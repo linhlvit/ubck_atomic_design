@@ -36,20 +36,6 @@ attributes:
     classification_context: "Source System Code = 'KNT_TAX_REG_REPRESENTATIVE' | Identification Type Code = '(SOURCE)'"
     etl_derived_value: KNT.TAX_REG_REPRESENTATIVE
 
-  - name: Previous Identification Number
-    physical_name: previous_identification_nbr
-    business_meaning: Số CMND cũ (trước khi đổi sang CCCD).
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: KNT
-    source_table: TAX_REG_REPRESENTATIVE
-    source_column: null
-    comment: Lưu lại để tra cứu lịch sử giấy tờ.
-    classification_context: "Source System Code = 'KNT_TAX_REG_REPRESENTATIVE' | Identification Type Code = '(SOURCE)'"
-    etl_derived_value: null
-
   - name: Identification Type Code
     physical_name: identification_tp_code
     business_meaning: "Loại giấy tờ: 1010=CMND, 2080=CCCD, 1020=Hộ chiếu."

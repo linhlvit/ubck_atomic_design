@@ -122,7 +122,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner License Certificate Type Id"
-  physical_name: "sp_license_certificate_type_id"
+  physical_name: "sp_license_certificate_tp_id"
   description: "FK đến loại chứng chỉ dự thi"
   data_domain: "Surrogate Key"
   nullable: false
@@ -130,7 +130,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.EXAM_DETAILS.CERTIFICATE_ID"
-  comment: "FK target: sp_license_certificate_type.sp_license_certificate_type_id.\
+  comment: "FK target: sp_license_certificate_type.sp_license_certificate_tp_id.\
     \ Cần ETL crosswalk sang NHNCK.CERTIFICATES: EXAM_DETAILS.CERTIFICATE_ID = CERTIFICATES.ID\
     \ để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK.CERTIFICATES', CERTIFICATE_CODE)\
     \ | Trước đây hash trực tiếp theo CERTIFICATE_ID (ID kỹ thuật) gây sai lệch với\
@@ -139,7 +139,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner License Certificate Type Code"
-  physical_name: "sp_license_certificate_type_code"
+  physical_name: "sp_license_certificate_tp_code"
   description: "Mã loại chứng chỉ dự thi (denormalized lookup)"
   data_domain: "Text"
   nullable: false
@@ -147,9 +147,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.EXAM_DETAILS.CERTIFICATE_ID"
-  comment: "Lookup pair: Securities Practitioner License Certificate Type.Securities\
-    \ Practitioner License Certificate Type Code. Pair with Securities Practitioner\
-    \ License Certificate Type Id."
+  comment: "Lookup pair: sp_license_certificate_type.sp_license_certificate_tp_code. Pair with sp_license_certificate_tp_id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

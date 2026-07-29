@@ -184,11 +184,12 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "pending"
   source_columns:
   - "THANHTRA.PETITION.ASSIGNED_OFFICER_ID"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
-    \ Hash: hash_id('NHNCK.USERS', ASSIGNED_OFFICER_ID)."
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
+    \ Hash: hash_id('IAM.USERS', ASSIGNED_OFFICER_ID) | Chưa xác nhận join key THANHTRA.PETITION.ASSIGNED_OFFICER_ID\
+    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

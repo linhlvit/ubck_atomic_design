@@ -275,32 +275,6 @@ entries:
   attribute_count: 39
   brd_ref: BRD-SRC-SCMS-SC_FIRM_PERIODIC_REPORT
 - subfolder: Business_Activity
-  file_name: dm_atm_securities_practitioner_post_certification_training_course-NHNCK.POST_CERT_TRAINING_COURSES.yaml
-  id: ATM-securities_practitioner_post_certification_training_course-NHNCK.POST_CERT_TRAINING_COURSES
-  physical_name: securities_practitioner_post_certification_training_course
-  logical_name: Securities Practitioner Post Certification Training Course
-  bcv_core_object: Business Activity
-  bcv_concept: "[Business Activity] Business Activity"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: NHNCK
-  status: draft
-  attribute_count: 5
-  brd_ref: BRD-SRC-NHNCK-POST_CERT_TRAINING_COURSES
-- subfolder: Business_Activity
-  file_name: dm_atm_securities_practitioner_post_certification_training_result-NHNCK.POST_CERT_TRAINING_RESULTS.yaml
-  id: ATM-securities_practitioner_post_certification_training_result-NHNCK.POST_CERT_TRAINING_RESULTS
-  physical_name: securities_practitioner_post_certification_training_result
-  logical_name: Securities Practitioner Post Certification Training Result
-  bcv_core_object: Business Activity
-  bcv_concept: "[Business Activity] Business Activity"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: NHNCK
-  status: draft
-  attribute_count: 13
-  brd_ref: BRD-SRC-NHNCK-POST_CERT_TRAINING_RESULTS
-- subfolder: Business_Activity
   file_name: dm_atm_sp_conduct_violation-NHNCK.VIOLATIONS.yaml
   id: ATM-sp_conduct_violation-NHNCK.VIOLATIONS
   physical_name: sp_conduct_violation
@@ -313,6 +287,32 @@ entries:
   status: approved
   attribute_count: 14
   brd_ref: BRD-SRC-NHNCK-VIOLATIONS
+- subfolder: Business_Activity
+  file_name: dm_atm_sp_post_certification_training_course-NHNCK.POST_CERT_TRAINING_COURSES.yaml
+  id: ATM-sp_post_certification_training_course-NHNCK.POST_CERT_TRAINING_COURSES
+  physical_name: sp_post_certification_training_course
+  logical_name: Securities Practitioner Post Certification Training Course
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Business Activity"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: NHNCK
+  status: draft
+  attribute_count: 5
+  brd_ref: BRD-SRC-NHNCK-POST_CERT_TRAINING_COURSES
+- subfolder: Business_Activity
+  file_name: dm_atm_sp_post_certification_training_result-NHNCK.POST_CERT_TRAINING_RESULTS.yaml
+  id: ATM-sp_post_certification_training_result-NHNCK.POST_CERT_TRAINING_RESULTS
+  physical_name: sp_post_certification_training_result
+  logical_name: Securities Practitioner Post Certification Training Result
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Business Activity"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: NHNCK
+  status: draft
+  attribute_count: 13
+  brd_ref: BRD-SRC-NHNCK-POST_CERT_TRAINING_RESULTS
 - subfolder: Business_Activity
   file_name: dm_atm_sp_professional_training_class-NHNCK.SPECIALIZATION_COURSES.yaml
   id: ATM-sp_professional_training_class-NHNCK.SPECIALIZATION_COURSES
@@ -743,19 +743,6 @@ entries:
   attribute_count: 16
   brd_ref: BRD-SRC-SCMS-SC_FIRM_ADMIN_SANCTION
 - subfolder: Documentation
-  file_name: dm_atm_securities_practitioner_license_certificate_status_change_history-NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.yaml
-  id: ATM-securities_practitioner_license_certificate_status_change_history-NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES
-  physical_name: securities_practitioner_license_certificate_status_change_history
-  logical_name: Securities Practitioner License Certificate Status Change History
-  bcv_core_object: Documentation
-  bcv_concept: "[Documentation] Gov. Registration Document"
-  table_type: Fact Append
-  etl_pattern: Fact Append
-  source: NHNCK
-  status: draft
-  attribute_count: 11
-  brd_ref: BRD-SRC-NHNCK-CERTIFICATE_RECORD_STATUS_HISTORIES
-- subfolder: Documentation
   file_name: dm_atm_sp_license_application-NHNCK.APPLICATIONS.yaml
   id: ATM-sp_license_application-NHNCK.APPLICATIONS
   physical_name: sp_license_application
@@ -808,6 +795,19 @@ entries:
   status: approved
   attribute_count: 23
   brd_ref: BRD-SRC-NHNCK-CERTIFICATE_RECORDS
+- subfolder: Documentation
+  file_name: dm_atm_sp_license_certificate_status_change_history-NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.yaml
+  id: ATM-sp_license_certificate_status_change_history-NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES
+  physical_name: sp_license_certificate_status_change_history
+  logical_name: Securities Practitioner License Certificate Status Change History
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Gov. Registration Document"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: NHNCK
+  status: draft
+  attribute_count: 11
+  brd_ref: BRD-SRC-NHNCK-CERTIFICATE_RECORD_STATUS_HISTORIES
 - subfolder: Documentation
   file_name: dm_atm_sp_license_certificate_type-NHNCK.CERTIFICATES.yaml
   id: ATM-sp_license_certificate_type-NHNCK.CERTIFICATES
@@ -1196,7 +1196,7 @@ entries:
   etl_pattern: SCD4A
   source: FIMS
   status: approved
-  attribute_count: 8
+  attribute_count: 7
   brd_ref: BRD-SRC-FIMS-INVESTOR
 - subfolder: Involved_Party
   file_name: dm_atm_ip_alternative_identification-FIMS.TRADINGREPRESENTATIVE.yaml
@@ -1209,7 +1209,7 @@ entries:
   etl_pattern: SCD4A
   source: FIMS
   status: approved
-  attribute_count: 8
+  attribute_count: 7
   brd_ref: BRD-SRC-FIMS-TRADINGREPRESENTATIVE
 - subfolder: Involved_Party
   file_name: dm_atm_ip_alternative_identification-FMS.FOR_BRCH.yaml
@@ -1222,7 +1222,7 @@ entries:
   etl_pattern: SCD4A
   source: FMS
   status: approved
-  attribute_count: 18
+  attribute_count: 15
   brd_ref: BRD-SRC-FMS-FOR_BRCH
 - subfolder: Involved_Party
   file_name: dm_atm_ip_alternative_identification-FMS.FUNDS.yaml
@@ -1235,7 +1235,7 @@ entries:
   etl_pattern: SCD4A
   source: FMS
   status: approved
-  attribute_count: 6
+  attribute_count: 5
   brd_ref: BRD-SRC-FMS-FUNDS
 - subfolder: Involved_Party
   file_name: dm_atm_ip_alternative_identification-FMS.INSIDER.yaml
@@ -1248,7 +1248,7 @@ entries:
   etl_pattern: SCD4A
   source: FMS
   status: approved
-  attribute_count: 8
+  attribute_count: 7
   brd_ref: BRD-SRC-FMS-INSIDER
 - subfolder: Involved_Party
   file_name: dm_atm_ip_alternative_identification-FMS.INVES.yaml
@@ -1261,7 +1261,7 @@ entries:
   etl_pattern: SCD4A
   source: FMS
   status: approved
-  attribute_count: 8
+  attribute_count: 7
   brd_ref: BRD-SRC-FMS-INVES
 - subfolder: Involved_Party
   file_name: dm_atm_ip_alternative_identification-FMS.MB_FUND.yaml
@@ -1274,7 +1274,7 @@ entries:
   etl_pattern: SCD4A
   source: FMS
   status: approved
-  attribute_count: 8
+  attribute_count: 7
   brd_ref: BRD-SRC-FMS-MB_FUND
 - subfolder: Involved_Party
   file_name: dm_atm_ip_alternative_identification-FMS.REPRESENT.yaml
@@ -1287,7 +1287,7 @@ entries:
   etl_pattern: SCD4A
   source: FMS
   status: approved
-  attribute_count: 8
+  attribute_count: 7
   brd_ref: BRD-SRC-FMS-REPRESENT
 - subfolder: Involved_Party
   file_name: dm_atm_ip_alternative_identification-FMS.SECURITIES.yaml
@@ -1300,7 +1300,7 @@ entries:
   etl_pattern: SCD4A
   source: FMS
   status: approved
-  attribute_count: 12
+  attribute_count: 10
   brd_ref: BRD-SRC-FMS-SECURITIES
 - subfolder: Involved_Party
   file_name: dm_atm_ip_alternative_identification-FMS.STF_FG_BRCH.yaml
@@ -1313,7 +1313,7 @@ entries:
   etl_pattern: SCD4A
   source: FMS
   status: approved
-  attribute_count: 13
+  attribute_count: 11
   brd_ref: BRD-SRC-FMS-STF_FG_BRCH
 - subfolder: Involved_Party
   file_name: dm_atm_ip_alternative_identification-IAM.USERS.yaml
@@ -1326,7 +1326,7 @@ entries:
   etl_pattern: SCD4A
   source: IAM
   status: approved
-  attribute_count: 14
+  attribute_count: 12
   brd_ref: BRD-SRC-IAM-USERS
 - subfolder: Involved_Party
   file_name: dm_atm_ip_alternative_identification-KNT.TAX_REG_REPRESENTATIVE.yaml
@@ -1339,7 +1339,7 @@ entries:
   etl_pattern: SCD4A
   source: KNT
   status: approved
-  attribute_count: 8
+  attribute_count: 7
   brd_ref: BRD-SRC-KNT-TAX_REG_REPRESENTATIVE
 - subfolder: Involved_Party
   file_name: dm_atm_ip_alternative_identification-NHNCK.IDENTITY_INFO_C06S.yaml
@@ -1352,7 +1352,7 @@ entries:
   etl_pattern: SCD4A
   source: NHNCK
   status: approved
-  attribute_count: 8
+  attribute_count: 7
   brd_ref: BRD-SRC-NHNCK-IDENTITY_INFO_C06S
 - subfolder: Involved_Party
   file_name: dm_atm_ip_alternative_identification-NHNCK.PROFESSIONALS.yaml
@@ -1378,7 +1378,7 @@ entries:
   etl_pattern: SCD4A
   source: SCMS
   status: approved
-  attribute_count: 6
+  attribute_count: 5
   brd_ref: BRD-SRC-SCMS-SC_FIRM_BRANCH
 - subfolder: Involved_Party
   file_name: dm_atm_ip_alternative_identification-SCMS.SC_FIRM_INFO.yaml
@@ -1391,7 +1391,7 @@ entries:
   etl_pattern: SCD4A
   source: SCMS
   status: approved
-  attribute_count: 36
+  attribute_count: 29
   brd_ref: BRD-SRC-SCMS-SC_FIRM_INFO
 - subfolder: Involved_Party
   file_name: dm_atm_ip_alternative_identification-SCMS.SC_FIRM_INSIDER_RELATION.yaml
@@ -1404,7 +1404,7 @@ entries:
   etl_pattern: SCD4A
   source: SCMS
   status: approved
-  attribute_count: 8
+  attribute_count: 7
   brd_ref: BRD-SRC-SCMS-SC_FIRM_INSIDER_RELATION
 - subfolder: Involved_Party
   file_name: dm_atm_ip_alternative_identification-SCMS.SC_FIRM_RELATED_PERSON.yaml
@@ -1417,7 +1417,7 @@ entries:
   etl_pattern: SCD4A
   source: SCMS
   status: approved
-  attribute_count: 8
+  attribute_count: 7
   brd_ref: BRD-SRC-SCMS-SC_FIRM_RELATED_PERSON
 - subfolder: Involved_Party
   file_name: dm_atm_ip_alternative_identification-SCMS.SC_FIRM_SENIOR_PERSONNEL.yaml
@@ -1430,7 +1430,7 @@ entries:
   etl_pattern: SCD4A
   source: SCMS
   status: approved
-  attribute_count: 14
+  attribute_count: 12
   brd_ref: BRD-SRC-SCMS-SC_FIRM_SENIOR_PERSONNEL
 - subfolder: Involved_Party
   file_name: dm_atm_ip_alternative_identification-SCMS.SC_FIRM_SHAREHOLDER.yaml
@@ -1443,7 +1443,7 @@ entries:
   etl_pattern: SCD4A
   source: SCMS
   status: approved
-  attribute_count: 6
+  attribute_count: 5
   brd_ref: BRD-SRC-SCMS-SC_FIRM_SHAREHOLDER
 - subfolder: Involved_Party
   file_name: dm_atm_ip_alternative_identification-SCMS.SC_FIRM_SHAREHOLDER_RELATION.yaml
@@ -1456,7 +1456,7 @@ entries:
   etl_pattern: SCD4A
   source: SCMS
   status: approved
-  attribute_count: 6
+  attribute_count: 5
   brd_ref: BRD-SRC-SCMS-SC_FIRM_SHAREHOLDER_RELATION
 - subfolder: Involved_Party
   file_name: dm_atm_ip_alternative_identification-SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE.yaml
@@ -1469,7 +1469,7 @@ entries:
   etl_pattern: SCD4A
   source: SCMS
   status: approved
-  attribute_count: 6
+  attribute_count: 5
   brd_ref: BRD-SRC-SCMS-SC_FIRM_SHAREHOLDER_REPRESENTATIVE
 - subfolder: Involved_Party
   file_name: dm_atm_ip_electronic_address-FIMS.INVESTOR.yaml

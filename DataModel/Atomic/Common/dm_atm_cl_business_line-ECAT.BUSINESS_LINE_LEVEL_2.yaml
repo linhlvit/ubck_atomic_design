@@ -14,7 +14,7 @@ ldm:
   etl_pattern: SCD2
   source: ECAT
   description: |
-    Danh mục ngành nghề kinh doanh 2 cấp (cấp 1 + cấp 2), self-referencing qua Parent Business Line. Gộp từ ECAT.BUSINESS_LINE_LEVEL_1 + BUSINESS_LINE_LEVEL_2 theo quy tắc "Gộp entity khi hợp lý" (CLAUDE.md #10). Table Type = Relative theo quyết định tường minh của Data Modeler (khác rule mặc định Common→Classification Value) — xem ECAT_HLD_Tier1.md T1-07. Tên bỏ tiền tố nguồn (ECAT) theo rule đặt tên Classification mới (CLAUDE.md #7). IDS.CATEGORIES chỉ dùng làm bảng join nội bộ (COMPANY_PROFILES.CATEGORY_L1_ID/L2_ID) — không tự sinh entity (quyết định lại 2026-07-23, thay thế quyết định 2026-07-17).
+    Danh mục ngành nghề kinh doanh 2 cấp (cấp 1 + cấp 2), self-referencing qua Parent Business Line. Gộp từ ECAT.BUSINESS_LINE_LEVEL_1 + BUSINESS_LINE_LEVEL_2 theo quy tắc "Gộp entity khi hợp lý" (CLAUDE.md #10). Table Type = Relative theo quyết định tường minh của Data Modeler (khác rule mặc định Common→Classification Value) — xem ECAT_HLD_Tier1.md T1-07. Tên bỏ tiền tố nguồn (ECAT) theo rule đặt tên Classification mới (CLAUDE.md #7). Bổ sung nguồn IDS.CATEGORIES (shared entity) theo quyết định tường minh Data Modeler (2026-07-17) — IDS.CATEGORIES và ECAT.BUSINESS_LINE_LEVEL_1/2 xác nhận cùng 1 concept nghiệp vụ, xem IDS_HLD_Tier1.md T1-13 / IDS_HLD_Overview.md mục 7e #12.
   owner:
     steward: username@ubck.com.vn
     data_modeler: username@fssc.com.vn

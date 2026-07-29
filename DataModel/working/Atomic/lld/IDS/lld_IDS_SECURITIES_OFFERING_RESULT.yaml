@@ -689,10 +689,9 @@ attributes:
   status: "pending"
   source_columns:
   - "IDS.SECURITIES_OFFERING_RESULT.APPROVER_USER_ID"
-  comment: "FK target: Identity and Access Management User.Identity and Access Management\
-    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: LOGINS.ID NUMBER(10)\
-    \ tự tăng vs IAM.USERS.ID VARCHAR2(36) GUID, chưa xác nhận crosswalk nên chưa\
-    \ thêm Hash."
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
+    \ Hash: hash_id('IAM.USERS', APPROVER_USER_ID) | Chưa xác nhận join key IDS.SECURITIES_OFFERING_RESULT.APPROVER_USER_ID\
+    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -705,8 +704,8 @@ attributes:
   status: "pending"
   source_columns:
   - "IDS.SECURITIES_OFFERING_RESULT.APPROVER_USER_ID"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pair with Approver User Id. Pending — xem ghi chú ở Id."
+  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
+    \ Pair with Approver User Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -734,9 +733,9 @@ attributes:
   status: "pending"
   source_columns:
   - "IDS.SECURITIES_OFFERING_RESULT.PROCESSOR_USER_ID"
-  comment: "FK target: Identity and Access Management User.Identity and Access Management\
-    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: xem ghi chú ở Approver\
-    \ User Id."
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
+    \ Hash: hash_id('IAM.USERS', PROCESSOR_USER_ID) | Chưa xác nhận join key IDS.SECURITIES_OFFERING_RESULT.PROCESSOR_USER_ID\
+    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -749,8 +748,8 @@ attributes:
   status: "pending"
   source_columns:
   - "IDS.SECURITIES_OFFERING_RESULT.PROCESSOR_USER_ID"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pair with Processor User Id. Pending — xem ghi chú ở Id."
+  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
+    \ Pair with Processor User Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

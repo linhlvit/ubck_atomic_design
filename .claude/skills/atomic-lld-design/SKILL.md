@@ -33,6 +33,62 @@ description: |
   - [`reference/post_check_codes.md`](reference/post_check_codes.md) — chi tiết C1–C5 và source coverage check.
   - [`reference/file_layout.md`](reference/file_layout.md) — vị trí + encoding + cấu trúc tất cả file LLD.
 
+## QUY TẮC CỨNG — KHÔNG GENERATE KHI CÒN LLD/ENTITY CHƯA APPROVED
+
+**Áp dụng cho MỌI lần chạy `generate_entity_consolidation.py`, `generate_dm_yaml.py`,
+`gen_summary_and_model.py`** (Bước 9, 10, 11) — kể cả khi chỉ cần regenerate lại để phản ánh 1
+comment/1 attribute vừa sửa, và kể cả khi thao tác giữa hội thoại không đi qua đủ Bước 0–9 từ đầu.
+
+**Vì sao phải tự kiểm tra thủ công, không được ỷ lại script:** `aggregate_atomic.py` và
+`generate_dm_yaml.py` **KHÔNG filter theo `design_status`** — đọc source 2 script này xác nhận
+không có bất kỳ điều kiện nào lọc `draft`/`reviewed` trước khi ghi output; chúng generate từ MỌI
+`lld_*.yaml`/`entity_*.yaml` tìm thấy, bất kể trạng thái duyệt. Nếu AI không tự chặn trước khi gọi
+lệnh, không có gì chặn cả — dữ liệu chưa qua review con người sẽ lọt thẳng vào
+`DataModel/Atomic/`.
+
+**Thực tế đã xảy ra (2026-07-29, sửa comment FK crosswalk module NHNCK/SCMS/IDS):** đã chạy
+`generate_dm_yaml.py --source IDS` trong khi `lld_IDS_COMPANY_PROFILES_IP_Postal_Address.yaml`
+còn `design_status: draft` — sinh `dm_atm_ip_postal_address-IDS.COMPANY_PROFILES.yaml` từ dữ liệu
+chưa approved mà không có cảnh báo nào dừng lại đúng lúc.
+
+**Quy trình bắt buộc trước khi chạy BẤT KỲ lệnh nào trong Bước 9, 10, 11:**
+
+1. Xác định phạm vi bị ảnh hưởng bởi lệnh sắp chạy:
+   - `generate_dm_yaml.py --source X` → toàn bộ `lld_*.yaml` của source X, **cộng thêm** mọi
+     source khác đóng góp vào shared entity (`entity_*.yaml`) mà X là 1 nguồn trong đó.
+   - `generate_entity_consolidation.py --entity Y` (hoặc chạy không kèm `--entity`) → toàn bộ
+     `lld_*.yaml` liệt kê trong `sources:` của entity Y (hoặc mọi entity nếu chạy full).
+   - `gen_summary_and_model.py` → toàn bộ dự án.
+2. Với từng file trong phạm vi đó, đọc `design_status` (hoặc `consolidation_status` với entity
+   file) — dùng `grep design_status` trực tiếp trên từng file hoặc `manifest.yaml`, không suy đoán.
+3. Nếu **còn bất kỳ file nào `draft` hoặc `reviewed`** (chưa `approved`):
+   - **DỪNG — KHÔNG chạy `--source`/full generate trực tiếp.**
+   - Liệt kê rõ danh sách file/bảng chưa approved cho người dùng.
+   - Hỏi xác nhận tường minh (AskUserQuestion hoặc tương đương), ưu tiên theo thứ tự:
+     (a) **approved-only regen** (xem kỹ thuật bên dưới) — mặc định đề xuất trước tiên, an toàn
+     nhất, không cần user tự đi approve thủ công trước;
+     (b) approve các file còn lại trước rồi quay lại chạy full;
+     (c) chấp nhận generate luôn dù còn draft (rủi ro trộn dữ liệu chưa duyệt vào Atomic output);
+     (d) hủy thao tác. **AI không được tự ý chọn (c) thay người dùng.**
+4. Chỉ chạy lệnh khi mọi file trong phạm vi đã `approved`, đã lọc approved-only theo kỹ thuật dưới
+   đây, hoặc người dùng đã tường minh xác nhận chấp nhận rủi ro ở bước 3.
+
+**Kỹ thuật approved-only regen (đã dùng thành công cho SCMS 2026-07-27 và FMS 2026-07-28 — AN
+TOÀN, KHÔNG bao giờ ghi đè `manifest.yaml`):** viết 1 script wrapper `importlib` module
+`aggregate_atomic.py` trực tiếp, gọi `load_manifest()` bình thường rồi **lọc list kết quả trong
+Python** (giữ nguyên mọi entry không thuộc phạm vi đang generate; với source/entity đang xét chỉ
+giữ entry có `design_status: approved` trong file LLD tương ứng), sau đó gọi thẳng
+`build_entities()`/`build_attributes()`/`write_*_yaml()` của module gốc với list đã lọc. File
+`manifest.yaml` trên đĩa **không bao giờ** bị mở ở chế độ ghi — chỉ `atomic_attributes.yaml`/
+`atomic_entities.yaml` (working file, được phép ghi đè) bị ảnh hưởng tạm thời. Sau khi
+`generate_dm_yaml.py --source {SOURCE}` + `validate_dm_yaml.py --source {SOURCE}` xong với dữ
+liệu đã lọc, chạy lại `aggregate_atomic.py` **KHÔNG filter** (bản gốc, đầy đủ) để phục hồi 2 file
+working về trạng thái đầy đủ toàn bộ manifest. KHÔNG sửa trực tiếp `manifest.yaml` để loại entry
+draft rồi phục hồi sau — cách này từng bị chặn và rủi ro hỏng file nguồn quan trọng nhất của
+pipeline.
+
+Rule này áp dụng **bất kể** có gọi qua Skill tool đầy đủ từ đầu hay không.
+
 ## ĐIỀU KIỆN TIÊN QUYẾT
 
 - HLD đã được duyệt cho source system đang thiết kế.
@@ -247,16 +303,16 @@ Khi bảng nguồn có cặp `CREATED_AT / CREATED_BY / UPDATED_AT / UPDATED_BY`
 |---|---|---|---|
 | `Created Timestamp` | `Timestamp` | `*.CREATED_AT` | (trống) |
 | `Updated Timestamp` | `Timestamp` | `*.UPDATED_AT` | (trống) |
-| `Created By [Entity] Id` | `Surrogate Key` | `*.CREATED_BY` | `FK target: {Entity}.{Entity} Id.` |
-| `Created By [Entity] Code` | `Text` | `*.CREATED_BY` | `Lookup pair: {Entity}.{Entity} Code. Pair with Created By [Entity] Id.` |
-| `Updated By [Entity] Id` | `Surrogate Key` | `*.UPDATED_BY` | `FK target: {Entity}.{Entity} Id.` |
-| `Updated By [Entity] Code` | `Text` | `*.UPDATED_BY` | `Lookup pair: {Entity}.{Entity} Code. Pair with Updated By [Entity] Id.` |
+| `Created By [Entity] Id` | `Surrogate Key` | `*.CREATED_BY` | `FK target: {entity_physical_name}.{entity_physical_name}_id.` |
+| `Created By [Entity] Code` | `Text` | `*.CREATED_BY` | `Lookup pair: {entity_physical_name}.{entity_physical_name}_code. Pair with Created By [Entity] Id.` |
+| `Updated By [Entity] Id` | `Surrogate Key` | `*.UPDATED_BY` | `FK target: {entity_physical_name}.{entity_physical_name}_id.` |
+| `Updated By [Entity] Code` | `Text` | `*.UPDATED_BY` | `Lookup pair: {entity_physical_name}.{entity_physical_name}_code. Pair with Updated By [Entity] Id.` |
 
 **Quy tắc:**
 - `[Entity]` = tên ngắn của Atomic entity đích dùng trong tên attribute (ví dụ: `Officer` khi FK target là `Regulatory Authority Officer`).
-- Comment `FK target:` và `Lookup pair:` phải dùng **tên attribute đầy đủ** (có prefix entity) — không dùng tên rút gọn.
-  - Đúng: `FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.`
-  - Sai: `FK target: Regulatory Authority Officer.Officer Id.`
+- `{entity_physical_name}` = physical_name viết thường của Atomic entity đích (VD: `ra_officer` cho `Regulatory Authority Officer`) — **không phải** tên rút gọn dùng trong tên attribute (`Officer`), cũng không phải Title Case business name.
+  - Đúng: `FK target: ra_officer.ra_officer_id.`
+  - Sai: `FK target: Regulatory Authority Officer.Officer Id.` (vừa sai casing, vừa dùng tên rút gọn thay vì tên đầy đủ của entity đích)
 - **Self-reference** (entity FK về chính nó): vẫn dùng đầy đủ cặp Id + Code — không bỏ Id.
 - **Nguồn `DATE` (không có giờ)**: vẫn dùng domain `Timestamp` — widening conversion, không cần ghi chú.
 - **FK target chưa xác định** (entity chưa thiết kế): giữ đủ 6 attribute, đặt `status=pending`, comment `Pending — FK target chưa xác định.`
@@ -292,8 +348,15 @@ Thứ tự: tag automation trước, notes sau.
 Phân biệt **Id** (FK constraint thực sự) vs **Code** (denormalized lookup, không phải FK constraint):
 
 - **Id** — FK constraint duy nhất (Surrogate Key):
-  `FK target: {Atomic Entity Name}.{Atomic Entity Name} Id. {notes}`
+  `FK target: {entity_physical_name}.{entity_physical_name}_id. {notes}`
   → `atomic-gen-docs` parse prefix `FK target:` và đưa vào bảng Constraint của tài liệu CSDL.
+
+  **Casing — physical_name viết thường LUÔN LUÔN**, cho mọi FK target (không phân biệt FK bình
+  thường/Shared entity/crosswalk). Đây không phải ngoại lệ riêng cho crosswalk — mọi `FK target:`/
+  `Lookup pair:` đều dùng `{entity_physical_name}.{attribute_physical_name}` viết thường, không
+  dùng Title Case Atomic Entity Name. `generate_dm_yaml.py::normalize_comment()` tự động convert
+  Title Case còn sót ở LLD (nếu designer lỡ viết) sang physical_name khi sinh output Atomic — nhưng
+  không nên dựa vào auto-convert này, viết đúng physical_name ngay từ LLD.
 
   **Hash comment — bắt buộc bổ sung cho ETL:** ETL hash surrogate Id từ 2 input:
   `(source_system_code, business_key)`. FK_SOURCE = source table của **target entity**,
@@ -303,12 +366,12 @@ Phân biệt **Id** (FK constraint thực sự) vs **Code** (denormalized lookup
   |---|---|---|
   | FK bình thường | `[SRC.TABLE.FK_COL]` | `Hash: hash_id('SRC.TARGET_TABLE', FK_COL).` |
   | Shared entity (IP sub-table, dùng PK parent) | `[SRC.PARENT_TABLE.ID]` | `Hash: hash_id('SRC.PARENT_TABLE', ID).` |
-  | FK luôn NULL | `[]` (rỗng) | Không thêm hash — ghi lý do NULL thay thế |
+  | FK luôn NULL | `[]` (rỗng) | Không thêm hash, không ghi lý do NULL — để `comment: null`. |
 
   Ví dụ:
-  - Normal: `"FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."`
-  - Shared entity: `"FK target: Securities Organization Reference.Securities Organization Reference Id. Shared entity. Hash: hash_id('NHNCK.ORGANIZATIONS', ID)."`
-  - Always null: `"FK target: Geographic Area.Geographic Area Id. NULL vì COUNTRIES không có parent."`
+  - Normal: `"FK target: securities_practitioner.securities_practitioner_id. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."`
+  - Shared entity: `"FK target: securities_organization_reference.securities_organization_reference_id. Shared entity. Hash: hash_id('NHNCK.ORGANIZATIONS', ID)."`
+  - Always null: `comment: null` (source_columns rỗng → không giữ lại "FK target:"/"Lookup pair:" hay lý do NULL nào trong comment, kể cả khi lý do đó đúng và ngắn gọn).
 
   **FK cần crosswalk sang bảng danh mục nguồn để lấy Code (không hash trực tiếp theo ID kỹ
   thuật):** Áp dụng khi cột FK nguồn lưu ID kỹ thuật nội bộ của 1 bảng danh mục/lookup — trong
@@ -327,10 +390,9 @@ Phân biệt **Id** (FK constraint thực sự) vs **Code** (denormalized lookup
   - `{SOURCE_SYSTEM}.{LOOKUP_TABLE}`, `{SOURCE_TABLE}.{FK_COLUMN}`, `{LOOKUP_PK_COLUMN}`,
     `{CODE_COLUMN}` giữ nguyên tên vật lý nguồn (viết hoa/snake theo CSDL gốc — không đổi).
     `{FILTER_VALUE}` viết theo chuẩn SQL literal, bọc dấu nháy đơn: `'COUNTRY'`.
-  - **Casing — ngoại lệ có chủ đích:** phần `FK target: {entity}.{attribute}` và điều kiện lọc
-    dùng **physical_name viết thường** (VD `geographic_area.geographic_area_id`) — khác với
-    `FK target:` Title Case dùng cho case "FK bình thường"/"Shared entity" ở trên. Không áp dụng
-    lùi cho các FK không cần crosswalk.
+  - `{target_entity_physical_name}.{target_attribute_physical_name}` và điều kiện lọc dùng
+    physical_name viết thường — cùng quy tắc chung áp dụng cho mọi `FK target:` (xem đầu mục Id
+    ở trên), không phải cú pháp riêng của crosswalk.
   - Dấu `|` ngăn cách phần **format chuẩn hóa** (`FK target: ...` đến hết `hash_id(...)`) với phần
     **free-text notes** phía sau (cảnh báo profile dữ liệu, ghi chú lịch sử fix, snapshot...). Nếu
     không có note nào thêm thì bỏ luôn dấu `|`.
@@ -363,16 +425,19 @@ Phân biệt **Id** (FK constraint thực sự) vs **Code** (denormalized lookup
 
   **Vòng đời comment — sau khi Data Modeler xác nhận** (profile dữ liệu xong, value set khớp danh
   mục đích, không còn rủi ro crosswalk): bỏ hẳn mệnh đề cảnh báo + dấu `|`, thu gọn về dạng Hash
-  comment chuẩn (case "FK bình thường" ở trên) — nhưng vẫn giữ **physical_name viết thường** cho
-  phần `FK target:` (không quay lại Title Case, đây là tiếp nối của cùng 1 rule):
-  `"FK target: {entity}.{attribute} ({điều kiện lọc nếu có}). Hash: hash_id('{TARGET_SRC}.{TARGET_TABLE}', {CODE_COLUMN})."`
+  comment chuẩn (case "FK bình thường" ở trên) — phần `FK target:` vẫn dùng physical_name viết
+  thường như mọi FK khác (không có gì đặc biệt cần "giữ lại" — đây luôn là casing chuẩn, không
+  phải trạng thái tạm thời của riêng crosswalk):
+  `"FK target: {entity_physical_name}.{entity_physical_name}_id ({điều kiện lọc nếu có}). Hash: hash_id('{TARGET_SRC}.{TARGET_TABLE}', {CODE_COLUMN})."`
 
 - **Code** — denormalized lookup (KHÔNG phải FK constraint, chỉ là copy giá trị business key cho tiện query):
-  `Lookup pair: {Atomic Entity Name}.{Atomic Entity Name} Code. Pair with {Id field name}. {notes}`
+  `Lookup pair: {entity_physical_name}.{entity_physical_name}_code. Pair with {Id field name}. {notes}`
   → `atomic-gen-docs` KHÔNG đưa Code vào bảng Constraint. Chỉ Id mới sinh constraint.
+  → Casing: physical_name viết thường, cùng quy tắc như Id — KHÔNG dùng Title Case Atomic Entity
+    Name (kể cả khi Id cặp cùng nó là FK bình thường không cần crosswalk).
 
 - **Currency Code** (Classification Value pattern, không có Id surrogate):
-  `FK target: Currency.Currency Code. {notes}`
+  `FK target: currency.currency_code. {notes}`
   → vẫn dùng `FK target:` vì đây là FK constraint trực tiếp đến Currency entity (không có cặp Id+Code).
 
 **Tại sao tách syntax:** parser của `atomic-gen-docs` đơn giản hoá — chỉ scan `FK target:` để build Constraint. Code có comment `Lookup pair:` → tự động không match → không bị duplicate trong Constraint table (đúng chuẩn DBA: 1 FK = 1 constraint, không lặp lại Code).
@@ -406,7 +471,7 @@ Trước khi xuất file:
 - [ ] **Conversion risk:** Mọi attribute có Data Domain không khớp tự nhiên với data type nguồn (ví dụ: nguồn `string` → domain `Small Counter`) đã có comment ghi chú conversion risk chưa? Nếu data type nguồn không khai báo → đã ghi "cần profile" trong comment?
 - [ ] **Domain mới:** Nếu có attribute dùng tag `[PROPOSE NEW DOMAIN]` → đã tách thành điểm cần xác nhận riêng để reviewer quyết định bổ sung vào `reference/data_domains.md`?
 - [ ] **FK comment** (xem Bước 5): Id ghi `FK target: ...`, Code ghi `Lookup pair: ... Pair with {Id field}` — KHÔNG ghi `FK target:` cho cả Id+Code. Currency Code (Classification Value pattern, không có Id) ghi `FK target:`.
-- [ ] **FK hash comment** (xem Bước 5): Mọi FK Id có `source_columns` không rỗng → comment phải có `Hash: hash_id('SRC.TARGET_TABLE', COL).` (FK_SOURCE tra từ `Source/{SOURCE}_Columns.csv`). FK với `source_columns: []` → không thêm hash, ghi lý do NULL.
+- [ ] **FK hash comment** (xem Bước 5): Mọi FK Id có `source_columns` không rỗng → comment phải có `Hash: hash_id('SRC.TARGET_TABLE', COL).` (FK_SOURCE tra từ `Source/{SOURCE}_Columns.csv`). FK với `source_columns: []` → không thêm hash, `comment: null` (không ghi lý do NULL).
 - [ ] **FK cần crosswalk qua bảng danh mục** (xem Bước 5): Nếu `COL` dùng trong `hash_id()` là ID kỹ thuật của bảng đích chứ không phải Code thật (đối chiếu `"{Entity} Code"` attribute của chính entity đích) → phải dùng cú pháp `FK target: {entity}.{attribute} (...). Cần ETL crosswalk sang ...` (physical_name viết thường), KHÔNG hash trực tiếp theo ID kỹ thuật.
 - [ ] **Audit block** (xem Bước 3k): Bảng nguồn có `CREATED_AT / CREATED_BY / UPDATED_AT / UPDATED_BY` → đủ 6 attribute chuẩn. Comment FK target dùng **tên attribute đầy đủ** (có prefix entity). Self-reference vẫn có cặp Id + Code.
 - [ ] **Technical bundle** (xem Bước 2c): Nếu bảng nguồn có đủ 9 cột audit/soft-delete/optimistic-locking chuẩn (`STATUS, DELETED, CREATED_AT, UPDATED_AT, CREATED_BY_ID, CREATED_BY_NAME, UPDATED_BY_ID, UPDATED_BY_NAME, VERSION`) → đã loại trừ và ghi 9 dòng `pending_design.yaml` chưa? Nếu chỉ có một phần → đã ghi "Điểm cần xác nhận" trong HLD Tier chưa?
@@ -607,6 +672,8 @@ Xử lý mọi warning (chi tiết C1–C5 xem [`reference/post_check_codes.md`]
 
 Khi Human trigger "Consolidate entity X" từ App:
 
+**Trước khi chạy lệnh dưới đây, thực hiện gate ở mục "QUY TẮC CỨNG — KHÔNG GENERATE KHI CÒN LLD/ENTITY CHƯA APPROVED" ở đầu file.**
+
 1. AI đọc tất cả `lld_*.yaml` có `design_status: approved` và `atomic_entity = X`.
 2. Build union attribute list, flag inconsistency:
    - Data domain mismatch cùng attribute tên giống nhau
@@ -631,6 +698,11 @@ python DataModel/working/Atomic/lld/scripts/validate_lld_yaml.py --entities
 ### Bước 10 — Generate YAML (Phase 4)
 
 Sau khi entity_*.yaml đã approved (hoặc entity single-source chỉ cần lld_*.yaml approved):
+
+**⛔ BẮT BUỘC chạy gate ở mục "QUY TẮC CỨNG — KHÔNG GENERATE KHI CÒN LLD/ENTITY CHƯA APPROVED" ở
+đầu file TRƯỚC lệnh dưới đây** — `--source {SOURCE}` generate cho TOÀN BỘ `lld_*.yaml` của
+source đó (và mọi source khác đóng góp vào shared entity liên quan), không chỉ bảng bạn vừa sửa.
+Kiểm tra `design_status` của tất cả các file trong phạm vi trước khi chạy, không giả định đã approved.
 
 ```bash
 python DataModel/generate_dm_yaml.py --source {SOURCE}
@@ -662,6 +734,8 @@ python DataModel/validate_dm_yaml.py --source {SOURCE}
 
 ### Bước 11 — Consolidate (Phase 5)
 
+**Trước khi chạy lệnh này, thực hiện gate ở mục "QUY TẮC CỨNG — KHÔNG GENERATE KHI CÒN LLD/ENTITY CHƯA APPROVED" ở đầu file** — lệnh này ảnh hưởng TOÀN BỘ dự án, không chỉ source đang thao tác.
+
 **KHÔNG dùng `--source`** — flag này **destructively truncate** `dm_manifest.yaml` xuống chỉ còn rows của source đó (đã tái diễn 3 lần: ThanhTra 2 lần + KNT 2026-07-27). Luôn chạy không kèm flag để rebuild toàn bộ manifest từ tất cả source:
 
 ```bash
@@ -684,6 +758,7 @@ Output:
 | 2 — Human Review Level 1 | (trong App) | Mọi `lld_*.yaml` cần thiết kế đã `design_status: approved` |
 | 3 — Post-check | `DataModel/working/Atomic/lld/scripts/post_check_atomic.py` + `post_check_source_coverage.py --source {SOURCE}` | **0 WARNING** |
 | 3b — Consolidation (nếu cần) | `DataModel/working/Atomic/lld/scripts/validate_lld_yaml.py --entities` | **Failed: 0**, `consolidation_status: approved` |
+| **Gate trước Phase 4/5** | Kiểm tra thủ công `design_status`/`consolidation_status` của TOÀN BỘ file trong phạm vi (xem "QUY TẮC CỨNG" đầu file) | **0 file draft/reviewed** trong phạm vi, hoặc user đã xác nhận chấp nhận rủi ro |
 | 4 — Generate YAML | `generate_dm_yaml.py --source {SOURCE}` | Số file đúng; 0 file thiếu `layer: Atomic` |
 | 4b — Validate YAML | `validate_dm_yaml.py --source {SOURCE}` | **Failed: 0** |
 | 5 — Consolidate | `gen_summary_and_model.py` (KHÔNG `--source` — xem Bước 11) | `dm_manifest.yaml` đủ N dòng của TẤT CẢ source; `atomic_model.yaml` parse được |

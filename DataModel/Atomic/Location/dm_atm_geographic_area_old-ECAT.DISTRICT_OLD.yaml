@@ -144,7 +144,7 @@ attributes:
     source_system: ECAT
     source_table: DISTRICT_OLD
     source_column: null
-    comment: "FK target: geographic_area.geographic_area_id (KHÁC entity — cross-entity anchor, không phải self-ref). Resolve: join REGION_ID → ECAT.REGION.ID để lấy CODE, rồi hash_id('ECAT.REGION', CODE). COUNTRY_ID trên bảng nguồn denormalized qua REGION_ID → REGION.COUNTRY_ID, không map riêng."
+    comment: null
     classification_context: "Source System Code = 'ECAT_DISTRICT_OLD'"
     etl_derived_value: null
 
@@ -158,7 +158,7 @@ attributes:
     source_system: ECAT
     source_table: DISTRICT_OLD
     source_column: null
-    comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Region Geographic Area Id."
+    comment: null
     classification_context: "Source System Code = 'ECAT_DISTRICT_OLD'"
     etl_derived_value: null
 
@@ -172,7 +172,7 @@ attributes:
     source_system: ECAT
     source_table: DISTRICT_OLD
     source_column: null
-    comment: "FK target: geographic_area.geographic_area_id (KHÁC entity — successor mapping sau sáp nhập hành chính, không phải hierarchy cha-con). Resolve: join PROVINCE_NEW_ID → ECAT.PROVINCE_NEW.ID để lấy CODE, rồi hash_id('ECAT.PROVINCE_NEW', CODE). // FK target: geographic_area.geographic_area_id (KHÁC entity — successor mapping sau sáp nhập hành chính). Resolve: join WARD_NEW_ID → ECAT.WARD_NEW.ID để lấy CODE, rồi hash_id('ECAT.WARD_NEW', CODE)."
+    comment: null
     classification_context: "Source System Code = 'ECAT_DISTRICT_OLD'"
     etl_derived_value: null
 
@@ -186,7 +186,7 @@ attributes:
     source_system: ECAT
     source_table: DISTRICT_OLD
     source_column: null
-    comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Successor Geographic Area Id."
+    comment: null
     classification_context: "Source System Code = 'ECAT_DISTRICT_OLD'"
     etl_derived_value: null
 
@@ -438,6 +438,6 @@ attributes:
     source_system: ECAT
     source_table: DISTRICT_OLD
     source_column: null
-    comment: "Scheme: GEOGRAPHIC_AREA_WARD_CATEGORY (dùng chung với WARD_NEW)."
+    comment: "Scheme: GEOGRAPHIC_AREA_WARD_CATEGORY (dùng chung với WARD_NEW). Không áp dụng cho ECAT.DISTRICT_OLD — thuộc tính không có dữ liệu nguồn ở source này (nullable placeholder cho shared entity)."
     classification_context: "Source System Code = 'ECAT_DISTRICT_OLD'"
     etl_derived_value: null

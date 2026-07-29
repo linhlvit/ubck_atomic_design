@@ -172,7 +172,7 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATION_SPECIALIZATIONS
     source_column: NHNCK.APPLICATION_SPECIALIZATIONS.ASSIGNEE_ID
-    comment: "Pending — FK target đổi sang Identity and Access Management User (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột ASSIGNEE_ID) và IAM.USERS, và lld_IAM_USERS.yaml lên approved."
+    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM.USERS', ASSIGNEE_ID) | Chưa xác nhận join key NHNCK.APPLICATION_SPECIALIZATIONS.ASSIGNEE_ID ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
     classification_context: "Source System Code = 'NHNCK_APPLICATION_SPECIALIZATIONS'"
     etl_derived_value: null
 
@@ -186,7 +186,7 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATION_SPECIALIZATIONS
     source_column: NHNCK.APPLICATION_SPECIALIZATIONS.ASSIGNEE_ID
-    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pending — xem ghi chú ở Appraised By Officer Id."
+    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Info Appraised By Officer Id."
     classification_context: "Source System Code = 'NHNCK_APPLICATION_SPECIALIZATIONS'"
     etl_derived_value: null
 

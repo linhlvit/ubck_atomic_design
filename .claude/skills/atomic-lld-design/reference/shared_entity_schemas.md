@@ -18,6 +18,12 @@ Schema shared entity cố định toàn dự án. Bảng nguồn nào map vào s
 
 ## IP Postal Address
 
+Thứ tự cột chuẩn — **theo thứ bậc địa lý từ lớn đến nhỏ** (Quốc gia → Tỉnh/thành → Quận/huyện
+→ Phường/xã), khớp cách các file đang triển khai thực tế. Mỗi cấp có thể là FK-with-lookup
+(`{Level} Id` + `{Level} Code`) hoặc denormalized text (`{Level} Name` + `{Level} Code`) tùy
+theo nguồn có lookup trong scope hay không — không dùng cả 2 dạng cho cùng 1 cấp trong cùng 1
+file.
+
 | Trường | Tên chuẩn | Data Domain |
 |---|---|---|
 | FK chính | `Involved Party Id` | Surrogate Key |
@@ -25,16 +31,20 @@ Schema shared entity cố định toàn dự án. Bảng nguồn nào map vào s
 | Nguồn | `Source System Code` | Classification Value |
 | Loại địa chỉ | `Address Type Code` | Classification Value |
 | Địa chỉ text | `Address Value` | Text |
-| FK địa lý (có lookup) | `{Semantic Prefix} Id` | Surrogate Key |
-| Mã địa lý (có lookup) | `{Semantic Prefix} Code` | Text |
-| Quận/huyện text | `District Name` | Text |
-| Mã quận/huyện | `District Code` | Text |
-| Phường/xã text | `Ward Name` | Text |
-| Mã phường/xã | `Ward Code` | Text |
-| Tỉnh/thành text | `Province Name` | Text |
-| Mã tỉnh text | `Province Code` | Text |
+| FK quốc gia (có lookup) | `Country Id` | Surrogate Key |
+| Mã quốc gia (có lookup) | `Country Code` | Text |
+| FK tỉnh/thành (có lookup) | `Province Id` | Surrogate Key |
+| Mã tỉnh/thành (có lookup) | `Province Code` | Text |
+| Tỉnh/thành text (không lookup) | `Province Name` | Text |
+| FK quận/huyện (có lookup) | `District Id` | Surrogate Key |
+| Mã quận/huyện (có lookup) | `District Code` | Text |
+| Quận/huyện text (không lookup) | `District Name` | Text |
+| FK phường/xã (có lookup) | `Ward Id` | Surrogate Key |
+| Mã phường/xã (có lookup) | `Ward Code` | Text |
+| Phường/xã text (không lookup) | `Ward Name` | Text |
 
-> Không phải mọi source đều có đủ trường — chỉ map những trường có dữ liệu nguồn.
+> Không phải mọi source đều có đủ trường — chỉ map những trường có dữ liệu nguồn. Trong 1 file,
+> mỗi cấp địa lý chỉ chọn 1 dạng (FK Id+Code hoặc text Name+Code), không dùng cả 2.
 
 **Quy tắc đặt tên `{Semantic Prefix}`:** Dùng prefix ngữ nghĩa cụ thể theo vai trò trường địa lý — KHÔNG dùng "Geographic Area" trong tên attribute.
 
@@ -43,11 +53,13 @@ Schema shared entity cố định toàn dự án. Bảng nguồn nào map vào s
 | Quốc tịch cá nhân | `Nationality Id` | `Nationality Code` |
 | Quốc gia đăng ký tổ chức | `Country of Registration Id` | `Country of Registration Code` |
 | Quốc gia cư trú | `Country of Residence Id` | `Country of Residence Code` |
+| Quốc gia (địa chỉ, có lookup) | `Country Id` | `Country Code` |
 | Tỉnh/thành phố | `Province Id` | `Province Code` |
 | Quận/huyện (có lookup) | `District Id` | `District Code` |
+| Phường/xã (có lookup) | `Ward Id` | `Ward Code` |
 | Các ngữ nghĩa khác | `{Vai trò cụ thể} Id` | `{Vai trò cụ thể} Code` |
 
-Comment vẫn ghi `FK target: Geographic Area.Geographic Area Id` cho trường Id; trường Code ghi `Lookup pair: Geographic Area.Geographic Area Code. Pair with {Id field}.` — chỉ tên attribute mới đổi (xem Bước 5 SKILL.md cho phân biệt FK target vs Lookup pair).
+Comment vẫn tham chiếu đúng entity đích `geographic_area` (physical_name viết thường — xem quy tắc casing chung tại Bước 5 SKILL.md): `FK target: geographic_area.geographic_area_id` cho trường Id; trường Code ghi `Lookup pair: geographic_area.geographic_area_code. Pair with {Id field}.` — chỉ tên attribute (Province Id, Nationality Id...) mới đổi theo Semantic Prefix, còn tên entity đích trong comment luôn là physical_name (xem Bước 5 SKILL.md cho phân biệt FK target vs Lookup pair).
 
 ## IP Electronic Address
 

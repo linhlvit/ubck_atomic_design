@@ -100,12 +100,7 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_TRANSACTION_OFFICE.PROVINCE_ID"
-  comment: "FK target: Geographic Area.Geographic Area Id. Geographic Area Type Code\
-    \ = PROVINCE. Nguồn Geographic Area đã chuyển sang ECAT (SCMS.CAT_PROVINCE ngừng\
-    \ thiết kế — chưa từng là entity riêng, chỉ là ý định extend chưa triển khai)\
-    \ — resolve bằng lookup giá trị: đối chiếu mã/tên tỉnh/thành PROVINCE_ID với Geographic\
-    \ Area Business Code (ECAT.PROVINCE_NEW.CODE) hoặc Name. Cần crosswalk nếu SCMS\
-    \ không cùng chuẩn mã với ECAT."
+  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'PROVINCE'). Cần ETL crosswalk sang SCMS.CAT_PROVINCE: SC_FIRM_TRANSACTION_OFFICE.PROVINCE_ID = CAT_PROVINCE.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT.PROVINCE_NEW', PROVINCE_CODE) | SCMS.CAT_PROVINCE ngừng thiết kế — chưa từng là entity riêng, chỉ là ý định extend chưa triển khai. Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   classification_context: "IP_ADDR_TYPE=TRANSACTION_OFFICE"
   etl_derived_value: null
   data_type: "string"
@@ -132,12 +127,7 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_TRANSACTION_OFFICE.DISTRICT_ID"
-  comment: "FK target: Geographic Area Old.Geographic Area Old Id (ĐỔI TARGET — không\
-    \ còn Geographic Area). Cấp quận/huyện đã bị loại bỏ trong cấu trúc địa giới hiện\
-    \ hành (post-sáp nhập 2025); ECAT chỉ còn lưu ở Geographic Area Old (Geographic\
-    \ Area Old Type Code = DISTRICT_OLD). Resolve bằng lookup giá trị: đối chiếu mã/tên\
-    \ quận/huyện DISTRICT_ID với Geographic Area Old Unique Key (ECAT.DISTRICT_OLD.CODE)\
-    \ hoặc Name. Cần crosswalk nếu SCMS không cùng chuẩn mã với ECAT."
+  comment: "FK target: geographic_area_old.geographic_area_old_id (geographic_area_old_tp_code = 'DISTRICT_OLD'). Cần ETL crosswalk sang SCMS.CAT_DISTRICT: SC_FIRM_TRANSACTION_OFFICE.DISTRICT_ID = CAT_DISTRICT.ID để xác nhận DISTRICT_CODE sau đó hash_id('ECAT.DISTRICT_OLD', DISTRICT_CODE) | ĐỔI TARGET — không còn Geographic Area: cấp quận/huyện đã bị loại bỏ trong cấu trúc địa giới hiện hành (post-sáp nhập 2025); ECAT chỉ còn lưu ở Geographic Area Old. SCMS.CAT_DISTRICT ngừng thiết kế — chưa từng là entity riêng. Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   classification_context: "IP_ADDR_TYPE=TRANSACTION_OFFICE"
   etl_derived_value: null
   data_type: "string"
@@ -164,11 +154,7 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_TRANSACTION_OFFICE.WARD_ID"
-  comment: "FK target: Geographic Area.Geographic Area Id. Geographic Area Type Code\
-    \ = WARD. Nguồn Geographic Area đã chuyển sang ECAT (SCMS.CAT_WARD ngừng thiết\
-    \ kế) — resolve bằng lookup giá trị: đối chiếu mã/tên phường/xã WARD_ID với Geographic\
-    \ Area Business Code (ECAT.WARD_NEW.CODE) hoặc Name. Cần crosswalk nếu SCMS không\
-    \ cùng chuẩn mã với ECAT."
+  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'WARD'). Cần ETL crosswalk sang SCMS.CAT_WARD: SC_FIRM_TRANSACTION_OFFICE.WARD_ID = CAT_WARD.ID để xác nhận WARD_CODE sau đó hash_id('ECAT.WARD_NEW', WARD_CODE) | SCMS.CAT_WARD ngừng thiết kế. Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   classification_context: "IP_ADDR_TYPE=TRANSACTION_OFFICE"
   etl_derived_value: null
   data_type: "string"

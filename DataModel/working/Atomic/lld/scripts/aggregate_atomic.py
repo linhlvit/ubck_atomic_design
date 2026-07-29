@@ -339,6 +339,35 @@ def _extract_addr_part(ctx_str: str) -> Optional[str]:
     return None
 
 
+# Markers nhận diện comment FK/Lookup pair — khi source_column rỗng cho NULL row,
+# comment loại này bị null hóa hoàn toàn (không giữ lại lý do NULL — xem Bước 5
+# SKILL.md: "FK luôn NULL → Không thêm hash, không ghi lý do NULL — để comment: null").
+_FK_COMMENT_MARKERS = ("FK target:", "Lookup pair:")
+
+
+def _generic_fk_comment(comment: str, source_system: str, source_table: str) -> Optional[str]:
+    """Xử lý comment khi emit NULL row cho 1 source không tự định nghĩa attribute này
+    (source_column rỗng) trong shared entity.
+
+    - Comment FK/Lookup pair (chứa "FK target:"/"Lookup pair:") → null hóa hoàn toàn,
+      không giữ lại lý do NULL nào (xem Bước 5 SKILL.md).
+    - Comment khác (VD denormalized text, PK surrogate hash) → giữ hành vi cũ: append
+      ghi chú "Không áp dụng cho {source}..." để người đọc biết đây là placeholder NULL
+      của shared entity, không phải do source này thực sự có logic đó.
+    """
+    c = (comment or "").strip()
+    if not c:
+        return None
+
+    if any(marker in c for marker in _FK_COMMENT_MARKERS):
+        return None
+
+    if not c.endswith("."):
+        c += "."
+    note = f"Không áp dụng cho {source_system}.{source_table} — thuộc tính không có dữ liệu nguồn ở source này (nullable placeholder cho shared entity)."
+    return f"{c} {note}".strip()
+
+
 def build_ctx_string(source_system: str, source_table: str, addr_part: Optional[str]) -> str:
     """Build classification_context string theo format: Field Name = 'value' | ...
 
@@ -432,11 +461,14 @@ def build_master_attrs(entity_manifest_rows: list) -> OrderedDict:
                 # nullable: conservative
                 if ar.get("nullable", "false").strip().lower() == "true":
                     existing["nullable"] = "true"
-                # comment: ghép nếu mới
-                new_c = ar.get("comment", "").strip()
-                old_c = existing.get("comment", "").strip()
-                if new_c and new_c not in old_c:
-                    existing["comment"] = (old_c + " // " + new_c).strip(" /")
+                # comment: giữ giá trị đầu tiên gặp được — KHÔNG nối comment của
+                # nhiều source khác nhau bằng " // " (comment FK thường mang chi tiết
+                # crosswalk/hash riêng của 1 source cụ thể; nối lại sẽ tạo ra 1 câu
+                # sai nghĩa mô tả nhiều source cùng lúc). Nếu source hiện tại không tự
+                # định nghĩa attribute này, comment FK/Lookup pair sẽ bị null hóa qua
+                # _generic_fk_comment() ở build_attributes(), không phải bản gộp này.
+                if not existing.get("comment", "").strip():
+                    existing["comment"] = ar.get("comment", "")
 
     # Dedup: nếu đã có (attr_name, addr_part) với addr_part != None,
     # xóa key (attr_name, None) tương ứng để tránh emit duplicate row
@@ -448,6 +480,44 @@ def build_master_attrs(entity_manifest_rows: list) -> OrderedDict:
         master.pop(k, None)
 
     return master
+
+
+# ---------------------------------------------------------------------------
+# Canonical attribute order cho 1 số shared entity — build_master_attrs() chèn
+# key theo thứ tự xử lý source trong manifest.yaml (không phải thứ tự cột thật
+# sự trong LLD gốc), nên output mỗi file có thể bị xáo trộn khác nhau tùy
+# source nào "định nghĩa" attr đó trước lúc build master. Với entity có khai
+# báo canonical order dưới đây, master_attrs được sort lại theo order này
+# trước khi build_attributes() lặp qua — đảm bảo mọi file sinh ra đều nhất
+# quán bất kể thứ tự xử lý source trong manifest.
+#
+# Thứ bậc địa lý áp dụng: Quốc gia → Tỉnh/thành → Quận/huyện → Phường/xã (xem
+# reference/shared_entity_schemas.md). Attr không có trong list giữ nguyên vị
+# trí tương đối theo thứ tự chèn gốc (stable sort), xếp sau các attr có tên.
+CANONICAL_ATTR_ORDER: dict[str, list[str]] = {
+    "Involved Party Postal Address": [
+        "Involved Party Id", "Involved Party Code",
+        "Source System Code", "Address Type Code", "Address Value",
+        "Country Id", "Country Code",
+        "Province Id", "Province Code", "Province Name",
+        "District Id", "District Code", "District Name",
+        "Ward Id", "Ward Code", "Ward Name",
+    ],
+}
+
+
+def _sort_master_by_canonical_order(entity: str, master: "OrderedDict") -> "OrderedDict":
+    order = CANONICAL_ATTR_ORDER.get(entity)
+    if not order:
+        return master
+
+    rank = {name: i for i, name in enumerate(order)}
+    original_index = {k: i for i, k in enumerate(master.keys())}
+    keys_sorted = sorted(
+        master.keys(),
+        key=lambda k: (rank.get(k[0], len(order)), original_index[k])
+    )
+    return OrderedDict((k, master[k]) for k in keys_sorted)
 
 
 # ---------------------------------------------------------------------------
@@ -465,7 +535,7 @@ def build_attributes(manifest_rows: list[dict],
     # Precompute master attr list per entity (1 lần, dùng lại cho mọi source)
     entity_masters: dict[str, OrderedDict] = {}
     for entity, rows in entity_manifest.items():
-        entity_masters[entity] = build_master_attrs(rows)
+        entity_masters[entity] = _sort_master_by_canonical_order(entity, build_master_attrs(rows))
 
     all_rows: list[dict] = []
 
@@ -523,7 +593,11 @@ def build_attributes(manifest_rows: list[dict],
                     })
                 else:
                     # NULL row — attribute không có trong source/context này
-                    # Metadata lấy từ master (best across all sources)
+                    # Metadata lấy từ master (best across all sources). Comment FK/Lookup
+                    # pair phải null hóa qua _generic_fk_comment() — không được copy
+                    # nguyên văn comment của master (comment đó có thể là FK/crosswalk chi
+                    # tiết của 1 source khác, không áp dụng cho source này vì không có
+                    # source_column — xem rule "FK luôn NULL" ở Bước 5 SKILL.md).
                     all_rows.append({
                         "bcv_core_object":        bcv_core_object,
                         "bcv_concept":            bcv_concept,
@@ -536,7 +610,7 @@ def build_attributes(manifest_rows: list[dict],
                         "source_system":          source_system,
                         "source_table":           source_table,
                         "source_column":          "",
-                        "comment":                master_row.get("comment", ""),
+                        "comment":                _generic_fk_comment(master_row.get("comment", ""), source_system, source_table),
                         "classification_context": ctx_key,
                         "etl_derived_value":      "",
                     })

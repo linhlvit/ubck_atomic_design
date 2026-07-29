@@ -23,12 +23,6 @@ sources:
 - source_system: "IAM"
   source_table: "USERS"
   lld_file: "IAM/lld_IAM_USERS_IP_Postal_Address.yaml"
-- source_system: "THANHTRA"
-  source_table: "EXAMINATION_TEAM_TARGET"
-  lld_file: "THANHTRA/lld_THANHTRA_EXAMINATION_TEAM_TARGET_IP_Postal_Address.yaml"
-- source_system: "THANHTRA"
-  source_table: "PENALTY_DECISION_SUBJECT"
-  lld_file: "THANHTRA/lld_THANHTRA_PENALTY_DECISION_SUBJECT_IP_Postal_Address.yaml"
 - source_system: "SCMS"
   source_table: "AUDIT_FIRM"
   lld_file: "SCMS/lld_SCMS_AUDIT_FIRM_IP_Postal_Address.yaml"
@@ -173,8 +167,6 @@ consolidation_notes:
   \ — đặt nullable=true"
 - "⚠️ NHNCK.UNITS: thiếu attribute 'Address Type Code' (ctx=IP_ADDR_TYPE=CURRENT)\
   \ — đặt nullable=true"
-- "⚠️ NHNCK.UNITS: thiếu attribute 'Address Type Code' (ctx=IP_ADDR_TYPE=ADDRESS)\
-  \ — đặt nullable=true"
 - "⚠️ NHNCK.UNITS: thiếu attribute 'Address Type Code' (ctx=IP_ADDR_TYPE=BRANCH) —\
   \ đặt nullable=true"
 - "⚠️ NHNCK.UNITS: thiếu attribute 'Address Type Code' (ctx=IP_ADDR_TYPE=REP_OFFICE)\
@@ -192,6 +184,8 @@ consolidation_notes:
 - "⚠️ NHNCK.UNITS: thiếu attribute 'Address Type Code' (ctx=IP_ADDR_TYPE=HOUSEHOLD_REGISTRY)\
   \ — đặt nullable=true"
 - "⚠️ NHNCK.UNITS: thiếu attribute 'Address Type Code' (ctx=IP_ADDR_TYPE=REGISTERED)\
+  \ — đặt nullable=true"
+- "⚠️ NHNCK.UNITS: thiếu attribute 'Address Type Code' (ctx=IP_ADDR_TYPE=ADDRESS)\
   \ — đặt nullable=true"
 - "⚠️ NHNCK.UNITS: thiếu attribute 'Address Type Code' (ctx=IP_ADDR_TYPE=BUSINESS)\
   \ — đặt nullable=true"
@@ -223,9 +217,7 @@ attributes:
     NHNCK.UNITS: "NHNCK.UNITS.ID"
     NHNCK.ORGANIZATIONS: "NHNCK.ORGANIZATIONS.ID"
     NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.ID"
-    IAM.USERS: "IAM.IAM.USERS.ID"
-    THANHTRA.EXAMINATION_TEAM_TARGET: "THANHTRA.EXAMINATION_TEAM_TARGET.ID"
-    THANHTRA.PENALTY_DECISION_SUBJECT: "THANHTRA.PENALTY_DECISION_SUBJECT.ID"
+    IAM.USERS: "IAM.USERS.ID"
     SCMS.AUDIT_FIRM: "SCMS.AUDIT_FIRM.ID"
     SCMS.BANK: "SCMS.BANK.ID"
     SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.ID"
@@ -285,9 +277,7 @@ attributes:
     NHNCK.UNITS: "NHNCK.UNITS.UNIT_CODE"
     NHNCK.ORGANIZATIONS: "NHNCK.ORGANIZATIONS.ID"
     NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.ID"
-    IAM.USERS: "IAM.IAM.USERS.ID"
-    THANHTRA.EXAMINATION_TEAM_TARGET: "THANHTRA.EXAMINATION_TEAM_TARGET.ID"
-    THANHTRA.PENALTY_DECISION_SUBJECT: "THANHTRA.PENALTY_DECISION_SUBJECT.ID"
+    IAM.USERS: "IAM.USERS.ID"
     SCMS.AUDIT_FIRM: "SCMS.AUDIT_FIRM.ID"
     SCMS.BANK: "SCMS.BANK.ID"
     SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.ID"
@@ -347,8 +337,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -408,8 +396,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -469,8 +455,6 @@ attributes:
     NHNCK.ORGANIZATIONS: "NHNCK.ORGANIZATIONS.ADDRESS"
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: "SCMS.AUDIT_FIRM.ADDRESS"
     SCMS.BANK: "SCMS.BANK.ADDRESS"
     SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.ADDRESS"
@@ -530,8 +514,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -593,9 +575,7 @@ attributes:
     NHNCK.UNITS: null
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.PERMANENT_ADDRESS"
-    IAM.USERS: "IAM.IAM.USERS.ADDRESS"
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
+    IAM.USERS: "IAM.USERS.ADDRESS"
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -658,8 +638,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.PERMANENT_COUNTRY_ID"
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -720,8 +698,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.PERMANENT_COUNTRY_ID"
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -773,12 +749,12 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  comment: "FK target: Geographic Area.Geographic Area Id. Geographic Area Type Code\
-    \ = PROVINCE. Nguồn Geographic Area đã chuyển sang ECAT (NHNCK.PROVINCES ngừng\
-    \ thiết kế) — resolve bằng lookup giá trị: đối chiếu mã/tên tỉnh/thành NHNCK.PROFESSIONALS.PERMANENT_PROVINCE_ID\
-    \ với Geographic Area Unique Key (ECAT.PROVINCE_NEW.CODE) hoặc Name, không còn\
-    \ hash_id() trực tiếp theo NHNCK.PROVINCES. Cần crosswalk nếu NHNCK không cùng\
-    \ chuẩn mã với ECAT."
+  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
+    \ = 'PROVINCE'). Cần ETL crosswalk sang NHNCK.PROVINCES: PROFESSIONALS.PERMANENT_PROVINCE_ID\
+    \ = PROVINCES.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT.PROVINCE_NEW',\
+    \ PROVINCE_CODE) | NHNCK.PROVINCES ngừng thiết kế Atomic entity riêng — chỉ dùng\
+    \ để crosswalk. Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu\
+    \ trước go-live."
   classification_context: "IP_ADDR_TYPE=PERMANENT"
   etl_derived_value: null
   source_mappings:
@@ -786,8 +762,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.PERMANENT_PROVINCE_ID"
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -848,8 +822,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.PERMANENT_PROVINCE_ID"
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -901,13 +873,14 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  comment: "FK target: Geographic Area Old.Geographic Area Old Id (ĐỔI TARGET — không\
-    \ còn Geographic Area). Cấp quận/huyện đã bị loại bỏ trong cấu trúc địa giới hiện\
-    \ hành (post-sáp nhập 2025); ECAT chỉ còn lưu ở Geographic Area Old (Geographic\
-    \ Area Old Type Code = DISTRICT_OLD). Resolve bằng lookup giá trị: đối chiếu mã/tên\
-    \ quận/huyện NHNCK.PROFESSIONALS.PERMANENT_DISTRICT_ID với Geographic Area Old\
-    \ Unique Key (ECAT.DISTRICT_OLD.CODE) hoặc Name. Cần crosswalk nếu NHNCK không\
-    \ cùng chuẩn mã với ECAT."
+  comment: "FK target: geographic_area_old.geographic_area_old_id (geographic_area_old_tp_code\
+    \ = 'DISTRICT_OLD'). Cần ETL crosswalk sang NHNCK.DISTRICTS: PROFESSIONALS.PERMANENT_DISTRICT_ID\
+    \ = DISTRICTS.ID để xác nhận DISTRICT_CODE sau đó hash_id('ECAT.DISTRICT_OLD',\
+    \ DISTRICT_CODE) | ĐỔI TARGET — không còn Geographic Area: cấp quận/huyện đã bị\
+    \ loại bỏ trong cấu trúc địa giới hiện hành (post-sáp nhập 2025); ECAT chỉ còn\
+    \ lưu ở Geographic Area Old. NHNCK.DISTRICTS ngừng thiết kế Atomic entity riêng\
+    \ — chỉ dùng để crosswalk. Chưa xác nhận value set khớp danh mục ECAT — cần profile\
+    \ dữ liệu trước go-live."
   classification_context: "IP_ADDR_TYPE=PERMANENT"
   etl_derived_value: null
   source_mappings:
@@ -915,8 +888,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.PERMANENT_DISTRICT_ID"
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -977,8 +948,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.PERMANENT_DISTRICT_ID"
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -1031,7 +1000,7 @@ attributes:
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
-  comment: "Bổ sung 2026-07-24 (post_check_source_coverage phát hiện). Scheme: IP_ADDR_TYPE.\
+  comment: "Scheme: IP_ADDR_TYPE.\
     \ Nguồn có 2 loại địa chỉ: PERMANENT và CURRENT (trước đây chỉ thiết kế PERMANENT)."
   classification_context: "IP_ADDR_TYPE=CURRENT"
   etl_derived_value: "CURRENT"
@@ -1040,8 +1009,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -1093,7 +1060,7 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  comment: "Bổ sung 2026-07-24. FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
+  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'COUNTRY'). Cần ETL crosswalk sang NHNCK.COUNTRIES: PROFESSIONALS.CURRENT_COUNTRY_ID\
     \ = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT.COUNTRY', COUNTRY_CODE)\
     \ | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
@@ -1104,8 +1071,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.CURRENT_COUNTRY_ID"
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -1157,7 +1122,7 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  comment: "Bổ sung 2026-07-24. Lookup pair: Geographic Area.Geographic Area Code\
+  comment: "Lookup pair: Geographic Area.Geographic Area Code\
     \ (nguồn ECAT). Pair with Country Id."
   classification_context: "IP_ADDR_TYPE=CURRENT"
   etl_derived_value: null
@@ -1166,8 +1131,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.CURRENT_COUNTRY_ID"
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -1219,9 +1182,12 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  comment: "Bổ sung 2026-07-24. FK target: Geographic Area.Geographic Area Id. Geographic\
-    \ Area Type Code = PROVINCE. Resolve bằng lookup giá trị đối chiếu ECAT.PROVINCE_NEW.CODE\
-    \ hoặc Name. Cần crosswalk nếu NHNCK không cùng chuẩn mã với ECAT."
+  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
+    \ = 'PROVINCE'). Cần ETL crosswalk sang NHNCK.PROVINCES: PROFESSIONALS.CURRENT_PROVINCE_ID\
+    \ = PROVINCES.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT.PROVINCE_NEW',\
+    \ PROVINCE_CODE) | NHNCK.PROVINCES ngừng thiết kế Atomic entity riêng — chỉ dùng\
+    \ để crosswalk. Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu\
+    \ trước go-live."
   classification_context: "IP_ADDR_TYPE=CURRENT"
   etl_derived_value: null
   source_mappings:
@@ -1229,8 +1195,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.CURRENT_PROVINCE_ID"
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -1282,7 +1246,7 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  comment: "Bổ sung 2026-07-24. Lookup pair: Geographic Area.Geographic Area Code\
+  comment: "Lookup pair: Geographic Area.Geographic Area Code\
     \ (nguồn ECAT). Pair with Province Id."
   classification_context: "IP_ADDR_TYPE=CURRENT"
   etl_derived_value: null
@@ -1291,8 +1255,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.CURRENT_PROVINCE_ID"
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -1344,10 +1306,13 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  comment: "Bổ sung 2026-07-24. FK target: Geographic Area Old.Geographic Area Old\
-    \ Id (ĐỔI TARGET — xem District Id khối PERMANENT ở trên). Resolve bằng lookup\
-    \ giá trị đối chiếu ECAT.DISTRICT_OLD.CODE hoặc Name. Cần crosswalk nếu NHNCK\
-    \ không cùng chuẩn mã với ECAT."
+  comment: "FK target: geographic_area_old.geographic_area_old_id\
+    \ (geographic_area_old_tp_code = 'DISTRICT_OLD', ĐỔI TARGET — xem District Id\
+    \ khối PERMANENT ở trên). Cần ETL crosswalk sang NHNCK.DISTRICTS: PROFESSIONALS.CURRENT_DISTRICT_ID\
+    \ = DISTRICTS.ID để xác nhận DISTRICT_CODE sau đó hash_id('ECAT.DISTRICT_OLD',\
+    \ DISTRICT_CODE) | NHNCK.DISTRICTS ngừng thiết kế Atomic entity riêng — chỉ dùng\
+    \ để crosswalk. Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu\
+    \ trước go-live."
   classification_context: "IP_ADDR_TYPE=CURRENT"
   etl_derived_value: null
   source_mappings:
@@ -1355,8 +1320,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.CURRENT_DISTRICT_ID"
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -1408,7 +1371,7 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  comment: "Bổ sung 2026-07-24. Lookup pair: Geographic Area Old.Geographic Area Old\
+  comment: "Lookup pair: Geographic Area Old.Geographic Area Old\
     \ Code (nguồn ECAT — ĐỔI TARGET). Pair with District Id."
   classification_context: "IP_ADDR_TYPE=CURRENT"
   etl_derived_value: null
@@ -1417,8 +1380,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.CURRENT_DISTRICT_ID"
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -1464,140 +1425,18 @@ attributes:
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
     NHNCK.IDENTITY_INFO_C06S: "NHNCK.IDENTITY_INFO_C06S.CURRENT_DISTRICT_CODE"
-- attribute_name: "Address Type Code"
-  physical_name: "adr_tp_code"
-  description: "Loại địa chỉ — địa chỉ chung, nguồn không phân loại."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: "IP_ADDR_TYPE=ADDRESS"
-  etl_derived_value: "ADDRESS"
-  source_mappings:
-    NHNCK.UNITS: null
-    NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_REP_OFFICE: null
-    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.BANK_MONI: null
-    FMS.AGENCIES: null
-    FMS.BRANCHS: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.INVES: null
-    FMS.AGENCIES_BRA: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: null
-    FMS.DISTRIBUTOR_LOCATION: null
-    IDS.COMPANY_PROFILES: null
-    IDS.LEGAL_ENTITIES: null
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REGISTRATION_INFO: null
-    NHNCK.IDENTITY_INFO_C06S: null
-- attribute_name: "Address Value"
-  physical_name: "adr_val"
-  description: "Địa chỉ đối tượng được kiểm tra (cá nhân và tổ chức)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: "IP_ADDR_TYPE=ADDRESS"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.UNITS: null
-    NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: "THANHTRA.EXAMINATION_TEAM_TARGET.ADDRESS"
-    THANHTRA.PENALTY_DECISION_SUBJECT: "THANHTRA.PENALTY_DECISION_SUBJECT.SUBJECT_ADDRESS"
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_REP_OFFICE: null
-    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.BANK_MONI: null
-    FMS.AGENCIES: null
-    FMS.BRANCHS: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: "FMS.TL_PROFILES.ADDRESS"
-    FMS.INVES: "FMS.INVES.ADDRESS"
-    FMS.AGENCIES_BRA: null
-    FMS.STF_FG_BRCH: "FMS.STF_FG_BRCH.ADDRESS"
-    FMS.REPRESENT: "FMS.REPRESENT.ADDRESS"
-    FMS.MB_FUND: "FMS.MB_FUND.ADDRESS"
-    FMS.INSIDER: "FMS.INSIDER.ADDRESS"
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.TL_PRO_RELA: "FMS.TL_PRO_RELA.ADDRESS"
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: "FMS.INSDER_RELA.ADDRESS"
-    FMS.DISTRIBUTOR_LOCATION: null
-    IDS.COMPANY_PROFILES: null
-    IDS.LEGAL_ENTITIES: "IDS.LEGAL_ENTITIES.ADDRESS"
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REGISTRATION_INFO: null
-    NHNCK.IDENTITY_INFO_C06S: null
 - attribute_name: "Province Id"
   physical_name: "province_id"
   description: "FK đến Geographic Area cấp tỉnh/thành phố (trụ sở chính)."
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  comment: "FK target: Geographic Area.Geographic Area Id. Geographic Area Type Code\
-    \ = PROVINCE. Nguồn Geographic Area đã chuyển sang ECAT (SCMS.CAT_PROVINCE ngừng\
-    \ thiết kế — chưa từng là entity riêng, chỉ là ý định extend chưa triển khai)\
-    \ — resolve bằng lookup giá trị: đối chiếu mã/tên tỉnh/thành PROVINCE_ID với Geographic\
-    \ Area Business Code (ECAT.PROVINCE_NEW.CODE) hoặc Name, không còn hash_id() theo\
-    \ SCMS.CAT_PROVINCE. Cần crosswalk nếu SCMS không cùng chuẩn mã với ECAT."
+  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
+    \ = 'PROVINCE'). Cần ETL crosswalk sang SCMS.CAT_PROVINCE: SC_FIRM_INFO.PROVINCE_ID\
+    \ = CAT_PROVINCE.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT.PROVINCE_NEW',\
+    \ PROVINCE_CODE) | SCMS.CAT_PROVINCE ngừng thiết kế — chưa từng là entity riêng,\
+    \ chỉ là ý định extend chưa triển khai. Chưa xác nhận value set khớp danh mục\
+    \ ECAT — cần profile dữ liệu trước go-live."
   classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
   etl_derived_value: null
   source_mappings:
@@ -1605,8 +1444,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.PROVINCE_ID"
@@ -1667,8 +1504,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.PROVINCE_ID"
@@ -1720,12 +1555,14 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  comment: "FK target: Geographic Area Old.Geographic Area Old Id (ĐỔI TARGET — không\
-    \ còn Geographic Area). Cấp quận/huyện đã bị loại bỏ trong cấu trúc địa giới hiện\
-    \ hành (post-sáp nhập 2025); ECAT chỉ còn lưu ở Geographic Area Old (Geographic\
-    \ Area Old Type Code = DISTRICT_OLD). Resolve bằng lookup giá trị: đối chiếu mã/tên\
-    \ quận/huyện DISTRICT_ID với Geographic Area Old Unique Key (ECAT.DISTRICT_OLD.CODE)\
-    \ hoặc Name. Cần crosswalk nếu SCMS không cùng chuẩn mã với ECAT."
+  comment: "FK target: geographic_area_old.geographic_area_old_id (geographic_area_old_tp_code\
+    \ = 'DISTRICT_OLD'). Cần ETL crosswalk sang SCMS.CAT_DISTRICT: SC_FIRM_INFO.DISTRICT_ID\
+    \ = CAT_DISTRICT.ID để xác nhận DISTRICT_CODE sau đó hash_id('ECAT.DISTRICT_OLD',\
+    \ DISTRICT_CODE) | ĐỔI TARGET — không còn Geographic Area: cấp quận/huyện đã bị\
+    \ loại bỏ trong cấu trúc địa giới hiện hành (post-sáp nhập 2025); ECAT chỉ còn\
+    \ lưu ở Geographic Area Old. SCMS.CAT_DISTRICT ngừng thiết kế — chưa từng là entity\
+    \ riêng. Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước\
+    \ go-live."
   classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
   etl_derived_value: null
   source_mappings:
@@ -1733,8 +1570,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.DISTRICT_ID"
@@ -1795,8 +1630,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.DISTRICT_ID"
@@ -1857,8 +1690,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.DISTRICT_ID"
@@ -1910,11 +1741,11 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  comment: "FK target: Geographic Area.Geographic Area Id. Geographic Area Type Code\
-    \ = WARD. Nguồn Geographic Area đã chuyển sang ECAT (SCMS.CAT_WARD ngừng thiết\
-    \ kế) — resolve bằng lookup giá trị: đối chiếu mã/tên phường/xã WARD_ID với Geographic\
-    \ Area Business Code (ECAT.WARD_NEW.CODE) hoặc Name, không còn hash_id() theo\
-    \ SCMS.CAT_WARD. Cần crosswalk nếu SCMS không cùng chuẩn mã với ECAT."
+  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
+    \ = 'WARD'). Cần ETL crosswalk sang SCMS.CAT_WARD: SC_FIRM_INFO.WARD_ID = CAT_WARD.ID\
+    \ để xác nhận WARD_CODE sau đó hash_id('ECAT.WARD_NEW', WARD_CODE) | SCMS.CAT_WARD\
+    \ ngừng thiết kế. Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ\
+    \ liệu trước go-live."
   classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
   etl_derived_value: null
   source_mappings:
@@ -1922,8 +1753,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.WARD_ID"
@@ -1984,8 +1813,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.WARD_ID"
@@ -2046,8 +1873,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.WARD_ID"
@@ -2108,8 +1933,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -2169,8 +1992,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -2222,12 +2043,12 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  comment: "FK target: Geographic Area.Geographic Area Id. Geographic Area Type Code\
-    \ = PROVINCE. Nguồn Geographic Area đã chuyển sang ECAT (SCMS.CAT_PROVINCE ngừng\
-    \ thiết kế — chưa từng là entity riêng, chỉ là ý định extend chưa triển khai)\
-    \ — resolve bằng lookup giá trị: đối chiếu mã/tên tỉnh/thành PROVINCE_ID với Geographic\
-    \ Area Business Code (ECAT.PROVINCE_NEW.CODE) hoặc Name. Cần crosswalk nếu SCMS\
-    \ không cùng chuẩn mã với ECAT."
+  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
+    \ = 'PROVINCE'). Cần ETL crosswalk sang SCMS.CAT_PROVINCE: SC_FIRM_BRANCH.PROVINCE_ID\
+    \ = CAT_PROVINCE.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT.PROVINCE_NEW',\
+    \ PROVINCE_CODE) | SCMS.CAT_PROVINCE ngừng thiết kế — chưa từng là entity riêng,\
+    \ chỉ là ý định extend chưa triển khai. Chưa xác nhận value set khớp danh mục\
+    \ ECAT — cần profile dữ liệu trước go-live."
   classification_context: "IP_ADDR_TYPE=BRANCH"
   etl_derived_value: null
   source_mappings:
@@ -2235,8 +2056,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -2297,8 +2116,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -2350,12 +2167,14 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  comment: "FK target: Geographic Area Old.Geographic Area Old Id (ĐỔI TARGET — không\
-    \ còn Geographic Area). Cấp quận/huyện đã bị loại bỏ trong cấu trúc địa giới hiện\
-    \ hành (post-sáp nhập 2025); ECAT chỉ còn lưu ở Geographic Area Old (Geographic\
-    \ Area Old Type Code = DISTRICT_OLD). Resolve bằng lookup giá trị: đối chiếu mã/tên\
-    \ quận/huyện DISTRICT_ID với Geographic Area Old Unique Key (ECAT.DISTRICT_OLD.CODE)\
-    \ hoặc Name. Cần crosswalk nếu SCMS không cùng chuẩn mã với ECAT."
+  comment: "FK target: geographic_area_old.geographic_area_old_id (geographic_area_old_tp_code\
+    \ = 'DISTRICT_OLD'). Cần ETL crosswalk sang SCMS.CAT_DISTRICT: SC_FIRM_BRANCH.DISTRICT_ID\
+    \ = CAT_DISTRICT.ID để xác nhận DISTRICT_CODE sau đó hash_id('ECAT.DISTRICT_OLD',\
+    \ DISTRICT_CODE) | ĐỔI TARGET — không còn Geographic Area: cấp quận/huyện đã bị\
+    \ loại bỏ trong cấu trúc địa giới hiện hành (post-sáp nhập 2025); ECAT chỉ còn\
+    \ lưu ở Geographic Area Old. SCMS.CAT_DISTRICT ngừng thiết kế — chưa từng là entity\
+    \ riêng. Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước\
+    \ go-live."
   classification_context: "IP_ADDR_TYPE=BRANCH"
   etl_derived_value: null
   source_mappings:
@@ -2363,8 +2182,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -2425,8 +2242,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -2486,8 +2301,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -2539,11 +2352,11 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  comment: "FK target: Geographic Area.Geographic Area Id. Geographic Area Type Code\
-    \ = WARD. Nguồn Geographic Area đã chuyển sang ECAT (SCMS.CAT_WARD ngừng thiết\
-    \ kế) — resolve bằng lookup giá trị: đối chiếu mã/tên phường/xã WARD_ID với Geographic\
-    \ Area Business Code (ECAT.WARD_NEW.CODE) hoặc Name. Cần crosswalk nếu SCMS không\
-    \ cùng chuẩn mã với ECAT."
+  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
+    \ = 'WARD'). Cần ETL crosswalk sang SCMS.CAT_WARD: SC_FIRM_BRANCH.WARD_ID = CAT_WARD.ID\
+    \ để xác nhận WARD_CODE sau đó hash_id('ECAT.WARD_NEW', WARD_CODE) | SCMS.CAT_WARD\
+    \ ngừng thiết kế. Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ\
+    \ liệu trước go-live."
   classification_context: "IP_ADDR_TYPE=BRANCH"
   etl_derived_value: null
   source_mappings:
@@ -2551,8 +2364,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -2613,8 +2424,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -2674,8 +2483,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -2736,8 +2543,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -2797,8 +2602,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -2850,12 +2653,12 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  comment: "FK target: Geographic Area.Geographic Area Id. Geographic Area Type Code\
-    \ = PROVINCE. Nguồn Geographic Area đã chuyển sang ECAT (SCMS.CAT_PROVINCE ngừng\
-    \ thiết kế — chưa từng là entity riêng, chỉ là ý định extend chưa triển khai)\
-    \ — resolve bằng lookup giá trị: đối chiếu mã/tên tỉnh/thành PROVINCE_ID với Geographic\
-    \ Area Business Code (ECAT.PROVINCE_NEW.CODE) hoặc Name. Cần crosswalk nếu SCMS\
-    \ không cùng chuẩn mã với ECAT."
+  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
+    \ = 'PROVINCE'). Cần ETL crosswalk sang SCMS.CAT_PROVINCE: SC_FIRM_REP_OFFICE.PROVINCE_ID\
+    \ = CAT_PROVINCE.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT.PROVINCE_NEW',\
+    \ PROVINCE_CODE) | SCMS.CAT_PROVINCE ngừng thiết kế — chưa từng là entity riêng,\
+    \ chỉ là ý định extend chưa triển khai. Chưa xác nhận value set khớp danh mục\
+    \ ECAT — cần profile dữ liệu trước go-live."
   classification_context: "IP_ADDR_TYPE=REP_OFFICE"
   etl_derived_value: null
   source_mappings:
@@ -2863,8 +2666,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -2925,8 +2726,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -2978,12 +2777,14 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  comment: "FK target: Geographic Area Old.Geographic Area Old Id (ĐỔI TARGET — không\
-    \ còn Geographic Area). Cấp quận/huyện đã bị loại bỏ trong cấu trúc địa giới hiện\
-    \ hành (post-sáp nhập 2025); ECAT chỉ còn lưu ở Geographic Area Old (Geographic\
-    \ Area Old Type Code = DISTRICT_OLD). Resolve bằng lookup giá trị: đối chiếu mã/tên\
-    \ quận/huyện DISTRICT_ID với Geographic Area Old Unique Key (ECAT.DISTRICT_OLD.CODE)\
-    \ hoặc Name. Cần crosswalk nếu SCMS không cùng chuẩn mã với ECAT."
+  comment: "FK target: geographic_area_old.geographic_area_old_id (geographic_area_old_tp_code\
+    \ = 'DISTRICT_OLD'). Cần ETL crosswalk sang SCMS.CAT_DISTRICT: SC_FIRM_REP_OFFICE.DISTRICT_ID\
+    \ = CAT_DISTRICT.ID để xác nhận DISTRICT_CODE sau đó hash_id('ECAT.DISTRICT_OLD',\
+    \ DISTRICT_CODE) | ĐỔI TARGET — không còn Geographic Area: cấp quận/huyện đã bị\
+    \ loại bỏ trong cấu trúc địa giới hiện hành (post-sáp nhập 2025); ECAT chỉ còn\
+    \ lưu ở Geographic Area Old. SCMS.CAT_DISTRICT ngừng thiết kế — chưa từng là entity\
+    \ riêng. Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước\
+    \ go-live."
   classification_context: "IP_ADDR_TYPE=REP_OFFICE"
   etl_derived_value: null
   source_mappings:
@@ -2991,8 +2792,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -3053,8 +2852,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -3106,11 +2903,11 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  comment: "FK target: Geographic Area.Geographic Area Id. Geographic Area Type Code\
-    \ = WARD. Nguồn Geographic Area đã chuyển sang ECAT (SCMS.CAT_WARD ngừng thiết\
-    \ kế) — resolve bằng lookup giá trị: đối chiếu mã/tên phường/xã WARD_ID với Geographic\
-    \ Area Business Code (ECAT.WARD_NEW.CODE) hoặc Name. Cần crosswalk nếu SCMS không\
-    \ cùng chuẩn mã với ECAT."
+  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
+    \ = 'WARD'). Cần ETL crosswalk sang SCMS.CAT_WARD: SC_FIRM_REP_OFFICE.WARD_ID\
+    \ = CAT_WARD.ID để xác nhận WARD_CODE sau đó hash_id('ECAT.WARD_NEW', WARD_CODE)\
+    \ | SCMS.CAT_WARD ngừng thiết kế. Chưa xác nhận value set khớp danh mục ECAT —\
+    \ cần profile dữ liệu trước go-live."
   classification_context: "IP_ADDR_TYPE=REP_OFFICE"
   etl_derived_value: null
   source_mappings:
@@ -3118,8 +2915,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -3180,8 +2975,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -3243,8 +3036,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -3304,8 +3095,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -3357,12 +3146,12 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  comment: "FK target: Geographic Area.Geographic Area Id. Geographic Area Type Code\
-    \ = PROVINCE. Nguồn Geographic Area đã chuyển sang ECAT (SCMS.CAT_PROVINCE ngừng\
-    \ thiết kế — chưa từng là entity riêng, chỉ là ý định extend chưa triển khai)\
-    \ — resolve bằng lookup giá trị: đối chiếu mã/tên tỉnh/thành PROVINCE_ID với Geographic\
-    \ Area Business Code (ECAT.PROVINCE_NEW.CODE) hoặc Name. Cần crosswalk nếu SCMS\
-    \ không cùng chuẩn mã với ECAT."
+  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
+    \ = 'PROVINCE'). Cần ETL crosswalk sang SCMS.CAT_PROVINCE: SC_FIRM_TRANSACTION_OFFICE.PROVINCE_ID\
+    \ = CAT_PROVINCE.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT.PROVINCE_NEW',\
+    \ PROVINCE_CODE) | SCMS.CAT_PROVINCE ngừng thiết kế — chưa từng là entity riêng,\
+    \ chỉ là ý định extend chưa triển khai. Chưa xác nhận value set khớp danh mục\
+    \ ECAT — cần profile dữ liệu trước go-live."
   classification_context: "IP_ADDR_TYPE=TRANSACTION_OFFICE"
   etl_derived_value: null
   source_mappings:
@@ -3370,8 +3159,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -3432,8 +3219,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -3485,12 +3270,14 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  comment: "FK target: Geographic Area Old.Geographic Area Old Id (ĐỔI TARGET — không\
-    \ còn Geographic Area). Cấp quận/huyện đã bị loại bỏ trong cấu trúc địa giới hiện\
-    \ hành (post-sáp nhập 2025); ECAT chỉ còn lưu ở Geographic Area Old (Geographic\
-    \ Area Old Type Code = DISTRICT_OLD). Resolve bằng lookup giá trị: đối chiếu mã/tên\
-    \ quận/huyện DISTRICT_ID với Geographic Area Old Unique Key (ECAT.DISTRICT_OLD.CODE)\
-    \ hoặc Name. Cần crosswalk nếu SCMS không cùng chuẩn mã với ECAT."
+  comment: "FK target: geographic_area_old.geographic_area_old_id (geographic_area_old_tp_code\
+    \ = 'DISTRICT_OLD'). Cần ETL crosswalk sang SCMS.CAT_DISTRICT: SC_FIRM_TRANSACTION_OFFICE.DISTRICT_ID\
+    \ = CAT_DISTRICT.ID để xác nhận DISTRICT_CODE sau đó hash_id('ECAT.DISTRICT_OLD',\
+    \ DISTRICT_CODE) | ĐỔI TARGET — không còn Geographic Area: cấp quận/huyện đã bị\
+    \ loại bỏ trong cấu trúc địa giới hiện hành (post-sáp nhập 2025); ECAT chỉ còn\
+    \ lưu ở Geographic Area Old. SCMS.CAT_DISTRICT ngừng thiết kế — chưa từng là entity\
+    \ riêng. Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước\
+    \ go-live."
   classification_context: "IP_ADDR_TYPE=TRANSACTION_OFFICE"
   etl_derived_value: null
   source_mappings:
@@ -3498,8 +3285,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -3560,8 +3345,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -3613,11 +3396,11 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  comment: "FK target: Geographic Area.Geographic Area Id. Geographic Area Type Code\
-    \ = WARD. Nguồn Geographic Area đã chuyển sang ECAT (SCMS.CAT_WARD ngừng thiết\
-    \ kế) — resolve bằng lookup giá trị: đối chiếu mã/tên phường/xã WARD_ID với Geographic\
-    \ Area Business Code (ECAT.WARD_NEW.CODE) hoặc Name. Cần crosswalk nếu SCMS không\
-    \ cùng chuẩn mã với ECAT."
+  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
+    \ = 'WARD'). Cần ETL crosswalk sang SCMS.CAT_WARD: SC_FIRM_TRANSACTION_OFFICE.WARD_ID\
+    \ = CAT_WARD.ID để xác nhận WARD_CODE sau đó hash_id('ECAT.WARD_NEW', WARD_CODE)\
+    \ | SCMS.CAT_WARD ngừng thiết kế. Chưa xác nhận value set khớp danh mục ECAT —\
+    \ cần profile dữ liệu trước go-live."
   classification_context: "IP_ADDR_TYPE=TRANSACTION_OFFICE"
   etl_derived_value: null
   source_mappings:
@@ -3625,8 +3408,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -3687,8 +3468,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -3751,8 +3530,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -3812,8 +3589,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -3873,8 +3648,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -3934,8 +3707,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -3998,8 +3769,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -4059,8 +3828,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -4120,8 +3887,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -4182,8 +3947,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -4243,8 +4006,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -4304,8 +4065,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -4365,8 +4124,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -4427,8 +4184,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -4488,8 +4243,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -4537,6 +4290,124 @@ attributes:
     NHNCK.IDENTITY_INFO_C06S: null
 - attribute_name: "Address Type Code"
   physical_name: "adr_tp_code"
+  description: "Loại địa chỉ — địa chỉ chung."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: "IP_ADDR_TYPE=ADDRESS"
+  etl_derived_value: "ADDRESS"
+  source_mappings:
+    NHNCK.UNITS: null
+    NHNCK.ORGANIZATIONS: null
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_REP_OFFICE: null
+    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.BANK_MONI: null
+    FMS.AGENCIES: null
+    FMS.BRANCHS: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.INVES: null
+    FMS.AGENCIES_BRA: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.DISTRIBUTOR_LOCATION: null
+    IDS.COMPANY_PROFILES: null
+    IDS.LEGAL_ENTITIES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
+    NHNCK.IDENTITY_INFO_C06S: null
+- attribute_name: "Address Value"
+  physical_name: "adr_val"
+  description: "Địa chỉ trụ sở."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: "IP_ADDR_TYPE=ADDRESS"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.UNITS: null
+    NHNCK.ORGANIZATIONS: null
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_REP_OFFICE: null
+    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.BANK_MONI: null
+    FMS.AGENCIES: null
+    FMS.BRANCHS: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: "FMS.TL_PROFILES.ADDRESS"
+    FMS.INVES: "FMS.INVES.ADDRESS"
+    FMS.AGENCIES_BRA: null
+    FMS.STF_FG_BRCH: "FMS.STF_FG_BRCH.ADDRESS"
+    FMS.REPRESENT: "FMS.REPRESENT.ADDRESS"
+    FMS.MB_FUND: "FMS.MB_FUND.ADDRESS"
+    FMS.INSIDER: "FMS.INSIDER.ADDRESS"
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.TL_PRO_RELA: "FMS.TL_PRO_RELA.ADDRESS"
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: "FMS.INSDER_RELA.ADDRESS"
+    FMS.DISTRIBUTOR_LOCATION: null
+    IDS.COMPANY_PROFILES: null
+    IDS.LEGAL_ENTITIES: "IDS.LEGAL_ENTITIES.ADDRESS"
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
+    NHNCK.IDENTITY_INFO_C06S: null
+- attribute_name: "Address Type Code"
+  physical_name: "adr_tp_code"
   description: "Loại địa chỉ — nơi làm việc."
   data_domain: "Classification Value"
   nullable: true
@@ -4549,8 +4420,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -4610,8 +4479,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -4672,8 +4539,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -4734,8 +4599,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -4796,8 +4659,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -4858,8 +4719,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -4919,8 +4778,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -4981,8 +4838,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -5042,8 +4897,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -5103,8 +4956,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -5164,8 +5015,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -5225,8 +5074,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.EXAMINATION_TEAM_TARGET: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null

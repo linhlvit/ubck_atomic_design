@@ -194,6 +194,17 @@ def abbreviate_domain_prefix(domain_prefix: str) -> str:
     return apply_dictionary(domain_prefix, _domain_prefix_dict())
 
 
+_exceptions_dict_cache: list[tuple[str, str]] | None = None
+
+
+def _exceptions_dict() -> list[tuple[str, str]]:
+    """Lazy-load + cache system/rules/rule_physical_name_exceptions.csv."""
+    global _exceptions_dict_cache
+    if _exceptions_dict_cache is None:
+        _exceptions_dict_cache = load_dict(EXCEPTIONS_PATH)
+    return _exceptions_dict_cache
+
+
 def full_words(text: str) -> str:
     return _sanitize("_".join(text.strip().lower().split()))
 
@@ -215,12 +226,18 @@ def transform_table_name(domain_prefix: str, atomic_entity: str) -> str:
 
 def _field_level_entity_abbrev(domain_prefix: str, atomic_entity: str) -> str:
     """
-    Nhu transform_table_name(), nhung abbreviate ca phan bcv_term qua domain-prefix
-    dictionary (apply_dictionary) thay vi full_words() tran. CHI dung de build
-    entity-prefix dict cho ATTRIBUTE (rule B, build_entity_prefix_dict) — KHONG dung
-    de tinh entity_physical_name (rule A van goi transform_table_name() nhu cu,
-    khong doi ten bang). Root entity (bcv_term rong) van tra ve full_words(dp), giong
+    Nhu transform_table_name(), nhung abbreviate ca phan bcv_term qua dictionary
+    (apply_dictionary) thay vi full_words() tran. CHI dung de build entity-prefix
+    dict cho ATTRIBUTE (rule B, build_entity_prefix_dict) — KHONG dung de tinh
+    entity_physical_name (rule A van goi transform_table_name() nhu cu, khong doi
+    ten bang). Root entity (bcv_term rong) van tra ve full_words(dp), giong
     transform_table_name(), nen khong anh huong toi cac entity root.
+
+    bcv_term duoc abbreviate qua ca domain-prefix dict (cum nhieu tu, VD "Organization
+    Unit"->"ou") LAN exceptions dict (tu don, VD "Type"->"tp", "Classification"->"cl")
+    — chi dung domain-prefix dict rieng le se bo sot cac tu don pho bien trong bcv_term
+    (VD "Event Type" se giu nguyen "event_type" thay vi abbreviate dung "event_tp"),
+    gay regression cho entity da abbreviate dung truoc do (2026-07-29).
     """
     dp = (domain_prefix or "").strip()
     entity = atomic_entity.strip()
@@ -229,7 +246,8 @@ def _field_level_entity_abbrev(domain_prefix: str, atomic_entity: str) -> str:
     bcv_term = entity[len(dp):].strip()
     if not bcv_term:
         return full_words(dp)
-    return f"{abbreviate_domain_prefix(dp)}_{apply_dictionary(bcv_term, _domain_prefix_dict())}"
+    bcv_dict = sorted(_domain_prefix_dict() + _exceptions_dict(), key=lambda x: (-len(x[0]), x[0]))
+    return f"{abbreviate_domain_prefix(dp)}_{apply_dictionary(bcv_term, bcv_dict)}"
 
 
 # ---------------------------------------------------------------------------

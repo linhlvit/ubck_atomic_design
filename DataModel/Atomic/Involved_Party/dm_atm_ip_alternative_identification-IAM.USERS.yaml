@@ -36,20 +36,6 @@ attributes:
     classification_context: "Source System Code = 'IAM_USERS' | Identification Type Code = 'NATIONAL_ID'"
     etl_derived_value: IAM.USERS
 
-  - name: Previous Identification Number
-    physical_name: previous_identification_nbr
-    business_meaning: Số CMND cũ (trước khi đổi sang CCCD).
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: IAM
-    source_table: USERS
-    source_column: null
-    comment: Lưu lại để tra cứu lịch sử giấy tờ.
-    classification_context: "Source System Code = 'IAM_USERS' | Identification Type Code = 'NATIONAL_ID'"
-    etl_derived_value: null
-
   - name: Identification Type Code
     physical_name: identification_tp_code
     business_meaning: Loại giấy tờ định danh — căn cước công dân/CMND/hộ chiếu.
@@ -147,20 +133,6 @@ attributes:
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     classification_context: "Source System Code = 'IAM_USERS' | Identification Type Code = 'TAX_ID'"
     etl_derived_value: IAM.USERS
-
-  - name: Previous Identification Number
-    physical_name: previous_identification_nbr
-    business_meaning: Số CMND cũ (trước khi đổi sang CCCD).
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: IAM
-    source_table: USERS
-    source_column: null
-    comment: Lưu lại để tra cứu lịch sử giấy tờ.
-    classification_context: "Source System Code = 'IAM_USERS' | Identification Type Code = 'TAX_ID'"
-    etl_derived_value: null
 
   - name: Identification Type Code
     physical_name: identification_tp_code

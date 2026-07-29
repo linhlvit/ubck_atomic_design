@@ -23,7 +23,7 @@ ldm:
 
 attributes:
   - name: Securities Practitioner Organization Employment Report Id
-    physical_name: sp_organization_employment_report_id
+    physical_name: sp_organization_employment_rpt_id
     business_meaning: Khóa đại diện cho báo cáo danh sách NHNCK tại tổ chức (surrogate key).
     data_domain: Surrogate Key
     data_type: string
@@ -37,7 +37,7 @@ attributes:
     etl_derived_value: null
 
   - name: Securities Practitioner Organization Employment Report Code
-    physical_name: sp_organization_employment_report_code
+    physical_name: sp_organization_employment_rpt_code
     business_meaning: Mã định danh kỹ thuật (BK). Map từ PK bảng nguồn.
     data_domain: Text
     data_type: string
@@ -163,7 +163,7 @@ attributes:
     etl_derived_value: null
 
   - name: Securities Practitioner License Certificate Type Id
-    physical_name: sp_license_certificate_type_id
+    physical_name: sp_license_certificate_tp_id
     business_meaning: FK đến loại chứng chỉ hành nghề tại thời điểm báo cáo.
     data_domain: Surrogate Key
     data_type: string
@@ -172,12 +172,12 @@ attributes:
     source_system: NHNCK
     source_table: ORGANIZATION_REPORTS
     source_column: NHNCK.ORGANIZATION_REPORTS.CERTIFICATE_ID
-    comment: "FK target: sp_license_certificate_type.sp_license_certificate_type_id. Cần ETL crosswalk sang NHNCK.CERTIFICATES: ORGANIZATION_REPORTS.CERTIFICATE_ID = CERTIFICATES.ID để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK.CERTIFICATES', CERTIFICATE_CODE) | Trước đây hash trực tiếp theo CERTIFICATE_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CERTIFICATE_CODE) — đã sửa sang crosswalk 2026-07-27."
+    comment: "FK target: sp_license_certificate_type.sp_license_certificate_tp_id. Cần ETL crosswalk sang NHNCK.CERTIFICATES: ORGANIZATION_REPORTS.CERTIFICATE_ID = CERTIFICATES.ID để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK.CERTIFICATES', CERTIFICATE_CODE) | Trước đây hash trực tiếp theo CERTIFICATE_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CERTIFICATE_CODE) — đã sửa sang crosswalk 2026-07-27."
     classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
     etl_derived_value: null
 
   - name: Securities Practitioner License Certificate Type Code
-    physical_name: sp_license_certificate_type_code
+    physical_name: sp_license_certificate_tp_code
     business_meaning: Mã loại chứng chỉ hành nghề tại thời điểm báo cáo (denormalized lookup)
     data_domain: Text
     data_type: string
@@ -186,12 +186,12 @@ attributes:
     source_system: NHNCK
     source_table: ORGANIZATION_REPORTS
     source_column: NHNCK.ORGANIZATION_REPORTS.CERTIFICATE_ID
-    comment: "Lookup pair: sp_license_certificate_type.sp_license_certificate_type_code. Pair with sp_license_certificate_type_id."
+    comment: "Lookup pair: sp_license_certificate_type.sp_license_certificate_tp_code. Pair with sp_license_certificate_tp_id."
     classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
     etl_derived_value: null
 
   - name: Parent Securities Practitioner Organization Employment Report Id
-    physical_name: parent_sp_organization_employment_report_id
+    physical_name: parent_sp_organization_employment_rpt_id
     business_meaning: "FK self-ref — báo cáo gốc được điều chỉnh (nullable)."
     data_domain: Surrogate Key
     data_type: string
@@ -200,12 +200,12 @@ attributes:
     source_system: NHNCK
     source_table: ORGANIZATION_REPORTS
     source_column: NHNCK.ORGANIZATION_REPORTS.PARENT_REPORT_ID
-    comment: "FK target: sp_organization_employment_report.sp_organization_employment_report_id. Self-referencing. Hash: hash_id('NHNCK.ORGANIZATION_REPORTS', PARENT_REPORT_ID)."
+    comment: "FK target: sp_organization_employment_report.sp_organization_employment_rpt_id. Self-referencing. Hash: hash_id('NHNCK.ORGANIZATION_REPORTS', PARENT_REPORT_ID)."
     classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
     etl_derived_value: null
 
   - name: Parent Securities Practitioner Organization Employment Report Code
-    physical_name: parent_sp_organization_employment_report_code
+    physical_name: parent_sp_organization_employment_rpt_code
     business_meaning: Mã báo cáo gốc (denormalized).
     data_domain: Text
     data_type: string
@@ -214,7 +214,7 @@ attributes:
     source_system: NHNCK
     source_table: ORGANIZATION_REPORTS
     source_column: NHNCK.ORGANIZATION_REPORTS.PARENT_REPORT_ID
-    comment: "Lookup pair: sp_organization_employment_report.sp_organization_employment_report_code. Pair with Parent Securities Practitioner Organization Employment Report Id."
+    comment: "Lookup pair: sp_organization_employment_report.sp_organization_employment_rpt_code. Pair with Parent Securities Practitioner Organization Employment Report Id."
     classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
     etl_derived_value: null
 

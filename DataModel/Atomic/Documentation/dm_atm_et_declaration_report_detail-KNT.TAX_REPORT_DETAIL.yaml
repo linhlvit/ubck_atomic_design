@@ -23,7 +23,7 @@ ldm:
 
 attributes:
   - name: External Tax Declaration Report Detail Id
-    physical_name: et_declaration_report_detail_id
+    physical_name: et_declaration_rpt_detail_id
     business_meaning: Khóa đại diện (surrogate key).
     data_domain: Surrogate Key
     data_type: string
@@ -37,7 +37,7 @@ attributes:
     etl_derived_value: null
 
   - name: External Tax Declaration Report Detail Code
-    physical_name: et_declaration_report_detail_code
+    physical_name: et_declaration_rpt_detail_code
     business_meaning: "Khóa chính của bản ghi. BK — nguồn không có mã nghiệp vụ riêng biệt (INDICATOR_CODE không unique đơn lẻ), dùng PK kỹ thuật làm BK duy nhất."
     data_domain: Text
     data_type: string
@@ -65,7 +65,7 @@ attributes:
     etl_derived_value: KNT.TAX_REPORT_DETAIL
 
   - name: External Tax Declaration Report Id
-    physical_name: et_declaration_report_id
+    physical_name: et_declaration_rpt_id
     business_meaning: "FK -> tax_report: Báo cáo tài chính TCT liên quan."
     data_domain: Surrogate Key
     data_type: string
@@ -74,12 +74,12 @@ attributes:
     source_system: KNT
     source_table: TAX_REPORT_DETAIL
     source_column: KNT.TAX_REPORT_DETAIL.TAX_REPORT_ID
-    comment: "FK target: et_declaration_report.et_declaration_report_id. Nguồn lưu ID kỹ thuật của TAX_REPORT — ETL join TAX_REPORT_ID → KNT.TAX_REPORT.ID để lấy DECLARATION_CODE rồi hash_id('KNT.TAX_REPORT', DECLARATION_CODE)."
+    comment: "FK target: et_declaration_report.et_declaration_rpt_id. Cần ETL crosswalk sang KNT.TAX_REPORT: TAX_REPORT_DETAIL.TAX_REPORT_ID = TAX_REPORT.ID để xác nhận DECLARATION_CODE sau đó hash_id('KNT.TAX_REPORT', DECLARATION_CODE) |"
     classification_context: "Source System Code = 'KNT_TAX_REPORT_DETAIL'"
     etl_derived_value: null
 
   - name: External Tax Declaration Report Code
-    physical_name: et_declaration_report_code
+    physical_name: et_declaration_rpt_code
     business_meaning: Mã tờ khai báo cáo tài chính liên quan.
     data_domain: Text
     data_type: string
@@ -88,7 +88,7 @@ attributes:
     source_system: KNT
     source_table: TAX_REPORT_DETAIL
     source_column: KNT.TAX_REPORT_DETAIL.TAX_REPORT_ID
-    comment: "Lookup pair: et_declaration_report.et_declaration_report_code. Pair with et_declaration_report_id."
+    comment: "Lookup pair: et_declaration_report.et_declaration_rpt_code. Pair with et_declaration_rpt_id."
     classification_context: "Source System Code = 'KNT_TAX_REPORT_DETAIL'"
     etl_derived_value: null
 

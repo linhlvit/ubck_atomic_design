@@ -17,9 +17,6 @@ sources:
 - source_system: "IAM"
   source_table: "USERS"
   lld_file: "IAM/lld_IAM_USERS_IP_Alt_Identification.yaml"
-- source_system: "THANHTRA"
-  source_table: "PENALTY_DECISION_SUBJECT"
-  lld_file: "THANHTRA/lld_THANHTRA_PENALTY_DECISION_SUBJECT_IP_Alt_Identification.yaml"
 - source_system: "SCMS"
   source_table: "AUDIT_FIRM"
   lld_file: "SCMS/lld_SCMS_AUDIT_FIRM_IP_Alt_Identification.yaml"
@@ -203,8 +200,7 @@ attributes:
   etl_derived_value: null
   source_mappings:
     NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.ID"
-    IAM.USERS: "IAM.IAM.USERS.ID"
-    THANHTRA.PENALTY_DECISION_SUBJECT: "THANHTRA.PENALTY_DECISION_SUBJECT.ID"
+    IAM.USERS: "IAM.USERS.ID"
     SCMS.AUDIT_FIRM: "SCMS.AUDIT_FIRM.ID"
     SCMS.BANK: "SCMS.BANK.ID"
     SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.ID"
@@ -263,8 +259,7 @@ attributes:
   etl_derived_value: null
   source_mappings:
     NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.ID"
-    IAM.USERS: "IAM.IAM.USERS.ID"
-    THANHTRA.PENALTY_DECISION_SUBJECT: "THANHTRA.PENALTY_DECISION_SUBJECT.ID"
+    IAM.USERS: "IAM.USERS.ID"
     SCMS.AUDIT_FIRM: "SCMS.AUDIT_FIRM.ID"
     SCMS.BANK: "SCMS.BANK.ID"
     SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.ID"
@@ -323,7 +318,6 @@ attributes:
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -385,7 +379,6 @@ attributes:
   source_mappings:
     NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.IDENTITY_TYPE"
     IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -444,8 +437,7 @@ attributes:
   etl_derived_value: null
   source_mappings:
     NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.IDENTITY_NUMBER"
-    IAM.USERS: "IAM.IAM.USERS.CITIZEN_ID_NUMBER"
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
+    IAM.USERS: null
     SCMS.AUDIT_FIRM: "SCMS.AUDIT_FIRM.BUSINESS_LICENSE_NUMBER"
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -504,7 +496,6 @@ attributes:
   source_mappings:
     NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.IDENTITY_ISSUE_DATE"
     IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: "SCMS.AUDIT_FIRM.BUSINESS_LICENSE_DATE"
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -563,7 +554,6 @@ attributes:
   source_mappings:
     NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.IDENTITY_ISSUE_PLACE"
     IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: "SCMS.AUDIT_FIRM.BUSINESS_LICENSE_ISSUER"
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -622,7 +612,6 @@ attributes:
   source_mappings:
     NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.PREVIOUS_IDENTITY_NUMBER"
     IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -683,66 +672,6 @@ attributes:
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.AUDITOR: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
-    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.FUNDS: null
-    FMS.INVES: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.BANK_EMPLOY: null
-    FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: null
-    FMS.INSDER_RPRST: null
-    IDS.COMPANY_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.IDENTITY: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REG_REPRESENTATIVE: null
-    NHNCK.IDENTITY_INFO_C06S: null
-- attribute_name: "Identification Type Code"
-  physical_name: "identification_tp_code"
-  description: "Loại giấy tờ định danh — mã số thuế."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode TAX_ID."
-  classification_context: "IP_ALT_ID_TYPE=TAX_ID"
-  etl_derived_value: "TAX_ID"
-  source_mappings:
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -791,17 +720,134 @@ attributes:
     NHNCK.IDENTITY_INFO_C06S: null
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"
-  description: "Mã số thuế của đối tượng bị xử phạt."
+  description: "Số giấy tờ tùy thân (CCCD / CMND / Hộ chiếu)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  comment: null
+  comment: "BK của shared entity cùng với Involved Party Id + Identification Type\
+    \ Code."
+  classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: "IAM.USERS.CITIZEN_ID_NUMBER"
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.AUDITOR: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.NATIONAL_ID"
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL.NATIONAL_ID"
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: "SCMS.SC_FIRM_SENIOR_PERSONNEL.NATIONAL_ID"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NATIONAL_ID"
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: "SCMS.SC_FIRM_INSIDER_RELATION.NATIONAL_ID"
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: "SCMS.SC_FIRM_RELATED_PERSON.IDENTIFICATION_NUMBER"
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: "SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.IDENTIFICATION_NUMBER"
+    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
+    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: "FMS.TL_PROFILES.ID_NO"
+    FMS.FUNDS: null
+    FMS.INVES: null
+    FMS.STF_FG_BRCH: "FMS.STF_FG_BRCH.ID_CODE"
+    FMS.REPRESENT: "FMS.REPRESENT.ID_NO"
+    FMS.MB_FUND: "FMS.MB_FUND.ID_NO"
+    FMS.INSIDER: "FMS.INSIDER.ID_NO"
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.BANK_EMPLOY: "FMS.BANK_EMPLOY.ID_NO"
+    FMS.TL_PRO_RELA: "FMS.TL_PRO_RELA.ID_NO"
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: "FMS.INSDER_RELA.ID_NO"
+    FMS.INSDER_RPRST: "FMS.INSDER_RPRST.ID_NO"
+    IDS.COMPANY_PROFILES: null
+    IDS.AF_LEGAL_REPRESENTATIVE: "IDS.AF_LEGAL_REPRESENTATIVE.IDENTITY_NO"
+    IDS.IDENTITY: null
+    IDS.LEGAL_REPRESENTATIVE: "IDS.LEGAL_REPRESENTATIVE.IDENTITY_NO"
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: "FIMS.TRADINGREPRESENTATIVE.IDNO"
+    KNT.TAX_REG_REPRESENTATIVE: null
+    NHNCK.IDENTITY_INFO_C06S: null
+- attribute_name: "Identification Type Code"
+  physical_name: "identification_tp_code"
+  description: "Loại giấy tờ định danh — mã số thuế."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode TAX_ID."
+  classification_context: "IP_ALT_ID_TYPE=TAX_ID"
+  etl_derived_value: "TAX_ID"
+  source_mappings:
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.AUDITOR: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
+    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.FUNDS: null
+    FMS.INVES: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.BANK_EMPLOY: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.INSDER_RPRST: null
+    IDS.COMPANY_PROFILES: null
+    IDS.AF_LEGAL_REPRESENTATIVE: null
+    IDS.IDENTITY: null
+    IDS.LEGAL_REPRESENTATIVE: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REG_REPRESENTATIVE: null
+    NHNCK.IDENTITY_INFO_C06S: null
+- attribute_name: "Identification Number"
+  physical_name: "identification_nbr"
+  description: "Mã số thuế của chi nhánh nước ngoài."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "BK của shared entity cùng với Involved Party Id + Identification Type\
+    \ Code."
   classification_context: "IP_ALT_ID_TYPE=TAX_ID"
   etl_derived_value: null
   source_mappings:
     NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: "THANHTRA.PENALTY_DECISION_SUBJECT.SUBJECT_TAX_CODE"
+    IAM.USERS: "IAM.USERS.TAX_ID_NUMBER"
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: "SCMS.BANK.TAX_CODE"
     SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.TAX_CODE"
@@ -863,7 +909,6 @@ attributes:
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -922,7 +967,6 @@ attributes:
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -981,7 +1025,6 @@ attributes:
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: "SCMS.BANK.ENTERPRISE_CODE"
     SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.ENTERPRISE_CODE"
@@ -1040,7 +1083,6 @@ attributes:
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: "SCMS.BANK.OPERATION_LICENSE_NUMBER"
     SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.BUSINESS_LICENSE_NUMBER"
@@ -1099,7 +1141,6 @@ attributes:
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: "SCMS.BANK.LICENSE_ISSUE_DATE"
     SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.BUSINESS_LICENSE_DATE"
@@ -1158,7 +1199,6 @@ attributes:
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: "SCMS.BANK.LICENSE_ISSUER"
     SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.BUSINESS_LICENSE_ISSUER"
@@ -1218,7 +1258,6 @@ attributes:
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -1277,7 +1316,6 @@ attributes:
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: "SCMS.BANK.BUSINESS_REG_CERT_NUMBER"
     SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.FOUNDATION_LICENSE_NUMBER"
@@ -1336,7 +1374,6 @@ attributes:
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: "SCMS.BANK.BUSINESS_REG_CERT_DATE"
     SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.FOUNDATION_LICENSE_DATE"
@@ -1395,7 +1432,6 @@ attributes:
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.FOUNDATION_LICENSE_ISSUER"
@@ -1456,7 +1492,6 @@ attributes:
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -1515,7 +1550,6 @@ attributes:
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.CERTIFICATE_NUMBER"
@@ -1574,7 +1608,6 @@ attributes:
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -1633,7 +1666,6 @@ attributes:
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.CUSTODIAN_CERT_NUMBER"
@@ -1692,7 +1724,6 @@ attributes:
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.CUSTODIAN_CERT_DATE"
@@ -1751,7 +1782,6 @@ attributes:
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -1810,7 +1840,6 @@ attributes:
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.CUSTODIAN_MEMBER_CERT_NUMBER"
@@ -1869,7 +1898,6 @@ attributes:
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.CUSTODIAN_MEMBER_CERT_DATE"
@@ -1929,7 +1957,6 @@ attributes:
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -1976,65 +2003,6 @@ attributes:
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REG_REPRESENTATIVE: null
     NHNCK.IDENTITY_INFO_C06S: null
-- attribute_name: "Identification Number"
-  physical_name: "identification_nbr"
-  description: "Số giấy tờ tùy thân (CCCD / CMND / Hộ chiếu)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.AUDITOR: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.NATIONAL_ID"
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL.NATIONAL_ID"
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: "SCMS.SC_FIRM_SENIOR_PERSONNEL.NATIONAL_ID"
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NATIONAL_ID"
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: "SCMS.SC_FIRM_INSIDER_RELATION.NATIONAL_ID"
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: "SCMS.SC_FIRM_RELATED_PERSON.IDENTIFICATION_NUMBER"
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: "SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.IDENTIFICATION_NUMBER"
-    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
-    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: "FMS.TL_PROFILES.ID_NO"
-    FMS.FUNDS: null
-    FMS.INVES: null
-    FMS.STF_FG_BRCH: "FMS.STF_FG_BRCH.ID_CODE"
-    FMS.REPRESENT: "FMS.REPRESENT.ID_NO"
-    FMS.MB_FUND: "FMS.MB_FUND.ID_NO"
-    FMS.INSIDER: "FMS.INSIDER.ID_NO"
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.BANK_EMPLOY: "FMS.BANK_EMPLOY.ID_NO"
-    FMS.TL_PRO_RELA: "FMS.TL_PRO_RELA.ID_NO"
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: "FMS.INSDER_RELA.ID_NO"
-    FMS.INSDER_RPRST: "FMS.INSDER_RPRST.ID_NO"
-    IDS.COMPANY_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: "IDS.AF_LEGAL_REPRESENTATIVE.IDENTITY_NO"
-    IDS.IDENTITY: null
-    IDS.LEGAL_REPRESENTATIVE: "IDS.LEGAL_REPRESENTATIVE.IDENTITY_NO"
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: "FIMS.TRADINGREPRESENTATIVE.IDNO"
-    KNT.TAX_REG_REPRESENTATIVE: null
-    NHNCK.IDENTITY_INFO_C06S: null
 - attribute_name: "Identification Issue Date"
   physical_name: "identification_issue_dt"
   description: "Ngày cấp CMND/CCCD/Hộ chiếu."
@@ -2047,7 +2015,6 @@ attributes:
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -2106,7 +2073,6 @@ attributes:
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -2165,7 +2131,6 @@ attributes:
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -2224,7 +2189,6 @@ attributes:
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -2284,7 +2248,6 @@ attributes:
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -2344,7 +2307,6 @@ attributes:
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -2403,7 +2365,6 @@ attributes:
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -2462,7 +2423,6 @@ attributes:
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -2522,7 +2482,6 @@ attributes:
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -2581,7 +2540,6 @@ attributes:
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -2640,7 +2598,6 @@ attributes:
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -2699,7 +2656,6 @@ attributes:
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -2758,7 +2714,6 @@ attributes:
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -2817,7 +2772,6 @@ attributes:
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -2877,7 +2831,6 @@ attributes:
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -2937,7 +2890,6 @@ attributes:
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -2997,7 +2949,6 @@ attributes:
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
@@ -3057,7 +3008,6 @@ attributes:
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null

@@ -1512,6 +1512,13 @@ entries:
     action: "Không map — xem Securities Practitioner.Previous Identity Number."
 
   - source_system: "NHNCK"
+    source_table: "PROFESSIONALS"
+    source_column: "PREVIOUS_IDENTITY_NUMBER"
+    description: "Số CMND cũ (trước khi đổi sang CCCD)."
+    reason: "Quyết định Data Modeler (2026-07-29): rút khỏi shared entity Involved Party Alternative Identification — field lookup riêng của NHNCK.PROFESSIONALS, ~48 nguồn khác trong shared entity đều null cho field này, không thuộc chuẩn 7-field của shared_entity_schemas.md, không có ý nghĩa đồng bộ/so khớp xuyên nguồn."
+    action: "Không map vào shared entity ip_alternative_identification (đã xoá khỏi lld_NHNCK_PROFESSIONALS_IP_Alt_Identification.yaml, design_status hạ về draft chờ re-approve) — xem Securities Practitioner.Previous Identity Number (đã có sẵn, không đổi)."
+
+  - source_system: "NHNCK"
     source_table: "PROFESSIONAL_HISTORIES"
     source_column: "NATIONAL"
     description: "Dân tộc (dữ liệu tích hợp C06)"

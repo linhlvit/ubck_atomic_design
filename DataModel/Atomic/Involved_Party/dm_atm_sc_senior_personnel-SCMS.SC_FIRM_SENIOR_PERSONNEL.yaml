@@ -368,7 +368,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_SENIOR_PERSONNEL
     source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.DISCLOSURE_PERSON_ID
-    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Cross-source FK (SCMS → IAM). Pending — SCMS lưu NUMBER(1) trong khi IAM.USERS.ID là UUIDv7 (string); chưa xác nhận cơ chế crosswalk/join key giữa 2 hệ thống."
+    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM.USERS', DISCLOSURE_PERSON_ID) | Cross-source FK (SCMS → IAM). Pending — SCMS lưu NUMBER(1) trong khi IAM.USERS.ID là UUIDv7 (string); chưa xác nhận cơ chế crosswalk/join key giữa 2 hệ thống."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
     etl_derived_value: null
 

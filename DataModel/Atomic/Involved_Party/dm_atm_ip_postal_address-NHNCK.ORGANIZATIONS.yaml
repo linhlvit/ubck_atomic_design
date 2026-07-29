@@ -22,6 +22,33 @@ ldm:
     brd: BRD-SRC-NHNCK-ORGANIZATIONS
 
 attributes:
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến Securities Organization Reference.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ORGANIZATIONS
+    source_column: NHNCK.ORGANIZATIONS.ID
+    comment: "FK target: securities_organization_reference.securities_organization_reference_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.ORGANIZATIONS', ID)."
+    classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã tổ chức.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ORGANIZATIONS
+    source_column: NHNCK.ORGANIZATIONS.ID
+    comment: "Lookup pair: securities_organization_reference.securities_organization_reference_code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: null
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning: Mã hệ thống nguồn.
@@ -66,7 +93,7 @@ attributes:
 
   - name: Province Id
     physical_name: province_id
-    business_meaning: FK đến Geographic Area cấp tỉnh/thành phố (trụ sở chính).
+    business_meaning: FK đến Geographic Area cấp tỉnh/thành phố.
     data_domain: Surrogate Key
     data_type: string
     nullable: true
@@ -74,13 +101,13 @@ attributes:
     source_system: NHNCK
     source_table: ORGANIZATIONS
     source_column: null
-    comment: "FK target: geographic_area.geographic_area_id. Geographic Area Type Code = PROVINCE. Nguồn Geographic Area đã chuyển sang ECAT (SCMS.CAT_PROVINCE ngừng thiết kế — chưa từng là entity riêng, chỉ là ý định extend chưa triển khai) — resolve bằng lookup giá trị: đối chiếu mã/tên tỉnh/thành PROVINCE_ID với Geographic Area Business Code (ECAT.PROVINCE_NEW.CODE) hoặc Name, không còn hash_id() theo SCMS.CAT_PROVINCE. Cần crosswalk nếu SCMS không cùng chuẩn mã với ECAT. // FK target: geographic_area.geographic_area_id. Geographic Area Type Code = PROVINCE. IDS.PROVINCES ngoài scope (xem HLD 7f) — resolve bằng lookup giá trị: đối chiếu mã/tên tỉnh/thành PROVINCE_ID với Geographic Area Unique Key (ECAT.PROVINCE_NEW.CODE) hoặc Name, không hash_id() trực tiếp theo IDS.PROVINCES. Cần crosswalk nếu IDS không cùng chuẩn mã với ECAT. Nguồn PROVINCE_ID VARCHAR2(50) dù tên cột gợi ý ID — cần profile giá trị thực tế."
+    comment: null
     classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS' | Address Type Code = 'HEAD_OFFICE'"
     etl_derived_value: null
 
   - name: Province Code
     physical_name: province_code
-    business_meaning: Mã tỉnh/thành phố (trụ sở chính).
+    business_meaning: Mã tỉnh/thành phố.
     data_domain: Text
     data_type: string
     nullable: true
@@ -88,7 +115,7 @@ attributes:
     source_system: NHNCK
     source_table: ORGANIZATIONS
     source_column: null
-    comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Province Id."
+    comment: null
     classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS' | Address Type Code = 'HEAD_OFFICE'"
     etl_derived_value: null
 
@@ -102,7 +129,7 @@ attributes:
     source_system: NHNCK
     source_table: ORGANIZATIONS
     source_column: null
-    comment: "FK target: geographic_area_old.geographic_area_old_id (ĐỔI TARGET — không còn Geographic Area). Cấp quận/huyện đã bị loại bỏ trong cấu trúc địa giới hiện hành (post-sáp nhập 2025); ECAT chỉ còn lưu ở Geographic Area Old (Geographic Area Old Type Code = DISTRICT_OLD). Resolve bằng lookup giá trị: đối chiếu mã/tên quận/huyện DISTRICT_ID với Geographic Area Old Unique Key (ECAT.DISTRICT_OLD.CODE) hoặc Name. Cần crosswalk nếu SCMS không cùng chuẩn mã với ECAT."
+    comment: null
     classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS' | Address Type Code = 'HEAD_OFFICE'"
     etl_derived_value: null
 
@@ -116,7 +143,7 @@ attributes:
     source_system: NHNCK
     source_table: ORGANIZATIONS
     source_column: null
-    comment: "Lookup pair: geographic_area_old.geographic_area_old_code (nguồn ECAT — ĐỔI TARGET, xem District Id). Pair with District Id."
+    comment: null
     classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS' | Address Type Code = 'HEAD_OFFICE'"
     etl_derived_value: null
 
@@ -130,7 +157,7 @@ attributes:
     source_system: NHNCK
     source_table: ORGANIZATIONS
     source_column: null
-    comment: "Denormalized — nguồn Geographic Area Old (ECAT.DISTRICT_OLD.geographic_area_old_nm), không còn CAT_DISTRICT.DISTRICT_NAME. ETL lookup theo District Id."
+    comment: "Denormalized — nguồn Geographic Area Old (ECAT.DISTRICT_OLD.geographic_area_old_nm), không còn CAT_DISTRICT.DISTRICT_NAME. ETL lookup theo District Id. Không áp dụng cho NHNCK.ORGANIZATIONS — thuộc tính không có dữ liệu nguồn ở source này (nullable placeholder cho shared entity)."
     classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS' | Address Type Code = 'HEAD_OFFICE'"
     etl_derived_value: null
 
@@ -144,7 +171,7 @@ attributes:
     source_system: NHNCK
     source_table: ORGANIZATIONS
     source_column: null
-    comment: "FK target: geographic_area.geographic_area_id. Geographic Area Type Code = WARD. Nguồn Geographic Area đã chuyển sang ECAT (SCMS.CAT_WARD ngừng thiết kế) — resolve bằng lookup giá trị: đối chiếu mã/tên phường/xã WARD_ID với Geographic Area Business Code (ECAT.WARD_NEW.CODE) hoặc Name, không còn hash_id() theo SCMS.CAT_WARD. Cần crosswalk nếu SCMS không cùng chuẩn mã với ECAT."
+    comment: null
     classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS' | Address Type Code = 'HEAD_OFFICE'"
     etl_derived_value: null
 
@@ -158,7 +185,7 @@ attributes:
     source_system: NHNCK
     source_table: ORGANIZATIONS
     source_column: null
-    comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Ward Id."
+    comment: null
     classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS' | Address Type Code = 'HEAD_OFFICE'"
     etl_derived_value: null
 
@@ -172,34 +199,7 @@ attributes:
     source_system: NHNCK
     source_table: ORGANIZATIONS
     source_column: null
-    comment: Denormalized từ CAT_WARD.WARD_NAME — ETL lookup theo WARD_ID. Lưu dự phòng để tránh join nhiều tầng.
+    comment: Denormalized từ CAT_WARD.WARD_NAME — ETL lookup theo WARD_ID. Lưu dự phòng để tránh join nhiều tầng. Không áp dụng cho NHNCK.ORGANIZATIONS — thuộc tính không có dữ liệu nguồn ở source này (nullable placeholder cho shared entity).
     classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS' | Address Type Code = 'HEAD_OFFICE'"
     etl_derived_value: null
 
-  - name: Involved Party Id
-    physical_name: ip_id
-    business_meaning: FK đến Securities Organization Reference.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: ORGANIZATIONS
-    source_column: NHNCK.ORGANIZATIONS.ID
-    comment: "FK target: securities_organization_reference.securities_organization_reference_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.ORGANIZATIONS', ID)."
-    classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS' | Address Type Code = 'HEAD_OFFICE'"
-    etl_derived_value: null
-
-  - name: Involved Party Code
-    physical_name: ip_code
-    business_meaning: Mã tổ chức.
-    data_domain: Text
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: ORGANIZATIONS
-    source_column: NHNCK.ORGANIZATIONS.ID
-    comment: "Lookup pair: securities_organization_reference.securities_organization_reference_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS' | Address Type Code = 'HEAD_OFFICE'"
-    etl_derived_value: null

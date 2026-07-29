@@ -116,12 +116,12 @@ attributes:
     source_system: ORDERTRADE
     source_table: TRADE_BOOK_HNX
     source_column: null
-    comment: "FK target: Currency.Currency Code. Chỉ có ở HOSE — HNX không có field này."
+    comment: null
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
     etl_derived_value: null
 
   - name: Board Type Code
-    physical_name: board_type_code
+    physical_name: board_tp_code
     business_meaning: Loại bảng giao dịch.
     data_domain: Classification Value
     data_type: string
@@ -186,7 +186,7 @@ attributes:
     source_system: ORDERTRADE
     source_table: TRADE_BOOK_HNX
     source_column: null
-    comment: Chỉ có ở HOSE — HNX không có field này.
+    comment: Chỉ có ở HOSE — HNX không có field này. Không áp dụng cho ORDERTRADE.TRADE_BOOK_HNX — thuộc tính không có dữ liệu nguồn ở source này (nullable placeholder cho shared entity).
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
     etl_derived_value: null
 
@@ -214,7 +214,7 @@ attributes:
     source_system: ORDERTRADE
     source_table: TRADE_BOOK_HNX
     source_column: null
-    comment: "nullable=false — HOSE có sẵn; HNX ETL derive = trade_price × trade_qty (quyết định Q6 HLD). Nguồn decimal(22,4)."
+    comment: "nullable=false — HOSE có sẵn; HNX ETL derive = trade_price × trade_qty (quyết định Q6 HLD). Nguồn decimal(22,4). Không áp dụng cho ORDERTRADE.TRADE_BOOK_HNX — thuộc tính không có dữ liệu nguồn ở source này (nullable placeholder cho shared entity)."
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
     etl_derived_value: null
 
@@ -228,7 +228,7 @@ attributes:
     source_system: ORDERTRADE
     source_table: TRADE_BOOK_HNX
     source_column: null
-    comment: Chỉ có ở HOSE — HNX không có field này.
+    comment: Chỉ có ở HOSE — HNX không có field này. Không áp dụng cho ORDERTRADE.TRADE_BOOK_HNX — thuộc tính không có dữ liệu nguồn ở source này (nullable placeholder cho shared entity).
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
     etl_derived_value: null
 
@@ -242,7 +242,7 @@ attributes:
     source_system: ORDERTRADE
     source_table: TRADE_BOOK_HNX
     source_column: null
-    comment: Chỉ có ở HOSE — HNX không có field này.
+    comment: Chỉ có ở HOSE — HNX không có field này. Không áp dụng cho ORDERTRADE.TRADE_BOOK_HNX — thuộc tính không có dữ liệu nguồn ở source này (nullable placeholder cho shared entity).
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
     etl_derived_value: null
 
@@ -256,7 +256,7 @@ attributes:
     source_system: ORDERTRADE
     source_table: TRADE_BOOK_HNX
     source_column: null
-    comment: Chỉ có ở HOSE — HNX không có field này.
+    comment: Chỉ có ở HOSE — HNX không có field này. Không áp dụng cho ORDERTRADE.TRADE_BOOK_HNX — thuộc tính không có dữ liệu nguồn ở source này (nullable placeholder cho shared entity).
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
     etl_derived_value: null
 
@@ -270,7 +270,7 @@ attributes:
     source_system: ORDERTRADE
     source_table: TRADE_BOOK_HNX
     source_column: null
-    comment: Chỉ có ở HOSE — HNX không có field này.
+    comment: Chỉ có ở HOSE — HNX không có field này. Không áp dụng cho ORDERTRADE.TRADE_BOOK_HNX — thuộc tính không có dữ liệu nguồn ở source này (nullable placeholder cho shared entity).
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
     etl_derived_value: null
 
@@ -284,7 +284,7 @@ attributes:
     source_system: ORDERTRADE
     source_table: TRADE_BOOK_HNX
     source_column: ORDERTRADE.TRADE_BOOK_HNX.BUY_ORDER_RECEPTION_NUMBER
-    comment: "FK target: securities_order.securities_order_id. Hash: hash_id('ORDERTRADE.ORDER_BOOK_HNX', buy_order_reception_no). nullable=true — ETL best-effort resolve trong batch ngày (quyết định Q7 HLD)."
+    comment: "FK target: securities_order.securities_order_id. Hash: hash_id('ORDERTRADE.ORDER_BOOK_HNX', BUY_ORDER_RECEPTION_NUMBER). nullable=true — ETL best-effort resolve trong batch ngày (quyết định Q7 HLD)."
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
     etl_derived_value: null
 
@@ -326,7 +326,7 @@ attributes:
     source_system: ORDERTRADE
     source_table: TRADE_BOOK_HNX
     source_column: null
-    comment: Chỉ có ở HOSE — HNX không có field này.
+    comment: Chỉ có ở HOSE — HNX không có field này. Không áp dụng cho ORDERTRADE.TRADE_BOOK_HNX — thuộc tính không có dữ liệu nguồn ở source này (nullable placeholder cho shared entity).
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
     etl_derived_value: null
 
@@ -340,7 +340,7 @@ attributes:
     source_system: ORDERTRADE
     source_table: TRADE_BOOK_HNX
     source_column: null
-    comment: Lưu raw tại Atomic — masking quyết định ở lớp truy cập (quyết định Q4 HLD). Chỉ có ở HOSE — HNX không có field này.
+    comment: Lưu raw tại Atomic — masking quyết định ở lớp truy cập (quyết định Q4 HLD). Chỉ có ở HOSE — HNX không có field này. Không áp dụng cho ORDERTRADE.TRADE_BOOK_HNX — thuộc tính không có dữ liệu nguồn ở source này (nullable placeholder cho shared entity).
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
     etl_derived_value: null
 
@@ -368,12 +368,12 @@ attributes:
     source_system: ORDERTRADE
     source_table: TRADE_BOOK_HNX
     source_column: null
-    comment: Chỉ có ở HOSE — HNX không có field này.
+    comment: Chỉ có ở HOSE — HNX không có field này. Không áp dụng cho ORDERTRADE.TRADE_BOOK_HNX — thuộc tính không có dữ liệu nguồn ở source này (nullable placeholder cho shared entity).
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
     etl_derived_value: null
 
   - name: Buy Client House Classification Code
-    physical_name: buy_client_house_classification_code
+    physical_name: buy_client_house_cl_code
     business_meaning: Lệnh mua của khách hàng hay tự doanh.
     data_domain: Classification Value
     data_type: string
@@ -387,7 +387,7 @@ attributes:
     etl_derived_value: null
 
   - name: Buy Investor Type Code
-    physical_name: buy_investor_type_code
+    physical_name: buy_investor_tp_code
     business_meaning: Phân loại nhà đầu tư mua theo loại hình tổ chức/cá nhân (raw từ HNX).
     data_domain: Classification Value
     data_type: string
@@ -401,7 +401,7 @@ attributes:
     etl_derived_value: null
 
   - name: Buy Foreign Investor Type Code
-    physical_name: buy_foreign_investor_type_code
+    physical_name: buy_foreign_investor_tp_code
     business_meaning: Phân loại loại hình nhà đầu tư nước ngoài tham gia giao dịch mua.
     data_domain: Classification Value
     data_type: string
@@ -452,7 +452,7 @@ attributes:
     source_system: ORDERTRADE
     source_table: TRADE_BOOK_HNX
     source_column: null
-    comment: Chỉ có ở HOSE — HNX không có field này.
+    comment: Chỉ có ở HOSE — HNX không có field này. Không áp dụng cho ORDERTRADE.TRADE_BOOK_HNX — thuộc tính không có dữ liệu nguồn ở source này (nullable placeholder cho shared entity).
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
     etl_derived_value: null
 
@@ -466,7 +466,7 @@ attributes:
     source_system: ORDERTRADE
     source_table: TRADE_BOOK_HNX
     source_column: null
-    comment: Chỉ có ở HOSE — HNX không có field này.
+    comment: Chỉ có ở HOSE — HNX không có field này. Không áp dụng cho ORDERTRADE.TRADE_BOOK_HNX — thuộc tính không có dữ liệu nguồn ở source này (nullable placeholder cho shared entity).
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
     etl_derived_value: null
 
@@ -494,7 +494,7 @@ attributes:
     source_system: ORDERTRADE
     source_table: TRADE_BOOK_HNX
     source_column: null
-    comment: Chỉ có ở HOSE — HNX không có field này.
+    comment: Chỉ có ở HOSE — HNX không có field này. Không áp dụng cho ORDERTRADE.TRADE_BOOK_HNX — thuộc tính không có dữ liệu nguồn ở source này (nullable placeholder cho shared entity).
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
     etl_derived_value: null
 
@@ -508,7 +508,7 @@ attributes:
     source_system: ORDERTRADE
     source_table: TRADE_BOOK_HNX
     source_column: null
-    comment: Chỉ có ở HOSE — HNX không có field này.
+    comment: Chỉ có ở HOSE — HNX không có field này. Không áp dụng cho ORDERTRADE.TRADE_BOOK_HNX — thuộc tính không có dữ liệu nguồn ở source này (nullable placeholder cho shared entity).
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
     etl_derived_value: null
 
@@ -522,7 +522,7 @@ attributes:
     source_system: ORDERTRADE
     source_table: TRADE_BOOK_HNX
     source_column: ORDERTRADE.TRADE_BOOK_HNX.SELL_ORDER_RECEPTION_NUMBER
-    comment: "FK target: securities_order.securities_order_id. Hash: hash_id('ORDERTRADE.ORDER_BOOK_HNX', sell_order_reception_no). nullable=true — ETL best-effort resolve trong batch ngày (quyết định Q7 HLD)."
+    comment: "FK target: securities_order.securities_order_id. Hash: hash_id('ORDERTRADE.ORDER_BOOK_HNX', SELL_ORDER_RECEPTION_NUMBER). nullable=true — ETL best-effort resolve trong batch ngày (quyết định Q7 HLD)."
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
     etl_derived_value: null
 
@@ -564,7 +564,7 @@ attributes:
     source_system: ORDERTRADE
     source_table: TRADE_BOOK_HNX
     source_column: null
-    comment: Chỉ có ở HOSE — HNX không có field này.
+    comment: Chỉ có ở HOSE — HNX không có field này. Không áp dụng cho ORDERTRADE.TRADE_BOOK_HNX — thuộc tính không có dữ liệu nguồn ở source này (nullable placeholder cho shared entity).
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
     etl_derived_value: null
 
@@ -578,7 +578,7 @@ attributes:
     source_system: ORDERTRADE
     source_table: TRADE_BOOK_HNX
     source_column: null
-    comment: Lưu raw tại Atomic — masking quyết định ở lớp truy cập (quyết định Q4 HLD). Chỉ có ở HOSE — HNX không có field này.
+    comment: Lưu raw tại Atomic — masking quyết định ở lớp truy cập (quyết định Q4 HLD). Chỉ có ở HOSE — HNX không có field này. Không áp dụng cho ORDERTRADE.TRADE_BOOK_HNX — thuộc tính không có dữ liệu nguồn ở source này (nullable placeholder cho shared entity).
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
     etl_derived_value: null
 
@@ -606,12 +606,12 @@ attributes:
     source_system: ORDERTRADE
     source_table: TRADE_BOOK_HNX
     source_column: null
-    comment: Chỉ có ở HOSE — HNX không có field này.
+    comment: Chỉ có ở HOSE — HNX không có field này. Không áp dụng cho ORDERTRADE.TRADE_BOOK_HNX — thuộc tính không có dữ liệu nguồn ở source này (nullable placeholder cho shared entity).
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
     etl_derived_value: null
 
   - name: Sell Client House Classification Code
-    physical_name: sell_client_house_classification_code
+    physical_name: sell_client_house_cl_code
     business_meaning: Lệnh bán của khách hàng hay tự doanh.
     data_domain: Classification Value
     data_type: string
@@ -625,7 +625,7 @@ attributes:
     etl_derived_value: null
 
   - name: Sell Investor Type Code
-    physical_name: sell_investor_type_code
+    physical_name: sell_investor_tp_code
     business_meaning: Phân loại nhà đầu tư bán theo loại hình tổ chức/cá nhân (raw từ HNX).
     data_domain: Classification Value
     data_type: string
@@ -639,7 +639,7 @@ attributes:
     etl_derived_value: null
 
   - name: Sell Foreign Investor Type Code
-    physical_name: sell_foreign_investor_type_code
+    physical_name: sell_foreign_investor_tp_code
     business_meaning: Phân loại loại hình nhà đầu tư nước ngoài tham gia giao dịch bán.
     data_domain: Classification Value
     data_type: string
@@ -690,7 +690,7 @@ attributes:
     source_system: ORDERTRADE
     source_table: TRADE_BOOK_HNX
     source_column: null
-    comment: Chỉ có ở HOSE — HNX không có field này.
+    comment: Chỉ có ở HOSE — HNX không có field này. Không áp dụng cho ORDERTRADE.TRADE_BOOK_HNX — thuộc tính không có dữ liệu nguồn ở source này (nullable placeholder cho shared entity).
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
     etl_derived_value: null
 
@@ -704,7 +704,7 @@ attributes:
     source_system: ORDERTRADE
     source_table: TRADE_BOOK_HNX
     source_column: null
-    comment: Chỉ có ở HOSE — HNX không có field này.
+    comment: Chỉ có ở HOSE — HNX không có field này. Không áp dụng cho ORDERTRADE.TRADE_BOOK_HNX — thuộc tính không có dữ liệu nguồn ở source này (nullable placeholder cho shared entity).
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
     etl_derived_value: null
 
@@ -737,7 +737,7 @@ attributes:
     etl_derived_value: null
 
   - name: Sell Order Action Type Code
-    physical_name: sell_order_action_type_code
+    physical_name: sell_order_action_tp_code
     business_meaning: Loại hành động sửa/hủy của lệnh bên bán.
     data_domain: Classification Value
     data_type: string
@@ -751,7 +751,7 @@ attributes:
     etl_derived_value: null
 
   - name: Sell Order Type Code
-    physical_name: sell_order_type_code
+    physical_name: sell_order_tp_code
     business_meaning: Loại lệnh của phía bán.
     data_domain: Classification Value
     data_type: string
@@ -779,7 +779,7 @@ attributes:
     etl_derived_value: null
 
   - name: Sell Quote Request Type Code
-    physical_name: sell_quote_request_type_code
+    physical_name: sell_quote_request_tp_code
     business_meaning: Mã loại yêu cầu báo giá của bên bán (HNX RFQ).
     data_domain: Classification Value
     data_type: string
@@ -793,7 +793,7 @@ attributes:
     etl_derived_value: null
 
   - name: Buy Order Action Type Code
-    physical_name: buy_order_action_type_code
+    physical_name: buy_order_action_tp_code
     business_meaning: Loại hành động sửa/hủy của lệnh bên mua.
     data_domain: Classification Value
     data_type: string
@@ -807,7 +807,7 @@ attributes:
     etl_derived_value: null
 
   - name: Buy Order Type Code
-    physical_name: buy_order_type_code
+    physical_name: buy_order_tp_code
     business_meaning: Loại lệnh mua.
     data_domain: Classification Value
     data_type: string
@@ -835,7 +835,7 @@ attributes:
     etl_derived_value: null
 
   - name: Buy Quote Request Type Code
-    physical_name: buy_quote_request_type_code
+    physical_name: buy_quote_request_tp_code
     business_meaning: Mã loại yêu cầu báo giá của bên mua (HNX RFQ).
     data_domain: Classification Value
     data_type: string

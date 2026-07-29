@@ -23,7 +23,7 @@ ldm:
 
 attributes:
   - name: Securities Company Periodic Report Id
-    physical_name: sc_periodic_report_id
+    physical_name: sc_periodic_rpt_id
     business_meaning: Khóa đại diện (surrogate key).
     data_domain: Surrogate Key
     data_type: string
@@ -37,7 +37,7 @@ attributes:
     etl_derived_value: null
 
   - name: Securities Company Periodic Report Code
-    physical_name: sc_periodic_report_code
+    physical_name: sc_periodic_rpt_code
     business_meaning: Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.
     data_domain: Text
     data_type: string
@@ -368,7 +368,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.APPROVED_BY
-    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Cross-source FK (SCMS → IAM). Pending — SCMS lưu NUMBER(10) trong khi IAM.USERS.ID là UUIDv7 (string); chưa xác nhận cơ chế crosswalk/join key giữa 2 hệ thống."
+    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM.USERS', APPROVED_BY) | Chưa xác nhận join key SCMS.SC_FIRM_PERIODIC_REPORT.APPROVED_BY ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
     etl_derived_value: null
 
@@ -382,7 +382,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.APPROVED_BY
-    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Approved By IAM User Id. Cross-source FK (SCMS → IAM), pending crosswalk (xem comment Id)."
+    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Approved By IAM User Id."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
     etl_derived_value: null
 
@@ -396,7 +396,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.SENDER_ID
-    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Cross-source FK (SCMS → IAM). Pending — SCMS lưu NUMBER(10) trong khi IAM.USERS.ID là UUIDv7 (string); chưa xác nhận cơ chế crosswalk/join key giữa 2 hệ thống."
+    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM.USERS', SENDER_ID) | Chưa xác nhận join key SCMS.SC_FIRM_PERIODIC_REPORT.SENDER_ID ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
     etl_derived_value: null
 
@@ -410,7 +410,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.SENDER_ID
-    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Sender IAM User Id. Cross-source FK (SCMS → IAM), pending crosswalk (xem comment Id)."
+    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Sender IAM User Id."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
     etl_derived_value: null
 
@@ -424,7 +424,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.CANCELLED_BY
-    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Cross-source FK (SCMS → IAM). Pending — SCMS lưu NUMBER(10) trong khi IAM.USERS.ID là UUIDv7 (string); chưa xác nhận cơ chế crosswalk/join key giữa 2 hệ thống."
+    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM.USERS', CANCELLED_BY) | Chưa xác nhận join key SCMS.SC_FIRM_PERIODIC_REPORT.CANCELLED_BY ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
     etl_derived_value: null
 
@@ -438,7 +438,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.CANCELLED_BY
-    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Cancelled By IAM User Id. Cross-source FK (SCMS → IAM), pending crosswalk (xem comment Id)."
+    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Cancelled By IAM User Id."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
     etl_derived_value: null
 

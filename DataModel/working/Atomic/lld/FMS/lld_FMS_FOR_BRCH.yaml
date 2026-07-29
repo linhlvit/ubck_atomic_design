@@ -288,10 +288,9 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.FOR_BRCH.EVENT_TYPE_ID"
-  comment: "FK target: Classification FMS Event Type.Classification FMS Event Type\
-    \ Id. [ĐỔI 2026-07-19] Đổi từ Classification Value đơn sang cặp FK Id/Code theo\
-    \ yêu cầu Data Modeler — EVENT_TYPE nay là entity riêng (giải quyết Tier6 T6-06).\
-    \ Hash: hash_id('FMS.EVENT_TYPE', EVENT_CODE resolve từ ID)."
+  comment: "FK target: cl_fms_event_type.cl_fms_event_tp_id. Cần ETL crosswalk\
+    \ sang FMS.EVENT_TYPE: FOR_BRCH.EVENT_TYPE_ID = EVENT_TYPE.ID để xác nhận ITEM_NAME\
+    \ sau đó hash_id('FMS.EVENT_TYPE', ITEM_NAME) |"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -304,8 +303,8 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.FOR_BRCH.EVENT_TYPE_ID"
-  comment: "Lookup pair: Classification FMS Event Type.Classification FMS Event Type\
-    \ Code. Pair with Event Type Id."
+  comment: "Lookup pair: cl_fms_event_type.cl_fms_event_tp_code. Pair with Event\
+    \ Type Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
