@@ -764,7 +764,49 @@ Nếu FAIL → sửa trước khi trình bày.
 - Nếu FAIL → đổi tên theo Kịch bản C (đồng bộ cả `datamart_attributes.csv`, `datamart_model.yaml`, file Attributes detail, Detail Mapping, SQL Phase 3, HLD.md — dùng `grep -rn "tên_cũ" Datamart/` để tìm hết vị trí cần sửa) → chạy lại TC8 → báo kết quả.
 - **Lưu ý:** nếu entity dùng chung nhiều module (`modules_using` có >1 giá trị), việc đổi tên ảnh hưởng tới mọi module đang reuse — phải rà cả Detail Mapping và HLD của các module khác trong `modules_using`, không chỉ module đang thiết kế.
 
-> **Quy tắc SELF-REVIEW:** Chỉ trình bày file cho human sau khi cả 9 TC (TC1, TC2, TC2b, TC3 gồm cả TC3b, TC4, TC5, TC6, TC7, TC8) đều PASS. Nếu có TC FAIL → sửa → chạy lại TC đó → báo kết quả cuối cùng kèm tóm tắt "Đã sửa X lỗi" trước khi trình bày file.
+**TC9 — `description` không lẫn KPI_ID/chi tiết ETL (bắt buộc dùng Bash tool):**
+
+- Mục đích: `description` chỉ mô tả ý nghĩa nghiệp vụ thuần của cột — không phải chỗ chứa KPI_ID hay chi tiết vận hành ETL (những thứ này thuộc `etl_logic`, hoặc thuộc HLD/Detail Mapping). Bài học thực tế: lỗi này lọt qua review 2 lần trước khi bị TC hóa — module GSDC (2026-07-22, description dạng `"K_GSDC_702 (...) — dùng để COUNT(*) WHERE ... GROUP BY ..."`, 44+48 dòng phải sửa lại) và module GSTT (2026-07-28, Nhóm 1 `fct_stock_portfolio_snpst`, description dạng `"K_GSTT_13 — Tổng KL. Pre-aggregate GROUP BY Symbol/Trade Date, broadcast trên mọi row Index Constituent..."`) — cả 2 lần đều do human tự đọc file và phát hiện lại, không có TC nào tự động bắt trước khi trình bày.
+- Quy tắc: cột `description` không được chứa:
+  1. **KPI_ID** — pattern `K_[A-Z0-9]+_\d+` (VD: `K_GSTT_13`, `K_GSDC_702`).
+  2. **Từ khóa ETL/vận hành** — `GROUP BY`, `pre-aggregate`, `broadcast`, `JOIN`, `WHERE`, `driving table` (không phân biệt hoa/thường).
+  - **Ngoại lệ duy nhất:** dòng `key = PK` được phép giữ cụm ngắn gọn `"PK — Driving: {table}"` (yêu cầu tường minh của Bước 1 — ghi rõ Driving Table trong description của PK/BK) — nhưng không được kèm thêm giải thích SCD/grain/logic dài dòng phía sau trong cùng ô. Dòng `key = BK` không có ngoại lệ này — description của BK chỉ mô tả ý nghĩa khóa nghiệp vụ, không nhắc driving table hay KPI dùng nó.
+- Chạy script sau trên **từng file vừa sinh** (không cần quét toàn master — đây là lỗi cục bộ theo file, khác TC6/TC7/TC8 vốn cần đối chiếu chéo):
+  ```bash
+  python3 -c "
+  import csv, re
+
+  files = ['<path_file_1>', '<path_file_2>', ...]  # danh sách file vừa sinh trong batch này
+
+  kpi_pattern = re.compile(r'K_[A-Z0-9]+_\d+')
+  etl_pattern = re.compile(r'GROUP BY|pre-aggregate|broadcast|JOIN|WHERE|driving table', re.IGNORECASE)
+
+  fails = []
+  for fp in files:
+      with open(fp, encoding='utf-8-sig') as f:
+          rows = list(csv.DictReader(f))
+      for r in rows:
+          desc = r['description']
+          key = r['key']
+          if kpi_pattern.search(desc):
+              fails.append((fp, r['datamart_attribute'], 'chứa KPI_ID', desc))
+              continue
+          # Ngoại lệ: dòng PK được phép có 'PK — Driving: X' — bỏ qua phần này rồi mới check ETL keyword
+          check_str = desc
+          if key == 'PK' and check_str.startswith('PK — Driving:'):
+              check_str = check_str.split('.', 1)[-1] if '.' in check_str else ''
+          if etl_pattern.search(check_str):
+              fails.append((fp, r['datamart_attribute'], 'chứa từ khóa ETL', desc))
+
+  print(f'Tổng lỗi: {len(fails)}')
+  for fp, attr, reason, desc in fails:
+      print(f'  ❌ {fp} | {attr} | {reason} | description={desc!r}')
+  "
+  ```
+- Báo: `✅ TC9 PASS: 0 description vi phạm` hoặc `❌ TC9 FAIL: [danh sách file | attribute | lý do | description hiện tại]`.
+- Nếu FAIL → rút gọn `description` chỉ còn phần mô tả nghiệp vụ thuần (bỏ KPI_ID, bỏ toàn bộ vế sau chứa logic ETL) → chạy lại TC9 → báo kết quả.
+
+> **Quy tắc SELF-REVIEW:** Chỉ trình bày file cho human sau khi cả 10 TC (TC1, TC2, TC2b, TC3 gồm cả TC3b, TC4, TC5, TC6, TC7, TC8, TC9) đều PASS. Nếu có TC FAIL → sửa → chạy lại TC đó → báo kết quả cuối cùng kèm tóm tắt "Đã sửa X lỗi" trước khi trình bày file.
 
 ### Checklist Phase 1
 
@@ -794,7 +836,8 @@ OUTPUT CHECK:
 □ ❌ KHÔNG được tự duyệt thay human, KHÔNG được gộp nhiều file vào 1 câu hỏi approve
 
 ATTRIBUTES CHECK:
-□ Driving Table ghi rõ trong description của PK/BK
+□ Driving Table ghi rõ trong description của PK/BK — ngắn gọn "PK — Driving: {table}", không kèm giải thích SCD/grain dài dòng
+□ description KHÔNG chứa KPI_ID hay từ khóa ETL (GROUP BY/pre-aggregate/broadcast/JOIN/WHERE) — xem TC9
 □ Mọi mapping tra từ entity YAML files trong DataModel/Atomic/ — không đoán
 □ etl_logic_type điền mọi row — kể cả pending row, trừ PK (BK vẫn phải điền)
 □ etl_logic (content) trống chỉ khi key = PK hoặc etl_logic_type = pending — BK KHÔNG được để trống

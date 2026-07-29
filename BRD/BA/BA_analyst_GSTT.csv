@@ -18,160 +18,158 @@ AND StockType NOT IN (
 'D' -- Trái phiếu chuyển đổi HOSE
 )
 AND s.tradingdate = :ngay_gd;";;;;;;Done;Dữ liệu tĩnh
-1;;Dashboard thông tin về danh mục chứng khoán theo dạng bảng số liệu;Ngành;;Dashboard;Chiều;TB;Mã CK;IDS;X;X;;Done;Ngành kinh tế cấp 1 trên IDS;CATEGORIES;c.industry_cd, c.industry_name AS ten_nganh;c.active_flg = 1;"SELECT c.industry_cd, c.industry_name,active_flg,equity_ticker 
-FROM IDS.categories c 
-JOIN IDS.company_profiles cp ON c.id = cp.category_l1_id 
-WHERE c.active_flg = 1 
+1;;Dashboard thông tin về danh mục chứng khoán theo dạng bảng số liệu;Ngành;;Dashboard;Chiều;TB;Mã CK;IDS;X;X;;Done;Ngành kinh tế cấp 1 trên IDS;CATEGORIES;c.industry_cd, c.industry_name AS ten_nganh;c.active_flg = 1;"SELECT c.industry_cd, c.industry_name,active_flg,equity_ticker
+FROM IDS.categories c
+JOIN IDS.company_profiles cp ON c.id = cp.category_l1_id
+WHERE c.active_flg = 1
 ORDER BY c.industry_cd";"-- Lưu ý: Cần xác nhận tên cột industry_cd, industry_name trong bảng IDS.categories
 -- (sheet câu hỏi phân hệ ghi nhận bảng này có 10 ngành IDS, không phải 21 ngành KT)
--- Để Link từ IDS sang MDDS và MSS thì sẽ link qua bảng company_profiles qua mã chứng khoán";"WITH 
--- ── 1. THÔNG TIN MÃ CK + GIÁ + NGÀNH + CHỈ SỐ ────────────────────────── 
-co_phieu AS ( 
-SELECT 
-s.symbol AS ma_ck, 
-s.FloorCode AS floor_code, 
+-- Để Link từ IDS sang MDDS và MSS thì sẽ link qua bảng company_profiles qua mã chứng khoán";"WITH
+-- ── 1. THÔNG TIN MÃ CK + GIÁ + NGÀNH + CHỈ SỐ ──────────────────────────
+co_phieu AS (
+SELECT
+s.symbol AS ma_ck,
+s.FloorCode AS floor_code,
 -- cat.industry_name AS ten_nganh, 
-CASE s.FloorCode 
-WHEN '10' THEN 'HOSE' 
-WHEN '02' THEN 'HNX' 
-WHEN '04' THEN 'UPCOM' 
-WHEN '03' THEN 'FDS' 
-WHEN '06' THEN 'CorpBond' 
-END AS ten_san, 
-CASE 
+CASE s.FloorCode
+WHEN '10' THEN 'HOSE'
+WHEN '02' THEN 'HNX'
+WHEN '04' THEN 'UPCOM'
+WHEN '03' THEN 'FDS'
+WHEN '06' THEN 'CorpBond'
+END AS ten_san,
+CASE
 WHEN s.FloorCode IN ('02', '04', '03') 
-THEN DECODE(s.StockType, '4', 'HĐTL') || DECODE(s.underlyingSymbol, 'GB05', 'TPCP', 'GB10', 'TPCP', s.underlyingSymbol) 
-ELSE NULL 
-END AS loai_phai_sinh, 
-s.underlyingsymbol AS San_pham_phai_sinh, 
-s.MaturityDate AS ngay_dao_han, 
-s.reference AS gia_tham_chieu, 
-s.closePrice AS gia_dong_cua, 
-s.change AS thay_doi_gia, 
-CASE 
-WHEN s.reference IS NULL OR s.reference = 0 THEN NULL 
-ELSE ROUND((s.change / s.reference) * 100, 2) 
-END AS pct_thay_doi, 
-idx.IndexCode AS chi_so, 
-s.TRADINGTIME 
-FROM FSSTRAINING.JAD_STOCKINFOR s 
-LEFT JOIN JAD_CSIDXINFOR idx 
-ON idx.Symbol = s.symbol 
-AND idx.TradingDate = s.tradingdate 
--- LEFT JOIN company_profiles cp 
--- ON cp.stock_code = s.symbol 
--- LEFT JOIN IDS.categories cat 
--- ON cat.id = cp.category_id 
--- AND cat.active_flg = 1 
-WHERE 1=1 
-AND TO_CHAR(TO_DATE(s.tradingdate, 'DD/MM/YYYY'), 'YYYYMMDD') = :ngay_gd 
-AND s.FloorCode IN ('10', '02', '04', '03') 
-AND s.StockType NOT IN ('1') 
--- AND s.symbol = 'ACB' 
--- AND s.STOCKTYPE = '4' 
-), 
+THEN DECODE(s.StockType, '4', 'HĐTL') || DECODE(s.underlyingSymbol, 'GB05', 'TPCP', 'GB10', 'TPCP', s.underlyingSymbol)
+ELSE NULL
+END AS loai_phai_sinh,
+s.underlyingsymbol AS San_pham_phai_sinh,
+s.MaturityDate AS ngay_dao_han,
+s.reference AS gia_tham_chieu,
+s.closePrice AS gia_dong_cua,
+s.change AS thay_doi_gia,
+CASE
+WHEN s.reference IS NULL OR s.reference = 0 THEN NULL
+ELSE ROUND((s.change / s.reference) * 100, 2)
+END AS pct_thay_doi,
+idx.IndexCode AS chi_so,
+s.TRADINGTIME
+FROM FSSTRAINING.JAD_STOCKINFOR s
+LEFT JOIN JAD_CSIDXINFOR idx
+ON idx.Symbol = s.symbol
+AND idx.TradingDate = s.tradingdate
+-- LEFT JOIN company_profiles cp
+-- ON cp.stock_code = s.symbol
+-- LEFT JOIN IDS.categories cat
+-- ON cat.id = cp.category_id
+-- AND cat.active_flg = 1
+WHERE 1=1
+AND TO_CHAR(TO_DATE(s.tradingdate, 'DD/MM/YYYY'), 'YYYYMMDD') = :ngay_gd
+AND s.FloorCode IN ('10', '02', '04', '03')
+AND s.StockType NOT IN ('1')
+-- AND s.symbol = 'ACB'
+-- AND s.STOCKTYPE = '4'
+),
 
--- ── 2. SỔ LỆNH – UNION HOSE + HNX ────────────────────────────────────── 
-so_lenh AS ( 
+-- ── 2. SỔ LỆNH – UNION HOSE + HNX ──────────────────────────────────────
+so_lenh AS (
 
--- HOSE: Market ID thực tế dùng 'STK', 'STO', 'UPX' 
-SELECT 
-t.SYMBOL AS symbol, 
-t.BOARD_TYPE AS board_type, 
-SUM(CASE WHEN t.MARKET_ID IN ('STK') 
-THEN t.EXECUTION_VOLUME ELSE 0 END) AS tong_kl, 
-SUM(CASE WHEN t.MARKET_ID IN ('STK') 
-THEN CAST(REPLACE(t.EXECUTION_VALUE, ',', '') AS DECIMAL(38,2)) 
-ELSE 0 END) AS tong_gt, 
-SUM(CASE WHEN t.MARKET_ID IN ('STK') 
-AND t.BOARD_TYPE IN ('T1','T2','T3','T4','T6') 
-THEN t.EXECUTION_VOLUME ELSE 0 END) AS tong_kl_tt, 
-SUM(CASE WHEN t.MARKET_ID IN ('STK') 
-AND t.BOARD_TYPE IN ('T1','T2','T3','T4','T6') 
-THEN CAST(REPLACE(t.EXECUTION_VALUE, ',', '') AS DECIMAL(38,2)) 
-ELSE 0 END) AS tong_gt_tt, 
-SUM(CASE WHEN t.MARKET_ID IN ('STK') 
-AND t.BUY_FOREIGNER_INVESTOR_TYPE IN ('10','20') 
-THEN t.EXECUTION_VOLUME ELSE 0 END) AS kl_nn_mua, 
-SUM(CASE WHEN t.MARKET_ID IN ('STK') 
-AND t.SELL_FOREIGNER_INVESTOR_TYPE IN ('10','20') 
-THEN t.EXECUTION_VOLUME ELSE 0 END) AS kl_nn_ban 
-FROM krx.trade_book_hose t 
-WHERE 1=1 
+-- HOSE: Market ID thực tế dùng 'STK', 'STO', 'UPX'
+SELECT
+t.SYMBOL AS symbol,
+t.BOARD_TYPE AS board_type,
+SUM(CASE WHEN t.MARKET_ID IN ('STK')
+THEN t.EXECUTION_VOLUME ELSE 0 END) AS tong_kl,
+SUM(CASE WHEN t.MARKET_ID IN ('STK')
+THEN CAST(REPLACE(t.EXECUTION_VALUE, ',', '') AS DECIMAL(38,2))
+ELSE 0 END) AS tong_gt,
+SUM(CASE WHEN t.MARKET_ID IN ('STK')
+AND t.BOARD_TYPE IN ('T1','T2','T3','T4','T6')
+THEN t.EXECUTION_VOLUME ELSE 0 END) AS tong_kl_tt,
+SUM(CASE WHEN t.MARKET_ID IN ('STK')
+AND t.BOARD_TYPE IN ('T1','T2','T3','T4','T6')
+THEN CAST(REPLACE(t.EXECUTION_VALUE, ',', '') AS DECIMAL(38,2))
+ELSE 0 END) AS tong_gt_tt,
+SUM(CASE WHEN t.MARKET_ID IN ('STK')
+AND t.BUY_FOREIGNER_INVESTOR_TYPE IN ('10','20')
+THEN t.EXECUTION_VOLUME ELSE 0 END) AS kl_nn_mua,
+SUM(CASE WHEN t.MARKET_ID IN ('STK')
+AND t.SELL_FOREIGNER_INVESTOR_TYPE IN ('10','20')
+THEN t.EXECUTION_VOLUME ELSE 0 END) AS kl_nn_ban
+FROM krx.trade_book_hose t
+WHERE 1=1
 --and symbol = 'CMWG2522' 
---and board_type = 'G1' 
-AND date_format(to_date(t.TRADE_DATE, 'd/M/yyyy'), 'yyyyMMdd') = :ngay_gd 
-GROUP BY t.SYMBOL, t.BOARD_TYPE 
+--and board_type = 'G1'
+AND date_format(to_date(t.TRADE_DATE, 'd/M/yyyy'), 'yyyyMMdd') = :ngay_gd
+GROUP BY t.SYMBOL, t.BOARD_TYPE
 union all 
-SELECT 
-t.ISSUE_CODE AS symbol, 
-t.BOARD_ID AS BOARD_TYPE, 
-SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX') 
-THEN t.TRADE_QUANTITY ELSE 0 END) AS tong_kl, 
-SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX') 
-THEN CAST(t.TRADE_PRICE AS NUMERIC) * t.TRADE_QUANTITY ELSE 0 END) AS tong_gt, 
-SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX') 
-AND t.BOARD_ID IN ('T1','T2','T3','T4','T6') 
-THEN t.TRADE_QUANTITY ELSE 0 END) AS tong_kl_tt, 
-SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX') 
-AND t.BOARD_ID IN ('T1','T2','T3','T4','T6') 
-THEN CAST(t.TRADE_PRICE AS NUMERIC) * t.TRADE_QUANTITY ELSE 0 END) AS tong_gt_tt, 
-SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX') 
-AND t.BUY_FOREIGN_INVESTOR_TYPE_CODE IN ('10','20') 
-THEN t.TRADE_QUANTITY ELSE 0 END) AS kl_nn_mua, 
-SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX') 
-AND t.SELL_FOREIGN_INVESTOR_TYPE_CODE IN ('10','20') 
-THEN t.TRADE_QUANTITY ELSE 0 END) AS kl_nn_ban 
-from krx.trade_book_hnx t 
+SELECT
+t.ISSUE_CODE AS symbol,
+t.BOARD_ID AS BOARD_TYPE,
+SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX')
+THEN t.TRADE_QUANTITY ELSE 0 END) AS tong_kl,
+SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX')
+THEN CAST(t.TRADE_PRICE AS NUMERIC) * t.TRADE_QUANTITY ELSE 0 END) AS tong_gt,
+SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX')
+AND t.BOARD_ID IN ('T1','T2','T3','T4','T6')
+THEN t.TRADE_QUANTITY ELSE 0 END) AS tong_kl_tt,
+SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX')
+AND t.BOARD_ID IN ('T1','T2','T3','T4','T6')
+THEN CAST(t.TRADE_PRICE AS NUMERIC) * t.TRADE_QUANTITY ELSE 0 END) AS tong_gt_tt,
+SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX')
+AND t.BUY_FOREIGN_INVESTOR_TYPE_CODE IN ('10','20')
+THEN t.TRADE_QUANTITY ELSE 0 END) AS kl_nn_mua,
+SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX')
+AND t.SELL_FOREIGN_INVESTOR_TYPE_CODE IN ('10','20')
+THEN t.TRADE_QUANTITY ELSE 0 END) AS kl_nn_ban
+from krx.trade_book_hnx t
 where 1=1 
 AND t.trade_date = :ngay_gd 
---and t.ISSUE_CODE = 'VN000000VW35' 
-group by t.board_id, t.ISSUE_CODE 
-), 
+--and t.ISSUE_CODE = 'VN000000VW35'
+group by t.board_id, t.ISSUE_CODE
+),
 
--- ── 3. GỘP HOSE + HNX THEO MÃ ─────────────────────────────────────────── 
-so_lenh_agg AS ( 
-SELECT 
-symbol, 
-BOARD_TYPE, 
-SUM(tong_kl) AS tong_kl, 
-SUM(tong_gt) AS tong_gt, 
-SUM(tong_kl_tt) AS tong_kl_tt, 
-SUM(tong_gt_tt) AS tong_gt_tt, 
-SUM(kl_nn_mua) AS kl_nn_mua, 
-SUM(kl_nn_ban) AS kl_nn_ban, 
-SUM(kl_nn_mua) - SUM(kl_nn_ban) AS klnn_rong 
-FROM so_lenh 
-GROUP BY symbol,BOARD_TYPE 
-) 
+-- ── 3. GỘP HOSE + HNX THEO MÃ ───────────────────────────────────────────
+so_lenh_agg AS (
+SELECT
+symbol,
+BOARD_TYPE,
+SUM(tong_kl) AS tong_kl,
+SUM(tong_gt) AS tong_gt,
+SUM(tong_kl_tt) AS tong_kl_tt,
+SUM(tong_gt_tt) AS tong_gt_tt,
+SUM(kl_nn_mua) AS kl_nn_mua,
+SUM(kl_nn_ban) AS kl_nn_ban,
+SUM(kl_nn_mua) - SUM(kl_nn_ban) AS klnn_rong
+FROM so_lenh
+GROUP BY symbol,BOARD_TYPE
+)
 
--- ── KẾT QUẢ CUỐI ───────────────────────────────────────────────────────── 
-SELECT 
-c.symbol, 
-c.ten_san, 
-c.ten_nganh, 
-c.chi_so, 
-c.loai_phai_sinh, 
-c.ngay_dao_han, 
-:ngay_gd AS ngay_gd, 
-c.gia_tham_chieu, 
-c.gia_dong_cua, 
-c.thay_doi_gia, 
-c.pct_thay_doi, 
-COALESCE(sl.tong_kl, 0) AS tong_kl, 
-COALESCE(sl.tong_gt, 0) AS tong_gt, 
-COALESCE(sl.tong_kl_ps, 0) AS tong_kl_phai_sinh, 
-COALESCE(sl.tong_gt_ps, 0) AS tong_gt_phai_sinh, 
-COALESCE(sl.tong_kl_tt, 0) AS tong_kl_thoa_thuan, 
-COALESCE(sl.tong_gt_tt, 0) AS tong_gt_thoa_thuan, 
-COALESCE(sl.klnn_rong, 0) AS klnn_rong 
+-- ── KẾT QUẢ CUỐI ─────────────────────────────────────────────────────────
+SELECT
+c.symbol,
+c.ten_san,
+c.ten_nganh,
+c.chi_so,
+c.loai_phai_sinh,
+c.ngay_dao_han,
+:ngay_gd AS ngay_gd,
+c.gia_tham_chieu,
+c.gia_dong_cua,
+c.thay_doi_gia,
+c.pct_thay_doi,
+COALESCE(sl.tong_kl, 0) AS tong_kl,
+COALESCE(sl.tong_gt, 0) AS tong_gt,
+COALESCE(sl.tong_kl_ps, 0) AS tong_kl_phai_sinh,
+COALESCE(sl.tong_gt_ps, 0) AS tong_gt_phai_sinh,
+COALESCE(sl.tong_kl_tt, 0) AS tong_kl_thoa_thuan,
+COALESCE(sl.tong_gt_tt, 0) AS tong_gt_thoa_thuan,
+COALESCE(sl.klnn_rong, 0) AS klnn_rong
 
-FROM co_phieu c 
-LEFT JOIN so_lenh_agg sl ON sl.symbol = c.symbol 
+FROM co_phieu c
+LEFT JOIN so_lenh_agg sl ON sl.symbol = c.symbol
 
-ORDER BY c.FloorCode, c.symbol; 
-
-
+ORDER BY c.FloorCode, c.symbol;
 
 
 
@@ -186,7 +184,10 @@ ORDER BY c.FloorCode, c.symbol;
 
 
 
-"" 
+
+
+""
+
 
 
 
@@ -599,21 +600,21 @@ FROM IDS.categories c
 WHERE c.active_flg = 1
 ORDER BY c.industry_cd";"-- Lưu ý: Cần xác nhận tên cột industry_cd, industry_name trong bảng IDS.categories
 -- (sheet câu hỏi phân hệ ghi nhận bảng này có 10 ngành IDS, không phải 21 ngành KT)";;;;;Done;Dữ liệu tĩnh
-3;;Dashboard về danh mục chứng khoán theo biểu đồ kỹ thuật;Sàn;;Dashboard;Chiều;Trùng;Mã CK;MDDS;;X;;Done;Thông tin thị trường;JAD_STOCKINFOR;floorCode;;"SELECT DISTINCT 
-s.FloorCode AS san, 
-CASE s.FloorCode 
-WHEN '10' THEN 'HOSE' 
-WHEN '02' THEN 'HNX' 
-WHEN '04' THEN 'UPCOM' 
-WHEN '03' THEN 'FDS' 
-WHEN '06' THEN 'CorpBond' 
-END AS ten_san 
-FROM JAD_STOCKINFOR s 
-WHERE s.tradingdate = :ngay_gd; 
+3;;Dashboard về danh mục chứng khoán theo biểu đồ kỹ thuật;Sàn;;Dashboard;Chiều;Trùng;Mã CK;MDDS;;X;;Done;Thông tin thị trường;JAD_STOCKINFOR;floorCode;;"SELECT DISTINCT
+s.FloorCode AS san,
+CASE s.FloorCode
+WHEN '10' THEN 'HOSE'
+WHEN '02' THEN 'HNX'
+WHEN '04' THEN 'UPCOM'
+WHEN '03' THEN 'FDS'
+WHEN '06' THEN 'CorpBond'
+END AS ten_san
+FROM JAD_STOCKINFOR s
+WHERE s.tradingdate = :ngay_gd;
 
 ";"02-HNX, 04-UPCOM, 10-HOSE, 03-FDS, 06-CorpBond
 FDS: thị trường Phái sinh
-CorpBond: Trái phiếu doanh nghiệp";"with MDDS as 
+CorpBond: Trái phiếu doanh nghiệp";"""with MDDS as 
 ( 
 SELECT 
 s.floorCode san 
@@ -638,18 +639,18 @@ AND TO_CHAR(TO_DATE(s.tradingdate, 'DD/MM/YYYY'), 'YYYYMMDD') = :ngay_gd
 ( 
 SELECT DISTINCT Symbol Ma_chung_khoan, 
 CASE 
-WHEN ""Board Type"" IN ('T1','T2','T3','T4','T6') THEN 'Thỏa thuận' 
+WHEN """"""""Board Type"""""""" IN ('T1','T2','T3','T4','T6') THEN 'Thỏa thuận' 
 END AS phuong_thuc_gd, 
-""Board Type"" AS board_type_code 
+""""""""Board Type"""""""" AS board_type_code 
 FROM TRADE_BOOK_HOSE t 
 WHERE 1=1 
 and t.[Trade Date] BETWEEN :tu_ngay AND :den_ngay 
 UNION 
 SELECT DISTINCT Issue Code Ma_chung_khoan, 
 CASE 
-WHEN ""Board ID"" IN ('T1','T2','T3','T4','T6') THEN 'Thỏa thuận' 
+WHEN """"""""Board ID"""""""" IN ('T1','T2','T3','T4','T6') THEN 'Thỏa thuận' 
 END AS phuong_thuc_gd, 
-""Board ID"" AS board_type_code 
+""""""""Board ID"""""""" AS board_type_code 
 FROM TRADE_BOOK_HNX t 
 WHERE 1=1 
 and t.[Trade Date] BETWEEN :tu_ngay AND :den_ngay; 
@@ -659,7 +660,6 @@ and t.[Trade Date] BETWEEN :tu_ngay AND :den_ngay;
 SELECT c.industry_cd, c.industry_name,equity_ticker 
 FROM IDS.categories c 
 JOIN ids.COMPANY_PROFILES cp ON cp.CATEGORY_L1_ID = c.id 
-WHERE c.active_flg = 1 
 ORDER BY c.industry_cd 
 ) 
 
@@ -704,23 +704,22 @@ OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('60'))
 OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('21'))) 
 GROUP BY equity_ticker 
 ), 
-VCSH AS 
+Doanh_thu AS 
 ( 
-SELECT 
-SUM(d.data_value) AS vcsh 
---, equity_ticker MCK 
+SELECT SUM(d.data_value) AS doanh_thu 
 FROM IDS.data d 
 Join IDS.company_profiles cp ON d.company_profile_id = cp.id 
 JOIN IDS.report_catalog rc ON d.report_catalog_id=rc.id 
 JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id 
 JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id 
--- JOIN IDS.company_data cd ON d.company_data_id=cd.id 
+JOIN IDS.company_data cd ON d.company_data_id=cd.id 
+JOIN IDS.company_profiles cp ON cp.id = d.COMPANY_PROFILE_ID 
 WHERE rc2.col_desc = '1' 
-AND rc.report_cd LIKE 'BCDKT%' 
--- AND cd.report_year=:year AND cd.report_quarter=:quarter 
-AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('400')) 
-OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('400')) 
-OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('500'))) 
+AND rc.report_cd LIKE 'BCKQKD%' 
+AND cd.report_year=:year AND cd.report_quarter=:quarter 
+AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('10')) 
+OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('10')) 
+OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('03'))) 
 GROUP BY equity_ticker 
 ) 
 select 
@@ -730,8 +729,43 @@ Gia_mo_cua
 , Gia_dong_cua 
 , Gia_tham_chieu 
 , tong_kl_khop 
+,a.ma_chung_khoan 
 from MDDS a 
-join Khoi_luong_giao_dich b on a.ma_chung_khoan = b.ma_chung_khoan";;;;Done;Dữ liệu tĩnh
+join Khoi_luong_giao_dich b on a.ma_chung_khoan = b.ma_chung_khoan 
+join VCSH on VCSH.MCK = a.ma_chung_khoan 
+join LNST on LNST.equity_ticker = a.ma_chung_khoan 
+join NGANH on NGANH.equity_ticker = a.ma_chung_khoan 
+join Phuong_thuc_khop_lenh on Phuong_thuc_khop_lenh.Ma_chung_khoan = a.ma_chung_khoan 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"" 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+";;;;Done;Dữ liệu tĩnh
 3;;Dashboard về danh mục chứng khoán theo biểu đồ kỹ thuật;Mã CK cổ phiếu;;Dashboard;Chiều;Trùng;Mã CK;MDDS;;X;;Done;Thông tin thị trường;JAD_STOCKINFOR;symbol;"AND s.STOCKTYPE <> '1'
 AND s.FLOORCODE in ('04','10','03','02') 
 AND s.MARKETID Not IN ('BDO', 'HCX')";"""SELECT DISTINCT 
@@ -871,12 +905,12 @@ OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('60'))
 OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('21')))";Join qua từ company_profiles với Id và company_profile_id;;;;Done;Dữ liệu tĩnh;
 4;;Dashboard về danh mục trái phiếu theo biểu đồ kỹ thuật;Mã trái phiếu;;Dashboard;Chiều;Trùng;Mã CK;MDDS;;X;;Done;Thông tin thị trường;JAD_STOCKINFOR;symbol;"AND s.STOCKTYPE = '1' 
 AND s.FLOORCODE in ('04','10','03','02') 
-AND s.MARKETID IN ('BDO', 'HCX')";"""SELECT DISTINCT s.symbol AS ma_tp 
-FROM JAD_STOCKINFOR s 
-WHERE 1=1 
-AND s.STOCKTYPE = '1' 
+AND s.MARKETID IN ('BDO', 'HCX')";"""SELECT DISTINCT s.symbol AS ma_tp
+FROM JAD_STOCKINFOR s
+WHERE 1=1
+AND s.STOCKTYPE = '1'
 AND s.FLOORCODE in ('04','10','03','02') 
-AND s.MARKETID IN ('BDO', 'HCX') 
+AND s.MARKETID IN ('BDO', 'HCX')
 ORDER BY s.symbol;""";;"With MDDS as 
 ( 
 SELECT 
@@ -894,7 +928,9 @@ FROM JAD_STOCKINFOR s
 JOIN JAD_CSIDXINFOR idx 
 ON idx.Symbol = s.symbol 
 WHERE 1=1 
-AND TO_CHAR(TO_DATE(s.tradingdate, 'DD/MM/YYYY'), 'YYYYMMDD') = :ngay_gd 
+AND TO_CHAR(TO_DATE(s.tradingdate, 'DD/MM/YYYY'), 'YYYYMMDD') = :Ngay_gd 
+AND s.FloorCode IN ('10', '02', '04', '03') 
+AND s.StockType IN ('1') 
 ) 
 , Khoi_luong_giao_dich 
 ( 
@@ -919,43 +955,6 @@ and Issue Code =:ma_ck
 and Market ID in ('UPX','STX','STK') 
 --GROUP BY t.Symbol 
 ) 
-, 
-LNST AS 
-( 
-SELECT SUM(d.data_value) AS lnst, equity_ticker 
-FROM IDS.data d 
-JOIN IDS.report_catalog rc ON d.report_catalog_id=rc.id 
-JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id 
-JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id 
-JOIN IDS.company_profiles cp ON cp.id = d.COMPANY_PROFILE_ID 
--- JOIN IDS.company_data cd ON d.company_data_id=cd.id 
-WHERE rc2.col_desc = '1' 
-AND rc.report_cd LIKE 'BCKQKD%' 
--- AND cd.report_year=:year AND cd.report_quarter=:quarter 
-AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('60')) 
-OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('60')) 
-OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('21'))) 
-GROUP BY equity_ticker 
-), 
-VCSH AS 
-( 
-SELECT 
-SUM(d.data_value) AS vcsh 
---, equity_ticker MCK 
-FROM IDS.data d 
-Join IDS.company_profiles cp ON d.company_profile_id = cp.id 
-JOIN IDS.report_catalog rc ON d.report_catalog_id=rc.id 
-JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id 
-JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id 
--- JOIN IDS.company_data cd ON d.company_data_id=cd.id 
-WHERE rc2.col_desc = '1' 
-AND rc.report_cd LIKE 'BCDKT%' 
--- AND cd.report_year=:year AND cd.report_quarter=:quarter 
-AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('400')) 
-OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('400')) 
-OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('500'))) 
-GROUP BY equity_ticker 
-) 
 select 
 Gia_mo_cua 
 , Gia_cao_nhat 
@@ -963,13 +962,24 @@ Gia_mo_cua
 , Gia_dong_cua 
 , Gia_tham_chieu 
 , tong_kl_khop 
+, ma_chung_khoan 
 from MDDS a 
-join Khoi_luong_giao_dich b on a.ma_chung_khoan = b.ma_chung_khoan"" 
+join Khoi_luong_giao_dich b on a.ma_chung_khoan = b.ma_chung_khoan 
 
 
 
 
 
+
+
+
+
+
+
+
+
+
+"" 
 
 
 
@@ -1030,135 +1040,182 @@ Execution - Volume: Khối lượng khớp lệnh
 Trade_HNX:
 Trade quantity: Khối lượng giao dịch";;;;Done;Dữ liệu tĩnh;
 5;;Dashboard về theo dõi diễn biến các chỉ số thị trường (Index);Chỉ số;;Dashboard;Chiều;TB;Danh mục chỉ số - theo giờ;MDDS;;X;X;Done;Thông tin thị trường;JAD_MARKETINFOR;marketCode;;;-Cần sửa lại nguồn của dashboard này;;;;;Chưa có sql;Dữ liệu tĩnh
-5;;Dashboard về theo dõi diễn biến các chỉ số thị trường (Index);Theo giờ trong ngày;;Dashboard;Chiều;TB;Danh mục chỉ số - theo giờ;MDDS;;X;;Done;;;;;;;"-----CHỉ số cuối ngày 
-WITH Gia_chi_so AS
-(
-SELECT
-MARKETID,
-MARKETCODE, 
-MARKETINDEX AS Gia_dong_cua,
-HIGH AS Gia_cao_nhat,
-LOW AS Gia_thap_nhat,
-ADVANCES AS So_luong_ma_tang,
-DECLINES AS So_luong_ma_giam,
-NOCHANGE AS So_luong_ma_dung_gia,
-NUMBEROFCE AS So_luong_ma_tang_tran,
-NUMBEROFFL AS So_luong_ma_giam_san,
-INDEXTIME,
-prev_index AS MARKETINDEX1,
-totalVolume tong_khoi_luong,
-totalValue tong_gia_tri,
-PT_TOTAL_VALUE tong_gia_tri_thoa_thuan,
-PT_TOTAL_TRADE tong_khoi_luong_thoa_thuan,
-MARKETINDEX - prev_index AS closeIndexChange,
-ROUND(
-(MARKETINDEX - prev_index) / NULLIF(prev_index, 0) * 100,
-2
-) AS closeIndexChangePrent
-FROM
-(
-SELECT
-jm.MARKETID,
-jm.MARKETINDEX,
-jm.HIGH,
-jm.LOW,
-jm.ADVANCES,
-jm.DECLINES,
-jm.NOCHANGE,
-jm.NUMBEROFCE,
-jm.NUMBEROFFL,
-jm.INDEXTIME,
-jm.tradingdate,
-jm.MARKETCODE,
-jm.totalVolume,
-jm.totalValue,
-jm.PT_TOTAL_VALUE,
-jm.PT_TOTAL_TRADE,
-LAG(MARKETINDEX) OVER (
-PARTITION BY marketCode
-ORDER BY tradingdate
-) AS prev_index,
-ROW_NUMBER() OVER (
-PARTITION BY tradingdate, marketCode
-ORDER BY indexTime DESC
-) AS rn
-FROM JAD_JAD_MARKETINFOR jm
-)
-WHERE 1=1 
-AND MARKETID = '10'
-AND TO_CHAR(TO_DATE(tradingdate, 'DD/MM/YYYY'), 'YYYYMMDD') = 20200610
--- AND rn = 1
-ORDER BY indexTime DESC
-)
-, HNX as 
-(
-SELECT
-t.""Trade date"" AS ngay_gd,
-idx.""INDEXCODE"" AS INDEXCODE,
-SUM(CASE WHEN t.""Buy Foreign Investor Type Code"" IN ('10','20')
-THEN t.""Trade quantity"" ELSE 0 END) AS kl_nn_mua,
-SUM(CASE WHEN t.""Sell Foreign Investor Type Code"" IN ('10','20')
-THEN t.""Trade quantity"" ELSE 0 END) AS kl_nn_ban
-FROM MSS_TRADE_HNX t
-JOIN JAD_JAD_CSIDXINFOR idx
-ON t.""Issue Code"" = idx.symbol
-WHERE t.""Trade date"" = 20200610
-AND t.""Market ID"" IN ('STX','UPX')
-GROUP BY t.""Trade date"", idx.""INDEXCODE""
-ORDER BY idx.""INDEXCODE""
-)
-,Hose as 
-(
-SELECT
-t.""Trade Date"" AS ngay_gd,
-idx.""INDEXCODE"" INDEXCODE,
-SUM(CASE WHEN t.""Buy - Foreigner Investor type"" IN ('10','20')
-THEN t.""Execution - Volume"" ELSE 0 END) AS kl_nn_mua,
-SUM(CASE WHEN t.""Sell - Foreigner Investor type"" IN ('10','20')
-THEN t.""Execution - Volume"" ELSE 0 END) AS kl_nn_ban
-FROM MSS_TRADE_HOSE t
-JOIN JAD_JAD_CSIDXINFOR idx
-ON t.""Symbol"" = idx.symbol
-WHERE TO_CHAR(TO_DATE(t.""Trade Date"", 'DD/MM/YYYY'), 'YYYYMMDD') = 20200610
-AND t.""Market ID"" = 'STO'
-GROUP BY t.""Trade Date"", idx.""INDEXCODE""
-ORDER BY idx.""INDEXCODE""
-)
-,KLNN AS 
-(
+5;;Dashboard về theo dõi diễn biến các chỉ số thị trường (Index);Theo giờ trong ngày;;Dashboard;Chiều;TB;Danh mục chỉ số - theo giờ;MDDS;;X;;Done;;JAD_MARKETINFOR;indextime;;;;"-----CHỉ số cuối ngày 
+WITH Gia_chi_so AS 
+( 
 SELECT 
-INDEXCODE,
-kl_nn_mua,
-kl_nn_ban,
-(kl_nn_mua - kl_nn_ban) AS kl_nn_rong
-FROM (SELECT * FROM HNX UNION ALL SELECT * FROM HOSE)
-)
-SELECT a.*,b.* FROM Gia_chi_so a
-JOIN KLNN b ON a.MARKETCODE = b.INDEXCODE
+MARKETID, 
+MARKETCODE AS Chi_so, 
+MARKETINDEX AS Gia_dong_cua, 
+HIGH AS Gia_cao_nhat, 
+LOW AS Gia_thap_nhat, 
+ADVANCES AS So_luong_ma_tang, 
+DECLINES AS So_luong_ma_giam, 
+NOCHANGE AS So_luong_ma_dung_gia, 
+NUMBEROFCE AS So_luong_ma_tang_tran, 
+NUMBEROFFL AS So_luong_ma_giam_san, 
+INDEXTIME, 
+prev_index AS MARKETINDEX1, 
+totalVolume tong_khoi_luong, 
+totalValue tong_gia_tri, 
+PT_TOTAL_VALUE tong_gia_tri_thoa_thuan, 
+PT_TOTAL_TRADE tong_khoi_luong_thoa_thuan, 
+MARKETINDEX - NVL(prev_index,0) AS closeIndexChange, 
+ROUND( 
+(MARKETINDEX - NVL(prev_index, 0)) / NULLIF(NVL(prev_index, 0), 0) * 100, 
+2 
+) AS closeIndexChangePrent 
+FROM 
+( 
+SELECT 
+jm.MARKETID, 
+jm.MARKETINDEX, 
+jm.HIGH, 
+jm.LOW, 
+jm.ADVANCES, 
+jm.DECLINES, 
+jm.NOCHANGE, 
+jm.NUMBEROFCE, 
+jm.NUMBEROFFL, 
+jm.INDEXTIME, 
+jm.tradingdate, 
+jm.MARKETCODE, 
+jm.totalVolume, 
+jm.totalValue, 
+jm.PT_TOTAL_VALUE, 
+jm.PT_TOTAL_TRADE, 
+LAG(MARKETINDEX) OVER ( 
+PARTITION BY marketCode 
+ORDER BY TO_DATE(tradingdate, 'DD/MM/YYYY') ASC, INDEXTIME ASC 
+) AS prev_index, 
+ROW_NUMBER() OVER ( 
+PARTITION BY tradingdate, marketCode 
+ORDER BY indexTime DESC 
+) AS rn 
+FROM JAD_MARKETINFOR jm 
+WHERE 1=1 
+AND TO_CHAR(TO_DATE(tradingdate, 'DD/MM/YYYY'), 'YYYYMMDD') = :ngay_gd 
+AND MARKETID = '100' 
+) 
+WHERE 1=1 
+AND MARKETID = '100' 
+AND TO_CHAR(TO_DATE(tradingdate, 'DD/MM/YYYY'), 'YYYYMMDD') = :ngay_gd 
+AND rn = 1 
+) 
+, HNX AS 
+( 
+SELECT 
+t.TRADE_DATE AS ngay_gd, 
+idx.INDEXCODE AS INDEXCODE, 
+SUM(CASE WHEN t.BUY_FOREIGN_INVESTOR_TYPE_CODE IN ('10','20') 
+THEN t.TRADE_QUANTITY ELSE 0 END) AS kl_nn_mua, 
+SUM(CASE WHEN t.SELL_FOREIGN_INVESTOR_TYPE_CODE IN ('10','20') 
+THEN t.TRADE_QUANTITY ELSE 0 END) AS kl_nn_ban 
+FROM krx.trade_book_hnx t 
+JOIN JAD_CSIDXINFOR idx 
+ON t.ISSUE_CODE = idx.SYMBOL 
+WHERE t.TRADE_DATE = :ngay_gd 
+AND t.MARKET_ID IN ('STX','UPX') 
+GROUP BY t.TRADE_DATE, idx.INDEXCODE 
+) 
+,Hose AS 
+( 
+SELECT 
+t.TRADE_DATE AS ngay_gd, 
+idx.INDEXCODE AS INDEXCODE, 
+SUM(CASE WHEN t.BUY_FOREIGNER_INVESTOR_TYPE IN ('10','20') 
+THEN t.EXECUTION_VOLUME ELSE 0 END) AS kl_nn_mua, 
+SUM(CASE WHEN t.SELL_FOREIGNER_INVESTOR_TYPE IN ('10','20') 
+THEN t.EXECUTION_VOLUME ELSE 0 END) AS kl_nn_ban 
+FROM krx.trade_book_hose t 
+JOIN JAD_CSIDXINFOR idx 
+ON t.SYMBOL = idx.SYMBOL 
+WHERE 1=1 
+AND date_format(to_date(t.TRADE_DATE, 'd/M/yyyy'), 'yyyyMMdd') = :ngay_gd 
+AND t.MARKET_ID = 'STK' 
+GROUP BY t.TRADE_DATE, idx.INDEXCODE 
+) 
+, so_co_phieu_luu_hanh AS 
+( 
+SELECT 
+idx.INDEXCODE AS INDEXCODE, 
+t.`Khối lượng chứng khoán đang lưu hành` AS so_luong_cp_luu_hanh 
+FROM `BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành` t 
+JOIN JAD_CSIDXINFOR idx 
+ON t.MCK = idx.SYMBOL 
+WHERE t.`Mã chứng khoán` = 'Cổ phiếu' 
+) 
+,KLNN AS 
+( 
+SELECT 
+INDEXCODE, 
+kl_nn_mua, 
+kl_nn_ban, 
+(kl_nn_mua - kl_nn_ban) AS kl_nn_rong 
+FROM (SELECT * FROM HNX UNION ALL SELECT * FROM HOSE) 
+) 
+,Von_hoa AS 
+( 
+SELECT 
+so_co_phieu_luu_hanh.INDEXCODE AS INDEXCODE, 
+(a.Gia_dong_cua * so_co_phieu_luu_hanh.so_luong_cp_luu_hanh) AS von_hoa 
+FROM so_co_phieu_luu_hanh 
+JOIN Gia_chi_so a 
+ON so_co_phieu_luu_hanh.INDEXCODE = a.MARKETCODE 
+) 
+
+SELECT a.*, b.*, c.von_hoa 
+FROM Gia_chi_so a 
+JOIN KLNN b ON a.MARKETCODE = b.INDEXCODE 
+JOIN Von_hoa c ON c.INDEXCODE = a.MARKETCODE; 
 --------CHỉ số theo timeline 
-SELECT
-marketId,
-marketIndex,
-COALESCE(
-totalValue - prevTotalValue,
-0
-) AS currentTradingValue,
-indexTime
-FROM (
-SELECT
-marketId,
-marketIndex,
-LAG(totalValue) OVER (
-PARTITION BY marketCode
-ORDER BY indexTime
-) AS prevTotalValue,
-indexTime,
-totalValue
-FROM JAD_JAD_MARKETINFOR a
-WHERE a.marketId = '10'
-)
-WHERE marketId = '10'
-ORDER BY indexTime;
+SELECT 
+marketId, 
+marketIndex, 
+COALESCE( 
+totalValue - prevTotalValue, 
+0 
+) AS currentTradingValue, 
+indexTime 
+FROM ( 
+SELECT 
+marketId, 
+marketIndex, 
+LAG(totalValue) OVER ( 
+PARTITION BY marketCode 
+ORDER BY indexTime 
+) AS prevTotalValue, 
+indexTime, 
+totalValue 
+FROM JAD_JAD_MARKETINFOR a 
+WHERE a.marketId = '10' 
+) 
+WHERE marketId = '10' 
+ORDER BY indexTime; 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"" 
+
+
+
+
 ";;;;Chưa có sql;Dữ liệu tĩnh
 5;;Dashboard về theo dõi diễn biến các chỉ số thị trường (Index);Giá đóng cửa;;Dashboard;Chỉ tiêu cơ sở;TB;Danh mục chỉ số - theo giờ;MDDS;;X;X;Done;Thông tin thị trường;JAD_MARKETINFOR;marketIndex;marketIndex (MAX indexTime);"-- Lấy marketIndex tại thời điểm cuối ngày
 SELECT marketCode, tradingdate, marketIndex AS diem_dong_cua,
@@ -1196,11 +1253,11 @@ FROM JAD_MARKETINFOR
 WHERE tradingdate = :ngay_gd
 ) WHERE rn = 1
 """;giá cao nhất đến thời điểm xem;;;;Chưa có sql;Dữ liệu tĩnh;
-5;;Dashboard về theo dõi diễn biến các chỉ số thị trường (Index);Số lượng mã tăng;;Dashboard;Chỉ tiêu cơ sở;TB;Danh mục chỉ số - theo giờ;MDDS;;;;Done;Thông tin thị trường;JAD_MARKETINFOR;advances;;"""SELECT 
-i.IndexCode, 
-i.TradingDate, 
-i.advances AS so_ma_tang 
-FROM JAD_MARKETINFOR i 
+5;;Dashboard về theo dõi diễn biến các chỉ số thị trường (Index);Số lượng mã tăng;;Dashboard;Chỉ tiêu cơ sở;TB;Danh mục chỉ số - theo giờ;MDDS;;;;Done;Thông tin thị trường;JAD_MARKETINFOR;advances;;"""SELECT
+i.IndexCode,
+i.TradingDate,
+i.advances AS so_ma_tang
+FROM JAD_MARKETINFOR i
 WHERE i.TradingDate = :ngay_gd;""";Chỉ có chỉ số thị trường;;;;Chưa có sql;Dữ liệu tĩnh;
 5;;Dashboard về theo dõi diễn biến các chỉ số thị trường (Index);Số lượng mã giảm;;Dashboard;Chỉ tiêu cơ sở;TB;Danh mục chỉ số - theo giờ;MDDS;;;;Done;Thông tin thị trường;JAD_MARKETINFOR;declines;;"""SELECT
 i.IndexCode,
@@ -1654,106 +1711,135 @@ FROM JAD_MARKETINFOR
 WHERE tradingdate = :ngay_gd 
 ) 
 WHERE rn = 1 
+) 
+, 
+Gia_dong_cua AS 
+( 
+SELECT 
+closePrice AS gia_dong_cua, 
+change, 
+tradingdate, 
+symbol 
+FROM JAD_STOCKINFOR 
 ), 
 SCPLH AS ( 
-SELECT cs.IndexCode, SUM(a.Khối lượng chứng khoán đang lưu hành) AS KLLH 
-FROM BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành a 
-JOIN JAD_CSIDXINFOR cs ON a.MCK = cs.Symbol 
+SELECT 
+a.ma_ck, 
+SUM(a.`Khối lượng chứng khoán đang lưu hành`) AS KLLH 
+FROM `BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành` a 
 WHERE a.Loai_CK = 'Co phieu' 
-GROUP BY cs.IndexCode 
+GROUP BY a.ma_ck 
 ), 
 LNST AS 
 ( 
-SELECT SUM(d.data_value) AS lnst, equity_ticker 
+SELECT 
+SUM(x.data_value) AS lnst, 
+x.equity_ticker 
+FROM ( 
+SELECT 
+d.data_value, 
+cp.equity_ticker, 
+cd.report_year, 
+cd.report_quarter, 
+ROW_NUMBER() OVER ( 
+PARTITION BY cp.equity_ticker 
+ORDER BY d.report_year DESC, d.report_quarter DESC 
+) AS rn 
 FROM IDS.data d 
-JOIN IDS.report_catalog rc ON d.report_catalog_id=rc.id 
+JOIN IDS.report_catalog rc ON d.report_catalog_id = rc.id 
 JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id 
 JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id 
 JOIN IDS.company_profiles cp ON cp.id = d.COMPANY_PROFILE_ID 
--- JOIN IDS.company_data cd ON d.company_data_id=cd.id 
 WHERE rc2.col_desc = '1' 
 AND rc.report_cd LIKE 'BCKQKD%' 
--- AND cd.report_year=:year AND cd.report_quarter=:quarter 
-AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('60')) 
-OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('60')) 
-OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('21'))) 
-GROUP BY equity_ticker 
+AND ((rc.enterprise_type_cd = 'dn' AND rr.row_desc IN ('60')) 
+OR (rc.enterprise_type_cd = 'bh' AND rr.row_desc IN ('60')) 
+OR (rc.enterprise_type_cd = 'td' AND rr.row_desc IN ('21'))) 
+) x 
+WHERE x.rn <= 4 
+GROUP BY x.equity_ticker 
 ), 
 VCSH AS 
 ( 
+SELECT * FROM 
+( 
 SELECT 
-SUM(d.data_value) AS vcsh 
-, equity_ticker MCK 
+SUM(d.data_value) AS vcsh, 
+cp.equity_ticker AS MCK, 
+cd.report_year, 
+cd.report_quarter, 
+ROW_NUMBER() OVER ( 
+PARTITION BY cp.equity_ticker 
+ORDER BY d.report_year DESC, d.report_quarter DESC 
+) AS rn 
 FROM IDS.data d 
-Join IDS.company_profiles cp ON d.company_profile_id = cp.id 
-JOIN IDS.report_catalog rc ON d.report_catalog_id=rc.id 
+JOIN IDS.company_profiles cp ON d.company_profile_id = cp.id 
+JOIN IDS.report_catalog rc ON d.report_catalog_id = rc.id 
 JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id 
 JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id 
-JOIN IDS.company_data cd ON d.company_data_id=cd.id 
 WHERE rc2.col_desc = '1' 
 AND rc.report_cd LIKE 'BCDKT%' 
-AND cd.report_year=:year AND cd.report_quarter=:quarter 
-AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('400')) 
-OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('400')) 
-OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('500'))) 
+AND ((rc.enterprise_type_cd = 'dn' AND rr.row_desc IN ('400')) 
+OR (rc.enterprise_type_cd = 'bh' AND rr.row_desc IN ('400')) 
+OR (rc.enterprise_type_cd = 'td' AND rr.row_desc IN ('500'))) 
+GROUP BY cp.equity_ticker, cd.report_year, cd.report_quarter 
+) x 
+WHERE x.rn = 1 
 ), 
-NGANH as 
+NGANH AS 
 ( 
 SELECT c.industry_cd, c.industry_name 
 FROM IDS.categories c 
-JOIN ids.COMPANY_PROFILES cp ON cp.CATEGORY_L1_ID = c.id 
+JOIN IDS.COMPANY_PROFILES cp ON cp.CATEGORY_L1_ID = c.id 
 WHERE c.active_flg = 1 
-ORDER BY c.industry_cd 
 ), 
 Von_hoa AS ( 
+SELECT 
+c.symbol, 
+c.tradingdate, 
+c.gia_dong_cua, 
+s.KLLH, 
+c.gia_dong_cua * s.KLLH AS von_hoa 
+FROM Gia_dong_cua c 
+JOIN SCPLH s ON c.symbol = s.ma_ck 
+), 
+PB_PE AS ( 
+SELECT 
+v.symbol, 
+v.tradingdate, 
+v.gia_dong_cua, 
+v.KLLH, 
+v.von_hoa, 
+vc.vcsh, 
+ln.lnst 
+FROM Von_hoa v 
+JOIN VCSH vc ON v.symbol = vc.MCK 
+JOIN LNST ln ON v.symbol = ln.equity_ticker 
+) 
 SELECT 
 c.marketCode, 
 c.tradingdate, 
 c.diem_dong_cua, 
-s.KLLH, 
-c.diem_dong_cua * s.KLLH AS von_hoa 
-FROM Chi_so c 
-JOIN SCPLH s ON c.marketCode = s.IndexCode 
-), 
-PB_PE AS ( 
-SELECT 
-v.marketCode, 
-v.tradingdate, 
-v.diem_dong_cua, 
-v.KLLH, 
-v.von_hoa, 
-vc.vcsh, 
-ln.lnst, 
--- Giá trị sổ sách = VCSH / KLLH 
-vc.vcsh / NULLIF(v.KLLH, 0) AS gia_tri_so_sach, 
--- EPS = LNST / KLLH 
-ln.lnst / NULLIF(v.KLLH, 0) AS eps, 
--- P/B = Giá đóng cửa / Giá trị sổ sách 
-ROUND( 
-v.diem_dong_cua / NULLIF(vc.vcsh / NULLIF(v.KLLH, 0), 0) 
-, 2) AS pb, 
--- P/E = Giá đóng cửa / EPS 
-ROUND( 
-v.diem_dong_cua / NULLIF(ln.lnst / NULLIF(v.KLLH, 0), 0) 
-, 2) AS pe 
-FROM Von_hoa v 
-JOIN VCSH vc ON v.marketCode = vc.MCK 
-JOIN LNST ln ON v.marketCode = ln.equity_ticker 
-) 
-SELECT 
-marketCode, 
-tradingdate, 
-diem_dong_cua, 
-KLLH, 
-von_hoa, 
-vcsh, 
-lnst, 
-gia_tri_so_sach, 
-eps, 
-pb, 
-pe 
-FROM PB_PE 
-ORDER BY marketCode;";;;;Chưa có sql;Dữ liệu tĩnh
+SUM(a.von_hoa) AS tong_von_hoa, 
+SUM(a.lnst) AS tong_lnst, 
+SUM(a.vcsh) AS tong_vcsh, 
+ROUND(SUM(a.von_hoa) / NULLIF(SUM(a.lnst), 0), 2) AS pe_chi_so, 
+ROUND(SUM(a.von_hoa) / NULLIF(SUM(a.vcsh), 0), 2) AS pb_chi_so 
+FROM PB_PE a 
+JOIN JAD_CSIDXInfor b ON a.symbol = b.symbol 
+JOIN Chi_so c ON c.marketCode = b.indexcode 
+GROUP BY c.marketCode, c.tradingdate, c.diem_dong_cua;"" 
+
+
+
+
+
+
+
+
+
+
+";;;;Chưa có sql;Dữ liệu tĩnh
 6;;Dashboard Định giá thị trường;sàn;;Dashboard;Chiều;Trùng;Danh mục chỉ số - theo giờ;MDDS;;X;X;Done;Thông tin thị trường;JAD_MARKETINFOR;marketId;'10'=HOSE, '02'=HNX, '04'=UPCOM;"SELECT DISTINCT 
 i.marketId, 
 CASE i.marketId 
@@ -1780,18 +1866,7 @@ ORDER BY indexTime DESC
 FROM JAD_MARKETINFOR
 )
 WHERE rn=1;";điểm chỉ số gần nhất trong ngày;;;;Chưa có sql;Dữ liệu tĩnh;
-6;;Dashboard Định giá thị trường;Giá đóng cửa;;Dashboard;Chỉ tiêu cơ sở;TB;Danh mục chỉ số - theo giờ;MDDS;;;;Done;Thông tin thị trường;JAD_MARKETINFOR;marketIndex;marketIndex (MAX indexTime);"-- Lấy marketIndex tại thời điểm cuối ngày
-SELECT marketCode, tradingdate, marketIndex AS diem_dong_cua,
-FROM (
-SELECT marketCode, tradingdate, marketIndex AS diem_dong_cua,
-ROW_NUMBER() OVER (
-PARTITION BY tradingdate, marketCode
-ORDER BY indexTime DESC
-) AS rn
-FROM JAD_MARKETINFOR
-WHERE tradingdate = :ngay_gd
-) WHERE rn = 1
-";-- Lấy marketIndex tại thời điểm cuối ngày;;;;Chưa có sql;Dữ liệu tĩnh;
+6;;Dashboard Định giá thị trường;Giá đóng cửa;;Dashboard;Chỉ tiêu cơ sở;TB;Danh mục chỉ số - theo giờ;MDDS;;;;Done;Thông tin thị trường;JAD_StockInfor;closePrice;;;;;;;Chưa có sql;Dữ liệu tĩnh;
 6;;Dashboard Định giá thị trường;Số cổ phiếu đang lưu hành;;Dashboard;Chỉ tiêu cơ sở;TB;Danh mục chỉ số - theo giờ;CSDLTT;;;;Done;Lấy từ VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày);BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành;Khối lượng chứng khoán đang lưu hành;Mã chứng khoán = 'Cổ phiếu';"select Mã chứng khoán MCK , Khối lượng chứng khoán đang lưu hành
 from BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành
 where Mã chứng khoán = 'Cổ phiếu'";Mapping theo BM;;;;Chưa có sql;Chưa có CSDL - Map biểu mẫu;
@@ -1801,36 +1876,66 @@ IDS.company_data (cd)";SUM(d.data_value) AS lnst;"rc2.col_desc = '1'
 AND rc.report_cd LIKE 'BCKQKD%'
 AND ((rc.enterprise_type_cd='dn' AND rr.row_desc='60')
 OR (rc.enterprise_type_cd='bh' AND rr.row_desc='60')
-OR (rc.enterprise_type_cd='td' AND rr.row_desc='21'))";"SELECT SUM(d.data_value) AS lnst 
+OR (rc.enterprise_type_cd='td' AND rr.row_desc='21'))";"( 
+SELECT 
+SUM(x.data_value) AS lnst, 
+x.equity_ticker 
+FROM ( 
+SELECT 
+d.data_value, 
+cp.equity_ticker, 
+cd.report_year, 
+cd.report_quarter, 
+ROW_NUMBER() OVER ( 
+PARTITION BY cp.equity_ticker 
+ORDER BY cd.report_year DESC, cd.report_quarter DESC 
+) AS rn 
 FROM IDS.data d 
-JOIN IDS.report_catalog rc ON d.report_catalog_id=rc.id 
+JOIN IDS.report_catalog rc ON d.report_catalog_id = rc.id 
 JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id 
 JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id 
--- JOIN IDS.company_data cd ON d.company_data_id=cd.id 
+JOIN IDS.company_profiles cp ON cp.id = d.COMPANY_PROFILE_ID 
+JOIN IDS.company_data cd ON d.company_data_id = cd.id 
 WHERE rc2.col_desc = '1' 
 AND rc.report_cd LIKE 'BCKQKD%' 
--- AND cd.report_year=:year AND cd.report_quarter=:quarter 
-AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('60')) 
-OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('60')) 
-OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('21')))";Join qua từ company_profiles với Id và company_profile_id;;;;Chưa có sql;Dữ liệu tĩnh;
+AND ((rc.enterprise_type_cd = 'dn' AND rr.row_desc IN ('60')) 
+OR (rc.enterprise_type_cd = 'bh' AND rr.row_desc IN ('60')) 
+OR (rc.enterprise_type_cd = 'td' AND rr.row_desc IN ('21'))) 
+) x 
+WHERE x.rn <= 4 
+GROUP BY x.equity_ticker 
+)";Join qua từ company_profiles với Id và company_profile_id;;;;Chưa có sql;Dữ liệu tĩnh;
 6;;Dashboard Định giá thị trường;VCSH;;Dashboard;Chỉ tiêu cơ sở;TB;Danh mục chỉ số - theo giờ;IDS;;;;Done;Lấy từ Báo cáo tài chính của IDS;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.company_data (cd)";SUM(d.data_value) AS vcsh;"rc2.col_desc = '1'
 AND rc.report_cd LIKE 'BCDKT%'
 AND ((rc.enterprise_type_cd='dn' AND rr.row_desc='400')
 OR (rc.enterprise_type_cd='bh' AND rr.row_desc='400')
-OR (rc.enterprise_type_cd='td' AND rr.row_desc='500'))";"SELECT SUM(d.data_value) AS vcsh
-FROM IDS.data d
-JOIN IDS.report_catalog rc ON d.report_catalog_id=rc.id
-JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id
-JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id
-JOIN IDS.company_data cd ON d.company_data_id=cd.id
-WHERE rc2.col_desc = '1'
-AND rc.report_cd LIKE 'BCDKT%'
-AND cd.report_year=:year AND cd.report_quarter=:quarter
-AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('400'))
-OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('400'))
-OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('500')))";;;;;Chưa có sql;Dữ liệu tĩnh;
+OR (rc.enterprise_type_cd='td' AND rr.row_desc='500'))";"SELECT * FROM 
+( 
+SELECT 
+SUM(d.data_value) AS vcsh, 
+cp.equity_ticker AS MCK, 
+cd.report_year, 
+cd.report_quarter, 
+ROW_NUMBER() OVER ( 
+PARTITION BY cp.equity_ticker 
+ORDER BY d.report_year DESC, d.report_quarter DESC 
+) AS rn 
+FROM IDS.data d 
+JOIN IDS.company_profiles cp ON d.company_profile_id = cp.id 
+JOIN IDS.report_catalog rc ON d.report_catalog_id = rc.id 
+JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id 
+JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id 
+WHERE rc2.col_desc = '1' 
+AND rc.report_cd LIKE 'BCDKT%' 
+AND ((rc.enterprise_type_cd = 'dn' AND rr.row_desc IN ('400')) 
+OR (rc.enterprise_type_cd = 'bh' AND rr.row_desc IN ('400')) 
+OR (rc.enterprise_type_cd = 'td' AND rr.row_desc IN ('500'))) 
+GROUP BY cp.equity_ticker, cd.report_year, cd.report_quarter 
+) x 
+WHERE x.rn = 1 
+)";;;;;Chưa có sql;Dữ liệu tĩnh;
 6;;Dashboard Định giá thị trường;P/E thị trường;"P/E = Giá đóng cửa/EPS.
 EPS = LNST/số cổ phiếu đang lưu hành.";Dashboard;Chỉ tiêu phái sinh;TB;Danh mục chỉ số - theo giờ;IDS, MDDS, CSDLTT;X;X;X;Done;"- Giá đóng cửa: thông tin thị trường 
 - LNST: lấy từ báo cáo tài chính IDS
@@ -1859,20 +1964,14 @@ OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('21')))
 ) 
 ,GĐC AS 
 ( 
-( 
--- Lấy marketIndex tại thời điểm cuối ngày 
-SELECT marketCode, tradingdate, marketIndex AS diem_dong_cua,Symbol MCK 
-FROM ( 
-SELECT marketCode, tradingdate, marketIndex AS diem_dong_cua, 
-ROW_NUMBER() OVER ( 
-PARTITION BY tradingdate, marketCode 
-ORDER BY indexTime DESC 
-) AS rn 
-FROM JAD_MARKETINFOR a 
-WHERE tradingdate = :ngay_gd 
-) a 
-join JAD_CSIDXINFOR cs on cs.IndexCode = a.marketCode 
-) WHERE rn = 1 
+SELECT 
+s.symbol, 
+s.tradingdate, 
+s.closePrice AS gia_dong_cua, 
+s.FloorCode 
+FROM JAD_STOCKINFOR s 
+WHERE s.tradingdate = :ngay_gd 
+AND s.StockType NOT IN ('B', '1', 'BO', 'D') -- Loại bỏ trái phiếu 
 ) 
 , SCPLH AS 
 ( 
@@ -1907,22 +2006,16 @@ AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('400'))
 OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('400')) 
 OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('500'))) 
 ) 
-,GĐC AS 
+,With GĐC AS 
 ( 
-( 
--- Lấy marketIndex tại thời điểm cuối ngày 
-SELECT marketCode, tradingdate, marketIndex AS diem_dong_cua,Symbol MCK 
-FROM ( 
-SELECT marketCode, tradingdate, marketIndex AS diem_dong_cua,Symbol cs 
-ROW_NUMBER() OVER ( 
-PARTITION BY tradingdate, marketCode 
-ORDER BY indexTime DESC 
-) AS rn 
-FROM JAD_MARKETINFOR a 
-join JAD_CSIDXINFOR cs on cs.IndexCode = a.marketCode 
-WHERE tradingdate = :ngay_gd 
-) 
-) WHERE rn = 1 
+SELECT 
+s.symbol, 
+s.tradingdate, 
+s.closePrice AS gia_dong_cua, 
+s.FloorCode 
+FROM JAD_STOCKINFOR s 
+WHERE s.tradingdate = :ngay_gd 
+AND s.StockType NOT IN ('B', '1', 'BO', 'D') -- Loại bỏ trái phiếu 
 ) 
 , SCPLH AS 
 ( 
@@ -1968,28 +2061,22 @@ join JAD_CSIDXINFOR cs on cs.Symbol = LNST.MCK";;;;;Chưa có sql;Chưa có CSDL
 - Số cổ phiếu đang lưu hành: Lấy từ VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày)";"Giá đóng cửa: STT 81
 Số cổ phiếu lưu hành: STT 82";"Giá đóng cửa: STT 81
 Số cổ phiếu lưu hành: STT 82";"Giá đóng cửa: STT 81
-Số cổ phiếu lưu hành: STT 82";"with GĐC AS
-(
-(
--- Lấy marketIndex tại thời điểm cuối ngày
-SELECT marketCode, tradingdate, marketIndex AS diem_dong_cua,Symbol MCK
-FROM (
-SELECT marketCode, tradingdate, marketIndex AS diem_dong_cua,Symbol cs
-ROW_NUMBER() OVER (
-PARTITION BY tradingdate, marketCode
-ORDER BY indexTime DESC
-) AS rn
-FROM JAD_MARKETINFOR a
-join JAD_CSIDXINFOR cs on cs.IndexCode = a.marketCode
-WHERE tradingdate = :ngay_gd
+Số cổ phiếu lưu hành: STT 82";"With GĐC AS 
+( 
+SELECT 
+s.symbol, 
+s.tradingdate, 
+s.closePrice AS gia_dong_cua, 
+s.FloorCode 
+FROM JAD_STOCKINFOR s 
+WHERE s.tradingdate = :ngay_gd 
+AND s.StockType NOT IN ('B', '1', 'BO', 'D') -- Loại bỏ trái phiếu 
 ) 
-) WHERE rn = 1
-)
 , SCPLH AS 
-(
-select Mã chứng khoán MCK , Khối lượng chứng khoán đang lưu hành
-from BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành
-where Mã chứng khoán = 'Cổ phiếu'
+( 
+select Mã chứng khoán MCK , Khối lượng chứng khoán đang lưu hành 
+from BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành 
+where Mã chứng khoán = 'Cổ phiếu' 
 )";Mapping theo BM;;;;Chưa có sql;Chưa có CSDL - Map biểu mẫu, Dữ liệu tĩnh;
 7;;Top khối lượng theo toàn thị trường theo dạng bảng số liệu;Mã ck;;Dashboard;Chiều;Trùng;Mã CK;MDDS;;X;;Done;Thông tin thị trường;JAD_STOCKINFOR;symbol;"FloorCode IN ('10','02','04', ' 03') AND StockType NOT IN (
 'B', '1', -- Trái phiếu HOSE
@@ -2004,123 +2091,156 @@ AND StockType NOT IN (
 'BO', -- Trái phiếu HNX
 'D' -- Trái phiếu chuyển đổi HOSE
 )
-AND s.tradingdate = :ngay_gd;";;"with KHGD as 
+AND s.tradingdate = :ngay_gd;";;"WITH GIA_DAU AS 
 ( 
-SELECT symbol, SUM(kl) AS tong_kl FROM ( 
-SELECT t.Symbol AS symbol, t.[Execution - Volume] AS kl FROM TRADE_BOOK_HOSE t 
-WHERE t.[Trade Date]=:ngay_gd AND t.[Market ID] IN ('UPX','STX','STO') ---HOSE 
+-- Giá đóng cửa tại phiên giao dịch gần nhất TRƯỚC từ_ngày 
+SELECT symbol, closePrice AS gia_dau 
+FROM ( 
+SELECT symbol, closePrice, tradingdate, 
+ROW_NUMBER() OVER (PARTITION BY symbol ORDER BY tradingdate DESC) AS rn 
+FROM JAD_STOCKINFOR 
+WHERE tradingdate < :tu_ngay 
+) x 
+WHERE rn = 1 
+), 
+GIA_CUOI AS 
+( 
+-- Giá đóng cửa tại đến_ngày 
+SELECT symbol, closePrice AS gia_cuoi 
+FROM JAD_STOCKINFOR 
+WHERE tradingdate = :den_ngay 
+), 
+KHGD AS 
+( 
+-- Tổng KLGD trong khoảng từ_ngày -> đến_ngày 
+SELECT symbol, SUM(kl) AS tong_kl 
+FROM ( 
+SELECT t.Symbol AS symbol, t.Execution_Volume AS kl 
+FROM TRADE_BOOK_HOSE t 
+WHERE t.Trade_date BETWEEN :tu_ngay AND :den_ngay 
+AND t.Market_ID = 'STK' 
 UNION ALL 
-SELECT t.[Issue Code], t.[Trade quantity] FROM TRADE_BOOK_HNX t 
-WHERE t.[Trade date]=:ngay_gd AND t.[Market ID] IN ('UPX','STX','STO') -- HNX 
-) 
-) 
-, MDDS as 
+SELECT t.`Issue Code` AS symbol, t.Trade_quantity AS kl 
+FROM TRADE_BOOK_HNX t 
+WHERE t.Trade_date BETWEEN :tu_ngay AND :den_ngay 
+AND t.Market_ID IN ('STX','UPX') 
+) x 
+GROUP BY symbol 
+), 
+SCPLH AS 
 ( 
+-- KLLH tại đến_ngày 
 SELECT 
-closePrice diem_dong_cua 
-,change 
-,symbol 
-FROM JAD_JAD_STOCKINFOR 
-) 
-, 
-SCPLH AS ( 
-SELECT a.MCK, SUM(a.Khối lượng chứng khoán đang lưu hành) AS KLLH 
-FROM BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành a 
+a.MCK, 
+SUM(a.`Khối lượng chứng khoán đang lưu hành`) AS KLLH 
+FROM `BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành` a 
 WHERE a.Loai_CK = 'Co phieu' 
+AND a.`Ngày báo cáo` = :den_ngay 
 GROUP BY a.MCK 
 ), 
 LNST AS 
 ( 
-SELECT SUM(d.data_value) AS lnst, equity_ticker 
+SELECT 
+SUM(x.data_value) AS lnst, 
+x.equity_ticker 
+FROM ( 
+SELECT 
+d.data_value, 
+cp.equity_ticker, 
+d.report_year, 
+d.report_quarter, 
+ROW_NUMBER() OVER ( 
+PARTITION BY cp.equity_ticker 
+ORDER BY d.report_year DESC, d.report_quarter DESC 
+) AS rn 
 FROM IDS.data d 
-JOIN IDS.report_catalog rc ON d.report_catalog_id=rc.id 
+JOIN IDS.report_catalog rc ON d.report_catalog_id = rc.id 
 JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id 
 JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id 
 JOIN IDS.company_profiles cp ON cp.id = d.COMPANY_PROFILE_ID 
--- JOIN IDS.company_data cd ON d.company_data_id=cd.id 
 WHERE rc2.col_desc = '1' 
 AND rc.report_cd LIKE 'BCKQKD%' 
--- AND cd.report_year=:year AND cd.report_quarter=:quarter 
-AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('60')) 
-OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('60')) 
-OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('21'))) 
-GROUP BY equity_ticker 
+AND ((rc.enterprise_type_cd = 'dn' AND rr.row_desc IN ('60')) 
+OR (rc.enterprise_type_cd = 'bh' AND rr.row_desc IN ('60')) 
+OR (rc.enterprise_type_cd = 'td' AND rr.row_desc IN ('21'))) 
+) x 
+WHERE x.rn <= 4 
+GROUP BY x.equity_ticker 
 ), 
 VCSH AS 
 ( 
+SELECT * FROM 
+( 
 SELECT 
-SUM(d.data_value) AS vcsh 
-, equity_ticker MCK 
+SUM(d.data_value) AS vcsh, 
+cp.equity_ticker AS MCK, 
+d.report_year, 
+d.report_quarter, 
+ROW_NUMBER() OVER ( 
+PARTITION BY cp.equity_ticker 
+ORDER BY d.report_year DESC, d.report_quarter DESC 
+) AS rn 
 FROM IDS.data d 
-Join IDS.company_profiles cp ON d.company_profile_id = cp.id 
-JOIN IDS.report_catalog rc ON d.report_catalog_id=rc.id 
+JOIN IDS.company_profiles cp ON d.company_profile_id = cp.id 
+JOIN IDS.report_catalog rc ON d.report_catalog_id = rc.id 
 JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id 
 JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id 
-JOIN IDS.company_data cd ON d.company_data_id=cd.id 
 WHERE rc2.col_desc = '1' 
 AND rc.report_cd LIKE 'BCDKT%' 
-AND cd.report_year=:year AND cd.report_quarter=:quarter 
-AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('400')) 
-OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('400')) 
-OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('500'))) 
+AND ((rc.enterprise_type_cd = 'dn' AND rr.row_desc IN ('400')) 
+OR (rc.enterprise_type_cd = 'bh' AND rr.row_desc IN ('400')) 
+OR (rc.enterprise_type_cd = 'td' AND rr.row_desc IN ('500'))) 
+GROUP BY cp.equity_ticker, d.report_year, d.report_quarter 
+) x 
+WHERE x.rn = 1 
 ), 
-NGANH as 
+NGANH AS 
 ( 
-SELECT c.industry_cd, c.industry_name, equity_ticker 
+SELECT c.industry_cd, c.industry_name, cp.equity_ticker 
 FROM IDS.categories c 
-JOIN ids.COMPANY_PROFILES cp ON cp.CATEGORY_L1_ID = c.id 
+JOIN IDS.COMPANY_PROFILES cp ON cp.CATEGORY_L1_ID = c.id 
 WHERE c.active_flg = 1 
-ORDER BY c.industry_cd 
 ), 
 Von_hoa AS ( 
 SELECT 
-c.symbol marketCode, 
-c.tradingdate, 
-c.diem_dong_cua, 
+c.symbol AS marketCode, 
+c.gia_cuoi, 
 s.KLLH, 
-c.diem_dong_cua * s.KLLH AS von_hoa 
-FROM MDDS c 
+c.gia_cuoi * s.KLLH AS von_hoa 
+FROM GIA_CUOI c 
 JOIN SCPLH s ON c.symbol = s.MCK 
 ), 
 PB_PE AS ( 
 SELECT 
 v.marketCode, 
-v.tradingdate, 
-v.diem_dong_cua, 
+v.gia_cuoi, 
 v.KLLH, 
 v.von_hoa, 
 vc.vcsh, 
 ln.lnst, 
--- Giá trị sổ sách = VCSH / KLLH 
-vc.vcsh / NULLIF(v.KLLH, 0) AS gia_tri_so_sach, 
--- EPS = LNST / KLLH 
-ln.lnst / NULLIF(v.KLLH, 0) AS eps, 
--- P/B = Giá đóng cửa / Giá trị sổ sách 
-ROUND( 
-v.diem_dong_cua / NULLIF(vc.vcsh / NULLIF(v.KLLH, 0), 0) 
-, 2) AS pb, 
--- P/E = Giá đóng cửa / EPS 
-ROUND( 
-v.diem_dong_cua / NULLIF(ln.lnst / NULLIF(v.KLLH, 0), 0) 
-, 2) AS pe 
+ROUND(v.gia_cuoi / NULLIF(vc.vcsh / NULLIF(v.KLLH, 0), 0), 2) AS pb, 
+ROUND(v.gia_cuoi / NULLIF(ln.lnst / NULLIF(v.KLLH, 0), 0), 2) AS pe 
 FROM Von_hoa v 
 JOIN VCSH vc ON v.marketCode = vc.MCK 
 JOIN LNST ln ON v.marketCode = ln.equity_ticker 
 ) 
-select 
-marketCode Ma_chung_khoan 
-, industry_name nganh 
-, tong_kl 
-, diem_dong_cua 
-, change 
-,von_hoa 
-,pb 
-,pe 
-from PB_PE a 
-join nganh b as a.marketCode = b.equity_ticker 
-join MDDS c on a.marketCode = c.symbol 
-GROUP BY symbol 
-ORDER BY tong_kl DESC FETCH FIRST :top_n ROWS ONLY";;;;;Dữ liệu tĩnh
+SELECT 
+ROW_NUMBER() OVER (ORDER BY k.tong_kl DESC) AS STT, 
+a.marketCode AS Ma, 
+b.industry_name AS Nganh, 
+k.tong_kl AS Tong_KL, 
+a.gia_cuoi AS Gia_dong_cua, 
+ROUND((gc.gia_cuoi - gd.gia_dau) / NULLIF(gd.gia_dau, 0) * 100, 2) AS Phan_tram_thay_doi, 
+a.von_hoa AS Von_hoa, 
+a.pe AS PE, 
+a.pb AS PB 
+FROM PB_PE a 
+JOIN NGANH b ON a.marketCode = b.equity_ticker 
+JOIN GIA_CUOI gc ON a.marketCode = gc.symbol 
+JOIN GIA_DAU gd ON a.marketCode = gd.symbol 
+JOIN KHGD k ON a.marketCode = k.symbol 
+ORDER BY k.tong_kl DESC 
+LIMIT :top_n;";;;;;Dữ liệu tĩnh
 7;;Top khối lượng theo toàn thị trường theo dạng bảng số liệu;Ngành;Lấy theo bảng phân ngành;Dashboard;Chiều;Trùng;Mã CK;IDS;;X;;Done;Ngành kinh tế cấp 1 trên IDS;IDS.categories (c);c.industry_cd, c.industry_name AS ten_nganh;c.active_flg = 1;"SELECT c.industry_cd, c.industry_name
 FROM IDS.categories c
 WHERE c.active_flg = 1
@@ -2197,39 +2317,39 @@ LNST: STT 97";"Giá đóng cửa: STT 93
 Số cổ phiếu lưu hành: STT 95
 LNST: STT 97";"Giá đóng cửa: STT 93
 Số cổ phiếu lưu hành: STT 95
-LNST: STT 97";"With GĐC AS 
-( 
-SELECT 
-s.symbol, 
-s.tradingdate, 
-s.closePrice AS gia_dong_cua, 
-s.FloorCode 
-FROM JAD_STOCKINFOR s 
-WHERE s.tradingdate = :ngay_gd 
-AND s.StockType NOT IN ('B', '1', 'BO', 'D') -- Loại bỏ trái phiếu 
-) 
+LNST: STT 97";"With GĐC AS
+(
+SELECT
+s.symbol,
+s.tradingdate,
+s.closePrice AS gia_dong_cua,
+s.FloorCode
+FROM JAD_STOCKINFOR s
+WHERE s.tradingdate = :ngay_gd
+AND s.StockType NOT IN ('B', '1', 'BO', 'D') -- Loại bỏ trái phiếu
+)
 , SCPLH AS 
-( 
-select Mã chứng khoán MCK , sum (Khối lượng chứng khoán đang lưu hành) KLLH 
-from BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành 
-where Mã chứng khoán = 'Cổ phiếu' 
-) 
+(
+select Mã chứng khoán MCK , sum (Khối lượng chứng khoán đang lưu hành) KLLH
+from BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành
+where Mã chứng khoán = 'Cổ phiếu'
+)
 ,LNST as 
-( 
-SELECT SUM(d.data_value) AS lnst 
+(
+SELECT SUM(d.data_value) AS lnst
 , equity_ticker MCK 
-FROM IDS.data d 
-Join IDS.company_profiles cp ON d.company_profile_id = cp.id 
-JOIN IDS.report_catalog rc ON d.report_catalog_id=rc.id 
-JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id 
-JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id 
-JOIN IDS.company_data cd ON d.company_data_id=cd.id 
-WHERE rc2.col_desc = '1' 
-AND rc.report_cd LIKE 'BCKQKD%' 
-AND cd.report_year=:year AND cd.report_quarter=:quarter 
-AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('60')) 
-OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('60')) 
-OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('21'))) 
+FROM IDS.data d
+Join IDS.company_profiles cp ON d.company_profile_id = cp.id
+JOIN IDS.report_catalog rc ON d.report_catalog_id=rc.id
+JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id
+JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id
+JOIN IDS.company_data cd ON d.company_data_id=cd.id
+WHERE rc2.col_desc = '1'
+AND rc.report_cd LIKE 'BCKQKD%'
+AND cd.report_year=:year AND cd.report_quarter=:quarter
+AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('60'))
+OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('60'))
+OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('21')))
 )";;;;;Chưa có sql;Chưa có CSDL - Map biểu mẫu, Dữ liệu tĩnh;
 7;;Top khối lượng theo toàn thị trường theo dạng bảng số liệu;VCSH;;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã CK;IDS;;;;Done;- VCSH: lấy từ báo cáo tài chính IDS;"IDS.data (d),
 IDS.report_catalog (rc),
@@ -2256,40 +2376,40 @@ VCSH: STT 99";"Giá đóng cửa: STT 93
 Số cổ phiếu lưu hành: STT 95
 VCSH: STT 99";"Giá đóng cửa: STT 93
 Số cổ phiếu lưu hành: STT 95
-VCSH: STT 99";"With GĐC AS 
-( 
-SELECT 
-s.symbol MCK, 
-s.tradingdate, 
-s.closePrice AS gia_dong_cua, 
-s.FloorCode 
-FROM JAD_STOCKINFOR s 
-WHERE s.tradingdate = :ngay_gd 
-AND s.StockType NOT IN ('B', '1', 'BO', 'D') -- Loại bỏ trái phiếu 
-) 
+VCSH: STT 99";"With GĐC AS
+(
+SELECT
+s.symbol MCK,
+s.tradingdate,
+s.closePrice AS gia_dong_cua,
+s.FloorCode
+FROM JAD_STOCKINFOR s
+WHERE s.tradingdate = :ngay_gd
+AND s.StockType NOT IN ('B', '1', 'BO', 'D') -- Loại bỏ trái phiếu
+)
 , SCPLH AS 
-( 
-select Mã chứng khoán MCK , sum (Khối lượng chứng khoán đang lưu hành) KLLH 
-from BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành 
-where Mã chứng khoán = 'Cổ phiếu' 
-) 
+(
+select Mã chứng khoán MCK , sum (Khối lượng chứng khoán đang lưu hành) KLLH
+from BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành
+where Mã chứng khoán = 'Cổ phiếu'
+)
 ,VCSH as 
-( 
+(
 SELECT 
-SUM(d.data_value) AS vcsh 
+SUM(d.data_value) AS vcsh
 , equity_ticker MCK 
-FROM IDS.data d 
-Join IDS.company_profiles cp ON d.company_profile_id = cp.id 
-JOIN IDS.report_catalog rc ON d.report_catalog_id=rc.id 
-JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id 
-JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id 
-JOIN IDS.company_data cd ON d.company_data_id=cd.id 
-WHERE rc2.col_desc = '1' 
-AND rc.report_cd LIKE 'BCDKT%' 
-AND cd.report_year=:year AND cd.report_quarter=:quarter 
-AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('400')) 
-OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('400')) 
-OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('500'))) 
+FROM IDS.data d
+Join IDS.company_profiles cp ON d.company_profile_id = cp.id
+JOIN IDS.report_catalog rc ON d.report_catalog_id=rc.id
+JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id
+JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id
+JOIN IDS.company_data cd ON d.company_data_id=cd.id
+WHERE rc2.col_desc = '1'
+AND rc.report_cd LIKE 'BCDKT%'
+AND cd.report_year=:year AND cd.report_quarter=:quarter
+AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('400'))
+OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('400'))
+OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('500')))
 )";;;;;Chưa có sql;Chưa có CSDL - Map biểu mẫu, Dữ liệu tĩnh;
 8;;Top khối lượng theo toàn thị trường theo dạng bảng biểu đồ kĩ thuật;Mã CK;;Dashboard;Chiều;Trùng;Mã CK;MDDS;;X;;Done;Thông tin thị trường;JAD_STOCKINFOR;symbol;"FloorCode IN ('10','02','04', ' 03') AND StockType NOT IN (
 'B', '1', -- Trái phiếu HOSE
@@ -2305,7 +2425,112 @@ AND StockType NOT IN (
 'D' -- Trái phiếu chuyển đổi HOSE
 )
 AND s.tradingdate = :ngay_gd;";;;;;;Done;Dữ liệu tĩnh
-8;;Top khối lượng theo toàn thị trường theo dạng bảng biểu đồ kĩ thuật;Ngày;;Dashboard;Chiều;Trùng;Mã CK;;;X;;Done;;;;;;;;;;;Done;Dữ liệu tĩnh
+8;;Top khối lượng theo toàn thị trường theo dạng bảng biểu đồ kĩ thuật;Ngày;;Dashboard;Chiều;Trùng;Mã CK;;;X;;Done;;;;;;;"With MDDS as 
+( 
+SELECT 
+s.floorCode san 
+,s.symbol ma_chung_khoan 
+,idx.indexCode ma_chi_so 
+,s.StockType 
+,open Gia_mo_cua 
+,high Gia_cao_nhat 
+,low Gia_thap_nhat 
+,closePrice Gia_dong_cua 
+,reference Gia_tham_chieu 
+,change Thay_doi 
+FROM JAD_STOCKINFOR s 
+JOIN JAD_CSIDXINFOR idx 
+ON idx.Symbol = s.symbol 
+WHERE 1=1 
+
+AND TO_CHAR(TO_DATE(s.tradingdate, 'DD/MM/YYYY'), 'YYYYMMDD') = :ngay_gd 
+AND s.FloorCode IN ('10', '02', '04', '03') 
+AND s.StockType NOT IN ('1') 
+) 
+, NGANH as 
+( 
+SELECT c.industry_cd, c.industry_name,equity_ticker 
+FROM IDS.categories c 
+JOIN ids.COMPANY_PROFILES cp ON cp.CATEGORY_L1_ID = c.id 
+WHERE c.active_flg = 1 
+ORDER BY c.industry_cd 
+) 
+
+, Khoi_luong_giao_dich 
+( 
+SELECT 
+SUM(t.[Execution - Volume]) AS tong_kl_khop 
+, Symbol ma_chung_khoan 
+FROM TRADE_BOOK_HOSE t 
+WHERE 1=1 
+and t.[Trade Date] BETWEEN :tu_ngay AND :den_ngay 
+and Symbol=:ma_ck 
+and Market ID in ('UPX','STX','STK') 
+--GROUP BY t.Symbol 
+UNION ALL 
+-- HNX / UPCOM 
+SELECT 
+SUM(t.[Trade quantity]) AS tong_kl_khop 
+, Issue Code ma_chung_khoan 
+FROM TRADE_BOOK_HNX t 
+WHERE 1=1 
+and t.[Trade date] BETWEEN :tu_ngay AND :den_ngay 
+and Issue Code =:ma_ck 
+and Market ID in ('UPX','STX','STK') 
+--GROUP BY t.Symbol 
+) 
+, 
+LNST AS 
+( 
+SELECT SUM(d.data_value) AS lnst, equity_ticker 
+FROM IDS.data d 
+JOIN IDS.report_catalog rc ON d.report_catalog_id=rc.id 
+JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id 
+JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id 
+JOIN IDS.company_profiles cp ON cp.id = d.COMPANY_PROFILE_ID 
+-- JOIN IDS.company_data cd ON d.company_data_id=cd.id 
+WHERE rc2.col_desc = '1' 
+AND rc.report_cd LIKE 'BCKQKD%' 
+-- AND cd.report_year=:year AND cd.report_quarter=:quarter 
+AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('60')) 
+OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('60')) 
+OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('21'))) 
+GROUP BY equity_ticker 
+), 
+Doanh_thu AS 
+( 
+SELECT SUM(d.data_value) AS doanh_thu 
+,equity_ticker MCK 
+FROM IDS.data d 
+Join IDS.company_profiles cp ON d.company_profile_id = cp.id 
+JOIN IDS.report_catalog rc ON d.report_catalog_id=rc.id 
+JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id 
+JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id 
+JOIN IDS.company_data cd ON d.company_data_id=cd.id 
+JOIN IDS.company_profiles cp ON cp.id = d.COMPANY_PROFILE_ID 
+WHERE rc2.col_desc = '1' 
+AND rc.report_cd LIKE 'BCKQKD%' 
+AND cd.report_year=:year AND cd.report_quarter=:quarter 
+AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('10')) 
+OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('10')) 
+OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('03'))) 
+GROUP BY equity_ticker 
+) 
+select 
+Gia_mo_cua 
+, Gia_cao_nhat 
+, Gia_thap_nhat 
+, Gia_dong_cua 
+, Gia_tham_chieu 
+, tong_kl_khop 
+from MDDS a 
+join Khoi_luong_giao_dich b on a.ma_chung_khoan = b.ma_chung_khoan 
+join Doanh_thu on Doanh_thu.MCK = a.ma_chung_khoan 
+join LNST on LNST.equity_ticker = a.ma_chung_khoan 
+join NGANH on NGANH.equity_ticker = a.ma_chung_khoan 
+GROUP BY symbol 
+ORDER BY tong_kl DESC FETCH FIRST :top_n ROWS ONLY 
+";;;;Done;Dữ liệu tĩnh
 8;;Top khối lượng theo toàn thị trường theo dạng bảng biểu đồ kĩ thuật;Giá mở cửa;Giá giao dịch đầu tiên;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã CK;MDDS;;X;;Done;Thông tin thị trường;JAD_STOCKINFOR;open;;"SELECT s.tradingdate, s.open, s.high, s.low, s.closePrice, s.totalTrading AS kl 
 FROM JAD_STOCKINFOR s 
 WHERE s.symbol = :ma_ck 
@@ -2362,143 +2587,135 @@ AND StockType NOT IN (
 'D' -- Trái phiếu chuyển đổi HOSE
 )
 AND s.tradingdate = :ngay_gd;";;;;;;Done;Dữ liệu tĩnh
-9;;Top khối lượng theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành) theo dạng bảng số liệu;Sàn;;Dashboard;Chiều;Trùng;Mã CK;MDDS;;X;;Done;Thông tin thị trường;JAD_MARKETINFOR;marketId;'10'=HOSE, '02'=HNX, '04'=UPCOM;"SELECT DISTINCT 
-i.marketId, 
-CASE i.marketId 
-WHEN '10' THEN 'HOSE' 
-WHEN '02' THEN 'HNX' 
-WHEN '04' THEN 'UPCOM' 
-END AS ten_san 
-FROM JAD_MARKETINFOR i 
-WHERE i.TradingDate = :ngay_gd;""";10=HOSE, 02=HNX, 04=UPCOM;"with KHGD as --- KHỐI LƯỢNG GD ĐANG THEO MÃ CHỨNG KHOÁN 
-( 
-SELECT symbol, SUM(kl) AS tong_kl FROM ( 
-SELECT t.SYMBOL AS symbol 
-, t.EXECUTION_VOLUME AS kl FROM krx.TRADE_BOOK_HOSE t 
-WHERE 1=1 
--- AND TO_CHAR(TO_DATE(TRADE_DATE, 'DD/MM/YYYY'), 'YYYYMMDD') = '20260302' 
-AND t.MARKET_ID IN ('UPX','STK','STO') ---HOSE 
-UNION ALL 
-SELECT t.ISSUE_CODE AS symbol 
-, t.TRADE_QUANTITY AS kl FROM krx.TRADE_BOOK_HNX t 
-WHERE 1=1 
--- AND TO_CHAR(TO_DATE(TRADE_DATE, 'DD/MM/YYYY'), 'YYYYMMDD') = '20260302' 
-AND t.MARKET_ID IN ('UPX','STK','STO') ---HNX 
-) 
+9;;Top khối lượng theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành) theo dạng bảng số liệu;Sàn;;Dashboard;Chiều;Trùng;Mã CK;MDDS;;X;;Done;Thông tin thị trường;JAD_STOCKINFOR;floorcode;'10'=HOSE, '02'=HNX, '04'=UPCOM;;10=HOSE, 02=HNX, 04=UPCOM;"with KHGD as --- KHỐI LƯỢNG GD ĐANG THEO MÃ CHỨNG KHOÁN
+(
+SELECT symbol, SUM(kl) AS tong_kl FROM (
+SELECT t.SYMBOL AS symbol
+, t.EXECUTION_VOLUME AS kl FROM krx.TRADE_BOOK_HOSE t
+WHERE 1=1
+-- AND TO_CHAR(TO_DATE(TRADE_DATE, 'DD/MM/YYYY'), 'YYYYMMDD') = '20260302'
+AND t.MARKET_ID IN ('UPX','STK','STO') ---HOSE
+UNION ALL
+SELECT t.ISSUE_CODE AS symbol
+, t.TRADE_QUANTITY AS kl FROM krx.TRADE_BOOK_HNX t
+WHERE 1=1
+-- AND TO_CHAR(TO_DATE(TRADE_DATE, 'DD/MM/YYYY'), 'YYYYMMDD') = '20260302'
+AND t.MARKET_ID IN ('UPX','STK','STO') ---HNX
+)
 group by symbol 
-) 
+)
 , MDDS as 
-( 
+(
 SELECT 
-CASE WHEN INDEXTYPECODE IN ( '10','02','04') THEN 'CHI_SO_THI_TRUONG' 
+CASE WHEN INDEXTYPECODE IN ( '10','02','04') THEN 'CHI_SO_THI_TRUONG'
 ELSE 'CHI_SO_KHAC' 
-END chi_so 
-, CASE WHEN MARKETID = '10' THEN 'HOSE' 
-WHEN MARKETID = '02' THEN 'HNX' 
-WHEN MARKETID = '04' THEN 'UPX' 
+END chi_so
+, CASE WHEN MARKETID = '10' THEN 'HOSE'
+WHEN MARKETID = '02' THEN 'HNX'
+WHEN MARKETID = '04' THEN 'UPX'
 ELSE NULL 
-END San 
-FROM JAD_JAD_MARKETINFOR 
-) 
-, 
-SCPLH AS ( 
-SELECT a.MCK, SUM(a.Khối lượng chứng khoán đang lưu hành) AS KLLH 
-FROM BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành a 
-WHERE a.Loai_CK = 'Co phieu' 
-GROUP BY a.MCK 
-), 
-LNST AS 
-( 
-SELECT SUM(d.data_value) AS lnst, equity_ticker 
-FROM IDS.data d 
-JOIN IDS.report_catalog rc ON d.report_catalog_id=rc.id 
-JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id 
-JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id 
+END San
+FROM JAD_JAD_MARKETINFOR
+)
+,
+SCPLH AS (
+SELECT a.MCK, SUM(a.Khối lượng chứng khoán đang lưu hành) AS KLLH
+FROM BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành a
+WHERE a.Loai_CK = 'Co phieu'
+GROUP BY a.MCK
+),
+LNST AS
+(
+SELECT SUM(d.data_value) AS lnst, equity_ticker
+FROM IDS.data d
+JOIN IDS.report_catalog rc ON d.report_catalog_id=rc.id
+JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id
+JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id
 JOIN IDS.company_profiles cp ON cp.id = d.COMPANY_PROFILE_ID 
--- JOIN IDS.company_data cd ON d.company_data_id=cd.id 
-WHERE rc2.col_desc = '1' 
-AND rc.report_cd LIKE 'BCKQKD%' 
--- AND cd.report_year=:year AND cd.report_quarter=:quarter 
-AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('60')) 
-OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('60')) 
-OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('21'))) 
-GROUP BY equity_ticker 
-), 
-VCSH AS 
-( 
+-- JOIN IDS.company_data cd ON d.company_data_id=cd.id
+WHERE rc2.col_desc = '1'
+AND rc.report_cd LIKE 'BCKQKD%'
+-- AND cd.report_year=:year AND cd.report_quarter=:quarter
+AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('60'))
+OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('60'))
+OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('21')))
+GROUP BY equity_ticker
+),
+VCSH AS
+(
 SELECT 
-SUM(d.data_value) AS vcsh 
+SUM(d.data_value) AS vcsh
 , equity_ticker MCK 
-FROM IDS.data d 
-Join IDS.company_profiles cp ON d.company_profile_id = cp.id 
-JOIN IDS.report_catalog rc ON d.report_catalog_id=rc.id 
-JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id 
-JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id 
-JOIN IDS.company_data cd ON d.company_data_id=cd.id 
-WHERE rc2.col_desc = '1' 
-AND rc.report_cd LIKE 'BCDKT%' 
-AND cd.report_year=:year AND cd.report_quarter=:quarter 
-AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('400')) 
-OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('400')) 
-OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('500'))) 
-), 
+FROM IDS.data d
+Join IDS.company_profiles cp ON d.company_profile_id = cp.id
+JOIN IDS.report_catalog rc ON d.report_catalog_id=rc.id
+JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id
+JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id
+JOIN IDS.company_data cd ON d.company_data_id=cd.id
+WHERE rc2.col_desc = '1'
+AND rc.report_cd LIKE 'BCDKT%'
+AND cd.report_year=:year AND cd.report_quarter=:quarter
+AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('400'))
+OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('400'))
+OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('500')))
+),
 NGANH as 
-( 
-SELECT c.industry_cd, c.industry_name, equity_ticker 
-FROM IDS.categories c 
+(
+SELECT c.industry_cd, c.industry_name, equity_ticker
+FROM IDS.categories c
 JOIN ids.COMPANY_PROFILES cp ON cp.CATEGORY_L1_ID = c.id 
-WHERE c.active_flg = 1 
-ORDER BY c.industry_cd 
-), 
-Von_hoa AS ( 
-SELECT 
-c.symbol marketCode, 
-c.tradingdate, 
-c.diem_dong_cua, 
-s.KLLH, 
-c.diem_dong_cua * s.KLLH AS von_hoa 
-FROM MDDS c 
-JOIN SCPLH s ON c.symbol = s.MCK 
-), 
-PB_PE AS ( 
-SELECT 
-v.marketCode, 
-v.tradingdate, 
-v.diem_dong_cua, 
-v.KLLH, 
-v.von_hoa, 
-vc.vcsh, 
-ln.lnst, 
--- Giá trị sổ sách = VCSH / KLLH 
-vc.vcsh / NULLIF(v.KLLH, 0) AS gia_tri_so_sach, 
--- EPS = LNST / KLLH 
-ln.lnst / NULLIF(v.KLLH, 0) AS eps, 
--- P/B = Giá đóng cửa / Giá trị sổ sách 
-ROUND( 
-v.diem_dong_cua / NULLIF(vc.vcsh / NULLIF(v.KLLH, 0), 0) 
-, 2) AS pb, 
--- P/E = Giá đóng cửa / EPS 
-ROUND( 
-v.diem_dong_cua / NULLIF(ln.lnst / NULLIF(v.KLLH, 0), 0) 
-, 2) AS pe 
-FROM Von_hoa v 
-JOIN VCSH vc ON v.marketCode = vc.MCK 
-JOIN LNST ln ON v.marketCode = ln.equity_ticker 
-) 
+WHERE c.active_flg = 1
+ORDER BY c.industry_cd
+),
+Von_hoa AS (
+SELECT
+c.symbol marketCode,
+c.tradingdate,
+c.diem_dong_cua,
+s.KLLH,
+c.diem_dong_cua * s.KLLH AS von_hoa
+FROM MDDS c
+JOIN SCPLH s ON c.symbol = s.MCK
+),
+PB_PE AS (
+SELECT
+v.marketCode,
+v.tradingdate,
+v.diem_dong_cua,
+v.KLLH,
+v.von_hoa,
+vc.vcsh,
+ln.lnst,
+-- Giá trị sổ sách = VCSH / KLLH
+vc.vcsh / NULLIF(v.KLLH, 0) AS gia_tri_so_sach,
+-- EPS = LNST / KLLH
+ln.lnst / NULLIF(v.KLLH, 0) AS eps,
+-- P/B = Giá đóng cửa / Giá trị sổ sách
+ROUND(
+v.diem_dong_cua / NULLIF(vc.vcsh / NULLIF(v.KLLH, 0), 0)
+, 2) AS pb,
+-- P/E = Giá đóng cửa / EPS
+ROUND(
+v.diem_dong_cua / NULLIF(ln.lnst / NULLIF(v.KLLH, 0), 0)
+, 2) AS pe
+FROM Von_hoa v
+JOIN VCSH vc ON v.marketCode = vc.MCK
+JOIN LNST ln ON v.marketCode = ln.equity_ticker
+)
 select 
-marketCode Ma_chung_khoan 
+marketCode Ma_chung_khoan
 , industry_name nganh 
-, tong_kl 
-, diem_dong_cua 
-, change 
-,von_hoa 
-,pb 
-,pe 
-from PB_PE a 
-join nganh b as a.marketCode = b.equity_ticker 
-join MDDS c on a.marketCode = c.symbol 
+, tong_kl
+, diem_dong_cua
+, change
+,von_hoa
+,pb
+,pe
+from PB_PE a
+join nganh b as a.marketCode = b.equity_ticker
+join MDDS c on a.marketCode = c.symbol
 GROUP BY symbol 
-ORDER BY tong_kl DESC FETCH FIRST :top_n ROWS ONLY"" 
+ORDER BY tong_kl DESC FETCH FIRST :top_n ROWS ONLY""
 
 
 
@@ -2629,40 +2846,40 @@ VCSH:124";"Giá đóng cửa: STT 118
 Số cổ phiếu lưu hành: STT 120
 VCSH:124";"Giá đóng cửa: STT 118
 Số cổ phiếu lưu hành: STT 120
-VCSH:124";"With GĐC AS 
-( 
-SELECT 
-s.symbol MCK, 
-s.tradingdate, 
-s.closePrice AS gia_dong_cua, 
-s.FloorCode 
-FROM JAD_STOCKINFOR s 
-WHERE s.tradingdate = :ngay_gd 
-AND s.StockType NOT IN ('B', '1', 'BO', 'D') -- Loại bỏ trái phiếu 
-) 
+VCSH:124";"With GĐC AS
+(
+SELECT
+s.symbol MCK,
+s.tradingdate,
+s.closePrice AS gia_dong_cua,
+s.FloorCode
+FROM JAD_STOCKINFOR s
+WHERE s.tradingdate = :ngay_gd
+AND s.StockType NOT IN ('B', '1', 'BO', 'D') -- Loại bỏ trái phiếu
+)
 , SCPLH AS 
-( 
-select Mã chứng khoán MCK , sum (Khối lượng chứng khoán đang lưu hành) KLLH 
-from BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành 
-where Mã chứng khoán = 'Cổ phiếu' 
-) 
+(
+select Mã chứng khoán MCK , sum (Khối lượng chứng khoán đang lưu hành) KLLH
+from BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành
+where Mã chứng khoán = 'Cổ phiếu'
+)
 ,VCSH as 
-( 
+(
 SELECT 
-SUM(d.data_value) AS vcsh 
+SUM(d.data_value) AS vcsh
 , equity_ticker MCK 
-FROM IDS.data d 
-Join IDS.company_profiles cp ON d.company_profile_id = cp.id 
-JOIN IDS.report_catalog rc ON d.report_catalog_id=rc.id 
-JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id 
-JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id 
-JOIN IDS.company_data cd ON d.company_data_id=cd.id 
-WHERE rc2.col_desc = '1' 
-AND rc.report_cd LIKE 'BCDKT%' 
-AND cd.report_year=:year AND cd.report_quarter=:quarter 
-AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('400')) 
-OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('400')) 
-OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('500'))) 
+FROM IDS.data d
+Join IDS.company_profiles cp ON d.company_profile_id = cp.id
+JOIN IDS.report_catalog rc ON d.report_catalog_id=rc.id
+JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id
+JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id
+JOIN IDS.company_data cd ON d.company_data_id=cd.id
+WHERE rc2.col_desc = '1'
+AND rc.report_cd LIKE 'BCDKT%'
+AND cd.report_year=:year AND cd.report_quarter=:quarter
+AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('400'))
+OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('400'))
+OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('500')))
 )";;;;;Chưa có sql;Chưa có CSDL - Map biểu mẫu, Dữ liệu tĩnh;
 10;;Top khối lượng theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành) theo dạng kĩ thuật;Mã CK;;Dashboard;Chiều;Trùng;Mã CK;MDDS;;X;;Done;Thông tin thị trường;JAD_STOCKINFOR;symbol;"FloorCode IN ('10','02','04', ' 03') AND StockType NOT IN (
 'B', '1', -- Trái phiếu HOSE
@@ -2682,109 +2899,112 @@ AND s.tradingdate = :ngay_gd;";;;;;;Done;Dữ liệu tĩnh
 FROM IDS.categories c
 WHERE c.active_flg = 1
 ORDER BY c.industry_cd";"-- Lưu ý: Cần xác nhận tên cột industry_cd, industry_name trong bảng IDS.categories
--- (sheet câu hỏi phân hệ ghi nhận bảng này có 10 ngành IDS, không phải 21 ngành KT)";"with KHGD as (
-SELECT symbol, SUM(kl) AS tong_kl FROM (
-SELECT
-t.SYMBOL AS symbol,
-SUM(t.EXECUTION_VOLUME) AS kl,
-SUM(CAST(REPLACE(t.EXECUTION_VALUE, ',', '') AS DECIMAL(38,2))) AS gt
-FROM krx.trade_book_hose t
-WHERE t.MARKET_ID IN ('STK')
-AND date_format(to_date(t.TRADE_DATE, 'd/M/yyyy'), 'yyyyMMdd') = :ngay_gd
-GROUP BY t.SYMBOL
-UNION ALL
-SELECT
-t.ISSUE_CODE AS symbol,
-SUM(t.TRADE_QUANTITY) AS kl,
-SUM(CAST(REPLACE(t.TRADE_PRICE, ',', '') AS DECIMAL(38,2)) * t.TRADE_QUANTITY) AS gt
-FROM krx.trade_book_hnx t
-WHERE t.MARKET_ID IN ('STX','UPX')
-AND t.TRADE_DATE = :ngay_gd
-GROUP BY t.ISSUE_CODE
-)
-GROUP BY symbol
-),
-MDDS as (
-SELECT closePrice diem_dong_cua, change, symbol
-FROM JAD_STOCKINFOR
-),
-SCPLH AS (
--- ⚠️ Cần xác nhận lại tên bảng/cột thật, đây đang là tên hiển thị tiếng Việt bị copy nhầm
-SELECT a.MCK, SUM(a.KHOI_LUONG_CK_DANG_LUU_HANH) AS KLLH
-FROM BM1_BC_KLCK_LUU_HANH a
-WHERE a.LOAI_CK = 'Co phieu'
-GROUP BY a.MCK
-),
-LNST AS (
-SELECT SUM(d.data_value) AS lnst, equity_ticker
-FROM IDS.data d
-JOIN IDS.report_catalog rc ON d.report_catalog_id = rc.id
-JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id
-JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id
-JOIN IDS.company_profiles cp ON cp.id = d.COMPANY_PROFILE_ID
-JOIN IDS.company_data cd ON d.company_data_id = cd.id
-WHERE rc2.col_desc = '1'
-AND rc.report_cd LIKE 'BCKQKD%'
-AND cd.report_year = :year AND cd.report_quarter = :quarter -- ✅ thêm lại để khớp kỳ với VCSH
-AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('60'))
-OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('60'))
-OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('21')))
-GROUP BY equity_ticker
-),
-VCSH AS (
-SELECT SUM(d.data_value) AS vcsh, equity_ticker MCK
-FROM IDS.data d
-JOIN IDS.company_profiles cp ON d.company_profile_id = cp.id
-JOIN IDS.report_catalog rc ON d.report_catalog_id = rc.id
-JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id
-JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id
-JOIN IDS.company_data cd ON d.company_data_id = cd.id
-WHERE rc2.col_desc = '1'
-AND rc.report_cd LIKE 'BCDKT%'
-AND cd.report_year = :year AND cd.report_quarter = :quarter
-AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('400'))
-OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('400'))
-OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('500')))
-),
-NGANH as (
-SELECT c.industry_cd, c.industry_name, cp.equity_ticker
-FROM IDS.categories c
-JOIN IDS.company_profiles cp ON cp.CATEGORY_L1_ID = c.id
-WHERE c.active_flg = 1
-),
-Von_hoa AS (
-SELECT c.symbol marketCode, c.diem_dong_cua, s.KLLH,
-c.diem_dong_cua * s.KLLH AS von_hoa
-FROM MDDS c
-JOIN SCPLH s ON c.symbol = s.MCK
-),
-PB_PE AS (
-SELECT
-v.marketCode, v.diem_dong_cua, v.KLLH, v.von_hoa,
-vc.vcsh, ln.lnst,
-vc.vcsh / NULLIF(v.KLLH, 0) AS gia_tri_so_sach,
-ln.lnst / NULLIF(v.KLLH, 0) AS eps,
-ROUND(v.diem_dong_cua / NULLIF(vc.vcsh / NULLIF(v.KLLH, 0), 0), 2) AS pb,
-ROUND(v.diem_dong_cua / NULLIF(ln.lnst / NULLIF(v.KLLH, 0), 0), 2) AS pe
-FROM Von_hoa v
-JOIN VCSH vc ON v.marketCode = vc.MCK
-JOIN LNST ln ON v.marketCode = ln.equity_ticker
-)
-SELECT
-a.marketCode AS Ma_chung_khoan,
-b.industry_name AS nganh,
-k.tong_kl,
-c.diem_dong_cua,
-c.change,
-a.von_hoa,
-a.pb,
-a.pe
-FROM PB_PE a
-JOIN NGANH b ON a.marketCode = b.equity_ticker
-JOIN MDDS c ON a.marketCode = c.symbol
-JOIN KHGD k ON a.marketCode = k.symbol
-ORDER BY k.tong_kl DESC
-FETCH FIRST :top_n ROWS ONLY";;;;Done;Dữ liệu tĩnh
+-- (sheet câu hỏi phân hệ ghi nhận bảng này có 10 ngành IDS, không phải 21 ngành KT)";"With MDDS as 
+( 
+SELECT 
+s.floorCode san 
+,s.symbol ma_chung_khoan 
+,idx.indexCode ma_chi_so 
+,s.StockType 
+,open Gia_mo_cua 
+,high Gia_cao_nhat 
+,low Gia_thap_nhat 
+,closePrice Gia_dong_cua 
+,reference Gia_tham_chieu 
+,change Thay_doi 
+FROM JAD_STOCKINFOR s 
+JOIN JAD_CSIDXINFOR idx 
+ON idx.Symbol = s.symbol 
+WHERE 1=1 
+
+AND TO_CHAR(TO_DATE(s.tradingdate, 'DD/MM/YYYY'), 'YYYYMMDD') = :ngay_gd 
+AND s.FloorCode IN ('10', '02', '04', '03') 
+AND s.StockType NOT IN ('1') 
+) 
+, NGANH as 
+( 
+SELECT c.industry_cd, c.industry_name,equity_ticker 
+FROM IDS.categories c 
+JOIN ids.COMPANY_PROFILES cp ON cp.CATEGORY_L1_ID = c.id 
+WHERE c.active_flg = 1 
+ORDER BY c.industry_cd 
+) 
+
+, Khoi_luong_giao_dich 
+( 
+SELECT 
+SUM(t.[Execution - Volume]) AS tong_kl_khop 
+, Symbol ma_chung_khoan 
+FROM TRADE_BOOK_HOSE t 
+WHERE 1=1 
+and t.[Trade Date] BETWEEN :tu_ngay AND :den_ngay 
+and Symbol=:ma_ck 
+and Market ID in ('UPX','STX','STK') 
+--GROUP BY t.Symbol 
+UNION ALL 
+-- HNX / UPCOM 
+SELECT 
+SUM(t.[Trade quantity]) AS tong_kl_khop 
+, Issue Code ma_chung_khoan 
+FROM TRADE_BOOK_HNX t 
+WHERE 1=1 
+and t.[Trade date] BETWEEN :tu_ngay AND :den_ngay 
+and Issue Code =:ma_ck 
+and Market ID in ('UPX','STX','STK') 
+--GROUP BY t.Symbol 
+) 
+, 
+LNST AS 
+( 
+SELECT SUM(d.data_value) AS lnst, equity_ticker 
+FROM IDS.data d 
+JOIN IDS.report_catalog rc ON d.report_catalog_id=rc.id 
+JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id 
+JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id 
+JOIN IDS.company_profiles cp ON cp.id = d.COMPANY_PROFILE_ID 
+-- JOIN IDS.company_data cd ON d.company_data_id=cd.id 
+WHERE rc2.col_desc = '1' 
+AND rc.report_cd LIKE 'BCKQKD%' 
+-- AND cd.report_year=:year AND cd.report_quarter=:quarter 
+AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('60')) 
+OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('60')) 
+OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('21'))) 
+GROUP BY equity_ticker 
+), 
+Doanh_thu AS 
+( 
+SELECT SUM(d.data_value) AS doanh_thu 
+,equity_ticker MCK 
+FROM IDS.data d 
+Join IDS.company_profiles cp ON d.company_profile_id = cp.id 
+JOIN IDS.report_catalog rc ON d.report_catalog_id=rc.id 
+JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id 
+JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id 
+JOIN IDS.company_data cd ON d.company_data_id=cd.id 
+JOIN IDS.company_profiles cp ON cp.id = d.COMPANY_PROFILE_ID 
+WHERE rc2.col_desc = '1' 
+AND rc.report_cd LIKE 'BCKQKD%' 
+AND cd.report_year=:year AND cd.report_quarter=:quarter 
+AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('10')) 
+OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('10')) 
+OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('03'))) 
+GROUP BY equity_ticker 
+) 
+select 
+Gia_mo_cua 
+, Gia_cao_nhat 
+, Gia_thap_nhat 
+, Gia_dong_cua 
+, Gia_tham_chieu 
+, tong_kl_khop 
+from MDDS a 
+join Khoi_luong_giao_dich b on a.ma_chung_khoan = b.ma_chung_khoan 
+join Doanh_thu on Doanh_thu.MCK = a.ma_chung_khoan 
+join LNST on LNST.equity_ticker = a.ma_chung_khoan 
+join NGANH on NGANH.equity_ticker = a.ma_chung_khoan 
+GROUP BY symbol 
+ORDER BY tong_kl DESC FETCH FIRST :top_n ROWS ONLY 
+";;;;Done;Dữ liệu tĩnh
 10;;Top khối lượng theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành) theo dạng kĩ thuật;Sàn;;Dashboard;Chiều;Trùng;Mã CK;MDDS;;X;;Done;Thông tin thị trường;JAD_MARKETINFOR;marketId;;"SELECT DISTINCT
 i.FloorCode,
 CASE i.FloorCode
@@ -2837,7 +3057,129 @@ AND StockType NOT IN (
 'D' -- Trái phiếu chuyển đổi HOSE
 )
 AND s.tradingdate = :ngay_gd;";;;;;;Done;Dữ liệu tĩnh
-11;;Top đột phá theo toàn thị trường;Ngày;;Dashboard;Chiều;Trùng;Mã CK;;;X;;Done;;;;;;;;;;;Done;Dữ liệu tĩnh
+11;;Top đột phá theo toàn thị trường;Ngày;;Dashboard;Chiều;Trùng;Mã CK;;;X;;Done;;;;;;;"WITH KHGD_DAILY AS ( 
+-- Khối lượng giao dịch theo TỪNG NGÀY (không chỉ ngày hiện tại) để tính KLGDTB 
+SELECT symbol, trade_date, SUM(kl) AS kl_ngay FROM ( 
+SELECT 
+t.SYMBOL AS symbol, 
+date_format(to_date(t.TRADE_DATE, 'd/M/yyyy'), 'yyyyMMdd') AS trade_date, 
+t.EXECUTION_VOLUME AS kl 
+FROM krx.trade_book_hose t 
+WHERE t.MARKET_ID IN ('STK') 
+UNION ALL 
+SELECT 
+t.ISSUE_CODE AS symbol, 
+t.TRADE_DATE AS trade_date, 
+t.TRADE_QUANTITY AS kl 
+FROM krx.trade_book_hnx t 
+WHERE t.MARKET_ID IN ('STX','UPX') 
+) 
+GROUP BY symbol, trade_date 
+), 
+KL_STATS AS ( 
+SELECT 
+symbol, 
+trade_date, 
+kl_ngay, 
+-- KLGD trung bình N ngày liền trước (KHÔNG tính ngày hiện tại) 
+AVG(kl_ngay) OVER ( 
+PARTITION BY symbol 
+ORDER BY trade_date 
+ROWS BETWEEN :so_ngay PRECEDING AND 1 PRECEDING 
+) AS kl_tb_n_ngay 
+FROM KHGD_DAILY 
+), 
+KHGD_HIEN_TAI AS ( 
+SELECT symbol, kl_ngay AS tong_kl, kl_tb_n_ngay, 
+ROUND(kl_ngay / NULLIF(kl_tb_n_ngay, 0), 2) AS ty_le_dot_bien 
+FROM KL_STATS 
+WHERE trade_date = :ngay_gd 
+), 
+MDDS as ( 
+SELECT 
+closePrice diem_dong_cua, 
+change, 
+symbol 
+FROM JAD_STOCKINFOR 
+), 
+SCPLH AS ( 
+SELECT a.MCK, SUM(a.KHOI_LUONG_CK_DANG_LUU_HANH) AS KLLH 
+FROM BM1_BC_KLCK_LUU_HANH a 
+WHERE a.LOAI_CK = 'Co phieu' 
+GROUP BY a.MCK 
+), 
+LNST AS ( 
+SELECT SUM(d.data_value) AS lnst, equity_ticker 
+FROM IDS.data d 
+JOIN IDS.report_catalog rc ON d.report_catalog_id = rc.id 
+JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id 
+JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id 
+JOIN IDS.company_profiles cp ON cp.id = d.COMPANY_PROFILE_ID 
+JOIN IDS.company_data cd ON d.company_data_id = cd.id 
+WHERE rc2.col_desc = '1' 
+AND rc.report_cd LIKE 'BCKQKD%' 
+AND cd.report_year = :year AND cd.report_quarter = :quarter 
+AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('60')) 
+OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('60')) 
+OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('21'))) 
+GROUP BY equity_ticker 
+), 
+VCSH AS ( 
+SELECT SUM(d.data_value) AS vcsh, equity_ticker MCK 
+FROM IDS.data d 
+JOIN IDS.company_profiles cp ON d.company_profile_id = cp.id 
+JOIN IDS.report_catalog rc ON d.report_catalog_id = rc.id 
+JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id 
+JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id 
+JOIN IDS.company_data cd ON d.company_data_id = cd.id 
+WHERE rc2.col_desc = '1' 
+AND rc.report_cd LIKE 'BCDKT%' 
+AND cd.report_year = :year AND cd.report_quarter = :quarter 
+AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('400')) 
+OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('400')) 
+OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('500'))) 
+), 
+Von_hoa AS ( 
+SELECT c.symbol marketCode, c.diem_dong_cua, s.KLLH, 
+c.diem_dong_cua * s.KLLH AS von_hoa 
+FROM MDDS c 
+JOIN SCPLH s ON c.symbol = s.MCK 
+), 
+PB_PE AS ( 
+SELECT 
+v.marketCode, v.diem_dong_cua, v.KLLH, v.von_hoa, 
+ROUND(v.diem_dong_cua / NULLIF(vc.vcsh / NULLIF(v.KLLH, 0), 0), 2) AS pb, 
+ROUND(v.diem_dong_cua / NULLIF(ln.lnst / NULLIF(v.KLLH, 0), 0), 2) AS pe 
+FROM Von_hoa v 
+JOIN VCSH vc ON v.marketCode = vc.MCK 
+JOIN LNST ln ON v.marketCode = ln.equity_ticker 
+) 
+SELECT 
+a.marketCode AS ma_ck, 
+k.tong_kl AS khoi_luong, 
+c.diem_dong_cua AS gia_dong_cua, 
+c.change AS thay_doi, 
+ROUND((c.change / NULLIF(c.diem_dong_cua - c.change, 0)) * 100, 2) AS pct_thay_doi, 
+a.von_hoa, 
+a.pe, 
+a.pb, 
+k.kl_tb_n_ngay AS klgdtb_n_ngay, 
+k.ty_le_dot_bien 
+FROM PB_PE a 
+JOIN MDDS c ON a.marketCode = c.symbol 
+JOIN KHGD_HIEN_TAI k ON a.marketCode = k.symbol 
+WHERE k.ty_le_dot_bien > :ty_le 
+ORDER BY k.ty_le_dot_bien DESC 
+FETCH FIRST :top_n ROWS ONLY 
+
+
+
+
+
+
+
+
+";;;;Done;Dữ liệu tĩnh
 11;;Top đột phá theo toàn thị trường;Tỷ lệ giữa KLGD/KLGDTB trong 5 ngày lớn hơn X lần;;Dashboard;Chỉ tiêu phái sinh;TB;Mã CK;CSDLTT;X;X;X;Done;Sổ lệnh;TRADE_BOOK_HOSE/ TRADE_BOOK_HNX;"HOSE: [Execution - Volume]
 [Trade Date], [Market ID]
 [Board Type]
@@ -3259,127 +3601,126 @@ AND StockType NOT IN (
 'D' -- Trái phiếu chuyển đổi HOSE
 )
 AND s.tradingdate = :ngay_gd;";;;;;;Done;Dữ liệu tĩnh
-12;;Top đột phá dạng biểu đồ kỹ thuật theo toàn thị trường;Chỉ số;;Dashboard;Chiều;Trùng;Mã CK;MDDS;;X;;Done;Thông tin thị trường;JAD_CSIDXINFOR;indexCode;Join bảng JAD_CSIDXINFOR với JAD_STOCKINFOR qua symbol;"SELECT s.symbol, idx.indexCode
-FROM JAD_STOCKINFOR s
-JOIN JAD_CSIDXINFOR idx ON s.symbol = idx.symbol
-AND s.tradingdate = idx.tradingdate;
-";;;;;;;
-12;;Top đột phá dạng biểu đồ kỹ thuật theo toàn thị trường;Ngày;;Dashboard;Chiều;Trùng;Mã CK;;;X;;Done;;;;;;;"""WITH KHGD_DAILY AS (
--- Khối lượng giao dịch theo TỪNG NGÀY (không chỉ ngày hiện tại) để tính KLGDTB
-SELECT symbol, trade_date, SUM(kl) AS kl_ngay FROM (
-SELECT
-t.SYMBOL AS symbol,
-date_format(to_date(t.TRADE_DATE, 'd/M/yyyy'), 'yyyyMMdd') AS trade_date,
-t.EXECUTION_VOLUME AS kl
-FROM krx.trade_book_hose t
-WHERE t.MARKET_ID IN ('STK')
-UNION ALL
-SELECT
-t.ISSUE_CODE AS symbol,
-t.TRADE_DATE AS trade_date,
-t.TRADE_QUANTITY AS kl
-FROM krx.trade_book_hnx t
-WHERE t.MARKET_ID IN ('STX','UPX')
-)
-GROUP BY symbol, trade_date
-),
-KL_STATS AS (
-SELECT
-symbol,
-trade_date,
-kl_ngay,
--- KLGD trung bình N ngày liền trước (KHÔNG tính ngày hiện tại)
-AVG(kl_ngay) OVER (
-PARTITION BY symbol
-ORDER BY trade_date
-ROWS BETWEEN :so_ngay PRECEDING AND 1 PRECEDING
-) AS kl_tb_n_ngay
-FROM KHGD_DAILY
-),
-KHGD_HIEN_TAI AS (
-SELECT symbol, kl_ngay AS tong_kl, kl_tb_n_ngay,
-ROUND(kl_ngay / NULLIF(kl_tb_n_ngay, 0), 2) AS ty_le_dot_bien
-FROM KL_STATS
-WHERE trade_date = :ngay_gd
-),
+12;;Top đột phá dạng biểu đồ kỹ thuật theo toàn thị trường;Ngày;;Dashboard;Chiều;Trùng;Mã CK;;;X;;Done;;;;;;;"WITH KHGD_DAILY AS ( 
+-- Khối lượng giao dịch theo TỪNG NGÀY (không chỉ ngày hiện tại) để tính KLGDTB 
+SELECT symbol, trade_date, SUM(kl) AS kl_ngay FROM ( 
+SELECT 
+t.SYMBOL AS symbol, 
+date_format(to_date(t.TRADE_DATE, 'd/M/yyyy'), 'yyyyMMdd') AS trade_date, 
+t.EXECUTION_VOLUME AS kl 
+FROM krx.trade_book_hose t 
+WHERE t.MARKET_ID IN ('STK') 
+UNION ALL 
+SELECT 
+t.ISSUE_CODE AS symbol, 
+t.TRADE_DATE AS trade_date, 
+t.TRADE_QUANTITY AS kl 
+FROM krx.trade_book_hnx t 
+WHERE t.MARKET_ID IN ('STX','UPX') 
+) 
+GROUP BY symbol, trade_date 
+), 
+KL_STATS AS ( 
+SELECT 
+symbol, 
+trade_date, 
+kl_ngay, 
+-- KLGD trung bình N ngày liền trước (KHÔNG tính ngày hiện tại) 
+AVG(kl_ngay) OVER ( 
+PARTITION BY symbol 
+ORDER BY trade_date 
+ROWS BETWEEN :so_ngay PRECEDING AND 1 PRECEDING 
+) AS kl_tb_n_ngay 
+FROM KHGD_DAILY 
+), 
+KHGD_HIEN_TAI AS ( 
+SELECT symbol, kl_ngay AS tong_kl, kl_tb_n_ngay, 
+ROUND(kl_ngay / NULLIF(kl_tb_n_ngay, 0), 2) AS ty_le_dot_bien 
+FROM KL_STATS 
+WHERE trade_date = :ngay_gd 
+), 
 MDDS as ( 
 SELECT 
-s.floorCode san
-,s.symbol ma_chung_khoan
-,idx.indexCode ma_chi_so
+s.floorCode san 
+,s.symbol ma_chung_khoan 
+,idx.indexCode ma_chi_so 
 ,s.StockType 
-,open Gia_mo_cua
-,high Gia_cao_nhat
+,open Gia_mo_cua 
+,high Gia_cao_nhat 
 ,low Gia_thap_nhat 
-,closePrice Gia_dong_cua
-,reference Gia_tham_chieu
+,closePrice Gia_dong_cua 
+,reference Gia_tham_chieu 
 ,change Thay_doi 
-FROM JAD_STOCKINFOR s
-JOIN JAD_CSIDXINFOR idx
-ON idx.Symbol = s.symbol
+FROM JAD_STOCKINFOR s 
+JOIN JAD_CSIDXINFOR idx 
+ON idx.Symbol = s.symbol 
 WHERE 1=1 
-AND TO_CHAR(TO_DATE(s.tradingdate, 'DD/MM/YYYY'), 'YYYYMMDD') = :ngay_gd
-AND s.FloorCode IN ('10', '02', '04', '03')
-AND s.StockType NOT IN ('1')
-),
-SCPLH AS (
-SELECT a.MCK, SUM(a.KHOI_LUONG_CK_DANG_LUU_HANH) AS KLLH
-FROM BM1_BC_KLCK_LUU_HANH a
-WHERE a.LOAI_CK = 'Co phieu'
-GROUP BY a.MCK
-),
-LNST AS (
-SELECT SUM(d.data_value) AS lnst, equity_ticker
-FROM IDS.data d
-JOIN IDS.report_catalog rc ON d.report_catalog_id = rc.id
-JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id
-JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id
-JOIN IDS.company_profiles cp ON cp.id = d.COMPANY_PROFILE_ID
-JOIN IDS.company_data cd ON d.company_data_id = cd.id
-WHERE rc2.col_desc = '1'
-AND rc.report_cd LIKE 'BCKQKD%'
-AND cd.report_year = :year AND cd.report_quarter = :quarter
-AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('60'))
-OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('60'))
-OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('21')))
-GROUP BY equity_ticker
-),
-VCSH AS (
-SELECT SUM(d.data_value) AS vcsh, equity_ticker MCK
-FROM IDS.data d
-JOIN IDS.company_profiles cp ON d.company_profile_id = cp.id
-JOIN IDS.report_catalog rc ON d.report_catalog_id = rc.id
-JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id
-JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id
-JOIN IDS.company_data cd ON d.company_data_id = cd.id
-WHERE rc2.col_desc = '1'
-AND rc.report_cd LIKE 'BCDKT%'
-AND cd.report_year = :year AND cd.report_quarter = :quarter
-AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('400'))
-OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('400'))
-OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('500')))
-)
-,
-NGANH as (
-SELECT c.industry_cd, c.industry_name, cp.equity_ticker
-FROM IDS.categories c
-JOIN IDS.company_profiles cp ON cp.CATEGORY_L1_ID = c.id
-WHERE c.active_flg = 1
-)
-SELECT
-a.marketCode AS ma_ck,
-b.industry_name AS nganh,
-k.tong_kl AS khoi_luong,
-c.diem_dong_cua AS gia_dong_cua,
-c.change AS thay_doi,
-ROUND((c.change / NULLIF(c.diem_dong_cua - c.change, 0)) * 100, 2) AS pct_thay_doi,
-k.kl_tb_n_ngay AS klgdtb_n_ngay,
-k.ty_le_dot_bien
-FROM MDDS c ON a.marketCode = c.symbol
-JOIN KHGD_HIEN_TAI k ON a.marketCode = k.symbol
-WHERE k.ty_le_dot_bien > :ty_le
-ORDER BY k.ty_le_dot_bien DESC
-FETCH FIRST :top_n ROWS ONLY"" 
+AND TO_CHAR(TO_DATE(s.tradingdate, 'DD/MM/YYYY'), 'YYYYMMDD') = :ngay_gd 
+AND s.FloorCode IN ('10', '02', '04', '03') 
+AND s.StockType NOT IN ('1') 
+), 
+LNST AS ( 
+SELECT SUM(d.data_value) AS lnst, equity_ticker 
+FROM IDS.data d 
+JOIN IDS.report_catalog rc ON d.report_catalog_id = rc.id 
+JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id 
+JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id 
+JOIN IDS.company_profiles cp ON cp.id = d.COMPANY_PROFILE_ID 
+JOIN IDS.company_data cd ON d.company_data_id = cd.id 
+WHERE rc2.col_desc = '1' 
+AND rc.report_cd LIKE 'BCKQKD%' 
+AND cd.report_year = :year AND cd.report_quarter = :quarter 
+AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('60')) 
+OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('60')) 
+OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('21'))) 
+GROUP BY equity_ticker 
+), 
+Doanh_thu AS 
+( 
+SELECT SUM(d.data_value) AS doanh_thu 
+,equity_ticker MCK 
+FROM IDS.data d 
+Join IDS.company_profiles cp ON d.company_profile_id = cp.id 
+JOIN IDS.report_catalog rc ON d.report_catalog_id=rc.id 
+JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id 
+JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id 
+JOIN IDS.company_data cd ON d.company_data_id=cd.id 
+JOIN IDS.company_profiles cp ON cp.id = d.COMPANY_PROFILE_ID 
+WHERE rc2.col_desc = '1' 
+AND rc.report_cd LIKE 'BCKQKD%' 
+AND cd.report_year=:year AND cd.report_quarter=:quarter 
+AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('10')) 
+OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('10')) 
+OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('03'))) 
+GROUP BY equity_ticker 
+) 
+SELECT 
+a.symbol AS ma_ck, 
+k.tong_kl AS khoi_luong, 
+,c.Gia_mo_cua 
+,c.Gia_cao_nhat 
+,c.Gia_thap_nhat 
+,c.Gia_dong_cua 
+,c.Gia_tham_chieu 
+k.kl_tb_n_ngay AS klgdtb_n_ngay, 
+k.ty_le_dot_bien 
+FROM MDDS c 
+JOIN KHGD_HIEN_TAI k ON c.symbol = k.symbol 
+join Doanh_thu dt on dt.MCK = c.symbol 
+join LNST on LNST.equity_ticker = c.symbol 
+WHERE k.ty_le_dot_bien > :ty_le 
+ORDER BY k.ty_le_dot_bien DESC 
+FETCH FIRST :top_n ROWS ONLY 
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3711,129 +4052,130 @@ WHEN '02' THEN 'HNX'
 WHEN '04' THEN 'UPCOM'
 END AS ten_san
 FROM JAD_MARKETINFORi
-WHERE i.TradingDate = :ngay_gd;";"IDXInfor.FloorCode: 10=HOSE, 02=HNX, 04=UPCOM; JAD_MARKETINFOR.marketId tương đương";;;;;Done;Dữ liệu tĩnh
-13;;Top đột phá theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành);Bộ chỉ số ngành/ bộ chỉ số thị trường;;Dashboard;Chiều;Trùng;Mã CK;MDDS;;X;X;Done;Thông tin thị trường;JAD_MARKETINFOR;IndexsTypeCode;;;Hiện tại bên CK đang sửa nên chưa có dữ liệu để xác thực giữa bộ chỉ số thị tường và bộ chỉ số ngành;"""WITH KHGD_DAILY AS (
--- Khối lượng giao dịch theo TỪNG NGÀY (không chỉ ngày hiện tại) để tính KLGDTB
-SELECT symbol, trade_date, SUM(kl) AS kl_ngay FROM (
-SELECT
-t.SYMBOL AS symbol,
-date_format(to_date(t.TRADE_DATE, 'd/M/yyyy'), 'yyyyMMdd') AS trade_date,
-t.EXECUTION_VOLUME AS kl
-FROM krx.trade_book_hose t
-WHERE t.MARKET_ID IN ('STK')
-UNION ALL
-SELECT
-t.ISSUE_CODE AS symbol,
-t.TRADE_DATE AS trade_date,
-t.TRADE_QUANTITY AS kl
-FROM krx.trade_book_hnx t
-WHERE t.MARKET_ID IN ('STX','UPX')
-)
-GROUP BY symbol, trade_date
-),
-KL_STATS AS (
-SELECT
-symbol,
-trade_date,
-kl_ngay,
--- KLGD trung bình N ngày liền trước (KHÔNG tính ngày hiện tại)
-AVG(kl_ngay) OVER (
-PARTITION BY symbol
-ORDER BY trade_date
-ROWS BETWEEN :so_ngay PRECEDING AND 1 PRECEDING
-) AS kl_tb_n_ngay
-FROM KHGD_DAILY
-),
-KHGD_HIEN_TAI AS (
-SELECT symbol, kl_ngay AS tong_kl, kl_tb_n_ngay,
-ROUND(kl_ngay / NULLIF(kl_tb_n_ngay, 0), 2) AS ty_le_dot_bien
-FROM KL_STATS
-WHERE trade_date = :ngay_gd
-),
+WHERE i.TradingDate = :ngay_gd;";"IDXInfor.FloorCode: 10=HOSE, 02=HNX, 04=UPCOM; JAD_MARKETINFOR.marketId tương đương";"WITH KHGD_DAILY AS ( 
+-- Khối lượng giao dịch theo TỪNG NGÀY (không chỉ ngày hiện tại) để tính KLGDTB 
+SELECT symbol, trade_date, SUM(kl) AS kl_ngay FROM ( 
+SELECT 
+t.SYMBOL AS symbol, 
+date_format(to_date(t.TRADE_DATE, 'd/M/yyyy'), 'yyyyMMdd') AS trade_date, 
+t.EXECUTION_VOLUME AS kl 
+FROM krx.trade_book_hose t 
+WHERE t.MARKET_ID IN ('STK') 
+UNION ALL 
+SELECT 
+t.ISSUE_CODE AS symbol, 
+t.TRADE_DATE AS trade_date, 
+t.TRADE_QUANTITY AS kl 
+FROM krx.trade_book_hnx t 
+WHERE t.MARKET_ID IN ('STX','UPX') 
+) 
+GROUP BY symbol, trade_date 
+), 
+KL_STATS AS ( 
+SELECT 
+symbol, 
+trade_date, 
+kl_ngay, 
+-- KLGD trung bình N ngày liền trước (KHÔNG tính ngày hiện tại) 
+AVG(kl_ngay) OVER ( 
+PARTITION BY symbol 
+ORDER BY trade_date 
+ROWS BETWEEN :so_ngay PRECEDING AND 1 PRECEDING 
+) AS kl_tb_n_ngay 
+FROM KHGD_DAILY 
+), 
+KHGD_HIEN_TAI AS ( 
+SELECT symbol, kl_ngay AS tong_kl, kl_tb_n_ngay, 
+ROUND(kl_ngay / NULLIF(kl_tb_n_ngay, 0), 2) AS ty_le_dot_bien 
+FROM KL_STATS 
+WHERE trade_date = :ngay_gd 
+), 
 MDDS as ( 
 SELECT 
-s.floorCode san
-,s.symbol ma_chung_khoan
-,idx.indexCode ma_chi_so
-,s.StockType 
-,open Gia_mo_cua
-,high Gia_cao_nhat
-,low Gia_thap_nhat 
-,closePrice Gia_dong_cua
-,reference Gia_tham_chieu
-,change Thay_doi 
-FROM JAD_STOCKINFOR s
-JOIN JAD_CSIDXINFOR idx
-ON idx.Symbol = s.symbol
-WHERE 1=1 
-AND TO_CHAR(TO_DATE(s.tradingdate, 'DD/MM/YYYY'), 'YYYYMMDD') = :ngay_gd
-AND s.FloorCode IN ('10', '02', '04', '03')
-AND s.StockType NOT IN ('1')
-),
-SCPLH AS (
-SELECT a.MCK, SUM(a.KHOI_LUONG_CK_DANG_LUU_HANH) AS KLLH
-FROM BM1_BC_KLCK_LUU_HANH a
-WHERE a.LOAI_CK = 'Co phieu'
-GROUP BY a.MCK
-),
-LNST AS (
-SELECT SUM(d.data_value) AS lnst, equity_ticker
-FROM IDS.data d
-JOIN IDS.report_catalog rc ON d.report_catalog_id = rc.id
-JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id
-JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id
-JOIN IDS.company_profiles cp ON cp.id = d.COMPANY_PROFILE_ID
-JOIN IDS.company_data cd ON d.company_data_id = cd.id
-WHERE rc2.col_desc = '1'
-AND rc.report_cd LIKE 'BCKQKD%'
-AND cd.report_year = :year AND cd.report_quarter = :quarter
-AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('60'))
-OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('60'))
-OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('21')))
-GROUP BY equity_ticker
-),
-VCSH AS (
-SELECT SUM(d.data_value) AS vcsh, equity_ticker MCK
-FROM IDS.data d
-JOIN IDS.company_profiles cp ON d.company_profile_id = cp.id
-JOIN IDS.report_catalog rc ON d.report_catalog_id = rc.id
-JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id
-JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id
-JOIN IDS.company_data cd ON d.company_data_id = cd.id
-WHERE rc2.col_desc = '1'
-AND rc.report_cd LIKE 'BCDKT%'
-AND cd.report_year = :year AND cd.report_quarter = :quarter
-AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('400'))
-OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('400'))
-OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('500')))
-)
-,
-NGANH as (
-SELECT c.industry_cd, c.industry_name, cp.equity_ticker
-FROM IDS.categories c
-JOIN IDS.company_profiles cp ON cp.CATEGORY_L1_ID = c.id
-WHERE c.active_flg = 1
-)
-SELECT
-a.marketCode AS ma_ck,
-b.industry_name AS nganh,
-k.tong_kl AS khoi_luong,
-c.diem_dong_cua AS gia_dong_cua,
-c.change AS thay_doi,
-ROUND((c.change / NULLIF(c.diem_dong_cua - c.change, 0)) * 100, 2) AS pct_thay_doi,
-k.kl_tb_n_ngay AS klgdtb_n_ngay,
-k.ty_le_dot_bien
-FROM MDDS c ON a.marketCode = c.symbol
-JOIN KHGD_HIEN_TAI k ON a.marketCode = k.symbol
-WHERE k.ty_le_dot_bien > :ty_le
-ORDER BY k.ty_le_dot_bien DESC
-FETCH FIRST :top_n ROWS ONLY"" 
+closePrice diem_dong_cua, 
+change, 
+symbol 
+FROM JAD_STOCKINFOR 
+), 
+SCPLH AS ( 
+SELECT a.MCK, SUM(a.KHOI_LUONG_CK_DANG_LUU_HANH) AS KLLH 
+FROM BM1_BC_KLCK_LUU_HANH a 
+WHERE a.LOAI_CK = 'Co phieu' 
+GROUP BY a.MCK 
+), 
+LNST AS ( 
+SELECT SUM(d.data_value) AS lnst, equity_ticker 
+FROM IDS.data d 
+JOIN IDS.report_catalog rc ON d.report_catalog_id = rc.id 
+JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id 
+JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id 
+JOIN IDS.company_profiles cp ON cp.id = d.COMPANY_PROFILE_ID 
+JOIN IDS.company_data cd ON d.company_data_id = cd.id 
+WHERE rc2.col_desc = '1' 
+AND rc.report_cd LIKE 'BCKQKD%' 
+AND cd.report_year = :year AND cd.report_quarter = :quarter 
+AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('60')) 
+OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('60')) 
+OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('21'))) 
+GROUP BY equity_ticker 
+), 
+VCSH AS ( 
+SELECT SUM(d.data_value) AS vcsh, equity_ticker MCK 
+FROM IDS.data d 
+JOIN IDS.company_profiles cp ON d.company_profile_id = cp.id 
+JOIN IDS.report_catalog rc ON d.report_catalog_id = rc.id 
+JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id 
+JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id 
+JOIN IDS.company_data cd ON d.company_data_id = cd.id 
+WHERE rc2.col_desc = '1' 
+AND rc.report_cd LIKE 'BCDKT%' 
+AND cd.report_year = :year AND cd.report_quarter = :quarter 
+AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('400')) 
+OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('400')) 
+OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('500'))) 
+), 
+Von_hoa AS ( 
+SELECT c.symbol marketCode, c.diem_dong_cua, s.KLLH, 
+c.diem_dong_cua * s.KLLH AS von_hoa 
+FROM MDDS c 
+JOIN SCPLH s ON c.symbol = s.MCK 
+), 
+PB_PE AS ( 
+SELECT 
+v.marketCode, v.diem_dong_cua, v.KLLH, v.von_hoa, 
+ROUND(v.diem_dong_cua / NULLIF(vc.vcsh / NULLIF(v.KLLH, 0), 0), 2) AS pb, 
+ROUND(v.diem_dong_cua / NULLIF(ln.lnst / NULLIF(v.KLLH, 0), 0), 2) AS pe 
+FROM Von_hoa v 
+JOIN VCSH vc ON v.marketCode = vc.MCK 
+JOIN LNST ln ON v.marketCode = ln.equity_ticker 
+) 
+SELECT 
+a.marketCode AS ma_ck, 
+k.tong_kl AS khoi_luong, 
+c.diem_dong_cua AS gia_dong_cua, 
+c.change AS thay_doi, 
+ROUND((c.change / NULLIF(c.diem_dong_cua - c.change, 0)) * 100, 2) AS pct_thay_doi, 
+a.von_hoa, 
+a.pe, 
+a.pb, 
+k.kl_tb_n_ngay AS klgdtb_n_ngay, 
+k.ty_le_dot_bien 
+FROM PB_PE a 
+JOIN MDDS c ON a.marketCode = c.symbol 
+JOIN KHGD_HIEN_TAI k ON a.marketCode = k.symbol 
+WHERE k.ty_le_dot_bien > :ty_le 
+ORDER BY k.ty_le_dot_bien DESC 
+FETCH FIRST :top_n ROWS ONLY 
+
+
+
 
 
 
 
 
 ";;;;Done;Dữ liệu tĩnh
+13;;Top đột phá theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành);Bộ chỉ số ngành/ bộ chỉ số thị trường;;Dashboard;Chiều;Trùng;Mã CK;MDDS;;X;X;Done;Thông tin thị trường;JAD_MARKETINFOR;IndexsTypeCode;;;Hiện tại bên CK đang sửa nên chưa có dữ liệu để xác thực giữa bộ chỉ số thị tường và bộ chỉ số ngành;;;;Done;Dữ liệu tĩnh;
 13;;Top đột phá theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành);Ngày;;Dashboard;Chiều;Trùng;Mã CK;;;X;;Done;;;;;;;;;;Done;Dữ liệu tĩnh;
 13;;Top đột phá theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành);Tỷ lệ giữa KLGD/KLGDTB trong 5 ngày lớn hơn X lần;;Dashboard;Chỉ tiêu phái sinh;Trùng;Mã CK;CSDLTT;X;X;X;Done;sổ lệnh;TRADE_BOOK_HOSE/ TRADE_BOOK_HNX;"HOSE: [Execution - Volume]
 [Trade Date], [Market ID]
@@ -4254,133 +4596,6 @@ AND StockType NOT IN (
 'D' -- Trái phiếu chuyển đổi HOSE
 )
 AND s.tradingdate = :ngay_gd;";;;;;;Done;Dữ liệu tĩnh
-14;;Top đột phá dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành);Chỉ số;;Dashboard;Chiều;Trùng;Mã CK;MDDS;;X;;Done;Thông tin thị trường;JAD_CSIDXINFOR;indexCode;Join bảng JAD_CSIDXINFOR với JAD_STOCKINFOR qua symbol;"SELECT s.symbol, idx.indexCode
-FROM JAD_STOCKINFOR s
-JOIN JAD_CSIDXINFOR idx ON s.symbol = idx.symbol
-AND s.tradingdate = idx.tradingdate;
-";;"""WITH KHGD_DAILY AS (
--- Khối lượng giao dịch theo TỪNG NGÀY (không chỉ ngày hiện tại) để tính KLGDTB
-SELECT symbol, trade_date, SUM(kl) AS kl_ngay FROM (
-SELECT
-t.SYMBOL AS symbol,
-date_format(to_date(t.TRADE_DATE, 'd/M/yyyy'), 'yyyyMMdd') AS trade_date,
-t.EXECUTION_VOLUME AS kl
-FROM krx.trade_book_hose t
-WHERE t.MARKET_ID IN ('STK')
-UNION ALL
-SELECT
-t.ISSUE_CODE AS symbol,
-t.TRADE_DATE AS trade_date,
-t.TRADE_QUANTITY AS kl
-FROM krx.trade_book_hnx t
-WHERE t.MARKET_ID IN ('STX','UPX')
-)
-GROUP BY symbol, trade_date
-),
-KL_STATS AS (
-SELECT
-symbol,
-trade_date,
-kl_ngay,
--- KLGD trung bình N ngày liền trước (KHÔNG tính ngày hiện tại)
-AVG(kl_ngay) OVER (
-PARTITION BY symbol
-ORDER BY trade_date
-ROWS BETWEEN :so_ngay PRECEDING AND 1 PRECEDING
-) AS kl_tb_n_ngay
-FROM KHGD_DAILY
-),
-KHGD_HIEN_TAI AS (
-SELECT symbol, kl_ngay AS tong_kl, kl_tb_n_ngay,
-ROUND(kl_ngay / NULLIF(kl_tb_n_ngay, 0), 2) AS ty_le_dot_bien
-FROM KL_STATS
-WHERE trade_date = :ngay_gd
-),
-MDDS as ( 
-SELECT 
-s.floorCode san
-,s.symbol ma_chung_khoan
-,idx.indexCode ma_chi_so
-,s.StockType 
-,open Gia_mo_cua
-,high Gia_cao_nhat
-,low Gia_thap_nhat 
-,closePrice Gia_dong_cua
-,reference Gia_tham_chieu
-,change Thay_doi 
-FROM JAD_STOCKINFOR s
-JOIN JAD_CSIDXINFOR idx
-ON idx.Symbol = s.symbol
-WHERE 1=1 
-AND TO_CHAR(TO_DATE(s.tradingdate, 'DD/MM/YYYY'), 'YYYYMMDD') = :ngay_gd
-AND s.FloorCode IN ('10', '02', '04', '03')
-AND s.StockType NOT IN ('1')
-),
-SCPLH AS (
-SELECT a.MCK, SUM(a.KHOI_LUONG_CK_DANG_LUU_HANH) AS KLLH
-FROM BM1_BC_KLCK_LUU_HANH a
-WHERE a.LOAI_CK = 'Co phieu'
-GROUP BY a.MCK
-),
-LNST AS (
-SELECT SUM(d.data_value) AS lnst, equity_ticker
-FROM IDS.data d
-JOIN IDS.report_catalog rc ON d.report_catalog_id = rc.id
-JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id
-JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id
-JOIN IDS.company_profiles cp ON cp.id = d.COMPANY_PROFILE_ID
-JOIN IDS.company_data cd ON d.company_data_id = cd.id
-WHERE rc2.col_desc = '1'
-AND rc.report_cd LIKE 'BCKQKD%'
-AND cd.report_year = :year AND cd.report_quarter = :quarter
-AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('60'))
-OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('60'))
-OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('21')))
-GROUP BY equity_ticker
-),
-VCSH AS (
-SELECT SUM(d.data_value) AS vcsh, equity_ticker MCK
-FROM IDS.data d
-JOIN IDS.company_profiles cp ON d.company_profile_id = cp.id
-JOIN IDS.report_catalog rc ON d.report_catalog_id = rc.id
-JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id
-JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id
-JOIN IDS.company_data cd ON d.company_data_id = cd.id
-WHERE rc2.col_desc = '1'
-AND rc.report_cd LIKE 'BCDKT%'
-AND cd.report_year = :year AND cd.report_quarter = :quarter
-AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('400'))
-OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('400'))
-OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('500')))
-)
-,
-NGANH as (
-SELECT c.industry_cd, c.industry_name, cp.equity_ticker
-FROM IDS.categories c
-JOIN IDS.company_profiles cp ON cp.CATEGORY_L1_ID = c.id
-WHERE c.active_flg = 1
-)
-SELECT
-a.marketCode AS ma_ck,
-b.industry_name AS nganh,
-k.tong_kl AS khoi_luong,
-c.diem_dong_cua AS gia_dong_cua,
-c.change AS thay_doi,
-ROUND((c.change / NULLIF(c.diem_dong_cua - c.change, 0)) * 100, 2) AS pct_thay_doi,
-k.kl_tb_n_ngay AS klgdtb_n_ngay,
-k.ty_le_dot_bien
-FROM MDDS c ON a.marketCode = c.symbol
-JOIN KHGD_HIEN_TAI k ON a.marketCode = k.symbol
-WHERE k.ty_le_dot_bien > :ty_le
-ORDER BY k.ty_le_dot_bien DESC
-FETCH FIRST :top_n ROWS ONLY"" 
-
-
-
-
-
-
-";;;;;
 14;;Top đột phá dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành);Sàn;;Dashboard;Chiều;Trùng;Mã CK;MDDS;;X;X;Done;Thông tin thị trường;JAD_MARKETINFOR;marketId;;"SELECT DISTINCT
 i.FloorCode,
 CASE i.FloorCode
@@ -4389,7 +4604,145 @@ WHEN '02' THEN 'HNX'
 WHEN '04' THEN 'UPCOM'
 END AS ten_san
 FROM JAD_MARKETINFORi
-WHERE i.TradingDate = :ngay_gd;";"IDXInfor.FloorCode: 10=HOSE, 02=HNX, 04=UPCOM; JAD_MARKETINFOR.marketId tương đương";;;;Done;Dữ liệu tĩnh;
+WHERE i.TradingDate = :ngay_gd;";"IDXInfor.FloorCode: 10=HOSE, 02=HNX, 04=UPCOM; JAD_MARKETINFOR.marketId tương đương";"WITH KHGD_DAILY AS ( 
+-- Khối lượng giao dịch theo TỪNG NGÀY (không chỉ ngày hiện tại) để tính KLGDTB 
+SELECT symbol, trade_date, SUM(kl) AS kl_ngay FROM ( 
+SELECT 
+t.SYMBOL AS symbol, 
+date_format(to_date(t.TRADE_DATE, 'd/M/yyyy'), 'yyyyMMdd') AS trade_date, 
+t.EXECUTION_VOLUME AS kl 
+FROM krx.trade_book_hose t 
+WHERE t.MARKET_ID IN ('STK') 
+UNION ALL 
+SELECT 
+t.ISSUE_CODE AS symbol, 
+t.TRADE_DATE AS trade_date, 
+t.TRADE_QUANTITY AS kl 
+FROM krx.trade_book_hnx t 
+WHERE t.MARKET_ID IN ('STX','UPX') 
+) 
+GROUP BY symbol, trade_date 
+), 
+KL_STATS AS ( 
+SELECT 
+symbol, 
+trade_date, 
+kl_ngay, 
+-- KLGD trung bình N ngày liền trước (KHÔNG tính ngày hiện tại) 
+AVG(kl_ngay) OVER ( 
+PARTITION BY symbol 
+ORDER BY trade_date 
+ROWS BETWEEN :so_ngay PRECEDING AND 1 PRECEDING 
+) AS kl_tb_n_ngay 
+FROM KHGD_DAILY 
+), 
+KHGD_HIEN_TAI AS ( 
+SELECT symbol, kl_ngay AS tong_kl, kl_tb_n_ngay, 
+ROUND(kl_ngay / NULLIF(kl_tb_n_ngay, 0), 2) AS ty_le_dot_bien 
+FROM KL_STATS 
+WHERE trade_date = :ngay_gd 
+), 
+MDDS as ( 
+SELECT 
+s.floorCode san 
+,s.symbol ma_chung_khoan 
+,idx.indexCode ma_chi_so 
+,s.StockType 
+,open Gia_mo_cua 
+,high Gia_cao_nhat 
+,low Gia_thap_nhat 
+,closePrice Gia_dong_cua 
+,reference Gia_tham_chieu 
+,change Thay_doi 
+FROM JAD_STOCKINFOR s 
+JOIN JAD_CSIDXINFOR idx 
+ON idx.Symbol = s.symbol 
+WHERE 1=1 
+AND TO_CHAR(TO_DATE(s.tradingdate, 'DD/MM/YYYY'), 'YYYYMMDD') = :ngay_gd 
+AND s.FloorCode IN ('10', '02', '04', '03') 
+AND s.StockType NOT IN ('1') 
+), 
+LNST AS ( 
+SELECT SUM(d.data_value) AS lnst, equity_ticker 
+FROM IDS.data d 
+JOIN IDS.report_catalog rc ON d.report_catalog_id = rc.id 
+JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id 
+JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id 
+JOIN IDS.company_profiles cp ON cp.id = d.COMPANY_PROFILE_ID 
+JOIN IDS.company_data cd ON d.company_data_id = cd.id 
+WHERE rc2.col_desc = '1' 
+AND rc.report_cd LIKE 'BCKQKD%' 
+AND cd.report_year = :year AND cd.report_quarter = :quarter 
+AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('60')) 
+OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('60')) 
+OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('21'))) 
+GROUP BY equity_ticker 
+), 
+Doanh_thu AS 
+( 
+SELECT SUM(d.data_value) AS doanh_thu 
+,equity_ticker MCK 
+FROM IDS.data d 
+Join IDS.company_profiles cp ON d.company_profile_id = cp.id 
+JOIN IDS.report_catalog rc ON d.report_catalog_id=rc.id 
+JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id 
+JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id 
+JOIN IDS.company_data cd ON d.company_data_id=cd.id 
+JOIN IDS.company_profiles cp ON cp.id = d.COMPANY_PROFILE_ID 
+WHERE rc2.col_desc = '1' 
+AND rc.report_cd LIKE 'BCKQKD%' 
+AND cd.report_year=:year AND cd.report_quarter=:quarter 
+AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('10')) 
+OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('10')) 
+OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('03'))) 
+GROUP BY equity_ticker 
+) 
+SELECT 
+a.symbol AS ma_ck, 
+k.tong_kl AS khoi_luong, 
+,c.Gia_mo_cua 
+,c.Gia_cao_nhat 
+,c.Gia_thap_nhat 
+,c.Gia_dong_cua 
+,c.Gia_tham_chieu 
+k.kl_tb_n_ngay AS klgdtb_n_ngay, 
+k.ty_le_dot_bien 
+FROM MDDS c 
+JOIN KHGD_HIEN_TAI k ON c.symbol = k.symbol 
+join Doanh_thu dt on dt.MCK = c.symbol 
+join LNST on LNST.equity_ticker = c.symbol 
+WHERE k.ty_le_dot_bien > :ty_le 
+ORDER BY k.ty_le_dot_bien DESC 
+FETCH FIRST :top_n ROWS ONLY 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"" 
+
+
+
+
+
+
+
+
+
+
+
+
+";;;;Done;Dữ liệu tĩnh
 14;;Top đột phá dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành);Bộ chỉ số ngành/ bộ chỉ số thị trường;;Dashboard;Chiều;Trùng;Mã CK;MDDS;;X;X;Done;Thông tin thị trường;JAD_MARKETINFOR;IndexsTypeCode;;;Hiện tại bên CK đang sửa nên chưa có dữ liệu để xác thực giữa bộ chỉ số thị tường và bộ chỉ số ngành;;;;Done;Dữ liệu tĩnh;
 14;;Top đột phá dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành);Ngày;;Dashboard;Chiều;Trùng;Mã CK;;;X;;Done;;;;;;;;;;Done;Dữ liệu tĩnh;
 14;;Top đột phá dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành);Tỷ lệ giữa KLGD/KLGDTB trong 5 ngày lớn hơn X lần;;Dashboard;Chỉ tiêu phái sinh;Trùng;Mã CK;CSDLTT;X;X;X;Done;Sổ lệnh;TRADE_BOOK_HOSE/ TRADE_BOOK_HNX;"HOSE: [Execution - Volume]
@@ -8544,54 +8897,12 @@ AND t.[Sell client/house classification] = '30'
 GROUP BY t.[Issue Code], t.[Trade date];""
 ";Cần điều kiện này không Market ID IN ('STO','STX','UPX') cần check lại;;;;;Done;Dữ liệu tĩnh
 42;;Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư;Phân loại nhà đầu tư (cá nhân,tự doanh,..);theo số TK;Dashboard;Chiều;TB;Mã CK;CSDLTT;;X;;Done;Sổ lệnh;TRADE_BOOK_HOSE/ TRADE_BOOK_HNX;"TRADE_BOOK_HOSE:
-Buy - Invest Type
-Sell - Invest Type
+Buy_Acct No
+Sell_Acct No
 Trade_HNX:
-Sell investor classification code
-Buy investor classification code";"Phân loại NĐT (HOSE - Invest Type):
-1000/8000 = Cá nhân trong nước
-2000-3999 = Tổ chức (bảo hiểm, quỹ, NH)
-5000/5100 = CTCK tự doanh (House)
-7000/7100 = NĐT nước ngoài
-HNX - investor classification code:
-8000 = Cá nhân
-1000-6999 = Tổ chức các loại
-7000/7100 = Tổ chức/NN
-House: Client/House = '30'
-Client: Client/House = '10'";"-- Phân loại NĐT theo nhóm (gộp HOSE + HNX)
-SELECT
-ma_ck, ngay_gd,
-CASE loai_ndt
-WHEN 'CA_NHAN' THEN 'Cá nhân trong nước'
-WHEN 'TO_CHUC' THEN 'Tổ chức trong nước'
-WHEN 'TU_DOANH' THEN 'Tự doanh'
-WHEN 'NUOC_NGOAI' THEN 'Nước ngoài'
-END AS ten_phan_loai
-FROM (
--- HOSE
-SELECT t.Symbol AS ma_ck, t.[Trade Date] AS ngay_gd,
-CASE
-WHEN t.[Buy - Client/House Classification Code]='30' THEN 'TU_DOANH'
-WHEN t.[Buy - Foreigner Investor type] IN ('10','20') THEN 'NUOC_NGOAI'
-WHEN t.[Buy - Invest Type] IN ('1000','8000') THEN 'CA_NHAN'
-ELSE 'TO_CHUC'
-END AS loai_ndt
-FROM TRADE_BOOK_HOSE t
-WHERE t.[Trade Date]=:ngay_gd AND t.[Market ID]='STO'
-UNION ALL
--- HNX
-SELECT t.[Issue Code], t.[Trade date],
-CASE
-WHEN t.[Buy client/house classification]='30' THEN 'TU_DOANH'
-WHEN t.[Buy Foreign Investor Type Code] IN ('10','20') THEN 'NUOC_NGOAI'
-WHEN t.[Buy investor classification code]='8000' THEN 'CA_NHAN'
-ELSE 'TO_CHUC'
-END
-FROM Trade_HNX t
-WHERE t.[Trade date]=:ngay_gd AND t.[Market ID] IN ('STX','UPX')
-) sub
-GROUP BY ma_ck, ngay_gd, loai_ndt;""
-";;;;;;Done;Dữ liệu tĩnh
+Buy account number
+sell_account_number";;;Hiện tại chưa có cơ sở để phân biệt chính xác về phân loại hình NĐT. Theo CĐS hiện tại sẽ phân biệt qua số tài khoản của nhà đầu tư;;;;;Done;Dữ liệu tĩnh
+42;;Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư;Chỉ số;;Dashboard;Chiều;TB;Mã CK;CSDLTT;;X;;Done;Thông tin thị trường;JAD_CSIDXInfor;indexcode;;;Cần join vào JAD_CSIDXInfor để biết chỉ số bao gồm những mã ck nào;;;;;Done;Dữ liệu tĩnh
 42;;Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư;Mã ck;;Dashboard;Chiều;TB;Mã CK;MDDS;;X;;Done;Thông tin thị trường;JAD_STOCKINFOR;symbol;"tradingdate = :ngay_gd 
 FloorCode IN ('10','02','04') 
 StockType NOT IN ('B','1','BO','D') 
@@ -8603,168 +8914,299 @@ FROM JAD_STOCKINFOR s
 WHERE s.tradingdate = :ngay_gd
 AND s.FloorCode IN ('10','02','04')
 AND s.StockType NOT IN ('B','1','BO','D');";- Cần check lại điều kiện;;;;;Done;Dữ liệu tĩnh
-42;;Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư;Giá mở cửa;Giá giao dịch đầu tiên trong phiên;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã CK;MDDS;;X;;Done;Thông tin thị trường;JAD_STOCKINFOR;open;;;0,042361111;;;;;Done;Dữ liệu tĩnh
-42;;Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư;Giá cao nhất;Giá giao dịch cao nhất trong phiên;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã CK;MDDS;;X;;Done;Thông tin thị trường;JAD_STOCKINFOR;high;;;0,042361111;;;;;Done;Dữ liệu tĩnh
-42;;Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư;Giá thấp nhất;Giá giao dịch thấp nhất trong phiên;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã CK;MDDS;;X;;Done;Thông tin thị trường;JAD_STOCKINFOR;low;;;0,042361111;;;;;Done;Dữ liệu tĩnh
-42;;Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư;Giá đóng cửa;Giá giao dịch cuối cùng trong phiên;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã CK;MDDS;;X;;Done;Thông tin thị trường;JAD_STOCKINFOR;closePrice;;"SELECT 
-s.symbol, 
-s.tradingdate, 
-s.closePrice AS gia_dong_cua, 
-s.FloorCode 
-FROM JAD_STOCKINFOR s 
-WHERE s.tradingdate = :ngay_gd";Giá đóng cửa, giá gần nhất (có thể bao gồm cả giá dự khớp trong các phiên khớp lệnh định kỳ);;;;;Done;Dữ liệu tĩnh
-42;;Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư;% thay đổi;;Dashboard;Chỉ tiêu phái sinh;Trùng;Mã CK;MDDS;;X;;Done;Thông tin thị trường;JAD_STOCKINFOR;(change / giá_tham_chiếu) × 100;;SELECT s.symbol, s.tradingdate, s.changePercent AS pct_thay_doiFROM JAD_STOCKINFOR s;;;;;;Done;Dữ liệu tĩnh
-42;;Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư;GT cá nhân ròng;;Dashboard;Chỉ tiêu phái sinh;Trùng;Mã CK;CSDLTT;;X;;Done;Sổ lệnh;TRADE_BOOK_HOSE/ TRADE_BOOK_HNX;"HOSE:
-Mua/Bán : [Execution - Value]
-WHERE [Buy - Invest Type]/ [Sell - Invest Type] IN ('1000','8000')
-HNX:
-Mua/Bán :
-[Trade price]*[Trade quantity]
-WHERE [Buy/Sell investor classification code]='8000'";"HOSE:
-Mua/Bán:
-WHERE [Buy - Invest Type]/ [Sell - Invest Type] IN ('1000','8000')
-HNX:
-Mua/Bán :
-WHERE [Buy/Sell investor classification code]='8000'";"-- ================================================================
--- GT CÁ NHÂN RÒNG (cá nhân = Individual, không phân biệt trong nước/nước ngoài)
--- ================================================================
-WITH ca_nhan AS (
-
--- HOSE: Invest Type IN ('1000','8000') = Individual
+42;;Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư;Giá cao nhất;Giá giao dịch cao nhất trong phiên;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã CK;MDDS;;X;;Done;Thông tin thị trường;JAD_MARKETINFOR;high;;"""-- Lấy marketIndex tại thời điểm cuối ngày
+SELECT marketCode, tradingdate, marketIndex AS diem_dong_cua,high,low 
+FROM (
+SELECT marketCode, tradingdate, marketIndex AS diem_dong_cua,high,low
+ROW_NUMBER() OVER (
+PARTITION BY tradingdate, marketCode
+ORDER BY indexTime DESC
+) AS rn
+FROM JAD_MARKETINFOR
+WHERE tradingdate = :ngay_gd
+) WHERE rn = 1
+""";giá cao nhất đến thời điểm xem;;;;;Done;Dữ liệu tĩnh
+42;;Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư;Giá thấp nhất;Giá giao dịch thấp nhất trong phiên;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã CK;MDDS;;X;;Done;Thông tin thị trường;JAD_MARKETINFOR;Low;;"""-- Lấy marketIndex tại thời điểm cuối ngày
+SELECT marketCode, tradingdate, marketIndex AS diem_dong_cua,high,low 
+FROM (
+SELECT marketCode, tradingdate, marketIndex AS diem_dong_cua,high,low
+ROW_NUMBER() OVER (
+PARTITION BY tradingdate, marketCode
+ORDER BY indexTime DESC
+) AS rn
+FROM JAD_MARKETINFOR
+WHERE tradingdate = :ngay_gd
+) WHERE rn = 1
+""";giá cao nhất đến thời điểm xem;;;;;Done;Dữ liệu tĩnh
+42;;Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư;Giá đóng cửa;Giá giao dịch cuối cùng trong phiên;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã CK;MDDS;;X;;Done;Thông tin thị trường;JAD_MARKETINFOR;marketIndex;marketIndex (MAX indexTime);"-- Lấy marketIndex tại thời điểm cuối ngày
+SELECT marketCode, tradingdate, marketIndex AS diem_dong_cua,
+FROM (
+SELECT marketCode, tradingdate, marketIndex AS diem_dong_cua,
+ROW_NUMBER() OVER (
+PARTITION BY tradingdate, marketCode
+ORDER BY indexTime DESC
+) AS rn
+FROM JAD_MARKETINFOR
+WHERE tradingdate = :ngay_gd
+) WHERE rn = 1
+";Giá đóng cửa, giá gần nhất (có thể bao gồm cả giá dự khớp trong các phiên khớp lệnh định kỳ);;;;;Done;Dữ liệu tĩnh
+42;;Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư;% thay đổi;;Dashboard;Chỉ tiêu phái sinh;Trùng;Mã CK;MDDS;;X;;Done;Thông tin thị trường;JAD_MARKETINFOR;marketIndex;;"SELECT
+""tradingdate"",
+""marketCode"",
+closeIndex,
+closeIndex
+- LAG(closeIndex) OVER (
+PARTITION BY ""marketCode""
+ORDER BY ""tradingdate""
+) AS closeIndexChange
+FROM
+(
 SELECT
-t.Symbol AS ma_ck,
-t.[Trade Date] AS ngay_gd,
-SUM(CASE WHEN t.[Buy - Invest Type] IN ('1000','8000')
-THEN t.[Execution - Value] ELSE 0 END) AS gt_mua,
-SUM(CASE WHEN t.[Sell - Invest Type] IN ('1000','8000')
-THEN t.[Execution - Value] ELSE 0 END) AS gt_ban
-FROM TRADE_BOOK_HOSE t
-WHERE t.[Trade Date] = :ngay_gd
-AND t.[Market ID] = 'STO'
-GROUP BY t.Symbol, t.[Trade Date]
-
-UNION ALL
-
--- HNX / UPCOM: investor classification code = '8000' = Individual
-SELECT
-t.[Issue Code] AS ma_ck,
-t.[Trade date] AS ngay_gd,
-SUM(CASE WHEN t.[Buy investor classification code] = '8000'
-THEN CAST(t.[Trade price] AS NUMERIC)
-* CAST(t.[Trade quantity] AS NUMERIC)
-ELSE 0 END) AS gt_mua,
-SUM(CASE WHEN t.[Sell investor classification code] = '8000'
-THEN CAST(t.[Trade price] AS NUMERIC)
-* CAST(t.[Trade quantity] AS NUMERIC)
-ELSE 0 END) AS gt_ban
-FROM Trade_HNX t
-WHERE t.[Trade date] = :ngay_gd
-AND t.[Market ID] IN ('STX','UPX')
-GROUP BY t.[Issue Code], t.[Trade date]
+""tradingdate"",
+""marketCode"",
+""marketIndex"" AS closeIndex,
+""marketId"",
+""indexTime"",
+ROW_NUMBER() OVER (
+PARTITION BY ""tradingdate"", ""marketCode""
+ORDER BY ""indexTime"" DESC
+) AS rn
+FROM FSSTRAINING.PUBLIC_JAD_MARKETINFOR
+where ""marketId"" = '10'
 )
-SELECT
-ma_ck,
-ngay_gd,
-SUM(gt_mua) AS gt_ca_nhan_mua,
-SUM(gt_ban) AS gt_ca_nhan_ban,
-SUM(gt_mua) - SUM(gt_ban) AS gt_ca_nhan_rong
-FROM ca_nhan
-GROUP BY ma_ck, ngay_gd
+WHERE rn = 1
+--AND ""marketId"" = '10'
+ORDER BY ""tradingdate"";";Lấy giá cuối ngày hôm nay - giá cuối ngày hôm trước;;;;;Done;Dữ liệu tĩnh
+42;;Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư;GT cá nhân ròng;;Dashboard;Chỉ tiêu phái sinh;Trùng;Mã CK;CSDLTT;;X;;Done;Sổ lệnh;TRADE_BOOK_HOSE/ TRADE_BOOK_HNX;"HOSE
+SUM(CASE
+WHEN SUBSTRING(t.buy_acct_no, 4, 1) IN ('C','E') THEN t.EXECUTION_VALUE
+WHEN SUBSTRING(t.buy_acct_no, 4, 1) = 'B'
+AND t.buy_acct_no NOT LIKE '%/%' THEN t.EXECUTION_VALUE
+ELSE 0
+END) AS gt_mua,
+SUM(CASE
+WHEN SUBSTRING(t.sell_acct_no, 4, 1) IN ('C','E') THEN t.EXECUTION_VALUE
+WHEN SUBSTRING(t.sell_acct_no, 4, 1) = 'B'
+AND t.sell_acct_no NOT LIKE '%/%' THEN t.EXECUTION_VALUE
+ELSE 0
+END) AS gt_ban
+HNX 
+SUM(CASE
+WHEN SUBSTRING(t.BUY_ACCOUNT_NUMBER, 4, 1) IN ('C','E')
+THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE)
+WHEN SUBSTRING(t.BUY_ACCOUNT_NUMBER, 4, 1) = 'B'
+AND t.BUY_ACCOUNT_NUMBER NOT LIKE '%/%'
+THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE)
+ELSE 0
+END) AS gt_mua,
+SUM(CASE
+WHEN SUBSTRING(t.SELL_ACCOUNT_NUMBER, 4, 1) IN ('C','E')
+THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE)
+WHEN SUBSTRING(t.SELL_ACCOUNT_NUMBER, 4, 1) = 'B'
+AND t.SELL_ACCOUNT_NUMBER NOT LIKE '%/%'
+THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE)
+ELSE 0
+END) AS gt_ban";"HOSE
+SUM(CASE
+WHEN SUBSTRING(t.buy_acct_no, 4, 1) IN ('C','E') THEN t.EXECUTION_VALUE
+WHEN SUBSTRING(t.buy_acct_no, 4, 1) = 'B'
+AND t.buy_acct_no NOT LIKE '%/%' THEN t.EXECUTION_VALUE
+ELSE 0
+END) AS gt_mua,
+SUM(CASE
+WHEN SUBSTRING(t.sell_acct_no, 4, 1) IN ('C','E') THEN t.EXECUTION_VALUE
+WHEN SUBSTRING(t.sell_acct_no, 4, 1) = 'B'
+AND t.sell_acct_no NOT LIKE '%/%' THEN t.EXECUTION_VALUE
+ELSE 0
+END) AS gt_ban
+HNX 
+SUM(CASE
+WHEN SUBSTRING(t.BUY_ACCOUNT_NUMBER, 4, 1) IN ('C','E')
+THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE)
+WHEN SUBSTRING(t.BUY_ACCOUNT_NUMBER, 4, 1) = 'B'
+AND t.BUY_ACCOUNT_NUMBER NOT LIKE '%/%'
+THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE)
+ELSE 0
+END) AS gt_mua,
+SUM(CASE
+WHEN SUBSTRING(t.SELL_ACCOUNT_NUMBER, 4, 1) IN ('C','E')
+THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE)
+WHEN SUBSTRING(t.SELL_ACCOUNT_NUMBER, 4, 1) = 'B'
+AND t.SELL_ACCOUNT_NUMBER NOT LIKE '%/%'
+THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE)
+ELSE 0
+END) AS gt_ban";"WITH ca_nhan AS ( 
+-- HOSE: buy_acct_no / sell_acct_no 
+SELECT 
+t.Symbol AS ma_ck, 
+t.Trade_date AS ngay_gd, 
+SUM(CASE 
+WHEN SUBSTRING(t.buy_acct_no, 4, 1) IN ('C','E') THEN t.EXECUTION_VALUE 
+WHEN SUBSTRING(t.buy_acct_no, 4, 1) = 'B' 
+AND t.buy_acct_no NOT LIKE '%/%' THEN t.EXECUTION_VALUE 
+ELSE 0 
+END) AS gt_mua, 
+SUM(CASE 
+WHEN SUBSTRING(t.sell_acct_no, 4, 1) IN ('C','E') THEN t.EXECUTION_VALUE 
+WHEN SUBSTRING(t.sell_acct_no, 4, 1) = 'B' 
+AND t.sell_acct_no NOT LIKE '%/%' THEN t.EXECUTION_VALUE 
+ELSE 0 
+END) AS gt_ban 
+FROM krx.TRADE_BOOK_HOSE t 
+WHERE 1=1 
+AND date_format(to_date(t.TRADE_DATE, 'd/M/yyyy'), 'yyyyMMdd') = 20260302 
+AND t.Market_ID = 'STK' 
+GROUP BY t.Symbol, t.Trade_date 
+UNION ALL 
+-- HNX / UPCOM: BUY_ACCOUNT_NUMBER / SELL_ACCOUNT_NUMBER 
+SELECT 
+t.Issue_Code AS ma_ck, 
+t.Trade_date AS ngay_gd, 
+SUM(CASE 
+WHEN SUBSTRING(t.BUY_ACCOUNT_NUMBER, 4, 1) IN ('C','E') 
+THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE) 
+WHEN SUBSTRING(t.BUY_ACCOUNT_NUMBER, 4, 1) = 'B' 
+AND t.BUY_ACCOUNT_NUMBER NOT LIKE '%/%' 
+THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE) 
+ELSE 0 
+END) AS gt_mua, 
+SUM(CASE 
+WHEN SUBSTRING(t.SELL_ACCOUNT_NUMBER, 4, 1) IN ('C','E') 
+THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE) 
+WHEN SUBSTRING(t.SELL_ACCOUNT_NUMBER, 4, 1) = 'B' 
+AND t.SELL_ACCOUNT_NUMBER NOT LIKE '%/%' 
+THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE) 
+ELSE 0 
+END) AS gt_ban 
+FROM krx.TRADE_BOOK_HNX t 
+WHERE t.Trade_date = 20260302 
+AND t.Market_ID IN ('STX','UPX') 
+GROUP BY t.Issue_Code, t.Trade_date 
+) 
+SELECT 
+ma_ck, 
+ngay_gd, 
+SUM(gt_mua) AS gt_ca_nhan_mua, 
+SUM(gt_ban) AS gt_ca_nhan_ban, 
+SUM(gt_mua) - SUM(gt_ban) AS gt_ca_nhan_rong 
+FROM ca_nhan 
+GROUP BY ma_ck, ngay_gd 
 ORDER BY ABS(SUM(gt_mua) - SUM(gt_ban)) DESC;";;;;;;Done;Dữ liệu tĩnh
-42;;Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư;GT tổ chức trong nước ròng;;Dashboard;Chỉ tiêu phái sinh;Trùng;Mã CK;CSDLTT;;X;;Done;Sổ lệnh;TRADE_BOOK_HOSE/ TRADE_BOOK_HNX;"HOSE:
-[Execution - Value]
-WHERE Sell /Buy - Invest Type IN (
-'2000','2100','2200', -- Bảo hiểm
-'3000','3100','3200','3300', -- Quỹ đầu tư
-'4000', -- Ngân hàng
-'5000','5100','5200', -- CTCK
-'6000') -- Tổ chức khác
-HNX:
-[Trade price]*[Trade quantity]
-WHERE Buy/SELL investor classification <> '8000'";"HOSE:
-[Execution - Value]
-WHERE Sell /Buy - Invest Type IN (
-'2000','2100','2200', -- Bảo hiểm
-'3000','3100','3200','3300', -- Quỹ đầu tư
-'4000', -- Ngân hàng
-'5000','5100','5200', -- CTCK
-'6000') -- Tổ chức khác
-and Buy/Sell Foreign Investor Type Code] = '00'
-HNX:
-[Trade price]*[Trade quantity]
-WHERE Buy/SELL investor classification <> '8000'
-and Buy Foreign Investor Type Code] = '00'";"-- ================================================================
--- GT TỔ CHỨC TRONG NƯỚC RÒNG (HOSE + HNX/UPCOM)
--- Tổ chức trong nước = tổ chức + Foreign Investor Type = '00'
--- ================================================================
-WITH to_chuc_tn AS (
-
--- ----------------------------------------------------------
--- HOSE
--- Tổ chức trong nước: Invest Type IN (2000-6000 series)
--- Loại trừ: cá nhân (1000,1100,1200,8000)
--- nước ngoài (7000,7100,7200)
--- không xác định (9000)
--- ----------------------------------------------------------
-SELECT
-t.Symbol AS ma_ck,
-t.[Trade Date] AS ngay_gd,
-SUM(CASE WHEN t.[Buy - Invest Type] IN (
-'2000','2100','2200', -- Bảo hiểm
-'3000','3100','3200','3300', -- Quỹ đầu tư
-'4000', -- Ngân hàng
-'5000','5100','5200', -- CTCK
-'6000') -- Tổ chức khác
-THEN t.[Execution - Value] ELSE 0 END) AS gt_mua,
-SUM(CASE WHEN t.[Sell - Invest Type] IN (
-'2000','2100','2200',
-'3000','3100','3200','3300',
-'4000',
-'5000','5100','5200',
-'6000')
-THEN t.[Execution - Value] ELSE 0 END) AS gt_ban
-FROM TRADE_BOOK_HOSE t
-WHERE t.[Trade Date] = :ngay_gd
-AND t.[Market ID] = 'STO'
-GROUP BY t.Symbol, t.[Trade Date]
-
-UNION ALL
-
--- ----------------------------------------------------------
--- HNX / UPCOM
--- Tổ chức trong nước: investor classification code <> '8000'
--- AND Foreign Investor Type = '00'
--- HNX code: 1000=CTCK, 2000=Bảo hiểm, 3000=Quỹ,
--- 4000=Ngân hàng, 5000=Tài chính, 6000=Hưu trí,
--- 7000/7100=Tổ chức NN → loại qua Foreign code='00'
--- ----------------------------------------------------------
-SELECT
-t.[Issue Code] AS ma_ck,
-t.[Trade date] AS ngay_gd,
-SUM(CASE WHEN t.[Buy investor classification code] <> '8000'
-AND t.[Buy Foreign Investor Type Code] = '00'
-THEN CAST(t.[Trade price] AS NUMERIC)
-* CAST(t.[Trade quantity] AS NUMERIC)
-ELSE 0 END) AS gt_mua,
-SUM(CASE WHEN t.[Sell investor classification code] <> '8000'
-AND t.[Sell Foreign Investor Type Code] = '00'
-THEN CAST(t.[Trade price] AS NUMERIC)
-* CAST(t.[Trade quantity] AS NUMERIC)
-ELSE 0 END) AS gt_ban
-FROM Trade_HNX t
-WHERE t.[Trade date] = :ngay_gd
-AND t.[Market ID] IN ('STX','UPX')
-GROUP BY t.[Issue Code], t.[Trade date]
-)
-SELECT
-ma_ck,
-ngay_gd,
-SUM(gt_mua) AS gt_tochuc_tn_mua,
-SUM(gt_ban) AS gt_tochuc_tn_ban,
-SUM(gt_mua) - SUM(gt_ban) AS gt_tochuc_tn_rong
-FROM to_chuc_tn
-GROUP BY ma_ck, ngay_gd
-ORDER BY ABS(SUM(gt_mua) - SUM(gt_ban)) DESC;";;;;;;Done;Dữ liệu tĩnh
+42;;Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư;GT tổ chức trong nước ròng;;Dashboard;Chỉ tiêu phái sinh;Trùng;Mã CK;CSDLTT;;X;;Done;Sổ lệnh;TRADE_BOOK_HOSE/ TRADE_BOOK_HNX;"HOSE
+SUM(CASE
+WHEN SUBSTRING(t.buy_acct_no, 4, 1) IN ('P','A') THEN t.EXECUTION_VALUE
+WHEN SUBSTRING(t.buy_acct_no, 4, 1) = 'B'
+AND t.buy_acct_no LIKE '%/%' THEN t.EXECUTION_VALUE
+ELSE 0
+END) AS gt_mua,
+SUM(CASE
+WHEN SUBSTRING(t.sell_acct_no, 4, 1) IN ('P','A') THEN t.EXECUTION_VALUE
+WHEN SUBSTRING(t.sell_acct_no, 4, 1) = 'B'
+AND t.sell_acct_no LIKE '%/%' THEN t.EXECUTION_VALUE
+ELSE 0
+END) AS gt_ban
+HNX 
+SUM(CASE
+WHEN SUBSTRING(t.BUY_ACCOUNT_NUMBER, 4, 1) IN ('P','A')
+THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE)
+WHEN SUBSTRING(t.BUY_ACCOUNT_NUMBER, 4, 1) = 'B'
+AND t.BUY_ACCOUNT_NUMBER LIKE '%/%'
+THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE)
+ELSE 0
+END) AS gt_mua,
+SUM(CASE
+WHEN SUBSTRING(t.SELL_ACCOUNT_NUMBER, 4, 1) IN ('P','A')
+THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE)
+WHEN SUBSTRING(t.SELL_ACCOUNT_NUMBER, 4, 1) = 'B'
+AND t.SELL_ACCOUNT_NUMBER LIKE '%/%'
+THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE)
+ELSE 0
+END) AS gt_ban";"HOSE
+SUM(CASE
+WHEN SUBSTRING(t.buy_acct_no, 4, 1) IN ('P','A') THEN t.EXECUTION_VALUE
+WHEN SUBSTRING(t.buy_acct_no, 4, 1) = 'B'
+AND t.buy_acct_no LIKE '%/%' THEN t.EXECUTION_VALUE
+ELSE 0
+END) AS gt_mua,
+SUM(CASE
+WHEN SUBSTRING(t.sell_acct_no, 4, 1) IN ('P','A') THEN t.EXECUTION_VALUE
+WHEN SUBSTRING(t.sell_acct_no, 4, 1) = 'B'
+AND t.sell_acct_no LIKE '%/%' THEN t.EXECUTION_VALUE
+ELSE 0
+END) AS gt_ban
+HNX 
+SUM(CASE
+WHEN SUBSTRING(t.BUY_ACCOUNT_NUMBER, 4, 1) IN ('P','A')
+THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE)
+WHEN SUBSTRING(t.BUY_ACCOUNT_NUMBER, 4, 1) = 'B'
+AND t.BUY_ACCOUNT_NUMBER LIKE '%/%'
+THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE)
+ELSE 0
+END) AS gt_mua,
+SUM(CASE
+WHEN SUBSTRING(t.SELL_ACCOUNT_NUMBER, 4, 1) IN ('P','A')
+THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE)
+WHEN SUBSTRING(t.SELL_ACCOUNT_NUMBER, 4, 1) = 'B'
+AND t.SELL_ACCOUNT_NUMBER LIKE '%/%'
+THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE)
+ELSE 0
+END) AS gt_ban";"WITH ca_nhan AS ( 
+-- HOSE: buy_acct_no / sell_acct_no 
+SELECT 
+t.Symbol AS ma_ck, 
+t.Trade_date AS ngay_gd, 
+SUM(CASE 
+WHEN SUBSTRING(t.buy_acct_no, 4, 1) IN ('P','A') THEN t.EXECUTION_VALUE 
+WHEN SUBSTRING(t.buy_acct_no, 4, 1) = 'B' 
+AND t.buy_acct_no LIKE '%/%' THEN t.EXECUTION_VALUE 
+ELSE 0 
+END) AS gt_mua, 
+SUM(CASE 
+WHEN SUBSTRING(t.sell_acct_no, 4, 1) IN ('P','A') THEN t.EXECUTION_VALUE 
+WHEN SUBSTRING(t.sell_acct_no, 4, 1) = 'B' 
+AND t.sell_acct_no LIKE '%/%' THEN t.EXECUTION_VALUE 
+ELSE 0 
+END) AS gt_ban 
+FROM krx.TRADE_BOOK_HOSE t 
+WHERE 1=1 
+AND date_format(to_date(t.TRADE_DATE, 'd/M/yyyy'), 'yyyyMMdd') = 20260302 
+AND t.Market_ID = 'STK' 
+GROUP BY t.Symbol, t.Trade_date 
+UNION ALL 
+-- HNX / UPCOM: BUY_ACCOUNT_NUMBER / SELL_ACCOUNT_NUMBER 
+SELECT 
+t.Issue_Code AS ma_ck, 
+t.Trade_date AS ngay_gd, 
+SUM(CASE 
+WHEN SUBSTRING(t.BUY_ACCOUNT_NUMBER, 4, 1) IN ('P','A') 
+THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE) 
+WHEN SUBSTRING(t.BUY_ACCOUNT_NUMBER, 4, 1) = 'B' 
+AND t.BUY_ACCOUNT_NUMBER LIKE '%/%' 
+THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE) 
+ELSE 0 
+END) AS gt_mua, 
+SUM(CASE 
+WHEN SUBSTRING(t.SELL_ACCOUNT_NUMBER, 4, 1) IN ('P','A') 
+THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE) 
+WHEN SUBSTRING(t.SELL_ACCOUNT_NUMBER, 4, 1) = 'B' 
+AND t.SELL_ACCOUNT_NUMBER LIKE '%/%' 
+THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE) 
+ELSE 0 
+END) AS gt_ban 
+FROM krx.TRADE_BOOK_HNX t 
+WHERE t.Trade_date = 20260302 
+AND t.Market_ID IN ('STX','UPX') 
+GROUP BY t.Issue_Code, t.Trade_date 
+) 
+SELECT 
+ma_ck, 
+ngay_gd, 
+SUM(gt_mua) AS gt_ca_nhan_mua, 
+SUM(gt_ban) AS gt_ca_nhan_ban, 
+SUM(gt_mua) - SUM(gt_ban) AS gt_ca_nhan_rong 
+FROM ca_nhan 
+GROUP BY ma_ck, ngay_gd 
+ORDER BY ABS(SUM(gt_mua) - SUM(gt_ban)) DESC;""";;;;;;Done;Dữ liệu tĩnh
 42;;Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư;GT tự doanh ròng;;Dashboard;Chỉ tiêu phái sinh;Trùng;Mã CK;CSDLTT;;X;;Done;Sổ lệnh;TRADE_BOOK_HOSE/ TRADE_BOOK_HNX;"HOSE:
 [Execution - Value]
 WHERE [Buy/Sell - Client/House Classification Code]='30'
@@ -8776,40 +9218,49 @@ WHERE [Buy/Sell client/house classification]='30'";"Tự doanh (House trade) = '
 Market IN ('STO','STX','UPX')
 GT ròng = GT mua - GT bán
 
-";"-- GT tự doanh ròng (HOSE + HNX)
-WITH tu_doanh AS (
--- HOSE
-SELECT t.Symbol AS ma_ck, t.[Trade Date] AS ngay_gd,
-SUM(CASE WHEN t.[Buy - Client/House Classification Code]='30'
-THEN t.[Execution - Value] ELSE 0 END) AS gt_mua,
-SUM(CASE WHEN t.[Sell - Client/House Classification Code]='30'
-THEN t.[Execution - Value] ELSE 0 END) AS gt_ban
-FROM TRADE_BOOK_HOSE t
-WHERE t.[Trade Date]=:ngay_gd AND t.[Market ID]='STO'
-GROUP BY t.Symbol, t.[Trade Date]
+";"-- GT tự doanh ròng (HOSE + HNX) 
+WITH tu_doanh AS ( 
+-- HOSE 
+SELECT 
+t.Symbol AS ma_ck, 
+t.Trade_date AS ngay_gd, 
+SUM(CASE WHEN t.Buy_Client_House_Classification_Code = '30' 
+THEN t.Execution_Value ELSE 0 END) AS gt_mua, 
+SUM(CASE WHEN t.Sell_Client_House_Classification_Code = '30' 
+THEN t.Execution_Value ELSE 0 END) AS gt_ban 
+FROM TRADE_BOOK_HOSE t 
+WHERE t.Trade_date = :ngay_gd 
+AND t.Market_ID = 'STO' 
+GROUP BY t.Symbol, t.Trade_date 
 
-UNION ALL
+UNION ALL 
 
--- HNX / UPCOM
-SELECT t.[Issue Code], t.[Trade date],
-SUM(CASE WHEN t.[Buy client/house classification]='30'
-THEN CAST(t.[Trade price] AS NUMERIC)
-* CAST(t.[Trade quantity] AS NUMERIC)
-ELSE 0 END) AS gt_mua,
-SUM(CASE WHEN t.[Sell client/house classification]='30'
-THEN CAST(t.[Trade price] AS NUMERIC)
-* CAST(t.[Trade quantity] AS NUMERIC)
-ELSE 0 END) AS gt_ban
-FROM Trade_HNX t
-WHERE t.[Trade date]=:ngay_gd AND t.[Market ID] IN ('STX','UPX')
-GROUP BY t.[Issue Code], t.[Trade date]
-)
-SELECT ma_ck, ngay_gd,
-SUM(gt_mua) AS gt_tudoanh_mua,
-SUM(gt_ban) AS gt_tudoanh_ban,
-SUM(gt_mua)-SUM(gt_ban) AS gt_tudoanh_rong
-FROM tu_doanh
-GROUP BY ma_ck, ngay_gd;";;;;;;Done;Dữ liệu tĩnh
+-- HNX / UPCOM 
+SELECT 
+t.Issue_Code AS ma_ck, 
+t.Trade_date AS ngay_gd, 
+SUM(CASE WHEN t.Buy_client_house_classification = '30' 
+THEN CAST(t.Trade_price AS DOUBLE) 
+* CAST(t.Trade_quantity AS DOUBLE) 
+ELSE 0 END) AS gt_mua, 
+SUM(CASE WHEN t.Sell_client_house_classification = '30' 
+THEN CAST(t.Trade_price AS DOUBLE) 
+* CAST(t.Trade_quantity AS DOUBLE) 
+ELSE 0 END) AS gt_ban 
+FROM TRADE_BOOK_HNX t 
+WHERE t.Trade_date = :ngay_gd 
+AND t.Market_ID IN ('STX','UPX') 
+GROUP BY t.Issue_Code, t.Trade_date 
+) 
+SELECT 
+ma_ck, 
+ngay_gd, 
+SUM(gt_mua) AS gt_tudoanh_mua, 
+SUM(gt_ban) AS gt_tudoanh_ban, 
+SUM(gt_mua) - SUM(gt_ban) AS gt_tudoanh_rong 
+FROM tu_doanh 
+GROUP BY ma_ck, ngay_gd 
+ORDER BY ABS(SUM(gt_mua) - SUM(gt_ban)) DESC;";;;;;;Done;Dữ liệu tĩnh
 42;;Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư;GT NN ròng;;Dashboard;Chỉ tiêu phái sinh;Trùng;Mã CK;CSDLTT;;X;;Done;Sổ lệnh;JAD_CSIDXINFOR/ TRADE_BOOK_HOSE/TRADE_BOOK_HNX;"HNX/UPCOM:
 Buy Foreign Investor Type Code
 Trade quantity * Trade price
@@ -8880,55 +9331,13 @@ FROM JAD_STOCKINFOR s
 WHERE s.tradingdate = :ngay_gd 
 AND s.FloorCode IN ('10','02','04') 
 AND s.StockType NOT IN ('B','1','BO','D');";- Cần check lại điều kiện;;;;;Done;Dữ liệu tĩnh
+43;;Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem bản đồ nhiệt GT mua ròng, GT bán ròng;Chỉ số;;Dashboard;Chiều;TB;Mã CK;CSDLTT;;X;;Done;Thông tin thị trường;JAD_CSIDXInfor;indexcode;;;Cần join vào JAD_CSIDXInfor để biết chỉ số bao gồm những mã ck nào;;;;;Done;Dữ liệu tĩnh
 43;;Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem bản đồ nhiệt GT mua ròng, GT bán ròng;Phân loại nhà đầu tư (cá nhân,tự doanh,..);theo số TK;Dashboard;Chiều;TB;Mã CK;CSDLTT;;X;;Done;Sổ lệnh;TRADE_BOOK_HOSE/ TRADE_BOOK_HNX;"TRADE_BOOK_HOSE:
-Buy - Invest Type
-Sell - Invest Type
+Buy_Acct No
+Sell_Acct No
 Trade_HNX:
-Sell investor classification code
-Buy investor classification code";"Phân loại NĐT (HOSE - Invest Type):
-1000/8000 = Cá nhân trong nước
-2000-3999 = Tổ chức (bảo hiểm, quỹ, NH)
-5000/5100 = CTCK tự doanh (House)
-7000/7100 = NĐT nước ngoài
-HNX - investor classification code:
-8000 = Cá nhân
-1000-6999 = Tổ chức các loại
-7000/7100 = Tổ chức/NN
-House: Client/House = '30'
-Client: Client/House = '10'";"-- Phân loại NĐT theo nhóm (gộp HOSE + HNX)
-SELECT
-ma_ck, ngay_gd,
-CASE loai_ndt
-WHEN 'CA_NHAN' THEN 'Cá nhân trong nước'
-WHEN 'TO_CHUC' THEN 'Tổ chức trong nước'
-WHEN 'TU_DOANH' THEN 'Tự doanh'
-WHEN 'NUOC_NGOAI' THEN 'Nước ngoài'
-END AS ten_phan_loai
-FROM (
--- HOSE
-SELECT t.Symbol AS ma_ck, t.[Trade Date] AS ngay_gd,
-CASE
-WHEN t.[Buy - Client/House Classification Code]='30' THEN 'TU_DOANH'
-WHEN t.[Buy - Foreigner Investor type] IN ('10','20') THEN 'NUOC_NGOAI'
-WHEN t.[Buy - Invest Type] IN ('1000','8000') THEN 'CA_NHAN'
-ELSE 'TO_CHUC'
-END AS loai_ndt
-FROM TRADE_BOOK_HOSE t
-WHERE t.[Trade Date]=:ngay_gd AND t.[Market ID]='STO'
-UNION ALL
--- HNX
-SELECT t.[Issue Code], t.[Trade date],
-CASE
-WHEN t.[Buy client/house classification]='30' THEN 'TU_DOANH'
-WHEN t.[Buy Foreign Investor Type Code] IN ('10','20') THEN 'NUOC_NGOAI'
-WHEN t.[Buy investor classification code]='8000' THEN 'CA_NHAN'
-ELSE 'TO_CHUC'
-END
-FROM Trade_HNX t
-WHERE t.[Trade date]=:ngay_gd AND t.[Market ID] IN ('STX','UPX')
-) sub
-GROUP BY ma_ck, ngay_gd, loai_ndt;""
-";;;;;;Done;Dữ liệu tĩnh
+Buy account number
+sell_account_number";;;Hiện tại chưa có cơ sở để phân biệt chính xác về phân loại hình NĐT. Theo CĐS hiện tại sẽ phân biệt qua số tài khoản của nhà đầu tư;;;;;Done;Dữ liệu tĩnh
 43;;Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem bản đồ nhiệt GT mua ròng, GT bán ròng;GT khớp lệnh;;Dashboard;Chỉ tiêu phái sinh;Trùng;Mã CK;CSDLTT;;X;;Done;Sổ lệnh;TRADE_BOOK_HOSE/ TRADE_BOOK_HNX;"(TRADE_BOOK_HOSE):
 Execution - Value: 
 Trade_HNX:
@@ -9000,63 +9409,67 @@ Trade_HNX:
 Trade quantity: Khối lượng giao dịch";;;;;Done;Dữ liệu tĩnh
 43;;Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem bản đồ nhiệt GT mua ròng, GT bán ròng;GT mua;;Dashboard;Chỉ tiêu phái sinh;Trùng;Mã CK;CSDLTT;;X;;Done;Sổ lệnh;TRADE_BOOK_HOSE/ TRADE_BOOK_HNX;"HOSE:
 [Execution - Value]
-Phân loại theo [Buy - Invest Type]
-và/hoặc [Buy - Client/House Classification Code]
-và/hoặc [Buy - Foreigner Investor type]
+Phân loại theo chiều NĐT
 HNX:
 [Trade price] * [Trade quantity]
-Phân loại theo [Buy investor classification code]
-và/hoặc [Buy client/house classification]
-và/hoặc [Buy Foreign Investor Type Code]";"Áp dụng điều kiện theo nhóm NĐT từ bộ lọc:
-── Cá nhân:
-HOSE: Buy - Invest Type IN ('1000','8000')
-HNX: Buy investor classification = '8000'
-── Tổ chức trong nước:
-HOSE: Buy - Invest Type IN ('2000'~'6000 series')
-AND Buy - Foreigner type = '00'
-HNX: Buy investor classification <> '8000'
-AND Buy Foreign Investor Type = '00'
-── Tự doanh:
-HOSE/HNX: Buy client/house = '30'
-── Nước ngoài:
-HOSE: Buy - Foreigner type IN ('10','20')
-HNX: Buy Foreign Investor Type IN ('10','20')
-Market IN ('STO','STX','UPX')";;Cần check lại điều kiện;;;;;Done;Dữ liệu tĩnh
+Phân loại theo chiều NĐT";Phân loại theo chiều NĐT;;Cần check lại điều kiện;;;;;Done;Dữ liệu tĩnh
 43;;Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem bản đồ nhiệt GT mua ròng, GT bán ròng;GT bán;;Dashboard;Chỉ tiêu phái sinh;Trùng;Mã CK;CSDLTT;;X;;Done;Sổ lệnh;TRADE_BOOK_HOSE/ TRADE_BOOK_HNX;"HOSE:
 [Execution - Value]
-Phân loại theo [Buy - Invest Type]
-và/hoặc [Buy - Client/House Classification Code]
-và/hoặc [Buy - Foreigner Investor type]
+Phân loại theo chiều NĐT
 HNX:
 [Trade price] * [Trade quantity]
-Phân loại theo [Buy investor classification code]
-và/hoặc [Buy client/house classification]
-và/hoặc [Buy Foreign Investor Type Code]";"Áp dụng điều kiện theo nhóm NĐT từ bộ lọc:
-── Cá nhân:
-HOSE: Sell - Invest Type IN ('1000','8000')
-HNX: Sell investor classification = '8000'
-── Tổ chức trong nước:
-HOSE: Sell - Invest Type IN ('2000'~'6000 series')
-AND Sell - Foreigner type = '00'
-HNX: Sell investor classification <> '8000'
-AND Sell Foreign Investor Type = '00'
-── Tự doanh:
-HOSE/HNX: Sell client/house = '30'
-── Nước ngoài:
-HOSE: Sell - Foreigner type IN ('10','20')
-HNX: Sell Foreign Investor Type IN ('10','20')
-Market IN ('STO','STX','UPX')";;Cần check lại điều kiện;;;;;Done;Dữ liệu tĩnh
-43;;Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem bản đồ nhiệt GT mua ròng, GT bán ròng;GT ròng;;Dashboard;Chỉ tiêu phái sinh;TB;Mã CK;CSDLTT;;X;;Done;Sổ lệnh;TRADE_BOOK_HOSE/ TRADE_BOOK_HNX;;;;"Tính từ GT mua và GT bán:
+Phân loại theo chiều NĐT";Phân loại theo chiều NĐT;;Cần check lại điều kiện;;;;;Done;Dữ liệu tĩnh
+43;;Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem bản đồ nhiệt GT mua ròng, GT bán ròng;GT ròng;;Dashboard;Chỉ tiêu phái sinh;TB;Mã CK;CSDLTT;;X;;Done;Sổ lệnh;TRADE_BOOK_HOSE/ TRADE_BOOK_HNX;"Tính từ GT mua và GT bán:
+GT ròng = GT mua - GT bán
+Phân loại theo từng nhóm NĐT
+(cá nhân / tổ chức / tự doanh / NN)";;;"Tính từ GT mua và GT bán:
 GT ròng = GT mua - GT bán
 Phân loại theo từng nhóm NĐT
 (cá nhân / tổ chức / tự doanh / NN)";;;;;Done;Dữ liệu tĩnh
-43;;Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem bản đồ nhiệt GT mua ròng, GT bán ròng;Giá;Giá đóng cửa;Dashboard;Chỉ tiêu phái sinh;Trùng;Mã CK;MDDS;;X;;Done;Thông tin thị trường;JAD_STOCKINFOR;closePrice;;"SELECT 
-s.symbol, 
-s.tradingdate, 
-s.closePrice AS gia_dong_cua, 
-s.FloorCode 
+43;;Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem bản đồ nhiệt GT mua ròng, GT bán ròng;GT mua ròng;;Dashboard;Chỉ tiêu phái sinh;TB;Mã CK;CSDLTT;;X;;Done;Sổ lệnh;TRADE_BOOK_HOSE/ TRADE_BOOK_HNX;"Tính từ GT mua và GT bán:
+GT ròng = GT mua - GT bán > 0
+Phân loại theo từng nhóm NĐT
+(cá nhân / tổ chức / tự doanh / NN)";;;"Tính từ GT mua và GT bán:
+GT ròng = GT mua - GT bán
+Phân loại theo từng nhóm NĐT
+(cá nhân / tổ chức / tự doanh / NN)";;;;;Done;Dữ liệu tĩnh
+43;;Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem bản đồ nhiệt GT mua ròng, GT bán ròng;GT bán ròng;;Dashboard;Chỉ tiêu phái sinh;TB;Mã CK;CSDLTT;;X;;Done;Sổ lệnh;TRADE_BOOK_HOSE/ TRADE_BOOK_HNX;"Tính từ GT mua và GT bán:
+GT ròng = GT mua - GT bán < 0
+Phân loại theo từng nhóm NĐT
+(cá nhân / tổ chức / tự doanh / NN)";;;"Tính từ GT mua và GT bán:
+GT ròng = GT mua - GT bán
+Phân loại theo từng nhóm NĐT
+(cá nhân / tổ chức / tự doanh / NN)";;;;;Done;Dữ liệu tĩnh
+43;;Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem bản đồ nhiệt GT mua ròng, GT bán ròng;Giá;Giá đóng cửa;Dashboard;Chỉ tiêu phái sinh;Trùng;Mã CK;MDDS;;X;;Done;Thông tin thị trường;JAD_STOCKINFOR;closePrice;;"SELECT * 
+FROM 
+( 
+SELECT 
+s.floorCode san 
+,s.symbol ma_chung_khoan 
+,idx.indexCode ma_chi_so 
+,s.StockType 
+,open Gia_mo_cua 
+,high Gia_cao_nhat 
+,low Gia_thap_nhat 
+,closePrice Gia_dong_cua 
+,reference Gia_tham_chieu 
+,change Thay_doi 
+, ROW_NUMBER() OVER ( 
+PARTITION BY TO_CHAR(TO_DATE(s.tradingdate, 'DD/MM/YYYY'), 'YYYYMMDD'), s.symbol 
+ORDER BY TRADINGTIME DESC 
+) AS rn 
+,s.tradingdate 
+, TRADINGTIME 
 FROM JAD_STOCKINFOR s 
-WHERE s.tradingdate = :ngay_gd";Giá đóng cửa, giá gần nhất (có thể bao gồm cả giá dự khớp trong các phiên khớp lệnh định kỳ);;;;;Done;Dữ liệu tĩnh
+JOIN JAD_CSIDXINFOR idx 
+ON idx.Symbol = s.symbol 
+WHERE 1=1 
+AND TO_CHAR(TO_DATE(s.tradingdate, 'DD/MM/YYYY'), 'YYYYMMDD') = :ngay_gd 
+AND s.FloorCode IN ('10', '02', '04', '03') 
+AND s.StockType NOT IN ('1') 
+) 
+WHERE rn = 1";Lấy giá trị cuối ngày;;;;;Done;Dữ liệu tĩnh
+43;;Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem bản đồ nhiệt GT mua ròng, GT bán ròng;% thay đổi;;Dashboard;Chỉ tiêu phái sinh;Trùng;Mã CK;MDDS;;X;;Done;Thông tin thị trường;JAD_STOCKINFOR;(change / giá_tham_chiếu) × 100;;SELECT s.symbol, s.tradingdate, s.changePercent AS pct_thay_doiFROM JAD_STOCKINFOR s;;;;;;Done;Dữ liệu tĩnh
 44;;Biểu đồ phân tích kỹ thuật;Mã;;Dashboard;Chiều;Trùng;Mã CK;MDDS;;X;;Done;Thông tin thị trường;JAD_STOCKINFOR;symbol;"FloorCode IN ('10','02','04', ' 03') AND StockType NOT IN (
 'B', '1', -- Trái phiếu HOSE
 'BO', -- Trái phiếu HNX
@@ -9076,24 +9489,43 @@ FROM JAD_STOCKINFOR s
 JOIN JAD_CSIDXINFOR idx ON s.symbol = idx.symbol
 AND s.tradingdate = idx.tradingdate;
 ";;;;;;;
-44;;Biểu đồ phân tích kỹ thuật;Ngày;;Dashboard;Chiều;Trùng;Mã CK;;;X;;Done;;;;;;;;;;;Done;Dữ liệu tĩnh
-44;;Biểu đồ phân tích kỹ thuật;Ngành;;Dashboard;Chiều;Trùng;Mã CK;IDS;;X;;Done;theo ngành kinh tế cấp 1 trên IDS;IDS.categories (c);c.industry_cd, c.industry_name AS ten_nganh;c.active_flg = 1;"SELECT c.industry_cd, c.industry_name
-FROM IDS.categories c
-WHERE c.active_flg = 1
-ORDER BY c.industry_cd";"-- Lưu ý: Cần xác nhận tên cột industry_cd, industry_name trong bảng IDS.categories
--- (sheet câu hỏi phân hệ ghi nhận bảng này có 10 ngành IDS, không phải 21 ngành KT)";;;;;Done;Dữ liệu tĩnh
-44;;Biểu đồ phân tích kỹ thuật;Sàn;;Dashboard;Chiều;Trùng;Mã CK;MDDS;;X;;Done;Thông tin thị trường;JAD_MARKETINFOR;marketId;;"SELECT DISTINCT i.FloorCode, CASE i.FloorCode WHEN '10' THEN 'HOSE' WHEN '02' THEN 'HNX' WHEN '04' THEN 'UPCOM' END AS ten_sanFROM JAD_MARKETINFORiWHERE i.TradingDate = :ngay_gd;";"IDXInfor.FloorCode: 10=HOSE, 02=HNX, 04=UPCOM; JAD_MARKETINFOR.marketId tương đương";;;;;Done;Dữ liệu tĩnh
-44;;Biểu đồ phân tích kỹ thuật;Bộ chỉ số thị trường/ bộ chỉ số ngành;;Dashboard;Chiều;Trùng;Mã CK;MDDS;;;;Done;Thông tin thị trường;JAD_MARKETINFOR;IndexsTypeCode;;;;;Hiện tại bên CK đang sửa nên chưa có dữ liệu để xác thực giữa bộ chỉ số thị tường và bộ chỉ số ngành;;;Done;Dữ liệu tĩnh
-44;;Biểu đồ phân tích kỹ thuật;Giá mở cửa;Giá giao dịch đầu tiên trong phiên;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã CK;MDDS;;X;;Done;Thông tin thị trường;JAD_STOCKINFOR;open;;;0,042361111;;;;;Done;Dữ liệu tĩnh
-44;;Biểu đồ phân tích kỹ thuật;Giá cao nhất;Giá giao dịch cao nhất trong phiên;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã CK;MDDS;;X;;Done;Thông tin thị trường;JAD_STOCKINFOR;high;;;0,042361111;;;;;Done;Dữ liệu tĩnh
-44;;Biểu đồ phân tích kỹ thuật;Giá thấp nhất;Giá giao dịch thấp nhất trong phiên;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã CK;MDDS;;X;;Done;Thông tin thị trường;JAD_STOCKINFOR;low;;;0,042361111;;;;;Done;Dữ liệu tĩnh
-44;;Biểu đồ phân tích kỹ thuật;Giá đóng cửa;Giá giao dịch cuối cùng trong phiên;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã CK;MDDS;;X;;Done;Thông tin thị trường;JAD_STOCKINFOR;closePrice;;"SELECT 
-s.symbol, 
-s.tradingdate, 
-s.closePrice AS gia_dong_cua, 
-s.FloorCode 
+44;;Biểu đồ phân tích kỹ thuật;Giá mở cửa theo từng time trong 1 ngày;Giá giao dịch đầu tiên trong phiên;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã CK;MDDS;;X;;Done;Thông tin thị trường;JAD_STOCKINFOR;open;;;0,042361111;;;;;Done;Dữ liệu tĩnh
+44;;Biểu đồ phân tích kỹ thuật;Giá cao nhất theo từng time trong 1 ngày;Giá giao dịch cao nhất trong phiên;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã CK;MDDS;;X;;Done;Thông tin thị trường;JAD_STOCKINFOR;high;;;0,042361111;;;;;Done;Dữ liệu tĩnh
+44;;Biểu đồ phân tích kỹ thuật;Giá thấp nhất theo từng time trong 1 ngày;Giá giao dịch thấp nhất trong phiên;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã CK;MDDS;;X;;Done;Thông tin thị trường;JAD_STOCKINFOR;low;;;0,042361111;;;;;Done;Dữ liệu tĩnh
+44;;Biểu đồ phân tích kỹ thuật;Giá đóng cửa theo từng time trong 1 ngày;Giá giao dịch cuối cùng trong phiên;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã CK;MDDS;;X;;Done;Thông tin thị trường;JAD_STOCKINFOR;closePrice;;;0,042361111;;;;;Done;Dữ liệu tĩnh
+44;;Biểu đồ phân tích kỹ thuật;Khối lượng giao dịch theo từng time trong 1 ngày;Tổng khối lượng cổ phiếu được giao dịch;Dashboard;Chỉ tiêu phái sinh;Trùng;Mã CK;CSDLTT;;X;;Done;Sổ lệnh;JAD_STOCKINFOR;totaltrading;;;Đây là lũy kế từ đầu ngày chứ không phải tổng khối lượng theo từng time;;;;;Done;Dữ liệu tĩnh
+44;;Biểu đồ phân tích kỹ thuật;Giá mở cửa;Giá giao dịch đầu tiên trong phiên;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã CK;MDDS;;X;;Done;Thông tin thị trường;JAD_STOCKINFOR;open;;"SELECT * 
+FROM 
+( 
+SELECT 
+s.floorCode san 
+,s.symbol ma_chung_khoan 
+,idx.indexCode ma_chi_so 
+,s.StockType 
+,open Gia_mo_cua 
+,high Gia_cao_nhat 
+,low Gia_thap_nhat 
+,closePrice Gia_dong_cua 
+,reference Gia_tham_chieu 
+,change Thay_doi 
+, ROW_NUMBER() OVER ( 
+PARTITION BY TO_CHAR(TO_DATE(s.tradingdate, 'DD/MM/YYYY'), 'YYYYMMDD'), s.symbol 
+ORDER BY TRADINGTIME DESC 
+) AS rn 
+,s.tradingdate 
+, TRADINGTIME 
 FROM JAD_STOCKINFOR s 
-WHERE s.tradingdate = :ngay_gd";Giá đóng cửa, giá gần nhất (có thể bao gồm cả giá dự khớp trong các phiên khớp lệnh định kỳ);;;;;Done;Dữ liệu tĩnh
+JOIN JAD_CSIDXINFOR idx 
+ON idx.Symbol = s.symbol 
+WHERE 1=1 
+AND TO_CHAR(TO_DATE(s.tradingdate, 'DD/MM/YYYY'), 'YYYYMMDD') = :ngay_gd 
+AND s.FloorCode IN ('10', '02', '04', '03') 
+AND s.StockType NOT IN ('1') 
+) 
+WHERE rn = 1";Lấy giá trị cuối ngày;;;;;Done;Dữ liệu tĩnh
+44;;Biểu đồ phân tích kỹ thuật;Giá cao nhất;Giá giao dịch cao nhất trong phiên;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã CK;MDDS;;X;;Done;Thông tin thị trường;JAD_STOCKINFOR;high;;Lấy giá trị cuối ngày;;;;;Done;Dữ liệu tĩnh;
+44;;Biểu đồ phân tích kỹ thuật;Giá thấp nhất;Giá giao dịch thấp nhất trong phiên;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã CK;MDDS;;X;;Done;Thông tin thị trường;JAD_STOCKINFOR;low;;Lấy giá trị cuối ngày;;;;;Done;Dữ liệu tĩnh;
+44;;Biểu đồ phân tích kỹ thuật;Giá đóng cửa;Giá giao dịch cuối cùng trong phiên;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã CK;MDDS;;X;;Done;Thông tin thị trường;JAD_STOCKINFOR;closePrice;;Lấy giá trị cuối ngày;;;;;Done;Dữ liệu tĩnh;
 44;;Biểu đồ phân tích kỹ thuật;Khối lượng giao dịch;Tổng khối lượng cổ phiếu được giao dịch;Dashboard;Chỉ tiêu phái sinh;Trùng;Mã CK;CSDLTT;;X;;Done;Sổ lệnh;TRADE_BOOK_HOSE/ TRADE_BOOK_HNX;"(TRADE_BOOK_HOSE):
 Execution - Volume: Khối lượng khớp lệnh
 Trade_HNX:
@@ -9113,9 +9545,9 @@ and Market ID in (UPX,STX,STO)
 ";"(TRADE_BOOK_HOSE):
 Execution - Volume: Khối lượng khớp lệnh
 Trade_HNX:
-Trade quantity: Khối lượng giao dịch";;;;;Done;Dữ liệu tĩnh
-44;;Biểu đồ phân tích kỹ thuật;Doanh thu;Doanh thu doanh nghiệp công bố;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã CK;IDS;;X;;Done;lấy từ báo cáo tài chính IDS;IDS.data (d), IDS.report_catalog (rc), IDS.company_data (cd);SUM(d.data_value) AS doanh_thu;rc2.col_desc = '1' AND rc.report_cd LIKE 'BCKQKD%' AND ((rc.enterprise_type_cd='dn' AND rr.row_desc='10') OR (rc.enterprise_type_cd='bh' AND rr.row_desc='10') OR (rc.enterprise_type_cd='td' AND rr.row_desc='03'));SELECT SUM(d.data_value) AS doanh_thu FROM IDS.data d JOIN IDS.report_catalog rc ON d.report_catalog_id=rc.id JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id JOIN IDS.company_data cd ON d.company_data_id=cd.id WHERE rc2.col_desc = '1' AND rc.report_cd LIKE 'BCKQKD%' AND cd.report_year=:year AND cd.report_quarter=:quarter AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('10')) OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('10')) OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('03')));;;;;;Done;Dữ liệu tĩnh
-44;;Biểu đồ phân tích kỹ thuật;Lợi nhuận sau thuế;Lợi nhuận doanh nghiệp công bố;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã CK;IDS;;X;;Done;lấy từ báo cáo tài chính IDS;IDS.data (d), IDS.report_catalog (rc), IDS.company_data (cd);SUM(d.data_value) AS lnst;rc2.col_desc = '1' AND rc.report_cd LIKE 'BCKQKD%' AND ((rc.enterprise_type_cd='dn' AND rr.row_desc='60') OR (rc.enterprise_type_cd='bh' AND rr.row_desc='60') OR (rc.enterprise_type_cd='td' AND rr.row_desc='21'));SELECT SUM(d.data_value) AS lnst FROM IDS.data d JOIN IDS.report_catalog rc ON d.report_catalog_id=rc.id JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id JOIN IDS.company_data cd ON d.company_data_id=cd.id WHERE rc2.col_desc = '1' AND rc.report_cd LIKE 'BCKQKD%' AND cd.report_year=:year AND cd.report_quarter=:quarter AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('60')) OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('60')) OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('21')));;;;;;Chưa có sql;Dữ liệu tĩnh
+Trade quantity: Khối lượng giao dịch";Có thể lấy từ MDDS cân nhắc;;;;Done;Dữ liệu tĩnh
+44;;Biểu đồ phân tích kỹ thuật;Doanh thu;Doanh thu doanh nghiệp công bố;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã CK;IDS;;X;;Done;lấy từ báo cáo tài chính IDS;IDS.data (d), IDS.report_catalog (rc), IDS.company_data (cd);SUM(d.data_value) AS doanh_thu;rc2.col_desc = '1' AND rc.report_cd LIKE 'BCKQKD%' AND ((rc.enterprise_type_cd='dn' AND rr.row_desc='10') OR (rc.enterprise_type_cd='bh' AND rr.row_desc='10') OR (rc.enterprise_type_cd='td' AND rr.row_desc='03'));SELECT SUM(d.data_value) AS doanh_thu FROM IDS.data d JOIN IDS.report_catalog rc ON d.report_catalog_id=rc.id JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id JOIN IDS.company_data cd ON d.company_data_id=cd.id WHERE rc2.col_desc = '1' AND rc.report_cd LIKE 'BCKQKD%' AND cd.report_year=:year AND cd.report_quarter=:quarter AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('10')) OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('10')) OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('03')));đối với doanh thu và lợi nhuận đang theo kỳ lên sẽ vẫn theo từng kỳ một;;;;;Done;Dữ liệu tĩnh
+44;;Biểu đồ phân tích kỹ thuật;Lợi nhuận sau thuế;Lợi nhuận doanh nghiệp công bố;Dashboard;Chỉ tiêu cơ sở;Trùng;Mã CK;IDS;;X;;Done;lấy từ báo cáo tài chính IDS;IDS.data (d), IDS.report_catalog (rc), IDS.company_data (cd);SUM(d.data_value) AS lnst;rc2.col_desc = '1' AND rc.report_cd LIKE 'BCKQKD%' AND ((rc.enterprise_type_cd='dn' AND rr.row_desc='60') OR (rc.enterprise_type_cd='bh' AND rr.row_desc='60') OR (rc.enterprise_type_cd='td' AND rr.row_desc='21'));SELECT SUM(d.data_value) AS lnst FROM IDS.data d JOIN IDS.report_catalog rc ON d.report_catalog_id=rc.id JOIN IDS.rrow rr ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id JOIN IDS.rcol rc2 ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id JOIN IDS.company_data cd ON d.company_data_id=cd.id WHERE rc2.col_desc = '1' AND rc.report_cd LIKE 'BCKQKD%' AND cd.report_year=:year AND cd.report_quarter=:quarter AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('60')) OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('60')) OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('21')));đối với doanh thu và lợi nhuận đang theo kỳ lên sẽ vẫn theo từng kỳ một;;;;;Chưa có sql;Dữ liệu tĩnh
 45;;Sở hữu và giao dịch nội bộ;Mã cổ phiếu;;Dashboard;Chiều;TB;Mã CK;IDS;;;;Done;;ids.company_profiles;equity_ticker;;;;;;;;Chưa có sql;Dữ liệu tĩnh
 45;;Sở hữu và giao dịch nội bộ;Tên cổ đông;Tên tổ chức hoặc cá nhân sở hữu cổ phần;Dashboard;Chiều;TB;Mã CK;CSDLTT;;;;Done;;BM 8_Danh sách cổ đông lớn của các công ty đăng ký chứng khoán tại Tổng công ty lưu ký và bù trừ chứng khoán Việt Nam và công ty con;Tên cổ đông;;;Mapping biểu mẫu;;;;;Chưa có sql;Chưa có CSDL - Map biểu mẫu
 45;;Sở hữu và giao dịch nội bộ;Số cổ phiếu sở hữu;Tổng số cổ phiếu mà cổ đông nắm giữ;Dashboard;Chỉ tiêu phái sinh;TB;Mã CK;CSDLTT;;;;Done;;BM 8_Danh sách cổ đông lớn của các công ty đăng ký chứng khoán tại Tổng công ty lưu ký và bù trừ chứng khoán Việt Nam và công ty con;Số lượng chứng khoán sở hữu ( lấy kỳ gần nhất);;;Mapping biểu mẫu;;;;;Chưa có sql;Chưa có CSDL - Map biểu mẫu
