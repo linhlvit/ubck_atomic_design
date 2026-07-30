@@ -14,11 +14,13 @@ flowchart LR
         MDDS_IDXInfor["MDDS.IDXInfor"]
         MSS_Trade_HOSE["MSS.Trade_HOSE"]
         MSS_Trade_HNX["MSS.Trade_HNX"]
-        SCMS_BC_BAO_CAO_GT["SCMS.BC_BAO_CAO_GT"]
-        SCMS_DM_CHI_TIEU["SCMS.DM_CHI_TIEU"]
         QLRR_RISK_INDICATOR["QLRR.RISK_INDICATOR"]
         QLRR_RISK_INDICATOR_VALUE["QLRR.RISK_INDICATOR_VALUE"]
-        KHO_DL_WeightConfig["KhoDL.WeightConfig"]
+        IDS_SECURITIES_OFFERING["IDS.SECURITIES_OFFERING"]
+        IDS_SECURITIES_OFFERING_PLAN["IDS.SECURITIES_OFFERING_PLAN"]
+        IDS_SECURITIES_OFFERING_RESULT["IDS.SECURITIES_OFFERING_RESULT"]
+        SCMS_DISCLOSURE_SECURITIES_OFFERING["SCMS.DISCLOSURE_SECURITIES_OFFERING"]
+        FMS_OFFERING["FMS.OFFERING"]
         ECAT_ECAT_29_HolidayInfo["ECAT.ECAT_29_HolidayInfo"]
     end
     subgraph SIL["Atomic"]
@@ -27,8 +29,11 @@ flowchart LR
         Security_Match_Log["Security Match Log"]
         Risk_Indicator["Risk Indicator"]
         Risk_Indicator_Value["Risk Indicator Value"]
-        Member_Report_Indicator_Value["Member Report Indicator Value"]
-        Risk_Weight_Configuration["Risk Weight Configuration"]
+        Public_Company_Securities_Offering["Public Company Securities Offering"]
+        Public_Company_Securities_Offering_Plan["Public Company Securities Offering Plan"]
+        Public_Company_Securities_Offering_Result["Public Company Securities Offering Result"]
+        Securities_Company_Disclosure_Securities_Offering["Securities Company Disclosure Securities Offering"]
+        Fund_Management_Company_Securities_Offering["Fund Management Company Securities Offering"]
         Calendar_Date["Calendar Date"]
     end
     subgraph GOLD["Datamart"]
@@ -40,22 +45,33 @@ flowchart LR
     MDDS_StockInfor --> Security_Trading_Snapshot
     MSS_Trade_HOSE --> Security_Match_Log
     MSS_Trade_HNX --> Security_Match_Log
-    SCMS_BC_BAO_CAO_GT --> Member_Report_Indicator_Value
-    SCMS_DM_CHI_TIEU --> Member_Report_Indicator_Value
     QLRR_RISK_INDICATOR --> Risk_Indicator
     QLRR_RISK_INDICATOR_VALUE --> Risk_Indicator_Value
-    KHO_DL_WeightConfig --> Risk_Weight_Configuration
+    IDS_SECURITIES_OFFERING --> Public_Company_Securities_Offering
+    IDS_SECURITIES_OFFERING_PLAN --> Public_Company_Securities_Offering_Plan
+    IDS_SECURITIES_OFFERING_RESULT --> Public_Company_Securities_Offering_Result
+    SCMS_DISCLOSURE_SECURITIES_OFFERING --> Securities_Company_Disclosure_Securities_Offering
+    FMS_OFFERING --> Fund_Management_Company_Securities_Offering
     ECAT_ECAT_29_HolidayInfo --> Calendar_Date
     Market_Index_Snapshot --> fct_mkt_rsk_snpst
     Security_Trading_Snapshot --> fct_mkt_rsk_snpst
     Security_Match_Log --> fct_mkt_rsk_snpst
-    Member_Report_Indicator_Value --> fct_mkt_rsk_snpst
     Risk_Indicator --> fct_mkt_rsk_snpst
     Risk_Indicator_Value --> fct_mkt_rsk_snpst
-    Risk_Weight_Configuration --> fct_mkt_rsk_snpst
+    Public_Company_Securities_Offering --> fct_mkt_rsk_snpst
+    Public_Company_Securities_Offering_Plan --> fct_mkt_rsk_snpst
+    Public_Company_Securities_Offering_Result --> fct_mkt_rsk_snpst
+    Securities_Company_Disclosure_Securities_Offering --> fct_mkt_rsk_snpst
+    Fund_Management_Company_Securities_Offering --> fct_mkt_rsk_snpst
     Calendar_Date --> cdr_dt_dim
     cdr_dt_dim --> fct_mkt_rsk_snpst
 ```
+
+> **Risk Weight Configuration (dự kiến Atomic, CHƯA vẽ node — chưa tồn tại thật trên Atomic repo):** bảng `rsk_wgt_cfg` — cột `risk_factor_code` (8 mã: RISK_INDEX=β0, VNINDEX_VOLATILITY/ILLIQ/MARGIN_BALANCE/INTERBANK_RATE/FOREIGN_NET_FLOW/EQUITY_CAPITAL_RAISING=β1~β6, EPSILON=ε), `weight` (hệ số do chuyên viên nhập tay), `data_dt` (trường kỹ thuật — ngày người dùng nhập). Đã grep xác nhận **không tồn tại** ở `DataModel/Atomic/` lẫn `DataModel/working/Atomic/` — cấu trúc chỉ mới thống nhất với user, chưa import vào Atomic. Giữ **PENDING** (K_PTTT_1, 18~23, 228, 229), không vẽ node trong sơ đồ cho tới khi entity tồn tại thật (xem O_PTTT_2).
+>
+> **`Public Company Securities Offering`/`Public Company Securities Offering Plan`/`Public Company Securities Offering Result`/`Securities Company Disclosure Securities Offering`/`Fund Management Company Securities Offering`:** BA đã cung cấp SQL join UNION ALL hoàn chỉnh (lọc `offering_method_code`/`offering_type`, GROUP BY ngày công văn) — logic khai thác "huy động vốn cổ phần" đã thống nhất, chuyển **READY**, có edge nối vào `fct_mkt_rsk_snpst` (K_PTTT_8, 11).
+>
+> **Loại khỏi sơ đồ Cụm 1 (dữ liệu động, chưa có Atomic entity nào):** `SSC_SCMS.MEMBER_REPORT/FORM_REPORT/REPORT_CELL_VALUE` (nguồn Dư nợ Margin, K_PTTT_5/10/24~27) — không vẽ node vì chưa có Atomic entity chuẩn hóa nào, chỉ ghi nhận PENDING bằng text. Tương tự VSDC `BM1_BCKLLH` (KL lưu hành cho MCAPₜ, xem O_PTTT_3).
 
 ##### Cụm 2: Chỉ số vĩ mô (Fact Macro Indicator Snapshot)
 
@@ -395,10 +411,10 @@ flowchart LR
 
 #### Nhóm 1 - Chỉ số rủi ro hệ thống
 
-##### READY
-
 > Phân loại: **Phân tích**
-> Atomic: `Market Index Snapshot` ← MDDS.IDXInfor — **READY** | `Security Trading Snapshot` ← MDDS.StockInfor — **READY** | `Security Match Log` ← MDDS.TransLog/MSS — **READY** | `Risk Indicator Value` ← QLRR.risk_indicator_value — **READY** | `Member Report Indicator Value` ← SCMS.BC_BAO_CAO_GT — **READY** | `Risk Weight Configuration` ← KhoDL.WeightConfig — **READY**
+> Atomic: `Market Index Snapshot` ← MDDS.IDXInfor — **READY** | `Security Trading Snapshot` ← MDDS.StockInfor — **READY** | `Security Match Log` ← MDDS.TransLog/MSS — **READY** | `Risk Indicator Value` ← QLRR.risk_indicator_value — **READY** | `Risk Weight Configuration` (bảng `rsk_wgt_cfg`: risk_factor_code/weight/data_dt) — **PENDING** (cấu trúc đã thống nhất với user — 8 `risk_factor_code`: RISK_INDEX=β0, VNINDEX_VOLATILITY/ILLIQ/MARGIN_BALANCE/INTERBANK_RATE/FOREIGN_NET_FLOW/EQUITY_CAPITAL_RAISING=β1~β6, EPSILON=ε — nhưng entity **chưa tồn tại trên Atomic repo** (đã grep xác nhận không có ở `DataModel/Atomic/` lẫn `DataModel/working/Atomic/`), xem O_PTTT_2) | `Public Company Securities Offering` (`pc_securities_offering`) ← IDS.SECURITIES_OFFERING — **READY** | `Public Company Securities Offering Plan` (`pc_securities_offering_plan`) ← IDS.SECURITIES_OFFERING_PLAN — **READY** | `Public Company Securities Offering Result` (`pc_securities_offering_result`) ← IDS.SECURITIES_OFFERING_RESULT — **READY** | `Securities Company Disclosure Securities Offering` (`sc_disclosure_securities_offering`) ← SCMS.DISCLOSURE_SECURITIES_OFFERING — **READY** | `Fund Management Company Securities Offering` (`fmc_securities_offering`, draft) ← FMS.OFFERING — **READY** (BA đã cung cấp SQL join UNION ALL 3 nguồn hoàn chỉnh, logic khai thác đã thống nhất — xem O_PTTT_1/O_PTTT_4 cập nhật)
+>
+> **Ghi chú gap Atomic (dữ liệu động, chưa có Atomic entity nào):** Dư nợ margin (MDₜ) có nguồn thực tế `SSC_SCMS.MEMBER_REPORT`/`FORM_REPORT`/`REPORT_CELL_VALUE` — cấu trúc bảng biểu mẫu báo cáo định kỳ do CTCK nộp, chưa có Atomic entity chuẩn hóa nào. Coi là **PENDING** cho tới khi có entity Atomic chuẩn hóa. Riêng `MCAPₜ` (mẫu số tỷ lệ margin) phụ thuộc thêm KL CK lưu hành từ VSDC (`BM1_BCKLLH`, Báo cáo TT138.2025.TT.BTC) — blocker O_PTTT_3 chưa giải quyết.
 
 **Mockup:**
 
@@ -419,28 +435,37 @@ flowchart LR
 | Tỷ trọng Dòng tiền ròng NĐTNN | 15% |
 | Tỷ trọng Huy động vốn | 15% |
 
-*(K_PTTT_1, K_PTTT_8, K_PTTT_11 — PENDING)*
+*(K_PTTT_1, K_PTTT_5, K_PTTT_10, K_PTTT_18~23, K_PTTT_24~27 — PENDING do `rsk_wgt_cfg` chưa có trên Atomic repo và/hoặc phụ thuộc VSDC KL lưu hành, xem cột Trạng thái. K_PTTT_8, K_PTTT_11 — Huy động vốn cổ phần — nay đã READY)*
 
 **Source:** `Fact Market Risk Snapshot` → `Calendar Date Dimension`
 
 **Bảng KPI:**
 
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
-|---|---|---|---|---|---|
-| K_PTTT_2 | Volatility — Biến động giá VN-Index 30 phiên (σ) | Số thực | Phái sinh | `σ = STDDEV_SAMP(Rₜ)` trên 30 ngày gần nhất, `Rₜ = LN(mkt_indx_snpst.cls_indx_val[t] / mkt_indx_snpst.cls_indx_val[t-1])`, lọc `mkt_indx_snpst.indx_code = 'VNINDEX'` ORDER BY `mkt_indx_snpst.tdg_dt` DESC | |
-| K_PTTT_3 | Z-score Biến động giá | Số thực | Phái sinh | `(K_PTTT_2 − AVG(K_PTTT_2 lịch sử)) / STDDEV_SAMP(K_PTTT_2 lịch sử)`, AVG/STDDEV tính trên toàn bộ `mkt_indx_snpst.tdg_dt <= snapshot_date` WHERE `mkt_indx_snpst.indx_code = 'VNINDEX'` | |
-| K_PTTT_4 | Z-score Thanh khoản (ILLIQ) | Số thực | Phái sinh | `(ILLIQ30_t − AVG(ILLIQ30 lịch sử)) / STDDEV_SAMP(ILLIQ30 lịch sử)` trong đó `ILLIQ30_t = AVG(ABS(Rₜ) / scr_mtch_log.acm_val)` trên 30 ngày GROUP BY `scr_mtch_log.tdg_dt`, `Rₜ` từ `mkt_indx_snpst.cls_indx_val`, `scr_mtch_log.acm_val` = giá trị khớp lũy kế ngày t | |
-| K_PTTT_5 | Z-score Dư nợ Margin | Số thực | Phái sinh | `(Mₜ − AVG(M lịch sử)) / STDDEV_SAMP(M lịch sử)` trong đó `Mₜ = SUM(mbr_rpt_ind_val.val WHERE mbr_rpt_ind_val.rpt_dt = snapshot_date AND mbr_rpt_ind_val.rpt_ind_code = [mã dư nợ margin]) / K_PTTT_9` | sub-components σ, Mₜ, M̄ → xem K_PTTT_24~27 (PENDING) |
-| K_PTTT_6 | Z-score Lãi suất liên ngân hàng | Số thực | Phái sinh | `(rsk_ind_val.val − AVG(rsk_ind_val.val lịch sử)) / STDDEV_SAMP(rsk_ind_val.val lịch sử)`, lọc JOIN `rsk_ind.bsn_key = 'INTERBANK_IR'` AND `rsk_ind_val.prd_tp_code = 1` (kỳ ngày), ORDER BY `rsk_ind_val.prd_dt` DESC | |
-| K_PTTT_7 | Z-score Dòng tiền ròng NĐTNN | Số thực | Phái sinh | `(AVG(Fₜ lịch sử) − Fₜ) / STDDEV_SAMP(Fₜ lịch sử)` (đảo chiều) trong đó `Fₜ = SUM(scr_tdg_snpst.frgn_buy_vol × scr_tdg_snpst.cls_prc) − SUM(scr_tdg_snpst.frgn_sell_vol × scr_tdg_snpst.cls_prc)` GROUP BY `scr_tdg_snpst.tdg_dt`, lọc `scr_tdg_snpst.flr_code IN ('02','04','10')` | |
-| K_PTTT_9 | Tổng vốn hóa thị trường MCAPₜ | Tỷ VND | Phái sinh | `SUM(scr_tdg_snpst.cls_prc × scr_tdg_snpst.tot_listing_vol)` GROUP BY `scr_tdg_snpst.tdg_dt`, lọc `scr_tdg_snpst.flr_code IN ('02','04','10')` AND `scr_tdg_snpst.stk_tp_code IN ('2','S','U','E','3')` | `tot_listing_vol` ← MDDS.StockInfor.TotalListingQtty; HOSE xem O_PTTT_3 |
-| K_PTTT_10 | Tỷ lệ Dư nợ Margin / Tổng vốn hóa Mₜ | % | Phái sinh | `SUM(mbr_rpt_ind_val.val WHERE mbr_rpt_ind_val.rpt_dt = snapshot_date AND mbr_rpt_ind_val.rpt_ind_code = [mã dư nợ margin]) / K_PTTT_9 × 100` | |
-| K_PTTT_18 | Tỷ trọng (Weight) — Biến động chỉ số VN-Index | % | Phái sinh | `rsk_wgt_cfg.weight` WHERE `rsk_wgt_cfg.risk_factor_code = 'VOLATILITY'` AND `rsk_wgt_cfg.effective_date = MAX(effective_date) <= snapshot_date` | |
-| K_PTTT_19 | Tỷ trọng (Weight) — Thanh khoản | % | Phái sinh | `rsk_wgt_cfg.weight` WHERE `rsk_wgt_cfg.risk_factor_code = 'LIQUIDITY'` AND `rsk_wgt_cfg.effective_date = MAX(effective_date) <= snapshot_date` | |
-| K_PTTT_20 | Tỷ trọng (Weight) — Dư nợ Margin | % | Phái sinh | `rsk_wgt_cfg.weight` WHERE `rsk_wgt_cfg.risk_factor_code = 'MARGIN'` AND `rsk_wgt_cfg.effective_date = MAX(effective_date) <= snapshot_date` | |
-| K_PTTT_21 | Tỷ trọng (Weight) — Lãi suất liên ngân hàng | % | Phái sinh | `rsk_wgt_cfg.weight` WHERE `rsk_wgt_cfg.risk_factor_code = 'INTEREST_RATE'` AND `rsk_wgt_cfg.effective_date = MAX(effective_date) <= snapshot_date` | |
-| K_PTTT_22 | Tỷ trọng (Weight) — Dòng tiền ròng NĐTNN | % | Phái sinh | `rsk_wgt_cfg.weight` WHERE `rsk_wgt_cfg.risk_factor_code = 'FOREIGN_FLOW'` AND `rsk_wgt_cfg.effective_date = MAX(effective_date) <= snapshot_date` | |
-| K_PTTT_23 | Tỷ trọng (Weight) — Huy động vốn cổ phần | % | Phái sinh | `rsk_wgt_cfg.weight` WHERE `rsk_wgt_cfg.risk_factor_code = 'EQUITY_RAISE'` AND `rsk_wgt_cfg.effective_date = MAX(effective_date) <= snapshot_date` | |
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_PTTT_2 | Volatility — Biến động giá VN-Index 30 phiên (σ) | Số thực | Phái sinh | `σ = STDDEV_SAMP(Rₜ)` trên 30 ngày gần nhất, `Rₜ = LN(mkt_indx_snpst.cls_indx_val[t] / mkt_indx_snpst.cls_indx_val[t-1])`, lọc `mkt_indx_snpst.indx_code = 'VNINDEX'` ORDER BY `mkt_indx_snpst.tdg_dt` DESC | | READY |
+| K_PTTT_3 | Z-score Biến động giá | Số thực | Phái sinh | `(K_PTTT_2 − AVG(K_PTTT_2 lịch sử)) / STDDEV_SAMP(K_PTTT_2 lịch sử)`, AVG/STDDEV tính trên toàn bộ `mkt_indx_snpst.tdg_dt <= snapshot_date` WHERE `mkt_indx_snpst.indx_code = 'VNINDEX'` | | READY |
+| K_PTTT_4 | Z-score Thanh khoản (ILLIQ) | Số thực | Phái sinh | `(ILLIQ30_t − AVG(ILLIQ30 lịch sử)) / STDDEV_SAMP(ILLIQ30 lịch sử)` trong đó `ILLIQ30_t = AVG(ABS(Rₜ) / scr_mtch_log.acm_val)` trên 30 ngày GROUP BY `scr_mtch_log.tdg_dt`, `Rₜ` từ `mkt_indx_snpst.cls_indx_val`, `scr_mtch_log.acm_val` = giá trị khớp lũy kế ngày t | | READY |
+| K_PTTT_5 | Z-score Dư nợ Margin | — | Phái sinh | TBD — chờ Atomic | **Lý do pending:** Mₜ = MDₜ (dư nợ margin) / MCAPₜ, MDₜ nguồn `SSC_SCMS.MEMBER_REPORT/FORM_REPORT/REPORT_CELL_VALUE` — biểu mẫu báo cáo định kỳ CTCK nộp, chưa có Atomic entity chuẩn hóa. **Atomic cần bổ sung:** entity chuẩn hóa từ SSC_SCMS.MEMBER_REPORT/FORM_REPORT/REPORT_CELL_VALUE (mã chỉ tiêu dư nợ margin). **Mart dự kiến:** `Fact Market Risk Snapshot` — grain 1 row/ngày. Sub-components σ, Mₜ, M̄ → xem K_PTTT_24~27 | PENDING |
+| K_PTTT_6 | Z-score Lãi suất liên ngân hàng | Số thực | Phái sinh | `(rsk_ind_val.val − AVG(rsk_ind_val.val lịch sử)) / STDDEV_SAMP(rsk_ind_val.val lịch sử)`, lọc JOIN `rsk_ind.bsn_key = 'INTERBANK_IR'` AND `rsk_ind_val.prd_tp_code = 1` (kỳ ngày), ORDER BY `rsk_ind_val.prd_dt` DESC | | READY |
+| K_PTTT_7 | Z-score Dòng tiền ròng NĐTNN | Số thực | Phái sinh | `(AVG(Fₜ lịch sử) − Fₜ) / STDDEV_SAMP(Fₜ lịch sử)` (đảo chiều) trong đó `Fₜ = SUM(scr_tdg_snpst.frgn_buy_vol × scr_tdg_snpst.cls_prc) − SUM(scr_tdg_snpst.frgn_sell_vol × scr_tdg_snpst.cls_prc)` GROUP BY `scr_tdg_snpst.tdg_dt`, lọc `scr_tdg_snpst.flr_code IN ('02','04','10')` | | READY |
+| K_PTTT_9 | Tổng vốn hóa thị trường MCAPₜ | Tỷ VND | Phái sinh | `SUM(scr_tdg_snpst.cls_prc × scr_tdg_snpst.tot_listing_vol)` GROUP BY `scr_tdg_snpst.tdg_dt`, lọc `scr_tdg_snpst.flr_code IN ('02','04','10')` AND `scr_tdg_snpst.stk_tp_code IN ('2','S','U','E','3')` | `tot_listing_vol` ← MDDS.StockInfor.TotalListingQtty; HOSE xem O_PTTT_3 | READY |
+| K_PTTT_10 | Tỷ lệ Dư nợ Margin / Tổng vốn hóa Mₜ | — | Phái sinh | TBD — chờ Atomic | **Lý do pending:** cùng nguồn MDₜ với K_PTTT_5 (SSC_SCMS.MEMBER_REPORT/FORM_REPORT/REPORT_CELL_VALUE), chưa có Atomic entity chuẩn hóa. **Atomic cần bổ sung:** xem K_PTTT_5. **Mart dự kiến:** `Fact Market Risk Snapshot` — grain 1 row/ngày | PENDING |
+| K_PTTT_18 | Hệ số hồi quy β — Biến động chỉ số VN-Index (β_V) | Số thực | Phái sinh | TBD — chờ Atomic | **Lý do pending:** `rsk_wgt_cfg.weight` WHERE `rsk_wgt_cfg.risk_factor_code = 'VNINDEX_VOLATILITY'` AND `rsk_wgt_cfg.data_dt = MAX(data_dt) <= snapshot_date` — nhưng bảng `rsk_wgt_cfg` **chưa tồn tại trên Atomic repo** (đã grep xác nhận). **Atomic cần bổ sung:** entity mới `Risk Weight Configuration` (`rsk_wgt_cfg`) — cấu trúc đã thống nhất, chờ import vào Atomic. **Mart dự kiến:** `Fact Market Risk Snapshot` — grain 1 row/ngày | PENDING |
+| K_PTTT_19 | Hệ số hồi quy β — Thanh khoản (β_L) | Số thực | Phái sinh | TBD — chờ Atomic | **Lý do pending:** `rsk_wgt_cfg.weight` WHERE `rsk_wgt_cfg.risk_factor_code = 'ILLIQ'` AND `rsk_wgt_cfg.data_dt = MAX(data_dt) <= snapshot_date`. **Atomic cần bổ sung:** xem K_PTTT_18. **Mart dự kiến:** `Fact Market Risk Snapshot` — grain 1 row/ngày | PENDING |
+| K_PTTT_20 | Hệ số hồi quy β — Dư nợ Margin (β_M) | Số thực | Phái sinh | TBD — chờ Atomic | **Lý do pending:** `rsk_wgt_cfg.weight` WHERE `rsk_wgt_cfg.risk_factor_code = 'MARGIN_BALANCE'` AND `rsk_wgt_cfg.data_dt = MAX(data_dt) <= snapshot_date`. **Atomic cần bổ sung:** xem K_PTTT_18. **Mart dự kiến:** `Fact Market Risk Snapshot` — grain 1 row/ngày | PENDING |
+| K_PTTT_21 | Hệ số hồi quy β — Lãi suất liên ngân hàng (β_I) | Số thực | Phái sinh | TBD — chờ Atomic | **Lý do pending:** `rsk_wgt_cfg.weight` WHERE `rsk_wgt_cfg.risk_factor_code = 'INTERBANK_RATE'` AND `rsk_wgt_cfg.data_dt = MAX(data_dt) <= snapshot_date`. **Atomic cần bổ sung:** xem K_PTTT_18. **Mart dự kiến:** `Fact Market Risk Snapshot` — grain 1 row/ngày | PENDING |
+| K_PTTT_22 | Hệ số hồi quy β — Dòng tiền ròng NĐTNN (β_F) | Số thực | Phái sinh | TBD — chờ Atomic | **Lý do pending:** `rsk_wgt_cfg.weight` WHERE `rsk_wgt_cfg.risk_factor_code = 'FOREIGN_NET_FLOW'` AND `rsk_wgt_cfg.data_dt = MAX(data_dt) <= snapshot_date`. **Atomic cần bổ sung:** xem K_PTTT_18. **Mart dự kiến:** `Fact Market Risk Snapshot` — grain 1 row/ngày | PENDING |
+| K_PTTT_23 | Hệ số hồi quy β — Huy động vốn cổ phần (β_C) | Số thực | Phái sinh | TBD — chờ Atomic | **Lý do pending:** `rsk_wgt_cfg.weight` WHERE `rsk_wgt_cfg.risk_factor_code = 'EQUITY_CAPITAL_RAISING'` AND `rsk_wgt_cfg.data_dt = MAX(data_dt) <= snapshot_date`. **Atomic cần bổ sung:** xem K_PTTT_18. **Mart dự kiến:** `Fact Market Risk Snapshot` — grain 1 row/ngày | PENDING |
+| K_PTTT_228 | Hằng số hồi quy β0 (Intercept) | Số thực | Phái sinh | TBD — chờ Atomic | **Lý do pending:** `rsk_wgt_cfg.weight` WHERE `rsk_wgt_cfg.risk_factor_code = 'RISK_INDEX'` AND `rsk_wgt_cfg.data_dt = MAX(data_dt) <= snapshot_date` (user xác nhận: mã `RISK_INDEX` trong `rsk_wgt_cfg` là β0, không phải giá trị RI đầu ra). **Atomic cần bổ sung:** xem K_PTTT_18. **Mart dự kiến:** `Fact Market Risk Snapshot` — grain 1 row/ngày | PENDING |
+| K_PTTT_229 | Sai số hồi quy ε (Epsilon) | Số thực | Phái sinh | TBD — chờ Atomic | **Lý do pending:** `rsk_wgt_cfg.weight` WHERE `rsk_wgt_cfg.risk_factor_code = 'EPSILON'` AND `rsk_wgt_cfg.data_dt = MAX(data_dt) <= snapshot_date`. **Atomic cần bổ sung:** xem K_PTTT_18. **Mart dự kiến:** `Fact Market Risk Snapshot` — grain 1 row/ngày | PENDING |
+| K_PTTT_1 | Risk Index (Chỉ số rủi ro hệ thống tổng hợp — Logistic Regression) | — | Phái sinh | `RI = β0 + β1·Z_L + β2·Z_V + β3·Z_M + β4·Z_I + β5·Z_F + β6·Z_C + ε` trong đó Z_L=K_PTTT_4, Z_V=K_PTTT_3, Z_M=K_PTTT_5, Z_I=K_PTTT_6, Z_F=K_PTTT_7, Z_C=K_PTTT_8 (Z-score 6 yếu tố); β0=K_PTTT_228, β1~β6=K_PTTT_18~23, ε=K_PTTT_229 — tất cả hệ số nhập tay qua `rsk_wgt_cfg` | **Lý do pending:** đổi từ công thức tuyến tính Σ(Z×Weight) sang Logistic Regression theo BA cập nhật — phụ thuộc `rsk_wgt_cfg` (PENDING, chưa có trên Atomic repo) và K_PTTT_5 (PENDING, gap Dư nợ Margin/MCAP). K_PTTT_8/11 (Huy động vốn) nay đã READY, không còn là blocker. **Atomic cần bổ sung:** xem K_PTTT_18 (`rsk_wgt_cfg`) + K_PTTT_5 (Dư nợ Margin/MCAP). **Mart dự kiến:** `Fact Market Risk Snapshot` — bổ sung cột Risk_Index | PENDING |
+| K_PTTT_8 | Z-score Huy động vốn cổ phần | Số thực | Phái sinh | `(MU − RT) / SIGMA` (Z-score đảo chiều) trong đó `RT` = tổng huy động vốn ngày t (xem K_PTTT_11), `MU`/`SIGMA` = AVG/STDDEV trên 20 phiên gần nhất | Nguồn: UNION ALL `pc_securities_offering` JOIN `pc_securities_offering_plan` JOIN `pc_securities_offering_result` (lọc `pc_securities_offering_plan.offering_method_code IN ('1','2','3','5','9','11')`, theo `pc_securities_offering.official_letter_dt`) + `sc_disclosure_securities_offering` (lọc `offering_type IN ('1','4','5','6','7')`, theo `document_date`) + `fmc_securities_offering` (theo `approval_document_date`, draft entity FMS) — GROUP BY ngày, 20 phiên gần nhất. Logic khai thác đã thống nhất (BA cung cấp SQL đầy đủ) | READY |
+| K_PTTT_11 | Huy động vốn cổ phần thị trường tại ngày t | Tỷ VND | Phái sinh | `COALESCE(SUM(pc_securities_offering_result.total_collected_amt),0) + COALESCE(SUM(sc_disclosure_securities_offering.proceeds_collected),0) + COALESCE(SUM(fmc_securities_offering.actual_total_value),0)` WHERE ngày công văn (`pc_securities_offering.official_letter_dt` / `sc_disclosure_securities_offering.document_date` / `fmc_securities_offering.approval_document_date`) `= snapshot_date`, cùng filter `offering_method_code`/`offering_type` như K_PTTT_8 | READY |
+| K_PTTT_24 | Z-score Dư nợ Margin — giá trị chuẩn hóa ngày t | — | Phái sinh | TBD — chờ Atomic | **Lý do pending:** BA đánh `Trạng thái mapping = Pending` — thiếu mapping nguồn MDₜ theo ngày vs tháng khi tính chuỗi lịch sử; đồng thời phụ thuộc gap K_PTTT_5. **Atomic cần bổ sung:** xem K_PTTT_5 + xác nhận mapping mã chỉ tiêu dư nợ margin theo ngày (SCMS.DM_CHI_TIEU). **Mart dự kiến:** `Fact Market Risk Snapshot` — grain 1 row/ngày | PENDING |
+| K_PTTT_25 | Độ lệch chuẩn chuỗi tỷ lệ Dư nợ Margin/MCAP (σ) | — | Phái sinh | TBD — chờ Atomic | **Lý do pending:** xem K_PTTT_24. **Atomic cần bổ sung:** xem K_PTTT_24. **Mart dự kiến:** `Fact Market Risk Snapshot` — grain 1 row/ngày | PENDING |
+| K_PTTT_26 | Tỷ lệ Dư nợ Margin / Tổng vốn hóa tại ngày t (Mₜ) | — | Phái sinh | TBD — chờ Atomic | **Lý do pending:** xem K_PTTT_24. **Atomic cần bổ sung:** xem K_PTTT_24. **Mart dự kiến:** `Fact Market Risk Snapshot` — grain 1 row/ngày | PENDING |
+| K_PTTT_27 | Tỷ lệ Dư nợ Margin / Tổng vốn hóa trung bình (M̄) | — | Phái sinh | TBD — chờ Atomic | **Lý do pending:** xem K_PTTT_24. **Atomic cần bổ sung:** xem K_PTTT_24. **Mart dự kiến:** `Fact Market Risk Snapshot` — grain 1 row/ngày | PENDING |
 
 **Star Schema:**
 
@@ -451,17 +476,11 @@ erDiagram
         float Volatility_30d
         float Z_Score_Volatility
         float Z_Score_Liquidity
-        float Z_Score_Margin
         float Z_Score_Interest_Rate
         float Z_Score_Foreign_Flow
+        float Z_Score_Equity_Raise
         float MCAP_Total_Bil_VND
-        float Margin_MCAP_Ratio_Pct
-        float Weight_Volatility
-        float Weight_Liquidity
-        float Weight_Margin
-        float Weight_Interest_Rate
-        float Weight_Foreign_Flow
-        float Weight_Equity_Raise
+        float Equity_Raise_Amount_Bil_VND
     }
     Calendar_Date_Dimension {
         int Date_Id PK
@@ -472,11 +491,13 @@ erDiagram
     Calendar_Date_Dimension ||--o{ Fact_Market_Risk_Snapshot : "Snapshot_Date_Id"
 ```
 
+> **Ghi chú:** Cột Risk_Index, Beta0, Beta_Volatility, Beta_Liquidity, Beta_Margin, Beta_Interest_Rate, Beta_Foreign_Flow, Beta_Equity_Raise, Epsilon, Z_Score_Margin **chưa đưa vào Star Schema** — thuộc các KPI đang PENDING (K_PTTT_1, 5, 18~23, 228, 229), sẽ bổ sung khi `rsk_wgt_cfg` có trên Atomic repo và Dư nợ Margin/MCAP hết PENDING.
+
 **Lineage Mart → Báo cáo:**
 
 ```mermaid
 flowchart LR
-    fct_mkt_rsk_snpst["Fact Market Risk Snapshot"] --> rpt_nh1_giam_sat["Dashboard Giám sát rủi ro — Nhóm 1: Volatility, Z-score, MCAP, Tỷ trọng"]
+    fct_mkt_rsk_snpst["Fact Market Risk Snapshot"] --> rpt_nh1_giam_sat["Dashboard Giám sát rủi ro — Nhóm 1: K_PTTT_2,3,4,6,7,8,9,11"]
     cdr_dt_dim["Calendar Date Dimension"] --> rpt_nh1_giam_sat
 ```
 
@@ -484,55 +505,22 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| Fact Market Risk Snapshot | 1 row / ngày |
-| Calendar Date Dimension | 1 row / ngày |
-
----
-
-##### PENDING (Risk Index + Huy động vốn + Sub-components Dư nợ Margin)
-
-**KPI liên quan:** K_PTTT_1, K_PTTT_8, K_PTTT_11, K_PTTT_24, K_PTTT_25, K_PTTT_26, K_PTTT_27
-
-**Lý do pending:**
-- K_PTTT_8, K_PTTT_11 (Huy động vốn cổ phần): cần 3 nguồn SCMS.CBTT_CHAO_BAN_CHUNG_KHOAN + IDS-GSĐC + FMS — chưa có Atomic entity tương ứng
-- K_PTTT_1 (Risk Index): phụ thuộc K_PTTT_8
-- K_PTTT_24~27 (Sub-components Z-score Dư nợ Margin): BA đánh `Trạng thái mapping = Pending` — thiếu mapping nguồn cho MDₜ (dư nợ margin theo ngày vs tháng), MCAPₜ khi tính chuỗi lịch sử
-
-**Atomic cần bổ sung:**
-- Entity từ SCMS/IDS-GSĐC/FMS cho nghiệp vụ huy động vốn cổ phần (CBTT chào bán chứng khoán)
-- Xác nhận mapping `mbr_rpt_ind_val.rpt_ind_code` → mã chỉ tiêu dư nợ margin (SCMS.DM_CHI_TIEU) để hoàn thiện chuỗi lịch sử K_PTTT_24~27
-
-**Mart dự kiến:**
-- `Fact Market Risk Snapshot` — grain: 1 row / ngày (bổ sung thêm Risk_Index, Z_Score_Equity_Raise, Equity_Raise_Amount khi Atomic sẵn sàng)
+| Fact Market Risk Snapshot | 1 row / ngày (SCD4A current state) |
+| Calendar Date Dimension | 1 row / ngày (SCD4A current state) |
 
 **Bảng mapping nguồn (Atomic Placeholder):**
 
 | Tên KPI | Bảng nguồn (BA) | Atomic entity dự kiến | Atomic table dự kiến |
 |---|---|---|---|
-| Huy động vốn cổ phần tại ngày t | SCMS.CBTT_CHAO_BAN_CHUNG_KHOAN | TBD (SCMS) | TBD |
-| Huy động vốn cổ phần — IDS-GSĐC | IDS-GSĐC | TBD (IDS) | TBD |
-| Huy động vốn cổ phần — FMS | FMS | TBD (FMS) | TBD |
-
-**Bảng KPI PENDING:**
-
-| KPI ID | Tên KPI | Tính chất | Trạng thái |
-|---|---|---|---|
-| K_PTTT_1 | Risk Index (Chỉ số rủi ro hệ thống tổng hợp) | Phái sinh | PENDING |
-| K_PTTT_8 | Z-score Huy động vốn cổ phần | Phái sinh | PENDING |
-| K_PTTT_11 | Huy động vốn cổ phần thị trường tại ngày t | Phái sinh | PENDING |
-| K_PTTT_24 | Z-score Dư nợ Margin — giá trị chuẩn hóa ngày t | Phái sinh | PENDING |
-| K_PTTT_25 | Độ lệch chuẩn chuỗi tỷ lệ Dư nợ Margin/MCAP (σ) | Phái sinh | PENDING |
-| K_PTTT_26 | Tỷ lệ Dư nợ Margin / Tổng vốn hóa tại ngày t (Mₜ) | Phái sinh | PENDING |
-| K_PTTT_27 | Tỷ lệ Dư nợ Margin / Tổng vốn hóa trung bình (M̄) | Phái sinh | PENDING |
+| Z-score/Tỷ lệ Dư nợ Margin (K_PTTT_5, 10, 24~27) | SSC_SCMS.MEMBER_REPORT / FORM_REPORT / REPORT_CELL_VALUE (MDₜ) + VSDC BM1_BCKLLH (KL lưu hành cho MCAPₜ) | TBD (chuẩn hóa biểu mẫu báo cáo định kỳ) + Security Listing Volume (VSDC, xem O_PTTT_3) | TBD / scr_listing_vol hoặc TBD |
+| Hệ số hồi quy β0/β1~β6/ε (K_PTTT_1, 18~23, 228, 229) | Bảng trọng số do chuyên viên nhập tay, import vào Atomic (cấu trúc đã thống nhất với user) | Risk Weight Configuration | rsk_wgt_cfg (risk_factor_code/weight/data_dt) — **chưa tồn tại trên Atomic repo**, chờ import |
 
 ---
 
 #### Nhóm 2 - Phân tích đóng góp rủi ro
 
-##### READY
-
 > Phân loại: **Phân tích**
-> Atomic: `Market Index Snapshot` ← MDDS.IDXInfor — **READY** | `Security Match Log` ← MDDS.TransLog/MSS — **READY** | `Risk Indicator Value` ← QLRR.risk_indicator_value — **READY** | `Member Report Indicator Value` ← SCMS.BC_BAO_CAO_GT — **READY** | `Security Trading Snapshot` ← MDDS.StockInfor — **READY** | `Risk Weight Configuration` ← KhoDL.WeightConfig — **READY**
+> Atomic: `Market Index Snapshot` ← MDDS.IDXInfor — **READY** | `Security Match Log` ← MDDS.TransLog/MSS — **READY** | `Risk Indicator Value` ← QLRR.risk_indicator_value — **READY** | `Security Trading Snapshot` ← MDDS.StockInfor — **READY** | `Risk Weight Configuration` ← KhoDL.WeightConfig — **PENDING** (xem O_PTTT_2) | nguồn Dư nợ Margin (SSC_SCMS.MEMBER_REPORT/FORM_REPORT/REPORT_CELL_VALUE) — **PENDING** (chưa có Atomic entity chuẩn hóa) | `Public Company Securities Offering` ← IDS/SCMS/FMS — **PENDING** (logic khai thác chưa thống nhất, xem Nhóm 1)
 
 **Mockup:**
 
@@ -545,7 +533,7 @@ flowchart LR
 | Dòng tiền ròng NĐTNN | Fₜ = -320 tỷ VND | -1.02 | 15% |
 | Huy động vốn cổ phần | Cₜ = — | — | 15% |
 
-*(Huy động vốn cổ phần — PENDING)*
+*(Dư nợ Margin — Mức độ tác động + Giá trị hiện tại PENDING; Huy động vốn cổ phần — PENDING; Tỷ trọng toàn bộ 6 yếu tố — PENDING, xem cột Trạng thái)*
 
 > **Ghi chú mockup:** "Giá trị hiện tại" = raw value xₜ tại ngày t (Rₜ, ILLIQₜ, Mₜ, IRₜ, Fₜ, Cₜ). "Mức độ tác động" = Z-score chuẩn hóa = (xₜ − μ) / σ. Hai cột này độc lập, không tính Z × Weight.
 
@@ -553,28 +541,26 @@ flowchart LR
 
 **Bảng KPI:**
 
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
-|---|---|---|---|---|---|
-| **Giá trị hiện tại (raw value tại ngày t)** | | | | | |
-| K_PTTT_12 | Giá trị hiện tại — Biến động chỉ số VN-Index (Rₜ) | Số thực | Cơ sở | `fct_mkt_rsk_snpst.indx_log_rtn_t` | Log return ngày t: ln(Pₜ/Pₜ₋₁) |
-| K_PTTT_13 | Giá trị hiện tại — Thanh khoản ILLIQ (ILLIQₜ) | Số thực | Cơ sở | `fct_mkt_rsk_snpst.illiq_t` | ILLIQₜ = \|Rₜ\| / VOLDₜ |
-| K_PTTT_10 | Giá trị hiện tại — Dư nợ Margin (Mₜ) | % | Phái sinh | `fct_mkt_rsk_snpst.mrgn_mcap_rto_pct` | Reuse từ Nhóm 1: Mₜ = MDₜ/MCAPₜ × 100 |
-| K_PTTT_14 | Giá trị hiện tại — Lãi suất liên ngân hàng (IRₜ) | % | Cơ sở | `fct_mkt_rsk_snpst.ir_t_pct` | Lãi suất tại ngày t từ RISK_INDICATOR_VALUE |
-| K_PTTT_15 | Giá trị hiện tại — Dòng tiền ròng NĐTNN (Fₜ) | Tỷ VND | Cơ sở | `fct_mkt_rsk_snpst.frgn_net_flw_t_bil` | Fₜ = SUM(buy) − SUM(sell) NĐTNN ngày t |
-| K_PTTT_16 | Giá trị hiện tại — Huy động vốn cổ phần (Cₜ) | Tỷ VND | Cơ sở | `fct_mkt_rsk_snpst.eqty_rse_t_bil` | PENDING — nguồn BA chưa mapping |
-| **Mức độ tác động (= Z-score chuẩn hóa, reuse từ Nhóm 1)** | | | | | |
-| K_PTTT_3 | Mức độ tác động — Biến động VN-Index (Z-score) | Số thực | Phái sinh | `fct_mkt_rsk_snpst.z_scr_vol` | Reuse K_PTTT_3 từ Nhóm 1 — Mức độ tác động = Z-score |
-| K_PTTT_4 | Mức độ tác động — Thanh khoản ILLIQ (Z-score) | Số thực | Phái sinh | `fct_mkt_rsk_snpst.z_scr_lqdt` | Reuse K_PTTT_4 từ Nhóm 1 — Mức độ tác động = Z-score |
-| K_PTTT_5 | Mức độ tác động — Dư nợ Margin (Z-score) | Số thực | Phái sinh | `fct_mkt_rsk_snpst.z_scr_mrgn` | Reuse K_PTTT_5 từ Nhóm 1 — Mức độ tác động = Z-score |
-| K_PTTT_6 | Mức độ tác động — Lãi suất liên ngân hàng (Z-score) | Số thực | Phái sinh | `fct_mkt_rsk_snpst.z_scr_ir` | Reuse K_PTTT_6 từ Nhóm 1 — Mức độ tác động = Z-score |
-| K_PTTT_7 | Mức độ tác động — Dòng tiền ròng NĐTNN (Z-score) | Số thực | Phái sinh | `fct_mkt_rsk_snpst.z_scr_frgn_flw` | Reuse K_PTTT_7 từ Nhóm 1 — Mức độ tác động = Z-score |
-| **Tỷ trọng (Weight)** | | | | | |
-| K_PTTT_18 | Tỷ trọng (Weight) — Biến động chỉ số VN-Index | % | Phái sinh | `fct_mkt_rsk_snpst.wgt_vol` | Reuse từ Nhóm 1 |
-| K_PTTT_19 | Tỷ trọng (Weight) — Thanh khoản | % | Phái sinh | `fct_mkt_rsk_snpst.wgt_lqdt` | Reuse từ Nhóm 1 |
-| K_PTTT_20 | Tỷ trọng (Weight) — Dư nợ Margin | % | Phái sinh | `fct_mkt_rsk_snpst.wgt_mrgn` | Reuse từ Nhóm 1 |
-| K_PTTT_21 | Tỷ trọng (Weight) — Lãi suất liên ngân hàng | % | Phái sinh | `fct_mkt_rsk_snpst.wgt_ir` | Reuse từ Nhóm 1 |
-| K_PTTT_22 | Tỷ trọng (Weight) — Dòng tiền ròng NĐTNN | % | Phái sinh | `fct_mkt_rsk_snpst.wgt_frgn_flw` | Reuse từ Nhóm 1 |
-| K_PTTT_23 | Tỷ trọng (Weight) — Huy động vốn cổ phần | % | Phái sinh | `fct_mkt_rsk_snpst.wgt_eqty_rse` | Reuse từ Nhóm 1 |
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_PTTT_12 | Giá trị hiện tại — Biến động chỉ số VN-Index (Rₜ) | Số thực | Cơ sở | `fct_mkt_rsk_snpst.indx_log_rtn_t` | Log return ngày t: ln(Pₜ/Pₜ₋₁) | READY |
+| K_PTTT_13 | Giá trị hiện tại — Thanh khoản ILLIQ (ILLIQₜ) | Số thực | Cơ sở | `fct_mkt_rsk_snpst.illiq_t` | ILLIQₜ = \|Rₜ\| / VOLDₜ | READY |
+| K_PTTT_10 | Giá trị hiện tại — Dư nợ Margin (Mₜ) | — | Phái sinh | TBD — chờ Atomic | **Lý do pending:** Reuse từ Nhóm 1 — nguồn MDₜ (SSC_SCMS.MEMBER_REPORT/FORM_REPORT/REPORT_CELL_VALUE) chưa có Atomic entity chuẩn hóa. **Atomic cần bổ sung:** xem Nhóm 1 K_PTTT_5. **Mart dự kiến:** `Fact Market Risk Snapshot` — grain 1 row/ngày | PENDING |
+| K_PTTT_14 | Giá trị hiện tại — Lãi suất liên ngân hàng (IRₜ) | % | Cơ sở | `fct_mkt_rsk_snpst.ir_t_pct` | Lãi suất tại ngày t từ RISK_INDICATOR_VALUE | READY |
+| K_PTTT_15 | Giá trị hiện tại — Dòng tiền ròng NĐTNN (Fₜ) | Tỷ VND | Cơ sở | `fct_mkt_rsk_snpst.frgn_net_flw_t_bil` | Fₜ = SUM(buy) − SUM(sell) NĐTNN ngày t | READY |
+| K_PTTT_16 | Giá trị hiện tại — Huy động vốn cổ phần (Cₜ) | — | Cơ sở | TBD — chờ Atomic | **Lý do pending:** Atomic entity `Public Company Securities Offering` đã có, nhưng logic khai thác chưa thống nhất — xem Nhóm 1 K_PTTT_8. **Atomic cần bổ sung:** xem Nhóm 1 K_PTTT_8. **Mart dự kiến:** `Fact Market Risk Snapshot` — bổ sung Eqty_Rse_t_Bil | PENDING |
+| K_PTTT_3 | Mức độ tác động — Biến động VN-Index (Z-score) | Số thực | Phái sinh | `fct_mkt_rsk_snpst.z_scr_vol` | Reuse K_PTTT_3 từ Nhóm 1 — Mức độ tác động = Z-score | READY |
+| K_PTTT_4 | Mức độ tác động — Thanh khoản ILLIQ (Z-score) | Số thực | Phái sinh | `fct_mkt_rsk_snpst.z_scr_lqdt` | Reuse K_PTTT_4 từ Nhóm 1 — Mức độ tác động = Z-score | READY |
+| K_PTTT_5 | Mức độ tác động — Dư nợ Margin (Z-score) | — | Phái sinh | TBD — chờ Atomic | **Lý do pending:** Reuse K_PTTT_5 từ Nhóm 1 — đang PENDING do gap nguồn MDₜ. **Atomic cần bổ sung:** xem Nhóm 1 K_PTTT_5. **Mart dự kiến:** `Fact Market Risk Snapshot` — grain 1 row/ngày | PENDING |
+| K_PTTT_6 | Mức độ tác động — Lãi suất liên ngân hàng (Z-score) | Số thực | Phái sinh | `fct_mkt_rsk_snpst.z_scr_ir` | Reuse K_PTTT_6 từ Nhóm 1 — Mức độ tác động = Z-score | READY |
+| K_PTTT_7 | Mức độ tác động — Dòng tiền ròng NĐTNN (Z-score) | Số thực | Phái sinh | `fct_mkt_rsk_snpst.z_scr_frgn_flw` | Reuse K_PTTT_7 từ Nhóm 1 — Mức độ tác động = Z-score | READY |
+| K_PTTT_8 | Mức độ tác động — Huy động vốn cổ phần (Z-score) | — | Phái sinh | TBD — chờ Atomic | **Lý do pending:** Reuse K_PTTT_8 từ Nhóm 1 — đang PENDING do chưa thống nhất logic khai thác. **Atomic cần bổ sung:** xem Nhóm 1 K_PTTT_8. **Mart dự kiến:** `Fact Market Risk Snapshot` — bổ sung Z_Score_Equity_Raise | PENDING |
+| K_PTTT_18 | Tỷ trọng (Weight) — Biến động chỉ số VN-Index | — | Phái sinh | TBD — chờ Atomic | **Lý do pending:** Reuse từ Nhóm 1 — đang PENDING do O_PTTT_2 (Risk Weight Configuration nhập tay, chưa có bảng DWH). **Atomic cần bổ sung:** xem Nhóm 1 K_PTTT_18. **Mart dự kiến:** `Fact Market Risk Snapshot` — grain 1 row/ngày | PENDING |
+| K_PTTT_19 | Tỷ trọng (Weight) — Thanh khoản | — | Phái sinh | TBD — chờ Atomic | **Lý do pending:** xem K_PTTT_18. **Atomic cần bổ sung:** xem Nhóm 1 K_PTTT_18. **Mart dự kiến:** `Fact Market Risk Snapshot` — grain 1 row/ngày | PENDING |
+| K_PTTT_20 | Tỷ trọng (Weight) — Dư nợ Margin | — | Phái sinh | TBD — chờ Atomic | **Lý do pending:** xem K_PTTT_18. **Atomic cần bổ sung:** xem Nhóm 1 K_PTTT_18. **Mart dự kiến:** `Fact Market Risk Snapshot` — grain 1 row/ngày | PENDING |
+| K_PTTT_21 | Tỷ trọng (Weight) — Lãi suất liên ngân hàng | — | Phái sinh | TBD — chờ Atomic | **Lý do pending:** xem K_PTTT_18. **Atomic cần bổ sung:** xem Nhóm 1 K_PTTT_18. **Mart dự kiến:** `Fact Market Risk Snapshot` — grain 1 row/ngày | PENDING |
+| K_PTTT_22 | Tỷ trọng (Weight) — Dòng tiền ròng NĐTNN | — | Phái sinh | TBD — chờ Atomic | **Lý do pending:** xem K_PTTT_18. **Atomic cần bổ sung:** xem Nhóm 1 K_PTTT_18. **Mart dự kiến:** `Fact Market Risk Snapshot` — grain 1 row/ngày | PENDING |
+| K_PTTT_23 | Tỷ trọng (Weight) — Huy động vốn cổ phần | — | Phái sinh | TBD — chờ Atomic | **Lý do pending:** xem K_PTTT_18 + K_PTTT_8. **Atomic cần bổ sung:** xem Nhóm 1 K_PTTT_18 + K_PTTT_8. **Mart dự kiến:** `Fact Market Risk Snapshot` — grain 1 row/ngày | PENDING |
 
 **Star Schema:**
 
@@ -585,22 +571,13 @@ erDiagram
         float Volatility_30d
         float Indx_Log_Rtn_t
         float ILLIQ_t
-        float Margin_MCAP_Ratio_Pct
         float IR_t_Pct
         float Frgn_Net_Flw_t_Bil
-        float Eqty_Rse_t_Bil
         float Z_Score_Volatility
         float Z_Score_Liquidity
-        float Z_Score_Margin
         float Z_Score_Interest_Rate
         float Z_Score_Foreign_Flow
         float MCAP_Total_Bil_VND
-        float Weight_Volatility
-        float Weight_Liquidity
-        float Weight_Margin
-        float Weight_Interest_Rate
-        float Weight_Foreign_Flow
-        float Weight_Equity_Raise
     }
     Calendar_Date_Dimension {
         int Date_Id PK
@@ -615,7 +592,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    fct_mkt_rsk_snpst["Fact Market Risk Snapshot"] --> rpt_nh2_dong_gop["Dashboard Giám sát rủi ro — Nhóm 2: Giá trị hiện tại, Z-score, Mức độ tác động, Tỷ trọng"]
+    fct_mkt_rsk_snpst["Fact Market Risk Snapshot"] --> rpt_nh2_dong_gop["Dashboard Giám sát rủi ro — Nhóm 2: K_PTTT_3,4,6,7,10(pending),12,13,14,15"]
     cdr_dt_dim["Calendar Date Dimension"] --> rpt_nh2_dong_gop
 ```
 
@@ -623,44 +600,14 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| Fact Market Risk Snapshot | 1 row / ngày |
-| Calendar Date Dimension | 1 row / ngày |
-
----
-
-##### PENDING (Huy động vốn cổ phần)
-
-**KPI liên quan:** K_PTTT_8, K_PTTT_16
-
-**Lý do pending:** K_PTTT_16 (Giá trị hiện tại — Huy động vốn Cₜ) và K_PTTT_8 (Z-score Huy động vốn) cần nguồn SCMS.CBTT_CHAO_BAN + IDS-GSĐC + FMS — chưa có Atomic entity.
-
-**Atomic cần bổ sung:** Xem Nhóm 1 — PENDING (Z-score Huy động vốn).
-
-**Mart dự kiến:**
-- `Fact Market Risk Snapshot` — grain: 1 row / ngày (bổ sung thêm Z_Score_Equity_Raise, Impact_Equity_Raise)
-
-**Bảng mapping nguồn (Atomic Placeholder):**
-
-| Tên KPI | Bảng nguồn (BA) | Atomic entity dự kiến | Atomic table dự kiến |
-|---|---|---|---|
-| Huy động vốn cổ phần — SCMS | SCMS.CBTT_CHAO_BAN_CHUNG_KHOAN | TBD (SCMS) | TBD |
-| Huy động vốn cổ phần — IDS-GSĐC | IDS-GSĐC | TBD (IDS) | TBD |
-| Huy động vốn cổ phần — FMS | FMS | TBD (FMS) | TBD |
-
-**Bảng KPI PENDING:**
-
-| KPI ID | Tên KPI | Tính chất | Trạng thái |
-|---|---|---|---|
-| K_PTTT_16 | Giá trị hiện tại — Huy động vốn cổ phần (Cₜ) | Cơ sở | PENDING — nguồn BA chưa mapping |
-| K_PTTT_8 | Mức độ tác động — Huy động vốn cổ phần (Z-score, reuse từ Nhóm 1) | Phái sinh | PENDING |
+| Fact Market Risk Snapshot | 1 row / ngày (SCD4A current state) |
+| Calendar Date Dimension | 1 row / ngày (SCD4A current state) |
 
 ---
 
 ### Tab Dashboard Sức khỏe thị trường và vĩ mô
 
 #### Nhóm 3 - Chỉ số vĩ mô – tiền tệ
-
-##### READY
 
 > Phân loại: **Phân tích**
 > Atomic: `Risk Indicator` ← QLRR.RISK_INDICATOR — **READY** | `Risk Indicator Value` ← QLRR.RISK_INDICATOR_VALUE — **READY**
@@ -674,24 +621,27 @@ flowchart LR
 | Chỉ số CPI (YoY) | 3.97% | 4.09% | -0.12 |
 | Tăng trưởng GDP | 5.55% | 5.21% | +0.34 |
 
+*(Ngày thống kê (Chiều thời gian) — PENDING, xem cột Trạng thái)*
+
 **Source:** `Fact Macro Indicator Snapshot` → `Calendar Date Dimension`
 
 **Bảng KPI:**
 
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
-|---|---|---|---|---|---|
-| K_PTTT_28 | Lãi suất liên ngân hàng qua đêm (ON) tại ngày t — IRₜ | %/năm | Cơ sở | `rsk_ind_val.val` WHERE JOIN `rsk_ind.bsn_key = 'INTERBANK_IR'` AND `rsk_ind_val.prd_dt = snapshot_date` | prd_tp_code = 1 (kỳ ngày) |
-| K_PTTT_29 | Lãi suất liên ngân hàng qua đêm ngày trước — IRₜ₋₁ | %/năm | Cơ sở | `rsk_ind_val.val` WHERE JOIN `rsk_ind.bsn_key = 'INTERBANK_IR'` AND `rsk_ind_val.prd_dt = MAX(prd_dt) < snapshot_date` | |
-| K_PTTT_30 | % thay đổi lãi suất liên ngân hàng | % | Phái sinh | `(K_PTTT_28 − K_PTTT_29) / K_PTTT_29 × 100` | |
-| K_PTTT_31 | Tỷ giá USD/VND tại ngày — FXₜ | VND/USD | Cơ sở | `rsk_ind_val.val` WHERE JOIN `rsk_ind.bsn_key = 'EX_RATE_VND_USD'` AND `rsk_ind_val.prd_dt = snapshot_date` | |
-| K_PTTT_32 | Tỷ giá USD/VND ngày trước — FXₜ₋₁ | VND/USD | Cơ sở | `rsk_ind_val.val` WHERE JOIN `rsk_ind.bsn_key = 'EX_RATE_VND_USD'` AND `rsk_ind_val.prd_dt = MAX(prd_dt) < snapshot_date` | |
-| K_PTTT_33 | % thay đổi tỷ giá USD/VND | % | Phái sinh | `(K_PTTT_31 − K_PTTT_32) / K_PTTT_32 × 100` | |
-| K_PTTT_34 | Chỉ số CPI (YoY) tại kỳ t | % | Cơ sở | `rsk_ind_val.val` WHERE JOIN `rsk_ind.bsn_key = 'CPI_VN'` AND `rsk_ind_val.prd_dt <= snapshot_date` ORDER BY `prd_dt` DESC LIMIT 1 | Tần suất tháng — lấy kỳ gần nhất |
-| K_PTTT_35 | CPI cùng kỳ năm trước | % | Cơ sở | `rsk_ind_val.val` WHERE JOIN `rsk_ind.bsn_key = 'CPI_VN'` AND `rsk_ind_val.prd_dt = MAX(prd_dt) < snapshot_date` | |
-| K_PTTT_36 | % thay đổi CPI YoY | % | Phái sinh | `(K_PTTT_34 − K_PTTT_35) / K_PTTT_35 × 100` | |
-| K_PTTT_37 | GDP kỳ hiện tại | Nghìn tỷ VND | Cơ sở | `rsk_ind_val.val` WHERE JOIN `rsk_ind.bsn_key = 'GDP_VN'` AND `rsk_ind_val.prd_dt <= snapshot_date` ORDER BY `prd_dt` DESC LIMIT 1 | Tần suất quý — lấy kỳ gần nhất |
-| K_PTTT_38 | GDP kỳ trước | Nghìn tỷ VND | Cơ sở | `rsk_ind_val.val` WHERE JOIN `rsk_ind.bsn_key = 'GDP_VN'` AND `rsk_ind_val.prd_dt = MAX(prd_dt) < snapshot_date WHERE bsn_key = 'GDP_VN'` | |
-| K_PTTT_39 | Tăng trưởng GDP | % | Phái sinh | `(K_PTTT_37 − K_PTTT_38) / K_PTTT_38 × 100` | |
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_PTTT_40 | Ngày thống kê (Chiều thời gian vĩ mô) | — | Chiều | TBD — chờ Atomic | **Lý do pending:** tần suất dữ liệu không đồng nhất giữa các chỉ tiêu vĩ mô — lãi suất/tỷ giá = ngày giao dịch, CPI = tháng, GDP = quý, không thể dùng chung 1 trục thời gian. **Atomic cần bổ sung:** không thiếu entity — cần thống nhất nghiệp vụ cách hiển thị chiều thời gian (chọn ngày giao dịch gần nhất có giá trị hay giữ kỳ báo cáo riêng từng loại). **Mart dự kiến:** `Fact Macro Indicator Snapshot` — grain 1 row/indicator_code/kỳ báo cáo (đã thiết kế, dùng khi thống nhất xong) | PENDING |
+| K_PTTT_28 | Lãi suất liên ngân hàng qua đêm (ON) tại ngày t — IRₜ | %/năm | Cơ sở | `rsk_ind_val.val` WHERE JOIN `rsk_ind.bsn_key = 'INTERBANK_IR'` AND `rsk_ind_val.prd_dt = snapshot_date` | prd_tp_code = 1 (kỳ ngày) | READY |
+| K_PTTT_29 | Lãi suất liên ngân hàng qua đêm ngày trước — IRₜ₋₁ | %/năm | Cơ sở | `rsk_ind_val.val` WHERE JOIN `rsk_ind.bsn_key = 'INTERBANK_IR'` AND `rsk_ind_val.prd_dt = MAX(prd_dt) < snapshot_date` | | READY |
+| K_PTTT_30 | % thay đổi lãi suất liên ngân hàng | % | Phái sinh | `(K_PTTT_28 − K_PTTT_29) / K_PTTT_29 × 100` | | READY |
+| K_PTTT_31 | Tỷ giá USD/VND tại ngày — FXₜ | VND/USD | Cơ sở | `rsk_ind_val.val` WHERE JOIN `rsk_ind.bsn_key = 'EX_RATE_VND_USD'` AND `rsk_ind_val.prd_dt = snapshot_date` | | READY |
+| K_PTTT_32 | Tỷ giá USD/VND ngày trước — FXₜ₋₁ | VND/USD | Cơ sở | `rsk_ind_val.val` WHERE JOIN `rsk_ind.bsn_key = 'EX_RATE_VND_USD'` AND `rsk_ind_val.prd_dt = MAX(prd_dt) < snapshot_date` | | READY |
+| K_PTTT_33 | % thay đổi tỷ giá USD/VND | % | Phái sinh | `(K_PTTT_31 − K_PTTT_32) / K_PTTT_32 × 100` | | READY |
+| K_PTTT_34 | Chỉ số CPI (YoY) tại kỳ t | % | Cơ sở | `rsk_ind_val.val` WHERE JOIN `rsk_ind.bsn_key = 'CPI_VN'` AND `rsk_ind_val.prd_dt <= snapshot_date` ORDER BY `prd_dt` DESC LIMIT 1 | Tần suất tháng — lấy kỳ gần nhất | READY |
+| K_PTTT_35 | CPI cùng kỳ năm trước | % | Cơ sở | `rsk_ind_val.val` WHERE JOIN `rsk_ind.bsn_key = 'CPI_VN'` AND `rsk_ind_val.prd_dt = MAX(prd_dt) < snapshot_date` | | READY |
+| K_PTTT_36 | % thay đổi CPI YoY | % | Phái sinh | `(K_PTTT_34 − K_PTTT_35) / K_PTTT_35 × 100` | | READY |
+| K_PTTT_37 | GDP kỳ hiện tại | Nghìn tỷ VND | Cơ sở | `rsk_ind_val.val` WHERE JOIN `rsk_ind.bsn_key = 'GDP_VN'` AND `rsk_ind_val.prd_dt <= snapshot_date` ORDER BY `prd_dt` DESC LIMIT 1 | Tần suất quý — lấy kỳ gần nhất | READY |
+| K_PTTT_38 | GDP kỳ trước | Nghìn tỷ VND | Cơ sở | `rsk_ind_val.val` WHERE JOIN `rsk_ind.bsn_key = 'GDP_VN'` AND `rsk_ind_val.prd_dt = MAX(prd_dt) < snapshot_date WHERE bsn_key = 'GDP_VN'` | | READY |
+| K_PTTT_39 | Tăng trưởng GDP | % | Phái sinh | `(K_PTTT_37 − K_PTTT_38) / K_PTTT_38 × 100` | | READY |
 
 **Star Schema:**
 
@@ -719,49 +669,21 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    fct_mcr_ind_snpst["Fact Macro Indicator Snapshot"]
-    cdr_dt_dim["Calendar Date Dimension"]
-    rpt_nhom3["Nhóm 3 - Chỉ số vĩ mô – tiền tệ"]
-    cdr_dt_dim --> fct_mcr_ind_snpst
-    fct_mcr_ind_snpst --> rpt_nhom3
+    fct_mcr_ind_snpst["Fact Macro Indicator Snapshot"] --> rpt_nhom3["Nhóm 3 - Chỉ số vĩ mô – tiền tệ: K_PTTT_28~39"]
+    cdr_dt_dim["Calendar Date Dimension"] --> fct_mcr_ind_snpst
 ```
 
 **Bảng grain:**
 
 | Tên bảng | Grain |
 |---|---|
-| Fact Macro Indicator Snapshot | 1 row / indicator_code / kỳ báo cáo (prd_dt) |
-| Calendar Date Dimension | 1 row / ngày |
-
-##### PENDING
-
-**KPI liên quan:** K_PTTT_40 (mới)
-
-**Lý do pending:** Chiều "Thời gian" (Ngày thống kê) — tần suất dữ liệu không đồng nhất giữa các chỉ tiêu vĩ mô: lãi suất = ngày giao dịch, tỷ giá = ngày giao dịch, CPI = tháng, GDP = quý. Không thể dùng cùng 1 trục thời gian thống nhất.
-
-**Atomic cần bổ sung:** Cần thống nhất nghiệp vụ về cách hiển thị chiều thời gian cho dashboard vĩ mô (chọn ngày giao dịch gần nhất có giá trị, hay kỳ báo cáo riêng cho từng loại).
-
-**Mart dự kiến:**
-- Fact Macro Indicator Snapshot — grain: 1 row / indicator_code / kỳ báo cáo (đã thiết kế trong READY, sẽ dùng khi thống nhất cách lọc chiều thời gian)
-
-**Bảng mapping nguồn (Atomic Placeholder):**
-
-| Tên KPI | Bảng nguồn (BA) | Atomic entity dự kiến | Atomic table dự kiến |
-|---|---|---|---|
-| Ngày thống kê (Chiều thời gian vĩ mô) | QLRR.RISK_INDICATOR | Risk Indicator | rsk_ind |
-
-**Bảng KPI PENDING:**
-
-| KPI ID | Tên KPI | Tính chất | Trạng thái |
-|---|---|---|---|
-| K_PTTT_40 | Ngày thống kê (Chiều thời gian vĩ mô) | Chiều | PENDING |
+| Fact Macro Indicator Snapshot | 1 row / indicator_code / kỳ báo cáo (prd_dt) (SCD4A current state) |
+| Calendar Date Dimension | 1 row / ngày (SCD4A current state) |
 
 #### Nhóm 4 - Biểu đồ chỉ số sức khỏe hệ thống
 
-##### READY
-
 > Phân loại: **Phân tích**
-> Atomic: `Security Trading Snapshot` ← MDDS.StockInfor — **READY** | `Security Match Log` ← MSS.Trade_HOSE/Trade_HNX — **READY** | `Market Index Snapshot` ← MDDS.MarketInfor — **READY** | `Member Report Indicator Value` ← SCMS.BC_BAO_CAO_GT — **READY** | `Risk Weight Configuration` ← KhoDL.WeightConfig — **READY**
+> Atomic: `Security Trading Snapshot` ← MDDS.StockInfor — **READY** | `Security Match Log` ← MSS.Trade_HOSE/Trade_HNX — **READY** | `Market Index Snapshot` ← MDDS.MarketInfor — **READY** | `Risk Weight Configuration` ← KhoDL.WeightConfig — **PENDING** (xem O_PTTT_2) | nguồn Dư nợ Margin (SSC_SCMS.MEMBER_REPORT/FORM_REPORT/REPORT_CELL_VALUE) — **PENDING** (chưa có Atomic entity chuẩn hóa, xem Nhóm 1)
 
 **Mockup:**
 
@@ -771,35 +693,38 @@ flowchart LR
 | Margin Tension | 82% | Near Saturation |
 | Systemic Vol | 29% | Stable |
 
+*(Margin Tension + Trọng số Sentiment W1/W2 — PENDING, xem cột Trạng thái)*
+
 **Source:** `Fact Market Risk Snapshot` → `Calendar Date Dimension`
 
 **Bảng KPI:**
 
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
-|---|---|---|---|---|---|
-| K_PTTT_41 | Ngày thống kê (Chiều thời gian) | Ngày | Chiều | `mkt_indx_snpst.tdg_dt` WHERE `indx_code = 'VNINDEX'` | |
-| K_PTTT_42 | Khối lượng khớp lệnh ngày t của mã CK — Vₜ | KL | Cơ sở | `scr_mtch_log.acm_vol` GROUP BY `scr_mtch_log.scr_code`, `scr_mtch_log.tdg_dt` | dùng trong formula S_liquidity |
-| K_PTTT_43 | Khối lượng khớp lệnh trung bình 20 phiên — MAvol(20) | KL | Phái sinh | `AVG(scr_mtch_log.acm_vol)` trên 20 ngày gần nhất GROUP BY `scr_mtch_log.scr_code` | |
-| K_PTTT_44 | Tỷ lệ dòng tiền — Flow Ratio | Số thực | Phái sinh | `K_PTTT_42 / K_PTTT_43` — tức `Vₜ / MAvol(20)` | |
-| K_PTTT_45 | Dấu dòng tiền — Sign(PriceChange) | Số nguyên | Phái sinh | `CASE WHEN scr_tdg_snpst.cls_prc > scr_tdg_snpst.opn_prc THEN 1 WHEN scr_tdg_snpst.cls_prc < scr_tdg_snpst.opn_prc THEN -1 ELSE 0 END` | +1 tăng, -1 giảm |
-| K_PTTT_46 | Điểm thanh khoản — S_liquidity | Điểm (0–100) | Phái sinh | `50 + K_PTTT_45 × LEAST(K_PTTT_44 × 25, 50)` | |
-| K_PTTT_47 | Giá cao nhất trong phiên — Hₜ | VND | Cơ sở | `scr_tdg_snpst.hi_prc` | |
-| K_PTTT_48 | Giá thấp nhất trong phiên — Lₜ | VND | Cơ sở | `scr_tdg_snpst.lo_prc` | |
-| K_PTTT_49 | ER – Volatility Efficiency Ratio (Vp/Vc) | Số thực | Phái sinh | `Vp / Vc` trong đó `Vc = LN(scr_tdg_snpst.cls_prc / cls_prc[t-1])`, `Vp = SQRT(1/(4N×LN(2)) × SUM(LN(scr_tdg_snpst.hi_prc/scr_tdg_snpst.lo_prc)²))` trên N phiên | |
-| K_PTTT_50 | Điểm ổn định — S_stability | Điểm (0–100) | Phái sinh | `GREATEST(0, 100 - (K_PTTT_49 × 50))` | |
-| K_PTTT_51 | Trọng số W1 (S_liquidity) và W2 (S_stability) | % | Cơ sở | `rsk_wgt_cfg.weight` WHERE `rsk_wgt_cfg.risk_factor_code IN ('SENTIMENT_W1', 'SENTIMENT_W2')` AND `MAX(effective_date) <= snapshot_date` | |
-| K_PTTT_52 | Sentiment Score của từng mã CK | Điểm (0–100) | Phái sinh | `W1 × K_PTTT_46 + W2 × K_PTTT_50` (W1, W2 từ K_PTTT_51) | |
-| K_PTTT_53 | Sentiment Index (chỉ số tâm lý giao dịch toàn thị trường) | Điểm (0–100) | Phái sinh | `SUM(K_PTTT_52 × scr_mtch_log.acm_val) / SUM(scr_mtch_log.acm_val)` GROUP BY `tdg_dt`, lọc `flr_code IN ('02','04','10')` | Weighted avg theo GTGD |
-| K_PTTT_54 | Ngưỡng trạng thái Sentiment Index | Text | Phái sinh | `rsk_wgt_cfg` hoặc lookup bảng config: 0-20 Extreme Fear, 20-40 Pessimistic, 40-60 Neutral, 60-80 Optimistic, 80-100 Euphoria | Cấu hình từ Kho dữ liệu |
-| K_PTTT_55 | Tổng dư nợ vay margin tất cả CTCK | Tỷ VND | Phái sinh | `SUM(mbr_rpt_ind_val.val)` WHERE `rpt_ind_code = [mã dư nợ margin]` AND `rpt_dt = snapshot_date` | từ SCMS.BC_BAO_CAO_GT |
-| K_PTTT_56 | Tổng hạn mức margin (tối đa 2× VCSH) | Tỷ VND | Phái sinh | `SUM(mbr_rpt_ind_val.val × 2)` WHERE `rpt_ind_code = [mã VCSH]` AND `rpt_dt = snapshot_date` | VCSH × 2 per CTCK |
-| K_PTTT_57 | Margin Tension (chỉ số độ căng margin) | % | Phái sinh | `K_PTTT_55 / K_PTTT_56 × 100` | |
-| K_PTTT_58 | Ngưỡng trạng thái Margin Tension | Text | Phái sinh | Lookup config: <50 Dư dả, 50-70 Tối ưu, 70-85 Căng, 85-95 Báo động, >95 Vi phạm | Cấu hình từ Kho dữ liệu |
-| K_PTTT_59 | Lợi suất ngày VN-Index — Rₜ | % | Phái sinh | `(mkt_indx_snpst.cls_indx_val[t] - mkt_indx_snpst.cls_indx_val[t-1]) / mkt_indx_snpst.cls_indx_val[t-1]` WHERE `indx_code = 'VNINDEX'` | |
-| K_PTTT_60 | σ_current — Độ lệch chuẩn biến động VN-Index 20 phiên (annualized) | % | Phái sinh | `STDDEV_SAMP(K_PTTT_59) × SQRT(252)` trên 20 ngày gần nhất WHERE `indx_code = 'VNINDEX'` | |
-| K_PTTT_61 | σ_max — Độ lệch chuẩn biến động VN-Index lịch sử tối đa | % | Phái sinh | `MAX(σ_current_lịch sử)` trên toàn bộ `mkt_indx_snpst.tdg_dt <= snapshot_date` WHERE `indx_code = 'VNINDEX'` | |
-| K_PTTT_62 | Systemic Vol (chỉ số biến động hệ thống) | % | Phái sinh | `K_PTTT_60 / K_PTTT_61 × 100` | |
-| K_PTTT_63 | Ngưỡng trạng thái Systemic Vol | Text | Phái sinh | Lookup config từ Kho dữ liệu | Cấu hình từ Kho dữ liệu |
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_PTTT_41 | Ngày thống kê (Chiều thời gian) | Ngày | Chiều | `mkt_indx_snpst.tdg_dt` WHERE `indx_code = 'VNINDEX'` | | READY |
+| K_PTTT_42 | Khối lượng khớp lệnh ngày t của mã CK — Vₜ | KL | Cơ sở | `scr_mtch_log.acm_vol` GROUP BY `scr_mtch_log.scr_code`, `scr_mtch_log.tdg_dt` | dùng trong formula S_liquidity | READY |
+| K_PTTT_43 | Khối lượng khớp lệnh trung bình 20 phiên — MAvol(20) | KL | Phái sinh | `AVG(scr_mtch_log.acm_vol)` trên 20 ngày gần nhất GROUP BY `scr_mtch_log.scr_code` | | READY |
+| K_PTTT_44 | Tỷ lệ dòng tiền — Flow Ratio | Số thực | Phái sinh | `K_PTTT_42 / K_PTTT_43` — tức `Vₜ / MAvol(20)` | | READY |
+| K_PTTT_45 | Dấu dòng tiền — Sign(PriceChange) | Số nguyên | Phái sinh | `CASE WHEN scr_tdg_snpst.cls_prc > scr_tdg_snpst.opn_prc THEN 1 WHEN scr_tdg_snpst.cls_prc < scr_tdg_snpst.opn_prc THEN -1 ELSE 0 END` | +1 tăng, -1 giảm | READY |
+| K_PTTT_46 | Điểm thanh khoản — S_liquidity | Điểm (0–100) | Phái sinh | `50 + K_PTTT_45 × LEAST(K_PTTT_44 × 25, 50)` | | READY |
+| K_PTTT_64 | Chuẩn hóa thang điểm S_liquidity (rule ngưỡng) | — | Phái sinh | TBD — chờ Atomic | **Lý do pending:** BA ghi Pending — logic chuẩn hóa S_liquidity về thang 0-100 dựa trên ngưỡng giá tăng/giảm/volume chưa được thống nhất hoàn toàn. Atomic entity đã sẵn sàng, đây là vấn đề nghiệp vụ. **Atomic cần bổ sung:** không cần bổ sung Atomic — cần BA xác nhận logic chuẩn hóa ngưỡng. **Mart dự kiến:** `Fact Market Risk Snapshot` — bổ sung logic chuẩn hóa khi BA xác nhận | PENDING |
+| K_PTTT_47 | Giá cao nhất trong phiên — Hₜ | VND | Cơ sở | `scr_tdg_snpst.hi_prc` | | READY |
+| K_PTTT_48 | Giá thấp nhất trong phiên — Lₜ | VND | Cơ sở | `scr_tdg_snpst.lo_prc` | | READY |
+| K_PTTT_49 | ER – Volatility Efficiency Ratio (Vp/Vc) | Số thực | Phái sinh | `Vp / Vc` trong đó `Vc = LN(scr_tdg_snpst.cls_prc / cls_prc[t-1])`, `Vp = SQRT(1/(4N×LN(2)) × SUM(LN(scr_tdg_snpst.hi_prc/scr_tdg_snpst.lo_prc)²))` trên N phiên | | READY |
+| K_PTTT_50 | Điểm ổn định — S_stability | Điểm (0–100) | Phái sinh | `GREATEST(0, 100 - (K_PTTT_49 × 50))` | | READY |
+| K_PTTT_51 | Trọng số W1 (S_liquidity) và W2 (S_stability) | — | Cơ sở | TBD — chờ Atomic | **Lý do pending:** xem O_PTTT_2 — Risk Weight Configuration nhập tay chuyên viên, chưa có bảng DWH thiết kế. **Atomic cần bổ sung:** xem Nhóm 1 K_PTTT_18. **Mart dự kiến:** `Fact Market Risk Snapshot` — grain 1 row/ngày | PENDING |
+| K_PTTT_52 | Sentiment Score của từng mã CK | — | Phái sinh | TBD — chờ Atomic | **Lý do pending:** phụ thuộc K_PTTT_51 (Trọng số) đang PENDING. **Atomic cần bổ sung:** xem K_PTTT_51. **Mart dự kiến:** `Fact Market Risk Snapshot` — grain 1 row/ngày | PENDING |
+| K_PTTT_53 | Sentiment Index (chỉ số tâm lý giao dịch toàn thị trường) | — | Phái sinh | TBD — chờ Atomic | **Lý do pending:** phụ thuộc K_PTTT_52 đang PENDING. **Atomic cần bổ sung:** xem K_PTTT_51. **Mart dự kiến:** `Fact Market Risk Snapshot` — bổ sung Sentiment_Index | PENDING |
+| K_PTTT_54 | Ngưỡng trạng thái Sentiment Index | — | Phái sinh | TBD — chờ Atomic | **Lý do pending:** phụ thuộc K_PTTT_53 đang PENDING. **Atomic cần bổ sung:** xem K_PTTT_51. **Mart dự kiến:** `Fact Market Risk Snapshot` — bổ sung Sentiment_Status | PENDING |
+| K_PTTT_55 | Tổng dư nợ vay margin tất cả CTCK | — | Phái sinh | TBD — chờ Atomic | **Lý do pending:** nguồn SSC_SCMS.MEMBER_REPORT/FORM_REPORT/REPORT_CELL_VALUE — biểu mẫu báo cáo định kỳ, chưa có Atomic entity chuẩn hóa (xem Nhóm 1 K_PTTT_5). **Atomic cần bổ sung:** xem Nhóm 1 K_PTTT_5. **Mart dự kiến:** `Fact Market Risk Snapshot` — grain 1 row/ngày | PENDING |
+| K_PTTT_56 | Tổng hạn mức margin (tối đa 2× VCSH) | — | Phái sinh | TBD — chờ Atomic | **Lý do pending:** cùng nguồn K_PTTT_55 (SSC_SCMS.MEMBER_REPORT). **Atomic cần bổ sung:** xem Nhóm 1 K_PTTT_5. **Mart dự kiến:** `Fact Market Risk Snapshot` — grain 1 row/ngày | PENDING |
+| K_PTTT_57 | Margin Tension (chỉ số độ căng margin) | — | Phái sinh | TBD — chờ Atomic | **Lý do pending:** phụ thuộc K_PTTT_55/56 đang PENDING. **Atomic cần bổ sung:** xem Nhóm 1 K_PTTT_5. **Mart dự kiến:** `Fact Market Risk Snapshot` — bổ sung Margin_Tension_Pct | PENDING |
+| K_PTTT_58 | Ngưỡng trạng thái Margin Tension | — | Phái sinh | TBD — chờ Atomic | **Lý do pending:** phụ thuộc K_PTTT_57 đang PENDING. **Atomic cần bổ sung:** xem Nhóm 1 K_PTTT_5. **Mart dự kiến:** `Fact Market Risk Snapshot` — bổ sung Margin_Tension_Status | PENDING |
+| K_PTTT_59 | Lợi suất ngày VN-Index — Rₜ | % | Phái sinh | `(mkt_indx_snpst.cls_indx_val[t] - mkt_indx_snpst.cls_indx_val[t-1]) / mkt_indx_snpst.cls_indx_val[t-1]` WHERE `indx_code = 'VNINDEX'` | | READY |
+| K_PTTT_60 | σ_current — Độ lệch chuẩn biến động VN-Index 20 phiên (annualized) | % | Phái sinh | `STDDEV_SAMP(K_PTTT_59) × SQRT(252)` trên 20 ngày gần nhất WHERE `indx_code = 'VNINDEX'` | | READY |
+| K_PTTT_61 | σ_max — Độ lệch chuẩn biến động VN-Index lịch sử tối đa | % | Phái sinh | `MAX(σ_current_lịch sử)` trên toàn bộ `mkt_indx_snpst.tdg_dt <= snapshot_date` WHERE `indx_code = 'VNINDEX'` | | READY |
+| K_PTTT_62 | Systemic Vol (chỉ số biến động hệ thống) | % | Phái sinh | `K_PTTT_60 / K_PTTT_61 × 100` | | READY |
+| K_PTTT_63 | Ngưỡng trạng thái Systemic Vol | Text | Phái sinh | Lookup config từ Kho dữ liệu | Cấu hình từ Kho dữ liệu | READY |
 
 **Star Schema:**
 
@@ -810,21 +735,11 @@ erDiagram
         float Volatility_30d
         float Z_Score_Volatility
         float Z_Score_Liquidity
-        float Z_Score_Margin
         float Z_Score_Interest_Rate
         float Z_Score_Foreign_Flow
         float MCAP_Total_Bil_VND
-        float Margin_MCAP_Ratio_Pct
-        float Weight_Volatility
-        float Weight_Liquidity
-        float Weight_Margin
-        float Weight_Interest_Rate
-        float Weight_Foreign_Flow
-        float Weight_Equity_Raise
-        float Sentiment_Index
-        string Sentiment_Status
-        float Margin_Tension_Pct
-        string Margin_Tension_Status
+        float Liquidity_Score
+        float Stability_Score
         float Systemic_Vol_Pct
         string Systemic_Vol_Status
     }
@@ -841,42 +756,24 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    fct_mkt_rsk_snpst["Fact Market Risk Snapshot"]
-    cdr_dt_dim["Calendar Date Dimension"]
-    rpt_nhom4["Nhóm 4 - Biểu đồ chỉ số sức khỏe hệ thống"]
-    cdr_dt_dim --> fct_mkt_rsk_snpst
-    fct_mkt_rsk_snpst --> rpt_nhom4
+    fct_mkt_rsk_snpst["Fact Market Risk Snapshot"] --> rpt_nhom4["Nhóm 4 - Biểu đồ chỉ số sức khỏe hệ thống: K_PTTT_41~50,59~63"]
+    cdr_dt_dim["Calendar Date Dimension"] --> fct_mkt_rsk_snpst
 ```
 
 **Bảng grain:**
 
 | Tên bảng | Grain |
 |---|---|
-| Fact Market Risk Snapshot | 1 row / ngày |
-| Calendar Date Dimension | 1 row / ngày |
-
-##### PENDING
-
-**KPI liên quan:** K_PTTT_64 (mới)
-
-**Lý do pending:** "Chuẩn hóa thang điểm" — BA ghi Pending. Logic chuẩn hóa S_liquidity về thang 0-100 dựa trên ngưỡng giá tăng/giảm/volume chưa được thống nhất hoàn toàn (rule: nếu giá giảm < 40, tăng nhẹ + vol thấp = 40-60, tăng + vol cao Flow > 1.2 = > 60). Atomic entity đã sẵn sàng — đây là vấn đề nghiệp vụ, không phải Atomic.
-
-**Atomic cần bổ sung:** Không cần bổ sung Atomic. Cần BA xác nhận logic chuẩn hóa ngưỡng.
-
-**Mart dự kiến:**
-- `Fact Market Risk Snapshot` — grain: 1 row / ngày (bổ sung logic chuẩn hóa khi BA xác nhận)
+| Fact Market Risk Snapshot | 1 row / ngày (SCD4A current state) |
+| Calendar Date Dimension | 1 row / ngày (SCD4A current state) |
 
 **Bảng mapping nguồn (Atomic Placeholder):**
 
 | Tên KPI | Bảng nguồn (BA) | Atomic entity dự kiến | Atomic table dự kiến |
 |---|---|---|---|
-| Chuẩn hóa thang điểm S_liquidity | MDDS.StockInfor | Security Trading Snapshot | scr_tdg_snpst |
-
-**Bảng KPI PENDING:**
-
-| KPI ID | Tên KPI | Tính chất | Trạng thái |
-|---|---|---|---|
-| K_PTTT_64 | Chuẩn hóa thang điểm S_liquidity (rule ngưỡng) | Phái sinh | PENDING |
+| Trọng số Sentiment W1/W2 (K_PTTT_51~54) | KhoDL.WeightConfig | Risk Weight Configuration | TBD (chưa thiết kế luồng upload) |
+| Dư nợ margin/hạn mức margin (K_PTTT_55~58) | SSC_SCMS.MEMBER_REPORT / FORM_REPORT / REPORT_CELL_VALUE | TBD (chuẩn hóa biểu mẫu báo cáo định kỳ) | TBD |
+| Chuẩn hóa thang điểm S_liquidity (K_PTTT_64) | MDDS.StockInfor | Security Trading Snapshot | scr_tdg_snpst |
 
 #### Nhóm 5 - Biểu đồ Macro correlation map
 
@@ -1090,6 +987,7 @@ erDiagram
         int Sector_Id PK
         string Sector_Code
         string Sector_Name
+        string Source_System_Code
     }
     Calendar_Date_Dimension ||--o{ Fact_Sector_Risk_Snapshot : "Snapshot_Date_Id"
     Sector_Dimension ||--o{ Fact_Sector_Risk_Snapshot : "Sector_Id"
@@ -1547,6 +1445,7 @@ erDiagram
         int Investor_Group_Id PK
         string Investor_Group_Code
         string Investor_Group_Name
+        string Source_System_Code
     }
     Calendar_Date_Dimension ||--o{ Fact_Investor_Flow_Snapshot : "Snapshot_Date_Id"
     Investor_Group_Dimension ||--o{ Fact_Investor_Flow_Snapshot : "Investor_Group_Id"
@@ -1635,6 +1534,7 @@ erDiagram
         int Investor_Group_Id PK
         string Investor_Group_Code
         string Investor_Group_Name
+        string Source_System_Code
     }
     Calendar_Date_Dimension ||--o{ Fact_Investor_Flow_Snapshot : "Snapshot_Date_Id"
     Investor_Group_Dimension ||--o{ Fact_Investor_Flow_Snapshot : "Investor_Group_Id"
@@ -1719,6 +1619,7 @@ erDiagram
         int Investor_Group_Id PK
         string Investor_Group_Code
         string Investor_Group_Name
+        string Source_System_Code
     }
     Calendar_Date_Dimension ||--o{ Fact_Investor_Flow_Snapshot : "Snapshot_Date_Id"
     Investor_Group_Dimension ||--o{ Fact_Investor_Flow_Snapshot : "Investor_Group_Id"
@@ -2078,6 +1979,7 @@ erDiagram
         int Securities_Company_Id PK
         string Member_Code
         string Member_Name
+        string Source_System_Code
     }
     Calendar_Date_Dimension ||--o{ Fact_Member_Safety_Per_Member_Snapshot : "Snapshot_Date_Id"
     Securities_Company_Dimension ||--o{ Fact_Member_Safety_Per_Member_Snapshot : "Securities_Company_Id"
@@ -2581,6 +2483,7 @@ erDiagram
         int Sector_Id PK
         string Sector_Code
         string Sector_Name
+        string Source_System_Code
     }
     Calendar_Date_Dimension ||--o{ Fact_Corporate_Bond_Sector_Snapshot : "Snapshot_Date_Id"
     Corp_Bond_Sector_Dimension ||--o{ Fact_Corporate_Bond_Sector_Snapshot : "Sector_Id"
@@ -2933,10 +2836,10 @@ graph TB
 
 | ID | Vấn đề | Giả định hiện tại | KPI liên quan | Trạng thái |
 |---|---|---|---|---|
-| O_PTTT_1 | Atomic entity cho huy động vốn cổ phần (SCMS.CBTT_CHAO_BAN_CHUNG_KHOAN, IDS-GSĐC, FMS) chưa tồn tại trong thiết kế Atomic old — chưa có entity nào map đến nghiệp vụ chào bán chứng khoán | Các entity còn lại (MDDS/QLRR/SCMS BC_BAO_CAO_GT) đã xác nhận READY từ Atomic old. Cần bổ sung thiết kế Atomic cho 3 nguồn huy động vốn | K_PTTT_1, K_PTTT_8, K_PTTT_11, K_PTTT_17 | Open |
-| O_PTTT_2 | Kho dữ liệu (trọng số Risk Weight Configuration) chưa có Source Analysis — luồng upload file → Kho dữ liệu → Staging → Atomic chưa được thiết kế | Atomic có entity Risk Weight Configuration với 4 cột: Risk_Factor_Code, Risk_Factor_Name, Weight (%), Effective_Date. ETL join: MAX(Effective_Date) <= snapshot_date. 6 cột Weight denormalized vào Fact làm measure. Không có bảng Tác nghiệp trên Datamart. | K_PTTT_18, K_PTTT_19, K_PTTT_20, K_PTTT_21, K_PTTT_22, K_PTTT_23 | Confirmed |
-| O_PTTT_3 | KL CK lưu hành (TotalListingQtty) trong Atomic old được map vào `scr_tdg_snpst.tot_listing_vol` — BA ghi nguồn MSS nhưng thực tế field này từ MDDS.StockInfor | Xác nhận `scr_tdg_snpst.tot_listing_vol` dùng cho MCAP. Lưu ý: HOSE không có TotalListingQtty trực tiếp — cần xác nhận logic tính MCAP cho HOSE với thiết kế Atomic | K_PTTT_9, K_PTTT_10 | Open |
-| O_PTTT_4 | Z-score Huy động vốn cổ phần (K_PTTT_8, K_PTTT_11) cần 3 nguồn: SCMS, IDS-GSĐC, FMS — BA ghi Pending, chưa có mapping chi tiết | Sẽ xác nhận khi Atomic entity từ SCMS/IDS/FMS được thiết kế cho nghiệp vụ huy động vốn | K_PTTT_8, K_PTTT_11, K_PTTT_17, K_PTTT_23 | Open |
+| O_PTTT_1 | ~~Atomic entity cho huy động vốn cổ phần chưa tồn tại~~ **[ĐÃ GIẢI QUYẾT]** — 5 entity (`pc_securities_offering`, `pc_securities_offering_plan`, `pc_securities_offering_result`, `sc_disclosure_securities_offering` đã approved trong `DataModel/Atomic/`; `fmc_securities_offering` draft trong `DataModel/working/Atomic/`) đã verify đủ attribute BA cần (official_letter_dt, offering_method_code, total_collected_amt, offering_type, proceeds_collected, document_date, approval_document_date, actual_total_value) | BA cung cấp SQL join UNION ALL 3 nguồn hoàn chỉnh (2026-07-30) — logic khai thác đã thống nhất, không còn cần chờ thiết kế CSDL | K_PTTT_1, K_PTTT_8, K_PTTT_11 | Resolved |
+| O_PTTT_2 | Risk Weight Configuration (`rsk_wgt_cfg`) — user đã cung cấp cấu trúc cụ thể (risk_factor_code/weight/data_dt) và mapping 8 mã cho công thức Logistic Regression, nhưng entity **chưa tồn tại thật trên Atomic repo** (đã grep xác nhận, 2026-07-30) | Risk Index đổi thuật toán từ Σ(Z-score × Weight) sang Logistic Regression: `RI = β0 + β1·Z_L + β2·Z_V + β3·Z_M + β4·Z_I + β5·Z_F + β6·Z_C + ε`. Mapping risk_factor_code: RISK_INDEX=β0, VNINDEX_VOLATILITY=β_V, ILLIQ=β_L, MARGIN_BALANCE=β_M, INTERBANK_RATE=β_I, FOREIGN_NET_FLOW=β_F, EQUITY_CAPITAL_RAISING=β_C, EPSILON=ε. ETL join: `MAX(data_dt) <= snapshot_date`. Cần import entity `rsk_wgt_cfg` vào Atomic trước khi chuyển READY. | K_PTTT_1, K_PTTT_18, K_PTTT_19, K_PTTT_20, K_PTTT_21, K_PTTT_22, K_PTTT_23, K_PTTT_228, K_PTTT_229 | Open |
+| O_PTTT_3 | KL CK lưu hành (TotalListingQtty) trong Atomic old được map vào `scr_tdg_snpst.tot_listing_vol` — BA ghi nguồn MSS nhưng thực tế field này từ MDDS.StockInfor | Xác nhận `scr_tdg_snpst.tot_listing_vol` dùng cho MCAP. Lưu ý: HOSE không có TotalListingQtty trực tiếp — cần xác nhận logic tính MCAP cho HOSE với thiết kế Atomic. Nguồn thay thế BA mới đề cập (VSDC `BM1_BCKLLH`, Báo cáo TT138.2025.TT.BTC) vẫn PENDING — chưa có Atomic entity. | K_PTTT_9, K_PTTT_5, K_PTTT_10 | Open |
+| O_PTTT_4 | ~~Z-score Huy động vốn cổ phần cần 3 nguồn chưa có mapping chi tiết~~ **[ĐÃ GIẢI QUYẾT]** — xem O_PTTT_1 | BA cung cấp SQL đầy đủ (UNION ALL theo ngày công văn, Z-score đảo chiều trên 20 phiên) — không còn vấn đề mở | K_PTTT_8, K_PTTT_11 | Resolved |
 | O_PTTT_5 | Sub-components Z-score Dư nợ Margin (K_PTTT_24~27) BA ghi Pending — cần xác nhận mã chỉ tiêu dư nợ margin trong `SCMS.DM_CHI_TIEU` (TEN_CHI_TIEU = 'Giá trị chứng khoán ký quỹ') để map sang `mbr_rpt_ind_val.rpt_ind_code` | Tổng dư nợ margin MDₜ (K_PTTT_9 sub) đã Done từ SCMS.BC_BAO_CAO_GT. K_PTTT_5 (Z-score tổng hợp) giữ READY vì có đủ công thức Atomic-level. K_PTTT_24~27 là sub-components chi tiết chưa đủ mapping chuỗi lịch sử | K_PTTT_24, K_PTTT_25, K_PTTT_26, K_PTTT_27 | Open |
 | O_PTTT_6 | Nhóm 12 cần phân loại MarketCap theo ngưỡng USD (< 2 tỷ / 2–10 tỷ / ≥ 10 tỷ) — ngoài blocker KL CK lưu hành (VSDC), còn cần tỷ giá USD/VND tại ngày t để quy đổi MarketCap từ VND sang USD | Tỷ giá USD/VND đã có trong `rsk_ind_val` (bsn_key = 'EX_RATE_VND_USD') — reuse K_PTTT_31. KL CK lưu hành vẫn là blocker chính (O_PTTT_3). Khi Atomic VSDC sẵn sàng, phân loại cap band = MarketCap_VND / FX_rate: LARGE ≥ 10B USD, MID 2–10B USD, SMALL < 2B USD | K_PTTT_126, K_PTTT_127, K_PTTT_128, K_PTTT_129 | Open |
 | O_PTTT_7 | Tab TPDN (Nhóm 18+): KL TP lưu hành từ VSDC.TT138 chưa có Atomic entity — blocker chính cho Tổng dư nợ TP, Áp lực đáo hạn 12T. YTMi chưa có trong Atomic (Sổ lệnh đang bổ sung trường, Sở tính sẵn) | Chờ HTTT phản hồi thiết kế CSDL VSDC. Mệnh giá fix cứng 100.000 VND/TP (Danh mục CK — MDDS.CSIDXInfor). GTGD trái phiếu lấy từ MSS.Trade_HOSE/HNX với Market ID = 'BDO'. Atomic entities dự kiến: `corp_bond_tdg_snpst`, `corp_bond_mtch_log` (đã có trong Atomic old), `corp_bond_listing_vol` (mới từ VSDC) | K_PTTT_160, K_PTTT_161, K_PTTT_162, K_PTTT_163, K_PTTT_164, K_PTTT_165, K_PTTT_166, K_PTTT_167, K_PTTT_168, K_PTTT_169 | Open |
