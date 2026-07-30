@@ -92,20 +92,6 @@ attributes:
     classification_context: "Source System Code = 'ECAT_DISTRICT_OLD'"
     etl_derived_value: null
 
-  - name: Geographic Area Old English Name
-    physical_name: geographic_area_old_english_nm
-    business_meaning: Tên phường/xã/thị trấn cũ (tiếng Anh)
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: ECAT
-    source_table: DISTRICT_OLD
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'ECAT_DISTRICT_OLD'"
-    etl_derived_value: null
-
   - name: Parent Geographic Area Old Id
     physical_name: parent_geographic_area_old_id
     business_meaning: "FK đến tỉnh/thành phố cũ cha (self-ref trong Geographic Area Old)"
@@ -131,62 +117,6 @@ attributes:
     source_table: DISTRICT_OLD
     source_column: ECAT.DISTRICT_OLD.PROVINCE_OLD_ID
     comment: "Lookup pair: geographic_area_old.geographic_area_old_code. Pair with Parent Geographic Area Old Id."
-    classification_context: "Source System Code = 'ECAT_DISTRICT_OLD'"
-    etl_derived_value: null
-
-  - name: Region Geographic Area Id
-    physical_name: region_geographic_area_id
-    business_meaning: "FK anchor cross-entity sang Region trong Geographic Area (hiện hành) — Region/Country dùng chung cho cả 2 hệ cũ/mới"
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: ECAT
-    source_table: DISTRICT_OLD
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'ECAT_DISTRICT_OLD'"
-    etl_derived_value: null
-
-  - name: Region Geographic Area Code
-    physical_name: region_geographic_area_code
-    business_meaning: Mã vùng/miền — lookup pair với Region Geographic Area Id
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: ECAT
-    source_table: DISTRICT_OLD
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'ECAT_DISTRICT_OLD'"
-    etl_derived_value: null
-
-  - name: Successor Geographic Area Id
-    physical_name: successor_geographic_area_id
-    business_meaning: "FK cross-entity sang tỉnh/thành phố hiện hành tương ứng sau sáp nhập 2025 (lateral mapping, không phải quan hệ cha-con)"
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: ECAT
-    source_table: DISTRICT_OLD
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'ECAT_DISTRICT_OLD'"
-    etl_derived_value: null
-
-  - name: Successor Geographic Area Code
-    physical_name: successor_geographic_area_code
-    business_meaning: Mã tỉnh/thành phố hiện hành tương ứng — lookup pair với Successor Geographic Area Id
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: ECAT
-    source_table: DISTRICT_OLD
-    source_column: null
-    comment: null
     classification_context: "Source System Code = 'ECAT_DISTRICT_OLD'"
     etl_derived_value: null
 
@@ -425,19 +355,5 @@ attributes:
     source_table: DISTRICT_OLD
     source_column: ECAT.DISTRICT_OLD.UPDATED_BY_NAME
     comment: "Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên hiển thị, không phải mã nhân viên)."
-    classification_context: "Source System Code = 'ECAT_DISTRICT_OLD'"
-    etl_derived_value: null
-
-  - name: Geographic Area Old Category Code
-    physical_name: geographic_area_old_category_code
-    business_meaning: Loại đơn vị hành chính cấp phường/xã cũ (Phường/Xã/Thị trấn)
-    data_domain: Classification Value
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: ECAT
-    source_table: DISTRICT_OLD
-    source_column: null
-    comment: "Scheme: GEOGRAPHIC_AREA_WARD_CATEGORY (dùng chung với WARD_NEW). Không áp dụng cho ECAT.DISTRICT_OLD — thuộc tính không có dữ liệu nguồn ở source này (nullable placeholder cho shared entity)."
     classification_context: "Source System Code = 'ECAT_DISTRICT_OLD'"
     etl_derived_value: null

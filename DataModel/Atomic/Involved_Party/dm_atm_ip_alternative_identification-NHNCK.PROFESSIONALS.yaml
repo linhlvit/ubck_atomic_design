@@ -22,6 +22,34 @@ ldm:
     brd: BRD-SRC-NHNCK-PROFESSIONALS
 
 attributes:
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến Securities Practitioner.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROFESSIONALS
+    source_column: NHNCK.PROFESSIONALS.ID
+    comment: "FK target: securities_practitioner.securities_practitioner_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.PROFESSIONALS', ID)."
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã người hành nghề.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROFESSIONALS
+    source_column: NHNCK.PROFESSIONALS.ID
+    comment: "Lookup pair: securities_practitioner.securities_practitioner_code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
+    etl_derived_value: null
+
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning: Mã hệ thống nguồn.
@@ -36,16 +64,58 @@ attributes:
     classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
     etl_derived_value: NHNCK.PROFESSIONALS
 
-  - name: Previous Identification Number
-    physical_name: previous_identification_nbr
-    business_meaning: Số CMND cũ (trước khi đổi sang CCCD).
+  - name: Identification Type Code
+    physical_name: identification_tp_code
+    business_meaning: Loại giấy tờ định danh.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROFESSIONALS
+    source_column: NHNCK.PROFESSIONALS.IDENTITY_TYPE
+    comment: "PENDING — Data Modeler sẽ profile dữ liệu thực tế của IDENTITY_TYPE trước khi xác nhận mapping ETL sang scheme IP_ALT_ID_TYPE. Tạm thời KHÔNG derive giá trị (mapping 1=NATIONAL_ID;2=CITIZEN_ID;3=PASSPORT trước đây chưa được xác nhận, tạm gỡ)."
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
+    etl_derived_value: null
+
+  - name: Identification Number
+    physical_name: identification_nbr
+    business_meaning: Số giấy tờ định danh (CMND/CCCD/Hộ chiếu).
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROFESSIONALS
+    source_column: NHNCK.PROFESSIONALS.IDENTITY_NUMBER
+    comment: BK của shared entity cùng với Involved Party Id + Identification Type Code.
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
+    etl_derived_value: null
+
+  - name: Identification Issue Date
+    physical_name: identification_issue_dt
+    business_meaning: Ngày cấp giấy tờ định danh.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROFESSIONALS
+    source_column: NHNCK.PROFESSIONALS.IDENTITY_ISSUE_DATE
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
+    etl_derived_value: null
+
+  - name: Identification Issue Place
+    physical_name: identification_issue_place
+    business_meaning: Nơi cấp giấy tờ định danh.
     data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: NHNCK
     source_table: PROFESSIONALS
-    source_column: NHNCK.PROFESSIONALS.PREVIOUS_IDENTITY_NUMBER
-    comment: Lưu lại để tra cứu lịch sử giấy tờ.
+    source_column: NHNCK.PROFESSIONALS.IDENTITY_ISSUE_PLACE
+    comment: null
     classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
     etl_derived_value: null

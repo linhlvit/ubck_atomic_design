@@ -92,48 +92,6 @@ attributes:
     classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Electronic Address Type Code = 'EMAIL'"
     etl_derived_value: null
 
-  - name: Involved Party Id
-    physical_name: ip_id
-    business_meaning: FK đến Securities Company (Involved Party).
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_INFO
-    source_column: SCMS.SC_FIRM_INFO.ID
-    comment: "FK target: securities_company.sc_id. Shared entity — không có PK surrogate riêng. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO: SC_FIRM_INFO.ID = SC_FIRM_INFO.ID để xác nhận CODE sau đó hash_id('SCMS.SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Electronic Address Type Code = 'FAX'"
-    etl_derived_value: null
-
-  - name: Involved Party Code
-    physical_name: ip_code
-    business_meaning: Mã Securities Company.
-    data_domain: Text
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_INFO
-    source_column: SCMS.SC_FIRM_INFO.ID
-    comment: "Lookup pair: securities_company.securities_company_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Electronic Address Type Code = 'FAX'"
-    etl_derived_value: null
-
-  - name: Source System Code
-    physical_name: src_stm_code
-    business_meaning: Mã hệ thống nguồn dữ liệu.
-    data_domain: Classification Value
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_INFO
-    source_column: null
-    comment: "Scheme: SOURCE_SYSTEM."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Electronic Address Type Code = 'FAX'"
-    etl_derived_value: SCMS.SC_FIRM_INFO
-
   - name: Electronic Address Type Code
     physical_name: electronic_adr_tp_code
     business_meaning: Loại kênh liên lạc — fax.
@@ -162,48 +120,6 @@ attributes:
     classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Electronic Address Type Code = 'FAX'"
     etl_derived_value: null
 
-  - name: Involved Party Id
-    physical_name: ip_id
-    business_meaning: FK đến Securities Company (Involved Party).
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_INFO
-    source_column: SCMS.SC_FIRM_INFO.ID
-    comment: "FK target: securities_company.sc_id. Shared entity — không có PK surrogate riêng. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO: SC_FIRM_INFO.ID = SC_FIRM_INFO.ID để xác nhận CODE sau đó hash_id('SCMS.SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Electronic Address Type Code = 'PHONE'"
-    etl_derived_value: null
-
-  - name: Involved Party Code
-    physical_name: ip_code
-    business_meaning: Mã Securities Company.
-    data_domain: Text
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_INFO
-    source_column: SCMS.SC_FIRM_INFO.ID
-    comment: "Lookup pair: securities_company.securities_company_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Electronic Address Type Code = 'PHONE'"
-    etl_derived_value: null
-
-  - name: Source System Code
-    physical_name: src_stm_code
-    business_meaning: Mã hệ thống nguồn dữ liệu.
-    data_domain: Classification Value
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_INFO
-    source_column: null
-    comment: "Scheme: SOURCE_SYSTEM."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Electronic Address Type Code = 'PHONE'"
-    etl_derived_value: SCMS.SC_FIRM_INFO
-
   - name: Electronic Address Type Code
     physical_name: electronic_adr_tp_code
     business_meaning: Loại kênh liên lạc — điện thoại.
@@ -231,48 +147,6 @@ attributes:
     comment: null
     classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Electronic Address Type Code = 'PHONE'"
     etl_derived_value: null
-
-  - name: Involved Party Id
-    physical_name: ip_id
-    business_meaning: FK đến Securities Company (Involved Party).
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_INFO
-    source_column: SCMS.SC_FIRM_INFO.ID
-    comment: "FK target: securities_company.sc_id. Shared entity — không có PK surrogate riêng. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO: SC_FIRM_INFO.ID = SC_FIRM_INFO.ID để xác nhận CODE sau đó hash_id('SCMS.SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Electronic Address Type Code = 'WEBSITE'"
-    etl_derived_value: null
-
-  - name: Involved Party Code
-    physical_name: ip_code
-    business_meaning: Mã Securities Company.
-    data_domain: Text
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_INFO
-    source_column: SCMS.SC_FIRM_INFO.ID
-    comment: "Lookup pair: securities_company.securities_company_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Electronic Address Type Code = 'WEBSITE'"
-    etl_derived_value: null
-
-  - name: Source System Code
-    physical_name: src_stm_code
-    business_meaning: Mã hệ thống nguồn dữ liệu.
-    data_domain: Classification Value
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_INFO
-    source_column: null
-    comment: "Scheme: SOURCE_SYSTEM."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Electronic Address Type Code = 'WEBSITE'"
-    etl_derived_value: SCMS.SC_FIRM_INFO
 
   - name: Electronic Address Type Code
     physical_name: electronic_adr_tp_code

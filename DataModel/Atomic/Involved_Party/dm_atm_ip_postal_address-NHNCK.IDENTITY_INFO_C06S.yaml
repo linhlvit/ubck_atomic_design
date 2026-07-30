@@ -33,7 +33,7 @@ attributes:
     source_table: IDENTITY_INFO_C06S
     source_column: NHNCK.IDENTITY_INFO_C06S.IDENTITY_NUMBER
     comment: "FK target: individual.individual_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.IDENTITY_INFO_C06S', IDENTITY_NUMBER)."
-    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Address Type Code = 'PERMANENT'"
+    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Address Type Code = 'CURRENT'"
     etl_derived_value: null
 
   - name: Involved Party Code
@@ -47,8 +47,9 @@ attributes:
     source_table: IDENTITY_INFO_C06S
     source_column: NHNCK.IDENTITY_INFO_C06S.IDENTITY_NUMBER
     comment: "Lookup pair: individual.individual_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Address Type Code = 'PERMANENT'"
+    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Address Type Code = 'CURRENT'"
     etl_derived_value: null
+
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning: Mã hệ thống nguồn.
@@ -91,20 +92,6 @@ attributes:
     classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Address Type Code = 'CURRENT'"
     etl_derived_value: null
 
-  - name: Country Id
-    physical_name: country_id
-    business_meaning: FK đến Geographic Area — quốc gia địa chỉ tạm trú hiện tại.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: IDENTITY_INFO_C06S
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Address Type Code = 'CURRENT'"
-    etl_derived_value: null
-
   - name: Country Code
     physical_name: country_code
     business_meaning: Mã quốc gia địa chỉ tạm trú (theo C06).
@@ -116,20 +103,6 @@ attributes:
     source_table: IDENTITY_INFO_C06S
     source_column: NHNCK.IDENTITY_INFO_C06S.CURRENT_COUNTRY_CODE
     comment: "Scheme: NHNCK_C06_COUNTRY. Dữ liệu tích hợp C06 — no_lookup."
-    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Address Type Code = 'CURRENT'"
-    etl_derived_value: null
-
-  - name: Province Id
-    physical_name: province_id
-    business_meaning: FK đến Geographic Area — tỉnh/thành địa chỉ tạm trú.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: IDENTITY_INFO_C06S
-    source_column: null
-    comment: null
     classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Address Type Code = 'CURRENT'"
     etl_derived_value: null
 
@@ -147,20 +120,6 @@ attributes:
     classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Address Type Code = 'CURRENT'"
     etl_derived_value: null
 
-  - name: District Id
-    physical_name: district_id
-    business_meaning: FK đến Geographic Area — quận/huyện địa chỉ tạm trú.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: IDENTITY_INFO_C06S
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Address Type Code = 'CURRENT'"
-    etl_derived_value: null
-
   - name: District Code
     physical_name: district_code
     business_meaning: Mã quận/huyện địa chỉ tạm trú (theo C06).
@@ -174,20 +133,6 @@ attributes:
     comment: "Scheme: NHNCK_C06_DISTRICT. Dữ liệu tích hợp C06 — no_lookup."
     classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Address Type Code = 'CURRENT'"
     etl_derived_value: null
-
-  - name: Source System Code
-    physical_name: src_stm_code
-    business_meaning: Mã hệ thống nguồn.
-    data_domain: Classification Value
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: IDENTITY_INFO_C06S
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Address Type Code = 'PERMANENT'"
-    etl_derived_value: NHNCK.IDENTITY_INFO_C06S
 
   - name: Address Type Code
     physical_name: adr_tp_code
@@ -217,20 +162,6 @@ attributes:
     classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Address Type Code = 'PERMANENT'"
     etl_derived_value: null
 
-  - name: Country Id
-    physical_name: country_id
-    business_meaning: FK đến Geographic Area — quốc gia.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: IDENTITY_INFO_C06S
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Address Type Code = 'PERMANENT'"
-    etl_derived_value: null
-
   - name: Country Code
     physical_name: country_code
     business_meaning: Mã quốc gia địa chỉ thường trú (theo C06).
@@ -242,20 +173,6 @@ attributes:
     source_table: IDENTITY_INFO_C06S
     source_column: NHNCK.IDENTITY_INFO_C06S.PERMANENT_COUNTRY_CODE
     comment: "Scheme: NHNCK_C06_COUNTRY. Dữ liệu tích hợp C06 — no_lookup, không tạo FK Geographic Area."
-    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Address Type Code = 'PERMANENT'"
-    etl_derived_value: null
-
-  - name: Province Id
-    physical_name: province_id
-    business_meaning: FK đến Geographic Area — tỉnh/thành.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: IDENTITY_INFO_C06S
-    source_column: null
-    comment: null
     classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Address Type Code = 'PERMANENT'"
     etl_derived_value: null
 
@@ -273,20 +190,6 @@ attributes:
     classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Address Type Code = 'PERMANENT'"
     etl_derived_value: null
 
-  - name: District Id
-    physical_name: district_id
-    business_meaning: FK đến Geographic Area — quận/huyện.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: IDENTITY_INFO_C06S
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Address Type Code = 'PERMANENT'"
-    etl_derived_value: null
-
   - name: District Code
     physical_name: district_code
     business_meaning: Mã quận/huyện địa chỉ thường trú (theo C06).
@@ -300,4 +203,3 @@ attributes:
     comment: "Scheme: NHNCK_C06_DISTRICT. Dữ liệu tích hợp C06 — no_lookup."
     classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Address Type Code = 'PERMANENT'"
     etl_derived_value: null
-

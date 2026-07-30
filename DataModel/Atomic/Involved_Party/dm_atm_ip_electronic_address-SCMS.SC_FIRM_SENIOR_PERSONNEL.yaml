@@ -92,48 +92,6 @@ attributes:
     classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL' | Electronic Address Type Code = 'EMAIL'"
     etl_derived_value: null
 
-  - name: Involved Party Id
-    physical_name: ip_id
-    business_meaning: FK đến Securities Company Senior Personnel (Involved Party).
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_SENIOR_PERSONNEL
-    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.ID
-    comment: "FK target: sc_senior_personnel.sc_senior_personnel_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_SENIOR_PERSONNEL', ID)."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL' | Electronic Address Type Code = 'EMAIL_DISCLOSURE'"
-    etl_derived_value: null
-
-  - name: Involved Party Code
-    physical_name: ip_code
-    business_meaning: Mã Securities Company Senior Personnel.
-    data_domain: Text
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_SENIOR_PERSONNEL
-    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.ID
-    comment: "Lookup pair: sc_senior_personnel.sc_senior_personnel_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL' | Electronic Address Type Code = 'EMAIL_DISCLOSURE'"
-    etl_derived_value: null
-
-  - name: Source System Code
-    physical_name: src_stm_code
-    business_meaning: Mã hệ thống nguồn dữ liệu.
-    data_domain: Classification Value
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_SENIOR_PERSONNEL
-    source_column: null
-    comment: "Scheme: SOURCE_SYSTEM."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL' | Electronic Address Type Code = 'EMAIL_DISCLOSURE'"
-    etl_derived_value: SCMS.SC_FIRM_SENIOR_PERSONNEL
-
   - name: Electronic Address Type Code
     physical_name: electronic_adr_tp_code
     business_meaning: Loại kênh liên lạc — email công bố thông tin.
@@ -162,48 +120,6 @@ attributes:
     classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL' | Electronic Address Type Code = 'EMAIL_DISCLOSURE'"
     etl_derived_value: null
 
-  - name: Involved Party Id
-    physical_name: ip_id
-    business_meaning: FK đến Securities Company Senior Personnel (Involved Party).
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_SENIOR_PERSONNEL
-    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.ID
-    comment: "FK target: sc_senior_personnel.sc_senior_personnel_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_SENIOR_PERSONNEL', ID)."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL' | Electronic Address Type Code = 'FAX'"
-    etl_derived_value: null
-
-  - name: Involved Party Code
-    physical_name: ip_code
-    business_meaning: Mã Securities Company Senior Personnel.
-    data_domain: Text
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_SENIOR_PERSONNEL
-    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.ID
-    comment: "Lookup pair: sc_senior_personnel.sc_senior_personnel_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL' | Electronic Address Type Code = 'FAX'"
-    etl_derived_value: null
-
-  - name: Source System Code
-    physical_name: src_stm_code
-    business_meaning: Mã hệ thống nguồn dữ liệu.
-    data_domain: Classification Value
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_SENIOR_PERSONNEL
-    source_column: null
-    comment: "Scheme: SOURCE_SYSTEM."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL' | Electronic Address Type Code = 'FAX'"
-    etl_derived_value: SCMS.SC_FIRM_SENIOR_PERSONNEL
-
   - name: Electronic Address Type Code
     physical_name: electronic_adr_tp_code
     business_meaning: Loại kênh liên lạc — fax.
@@ -231,48 +147,6 @@ attributes:
     comment: null
     classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL' | Electronic Address Type Code = 'FAX'"
     etl_derived_value: null
-
-  - name: Involved Party Id
-    physical_name: ip_id
-    business_meaning: FK đến Securities Company Senior Personnel (Involved Party).
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_SENIOR_PERSONNEL
-    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.ID
-    comment: "FK target: sc_senior_personnel.sc_senior_personnel_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_SENIOR_PERSONNEL', ID)."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL' | Electronic Address Type Code = 'PHONE'"
-    etl_derived_value: null
-
-  - name: Involved Party Code
-    physical_name: ip_code
-    business_meaning: Mã Securities Company Senior Personnel.
-    data_domain: Text
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_SENIOR_PERSONNEL
-    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.ID
-    comment: "Lookup pair: sc_senior_personnel.sc_senior_personnel_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL' | Electronic Address Type Code = 'PHONE'"
-    etl_derived_value: null
-
-  - name: Source System Code
-    physical_name: src_stm_code
-    business_meaning: Mã hệ thống nguồn dữ liệu.
-    data_domain: Classification Value
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_SENIOR_PERSONNEL
-    source_column: null
-    comment: "Scheme: SOURCE_SYSTEM."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL' | Electronic Address Type Code = 'PHONE'"
-    etl_derived_value: SCMS.SC_FIRM_SENIOR_PERSONNEL
 
   - name: Electronic Address Type Code
     physical_name: electronic_adr_tp_code

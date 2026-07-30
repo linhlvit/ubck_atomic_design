@@ -33,7 +33,7 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.TAX_CODE
     comment: "FK target: et_registration.et_registration_id. Hash: hash_id('KNT.TAX_REGISTRATION_INFO', TAX_CODE)."
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO' | Address Type Code = 'HEAD_OFFICE'"
+    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO' | Address Type Code = 'BUSINESS'"
     etl_derived_value: null
 
   - name: Involved Party Code
@@ -47,8 +47,9 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.TAX_CODE
     comment: "Lookup pair: et_registration.et_registration_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO' | Address Type Code = 'HEAD_OFFICE'"
+    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO' | Address Type Code = 'BUSINESS'"
     etl_derived_value: null
+
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning: Mã hệ thống nguồn dữ liệu.
@@ -175,20 +176,6 @@ attributes:
     classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO' | Address Type Code = 'BUSINESS'"
     etl_derived_value: null
 
-  - name: Source System Code
-    physical_name: src_stm_code
-    business_meaning: Mã hệ thống nguồn dữ liệu.
-    data_domain: Classification Value
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: KNT
-    source_table: TAX_REGISTRATION_INFO
-    source_column: null
-    comment: "Scheme: SOURCE_SYSTEM."
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO' | Address Type Code = 'HEAD_OFFICE'"
-    etl_derived_value: KNT.TAX_REGISTRATION_INFO
-
   - name: Address Type Code
     physical_name: adr_tp_code
     business_meaning: Loại địa chỉ.
@@ -216,116 +203,3 @@ attributes:
     comment: null
     classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO' | Address Type Code = 'HEAD_OFFICE'"
     etl_derived_value: null
-
-  - name: Province Id
-    physical_name: province_id
-    business_meaning: FK đến Geographic Area cấp tỉnh/thành phố (trụ sở chính).
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: KNT
-    source_table: TAX_REGISTRATION_INFO
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO' | Address Type Code = 'HEAD_OFFICE'"
-    etl_derived_value: null
-
-  - name: Province Code
-    physical_name: province_code
-    business_meaning: Mã tỉnh/thành phố (trụ sở chính).
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: KNT
-    source_table: TAX_REGISTRATION_INFO
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO' | Address Type Code = 'HEAD_OFFICE'"
-    etl_derived_value: null
-
-  - name: District Id
-    physical_name: district_id
-    business_meaning: FK đến Geographic Area Old cấp quận/huyện (cũ).
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: KNT
-    source_table: TAX_REGISTRATION_INFO
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO' | Address Type Code = 'HEAD_OFFICE'"
-    etl_derived_value: null
-
-  - name: District Code
-    physical_name: district_code
-    business_meaning: Mã quận/huyện.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: KNT
-    source_table: TAX_REGISTRATION_INFO
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO' | Address Type Code = 'HEAD_OFFICE'"
-    etl_derived_value: null
-
-  - name: District Name
-    physical_name: district_nm
-    business_meaning: Tên quận/huyện (denormalized để tiện query mà không cần join CAT_DISTRICT).
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: KNT
-    source_table: TAX_REGISTRATION_INFO
-    source_column: null
-    comment: "Denormalized — nguồn Geographic Area Old (ECAT.DISTRICT_OLD.geographic_area_old_nm), không còn CAT_DISTRICT.DISTRICT_NAME. ETL lookup theo District Id. Không áp dụng cho KNT.TAX_REGISTRATION_INFO — thuộc tính không có dữ liệu nguồn ở source này (nullable placeholder cho shared entity)."
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO' | Address Type Code = 'HEAD_OFFICE'"
-    etl_derived_value: null
-
-  - name: Ward Id
-    physical_name: ward_id
-    business_meaning: FK đến Geographic Area cấp phường/xã.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: KNT
-    source_table: TAX_REGISTRATION_INFO
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO' | Address Type Code = 'HEAD_OFFICE'"
-    etl_derived_value: null
-
-  - name: Ward Code
-    physical_name: ward_code
-    business_meaning: Mã phường/xã.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: KNT
-    source_table: TAX_REGISTRATION_INFO
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO' | Address Type Code = 'HEAD_OFFICE'"
-    etl_derived_value: null
-
-  - name: Ward Name
-    physical_name: ward_nm
-    business_meaning: Tên phường/xã (denormalized để tiện query mà không cần join CAT_WARD).
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: KNT
-    source_table: TAX_REGISTRATION_INFO
-    source_column: null
-    comment: Denormalized từ CAT_WARD.WARD_NAME — ETL lookup theo WARD_ID. Lưu dự phòng để tránh join nhiều tầng. Không áp dụng cho KNT.TAX_REGISTRATION_INFO — thuộc tính không có dữ liệu nguồn ở source này (nullable placeholder cho shared entity).
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO' | Address Type Code = 'HEAD_OFFICE'"
-    etl_derived_value: null
-

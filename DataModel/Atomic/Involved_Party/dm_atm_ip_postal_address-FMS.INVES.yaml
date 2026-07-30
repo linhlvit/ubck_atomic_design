@@ -22,6 +22,34 @@ ldm:
     brd: BRD-SRC-FMS-INVES
 
 attributes:
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến Discretionary Investment Investor.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: INVES
+    source_column: FMS.INVES.ID
+    comment: "FK target: discretionary_investment_investor.discretionary_investment_investor_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.INVES', ID)."
+    classification_context: "Source System Code = 'FMS_INVES' | Address Type Code = 'ADDRESS'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã nhà đầu tư ủy thác.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: INVES
+    source_column: FMS.INVES.ID
+    comment: "Lookup pair: discretionary_investment_investor.discretionary_investment_investor_code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'FMS_INVES' | Address Type Code = 'ADDRESS'"
+    etl_derived_value: null
+
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning: Mã hệ thống nguồn.

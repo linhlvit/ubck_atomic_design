@@ -22,6 +22,34 @@ ldm:
     brd: BRD-SRC-FMS-BRANCHS
 
 attributes:
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến Fund Management Company Organization Unit.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: BRANCHS
+    source_column: FMS.BRANCHS.ID
+    comment: "FK target: fmc_organization_unit.fmc_organization_unit_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.BRANCHS', ID)."
+    classification_context: "Source System Code = 'FMS_BRANCHS' | Address Type Code = 'BRANCH'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã chi nhánh/VPĐD.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: BRANCHS
+    source_column: FMS.BRANCHS.ID
+    comment: "Lookup pair: fmc_organization_unit.fmc_organization_unit_code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'FMS_BRANCHS' | Address Type Code = 'BRANCH'"
+    etl_derived_value: null
+
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning: Mã hệ thống nguồn.
@@ -61,117 +89,5 @@ attributes:
     source_table: BRANCHS
     source_column: FMS.BRANCHS.ADDRESS
     comment: null
-    classification_context: "Source System Code = 'FMS_BRANCHS' | Address Type Code = 'BRANCH'"
-    etl_derived_value: null
-
-  - name: Province Id
-    physical_name: province_id
-    business_meaning: FK đến Geographic Area cấp Tỉnh/Thành phố.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: FMS
-    source_table: BRANCHS
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'FMS_BRANCHS' | Address Type Code = 'BRANCH'"
-    etl_derived_value: null
-
-  - name: Province Code
-    physical_name: province_code
-    business_meaning: Mã Tỉnh/Thành phố.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: FMS
-    source_table: BRANCHS
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'FMS_BRANCHS' | Address Type Code = 'BRANCH'"
-    etl_derived_value: null
-
-  - name: District Id
-    physical_name: district_id
-    business_meaning: FK đến Geographic Area Old cấp Quận/Huyện (cũ).
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: FMS
-    source_table: BRANCHS
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'FMS_BRANCHS' | Address Type Code = 'BRANCH'"
-    etl_derived_value: null
-
-  - name: District Code
-    physical_name: district_code
-    business_meaning: Mã Quận/Huyện.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: FMS
-    source_table: BRANCHS
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'FMS_BRANCHS' | Address Type Code = 'BRANCH'"
-    etl_derived_value: null
-
-  - name: District Name
-    physical_name: district_nm
-    business_meaning: "Tên Quận/Huyện (denormalized text, không có FK riêng)."
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: FMS
-    source_table: BRANCHS
-    source_column: null
-    comment: Text gốc từ bảng nguồn (không phải ETL lookup). Dùng khi District Id NULL. Không áp dụng cho FMS.BRANCHS — thuộc tính không có dữ liệu nguồn ở source này (nullable placeholder cho shared entity).
-    classification_context: "Source System Code = 'FMS_BRANCHS' | Address Type Code = 'BRANCH'"
-    etl_derived_value: null
-
-  - name: Ward Id
-    physical_name: ward_id
-    business_meaning: FK đến Geographic Area cấp Phường/Xã.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: FMS
-    source_table: BRANCHS
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'FMS_BRANCHS' | Address Type Code = 'BRANCH'"
-    etl_derived_value: null
-
-  - name: Ward Code
-    physical_name: ward_code
-    business_meaning: Mã Phường/Xã.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: FMS
-    source_table: BRANCHS
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'FMS_BRANCHS' | Address Type Code = 'BRANCH'"
-    etl_derived_value: null
-
-  - name: Ward Name
-    physical_name: ward_nm
-    business_meaning: Tên Phường/Xã (denormalized text).
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: FMS
-    source_table: BRANCHS
-    source_column: null
-    comment: Text gốc từ bảng nguồn (không phải ETL lookup). Dùng khi Ward Id NULL. Không áp dụng cho FMS.BRANCHS — thuộc tính không có dữ liệu nguồn ở source này (nullable placeholder cho shared entity).
     classification_context: "Source System Code = 'FMS_BRANCHS' | Address Type Code = 'BRANCH'"
     etl_derived_value: null

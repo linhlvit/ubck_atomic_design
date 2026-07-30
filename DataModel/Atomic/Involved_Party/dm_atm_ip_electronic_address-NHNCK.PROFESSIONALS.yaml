@@ -92,48 +92,6 @@ attributes:
     classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Electronic Address Type Code = 'EMAIL'"
     etl_derived_value: null
 
-  - name: Involved Party Id
-    physical_name: ip_id
-    business_meaning: FK đến Securities Practitioner.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: PROFESSIONALS
-    source_column: NHNCK.PROFESSIONALS.ID
-    comment: "FK target: securities_practitioner.securities_practitioner_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.PROFESSIONALS', ID)."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Electronic Address Type Code = 'MOBILE'"
-    etl_derived_value: null
-
-  - name: Involved Party Code
-    physical_name: ip_code
-    business_meaning: Mã người hành nghề.
-    data_domain: Text
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: PROFESSIONALS
-    source_column: NHNCK.PROFESSIONALS.ID
-    comment: "Lookup pair: securities_practitioner.securities_practitioner_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Electronic Address Type Code = 'MOBILE'"
-    etl_derived_value: null
-
-  - name: Source System Code
-    physical_name: src_stm_code
-    business_meaning: Mã hệ thống nguồn.
-    data_domain: Classification Value
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: PROFESSIONALS
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Electronic Address Type Code = 'MOBILE'"
-    etl_derived_value: NHNCK.PROFESSIONALS
-
   - name: Electronic Address Type Code
     physical_name: electronic_adr_tp_code
     business_meaning: Loại kênh liên lạc — điện thoại di động.
@@ -161,48 +119,6 @@ attributes:
     comment: null
     classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Electronic Address Type Code = 'MOBILE'"
     etl_derived_value: null
-
-  - name: Involved Party Id
-    physical_name: ip_id
-    business_meaning: FK đến Securities Practitioner.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: PROFESSIONALS
-    source_column: NHNCK.PROFESSIONALS.ID
-    comment: "FK target: securities_practitioner.securities_practitioner_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.PROFESSIONALS', ID)."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Electronic Address Type Code = 'PHONE'"
-    etl_derived_value: null
-
-  - name: Involved Party Code
-    physical_name: ip_code
-    business_meaning: Mã người hành nghề.
-    data_domain: Text
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: PROFESSIONALS
-    source_column: NHNCK.PROFESSIONALS.ID
-    comment: "Lookup pair: securities_practitioner.securities_practitioner_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Electronic Address Type Code = 'PHONE'"
-    etl_derived_value: null
-
-  - name: Source System Code
-    physical_name: src_stm_code
-    business_meaning: Mã hệ thống nguồn.
-    data_domain: Classification Value
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: PROFESSIONALS
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Electronic Address Type Code = 'PHONE'"
-    etl_derived_value: NHNCK.PROFESSIONALS
 
   - name: Electronic Address Type Code
     physical_name: electronic_adr_tp_code

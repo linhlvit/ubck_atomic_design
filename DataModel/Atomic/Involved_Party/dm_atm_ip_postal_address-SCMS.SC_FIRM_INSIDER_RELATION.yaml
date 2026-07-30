@@ -49,6 +49,7 @@ attributes:
     comment: "Lookup pair: sc_insider_related_person.sc_insider_related_person_code. Pair with Involved Party Id."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_INSIDER_RELATION' | Address Type Code = 'PERMANENT'"
     etl_derived_value: null
+
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning: Mã hệ thống nguồn dữ liệu.
@@ -90,88 +91,3 @@ attributes:
     comment: NVARCHAR2(500). Không có Province/District/Ward FK.
     classification_context: "Source System Code = 'SCMS_SC_FIRM_INSIDER_RELATION' | Address Type Code = 'PERMANENT'"
     etl_derived_value: null
-
-  - name: Country Id
-    physical_name: country_id
-    business_meaning: FK đến Geographic Area — quốc gia.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_INSIDER_RELATION
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_INSIDER_RELATION' | Address Type Code = 'PERMANENT'"
-    etl_derived_value: null
-
-  - name: Country Code
-    physical_name: country_code
-    business_meaning: Mã quốc gia địa chỉ thường trú (theo C06).
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_INSIDER_RELATION
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_INSIDER_RELATION' | Address Type Code = 'PERMANENT'"
-    etl_derived_value: null
-
-  - name: Province Id
-    physical_name: province_id
-    business_meaning: FK đến Geographic Area — tỉnh/thành.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_INSIDER_RELATION
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_INSIDER_RELATION' | Address Type Code = 'PERMANENT'"
-    etl_derived_value: null
-
-  - name: Province Code
-    physical_name: province_code
-    business_meaning: Mã tỉnh/thành phố địa chỉ thường trú (theo C06).
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_INSIDER_RELATION
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_INSIDER_RELATION' | Address Type Code = 'PERMANENT'"
-    etl_derived_value: null
-
-  - name: District Id
-    physical_name: district_id
-    business_meaning: FK đến Geographic Area — quận/huyện.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_INSIDER_RELATION
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_INSIDER_RELATION' | Address Type Code = 'PERMANENT'"
-    etl_derived_value: null
-
-  - name: District Code
-    physical_name: district_code
-    business_meaning: Mã quận/huyện địa chỉ thường trú (theo C06).
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_INSIDER_RELATION
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_INSIDER_RELATION' | Address Type Code = 'PERMANENT'"
-    etl_derived_value: null
-

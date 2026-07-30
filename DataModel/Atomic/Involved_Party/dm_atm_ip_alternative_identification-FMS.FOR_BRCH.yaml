@@ -22,6 +22,34 @@ ldm:
     brd: BRD-SRC-FMS-FOR_BRCH
 
 attributes:
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến Foreign Fund Management Organization Unit.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: FOR_BRCH
+    source_column: FMS.FOR_BRCH.ID
+    comment: "FK target: foreign_fund_management_organization_unit.foreign_fund_management_organization_unit_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.FOR_BRCH', ID)."
+    classification_context: "Source System Code = 'FMS_FOR_BRCH' | Identification Type Code = 'BUSINESS_LICENSE'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã VPĐD/CN QLQ nước ngoài.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: FOR_BRCH
+    source_column: FMS.FOR_BRCH.ID
+    comment: "Lookup pair: foreign_fund_management_organization_unit.foreign_fund_management_organization_unit_code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'FMS_FOR_BRCH' | Identification Type Code = 'BUSINESS_LICENSE'"
+    etl_derived_value: null
+
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning: Mã hệ thống nguồn.
@@ -63,48 +91,6 @@ attributes:
     comment: null
     classification_context: "Source System Code = 'FMS_FOR_BRCH' | Identification Type Code = 'BUSINESS_LICENSE'"
     etl_derived_value: null
-
-  - name: Identification Issue Date
-    physical_name: identification_issue_dt
-    business_meaning: Ngày cấp giấy phép hoạt động của văn phòng tại VN.
-    data_domain: Date
-    data_type: date
-    nullable: true
-    is_primary_key: false
-    source_system: FMS
-    source_table: FOR_BRCH
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'FMS_FOR_BRCH' | Identification Type Code = 'BUSINESS_LICENSE'"
-    etl_derived_value: null
-
-  - name: Identification Issue Place
-    physical_name: identification_issue_place
-    business_meaning: Cơ quan cấp giấy phép hoạt động của văn phòng tại VN.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: FMS
-    source_table: FOR_BRCH
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'FMS_FOR_BRCH' | Identification Type Code = 'BUSINESS_LICENSE'"
-    etl_derived_value: null
-
-  - name: Source System Code
-    physical_name: src_stm_code
-    business_meaning: Mã hệ thống nguồn.
-    data_domain: Classification Value
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: FMS
-    source_table: FOR_BRCH
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'FMS_FOR_BRCH' | Identification Type Code = 'OPERATION_LICENSE'"
-    etl_derived_value: FMS.FOR_BRCH
 
   - name: Identification Type Code
     physical_name: identification_tp_code
@@ -148,34 +134,6 @@ attributes:
     classification_context: "Source System Code = 'FMS_FOR_BRCH' | Identification Type Code = 'OPERATION_LICENSE'"
     etl_derived_value: null
 
-  - name: Identification Issue Place
-    physical_name: identification_issue_place
-    business_meaning: Cơ quan cấp GCN đăng ký hoạt động phân phối CCQ.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: FMS
-    source_table: FOR_BRCH
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'FMS_FOR_BRCH' | Identification Type Code = 'OPERATION_LICENSE'"
-    etl_derived_value: null
-
-  - name: Source System Code
-    physical_name: src_stm_code
-    business_meaning: Mã hệ thống nguồn.
-    data_domain: Classification Value
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: FMS
-    source_table: FOR_BRCH
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'FMS_FOR_BRCH' | Identification Type Code = 'TAX_ID'"
-    etl_derived_value: FMS.FOR_BRCH
-
   - name: Identification Type Code
     physical_name: identification_tp_code
     business_meaning: Loại giấy tờ — mã số thuế.
@@ -200,34 +158,6 @@ attributes:
     source_system: FMS
     source_table: FOR_BRCH
     source_column: FMS.FOR_BRCH.TAX_CODE
-    comment: null
-    classification_context: "Source System Code = 'FMS_FOR_BRCH' | Identification Type Code = 'TAX_ID'"
-    etl_derived_value: null
-
-  - name: Identification Issue Date
-    physical_name: identification_issue_dt
-    business_meaning: Ngày cấp mã số thuế.
-    data_domain: Date
-    data_type: date
-    nullable: true
-    is_primary_key: false
-    source_system: FMS
-    source_table: FOR_BRCH
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'FMS_FOR_BRCH' | Identification Type Code = 'TAX_ID'"
-    etl_derived_value: null
-
-  - name: Identification Issue Place
-    physical_name: identification_issue_place
-    business_meaning: Nơi cấp mã số thuế.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: FMS
-    source_table: FOR_BRCH
-    source_column: null
     comment: null
     classification_context: "Source System Code = 'FMS_FOR_BRCH' | Identification Type Code = 'TAX_ID'"
     etl_derived_value: null

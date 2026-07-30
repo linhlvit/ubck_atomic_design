@@ -92,20 +92,6 @@ attributes:
     classification_context: "Source System Code = 'ECAT_REGION'"
     etl_derived_value: null
 
-  - name: Geographic Area English Name
-    physical_name: geographic_area_english_nm
-    business_meaning: Tên phường/xã/thị trấn (tiếng Anh)
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: ECAT
-    source_table: REGION
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'ECAT_REGION'"
-    etl_derived_value: null
-
   - name: Parent Geographic Area Id
     physical_name: parent_geographic_area_id
     business_meaning: FK đến quốc gia cha
@@ -131,20 +117,6 @@ attributes:
     source_table: REGION
     source_column: ECAT.REGION.COUNTRY_ID
     comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Parent Geographic Area Id."
-    classification_context: "Source System Code = 'ECAT_REGION'"
-    etl_derived_value: null
-
-  - name: Effective Indicator
-    physical_name: effective_indicator
-    business_meaning: "Tình trạng hiệu lực: true=Hiệu lực; false=Hết hiệu lực"
-    data_domain: Small Counter
-    data_type: int
-    nullable: false
-    is_primary_key: false
-    source_system: ECAT
-    source_table: REGION
-    source_column: null
-    comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Active/Deleted Indicator. Không áp dụng cho ECAT.REGION — thuộc tính không có dữ liệu nguồn ở source này (nullable placeholder cho shared entity)."
     classification_context: "Source System Code = 'ECAT_REGION'"
     etl_derived_value: null
 
@@ -215,20 +187,6 @@ attributes:
     source_table: REGION
     source_column: ECAT.REGION.VERSION
     comment: "Đẩy 1:1 theo yêu cầu."
-    classification_context: "Source System Code = 'ECAT_REGION'"
-    etl_derived_value: null
-
-  - name: Display Label
-    physical_name: display_label
-    business_meaning: Nhãn hiển thị
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: ECAT
-    source_table: REGION
-    source_column: null
-    comment: "Đẩy 1:1 theo yêu cầu. Không áp dụng cho ECAT.REGION — thuộc tính không có dữ liệu nguồn ở source này (nullable placeholder cho shared entity)."
     classification_context: "Source System Code = 'ECAT_REGION'"
     etl_derived_value: null
 
@@ -369,19 +327,5 @@ attributes:
     source_table: REGION
     source_column: ECAT.REGION.UPDATED_BY_NAME
     comment: "Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên hiển thị, không phải mã nhân viên)."
-    classification_context: "Source System Code = 'ECAT_REGION'"
-    etl_derived_value: null
-
-  - name: Geographic Area Category Code
-    physical_name: geographic_area_category_code
-    business_meaning: Loại đơn vị hành chính cấp phường/xã (Phường/Xã/Thị trấn)
-    data_domain: Classification Value
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: ECAT
-    source_table: REGION
-    source_column: null
-    comment: "Scheme: GEOGRAPHIC_AREA_WARD_CATEGORY. Không áp dụng cho ECAT.REGION — thuộc tính không có dữ liệu nguồn ở source này (nullable placeholder cho shared entity)."
     classification_context: "Source System Code = 'ECAT_REGION'"
     etl_derived_value: null

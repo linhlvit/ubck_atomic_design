@@ -22,6 +22,34 @@ ldm:
     brd: BRD-SRC-KNT-TAX_REG_REPRESENTATIVE
 
 attributes:
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến External Tax Registration Representative (Involved Party).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: KNT
+    source_table: TAX_REG_REPRESENTATIVE
+    source_column: KNT.TAX_REG_REPRESENTATIVE.ID
+    comment: "FK target: et_registration_representative.et_registration_representative_id. Hash: hash_id('KNT.TAX_REG_REPRESENTATIVE', ID)."
+    classification_context: "Source System Code = 'KNT_TAX_REG_REPRESENTATIVE' | Identification Type Code = '(SOURCE)'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã External Tax Registration Representative.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REG_REPRESENTATIVE
+    source_column: KNT.TAX_REG_REPRESENTATIVE.ID
+    comment: "Lookup pair: et_registration_representative.et_registration_representative_code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'KNT_TAX_REG_REPRESENTATIVE' | Identification Type Code = '(SOURCE)'"
+    etl_derived_value: null
+
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning: Mã hệ thống nguồn dữ liệu.
@@ -75,47 +103,5 @@ attributes:
     source_table: TAX_REG_REPRESENTATIVE
     source_column: KNT.TAX_REG_REPRESENTATIVE.ISSUE_DATE
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REG_REPRESENTATIVE' | Identification Type Code = '(SOURCE)'"
-    etl_derived_value: null
-
-  - name: Identification Issue Place
-    physical_name: identification_issue_place
-    business_meaning: Nơi cấp giấy tờ định danh.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: KNT
-    source_table: TAX_REG_REPRESENTATIVE
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REG_REPRESENTATIVE' | Identification Type Code = '(SOURCE)'"
-    etl_derived_value: null
-
-  - name: Involved Party Id
-    physical_name: ip_id
-    business_meaning: FK đến External Tax Registration Representative (Involved Party).
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: false
-    is_primary_key: true
-    source_system: KNT
-    source_table: TAX_REG_REPRESENTATIVE
-    source_column: KNT.TAX_REG_REPRESENTATIVE.ID
-    comment: "FK target: et_registration_representative.et_registration_representative_id. Hash: hash_id('KNT.TAX_REG_REPRESENTATIVE', ID)."
-    classification_context: "Source System Code = 'KNT_TAX_REG_REPRESENTATIVE' | Identification Type Code = '(SOURCE)'"
-    etl_derived_value: null
-
-  - name: Involved Party Code
-    physical_name: ip_code
-    business_meaning: Mã External Tax Registration Representative.
-    data_domain: Text
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: KNT
-    source_table: TAX_REG_REPRESENTATIVE
-    source_column: KNT.TAX_REG_REPRESENTATIVE.ID
-    comment: "Lookup pair: et_registration_representative.et_registration_representative_code. Pair with Involved Party Id."
     classification_context: "Source System Code = 'KNT_TAX_REG_REPRESENTATIVE' | Identification Type Code = '(SOURCE)'"
     etl_derived_value: null

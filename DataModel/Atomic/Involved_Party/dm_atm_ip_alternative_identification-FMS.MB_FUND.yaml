@@ -22,6 +22,34 @@ ldm:
     brd: BRD-SRC-FMS-MB_FUND
 
 attributes:
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến Investment Fund Investor Membership.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: MB_FUND
+    source_column: FMS.MB_FUND.ID
+    comment: "FK target: investment_fund_investor_membership.investment_fund_investor_membership_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.MB_FUND', ID)."
+    classification_context: "Source System Code = 'FMS_MB_FUND' | Identification Type Code = 'NATIONAL_ID'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã thành viên quỹ.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: MB_FUND
+    source_column: FMS.MB_FUND.ID
+    comment: "Lookup pair: investment_fund_investor_membership.investment_fund_investor_membership_code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'FMS_MB_FUND' | Identification Type Code = 'NATIONAL_ID'"
+    etl_derived_value: null
+
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning: Mã hệ thống nguồn.
@@ -75,47 +103,5 @@ attributes:
     source_table: MB_FUND
     source_column: FMS.MB_FUND.ID_DATE
     comment: null
-    classification_context: "Source System Code = 'FMS_MB_FUND' | Identification Type Code = 'NATIONAL_ID'"
-    etl_derived_value: null
-
-  - name: Identification Issue Place
-    physical_name: identification_issue_place
-    business_meaning: Nơi cấp CMND/CCCD/Hộ chiếu.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: FMS
-    source_table: MB_FUND
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'FMS_MB_FUND' | Identification Type Code = 'NATIONAL_ID'"
-    etl_derived_value: null
-
-  - name: Involved Party Id
-    physical_name: ip_id
-    business_meaning: FK đến Investment Fund Investor Membership.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: FMS
-    source_table: MB_FUND
-    source_column: FMS.MB_FUND.ID
-    comment: "FK target: investment_fund_investor_membership.investment_fund_investor_membership_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.MB_FUND', ID)."
-    classification_context: "Source System Code = 'FMS_MB_FUND' | Identification Type Code = 'NATIONAL_ID'"
-    etl_derived_value: null
-
-  - name: Involved Party Code
-    physical_name: ip_code
-    business_meaning: Mã thành viên quỹ.
-    data_domain: Text
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: FMS
-    source_table: MB_FUND
-    source_column: FMS.MB_FUND.ID
-    comment: "Lookup pair: investment_fund_investor_membership.investment_fund_investor_membership_code. Pair with Involved Party Id."
     classification_context: "Source System Code = 'FMS_MB_FUND' | Identification Type Code = 'NATIONAL_ID'"
     etl_derived_value: null

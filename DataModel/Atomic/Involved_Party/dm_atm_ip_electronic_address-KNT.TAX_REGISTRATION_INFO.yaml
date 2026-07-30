@@ -92,48 +92,6 @@ attributes:
     classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO' | Electronic Address Type Code = 'EMAIL_BUSINESS'"
     etl_derived_value: null
 
-  - name: Involved Party Id
-    physical_name: ip_id
-    business_meaning: FK đến External Tax Registration (Involved Party).
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: false
-    is_primary_key: true
-    source_system: KNT
-    source_table: TAX_REGISTRATION_INFO
-    source_column: KNT.TAX_REGISTRATION_INFO.TAX_CODE
-    comment: "FK target: et_registration.et_registration_id. Hash: hash_id('KNT.TAX_REGISTRATION_INFO', TAX_CODE)."
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO' | Electronic Address Type Code = 'FAX'"
-    etl_derived_value: null
-
-  - name: Involved Party Code
-    physical_name: ip_code
-    business_meaning: Mã External Tax Registration.
-    data_domain: Text
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: KNT
-    source_table: TAX_REGISTRATION_INFO
-    source_column: KNT.TAX_REGISTRATION_INFO.TAX_CODE
-    comment: "Lookup pair: et_registration.et_registration_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO' | Electronic Address Type Code = 'FAX'"
-    etl_derived_value: null
-
-  - name: Source System Code
-    physical_name: src_stm_code
-    business_meaning: Mã hệ thống nguồn dữ liệu.
-    data_domain: Classification Value
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: KNT
-    source_table: TAX_REGISTRATION_INFO
-    source_column: null
-    comment: "Scheme: SOURCE_SYSTEM."
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO' | Electronic Address Type Code = 'FAX'"
-    etl_derived_value: KNT.TAX_REGISTRATION_INFO
-
   - name: Electronic Address Type Code
     physical_name: electronic_adr_tp_code
     business_meaning: Loại kênh liên lạc — fax.
@@ -161,48 +119,6 @@ attributes:
     comment: null
     classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO' | Electronic Address Type Code = 'FAX'"
     etl_derived_value: null
-
-  - name: Involved Party Id
-    physical_name: ip_id
-    business_meaning: FK đến External Tax Registration (Involved Party).
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: false
-    is_primary_key: true
-    source_system: KNT
-    source_table: TAX_REGISTRATION_INFO
-    source_column: KNT.TAX_REGISTRATION_INFO.TAX_CODE
-    comment: "FK target: et_registration.et_registration_id. Hash: hash_id('KNT.TAX_REGISTRATION_INFO', TAX_CODE)."
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO' | Electronic Address Type Code = 'FAX_BUSINESS'"
-    etl_derived_value: null
-
-  - name: Involved Party Code
-    physical_name: ip_code
-    business_meaning: Mã External Tax Registration.
-    data_domain: Text
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: KNT
-    source_table: TAX_REGISTRATION_INFO
-    source_column: KNT.TAX_REGISTRATION_INFO.TAX_CODE
-    comment: "Lookup pair: et_registration.et_registration_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO' | Electronic Address Type Code = 'FAX_BUSINESS'"
-    etl_derived_value: null
-
-  - name: Source System Code
-    physical_name: src_stm_code
-    business_meaning: Mã hệ thống nguồn dữ liệu.
-    data_domain: Classification Value
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: KNT
-    source_table: TAX_REGISTRATION_INFO
-    source_column: null
-    comment: "Scheme: SOURCE_SYSTEM."
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO' | Electronic Address Type Code = 'FAX_BUSINESS'"
-    etl_derived_value: KNT.TAX_REGISTRATION_INFO
 
   - name: Electronic Address Type Code
     physical_name: electronic_adr_tp_code
@@ -232,48 +148,6 @@ attributes:
     classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO' | Electronic Address Type Code = 'FAX_BUSINESS'"
     etl_derived_value: null
 
-  - name: Involved Party Id
-    physical_name: ip_id
-    business_meaning: FK đến External Tax Registration (Involved Party).
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: false
-    is_primary_key: true
-    source_system: KNT
-    source_table: TAX_REGISTRATION_INFO
-    source_column: KNT.TAX_REGISTRATION_INFO.TAX_CODE
-    comment: "FK target: et_registration.et_registration_id. Hash: hash_id('KNT.TAX_REGISTRATION_INFO', TAX_CODE)."
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO' | Electronic Address Type Code = 'PHONE'"
-    etl_derived_value: null
-
-  - name: Involved Party Code
-    physical_name: ip_code
-    business_meaning: Mã External Tax Registration.
-    data_domain: Text
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: KNT
-    source_table: TAX_REGISTRATION_INFO
-    source_column: KNT.TAX_REGISTRATION_INFO.TAX_CODE
-    comment: "Lookup pair: et_registration.et_registration_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO' | Electronic Address Type Code = 'PHONE'"
-    etl_derived_value: null
-
-  - name: Source System Code
-    physical_name: src_stm_code
-    business_meaning: Mã hệ thống nguồn dữ liệu.
-    data_domain: Classification Value
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: KNT
-    source_table: TAX_REGISTRATION_INFO
-    source_column: null
-    comment: "Scheme: SOURCE_SYSTEM."
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO' | Electronic Address Type Code = 'PHONE'"
-    etl_derived_value: KNT.TAX_REGISTRATION_INFO
-
   - name: Electronic Address Type Code
     physical_name: electronic_adr_tp_code
     business_meaning: Loại kênh liên lạc — điện thoại.
@@ -301,48 +175,6 @@ attributes:
     comment: null
     classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO' | Electronic Address Type Code = 'PHONE'"
     etl_derived_value: null
-
-  - name: Involved Party Id
-    physical_name: ip_id
-    business_meaning: FK đến External Tax Registration (Involved Party).
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: false
-    is_primary_key: true
-    source_system: KNT
-    source_table: TAX_REGISTRATION_INFO
-    source_column: KNT.TAX_REGISTRATION_INFO.TAX_CODE
-    comment: "FK target: et_registration.et_registration_id. Hash: hash_id('KNT.TAX_REGISTRATION_INFO', TAX_CODE)."
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO' | Electronic Address Type Code = 'PHONE_BUSINESS'"
-    etl_derived_value: null
-
-  - name: Involved Party Code
-    physical_name: ip_code
-    business_meaning: Mã External Tax Registration.
-    data_domain: Text
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: KNT
-    source_table: TAX_REGISTRATION_INFO
-    source_column: KNT.TAX_REGISTRATION_INFO.TAX_CODE
-    comment: "Lookup pair: et_registration.et_registration_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO' | Electronic Address Type Code = 'PHONE_BUSINESS'"
-    etl_derived_value: null
-
-  - name: Source System Code
-    physical_name: src_stm_code
-    business_meaning: Mã hệ thống nguồn dữ liệu.
-    data_domain: Classification Value
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: KNT
-    source_table: TAX_REGISTRATION_INFO
-    source_column: null
-    comment: "Scheme: SOURCE_SYSTEM."
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO' | Electronic Address Type Code = 'PHONE_BUSINESS'"
-    etl_derived_value: KNT.TAX_REGISTRATION_INFO
 
   - name: Electronic Address Type Code
     physical_name: electronic_adr_tp_code

@@ -22,6 +22,34 @@ ldm:
     brd: BRD-SRC-FMS-FOR_BRCH
 
 attributes:
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến Foreign Fund Management Organization Unit.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: FOR_BRCH
+    source_column: FMS.FOR_BRCH.ID
+    comment: "FK target: foreign_fund_management_organization_unit.foreign_fund_management_organization_unit_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.FOR_BRCH', ID)."
+    classification_context: "Source System Code = 'FMS_FOR_BRCH' | Address Type Code = 'FOREIGN_BRANCH'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã VPĐD/CN QLQ nước ngoài.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: FOR_BRCH
+    source_column: FMS.FOR_BRCH.ID
+    comment: "Lookup pair: foreign_fund_management_organization_unit.foreign_fund_management_organization_unit_code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'FMS_FOR_BRCH' | Address Type Code = 'FOREIGN_BRANCH'"
+    etl_derived_value: null
+
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning: Mã hệ thống nguồn.
@@ -63,20 +91,6 @@ attributes:
     comment: null
     classification_context: "Source System Code = 'FMS_FOR_BRCH' | Address Type Code = 'FOREIGN_BRANCH'"
     etl_derived_value: null
-
-  - name: Source System Code
-    physical_name: src_stm_code
-    business_meaning: Mã hệ thống nguồn.
-    data_domain: Classification Value
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: FMS
-    source_table: FOR_BRCH
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'FMS_FOR_BRCH' | Address Type Code = 'PARENT_ADDRESS'"
-    etl_derived_value: FMS.FOR_BRCH
 
   - name: Address Type Code
     physical_name: adr_tp_code

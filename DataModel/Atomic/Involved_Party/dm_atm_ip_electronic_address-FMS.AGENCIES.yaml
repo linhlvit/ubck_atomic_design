@@ -92,48 +92,6 @@ attributes:
     classification_context: "Source System Code = 'FMS_AGENCIES' | Electronic Address Type Code = 'FAX'"
     etl_derived_value: null
 
-  - name: Involved Party Id
-    physical_name: ip_id
-    business_meaning: FK đến Fund Distribution Agent.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: FMS
-    source_table: AGENCIES
-    source_column: FMS.AGENCIES.ID
-    comment: "FK target: fund_distribution_agent.fund_distribution_agent_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.AGENCIES', ID)."
-    classification_context: "Source System Code = 'FMS_AGENCIES' | Electronic Address Type Code = 'PHONE'"
-    etl_derived_value: null
-
-  - name: Involved Party Code
-    physical_name: ip_code
-    business_meaning: Mã đại lý phân phối.
-    data_domain: Text
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: FMS
-    source_table: AGENCIES
-    source_column: FMS.AGENCIES.ID
-    comment: "Lookup pair: fund_distribution_agent.fund_distribution_agent_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'FMS_AGENCIES' | Electronic Address Type Code = 'PHONE'"
-    etl_derived_value: null
-
-  - name: Source System Code
-    physical_name: src_stm_code
-    business_meaning: Mã hệ thống nguồn.
-    data_domain: Classification Value
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: FMS
-    source_table: AGENCIES
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'FMS_AGENCIES' | Electronic Address Type Code = 'PHONE'"
-    etl_derived_value: FMS.AGENCIES
-
   - name: Electronic Address Type Code
     physical_name: electronic_adr_tp_code
     business_meaning: Loại kênh liên lạc — điện thoại.

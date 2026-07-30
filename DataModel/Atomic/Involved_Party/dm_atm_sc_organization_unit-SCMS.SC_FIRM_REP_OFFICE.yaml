@@ -134,20 +134,6 @@ attributes:
     classification_context: "Source System Code = 'SCMS_SC_FIRM_REP_OFFICE'"
     etl_derived_value: null
 
-  - name: Organization Unit Code
-    physical_name: ou_code
-    business_meaning: Mã nghiệp vụ chi nhánh (mã viết tắt).
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_REP_OFFICE
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_REP_OFFICE'"
-    etl_derived_value: null
-
   - name: Organization Unit Name
     physical_name: ou_nm
     business_meaning: Tên văn phòng đại diện.
@@ -173,20 +159,6 @@ attributes:
     source_table: SC_FIRM_REP_OFFICE
     source_column: SCMS.SC_FIRM_REP_OFFICE.OFFICE_NAME
     comment: Trường legacy — cần xác nhận với team SCMS.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_REP_OFFICE'"
-    etl_derived_value: null
-
-  - name: Organization Unit English Name
-    physical_name: ou_english_nm
-    business_meaning: Tên chi nhánh bằng tiếng Anh.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_REP_OFFICE
-    source_column: null
-    comment: null
     classification_context: "Source System Code = 'SCMS_SC_FIRM_REP_OFFICE'"
     etl_derived_value: null
 
@@ -232,17 +204,45 @@ attributes:
     classification_context: "Source System Code = 'SCMS_SC_FIRM_REP_OFFICE'"
     etl_derived_value: null
 
-  - name: Provisional Indicator
-    physical_name: provisional_indicator
+  - name: Provisional Status Code
+    physical_name: provisional_status_code
     business_meaning: "Cờ bản nháp: 1=Bản nháp; 0=Chính thức."
-    data_domain: Small Counter
-    data_type: int
+    data_domain: Classification Value
+    data_type: string
     nullable: true
     is_primary_key: false
     source_system: SCMS
     source_table: SC_FIRM_REP_OFFICE
-    source_column: null
-    comment: null
+    source_column: SCMS.SC_FIRM_REP_OFFICE.PROVISIONAL
+    comment: "Scheme: SCMS_PROVISIONAL_STATUS. NUMBER(1)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_REP_OFFICE'"
+    etl_derived_value: "1=Bản nháp;0=Chính thức"
+
+  - name: Classification Event Type Id
+    physical_name: cl_event_tp_id
+    business_meaning: Loại sự vụ/sự kiện nghiệp vụ.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_REP_OFFICE
+    source_column: SCMS.SC_FIRM_REP_OFFICE.EVENT_TYPE_ID
+    comment: "FK target: cl_event_type.cl_event_type_id. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_REP_OFFICE'"
+    etl_derived_value: null
+
+  - name: Classification Event Type Code
+    physical_name: cl_event_tp_code
+    business_meaning: Loại sự vụ/sự kiện nghiệp vụ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_REP_OFFICE
+    source_column: SCMS.SC_FIRM_REP_OFFICE.EVENT_TYPE_ID
+    comment: "Lookup pair: cl_event_type.cl_event_type_code. Pair with Classification Event Type Id."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_REP_OFFICE'"
     etl_derived_value: null
 
@@ -271,202 +271,6 @@ attributes:
     source_table: SC_FIRM_REP_OFFICE
     source_column: SCMS.SC_FIRM_REP_OFFICE.DECISION_DATE
     comment: "DECISION_DATE là cột chuẩn (thay NGAY_QUYET_DINH — cột tiếng Việt cũ, đã loại bỏ do trùng ý nghĩa, xem pending_design.yaml)."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_REP_OFFICE'"
-    etl_derived_value: null
-
-  - name: Valid Dossier Date
-    physical_name: valid_dossier_dt
-    business_meaning: Ngày hồ sơ hợp lệ.
-    data_domain: Date
-    data_type: date
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_REP_OFFICE
-    source_column: SCMS.SC_FIRM_REP_OFFICE.VALID_DOSSIER_DATE
-    comment: null
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_REP_OFFICE'"
-    etl_derived_value: null
-
-  - name: Operation Date
-    physical_name: operation_dt
-    business_meaning: Ngày bắt đầu hoạt động (dự kiến).
-    data_domain: Date
-    data_type: date
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_REP_OFFICE
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_REP_OFFICE'"
-    etl_derived_value: null
-
-  - name: Official Operation Date
-    physical_name: official_operation_dt
-    business_meaning: Ngày bắt đầu hoạt động chính thức.
-    data_domain: Date
-    data_type: date
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_REP_OFFICE
-    source_column: SCMS.SC_FIRM_REP_OFFICE.OFFICIAL_OPERATION_DATE
-    comment: null
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_REP_OFFICE'"
-    etl_derived_value: null
-
-  - name: Director Name
-    physical_name: director_nm
-    business_meaning: Họ tên Giám đốc chi nhánh.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_REP_OFFICE
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_REP_OFFICE'"
-    etl_derived_value: null
-
-  - name: Representative Name
-    physical_name: representative_nm
-    business_meaning: Họ tên người đại diện văn phòng.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_REP_OFFICE
-    source_column: SCMS.SC_FIRM_REP_OFFICE.REPRESENTATIVE_NAME
-    comment: null
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_REP_OFFICE'"
-    etl_derived_value: null
-
-  - name: Representative Title
-    physical_name: representative_title
-    business_meaning: Chức danh người đại diện chi nhánh.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_REP_OFFICE
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_REP_OFFICE'"
-    etl_derived_value: null
-
-  - name: Personnel Director Id
-    physical_name: personnel_director_id
-    business_meaning: "ID nhân sự giám đốc (liên kết nội bộ SCMS, không phải FK chính thức)."
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_REP_OFFICE
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_REP_OFFICE'"
-    etl_derived_value: null
-
-  - name: Administrative Authority Name
-    physical_name: administrative_authority_nm
-    business_meaning: "Tên cơ quan cấp phép/quản lý chi nhánh (VD: UBCKNN, Sở KH)."
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_REP_OFFICE
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_REP_OFFICE'"
-    etl_derived_value: null
-
-  - name: Business Lines
-    physical_name: business_lines
-    business_meaning: Danh sách nghiệp vụ kinh doanh chứng khoán được cấp phép cho chi nhánh.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_REP_OFFICE
-    source_column: null
-    comment: "Map 1:1 từ nguồn — giữ nguyên dạng string thô (không parse ARRAY). Sau này đánh giá có FK sang bảng danh mục nghiệp vụ hay không. Không áp dụng cho SCMS.SC_FIRM_REP_OFFICE — thuộc tính không có dữ liệu nguồn ở source này (nullable placeholder cho shared entity)."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_REP_OFFICE'"
-    etl_derived_value: null
-
-  - name: Attachment Path
-    physical_name: attachment_path
-    business_meaning: Đường dẫn file đính kèm trên hệ thống lưu trữ.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_REP_OFFICE
-    source_column: SCMS.SC_FIRM_REP_OFFICE.ATTACHMENT_PATH
-    comment: null
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_REP_OFFICE'"
-    etl_derived_value: null
-
-  - name: Note
-    physical_name: note
-    business_meaning: "Ghi chú bổ sung, không bắt buộc."
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_REP_OFFICE
-    source_column: SCMS.SC_FIRM_REP_OFFICE.NOTE
-    comment: null
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_REP_OFFICE'"
-    etl_derived_value: null
-
-  - name: Provisional Status Code
-    physical_name: provisional_status_code
-    business_meaning: "Cờ bản nháp: 1=Bản nháp; 0=Chính thức."
-    data_domain: Classification Value
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_REP_OFFICE
-    source_column: SCMS.SC_FIRM_REP_OFFICE.PROVISIONAL
-    comment: "Scheme: SCMS_PROVISIONAL_STATUS. NUMBER(1)."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_REP_OFFICE'"
-    etl_derived_value: "1=Bản nháp;0=Chính thức"
-
-  - name: Classification Event Type Id
-    physical_name: cl_event_tp_id
-    business_meaning: Loại sự vụ/sự kiện nghiệp vụ.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_REP_OFFICE
-    source_column: SCMS.SC_FIRM_REP_OFFICE.EVENT_TYPE_ID
-    comment: "FK target: Classification Event Type.Classification Event Type Id. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_REP_OFFICE'"
-    etl_derived_value: null
-
-  - name: Classification Event Type Code
-    physical_name: cl_event_tp_code
-    business_meaning: Loại sự vụ/sự kiện nghiệp vụ.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_REP_OFFICE
-    source_column: SCMS.SC_FIRM_REP_OFFICE.EVENT_TYPE_ID
-    comment: "Lookup pair: Classification Event Type.Classification Event Type Code. Pair with Classification Event Type Id."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_REP_OFFICE'"
     etl_derived_value: null
 
@@ -526,6 +330,34 @@ attributes:
     classification_context: "Source System Code = 'SCMS_SC_FIRM_REP_OFFICE'"
     etl_derived_value: null
 
+  - name: Valid Dossier Date
+    physical_name: valid_dossier_dt
+    business_meaning: Ngày hồ sơ hợp lệ.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_REP_OFFICE
+    source_column: SCMS.SC_FIRM_REP_OFFICE.VALID_DOSSIER_DATE
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_REP_OFFICE'"
+    etl_derived_value: null
+
+  - name: Official Operation Date
+    physical_name: official_operation_dt
+    business_meaning: Ngày bắt đầu hoạt động chính thức.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_REP_OFFICE
+    source_column: SCMS.SC_FIRM_REP_OFFICE.OFFICIAL_OPERATION_DATE
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_REP_OFFICE'"
+    etl_derived_value: null
+
   - name: Validity Start Date
     physical_name: validity_start_dt
     business_meaning: Ngày bắt đầu hiệu lực giấy phép/văn bản.
@@ -550,6 +382,20 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_REP_OFFICE
     source_column: SCMS.SC_FIRM_REP_OFFICE.VALIDITY_END_DATE
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_REP_OFFICE'"
+    etl_derived_value: null
+
+  - name: Representative Name
+    physical_name: representative_nm
+    business_meaning: Họ tên người đại diện văn phòng.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_REP_OFFICE
+    source_column: SCMS.SC_FIRM_REP_OFFICE.REPRESENTATIVE_NAME
     comment: null
     classification_context: "Source System Code = 'SCMS_SC_FIRM_REP_OFFICE'"
     etl_derived_value: null
@@ -582,30 +428,30 @@ attributes:
     classification_context: "Source System Code = 'SCMS_SC_FIRM_REP_OFFICE'"
     etl_derived_value: null
 
-  - name: Decision Number Secondary
-    physical_name: decision_nbr_secondary
-    business_meaning: Số quyết định (trường mới DECISION_NUMBER — có thể trùng SO_QUYET_DINH).
+  - name: Attachment Path
+    physical_name: attachment_path
+    business_meaning: Đường dẫn file đính kèm trên hệ thống lưu trữ.
     data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: SCMS
     source_table: SC_FIRM_REP_OFFICE
-    source_column: null
+    source_column: SCMS.SC_FIRM_REP_OFFICE.ATTACHMENT_PATH
     comment: null
     classification_context: "Source System Code = 'SCMS_SC_FIRM_REP_OFFICE'"
     etl_derived_value: null
 
-  - name: Decision Date Secondary
-    physical_name: decision_dt_secondary
-    business_meaning: Ngày quyết định (trường mới DECISION_DATE — có thể trùng NGAY_QUYET_DINH).
-    data_domain: Date
-    data_type: date
+  - name: Note
+    physical_name: note
+    business_meaning: "Ghi chú bổ sung, không bắt buộc."
+    data_domain: Text
+    data_type: string
     nullable: true
     is_primary_key: false
     source_system: SCMS
     source_table: SC_FIRM_REP_OFFICE
-    source_column: null
+    source_column: SCMS.SC_FIRM_REP_OFFICE.NOTE
     comment: null
     classification_context: "Source System Code = 'SCMS_SC_FIRM_REP_OFFICE'"
     etl_derived_value: null

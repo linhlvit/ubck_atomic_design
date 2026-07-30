@@ -106,6 +106,20 @@ attributes:
     classification_context: "Source System Code = 'ECAT_WARD_OLD'"
     etl_derived_value: null
 
+  - name: Geographic Area Old Category Code
+    physical_name: geographic_area_old_category_code
+    business_meaning: Loại đơn vị hành chính cấp phường/xã cũ (Phường/Xã/Thị trấn)
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: WARD_OLD
+    source_column: ECAT.WARD_OLD.CATEGORY
+    comment: "Scheme: GEOGRAPHIC_AREA_WARD_CATEGORY (dùng chung với WARD_NEW)."
+    classification_context: "Source System Code = 'ECAT_WARD_OLD'"
+    etl_derived_value: null
+
   - name: Parent Geographic Area Old Id
     physical_name: parent_geographic_area_old_id
     business_meaning: "FK đến quận/huyện cũ cha (self-ref trong Geographic Area Old)"
@@ -131,34 +145,6 @@ attributes:
     source_table: WARD_OLD
     source_column: ECAT.WARD_OLD.DISTRICT_OLD_ID
     comment: "Lookup pair: geographic_area_old.geographic_area_old_code. Pair with Parent Geographic Area Old Id."
-    classification_context: "Source System Code = 'ECAT_WARD_OLD'"
-    etl_derived_value: null
-
-  - name: Region Geographic Area Id
-    physical_name: region_geographic_area_id
-    business_meaning: "FK anchor cross-entity sang Region trong Geographic Area (hiện hành) — Region/Country dùng chung cho cả 2 hệ cũ/mới"
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: ECAT
-    source_table: WARD_OLD
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'ECAT_WARD_OLD'"
-    etl_derived_value: null
-
-  - name: Region Geographic Area Code
-    physical_name: region_geographic_area_code
-    business_meaning: Mã vùng/miền — lookup pair với Region Geographic Area Id
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: ECAT
-    source_table: WARD_OLD
-    source_column: null
-    comment: null
     classification_context: "Source System Code = 'ECAT_WARD_OLD'"
     etl_derived_value: null
 
@@ -425,19 +411,5 @@ attributes:
     source_table: WARD_OLD
     source_column: ECAT.WARD_OLD.UPDATED_BY_NAME
     comment: "Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên hiển thị, không phải mã nhân viên)."
-    classification_context: "Source System Code = 'ECAT_WARD_OLD'"
-    etl_derived_value: null
-
-  - name: Geographic Area Old Category Code
-    physical_name: geographic_area_old_category_code
-    business_meaning: Loại đơn vị hành chính cấp phường/xã cũ (Phường/Xã/Thị trấn)
-    data_domain: Classification Value
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: ECAT
-    source_table: WARD_OLD
-    source_column: ECAT.WARD_OLD.CATEGORY
-    comment: "Scheme: GEOGRAPHIC_AREA_WARD_CATEGORY (dùng chung với WARD_NEW)."
     classification_context: "Source System Code = 'ECAT_WARD_OLD'"
     etl_derived_value: null

@@ -22,6 +22,34 @@ ldm:
     brd: BRD-SRC-FMS-REPRESENT
 
 attributes:
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến Investment Fund Representative Board Member.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPRESENT
+    source_column: FMS.REPRESENT.ID
+    comment: "FK target: investment_fund_representative_board_member.investment_fund_representative_board_member_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.REPRESENT', ID)."
+    classification_context: "Source System Code = 'FMS_REPRESENT' | Address Type Code = 'ADDRESS'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã thành viên ban đại diện.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPRESENT
+    source_column: FMS.REPRESENT.ID
+    comment: "Lookup pair: investment_fund_representative_board_member.investment_fund_representative_board_member_code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'FMS_REPRESENT' | Address Type Code = 'ADDRESS'"
+    etl_derived_value: null
+
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning: Mã hệ thống nguồn.

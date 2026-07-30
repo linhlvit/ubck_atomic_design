@@ -92,48 +92,6 @@ attributes:
     classification_context: "Source System Code = 'IAM_USERS' | Electronic Address Type Code = 'EMAIL'"
     etl_derived_value: null
 
-  - name: Involved Party Id
-    physical_name: ip_id
-    business_meaning: FK đến Identity and Access Management User.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: IAM
-    source_table: USERS
-    source_column: IAM.USERS.ID
-    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('IAM.USERS', ID)."
-    classification_context: "Source System Code = 'IAM_USERS' | Electronic Address Type Code = 'MOBILE'"
-    etl_derived_value: null
-
-  - name: Involved Party Code
-    physical_name: ip_code
-    business_meaning: Mã người dùng IAM.
-    data_domain: Text
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: IAM
-    source_table: USERS
-    source_column: IAM.USERS.ID
-    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'IAM_USERS' | Electronic Address Type Code = 'MOBILE'"
-    etl_derived_value: null
-
-  - name: Source System Code
-    physical_name: src_stm_code
-    business_meaning: Mã hệ thống nguồn dữ liệu.
-    data_domain: Classification Value
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: IAM
-    source_table: USERS
-    source_column: null
-    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-    classification_context: "Source System Code = 'IAM_USERS' | Electronic Address Type Code = 'MOBILE'"
-    etl_derived_value: IAM.USERS
-
   - name: Electronic Address Type Code
     physical_name: electronic_adr_tp_code
     business_meaning: Loại địa chỉ điện tử — điện thoại di động.
@@ -161,48 +119,6 @@ attributes:
     comment: ETL ghép DIAL_NUMBER (mã vùng VARCHAR2(4)) + PHONE thành số đầy đủ nếu cần.
     classification_context: "Source System Code = 'IAM_USERS' | Electronic Address Type Code = 'MOBILE'"
     etl_derived_value: null
-
-  - name: Involved Party Id
-    physical_name: ip_id
-    business_meaning: FK đến Identity and Access Management User.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: IAM
-    source_table: USERS
-    source_column: IAM.USERS.ID
-    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('IAM.USERS', ID)."
-    classification_context: "Source System Code = 'IAM_USERS' | Electronic Address Type Code = 'PHONE_OFFICE'"
-    etl_derived_value: null
-
-  - name: Involved Party Code
-    physical_name: ip_code
-    business_meaning: Mã người dùng IAM.
-    data_domain: Text
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: IAM
-    source_table: USERS
-    source_column: IAM.USERS.ID
-    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'IAM_USERS' | Electronic Address Type Code = 'PHONE_OFFICE'"
-    etl_derived_value: null
-
-  - name: Source System Code
-    physical_name: src_stm_code
-    business_meaning: Mã hệ thống nguồn dữ liệu.
-    data_domain: Classification Value
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: IAM
-    source_table: USERS
-    source_column: null
-    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-    classification_context: "Source System Code = 'IAM_USERS' | Electronic Address Type Code = 'PHONE_OFFICE'"
-    etl_derived_value: IAM.USERS
 
   - name: Electronic Address Type Code
     physical_name: electronic_adr_tp_code

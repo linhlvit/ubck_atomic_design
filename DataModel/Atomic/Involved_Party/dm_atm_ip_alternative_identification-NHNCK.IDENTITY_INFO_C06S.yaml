@@ -22,6 +22,34 @@ ldm:
     brd: BRD-SRC-NHNCK-IDENTITY_INFO_C06S
 
 attributes:
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến Individual.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: IDENTITY_INFO_C06S
+    source_column: NHNCK.IDENTITY_INFO_C06S.IDENTITY_NUMBER
+    comment: "FK target: individual.individual_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.IDENTITY_INFO_C06S', IDENTITY_NUMBER)."
+    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Identification Type Code = 'NATIONAL_ID'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Số CMND/CCCD/Hộ chiếu của người hành nghề.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: IDENTITY_INFO_C06S
+    source_column: NHNCK.IDENTITY_INFO_C06S.IDENTITY_NUMBER
+    comment: "Lookup pair: individual.individual_code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Identification Type Code = 'NATIONAL_ID'"
+    etl_derived_value: null
+
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning: Mã hệ thống nguồn.
@@ -61,61 +89,5 @@ attributes:
     source_table: IDENTITY_INFO_C06S
     source_column: NHNCK.IDENTITY_INFO_C06S.IDENTITY_NUMBER
     comment: BK của shared entity cùng với Involved Party Id + Identification Type Code.
-    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Identification Type Code = 'NATIONAL_ID'"
-    etl_derived_value: null
-
-  - name: Identification Issue Date
-    physical_name: identification_issue_dt
-    business_meaning: Ngày cấp CMND/CCCD/Hộ chiếu.
-    data_domain: Date
-    data_type: date
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: IDENTITY_INFO_C06S
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Identification Type Code = 'NATIONAL_ID'"
-    etl_derived_value: null
-
-  - name: Identification Issue Place
-    physical_name: identification_issue_place
-    business_meaning: Nơi cấp CMND/CCCD/Hộ chiếu.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: IDENTITY_INFO_C06S
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Identification Type Code = 'NATIONAL_ID'"
-    etl_derived_value: null
-
-  - name: Involved Party Id
-    physical_name: ip_id
-    business_meaning: FK đến Individual.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: IDENTITY_INFO_C06S
-    source_column: NHNCK.IDENTITY_INFO_C06S.IDENTITY_NUMBER
-    comment: "FK target: individual.individual_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.IDENTITY_INFO_C06S', IDENTITY_NUMBER)."
-    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Identification Type Code = 'NATIONAL_ID'"
-    etl_derived_value: null
-
-  - name: Involved Party Code
-    physical_name: ip_code
-    business_meaning: Số CMND/CCCD/Hộ chiếu của người hành nghề.
-    data_domain: Text
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: IDENTITY_INFO_C06S
-    source_column: NHNCK.IDENTITY_INFO_C06S.IDENTITY_NUMBER
-    comment: "Lookup pair: individual.individual_code. Pair with Involved Party Id."
     classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Identification Type Code = 'NATIONAL_ID'"
     etl_derived_value: null

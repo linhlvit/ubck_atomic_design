@@ -523,20 +523,11 @@ def _sort_master_by_canonical_order(entity: str, master: "OrderedDict") -> "Orde
 # ---------------------------------------------------------------------------
 # Build atomic_attributes rows
 # Grain: 1 dòng = 1 (atomic_entity × atomic_attribute × source × context)
-# Master attribute list per entity lấy từ union tất cả attr files (qua manifest)
+# Master attribute list scoped RIÊNG cho từng file nguồn (không union cross-source
+# trong shared entity) — xem comment chi tiết bên trong build_attributes().
 # ---------------------------------------------------------------------------
 def build_attributes(manifest_rows: list[dict],
                      entity_lookup: dict[str, dict]) -> list[dict]:
-    # Group manifest theo entity
-    entity_manifest: dict[str, list[dict]] = defaultdict(list)
-    for m in manifest_rows:
-        entity_manifest[m["atomic_entity"]].append(m)
-
-    # Precompute master attr list per entity (1 lần, dùng lại cho mọi source)
-    entity_masters: dict[str, OrderedDict] = {}
-    for entity, rows in entity_manifest.items():
-        entity_masters[entity] = _sort_master_by_canonical_order(entity, build_master_attrs(rows))
-
     all_rows: list[dict] = []
 
     for m in manifest_rows:
@@ -548,19 +539,29 @@ def build_attributes(manifest_rows: list[dict],
         bcv_core_object = entity_meta.get("bcv_core_object", "")
         bcv_concept     = entity_meta.get("bcv_concept", "")
 
-        master_attrs = entity_masters.get(atomic_entity, OrderedDict())
-
         attr_rows = load_attr_file(source_system, m["lld_file"])
         if not attr_rows:
             continue
 
+        # Master attr list SCOPED RIÊNG cho file nguồn này ([m], không phải toàn bộ
+        # entity_manifest_rows của shared entity) — tránh rò rỉ attribute/mô tả giữa
+        # các bảng nguồn không liên quan chỉ vì chúng cùng đóng góp vào 1 shared entity
+        # (VD: "Address Value" của NHNCK.IDENTITY_INFO_C06S từng bị mượn nhầm sang
+        # NHNCK.PROFESSIONALS qua master list dùng chung toàn entity — xem review 2026-07-30).
+        # Việc gộp cross-source cho Level 2 Entity Consolidation nằm ở
+        # generate_entity_consolidation.py, đọc thẳng LLD, không phụ thuộc hàm này.
+        master_attrs = _sort_master_by_canonical_order(atomic_entity, build_master_attrs([m]))
+
         context_keys = get_distinct_context_keys(attr_rows, source_system, source_table)
+        # Attribute không gắn address-type context (master_addr_part is None, VD
+        # "Source System Code", "Involved Party Id/Code") mang tính entity-level —
+        # chỉ emit 1 lần cho cả source, không lặp lại theo từng context_key.
+        emitted_context_free: set = set()
 
         for ctx_key in context_keys:
             for (attr_name, master_addr_part), master_row in master_attrs.items():
                 # ctx_key được build từ (source_system, source_table, addr_part của source này).
-                # Với shared entity, master_addr_part là addr_part từ file LLD đầu tiên định nghĩa
-                # attr này. Nếu master_addr_part không None, chỉ emit dòng này khi ctx_key
+                # Nếu master_addr_part không None, chỉ emit dòng này khi ctx_key
                 # chứa cùng addr value — tránh emit Identification Number/BUSINESS_LICENSE
                 # vào context OPERATING_LICENSE.
                 if master_addr_part is not None:
@@ -571,6 +572,10 @@ def build_attributes(manifest_rows: list[dict],
                     if ctx_tag not in ctx_key:
                         # Không phải context này — bỏ qua
                         continue
+                else:
+                    if attr_name in emitted_context_free:
+                        continue
+                    emitted_context_free.add(attr_name)
 
                 matched = find_attr_in_ctx(attr_rows, attr_name, ctx_key, source_system, source_table)
 
