@@ -2442,7 +2442,7 @@ entities:
     module: "QLKD"
     status: "draft"
     reuse_status: "new"
-    description: "Lịch sử tuân thủ & vi phạm CTCK — quyết định xử phạt hành chính, thanh tra/kiểm tra. Grain 1 CTCK x 1 sự kiện. Multi-source tách bộ (Admin Penalty Decision/Inspection/Examination) — 3 file LLD riêng, UNION về 1 schema cột đích thống nhất (PK chung compliance_event_code). Chỉ giữ KPI READY (K_QLKD_188, 197-203) — không có Periodic Report (Nhóm 38/39 phần PENDING gating dữ liệu động). Nguồn Atomic track draft chưa approved. GAP: sc_code cho nhánh Inspection/Examination chưa có FK surrogate chính thức, chỉ text-match qua Inspection/Examination Team Target.target_reference_id."
+    description: "Lịch sử tuân thủ & vi phạm CTCK — quyết định xử phạt hành chính, thanh tra/kiểm tra. Grain: nhánh Admin Penalty Decision = 1 CTCK x 1 quyết định xử phạt; nhánh Inspection/Examination = 1 hành vi vi phạm x 1 đối tượng bị xử phạt. Multi-source tách bộ (Admin Penalty Decision/Inspection/Examination) — 3 file LLD riêng, UNION về 1 schema cột đích thống nhất (PK chung compliance_event_code). Chỉ giữ KPI READY (K_QLKD_188, 197-203) — không có Periodic Report (Nhóm 38/39 phần PENDING gating dữ liệu động). Nguồn Atomic track draft chưa approved. GAP: sc_code cho nhánh Inspection/Examination chưa có FK surrogate chính thức, chỉ text-match qua Inspection/Examination Team Target.target_reference_id."
     source_atomic:
       - "sc_administrative_penalty_decision"
       - "penalty_decision_subject"
@@ -2463,9 +2463,9 @@ entities:
         data_type: "string"
         nullable: false
         key: "PK"
-        description: "PK — mã sự kiện tuân thủ (Bảng Tác nghiệp), thống nhất tên cột PK cho cả 3 nhánh UNION. Nguồn: sc_administrative_penalty_decision.sc_administrative_pd_code (Admin Penalty) hoặc penalty_decision_subject.pd_code (Inspection/Examination)."
-        source_atomic_table: "penalty_decision_subject"
-        source_atomic_column: "penalty_decision_subject.pd_code / sc_administrative_penalty_decision.sc_administrative_pd_code"
+        description: "PK — mã sự kiện tuân thủ (Bảng Tác nghiệp), thống nhất tên cột PK cho cả 3 nhánh UNION. Nguồn: sc_administrative_penalty_decision.sc_administrative_pd_code (Admin Penalty) hoặc pd_subject_behavior.pd_subject_behavior_code (Inspection/Examination — xem mô tả grain ở description bảng)."
+        source_atomic_table: "pd_subject_behavior"
+        source_atomic_column: "pd_subject_behavior.pd_subject_behavior_code / sc_administrative_penalty_decision.sc_administrative_pd_code"
       - logical_name: "Event Type Code"
         physical_name: "event_tp_code"
         data_domain: "Text"
