@@ -80,7 +80,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_license_conditio
     -- From: FACT Fact Securities Company License Condition Snapshot
     snpst_dt_dim_id                 String                  COMMENT 'FK ngày snapshot D (Processing Date)',
     securities_company_dim_id       String                  COMMENT 'FK CTCK',
-    indicator_code                  Nullable(String)        COMMENT 'Loại giấy phép — phân biệt Nhóm 5/6/7 trên cùng 1 Fact — JOIN sc_alert_indicator',
+    indicator_code                  String        COMMENT 'Loại giấy phép — phân biệt Nhóm 5/6/7 trên cùng 1 Fact — JOIN sc_alert_indicator',
     severity_level                  Nullable(String)        COMMENT 'Mức duy trì điều kiện cấp phép (1/2/3)',
 
     -- From: CALENDAR DATE DIMENSION
