@@ -12088,10 +12088,9 @@ attributes:
   source_system: "NHNCK"
   source_table: "EXAM_DETAILS"
   source_column: "NHNCK.EXAM_DETAILS.EXAM_SESSION_ID"
-  comment: "FK target: Securities Practitioner Qualification Examination Assessment.Securities\
-    \ Practitioner Qualification Examination Assessment Id. Nguồn lưu ID kỹ thuật\
-    \ của EXAM_SESSIONS — ETL join EXAM_SESSION_ID → NHNCK.EXAM_SESSIONS.ID để lấy\
-    \ CODE, rồi hash_id('NHNCK.EXAM_SESSIONS', CODE)."
+  comment: "FK target: sp_qualification_examination_assessment.sp_qualification_examination_assessment_id.\
+    \ Cần ETL crosswalk sang NHNCK.EXAM_SESSIONS: EXAM_DETAILS.EXAM_SESSION_ID = EXAM_SESSIONS.ID\
+    \ để xác nhận CODE sau đó hash_id('NHNCK.EXAM_SESSIONS', CODE)"
   classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
   etl_derived_value: null
   atomic_table: "sp_qualification_examination_assessment_result"
@@ -12108,9 +12107,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "EXAM_DETAILS"
   source_column: "NHNCK.EXAM_DETAILS.EXAM_SESSION_ID"
-  comment: "Lookup pair: Securities Practitioner Qualification Examination Assessment.Securities\
-    \ Practitioner Qualification Examination Assessment Code. Pair with Securities\
-    \ Practitioner Qualification Examination Assessment Id."
+  comment: "Lookup pair: sp_qualification_examination_assessment.sp_qualification_examination_assessment_code.\
+    \ Pair with Securities Practitioner Qualification Examination Assessment Id."
   classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
   etl_derived_value: null
   atomic_table: "sp_qualification_examination_assessment_result"
@@ -12181,7 +12179,7 @@ attributes:
   source_table: "EXAM_DETAILS"
   source_column: "NHNCK.EXAM_DETAILS.CERTIFICATE_ID"
   comment: "Lookup pair: sp_license_certificate_type.sp_license_certificate_tp_code.\
-    \ Pair with sp_license_certificate_tp_id."
+    \ Pair with Securities Practitioner License Certificate Type Id."
   classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
   etl_derived_value: null
   atomic_table: "sp_qualification_examination_assessment_result"
@@ -12658,7 +12656,7 @@ attributes:
   source_table: "EXAM_SESSION_FEES"
   source_column: "NHNCK.EXAM_SESSION_FEES.CERTIFICATE_ID"
   comment: "Lookup pair: sp_license_certificate_type.sp_license_certificate_tp_code.\
-    \ Pair with sp_license_certificate_tp_id."
+    \ Pair with Securities Practitioner License Certificate Type Id."
   classification_context: "Source System Code = 'NHNCK_EXAM_SESSION_FEES'"
   etl_derived_value: null
   atomic_table: "sp_qualification_examination_assessment_fee"
@@ -16287,7 +16285,7 @@ attributes:
   source_table: "APPLICATIONS"
   source_column: "NHNCK.APPLICATIONS.CERTIFICATE_ID"
   comment: "Lookup pair: sp_license_certificate_type.sp_license_certificate_tp_code.\
-    \ Pair with sp_license_certificate_tp_id."
+    \ Pair with Securities Practitioner License Certificate Type Id."
   classification_context: "Source System Code = 'NHNCK_APPLICATIONS'"
   etl_derived_value: null
   atomic_table: "sp_license_application"
@@ -17373,7 +17371,7 @@ attributes:
   source_table: "CERTIFICATE_RECORDS"
   source_column: "NHNCK.CERTIFICATE_RECORDS.CERTIFICATE_ID"
   comment: "Lookup pair: sp_license_certificate_type.sp_license_certificate_tp_code.\
-    \ Pair with sp_license_certificate_tp_id."
+    \ Pair with Securities Practitioner License Certificate Type Id."
   classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
   etl_derived_value: null
   atomic_table: "sp_license_certificate_document"
@@ -18479,7 +18477,7 @@ attributes:
   source_table: "ORGANIZATION_REPORTS"
   source_column: "NHNCK.ORGANIZATION_REPORTS.CERTIFICATE_ID"
   comment: "Lookup pair: sp_license_certificate_type.sp_license_certificate_tp_code.\
-    \ Pair with sp_license_certificate_tp_id."
+    \ Pair with Securities Practitioner License Certificate Type Id."
   classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
   etl_derived_value: null
   atomic_table: "sp_organization_employment_report"
@@ -26283,7 +26281,7 @@ attributes:
   source_system: "FMS"
   source_table: "INSIDER"
   source_column: "FMS.INSIDER.TLPRO_ID"
-  comment: "Lookup pair: fmc_employee.fmc_employee_code. Pair with fmc_employee_id."
+  comment: "Lookup pair: fmc_employee.fmc_employee_code. Pair with Fund Management Company Employee Id."
   classification_context: "Source System Code = 'FMS_INSIDER'"
   etl_derived_value: null
   atomic_table: "fmc_insider"
@@ -26712,7 +26710,7 @@ attributes:
   source_system: "FMS"
   source_table: "BRANCHS"
   source_column: "FMS.BRANCHS.TL_ID"
-  comment: "Lookup pair: fmc_employee.fmc_employee_code. Pair with fmc_employee_id."
+  comment: "Lookup pair: fmc_employee.fmc_employee_code. Pair with Fund Management Company Employee Id."
   classification_context: "Source System Code = 'FMS_BRANCHS'"
   etl_derived_value: null
   atomic_table: "fmc_organization_unit"

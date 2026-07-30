@@ -141,12 +141,6 @@ def normalize_comment(comment, name_to_table):
         comment = comment.replace(
             f"{ename}.{ename} Code", f"{tname}.{tname}_code"
         )
-        comment = comment.replace(
-            f"Pair with {ename} Id", f"Pair with {tname}_id"
-        )
-        comment = comment.replace(
-            f"Pair with {ename} Code", f"Pair with {tname}_code"
-        )
     return comment
 
 

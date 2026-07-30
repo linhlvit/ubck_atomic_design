@@ -71,10 +71,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.EXAM_DETAILS.EXAM_SESSION_ID"
-  comment: "FK target: Securities Practitioner Qualification Examination Assessment.Securities\
-    \ Practitioner Qualification Examination Assessment Id. Nguồn lưu ID kỹ thuật\
-    \ của EXAM_SESSIONS — ETL join EXAM_SESSION_ID → NHNCK.EXAM_SESSIONS.ID để lấy\
-    \ CODE, rồi hash_id('NHNCK.EXAM_SESSIONS', CODE)."
+  comment: "FK target: sp_qualification_examination_assessment.sp_qualification_examination_assessment_id. Cần ETL crosswalk sang NHNCK.EXAM_SESSIONS: EXAM_DETAILS.EXAM_SESSION_ID = EXAM_SESSIONS.ID để xác nhận CODE sau đó hash_id('NHNCK.EXAM_SESSIONS', CODE)"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -87,9 +84,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.EXAM_DETAILS.EXAM_SESSION_ID"
-  comment: "Lookup pair: Securities Practitioner Qualification Examination Assessment.Securities\
-    \ Practitioner Qualification Examination Assessment Code. Pair with Securities\
-    \ Practitioner Qualification Examination Assessment Id."
+  comment: "Lookup pair: sp_qualification_examination_assessment.sp_qualification_examination_assessment_code. Pair with Securities Practitioner Qualification Examination Assessment Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -147,7 +142,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.EXAM_DETAILS.CERTIFICATE_ID"
-  comment: "Lookup pair: sp_license_certificate_type.sp_license_certificate_tp_code. Pair with sp_license_certificate_tp_id."
+  comment: "Lookup pair: sp_license_certificate_type.sp_license_certificate_tp_code. Pair with Securities Practitioner License Certificate Type Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
