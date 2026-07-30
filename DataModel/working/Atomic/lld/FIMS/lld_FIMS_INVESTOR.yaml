@@ -258,13 +258,10 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
   - "FIMS.INVESTOR.BankAddId"
-  comment: "Pending — FK target: Market Participant Organization.Market Participant\
-    \ Organization Id (chưa thiết kế LLD — nguồn FIMS.BANKMONI). Hash: hash_id('FIMS.BANKMONI',\
-    \ CODE) sau khi Market Participant Organization được thiết kế và xác định cột\
-    \ BK."
+  comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS.BANK_MONI', BankAddId) | Cần đánh giá thêm FMS.BANK_MONI chứa đủ dữ liệu của bảng FIMS.BANKMONI hay không."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -274,11 +271,10 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
   - "FIMS.INVESTOR.BankAddId"
-  comment: "Lookup pair: Market Participant Organization.Market Participant Organization\
-    \ Code. Pending — xem ghi chú ở Custodian Bank Id."
+  comment: "Lookup pair: custodian_bank.custodian_bank_code. Pair with Custodian Bank Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -304,10 +300,7 @@ attributes:
   status: "pending"
   source_columns:
   - "FIMS.INVESTOR.BankAddCapId"
-  comment: "Pending — FK target: Market Participant Organization.Market Participant\
-    \ Organization Id (chưa thiết kế LLD — nguồn FIMS.BANKMONI). Hash: hash_id('FIMS.BANKMONI',\
-    \ CODE) sau khi Market Participant Organization được thiết kế và xác định cột\
-    \ BK."
+  comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS.BANK_MONI', BankAddCapId) | Cần đánh giá thêm FMS.BANK_MONI chứa đủ dữ liệu của bảng FIMS.BANKMONI hay không."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -320,8 +313,7 @@ attributes:
   status: "pending"
   source_columns:
   - "FIMS.INVESTOR.BankAddCapId"
-  comment: "Lookup pair: Market Participant Organization.Market Participant Organization\
-    \ Code. Pending — xem ghi chú ở Capital Custodian Bank Id."
+  comment: "Lookup pair: custodian_bank.custodian_bank_code. Pair with Capital Custodian Bank Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

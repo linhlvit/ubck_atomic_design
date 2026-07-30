@@ -18633,9 +18633,10 @@ entities:
   - name: External Tax Declaration Report Id
     physical_name: et_declaration_rpt_id
     business_meaning_1st: "FK -> tax_report: Báo cáo tài chính TCT liên quan."
-    comment_1st: "FK target: et_declaration_report.et_declaration_rpt_id. Nguồn\
-      \ lưu ID kỹ thuật của TAX_REPORT — ETL join TAX_REPORT_ID → KNT.TAX_REPORT.ID\
-      \ để lấy DECLARATION_CODE rồi hash_id('KNT.TAX_REPORT', DECLARATION_CODE)."
+    comment_1st: "FK target: et_declaration_report.et_declaration_rpt_id. Cần ETL\
+      \ crosswalk sang KNT.TAX_REPORT: TAX_REPORT_DETAIL.TAX_REPORT_ID = TAX_REPORT.ID\
+      \ để xác nhận DECLARATION_CODE sau đó hash_id('KNT.TAX_REPORT', DECLARATION_CODE)\
+      \ |"
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -18648,9 +18649,10 @@ entities:
       - source_table: TAX_REPORT_DETAIL
         source_column: KNT.TAX_REPORT_DETAIL.TAX_REPORT_ID
         business_meaning: "FK -> tax_report: Báo cáo tài chính TCT liên quan."
-        comment: "FK target: et_declaration_report.et_declaration_rpt_id. Nguồn\
-          \ lưu ID kỹ thuật của TAX_REPORT — ETL join TAX_REPORT_ID → KNT.TAX_REPORT.ID\
-          \ để lấy DECLARATION_CODE rồi hash_id('KNT.TAX_REPORT', DECLARATION_CODE)."
+        comment: "FK target: et_declaration_report.et_declaration_rpt_id. Cần ETL\
+          \ crosswalk sang KNT.TAX_REPORT: TAX_REPORT_DETAIL.TAX_REPORT_ID = TAX_REPORT.ID\
+          \ để xác nhận DECLARATION_CODE sau đó hash_id('KNT.TAX_REPORT', DECLARATION_CODE)\
+          \ |"
   - name: External Tax Declaration Report Code
     physical_name: et_declaration_rpt_code
     business_meaning_1st: Mã tờ khai báo cáo tài chính liên quan.
@@ -33014,10 +33016,9 @@ entities:
   - name: Event Type Id
     physical_name: event_tp_id
     business_meaning_1st: "FK -> EVENT_TYPE: Loại sự vụ áp dụng."
-    comment_1st: "FK target: cl_fms_event_type.cl_fms_event_tp_id. [ĐỔI 2026-07-19]\
-      \ Đổi từ Classification Value đơn sang cặp FK Id/Code theo yêu cầu Data Modeler\
-      \ — EVENT_TYPE nay là entity riêng (giải quyết Tier6 T6-06). Hash: hash_id('FMS.EVENT_TYPE',\
-      \ EVENT_CODE resolve từ ID)."
+    comment_1st: "FK target: cl_fms_event_type.cl_fms_event_tp_id. Cần ETL crosswalk\
+      \ sang FMS.EVENT_TYPE: FOR_BRCH.EVENT_TYPE_ID = EVENT_TYPE.ID để xác nhận ITEM_NAME\
+      \ sau đó hash_id('FMS.EVENT_TYPE', ITEM_NAME) |"
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -33030,15 +33031,14 @@ entities:
       - source_table: FOR_BRCH
         source_column: FMS.FOR_BRCH.EVENT_TYPE_ID
         business_meaning: "FK -> EVENT_TYPE: Loại sự vụ áp dụng."
-        comment: "FK target: cl_fms_event_type.cl_fms_event_tp_id. [ĐỔI 2026-07-19]\
-          \ Đổi từ Classification Value đơn sang cặp FK Id/Code theo yêu cầu Data\
-          \ Modeler — EVENT_TYPE nay là entity riêng (giải quyết Tier6 T6-06). Hash:\
-          \ hash_id('FMS.EVENT_TYPE', EVENT_CODE resolve từ ID)."
+        comment: "FK target: cl_fms_event_type.cl_fms_event_tp_id. Cần ETL crosswalk\
+          \ sang FMS.EVENT_TYPE: FOR_BRCH.EVENT_TYPE_ID = EVENT_TYPE.ID để xác nhận\
+          \ ITEM_NAME sau đó hash_id('FMS.EVENT_TYPE', ITEM_NAME) |"
   - name: Event Type Code
     physical_name: event_tp_code
     business_meaning_1st: Mã loại sự vụ áp dụng.
-    comment_1st: "Lookup pair: cl_fms_event_type.cl_fms_event_tp_code. Pair with\
-      \ Event Type Id."
+    comment_1st: "Lookup pair: cl_fms_event_type.cl_fms_event_tp_code. Pair with Event\
+      \ Type Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -33051,8 +33051,8 @@ entities:
       - source_table: FOR_BRCH
         source_column: FMS.FOR_BRCH.EVENT_TYPE_ID
         business_meaning: Mã loại sự vụ áp dụng.
-        comment: "Lookup pair: cl_fms_event_type.cl_fms_event_tp_code. Pair with\
-          \ Event Type Id."
+        comment: "Lookup pair: cl_fms_event_type.cl_fms_event_tp_code. Pair with Event\
+          \ Type Id."
 - ldm:
     id: ATM-foreign_investor
     logical_name_1st: Foreign Investor
@@ -33403,10 +33403,9 @@ entities:
     physical_name: custodian_bank_id
     business_meaning_1st: "FK -> BANKMONI: Ngân hàng lưu ký đăng ký tài khoản giao\
       \ dịch."
-    comment_1st: "Pending — FK target: Market Participant Organization.Market Participant\
-      \ Organization Id (chưa thiết kế LLD — nguồn FIMS.BANKMONI). Hash: hash_id('FIMS.BANKMONI',\
-      \ CODE) sau khi Market Participant Organization được thiết kế và xác định cột\
-      \ BK."
+    comment_1st: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS.BANK_MONI',\
+      \ BankAddId) | Cần đánh giá thêm FMS.BANK_MONI chứa đủ dữ liệu của bảng FIMS.BANKMONI\
+      \ hay không."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -33420,15 +33419,13 @@ entities:
         source_column: FIMS.INVESTOR.BankAddId
         business_meaning: "FK -> BANKMONI: Ngân hàng lưu ký đăng ký tài khoản giao\
           \ dịch."
-        comment: "Pending — FK target: Market Participant Organization.Market Participant\
-          \ Organization Id (chưa thiết kế LLD — nguồn FIMS.BANKMONI). Hash: hash_id('FIMS.BANKMONI',\
-          \ CODE) sau khi Market Participant Organization được thiết kế và xác định\
-          \ cột BK."
+        comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS.BANK_MONI',\
+          \ BankAddId) | Cần đánh giá thêm FMS.BANK_MONI chứa đủ dữ liệu của bảng\
+          \ FIMS.BANKMONI hay không."
   - name: Custodian Bank Code
     physical_name: custodian_bank_code
     business_meaning_1st: Mã ngân hàng lưu ký đăng ký tài khoản giao dịch.
-    comment_1st: "Lookup pair: Market Participant Organization.Market Participant\
-      \ Organization Code. Pending — xem ghi chú ở Custodian Bank Id."
+    comment_1st: "Lookup pair: custodian_bank.custodian_bank_code. Pair with custodian_bank_id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -33441,8 +33438,7 @@ entities:
       - source_table: INVESTOR
         source_column: FIMS.INVESTOR.BankAddId
         business_meaning: Mã ngân hàng lưu ký đăng ký tài khoản giao dịch.
-        comment: "Lookup pair: Market Participant Organization.Market Participant\
-          \ Organization Code. Pending — xem ghi chú ở Custodian Bank Id."
+        comment: "Lookup pair: custodian_bank.custodian_bank_code. Pair with custodian_bank_id."
   - name: Capital Investment Account Number
     physical_name: capital_investment_account_nbr
     business_meaning_1st: Số tài khoản đầu tư vốn của NĐT NN.
@@ -33463,10 +33459,9 @@ entities:
   - name: Capital Custodian Bank Id
     physical_name: capital_custodian_bank_id
     business_meaning_1st: "FK -> BANKMONI: Ngân hàng lưu ký đăng ký tài khoản vốn."
-    comment_1st: "Pending — FK target: Market Participant Organization.Market Participant\
-      \ Organization Id (chưa thiết kế LLD — nguồn FIMS.BANKMONI). Hash: hash_id('FIMS.BANKMONI',\
-      \ CODE) sau khi Market Participant Organization được thiết kế và xác định cột\
-      \ BK."
+    comment_1st: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS.BANK_MONI',\
+      \ BankAddCapId) | Cần đánh giá thêm FMS.BANK_MONI chứa đủ dữ liệu của bảng FIMS.BANKMONI\
+      \ hay không."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -33479,15 +33474,14 @@ entities:
       - source_table: INVESTOR
         source_column: FIMS.INVESTOR.BankAddCapId
         business_meaning: "FK -> BANKMONI: Ngân hàng lưu ký đăng ký tài khoản vốn."
-        comment: "Pending — FK target: Market Participant Organization.Market Participant\
-          \ Organization Id (chưa thiết kế LLD — nguồn FIMS.BANKMONI). Hash: hash_id('FIMS.BANKMONI',\
-          \ CODE) sau khi Market Participant Organization được thiết kế và xác định\
-          \ cột BK."
+        comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS.BANK_MONI',\
+          \ BankAddCapId) | Cần đánh giá thêm FMS.BANK_MONI chứa đủ dữ liệu của bảng\
+          \ FIMS.BANKMONI hay không."
   - name: Capital Custodian Bank Code
     physical_name: capital_custodian_bank_code
     business_meaning_1st: Mã ngân hàng lưu ký đăng ký tài khoản vốn.
-    comment_1st: "Lookup pair: Market Participant Organization.Market Participant\
-      \ Organization Code. Pending — xem ghi chú ở Capital Custodian Bank Id."
+    comment_1st: "Lookup pair: custodian_bank.custodian_bank_code. Pair with Capital\
+      \ Custodian Bank Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -33500,8 +33494,8 @@ entities:
       - source_table: INVESTOR
         source_column: FIMS.INVESTOR.BankAddCapId
         business_meaning: Mã ngân hàng lưu ký đăng ký tài khoản vốn.
-        comment: "Lookup pair: Market Participant Organization.Market Participant\
-          \ Organization Code. Pending — xem ghi chú ở Capital Custodian Bank Id."
+        comment: "Lookup pair: custodian_bank.custodian_bank_code. Pair with Capital\
+          \ Custodian Bank Id."
   - name: Company Type Code
     physical_name: company_tp_code
     business_meaning_1st: Loại hình doanh nghiệp (chỉ áp dụng NĐT tổ chức).
@@ -34738,10 +34732,9 @@ entities:
   - name: Event Type Id
     physical_name: event_tp_id
     business_meaning_1st: "FK -> EVENT_TYPE: Loại sự vụ áp dụng."
-    comment_1st: "FK target: cl_fms_event_type.cl_fms_event_tp_id. [ĐỔI 2026-07-19]\
-      \ Đổi từ Classification Value đơn sang cặp FK Id/Code theo yêu cầu Data Modeler\
-      \ — EVENT_TYPE nay là entity riêng (giải quyết Tier6 T6-06). Hash: hash_id('FMS.EVENT_TYPE',\
-      \ EVENT_CODE resolve từ ID)."
+    comment_1st: "FK target: cl_fms_event_type.cl_fms_event_tp_id. Cần ETL crosswalk\
+      \ sang FMS.EVENT_TYPE: SECURITIES.EVENT_TYPE_ID = EVENT_TYPE.ID để xác nhận\
+      \ ITEM_NAME sau đó hash_id('FMS.EVENT_TYPE', ITEM_NAME) |"
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -34754,15 +34747,14 @@ entities:
       - source_table: SECURITIES
         source_column: FMS.SECURITIES.EVENT_TYPE_ID
         business_meaning: "FK -> EVENT_TYPE: Loại sự vụ áp dụng."
-        comment: "FK target: cl_fms_event_type.cl_fms_event_tp_id. [ĐỔI 2026-07-19]\
-          \ Đổi từ Classification Value đơn sang cặp FK Id/Code theo yêu cầu Data\
-          \ Modeler — EVENT_TYPE nay là entity riêng (giải quyết Tier6 T6-06). Hash:\
-          \ hash_id('FMS.EVENT_TYPE', EVENT_CODE resolve từ ID)."
+        comment: "FK target: cl_fms_event_type.cl_fms_event_tp_id. Cần ETL crosswalk\
+          \ sang FMS.EVENT_TYPE: SECURITIES.EVENT_TYPE_ID = EVENT_TYPE.ID để xác nhận\
+          \ ITEM_NAME sau đó hash_id('FMS.EVENT_TYPE', ITEM_NAME) |"
   - name: Event Type Code
     physical_name: event_tp_code
     business_meaning_1st: Mã loại sự vụ áp dụng.
-    comment_1st: "Lookup pair: cl_fms_event_type.cl_fms_event_tp_code. Pair with\
-      \ Event Type Id."
+    comment_1st: "Lookup pair: cl_fms_event_type.cl_fms_event_tp_code. Pair with Event\
+      \ Type Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -34775,8 +34767,8 @@ entities:
       - source_table: SECURITIES
         source_column: FMS.SECURITIES.EVENT_TYPE_ID
         business_meaning: Mã loại sự vụ áp dụng.
-        comment: "Lookup pair: cl_fms_event_type.cl_fms_event_tp_code. Pair with\
-          \ Event Type Id."
+        comment: "Lookup pair: cl_fms_event_type.cl_fms_event_tp_code. Pair with Event\
+          \ Type Id."
 - ldm:
     id: ATM-fund_management_company_employee_x_classification_fms_position_relationship
     logical_name_1st: Fund Management Company Employee X Classification FMS Position

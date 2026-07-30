@@ -270,7 +270,7 @@ attributes:
     source_system: FIMS
     source_table: INVESTOR
     source_column: FIMS.INVESTOR.BankAddId
-    comment: "Pending — FK target: Market Participant Organization.Market Participant Organization Id (chưa thiết kế LLD — nguồn FIMS.BANKMONI). Hash: hash_id('FIMS.BANKMONI', CODE) sau khi Market Participant Organization được thiết kế và xác định cột BK."
+    comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS.BANK_MONI', BankAddId) | Cần đánh giá thêm FMS.BANK_MONI chứa đủ dữ liệu của bảng FIMS.BANKMONI hay không."
     classification_context: "Source System Code = 'FIMS_INVESTOR'"
     etl_derived_value: null
 
@@ -284,7 +284,7 @@ attributes:
     source_system: FIMS
     source_table: INVESTOR
     source_column: FIMS.INVESTOR.BankAddId
-    comment: "Lookup pair: Market Participant Organization.Market Participant Organization Code. Pending — xem ghi chú ở Custodian Bank Id."
+    comment: "Lookup pair: custodian_bank.custodian_bank_code. Pair with custodian_bank_id."
     classification_context: "Source System Code = 'FIMS_INVESTOR'"
     etl_derived_value: null
 
@@ -312,7 +312,7 @@ attributes:
     source_system: FIMS
     source_table: INVESTOR
     source_column: FIMS.INVESTOR.BankAddCapId
-    comment: "Pending — FK target: Market Participant Organization.Market Participant Organization Id (chưa thiết kế LLD — nguồn FIMS.BANKMONI). Hash: hash_id('FIMS.BANKMONI', CODE) sau khi Market Participant Organization được thiết kế và xác định cột BK."
+    comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS.BANK_MONI', BankAddCapId) | Cần đánh giá thêm FMS.BANK_MONI chứa đủ dữ liệu của bảng FIMS.BANKMONI hay không."
     classification_context: "Source System Code = 'FIMS_INVESTOR'"
     etl_derived_value: null
 
@@ -326,7 +326,7 @@ attributes:
     source_system: FIMS
     source_table: INVESTOR
     source_column: FIMS.INVESTOR.BankAddCapId
-    comment: "Lookup pair: Market Participant Organization.Market Participant Organization Code. Pending — xem ghi chú ở Capital Custodian Bank Id."
+    comment: "Lookup pair: custodian_bank.custodian_bank_code. Pair with Capital Custodian Bank Id."
     classification_context: "Source System Code = 'FIMS_INVESTOR'"
     etl_derived_value: null
 
