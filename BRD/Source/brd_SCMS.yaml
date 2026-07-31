@@ -314,8 +314,8 @@ brd_entries:
     content:
       table_meaning: "Danh mục quận/huyện"
       functional_group: "Danh mục dùng chung"
-      scope_status: out_of_scope
-      scope_reason: "Dữ liệu địa giới chuẩn hóa tại ECAT — không tự thiết kế Atomic entity (2026-07-10)"
+      scope_status: in_scope
+      scope_reason: "Không thiết kế Atomic entity riêng (dữ liệu địa giới chuẩn hóa tại ECAT), nhưng ETL vẫn crosswalk bảng này để lấy DISTRICT_CODE khi hash geographic_area_old — xem comment FK 'District Id' trong lld_SCMS_SC_FIRM_BRANCH/INFO/REP_OFFICE/TRANSACTION_OFFICE_IP_Postal_Address.yaml. Đánh in_scope vì có bị ETL đọc tới (2026-07-31)."
       table: CAT_DISTRICT
       related_tables:
         - table: CAT_PROVINCE
@@ -546,8 +546,8 @@ brd_entries:
     content:
       table_meaning: "Danh mục tỉnh/thành phố"
       functional_group: "Danh mục dùng chung"
-      scope_status: out_of_scope
-      scope_reason: "Dữ liệu địa giới chuẩn hóa tại ECAT — không tự thiết kế Atomic entity (2026-07-10)"
+      scope_status: in_scope
+      scope_reason: "Không thiết kế Atomic entity riêng (dữ liệu địa giới chuẩn hóa tại ECAT), nhưng ETL vẫn crosswalk bảng này để lấy PROVINCE_CODE khi hash geographic_area — xem comment FK 'Province Id' trong lld_SCMS_SC_FIRM_BRANCH/INFO/REP_OFFICE/TRANSACTION_OFFICE_IP_Postal_Address.yaml. Đánh in_scope vì có bị ETL đọc tới (2026-07-31)."
       table: CAT_PROVINCE
       related_tables:
         - table: CAT_DISTRICT
@@ -754,8 +754,8 @@ brd_entries:
     content:
       table_meaning: "Danh mục phường/xã"
       functional_group: "Danh mục dùng chung"
-      scope_status: out_of_scope
-      scope_reason: "Dữ liệu địa giới chuẩn hóa tại ECAT — không tự thiết kế Atomic entity (2026-07-10)"
+      scope_status: in_scope
+      scope_reason: "Không thiết kế Atomic entity riêng (dữ liệu địa giới chuẩn hóa tại ECAT), nhưng ETL vẫn crosswalk bảng này để lấy Ward Code khi hash geographic_area — xem comment FK 'Ward Id' trong lld_SCMS_SC_FIRM_BRANCH/INFO/REP_OFFICE/TRANSACTION_OFFICE_IP_Postal_Address.yaml. Đánh in_scope vì có bị ETL đọc tới (2026-07-31)."
       table: CAT_WARD
       related_tables:
         - table: CAT_PROVINCE

@@ -1071,8 +1071,8 @@ brd_entries:
     content:
       table_meaning: "lưu danh sách quốc tịch / quốc gia"
       functional_group: "FIMS.5 Danh mục dùng chung"
-      scope_status: out_of_scope
-      scope_reason: "Dữ liệu địa giới chuẩn hóa tại ECAT — không tự thiết kế Atomic entity (2026-07-10)"
+      scope_status: in_scope
+      scope_reason: "Không thiết kế Atomic entity riêng (dữ liệu quốc tịch/quốc gia chuẩn hóa tại ECAT), nhưng ETL vẫn crosswalk bảng này để lấy Code khi hash geographic_area — xem comment FK trong lld_FIMS_INVESTOR.yaml và lld_FIMS_TRADINGREPRESENTATIVE.yaml. Đánh in_scope vì có bị ETL đọc tới (2026-07-31)."
       table: NATIONAL
       related_tables:
         - table: BANKMONI
