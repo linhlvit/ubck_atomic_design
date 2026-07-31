@@ -1,0 +1,281 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-sc_senior_personnel-SCMS.SC_FIRM_SENIOR_PERSONNEL
+  logical_name: Mapping Atomic - Securities Company Senior Personnel – source SCMS.SC_FIRM_SENIOR_PERSONNEL
+  physical_name: sc_senior_personnel
+  dm_ref: ATM-sc_senior_personnel-SCMS.SC_FIRM_SENIOR_PERSONNEL
+  brd_ref: BRD-SRC-SCMS-SC_FIRM_SENIOR_PERSONNEL
+target:
+  namespace: atm
+  physical_name: sc_senior_personnel
+  etl_handle: SCD4A
+  description: Nhân sự cấp cao của CTCK (GĐ, PGĐ, KTT, ...). Ghi nhận thông tin cá
+    nhân, chức vụ, số CCHN, ngày bổ nhiệm và đơn vị công tác (hội sở/chi nhánh/PGD).
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: SC_FIRM_SENIOR_PERSONNEL
+  alias: sc_fi_se_pe
+  select_fields: ID, SC_FIRM_INFO_ID, SC_FIRM_BRANCH_ID, SC_FIRM_TRANSACTION_OFFICE_ID,
+    SC_FIRM_REP_OFFICE_ID, FULL_NAME, ENTITY_TYPE, GENDER, DATE_OF_BIRTH, PLACE_OF_BIRTH,
+    NATIONALITY_ID, PERSONNEL_STATUS, RECORD_STATUS, PROVISIONAL, LEGAL_REPRESENTATIVE,
+    STATUTORY_REPRESENTATIVE, NGUOI_CONG_BO_TT, DISCLOSURE_PERSON_ID, DEPARTMENT,
+    POSITION_ID, POSITION, POSITION_IDS, APPOINTMENT_DATE, WORK_START_DATE, DISMISSAL_DATE,
+    RESIGNATION_DATE, SECURITIES_LICENSE, SECURITIES_LICENSE_NUMBER, SECURITIES_LICENSE_DATE,
+    SHAREHOLDER_TYPE, CONTRIBUTED_CAPITAL, OWNERSHIP_RATIO_DATE, PRACTITIONER_LEGACY_ID,
+    BUSINESS_DIVISION_ID, RESPONSIBLE_SERVICE_ID, REPORT_CONTENT, DELETED, ATTACHMENT_PATH,
+    NOTE
+  filter: null
+- source_type: physical_table
+  namespace: ods
+  table_name: SC_FIRM_INFO
+  alias: sc_fi_in
+  select_fields: ID, CODE
+  filter: null
+  note: Crosswalk bridge cho sc_id
+relationship:
+- main_alias: sc_fi_se_pe
+  join_type: LEFT JOIN
+  join_alias: sc_fi_in
+  join_on: sc_fi_se_pe.SC_FIRM_INFO_ID = sc_fi_in.ID
+mapping_columns:
+- target_column: sc_senior_personnel_id
+  transformation: '{hash_id}(''SCMS_SC_FIRM_SENIOR_PERSONNEL'', sc_fi_se_pe.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Securities Company Senior Personnel Id
+- target_column: sc_senior_personnel_code
+  transformation: sc_fi_se_pe.ID
+  data_type: string
+  description: Khóa chính kỹ thuật (ID tự tăng). BK của entity.
+  target_attr_name: Securities Company Senior Personnel Code
+- target_column: src_stm_code
+  transformation: '''SCMS_SC_FIRM_SENIOR_PERSONNEL'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: sc_id
+  transformation: '{hash_id}(''SCMS_SC_FIRM_INFO'', sc_fi_in.CODE)'
+  data_type: string
+  description: FK đến Công ty chứng khoán.
+  target_attr_name: Securities Company Id
+- target_column: sc_code
+  transformation: sc_fi_se_pe.SC_FIRM_INFO_ID
+  data_type: string
+  description: Mã Công ty chứng khoán.
+  target_attr_name: Securities Company Code
+- target_column: branch_ou_id
+  transformation: '{hash_id}(''SCMS_SC_FIRM_BRANCH'', sc_fi_se_pe.SC_FIRM_BRANCH_ID)'
+  data_type: string
+  description: FK đến chi nhánh CTCK nơi nhân sự công tác (nullable).
+  target_attr_name: Branch Organization Unit Id
+- target_column: branch_ou_code
+  transformation: sc_fi_se_pe.SC_FIRM_BRANCH_ID
+  data_type: string
+  description: Mã chi nhánh CTCK nơi nhân sự công tác.
+  target_attr_name: Branch Organization Unit Code
+- target_column: transaction_office_ou_id
+  transformation: '{hash_id}(''SCMS_SC_FIRM_TRANSACTION_OFFICE'', sc_fi_se_pe.SC_FIRM_TRANSACTION_OFFICE_ID)'
+  data_type: string
+  description: FK đến phòng giao dịch CTCK nơi nhân sự công tác (nullable).
+  target_attr_name: Transaction Office Organization Unit Id
+- target_column: transaction_office_ou_code
+  transformation: sc_fi_se_pe.SC_FIRM_TRANSACTION_OFFICE_ID
+  data_type: string
+  description: Mã phòng giao dịch CTCK nơi nhân sự công tác.
+  target_attr_name: Transaction Office Organization Unit Code
+- target_column: representative_office_ou_id
+  transformation: '{hash_id}(''SCMS_SC_FIRM_REP_OFFICE'', sc_fi_se_pe.SC_FIRM_REP_OFFICE_ID)'
+  data_type: string
+  description: FK đến VPDD CTCK nơi nhân sự công tác (nullable).
+  target_attr_name: Representative Office Organization Unit Id
+- target_column: representative_office_ou_code
+  transformation: sc_fi_se_pe.SC_FIRM_REP_OFFICE_ID
+  data_type: string
+  description: Mã VPDD CTCK nơi nhân sự công tác.
+  target_attr_name: Representative Office Organization Unit Code
+- target_column: full_nm
+  transformation: sc_fi_se_pe.FULL_NAME
+  data_type: string
+  description: Họ và tên đầy đủ (cá nhân) hoặc tên đầy đủ (tổ chức).
+  target_attr_name: Full Name
+- target_column: entity_tp_code
+  transformation: sc_fi_se_pe.ENTITY_TYPE
+  data_type: string
+  description: 'Loại đối tượng: CA_NHAN=Cá nhân; TO_CHUC=Tổ chức.'
+  target_attr_name: Entity Type Code
+- target_column: gender_code
+  transformation: sc_fi_se_pe.GENDER
+  data_type: string
+  description: 'Giới tính: 1=Nam; 2=Nữ.'
+  target_attr_name: Gender Code
+- target_column: dt_of_birth
+  transformation: sc_fi_se_pe.DATE_OF_BIRTH
+  data_type: date
+  description: Ngày sinh (dd/mm/yyyy).
+  target_attr_name: Date Of Birth
+- target_column: place_of_birth
+  transformation: sc_fi_se_pe.PLACE_OF_BIRTH
+  data_type: string
+  description: Nơi sinh.
+  target_attr_name: Place Of Birth
+- target_column: cl_nationality_id
+  transformation: '{hash_id}(''SCMS_CAT_NATIONALITY'', sc_fi_se_pe.NATIONALITY_ID)'
+  data_type: string
+  description: Quốc tịch (FK đến CAT_NATIONALITY).
+  target_attr_name: Classification Nationality Id
+- target_column: cl_nationality_code
+  transformation: sc_fi_se_pe.NATIONALITY_ID
+  data_type: string
+  description: Quốc tịch (FK đến CAT_NATIONALITY).
+  target_attr_name: Classification Nationality Code
+- target_column: personnel_status_code
+  transformation: sc_fi_se_pe.PERSONNEL_STATUS
+  data_type: string
+  description: 'Trạng thái nhân sự cấp cao: DUONG_NHIEM=Đương nhiệm; MIEN_NHIEM=Miễn
+    nhiệm; NGHI_VIEC=Nghỉ việc.'
+  target_attr_name: Personnel Status Code
+- target_column: record_status_code
+  transformation: sc_fi_se_pe.RECORD_STATUS
+  data_type: string
+  description: 'Trạng thái bản ghi kỹ thuật: 1=Đang hoạt động; 0=Ngừng hoạt động.'
+  target_attr_name: Record Status Code
+- target_column: provisional_status_code
+  transformation: sc_fi_se_pe.PROVISIONAL
+  data_type: string
+  description: 'Cờ bản nháp: 1=Bản nháp; 0=Chính thức.'
+  target_attr_name: Provisional Status Code
+- target_column: legal_representative_indicator
+  transformation: sc_fi_se_pe.LEGAL_REPRESENTATIVE
+  data_type: int
+  description: 'Là người đại diện theo pháp luật: 1=Có; 0=Không.'
+  target_attr_name: Legal Representative Indicator
+- target_column: statutory_representative_indicator
+  transformation: sc_fi_se_pe.STATUTORY_REPRESENTATIVE
+  data_type: int
+  description: Là người đại diện theo điều lệ.
+  target_attr_name: Statutory Representative Indicator
+- target_column: disclosure_person_indicator
+  transformation: sc_fi_se_pe.NGUOI_CONG_BO_TT
+  data_type: int
+  description: 'Là người công bố thông tin (NGUOI_CONG_BO_TT): 1=Có; 0=Không.'
+  target_attr_name: Disclosure Person Indicator
+- target_column: disclosure_person_id
+  transformation: '{hash_id}(''IAM_USERS'', sc_fi_se_pe.DISCLOSURE_PERSON_ID)'
+  data_type: string
+  description: FK đến người dùng đại diện công bố thông tin (IAM.USERS).
+  target_attr_name: Disclosure Person Id
+- target_column: disclosure_person_code
+  transformation: sc_fi_se_pe.DISCLOSURE_PERSON_ID
+  data_type: string
+  description: Mã người dùng đại diện công bố thông tin.
+  target_attr_name: Disclosure Person Code
+- target_column: department
+  transformation: sc_fi_se_pe.DEPARTMENT
+  data_type: string
+  description: Phòng/Ban công tác của nhân sự.
+  target_attr_name: Department
+- target_column: position_code
+  transformation: sc_fi_se_pe.POSITION_ID
+  data_type: string
+  description: Mã chức vụ trong danh mục (FK → CAT_POSITION).
+  target_attr_name: Position Code
+- target_column: position_nm
+  transformation: sc_fi_se_pe.POSITION
+  data_type: string
+  description: Tên chức vụ (tên tự do, không chuẩn hóa theo danh mục).
+  target_attr_name: Position Name
+- target_column: position_ids
+  transformation: sc_fi_se_pe.POSITION_IDS
+  data_type: string
+  description: Danh sách ID chức vụ kiêm nhiệm (CLOB — có thể là JSON array).
+  target_attr_name: Position Ids
+- target_column: appointment_dt
+  transformation: sc_fi_se_pe.APPOINTMENT_DATE
+  data_type: date
+  description: Ngày bổ nhiệm vào chức vụ.
+  target_attr_name: Appointment Date
+- target_column: work_start_dt
+  transformation: sc_fi_se_pe.WORK_START_DATE
+  data_type: date
+  description: Ngày bắt đầu làm việc tại CTCK.
+  target_attr_name: Work Start Date
+- target_column: dismissal_dt
+  transformation: sc_fi_se_pe.DISMISSAL_DATE
+  data_type: date
+  description: Ngày miễn nhiệm khỏi chức vụ.
+  target_attr_name: Dismissal Date
+- target_column: resignation_dt
+  transformation: sc_fi_se_pe.RESIGNATION_DATE
+  data_type: date
+  description: Ngày nghỉ việc (tự nguyện).
+  target_attr_name: Resignation Date
+- target_column: securities_license_indicator
+  transformation: sc_fi_se_pe.SECURITIES_LICENSE
+  data_type: int
+  description: 'Có chứng chỉ hành nghề chứng khoán: 1=Có; 0=Không.'
+  target_attr_name: Securities License Indicator
+- target_column: securities_license_nbr
+  transformation: sc_fi_se_pe.SECURITIES_LICENSE_NUMBER
+  data_type: string
+  description: Số chứng chỉ hành nghề chứng khoán (CCHN).
+  target_attr_name: Securities License Number
+- target_column: securities_license_dt
+  transformation: sc_fi_se_pe.SECURITIES_LICENSE_DATE
+  data_type: date
+  description: Ngày cấp chứng chỉ hành nghề chứng khoán.
+  target_attr_name: Securities License Date
+- target_column: shareholder_tp_code
+  transformation: sc_fi_se_pe.SHAREHOLDER_TYPE
+  data_type: string
+  description: 'Loại cổ đông: CO_DONG_LON=Cổ đông lớn (≥5%); CO_DONG_SANG_LAP=Cổ đông
+    sáng lập; CO_DONG_PHO_THONG=Cổ đông phổ thông.'
+  target_attr_name: Shareholder Type Code
+- target_column: contributed_capital_amt
+  transformation: sc_fi_se_pe.CONTRIBUTED_CAPITAL
+  data_type: decimal(23,2)
+  description: 'Vốn góp của nhân sự này với tư cách cổ đông (đơn vị: đồng).'
+  target_attr_name: Contributed Capital Amount
+- target_column: ownership_ratio_dt
+  transformation: sc_fi_se_pe.OWNERSHIP_RATIO_DATE
+  data_type: date
+  description: Ngày tính tỷ lệ sở hữu.
+  target_attr_name: Ownership Ratio Date
+- target_column: legacy_practitioner_id
+  transformation: sc_fi_se_pe.PRACTITIONER_LEGACY_ID
+  data_type: string
+  description: ID nhân sự từ hệ thống cũ (TLID).
+  target_attr_name: Legacy Practitioner Id
+- target_column: business_division_id
+  transformation: sc_fi_se_pe.BUSINESS_DIVISION_ID
+  data_type: string
+  description: ID phân khu kinh doanh (FK → không xác định, pending).
+  target_attr_name: Business Division Id
+- target_column: responsible_service_id
+  transformation: sc_fi_se_pe.RESPONSIBLE_SERVICE_ID
+  data_type: string
+  description: ID dịch vụ phụ trách (FK → không xác định, pending).
+  target_attr_name: Responsible Service Id
+- target_column: rpt_content
+  transformation: sc_fi_se_pe.REPORT_CONTENT
+  data_type: string
+  description: Nội dung báo cáo liên quan đến nhân sự.
+  target_attr_name: Report Content
+- target_column: deleted_indicator
+  transformation: sc_fi_se_pe.DELETED
+  data_type: int
+  description: 'Cờ xóa mềm: 1=Đã xóa; 0=Chưa xóa.'
+  target_attr_name: Deleted Indicator
+- target_column: attachment_path
+  transformation: sc_fi_se_pe.ATTACHMENT_PATH
+  data_type: string
+  description: Đường dẫn file đính kèm.
+  target_attr_name: Attachment Path
+- target_column: note
+  transformation: sc_fi_se_pe.NOTE
+  data_type: string
+  description: Ghi chú bổ sung, không bắt buộc.
+  target_attr_name: Note
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

@@ -1,0 +1,63 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-investment_fund_x_fund_distribution_agent_relationship-FMS.AGEN_FUNDS
+  logical_name: Mapping Atomic - Investment Fund X Fund Distribution Agent Relationship
+    – source FMS.AGEN_FUNDS
+  physical_name: investment_fund_x_fund_distribution_agent_relationship
+  dm_ref: ATM-investment_fund_x_fund_distribution_agent_relationship-FMS.AGEN_FUNDS
+  brd_ref: BRD-SRC-FMS-AGEN_FUNDS
+target:
+  namespace: atm
+  physical_name: investment_fund_x_fund_distribution_agent_relationship
+  etl_handle: SCD2
+  description: Quan hệ đại lý phân phối CCQ được ủy quyền cho quỹ đầu tư. Đảo ngược
+    quyết định denormalize ARRAY cũ trên Investment Fund. FK đến Investment Fund +
+    Fund Distribution Agent.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: AGEN_FUNDS
+  alias: ag_fu
+  select_fields: FUND_ID, AGENCY_ID
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: investment_fund_x_fund_distribution_agent_rltnp_id
+  transformation: 'null'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Investment Fund X Fund Distribution Agent Relationship Id
+- target_column: investment_fund_x_fund_distribution_agent_rltnp_code
+  transformation: 'null'
+  data_type: string
+  description: Mã quan hệ — composite AGENCY_ID+FUND_ID (bảng nguồn không có PK/mã
+    nghiệp vụ riêng).
+  target_attr_name: Investment Fund X Fund Distribution Agent Relationship Code
+- target_column: src_stm_code
+  transformation: '''FMS_AGEN_FUNDS'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: investment_fund_id
+  transformation: '{hash_id}(''FMS_FUNDS'', ag_fu.FUND_ID)'
+  data_type: string
+  description: 'FK -> FUNDS: Quỹ đầu tư liên quan.'
+  target_attr_name: Investment Fund Id
+- target_column: investment_fund_code
+  transformation: ag_fu.FUND_ID
+  data_type: string
+  description: Mã quỹ đầu tư liên quan.
+  target_attr_name: Investment Fund Code
+- target_column: fund_distribution_agent_id
+  transformation: '{hash_id}(''FMS_AGENCIES'', ag_fu.AGENCY_ID)'
+  data_type: string
+  description: 'FK -> AGENCIES: Đại lý phân phối liên quan.'
+  target_attr_name: Fund Distribution Agent Id
+- target_column: fund_distribution_agent_code
+  transformation: ag_fu.AGENCY_ID
+  data_type: string
+  description: Mã đại lý phân phối liên quan.
+  target_attr_name: Fund Distribution Agent Code
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

@@ -1,0 +1,163 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-et_enforcement_invoice_decision-KNT.TAX_ENFORCEMENT_INVOICE
+  logical_name: Mapping Atomic - External Tax Enforcement Invoice Decision – source
+    KNT.TAX_ENFORCEMENT_INVOICE
+  physical_name: et_enforcement_invoice_decision
+  dm_ref: ATM-et_enforcement_invoice_decision-KNT.TAX_ENFORCEMENT_INVOICE
+  brd_ref: BRD-SRC-KNT-TAX_ENFORCEMENT_INVOICE
+target:
+  namespace: atm
+  physical_name: et_enforcement_invoice_decision
+  etl_handle: Fact Append
+  description: Quyết định cưỡng chế ngừng sử dụng hóa đơn do Cục Thuế ban hành đối
+    với doanh nghiệp trên TTCK. Ghi nhận số quyết định và thời gian hiệu lực. Nghi
+    vấn liên kết logic với External Tax Enforcement Debt Decision qua Basis Decision
+    Number — xem 7e#1.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: TAX_ENFORCEMENT_INVOICE
+  alias: ta_en_in
+  select_fields: DECISION_NUMBER, TAXPAYER_TAX_CODE, TAXPAYER_NAME, DIRECT_TAX_AUTHORITY_CODE,
+    DIRECT_TAX_AUTHORITY_NAME, ENFORCEMENT_METHOD_CODE, ENFORCEMENT_METHOD_NAME, E_TRANSACTION_CODE,
+    DECISION_DATE, ENFORCED_ENTITY_BUSINESS_LINE, DECISION_EFFECTIVE_FROM, DECISION_EFFECTIVE_TO,
+    NOTICE_TAXPAYER_TAX_CODE, NOTICE_TAXPAYER_NAME, NOTICE_CODE, NOTICE_NAME, BASIS_DECISION_NUMBER,
+    BASIS_DECISION_DATE, NOTICE_DEBT_AMOUNT, NOTICE_DEBT_DATE, VALIDITY_FLAG, GUID,
+    MSG_PACKET_ID
+  filter: created_at >= {etl_date}
+relationship: []
+mapping_columns:
+- target_column: et_enforcement_invoice_decision_id
+  transformation: '{hash_id}(''KNT_TAX_ENFORCEMENT_INVOICE'', ta_en_in.DECISION_NUMBER)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: External Tax Enforcement Invoice Decision Id
+- target_column: et_enforcement_invoice_decision_code
+  transformation: ta_en_in.DECISION_NUMBER
+  data_type: string
+  description: Số quyết định thành lập/xử phạt. BK.
+  target_attr_name: External Tax Enforcement Invoice Decision Code
+- target_column: src_stm_code
+  transformation: '''KNT_TAX_ENFORCEMENT_INVOICE'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: et_registration_id
+  transformation: '{hash_id}(''KNT_TAX_REGISTRATION_INFO'', ta_en_in.TAXPAYER_TAX_CODE)'
+  data_type: string
+  description: FK đến hồ sơ đăng ký thuế của doanh nghiệp bị cưỡng chế.
+  target_attr_name: External Tax Registration Id
+- target_column: et_registration_code
+  transformation: ta_en_in.TAXPAYER_TAX_CODE
+  data_type: string
+  description: Mã số thuế người nộp thuế bị cưỡng chế.
+  target_attr_name: External Tax Registration Code
+- target_column: taxpayer_nm
+  transformation: ta_en_in.TAXPAYER_NAME
+  data_type: string
+  description: Tên người nộp thuế (doanh nghiệp trên thị trường chứng khoán).
+  target_attr_name: Taxpayer Name
+- target_column: direct_tax_authority_code
+  transformation: ta_en_in.DIRECT_TAX_AUTHORITY_CODE
+  data_type: string
+  description: Mã cơ quan thuế quản lý trực tiếp.
+  target_attr_name: Direct Tax Authority Code
+- target_column: direct_tax_authority_nm
+  transformation: ta_en_in.DIRECT_TAX_AUTHORITY_NAME
+  data_type: string
+  description: Tên cơ quan thuế quản lý trực tiếp.
+  target_attr_name: Direct Tax Authority Name
+- target_column: enforcement_method_code
+  transformation: ta_en_in.ENFORCEMENT_METHOD_CODE
+  data_type: string
+  description: Mã hình thức cưỡng chế.
+  target_attr_name: Enforcement Method Code
+- target_column: enforcement_method_nm
+  transformation: ta_en_in.ENFORCEMENT_METHOD_NAME
+  data_type: string
+  description: Tên hình thức cưỡng chế.
+  target_attr_name: Enforcement Method Name
+- target_column: electronic_transaction_code
+  transformation: ta_en_in.E_TRANSACTION_CODE
+  data_type: string
+  description: Mã giao dịch điện tử trong hệ thống Cục Thuế.
+  target_attr_name: Electronic Transaction Code
+- target_column: decision_dt
+  transformation: ta_en_in.DECISION_DATE
+  data_type: date
+  description: Ngày ban hành quyết định.
+  target_attr_name: Decision Date
+- target_column: enforced_entity_business_line_nm
+  transformation: ta_en_in.ENFORCED_ENTITY_BUSINESS_LINE
+  data_type: string
+  description: Ngành kinh doanh của đối tượng bị cưỡng chế.
+  target_attr_name: Enforced Entity Business Line Name
+- target_column: decision_effective_from_dt
+  transformation: ta_en_in.DECISION_EFFECTIVE_FROM
+  data_type: date
+  description: Ngày bắt đầu hiệu lực quyết định cưỡng chế.
+  target_attr_name: Decision Effective From Date
+- target_column: decision_effective_to_dt
+  transformation: ta_en_in.DECISION_EFFECTIVE_TO
+  data_type: date
+  description: Ngày kết thúc hiệu lực quyết định cưỡng chế.
+  target_attr_name: Decision Effective To Date
+- target_column: notice_taxpayer_tax_code
+  transformation: ta_en_in.NOTICE_TAXPAYER_TAX_CODE
+  data_type: string
+  description: 'Thông báo: MST người nộp thuế.'
+  target_attr_name: Notice Taxpayer Tax Code
+- target_column: notice_taxpayer_nm
+  transformation: ta_en_in.NOTICE_TAXPAYER_NAME
+  data_type: string
+  description: 'Thông báo: tên người nộp thuế.'
+  target_attr_name: Notice Taxpayer Name
+- target_column: notice_code
+  transformation: ta_en_in.NOTICE_CODE
+  data_type: string
+  description: 'Thông báo: mã thông báo cưỡng chế.'
+  target_attr_name: Notice Code
+- target_column: notice_nm
+  transformation: ta_en_in.NOTICE_NAME
+  data_type: string
+  description: 'Thông báo: tên thông báo cưỡng chế.'
+  target_attr_name: Notice Name
+- target_column: basis_decision_nbr
+  transformation: ta_en_in.BASIS_DECISION_NUMBER
+  data_type: string
+  description: 'Căn cứ: số quyết định gốc.'
+  target_attr_name: Basis Decision Number
+- target_column: basis_decision_dt
+  transformation: ta_en_in.BASIS_DECISION_DATE
+  data_type: date
+  description: 'Căn cứ: ngày quyết định gốc.'
+  target_attr_name: Basis Decision Date
+- target_column: notice_debt_amt
+  transformation: ta_en_in.NOTICE_DEBT_AMOUNT
+  data_type: decimal(23,2)
+  description: 'Thông báo: số tiền nợ và tiền phạt nộp chậm.'
+  target_attr_name: Notice Debt Amount
+- target_column: notice_debt_dt
+  transformation: ta_en_in.NOTICE_DEBT_DATE
+  data_type: date
+  description: 'Thông báo: ngày tính tiền nợ và tiền phạt nộp chậm.'
+  target_attr_name: Notice Debt Date
+- target_column: validity_flag
+  transformation: ta_en_in.VALIDITY_FLAG
+  data_type: string
+  description: Cờ hiệu lực của quyết định/thông báo cưỡng chế.
+  target_attr_name: Validity Flag
+- target_column: global_unique_identifier
+  transformation: ta_en_in.GUID
+  data_type: string
+  description: Định danh duy nhất toàn cục (GUID/UUID) của bản ghi.
+  target_attr_name: Global Unique Identifier
+- target_column: message_packet_id
+  transformation: ta_en_in.MSG_PACKET_ID
+  data_type: string
+  description: Mã gói tin trao đổi liên quan.
+  target_attr_name: Message Packet Id
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

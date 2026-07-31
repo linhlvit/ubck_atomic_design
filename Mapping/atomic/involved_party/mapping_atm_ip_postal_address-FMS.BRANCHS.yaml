@@ -1,0 +1,50 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-ip_postal_address-FMS.BRANCHS
+  logical_name: Mapping Atomic - Involved Party Postal Address – source FMS.BRANCHS
+  physical_name: ip_postal_address
+  dm_ref: ATM-ip_postal_address-FMS.BRANCHS
+  brd_ref: BRD-SRC-FMS-BRANCHS
+target:
+  namespace: atm
+  physical_name: ip_postal_address
+  etl_handle: SCD4A
+  description: Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường
+    trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: BRANCHS
+  alias: br
+  select_fields: ID, ADDRESS
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: ip_id
+  transformation: '{hash_id}(''FMS_BRANCHS'', br.ID)'
+  data_type: string
+  description: FK đến Fund Management Company Organization Unit.
+  target_attr_name: Involved Party Id
+- target_column: ip_code
+  transformation: br.ID
+  data_type: string
+  description: Mã chi nhánh/VPĐD.
+  target_attr_name: Involved Party Code
+- target_column: src_stm_code
+  transformation: '''FMS_BRANCHS'''
+  data_type: string
+  description: Mã hệ thống nguồn.
+  target_attr_name: Source System Code
+- target_column: adr_tp_code
+  transformation: '''BRANCH'''
+  data_type: string
+  description: Loại địa chỉ — trụ sở chính.
+  target_attr_name: Address Type Code
+- target_column: adr_val
+  transformation: br.ADDRESS
+  data_type: string
+  description: Địa chỉ trụ sở.
+  target_attr_name: Address Value
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

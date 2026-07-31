@@ -1,0 +1,94 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-sp_professional_training_class-NHNCK.SPECIALIZATION_COURSES
+  logical_name: Mapping Atomic - Securities Practitioner Professional Training Class
+    – source NHNCK.SPECIALIZATION_COURSES
+  physical_name: sp_professional_training_class
+  dm_ref: ATM-sp_professional_training_class-NHNCK.SPECIALIZATION_COURSES
+  brd_ref: BRD-SRC-NHNCK-SPECIALIZATION_COURSES
+target:
+  namespace: atm
+  physical_name: sp_professional_training_class
+  etl_handle: SCD4A
+  description: Khóa học chuyên môn bổ sung kiến thức cho người hành nghề chứng khoán.
+    Master entity của khóa học — ghi nhận mã, tên, loại chuyên môn, thời gian và địa
+    điểm thi.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: SPECIALIZATION_COURSES
+  alias: sp_co
+  select_fields: COURSE_CODE, COURSE_NAME, ACADEMIC_YEAR, SPECIALIZATION_ID, EXAM_DATE_FROM,
+    EXAM_DATE_TO, ADDRESS, PROVINCE_ID
+  filter: null
+- source_type: physical_table
+  namespace: ods
+  table_name: PROVINCES
+  alias: prov
+  select_fields: ID, PROVINCE_CODE
+  filter: null
+  note: Crosswalk bridge cho province_id
+relationship:
+- main_alias: sp_co
+  join_type: LEFT JOIN
+  join_alias: prov
+  join_on: sp_co.PROVINCE_ID = prov.ID
+mapping_columns:
+- target_column: sp_professional_training_class_id
+  transformation: '{hash_id}(''NHNCK_SPECIALIZATION_COURSES'', sp_co.COURSE_CODE)'
+  data_type: string
+  description: Surrogate key cho khóa học chuyên môn
+  target_attr_name: Securities Practitioner Professional Training Class Id
+- target_column: sp_professional_training_class_code
+  transformation: sp_co.COURSE_CODE
+  data_type: string
+  description: Mã khóa học (business key)
+  target_attr_name: Securities Practitioner Professional Training Class Code
+- target_column: src_stm_code
+  transformation: '''NHNCK_SPECIALIZATION_COURSES'''
+  data_type: string
+  description: Mã hệ thống nguồn
+  target_attr_name: Source System Code
+- target_column: training_class_nm
+  transformation: sp_co.COURSE_NAME
+  data_type: string
+  description: Tên khóa học
+  target_attr_name: Training Class Name
+- target_column: academic_year
+  transformation: sp_co.ACADEMIC_YEAR
+  data_type: int
+  description: Năm học
+  target_attr_name: Academic Year
+- target_column: specialization_tp_code
+  transformation: sp_co.SPECIALIZATION_ID
+  data_type: string
+  description: Loại chuyên môn của khóa học
+  target_attr_name: Specialization Type Code
+- target_column: exam_start_dt
+  transformation: sp_co.EXAM_DATE_FROM
+  data_type: date
+  description: Ngày bắt đầu thi
+  target_attr_name: Exam Start Date
+- target_column: exam_end_dt
+  transformation: sp_co.EXAM_DATE_TO
+  data_type: date
+  description: Ngày kết thúc thi
+  target_attr_name: Exam End Date
+- target_column: exam_location_adr
+  transformation: sp_co.ADDRESS
+  data_type: string
+  description: Địa điểm tổ chức thi
+  target_attr_name: Exam Location Address
+- target_column: province_id
+  transformation: '{hash_id}(''ECAT_PROVINCE_NEW'', prov.PROVINCE_CODE)'
+  data_type: string
+  description: FK đến tỉnh/thành nơi tổ chức thi
+  target_attr_name: Province Id
+- target_column: province_code
+  transformation: sp_co.PROVINCE_ID
+  data_type: string
+  description: Mã tỉnh/thành nơi tổ chức thi (lookup pair)
+  target_attr_name: Province Code
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

@@ -1,0 +1,180 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-investment_fund-FMS.FUNDS
+  logical_name: Mapping Atomic - Investment Fund – source FMS.FUNDS
+  physical_name: investment_fund
+  dm_ref: ATM-investment_fund-FMS.FUNDS
+  brd_ref: BRD-SRC-FMS-FUNDS
+target:
+  namespace: atm
+  physical_name: investment_fund
+  etl_handle: SCD4A
+  description: Quỹ đầu tư chứng khoán — định chế đầu tư đóng vai trò Involved Party
+    (BCV term Funds, id 10821). Domain prefix dùng chung với Investment Fund Representative
+    Board Member, Investment Fund Investor Membership (Tier 3), Investment Fund Investor
+    Capital Change Log, Investment Fund Certificate Transfer (Tier 4).
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: FUNDS
+  alias: fund
+  select_fields: ID, SEC_ID, BANK_ID, STATUS_ID, ITEM_NAME, ENAME, SHORT_NAME, CER_CODE,
+    FTYPE_ID, CAPITAL, TOTAL_QTTY, DESCRIPTION, TYPE_OF_FUND_NO, TYPE_OF_FUND_MNP,
+    TYPE_OF_FUND_DENT, TIME_OF_FUND, VOUCHER_NO, NAV, NAV_CCQ, DEC_DATE, PAR_VALUE,
+    INVES_STRATEGY, DESCHANGE, LISTING_DATE, NUMBER_FUND_CER_FIRST, STOCK_EXCHANGE
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: investment_fund_id
+  transformation: '{hash_id}(''FMS_FUNDS'', fund.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Investment Fund Id
+- target_column: investment_fund_code
+  transformation: fund.ID
+  data_type: string
+  description: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+  target_attr_name: Investment Fund Code
+- target_column: src_stm_code
+  transformation: '''FMS_FUNDS'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: fmc_id
+  transformation: '{hash_id}(''FMS_SECURITIES'', fund.SEC_ID)'
+  data_type: string
+  description: 'FK -> SECURITIES: Công ty QLQ liên quan.'
+  target_attr_name: Fund Management Company Id
+- target_column: fmc_code
+  transformation: fund.SEC_ID
+  data_type: string
+  description: Mã công ty QLQ liên quan.
+  target_attr_name: Fund Management Company Code
+- target_column: custodian_bank_id
+  transformation: '{hash_id}(''FMS_BANK_MONI'', fund.BANK_ID)'
+  data_type: string
+  description: 'FK -> BANK_MONI: Ngân hàng lưu ký/giám sát liên quan.'
+  target_attr_name: Custodian Bank Id
+- target_column: custodian_bank_code
+  transformation: fund.BANK_ID
+  data_type: string
+  description: Mã ngân hàng lưu ký/giám sát liên quan.
+  target_attr_name: Custodian Bank Code
+- target_column: operation_status_code
+  transformation: fund.STATUS_ID
+  data_type: string
+  description: 'FK -> STATUS: Trạng thái hoạt động của đối tượng (bảng danh mục STATUS).'
+  target_attr_name: Operation Status Code
+- target_column: investment_fund_full_nm
+  transformation: fund.ITEM_NAME
+  data_type: string
+  description: Tên hiển thị chính.
+  target_attr_name: Investment Fund Full Name
+- target_column: investment_fund_english_nm
+  transformation: fund.ENAME
+  data_type: string
+  description: Tên tiếng Anh đầy đủ.
+  target_attr_name: Investment Fund English Name
+- target_column: investment_fund_short_nm
+  transformation: fund.SHORT_NAME
+  data_type: string
+  description: Tên viết tắt.
+  target_attr_name: Investment Fund Short Name
+- target_column: fund_certificate_ticker_code
+  transformation: fund.CER_CODE
+  data_type: string
+  description: Mã chứng chỉ quỹ (ticker symbol trên sàn giao dịch).
+  target_attr_name: Fund Certificate Ticker Code
+- target_column: fund_tp_code
+  transformation: fund.FTYPE_ID
+  data_type: string
+  description: 'FK -> FUND_TYPE: Loại quỹ đầu tư.'
+  target_attr_name: Fund Type Code
+- target_column: charter_capital_amt
+  transformation: fund.CAPITAL
+  data_type: decimal(23,2)
+  description: 'Vốn điều lệ/vốn góp (đơn vị: VNĐ).'
+  target_attr_name: Charter Capital Amount
+- target_column: total_outstanding_unit_quantity
+  transformation: fund.TOTAL_QTTY
+  data_type: int
+  description: Tổng số lượng CCQ/cổ phiếu đang lưu hành.
+  target_attr_name: Total Outstanding Unit Quantity
+- target_column: description
+  transformation: fund.DESCRIPTION
+  data_type: string
+  description: Mô tả chi tiết.
+  target_attr_name: Description
+- target_column: fund_tp_decision_nbr
+  transformation: fund.TYPE_OF_FUND_NO
+  data_type: string
+  description: Số quyết định về loại hình quỹ.
+  target_attr_name: Fund Type Decision Number
+- target_column: fund_tp_par_val_description
+  transformation: fund.TYPE_OF_FUND_MNP
+  data_type: string
+  description: Mệnh giá CCQ theo loại quỹ.
+  target_attr_name: Fund Type Par Value Description
+- target_column: fund_tp_identifier_description
+  transformation: fund.TYPE_OF_FUND_DENT
+  data_type: string
+  description: Loại quỹ theo định danh nội bộ.
+  target_attr_name: Fund Type Identifier Description
+- target_column: fund_duration_description
+  transformation: fund.TIME_OF_FUND
+  data_type: string
+  description: Thời hạn hoạt động của quỹ (số năm hoặc 'Vô thời hạn').
+  target_attr_name: Fund Duration Description
+- target_column: amendment_document_nbr
+  transformation: fund.VOUCHER_NO
+  data_type: string
+  description: Số văn bản/giấy phép điều chỉnh (khi cập nhật hồ sơ).
+  target_attr_name: Amendment Document Number
+- target_column: net_asset_val_amt
+  transformation: fund.NAV
+  data_type: decimal(23,2)
+  description: 'Giá trị tài sản ròng (NAV) của quỹ (đơn vị: VNĐ).'
+  target_attr_name: Net Asset Value Amount
+- target_column: net_asset_val_per_unit_amt
+  transformation: fund.NAV_CCQ
+  data_type: decimal(23,2)
+  description: 'NAV trên mỗi chứng chỉ quỹ - NAV/CCQ (đơn vị: VNĐ).'
+  target_attr_name: Net Asset Value Per Unit Amount
+- target_column: decision_issue_dt
+  transformation: fund.DEC_DATE
+  data_type: date
+  description: Ngày ban hành quyết định/nghị quyết.
+  target_attr_name: Decision Issue Date
+- target_column: unit_par_val_amt
+  transformation: fund.PAR_VALUE
+  data_type: decimal(23,2)
+  description: 'Mệnh giá CCQ (đơn vị: VNĐ).'
+  target_attr_name: Unit Par Value Amount
+- target_column: investment_strategy_description
+  transformation: fund.INVES_STRATEGY
+  data_type: string
+  description: Chiến lược đầu tư của quỹ (mô tả).
+  target_attr_name: Investment Strategy Description
+- target_column: change_description
+  transformation: fund.DESCHANGE
+  data_type: string
+  description: Mô tả thay đổi hồ sơ quỹ khi cập nhật.
+  target_attr_name: Change Description
+- target_column: listing_dt
+  transformation: fund.LISTING_DATE
+  data_type: date
+  description: Ngày niêm yết CCQ trên sàn giao dịch chứng khoán.
+  target_attr_name: Listing Date
+- target_column: initial_offering_unit_quantity
+  transformation: fund.NUMBER_FUND_CER_FIRST
+  data_type: int
+  description: Số lượng CCQ phát hành lần đầu tiên.
+  target_attr_name: Initial Offering Unit Quantity
+- target_column: stock_exchange_nm
+  transformation: fund.STOCK_EXCHANGE
+  data_type: string
+  description: 'Sàn giao dịch niêm yết CCQ: HOSE, HNX, UPCOM.'
+  target_attr_name: Stock Exchange Name
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

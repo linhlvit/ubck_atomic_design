@@ -1,0 +1,172 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-foreign_investor-FIMS.INVESTOR
+  logical_name: Mapping Atomic - Foreign Investor – source FIMS.INVESTOR
+  physical_name: foreign_investor
+  dm_ref: ATM-foreign_investor-FIMS.INVESTOR
+  brd_ref: BRD-SRC-FIMS-INVESTOR
+target:
+  namespace: atm
+  physical_name: foreign_investor
+  etl_handle: SCD4A
+  description: Nhà đầu tư nước ngoài (cá nhân và tổ chức) được UBCKNN quản lý tại
+    Việt Nam. Ghi nhận loại đối tượng (cá nhân/tổ chức), mã giao dịch VSDC, thông
+    tin nhân thân/doanh nghiệp, tài khoản lưu ký và trạng thái hoạt động. Tách IP
+    Postal Address + IP Electronic Address + IP Alt Identification (bổ sung 2026-07-19
+    khi thiết kế LLD).
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: INVESTOR
+  alias: inve
+  select_fields: TransactionCode, ObjectType, Name, EName, Sex, DateOfBirth, NaId,
+    BusinessNumber, Director, InvestorTypeId, DepAccountNumber, SysObjectType, SecComAddId,
+    BankAddId, AccountInvesCapital, BankAddCapId, CompanyTypeId, StatusId, Description,
+    FileName
+  filter: null
+- source_type: physical_table
+  namespace: ods
+  table_name: NATIONAL
+  alias: nati
+  select_fields: Id, SName
+  filter: null
+  note: Crosswalk bridge cho nationality_id
+relationship:
+- main_alias: inve
+  join_type: LEFT JOIN
+  join_alias: nati
+  join_on: inve.NaId = nati.Id
+mapping_columns:
+- target_column: foreign_investor_id
+  transformation: '{hash_id}(''FIMS_INVESTOR'', inve.TransactionCode)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Foreign Investor Id
+- target_column: foreign_investor_code
+  transformation: inve.TransactionCode
+  data_type: string
+  description: Mã số giao dịch của NĐT NN do VSDC cấp. BK.
+  target_attr_name: Foreign Investor Code
+- target_column: src_stm_code
+  transformation: '''FIMS_INVESTOR'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: investor_object_tp_code
+  transformation: inve.ObjectType
+  data_type: string
+  description: 'Loại đối tượng: 1=Cá nhân, 2=Tổ chức.'
+  target_attr_name: Investor Object Type Code
+- target_column: full_nm
+  transformation: inve.Name
+  data_type: string
+  description: Tên đầy đủ (tiếng Việt).
+  target_attr_name: Full Name
+- target_column: english_nm
+  transformation: inve.EName
+  data_type: string
+  description: Tên tiếng Anh.
+  target_attr_name: English Name
+- target_column: gender_code
+  transformation: inve.Sex
+  data_type: string
+  description: 'Giới tính: 1=Nam, 2=Nữ.'
+  target_attr_name: Gender Code
+- target_column: dt_of_birth
+  transformation: inve.DateOfBirth
+  data_type: date
+  description: Ngày sinh (với NĐT cá nhân).
+  target_attr_name: Date of Birth
+- target_column: nationality_id
+  transformation: '{hash_id}(''ECAT_COUNTRY'', nati.SName)'
+  data_type: string
+  description: FK đến Geographic Area (quốc tịch).
+  target_attr_name: Nationality Id
+- target_column: nationality_code
+  transformation: inve.NaId
+  data_type: string
+  description: Mã quốc gia/quốc tịch.
+  target_attr_name: Nationality Code
+- target_column: business_registration_nbr
+  transformation: inve.BusinessNumber
+  data_type: string
+  description: Số đăng ký kinh doanh/mã số doanh nghiệp.
+  target_attr_name: Business Registration Number
+- target_column: director_full_nm
+  transformation: inve.Director
+  data_type: string
+  description: Họ tên Giám đốc/Tổng giám đốc.
+  target_attr_name: Director Full Name
+- target_column: investor_tp_code
+  transformation: inve.InvestorTypeId
+  data_type: string
+  description: Loại nhà đầu tư nước ngoài.
+  target_attr_name: Investor Type Code
+- target_column: depository_account_nbr
+  transformation: inve.DepAccountNumber
+  data_type: string
+  description: Số tài khoản lưu ký tại VSDC.
+  target_attr_name: Depository Account Number
+- target_column: investor_stm_object_tp_code
+  transformation: inve.SysObjectType
+  data_type: string
+  description: Loại đối tượng trong hệ thống (phân biệt giữa các loại NĐT NN).
+  target_attr_name: Investor System Object Type Code
+- target_column: trading_sc_id
+  transformation: '{hash_id}(''FIMS_SECURITIESCOMPANY'', inve.SecComAddId)'
+  data_type: string
+  description: 'FK -> SECURITIESCOMPANY: Công ty CK nơi mở tài khoản.'
+  target_attr_name: Trading Securities Company Id
+- target_column: trading_sc_code
+  transformation: inve.SecComAddId
+  data_type: string
+  description: Mã công ty CK nơi mở tài khoản.
+  target_attr_name: Trading Securities Company Code
+- target_column: custodian_bank_id
+  transformation: '{hash_id}(''FMS_BANK_MONI'', inve.BankAddId)'
+  data_type: string
+  description: 'FK -> BANKMONI: Ngân hàng lưu ký đăng ký tài khoản giao dịch.'
+  target_attr_name: Custodian Bank Id
+- target_column: custodian_bank_code
+  transformation: inve.BankAddId
+  data_type: string
+  description: Mã ngân hàng lưu ký đăng ký tài khoản giao dịch.
+  target_attr_name: Custodian Bank Code
+- target_column: capital_investment_account_nbr
+  transformation: inve.AccountInvesCapital
+  data_type: string
+  description: Số tài khoản đầu tư vốn của NĐT NN.
+  target_attr_name: Capital Investment Account Number
+- target_column: capital_custodian_bank_id
+  transformation: '{hash_id}(''FMS_BANK_MONI'', inve.BankAddCapId)'
+  data_type: string
+  description: 'FK -> BANKMONI: Ngân hàng lưu ký đăng ký tài khoản vốn.'
+  target_attr_name: Capital Custodian Bank Id
+- target_column: capital_custodian_bank_code
+  transformation: inve.BankAddCapId
+  data_type: string
+  description: Mã ngân hàng lưu ký đăng ký tài khoản vốn.
+  target_attr_name: Capital Custodian Bank Code
+- target_column: company_tp_code
+  transformation: inve.CompanyTypeId
+  data_type: string
+  description: Loại hình doanh nghiệp (chỉ áp dụng NĐT tổ chức).
+  target_attr_name: Company Type Code
+- target_column: activity_status_code
+  transformation: inve.StatusId
+  data_type: string
+  description: Trạng thái hoạt động của đối tượng.
+  target_attr_name: Activity Status Code
+- target_column: description
+  transformation: inve.Description
+  data_type: string
+  description: Mô tả chi tiết / ghi chú bổ sung.
+  target_attr_name: Description
+- target_column: attachment_file_nm
+  transformation: inve.FileName
+  data_type: string
+  description: Tên file đính kèm.
+  target_attr_name: Attachment File Name
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

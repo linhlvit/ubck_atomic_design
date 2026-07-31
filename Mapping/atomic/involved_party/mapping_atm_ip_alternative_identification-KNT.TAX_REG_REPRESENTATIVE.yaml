@@ -1,0 +1,57 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-ip_alternative_identification-KNT.TAX_REG_REPRESENTATIVE
+  logical_name: Mapping Atomic - Involved Party Alternative Identification – source
+    KNT.TAX_REG_REPRESENTATIVE
+  physical_name: ip_alternative_identification
+  dm_ref: ATM-ip_alternative_identification-KNT.TAX_REG_REPRESENTATIVE
+  brd_ref: BRD-SRC-KNT-TAX_REG_REPRESENTATIVE
+target:
+  namespace: atm
+  physical_name: ip_alternative_identification
+  etl_handle: SCD4A
+  description: Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ
+    chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ
+    1 nguồn.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: TAX_REG_REPRESENTATIVE
+  alias: ta_re_re
+  select_fields: ID, ID_DOCUMENT_TYPE, ID_DOCUMENT_NUMBER, ISSUE_DATE
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: ip_id
+  transformation: '{hash_id}(''KNT_TAX_REG_REPRESENTATIVE'', ta_re_re.ID)'
+  data_type: string
+  description: FK đến External Tax Registration Representative (Involved Party).
+  target_attr_name: Involved Party Id
+- target_column: ip_code
+  transformation: ta_re_re.ID
+  data_type: string
+  description: Mã External Tax Registration Representative.
+  target_attr_name: Involved Party Code
+- target_column: src_stm_code
+  transformation: '''KNT_TAX_REG_REPRESENTATIVE'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: identification_tp_code
+  transformation: ta_re_re.ID_DOCUMENT_TYPE
+  data_type: string
+  description: 'Loại giấy tờ: 1010=CMND, 2080=CCCD, 1020=Hộ chiếu.'
+  target_attr_name: Identification Type Code
+- target_column: identification_nbr
+  transformation: ta_re_re.ID_DOCUMENT_NUMBER
+  data_type: string
+  description: Số giấy tờ định danh.
+  target_attr_name: Identification Number
+- target_column: identification_issue_dt
+  transformation: ta_re_re.ISSUE_DATE
+  data_type: date
+  description: Ngày cấp giấy phép thành lập.
+  target_attr_name: Identification Issue Date
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

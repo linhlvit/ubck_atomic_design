@@ -1,0 +1,88 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-foreign_investor_securities_account-FIMS.SECURITIESACCOUNT
+  logical_name: Mapping Atomic - Foreign Investor Securities Account – source FIMS.SECURITIESACCOUNT
+  physical_name: foreign_investor_securities_account
+  dm_ref: ATM-foreign_investor_securities_account-FIMS.SECURITIESACCOUNT
+  brd_ref: BRD-SRC-FIMS-SECURITIESACCOUNT
+target:
+  namespace: atm
+  physical_name: foreign_investor_securities_account
+  etl_handle: SCD4A
+  description: Tài khoản giao dịch chứng khoán của nhà đầu tư nước ngoài mở tại công
+    ty chứng khoán. Ghi nhận số tài khoản, nơi mở, số lượng và tỷ lệ sở hữu chứng
+    khoán hiện tại (từ CATEGORIESSTOCK — cùng grain Investor × Securities Company).
+    FK đến Foreign Investor và Market Participant Organization (SECURITIESCOMPANY).
+    Table
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: SECURITIESACCOUNT
+  alias: se_ac
+  select_fields: Account, InvesId, SecId, OpenPlace
+  filter: null
+- source_type: physical_table
+  namespace: ods
+  table_name: CATEGORIESSTOCK
+  alias: ca_st
+  select_fields: Quantity, Rate
+  filter: null
+relationship:
+- main_alias: se_ac
+  join_type: LEFT JOIN
+  join_alias: ca_st
+  join_on: se_ac.Id = ca_st.Id
+mapping_columns:
+- target_column: foreign_investor_securities_account_id
+  transformation: '{hash_id}(''FIMS_SECURITIESACCOUNT'', se_ac.Account)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Foreign Investor Securities Account Id
+- target_column: foreign_investor_securities_account_code
+  transformation: se_ac.Account
+  data_type: string
+  description: Số tài khoản chứng khoán. BK.
+  target_attr_name: Foreign Investor Securities Account Code
+- target_column: src_stm_code
+  transformation: '''FIMS_SECURITIESACCOUNT'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: foreign_investor_id
+  transformation: '{hash_id}(''FIMS_SECURITIESACCOUNT'', se_ac.InvesId)'
+  data_type: string
+  description: 'FK -> INVESTOR: Nhà đầu tư nước ngoài sở hữu chứng khoán.'
+  target_attr_name: Foreign Investor Id
+- target_column: foreign_investor_code
+  transformation: se_ac.InvesId
+  data_type: string
+  description: Mã giao dịch NĐT NN (VSDC).
+  target_attr_name: Foreign Investor Code
+- target_column: sc_id
+  transformation: '{hash_id}(''FIMS_SECURITIESACCOUNT'', se_ac.SecId)'
+  data_type: string
+  description: 'FK -> SECURITIESCOMPANY: Công ty CK liên quan.'
+  target_attr_name: Securities Company Id
+- target_column: sc_code
+  transformation: se_ac.SecId
+  data_type: string
+  description: Mã công ty CK liên quan.
+  target_attr_name: Securities Company Code
+- target_column: account_opening_place
+  transformation: se_ac.OpenPlace
+  data_type: string
+  description: Nơi mở tài khoản (tên công ty CK hoặc VSDC).
+  target_attr_name: Account Opening Place
+- target_column: current_holding_quantity
+  transformation: se_ac.Quantity
+  data_type: int
+  description: Số lượng chứng khoán nắm giữ hiện tại.
+  target_attr_name: Current Holding Quantity
+- target_column: current_ownership_rate
+  transformation: se_ac.Rate
+  data_type: decimal(5,2)
+  description: Tỷ lệ nắm giữ so với tổng số lượng lưu hành (%).
+  target_attr_name: Current Ownership Rate
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

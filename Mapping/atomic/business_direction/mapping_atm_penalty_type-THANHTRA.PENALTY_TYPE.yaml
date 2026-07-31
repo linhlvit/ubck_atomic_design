@@ -1,0 +1,72 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-penalty_type-THANHTRA.PENALTY_TYPE
+  logical_name: Mapping Atomic - Penalty Type – source THANHTRA.PENALTY_TYPE
+  physical_name: penalty_type
+  dm_ref: ATM-penalty_type-THANHTRA.PENALTY_TYPE
+  brd_ref: BRD-SRC-THANHTRA-PENALTY_TYPE
+target:
+  namespace: atm
+  physical_name: penalty_type
+  etl_handle: Upsert
+  description: Danh mục hình thức xử phạt hành chính được pháp luật quy định, phân
+    loại thành hình phạt chính, hình phạt bổ sung và biện pháp khắc phục, có trạng
+    thái hiệu lực.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: PENALTY_TYPE
+  alias: pe_ty
+  select_fields: CODE, NAME, CATEGORY, DESCRIPTION, STATUS, LEGAL_BASIS, NOTE
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: penalty_tp_id
+  transformation: '{hash_id}(''THANHTRA_PENALTY_TYPE'', pe_ty.CODE)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Penalty Type Id
+- target_column: penalty_tp_code
+  transformation: pe_ty.CODE
+  data_type: string
+  description: Mã hình thức xử phạt, tự động sinh, UNIQUE. BK của entity.
+  target_attr_name: Penalty Type Code
+- target_column: src_stm_code
+  transformation: '''THANHTRA_PENALTY_TYPE'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: penalty_tp_nm
+  transformation: pe_ty.NAME
+  data_type: string
+  description: Tên hình thức xử phạt hành chính.
+  target_attr_name: Penalty Type Name
+- target_column: penalty_category_code
+  transformation: pe_ty.CATEGORY
+  data_type: string
+  description: 'Phân loại: PRIMARY_PENALTY (Xử phạt chính), SUPPLEMENTARY_PENALTY
+    (Xử phạt bổ sung), REMEDIAL_MEASURE (Biện pháp khắc phục hậu quả).'
+  target_attr_name: Penalty Category Code
+- target_column: description
+  transformation: pe_ty.DESCRIPTION
+  data_type: string
+  description: Mô tả chi tiết hình thức xử phạt.
+  target_attr_name: Description
+- target_column: life_cycle_status_code
+  transformation: pe_ty.STATUS
+  data_type: string
+  description: 'Trạng thái: ACTIVE (Đang sử dụng), INACTIVE (Ngừng sử dụng).'
+  target_attr_name: Life Cycle Status Code
+- target_column: legal_basis
+  transformation: pe_ty.LEGAL_BASIS
+  data_type: string
+  description: Căn cứ pháp luật cho hình thức xử phạt này.
+  target_attr_name: Legal Basis
+- target_column: note
+  transformation: pe_ty.NOTE
+  data_type: string
+  description: Ghi chú bổ sung.
+  target_attr_name: Note
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

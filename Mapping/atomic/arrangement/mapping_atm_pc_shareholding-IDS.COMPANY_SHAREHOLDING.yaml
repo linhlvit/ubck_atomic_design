@@ -1,0 +1,235 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-pc_shareholding-IDS.COMPANY_SHAREHOLDING
+  logical_name: Mapping Atomic - Public Company Shareholding – source IDS.COMPANY_SHAREHOLDING
+  physical_name: pc_shareholding
+  dm_ref: ATM-pc_shareholding-IDS.COMPANY_SHAREHOLDING
+  brd_ref: BRD-SRC-IDS-COMPANY_SHAREHOLDING
+target:
+  namespace: atm
+  physical_name: pc_shareholding
+  etl_handle: SCD4A
+  description: 'Cổ đông của CTĐC và thông tin sở hữu: số lượng cổ phần, tỷ lệ sở hữu,
+    phân loại cổ đông (sáng lập/lớn/chiến lược/nội bộ/nhà nước/liên quan).'
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: COMPANY_SHAREHOLDING
+  alias: co_sh
+  select_fields: ID, COMPANY_PROFILE_ID, LEGAL_ENTITY_ID, FOUNDER_HLD_FLG, FOUNDER_HLD_ACTIVE_DATE,
+    FOUNDER_HLD_INACTIVE_DATE, MAJOR_HLD_FLG, MAJOR_HLD_ACTIVE_DATE, MAJOR_HLD_INACTIVE_DATE,
+    STRATEGIC_HLD_FLG, STRATEGIC_HLD_ACTIVE_DATE, STRATEGIC_HLD_INACTIVE_DATE, INSIDER_HLD_FLG,
+    INSIDER_HLD_ACTIVE_DATE, INSIDER_HLD_INACTIVE_DATE, GOVERNMENT_HLD_FLG, GOVERNMENT_HLD_ACTIVE_DATE,
+    GOVERNMENT_HLD_INACTIVE_DATE, RELATED_HLD_FLG, RELATED_HLD_ACTIVE_DATE, RELATED_HLD_INACTIVE_DATE,
+    OTHER_HLD_FLG, OTHER_HLD_ACTIVE_DATE, OTHER_HLD_INACTIVE_DATE, SHAREHOLDER_TYPE,
+    OWNERSHIP_QTY, OWNERSHIP_RATIO, OWNERSHIP_DATE, DESCRIPTION, APPROVAL_FLG, DATA_SOURCE_CD,
+    DATA_UPDATED_DATE, DELETE_FLG
+  filter: null
+- source_type: physical_table
+  namespace: ods
+  table_name: COMPANY_SHAREHOLDING
+  alias: co_sh_2_raw
+  select_fields: Company_shareholdingID, SHAREHOLDER_TYPE
+  filter: null
+  note: Pure junction — denormalize thành ARRAY
+- source_type: derived_cte
+  namespace: null
+  table_name: co_sh_2_raw
+  alias: co_sh_2
+  select_fields: Company_shareholdingID, COLLECT_LIST(NAMED_STRUCT('shareholder_tp_code',
+    shareholder_type)) AS shareholder_tp_code
+  filter: GROUP BY Company_shareholdingID
+relationship:
+- main_alias: co_sh
+  join_type: LEFT JOIN
+  join_alias: co_sh_2
+  join_on: co_sh.ID = co_sh_2.Company_shareholdingID
+mapping_columns:
+- target_column: pc_shareholding_id
+  transformation: '{hash_id}(''IDS_COMPANY_SHAREHOLDING'', co_sh.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Public Company Shareholding Id
+- target_column: pc_shareholding_code
+  transformation: co_sh.ID
+  data_type: string
+  description: Khóa chính. BK của entity — map từ PK bảng nguồn.
+  target_attr_name: Public Company Shareholding Code
+- target_column: src_stm_code
+  transformation: '''IDS_COMPANY_SHAREHOLDING'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: pc_id
+  transformation: '{hash_id}(''IDS_COMPANY_PROFILES'', co_sh.COMPANY_PROFILE_ID)'
+  data_type: string
+  description: Id công ty đại chúng.
+  target_attr_name: Public Company Id
+- target_column: pc_code
+  transformation: co_sh.COMPANY_PROFILE_ID
+  data_type: string
+  description: Mã công ty đại chúng.
+  target_attr_name: Public Company Code
+- target_column: legal_entity_id
+  transformation: '{hash_id}(''IDS_LEGAL_ENTITIES'', co_sh.LEGAL_ENTITY_ID)'
+  data_type: string
+  description: Id cổ đông.
+  target_attr_name: Legal Entity Id
+- target_column: legal_entity_code
+  transformation: co_sh.LEGAL_ENTITY_ID
+  data_type: string
+  description: Mã thực thể pháp lý (cổ đông).
+  target_attr_name: Legal Entity Code
+- target_column: founder_shareholder_indicator
+  transformation: co_sh.FOUNDER_HLD_FLG
+  data_type: int
+  description: Là cổ đông sáng lập.
+  target_attr_name: Founder Shareholder Indicator
+- target_column: founder_shareholder_active_dt
+  transformation: co_sh.FOUNDER_HLD_ACTIVE_DATE
+  data_type: date
+  description: Ngày hoạt động của cổ đông sáng lập.
+  target_attr_name: Founder Shareholder Active Date
+- target_column: founder_shareholder_inactive_dt
+  transformation: co_sh.FOUNDER_HLD_INACTIVE_DATE
+  data_type: date
+  description: Ngày kết thúc hoạt động của cổ đông sáng lập.
+  target_attr_name: Founder Shareholder Inactive Date
+- target_column: major_shareholder_indicator
+  transformation: co_sh.MAJOR_HLD_FLG
+  data_type: int
+  description: Là cổ đông lớn.
+  target_attr_name: Major Shareholder Indicator
+- target_column: major_shareholder_active_dt
+  transformation: co_sh.MAJOR_HLD_ACTIVE_DATE
+  data_type: date
+  description: Ngày hoạt động của cổ đông lớn.
+  target_attr_name: Major Shareholder Active Date
+- target_column: major_shareholder_inactive_dt
+  transformation: co_sh.MAJOR_HLD_INACTIVE_DATE
+  data_type: date
+  description: Ngày kết thúc hoạt động của cổ đông lớn.
+  target_attr_name: Major Shareholder Inactive Date
+- target_column: strategic_shareholder_indicator
+  transformation: co_sh.STRATEGIC_HLD_FLG
+  data_type: int
+  description: Là cổ đông chiến lược.
+  target_attr_name: Strategic Shareholder Indicator
+- target_column: strategic_shareholder_active_dt
+  transformation: co_sh.STRATEGIC_HLD_ACTIVE_DATE
+  data_type: date
+  description: Ngày bắt đầu là cổ đông chiến lược.
+  target_attr_name: Strategic Shareholder Active Date
+- target_column: strategic_shareholder_inactive_dt
+  transformation: co_sh.STRATEGIC_HLD_INACTIVE_DATE
+  data_type: date
+  description: Ngày kết thúc là cổ đông chiến lược.
+  target_attr_name: Strategic Shareholder Inactive Date
+- target_column: insider_shareholder_indicator
+  transformation: co_sh.INSIDER_HLD_FLG
+  data_type: int
+  description: Là cổ đông nội bộ.
+  target_attr_name: Insider Shareholder Indicator
+- target_column: insider_shareholder_active_dt
+  transformation: co_sh.INSIDER_HLD_ACTIVE_DATE
+  data_type: date
+  description: Ngày hoạt động của cổ đông nội bộ.
+  target_attr_name: Insider Shareholder Active Date
+- target_column: insider_shareholder_inactive_dt
+  transformation: co_sh.INSIDER_HLD_INACTIVE_DATE
+  data_type: date
+  description: Ngày kết thúc hoạt động của cổ đông nội bộ.
+  target_attr_name: Insider Shareholder Inactive Date
+- target_column: government_shareholder_indicator
+  transformation: co_sh.GOVERNMENT_HLD_FLG
+  data_type: int
+  description: Là cổ đông nhà nước.
+  target_attr_name: Government Shareholder Indicator
+- target_column: government_shareholder_active_dt
+  transformation: co_sh.GOVERNMENT_HLD_ACTIVE_DATE
+  data_type: date
+  description: Ngày hoạt động của cổ đông nhà nước.
+  target_attr_name: Government Shareholder Active Date
+- target_column: government_shareholder_inactive_dt
+  transformation: co_sh.GOVERNMENT_HLD_INACTIVE_DATE
+  data_type: date
+  description: Ngày kết thúc hoạt động của cổ đông nhà nước.
+  target_attr_name: Government Shareholder Inactive Date
+- target_column: related_shareholder_indicator
+  transformation: co_sh.RELATED_HLD_FLG
+  data_type: int
+  description: Là cổ đông liên quan.
+  target_attr_name: Related Shareholder Indicator
+- target_column: related_shareholder_active_dt
+  transformation: co_sh.RELATED_HLD_ACTIVE_DATE
+  data_type: date
+  description: Ngày hoạt động của cổ đông liên quan.
+  target_attr_name: Related Shareholder Active Date
+- target_column: related_shareholder_inactive_dt
+  transformation: co_sh.RELATED_HLD_INACTIVE_DATE
+  data_type: date
+  description: Ngày kết thúc hoạt động của cổ đông liên quan.
+  target_attr_name: Related Shareholder Inactive Date
+- target_column: other_shareholder_indicator
+  transformation: co_sh.OTHER_HLD_FLG
+  data_type: int
+  description: Cổ đông khác (không thuộc các nhóm phân loại chuẩn).
+  target_attr_name: Other Shareholder Indicator
+- target_column: other_shareholder_active_dt
+  transformation: co_sh.OTHER_HLD_ACTIVE_DATE
+  data_type: date
+  description: Ngày bắt đầu là cổ đông khác.
+  target_attr_name: Other Shareholder Active Date
+- target_column: other_shareholder_inactive_dt
+  transformation: co_sh.OTHER_HLD_INACTIVE_DATE
+  data_type: date
+  description: Ngày kết thúc là cổ đông khác.
+  target_attr_name: Other Shareholder Inactive Date
+- target_column: shareholder_tp_code
+  transformation: co_sh_2.shareholder_tp_code
+  data_type: array<string>
+  description: Loại cổ đông (có thể thuộc nhiều loại cùng lúc).
+  target_attr_name: Shareholder Type Code
+- target_column: ownership_quantity
+  transformation: co_sh.OWNERSHIP_QTY
+  data_type: int
+  description: Số lượng cổ phiếu nắm giữ.
+  target_attr_name: Ownership Quantity
+- target_column: ownership_ratio_percentage
+  transformation: co_sh.OWNERSHIP_RATIO
+  data_type: decimal(5,2)
+  description: Phần trăm nắm giữ.
+  target_attr_name: Ownership Ratio Percentage
+- target_column: ownership_dt
+  transformation: co_sh.OWNERSHIP_DATE
+  data_type: date
+  description: Ngày đạt tỷ lệ sở hữu.
+  target_attr_name: Ownership Date
+- target_column: description
+  transformation: co_sh.DESCRIPTION
+  data_type: string
+  description: Mô tả.
+  target_attr_name: Description
+- target_column: approval_indicator
+  transformation: co_sh.APPROVAL_FLG
+  data_type: int
+  description: Trạng thái phê duyệt thông tin cổ đông.
+  target_attr_name: Approval Indicator
+- target_column: data_src_code
+  transformation: co_sh.DATA_SOURCE_CD
+  data_type: string
+  description: Nguồn cập nhật dữ liệu cổ đông (trung tâm lưu ký hay thủ công).
+  target_attr_name: Data Source Code
+- target_column: data_updated_dt
+  transformation: co_sh.DATA_UPDATED_DATE
+  data_type: date
+  description: Ngày cập nhật dữ liệu từ trung tâm lưu ký và các sổ.
+  target_attr_name: Data Updated Date
+- target_column: deleted_indicator
+  transformation: co_sh.DELETE_FLG
+  data_type: int
+  description: Đánh dấu xóa mềm.
+  target_attr_name: Deleted Indicator
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

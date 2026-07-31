@@ -1,0 +1,71 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-ra_organization_unit-NHNCK.UNITS
+  logical_name: Mapping Atomic - Regulatory Authority Organization Unit – source NHNCK.UNITS
+  physical_name: ra_organization_unit
+  dm_ref: ATM-ra_organization_unit-NHNCK.UNITS
+  brd_ref: BRD-SRC-NHNCK-UNITS
+target:
+  namespace: atm
+  physical_name: ra_organization_unit
+  etl_handle: SCD4A
+  description: Đơn vị và phòng ban thuộc UBCKNN — cấu trúc cây self-referencing DEPARTMENT
+    → UNIT. Phân biệt bằng Organization Unit Type Code (ETL-derived). Dùng chung làm
+    FK tổ chức nội bộ.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: UNITS
+  alias: unit
+  select_fields: UNIT_CODE, UNIT_NAME, LEVEL_, PARENT_ID, DESCRIPTION
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: ra_ou_id
+  transformation: '{hash_id}(''NHNCK_UNITS'', unit.UNIT_CODE)'
+  data_type: string
+  description: Id tự sinh (surrogate key)
+  target_attr_name: Regulatory Authority Organization Unit Id
+- target_column: ra_ou_code
+  transformation: unit.UNIT_CODE
+  data_type: string
+  description: Mã đơn vị nội bộ UBCKNN. BK
+  target_attr_name: Regulatory Authority Organization Unit Code
+- target_column: src_stm_code
+  transformation: '''NHNCK_UNITS'''
+  data_type: string
+  description: Mã hệ thống nguồn. BK
+  target_attr_name: Source System Code
+- target_column: ou_tp_code
+  transformation: 'null'
+  data_type: string
+  description: Phân loại — Đơn vị (Unit)
+  target_attr_name: Organization Unit Type Code
+- target_column: ra_ou_nm
+  transformation: unit.UNIT_NAME
+  data_type: string
+  description: Tên đơn vị nội bộ UBCKNN
+  target_attr_name: Regulatory Authority Organization Unit Name
+- target_column: hierarchy_level_code
+  transformation: unit.LEVEL_
+  data_type: string
+  description: Cấp độ trong cây phân cấp tổ chức
+  target_attr_name: Hierarchy Level Code
+- target_column: parent_ra_ou_id
+  transformation: '{hash_id}(''NHNCK_UNITS'', unit.UNIT_CODE)'
+  data_type: string
+  description: FK đến đơn vị cha (self-ref)
+  target_attr_name: Parent Regulatory Authority Organization Unit Id
+- target_column: parent_ra_ou_code
+  transformation: unit.PARENT_ID
+  data_type: string
+  description: Mã đơn vị cha
+  target_attr_name: Parent Regulatory Authority Organization Unit Code
+- target_column: description
+  transformation: unit.DESCRIPTION
+  data_type: string
+  description: Mô tả chi tiết đơn vị
+  target_attr_name: Description
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

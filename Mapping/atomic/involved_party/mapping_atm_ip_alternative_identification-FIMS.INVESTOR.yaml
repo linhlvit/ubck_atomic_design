@@ -1,0 +1,63 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-ip_alternative_identification-FIMS.INVESTOR
+  logical_name: Mapping Atomic - Involved Party Alternative Identification – source
+    FIMS.INVESTOR
+  physical_name: ip_alternative_identification
+  dm_ref: ATM-ip_alternative_identification-FIMS.INVESTOR
+  brd_ref: BRD-SRC-FIMS-INVESTOR
+target:
+  namespace: atm
+  physical_name: ip_alternative_identification
+  etl_handle: SCD4A
+  description: Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ
+    chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ
+    1 nguồn.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: INVESTOR
+  alias: inve
+  select_fields: ObjectType, IdNo, IdDate, IdAdd, TransactionCode
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: src_stm_code
+  transformation: '''FIMS_INVESTOR'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: identification_tp_code
+  transformation: inve.ObjectType
+  data_type: string
+  description: Loại giấy tờ tùy thân/pháp lý (CMND/CCCD/Hộ chiếu với NĐT cá nhân,
+    Giấy phép/Mã số DN với NĐT tổ chức).
+  target_attr_name: Identification Type Code
+- target_column: identification_nbr
+  transformation: inve.IdNo
+  data_type: string
+  description: Số CMND/CCCD/Hộ chiếu/Giấy phép.
+  target_attr_name: Identification Number
+- target_column: identification_issue_dt
+  transformation: inve.IdDate
+  data_type: date
+  description: Ngày cấp giấy tờ định danh.
+  target_attr_name: Identification Issue Date
+- target_column: identification_issue_place
+  transformation: inve.IdAdd
+  data_type: string
+  description: Nơi cấp giấy tờ định danh.
+  target_attr_name: Identification Issue Place
+- target_column: ip_id
+  transformation: '{hash_id}(''FIMS_INVESTOR'', inve.TransactionCode)'
+  data_type: string
+  description: FK đến Foreign Investor (Involved Party).
+  target_attr_name: Involved Party Id
+- target_column: ip_code
+  transformation: inve.TransactionCode
+  data_type: string
+  description: Mã Foreign Investor.
+  target_attr_name: Involved Party Code
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

@@ -1,0 +1,130 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-pd_subject_behavior-THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR
+  logical_name: Mapping Atomic - Penalty Decision Subject Behavior – source THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR
+  physical_name: pd_subject_behavior
+  dm_ref: ATM-pd_subject_behavior-THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR
+  brd_ref: BRD-SRC-THANHTRA-PENALTY_DECISION_SUBJECT_BEHAVIOR
+target:
+  namespace: atm
+  physical_name: pd_subject_behavior
+  etl_handle: SCD4A
+  description: 'Chi tiết từng hành vi vi phạm của một đối tượng trong quyết định xử
+    phạt: liên kết hành vi vi phạm, hình thức xử phạt được áp dụng, mức phạt thực
+    tế.'
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: PENALTY_DECISION_SUBJECT_BEHAVIOR
+  alias: pe_de_su_be
+  select_fields: ID, PENALTY_DECISION_SUBJECT_ID, VIOLATION_BEHAVIOR_ID, PENALTY_TYPE_ID,
+    DESCRIPTION, MIN_FINE_AMOUNT, MAX_FINE_AMOUNT, APPLIED_FINE_AMOUNT, REMEDIAL_MEASURE,
+    REMEDIAL_DEADLINE, LEGAL_BASIS
+  filter: null
+- source_type: physical_table
+  namespace: ods
+  table_name: VIOLATION_BEHAVIOR
+  alias: vi_be
+  select_fields: ID, CODE
+  filter: null
+  note: Crosswalk bridge cho violation_behavior_id
+- source_type: physical_table
+  namespace: ods
+  table_name: PENALTY_TYPE
+  alias: pe_ty
+  select_fields: ID, CODE
+  filter: null
+  note: Crosswalk bridge cho penalty_tp_id
+relationship:
+- main_alias: pe_de_su_be
+  join_type: LEFT JOIN
+  join_alias: vi_be
+  join_on: pe_de_su_be.VIOLATION_BEHAVIOR_ID = vi_be.ID
+- main_alias: pe_de_su_be
+  join_type: LEFT JOIN
+  join_alias: pe_ty
+  join_on: pe_de_su_be.PENALTY_TYPE_ID = pe_ty.ID
+mapping_columns:
+- target_column: pd_subject_behavior_id
+  transformation: '{hash_id}(''THANHTRA_PENALTY_DECISION_SUBJECT_BEHAVIOR'', pe_de_su_be.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Penalty Decision Subject Behavior Id
+- target_column: pd_subject_behavior_code
+  transformation: pe_de_su_be.ID
+  data_type: string
+  description: BK chính. PK nguồn (VARCHAR2 UUID).
+  target_attr_name: Penalty Decision Subject Behavior Code
+- target_column: src_stm_code
+  transformation: '''THANHTRA_PENALTY_DECISION_SUBJECT_BEHAVIOR'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: pd_subject_id
+  transformation: '{hash_id}(''THANHTRA_PENALTY_DECISION_SUBJECT'', pe_de_su_be.PENALTY_DECISION_SUBJECT_ID)'
+  data_type: string
+  description: FK đến đối tượng bị xử phạt trong quyết định.
+  target_attr_name: Penalty Decision Subject Id
+- target_column: pd_subject_code
+  transformation: pe_de_su_be.PENALTY_DECISION_SUBJECT_ID
+  data_type: string
+  description: Mã đối tượng bị xử phạt liên kết (snapshot).
+  target_attr_name: Penalty Decision Subject Code
+- target_column: violation_behavior_id
+  transformation: '{hash_id}(''THANHTRA_VIOLATION_BEHAVIOR'', vi_be.CODE)'
+  data_type: string
+  description: FK đến danh mục hành vi vi phạm.
+  target_attr_name: Violation Behavior Id
+- target_column: violation_behavior_code
+  transformation: pe_de_su_be.VIOLATION_BEHAVIOR_ID
+  data_type: string
+  description: Mã hành vi vi phạm liên kết (snapshot).
+  target_attr_name: Violation Behavior Code
+- target_column: penalty_tp_id
+  transformation: '{hash_id}(''THANHTRA_PENALTY_TYPE'', pe_ty.CODE)'
+  data_type: string
+  description: FK đến loại hình phạt áp dụng.
+  target_attr_name: Penalty Type Id
+- target_column: penalty_tp_code
+  transformation: pe_de_su_be.PENALTY_TYPE_ID
+  data_type: string
+  description: Mã loại hình phạt liên kết (snapshot).
+  target_attr_name: Penalty Type Code
+- target_column: description
+  transformation: pe_de_su_be.DESCRIPTION
+  data_type: string
+  description: Mô tả chi tiết hành vi vi phạm (thời gian, địa điểm vi phạm).
+  target_attr_name: Description
+- target_column: min_fine_amt
+  transformation: pe_de_su_be.MIN_FINE_AMOUNT
+  data_type: decimal(23,2)
+  description: Mức phạt tiền tối thiểu của khung xử phạt (A), VNĐ.
+  target_attr_name: Min Fine Amount
+- target_column: max_fine_amt
+  transformation: pe_de_su_be.MAX_FINE_AMOUNT
+  data_type: decimal(23,2)
+  description: Mức phạt tiền tối đa của khung xử phạt (B), VNĐ.
+  target_attr_name: Max Fine Amount
+- target_column: applied_fine_amt
+  transformation: pe_de_su_be.APPLIED_FINE_AMOUNT
+  data_type: decimal(23,2)
+  description: Mức phạt tiền áp dụng thực tế, VNĐ.
+  target_attr_name: Applied Fine Amount
+- target_column: remedial_measure
+  transformation: pe_de_su_be.REMEDIAL_MEASURE
+  data_type: string
+  description: Biện pháp khắc phục hậu quả áp dụng cho hành vi vi phạm này.
+  target_attr_name: Remedial Measure
+- target_column: remedial_deadline
+  transformation: pe_de_su_be.REMEDIAL_DEADLINE
+  data_type: date
+  description: Hạn thực hiện biện pháp khắc phục.
+  target_attr_name: Remedial Deadline
+- target_column: legal_basis
+  transformation: pe_de_su_be.LEGAL_BASIS
+  data_type: string
+  description: Căn cứ pháp luật để xử phạt hành vi vi phạm này.
+  target_attr_name: Legal Basis
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

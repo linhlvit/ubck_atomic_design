@@ -1,0 +1,133 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-sc_shareholder_ownership_change-SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE
+  logical_name: Mapping Atomic - Securities Company Shareholder Ownership Change –
+    source SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE
+  physical_name: sc_shareholder_ownership_change
+  dm_ref: ATM-sc_shareholder_ownership_change-SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE
+  brd_ref: BRD-SRC-SCMS-SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE
+target:
+  namespace: atm
+  physical_name: sc_shareholder_ownership_change
+  etl_handle: Fact Append
+  description: Giao dịch thay đổi sở hữu cổ đông CTCK. Mỗi dòng = 1 lần thay đổi insert-only.
+    Ghi nhận số cổ phần và tỷ lệ sở hữu trước/sau thay đổi.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE
+  alias: sc_fi_sh_ow_ch
+  select_fields: ID, CREATED_AT, SC_FIRM_INFO_ID, SHAREHOLDER_ID, TRANSACTION_TYPE,
+    DATA_SOURCE, CAPITAL_BEFORE, RATIO_BEFORE, CAPITAL_AFTER, RATIO_AFTER, NGAY_HIEU_LUC,
+    DOCUMENT_NUMBER, ATTACHMENT_PATH, NOTE
+  filter: created_at >= {etl_date} AND created_at < {etl_date} + 1
+- source_type: physical_table
+  namespace: ods
+  table_name: SC_FIRM_INFO
+  alias: sc_fi_in
+  select_fields: ID, CODE
+  filter: null
+  note: Crosswalk bridge cho sc_id
+relationship:
+- main_alias: sc_fi_sh_ow_ch
+  join_type: LEFT JOIN
+  join_alias: sc_fi_in
+  join_on: sc_fi_sh_ow_ch.SC_FIRM_INFO_ID = sc_fi_in.ID
+mapping_columns:
+- target_column: sc_shareholder_ownership_change_id
+  transformation: '{hash_id}(''SCMS_SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE'', sc_fi_sh_ow_ch.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Securities Company Shareholder Ownership Change Id
+- target_column: sc_shareholder_ownership_change_code
+  transformation: sc_fi_sh_ow_ch.ID
+  data_type: string
+  description: Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.
+  target_attr_name: Securities Company Shareholder Ownership Change Code
+- target_column: src_stm_code
+  transformation: '''SCMS_SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: data_dt
+  transformation: sc_fi_sh_ow_ch.CREATED_AT
+  data_type: date
+  description: 'Thời điểm tạo bản ghi (nguồn: CREATED_AT). Dùng làm căn cứ partition
+    Delta Lake / incremental filter — bảng nguồn có data_change_mode=Append, filter_logic
+    theo created_at (xem BRD/Source/brd_SCMS.yaml, đã sửa lỗi created_by→created_at
+    2026-07-15).'
+  target_attr_name: Data Date
+- target_column: sc_id
+  transformation: '{hash_id}(''SCMS_SC_FIRM_INFO'', sc_fi_in.CODE)'
+  data_type: string
+  description: FK đến Công ty chứng khoán liên quan đến giao dịch thay đổi sở hữu.
+  target_attr_name: Securities Company Id
+- target_column: sc_code
+  transformation: sc_fi_sh_ow_ch.SC_FIRM_INFO_ID
+  data_type: string
+  description: Mã Công ty chứng khoán.
+  target_attr_name: Securities Company Code
+- target_column: sc_shareholder_id
+  transformation: '{hash_id}(''SCMS_SC_FIRM_SHAREHOLDER'', sc_fi_sh_ow_ch.SHAREHOLDER_ID)'
+  data_type: string
+  description: FK đến Cổ đông CTCK có thay đổi sở hữu.
+  target_attr_name: Securities Company Shareholder Id
+- target_column: sc_shareholder_code
+  transformation: sc_fi_sh_ow_ch.SHAREHOLDER_ID
+  data_type: string
+  description: Mã Cổ đông CTCK có thay đổi sở hữu.
+  target_attr_name: Securities Company Shareholder Code
+- target_column: shareholder_transaction_tp_code
+  transformation: sc_fi_sh_ow_ch.TRANSACTION_TYPE
+  data_type: string
+  description: 'Loại giao dịch thay đổi sở hữu: TANG_VON=Tăng vốn góp; GIAM_VON=Giảm
+    vốn góp; CHUYEN_NHUONG=Chuyển nhượng cổ phần; TANG_VON_DIEU_LE=Tăng vốn điều lệ.'
+  target_attr_name: Shareholder Transaction Type Code
+- target_column: data_src
+  transformation: sc_fi_sh_ow_ch.DATA_SOURCE
+  data_type: string
+  description: 'Nguồn gốc dữ liệu: Đồng bộ tự động, Nhập tay, Cổng báo cáo.'
+  target_attr_name: Data Source
+- target_column: capital_before
+  transformation: sc_fi_sh_ow_ch.CAPITAL_BEFORE
+  data_type: decimal(23,2)
+  description: 'Vốn góp trước khi giao dịch (đơn vị: đồng).'
+  target_attr_name: Capital Before
+- target_column: ratio_before
+  transformation: sc_fi_sh_ow_ch.RATIO_BEFORE
+  data_type: decimal(5,2)
+  description: Tỷ lệ sở hữu trước khi giao dịch (%).
+  target_attr_name: Ratio Before
+- target_column: capital_after
+  transformation: sc_fi_sh_ow_ch.CAPITAL_AFTER
+  data_type: decimal(23,2)
+  description: 'Vốn góp sau khi giao dịch (đơn vị: đồng).'
+  target_attr_name: Capital After
+- target_column: ratio_after
+  transformation: sc_fi_sh_ow_ch.RATIO_AFTER
+  data_type: decimal(5,2)
+  description: Tỷ lệ sở hữu sau khi giao dịch (%).
+  target_attr_name: Ratio After
+- target_column: effective_dt
+  transformation: sc_fi_sh_ow_ch.NGAY_HIEU_LUC
+  data_type: date
+  description: Ngày hiệu lực của thay đổi sở hữu.
+  target_attr_name: Effective Date
+- target_column: document_nbr
+  transformation: sc_fi_sh_ow_ch.DOCUMENT_NUMBER
+  data_type: string
+  description: Số văn bản pháp lý (QĐ/GP/CV/Thông tư) của giao dịch thay đổi sở hữu.
+  target_attr_name: Document Number
+- target_column: attachment_path
+  transformation: sc_fi_sh_ow_ch.ATTACHMENT_PATH
+  data_type: string
+  description: Đường dẫn file đính kèm trên hệ thống lưu trữ.
+  target_attr_name: Attachment Path
+- target_column: note
+  transformation: sc_fi_sh_ow_ch.NOTE
+  data_type: string
+  description: Ghi chú bổ sung, không bắt buộc.
+  target_attr_name: Note
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

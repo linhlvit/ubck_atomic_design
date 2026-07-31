@@ -1,0 +1,109 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-sp_license_decision_document-NHNCK.DECISIONS
+  logical_name: Mapping Atomic - Securities Practitioner License Decision Document
+    – source NHNCK.DECISIONS
+  physical_name: sp_license_decision_document
+  dm_ref: ATM-sp_license_decision_document-NHNCK.DECISIONS
+  brd_ref: BRD-SRC-NHNCK-DECISIONS
+target:
+  namespace: atm
+  physical_name: sp_license_decision_document
+  etl_handle: SCD4A
+  description: Quyết định hành chính do UBCKNN ban hành liên quan đến CCHN — cấp,
+    thu hồi, hủy CCHN hoặc công nhận kết quả thi. Ghi nhận số quyết định, loại, ngày
+    ký và người ký.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: DECISIONS
+  alias: deci
+  select_fields: ID, DECISION_NUMBER, TITLE, REFERENCE, DECISION_CONTENT, SIGNED_DATE,
+    SIGNATORY, POSITION, DECISION_UNIT, FILE_NAME, FILE_PATH, DECISION_TYPE_ID, CONTENT,
+    IS_ACTIVE
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: sp_license_decision_document_id
+  transformation: '{hash_id}(''NHNCK_DECISIONS'', deci.ID)'
+  data_type: string
+  description: Surrogate key cho quyết định hành chính
+  target_attr_name: Securities Practitioner License Decision Document Id
+- target_column: sp_license_decision_document_code
+  transformation: deci.ID
+  data_type: string
+  description: Business key từ PK nguồn DECISIONS.ID
+  target_attr_name: Securities Practitioner License Decision Document Code
+- target_column: src_stm_code
+  transformation: '''NHNCK_DECISIONS'''
+  data_type: string
+  description: Mã hệ thống nguồn của bản ghi
+  target_attr_name: Source System Code
+- target_column: decision_nbr
+  transformation: deci.DECISION_NUMBER
+  data_type: string
+  description: 'Số hiệu quyết định hành chính (VD: 123/QĐ-UBCK)'
+  target_attr_name: Decision Number
+- target_column: decision_title
+  transformation: deci.TITLE
+  data_type: string
+  description: Tiêu đề/tên quyết định hành chính
+  target_attr_name: Decision Title
+- target_column: legal_reference
+  transformation: deci.REFERENCE
+  data_type: string
+  description: Căn cứ pháp lý của quyết định
+  target_attr_name: Legal Reference
+- target_column: decision_content
+  transformation: deci.DECISION_CONTENT
+  data_type: string
+  description: Nội dung đầy đủ của quyết định
+  target_attr_name: Decision Content
+- target_column: decision_signed_dt
+  transformation: deci.SIGNED_DATE
+  data_type: date
+  description: Ngày ký ban hành quyết định
+  target_attr_name: Decision Signed Date
+- target_column: signatory_nm
+  transformation: deci.SIGNATORY
+  data_type: string
+  description: Họ tên người ký quyết định
+  target_attr_name: Signatory Name
+- target_column: signatory_position
+  transformation: deci.POSITION
+  data_type: string
+  description: Chức vụ của người ký quyết định
+  target_attr_name: Signatory Position
+- target_column: issuing_organization_nm
+  transformation: deci.DECISION_UNIT
+  data_type: string
+  description: 'Tên đơn vị ban hành quyết định (VD: Ủy ban Chứng khoán Nhà nước)'
+  target_attr_name: Issuing Organization Name
+- target_column: attachment_file_nm
+  transformation: deci.FILE_NAME
+  data_type: string
+  description: Tên file văn bản đính kèm
+  target_attr_name: Attachment File Name
+- target_column: attachment_file_path
+  transformation: deci.FILE_PATH
+  data_type: string
+  description: Đường dẫn lưu trữ file đính kèm
+  target_attr_name: Attachment File Path
+- target_column: decision_tp_code
+  transformation: deci.DECISION_TYPE_ID
+  data_type: string
+  description: Loại quyết định hành chính (Cấp mới / Thu hồi / Cấp lại / ...)
+  target_attr_name: Decision Type Code
+- target_column: notification_content
+  transformation: deci.CONTENT
+  data_type: string
+  description: Nội dung thông báo hoặc yêu cầu bổ sung hồ sơ kèm theo
+  target_attr_name: Notification Content
+- target_column: active_flag
+  transformation: deci.IS_ACTIVE
+  data_type: int
+  description: Cờ đánh dấu quyết định đang được sử dụng (1=Đang dùng; 0=Vô hiệu)
+  target_attr_name: Active Flag
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

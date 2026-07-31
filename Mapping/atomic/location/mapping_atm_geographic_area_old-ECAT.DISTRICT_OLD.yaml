@@ -1,0 +1,151 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-geographic_area_old-ECAT.DISTRICT_OLD
+  logical_name: Mapping Atomic - Geographic Area Old – source ECAT.DISTRICT_OLD
+  physical_name: geographic_area_old
+  dm_ref: ATM-geographic_area_old-ECAT.DISTRICT_OLD
+  brd_ref: BRD-SRC-ECAT-DISTRICT_OLD
+target:
+  namespace: atm
+  physical_name: geographic_area_old
+  etl_handle: SCD4A
+  description: Đơn vị địa lý lịch sử (pre-2025) — tỉnh/thành phố cũ (PROVINCE_OLD),
+    quận/huyện cũ (DISTRICT_OLD, cấp bị bỏ sau sáp nhập), phường/xã cũ (WARD_OLD).
+    Tách riêng khỏi Geographic Area vì cấu trúc phân cấp 3 cấp khác với 2 cấp hiện
+    hành. Chỉ phục vụ tra cứu lịch sử, có FK cross-entity sang Geographic Area (anchor
+    Region + successor mapping sau sáp nhập).
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: DISTRICT_OLD
+  alias: di_ol
+  select_fields: CODE, NAME, PROVINCE_OLD_ID, EFFECTIVE, ACTIVE, DELETED, EFFECTIVE_START_DATE,
+    EFFECTIVE_END_DATE, VERSION, DISPLAY_LABEL, ACTIVE_REASON, DELETED_REASON, CREATED_AT,
+    UPDATED_AT, CREATED_BY_ID, CREATED_BY_NAME, UPDATED_BY_ID, UPDATED_BY_NAME
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: geographic_area_old_id
+  transformation: '{hash_id}(''ECAT_DISTRICT_OLD'', di_ol.CODE)'
+  data_type: string
+  description: Id tự sinh (surrogate key)
+  target_attr_name: Geographic Area Old Id
+- target_column: src_stm_code
+  transformation: '''ECAT_DISTRICT_OLD'''
+  data_type: string
+  description: Mã nguồn dữ liệu
+  target_attr_name: Source System Code
+- target_column: geographic_area_old_tp_code
+  transformation: 'null'
+  data_type: string
+  description: Phân loại vùng địa lý lịch sử — Quận/Huyện cũ
+  target_attr_name: Geographic Area Old Type Code
+- target_column: geographic_area_old_code
+  transformation: di_ol.CODE
+  data_type: string
+  description: Mã quận/huyện cũ nghiệp vụ (do ECAT quản lý). BK duy nhất — Id hash
+    từ trường này.
+  target_attr_name: Geographic Area Old Code
+- target_column: geographic_area_old_nm
+  transformation: di_ol.NAME
+  data_type: string
+  description: Tên quận/huyện cũ
+  target_attr_name: Geographic Area Old Name
+- target_column: parent_geographic_area_old_id
+  transformation: '{hash_id}(''ECAT_DISTRICT_OLD'', di_ol.PROVINCE_OLD_ID)'
+  data_type: string
+  description: FK đến tỉnh/thành phố cũ cha (self-ref trong Geographic Area Old)
+  target_attr_name: Parent Geographic Area Old Id
+- target_column: parent_geographic_area_old_code
+  transformation: di_ol.PROVINCE_OLD_ID
+  data_type: string
+  description: Mã tỉnh/thành phố cũ cha
+  target_attr_name: Parent Geographic Area Old Code
+- target_column: effective_indicator
+  transformation: di_ol.EFFECTIVE
+  data_type: int
+  description: 'Tình trạng hiệu lực: true=Hiệu lực; false=Hết hiệu lực'
+  target_attr_name: Effective Indicator
+- target_column: active_indicator
+  transformation: di_ol.ACTIVE
+  data_type: int
+  description: 'Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng'
+  target_attr_name: Active Indicator
+- target_column: deleted_indicator
+  transformation: di_ol.DELETED
+  data_type: int
+  description: 'Cờ xóa mềm: true=Đã xóa; false=Chưa xóa'
+  target_attr_name: Deleted Indicator
+- target_column: effective_start_dt
+  transformation: di_ol.EFFECTIVE_START_DATE
+  data_type: timestamp
+  description: Ngày bắt đầu hiệu lực
+  target_attr_name: Effective Start Date
+- target_column: effective_end_dt
+  transformation: di_ol.EFFECTIVE_END_DATE
+  data_type: timestamp
+  description: Ngày kết thúc hiệu lực
+  target_attr_name: Effective End Date
+- target_column: version_nbr
+  transformation: di_ol.VERSION
+  data_type: int
+  description: Số phiên bản bản ghi tại nguồn
+  target_attr_name: Version Number
+- target_column: display_label
+  transformation: di_ol.DISPLAY_LABEL
+  data_type: string
+  description: Nhãn hiển thị
+  target_attr_name: Display Label
+- target_column: active_reason
+  transformation: di_ol.ACTIVE_REASON
+  data_type: string
+  description: Lý do thay đổi trạng thái sử dụng
+  target_attr_name: Active Reason
+- target_column: deleted_reason
+  transformation: di_ol.DELETED_REASON
+  data_type: string
+  description: Lý do xóa
+  target_attr_name: Deleted Reason
+- target_column: created_tms
+  transformation: di_ol.CREATED_AT
+  data_type: timestamp
+  description: Thời điểm bản ghi được tạo tại nguồn
+  target_attr_name: Created Timestamp
+- target_column: updated_tms
+  transformation: di_ol.UPDATED_AT
+  data_type: timestamp
+  description: Thời điểm bản ghi được cập nhật gần nhất tại nguồn
+  target_attr_name: Updated Timestamp
+- target_column: created_by_staff_id
+  transformation: '{hash_id}(''ECAT_UBCK_STAFF'', di_ol.CREATED_BY_ID)'
+  data_type: string
+  description: FK đến Regulatory Authority Staff — cán bộ tạo bản ghi
+  target_attr_name: Created By Staff Id
+- target_column: created_by_staff_code
+  transformation: di_ol.CREATED_BY_ID
+  data_type: string
+  description: Mã cán bộ tạo bản ghi — lookup pair với Created By Staff Id
+  target_attr_name: Created By Staff Code
+- target_column: created_by_staff_nm
+  transformation: di_ol.CREATED_BY_NAME
+  data_type: string
+  description: Tên người tạo bản ghi (denormalized snapshot tại thời điểm tạo)
+  target_attr_name: Created By Staff Name
+- target_column: updated_by_staff_id
+  transformation: '{hash_id}(''ECAT_UBCK_STAFF'', di_ol.UPDATED_BY_ID)'
+  data_type: string
+  description: FK đến Regulatory Authority Staff — cán bộ cập nhật bản ghi gần nhất
+  target_attr_name: Updated By Staff Id
+- target_column: updated_by_staff_code
+  transformation: di_ol.UPDATED_BY_ID
+  data_type: string
+  description: Mã cán bộ cập nhật bản ghi — lookup pair với Updated By Staff Id
+  target_attr_name: Updated By Staff Code
+- target_column: updated_by_staff_nm
+  transformation: di_ol.UPDATED_BY_NAME
+  data_type: string
+  description: Tên người cập nhật bản ghi gần nhất (denormalized snapshot)
+  target_attr_name: Updated By Staff Name
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

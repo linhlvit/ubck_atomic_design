@@ -1,0 +1,71 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-cl_application_status-NHNCK.APPLICATION_STATUSES
+  logical_name: Mapping Atomic - Classification Application Status – source NHNCK.APPLICATION_STATUSES
+  physical_name: cl_application_status
+  dm_ref: ATM-cl_application_status-NHNCK.APPLICATION_STATUSES
+  brd_ref: BRD-SRC-NHNCK-APPLICATION_STATUSES
+target:
+  namespace: atm
+  physical_name: cl_application_status
+  etl_handle: SCD2
+  description: Danh mục trạng thái xử lý hồ sơ đăng ký chứng chỉ hành nghề chứng khoán
+    (NHNCK).
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: APPLICATION_STATUSES
+  alias: ap_st
+  select_fields: ID, STATUS_CODE, STATUS_NAME, LABEL, DESCRIPTION, SORT_ORDER, IS_ACTIVE,
+    IS_ORIGINAL_DATA
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: cl_application_status_id
+  transformation: '{hash_id}(''NHNCK_APPLICATION_STATUSES'', ap_st.STATUS_CODE)'
+  data_type: string
+  description: Id tự sinh (surrogate key).
+  target_attr_name: Classification Application Status Id
+- target_column: cl_application_status_code
+  transformation: ap_st.STATUS_CODE
+  data_type: string
+  description: Mã trạng thái hồ sơ — BK của entity.
+  target_attr_name: Classification Application Status Code
+- target_column: src_stm_code
+  transformation: '''NHNCK_APPLICATION_STATUSES'''
+  data_type: string
+  description: Mã hệ thống nguồn.
+  target_attr_name: Source System Code
+- target_column: cl_application_status_nm
+  transformation: ap_st.STATUS_NAME
+  data_type: string
+  description: Tên trạng thái hồ sơ hiển thị trên giao diện.
+  target_attr_name: Classification Application Status Name
+- target_column: label
+  transformation: ap_st.LABEL
+  data_type: string
+  description: Nhãn hiển thị ngắn gọn trên badge/tag.
+  target_attr_name: Label
+- target_column: description
+  transformation: ap_st.DESCRIPTION
+  data_type: string
+  description: Mô tả chi tiết trạng thái.
+  target_attr_name: Description
+- target_column: sort_order
+  transformation: ap_st.SORT_ORDER
+  data_type: int
+  description: Thứ tự sắp xếp hiển thị (số nhỏ hơn hiển thị trước).
+  target_attr_name: Sort Order
+- target_column: active_indicator
+  transformation: ap_st.IS_ACTIVE
+  data_type: string
+  description: Cờ đang kích hoạt/hiệu lực.
+  target_attr_name: Active Indicator
+- target_column: original_data_indicator
+  transformation: ap_st.IS_ORIGINAL_DATA
+  data_type: string
+  description: Cờ dữ liệu gốc của hệ thống (không được xóa).
+  target_attr_name: Original Data Indicator
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

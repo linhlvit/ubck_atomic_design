@@ -1,0 +1,67 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-ip_postal_address-FMS.FOR_BRCH
+  logical_name: Mapping Atomic - Involved Party Postal Address – source FMS.FOR_BRCH
+  physical_name: ip_postal_address
+  dm_ref: ATM-ip_postal_address-FMS.FOR_BRCH
+  brd_ref: BRD-SRC-FMS-FOR_BRCH
+target:
+  namespace: atm
+  physical_name: ip_postal_address
+  etl_handle: SCD4A
+  description: Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường
+    trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: FOR_BRCH
+  alias: fo_br
+  select_fields: ID, ADDRESS, PARENT_ADDRESS
+  filter: null
+- source_type: unpivot_cte
+  namespace: null
+  table_name: fo_br
+  alias: unpvt
+  select_fields: ID, adr_tp_code, adr_val
+  filter: null
+  unpivot_spec:
+    value_columns:
+    - adr_val
+    type_column: adr_tp_code
+    legs:
+    - type_value: FOREIGN_BRANCH
+      source_columns:
+      - ADDRESS
+    - type_value: PARENT_ADDRESS
+      source_columns:
+      - PARENT_ADDRESS
+relationship: []
+mapping_columns:
+- target_column: ip_id
+  transformation: '{hash_id}(''FMS_FOR_BRCH'', unpvt.ID)'
+  data_type: string
+  description: FK đến Foreign Fund Management Organization Unit.
+  target_attr_name: Involved Party Id
+- target_column: ip_code
+  transformation: unpvt.ID
+  data_type: string
+  description: Mã VPĐD/CN QLQ nước ngoài.
+  target_attr_name: Involved Party Code
+- target_column: src_stm_code
+  transformation: '''FMS_FOR_BRCH'''
+  data_type: string
+  description: Mã hệ thống nguồn.
+  target_attr_name: Source System Code
+- target_column: adr_tp_code
+  transformation: unpvt.adr_tp_code
+  data_type: string
+  description: Loại địa chỉ — trụ sở VPĐD/CN nước ngoài.
+  target_attr_name: Address Type Code
+- target_column: adr_val
+  transformation: unpvt.adr_val
+  data_type: string
+  description: Địa chỉ trụ sở.
+  target_attr_name: Address Value
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

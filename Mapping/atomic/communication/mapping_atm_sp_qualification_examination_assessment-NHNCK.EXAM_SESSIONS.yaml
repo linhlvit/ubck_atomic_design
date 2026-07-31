@@ -1,0 +1,129 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-sp_qualification_examination_assessment-NHNCK.EXAM_SESSIONS
+  logical_name: Mapping Atomic - Securities Practitioner Qualification Examination
+    Assessment – source NHNCK.EXAM_SESSIONS
+  physical_name: sp_qualification_examination_assessment
+  dm_ref: ATM-sp_qualification_examination_assessment-NHNCK.EXAM_SESSIONS
+  brd_ref: BRD-SRC-NHNCK-EXAM_SESSIONS
+target:
+  namespace: atm
+  physical_name: sp_qualification_examination_assessment
+  etl_handle: SCD4A
+  description: Đợt thi sát hạch cấp CCHN do UBCKNN tổ chức. Ghi nhận thời gian đăng
+    ký và thi, địa điểm, hình thức nộp hồ sơ, quyết định công nhận kết quả và phí
+    thi.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: EXAM_SESSIONS
+  alias: ex_se
+  select_fields: CODE, NAME, YEAR, SESSION_, ORGANIZING_UNIT, APPLICATION_START_DATE,
+    APPLICATION_END_DATE, EXAM_START_DATE, EXAM_END_DATE, NOTI_DATE, EXAM_LOCATIONS,
+    SUBMISSION_METHODS, FILE_PATH, DECISION_ID, BANK_ID, BANK_ACCOUNT_NUMBER, BANK_ACCOUNT_NAME
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: sp_qualification_examination_assessment_id
+  transformation: '{hash_id}(''NHNCK_EXAM_SESSIONS'', ex_se.CODE)'
+  data_type: string
+  description: Id tự sinh (surrogate key)
+  target_attr_name: Securities Practitioner Qualification Examination Assessment Id
+- target_column: sp_qualification_examination_assessment_code
+  transformation: ex_se.CODE
+  data_type: string
+  description: Mã định danh nghiệp vụ đợt thi. BK
+  target_attr_name: Securities Practitioner Qualification Examination Assessment Code
+- target_column: src_stm_code
+  transformation: '''NHNCK_EXAM_SESSIONS'''
+  data_type: string
+  description: Mã hệ thống nguồn
+  target_attr_name: Source System Code
+- target_column: assessment_nm
+  transformation: ex_se.NAME
+  data_type: string
+  description: Tên hiển thị đợt thi
+  target_attr_name: Assessment Name
+- target_column: rpt_year
+  transformation: ex_se.YEAR
+  data_type: int
+  description: Năm báo cáo (YYYY)
+  target_attr_name: Report Year
+- target_column: examination_session_nbr
+  transformation: ex_se.SESSION_
+  data_type: int
+  description: Kỳ thi trong năm (1, 2…)
+  target_attr_name: Examination Session Number
+- target_column: organizing_unit_nm
+  transformation: ex_se.ORGANIZING_UNIT
+  data_type: string
+  description: Tên đơn vị tổ chức thi
+  target_attr_name: Organizing Unit Name
+- target_column: application_registration_start_dt
+  transformation: ex_se.APPLICATION_START_DATE
+  data_type: string
+  description: Ngày bắt đầu nhận đăng ký
+  target_attr_name: Application Registration Start Date
+- target_column: application_registration_end_dt
+  transformation: ex_se.APPLICATION_END_DATE
+  data_type: string
+  description: Ngày kết thúc nhận đăng ký
+  target_attr_name: Application Registration End Date
+- target_column: examination_start_dt
+  transformation: ex_se.EXAM_START_DATE
+  data_type: string
+  description: Ngày bắt đầu thi
+  target_attr_name: Examination Start Date
+- target_column: examination_end_dt
+  transformation: ex_se.EXAM_END_DATE
+  data_type: string
+  description: Ngày kết thúc thi
+  target_attr_name: Examination End Date
+- target_column: result_notification_dt
+  transformation: ex_se.NOTI_DATE
+  data_type: string
+  description: Ngày thông báo kết quả thi
+  target_attr_name: Result Notification Date
+- target_column: examination_locations
+  transformation: ex_se.EXAM_LOCATIONS
+  data_type: string
+  description: Địa điểm tổ chức thi
+  target_attr_name: Examination Locations
+- target_column: submission_methods
+  transformation: ex_se.SUBMISSION_METHODS
+  data_type: string
+  description: Phương thức nộp hồ sơ
+  target_attr_name: Submission Methods
+- target_column: notification_file_path
+  transformation: ex_se.FILE_PATH
+  data_type: string
+  description: Đường dẫn file thông báo kết quả
+  target_attr_name: Notification File Path
+- target_column: sp_license_decision_document_id
+  transformation: '{hash_id}(''NHNCK_DECISIONS'', ex_se.DECISION_ID)'
+  data_type: string
+  description: FK đến quyết định cấp chứng chỉ liên quan đợt thi
+  target_attr_name: Securities Practitioner License Decision Document Id
+- target_column: sp_license_decision_document_code
+  transformation: ex_se.DECISION_ID
+  data_type: string
+  description: Mã quyết định cấp chứng chỉ
+  target_attr_name: Securities Practitioner License Decision Document Code
+- target_column: bank_code
+  transformation: ex_se.BANK_ID
+  data_type: string
+  description: Mã ngân hàng thu phí
+  target_attr_name: Bank Code
+- target_column: bank_account_nbr
+  transformation: ex_se.BANK_ACCOUNT_NUMBER
+  data_type: string
+  description: Số tài khoản ngân hàng thu phí
+  target_attr_name: Bank Account Number
+- target_column: bank_account_nm
+  transformation: ex_se.BANK_ACCOUNT_NAME
+  data_type: string
+  description: Tên chủ tài khoản ngân hàng thu phí
+  target_attr_name: Bank Account Name
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

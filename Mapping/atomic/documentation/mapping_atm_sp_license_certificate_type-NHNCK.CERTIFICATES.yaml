@@ -1,0 +1,77 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-sp_license_certificate_type-NHNCK.CERTIFICATES
+  logical_name: Mapping Atomic - Securities Practitioner License Certificate Type
+    – source NHNCK.CERTIFICATES
+  physical_name: sp_license_certificate_type
+  dm_ref: ATM-sp_license_certificate_type-NHNCK.CERTIFICATES
+  brd_ref: BRD-SRC-NHNCK-CERTIFICATES
+target:
+  namespace: atm
+  physical_name: sp_license_certificate_type
+  etl_handle: SCD4A
+  description: Danh mục loại chứng chỉ hành nghề chứng khoán — tên CCHN, mô tả, số
+    ngày xử lý, thứ tự hiển thị. FK target cho Certificate Type Id ở các entity License
+    Application/Certificate Document/Organization Employment Report và cross-source
+    từ IAM User (Practice Certificate Type Id).
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: CERTIFICATES
+  alias: cert
+  select_fields: CERTIFICATE_CODE, CERTIFICATE_NAME, DESCRIPTION, PROCESSING_DAYS,
+    SORT_ORDER, IS_DISPLAYED, IS_ORIGINAL_DATA
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: sp_license_certificate_tp_id
+  transformation: '{hash_id}(''NHNCK_CERTIFICATES'', cert.CERTIFICATE_CODE)'
+  data_type: string
+  description: Id tự sinh (surrogate key)
+  target_attr_name: Securities Practitioner License Certificate Type Id
+- target_column: sp_license_certificate_tp_code
+  transformation: cert.CERTIFICATE_CODE
+  data_type: string
+  description: 'Mã định danh nghiệp vụ duy nhất của loại chứng chỉ (VD: QLQY, PTDT,
+    MTCK). BK duy nhất — Id hash từ trường này.'
+  target_attr_name: Securities Practitioner License Certificate Type Code
+- target_column: src_stm_code
+  transformation: '''NHNCK_CERTIFICATES'''
+  data_type: string
+  description: Mã nguồn dữ liệu
+  target_attr_name: Source System Code
+- target_column: certificate_nm
+  transformation: cert.CERTIFICATE_NAME
+  data_type: string
+  description: 'Tên loại chứng chỉ hành nghề (VD: Quản lý quỹ, Phân tích đầu tư, Môi
+    giới CK)'
+  target_attr_name: Certificate Name
+- target_column: description
+  transformation: cert.DESCRIPTION
+  data_type: string
+  description: Mô tả chi tiết
+  target_attr_name: Description
+- target_column: processing_days
+  transformation: cert.PROCESSING_DAYS
+  data_type: int
+  description: Số ngày làm việc xử lý hồ sơ theo quy định
+  target_attr_name: Processing Days
+- target_column: sort_order
+  transformation: cert.SORT_ORDER
+  data_type: int
+  description: Thứ tự sắp xếp hiển thị (số nhỏ hơn hiển thị trước)
+  target_attr_name: Sort Order
+- target_column: displayed_indicator
+  transformation: cert.IS_DISPLAYED
+  data_type: string
+  description: 'Cờ hiển thị trên giao diện người dùng: 1=Hiển thị, 0=Ẩn'
+  target_attr_name: Displayed Indicator
+- target_column: original_data_indicator
+  transformation: cert.IS_ORIGINAL_DATA
+  data_type: string
+  description: 'Cờ dữ liệu gốc của hệ thống (không được xóa): 1=Dữ liệu gốc, 0=Người
+    dùng tạo'
+  target_attr_name: Original Data Indicator
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

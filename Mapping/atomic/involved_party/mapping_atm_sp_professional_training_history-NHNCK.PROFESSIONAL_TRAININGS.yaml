@@ -1,0 +1,83 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-sp_professional_training_history-NHNCK.PROFESSIONAL_TRAININGS
+  logical_name: Mapping Atomic - Securities Practitioner Professional Training History
+    – source NHNCK.PROFESSIONAL_TRAININGS
+  physical_name: sp_professional_training_history
+  dm_ref: ATM-sp_professional_training_history-NHNCK.PROFESSIONAL_TRAININGS
+  brd_ref: BRD-SRC-NHNCK-PROFESSIONAL_TRAININGS
+target:
+  namespace: atm
+  physical_name: sp_professional_training_history
+  etl_handle: SCD4A
+  description: Lịch sử đào tạo và bồi dưỡng của người hành nghề chứng khoán. Ghi nhận
+    thời gian, địa điểm đào tạo, chuyên ngành, khen thưởng và kỷ luật. FK đến Practitioner.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: PROFESSIONAL_TRAININGS
+  alias: pr_tr
+  select_fields: ID, PROFESSIONAL_ID, START_DATE, END_DATE, TRAINING_PLACE, SPECIALIZATION,
+    AWARDS, DISCIPLINES
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: sp_professional_training_history_id
+  transformation: '{hash_id}(''NHNCK_PROFESSIONAL_TRAININGS'', pr_tr.ID)'
+  data_type: string
+  description: Khóa đại diện cho bản ghi lịch sử đào tạo / bồi dưỡng chuyên môn của
+    người hành nghề chứng khoán (surrogate key).
+  target_attr_name: Securities Practitioner Professional Training History Id
+- target_column: sp_professional_training_history_code
+  transformation: pr_tr.ID
+  data_type: string
+  description: Mã định danh kỹ thuật. BK của entity. Map từ PK bảng nguồn.
+  target_attr_name: Securities Practitioner Professional Training History Code
+- target_column: src_stm_code
+  transformation: '''NHNCK_PROFESSIONAL_TRAININGS'''
+  data_type: string
+  description: Mã hệ thống nguồn.
+  target_attr_name: Source System Code
+- target_column: sp_id
+  transformation: '{hash_id}(''NHNCK_PROFESSIONALS'', pr_tr.PROFESSIONAL_ID)'
+  data_type: string
+  description: Surrogate key FK đến người hành nghề chứng khoán.
+  target_attr_name: Securities Practitioner Id
+- target_column: sp_code
+  transformation: pr_tr.PROFESSIONAL_ID
+  data_type: string
+  description: Mã kỹ thuật của người hành nghề (dư thừa).
+  target_attr_name: Securities Practitioner Code
+- target_column: training_start_dt
+  transformation: pr_tr.START_DATE
+  data_type: string
+  description: Ngày bắt đầu khóa đào tạo / bồi dưỡng chuyên môn.
+  target_attr_name: Training Start Date
+- target_column: training_end_dt
+  transformation: pr_tr.END_DATE
+  data_type: string
+  description: Ngày kết thúc khóa đào tạo / bồi dưỡng chuyên môn.
+  target_attr_name: Training End Date
+- target_column: training_place
+  transformation: pr_tr.TRAINING_PLACE
+  data_type: string
+  description: Nơi tổ chức đào tạo / bồi dưỡng.
+  target_attr_name: Training Place
+- target_column: specialization_description
+  transformation: pr_tr.SPECIALIZATION
+  data_type: string
+  description: Chuyên ngành được đào tạo (text tự do từ nguồn).
+  target_attr_name: Specialization Description
+- target_column: awards
+  transformation: pr_tr.AWARDS
+  data_type: string
+  description: Thông tin khen thưởng nhận được trong quá trình đào tạo.
+  target_attr_name: Awards
+- target_column: disciplines
+  transformation: pr_tr.DISCIPLINES
+  data_type: string
+  description: Thông tin kỷ luật trong quá trình đào tạo.
+  target_attr_name: Disciplines
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

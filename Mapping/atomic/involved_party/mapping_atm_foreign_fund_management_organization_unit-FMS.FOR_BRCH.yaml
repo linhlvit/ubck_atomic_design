@@ -1,0 +1,156 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-foreign_fund_management_organization_unit-FMS.FOR_BRCH
+  logical_name: Mapping Atomic - Foreign Fund Management Organization Unit – source
+    FMS.FOR_BRCH
+  physical_name: foreign_fund_management_organization_unit
+  dm_ref: ATM-foreign_fund_management_organization_unit-FMS.FOR_BRCH
+  brd_ref: BRD-SRC-FMS-FOR_BRCH
+target:
+  namespace: atm
+  physical_name: foreign_fund_management_organization_unit
+  etl_handle: SCD4A
+  description: Tổ chức quản lý quỹ nước ngoài có hiện diện (VPĐD/CN) tại Việt Nam,
+    không FK đến Fund Management Company trong nước. Domain prefix dùng chung với
+    Foreign Fund Management Organization Unit Staff (Tier 3).
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: FOR_BRCH
+  alias: fo_br
+  select_fields: ID, STATUS_ID, NAT_ID, BRANCH_FLAG, ITEM_NAME, EN_NAME, SHORT_NAME,
+    START_DATE, END_DATE, PARENT_NAME, PARENT_CODE, CHANGE_LICENSE, CHANGE_LICENSE_DATE,
+    CHANGE_NOTE, NOTE, CAPITAL, EVENT_TYPE_ID
+  filter: null
+- source_type: physical_table
+  namespace: ods
+  table_name: NATIONAL
+  alias: nati
+  select_fields: ID, SNAME
+  filter: null
+  note: Crosswalk bridge cho country_of_registration_id
+- source_type: physical_table
+  namespace: ods
+  table_name: EVENT_TYPE
+  alias: ev_ty
+  select_fields: ID, ITEM_NAME
+  filter: null
+  note: Crosswalk bridge cho event_tp_id
+relationship:
+- main_alias: fo_br
+  join_type: LEFT JOIN
+  join_alias: nati
+  join_on: fo_br.NAT_ID = nati.ID
+- main_alias: fo_br
+  join_type: LEFT JOIN
+  join_alias: ev_ty
+  join_on: fo_br.EVENT_TYPE_ID = ev_ty.ID
+mapping_columns:
+- target_column: foreign_fm_ou_id
+  transformation: '{hash_id}(''FMS_FOR_BRCH'', fo_br.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Foreign Fund Management Organization Unit Id
+- target_column: foreign_fm_ou_code
+  transformation: fo_br.ID
+  data_type: string
+  description: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+  target_attr_name: Foreign Fund Management Organization Unit Code
+- target_column: src_stm_code
+  transformation: '''FMS_FOR_BRCH'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: operation_status_code
+  transformation: fo_br.STATUS_ID
+  data_type: string
+  description: 'FK -> STATUS: Trạng thái hoạt động của đối tượng (bảng danh mục STATUS).'
+  target_attr_name: Operation Status Code
+- target_column: country_of_registration_id
+  transformation: '{hash_id}(''ECAT_COUNTRY'', nati.SNAME)'
+  data_type: string
+  description: FK đến Geographic Area (quốc gia đăng ký).
+  target_attr_name: Country of Registration Id
+- target_column: country_of_registration_code
+  transformation: fo_br.NAT_ID
+  data_type: string
+  description: Mã quốc gia/quốc tịch (SNAME từ FMS.NATIONAL).
+  target_attr_name: Country of Registration Code
+- target_column: branch_tp_code
+  transformation: fo_br.BRANCH_FLAG
+  data_type: string
+  description: 'Cờ là chi nhánh: 1=Chi nhánh, 0=Văn phòng đại diện.'
+  target_attr_name: Branch Type Code
+- target_column: foreign_fm_ou_full_nm
+  transformation: fo_br.ITEM_NAME
+  data_type: string
+  description: Tên hiển thị chính.
+  target_attr_name: Foreign Fund Management Organization Unit Full Name
+- target_column: foreign_fm_ou_english_nm
+  transformation: fo_br.EN_NAME
+  data_type: string
+  description: Tên tiếng Anh.
+  target_attr_name: Foreign Fund Management Organization Unit English Name
+- target_column: foreign_fm_ou_short_nm
+  transformation: fo_br.SHORT_NAME
+  data_type: string
+  description: Tên viết tắt.
+  target_attr_name: Foreign Fund Management Organization Unit Short Name
+- target_column: effective_start_dt
+  transformation: fo_br.START_DATE
+  data_type: date
+  description: Ngày bắt đầu.
+  target_attr_name: Effective Start Date
+- target_column: effective_end_dt
+  transformation: fo_br.END_DATE
+  data_type: date
+  description: Ngày kết thúc.
+  target_attr_name: Effective End Date
+- target_column: parent_company_nm
+  transformation: fo_br.PARENT_NAME
+  data_type: string
+  description: Tên công ty mẹ (tổ chức nước ngoài sở hữu).
+  target_attr_name: Parent Company Name
+- target_column: parent_company_code
+  transformation: fo_br.PARENT_CODE
+  data_type: string
+  description: Mã công ty mẹ trong hệ thống.
+  target_attr_name: Parent Company Code
+- target_column: amendment_license_nbr
+  transformation: fo_br.CHANGE_LICENSE
+  data_type: string
+  description: Số giấy phép điều chỉnh tại lần thay đổi.
+  target_attr_name: Amendment License Number
+- target_column: amendment_license_dt
+  transformation: fo_br.CHANGE_LICENSE_DATE
+  data_type: date
+  description: Ngày ban hành giấy phép điều chỉnh.
+  target_attr_name: Amendment License Date
+- target_column: amendment_note
+  transformation: fo_br.CHANGE_NOTE
+  data_type: string
+  description: Ghi chú về nội dung điều chỉnh.
+  target_attr_name: Amendment Note
+- target_column: note
+  transformation: fo_br.NOTE
+  data_type: string
+  description: Ghi chú bổ sung.
+  target_attr_name: Note
+- target_column: charter_capital_amt
+  transformation: fo_br.CAPITAL
+  data_type: decimal(23,2)
+  description: 'Vốn điều lệ/vốn góp (đơn vị: VNĐ).'
+  target_attr_name: Charter Capital Amount
+- target_column: event_tp_id
+  transformation: '{hash_id}(''FMS_EVENT_TYPE'', ev_ty.ITEM_NAME)'
+  data_type: string
+  description: 'FK -> EVENT_TYPE: Loại sự vụ áp dụng.'
+  target_attr_name: Event Type Id
+- target_column: event_tp_code
+  transformation: fo_br.EVENT_TYPE_ID
+  data_type: string
+  description: Mã loại sự vụ áp dụng.
+  target_attr_name: Event Type Code
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

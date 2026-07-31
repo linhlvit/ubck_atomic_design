@@ -1,0 +1,200 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-et_declaration_report_detail-KNT.TAX_REPORT_DETAIL
+  logical_name: Mapping Atomic - External Tax Declaration Report Detail – source KNT.TAX_REPORT_DETAIL
+  physical_name: et_declaration_report_detail
+  dm_ref: ATM-et_declaration_report_detail-KNT.TAX_REPORT_DETAIL
+  brd_ref: BRD-SRC-KNT-TAX_REPORT_DETAIL
+target:
+  namespace: atm
+  physical_name: et_declaration_report_detail
+  etl_handle: Fact Append
+  description: 'Dòng chỉ tiêu chi tiết trong 1 External Tax Declaration Report: giá
+    trị đầu năm, cuối năm, năm nay, năm trước theo từng loại sheet báo cáo tài chính.
+    FK đến External Tax Declaration Report. Đổi tên từ "Tax Declaration Report Indicator"
+    2026-07-19.'
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: TAX_REPORT_DETAIL
+  alias: ta_re_de
+  select_fields: ID, TAX_REPORT_ID, INDICATOR_CODE, INDICATOR_NAME, EXPLANATION_NOTE,
+    SHEET_NAME, YEAR_END_VALUE, YEAR_BEGIN_VALUE, CURRENT_YEAR_VALUE, PRIOR_YEAR_VALUE,
+    PREPARER_NAME, CHIEF_ACCOUNTANT, PREPARATION_DATE, DIRECTOR_NAME, PRACTICE_CERT_NUMBER,
+    AUDIT_SERVICE_UNIT, GOING_CONCERN_YES, GOING_CONCERN_NO, INCREASE_PRIOR_YEAR,
+    CURRENT_YEAR_AMOUNT, PREVIOUS_YEAR_AMOUNT, BEGIN_BALANCE_CURRENT_YEAR, END_BALANCE_CURRENT_YEAR,
+    END_BALANCE_PRIOR_YEAR, BEGIN_BALANCE_PRIOR_YEAR, INCREASE_CURRENT_YEAR, DECREASE_CURRENT_YEAR,
+    DECREASE_PRIOR_YEAR
+  filter: null
+- source_type: physical_table
+  namespace: ods
+  table_name: TAX_REPORT
+  alias: ta_re
+  select_fields: ID, DECLARATION_CODE
+  filter: CREATED_AT >= {etl_date}
+  note: Crosswalk bridge cho et_declaration_rpt_id
+relationship:
+- main_alias: ta_re_de
+  join_type: LEFT JOIN
+  join_alias: ta_re
+  join_on: ta_re_de.TAX_REPORT_ID = ta_re.ID
+mapping_columns:
+- target_column: et_declaration_rpt_detail_id
+  transformation: '{hash_id}(''KNT_TAX_REPORT_DETAIL'', ta_re_de.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: External Tax Declaration Report Detail Id
+- target_column: et_declaration_rpt_detail_code
+  transformation: ta_re_de.ID
+  data_type: string
+  description: Khóa chính của bản ghi. BK — nguồn không có mã nghiệp vụ riêng biệt
+    (INDICATOR_CODE không unique đơn lẻ), dùng PK kỹ thuật làm BK duy nhất.
+  target_attr_name: External Tax Declaration Report Detail Code
+- target_column: src_stm_code
+  transformation: '''KNT_TAX_REPORT_DETAIL'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: et_declaration_rpt_id
+  transformation: '{hash_id}(''KNT_TAX_REPORT'', ta_re.DECLARATION_CODE)'
+  data_type: string
+  description: 'FK -> tax_report: Báo cáo tài chính TCT liên quan.'
+  target_attr_name: External Tax Declaration Report Id
+- target_column: et_declaration_rpt_code
+  transformation: ta_re_de.TAX_REPORT_ID
+  data_type: string
+  description: Mã tờ khai báo cáo tài chính liên quan.
+  target_attr_name: External Tax Declaration Report Code
+- target_column: indicator_code
+  transformation: ta_re_de.INDICATOR_CODE
+  data_type: string
+  description: Mã chỉ tiêu trong biểu mẫu báo cáo.
+  target_attr_name: Indicator Code
+- target_column: indicator_nm
+  transformation: ta_re_de.INDICATOR_NAME
+  data_type: string
+  description: Tên chỉ tiêu trong biểu mẫu báo cáo.
+  target_attr_name: Indicator Name
+- target_column: explanation_note
+  transformation: ta_re_de.EXPLANATION_NOTE
+  data_type: string
+  description: Thuyết minh/ghi chú cho chỉ tiêu báo cáo.
+  target_attr_name: Explanation Note
+- target_column: sheet_nm_code
+  transformation: ta_re_de.SHEET_NAME
+  data_type: string
+  description: Mã sheet báo cáo.
+  target_attr_name: Sheet Name Code
+- target_column: year_end_val
+  transformation: ta_re_de.YEAR_END_VALUE
+  data_type: decimal(23,2)
+  description: Giá trị cuối năm báo cáo (đầu kỳ của năm sau).
+  target_attr_name: Year End Value
+- target_column: year_begin_val
+  transformation: ta_re_de.YEAR_BEGIN_VALUE
+  data_type: decimal(23,2)
+  description: Giá trị đầu năm báo cáo (số dư đầu kỳ).
+  target_attr_name: Year Begin Value
+- target_column: current_year_val
+  transformation: ta_re_de.CURRENT_YEAR_VALUE
+  data_type: decimal(23,2)
+  description: Giá trị năm nay (kỳ hiện tại).
+  target_attr_name: Current Year Value
+- target_column: prior_year_val
+  transformation: ta_re_de.PRIOR_YEAR_VALUE
+  data_type: decimal(23,2)
+  description: Giá trị năm trước (kỳ so sánh).
+  target_attr_name: Prior Year Value
+- target_column: preparer_full_nm
+  transformation: ta_re_de.PREPARER_NAME
+  data_type: string
+  description: Họ tên người lập biểu.
+  target_attr_name: Preparer Full Name
+- target_column: chief_accountant_full_nm
+  transformation: ta_re_de.CHIEF_ACCOUNTANT
+  data_type: string
+  description: Họ tên kế toán trưởng.
+  target_attr_name: Chief Accountant Full Name
+- target_column: preparation_dt
+  transformation: ta_re_de.PREPARATION_DATE
+  data_type: date
+  description: Ngày lập biểu.
+  target_attr_name: Preparation Date
+- target_column: director_full_nm
+  transformation: ta_re_de.DIRECTOR_NAME
+  data_type: string
+  description: Họ tên Giám đốc/Tổng giám đốc ký báo cáo.
+  target_attr_name: Director Full Name
+- target_column: practice_certificate_nbr
+  transformation: ta_re_de.PRACTICE_CERT_NUMBER
+  data_type: string
+  description: Số chứng chỉ hành nghề kiểm toán.
+  target_attr_name: Practice Certificate Number
+- target_column: audit_service_unit_nm
+  transformation: ta_re_de.AUDIT_SERVICE_UNIT
+  data_type: string
+  description: Đơn vị cung cấp dịch vụ kiểm toán.
+  target_attr_name: Audit Service Unit Name
+- target_column: going_concern_yes_flag
+  transformation: ta_re_de.GOING_CONCERN_YES
+  data_type: string
+  description: 'Cờ hoạt động liên tục: true/false.'
+  target_attr_name: Going Concern Yes Flag
+- target_column: going_concern_no_flag
+  transformation: ta_re_de.GOING_CONCERN_NO
+  data_type: string
+  description: 'Cờ không hoạt động liên tục: true/false.'
+  target_attr_name: Going Concern No Flag
+- target_column: increase_prior_year_amt
+  transformation: ta_re_de.INCREASE_PRIOR_YEAR
+  data_type: decimal(23,2)
+  description: Số tăng năm trước.
+  target_attr_name: Increase Prior Year Amount
+- target_column: current_year_amt
+  transformation: ta_re_de.CURRENT_YEAR_AMOUNT
+  data_type: decimal(23,2)
+  description: Số tiền/giá trị năm nay.
+  target_attr_name: Current Year Amount
+- target_column: previous_year_amt
+  transformation: ta_re_de.PREVIOUS_YEAR_AMOUNT
+  data_type: decimal(23,2)
+  description: Số tiền/giá trị năm ngoái.
+  target_attr_name: Previous Year Amount
+- target_column: begin_balance_current_year_amt
+  transformation: ta_re_de.BEGIN_BALANCE_CURRENT_YEAR
+  data_type: decimal(23,2)
+  description: Số dư đầu năm nay.
+  target_attr_name: Begin Balance Current Year Amount
+- target_column: end_balance_current_year_amt
+  transformation: ta_re_de.END_BALANCE_CURRENT_YEAR
+  data_type: decimal(23,2)
+  description: Số dư cuối năm nay.
+  target_attr_name: End Balance Current Year Amount
+- target_column: end_balance_prior_year_amt
+  transformation: ta_re_de.END_BALANCE_PRIOR_YEAR
+  data_type: decimal(23,2)
+  description: Số dư cuối năm trước.
+  target_attr_name: End Balance Prior Year Amount
+- target_column: begin_balance_prior_year_amt
+  transformation: ta_re_de.BEGIN_BALANCE_PRIOR_YEAR
+  data_type: decimal(23,2)
+  description: Số dư đầu năm trước.
+  target_attr_name: Begin Balance Prior Year Amount
+- target_column: increase_current_year_amt
+  transformation: ta_re_de.INCREASE_CURRENT_YEAR
+  data_type: decimal(23,2)
+  description: Số tăng năm nay.
+  target_attr_name: Increase Current Year Amount
+- target_column: decrease_current_year_amt
+  transformation: ta_re_de.DECREASE_CURRENT_YEAR
+  data_type: decimal(23,2)
+  description: Số giảm năm nay.
+  target_attr_name: Decrease Current Year Amount
+- target_column: decrease_prior_year_amt
+  transformation: ta_re_de.DECREASE_PRIOR_YEAR
+  data_type: decimal(23,2)
+  description: Số giảm năm trước.
+  target_attr_name: Decrease Prior Year Amount
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

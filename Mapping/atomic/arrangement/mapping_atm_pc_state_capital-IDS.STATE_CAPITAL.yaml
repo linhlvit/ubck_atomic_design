@@ -1,0 +1,86 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-pc_state_capital-IDS.STATE_CAPITAL
+  logical_name: Mapping Atomic - Public Company State Capital – source IDS.STATE_CAPITAL
+  physical_name: pc_state_capital
+  dm_ref: ATM-pc_state_capital-IDS.STATE_CAPITAL
+  brd_ref: BRD-SRC-IDS-STATE_CAPITAL
+target:
+  namespace: atm
+  physical_name: pc_state_capital
+  etl_handle: SCD4A
+  description: 'Tỷ lệ vốn nhà nước tại CTĐC và cơ quan đại diện phần vốn nhà nước:
+    tỷ lệ sở hữu, ngày hiệu lực.'
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: STATE_CAPITAL
+  alias: st_ca
+  select_fields: ID, COMPANY_PROFILE_ID, STATE_REP_NAME_VI, STATE_REP_NAME_EN, STATE_OWNER_ORG_VI,
+    STATE_OWNER_ORG_EN, OWNED_SHARE_QTY, OWNERSHIP_RATIO, DELETE_FLG
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: pc_state_capital_id
+  transformation: '{hash_id}(''IDS_STATE_CAPITAL'', st_ca.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Public Company State Capital Id
+- target_column: pc_state_capital_code
+  transformation: st_ca.ID
+  data_type: string
+  description: Khóa chính. BK của entity — map từ PK bảng nguồn.
+  target_attr_name: Public Company State Capital Code
+- target_column: src_stm_code
+  transformation: '''IDS_STATE_CAPITAL'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: pc_id
+  transformation: '{hash_id}(''IDS_COMPANY_PROFILES'', st_ca.COMPANY_PROFILE_ID)'
+  data_type: string
+  description: Khóa link đến bảng COMPANY_PROFILES.
+  target_attr_name: Public Company Id
+- target_column: pc_code
+  transformation: st_ca.COMPANY_PROFILE_ID
+  data_type: string
+  description: Mã công ty đại chúng.
+  target_attr_name: Public Company Code
+- target_column: state_representative_nm
+  transformation: st_ca.STATE_REP_NAME_VI
+  data_type: string
+  description: Tên đại diện nhà nước (tiếng Việt).
+  target_attr_name: State Representative Name
+- target_column: state_representative_english_nm
+  transformation: st_ca.STATE_REP_NAME_EN
+  data_type: string
+  description: Tên đại diện nhà nước (tiếng Anh).
+  target_attr_name: State Representative English Name
+- target_column: state_owner_organization_nm
+  transformation: st_ca.STATE_OWNER_ORG_VI
+  data_type: string
+  description: Tên cơ quan chủ sở hữu vốn nhà nước (tiếng Việt).
+  target_attr_name: State Owner Organization Name
+- target_column: state_owner_organization_english_nm
+  transformation: st_ca.STATE_OWNER_ORG_EN
+  data_type: string
+  description: Tên cơ quan chủ sở hữu vốn nhà nước (tiếng Anh).
+  target_attr_name: State Owner Organization English Name
+- target_column: owned_share_quantity
+  transformation: st_ca.OWNED_SHARE_QTY
+  data_type: int
+  description: Số cổ phiếu sở hữu.
+  target_attr_name: Owned Share Quantity
+- target_column: ownership_ratio_percentage
+  transformation: st_ca.OWNERSHIP_RATIO
+  data_type: decimal(5,2)
+  description: Phần trăm sở hữu.
+  target_attr_name: Ownership Ratio Percentage
+- target_column: deleted_indicator
+  transformation: st_ca.DELETE_FLG
+  data_type: int
+  description: Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa).
+  target_attr_name: Deleted Indicator
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

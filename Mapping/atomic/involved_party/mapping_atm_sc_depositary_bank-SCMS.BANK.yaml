@@ -1,0 +1,170 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-sc_depositary_bank-SCMS.BANK
+  logical_name: Mapping Atomic - Securities Company Depositary Bank – source SCMS.BANK
+  physical_name: sc_depositary_bank
+  dm_ref: ATM-sc_depositary_bank-SCMS.BANK
+  brd_ref: BRD-SRC-SCMS-BANK
+target:
+  namespace: atm
+  physical_name: sc_depositary_bank
+  etl_handle: SCD4A
+  description: Ngân hàng đối tác thanh toán hoặc lưu ký tài sản của CTCK trong hệ
+    thống SCMS. Ghi nhận mã ngân hàng, tên và trạng thái hoạt động.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: BANK
+  alias: bank
+  select_fields: ID, BANK_NAME, NAME_EN, SHORT_NAME, ENTERPRISE_CODE, TAX_CODE, CHARTER_CAPITAL,
+    CATEGORY, OPERATION_LICENSE_NUMBER, LICENSE_ISSUE_DATE, LICENSE_ISSUER, SETTLEMENT_BANK_DECISION_NUMBER,
+    SETTLEMENT_BANK_DECISION_DATE, SETTLEMENT_START_DATE, SETTLEMENT_FUNCTION_DESCRIPTION,
+    BUSINESS_REG_CERT_NUMBER, BUSINESS_REG_CERT_DATE, CUSTODIAN_START_DATE, CUSTODIAN_MEMBER_CERT_NUMBER,
+    CUSTODIAN_CERT_DATE, CUSTODIAN_MEMBER_CODE, CUSTODIAN_FUNCTION_DESCRIPTION, ATTACHMENT_PATH,
+    NOTE, INPUT_REPORT_DATA, RECORD_STATUS
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: sc_depositary_bank_id
+  transformation: '{hash_id}(''SCMS_BANK'', bank.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Securities Company Depositary Bank Id
+- target_column: sc_depositary_bank_code
+  transformation: bank.ID
+  data_type: string
+  description: Khóa chính kỹ thuật (ID tự tăng). BK của entity.
+  target_attr_name: Securities Company Depositary Bank Code
+- target_column: src_stm_code
+  transformation: '''SCMS_BANK'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: sc_depositary_bank_nm
+  transformation: bank.BANK_NAME
+  data_type: string
+  description: Tên ngân hàng.
+  target_attr_name: Securities Company Depositary Bank Name
+- target_column: sc_depositary_bank_english_nm
+  transformation: bank.NAME_EN
+  data_type: string
+  description: Tên đầy đủ bằng tiếng Anh.
+  target_attr_name: Securities Company Depositary Bank English Name
+- target_column: sc_depositary_bank_short_nm
+  transformation: bank.SHORT_NAME
+  data_type: string
+  description: 'Tên viết tắt (VD: TCB, VCB, BIDV).'
+  target_attr_name: Securities Company Depositary Bank Short Name
+- target_column: enterprise_code
+  transformation: bank.ENTERPRISE_CODE
+  data_type: string
+  description: Mã số doanh nghiệp đăng ký tại Sở KH&ĐT.
+  target_attr_name: Enterprise Code
+- target_column: tax_code
+  transformation: bank.TAX_CODE
+  data_type: string
+  description: Mã số thuế doanh nghiệp.
+  target_attr_name: Tax Code
+- target_column: charter_capital_amt
+  transformation: bank.CHARTER_CAPITAL
+  data_type: decimal(23,2)
+  description: 'Vốn điều lệ (đơn vị: đồng).'
+  target_attr_name: Charter Capital Amount
+- target_column: bank_category
+  transformation: bank.CATEGORY
+  data_type: string
+  description: Phân loại ngân hàng.
+  target_attr_name: Bank Category
+- target_column: operation_license_nbr
+  transformation: bank.OPERATION_LICENSE_NUMBER
+  data_type: string
+  description: Số giấy phép hoạt động ngân hàng.
+  target_attr_name: Operation License Number
+- target_column: license_issue_dt
+  transformation: bank.LICENSE_ISSUE_DATE
+  data_type: date
+  description: Ngày cấp giấy phép hoạt động.
+  target_attr_name: License Issue Date
+- target_column: license_issuer_nm
+  transformation: bank.LICENSE_ISSUER
+  data_type: string
+  description: Tên cơ quan cấp giấy phép hoạt động.
+  target_attr_name: License Issuer Name
+- target_column: settlement_bank_decision_nbr
+  transformation: bank.SETTLEMENT_BANK_DECISION_NUMBER
+  data_type: string
+  description: Số quyết định chỉ định ngân hàng thanh toán.
+  target_attr_name: Settlement Bank Decision Number
+- target_column: settlement_bank_decision_dt
+  transformation: bank.SETTLEMENT_BANK_DECISION_DATE
+  data_type: date
+  description: Ngày quyết định chỉ định ngân hàng thanh toán.
+  target_attr_name: Settlement Bank Decision Date
+- target_column: settlement_start_dt
+  transformation: bank.SETTLEMENT_START_DATE
+  data_type: date
+  description: Ngày bắt đầu thực hiện chức năng thanh toán.
+  target_attr_name: Settlement Start Date
+- target_column: settlement_function_description
+  transformation: bank.SETTLEMENT_FUNCTION_DESCRIPTION
+  data_type: string
+  description: Mô tả chức năng thanh toán của ngân hàng.
+  target_attr_name: Settlement Function Description
+- target_column: business_registration_certificate_nbr
+  transformation: bank.BUSINESS_REG_CERT_NUMBER
+  data_type: string
+  description: Số giấy chứng nhận đăng ký kinh doanh.
+  target_attr_name: Business Registration Certificate Number
+- target_column: business_registration_certificate_dt
+  transformation: bank.BUSINESS_REG_CERT_DATE
+  data_type: date
+  description: Ngày cấp giấy chứng nhận đăng ký kinh doanh.
+  target_attr_name: Business Registration Certificate Date
+- target_column: custodian_start_dt
+  transformation: bank.CUSTODIAN_START_DATE
+  data_type: date
+  description: Ngày bắt đầu chức năng lưu ký.
+  target_attr_name: Custodian Start Date
+- target_column: custodian_member_certificate_nbr
+  transformation: bank.CUSTODIAN_MEMBER_CERT_NUMBER
+  data_type: string
+  description: Số chứng nhận thành viên lưu ký.
+  target_attr_name: Custodian Member Certificate Number
+- target_column: custodian_certificate_dt
+  transformation: bank.CUSTODIAN_CERT_DATE
+  data_type: date
+  description: Ngày cấp chứng nhận lưu ký.
+  target_attr_name: Custodian Certificate Date
+- target_column: custodian_member_code
+  transformation: bank.CUSTODIAN_MEMBER_CODE
+  data_type: string
+  description: Mã thành viên lưu ký.
+  target_attr_name: Custodian Member Code
+- target_column: custodian_function_description
+  transformation: bank.CUSTODIAN_FUNCTION_DESCRIPTION
+  data_type: string
+  description: Mô tả chức năng lưu ký của ngân hàng.
+  target_attr_name: Custodian Function Description
+- target_column: attachment_path
+  transformation: bank.ATTACHMENT_PATH
+  data_type: string
+  description: Đường dẫn file đính kèm trên hệ thống lưu trữ.
+  target_attr_name: Attachment Path
+- target_column: note
+  transformation: bank.NOTE
+  data_type: string
+  description: Ghi chú bổ sung, không bắt buộc.
+  target_attr_name: Note
+- target_column: input_rpt_data_indicator
+  transformation: bank.INPUT_REPORT_DATA
+  data_type: int
+  description: Cờ cho phép nhập dữ liệu báo cáo.
+  target_attr_name: Input Report Data Indicator
+- target_column: record_status_code
+  transformation: bank.RECORD_STATUS
+  data_type: string
+  description: 'Trạng thái ngân hàng: 1=Hoạt động; 0=Ngừng hoạt động.'
+  target_attr_name: Record Status Code
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

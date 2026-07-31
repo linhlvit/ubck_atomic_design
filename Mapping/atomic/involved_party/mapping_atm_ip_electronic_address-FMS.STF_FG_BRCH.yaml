@@ -1,0 +1,67 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-ip_electronic_address-FMS.STF_FG_BRCH
+  logical_name: Mapping Atomic - Involved Party Electronic Address – source FMS.STF_FG_BRCH
+  physical_name: ip_electronic_address
+  dm_ref: ATM-ip_electronic_address-FMS.STF_FG_BRCH
+  brd_ref: BRD-SRC-FMS-STF_FG_BRCH
+target:
+  namespace: atm
+  physical_name: ip_electronic_address
+  etl_handle: SCD4A
+  description: Lưu trữ các địa chỉ liên lạc điện tử của Involved Party (điện thoại/fax/email).
+    Mỗi dòng = 1 kênh liên lạc từ 1 nguồn.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: STF_FG_BRCH
+  alias: st_fg_br
+  select_fields: ID, EMAIL, PL_EMAIL
+  filter: null
+- source_type: unpivot_cte
+  namespace: null
+  table_name: st_fg_br
+  alias: unpvt
+  select_fields: ID, electronic_adr_tp_code, electronic_adr_val
+  filter: null
+  unpivot_spec:
+    value_columns:
+    - electronic_adr_val
+    type_column: electronic_adr_tp_code
+    legs:
+    - type_value: EMAIL
+      source_columns:
+      - EMAIL
+    - type_value: EMAIL_PERSONAL
+      source_columns:
+      - PL_EMAIL
+relationship: []
+mapping_columns:
+- target_column: ip_id
+  transformation: '{hash_id}(''FMS_STF_FG_BRCH'', unpvt.ID)'
+  data_type: string
+  description: FK đến Foreign Fund Management Organization Unit Staff.
+  target_attr_name: Involved Party Id
+- target_column: ip_code
+  transformation: unpvt.ID
+  data_type: string
+  description: Mã nhân sự VPĐD/CN QLQ nước ngoài.
+  target_attr_name: Involved Party Code
+- target_column: src_stm_code
+  transformation: '''FMS_STF_FG_BRCH'''
+  data_type: string
+  description: Mã hệ thống nguồn.
+  target_attr_name: Source System Code
+- target_column: electronic_adr_tp_code
+  transformation: unpvt.electronic_adr_tp_code
+  data_type: string
+  description: Loại kênh liên lạc — email.
+  target_attr_name: Electronic Address Type Code
+- target_column: electronic_adr_val
+  transformation: unpvt.electronic_adr_val
+  data_type: string
+  description: Địa chỉ email.
+  target_attr_name: Electronic Address Value
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

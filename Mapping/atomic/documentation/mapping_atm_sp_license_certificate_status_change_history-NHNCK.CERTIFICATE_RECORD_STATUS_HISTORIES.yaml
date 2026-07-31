@@ -1,0 +1,85 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-sp_license_certificate_status_change_history-NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES
+  logical_name: Mapping Atomic - Securities Practitioner License Certificate Status
+    Change History – source NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES
+  physical_name: sp_license_certificate_status_change_history
+  dm_ref: ATM-sp_license_certificate_status_change_history-NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES
+  brd_ref: BRD-SRC-NHNCK-CERTIFICATE_RECORD_STATUS_HISTORIES
+target:
+  namespace: atm
+  physical_name: sp_license_certificate_status_change_history
+  etl_handle: Fact Append
+  description: Lịch sử thay đổi trạng thái CCHN (cấp/thu hồi/hủy/hết hiệu lực). Mỗi
+    dòng = 1 lần thay đổi trạng thái insert-only. FK đến License Certificate Document
+    và Decision.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: CERTIFICATE_RECORD_STATUS_HISTORIES
+  alias: ce_re_st_hi
+  select_fields: ID, CERTIFICATE_RECORD_ID, UPDATE_TYPE, OLD_STATUS, NEW_STATUS, DECISION_ID,
+    REASON
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: sp_license_certificate_status_change_history_id
+  transformation: '{hash_id}(''NHNCK_CERTIFICATE_RECORD_STATUS_HISTORIES'', ce_re_st_hi.ID)'
+  data_type: string
+  description: Id tự sinh (surrogate key)
+  target_attr_name: Securities Practitioner License Certificate Status Change History
+    Id
+- target_column: sp_license_certificate_status_change_history_code
+  transformation: ce_re_st_hi.ID
+  data_type: string
+  description: Mã định danh (BK từ PK nguồn — nguồn không có cột mã nghiệp vụ riêng)
+  target_attr_name: Securities Practitioner License Certificate Status Change History
+    Code
+- target_column: src_stm_code
+  transformation: '''NHNCK_CERTIFICATE_RECORD_STATUS_HISTORIES'''
+  data_type: string
+  description: Mã nguồn dữ liệu
+  target_attr_name: Source System Code
+- target_column: sp_license_certificate_document_id
+  transformation: '{hash_id}(''NHNCK_CERTIFICATE_RECORDS'', ce_re_st_hi.CERTIFICATE_RECORD_ID)'
+  data_type: string
+  description: FK đến chứng chỉ hành nghề bị thay đổi trạng thái
+  target_attr_name: Securities Practitioner License Certificate Document Id
+- target_column: sp_license_certificate_document_code
+  transformation: ce_re_st_hi.CERTIFICATE_RECORD_ID
+  data_type: string
+  description: Mã chứng chỉ hành nghề (denormalized lookup)
+  target_attr_name: Securities Practitioner License Certificate Document Code
+- target_column: update_tp
+  transformation: ce_re_st_hi.UPDATE_TYPE
+  data_type: string
+  description: Loại cập nhật trạng thái CCHN (chuỗi mô tả hành động thay đổi)
+  target_attr_name: Update Type
+- target_column: old_certificate_status_code
+  transformation: ce_re_st_hi.OLD_STATUS
+  data_type: string
+  description: Trạng thái CCHN trước khi thay đổi
+  target_attr_name: Old Certificate Status Code
+- target_column: new_certificate_status_code
+  transformation: ce_re_st_hi.NEW_STATUS
+  data_type: string
+  description: Trạng thái CCHN sau khi thay đổi
+  target_attr_name: New Certificate Status Code
+- target_column: sp_license_decision_document_id
+  transformation: '{hash_id}(''NHNCK_DECISIONS'', ce_re_st_hi.DECISION_ID)'
+  data_type: string
+  description: FK đến quyết định hành chính liên quan đến lần thay đổi trạng thái
+  target_attr_name: Securities Practitioner License Decision Document Id
+- target_column: sp_license_decision_document_code
+  transformation: ce_re_st_hi.DECISION_ID
+  data_type: string
+  description: Mã quyết định (denormalized lookup)
+  target_attr_name: Securities Practitioner License Decision Document Code
+- target_column: change_reason
+  transformation: ce_re_st_hi.REASON
+  data_type: string
+  description: Lý do thực hiện thao tác hoặc thay đổi
+  target_attr_name: Change Reason
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

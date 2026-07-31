@@ -1,0 +1,221 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-sp_organization_employment_report-NHNCK.ORGANIZATION_REPORTS
+  logical_name: Mapping Atomic - Securities Practitioner Organization Employment Report
+    – source NHNCK.ORGANIZATION_REPORTS
+  physical_name: sp_organization_employment_report
+  dm_ref: ATM-sp_organization_employment_report-NHNCK.ORGANIZATION_REPORTS
+  brd_ref: BRD-SRC-NHNCK-ORGANIZATION_REPORTS
+target:
+  namespace: atm
+  physical_name: sp_organization_employment_report
+  etl_handle: Fact Append
+  description: Báo cáo của tổ chức về tình trạng làm việc của người hành nghề. Mỗi
+    dòng = 1 lần nộp báo cáo insert-only. Ghi nhận loại báo cáo, trạng thái làm việc,
+    chức vụ và ngày báo cáo.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: ORGANIZATION_REPORTS
+  alias: or_re
+  select_fields: ID, CREATED_AT, ORGANIZATION_ID, PROFESSIONAL_ID, CERTIFICATE_RECORD_ID,
+    CERTIFICATE_ID, PARENT_REPORT_ID, FULL_NAME, BIRTH_DATE, IDENTITY_NUMBER, POSITION,
+    DEPARTMENT, WORKPLACE, CERTIFICATE_NUMBER, ISSUE_DATE, HIRE_DATE, TERMINATION_DATE,
+    REPORT_DATE, DISCIPLINES, DESCRIPTION, NOTES, BUSINESS_DEPARTMENT, FILE_PATH,
+    FILE_PATH_TERMINATION, SYNC_ID, STATUS_ORGANIZATION, SYNC_CREATED_AT, SYNC_UPDATED_AT
+  filter: created_at >= {etl_date} AND created_at < {etl_date} + 1
+- source_type: physical_table
+  namespace: ods
+  table_name: CERTIFICATES
+  alias: cert
+  select_fields: ID, CERTIFICATE_CODE
+  filter: null
+  note: Crosswalk bridge cho sp_license_certificate_tp_id
+relationship:
+- main_alias: or_re
+  join_type: LEFT JOIN
+  join_alias: cert
+  join_on: or_re.CERTIFICATE_ID = cert.ID
+mapping_columns:
+- target_column: sp_organization_employment_rpt_id
+  transformation: '{hash_id}(''NHNCK_ORGANIZATION_REPORTS'', or_re.ID)'
+  data_type: string
+  description: Khóa đại diện cho báo cáo danh sách NHNCK tại tổ chức (surrogate key).
+  target_attr_name: Securities Practitioner Organization Employment Report Id
+- target_column: sp_organization_employment_rpt_code
+  transformation: or_re.ID
+  data_type: string
+  description: Mã định danh kỹ thuật (BK). Map từ PK bảng nguồn.
+  target_attr_name: Securities Practitioner Organization Employment Report Code
+- target_column: src_stm_code
+  transformation: '''NHNCK_ORGANIZATION_REPORTS'''
+  data_type: string
+  description: Mã hệ thống nguồn.
+  target_attr_name: Source System Code
+- target_column: data_dt
+  transformation: or_re.CREATED_AT
+  data_type: date
+  description: 'Thời điểm tạo bản ghi (nguồn: CREATED_AT). Dùng làm căn cứ partition
+    Delta Lake / incremental filter — bảng nguồn có data_change_mode=Append, filter_logic
+    theo created_at (xem BRD/Source/brd_NHNCK.yaml).'
+  target_attr_name: Data Date
+- target_column: securities_organization_reference_id
+  transformation: '{hash_id}(''NHNCK_ORGANIZATIONS'', or_re.ORGANIZATION_ID)'
+  data_type: string
+  description: FK đến tổ chức kinh doanh chứng khoán.
+  target_attr_name: Securities Organization Reference Id
+- target_column: securities_organization_reference_code
+  transformation: or_re.ORGANIZATION_ID
+  data_type: string
+  description: Mã tổ chức (denormalized).
+  target_attr_name: Securities Organization Reference Code
+- target_column: sp_id
+  transformation: '{hash_id}(''NHNCK_PROFESSIONALS'', or_re.PROFESSIONAL_ID)'
+  data_type: string
+  description: FK đến người hành nghề chứng khoán.
+  target_attr_name: Securities Practitioner Id
+- target_column: sp_code
+  transformation: or_re.PROFESSIONAL_ID
+  data_type: string
+  description: Mã người hành nghề (denormalized).
+  target_attr_name: Securities Practitioner Code
+- target_column: sp_license_certificate_document_id
+  transformation: '{hash_id}(''NHNCK_CERTIFICATE_RECORDS'', or_re.CERTIFICATE_RECORD_ID)'
+  data_type: string
+  description: FK đến hồ sơ chứng chỉ hành nghề (nullable).
+  target_attr_name: Securities Practitioner License Certificate Document Id
+- target_column: sp_license_certificate_document_code
+  transformation: or_re.CERTIFICATE_RECORD_ID
+  data_type: string
+  description: Mã hồ sơ chứng chỉ hành nghề (denormalized).
+  target_attr_name: Securities Practitioner License Certificate Document Code
+- target_column: sp_license_certificate_tp_id
+  transformation: '{hash_id}(''NHNCK_CERTIFICATES'', cert.CERTIFICATE_CODE)'
+  data_type: string
+  description: FK đến loại chứng chỉ hành nghề tại thời điểm báo cáo.
+  target_attr_name: Securities Practitioner License Certificate Type Id
+- target_column: sp_license_certificate_tp_code
+  transformation: or_re.CERTIFICATE_ID
+  data_type: string
+  description: Mã loại chứng chỉ hành nghề tại thời điểm báo cáo (denormalized lookup)
+  target_attr_name: Securities Practitioner License Certificate Type Code
+- target_column: parent_sp_organization_employment_rpt_id
+  transformation: '{hash_id}(''NHNCK_ORGANIZATION_REPORTS'', or_re.PARENT_REPORT_ID)'
+  data_type: string
+  description: FK self-ref — báo cáo gốc được điều chỉnh (nullable).
+  target_attr_name: Parent Securities Practitioner Organization Employment Report
+    Id
+- target_column: parent_sp_organization_employment_rpt_code
+  transformation: or_re.PARENT_REPORT_ID
+  data_type: string
+  description: Mã báo cáo gốc (denormalized).
+  target_attr_name: Parent Securities Practitioner Organization Employment Report
+    Code
+- target_column: practitioner_nm_at_rpt
+  transformation: or_re.FULL_NAME
+  data_type: string
+  description: Họ và tên người hành nghề tại thời điểm lập báo cáo (snapshot).
+  target_attr_name: Practitioner Name At Report
+- target_column: practitioner_birth_dt_at_rpt
+  transformation: or_re.BIRTH_DATE
+  data_type: date
+  description: Ngày sinh người hành nghề tại thời điểm lập báo cáo (snapshot).
+  target_attr_name: Practitioner Birth Date At Report
+- target_column: practitioner_identity_nbr_at_rpt
+  transformation: or_re.IDENTITY_NUMBER
+  data_type: string
+  description: Số định danh cá nhân tại thời điểm lập báo cáo (snapshot).
+  target_attr_name: Practitioner Identity Number At Report
+- target_column: practitioner_position_at_rpt
+  transformation: or_re.POSITION
+  data_type: string
+  description: Chức vụ của người hành nghề tại tổ chức (snapshot).
+  target_attr_name: Practitioner Position At Report
+- target_column: practitioner_department_at_rpt
+  transformation: or_re.DEPARTMENT
+  data_type: string
+  description: Phòng ban của người hành nghề tại tổ chức (snapshot).
+  target_attr_name: Practitioner Department At Report
+- target_column: practitioner_workplace_at_rpt
+  transformation: or_re.WORKPLACE
+  data_type: string
+  description: Nơi làm việc của người hành nghề tại thời điểm báo cáo (snapshot).
+  target_attr_name: Practitioner Workplace At Report
+- target_column: certificate_nbr_at_rpt
+  transformation: or_re.CERTIFICATE_NUMBER
+  data_type: string
+  description: Số chứng chỉ hành nghề tại thời điểm lập báo cáo (snapshot).
+  target_attr_name: Certificate Number At Report
+- target_column: certificate_issue_dt_at_rpt
+  transformation: or_re.ISSUE_DATE
+  data_type: date
+  description: Ngày cấp chứng chỉ hành nghề tại thời điểm lập báo cáo (snapshot).
+  target_attr_name: Certificate Issue Date At Report
+- target_column: hire_dt
+  transformation: or_re.HIRE_DATE
+  data_type: date
+  description: Ngày tuyển dụng vào tổ chức.
+  target_attr_name: Hire Date
+- target_column: termination_dt
+  transformation: or_re.TERMINATION_DATE
+  data_type: date
+  description: Ngày chấm dứt hợp đồng lao động (NULL = đang làm việc).
+  target_attr_name: Termination Date
+- target_column: rpt_dt
+  transformation: or_re.REPORT_DATE
+  data_type: date
+  description: Ngày lập báo cáo.
+  target_attr_name: Report Date
+- target_column: disciplines
+  transformation: or_re.DISCIPLINES
+  data_type: string
+  description: Kỷ luật của người hành nghề tại tổ chức.
+  target_attr_name: Disciplines
+- target_column: description
+  transformation: or_re.DESCRIPTION
+  data_type: string
+  description: Mô tả bổ sung cho báo cáo.
+  target_attr_name: Description
+- target_column: notes
+  transformation: or_re.NOTES
+  data_type: string
+  description: Ghi chú nội bộ.
+  target_attr_name: Notes
+- target_column: business_department_nm
+  transformation: or_re.BUSINESS_DEPARTMENT
+  data_type: string
+  description: Tên phòng nghiệp vụ UBCKNN phụ trách (denormalized text).
+  target_attr_name: Business Department Name
+- target_column: rpt_file_path
+  transformation: or_re.FILE_PATH
+  data_type: string
+  description: Đường dẫn file báo cáo đính kèm.
+  target_attr_name: Report File Path
+- target_column: termination_file_path
+  transformation: or_re.FILE_PATH_TERMINATION
+  data_type: string
+  description: Đường dẫn file chấm dứt hợp đồng đính kèm.
+  target_attr_name: Termination File Path
+- target_column: external_sync_id
+  transformation: or_re.SYNC_ID
+  data_type: string
+  description: Mã đồng bộ từ hệ thống ngoài (FMS/SCMS).
+  target_attr_name: External Sync Id
+- target_column: organization_status_code_at_rpt
+  transformation: or_re.STATUS_ORGANIZATION
+  data_type: string
+  description: Trạng thái tổ chức tại thời điểm lập báo cáo.
+  target_attr_name: Organization Status Code At Report
+- target_column: sync_created_tms
+  transformation: or_re.SYNC_CREATED_AT
+  data_type: timestamp
+  description: Thời điểm tạo bản ghi tại hệ thống đồng bộ nguồn.
+  target_attr_name: Sync Created Timestamp
+- target_column: sync_updated_tms
+  transformation: or_re.SYNC_UPDATED_AT
+  data_type: timestamp
+  description: Thời điểm cập nhật bản ghi tại hệ thống đồng bộ nguồn.
+  target_attr_name: Sync Updated Timestamp
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

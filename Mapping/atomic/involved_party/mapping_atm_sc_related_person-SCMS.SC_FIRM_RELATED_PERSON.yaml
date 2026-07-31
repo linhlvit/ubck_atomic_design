@@ -1,0 +1,195 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-sc_related_person-SCMS.SC_FIRM_RELATED_PERSON
+  logical_name: Mapping Atomic - Securities Company Related Person – source SCMS.SC_FIRM_RELATED_PERSON
+  physical_name: sc_related_person
+  dm_ref: ATM-sc_related_person-SCMS.SC_FIRM_RELATED_PERSON
+  brd_ref: BRD-SRC-SCMS-SC_FIRM_RELATED_PERSON
+target:
+  namespace: atm
+  physical_name: sc_related_person
+  etl_handle: SCD4A
+  description: Người liên quan của CTCK theo quy định pháp luật chứng khoán — cá nhân
+    và tổ chức có quan hệ sở hữu hoặc quản trị. Ghi nhận loại quan hệ, thông tin định
+    danh và thời gian.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: SC_FIRM_RELATED_PERSON
+  alias: sc_fi_re_pe
+  select_fields: ID, SC_FIRM_INFO_ID, ENTITY_TYPE, RECORD_STATUS, GENDER, POSITION_ID,
+    COUNTRY_ID, FULL_NAME, ORG_NAME_EN, ORG_SHORT_NAME, DATE_OF_BIRTH, ISSUE_DATE,
+    ISSUE_PLACE, REPRESENTATIVE_TITLE, LEGAL_REPRESENTATIVE, APPOINTMENT_DATE, WORKPLACE,
+    RELATIONSHIP, OWNERSHIP_RATIO, OWNERSHIP_RATIO_DATE, SHARES_COUNT, FOUNDING_SHAREHOLDER,
+    NOTE
+  filter: null
+- source_type: physical_table
+  namespace: ods
+  table_name: SC_FIRM_INFO
+  alias: sc_fi_in
+  select_fields: ID, CODE
+  filter: null
+  note: Crosswalk bridge cho sc_id
+- source_type: physical_table
+  namespace: ods
+  table_name: CAT_NATIONALITY
+  alias: ca_na
+  select_fields: ID, NATIONALITY_CODE
+  filter: created_at >= {etl_date} AND created_at < {etl_date} + 1
+  note: Crosswalk bridge cho country_id
+relationship:
+- main_alias: sc_fi_re_pe
+  join_type: LEFT JOIN
+  join_alias: sc_fi_in
+  join_on: sc_fi_re_pe.SC_FIRM_INFO_ID = sc_fi_in.ID
+- main_alias: sc_fi_re_pe
+  join_type: LEFT JOIN
+  join_alias: ca_na
+  join_on: sc_fi_re_pe.COUNTRY_ID = ca_na.ID
+mapping_columns:
+- target_column: sc_related_person_id
+  transformation: '{hash_id}(''SCMS_SC_FIRM_RELATED_PERSON'', sc_fi_re_pe.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Securities Company Related Person Id
+- target_column: sc_related_person_code
+  transformation: sc_fi_re_pe.ID
+  data_type: string
+  description: Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.
+  target_attr_name: Securities Company Related Person Code
+- target_column: src_stm_code
+  transformation: '''SCMS_SC_FIRM_RELATED_PERSON'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: sc_id
+  transformation: '{hash_id}(''SCMS_SC_FIRM_INFO'', sc_fi_in.CODE)'
+  data_type: string
+  description: FK đến Công ty chứng khoán mà người liên quan này gắn với.
+  target_attr_name: Securities Company Id
+- target_column: sc_code
+  transformation: sc_fi_re_pe.SC_FIRM_INFO_ID
+  data_type: string
+  description: Mã Công ty chứng khoán.
+  target_attr_name: Securities Company Code
+- target_column: entity_tp_code
+  transformation: sc_fi_re_pe.ENTITY_TYPE
+  data_type: string
+  description: 'Loại đối tượng người liên quan: CA_NHAN=Cá nhân; TO_CHUC=Tổ chức (trong
+    nước/nước ngoài).'
+  target_attr_name: Entity Type Code
+- target_column: record_status_code
+  transformation: sc_fi_re_pe.RECORD_STATUS
+  data_type: string
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/còn hiệu lực; 0=Ngừng hoạt động/hết
+    hiệu lực.'
+  target_attr_name: Record Status Code
+- target_column: gender_code
+  transformation: sc_fi_re_pe.GENDER
+  data_type: string
+  description: 'Giới tính: 1=Nam; 2=Nữ.'
+  target_attr_name: Gender Code
+- target_column: position_id
+  transformation: '{hash_id}(''SCMS_SC_FIRM_RELATED_PERSON'', sc_fi_re_pe.POSITION_ID)'
+  data_type: string
+  description: FK đến danh mục chức vụ của người liên quan.
+  target_attr_name: Position Id
+- target_column: position_code
+  transformation: sc_fi_re_pe.POSITION_ID
+  data_type: string
+  description: Mã chức vụ của người liên quan.
+  target_attr_name: Position Code
+- target_column: country_id
+  transformation: '{hash_id}(''ECAT_COUNTRY'', ca_na.NATIONALITY_CODE)'
+  data_type: string
+  description: FK đến quốc gia của người/tổ chức liên quan.
+  target_attr_name: Country Id
+- target_column: country_code
+  transformation: sc_fi_re_pe.COUNTRY_ID
+  data_type: string
+  description: Mã quốc gia của người/tổ chức liên quan.
+  target_attr_name: Country Code
+- target_column: full_nm
+  transformation: sc_fi_re_pe.FULL_NAME
+  data_type: string
+  description: Họ và tên đầy đủ (cá nhân) hoặc tên đầy đủ (tổ chức).
+  target_attr_name: Full Name
+- target_column: org_nm_en
+  transformation: sc_fi_re_pe.ORG_NAME_EN
+  data_type: string
+  description: Tên tổ chức bằng tiếng Anh.
+  target_attr_name: Org Name En
+- target_column: org_short_nm
+  transformation: sc_fi_re_pe.ORG_SHORT_NAME
+  data_type: string
+  description: Tên viết tắt của tổ chức liên quan.
+  target_attr_name: Org Short Name
+- target_column: dt_of_birth
+  transformation: sc_fi_re_pe.DATE_OF_BIRTH
+  data_type: date
+  description: Ngày sinh (dd/mm/yyyy).
+  target_attr_name: Date Of Birth
+- target_column: issue_dt
+  transformation: sc_fi_re_pe.ISSUE_DATE
+  data_type: date
+  description: Ngày cấp giấy tờ/chứng chỉ định danh.
+  target_attr_name: Issue Date
+- target_column: issue_place
+  transformation: sc_fi_re_pe.ISSUE_PLACE
+  data_type: string
+  description: Nơi cấp giấy tờ/chứng chỉ định danh.
+  target_attr_name: Issue Place
+- target_column: representative_title
+  transformation: sc_fi_re_pe.REPRESENTATIVE_TITLE
+  data_type: string
+  description: Chức danh người đại diện.
+  target_attr_name: Representative Title
+- target_column: legal_representative
+  transformation: sc_fi_re_pe.LEGAL_REPRESENTATIVE
+  data_type: string
+  description: Thông tin người đại diện pháp luật (lưu dạng text).
+  target_attr_name: Legal Representative
+- target_column: appointment_dt
+  transformation: sc_fi_re_pe.APPOINTMENT_DATE
+  data_type: date
+  description: Ngày bổ nhiệm vào chức vụ.
+  target_attr_name: Appointment Date
+- target_column: workplace
+  transformation: sc_fi_re_pe.WORKPLACE
+  data_type: string
+  description: Nơi làm việc của người liên quan.
+  target_attr_name: Workplace
+- target_column: rltnp
+  transformation: sc_fi_re_pe.RELATIONSHIP
+  data_type: string
+  description: Mối quan hệ với CTCK hoặc với người nội bộ (vợ/chồng/con cái/anh chị
+    em).
+  target_attr_name: Relationship
+- target_column: ownership_ratio
+  transformation: sc_fi_re_pe.OWNERSHIP_RATIO
+  data_type: decimal(5,2)
+  description: Tỷ lệ sở hữu vốn (%).
+  target_attr_name: Ownership Ratio
+- target_column: ownership_ratio_dt
+  transformation: sc_fi_re_pe.OWNERSHIP_RATIO_DATE
+  data_type: date
+  description: Ngày xác định tỷ lệ sở hữu.
+  target_attr_name: Ownership Ratio Date
+- target_column: shares_count
+  transformation: sc_fi_re_pe.SHARES_COUNT
+  data_type: int
+  description: Số lượng cổ phần nắm giữ.
+  target_attr_name: Shares Count
+- target_column: founding_shareholder_indicator
+  transformation: sc_fi_re_pe.FOUNDING_SHAREHOLDER
+  data_type: int
+  description: 'Cờ là cổ đông sáng lập: 1=Có; 0=Không.'
+  target_attr_name: Founding Shareholder Indicator
+- target_column: note
+  transformation: sc_fi_re_pe.NOTE
+  data_type: string
+  description: Ghi chú bổ sung, không bắt buộc.
+  target_attr_name: Note
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

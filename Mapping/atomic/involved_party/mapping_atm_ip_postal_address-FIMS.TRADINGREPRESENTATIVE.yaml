@@ -1,0 +1,50 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-ip_postal_address-FIMS.TRADINGREPRESENTATIVE
+  logical_name: Mapping Atomic - Involved Party Postal Address – source FIMS.TRADINGREPRESENTATIVE
+  physical_name: ip_postal_address
+  dm_ref: ATM-ip_postal_address-FIMS.TRADINGREPRESENTATIVE
+  brd_ref: BRD-SRC-FIMS-TRADINGREPRESENTATIVE
+target:
+  namespace: atm
+  physical_name: ip_postal_address
+  etl_handle: SCD4A
+  description: Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường
+    trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: TRADINGREPRESENTATIVE
+  alias: tr_re
+  select_fields: ID, ADDRESS
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: ip_id
+  transformation: '{hash_id}(''FIMS_TRADINGREPRESENTATIVE'', tr_re.ID)'
+  data_type: string
+  description: FK đến Trading Representative (Involved Party).
+  target_attr_name: Involved Party Id
+- target_column: ip_code
+  transformation: tr_re.ID
+  data_type: string
+  description: Mã Trading Representative.
+  target_attr_name: Involved Party Code
+- target_column: src_stm_code
+  transformation: '''FIMS_TRADINGREPRESENTATIVE'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: adr_tp_code
+  transformation: '''PERMANENT'''
+  data_type: string
+  description: Loại địa chỉ.
+  target_attr_name: Address Type Code
+- target_column: adr_val
+  transformation: tr_re.ADDRESS
+  data_type: string
+  description: Địa chỉ thường trú của đại diện giao dịch.
+  target_attr_name: Address Value
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

@@ -1,0 +1,140 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-foreign_fm_ou_staff-FMS.STF_FG_BRCH
+  logical_name: Mapping Atomic - Foreign Fund Management Organization Unit Staff –
+    source FMS.STF_FG_BRCH
+  physical_name: foreign_fm_ou_staff
+  dm_ref: ATM-foreign_fm_ou_staff-FMS.STF_FG_BRCH
+  brd_ref: BRD-SRC-FMS-STF_FG_BRCH
+target:
+  namespace: atm
+  physical_name: foreign_fm_ou_staff
+  etl_handle: SCD4A
+  description: Cá nhân giữ vị trí trong VPĐD/CN QLQ nước ngoài. Domain prefix dùng
+    chung với Foreign Fund Management Organization Unit (Tier 2).
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: STF_FG_BRCH
+  alias: st_fg_br
+  select_fields: ID, FOR_BRCH_ID, JOBS_ID, NAT_ID, STAFF_BRANCH, ITEM_NAME, SEX, RECORD_STATUS,
+    REPRESENT, LICENSE, LICENSE_DATE, NOTE, ISP, BRANCH_DIRECTOR, DIRECTOR_APPOINT_LICENSE_NO,
+    DIRECTOR_APPROVAL_DATE
+  filter: null
+- source_type: physical_table
+  namespace: ods
+  table_name: NATIONAL
+  alias: nati
+  select_fields: ID, SNAME
+  filter: null
+  note: Crosswalk bridge cho nationality_id
+relationship:
+- main_alias: st_fg_br
+  join_type: LEFT JOIN
+  join_alias: nati
+  join_on: st_fg_br.NAT_ID = nati.ID
+mapping_columns:
+- target_column: foreign_fm_ou_staff_id
+  transformation: '{hash_id}(''FMS_STF_FG_BRCH'', st_fg_br.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Foreign Fund Management Organization Unit Staff Id
+- target_column: foreign_fm_ou_staff_code
+  transformation: st_fg_br.ID
+  data_type: string
+  description: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+  target_attr_name: Foreign Fund Management Organization Unit Staff Code
+- target_column: src_stm_code
+  transformation: '''FMS_STF_FG_BRCH'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: foreign_fm_ou_id
+  transformation: '{hash_id}(''FMS_FOR_BRCH'', st_fg_br.FOR_BRCH_ID)'
+  data_type: string
+  description: 'FK -> FOR_BRCH: Chi nhánh/VPĐD nước ngoài liên quan.'
+  target_attr_name: Foreign Fund Management Organization Unit Id
+- target_column: foreign_fm_ou_code
+  transformation: st_fg_br.FOR_BRCH_ID
+  data_type: string
+  description: Mã chi nhánh/VPĐD nước ngoài liên quan.
+  target_attr_name: Foreign Fund Management Organization Unit Code
+- target_column: job_title_code
+  transformation: st_fg_br.JOBS_ID
+  data_type: string
+  description: 'FK -> JOBS: Chức danh/vị trí công tác của nhân sự.'
+  target_attr_name: Job Title Code
+- target_column: nationality_id
+  transformation: '{hash_id}(''ECAT_COUNTRY'', nati.SNAME)'
+  data_type: string
+  description: FK đến Geographic Area (quốc tịch).
+  target_attr_name: Nationality Id
+- target_column: nationality_code
+  transformation: st_fg_br.NAT_ID
+  data_type: string
+  description: Mã quốc gia/quốc tịch (SNAME từ FMS.NATIONAL).
+  target_attr_name: Nationality Code
+- target_column: staff_branch_tp_code
+  transformation: st_fg_br.STAFF_BRANCH
+  data_type: string
+  description: 'Cờ là nhân sự chi nhánh: 1=Nhân sự CN, 0=Nhân sự VPĐD.'
+  target_attr_name: Staff Branch Type Code
+- target_column: foreign_fm_ou_staff_full_nm
+  transformation: st_fg_br.ITEM_NAME
+  data_type: string
+  description: Tên hiển thị chính.
+  target_attr_name: Foreign Fund Management Organization Unit Staff Full Name
+- target_column: gender_code
+  transformation: st_fg_br.SEX
+  data_type: string
+  description: 'Giới tính: 1=Nam, 0=Nữ (hoặc chuỗi Nam/Nữ tùy bảng).'
+  target_attr_name: Gender Code
+- target_column: active_status_flag
+  transformation: st_fg_br.RECORD_STATUS
+  data_type: int
+  description: 'Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu
+    lực.'
+  target_attr_name: Active Status Flag
+- target_column: legal_representative_flag
+  transformation: st_fg_br.REPRESENT
+  data_type: int
+  description: 'Cờ là người đại diện theo pháp luật: 1=Có, 0=Không.'
+  target_attr_name: Legal Representative Flag
+- target_column: operating_license_nbr
+  transformation: st_fg_br.LICENSE
+  data_type: string
+  description: Số giấy phép hoạt động.
+  target_attr_name: Operating License Number
+- target_column: operating_license_dt
+  transformation: st_fg_br.LICENSE_DATE
+  data_type: date
+  description: Ngày cấp giấy phép.
+  target_attr_name: Operating License Date
+- target_column: note
+  transformation: st_fg_br.NOTE
+  data_type: string
+  description: Ghi chú bổ sung.
+  target_attr_name: Note
+- target_column: held_unit_quantity
+  transformation: st_fg_br.ISP
+  data_type: int
+  description: Số lượng cổ phiếu/CCQ nắm giữ của người hành nghề.
+  target_attr_name: Held Unit Quantity
+- target_column: branch_director_flag
+  transformation: st_fg_br.BRANCH_DIRECTOR
+  data_type: int
+  description: 'Cờ là Giám đốc chi nhánh: 1=Là GĐ CN, 0=Nhân viên thường.'
+  target_attr_name: Branch Director Flag
+- target_column: director_appointment_license_nbr
+  transformation: st_fg_br.DIRECTOR_APPOINT_LICENSE_NO
+  data_type: string
+  description: Số GP/QĐ bổ nhiệm Giám đốc chi nhánh.
+  target_attr_name: Director Appointment License Number
+- target_column: director_appointment_approval_dt
+  transformation: st_fg_br.DIRECTOR_APPROVAL_DATE
+  data_type: date
+  description: Ngày phê duyệt bổ nhiệm Giám đốc chi nhánh.
+  target_attr_name: Director Appointment Approval Date
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

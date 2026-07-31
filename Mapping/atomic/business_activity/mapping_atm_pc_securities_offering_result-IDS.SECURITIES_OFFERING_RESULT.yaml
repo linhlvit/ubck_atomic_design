@@ -1,0 +1,377 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-pc_securities_offering_result-IDS.SECURITIES_OFFERING_RESULT
+  logical_name: Mapping Atomic - Public Company Securities Offering Result – source
+    IDS.SECURITIES_OFFERING_RESULT
+  physical_name: pc_securities_offering_result
+  dm_ref: ATM-pc_securities_offering_result-IDS.SECURITIES_OFFERING_RESULT
+  brd_ref: BRD-SRC-IDS-SECURITIES_OFFERING_RESULT
+target:
+  namespace: atm
+  physical_name: pc_securities_offering_result
+  etl_handle: SCD4A
+  description: 'Kết quả thực tế chào bán chứng khoán: số lượng thành công, giá thực
+    tế, tổng giá trị huy động, phân chia trong nước/nước ngoài, chi phí phát hành.'
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: SECURITIES_OFFERING_RESULT
+  alias: se_of_re
+  select_fields: ID, SECURITIES_OFFERING_ID, OFFERING_PHASE_NAME, RESULT_REPORT_DATE,
+    OFFERING_END_DATE, OFFERING_METHOD_CD, SECURITY_TYPE_CD, TOTAL_SUCCESSFUL_QTY,
+    ACTUAL_OFFERING_PRICE, TOTAL_COLLECTED_AM, SUCCESSFUL_RATIO, ISSUER_SUCCESSFUL_QTY,
+    SHAREHOLDER_SUCCESSFUL_QTY, ISSUER_COLLECTED_AM, SHAREHOLDER_COLLECTED_AM, CAPITAL_SOURCE,
+    EMPLOYEE_QTY, DOMESTIC_SUCCESSFUL_QTY, DOMESTIC_COLLECTED_AM, FOREIGN_SUCCESSFUL_QTY,
+    FOREIGN_COLLECTED_AM, POST_ISSUANCE_TOTAL_QTY, TOTAL_TREASURY_SHARE, TOTAL_OUTSTANDING_SHARE,
+    DOMESTIC_OFFERING_PRICE, DOMESTIC_OFFERING_QTY, DOMESTIC_REGISTERED_QTY, DOMESTIC_DISTRIBUTED_QTY,
+    DOMESTIC_REG_INVESTOR_QTY, DOMESTIC_DIST_INVESTOR_QTY, DOMESTIC_UNDIST_INVESTOR_QTY,
+    DOMESTIC_REMAINING_QTY, DOMESTIC_DISTRIBUTED_PCT, FOREIGN_OFFERING_PRICE, FOREIGN_OFFERING_QTY,
+    FOREIGN_REGISTERED_QTY, FOREIGN_DISTRIBUTED_QTY, FOREIGN_REG_INVESTOR_QTY, FOREIGN_DIST_INVESTOR_QTY,
+    FOREIGN_UNDIST_INVESTOR_QTY, FOREIGN_REMAINING_QTY, FOREIGN_DISTRIBUTED_PCT, CERTIFICATE_NO,
+    CERTIFICATE_DATE, OFFICIAL_LETTER_NO, OFFICIAL_LETTER_DATE, APPROVAL_STATUS_CD,
+    APPROVER_USER_ID, APPROVER_USER_NAME, PROCESSOR_USER_ID, PROCESSOR_USER_NAME,
+    REVISION_REASON, TOTAL_EXPENSE, UNDERWRITING_FEE, DISTRIBUTION_FEE, AUDIT_FEE,
+    OTHER_EXPENSE, NET_OFFERING_PROCEEDS, IS_SYNC, DELETE_FLG, APPROVER_COMMENT
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: pc_securities_offering_result_id
+  transformation: '{hash_id}(''IDS_SECURITIES_OFFERING_RESULT'', se_of_re.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Public Company Securities Offering Result Id
+- target_column: pc_securities_offering_result_code
+  transformation: se_of_re.ID
+  data_type: string
+  description: Khóa chính. BK của entity — map từ PK bảng nguồn.
+  target_attr_name: Public Company Securities Offering Result Code
+- target_column: src_stm_code
+  transformation: '''IDS_SECURITIES_OFFERING_RESULT'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: pc_securities_offering_id
+  transformation: '{hash_id}(''IDS_SECURITIES_OFFERING'', se_of_re.SECURITIES_OFFERING_ID)'
+  data_type: string
+  description: Khóa link đến bảng SECURITIES_OFFERING (đợt chào bán/phát hành cha).
+  target_attr_name: Public Company Securities Offering Id
+- target_column: pc_securities_offering_code
+  transformation: se_of_re.SECURITIES_OFFERING_ID
+  data_type: string
+  description: Mã hồ sơ chào bán/phát hành cha.
+  target_attr_name: Public Company Securities Offering Code
+- target_column: offering_phase_nm
+  transformation: se_of_re.OFFERING_PHASE_NAME
+  data_type: string
+  description: Tên đợt chào bán.
+  target_attr_name: Offering Phase Name
+- target_column: result_rpt_dt
+  transformation: se_of_re.RESULT_REPORT_DATE
+  data_type: date
+  description: Ngày báo cáo kết quả.
+  target_attr_name: Result Report Date
+- target_column: offering_end_dt
+  transformation: se_of_re.OFFERING_END_DATE
+  data_type: date
+  description: Ngày kết thúc đợt chào bán/phát hành.
+  target_attr_name: Offering End Date
+- target_column: offering_method_code_snpst
+  transformation: se_of_re.OFFERING_METHOD_CD
+  data_type: string
+  description: Hình thức chào bán phát hành (snapshot lấy từ Phương án chào bán).
+  target_attr_name: Offering Method Code Snapshot
+- target_column: security_tp_code
+  transformation: se_of_re.SECURITY_TYPE_CD
+  data_type: string
+  description: Loại chứng khoán (Cổ phiếu, Cổ phiếu ưu đãi, Trái phiếu, Trái phiếu
+    kèm chứng quyền, Trái phiếu chuyển đổi).
+  target_attr_name: Security Type Code
+- target_column: total_successful_quantity
+  transformation: se_of_re.TOTAL_SUCCESSFUL_QTY
+  data_type: int
+  description: Tổng số chứng khoán chào bán/phát hành thành công.
+  target_attr_name: Total Successful Quantity
+- target_column: actual_offering_price
+  transformation: se_of_re.ACTUAL_OFFERING_PRICE
+  data_type: decimal(23,2)
+  description: Giá chào bán thực tế (hiển thị đối với một số thủ tục).
+  target_attr_name: Actual Offering Price
+- target_column: total_collected_amt
+  transformation: se_of_re.TOTAL_COLLECTED_AM
+  data_type: decimal(23,2)
+  description: Tổng số tiền thu được (VNĐ).
+  target_attr_name: Total Collected Amount
+- target_column: successful_ratio_percentage
+  transformation: se_of_re.SUCCESSFUL_RATIO
+  data_type: decimal(5,2)
+  description: Tỷ lệ % so với tổng số chứng khoán đăng ký.
+  target_attr_name: Successful Ratio Percentage
+- target_column: issuer_successful_quantity
+  transformation: se_of_re.ISSUER_SUCCESSFUL_QTY
+  data_type: int
+  description: Số lượng chứng khoán của tổ chức phát hành chào bán/phát hành thành
+    công (hiển thị đối với một số thủ tục).
+  target_attr_name: Issuer Successful Quantity
+- target_column: shareholder_successful_quantity
+  transformation: se_of_re.SHAREHOLDER_SUCCESSFUL_QTY
+  data_type: int
+  description: Số lượng chứng khoán của cổ đông/thành viên chào bán/phát hành thành
+    công (hiển thị đối với một số thủ tục).
+  target_attr_name: Shareholder Successful Quantity
+- target_column: issuer_collected_amt
+  transformation: se_of_re.ISSUER_COLLECTED_AM
+  data_type: decimal(23,2)
+  description: Số tiền thu được của tổ chức phát hành (hiển thị đối với một số thủ
+    tục).
+  target_attr_name: Issuer Collected Amount
+- target_column: shareholder_collected_amt
+  transformation: se_of_re.SHAREHOLDER_COLLECTED_AM
+  data_type: decimal(23,2)
+  description: Số tiền thu được của cổ đông/thành viên (hiển thị đối với một số thủ
+    tục).
+  target_attr_name: Shareholder Collected Amount
+- target_column: capital_src
+  transformation: se_of_re.CAPITAL_SOURCE
+  data_type: string
+  description: Nguồn vốn (hiển thị đối với một số thủ tục).
+  target_attr_name: Capital Source
+- target_column: employee_quantity
+  transformation: se_of_re.EMPLOYEE_QTY
+  data_type: int
+  description: Số lượng người lao động (hiển thị đối với một số thủ tục).
+  target_attr_name: Employee Quantity
+- target_column: domestic_successful_quantity
+  transformation: se_of_re.DOMESTIC_SUCCESSFUL_QTY
+  data_type: int
+  description: Số lượng chứng khoán của nhà đầu tư trong nước.
+  target_attr_name: Domestic Successful Quantity
+- target_column: domestic_collected_amt
+  transformation: se_of_re.DOMESTIC_COLLECTED_AM
+  data_type: decimal(23,2)
+  description: Số tiền thu được của nhà đầu tư trong nước.
+  target_attr_name: Domestic Collected Amount
+- target_column: foreign_successful_quantity
+  transformation: se_of_re.FOREIGN_SUCCESSFUL_QTY
+  data_type: int
+  description: Số lượng chứng khoán của nhà đầu tư nước ngoài.
+  target_attr_name: Foreign Successful Quantity
+- target_column: foreign_collected_amt
+  transformation: se_of_re.FOREIGN_COLLECTED_AM
+  data_type: decimal(23,2)
+  description: Số tiền thu được của nhà đầu tư nước ngoài.
+  target_attr_name: Foreign Collected Amount
+- target_column: post_issuance_total_quantity
+  transformation: se_of_re.POST_ISSUANCE_TOTAL_QTY
+  data_type: int
+  description: Tổng số chứng khoán sau đợt phát hành.
+  target_attr_name: Post Issuance Total Quantity
+- target_column: total_treasury_share
+  transformation: se_of_re.TOTAL_TREASURY_SHARE
+  data_type: int
+  description: Tổng số cổ phiếu quỹ.
+  target_attr_name: Total Treasury Share
+- target_column: total_outstanding_share
+  transformation: se_of_re.TOTAL_OUTSTANDING_SHARE
+  data_type: int
+  description: Số chứng khoán đang lưu hành.
+  target_attr_name: Total Outstanding Share
+- target_column: domestic_offering_price
+  transformation: se_of_re.DOMESTIC_OFFERING_PRICE
+  data_type: decimal(23,2)
+  description: Giá chào bán trong nước (hiển thị đối với một số thủ tục).
+  target_attr_name: Domestic Offering Price
+- target_column: domestic_offering_quantity
+  transformation: se_of_re.DOMESTIC_OFFERING_QTY
+  data_type: int
+  description: Số chứng khoán chào bán/phát hành trong nước.
+  target_attr_name: Domestic Offering Quantity
+- target_column: domestic_registered_quantity
+  transformation: se_of_re.DOMESTIC_REGISTERED_QTY
+  data_type: int
+  description: Số chứng khoán đăng ký mua/hoán đổi trong nước.
+  target_attr_name: Domestic Registered Quantity
+- target_column: domestic_distributed_quantity
+  transformation: se_of_re.DOMESTIC_DISTRIBUTED_QTY
+  data_type: int
+  description: Số chứng khoán được phân phối/hoán đổi trong nước.
+  target_attr_name: Domestic Distributed Quantity
+- target_column: domestic_registered_investor_quantity
+  transformation: se_of_re.DOMESTIC_REG_INVESTOR_QTY
+  data_type: int
+  description: Số nhà đầu tư đăng ký mua/hoán đổi trong nước.
+  target_attr_name: Domestic Registered Investor Quantity
+- target_column: domestic_distributed_investor_quantity
+  transformation: se_of_re.DOMESTIC_DIST_INVESTOR_QTY
+  data_type: int
+  description: Số nhà đầu tư được phân phối/hoán đổi trong nước.
+  target_attr_name: Domestic Distributed Investor Quantity
+- target_column: domestic_undistributed_investor_quantity
+  transformation: se_of_re.DOMESTIC_UNDIST_INVESTOR_QTY
+  data_type: int
+  description: Số nhà đầu tư không được phân phối/hoán đổi trong nước.
+  target_attr_name: Domestic Undistributed Investor Quantity
+- target_column: domestic_remaining_quantity
+  transformation: se_of_re.DOMESTIC_REMAINING_QTY
+  data_type: int
+  description: Số chứng khoán còn lại trong nước.
+  target_attr_name: Domestic Remaining Quantity
+- target_column: domestic_distributed_percentage
+  transformation: se_of_re.DOMESTIC_DISTRIBUTED_PCT
+  data_type: decimal(5,2)
+  description: Tỷ lệ chứng khoán được phân phối/phát hành trong nước.
+  target_attr_name: Domestic Distributed Percentage
+- target_column: foreign_offering_price
+  transformation: se_of_re.FOREIGN_OFFERING_PRICE
+  data_type: decimal(23,2)
+  description: Giá chào bán nước ngoài (hiển thị đối với một số thủ tục).
+  target_attr_name: Foreign Offering Price
+- target_column: foreign_offering_quantity
+  transformation: se_of_re.FOREIGN_OFFERING_QTY
+  data_type: int
+  description: Số chứng khoán chào bán/phát hành nước ngoài.
+  target_attr_name: Foreign Offering Quantity
+- target_column: foreign_registered_quantity
+  transformation: se_of_re.FOREIGN_REGISTERED_QTY
+  data_type: int
+  description: Số chứng khoán đăng ký mua/hoán đổi nước ngoài.
+  target_attr_name: Foreign Registered Quantity
+- target_column: foreign_distributed_quantity
+  transformation: se_of_re.FOREIGN_DISTRIBUTED_QTY
+  data_type: int
+  description: Số chứng khoán được phân phối/hoán đổi nước ngoài.
+  target_attr_name: Foreign Distributed Quantity
+- target_column: foreign_registered_investor_quantity
+  transformation: se_of_re.FOREIGN_REG_INVESTOR_QTY
+  data_type: int
+  description: Số nhà đầu tư đăng ký mua/hoán đổi nước ngoài.
+  target_attr_name: Foreign Registered Investor Quantity
+- target_column: foreign_distributed_investor_quantity
+  transformation: se_of_re.FOREIGN_DIST_INVESTOR_QTY
+  data_type: int
+  description: Số nhà đầu tư được phân phối/hoán đổi nước ngoài.
+  target_attr_name: Foreign Distributed Investor Quantity
+- target_column: foreign_undistributed_investor_quantity
+  transformation: se_of_re.FOREIGN_UNDIST_INVESTOR_QTY
+  data_type: int
+  description: Số nhà đầu tư không được phân phối/hoán đổi nước ngoài.
+  target_attr_name: Foreign Undistributed Investor Quantity
+- target_column: foreign_remaining_quantity
+  transformation: se_of_re.FOREIGN_REMAINING_QTY
+  data_type: int
+  description: Số chứng khoán còn lại nước ngoài.
+  target_attr_name: Foreign Remaining Quantity
+- target_column: foreign_distributed_percentage
+  transformation: se_of_re.FOREIGN_DISTRIBUTED_PCT
+  data_type: decimal(5,2)
+  description: Tỷ lệ chứng khoán được phân phối/phát hành nước ngoài.
+  target_attr_name: Foreign Distributed Percentage
+- target_column: certificate_nbr
+  transformation: se_of_re.CERTIFICATE_NO
+  data_type: string
+  description: Số giấy chứng nhận.
+  target_attr_name: Certificate Number
+- target_column: certificate_dt
+  transformation: se_of_re.CERTIFICATE_DATE
+  data_type: date
+  description: Ngày giấy chứng nhận.
+  target_attr_name: Certificate Date
+- target_column: official_letter_nbr
+  transformation: se_of_re.OFFICIAL_LETTER_NO
+  data_type: string
+  description: Số công văn của UBCKNN.
+  target_attr_name: Official Letter Number
+- target_column: official_letter_dt
+  transformation: se_of_re.OFFICIAL_LETTER_DATE
+  data_type: date
+  description: Ngày công văn.
+  target_attr_name: Official Letter Date
+- target_column: approval_status_code
+  transformation: se_of_re.APPROVAL_STATUS_CD
+  data_type: string
+  description: 'Trạng thái phê duyệt kết quả (dùng để Ban Quản lý chào bán phê duyệt:
+    Chờ kiểm tra; Chờ duyệt; Đã duyệt; Từ chối).'
+  target_attr_name: Approval Status Code
+- target_column: approver_user_id
+  transformation: '{hash_id}(''IAM_USERS'', se_of_re.APPROVER_USER_ID)'
+  data_type: string
+  description: Id Login của lãnh đạo phê duyệt.
+  target_attr_name: Approver User Id
+- target_column: approver_user_code
+  transformation: se_of_re.APPROVER_USER_ID
+  data_type: string
+  description: Mã người phê duyệt (denormalized lookup).
+  target_attr_name: Approver User Code
+- target_column: approver_user_nm_snpst
+  transformation: se_of_re.APPROVER_USER_NAME
+  data_type: string
+  description: Tên lãnh đạo duyệt phương án (chuyên viên chọn lãnh đạo phê duyệt dữ
+    liệu phương án — snapshot text).
+  target_attr_name: Approver User Name Snapshot
+- target_column: processor_user_id
+  transformation: '{hash_id}(''IAM_USERS'', se_of_re.PROCESSOR_USER_ID)'
+  data_type: string
+  description: Id Login của chuyên viên xử lý.
+  target_attr_name: Processor User Id
+- target_column: processor_user_code
+  transformation: se_of_re.PROCESSOR_USER_ID
+  data_type: string
+  description: Mã chuyên viên xử lý (denormalized lookup).
+  target_attr_name: Processor User Code
+- target_column: processor_user_nm_snpst
+  transformation: se_of_re.PROCESSOR_USER_NAME
+  data_type: string
+  description: Tên chuyên viên xử lý (đồng bộ từ TTHC hoặc chọn thủ công tại IDS).
+  target_attr_name: Processor User Name Snapshot
+- target_column: revision_reason
+  transformation: se_of_re.REVISION_REASON
+  data_type: string
+  description: Lý do chỉnh sửa.
+  target_attr_name: Revision Reason
+- target_column: total_expense
+  transformation: se_of_re.TOTAL_EXPENSE
+  data_type: decimal(23,2)
+  description: Tổng chi phí (VNĐ).
+  target_attr_name: Total Expense
+- target_column: underwriting_fee
+  transformation: se_of_re.UNDERWRITING_FEE
+  data_type: decimal(23,2)
+  description: Phí bảo lãnh (VNĐ).
+  target_attr_name: Underwriting Fee
+- target_column: distribution_fee
+  transformation: se_of_re.DISTRIBUTION_FEE
+  data_type: decimal(23,2)
+  description: Phí phân phối (VNĐ).
+  target_attr_name: Distribution Fee
+- target_column: audit_fee
+  transformation: se_of_re.AUDIT_FEE
+  data_type: decimal(23,2)
+  description: Phí kiểm toán (VNĐ).
+  target_attr_name: Audit Fee
+- target_column: other_expense
+  transformation: se_of_re.OTHER_EXPENSE
+  data_type: decimal(23,2)
+  description: Chi phí khác (VNĐ).
+  target_attr_name: Other Expense
+- target_column: net_offering_proceeds
+  transformation: se_of_re.NET_OFFERING_PROCEEDS
+  data_type: decimal(23,2)
+  description: Tổng thu ròng từ đợt chào bán/phát hành (VNĐ).
+  target_attr_name: Net Offering Proceeds
+- target_column: synced_from_external_stm_indicator
+  transformation: se_of_re.IS_SYNC
+  data_type: int
+  description: Đánh dấu đồng bộ dữ liệu từ hệ thống CBTT hay tạo mới tại IDS.
+  target_attr_name: Synced From External System Indicator
+- target_column: deleted_indicator
+  transformation: se_of_re.DELETE_FLG
+  data_type: int
+  description: Đánh dấu trạng thái xóa mềm.
+  target_attr_name: Deleted Indicator
+- target_column: approver_comment
+  transformation: se_of_re.APPROVER_COMMENT
+  data_type: string
+  description: Ghi chú của người phê duyệt.
+  target_attr_name: Approver Comment
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

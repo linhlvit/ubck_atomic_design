@@ -1,0 +1,123 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-ip_postal_address-SCMS.SC_FIRM_BRANCH
+  logical_name: Mapping Atomic - Involved Party Postal Address – source SCMS.SC_FIRM_BRANCH
+  physical_name: ip_postal_address
+  dm_ref: ATM-ip_postal_address-SCMS.SC_FIRM_BRANCH
+  brd_ref: BRD-SRC-SCMS-SC_FIRM_BRANCH
+target:
+  namespace: atm
+  physical_name: ip_postal_address
+  etl_handle: SCD4A
+  description: Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường
+    trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: SC_FIRM_BRANCH
+  alias: sc_fi_br
+  select_fields: ID, ADDRESS, PROVINCE_ID, DISTRICT_ID, DISTRICT_NAME, WARD_ID, WARD_NAME
+  filter: null
+- source_type: physical_table
+  namespace: ods
+  table_name: CAT_PROVINCE
+  alias: ca_pr
+  select_fields: ID, PROVINCE_CODE
+  filter: created_at >= {etl_date} AND created_at < {etl_date} + 1
+  note: Crosswalk bridge cho province_id
+- source_type: physical_table
+  namespace: ods
+  table_name: CAT_DISTRICT
+  alias: ca_di
+  select_fields: ID, DISTRICT_CODE
+  filter: created_at >= {etl_date} AND created_at < {etl_date} + 1
+  note: Crosswalk bridge cho district_id
+- source_type: physical_table
+  namespace: ods
+  table_name: CAT_WARD
+  alias: ca_wa
+  select_fields: ID, WARD_CODE
+  filter: created_at >= {etl_date} AND created_at < {etl_date} + 1
+  note: Crosswalk bridge cho ward_id
+relationship:
+- main_alias: sc_fi_br
+  join_type: LEFT JOIN
+  join_alias: ca_pr
+  join_on: sc_fi_br.PROVINCE_ID = ca_pr.ID
+- main_alias: sc_fi_br
+  join_type: LEFT JOIN
+  join_alias: ca_di
+  join_on: sc_fi_br.DISTRICT_ID = ca_di.ID
+- main_alias: sc_fi_br
+  join_type: LEFT JOIN
+  join_alias: ca_wa
+  join_on: sc_fi_br.WARD_ID = ca_wa.ID
+mapping_columns:
+- target_column: ip_id
+  transformation: '{hash_id}(''SCMS_SC_FIRM_BRANCH'', sc_fi_br.ID)'
+  data_type: string
+  description: FK đến Securities Company Organization Unit (chi nhánh CTCK).
+  target_attr_name: Involved Party Id
+- target_column: ip_code
+  transformation: sc_fi_br.ID
+  data_type: string
+  description: Mã Securities Company Organization Unit.
+  target_attr_name: Involved Party Code
+- target_column: src_stm_code
+  transformation: '''SCMS_SC_FIRM_BRANCH'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: adr_tp_code
+  transformation: '''BRANCH'''
+  data_type: string
+  description: 'Loại địa chỉ: BRANCH=Địa chỉ chi nhánh CTCK trong nước.'
+  target_attr_name: Address Type Code
+- target_column: adr_val
+  transformation: sc_fi_br.ADDRESS
+  data_type: string
+  description: Địa chỉ chi tiết của chi nhánh (số nhà, tên đường, phường/xã).
+  target_attr_name: Address Value
+- target_column: province_id
+  transformation: '{hash_id}(''ECAT_PROVINCE_NEW'', ca_pr.PROVINCE_CODE)'
+  data_type: string
+  description: FK đến Geographic Area cấp Tỉnh/Thành phố.
+  target_attr_name: Province Id
+- target_column: province_code
+  transformation: sc_fi_br.PROVINCE_ID
+  data_type: string
+  description: Mã Tỉnh/Thành phố.
+  target_attr_name: Province Code
+- target_column: district_id
+  transformation: '{hash_id}(''ECAT_DISTRICT_OLD'', ca_di.DISTRICT_CODE)'
+  data_type: string
+  description: FK đến Geographic Area Old cấp Quận/Huyện (cũ).
+  target_attr_name: District Id
+- target_column: district_code
+  transformation: sc_fi_br.DISTRICT_ID
+  data_type: string
+  description: Mã Quận/Huyện.
+  target_attr_name: District Code
+- target_column: district_nm
+  transformation: sc_fi_br.DISTRICT_NAME
+  data_type: string
+  description: Tên Quận/Huyện (denormalized text, không có FK riêng).
+  target_attr_name: District Name
+- target_column: ward_id
+  transformation: '{hash_id}(''ECAT_WARD_NEW'', ca_wa.WARD_CODE)'
+  data_type: string
+  description: FK đến Geographic Area cấp Phường/Xã.
+  target_attr_name: Ward Id
+- target_column: ward_code
+  transformation: sc_fi_br.WARD_ID
+  data_type: string
+  description: Mã Phường/Xã.
+  target_attr_name: Ward Code
+- target_column: ward_nm
+  transformation: sc_fi_br.WARD_NAME
+  data_type: string
+  description: Tên Phường/Xã (denormalized text).
+  target_attr_name: Ward Name
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

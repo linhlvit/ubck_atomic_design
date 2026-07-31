@@ -1,0 +1,98 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-cl_fms_event_type-FMS.EVENT_TYPE
+  logical_name: Mapping Atomic - Classification FMS Event Type – source FMS.EVENT_TYPE
+  physical_name: cl_fms_event_type
+  dm_ref: ATM-cl_fms_event_type-FMS.EVENT_TYPE
+  brd_ref: BRD-SRC-FMS-EVENT_TYPE
+target:
+  namespace: atm
+  physical_name: cl_fms_event_type
+  etl_handle: SCD2
+  description: Danh mục loại sự vụ báo cáo/CBTT của thành viên thị trường FMS. Promote
+    từ Classification Value (scheme FMS_EVENT_TYPE, nay deprecated) lên entity riêng
+    — không dùng chung với Classification Event Type của SCMS do cấu trúc khác biệt
+    (METADATA/BUSINESS_RULE_CONFIG đặc thù FMS).
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: EVENT_TYPE
+  alias: ev_ty
+  select_fields: EVENT_CODE, ITEM_NAME, CATEGORY, EVENT_CATEGORY, OBLIGATION_TYPE,
+    DEADLINE_CALC_METHOD, DESCRIPTION, NOTE, METADATA, BUSINESS_RULE_CONFIG, RECORD_STATUS
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: cl_fms_event_tp_id
+  transformation: '{hash_id}(''FMS_EVENT_TYPE'', ev_ty.EVENT_CODE)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Classification FMS Event Type Id
+- target_column: cl_fms_event_tp_code
+  transformation: ev_ty.EVENT_CODE
+  data_type: string
+  description: Mã sự vụ duy nhất (do hệ thống hoặc người dùng định nghĩa). BK.
+  target_attr_name: Classification FMS Event Type Code
+- target_column: src_stm_code
+  transformation: '''FMS_EVENT_TYPE'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: cl_fms_event_tp_nm
+  transformation: ev_ty.ITEM_NAME
+  data_type: string
+  description: Tên hiển thị chính.
+  target_attr_name: Classification FMS Event Type Name
+- target_column: event_category_description
+  transformation: ev_ty.CATEGORY
+  data_type: string
+  description: 'Danh mục phân nhóm sự vụ (VD: CBTT_CONG_TY_QLQ, CBTT_QUY_DAU_TU...).'
+  target_attr_name: Event Category Description
+- target_column: event_category_tp_code
+  transformation: ev_ty.EVENT_CATEGORY
+  data_type: string
+  description: 'Phân loại sự vụ: DINH_KY=Định kỳ, BAT_THUONG=Bất thường, THEO_YEU_CAU=Theo
+    yêu cầu, KHAC=Khác.'
+  target_attr_name: Event Category Type Code
+- target_column: obligation_tp_code
+  transformation: ev_ty.OBLIGATION_TYPE
+  data_type: string
+  description: 'Nghĩa vụ: CHI_BAO_CAO=Chỉ báo cáo, CHI_CBTT=Chỉ CBTT, BAO_CAO_VA_CBTT=Cả
+    hai, THAY_DOI=Thay đổi hồ sơ.'
+  target_attr_name: Obligation Type Code
+- target_column: deadline_calc_method_code
+  transformation: ev_ty.DEADLINE_CALC_METHOD
+  data_type: string
+  description: 'Cách tính thời hạn nộp: DINH_KY=Định kỳ cố định, SU_KIEN=Tính từ sự
+    kiện phát sinh.'
+  target_attr_name: Deadline Calc Method Code
+- target_column: description
+  transformation: ev_ty.DESCRIPTION
+  data_type: string
+  description: Mô tả chi tiết.
+  target_attr_name: Description
+- target_column: note
+  transformation: ev_ty.NOTE
+  data_type: string
+  description: Ghi chú bổ sung.
+  target_attr_name: Note
+- target_column: metadata_config
+  transformation: ev_ty.METADATA
+  data_type: string
+  description: 'Metadata bổ sung của sự vụ (JSON CLOB: cấu hình form, tham số riêng).'
+  target_attr_name: Metadata Config
+- target_column: business_rule_config
+  transformation: ev_ty.BUSINESS_RULE_CONFIG
+  data_type: string
+  description: 'Cấu hình nghiệp vụ bổ sung của sự vụ: điều kiện áp dụng, biểu mẫu,
+    lịch gửi, tham số (JSON CLOB).'
+  target_attr_name: Business Rule Config
+- target_column: event_tp_record_status_code
+  transformation: ev_ty.RECORD_STATUS
+  data_type: string
+  description: 'Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu
+    lực.'
+  target_attr_name: Event Type Record Status Code
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

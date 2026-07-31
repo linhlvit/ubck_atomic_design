@@ -1,0 +1,65 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-fund_management_company_employee_x_classification_fms_position_relationship-FMS.JOB_TL_PRO
+  logical_name: Mapping Atomic - Fund Management Company Employee X Classification
+    FMS Position Relationship – source FMS.JOB_TL_PRO
+  physical_name: fund_management_company_employee_x_classification_fms_position_relationship
+  dm_ref: ATM-fund_management_company_employee_x_classification_fms_position_relationship-FMS.JOB_TL_PRO
+  brd_ref: BRD-SRC-FMS-JOB_TL_PRO
+target:
+  namespace: atm
+  physical_name: fund_management_company_employee_x_classification_fms_position_relationship
+  etl_handle: SCD2
+  description: Quan hệ gán chức danh/vị trí công việc cho nhân sự chủ chốt công ty
+    QLQ (1 nhân sự có thể giữ nhiều chức danh). FK đến Fund Management Company Employee
+    + Classification FMS Position.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: JOB_TL_PRO
+  alias: jo_tl_pr
+  select_fields: TLPRO_ID, JOB_ID
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: fmc_employee_x_cl_fms_position_rltnp_id
+  transformation: 'null'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Fund Management Company Employee X Classification FMS Position
+    Relationship Id
+- target_column: fmc_employee_x_cl_fms_position_rltnp_code
+  transformation: 'null'
+  data_type: string
+  description: Mã quan hệ — composite JOB_ID+TLPRO_ID (bảng nguồn không có PK/mã nghiệp
+    vụ riêng).
+  target_attr_name: Fund Management Company Employee X Classification FMS Position
+    Relationship Code
+- target_column: src_stm_code
+  transformation: '''FMS_JOB_TL_PRO'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: fmc_employee_id
+  transformation: '{hash_id}(''FMS_TL_PROFILES'', jo_tl_pr.TLPRO_ID)'
+  data_type: string
+  description: 'FK -> TL_PROFILES: Người hành nghề được gán chức danh.'
+  target_attr_name: Fund Management Company Employee Id
+- target_column: fmc_employee_code
+  transformation: jo_tl_pr.TLPRO_ID
+  data_type: string
+  description: Mã người hành nghề được gán chức danh.
+  target_attr_name: Fund Management Company Employee Code
+- target_column: cl_fms_position_id
+  transformation: '{hash_id}(''FMS_JOBS'', jo_tl_pr.JOB_ID)'
+  data_type: string
+  description: 'FK -> JOBS: Chức danh/vị trí công việc được gán.'
+  target_attr_name: Classification FMS Position Id
+- target_column: cl_fms_position_code
+  transformation: jo_tl_pr.JOB_ID
+  data_type: string
+  description: Mã chức danh/vị trí công việc được gán.
+  target_attr_name: Classification FMS Position Code
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

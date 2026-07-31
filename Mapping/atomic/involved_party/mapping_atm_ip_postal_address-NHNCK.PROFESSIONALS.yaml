@@ -1,0 +1,114 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-ip_postal_address-NHNCK.PROFESSIONALS
+  logical_name: Mapping Atomic - Involved Party Postal Address – source NHNCK.PROFESSIONALS
+  physical_name: ip_postal_address
+  dm_ref: ATM-ip_postal_address-NHNCK.PROFESSIONALS
+  brd_ref: BRD-SRC-NHNCK-PROFESSIONALS
+target:
+  namespace: atm
+  physical_name: ip_postal_address
+  etl_handle: SCD4A
+  description: Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường
+    trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: PROFESSIONALS
+  alias: pro
+  select_fields: ID, CURRENT_COUNTRY_ID, CURRENT_PROVINCE_ID, CURRENT_DISTRICT_ID,
+    PERMANENT_COUNTRY_ID, PERMANENT_PROVINCE_ID, PERMANENT_DISTRICT_ID
+  filter: null
+- source_type: unpivot_cte
+  namespace: null
+  table_name: pro
+  alias: unpvt
+  select_fields: ID, adr_tp_code, country_id, country_code, province_id, province_code,
+    district_id, district_code
+  filter: null
+  unpivot_spec:
+    value_columns:
+    - country_id
+    - country_code
+    - province_id
+    - province_code
+    - district_id
+    - district_code
+    type_column: adr_tp_code
+    legs:
+    - type_value: CURRENT
+      source_columns:
+      - CURRENT_COUNTRY_ID
+      - CURRENT_COUNTRY_ID
+      - CURRENT_PROVINCE_ID
+      - CURRENT_PROVINCE_ID
+      - CURRENT_DISTRICT_ID
+      - CURRENT_DISTRICT_ID
+    - type_value: PERMANENT
+      source_columns:
+      - PERMANENT_COUNTRY_ID
+      - PERMANENT_COUNTRY_ID
+      - PERMANENT_PROVINCE_ID
+      - PERMANENT_PROVINCE_ID
+      - PERMANENT_DISTRICT_ID
+      - PERMANENT_DISTRICT_ID
+relationship: []
+mapping_columns:
+- target_column: ip_id
+  transformation: '{hash_id}(''NHNCK_PROFESSIONALS'', unpvt.ID)'
+  data_type: string
+  description: FK đến Securities Practitioner.
+  target_attr_name: Involved Party Id
+- target_column: ip_code
+  transformation: unpvt.ID
+  data_type: string
+  description: Mã người hành nghề.
+  target_attr_name: Involved Party Code
+- target_column: src_stm_code
+  transformation: '''NHNCK_PROFESSIONALS'''
+  data_type: string
+  description: Mã hệ thống nguồn.
+  target_attr_name: Source System Code
+- target_column: adr_val
+  transformation: 'null'
+  data_type: string
+  description: Giá trị địa chỉ.
+  target_attr_name: Address Value
+- target_column: adr_tp_code
+  transformation: unpvt.adr_tp_code
+  data_type: string
+  description: Loại địa chỉ — tạm trú.
+  target_attr_name: Address Type Code
+- target_column: country_id
+  transformation: unpvt.country_id
+  data_type: string
+  description: FK đến Geographic Area — quốc gia địa chỉ tạm trú hiện tại.
+  target_attr_name: Country Id
+- target_column: country_code
+  transformation: unpvt.country_code
+  data_type: string
+  description: Mã quốc gia địa chỉ tạm trú.
+  target_attr_name: Country Code
+- target_column: province_id
+  transformation: unpvt.province_id
+  data_type: string
+  description: FK đến Geographic Area — tỉnh/thành địa chỉ tạm trú.
+  target_attr_name: Province Id
+- target_column: province_code
+  transformation: unpvt.province_code
+  data_type: string
+  description: Mã tỉnh/thành địa chỉ tạm trú.
+  target_attr_name: Province Code
+- target_column: district_id
+  transformation: unpvt.district_id
+  data_type: string
+  description: FK đến Geographic Area — quận/huyện địa chỉ tạm trú.
+  target_attr_name: District Id
+- target_column: district_code
+  transformation: unpvt.district_code
+  data_type: string
+  description: Mã quận/huyện địa chỉ tạm trú.
+  target_attr_name: District Code
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

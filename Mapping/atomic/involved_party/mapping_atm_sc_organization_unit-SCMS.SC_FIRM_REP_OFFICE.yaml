@@ -1,0 +1,199 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-sc_organization_unit-SCMS.SC_FIRM_REP_OFFICE
+  logical_name: Mapping Atomic - Securities Company Organization Unit – source SCMS.SC_FIRM_REP_OFFICE
+  physical_name: sc_organization_unit
+  dm_ref: ATM-sc_organization_unit-SCMS.SC_FIRM_REP_OFFICE
+  brd_ref: BRD-SRC-SCMS-SC_FIRM_REP_OFFICE
+target:
+  namespace: atm
+  physical_name: sc_organization_unit
+  etl_handle: SCD4A
+  description: Chi nhánh của CTCK tại Việt Nam có địa chỉ pháp lý và giấy phép hoạt
+    động riêng do UBCKNN cấp. Ghi nhận mã, địa chỉ, ngày thành lập và trạng thái pháp
+    lý. org_unit_type_code = BRANCH.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: SC_FIRM_REP_OFFICE
+  alias: sc_fi_re_of
+  select_fields: ID, SC_FIRM_INFO_ID, SC_FIRM_BRANCH_ID, FULL_NAME, OFFICE_NAME, REP_OFFICE_STATUS,
+    RECORD_STATUS, PROVISIONAL, EVENT_TYPE_ID, DECISION_NUMBER, DECISION_DATE, DOCUMENT_NUMBER,
+    DOCUMENT_DATE, DOCUMENT_FILE_PATH, DOCUMENT_DECLARATION, VALID_DOSSIER_DATE, OFFICIAL_OPERATION_DATE,
+    VALIDITY_START_DATE, VALIDITY_END_DATE, REPRESENTATIVE_NAME, REPRESENTATIVE_ID,
+    SCOPE_OF_OPERATION, ATTACHMENT_PATH, NOTE
+  filter: null
+- source_type: physical_table
+  namespace: ods
+  table_name: SC_FIRM_INFO
+  alias: sc_fi_in
+  select_fields: ID, CODE
+  filter: null
+  note: Crosswalk bridge cho sc_id
+relationship:
+- main_alias: sc_fi_re_of
+  join_type: LEFT JOIN
+  join_alias: sc_fi_in
+  join_on: sc_fi_re_of.SC_FIRM_INFO_ID = sc_fi_in.ID
+mapping_columns:
+- target_column: sc_ou_id
+  transformation: '{hash_id}(''SCMS_SC_FIRM_REP_OFFICE'', sc_fi_re_of.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Securities Company Organization Unit Id
+- target_column: sc_ou_code
+  transformation: sc_fi_re_of.ID
+  data_type: string
+  description: Khóa chính kỹ thuật (ID tự tăng). BK của entity.
+  target_attr_name: Securities Company Organization Unit Code
+- target_column: src_stm_code
+  transformation: '''SCMS_SC_FIRM_REP_OFFICE'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: ou_tp_code
+  transformation: 'null'
+  data_type: string
+  description: Loại đơn vị tổ chức trực thuộc CTCK.
+  target_attr_name: Organization Unit Type Code
+- target_column: sc_id
+  transformation: '{hash_id}(''SCMS_SC_FIRM_INFO'', sc_fi_in.CODE)'
+  data_type: string
+  description: FK đến Công ty chứng khoán.
+  target_attr_name: Securities Company Id
+- target_column: sc_code
+  transformation: sc_fi_re_of.SC_FIRM_INFO_ID
+  data_type: string
+  description: Mã Công ty chứng khoán.
+  target_attr_name: Securities Company Code
+- target_column: parent_ou_id
+  transformation: '{hash_id}(''SCMS_SC_FIRM_BRANCH'', sc_fi_re_of.SC_FIRM_BRANCH_ID)'
+  data_type: string
+  description: FK đến chi nhánh cha (VPDD có thể trực thuộc chi nhánh hoặc hội sở).
+  target_attr_name: Parent Organization Unit Id
+- target_column: parent_ou_code
+  transformation: sc_fi_re_of.SC_FIRM_BRANCH_ID
+  data_type: string
+  description: Mã đơn vị tổ chức cha.
+  target_attr_name: Parent Organization Unit Code
+- target_column: ou_nm
+  transformation: sc_fi_re_of.FULL_NAME
+  data_type: string
+  description: Tên văn phòng đại diện.
+  target_attr_name: Organization Unit Name
+- target_column: ou_legacy_nm
+  transformation: sc_fi_re_of.OFFICE_NAME
+  data_type: string
+  description: Tên văn phòng đại diện (trường OFFICE_NAME — có thể trùng với FULL_NAME).
+  target_attr_name: Organization Unit Legacy Name
+- target_column: cl_firm_status_id
+  transformation: '{hash_id}(''SCMS_CAT_SC_FIRM_STATUS'', sc_fi_re_of.REP_OFFICE_STATUS)'
+  data_type: string
+  description: 'Trạng thái pháp lý văn phòng đại diện: 1=Hoạt động; 2=Đóng cửa; 3=Tạm
+    ngừng; 4=Đình chỉ.'
+  target_attr_name: Classification Firm Status Id
+- target_column: cl_firm_status_code
+  transformation: sc_fi_re_of.REP_OFFICE_STATUS
+  data_type: string
+  description: 'Trạng thái pháp lý văn phòng đại diện: 1=Hoạt động; 2=Đóng cửa; 3=Tạm
+    ngừng; 4=Đình chỉ.'
+  target_attr_name: Classification Firm Status Code
+- target_column: record_status_code
+  transformation: sc_fi_re_of.RECORD_STATUS
+  data_type: string
+  description: 'Trạng thái bản ghi kỹ thuật: 1=Còn hiệu lực; 0=Hết hiệu lực.'
+  target_attr_name: Record Status Code
+- target_column: provisional_status_code
+  transformation: sc_fi_re_of.PROVISIONAL
+  data_type: string
+  description: 'Cờ bản nháp: 1=Bản nháp; 0=Chính thức.'
+  target_attr_name: Provisional Status Code
+- target_column: cl_event_tp_id
+  transformation: '{hash_id}(''SCMS_CAT_EVENT_TYPE'', sc_fi_re_of.EVENT_TYPE_ID)'
+  data_type: string
+  description: Loại sự vụ/sự kiện nghiệp vụ.
+  target_attr_name: Classification Event Type Id
+- target_column: cl_event_tp_code
+  transformation: sc_fi_re_of.EVENT_TYPE_ID
+  data_type: string
+  description: Loại sự vụ/sự kiện nghiệp vụ.
+  target_attr_name: Classification Event Type Code
+- target_column: decision_nbr
+  transformation: sc_fi_re_of.DECISION_NUMBER
+  data_type: string
+  description: Số quyết định (trường mới DECISION_NUMBER).
+  target_attr_name: Decision Number
+- target_column: decision_dt
+  transformation: sc_fi_re_of.DECISION_DATE
+  data_type: date
+  description: Ngày quyết định (trường mới DECISION_DATE).
+  target_attr_name: Decision Date
+- target_column: document_nbr
+  transformation: sc_fi_re_of.DOCUMENT_NUMBER
+  data_type: string
+  description: Số văn bản pháp lý (QĐ/GP/CV/Thông tư).
+  target_attr_name: Document Number
+- target_column: document_dt
+  transformation: sc_fi_re_of.DOCUMENT_DATE
+  data_type: date
+  description: Ngày ký/ban hành văn bản.
+  target_attr_name: Document Date
+- target_column: document_file_path
+  transformation: sc_fi_re_of.DOCUMENT_FILE_PATH
+  data_type: string
+  description: Đường dẫn file văn bản.
+  target_attr_name: Document File Path
+- target_column: document_declaration_indicator
+  transformation: sc_fi_re_of.DOCUMENT_DECLARATION
+  data_type: int
+  description: 'Cờ khai theo văn bản: 1=Có khai theo văn bản; 0=Không.'
+  target_attr_name: Document Declaration Indicator
+- target_column: valid_dossier_dt
+  transformation: sc_fi_re_of.VALID_DOSSIER_DATE
+  data_type: date
+  description: Ngày hồ sơ hợp lệ.
+  target_attr_name: Valid Dossier Date
+- target_column: official_operation_dt
+  transformation: sc_fi_re_of.OFFICIAL_OPERATION_DATE
+  data_type: date
+  description: Ngày bắt đầu hoạt động chính thức.
+  target_attr_name: Official Operation Date
+- target_column: validity_start_dt
+  transformation: sc_fi_re_of.VALIDITY_START_DATE
+  data_type: date
+  description: Ngày bắt đầu hiệu lực giấy phép/văn bản.
+  target_attr_name: Validity Start Date
+- target_column: validity_end_dt
+  transformation: sc_fi_re_of.VALIDITY_END_DATE
+  data_type: date
+  description: Ngày hết hiệu lực giấy phép/văn bản.
+  target_attr_name: Validity End Date
+- target_column: representative_nm
+  transformation: sc_fi_re_of.REPRESENTATIVE_NAME
+  data_type: string
+  description: Họ tên người đại diện văn phòng.
+  target_attr_name: Representative Name
+- target_column: representative_id
+  transformation: sc_fi_re_of.REPRESENTATIVE_ID
+  data_type: string
+  description: ID nhân sự người đại diện (liên kết nội bộ SCMS, không phải FK chính
+    thức).
+  target_attr_name: Representative Id
+- target_column: scope_of_operation
+  transformation: sc_fi_re_of.SCOPE_OF_OPERATION
+  data_type: string
+  description: Phạm vi hoạt động của văn phòng đại diện.
+  target_attr_name: Scope Of Operation
+- target_column: attachment_path
+  transformation: sc_fi_re_of.ATTACHMENT_PATH
+  data_type: string
+  description: Đường dẫn file đính kèm trên hệ thống lưu trữ.
+  target_attr_name: Attachment Path
+- target_column: note
+  transformation: sc_fi_re_of.NOTE
+  data_type: string
+  description: Ghi chú bổ sung, không bắt buộc.
+  target_attr_name: Note
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

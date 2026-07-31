@@ -1,0 +1,206 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-market_index_snapshot-MDDS.JAD_MARKETINFOR
+  logical_name: Mapping Atomic - Market Index Snapshot – source MDDS.JAD_MARKETINFOR
+  physical_name: market_index_snapshot
+  dm_ref: ATM-market_index_snapshot-MDDS.JAD_MARKETINFOR
+  brd_ref: BRD-SRC-MDDS-JAD_MARKETINFOR
+target:
+  namespace: atm
+  physical_name: market_index_snapshot
+  etl_handle: Fact Snapshot
+  description: Snapshot trạng thái của một chỉ số thị trường (VNINDEX, HNX-Index,
+    UPCOM-Index) tại một thời điểm trong ngày, bao gồm điểm chỉ số, tổng khối lượng/giá
+    trị, thống kê mã tăng/giảm/trần/sàn, trạng thái phiên giao dịch.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: JAD_MARKETINFOR
+  alias: ja_ma
+  select_fields: HISTORYID, MARKETCODE, MARKETID, ID, TRADINGDATE, INDEXTIME, INDEXTYPECODE,
+    MARKETSTATUS, INDEXCOLOR, HALTRSNCODE, MARKETINDEX, INDEXCHANGE, INDEXPERCENTCHANGE,
+    OPEN, HIGH, LOW, PRV_PRIOR_MARKET_INDEX, TOTALVOLUME, TOTALVALUE, ADVANCES, DECLINES,
+    NOCHANGE, NUMBEROFCE, NUMBEROFFL, ADVANCESVOLUMN, DECLINESVOLUMN, NOCHANGEVOLUMN,
+    ODDLOTTOTALVALUE, ODDLOTTOTALVOLUME, PT_TOTAL_QTTY, PT_TOTAL_VALUE, PT_TOTAL_TRADE,
+    TSCPRODGRPID
+  filter: TRADINGDATE = {etl_date}
+relationship: []
+mapping_columns:
+- target_column: market_index_snpst_id
+  transformation: '{hash_id}(''MDDS_JAD_MARKETINFOR'', ja_ma.HISTORYID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Market Index Snapshot Id
+- target_column: market_index_snpst_code
+  transformation: ja_ma.HISTORYID
+  data_type: string
+  description: ID unique để lưu lịch sử — PK thực tế của bảng. BK của Snapshot entity.
+  target_attr_name: Market Index Snapshot Code
+- target_column: src_stm_code
+  transformation: '''MDDS_JAD_MARKETINFOR'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: market_code
+  transformation: ja_ma.MARKETCODE
+  data_type: string
+  description: Mã thị trường — FSS tự quy định.
+  target_attr_name: Market Code
+- target_column: market_id
+  transformation: ja_ma.MARKETID
+  data_type: string
+  description: ID thị trường — FSS tự quy định.
+  target_attr_name: Market Id
+- target_column: jadapter_id
+  transformation: ja_ma.ID
+  data_type: string
+  description: ID jadapter sinh.
+  target_attr_name: Jadapter Id
+- target_column: trading_dt
+  transformation: ja_ma.TRADINGDATE
+  data_type: date
+  description: Ngày giao dịch.
+  target_attr_name: Trading Date
+- target_column: index_time
+  transformation: ja_ma.INDEXTIME
+  data_type: string
+  description: Thời gian ghi nhận chỉ số.
+  target_attr_name: Index Time
+- target_column: index_tp_code
+  transformation: ja_ma.INDEXTYPECODE
+  data_type: string
+  description: Loại index — mã Sở quy định.
+  target_attr_name: Index Type Code
+- target_column: market_status_code
+  transformation: ja_ma.MARKETSTATUS
+  data_type: string
+  description: Trạng thái phiên giao dịch.
+  target_attr_name: Market Status Code
+- target_column: index_color_code
+  transformation: ja_ma.INDEXCOLOR
+  data_type: string
+  description: Indicator index đang tăng/giảm.
+  target_attr_name: Index Color Code
+- target_column: halt_reason_code
+  transformation: ja_ma.HALTRSNCODE
+  data_type: string
+  description: Lý do thị trường bị halt.
+  target_attr_name: Halt Reason Code
+- target_column: market_index_val
+  transformation: ja_ma.MARKETINDEX
+  data_type: decimal(23,2)
+  description: Giá trị index tại thời điểm ghi nhận.
+  target_attr_name: Market Index Value
+- target_column: index_change
+  transformation: ja_ma.INDEXCHANGE
+  data_type: decimal(23,2)
+  description: Giá trị index thay đổi so với index cuối ngày hôm trước.
+  target_attr_name: Index Change
+- target_column: index_percent_change
+  transformation: ja_ma.INDEXPERCENTCHANGE
+  data_type: decimal(5,2)
+  description: '% index thay đổi so với index cuối ngày hôm trước.'
+  target_attr_name: Index Percent Change
+- target_column: open_index
+  transformation: ja_ma.OPEN
+  data_type: decimal(23,2)
+  description: Index mở cửa.
+  target_attr_name: Open Index
+- target_column: high_index
+  transformation: ja_ma.HIGH
+  data_type: decimal(23,2)
+  description: Index cao nhất tính đến thời điểm hiện tại.
+  target_attr_name: High Index
+- target_column: low_index
+  transformation: ja_ma.LOW
+  data_type: decimal(23,2)
+  description: Index thấp nhất tính đến thời điểm hiện tại.
+  target_attr_name: Low Index
+- target_column: prior_index
+  transformation: ja_ma.PRV_PRIOR_MARKET_INDEX
+  data_type: decimal(23,2)
+  description: Index cuối cùng của phiên trước đó.
+  target_attr_name: Prior Index
+- target_column: total_vol
+  transformation: ja_ma.TOTALVOLUME
+  data_type: int
+  description: Tổng khối lượng đã khớp.
+  target_attr_name: Total Volume
+- target_column: total_val
+  transformation: ja_ma.TOTALVALUE
+  data_type: decimal(23,2)
+  description: Tổng giá trị đã khớp.
+  target_attr_name: Total Value
+- target_column: advances_count
+  transformation: ja_ma.ADVANCES
+  data_type: int
+  description: Số lượng mã tăng.
+  target_attr_name: Advances Count
+- target_column: declines_count
+  transformation: ja_ma.DECLINES
+  data_type: int
+  description: Số lượng mã giảm.
+  target_attr_name: Declines Count
+- target_column: no_change_count
+  transformation: ja_ma.NOCHANGE
+  data_type: int
+  description: Số lượng mã không tăng/giảm.
+  target_attr_name: No Change Count
+- target_column: ceiling_count
+  transformation: ja_ma.NUMBEROFCE
+  data_type: int
+  description: Số lượng mã đang trần.
+  target_attr_name: Ceiling Count
+- target_column: floor_count
+  transformation: ja_ma.NUMBEROFFL
+  data_type: int
+  description: Số lượng mã đang sàn.
+  target_attr_name: Floor Count
+- target_column: advances_vol
+  transformation: ja_ma.ADVANCESVOLUMN
+  data_type: int
+  description: Tổng khối lượng đã khớp của các mã tăng.
+  target_attr_name: Advances Volume
+- target_column: declines_vol
+  transformation: ja_ma.DECLINESVOLUMN
+  data_type: int
+  description: Tổng khối lượng đã khớp của các mã giảm.
+  target_attr_name: Declines Volume
+- target_column: no_change_vol
+  transformation: ja_ma.NOCHANGEVOLUMN
+  data_type: int
+  description: Khối lượng khớp mã không tăng/giảm.
+  target_attr_name: No Change Volume
+- target_column: odd_lot_total_val
+  transformation: ja_ma.ODDLOTTOTALVALUE
+  data_type: decimal(23,2)
+  description: Giá trị khớp lô lẻ.
+  target_attr_name: Odd Lot Total Value
+- target_column: odd_lot_total_vol
+  transformation: ja_ma.ODDLOTTOTALVOLUME
+  data_type: int
+  description: Khối lượng khớp lô lẻ.
+  target_attr_name: Odd Lot Total Volume
+- target_column: pt_total_vol
+  transformation: ja_ma.PT_TOTAL_QTTY
+  data_type: int
+  description: Tổng khối lượng giao dịch thỏa thuận.
+  target_attr_name: PT Total Volume
+- target_column: pt_total_val
+  transformation: ja_ma.PT_TOTAL_VALUE
+  data_type: decimal(23,2)
+  description: Tổng giá trị giao dịch thỏa thuận.
+  target_attr_name: PT Total Value
+- target_column: pt_total_trade_count
+  transformation: ja_ma.PT_TOTAL_TRADE
+  data_type: int
+  description: Tổng số giao dịch thỏa thuận.
+  target_attr_name: PT Total Trade Count
+- target_column: tsc_product_group_id
+  transformation: ja_ma.TSCPRODGRPID
+  data_type: string
+  description: Mã sản phẩm giao dịch (hose/hnx/upcom).
+  target_attr_name: TSC Product Group Id
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

@@ -1,0 +1,250 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-securities_trade-ORDERTRADE.TRADE_BOOK_HNX
+  logical_name: Mapping Atomic - Securities Trade – source ORDERTRADE.TRADE_BOOK_HNX
+  physical_name: securities_trade
+  dm_ref: ATM-securities_trade-ORDERTRADE.TRADE_BOOK_HNX
+  brd_ref: BRD-SRC-ORDERTRADE-TRADE_BOOK_HNX
+target:
+  namespace: atm
+  physical_name: securities_trade
+  etl_handle: Fact Append
+  description: Từng lần khớp lệnh thành công trên HOSE và HNX. Mỗi dòng = 1 Trade
+    ID. Lưu đồng thời thông tin bên mua và bên bán trong cùng 1 row. FK-BK về Securities
+    Order qua buy/sell_scr_ordr_code.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: TRADE_BOOK_HNX
+  alias: tr_bo_hn
+  select_fields: TRADE_NUMBER, TRADE_DATE, MARKET_ID, BOARD_ID, ISSUE_CODE, TRADE_TIME,
+    TRADE_PRICE, TRADE_QUANTITY, SESSION_ID, MESSAGE_SEQUENCE, SELL_REPLACE_CANCEL_CLASSIFICATION_CODE,
+    SELL_MEMBER_NUMBER, SELL_ACCOUNT_NUMBER, SELL_ORDER_TYPE_CODE, SELL_ORDER_CONDITION_CODE,
+    SELL_CLIENT_HOUSE_CLASSIFICATION, SELL_INVESTOR_CLASSIFICATION_CODE, SELL_ORDER_QUANTITY,
+    SELL_ORDER_PRICE, SELL_ORDER_RECEPTION_NUMBER, SELL_FOREIGN_INVESTOR_TYPE_CODE,
+    SELL_QUOTE_REQUEST_CODE, BUY_REPLACE_CANCEL_CLASSIFICATION_CODE, BUY_MEMBER_NUMBER,
+    BUY_ACCOUNT_NUMBER, BUY_ORDER_TYPE_CODE, BUY_ORDER_CONDITION_CODE, BUY_CLIENT_HOUSE_CLASSIFICATION,
+    BUY_INVESTOR_CLASSIFICATION_CODE, BUY_ORDER_QUANTITY, BUY_ORDER_PRICE, BUY_ORDER_RECEPTION_NUMBER,
+    BUY_FOREIGN_INVESTOR_TYPE_CODE, BUY_QUOTE_REQUEST_CODE, EXECUTION_PRICE_OF_SPREAD_FIRST,
+    EXECUTION_PRICE_OF_SPREAD_SECOND
+  filter: TRADE_DATE = {etl_date}
+relationship: []
+mapping_columns:
+- target_column: securities_trade_id
+  transformation: '{hash_id}(''ORDERTRADE_TRADE_BOOK_HNX'', tr_bo_hn.TRADE_NUMBER)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Securities Trade Id
+- target_column: securities_trade_code
+  transformation: tr_bo_hn.TRADE_NUMBER
+  data_type: string
+  description: ID của giao dịch — dùng làm unique key, audit, tracking trade (BK).
+    BK.
+  target_attr_name: Securities Trade Code
+- target_column: src_stm_code
+  transformation: '''ORDERTRADE_TRADE_BOOK_HNX'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: trade_dt
+  transformation: tr_bo_hn.TRADE_DATE
+  data_type: date
+  description: Ngày giao dịch của trade.
+  target_attr_name: Trade Date
+- target_column: market_id_code
+  transformation: tr_bo_hn.MARKET_ID
+  data_type: string
+  description: Mã thị trường chứng khoán.
+  target_attr_name: Market Id Code
+- target_column: board_tp_code
+  transformation: tr_bo_hn.BOARD_ID
+  data_type: string
+  description: Loại bảng giao dịch.
+  target_attr_name: Board Type Code
+- target_column: security_symbol_code
+  transformation: tr_bo_hn.ISSUE_CODE
+  data_type: string
+  description: Mã định danh của loại chứng khoán đang được giao dịch (unique).
+  target_attr_name: Security Symbol Code
+- target_column: trade_time
+  transformation: tr_bo_hn.TRADE_TIME
+  data_type: string
+  description: Thời điểm giao dịch xảy ra.
+  target_attr_name: Trade Time
+- target_column: execution_price
+  transformation: tr_bo_hn.TRADE_PRICE
+  data_type: decimal(23,2)
+  description: Giá khớp của giao dịch.
+  target_attr_name: Execution Price
+- target_column: execution_vol
+  transformation: tr_bo_hn.TRADE_QUANTITY
+  data_type: int
+  description: Khối lượng giao dịch.
+  target_attr_name: Execution Volume
+- target_column: session_code
+  transformation: tr_bo_hn.SESSION_ID
+  data_type: string
+  description: Mã phiên giao dịch.
+  target_attr_name: Session Code
+- target_column: message_sequence_nbr
+  transformation: tr_bo_hn.MESSAGE_SEQUENCE
+  data_type: int
+  description: Số thứ tự message trong luồng dữ liệu (tăng dần từ 1).
+  target_attr_name: Message Sequence Number
+- target_column: sell_order_action_tp_code
+  transformation: tr_bo_hn.SELL_REPLACE_CANCEL_CLASSIFICATION_CODE
+  data_type: string
+  description: Loại hành động sửa/hủy của lệnh bên bán.
+  target_attr_name: Sell Order Action Type Code
+- target_column: sell_broker_id
+  transformation: tr_bo_hn.SELL_MEMBER_NUMBER
+  data_type: string
+  description: Mã định danh công ty chứng khoán thực hiện lệnh bán.
+  target_attr_name: Sell Broker Id
+- target_column: sell_account_nbr
+  transformation: tr_bo_hn.SELL_ACCOUNT_NUMBER
+  data_type: string
+  description: Số tài khoản giao dịch của khách hàng thực hiện lệnh bán.
+  target_attr_name: Sell Account Number
+- target_column: sell_order_tp_code
+  transformation: tr_bo_hn.SELL_ORDER_TYPE_CODE
+  data_type: string
+  description: Loại lệnh của phía bán.
+  target_attr_name: Sell Order Type Code
+- target_column: sell_order_condition_code
+  transformation: tr_bo_hn.SELL_ORDER_CONDITION_CODE
+  data_type: string
+  description: Điều kiện hiệu lực và cách xử lý của lệnh bán.
+  target_attr_name: Sell Order Condition Code
+- target_column: sell_client_house_cl_code
+  transformation: tr_bo_hn.SELL_CLIENT_HOUSE_CLASSIFICATION
+  data_type: string
+  description: Lệnh bán của khách hàng hay tự doanh.
+  target_attr_name: Sell Client House Classification Code
+- target_column: sell_investor_tp_code
+  transformation: tr_bo_hn.SELL_INVESTOR_CLASSIFICATION_CODE
+  data_type: string
+  description: Phân loại nhà đầu tư bán theo loại hình tổ chức/cá nhân (raw từ HNX).
+  target_attr_name: Sell Investor Type Code
+- target_column: sell_order_vol
+  transformation: tr_bo_hn.SELL_ORDER_QUANTITY
+  data_type: int
+  description: Khối lượng đặt bán.
+  target_attr_name: Sell Order Volume
+- target_column: sell_order_price
+  transformation: tr_bo_hn.SELL_ORDER_PRICE
+  data_type: decimal(23,2)
+  description: Giá đặt bán.
+  target_attr_name: Sell Order Price
+- target_column: sell_securities_order_id
+  transformation: '{hash_id}(''ORDERTRADE_ORDER_BOOK_HNX'', tr_bo_hn.SELL_ORDER_RECEPTION_NUMBER)'
+  data_type: string
+  description: FK surrogate đến Securities Order của lệnh bán (best-effort resolve).
+  target_attr_name: Sell Securities Order Id
+- target_column: sell_securities_order_code
+  transformation: tr_bo_hn.SELL_ORDER_RECEPTION_NUMBER
+  data_type: string
+  description: FK-BK đến Securities Order của lệnh bán (Order Reception Number — BK
+    phụ HNX).
+  target_attr_name: Sell Securities Order Code
+- target_column: sell_foreign_investor_tp_code
+  transformation: tr_bo_hn.SELL_FOREIGN_INVESTOR_TYPE_CODE
+  data_type: string
+  description: Phân loại loại hình nhà đầu tư nước ngoài tham gia giao dịch bán.
+  target_attr_name: Sell Foreign Investor Type Code
+- target_column: sell_quote_request_tp_code
+  transformation: tr_bo_hn.SELL_QUOTE_REQUEST_CODE
+  data_type: string
+  description: Mã loại yêu cầu báo giá của bên bán (HNX RFQ).
+  target_attr_name: Sell Quote Request Type Code
+- target_column: sell_reference_sequence_nbr
+  transformation: 'null'
+  data_type: string
+  description: Số tham chiếu theo thứ tự đặt bán trong ngày.
+  target_attr_name: Sell Reference Sequence Number
+- target_column: buy_order_action_tp_code
+  transformation: tr_bo_hn.BUY_REPLACE_CANCEL_CLASSIFICATION_CODE
+  data_type: string
+  description: Loại hành động sửa/hủy của lệnh bên mua.
+  target_attr_name: Buy Order Action Type Code
+- target_column: buy_broker_id
+  transformation: tr_bo_hn.BUY_MEMBER_NUMBER
+  data_type: string
+  description: Mã/số công ty chứng khoán thực hiện giao dịch mua.
+  target_attr_name: Buy Broker Id
+- target_column: buy_account_nbr
+  transformation: tr_bo_hn.BUY_ACCOUNT_NUMBER
+  data_type: string
+  description: Mã tài khoản thực hiện giao dịch mua.
+  target_attr_name: Buy Account Number
+- target_column: buy_order_tp_code
+  transformation: tr_bo_hn.BUY_ORDER_TYPE_CODE
+  data_type: string
+  description: Loại lệnh mua.
+  target_attr_name: Buy Order Type Code
+- target_column: buy_order_condition_code
+  transformation: tr_bo_hn.BUY_ORDER_CONDITION_CODE
+  data_type: string
+  description: Điều kiện thực hiện lệnh mua.
+  target_attr_name: Buy Order Condition Code
+- target_column: buy_client_house_cl_code
+  transformation: tr_bo_hn.BUY_CLIENT_HOUSE_CLASSIFICATION
+  data_type: string
+  description: Lệnh mua của khách hàng hay tự doanh.
+  target_attr_name: Buy Client House Classification Code
+- target_column: buy_investor_tp_code
+  transformation: tr_bo_hn.BUY_INVESTOR_CLASSIFICATION_CODE
+  data_type: string
+  description: Phân loại nhà đầu tư mua theo loại hình tổ chức/cá nhân (raw từ HNX).
+  target_attr_name: Buy Investor Type Code
+- target_column: buy_order_vol
+  transformation: tr_bo_hn.BUY_ORDER_QUANTITY
+  data_type: int
+  description: Khối lượng đặt mua.
+  target_attr_name: Buy Order Volume
+- target_column: buy_order_price
+  transformation: tr_bo_hn.BUY_ORDER_PRICE
+  data_type: decimal(23,2)
+  description: Giá đặt mua.
+  target_attr_name: Buy Order Price
+- target_column: buy_securities_order_id
+  transformation: '{hash_id}(''ORDERTRADE_ORDER_BOOK_HNX'', tr_bo_hn.BUY_ORDER_RECEPTION_NUMBER)'
+  data_type: string
+  description: FK surrogate đến Securities Order của lệnh mua (best-effort resolve).
+  target_attr_name: Buy Securities Order Id
+- target_column: buy_securities_order_code
+  transformation: tr_bo_hn.BUY_ORDER_RECEPTION_NUMBER
+  data_type: string
+  description: FK-BK đến Securities Order của lệnh mua (Order Reception Number — BK
+    phụ HNX).
+  target_attr_name: Buy Securities Order Code
+- target_column: buy_foreign_investor_tp_code
+  transformation: tr_bo_hn.BUY_FOREIGN_INVESTOR_TYPE_CODE
+  data_type: string
+  description: Phân loại loại hình nhà đầu tư nước ngoài tham gia giao dịch mua.
+  target_attr_name: Buy Foreign Investor Type Code
+- target_column: buy_quote_request_tp_code
+  transformation: tr_bo_hn.BUY_QUOTE_REQUEST_CODE
+  data_type: string
+  description: Mã loại yêu cầu báo giá của bên mua (HNX RFQ).
+  target_attr_name: Buy Quote Request Type Code
+- target_column: buy_reference_sequence_nbr
+  transformation: 'null'
+  data_type: string
+  description: Số tham chiếu theo thứ tự đặt mua trong ngày.
+  target_attr_name: Buy Reference Sequence Number
+- target_column: execution_price_spread_first
+  transformation: tr_bo_hn.EXECUTION_PRICE_OF_SPREAD_FIRST
+  data_type: decimal(23,2)
+  description: 'Giá khớp của leg thứ nhất trong spread trade (HNX-only: phái sinh/repo
+    2 vế).'
+  target_attr_name: Execution Price Spread First
+- target_column: execution_price_spread_second
+  transformation: tr_bo_hn.EXECUTION_PRICE_OF_SPREAD_SECOND
+  data_type: decimal(23,2)
+  description: 'Giá khớp của leg thứ hai trong spread trade (HNX-only: phái sinh/repo
+    2 vế).'
+  target_attr_name: Execution Price Spread Second
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

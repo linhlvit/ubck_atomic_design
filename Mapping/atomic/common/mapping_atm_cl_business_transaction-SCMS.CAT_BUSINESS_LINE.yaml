@@ -1,0 +1,78 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-cl_business_transaction-SCMS.CAT_BUSINESS_LINE
+  logical_name: Mapping Atomic - Classification Business Transaction – source SCMS.CAT_BUSINESS_LINE
+  physical_name: cl_business_transaction
+  dm_ref: ATM-cl_business_transaction-SCMS.CAT_BUSINESS_LINE
+  brd_ref: BRD-SRC-SCMS-CAT_BUSINESS_LINE
+target:
+  namespace: atm
+  physical_name: cl_business_transaction
+  etl_handle: Upsert
+  description: 'Danh mục nghiệp vụ kinh doanh chứng khoán được UBCKNN cấp phép cho
+    CTCK (môi giới, tự doanh, bảo lãnh phát hành, tư vấn đầu tư, quản lý quỹ...) —
+    mã, tên, vốn pháp định tối thiểu theo quy định pháp luật cho từng nghiệp vụ. Nâng
+    cấp từ Classification Value (scheme SCMS_BUSINESS_LINE) lên entity thật. Đổi tên
+    từ "Classification SCMS Business Line" theo yêu cầu tường minh của Data Modeler
+    (bỏ tiền tố nguồn + đổi BCV Term hiển thị thành "Business Transaction"); BCV Concept
+    giữ nguyên [Common] Business Line do không tìm thấy BCV Term "Business Transaction"
+    khớp hơn trong knowledge/terms.csv. Xem SCMS_HLD_Overview.md #55 / 7e #16.'
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: CAT_BUSINESS_LINE
+  alias: ca_bu_li
+  select_fields: CREATED_AT, BUSINESS_LINE_CODE, BUSINESS_LINE_NAME, NOTE, LEGAL_CAPITAL,
+    RECORD_STATUS
+  filter: created_at >= {etl_date} AND created_at < {etl_date} + 1
+relationship: []
+mapping_columns:
+- target_column: cl_business_transaction_id
+  transformation: '{hash_id}(''SCMS_CAT_BUSINESS_LINE'', ca_bu_li.BUSINESS_LINE_CODE)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Classification Business Transaction Id
+- target_column: src_stm_code
+  transformation: '''SCMS_CAT_BUSINESS_LINE'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: data_dt
+  transformation: ca_bu_li.CREATED_AT
+  data_type: date
+  description: 'Thời điểm tạo bản ghi (nguồn: CREATED_AT). Dùng làm căn cứ partition
+    Delta Lake / incremental filter — bảng nguồn có data_change_mode=Append, filter_logic
+    theo created_at (xem BRD/Source/brd_SCMS.yaml, đã sửa lỗi created_by→created_at
+    2026-07-15).'
+  target_attr_name: Data Date
+- target_column: cl_business_transaction_code
+  transformation: ca_bu_li.BUSINESS_LINE_CODE
+  data_type: string
+  description: Mã nghiệp vụ kinh doanh chứng khoán. BK duy nhất — Id hash từ trường
+    này.
+  target_attr_name: Classification Business Transaction Code
+- target_column: cl_business_transaction_nm
+  transformation: ca_bu_li.BUSINESS_LINE_NAME
+  data_type: string
+  description: Tên nghiệp vụ kinh doanh chứng khoán.
+  target_attr_name: Classification Business Transaction Name
+- target_column: note
+  transformation: ca_bu_li.NOTE
+  data_type: string
+  description: Ghi chú bổ sung, không bắt buộc.
+  target_attr_name: Note
+- target_column: legal_capital_amt
+  transformation: ca_bu_li.LEGAL_CAPITAL
+  data_type: decimal(23,2)
+  description: Vốn pháp định tối thiểu theo quy định pháp luật cho nghiệp vụ này (mô
+    tả gốc BRD trống).
+  target_attr_name: Legal Capital Amount
+- target_column: record_status_code
+  transformation: ca_bu_li.RECORD_STATUS
+  data_type: string
+  description: 'Trạng thái bản ghi nghiệp vụ kinh doanh: 1 = Đang sử dụng; 0 = Ngừng
+    sử dụng.'
+  target_attr_name: Record Status Code
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

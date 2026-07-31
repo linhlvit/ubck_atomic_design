@@ -1,0 +1,480 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-sc_disclosure_securities_offering-SCMS.DISCLOSURE_SECURITIES_OFFERING
+  logical_name: Mapping Atomic - Securities Company Disclosure Securities Offering
+    – source SCMS.DISCLOSURE_SECURITIES_OFFERING
+  physical_name: sc_disclosure_securities_offering
+  dm_ref: ATM-sc_disclosure_securities_offering-SCMS.DISCLOSURE_SECURITIES_OFFERING
+  brd_ref: BRD-SRC-SCMS-DISCLOSURE_SECURITIES_OFFERING
+target:
+  namespace: atm
+  physical_name: sc_disclosure_securities_offering
+  etl_handle: SCD4A
+  description: Thông tin công bố về đợt chào bán chứng khoán của CTCK theo quy định
+    minh bạch thông tin thị trường. Ghi nhận loại chào bán, giá trị, ngày công bố
+    và trạng thái.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: DISCLOSURE_SECURITIES_OFFERING
+  alias: di_se_of
+  select_fields: ID, SC_FIRM_INFO_ID, EVENT_TYPE_ID, ADMIN_PROC_ID, OFFERING_TYPE,
+    SECURITIES_TYPE, RECORD_STATUS, DATA_SOURCE, ASSESSMENT, ITEM_CATEGORY, SU_VU,
+    DOCUMENT_NUMBER, DOCUMENT_DATE, DOCUMENT_FILE_PATH, OFFERING_METHOD, TARGET_INVESTORS,
+    OFFERING_PURPOSE, UNDERWRITER, UNDERWRITING_COMPANY, ADVISOR, DISCLOSURE_PERSON_NAME,
+    QUANTITY, OFFERED_QUANTITY, TOTAL_OFFERED_QUANTITY, TOTAL_OFFERED_COMPLETED, ITEM_VALUE,
+    OFFERING_PRICE, TOTAL_VALUE, EXPECTED_TOTAL_AMOUNT, PROCEEDS_COLLECTED, VALID_DATE,
+    OFFERING_DATE, START_DATE, END_DATE, OFFERING_START_DATE, OFFERING_END_DATE, EXPECTED_START_DATE,
+    EXPECTED_END_DATE, RESULT_REPORT_DATE, FIRST_DOSSIER_SUBMISSION_DATE, COMPLETE_DOSSIER_SUBMISSION_DATE,
+    EXTENSION_TO_DATE, DISCLOSURE_DATE, SENT_AT, COLLATERAL_REQUIRED, SYNCED_FROM_ADMIN_PROC,
+    BOND_TYPE, BOND_CODE, BOND_FACE_VALUE, MATURITY_YEARS, INTEREST_PAYMENT_PERIOD,
+    BOND_HOLDER_REPRESENTATIVE, ISSUANCE_DATE, COVERED_WARRANT_TYPE, COVERED_WARRANT_NAME,
+    LISTED_CW_CODE, UNDERLYING_SECURITIES_CODE, UNDERLYING_SECURITIES_ISSUER, CW_TERM_MONTHS,
+    CW_REGISTERED_QUANTITY, CW_PERMITTED_QUANTITY, CW_DISTRIBUTED_QUANTITY, CW_SHARES_PER_WARRANT,
+    CONVERSION_RATIO, CONVERTED_SHARES_QUANTITY, REGISTERED_OFFERING_PRICE, CW_ACTUAL_OFFERING_PRICE,
+    CW_OFFERING_DATE, CW_MATURITY_DATE, COLLATERAL_SETTLEMENT_VALUE, COLLATERAL_DEPOSIT_BANK,
+    CW_DEPOSIT_AMOUNT, CW_PROCEEDS, ATTACHMENT_PATH, RESULT_ATTACHMENT_PATH, ERROR_DESCRIPTION,
+    LEGACY_FILENAME, LEGACY_ROWTEXT, NGAY_SUA, NGUOI_SUA_ID
+  filter: null
+- source_type: physical_table
+  namespace: ods
+  table_name: SC_FIRM_INFO
+  alias: sc_fi_in
+  select_fields: ID, CODE
+  filter: null
+  note: Crosswalk bridge cho sc_id
+relationship:
+- main_alias: di_se_of
+  join_type: LEFT JOIN
+  join_alias: sc_fi_in
+  join_on: di_se_of.SC_FIRM_INFO_ID = sc_fi_in.ID
+mapping_columns:
+- target_column: sc_disclosure_securities_offering_id
+  transformation: '{hash_id}(''SCMS_DISCLOSURE_SECURITIES_OFFERING'', di_se_of.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Securities Company Disclosure Securities Offering Id
+- target_column: sc_disclosure_securities_offering_code
+  transformation: di_se_of.ID
+  data_type: string
+  description: Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.
+  target_attr_name: Securities Company Disclosure Securities Offering Code
+- target_column: src_stm_code
+  transformation: '''SCMS_DISCLOSURE_SECURITIES_OFFERING'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: sc_id
+  transformation: '{hash_id}(''SCMS_SC_FIRM_INFO'', sc_fi_in.CODE)'
+  data_type: string
+  description: FK đến Công ty chứng khoán chào bán chứng khoán.
+  target_attr_name: Securities Company Id
+- target_column: sc_code
+  transformation: di_se_of.SC_FIRM_INFO_ID
+  data_type: string
+  description: Mã Công ty chứng khoán.
+  target_attr_name: Securities Company Code
+- target_column: cl_event_tp_id
+  transformation: '{hash_id}(''SCMS_CAT_EVENT_TYPE'', di_se_of.EVENT_TYPE_ID)'
+  data_type: string
+  description: FK đến loại sự vụ/sự kiện nghiệp vụ.
+  target_attr_name: Classification Event Type Id
+- target_column: cl_event_tp_code
+  transformation: di_se_of.EVENT_TYPE_ID
+  data_type: string
+  description: Mã loại sự vụ/sự kiện nghiệp vụ.
+  target_attr_name: Classification Event Type Code
+- target_column: admin_procedure_id
+  transformation: di_se_of.ADMIN_PROC_ID
+  data_type: string
+  description: FK đến thủ tục hành chính liên quan.
+  target_attr_name: Admin Procedure Id
+- target_column: offering_tp_code
+  transformation: di_se_of.OFFERING_TYPE
+  data_type: string
+  description: 'Loại chào bán: 1=Công chúng; 2=CP thường; 3=Trả cổ tức CP; 4=CTLC>100
+    NLĐ; 5=CTLC<100 NLĐ; 6=Đấu giá; 7=Riêng lẻ; 8=Khác; 9=CP hoán đổi; 10=CB cổ đông
+    lớn.'
+  target_attr_name: Offering Type Code
+- target_column: securities_tp_code
+  transformation: di_se_of.SECURITIES_TYPE
+  data_type: string
+  description: 'Loại chứng khoán: CP_THUONG=Cổ phiếu phổ thông; CP_UU_DAI=Cổ phiếu
+    ưu đãi; TP=Trái phiếu; CW=Chứng quyền có bảo đảm.'
+  target_attr_name: Securities Type Code
+- target_column: record_status_code
+  transformation: di_se_of.RECORD_STATUS
+  data_type: string
+  description: 'Trạng thái bản ghi chào bán: 1=Đang hoạt động/còn hiệu lực; 0=Ngừng
+    hoạt động/hết hiệu lực.'
+  target_attr_name: Record Status Code
+- target_column: data_src_code
+  transformation: di_se_of.DATA_SOURCE
+  data_type: string
+  description: 'Nguồn gốc dữ liệu: Đồng bộ tự động/Nhập tay/Cổng báo cáo.'
+  target_attr_name: Data Source Code
+- target_column: assessment_code
+  transformation: di_se_of.ASSESSMENT
+  data_type: string
+  description: Đánh giá đợt chào bán.
+  target_attr_name: Assessment Code
+- target_column: item_category_code
+  transformation: di_se_of.ITEM_CATEGORY
+  data_type: string
+  description: Phân loại mục chào bán.
+  target_attr_name: Item Category Code
+- target_column: su_vu
+  transformation: di_se_of.SU_VU
+  data_type: string
+  description: 'Tên sự vụ áp dụng (VD: Chào bán riêng lẻ; Chào bán ra công chúng).'
+  target_attr_name: SU VU
+- target_column: document_nbr
+  transformation: di_se_of.DOCUMENT_NUMBER
+  data_type: string
+  description: Số văn bản pháp lý (QĐ/GP/CV/Thông tư).
+  target_attr_name: Document Number
+- target_column: document_dt
+  transformation: di_se_of.DOCUMENT_DATE
+  data_type: date
+  description: Ngày ký/ban hành văn bản.
+  target_attr_name: Document Date
+- target_column: document_file_path
+  transformation: di_se_of.DOCUMENT_FILE_PATH
+  data_type: string
+  description: Đường dẫn file văn bản.
+  target_attr_name: Document File Path
+- target_column: offering_method
+  transformation: di_se_of.OFFERING_METHOD
+  data_type: string
+  description: Hình thức chào bán (Riêng lẻ/Công chúng/Đấu giá).
+  target_attr_name: Offering Method
+- target_column: target_investors
+  transformation: di_se_of.TARGET_INVESTORS
+  data_type: string
+  description: Đối tượng nhà đầu tư mục tiêu.
+  target_attr_name: Target Investors
+- target_column: offering_purpose
+  transformation: di_se_of.OFFERING_PURPOSE
+  data_type: string
+  description: Mục đích chào bán/phát hành chứng khoán.
+  target_attr_name: Offering Purpose
+- target_column: underwriter
+  transformation: di_se_of.UNDERWRITER
+  data_type: string
+  description: Tổ chức bảo lãnh phát hành.
+  target_attr_name: Underwriter
+- target_column: underwriting_company
+  transformation: di_se_of.UNDERWRITING_COMPANY
+  data_type: string
+  description: Công ty bảo lãnh phát hành.
+  target_attr_name: Underwriting Company
+- target_column: advisor
+  transformation: di_se_of.ADVISOR
+  data_type: string
+  description: Tổ chức tư vấn phát hành.
+  target_attr_name: Advisor
+- target_column: disclosure_person_nm
+  transformation: di_se_of.DISCLOSURE_PERSON_NAME
+  data_type: string
+  description: Tên người công bố thông tin (denormalized).
+  target_attr_name: Disclosure Person Name
+- target_column: quantity
+  transformation: di_se_of.QUANTITY
+  data_type: int
+  description: Số lượng chứng khoán (nghĩa gốc trống).
+  target_attr_name: Quantity
+- target_column: offered_quantity
+  transformation: di_se_of.OFFERED_QUANTITY
+  data_type: int
+  description: Số lượng chứng khoán dự kiến chào bán.
+  target_attr_name: Offered Quantity
+- target_column: total_offered_quantity
+  transformation: di_se_of.TOTAL_OFFERED_QUANTITY
+  data_type: int
+  description: Tổng số lượng chứng khoán chào bán.
+  target_attr_name: Total Offered Quantity
+- target_column: total_offered_completed
+  transformation: di_se_of.TOTAL_OFFERED_COMPLETED
+  data_type: int
+  description: Tổng số lượng chứng khoán đã chào bán hoàn thành.
+  target_attr_name: Total Offered Completed
+- target_column: item_val_amt
+  transformation: di_se_of.ITEM_VALUE
+  data_type: decimal(23,2)
+  description: Giá trị mặt hàng chào bán.
+  target_attr_name: Item Value Amount
+- target_column: offering_price_amt
+  transformation: di_se_of.OFFERING_PRICE
+  data_type: decimal(23,2)
+  description: Giá chào bán (đồng/cổ phiếu hoặc trái phiếu).
+  target_attr_name: Offering Price Amount
+- target_column: total_val_amt
+  transformation: di_se_of.TOTAL_VALUE
+  data_type: decimal(23,2)
+  description: Tổng giá trị đợt chào bán (đồng).
+  target_attr_name: Total Value Amount
+- target_column: expected_total_amt
+  transformation: di_se_of.EXPECTED_TOTAL_AMOUNT
+  data_type: decimal(23,2)
+  description: Tổng giá trị dự kiến thu về.
+  target_attr_name: Expected Total Amount
+- target_column: proceeds_collected_amt
+  transformation: di_se_of.PROCEEDS_COLLECTED
+  data_type: decimal(23,2)
+  description: Tổng tiền thực tế thu được.
+  target_attr_name: Proceeds Collected Amount
+- target_column: valid_dt
+  transformation: di_se_of.VALID_DATE
+  data_type: timestamp
+  description: Ngày có hiệu lực.
+  target_attr_name: Valid Date
+- target_column: offering_dt
+  transformation: di_se_of.OFFERING_DATE
+  data_type: timestamp
+  description: Ngày chào bán.
+  target_attr_name: Offering Date
+- target_column: start_dt
+  transformation: di_se_of.START_DATE
+  data_type: date
+  description: Ngày bắt đầu kỳ báo cáo hoặc hiệu lực.
+  target_attr_name: Start Date
+- target_column: end_dt
+  transformation: di_se_of.END_DATE
+  data_type: date
+  description: Ngày kết thúc kỳ báo cáo hoặc hết hiệu lực.
+  target_attr_name: End Date
+- target_column: offering_start_dt
+  transformation: di_se_of.OFFERING_START_DATE
+  data_type: date
+  description: Ngày bắt đầu đợt chào bán.
+  target_attr_name: Offering Start Date
+- target_column: offering_end_dt
+  transformation: di_se_of.OFFERING_END_DATE
+  data_type: date
+  description: Ngày kết thúc đợt chào bán.
+  target_attr_name: Offering End Date
+- target_column: expected_start_dt
+  transformation: di_se_of.EXPECTED_START_DATE
+  data_type: date
+  description: Ngày bắt đầu dự kiến đợt chào bán.
+  target_attr_name: Expected Start Date
+- target_column: expected_end_dt
+  transformation: di_se_of.EXPECTED_END_DATE
+  data_type: date
+  description: Ngày kết thúc dự kiến đợt chào bán.
+  target_attr_name: Expected End Date
+- target_column: result_rpt_dt
+  transformation: di_se_of.RESULT_REPORT_DATE
+  data_type: date
+  description: Ngày báo cáo kết quả đợt chào bán.
+  target_attr_name: Result Report Date
+- target_column: first_dossier_submission_dt
+  transformation: di_se_of.FIRST_DOSSIER_SUBMISSION_DATE
+  data_type: date
+  description: Ngày nộp hồ sơ lần đầu.
+  target_attr_name: First Dossier Submission Date
+- target_column: complete_dossier_submission_dt
+  transformation: di_se_of.COMPLETE_DOSSIER_SUBMISSION_DATE
+  data_type: date
+  description: Ngày nộp hồ sơ đầy đủ.
+  target_attr_name: Complete Dossier Submission Date
+- target_column: extension_to_dt
+  transformation: di_se_of.EXTENSION_TO_DATE
+  data_type: date
+  description: Ngày gia hạn đợt chào bán.
+  target_attr_name: Extension To Date
+- target_column: disclosure_dt
+  transformation: di_se_of.DISCLOSURE_DATE
+  data_type: timestamp
+  description: Ngày công bố thông tin chào bán.
+  target_attr_name: Disclosure Date
+- target_column: sent_tms
+  transformation: di_se_of.SENT_AT
+  data_type: timestamp
+  description: Thời điểm gửi thông báo chào bán.
+  target_attr_name: Sent Timestamp
+- target_column: collateral_required_indicator
+  transformation: di_se_of.COLLATERAL_REQUIRED
+  data_type: int
+  description: 'Có tài sản bảo đảm: 1=Có; 0=Không.'
+  target_attr_name: Collateral Required Indicator
+- target_column: synced_from_admin_procedure_indicator
+  transformation: di_se_of.SYNCED_FROM_ADMIN_PROC
+  data_type: int
+  description: 'Dữ liệu đồng bộ từ phân hệ TTHC: 1=Đồng bộ; 0=Nhập tay.'
+  target_attr_name: Synced From Admin Procedure Indicator
+- target_column: bond_tp_code
+  transformation: di_se_of.BOND_TYPE
+  data_type: string
+  description: 'Loại trái phiếu: CO_BAO_DAM=Có bảo đảm; KHONG_BAO_DAM=Không bảo đảm;
+    CHUYEN_DOI=Chuyển đổi.'
+  target_attr_name: Bond Type Code
+- target_column: bond_code
+  transformation: di_se_of.BOND_CODE
+  data_type: string
+  description: Mã trái phiếu.
+  target_attr_name: Bond Code
+- target_column: bond_face_val_amt
+  transformation: di_se_of.BOND_FACE_VALUE
+  data_type: decimal(23,2)
+  description: Mệnh giá trái phiếu (đồng/trái phiếu).
+  target_attr_name: Bond Face Value Amount
+- target_column: maturity_years
+  transformation: di_se_of.MATURITY_YEARS
+  data_type: int
+  description: Kỳ hạn trái phiếu (số năm).
+  target_attr_name: Maturity Years
+- target_column: interest_payment_period
+  transformation: di_se_of.INTEREST_PAYMENT_PERIOD
+  data_type: string
+  description: Kỳ trả lãi (Hàng tháng/Quý/6 tháng/Năm).
+  target_attr_name: Interest Payment Period
+- target_column: bond_holder_representative
+  transformation: di_se_of.BOND_HOLDER_REPRESENTATIVE
+  data_type: string
+  description: Đại diện người nắm giữ trái phiếu.
+  target_attr_name: Bond Holder Representative
+- target_column: issuance_dt
+  transformation: di_se_of.ISSUANCE_DATE
+  data_type: date
+  description: Ngày phát hành trái phiếu.
+  target_attr_name: Issuance Date
+- target_column: covered_warrant_tp_code
+  transformation: di_se_of.COVERED_WARRANT_TYPE
+  data_type: string
+  description: 'Loại chứng quyền có bảo đảm: CW_MUA=Chứng quyền mua; CW_BAN=Chứng
+    quyền bán.'
+  target_attr_name: Covered Warrant Type Code
+- target_column: covered_warrant_nm
+  transformation: di_se_of.COVERED_WARRANT_NAME
+  data_type: string
+  description: Tên chứng quyền có bảo đảm.
+  target_attr_name: Covered Warrant Name
+- target_column: listed_cw_code
+  transformation: di_se_of.LISTED_CW_CODE
+  data_type: string
+  description: Mã chứng quyền niêm yết trên sàn.
+  target_attr_name: Listed CW Code
+- target_column: underlying_securities_code
+  transformation: di_se_of.UNDERLYING_SECURITIES_CODE
+  data_type: string
+  description: Mã chứng khoán cơ sở của chứng quyền.
+  target_attr_name: Underlying Securities Code
+- target_column: underlying_securities_issuer
+  transformation: di_se_of.UNDERLYING_SECURITIES_ISSUER
+  data_type: string
+  description: Tổ chức phát hành chứng khoán cơ sở.
+  target_attr_name: Underlying Securities Issuer
+- target_column: cw_term_months
+  transformation: di_se_of.CW_TERM_MONTHS
+  data_type: int
+  description: Thời hạn chứng quyền (số tháng).
+  target_attr_name: CW Term Months
+- target_column: cw_registered_quantity
+  transformation: di_se_of.CW_REGISTERED_QUANTITY
+  data_type: int
+  description: Số lượng chứng quyền đăng ký.
+  target_attr_name: CW Registered Quantity
+- target_column: cw_permitted_quantity
+  transformation: di_se_of.CW_PERMITTED_QUANTITY
+  data_type: int
+  description: Số lượng chứng quyền được phép phát hành.
+  target_attr_name: CW Permitted Quantity
+- target_column: cw_distributed_quantity
+  transformation: di_se_of.CW_DISTRIBUTED_QUANTITY
+  data_type: int
+  description: Số lượng chứng quyền đã phân phối.
+  target_attr_name: CW Distributed Quantity
+- target_column: cw_shares_per_warrant
+  transformation: di_se_of.CW_SHARES_PER_WARRANT
+  data_type: int
+  description: Số cổ phiếu/1 chứng quyền.
+  target_attr_name: CW Shares Per Warrant
+- target_column: conversion_ratio
+  transformation: di_se_of.CONVERSION_RATIO
+  data_type: int
+  description: Tỷ lệ chuyển đổi (số CW/1 cổ phiếu cơ sở).
+  target_attr_name: Conversion Ratio
+- target_column: converted_shares_quantity
+  transformation: di_se_of.CONVERTED_SHARES_QUANTITY
+  data_type: int
+  description: Số cổ phiếu chuyển đổi.
+  target_attr_name: Converted Shares Quantity
+- target_column: registered_offering_price_amt
+  transformation: di_se_of.REGISTERED_OFFERING_PRICE
+  data_type: decimal(23,2)
+  description: Giá chào bán đã đăng ký.
+  target_attr_name: Registered Offering Price Amount
+- target_column: cw_actual_offering_price_amt
+  transformation: di_se_of.CW_ACTUAL_OFFERING_PRICE
+  data_type: decimal(23,2)
+  description: Giá chào bán thực tế chứng quyền.
+  target_attr_name: CW Actual Offering Price Amount
+- target_column: cw_offering_dt
+  transformation: di_se_of.CW_OFFERING_DATE
+  data_type: date
+  description: Ngày chào bán chứng quyền.
+  target_attr_name: CW Offering Date
+- target_column: cw_maturity_dt
+  transformation: di_se_of.CW_MATURITY_DATE
+  data_type: date
+  description: Ngày đáo hạn chứng quyền.
+  target_attr_name: CW Maturity Date
+- target_column: collateral_settlement_val_amt
+  transformation: di_se_of.COLLATERAL_SETTLEMENT_VALUE
+  data_type: decimal(23,2)
+  description: Giá trị thanh toán tài sản bảo đảm chứng quyền.
+  target_attr_name: Collateral Settlement Value Amount
+- target_column: collateral_deposit_bank
+  transformation: di_se_of.COLLATERAL_DEPOSIT_BANK
+  data_type: string
+  description: Ngân hàng ký quỹ tài sản bảo đảm cho chứng quyền.
+  target_attr_name: Collateral Deposit Bank
+- target_column: cw_deposit_amt
+  transformation: di_se_of.CW_DEPOSIT_AMOUNT
+  data_type: decimal(23,2)
+  description: Số tiền ký quỹ chứng quyền.
+  target_attr_name: CW Deposit Amount
+- target_column: cw_proceeds_amt
+  transformation: di_se_of.CW_PROCEEDS
+  data_type: decimal(23,2)
+  description: Tiền thu được từ chứng quyền.
+  target_attr_name: CW Proceeds Amount
+- target_column: attachment_path
+  transformation: di_se_of.ATTACHMENT_PATH
+  data_type: string
+  description: Đường dẫn file đính kèm trên hệ thống lưu trữ.
+  target_attr_name: Attachment Path
+- target_column: result_attachment_path
+  transformation: di_se_of.RESULT_ATTACHMENT_PATH
+  data_type: string
+  description: Đường dẫn file báo cáo kết quả đợt chào bán.
+  target_attr_name: Result Attachment Path
+- target_column: error_description
+  transformation: di_se_of.ERROR_DESCRIPTION
+  data_type: string
+  description: Mô tả lỗi khi gửi CBTT chào bán.
+  target_attr_name: Error Description
+- target_column: legacy_filename
+  transformation: di_se_of.LEGACY_FILENAME
+  data_type: string
+  description: Tên file đính kèm từ hệ thống cũ.
+  target_attr_name: Legacy Filename
+- target_column: legacy_row_text
+  transformation: di_se_of.LEGACY_ROWTEXT
+  data_type: string
+  description: Chuỗi tham chiếu bản ghi từ hệ thống cũ.
+  target_attr_name: Legacy Row Text
+- target_column: legacy_updated_dt
+  transformation: di_se_of.NGAY_SUA
+  data_type: timestamp
+  description: Ngày cập nhật từ hệ thống cũ (NGAY_SUA).
+  target_attr_name: Legacy Updated Date
+- target_column: legacy_updated_by_id
+  transformation: di_se_of.NGUOI_SUA_ID
+  data_type: string
+  description: ID người cập nhật từ hệ thống cũ (NGUOI_SUA_ID).
+  target_attr_name: Legacy Updated By Id
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

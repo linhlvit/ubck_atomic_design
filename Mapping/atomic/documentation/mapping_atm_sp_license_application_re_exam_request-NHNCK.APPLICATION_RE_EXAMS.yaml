@@ -1,0 +1,89 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-sp_license_application_re_exam_request-NHNCK.APPLICATION_RE_EXAMS
+  logical_name: Mapping Atomic - Securities Practitioner License Application Re-Exam
+    Request – source NHNCK.APPLICATION_RE_EXAMS
+  physical_name: sp_license_application_re_exam_request
+  dm_ref: ATM-sp_license_application_re_exam_request-NHNCK.APPLICATION_RE_EXAMS
+  brd_ref: BRD-SRC-NHNCK-APPLICATION_RE_EXAMS
+target:
+  namespace: atm
+  physical_name: sp_license_application_re_exam_request
+  etl_handle: SCD4A
+  description: Liên kết theo dõi chu trình thi lại — hồ sơ gốc, kết quả thi trượt
+    và hồ sơ đăng ký thi lại mới (nullable nếu chưa nộp). FK đến License Application
+    (×2) và Exam Assessment Result.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: APPLICATION_RE_EXAMS
+  alias: ap_re_ex
+  select_fields: ID, APPLICATION_ID, EXAM_DETAIL_ID, RE_APPLICATION_ID
+  filter: null
+- source_type: physical_table
+  namespace: ods
+  table_name: APPLICATIONS
+  alias: appl
+  select_fields: ID, APPLICATION_CODE
+  filter: null
+  note: Crosswalk bridge cho sp_license_application_id, re_exam_sp_license_application_id
+relationship:
+- main_alias: ap_re_ex
+  join_type: LEFT JOIN
+  join_alias: appl
+  join_on: ap_re_ex.APPLICATION_ID = appl.ID
+- main_alias: ap_re_ex
+  join_type: LEFT JOIN
+  join_alias: appl
+  join_on: ap_re_ex.RE_APPLICATION_ID = appl.ID
+mapping_columns:
+- target_column: sp_license_application_re_exam_request_id
+  transformation: '{hash_id}(''NHNCK_APPLICATION_RE_EXAMS'', ap_re_ex.ID)'
+  data_type: string
+  description: Id tự sinh (surrogate key)
+  target_attr_name: Securities Practitioner License Application Re-Exam Request Id
+- target_column: sp_license_application_re_exam_request_code
+  transformation: ap_re_ex.ID
+  data_type: string
+  description: Mã định danh. BK
+  target_attr_name: Securities Practitioner License Application Re-Exam Request Code
+- target_column: src_stm_code
+  transformation: '''NHNCK_APPLICATION_RE_EXAMS'''
+  data_type: string
+  description: Mã nguồn dữ liệu
+  target_attr_name: Source System Code
+- target_column: sp_license_application_id
+  transformation: '{hash_id}(''NHNCK_APPLICATIONS'', appl.APPLICATION_CODE)'
+  data_type: string
+  description: FK đến hồ sơ gốc đã thi trượt
+  target_attr_name: Securities Practitioner License Application Id
+- target_column: sp_license_application_code
+  transformation: ap_re_ex.APPLICATION_ID
+  data_type: string
+  description: Mã hồ sơ gốc
+  target_attr_name: Securities Practitioner License Application Code
+- target_column: sp_qualification_examination_assessment_result_id
+  transformation: '{hash_id}(''NHNCK_EXAM_DETAILS'', ap_re_ex.EXAM_DETAIL_ID)'
+  data_type: string
+  description: FK đến kết quả thi trượt
+  target_attr_name: Securities Practitioner Qualification Examination Assessment Result
+    Id
+- target_column: sp_qualification_examination_assessment_result_code
+  transformation: ap_re_ex.EXAM_DETAIL_ID
+  data_type: string
+  description: Mã kết quả thi trượt
+  target_attr_name: Securities Practitioner Qualification Examination Assessment Result
+    Code
+- target_column: re_exam_sp_license_application_id
+  transformation: '{hash_id}(''NHNCK_APPLICATIONS'', appl.APPLICATION_CODE)'
+  data_type: string
+  description: FK đến hồ sơ thi lại mới (nullable — chưa nộp)
+  target_attr_name: Re-Exam Securities Practitioner License Application Id
+- target_column: re_exam_sp_license_application_code
+  transformation: ap_re_ex.RE_APPLICATION_ID
+  data_type: string
+  description: Mã hồ sơ thi lại mới
+  target_attr_name: Re-Exam Securities Practitioner License Application Code
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

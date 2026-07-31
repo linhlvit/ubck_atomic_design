@@ -1,0 +1,122 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-sp_license_application_education_certificate_document-NHNCK.APPLICATION_SPECIALIZATIONS
+  logical_name: Mapping Atomic - Securities Practitioner License Application Education
+    Certificate Document – source NHNCK.APPLICATION_SPECIALIZATIONS
+  physical_name: sp_license_application_education_certificate_document
+  dm_ref: ATM-sp_license_application_education_certificate_document-NHNCK.APPLICATION_SPECIALIZATIONS
+  brd_ref: BRD-SRC-NHNCK-APPLICATION_SPECIALIZATIONS
+target:
+  namespace: atm
+  physical_name: sp_license_application_education_certificate_document
+  etl_handle: SCD4A
+  description: Chứng chỉ hoặc bằng chuyên môn đào tạo đính kèm trong hồ sơ đăng ký
+    CCHN. Ghi nhận loại chuyên môn, file đính kèm, trạng thái thẩm định và cán bộ
+    thẩm định.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: APPLICATION_SPECIALIZATIONS
+  alias: ap_sp
+  select_fields: ID, APPLICATION_ID, SPECIALIZATION_ID, ISSUE_DATE, ISSUE_PLACE, APPRAISALED_AT,
+    ASSIGNEE_ID, FILES, NOTE
+  filter: null
+- source_type: physical_table
+  namespace: ods
+  table_name: APPLICATIONS
+  alias: appl
+  select_fields: ID, APPLICATION_CODE
+  filter: null
+  note: Crosswalk bridge cho sp_license_application_id
+- source_type: physical_table
+  namespace: ods
+  table_name: SPECIALIZATIONS
+  alias: spec
+  select_fields: ID, SPECIALIZATION_CODE
+  filter: null
+  note: Crosswalk bridge cho cl_specialization_id
+relationship:
+- main_alias: ap_sp
+  join_type: LEFT JOIN
+  join_alias: appl
+  join_on: ap_sp.APPLICATION_ID = appl.ID
+- main_alias: ap_sp
+  join_type: LEFT JOIN
+  join_alias: spec
+  join_on: ap_sp.SPECIALIZATION_ID = spec.ID
+mapping_columns:
+- target_column: sp_license_application_education_certificate_document_id
+  transformation: '{hash_id}(''NHNCK_APPLICATION_SPECIALIZATIONS'', ap_sp.ID)'
+  data_type: string
+  description: Id tự sinh (surrogate key)
+  target_attr_name: Securities Practitioner License Application Education Certificate
+    Document Id
+- target_column: sp_license_application_education_certificate_document_code
+  transformation: ap_sp.ID
+  data_type: string
+  description: Mã định danh bản ghi chuyên môn. BK
+  target_attr_name: Securities Practitioner License Application Education Certificate
+    Document Code
+- target_column: src_stm_code
+  transformation: '''NHNCK_APPLICATION_SPECIALIZATIONS'''
+  data_type: string
+  description: Mã hệ thống nguồn (ETL-derived)
+  target_attr_name: Source System Code
+- target_column: sp_license_application_id
+  transformation: '{hash_id}(''NHNCK_APPLICATIONS'', appl.APPLICATION_CODE)'
+  data_type: string
+  description: FK đến License Application (hồ sơ đăng ký)
+  target_attr_name: Securities Practitioner License Application Id
+- target_column: sp_license_application_code
+  transformation: ap_sp.APPLICATION_ID
+  data_type: string
+  description: Mã hồ sơ đăng ký. Lookup pair
+  target_attr_name: Securities Practitioner License Application Code
+- target_column: cl_specialization_id
+  transformation: '{hash_id}(''NHNCK_SPECIALIZATIONS'', spec.SPECIALIZATION_CODE)'
+  data_type: string
+  description: FK đến chuyên ngành CCHN đăng ký
+  target_attr_name: Classification Specialization Id
+- target_column: cl_specialization_code
+  transformation: ap_sp.SPECIALIZATION_ID
+  data_type: string
+  description: Mã chuyên ngành CCHN đăng ký (denormalized lookup)
+  target_attr_name: Classification Specialization Code
+- target_column: certificate_issue_dt
+  transformation: ap_sp.ISSUE_DATE
+  data_type: date
+  description: Ngày cấp chứng chỉ chuyên môn
+  target_attr_name: Certificate Issue Date
+- target_column: certificate_issue_place
+  transformation: ap_sp.ISSUE_PLACE
+  data_type: string
+  description: Nơi cấp chứng chỉ chuyên môn
+  target_attr_name: Certificate Issue Place
+- target_column: appraisal_completed_dt
+  transformation: ap_sp.APPRAISALED_AT
+  data_type: timestamp
+  description: Thời điểm thẩm định hoàn tất
+  target_attr_name: Appraisal Completed Date
+- target_column: appraised_by_officer_id
+  transformation: '{hash_id}(''IAM_USERS'', ap_sp.ASSIGNEE_ID)'
+  data_type: string
+  description: FK đến cán bộ thẩm định (Regulatory Authority Officer)
+  target_attr_name: Appraised By Officer Id
+- target_column: appraised_by_officer_code
+  transformation: ap_sp.ASSIGNEE_ID
+  data_type: string
+  description: Mã cán bộ thẩm định. Lookup pair
+  target_attr_name: Appraised By Officer Code
+- target_column: attachment_files
+  transformation: ap_sp.FILES
+  data_type: string
+  description: Danh sách file đính kèm (JSON CLOB)
+  target_attr_name: Attachment Files
+- target_column: note
+  transformation: ap_sp.NOTE
+  data_type: string
+  description: Ghi chú bổ sung
+  target_attr_name: Note
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

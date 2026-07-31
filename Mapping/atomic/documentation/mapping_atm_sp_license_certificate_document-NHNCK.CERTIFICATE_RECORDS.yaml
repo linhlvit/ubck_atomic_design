@@ -1,0 +1,158 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-sp_license_certificate_document-NHNCK.CERTIFICATE_RECORDS
+  logical_name: Mapping Atomic - Securities Practitioner License Certificate Document
+    – source NHNCK.CERTIFICATE_RECORDS
+  physical_name: sp_license_certificate_document
+  dm_ref: ATM-sp_license_certificate_document-NHNCK.CERTIFICATE_RECORDS
+  brd_ref: BRD-SRC-NHNCK-CERTIFICATE_RECORDS
+target:
+  namespace: atm
+  physical_name: sp_license_certificate_document
+  etl_handle: SCD4A
+  description: Chứng chỉ hành nghề chứng khoán được cấp cho người hành nghề. Ghi nhận
+    số CCHN, loại, ngày cấp, trạng thái và 3 quyết định liên quan (cấp/thu hồi/hủy).
+    FK đến Practitioner.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: CERTIFICATE_RECORDS
+  alias: ce_re
+  select_fields: ID, CERTIFICATE_NUMBER, CERTIFICATE_ID, PROFESSIONAL_ID, ISSUE_DECISION_ID,
+    REVOCATION_DECISION_ID, CANCELLATION_DECISION_ID, ISSUE_DATE, REVOCATION_DATE,
+    REVOCATION_REASON, PROFESSIONAL_FULL_NAME, ALLOW_REISSUE, PROCESS_STATUS, CER_PATH,
+    CONVERSION_STATUS, DESCRIPTION
+  filter: null
+- source_type: physical_table
+  namespace: ods
+  table_name: CERTIFICATES
+  alias: cert
+  select_fields: ID, CERTIFICATE_CODE
+  filter: null
+  note: Crosswalk bridge cho sp_license_certificate_tp_id
+relationship:
+- main_alias: ce_re
+  join_type: LEFT JOIN
+  join_alias: cert
+  join_on: ce_re.CERTIFICATE_ID = cert.ID
+mapping_columns:
+- target_column: sp_license_certificate_document_id
+  transformation: '{hash_id}(''NHNCK_CERTIFICATE_RECORDS'', ce_re.ID)'
+  data_type: string
+  description: Surrogate key cho chứng chỉ hành nghề chứng khoán
+  target_attr_name: Securities Practitioner License Certificate Document Id
+- target_column: sp_license_certificate_document_code
+  transformation: ce_re.ID
+  data_type: string
+  description: Business key từ CERTIFICATE_RECORDS.ID
+  target_attr_name: Securities Practitioner License Certificate Document Code
+- target_column: src_stm_code
+  transformation: '''NHNCK_CERTIFICATE_RECORDS'''
+  data_type: string
+  description: Mã hệ thống nguồn ETL-derived
+  target_attr_name: Source System Code
+- target_column: certificate_nbr
+  transformation: ce_re.CERTIFICATE_NUMBER
+  data_type: string
+  description: Số chứng chỉ hành nghề
+  target_attr_name: Certificate Number
+- target_column: sp_license_certificate_tp_id
+  transformation: '{hash_id}(''NHNCK_CERTIFICATES'', cert.CERTIFICATE_CODE)'
+  data_type: string
+  description: FK đến loại chứng chỉ hành nghề (CCHN)
+  target_attr_name: Securities Practitioner License Certificate Type Id
+- target_column: sp_license_certificate_tp_code
+  transformation: ce_re.CERTIFICATE_ID
+  data_type: string
+  description: Mã loại chứng chỉ (denormalized lookup)
+  target_attr_name: Securities Practitioner License Certificate Type Code
+- target_column: sp_id
+  transformation: '{hash_id}(''NHNCK_PROFESSIONALS'', ce_re.PROFESSIONAL_ID)'
+  data_type: string
+  description: FK đến Securities Practitioner
+  target_attr_name: Securities Practitioner Id
+- target_column: sp_code
+  transformation: ce_re.PROFESSIONAL_ID
+  data_type: string
+  description: Mã nghiệp vụ của người hành nghề
+  target_attr_name: Securities Practitioner Code
+- target_column: issue_sp_license_decision_document_id
+  transformation: '{hash_id}(''NHNCK_DECISIONS'', ce_re.ISSUE_DECISION_ID)'
+  data_type: string
+  description: FK đến quyết định cấp chứng chỉ
+  target_attr_name: Issue Securities Practitioner License Decision Document Id
+- target_column: issue_sp_license_decision_document_code
+  transformation: ce_re.ISSUE_DECISION_ID
+  data_type: string
+  description: Mã nghiệp vụ của quyết định cấp
+  target_attr_name: Issue Securities Practitioner License Decision Document Code
+- target_column: revocation_sp_license_decision_document_id
+  transformation: '{hash_id}(''NHNCK_DECISIONS'', ce_re.REVOCATION_DECISION_ID)'
+  data_type: string
+  description: FK đến quyết định thu hồi chứng chỉ
+  target_attr_name: Revocation Securities Practitioner License Decision Document Id
+- target_column: revocation_sp_license_decision_document_code
+  transformation: ce_re.REVOCATION_DECISION_ID
+  data_type: string
+  description: Mã nghiệp vụ của quyết định thu hồi
+  target_attr_name: Revocation Securities Practitioner License Decision Document Code
+- target_column: cancellation_sp_license_decision_document_id
+  transformation: '{hash_id}(''NHNCK_DECISIONS'', ce_re.CANCELLATION_DECISION_ID)'
+  data_type: string
+  description: FK đến quyết định hủy chứng chỉ
+  target_attr_name: Cancellation Securities Practitioner License Decision Document
+    Id
+- target_column: cancellation_sp_license_decision_document_code
+  transformation: ce_re.CANCELLATION_DECISION_ID
+  data_type: string
+  description: Mã nghiệp vụ của quyết định hủy
+  target_attr_name: Cancellation Securities Practitioner License Decision Document
+    Code
+- target_column: issue_dt
+  transformation: ce_re.ISSUE_DATE
+  data_type: date
+  description: Ngày cấp chứng chỉ hành nghề
+  target_attr_name: Issue Date
+- target_column: revocation_dt
+  transformation: ce_re.REVOCATION_DATE
+  data_type: date
+  description: Ngày thu hồi chứng chỉ hành nghề
+  target_attr_name: Revocation Date
+- target_column: revocation_reason
+  transformation: ce_re.REVOCATION_REASON
+  data_type: string
+  description: Lý do thu hồi chứng chỉ hành nghề
+  target_attr_name: Revocation Reason
+- target_column: practitioner_nm_at_issuance
+  transformation: ce_re.PROFESSIONAL_FULL_NAME
+  data_type: string
+  description: Tên người hành nghề tại thời điểm cấp chứng chỉ (snapshot)
+  target_attr_name: Practitioner Name At Issuance
+- target_column: reissuance_allowed_count
+  transformation: ce_re.ALLOW_REISSUE
+  data_type: int
+  description: Số lần được phép cấp lại chứng chỉ (0 = không được cấp lại)
+  target_attr_name: Reissuance Allowed Count
+- target_column: process_status_code
+  transformation: ce_re.PROCESS_STATUS
+  data_type: string
+  description: Trạng thái xử lý chứng chỉ (1=Đã cấp 2=Đã ký nháy 3=Đã ký 4=Đã trả)
+  target_attr_name: Process Status Code
+- target_column: certificate_file_path
+  transformation: ce_re.CER_PATH
+  data_type: string
+  description: Đường dẫn file chứng chỉ số
+  target_attr_name: Certificate File Path
+- target_column: conversion_status_code
+  transformation: ce_re.CONVERSION_STATUS
+  data_type: string
+  description: Trạng thái chuyển đổi chứng chỉ (1=Giấy 2=Chờ điện tử 3=Chứng chỉ số)
+  target_attr_name: Conversion Status Code
+- target_column: description
+  transformation: ce_re.DESCRIPTION
+  data_type: string
+  description: Mô tả bổ sung cho chứng chỉ hành nghề
+  target_attr_name: Description
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

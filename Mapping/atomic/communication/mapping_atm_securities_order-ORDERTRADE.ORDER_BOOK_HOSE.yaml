@@ -1,0 +1,271 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-securities_order-ORDERTRADE.ORDER_BOOK_HOSE
+  logical_name: Mapping Atomic - Securities Order – source ORDERTRADE.ORDER_BOOK_HOSE
+  physical_name: securities_order
+  dm_ref: ATM-securities_order-ORDERTRADE.ORDER_BOOK_HOSE
+  brd_ref: BRD-SRC-ORDERTRADE-ORDER_BOOK_HOSE
+target:
+  namespace: atm
+  physical_name: securities_order
+  etl_handle: Fact Append
+  description: Toàn bộ lifecycle của từng lệnh giao dịch chứng khoán trên HOSE và
+    HNX. Mỗi dòng = 1 event lệnh (new/modify/cancel). Gộp ORDER_BOOK_HOSE + ORDER_BOOK_HNX,
+    phân biệt qua market_id_code và src_stm_code.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: ORDER_BOOK_HOSE
+  alias: or_bo_ho
+  select_fields: ORDER_ID, TRADE_DATE, MARKET_ID, SYMBOL, CURRENCY, BOARD_TYPE, ORDER_DATE,
+    ORDER_TIME, SESSION, MODIFY_CANCEL, ORDER_ACCEPT_ID, ORIG_ORDER_ACCEPT_ID, ORIG_ORDER_ID,
+    SIDE, BRK_ID, BRK, PIN, ACCT_NO, NAME, MARKET_MAKER_ORDER, CLIENT_HOUSE_CLASSIFICATION_CODE,
+    INVEST_TYPE, FOREIGNER_INVESTOR_TYPE, ORDER_TYPE, ORDER_PRICE, ORDER_VOL, ORDER_CONDITION,
+    LTP, EXECUTION_PRICE, IMMED_MATCHED_VOL, MATCHED_VOL, ORDER_RQTY, ORDER_PRICE_LTP,
+    MATCHED_RATIO, BUY_UP_SELL_DOWN_AMT, BUY_UP_SELL_DOWN_TICK, NEW_HIGH_LOW_PRICE,
+    ORDER_STATUS, ICD_BUG_QTY, EXPECTED_EXECUTION_PRICE, EXPECTED_EXECUTION_VOLUME,
+    SHORT_SELL_INDICATOR, TRADER_NO, TRADER_NAME, REFERENCE_SEQUENCE_NO
+  filter: ORDER_DATE = {etl_date}
+relationship: []
+mapping_columns:
+- target_column: securities_order_id
+  transformation: '{hash_id}(''ORDERTRADE_ORDER_BOOK_HOSE'', or_bo_ho.ORDER_ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Securities Order Id
+- target_column: securities_order_code
+  transformation: or_bo_ho.ORDER_ID
+  data_type: string
+  description: Mã định danh của lệnh đặt (Order ID 17 ký tự — BK chính). BK.
+  target_attr_name: Securities Order Code
+- target_column: src_stm_code
+  transformation: '''ORDERTRADE_ORDER_BOOK_HOSE'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: trade_dt
+  transformation: or_bo_ho.TRADE_DATE
+  data_type: date
+  description: Ngày giao dịch theo thị trường chứng khoán.
+  target_attr_name: Trade Date
+- target_column: market_id_code
+  transformation: or_bo_ho.MARKET_ID
+  data_type: string
+  description: Mã thị trường chứng khoán.
+  target_attr_name: Market Id Code
+- target_column: security_symbol_code
+  transformation: or_bo_ho.SYMBOL
+  data_type: string
+  description: Mã chứng khoán.
+  target_attr_name: Security Symbol Code
+- target_column: currency_code
+  transformation: or_bo_ho.CURRENCY
+  data_type: string
+  description: Đơn vị tiền tệ.
+  target_attr_name: Currency Code
+- target_column: board_tp_code
+  transformation: or_bo_ho.BOARD_TYPE
+  data_type: string
+  description: Loại bảng giao dịch mà lệnh được phân loại vào.
+  target_attr_name: Board Type Code
+- target_column: order_dt
+  transformation: or_bo_ho.ORDER_DATE
+  data_type: date
+  description: Ngày đặt lệnh của người thực hiện giao dịch.
+  target_attr_name: Order Date
+- target_column: order_time
+  transformation: or_bo_ho.ORDER_TIME
+  data_type: string
+  description: Thời gian đặt lệnh của người thực hiện giao dịch.
+  target_attr_name: Order Time
+- target_column: session_code
+  transformation: or_bo_ho.SESSION
+  data_type: string
+  description: Phiên giao dịch của thị trường chứng khoán.
+  target_attr_name: Session Code
+- target_column: order_action_tp_code
+  transformation: or_bo_ho.MODIFY_CANCEL
+  data_type: string
+  description: 'Loại hành động lệnh: N=Mới / M=Sửa / C=Hủy.'
+  target_attr_name: Order Action Type Code
+- target_column: order_accept_id
+  transformation: or_bo_ho.ORDER_ACCEPT_ID
+  data_type: string
+  description: Số thứ tự giao dịch được ghi nhận trên hệ thống của Sàn trong ngày
+    giao dịch, theo từng mã chứng khoán (BK phụ).
+  target_attr_name: Order Accept Id
+- target_column: original_order_accept_id
+  transformation: or_bo_ho.ORIG_ORDER_ACCEPT_ID
+  data_type: string
+  description: Số thứ tự giao dịch ban đầu (trước chỉnh sửa) được ghi nhận trên hệ
+    thống của Sàn.
+  target_attr_name: Original Order Accept Id
+- target_column: original_order_code
+  transformation: or_bo_ho.ORIG_ORDER_ID
+  data_type: string
+  description: Mã định danh của lệnh đặt trước khi chỉnh sửa.
+  target_attr_name: Original Order Code
+- target_column: side_indicator
+  transformation: or_bo_ho.SIDE
+  data_type: string
+  description: 'Loại lệnh: B=Buy / S=Sell.'
+  target_attr_name: Side Indicator
+- target_column: broker_id
+  transformation: or_bo_ho.BRK_ID
+  data_type: string
+  description: Mã/số công ty chứng khoán.
+  target_attr_name: Broker Id
+- target_column: broker_nm
+  transformation: or_bo_ho.BRK
+  data_type: string
+  description: Tên công ty chứng khoán.
+  target_attr_name: Broker Name
+- target_column: account_pin_code
+  transformation: or_bo_ho.PIN
+  data_type: string
+  description: Mã PIN của tài khoản giao dịch.
+  target_attr_name: Account Pin Code
+- target_column: account_nbr
+  transformation: or_bo_ho.ACCT_NO
+  data_type: string
+  description: Mã/Số tài khoản giao dịch của nhà đầu tư.
+  target_attr_name: Account Number
+- target_column: account_holder_nm
+  transformation: or_bo_ho.NAME
+  data_type: string
+  description: Tên nhà đầu tư/chủ tài khoản nhà đầu tư.
+  target_attr_name: Account Holder Name
+- target_column: market_maker_order_indicator
+  transformation: or_bo_ho.MARKET_MAKER_ORDER
+  data_type: string
+  description: Lệnh đặt của nhà tạo lập thị trường.
+  target_attr_name: Market Maker Order Indicator
+- target_column: client_house_cl_code
+  transformation: or_bo_ho.CLIENT_HOUSE_CLASSIFICATION_CODE
+  data_type: string
+  description: Phân loại lệnh khách hàng/công ty tự doanh.
+  target_attr_name: Client House Classification Code
+- target_column: investor_tp_code
+  transformation: or_bo_ho.INVEST_TYPE
+  data_type: string
+  description: Phân loại nhà đầu tư (raw từ HOSE).
+  target_attr_name: Investor Type Code
+- target_column: foreign_investor_tp_code
+  transformation: or_bo_ho.FOREIGNER_INVESTOR_TYPE
+  data_type: string
+  description: Phân loại đầu tư nước ngoài.
+  target_attr_name: Foreign Investor Type Code
+- target_column: order_tp_code
+  transformation: or_bo_ho.ORDER_TYPE
+  data_type: string
+  description: Loại lệnh theo giá.
+  target_attr_name: Order Type Code
+- target_column: order_price
+  transformation: or_bo_ho.ORDER_PRICE
+  data_type: decimal(23,2)
+  description: Giá đặt lệnh.
+  target_attr_name: Order Price
+- target_column: order_vol
+  transformation: or_bo_ho.ORDER_VOL
+  data_type: int
+  description: Khối lượng đặt lệnh.
+  target_attr_name: Order Volume
+- target_column: order_condition_code
+  transformation: or_bo_ho.ORDER_CONDITION
+  data_type: string
+  description: Điều kiện thực hiện lệnh.
+  target_attr_name: Order Condition Code
+- target_column: last_traded_price
+  transformation: or_bo_ho.LTP
+  data_type: decimal(23,2)
+  description: Giá khớp gần nhất trên thị trường (LTP).
+  target_attr_name: Last Traded Price
+- target_column: execution_price
+  transformation: or_bo_ho.EXECUTION_PRICE
+  data_type: decimal(23,2)
+  description: Giá khớp lệnh thực tế.
+  target_attr_name: Execution Price
+- target_column: immediate_matched_vol
+  transformation: or_bo_ho.IMMED_MATCHED_VOL
+  data_type: int
+  description: Khối lượng khớp ngay khi hệ thống ghi nhận lệnh.
+  target_attr_name: Immediate Matched Volume
+- target_column: matched_vol
+  transformation: or_bo_ho.MATCHED_VOL
+  data_type: int
+  description: Tổng khối lượng đã khớp của lệnh.
+  target_attr_name: Matched Volume
+- target_column: remaining_quantity
+  transformation: or_bo_ho.ORDER_RQTY
+  data_type: int
+  description: Khối lượng còn lại chưa khớp của lệnh.
+  target_attr_name: Remaining Quantity
+- target_column: order_spread
+  transformation: or_bo_ho.ORDER_PRICE_LTP
+  data_type: decimal(23,2)
+  description: Chênh lệch giữa giá đặt lệnh và giá khớp gần nhất.
+  target_attr_name: Order Spread
+- target_column: matched_ratio
+  transformation: or_bo_ho.MATCHED_RATIO
+  data_type: decimal(5,2)
+  description: Tỷ lệ khớp lệnh.
+  target_attr_name: Matched Ratio
+- target_column: price_change_amt
+  transformation: or_bo_ho.BUY_UP_SELL_DOWN_AMT
+  data_type: decimal(23,2)
+  description: Mức tăng/giảm giá so với tham chiếu theo giá trị.
+  target_attr_name: Price Change Amount
+- target_column: price_change_tick
+  transformation: or_bo_ho.BUY_UP_SELL_DOWN_TICK
+  data_type: int
+  description: Mức tăng/giảm theo bước giá.
+  target_attr_name: Price Change Tick
+- target_column: new_high_low_price_indicator
+  transformation: or_bo_ho.NEW_HIGH_LOW_PRICE
+  data_type: string
+  description: Đánh dấu nếu lệnh tạo giá cao nhất hoặc thấp nhất mới trong ngày.
+  target_attr_name: New High Low Price Indicator
+- target_column: order_status_code
+  transformation: or_bo_ho.ORDER_STATUS
+  data_type: string
+  description: Trạng thái của lệnh.
+  target_attr_name: Order Status Code
+- target_column: icd_bug_quantity
+  transformation: or_bo_ho.ICD_BUG_QTY
+  data_type: int
+  description: Khối lượng lỗi hoặc điều chỉnh trong hệ thống giao dịch.
+  target_attr_name: Icd Bug Quantity
+- target_column: expected_execution_price
+  transformation: or_bo_ho.EXPECTED_EXECUTION_PRICE
+  data_type: decimal(23,2)
+  description: Giá khớp lệnh dự kiến, dựa trên các giao dịch thị trường trong ngày.
+  target_attr_name: Expected Execution Price
+- target_column: expected_execution_vol
+  transformation: or_bo_ho.EXPECTED_EXECUTION_VOLUME
+  data_type: int
+  description: Khối lượng khớp lệnh dự kiến, dựa trên các giao dịch thị trường trong
+    ngày.
+  target_attr_name: Expected Execution Volume
+- target_column: short_sell_tp_code
+  transformation: or_bo_ho.SHORT_SELL_INDICATOR
+  data_type: string
+  description: Phân loại lệnh bán khống.
+  target_attr_name: Short Sell Type Code
+- target_column: trader_nbr
+  transformation: or_bo_ho.TRADER_NO
+  data_type: string
+  description: Mã/số định danh người thực hiện giao dịch.
+  target_attr_name: Trader Number
+- target_column: trader_nm
+  transformation: or_bo_ho.TRADER_NAME
+  data_type: string
+  description: Tên người thực hiện giao dịch.
+  target_attr_name: Trader Name
+- target_column: reference_sequence_nbr
+  transformation: or_bo_ho.REFERENCE_SEQUENCE_NO
+  data_type: string
+  description: Số tham chiếu theo thứ tự giao dịch.
+  target_attr_name: Reference Sequence Number
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

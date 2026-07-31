@@ -1,0 +1,142 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-sc_administrative_penalty_decision-SCMS.SC_FIRM_ADMIN_PENALTY_DECISION
+  logical_name: Mapping Atomic - Securities Company Administrative Penalty Decision
+    – source SCMS.SC_FIRM_ADMIN_PENALTY_DECISION
+  physical_name: sc_administrative_penalty_decision
+  dm_ref: ATM-sc_administrative_penalty_decision-SCMS.SC_FIRM_ADMIN_PENALTY_DECISION
+  brd_ref: BRD-SRC-SCMS-SC_FIRM_ADMIN_PENALTY_DECISION
+target:
+  namespace: atm
+  physical_name: sc_administrative_penalty_decision
+  etl_handle: SCD4A
+  description: Quyết định xử phạt vi phạm hành chính do UBCKNN ban hành đối với CTCK.
+    Ghi nhận số quyết định, hình thức phạt, số tiền phạt, ngày hiệu lực và trạng thái
+    thực hiện.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: SC_FIRM_ADMIN_PENALTY_DECISION
+  alias: sc_fi_ad_pe_de
+  select_fields: ID, SC_FIRM_INFO_ID, DECISION_NUMBER, ISSUED_DATE, PENALTY_FORM,
+    SIGNATORY, REGISTERED_ADDRESS, TAX_CODE_BUSINESS_LICENSE, IMPLEMENTATION_STATUS,
+    DATA_SOURCE, FINE_AMOUNT, TOTAL_FINE_AMOUNT, PAID_AMOUNT, FINE_PAYMENT_DEADLINE,
+    DECISION_FILE_PATH, SYNC_DATE, NOTE
+  filter: null
+- source_type: physical_table
+  namespace: ods
+  table_name: SC_FIRM_INFO
+  alias: sc_fi_in
+  select_fields: ID, CODE
+  filter: null
+  note: Crosswalk bridge cho sc_id
+relationship:
+- main_alias: sc_fi_ad_pe_de
+  join_type: LEFT JOIN
+  join_alias: sc_fi_in
+  join_on: sc_fi_ad_pe_de.SC_FIRM_INFO_ID = sc_fi_in.ID
+mapping_columns:
+- target_column: sc_administrative_pd_id
+  transformation: '{hash_id}(''SCMS_SC_FIRM_ADMIN_PENALTY_DECISION'', sc_fi_ad_pe_de.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Securities Company Administrative Penalty Decision Id
+- target_column: sc_administrative_pd_code
+  transformation: sc_fi_ad_pe_de.ID
+  data_type: string
+  description: Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.
+  target_attr_name: Securities Company Administrative Penalty Decision Code
+- target_column: src_stm_code
+  transformation: '''SCMS_SC_FIRM_ADMIN_PENALTY_DECISION'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: sc_id
+  transformation: '{hash_id}(''SCMS_SC_FIRM_INFO'', sc_fi_in.CODE)'
+  data_type: string
+  description: FK đến Công ty chứng khoán bị xử phạt.
+  target_attr_name: Securities Company Id
+- target_column: sc_code
+  transformation: sc_fi_ad_pe_de.SC_FIRM_INFO_ID
+  data_type: string
+  description: Mã Công ty chứng khoán.
+  target_attr_name: Securities Company Code
+- target_column: decision_nbr
+  transformation: sc_fi_ad_pe_de.DECISION_NUMBER
+  data_type: string
+  description: Số hiệu quyết định xử phạt hành chính.
+  target_attr_name: Decision Number
+- target_column: issued_dt
+  transformation: sc_fi_ad_pe_de.ISSUED_DATE
+  data_type: date
+  description: Ngày ban hành quyết định xử phạt.
+  target_attr_name: Issued Date
+- target_column: penalty_form
+  transformation: sc_fi_ad_pe_de.PENALTY_FORM
+  data_type: string
+  description: Hình thức xử phạt theo quyết định.
+  target_attr_name: Penalty Form
+- target_column: signatory
+  transformation: sc_fi_ad_pe_de.SIGNATORY
+  data_type: string
+  description: Tên người ký quyết định xử phạt.
+  target_attr_name: Signatory
+- target_column: registered_adr
+  transformation: sc_fi_ad_pe_de.REGISTERED_ADDRESS
+  data_type: string
+  description: Địa chỉ đăng ký của CTCK tại thời điểm ra quyết định xử phạt.
+  target_attr_name: Registered Address
+- target_column: tax_code_business_license
+  transformation: sc_fi_ad_pe_de.TAX_CODE_BUSINESS_LICENSE
+  data_type: string
+  description: Mã số thuế hoặc số giấy phép kinh doanh của CTCK.
+  target_attr_name: Tax Code Business License
+- target_column: implementation_status_code
+  transformation: sc_fi_ad_pe_de.IMPLEMENTATION_STATUS
+  data_type: string
+  description: 'Trạng thái thực thi quyết định xử phạt: CHUA_THUC_HIEN=Chưa thực hiện;
+    DANG_THUC_HIEN=Đang thực hiện; DA_THUC_HIEN=Đã thực hiện; QUA_HAN=Quá hạn.'
+  target_attr_name: Implementation Status Code
+- target_column: data_src
+  transformation: sc_fi_ad_pe_de.DATA_SOURCE
+  data_type: string
+  description: Nguồn dữ liệu của quyết định xử phạt.
+  target_attr_name: Data Source
+- target_column: fine_amt
+  transformation: sc_fi_ad_pe_de.FINE_AMOUNT
+  data_type: decimal(23,2)
+  description: Số tiền phạt theo quyết định xử phạt.
+  target_attr_name: Fine Amount
+- target_column: total_fine_amt
+  transformation: sc_fi_ad_pe_de.TOTAL_FINE_AMOUNT
+  data_type: decimal(23,2)
+  description: Tổng số tiền phạt (bao gồm cả phạt chính + phạt bổ sung nếu có).
+  target_attr_name: Total Fine Amount
+- target_column: paid_amt
+  transformation: sc_fi_ad_pe_de.PAID_AMOUNT
+  data_type: decimal(23,2)
+  description: Số tiền phạt đã nộp.
+  target_attr_name: Paid Amount
+- target_column: fine_payment_deadline
+  transformation: sc_fi_ad_pe_de.FINE_PAYMENT_DEADLINE
+  data_type: string
+  description: Hạn nộp phạt (lưu dạng text vì data type nguồn là VARCHAR).
+  target_attr_name: Fine Payment Deadline
+- target_column: decision_file_path
+  transformation: sc_fi_ad_pe_de.DECISION_FILE_PATH
+  data_type: string
+  description: Đường dẫn file quyết định xử phạt trên hệ thống lưu trữ.
+  target_attr_name: Decision File Path
+- target_column: sync_dt
+  transformation: sc_fi_ad_pe_de.SYNC_DATE
+  data_type: date
+  description: Ngày đồng bộ dữ liệu từ nguồn ngoài.
+  target_attr_name: Sync Date
+- target_column: note
+  transformation: sc_fi_ad_pe_de.NOTE
+  data_type: string
+  description: Ghi chú về quyết định xử phạt.
+  target_attr_name: Note
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

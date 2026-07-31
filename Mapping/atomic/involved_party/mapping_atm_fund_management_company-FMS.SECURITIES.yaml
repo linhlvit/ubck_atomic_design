@@ -1,0 +1,287 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-fund_management_company-FMS.SECURITIES
+  logical_name: Mapping Atomic - Fund Management Company – source FMS.SECURITIES
+  physical_name: fund_management_company
+  dm_ref: ATM-fund_management_company-FMS.SECURITIES
+  brd_ref: BRD-SRC-FMS-SECURITIES
+target:
+  namespace: atm
+  physical_name: fund_management_company
+  etl_handle: SCD4A
+  description: Công ty quản lý quỹ (QLQ) trong nước hoặc nước ngoài tại Việt Nam,
+    được UBCKNN cấp phép và giám sát. Domain prefix dùng chung cho nhóm entity con
+    (Organization Unit, Key Person, Insider, Securities Offering, Share Transfer...).
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: SECURITIES
+  alias: secu
+  select_fields: ID, STATUS_ID, ITEM_NAME, TNAME, ENAME, SHORT_NAME, CODE, CAPITAL,
+    TOTAL_QTTY, BUSINESS_TYPE, BORF_FLAG, INSIDER_ID, DESCRIPTION, STOCK_CODE, MARKET,
+    NATIONAL, BANK_ID, FR_DATE, TO_DATE, STOP_DATE, ACTIVE_DATE, RECORD_TYPE, PEPRESENT_ATIVE,
+    ORG_NAME, TR_CODE, LISTED, PUBLIC_LISTED, REG_DATE, FIN_DATE, DEC_DATE, VOUCHER_NO,
+    DIREC_NAME, DEPUT_NAME, DES_CHANGE, ACTIV_OTHER, FOREIGN_TYPE, ORG_NATIONAL, ORG_ID_NO,
+    REAL_BUSINESS_TYPE, PAR_ID, REAL_ACTIVE_DATE, CT_ID, EVENT_TYPE_ID
+  filter: null
+- source_type: physical_table
+  namespace: ods
+  table_name: EVENT_TYPE
+  alias: ev_ty
+  select_fields: ID, ITEM_NAME
+  filter: null
+  note: Crosswalk bridge cho event_tp_id
+relationship:
+- main_alias: secu
+  join_type: LEFT JOIN
+  join_alias: ev_ty
+  join_on: secu.EVENT_TYPE_ID = ev_ty.ID
+mapping_columns:
+- target_column: fmc_id
+  transformation: '{hash_id}(''FMS_SECURITIES'', secu.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Fund Management Company Id
+- target_column: fmc_code
+  transformation: secu.ID
+  data_type: string
+  description: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+  target_attr_name: Fund Management Company Code
+- target_column: src_stm_code
+  transformation: '''FMS_SECURITIES'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: operation_status_code
+  transformation: secu.STATUS_ID
+  data_type: string
+  description: 'FK -> STATUS: Trạng thái hoạt động của đối tượng (bảng danh mục STATUS).'
+  target_attr_name: Operation Status Code
+- target_column: fmc_full_nm
+  transformation: secu.ITEM_NAME
+  data_type: string
+  description: Tên hiển thị chính.
+  target_attr_name: Fund Management Company Full Name
+- target_column: fmc_trading_nm
+  transformation: secu.TNAME
+  data_type: string
+  description: Tên giao dịch/tên thứ hai của công ty QLQ.
+  target_attr_name: Fund Management Company Trading Name
+- target_column: fmc_english_nm
+  transformation: secu.ENAME
+  data_type: string
+  description: Tên tiếng Anh đầy đủ.
+  target_attr_name: Fund Management Company English Name
+- target_column: fmc_short_nm
+  transformation: secu.SHORT_NAME
+  data_type: string
+  description: Tên viết tắt.
+  target_attr_name: Fund Management Company Short Name
+- target_column: fmc_short_code
+  transformation: secu.CODE
+  data_type: string
+  description: Mã định danh ngắn gọn.
+  target_attr_name: Fund Management Company Short Code
+- target_column: charter_capital_amt
+  transformation: secu.CAPITAL
+  data_type: decimal(23,2)
+  description: 'Vốn điều lệ/vốn góp (đơn vị: VNĐ).'
+  target_attr_name: Charter Capital Amount
+- target_column: total_outstanding_unit_quantity
+  transformation: secu.TOTAL_QTTY
+  data_type: int
+  description: Tổng số lượng CCQ/cổ phiếu đang lưu hành.
+  target_attr_name: Total Outstanding Unit Quantity
+- target_column: business_tp_description
+  transformation: secu.BUSINESS_TYPE
+  data_type: string
+  description: Loại hình kinh doanh của công ty QLQ (mô tả hoặc mã danh mục).
+  target_attr_name: Business Type Description
+- target_column: organization_territory_tp_code
+  transformation: secu.BORF_FLAG
+  data_type: string
+  description: 'Loại tổ chức theo địa giới: 1=Trong nước, 0=Nước ngoài.'
+  target_attr_name: Organization Territory Type Code
+- target_column: fmc_insider_id
+  transformation: '{hash_id}(''FMS_INSIDER'', secu.INSIDER_ID)'
+  data_type: string
+  description: 'FK -> INSIDER: Cổ đông nội bộ sáng lập/kiểm soát công ty QLQ.'
+  target_attr_name: Fund Management Company Insider Id
+- target_column: fmc_insider_code
+  transformation: secu.INSIDER_ID
+  data_type: string
+  description: Mã cổ đông nội bộ sáng lập/kiểm soát công ty QLQ.
+  target_attr_name: Fund Management Company Insider Code
+- target_column: description
+  transformation: secu.DESCRIPTION
+  data_type: string
+  description: Mô tả chi tiết.
+  target_attr_name: Description
+- target_column: stock_ticker_code
+  transformation: secu.STOCK_CODE
+  data_type: string
+  description: Mã cổ phiếu niêm yết của công ty QLQ (ticker).
+  target_attr_name: Stock Ticker Code
+- target_column: market_code
+  transformation: secu.MARKET
+  data_type: string
+  description: 'Sàn giao dịch: 1=HOSE, 2=HNX, 3=UPCOM.'
+  target_attr_name: Market Code
+- target_column: country_of_registration_nm
+  transformation: secu.NATIONAL
+  data_type: string
+  description: Quốc gia/quốc tịch của công ty QLQ (tên hoặc mã quốc gia).
+  target_attr_name: Country of Registration Name
+- target_column: custodian_bank_id
+  transformation: '{hash_id}(''FMS_BANK_MONI'', secu.BANK_ID)'
+  data_type: string
+  description: 'FK -> BANK_MONI: Ngân hàng lưu ký/giám sát liên quan.'
+  target_attr_name: Custodian Bank Id
+- target_column: custodian_bank_code
+  transformation: secu.BANK_ID
+  data_type: string
+  description: Mã ngân hàng lưu ký/giám sát liên quan.
+  target_attr_name: Custodian Bank Code
+- target_column: effective_start_dt
+  transformation: secu.FR_DATE
+  data_type: date
+  description: Ngày bắt đầu (from date).
+  target_attr_name: Effective Start Date
+- target_column: effective_end_dt
+  transformation: secu.TO_DATE
+  data_type: date
+  description: Ngày kết thúc (to date).
+  target_attr_name: Effective End Date
+- target_column: suspension_dt
+  transformation: secu.STOP_DATE
+  data_type: date
+  description: Ngày ngừng/đình chỉ hoạt động.
+  target_attr_name: Suspension Date
+- target_column: operation_commencement_dt
+  transformation: secu.ACTIVE_DATE
+  data_type: date
+  description: Ngày bắt đầu hoạt động chính thức.
+  target_attr_name: Operation Commencement Date
+- target_column: record_cl_text
+  transformation: secu.RECORD_TYPE
+  data_type: string
+  description: Loại/phân loại của bản ghi.
+  target_attr_name: Record Classification Text
+- target_column: legal_representative_indicator
+  transformation: secu.PEPRESENT_ATIVE
+  data_type: string
+  description: 'Cờ là người đại diện theo pháp luật: 1=Có, 0=Không.'
+  target_attr_name: Legal Representative Indicator
+- target_column: parent_organization_nm
+  transformation: secu.ORG_NAME
+  data_type: string
+  description: Tên tổ chức chủ quản/tổ chức phụ thuộc.
+  target_attr_name: Parent Organization Name
+- target_column: internal_transaction_code
+  transformation: secu.TR_CODE
+  data_type: string
+  description: Mã giao dịch nội bộ của công ty QLQ.
+  target_attr_name: Internal Transaction Code
+- target_column: listing_description
+  transformation: secu.LISTED
+  data_type: string
+  description: Thông tin niêm yết (chuỗi mô tả sàn và thời gian niêm yết).
+  target_attr_name: Listing Description
+- target_column: public_listed_indicator
+  transformation: secu.PUBLIC_LISTED
+  data_type: string
+  description: 'Cờ công ty đại chúng đang niêm yết: Y=Có, N=Không.'
+  target_attr_name: Public Listed Indicator
+- target_column: registration_dt
+  transformation: secu.REG_DATE
+  data_type: date
+  description: Ngày đăng ký hoạt động.
+  target_attr_name: Registration Date
+- target_column: financial_activity_end_dt
+  transformation: secu.FIN_DATE
+  data_type: date
+  description: Ngày kết thúc hoạt động tài chính.
+  target_attr_name: Financial Activity End Date
+- target_column: decision_issue_dt
+  transformation: secu.DEC_DATE
+  data_type: date
+  description: Ngày ban hành quyết định/nghị quyết.
+  target_attr_name: Decision Issue Date
+- target_column: amendment_document_nbr
+  transformation: secu.VOUCHER_NO
+  data_type: string
+  description: Số văn bản/giấy phép điều chỉnh (khi cập nhật hồ sơ).
+  target_attr_name: Amendment Document Number
+- target_column: director_full_nm
+  transformation: secu.DIREC_NAME
+  data_type: string
+  description: Họ tên Tổng Giám đốc/Giám đốc hiện tại.
+  target_attr_name: Director Full Name
+- target_column: deputy_director_full_nm
+  transformation: secu.DEPUT_NAME
+  data_type: string
+  description: Họ tên Phó Tổng Giám đốc/Phó Giám đốc hiện tại.
+  target_attr_name: Deputy Director Full Name
+- target_column: change_description
+  transformation: secu.DES_CHANGE
+  data_type: string
+  description: Mô tả nội dung thay đổi khi cập nhật hồ sơ.
+  target_attr_name: Change Description
+- target_column: other_business_activity_description
+  transformation: secu.ACTIV_OTHER
+  data_type: string
+  description: 'Hoạt động khác ngoài quản lý quỹ (NCLOB: JSON danh sách).'
+  target_attr_name: Other Business Activity Description
+- target_column: foreign_organization_tp_description
+  transformation: secu.FOREIGN_TYPE
+  data_type: string
+  description: 'Loại hình tổ chức nước ngoài: chi nhánh, VPĐD...'
+  target_attr_name: Foreign Organization Type Description
+- target_column: foreign_organization_country_nm
+  transformation: secu.ORG_NATIONAL
+  data_type: string
+  description: Quốc gia của tổ chức nước ngoài.
+  target_attr_name: Foreign Organization Country Name
+- target_column: foreign_organization_registration_nbr
+  transformation: secu.ORG_ID_NO
+  data_type: string
+  description: Mã số đăng ký của tổ chức nước ngoài tại nước đăng ký.
+  target_attr_name: Foreign Organization Registration Number
+- target_column: actual_business_tp_description
+  transformation: secu.REAL_BUSINESS_TYPE
+  data_type: string
+  description: Loại hình kinh doanh thực tế của công ty QLQ.
+  target_attr_name: Actual Business Type Description
+- target_column: parent_fmc_id
+  transformation: '{hash_id}(''FMS_SECURITIES'', secu.PAR_ID)'
+  data_type: string
+  description: 'FK -> SECURITIES: Công ty QLQ cha trực tiếp (nếu có quan hệ sở hữu).'
+  target_attr_name: Parent Fund Management Company Id
+- target_column: parent_fmc_code
+  transformation: secu.PAR_ID
+  data_type: string
+  description: Mã công ty QLQ cha trực tiếp.
+  target_attr_name: Parent Fund Management Company Code
+- target_column: actual_operation_commencement_dt
+  transformation: secu.REAL_ACTIVE_DATE
+  data_type: date
+  description: Ngày thực tế bắt đầu hoạt động (khác ngày cấp phép).
+  target_attr_name: Actual Operation Commencement Date
+- target_column: company_tp_code
+  transformation: secu.CT_ID
+  data_type: string
+  description: 'FK -> COMPANY_TYPE: Loại hình công ty QLQ.'
+  target_attr_name: Company Type Code
+- target_column: event_tp_id
+  transformation: '{hash_id}(''FMS_EVENT_TYPE'', ev_ty.ITEM_NAME)'
+  data_type: string
+  description: 'FK -> EVENT_TYPE: Loại sự vụ áp dụng.'
+  target_attr_name: Event Type Id
+- target_column: event_tp_code
+  transformation: secu.EVENT_TYPE_ID
+  data_type: string
+  description: Mã loại sự vụ áp dụng.
+  target_attr_name: Event Type Code
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

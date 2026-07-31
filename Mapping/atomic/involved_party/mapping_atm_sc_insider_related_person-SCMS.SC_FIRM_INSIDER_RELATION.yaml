@@ -1,0 +1,171 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-sc_insider_related_person-SCMS.SC_FIRM_INSIDER_RELATION
+  logical_name: Mapping Atomic - Securities Company Insider Related Person – source
+    SCMS.SC_FIRM_INSIDER_RELATION
+  physical_name: sc_insider_related_person
+  dm_ref: ATM-sc_insider_related_person-SCMS.SC_FIRM_INSIDER_RELATION
+  brd_ref: BRD-SRC-SCMS-SC_FIRM_INSIDER_RELATION
+target:
+  namespace: atm
+  physical_name: sc_insider_related_person
+  etl_handle: SCD4A
+  description: Người nội bộ của CTCK theo quy định CBTT — bao gồm người thân có quan
+    hệ gia đình với nhân sự cấp cao. Ghi nhận họ tên, chức vụ, loại quan hệ và thời
+    gian công tác.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: SC_FIRM_INSIDER_RELATION
+  alias: sc_fi_in_re
+  select_fields: ID, SC_FIRM_INFO_ID, SENIOR_PERSONNEL_ID, ENTITY_TYPE, GENDER, FULL_NAME,
+    NAME_EN, SHORT_NAME, DATE_OF_BIRTH, ISSUE_DATE, ISSUE_PLACE, NATIONALITY_ID, RELATIONSHIP,
+    RELATION_START_DATE, OWNERSHIP_RATIO, OWNERSHIP_RATIO_DATE, SHARES_COUNT, FOUNDING_SHAREHOLDER,
+    LEGAL_REPRESENTATIVE_NAME, REPRESENTATIVE_POSITION, NOTE
+  filter: null
+- source_type: physical_table
+  namespace: ods
+  table_name: SC_FIRM_INFO
+  alias: sc_fi_in
+  select_fields: ID, CODE
+  filter: null
+  note: Crosswalk bridge cho sc_id
+relationship:
+- main_alias: sc_fi_in_re
+  join_type: LEFT JOIN
+  join_alias: sc_fi_in
+  join_on: sc_fi_in_re.SC_FIRM_INFO_ID = sc_fi_in.ID
+mapping_columns:
+- target_column: sc_insider_related_person_id
+  transformation: '{hash_id}(''SCMS_SC_FIRM_INSIDER_RELATION'', sc_fi_in_re.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Securities Company Insider Related Person Id
+- target_column: sc_insider_related_person_code
+  transformation: sc_fi_in_re.ID
+  data_type: string
+  description: Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.
+  target_attr_name: Securities Company Insider Related Person Code
+- target_column: src_stm_code
+  transformation: '''SCMS_SC_FIRM_INSIDER_RELATION'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: sc_id
+  transformation: '{hash_id}(''SCMS_SC_FIRM_INFO'', sc_fi_in.CODE)'
+  data_type: string
+  description: FK đến Công ty chứng khoán mà người nội bộ liên quan.
+  target_attr_name: Securities Company Id
+- target_column: sc_code
+  transformation: sc_fi_in_re.SC_FIRM_INFO_ID
+  data_type: string
+  description: Mã Công ty chứng khoán.
+  target_attr_name: Securities Company Code
+- target_column: sc_senior_personnel_id
+  transformation: '{hash_id}(''SCMS_SC_FIRM_SENIOR_PERSONNEL'', sc_fi_in_re.SENIOR_PERSONNEL_ID)'
+  data_type: string
+  description: FK đến nhân sự cao cấp CTCK mà người này có quan hệ nội bộ.
+  target_attr_name: Securities Company Senior Personnel Id
+- target_column: sc_senior_personnel_code
+  transformation: sc_fi_in_re.SENIOR_PERSONNEL_ID
+  data_type: string
+  description: Mã nhân sự cao cấp liên quan.
+  target_attr_name: Securities Company Senior Personnel Code
+- target_column: entity_tp_code
+  transformation: sc_fi_in_re.ENTITY_TYPE
+  data_type: string
+  description: 'Loại đối tượng người nội bộ: CA_NHAN=Cá nhân; TO_CHUC=Tổ chức.'
+  target_attr_name: Entity Type Code
+- target_column: gender_code
+  transformation: sc_fi_in_re.GENDER
+  data_type: string
+  description: 'Giới tính: 1=Nam; 2=Nữ.'
+  target_attr_name: Gender Code
+- target_column: full_nm
+  transformation: sc_fi_in_re.FULL_NAME
+  data_type: string
+  description: Họ và tên đầy đủ (cá nhân) hoặc tên đầy đủ (tổ chức).
+  target_attr_name: Full Name
+- target_column: nm_en
+  transformation: sc_fi_in_re.NAME_EN
+  data_type: string
+  description: Tên đầy đủ bằng tiếng Anh.
+  target_attr_name: Name En
+- target_column: short_nm
+  transformation: sc_fi_in_re.SHORT_NAME
+  data_type: string
+  description: 'Tên viết tắt của tổ chức (VD: SSI, VPS, MBS).'
+  target_attr_name: Short Name
+- target_column: dt_of_birth
+  transformation: sc_fi_in_re.DATE_OF_BIRTH
+  data_type: date
+  description: Ngày sinh (dd/mm/yyyy).
+  target_attr_name: Date Of Birth
+- target_column: issue_dt
+  transformation: sc_fi_in_re.ISSUE_DATE
+  data_type: date
+  description: Ngày cấp giấy tờ/chứng chỉ định danh.
+  target_attr_name: Issue Date
+- target_column: issue_place
+  transformation: sc_fi_in_re.ISSUE_PLACE
+  data_type: string
+  description: Nơi cấp giấy tờ/chứng chỉ định danh.
+  target_attr_name: Issue Place
+- target_column: cl_nationality_id
+  transformation: '{hash_id}(''SCMS_CAT_NATIONALITY'', sc_fi_in_re.NATIONALITY_ID)'
+  data_type: string
+  description: FK đến quốc tịch của người nội bộ.
+  target_attr_name: Classification Nationality Id
+- target_column: cl_nationality_code
+  transformation: sc_fi_in_re.NATIONALITY_ID
+  data_type: string
+  description: Mã quốc tịch của người nội bộ.
+  target_attr_name: Classification Nationality Code
+- target_column: rltnp
+  transformation: sc_fi_in_re.RELATIONSHIP
+  data_type: string
+  description: Mối quan hệ với nhân sự cao cấp (vợ/chồng/con cái/anh chị em).
+  target_attr_name: Relationship
+- target_column: relation_start_dt
+  transformation: sc_fi_in_re.RELATION_START_DATE
+  data_type: date
+  description: Ngày bắt đầu mối quan hệ nội bộ.
+  target_attr_name: Relation Start Date
+- target_column: ownership_ratio
+  transformation: sc_fi_in_re.OWNERSHIP_RATIO
+  data_type: decimal(5,2)
+  description: Tỷ lệ sở hữu vốn (%).
+  target_attr_name: Ownership Ratio
+- target_column: ownership_ratio_dt
+  transformation: sc_fi_in_re.OWNERSHIP_RATIO_DATE
+  data_type: date
+  description: Ngày xác định tỷ lệ sở hữu.
+  target_attr_name: Ownership Ratio Date
+- target_column: shares_count
+  transformation: sc_fi_in_re.SHARES_COUNT
+  data_type: int
+  description: Số lượng cổ phần nắm giữ.
+  target_attr_name: Shares Count
+- target_column: founding_shareholder_indicator
+  transformation: sc_fi_in_re.FOUNDING_SHAREHOLDER
+  data_type: int
+  description: 'Cờ là cổ đông sáng lập: 1=Có; 0=Không.'
+  target_attr_name: Founding Shareholder Indicator
+- target_column: legal_representative_nm
+  transformation: sc_fi_in_re.LEGAL_REPRESENTATIVE_NAME
+  data_type: string
+  description: Tên người đại diện pháp luật của tổ chức nội bộ.
+  target_attr_name: Legal Representative Name
+- target_column: representative_position
+  transformation: sc_fi_in_re.REPRESENTATIVE_POSITION
+  data_type: string
+  description: Chức vụ của người đại diện pháp luật.
+  target_attr_name: Representative Position
+- target_column: note
+  transformation: sc_fi_in_re.NOTE
+  data_type: string
+  description: Ghi chú bổ sung về người nội bộ.
+  target_attr_name: Note
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

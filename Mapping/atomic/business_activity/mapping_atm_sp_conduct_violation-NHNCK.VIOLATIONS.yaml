@@ -1,0 +1,99 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-sp_conduct_violation-NHNCK.VIOLATIONS
+  logical_name: Mapping Atomic - Securities Practitioner Conduct Violation – source
+    NHNCK.VIOLATIONS
+  physical_name: sp_conduct_violation
+  dm_ref: ATM-sp_conduct_violation-NHNCK.VIOLATIONS
+  brd_ref: BRD-SRC-NHNCK-VIOLATIONS
+target:
+  namespace: atm
+  physical_name: sp_conduct_violation
+  etl_handle: SCD4A
+  description: Vi phạm pháp luật hoặc hành chính của người hành nghề chứng khoán được
+    ghi nhận kèm quyết định xử lý. Mỗi dòng = 1 sự kiện vi phạm insert-only. FK đến
+    Practitioner và Decision.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: VIOLATIONS
+  alias: viol
+  select_fields: ID, PROFESSIONAL_ID, DECISION_ID, FULL_NAME, BIRTH_DATE, IDENTITY_NUMBER,
+    CREATED_AT, NOTE, STATUS, TYPE
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: sp_conduct_violation_id
+  transformation: '{hash_id}(''NHNCK_VIOLATIONS'', viol.ID)'
+  data_type: string
+  description: Khóa đại diện cho bản ghi vi phạm đạo đức hành nghề (surrogate key).
+  target_attr_name: Securities Practitioner Conduct Violation Id
+- target_column: sp_conduct_violation_code
+  transformation: viol.ID
+  data_type: string
+  description: Mã định danh kỹ thuật tự tăng. BK của entity. Map từ PK bảng nguồn.
+  target_attr_name: Securities Practitioner Conduct Violation Code
+- target_column: src_stm_code
+  transformation: '''NHNCK_VIOLATIONS'''
+  data_type: string
+  description: Mã hệ thống nguồn.
+  target_attr_name: Source System Code
+- target_column: sp_id
+  transformation: '{hash_id}(''NHNCK_PROFESSIONALS'', viol.PROFESSIONAL_ID)'
+  data_type: string
+  description: FK đến người hành nghề chứng khoán bị vi phạm.
+  target_attr_name: Securities Practitioner Id
+- target_column: sp_code
+  transformation: viol.PROFESSIONAL_ID
+  data_type: string
+  description: Mã người hành nghề chứng khoán bị vi phạm.
+  target_attr_name: Securities Practitioner Code
+- target_column: sp_license_decision_document_id
+  transformation: '{hash_id}(''NHNCK_DECISIONS'', viol.DECISION_ID)'
+  data_type: string
+  description: FK đến quyết định xử lý vi phạm.
+  target_attr_name: Securities Practitioner License Decision Document Id
+- target_column: sp_license_decision_document_code
+  transformation: viol.DECISION_ID
+  data_type: string
+  description: Mã quyết định xử lý vi phạm.
+  target_attr_name: Securities Practitioner License Decision Document Code
+- target_column: practitioner_nm_at_violation
+  transformation: viol.FULL_NAME
+  data_type: string
+  description: Họ tên người hành nghề tại thời điểm vi phạm (snapshot).
+  target_attr_name: Practitioner Name At Violation
+- target_column: practitioner_birth_dt_at_violation
+  transformation: viol.BIRTH_DATE
+  data_type: date
+  description: Ngày sinh người hành nghề tại thời điểm vi phạm (snapshot).
+  target_attr_name: Practitioner Birth Date At Violation
+- target_column: practitioner_identity_nbr_at_violation
+  transformation: viol.IDENTITY_NUMBER
+  data_type: string
+  description: Số CMND/CCCD người hành nghề tại thời điểm vi phạm (snapshot).
+  target_attr_name: Practitioner Identity Number At Violation
+- target_column: violation_record_dt
+  transformation: viol.CREATED_AT
+  data_type: timestamp
+  description: Ngày ghi nhận vi phạm (business event date).
+  target_attr_name: Violation Record Date
+- target_column: note
+  transformation: viol.NOTE
+  data_type: string
+  description: Ghi chú vi phạm.
+  target_attr_name: Note
+- target_column: violation_status_code
+  transformation: viol.STATUS
+  data_type: string
+  description: 'Trạng thái bản ghi vi phạm: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt
+    động.'
+  target_attr_name: Violation Status Code
+- target_column: violation_tp_code
+  transformation: viol.TYPE
+  data_type: string
+  description: Loại/phân loại của bản ghi vi phạm.
+  target_attr_name: Violation Type Code
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

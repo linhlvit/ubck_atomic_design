@@ -1,0 +1,100 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-ip_postal_address-KNT.TAX_REGISTRATION_INFO
+  logical_name: Mapping Atomic - Involved Party Postal Address – source KNT.TAX_REGISTRATION_INFO
+  physical_name: ip_postal_address
+  dm_ref: ATM-ip_postal_address-KNT.TAX_REGISTRATION_INFO
+  brd_ref: BRD-SRC-KNT-TAX_REGISTRATION_INFO
+target:
+  namespace: atm
+  physical_name: ip_postal_address
+  etl_handle: SCD4A
+  description: Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường
+    trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: TAX_REGISTRATION_INFO
+  alias: ta_re_in
+  select_fields: TAX_CODE, BUSINESS_PROVINCE_CODE, BUSINESS_PROVINCE_NAME, BUSINESS_DISTRICT_CODE,
+    BUSINESS_DISTRICT_NAME, BUSINESS_WARD_CODE, BUSINESS_WARD_NAME, BUSINESS_ADDRESS_DESC,
+    HQ_ADDRESS
+  filter: null
+- source_type: unpivot_cte
+  namespace: null
+  table_name: ta_re_in
+  alias: unpvt
+  select_fields: TAX_CODE, BUSINESS_PROVINCE_CODE, BUSINESS_PROVINCE_NAME, BUSINESS_DISTRICT_CODE,
+    BUSINESS_DISTRICT_NAME, BUSINESS_WARD_CODE, BUSINESS_WARD_NAME, adr_tp_code, adr_val
+  filter: null
+  unpivot_spec:
+    value_columns:
+    - adr_val
+    type_column: adr_tp_code
+    legs:
+    - type_value: BUSINESS
+      source_columns:
+      - BUSINESS_ADDRESS_DESC
+    - type_value: HEAD_OFFICE
+      source_columns:
+      - HQ_ADDRESS
+relationship: []
+mapping_columns:
+- target_column: ip_id
+  transformation: '{hash_id}(''KNT_TAX_REGISTRATION_INFO'', unpvt.TAX_CODE)'
+  data_type: string
+  description: FK đến External Tax Registration (Involved Party).
+  target_attr_name: Involved Party Id
+- target_column: ip_code
+  transformation: unpvt.TAX_CODE
+  data_type: string
+  description: Mã External Tax Registration.
+  target_attr_name: Involved Party Code
+- target_column: src_stm_code
+  transformation: '''KNT_TAX_REGISTRATION_INFO'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: province_code
+  transformation: unpvt.BUSINESS_PROVINCE_CODE
+  data_type: string
+  description: Mã tỉnh/thành phố địa chỉ kinh doanh.
+  target_attr_name: Province Code
+- target_column: province_nm
+  transformation: unpvt.BUSINESS_PROVINCE_NAME
+  data_type: string
+  description: Tên tỉnh/thành phố kinh doanh.
+  target_attr_name: Province Name
+- target_column: district_code
+  transformation: unpvt.BUSINESS_DISTRICT_CODE
+  data_type: string
+  description: Mã quận/huyện địa chỉ kinh doanh.
+  target_attr_name: District Code
+- target_column: district_nm
+  transformation: unpvt.BUSINESS_DISTRICT_NAME
+  data_type: string
+  description: Tên quận/huyện kinh doanh.
+  target_attr_name: District Name
+- target_column: ward_code
+  transformation: unpvt.BUSINESS_WARD_CODE
+  data_type: string
+  description: Mã xã/phường địa chỉ kinh doanh.
+  target_attr_name: Ward Code
+- target_column: ward_nm
+  transformation: unpvt.BUSINESS_WARD_NAME
+  data_type: string
+  description: Tên xã/phường địa chỉ kinh doanh.
+  target_attr_name: Ward Name
+- target_column: adr_tp_code
+  transformation: unpvt.adr_tp_code
+  data_type: string
+  description: Loại địa chỉ.
+  target_attr_name: Address Type Code
+- target_column: adr_val
+  transformation: unpvt.adr_val
+  data_type: string
+  description: Mô tả địa chỉ kinh doanh.
+  target_attr_name: Address Value
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

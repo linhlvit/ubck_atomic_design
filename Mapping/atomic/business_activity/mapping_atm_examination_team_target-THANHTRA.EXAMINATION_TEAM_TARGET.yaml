@@ -1,0 +1,114 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-examination_team_target-THANHTRA.EXAMINATION_TEAM_TARGET
+  logical_name: Mapping Atomic - Examination Team Target – source THANHTRA.EXAMINATION_TEAM_TARGET
+  physical_name: examination_team_target
+  dm_ref: ATM-examination_team_target-THANHTRA.EXAMINATION_TEAM_TARGET
+  brd_ref: BRD-SRC-THANHTRA-EXAMINATION_TEAM_TARGET
+target:
+  namespace: atm
+  physical_name: examination_team_target
+  etl_handle: SCD4A
+  description: 'Danh sách đối tượng được kiểm tra trong đoàn cụ thể: 7 loại đơn vị/cá
+    nhân, mã tham chiếu trong hệ thống nguồn, tên đối tượng.'
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: EXAMINATION_TEAM_TARGET
+  alias: ex_te_ta
+  select_fields: ID, EXAMINATION_TEAM_ID, TARGET_TYPE, TARGET_REFERENCE_ID, TARGET_NAME,
+    ADDRESS, ACCOUNT_NUMBER, SECURITIES_COMPANY_NAME, CITIZEN_ID, BUSINESS_REGISTRATION_NUMBER,
+    LEGAL_REP_NAME, LEGAL_REP_CITIZEN_ID
+  filter: null
+- source_type: physical_table
+  namespace: ods
+  table_name: EXAMINATION_TEAM
+  alias: ex_te
+  select_fields: ID, CODE
+  filter: null
+  note: Crosswalk bridge cho examination_team_id
+relationship:
+- main_alias: ex_te_ta
+  join_type: LEFT JOIN
+  join_alias: ex_te
+  join_on: ex_te_ta.EXAMINATION_TEAM_ID = ex_te.ID
+mapping_columns:
+- target_column: examination_team_target_id
+  transformation: '{hash_id}(''THANHTRA_EXAMINATION_TEAM_TARGET'', ex_te_ta.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Examination Team Target Id
+- target_column: examination_team_target_code
+  transformation: ex_te_ta.ID
+  data_type: string
+  description: PK nguồn (VARCHAR2 UUID). BK của entity.
+  target_attr_name: Examination Team Target Code
+- target_column: src_stm_code
+  transformation: '''THANHTRA_EXAMINATION_TEAM_TARGET'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: examination_team_id
+  transformation: '{hash_id}(''THANHTRA_EXAMINATION_TEAM'', ex_te.CODE)'
+  data_type: string
+  description: FK đến đoàn kiểm tra thực hiện kiểm tra đối tượng này.
+  target_attr_name: Examination Team Id
+- target_column: examination_team_code
+  transformation: ex_te_ta.EXAMINATION_TEAM_ID
+  data_type: string
+  description: Mã đoàn kiểm tra liên kết (snapshot).
+  target_attr_name: Examination Team Code
+- target_column: target_tp_code
+  transformation: ex_te_ta.TARGET_TYPE
+  data_type: string
+  description: 'Loại đối tượng: SECURITIES_COMPANY, FUND_MANAGEMENT_COMPANY, PUBLIC_COMPANY,
+    AUDIT_COMPANY, CRYPTO_SERVICE_PROVIDER, INDIVIDUAL, ORGANIZATION.'
+  target_attr_name: Target Type Code
+- target_column: target_reference_id
+  transformation: ex_te_ta.TARGET_REFERENCE_ID
+  data_type: string
+  description: ID tham chiếu đối tượng trong hệ thống nguồn (SCMS/FMS/IDS).
+  target_attr_name: Target Reference Id
+- target_column: target_nm
+  transformation: ex_te_ta.TARGET_NAME
+  data_type: string
+  description: Tên đối tượng được kiểm tra.
+  target_attr_name: Target Name
+- target_column: target_adr
+  transformation: ex_te_ta.ADDRESS
+  data_type: string
+  description: Địa chỉ đối tượng được kiểm tra (cá nhân và tổ chức).
+  target_attr_name: Target Address
+- target_column: account_nbr
+  transformation: ex_te_ta.ACCOUNT_NUMBER
+  data_type: string
+  description: Số tài khoản chứng khoán (cá nhân và tổ chức).
+  target_attr_name: Account Number
+- target_column: sc_nm
+  transformation: ex_te_ta.SECURITIES_COMPANY_NAME
+  data_type: string
+  description: CTCK nơi mở tài khoản (snapshot).
+  target_attr_name: Securities Company Name
+- target_column: citizen_id
+  transformation: ex_te_ta.CITIZEN_ID
+  data_type: string
+  description: Số CCCD/CMND — chỉ dùng cho cá nhân (targetType=INDIVIDUAL).
+  target_attr_name: Citizen Id
+- target_column: business_registration_nbr
+  transformation: ex_te_ta.BUSINESS_REGISTRATION_NUMBER
+  data_type: string
+  description: Số đăng ký kinh doanh — chỉ dùng cho tổ chức.
+  target_attr_name: Business Registration Number
+- target_column: legal_rep_nm
+  transformation: ex_te_ta.LEGAL_REP_NAME
+  data_type: string
+  description: Tên người đại diện theo pháp luật (tổ chức).
+  target_attr_name: Legal Rep Name
+- target_column: legal_rep_citizen_id
+  transformation: ex_te_ta.LEGAL_REP_CITIZEN_ID
+  data_type: string
+  description: CCCD người đại diện theo pháp luật.
+  target_attr_name: Legal Rep Citizen Id
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

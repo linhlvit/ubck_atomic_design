@@ -1,0 +1,261 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-sc_shareholder-SCMS.SC_FIRM_SHAREHOLDER
+  logical_name: Mapping Atomic - Securities Company Shareholder – source SCMS.SC_FIRM_SHAREHOLDER
+  physical_name: sc_shareholder
+  dm_ref: ATM-sc_shareholder-SCMS.SC_FIRM_SHAREHOLDER
+  brd_ref: BRD-SRC-SCMS-SC_FIRM_SHAREHOLDER
+target:
+  namespace: atm
+  physical_name: sc_shareholder
+  etl_handle: SCD4A
+  description: Cổ đông của CTCK (cá nhân hoặc tổ chức). Ghi nhận thông tin định danh,
+    loại cổ đông, quốc tịch, số cổ phần và tỷ lệ sở hữu.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: SC_FIRM_SHAREHOLDER
+  alias: sc_fi_sh
+  select_fields: ID, SC_FIRM_INFO_ID, SC_FIRM_PERSONNEL_ID, SHAREHOLDER_TYPE, SHAREHOLDER_ENTITY_TYPE,
+    RECORD_STATUS, NATIONALITY_ID, INDIVIDUAL, SHAREHOLDER_NAME, DATE_OF_BIRTH, PLACE_OF_BIRTH,
+    ISSUE_DATE, ISSUE_PLACE, EDUCATION_LEVEL, DEGREE, OCCUPATION, WORKPLACE, JOB_TITLE,
+    TRADING_ACCOUNT, ORG_SHORT_NAME, LEGAL_REPRESENTATIVE_NAME, REPRESENTATIVE_POSITION,
+    SHARES_HELD, FREELY_TRADABLE_SHARES, PLEDGED_SHARES, RESTRICTED_SHARES, OWNERSHIP_RATIO,
+    CONTRIBUTED_CAPITAL, LARGE_SHAREHOLDER_DATE, CONTROLLING_SHAREHOLDER, FOUNDING_SHAREHOLDER,
+    OWNER, PARTY_MEMBER, LEGAL_ENTITY_REPRESENTATIVE, COMPANY_EMPLOYEE, FOREIGN_INVESTMENT,
+    PRACTITIONER_LEGACY_ID, NOTE
+  filter: null
+- source_type: physical_table
+  namespace: ods
+  table_name: SC_FIRM_INFO
+  alias: sc_fi_in
+  select_fields: ID, CODE
+  filter: null
+  note: Crosswalk bridge cho sc_id
+relationship:
+- main_alias: sc_fi_sh
+  join_type: LEFT JOIN
+  join_alias: sc_fi_in
+  join_on: sc_fi_sh.SC_FIRM_INFO_ID = sc_fi_in.ID
+mapping_columns:
+- target_column: sc_shareholder_id
+  transformation: '{hash_id}(''SCMS_SC_FIRM_SHAREHOLDER'', sc_fi_sh.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Securities Company Shareholder Id
+- target_column: sc_shareholder_code
+  transformation: sc_fi_sh.ID
+  data_type: string
+  description: Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.
+  target_attr_name: Securities Company Shareholder Code
+- target_column: src_stm_code
+  transformation: '''SCMS_SC_FIRM_SHAREHOLDER'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: sc_id
+  transformation: '{hash_id}(''SCMS_SC_FIRM_INFO'', sc_fi_in.CODE)'
+  data_type: string
+  description: FK đến Công ty chứng khoán có cổ đông này.
+  target_attr_name: Securities Company Id
+- target_column: sc_code
+  transformation: sc_fi_sh.SC_FIRM_INFO_ID
+  data_type: string
+  description: Mã Công ty chứng khoán.
+  target_attr_name: Securities Company Code
+- target_column: sc_senior_personnel_id
+  transformation: '{hash_id}(''SCMS_SC_FIRM_SENIOR_PERSONNEL'', sc_fi_sh.SC_FIRM_PERSONNEL_ID)'
+  data_type: string
+  description: FK đến nhân sự cao cấp CTCK (nếu cổ đông cũng là nhân sự cao cấp).
+  target_attr_name: Securities Company Senior Personnel Id
+- target_column: sc_senior_personnel_code
+  transformation: sc_fi_sh.SC_FIRM_PERSONNEL_ID
+  data_type: string
+  description: Mã nhân sự cao cấp CTCK liên quan.
+  target_attr_name: Securities Company Senior Personnel Code
+- target_column: shareholder_tp_code
+  transformation: sc_fi_sh.SHAREHOLDER_TYPE
+  data_type: string
+  description: 'Loại cổ đông: CO_DONG_LON=Cổ đông lớn (≥5%); CO_DONG_SANG_LAP=Cổ đông
+    sáng lập; CO_DONG_PHO_THONG=Cổ đông phổ thông.'
+  target_attr_name: Shareholder Type Code
+- target_column: shareholder_entity_tp_code
+  transformation: sc_fi_sh.SHAREHOLDER_ENTITY_TYPE
+  data_type: string
+  description: 'Loại hình cổ đông: CA_NHAN=Cá nhân; TO_CHUC_TRONG_NUOC=Tổ chức trong
+    nước; TO_CHUC_NUOC_NGOAI=Tổ chức nước ngoài.'
+  target_attr_name: Shareholder Entity Type Code
+- target_column: record_status_code
+  transformation: sc_fi_sh.RECORD_STATUS
+  data_type: string
+  description: 'Trạng thái bản ghi cổ đông: 1=Đang hoạt động/còn hiệu lực; 0=Ngừng
+    hoạt động/hết hiệu lực.'
+  target_attr_name: Record Status Code
+- target_column: cl_nationality_id
+  transformation: '{hash_id}(''SCMS_CAT_NATIONALITY'', sc_fi_sh.NATIONALITY_ID)'
+  data_type: string
+  description: FK đến quốc tịch của cổ đông.
+  target_attr_name: Classification Nationality Id
+- target_column: cl_nationality_code
+  transformation: sc_fi_sh.NATIONALITY_ID
+  data_type: string
+  description: Mã quốc tịch của cổ đông.
+  target_attr_name: Classification Nationality Code
+- target_column: individual_indicator
+  transformation: sc_fi_sh.INDIVIDUAL
+  data_type: int
+  description: 'Cờ là cá nhân: 1=Cá nhân; 0=Tổ chức.'
+  target_attr_name: Individual Indicator
+- target_column: shareholder_nm
+  transformation: sc_fi_sh.SHAREHOLDER_NAME
+  data_type: string
+  description: Họ và tên đầy đủ (cá nhân) hoặc tên đầy đủ (tổ chức) của cổ đông.
+  target_attr_name: Shareholder Name
+- target_column: dt_of_birth
+  transformation: sc_fi_sh.DATE_OF_BIRTH
+  data_type: date
+  description: Ngày sinh (dd/mm/yyyy).
+  target_attr_name: Date Of Birth
+- target_column: place_of_birth
+  transformation: sc_fi_sh.PLACE_OF_BIRTH
+  data_type: string
+  description: Nơi sinh.
+  target_attr_name: Place Of Birth
+- target_column: issue_dt
+  transformation: sc_fi_sh.ISSUE_DATE
+  data_type: date
+  description: Ngày cấp giấy tờ/chứng chỉ định danh.
+  target_attr_name: Issue Date
+- target_column: issue_place
+  transformation: sc_fi_sh.ISSUE_PLACE
+  data_type: string
+  description: Nơi cấp giấy tờ/chứng chỉ định danh.
+  target_attr_name: Issue Place
+- target_column: education_level
+  transformation: sc_fi_sh.EDUCATION_LEVEL
+  data_type: string
+  description: Trình độ học vấn của cổ đông cá nhân.
+  target_attr_name: Education Level
+- target_column: degree
+  transformation: sc_fi_sh.DEGREE
+  data_type: string
+  description: Bằng cấp chuyên môn của cổ đông cá nhân.
+  target_attr_name: Degree
+- target_column: occupation
+  transformation: sc_fi_sh.OCCUPATION
+  data_type: string
+  description: Nghề nghiệp của cổ đông cá nhân.
+  target_attr_name: Occupation
+- target_column: workplace
+  transformation: sc_fi_sh.WORKPLACE
+  data_type: string
+  description: Nơi làm việc của cổ đông cá nhân.
+  target_attr_name: Workplace
+- target_column: job_title
+  transformation: sc_fi_sh.JOB_TITLE
+  data_type: string
+  description: Chức danh/chức vụ của cổ đông cá nhân tại nơi làm việc.
+  target_attr_name: Job Title
+- target_column: trading_account
+  transformation: sc_fi_sh.TRADING_ACCOUNT
+  data_type: string
+  description: Số tài khoản giao dịch chứng khoán của cổ đông.
+  target_attr_name: Trading Account
+- target_column: org_short_nm
+  transformation: sc_fi_sh.ORG_SHORT_NAME
+  data_type: string
+  description: Tên viết tắt của tổ chức cổ đông.
+  target_attr_name: Org Short Name
+- target_column: legal_representative_nm
+  transformation: sc_fi_sh.LEGAL_REPRESENTATIVE_NAME
+  data_type: string
+  description: Tên người đại diện pháp luật của tổ chức cổ đông.
+  target_attr_name: Legal Representative Name
+- target_column: representative_position
+  transformation: sc_fi_sh.REPRESENTATIVE_POSITION
+  data_type: string
+  description: Chức vụ của người đại diện pháp luật của tổ chức cổ đông.
+  target_attr_name: Representative Position
+- target_column: shares_held
+  transformation: sc_fi_sh.SHARES_HELD
+  data_type: int
+  description: Số lượng cổ phần đang nắm giữ.
+  target_attr_name: Shares Held
+- target_column: freely_tradable_shares
+  transformation: sc_fi_sh.FREELY_TRADABLE_SHARES
+  data_type: int
+  description: Số cổ phần tự do giao dịch.
+  target_attr_name: Freely Tradable Shares
+- target_column: pledged_shares
+  transformation: sc_fi_sh.PLEDGED_SHARES
+  data_type: int
+  description: Số cổ phần đang cầm cố/thế chấp.
+  target_attr_name: Pledged Shares
+- target_column: restricted_shares
+  transformation: sc_fi_sh.RESTRICTED_SHARES
+  data_type: int
+  description: Số cổ phần bị hạn chế chuyển nhượng.
+  target_attr_name: Restricted Shares
+- target_column: ownership_ratio
+  transformation: sc_fi_sh.OWNERSHIP_RATIO
+  data_type: decimal(5,2)
+  description: Tỷ lệ sở hữu vốn (%).
+  target_attr_name: Ownership Ratio
+- target_column: contributed_capital
+  transformation: sc_fi_sh.CONTRIBUTED_CAPITAL
+  data_type: decimal(23,2)
+  description: 'Vốn góp (đơn vị: đồng).'
+  target_attr_name: Contributed Capital
+- target_column: large_shareholder_dt
+  transformation: sc_fi_sh.LARGE_SHAREHOLDER_DATE
+  data_type: date
+  description: Ngày đạt tỷ lệ sở hữu cổ đông lớn (từ 5% trở lên).
+  target_attr_name: Large Shareholder Date
+- target_column: controlling_shareholder
+  transformation: sc_fi_sh.CONTROLLING_SHAREHOLDER
+  data_type: string
+  description: Thông tin cổ đông kiểm soát.
+  target_attr_name: Controlling Shareholder
+- target_column: founding_shareholder_indicator
+  transformation: sc_fi_sh.FOUNDING_SHAREHOLDER
+  data_type: int
+  description: 'Cờ là cổ đông sáng lập: 1=Có; 0=Không.'
+  target_attr_name: Founding Shareholder Indicator
+- target_column: owner_indicator
+  transformation: sc_fi_sh.OWNER
+  data_type: int
+  description: Cờ là chủ sở hữu.
+  target_attr_name: Owner Indicator
+- target_column: party_member_indicator
+  transformation: sc_fi_sh.PARTY_MEMBER
+  data_type: int
+  description: Cờ là đảng viên.
+  target_attr_name: Party Member Indicator
+- target_column: legal_entity_representative_indicator
+  transformation: sc_fi_sh.LEGAL_ENTITY_REPRESENTATIVE
+  data_type: int
+  description: Cờ là người đại diện pháp luật.
+  target_attr_name: Legal Entity Representative Indicator
+- target_column: company_employee_indicator
+  transformation: sc_fi_sh.COMPANY_EMPLOYEE
+  data_type: int
+  description: Cờ là nhân viên của CTCK.
+  target_attr_name: Company Employee Indicator
+- target_column: foreign_investment_indicator
+  transformation: sc_fi_sh.FOREIGN_INVESTMENT
+  data_type: int
+  description: 'Cờ là vốn đầu tư nước ngoài: 1=Có; 0=Không.'
+  target_attr_name: Foreign Investment Indicator
+- target_column: practitioner_legacy_id
+  transformation: sc_fi_sh.PRACTITIONER_LEGACY_ID
+  data_type: string
+  description: Mã tham chiếu người hành nghề từ hệ thống cũ.
+  target_attr_name: Practitioner Legacy Id
+- target_column: note
+  transformation: sc_fi_sh.NOTE
+  data_type: string
+  description: Ghi chú bổ sung, không bắt buộc.
+  target_attr_name: Note
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

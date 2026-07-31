@@ -1,0 +1,176 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-fmc_insider-FMS.INSIDER
+  logical_name: Mapping Atomic - Fund Management Company Insider – source FMS.INSIDER
+  physical_name: fmc_insider
+  dm_ref: ATM-fmc_insider-FMS.INSIDER
+  brd_ref: BRD-SRC-FMS-INSIDER
+target:
+  namespace: atm
+  physical_name: fmc_insider
+  etl_handle: SCD4A
+  description: Cổ đông nội bộ/người có liên quan của Fund Management Company. Domain
+    prefix dùng chung với Fund Management Company (Tier 1).
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: INSIDER
+  alias: insi
+  select_fields: ID, SC_ID, S_ID, NAT_ID, TLPRO_ID, ITEM_NAME, INSIDER_NO, TL_PROFILE_LINKED,
+    TL_PROFILE_IN_SEC, INSIDER_TYPE, CAPITAL, QTTY, REPRECENT, PER_DATE, RECORD_STATUS,
+    DESCRIPTION, BIRTH, S_WORK_DTE, EMPLOY_STATUS, GP_QD_NO, APPROVAL_DATE
+  filter: null
+- source_type: physical_table
+  namespace: ods
+  table_name: NATIONAL
+  alias: nati
+  select_fields: ID, SNAME
+  filter: null
+  note: Crosswalk bridge cho nationality_id
+relationship:
+- main_alias: insi
+  join_type: LEFT JOIN
+  join_alias: nati
+  join_on: insi.NAT_ID = nati.ID
+mapping_columns:
+- target_column: fmc_insider_id
+  transformation: '{hash_id}(''FMS_INSIDER'', insi.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Fund Management Company Insider Id
+- target_column: fmc_insider_code
+  transformation: insi.ID
+  data_type: string
+  description: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+  target_attr_name: Fund Management Company Insider Code
+- target_column: src_stm_code
+  transformation: '''FMS_INSIDER'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: fmc_id
+  transformation: '{hash_id}(''FMS_SECURITIES'', insi.SC_ID)'
+  data_type: string
+  description: 'FK -> SECURITIES: Công ty QLQ liên quan đến giao dịch nội bộ.'
+  target_attr_name: Fund Management Company Id
+- target_column: fmc_code
+  transformation: insi.SC_ID
+  data_type: string
+  description: Mã công ty QLQ liên quan đến giao dịch nội bộ.
+  target_attr_name: Fund Management Company Code
+- target_column: employer_fmc_id
+  transformation: '{hash_id}(''FMS_SECURITIES'', insi.S_ID)'
+  data_type: string
+  description: 'FK -> SECURITIES: Công ty QLQ mà người nội bộ thuộc về.'
+  target_attr_name: Employer Fund Management Company Id
+- target_column: employer_fmc_code
+  transformation: insi.S_ID
+  data_type: string
+  description: Mã công ty QLQ mà người nội bộ thuộc về.
+  target_attr_name: Employer Fund Management Company Code
+- target_column: nationality_id
+  transformation: '{hash_id}(''ECAT_COUNTRY'', nati.SNAME)'
+  data_type: string
+  description: FK đến Geographic Area (quốc tịch).
+  target_attr_name: Nationality Id
+- target_column: nationality_code
+  transformation: insi.NAT_ID
+  data_type: string
+  description: Mã quốc gia/quốc tịch.
+  target_attr_name: Nationality Code
+- target_column: fmc_employee_id
+  transformation: '{hash_id}(''FMS_TL_PROFILES'', insi.TLPRO_ID)'
+  data_type: string
+  description: 'FK -> TL_PROFILES: Người hành nghề liên quan.'
+  target_attr_name: Fund Management Company Employee Id
+- target_column: fmc_employee_code
+  transformation: insi.TLPRO_ID
+  data_type: string
+  description: Mã người hành nghề liên quan.
+  target_attr_name: Fund Management Company Employee Code
+- target_column: fmc_insider_full_nm
+  transformation: insi.ITEM_NAME
+  data_type: string
+  description: Tên hiển thị chính.
+  target_attr_name: Fund Management Company Insider Full Name
+- target_column: insider_registration_nbr
+  transformation: insi.INSIDER_NO
+  data_type: string
+  description: Số định danh nội bộ của cổ đông nội bộ trong công ty QLQ.
+  target_attr_name: Insider Registration Number
+- target_column: key_person_linked_flag
+  transformation: insi.TL_PROFILE_LINKED
+  data_type: int
+  description: 'Cờ cổ đông nội bộ là người hành nghề (TL_PROFILES): 1=Có liên kết,
+    0=Không.'
+  target_attr_name: Key Person Linked Flag
+- target_column: practitioner_affiliated_fmc_flag
+  transformation: insi.TL_PROFILE_IN_SEC
+  data_type: int
+  description: 'Cờ người hành nghề thuộc công ty QLQ này: 1=Thuộc, 0=Không.'
+  target_attr_name: Practitioner Affiliated Fund Management Company Flag
+- target_column: insider_tp_code
+  transformation: insi.INSIDER_TYPE
+  data_type: string
+  description: 'Loại cổ đông nội bộ: 1=Cổ đông lớn, 2=Ban điều hành, 3=HĐQT...'
+  target_attr_name: Insider Type Code
+- target_column: contributed_capital_amt
+  transformation: insi.CAPITAL
+  data_type: decimal(23,2)
+  description: 'Vốn điều lệ/vốn góp (đơn vị: VNĐ).'
+  target_attr_name: Contributed Capital Amount
+- target_column: held_unit_quantity
+  transformation: insi.QTTY
+  data_type: int
+  description: Số lượng CCQ/cổ phiếu nắm giữ.
+  target_attr_name: Held Unit Quantity
+- target_column: representation_percentage
+  transformation: insi.REPRECENT
+  data_type: decimal(5,2)
+  description: Tỷ lệ đại diện theo ủy quyền (%).
+  target_attr_name: Representation Percentage
+- target_column: percentage_determination_dt
+  transformation: insi.PER_DATE
+  data_type: date
+  description: Ngày xác định tỷ lệ sở hữu/đại diện.
+  target_attr_name: Percentage Determination Date
+- target_column: active_status_flag
+  transformation: insi.RECORD_STATUS
+  data_type: int
+  description: 'Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu
+    lực.'
+  target_attr_name: Active Status Flag
+- target_column: description
+  transformation: insi.DESCRIPTION
+  data_type: string
+  description: Mô tả chi tiết.
+  target_attr_name: Description
+- target_column: birth_dt
+  transformation: insi.BIRTH
+  data_type: date
+  description: Ngày sinh.
+  target_attr_name: Birth Date
+- target_column: employment_start_dt
+  transformation: insi.S_WORK_DTE
+  data_type: date
+  description: Ngày bắt đầu làm việc (khi insider là nhân sự công ty QLQ).
+  target_attr_name: Employment Start Date
+- target_column: employment_status_code
+  transformation: insi.EMPLOY_STATUS
+  data_type: string
+  description: 'Trạng thái hợp đồng lao động: 1=Còn hiệu lực, 2=Hết hiệu lực, 3=Vô
+    thời hạn.'
+  target_attr_name: Employment Status Code
+- target_column: decision_document_nbr
+  transformation: insi.GP_QD_NO
+  data_type: string
+  description: Số GP/QĐ liên quan đến giao dịch chuyển nhượng hoặc thay đổi hồ sơ.
+  target_attr_name: Decision Document Number
+- target_column: approval_dt
+  transformation: insi.APPROVAL_DATE
+  data_type: date
+  description: Ngày chấp thuận/phê duyệt của UBCKNN.
+  target_attr_name: Approval Date
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

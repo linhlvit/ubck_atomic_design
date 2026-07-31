@@ -1,0 +1,51 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-sp_post_certification_training_course-NHNCK.POST_CERT_TRAINING_COURSES
+  logical_name: Mapping Atomic - Securities Practitioner Post Certification Training
+    Course – source NHNCK.POST_CERT_TRAINING_COURSES
+  physical_name: sp_post_certification_training_course
+  dm_ref: ATM-sp_post_certification_training_course-NHNCK.POST_CERT_TRAINING_COURSES
+  brd_ref: BRD-SRC-NHNCK-POST_CERT_TRAINING_COURSES
+target:
+  namespace: atm
+  physical_name: sp_post_certification_training_course
+  etl_handle: SCD4A
+  description: Danh mục khóa học/lớp bồi dưỡng kiến thức định kỳ sau cấp CCHN. Master
+    entity khóa bồi dưỡng, không FK đến bảng nghiệp vụ nào.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: POST_CERT_TRAINING_COURSES
+  alias: po_ce_tr_co
+  select_fields: COURSE_CODE, COURSE_NAME, CLASS_CODE
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: sp_post_certification_training_course_id
+  transformation: '{hash_id}(''NHNCK_POST_CERT_TRAINING_COURSES'', po_ce_tr_co.COURSE_CODE)'
+  data_type: string
+  description: Id tự sinh (surrogate key)
+  target_attr_name: Securities Practitioner Post Certification Training Course Id
+- target_column: sp_post_certification_training_course_code
+  transformation: po_ce_tr_co.COURSE_CODE
+  data_type: string
+  description: Mã khóa học/lớp học. BK duy nhất của entity
+  target_attr_name: Securities Practitioner Post Certification Training Course Code
+- target_column: src_stm_code
+  transformation: '''NHNCK_POST_CERT_TRAINING_COURSES'''
+  data_type: string
+  description: Mã nguồn dữ liệu
+  target_attr_name: Source System Code
+- target_column: training_course_nm
+  transformation: po_ce_tr_co.COURSE_NAME
+  data_type: string
+  description: Tên khóa học/lớp học
+  target_attr_name: Training Course Name
+- target_column: training_class_code
+  transformation: po_ce_tr_co.CLASS_CODE
+  data_type: string
+  description: Mã lớp học (định danh lớp cụ thể trong khóa)
+  target_attr_name: Training Class Code
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

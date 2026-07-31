@@ -1,0 +1,102 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-fund_distribution_agent-FMS.AGENCIES
+  logical_name: Mapping Atomic - Fund Distribution Agent – source FMS.AGENCIES
+  physical_name: fund_distribution_agent
+  dm_ref: ATM-fund_distribution_agent-FMS.AGENCIES
+  brd_ref: BRD-SRC-FMS-AGENCIES
+target:
+  namespace: atm
+  physical_name: fund_distribution_agent
+  etl_handle: SCD4A
+  description: Tổ chức phân phối chứng chỉ quỹ (CCQ) cho nhà đầu tư cá nhân.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: AGENCIES
+  alias: agen
+  select_fields: ID, ITEM_NAME, SHORT_NAME, ENAME, DECISION, DECISION_DATE, DECISION_PLACE,
+    RECORD_STATUS, CONTENT, STOP_DATE, ACTIVE_DATE, LIST_DISTRIBUTION_STAFF, NUMBER_REG_FUND_CER
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: fund_distribution_agent_id
+  transformation: '{hash_id}(''FMS_AGENCIES'', agen.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Fund Distribution Agent Id
+- target_column: fund_distribution_agent_code
+  transformation: agen.ID
+  data_type: string
+  description: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+  target_attr_name: Fund Distribution Agent Code
+- target_column: src_stm_code
+  transformation: '''FMS_AGENCIES'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: fund_distribution_agent_full_nm
+  transformation: agen.ITEM_NAME
+  data_type: string
+  description: Tên hiển thị chính.
+  target_attr_name: Fund Distribution Agent Full Name
+- target_column: fund_distribution_agent_short_nm
+  transformation: agen.SHORT_NAME
+  data_type: string
+  description: Tên viết tắt.
+  target_attr_name: Fund Distribution Agent Short Name
+- target_column: fund_distribution_agent_english_nm
+  transformation: agen.ENAME
+  data_type: string
+  description: Tên tiếng Anh đầy đủ.
+  target_attr_name: Fund Distribution Agent English Name
+- target_column: license_decision_nbr
+  transformation: agen.DECISION
+  data_type: string
+  description: Số quyết định/giấy phép thành lập hoặc chấp thuận hoạt động.
+  target_attr_name: License Decision Number
+- target_column: license_decision_dt
+  transformation: agen.DECISION_DATE
+  data_type: date
+  description: Ngày ban hành quyết định/giấy phép chấp thuận hoạt động đại lý.
+  target_attr_name: License Decision Date
+- target_column: license_decision_issuing_place
+  transformation: agen.DECISION_PLACE
+  data_type: string
+  description: Nơi ban hành quyết định/giấy phép.
+  target_attr_name: License Decision Issuing Place
+- target_column: active_status_flag
+  transformation: agen.RECORD_STATUS
+  data_type: int
+  description: 'Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu
+    lực.'
+  target_attr_name: Active Status Flag
+- target_column: description_content
+  transformation: agen.CONTENT
+  data_type: string
+  description: Nội dung/ghi chú chi tiết về đại lý phân phối.
+  target_attr_name: Description Content
+- target_column: suspension_dt
+  transformation: agen.STOP_DATE
+  data_type: date
+  description: Ngày ngừng/đình chỉ hoạt động.
+  target_attr_name: Suspension Date
+- target_column: operation_commencement_dt
+  transformation: agen.ACTIVE_DATE
+  data_type: date
+  description: Ngày bắt đầu hoạt động chính thức.
+  target_attr_name: Operation Commencement Date
+- target_column: distribution_staff_list_text
+  transformation: agen.LIST_DISTRIBUTION_STAFF
+  data_type: string
+  description: Danh sách nhân sự phân phối CCQ của đại lý (JSON hoặc danh sách ID
+    người hành nghề).
+  target_attr_name: Distribution Staff List Text
+- target_column: registered_fund_certificate_count
+  transformation: agen.NUMBER_REG_FUND_CER
+  data_type: string
+  description: Số lượng quỹ đầu tư đăng ký hoạt động phân phối CCQ tại đại lý này.
+  target_attr_name: Registered Fund Certificate Count
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

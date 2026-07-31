@@ -1,0 +1,148 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-trading_authorization-FIMS.TRADINGAUTHORIZATION
+  logical_name: Mapping Atomic - Trading Authorization – source FIMS.TRADINGAUTHORIZATION
+  physical_name: trading_authorization
+  dm_ref: ATM-trading_authorization-FIMS.TRADINGAUTHORIZATION
+  brd_ref: BRD-SRC-FIMS-TRADINGAUTHORIZATION
+target:
+  namespace: atm
+  physical_name: trading_authorization
+  etl_handle: SCD4A
+  description: Thỏa thuận ủy quyền giao dịch — nhà đầu tư nước ngoài ủy quyền cho
+    đại diện giao dịch tại thành viên thị trường hành động thay mặt. Ghi nhận phạm
+    vi ủy quyền, thời hạn và người được ủy quyền (Trading Representative). FK đến
+    Foreign Investor, Market Participant Organization và Trading Representative. BCO
+    đổi từ Documentation
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: TRADINGAUTHORIZATION
+  alias: tr_au
+  select_fields: Id, SystemObject, FundComId, SecComId, InvestorId, AuthorizationTypeId,
+    Status, FileName, SDate, EDate, Note, TradingRepresentativeId
+  filter: null
+- source_type: physical_table
+  namespace: ods
+  table_name: TRADINGAUTHORIZATIONINVES
+  alias: tr_au_in
+  select_fields: InvestorId, DateCreated
+  filter: datecreated >= {{etl_date}} AND datecreated < {{etl_date}} + 1
+relationship:
+- main_alias: tr_au
+  join_type: LEFT JOIN
+  join_alias: tr_au_in
+  join_on: tr_au.Id = tr_au_in.Id
+mapping_columns:
+- target_column: trading_authorization_id
+  transformation: '{hash_id}(''FIMS_TRADINGAUTHORIZATION'', tr_au.Id)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Trading Authorization Id
+- target_column: trading_authorization_code
+  transformation: tr_au.Id
+  data_type: string
+  description: Khóa chính của bản ghi. BK — nguồn không có mã nghiệp vụ riêng biệt,
+    dùng PK kỹ thuật làm BK duy nhất.
+  target_attr_name: Trading Authorization Code
+- target_column: src_stm_code
+  transformation: '''FIMS_TRADINGAUTHORIZATION'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: stm_object_tp_code
+  transformation: tr_au.SystemObject
+  data_type: string
+  description: 'Loại đối tượng áp dụng: 1=QLQ, 2=CTCK, 3=NHLK, 4=VSDC, 5=Sở GD, 7=CN
+    QLQ NN.'
+  target_attr_name: System Object Type Code
+- target_column: fmc_id
+  transformation: '{hash_id}(''FIMS_TRADINGAUTHORIZATION'', tr_au.FundComId)'
+  data_type: string
+  description: 'FK đến Fund Management Company: QLQ nơi người hành nghề làm việc.'
+  target_attr_name: Fund Management Company Id
+- target_column: fmc_code
+  transformation: tr_au.FundComId
+  data_type: string
+  description: Mã QLQ nơi người hành nghề làm việc.
+  target_attr_name: Fund Management Company Code
+- target_column: sc_id
+  transformation: '{hash_id}(''FIMS_TRADINGAUTHORIZATION'', tr_au.SecComId)'
+  data_type: string
+  description: 'FK đến Securities Company: CTCK nơi người hành nghề làm việc.'
+  target_attr_name: Securities Company Id
+- target_column: sc_code
+  transformation: tr_au.SecComId
+  data_type: string
+  description: Mã CTCK nơi người hành nghề làm việc.
+  target_attr_name: Securities Company Code
+- target_column: foreign_investor_id
+  transformation: '{hash_id}(''FIMS_TRADINGAUTHORIZATION'', tr_au.InvestorId)'
+  data_type: string
+  description: 'FK -> INVESTOR: Nhà đầu tư nước ngoài trong hợp đồng ủy quyền.'
+  target_attr_name: Foreign Investor Id
+- target_column: foreign_investor_code
+  transformation: tr_au.InvestorId
+  data_type: string
+  description: Mã giao dịch NĐT NN (VSDC) trong hợp đồng ủy quyền.
+  target_attr_name: Foreign Investor Code
+- target_column: authorization_tp_code
+  transformation: tr_au.AuthorizationTypeId
+  data_type: string
+  description: FK -> loại hình ủy quyền giao dịch (LO).
+  target_attr_name: Authorization Type Code
+- target_column: activity_status_code
+  transformation: tr_au.Status
+  data_type: string
+  description: Trạng thái bản ghi (tra cứu danh mục STATUS tương ứng).
+  target_attr_name: Activity Status Code
+- target_column: attachment_file_nm
+  transformation: tr_au.FileName
+  data_type: string
+  description: Tên file đính kèm.
+  target_attr_name: Attachment File Name
+- target_column: effective_start_dt
+  transformation: tr_au.SDate
+  data_type: date
+  description: Ngày bắt đầu hiệu lực hợp đồng ủy quyền.
+  target_attr_name: Effective Start Date
+- target_column: effective_end_dt
+  transformation: tr_au.EDate
+  data_type: date
+  description: Ngày kết thúc hiệu lực hợp đồng ủy quyền.
+  target_attr_name: Effective End Date
+- target_column: note
+  transformation: tr_au.Note
+  data_type: string
+  description: Ghi chú bổ sung.
+  target_attr_name: Note
+- target_column: trading_representative_id
+  transformation: '{hash_id}(''FIMS_TRADINGREPRESENTATIVE'', tr_au.TradingRepresentativeId)'
+  data_type: string
+  description: FK đến TRADINGREPRESENTATIVE — Người đại diện giao dịch được ủy quyền.
+  target_attr_name: Trading Representative Id
+- target_column: trading_representative_code
+  transformation: tr_au.TradingRepresentativeId
+  data_type: string
+  description: Mã người đại diện giao dịch được ủy quyền.
+  target_attr_name: Trading Representative Code
+- target_column: authorized_investor_id
+  transformation: '{hash_id}(''FIMS_TRADINGAUTHORIZATIONINVES'', tr_au.InvestorId)'
+  data_type: string
+  description: 'FK đến Foreign Investor: nhà đầu tư nước ngoài trong bản ghi ủy quyền
+    giao dịch (TRADINGAUTHORIZATIONINVES).'
+  target_attr_name: Authorized Investor Id
+- target_column: authorized_investor_code
+  transformation: tr_au.InvestorId
+  data_type: string
+  description: Mã giao dịch NĐT NN (VSDC) trong bản ghi ủy quyền giao dịch (TRADINGAUTHORIZATIONINVES).
+  target_attr_name: Authorized Investor Code
+- target_column: authorized_investor_data_dt
+  transformation: tr_au.DateCreated
+  data_type: date
+  description: Ngày dữ liệu bản ghi ủy quyền NĐT NN (TRADINGAUTHORIZATIONINVES) —
+    dùng cho filter logic incremental extract.
+  target_attr_name: Authorized Investor Data Date
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

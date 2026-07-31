@@ -1,0 +1,109 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-violation_behavior-THANHTRA.VIOLATION_BEHAVIOR
+  logical_name: Mapping Atomic - Violation Behavior – source THANHTRA.VIOLATION_BEHAVIOR
+  physical_name: violation_behavior
+  dm_ref: ATM-violation_behavior-THANHTRA.VIOLATION_BEHAVIOR
+  brd_ref: BRD-SRC-THANHTRA-VIOLATION_BEHAVIOR
+target:
+  namespace: atm
+  physical_name: violation_behavior
+  etl_handle: SCD4A
+  description: 'Danh mục hành vi vi phạm hành chính được pháp luật quy định: loại
+    hành vi, hình thức xử phạt chính, khung tiền phạt min/max, biện pháp khắc phục.'
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: VIOLATION_BEHAVIOR
+  alias: vi_be
+  select_fields: CODE, NAME, DESCRIPTION, PRIMARY_PENALTY_TYPE_ID, MIN_FINE_AMOUNT,
+    MAX_FINE_AMOUNT, REMEDIAL_MEASURE, STATUS, NOTE, LEGAL_DOCUMENT, VIOLATION_CLAUSE
+  filter: null
+- source_type: physical_table
+  namespace: ods
+  table_name: PENALTY_TYPE
+  alias: pe_ty
+  select_fields: ID, CODE
+  filter: null
+  note: Crosswalk bridge cho penalty_tp_id
+relationship:
+- main_alias: vi_be
+  join_type: LEFT JOIN
+  join_alias: pe_ty
+  join_on: vi_be.PRIMARY_PENALTY_TYPE_ID = pe_ty.ID
+mapping_columns:
+- target_column: violation_behavior_id
+  transformation: '{hash_id}(''THANHTRA_VIOLATION_BEHAVIOR'', vi_be.CODE)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Violation Behavior Id
+- target_column: violation_behavior_code
+  transformation: vi_be.CODE
+  data_type: string
+  description: Mã hành vi vi phạm tự sinh UNIQUE. BK duy nhất — Id hash từ trường
+    này.
+  target_attr_name: Violation Behavior Code
+- target_column: src_stm_code
+  transformation: '''THANHTRA_VIOLATION_BEHAVIOR'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: violation_behavior_nm
+  transformation: vi_be.NAME
+  data_type: string
+  description: Tên hành vi vi phạm hành chính.
+  target_attr_name: Violation Behavior Name
+- target_column: description
+  transformation: vi_be.DESCRIPTION
+  data_type: string
+  description: Mô tả chi tiết hành vi vi phạm hành chính.
+  target_attr_name: Description
+- target_column: penalty_tp_id
+  transformation: '{hash_id}(''THANHTRA_PENALTY_TYPE'', pe_ty.CODE)'
+  data_type: string
+  description: FK đến Penalty Type (hình thức xử phạt chính áp dụng cho hành vi vi
+    phạm này).
+  target_attr_name: Penalty Type Id
+- target_column: penalty_tp_code
+  transformation: vi_be.PRIMARY_PENALTY_TYPE_ID
+  data_type: string
+  description: Mã Penalty Type chính (denormalized lookup).
+  target_attr_name: Penalty Type Code
+- target_column: min_fine_amt
+  transformation: vi_be.MIN_FINE_AMOUNT
+  data_type: decimal(23,2)
+  description: Mức phạt tiền tối thiểu (VNĐ) theo quy định pháp luật.
+  target_attr_name: Min Fine Amount
+- target_column: max_fine_amt
+  transformation: vi_be.MAX_FINE_AMOUNT
+  data_type: decimal(23,2)
+  description: Mức phạt tiền tối đa (VNĐ) theo quy định pháp luật.
+  target_attr_name: Max Fine Amount
+- target_column: remedial_measure
+  transformation: vi_be.REMEDIAL_MEASURE
+  data_type: string
+  description: Biện pháp khắc phục hậu quả bắt buộc thực hiện sau khi bị xử phạt.
+  target_attr_name: Remedial Measure
+- target_column: life_cycle_status_code
+  transformation: vi_be.STATUS
+  data_type: string
+  description: Trạng thái hiệu lực của danh mục hành vi vi phạm (ACTIVE/INACTIVE).
+  target_attr_name: Life Cycle Status Code
+- target_column: note
+  transformation: vi_be.NOTE
+  data_type: string
+  description: Ghi chú bổ sung về hành vi vi phạm.
+  target_attr_name: Note
+- target_column: legal_document
+  transformation: vi_be.LEGAL_DOCUMENT
+  data_type: string
+  description: Văn bản pháp luật tham chiếu (text tự do).
+  target_attr_name: Legal Document
+- target_column: violation_clause
+  transformation: vi_be.VIOLATION_CLAUSE
+  data_type: string
+  description: Điều khoản pháp lý vi phạm tương ứng với hành vi này.
+  target_attr_name: Violation Clause
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

@@ -1,0 +1,103 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-sp_post_certification_training_result-NHNCK.POST_CERT_TRAINING_RESULTS
+  logical_name: Mapping Atomic - Securities Practitioner Post Certification Training
+    Result – source NHNCK.POST_CERT_TRAINING_RESULTS
+  physical_name: sp_post_certification_training_result
+  dm_ref: ATM-sp_post_certification_training_result-NHNCK.POST_CERT_TRAINING_RESULTS
+  brd_ref: BRD-SRC-NHNCK-POST_CERT_TRAINING_RESULTS
+target:
+  namespace: atm
+  physical_name: sp_post_certification_training_result
+  etl_handle: SCD4A
+  description: Kết quả tham gia khóa bồi dưỡng sau cấp CCHN của người hành nghề. FK
+    đến Post Certification Training Course và Practitioner.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: POST_CERT_TRAINING_RESULTS
+  alias: po_ce_tr_re
+  select_fields: ID, PROFESSIONAL_ID, TRAINING_COURSE_ID, START_DATE, END_DATE, TRAINING_HOURS,
+    RESULT_STATUS, CLASSIFICATION_RESULT, NOTE
+  filter: null
+- source_type: physical_table
+  namespace: ods
+  table_name: POST_CERT_TRAINING_COURSES
+  alias: po_ce_tr_co
+  select_fields: ID, COURSE_CODE
+  filter: null
+  note: Crosswalk bridge cho sp_post_certification_training_course_id
+relationship:
+- main_alias: po_ce_tr_re
+  join_type: LEFT JOIN
+  join_alias: po_ce_tr_co
+  join_on: po_ce_tr_re.TRAINING_COURSE_ID = po_ce_tr_co.ID
+mapping_columns:
+- target_column: sp_post_certification_training_result_id
+  transformation: '{hash_id}(''NHNCK_POST_CERT_TRAINING_RESULTS'', po_ce_tr_re.ID)'
+  data_type: string
+  description: Id tự sinh (surrogate key)
+  target_attr_name: Securities Practitioner Post Certification Training Result Id
+- target_column: sp_post_certification_training_result_code
+  transformation: po_ce_tr_re.ID
+  data_type: string
+  description: Mã định danh (BK từ PK nguồn — nguồn không có cột mã nghiệp vụ riêng)
+  target_attr_name: Securities Practitioner Post Certification Training Result Code
+- target_column: src_stm_code
+  transformation: '''NHNCK_POST_CERT_TRAINING_RESULTS'''
+  data_type: string
+  description: Mã nguồn dữ liệu
+  target_attr_name: Source System Code
+- target_column: sp_id
+  transformation: '{hash_id}(''NHNCK_PROFESSIONALS'', po_ce_tr_re.PROFESSIONAL_ID)'
+  data_type: string
+  description: FK đến người hành nghề tham gia đào tạo
+  target_attr_name: Securities Practitioner Id
+- target_column: sp_code
+  transformation: po_ce_tr_re.PROFESSIONAL_ID
+  data_type: string
+  description: Mã người hành nghề (denormalized lookup)
+  target_attr_name: Securities Practitioner Code
+- target_column: sp_post_certification_training_course_id
+  transformation: '{hash_id}(''NHNCK_POST_CERT_TRAINING_COURSES'', po_ce_tr_co.COURSE_CODE)'
+  data_type: string
+  description: FK đến khóa bồi dưỡng sau cấp CCHN
+  target_attr_name: Securities Practitioner Post Certification Training Course Id
+- target_column: sp_post_certification_training_course_code
+  transformation: po_ce_tr_re.TRAINING_COURSE_ID
+  data_type: string
+  description: Mã khóa bồi dưỡng (denormalized lookup)
+  target_attr_name: Securities Practitioner Post Certification Training Course Code
+- target_column: training_start_dt
+  transformation: po_ce_tr_re.START_DATE
+  data_type: date
+  description: Ngày bắt đầu tham gia khóa bồi dưỡng
+  target_attr_name: Training Start Date
+- target_column: training_end_dt
+  transformation: po_ce_tr_re.END_DATE
+  data_type: date
+  description: Ngày kết thúc tham gia khóa bồi dưỡng
+  target_attr_name: Training End Date
+- target_column: training_hours
+  transformation: po_ce_tr_re.TRAINING_HOURS
+  data_type: int
+  description: Số giờ đào tạo
+  target_attr_name: Training Hours
+- target_column: training_result_status_code
+  transformation: po_ce_tr_re.RESULT_STATUS
+  data_type: string
+  description: Trạng thái kết quả khóa bồi dưỡng (Đạt/Không đạt — suy đoán từ NUMBER(1,0))
+  target_attr_name: Training Result Status Code
+- target_column: training_cl_result_code
+  transformation: po_ce_tr_re.CLASSIFICATION_RESULT
+  data_type: string
+  description: 'Phân loại kết quả khóa bồi dưỡng (VD: Giỏi/Khá/Trung bình — suy đoán)'
+  target_attr_name: Training Classification Result Code
+- target_column: note
+  transformation: po_ce_tr_re.NOTE
+  data_type: string
+  description: Ghi chú
+  target_attr_name: Note
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

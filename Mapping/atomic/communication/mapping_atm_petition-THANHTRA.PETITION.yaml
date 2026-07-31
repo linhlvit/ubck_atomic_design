@@ -1,0 +1,162 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-petition-THANHTRA.PETITION
+  logical_name: Mapping Atomic - Petition – source THANHTRA.PETITION
+  physical_name: petition
+  dm_ref: ATM-petition-THANHTRA.PETITION
+  brd_ref: BRD-SRC-THANHTRA-PETITION
+target:
+  namespace: atm
+  physical_name: petition
+  etl_handle: SCD4A
+  description: Hồ sơ đơn thư gửi đến UBCKNN từ công dân hoặc tổ chức, gồm phản ánh
+    kiến nghị, khiếu nại và tố cáo, với khả năng nhận diện đơn trùng qua self-reference.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: PETITION
+  alias: peti
+  select_fields: CODE, RECEIVED_DATE, FORWARDING_UNIT, SENDER_NAME, SENDER_ADDRESS,
+    CONTENT, PETITION_CATEGORY, RELATED_TO_CORPORATE_BOND, ELIGIBLE_FOR_PROCESSING,
+    WITHIN_JURISDICTION, ASSIGNED_OFFICER_ID, ASSIGNED_OFFICER_NAME, DUPLICATE_TYPE,
+    ORIGINAL_PETITION_ID, SUBMISSION_NUMBER, TRANSFERRED_AUTHORITY, INTERNAL_TRANSFER_UNIT_NAME,
+    ARCHIVED, GUIDANCE_DOCUMENT_NUMBER, GUIDANCE_DOCUMENT_DATE, STATUS, END_DATE,
+    NOTE
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: petition_id
+  transformation: '{hash_id}(''THANHTRA_PETITION'', peti.CODE)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Petition Id
+- target_column: petition_code
+  transformation: peti.CODE
+  data_type: string
+  description: 'Mã vụ việc tự sinh UNIQUE (VD: DA2540). BK duy nhất — Id hash từ trường
+    này.'
+  target_attr_name: Petition Code
+- target_column: src_stm_code
+  transformation: '''THANHTRA_PETITION'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: received_dt
+  transformation: peti.RECEIVED_DATE
+  data_type: date
+  description: Ngày tiếp nhận đơn thư.
+  target_attr_name: Received Date
+- target_column: forwarding_unit
+  transformation: peti.FORWARDING_UNIT
+  data_type: string
+  description: Đơn vị/cơ quan chuyển đơn thư đến Thanh tra.
+  target_attr_name: Forwarding Unit
+- target_column: sender_nm
+  transformation: peti.SENDER_NAME
+  data_type: string
+  description: Họ tên người gửi đơn thư.
+  target_attr_name: Sender Name
+- target_column: sender_adr
+  transformation: peti.SENDER_ADDRESS
+  data_type: string
+  description: Địa chỉ người gửi đơn thư.
+  target_attr_name: Sender Address
+- target_column: content
+  transformation: peti.CONTENT
+  data_type: string
+  description: Nội dung tóm tắt đơn thư.
+  target_attr_name: Content
+- target_column: petition_category_code
+  transformation: peti.PETITION_CATEGORY
+  data_type: string
+  description: 'Loại đơn: FEEDBACK_SUGGESTION (Phản ánh kiến nghị), COMPLAINT (Khiếu
+    nại), DENUNCIATION (Tố cáo).'
+  target_attr_name: Petition Category Code
+- target_column: related_to_corporate_bond_indicator
+  transformation: peti.RELATED_TO_CORPORATE_BOND
+  data_type: string
+  description: 'Liên quan TPDN: 0=Không, 1=Có.'
+  target_attr_name: Related To Corporate Bond Indicator
+- target_column: eligible_for_processing_indicator
+  transformation: peti.ELIGIBLE_FOR_PROCESSING
+  data_type: string
+  description: 'Đủ điều kiện xử lý: 0=Không, 1=Có.'
+  target_attr_name: Eligible For Processing Indicator
+- target_column: within_jurisdiction_indicator
+  transformation: peti.WITHIN_JURISDICTION
+  data_type: string
+  description: 'Thuộc thẩm quyền: 0=Không, 1=Có.'
+  target_attr_name: Within Jurisdiction Indicator
+- target_column: assigned_officer_id
+  transformation: '{hash_id}(''IAM_USERS'', peti.ASSIGNED_OFFICER_ID)'
+  data_type: string
+  description: ID chuyên viên được phân công xử lý đơn thư.
+  target_attr_name: Assigned Officer Id
+- target_column: assigned_officer_nm
+  transformation: peti.ASSIGNED_OFFICER_NAME
+  data_type: string
+  description: Tên chuyên viên được phân công xử lý đơn thư (snapshot).
+  target_attr_name: Assigned Officer Name
+- target_column: duplicate_tp_code
+  transformation: peti.DUPLICATE_TYPE
+  data_type: string
+  description: 'Loại: ORIGINAL (Đơn gốc), DUPLICATE (Đơn trùng).'
+  target_attr_name: Duplicate Type Code
+- target_column: original_petition_id
+  transformation: '{hash_id}(''THANHTRA_PETITION'', peti.ORIGINAL_PETITION_ID)'
+  data_type: string
+  description: FK tự tham chiếu đến đơn gốc. Bắt buộc khi duplicate_type=DUPLICATE.
+  target_attr_name: Original Petition Id
+- target_column: original_petition_code
+  transformation: peti.ORIGINAL_PETITION_ID
+  data_type: string
+  description: Mã đơn gốc (snapshot denormalized).
+  target_attr_name: Original Petition Code
+- target_column: submission_nbr
+  transformation: peti.SUBMISSION_NUMBER
+  data_type: string
+  description: Số tờ trình Thanh tra trình lãnh đạo (lấy từ eDoc).
+  target_attr_name: Submission Number
+- target_column: transferred_authority
+  transformation: peti.TRANSFERRED_AUTHORITY
+  data_type: string
+  description: Tên cơ quan có thẩm quyền nhận chuyển đơn.
+  target_attr_name: Transferred Authority
+- target_column: internal_transfer_unit_nm
+  transformation: peti.INTERNAL_TRANSFER_UNIT_NAME
+  data_type: string
+  description: Tên ban/đơn vị nội bộ UBCKNN nhận chuyển đơn.
+  target_attr_name: Internal Transfer Unit Name
+- target_column: archived_indicator
+  transformation: peti.ARCHIVED
+  data_type: string
+  description: 'Lưu đơn: 0=Không, 1=Có.'
+  target_attr_name: Archived Indicator
+- target_column: guidance_document_nbr
+  transformation: peti.GUIDANCE_DOCUMENT_NUMBER
+  data_type: string
+  description: Số văn bản hướng dẫn nhà đầu tư (văn bản đi).
+  target_attr_name: Guidance Document Number
+- target_column: guidance_document_dt
+  transformation: peti.GUIDANCE_DOCUMENT_DATE
+  data_type: date
+  description: Ngày văn bản hướng dẫn nhà đầu tư.
+  target_attr_name: Guidance Document Date
+- target_column: life_cycle_status_code
+  transformation: peti.STATUS
+  data_type: string
+  description: 'Trạng thái: RECEIVED (Đã tiếp nhận), PROCESSED (Đã xử lý xong).'
+  target_attr_name: Life Cycle Status Code
+- target_column: end_dt
+  transformation: peti.END_DATE
+  data_type: date
+  description: Ngày kết thúc xử lý đơn thư.
+  target_attr_name: End Date
+- target_column: note
+  transformation: peti.NOTE
+  data_type: string
+  description: Ghi chú bổ sung.
+  target_attr_name: Note
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

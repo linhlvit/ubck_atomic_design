@@ -1,0 +1,412 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-security_trading_snapshot-MDDS.JAD_STOCKINFOR
+  logical_name: Mapping Atomic - Security Trading Snapshot – source MDDS.JAD_STOCKINFOR
+  physical_name: security_trading_snapshot
+  dm_ref: ATM-security_trading_snapshot-MDDS.JAD_STOCKINFOR
+  brd_ref: BRD-SRC-MDDS-JAD_STOCKINFOR
+target:
+  namespace: atm
+  physical_name: security_trading_snapshot
+  etl_handle: Fact Snapshot
+  description: Snapshot trạng thái giao dịch của một công cụ tài chính (cổ phiếu,
+    chứng quyền, hợp đồng phái sinh, chứng chỉ quỹ) tại một thời điểm trong ngày giao
+    dịch, bao gồm giá, sổ lệnh, NĐTNN và thông tin đặc thù theo loại instrument.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: JAD_STOCKINFOR
+  alias: ja_st
+  select_fields: HISTORYID, SYMBOL, TRADINGDATE, FULLNAME, STOCKID, KID, STOCKTYPE,
+    FLOORCODE, TRADINGSESSIONID, LASTCOLOR, SYMBOLSTATUSCODE, CEILING, FLOOR, REFERENCE,
+    CLOSEPRICE, CLOSEVOL, CHANGE, OPEN, HIGH, LOW, AVERAGEPRICE, BIDPRICE1, BIDVOL1,
+    BIDPRICE2, BIDVOL2, BIDPRICE3, BIDVOL3, OFFERPRICE1, OFFERVOL1, OFFERPRICE2, OFFERVOL2,
+    OFFERPRICE3, OFFERVOL3, TOTALTRADING, TOTALTRADINGVALUE, TOTAL_OFFER_QTTY, TOTAL_BID_QTTY,
+    FOREIGNBUY, FOREIGNSELL, FOREIGNREMAIN, FOREIGNROOM, PT_MATCH_QTTY, PT_MATCH_PRICE,
+    PT_TOTAL_TRADED_QTTY, PT_TOTAL_TRADED_VALUE, STATUS, SYMBOLISIN, LISTEDSHARE,
+    TOTALLISTINGQTTY, MARKETID, BOARDID, PRODUCTGRPID, PRODUCTID, TRADINGTIME, FUNDTYPE,
+    OPENINTEREST, FIRSTTRADINGDATE, LASTTRADINGDATE, UNDERLYINGSYMBOL, ISSUERNAME,
+    COVEREDWARRANTTYPE, MATURITYDATE, EXERCISEPRICE, EXERCISERATIO, SETTLEMENTPRICE,
+    MATURITYMONTHYEAR, LISTINGDATE, CONTRACTMULTIPLIER, PUTORCALL, EXERCISESTYLE,
+    COUPONRATE, YIELD, ISSUEDATE
+  filter: TRADINGDATE = {etl_date}
+relationship: []
+mapping_columns:
+- target_column: security_trading_snpst_id
+  transformation: '{hash_id}(''MDDS_JAD_STOCKINFOR'', ja_st.HISTORYID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Security Trading Snapshot Id
+- target_column: security_trading_snpst_code
+  transformation: ja_st.HISTORYID
+  data_type: string
+  description: ID unique cho từng dòng lịch sử — PK bảng nguồn. BK của Snapshot entity.
+  target_attr_name: Security Trading Snapshot Code
+- target_column: src_stm_code
+  transformation: '''MDDS_JAD_STOCKINFOR'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: symbol
+  transformation: ja_st.SYMBOL
+  data_type: string
+  description: Mã chứng khoán.
+  target_attr_name: Symbol
+- target_column: trading_dt
+  transformation: ja_st.TRADINGDATE
+  data_type: date
+  description: Ngày giao dịch format dd/mm/yyyy. ETL cần parse sang Date.
+  target_attr_name: Trading Date
+- target_column: security_full_nm
+  transformation: ja_st.FULLNAME
+  data_type: string
+  description: Tên chứng khoán (tiếng Việt).
+  target_attr_name: Security Full Name
+- target_column: security_id
+  transformation: ja_st.STOCKID
+  data_type: string
+  description: ID của chứng khoán trong hệ thống Sở.
+  target_attr_name: Security Id
+- target_column: jadapter_id
+  transformation: ja_st.KID
+  data_type: string
+  description: ID của mã do jadapter tự sinh.
+  target_attr_name: Jadapter Id
+- target_column: stock_tp_code
+  transformation: ja_st.STOCKTYPE
+  data_type: string
+  description: Loại chứng khoán (ST/BO/MF/FU/OP/EF/W...).
+  target_attr_name: Stock Type Code
+- target_column: floor_code
+  transformation: ja_st.FLOORCODE
+  data_type: string
+  description: 'Mã sàn: 02-HNX, 04-UPCOM, 10-HOSE, 03-FDS, 06-corp-bond.'
+  target_attr_name: Floor Code
+- target_column: trading_session_status_code
+  transformation: ja_st.TRADINGSESSIONID
+  data_type: string
+  description: Trạng thái phiên tại thời điểm chụp.
+  target_attr_name: Trading Session Status Code
+- target_column: trade_direction_code
+  transformation: ja_st.LASTCOLOR
+  data_type: string
+  description: Chiều mua/bán chủ động gần nhất.
+  target_attr_name: Trade Direction Code
+- target_column: symbol_status_code
+  transformation: ja_st.SYMBOLSTATUSCODE
+  data_type: string
+  description: Trạng thái mã CK.
+  target_attr_name: Symbol Status Code
+- target_column: ceiling_price
+  transformation: ja_st.CEILING
+  data_type: decimal(23,2)
+  description: Giá trần.
+  target_attr_name: Ceiling Price
+- target_column: floor_price
+  transformation: ja_st.FLOOR
+  data_type: decimal(23,2)
+  description: Giá sàn.
+  target_attr_name: Floor Price
+- target_column: reference_price
+  transformation: ja_st.REFERENCE
+  data_type: decimal(23,2)
+  description: Giá tham chiếu.
+  target_attr_name: Reference Price
+- target_column: close_price
+  transformation: ja_st.CLOSEPRICE
+  data_type: decimal(23,2)
+  description: Giá khớp gần nhất.
+  target_attr_name: Close Price
+- target_column: close_vol
+  transformation: ja_st.CLOSEVOL
+  data_type: int
+  description: Khối lượng khớp gần nhất.
+  target_attr_name: Close Volume
+- target_column: price_change
+  transformation: ja_st.CHANGE
+  data_type: decimal(23,2)
+  description: Thay đổi giữa giá khớp gần nhất và giá tham chiếu.
+  target_attr_name: Price Change
+- target_column: open_price
+  transformation: ja_st.OPEN
+  data_type: decimal(23,2)
+  description: Giá mở cửa.
+  target_attr_name: Open Price
+- target_column: high_price
+  transformation: ja_st.HIGH
+  data_type: decimal(23,2)
+  description: Giá khớp cao nhất tính đến thời điểm.
+  target_attr_name: High Price
+- target_column: low_price
+  transformation: ja_st.LOW
+  data_type: decimal(23,2)
+  description: Giá khớp thấp nhất tính đến thời điểm.
+  target_attr_name: Low Price
+- target_column: average_price
+  transformation: ja_st.AVERAGEPRICE
+  data_type: decimal(23,2)
+  description: Giá khớp trung bình.
+  target_attr_name: Average Price
+- target_column: bid_price_1
+  transformation: ja_st.BIDPRICE1
+  data_type: decimal(23,2)
+  description: Giá mua top 1.
+  target_attr_name: Bid Price 1
+- target_column: bid_vol_1
+  transformation: ja_st.BIDVOL1
+  data_type: int
+  description: Khối lượng mua top 1.
+  target_attr_name: Bid Volume 1
+- target_column: bid_price_2
+  transformation: ja_st.BIDPRICE2
+  data_type: decimal(23,2)
+  description: Giá mua top 2.
+  target_attr_name: Bid Price 2
+- target_column: bid_vol_2
+  transformation: ja_st.BIDVOL2
+  data_type: int
+  description: Khối lượng mua top 2.
+  target_attr_name: Bid Volume 2
+- target_column: bid_price_3
+  transformation: ja_st.BIDPRICE3
+  data_type: decimal(23,2)
+  description: Giá mua top 3.
+  target_attr_name: Bid Price 3
+- target_column: bid_vol_3
+  transformation: ja_st.BIDVOL3
+  data_type: int
+  description: Khối lượng mua top 3.
+  target_attr_name: Bid Volume 3
+- target_column: offer_price_1
+  transformation: ja_st.OFFERPRICE1
+  data_type: decimal(23,2)
+  description: Giá bán top 1.
+  target_attr_name: Offer Price 1
+- target_column: offer_vol_1
+  transformation: ja_st.OFFERVOL1
+  data_type: int
+  description: Khối lượng bán top 1.
+  target_attr_name: Offer Volume 1
+- target_column: offer_price_2
+  transformation: ja_st.OFFERPRICE2
+  data_type: decimal(23,2)
+  description: Giá bán top 2.
+  target_attr_name: Offer Price 2
+- target_column: offer_vol_2
+  transformation: ja_st.OFFERVOL2
+  data_type: int
+  description: Khối lượng bán top 2.
+  target_attr_name: Offer Volume 2
+- target_column: offer_price_3
+  transformation: ja_st.OFFERPRICE3
+  data_type: decimal(23,2)
+  description: Giá bán top 3.
+  target_attr_name: Offer Price 3
+- target_column: offer_vol_3
+  transformation: ja_st.OFFERVOL3
+  data_type: int
+  description: Khối lượng bán top 3.
+  target_attr_name: Offer Volume 3
+- target_column: total_trading_vol
+  transformation: ja_st.TOTALTRADING
+  data_type: int
+  description: Tổng khối lượng khớp từ đầu ngày.
+  target_attr_name: Total Trading Volume
+- target_column: total_trading_val
+  transformation: ja_st.TOTALTRADINGVALUE
+  data_type: decimal(23,2)
+  description: Tổng giá trị khớp từ đầu ngày.
+  target_attr_name: Total Trading Value
+- target_column: total_offer_vol
+  transformation: ja_st.TOTAL_OFFER_QTTY
+  data_type: int
+  description: Tổng khối lượng dư bán.
+  target_attr_name: Total Offer Volume
+- target_column: total_bid_vol
+  transformation: ja_st.TOTAL_BID_QTTY
+  data_type: int
+  description: Tổng khối lượng dư mua.
+  target_attr_name: Total Bid Volume
+- target_column: foreign_buy_vol
+  transformation: ja_st.FOREIGNBUY
+  data_type: int
+  description: Khối lượng NĐTNN mua.
+  target_attr_name: Foreign Buy Volume
+- target_column: foreign_sell_vol
+  transformation: ja_st.FOREIGNSELL
+  data_type: int
+  description: Khối lượng NĐTNN bán.
+  target_attr_name: Foreign Sell Volume
+- target_column: foreign_remain_vol
+  transformation: ja_st.FOREIGNREMAIN
+  data_type: int
+  description: Room còn lại cho NĐTNN.
+  target_attr_name: Foreign Remain Volume
+- target_column: foreign_room_vol
+  transformation: ja_st.FOREIGNROOM
+  data_type: int
+  description: Tổng room NĐTNN.
+  target_attr_name: Foreign Room Volume
+- target_column: pt_match_vol
+  transformation: ja_st.PT_MATCH_QTTY
+  data_type: int
+  description: Khối lượng khớp thỏa thuận gần nhất.
+  target_attr_name: PT Match Volume
+- target_column: pt_match_price
+  transformation: ja_st.PT_MATCH_PRICE
+  data_type: decimal(23,2)
+  description: Giá khớp thỏa thuận gần nhất.
+  target_attr_name: PT Match Price
+- target_column: pt_total_traded_vol
+  transformation: ja_st.PT_TOTAL_TRADED_QTTY
+  data_type: int
+  description: Tổng khối lượng khớp thỏa thuận từ đầu ngày.
+  target_attr_name: PT Total Traded Volume
+- target_column: pt_total_traded_val
+  transformation: ja_st.PT_TOTAL_TRADED_VALUE
+  data_type: decimal(23,2)
+  description: Tổng giá trị khớp thỏa thuận từ đầu ngày.
+  target_attr_name: PT Total Traded Value
+- target_column: security_event_status_code
+  transformation: ja_st.STATUS
+  data_type: string
+  description: Trạng thái sự kiện quyền của CK.
+  target_attr_name: Security Event Status Code
+- target_column: isin_code
+  transformation: ja_st.SYMBOLISIN
+  data_type: string
+  description: Mã ISIN của CK.
+  target_attr_name: ISIN Code
+- target_column: listed_share_count
+  transformation: ja_st.LISTEDSHARE
+  data_type: int
+  description: Khối lượng CK niêm yết.
+  target_attr_name: Listed Share Count
+- target_column: total_listing_vol
+  transformation: ja_st.TOTALLISTINGQTTY
+  data_type: int
+  description: Khối lượng CK niêm yết.
+  target_attr_name: Total Listing Volume
+- target_column: market_id
+  transformation: ja_st.MARKETID
+  data_type: string
+  description: Mã sàn theo Sở.
+  target_attr_name: Market Id
+- target_column: board_id
+  transformation: ja_st.BOARDID
+  data_type: string
+  description: Board của mã CK (mặc định G1).
+  target_attr_name: Board Id
+- target_column: product_group_id
+  transformation: ja_st.PRODUCTGRPID
+  data_type: string
+  description: Mã sản phẩm của CK theo Sở.
+  target_attr_name: Product Group Id
+- target_column: product_id
+  transformation: ja_st.PRODUCTID
+  data_type: string
+  description: Tag 20003 của Sở — xác định CK thuộc bộ sản phẩm nào.
+  target_attr_name: Product Id
+- target_column: trading_time
+  transformation: ja_st.TRADINGTIME
+  data_type: string
+  description: Thời gian ghi nhận snapshot.
+  target_attr_name: Trading Time
+- target_column: fund_tp_code
+  transformation: ja_st.FUNDTYPE
+  data_type: string
+  description: Loại quỹ — FSS quy định.
+  target_attr_name: Fund Type Code
+- target_column: open_interest
+  transformation: ja_st.OPENINTEREST
+  data_type: string
+  description: Khối lượng mở OI — dành cho phái sinh.
+  target_attr_name: Open Interest
+- target_column: first_trading_dt
+  transformation: ja_st.FIRSTTRADINGDATE
+  data_type: date
+  description: Ngày giao dịch đầu tiên — dành cho phái sinh/CW.
+  target_attr_name: First Trading Date
+- target_column: last_trading_dt
+  transformation: ja_st.LASTTRADINGDATE
+  data_type: date
+  description: Ngày giao dịch cuối cùng — dành cho phái sinh/CW.
+  target_attr_name: Last Trading Date
+- target_column: underlying_symbol
+  transformation: ja_st.UNDERLYINGSYMBOL
+  data_type: string
+  description: Chứng khoán cơ sở — dành cho CW/phái sinh.
+  target_attr_name: Underlying Symbol
+- target_column: issuer_nm
+  transformation: ja_st.ISSUERNAME
+  data_type: string
+  description: Tổ chức phát hành.
+  target_attr_name: Issuer Name
+- target_column: covered_warrant_tp_code
+  transformation: ja_st.COVEREDWARRANTTYPE
+  data_type: string
+  description: Kiểu chứng quyền.
+  target_attr_name: Covered Warrant Type Code
+- target_column: maturity_dt
+  transformation: ja_st.MATURITYDATE
+  data_type: date
+  description: Ngày đáo hạn.
+  target_attr_name: Maturity Date
+- target_column: exercise_price
+  transformation: ja_st.EXERCISEPRICE
+  data_type: decimal(23,2)
+  description: Giá thực hiện CW.
+  target_attr_name: Exercise Price
+- target_column: exercise_ratio
+  transformation: ja_st.EXERCISERATIO
+  data_type: string
+  description: Tỉ lệ thực hiện CW.
+  target_attr_name: Exercise Ratio
+- target_column: settlement_price
+  transformation: ja_st.SETTLEMENTPRICE
+  data_type: decimal(23,2)
+  description: Giá tham chiếu cho ngày giao dịch tiếp theo của HĐTL.
+  target_attr_name: Settlement Price
+- target_column: maturity_month_year
+  transformation: ja_st.MATURITYMONTHYEAR
+  data_type: string
+  description: Năm tháng đáo hạn HĐTL.
+  target_attr_name: Maturity Month Year
+- target_column: listing_dt
+  transformation: ja_st.LISTINGDATE
+  data_type: date
+  description: Ngày niêm yết sản phẩm phái sinh.
+  target_attr_name: Listing Date
+- target_column: contract_multiplier
+  transformation: ja_st.CONTRACTMULTIPLIER
+  data_type: string
+  description: Hệ số nhân HĐTL.
+  target_attr_name: Contract Multiplier
+- target_column: put_or_call_code
+  transformation: ja_st.PUTORCALL
+  data_type: string
+  description: 'Loại quyền phái sinh: P/C.'
+  target_attr_name: Put Or Call Code
+- target_column: exercise_style_code
+  transformation: ja_st.EXERCISESTYLE
+  data_type: string
+  description: 'Kiểu thực hiện phái sinh: A/E/B/Z.'
+  target_attr_name: Exercise Style Code
+- target_column: coupon_rate
+  transformation: ja_st.COUPONRATE
+  data_type: decimal(8,5)
+  description: Lãi suất trái phiếu.
+  target_attr_name: Coupon Rate
+- target_column: yield
+  transformation: ja_st.YIELD
+  data_type: decimal(8,5)
+  description: YTM (Yield to Maturity).
+  target_attr_name: Yield
+- target_column: issue_dt
+  transformation: ja_st.ISSUEDATE
+  data_type: date
+  description: Ngày phát hành.
+  target_attr_name: Issue Date
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

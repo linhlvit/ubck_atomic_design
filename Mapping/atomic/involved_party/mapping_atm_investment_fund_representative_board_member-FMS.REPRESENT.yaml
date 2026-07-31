@@ -1,0 +1,129 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-investment_fund_representative_board_member-FMS.REPRESENT
+  logical_name: Mapping Atomic - Investment Fund Representative Board Member – source
+    FMS.REPRESENT
+  physical_name: investment_fund_representative_board_member
+  dm_ref: ATM-investment_fund_representative_board_member-FMS.REPRESENT
+  brd_ref: BRD-SRC-FMS-REPRESENT
+target:
+  namespace: atm
+  physical_name: investment_fund_representative_board_member
+  etl_handle: SCD4A
+  description: Thành viên ban đại diện/HĐQT của Investment Fund. Domain prefix dùng
+    chung với Investment Fund (Tier 2).
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: REPRESENT
+  alias: repr
+  select_fields: ID, FUND_ID, JOB_ID, NAT_ID, ITEM_NAME, PROVINCE, POSITION, RECORD_STATUS,
+    EDUCATION, PROF_QUALIFI, OTHER_EXP, OTHER_POSITION, DESCRIPTION, MEMBER_TYPE
+  filter: null
+- source_type: physical_table
+  namespace: ods
+  table_name: NATIONAL
+  alias: nati
+  select_fields: ID, SNAME
+  filter: null
+  note: Crosswalk bridge cho nationality_id
+relationship:
+- main_alias: repr
+  join_type: LEFT JOIN
+  join_alias: nati
+  join_on: repr.NAT_ID = nati.ID
+mapping_columns:
+- target_column: investment_fund_representative_board_member_id
+  transformation: '{hash_id}(''FMS_REPRESENT'', repr.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Investment Fund Representative Board Member Id
+- target_column: investment_fund_representative_board_member_code
+  transformation: repr.ID
+  data_type: string
+  description: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+  target_attr_name: Investment Fund Representative Board Member Code
+- target_column: src_stm_code
+  transformation: '''FMS_REPRESENT'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: investment_fund_id
+  transformation: '{hash_id}(''FMS_FUNDS'', repr.FUND_ID)'
+  data_type: string
+  description: 'FK -> FUNDS: Quỹ đầu tư liên quan.'
+  target_attr_name: Investment Fund Id
+- target_column: investment_fund_code
+  transformation: repr.FUND_ID
+  data_type: string
+  description: Mã quỹ đầu tư liên quan.
+  target_attr_name: Investment Fund Code
+- target_column: job_title_code
+  transformation: repr.JOB_ID
+  data_type: string
+  description: 'FK -> JOBS: Chức danh/vị trí công việc.'
+  target_attr_name: Job Title Code
+- target_column: nationality_id
+  transformation: '{hash_id}(''ECAT_COUNTRY'', nati.SNAME)'
+  data_type: string
+  description: FK đến Geographic Area (quốc tịch).
+  target_attr_name: Nationality Id
+- target_column: nationality_code
+  transformation: repr.NAT_ID
+  data_type: string
+  description: Mã quốc gia/quốc tịch (SNAME từ FMS.NATIONAL).
+  target_attr_name: Nationality Code
+- target_column: board_member_full_nm
+  transformation: repr.ITEM_NAME
+  data_type: string
+  description: Tên hiển thị chính.
+  target_attr_name: Board Member Full Name
+- target_column: province_nm
+  transformation: repr.PROVINCE
+  data_type: string
+  description: Tỉnh/thành phố của thành viên quỹ.
+  target_attr_name: Province Name
+- target_column: current_position_title
+  transformation: repr.POSITION
+  data_type: string
+  description: Chức vụ/vị trí công tác hiện tại.
+  target_attr_name: Current Position Title
+- target_column: active_status_flag
+  transformation: repr.RECORD_STATUS
+  data_type: int
+  description: 'Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu
+    lực.'
+  target_attr_name: Active Status Flag
+- target_column: education_level_description
+  transformation: repr.EDUCATION
+  data_type: string
+  description: Trình độ học vấn (cử nhân, thạc sĩ, tiến sĩ...).
+  target_attr_name: Education Level Description
+- target_column: professional_qualification_description
+  transformation: repr.PROF_QUALIFI
+  data_type: string
+  description: Trình độ chuyên môn/bằng cấp của người đại diện.
+  target_attr_name: Professional Qualification Description
+- target_column: other_experience_description
+  transformation: repr.OTHER_EXP
+  data_type: string
+  description: Kinh nghiệm khác của người đại diện ngoài chuyên ngành chính.
+  target_attr_name: Other Experience Description
+- target_column: other_concurrent_position_description
+  transformation: repr.OTHER_POSITION
+  data_type: string
+  description: Chức vụ/vị trí kiêm nhiệm khác của người đại diện.
+  target_attr_name: Other Concurrent Position Description
+- target_column: description
+  transformation: repr.DESCRIPTION
+  data_type: string
+  description: Mô tả chi tiết.
+  target_attr_name: Description
+- target_column: board_member_tp_code
+  transformation: repr.MEMBER_TYPE
+  data_type: string
+  description: 'Loại thành viên: 1=Người đại diện cá nhân, 2=Người đại diện tổ chức.'
+  target_attr_name: Board Member Type Code
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

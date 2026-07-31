@@ -1,0 +1,68 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-et_high_risk_enterprise-KNT.HIGH_RISK_ENTERPRISE
+  logical_name: Mapping Atomic - External Tax High Risk Enterprise – source KNT.HIGH_RISK_ENTERPRISE
+  physical_name: et_high_risk_enterprise
+  dm_ref: ATM-et_high_risk_enterprise-KNT.HIGH_RISK_ENTERPRISE
+  brd_ref: BRD-SRC-KNT-HIGH_RISK_ENTERPRISE
+target:
+  namespace: atm
+  physical_name: et_high_risk_enterprise
+  etl_handle: Fact Append
+  description: Danh sách doanh nghiệp bị Cục Thuế xếp hạng/đánh giá thuộc diện rủi
+    ro cao về thuế theo từng năm đánh giá. Ghi nhận mã/tên DN, địa chỉ trụ sở, cơ
+    quan thuế quản lý và năm đánh giá — cùng 1 DN có thể xuất hiện lại ở nhiều năm
+    khác nhau. BCO/Table Type điều chỉnh 2026-07-19
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: HIGH_RISK_ENTERPRISE
+  alias: hi_ri_en
+  select_fields: ENTERPRISE_CODE, ENTERPRISE_NAME, HQ_ADDRESS, MANAGING_TAX_AUTHORITY,
+    RISK_ASSESSMENT_YEAR, MSG_PACKET_ID
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: et_high_risk_enterprise_id
+  transformation: '{hash_id}(''KNT_HIGH_RISK_ENTERPRISE'', hi_ri_en.ENTERPRISE_CODE)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: External Tax High Risk Enterprise Id
+- target_column: et_high_risk_enterprise_code
+  transformation: hi_ri_en.ENTERPRISE_CODE
+  data_type: string
+  description: Mã số doanh nghiệp đăng ký kinh doanh. BK.
+  target_attr_name: External Tax High Risk Enterprise Code
+- target_column: src_stm_code
+  transformation: '''KNT_HIGH_RISK_ENTERPRISE'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: enterprise_nm
+  transformation: hi_ri_en.ENTERPRISE_NAME
+  data_type: string
+  description: Tên doanh nghiệp rủi ro cao.
+  target_attr_name: Enterprise Name
+- target_column: headquarters_adr
+  transformation: hi_ri_en.HQ_ADDRESS
+  data_type: string
+  description: Địa chỉ trụ sở chính của doanh nghiệp.
+  target_attr_name: Headquarters Address
+- target_column: managing_tax_authority_nm
+  transformation: hi_ri_en.MANAGING_TAX_AUTHORITY
+  data_type: string
+  description: Cơ quan thuế quản lý doanh nghiệp rủi ro cao.
+  target_attr_name: Managing Tax Authority Name
+- target_column: risk_assessment_year
+  transformation: hi_ri_en.RISK_ASSESSMENT_YEAR
+  data_type: string
+  description: Năm Cục Thuế đánh giá doanh nghiệp là rủi ro cao.
+  target_attr_name: Risk Assessment Year
+- target_column: message_packet_id
+  transformation: hi_ri_en.MSG_PACKET_ID
+  data_type: string
+  description: Mã gói tin trao đổi liên quan.
+  target_attr_name: Message Packet Id
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

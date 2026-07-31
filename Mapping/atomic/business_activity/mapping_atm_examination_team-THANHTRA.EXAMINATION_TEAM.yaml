@@ -1,0 +1,137 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-examination_team-THANHTRA.EXAMINATION_TEAM
+  logical_name: Mapping Atomic - Examination Team – source THANHTRA.EXAMINATION_TEAM
+  physical_name: examination_team
+  dm_ref: ATM-examination_team-THANHTRA.EXAMINATION_TEAM
+  brd_ref: BRD-SRC-THANHTRA-EXAMINATION_TEAM
+target:
+  namespace: atm
+  physical_name: examination_team
+  etl_handle: SCD4A
+  description: Hồ sơ đoàn kiểm tra cụ thể (mã HSKT-YYYY-XXX), ghi nhận thông tin thành
+    lập đoàn, quyết định kiểm tra, đơn vị chủ trì và hình thức kiểm tra (định kỳ/đột
+    xuất).
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: EXAMINATION_TEAM
+  alias: ex_te
+  select_fields: CODE, EXAMINATION_ANNUAL_PLAN_ID, UNIT_NAME, PLAN_YEAR, FORM_TYPE,
+    START_DATE, END_DATE, DURATION_DAYS, DECISION_NUMBER, DECISION_DATE, DECISION_NAME,
+    ANNOUNCEMENT_DATE, CONTENT, EXAMINATION_PERIOD_FROM, EXAMINATION_PERIOD_TO, ANTI_MONEY_LAUNDERING,
+    ABNORMAL_TRANSACTION_CHECK, NOTE
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: examination_team_id
+  transformation: '{hash_id}(''THANHTRA_EXAMINATION_TEAM'', ex_te.CODE)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Examination Team Id
+- target_column: examination_team_code
+  transformation: ex_te.CODE
+  data_type: string
+  description: Mã hồ sơ đoàn kiểm tra tự sinh UNIQUE (HSKT-YYYY-XXX). BK duy nhất
+    — Id hash từ trường này.
+  target_attr_name: Examination Team Code
+- target_column: src_stm_code
+  transformation: '''THANHTRA_EXAMINATION_TEAM'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: examination_annual_plan_id
+  transformation: '{hash_id}(''THANHTRA_EXAMINATION_ANNUAL_PLAN'', ex_te.EXAMINATION_ANNUAL_PLAN_ID)'
+  data_type: string
+  description: FK đến kế hoạch kiểm tra năm (chỉ có khi form_type=PERIODIC).
+  target_attr_name: Examination Annual Plan Id
+- target_column: examination_annual_plan_code
+  transformation: ex_te.EXAMINATION_ANNUAL_PLAN_ID
+  data_type: string
+  description: Mã kế hoạch kiểm tra năm liên kết (snapshot).
+  target_attr_name: Examination Annual Plan Code
+- target_column: unit_nm
+  transformation: ex_te.UNIT_NAME
+  data_type: string
+  description: Tên đơn vị chủ trì kiểm tra (tự động gán theo Ban của người dùng đăng
+    nhập).
+  target_attr_name: Unit Name
+- target_column: plan_year
+  transformation: ex_te.PLAN_YEAR
+  data_type: int
+  description: Năm kiểm tra.
+  target_attr_name: Plan Year
+- target_column: form_tp_code
+  transformation: ex_te.FORM_TYPE
+  data_type: string
+  description: 'Hình thức: PERIODIC (Định kỳ), UNSCHEDULED (Đột xuất).'
+  target_attr_name: Form Type Code
+- target_column: start_dt
+  transformation: ex_te.START_DATE
+  data_type: date
+  description: Ngày bắt đầu đoàn kiểm tra.
+  target_attr_name: Start Date
+- target_column: end_dt
+  transformation: ex_te.END_DATE
+  data_type: date
+  description: Ngày kết thúc đoàn kiểm tra (phải >= start_date).
+  target_attr_name: End Date
+- target_column: duration_days
+  transformation: ex_te.DURATION_DAYS
+  data_type: int
+  description: Thời hạn kiểm tra (số ngày, chỉ nhập số nguyên > 0).
+  target_attr_name: Duration Days
+- target_column: decision_nbr
+  transformation: ex_te.DECISION_NUMBER
+  data_type: string
+  description: Số quyết định kiểm tra (UNIQUE trên phân hệ).
+  target_attr_name: Decision Number
+- target_column: decision_dt
+  transformation: ex_te.DECISION_DATE
+  data_type: date
+  description: Ngày ban hành quyết định kiểm tra.
+  target_attr_name: Decision Date
+- target_column: decision_nm
+  transformation: ex_te.DECISION_NAME
+  data_type: string
+  description: Tên quyết định kiểm tra.
+  target_attr_name: Decision Name
+- target_column: announcement_dt
+  transformation: ex_te.ANNOUNCEMENT_DATE
+  data_type: date
+  description: Ngày công bố quyết định kiểm tra.
+  target_attr_name: Announcement Date
+- target_column: content
+  transformation: ex_te.CONTENT
+  data_type: string
+  description: Nội dung kiểm tra tổng quát.
+  target_attr_name: Content
+- target_column: examination_period_from_dt
+  transformation: ex_te.EXAMINATION_PERIOD_FROM
+  data_type: date
+  description: Thời kỳ kiểm tra - Từ ngày.
+  target_attr_name: Examination Period From Date
+- target_column: examination_period_to_dt
+  transformation: ex_te.EXAMINATION_PERIOD_TO
+  data_type: date
+  description: Thời kỳ kiểm tra - Đến ngày.
+  target_attr_name: Examination Period To Date
+- target_column: anti_money_laundering_indicator
+  transformation: ex_te.ANTI_MONEY_LAUNDERING
+  data_type: string
+  description: 'Có kiểm tra nội dung PCRT: 0=Không, 1=Có.'
+  target_attr_name: Anti Money Laundering Indicator
+- target_column: abnormal_transaction_check_indicator
+  transformation: ex_te.ABNORMAL_TRANSACTION_CHECK
+  data_type: string
+  description: 'Kiểm tra giao dịch bất thường: 0=Không, 1=Có. Nếu=1 thì không tạo
+    thông báo kết quả.'
+  target_attr_name: Abnormal Transaction Check Indicator
+- target_column: note
+  transformation: ex_te.NOTE
+  data_type: string
+  description: Ghi chú bổ sung.
+  target_attr_name: Note
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

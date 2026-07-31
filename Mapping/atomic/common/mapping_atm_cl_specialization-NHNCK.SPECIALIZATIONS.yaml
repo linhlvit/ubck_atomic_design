@@ -1,0 +1,65 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-cl_specialization-NHNCK.SPECIALIZATIONS
+  logical_name: Mapping Atomic - Classification Specialization – source NHNCK.SPECIALIZATIONS
+  physical_name: cl_specialization
+  dm_ref: ATM-cl_specialization-NHNCK.SPECIALIZATIONS
+  brd_ref: BRD-SRC-NHNCK-SPECIALIZATIONS
+target:
+  namespace: atm
+  physical_name: cl_specialization
+  etl_handle: SCD2
+  description: Danh mục chuyên ngành đào tạo/hành nghề chứng khoán (NHNCK).
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: SPECIALIZATIONS
+  alias: spec
+  select_fields: ID, SPECIALIZATION_CODE, SPECIALIZATION_NAME, REFERENCE, IS_ACTIVE,
+    IS_ORIGINAL_DATA, MCDT_CODE
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: cl_specialization_id
+  transformation: '{hash_id}(''NHNCK_SPECIALIZATIONS'', spec.SPECIALIZATION_CODE)'
+  data_type: string
+  description: Id tự sinh (surrogate key).
+  target_attr_name: Classification Specialization Id
+- target_column: cl_specialization_code
+  transformation: spec.SPECIALIZATION_CODE
+  data_type: string
+  description: Mã chuyên ngành CCHN — BK của entity.
+  target_attr_name: Classification Specialization Code
+- target_column: src_stm_code
+  transformation: '''NHNCK_SPECIALIZATIONS'''
+  data_type: string
+  description: Mã hệ thống nguồn.
+  target_attr_name: Source System Code
+- target_column: cl_specialization_nm
+  transformation: spec.SPECIALIZATION_NAME
+  data_type: string
+  description: 'Tên chuyên ngành CCHN (VD: Phân tích đầu tư, Quản lý quỹ...).'
+  target_attr_name: Classification Specialization Name
+- target_column: legal_reference
+  transformation: spec.REFERENCE
+  data_type: string
+  description: Trích dẫn căn cứ pháp lý liên quan đến chuyên ngành.
+  target_attr_name: Legal Reference
+- target_column: active_indicator
+  transformation: spec.IS_ACTIVE
+  data_type: string
+  description: Cờ đang kích hoạt/hiệu lực.
+  target_attr_name: Active Indicator
+- target_column: original_data_indicator
+  transformation: spec.IS_ORIGINAL_DATA
+  data_type: string
+  description: Cờ dữ liệu gốc của hệ thống (không được xóa).
+  target_attr_name: Original Data Indicator
+- target_column: public_service_portal_code
+  transformation: spec.MCDT_CODE
+  data_type: string
+  description: Mã đồng bộ chuyên ngành trên hệ thống Cổng Dịch vụ công quốc gia (MCĐT).
+  target_attr_name: Public Service Portal Code
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

@@ -1,0 +1,88 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-trading_representative-FIMS.TRADINGREPRESENTATIVE
+  logical_name: Mapping Atomic - Trading Representative – source FIMS.TRADINGREPRESENTATIVE
+  physical_name: trading_representative
+  dm_ref: ATM-trading_representative-FIMS.TRADINGREPRESENTATIVE
+  brd_ref: BRD-SRC-FIMS-TRADINGREPRESENTATIVE
+target:
+  namespace: atm
+  physical_name: trading_representative
+  etl_handle: SCD4A
+  description: Cá nhân đại diện giao dịch cho nhà đầu tư nước ngoài tại công ty chứng
+    khoán. Ghi nhận thông tin nhân thân, quốc tịch, địa chỉ, liên lạc và trạng thái
+    hoạt động. Được tham chiếu từ Member Periodic Report và Trading Authorization.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: TRADINGREPRESENTATIVE
+  alias: tr_re
+  select_fields: ID, FULLNAME, SEX, DATEOFBIRTH, NAID, STATUSID, DESCRIPTION
+  filter: null
+- source_type: physical_table
+  namespace: ods
+  table_name: NATIONAL
+  alias: nati
+  select_fields: Id, SName
+  filter: null
+  note: Crosswalk bridge cho nationality_id
+relationship:
+- main_alias: tr_re
+  join_type: LEFT JOIN
+  join_alias: nati
+  join_on: tr_re.NAID = nati.Id
+mapping_columns:
+- target_column: trading_representative_id
+  transformation: '{hash_id}(''FIMS_TRADINGREPRESENTATIVE'', tr_re.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Trading Representative Id
+- target_column: trading_representative_code
+  transformation: tr_re.ID
+  data_type: string
+  description: Khóa chính của bản ghi. BK — nguồn không có mã nghiệp vụ riêng biệt,
+    dùng PK kỹ thuật làm BK duy nhất.
+  target_attr_name: Trading Representative Code
+- target_column: src_stm_code
+  transformation: '''FIMS_TRADINGREPRESENTATIVE'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: full_nm
+  transformation: tr_re.FULLNAME
+  data_type: string
+  description: Họ và tên đầy đủ của đại diện giao dịch.
+  target_attr_name: Full Name
+- target_column: gender_code
+  transformation: tr_re.SEX
+  data_type: string
+  description: 'Giới tính: 1=Nam, 2=Nữ.'
+  target_attr_name: Gender Code
+- target_column: dt_of_birth
+  transformation: tr_re.DATEOFBIRTH
+  data_type: date
+  description: Ngày sinh của đại diện giao dịch.
+  target_attr_name: Date of Birth
+- target_column: nationality_id
+  transformation: '{hash_id}(''ECAT_COUNTRY'', nati.SName)'
+  data_type: string
+  description: FK đến Geographic Area (quốc tịch của đại diện giao dịch).
+  target_attr_name: Nationality Id
+- target_column: nationality_code
+  transformation: tr_re.NAID
+  data_type: string
+  description: Mã quốc gia/quốc tịch.
+  target_attr_name: Nationality Code
+- target_column: activity_status_code
+  transformation: tr_re.STATUSID
+  data_type: string
+  description: Trạng thái hoạt động của đại diện giao dịch.
+  target_attr_name: Activity Status Code
+- target_column: description
+  transformation: tr_re.DESCRIPTION
+  data_type: string
+  description: Mô tả/ghi chú về đại diện giao dịch.
+  target_attr_name: Description
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

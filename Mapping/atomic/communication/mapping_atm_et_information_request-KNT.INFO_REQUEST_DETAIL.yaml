@@ -1,0 +1,72 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-et_information_request-KNT.INFO_REQUEST_DETAIL
+  logical_name: Mapping Atomic - External Tax Information Request – source KNT.INFO_REQUEST_DETAIL
+  physical_name: et_information_request
+  dm_ref: ATM-et_information_request-KNT.INFO_REQUEST_DETAIL
+  brd_ref: BRD-SRC-KNT-INFO_REQUEST_DETAIL
+target:
+  namespace: atm
+  physical_name: et_information_request
+  etl_handle: Fact Append
+  description: 1 lần trao đổi yêu cầu thông tin từ Cục Thuế gửi UBCKNN liên quan đến
+    1 doanh nghiệp, kèm trạng thái phản hồi WebService.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: INFO_REQUEST_DETAIL
+  alias: in_re_de
+  select_fields: ID, TAX_CODE, REQUEST_NAME, STATUS_DESCRIPTION, STATUS, MSG_PACKET_ID
+  filter: created_at >= {etl_date}
+relationship: []
+mapping_columns:
+- target_column: et_information_request_id
+  transformation: '{hash_id}(''KNT_INFO_REQUEST_DETAIL'', in_re_de.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: External Tax Information Request Id
+- target_column: et_information_request_code
+  transformation: in_re_de.ID
+  data_type: string
+  description: Khóa chính của bản ghi. BK — nguồn không có mã nghiệp vụ riêng biệt,
+    dùng PK kỹ thuật làm BK duy nhất.
+  target_attr_name: External Tax Information Request Code
+- target_column: src_stm_code
+  transformation: '''KNT_INFO_REQUEST_DETAIL'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: et_registration_id
+  transformation: '{hash_id}(''KNT_TAX_REGISTRATION_INFO'', in_re_de.TAX_CODE)'
+  data_type: string
+  description: FK đến hồ sơ đăng ký thuế của doanh nghiệp liên quan yêu cầu thông
+    tin.
+  target_attr_name: External Tax Registration Id
+- target_column: et_registration_code
+  transformation: in_re_de.TAX_CODE
+  data_type: string
+  description: Mã số thuế doanh nghiệp liên quan yêu cầu thông tin.
+  target_attr_name: External Tax Registration Code
+- target_column: request_nm
+  transformation: in_re_de.REQUEST_NAME
+  data_type: string
+  description: Tên loại yêu cầu thông tin từ Cục Thuế.
+  target_attr_name: Request Name
+- target_column: status_description
+  transformation: in_re_de.STATUS_DESCRIPTION
+  data_type: string
+  description: Mô tả trạng thái xử lý yêu cầu thông tin.
+  target_attr_name: Status Description
+- target_column: response_status_code
+  transformation: in_re_de.STATUS
+  data_type: string
+  description: Trạng thái phản hồi WebService.
+  target_attr_name: Response Status Code
+- target_column: message_packet_id
+  transformation: in_re_de.MSG_PACKET_ID
+  data_type: string
+  description: Mã gói tin trao đổi liên quan.
+  target_attr_name: Message Packet Id
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

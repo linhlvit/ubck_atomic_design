@@ -1,0 +1,92 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-pc_bond_evaluation-IDS.EVALUATION_CBONDS
+  logical_name: Mapping Atomic - Public Company Bond Evaluation – source IDS.EVALUATION_CBONDS
+  physical_name: pc_bond_evaluation
+  dm_ref: ATM-pc_bond_evaluation-IDS.EVALUATION_CBONDS
+  brd_ref: BRD-SRC-IDS-EVALUATION_CBONDS
+target:
+  namespace: atm
+  physical_name: pc_bond_evaluation
+  etl_handle: SCD4A
+  description: 'Chỉ số trái phiếu của công ty đại chúng theo kỳ (năm/tháng): xếp hạng,
+    tỷ lệ trái phiếu đảm bảo/giá trị trái phiếu, tỷ lệ trái phiếu lưu hành/vốn chủ
+    sở hữu. Không FK đến Public Company Evaluation — grain 1 CTĐC × 1 kỳ.'
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: EVALUATION_CBONDS
+  alias: ev_cb
+  select_fields: ID, COMPANY_ID, BUSINESS_REG_NO, EQUITY_TICKER, NAME, RANKING, YEAR,
+    MONTH, PER_TP_DB, PRICE_TP_LH
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: pc_bond_evaluation_id
+  transformation: '{hash_id}(''IDS_EVALUATION_CBONDS'', ev_cb.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Public Company Bond Evaluation Id
+- target_column: pc_bond_evaluation_code
+  transformation: ev_cb.ID
+  data_type: string
+  description: Khóa chính. BK của entity — map từ PK bảng nguồn.
+  target_attr_name: Public Company Bond Evaluation Code
+- target_column: src_stm_code
+  transformation: '''IDS_EVALUATION_CBONDS'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: pc_id
+  transformation: '{hash_id}(''IDS_COMPANY_PROFILES'', ev_cb.COMPANY_ID)'
+  data_type: string
+  description: Khóa link đến bảng COMPANY_PROFILES.
+  target_attr_name: Public Company Id
+- target_column: pc_code
+  transformation: ev_cb.COMPANY_ID
+  data_type: string
+  description: Mã công ty đại chúng.
+  target_attr_name: Public Company Code
+- target_column: business_registration_nbr_snpst
+  transformation: ev_cb.BUSINESS_REG_NO
+  data_type: string
+  description: Mã số doanh nghiệp (snapshot tại thời điểm đánh giá).
+  target_attr_name: Business Registration Number Snapshot
+- target_column: equity_ticker_symbol_snpst
+  transformation: ev_cb.EQUITY_TICKER
+  data_type: string
+  description: Mã cổ phiếu (mã chứng khoán, snapshot tại thời điểm đánh giá).
+  target_attr_name: Equity Ticker Symbol Snapshot
+- target_column: pc_nm_snpst
+  transformation: ev_cb.NAME
+  data_type: string
+  description: Tên công ty (snapshot tại thời điểm đánh giá).
+  target_attr_name: Public Company Name Snapshot
+- target_column: ranking_code
+  transformation: ev_cb.RANKING
+  data_type: string
+  description: Xếp hạng doanh nghiệp (A, B, C, E).
+  target_attr_name: Ranking Code
+- target_column: evaluation_year
+  transformation: ev_cb.YEAR
+  data_type: int
+  description: Năm đánh giá.
+  target_attr_name: Evaluation Year
+- target_column: evaluation_month
+  transformation: ev_cb.MONTH
+  data_type: int
+  description: Tháng đánh giá.
+  target_attr_name: Evaluation Month
+- target_column: bond_collateral_ratio_percentage
+  transformation: ev_cb.PER_TP_DB
+  data_type: decimal(5,2)
+  description: Tỉ lệ trái phiếu đảm bảo/giá trị trái phiếu.
+  target_attr_name: Bond Collateral Ratio Percentage
+- target_column: bond_outstanding_to_equity_ratio_percentage
+  transformation: ev_cb.PRICE_TP_LH
+  data_type: decimal(5,2)
+  description: Giá trị trái phiếu đang lưu hành/tổng vốn chủ sở hữu.
+  target_attr_name: Bond Outstanding To Equity Ratio Percentage
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

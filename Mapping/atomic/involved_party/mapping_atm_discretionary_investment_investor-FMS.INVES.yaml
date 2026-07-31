@@ -1,0 +1,107 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-discretionary_investment_investor-FMS.INVES
+  logical_name: Mapping Atomic - Discretionary Investment Investor – source FMS.INVES
+  physical_name: discretionary_investment_investor
+  dm_ref: ATM-discretionary_investment_investor-FMS.INVES
+  brd_ref: BRD-SRC-FMS-INVES
+target:
+  namespace: atm
+  physical_name: discretionary_investment_investor
+  etl_handle: SCD4A
+  description: Nhà đầu tư cá nhân/tổ chức ủy thác đầu tư cho Fund Management Company.
+    Domain prefix dùng chung với Discretionary Investment Account (Tier 3).
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: INVES
+  alias: in
+  select_fields: ID, SEC_ID, NAT_ID, STO_ID, ITEM_NAME, DORF, RELATION_SHIP, AD_SCALE,
+    ACT_SCALE, LIST_VALUE
+  filter: null
+- source_type: physical_table
+  namespace: ods
+  table_name: NATIONAL
+  alias: nati
+  select_fields: ID, SNAME
+  filter: null
+  note: Crosswalk bridge cho nationality_id
+relationship:
+- main_alias: in
+  join_type: LEFT JOIN
+  join_alias: nati
+  join_on: in.NAT_ID = nati.ID
+mapping_columns:
+- target_column: discretionary_investment_investor_id
+  transformation: '{hash_id}(''FMS_INVES'', in.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Discretionary Investment Investor Id
+- target_column: discretionary_investment_investor_code
+  transformation: in.ID
+  data_type: string
+  description: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+  target_attr_name: Discretionary Investment Investor Code
+- target_column: src_stm_code
+  transformation: '''FMS_INVES'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: fmc_id
+  transformation: '{hash_id}(''FMS_SECURITIES'', in.SEC_ID)'
+  data_type: string
+  description: 'FK -> SECURITIES: Công ty QLQ liên quan.'
+  target_attr_name: Fund Management Company Id
+- target_column: fmc_code
+  transformation: in.SEC_ID
+  data_type: string
+  description: Mã công ty QLQ liên quan.
+  target_attr_name: Fund Management Company Code
+- target_column: nationality_id
+  transformation: '{hash_id}(''ECAT_COUNTRY'', nati.SNAME)'
+  data_type: string
+  description: FK đến Geographic Area (quốc tịch).
+  target_attr_name: Nationality Id
+- target_column: nationality_code
+  transformation: in.NAT_ID
+  data_type: string
+  description: Mã quốc gia/quốc tịch (SNAME từ FMS.NATIONAL).
+  target_attr_name: Nationality Code
+- target_column: stockholder_tp_code
+  transformation: in.STO_ID
+  data_type: string
+  description: 'FK -> STOCKHOLDER_TYPE: Loại cổ đông.'
+  target_attr_name: Stockholder Type Code
+- target_column: discretionary_investment_investor_full_nm
+  transformation: in.ITEM_NAME
+  data_type: string
+  description: Tên hiển thị chính.
+  target_attr_name: Discretionary Investment Investor Full Name
+- target_column: organization_territory_tp_code
+  transformation: in.DORF
+  data_type: string
+  description: 'Loại tổ chức thành viên: 1=Trong nước, 2=Nước ngoài.'
+  target_attr_name: Organization Territory Type Code
+- target_column: rltnp_description
+  transformation: in.RELATION_SHIP
+  data_type: string
+  description: Mô tả quan hệ của nhà đầu tư với công ty QLQ.
+  target_attr_name: Relationship Description
+- target_column: committed_entrustment_scale_amt
+  transformation: in.AD_SCALE
+  data_type: decimal(23,2)
+  description: 'Quy mô uỷ thác cam kết (đơn vị: VNĐ).'
+  target_attr_name: Committed Entrustment Scale Amount
+- target_column: actual_entrustment_scale_amt
+  transformation: in.ACT_SCALE
+  data_type: decimal(23,2)
+  description: 'Quy mô uỷ thác thực tế (đơn vị: VNĐ).'
+  target_attr_name: Actual Entrustment Scale Amount
+- target_column: portfolio_val_amt
+  transformation: in.LIST_VALUE
+  data_type: decimal(23,2)
+  description: 'Giá trị danh mục đầu tư (đơn vị: VNĐ).'
+  target_attr_name: Portfolio Value Amount
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

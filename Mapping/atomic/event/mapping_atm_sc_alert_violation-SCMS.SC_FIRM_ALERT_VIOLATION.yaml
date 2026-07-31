@@ -1,0 +1,232 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-sc_alert_violation-SCMS.SC_FIRM_ALERT_VIOLATION
+  logical_name: Mapping Atomic - Securities Company Alert Violation – source SCMS.SC_FIRM_ALERT_VIOLATION
+  physical_name: sc_alert_violation
+  dm_ref: ATM-sc_alert_violation-SCMS.SC_FIRM_ALERT_VIOLATION
+  brd_ref: BRD-SRC-SCMS-SC_FIRM_ALERT_VIOLATION
+target:
+  namespace: atm
+  physical_name: sc_alert_violation
+  etl_handle: Fact Append
+  description: Vi phạm ngưỡng được hệ thống cảnh báo tự động phát hiện cho CTCK. Mỗi
+    dòng = 1 vi phạm insert-only với chỉ tiêu, giá trị thực tế, giá trị ngưỡng và
+    mức độ vi phạm.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: SC_FIRM_ALERT_VIOLATION
+  alias: sc_fi_al_vi
+  select_fields: ID, CREATED_AT, SC_FIRM_INFO_ID, ALERT_INDICATOR_ID, ALERT_CONDITION_ID,
+    ALERT_RUN_ID, VIOLATION_SEVERITY, SEVERITY_LEVEL, ENTITY_TYPE, ENTITY_ID, CONDITION,
+    GIA_TRI_SO_SANH, GIA_TRI_THUC_TE, THRESHOLD, DEDUCTED_SCORE, ALERT_YEAR, REPORT_YEAR,
+    REPORT_PERIOD, REPORT_PERIOD_VALUE, PERIOD, RESOLVED, RESOLUTION_NOTE, VIOLATION_DESCRIPTION,
+    NOTE, PROCESSING_DATE, PROCESSOR_ID
+  filter: created_at >= {etl_date} AND created_at < {etl_date} + 1
+- source_type: physical_table
+  namespace: ods
+  table_name: SC_FIRM_INFO
+  alias: sc_fi_in
+  select_fields: ID, CODE
+  filter: null
+  note: Crosswalk bridge cho sc_id
+- source_type: physical_table
+  namespace: ods
+  table_name: ALERT_INDICATOR
+  alias: al_in
+  select_fields: ID, ALERT_CODE
+  filter: null
+  note: Crosswalk bridge cho sc_alert_indicator_id
+- source_type: physical_table
+  namespace: ods
+  table_name: ALERT_RUN
+  alias: al_ru
+  select_fields: ID, RUN_ID
+  filter: created_at >= {etl_date} AND created_at < {etl_date} + 1
+  note: Crosswalk bridge cho sc_alert_run_id
+relationship:
+- main_alias: sc_fi_al_vi
+  join_type: LEFT JOIN
+  join_alias: sc_fi_in
+  join_on: sc_fi_al_vi.SC_FIRM_INFO_ID = sc_fi_in.ID
+- main_alias: sc_fi_al_vi
+  join_type: LEFT JOIN
+  join_alias: al_in
+  join_on: sc_fi_al_vi.ALERT_INDICATOR_ID = al_in.ID
+- main_alias: sc_fi_al_vi
+  join_type: LEFT JOIN
+  join_alias: al_ru
+  join_on: sc_fi_al_vi.ALERT_RUN_ID = al_ru.ID
+mapping_columns:
+- target_column: sc_alert_violation_id
+  transformation: '{hash_id}(''SCMS_SC_FIRM_ALERT_VIOLATION'', sc_fi_al_vi.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Securities Company Alert Violation Id
+- target_column: sc_alert_violation_code
+  transformation: sc_fi_al_vi.ID
+  data_type: string
+  description: Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.
+  target_attr_name: Securities Company Alert Violation Code
+- target_column: src_stm_code
+  transformation: '''SCMS_SC_FIRM_ALERT_VIOLATION'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: data_dt
+  transformation: sc_fi_al_vi.CREATED_AT
+  data_type: date
+  description: 'Thời điểm tạo bản ghi (nguồn: CREATED_AT). Dùng làm căn cứ partition
+    Delta Lake / incremental filter — bảng nguồn có data_change_mode=Append, filter_logic
+    theo created_at (xem BRD/Source/brd_SCMS.yaml).'
+  target_attr_name: Data Date
+- target_column: sc_id
+  transformation: '{hash_id}(''SCMS_SC_FIRM_INFO'', sc_fi_in.CODE)'
+  data_type: string
+  description: FK đến Công ty chứng khoán có vi phạm cảnh báo.
+  target_attr_name: Securities Company Id
+- target_column: sc_code
+  transformation: sc_fi_al_vi.SC_FIRM_INFO_ID
+  data_type: string
+  description: Mã Công ty chứng khoán.
+  target_attr_name: Securities Company Code
+- target_column: sc_alert_indicator_id
+  transformation: '{hash_id}(''SCMS_ALERT_INDICATOR'', al_in.ALERT_CODE)'
+  data_type: string
+  description: FK đến chỉ tiêu cảnh báo kích hoạt vi phạm.
+  target_attr_name: Securities Company Alert Indicator Id
+- target_column: sc_alert_indicator_code
+  transformation: sc_fi_al_vi.ALERT_INDICATOR_ID
+  data_type: string
+  description: Mã chỉ tiêu cảnh báo.
+  target_attr_name: Securities Company Alert Indicator Code
+- target_column: sc_alert_indicator_condition_id
+  transformation: '{hash_id}(''SCMS_ALERT_INDICATOR_CONDITION'', sc_fi_al_vi.ALERT_CONDITION_ID)'
+  data_type: string
+  description: FK đến điều kiện cảnh báo (Alert Condition) liên quan.
+  target_attr_name: Securities Company Alert Indicator Condition Id
+- target_column: sc_alert_indicator_condition_code
+  transformation: sc_fi_al_vi.ALERT_CONDITION_ID
+  data_type: string
+  description: Mã điều kiện cảnh báo.
+  target_attr_name: Securities Company Alert Indicator Condition Code
+- target_column: sc_alert_run_id
+  transformation: '{hash_id}(''SCMS_ALERT_RUN'', al_ru.RUN_ID)'
+  data_type: string
+  description: FK đến lần chạy alert tạo ra vi phạm này.
+  target_attr_name: Securities Company Alert Run Id
+- target_column: sc_alert_run_code
+  transformation: sc_fi_al_vi.ALERT_RUN_ID
+  data_type: string
+  description: Mã lần chạy alert.
+  target_attr_name: Securities Company Alert Run Code
+- target_column: violation_severity_code
+  transformation: sc_fi_al_vi.VIOLATION_SEVERITY
+  data_type: string
+  description: 'Mức độ nghiêm trọng của vi phạm: 1=Nhẹ; 2=Trung bình; 3=Nghiêm trọng.'
+  target_attr_name: Violation Severity Code
+- target_column: severity_level
+  transformation: sc_fi_al_vi.SEVERITY_LEVEL
+  data_type: string
+  description: Nhãn mức độ nghiêm trọng dạng văn bản (tương ứng VIOLATION_SEVERITY
+    nhưng dạng text).
+  target_attr_name: Severity Level
+- target_column: alert_entity_tp_code
+  transformation: sc_fi_al_vi.ENTITY_TYPE
+  data_type: string
+  description: 'Loại đối tượng cảnh báo: CTCK=Công ty chứng khoán; CN_NUOC_NGOAI=Chi
+    nhánh nước ngoài; VPDD_NUOC_NGOAI=Văn phòng đại diện nước ngoài.'
+  target_attr_name: Alert Entity Type Code
+- target_column: alert_entity_code
+  transformation: sc_fi_al_vi.ENTITY_ID
+  data_type: string
+  description: Mã nghiệp vụ của đối tượng cảnh báo (tùy loại ENTITY_TYPE).
+  target_attr_name: Alert Entity Code
+- target_column: condition_expression
+  transformation: sc_fi_al_vi.CONDITION
+  data_type: string
+  description: Biểu thức điều kiện logic đã kích hoạt cảnh báo.
+  target_attr_name: Condition Expression
+- target_column: comparison_val
+  transformation: sc_fi_al_vi.GIA_TRI_SO_SANH
+  data_type: int
+  description: Giá trị so sánh dùng trong điều kiện cảnh báo.
+  target_attr_name: Comparison Value
+- target_column: actual_val
+  transformation: sc_fi_al_vi.GIA_TRI_THUC_TE
+  data_type: decimal(23,2)
+  description: Giá trị thực tế của chỉ số tại thời điểm cảnh báo.
+  target_attr_name: Actual Value
+- target_column: threshold_val
+  transformation: sc_fi_al_vi.THRESHOLD
+  data_type: decimal(23,2)
+  description: Ngưỡng cảnh báo được cấu hình.
+  target_attr_name: Threshold Value
+- target_column: deducted_score
+  transformation: sc_fi_al_vi.DEDUCTED_SCORE
+  data_type: decimal(23,2)
+  description: Điểm trừ do vi phạm cảnh báo.
+  target_attr_name: Deducted Score
+- target_column: alert_year
+  transformation: sc_fi_al_vi.ALERT_YEAR
+  data_type: string
+  description: Năm của cảnh báo.
+  target_attr_name: Alert Year
+- target_column: rpt_year
+  transformation: sc_fi_al_vi.REPORT_YEAR
+  data_type: int
+  description: Năm báo cáo liên quan đến cảnh báo.
+  target_attr_name: Report Year
+- target_column: rpt_period_code
+  transformation: sc_fi_al_vi.REPORT_PERIOD
+  data_type: string
+  description: Kỳ báo cáo của cảnh báo.
+  target_attr_name: Report Period Code
+- target_column: rpt_period_val
+  transformation: sc_fi_al_vi.REPORT_PERIOD_VALUE
+  data_type: int
+  description: 'Giá trị kỳ báo cáo (số thứ tự kỳ: quý 1/2/3/4 hoặc tháng 1-12).'
+  target_attr_name: Report Period Value
+- target_column: period
+  transformation: sc_fi_al_vi.PERIOD
+  data_type: string
+  description: Giai đoạn/kỳ của cảnh báo dạng chuỗi ký hiệu.
+  target_attr_name: Period
+- target_column: resolved_indicator
+  transformation: sc_fi_al_vi.RESOLVED
+  data_type: int
+  description: 'Cờ đánh dấu vi phạm đã được xử lý: 1=Đã xử lý; 0=Chưa xử lý.'
+  target_attr_name: Resolved Indicator
+- target_column: resolution_note
+  transformation: sc_fi_al_vi.RESOLUTION_NOTE
+  data_type: string
+  description: Ghi chú về cách xử lý vi phạm cảnh báo.
+  target_attr_name: Resolution Note
+- target_column: violation_description
+  transformation: sc_fi_al_vi.VIOLATION_DESCRIPTION
+  data_type: string
+  description: Mô tả chi tiết về vi phạm cảnh báo.
+  target_attr_name: Violation Description
+- target_column: note
+  transformation: sc_fi_al_vi.NOTE
+  data_type: string
+  description: Ghi chú bổ sung về vi phạm cảnh báo.
+  target_attr_name: Note
+- target_column: processing_dt
+  transformation: sc_fi_al_vi.PROCESSING_DATE
+  data_type: timestamp
+  description: Thời điểm xử lý vi phạm cảnh báo.
+  target_attr_name: Processing Date
+- target_column: processor_iam_user_id
+  transformation: '{hash_id}(''IAM_USERS'', sc_fi_al_vi.PROCESSOR_ID)'
+  data_type: string
+  description: FK đến người xử lý vi phạm cảnh báo.
+  target_attr_name: Processor IAM User Id
+- target_column: processor_iam_user_code
+  transformation: sc_fi_al_vi.PROCESSOR_ID
+  data_type: string
+  description: Mã người xử lý vi phạm cảnh báo.
+  target_attr_name: Processor IAM User Code
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

@@ -1,0 +1,61 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-pc_evaluation_group-IDS.EVALUATION_GROUPS
+  logical_name: Mapping Atomic - Public Company Evaluation Group – source IDS.EVALUATION_GROUPS
+  physical_name: pc_evaluation_group
+  dm_ref: ATM-pc_evaluation_group-IDS.EVALUATION_GROUPS
+  brd_ref: BRD-SRC-IDS-EVALUATION_GROUPS
+target:
+  namespace: atm
+  physical_name: pc_evaluation_group
+  etl_handle: Upsert
+  description: 'Nhóm phân loại chỉ tiêu dùng trong hệ thống đánh giá/xếp hạng công
+    ty đại chúng: tên nhóm, thứ tự, tổng điểm tối đa. Table Type = Classification
+    theo xác nhận Tier1 6f (T1-03).'
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: EVALUATION_GROUPS
+  alias: ev_gr
+  select_fields: GROUP_CD, GROUP_NAME, DESCRIPTION, WEIGHT, DISPLAY_ORDER
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: pc_evaluation_group_id
+  transformation: '{hash_id}(''IDS_EVALUATION_GROUPS'', ev_gr.GROUP_CD)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Public Company Evaluation Group Id
+- target_column: pc_evaluation_group_code
+  transformation: ev_gr.GROUP_CD
+  data_type: string
+  description: Mã nhóm. BK duy nhất — Id hash từ trường này.
+  target_attr_name: Public Company Evaluation Group Code
+- target_column: src_stm_code
+  transformation: '''IDS_EVALUATION_GROUPS'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: pc_evaluation_group_nm
+  transformation: ev_gr.GROUP_NAME
+  data_type: string
+  description: Tên của nhóm đánh giá.
+  target_attr_name: Public Company Evaluation Group Name
+- target_column: description
+  transformation: ev_gr.DESCRIPTION
+  data_type: string
+  description: Mô tả chi tiết về nhóm đánh giá.
+  target_attr_name: Description
+- target_column: weight_percentage
+  transformation: ev_gr.WEIGHT
+  data_type: decimal(5,2)
+  description: Trọng số (giá trị từ 0 đến 1) áp dụng cho nhóm đánh giá.
+  target_attr_name: Weight Percentage
+- target_column: display_order
+  transformation: ev_gr.DISPLAY_ORDER
+  data_type: int
+  description: Số thứ tự hiển thị.
+  target_attr_name: Display Order
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

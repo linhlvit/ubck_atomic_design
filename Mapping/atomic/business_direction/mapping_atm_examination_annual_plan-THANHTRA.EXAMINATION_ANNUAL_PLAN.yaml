@@ -1,0 +1,70 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-examination_annual_plan-THANHTRA.EXAMINATION_ANNUAL_PLAN
+  logical_name: Mapping Atomic - Examination Annual Plan – source THANHTRA.EXAMINATION_ANNUAL_PLAN
+  physical_name: examination_annual_plan
+  dm_ref: ATM-examination_annual_plan-THANHTRA.EXAMINATION_ANNUAL_PLAN
+  brd_ref: BRD-SRC-THANHTRA-EXAMINATION_ANNUAL_PLAN
+target:
+  namespace: atm
+  physical_name: examination_annual_plan
+  etl_handle: SCD4A
+  description: Kế hoạch kiểm tra hàng năm của UBCKNN, cấu trúc đồng nhất với kế hoạch
+    thanh tra nhưng dành riêng cho hoạt động kiểm tra (khác thẩm quyền).
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: EXAMINATION_ANNUAL_PLAN
+  alias: ex_an_pl
+  select_fields: ID, NAME, PLAN_YEAR, DECISION_NUMBER, DECISION_DATE, STATUS, NOTE
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: examination_annual_plan_id
+  transformation: '{hash_id}(''THANHTRA_EXAMINATION_ANNUAL_PLAN'', ex_an_pl.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Examination Annual Plan Id
+- target_column: examination_annual_plan_code
+  transformation: ex_an_pl.ID
+  data_type: string
+  description: Khóa chính UUID của bảng nguồn. BK của entity.
+  target_attr_name: Examination Annual Plan Code
+- target_column: src_stm_code
+  transformation: '''THANHTRA_EXAMINATION_ANNUAL_PLAN'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: examination_annual_plan_nm
+  transformation: ex_an_pl.NAME
+  data_type: string
+  description: Tên kế hoạch kiểm tra chuyên đề hàng năm.
+  target_attr_name: Examination Annual Plan Name
+- target_column: plan_year
+  transformation: ex_an_pl.PLAN_YEAR
+  data_type: int
+  description: Năm kiểm tra, UNIQUE (mỗi năm chỉ 1 kế hoạch).
+  target_attr_name: Plan Year
+- target_column: approval_decision_nbr
+  transformation: ex_an_pl.DECISION_NUMBER
+  data_type: string
+  description: Số quyết định phê duyệt kế hoạch (bắt buộc khi status=APPROVED).
+  target_attr_name: Approval Decision Number
+- target_column: approval_decision_dt
+  transformation: ex_an_pl.DECISION_DATE
+  data_type: date
+  description: Ngày quyết định phê duyệt (bắt buộc khi status=APPROVED).
+  target_attr_name: Approval Decision Date
+- target_column: life_cycle_status_code
+  transformation: ex_an_pl.STATUS
+  data_type: string
+  description: 'Trạng thái: DRAFT (Dự thảo), APPROVED (Đã duyệt).'
+  target_attr_name: Life Cycle Status Code
+- target_column: note
+  transformation: ex_an_pl.NOTE
+  data_type: string
+  description: Ghi chú bổ sung.
+  target_attr_name: Note
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

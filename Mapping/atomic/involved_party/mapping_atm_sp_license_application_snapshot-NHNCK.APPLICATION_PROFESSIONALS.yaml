@@ -1,0 +1,318 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-sp_license_application_snapshot-NHNCK.APPLICATION_PROFESSIONALS
+  logical_name: Mapping Atomic - Securities Practitioner License Application Snapshot
+    – source NHNCK.APPLICATION_PROFESSIONALS
+  physical_name: sp_license_application_snapshot
+  dm_ref: ATM-sp_license_application_snapshot-NHNCK.APPLICATION_PROFESSIONALS
+  brd_ref: BRD-SRC-NHNCK-APPLICATION_PROFESSIONALS
+target:
+  namespace: atm
+  physical_name: sp_license_application_snapshot
+  etl_handle: SCD4A
+  description: Snapshot thông tin nhân thân của người đăng ký tại thời điểm nộp hồ
+    sơ. Denormalize toàn bộ trường định danh, địa chỉ và liên lạc từ Practitioner.
+    Loại bỏ USERNAME/PASSWORD.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: APPLICATION_PROFESSIONALS
+  alias: ap_pr
+  select_fields: ID, APPLICATION_ID, PROFESSIONAL_ID, ORGANIZATION_ID, NATIONALITY_ID,
+    FULL_NAME, FIRST_NAME, BIRTH_DATE, BIRTH_YEAR, GENDER, EDUCATION_LEVEL_ID, REGISTRATION_TYPE,
+    IDENTITY_TYPE, IDENTITY_NUMBER, IDENTITY_ISSUE_DATE, IDENTITY_ISSUE_PLACE, PREVIOUS_IDENTITY_NUMBER,
+    PHONE_NUMBER, MOBILE_NUMBER, EMAIL, WORKPLACE, POSITION, DEPARTMENT, PLACE_OF_BIRTH,
+    ADDRESS, PERMANENT_ADDRESS, PERMANENT_COUNTRY_ID, PERMANENT_PROVINCE_ID, PERMANENT_DISTRICT_ID,
+    CURRENT_COUNTRY_ID, CURRENT_PROVINCE_ID, CURRENT_DISTRICT_ID, AVATAR
+  filter: null
+- source_type: physical_table
+  namespace: ods
+  table_name: APPLICATIONS
+  alias: appl
+  select_fields: ID, APPLICATION_CODE
+  filter: null
+  note: Crosswalk bridge cho sp_license_application_id
+- source_type: physical_table
+  namespace: ods
+  table_name: COUNTRIES
+  alias: coun
+  select_fields: ID, COUNTRY_CODE
+  filter: null
+  note: Crosswalk bridge cho nationality_id, snpst_permanent_country_id, snpst_current_country_id
+- source_type: physical_table
+  namespace: ods
+  table_name: PROVINCES
+  alias: prov
+  select_fields: ID, PROVINCE_CODE
+  filter: null
+  note: Crosswalk bridge cho snpst_permanent_province_id, snpst_current_province_id
+- source_type: physical_table
+  namespace: ods
+  table_name: DISTRICTS
+  alias: dist
+  select_fields: ID, DISTRICT_CODE
+  filter: null
+  note: Crosswalk bridge cho snpst_permanent_district_id, snpst_current_district_id
+relationship:
+- main_alias: ap_pr
+  join_type: LEFT JOIN
+  join_alias: appl
+  join_on: ap_pr.APPLICATION_ID = appl.ID
+- main_alias: ap_pr
+  join_type: LEFT JOIN
+  join_alias: coun
+  join_on: ap_pr.NATIONALITY_ID = coun.ID
+- main_alias: ap_pr
+  join_type: LEFT JOIN
+  join_alias: coun
+  join_on: ap_pr.PERMANENT_COUNTRY_ID = coun.ID
+- main_alias: ap_pr
+  join_type: LEFT JOIN
+  join_alias: coun
+  join_on: ap_pr.CURRENT_COUNTRY_ID = coun.ID
+- main_alias: ap_pr
+  join_type: LEFT JOIN
+  join_alias: prov
+  join_on: ap_pr.PERMANENT_PROVINCE_ID = prov.ID
+- main_alias: ap_pr
+  join_type: LEFT JOIN
+  join_alias: prov
+  join_on: ap_pr.CURRENT_PROVINCE_ID = prov.ID
+- main_alias: ap_pr
+  join_type: LEFT JOIN
+  join_alias: dist
+  join_on: ap_pr.PERMANENT_DISTRICT_ID = dist.ID
+- main_alias: ap_pr
+  join_type: LEFT JOIN
+  join_alias: dist
+  join_on: ap_pr.CURRENT_DISTRICT_ID = dist.ID
+mapping_columns:
+- target_column: sp_license_application_snpst_id
+  transformation: '{hash_id}(''NHNCK_APPLICATION_PROFESSIONALS'', ap_pr.ID)'
+  data_type: string
+  description: Id tự sinh (surrogate key)
+  target_attr_name: Securities Practitioner License Application Snapshot Id
+- target_column: sp_license_application_snpst_code
+  transformation: ap_pr.ID
+  data_type: string
+  description: Mã snapshot. BK từ PK nguồn
+  target_attr_name: Securities Practitioner License Application Snapshot Code
+- target_column: src_stm_code
+  transformation: '''NHNCK_APPLICATION_PROFESSIONALS'''
+  data_type: string
+  description: Mã nguồn dữ liệu
+  target_attr_name: Source System Code
+- target_column: sp_license_application_id
+  transformation: '{hash_id}(''NHNCK_APPLICATIONS'', appl.APPLICATION_CODE)'
+  data_type: string
+  description: FK đến hồ sơ đăng ký
+  target_attr_name: Securities Practitioner License Application Id
+- target_column: sp_license_application_code
+  transformation: ap_pr.APPLICATION_ID
+  data_type: string
+  description: Mã hồ sơ đăng ký (denormalized)
+  target_attr_name: Securities Practitioner License Application Code
+- target_column: sp_id
+  transformation: '{hash_id}(''NHNCK_PROFESSIONALS'', ap_pr.PROFESSIONAL_ID)'
+  data_type: string
+  description: FK đến người hành nghề
+  target_attr_name: Securities Practitioner Id
+- target_column: sp_code
+  transformation: ap_pr.PROFESSIONAL_ID
+  data_type: string
+  description: Mã người hành nghề (denormalized)
+  target_attr_name: Securities Practitioner Code
+- target_column: securities_organization_reference_id
+  transformation: '{hash_id}(''NHNCK_ORGANIZATIONS'', ap_pr.ORGANIZATION_ID)'
+  data_type: string
+  description: FK đến tổ chức chứng khoán (nullable)
+  target_attr_name: Securities Organization Reference Id
+- target_column: securities_organization_reference_code
+  transformation: ap_pr.ORGANIZATION_ID
+  data_type: string
+  description: Mã tổ chức (denormalized)
+  target_attr_name: Securities Organization Reference Code
+- target_column: nationality_id
+  transformation: '{hash_id}(''ECAT_COUNTRY'', coun.COUNTRY_CODE)'
+  data_type: string
+  description: FK đến Geographic Area (quốc tịch snapshot)
+  target_attr_name: Nationality Id
+- target_column: nationality_code
+  transformation: ap_pr.NATIONALITY_ID
+  data_type: string
+  description: Mã quốc gia/quốc tịch (denormalized)
+  target_attr_name: Nationality Code
+- target_column: snpst_full_nm
+  transformation: ap_pr.FULL_NAME
+  data_type: string
+  description: Họ và tên đầy đủ tại thời điểm nộp hồ sơ
+  target_attr_name: Snapshot Full Name
+- target_column: snpst_given_nm
+  transformation: ap_pr.FIRST_NAME
+  data_type: string
+  description: Tên đệm và tên riêng tại thời điểm nộp hồ sơ
+  target_attr_name: Snapshot Given Name
+- target_column: snpst_birth_dt
+  transformation: ap_pr.BIRTH_DATE
+  data_type: date
+  description: Ngày sinh tại thời điểm nộp hồ sơ
+  target_attr_name: Snapshot Birth Date
+- target_column: snpst_birth_year
+  transformation: ap_pr.BIRTH_YEAR
+  data_type: string
+  description: Năm sinh (chuỗi) tại thời điểm nộp hồ sơ
+  target_attr_name: Snapshot Birth Year
+- target_column: snpst_gender_code
+  transformation: ap_pr.GENDER
+  data_type: string
+  description: Giới tính tại thời điểm nộp hồ sơ
+  target_attr_name: Snapshot Gender Code
+- target_column: snpst_education_level_code
+  transformation: ap_pr.EDUCATION_LEVEL_ID
+  data_type: string
+  description: Trình độ học vấn tại thời điểm nộp hồ sơ
+  target_attr_name: Snapshot Education Level Code
+- target_column: snpst_practitioner_registration_tp_code
+  transformation: ap_pr.REGISTRATION_TYPE
+  data_type: string
+  description: Hình thức đăng ký tại thời điểm nộp hồ sơ
+  target_attr_name: Snapshot Practitioner Registration Type Code
+- target_column: snpst_identity_tp_code
+  transformation: ap_pr.IDENTITY_TYPE
+  data_type: string
+  description: Loại giấy tờ định danh tại thời điểm nộp hồ sơ
+  target_attr_name: Snapshot Identity Type Code
+- target_column: snpst_identity_nbr
+  transformation: ap_pr.IDENTITY_NUMBER
+  data_type: string
+  description: Số giấy tờ định danh tại thời điểm nộp hồ sơ
+  target_attr_name: Snapshot Identity Number
+- target_column: snpst_identity_issue_dt
+  transformation: ap_pr.IDENTITY_ISSUE_DATE
+  data_type: date
+  description: Ngày cấp giấy tờ định danh tại thời điểm nộp hồ sơ
+  target_attr_name: Snapshot Identity Issue Date
+- target_column: snpst_identity_issue_place
+  transformation: ap_pr.IDENTITY_ISSUE_PLACE
+  data_type: string
+  description: Nơi cấp giấy tờ định danh tại thời điểm nộp hồ sơ
+  target_attr_name: Snapshot Identity Issue Place
+- target_column: snpst_previous_identity_nbr
+  transformation: ap_pr.PREVIOUS_IDENTITY_NUMBER
+  data_type: string
+  description: Số CMND cũ tại thời điểm nộp hồ sơ
+  target_attr_name: Snapshot Previous Identity Number
+- target_column: snpst_phone_nbr
+  transformation: ap_pr.PHONE_NUMBER
+  data_type: string
+  description: Số điện thoại cố định tại thời điểm nộp hồ sơ
+  target_attr_name: Snapshot Phone Number
+- target_column: snpst_mobile_nbr
+  transformation: ap_pr.MOBILE_NUMBER
+  data_type: string
+  description: Số điện thoại di động tại thời điểm nộp hồ sơ
+  target_attr_name: Snapshot Mobile Number
+- target_column: snpst_email
+  transformation: ap_pr.EMAIL
+  data_type: string
+  description: Email tại thời điểm nộp hồ sơ
+  target_attr_name: Snapshot Email
+- target_column: snpst_workplace_nm
+  transformation: ap_pr.WORKPLACE
+  data_type: string
+  description: Nơi làm việc tại thời điểm nộp hồ sơ
+  target_attr_name: Snapshot Workplace Name
+- target_column: snpst_position_nm
+  transformation: ap_pr.POSITION
+  data_type: string
+  description: Chức vụ tại thời điểm nộp hồ sơ
+  target_attr_name: Snapshot Position Name
+- target_column: snpst_department_nm
+  transformation: ap_pr.DEPARTMENT
+  data_type: string
+  description: Phòng ban tại thời điểm nộp hồ sơ
+  target_attr_name: Snapshot Department Name
+- target_column: snpst_place_of_birth
+  transformation: ap_pr.PLACE_OF_BIRTH
+  data_type: string
+  description: Nơi sinh tại thời điểm nộp hồ sơ
+  target_attr_name: Snapshot Place of Birth
+- target_column: snpst_adr
+  transformation: ap_pr.ADDRESS
+  data_type: string
+  description: Địa chỉ chung (legacy) tại thời điểm nộp hồ sơ
+  target_attr_name: Snapshot Address
+- target_column: snpst_permanent_adr
+  transformation: ap_pr.PERMANENT_ADDRESS
+  data_type: string
+  description: Địa chỉ thường trú chi tiết tại thời điểm nộp hồ sơ
+  target_attr_name: Snapshot Permanent Address
+- target_column: snpst_permanent_country_id
+  transformation: '{hash_id}(''ECAT_COUNTRY'', coun.COUNTRY_CODE)'
+  data_type: string
+  description: FK đến Geographic Area — quốc gia thường trú (snapshot)
+  target_attr_name: Snapshot Permanent Country Id
+- target_column: snpst_permanent_country_code
+  transformation: ap_pr.PERMANENT_COUNTRY_ID
+  data_type: string
+  description: Mã quốc gia thường trú (denormalized snapshot)
+  target_attr_name: Snapshot Permanent Country Code
+- target_column: snpst_permanent_province_id
+  transformation: '{hash_id}(''ECAT_PROVINCE_NEW'', prov.PROVINCE_CODE)'
+  data_type: string
+  description: FK đến Geographic Area — tỉnh thường trú (snapshot)
+  target_attr_name: Snapshot Permanent Province Id
+- target_column: snpst_permanent_province_code
+  transformation: ap_pr.PERMANENT_PROVINCE_ID
+  data_type: string
+  description: Mã tỉnh thường trú (denormalized snapshot)
+  target_attr_name: Snapshot Permanent Province Code
+- target_column: snpst_permanent_district_id
+  transformation: '{hash_id}(''ECAT_DISTRICT_OLD'', dist.DISTRICT_CODE)'
+  data_type: string
+  description: FK đến Geographic Area — huyện thường trú (snapshot)
+  target_attr_name: Snapshot Permanent District Id
+- target_column: snpst_permanent_district_code
+  transformation: ap_pr.PERMANENT_DISTRICT_ID
+  data_type: string
+  description: Mã huyện thường trú (denormalized snapshot)
+  target_attr_name: Snapshot Permanent District Code
+- target_column: snpst_current_country_id
+  transformation: '{hash_id}(''ECAT_COUNTRY'', coun.COUNTRY_CODE)'
+  data_type: string
+  description: FK đến Geographic Area — quốc gia tạm trú (snapshot)
+  target_attr_name: Snapshot Current Country Id
+- target_column: snpst_current_country_code
+  transformation: ap_pr.CURRENT_COUNTRY_ID
+  data_type: string
+  description: Mã quốc gia tạm trú (denormalized snapshot)
+  target_attr_name: Snapshot Current Country Code
+- target_column: snpst_current_province_id
+  transformation: '{hash_id}(''ECAT_PROVINCE_NEW'', prov.PROVINCE_CODE)'
+  data_type: string
+  description: FK đến Geographic Area — tỉnh tạm trú (snapshot)
+  target_attr_name: Snapshot Current Province Id
+- target_column: snpst_current_province_code
+  transformation: ap_pr.CURRENT_PROVINCE_ID
+  data_type: string
+  description: Mã tỉnh tạm trú (denormalized snapshot)
+  target_attr_name: Snapshot Current Province Code
+- target_column: snpst_current_district_id
+  transformation: '{hash_id}(''ECAT_DISTRICT_OLD'', dist.DISTRICT_CODE)'
+  data_type: string
+  description: FK đến Geographic Area — huyện tạm trú (snapshot)
+  target_attr_name: Snapshot Current District Id
+- target_column: snpst_current_district_code
+  transformation: ap_pr.CURRENT_DISTRICT_ID
+  data_type: string
+  description: Mã huyện tạm trú (denormalized snapshot)
+  target_attr_name: Snapshot Current District Code
+- target_column: snpst_avatar_file_path
+  transformation: ap_pr.AVATAR
+  data_type: string
+  description: Đường dẫn/URL ảnh đại diện (denormalized snapshot tại thời điểm nộp
+    hồ sơ)
+  target_attr_name: Snapshot Avatar File Path
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

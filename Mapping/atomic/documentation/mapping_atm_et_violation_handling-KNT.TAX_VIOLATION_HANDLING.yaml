@@ -1,0 +1,113 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-et_violation_handling-KNT.TAX_VIOLATION_HANDLING
+  logical_name: Mapping Atomic - External Tax Violation Handling – source KNT.TAX_VIOLATION_HANDLING
+  physical_name: et_violation_handling
+  dm_ref: ATM-et_violation_handling-KNT.TAX_VIOLATION_HANDLING
+  brd_ref: BRD-SRC-KNT-TAX_VIOLATION_HANDLING
+target:
+  namespace: atm
+  physical_name: et_violation_handling
+  etl_handle: Fact Append
+  description: 'Quyết định xử lý vi phạm pháp luật về thuế do Cục Thuế cung cấp: số
+    quyết định xử lý, kỳ thanh tra, số tiền phạt và truy thu. BCO điều chỉnh 2026-07-19
+    (từ Business Activity) để nhất quán với các entity quyết định cưỡng chế cùng nguồn.'
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: TAX_VIOLATION_HANDLING
+  alias: ta_vi_ha
+  select_fields: HANDLING_DECISION_NUMBER, TAX_CODE, SUBJECT_NAME, INSPECTION_PERIOD,
+    VIOLATION_FINE, ADMIN_VIOLATION_FINE, TAX_RECOVERY_AMOUNT, ISSUING_ORG, ISSUING_TAX_AUTHORITY_NAME,
+    DECISION_TYPE, DECISION_DATE, TOTAL_FINE_AMOUNT, OTHER_FINE_AMOUNT, MSG_PACKET_ID
+  filter: created_at >= {etl_date}
+relationship: []
+mapping_columns:
+- target_column: et_violation_handling_id
+  transformation: '{hash_id}(''KNT_TAX_VIOLATION_HANDLING'', ta_vi_ha.HANDLING_DECISION_NUMBER)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: External Tax Violation Handling Id
+- target_column: et_violation_handling_code
+  transformation: ta_vi_ha.HANDLING_DECISION_NUMBER
+  data_type: string
+  description: Số quyết định xử lý vi phạm pháp luật về thuế. BK.
+  target_attr_name: External Tax Violation Handling Code
+- target_column: src_stm_code
+  transformation: '''KNT_TAX_VIOLATION_HANDLING'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: et_registration_id
+  transformation: '{hash_id}(''KNT_TAX_REGISTRATION_INFO'', ta_vi_ha.TAX_CODE)'
+  data_type: string
+  description: FK đến hồ sơ đăng ký thuế của doanh nghiệp vi phạm.
+  target_attr_name: External Tax Registration Id
+- target_column: et_registration_code
+  transformation: ta_vi_ha.TAX_CODE
+  data_type: string
+  description: Mã số thuế doanh nghiệp vi phạm.
+  target_attr_name: External Tax Registration Code
+- target_column: subject_nm
+  transformation: ta_vi_ha.SUBJECT_NAME
+  data_type: string
+  description: Tên tổ chức/cá nhân đối tượng.
+  target_attr_name: Subject Name
+- target_column: inspection_period
+  transformation: ta_vi_ha.INSPECTION_PERIOD
+  data_type: string
+  description: Kỳ thanh tra/kiểm tra thuế tại trụ sở doanh nghiệp.
+  target_attr_name: Inspection Period
+- target_column: violation_fine_amt
+  transformation: ta_vi_ha.VIOLATION_FINE
+  data_type: decimal(23,2)
+  description: Số tiền phạt hành vi vi phạm.
+  target_attr_name: Violation Fine Amount
+- target_column: administrative_violation_fine_amt
+  transformation: ta_vi_ha.ADMIN_VIOLATION_FINE
+  data_type: decimal(23,2)
+  description: Số tiền phạt hành vi vi phạm hành chính về thuế.
+  target_attr_name: Administrative Violation Fine Amount
+- target_column: tax_recovery_amt
+  transformation: ta_vi_ha.TAX_RECOVERY_AMOUNT
+  data_type: decimal(23,2)
+  description: Số tiền truy thu (thuế, tiền nộp chậm).
+  target_attr_name: Tax Recovery Amount
+- target_column: issuing_organization_nm
+  transformation: ta_vi_ha.ISSUING_ORG
+  data_type: string
+  description: Cơ quan ban hành quyết định.
+  target_attr_name: Issuing Organization Name
+- target_column: issuing_tax_authority_nm
+  transformation: ta_vi_ha.ISSUING_TAX_AUTHORITY_NAME
+  data_type: string
+  description: Tên cơ quan thuế ban hành quyết định xử lý.
+  target_attr_name: Issuing Tax Authority Name
+- target_column: decision_tp_code
+  transformation: ta_vi_ha.DECISION_TYPE
+  data_type: string
+  description: 'Loại quyết định: xử phạt hành chính, truy thu, đình chỉ...'
+  target_attr_name: Decision Type Code
+- target_column: decision_dt
+  transformation: ta_vi_ha.DECISION_DATE
+  data_type: date
+  description: Ngày ban hành quyết định.
+  target_attr_name: Decision Date
+- target_column: total_fine_amt
+  transformation: ta_vi_ha.TOTAL_FINE_AMOUNT
+  data_type: decimal(23,2)
+  description: 'Tổng số tiền phạt theo quyết định (đơn vị: đồng).'
+  target_attr_name: Total Fine Amount
+- target_column: other_fine_amt
+  transformation: ta_vi_ha.OTHER_FINE_AMOUNT
+  data_type: decimal(23,2)
+  description: Tổng tiền phạt khác (không phải phạt hành chính).
+  target_attr_name: Other Fine Amount
+- target_column: message_packet_id
+  transformation: ta_vi_ha.MSG_PACKET_ID
+  data_type: string
+  description: Mã gói tin trao đổi liên quan.
+  target_attr_name: Message Packet Id
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

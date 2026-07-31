@@ -1,0 +1,114 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-sp_license_application_fee-NHNCK.APPLICATION_FEES
+  logical_name: Mapping Atomic - Securities Practitioner License Application Fee –
+    source NHNCK.APPLICATION_FEES
+  physical_name: sp_license_application_fee
+  dm_ref: ATM-sp_license_application_fee-NHNCK.APPLICATION_FEES
+  brd_ref: BRD-SRC-NHNCK-APPLICATION_FEES
+target:
+  namespace: atm
+  physical_name: sp_license_application_fee
+  etl_handle: SCD4A
+  description: Phí thực tế phát sinh cho hồ sơ đăng ký CCHN — phí nộp hồ sơ, phí cấp
+    CCHN (Transaction). Có lifecycle riêng qua trạng thái thanh toán. Phân biệt với
+    Examination Assessment Fee (Condition).
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: APPLICATION_FEES
+  alias: ap_fe
+  select_fields: ID, APPLICATION_ID, PROFESSIONAL_ID, FEE_TYPE, CONTENT, FEE, REQUEST_DATE,
+    PAYMENT_DATE, EXPIRY_DATE, FILE_PATH, NOTE
+  filter: null
+- source_type: physical_table
+  namespace: ods
+  table_name: APPLICATIONS
+  alias: appl
+  select_fields: ID, APPLICATION_CODE
+  filter: null
+  note: Crosswalk bridge cho sp_license_application_id
+relationship:
+- main_alias: ap_fe
+  join_type: LEFT JOIN
+  join_alias: appl
+  join_on: ap_fe.APPLICATION_ID = appl.ID
+mapping_columns:
+- target_column: sp_license_application_fee_id
+  transformation: '{hash_id}(''NHNCK_APPLICATION_FEES'', ap_fe.ID)'
+  data_type: string
+  description: Surrogate primary key
+  target_attr_name: Securities Practitioner License Application Fee Id
+- target_column: sp_license_application_fee_code
+  transformation: ap_fe.ID
+  data_type: string
+  description: Business key từ APPLICATION_FEES.ID
+  target_attr_name: Securities Practitioner License Application Fee Code
+- target_column: src_stm_code
+  transformation: '''NHNCK_APPLICATION_FEES'''
+  data_type: string
+  description: Mã hệ thống nguồn
+  target_attr_name: Source System Code
+- target_column: sp_license_application_id
+  transformation: '{hash_id}(''NHNCK_APPLICATIONS'', appl.APPLICATION_CODE)'
+  data_type: string
+  description: FK đến License Application
+  target_attr_name: Securities Practitioner License Application Id
+- target_column: sp_license_application_code
+  transformation: ap_fe.APPLICATION_ID
+  data_type: string
+  description: Mã hồ sơ đăng ký (lookup pair)
+  target_attr_name: Securities Practitioner License Application Code
+- target_column: sp_id
+  transformation: '{hash_id}(''NHNCK_PROFESSIONALS'', ap_fe.PROFESSIONAL_ID)'
+  data_type: string
+  description: FK đến Securities Practitioner (redundant — derive được từ Application)
+  target_attr_name: Securities Practitioner Id
+- target_column: sp_code
+  transformation: ap_fe.PROFESSIONAL_ID
+  data_type: string
+  description: Mã chuyên viên (lookup pair)
+  target_attr_name: Securities Practitioner Code
+- target_column: fee_tp_code
+  transformation: ap_fe.FEE_TYPE
+  data_type: string
+  description: 'Loại phí: 1=Phí thi 2=Phí phúc khảo 3=Phí cấp chứng chỉ'
+  target_attr_name: Fee Type Code
+- target_column: fee_content
+  transformation: ap_fe.CONTENT
+  data_type: string
+  description: Nội dung khoản phí
+  target_attr_name: Fee Content
+- target_column: fee_amt
+  transformation: ap_fe.FEE
+  data_type: decimal(23,2)
+  description: Số tiền phí (VNĐ)
+  target_attr_name: Fee Amount
+- target_column: payment_request_dt
+  transformation: ap_fe.REQUEST_DATE
+  data_type: date
+  description: Ngày yêu cầu nộp phí
+  target_attr_name: Payment Request Date
+- target_column: payment_dt
+  transformation: ap_fe.PAYMENT_DATE
+  data_type: date
+  description: Ngày thanh toán thực tế
+  target_attr_name: Payment Date
+- target_column: payment_expiry_dt
+  transformation: ap_fe.EXPIRY_DATE
+  data_type: date
+  description: Ngày hết hạn thanh toán
+  target_attr_name: Payment Expiry Date
+- target_column: payment_evidence_file_path
+  transformation: ap_fe.FILE_PATH
+  data_type: string
+  description: Đường dẫn chứng từ thanh toán
+  target_attr_name: Payment Evidence File Path
+- target_column: note
+  transformation: ap_fe.NOTE
+  data_type: string
+  description: Ghi chú
+  target_attr_name: Note
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

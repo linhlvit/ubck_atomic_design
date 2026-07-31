@@ -1,0 +1,201 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-securities_order-ORDERTRADE.ORDER_BOOK_HNX
+  logical_name: Mapping Atomic - Securities Order – source ORDERTRADE.ORDER_BOOK_HNX
+  physical_name: securities_order
+  dm_ref: ATM-securities_order-ORDERTRADE.ORDER_BOOK_HNX
+  brd_ref: BRD-SRC-ORDERTRADE-ORDER_BOOK_HNX
+target:
+  namespace: atm
+  physical_name: securities_order
+  etl_handle: Fact Append
+  description: Toàn bộ lifecycle của từng lệnh giao dịch chứng khoán trên HOSE và
+    HNX. Mỗi dòng = 1 event lệnh (new/modify/cancel). Gộp ORDER_BOOK_HOSE + ORDER_BOOK_HNX,
+    phân biệt qua market_id_code và src_stm_code.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: ORDER_BOOK_HNX
+  alias: or_bo_hn
+  select_fields: ORDER_ID, TRADE_DATE, MARKET_ID, BOARD_ID, ISSUE_CODE, ORDER_ACCEPT_TIME,
+    MEMBER_ID, SELL_BUY_CLASSIFICATION_CODE, ACCOUNT_NUMBER, ORDER_TYPE_CODE, ORDER_CONDITION_CODE,
+    CLIENT_HOUSE_CLASSIFICATION_CODE, INVESTOR_CLASSIFICATION_CODE, ORDER_DATE, ORDER_REJECT_REASON_CODE,
+    ORDER_QUANTITY, ORDER_PRICE, PUBLIC_QUANTITY, CONDITION_PRICE, ORDER_RECEPTION_NUMBER,
+    ORIGINAL_ORDER_RECEPTION_NUMBER, ORIGINAL_ORDER_TYPE_CODE, SESSION_ID, ORDER_REMAINING_QUANTITY,
+    MESSAGE_SEQUENCE, REPLACE_CANCEL_CLASSIFICATION_CODE, QUOTE_REQUEST_TYPE, AUTOMATED_CANCEL_PROCESSING_CLASSIFICATION,
+    ORIGINAL_ORDER_ID, FOREIGN_INVESTOR_TYPE_CODE
+  filter: ORDER_DATE = {etl_date}
+relationship: []
+mapping_columns:
+- target_column: securities_order_id
+  transformation: '{hash_id}(''ORDERTRADE_ORDER_BOOK_HNX'', or_bo_hn.ORDER_ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Securities Order Id
+- target_column: securities_order_code
+  transformation: or_bo_hn.ORDER_ID
+  data_type: string
+  description: Mã định danh của lệnh giao dịch (BK chính). BK.
+  target_attr_name: Securities Order Code
+- target_column: src_stm_code
+  transformation: '''ORDERTRADE_ORDER_BOOK_HNX'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: trade_dt
+  transformation: or_bo_hn.TRADE_DATE
+  data_type: date
+  description: Ngày giao dịch (yyyymmdd).
+  target_attr_name: Trade Date
+- target_column: market_id_code
+  transformation: or_bo_hn.MARKET_ID
+  data_type: string
+  description: Mã thị trường chứng khoán.
+  target_attr_name: Market Id Code
+- target_column: board_tp_code
+  transformation: or_bo_hn.BOARD_ID
+  data_type: string
+  description: Loại bảng giao dịch.
+  target_attr_name: Board Type Code
+- target_column: security_symbol_code
+  transformation: or_bo_hn.ISSUE_CODE
+  data_type: string
+  description: Mã định danh của loại chứng khoán (unique, thường là ISIN).
+  target_attr_name: Security Symbol Code
+- target_column: order_accept_time
+  transformation: or_bo_hn.ORDER_ACCEPT_TIME
+  data_type: string
+  description: Thời điểm KRX core system chấp nhận lệnh vào sổ lệnh (hh24misss).
+  target_attr_name: Order Accept Time
+- target_column: broker_id
+  transformation: or_bo_hn.MEMBER_ID
+  data_type: string
+  description: Mã định danh thành viên giao dịch (công ty chứng khoán) do Sở giao
+    dịch cấp.
+  target_attr_name: Broker Id
+- target_column: side_indicator
+  transformation: or_bo_hn.SELL_BUY_CLASSIFICATION_CODE
+  data_type: string
+  description: 'Hướng lệnh: Mua/Bán.'
+  target_attr_name: Side Indicator
+- target_column: account_nbr
+  transformation: or_bo_hn.ACCOUNT_NUMBER
+  data_type: string
+  description: Mã định danh tài khoản giao dịch của nhà đầu tư tại công ty chứng khoán.
+  target_attr_name: Account Number
+- target_column: order_tp_code
+  transformation: or_bo_hn.ORDER_TYPE_CODE
+  data_type: string
+  description: Loại lệnh theo giá.
+  target_attr_name: Order Type Code
+- target_column: order_condition_code
+  transformation: or_bo_hn.ORDER_CONDITION_CODE
+  data_type: string
+  description: Điều kiện thực hiện lệnh.
+  target_attr_name: Order Condition Code
+- target_column: client_house_cl_code
+  transformation: or_bo_hn.CLIENT_HOUSE_CLASSIFICATION_CODE
+  data_type: string
+  description: Lệnh của khách hàng hay công ty tự doanh.
+  target_attr_name: Client House Classification Code
+- target_column: investor_tp_code
+  transformation: or_bo_hn.INVESTOR_CLASSIFICATION_CODE
+  data_type: string
+  description: Phân loại nhà đầu tư theo loại hình tổ chức/cá nhân (raw từ HNX).
+  target_attr_name: Investor Type Code
+- target_column: order_dt
+  transformation: or_bo_hn.ORDER_DATE
+  data_type: date
+  description: Ngày mà lệnh được ghi nhận theo ngày giao dịch của hệ thống.
+  target_attr_name: Order Date
+- target_column: order_reject_reason_code
+  transformation: or_bo_hn.ORDER_REJECT_REASON_CODE
+  data_type: string
+  description: Mã lý do lệnh bị từ chối bởi hệ thống KRX.
+  target_attr_name: Order Reject Reason Code
+- target_column: order_vol
+  transformation: or_bo_hn.ORDER_QUANTITY
+  data_type: int
+  description: Số lượng chứng khoán muốn mua hoặc bán trong lệnh.
+  target_attr_name: Order Volume
+- target_column: order_price
+  transformation: or_bo_hn.ORDER_PRICE
+  data_type: decimal(23,2)
+  description: Mức giá sẵn sàng mua hoặc bán (0 nếu Market/Fixed price/Cancel).
+  target_attr_name: Order Price
+- target_column: public_vol
+  transformation: or_bo_hn.PUBLIC_QUANTITY
+  data_type: int
+  description: 'Phần khối lượng hiển thị công khai trên sổ lệnh (Iceberg order: pub_qty
+    ≤ order_qty).'
+  target_attr_name: Public Volume
+- target_column: condition_price
+  transformation: or_bo_hn.CONDITION_PRICE
+  data_type: decimal(23,2)
+  description: Mức giá điều kiện để kích hoạt lệnh Stop order.
+  target_attr_name: Condition Price
+- target_column: order_reception_nbr
+  transformation: or_bo_hn.ORDER_RECEPTION_NUMBER
+  data_type: string
+  description: Số định danh của lệnh tại thời điểm hệ thống KRX tiếp nhận (duy nhất
+    trong ngày, tăng dần theo issue).
+  target_attr_name: Order Reception Number
+- target_column: original_order_reception_nbr
+  transformation: or_bo_hn.ORIGINAL_ORDER_RECEPTION_NUMBER
+  data_type: string
+  description: Order Reception Number của lệnh gốc mà một lệnh sửa/hủy đang tham chiếu
+    tới.
+  target_attr_name: Original Order Reception Number
+- target_column: original_order_tp_code
+  transformation: or_bo_hn.ORIGINAL_ORDER_TYPE_CODE
+  data_type: string
+  description: Loại lệnh của lệnh gốc trước khi bị sửa/hủy.
+  target_attr_name: Original Order Type Code
+- target_column: session_code
+  transformation: or_bo_hn.SESSION_ID
+  data_type: string
+  description: Mã phiên giao dịch.
+  target_attr_name: Session Code
+- target_column: remaining_quantity
+  transformation: or_bo_hn.ORDER_REMAINING_QUANTITY
+  data_type: int
+  description: Khối lượng còn lại của lệnh chưa được khớp hoặc chưa bị hủy.
+  target_attr_name: Remaining Quantity
+- target_column: message_sequence_nbr
+  transformation: or_bo_hn.MESSAGE_SEQUENCE
+  data_type: int
+  description: Số thứ tự message trong luồng dữ liệu (tăng dần từ 1).
+  target_attr_name: Message Sequence Number
+- target_column: order_action_tp_code
+  transformation: or_bo_hn.REPLACE_CANCEL_CLASSIFICATION_CODE
+  data_type: string
+  description: 'Loại hành động đối với lệnh: Mới / Sửa / Hủy.'
+  target_attr_name: Order Action Type Code
+- target_column: quote_request_tp_code
+  transformation: or_bo_hn.QUOTE_REQUEST_TYPE
+  data_type: string
+  description: Loại yêu cầu báo giá RFQ (HNX-only).
+  target_attr_name: Quote Request Type Code
+- target_column: auto_cancel_reason_code
+  transformation: or_bo_hn.AUTOMATED_CANCEL_PROCESSING_CLASSIFICATION
+  data_type: string
+  description: Mã xác định việc hủy lệnh tự động do cơ chế nào.
+  target_attr_name: Auto Cancel Reason Code
+- target_column: original_order_code
+  transformation: or_bo_hn.ORIGINAL_ORDER_ID
+  data_type: string
+  description: Order ID của lệnh gốc mà một lệnh sửa/hủy đang tham chiếu tới.
+  target_attr_name: Original Order Code
+- target_column: foreign_investor_tp_code
+  transformation: or_bo_hn.FOREIGN_INVESTOR_TYPE_CODE
+  data_type: string
+  description: Phân loại loại hình nhà đầu tư nước ngoài.
+  target_attr_name: Foreign Investor Type Code
+- target_column: order_status_code
+  transformation: 'null'
+  data_type: string
+  description: Trạng thái của lệnh.
+  target_attr_name: Order Status Code
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

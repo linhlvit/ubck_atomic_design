@@ -1,0 +1,273 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-sp_license_application-NHNCK.APPLICATIONS
+  logical_name: Mapping Atomic - Securities Practitioner License Application – source
+    NHNCK.APPLICATIONS
+  physical_name: sp_license_application
+  dm_ref: ATM-sp_license_application-NHNCK.APPLICATIONS
+  brd_ref: BRD-SRC-NHNCK-APPLICATIONS
+target:
+  namespace: atm
+  physical_name: sp_license_application
+  etl_handle: SCD4A
+  description: Hồ sơ đăng ký chứng chỉ hành nghề chứng khoán. Ghi nhận loại đăng ký,
+    loại hồ sơ, trạng thái, ngày nộp, CCHN liên quan và kết quả thi. FK đến Practitioner
+    và Officer phụ trách.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: APPLICATIONS
+  alias: appl
+  select_fields: APPLICATION_CODE, APPLICATION_TYPE, STATUS_ID, REGISTRATION_TYPE,
+    CERTIFICATE_ID, TITLE, SUBMISSION_DATE, SUPPLEMENT_DATE, SUPPLEMENT_LETTER_DATE,
+    CERTIFICATE_NUMBER, ISSUE_DATE, PREVIOUS_CERTIFICATE_NUMBER, PREVIOUS_ISSUE_DATE,
+    PREVIOUS_CERTIFICATE_ID, REISSUE_REASON, REJECTION_REASON, CERTIFICATE_RECEIPT_METHOD,
+    CERTIFICATE_RECEIPT_ADDRESS, CERTIFICATE_RECEIPT_PHONE, RECEIPT_STATUS, IS_VIOLATED,
+    IS_DATA_EXPLOITABLE, REISSUE_HSM, NOTE, PROFESSIONAL_ID, CERTIFICATE_RECORD_ID,
+    PREVIOUS_CERTIFICATE_RECORD_ID, EXAM_SESSION_ID, ASSIGNEE_ID, INFO_VERIFY_ID,
+    MCDT_CONTENT_ITEM_ID
+  filter: null
+- source_type: physical_table
+  namespace: ods
+  table_name: APPLICATION_STATUSES
+  alias: ap_st
+  select_fields: ID, STATUS_CODE
+  filter: null
+  note: Crosswalk bridge cho cl_application_status_id
+- source_type: physical_table
+  namespace: ods
+  table_name: CERTIFICATES
+  alias: cert
+  select_fields: ID, CERTIFICATE_CODE
+  filter: null
+  note: Crosswalk bridge cho sp_license_certificate_tp_id, previous_sp_license_certificate_tp_id
+relationship:
+- main_alias: appl
+  join_type: LEFT JOIN
+  join_alias: ap_st
+  join_on: appl.STATUS_ID = ap_st.ID
+- main_alias: appl
+  join_type: LEFT JOIN
+  join_alias: cert
+  join_on: appl.CERTIFICATE_ID = cert.ID
+- main_alias: appl
+  join_type: LEFT JOIN
+  join_alias: cert
+  join_on: appl.PREVIOUS_CERTIFICATE_ID = cert.ID
+mapping_columns:
+- target_column: sp_license_application_id
+  transformation: '{hash_id}(''NHNCK_APPLICATIONS'', appl.APPLICATION_CODE)'
+  data_type: string
+  description: Id tự sinh (surrogate key).
+  target_attr_name: Securities Practitioner License Application Id
+- target_column: sp_license_application_code
+  transformation: appl.APPLICATION_CODE
+  data_type: string
+  description: Mã hồ sơ đăng ký do hệ thống sinh — BK của entity.
+  target_attr_name: Securities Practitioner License Application Code
+- target_column: src_stm_code
+  transformation: '''NHNCK_APPLICATIONS'''
+  data_type: string
+  description: Mã hệ thống nguồn.
+  target_attr_name: Source System Code
+- target_column: application_tp_code
+  transformation: appl.APPLICATION_TYPE
+  data_type: string
+  description: Loại hồ sơ.
+  target_attr_name: Application Type Code
+- target_column: cl_application_status_id
+  transformation: '{hash_id}(''NHNCK_APPLICATION_STATUSES'', ap_st.STATUS_CODE)'
+  data_type: string
+  description: FK đến trạng thái hồ sơ hiện tại.
+  target_attr_name: Classification Application Status Id
+- target_column: cl_application_status_code
+  transformation: appl.STATUS_ID
+  data_type: string
+  description: Mã trạng thái hồ sơ hiện tại (denormalized lookup).
+  target_attr_name: Classification Application Status Code
+- target_column: registration_tp_code
+  transformation: appl.REGISTRATION_TYPE
+  data_type: string
+  description: Nguồn tiếp nhận hồ sơ.
+  target_attr_name: Registration Type Code
+- target_column: sp_license_certificate_tp_id
+  transformation: '{hash_id}(''NHNCK_CERTIFICATES'', cert.CERTIFICATE_CODE)'
+  data_type: string
+  description: FK đến loại chứng chỉ hành nghề đăng ký.
+  target_attr_name: Securities Practitioner License Certificate Type Id
+- target_column: sp_license_certificate_tp_code
+  transformation: appl.CERTIFICATE_ID
+  data_type: string
+  description: Mã loại chứng chỉ hành nghề đăng ký (denormalized lookup)
+  target_attr_name: Securities Practitioner License Certificate Type Code
+- target_column: title
+  transformation: appl.TITLE
+  data_type: string
+  description: Tiêu đề hoặc tên nhóm hồ sơ.
+  target_attr_name: Title
+- target_column: submission_dt
+  transformation: appl.SUBMISSION_DATE
+  data_type: date
+  description: Ngày nộp hồ sơ chính thức.
+  target_attr_name: Submission Date
+- target_column: supplement_dt
+  transformation: appl.SUPPLEMENT_DATE
+  data_type: date
+  description: Ngày nộp bổ sung hồ sơ.
+  target_attr_name: Supplement Date
+- target_column: supplement_letter_dt
+  transformation: appl.SUPPLEMENT_LETTER_DATE
+  data_type: date
+  description: Ngày ban hành công văn yêu cầu bổ sung hồ sơ.
+  target_attr_name: Supplement Letter Date
+- target_column: certificate_nbr
+  transformation: appl.CERTIFICATE_NUMBER
+  data_type: string
+  description: Số CCHN cấp cho người hành nghề.
+  target_attr_name: Certificate Number
+- target_column: issue_dt
+  transformation: appl.ISSUE_DATE
+  data_type: date
+  description: Ngày cấp CCHN.
+  target_attr_name: Issue Date
+- target_column: previous_certificate_nbr
+  transformation: appl.PREVIOUS_CERTIFICATE_NUMBER
+  data_type: string
+  description: Số CCHN cũ trước khi cấp lại.
+  target_attr_name: Previous Certificate Number
+- target_column: previous_issue_dt
+  transformation: appl.PREVIOUS_ISSUE_DATE
+  data_type: date
+  description: Ngày cấp CCHN cũ.
+  target_attr_name: Previous Issue Date
+- target_column: previous_sp_license_certificate_tp_id
+  transformation: '{hash_id}(''NHNCK_CERTIFICATES'', cert.CERTIFICATE_CODE)'
+  data_type: string
+  description: FK đến loại CCHN cũ khi cấp lại.
+  target_attr_name: Previous Securities Practitioner License Certificate Type Id
+- target_column: previous_sp_license_certificate_tp_code
+  transformation: appl.PREVIOUS_CERTIFICATE_ID
+  data_type: string
+  description: Mã loại CCHN cũ khi cấp lại (denormalized lookup)
+  target_attr_name: Previous Securities Practitioner License Certificate Type Code
+- target_column: reissue_reason
+  transformation: appl.REISSUE_REASON
+  data_type: string
+  description: Lý do xin cấp lại CCHN.
+  target_attr_name: Reissue Reason
+- target_column: rejection_reason
+  transformation: appl.REJECTION_REASON
+  data_type: string
+  description: Lý do trả lại hoặc từ chối hồ sơ.
+  target_attr_name: Rejection Reason
+- target_column: certificate_receipt_method_code
+  transformation: appl.CERTIFICATE_RECEIPT_METHOD
+  data_type: string
+  description: Phương thức nhận CCHN.
+  target_attr_name: Certificate Receipt Method Code
+- target_column: certificate_receipt_adr
+  transformation: appl.CERTIFICATE_RECEIPT_ADDRESS
+  data_type: string
+  description: Địa chỉ nhận CCHN qua bưu điện.
+  target_attr_name: Certificate Receipt Address
+- target_column: certificate_receipt_phone
+  transformation: appl.CERTIFICATE_RECEIPT_PHONE
+  data_type: string
+  description: Số điện thoại liên lạc khi nhận CCHN.
+  target_attr_name: Certificate Receipt Phone
+- target_column: receipt_status_code
+  transformation: appl.RECEIPT_STATUS
+  data_type: string
+  description: Trạng thái nhận CCHN.
+  target_attr_name: Receipt Status Code
+- target_column: violated_indicator
+  transformation: appl.IS_VIOLATED
+  data_type: int
+  description: Cờ người hành nghề vi phạm quy định.
+  target_attr_name: Violated Indicator
+- target_column: data_exploitable_indicator
+  transformation: appl.IS_DATA_EXPLOITABLE
+  data_type: int
+  description: Cờ dữ liệu có thể khai thác.
+  target_attr_name: Data Exploitable Indicator
+- target_column: reissue_hsm
+  transformation: appl.REISSUE_HSM
+  data_type: string
+  description: Thông tin HSM khi cấp CCHN điện tử.
+  target_attr_name: Reissue Hsm
+- target_column: note
+  transformation: appl.NOTE
+  data_type: string
+  description: Ghi chú bổ sung.
+  target_attr_name: Note
+- target_column: sp_id
+  transformation: '{hash_id}(''NHNCK_PROFESSIONALS'', appl.PROFESSIONAL_ID)'
+  data_type: string
+  description: FK đến Securities Practitioner.
+  target_attr_name: Securities Practitioner Id
+- target_column: sp_code
+  transformation: appl.PROFESSIONAL_ID
+  data_type: string
+  description: Mã người hành nghề.
+  target_attr_name: Securities Practitioner Code
+- target_column: sp_license_certificate_document_id
+  transformation: '{hash_id}(''NHNCK_CERTIFICATE_RECORDS'', appl.CERTIFICATE_RECORD_ID)'
+  data_type: string
+  description: FK đến License Certificate Document (CCHN trong sổ đăng bộ).
+  target_attr_name: Securities Practitioner License Certificate Document Id
+- target_column: sp_license_certificate_document_code
+  transformation: appl.CERTIFICATE_RECORD_ID
+  data_type: string
+  description: Mã CCHN trong sổ đăng bộ.
+  target_attr_name: Securities Practitioner License Certificate Document Code
+- target_column: previous_sp_license_certificate_document_id
+  transformation: '{hash_id}(''NHNCK_CERTIFICATE_RECORDS'', appl.PREVIOUS_CERTIFICATE_RECORD_ID)'
+  data_type: string
+  description: FK đến CCHN cũ (khi cấp lại).
+  target_attr_name: Previous Securities Practitioner License Certificate Document
+    Id
+- target_column: previous_sp_license_certificate_document_code
+  transformation: appl.PREVIOUS_CERTIFICATE_RECORD_ID
+  data_type: string
+  description: Mã CCHN cũ.
+  target_attr_name: Previous Securities Practitioner License Certificate Document
+    Code
+- target_column: sp_qualification_examination_assessment_id
+  transformation: '{hash_id}(''NHNCK_APPLICATIONS'', appl.EXAM_SESSION_ID)'
+  data_type: string
+  description: FK đến Exam Session (đợt thi sát hạch liên quan — nullable).
+  target_attr_name: Securities Practitioner Qualification Examination Assessment Id
+- target_column: sp_qualification_examination_assessment_code
+  transformation: appl.EXAM_SESSION_ID
+  data_type: string
+  description: Mã đợt thi sát hạch.
+  target_attr_name: Securities Practitioner Qualification Examination Assessment Code
+- target_column: assignee_officer_id
+  transformation: '{hash_id}(''IAM_USERS'', appl.ASSIGNEE_ID)'
+  data_type: string
+  description: FK đến Regulatory Authority Officer — cán bộ được phân công xử lý hồ
+    sơ.
+  target_attr_name: Assignee Officer Id
+- target_column: assignee_officer_code
+  transformation: appl.ASSIGNEE_ID
+  data_type: string
+  description: Mã cán bộ được phân công.
+  target_attr_name: Assignee Officer Code
+- target_column: info_verify_officer_id
+  transformation: '{hash_id}(''IAM_USERS'', appl.INFO_VERIFY_ID)'
+  data_type: string
+  description: FK đến Regulatory Authority Officer — cán bộ xác minh thông tin.
+  target_attr_name: Info Verify Officer Id
+- target_column: info_verify_officer_code
+  transformation: appl.INFO_VERIFY_ID
+  data_type: string
+  description: Mã cán bộ xác minh thông tin.
+  target_attr_name: Info Verify Officer Code
+- target_column: public_service_portal_content_item_code
+  transformation: appl.MCDT_CONTENT_ITEM_ID
+  data_type: string
+  description: ContentItemId hồ sơ TTHC trên DVC (MCĐT).
+  target_attr_name: Public Service Portal Content Item Code
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

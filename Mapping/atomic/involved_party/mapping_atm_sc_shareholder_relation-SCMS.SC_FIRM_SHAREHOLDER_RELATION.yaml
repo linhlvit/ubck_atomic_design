@@ -1,0 +1,142 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-sc_shareholder_relation-SCMS.SC_FIRM_SHAREHOLDER_RELATION
+  logical_name: Mapping Atomic - Securities Company Shareholder Relation – source
+    SCMS.SC_FIRM_SHAREHOLDER_RELATION
+  physical_name: sc_shareholder_relation
+  dm_ref: ATM-sc_shareholder_relation-SCMS.SC_FIRM_SHAREHOLDER_RELATION
+  brd_ref: BRD-SRC-SCMS-SC_FIRM_SHAREHOLDER_RELATION
+target:
+  namespace: atm
+  physical_name: sc_shareholder_relation
+  etl_handle: SCD4A
+  description: Người có liên quan của cổ đông CTCK. Ghi nhận thông tin định danh người
+    liên quan và loại quan hệ với cổ đông.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: SC_FIRM_SHAREHOLDER_RELATION
+  alias: sc_fi_sh_re
+  select_fields: ID, SC_FIRM_INFO_ID, SC_FIRM_SHAREHOLDER_ID, RECORD_STATUS, FULL_NAME,
+    RELATIONSHIP, ID_NUMBER, ISSUE_DATE, ISSUE_PLACE, WORKPLACE, JOB_TITLE, SC_FIRM_WITH_SHARES_ID,
+    SHARES_COUNT, OWNERSHIP_RATIO, ATTACHMENT_PATH, NOTE
+  filter: null
+- source_type: physical_table
+  namespace: ods
+  table_name: SC_FIRM_INFO
+  alias: sc_fi_in
+  select_fields: ID, CODE
+  filter: null
+  note: Crosswalk bridge cho sc_id
+relationship:
+- main_alias: sc_fi_sh_re
+  join_type: LEFT JOIN
+  join_alias: sc_fi_in
+  join_on: sc_fi_sh_re.SC_FIRM_INFO_ID = sc_fi_in.ID
+mapping_columns:
+- target_column: sc_shareholder_relation_id
+  transformation: '{hash_id}(''SCMS_SC_FIRM_SHAREHOLDER_RELATION'', sc_fi_sh_re.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Securities Company Shareholder Relation Id
+- target_column: sc_shareholder_relation_code
+  transformation: sc_fi_sh_re.ID
+  data_type: string
+  description: Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.
+  target_attr_name: Securities Company Shareholder Relation Code
+- target_column: src_stm_code
+  transformation: '''SCMS_SC_FIRM_SHAREHOLDER_RELATION'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: sc_id
+  transformation: '{hash_id}(''SCMS_SC_FIRM_INFO'', sc_fi_in.CODE)'
+  data_type: string
+  description: FK đến Công ty chứng khoán liên quan.
+  target_attr_name: Securities Company Id
+- target_column: sc_code
+  transformation: sc_fi_sh_re.SC_FIRM_INFO_ID
+  data_type: string
+  description: Mã Công ty chứng khoán.
+  target_attr_name: Securities Company Code
+- target_column: sc_shareholder_id
+  transformation: '{hash_id}(''SCMS_SC_FIRM_SHAREHOLDER'', sc_fi_sh_re.SC_FIRM_SHAREHOLDER_ID)'
+  data_type: string
+  description: FK đến Cổ đông CTCK mà người này có quan hệ.
+  target_attr_name: Securities Company Shareholder Id
+- target_column: sc_shareholder_code
+  transformation: sc_fi_sh_re.SC_FIRM_SHAREHOLDER_ID
+  data_type: string
+  description: Mã Cổ đông CTCK.
+  target_attr_name: Securities Company Shareholder Code
+- target_column: record_status_code
+  transformation: sc_fi_sh_re.RECORD_STATUS
+  data_type: string
+  description: 'Trạng thái bản ghi quan hệ cổ đông: 1=Đang hoạt động/còn hiệu lực;
+    0=Ngừng hoạt động/hết hiệu lực.'
+  target_attr_name: Record Status Code
+- target_column: full_nm
+  transformation: sc_fi_sh_re.FULL_NAME
+  data_type: string
+  description: Họ và tên đầy đủ (cá nhân) hoặc tên đầy đủ (tổ chức) của người liên
+    quan.
+  target_attr_name: Full Name
+- target_column: rltnp
+  transformation: sc_fi_sh_re.RELATIONSHIP
+  data_type: string
+  description: Mối quan hệ với cổ đông (vợ/chồng/con cái/anh chị em).
+  target_attr_name: Relationship
+- target_column: identification_nbr
+  transformation: sc_fi_sh_re.ID_NUMBER
+  data_type: string
+  description: Số CMND/CCCD của người liên quan (định danh cũ).
+  target_attr_name: Identification Number
+- target_column: issue_dt
+  transformation: sc_fi_sh_re.ISSUE_DATE
+  data_type: date
+  description: Ngày cấp giấy tờ/chứng chỉ của người liên quan.
+  target_attr_name: Issue Date
+- target_column: issue_place
+  transformation: sc_fi_sh_re.ISSUE_PLACE
+  data_type: string
+  description: Nơi cấp giấy tờ/chứng chỉ của người liên quan.
+  target_attr_name: Issue Place
+- target_column: workplace
+  transformation: sc_fi_sh_re.WORKPLACE
+  data_type: string
+  description: Nơi làm việc của người liên quan.
+  target_attr_name: Workplace
+- target_column: job_title
+  transformation: sc_fi_sh_re.JOB_TITLE
+  data_type: string
+  description: Chức danh/chức vụ của người liên quan tại nơi làm việc.
+  target_attr_name: Job Title
+- target_column: sc_firm_with_shares_reference_id
+  transformation: sc_fi_sh_re.SC_FIRM_WITH_SHARES_ID
+  data_type: string
+  description: Tham chiếu đến CTCK khác mà người liên quan nắm cổ phần (không phải
+    FK constraint).
+  target_attr_name: Sc Firm With Shares Reference Id
+- target_column: shares_count
+  transformation: sc_fi_sh_re.SHARES_COUNT
+  data_type: int
+  description: Số lượng cổ phần của người liên quan tại CTCK.
+  target_attr_name: Shares Count
+- target_column: ownership_ratio
+  transformation: sc_fi_sh_re.OWNERSHIP_RATIO
+  data_type: decimal(5,2)
+  description: Tỷ lệ sở hữu vốn của người liên quan tại CTCK (%).
+  target_attr_name: Ownership Ratio
+- target_column: attachment_path
+  transformation: sc_fi_sh_re.ATTACHMENT_PATH
+  data_type: string
+  description: Đường dẫn file đính kèm trên hệ thống lưu trữ.
+  target_attr_name: Attachment Path
+- target_column: note
+  transformation: sc_fi_sh_re.NOTE
+  data_type: string
+  description: Ghi chú bổ sung, không bắt buộc.
+  target_attr_name: Note
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

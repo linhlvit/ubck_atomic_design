@@ -1,0 +1,96 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-pc_evaluation-IDS.EVALUATIONS
+  logical_name: Mapping Atomic - Public Company Evaluation – source IDS.EVALUATIONS
+  physical_name: pc_evaluation
+  dm_ref: ATM-pc_evaluation-IDS.EVALUATIONS
+  brd_ref: BRD-SRC-IDS-EVALUATIONS
+target:
+  namespace: atm
+  physical_name: pc_evaluation
+  etl_handle: SCD4A
+  description: 'Kết quả đánh giá/xếp hạng tổng thể của một CTĐC trong một kỳ đánh
+    giá: tổng điểm, loại xếp hạng (A/B/C), trạng thái phê duyệt.'
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: EVALUATIONS
+  alias: eval
+  select_fields: ID, COMPANY_ID, PERIOD_ID, TOTAL_SCORE, EVALUATION_DATE, TYPE, STATUS,
+    APPROVED_BY, APPROVED_DATE
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: pc_evaluation_id
+  transformation: '{hash_id}(''IDS_EVALUATIONS'', eval.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Public Company Evaluation Id
+- target_column: pc_evaluation_code
+  transformation: eval.ID
+  data_type: string
+  description: Khóa chính. BK của entity — map từ PK bảng nguồn.
+  target_attr_name: Public Company Evaluation Code
+- target_column: src_stm_code
+  transformation: '''IDS_EVALUATIONS'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: pc_id
+  transformation: '{hash_id}(''IDS_COMPANY_PROFILES'', eval.COMPANY_ID)'
+  data_type: string
+  description: Id của công ty được đánh giá.
+  target_attr_name: Public Company Id
+- target_column: pc_code
+  transformation: eval.COMPANY_ID
+  data_type: string
+  description: Mã công ty đại chúng.
+  target_attr_name: Public Company Code
+- target_column: pc_evaluation_period_id
+  transformation: '{hash_id}(''IDS_EVALUATION_PERIODS'', eval.PERIOD_ID)'
+  data_type: string
+  description: Id kỳ đánh giá.
+  target_attr_name: Public Company Evaluation Period Id
+- target_column: pc_evaluation_period_code
+  transformation: eval.PERIOD_ID
+  data_type: string
+  description: Mã kỳ đánh giá.
+  target_attr_name: Public Company Evaluation Period Code
+- target_column: total_score_percentage
+  transformation: eval.TOTAL_SCORE
+  data_type: decimal(5,2)
+  description: Tổng điểm.
+  target_attr_name: Total Score Percentage
+- target_column: evaluation_dt
+  transformation: eval.EVALUATION_DATE
+  data_type: date
+  description: Ngày đánh giá (ngày chạy đánh giá trong kỳ).
+  target_attr_name: Evaluation Date
+- target_column: evaluation_tp_code
+  transformation: eval.TYPE
+  data_type: string
+  description: Xếp Loại (A,B,C - theo tổng điểm).
+  target_attr_name: Evaluation Type Code
+- target_column: evaluation_status_code
+  transformation: eval.STATUS
+  data_type: string
+  description: Trạng thái đánh giá.
+  target_attr_name: Evaluation Status Code
+- target_column: approved_by_user_id
+  transformation: '{hash_id}(''IAM_USERS'', eval.APPROVED_BY)'
+  data_type: string
+  description: Người duyệt.
+  target_attr_name: Approved By User Id
+- target_column: approved_by_user_code
+  transformation: eval.APPROVED_BY
+  data_type: string
+  description: Mã người duyệt (denormalized lookup).
+  target_attr_name: Approved By User Code
+- target_column: approved_dt
+  transformation: eval.APPROVED_DATE
+  data_type: date
+  description: Ngày duyệt.
+  target_attr_name: Approved Date
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

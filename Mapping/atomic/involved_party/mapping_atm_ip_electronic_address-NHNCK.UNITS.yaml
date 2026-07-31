@@ -1,0 +1,70 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-ip_electronic_address-NHNCK.UNITS
+  logical_name: Mapping Atomic - Involved Party Electronic Address – source NHNCK.UNITS
+  physical_name: ip_electronic_address
+  dm_ref: ATM-ip_electronic_address-NHNCK.UNITS
+  brd_ref: BRD-SRC-NHNCK-UNITS
+target:
+  namespace: atm
+  physical_name: ip_electronic_address
+  etl_handle: SCD4A
+  description: Lưu trữ các địa chỉ liên lạc điện tử của Involved Party (điện thoại/fax/email).
+    Mỗi dòng = 1 kênh liên lạc từ 1 nguồn.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: UNITS
+  alias: unit
+  select_fields: ID, UNIT_CODE, EMAIL, FAX, PHONE_NUMBER
+  filter: null
+- source_type: unpivot_cte
+  namespace: null
+  table_name: unit
+  alias: unpvt
+  select_fields: ID, UNIT_CODE, electronic_adr_tp_code, electronic_adr_val
+  filter: null
+  unpivot_spec:
+    value_columns:
+    - electronic_adr_val
+    type_column: electronic_adr_tp_code
+    legs:
+    - type_value: EMAIL
+      source_columns:
+      - EMAIL
+    - type_value: FAX
+      source_columns:
+      - FAX
+    - type_value: PHONE
+      source_columns:
+      - PHONE_NUMBER
+relationship: []
+mapping_columns:
+- target_column: ip_id
+  transformation: '{hash_id}(''NHNCK_UNITS'', unpvt.ID)'
+  data_type: string
+  description: FK đến Regulatory Authority Organization Unit
+  target_attr_name: Involved Party Id
+- target_column: ip_code
+  transformation: unpvt.UNIT_CODE
+  data_type: string
+  description: Mã đơn vị
+  target_attr_name: Involved Party Code
+- target_column: src_stm_code
+  transformation: '''NHNCK_UNITS'''
+  data_type: string
+  description: Mã hệ thống nguồn
+  target_attr_name: Source System Code
+- target_column: electronic_adr_tp_code
+  transformation: unpvt.electronic_adr_tp_code
+  data_type: string
+  description: Loại kênh liên lạc — email
+  target_attr_name: Electronic Address Type Code
+- target_column: electronic_adr_val
+  transformation: unpvt.electronic_adr_val
+  data_type: string
+  description: Email đơn vị
+  target_attr_name: Electronic Address Value
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

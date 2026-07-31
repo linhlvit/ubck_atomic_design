@@ -1,0 +1,109 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-inspection_team_target-THANHTRA.INSPECTION_TEAM_TARGET
+  logical_name: Mapping Atomic - Inspection Team Target – source THANHTRA.INSPECTION_TEAM_TARGET
+  physical_name: inspection_team_target
+  dm_ref: ATM-inspection_team_target-THANHTRA.INSPECTION_TEAM_TARGET
+  brd_ref: BRD-SRC-THANHTRA-INSPECTION_TEAM_TARGET
+target:
+  namespace: atm
+  physical_name: inspection_team_target
+  etl_handle: SCD4A
+  description: 'Danh sách đối tượng được thanh tra trong đoàn cụ thể: 7 loại đơn vị/cá
+    nhân, mã tham chiếu trong hệ thống nguồn, tên đối tượng.'
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: INSPECTION_TEAM_TARGET
+  alias: in_te_ta
+  select_fields: ID, INSPECTION_TEAM_ID, TARGET_TYPE, TARGET_REFERENCE_ID, TARGET_NAME,
+    INSPECTION_PERIOD_FROM, INSPECTION_PERIOD_TO, ANTI_MONEY_LAUNDERING, ABNORMAL_TRANSACTION_CHECK,
+    CONTENT, NOTE
+  filter: null
+- source_type: physical_table
+  namespace: ods
+  table_name: INSPECTION_TEAM
+  alias: in_te
+  select_fields: ID, CODE
+  filter: null
+  note: Crosswalk bridge cho inspection_team_id
+relationship:
+- main_alias: in_te_ta
+  join_type: LEFT JOIN
+  join_alias: in_te
+  join_on: in_te_ta.INSPECTION_TEAM_ID = in_te.ID
+mapping_columns:
+- target_column: inspection_team_target_id
+  transformation: '{hash_id}(''THANHTRA_INSPECTION_TEAM_TARGET'', in_te_ta.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Inspection Team Target Id
+- target_column: inspection_team_target_code
+  transformation: in_te_ta.ID
+  data_type: string
+  description: PK nguồn (VARCHAR2 UUID). BK của entity.
+  target_attr_name: Inspection Team Target Code
+- target_column: src_stm_code
+  transformation: '''THANHTRA_INSPECTION_TEAM_TARGET'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: inspection_team_id
+  transformation: '{hash_id}(''THANHTRA_INSPECTION_TEAM'', in_te.CODE)'
+  data_type: string
+  description: FK đến đoàn thanh tra thực hiện thanh tra đối tượng này.
+  target_attr_name: Inspection Team Id
+- target_column: inspection_team_code
+  transformation: in_te_ta.INSPECTION_TEAM_ID
+  data_type: string
+  description: Mã đoàn thanh tra liên kết (snapshot).
+  target_attr_name: Inspection Team Code
+- target_column: target_tp_code
+  transformation: in_te_ta.TARGET_TYPE
+  data_type: string
+  description: 'Loại đối tượng: SECURITIES_COMPANY, FUND_MANAGEMENT_COMPANY, PUBLIC_COMPANY,
+    AUDIT_COMPANY, CRYPTO_SERVICE_PROVIDER, INDIVIDUAL, ORGANIZATION.'
+  target_attr_name: Target Type Code
+- target_column: target_reference_id
+  transformation: in_te_ta.TARGET_REFERENCE_ID
+  data_type: string
+  description: ID tham chiếu đối tượng trong hệ thống nguồn (SCMS/FMS/IDS).
+  target_attr_name: Target Reference Id
+- target_column: target_nm
+  transformation: in_te_ta.TARGET_NAME
+  data_type: string
+  description: Tên đối tượng được thanh tra.
+  target_attr_name: Target Name
+- target_column: inspection_period_from_dt
+  transformation: in_te_ta.INSPECTION_PERIOD_FROM
+  data_type: date
+  description: Thời kỳ thanh tra từ (per-target, có thể khác plan-level).
+  target_attr_name: Inspection Period From Date
+- target_column: inspection_period_to_dt
+  transformation: in_te_ta.INSPECTION_PERIOD_TO
+  data_type: date
+  description: Thời kỳ thanh tra đến.
+  target_attr_name: Inspection Period To Date
+- target_column: anti_money_laundering_indicator
+  transformation: in_te_ta.ANTI_MONEY_LAUNDERING
+  data_type: string
+  description: 'Có/không thanh tra về PCRT: 1=Có, 0=Không.'
+  target_attr_name: Anti Money Laundering Indicator
+- target_column: abnormal_transaction_check_indicator
+  transformation: in_te_ta.ABNORMAL_TRANSACTION_CHECK
+  data_type: string
+  description: 'Kiểm tra giao dịch bất thường: 1=Có, 0=Không.'
+  target_attr_name: Abnormal Transaction Check Indicator
+- target_column: content
+  transformation: in_te_ta.CONTENT
+  data_type: string
+  description: Nội dung thanh tra đối với đối tượng này.
+  target_attr_name: Content
+- target_column: note
+  transformation: in_te_ta.NOTE
+  data_type: string
+  description: Ghi chú bổ sung.
+  target_attr_name: Note
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

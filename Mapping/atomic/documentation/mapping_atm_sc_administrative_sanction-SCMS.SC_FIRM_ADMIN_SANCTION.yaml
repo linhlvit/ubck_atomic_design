@@ -1,0 +1,121 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-sc_administrative_sanction-SCMS.SC_FIRM_ADMIN_SANCTION
+  logical_name: Mapping Atomic - Securities Company Administrative Sanction – source
+    SCMS.SC_FIRM_ADMIN_SANCTION
+  physical_name: sc_administrative_sanction
+  dm_ref: ATM-sc_administrative_sanction-SCMS.SC_FIRM_ADMIN_SANCTION
+  brd_ref: BRD-SRC-SCMS-SC_FIRM_ADMIN_SANCTION
+target:
+  namespace: atm
+  physical_name: sc_administrative_sanction
+  etl_handle: SCD2
+  description: Biện pháp xử lý hành chính áp dụng cho CTCK (cảnh cáo, phạt tiền, đình
+    chỉ, thu hồi giấy phép). Ghi nhận từng biện pháp với số văn bản, ngày hiệu lực
+    và lý do áp dụng.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: SC_FIRM_ADMIN_SANCTION
+  alias: sc_fi_ad_sa
+  select_fields: ID, SC_FIRM_INFO_ID, FORM_TYPE, RECORD_STATUS, AMOUNT, CONTENT, DECISION_CONTENT,
+    DECISION_DATE, ADDITIONAL_PENALTY, ADDITIONAL_PENALTY_DATE, BIEN_PHAP_KHAC_PHUC,
+    PROCESSING_UNIT, ATTACHMENT_PATH
+  filter: null
+- source_type: physical_table
+  namespace: ods
+  table_name: SC_FIRM_INFO
+  alias: sc_fi_in
+  select_fields: ID, CODE
+  filter: null
+  note: Crosswalk bridge cho sc_id
+relationship:
+- main_alias: sc_fi_ad_sa
+  join_type: LEFT JOIN
+  join_alias: sc_fi_in
+  join_on: sc_fi_ad_sa.SC_FIRM_INFO_ID = sc_fi_in.ID
+mapping_columns:
+- target_column: sc_administrative_sanction_id
+  transformation: '{hash_id}(''SCMS_SC_FIRM_ADMIN_SANCTION'', sc_fi_ad_sa.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Securities Company Administrative Sanction Id
+- target_column: sc_administrative_sanction_code
+  transformation: sc_fi_ad_sa.ID
+  data_type: string
+  description: Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.
+  target_attr_name: Securities Company Administrative Sanction Code
+- target_column: src_stm_code
+  transformation: '''SCMS_SC_FIRM_ADMIN_SANCTION'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: sc_id
+  transformation: '{hash_id}(''SCMS_SC_FIRM_INFO'', sc_fi_in.CODE)'
+  data_type: string
+  description: FK đến Công ty chứng khoán bị xử lý hành chính.
+  target_attr_name: Securities Company Id
+- target_column: sc_code
+  transformation: sc_fi_ad_sa.SC_FIRM_INFO_ID
+  data_type: string
+  description: Mã Công ty chứng khoán.
+  target_attr_name: Securities Company Code
+- target_column: sanction_form_tp_code
+  transformation: sc_fi_ad_sa.FORM_TYPE
+  data_type: string
+  description: 'Hình thức xử lý hành chính: CANH_CAO=Cảnh cáo; PHAT_TIEN=Phạt tiền;
+    DINH_CHI=Đình chỉ; TUOC_GIAY_PHEP=Tước giấy phép.'
+  target_attr_name: Sanction Form Type Code
+- target_column: record_status_code
+  transformation: sc_fi_ad_sa.RECORD_STATUS
+  data_type: string
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động; 0=Ngừng hoạt động.'
+  target_attr_name: Record Status Code
+- target_column: amt
+  transformation: sc_fi_ad_sa.AMOUNT
+  data_type: decimal(23,2)
+  description: Số tiền xử phạt hành chính.
+  target_attr_name: Amount
+- target_column: content
+  transformation: sc_fi_ad_sa.CONTENT
+  data_type: string
+  description: Nội dung chi tiết biện pháp xử lý hành chính.
+  target_attr_name: Content
+- target_column: decision_content
+  transformation: sc_fi_ad_sa.DECISION_CONTENT
+  data_type: string
+  description: Nội dung quyết định xử phạt liên quan.
+  target_attr_name: Decision Content
+- target_column: decision_dt
+  transformation: sc_fi_ad_sa.DECISION_DATE
+  data_type: date
+  description: Ngày ban hành quyết định xử lý hành chính.
+  target_attr_name: Decision Date
+- target_column: additional_penalty
+  transformation: sc_fi_ad_sa.ADDITIONAL_PENALTY
+  data_type: string
+  description: Mô tả hình phạt bổ sung kèm theo biện pháp xử lý chính.
+  target_attr_name: Additional Penalty
+- target_column: additional_penalty_dt
+  transformation: sc_fi_ad_sa.ADDITIONAL_PENALTY_DATE
+  data_type: date
+  description: Ngày áp dụng hình phạt bổ sung.
+  target_attr_name: Additional Penalty Date
+- target_column: remediation_measures
+  transformation: sc_fi_ad_sa.BIEN_PHAP_KHAC_PHUC
+  data_type: string
+  description: Biện pháp khắc phục hậu quả vi phạm.
+  target_attr_name: Remediation Measures
+- target_column: processing_unit
+  transformation: sc_fi_ad_sa.PROCESSING_UNIT
+  data_type: string
+  description: Đơn vị xử lý biện pháp hành chính.
+  target_attr_name: Processing Unit
+- target_column: attachment_path
+  transformation: sc_fi_ad_sa.ATTACHMENT_PATH
+  data_type: string
+  description: Đường dẫn file đính kèm biện pháp xử lý.
+  target_attr_name: Attachment Path
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

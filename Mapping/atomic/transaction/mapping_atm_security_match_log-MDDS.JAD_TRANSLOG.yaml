@@ -1,0 +1,108 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-security_match_log-MDDS.JAD_TRANSLOG
+  logical_name: Mapping Atomic - Security Match Log – source MDDS.JAD_TRANSLOG
+  physical_name: security_match_log
+  dm_ref: ATM-security_match_log-MDDS.JAD_TRANSLOG
+  brd_ref: BRD-SRC-MDDS-JAD_TRANSLOG
+target:
+  namespace: atm
+  physical_name: security_match_log
+  etl_handle: Fact Append
+  description: Log từng lần khớp lệnh (tick-by-tick) của cổ phiếu niêm yết trong ngày
+    giao dịch, bao gồm giá khớp, khối lượng khớp, chiều giao dịch chủ động, và lũy
+    kế khối lượng/giá trị từ đầu ngày.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: JAD_TRANSLOG
+  alias: ja_tr
+  select_fields: ID, SYMBOL, TRADINGDATE, FORMATTEDTIME, SEQUENCEMSG, LASTCOLOR, CHANGECOLOR,
+    FORMATTEDMATCHPRICE, FORMATTEDVOL, FORMATTEDACCVOL, FORMATTEDACCVAL, TOTALBUYVOL,
+    TOTALSELLVOL, BOARDID
+  filter: TRADINGDATE = {etl_date}
+relationship: []
+mapping_columns:
+- target_column: security_match_log_id
+  transformation: '{hash_id}(''MDDS_JAD_TRANSLOG'', ja_tr.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Security Match Log Id
+- target_column: security_match_log_code
+  transformation: ja_tr.ID
+  data_type: string
+  description: ID unique cho từng lần khớp — PK bảng nguồn. BK.
+  target_attr_name: Security Match Log Code
+- target_column: src_stm_code
+  transformation: '''MDDS_JAD_TRANSLOG'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: symbol
+  transformation: ja_tr.SYMBOL
+  data_type: string
+  description: Mã chứng khoán.
+  target_attr_name: Symbol
+- target_column: trading_dt
+  transformation: ja_tr.TRADINGDATE
+  data_type: date
+  description: Ngày giao dịch.
+  target_attr_name: Trading Date
+- target_column: match_time
+  transformation: ja_tr.FORMATTEDTIME
+  data_type: string
+  description: Thời gian khớp.
+  target_attr_name: Match Time
+- target_column: sequence_message
+  transformation: ja_tr.SEQUENCEMSG
+  data_type: string
+  description: Sequence tín hiệu của sở.
+  target_attr_name: Sequence Message
+- target_column: trade_direction_code
+  transformation: ja_tr.LASTCOLOR
+  data_type: string
+  description: Chiều mua/bán chủ động.
+  target_attr_name: Trade Direction Code
+- target_column: change_color_code
+  transformation: ja_tr.CHANGECOLOR
+  data_type: string
+  description: Indicator tăng/giảm so với giá tham chiếu.
+  target_attr_name: Change Color Code
+- target_column: match_price
+  transformation: ja_tr.FORMATTEDMATCHPRICE
+  data_type: decimal(23,2)
+  description: Giá khớp.
+  target_attr_name: Match Price
+- target_column: match_vol
+  transformation: ja_tr.FORMATTEDVOL
+  data_type: int
+  description: Khối lượng khớp.
+  target_attr_name: Match Volume
+- target_column: accumulated_vol
+  transformation: ja_tr.FORMATTEDACCVOL
+  data_type: int
+  description: Tổng khối lượng khớp lũy kế trong ngày (lô chẵn).
+  target_attr_name: Accumulated Volume
+- target_column: accumulated_val
+  transformation: ja_tr.FORMATTEDACCVAL
+  data_type: decimal(23,2)
+  description: Tổng giá trị khớp lũy kế trong ngày (lô chẵn).
+  target_attr_name: Accumulated Value
+- target_column: total_buy_vol
+  transformation: ja_tr.TOTALBUYVOL
+  data_type: int
+  description: Tổng khối lượng mua chủ động.
+  target_attr_name: Total Buy Volume
+- target_column: total_sell_vol
+  transformation: ja_tr.TOTALSELLVOL
+  data_type: int
+  description: Tổng khối lượng bán chủ động.
+  target_attr_name: Total Sell Volume
+- target_column: board_id
+  transformation: ja_tr.BOARDID
+  data_type: string
+  description: Board của mã, mặc định G1.
+  target_attr_name: Board Id
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

@@ -1,0 +1,138 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-pd_subject-THANHTRA.PENALTY_DECISION_SUBJECT
+  logical_name: Mapping Atomic - Penalty Decision Subject – source THANHTRA.PENALTY_DECISION_SUBJECT
+  physical_name: pd_subject
+  dm_ref: ATM-pd_subject-THANHTRA.PENALTY_DECISION_SUBJECT
+  brd_ref: BRD-SRC-THANHTRA-PENALTY_DECISION_SUBJECT
+target:
+  namespace: atm
+  physical_name: pd_subject
+  etl_handle: SCD4A
+  description: 'Đối tượng bị xử phạt trong quyết định: thông tin định danh, tổng số
+    tiền phạt, số tiền đã nộp, số tiền cưỡng chế, trạng thái tuân thủ thanh toán.'
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: PENALTY_DECISION_SUBJECT
+  alias: pe_de_su
+  select_fields: ID, PENALTY_DECISION_ID, SUBJECT_TYPE, SUBJECT_NAME, SUBJECT_ID_NUMBER,
+    SUBJECT_ADDRESS, SUBJECT_TAX_CODE, SUBJECT_DOB, SUBJECT_LEGAL_REP, SUBJECT_LEGAL_REP_TITLE,
+    TOTAL_FINE_AMOUNT, PAID_AMOUNT, COERCED_AMOUNT, PAYMENT_RECEIVED_DATE, COMPLIANCE_STATUS,
+    ENFORCEMENT_PROGRESS, NOTE, PAYMENT_PROOF_URL, PAYMENT_PROOF_UPLOADED_AT
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: pd_subject_id
+  transformation: '{hash_id}(''THANHTRA_PENALTY_DECISION_SUBJECT'', pe_de_su.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Penalty Decision Subject Id
+- target_column: pd_subject_code
+  transformation: pe_de_su.ID
+  data_type: string
+  description: BK chính. PK nguồn (VARCHAR2 UUID).
+  target_attr_name: Penalty Decision Subject Code
+- target_column: src_stm_code
+  transformation: '''THANHTRA_PENALTY_DECISION_SUBJECT'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: pd_id
+  transformation: '{hash_id}(''THANHTRA_PENALTY_DECISION'', pe_de_su.PENALTY_DECISION_ID)'
+  data_type: string
+  description: FK đến quyết định xử phạt.
+  target_attr_name: Penalty Decision Id
+- target_column: pd_code
+  transformation: pe_de_su.PENALTY_DECISION_ID
+  data_type: string
+  description: Mã quyết định xử phạt liên kết (snapshot).
+  target_attr_name: Penalty Decision Code
+- target_column: subject_tp_code
+  transformation: pe_de_su.SUBJECT_TYPE
+  data_type: string
+  description: 'Loại đối tượng: INDIVIDUAL (Cá nhân), ORGANIZATION (Tổ chức).'
+  target_attr_name: Subject Type Code
+- target_column: subject_nm
+  transformation: pe_de_su.SUBJECT_NAME
+  data_type: string
+  description: Tên đối tượng bị xử phạt.
+  target_attr_name: Subject Name
+- target_column: subject_id_nbr
+  transformation: pe_de_su.SUBJECT_ID_NUMBER
+  data_type: string
+  description: Số CCCD/CMND (cá nhân) hoặc Mã số thuế/GPKD (tổ chức).
+  target_attr_name: Subject Id Number
+- target_column: subject_adr
+  transformation: pe_de_su.SUBJECT_ADDRESS
+  data_type: string
+  description: Địa chỉ cư trú/trụ sở đối tượng bị xử phạt.
+  target_attr_name: Subject Address
+- target_column: subject_tax_code
+  transformation: pe_de_su.SUBJECT_TAX_CODE
+  data_type: string
+  description: Mã số thuế của đối tượng bị xử phạt.
+  target_attr_name: Subject Tax Code
+- target_column: subject_dt_of_birth
+  transformation: pe_de_su.SUBJECT_DOB
+  data_type: date
+  description: Ngày sinh đối tượng bị xử phạt (cá nhân).
+  target_attr_name: Subject Date Of Birth
+- target_column: subject_legal_rep
+  transformation: pe_de_su.SUBJECT_LEGAL_REP
+  data_type: string
+  description: Tên người đại diện pháp luật.
+  target_attr_name: Subject Legal Rep
+- target_column: subject_legal_rep_title
+  transformation: pe_de_su.SUBJECT_LEGAL_REP_TITLE
+  data_type: string
+  description: Chức danh người đại diện pháp luật.
+  target_attr_name: Subject Legal Rep Title
+- target_column: total_fine_amt
+  transformation: pe_de_su.TOTAL_FINE_AMOUNT
+  data_type: decimal(23,2)
+  description: Tổng mức phạt tiền đối với đối tượng này (VNĐ).
+  target_attr_name: Total Fine Amount
+- target_column: paid_amt
+  transformation: pe_de_su.PAID_AMOUNT
+  data_type: decimal(23,2)
+  description: Số tiền đã nộp phạt (VNĐ).
+  target_attr_name: Paid Amount
+- target_column: coerced_amt
+  transformation: pe_de_su.COERCED_AMOUNT
+  data_type: decimal(23,2)
+  description: Số tiền đã cưỡng chế tài khoản (VNĐ).
+  target_attr_name: Coerced Amount
+- target_column: payment_received_dt
+  transformation: pe_de_su.PAYMENT_RECEIVED_DATE
+  data_type: date
+  description: Ngày xác nhận đã nhận tiền phạt.
+  target_attr_name: Payment Received Date
+- target_column: compliance_status_code
+  transformation: pe_de_su.COMPLIANCE_STATUS
+  data_type: string
+  description: 'Trạng thái thi hành: NOT_PAID, PAID, PARTIAL, COMPLAINING.'
+  target_attr_name: Compliance Status Code
+- target_column: enforcement_progress
+  transformation: pe_de_su.ENFORCEMENT_PROGRESS
+  data_type: string
+  description: Diễn tiến cưỡng chế thi hành quyết định.
+  target_attr_name: Enforcement Progress
+- target_column: note
+  transformation: pe_de_su.NOTE
+  data_type: string
+  description: Ghi chú bổ sung về đối tượng bị xử phạt.
+  target_attr_name: Note
+- target_column: payment_proof_url
+  transformation: pe_de_su.PAYMENT_PROOF_URL
+  data_type: string
+  description: URL file chứng từ nộp tiền phạt do người vi phạm upload.
+  target_attr_name: Payment Proof URL
+- target_column: payment_proof_uploaded_tms
+  transformation: pe_de_su.PAYMENT_PROOF_UPLOADED_AT
+  data_type: timestamp
+  description: Thời điểm upload chứng từ nộp tiền phạt.
+  target_attr_name: Payment Proof Uploaded Timestamp
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

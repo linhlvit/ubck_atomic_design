@@ -1,0 +1,302 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-securities_company-SCMS.SC_FIRM_INFO
+  logical_name: Mapping Atomic - Securities Company – source SCMS.SC_FIRM_INFO
+  physical_name: securities_company
+  dm_ref: ATM-securities_company-SCMS.SC_FIRM_INFO
+  brd_ref: BRD-SRC-SCMS-SC_FIRM_INFO
+target:
+  namespace: atm
+  physical_name: securities_company
+  etl_handle: SCD4A
+  description: 'Công ty chứng khoán thành viên do UBCKNN quản lý. Ghi nhận thông tin
+    pháp lý toàn diện: tên, địa chỉ, vốn điều lệ, số giấy phép UBCKNN, loại hình doanh
+    nghiệp và trạng thái hoạt động.'
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: SC_FIRM_INFO
+  alias: sc_fi_in
+  select_fields: SC_FIRM_INFO_ID, CODE, SHORT_NAME, NAME_VI, NAME_EN, COMPANY_TYPE_ID,
+    RECORD_STATUS, EVENT_TYPE_ID, FINANCIAL_REPORT_TYPE, FOUNDATION_LICENSE_FILE,
+    TERMINATION_DECISION_NUMBER, CHARTER_CAPITAL, TOTAL_SHARES, BUSINESS_LINES, ADDITIONAL_BUSINESS_LINES,
+    LISTED, LISTING_EXCHANGE, SECURITIES_CODE, LISTING_DATE, SC_FIRM_REGISTRATION_DATE,
+    OFFICIAL_OPERATION_DATE, FISCAL_YEAR_END_DATE, ELECTRONIC_TRADING_STATUS, ELECTRONIC_TRADING_DECISION_NUMBER,
+    ELECTRONIC_TRADING_DECISION_DATE, ELECTRONIC_TRADING_REASON, PUBLIC_COMPANY, PUBLIC_COMPANY_REGISTRATION_DATE,
+    PUBLIC_COMPANY_DECISION_NUMBER, PUBLIC_COMPANY_END_DATE, PUBLIC_COMPANY_END_DECISION_NUMBER,
+    CUSTODIAN_MEMBER_CODE, CUSTODIAN_MEMBERSHIP_REVOCATION_DECISION, CUSTODIAN_MEMBERSHIP_REVOCATION_DATE,
+    FOREIGN_INVESTOR_OWNERSHIP_LIMIT, OWNERSHIP_LIMIT_FROM_DATE, OWNERSHIP_LIMIT_TO_DATE,
+    AMENDMENT_DECLARATION, AMENDMENT_DOCUMENT_NUMBER, AMENDMENT_DOCUMENT_DATE, AMENDMENT_EFFECTIVE_DATE,
+    AMENDMENT_EXPIRY_DATE, AMENDMENT_DOCUMENT_FILE, PROVISIONAL, SYNCED_FROM_ADMIN_PROC,
+    ATTACHMENT_PATH, NOTE
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: sc_id
+  transformation: '{hash_id}(''SCMS_SC_FIRM_INFO'', sc_fi_in.CODE)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Securities Company Id
+- target_column: src_stm_code
+  transformation: '''SCMS_SC_FIRM_INFO'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: parent_sc_id
+  transformation: '{hash_id}(''SCMS_SC_FIRM_INFO'', sc_fi_in.SC_FIRM_INFO_ID)'
+  data_type: string
+  description: FK tự tham chiếu — CTCK cha trong cấu trúc phân cấp (nếu có).
+  target_attr_name: Parent Securities Company Id
+- target_column: parent_sc_code
+  transformation: sc_fi_in.SC_FIRM_INFO_ID
+  data_type: string
+  description: Mã CTCK cha.
+  target_attr_name: Parent Securities Company Code
+- target_column: sc_code
+  transformation: sc_fi_in.CODE
+  data_type: string
+  description: Mã định danh (mã viết tắt, mã nghiệp vụ) của CTCK. BK duy nhất — Id
+    hash từ trường này.
+  target_attr_name: Securities Company Code
+- target_column: sc_short_nm
+  transformation: sc_fi_in.SHORT_NAME
+  data_type: string
+  description: 'Tên viết tắt (VD: SSI, VPS, MBS).'
+  target_attr_name: Securities Company Short Name
+- target_column: sc_nm
+  transformation: sc_fi_in.NAME_VI
+  data_type: string
+  description: Tên đầy đủ bằng tiếng Việt.
+  target_attr_name: Securities Company Name
+- target_column: sc_english_nm
+  transformation: sc_fi_in.NAME_EN
+  data_type: string
+  description: Tên đầy đủ bằng tiếng Anh.
+  target_attr_name: Securities Company English Name
+- target_column: company_tp_code
+  transformation: sc_fi_in.COMPANY_TYPE_ID
+  data_type: string
+  description: Loại hình doanh nghiệp CTCK (FK đến CAT_COMPANY_TYPE).
+  target_attr_name: Company Type Code
+- target_column: cl_firm_status_id
+  transformation: '{hash_id}(''SCMS_CAT_SC_FIRM_STATUS'', sc_fi_in.RECORD_STATUS)'
+  data_type: string
+  description: Trạng thái pháp lý CTCK — FK tới Classification Firm Status (Đang hoạt
+    động, Tạm ngừng, Đình chỉ, Đóng cửa).
+  target_attr_name: Classification Firm Status Id
+- target_column: cl_firm_status_code
+  transformation: sc_fi_in.RECORD_STATUS
+  data_type: string
+  description: Mã trạng thái pháp lý CTCK.
+  target_attr_name: Classification Firm Status Code
+- target_column: cl_event_tp_id
+  transformation: '{hash_id}(''SCMS_CAT_EVENT_TYPE'', sc_fi_in.EVENT_TYPE_ID)'
+  data_type: string
+  description: Loại sự vụ/sự kiện nghiệp vụ — FK tới Classification Event Type.
+  target_attr_name: Classification Event Type Id
+- target_column: cl_event_tp_code
+  transformation: sc_fi_in.EVENT_TYPE_ID
+  data_type: string
+  description: Mã loại sự vụ/sự kiện nghiệp vụ.
+  target_attr_name: Classification Event Type Code
+- target_column: financial_rpt_tp_code
+  transformation: sc_fi_in.FINANCIAL_REPORT_TYPE
+  data_type: string
+  description: 'Loại báo cáo tài chính: RIENG_LE=Riêng lẻ; HOP_NHAT=Hợp nhất (nhiều
+    giá trị phân cách bởi dấu phẩy).'
+  target_attr_name: Financial Report Type Code
+- target_column: foundation_license_file_path
+  transformation: sc_fi_in.FOUNDATION_LICENSE_FILE
+  data_type: string
+  description: Đường dẫn file giấy phép thành lập trên hệ thống lưu trữ.
+  target_attr_name: Foundation License File Path
+- target_column: termination_decision_nbr
+  transformation: sc_fi_in.TERMINATION_DECISION_NUMBER
+  data_type: string
+  description: Số quyết định chấm dứt hoạt động.
+  target_attr_name: Termination Decision Number
+- target_column: charter_capital_amt
+  transformation: sc_fi_in.CHARTER_CAPITAL
+  data_type: decimal(23,2)
+  description: 'Vốn điều lệ (đơn vị: đồng).'
+  target_attr_name: Charter Capital Amount
+- target_column: total_shares
+  transformation: sc_fi_in.TOTAL_SHARES
+  data_type: decimal(23,2)
+  description: Tổng số lượng cổ phần (tự động = vốn điều lệ / mệnh giá 10.000đ).
+  target_attr_name: Total Shares
+- target_column: business_lines
+  transformation: sc_fi_in.BUSINESS_LINES
+  data_type: string
+  description: Danh sách nghiệp vụ kinh doanh chứng khoán được cấp phép (denormalized
+    từ LNK_SC_FIRM_BUSINESS_LINE).
+  target_attr_name: Business Lines
+- target_column: additional_business_lines
+  transformation: sc_fi_in.ADDITIONAL_BUSINESS_LINES
+  data_type: string
+  description: Danh sách nghiệp vụ kinh doanh bổ sung được cấp phép.
+  target_attr_name: Additional Business Lines
+- target_column: listed_indicator
+  transformation: sc_fi_in.LISTED
+  data_type: int
+  description: 'Cờ niêm yết: 1=Có niêm yết trên sàn; 0=Không niêm yết.'
+  target_attr_name: Listed Indicator
+- target_column: listing_exchange_code
+  transformation: sc_fi_in.LISTING_EXCHANGE
+  data_type: string
+  description: Sàn niêm yết (HOSE, HNX, UPCOM).
+  target_attr_name: Listing Exchange Code
+- target_column: securities_code
+  transformation: sc_fi_in.SECURITIES_CODE
+  data_type: string
+  description: Mã chứng khoán niêm yết.
+  target_attr_name: Securities Code
+- target_column: listing_dt
+  transformation: sc_fi_in.LISTING_DATE
+  data_type: date
+  description: Ngày niêm yết trên sàn giao dịch.
+  target_attr_name: Listing Date
+- target_column: registration_dt
+  transformation: sc_fi_in.SC_FIRM_REGISTRATION_DATE
+  data_type: date
+  description: Ngày đăng ký thành lập CTCK.
+  target_attr_name: Registration Date
+- target_column: official_operation_dt
+  transformation: sc_fi_in.OFFICIAL_OPERATION_DATE
+  data_type: date
+  description: Ngày bắt đầu hoạt động chính thức.
+  target_attr_name: Official Operation Date
+- target_column: fiscal_year_end_dt
+  transformation: sc_fi_in.FISCAL_YEAR_END_DATE
+  data_type: string
+  description: 'Ngày kết thúc năm tài chính (VD: 31/12).'
+  target_attr_name: Fiscal Year End Date
+- target_column: electronic_trading_status_code
+  transformation: sc_fi_in.ELECTRONIC_TRADING_STATUS
+  data_type: string
+  description: 'Trạng thái giao dịch điện tử: HOAT_DONG=Đang hoạt động; TAM_NGUNG=Tạm
+    ngừng; DINH_CHI=Đình chỉ hoạt động.'
+  target_attr_name: Electronic Trading Status Code
+- target_column: electronic_trading_decision_nbr
+  transformation: sc_fi_in.ELECTRONIC_TRADING_DECISION_NUMBER
+  data_type: string
+  description: Số quyết định về giao dịch điện tử.
+  target_attr_name: Electronic Trading Decision Number
+- target_column: electronic_trading_decision_dt
+  transformation: sc_fi_in.ELECTRONIC_TRADING_DECISION_DATE
+  data_type: date
+  description: Ngày quyết định về giao dịch điện tử.
+  target_attr_name: Electronic Trading Decision Date
+- target_column: electronic_trading_reason
+  transformation: sc_fi_in.ELECTRONIC_TRADING_REASON
+  data_type: string
+  description: Lý do thay đổi trạng thái giao dịch điện tử.
+  target_attr_name: Electronic Trading Reason
+- target_column: pc_indicator
+  transformation: sc_fi_in.PUBLIC_COMPANY
+  data_type: int
+  description: 'Cờ công ty đại chúng: 1=Là công ty đại chúng; 0=Không phải.'
+  target_attr_name: Public Company Indicator
+- target_column: pc_registration_dt
+  transformation: sc_fi_in.PUBLIC_COMPANY_REGISTRATION_DATE
+  data_type: date
+  description: Ngày đăng ký là công ty đại chúng với UBCKNN.
+  target_attr_name: Public Company Registration Date
+- target_column: pc_decision_nbr
+  transformation: sc_fi_in.PUBLIC_COMPANY_DECISION_NUMBER
+  data_type: string
+  description: Số quyết định công ty đại chúng.
+  target_attr_name: Public Company Decision Number
+- target_column: pc_end_dt
+  transformation: sc_fi_in.PUBLIC_COMPANY_END_DATE
+  data_type: date
+  description: Ngày chấm dứt tư cách công ty đại chúng.
+  target_attr_name: Public Company End Date
+- target_column: pc_end_decision_nbr
+  transformation: sc_fi_in.PUBLIC_COMPANY_END_DECISION_NUMBER
+  data_type: string
+  description: Số quyết định chấm dứt tư cách công ty đại chúng.
+  target_attr_name: Public Company End Decision Number
+- target_column: custodian_member_code
+  transformation: sc_fi_in.CUSTODIAN_MEMBER_CODE
+  data_type: string
+  description: Mã thành viên lưu ký.
+  target_attr_name: Custodian Member Code
+- target_column: custodian_membership_revocation_decision
+  transformation: sc_fi_in.CUSTODIAN_MEMBERSHIP_REVOCATION_DECISION
+  data_type: string
+  description: Quyết định thu hồi tư cách thành viên lưu ký.
+  target_attr_name: Custodian Membership Revocation Decision
+- target_column: custodian_membership_revocation_dt
+  transformation: sc_fi_in.CUSTODIAN_MEMBERSHIP_REVOCATION_DATE
+  data_type: date
+  description: Ngày thu hồi tư cách thành viên lưu ký.
+  target_attr_name: Custodian Membership Revocation Date
+- target_column: foreign_investor_ownership_limit_rate
+  transformation: sc_fi_in.FOREIGN_INVESTOR_OWNERSHIP_LIMIT
+  data_type: decimal(5,2)
+  description: Tỷ lệ sở hữu tối đa của nhà đầu tư nước ngoài.
+  target_attr_name: Foreign Investor Ownership Limit Rate
+- target_column: ownership_limit_from_dt
+  transformation: sc_fi_in.OWNERSHIP_LIMIT_FROM_DATE
+  data_type: date
+  description: Ngày bắt đầu áp dụng giới hạn sở hữu nước ngoài.
+  target_attr_name: Ownership Limit From Date
+- target_column: ownership_limit_to_dt
+  transformation: sc_fi_in.OWNERSHIP_LIMIT_TO_DATE
+  data_type: date
+  description: Ngày kết thúc áp dụng giới hạn sở hữu nước ngoài.
+  target_attr_name: Ownership Limit To Date
+- target_column: amendment_declaration_indicator
+  transformation: sc_fi_in.AMENDMENT_DECLARATION
+  data_type: int
+  description: 'Cờ có khai bổ sung/sửa đổi: 1=Có văn bản sửa đổi; 0=Không có.'
+  target_attr_name: Amendment Declaration Indicator
+- target_column: amendment_document_nbr
+  transformation: sc_fi_in.AMENDMENT_DOCUMENT_NUMBER
+  data_type: string
+  description: Số văn bản sửa đổi.
+  target_attr_name: Amendment Document Number
+- target_column: amendment_document_dt
+  transformation: sc_fi_in.AMENDMENT_DOCUMENT_DATE
+  data_type: date
+  description: Ngày văn bản sửa đổi.
+  target_attr_name: Amendment Document Date
+- target_column: amendment_effective_dt
+  transformation: sc_fi_in.AMENDMENT_EFFECTIVE_DATE
+  data_type: date
+  description: Ngày hiệu lực văn bản sửa đổi.
+  target_attr_name: Amendment Effective Date
+- target_column: amendment_expiry_dt
+  transformation: sc_fi_in.AMENDMENT_EXPIRY_DATE
+  data_type: date
+  description: Ngày hết hạn văn bản sửa đổi.
+  target_attr_name: Amendment Expiry Date
+- target_column: amendment_document_file_path
+  transformation: sc_fi_in.AMENDMENT_DOCUMENT_FILE
+  data_type: string
+  description: Đường dẫn file văn bản sửa đổi.
+  target_attr_name: Amendment Document File Path
+- target_column: provisional_status_code
+  transformation: sc_fi_in.PROVISIONAL
+  data_type: string
+  description: 'Cờ bản nháp: 1=Bản nháp; 0=Chính thức.'
+  target_attr_name: Provisional Status Code
+- target_column: synced_from_admin_process_indicator
+  transformation: sc_fi_in.SYNCED_FROM_ADMIN_PROC
+  data_type: int
+  description: 'Cờ đã đồng bộ từ Thủ tục hành chính: 1=Đã đồng bộ; 0=Chưa đồng bộ.'
+  target_attr_name: Synced From Admin Process Indicator
+- target_column: attachment_path
+  transformation: sc_fi_in.ATTACHMENT_PATH
+  data_type: string
+  description: Đường dẫn file đính kèm trên hệ thống lưu trữ.
+  target_attr_name: Attachment Path
+- target_column: note
+  transformation: sc_fi_in.NOTE
+  data_type: string
+  description: Ghi chú bổ sung, không bắt buộc.
+  target_attr_name: Note
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

@@ -1,0 +1,310 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-corporate_bond_trading_snapshot-MDDS.JAD_CORPBONDINFOR
+  logical_name: Mapping Atomic - Corporate Bond Trading Snapshot – source MDDS.JAD_CORPBONDINFOR
+  physical_name: corporate_bond_trading_snapshot
+  dm_ref: ATM-corporate_bond_trading_snapshot-MDDS.JAD_CORPBONDINFOR
+  brd_ref: BRD-SRC-MDDS-JAD_CORPBONDINFOR
+target:
+  namespace: atm
+  physical_name: corporate_bond_trading_snapshot
+  etl_handle: Fact Snapshot
+  description: Snapshot trạng thái giao dịch của trái phiếu doanh nghiệp niêm yết
+    tại sàn HNX tại một thời điểm, bao gồm giá khớp, order book thỏa thuận Outright,
+    thông tin đặc thù trái phiếu (kỳ hạn, lãi suất, coupon, mệnh giá, ngày phát hành/đáo
+    hạn).
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: JAD_CORPBONDINFOR
+  alias: ja_co
+  select_fields: KID, SYMBOL, TRADINGDATE, FULLNAME, TRADINGTIME, FLOORCODE, STOCKTYPE,
+    TRADINGSESSIONID, SECURITYTRADINGSTATUS, TRADSESSTATUS, PERIOD_UNIT, INTEREST_PERIOD_UNIT,
+    INTEREST_COUPON_TYPE, INTERESTRATE_TYPE, INTEREST_TYPE, INTEREST_PAYMENT_TYPE,
+    CEILING, FLOOR, REFERENCE, CLOSEPRICE, CLOSEVOL, CHANGE, OPEN, HIGH, LOW, AVERAGEPRICE,
+    TOTALTRADING, TOTALTRADINGVALUE, TOTALLISTINGQTTY, FOREIGNREMAIN, PT_MATCH_QTTY,
+    PT_MATCH_PRICE, PT_TOTAL_TRADED_QTTY, PT_TOTAL_TRADED_VALUE, PT_BESTBIDQTTY, PT_BESTBIDPRICE,
+    PT_BESTOFFERQTTY, PT_BESTOFFERPRICE, PT_TOTALBIDQTTY, PT_TOTALOFFERQTTY, PT_MAXQTTY,
+    PT_MAXPRICE, PT_MINQTTY, PT_MINPRICE, ISSUERNAME, ISSUEDATE, MATURITYDATE, PARVALUE,
+    BOND_PERIOD, PERIOD_REMAIN, INTEREST_PERIOD, INTEREST_RATE, CHARACTERISTICS
+  filter: TRADINGDATE = {etl_date}
+relationship: []
+mapping_columns:
+- target_column: corporate_bond_trading_snpst_id
+  transformation: '{hash_id}(''MDDS_JAD_CORPBONDINFOR'', ja_co.KID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Corporate Bond Trading Snapshot Id
+- target_column: corporate_bond_trading_snpst_code
+  transformation: ja_co.KID
+  data_type: string
+  description: ID mã do jadapter sinh. BK của Snapshot entity.
+  target_attr_name: Corporate Bond Trading Snapshot Code
+- target_column: src_stm_code
+  transformation: '''MDDS_JAD_CORPBONDINFOR'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: symbol
+  transformation: ja_co.SYMBOL
+  data_type: string
+  description: Mã chứng khoán trái phiếu.
+  target_attr_name: Symbol
+- target_column: trading_dt
+  transformation: ja_co.TRADINGDATE
+  data_type: date
+  description: Ngày giao dịch format dd/mm/yyyy.
+  target_attr_name: Trading Date
+- target_column: bond_full_nm
+  transformation: ja_co.FULLNAME
+  data_type: string
+  description: Tên đầy đủ của trái phiếu.
+  target_attr_name: Bond Full Name
+- target_column: trading_time
+  transformation: ja_co.TRADINGTIME
+  data_type: string
+  description: Thời gian giao dịch.
+  target_attr_name: Trading Time
+- target_column: floor_code
+  transformation: ja_co.FLOORCODE
+  data_type: string
+  description: 'Mã sàn: 06 (corp-bond HNX).'
+  target_attr_name: Floor Code
+- target_column: stock_tp_code
+  transformation: ja_co.STOCKTYPE
+  data_type: string
+  description: 'Loại CK: 12 (trái phiếu DN).'
+  target_attr_name: Stock Type Code
+- target_column: trading_session_status_code
+  transformation: ja_co.TRADINGSESSIONID
+  data_type: string
+  description: Trạng thái phiên giao dịch HNX.
+  target_attr_name: Trading Session Status Code
+- target_column: security_trading_status_code
+  transformation: ja_co.SECURITYTRADINGSTATUS
+  data_type: string
+  description: Trạng thái trái phiếu (0-bình thường / 10-tạm ngừng / 11-hạn chế).
+  target_attr_name: Security Trading Status Code
+- target_column: trading_session_status_2_code
+  transformation: ja_co.TRADSESSTATUS
+  data_type: string
+  description: Trạng thái phiên giao dịch (tradsesstatus — trường thứ 2).
+  target_attr_name: Trading Session Status 2 Code
+- target_column: period_unit_code
+  transformation: ja_co.PERIOD_UNIT
+  data_type: string
+  description: Đơn vị kỳ hạn (Ngày/Tuần/Tháng/Năm).
+  target_attr_name: Period Unit Code
+- target_column: interest_period_unit_code
+  transformation: ja_co.INTEREST_PERIOD_UNIT
+  data_type: string
+  description: Đơn vị kỳ hạn trả lãi.
+  target_attr_name: Interest Period Unit Code
+- target_column: coupon_tp_code
+  transformation: ja_co.INTEREST_COUPON_TYPE
+  data_type: string
+  description: 'Kiểu trả lãi: Standard/Long/Short/Zero Coupon.'
+  target_attr_name: Coupon Type Code
+- target_column: interest_rate_tp_code
+  transformation: ja_co.INTERESTRATE_TYPE
+  data_type: string
+  description: 'Loại lãi suất: Cố định/Thả nổi/Khác.'
+  target_attr_name: Interest Rate Type Code
+- target_column: interest_tp_code
+  transformation: ja_co.INTEREST_TYPE
+  data_type: string
+  description: Loại hình trả lãi (Định kỳ cuối kỳ / đầu kỳ / khác).
+  target_attr_name: Interest Type Code
+- target_column: interest_payment_tp_code
+  transformation: ja_co.INTEREST_PAYMENT_TYPE
+  data_type: string
+  description: Phương thức trả lãi.
+  target_attr_name: Interest Payment Type Code
+- target_column: ceiling_price
+  transformation: ja_co.CEILING
+  data_type: decimal(23,2)
+  description: Giá trần khớp lệnh.
+  target_attr_name: Ceiling Price
+- target_column: floor_price
+  transformation: ja_co.FLOOR
+  data_type: decimal(23,2)
+  description: Giá sàn khớp lệnh.
+  target_attr_name: Floor Price
+- target_column: reference_price
+  transformation: ja_co.REFERENCE
+  data_type: decimal(23,2)
+  description: Giá tham chiếu.
+  target_attr_name: Reference Price
+- target_column: close_price
+  transformation: ja_co.CLOSEPRICE
+  data_type: decimal(23,2)
+  description: Giá đóng cửa ngày.
+  target_attr_name: Close Price
+- target_column: close_vol
+  transformation: ja_co.CLOSEVOL
+  data_type: int
+  description: Khối lượng đóng cửa.
+  target_attr_name: Close Volume
+- target_column: price_change
+  transformation: ja_co.CHANGE
+  data_type: decimal(23,2)
+  description: Thay đổi giá khớp gần nhất so với giá tham chiếu.
+  target_attr_name: Price Change
+- target_column: open_price
+  transformation: ja_co.OPEN
+  data_type: decimal(23,2)
+  description: Giá mở cửa.
+  target_attr_name: Open Price
+- target_column: high_price
+  transformation: ja_co.HIGH
+  data_type: decimal(23,2)
+  description: Giá thực hiện cao nhất GD khớp lệnh.
+  target_attr_name: High Price
+- target_column: low_price
+  transformation: ja_co.LOW
+  data_type: decimal(23,2)
+  description: Giá thực hiện thấp nhất GD khớp lệnh.
+  target_attr_name: Low Price
+- target_column: average_price
+  transformation: ja_co.AVERAGEPRICE
+  data_type: decimal(23,2)
+  description: Giá trung bình.
+  target_attr_name: Average Price
+- target_column: total_trading_vol
+  transformation: ja_co.TOTALTRADING
+  data_type: int
+  description: Tổng khối lượng giao dịch.
+  target_attr_name: Total Trading Volume
+- target_column: total_trading_val
+  transformation: ja_co.TOTALTRADINGVALUE
+  data_type: decimal(23,2)
+  description: Tổng giá trị giao dịch.
+  target_attr_name: Total Trading Value
+- target_column: total_listing_vol
+  transformation: ja_co.TOTALLISTINGQTTY
+  data_type: int
+  description: Khối lượng niêm yết.
+  target_attr_name: Total Listing Volume
+- target_column: foreign_remain_vol
+  transformation: ja_co.FOREIGNREMAIN
+  data_type: int
+  description: Room NĐTNN còn lại.
+  target_attr_name: Foreign Remain Volume
+- target_column: pt_match_vol
+  transformation: ja_co.PT_MATCH_QTTY
+  data_type: int
+  description: Khối lượng thực hiện gần nhất GD thỏa thuận Outright.
+  target_attr_name: PT Match Volume
+- target_column: pt_match_price
+  transformation: ja_co.PT_MATCH_PRICE
+  data_type: decimal(23,2)
+  description: Giá thực hiện gần nhất GD thỏa thuận Outright.
+  target_attr_name: PT Match Price
+- target_column: pt_total_traded_vol
+  transformation: ja_co.PT_TOTAL_TRADED_QTTY
+  data_type: int
+  description: Tổng khối lượng GD thỏa thuận Outright.
+  target_attr_name: PT Total Traded Volume
+- target_column: pt_total_traded_val
+  transformation: ja_co.PT_TOTAL_TRADED_VALUE
+  data_type: decimal(23,2)
+  description: Tổng giá trị GD thỏa thuận Outright.
+  target_attr_name: PT Total Traded Value
+- target_column: pt_best_bid_vol
+  transformation: ja_co.PT_BESTBIDQTTY
+  data_type: int
+  description: Tổng KL chào mua cao nhất GD thỏa thuận Outright.
+  target_attr_name: PT Best Bid Volume
+- target_column: pt_best_bid_price
+  transformation: ja_co.PT_BESTBIDPRICE
+  data_type: decimal(23,2)
+  description: Giá chào mua cao nhất GD thỏa thuận Outright.
+  target_attr_name: PT Best Bid Price
+- target_column: pt_best_offer_vol
+  transformation: ja_co.PT_BESTOFFERQTTY
+  data_type: int
+  description: Tổng KL chào bán thấp nhất GD thỏa thuận Outright.
+  target_attr_name: PT Best Offer Volume
+- target_column: pt_best_offer_price
+  transformation: ja_co.PT_BESTOFFERPRICE
+  data_type: decimal(23,2)
+  description: Giá chào bán thấp nhất GD thỏa thuận Outright.
+  target_attr_name: PT Best Offer Price
+- target_column: pt_total_bid_vol
+  transformation: ja_co.PT_TOTALBIDQTTY
+  data_type: int
+  description: Tổng KL chào mua GD thỏa thuận Outright.
+  target_attr_name: PT Total Bid Volume
+- target_column: pt_total_offer_vol
+  transformation: ja_co.PT_TOTALOFFERQTTY
+  data_type: int
+  description: Tổng KL chào bán GD thỏa thuận Outright.
+  target_attr_name: PT Total Offer Volume
+- target_column: pt_max_vol
+  transformation: ja_co.PT_MAXQTTY
+  data_type: int
+  description: KL thực hiện tương ứng giá cao nhất GD thỏa thuận Outright.
+  target_attr_name: PT Max Volume
+- target_column: pt_max_price
+  transformation: ja_co.PT_MAXPRICE
+  data_type: decimal(23,2)
+  description: Giá thực hiện cao nhất GD thỏa thuận Outright.
+  target_attr_name: PT Max Price
+- target_column: pt_min_vol
+  transformation: ja_co.PT_MINQTTY
+  data_type: int
+  description: KL thực hiện tương ứng giá thấp nhất GD thỏa thuận Outright.
+  target_attr_name: PT Min Volume
+- target_column: pt_min_price
+  transformation: ja_co.PT_MINPRICE
+  data_type: decimal(23,2)
+  description: Giá thực hiện thấp nhất GD thỏa thuận Outright.
+  target_attr_name: PT Min Price
+- target_column: issuer_nm
+  transformation: ja_co.ISSUERNAME
+  data_type: string
+  description: Tên tổ chức phát hành.
+  target_attr_name: Issuer Name
+- target_column: issue_dt
+  transformation: ja_co.ISSUEDATE
+  data_type: date
+  description: Ngày phát hành trái phiếu.
+  target_attr_name: Issue Date
+- target_column: maturity_dt
+  transformation: ja_co.MATURITYDATE
+  data_type: date
+  description: Ngày đáo hạn trái phiếu.
+  target_attr_name: Maturity Date
+- target_column: par_val
+  transformation: ja_co.PARVALUE
+  data_type: decimal(23,2)
+  description: Mệnh giá trái phiếu.
+  target_attr_name: Par Value
+- target_column: bond_period
+  transformation: ja_co.BOND_PERIOD
+  data_type: string
+  description: Kỳ hạn trái phiếu.
+  target_attr_name: Bond Period
+- target_column: period_remain_days
+  transformation: ja_co.PERIOD_REMAIN
+  data_type: int
+  description: Kỳ hạn còn lại tính bằng ngày.
+  target_attr_name: Period Remain Days
+- target_column: interest_period
+  transformation: ja_co.INTEREST_PERIOD
+  data_type: string
+  description: Kỳ hạn trả lãi.
+  target_attr_name: Interest Period
+- target_column: interest_rate
+  transformation: ja_co.INTEREST_RATE
+  data_type: decimal(8,5)
+  description: Lãi suất danh nghĩa.
+  target_attr_name: Interest Rate
+- target_column: bond_characteristics
+  transformation: ja_co.CHARACTERISTICS
+  data_type: string
+  description: Đặc điểm trái phiếu.
+  target_attr_name: Bond Characteristics
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

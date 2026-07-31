@@ -1,0 +1,255 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-et_registration-KNT.TAX_REGISTRATION_INFO
+  logical_name: Mapping Atomic - External Tax Registration – source KNT.TAX_REGISTRATION_INFO
+  physical_name: et_registration
+  dm_ref: ATM-et_registration-KNT.TAX_REGISTRATION_INFO
+  brd_ref: BRD-SRC-KNT-TAX_REGISTRATION_INFO
+target:
+  namespace: atm
+  physical_name: et_registration
+  etl_handle: SCD4A
+  description: 'Hồ sơ đăng ký thuế của 1 doanh nghiệp/hộ kinh doanh trên TTCK do Cục
+    Thuế cung cấp: địa chỉ, vốn điều lệ, người đại diện, trạng thái hoạt động, tạm
+    ngừng kinh doanh. Tách IP Postal Address + IP Electronic Address; denormalize
+    business_line_codes ARRAY.'
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: TAX_REGISTRATION_INFO
+  alias: ta_re_in
+  select_fields: TAX_CODE, TAXPAYER_NAME, CHARTER_CAPITAL, BUSINESS_LINE_CODE, BUSINESS_LINE,
+    LICENSE_NUMBER, ISSUE_DATE, ISSUING_AUTHORITY, DECISION_NUMBER, ISSUED_DATE, ISSUING_ORG,
+    SUPERVISING_UNIT, SUPERVISING_UNIT_ADDRESS, BUSINESS_START_DATE, LEGAL_REPRESENTATIVE_NAME,
+    ID_CARD_NUMBER, SO_DIEN_THOAI, DIRECTOR_NAME, DIRECTOR_PHONE, OPERATION_STATUS,
+    STATUS_NAME, SUSPENSION_REASON, SUSPENSION_TYPE, DIRECT_SUPERVISING_AUTHORITY,
+    TAX_AUTHORITY_CODE, DOMESTIC_CAPITAL_CURRENCY, FOREIGN_CAPITAL_AMOUNT, FOREIGN_CAPITAL_CURRENCY,
+    FOREIGN_CAPITAL_RATIO, SUSPENSION_FROM_DATE, SUSPENSION_TO_DATE, SUSPENSION_REASON_TEXT,
+    SUSPENSION_NOTICE_NUMBER, SUSPENSION_NOTICE_DATE, OPERATION_STOP_DATE, OPERATION_STOP_REASON,
+    OPERATION_STOP_NOTE, OPERATION_STOP_NOTICE_NUMBER, MSG_PACKET_ID
+  filter: null
+- source_type: physical_table
+  namespace: ods
+  table_name: TAX_REG_BUSINESS_LINE
+  alias: ta_re_bu_li
+  select_fields: BUSINESS_LINE_CODE
+  filter: null
+relationship:
+- main_alias: ta_re_in
+  join_type: LEFT JOIN
+  join_alias: ta_re_bu_li
+  join_on: ta_re_in.Id = ta_re_bu_li.Id
+mapping_columns:
+- target_column: et_registration_id
+  transformation: '{hash_id}(''KNT_TAX_REGISTRATION_INFO'', ta_re_in.TAX_CODE)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: External Tax Registration Id
+- target_column: et_registration_code
+  transformation: ta_re_in.TAX_CODE
+  data_type: string
+  description: Mã số thuế doanh nghiệp. BK.
+  target_attr_name: External Tax Registration Code
+- target_column: src_stm_code
+  transformation: '''KNT_TAX_REGISTRATION_INFO'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: taxpayer_nm
+  transformation: ta_re_in.TAXPAYER_NAME
+  data_type: string
+  description: Tên người nộp thuế (doanh nghiệp trên thị trường chứng khoán).
+  target_attr_name: Taxpayer Name
+- target_column: charter_capital_amt
+  transformation: ta_re_in.CHARTER_CAPITAL
+  data_type: decimal(23,2)
+  description: 'Vốn điều lệ/vốn đầu tư của chủ sở hữu (đơn vị: đồng).'
+  target_attr_name: Charter Capital Amount
+- target_column: primary_business_line_code
+  transformation: ta_re_in.BUSINESS_LINE_CODE
+  data_type: string
+  description: Mã ngành nghề kinh doanh chính.
+  target_attr_name: Primary Business Line Code
+- target_column: primary_business_line_nm
+  transformation: ta_re_in.BUSINESS_LINE
+  data_type: string
+  description: Ngành nghề kinh doanh chính.
+  target_attr_name: Primary Business Line Name
+- target_column: business_license_nbr
+  transformation: ta_re_in.LICENSE_NUMBER
+  data_type: string
+  description: Số giấy phép thành lập doanh nghiệp.
+  target_attr_name: Business License Number
+- target_column: business_license_issue_dt
+  transformation: ta_re_in.ISSUE_DATE
+  data_type: date
+  description: Ngày cấp giấy phép thành lập.
+  target_attr_name: Business License Issue Date
+- target_column: business_license_issuing_authority_nm
+  transformation: ta_re_in.ISSUING_AUTHORITY
+  data_type: string
+  description: Cơ quan cấp giấy phép thành lập.
+  target_attr_name: Business License Issuing Authority Name
+- target_column: establishment_decision_nbr
+  transformation: ta_re_in.DECISION_NUMBER
+  data_type: string
+  description: Số quyết định thành lập/xử phạt.
+  target_attr_name: Establishment Decision Number
+- target_column: establishment_decision_issue_dt
+  transformation: ta_re_in.ISSUED_DATE
+  data_type: date
+  description: Ngày ban hành quyết định.
+  target_attr_name: Establishment Decision Issue Date
+- target_column: establishment_decision_issuing_organization_nm
+  transformation: ta_re_in.ISSUING_ORG
+  data_type: string
+  description: Cơ quan ban hành quyết định.
+  target_attr_name: Establishment Decision Issuing Organization Name
+- target_column: supervising_unit_nm
+  transformation: ta_re_in.SUPERVISING_UNIT
+  data_type: string
+  description: Đơn vị chủ quản/quản lý trực tiếp doanh nghiệp.
+  target_attr_name: Supervising Unit Name
+- target_column: supervising_unit_adr
+  transformation: ta_re_in.SUPERVISING_UNIT_ADDRESS
+  data_type: string
+  description: Địa chỉ đơn vị chủ quản.
+  target_attr_name: Supervising Unit Address
+- target_column: business_start_dt
+  transformation: ta_re_in.BUSINESS_START_DATE
+  data_type: date
+  description: Ngày bắt đầu hoạt động kinh doanh.
+  target_attr_name: Business Start Date
+- target_column: legal_representative_full_nm
+  transformation: ta_re_in.LEGAL_REPRESENTATIVE_NAME
+  data_type: string
+  description: Họ tên người đại diện theo pháp luật.
+  target_attr_name: Legal Representative Full Name
+- target_column: legal_representative_identification_nbr
+  transformation: ta_re_in.ID_CARD_NUMBER
+  data_type: string
+  description: Số CMND/hộ chiếu người đại diện theo pháp luật.
+  target_attr_name: Legal Representative Identification Number
+- target_column: legal_representative_phone_nbr
+  transformation: ta_re_in.SO_DIEN_THOAI
+  data_type: string
+  description: Số điện thoại người đại diện theo pháp luật/chủ doanh nghiệp tư nhân.
+  target_attr_name: Legal Representative Phone Number
+- target_column: director_full_nm
+  transformation: ta_re_in.DIRECTOR_NAME
+  data_type: string
+  description: Họ tên Giám đốc/Tổng giám đốc ký báo cáo.
+  target_attr_name: Director Full Name
+- target_column: director_phone_nbr
+  transformation: ta_re_in.DIRECTOR_PHONE
+  data_type: string
+  description: Số điện thoại Giám đốc/Tổng giám đốc.
+  target_attr_name: Director Phone Number
+- target_column: operation_status_code
+  transformation: ta_re_in.OPERATION_STATUS
+  data_type: string
+  description: Trạng thái hoạt động DN.
+  target_attr_name: Operation Status Code
+- target_column: operation_status_nm
+  transformation: ta_re_in.STATUS_NAME
+  data_type: string
+  description: Tên trạng thái người nộp thuế.
+  target_attr_name: Operation Status Name
+- target_column: suspension_reason_description
+  transformation: ta_re_in.SUSPENSION_REASON
+  data_type: string
+  description: Lý do ngừng hoạt động (nhập sau khi chọn loại ngừng).
+  target_attr_name: Suspension Reason Description
+- target_column: suspension_tp_code
+  transformation: ta_re_in.SUSPENSION_TYPE
+  data_type: string
+  description: Lý do ngừng hoạt động.
+  target_attr_name: Suspension Type Code
+- target_column: direct_supervising_authority_nm
+  transformation: ta_re_in.DIRECT_SUPERVISING_AUTHORITY
+  data_type: string
+  description: Cơ quan quản lý trực tiếp.
+  target_attr_name: Direct Supervising Authority Name
+- target_column: tax_authority_code
+  transformation: ta_re_in.TAX_AUTHORITY_CODE
+  data_type: string
+  description: Mã cơ quan thuế ban hành thông báo cưỡng chế.
+  target_attr_name: Tax Authority Code
+- target_column: domestic_capital_currency_code
+  transformation: ta_re_in.DOMESTIC_CAPITAL_CURRENCY
+  data_type: string
+  description: Loại tiền vốn điều lệ trong nước.
+  target_attr_name: Domestic Capital Currency Code
+- target_column: foreign_capital_amt
+  transformation: ta_re_in.FOREIGN_CAPITAL_AMOUNT
+  data_type: decimal(23,2)
+  description: Vốn điều lệ nước ngoài (đơn vị theo loại tiền).
+  target_attr_name: Foreign Capital Amount
+- target_column: foreign_capital_currency_code
+  transformation: ta_re_in.FOREIGN_CAPITAL_CURRENCY
+  data_type: string
+  description: Loại tiền vốn điều lệ nước ngoài.
+  target_attr_name: Foreign Capital Currency Code
+- target_column: foreign_capital_ratio
+  transformation: ta_re_in.FOREIGN_CAPITAL_RATIO
+  data_type: decimal(5,2)
+  description: Tỷ trọng vốn nước ngoài (%).
+  target_attr_name: Foreign Capital Ratio
+- target_column: temporary_suspension_from_dt
+  transformation: ta_re_in.SUSPENSION_FROM_DATE
+  data_type: date
+  description: Tạm nghỉ/từ ngày.
+  target_attr_name: Temporary Suspension From Date
+- target_column: temporary_suspension_to_dt
+  transformation: ta_re_in.SUSPENSION_TO_DATE
+  data_type: date
+  description: Tạm nghỉ/đến ngày.
+  target_attr_name: Temporary Suspension To Date
+- target_column: temporary_suspension_reason_description
+  transformation: ta_re_in.SUSPENSION_REASON_TEXT
+  data_type: string
+  description: Lý do tạm nghỉ.
+  target_attr_name: Temporary Suspension Reason Description
+- target_column: temporary_suspension_notice_nbr
+  transformation: ta_re_in.SUSPENSION_NOTICE_NUMBER
+  data_type: string
+  description: Số thông báo tạm nghỉ.
+  target_attr_name: Temporary Suspension Notice Number
+- target_column: temporary_suspension_notice_dt
+  transformation: ta_re_in.SUSPENSION_NOTICE_DATE
+  data_type: date
+  description: Ngày thông báo tạm nghỉ.
+  target_attr_name: Temporary Suspension Notice Date
+- target_column: operation_stop_dt
+  transformation: ta_re_in.OPERATION_STOP_DATE
+  data_type: date
+  description: Ngày ngừng hoạt động.
+  target_attr_name: Operation Stop Date
+- target_column: operation_stop_reason_description
+  transformation: ta_re_in.OPERATION_STOP_REASON
+  data_type: string
+  description: Lý do ngừng hoạt động.
+  target_attr_name: Operation Stop Reason Description
+- target_column: operation_stop_note
+  transformation: ta_re_in.OPERATION_STOP_NOTE
+  data_type: string
+  description: Ghi chú ngừng hoạt động.
+  target_attr_name: Operation Stop Note
+- target_column: operation_stop_notice_nbr
+  transformation: ta_re_in.OPERATION_STOP_NOTICE_NUMBER
+  data_type: string
+  description: Số thông báo ngừng hoạt động.
+  target_attr_name: Operation Stop Notice Number
+- target_column: secondary_business_line_code
+  transformation: ta_re_in.BUSINESS_LINE_CODE
+  data_type: string
+  description: Ngành nghề kinh doanh bổ sung của doanh nghiệp (từ TAX_REG_BUSINESS_LINE).
+  target_attr_name: Secondary Business Line Code
+- target_column: message_packet_id
+  transformation: ta_re_in.MSG_PACKET_ID
+  data_type: string
+  description: Mã gói tin trao đổi liên quan.
+  target_attr_name: Message Packet Id
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

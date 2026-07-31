@@ -1,0 +1,208 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-account_investor-GSGD.INVESTOR_ACCOUNT
+  logical_name: Mapping Atomic - Account Investor – source GSGD.INVESTOR_ACCOUNT
+  physical_name: account_investor
+  dm_ref: ATM-account_investor-GSGD.INVESTOR_ACCOUNT
+  brd_ref: BRD-SRC-GSGD-INVESTOR_ACCOUNT
+target:
+  namespace: atm
+  physical_name: account_investor
+  etl_handle: SCD4A
+  description: Tài khoản giao dịch chứng khoán của nhà đầu tư trong hệ thống GSGD
+    (nguồn gốc VSDC). Gộp thông tin cơ bản (định danh, loại hình NĐT, trạng thái,
+    người/ngày nhận ủy quyền) và thông tin mở rộng liên hệ/ngân hàng vào 1 entity
+    duy nhất. Số CCCD (Identity Number) FK sang Individual (nguồn NHNCK.IDENTITY_INFO_C06S).
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: INVESTOR_ACCOUNT
+  alias: in_ac
+  select_fields: ACCOUNT_CODE, IDENTITY_NUMBER, ACCOUNT_NAME, INVESTOR_TYPE, NATIONALITY,
+    DATE_OF_BIRTH, IDENTITY_ISSUE_DATE, IDENTITY_ISSUE_PLACE, ACCOUNT_STATUS, DOMESTIC_FOREIGN_FLAG,
+    CONTACT_ADDRESS, PERMANENT_ADDRESS, OPEN_DATE, CLOSE_DATE, LAST_MODIFIED_DATE,
+    MARGIN_ACCOUNT_OPEN_DATE, MARGIN_SERVICE_ENABLED, ADVANCE_PAYMENT_SERVICE_ENABLED,
+    ACCOUNT_AUTHORIZATION_ENABLED, AUTHORIZED_PERSON_NAME, AUTHORIZATION_DATE, APPROVAL_STATUS,
+    DATA_SOURCE
+  filter: null
+- source_type: physical_table
+  namespace: ods
+  table_name: INVESTOR_ACCOUNT_EXTENDED_INFO
+  alias: in_ac_ex_in
+  select_fields: LEGAL_REPRESENTATIVE, PHONE_NUMBER, EMAIL, BANK_ACCOUNT_HOLDER_NAME,
+    BANK_ACCOUNT_NUMBER, BANK_ACCOUNT_NAME
+  filter: null
+relationship:
+- main_alias: in_ac
+  join_type: LEFT JOIN
+  join_alias: in_ac_ex_in
+  join_on: in_ac.Id = in_ac_ex_in.Id
+mapping_columns:
+- target_column: account_investor_id
+  transformation: '{hash_id}(''GSGD_INVESTOR_ACCOUNT'', in_ac.ACCOUNT_CODE)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Account Investor Id
+- target_column: account_investor_code
+  transformation: in_ac.ACCOUNT_CODE
+  data_type: string
+  description: Số tài khoản (từ VSDC). BK duy nhất của entity.
+  target_attr_name: Account Investor Code
+- target_column: src_stm_code
+  transformation: '''GSGD_INVESTOR_ACCOUNT'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: individual_id
+  transformation: '{hash_id}(''NHNCK_IDENTITY_INFO_C06S'', in_ac.IDENTITY_NUMBER)'
+  data_type: string
+  description: Số CCCD/Số đăng ký sở hữu của nhà đầu tư — dùng làm FK sang Individual.
+  target_attr_name: Individual Id
+- target_column: individual_code
+  transformation: in_ac.IDENTITY_NUMBER
+  data_type: string
+  description: Số CCCD/Số đăng ký sở hữu — bản sao business key của Individual.
+  target_attr_name: Individual Code
+- target_column: account_nm
+  transformation: in_ac.ACCOUNT_NAME
+  data_type: string
+  description: Họ và tên (nhà đầu tư cá nhân) hoặc tên tổ chức.
+  target_attr_name: Account Name
+- target_column: investor_tp_code
+  transformation: in_ac.INVESTOR_TYPE
+  data_type: string
+  description: Loại hình nhà đầu tư.
+  target_attr_name: Investor Type Code
+- target_column: nationality_id
+  transformation: '{hash_id}(''GSGD_INVESTOR_ACCOUNT'', in_ac.NATIONALITY)'
+  data_type: string
+  description: Quốc tịch — FK đến Geographic Area (ECAT).
+  target_attr_name: Nationality Id
+- target_column: nationality_code
+  transformation: in_ac.NATIONALITY
+  data_type: string
+  description: Mã quốc gia/quốc tịch (denormalized).
+  target_attr_name: Nationality Code
+- target_column: dt_of_birth
+  transformation: in_ac.DATE_OF_BIRTH
+  data_type: date
+  description: Ngày tháng năm sinh/ngày thành lập DN (từ CTCK, có thể sửa).
+  target_attr_name: Date Of Birth
+- target_column: identity_issue_dt
+  transformation: in_ac.IDENTITY_ISSUE_DATE
+  data_type: date
+  description: Ngày cấp giấy tờ định danh (CCCD/giấy đăng ký sở hữu).
+  target_attr_name: Identity Issue Date
+- target_column: identity_issue_place
+  transformation: in_ac.IDENTITY_ISSUE_PLACE
+  data_type: string
+  description: Nơi cấp giấy tờ định danh.
+  target_attr_name: Identity Issue Place
+- target_column: account_status_code
+  transformation: in_ac.ACCOUNT_STATUS
+  data_type: string
+  description: Trạng thái tài khoản.
+  target_attr_name: Account Status Code
+- target_column: domestic_foreign_flag
+  transformation: in_ac.DOMESTIC_FOREIGN_FLAG
+  data_type: string
+  description: Trong nước/Nước ngoài.
+  target_attr_name: Domestic Foreign Flag
+- target_column: contact_adr
+  transformation: in_ac.CONTACT_ADDRESS
+  data_type: string
+  description: Địa chỉ liên lạc (từ CTCK, có thể sửa).
+  target_attr_name: Contact Address
+- target_column: permanent_adr
+  transformation: in_ac.PERMANENT_ADDRESS
+  data_type: string
+  description: Địa chỉ thường trú (từ CTCK, có thể sửa).
+  target_attr_name: Permanent Address
+- target_column: legal_representative
+  transformation: in_ac.LEGAL_REPRESENTATIVE
+  data_type: string
+  description: Người đại diện theo pháp luật.
+  target_attr_name: Legal Representative
+- target_column: phone_nbr
+  transformation: in_ac.PHONE_NUMBER
+  data_type: string
+  description: Số điện thoại.
+  target_attr_name: Phone Number
+- target_column: email
+  transformation: in_ac.EMAIL
+  data_type: string
+  description: Email.
+  target_attr_name: Email
+- target_column: bank_account_holder_nm
+  transformation: in_ac.BANK_ACCOUNT_HOLDER_NAME
+  data_type: string
+  description: Tên chủ tài khoản ngân hàng.
+  target_attr_name: Bank Account Holder Name
+- target_column: bank_account_nbr
+  transformation: in_ac.BANK_ACCOUNT_NUMBER
+  data_type: string
+  description: Số tài khoản ngân hàng.
+  target_attr_name: Bank Account Number
+- target_column: bank_account_nm
+  transformation: in_ac.BANK_ACCOUNT_NAME
+  data_type: string
+  description: Tên ngân hàng.
+  target_attr_name: Bank Account Name
+- target_column: open_dt
+  transformation: in_ac.OPEN_DATE
+  data_type: date
+  description: Ngày mở tài khoản.
+  target_attr_name: Open Date
+- target_column: close_dt
+  transformation: in_ac.CLOSE_DATE
+  data_type: date
+  description: Ngày đóng tài khoản.
+  target_attr_name: Close Date
+- target_column: last_modified_tms
+  transformation: in_ac.LAST_MODIFIED_DATE
+  data_type: timestamp
+  description: Ngày thay đổi thông tin.
+  target_attr_name: Last Modified Timestamp
+- target_column: margin_account_open_dt
+  transformation: in_ac.MARGIN_ACCOUNT_OPEN_DATE
+  data_type: date
+  description: Ngày mở TK ký quỹ.
+  target_attr_name: Margin Account Open Date
+- target_column: margin_service_enabled
+  transformation: in_ac.MARGIN_SERVICE_ENABLED
+  data_type: string
+  description: Dịch vụ TC sử dụng - Ký quỹ.
+  target_attr_name: Margin Service Enabled
+- target_column: advance_payment_service_enabled
+  transformation: in_ac.ADVANCE_PAYMENT_SERVICE_ENABLED
+  data_type: string
+  description: Dịch vụ TC sử dụng - Ứng trước tiền bán.
+  target_attr_name: Advance Payment Service Enabled
+- target_column: authorization_service_enabled
+  transformation: in_ac.ACCOUNT_AUTHORIZATION_ENABLED
+  data_type: string
+  description: Dịch vụ TC sử dụng - Hợp đồng tài chính khác.
+  target_attr_name: Authorization Service Enabled
+- target_column: authorized_person_nm
+  transformation: in_ac.AUTHORIZED_PERSON_NAME
+  data_type: string
+  description: Người nhận ủy quyền.
+  target_attr_name: Authorized Person Name
+- target_column: authorization_dt
+  transformation: in_ac.AUTHORIZATION_DATE
+  data_type: date
+  description: Ngày nhận ủy quyền.
+  target_attr_name: Authorization Date
+- target_column: approval_status_code
+  transformation: in_ac.APPROVAL_STATUS
+  data_type: string
+  description: Trạng thái phê duyệt tài khoản.
+  target_attr_name: Approval Status Code
+- target_column: data_src
+  transformation: in_ac.DATA_SOURCE
+  data_type: string
+  description: 'Nguồn dữ liệu chính: VSDC, CTCK.'
+  target_attr_name: Data Source
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

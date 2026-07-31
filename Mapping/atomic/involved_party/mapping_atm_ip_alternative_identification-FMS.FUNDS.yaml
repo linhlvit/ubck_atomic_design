@@ -1,0 +1,57 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-ip_alternative_identification-FMS.FUNDS
+  logical_name: Mapping Atomic - Involved Party Alternative Identification – source
+    FMS.FUNDS
+  physical_name: ip_alternative_identification
+  dm_ref: ATM-ip_alternative_identification-FMS.FUNDS
+  brd_ref: BRD-SRC-FMS-FUNDS
+target:
+  namespace: atm
+  physical_name: ip_alternative_identification
+  etl_handle: SCD4A
+  description: Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ
+    chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ
+    1 nguồn.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: FUNDS
+  alias: fund
+  select_fields: ID, ID_NO, ID_DATE
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: ip_id
+  transformation: '{hash_id}(''FMS_FUNDS'', fund.ID)'
+  data_type: string
+  description: FK đến Investment Fund.
+  target_attr_name: Involved Party Id
+- target_column: ip_code
+  transformation: fund.ID
+  data_type: string
+  description: Mã quỹ đầu tư.
+  target_attr_name: Involved Party Code
+- target_column: src_stm_code
+  transformation: '''FMS_FUNDS'''
+  data_type: string
+  description: Mã hệ thống nguồn.
+  target_attr_name: Source System Code
+- target_column: identification_tp_code
+  transformation: '''TAX_ID'''
+  data_type: string
+  description: Loại giấy tờ định danh — mã số thuế.
+  target_attr_name: Identification Type Code
+- target_column: identification_nbr
+  transformation: fund.ID_NO
+  data_type: string
+  description: Mã số thuế của quỹ đầu tư.
+  target_attr_name: Identification Number
+- target_column: identification_issue_dt
+  transformation: fund.ID_DATE
+  data_type: date
+  description: Ngày cấp mã số thuế.
+  target_attr_name: Identification Issue Date
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

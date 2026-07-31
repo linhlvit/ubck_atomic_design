@@ -1,0 +1,236 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-securities_practitioner-NHNCK.PROFESSIONALS
+  logical_name: Mapping Atomic - Securities Practitioner – source NHNCK.PROFESSIONALS
+  physical_name: securities_practitioner
+  dm_ref: ATM-securities_practitioner-NHNCK.PROFESSIONALS
+  brd_ref: BRD-SRC-NHNCK-PROFESSIONALS
+target:
+  namespace: atm
+  physical_name: securities_practitioner
+  etl_handle: SCD4A
+  description: Người hành nghề chứng khoán được UBCKNN quản lý. Ghi nhận thông tin
+    nhân thân và trạng thái hành nghề.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: PROFESSIONALS
+  alias: pro
+  select_fields: ID, FULL_NAME, FIRST_NAME, BIRTH_DATE, BIRTH_YEAR, GENDER, EDUCATION_LEVEL_ID,
+    REGISTRATION_TYPE, STATUS_WORK, STATUS_ACCOUNT, ORGANIZATION_ID, NATIONALITY_ID,
+    WORKPLACE, POSITION, DEPARTMENT, PREVIOUS_IDENTITY_NUMBER, HOMETOWN, NATIONAL,
+    RELIGION, PLACE_OF_BIRTH, AVATAR, PLACE_OF_BIRTH_COUNTRY_ID, PLACE_OF_BIRTH_PROVINCE_ID,
+    PLACE_OF_BIRTH_DISTRICT_ID, SSO_SYNCED, SSO_USER_ID
+  filter: null
+- source_type: physical_table
+  namespace: ods
+  table_name: COUNTRIES
+  alias: coun
+  select_fields: ID, COUNTRY_CODE
+  filter: null
+  note: Crosswalk bridge cho nationality_id, place_of_birth_country_id
+- source_type: physical_table
+  namespace: ods
+  table_name: PROVINCES
+  alias: prov
+  select_fields: ID, PROVINCE_CODE
+  filter: null
+  note: Crosswalk bridge cho place_of_birth_province_id
+- source_type: physical_table
+  namespace: ods
+  table_name: DISTRICTS
+  alias: dist
+  select_fields: ID, DISTRICT_CODE
+  filter: null
+  note: Crosswalk bridge cho place_of_birth_district_id
+relationship:
+- main_alias: pro
+  join_type: LEFT JOIN
+  join_alias: coun
+  join_on: pro.NATIONALITY_ID = coun.ID
+- main_alias: pro
+  join_type: LEFT JOIN
+  join_alias: coun
+  join_on: pro.PLACE_OF_BIRTH_COUNTRY_ID = coun.ID
+- main_alias: pro
+  join_type: LEFT JOIN
+  join_alias: prov
+  join_on: pro.PLACE_OF_BIRTH_PROVINCE_ID = prov.ID
+- main_alias: pro
+  join_type: LEFT JOIN
+  join_alias: dist
+  join_on: pro.PLACE_OF_BIRTH_DISTRICT_ID = dist.ID
+mapping_columns:
+- target_column: sp_id
+  transformation: '{hash_id}(''NHNCK_PROFESSIONALS'', pro.ID)'
+  data_type: string
+  description: Id tự sinh (surrogate key)
+  target_attr_name: Securities Practitioner Id
+- target_column: sp_code
+  transformation: pro.ID
+  data_type: string
+  description: Mã người hành nghề. BK từ PK nguồn
+  target_attr_name: Securities Practitioner Code
+- target_column: src_stm_code
+  transformation: '''NHNCK_PROFESSIONALS'''
+  data_type: string
+  description: Mã nguồn dữ liệu
+  target_attr_name: Source System Code
+- target_column: full_nm
+  transformation: pro.FULL_NAME
+  data_type: string
+  description: Họ và tên đầy đủ của người hành nghề
+  target_attr_name: Full Name
+- target_column: given_nm
+  transformation: pro.FIRST_NAME
+  data_type: string
+  description: Tên đệm và tên riêng
+  target_attr_name: Given Name
+- target_column: birth_dt
+  transformation: pro.BIRTH_DATE
+  data_type: date
+  description: Ngày sinh
+  target_attr_name: Birth Date
+- target_column: birth_year
+  transformation: pro.BIRTH_YEAR
+  data_type: string
+  description: Năm sinh (lưu dạng chuỗi khi không có ngày tháng đủ)
+  target_attr_name: Birth Year
+- target_column: gender_code
+  transformation: pro.GENDER
+  data_type: string
+  description: 'Giới tính: 0=Nam / 1=Nữ'
+  target_attr_name: Gender Code
+- target_column: education_level_code
+  transformation: pro.EDUCATION_LEVEL_ID
+  data_type: string
+  description: Trình độ học vấn
+  target_attr_name: Education Level Code
+- target_column: practitioner_registration_tp_code
+  transformation: pro.REGISTRATION_TYPE
+  data_type: string
+  description: 'Hình thức đăng ký hồ sơ: 0=MCĐT/cổng DVC / 1=Nhập tay'
+  target_attr_name: Practitioner Registration Type Code
+- target_column: practice_status_code
+  transformation: pro.STATUS_WORK
+  data_type: string
+  description: Trạng thái hành nghề chứng khoán
+  target_attr_name: Practice Status Code
+- target_column: account_status_code
+  transformation: pro.STATUS_ACCOUNT
+  data_type: string
+  description: Trạng thái tài khoản người dùng trên cổng NHNCK
+  target_attr_name: Account Status Code
+- target_column: securities_organization_reference_id
+  transformation: '{hash_id}(''NHNCK_ORGANIZATIONS'', pro.ORGANIZATION_ID)'
+  data_type: string
+  description: FK đến tổ chức chứng khoán hiện tại (nullable)
+  target_attr_name: Securities Organization Reference Id
+- target_column: securities_organization_reference_code
+  transformation: pro.ORGANIZATION_ID
+  data_type: string
+  description: Mã tổ chức (denormalized lookup)
+  target_attr_name: Securities Organization Reference Code
+- target_column: nationality_id
+  transformation: '{hash_id}(''ECAT_COUNTRY'', coun.COUNTRY_CODE)'
+  data_type: string
+  description: FK đến Geographic Area (quốc tịch)
+  target_attr_name: Nationality Id
+- target_column: nationality_code
+  transformation: pro.NATIONALITY_ID
+  data_type: string
+  description: Mã quốc gia/quốc tịch (denormalized)
+  target_attr_name: Nationality Code
+- target_column: workplace_nm
+  transformation: pro.WORKPLACE
+  data_type: string
+  description: Nơi làm việc hiện tại (tên tổ chức — denormalized text tự do)
+  target_attr_name: Workplace Name
+- target_column: position_nm
+  transformation: pro.POSITION
+  data_type: string
+  description: Chức vụ hiện tại (denormalized text tự do)
+  target_attr_name: Position Name
+- target_column: department_nm
+  transformation: pro.DEPARTMENT
+  data_type: string
+  description: Phòng ban hiện tại (denormalized text tự do)
+  target_attr_name: Department Name
+- target_column: previous_identity_nbr
+  transformation: pro.PREVIOUS_IDENTITY_NUMBER
+  data_type: string
+  description: Số CMND cũ trước khi chuyển sang CCCD
+  target_attr_name: Previous Identity Number
+- target_column: hometown
+  transformation: pro.HOMETOWN
+  data_type: string
+  description: Quê quán (dữ liệu tích hợp C06)
+  target_attr_name: Hometown
+- target_column: ethnicity_nm
+  transformation: pro.NATIONAL
+  data_type: string
+  description: Dân tộc (dữ liệu tích hợp C06)
+  target_attr_name: Ethnicity Name
+- target_column: religion_nm
+  transformation: pro.RELIGION
+  data_type: string
+  description: Tôn giáo (dữ liệu tích hợp C06)
+  target_attr_name: Religion Name
+- target_column: place_of_birth_description
+  transformation: pro.PLACE_OF_BIRTH
+  data_type: string
+  description: Nơi sinh (text tự do)
+  target_attr_name: Place of Birth Description
+- target_column: avatar_file_path
+  transformation: pro.AVATAR
+  data_type: string
+  description: Đường dẫn/URL ảnh đại diện của người hành nghề
+  target_attr_name: Avatar File Path
+- target_column: place_of_birth_country_id
+  transformation: '{hash_id}(''ECAT_COUNTRY'', coun.COUNTRY_CODE)'
+  data_type: string
+  description: FK đến Geographic Area — quốc gia nơi sinh
+  target_attr_name: Place of Birth Country Id
+- target_column: place_of_birth_country_code
+  transformation: pro.PLACE_OF_BIRTH_COUNTRY_ID
+  data_type: string
+  description: Mã quốc gia nơi sinh (denormalized)
+  target_attr_name: Place of Birth Country Code
+- target_column: place_of_birth_province_id
+  transformation: '{hash_id}(''ECAT_PROVINCE_NEW'', prov.PROVINCE_CODE)'
+  data_type: string
+  description: FK đến Geographic Area — tỉnh/thành phố nơi sinh
+  target_attr_name: Place of Birth Province Id
+- target_column: place_of_birth_province_code
+  transformation: pro.PLACE_OF_BIRTH_PROVINCE_ID
+  data_type: string
+  description: Mã tỉnh/thành phố nơi sinh (denormalized)
+  target_attr_name: Place of Birth Province Code
+- target_column: place_of_birth_district_id
+  transformation: '{hash_id}(''ECAT_DISTRICT_OLD'', dist.DISTRICT_CODE)'
+  data_type: string
+  description: FK đến Geographic Area — quận/huyện nơi sinh
+  target_attr_name: Place of Birth District Id
+- target_column: place_of_birth_district_code
+  transformation: pro.PLACE_OF_BIRTH_DISTRICT_ID
+  data_type: string
+  description: Mã quận/huyện nơi sinh (denormalized)
+  target_attr_name: Place of Birth District Code
+- target_column: sso_sync_status_code
+  transformation: pro.SSO_SYNCED
+  data_type: string
+  description: 0=chưa chuyển SSO, 1=đã chuyển SSO
+  target_attr_name: SSO Sync Status Code
+- target_column: identity_and_access_management_user_id
+  transformation: '{hash_id}(''IAM_USERS'', pro.SSO_USER_ID)'
+  data_type: string
+  description: UUID user trên IAM (provisioning SSO)
+  target_attr_name: Identity and Access Management User Id
+- target_column: identity_and_access_management_user_code
+  transformation: pro.SSO_USER_ID
+  data_type: string
+  description: Mã user IAM (denormalized lookup)
+  target_attr_name: Identity and Access Management User Code
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

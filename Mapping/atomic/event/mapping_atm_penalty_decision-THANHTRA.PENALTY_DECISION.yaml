@@ -1,0 +1,193 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-penalty_decision-THANHTRA.PENALTY_DECISION
+  logical_name: Mapping Atomic - Penalty Decision – source THANHTRA.PENALTY_DECISION
+  physical_name: penalty_decision
+  dm_ref: ATM-penalty_decision-THANHTRA.PENALTY_DECISION
+  brd_ref: BRD-SRC-THANHTRA-PENALTY_DECISION
+target:
+  namespace: atm
+  physical_name: penalty_decision
+  etl_handle: SCD4A
+  description: 'Quyết định xử phạt vi phạm hành chính: ghi nhận số quyết định, ngày
+    ban hành, tổng số tiền phạt, trạng thái (7 bước), thông tin khiếu nại và khởi
+    kiện liên quan.'
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: PENALTY_DECISION
+  alias: pe_de
+  select_fields: ID, VIOLATION_CASE_ID, DECISION_NUMBER, ISSUED_DATE, DECISION_CATEGORY,
+    STATUS, SIGNER_ID, SIGNER_NAME, ASSIGNED_OFFICER_ID, ASSIGNED_OFFICER_NAME, SUBMITTED_BY_ID,
+    APPROVER_ID, ANTI_MONEY_LAUNDERING, TOTAL_FINE_AMOUNT, PAYMENT_DEADLINE, SUBMITTED_AT,
+    COMPLAINT_EXISTS, COMPLAINT_CONTENT, COMPLAINT_RECEIVED_DATE, COMPLAINT_STATUS,
+    COMPLAINT_RESULT, LAWSUIT_EXISTS, LAWSUIT_CONTENT, SIGNED_DOCUMENT_URL, SUMMARY
+  filter: null
+- source_type: physical_table
+  namespace: ods
+  table_name: VIOLATION_CASE
+  alias: vi_ca
+  select_fields: ID, CODE
+  filter: null
+  note: Crosswalk bridge cho violation_case_id
+relationship:
+- main_alias: pe_de
+  join_type: LEFT JOIN
+  join_alias: vi_ca
+  join_on: pe_de.VIOLATION_CASE_ID = vi_ca.ID
+mapping_columns:
+- target_column: pd_id
+  transformation: '{hash_id}(''THANHTRA_PENALTY_DECISION'', pe_de.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Penalty Decision Id
+- target_column: pd_code
+  transformation: pe_de.ID
+  data_type: string
+  description: BK chính. PK nguồn (VARCHAR2 UUID).
+  target_attr_name: Penalty Decision Code
+- target_column: src_stm_code
+  transformation: '''THANHTRA_PENALTY_DECISION'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: violation_case_id
+  transformation: '{hash_id}(''THANHTRA_VIOLATION_CASE'', vi_ca.CODE)'
+  data_type: string
+  description: FK đến hồ sơ VPHC.
+  target_attr_name: Violation Case Id
+- target_column: violation_case_code
+  transformation: pe_de.VIOLATION_CASE_ID
+  data_type: string
+  description: Mã hồ sơ VPHC liên kết (snapshot).
+  target_attr_name: Violation Case Code
+- target_column: decision_nbr
+  transformation: pe_de.DECISION_NUMBER
+  data_type: string
+  description: Số quyết định xử phạt VPHC (cập nhật sau khi ký, cấp số từ VBĐH).
+  target_attr_name: Decision Number
+- target_column: issued_dt
+  transformation: pe_de.ISSUED_DATE
+  data_type: date
+  description: Ngày ban hành quyết định xử phạt.
+  target_attr_name: Issued Date
+- target_column: decision_category_code
+  transformation: pe_de.DECISION_CATEGORY
+  data_type: string
+  description: 'Phân loại: INSPECTOR_SIGNED (LĐ Thanh tra ký), SSC_LEADER_SIGNED (LĐ
+    UBCKNN ký).'
+  target_attr_name: Decision Category Code
+- target_column: life_cycle_status_code
+  transformation: pe_de.STATUS
+  data_type: string
+  description: 'Trạng thái: DRAFT, SUBMITTED, APPROVED, REJECTED, ISSUED, SENT_TO_SUBJECT,
+    ENFORCED.'
+  target_attr_name: Life Cycle Status Code
+- target_column: signer_officer_id
+  transformation: '{hash_id}(''IAM_USERS'', pe_de.SIGNER_ID)'
+  data_type: string
+  description: FK đến cán bộ ký quyết định xử phạt.
+  target_attr_name: Signer Officer Id
+- target_column: signer_officer_code
+  transformation: pe_de.SIGNER_NAME
+  data_type: string
+  description: Tên cán bộ ký quyết định (snapshot).
+  target_attr_name: Signer Officer Code
+- target_column: assigned_officer_id
+  transformation: '{hash_id}(''IAM_USERS'', pe_de.ASSIGNED_OFFICER_ID)'
+  data_type: string
+  description: FK đến cán bộ được phân công xử lý quyết định.
+  target_attr_name: Assigned Officer Id
+- target_column: assigned_officer_nm
+  transformation: pe_de.ASSIGNED_OFFICER_NAME
+  data_type: string
+  description: Tên cán bộ được phân công (snapshot).
+  target_attr_name: Assigned Officer Name
+- target_column: submitted_by_officer_id
+  transformation: '{hash_id}(''IAM_USERS'', pe_de.SUBMITTED_BY_ID)'
+  data_type: string
+  description: FK đến cán bộ trình ký quyết định.
+  target_attr_name: Submitted By Officer Id
+- target_column: submitted_by_officer_code
+  transformation: pe_de.SUBMITTED_BY_ID
+  data_type: string
+  description: Mã cán bộ trình ký (snapshot).
+  target_attr_name: Submitted By Officer Code
+- target_column: approver_officer_id
+  transformation: '{hash_id}(''IAM_USERS'', pe_de.APPROVER_ID)'
+  data_type: string
+  description: FK đến người phê duyệt quyết định.
+  target_attr_name: Approver Officer Id
+- target_column: approver_officer_code
+  transformation: pe_de.APPROVER_ID
+  data_type: string
+  description: Mã người phê duyệt (snapshot).
+  target_attr_name: Approver Officer Code
+- target_column: anti_money_laundering_indicator
+  transformation: pe_de.ANTI_MONEY_LAUNDERING
+  data_type: string
+  description: 'Quyết định có nội dung PCRT: 0=Không, 1=Có.'
+  target_attr_name: Anti Money Laundering Indicator
+- target_column: total_fine_amt
+  transformation: pe_de.TOTAL_FINE_AMOUNT
+  data_type: decimal(23,2)
+  description: Tổng mức phạt tiền của quyết định (VNĐ).
+  target_attr_name: Total Fine Amount
+- target_column: payment_deadline
+  transformation: pe_de.PAYMENT_DEADLINE
+  data_type: date
+  description: Hạn nộp tiền phạt.
+  target_attr_name: Payment Deadline
+- target_column: submitted_tms
+  transformation: pe_de.SUBMITTED_AT
+  data_type: timestamp
+  description: Thời điểm trình ký quyết định.
+  target_attr_name: Submitted Timestamp
+- target_column: complaint_exists_indicator
+  transformation: pe_de.COMPLAINT_EXISTS
+  data_type: string
+  description: 'Có khiếu nại: 0=Không, 1=Có.'
+  target_attr_name: Complaint Exists Indicator
+- target_column: complaint_content
+  transformation: pe_de.COMPLAINT_CONTENT
+  data_type: string
+  description: Nội dung khiếu nại quyết định xử phạt.
+  target_attr_name: Complaint Content
+- target_column: complaint_received_dt
+  transformation: pe_de.COMPLAINT_RECEIVED_DATE
+  data_type: date
+  description: Ngày tiếp nhận khiếu nại.
+  target_attr_name: Complaint Received Date
+- target_column: complaint_status_code
+  transformation: pe_de.COMPLAINT_STATUS
+  data_type: string
+  description: 'Trạng thái khiếu nại: PROCESSING, RESOLVED.'
+  target_attr_name: Complaint Status Code
+- target_column: complaint_result
+  transformation: pe_de.COMPLAINT_RESULT
+  data_type: string
+  description: Kết quả giải quyết khiếu nại.
+  target_attr_name: Complaint Result
+- target_column: lawsuit_exists_indicator
+  transformation: pe_de.LAWSUIT_EXISTS
+  data_type: string
+  description: 'Có khởi kiện: 0=Không, 1=Có.'
+  target_attr_name: Lawsuit Exists Indicator
+- target_column: lawsuit_content
+  transformation: pe_de.LAWSUIT_CONTENT
+  data_type: string
+  description: Nội dung khởi kiện quyết định xử phạt.
+  target_attr_name: Lawsuit Content
+- target_column: signed_document_url
+  transformation: pe_de.SIGNED_DOCUMENT_URL
+  data_type: string
+  description: URL file PDF đã ký số.
+  target_attr_name: Signed Document URL
+- target_column: summary
+  transformation: pe_de.SUMMARY
+  data_type: string
+  description: Tóm tắt nội dung quyết định xử phạt.
+  target_attr_name: Summary
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

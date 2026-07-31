@@ -1,0 +1,64 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-investment_fund_x_fund_management_company_employee_relationship-FMS.FUND_TL_PRO
+  logical_name: Mapping Atomic - Investment Fund X Fund Management Company Employee
+    Relationship – source FMS.FUND_TL_PRO
+  physical_name: investment_fund_x_fund_management_company_employee_relationship
+  dm_ref: ATM-investment_fund_x_fund_management_company_employee_relationship-FMS.FUND_TL_PRO
+  brd_ref: BRD-SRC-FMS-FUND_TL_PRO
+target:
+  namespace: atm
+  physical_name: investment_fund_x_fund_management_company_employee_relationship
+  etl_handle: SCD2
+  description: Quan hệ gán người hành nghề (nhân sự chủ chốt CTQLQ) liên quan đến
+    quỹ đầu tư. FK đến Investment Fund + Fund Management Company Employee.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: FUND_TL_PRO
+  alias: fu_tl_pr
+  select_fields: FUND_ID, TLPR_ID
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: investment_fund_x_fmc_employee_rltnp_id
+  transformation: 'null'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Investment Fund X Fund Management Company Employee Relationship
+    Id
+- target_column: investment_fund_x_fmc_employee_rltnp_code
+  transformation: 'null'
+  data_type: string
+  description: Mã quan hệ — composite FUND_ID+TLPR_ID (bảng nguồn không có PK/mã nghiệp
+    vụ riêng).
+  target_attr_name: Investment Fund X Fund Management Company Employee Relationship
+    Code
+- target_column: src_stm_code
+  transformation: '''FMS_FUND_TL_PRO'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: investment_fund_id
+  transformation: '{hash_id}(''FMS_FUNDS'', fu_tl_pr.FUND_ID)'
+  data_type: string
+  description: 'FK -> FUNDS: Quỹ đầu tư liên quan.'
+  target_attr_name: Investment Fund Id
+- target_column: investment_fund_code
+  transformation: fu_tl_pr.FUND_ID
+  data_type: string
+  description: Mã quỹ đầu tư liên quan.
+  target_attr_name: Investment Fund Code
+- target_column: fmc_employee_id
+  transformation: '{hash_id}(''FMS_TL_PROFILES'', fu_tl_pr.TLPR_ID)'
+  data_type: string
+  description: 'FK -> TL_PROFILES: Người hành nghề liên quan đến quỹ.'
+  target_attr_name: Fund Management Company Employee Id
+- target_column: fmc_employee_code
+  transformation: fu_tl_pr.TLPR_ID
+  data_type: string
+  description: Mã người hành nghề liên quan đến quỹ.
+  target_attr_name: Fund Management Company Employee Code
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

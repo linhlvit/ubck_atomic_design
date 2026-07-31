@@ -1,0 +1,140 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-geographic_area-ECAT.REGION
+  logical_name: Mapping Atomic - Geographic Area – source ECAT.REGION
+  physical_name: geographic_area
+  dm_ref: ATM-geographic_area-ECAT.REGION
+  brd_ref: BRD-SRC-ECAT-REGION
+target:
+  namespace: atm
+  physical_name: geographic_area
+  etl_handle: SCD4A
+  description: 'Đơn vị địa lý dùng làm FK tham chiếu: quốc gia/quốc tịch (COUNTRY),
+    vùng/miền (REGION), tỉnh/thành phố mới/cũ (PROVINCE/PROVINCE_OLD), quận/huyện
+    cũ (DISTRICT_OLD), phường/xã mới/cũ (WARD/WARD_OLD). Phân biệt bằng geographic_area_type_code.
+    Hỗ trợ song song bộ danh mục pre- và post-sáp nhập hành chính 2025.'
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: REGION
+  alias: regi
+  select_fields: CODE, NAME, COUNTRY_ID, ACTIVE, DELETED, EFFECTIVE_START_DATE, EFFECTIVE_END_DATE,
+    VERSION, ACTIVE_REASON, DELETED_REASON, CREATED_AT, UPDATED_AT, CREATED_BY_ID,
+    CREATED_BY_NAME, UPDATED_BY_ID, UPDATED_BY_NAME
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: geographic_area_id
+  transformation: '{hash_id}(''ECAT_REGION'', regi.CODE)'
+  data_type: string
+  description: Id tự sinh (surrogate key)
+  target_attr_name: Geographic Area Id
+- target_column: src_stm_code
+  transformation: '''ECAT_REGION'''
+  data_type: string
+  description: Mã nguồn dữ liệu
+  target_attr_name: Source System Code
+- target_column: geographic_area_tp_code
+  transformation: 'null'
+  data_type: string
+  description: Phân loại vùng địa lý — Vùng/miền
+  target_attr_name: Geographic Area Type Code
+- target_column: geographic_area_code
+  transformation: regi.CODE
+  data_type: string
+  description: Mã vùng/miền nghiệp vụ (do ECAT quản lý). BK duy nhất — Id hash từ
+    trường này.
+  target_attr_name: Geographic Area Code
+- target_column: geographic_area_nm
+  transformation: regi.NAME
+  data_type: string
+  description: Tên vùng/miền
+  target_attr_name: Geographic Area Name
+- target_column: parent_geographic_area_id
+  transformation: '{hash_id}(''ECAT_REGION'', regi.COUNTRY_ID)'
+  data_type: string
+  description: FK đến quốc gia cha
+  target_attr_name: Parent Geographic Area Id
+- target_column: parent_geographic_area_code
+  transformation: regi.COUNTRY_ID
+  data_type: string
+  description: Mã quốc gia cha
+  target_attr_name: Parent Geographic Area Code
+- target_column: active_indicator
+  transformation: regi.ACTIVE
+  data_type: int
+  description: 'Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng'
+  target_attr_name: Active Indicator
+- target_column: deleted_indicator
+  transformation: regi.DELETED
+  data_type: int
+  description: 'Cờ xóa mềm: true=Đã xóa; false=Chưa xóa'
+  target_attr_name: Deleted Indicator
+- target_column: effective_start_dt
+  transformation: regi.EFFECTIVE_START_DATE
+  data_type: timestamp
+  description: Ngày bắt đầu hiệu lực
+  target_attr_name: Effective Start Date
+- target_column: effective_end_dt
+  transformation: regi.EFFECTIVE_END_DATE
+  data_type: timestamp
+  description: Ngày kết thúc hiệu lực
+  target_attr_name: Effective End Date
+- target_column: version_nbr
+  transformation: regi.VERSION
+  data_type: int
+  description: Số phiên bản bản ghi tại nguồn
+  target_attr_name: Version Number
+- target_column: active_reason
+  transformation: regi.ACTIVE_REASON
+  data_type: string
+  description: Lý do thay đổi trạng thái sử dụng
+  target_attr_name: Active Reason
+- target_column: deleted_reason
+  transformation: regi.DELETED_REASON
+  data_type: string
+  description: Lý do xóa
+  target_attr_name: Deleted Reason
+- target_column: created_tms
+  transformation: regi.CREATED_AT
+  data_type: timestamp
+  description: Thời điểm bản ghi được tạo tại nguồn
+  target_attr_name: Created Timestamp
+- target_column: updated_tms
+  transformation: regi.UPDATED_AT
+  data_type: timestamp
+  description: Thời điểm bản ghi được cập nhật gần nhất tại nguồn
+  target_attr_name: Updated Timestamp
+- target_column: created_by_staff_id
+  transformation: '{hash_id}(''ECAT_UBCK_STAFF'', regi.CREATED_BY_ID)'
+  data_type: string
+  description: FK đến Regulatory Authority Staff — cán bộ tạo bản ghi
+  target_attr_name: Created By Staff Id
+- target_column: created_by_staff_code
+  transformation: regi.CREATED_BY_ID
+  data_type: string
+  description: Mã cán bộ tạo bản ghi — lookup pair với Created By Staff Id
+  target_attr_name: Created By Staff Code
+- target_column: created_by_staff_nm
+  transformation: regi.CREATED_BY_NAME
+  data_type: string
+  description: Tên người tạo bản ghi (denormalized snapshot tại thời điểm tạo)
+  target_attr_name: Created By Staff Name
+- target_column: updated_by_staff_id
+  transformation: '{hash_id}(''ECAT_UBCK_STAFF'', regi.UPDATED_BY_ID)'
+  data_type: string
+  description: FK đến Regulatory Authority Staff — cán bộ cập nhật bản ghi gần nhất
+  target_attr_name: Updated By Staff Id
+- target_column: updated_by_staff_code
+  transformation: regi.UPDATED_BY_ID
+  data_type: string
+  description: Mã cán bộ cập nhật bản ghi — lookup pair với Updated By Staff Id
+  target_attr_name: Updated By Staff Code
+- target_column: updated_by_staff_nm
+  transformation: regi.UPDATED_BY_NAME
+  data_type: string
+  description: Tên người cập nhật bản ghi gần nhất (denormalized snapshot)
+  target_attr_name: Updated By Staff Name
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

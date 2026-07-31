@@ -1,0 +1,64 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-et_registration_representative-KNT.TAX_REG_REPRESENTATIVE
+  logical_name: Mapping Atomic - External Tax Registration Representative – source
+    KNT.TAX_REG_REPRESENTATIVE
+  physical_name: et_registration_representative
+  dm_ref: ATM-et_registration_representative-KNT.TAX_REG_REPRESENTATIVE
+  brd_ref: BRD-SRC-KNT-TAX_REG_REPRESENTATIVE
+target:
+  namespace: atm
+  physical_name: et_registration_representative
+  etl_handle: SCD4A
+  description: 'Người đại diện theo pháp luật/chủ hộ kinh doanh của 1 hồ sơ External
+    Tax Registration: họ tên, chức vụ, giấy tờ định danh. Tách IP Alt Identification
+    + IP Electronic Address. FK đến External Tax Registration. Table Type điều chỉnh
+    2026-07-19 (từ Relative sang Fundamental).'
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: TAX_REG_REPRESENTATIVE
+  alias: ta_re_re
+  select_fields: ID, TAX_REGISTRATION_ID, REPRESENTATIVE_NAME, POSITION
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: et_registration_representative_id
+  transformation: '{hash_id}(''KNT_TAX_REG_REPRESENTATIVE'', ta_re_re.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: External Tax Registration Representative Id
+- target_column: et_registration_representative_code
+  transformation: ta_re_re.ID
+  data_type: string
+  description: Khóa chính của bản ghi. BK — nguồn không có mã nghiệp vụ riêng biệt,
+    dùng PK kỹ thuật làm BK duy nhất.
+  target_attr_name: External Tax Registration Representative Code
+- target_column: src_stm_code
+  transformation: '''KNT_TAX_REG_REPRESENTATIVE'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: et_registration_id
+  transformation: '{hash_id}(''KNT_TAX_REG_REPRESENTATIVE'', ta_re_re.TAX_REGISTRATION_ID)'
+  data_type: string
+  description: 'FK -> tax_registration_info: Hồ sơ đăng ký thuế liên quan.'
+  target_attr_name: External Tax Registration Id
+- target_column: et_registration_code
+  transformation: ta_re_re.TAX_REGISTRATION_ID
+  data_type: string
+  description: Mã số thuế hồ sơ đăng ký thuế liên quan.
+  target_attr_name: External Tax Registration Code
+- target_column: full_nm
+  transformation: ta_re_re.REPRESENTATIVE_NAME
+  data_type: string
+  description: Họ tên người đại diện/chủ hộ kinh doanh.
+  target_attr_name: Full Name
+- target_column: position
+  transformation: ta_re_re.POSITION
+  data_type: string
+  description: Chức vụ (tên hoặc mã).
+  target_attr_name: Position
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

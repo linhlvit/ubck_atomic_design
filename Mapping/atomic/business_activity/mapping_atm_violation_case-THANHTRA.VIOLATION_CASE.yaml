@@ -1,0 +1,130 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-violation_case-THANHTRA.VIOLATION_CASE
+  logical_name: Mapping Atomic - Violation Case – source THANHTRA.VIOLATION_CASE
+  physical_name: violation_case
+  dm_ref: ATM-violation_case-THANHTRA.VIOLATION_CASE
+  brd_ref: BRD-SRC-THANHTRA-VIOLATION_CASE
+target:
+  namespace: atm
+  physical_name: violation_case
+  etl_handle: SCD4A
+  description: 'Hồ sơ xử lý vi phạm hành chính (VPHC): ghi nhận nguồn phát hiện, liên
+    kết đoàn thanh tra/kiểm tra, cán bộ phụ trách, vòng đời hồ sơ (5 trạng thái),
+    theo dõi tiền bảo đảm.'
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: VIOLATION_CASE
+  alias: vi_ca
+  select_fields: CODE, NAME, INSPECTION_TEAM_ID, EXAMINATION_TEAM_ID, SOURCE_CATEGORY,
+    SOURCE_UNIT_NAME, ASSIGNED_OFFICER_ID, ASSIGNED_OFFICER_NAME, SUPERVISING_LEADER_ID,
+    SUPERVISING_LEADER_NAME, STATUS, MARKET_TYPE, BOND_ISSUER_CODE, BOND_CODE, PROCESSING_PROGRESS,
+    NOTE
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: violation_case_id
+  transformation: '{hash_id}(''THANHTRA_VIOLATION_CASE'', vi_ca.CODE)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Violation Case Id
+- target_column: violation_case_code
+  transformation: vi_ca.CODE
+  data_type: string
+  description: Mã hồ sơ VPHC tự sinh UNIQUE. BK duy nhất — Id hash từ trường này.
+  target_attr_name: Violation Case Code
+- target_column: src_stm_code
+  transformation: '''THANHTRA_VIOLATION_CASE'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: violation_case_nm
+  transformation: vi_ca.NAME
+  data_type: string
+  description: Tên hồ sơ/vụ việc vi phạm hành chính.
+  target_attr_name: Violation Case Name
+- target_column: inspection_team_id
+  transformation: '{hash_id}(''THANHTRA_VIOLATION_CASE'', vi_ca.INSPECTION_TEAM_ID)'
+  data_type: string
+  description: FK đến đoàn thanh tra phát sinh hồ sơ VPHC.
+  target_attr_name: Inspection Team Id
+- target_column: inspection_team_code
+  transformation: vi_ca.INSPECTION_TEAM_ID
+  data_type: string
+  description: Mã đoàn thanh tra liên kết (snapshot).
+  target_attr_name: Inspection Team Code
+- target_column: examination_team_id
+  transformation: '{hash_id}(''THANHTRA_VIOLATION_CASE'', vi_ca.EXAMINATION_TEAM_ID)'
+  data_type: string
+  description: FK đến đoàn kiểm tra phát sinh hồ sơ VPHC.
+  target_attr_name: Examination Team Id
+- target_column: examination_team_code
+  transformation: vi_ca.EXAMINATION_TEAM_ID
+  data_type: string
+  description: Mã đoàn kiểm tra liên kết (snapshot).
+  target_attr_name: Examination Team Code
+- target_column: src_category_code
+  transformation: vi_ca.SOURCE_CATEGORY
+  data_type: string
+  description: 'Nguồn phát sinh: INSPECTION_RESULT, INTERNAL_UNIT, STOCK_EXCHANGE,
+    VSDC, OTHER_SUPERVISION.'
+  target_attr_name: Source Category Code
+- target_column: src_unit_nm
+  transformation: vi_ca.SOURCE_UNIT_NAME
+  data_type: string
+  description: Tên đơn vị gửi kết quả giám sát/vi phạm (snapshot).
+  target_attr_name: Source Unit Name
+- target_column: assigned_officer_id
+  transformation: '{hash_id}(''IAM_USERS'', vi_ca.ASSIGNED_OFFICER_ID)'
+  data_type: string
+  description: FK đến cán bộ được phân công xử lý hồ sơ VPHC.
+  target_attr_name: Assigned Officer Id
+- target_column: assigned_officer_nm
+  transformation: vi_ca.ASSIGNED_OFFICER_NAME
+  data_type: string
+  description: Tên cán bộ phụ trách xử lý hồ sơ VPHC (snapshot).
+  target_attr_name: Assigned Officer Name
+- target_column: supervising_leader_id
+  transformation: '{hash_id}(''IAM_USERS'', vi_ca.SUPERVISING_LEADER_ID)'
+  data_type: string
+  description: FK đến lãnh đạo phụ trách hồ sơ VPHC.
+  target_attr_name: Supervising Leader Id
+- target_column: supervising_leader_nm
+  transformation: vi_ca.SUPERVISING_LEADER_NAME
+  data_type: string
+  description: Tên lãnh đạo phụ trách hồ sơ VPHC (snapshot).
+  target_attr_name: Supervising Leader Name
+- target_column: life_cycle_status_code
+  transformation: vi_ca.STATUS
+  data_type: string
+  description: 'Trạng thái: NEW, PROCESSING, DECISION_ISSUED, ENFORCED, CLOSED.'
+  target_attr_name: Life Cycle Status Code
+- target_column: market_tp_code
+  transformation: vi_ca.MARKET_TYPE
+  data_type: string
+  description: 'Thị trường: DOMESTIC, INTERNATIONAL.'
+  target_attr_name: Market Type Code
+- target_column: bond_issuer_code
+  transformation: vi_ca.BOND_ISSUER_CODE
+  data_type: string
+  description: Mã tổ chức phát hành trái phiếu (nếu hồ sơ liên quan TPDN).
+  target_attr_name: Bond Issuer Code
+- target_column: bond_code
+  transformation: vi_ca.BOND_CODE
+  data_type: string
+  description: Mã trái phiếu (nếu hồ sơ liên quan vi phạm về TPDN).
+  target_attr_name: Bond Code
+- target_column: processing_progress
+  transformation: vi_ca.PROCESSING_PROGRESS
+  data_type: string
+  description: Mô tả tiến trình xử lý hồ sơ VPHC.
+  target_attr_name: Processing Progress
+- target_column: note
+  transformation: vi_ca.NOTE
+  data_type: string
+  description: Ghi chú bổ sung.
+  target_attr_name: Note
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

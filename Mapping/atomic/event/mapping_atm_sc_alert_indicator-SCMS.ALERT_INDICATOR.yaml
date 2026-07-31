@@ -1,0 +1,159 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-sc_alert_indicator-SCMS.ALERT_INDICATOR
+  logical_name: Mapping Atomic - Securities Company Alert Indicator – source SCMS.ALERT_INDICATOR
+  physical_name: sc_alert_indicator
+  dm_ref: ATM-sc_alert_indicator-SCMS.ALERT_INDICATOR
+  brd_ref: BRD-SRC-SCMS-ALERT_INDICATOR
+target:
+  namespace: atm
+  physical_name: sc_alert_indicator
+  etl_handle: SCD4A
+  description: Chỉ tiêu cảnh báo giám sát CTCK. Danh mục master định nghĩa tên, loại,
+    công thức tính và ngưỡng cảnh báo cho từng chỉ tiêu cần theo dõi.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: ALERT_INDICATOR
+  alias: al_in
+  select_fields: ID, ALERT_CODE, INDICATOR_CODE, ALERT_NAME, INDICATOR_NAME, ALERT_INDICATOR_TYPE,
+    INDICATOR_TYPE_ID, LEGAL_REFERENCE, LEGAL_REFERENCE_ID, LEGAL_BASIS, SEVERITY_LEVEL,
+    SEVERITY, LOWER_THRESHOLD, UPPER_THRESHOLD, UNIT, DEFAULT_VALUE, DESCRIPTION,
+    NOTE, FORMULA_TEXT, FORMULA, SUM_FORMULA, WEIGHT, SORT_ORDER, RECORD_STATUS
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: sc_alert_indicator_id
+  transformation: '{hash_id}(''SCMS_ALERT_INDICATOR'', al_in.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Securities Company Alert Indicator Id
+- target_column: sc_alert_indicator_code
+  transformation: al_in.ID
+  data_type: string
+  description: Khóa chính kỹ thuật (ID tự tăng). BK của entity.
+  target_attr_name: Securities Company Alert Indicator Code
+- target_column: src_stm_code
+  transformation: '''SCMS_ALERT_INDICATOR'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: alert_code
+  transformation: al_in.ALERT_CODE
+  data_type: string
+  description: Mã chỉ tiêu cảnh báo (mã nghiệp vụ chính).
+  target_attr_name: Alert Code
+- target_column: indicator_code
+  transformation: al_in.INDICATOR_CODE
+  data_type: string
+  description: Mã chỉ tiêu (trường thứ cấp, có thể trùng với Alert Code).
+  target_attr_name: Indicator Code
+- target_column: sc_alert_indicator_nm
+  transformation: al_in.ALERT_NAME
+  data_type: string
+  description: Tên chỉ tiêu cảnh báo (tên chính).
+  target_attr_name: Securities Company Alert Indicator Name
+- target_column: indicator_nm
+  transformation: al_in.INDICATOR_NAME
+  data_type: string
+  description: Tên chỉ tiêu (trường thứ cấp, có thể trùng với Alert Name).
+  target_attr_name: Indicator Name
+- target_column: alert_indicator_tp_code
+  transformation: al_in.ALERT_INDICATOR_TYPE
+  data_type: string
+  description: 'Loại chỉ tiêu cảnh báo: AN_TOAN_TAI_CHINH=An toàn tài chính; TUAN_THU=Tuân
+    thủ pháp lý; RUI_RO=Rủi ro hoạt động.'
+  target_attr_name: Alert Indicator Type Code
+- target_column: indicator_tp_id
+  transformation: al_in.INDICATOR_TYPE_ID
+  data_type: string
+  description: ID loại chỉ tiêu (nguồn không khai báo FK target).
+  target_attr_name: Indicator Type Id
+- target_column: legal_reference
+  transformation: al_in.LEGAL_REFERENCE
+  data_type: string
+  description: Tham chiếu văn bản pháp luật liên quan (denormalized).
+  target_attr_name: Legal Reference
+- target_column: legal_reference_id
+  transformation: al_in.LEGAL_REFERENCE_ID
+  data_type: string
+  description: ID văn bản pháp luật tham chiếu (nguồn không khai báo FK target).
+  target_attr_name: Legal Reference Id
+- target_column: legal_basis
+  transformation: al_in.LEGAL_BASIS
+  data_type: string
+  description: Căn cứ pháp lý (tên/số thông tư, nghị định áp dụng).
+  target_attr_name: Legal Basis
+- target_column: severity_level
+  transformation: al_in.SEVERITY_LEVEL
+  data_type: int
+  description: 'Mức độ cảnh báo: Cấp 1, 2 hoặc 3.'
+  target_attr_name: Severity Level
+- target_column: severity_code
+  transformation: al_in.SEVERITY
+  data_type: string
+  description: 'Mức độ nghiêm trọng: 1=Thấp, 2=Trung bình, 3=Cao.'
+  target_attr_name: Severity Code
+- target_column: lower_threshold
+  transformation: al_in.LOWER_THRESHOLD
+  data_type: string
+  description: Ngưỡng cảnh báo dưới.
+  target_attr_name: Lower Threshold
+- target_column: upper_threshold
+  transformation: al_in.UPPER_THRESHOLD
+  data_type: string
+  description: Ngưỡng cảnh báo trên.
+  target_attr_name: Upper Threshold
+- target_column: unit
+  transformation: al_in.UNIT
+  data_type: string
+  description: Đơn vị tính (Triệu đồng/Tỷ đồng/Phần trăm/Số lượng).
+  target_attr_name: Unit
+- target_column: default_val
+  transformation: al_in.DEFAULT_VALUE
+  data_type: string
+  description: Giá trị mặc định của ô khi khởi tạo.
+  target_attr_name: Default Value
+- target_column: description
+  transformation: al_in.DESCRIPTION
+  data_type: string
+  description: Mô tả chi tiết nội dung/mục đích của bản ghi.
+  target_attr_name: Description
+- target_column: note
+  transformation: al_in.NOTE
+  data_type: string
+  description: Ghi chú bổ sung, không bắt buộc.
+  target_attr_name: Note
+- target_column: formula_text
+  transformation: al_in.FORMULA_TEXT
+  data_type: string
+  description: Mô tả công thức dạng văn bản để hiển thị cho người dùng.
+  target_attr_name: Formula Text
+- target_column: formula
+  transformation: al_in.FORMULA
+  data_type: string
+  description: Công thức tính toán giá trị ô.
+  target_attr_name: Formula
+- target_column: sum_formula
+  transformation: al_in.SUM_FORMULA
+  data_type: string
+  description: Công thức tổng hợp của ô (tính tổng nhiều ô).
+  target_attr_name: Sum Formula
+- target_column: weight
+  transformation: al_in.WEIGHT
+  data_type: decimal(5,2)
+  description: Trọng số của chỉ tiêu trong công thức tính điểm (%).
+  target_attr_name: Weight
+- target_column: sort_order
+  transformation: al_in.SORT_ORDER
+  data_type: int
+  description: Thứ tự sắp xếp hiển thị.
+  target_attr_name: Sort Order
+- target_column: record_status_code
+  transformation: al_in.RECORD_STATUS
+  data_type: string
+  description: 'Trạng thái chỉ tiêu cảnh báo: 0=Không sử dụng; 1=Đang sử dụng.'
+  target_attr_name: Record Status Code
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

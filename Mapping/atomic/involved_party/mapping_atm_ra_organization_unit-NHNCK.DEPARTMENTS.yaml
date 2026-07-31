@@ -1,0 +1,93 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-ra_organization_unit-NHNCK.DEPARTMENTS
+  logical_name: Mapping Atomic - Regulatory Authority Organization Unit – source NHNCK.DEPARTMENTS
+  physical_name: ra_organization_unit
+  dm_ref: ATM-ra_organization_unit-NHNCK.DEPARTMENTS
+  brd_ref: BRD-SRC-NHNCK-DEPARTMENTS
+target:
+  namespace: atm
+  physical_name: ra_organization_unit
+  etl_handle: SCD4A
+  description: Đơn vị và phòng ban thuộc UBCKNN — cấu trúc cây self-referencing DEPARTMENT
+    → UNIT. Phân biệt bằng Organization Unit Type Code (ETL-derived). Dùng chung làm
+    FK tổ chức nội bộ.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: DEPARTMENTS
+  alias: depa
+  select_fields: DEPARTMENT_CODE, DEPARTMENT_NAME, UNIT_ID, DESCRIPTION, SORT_ORDER,
+    ECATALOG_ID
+  filter: null
+- source_type: physical_table
+  namespace: ods
+  table_name: UNITS
+  alias: unit
+  select_fields: ID, UNIT_CODE
+  filter: null
+  note: Crosswalk bridge cho parent_ra_ou_id
+relationship:
+- main_alias: depa
+  join_type: LEFT JOIN
+  join_alias: unit
+  join_on: depa.UNIT_ID = unit.ID
+mapping_columns:
+- target_column: ra_ou_id
+  transformation: '{hash_id}(''NHNCK_DEPARTMENTS'', depa.DEPARTMENT_CODE)'
+  data_type: string
+  description: Id tự sinh (surrogate key)
+  target_attr_name: Regulatory Authority Organization Unit Id
+- target_column: ra_ou_code
+  transformation: depa.DEPARTMENT_CODE
+  data_type: string
+  description: Mã phòng ban. BK
+  target_attr_name: Regulatory Authority Organization Unit Code
+- target_column: src_stm_code
+  transformation: '''NHNCK_DEPARTMENTS'''
+  data_type: string
+  description: Mã hệ thống nguồn. BK
+  target_attr_name: Source System Code
+- target_column: ou_tp_code
+  transformation: 'null'
+  data_type: string
+  description: Phân loại — Phòng ban (Department)
+  target_attr_name: Organization Unit Type Code
+- target_column: ra_ou_nm
+  transformation: depa.DEPARTMENT_NAME
+  data_type: string
+  description: Tên phòng ban
+  target_attr_name: Regulatory Authority Organization Unit Name
+- target_column: hierarchy_level_code
+  transformation: 'null'
+  data_type: string
+  description: Cấp độ trong cây phân cấp — null cho phòng ban
+  target_attr_name: Hierarchy Level Code
+- target_column: parent_ra_ou_id
+  transformation: '{hash_id}(''NHNCK_UNITS'', unit.UNIT_CODE)'
+  data_type: string
+  description: FK đến đơn vị cha (UNITS)
+  target_attr_name: Parent Regulatory Authority Organization Unit Id
+- target_column: parent_ra_ou_code
+  transformation: depa.UNIT_ID
+  data_type: string
+  description: Mã đơn vị cha (UNITS)
+  target_attr_name: Parent Regulatory Authority Organization Unit Code
+- target_column: description
+  transformation: depa.DESCRIPTION
+  data_type: string
+  description: Mô tả chi tiết phòng ban
+  target_attr_name: Description
+- target_column: sort_order
+  transformation: depa.SORT_ORDER
+  data_type: int
+  description: Thứ tự sắp xếp phòng ban trong đơn vị
+  target_attr_name: Sort Order
+- target_column: external_catalog_reference_code
+  transformation: depa.ECATALOG_ID
+  data_type: string
+  description: TBD - cần bổ sung mô tả
+  target_attr_name: External Catalog Reference Code
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

@@ -1,0 +1,138 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-fmc_organization_unit-FMS.BRANCHS
+  logical_name: Mapping Atomic - Fund Management Company Organization Unit – source
+    FMS.BRANCHS
+  physical_name: fmc_organization_unit
+  dm_ref: ATM-fmc_organization_unit-FMS.BRANCHS
+  brd_ref: BRD-SRC-FMS-BRANCHS
+target:
+  namespace: atm
+  physical_name: fmc_organization_unit
+  etl_handle: SCD4A
+  description: Chi nhánh/VPĐD trực thuộc Fund Management Company trong nước.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: BRANCHS
+  alias: br
+  select_fields: ID, SEC_ID, ITEM_NAME, BR_TYPE, HOST_OFFICE, TL_ID, TL_NAME, DESCRIPTION,
+    CONTENT, DORF, STOP_DATE, ACTIVE_DATE, DECISION, DECISION_DATE, VOUCHER_NO, VOUCHER_DATE,
+    DES_CHANGE, RECORD_STATUS
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: fmc_ou_id
+  transformation: '{hash_id}(''FMS_BRANCHS'', br.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Fund Management Company Organization Unit Id
+- target_column: fmc_ou_code
+  transformation: br.ID
+  data_type: string
+  description: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+  target_attr_name: Fund Management Company Organization Unit Code
+- target_column: src_stm_code
+  transformation: '''FMS_BRANCHS'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: fmc_id
+  transformation: '{hash_id}(''FMS_SECURITIES'', br.SEC_ID)'
+  data_type: string
+  description: 'FK -> SECURITIES: Công ty QLQ liên quan.'
+  target_attr_name: Fund Management Company Id
+- target_column: fmc_code
+  transformation: br.SEC_ID
+  data_type: string
+  description: Mã công ty QLQ liên quan.
+  target_attr_name: Fund Management Company Code
+- target_column: fmc_ou_full_nm
+  transformation: br.ITEM_NAME
+  data_type: string
+  description: Tên hiển thị chính.
+  target_attr_name: Fund Management Company Organization Unit Full Name
+- target_column: ou_tp_code
+  transformation: br.BR_TYPE
+  data_type: string
+  description: 'Loại chi nhánh: 1=Chi nhánh, 2=VPĐD.'
+  target_attr_name: Organization Unit Type Code
+- target_column: head_office_flag
+  transformation: br.HOST_OFFICE
+  data_type: int
+  description: 'Cờ là trụ sở chính: 1=Trụ sở chính, 0=Chi nhánh/VPĐD.'
+  target_attr_name: Head Office Flag
+- target_column: fmc_employee_id
+  transformation: '{hash_id}(''FMS_TL_PROFILES'', br.TL_ID)'
+  data_type: string
+  description: 'FK -> TL_PROFILES: Người phụ trách/giám đốc chi nhánh.'
+  target_attr_name: Fund Management Company Employee Id
+- target_column: fmc_employee_code
+  transformation: br.TL_ID
+  data_type: string
+  description: Mã người phụ trách/giám đốc chi nhánh.
+  target_attr_name: Fund Management Company Employee Code
+- target_column: head_person_full_nm
+  transformation: br.TL_NAME
+  data_type: string
+  description: Tên người phụ trách chi nhánh (snapshot).
+  target_attr_name: Head Person Full Name
+- target_column: description
+  transformation: br.DESCRIPTION
+  data_type: string
+  description: Mô tả chi tiết.
+  target_attr_name: Description
+- target_column: content_note
+  transformation: br.CONTENT
+  data_type: string
+  description: Nội dung/ghi chú bổ sung về chi nhánh.
+  target_attr_name: Content Note
+- target_column: organization_territory_tp_code
+  transformation: br.DORF
+  data_type: string
+  description: 'Loại tổ chức thành viên: 1=Trong nước, 2=Nước ngoài.'
+  target_attr_name: Organization Territory Type Code
+- target_column: suspension_dt
+  transformation: br.STOP_DATE
+  data_type: date
+  description: Ngày ngừng/đình chỉ hoạt động.
+  target_attr_name: Suspension Date
+- target_column: operation_commencement_dt
+  transformation: br.ACTIVE_DATE
+  data_type: date
+  description: Ngày bắt đầu hoạt động chính thức.
+  target_attr_name: Operation Commencement Date
+- target_column: license_decision_nbr
+  transformation: br.DECISION
+  data_type: string
+  description: Số quyết định/giấy phép thành lập hoặc chấp thuận hoạt động.
+  target_attr_name: License Decision Number
+- target_column: license_decision_dt
+  transformation: br.DECISION_DATE
+  data_type: date
+  description: Ngày ban hành quyết định/giấy phép thành lập hoặc chấp thuận hoạt động.
+  target_attr_name: License Decision Date
+- target_column: amendment_document_nbr
+  transformation: br.VOUCHER_NO
+  data_type: string
+  description: Số văn bản/giấy phép điều chỉnh (khi cập nhật hồ sơ).
+  target_attr_name: Amendment Document Number
+- target_column: amendment_document_dt
+  transformation: br.VOUCHER_DATE
+  data_type: date
+  description: Ngày ban hành văn bản điều chỉnh.
+  target_attr_name: Amendment Document Date
+- target_column: change_description
+  transformation: br.DES_CHANGE
+  data_type: string
+  description: Mô tả nội dung thay đổi khi cập nhật hồ sơ.
+  target_attr_name: Change Description
+- target_column: active_status_flag
+  transformation: br.RECORD_STATUS
+  data_type: int
+  description: 'Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu
+    lực.'
+  target_attr_name: Active Status Flag
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

@@ -1,0 +1,86 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-pc_evaluation_detail-IDS.EVALUATION_DETAILS
+  logical_name: Mapping Atomic - Public Company Evaluation Detail – source IDS.EVALUATION_DETAILS
+  physical_name: pc_evaluation_detail
+  dm_ref: ATM-pc_evaluation_detail-IDS.EVALUATION_DETAILS
+  brd_ref: BRD-SRC-IDS-EVALUATION_DETAILS
+target:
+  namespace: atm
+  physical_name: pc_evaluation_detail
+  etl_handle: SCD4A
+  description: 'Chi tiết điểm từng chỉ tiêu trong kết quả đánh giá CTĐC: kết quả định
+    tính, điểm số, cờ đánh giá — grain 1 chỉ tiêu × 1 kỳ đánh giá × 1 công ty.'
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: EVALUATION_DETAILS
+  alias: ev_de
+  select_fields: ID, EVALUATION_ID, CRITERION_ID, RESULT, SCORE, EVALUATE
+  filter: null
+- source_type: physical_table
+  namespace: ods
+  table_name: EVALUATION_CRITERIA
+  alias: ev_cr
+  select_fields: ID, CRITERION_CD
+  filter: null
+  note: Crosswalk bridge cho pc_evaluation_criterion_id
+relationship:
+- main_alias: ev_de
+  join_type: LEFT JOIN
+  join_alias: ev_cr
+  join_on: ev_de.CRITERION_ID = ev_cr.ID
+mapping_columns:
+- target_column: pc_evaluation_detail_id
+  transformation: '{hash_id}(''IDS_EVALUATION_DETAILS'', ev_de.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Public Company Evaluation Detail Id
+- target_column: pc_evaluation_detail_code
+  transformation: ev_de.ID
+  data_type: string
+  description: Khóa chính. BK của entity — map từ PK bảng nguồn.
+  target_attr_name: Public Company Evaluation Detail Code
+- target_column: src_stm_code
+  transformation: '''IDS_EVALUATION_DETAILS'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: pc_evaluation_id
+  transformation: '{hash_id}(''IDS_EVALUATIONS'', ev_de.EVALUATION_ID)'
+  data_type: string
+  description: Id đợt đánh giá.
+  target_attr_name: Public Company Evaluation Id
+- target_column: pc_evaluation_code
+  transformation: ev_de.EVALUATION_ID
+  data_type: string
+  description: Mã đợt đánh giá.
+  target_attr_name: Public Company Evaluation Code
+- target_column: pc_evaluation_criterion_id
+  transformation: '{hash_id}(''IDS_EVALUATION_CRITERIA'', ev_cr.CRITERION_CD)'
+  data_type: string
+  description: Id chỉ tiêu đánh giá.
+  target_attr_name: Public Company Evaluation Criterion Id
+- target_column: pc_evaluation_criterion_code
+  transformation: ev_de.CRITERION_ID
+  data_type: string
+  description: Mã chỉ tiêu đánh giá.
+  target_attr_name: Public Company Evaluation Criterion Code
+- target_column: evaluation_result_text
+  transformation: ev_de.RESULT
+  data_type: string
+  description: 'Kết quả định tính (VD: <1 lần/năm, 0 lần/năm...).'
+  target_attr_name: Evaluation Result Text
+- target_column: evaluation_score
+  transformation: ev_de.SCORE
+  data_type: int
+  description: Điểm số chỉ tiêu (Bình thường 0 điểm, Cảnh báo -1 điểm, Rủi ro -3 điểm).
+  target_attr_name: Evaluation Score
+- target_column: evaluation_level_code
+  transformation: ev_de.EVALUATE
+  data_type: string
+  description: Mức đánh giá chỉ tiêu.
+  target_attr_name: Evaluation Level Code
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

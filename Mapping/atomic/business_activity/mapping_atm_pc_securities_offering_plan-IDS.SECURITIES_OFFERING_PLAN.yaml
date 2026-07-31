@@ -1,0 +1,335 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-pc_securities_offering_plan-IDS.SECURITIES_OFFERING_PLAN
+  logical_name: Mapping Atomic - Public Company Securities Offering Plan – source
+    IDS.SECURITIES_OFFERING_PLAN
+  physical_name: pc_securities_offering_plan
+  dm_ref: ATM-pc_securities_offering_plan-IDS.SECURITIES_OFFERING_PLAN
+  brd_ref: BRD-SRC-IDS-SECURITIES_OFFERING_PLAN
+target:
+  namespace: atm
+  physical_name: pc_securities_offering_plan
+  etl_handle: SCD4A
+  description: 'Kế hoạch chi tiết chào bán chứng khoán: phương thức phân phối, loại
+    CK, số lượng, giá chào bán, thời gian chào bán, điều kiện đặc thù theo loại CK.'
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: SECURITIES_OFFERING_PLAN
+  alias: se_of_pl
+  select_fields: ID, SECURITIES_OFFERING_ID, OFFERING_METHOD_CD, DISTRIBUTION_METHOD_CD,
+    SECURITY_TYPE_CD, SECURITY_NAME, PAR_VALUE, TOTAL_REGISTERED_QTY, OFFERING_PRICE,
+    TOTAL_EXPECTED_AM, ISSUER_TOTAL_REGISTERED_QTY, SHAREHOLDER_REGISTERED_QTY, ISSUER_TOTAL_EXPECTED_AM,
+    SHAREHOLDER_EXPECTED_AM, OFFERING_START_DATE, OFFERING_END_DATE, OWNED_SHARE_QTY,
+    UNRESTRICTED_SHARE_QTY, OFFER_TO_OWNED_PCT, TRANSFER_RESTRICT_PERIOD, OFFER_SUCCESS_PCT,
+    OFFER_TO_OUTSTANDING_PCT, EMPLOYEE_QTY, CAPITAL_SOURCE, EXERCISE_PERIOD, RIGHTS_RATIO,
+    SWAP_RATIO, SWAP_TARGET, ISSUANCE_MARKET, INTEREST_RATE, BOND_TERM_VALUE, INTEREST_PAYMENT_PERIOD,
+    CONVERSION_PERIOD_VALUE, CONVERSION_RATIO, CONVERSION_GUARANTEE_PLAN, EXERCISE_PERIOD_VALUE,
+    EXERCISE_RATIO, EXERCISE_GUARANTEE_PLAN, GUARANTEE_TYPE_CD, GUARANTEED_BOND_VALUE,
+    PAYMENT_GUARANTOR_ORG, PAYMENT_GUARANTEE_VALUE, SECURED_ASSET, SECURED_ASSET_VALUE,
+    SECURED_ASSET_OWNER, SECURED_ASSET_ORG, PUBLIC_OFFERING_VAL, PRIVATE_PLACEMENT_VAL,
+    TOTAL_OUTSTANDING_VAL, PUBLIC_OFFERING_12M_VAL, PRIVATE_PLACEMENT_12M_VAL, TOTAL_12M_VAL,
+    REG_TO_OUTSTANDING_PCT, DELETE_FLG
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: pc_securities_offering_plan_id
+  transformation: '{hash_id}(''IDS_SECURITIES_OFFERING_PLAN'', se_of_pl.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Public Company Securities Offering Plan Id
+- target_column: pc_securities_offering_plan_code
+  transformation: se_of_pl.ID
+  data_type: string
+  description: Khóa chính. BK của entity — map từ PK bảng nguồn.
+  target_attr_name: Public Company Securities Offering Plan Code
+- target_column: src_stm_code
+  transformation: '''IDS_SECURITIES_OFFERING_PLAN'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: pc_securities_offering_id
+  transformation: '{hash_id}(''IDS_SECURITIES_OFFERING'', se_of_pl.SECURITIES_OFFERING_ID)'
+  data_type: string
+  description: Khóa link đến bảng SECURITIES_OFFERING — kế hoạch chào bán/phát hành
+    thuộc đợt chào bán nào.
+  target_attr_name: Public Company Securities Offering Id
+- target_column: pc_securities_offering_code
+  transformation: se_of_pl.SECURITIES_OFFERING_ID
+  data_type: string
+  description: Mã đợt chào bán/phát hành (denormalized lookup).
+  target_attr_name: Public Company Securities Offering Code
+- target_column: offering_method_code
+  transformation: se_of_pl.OFFERING_METHOD_CD
+  data_type: string
+  description: Hình thức chào bán phát hành (chào bán ra công chúng, chào bán riêng
+    lẻ, hoán đổi, phát hành trả cổ tức...).
+  target_attr_name: Offering Method Code
+- target_column: distribution_method_code
+  transformation: se_of_pl.DISTRIBUTION_METHOD_CD
+  data_type: string
+  description: Phương thức phân phối (tổ chức bảo lãnh phát hành, đại lý phát hành,
+    đấu giá, khác).
+  target_attr_name: Distribution Method Code
+- target_column: security_tp_code
+  transformation: se_of_pl.SECURITY_TYPE_CD
+  data_type: string
+  description: Loại chứng khoán (cổ phiếu, cổ phiếu ưu đãi, trái phiếu, trái phiếu
+    kèm chứng quyền, trái phiếu chuyển đổi).
+  target_attr_name: Security Type Code
+- target_column: security_nm
+  transformation: se_of_pl.SECURITY_NAME
+  data_type: string
+  description: Tên chứng khoán.
+  target_attr_name: Security Name
+- target_column: par_val
+  transformation: se_of_pl.PAR_VALUE
+  data_type: decimal(23,2)
+  description: Mệnh giá.
+  target_attr_name: Par Value
+- target_column: total_registered_quantity_snpst
+  transformation: se_of_pl.TOTAL_REGISTERED_QTY
+  data_type: int
+  description: Tổng số chứng khoán chào bán/phát hành.
+  target_attr_name: Total Registered Quantity Snapshot
+- target_column: offering_price
+  transformation: se_of_pl.OFFERING_PRICE
+  data_type: decimal(23,2)
+  description: Giá chào bán phát hành dự kiến.
+  target_attr_name: Offering Price
+- target_column: total_expected_amt_snpst
+  transformation: se_of_pl.TOTAL_EXPECTED_AM
+  data_type: decimal(23,2)
+  description: Tổng số tiền dự kiến thu được, VNĐ.
+  target_attr_name: Total Expected Amount Snapshot
+- target_column: issuer_total_registered_quantity
+  transformation: se_of_pl.ISSUER_TOTAL_REGISTERED_QTY
+  data_type: int
+  description: Số lượng chứng khoán tổ chức phát hành đăng ký (hiển thị đối với một
+    số thủ tục).
+  target_attr_name: Issuer Total Registered Quantity
+- target_column: shareholder_registered_quantity
+  transformation: se_of_pl.SHAREHOLDER_REGISTERED_QTY
+  data_type: int
+  description: Số lượng chứng khoán cổ đông/thành viên đăng ký (hiển thị đối với một
+    số thủ tục).
+  target_attr_name: Shareholder Registered Quantity
+- target_column: issuer_total_expected_amt
+  transformation: se_of_pl.ISSUER_TOTAL_EXPECTED_AM
+  data_type: decimal(23,2)
+  description: Số tiền dự kiến thu được từ tổ chức phát hành, VND (hiển thị đối với
+    một số thủ tục).
+  target_attr_name: Issuer Total Expected Amount
+- target_column: shareholder_expected_amt
+  transformation: se_of_pl.SHAREHOLDER_EXPECTED_AM
+  data_type: decimal(23,2)
+  description: Số tiền dự kiến thu được từ cổ đông/thành viên, VND (hiển thị đối với
+    một số thủ tục).
+  target_attr_name: Shareholder Expected Amount
+- target_column: offering_start_dt
+  transformation: se_of_pl.OFFERING_START_DATE
+  data_type: date
+  description: Thời gian chào bán — từ ngày.
+  target_attr_name: Offering Start Date
+- target_column: offering_end_dt
+  transformation: se_of_pl.OFFERING_END_DATE
+  data_type: date
+  description: Thời gian chào bán — đến ngày.
+  target_attr_name: Offering End Date
+- target_column: owned_share_quantity
+  transformation: se_of_pl.OWNED_SHARE_QTY
+  data_type: int
+  description: Số lượng cổ phiếu sở hữu (hiển thị đối với một số thủ tục).
+  target_attr_name: Owned Share Quantity
+- target_column: unrestricted_share_quantity
+  transformation: se_of_pl.UNRESTRICTED_SHARE_QTY
+  data_type: int
+  description: Số lượng cổ phiếu được phép chuyển nhượng (hiển thị đối với một số
+    thủ tục).
+  target_attr_name: Unrestricted Share Quantity
+- target_column: offer_to_owned_percentage
+  transformation: se_of_pl.OFFER_TO_OWNED_PCT
+  data_type: decimal(5,2)
+  description: Tỷ lệ cổ phiếu đăng ký chào bán trên tổng cổ phiếu sở hữu (hiển thị
+    đối với một số thủ tục).
+  target_attr_name: Offer To Owned Percentage
+- target_column: transfer_restrict_period
+  transformation: se_of_pl.TRANSFER_RESTRICT_PERIOD
+  data_type: string
+  description: Thời gian hạn chế chuyển nhượng (hiển thị ở một số thủ tục).
+  target_attr_name: Transfer Restrict Period
+- target_column: offer_success_percentage
+  transformation: se_of_pl.OFFER_SUCCESS_PCT
+  data_type: decimal(5,2)
+  description: Tỷ lệ chào bán thành công (hiển thị ở một số thủ tục).
+  target_attr_name: Offer Success Percentage
+- target_column: offer_to_outstanding_percentage
+  transformation: se_of_pl.OFFER_TO_OUTSTANDING_PCT
+  data_type: decimal(5,2)
+  description: Tỷ lệ phát hành (hiển thị ở một số thủ tục).
+  target_attr_name: Offer To Outstanding Percentage
+- target_column: employee_quantity
+  transformation: se_of_pl.EMPLOYEE_QTY
+  data_type: int
+  description: Số lượng người lao động (hiển thị đối với một số thủ tục).
+  target_attr_name: Employee Quantity
+- target_column: capital_src
+  transformation: se_of_pl.CAPITAL_SOURCE
+  data_type: string
+  description: Nguồn vốn (hiển thị đối với một số thủ tục).
+  target_attr_name: Capital Source
+- target_column: exercise_period
+  transformation: se_of_pl.EXERCISE_PERIOD
+  data_type: string
+  description: Thời hạn thực hiện quyền (hiển thị đối với một số thủ tục).
+  target_attr_name: Exercise Period
+- target_column: rights_ratio
+  transformation: se_of_pl.RIGHTS_RATIO
+  data_type: string
+  description: Tỷ lệ thực hiện quyền (hiển thị đối với một số thủ tục).
+  target_attr_name: Rights Ratio
+- target_column: swap_ratio
+  transformation: se_of_pl.SWAP_RATIO
+  data_type: string
+  description: Tỷ lệ hoán đổi (hiển thị đối với một số thủ tục).
+  target_attr_name: Swap Ratio
+- target_column: swap_target
+  transformation: se_of_pl.SWAP_TARGET
+  data_type: string
+  description: Đối tượng phát hành để hoán đổi (hiển thị đối với một số thủ tục).
+  target_attr_name: Swap Target
+- target_column: issuance_market
+  transformation: se_of_pl.ISSUANCE_MARKET
+  data_type: string
+  description: Thị trường phát hành (đối với chào bán tại nước ngoài).
+  target_attr_name: Issuance Market
+- target_column: interest_rate
+  transformation: se_of_pl.INTEREST_RATE
+  data_type: decimal(8,5)
+  description: Lãi suất.
+  target_attr_name: Interest Rate
+- target_column: bond_term_val
+  transformation: se_of_pl.BOND_TERM_VALUE
+  data_type: string
+  description: Kỳ hạn trái phiếu (tháng).
+  target_attr_name: Bond Term Value
+- target_column: interest_payment_period
+  transformation: se_of_pl.INTEREST_PAYMENT_PERIOD
+  data_type: string
+  description: Kỳ trả lãi.
+  target_attr_name: Interest Payment Period
+- target_column: conversion_period_val
+  transformation: se_of_pl.CONVERSION_PERIOD_VALUE
+  data_type: string
+  description: Thời hạn chuyển đổi.
+  target_attr_name: Conversion Period Value
+- target_column: conversion_ratio_percentage
+  transformation: se_of_pl.CONVERSION_RATIO
+  data_type: decimal(5,2)
+  description: Tỷ lệ chuyển đổi.
+  target_attr_name: Conversion Ratio Percentage
+- target_column: conversion_guarantee_plan
+  transformation: se_of_pl.CONVERSION_GUARANTEE_PLAN
+  data_type: string
+  description: Phương án đảm bảo tỷ lệ sở hữu nước ngoài về chuyển đổi.
+  target_attr_name: Conversion Guarantee Plan
+- target_column: exercise_period_val
+  transformation: se_of_pl.EXERCISE_PERIOD_VALUE
+  data_type: string
+  description: Thời hạn thực hiện quyền.
+  target_attr_name: Exercise Period Value
+- target_column: exercise_ratio_percentage
+  transformation: se_of_pl.EXERCISE_RATIO
+  data_type: decimal(5,2)
+  description: Tỷ lệ thực hiện quyền.
+  target_attr_name: Exercise Ratio Percentage
+- target_column: exercise_guarantee_plan
+  transformation: se_of_pl.EXERCISE_GUARANTEE_PLAN
+  data_type: string
+  description: Phương án đảm bảo tỷ lệ sở hữu nước ngoài về thực hiện quyền.
+  target_attr_name: Exercise Guarantee Plan
+- target_column: guarantee_tp_code
+  transformation: se_of_pl.GUARANTEE_TYPE_CD
+  data_type: string
+  description: Hình thức bảo đảm (thanh toán bằng bảo lãnh; thanh toán bằng tài sản).
+  target_attr_name: Guarantee Type Code
+- target_column: guaranteed_bond_val
+  transformation: se_of_pl.GUARANTEED_BOND_VALUE
+  data_type: decimal(23,2)
+  description: Giá trị trái phiếu được bảo đảm.
+  target_attr_name: Guaranteed Bond Value
+- target_column: payment_guarantor_organization_nm
+  transformation: se_of_pl.PAYMENT_GUARANTOR_ORG
+  data_type: string
+  description: Tên tổ chức bảo lãnh thanh toán.
+  target_attr_name: Payment Guarantor Organization Name
+- target_column: payment_guarantee_val
+  transformation: se_of_pl.PAYMENT_GUARANTEE_VALUE
+  data_type: decimal(23,2)
+  description: Giá trị bảo lãnh.
+  target_attr_name: Payment Guarantee Value
+- target_column: secured_asset
+  transformation: se_of_pl.SECURED_ASSET
+  data_type: string
+  description: Tài sản bảo đảm.
+  target_attr_name: Secured Asset
+- target_column: secured_asset_val
+  transformation: se_of_pl.SECURED_ASSET_VALUE
+  data_type: decimal(23,2)
+  description: Giá trị tài sản bảo đảm.
+  target_attr_name: Secured Asset Value
+- target_column: secured_asset_owner
+  transformation: se_of_pl.SECURED_ASSET_OWNER
+  data_type: string
+  description: Chủ sở hữu tài sản bảo đảm.
+  target_attr_name: Secured Asset Owner
+- target_column: secured_asset_organization_nm
+  transformation: se_of_pl.SECURED_ASSET_ORG
+  data_type: string
+  description: Tổ chức nhận tài sản bảo đảm.
+  target_attr_name: Secured Asset Organization Name
+- target_column: public_offering_val
+  transformation: se_of_pl.PUBLIC_OFFERING_VAL
+  data_type: decimal(23,2)
+  description: Tổng giá trị trái phiếu chào bán ra công chúng đang lưu hành.
+  target_attr_name: Public Offering Value
+- target_column: private_placement_val
+  transformation: se_of_pl.PRIVATE_PLACEMENT_VAL
+  data_type: decimal(23,2)
+  description: Tổng giá trị trái phiếu chào bán riêng lẻ đang lưu hành.
+  target_attr_name: Private Placement Value
+- target_column: total_outstanding_val
+  transformation: se_of_pl.TOTAL_OUTSTANDING_VAL
+  data_type: decimal(23,2)
+  description: Tổng giá trị trái phiếu đang lưu hành.
+  target_attr_name: Total Outstanding Value
+- target_column: public_offering_12_month_val
+  transformation: se_of_pl.PUBLIC_OFFERING_12M_VAL
+  data_type: decimal(23,2)
+  description: Tổng giá trị trái phiếu chào bán ra công chúng huy động trong 12 tháng
+    gần nhất.
+  target_attr_name: Public Offering 12 Month Value
+- target_column: private_placement_12_month_val
+  transformation: se_of_pl.PRIVATE_PLACEMENT_12M_VAL
+  data_type: decimal(23,2)
+  description: Tổng giá trị trái phiếu chào bán riêng lẻ huy động trong 12 tháng gần
+    nhất.
+  target_attr_name: Private Placement 12 Month Value
+- target_column: total_12_month_val
+  transformation: se_of_pl.TOTAL_12M_VAL
+  data_type: decimal(23,2)
+  description: Tổng giá trị trái phiếu huy động trong 12 tháng gần nhất.
+  target_attr_name: Total 12 Month Value
+- target_column: registered_to_outstanding_percentage
+  transformation: se_of_pl.REG_TO_OUTSTANDING_PCT
+  data_type: decimal(5,2)
+  description: Tỷ lệ trái phiếu đăng ký chào bán trên tổng đang lưu hành.
+  target_attr_name: Registered To Outstanding Percentage
+- target_column: deleted_indicator
+  transformation: se_of_pl.DELETE_FLG
+  data_type: int
+  description: Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa).
+  target_attr_name: Deleted Indicator
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

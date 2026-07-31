@@ -1,0 +1,66 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-member_rating_period-FMS.RATING_PD
+  logical_name: Mapping Atomic - Member Rating Period – source FMS.RATING_PD
+  physical_name: member_rating_period
+  dm_ref: ATM-member_rating_period-FMS.RATING_PD
+  brd_ref: BRD-SRC-FMS-RATING_PD
+target:
+  namespace: atm
+  physical_name: member_rating_period
+  etl_handle: SCD4A
+  description: Kỳ thời gian định kỳ (giữa năm/cuối năm) để đánh giá và xếp loại công
+    ty quản lý quỹ. Master entity được FK từ Member Rating (Tier 2).
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: RATING_PD
+  alias: ra_pd
+  select_fields: ID, REPORT_YEAR, PERIOD, RECORD_STATUS, UPDATE_DATA_RATING, RATING_FINALIZED
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: member_rating_period_id
+  transformation: '{hash_id}(''FMS_RATING_PD'', ra_pd.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Member Rating Period Id
+- target_column: member_rating_period_code
+  transformation: ra_pd.ID
+  data_type: string
+  description: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+  target_attr_name: Member Rating Period Code
+- target_column: src_stm_code
+  transformation: '''FMS_RATING_PD'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: rpt_year
+  transformation: ra_pd.REPORT_YEAR
+  data_type: int
+  description: Năm báo cáo (định dạng YYYY).
+  target_attr_name: Report Year
+- target_column: rating_period_tp_code
+  transformation: ra_pd.PERIOD
+  data_type: string
+  description: 'Kỳ đánh giá trong năm: 1=Giữa năm, 2=Cuối năm.'
+  target_attr_name: Rating Period Type Code
+- target_column: active_status_flag
+  transformation: ra_pd.RECORD_STATUS
+  data_type: int
+  description: 'Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu
+    lực.'
+  target_attr_name: Active Status Flag
+- target_column: rating_data_update_dt
+  transformation: ra_pd.UPDATE_DATA_RATING
+  data_type: date
+  description: Ngày cập nhật dữ liệu để tính điểm đánh giá.
+  target_attr_name: Rating Data Update Date
+- target_column: rating_finalized_flag
+  transformation: ra_pd.RATING_FINALIZED
+  data_type: int
+  description: 'Cờ kỳ đánh giá đã kết thúc/phê duyệt: 1=Đã kết thúc, 0=Đang mở.'
+  target_attr_name: Rating Finalized Flag
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

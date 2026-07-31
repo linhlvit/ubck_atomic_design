@@ -1,0 +1,76 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-legal_entity_position-IDS.POSITIONS
+  logical_name: Mapping Atomic - Legal Entity Position – source IDS.POSITIONS
+  physical_name: legal_entity_position
+  dm_ref: ATM-legal_entity_position-IDS.POSITIONS
+  brd_ref: BRD-SRC-IDS-POSITIONS
+target:
+  namespace: atm
+  physical_name: legal_entity_position
+  etl_handle: SCD4A
+  description: 'Chức vụ của người nội bộ/cổ đông tại công ty: mã chức vụ, ngày bổ
+    nhiệm, ngày miễn nhiệm, trạng thái.'
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: POSITIONS
+  alias: posi
+  select_fields: ID, LEGAL_ENTITY_ID, POSITION_CD, APPOINTMENT_DATE, DISMISSAL_DATE,
+    ACTIVE_FLG, DELETE_FLG
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: legal_entity_position_id
+  transformation: '{hash_id}(''IDS_POSITIONS'', posi.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Legal Entity Position Id
+- target_column: legal_entity_position_code
+  transformation: posi.ID
+  data_type: string
+  description: Khóa chính. BK của entity — map từ PK bảng nguồn.
+  target_attr_name: Legal Entity Position Code
+- target_column: src_stm_code
+  transformation: '''IDS_POSITIONS'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: legal_entity_id
+  transformation: '{hash_id}(''IDS_LEGAL_ENTITIES'', posi.LEGAL_ENTITY_ID)'
+  data_type: string
+  description: Khóa link đến bảng LEGAL_ENTITIES.
+  target_attr_name: Legal Entity Id
+- target_column: legal_entity_code
+  transformation: posi.LEGAL_ENTITY_ID
+  data_type: string
+  description: Mã cổ đông liên quan.
+  target_attr_name: Legal Entity Code
+- target_column: position_code
+  transformation: posi.POSITION_CD
+  data_type: string
+  description: Loại chức vụ.
+  target_attr_name: Position Code
+- target_column: appointment_dt
+  transformation: posi.APPOINTMENT_DATE
+  data_type: date
+  description: Ngày bổ nhiệm.
+  target_attr_name: Appointment Date
+- target_column: dismissal_dt
+  transformation: posi.DISMISSAL_DATE
+  data_type: date
+  description: Ngày miễn nhiệm.
+  target_attr_name: Dismissal Date
+- target_column: active_indicator
+  transformation: posi.ACTIVE_FLG
+  data_type: int
+  description: Có trạng thái chức vụ hiện tại (0-Không, 1-Có).
+  target_attr_name: Active Indicator
+- target_column: deleted_indicator
+  transformation: posi.DELETE_FLG
+  data_type: int
+  description: Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa).
+  target_attr_name: Deleted Indicator
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

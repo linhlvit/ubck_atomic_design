@@ -1,0 +1,62 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-sp_reason_change_history-NHNCK.PROFESSIONAL_HISTORIES
+  logical_name: Mapping Atomic - Securities Practitioner Reason Change History – source
+    NHNCK.PROFESSIONAL_HISTORIES
+  physical_name: sp_reason_change_history
+  dm_ref: ATM-sp_reason_change_history-NHNCK.PROFESSIONAL_HISTORIES
+  brd_ref: BRD-SRC-NHNCK-PROFESSIONAL_HISTORIES
+target:
+  namespace: atm
+  physical_name: sp_reason_change_history
+  etl_handle: SCD4A
+  description: Ghi nhận 1 lần thay đổi thông tin cá nhân của người hành nghề — ai
+    bị thay đổi, khi nào, lý do gì. Giữ concept Involved Party (cùng nhóm với Securities
+    Practitioner) theo quyết định Data Modeler.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: PROFESSIONAL_HISTORIES
+  alias: pr_hi
+  select_fields: ID, PROFESSIONAL_ID, CHANGE_DATE, REASON_UPDATE
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: sp_reason_change_history_id
+  transformation: '{hash_id}(''NHNCK_PROFESSIONAL_HISTORIES'', pr_hi.ID)'
+  data_type: string
+  description: Id tự sinh (surrogate key)
+  target_attr_name: Securities Practitioner Reason Change History Id
+- target_column: sp_reason_change_history_code
+  transformation: pr_hi.ID
+  data_type: string
+  description: Mã bản ghi thay đổi. BK từ PK nguồn
+  target_attr_name: Securities Practitioner Reason Change History Code
+- target_column: src_stm_code
+  transformation: '''NHNCK_PROFESSIONAL_HISTORIES'''
+  data_type: string
+  description: Mã nguồn dữ liệu
+  target_attr_name: Source System Code
+- target_column: sp_id
+  transformation: '{hash_id}(''NHNCK_PROFESSIONALS'', pr_hi.PROFESSIONAL_ID)'
+  data_type: string
+  description: FK đến người hành nghề bị thay đổi thông tin
+  target_attr_name: Securities Practitioner Id
+- target_column: sp_code
+  transformation: pr_hi.PROFESSIONAL_ID
+  data_type: string
+  description: Mã người hành nghề (denormalized lookup)
+  target_attr_name: Securities Practitioner Code
+- target_column: change_dt
+  transformation: pr_hi.CHANGE_DATE
+  data_type: date
+  description: Ngày ghi nhận thay đổi thông tin
+  target_attr_name: Change Date
+- target_column: change_reason
+  transformation: pr_hi.REASON_UPDATE
+  data_type: string
+  description: Lý do cập nhật thông tin người hành nghề
+  target_attr_name: Change Reason
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

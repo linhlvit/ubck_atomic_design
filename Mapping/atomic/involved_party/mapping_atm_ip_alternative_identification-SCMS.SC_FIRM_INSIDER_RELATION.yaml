@@ -1,0 +1,52 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-ip_alternative_identification-SCMS.SC_FIRM_INSIDER_RELATION
+  logical_name: Mapping Atomic - Involved Party Alternative Identification – source
+    SCMS.SC_FIRM_INSIDER_RELATION
+  physical_name: ip_alternative_identification
+  dm_ref: ATM-ip_alternative_identification-SCMS.SC_FIRM_INSIDER_RELATION
+  brd_ref: BRD-SRC-SCMS-SC_FIRM_INSIDER_RELATION
+target:
+  namespace: atm
+  physical_name: ip_alternative_identification
+  etl_handle: SCD4A
+  description: Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ
+    chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ
+    1 nguồn.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: SC_FIRM_INSIDER_RELATION
+  alias: sc_fi_in_re
+  select_fields: ID, NATIONAL_ID
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: ip_id
+  transformation: '{hash_id}(''SCMS_SC_FIRM_INSIDER_RELATION'', sc_fi_in_re.ID)'
+  data_type: string
+  description: FK đến Securities Company Insider Related Person.
+  target_attr_name: Involved Party Id
+- target_column: ip_code
+  transformation: sc_fi_in_re.ID
+  data_type: string
+  description: Mã Securities Company Insider Related Person.
+  target_attr_name: Involved Party Code
+- target_column: src_stm_code
+  transformation: '''SCMS_SC_FIRM_INSIDER_RELATION'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: identification_tp_code
+  transformation: '''NATIONAL_ID'''
+  data_type: string
+  description: 'Loại giấy tờ tùy thân: NATIONAL_ID=CCCD/CMND/Hộ chiếu.'
+  target_attr_name: Identification Type Code
+- target_column: identification_nbr
+  transformation: sc_fi_in_re.NATIONAL_ID
+  data_type: string
+  description: Số giấy tờ tùy thân (CCCD / CMND / Hộ chiếu).
+  target_attr_name: Identification Number
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

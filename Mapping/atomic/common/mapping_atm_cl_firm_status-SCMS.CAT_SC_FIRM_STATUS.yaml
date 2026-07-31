@@ -1,0 +1,102 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-cl_firm_status-SCMS.CAT_SC_FIRM_STATUS
+  logical_name: Mapping Atomic - Classification Firm Status – source SCMS.CAT_SC_FIRM_STATUS
+  physical_name: cl_firm_status
+  dm_ref: ATM-cl_firm_status-SCMS.CAT_SC_FIRM_STATUS
+  brd_ref: BRD-SRC-SCMS-CAT_SC_FIRM_STATUS
+target:
+  namespace: atm
+  physical_name: cl_firm_status
+  etl_handle: Upsert
+  description: 'Danh mục trạng thái pháp lý áp dụng cho CTCK, Chi nhánh, VPĐD, PGD,
+    Ngân hàng đối tác — mã, tên, cờ yêu cầu nộp báo cáo/CBTT theo từng trạng thái.
+    Nâng cấp từ Classification Value (scheme SCMS_SC_FIRM_STATUS) lên entity thật.
+    Xem 7e #11.'
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: CAT_SC_FIRM_STATUS
+  alias: ca_sc_fi_st
+  select_fields: ID, SC_FIRM_STATUS_CODE, CREATED_AT, SC_FIRM_STATUS_NAME, APPLICABLE_ENTITY,
+    REPORT_SUBMISSION_ENABLED, DISCLOSURE_ENABLED, RECORD_STATUS, DESCRIPTION, NOTE,
+    CODE, ITEM_NAME, ACTIVE
+  filter: created_at >= {etl_date} AND created_at < {etl_date} + 1
+relationship: []
+mapping_columns:
+- target_column: cl_firm_status_id
+  transformation: '{hash_id}(''SCMS_CAT_SC_FIRM_STATUS'', ca_sc_fi_st.SC_FIRM_STATUS_CODE)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Classification Firm Status Id
+- target_column: cl_firm_status_code
+  transformation: ca_sc_fi_st.SC_FIRM_STATUS_CODE
+  data_type: string
+  description: Mã trạng thái hoạt động CTCK. BK của entity.
+  target_attr_name: Classification Firm Status Code
+- target_column: src_stm_code
+  transformation: '''SCMS_CAT_SC_FIRM_STATUS'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: data_dt
+  transformation: ca_sc_fi_st.CREATED_AT
+  data_type: date
+  description: 'Thời điểm tạo bản ghi (nguồn: CREATED_AT). Dùng làm căn cứ partition
+    Delta Lake / incremental filter — bảng nguồn có data_change_mode=Append, filter_logic
+    theo created_at (xem BRD/Source/brd_SCMS.yaml, đã sửa lỗi created_by→created_at
+    2026-07-15).'
+  target_attr_name: Data Date
+- target_column: cl_firm_status_nm
+  transformation: ca_sc_fi_st.SC_FIRM_STATUS_NAME
+  data_type: string
+  description: Tên trạng thái hoạt động CTCK.
+  target_attr_name: Classification Firm Status Name
+- target_column: applicable_entity
+  transformation: ca_sc_fi_st.APPLICABLE_ENTITY
+  data_type: string
+  description: Đối tượng áp dụng (CTCK/CN/VPDD/NH/Cả hai).
+  target_attr_name: Applicable Entity
+- target_column: rpt_submission_required_indicator
+  transformation: ca_sc_fi_st.REPORT_SUBMISSION_ENABLED
+  data_type: int
+  description: 'Cờ CTCK ở trạng thái này phải nộp báo cáo: 1=Phải nộp, 0=Không.'
+  target_attr_name: Report Submission Required Indicator
+- target_column: disclosure_required_indicator
+  transformation: ca_sc_fi_st.DISCLOSURE_ENABLED
+  data_type: int
+  description: 'Cờ CTCK ở trạng thái này phải CBTT: 1=Phải CBTT, 0=Không.'
+  target_attr_name: Disclosure Required Indicator
+- target_column: record_status_code
+  transformation: ca_sc_fi_st.RECORD_STATUS
+  data_type: string
+  description: 'Trạng thái bản ghi danh mục: 1 = Đang sử dụng; 0 = Ngừng sử dụng.'
+  target_attr_name: Record Status Code
+- target_column: description
+  transformation: ca_sc_fi_st.DESCRIPTION
+  data_type: string
+  description: Mô tả chi tiết nội dung/mục đích của bản ghi.
+  target_attr_name: Description
+- target_column: note
+  transformation: ca_sc_fi_st.NOTE
+  data_type: string
+  description: Ghi chú bổ sung, không bắt buộc.
+  target_attr_name: Note
+- target_column: item_code
+  transformation: ca_sc_fi_st.CODE
+  data_type: string
+  description: Mã định danh (mã viết tắt, mã nghiệp vụ).
+  target_attr_name: Item Code
+- target_column: item_nm
+  transformation: ca_sc_fi_st.ITEM_NAME
+  data_type: string
+  description: Cột item_name (mô tả gốc BRD trống).
+  target_attr_name: Item Name
+- target_column: active_indicator
+  transformation: ca_sc_fi_st.ACTIVE
+  data_type: int
+  description: Cột active (mô tả gốc BRD trống).
+  target_attr_name: Active Indicator
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

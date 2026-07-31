@@ -1,0 +1,82 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-ip_alternative_identification-FMS.STF_FG_BRCH
+  logical_name: Mapping Atomic - Involved Party Alternative Identification – source
+    FMS.STF_FG_BRCH
+  physical_name: ip_alternative_identification
+  dm_ref: ATM-ip_alternative_identification-FMS.STF_FG_BRCH
+  brd_ref: BRD-SRC-FMS-STF_FG_BRCH
+target:
+  namespace: atm
+  physical_name: ip_alternative_identification
+  etl_handle: SCD4A
+  description: Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ
+    chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ
+    1 nguồn.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: STF_FG_BRCH
+  alias: st_fg_br
+  select_fields: ID, ISSUED_CODE, ID_CODE, DATE_CODE, PRACTICE_CERT_NO, PRACTICE_CERT_ISSUE_DATE
+  filter: null
+- source_type: unpivot_cte
+  namespace: null
+  table_name: st_fg_br
+  alias: unpvt
+  select_fields: ID, ISSUED_CODE, identification_tp_code, identification_nbr, identification_issue_dt
+  filter: null
+  unpivot_spec:
+    value_columns:
+    - identification_nbr
+    - identification_issue_dt
+    type_column: identification_tp_code
+    legs:
+    - type_value: NATIONAL_ID
+      source_columns:
+      - ID_CODE
+      - DATE_CODE
+    - type_value: PRACTITIONER_LICENSE
+      source_columns:
+      - PRACTICE_CERT_NO
+      - PRACTICE_CERT_ISSUE_DATE
+relationship: []
+mapping_columns:
+- target_column: ip_id
+  transformation: '{hash_id}(''FMS_STF_FG_BRCH'', unpvt.ID)'
+  data_type: string
+  description: FK đến Foreign Fund Management Organization Unit Staff.
+  target_attr_name: Involved Party Id
+- target_column: ip_code
+  transformation: unpvt.ID
+  data_type: string
+  description: Mã nhân sự VPĐD/CN QLQ nước ngoài.
+  target_attr_name: Involved Party Code
+- target_column: src_stm_code
+  transformation: '''FMS_STF_FG_BRCH'''
+  data_type: string
+  description: Mã hệ thống nguồn.
+  target_attr_name: Source System Code
+- target_column: identification_issue_place
+  transformation: unpvt.ISSUED_CODE
+  data_type: string
+  description: Nơi cấp CMND/CCCD/Hộ chiếu.
+  target_attr_name: Identification Issue Place
+- target_column: identification_tp_code
+  transformation: unpvt.identification_tp_code
+  data_type: string
+  description: Loại giấy tờ định danh.
+  target_attr_name: Identification Type Code
+- target_column: identification_nbr
+  transformation: unpvt.identification_nbr
+  data_type: string
+  description: Số CMND/CCCD/Hộ chiếu của nhân sự.
+  target_attr_name: Identification Number
+- target_column: identification_issue_dt
+  transformation: unpvt.identification_issue_dt
+  data_type: date
+  description: Ngày cấp CMND/CCCD/Hộ chiếu.
+  target_attr_name: Identification Issue Date
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

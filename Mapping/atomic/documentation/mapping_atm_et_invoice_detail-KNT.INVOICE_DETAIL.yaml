@@ -1,0 +1,80 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-et_invoice_detail-KNT.INVOICE_DETAIL
+  logical_name: Mapping Atomic - External Tax Invoice Detail – source KNT.INVOICE_DETAIL
+  physical_name: et_invoice_detail
+  dm_ref: ATM-et_invoice_detail-KNT.INVOICE_DETAIL
+  brd_ref: BRD-SRC-KNT-INVOICE_DETAIL
+target:
+  namespace: atm
+  physical_name: et_invoice_detail
+  etl_handle: Fact Append
+  description: 1 hóa đơn cụ thể bị áp dụng biện pháp cưỡng chế ngừng sử dụng, thuộc
+    1 External Tax Enforcement Invoice Decision. Đổi tên từ "Tax Enforcement Invoice
+    Decision Item" 2026-07-19 — tên không còn chứa đầy đủ tên entity cha, ngoại lệ
+    có chủ đích, xem 7e#8.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: INVOICE_DETAIL
+  alias: in_de
+  select_fields: ID, TAX_ENFORCEMENT_INVOICE_ID, INVOICE_TEMPLATE_SYMBOL, INVOICE_SYMBOL,
+    INVOICE_NUMBER, INVOICE_TYPE, OBJ_ID
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: et_invoice_detail_id
+  transformation: '{hash_id}(''KNT_INVOICE_DETAIL'', in_de.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: External Tax Invoice Detail Id
+- target_column: et_invoice_detail_code
+  transformation: in_de.ID
+  data_type: string
+  description: Khóa chính của bản ghi. BK — nguồn không có mã nghiệp vụ đơn lẻ duy
+    nhất (INVOICE_NUMBER cần kết hợp INVOICE_TEMPLATE_SYMBOL/INVOICE_SYMBOL mới đủ
+    định danh), dùng PK kỹ thuật làm BK duy nhất.
+  target_attr_name: External Tax Invoice Detail Code
+- target_column: src_stm_code
+  transformation: '''KNT_INVOICE_DETAIL'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: et_enforcement_invoice_decision_id
+  transformation: '{hash_id}(''KNT_INVOICE_DETAIL'', in_de.TAX_ENFORCEMENT_INVOICE_ID)'
+  data_type: string
+  description: 'FK -> tax_enforcement_invoice: Quyết định cưỡng chế ngừng hóa đơn.'
+  target_attr_name: External Tax Enforcement Invoice Decision Id
+- target_column: et_enforcement_invoice_decision_code
+  transformation: in_de.TAX_ENFORCEMENT_INVOICE_ID
+  data_type: string
+  description: Số quyết định cưỡng chế ngừng sử dụng hóa đơn liên quan.
+  target_attr_name: External Tax Enforcement Invoice Decision Code
+- target_column: invoice_template_symbol
+  transformation: in_de.INVOICE_TEMPLATE_SYMBOL
+  data_type: string
+  description: Ký hiệu mẫu hóa đơn.
+  target_attr_name: Invoice Template Symbol
+- target_column: invoice_symbol
+  transformation: in_de.INVOICE_SYMBOL
+  data_type: string
+  description: Ký hiệu hóa đơn.
+  target_attr_name: Invoice Symbol
+- target_column: invoice_nbr
+  transformation: in_de.INVOICE_NUMBER
+  data_type: string
+  description: Số hóa đơn.
+  target_attr_name: Invoice Number
+- target_column: invoice_tp_code
+  transformation: in_de.INVOICE_TYPE
+  data_type: string
+  description: Loại hóa đơn bị cưỡng chế ngừng sử dụng.
+  target_attr_name: Invoice Type Code
+- target_column: object_id
+  transformation: in_de.OBJ_ID
+  data_type: string
+  description: ID đối tượng trong hệ thống Cục Thuế.
+  target_attr_name: Object Id
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

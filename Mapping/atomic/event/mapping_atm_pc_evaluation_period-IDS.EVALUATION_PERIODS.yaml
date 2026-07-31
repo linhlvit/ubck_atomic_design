@@ -1,0 +1,60 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-pc_evaluation_period-IDS.EVALUATION_PERIODS
+  logical_name: Mapping Atomic - Public Company Evaluation Period – source IDS.EVALUATION_PERIODS
+  physical_name: pc_evaluation_period
+  dm_ref: ATM-pc_evaluation_period-IDS.EVALUATION_PERIODS
+  brd_ref: BRD-SRC-IDS-EVALUATION_PERIODS
+target:
+  namespace: atm
+  physical_name: pc_evaluation_period
+  etl_handle: SCD4A
+  description: 'Kỳ đánh giá/xếp hạng công ty đại chúng: xác định năm, tháng và trạng
+    thái mở/đóng của từng kỳ đánh giá.'
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: EVALUATION_PERIODS
+  alias: ev_pe
+  select_fields: ID, YEAR, MONTH, DESCRIPTION, STATUS
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: pc_evaluation_period_id
+  transformation: '{hash_id}(''IDS_EVALUATION_PERIODS'', ev_pe.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Public Company Evaluation Period Id
+- target_column: pc_evaluation_period_code
+  transformation: ev_pe.ID
+  data_type: string
+  description: Khóa chính. BK của entity — map từ PK bảng nguồn.
+  target_attr_name: Public Company Evaluation Period Code
+- target_column: src_stm_code
+  transformation: '''IDS_EVALUATION_PERIODS'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: evaluation_year
+  transformation: ev_pe.YEAR
+  data_type: string
+  description: Năm của kỳ đánh giá/xếp hạng CTĐC.
+  target_attr_name: Evaluation Year
+- target_column: evaluation_month
+  transformation: ev_pe.MONTH
+  data_type: string
+  description: Tháng.
+  target_attr_name: Evaluation Month
+- target_column: description
+  transformation: ev_pe.DESCRIPTION
+  data_type: string
+  description: Mô tả.
+  target_attr_name: Description
+- target_column: evaluation_period_status_code
+  transformation: ev_pe.STATUS
+  data_type: string
+  description: Trạng thái (approved or draft).
+  target_attr_name: Evaluation Period Status Code
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

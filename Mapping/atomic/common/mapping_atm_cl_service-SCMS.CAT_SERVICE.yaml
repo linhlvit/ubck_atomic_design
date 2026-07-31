@@ -1,0 +1,66 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-cl_service-SCMS.CAT_SERVICE
+  logical_name: Mapping Atomic - Classification Service – source SCMS.CAT_SERVICE
+  physical_name: cl_service
+  dm_ref: ATM-cl_service-SCMS.CAT_SERVICE
+  brd_ref: BRD-SRC-SCMS-CAT_SERVICE
+target:
+  namespace: atm
+  physical_name: cl_service
+  etl_handle: Upsert
+  description: 'Danh mục dịch vụ chứng khoán được UBCKNN cấp phép cho CTCK. Nâng cấp
+    từ Classification Value (scheme SCMS_SERVICE_TYPE) lên entity thật. FK target
+    cho Classification Service Id trên Securities Company Licensed Service. Xem 7e
+    #11/#14.'
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: CAT_SERVICE
+  alias: ca_se
+  select_fields: ID, SERVICE_CODE, CREATED_AT, SERVICE_NAME, RECORD_STATUS, NOTE
+  filter: created_at >= {etl_date} AND created_at < {etl_date} + 1
+relationship: []
+mapping_columns:
+- target_column: cl_service_id
+  transformation: '{hash_id}(''SCMS_CAT_SERVICE'', ca_se.SERVICE_CODE)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Classification Service Id
+- target_column: cl_service_code
+  transformation: ca_se.SERVICE_CODE
+  data_type: string
+  description: Mã dịch vụ chứng khoán. BK của entity.
+  target_attr_name: Classification Service Code
+- target_column: src_stm_code
+  transformation: '''SCMS_CAT_SERVICE'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: data_dt
+  transformation: ca_se.CREATED_AT
+  data_type: date
+  description: 'Thời điểm tạo bản ghi (nguồn: CREATED_AT). Dùng làm căn cứ partition
+    Delta Lake / incremental filter — bảng nguồn có data_change_mode=Append, filter_logic
+    theo created_at (xem BRD/Source/brd_SCMS.yaml, đã sửa lỗi created_by→created_at
+    2026-07-15).'
+  target_attr_name: Data Date
+- target_column: cl_service_nm
+  transformation: ca_se.SERVICE_NAME
+  data_type: string
+  description: Tên dịch vụ chứng khoán.
+  target_attr_name: Classification Service Name
+- target_column: record_status_code
+  transformation: ca_se.RECORD_STATUS
+  data_type: string
+  description: 'Trạng thái bản ghi dịch vụ chứng khoán: 1 = Đang sử dụng; 0 = Ngừng
+    sử dụng.'
+  target_attr_name: Record Status Code
+- target_column: note
+  transformation: ca_se.NOTE
+  data_type: string
+  description: Ghi chú bổ sung, không bắt buộc.
+  target_attr_name: Note
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

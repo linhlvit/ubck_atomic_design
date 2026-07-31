@@ -1,0 +1,52 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-ip_alternative_identification-SCMS.SC_FIRM_SHAREHOLDER
+  logical_name: Mapping Atomic - Involved Party Alternative Identification – source
+    SCMS.SC_FIRM_SHAREHOLDER
+  physical_name: ip_alternative_identification
+  dm_ref: ATM-ip_alternative_identification-SCMS.SC_FIRM_SHAREHOLDER
+  brd_ref: BRD-SRC-SCMS-SC_FIRM_SHAREHOLDER
+target:
+  namespace: atm
+  physical_name: ip_alternative_identification
+  etl_handle: SCD4A
+  description: Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ
+    chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ
+    1 nguồn.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: SC_FIRM_SHAREHOLDER
+  alias: sc_fi_sh
+  select_fields: ID_NUMBER
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: src_stm_code
+  transformation: '''SCMS_SC_FIRM_SHAREHOLDER'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: identification_tp_code
+  transformation: '''LEGACY_NATIONAL_ID'''
+  data_type: string
+  description: 'Loại giấy tờ tùy thân: LEGACY_NATIONAL_ID=CMND (định danh cũ).'
+  target_attr_name: Identification Type Code
+- target_column: identification_nbr
+  transformation: sc_fi_sh.ID_NUMBER
+  data_type: string
+  description: Số CMND (định danh cũ).
+  target_attr_name: Identification Number
+- target_column: identification_issue_dt
+  transformation: 'null'
+  data_type: date
+  description: Ngày cấp CMND cũ.
+  target_attr_name: Identification Issue Date
+- target_column: identification_issue_place
+  transformation: 'null'
+  data_type: string
+  description: Nơi cấp CMND cũ.
+  target_attr_name: Identification Issue Place
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

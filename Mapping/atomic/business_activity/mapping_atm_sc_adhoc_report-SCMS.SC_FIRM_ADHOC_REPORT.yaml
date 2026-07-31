@@ -1,0 +1,240 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-sc_adhoc_report-SCMS.SC_FIRM_ADHOC_REPORT
+  logical_name: Mapping Atomic - Securities Company Adhoc Report – source SCMS.SC_FIRM_ADHOC_REPORT
+  physical_name: sc_adhoc_report
+  dm_ref: ATM-sc_adhoc_report-SCMS.SC_FIRM_ADHOC_REPORT
+  brd_ref: BRD-SRC-SCMS-SC_FIRM_ADHOC_REPORT
+target:
+  namespace: atm
+  physical_name: sc_adhoc_report
+  etl_handle: SCD2
+  description: Báo cáo đột xuất của CTCK nộp lên UBCKNN khi phát sinh sự kiện bất
+    thường hoặc theo yêu cầu. Ghi nhận từng lần nộp báo cáo với loại sự kiện, ngày
+    nộp và trạng thái xử lý.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: SC_FIRM_ADHOC_REPORT
+  alias: sc_fi_ad_re
+  select_fields: ID, SC_FIRM_INFO_ID, SC_FIRM_FOREIGN_BRANCH_ID, BANK_ID, FORM_REPORT_ID,
+    FORM_VERSION_ID, REPORT_INPUT_SUBMISSION_ID, REPORT_NAME, REPORT_YEAR, DOCUMENT_NUMBER,
+    PERIOD_VALUE, DETAIL_TYPE, CATEGORY, SIGNATURE_TYPE, RECORD_STATUS, SO_NGAY_GUI_MUON,
+    ALLOW_IMPORT, REQUIRES_DISCLOSURE, EVENT_TYPE_ID, HAN_GUI, EVENT_DATE, DOCUMENT_DATE,
+    SENT_AT, CANCELLED_AT, SENDER_ID, CANCELLED_BY, SUMMARY, IMPORT_FILE_PATH, ATTACHMENT_PATH,
+    NOTE, CANCELLATION_REASON
+  filter: null
+- source_type: physical_table
+  namespace: ods
+  table_name: SC_FIRM_INFO
+  alias: sc_fi_in
+  select_fields: ID, CODE
+  filter: null
+  note: Crosswalk bridge cho sc_id
+relationship:
+- main_alias: sc_fi_ad_re
+  join_type: LEFT JOIN
+  join_alias: sc_fi_in
+  join_on: sc_fi_ad_re.SC_FIRM_INFO_ID = sc_fi_in.ID
+mapping_columns:
+- target_column: sc_adhoc_rpt_id
+  transformation: '{hash_id}(''SCMS_SC_FIRM_ADHOC_REPORT'', sc_fi_ad_re.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Securities Company Adhoc Report Id
+- target_column: sc_adhoc_rpt_code
+  transformation: sc_fi_ad_re.ID
+  data_type: string
+  description: Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.
+  target_attr_name: Securities Company Adhoc Report Code
+- target_column: src_stm_code
+  transformation: '''SCMS_SC_FIRM_ADHOC_REPORT'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: sc_id
+  transformation: '{hash_id}(''SCMS_SC_FIRM_INFO'', sc_fi_in.CODE)'
+  data_type: string
+  description: FK đến Công ty chứng khoán nộp báo cáo.
+  target_attr_name: Securities Company Id
+- target_column: sc_code
+  transformation: sc_fi_ad_re.SC_FIRM_INFO_ID
+  data_type: string
+  description: Mã Công ty chứng khoán.
+  target_attr_name: Securities Company Code
+- target_column: sc_foreign_branch_id
+  transformation: '{hash_id}(''SCMS_SC_FIRM_FOREIGN_BRANCH'', sc_fi_ad_re.SC_FIRM_FOREIGN_BRANCH_ID)'
+  data_type: string
+  description: FK đến chi nhánh CTCK nước ngoài liên quan (nullable).
+  target_attr_name: Securities Company Foreign Branch Id
+- target_column: sc_foreign_branch_code
+  transformation: sc_fi_ad_re.SC_FIRM_FOREIGN_BRANCH_ID
+  data_type: string
+  description: Mã chi nhánh CTCK nước ngoài.
+  target_attr_name: Securities Company Foreign Branch Code
+- target_column: bank_id
+  transformation: '{hash_id}(''SCMS_BANK'', sc_fi_ad_re.BANK_ID)'
+  data_type: string
+  description: FK đến ngân hàng liên quan đến báo cáo (nullable).
+  target_attr_name: Bank Id
+- target_column: bank_code
+  transformation: sc_fi_ad_re.BANK_ID
+  data_type: string
+  description: Mã ngân hàng.
+  target_attr_name: Bank Code
+- target_column: form_rpt_id
+  transformation: sc_fi_ad_re.FORM_REPORT_ID
+  data_type: string
+  description: FK đến biểu mẫu báo cáo liên quan (FORM_REPORT).
+  target_attr_name: Form Report Id
+- target_column: form_version_id
+  transformation: sc_fi_ad_re.FORM_VERSION_ID
+  data_type: string
+  description: Phiên bản biểu mẫu báo cáo.
+  target_attr_name: Form Version Id
+- target_column: rpt_input_submission_id
+  transformation: sc_fi_ad_re.REPORT_INPUT_SUBMISSION_ID
+  data_type: string
+  description: FK đến phiên gửi báo cáo liên quan (REPORT_INPUT_SUBMISSION).
+  target_attr_name: Report Input Submission Id
+- target_column: rpt_nm
+  transformation: sc_fi_ad_re.REPORT_NAME
+  data_type: string
+  description: Tên báo cáo/biểu mẫu.
+  target_attr_name: Report Name
+- target_column: rpt_year
+  transformation: sc_fi_ad_re.REPORT_YEAR
+  data_type: int
+  description: Năm báo cáo.
+  target_attr_name: Report Year
+- target_column: document_nbr
+  transformation: sc_fi_ad_re.DOCUMENT_NUMBER
+  data_type: string
+  description: Số văn bản pháp lý (QĐ/GP/CV/Thông tư).
+  target_attr_name: Document Number
+- target_column: period_val
+  transformation: sc_fi_ad_re.PERIOD_VALUE
+  data_type: string
+  description: 'Giá trị kỳ đánh giá rủi ro (VD: 2024-Q1).'
+  target_attr_name: Period Value
+- target_column: adhoc_rpt_tp_code
+  transformation: sc_fi_ad_re.DETAIL_TYPE
+  data_type: string
+  description: 'Loại báo cáo chi tiết: BAT_THUONG=Bất thường; THEO_YEU_CAU=Theo yêu
+    cầu; KHAC=Khác.'
+  target_attr_name: Adhoc Report Type Code
+- target_column: category_code
+  transformation: sc_fi_ad_re.CATEGORY
+  data_type: string
+  description: Phân loại báo cáo đột xuất.
+  target_attr_name: Category Code
+- target_column: signature_tp_code
+  transformation: sc_fi_ad_re.SIGNATURE_TYPE
+  data_type: string
+  description: 'Loại chữ ký: DIEN_TU=Chữ ký điện tử; SO_HOA=Số hóa/upload file ký;
+    NONE=Không yêu cầu chữ ký.'
+  target_attr_name: Signature Type Code
+- target_column: rpt_submission_status_code
+  transformation: sc_fi_ad_re.RECORD_STATUS
+  data_type: string
+  description: 'Trạng thái nộp báo cáo đột xuất: 0=Chưa gửi; 1=Gửi đúng hạn; 2=Gửi
+    muộn; 3=Bị hủy.'
+  target_attr_name: Report Submission Status Code
+- target_column: overdue_days
+  transformation: sc_fi_ad_re.SO_NGAY_GUI_MUON
+  data_type: int
+  description: Số ngày gửi báo cáo muộn.
+  target_attr_name: Overdue Days
+- target_column: allow_import_indicator
+  transformation: sc_fi_ad_re.ALLOW_IMPORT
+  data_type: int
+  description: 'Cho phép nhập dữ liệu qua file Excel: 1=Cho phép; 0=Không cho phép.'
+  target_attr_name: Allow Import Indicator
+- target_column: requires_disclosure_indicator
+  transformation: sc_fi_ad_re.REQUIRES_DISCLOSURE
+  data_type: int
+  description: 'Phải công bố thông tin khi nộp báo cáo: 1=Có; 0=Không.'
+  target_attr_name: Requires Disclosure Indicator
+- target_column: cl_event_tp_id
+  transformation: '{hash_id}(''SCMS_CAT_EVENT_TYPE'', sc_fi_ad_re.EVENT_TYPE_ID)'
+  data_type: string
+  description: FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE).
+  target_attr_name: Classification Event Type Id
+- target_column: cl_event_tp_code
+  transformation: sc_fi_ad_re.EVENT_TYPE_ID
+  data_type: string
+  description: FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE).
+  target_attr_name: Classification Event Type Code
+- target_column: submission_deadline_tms
+  transformation: sc_fi_ad_re.HAN_GUI
+  data_type: timestamp
+  description: 'Hạn nộp báo cáo đột xuất (tên cột: HAN_GUI).'
+  target_attr_name: Submission Deadline Timestamp
+- target_column: event_dt
+  transformation: sc_fi_ad_re.EVENT_DATE
+  data_type: date
+  description: Ngày xảy ra sự kiện báo cáo đột xuất.
+  target_attr_name: Event Date
+- target_column: document_dt
+  transformation: sc_fi_ad_re.DOCUMENT_DATE
+  data_type: date
+  description: Ngày ký/ban hành văn bản.
+  target_attr_name: Document Date
+- target_column: sent_tms
+  transformation: sc_fi_ad_re.SENT_AT
+  data_type: timestamp
+  description: Thời điểm gửi báo cáo.
+  target_attr_name: Sent Timestamp
+- target_column: cancelled_tms
+  transformation: sc_fi_ad_re.CANCELLED_AT
+  data_type: timestamp
+  description: Thời điểm hủy báo cáo.
+  target_attr_name: Cancelled Timestamp
+- target_column: sender_iam_user_id
+  transformation: '{hash_id}(''IAM_USERS'', sc_fi_ad_re.SENDER_ID)'
+  data_type: string
+  description: FK đến người gửi báo cáo.
+  target_attr_name: Sender IAM User Id
+- target_column: sender_iam_user_code
+  transformation: sc_fi_ad_re.SENDER_ID
+  data_type: string
+  description: Mã người gửi báo cáo.
+  target_attr_name: Sender IAM User Code
+- target_column: cancelled_by_iam_user_id
+  transformation: '{hash_id}(''IAM_USERS'', sc_fi_ad_re.CANCELLED_BY)'
+  data_type: string
+  description: FK đến người hủy báo cáo.
+  target_attr_name: Cancelled By IAM User Id
+- target_column: cancelled_by_iam_user_code
+  transformation: sc_fi_ad_re.CANCELLED_BY
+  data_type: string
+  description: Mã người hủy báo cáo.
+  target_attr_name: Cancelled By IAM User Code
+- target_column: summary
+  transformation: sc_fi_ad_re.SUMMARY
+  data_type: string
+  description: Tóm tắt nội dung trích yếu.
+  target_attr_name: Summary
+- target_column: import_file_path
+  transformation: sc_fi_ad_re.IMPORT_FILE_PATH
+  data_type: string
+  description: Đường dẫn file Excel import dữ liệu.
+  target_attr_name: Import File Path
+- target_column: attachment_path
+  transformation: sc_fi_ad_re.ATTACHMENT_PATH
+  data_type: string
+  description: Đường dẫn file đính kèm trên hệ thống lưu trữ.
+  target_attr_name: Attachment Path
+- target_column: note
+  transformation: sc_fi_ad_re.NOTE
+  data_type: string
+  description: Ghi chú bổ sung, không bắt buộc.
+  target_attr_name: Note
+- target_column: cancellation_reason
+  transformation: sc_fi_ad_re.CANCELLATION_REASON
+  data_type: string
+  description: Lý do hủy báo cáo.
+  target_attr_name: Cancellation Reason
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

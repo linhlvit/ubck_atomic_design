@@ -1,0 +1,239 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-sc_periodic_report-SCMS.SC_FIRM_PERIODIC_REPORT
+  logical_name: Mapping Atomic - Securities Company Periodic Report – source SCMS.SC_FIRM_PERIODIC_REPORT
+  physical_name: sc_periodic_report
+  dm_ref: ATM-sc_periodic_report-SCMS.SC_FIRM_PERIODIC_REPORT
+  brd_ref: BRD-SRC-SCMS-SC_FIRM_PERIODIC_REPORT
+target:
+  namespace: atm
+  physical_name: sc_periodic_report
+  etl_handle: SCD4A
+  description: Báo cáo định kỳ của CTCK nộp lên UBCKNN (tài chính, hoạt động kinh
+    doanh). Ghi nhận kỳ, năm, hạn nộp theo quy định, ngày nộp thực tế và trạng thái
+    xử lý.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: SC_FIRM_PERIODIC_REPORT
+  alias: sc_fi_pe_re
+  select_fields: ID, SC_FIRM_INFO_ID, FORM_REPORT_ID, REPORT_NAME, REPORT_YEAR, PERIOD,
+    QUARTER, REPORT_MONTH, REPORT_PERIOD, START_DATE, END_DATE, SUBMISSION_DEADLINE,
+    SUBMISSION_DEADLINE_AT, RECORD_STATUS, OVERDUE_DAYS, EVENT_TYPE_ID, SENT_AT, APPROVED_AT,
+    CANCELLED_AT, APPROVED_BY, SENDER_ID, CANCELLED_BY, VALID_DIGITAL_SIGNATURE, VALID_DATA,
+    DIGITAL_SIGNATURE_FILE, SUMMARY, IMPORT_FILE_PATH, ATTACHMENT_PATH, NOTE, CANCELLATION_REASON,
+    REJECTION_REASON
+  filter: null
+- source_type: physical_table
+  namespace: ods
+  table_name: SC_FIRM_INFO
+  alias: sc_fi_in
+  select_fields: ID, CODE
+  filter: null
+  note: Crosswalk bridge cho sc_id
+relationship:
+- main_alias: sc_fi_pe_re
+  join_type: LEFT JOIN
+  join_alias: sc_fi_in
+  join_on: sc_fi_pe_re.SC_FIRM_INFO_ID = sc_fi_in.ID
+mapping_columns:
+- target_column: sc_periodic_rpt_id
+  transformation: '{hash_id}(''SCMS_SC_FIRM_PERIODIC_REPORT'', sc_fi_pe_re.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Securities Company Periodic Report Id
+- target_column: sc_periodic_rpt_code
+  transformation: sc_fi_pe_re.ID
+  data_type: string
+  description: Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.
+  target_attr_name: Securities Company Periodic Report Code
+- target_column: src_stm_code
+  transformation: '''SCMS_SC_FIRM_PERIODIC_REPORT'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: sc_id
+  transformation: '{hash_id}(''SCMS_SC_FIRM_INFO'', sc_fi_in.CODE)'
+  data_type: string
+  description: FK đến Công ty chứng khoán nộp báo cáo.
+  target_attr_name: Securities Company Id
+- target_column: sc_code
+  transformation: sc_fi_pe_re.SC_FIRM_INFO_ID
+  data_type: string
+  description: Mã Công ty chứng khoán.
+  target_attr_name: Securities Company Code
+- target_column: sc_form_rpt_id
+  transformation: '{hash_id}(''SCMS_FORM_REPORT'', sc_fi_pe_re.FORM_REPORT_ID)'
+  data_type: string
+  description: FK đến biểu mẫu báo cáo liên quan (FORM_REPORT).
+  target_attr_name: Securities Company Form Report Id
+- target_column: sc_form_rpt_code
+  transformation: sc_fi_pe_re.FORM_REPORT_ID
+  data_type: string
+  description: Mã biểu mẫu báo cáo liên quan (FORM_REPORT).
+  target_attr_name: Securities Company Form Report Code
+- target_column: rpt_nm
+  transformation: sc_fi_pe_re.REPORT_NAME
+  data_type: string
+  description: Tên báo cáo/biểu mẫu.
+  target_attr_name: Report Name
+- target_column: rpt_year
+  transformation: sc_fi_pe_re.REPORT_YEAR
+  data_type: int
+  description: Năm báo cáo.
+  target_attr_name: Report Year
+- target_column: period
+  transformation: sc_fi_pe_re.PERIOD
+  data_type: int
+  description: Kỳ số (1-4 cho quý, 1-12 cho tháng).
+  target_attr_name: Period
+- target_column: quarter
+  transformation: sc_fi_pe_re.QUARTER
+  data_type: int
+  description: Quý trong năm (1, 2, 3, 4).
+  target_attr_name: Quarter
+- target_column: rpt_month
+  transformation: sc_fi_pe_re.REPORT_MONTH
+  data_type: int
+  description: Tháng trong năm.
+  target_attr_name: Report Month
+- target_column: rpt_period
+  transformation: sc_fi_pe_re.REPORT_PERIOD
+  data_type: string
+  description: Kỳ báo cáo (Ngày/Tuần/Tháng/Quý/Bán niên/Năm).
+  target_attr_name: Report Period
+- target_column: start_dt
+  transformation: sc_fi_pe_re.START_DATE
+  data_type: date
+  description: Ngày bắt đầu kỳ báo cáo hoặc hiệu lực.
+  target_attr_name: Start Date
+- target_column: end_dt
+  transformation: sc_fi_pe_re.END_DATE
+  data_type: date
+  description: Ngày kết thúc kỳ báo cáo hoặc hết hiệu lực.
+  target_attr_name: End Date
+- target_column: submission_deadline_dt
+  transformation: sc_fi_pe_re.SUBMISSION_DEADLINE
+  data_type: date
+  description: Hạn nộp báo cáo theo quy định.
+  target_attr_name: Submission Deadline Date
+- target_column: submission_deadline_tms
+  transformation: sc_fi_pe_re.SUBMISSION_DEADLINE_AT
+  data_type: timestamp
+  description: Hạn nộp báo cáo theo quy định (có giờ).
+  target_attr_name: Submission Deadline Timestamp
+- target_column: rpt_submission_status_code
+  transformation: sc_fi_pe_re.RECORD_STATUS
+  data_type: string
+  description: 'Trạng thái nộp báo cáo định kỳ: 0=Chưa gửi; 1=Đã gửi; 2=Đã duyệt;
+    -1=Từ chối; 3=Bị hủy.'
+  target_attr_name: Report Submission Status Code
+- target_column: overdue_days
+  transformation: sc_fi_pe_re.OVERDUE_DAYS
+  data_type: int
+  description: Số ngày nộp báo cáo quá hạn.
+  target_attr_name: Overdue Days
+- target_column: cl_event_tp_id
+  transformation: '{hash_id}(''SCMS_CAT_EVENT_TYPE'', sc_fi_pe_re.EVENT_TYPE_ID)'
+  data_type: string
+  description: FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE).
+  target_attr_name: Classification Event Type Id
+- target_column: cl_event_tp_code
+  transformation: sc_fi_pe_re.EVENT_TYPE_ID
+  data_type: string
+  description: FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE).
+  target_attr_name: Classification Event Type Code
+- target_column: sent_tms
+  transformation: sc_fi_pe_re.SENT_AT
+  data_type: timestamp
+  description: Thời điểm gửi báo cáo lên UBCKNN.
+  target_attr_name: Sent Timestamp
+- target_column: approved_tms
+  transformation: sc_fi_pe_re.APPROVED_AT
+  data_type: timestamp
+  description: Thời điểm phê duyệt báo cáo.
+  target_attr_name: Approved Timestamp
+- target_column: cancelled_tms
+  transformation: sc_fi_pe_re.CANCELLED_AT
+  data_type: timestamp
+  description: Thời điểm hủy báo cáo.
+  target_attr_name: Cancelled Timestamp
+- target_column: approved_by_iam_user_id
+  transformation: '{hash_id}(''IAM_USERS'', sc_fi_pe_re.APPROVED_BY)'
+  data_type: string
+  description: FK đến người phê duyệt báo cáo.
+  target_attr_name: Approved By IAM User Id
+- target_column: approved_by_iam_user_code
+  transformation: sc_fi_pe_re.APPROVED_BY
+  data_type: string
+  description: Mã người phê duyệt báo cáo.
+  target_attr_name: Approved By IAM User Code
+- target_column: sender_iam_user_id
+  transformation: '{hash_id}(''IAM_USERS'', sc_fi_pe_re.SENDER_ID)'
+  data_type: string
+  description: FK đến người gửi báo cáo.
+  target_attr_name: Sender IAM User Id
+- target_column: sender_iam_user_code
+  transformation: sc_fi_pe_re.SENDER_ID
+  data_type: string
+  description: Mã người gửi báo cáo.
+  target_attr_name: Sender IAM User Code
+- target_column: cancelled_by_iam_user_id
+  transformation: '{hash_id}(''IAM_USERS'', sc_fi_pe_re.CANCELLED_BY)'
+  data_type: string
+  description: FK đến người hủy báo cáo.
+  target_attr_name: Cancelled By IAM User Id
+- target_column: cancelled_by_iam_user_code
+  transformation: sc_fi_pe_re.CANCELLED_BY
+  data_type: string
+  description: Mã người hủy báo cáo.
+  target_attr_name: Cancelled By IAM User Code
+- target_column: valid_digital_signature_indicator
+  transformation: sc_fi_pe_re.VALID_DIGITAL_SIGNATURE
+  data_type: int
+  description: 'Chữ ký số hợp lệ: 1=Hợp lệ; 0=Không hợp lệ.'
+  target_attr_name: Valid Digital Signature Indicator
+- target_column: valid_data_indicator
+  transformation: sc_fi_pe_re.VALID_DATA
+  data_type: int
+  description: 'Dữ liệu hợp lệ (vượt qua kiểm tra nghiệp vụ): 1=Hợp lệ; 0=Không hợp
+    lệ.'
+  target_attr_name: Valid Data Indicator
+- target_column: digital_signature_file
+  transformation: sc_fi_pe_re.DIGITAL_SIGNATURE_FILE
+  data_type: string
+  description: Đường dẫn file chữ ký số.
+  target_attr_name: Digital Signature File
+- target_column: summary
+  transformation: sc_fi_pe_re.SUMMARY
+  data_type: string
+  description: Tóm tắt nội dung trích yếu.
+  target_attr_name: Summary
+- target_column: import_file_path
+  transformation: sc_fi_pe_re.IMPORT_FILE_PATH
+  data_type: string
+  description: Đường dẫn file Excel import dữ liệu.
+  target_attr_name: Import File Path
+- target_column: attachment_path
+  transformation: sc_fi_pe_re.ATTACHMENT_PATH
+  data_type: string
+  description: Đường dẫn file đính kèm trên hệ thống lưu trữ.
+  target_attr_name: Attachment Path
+- target_column: note
+  transformation: sc_fi_pe_re.NOTE
+  data_type: string
+  description: Ghi chú bổ sung, không bắt buộc.
+  target_attr_name: Note
+- target_column: cancellation_reason
+  transformation: sc_fi_pe_re.CANCELLATION_REASON
+  data_type: string
+  description: Lý do hủy báo cáo.
+  target_attr_name: Cancellation Reason
+- target_column: rejection_reason
+  transformation: sc_fi_pe_re.REJECTION_REASON
+  data_type: string
+  description: Lý do từ chối báo cáo.
+  target_attr_name: Rejection Reason
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

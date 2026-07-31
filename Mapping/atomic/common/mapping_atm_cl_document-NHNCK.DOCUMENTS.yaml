@@ -1,0 +1,71 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-cl_document-NHNCK.DOCUMENTS
+  logical_name: Mapping Atomic - Classification Document – source NHNCK.DOCUMENTS
+  physical_name: cl_document
+  dm_ref: ATM-cl_document-NHNCK.DOCUMENTS
+  brd_ref: BRD-SRC-NHNCK-DOCUMENTS
+target:
+  namespace: atm
+  physical_name: cl_document
+  etl_handle: SCD2
+  description: Danh mục các loại tài liệu/hồ sơ cần nộp trong quy trình cấp chứng
+    chỉ hành nghề chứng khoán (NHNCK).
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: DOCUMENTS
+  alias: docu
+  select_fields: ID, DOCUMENT_CODE, DOCUMENT_NAME, REFERENCE, SORT_ORDER, IS_ACTIVE,
+    IS_ORIGINAL_DATA, MCDT_CODE
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: cl_document_id
+  transformation: '{hash_id}(''NHNCK_DOCUMENTS'', docu.DOCUMENT_CODE)'
+  data_type: string
+  description: Id tự sinh (surrogate key).
+  target_attr_name: Classification Document Id
+- target_column: cl_document_code
+  transformation: docu.DOCUMENT_CODE
+  data_type: string
+  description: Mã tài liệu — BK của entity.
+  target_attr_name: Classification Document Code
+- target_column: src_stm_code
+  transformation: '''NHNCK_DOCUMENTS'''
+  data_type: string
+  description: Mã hệ thống nguồn.
+  target_attr_name: Source System Code
+- target_column: cl_document_nm
+  transformation: docu.DOCUMENT_NAME
+  data_type: string
+  description: Tên tài liệu.
+  target_attr_name: Classification Document Name
+- target_column: legal_reference
+  transformation: docu.REFERENCE
+  data_type: string
+  description: Trích dẫn căn cứ pháp lý liên quan đến tài liệu.
+  target_attr_name: Legal Reference
+- target_column: sort_order
+  transformation: docu.SORT_ORDER
+  data_type: int
+  description: Thứ tự sắp xếp hiển thị (số nhỏ hơn hiển thị trước).
+  target_attr_name: Sort Order
+- target_column: active_indicator
+  transformation: docu.IS_ACTIVE
+  data_type: string
+  description: Cờ đang kích hoạt/hiệu lực.
+  target_attr_name: Active Indicator
+- target_column: original_data_indicator
+  transformation: docu.IS_ORIGINAL_DATA
+  data_type: string
+  description: Cờ dữ liệu gốc của hệ thống (không được xóa).
+  target_attr_name: Original Data Indicator
+- target_column: public_service_portal_code
+  transformation: docu.MCDT_CODE
+  data_type: string
+  description: Mã đồng bộ chuyên ngành trên hệ thống Cổng Dịch vụ công quốc gia (MCĐT).
+  target_attr_name: Public Service Portal Code
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

@@ -1,0 +1,290 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-public_company-IDS.COMPANY_PROFILES
+  logical_name: Mapping Atomic - Public Company – source IDS.COMPANY_PROFILES
+  physical_name: public_company
+  dm_ref: ATM-public_company-IDS.COMPANY_PROFILES
+  brd_ref: BRD-SRC-IDS-COMPANY_PROFILES
+target:
+  namespace: atm
+  physical_name: public_company
+  etl_handle: SCD4A
+  description: 'Hồ sơ công ty đại chúng (CTĐC) được quản lý bởi UBCKNN: tên, mã CK,
+    sàn niêm yết, trạng thái hoạt động, vốn điều lệ, loại hình doanh nghiệp, nhóm
+    ngành, loại BCTC.'
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: COMPANY_PROFILES
+  alias: co_pr
+  select_fields: ID, COMPANY_NAME_VN, COMPANY_NAME_EN, FIRST_REG_DATE, LATEST_REG_DATE,
+    LATEST_REG_PROV, CAPITAL_PAID_REPORTED, TREASURY_SHARES, CATEGORY_L1_ID, CATEGORY_L2_ID,
+    ENTERPRISE_TYPE_CD, FINANCIAL_STMT_TYPE_CD, SECURITIES_TYPE_CD, EQUITY_LISTING_EXCH,
+    EQUITY_TICKER, EQUITY_SECURITY_FLG, EQUITY_LISTED_QTY, BOND_LISTING_EXCH, BOND_TICKER,
+    BOND_SECURITY_FLG, BOND_LISTED_QTY, INTL_EXCH, INTL_TICKER, STATUS_IDS_CD, AUTO_APPROVAL_FLG,
+    COMPANY_LOGIN, APPROVER_COMMENT, SPECIALIST_NOTES, IDS_REG_STATUS_FLG, IDS_REG_DATE,
+    OPERATING_STATUS_CD, FY_END_DATE, PUBLIC_COMPANY_FORM_CD, PUBLIC_COM_TYPE_CD,
+    PUBLIC_BOND_ISSUER_FLG, FORMER_STATE_OWNED_FLG, EQUIT_LICENSE_DATE, CAPITAL_AT_EQUIT,
+    HAS_STATE_OWN_FLG, FDI_COM_FLG, HAS_PARENT_COM_FLG, HAS_SUBSIDIARIES_FLG, HAS_JOINT_VENTURES_FLG,
+    HEAD_OFFICE_PROV, IPO_COMPANY_FLG, APPROVAL_STATUS_CD, DELETE_FLG
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: pc_id
+  transformation: '{hash_id}(''IDS_COMPANY_PROFILES'', co_pr.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Public Company Id
+- target_column: pc_code
+  transformation: co_pr.ID
+  data_type: string
+  description: Khóa chính. BK của entity — map từ PK bảng nguồn.
+  target_attr_name: Public Company Code
+- target_column: src_stm_code
+  transformation: '''IDS_COMPANY_PROFILES'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: pc_nm
+  transformation: co_pr.COMPANY_NAME_VN
+  data_type: string
+  description: Tên công ty (tiếng Việt).
+  target_attr_name: Public Company Name
+- target_column: pc_english_nm
+  transformation: co_pr.COMPANY_NAME_EN
+  data_type: string
+  description: Tên công ty (tiếng Anh).
+  target_attr_name: Public Company English Name
+- target_column: first_registration_dt
+  transformation: co_pr.FIRST_REG_DATE
+  data_type: date
+  description: Ngày đăng ký lần đầu.
+  target_attr_name: First Registration Date
+- target_column: latest_registration_dt
+  transformation: co_pr.LATEST_REG_DATE
+  data_type: date
+  description: Ngày đăng ký thay đổi gần nhất.
+  target_attr_name: Latest Registration Date
+- target_column: latest_registration_province_nm
+  transformation: co_pr.LATEST_REG_PROV
+  data_type: string
+  description: Tỉnh/TP đăng ký thay đổi gần nhất.
+  target_attr_name: Latest Registration Province Name
+- target_column: charter_capital_amt
+  transformation: co_pr.CAPITAL_PAID_REPORTED
+  data_type: decimal(23,2)
+  description: Vốn điều lệ.
+  target_attr_name: Charter Capital Amount
+- target_column: treasury_share_quantity
+  transformation: co_pr.TREASURY_SHARES
+  data_type: int
+  description: Cổ phiếu quỹ.
+  target_attr_name: Treasury Share Quantity
+- target_column: business_line_level_1_id
+  transformation: '{hash_id}(''IDS_COMPANY_PROFILES'', co_pr.CATEGORY_L1_ID)'
+  data_type: string
+  description: Ngành cấp 1 (FK).
+  target_attr_name: Business Line Level 1 Id
+- target_column: business_line_level_1_code
+  transformation: co_pr.CATEGORY_L1_ID
+  data_type: string
+  description: Mã ngành cấp 1.
+  target_attr_name: Business Line Level 1 Code
+- target_column: business_line_level_2_id
+  transformation: '{hash_id}(''IDS_COMPANY_PROFILES'', co_pr.CATEGORY_L2_ID)'
+  data_type: string
+  description: Ngành cấp 2 (FK).
+  target_attr_name: Business Line Level 2 Id
+- target_column: business_line_level_2_code
+  transformation: co_pr.CATEGORY_L2_ID
+  data_type: string
+  description: Mã ngành cấp 2.
+  target_attr_name: Business Line Level 2 Code
+- target_column: enterprise_tp_code
+  transformation: co_pr.ENTERPRISE_TYPE_CD
+  data_type: string
+  description: Loại hình doanh nghiệp.
+  target_attr_name: Enterprise Type Code
+- target_column: financial_statement_tp_code
+  transformation: co_pr.FINANCIAL_STMT_TYPE_CD
+  data_type: string
+  description: Loại báo cáo tài chính.
+  target_attr_name: Financial Statement Type Code
+- target_column: securities_tp_code
+  transformation: co_pr.SECURITIES_TYPE_CD
+  data_type: string
+  description: Loại chứng khoán.
+  target_attr_name: Securities Type Code
+- target_column: equity_listing_exchange_code
+  transformation: co_pr.EQUITY_LISTING_EXCH
+  data_type: string
+  description: Sàn niêm yết.
+  target_attr_name: Equity Listing Exchange Code
+- target_column: equity_ticker_symbol
+  transformation: co_pr.EQUITY_TICKER
+  data_type: string
+  description: Mã cổ phiếu.
+  target_attr_name: Equity Ticker Symbol
+- target_column: equity_security_indicator
+  transformation: co_pr.EQUITY_SECURITY_FLG
+  data_type: int
+  description: Cờ chứng khoán cổ phiếu.
+  target_attr_name: Equity Security Indicator
+- target_column: equity_listed_quantity
+  transformation: co_pr.EQUITY_LISTED_QTY
+  data_type: int
+  description: Số lượng cổ phiếu niêm yết.
+  target_attr_name: Equity Listed Quantity
+- target_column: bond_listing_exchange_code
+  transformation: co_pr.BOND_LISTING_EXCH
+  data_type: string
+  description: Sàn trái phiếu.
+  target_attr_name: Bond Listing Exchange Code
+- target_column: bond_ticker_symbol
+  transformation: co_pr.BOND_TICKER
+  data_type: string
+  description: Mã trái phiếu.
+  target_attr_name: Bond Ticker Symbol
+- target_column: bond_security_indicator
+  transformation: co_pr.BOND_SECURITY_FLG
+  data_type: int
+  description: Cờ chứng khoán trái phiếu.
+  target_attr_name: Bond Security Indicator
+- target_column: bond_listed_quantity
+  transformation: co_pr.BOND_LISTED_QTY
+  data_type: int
+  description: Số lượng trái phiếu niêm yết.
+  target_attr_name: Bond Listed Quantity
+- target_column: international_exchange_nm
+  transformation: co_pr.INTL_EXCH
+  data_type: string
+  description: Sàn quốc tế.
+  target_attr_name: International Exchange Name
+- target_column: international_ticker_symbol
+  transformation: co_pr.INTL_TICKER
+  data_type: string
+  description: Mã quốc tế.
+  target_attr_name: International Ticker Symbol
+- target_column: pc_status_code
+  transformation: co_pr.STATUS_IDS_CD
+  data_type: string
+  description: Trạng thái.
+  target_attr_name: Public Company Status Code
+- target_column: auto_approval_indicator
+  transformation: co_pr.AUTO_APPROVAL_FLG
+  data_type: int
+  description: Tự động phê duyệt.
+  target_attr_name: Auto Approval Indicator
+- target_column: company_login_username
+  transformation: co_pr.COMPANY_LOGIN
+  data_type: string
+  description: Tài khoản đăng nhập.
+  target_attr_name: Company Login Username
+- target_column: approver_comment
+  transformation: co_pr.APPROVER_COMMENT
+  data_type: string
+  description: Ghi chú phê duyệt.
+  target_attr_name: Approver Comment
+- target_column: specialist_note
+  transformation: co_pr.SPECIALIST_NOTES
+  data_type: string
+  description: Ghi chú chuyên viên.
+  target_attr_name: Specialist Note
+- target_column: ids_registration_indicator
+  transformation: co_pr.IDS_REG_STATUS_FLG
+  data_type: int
+  description: Trạng thái đăng ký IDS.
+  target_attr_name: Ids Registration Indicator
+- target_column: ids_registration_dt
+  transformation: co_pr.IDS_REG_DATE
+  data_type: date
+  description: Ngày đăng ký IDS.
+  target_attr_name: Ids Registration Date
+- target_column: operating_status_code
+  transformation: co_pr.OPERATING_STATUS_CD
+  data_type: string
+  description: Trạng thái hoạt động.
+  target_attr_name: Operating Status Code
+- target_column: fiscal_year_end_dt
+  transformation: co_pr.FY_END_DATE
+  data_type: date
+  description: Ngày kết thúc năm tài chính.
+  target_attr_name: Fiscal Year End Date
+- target_column: pc_form_code
+  transformation: co_pr.PUBLIC_COMPANY_FORM_CD
+  data_type: string
+  description: Hình thức trở thành công ty đại chúng.
+  target_attr_name: Public Company Form Code
+- target_column: pc_tp_code
+  transformation: co_pr.PUBLIC_COM_TYPE_CD
+  data_type: string
+  description: Loại công ty đại chúng.
+  target_attr_name: Public Company Type Code
+- target_column: public_bond_issuer_indicator
+  transformation: co_pr.PUBLIC_BOND_ISSUER_FLG
+  data_type: int
+  description: Doanh nghiệp phát hành trái phiếu.
+  target_attr_name: Public Bond Issuer Indicator
+- target_column: former_state_owned_indicator
+  transformation: co_pr.FORMER_STATE_OWNED_FLG
+  data_type: int
+  description: Doanh nghiệp nhà nước (trước đây).
+  target_attr_name: Former State Owned Indicator
+- target_column: equitization_license_dt
+  transformation: co_pr.EQUIT_LICENSE_DATE
+  data_type: date
+  description: Ngày cấp phép cổ phần hóa.
+  target_attr_name: Equitization License Date
+- target_column: equitization_capital_amt
+  transformation: co_pr.CAPITAL_AT_EQUIT
+  data_type: decimal(23,2)
+  description: Vốn điều lệ tại thời điểm cổ phần hóa.
+  target_attr_name: Equitization Capital Amount
+- target_column: has_state_ownership_indicator
+  transformation: co_pr.HAS_STATE_OWN_FLG
+  data_type: int
+  description: Có vốn nhà nước.
+  target_attr_name: Has State Ownership Indicator
+- target_column: foreign_direct_investment_indicator
+  transformation: co_pr.FDI_COM_FLG
+  data_type: int
+  description: Doanh nghiệp FDI.
+  target_attr_name: Foreign Direct Investment Indicator
+- target_column: has_parent_company_indicator
+  transformation: co_pr.HAS_PARENT_COM_FLG
+  data_type: int
+  description: Có công ty mẹ.
+  target_attr_name: Has Parent Company Indicator
+- target_column: has_subsidiary_indicator
+  transformation: co_pr.HAS_SUBSIDIARIES_FLG
+  data_type: int
+  description: Có công ty con.
+  target_attr_name: Has Subsidiary Indicator
+- target_column: has_joint_venture_indicator
+  transformation: co_pr.HAS_JOINT_VENTURES_FLG
+  data_type: int
+  description: Có liên doanh.
+  target_attr_name: Has Joint Venture Indicator
+- target_column: head_office_province_nm
+  transformation: co_pr.HEAD_OFFICE_PROV
+  data_type: string
+  description: Tỉnh/TP trụ sở chính.
+  target_attr_name: Head Office Province Name
+- target_column: ipo_company_indicator
+  transformation: co_pr.IPO_COMPANY_FLG
+  data_type: int
+  description: 1-Công ty đang IPO, 0-Công ty đại chúng.
+  target_attr_name: Ipo Company Indicator
+- target_column: approval_status_code
+  transformation: co_pr.APPROVAL_STATUS_CD
+  data_type: string
+  description: Trạng thái phê duyệt hồ sơ.
+  target_attr_name: Approval Status Code
+- target_column: deleted_indicator
+  transformation: co_pr.DELETE_FLG
+  data_type: int
+  description: Trạng thái xoá.
+  target_attr_name: Deleted Indicator
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

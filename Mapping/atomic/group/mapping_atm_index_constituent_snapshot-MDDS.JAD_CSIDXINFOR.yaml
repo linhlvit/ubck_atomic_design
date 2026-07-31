@@ -1,0 +1,77 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-index_constituent_snapshot-MDDS.JAD_CSIDXINFOR
+  logical_name: Mapping Atomic - Index Constituent Snapshot – source MDDS.JAD_CSIDXINFOR
+  physical_name: index_constituent_snapshot
+  dm_ref: ATM-index_constituent_snapshot-MDDS.JAD_CSIDXINFOR
+  brd_ref: BRD-SRC-MDDS-JAD_CSIDXINFOR
+target:
+  namespace: atm
+  physical_name: index_constituent_snapshot
+  etl_handle: Fact Snapshot
+  description: Snapshot thành phần rổ chỉ số thị trường theo ngày giao dịch — mỗi
+    dòng ghi nhận một cặp mã chỉ số và mã chứng khoán có mặt trong rổ chỉ số tại ngày
+    giao dịch tương ứng.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: JAD_CSIDXINFOR
+  alias: ja_cs
+  select_fields: ID, INDEXCODE, INDEXID, SYMBOL, TRADINGDATE, ADDDATE, FLOORCODE,
+    TOTALQTTY
+  filter: TRADINGDATE = {etl_date}
+relationship: []
+mapping_columns:
+- target_column: index_constituent_snpst_id
+  transformation: '{hash_id}(''MDDS_JAD_CSIDXINFOR'', ja_cs.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Index Constituent Snapshot Id
+- target_column: index_constituent_snpst_code
+  transformation: ja_cs.ID
+  data_type: string
+  description: GUID — PK của bảng nguồn. BK.
+  target_attr_name: Index Constituent Snapshot Code
+- target_column: src_stm_code
+  transformation: '''MDDS_JAD_CSIDXINFOR'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: index_code
+  transformation: ja_cs.INDEXCODE
+  data_type: string
+  description: Mã chỉ số (FK đến MarketInfor / IDXInfor).
+  target_attr_name: Index Code
+- target_column: index_id
+  transformation: ja_cs.INDEXID
+  data_type: string
+  description: ID nội bộ của chỉ số.
+  target_attr_name: Index Id
+- target_column: symbol
+  transformation: ja_cs.SYMBOL
+  data_type: string
+  description: Mã chứng khoán trong rổ (FK đến StockInfor).
+  target_attr_name: Symbol
+- target_column: trading_dt
+  transformation: ja_cs.TRADINGDATE
+  data_type: date
+  description: Ngày giao dịch dạng dd/MM/yyyy.
+  target_attr_name: Trading Date
+- target_column: add_dt
+  transformation: ja_cs.ADDDATE
+  data_type: date
+  description: Ngày thêm vào chỉ số.
+  target_attr_name: Add Date
+- target_column: floor_code
+  transformation: ja_cs.FLOORCODE
+  data_type: string
+  description: Mã sở giao dịch CK.
+  target_attr_name: Floor Code
+- target_column: total_match_vol
+  transformation: ja_cs.TOTALQTTY
+  data_type: int
+  description: Tổng khối lượng khớp lệnh lô chẵn.
+  target_attr_name: Total Match Volume
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

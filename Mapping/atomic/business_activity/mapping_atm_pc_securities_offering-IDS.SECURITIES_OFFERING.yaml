@@ -1,0 +1,229 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-pc_securities_offering-IDS.SECURITIES_OFFERING
+  logical_name: Mapping Atomic - Public Company Securities Offering – source IDS.SECURITIES_OFFERING
+  physical_name: pc_securities_offering
+  dm_ref: ATM-pc_securities_offering-IDS.SECURITIES_OFFERING
+  brd_ref: BRD-SRC-IDS-SECURITIES_OFFERING
+target:
+  namespace: atm
+  physical_name: pc_securities_offering
+  etl_handle: SCD4A
+  description: 'Hồ sơ đăng ký chào bán/phát hành chứng khoán của CTĐC hoặc cá nhân:
+    số đăng ký, chứng nhận, tổng số lượng đăng ký. APPLICANT_TYPE_FLG phân biệt tổ
+    chức và cá nhân.'
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: SECURITIES_OFFERING
+  alias: se_of
+  select_fields: ID, APPLICANT_TYPE_FLG, COMPANY_PROFILE_ID, LEGAL_ENTITY_ID, APPLICATION_CD,
+    ADMINISTRATIVE_PROC_CD, ADMINISTRATIVE_STATUS_CD, CERTIFICATE_NO, CERTIFICATE_DATE,
+    OFFICIAL_LETTER_NO, OFFICIAL_LETTER_DATE, OFFERING_PURPOSE, TOTAL_REGISTERED_QTY,
+    TOTAL_EXPECTED_AM, CAPITAL_USAGE_PLAN, EXPECTED_SCHEDULE, MATCHING_CAPITAL, CONSULTING_ORG,
+    AUDIT_ORG, BOND_REPRESENTATIVE_ORG, UNDERWWRITING_ORG, CREDIT_RATING_ORG, OTHER_ORG,
+    APPROVAL_STATUS_CD, APPROVER_USER_ID, APPROVER_USER_NAME, PROCESSOR_USER_ID, PROCESSOR_USER_NAME,
+    REVISION_REASON, MULTI_TURN_FLG, IS_SYNC, DELETE_FLG, APPROVER_COMMENT
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: pc_securities_offering_id
+  transformation: '{hash_id}(''IDS_SECURITIES_OFFERING'', se_of.ID)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: Public Company Securities Offering Id
+- target_column: pc_securities_offering_code
+  transformation: se_of.ID
+  data_type: string
+  description: Khóa chính. BK của entity — map từ PK bảng nguồn.
+  target_attr_name: Public Company Securities Offering Code
+- target_column: src_stm_code
+  transformation: '''IDS_SECURITIES_OFFERING'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: applicant_tp_indicator
+  transformation: se_of.APPLICANT_TYPE_FLG
+  data_type: int
+  description: 'Phân loại bên đăng ký chào bán: tổ chức hay cá nhân.'
+  target_attr_name: Applicant Type Indicator
+- target_column: pc_id
+  transformation: '{hash_id}(''IDS_COMPANY_PROFILES'', se_of.COMPANY_PROFILE_ID)'
+  data_type: string
+  description: Id công ty đại chúng đăng ký chào bán (khi APPLICANT_TYPE_FLG = 1).
+  target_attr_name: Public Company Id
+- target_column: pc_code
+  transformation: se_of.COMPANY_PROFILE_ID
+  data_type: string
+  description: Mã công ty đại chúng.
+  target_attr_name: Public Company Code
+- target_column: legal_entity_id
+  transformation: '{hash_id}(''IDS_LEGAL_ENTITIES'', se_of.LEGAL_ENTITY_ID)'
+  data_type: string
+  description: Id cá nhân đăng ký chào bán (khi APPLICANT_TYPE_FLG = 0).
+  target_attr_name: Legal Entity Id
+- target_column: legal_entity_code
+  transformation: se_of.LEGAL_ENTITY_ID
+  data_type: string
+  description: Mã thực thể pháp lý.
+  target_attr_name: Legal Entity Code
+- target_column: application_code
+  transformation: se_of.APPLICATION_CD
+  data_type: string
+  description: Mã hồ sơ.
+  target_attr_name: Application Code
+- target_column: administrative_procedure_code
+  transformation: se_of.ADMINISTRATIVE_PROC_CD
+  data_type: string
+  description: Thủ tục hành chính áp dụng.
+  target_attr_name: Administrative Procedure Code
+- target_column: administrative_status_code
+  transformation: se_of.ADMINISTRATIVE_STATUS_CD
+  data_type: string
+  description: Trạng thái thủ tục hành chính (lấy từ thủ tục hành chính).
+  target_attr_name: Administrative Status Code
+- target_column: certificate_nbr
+  transformation: se_of.CERTIFICATE_NO
+  data_type: string
+  description: Số giấy chứng nhận.
+  target_attr_name: Certificate Number
+- target_column: certificate_dt
+  transformation: se_of.CERTIFICATE_DATE
+  data_type: date
+  description: Ngày giấy chứng nhận.
+  target_attr_name: Certificate Date
+- target_column: official_letter_nbr
+  transformation: se_of.OFFICIAL_LETTER_NO
+  data_type: string
+  description: Số công văn của UBCKNN.
+  target_attr_name: Official Letter Number
+- target_column: official_letter_dt
+  transformation: se_of.OFFICIAL_LETTER_DATE
+  data_type: date
+  description: Ngày công văn.
+  target_attr_name: Official Letter Date
+- target_column: offering_purpose
+  transformation: se_of.OFFERING_PURPOSE
+  data_type: string
+  description: Mục đích sử dụng.
+  target_attr_name: Offering Purpose
+- target_column: total_registered_quantity
+  transformation: se_of.TOTAL_REGISTERED_QTY
+  data_type: int
+  description: Tổng số chứng khoán chào bán/phát hành.
+  target_attr_name: Total Registered Quantity
+- target_column: total_expected_amt
+  transformation: se_of.TOTAL_EXPECTED_AM
+  data_type: decimal(23,2)
+  description: Tổng số tiền dự kiến thu được (VNĐ).
+  target_attr_name: Total Expected Amount
+- target_column: capital_usage_plan
+  transformation: se_of.CAPITAL_USAGE_PLAN
+  data_type: string
+  description: Phương án sử dụng vốn.
+  target_attr_name: Capital Usage Plan
+- target_column: expected_schedule
+  transformation: se_of.EXPECTED_SCHEDULE
+  data_type: string
+  description: Tiến độ dự kiến (phương án sử dụng vốn).
+  target_attr_name: Expected Schedule
+- target_column: matching_capital_src
+  transformation: se_of.MATCHING_CAPITAL
+  data_type: string
+  description: Nguồn vốn đối ứng (phương án sử dụng vốn).
+  target_attr_name: Matching Capital Source
+- target_column: consulting_organization_nm
+  transformation: se_of.CONSULTING_ORG
+  data_type: string
+  description: Tổ chức tư vấn liên quan.
+  target_attr_name: Consulting Organization Name
+- target_column: audit_organization_nm
+  transformation: se_of.AUDIT_ORG
+  data_type: string
+  description: Tổ chức kiểm toán liên quan.
+  target_attr_name: Audit Organization Name
+- target_column: bond_representative_organization_nm
+  transformation: se_of.BOND_REPRESENTATIVE_ORG
+  data_type: string
+  description: Đại diện người sở hữu trái phiếu liên quan.
+  target_attr_name: Bond Representative Organization Name
+- target_column: underwriting_organization_nm
+  transformation: se_of.UNDERWWRITING_ORG
+  data_type: string
+  description: Tổ chức bảo lãnh phát hành liên quan.
+  target_attr_name: Underwriting Organization Name
+- target_column: credit_rating_organization_nm
+  transformation: se_of.CREDIT_RATING_ORG
+  data_type: string
+  description: Tổ chức xếp hạng tín nhiệm liên quan.
+  target_attr_name: Credit Rating Organization Name
+- target_column: other_related_organization_nm
+  transformation: se_of.OTHER_ORG
+  data_type: string
+  description: Tổ chức liên quan khác.
+  target_attr_name: Other Related Organization Name
+- target_column: approval_status_code
+  transformation: se_of.APPROVAL_STATUS_CD
+  data_type: string
+  description: Trạng thái phê duyệt phương án sử dụng vốn (Đang xử lý; Chờ duyệt;
+    Đã duyệt; Từ chối).
+  target_attr_name: Approval Status Code
+- target_column: approver_user_id
+  transformation: '{hash_id}(''IAM_USERS'', se_of.APPROVER_USER_ID)'
+  data_type: string
+  description: Id Login của lãnh đạo phê duyệt phương án.
+  target_attr_name: Approver User Id
+- target_column: approver_user_code
+  transformation: se_of.APPROVER_USER_ID
+  data_type: string
+  description: Mã người phê duyệt (denormalized lookup).
+  target_attr_name: Approver User Code
+- target_column: approver_user_nm_snpst
+  transformation: se_of.APPROVER_USER_NAME
+  data_type: string
+  description: Tên lãnh đạo phê duyệt (snapshot text tại thời điểm chọn, độc lập với
+    Approver User Code).
+  target_attr_name: Approver User Name Snapshot
+- target_column: processor_user_id
+  transformation: '{hash_id}(''IAM_USERS'', se_of.PROCESSOR_USER_ID)'
+  data_type: string
+  description: Id Login của chuyên viên xử lý hồ sơ.
+  target_attr_name: Processor User Id
+- target_column: processor_user_code
+  transformation: se_of.PROCESSOR_USER_ID
+  data_type: string
+  description: Mã chuyên viên xử lý (denormalized lookup).
+  target_attr_name: Processor User Code
+- target_column: processor_user_nm_snpst
+  transformation: se_of.PROCESSOR_USER_NAME
+  data_type: string
+  description: Tên chuyên viên xử lý (đồng bộ từ TTHC hoặc chọn thủ công tại IDS).
+  target_attr_name: Processor User Name Snapshot
+- target_column: revision_reason
+  transformation: se_of.REVISION_REASON
+  data_type: string
+  description: Lý do chỉnh sửa.
+  target_attr_name: Revision Reason
+- target_column: multi_turn_indicator
+  transformation: se_of.MULTI_TURN_FLG
+  data_type: int
+  description: Hồ sơ đăng ký chào bán phát hành có nhiều đợt hay không.
+  target_attr_name: Multi Turn Indicator
+- target_column: synced_from_external_stm_indicator
+  transformation: se_of.IS_SYNC
+  data_type: int
+  description: Đánh dấu hồ sơ được đồng bộ từ hệ thống TTHC hay tạo mới tại IDS.
+  target_attr_name: Synced From External System Indicator
+- target_column: deleted_indicator
+  transformation: se_of.DELETE_FLG
+  data_type: int
+  description: Đánh dấu trạng thái xóa mềm.
+  target_attr_name: Deleted Indicator
+- target_column: approver_comment
+  transformation: se_of.APPROVER_COMMENT
+  data_type: string
+  description: Ghi chú của người phê duyệt.
+  target_attr_name: Approver Comment
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

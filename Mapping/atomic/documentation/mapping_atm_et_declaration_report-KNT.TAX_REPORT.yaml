@@ -1,0 +1,332 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-et_declaration_report-KNT.TAX_REPORT
+  logical_name: Mapping Atomic - External Tax Declaration Report – source KNT.TAX_REPORT
+  physical_name: et_declaration_report
+  dm_ref: ATM-et_declaration_report-KNT.TAX_REPORT
+  brd_ref: BRD-SRC-KNT-TAX_REPORT
+target:
+  namespace: atm
+  physical_name: et_declaration_report
+  etl_handle: Fact Append
+  description: Tờ khai/báo cáo tài chính do Cục Thuế cung cấp cho UBCKNN theo từng
+    kỳ kê khai. Ghi nhận mã/loại tờ khai, kỳ kê khai, số lần nộp (kể cả bổ sung —
+    attempt_count) và thông tin kiểm toán liên quan.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: TAX_REPORT
+  alias: ta_re
+  select_fields: DECLARATION_CODE, TAX_CODE, SERVICE_CODE, SERVICE_NAME, SERVICE_VERSION,
+    SERVICE_PROVIDER_INFO, DECLARATION_NAME, FORM_DESCRIPTION, DECLARATION_XML_VERSION,
+    DECLARATION_TYPE, ATTEMPT_COUNT, PERIOD_TYPE, DECLARATION_PERIOD, DECLARATION_FROM_DATE,
+    DECLARATION_TO_DATE, DECLARATION_FROM_MONTH, DECLARATION_TO_MONTH, TAX_OFFICE_CODE,
+    TAX_OFFICE_NAME, DECLARATION_DATE, EXTENSION_REASON_CODE, EXTENSION_REASON, SIGNATORY,
+    SIGNED_AT, BUSINESS_LINE, REPRESENTATIVE_NAME, TAXPAYER_ADDRESS, WARD, TAXPAYER_DISTRICT_CODE,
+    TAXPAYER_DISTRICT_NAME, TAXPAYER_PROVINCE_CODE, TAXPAYER_PROVINCE_NAME, TAXPAYER_PHONE,
+    TAXPAYER_FAX, TAXPAYER_EMAIL, AUDIT_STATUS_TEXT, AUDIT_FIRM_TAX_CODE, AUDIT_FIRM_NAME,
+    AUDITOR_CODE, AUDITOR_NAME, AUDITED, AUDIT_OPINION_CODE, AUDIT_OPINION, AUDIT_DATE,
+    CREATED_AT, ADD_INFO_SUBMISSION_DATE, ADD_INFO_RECEIVED_DATE, ADD_INFO_PREPARATION_PERIOD,
+    ADD_INFO_SOURCE, ADD_INFO_ENTERED_BY, ADD_INFO_RECEIVED_AT, ADD_INFO_DECLARATION_ID,
+    ADD_INFO_SENT_FROM, ADD_INFO_RECEIVED_AT_LOCATION, GUID, MSG_PACKET_ID
+  filter: CREATED_AT >= {etl_date}
+relationship: []
+mapping_columns:
+- target_column: et_declaration_rpt_id
+  transformation: '{hash_id}(''KNT_TAX_REPORT'', ta_re.DECLARATION_CODE)'
+  data_type: string
+  description: Khóa đại diện (surrogate key).
+  target_attr_name: External Tax Declaration Report Id
+- target_column: et_declaration_rpt_code
+  transformation: ta_re.DECLARATION_CODE
+  data_type: string
+  description: Mã tờ khai thuế trong hệ thống Cục Thuế. BK.
+  target_attr_name: External Tax Declaration Report Code
+- target_column: src_stm_code
+  transformation: '''KNT_TAX_REPORT'''
+  data_type: string
+  description: Mã hệ thống nguồn dữ liệu.
+  target_attr_name: Source System Code
+- target_column: et_registration_id
+  transformation: '{hash_id}(''KNT_TAX_REGISTRATION_INFO'', ta_re.TAX_CODE)'
+  data_type: string
+  description: FK đến hồ sơ đăng ký thuế của doanh nghiệp nộp báo cáo.
+  target_attr_name: External Tax Registration Id
+- target_column: et_registration_code
+  transformation: ta_re.TAX_CODE
+  data_type: string
+  description: Mã số thuế doanh nghiệp nộp báo cáo.
+  target_attr_name: External Tax Registration Code
+- target_column: service_code
+  transformation: ta_re.SERVICE_CODE
+  data_type: string
+  description: Mã dịch vụ trao đổi dữ liệu.
+  target_attr_name: Service Code
+- target_column: service_nm
+  transformation: ta_re.SERVICE_NAME
+  data_type: string
+  description: Tên dịch vụ trao đổi dữ liệu.
+  target_attr_name: Service Name
+- target_column: service_version
+  transformation: ta_re.SERVICE_VERSION
+  data_type: string
+  description: Phiên bản dịch vụ trao đổi dữ liệu.
+  target_attr_name: Service Version
+- target_column: service_provider_information
+  transformation: ta_re.SERVICE_PROVIDER_INFO
+  data_type: string
+  description: Thông tin nhà cung cấp dịch vụ.
+  target_attr_name: Service Provider Information
+- target_column: declaration_nm
+  transformation: ta_re.DECLARATION_NAME
+  data_type: string
+  description: Tên tờ khai thuế.
+  target_attr_name: Declaration Name
+- target_column: form_description
+  transformation: ta_re.FORM_DESCRIPTION
+  data_type: string
+  description: Mô tả biểu mẫu tờ khai.
+  target_attr_name: Form Description
+- target_column: declaration_xml_version
+  transformation: ta_re.DECLARATION_XML_VERSION
+  data_type: string
+  description: Phiên bản tờ khai dạng XML.
+  target_attr_name: Declaration XML Version
+- target_column: declaration_tp_code
+  transformation: ta_re.DECLARATION_TYPE
+  data_type: string
+  description: Loại tờ khai thuế.
+  target_attr_name: Declaration Type Code
+- target_column: attempt_count
+  transformation: ta_re.ATTEMPT_COUNT
+  data_type: int
+  description: Số lần nộp tờ khai (lần đầu, bổ sung lần 1, 2...).
+  target_attr_name: Attempt Count
+- target_column: period_tp_code
+  transformation: ta_re.PERIOD_TYPE
+  data_type: string
+  description: 'Kiểu kỳ báo cáo: Y=Năm, H=Bán niên, Q=Quý, M=Tháng.'
+  target_attr_name: Period Type Code
+- target_column: declaration_period
+  transformation: ta_re.DECLARATION_PERIOD
+  data_type: string
+  description: Kỳ kê khai thuế.
+  target_attr_name: Declaration Period
+- target_column: declaration_from_dt
+  transformation: ta_re.DECLARATION_FROM_DATE
+  data_type: date
+  description: Kỳ kê khai từ ngày.
+  target_attr_name: Declaration From Date
+- target_column: declaration_to_dt
+  transformation: ta_re.DECLARATION_TO_DATE
+  data_type: date
+  description: Kỳ kê khai đến ngày.
+  target_attr_name: Declaration To Date
+- target_column: declaration_from_month
+  transformation: ta_re.DECLARATION_FROM_MONTH
+  data_type: string
+  description: Kỳ kê khai từ tháng.
+  target_attr_name: Declaration From Month
+- target_column: declaration_to_month
+  transformation: ta_re.DECLARATION_TO_MONTH
+  data_type: string
+  description: Kỳ kê khai đến tháng.
+  target_attr_name: Declaration To Month
+- target_column: tax_office_code
+  transformation: ta_re.TAX_OFFICE_CODE
+  data_type: string
+  description: Mã cơ quan thuế nơi nộp.
+  target_attr_name: Tax Office Code
+- target_column: tax_office_nm
+  transformation: ta_re.TAX_OFFICE_NAME
+  data_type: string
+  description: Tên cơ quan thuế nơi nộp.
+  target_attr_name: Tax Office Name
+- target_column: declaration_dt
+  transformation: ta_re.DECLARATION_DATE
+  data_type: date
+  description: Ngày lập tờ khai.
+  target_attr_name: Declaration Date
+- target_column: extension_reason_code
+  transformation: ta_re.EXTENSION_REASON_CODE
+  data_type: string
+  description: Mã lý do gia hạn nộp báo cáo.
+  target_attr_name: Extension Reason Code
+- target_column: extension_reason_description
+  transformation: ta_re.EXTENSION_REASON
+  data_type: string
+  description: Nội dung lý do gia hạn nộp báo cáo.
+  target_attr_name: Extension Reason Description
+- target_column: signatory_full_nm
+  transformation: ta_re.SIGNATORY
+  data_type: string
+  description: Người ký báo cáo (Giám đốc/TGĐ).
+  target_attr_name: Signatory Full Name
+- target_column: signed_dt
+  transformation: ta_re.SIGNED_AT
+  data_type: date
+  description: Ngày ký báo cáo.
+  target_attr_name: Signed Date
+- target_column: business_line_nm
+  transformation: ta_re.BUSINESS_LINE
+  data_type: string
+  description: Ngành nghề kinh doanh chính.
+  target_attr_name: Business Line Name
+- target_column: representative_full_nm
+  transformation: ta_re.REPRESENTATIVE_NAME
+  data_type: string
+  description: Họ tên người đại diện/chủ hộ kinh doanh.
+  target_attr_name: Representative Full Name
+- target_column: taxpayer_adr
+  transformation: ta_re.TAXPAYER_ADDRESS
+  data_type: string
+  description: Địa chỉ người nộp thuế.
+  target_attr_name: Taxpayer Address
+- target_column: taxpayer_ward_nm
+  transformation: ta_re.WARD
+  data_type: string
+  description: Phường/xã người nộp thuế.
+  target_attr_name: Taxpayer Ward Name
+- target_column: taxpayer_district_code
+  transformation: ta_re.TAXPAYER_DISTRICT_CODE
+  data_type: string
+  description: Mã quận/huyện người nộp thuế.
+  target_attr_name: Taxpayer District Code
+- target_column: taxpayer_district_nm
+  transformation: ta_re.TAXPAYER_DISTRICT_NAME
+  data_type: string
+  description: Tên quận/huyện người nộp thuế.
+  target_attr_name: Taxpayer District Name
+- target_column: taxpayer_province_code
+  transformation: ta_re.TAXPAYER_PROVINCE_CODE
+  data_type: string
+  description: Mã tỉnh/thành phố người nộp thuế.
+  target_attr_name: Taxpayer Province Code
+- target_column: taxpayer_province_nm
+  transformation: ta_re.TAXPAYER_PROVINCE_NAME
+  data_type: string
+  description: Tên tỉnh/thành phố người nộp thuế.
+  target_attr_name: Taxpayer Province Name
+- target_column: taxpayer_phone_nbr
+  transformation: ta_re.TAXPAYER_PHONE
+  data_type: string
+  description: Số điện thoại người nộp thuế.
+  target_attr_name: Taxpayer Phone Number
+- target_column: taxpayer_fax_nbr
+  transformation: ta_re.TAXPAYER_FAX
+  data_type: string
+  description: Số fax người nộp thuế.
+  target_attr_name: Taxpayer Fax Number
+- target_column: taxpayer_email
+  transformation: ta_re.TAXPAYER_EMAIL
+  data_type: string
+  description: Email người nộp thuế.
+  target_attr_name: Taxpayer Email
+- target_column: audit_status_description
+  transformation: ta_re.AUDIT_STATUS_TEXT
+  data_type: string
+  description: Trạng thái kiểm toán dạng văn bản (từ Cục Thuế).
+  target_attr_name: Audit Status Description
+- target_column: af_tax_code
+  transformation: ta_re.AUDIT_FIRM_TAX_CODE
+  data_type: string
+  description: Mã số thuế của tổ chức kiểm toán.
+  target_attr_name: Audit Firm Tax Code
+- target_column: af_nm
+  transformation: ta_re.AUDIT_FIRM_NAME
+  data_type: string
+  description: Tên tổ chức kiểm toán thực hiện kiểm toán báo cáo.
+  target_attr_name: Audit Firm Name
+- target_column: auditor_code
+  transformation: ta_re.AUDITOR_CODE
+  data_type: string
+  description: Mã kiểm toán viên.
+  target_attr_name: Auditor Code
+- target_column: auditor_full_nm
+  transformation: ta_re.AUDITOR_NAME
+  data_type: string
+  description: Họ tên kiểm toán viên.
+  target_attr_name: Auditor Full Name
+- target_column: audited_flag
+  transformation: ta_re.AUDITED
+  data_type: int
+  description: Cờ báo cáo tài chính đã được kiểm toán.
+  target_attr_name: Audited Flag
+- target_column: audit_opinion_code
+  transformation: ta_re.AUDIT_OPINION_CODE
+  data_type: string
+  description: Mã ý kiến kiểm toán (theo chuẩn mực kiểm toán).
+  target_attr_name: Audit Opinion Code
+- target_column: audit_opinion_description
+  transformation: ta_re.AUDIT_OPINION
+  data_type: string
+  description: Nội dung ý kiến kiểm toán.
+  target_attr_name: Audit Opinion Description
+- target_column: audit_dt
+  transformation: ta_re.AUDIT_DATE
+  data_type: date
+  description: Ngày ký báo cáo kiểm toán.
+  target_attr_name: Audit Date
+- target_column: created_tms
+  transformation: ta_re.CREATED_AT
+  data_type: timestamp
+  description: Thời điểm tạo bản ghi.
+  target_attr_name: Created Timestamp
+- target_column: additional_info_submission_dt
+  transformation: ta_re.ADD_INFO_SUBMISSION_DATE
+  data_type: date
+  description: 'Thông tin bổ sung: ngày nộp tờ khai.'
+  target_attr_name: Additional Info Submission Date
+- target_column: additional_info_received_dt
+  transformation: ta_re.ADD_INFO_RECEIVED_DATE
+  data_type: date
+  description: 'Thông tin bổ sung: ngày tiếp nhận tờ khai.'
+  target_attr_name: Additional Info Received Date
+- target_column: additional_info_preparation_period
+  transformation: ta_re.ADD_INFO_PREPARATION_PERIOD
+  data_type: string
+  description: 'Thông tin bổ sung: kỳ lập bộ hồ sơ.'
+  target_attr_name: Additional Info Preparation Period
+- target_column: additional_info_src
+  transformation: ta_re.ADD_INFO_SOURCE
+  data_type: string
+  description: 'Thông tin bổ sung: nguồn gốc tờ khai.'
+  target_attr_name: Additional Info Source
+- target_column: additional_info_entered_by_nm
+  transformation: ta_re.ADD_INFO_ENTERED_BY
+  data_type: string
+  description: 'Thông tin bổ sung: người nhập tờ khai.'
+  target_attr_name: Additional Info Entered By Name
+- target_column: additional_info_received_at_dt
+  transformation: ta_re.ADD_INFO_RECEIVED_AT
+  data_type: date
+  description: 'Thông tin bổ sung: ngày nhận tờ khai.'
+  target_attr_name: Additional Info Received At Date
+- target_column: additional_info_declaration_id
+  transformation: ta_re.ADD_INFO_DECLARATION_ID
+  data_type: string
+  description: 'Thông tin bổ sung: ID tờ khai trong hệ thống Cục Thuế.'
+  target_attr_name: Additional Info Declaration Id
+- target_column: additional_info_sent_from_nm
+  transformation: ta_re.ADD_INFO_SENT_FROM
+  data_type: string
+  description: 'Thông tin bổ sung: nơi gửi tờ khai.'
+  target_attr_name: Additional Info Sent From Name
+- target_column: additional_info_received_at_location
+  transformation: ta_re.ADD_INFO_RECEIVED_AT_LOCATION
+  data_type: string
+  description: 'Thông tin bổ sung: nơi nhận tờ khai.'
+  target_attr_name: Additional Info Received At Location
+- target_column: global_unique_identifier
+  transformation: ta_re.GUID
+  data_type: string
+  description: Định danh duy nhất toàn cục (GUID/UUID) của bản ghi.
+  target_attr_name: Global Unique Identifier
+- target_column: message_packet_id
+  transformation: ta_re.MSG_PACKET_ID
+  data_type: string
+  description: Mã gói tin trao đổi liên quan.
+  target_attr_name: Message Packet Id
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

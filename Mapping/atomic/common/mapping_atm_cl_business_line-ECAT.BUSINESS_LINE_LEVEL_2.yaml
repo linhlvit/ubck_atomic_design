@@ -1,0 +1,113 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-cl_business_line-ECAT.BUSINESS_LINE_LEVEL_2
+  logical_name: Mapping Atomic - Classification Business Line – source ECAT.BUSINESS_LINE_LEVEL_2
+  physical_name: cl_business_line
+  dm_ref: ATM-cl_business_line-ECAT.BUSINESS_LINE_LEVEL_2
+  brd_ref: BRD-SRC-ECAT-BUSINESS_LINE_LEVEL_2
+target:
+  namespace: atm
+  physical_name: cl_business_line
+  etl_handle: SCD2
+  description: 'Danh mục ngành nghề kinh doanh 2 cấp (cấp 1 + cấp 2), self-referencing
+    qua Parent Business Line. Gộp từ ECAT.BUSINESS_LINE_LEVEL_1 + BUSINESS_LINE_LEVEL_2
+    theo quy tắc "Gộp entity khi hợp lý" (CLAUDE.md #10). Table Type = Relative theo
+    quyết định tường minh của Data Modeler (khác rule mặc định Common→Classification
+    Value) — xem ECAT_HLD_Tier1.md T1-07. Tên bỏ tiền tố nguồn (ECAT) theo rule đặt
+    tên Classification mới (CLAUDE.md #7). Bổ sung nguồn IDS.CATEGORIES (shared entity)
+    theo quyết định tường minh Data Modeler (2026-07-17) — IDS.CATEGORIES và ECAT.BUSINESS_LINE_LEVEL_1/2
+    xác nhận cùng 1 concept nghiệp vụ, xem IDS_HLD_Tier1.md T1-13 / IDS_HLD_Overview.md
+    mục 7e #12.'
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: BUSINESS_LINE_LEVEL_2
+  alias: bu_li_le_2
+  select_fields: CODE, NAME, PARENT_LINE_ID, DISPLAY_LABEL, EFFECTIVE, ACTIVE, DELETED,
+    EFFECTIVE_START_DATE, EFFECTIVE_END_DATE, VERSION, ACTIVE_REASON, DELETED_REASON
+  filter: null
+relationship: []
+mapping_columns:
+- target_column: cl_business_line_id
+  transformation: '{hash_id}(''ECAT_BUSINESS_LINE_LEVEL_2'', bu_li_le_2.CODE)'
+  data_type: string
+  description: Id tự sinh (surrogate key)
+  target_attr_name: Classification Business Line Id
+- target_column: src_stm_code
+  transformation: '''ECAT_BUSINESS_LINE_LEVEL_2'''
+  data_type: string
+  description: Mã nguồn dữ liệu
+  target_attr_name: Source System Code
+- target_column: cl_business_line_level_code
+  transformation: 'null'
+  data_type: string
+  description: Phân biệt cấp ngành nghề — Cấp 2
+  target_attr_name: Classification Business Line Level Code
+- target_column: cl_business_line_code
+  transformation: bu_li_le_2.CODE
+  data_type: string
+  description: Mã ngành nghề cấp 2. BK duy nhất — Id hash từ trường này.
+  target_attr_name: Classification Business Line Code
+- target_column: cl_business_line_nm
+  transformation: bu_li_le_2.NAME
+  data_type: string
+  description: Tên ngành nghề cấp 2
+  target_attr_name: Classification Business Line Name
+- target_column: parent_cl_business_line_id
+  transformation: '{hash_id}(''ECAT_BUSINESS_LINE_LEVEL_2'', bu_li_le_2.PARENT_LINE_ID)'
+  data_type: string
+  description: FK đến ngành nghề cấp 1 cha (self-ref)
+  target_attr_name: Parent Classification Business Line Id
+- target_column: parent_cl_business_line_code
+  transformation: bu_li_le_2.PARENT_LINE_ID
+  data_type: string
+  description: Mã ngành nghề cấp 1 cha
+  target_attr_name: Parent Classification Business Line Code
+- target_column: display_label
+  transformation: bu_li_le_2.DISPLAY_LABEL
+  data_type: string
+  description: Nhãn hiển thị
+  target_attr_name: Display Label
+- target_column: effective_indicator
+  transformation: bu_li_le_2.EFFECTIVE
+  data_type: int
+  description: 'Tình trạng hiệu lực: true=Hiệu lực; false=Hết hiệu lực'
+  target_attr_name: Effective Indicator
+- target_column: active_indicator
+  transformation: bu_li_le_2.ACTIVE
+  data_type: int
+  description: 'Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng'
+  target_attr_name: Active Indicator
+- target_column: deleted_indicator
+  transformation: bu_li_le_2.DELETED
+  data_type: int
+  description: 'Cờ xóa mềm: true=Đã xóa; false=Chưa xóa'
+  target_attr_name: Deleted Indicator
+- target_column: effective_start_dt
+  transformation: bu_li_le_2.EFFECTIVE_START_DATE
+  data_type: timestamp
+  description: Ngày bắt đầu hiệu lực
+  target_attr_name: Effective Start Date
+- target_column: effective_end_dt
+  transformation: bu_li_le_2.EFFECTIVE_END_DATE
+  data_type: timestamp
+  description: Ngày kết thúc hiệu lực
+  target_attr_name: Effective End Date
+- target_column: version_nbr
+  transformation: bu_li_le_2.VERSION
+  data_type: int
+  description: Số phiên bản bản ghi tại nguồn
+  target_attr_name: Version Number
+- target_column: active_reason
+  transformation: bu_li_le_2.ACTIVE_REASON
+  data_type: string
+  description: Lý do thay đổi trạng thái sử dụng
+  target_attr_name: Active Reason
+- target_column: deleted_reason
+  transformation: bu_li_le_2.DELETED_REASON
+  data_type: string
+  description: Lý do xóa
+  target_attr_name: Deleted Reason
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

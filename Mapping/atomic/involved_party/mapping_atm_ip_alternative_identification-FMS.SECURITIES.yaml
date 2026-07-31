@@ -1,0 +1,79 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-ip_alternative_identification-FMS.SECURITIES
+  logical_name: Mapping Atomic - Involved Party Alternative Identification – source
+    FMS.SECURITIES
+  physical_name: ip_alternative_identification
+  dm_ref: ATM-ip_alternative_identification-FMS.SECURITIES
+  brd_ref: BRD-SRC-FMS-SECURITIES
+target:
+  namespace: atm
+  physical_name: ip_alternative_identification
+  etl_handle: SCD4A
+  description: Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ
+    chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ
+    1 nguồn.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: SECURITIES
+  alias: secu
+  select_fields: ID, ID_DATE, ID_ADD, REG_NO, ID_NO
+  filter: null
+- source_type: unpivot_cte
+  namespace: null
+  table_name: secu
+  alias: unpvt
+  select_fields: ID, ID_DATE, ID_ADD, identification_tp_code, identification_nbr
+  filter: null
+  unpivot_spec:
+    value_columns:
+    - identification_nbr
+    type_column: identification_tp_code
+    legs:
+    - type_value: BUSINESS_LICENSE
+      source_columns:
+      - REG_NO
+    - type_value: TAX_ID
+      source_columns:
+      - ID_NO
+relationship: []
+mapping_columns:
+- target_column: ip_id
+  transformation: '{hash_id}(''FMS_SECURITIES'', unpvt.ID)'
+  data_type: string
+  description: FK đến Fund Management Company.
+  target_attr_name: Involved Party Id
+- target_column: ip_code
+  transformation: unpvt.ID
+  data_type: string
+  description: Mã công ty QLQ.
+  target_attr_name: Involved Party Code
+- target_column: src_stm_code
+  transformation: '''FMS_SECURITIES'''
+  data_type: string
+  description: Mã hệ thống nguồn.
+  target_attr_name: Source System Code
+- target_column: identification_issue_dt
+  transformation: unpvt.ID_DATE
+  data_type: date
+  description: Ngày cấp mã số thuế.
+  target_attr_name: Identification Issue Date
+- target_column: identification_issue_place
+  transformation: unpvt.ID_ADD
+  data_type: string
+  description: Nơi cấp mã số thuế.
+  target_attr_name: Identification Issue Place
+- target_column: identification_tp_code
+  transformation: unpvt.identification_tp_code
+  data_type: string
+  description: Loại giấy tờ — giấy phép thành lập/đăng ký kinh doanh.
+  target_attr_name: Identification Type Code
+- target_column: identification_nbr
+  transformation: unpvt.identification_nbr
+  data_type: string
+  description: Số đăng ký kinh doanh của công ty quản lý quỹ.
+  target_attr_name: Identification Number
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []

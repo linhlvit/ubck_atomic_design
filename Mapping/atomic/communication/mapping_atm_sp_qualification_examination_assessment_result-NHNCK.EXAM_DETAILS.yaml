@@ -1,0 +1,159 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-ATM-sp_qualification_examination_assessment_result-NHNCK.EXAM_DETAILS
+  logical_name: Mapping Atomic - Securities Practitioner Qualification Examination
+    Assessment Result – source NHNCK.EXAM_DETAILS
+  physical_name: sp_qualification_examination_assessment_result
+  dm_ref: ATM-sp_qualification_examination_assessment_result-NHNCK.EXAM_DETAILS
+  brd_ref: BRD-SRC-NHNCK-EXAM_DETAILS
+target:
+  namespace: atm
+  physical_name: sp_qualification_examination_assessment_result
+  etl_handle: SCD4A
+  description: Kết quả thi sát hạch của từng thí sinh trong một đợt thi. Ghi nhận
+    điểm thi luật, điểm chuyên môn, kết quả từng phần và kết quả tổng thể. FK đến
+    Exam Assessment và Practitioner.
+input:
+- source_type: physical_table
+  namespace: ods
+  table_name: EXAM_DETAILS
+  alias: ex_de
+  select_fields: ID, EXAM_SESSION_ID, PROFESSIONAL_ID, CERTIFICATE_ID, APPLICATION_ID,
+    SEQUENCE_NUMBER, EXAM_NUMBER, LAW_SCORE, LAW_RESULT, SPECIALIZATION_SCORE, SPECIALIZATION_RESULT,
+    RESULT, NOTE
+  filter: null
+- source_type: physical_table
+  namespace: ods
+  table_name: EXAM_SESSIONS
+  alias: ex_se
+  select_fields: ID, CODE
+  filter: null
+  note: Crosswalk bridge cho sp_qualification_examination_assessment_id
+- source_type: physical_table
+  namespace: ods
+  table_name: CERTIFICATES
+  alias: cert
+  select_fields: ID, CERTIFICATE_CODE
+  filter: null
+  note: Crosswalk bridge cho sp_license_certificate_tp_id
+- source_type: physical_table
+  namespace: ods
+  table_name: APPLICATIONS
+  alias: appl
+  select_fields: ID, APPLICATION_CODE
+  filter: null
+  note: Crosswalk bridge cho sp_license_application_id
+relationship:
+- main_alias: ex_de
+  join_type: LEFT JOIN
+  join_alias: ex_se
+  join_on: ex_de.EXAM_SESSION_ID = ex_se.ID
+- main_alias: ex_de
+  join_type: LEFT JOIN
+  join_alias: cert
+  join_on: ex_de.CERTIFICATE_ID = cert.ID
+- main_alias: ex_de
+  join_type: LEFT JOIN
+  join_alias: appl
+  join_on: ex_de.APPLICATION_ID = appl.ID
+mapping_columns:
+- target_column: sp_qualification_examination_assessment_result_id
+  transformation: '{hash_id}(''NHNCK_EXAM_DETAILS'', ex_de.ID)'
+  data_type: string
+  description: Id tự sinh (surrogate key)
+  target_attr_name: Securities Practitioner Qualification Examination Assessment Result
+    Id
+- target_column: sp_qualification_examination_assessment_result_code
+  transformation: ex_de.ID
+  data_type: string
+  description: Mã định danh nghiệp vụ. BK
+  target_attr_name: Securities Practitioner Qualification Examination Assessment Result
+    Code
+- target_column: src_stm_code
+  transformation: '''NHNCK_EXAM_DETAILS'''
+  data_type: string
+  description: Mã nguồn dữ liệu
+  target_attr_name: Source System Code
+- target_column: sp_qualification_examination_assessment_id
+  transformation: '{hash_id}(''NHNCK_EXAM_SESSIONS'', ex_se.CODE)'
+  data_type: string
+  description: FK đến đợt thi sát hạch
+  target_attr_name: Securities Practitioner Qualification Examination Assessment Id
+- target_column: sp_qualification_examination_assessment_code
+  transformation: ex_de.EXAM_SESSION_ID
+  data_type: string
+  description: Mã đợt thi sát hạch
+  target_attr_name: Securities Practitioner Qualification Examination Assessment Code
+- target_column: sp_id
+  transformation: '{hash_id}(''NHNCK_PROFESSIONALS'', ex_de.PROFESSIONAL_ID)'
+  data_type: string
+  description: FK đến người hành nghề
+  target_attr_name: Securities Practitioner Id
+- target_column: sp_code
+  transformation: ex_de.PROFESSIONAL_ID
+  data_type: string
+  description: Mã người hành nghề
+  target_attr_name: Securities Practitioner Code
+- target_column: sp_license_certificate_tp_id
+  transformation: '{hash_id}(''NHNCK_CERTIFICATES'', cert.CERTIFICATE_CODE)'
+  data_type: string
+  description: FK đến loại chứng chỉ dự thi
+  target_attr_name: Securities Practitioner License Certificate Type Id
+- target_column: sp_license_certificate_tp_code
+  transformation: ex_de.CERTIFICATE_ID
+  data_type: string
+  description: Mã loại chứng chỉ dự thi (denormalized lookup)
+  target_attr_name: Securities Practitioner License Certificate Type Code
+- target_column: sp_license_application_id
+  transformation: '{hash_id}(''NHNCK_APPLICATIONS'', appl.APPLICATION_CODE)'
+  data_type: string
+  description: FK đến hồ sơ đăng ký
+  target_attr_name: Securities Practitioner License Application Id
+- target_column: sp_license_application_code
+  transformation: ex_de.APPLICATION_ID
+  data_type: string
+  description: Mã hồ sơ đăng ký
+  target_attr_name: Securities Practitioner License Application Code
+- target_column: sequence_nbr
+  transformation: ex_de.SEQUENCE_NUMBER
+  data_type: int
+  description: Số thứ tự dự thi trong đợt thi
+  target_attr_name: Sequence Number
+- target_column: exam_nbr
+  transformation: ex_de.EXAM_NUMBER
+  data_type: string
+  description: Số báo danh
+  target_attr_name: Exam Number
+- target_column: law_score
+  transformation: ex_de.LAW_SCORE
+  data_type: int
+  description: Điểm thi pháp luật
+  target_attr_name: Law Score
+- target_column: law_result_code
+  transformation: ex_de.LAW_RESULT
+  data_type: string
+  description: 'Kết quả thi pháp luật (-1: Không thi, 0: Không đạt, 1: Đạt)'
+  target_attr_name: Law Result Code
+- target_column: specialization_score
+  transformation: ex_de.SPECIALIZATION_SCORE
+  data_type: int
+  description: Điểm thi chuyên ngành
+  target_attr_name: Specialization Score
+- target_column: specialization_result_code
+  transformation: ex_de.SPECIALIZATION_RESULT
+  data_type: string
+  description: 'Kết quả thi chuyên ngành (-1: Không thi, 0: Không đạt, 1: Đạt)'
+  target_attr_name: Specialization Result Code
+- target_column: overall_result_code
+  transformation: ex_de.RESULT
+  data_type: string
+  description: 'Kết quả thi tổng thể (-1: Không thi, 0: Không đạt, 1: Đạt)'
+  target_attr_name: Overall Result Code
+- target_column: examination_note
+  transformation: ex_de.NOTE
+  data_type: string
+  description: Ghi chú
+  target_attr_name: Examination Note
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
+final_filter: []
