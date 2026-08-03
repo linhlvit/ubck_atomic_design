@@ -230,8 +230,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.PETITION.ORIGINAL_PETITION_ID"
-  comment: "FK target: Petition.Petition Id. Self-reference. Resolve: join ORIGINAL_PETITION_ID\
-    \ → THANHTRA.PETITION.ID để lấy CODE, rồi hash_id('THANHTRA.PETITION', CODE_CHA)."
+  comment: "FK target: petition.petition_id. Cần ETL crosswalk sang THANHTRA.PETITION: PETITION.ORIGINAL_PETITION_ID = PETITION.ID để xác nhận CODE sau đó hash_id('THANHTRA.PETITION', CODE) | Self-reference."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -244,7 +243,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.PETITION.ORIGINAL_PETITION_ID"
-  comment: "Lookup pair: Petition.Petition Code. Pair with Original Petition Id."
+  comment: "Lookup pair: petition.petition_code. Pair with Original Petition Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

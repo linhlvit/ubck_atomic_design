@@ -81,9 +81,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.VIOLATION_CASE.INSPECTION_TEAM_ID"
-  comment: "FK target: Inspection Team.Inspection Team Id. Resolve: join INSPECTION_TEAM_ID\
-    \ → THANHTRA.INSPECTION_TEAM.ID để lấy CODE, rồi hash_id('THANHTRA.INSPECTION_TEAM',\
-    \ CODE). Nullable — case có thể không từ thanh tra."
+  comment: "FK target: inspection_team.inspection_team_id. Cần ETL crosswalk sang THANHTRA.INSPECTION_TEAM: VIOLATION_CASE.INSPECTION_TEAM_ID = INSPECTION_TEAM.ID để xác nhận CODE sau đó hash_id('THANHTRA.INSPECTION_TEAM', CODE) | Nullable — case có thể không từ thanh tra."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -96,8 +94,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.VIOLATION_CASE.INSPECTION_TEAM_ID"
-  comment: "Lookup pair: Inspection Team.Inspection Team Code. Pair with Inspection\
-    \ Team Id."
+  comment: "Lookup pair: inspection_team.inspection_team_code. Pair with Inspection Team Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -110,9 +107,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.VIOLATION_CASE.EXAMINATION_TEAM_ID"
-  comment: "FK target: Examination Team.Examination Team Id. Resolve: join EXAMINATION_TEAM_ID\
-    \ → THANHTRA.EXAMINATION_TEAM.ID để lấy CODE, rồi hash_id('THANHTRA.EXAMINATION_TEAM',\
-    \ CODE). Nullable — case có thể không từ kiểm tra."
+  comment: "FK target: examination_team.examination_team_id. Cần ETL crosswalk sang THANHTRA.EXAMINATION_TEAM: VIOLATION_CASE.EXAMINATION_TEAM_ID = EXAMINATION_TEAM.ID để xác nhận CODE sau đó hash_id('THANHTRA.EXAMINATION_TEAM', CODE) | Nullable — case có thể không từ kiểm tra."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -125,8 +120,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.VIOLATION_CASE.EXAMINATION_TEAM_ID"
-  comment: "Lookup pair: Examination Team.Examination Team Code. Pair with Examination\
-    \ Team Id."
+  comment: "Lookup pair: examination_team.examination_team_code. Pair with Examination Team Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
