@@ -327,7 +327,7 @@ flowchart LR
 | K_GSDC_3 | Tài chính | Điểm | Base | Public Company Evaluation Detail | pc_evaluation_detail | Evaluation Score | evaluation_score |
 | K_GSDC_4 | Phi tài chính & M-Score | Điểm | Base | Public Company Evaluation Detail | pc_evaluation_detail | Evaluation Score | evaluation_score |
 | K_GSDC_5 | Xếp hạng tín nhiệm DN | Điểm | Base | Public Company Evaluation Detail | pc_evaluation_detail | Evaluation Score | evaluation_score |
-| K_GSDC_6 | Điểm tổng hợp | Điểm | Base | Public Company Evaluation | public_company_evaluation | Total Score Percentage | total_score_percentage |
+| K_GSDC_6 | Điểm tổng hợp | Điểm | Base | Public Company Evaluation | pc_evaluation | Total Score Percentage | total_score_percentage |
 | K_GSDC_7 | Mã CK doanh nghiệp | Text | Chiều | Public Company | public_company | Equity Ticker | equity_ticker_symbol |
 | K_GSDC_8 | Tên doanh nghiệp | Text | Chiều | Public Company | public_company | Public Company Name | pc_nm |
 
@@ -342,9 +342,9 @@ flowchart LR
 ```mermaid
 erDiagram
     Fact_Public_Company_Risk_Score_Snapshot {
-        string Fact_Public_Company_Risk_Score_Snapshot_Id PK
-        string Public_Company_Dimension_Id FK
-        string Calendar_Date_Dimension_Id FK
+        string Public_Company_Dimension_Id PK
+        string Snapshot_Date_Dimension_Id PK
+        string Evaluation_Date_Dimension_Id FK
         decimal Compliance_Score
         decimal Issuance_Score
         decimal Financial_Score
@@ -373,8 +373,11 @@ erDiagram
     }
 
     Fact_Public_Company_Risk_Score_Snapshot }o--|| Public_Company_Dimension : "Public_Company_Dimension_Id"
-    Fact_Public_Company_Risk_Score_Snapshot }o--|| Calendar_Date_Dimension : "Calendar_Date_Dimension_Id"
+    Fact_Public_Company_Risk_Score_Snapshot }o--|| Calendar_Date_Dimension : "Snapshot_Date_Dimension_Id"
+    Fact_Public_Company_Risk_Score_Snapshot }o--o| Calendar_Date_Dimension : "Evaluation_Date_Dimension_Id"
 ```
+
+> **Sửa 2026-08-03 (đánh giá lại ETL):** Grain đổi từ "1 row/CTDC/kỳ đánh giá" sang "1 row/CTDC/ngày snapshot ETL" — driving table là `Public Company Dimension` (full-scan toàn bộ CTĐC mỗi ngày, vì không biết trước công ty nào phát sinh kỳ đánh giá mới vào ngày nào). Với mỗi công ty, các measure (Compliance/Issuance/Financial/NonFinancial/Credit Rating/Total Score) carry-forward từ kỳ đánh giá gần nhất (`Evaluation Date <= ngày ETL`, LEFT JOIN, nullable khi công ty chưa từng có kỳ đánh giá). `Snapshot Date Dimension Id` là PK (ngày chạy ETL); `Evaluation Date Dimension Id` là thuộc tính carry-forward (ngày kỳ đánh giá thật, không phải PK) — áp dụng đồng nhất cho cả 5 Fact `Fact Public Company *_Score_Snapshot` (Risk/Compliance/Issuance/Financial/Non-Financial).
 
 **Lineage Mart → Báo cáo:**
 
@@ -388,7 +391,7 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| Fact Public Company Risk Score Snapshot | 1 row / công ty đại chúng / kỳ đánh giá (SCD4A current state) |
+| Fact Public Company Risk Score Snapshot | 1 row / công ty đại chúng / ngày snapshot ETL (full-scan daily, carry-forward điểm số từ kỳ đánh giá gần nhất — sửa 2026-08-03) |
 | Public Company Dimension | 1 row / công ty đại chúng (SCD2) |
 | Calendar Date Dimension | 1 row / ngày (Conformed) |
 
@@ -429,7 +432,7 @@ flowchart LR
 
 **Ghi chú lọc chung:** Mọi KPI Base join `Public Company Evaluation Detail (ed)` → `Public Company Evaluation Criterion (ec)` qua `pc_evaluation_criterion_id`, filter theo `pc_evaluation_criterion_code` tương ứng cột "Điều kiện lọc" ở trên. BA còn trả kèm `ed.result` (kết quả text) cho mỗi dòng — theo xác nhận Nhóm 1, cột này không đưa vào KPI (chỉ dùng `evaluation_score`).
 
-**Mart:** `Fact Public Company Compliance Score Snapshot` (grain: 1 row / CTDC / kỳ đánh giá)
+**Mart:** `Fact Public Company Compliance Score Snapshot` (grain: 1 row / CTDC / ngày snapshot ETL — full-scan daily, carry-forward, sửa 2026-08-03)
 
 ---
 
@@ -461,7 +464,7 @@ flowchart LR
 
 **Ghi chú lọc chung:** Mọi KPI Base join `Public Company Evaluation Detail (ed)` → `Public Company Evaluation Criterion (ec)` qua `pc_evaluation_criterion_id`, filter theo `pc_evaluation_criterion_code` tương ứng cột "Điều kiện lọc" ở trên.
 
-**Mart:** `Fact Public Company Issuance Score Snapshot` (grain: 1 row / CTDC / kỳ đánh giá)
+**Mart:** `Fact Public Company Issuance Score Snapshot` (grain: 1 row / CTDC / ngày snapshot ETL — full-scan daily, carry-forward, sửa 2026-08-03)
 
 ---
 
@@ -498,7 +501,7 @@ flowchart LR
 
 **Ghi chú lọc chung:** Mọi KPI Base join `Public Company Evaluation Detail (ed)` → `Public Company Evaluation Criterion (ec)` qua `pc_evaluation_criterion_id`, filter theo `pc_evaluation_criterion_code` tương ứng cột "Điều kiện lọc" ở trên.
 
-**Mart:** `Fact Public Company Financial Score Snapshot` (grain: 1 row / CTDC / kỳ đánh giá)
+**Mart:** `Fact Public Company Financial Score Snapshot` (grain: 1 row / CTDC / ngày snapshot ETL — full-scan daily, carry-forward, sửa 2026-08-03)
 
 ---
 
@@ -523,7 +526,7 @@ flowchart LR
 
 **Ghi chú lọc chung:** Mọi KPI Base join `Public Company Evaluation Detail (ed)` → `Public Company Evaluation Criterion (ec)` qua `pc_evaluation_criterion_id`, filter theo `pc_evaluation_criterion_code` tương ứng cột "Điều kiện lọc" ở trên.
 
-**Mart:** `Fact Public Company Non-Financial Score Snapshot` (grain: 1 row / CTDC / kỳ đánh giá)
+**Mart:** `Fact Public Company Non-Financial Score Snapshot` (grain: 1 row / CTDC / ngày snapshot ETL — full-scan daily, carry-forward, sửa 2026-08-03)
 
 ---
 
@@ -1859,13 +1862,13 @@ Data Explorer cho phép tra cứu BCTC chi tiết theo từng CTDC, kỳ báo c�
 | K_GSDC_3 | Tài chính | Điểm | Base | Public Company Evaluation Detail | pc_evaluation_detail | Evaluation Score | evaluation_score | Reuse từ Nhóm 1 |
 | K_GSDC_4 | Phi tài chính & M-Score | Điểm | Base | Public Company Evaluation Detail | pc_evaluation_detail | Evaluation Score | evaluation_score | Reuse từ Nhóm 1 |
 | K_GSDC_5 | Xếp hạng tín nhiệm DN | Điểm | Base | Public Company Evaluation Detail | pc_evaluation_detail | Evaluation Score | evaluation_score | Reuse từ Nhóm 1 |
-| K_GSDC_6 | Điểm tổng hợp | Điểm | Base | Public Company Evaluation | public_company_evaluation | Total Score Percentage | total_score_percentage | Reuse từ Nhóm 1 |
+| K_GSDC_6 | Điểm tổng hợp | Điểm | Base | Public Company Evaluation | pc_evaluation | Total Score Percentage | total_score_percentage | Reuse từ Nhóm 1 |
 | K_GSDC_7 | Mã CK doanh nghiệp | Text | Chiều | Public Company | public_company | Equity Ticker | equity_ticker_symbol | Reuse từ Nhóm 1 |
 | K_GSDC_8 | Tên doanh nghiệp | Text | Chiều | Public Company | public_company | Public Company Name | pc_nm | Reuse từ Nhóm 1 |
 
 **Star Schema, Lineage, Bảng grain:** giống Nhóm 1.
 
-**Mart:** `Fact Public Company Risk Score Snapshot` (grain: 1 row / CTDC / kỳ đánh giá — SCD4A current state)
+**Mart:** `Fact Public Company Risk Score Snapshot` (grain: 1 row / CTDC / ngày snapshot ETL — full-scan daily, carry-forward từ kỳ đánh giá gần nhất, sửa 2026-08-03)
 
 ---
 
@@ -1898,9 +1901,9 @@ Data Explorer cho phép tra cứu BCTC chi tiết theo từng CTDC, kỳ báo c�
 | K_GSDC_22 | Thay đổi phương án sử dụng vốn | Điểm | Base | Public Company Evaluation Detail | pc_evaluation_detail | Evaluation Score | evaluation_score | Reuse từ Nhóm 2 |
 | K_GSDC_23 | Tổng điểm Tuân thủ | Điểm | Phái sinh | Public Company Evaluation Detail | pc_evaluation_detail | Evaluation Score | evaluation_score | Reuse từ Nhóm 2 — SUM(evaluation_score) |
 
-**Star Schema, Lineage, Bảng grain:** tương tự Nhóm 1 (cùng pattern `Fact_..._Score_Snapshot`), Fact riêng `Fact Public Company Compliance Score Snapshot` — grain: 1 row / CTDC / kỳ đánh giá.
+**Star Schema, Lineage, Bảng grain:** tương tự Nhóm 1 (cùng pattern `Fact_..._Score_Snapshot`), Fact riêng `Fact Public Company Compliance Score Snapshot` — grain: 1 row / CTDC / ngày snapshot ETL (full-scan daily, carry-forward, sửa 2026-08-03).
 
-**Mart:** `Fact Public Company Compliance Score Snapshot` (grain: 1 row / CTDC / kỳ đánh giá)
+**Mart:** `Fact Public Company Compliance Score Snapshot` (grain: 1 row / CTDC / ngày snapshot ETL — full-scan daily, carry-forward, sửa 2026-08-03)
 
 ---
 
@@ -1930,9 +1933,9 @@ Data Explorer cho phép tra cứu BCTC chi tiết theo từng CTDC, kỳ báo c�
 | K_GSDC_41 | Doanh thu từ hoạt động khác / Lợi nhuận sau thuế | Điểm | Base | Public Company Evaluation Detail | pc_evaluation_detail | Evaluation Score | evaluation_score | Reuse từ Nhóm 4 |
 | K_GSDC_42 | Tổng điểm Tài chính | Điểm | Phái sinh | Public Company Evaluation Detail | pc_evaluation_detail | Evaluation Score | evaluation_score | Reuse từ Nhóm 4 — SUM(evaluation_score) |
 
-**Star Schema, Lineage, Bảng grain:** tương tự Nhóm 1 (cùng pattern `Fact_..._Score_Snapshot`), Fact riêng `Fact Public Company Financial Score Snapshot` — grain: 1 row / CTDC / kỳ đánh giá.
+**Star Schema, Lineage, Bảng grain:** tương tự Nhóm 1 (cùng pattern `Fact_..._Score_Snapshot`), Fact riêng `Fact Public Company Financial Score Snapshot` — grain: 1 row / CTDC / ngày snapshot ETL (full-scan daily, carry-forward, sửa 2026-08-03).
 
-**Mart:** `Fact Public Company Financial Score Snapshot` (grain: 1 row / CTDC / kỳ đánh giá)
+**Mart:** `Fact Public Company Financial Score Snapshot` (grain: 1 row / CTDC / ngày snapshot ETL — full-scan daily, carry-forward, sửa 2026-08-03)
 
 ---
 
@@ -1958,9 +1961,9 @@ Data Explorer cho phép tra cứu BCTC chi tiết theo từng CTDC, kỳ báo c�
 | K_GSDC_30 | Dư nợ trái phiếu / Tổng VCSH | Điểm | Base | Public Company Evaluation Detail | pc_evaluation_detail | Evaluation Score | evaluation_score | Reuse từ Nhóm 3 |
 | K_GSDC_31 | Tổng điểm Phát hành | Điểm | Phái sinh | Public Company Evaluation Detail | pc_evaluation_detail | Evaluation Score | evaluation_score | Reuse từ Nhóm 3 — SUM(evaluation_score) |
 
-**Star Schema, Lineage, Bảng grain:** tương tự Nhóm 1 (cùng pattern `Fact_..._Score_Snapshot`), Fact riêng `Fact Public Company Issuance Score Snapshot` — grain: 1 row / CTDC / kỳ đánh giá.
+**Star Schema, Lineage, Bảng grain:** tương tự Nhóm 1 (cùng pattern `Fact_..._Score_Snapshot`), Fact riêng `Fact Public Company Issuance Score Snapshot` — grain: 1 row / CTDC / ngày snapshot ETL (full-scan daily, carry-forward, sửa 2026-08-03).
 
-**Mart:** `Fact Public Company Issuance Score Snapshot` (grain: 1 row / CTDC / kỳ đánh giá)
+**Mart:** `Fact Public Company Issuance Score Snapshot` (grain: 1 row / CTDC / ngày snapshot ETL — full-scan daily, carry-forward, sửa 2026-08-03)
 
 ---
 
@@ -1981,9 +1984,9 @@ Data Explorer cho phép tra cứu BCTC chi tiết theo từng CTDC, kỳ báo c�
 | K_GSDC_44 | M-Score | Điểm | Base | Public Company Evaluation Detail | pc_evaluation_detail | Evaluation Score | evaluation_score | Reuse từ Nhóm 5 |
 | K_GSDC_45 | Tổng điểm Phi tài chính & M-Score | Điểm | Phái sinh | Public Company Evaluation Detail | pc_evaluation_detail | Evaluation Score | evaluation_score | Reuse từ Nhóm 5 — SUM(evaluation_score) |
 
-**Star Schema, Lineage, Bảng grain:** tương tự Nhóm 1 (cùng pattern `Fact_..._Score_Snapshot`), Fact riêng `Fact Public Company Non-Financial Score Snapshot` — grain: 1 row / CTDC / kỳ đánh giá.
+**Star Schema, Lineage, Bảng grain:** tương tự Nhóm 1 (cùng pattern `Fact_..._Score_Snapshot`), Fact riêng `Fact Public Company Non-Financial Score Snapshot` — grain: 1 row / CTDC / ngày snapshot ETL (full-scan daily, carry-forward, sửa 2026-08-03).
 
-**Mart:** `Fact Public Company Non-Financial Score Snapshot` (grain: 1 row / CTDC / kỳ đánh giá)
+**Mart:** `Fact Public Company Non-Financial Score Snapshot` (grain: 1 row / CTDC / ngày snapshot ETL — full-scan daily, carry-forward, sửa 2026-08-03)
 
 ---
 
@@ -2295,11 +2298,11 @@ graph TB
 
 | Bảng | Pattern | Grain | KPI | Trạng thái |
 |---|---|---|---|---|
-| `Fact Public Company Risk Score Snapshot` | Periodic Snapshot | 1 CTDC × 1 kỳ đánh giá | K_GSDC_1–6 (Nhóm 1); K_GSDC_1, 2, 3, 4, 5, 6, 7, 8 (Nhóm 32, reuse) | READY (Atomic draft — chưa approved) |
-| `Fact Public Company Compliance Score Snapshot` | Periodic Snapshot | 1 CTDC × 1 kỳ đánh giá | K_GSDC_9–23 (Nhóm 2); reuse toàn bộ (Nhóm 33) | READY (Atomic draft — chưa approved) |
-| `Fact Public Company Issuance Score Snapshot` | Periodic Snapshot | 1 CTDC × 1 kỳ đánh giá | K_GSDC_24–31 (Nhóm 3); reuse toàn bộ (Nhóm 35) | READY (Atomic draft — chưa approved) |
-| `Fact Public Company Financial Score Snapshot` | Periodic Snapshot | 1 CTDC × 1 kỳ đánh giá | K_GSDC_32–42 (Nhóm 4); reuse toàn bộ (Nhóm 34) | READY (Atomic draft — chưa approved) |
-| `Fact Public Company Non-Financial Score Snapshot` | Periodic Snapshot | 1 CTDC × 1 kỳ đánh giá | K_GSDC_43–45 (Nhóm 5); reuse toàn bộ (Nhóm 36) | READY (Atomic draft — chưa approved) |
+| `Fact Public Company Risk Score Snapshot` | Periodic Snapshot | 1 CTDC × 1 ngày snapshot ETL (full-scan daily, carry-forward — sửa 2026-08-03) | K_GSDC_1–6 (Nhóm 1); K_GSDC_1, 2, 3, 4, 5, 6, 7, 8 (Nhóm 32, reuse) | READY (Atomic draft — chưa approved) |
+| `Fact Public Company Compliance Score Snapshot` | Periodic Snapshot | 1 CTDC × 1 ngày snapshot ETL (full-scan daily, carry-forward — sửa 2026-08-03) | K_GSDC_9–23 (Nhóm 2); reuse toàn bộ (Nhóm 33) | READY (Atomic draft — chưa approved) |
+| `Fact Public Company Issuance Score Snapshot` | Periodic Snapshot | 1 CTDC × 1 ngày snapshot ETL (full-scan daily, carry-forward — sửa 2026-08-03) | K_GSDC_24–31 (Nhóm 3); reuse toàn bộ (Nhóm 35) | READY (Atomic draft — chưa approved) |
+| `Fact Public Company Financial Score Snapshot` | Periodic Snapshot | 1 CTDC × 1 ngày snapshot ETL (full-scan daily, carry-forward — sửa 2026-08-03) | K_GSDC_32–42 (Nhóm 4); reuse toàn bộ (Nhóm 34) | READY (Atomic draft — chưa approved) |
+| `Fact Public Company Non-Financial Score Snapshot` | Periodic Snapshot | 1 CTDC × 1 ngày snapshot ETL (full-scan daily, carry-forward — sửa 2026-08-03) | K_GSDC_43–45 (Nhóm 5); reuse toàn bộ (Nhóm 36) | READY (Atomic draft — chưa approved) |
 | `Fact Public Company Financial Report Value` | Event | 1 CTDC × 1 kỳ × Row_Code × Column_Code | K_GSDC_50–92 (Nhóm 7, 8, 11, 13, 15, 17); K_GSDC_99–689 (Nhóm 19-30); K_GSDC_50-62 reuse (Nhóm 37) | PENDING (Gap Atomic — không có Atomic LLD nào trong `DataModel/working/Atomic/lld/IDS/`, xem O_GSDC_5; 100% KPI dùng Fact này đều PENDING — K_GSDC_63/79 READY thuộc `public_company`, không thuộc Fact này) |
 | `Fact Public Company Listing Info Snapshot` | Periodic Snapshot | 1 CTDC × 1 ngày | K_GSDC_690–699 (Nhóm 31) | PENDING |
 

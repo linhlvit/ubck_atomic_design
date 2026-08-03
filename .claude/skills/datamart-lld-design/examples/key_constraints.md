@@ -8,13 +8,22 @@
 > không mất đi — chỉ không còn là 1 token `key` riêng.
 > Áp dụng hồi tố: mọi entry cũ dùng `NK` (NHNCK, QLKD, QLCB, TT) đã được đổi thành `BK`.
 
+> **Đổi quy ước 2026-08-03:** `key` trên Fact chỉ ghi token thuần **`FK`** — KHÔNG kèm tên Dimension
+> (`FK → <Dim>` đã lỗi thời). Tên Dimension đích chuyển hoàn toàn vào `description` (VD: "FK —
+> Driving Table: Public Company Dimension..." hoặc "FK tới Calendar Date Dimension — ..."). Lý do:
+> cột `key` chỉ dùng để phân loại vai trò cấu trúc (PK/BK/FK/DD/trống), không phải nơi diễn giải quan
+> hệ — thông tin "trỏ đi đâu" đã có sẵn ở `description` nên lặp lại trong `key` là dư thừa và có thể
+> lệch nhau khi 1 trong 2 nơi bị sửa mà quên đồng bộ nơi kia.
+> Áp dụng cho thiết kế mới từ 2026-08-03 (GSDC 5 Fact Score Snapshot). Các module cũ (GSTT, QLCB,
+> QLKD, TT) vẫn còn dùng `FK -> <Dim>`/`FK → <Dim>` — chưa hồi tố, chỉ sửa khi có yêu cầu riêng.
+
 ## Bảng tổng hợp
 
 | key | Dimension | Fact | Operational |
 |---|---|---|---|
 | `PK` | ✅ Surrogate key | ❌ | ✅ Surrogate key |
 | `BK` | ✅ Business key join anchor | ❌ | ✅ Business key |
-| `FK → <Dim>` | ❌ | ✅ Surrogate dim key | ❌ |
+| `FK` | ❌ | ✅ Surrogate dim key — tên Dimension đích ghi trong `description`, không ghi trong `key` | ❌ |
 | `DD` | ❌ | ✅ Degenerate dimension | ❌ |
 | (trống) | ✅ Mọi attribute thường | ✅ Measure, date, metadata | ✅ Mọi attribute thường |
 
@@ -26,7 +35,7 @@
 |---|---|
 | `PK` | `false` — bắt buộc |
 | `BK` | `false` — bắt buộc |
-| `FK → <Dim>` | `false` — bắt buộc |
+| `FK` | `false` — bắt buộc (trừ trường hợp carry-forward optional, ghi rõ lý do trong `description`) |
 | `DD` | Theo business logic (thường `false`) |
 | (trống) | Theo business logic |
 
@@ -37,7 +46,7 @@
 | data_domain | key bắt buộc | nullable |
 |---|---|---|
 | `Surrogate Key` | `PK` | `false` |
-| `Surrogate Dimension Key` | `FK → <Dim>` | `false` |
+| `Surrogate Dimension Key` | `FK` | `false` |
 | `Classification Value` | **(trống)** — không được có key | Theo business logic |
 
 ---
@@ -48,7 +57,7 @@
 |---|---|
 | `PK` | Trống — `source_entity = Generated` (surrogate sinh mới, không map Atomic) |
 | `BK` | **Bắt buộc đầy đủ** như attribute thường — BK lấy giá trị thật từ Atomic (thường `etl_logic_type = direct` từ driving table). ❌ Không được để trống. |
-| `FK → <Dim>` | Bắt buộc — `lookup_dim`/`lookup_date` |
+| `FK` | Bắt buộc — `lookup_dim`/`lookup_date`/`direct` (khi driving table chính là Dimension đích, xem ví dụ Fact bên dưới) |
 | `DD` | Bắt buộc — map từ Atomic (thường `direct` hoặc `join_atomic`) |
 | (trống) | Bắt buộc, trừ khi `etl_logic_type = pending` |
 
@@ -70,13 +79,16 @@ datamart_entity,key,data_domain,nullable,etl_logic,etl_logic_type
 ## Ví dụ đúng — Fact
 
 ```csv
-datamart_entity,key,data_domain,nullable
-"Fact FMS Snapshot","FK → Calendar Date Dimension","Surrogate Dimension Key","false"
-"Fact FMS Snapshot","FK → Fund Management Company Dimension","Surrogate Dimension Key","false"
-"Fact FMS Snapshot","DD","Text","false"                             ← degenerate dim
-"Fact FMS Snapshot","","Small Counter","true"                       ← measure nullable
-"Fact FMS Snapshot","","Currency Amount","true"                     ← measure nullable
+datamart_entity,key,data_domain,nullable,description
+"Fact FMS Snapshot","FK","Surrogate Dimension Key","false","FK tới Calendar Date Dimension — ..."
+"Fact FMS Snapshot","FK","Surrogate Dimension Key","false","FK tới Fund Management Company Dimension — ..."
+"Fact FMS Snapshot","DD","Text","false",""                          ← degenerate dim
+"Fact FMS Snapshot","","Small Counter","true",""                    ← measure nullable
+"Fact FMS Snapshot","","Currency Amount","true",""                  ← measure nullable
 ```
+
+> `key` chỉ ghi token `FK` thuần — tên Dimension đích (Calendar Date Dimension, Fund Management
+> Company Dimension...) nằm trong `description`, không lặp lại trong `key`.
 
 > ❌ Fact **KHÔNG có `key = PK`** dù có surrogate key. Fact chỉ có `FK`/`DD`/measure — không có
 > dòng nào định danh grain bằng surrogate `_id` riêng (bài học module TT 2026-07-21: 7/7 file Fact
@@ -114,7 +126,7 @@ Vấn đề: Fact table không có Surrogate Key — không tạo PK cho Fact.
 
 ```
 ❌ Sai:
-"Fund Management Company Dimension","FK → Calendar Date Dimension","Surrogate Dimension Key","false"
+"Fund Management Company Dimension","FK","Surrogate Dimension Key","false"
 
 Vấn đề: FK chỉ trên Fact. Dimension không join sang Dimension khác.
 
@@ -138,12 +150,13 @@ Vấn đề: data_domain = Classification Value không được có key — khô
 
 ```
 ❌ Sai:
-"Fact FMS Snapshot","FK → Calendar Date Dimension","Surrogate Dimension Key","true"
+"Fact FMS Snapshot","FK","Surrogate Dimension Key","true"
 
-Vấn đề: FK không được nullable — mọi Fact row phải có date dimension.
+Vấn đề: FK không được nullable — mọi Fact row phải có date dimension (trừ carry-forward optional
+đã ghi rõ lý do trong description).
 
 ✅ Fix: nullable = false
-"Fact FMS Snapshot","FK → Calendar Date Dimension","Surrogate Dimension Key","false"
+"Fact FMS Snapshot","FK","Surrogate Dimension Key","false"
 ```
 
 ### Vi phạm 5 — BK để trống etl_logic (nhầm với PK)

@@ -26,7 +26,7 @@ o Huy động vốn cổ phần (Equity Capital Raising - C)
 ▪ Công thức chuẩn hóa Z-Score:
 1. Công thức tổng quát:
 Z-score = (x − μ) / σ";Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;SCMS, MDDS, QLRR, FMS, CSDLTT;x;x;;Done;;;"risk_index_value, z_*, beta*
-";;;;;;;;;Dữ liệu tĩnh
+";;;;;;;;;Dữ liệu tĩnh, Dữ liệu động, Chưa có CSDL - Map biểu mẫu
 1;;Dashboard Giám sát rủi ro/ Chỉ số rủi ro hệ thống;"Z-score Biến động giá 
 Z-score = (x − μ) / σ
 
@@ -49,12 +49,12 @@ AND m2.TradingDate = JAD_MARKETINFOR.TradingDate
 )
 ),
 daily_ret AS (
--- Bước 1: tính log return, lấy 31 ngày → được 30 log-return sau khi LAG cho NULL ở dòng đầu
+-- Bước 1: tính log return
 SELECT TradingDate,
 LN(CloseIndex / LAG(CloseIndex) OVER (ORDER BY TradingDate)) AS r
 FROM close_price
 ORDER BY TradingDate DESC
-FETCH FIRST 31 ROWS ONLY -- Oracle 19c; đổi thành LIMIT 31 nếu PostgreSQL
+FETCH FIRST 31 ROWS ONLY 
 ),
 vol30 AS (
 -- Bước 2: tính σ_t = độ lệch chuẩn mẫu của 30 log-return
@@ -85,20 +85,20 @@ Volatility cao Rủi ro tăng.
 SELECT LN(CAST(m.marketIndex AS FLOAT)/
 NULLIF(CAST(mp.marketIndex AS FLOAT),0)) AS r
 FROM JAD_MARKETINFOR m
-JOIN JAD_MARKETINFOR mp ON mp.IndexCode='HOSE'
+JOIN JAD_MARKETINFOR mp ON mp.MarketCode='HOSE'
 AND mp.TradingDate=(
 SELECT MAX(TradingDate) FROM JAD_MARKETINFOR
-WHERE IndexCode='HOSE' AND TradingDate < m.TradingDate)
+WHERE MarketCode='HOSE' AND TradingDate < m.TradingDate)
 AND mp.indexTime=(SELECT MAX(indexTime) FROM JAD_MARKETINFOR
-WHERE IndexCode='HOSE' AND TradingDate=mp.TradingDate)
-WHERE m.IndexCode='HOSE'
+WHERE MarketCode='HOSE' AND TradingDate=mp.TradingDate)
+WHERE m.MarketCode='HOSE'
 AND m.indexTime=(SELECT MAX(indexTime) FROM JAD_MARKETINFOR
-WHERE IndexCode='HOSE' AND TradingDate=m.TradingDate)
+WHERE MarketCode='HOSE' AND TradingDate=m.TradingDate)
 AND m.TradingDate <= :input_date
 ORDER BY m.TradingDate DESC LIMIT 30
 )
 SELECT STDDEV_SAMP(r) AS volatility_30d FROM daily_ret WHERE r IS NOT NULL;";;;;;;;Dữ liệu tĩnh
-1;;Dashboard Giám sát rủi ro/ Chỉ số rủi ro hệ thống;Lợi suất ngày (x);Lợi suất ngày (Log Return): Rₜ = ln(Pₜ / Pₜ₋₁);Dashboard;Chỉ tiêu phái sinh;TB;Ngày;MDDS;x;x;;Done;Thông tin thị trường;JAD_MARKETINFOR;"MarketIndex TradingDate, IndexCode
+1;;Dashboard Giám sát rủi ro/ Chỉ số rủi ro hệ thống;Lợi suất ngày (x);Lợi suất ngày (Log Return): Rₜ = ln(Pₜ / Pₜ₋₁);Dashboard;Chỉ tiêu phái sinh;TB;Ngày;MDDS;x;x;;Done;Thông tin thị trường;JAD_MARKETINFOR;"MarketIndex, TradingDate, IndexCode
 ";"IndexCode = 'HOSE'; 
 TradingDate ngày t và t-1;
 MarketIndex";"SELECT
@@ -126,32 +126,32 @@ AND m.tradingdate = :input_date);";;;;;;;Dữ liệu tĩnh
 ";"IndexCode = 'HOSE'; TradingDate = :input_date
 ";"SELECT marketIndex AS close_index_t
 FROM JAD_MARKETINFOR
-WHERE IndexCode = 'HOSE'
+WHERE marketCode = 'HOSE'
 AND TradingDate = :input_date
 AND indexTime = (
 SELECT MAX(indexTime)
 FROM JAD_MARKETINFOR
-WHERE IndexCode = 'HOSE'
+WHERE marketCode = 'HOSE'
 AND TradingDate = :input_date
 );";;;;;;;Dữ liệu tĩnh
 1;;Dashboard Giám sát rủi ro/ Chỉ số rủi ro hệ thống;Giá đóng cửa ngày P(t-1);Giá đóng cửa ngày t-1;Dashboard;Chỉ tiêu cơ sở;TB;Ngày;MDDS;x;x;;Done;Thông tin thị trường;JAD_MARKETINFOR;"MarketIndex TradingDate, IndexCode
 ";"IndexCode = 'HOSE'; TradingDate = :input_date -1";"SELECT marketIndex AS close_index_t1
 FROM JAD_MARKETINFOR
-WHERE IndexCode = 'HOSE'
+WHERE MARKETCODE = 'HOSE'
 AND TradingDate = (
 SELECT MAX(TradingDate)
 FROM JAD_MARKETINFOR
-WHERE IndexCode = 'HOSE'
+WHERE marketCode = 'HOSE'
 AND TradingDate < :input_date
 )
 AND indexTime = (
 SELECT MAX(indexTime)
 FROM JAD_MARKETINFOR
-WHERE IndexCode = 'HOSE'
+WHERE marketCode= 'HOSE'
 AND TradingDate = (
 SELECT MAX(TradingDate)
 FROM JAD_MARKETINFOR
-WHERE IndexCode = 'HOSE'
+WHERE marketCode = 'HOSE'
 AND TradingDate < :input_date
 )
 );";;;;;;;Dữ liệu tĩnh
@@ -161,9 +161,9 @@ AND TradingDate < :input_date
 SELECT TradingDate, marketIndex,
 LAG(marketIndex) OVER (ORDER BY TradingDate) AS prev_idx
 FROM JAD_MARKETINFOR
-WHERE IndexCode='HOSE'
+WHERE MarketCode='HOSE'
 AND indexTime=(SELECT MAX(indexTime) FROM JAD_MARKETINFOR m2
-WHERE m2.IndexCode='HOSE' AND m2.TradingDate=JAD_MARKETINFOR.TradingDate)
+WHERE m2.MarketCode='HOSE' AND m2.TradingDate=JAD_MARKETINFOR.TradingDate)
 AND TradingDate <= :input_date
 ORDER BY TradingDate DESC LIMIT 31
 )
@@ -489,7 +489,7 @@ ROUND(sigma * 100, 4) AS sigma_volatility_pct,
 n AS so_ngay,
 ROUND((rt - mu) / NULLIF(sigma, 0), 4) AS z_score
 FROM thong_ke
-WHERE tradingdate = TO_DATE(:ngay_gd,'YYYY-MM-DD');";KLCK lưu hành lấy từ VSDC - Báo cáo TT138.2025.TT.BTC Mẫu số 01;;;;;;Chưa có CSDL - Map biểu mẫu
+WHERE tradingdate = TO_DATE(:ngay_gd,'YYYY-MM-DD');";KLCK lưu hành lấy từ VSDC - Báo cáo TT138.2025.TT.BTC Mẫu số 01;;;;;;Chưa có CSDL - Map biểu mẫu, Dữ liệu động, Dữ liệu tĩnh
 1;;Dashboard Giám sát rủi ro/ Chỉ số rủi ro hệ thống;Độ lệch chuẩn;σ_volatility = √[ (1/(N−1)) × Σ(Rt − R̄)² ];Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;SCMS, MDDS, CSDLTT;x;x;;Done;"Thông tin thị trường
 Sổ lệnh
 Lấy ở báo cáo SCMS";"Lấy từ VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) 
@@ -498,7 +498,7 @@ JAD_STOCKINFOR s
 
 Lấy báo cáo ở SCMS";;"Margin theo tháng; 
 MCAP tính từ giá đóng cửa × KL lưu hành; 
-chuỗi 30 phiên đến input_date""";KLCK lưu hành lấy từ VSDC - Báo cáo TT138.2025.TT.BTC Mẫu số 01;;;;;;Chưa có CSDL - Map biểu mẫu;
+chuỗi 30 phiên đến input_date""";KLCK lưu hành lấy từ VSDC - Báo cáo TT138.2025.TT.BTC Mẫu số 01;;;;;;Chưa có CSDL - Map biểu mẫu, Dữ liệu động, Dữ liệu tĩnh;
 1;;Dashboard Giám sát rủi ro/ Chỉ số rủi ro hệ thống;Tỷ lệ Dư nợ Margin trên Tổng vốn hóa thị trường tại ngày (x);"
 Mₜ (Margin ratio) = MDₜ / MCAPₜ";Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;SCMS, MDDS, CSDLTT;x;x;;Done;"Thông tin thị trường
 Sổ lệnh
@@ -561,7 +561,7 @@ d.tong_du_no_margin AS mdt,
 m.tong_von_hoa AS mcapt,
 ROUND(d.tong_du_no_margin / NULLIF(m.tong_von_hoa,0) * 100, 4) AS margin_ratio_pct
 FROM du_no_margin d
-INNER JOIN mcap m ON 1=1;";KLCK lưu hành lấy từ VSDC - Báo cáo TT138.2025.TT.BTC Mẫu số 01;;;;;;Chưa có CSDL - Map biểu mẫu
+INNER JOIN mcap m ON 1=1;";KLCK lưu hành lấy từ VSDC - Báo cáo TT138.2025.TT.BTC Mẫu số 01;;;;;;Chưa có CSDL - Map biểu mẫu, Dữ liệu động
 1;;Dashboard Giám sát rủi ro/ Chỉ số rủi ro hệ thống;Tỷ lệ Dư nợ Margin trên Tổng vốn hóa thị trường trung bình;R̄ = Σ(MDₜ / MCAPₜ)/30;Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;SCMS, MDDS, CSDLTT;x;x;;Done;"Thông tin thị trường
 Sổ lệnh
 Lấy ở báo cáo SCMS";"Lấy từ VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) 
@@ -645,7 +645,7 @@ SELECT
 TO_DATE(:ngay_gd,'YYYY-MM-DD') AS ngay_gd,
 COUNT(*) AS so_ngay,
 ROUND(SUM(ratio_ngay) / 30 * 100, 4) AS r_bar_pct
-FROM ratio_ngay;";;;;;;;Chưa có CSDL - Map biểu mẫu
+FROM ratio_ngay;";;;;;;;Chưa có CSDL - Map biểu mẫu, Dữ liệu động
 1;;Dashboard Giám sát rủi ro/ Chỉ số rủi ro hệ thống;"Tổng dư nợ margin (dữ liệu của các CTCK theo tháng)
 MDₜ";Tổng dư nợ margin (dữ liệu của các CTCK theo tháng);Dashboard;Chỉ tiêu phái sinh;TB;Ngày;SCMS;x;x;x;Done;Lấy báo cáo ở SCMS;"SSC_SCMS.MEMBER_REPORT
 SSC_SCMS.FORM_REPORT
@@ -693,7 +693,7 @@ AND mr2.REPORT_YEAR = mr.REPORT_YEAR
 AND mr2.PERIOD = mr.PERIOD
 )
 GROUP BY mr.REPORT_YEAR, mr.PERIOD
-ORDER BY mr.REPORT_YEAR, mr.PERIOD;";;;;;;;Dữ liệu tĩnh
+ORDER BY mr.REPORT_YEAR, mr.PERIOD;";;;;;;;Chưa có CSDL - Map biểu mẫu, Dữ liệu động
 1;;Dashboard Giám sát rủi ro/ Chỉ số rủi ro hệ thống;"MCAPₜ = Tổng vốn hóa thị trường tại ngày t
 Vốn hóa = Giá đóng cửa * KL CK lưu hành";Tổng vốn hóa thị trường tại ngày t;Dashboard;Chỉ tiêu phái sinh;TB;Ngày;MDDS, CSDLTT;x;x;;Done;"- Giá đóng cửa: thông tin thị trường 
 - Số cổ phiếu đang lưu hành: Lấy từ VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày)";"Lấy từ VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) 
@@ -716,7 +716,7 @@ AND s.StockType NOT IN ('B', '1', 'BO', 'D') -- Loại bỏ trái phiếu
 select Mã chứng khoán MCK , sum (Khối lượng chứng khoán đang lưu hành) KLLH
 from BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành
 where Mã chứng khoán = 'Cổ phiếu'
-)";KLCK lưu hành lấy từ VSDC - Báo cáo TT138.2025.TT.BTC Mẫu số 01;;;;;;Chưa có CSDL - Map biểu mẫu
+)";KLCK lưu hành lấy từ VSDC - Báo cáo TT138.2025.TT.BTC Mẫu số 01;;;;;;Chưa có CSDL - Map biểu mẫu, Dữ liệu động
 1;;Dashboard Giám sát rủi ro/ Chỉ số rủi ro hệ thống;Giá đóng cửa tại ngày;Giá đóng cửa;Dashboard;Chỉ tiêu cơ sở;TB;Ngày;MDDS;x;x;;Done;Thông tin thị trường;JAD_STOCKINFOR (PriceBoardAPI);symbol, closePrice, tradingdate;"tradingdate = :input_date; FloorCode IN ('02','04','10')";"SELECT symbol, closePrice, tradingdate
 FROM JAD_STOCKINFOR
 WHERE tradingdate = :input_date
@@ -1624,7 +1624,7 @@ d.tong_du_no_margin AS mdt,
 m.tong_von_hoa AS mcapt,
 ROUND(d.tong_du_no_margin / NULLIF(m.tong_von_hoa,0) * 100, 4) AS margin_ratio_pct
 FROM du_no_margin d
-INNER JOIN mcap m ON 1=1;";KLCK lưu hành lấy từ VSDC - Báo cáo TT138.2025.TT.BTC Mẫu số 01;;;;;;Dữ liệu tĩnh
+INNER JOIN mcap m ON 1=1;";KLCK lưu hành lấy từ VSDC - Báo cáo TT138.2025.TT.BTC Mẫu số 01;;;;;;Dữ liệu tĩnh, Dữ liệu động, Chưa có CSDL - Map biểu mẫu
 2;;Dashboard Giám sát rủi ro/ Phân tích đóng góp rủi ro;Lãi suất tại ngày t;Lãi suất liên ngân hàng (IRₜ) phản ánh chi phí vốn ngắn hạn của hệ thống tài chính.;Dashboard;Chỉ tiêu cơ sở;Trùng;Ngày;QLRR;x;x;;Done;RISK_INDICATOR;"RISK_INDICATOR i 
 RISK_INDICATOR_VALUE v";"i.indicator_code;
 v.trading_date";"i.indicator_code = 'INTERBANK_IR';
@@ -2001,7 +2001,7 @@ ROUND(sigma * 100, 4) AS sigma_volatility_pct,
 n AS so_ngay,
 ROUND((rt - mu) / NULLIF(sigma, 0), 4) AS z_score
 FROM thong_ke
-WHERE tradingdate = TO_DATE(:ngay_gd,'YYYY-MM-DD');";Trùng dòng 20;;;;;;Chưa có CSDL - Map biểu mẫu
+WHERE tradingdate = TO_DATE(:ngay_gd,'YYYY-MM-DD');";Trùng dòng 20;;;;;;Chưa có CSDL - Map biểu mẫu, Dữ liệu động
 2;;Dashboard Giám sát rủi ro/ Phân tích đóng góp rủi ro;Độ lệch chuẩn;σ_volatility = √[ (1/(N−1)) × Σ(Rt − R̄)² ];Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày;SCMS, MDDS, CSDLTT;x;x;;Done;"Thông tin thị trường
 Sổ lệnh
 Lấy ở báo cáo SCMS";"Lấy từ VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) 
@@ -2010,7 +2010,7 @@ JAD_STOCKINFOR s
 
 Lấy báo cáo ở SCMS";;"Margin theo tháng; 
 MCAP tính từ giá đóng cửa × KL lưu hành; 
-chuỗi 30 phiên đến input_date""";KLCK lưu hành lấy từ VSDC - Báo cáo TT138.2025.TT.BTC Mẫu số 01;;;;;;Chưa có CSDL - Map biểu mẫu;
+chuỗi 30 phiên đến input_date""";KLCK lưu hành lấy từ VSDC - Báo cáo TT138.2025.TT.BTC Mẫu số 01;;;;;;Chưa có CSDL - Map biểu mẫu, Dữ liệu động;
 2;;Dashboard Giám sát rủi ro/ Phân tích đóng góp rủi ro;Tỷ lệ Dư nợ Margin trên Tổng vốn hóa thị trường tại ngày (x);"
 Mₜ (Margin ratio) = MDₜ / MCAPₜ";Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày;SCMS, MDDS, CSDLTT;x;x;;Done;"Thông tin thị trường
 Sổ lệnh
@@ -2073,7 +2073,7 @@ d.tong_du_no_margin AS mdt,
 m.tong_von_hoa AS mcapt,
 ROUND(d.tong_du_no_margin / NULLIF(m.tong_von_hoa,0) * 100, 4) AS margin_ratio_pct
 FROM du_no_margin d
-INNER JOIN mcap m ON 1=1;";KLCK lưu hành lấy từ VSDC - Báo cáo TT138.2025.TT.BTC Mẫu số 01;;;;;;Chưa có CSDL - Map biểu mẫu
+INNER JOIN mcap m ON 1=1;";KLCK lưu hành lấy từ VSDC - Báo cáo TT138.2025.TT.BTC Mẫu số 01;;;;;;Chưa có CSDL - Map biểu mẫu, Dữ liệu động
 2;;Dashboard Giám sát rủi ro/ Phân tích đóng góp rủi ro;Tỷ lệ Dư nợ Margin trên Tổng vốn hóa thị trường trung bình;R̄ = Σ(MDₜ / MCAPₜ)/30;Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày;SCMS, MDDS, CSDLTT;x;;;Done;;"Lấy từ VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) 
 
 JAD_STOCKINFOR s
@@ -2159,7 +2159,7 @@ TO_DATE(:ngay_gd,'YYYY-MM-DD') AS ngay_gd,
 COUNT(*) AS so_ngay_tinh,
 -- R̄ = Σ(MDt/MCAPt) / 30
 ROUND(SUM(ratio_t)/30*100,4) AS margin_ratio_trung_binh_pct
-FROM ratio_daily;";;;;;;;Chưa có CSDL - Map biểu mẫu
+FROM ratio_daily;";;;;;;;Chưa có CSDL - Map biểu mẫu, Dữ liệu động
 2;;Dashboard Giám sát rủi ro/ Phân tích đóng góp rủi ro;"Tổng dư nợ margin (dữ liệu của các CTCK theo tháng)
 MDₜ";Tổng dư nợ margin (dữ liệu của các CTCK theo tháng);Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày;SCMS;x;x;x;Done;Lấy báo cáo ở SCMS;"SSC_SCMS.MEMBER_REPORT
 SSC_SCMS.FORM_REPORT
@@ -2207,7 +2207,7 @@ AND mr2.REPORT_YEAR = mr.REPORT_YEAR
 AND mr2.PERIOD = mr.PERIOD
 )
 GROUP BY mr.REPORT_YEAR, mr.PERIOD
-ORDER BY mr.REPORT_YEAR, mr.PERIOD;";;;;;;;Dữ liệu tĩnh
+ORDER BY mr.REPORT_YEAR, mr.PERIOD;";;;;;;;Dữ liệu động, Dữ liệu tĩnh
 2;;Dashboard Giám sát rủi ro/ Phân tích đóng góp rủi ro;"MCAPₜ = Tổng vốn hóa thị trường tại ngày t
 Vốn hóa = Giá đóng cửa * KL CK lưu hành";Tổng vốn hóa thị trường tại ngày t;Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày;MDDS, CSDLTT;x;x;;Done;"Thông tin thị trường
 Sổ lệnh";"Lấy từ VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) 
@@ -2230,7 +2230,7 @@ AND s.StockType NOT IN ('B', '1', 'BO', 'D') -- Loại bỏ trái phiếu
 select Mã chứng khoán MCK , sum (Khối lượng chứng khoán đang lưu hành) KLLH
 from BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành
 where Mã chứng khoán = 'Cổ phiếu'
-)";;;;;;;Chưa có CSDL - Map biểu mẫu
+)";;;;;;;Chưa có CSDL - Map biểu mẫu, Dữ liệu tĩnh
 2;;Dashboard Giám sát rủi ro/ Phân tích đóng góp rủi ro;Giá đóng cửa tại ngày;Giá đóng cửa;Dashboard;Chỉ tiêu cơ sở;Trùng;Ngày;MDDS;x;x;;Done;Thông tin thị trường;JAD_STOCKINFOR;symbol, closePrice, tradingdate;"tradingdate = :input_date; FloorCode IN ('02','04','10')";"SELECT symbol, closePrice, tradingdate
 FROM JAD_STOCKINFOR
 WHERE tradingdate = :input_date
@@ -3780,7 +3780,7 @@ FROM du_no_margin d
 JOIN han_muc_margin h
 ON h.nam = d.nam
 AND h.thang = d.thang
-ORDER BY d.nam, d.thang;";;;;;;;Dữ liệu tĩnh
+ORDER BY d.nam, d.thang;";;;;;;;Dữ liệu tĩnh, Dữ liệu động
 4;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ chỉ số sức khỏe hệ thống;Tổng dư nợ vay margin của tất cả các CTCK;Tổng dư nợ vay margin của tất cả các CTCK;Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;SCMS;x;x;;Done;"Lấy từ báo cáo tình hình hoạt động 
 ";"SSC_SCMS.MEMBER_REPORT
 SSC_SCMS.FORM_REPORT
@@ -3830,7 +3830,7 @@ AND mr2.REPORT_YEAR = mr.REPORT_YEAR
 AND mr2.PERIOD = mr.PERIOD
 )
 GROUP BY mr.REPORT_YEAR, mr.PERIOD
-ORDER BY mr.REPORT_YEAR, mr.PERIOD;";;;;;;;Dữ liệu tĩnh
+ORDER BY mr.REPORT_YEAR, mr.PERIOD;";;;;;;;Dữ liệu tĩnh, Dữ liệu động
 4;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ chỉ số sức khỏe hệ thống;Tổng hạn mức margin;"Tổng hạn mức margin
 Tối đa 2 lần VCSH của CTCK";Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;SCMS;x;x;;Done;Báo cáo tài chính của CTCK;"SSC_SCMS.MEMBER_REPORT
 SSC_SCMS.FORM_REPORT
@@ -3905,7 +3905,7 @@ AND mr2.REPORT_YEAR = mr_attc.REPORT_YEAR
 AND mr2.PERIOD = mr_attc.PERIOD
 )
 GROUP BY mr_attc.REPORT_YEAR, mr_attc.PERIOD
-ORDER BY mr_attc.REPORT_YEAR, mr_attc.PERIOD;";;;;;;;Dữ liệu tĩnh
+ORDER BY mr_attc.REPORT_YEAR, mr_attc.PERIOD;";;;;;;;Dữ liệu tĩnh, Dữ liệu động
 4;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ chỉ số sức khỏe hệ thống;Cấu hình ngưỡng trạng thái;"Cấu hình ngưỡng trạng thái 
 Từ Margin Tension (%) cấu hình ngưỡng trạng thái
 Cấu hình trạng thái Margin Tension (%) (từ 0 đến 50 trạng thái dư dả), (từ 50 đến 70 trạng thái tối ưu), (từ 70 đến 85 trạng thái căng), (từ 85 đến 95 trạng thái báo động), (lớn hơn 95 trạng thái vi phạm)";Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;SCMS;x;x;;Done;"Lấy từ báo cáo tình hình hoạt động 
@@ -4034,7 +4034,7 @@ FROM margin_data
 LEFT JOIN vcsh_data
 ON vcsh_data.nam = margin_data.nam
 AND vcsh_data.thang = margin_data.thang
-ORDER BY margin_data.nam, margin_data.thang;";;;;;;;Dữ liệu tĩnh
+ORDER BY margin_data.nam, margin_data.thang;";;;;;;;Dữ liệu tĩnh, Dữ liệu động
 4;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ chỉ số sức khỏe hệ thống;"Cấu hình ngưỡng trạng thái của Chỉ số biến động hệ thống (Systemic vol)
 ";Cấu hình ngưỡng trạng thái của Chỉ số biến động hệ thống (Systemic vol);Dashboard;Chỉ tiêu phái sinh;Khó;;Kho dữ liệu;x;;;Done;Kho dữ liệu;DW;;;;Cấu hình từng trạng thái theo dải điểm CV nhập;;;;;;Dữ liệu tĩnh
 4;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ chỉ số sức khỏe hệ thống;Chỉ số biến động hệ thống (Systemic vol);Systemic Vol (%) = σ_current / σ_max * 100;Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;MDDS;x;x;;Done;Thông tin thị trường;JAD_MARKETINFOR;"MarketIndex, TradingDate, IndexCode
@@ -4703,7 +4703,7 @@ ORDER BY c.industry_cd";"-- Lưu ý: Cần xác nhận tên cột industry_cd, i
 7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;Sector Stress Score – Chỉ số mức độ căng thẳng ngành;"StressScoreSector = Σ ( StressScorei x wi) 
 với i=1 --> n";Dashboard;Chỉ tiêu phái sinh;Khó;Thời gian, Ngành;MDDS, MSS;x;x;;Done;"Thông tin thị trường
 Khối lượng CK đang lưu hành: VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày)";;;;"Tính phái sinh từ StressScore 
-Wi - Trọng số vốn hóa của mã i trong ngành";;;;;;;Dữ liệu tĩnh
+Wi - Trọng số vốn hóa của mã i trong ngành";;;;;;;Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu
 7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;Wi - Trọng số vốn hóa của mã i trong ngành;wi = MarketCapi / ΣMarketCap toàn ngành;Dashboard;Chỉ tiêu phái sinh;TB;Thời gian, Ngành;MDDS, MSS;x;x;;Done;"Thông tin thị trường
 Khối lượng CK đang lưu hành: VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) """;"Lấy từ VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) 
 
@@ -4765,7 +4765,7 @@ market_cap,
 tong_von_hoa_nganh,
 ROUND(market_cap/NULLIF(tong_von_hoa_nganh,0),6) AS wi
 FROM von_hoa_nganh
-ORDER BY industry_cd,wi DESC;";;;;;;;Dữ liệu tĩnh
+ORDER BY industry_cd,wi DESC;";;;;;;;Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu
 7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;Tổng Vốn hóa (MarketCapi);ΣMarketCap toàn ngành;Dashboard;Chỉ tiêu phái sinh;Khó;Thời gian, Ngành;MDDS, MSS;x;x;;Done;"Thông tin thị trường
 Khối lượng CK đang lưu hành: VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày)";"Lấy từ VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) 
 
@@ -4815,7 +4815,7 @@ FROM von_hoa_ma v
 JOIN IDS.company_info ci ON ci.symbol = v.symbol
 JOIN nganh n ON n.industry_cd = ci.industry_cd
 GROUP BY n.industry_cd, n.industry_name
-ORDER BY tong_von_hoa_nganh DESC;";;;;;;;Dữ liệu tĩnh
+ORDER BY tong_von_hoa_nganh DESC;";;;;;;;Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu
 7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;Vốn hóa (MarketCapi);MarketCapi = Giá đóng cửa * Khối lượng cổ phiếu lưu hành;Dashboard;Chỉ tiêu phái sinh;TB;Thời gian, Ngành;MDDS, MSS;x;x;;Done;"- Giá đóng cửa: thông tin thị trường 
 - Số cổ phiếu đang lưu hành: Lấy từ VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày)";"Lấy từ VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) 
 
@@ -4837,13 +4837,13 @@ AND s.StockType NOT IN ('B', '1', 'BO', 'D') -- Loại bỏ trái phiếu
 select Mã chứng khoán MCK , sum (Khối lượng chứng khoán đang lưu hành) KLLH
 from BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành
 where Mã chứng khoán = 'Cổ phiếu'
-)";;;;;;;Dữ liệu tĩnh
+)";;;;;;;Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu
 7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;Giá đóng cửa;Giá đóng cửa;Dashboard;Chỉ tiêu cơ sở;Dễ;Thời gian, Ngành;MDDS;x;x;;Done;Thông tin thị trường;JAD_STOCKINFOR;symbol, closePrice, tradingdate;"tradingdate = :input_date; FloorCode IN ('02','04','10')";"SELECT symbol, closePrice, tradingdate
 FROM JAD_STOCKINFOR
 WHERE tradingdate = :input_date
 AND FloorCode IN ('02','04','10');
 ";;;;;;;Dữ liệu tĩnh
-7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;KL CK lưu hành;Khối lượng cổ phiếu lưu hành;Dashboard;Chỉ tiêu cơ sở;Dễ;Thời gian, Ngành;MSS;x;x;;Done;Khối lượng CK đang lưu hành: VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày);Lấy từ VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày);BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành;Khối lượng chứng khoán đang lưu hành;Mã chứng khoán = 'Cổ phiếu';"KLCK lưu hành lấy từ VSDC - Báo cáo TT138.2025.TT.BTC Mẫu số 01. MSS chưa có thiết kế CSDL riêng;";;;;;;Dữ liệu tĩnh
+7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;KL CK lưu hành;Khối lượng cổ phiếu lưu hành;Dashboard;Chỉ tiêu cơ sở;Dễ;Thời gian, Ngành;MSS;x;x;;Done;Khối lượng CK đang lưu hành: VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày);Lấy từ VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày);BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành;Khối lượng chứng khoán đang lưu hành;Mã chứng khoán = 'Cổ phiếu';"KLCK lưu hành lấy từ VSDC - Báo cáo TT138.2025.TT.BTC Mẫu số 01. MSS chưa có thiết kế CSDL riêng;";;;;;;Chưa có CSDL - Map biểu mẫu
 7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;StressScore từng mã trong ngành là tổng hợp trọng số của 3 yếu tố chính;StressScorei = (W₁ × Pdrawdown_i) + (W₂ × Pvolatility_i) + (W₃ × Pselling_i);Dashboard;Chỉ tiêu phái sinh;Khó;Thời gian, Mã chứng khoán;MDDS;x;x;;Done;;"JAD_STOCKINFOR (PriceBoardAPI) 
 TRADE_BOOK_HOSE / Trade_HNX";"JAD_STOCKINFOR.closePrice, JAD_STOCKINFOR.high, JAD_STOCKINFOR.totalTrading
 TRADE_BOOK_HOSE.[Execution - Volume], [Sell - Invest Type]
@@ -5405,7 +5405,7 @@ FROM von_hoa_ma v
 JOIN IDS.company_info ci ON ci.symbol = v.symbol
 JOIN nganh n ON n.industry_cd = ci.industry_cd
 GROUP BY n.industry_cd, n.industry_name
-ORDER BY tong_von_hoa_nganh DESC;";Trùng;;;;;;Dữ liệu tĩnh
+ORDER BY tong_von_hoa_nganh DESC;";Trùng;;;;;;Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu
 7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;MarketCap_i;MarketCap_i = Giá cổ phiếu * Khối lượng cổ phiếu lưu hành;Dashboard;Chỉ tiêu phái sinh;Trùng;Thời gian, Ngành;MDDS, MSS;x;x;;Done;"- Giá đóng cửa: thông tin thị trường 
 - Số cổ phiếu đang lưu hành: Lấy từ VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày)";"Lấy từ VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) 
 
@@ -5427,19 +5427,19 @@ AND s.StockType NOT IN ('B', '1', 'BO', 'D') -- Loại bỏ trái phiếu
 select Mã chứng khoán MCK , sum (Khối lượng chứng khoán đang lưu hành) KLLH
 from BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành
 where Mã chứng khoán = 'Cổ phiếu'
-)";Trùng;;;;;;Dữ liệu tĩnh
+)";Trùng;;;;;;Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu
 7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;Giá cổ phiếu;Giá đóng cửa;Dashboard;Chỉ tiêu cơ sở;Trùng;Thời gian, Ngành;MDDS;x;x;;Done;Thông tin thị trường;JAD_STOCKINFOR (PriceBoardAPI);symbol, closePrice, tradingdate;"tradingdate = :input_date; FloorCode IN ('02','04','10')";"SELECT symbol, closePrice, tradingdate
 FROM JAD_STOCKINFOR
 WHERE tradingdate = :input_date
 AND FloorCode IN ('02','04','10');
 ";Trùng;;;;;;Dữ liệu tĩnh
 7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;Khối lượng cổ phiếu lưu hành;Khối lượng cổ phiếu lưu hành;Dashboard;Chỉ tiêu cơ sở;Trùng;Thời gian, Ngành;MSS;x;x;;Done;Khối lượng CK đang lưu hành: VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày);Lấy từ VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày);BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành;Khối lượng chứng khoán đang lưu hành;Mã chứng khoán = 'Cổ phiếu';"KLCK lưu hành lấy từ VSDC - Báo cáo TT138.2025.TT.BTC Mẫu số 01. MSS chưa có thiết kế CSDL riêng;
-Trùng dòng 168";;;;;;Dữ liệu tĩnh
+Trùng dòng 168";;;;;;Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu
 7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;Sector Debt Score – Chỉ số sức khỏe tài chính của ngành;Σ Nợ phải trả (ngành) / Σ VCSH (ngành);Dashboard;Chỉ tiêu phái sinh;Khó;Thời gian, Ngành;IDS;x;x;;Done;Báo cáo tài chính công ty đại chúng;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.company_data (cd)";SUM(no_phai_tra) / NULLIF(SUM(vcsh),0) AS ty_le_no_vcsh;"-- Chỉ tiêu phái sinh
 = Tổng nợ phải trả / Vốn chủ sở hữu";"-- Chỉ tiêu phái sinh (tính từ các chỉ tiêu cơ sở)
--- Nợ/Vốn CSH = Tổng Nợ Phải Trả / VCSH";Kỳ báo cáo BCTC (quý/năm) khác với kỳ giao dịch (ngày). Cần cấu hình mapping kỳ BCTC gần nhất theo ngày giao dịch. Thang điểm D/E → Quy đổi D/E ngành ra điểm số (0-100);;;;;;Dữ liệu tĩnh
+-- Nợ/Vốn CSH = Tổng Nợ Phải Trả / VCSH";Kỳ báo cáo BCTC (quý/năm) khác với kỳ giao dịch (ngày). Cần cấu hình mapping kỳ BCTC gần nhất theo ngày giao dịch. Thang điểm D/E → Quy đổi D/E ngành ra điểm số (0-100);;;;;;Dữ liệu động
 7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;Nợ phải trả (ngành);Nợ phải trả (ngành);Dashboard;Chỉ tiêu cơ sở;TB;Thời gian, Ngành;IDS;x;x;;Done;Báo cáo tài chính công ty đại chúng;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.company_data (cd),
@@ -5461,7 +5461,7 @@ AND cd.report_year=:year AND cd.report_quarter=:quarter
 AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('300'))
 OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('300'))
 OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('400')))
-GROUP BY cdet.category_l1_id";;;;;;;Dữ liệu tĩnh
+GROUP BY cdet.category_l1_id";;;;;;;Dữ liệu động
 7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;VCSH (ngành);VCSH (ngành);Dashboard;Chỉ tiêu cơ sở;TB;Thời gian, Ngành;IDS;x;x;;Done;Báo cáo tài chính công ty đại chúng;"IDS.data (d),
 IDS.report_catalog (rc),
 IDS.company_data (cd)";SUM(d.data_value) AS vcsh;"rc2.col_desc = '1'
@@ -5479,21 +5479,21 @@ AND rc.report_cd LIKE 'BCDKT%'
 AND cd.report_year=:year AND cd.report_quarter=:quarter
 AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('400'))
 OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('400'))
-OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('500')))";;;;;;;Dữ liệu tĩnh
+OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('500')))";;;;;;;Dữ liệu động
 7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;Biến động áp lực (Stress Score );Điểm áp lực kỳ này - Điểm áp lực kỳ trước;Dashboard;Chỉ tiêu phái sinh;Khó;Thời gian, Ngành;MDDS, MSS;x;x;;Done;"Thông tin thị trường
-Khối lượng CK đang lưu hành: VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày)";;;;Chỉ tiêu phái sinh: Tính từ chỉ tiêu 2 (Sector Stress Score);Cần có bảng mart lưu kết quả Sector Stress Score theo ngày trong DWH;;;;;;Dữ liệu tĩnh
+Khối lượng CK đang lưu hành: VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày)";;;;Chỉ tiêu phái sinh: Tính từ chỉ tiêu 2 (Sector Stress Score);Cần có bảng mart lưu kết quả Sector Stress Score theo ngày trong DWH;;;;;;Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu
 7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;Sector Stress Score kỳ hiện tại – Chỉ số mức độ căng thẳng ngành;"StressScoreSector = Σ ( StressScorei x wi) 
 với i=1 --> n";Dashboard;Chỉ tiêu phái sinh;Trùng;Thời gian, Ngành;MDDS, MSS;x;x;;Done;"Thông tin thị trường
-Khối lượng CK đang lưu hành: VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày)";;;;;Trùng dòng 169;;;;;;Dữ liệu tĩnh
+Khối lượng CK đang lưu hành: VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày)";;;;;Trùng dòng 169;;;;;;Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu
 7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;Sector Stress Score kỳ trước – Chỉ số mức độ căng thẳng ngành;"StressScoreSector = Σ ( StressScorei x wi) 
 với i=1 --> n";Dashboard;Chỉ tiêu phái sinh;Trùng;Thời gian, Ngành;MDDS, MSS;x;x;;Done;"Thông tin thị trường
-Khối lượng CK đang lưu hành: VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày)";;;;;Trùng dòng 169;;;;;;Dữ liệu tĩnh
+Khối lượng CK đang lưu hành: VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày)";;;;;Trùng dòng 169;;;;;;Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu
 7;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành;Xếp hạng;"Cấu hình quy định thang điểm stress score thành trạng thái: 
 ▪ Thấp: EXCELLENT
 ▪ Trung bình: WARNING
 ▪ Cao: HIGH RISK
 ";Dashboard;Chỉ tiêu phái sinh;Khó;Thời gian, Ngành;MDDS, MSS;x;x;;Done;"Thông tin thị trường
-Khối lượng CK đang lưu hành: VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày)";;;;Từ điểm stress score;Join lại bảng cấu hình thanh điểm để phân loại trạng thái;;;;;;Dữ liệu tĩnh
+Khối lượng CK đang lưu hành: VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày)";;;;Từ điểm stress score;Join lại bảng cấu hình thanh điểm để phân loại trạng thái;;;;;;Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu
 8;;Dashboard Thanh khoản và đòn bẩy/ Chỉ số chung;Thời gian thống kê (Ngày);Ngày;Dashboard;Chiều;Dễ;;MSS;x;x;;Done;;"TRADE_BOOK_HOSE
 TRADE_BOOK_HNX";tradingdate;"tradingdate = :input_date
 marketCode IN ('VNINDEX','HNXINDEX','UPCOMINDEX')";"SELECT DISTINCT tradingdate AS ngay_thong_ke
@@ -5677,7 +5677,7 @@ AND mr2.REPORT_YEAR = mr.REPORT_YEAR
 AND mr2.PERIOD = mr.PERIOD
 )
 GROUP BY mr.REPORT_YEAR, mr.PERIOD
-ORDER BY mr.REPORT_YEAR, mr.PERIOD;";31/6: Sửa lại Bộ lọc từ năm - năm, tháng - tháng, các trường không thay đổi;;;;;;Dữ liệu tĩnh
+ORDER BY mr.REPORT_YEAR, mr.PERIOD;";31/6: Sửa lại Bộ lọc từ năm - năm, tháng - tháng, các trường không thay đổi;;;;;;Dữ liệu động
 8;;Dashboard Thanh khoản và đòn bẩy/ Chỉ số chung;Quy mô lệnh TB;Quy mô lệnh trung bình = Σ GTGD khớp lệnh / Σ Số lệnh khớp;Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;MSS;x;x;;Done;Sổ lệnh;"TRADE_BOOK_HOSE
 TRADE_BOOK_HNX";"TRADE_BOOK_HOSE: ""Execution - Value"", ""Trade Date"", ""Board Type""
 
@@ -5836,7 +5836,7 @@ WHEN tvi < 0.5 THEN 'A - Cold Market'
 WHEN tvi <= 3.0 THEN 'B - Healthy Market'
 ELSE 'C - Overheated/Bubble'
 END AS phan_loai_tvi
-FROM tvi_calc;";Từ chỉ tiêu Tốc độ vòng quay phái sinh chỉ tiêu phân loại;;;;;;Dữ liệu tĩnh
+FROM tvi_calc;";Từ chỉ tiêu Tốc độ vòng quay phái sinh chỉ tiêu phân loại;;;;;;Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu
 8;;Dashboard Thanh khoản và đòn bẩy/ Chỉ số chung;Σ Total Trading Valuei;Σ GTGD;Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;MSS;x;x;;Done;Sổ lệnh;"TRADE_BOOK_HOSE
 TRADE_BOOK_HNX";"lấy từ sổ lệnh: 
 - Hose: 
@@ -5940,7 +5940,7 @@ SELECT
 COUNT(*) AS so_phien,
 SUM(total_market_cap_t) AS tong_von_hoa,
 AVG(total_market_cap_t) AS von_hoa_binh_quan
-FROM tong_von_hoa_ngay;";"KLCK lưu hành lấy từ VSDC - Báo cáo TT138.2025.TT.BTC Mẫu số 01. MSS chưa có thiết kế CSDL riêng;";;;;;;Dữ liệu tĩnh
+FROM tong_von_hoa_ngay;";"KLCK lưu hành lấy từ VSDC - Báo cáo TT138.2025.TT.BTC Mẫu số 01. MSS chưa có thiết kế CSDL riêng;";;;;;;Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu
 8;;Dashboard Thanh khoản và đòn bẩy/ Chỉ số chung;Σ Vốn hóa bình quân;Σ(MarketCapₜ) / N;Dashboard;Chỉ tiêu phái sinh;TB;Ngày;MDDS, MSS;x;x;;Done;"Sổ lệnh 
 Thông tin thị trường 
 ";JAD_STOCKINFOR (PriceBoardAPI);;"tradingdate <= :input_date; 
@@ -5997,7 +5997,7 @@ AND s.StockType NOT IN ('B', '1', 'BO', 'D') -- Loại bỏ trái phiếu
 select Mã chứng khoán MCK , sum (Khối lượng chứng khoán đang lưu hành) KLLH
 from BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành
 where Mã chứng khoán = 'Cổ phiếu'
-)";KLCK lưu hành lấy từ VSDC - Báo cáo TT138.2025.TT.BTC Mẫu số 01;;;;;;Dữ liệu tĩnh
+)";KLCK lưu hành lấy từ VSDC - Báo cáo TT138.2025.TT.BTC Mẫu số 01;;;;;;Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu
 8;;Dashboard Thanh khoản và đòn bẩy/ Chỉ số chung;Giá đóng cửa ngày t;Giá đóng cửa ngày t;Dashboard;Chỉ tiêu cơ sở;Trùng;Ngày;MDDS;x;x;;Done;Thông tin thị trường;JAD_STOCKINFOR (PriceBoardAPI);symbol, closePrice, tradingdate;"tradingdate = :input_date; FloorCode IN ('02','04','10')";"SELECT symbol, closePrice, tradingdate
 FROM JAD_STOCKINFOR
 WHERE tradingdate = :input_date
@@ -6194,7 +6194,7 @@ AND mr2.REPORT_YEAR = mr.REPORT_YEAR
 AND mr2.PERIOD = mr.PERIOD
 )
 GROUP BY mr.REPORT_YEAR, mr.PERIOD
-ORDER BY mr.REPORT_YEAR, mr.PERIOD;";31/6: Sửa lại Bộ lọc từ năm - năm, tháng - tháng, các trường không thay đổi;;;;;;Dữ liệu tĩnh
+ORDER BY mr.REPORT_YEAR, mr.PERIOD;";31/6: Sửa lại Bộ lọc từ năm - năm, tháng - tháng, các trường không thay đổi;;;;;;Dữ liệu động
 10;;Dashboard Thanh khoản và đòn bẩy/ Áp lực đòn bẩy hệ thống (Margin Stress);Tỷ lệ bão hòa;Margin Stress = (|Δmargin Balance Today| / Avg Trading Value Sector) * 100;Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;SCMS, MSS;x;x;;Done;"Lấy từ báo cáo tình hình hoạt động 
 Sổ lệnh";"[SCMS] 
 SSC_SCMS.MEMBER_REPORT
@@ -6226,7 +6226,7 @@ Trong đó:
 -- Bước 1: Δ margin balance (tháng t so với t-1)
 -- Bước 2: GTGD bình quân 20 phiên giao dịch gần nhất
 -- Bước 3: Tính Margin Stress
-";;;;;;;Dữ liệu tĩnh
+";;;;;;;Dữ liệu động
 10;;Dashboard Thanh khoản và đòn bẩy/ Áp lực đòn bẩy hệ thống (Margin Stress);Δ margin balance;Δ margin balance = Margin tháng t – Margin tháng {t-1};Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;"SSC_SCMS.MEMBER_REPORT
 SSC_SCMS.FORM_REPORT
 SSC_SCMS.REPORT_CELL_VALUE";"rcv.ROW_NAME, 
@@ -6317,7 +6317,7 @@ margin_t1.thang AS thang_t1,
 margin_t1.du_no_margin AS margin_t1,
 margin_t.du_no_margin - NVL(margin_t1.du_no_margin, 0) AS delta_margin_balance
 FROM margin_t
-LEFT JOIN margin_t1 ON 1 = 1; -- mỗi CTE chỉ có 1 dòng (đúng 1 tháng) nên join không điều kiện";;;;;;;Dữ liệu tĩnh
+LEFT JOIN margin_t1 ON 1 = 1; -- mỗi CTE chỉ có 1 dòng (đúng 1 tháng) nên join không điều kiện";;;;;;;Dữ liệu động
 10;;Dashboard Thanh khoản và đòn bẩy/ Áp lực đòn bẩy hệ thống (Margin Stress);Margin tháng t;Margin tháng t;Dashboard;Chỉ tiêu cơ sở;Dễ;Ngày;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;"SSC_SCMS.MEMBER_REPORT
 SSC_SCMS.FORM_REPORT
 SSC_SCMS.REPORT_CELL_VALUE";"rcv.ROW_NAME, 
@@ -6366,7 +6366,7 @@ AND mr2.REPORT_YEAR = mr.REPORT_YEAR
 AND mr2.PERIOD = mr.PERIOD
 )
 GROUP BY mr.REPORT_YEAR, mr.PERIOD
-ORDER BY mr.REPORT_YEAR, mr.PERIOD;";31/6: Sửa lại Bộ lọc từ năm - năm, tháng - tháng, các trường không thay đổi;;;;;;Dữ liệu tĩnh
+ORDER BY mr.REPORT_YEAR, mr.PERIOD;";31/6: Sửa lại Bộ lọc từ năm - năm, tháng - tháng, các trường không thay đổi;;;;;;Dữ liệu động
 10;;Dashboard Thanh khoản và đòn bẩy/ Áp lực đòn bẩy hệ thống (Margin Stress);Margin tháng {t-1};Margin tháng {t-1};Dashboard;Chỉ tiêu cơ sở;Dễ;Ngày;SCMS;x;x;;Done;;"SSC_SCMS.MEMBER_REPORT
 SSC_SCMS.FORM_REPORT
 SSC_SCMS.REPORT_CELL_VALUE";;ĐK tháng t -1;"-- Dư nợ margin tại tháng t-1
@@ -6396,7 +6396,7 @@ AND mr2.REPORT_YEAR = mr.REPORT_YEAR
 AND mr2.PERIOD = mr.PERIOD
 )
 GROUP BY mr.REPORT_YEAR, mr.PERIOD
-ORDER BY mr.REPORT_YEAR, mr.PERIOD;";;;;;;;Dữ liệu tĩnh
+ORDER BY mr.REPORT_YEAR, mr.PERIOD;";;;;;;;Dữ liệu động
 10;;Dashboard Thanh khoản và đòn bẩy/ Áp lực đòn bẩy hệ thống (Margin Stress);GTGD bình quân Avg Trading Value;Trading Value = Σ GTGDi / N;Dashboard;Chỉ tiêu phái sinh;TB;Ngày;MSS;x;x;;Done;Sổ lệnh;"TRADE_BOOK_HOSE
 TRADE_BOOK_HNX";"TRADE_BOOK_HOSE:
 Trade Date 
@@ -6564,7 +6564,7 @@ Trong đó:
 -- Bước 1: Δ margin balance (tháng t so với t-1)
 -- Bước 2: GTGD bình quân 20 phiên giao dịch gần nhất
 -- Bước 3: Tính Margin Stress
---Bước 4: Quy đổi trạng thái";;;;;;;Dữ liệu tĩnh
+--Bước 4: Quy đổi trạng thái";;;;;;;Dữ liệu tĩnh, Dữ liệu động
 11;;Dashboard Thanh khoản và đòn bẩy/Cấu trúc quy mô lệnh;Thời gian;Ngày thống kê;Dashboard;Chiều;Dễ;Ngày;MSS;x;x;;Done;Tham số lọc;:input_date (DATE);"Tham số đầu vào; người dùng chọn ngày";"-- Chiều thời gian: tham số đầu vào
 ";;;;;;;;Dữ liệu tĩnh
 11;;Dashboard Thanh khoản và đòn bẩy/Cấu trúc quy mô lệnh;Quy mô lệnh;"Chia thành 2 loại GTGD:
@@ -6847,7 +6847,7 @@ WHERE t.[Trade date] = :ngay_gd
 AND t.[Market ID] IN ('UPX', 'STX', 'STO')
 )
 ) tong_tt
-GROUP BY nhom.nhom_von_hoa, gtgd.ngay_gd, tong_tt.tong_gt_tt;";;;;;;;Chưa có CSDL - Map biểu mẫu
+GROUP BY nhom.nhom_von_hoa, gtgd.ngay_gd, tong_tt.tong_gt_tt;";;;;;;;Dữ liệu tĩnh
 12;;Dashboard Thanh khoản và đòn bẩy/Phân bổ thanh khoản theo nhóm vốn hóa;GTGD nhóm vốn hóa;Giá trị giao dịch nhóm vốn hóa = KL khớp * Giá khớp;Dashboard;Chỉ tiêu phái sinh;TB;Nhóm vốn hóa, Ngày;MSS;x;x;;Done;Sổ lệnh;"TRADE_BOOK_HOSE
 TRADE_BOOK_HNX";"(TRADE_BOOK_HOSE):
 Execution - Value: Giá trị giao dịch
@@ -8690,7 +8690,7 @@ AND s.StockType IN ('B','1','D');";;;;;;;Dữ liệu tĩnh
 18;;"
 Dashboard Trái phiếu doanh nghiệp/ Chỉ số chung
 ";Mệnh giá;Mệnh giá;Dashboard;Chỉ tiêu cơ sở;Dễ;Ngày;MDDS;x;x;;Done;"Danh mục chứng khoán
-Fix sẵn 100.000/ 1 trái phiếu";;;;;Fix sẵn 100.000/ 1 trái phiếu;;;;;;Dữ liệu tĩnh
+Fix sẵn 100.000/ 1 trái phiếu";JAD_STOCKINFOR;;;;Fix sẵn 100.000/ 1 trái phiếu;;;;;;Dữ liệu tĩnh
 18;;"
 Dashboard Trái phiếu doanh nghiệp/ Chỉ số chung
 ";KL TP lưu hành;KL TP lưu hành;Dashboard;Chỉ tiêu cơ sở;Dễ;Ngày;MSS;x;x;;Done;Thông tin thị trường;JAD_STOCKINFOR;ListedShare;;"SELECT
@@ -8964,9 +8964,9 @@ SELECT
 :p_quarter AS quy,
 COUNT(DISTINCT symbol) AS so_ma_tp_rui_ro,
 SUM(gia_tri_dao_han) AS gt_dao_han_rui_ro_cao
-FROM tp_dao_han;";Chưa có bảng trong thiết kế CSDL;;;;;;Chưa có CSDL - Map biểu mẫu, Dữ liệu tĩnh
+FROM tp_dao_han;";;;;;;;Chưa có CSDL - Map biểu mẫu, Dữ liệu tĩnh
 19;;Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu;Tổng dư nợ TP theo xếp hạng tín nhiệm;Tổng dư nợ TP = Σ (Mệnh giá * KL TP lưu hành);Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày;MSS, MDDS;x;x;;Done;"- Danh mục chứng khoán
-- VSDS lập bảo cáo đẩy cồng trung cập tập trung (Mẫu bc ngày TT138)";;;;Đã xin thiết kế CSDL, đang chờ HTTT phản hồi;;;;;;Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu;
+- VSDS lập bảo cáo đẩy cồng trung cập tập trung (Mẫu bc ngày TT138)";;;;;;;;;;Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu;
 19;;Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu;Mệnh giá;Mệnh giá;Dashboard;Chỉ tiêu cơ sở;Trùng;Ngày;MDDS;x;x;;Done;"- Danh mục chứng khoán
 ";;;;;Fix sẵn 100.000/ 1 trái phiếu;;;;;;Dữ liệu tĩnh
 19;;Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu;KL TP lưu hành;KL TP lưu hành;Dashboard;Chỉ tiêu cơ sở;Trùng;Ngày;CSDLTT;x;x;;Done;;JAD_STOCKINFOR;ListedShare;;"SELECT
@@ -8980,56 +8980,36 @@ FROM JAD_STOCKINFOR s
 WHERE EXTRACT(YEAR FROM TO_DATE(s.tradingdate, 'DD/MM/YYYY')) = :nam
 AND EXTRACT(QUARTER FROM TO_DATE(s.tradingdate, 'DD/MM/YYYY')) = :quy
 AND s.StockType IN ('B','1','D')
-ORDER BY s.tradingdate, s.symbol;";Đã xin thiết kế CSDL, đang chờ HTTT phản hồi;;;;;;Chưa có CSDL - Map biểu mẫu
-19;;Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu;Xếp hạng tín nhiệm DN;Xếp hạng tín nhiệm DN;Dashboard;Chỉ tiêu cơ sở;Dễ;Ngày;IDS;x;x;;Done;;"evaluations (ev)
-evaluation_details (ed)
-evaluation_criteria (ec)
-evaluation_groups (eg)
-evaluation_periods (ep)";"company_id, ed.score AS diem_phat_hanh_nhanh,
-ed.result AS ket_qua";"ec.criterion_cd = 'PHAT_HANH_TIN_NHIEM'
-AND eg.group_cd = 'PHAT_HANH'
-AND ev.company_id = :p_company_id
-AND ep.year = :p_year
-AND ep.month = :p_month";"SELECT company_id, ed.score AS diem_phat_hanh_nhanh,
-ed.result AS ket_qua
-FROM evaluation_details ed
-JOIN evaluation_criteria ec ON ec.id = ed.criterion_id
-JOIN evaluation_groups eg ON eg.id = ec.group_id
-JOIN evaluations ev ON ev.id = ed.evaluation_id
-JOIN evaluation_periods ep ON ep.id = ev.period_id
-WHERE ec.criterion_cd = 'PHAT_HANH_TIN_NHIEM'
-AND eg.group_cd = 'PHAT_HANH'
-AND ev.company_id = :p_company_id
-AND ep.year = :p_year
-AND ep.month = :p_month
-
-SELECT company_id, ecb.ranking AS xep_hang_tin_nhiem
+ORDER BY s.tradingdate, s.symbol;";;;;;;;Dữ liệu tĩnh
+19;;Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu;Xếp hạng tín nhiệm DN;Xếp hạng tín nhiệm DN;Dashboard;Chỉ tiêu cơ sở;Dễ;Ngày;IDS;x;x;;Done;;evaluation_cbonds (ecb);ecb.ranking AS xep_hang_tin_nhiem;"ecb.company_id = :p_company_id
+AND ecb.year = :p_year
+AND ecb.month = :p_month";"SELECT company_id, ecb.ranking AS xep_hang_tin_nhiem
 FROM evaluation_cbonds ecb
 WHERE ecb.company_id = :p_company_id
 AND ecb.year = :p_year
 AND ecb.month = :p_month";Phân hệ đang pending ev.status => DW sẽ bổ sung sau khi phân hệ hoàn thành;;Chưa có bảng trong thiết kế CSDL;;;;Dữ liệu tĩnh
-19;;Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu;Thời gian;Quý thống kê;Dashboard;Chiều;Dễ;;SGDCK;x;x;;Done;;BM 29_Quy mô đăng ký giao dịch và khối lượng đang lưu hành;;;;Lấy từ biểu mẫu bc từ Sở;;;;;;Dữ liệu tĩnh
-19;;Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu;Tổng dư nợ TP (trái phiếu riêng lẻ);Tổng dư nợ TP = Σ (Mệnh giá * KL TP lưu hành);Dashboard;Chỉ tiêu phái sinh;TB;Ngày;SGDCK;x;x;;Done;;BM 29_Quy mô đăng ký giao dịch và khối lượng đang lưu hành;"Mệnh giá 
+19;;Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu;Thời gian;Quý thống kê;Dashboard;Chiều;Dễ;;CSDLTT;x;x;;Done;;BM 29_Quy mô đăng ký giao dịch và khối lượng đang lưu hành;;;;Lấy từ biểu mẫu bc từ Sở;;;;;;Chưa có CSDL - Map biểu mẫu
+19;;Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu;Tổng dư nợ TP (trái phiếu riêng lẻ);Tổng dư nợ TP = Σ (Mệnh giá * KL TP lưu hành);Dashboard;Chỉ tiêu phái sinh;TB;Ngày;CSDLTT;x;x;;Done;;BM 29_Quy mô đăng ký giao dịch và khối lượng đang lưu hành;"Mệnh giá 
 Khối lượng còn lưu hành";;"SELECT
 t.MA_TP,
 t.MENH_GIA,
 t.KL_LUU_HANH,
 t.MENH_GIA * t.KL_LUU_HANH AS DU_NO_TP
 FROM VSDC.BM29_QUY_MO_DKGD_KL_LUU_HANH t
-WHERE t.LOAI_CK = 'TP_RIENG_LE'";BM 29_Quy mô đăng ký giao dịch và khối lượng đang lưu hành;;;;;;Dữ liệu tĩnh
-19;;Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu;Mệnh giá TP (trái phiếu riêng lẻ);Mệnh giá;Dashboard;Chỉ tiêu cơ sở;Dễ;Ngày;SGDCK;x;x;;Done;;BM 29_Quy mô đăng ký giao dịch và khối lượng đang lưu hành;Mệnh giá;;"SELECT
+WHERE t.LOAI_CK = 'TP_RIENG_LE'";BM 29_Quy mô đăng ký giao dịch và khối lượng đang lưu hành;;;;;;Chưa có CSDL - Map biểu mẫu
+19;;Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu;Mệnh giá TP (trái phiếu riêng lẻ);Mệnh giá;Dashboard;Chỉ tiêu cơ sở;Dễ;Ngày;CSDLTT;x;x;;Done;;BM 29_Quy mô đăng ký giao dịch và khối lượng đang lưu hành;Mệnh giá;;"SELECT
 t.MA_TP,
 t.MENH_GIA,
 t.KL_LUU_HANH
 FROM VSDC.BM29_QUY_MO_DKGD_KL_LUU_HANH t
-WHERE t.LOAI_CK = 'TP_RIENG_LE'";BM 29_Quy mô đăng ký giao dịch và khối lượng đang lưu hành;;;;;;Dữ liệu tĩnh
+WHERE t.LOAI_CK = 'TP_RIENG_LE'";BM 29_Quy mô đăng ký giao dịch và khối lượng đang lưu hành;;;;;;Chưa có CSDL - Map biểu mẫu
 19;;Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu;KL TP lưu hành (trái phiếu riêng lẻ);KL TP lưu hành;Dashboard;Chỉ tiêu cơ sở;Dễ;Ngày;CSDLTT;x;x;;Done;;BM 29_Quy mô đăng ký giao dịch và khối lượng đang lưu hành;Khối lượng còn lưu hành;;"SELECT
 t.MA_TP,
 t.MENH_GIA,
 t.KL_LUU_HANH
 FROM VSDC.BM29_QUY_MO_DKGD_KL_LUU_HANH t
-WHERE t.LOAI_CK = 'TP_RIENG_LE'";BM 29_Quy mô đăng ký giao dịch và khối lượng đang lưu hành;;;;;;Dữ liệu tĩnh
-19;;Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu;Giá trị đáo hạn rủi ro cao (trái phiếu riêng lẻ);Σ giá trị đáo hạn trái phiếu của doanh nghiệp có xếp hạng tín nhiệm thấp;Dashboard;Chỉ tiêu phái sinh;TB;Ngày;SGDCK, IDS;x;x;;Done;;;;;"WITH
+WHERE t.LOAI_CK = 'TP_RIENG_LE'";BM 29_Quy mô đăng ký giao dịch và khối lượng đang lưu hành;;;;;;Chưa có CSDL - Map biểu mẫu
+19;;Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu;Giá trị đáo hạn rủi ro cao (trái phiếu riêng lẻ);Σ giá trị đáo hạn trái phiếu của doanh nghiệp có xếp hạng tín nhiệm thấp;Dashboard;Chỉ tiêu phái sinh;TB;Ngày;IDS, CSDLTT;x;x;;Done;;;;;"WITH
 -- Bước 1: Lấy xếp hạng tín nhiệm mới nhất của từng doanh nghiệp trong kỳ
 xep_hang AS (
 SELECT
@@ -9064,23 +9044,23 @@ FROM tp_dang_luu_hanh tp
 JOIN dn_rui_ro_cao drc
 ON drc.company_id = tp.COMPANY_ID
 WHERE tp.MATURITY_DATE BETWEEN :p_tu_ngay AND :p_den_ngay; -- kỳ đáo hạn cần xét (VD: 12 tháng tới)";"Chỉ tiêu phái sinh từ Tổng dư nợ và xếp hạng tín nhiệm
---> Phân nhóm mức rủi ro tham khảo theo file: Trái phiếu - Xếp hạng tín nhiệm";;;;;;Dữ liệu tĩnh
-19;;Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu;Tổng dư nợ TP theo xếp hạng tín nhiệm (trái phiếu riêng lẻ);Tổng dư nợ TP = Σ (Mệnh giá * KL TP lưu hành);Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày;SGDCK;x;x;;Done;;BM 29_Quy mô đăng ký giao dịch và khối lượng đang lưu hành;"Mệnh giá 
+--> Phân nhóm mức rủi ro tham khảo theo file: Trái phiếu - Xếp hạng tín nhiệm";;;;;;Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu
+19;;Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu;Tổng dư nợ TP theo xếp hạng tín nhiệm (trái phiếu riêng lẻ);Tổng dư nợ TP = Σ (Mệnh giá * KL TP lưu hành);Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày;CSDLTT;x;x;;Done;;BM 29_Quy mô đăng ký giao dịch và khối lượng đang lưu hành;"Mệnh giá 
 Khối lượng trái phiểu riêng lẻ đang lưu hành";;"Tổng dư nợ TP = Σ (Mệnh giá * KL TP lưu hành)
 Tổng dư nợ TP theo quý thống kê
-";;;;;;;Dữ liệu tĩnh
-19;;Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu;Mệnh giá;Mệnh giá;Dashboard;Chỉ tiêu cơ sở;Trùng;Ngày;SGDCK;x;x;;Done;;BM 29_Quy mô đăng ký giao dịch và khối lượng đang lưu hành;Mệnh giá;;"SELECT
+";;;;;;;Chưa có CSDL - Map biểu mẫu
+19;;Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu;Mệnh giá;Mệnh giá;Dashboard;Chỉ tiêu cơ sở;Trùng;Ngày;CSDLTT;x;x;;Done;;BM 29_Quy mô đăng ký giao dịch và khối lượng đang lưu hành;Mệnh giá;;"SELECT
 t.MA_TP,
 t.MENH_GIA,
 t.KL_LUU_HANH
 FROM VSDC.BM29_QUY_MO_DKGD_KL_LUU_HANH t
-WHERE t.LOAI_CK = 'TP_RIENG_LE'";;;;;;;Dữ liệu tĩnh
-19;;Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu;KL TP lưu hành;KL TP lưu hành;Dashboard;Chỉ tiêu cơ sở;Trùng;Ngày;SGDCK;x;x;;Done;;BM 29_Quy mô đăng ký giao dịch và khối lượng đang lưu hành;Khối lượng còn lưu hành;;"SELECT
+WHERE t.LOAI_CK = 'TP_RIENG_LE'";;;;;;;Chưa có CSDL - Map biểu mẫu
+19;;Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu;KL TP lưu hành;KL TP lưu hành;Dashboard;Chỉ tiêu cơ sở;Trùng;Ngày;CSDLTT;x;x;;Done;;BM 29_Quy mô đăng ký giao dịch và khối lượng đang lưu hành;Khối lượng còn lưu hành;;"SELECT
 t.MA_TP,
 t.MENH_GIA,
 t.KL_LUU_HANH
 FROM VSDC.BM29_QUY_MO_DKGD_KL_LUU_HANH t
-WHERE t.LOAI_CK = 'TP_RIENG_LE'";;;;;;;Dữ liệu tĩnh
+WHERE t.LOAI_CK = 'TP_RIENG_LE'";;;;;;;Chưa có CSDL - Map biểu mẫu
 19;;Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu;Xếp hạng tín nhiệm DN;Xếp hạng tín nhiệm DN;Dashboard;Chỉ tiêu cơ sở;Dễ;Ngày;IDS;x;x;;Done;;evaluation_cbonds (ecb);ecb.ranking AS xep_hang_tin_nhiem;"ecb.company_id = :p_company_id
 AND ecb.year = :p_year
 AND ecb.month = :p_month";"SELECT company_id, ecb.ranking AS xep_hang_tin_nhiem
@@ -9138,11 +9118,11 @@ ELSE ROUND(n.du_no_tp_nganh / t.tong_du_no_tp * 100, 2)
 END AS ty_trong_du_no_pct
 FROM du_no_nganh n
 CROSS JOIN du_no_toan_tt t
-ORDER BY n.du_no_tp_nganh DESC;";;;;;;;Dữ liệu tĩnh
-20;;Dashboard Trái phiếu doanh nghiệp / Cơ cấu nợ vay theo ngành;Dư nợ TP toàn thị trường;Dư nợ TP toàn thị trường = ΣTổng dư nợ TP;Dashboard;Chỉ tiêu phái sinh;TB;Ngành, Thời gian;MSS, MDDS;x;x;;Done;Thông tin thị trường;JAD_STOCKINFOR;ListedShare;;;;;;;;Dữ liệu tĩnh;
-20;;Dashboard Trái phiếu doanh nghiệp / Cơ cấu nợ vay theo ngành;Tỷ trọng dư nợ theo nhóm ngành;Dư nợ TP ngành / Dư nợ TP toàn thị trường (%);Dashboard;Chỉ tiêu phái sinh;TB;Ngành, Thời gian;MSS, MDDS;x;x;;Done;Thông tin thị trường;JAD_STOCKINFOR;ListedShare;;;;;;;;Dữ liệu tĩnh;
+ORDER BY n.du_no_tp_nganh DESC;";;;;;;;Dữ liệu tĩnh, Dữ liệu động
+20;;Dashboard Trái phiếu doanh nghiệp / Cơ cấu nợ vay theo ngành;Dư nợ TP toàn thị trường;Dư nợ TP toàn thị trường = ΣTổng dư nợ TP;Dashboard;Chỉ tiêu phái sinh;TB;Ngành, Thời gian;MSS, MDDS;x;x;;Done;Thông tin thị trường;JAD_STOCKINFOR;ListedShare;;;;;;;;Dữ liệu tĩnh, Dữ liệu động;
+20;;Dashboard Trái phiếu doanh nghiệp / Cơ cấu nợ vay theo ngành;Tỷ trọng dư nợ theo nhóm ngành;Dư nợ TP ngành / Dư nợ TP toàn thị trường (%);Dashboard;Chỉ tiêu phái sinh;TB;Ngành, Thời gian;MSS, MDDS;x;x;;Done;Thông tin thị trường;JAD_STOCKINFOR;ListedShare;;;;;;;;Dữ liệu tĩnh, Dữ liệu động;
 20;;Dashboard Trái phiếu doanh nghiệp / Cơ cấu nợ vay theo ngành;Mệnh giá;Mệnh giá;Dashboard;Chỉ tiêu cơ sở;Trùng;Ngành, Thời gian;MDDS;x;x;;Done;Danh mục chứng khoán;;;;;Fix sẵn 100.000/ 1 trái phiếu;;;;;;Dữ liệu tĩnh
-20;;Dashboard Trái phiếu doanh nghiệp / Cơ cấu nợ vay theo ngành;KL TP lưu hành;KL TP lưu hành;Dashboard;Chỉ tiêu cơ sở;Trùng;Ngành, Thời gian;MSS;x;x;;Done;Thông tin thị trường;JAD_STOCKINFOR;ListedShare;;"SELECT
+20;;Dashboard Trái phiếu doanh nghiệp / Cơ cấu nợ vay theo ngành;KL TP lưu hành;KL TP lưu hành;Dashboard;Chỉ tiêu cơ sở;Trùng;Ngành, Thời gian;CSDLTT;x;x;;Done;Thông tin thị trường;JAD_STOCKINFOR;ListedShare;;"SELECT
 s.symbol,
 TO_DATE(s.tradingdate, 'DD/MM/YYYY') AS ngay_thong_ke,
 s.FloorCode,
@@ -9151,7 +9131,7 @@ FROM JAD_STOCKINFOR s
 WHERE TO_DATE(s.tradingdate, 'DD/MM/YYYY') = :ngay_gd
 AND s.StockType IN ('B','1','D')
 ORDER BY s.symbol;";;;;;;;Dữ liệu tĩnh
-21;;Dashboard Trái phiếu doanh nghiệp / Danh mục tổ chức phát hành cần giám sát tín dụng;Thời gian;Ngày thống kê;Dashboard;Chiều;Dễ;;MSS, MDDS;x;x;;Done;;;;;;;;;;;;Dữ liệu tĩnh
+21;;Dashboard Trái phiếu doanh nghiệp / Danh mục tổ chức phát hành cần giám sát tín dụng;Thời gian;Ngày thống kê;Dashboard;Chiều;Dễ;;MDDS, CSDLTT;x;x;;Done;;;;;;;;;;;;Dữ liệu tĩnh
 21;;Dashboard Trái phiếu doanh nghiệp / Danh mục tổ chức phát hành cần giám sát tín dụng;Tổ chức phát hành;Định danh tổ chức phát hành;Dashboard;Chiều;Dễ;;IDS, MDDS;x;x;;Done;;"MDDS.JAD_STOCKINFOR 
 IDS.company_profiles 
 IDS.categories 
@@ -9208,7 +9188,7 @@ TP.""symbol"",
 p.company_name_vn,
 c.industry_cd,
 c.industry_name,
-CP.equity_ticker;";;;;;;;Dữ liệu tĩnh
+CP.equity_ticker;";;;;;;;Dữ liệu động
 21;;Dashboard Trái phiếu doanh nghiệp / Danh mục tổ chức phát hành cần giám sát tín dụng;Dư nợ;"Tổng giá trị nợ vay hiện hữu của doanh nghiệp
 Tổng dư nợ = Mệnh giá * KL TP lưu hành";Dashboard;Chỉ tiêu phái sinh;Trùng;Tổ chức phát hành, Thời gian;MSS, MDDS;x;x;;Done;"- Danh mục chứng khoán
 - VSDS lập bảo cáo đẩy cồng trung cập tập trung (Mẫu bc ngày TT138)
@@ -9277,7 +9257,7 @@ AND e.report_year=:year AND e.report_quarter=:quarter
 AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('300'))
 OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('300'))
 OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('400')))
-GROUP BY c.industry_cd, c.industry_name, p.report_type_cd, e.report_year, e.report_quarter";;;;;;;Dữ liệu tĩnh
+GROUP BY c.industry_cd, c.industry_name, p.report_type_cd, e.report_year, e.report_quarter";;;;;;;Dữ liệu tĩnh, Dữ liệu động
 21;;Dashboard Trái phiếu doanh nghiệp / Danh mục tổ chức phát hành cần giám sát tín dụng;VCSH;Tổng vốn chủ sở hữu tổ chức phát hành trái phiếu;Dashboard;Chỉ tiêu cơ sở;TB;Tổ chức phát hành, Thời gian;IDS;x;;;Done;"select sum(data_value)
 from data a
 join report_catalog b on a.report_catalog_id = b.id
@@ -9328,7 +9308,7 @@ AND cd.report_year=:year AND cd.report_quarter=:quarter
 AND ((rc.enterprise_type_cd='dn' AND rr.row_desc='400')
 OR (rc.enterprise_type_cd='bh' AND rr.row_desc='400')
 OR (rc.enterprise_type_cd='td' AND rr.row_desc='500'))
-GROUP BY c.industry_cd, c.industry_name, p.report_type_cd, e.report_year, e.report_quarter";;;;;;;Dữ liệu tĩnh
+GROUP BY c.industry_cd, c.industry_name, p.report_type_cd, e.report_year, e.report_quarter";;;;;;;Dữ liệu tĩnh, Dữ liệu động
 21;;Dashboard Trái phiếu doanh nghiệp / Danh mục tổ chức phát hành cần giám sát tín dụng;ROE;Tỷ suất sinh lời trên vốn chủ sở hữu;Dashboard;Chỉ tiêu phái sinh;TB;Tổ chức phát hành, Thời gian;IDS;x;x;;Done;"VCSH bình quân:
 select sum(case when dau_ky is null then cuoi_ky
 when cuoi_ky is null then dau_ky
@@ -9387,7 +9367,7 @@ FROM bq b JOIN ln l
 ON l.equity_listing_exch_cd=b.equity_listing_exch_cd
 AND l.industry_cd=b.industry_cd AND l.report_type_cd=b.report_type_cd
 AND l.report_year=b.report_year AND l.report_quarter=b.report_quarter
-GROUP BY cp.equity_listing_exch_cd, cat.industry_cd, cat.industry_name, cp.report_type_cd, cd.report_year, cd.report_quarter";;;;;;;Dữ liệu tĩnh
+GROUP BY cp.equity_listing_exch_cd, cat.industry_cd, cat.industry_name, cp.report_type_cd, cd.report_year, cd.report_quarter";;;;;;;Dữ liệu tĩnh, Dữ liệu động
 21;;Dashboard Trái phiếu doanh nghiệp / Danh mục tổ chức phát hành cần giám sát tín dụng;LNST;LNST;Dashboard;Chỉ tiêu cơ sở;Dễ;Tổ chức phát hành, Thời gian;IDS;x;x;;Done;"select sum(data_value)
 from data a
 join report_catalog b on a.report_catalog_id = b.id
@@ -9415,9 +9395,9 @@ AND ((rc.enterprise_type_cd='dn' AND rr.row_desc='60')
 OR (rc.enterprise_type_cd='bh' AND rr.row_desc='60')
 OR (rc.enterprise_type_cd='td' AND rr.row_desc='21'))
 GROUP BY cp.equity_listing_exch_cd, cat.industry_cd, cat.industry_name,
-cp.report_type_cd, cd.report_year, cd.report_quarter";;;;;;;Dữ liệu tĩnh
+cp.report_type_cd, cd.report_year, cd.report_quarter";;;;;;;Dữ liệu tĩnh, Dữ liệu động
 21;;Dashboard Trái phiếu doanh nghiệp / Danh mục tổ chức phát hành cần giám sát tín dụng;VCSH bình quân;VCSH bình quân = (VCSH đầu kỳ + VCSH cuối kỳ) / 2;Dashboard;Chỉ tiêu cơ sở;Dễ;Tổ chức phát hành, Thời gian;IDS;x;x;;Done;Lấy từ báo cáo tài chính;;;;"Chỉ tiêu phái sinh từ chỉ tiêu: VCSH đầu kỳ và 
-VCSH cuối kỳ";;;;;;;Dữ liệu tĩnh
+VCSH cuối kỳ";;;;;;;Dữ liệu tĩnh, Dữ liệu động
 21;;Dashboard Trái phiếu doanh nghiệp / Danh mục tổ chức phát hành cần giám sát tín dụng;VCSH đầu kỳ;VCSH đầu kỳ;Dashboard;Chỉ tiêu cơ sở;Dễ;Tổ chức phát hành, Thời gian;IDS;x;x;;Done;Lấy từ báo cáo tài chính;"IDS.data (d), IDS.report_catalog (rc), IDS.rrow (rr),
 IDS.rcol (rc2), IDS.company_data (cd),
 IDS.company_profiles (cp), IDS.categories (cat)";SUM(d.data_value) AS vcsh;BCDKT% | col_desc='1' | row_desc: '400'(dn/bh), '500'(td);"
@@ -9489,7 +9469,7 @@ c.industry_name,
 cp.equity_ticker,
 pp.prev_year,
 pp.prev_quarter;
-";;;;;;;Dữ liệu tĩnh
+";;;;;;;Dữ liệu tĩnh, Dữ liệu động
 21;;Dashboard Trái phiếu doanh nghiệp / Danh mục tổ chức phát hành cần giám sát tín dụng;VCSH cuối kỳ;VCSH cuối kỳ;Dashboard;Chỉ tiêu cơ sở;Dễ;Tổ chức phát hành, Thời gian;IDS;x;x;;Done;Lấy từ báo cáo tài chính;"IDS.data (d), IDS.report_catalog (rc), IDS.rrow (rr),
 IDS.rcol (rc2), IDS.company_data (cd),
 IDS.company_profiles (cp), IDS.categories (cat)";SUM(d.data_value) AS vcsh;BCDKT% | col_desc='1' | row_desc: '400'(dn/bh), '500'(td);"
@@ -9546,7 +9526,7 @@ GROUP BY
 tp.""symbol"",
 c.industry_cd,
 c.industry_name,
-cp.equity_ticker;";;;;;;;Dữ liệu tĩnh
+cp.equity_ticker;";;;;;;;Dữ liệu tĩnh, Dữ liệu động
 21;;Dashboard Trái phiếu doanh nghiệp / Danh mục tổ chức phát hành cần giám sát tín dụng;Ý kiến kiểm toán;Ý kiến kiểm toán BCTC trong kỳ báo cáo;Dashboard;Chỉ tiêu phái sinh;TB;Tổ chức phát hành, Thời gian;IDS;x;x;;Done;Lấy từ báo cáo tài chính;"EVALUATION_DETAILS (ed)
 EVALUATION_CRITERIA (ec) 
 EVALUATION_GROUPS (eg)
@@ -9598,7 +9578,7 @@ FROM evaluation_cbonds ecb
 WHERE ecb.company_id = :p_company_id
 AND ecb.year = :p_year
 AND ecb.month = :p_month;";Thiết lập xếp loại theo xếp hạng tín nhiệm của doanh nghiệp;;;;;;Dữ liệu tĩnh
-22;;Dashboard An toàn CTCK/ Bộ chỉ tiêu chung;Thời gian;Ngày thống kê;Dashboard;Chiều;Dễ;;SCMS;x;x;;Done;;;;;;;;;;;;Dữ liệu tĩnh
+22;;Dashboard An toàn CTCK/ Bộ chỉ tiêu chung;Thời gian;Ngày thống kê;Dashboard;Chiều;Dễ;;SCMS;x;x;;Done;;;;;;;;;;;;Dữ liệu tĩnh, Dữ liệu động
 22;;Dashboard An toàn CTCK/ Bộ chỉ tiêu chung;Tỷ lệ dư nợ margin;Tỷ lệ dư nợ margin / VCSH;Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;"SSC_SCMS.MEMBER_REPORT
 SSC_SCMS.FORM_REPORT
 SSC_SCMS.REPORT_CELL_VALUE
@@ -9674,7 +9654,7 @@ FROM margin_data
 LEFT JOIN vcsh_data
 ON vcsh_data.nam = margin_data.nam
 AND vcsh_data.thang = margin_data.thang
-ORDER BY margin_data.nam, margin_data.thang;";;;;;;;Dữ liệu tĩnh
+ORDER BY margin_data.nam, margin_data.thang;";;;;;;;Dữ liệu tĩnh, Dữ liệu động
 22;;Dashboard An toàn CTCK/ Bộ chỉ tiêu chung;Dư nợ margin;Dư nợ margin trên báo cáo tháng của các CTCK;Dashboard;Chỉ tiêu cơ sở;Dễ;Ngày;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;"SSC_SCMS.MEMBER_REPORT
 SSC_SCMS.FORM_REPORT
 SSC_SCMS.REPORT_CELL_VALUE
@@ -9725,7 +9705,7 @@ AND mr2.PERIOD = mr.PERIOD
 )
 -- AND f.SHORT_NAME = 'SSI' -- Check CTCK cụ thể
 GROUP BY mr.REPORT_YEAR, mr.PERIOD
-ORDER BY mr.REPORT_YEAR, mr.PERIOD;";;;;;;;Dữ liệu tĩnh
+ORDER BY mr.REPORT_YEAR, mr.PERIOD;";;;;;;;Dữ liệu tĩnh, Dữ liệu động
 22;;Dashboard An toàn CTCK/ Bộ chỉ tiêu chung;VCSH;Vốn chủ sở hữu;Dashboard;Chỉ tiêu cơ sở;Dễ;Ngày;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;"SSC_SCMS.MEMBER_REPORT
 SSC_SCMS.FORM_REPORT
 SSC_SCMS.REPORT_CELL_VALUE
@@ -9777,7 +9757,7 @@ AND mr2.PERIOD = mr.PERIOD
 )
 -- AND f.SHORT_NAME = 'SSI' -- Check CTCK cụ thể
 GROUP BY mr.REPORT_YEAR, mr.PERIOD
-ORDER BY mr.REPORT_YEAR, mr.PERIOD;";;;;;;;Dữ liệu tĩnh
+ORDER BY mr.REPORT_YEAR, mr.PERIOD;";;;;;;;Dữ liệu tĩnh, Dữ liệu động
 22;;Dashboard An toàn CTCK/ Bộ chỉ tiêu chung;CTCK cần kiểm soát;"Tỷ lệ dư nợ margin > Ngưỡng quy định kiểm soát
 Tỷ lệ dự nợ margin lớn hơn mức cao";Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;"SSC_SCMS.REPORT_CELL_VALUE
 SSC_SCMS.MEMBER_REPORT
@@ -9820,7 +9800,7 @@ AND mr.RECORD_STATUS IN (2, 3)
 AND rcv.NUMERIC_VALUE IS NOT NULL
 ) rcv ON rcv.thang = nd.thang AND rcv.rn = 1
 GROUP BY nd.thang
-ORDER BY nd.thang;";;;;;;;Dữ liệu tĩnh
+ORDER BY nd.thang;";;;;;;;Dữ liệu tĩnh, Dữ liệu động
 22;;Dashboard An toàn CTCK/ Bộ chỉ tiêu chung;Xếp hạng tỷ lệ an toàn tài chính;Xếp hạng tỷ lệ an toàn tài chính: Cao, Thấp, Trung bình;Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;"SSC_SCMS.REPORT_CELL_VALUE
 SSC_SCMS.MEMBER_REPORT
 SSC_SCMS.CAT_INDICATOR";"rcv.NUMERIC_VALUE, 
@@ -9866,7 +9846,7 @@ AND mr.RECORD_STATUS IN (2, 3)
 AND rcv.NUMERIC_VALUE IS NOT NULL
 ) rcv ON rcv.thang = nd.thang AND rcv.rn = 1
 GROUP BY nd.thang
-ORDER BY nd.thang;";;;;;;;Dữ liệu tĩnh
+ORDER BY nd.thang;";;;;;;;Dữ liệu tĩnh, Dữ liệu động
 22;;Dashboard An toàn CTCK/ Bộ chỉ tiêu chung;Tổng VCSH;Tổng VCSH của các CTCK;Dashboard;Chỉ tiêu phái sinh;TB;Ngày;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;"SSC_SCMS.MEMBER_REPORT
 SSC_SCMS.FORM_REPORT
 SSC_SCMS.REPORT_CELL_VALUE
@@ -9918,9 +9898,9 @@ AND mr2.PERIOD = mr.PERIOD
 )
 -- AND f.SHORT_NAME = 'SSI' -- Check CTCK cụ thể
 GROUP BY mr.REPORT_YEAR, mr.PERIOD
-ORDER BY mr.REPORT_YEAR, mr.PERIOD;";;;;;;;Dữ liệu tĩnh
+ORDER BY mr.REPORT_YEAR, mr.PERIOD;";;;;;;;Dữ liệu tĩnh, Dữ liệu động
 22;;Dashboard An toàn CTCK/ Bộ chỉ tiêu chung;Hệ số đòn bẩy D/E trung bình;D/E (CTCK i) = Σ Tổng nợ phải trả / Σ VCSH;Dashboard;Chỉ tiêu phái sinh;TB;Ngày;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;;;;"-- Tính phái sinh từ chỉ tiêu:
-Tổng nợ phải trả / VCSH";;;;;;;Dữ liệu tĩnh
+Tổng nợ phải trả / VCSH";;;;;;;Dữ liệu tĩnh, Dữ liệu động
 22;;Dashboard An toàn CTCK/ Bộ chỉ tiêu chung;Tổng nợ phải trả;Tổng nợ phải trả;Dashboard;Chỉ tiêu cơ sở;Dễ;Ngày;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;"SSC_SCMS.MEMBER_REPORT 
 SSC_SCMS.FORM_REPORT 
 SSC_SCMS.REPORT_CELL_VALUE 
@@ -9938,7 +9918,7 @@ JOIN SSC_SCMS.FORM_SHEET_COLUMN fsc ON fsc.FORM_SHEET_ID = 5894
 -- AND fsc.COLUMN_NAME = rcv.COLUMN_NAME
 WHERE mr.RECORD_STATUS IN (2, 3)
 GROUP BY mr.ID, mr.DATA_DATE
-ORDER BY mr.DATA_DATE DESC;";;;;;;;Dữ liệu tĩnh
+ORDER BY mr.DATA_DATE DESC;";;;;;;;Dữ liệu tĩnh, Dữ liệu động
 22;;Dashboard An toàn CTCK/ Bộ chỉ tiêu chung;VCSH;VCSH;Dashboard;Chỉ tiêu cơ sở;Dễ;Ngày;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;"SSC_SCMS.MEMBER_REPORT
 SSC_SCMS.FORM_REPORT
 SSC_SCMS.REPORT_CELL_VALUE
@@ -9990,12 +9970,12 @@ AND mr2.PERIOD = mr.PERIOD
 )
 -- AND f.SHORT_NAME = 'SSI' -- Check CTCK cụ thể
 GROUP BY mr.REPORT_YEAR, mr.PERIOD
-ORDER BY mr.REPORT_YEAR, mr.PERIOD;";;;;;;;Dữ liệu tĩnh
-23;;Dashboard An toàn CTCK/Phân bổ dư nợ margin;Thời gian;Thời gian;Dashboard;Chỉ tiêu cơ sở;Dễ;;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;;;;;;;;;;;Dữ liệu tĩnh
+ORDER BY mr.REPORT_YEAR, mr.PERIOD;";;;;;;;Dữ liệu tĩnh, Dữ liệu động
+23;;Dashboard An toàn CTCK/Phân bổ dư nợ margin;Thời gian;Thời gian;Dashboard;Chỉ tiêu cơ sở;Dễ;;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;;;;;;;;;;;Dữ liệu tĩnh, Dữ liệu động
 23;;Dashboard An toàn CTCK/Phân bổ dư nợ margin;Tỷ lệ dư nợ margin;Tỷ lệ dư nợ margin / VCSH;Dashboard;Chỉ tiêu phái sinh;Trùng;Tháng, Mức độ xếp hạng;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;"SSC_SCMS.MEMBER_REPORT
 SSC_SCMS.FORM_REPORT
 SSC_SCMS.REPORT_CELL_VALUE
-SSC_SCMS.SC_FIRM_INFO";;;Tính phái sinh Dư nợ margin/ Vốn chủ sở hữu;;;;;;;Dữ liệu tĩnh
+SSC_SCMS.SC_FIRM_INFO";;;Tính phái sinh Dư nợ margin/ Vốn chủ sở hữu;;;;;;;Dữ liệu tĩnh, Dữ liệu động
 23;;Dashboard An toàn CTCK/Phân bổ dư nợ margin;Xếp hạng tỷ lệ an toàn tài chính;Xếp hạng tỷ lệ an toàn tài chính: Cao, Thấp, Trung bình;Dashboard;Chỉ tiêu phái sinh;Trùng;Tháng, Mức độ xếp hạng;SCMS;x;x;;Done;;"SSC_SCMS.REPORT_CELL_VALUE
 SSC_SCMS.MEMBER_REPORT
 SSC_SCMS.CAT_INDICATOR";"rcv.NUMERIC_VALUE, 
@@ -10041,7 +10021,7 @@ AND mr.RECORD_STATUS IN (2, 3)
 AND rcv.NUMERIC_VALUE IS NOT NULL
 ) rcv ON rcv.thang = nd.thang AND rcv.rn = 1
 GROUP BY nd.thang
-ORDER BY nd.thang;";Trùng dòng 343;;;;;;Dữ liệu tĩnh
+ORDER BY nd.thang;";Trùng dòng 343;;;;;;Dữ liệu tĩnh, Dữ liệu động
 23;;Dashboard An toàn CTCK/Phân bổ dư nợ margin;Dư nợ margin;Dư nợ margin;Dashboard;Chỉ tiêu cơ sở;Dễ;Tháng, Mức độ xếp hạng;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;"SSC_SCMS.MEMBER_REPORT
 SSC_SCMS.FORM_REPORT
 SSC_SCMS.REPORT_CELL_VALUE
@@ -10092,7 +10072,7 @@ AND mr2.PERIOD = mr.PERIOD
 ) 
 -- AND f.SHORT_NAME = 'SSI' -- Check CTCK cụ thể 
 GROUP BY mr.REPORT_YEAR, mr.PERIOD 
-ORDER BY mr.REPORT_YEAR, mr.PERIOD;";;;;;;;Dữ liệu tĩnh
+ORDER BY mr.REPORT_YEAR, mr.PERIOD;";;;;;;;Dữ liệu tĩnh, Dữ liệu động
 23;;Dashboard An toàn CTCK/Phân bổ dư nợ margin;VCSH;VCSH;Dashboard;Chỉ tiêu cơ sở;Dễ;Tháng, Mức độ xếp hạng;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;"SSC_SCMS.MEMBER_REPORT
 SSC_SCMS.FORM_REPORT
 SSC_SCMS.REPORT_CELL_VALUE
@@ -10144,7 +10124,7 @@ AND mr2.PERIOD = mr.PERIOD
 )
 -- AND f.SHORT_NAME = 'SSI' -- Check CTCK cụ thể
 GROUP BY mr.REPORT_YEAR, mr.PERIOD
-ORDER BY mr.REPORT_YEAR, mr.PERIOD;";;;;;;;Dữ liệu tĩnh
+ORDER BY mr.REPORT_YEAR, mr.PERIOD;";;;;;;;Dữ liệu tĩnh, Dữ liệu động
 23;;Dashboard An toàn CTCK/Phân bổ dư nợ margin;Số lượng CTCK xếp hạng cao;Số lượng CTCK theo từng mức xếp hạng cao;Dashboard;Chỉ tiêu phái sinh;TB;Tháng, Mức độ xếp hạng;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;"SSC_SCMS.REPORT_CELL_VALUE
 SSC_SCMS.MEMBER_REPORT
 SSC_SCMS.CAT_INDICATOR";"rcv.NUMERIC_VALUE, 
@@ -10157,7 +10137,7 @@ rcv.MEMBER_REPORT_ID,
 rcv.INDICATOR_ID,
 ci.ID,
 ci.INDICATOR_CODE";;"-- Phái sinh Mức cao đếm CTCK
-";;;;;;;Dữ liệu tĩnh
+";;;;;;;Dữ liệu tĩnh, Dữ liệu động
 23;;Dashboard An toàn CTCK/Phân bổ dư nợ margin;Số lượng CTCK xếp hạng trung bình;Số lượng CTCK theo từng mức xếp hạng trung bình;Dashboard;Chỉ tiêu phái sinh;TB;Tháng, Mức độ xếp hạng;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;"SSC_SCMS.REPORT_CELL_VALUE
 SSC_SCMS.MEMBER_REPORT
 SSC_SCMS.CAT_INDICATOR";"rcv.NUMERIC_VALUE, 
@@ -10170,7 +10150,7 @@ rcv.MEMBER_REPORT_ID,
 rcv.INDICATOR_ID,
 ci.ID,
 ci.INDICATOR_CODE";;"-- Phái sinh Mức trung bình đếm CTCK
-";;;;;;;Dữ liệu tĩnh
+";;;;;;;Dữ liệu tĩnh, Dữ liệu động
 23;;Dashboard An toàn CTCK/Phân bổ dư nợ margin;Số lượng CTCK xếp hạng thấp;Số lượng CTCK theo từng mức xếp hạng thấp;Dashboard;Chỉ tiêu phái sinh;TB;Tháng, Mức độ xếp hạng;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;"SSC_SCMS.REPORT_CELL_VALUE
 SSC_SCMS.MEMBER_REPORT
 SSC_SCMS.CAT_INDICATOR";"rcv.NUMERIC_VALUE, 
@@ -10183,7 +10163,7 @@ rcv.MEMBER_REPORT_ID,
 rcv.INDICATOR_ID,
 ci.ID,
 ci.INDICATOR_CODE";;"-- Phái sinh Mức thấp đếm CTCK
-";;;;;;;Dữ liệu tĩnh
+";;;;;;;Dữ liệu tĩnh, Dữ liệu động
 23;;Dashboard An toàn CTCK/Phân bổ dư nợ margin;Phân loại CTCK;Phân loại CTCK theo từng mức cao, trung bình, thấp;Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;"SSC_SCMS.REPORT_CELL_VALUE
 SSC_SCMS.MEMBER_REPORT
 SSC_SCMS.CAT_INDICATOR";"rcv.NUMERIC_VALUE, 
@@ -10206,12 +10186,12 @@ FROM SCMS.BC_BAO_CAO_GT gt
 JOIN SCMS.DM_CHI_TIEU dct ON dct.ID = gt.DM_CHI_TIEU_ID
 WHERE dct.MA_CHI_TIEU = 'TY_LE_VON_KHA_DUNG' -- Xác nhận lại
 AND gt.GIA_TRI IS NOT NULL
-ORDER BY 1;";;;;;;;Dữ liệu tĩnh
-24;;Dashboard An toàn CTCK/ Biểu đồ tương quan vốn và dự nợ margin;Thời gian (Ngày);Ngày;Dashboard;Chiều;Dễ;;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;;;;;;;;;;;Dữ liệu tĩnh
+ORDER BY 1;";;;;;;;Dữ liệu tĩnh, Dữ liệu động
+24;;Dashboard An toàn CTCK/ Biểu đồ tương quan vốn và dự nợ margin;Thời gian (Ngày);Ngày;Dashboard;Chiều;Dễ;;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;;;;;;;;;;;Dữ liệu tĩnh, Dữ liệu động
 24;;Dashboard An toàn CTCK/ Biểu đồ tương quan vốn và dự nợ margin;Mã CTCK;Công ty chứng khoán;Dashboard;Chiều;TB;Ngày, Mã CK;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;"SSC_SCMS.MEMBER_REPORT
 SSC_SCMS.FORM_REPORT
 SSC_SCMS.REPORT_CELL_VALUE
-SSC_SCMS.SC_FIRM_INFO";;;;;;;;;;Dữ liệu tĩnh
+SSC_SCMS.SC_FIRM_INFO";;;;;;;;;;Dữ liệu tĩnh, Dữ liệu động
 24;;Dashboard An toàn CTCK/ Biểu đồ tương quan vốn và dự nợ margin;Tổng VCSH;VCSH của các CTCK;Dashboard;Chỉ tiêu cơ sở;Trùng;Ngày, Mã CK;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;"SSC_SCMS.MEMBER_REPORT
 SSC_SCMS.FORM_REPORT
 SSC_SCMS.REPORT_CELL_VALUE
@@ -10263,7 +10243,7 @@ AND mr2.PERIOD = mr.PERIOD
 )
 -- AND f.SHORT_NAME = 'SSI' -- Check CTCK cụ thể
 GROUP BY mr.REPORT_YEAR, mr.PERIOD
-ORDER BY mr.REPORT_YEAR, mr.PERIOD;";;;;;;;Dữ liệu tĩnh
+ORDER BY mr.REPORT_YEAR, mr.PERIOD;";;;;;;;Dữ liệu tĩnh, Dữ liệu động
 24;;Dashboard An toàn CTCK/ Biểu đồ tương quan vốn và dự nợ margin;Dư nợ margin;Dư nợ margin của các CTCK;Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày, Mã CK;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;"SSC_SCMS.MEMBER_REPORT
 SSC_SCMS.FORM_REPORT
 SSC_SCMS.REPORT_CELL_VALUE
@@ -10314,11 +10294,11 @@ AND mr2.PERIOD = mr.PERIOD
 ) 
 -- AND f.SHORT_NAME = 'SSI' -- Check CTCK cụ thể 
 GROUP BY mr.REPORT_YEAR, mr.PERIOD 
-ORDER BY mr.REPORT_YEAR, mr.PERIOD;";;;;;;;Dữ liệu tĩnh
+ORDER BY mr.REPORT_YEAR, mr.PERIOD;";;;;;;;Dữ liệu tĩnh, Dữ liệu động
 24;;Dashboard An toàn CTCK/ Biểu đồ tương quan vốn và dự nợ margin;Tỷ lệ dư nợ margin;Tỷ lệ dư nợ margin / VCSH;Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày, Mã CK;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;"SSC_SCMS.MEMBER_REPORT
 SSC_SCMS.FORM_REPORT
 SSC_SCMS.REPORT_CELL_VALUE
-SSC_SCMS.SC_FIRM_INFO";;;--Phái sinh Tỷ lệ dư nợ margin / VCSH;;;;;;;Dữ liệu tĩnh
+SSC_SCMS.SC_FIRM_INFO";;;--Phái sinh Tỷ lệ dư nợ margin / VCSH;;;;;;;Dữ liệu tĩnh, Dữ liệu động
 24;;Dashboard An toàn CTCK/ Biểu đồ tương quan vốn và dự nợ margin;Xếp hạng tỷ lệ an toàn tài chính;Xếp hạng tỷ lệ an toàn tài chính: Cao, Thấp, Trung bình;Dashboard;Chỉ tiêu cơ sở;Trùng;Ngày, Mã CK;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;"SSC_SCMS.REPORT_CELL_VALUE
 SSC_SCMS.MEMBER_REPORT
 SSC_SCMS.CAT_INDICATOR";"rcv.NUMERIC_VALUE, 
@@ -10364,13 +10344,13 @@ AND mr.RECORD_STATUS IN (2, 3)
 AND rcv.NUMERIC_VALUE IS NOT NULL
 ) rcv ON rcv.thang = nd.thang AND rcv.rn = 1
 GROUP BY nd.thang
-ORDER BY nd.thang;";Trùng dòng 343;;;;;;Dữ liệu tĩnh
+ORDER BY nd.thang;";Trùng dòng 343;;;;;;Dữ liệu tĩnh, Dữ liệu động
 25;;"
 Dashboard An toàn CTCK/
-Danh sách giám sát rủi ro dư nợ margin""";Ngày;Ngày;Dashboard;Chiều;Trùng;;SCMS;;;;Done;Lấy từ báo cáo tình hình hoạt động;;;;;;;;;;;Dữ liệu tĩnh
+Danh sách giám sát rủi ro dư nợ margin";Ngày;Ngày;Dashboard;Chiều;Trùng;;SCMS;;;;Done;Lấy từ báo cáo tình hình hoạt động;;;;;;;;;;;Dữ liệu tĩnh, Dữ liệu động
 25;;"
 Dashboard An toàn CTCK/
-Danh sách giám sát rủi ro dư nợ margin";Mã CTCK;Mã CTCK;Dashboard;Chiều;Trùng;;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;;;;;;;;;;;Dữ liệu tĩnh
+Danh sách giám sát rủi ro dư nợ margin";Mã CTCK;Mã CTCK;Dashboard;Chiều;Trùng;;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;;;;;;;;;;;Dữ liệu tĩnh, Dữ liệu động
 25;;"
 Dashboard An toàn CTCK/
 Danh sách giám sát rủi ro dư nợ margin";VCSH;VCSH của các CTCK;Dashboard;Chỉ tiêu cơ sở;Trùng;Ngày, Mã CK;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;"SSC_SCMS.MEMBER_REPORT
@@ -10424,7 +10404,7 @@ AND mr2.PERIOD = mr.PERIOD
 )
 -- AND f.SHORT_NAME = 'SSI' -- Check CTCK cụ thể
 GROUP BY mr.REPORT_YEAR, mr.PERIOD
-ORDER BY mr.REPORT_YEAR, mr.PERIOD;";;;;;;;Dữ liệu tĩnh
+ORDER BY mr.REPORT_YEAR, mr.PERIOD;";;;;;;;Dữ liệu tĩnh, Dữ liệu động
 25;;"
 Dashboard An toàn CTCK/
 Danh sách giám sát rủi ro dư nợ margin";Dư nợ margin;Dư nợ margin;Dashboard;Chỉ tiêu cơ sở;Trùng;Ngày, Mã CK;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;"SSC_SCMS.MEMBER_REPORT
@@ -10477,13 +10457,13 @@ AND mr2.PERIOD = mr.PERIOD
 ) 
 -- AND f.SHORT_NAME = 'SSI' -- Check CTCK cụ thể 
 GROUP BY mr.REPORT_YEAR, mr.PERIOD 
-ORDER BY mr.REPORT_YEAR, mr.PERIOD;";;;;;;;Dữ liệu tĩnh
+ORDER BY mr.REPORT_YEAR, mr.PERIOD;";;;;;;;Dữ liệu tĩnh, Dữ liệu động
 25;;"
 Dashboard An toàn CTCK/
 Danh sách giám sát rủi ro dư nợ margin";Tỷ lệ dư nợ margin;Tỷ lệ dư nợ margin / VCSH;Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày, Mã CK;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;"SSC_SCMS.MEMBER_REPORT
 SSC_SCMS.FORM_REPORT
 SSC_SCMS.REPORT_CELL_VALUE
-SSC_SCMS.SC_FIRM_INFO";;;--Phái sinh Tỷ lệ dư nợ margin / VCSH;;;;;;;Dữ liệu tĩnh
+SSC_SCMS.SC_FIRM_INFO";;;--Phái sinh Tỷ lệ dư nợ margin / VCSH;;;;;;;Dữ liệu tĩnh, Dữ liệu động
 25;;"
 Dashboard An toàn CTCK/
 Danh sách giám sát rủi ro dư nợ margin";Xếp hạng tỷ lệ an toàn tài chính;Xếp hạng tỷ lệ an toàn tài chính: Cao, Thấp, Trung bình;Dashboard;Chỉ tiêu cơ sở;Trùng;Ngày, Mã CK;SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;"SSC_SCMS.REPORT_CELL_VALUE
@@ -10531,7 +10511,7 @@ AND mr.RECORD_STATUS IN (2, 3)
 AND rcv.NUMERIC_VALUE IS NOT NULL
 ) rcv ON rcv.thang = nd.thang AND rcv.rn = 1
 GROUP BY nd.thang
-ORDER BY nd.thang;";Trùng dòng 343;;;;;;Dữ liệu tĩnh
+ORDER BY nd.thang;";Trùng dòng 343;;;;;;Dữ liệu tĩnh, Dữ liệu động
 26;;Dashboard Phái sinh / Biến động trong phiên/ VN30;Ngày;Ngày;Dashboard;Chiều;Dễ;;MDDS;x;x;;Done;;;;;;;;;;;;Dữ liệu tĩnh
 26;;Dashboard Phái sinh / Biến động trong phiên/ VN30;Hợp đồng tương lai;Hợp đồng tương lai;Dashboard;Chiều;Dễ;;MDDS;x;x;;Done;Thông tin thị trường;JAD_STOCKINFOR;stockType;FloorCode='03' (FDS) AND StockType='FU' cho phái sinh;"SELECT
 s.StockType,
@@ -11443,7 +11423,7 @@ AND ((rc.enterprise_type_cd='dn' AND rr.row_desc='60')
 OR (rc.enterprise_type_cd='bh' AND rr.row_desc='60')
 OR (rc.enterprise_type_cd='td' AND rr.row_desc='21'))
 GROUP BY cp.equity_listing_exch_cd, cat.industry_cd, cat.industry_name,
-cp.report_type_cd, cd.report_year, cd.report_quarter";;;;;;;Dữ liệu tĩnh
+cp.report_type_cd, cd.report_year, cd.report_quarter";;;;;;;Dữ liệu tĩnh, Dữ liệu động
 32;;Thống kê theo chỉ số;Số cổ phiếu đang lưu hành;Số cổ phiếu đang lưu hành;Data Explorer;Chỉ tiêu cơ sở;TB;Thời gian, Chỉ số;MSS;;;;Done;Khối lượng CK đang lưu hành: VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày);Lấy từ VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày);BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành;Khối lượng chứng khoán đang lưu hành;Mã chứng khoán = 'Cổ phiếu';"KLCK lưu hành lấy từ VSDC - Báo cáo TT138.2025.TT.BTC Mẫu số 01. MSS chưa có thiết kế CSDL riêng;";;;;;;Chưa có CSDL - Map biểu mẫu
 32;;Thống kê theo chỉ số;GTGD phiên;;Data Explorer;Chỉ tiêu phái sinh;Khó;Thời gian, Chỉ số;MDDS;x;x;;Done;Thông tin thị trường;"TRADE_BOOK_HOSE
 TRADE_BOOK_HNX";"(TRADE_BOOK_HOSE):
@@ -11568,11 +11548,11 @@ AND mr2.PERIOD = mr.PERIOD
 ) 
 -- AND f.SHORT_NAME = 'SSI' -- Check CTCK cụ thể 
 GROUP BY mr.REPORT_YEAR, mr.PERIOD 
-ORDER BY mr.REPORT_YEAR, mr.PERIOD;";;;;;;;Dữ liệu tĩnh
+ORDER BY mr.REPORT_YEAR, mr.PERIOD;";;;;;;;Dữ liệu tĩnh, Dữ liệu động
 32;;Thống kê theo chỉ số;Tỷ lệ Margin/VCSH;;Data Explorer;Chỉ tiêu phái sinh;TB;Thời gian, Chỉ số;MDDS, SCMS;x;x;;Done;Lấy từ báo cáo tình hình hoạt động;"SSC_SCMS.MEMBER_REPORT
 SSC_SCMS.FORM_REPORT
 SSC_SCMS.REPORT_CELL_VALUE
-SSC_SCMS.SC_FIRM_INFO";;;--Phái sinh Tỷ lệ dư nợ margin / VCSH;;;;;;;Dữ liệu tĩnh
+SSC_SCMS.SC_FIRM_INFO";;;--Phái sinh Tỷ lệ dư nợ margin / VCSH;;;;;;;Dữ liệu tĩnh, Dữ liệu động
 33;;Theo ngành;Ngành nghề;;Data Explorer;Chiều;TB;;IDS;x;x;;Done;"Cần hỏi lại phân hệ:
 Select code ||'-'|| name
 From Business_line_level_1
@@ -11658,7 +11638,7 @@ AND ((rc.enterprise_type_cd='dn' AND rr.row_desc='60')
 OR (rc.enterprise_type_cd='bh' AND rr.row_desc='60')
 OR (rc.enterprise_type_cd='td' AND rr.row_desc='21'))
 GROUP BY cp.equity_listing_exch_cd, cat.industry_cd, cat.industry_name,
-cp.report_type_cd, cd.report_year, cd.report_quarter";;;;;;;Dữ liệu tĩnh
+cp.report_type_cd, cd.report_year, cd.report_quarter";;;;;;;Dữ liệu tĩnh, Dữ liệu động
 33;;Theo ngành;Số cổ phiếu đang lưu hành;Khối lượng CK đang lưu hành;Data Explorer;Chỉ tiêu cơ sở;Trùng;;MSS;;;;Done;Khối lượng CK đang lưu hành: VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày);;;;;;;;;;;Chưa có CSDL - Map biểu mẫu
 34;;Vốn hóa thị trường;Ngành nghề kinh tế;;Data Explorer;Chiều;Trùng;;IDS;x;x;;Done;"Cần hỏi lại phân hệ:
 Select code ||'-'|| name

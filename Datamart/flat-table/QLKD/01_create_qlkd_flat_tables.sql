@@ -8,16 +8,23 @@
 -- ============================================================
 -- 1. FACT: qlkd_fct_securities_company_status_snpst_flat
 --    Fact Securities Company Status Snapshot
---    Joins: Calendar Date × Securities Company Dimension
+--    Grain: 1 CTCK × 1 ngày snapshot D (Periodic Snapshot APPEND, driving
+--    table = Securities Company). License Issue Date là Chiều riêng, không
+--    phải grain.
+--    Joins: Calendar Date (snpst_dt_dim_id, license_issue_dt_dim_id) × Securities Company Dimension
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_status_snpst_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT Fact Securities Company Status Snapshot
-    snpst_dt_dim_id                 String                  COMMENT 'FK ngày snapshot D — date-spine từ MIN(License_Issue_Date)',
-    securities_company_dim_id       String                  COMMENT 'FK CTCK',
+    snpst_dt_dim_id                 String                  COMMENT 'FK ngày snapshot D — ETL runtime date, full-scan Securities Company Dimension mỗi lần chạy',
+    securities_company_dim_id       String                  COMMENT 'FK CTCK — driving table',
+    license_issue_dt_dim_id          Nullable(String)        COMMENT 'FK ngày cấp phép hoạt động — Chiều riêng, không phải grain',
 
-    -- From: CALENDAR DATE DIMENSION
-    cdr_dt                          Nullable(Date)          COMMENT 'FK ngày snapshot D — từ Calendar Date Dimension',
+    -- From: CALENDAR DATE DIMENSION (Snapshot Date)
+    cdr_dt                          Nullable(Date)          COMMENT 'Ngày snapshot D — từ Calendar Date Dimension',
+
+    -- From: CALENDAR DATE DIMENSION (License Issue Date)
+    license_issue_cdr_dt             Nullable(Date)          COMMENT 'Ngày cấp phép hoạt động — từ Calendar Date Dimension (Chiều/thuộc tính riêng)',
 
     -- From: SECURITIES COMPANY DIMENSION
     sc_id                           Nullable(String)        COMMENT 'Business Id CTCK (Atomic surrogate) — từ Securities Company Dimension',
@@ -26,7 +33,8 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_status_snpst_fla
     company_tp_code                 Nullable(String)        COMMENT 'Loại hình doanh nghiệp CTCK — từ Securities Company Dimension',
     company_status_code             Nullable(String)        COMMENT '7 nhóm trạng thái CTCK — derive CASE/LIKE trên Classification Firm Status Name — LEFT JOIN cl_firm_status — từ Securities Company Dimension',
     is_listed_indicator             Nullable(UInt8)         COMMENT 'Cờ niêm yết trên sàn — từ Securities Company Dimension',
-    stock_exchange_nm               Nullable(String)        COMMENT 'Sàn niêm yết (HOSE/HNX/UPCOM) — từ Securities Company Dimension'
+    stock_exchange_nm               Nullable(String)        COMMENT 'Sàn niêm yết (HOSE/HNX/UPCOM) — từ Securities Company Dimension',
+    securities_company_src_stm_code Nullable(String)        COMMENT 'Mã hệ thống nguồn — từ Securities Company Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
@@ -58,10 +66,12 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_service_registra
     company_status_code             Nullable(String)        COMMENT '7 nhóm trạng thái CTCK — derive CASE/LIKE trên Classification Firm Status Name — LEFT JOIN cl_firm_status — từ Securities Company Dimension',
     is_listed_indicator             Nullable(UInt8)         COMMENT 'Cờ niêm yết trên sàn — từ Securities Company Dimension',
     stock_exchange_nm               Nullable(String)        COMMENT 'Sàn niêm yết (HOSE/HNX/UPCOM) — từ Securities Company Dimension',
+    securities_company_src_stm_code Nullable(String)        COMMENT 'Mã hệ thống nguồn — từ Securities Company Dimension',
 
     -- From: SERVICE TYPE DIMENSION
     cl_service_code                 Nullable(String)        COMMENT 'Mã dịch vụ chứng khoán — từ Service Type Dimension',
-    cl_service_nm                   Nullable(String)        COMMENT 'Tên dịch vụ chứng khoán — dùng CASE/LIKE phân loại tại tầng báo cáo — từ Service Type Dimension'
+    cl_service_nm                   Nullable(String)        COMMENT 'Tên dịch vụ chứng khoán — dùng CASE/LIKE phân loại tại tầng báo cáo — từ Service Type Dimension',
+    service_tp_src_stm_code         Nullable(String)        COMMENT 'Mã hệ thống nguồn — từ Service Type Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
@@ -93,7 +103,8 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_license_conditio
     company_tp_code                 Nullable(String)        COMMENT 'Loại hình doanh nghiệp CTCK — từ Securities Company Dimension',
     company_status_code             Nullable(String)        COMMENT '7 nhóm trạng thái CTCK — derive CASE/LIKE trên Classification Firm Status Name — LEFT JOIN cl_firm_status — từ Securities Company Dimension',
     is_listed_indicator             Nullable(UInt8)         COMMENT 'Cờ niêm yết trên sàn — từ Securities Company Dimension',
-    stock_exchange_nm               Nullable(String)        COMMENT 'Sàn niêm yết (HOSE/HNX/UPCOM) — từ Securities Company Dimension'
+    stock_exchange_nm               Nullable(String)        COMMENT 'Sàn niêm yết (HOSE/HNX/UPCOM) — từ Securities Company Dimension',
+    securities_company_src_stm_code Nullable(String)        COMMENT 'Mã hệ thống nguồn — từ Securities Company Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
@@ -119,7 +130,8 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_capital_raising_
 
     -- From: OFFERING FORM DIMENSION
     capital_raising_form_code       Nullable(String)        COMMENT 'Mã hình thức tăng vốn — ETL-derived CASE WHEN Item Category Code + Offering Method — từ Offering Form Dimension',
-    capital_raising_form_nm         Nullable(String)        COMMENT 'Tên hình thức tăng vốn (5 nhóm) — từ Offering Form Dimension'
+    capital_raising_form_nm         Nullable(String)        COMMENT 'Tên hình thức tăng vốn (5 nhóm) — từ Offering Form Dimension',
+    offering_form_src_stm_code      Nullable(String)        COMMENT 'Mã hệ thống nguồn — từ Offering Form Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
@@ -140,13 +152,32 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_market_index_snpst_flat ON CLUSTER 
     snpst_dt_dim_id                 String                  COMMENT 'FK ngày (populate lấy đúng ngày cuối tháng)',
     market_index_dim_id             String                  COMMENT 'FK Market Index Dimension',
     market_index_val                Nullable(Decimal(23,2)) COMMENT 'Giá trị chỉ số (bản ghi cuối phiên, ngày cuối tháng)',
+    open_index                      Nullable(Decimal(23,2)) COMMENT '[GSTT delta] Index mở cửa tại bản ghi cuối phiên',
+    high_index                      Nullable(Decimal(23,2)) COMMENT '[GSTT delta] Index cao nhất tại bản ghi cuối phiên',
+    low_index                       Nullable(Decimal(23,2)) COMMENT '[GSTT delta] Index thấp nhất tại bản ghi cuối phiên',
+    prior_index                     Nullable(Decimal(23,2)) COMMENT '[GSTT delta] Index cuối cùng của phiên trước đó',
+    index_change                    Nullable(Decimal(23,2)) COMMENT '[GSTT delta] Giá trị index thay đổi so với phiên trước',
+    index_percent_change            Nullable(Decimal(5,2))  COMMENT '[GSTT delta] % index thay đổi so với phiên trước',
+    advances_count                  Nullable(Int64)         COMMENT '[GSTT delta] Số lượng mã tăng',
+    declines_count                  Nullable(Int64)         COMMENT '[GSTT delta] Số lượng mã giảm',
+    no_change_count                 Nullable(Int64)         COMMENT '[GSTT delta] Số lượng mã không tăng/giảm',
+    ceiling_count                   Nullable(Int64)         COMMENT '[GSTT delta] Số lượng mã đang trần',
+    floor_count                     Nullable(Int64)         COMMENT '[GSTT delta] Số lượng mã đang sàn',
+    odd_lot_total_vol                Nullable(Int64)         COMMENT '[GSTT delta] Khối lượng khớp lô lẻ',
+    odd_lot_total_val                Nullable(Decimal(23,2)) COMMENT '[GSTT delta] Giá trị khớp lô lẻ',
+    pt_total_vol                    Nullable(Int64)         COMMENT '[GSTT delta] Tổng khối lượng giao dịch thỏa thuận',
+    pt_total_val                    Nullable(Decimal(23,2)) COMMENT '[GSTT delta] Tổng giá trị giao dịch thỏa thuận',
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                          Nullable(Date)          COMMENT 'Ngày cuối tháng (LAST_DAY) — từ Calendar Date Dimension',
 
     -- From: MARKET INDEX DIMENSION
     market_id                       Nullable(String)        COMMENT 'Mã thị trường — từ Market Index Dimension',
-    market_code                     Nullable(String)        COMMENT 'Mã sàn/chỉ số (HOSE/HNX/UPCOM/30) — từ Market Index Dimension'
+    market_code                     Nullable(String)        COMMENT 'Mã sàn/chỉ số (HOSE/HNX/UPCOM/30) — từ Market Index Dimension',
+    index_tp_code                   Nullable(String)        COMMENT 'Loại chỉ số — từ Market Index Dimension',
+    tsc_product_group_id             Nullable(String)        COMMENT 'Mã sản phẩm giao dịch (HOSE/HNX/UPCOM) — từ Market Index Dimension',
+    market_status_code              Nullable(String)        COMMENT 'Trạng thái phiên (current-state SCD4A) — từ Market Index Dimension',
+    market_index_src_stm_code       Nullable(String)        COMMENT 'Mã hệ thống nguồn — từ Market Index Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))

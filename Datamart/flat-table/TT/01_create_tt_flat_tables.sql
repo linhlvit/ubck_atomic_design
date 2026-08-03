@@ -15,7 +15,8 @@ CREATE TABLE IF NOT EXISTS datamart.tt_fct_inspection_team_activity_flat ON CLUS
     inspection_team_code                String              COMMENT 'BK — mã hồ sơ đoàn thanh tra — từ Inspection Team Dimension',
     start_dt                            Nullable(Date)       COMMENT 'Ngày bắt đầu đoàn thanh tra — từ Inspection Team Dimension',
     end_dt                               Nullable(Date)       COMMENT 'Ngày kết thúc đoàn thanh tra — từ Inspection Team Dimension',
-    content                             Nullable(String)    COMMENT 'Nội dung tổng quát cuộc thanh tra — từ Inspection Team Dimension'
+    content                             Nullable(String)    COMMENT 'Nội dung tổng quát cuộc thanh tra — từ Inspection Team Dimension',
+    inspection_team_src_stm_code        Nullable(String)    COMMENT 'Mã hệ thống nguồn — từ Inspection Team Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
@@ -35,7 +36,8 @@ CREATE TABLE IF NOT EXISTS datamart.tt_fct_examination_team_activity_flat ON CLU
     examination_team_code               String              COMMENT 'BK — mã hồ sơ đoàn kiểm tra — từ Examination Team Dimension',
     start_dt                            Nullable(Date)       COMMENT 'Ngày bắt đầu đoàn kiểm tra — từ Examination Team Dimension',
     end_dt                               Nullable(Date)       COMMENT 'Ngày kết thúc đoàn kiểm tra — từ Examination Team Dimension',
-    content                             Nullable(String)    COMMENT 'Nội dung kiểm tra tổng quát — từ Examination Team Dimension'
+    content                             Nullable(String)    COMMENT 'Nội dung kiểm tra tổng quát — từ Examination Team Dimension',
+    examination_team_src_stm_code       Nullable(String)    COMMENT 'Mã hệ thống nguồn — từ Examination Team Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
@@ -54,12 +56,14 @@ CREATE TABLE IF NOT EXISTS datamart.tt_fct_inspection_team_target_activity_flat 
     -- From: INSPECTION TEAM TARGET DIMENSION
     inspection_team_target_code             String           COMMENT 'BK per-row unique — từ Inspection Team Target Dimension',
     target_tp_code                          Nullable(String) COMMENT 'Loại đối tượng — từ Inspection Team Target Dimension',
+    inspection_team_target_src_stm_code     Nullable(String) COMMENT 'Mã hệ thống nguồn — từ Inspection Team Target Dimension',
 
     -- From: INSPECTION TEAM DIMENSION (Dimension cha)
     inspection_team_code                    String           COMMENT 'BK — mã hồ sơ đoàn thanh tra — từ Inspection Team Dimension',
     start_dt                                Nullable(Date)   COMMENT 'Ngày bắt đầu đoàn thanh tra — từ Inspection Team Dimension',
     end_dt                                    Nullable(Date)   COMMENT 'Ngày kết thúc đoàn thanh tra — từ Inspection Team Dimension',
-    content                                 Nullable(String) COMMENT 'Nội dung tổng quát cuộc thanh tra — từ Inspection Team Dimension'
+    content                                 Nullable(String) COMMENT 'Nội dung tổng quát cuộc thanh tra — từ Inspection Team Dimension',
+    inspection_team_src_stm_code            Nullable(String) COMMENT 'Mã hệ thống nguồn — từ Inspection Team Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
@@ -78,12 +82,14 @@ CREATE TABLE IF NOT EXISTS datamart.tt_fct_examination_team_target_activity_flat
     -- From: EXAMINATION TEAM TARGET DIMENSION
     examination_team_target_code             String           COMMENT 'BK per-row unique — từ Examination Team Target Dimension',
     target_tp_code                           Nullable(String) COMMENT 'Loại đối tượng — từ Examination Team Target Dimension',
+    examination_team_target_src_stm_code     Nullable(String) COMMENT 'Mã hệ thống nguồn — từ Examination Team Target Dimension',
 
     -- From: EXAMINATION TEAM DIMENSION (Dimension cha)
     examination_team_code                    String           COMMENT 'BK — mã hồ sơ đoàn kiểm tra — từ Examination Team Dimension',
     start_dt                                 Nullable(Date)   COMMENT 'Ngày bắt đầu đoàn kiểm tra — từ Examination Team Dimension',
     end_dt                                     Nullable(Date)   COMMENT 'Ngày kết thúc đoàn kiểm tra — từ Examination Team Dimension',
-    content                                  Nullable(String) COMMENT 'Nội dung kiểm tra tổng quát — từ Examination Team Dimension'
+    content                                  Nullable(String) COMMENT 'Nội dung kiểm tra tổng quát — từ Examination Team Dimension',
+    examination_team_src_stm_code            Nullable(String) COMMENT 'Mã hệ thống nguồn — từ Examination Team Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
@@ -103,7 +109,8 @@ CREATE TABLE IF NOT EXISTS datamart.tt_fct_penalty_decision_flat ON CLUSTER 'my_
     cdr_dt                              Nullable(Date)              COMMENT 'Ngày ban hành quyết định xử phạt — từ Calendar Date Dimension',
 
     -- From: PENALTY DECISION DIMENSION
-    penalty_decision_code               String                      COMMENT 'BK — mã quyết định xử phạt — từ Penalty Decision Dimension'
+    penalty_decision_code               String                      COMMENT 'BK — mã quyết định xử phạt — từ Penalty Decision Dimension',
+    penalty_decision_src_stm_code       Nullable(String)            COMMENT 'Mã hệ thống nguồn — từ Penalty Decision Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
@@ -122,13 +129,16 @@ CREATE TABLE IF NOT EXISTS datamart.tt_fct_penalty_decision_subject_behavior_fla
     -- From: PENALTY DECISION SUBJECT BEHAVIOR DIMENSION
     penalty_decision_subject_behavior_code    String           COMMENT 'BK per-row unique — từ Penalty Decision Subject Behavior Dimension',
     violation_behavior_nm                     Nullable(String) COMMENT 'Tên hành vi vi phạm — từ Penalty Decision Subject Behavior Dimension',
+    penalty_decision_subject_behavior_src_stm_code Nullable(String) COMMENT 'Mã hệ thống nguồn — từ Penalty Decision Subject Behavior Dimension',
 
     -- From: PENALTY DECISION DIMENSION
     penalty_decision_code                     String           COMMENT 'BK — mã quyết định xử phạt — từ Penalty Decision Dimension',
+    penalty_decision_src_stm_code             Nullable(String) COMMENT 'Mã hệ thống nguồn — từ Penalty Decision Dimension',
 
     -- From: PENALTY DECISION SUBJECT DIMENSION
     penalty_decision_subject_code             String           COMMENT 'BK per-row unique — từ Penalty Decision Subject Dimension',
-    subject_tp_code                           Nullable(String) COMMENT 'Loại đối tượng — từ Penalty Decision Subject Dimension'
+    subject_tp_code                           Nullable(String) COMMENT 'Loại đối tượng — từ Penalty Decision Subject Dimension',
+    penalty_decision_subject_src_stm_code     Nullable(String) COMMENT 'Mã hệ thống nguồn — từ Penalty Decision Subject Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
@@ -147,9 +157,11 @@ CREATE TABLE IF NOT EXISTS datamart.tt_fct_penalty_decision_subject_flat ON CLUS
     -- From: PENALTY DECISION SUBJECT DIMENSION
     penalty_decision_subject_code        String            COMMENT 'BK per-row unique — từ Penalty Decision Subject Dimension',
     subject_tp_code                      Nullable(String)  COMMENT 'Loại đối tượng — từ Penalty Decision Subject Dimension',
+    penalty_decision_subject_src_stm_code Nullable(String) COMMENT 'Mã hệ thống nguồn — từ Penalty Decision Subject Dimension',
 
     -- From: PENALTY DECISION DIMENSION
-    penalty_decision_code                String            COMMENT 'BK — mã quyết định xử phạt — từ Penalty Decision Dimension'
+    penalty_decision_code                String            COMMENT 'BK — mã quyết định xử phạt — từ Penalty Decision Dimension',
+    penalty_decision_src_stm_code        Nullable(String)  COMMENT 'Mã hệ thống nguồn — từ Penalty Decision Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))

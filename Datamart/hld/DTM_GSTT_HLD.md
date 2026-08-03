@@ -112,37 +112,24 @@ flowchart LR
 
 > **Ghi chú grain:** Mục đích là vẽ biểu đồ đường/cột theo thời gian trong ngày — khác Fact EOD (1 row/ngày), dùng chung nguồn `Market Index Snapshot` nhưng KHÔNG lọc `rn=1`. Grain = **1 row / Market Code / Index Time** (theo đúng nguồn `JAD_MARKETINFOR`). Dashboard xử lý lại theo giờ ở tầng BI, không xử lý ở Datamart.
 
-##### Cụm 3: Sở hữu và giao dịch nội bộ (`Fact Public Company Shareholding`)
+##### Cụm 3: Sở hữu và giao dịch nội bộ (`Legal Entity Position Dimension`)
 
 ```mermaid
 flowchart LR
     subgraph SRC["Staging"]
-        S3A["IDS.COMPANY_SHAREHOLDING"]
         S3B["IDS.POSITIONS"]
-        S3C["IDS.LEGAL_ENTITIES"]
     end
     subgraph SIL["Atomic"]
-        A3A["Public Company Shareholding"]
         A3B["Legal Entity Position"]
-        A3C["Legal Entity"]
     end
     subgraph GOLD["Datamart"]
-        fct_public_company_shareholding["Fact Public Company Shareholding"]
-        legal_entity_dim["Legal Entity Dimension"]
         legal_entity_position_dim["Legal Entity Position Dimension"]
     end
-    S3A --> A3A
     S3B --> A3B
-    S3C --> A3C
-    A3A --> fct_public_company_shareholding
-    A3C --> legal_entity_dim
     A3B --> legal_entity_position_dim
-    legal_entity_dim --> fct_public_company_shareholding
-    legal_entity_position_dim --> fct_public_company_shareholding
 ```
 
-> **Ghi chú nguồn:** `Public Company Shareholding` (Nguồn 1, entity draft) là driving table của Fact — grain 1 row/cổ đông/mã CK. `Legal Entity` (Tên cổ đông) chỉ có ở Nguồn 2 (`DataModel/working/Atomic/lld/IDS/lld_IDS_LEGAL_ENTITIES.yaml`), chưa promote Nguồn 1 — dùng theo thứ tự ưu tiên nguồn (fallback Nguồn 2). `Public Company Dimension` (reuse từ Cụm 1, không vẽ lại nguồn Atomic ở đây) cũng là 1 FK của Fact này — xem Cụm 1 để có đầy đủ nguồn `Public Company`.
-> **Ghi chú FK optional:** `Legal Entity Position Dimension Id` cho phép NULL — không phải mọi cổ đông đều là người nội bộ có chức vụ.
+> **Ghi chú (sửa 2026-08-03):** Chỉ 2/8 KPI của Nhóm 45 READY (Mã cổ phiếu — reuse `Public Company Dimension` từ Cụm 1; Chức vụ người nội bộ — `Legal Entity Position Dimension`, Nguồn 1 approved `dm_atm_legal_entity_position-IDS.POSITIONS.yaml`). 6 KPI còn lại (Tên cổ đông, Số cổ phiếu sở hữu, Sở hữu nước ngoài, Sở hữu trong nước, Tỷ lệ sở hữu, Sở hữu cổ đông lớn) PENDING — nguồn `Chưa có CSDL - Map biểu mẫu` (BM8/BM70 VSDC), không vẽ Fact/Dimension cho phần này ở giai đoạn hiện tại (xem Bảng mapping nguồn — Atomic Placeholder ở Section 2, Nhóm 45).
 
 ---
 
@@ -2590,41 +2577,38 @@ flowchart LR
 #### Nhóm 45 - Sở hữu và giao dịch nội bộ
 
 > **Phân loại:** Dashboard
-> **Atomic:** `Public Company Shareholding` ← IDS.COMPANY_SHAREHOLDING — **Nguồn 1, entity draft** (Involved_Party BCV concept: `Ownership`) / `Legal Entity Position` ← IDS.POSITIONS — **Nguồn 1, entity draft** / `Legal Entity` (chứa Tên cổ đông) — **chỉ có ở Nguồn 2** (`DataModel/working/Atomic/lld/IDS/lld_IDS_LEGAL_ENTITIES.yaml`, chưa promote lên Nguồn 1) — theo thứ tự ưu tiên nguồn (Atomic > working/Atomic), dùng Nguồn 2 làm fallback cho riêng entity này.
+> **Atomic (2 KPI READY — Chiều tĩnh):** `Public Company` ← IDS.COMPANY_PROFILES — **Nguồn 1, approved** (Equity Ticker Symbol, reuse nguyên trạng từ Nhóm 1) / `Legal Entity Position` ← IDS.POSITIONS — **Nguồn 1, draft** (`dm_atm_legal_entity_position-IDS.POSITIONS.yaml`, attribute `Position Code`) — vẫn READY theo nguyên tắc "Atomic working = READY cho Datamart".
 >
-> **Ghi chú nguồn mới hoàn toàn:** BA liệt kê 6 dòng con — đây là entity chưa từng xuất hiện ở Nhóm 1-44 (module GSTT trước đó chỉ xoay quanh `Fact Stock Portfolio Snapshot`). Cần 2 entity Atomic mới: `Public Company Shareholding` (sở hữu cổ đông, grain 1 row/cổ đông/mã CK) và `Legal Entity Position` (chức vụ người nội bộ, grain 1 row/cổ đông/chức vụ). Cả 2 đều **status: draft** ở Nguồn 1 — vẫn coi là READY theo nguyên tắc "Atomic working = READY cho Datamart" (draft không phải blocking issue, chỉ cần theo dõi khi promote lên approved).
-> **Ghi chú "Tên cổ đông", "Số cổ phiếu sở hữu", "Tỷ lệ sở hữu", "Sở hữu cổ đông lớn" (BA đánh "Chưa có CSDL - Map biểu mẫu"):** Mặc dù BA tự đánh giá "Chưa có CSDL", đối chiếu lại Atomic xác nhận có nguồn thật: `Public Company Shareholding.Ownership Quantity` (Số cổ phiếu sở hữu), `.Ownership Ratio Percentage` (Tỷ lệ sở hữu), `Legal Entity.Legal Entity Name` (Tên cổ đông, Nguồn 2). "Sở hữu cổ đông lớn của người nội bộ/ban lãnh đạo" dùng chung `Ownership Ratio Percentage`, lọc thêm điều kiện `Insider Shareholder Indicator = true` và `Shareholder Type Code` thuộc nhóm "Major"/"Insider" (scheme `IDS_SHAREHOLDER_TYPE`) — không phải KPI tách biệt, chỉ là filter con của "Tỷ lệ sở hữu". Đánh giá lại trạng thái từ PENDING (theo BA) thành READY (theo Atomic thật đã xác nhận) — cần lưu ý khi cross-check với BA ở bước sau (xem O_GSTT_9).
-> **Ghi chú phần "giao dịch" (chưa có nguồn):** BA đặt tên Nhóm là "Sở hữu **và giao dịch** nội bộ" nhưng cả 6 dòng con chỉ mô tả **sở hữu** (holding snapshot tại 1 thời điểm), không có chỉ tiêu nào về giao dịch phát sinh (VD: khối lượng đăng ký mua/bán, ngày giao dịch dự kiến). Đã khảo sát toàn bộ nguồn IDS/MDDS/ORDERTRADE liên quan — không tìm thấy entity "Insider Transaction/Trade" nào riêng biệt. PENDING phần "giao dịch" — cần BA xác nhận có yêu cầu thêm chỉ tiêu nào chưa liệt kê hay tên Nhóm chỉ mang tính mô tả chung (xem O_GSTT_9).
+> **Ghi chú gating theo Loại dữ liệu (sửa 2026-08-03 — đảo ngược đánh giá v4.2):** BA cập nhật lại (2026-08-03) STT=45 nay có **8 dòng con** (trước đây 6 dòng, thiếu "Sở hữu nước ngoài"/"Sở hữu trong nước"). Cột **Loại dữ liệu** xác nhận: 2/8 dòng là `Dữ liệu tĩnh` (Mã cổ phiếu, Chức vụ người nội bộ) → READY. **6/8 dòng còn lại là `Chưa có CSDL - Map biểu mẫu`** (Tên cổ đông, Số cổ phiếu sở hữu, Sở hữu nước ngoài, Sở hữu trong nước, Tỷ lệ sở hữu, Sở hữu cổ đông lớn của người nội bộ/ban lãnh đạo) — nguồn thật là **biểu mẫu giấy VSDC** (`BM 8_Danh sách cổ đông lớn...`, `BM 70_Quản lý thông tin nhà đầu tư nước ngoài`), hệ thống **chưa có CSDL lưu trữ**. Theo gating rule "dữ liệu động/biểu mẫu luôn PENDING dù Atomic READY, độc lập với Atomic gating" — 6 dòng này PENDING, bất kể `Public Company Shareholding` (IDS.COMPANY_SHAREHOLDING) có field `Ownership Quantity`/`Ownership Ratio Percentage` tương ứng hay không.
+> **Bằng chứng bổ sung xác nhận PENDING đúng:** Atomic entity `Public Company Shareholding` (`lld_IDS_COMPANY_SHAREHOLDING.yaml`) có 2 attribute `Data Source Code` ("Nguồn cập nhật dữ liệu cổ đông — trung tâm lưu ký hay thủ công") và `Approval Indicator` (workflow phê duyệt) — xác nhận trực tiếp bản chất đây là dữ liệu nhập từ biểu mẫu qua quy trình phê duyệt, không phải feed hệ thống tự động theo ngày. Việc HLD v4.2 override đánh giá BA "Chưa có CSDL" thành READY chỉ vì tìm thấy Atomic entity là **sai gating rule** — đã sửa lại đúng ở bản này.
+> **Ghi chú phần "giao dịch" (vẫn chưa có nguồn, giữ nguyên từ v4.2):** BA đặt tên Nhóm là "Sở hữu **và giao dịch** nội bộ" nhưng không dòng con nào mô tả giao dịch phát sinh (khối lượng đăng ký mua/bán, ngày giao dịch dự kiến) — đã khảo sát IDS/MDDS/ORDERTRADE, không có entity "Insider Transaction/Trade" riêng biệt. PENDING phần "giao dịch" — cần BA xác nhận yêu cầu thêm hay tên Nhóm chỉ mang tính mô tả chung (xem O_GSTT_9).
+> **Ghi chú Fact (sửa 2026-08-03):** Với chỉ 2 KPI READY đều là Chiều thuần (Equity Ticker Symbol trên `Public Company Dimension` — reuse Nhóm 1; Position Code trên `Legal Entity Position Dimension`), **không còn measure Cơ sở/Phái sinh nào READY thuộc Fact** — 6 measure (Ownership Quantity, Ownership Ratio Percentage, Insider Shareholder Indicator, Shareholder Type Code, Sở hữu nước ngoài, Sở hữu trong nước) đều PENDING. Do đó **loại bỏ `Fact Public Company Shareholding` và `Legal Entity Dimension` khỏi Star Schema ở giai đoạn này** — 2 KPI READY chỉ cần 2 Dimension attribute (không cần Fact riêng, không cần Dimension mới cho "Tên cổ đông" vì Legal Entity Dimension chỉ phục vụ measure PENDING). Sẽ thiết kế lại Fact đầy đủ khi VSDC tích hợp CSDL cho các biểu mẫu BM8/BM70.
 
 **Mockup:**
 
-| Mã cổ phiếu | Tên cổ đông | Số cổ phiếu sở hữu | Tỷ lệ sở hữu | Chức vụ người nội bộ | Sở hữu cổ đông lớn (%) |
-|---|---|---|---|---|---|
-| VCB | Nguyễn Văn A | 1,200,000 | 0.15% | Thành viên HĐQT | 0.15% |
+| Mã cổ phiếu | Tên cổ đông | Số cổ phiếu sở hữu | Sở hữu nước ngoài | Sở hữu trong nước | Tỷ lệ sở hữu | Chức vụ người nội bộ | Sở hữu cổ đông lớn (%) |
+|---|---|---|---|---|---|---|---|
+| VCB | *(pending)* | *(pending)* | *(pending)* | *(pending)* | *(pending)* | Thành viên HĐQT | *(pending)* |
 
-**Source:** `Fact Public Company Shareholding` (mới) → `Legal Entity Dimension` (mới), `Public Company Dimension` (reuse Nhóm 1), `Legal Entity Position Dimension` (mới).
+**Source:** `Public Company Dimension` (reuse Nhóm 1), `Legal Entity Position Dimension` (mới) — 2/8 chỉ tiêu READY, không có Fact ở giai đoạn này.
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_GSTT_100 | Mã cổ phiếu | — | Chiều | `Public Company Dimension.Equity Ticker Symbol` | Reuse cơ chế Public Company Dimension từ Nhóm 1, khác entity chính (Fact Shareholding, không phải Fact Stock Portfolio Snapshot) | READY |
-| K_GSTT_101 | Tên cổ đông | — | Chiều | `Legal Entity Dimension.Legal Entity Name` | Mới — Atomic Nguồn 2 (`Legal Entity`, chưa promote Nguồn 1) | READY |
-| K_GSTT_102 | Số cổ phiếu sở hữu | Cổ phiếu | Cơ sở | `Fact Public Company Shareholding.Ownership Quantity` | Mới — Atomic Nguồn 1 `Public Company Shareholding` (draft) | READY |
-| K_GSTT_103 | Tỷ lệ sở hữu | % | Cơ sở | `Fact Public Company Shareholding.Ownership Ratio Percentage` | Mới — cùng nguồn K_GSTT_102 | READY |
-| K_GSTT_104 | Chức vụ người nội bộ | — | Chiều | `Legal Entity Position Dimension.Position Code` | Mới — Atomic Nguồn 1 `Legal Entity Position` (draft) | READY |
-| K_GSTT_103 | Sở hữu cổ đông lớn của người nội bộ/ban lãnh đạo | % | Cơ sở | `K_GSTT_103 WHERE Insider Shareholder Indicator = true AND Shareholder Type Code IN ('Major','Insider')` | Filter con của K_GSTT_103 — không khai KPI mới | READY |
+| K_GSTT_100 | Mã cổ phiếu | — | Chiều | `Public Company Dimension.Equity Ticker Symbol` | Reuse cơ chế Public Company Dimension từ Nhóm 1 | READY |
+| K_GSTT_101 | Tên cổ đông | — | Chiều | *(chưa xác định)* | **Lý do pending:** `Chưa có CSDL - Map biểu mẫu` — nguồn `BM 8_Danh sách cổ đông lớn...`, hệ thống chưa có CSDL. **Atomic cần bổ sung:** entity lưu trữ dữ liệu BM8 (Tên cổ đông) khi VSDC tích hợp. **Mart dự kiến:** `Fact Public Company Shareholding` (grain 1 CTCK × 1 cổ đông) | PENDING |
+| K_GSTT_102 | Số cổ phiếu sở hữu | Cổ phiếu | Cơ sở | *(chưa xác định)* | **Lý do pending:** `Chưa có CSDL - Map biểu mẫu` — nguồn `BM 8` (Số lượng chứng khoán sở hữu kỳ gần nhất). **Atomic cần bổ sung:** entity lưu trữ BM8. **Mart dự kiến:** `Fact Public Company Shareholding` | PENDING |
+| K_GSTT_120 | Sở hữu nước ngoài | % | Phái sinh | *(chưa xác định)* | **Lý do pending:** `Chưa có CSDL - Map biểu mẫu` — nguồn `BM 70_Quản lý thông tin nhà đầu tư nước ngoài` (Số lượng CP nắm giữ bởi NĐTNN / Tổng số CP phát hành). Mới — khai sinh KPI_ID nối tiếp dải hiện có (không renumber theo thứ tự Nhóm). **Mart dự kiến:** `Fact Public Company Shareholding` hoặc Fact riêng theo BM70 | PENDING |
+| K_GSTT_121 | Sở hữu trong nước | % | Phái sinh | *(chưa xác định)* | **Lý do pending:** cùng nguồn K_GSTT_120 (`BM 70`), công thức = Tổng số CP phát hành − Sở hữu nước ngoài. Mới — khai sinh liền sau K_GSTT_120 | PENDING |
+| K_GSTT_103 | Tỷ lệ sở hữu | % | Cơ sở | *(chưa xác định)* | **Lý do pending:** `Chưa có CSDL - Map biểu mẫu` — nguồn `BM 8` (Tỷ lệ %). **Mart dự kiến:** `Fact Public Company Shareholding` | PENDING |
+| K_GSTT_104 | Chức vụ người nội bộ | — | Chiều | `Legal Entity Position Dimension.Position Code` | Mới — Atomic Nguồn 1 `Legal Entity Position` (`dm_atm_legal_entity_position-IDS.POSITIONS.yaml`, draft), scheme `IDS_POSITION` | READY |
+| K_GSTT_103b | Sở hữu cổ đông lớn của người nội bộ/ban lãnh đạo | % | Cơ sở | *(chưa xác định)* | **Lý do pending:** cùng nguồn K_GSTT_103 (`BM 8`, Tỷ lệ %), filter thêm Insider/Major — vẫn PENDING theo K_GSTT_103. BA note thêm: "Sẽ đánh giá lại lấy từ IDS hay thẳng VSDC vì lấy IDS có thể phụ thuộc" — chưa chốt nguồn cuối cùng | PENDING |
 
 **Star Schema:**
 
 ```mermaid
 erDiagram
-    Legal_Entity_Dimension {
-        string Legal_Entity_Dimension_Id PK
-        string Legal_Entity_Code
-        string Legal_Entity_Name
-        string Source_System_Code
-    }
     Legal_Entity_Position_Dimension {
         string Legal_Entity_Position_Dimension_Id PK
         string Legal_Entity_Position_Code
@@ -2633,46 +2617,32 @@ erDiagram
         date Dismissal_Date
         string Source_System_Code
     }
-    Public_Company_Dimension {
-        string Public_Company_Dimension_Id PK
-        string Equity_Ticker_Symbol
-        string Source_System_Code
-    }
-    Fact_Public_Company_Shareholding {
-        string Legal_Entity_Dimension_Id FK
-        string Public_Company_Dimension_Id FK
-        string Legal_Entity_Position_Dimension_Id FK
-        decimal Ownership_Quantity
-        decimal Ownership_Ratio_Percentage
-        boolean Insider_Shareholder_Indicator
-        string Shareholder_Type_Code
-    }
-    Legal_Entity_Dimension ||--o{ Fact_Public_Company_Shareholding : " "
-    Public_Company_Dimension ||--o{ Fact_Public_Company_Shareholding : " "
-    Legal_Entity_Position_Dimension |o--o{ Fact_Public_Company_Shareholding : " "
 ```
 
-> **FK `Legal_Entity_Position_Dimension_Id` cho phép NULL** — không phải mọi cổ đông đều là người nội bộ có chức vụ (VD: cổ đông lớn thông thường, không kiêm nhiệm chức vụ trong công ty).
+> **Ghi chú (sửa 2026-08-03):** Không vẽ Fact ở giai đoạn này — 2 KPI READY (K_GSTT_100, K_GSTT_104) là Chiều thuần, không cần Star Schema nối Fact. `K_GSTT_100` dùng `Public Company Dimension` đã có Star Schema đầy đủ ở Nhóm 1, không vẽ lại. `Legal Entity Position Dimension` vẽ riêng vì là entity mới, dùng độc lập không qua Fact (phục vụ K_GSTT_104 dạng danh mục Chiều).
 
 **Lineage Mart → Báo cáo:**
 
 ```mermaid
 flowchart LR
-    F1["Fact Public Company Shareholding"] --> RPT45["Sở hữu và giao dịch nội bộ"]
-    D1["Legal Entity Dimension"] --> RPT45
-    D2["Public Company Dimension"] --> RPT45
-    D3["Legal Entity Position Dimension"] --> RPT45
+    D1["Public Company Dimension"] --> RPT45["Sở hữu và giao dịch nội bộ (K_GSTT_100,104)"]
+    D2["Legal Entity Position Dimension"] --> RPT45
 ```
 
 **Bảng grain:**
 
 | Tên bảng | Grain |
 |---|---|
-| Fact Public Company Shareholding | 1 row / cổ đông (Legal Entity) / mã công ty (Public Company) / (chức vụ nếu là người nội bộ, nullable) |
-| Legal Entity Dimension | 1 row / cổ đông (SCD4A) |
 | Legal Entity Position Dimension | 1 row / (cổ đông, chức vụ) (SCD4A) |
 
-> **Coverage rule:** `Fact Public Company Shareholding` kéo đủ measure sở hữu có thật trong `Public Company Shareholding` (Ownership Quantity, Ownership Ratio Percentage, Insider Shareholder Indicator, Shareholder Type Code) theo coverage rule (Bước 1a).
+> **Coverage rule:** Không áp dụng ở giai đoạn này — `Legal Entity Position Dimension` chỉ mới thiết kế đủ cột phục vụ K_GSTT_104 (Position Code + BK). Sẽ áp dụng coverage rule đầy đủ khi thiết kế `Fact Public Company Shareholding` chính thức (sau khi VSDC tích hợp CSDL BM8/BM70).
+
+**Bảng mapping nguồn (Atomic Placeholder):**
+
+| Tên KPI | Bảng nguồn (BA) | Atomic entity dự kiến | Atomic table dự kiến |
+|---|---|---|---|
+| Tên cổ đông, Số cổ phiếu sở hữu, Tỷ lệ sở hữu, Sở hữu cổ đông lớn | BM 8_Danh sách cổ đông lớn của các công ty đăng ký chứng khoán tại VSDC và công ty con | Public Company Shareholding (nếu VSDC tích hợp CSDL) | TBD |
+| Sở hữu nước ngoài, Sở hữu trong nước | BM 70_Quản lý thông tin nhà đầu tư nước ngoài | TBD (Foreign Ownership Statistics) | TBD |
 
 ---
 
@@ -2815,44 +2785,48 @@ flowchart LR
 #### Nhóm 48 - Data Explorer: Giao dịch & thanh khoản — Số cổ phiếu sở hữu
 
 > **Phân loại:** Data Explorer
-> **Atomic:** 100% reuse Nhóm 45 (`Public Company Shareholding`, `Legal Entity`, `Legal Entity Position`) — không có nguồn mới.
+> **Atomic:** 100% reuse Nhóm 45 — không có nguồn mới.
 >
-> **Ghi chú tái sử dụng:** BA liệt kê 6 dòng con — giống hệt (cùng tên, cùng nguồn, cùng công thức) 6 dòng con của Nhóm 45 ("Sở hữu và giao dịch nội bộ"). Đây là 2 STT riêng biệt trong BA (STT 45 thuộc Dashboard "Sở hữu và giao dịch nội bộ", STT 48 thuộc Dashboard "Giao dịch & thanh khoản >> số cổ phiếu sở hữu") nhưng nội dung dữ liệu hoàn toàn trùng lặp — reuse thẳng toàn bộ 6 KPI đã khai sinh ở Nhóm 45 (K_GSTT_100-103), không khai sinh KPI mới, không tạo/sửa Fact hay Dimension nào.
+> **Ghi chú tái sử dụng (sửa 2026-08-03):** BA liệt kê **6 dòng con** (khác Nhóm 45 nay có 8 dòng — Nhóm 48 KHÔNG có "Sở hữu nước ngoài"/"Sở hữu trong nước"). 6 dòng còn lại giống hệt (cùng tên, cùng nguồn) 6/8 dòng con gốc của Nhóm 45 — reuse thẳng theo đúng trạng thái đã xác nhận ở Nhóm 45: 2 KPI READY (Mã cổ phiếu, Chức vụ người nội bộ), 4 KPI PENDING (Tên cổ đông, Số cổ phiếu sở hữu, Tỷ lệ sở hữu, Sở hữu cổ đông lớn của người nội bộ/ban lãnh đạo — đều `Chưa có CSDL - Map biểu mẫu`, xem ghi chú gating Nhóm 45). Không khai sinh KPI mới, không tạo/sửa Fact hay Dimension nào.
 
 **Mockup:**
 
 | Mã cổ phiếu | Tên cổ đông | Số cổ phiếu sở hữu | Tỷ lệ sở hữu | Chức vụ người nội bộ | Sở hữu cổ đông lớn (%) |
 |---|---|---|---|---|---|
-| VCB | Nguyễn Văn A | 1,200,000 | 0.15% | Thành viên HĐQT | 0.15% |
+| VCB | *(pending)* | *(pending)* | *(pending)* | Thành viên HĐQT | *(pending)* |
 
-**Source:** `Fact Public Company Shareholding` → `Legal Entity Dimension`, `Public Company Dimension`, `Legal Entity Position Dimension` — 100% reuse từ Nhóm 45.
+**Source:** `Public Company Dimension`, `Legal Entity Position Dimension` — 100% reuse từ Nhóm 45.
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
 | K_GSTT_100 | Mã cổ phiếu | — | Chiều | `Public Company Dimension.Equity Ticker Symbol` | Reuse từ Nhóm 45 | READY |
-| K_GSTT_101 | Tên cổ đông | — | Chiều | `Legal Entity Dimension.Legal Entity Name` | Reuse từ Nhóm 45 | READY |
-| K_GSTT_102 | Số cổ phiếu sở hữu | Cổ phiếu | Cơ sở | `Fact Public Company Shareholding.Ownership Quantity` | Reuse từ Nhóm 45 | READY |
-| K_GSTT_103 | Tỷ lệ sở hữu | % | Cơ sở | `Fact Public Company Shareholding.Ownership Ratio Percentage` | Reuse từ Nhóm 45 | READY |
+| K_GSTT_101 | Tên cổ đông | — | Chiều | *(chưa xác định)* | Reuse từ Nhóm 45 — vẫn PENDING (`Chưa có CSDL - Map biểu mẫu`, xem O_GSTT_9) | PENDING |
+| K_GSTT_102 | Số cổ phiếu sở hữu | Cổ phiếu | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 45 — vẫn PENDING | PENDING |
+| K_GSTT_103 | Tỷ lệ sở hữu | % | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 45 — vẫn PENDING | PENDING |
 | K_GSTT_104 | Chức vụ người nội bộ | — | Chiều | `Legal Entity Position Dimension.Position Code` | Reuse từ Nhóm 45 | READY |
-| K_GSTT_103 | Sở hữu cổ đông lớn của người nội bộ/ban lãnh đạo | % | Cơ sở | `K_GSTT_103 WHERE Insider Shareholder Indicator = true AND Shareholder Type Code IN ('Major','Insider')` | Reuse từ Nhóm 45 — filter con của K_GSTT_103 | READY |
+| K_GSTT_103b | Sở hữu cổ đông lớn của người nội bộ/ban lãnh đạo | % | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 45 — vẫn PENDING (filter con của K_GSTT_103) | PENDING |
 
-**Star Schema:** Không có bảng mới — 100% reuse `Fact Public Company Shareholding`, `Legal Entity Dimension`, `Public Company Dimension`, `Legal Entity Position Dimension` đã vẽ ở Nhóm 45.
+**Star Schema:** Không có bảng mới — 100% reuse `Public Company Dimension` (Nhóm 1), `Legal Entity Position Dimension` (Nhóm 45).
 
 **Lineage Mart → Báo cáo:**
 
 ```mermaid
 flowchart LR
-    F1["Fact Public Company Shareholding"] --> RPT48["Data Explorer: Giao dịch & thanh khoản — Số cổ phiếu sở hữu"]
-    D1["Legal Entity Dimension"] --> RPT48
-    D2["Public Company Dimension"] --> RPT48
-    D3["Legal Entity Position Dimension"] --> RPT48
+    D1["Public Company Dimension"] --> RPT48["Data Explorer: Giao dịch & thanh khoản — Số cổ phiếu sở hữu (K_GSTT_100,104)"]
+    D2["Legal Entity Position Dimension"] --> RPT48
 ```
 
-**Bảng grain:** Không có bảng mới — cùng grain `Fact Public Company Shareholding` đã có ở Nhóm 45.
+**Bảng grain:** Không có bảng mới — cùng grain `Legal Entity Position Dimension` đã có ở Nhóm 45.
 
-> **Coverage rule:** Không áp dụng — Nhóm này không tạo/mở rộng Fact hay Dimension nào, thuần túy reuse từ Nhóm 45.
+> **Coverage rule:** Không áp dụng — Nhóm này không tạo/mở rộng Dimension nào, thuần túy reuse từ Nhóm 45.
+
+**Bảng mapping nguồn (Atomic Placeholder):**
+
+| Tên KPI | Bảng nguồn (BA) | Atomic entity dự kiến | Atomic table dự kiến |
+|---|---|---|---|
+| Tên cổ đông, Số cổ phiếu sở hữu, Tỷ lệ sở hữu, Sở hữu cổ đông lớn | BM 8_Danh sách cổ đông lớn của các công ty đăng ký chứng khoán tại VSDC và công ty con | Public Company Shareholding (nếu VSDC tích hợp CSDL) — cùng Atomic Placeholder Nhóm 45 | TBD |
 
 ---
 
@@ -2936,7 +2910,6 @@ graph TB
 | Fact Stock Portfolio Snapshot | Periodic Snapshot | 1 row / mã CK / rổ chỉ số (FK nullable) / ngày giao dịch | K_GSTT_1–19 (Nhóm 1), K_GSTT_20–26 (Nhóm 2, reuse Nhóm 1), K_GSTT_27–29 (Nhóm 3, mới), K_GSTT_30–32 (Nhóm 3, PENDING), Nhóm 4 (100% reuse Nhóm 2/3), K_GSTT_55–61 (Nhóm 6, mở rộng 3 cột PENDING: Số CP lưu hành/LNST/VCSH), Nhóm 7 (100% reuse Nhóm 1/6, Top-N theo KLGD), Nhóm 8 (100% reuse Nhóm 1/3, Top-N theo KLGD dạng biểu đồ), K_GSTT_62–63 (Nhóm 9, mới: Bộ chỉ số thị trường/theo ngành — cùng cột vật lý K_GSTT_4 nhưng 2 chỉ tiêu nghiệp vụ độc lập, reuse ở 13 Nhóm khác), Nhóm 10 (100% reuse Nhóm 1/3/9, Top-N theo KLGD dạng biểu đồ), K_GSTT_64–69 (Nhóm 11, rolling window KLGDTB/tỷ lệ đột phá 5/10/20 ngày, không cần cột mới), Nhóm 12 (100% reuse Nhóm 1/3/11, Top-N theo tỷ lệ đột phá dạng biểu đồ), Nhóm 13 (100% reuse Nhóm 1/6/9/11, Top-N theo tỷ lệ đột phá theo sàn/bộ chỉ số), Nhóm 14 (100% reuse Nhóm 1/3/9/11, Top-N theo tỷ lệ đột phá theo sàn/bộ chỉ số dạng biểu đồ), Nhóm 15 (100% reuse Nhóm 1/6/9, Top-N theo GTGD), Nhóm 16 (100% reuse Nhóm 1/3/9, Top-N theo GTGD dạng biểu đồ), Nhóm 17 (100% reuse Nhóm 1/6, Top-N theo % thay đổi giảm mạnh nhất), Nhóm 18 (100% reuse Nhóm 1/3, Top-N theo % thay đổi giảm mạnh nhất dạng biểu đồ), Nhóm 19 (100% reuse Nhóm 1/6, Top-N theo % thay đổi giảm mạnh nhất theo sàn), Nhóm 20 (100% reuse Nhóm 1/3, Top-N theo % thay đổi giảm mạnh nhất theo sàn dạng biểu đồ), Nhóm 21 (100% reuse Nhóm 1/3/6, Top-N theo % thay đổi tăng mạnh nhất "vượt đỉnh"), Nhóm 22 (100% reuse Nhóm 1/3, Top-N theo % thay đổi tăng mạnh nhất "vượt đỉnh" dạng biểu đồ), Nhóm 23 (100% reuse Nhóm 1/3/6/9, Top-N theo % thay đổi tăng mạnh nhất "vượt đỉnh" theo sàn/bộ chỉ số), Nhóm 24 (100% reuse Nhóm 1/3/9, Top-N theo % thay đổi tăng mạnh nhất "vượt đỉnh" theo sàn/bộ chỉ số dạng biểu đồ), Nhóm 25 (100% reuse Nhóm 1/3/6, Top-N theo % thay đổi giảm mạnh nhất "thủng đáy"), Nhóm 26 (100% reuse Nhóm 1/3, Top-N theo % thay đổi giảm mạnh nhất "thủng đáy" dạng biểu đồ), Nhóm 27 (100% reuse Nhóm 1/3/6/9, Top-N theo % thay đổi giảm mạnh nhất "thủng đáy" theo sàn/bộ chỉ số), Nhóm 28 (100% reuse Nhóm 1/3/9, Top-N theo % thay đổi giảm mạnh nhất "thủng đáy" theo sàn/bộ chỉ số dạng biểu đồ), Nhóm 29 (100% reuse Nhóm 1/6, Top-N theo % thay đổi tăng mạnh nhất "tăng giá"), Nhóm 30 (100% reuse Nhóm 1/3, Top-N theo % thay đổi tăng mạnh nhất "tăng giá" dạng biểu đồ), Nhóm 31 (100% reuse Nhóm 1/6/9, Top-N theo % thay đổi tăng mạnh nhất "tăng giá" theo sàn/bộ chỉ số), Nhóm 32 (100% reuse Nhóm 1/3/9, Top-N theo % thay đổi tăng mạnh nhất "tăng giá" theo sàn/bộ chỉ số dạng biểu đồ), K_GSTT_70–73 (Nhóm 33, mới: KL/GT mua-bán ròng NĐTNN, mở rộng Fact — reuse Nhóm 35), Nhóm 34/36 (100% reuse, biến thể biểu đồ không lặp measure NĐTNN), Nhóm 37 (100% reuse Nhóm 1/6/33, bản đồ nhiệt), K_GSTT_75–76 (Nhóm 38, PENDING: Free Float/Tỷ trọng/Điểm đóng góp — chưa có nguồn Atomic), K_GSTT_77 (Nhóm 39, GTNN ròng — derive từ K_GSTT_72/73), K_GSTT_78–80 (Nhóm 39, PENDING: theo từng time trong ngày), Nhóm 40 (100% reuse Nhóm 1/33, bản đồ nhiệt KLNN), K_GSTT_81–84 (Nhóm 41, mới: Phân loại + GT tự doanh mua/bán/ròng, mở rộng Fact), K_GSTT_85–87 (Nhóm 42, mới: Phân loại NĐT + GT cá nhân/tổ chức trong nước ròng, mở rộng Fact), K_GSTT_88–94 (Nhóm 43, mới: GT khớp lệnh/thỏa thuận/mua/bán/ròng/mua ròng/bán ròng theo phân loại NĐT, filter động tại BI), K_GSTT_95–99 (Nhóm 44, PENDING: Giá mở/cao/thấp/đóng cửa + Khối lượng giao dịch theo từng time trong ngày, chờ profile `Trading Time`), K_GSTT_105 (Nhóm 46, mới: Ngày GD đầu tiên/Khối lượng niêm yết — đã có sẵn theo coverage rule Nhóm 1, mới khai KPI), K_GSTT_106–107, K_GSTT_109–113 (Nhóm 46, PENDING: 52 tuần/EPS/Book Value, không có Atomic), K_GSTT_114–119 (Nhóm 47, mới: KL mua/bán/ròng tự doanh + theo phân loại NĐT, mở rộng Fact + filter động) | READY |
 | Fact Market Index Snapshot | Periodic Snapshot | 1 row / chỉ số thị trường (market_code) / ngày (bản ghi cuối phiên) | K_GSTT_35–43, K_GSTT_47–51 (Nhóm 5, reuse + mở rộng Fact QLKD), Nhóm 49 (100% reuse Nhóm 5, Data Explorer) | READY |
 | Fact Market Index Intraday | Transaction/Tick Snapshot | 1 row / chỉ số thị trường (market_code) / Index Time — FK `Calendar Date Dimension` qua `Trading Date` | K_GSTT_34, K_GSTT_45–46 (Nhóm 5, mới) | READY |
-| Fact Public Company Shareholding | Transaction/Snapshot | 1 row / cổ đông (Legal Entity) / mã công ty (Public Company) / chức vụ (nullable) | K_GSTT_100–103 (Nhóm 45, mới), Nhóm 48 (100% reuse Nhóm 45) | READY |
 
 ### 3.3 Bảng Tác nghiệp
 
@@ -2956,7 +2929,6 @@ Không có.
 | Calendar Date Dimension | Conformed (dùng chung toàn hệ thống) | 1 row / ngày | — | READY |
 | Index Constituent Dimension | Reference per module | 1 row / (Index Code, Symbol) — quan hệ thành viên rổ chỉ số, driving entity `Index Constituent Snapshot` ← MDDS.JAD_CSIDXINFOR. FK trên Fact cho phép NULL khi mã CK không thuộc rổ nào | — | READY |
 | Market Index Dimension | Conformed (sở hữu QLKD, dùng chung QLKD/NDTNN/GSTT) | 1 row / combo (Market Id, Market Code) — danh mục chỉ số thị trường (VN-Index/HNX/UPCOM/VN30) | MDDS_INDEX_TYPE | READY |
-| Legal Entity Dimension | Reference per module | 1 row / cổ đông — tên cổ đông, driving entity `Legal Entity` ← IDS.LEGAL_ENTITIES (Nguồn 2) | — | READY |
 | Legal Entity Position Dimension | Reference per module | 1 row / (cổ đông, chức vụ) — chức vụ người nội bộ, driving entity `Legal Entity Position` ← IDS.POSITIONS (Nguồn 1, draft) | IDS_POSITION | READY |
 
 ---
@@ -2973,9 +2945,7 @@ Không có.
 | Market Index Dimension | market_index_dim | reuse | Đã có trong master, sở hữu QLKD (reuse NDTNN). GSTT reuse nguyên trạng, không cần thêm cột — đã cập nhật `modules_using` (+GSTT) |
 | Public Company Dimension | public_company_dim | reuse | Đã có trong master (module gốc GSDC, dùng chung QLCB/NDTNN) — đủ cột (Code + Name ngành đệm sẵn) cho nhu cầu GSTT, không cần thêm cột. Đã sửa logic JOIN nội bộ của cột `Classification Business Line Name` sang so khớp qua Id (2026-07-27) — không đổi cấu trúc schema |
 | Calendar Date Dimension | cdr_dt_dim | reuse | Conformed Dimension — luôn reuse toàn hệ thống |
-| Fact Public Company Shareholding | fct_public_company_shareholding | new | Chưa có trong master — GSTT (Nhóm 45) tạo mới. Grain = 1 row/cổ đông (Legal Entity)/mã công ty/chức vụ (nullable). Nguồn Atomic `Public Company Shareholding` (IDS.COMPANY_SHAREHOLDING, Nguồn 1, entity draft) + `Legal Entity Position` (IDS.POSITIONS, Nguồn 1, draft) |
-| Legal Entity Dimension | legal_entity_dim | new | Chưa có trong master. Driving entity `Legal Entity` ← IDS.LEGAL_ENTITIES — chỉ có ở Nguồn 2 (`DataModel/working/Atomic/lld/IDS/lld_IDS_LEGAL_ENTITIES.yaml`), chưa promote lên Nguồn 1 — dùng theo thứ tự ưu tiên nguồn (fallback Nguồn 2) |
-| Legal Entity Position Dimension | legal_entity_position_dim | new | Chưa có trong master. Driving entity `Legal Entity Position` ← IDS.POSITIONS (Nguồn 1, draft). FK trên Fact cho phép NULL (không phải mọi cổ đông đều là người nội bộ có chức vụ) |
+| Legal Entity Position Dimension | legal_entity_position_dim | new | Chưa có trong master. Driving entity `Legal Entity Position` ← IDS.POSITIONS (Nguồn 1, draft) — phục vụ K_GSTT_104 (Chiều "Chức vụ người nội bộ", READY). **Sửa 2026-08-03:** Không còn FK nullable trên Fact vì `Fact Public Company Shareholding` đã loại khỏi Star Schema (6/8 KPI của Nhóm 45 PENDING theo gating "Chưa có CSDL - Map biểu mẫu" — xem Nhóm 45 Section 2). Dimension này hiện dùng độc lập như danh mục Chiều, không qua Fact |
 
 ---
 
