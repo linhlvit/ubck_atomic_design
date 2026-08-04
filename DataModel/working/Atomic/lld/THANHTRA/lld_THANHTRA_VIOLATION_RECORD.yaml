@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Business Activity] Conduct Violation"
   table_type: "Fundamental"
   group: "T3"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -126,14 +126,14 @@ attributes:
 - attribute_name: "Record Type Code"
   physical_name: "record_tp_code"
   description: "Phân loại: PAPER, ELECTRONIC."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "THANHTRA.VIOLATION_RECORD.RECORD_TYPE"
-  comment: "Scheme: VIOLATION_RECORD_TYPE."
-  classification_context: "VIOLATION_RECORD_TYPE"
+  comment: null
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Violation Timestamp"
@@ -217,14 +217,14 @@ attributes:
 - attribute_name: "Subject Type Code"
   physical_name: "subject_tp_code"
   description: "Đối tượng vi phạm: INDIVIDUAL, ORGANIZATION."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "THANHTRA.VIOLATION_RECORD.SUBJECT_TYPE"
-  comment: "Scheme: VIOLATION_SUBJECT_TYPE."
-  classification_context: "VIOLATION_SUBJECT_TYPE"
+  comment: null
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Subject Name"
@@ -334,27 +334,27 @@ attributes:
 - attribute_name: "Life Cycle Status Code"
   physical_name: "life_cycle_status_code"
   description: "Trạng thái: DRAFT, PENDING_LEADER_SIGN, SIGNED, NUMBERED, SENT_TO_SUBJECT."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "THANHTRA.VIOLATION_RECORD.STATUS"
-  comment: "Scheme: VIOLATION_RECORD_STATUS."
-  classification_context: "VIOLATION_RECORD_STATUS"
+  comment: null
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Signature Type Code"
   physical_name: "signature_tp_code"
   description: "Loại chữ ký: SINGLE, TWO_STEP."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "THANHTRA.VIOLATION_RECORD.SIGNATURE_TYPE"
-  comment: "Scheme: SIGNATURE_TYPE."
-  classification_context: "SIGNATURE_TYPE"
+  comment: null
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Signed By Officer Id"
@@ -366,8 +366,9 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.VIOLATION_RECORD.SIGNED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
-    \ Hash: hash_id('NHNCK.USERS', SIGNED_BY). Người ký số cuối."
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
+    \ Hash: hash_id('IAM.USERS', SIGNED_BY) | Chưa xác nhận join key THANHTRA.VIOLATION_RECORD.SIGNED_BY\
+    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -380,8 +381,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.VIOLATION_RECORD.SIGNED_BY"
-  comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
-    \ Code. Pair with Signed By Officer Id."
+  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Signed By Officer Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -407,8 +407,9 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.VIOLATION_RECORD.FIRST_SIGNED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
-    \ Hash: hash_id('NHNCK.USERS', FIRST_SIGNED_BY). Người ký nháy (ký 2 bước)."
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
+    \ Hash: hash_id('IAM.USERS', FIRST_SIGNED_BY) | Chưa xác nhận join key THANHTRA.VIOLATION_RECORD.FIRST_SIGNED_BY\
+    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -421,8 +422,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.VIOLATION_RECORD.FIRST_SIGNED_BY"
-  comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
-    \ Code. Pair with First Signed By Officer Id."
+  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with First Signed By Officer Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -513,8 +513,9 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.VIOLATION_RECORD.FORWARDED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
-    \ Hash: hash_id('NHNCK.USERS', FORWARDED_BY)."
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
+    \ Hash: hash_id('IAM.USERS', FORWARDED_BY) | Chưa xác nhận join key THANHTRA.VIOLATION_RECORD.FORWARDED_BY\
+    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -527,8 +528,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.VIOLATION_RECORD.FORWARDED_BY"
-  comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
-    \ Code. Pair with Forwarded By Officer Id."
+  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Forwarded By Officer Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

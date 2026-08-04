@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Business Activity] Business Review"
   table_type: "Fundamental"
   group: "T2"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -79,13 +79,12 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.CITIZEN_RECEPTION.RECEIVER_ID"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
-    \ Hash: hash_id('NHNCK.USERS', RECEIVER_ID)."
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM.USERS', RECEIVER_ID) | Chưa xác nhận join key THANHTRA.CITIZEN_RECEPTION.RECEIVER_ID ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Receiver Officer Code"
-  physical_name: "receiver_officer_code"
+- attribute_name: "Receiver Officer Name"
+  physical_name: "receiver_officer_nm"
   description: "Mã cán bộ tiếp công dân (snapshot tại thời điểm tiếp). Map từ RECEIVER_NAME."
   data_domain: "Text"
   nullable: true
@@ -93,23 +92,21 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.CITIZEN_RECEPTION.RECEIVER_NAME"
-  comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
-    \ Code. Pair with Receiver Officer Id. Nguồn map từ RECEIVER_NAME (không có RECEIVER_CODE\
-    \ riêng)."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Subject Type Code"
   physical_name: "subject_tp_code"
-  description: "Loại đối tượng đến tiếp: INDIVIDUAL (Cá nhân), ORGANIZATION (Tổ chức)."
-  data_domain: "Classification Value"
+  description: "Loại đối tượng đến tiếp: CA_NHAN, TO_CHUC."
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "THANHTRA.CITIZEN_RECEPTION.SUBJECT_TYPE"
-  comment: "Scheme: CITIZEN_SUBJECT_TYPE."
-  classification_context: "CITIZEN_SUBJECT_TYPE"
+  comment: null
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Subject Name"
@@ -134,7 +131,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.CITIZEN_RECEPTION.NUMBER_OF_PEOPLE"
-  comment: "Nguồn NUMBER(5,0) — ETL cast sang integer. Tối đa 5 chữ số."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "int"
@@ -160,7 +157,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.CITIZEN_RECEPTION.PETITION_ATTACHED"
-  comment: "Nguồn NUMBER(1,0) — ETL cast sang boolean/indicator."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -168,28 +165,27 @@ attributes:
   physical_name: "petition_category_code"
   description: "Loại đơn thư kèm theo (chỉ có giá trị khi petition_attached=1): FEEDBACK_SUGGESTION,\
     \ COMPLAINT, DENUNCIATION."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "THANHTRA.CITIZEN_RECEPTION.PETITION_CATEGORY"
-  comment: "Scheme: PETITION_CATEGORY. Chỉ điền khi Petition Attached Indicator =\
-    \ 1."
-  classification_context: "PETITION_CATEGORY"
+  comment: "Chỉ điền khi Petition Attached Indicator = 1."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Processing Status Code"
   physical_name: "processing_status_code"
   description: "Trạng thái xử lý buổi tiếp công dân."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "THANHTRA.CITIZEN_RECEPTION.PROCESSING_STATUS"
-  comment: "Scheme: CITIZEN_RECEPTION_STATUS."
-  classification_context: "CITIZEN_RECEPTION_STATUS"
+  comment: null
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Petition Id"

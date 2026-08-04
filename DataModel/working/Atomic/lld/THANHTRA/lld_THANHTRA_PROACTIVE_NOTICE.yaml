@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Event] Event"
   table_type: "Fundamental"
   group: "T1"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -88,27 +88,27 @@ attributes:
   description: "Loại thông báo: PENALTY_DECISION (Quyết định xử phạt VPHC), MARKET_SECURITY_MEASURE\
     \ (Quyết định BPBĐ an ninh thị trường), GUIDANCE_DOCUMENT (Công văn hướng dẫn),\
     \ OTHER (Thông báo khác)."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "THANHTRA.PROACTIVE_NOTICE.NOTICE_TYPE"
-  comment: "Scheme: PROACTIVE_NOTICE_TYPE."
-  classification_context: "PROACTIVE_NOTICE_TYPE"
+  comment: null
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Priority Code"
   physical_name: "priority_code"
   description: "Mức độ ưu tiên: NORMAL (Bình thường), URGENT (Khẩn)."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "THANHTRA.PROACTIVE_NOTICE.PRIORITY"
-  comment: "Scheme: NOTICE_PRIORITY."
-  classification_context: "NOTICE_PRIORITY"
+  comment: null
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Sender Officer Id"
@@ -120,8 +120,9 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.PROACTIVE_NOTICE.SENDER_ID"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
-    \ Hash: hash_id('NHNCK.USERS', SENDER_ID)."
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
+    \ Hash: hash_id('IAM.USERS', SENDER_ID) | Chưa xác nhận join key THANHTRA.PROACTIVE_NOTICE.SENDER_ID\
+    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -134,9 +135,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.PROACTIVE_NOTICE.SENDER_NAME"
-  comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
-    \ Code. Pair with Sender Officer Id. Nguồn lưu SENDER_NAME (text) — ETL map sang\
-    \ code từ USERS."
+  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Sender Officer Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -157,13 +156,13 @@ attributes:
   physical_name: "life_cycle_status_code"
   description: "Trạng thái: DRAFT (Nháp), SENT (Đã gửi) — sau khi SENT không thể sửa\
     \ hoặc thu hồi."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "THANHTRA.PROACTIVE_NOTICE.STATUS"
-  comment: "Scheme: NOTICE_STATUS."
-  classification_context: "NOTICE_STATUS"
+  comment: null
+  classification_context: null
   etl_derived_value: null
   data_type: "string"

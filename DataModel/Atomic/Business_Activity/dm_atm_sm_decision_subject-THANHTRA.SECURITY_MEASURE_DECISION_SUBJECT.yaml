@@ -1,0 +1,177 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-sm_decision_subject-THANHTRA.SECURITY_MEASURE_DECISION_SUBJECT
+  logical_name: Security Measure Decision Subject
+  physical_name: sm_decision_subject
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Conduct Violation"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: THANHTRA
+  description: |
+    Đối tượng bị áp dụng biện pháp ngăn chặn trong quyết định: thông tin định danh nhúng (loại, tên, số giấy tờ).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-THANHTRA-SECURITY_MEASURE_DECISION_SUBJECT
+
+attributes:
+  - name: Security Measure Decision Subject Id
+    physical_name: sm_decision_subject_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: THANHTRA
+    source_table: SECURITY_MEASURE_DECISION_SUBJECT
+    source_column: null
+    comment: "PK surrogate. BCV: [Business Activity] Conduct Violation."
+    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION_SUBJECT'"
+    etl_derived_value: null
+
+  - name: Security Measure Decision Subject Code
+    physical_name: sm_decision_subject_code
+    business_meaning: Khóa chính UUID của bảng nguồn. BK của entity.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: SECURITY_MEASURE_DECISION_SUBJECT
+    source_column: THANHTRA.SECURITY_MEASURE_DECISION_SUBJECT.ID
+    comment: BK chính. PK nguồn (VARCHAR2 UUID).
+    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION_SUBJECT'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: SECURITY_MEASURE_DECISION_SUBJECT
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION_SUBJECT'"
+    etl_derived_value: THANHTRA.SECURITY_MEASURE_DECISION_SUBJECT
+
+  - name: Security Measure Decision Id
+    physical_name: sm_decision_id
+    business_meaning: FK đến Security Measure Decision (quyết định biện pháp ngăn chặn chứa đối tượng này).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: SECURITY_MEASURE_DECISION_SUBJECT
+    source_column: THANHTRA.SECURITY_MEASURE_DECISION_SUBJECT.SECURITY_MEASURE_DECISION_ID
+    comment: "FK target: sm_decision.sm_decision_id. Hash: hash_id('THANHTRA.SECURITY_MEASURE_DECISION', SECURITY_MEASURE_DECISION_ID)."
+    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION_SUBJECT'"
+    etl_derived_value: null
+
+  - name: Security Measure Decision Code
+    physical_name: sm_decision_code
+    business_meaning: Mã Security Measure Decision (denormalized lookup).
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: SECURITY_MEASURE_DECISION_SUBJECT
+    source_column: THANHTRA.SECURITY_MEASURE_DECISION_SUBJECT.SECURITY_MEASURE_DECISION_ID
+    comment: "Lookup pair: sm_decision.sm_decision_code. Pair with Security Measure Decision Id."
+    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION_SUBJECT'"
+    etl_derived_value: null
+
+  - name: Subject Type Code
+    physical_name: subject_tp_code
+    business_meaning: Loại đối tượng bị áp dụng biện pháp ngăn chặn (cá nhân hoặc tổ chức).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: SECURITY_MEASURE_DECISION_SUBJECT
+    source_column: THANHTRA.SECURITY_MEASURE_DECISION_SUBJECT.SUBJECT_TYPE
+    comment: null
+    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION_SUBJECT'"
+    etl_derived_value: null
+
+  - name: Subject Name
+    physical_name: subject_nm
+    business_meaning: Tên cá nhân hoặc tổ chức bị áp dụng biện pháp ngăn chặn.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: SECURITY_MEASURE_DECISION_SUBJECT
+    source_column: THANHTRA.SECURITY_MEASURE_DECISION_SUBJECT.SUBJECT_NAME
+    comment: null
+    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION_SUBJECT'"
+    etl_derived_value: null
+
+  - name: Subject Id Number
+    physical_name: subject_id_nbr
+    business_meaning: Số CCCD/CMND (cá nhân) hoặc mã số doanh nghiệp (tổ chức) của đối tượng.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: SECURITY_MEASURE_DECISION_SUBJECT
+    source_column: THANHTRA.SECURITY_MEASURE_DECISION_SUBJECT.SUBJECT_ID_NUMBER
+    comment: null
+    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION_SUBJECT'"
+    etl_derived_value: null
+
+  - name: Subject Date Of Birth
+    physical_name: subject_dt_of_birth
+    business_meaning: Ngày sinh của đối tượng (chỉ áp dụng cho cá nhân).
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: SECURITY_MEASURE_DECISION_SUBJECT
+    source_column: THANHTRA.SECURITY_MEASURE_DECISION_SUBJECT.SUBJECT_DOB
+    comment: null
+    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION_SUBJECT'"
+    etl_derived_value: null
+
+  - name: Subject Address
+    physical_name: subject_adr
+    business_meaning: Địa chỉ cư trú (cá nhân) hoặc trụ sở (tổ chức) của đối tượng.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: SECURITY_MEASURE_DECISION_SUBJECT
+    source_column: THANHTRA.SECURITY_MEASURE_DECISION_SUBJECT.SUBJECT_ADDRESS
+    comment: "Denormalized text — không tách IP Postal Address vì grain bảng nguồn là quyết định ngăn chặn, không phải Involved Party."
+    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION_SUBJECT'"
+    etl_derived_value: null
+
+  - name: Subject Legal Representative
+    physical_name: subject_legal_representative
+    business_meaning: Tên người đại diện pháp luật (chỉ áp dụng cho tổ chức).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: SECURITY_MEASURE_DECISION_SUBJECT
+    source_column: THANHTRA.SECURITY_MEASURE_DECISION_SUBJECT.SUBJECT_LEGAL_REP
+    comment: null
+    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION_SUBJECT'"
+    etl_derived_value: null

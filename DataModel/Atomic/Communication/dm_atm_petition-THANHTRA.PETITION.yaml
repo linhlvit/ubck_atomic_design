@@ -137,14 +137,14 @@ attributes:
   - name: Petition Category Code
     physical_name: petition_category_code
     business_meaning: "Loại đơn: FEEDBACK_SUGGESTION (Phản ánh kiến nghị), COMPLAINT (Khiếu nại), DENUNCIATION (Tố cáo)."
-    data_domain: Classification Value
+    data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: THANHTRA
     source_table: PETITION
     source_column: THANHTRA.PETITION.PETITION_CATEGORY
-    comment: "Scheme: PETITION_CATEGORY."
+    comment: null
     classification_context: "Source System Code = 'THANHTRA_PETITION'"
     etl_derived_value: null
 
@@ -221,14 +221,14 @@ attributes:
   - name: Duplicate Type Code
     physical_name: duplicate_tp_code
     business_meaning: "Loại: ORIGINAL (Đơn gốc), DUPLICATE (Đơn trùng)."
-    data_domain: Classification Value
+    data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: THANHTRA
     source_table: PETITION
     source_column: THANHTRA.PETITION.DUPLICATE_TYPE
-    comment: "Scheme: PETITION_DUPLICATE_TYPE."
+    comment: null
     classification_context: "Source System Code = 'THANHTRA_PETITION'"
     etl_derived_value: null
 
@@ -242,7 +242,7 @@ attributes:
     source_system: THANHTRA
     source_table: PETITION
     source_column: THANHTRA.PETITION.ORIGINAL_PETITION_ID
-    comment: "FK target: petition.petition_id. Self-reference. Resolve: join ORIGINAL_PETITION_ID → THANHTRA.PETITION.ID để lấy CODE, rồi hash_id('THANHTRA.PETITION', CODE_CHA)."
+    comment: "FK target: petition.petition_id. Cần ETL crosswalk sang THANHTRA.PETITION: PETITION.ORIGINAL_PETITION_ID = PETITION.ID để xác nhận CODE sau đó hash_id('THANHTRA.PETITION', CODE) | Self-reference."
     classification_context: "Source System Code = 'THANHTRA_PETITION'"
     etl_derived_value: null
 
@@ -347,14 +347,14 @@ attributes:
   - name: Life Cycle Status Code
     physical_name: life_cycle_status_code
     business_meaning: "Trạng thái: RECEIVED (Đã tiếp nhận), PROCESSED (Đã xử lý xong)."
-    data_domain: Classification Value
+    data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: THANHTRA
     source_table: PETITION
     source_column: THANHTRA.PETITION.STATUS
-    comment: "Scheme: PETITION_STATUS."
+    comment: null
     classification_context: "Source System Code = 'THANHTRA_PETITION'"
     etl_derived_value: null
 

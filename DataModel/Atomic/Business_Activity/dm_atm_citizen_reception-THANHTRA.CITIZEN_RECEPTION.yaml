@@ -1,0 +1,247 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-citizen_reception-THANHTRA.CITIZEN_RECEPTION
+  logical_name: Citizen Reception
+  physical_name: citizen_reception
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Business Review"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: THANHTRA
+  description: |
+    Ghi nhận buổi tiếp công dân tại UBCKNN: ngày tiếp, cán bộ tiếp, loại đối tượng, nội dung tóm tắt, liên kết hồ sơ đơn thư nếu có.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-THANHTRA-CITIZEN_RECEPTION
+
+attributes:
+  - name: Citizen Reception Id
+    physical_name: citizen_reception_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: THANHTRA
+    source_table: CITIZEN_RECEPTION
+    source_column: null
+    comment: "PK surrogate. BCV: [Business Activity] Business Review."
+    classification_context: "Source System Code = 'THANHTRA_CITIZEN_RECEPTION'"
+    etl_derived_value: null
+
+  - name: Citizen Reception Code
+    physical_name: citizen_reception_code
+    business_meaning: Khóa chính UUID của bảng nguồn. BK của entity.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: CITIZEN_RECEPTION
+    source_column: THANHTRA.CITIZEN_RECEPTION.ID
+    comment: BK chính. PK nguồn (VARCHAR2 UUID).
+    classification_context: "Source System Code = 'THANHTRA_CITIZEN_RECEPTION'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: CITIZEN_RECEPTION
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'THANHTRA_CITIZEN_RECEPTION'"
+    etl_derived_value: THANHTRA.CITIZEN_RECEPTION
+
+  - name: Reception Date
+    physical_name: reception_dt
+    business_meaning: Ngày tiếp công dân.
+    data_domain: Date
+    data_type: date
+    nullable: false
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: CITIZEN_RECEPTION
+    source_column: THANHTRA.CITIZEN_RECEPTION.RECEPTION_DATE
+    comment: null
+    classification_context: "Source System Code = 'THANHTRA_CITIZEN_RECEPTION'"
+    etl_derived_value: null
+
+  - name: Receiver Officer Id
+    physical_name: receiver_officer_id
+    business_meaning: FK đến Regulatory Authority Officer (cán bộ UBCKNN thực hiện tiếp công dân).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: CITIZEN_RECEPTION
+    source_column: THANHTRA.CITIZEN_RECEPTION.RECEIVER_ID
+    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM.USERS', RECEIVER_ID) | Chưa xác nhận join key THANHTRA.CITIZEN_RECEPTION.RECEIVER_ID ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+    classification_context: "Source System Code = 'THANHTRA_CITIZEN_RECEPTION'"
+    etl_derived_value: null
+
+  - name: Receiver Officer Name
+    physical_name: receiver_officer_nm
+    business_meaning: Mã cán bộ tiếp công dân (snapshot tại thời điểm tiếp). Map từ RECEIVER_NAME.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: CITIZEN_RECEPTION
+    source_column: THANHTRA.CITIZEN_RECEPTION.RECEIVER_NAME
+    comment: null
+    classification_context: "Source System Code = 'THANHTRA_CITIZEN_RECEPTION'"
+    etl_derived_value: null
+
+  - name: Subject Type Code
+    physical_name: subject_tp_code
+    business_meaning: "Loại đối tượng đến tiếp: CA_NHAN, TO_CHUC."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: CITIZEN_RECEPTION
+    source_column: THANHTRA.CITIZEN_RECEPTION.SUBJECT_TYPE
+    comment: null
+    classification_context: "Source System Code = 'THANHTRA_CITIZEN_RECEPTION'"
+    etl_derived_value: null
+
+  - name: Subject Name
+    physical_name: subject_nm
+    business_meaning: Tên cá nhân hoặc tổ chức được tiếp.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: CITIZEN_RECEPTION
+    source_column: THANHTRA.CITIZEN_RECEPTION.SUBJECT_NAME
+    comment: null
+    classification_context: "Source System Code = 'THANHTRA_CITIZEN_RECEPTION'"
+    etl_derived_value: null
+
+  - name: Number Of People
+    physical_name: nbr_of_people
+    business_meaning: Số người tham gia buổi tiếp công dân.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: CITIZEN_RECEPTION
+    source_column: THANHTRA.CITIZEN_RECEPTION.NUMBER_OF_PEOPLE
+    comment: null
+    classification_context: "Source System Code = 'THANHTRA_CITIZEN_RECEPTION'"
+    etl_derived_value: null
+
+  - name: Summary
+    physical_name: summary
+    business_meaning: Tóm tắt nội dung buổi tiếp công dân.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: CITIZEN_RECEPTION
+    source_column: THANHTRA.CITIZEN_RECEPTION.SUMMARY
+    comment: Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng.
+    classification_context: "Source System Code = 'THANHTRA_CITIZEN_RECEPTION'"
+    etl_derived_value: null
+
+  - name: Petition Attached Indicator
+    physical_name: petition_attached_indicator
+    business_meaning: "Cờ cho biết có đơn thư kèm theo hay không (0=Không, 1=Có)."
+    data_domain: Indicator
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: CITIZEN_RECEPTION
+    source_column: THANHTRA.CITIZEN_RECEPTION.PETITION_ATTACHED
+    comment: null
+    classification_context: "Source System Code = 'THANHTRA_CITIZEN_RECEPTION'"
+    etl_derived_value: null
+
+  - name: Petition Category Code
+    physical_name: petition_category_code
+    business_meaning: "Loại đơn thư kèm theo (chỉ có giá trị khi petition_attached=1): FEEDBACK_SUGGESTION, COMPLAINT, DENUNCIATION."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: CITIZEN_RECEPTION
+    source_column: THANHTRA.CITIZEN_RECEPTION.PETITION_CATEGORY
+    comment: "Chỉ điền khi Petition Attached Indicator = 1."
+    classification_context: "Source System Code = 'THANHTRA_CITIZEN_RECEPTION'"
+    etl_derived_value: null
+
+  - name: Processing Status Code
+    physical_name: processing_status_code
+    business_meaning: Trạng thái xử lý buổi tiếp công dân.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: CITIZEN_RECEPTION
+    source_column: THANHTRA.CITIZEN_RECEPTION.PROCESSING_STATUS
+    comment: null
+    classification_context: "Source System Code = 'THANHTRA_CITIZEN_RECEPTION'"
+    etl_derived_value: null
+
+  - name: Petition Id
+    physical_name: petition_id
+    business_meaning: "FK đến Petition (đơn thư liên kết với buổi tiếp công dân này, nếu có)."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: CITIZEN_RECEPTION
+    source_column: THANHTRA.CITIZEN_RECEPTION.PETITION_ID
+    comment: "FK target: petition.petition_id. Cần ETL crosswalk sang THANHTRA.PETITION: CITIZEN_RECEPTION.PETITION_ID = PETITION.ID để xác nhận CODE sau đó hash_id('THANHTRA.PETITION', CODE) | Trước đây hash trực tiếp theo PETITION_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27. Nullable — không phải buổi tiếp nào cũng có đơn thư."
+    classification_context: "Source System Code = 'THANHTRA_CITIZEN_RECEPTION'"
+    etl_derived_value: null
+
+  - name: Petition Code
+    physical_name: petition_code
+    business_meaning: "Mã Petition (denormalized lookup, snapshot tại thời điểm tiếp)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: CITIZEN_RECEPTION
+    source_column: THANHTRA.CITIZEN_RECEPTION.PETITION_ID
+    comment: "Lookup pair: petition.petition_code. Pair with Petition Id."
+    classification_context: "Source System Code = 'THANHTRA_CITIZEN_RECEPTION'"
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: Ghi chú bổ sung về buổi tiếp công dân.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: CITIZEN_RECEPTION
+    source_column: THANHTRA.CITIZEN_RECEPTION.NOTE
+    comment: Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng.
+    classification_context: "Source System Code = 'THANHTRA_CITIZEN_RECEPTION'"
+    etl_derived_value: null

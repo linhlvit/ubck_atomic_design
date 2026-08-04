@@ -1079,6 +1079,8 @@ brd_entries:
       data_change_mode: Append
       filter_logic: null
       filter_note: null
+      filter_logic: created_at >= {etl_date} AND created_at < {etl_date} + 1
+      filter_note: Ngày thay đổi trạng thái chứng chi hành nghề được ghi vào hệ thống — append theo CREATED_AT
 - brd_id: BRD-SRC-NHNCK-CERTIFICATE_RECORD_LOGS
   brd_name: Design Atomic từ nguồn NHNCK bảng CERTIFICATE_RECORD_LOGS
   type: Theo Source

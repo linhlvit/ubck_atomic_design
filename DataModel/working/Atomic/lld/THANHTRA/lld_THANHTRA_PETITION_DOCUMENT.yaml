@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Communication] Feedback"
   table_type: "Fundamental"
   group: "T2"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -88,14 +88,14 @@ attributes:
   description: "Loại văn bản xử lý đơn thư (8 loại): CLASSIFICATION_REPORT, MULTI_CONTENT_GUIDE,\
     \ ACCEPTANCE_NOTICE, FEEDBACK_PROPOSAL, ACCEPTANCE_PROPOSAL, FEEDBACK_TRANSFER,\
     \ DENUNCIATION_TRANSFER, INVESTOR_RESPONSE."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "THANHTRA.PETITION_DOCUMENT.DOCUMENT_TYPE"
-  comment: "Scheme: PETITION_DOCUMENT_TYPE."
-  classification_context: "PETITION_DOCUMENT_TYPE"
+  comment: null
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Document Number"
@@ -141,15 +141,14 @@ attributes:
   physical_name: "cl_result_code"
   description: "Kết quả phân loại đơn thư: WITHIN_JURISDICTION (Thuộc thẩm quyền),\
     \ NOT_WITHIN_JURISDICTION (Không thuộc thẩm quyền), MULTI_CONTENT (Nhiều nội dung)."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "THANHTRA.PETITION_DOCUMENT.CLASSIFICATION_RESULT"
-  comment: "Scheme: PETITION_CATEGORY. Dùng lại scheme phân loại đơn thư cho kết quả\
-    \ phân loại."
-  classification_context: "PETITION_CATEGORY"
+  comment: null
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Proposed Action"
@@ -240,8 +239,9 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.PETITION_DOCUMENT.PREPARED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
-    \ Hash: hash_id('NHNCK.USERS', PREPARED_BY). FK suy luận — không có formal constraint."
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
+    \ Hash: hash_id('IAM.USERS', PREPARED_BY) | Chưa xác nhận join key THANHTRA.PETITION_DOCUMENT.PREPARED_BY\
+    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -254,8 +254,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.PETITION_DOCUMENT.PREPARED_BY"
-  comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
-    \ Code. Pair with Prepared By Officer Id."
+  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Prepared By Officer Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

@@ -128,14 +128,14 @@ attributes:
   physical_name: "src_category_code"
   description: "Nguồn phát sinh: INSPECTION_RESULT, INTERNAL_UNIT, STOCK_EXCHANGE,\
     \ VSDC, OTHER_SUPERVISION."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "THANHTRA.VIOLATION_CASE.SOURCE_CATEGORY"
-  comment: "Scheme: VIOLATION_CASE_SOURCE_CATEGORY."
-  classification_context: "VIOLATION_CASE_SOURCE_CATEGORY"
+  comment: null
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Source Unit Name"
@@ -175,9 +175,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.VIOLATION_CASE.ASSIGNED_OFFICER_NAME"
-  comment: "Denormalized snapshot tên cán bộ tại thời điểm phân công, không phải Code\
-    \ nghiệp vụ — nguồn lưu ASSIGNED_OFFICER_NAME (text), không dùng pattern Lookup\
-    \ pair Code. Pair with Assigned Officer Id."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -205,36 +203,34 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.VIOLATION_CASE.SUPERVISING_LEADER_NAME"
-  comment: "Denormalized snapshot tên lãnh đạo tại thời điểm phân công, không phải\
-    \ Code nghiệp vụ — nguồn lưu SUPERVISING_LEADER_NAME (text), không dùng pattern\
-    \ Lookup pair Code. Pair with Supervising Leader Id."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Life Cycle Status Code"
   physical_name: "life_cycle_status_code"
   description: "Trạng thái: NEW, PROCESSING, DECISION_ISSUED, ENFORCED, CLOSED."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "THANHTRA.VIOLATION_CASE.STATUS"
-  comment: "Scheme: VIOLATION_CASE_STATUS."
-  classification_context: "VIOLATION_CASE_STATUS"
+  comment: null
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Market Type Code"
   physical_name: "market_tp_code"
   description: "Thị trường: DOMESTIC, INTERNATIONAL."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "THANHTRA.VIOLATION_CASE.MARKET_TYPE"
-  comment: "Scheme: MARKET_TYPE."
-  classification_context: "MARKET_TYPE"
+  comment: null
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Bond Issuer Code"
