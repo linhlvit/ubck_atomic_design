@@ -29,7 +29,11 @@ metadata:
     \ Các file downstream tham chiếu Code cũ (ID-based) cần rà soát riêng. STATUS\
     \ (nguồn) không map — cùng field với RECORD_STATUS đã loại trừ theo chính sách\
     \ Data Modeler (2026-07-07), chỉ đổi tên qua DDL UAT remap 2026-07-15/20. Xem\
-    \ pending_design.yaml (cập nhật lại source_column 2026-07-24)."
+    \ pending_design.yaml (cập nhật lại source_column 2026-07-24). Đổi tên attribute\
+    \ Certificate Name → Certificate Type Name (2026-08-04), nhất quán với Datamart\
+    \ SP License Certificate Type Dimension (đã dùng tên này từ trước) — physical_name\
+    \ certificate_nm → certificate_tp_nm. Hạ design_status approved → draft do sửa\
+    \ sau approve — cần review/approve lại."
 attributes:
 - attribute_name: "Securities Practitioner License Certificate Type Id"
   physical_name: "sp_license_certificate_tp_id"
@@ -72,8 +76,8 @@ attributes:
   classification_context: "SOURCE_SYSTEM=NHNCK.CERTIFICATES"
   etl_derived_value: "NHNCK.CERTIFICATES"
   data_type: "string"
-- attribute_name: "Certificate Name"
-  physical_name: "certificate_nm"
+- attribute_name: "Certificate Type Name"
+  physical_name: "certificate_tp_nm"
   description: "Tên loại chứng chỉ hành nghề (VD: Quản lý quỹ, Phân tích đầu tư, Môi\
     \ giới CK)"
   data_domain: "Text"
@@ -82,7 +86,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.CERTIFICATES.CERTIFICATE_NAME"
-  comment: "BCV: không có term riêng — đặt tên theo nghĩa nghiệp vụ."
+  comment: "BCV: không có term riêng — đặt tên theo nghĩa nghiệp vụ. Đổi tên từ Certificate\
+    \ Name (2026-08-04) để nhất quán với Datamart SP License Certificate Type Dimension."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
