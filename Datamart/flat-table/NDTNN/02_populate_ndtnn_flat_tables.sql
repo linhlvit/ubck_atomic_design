@@ -5,6 +5,9 @@
 -- 5 bảng: 3 fact + 2 operational
 -- ETL daily: fact lọc theo WHERE cal.cdr_dt = :etl_date (bảng có FK Calendar Date)
 --            fact report lọc trực tiếp theo WHERE f.report_dt = :etl_date (không FK Calendar Date)
+-- 2 fact report (statistics_rpt, detail_rpt) là ETL append-only theo Report
+-- Date (xem HLD O_NDTNN_31b) — KHÔNG TRUNCATE, chỉ DELETE đúng ngày :etl_date
+-- (idempotent re-run) rồi INSERT lại, giữ nguyên lịch sử các ngày report khác.
 -- ============================================================
 
 
@@ -37,6 +40,7 @@ SELECT
     sec_dim.issuer_nm                  AS issuer_nm,
     sec_dim.listing_dt                 AS listing_dt,
     sec_dim.symbol_status_code         AS symbol_status_code,
+    sec_dim.src_stm_code                AS securities_src_stm_code,
 
     -- From: PUBLIC COMPANY DIMENSION
     pc_dim.public_company_code             AS public_company_code,
@@ -64,7 +68,8 @@ SELECT
     pc_dim.has_parent_company_indicator    AS has_parent_company_indicator,
     pc_dim.has_subsidiary_indicator        AS has_subsidiary_indicator,
     pc_dim.has_joint_venture_indicator     AS has_joint_venture_indicator,
-    pc_dim.ipo_company_indicator           AS ipo_company_indicator
+    pc_dim.ipo_company_indicator           AS ipo_company_indicator,
+    pc_dim.src_stm_code                    AS public_company_src_stm_code
 
 FROM datamart.fct_securities_foreign_trading_snpst f
 JOIN datamart.cdr_dt_dim trade_cal
@@ -81,7 +86,8 @@ WHERE trade_cal.cdr_dt = :etl_date
 -- 2. FACT (report): ndtnn_foreign_investor_trading_statistics_rpt_flat
 --    Không FK Calendar Date — lọc trực tiếp trên report_dt
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.ndtnn_foreign_investor_trading_statistics_rpt_flat ON CLUSTER 'my_cluster';
+DELETE FROM datamart.ndtnn_foreign_investor_trading_statistics_rpt_flat ON CLUSTER 'my_cluster'
+WHERE report_dt = :etl_date;
 INSERT INTO datamart.ndtnn_foreign_investor_trading_statistics_rpt_flat
 SELECT
     -- From: FACT Foreign Investor Trading Statistics Report
@@ -100,7 +106,8 @@ WHERE f.report_dt = :etl_date
 -- 3. FACT (report): ndtnn_foreign_investor_trading_detail_rpt_flat
 --    Không FK Calendar Date — lọc trực tiếp trên report_dt
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.ndtnn_foreign_investor_trading_detail_rpt_flat ON CLUSTER 'my_cluster';
+DELETE FROM datamart.ndtnn_foreign_investor_trading_detail_rpt_flat ON CLUSTER 'my_cluster'
+WHERE report_dt = :etl_date;
 INSERT INTO datamart.ndtnn_foreign_investor_trading_detail_rpt_flat
 SELECT
     -- From: FACT Foreign Investor Trading Detail Report

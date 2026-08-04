@@ -4,15 +4,21 @@
 -- Generated: Phase 3 LLD Datamart
 -- 11 bảng: 2 fact + 9 operational
 -- ETL daily: fact lọc theo WHERE cal.cdr_dt = :etl_date
+-- Grain 2 fact Snapshot (license_certificate_snpst, daily_snpst) = APPEND
+-- theo Snapshot_Date (HLD: "ETL append 1 row per NHN mỗi ngày") — phục vụ
+-- KPI YoY/so sánh 31/12/Y các năm quá khứ. KHÔNG TRUNCATE — chỉ DELETE đúng
+-- ngày :etl_date (idempotent re-run) rồi INSERT lại, giữ nguyên lịch sử
+-- các ngày snapshot khác.
 -- ============================================================
 
 
 -- ============================================================
 -- 1. FACT: nhnck_fct_practitioner_license_certificate_snpst_flat
---    snpst_cal: JOIN + WHERE cdr_dt = :etl_date
+--    Grain APPEND — DELETE đúng ngày :etl_date (không TRUNCATE) rồi INSERT
 --    issu_cal:  LEFT JOIN (lịch sử — không lọc ngày)
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.nhnck_fct_practitioner_license_certificate_snpst_flat ON CLUSTER 'my_cluster';
+DELETE FROM datamart.nhnck_fct_practitioner_license_certificate_snpst_flat ON CLUSTER 'my_cluster'
+WHERE snpst_cdr_dt = :etl_date;
 INSERT INTO datamart.nhnck_fct_practitioner_license_certificate_snpst_flat
 SELECT
     -- From: FACT Practitioner License Certificate Snapshot
@@ -40,10 +46,12 @@ SELECT
     prac_dim.nationality_code           AS practitioner_nationality_code,
     prac_dim.birth_dt                   AS practitioner_birth_dt,
     prac_dim.practice_status_code       AS practitioner_practice_status_code,
+    prac_dim.src_stm_code               AS practitioner_src_stm_code,
 
     -- From: SP LICENSE CERTIFICATE TYPE DIMENSION
     certificate_tp_dim.certificate_tp_code   AS certificate_tp_dim_code,
-    certificate_tp_dim.certificate_tp_nm     AS certificate_tp_dim_nm
+    certificate_tp_dim.certificate_tp_nm     AS certificate_tp_dim_nm,
+    certificate_tp_dim.src_stm_code          AS certificate_tp_src_stm_code
 
 FROM datamart.fct_practitioner_license_certificate_snpst f
 JOIN datamart.cdr_dt_dim snpst_cal
@@ -60,9 +68,10 @@ WHERE snpst_cal.cdr_dt = :etl_date
 
 -- ============================================================
 -- 2. FACT: nhnck_fct_practitioner_daily_snpst_flat
---    snpst_cal: JOIN + WHERE cdr_dt = :etl_date
+--    Grain APPEND — DELETE đúng ngày :etl_date (không TRUNCATE) rồi INSERT
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.nhnck_fct_practitioner_daily_snpst_flat ON CLUSTER 'my_cluster';
+DELETE FROM datamart.nhnck_fct_practitioner_daily_snpst_flat ON CLUSTER 'my_cluster'
+WHERE snpst_cdr_dt = :etl_date;
 INSERT INTO datamart.nhnck_fct_practitioner_daily_snpst_flat
 SELECT
     -- From: FACT Practitioner Daily Snapshot
@@ -80,7 +89,8 @@ SELECT
     prac_dim.education_level_code        AS practitioner_education_level_code,
     prac_dim.nationality_code           AS practitioner_nationality_code,
     prac_dim.birth_dt            AS practitioner_birth_dt,
-    prac_dim.practice_status_code   AS practitioner_practice_status_code
+    prac_dim.practice_status_code   AS practitioner_practice_status_code,
+    prac_dim.src_stm_code           AS practitioner_src_stm_code
 
 FROM datamart.fct_practitioner_daily_snpst f
 JOIN datamart.cdr_dt_dim snpst_cal

@@ -10,7 +10,6 @@ Trạng thái: draft — chờ reviewer duyệt từng bảng
 ```mermaid
 erDiagram
     Calendar_Date_Dimension ||--o{ Fact_Market_Risk_Snapshot : " "
-    Calendar_Date_Dimension ||--o{ Fact_Macro_Indicator_Snapshot : " "
     Calendar_Date_Dimension ||--o{ Fact_Sector_Risk_Snapshot : " "
     Sector_Dimension ||--o{ Fact_Sector_Risk_Snapshot : " "
     Calendar_Date_Dimension ||--o{ Fact_Order_Size_Snapshot : " "
@@ -23,155 +22,93 @@ erDiagram
     Calendar_Date_Dimension ||--o{ Fact_Member_Safety_Snapshot : " "
     Calendar_Date_Dimension ||--o{ Fact_Member_Safety_Per_Member_Snapshot : " "
     Securities_Company_Dimension ||--o{ Fact_Member_Safety_Per_Member_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Corporate_Bond_Market_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Corporate_Bond_Maturity_Wall : " "
+    Securities_Dimension ||--o{ Fact_Corporate_Bond_Maturity_Wall : " "
+    Calendar_Date_Dimension ||--o{ Fact_Futures_Intraday_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Futures_Investor_Flow_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Market_Statistics_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Market_Statistics_By_Industry_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Market_Statistics_By_Cap_Snapshot : " "
 ```
+
+> **Ghi chú:** `Fact Macro Indicator Snapshot` (Nhóm 3) và `Fact Cap Group Snapshot` (Nhóm 12) 100% PENDING toàn bộ KPI — không đưa vào mô hình/Entities.csv, xem mục "Bảng PENDING" cuối file.
 
 ---
 
-## Tab Dashboard Giám sát rủi ro thị trường
-
-### Nhóm 1–2: Chỉ số rủi ro hệ thống & Phân tích đóng góp rủi ro
+## Tab Dashboard Giám sát rủi ro (Nhóm 1-2)
 
 ```mermaid
 erDiagram
     Calendar_Date_Dimension ||--o{ Fact_Market_Risk_Snapshot : " "
 ```
 
-| Datamart Entity | Loại | Mô tả | Grain | KPI |
-|---|---|---|---|---|
-| Fact Market Risk Snapshot | Fact Snapshot | Chỉ số rủi ro hệ thống VN-Index + Z-score + tâm lý + thanh khoản | 1 row / ngày | K_PTTT_1, K_PTTT_2, K_PTTT_3, K_PTTT_4, K_PTTT_5, K_PTTT_6, K_PTTT_7, K_PTTT_8, K_PTTT_9, K_PTTT_10, K_PTTT_11, K_PTTT_12, K_PTTT_13, K_PTTT_14, K_PTTT_15, K_PTTT_16, K_PTTT_17, K_PTTT_18, K_PTTT_19, K_PTTT_20, K_PTTT_21, K_PTTT_22, K_PTTT_23, K_PTTT_24, K_PTTT_25, K_PTTT_26, K_PTTT_27 |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Chiều thời gian | 1 row / ngày | — |
+| Fact Market Risk Snapshot | Fact Snapshot | new | Risk Index, Volatility, 6 Z-score, 6 Mức độ tác động, 6 Tỷ trọng | 1 row / ngày | K_PTTT_1~24, K_PTTT_25~29 |
 
-### Nhóm 3–6: Chỉ số vĩ mô
+---
 
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Macro_Indicator_Snapshot : " "
-```
-
-| Datamart Entity | Loại | Mô tả | Grain | KPI |
-|---|---|---|---|---|
-| Fact Macro Indicator Snapshot | Fact Snapshot | Chỉ tiêu vĩ mô (lãi suất/CPI/GDP/tỷ giá) per kỳ báo cáo | 1 row / chỉ tiêu / kỳ | K_PTTT_28, K_PTTT_29, K_PTTT_30, K_PTTT_31, K_PTTT_32, K_PTTT_33, K_PTTT_34, K_PTTT_35, K_PTTT_36, K_PTTT_37, K_PTTT_38, K_PTTT_39, K_PTTT_40, K_PTTT_41, K_PTTT_59, K_PTTT_65, K_PTTT_66, K_PTTT_67, K_PTTT_68, K_PTTT_69, K_PTTT_70, K_PTTT_71, K_PTTT_72, K_PTTT_73, K_PTTT_74, K_PTTT_75, K_PTTT_76, K_PTTT_77, K_PTTT_78 |
-
-### Nhóm 4: Biểu đồ sức khỏe hệ thống
+## Tab Dashboard Sức khỏe thị trường và vĩ mô (Nhóm 3-7)
 
 ```mermaid
 erDiagram
     Calendar_Date_Dimension ||--o{ Fact_Market_Risk_Snapshot : " "
-```
-
-| Datamart Entity | Loại | Mô tả | Grain | KPI |
-|---|---|---|---|---|
-| Fact Market Risk Snapshot | Fact Snapshot | Reuse — chỉ số sức khỏe hệ thống tổng hợp | 1 row / ngày | K_PTTT_41, K_PTTT_42, K_PTTT_43, K_PTTT_44, K_PTTT_45, K_PTTT_46, K_PTTT_47, K_PTTT_48, K_PTTT_49, K_PTTT_50, K_PTTT_51, K_PTTT_52, K_PTTT_53, K_PTTT_54, K_PTTT_55, K_PTTT_56, K_PTTT_57, K_PTTT_58, K_PTTT_59, K_PTTT_60, K_PTTT_61, K_PTTT_62, K_PTTT_63, K_PTTT_64 |
-
----
-
-## Tab Dashboard Giám sát rủi ro ngành
-
-### Nhóm 7: Biểu đồ áp lực ngành
-
-```mermaid
-erDiagram
     Calendar_Date_Dimension ||--o{ Fact_Sector_Risk_Snapshot : " "
     Sector_Dimension ||--o{ Fact_Sector_Risk_Snapshot : " "
 ```
 
-| Datamart Entity | Loại | Mô tả | Grain | KPI |
-|---|---|---|---|---|
-| Sector Dimension | Dimension | Chiều ngành nghề chứng khoán (SCD4A) | 1 row / ngành | — |
-| Fact Sector Risk Snapshot | Fact Snapshot | Chỉ số áp lực rủi ro per ngành CK | 1 row / ngành / ngày | K_PTTT_41, K_PTTT_79, K_PTTT_80, K_PTTT_81, K_PTTT_82, K_PTTT_83, K_PTTT_84, K_PTTT_85, K_PTTT_86, K_PTTT_87, K_PTTT_88, K_PTTT_89, K_PTTT_90, K_PTTT_91, K_PTTT_92, K_PTTT_93, K_PTTT_94, K_PTTT_95, K_PTTT_96, K_PTTT_97, K_PTTT_98, K_PTTT_99, K_PTTT_100, K_PTTT_101, K_PTTT_102, K_PTTT_103, K_PTTT_111, K_PTTT_117, K_PTTT_126, K_PTTT_127, K_PTTT_128, K_PTTT_129, K_PTTT_160, K_PTTT_161, K_PTTT_174, K_PTTT_175, K_PTTT_176, K_PTTT_177 |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Chiều thời gian | 1 row / ngày | — |
+| Sector Dimension | Dimension | new | Chiều ngành nghề kinh doanh mã CK | 1 row / ngành | — |
+| Fact Market Risk Snapshot | Fact Snapshot | new | Điểm chứng khoán, Sentiment, Margin Tension, Systemic Vol (reuse từ Nhóm 1, dùng thêm cho Nhóm 4-6) | 1 row / ngày | K_PTTT_30~42 (PENDING, Nhóm 3), K_PTTT_43~80 |
+| Fact Sector Risk Snapshot | Fact Snapshot | new | StressScore, D/E, GTGD theo ngành | 1 row / ngành / ngày | K_PTTT_43,62,81~106 |
+
+> Nhóm 3 (Chỉ tiêu vĩ mô) 100% PENDING — gap Atomic `Risk Indicator`/`Risk Indicator Value` (O_PTTT_11), tạm gán `Fact Market Risk Snapshot` làm Mart dự kiến, chưa có measure thật nào populate.
 
 ---
 
-## Tab Dashboard Giám sát thanh khoản thị trường
-
-### Nhóm 8–10: Chỉ số thanh khoản & Margin Stress
+## Tab Dashboard Thanh khoản và đòn bẩy (Nhóm 8-12)
 
 ```mermaid
 erDiagram
     Calendar_Date_Dimension ||--o{ Fact_Market_Risk_Snapshot : " "
-```
-
-| Datamart Entity | Loại | Mô tả | Grain | KPI |
-|---|---|---|---|---|
-| Fact Market Risk Snapshot | Fact Snapshot | Reuse — thanh khoản thị trường + áp lực đòn bẩy | 1 row / ngày | K_PTTT_41, K_PTTT_55, K_PTTT_96, K_PTTT_97, K_PTTT_104, K_PTTT_105, K_PTTT_106, K_PTTT_107, K_PTTT_108, K_PTTT_109, K_PTTT_110, K_PTTT_111, K_PTTT_112, K_PTTT_113, K_PTTT_114, K_PTTT_115, K_PTTT_116, K_PTTT_117, K_PTTT_118, K_PTTT_119, K_PTTT_120, K_PTTT_121, K_PTTT_122, K_PTTT_123 |
-
-### Nhóm 11: Cấu trúc quy mô lệnh
-
-```mermaid
-erDiagram
     Calendar_Date_Dimension ||--o{ Fact_Order_Size_Snapshot : " "
 ```
 
-| Datamart Entity | Loại | Mô tả | Grain | KPI |
-|---|---|---|---|---|
-| Fact Order Size Snapshot | Fact Snapshot | GTGD và KL per mã CK theo band quy mô lệnh | 1 row / mã CK / band / ngày | K_PTTT_41, K_PTTT_111, K_PTTT_117, K_PTTT_124, K_PTTT_125 |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Chiều thời gian | 1 row / ngày | — |
+| Fact Market Risk Snapshot | Fact Snapshot | new | GTGD phiên, Dư nợ margin, Margin Stress, TVI (reuse từ Nhóm 1/4) | 1 row / ngày | K_PTTT_43,58,60,107~126 |
+| Fact Order Size Snapshot | Fact Snapshot | new | GTGD và phân loại quy mô lệnh per mã CK | 1 row / mã CK / order_size_band / ngày | K_PTTT_43,107,114,120,127,128 |
+
+> Nhóm 12 (Phân bổ thanh khoản theo nhóm vốn hóa) 100% PENDING — gap KL CP lưu hành VSDC BM1 (O_PTTT_3/O_PTTT_6), Mart dự kiến `Fact Cap Group Snapshot` — không đưa vào Entities.csv, xem mục "Bảng PENDING".
 
 ---
 
-## Tab Dashboard Giám sát dòng tiền
-
-### Nhóm 13–15: Dòng tiền nhóm NĐT
+## Tab Dashboard Dòng tiền và cơ cấu nhà đầu tư (Nhóm 13-17)
 
 ```mermaid
 erDiagram
     Calendar_Date_Dimension ||--o{ Fact_Investor_Flow_Snapshot : " "
     Investor_Group_Dimension ||--o{ Fact_Investor_Flow_Snapshot : " "
-```
-
-| Datamart Entity | Loại | Mô tả | Grain | KPI |
-|---|---|---|---|---|
-| Investor Group Dimension | Dimension | Chiều nhóm NĐT — 4 loại (SCD4A) | 1 row / nhóm | — |
-| Fact Investor Flow Snapshot | Fact Snapshot | Dòng tiền mua/bán/ròng theo nhóm NĐT | 1 row / nhóm NĐT / ngày | K_PTTT_41, K_PTTT_104, K_PTTT_111, K_PTTT_117, K_PTTT_130, K_PTTT_131, K_PTTT_132, K_PTTT_133, K_PTTT_134, K_PTTT_135, K_PTTT_136, K_PTTT_137, K_PTTT_138, K_PTTT_139, K_PTTT_140, K_PTTT_141, K_PTTT_142, K_PTTT_143, K_PTTT_144, K_PTTT_145, K_PTTT_146, K_PTTT_147, K_PTTT_148, K_PTTT_149, K_PTTT_150, K_PTTT_151, K_PTTT_152 |
-
-### Nhóm 16: Top mua bán ròng NĐTNN
-
-```mermaid
-erDiagram
     Calendar_Date_Dimension ||--o{ Fact_Foreign_Net_Trade_Snapshot : " "
-```
-
-| Datamart Entity | Loại | Mô tả | Grain | KPI |
-|---|---|---|---|---|
-| Fact Foreign Net Trade Snapshot | Fact Snapshot | Giao dịch ròng NĐTNN per mã CK | 1 row / mã CK / ngày | K_PTTT_41, K_PTTT_153, K_PTTT_154, K_PTTT_155, K_PTTT_156 |
-
-### Nhóm 17: Top mua bán ròng tự doanh
-
-```mermaid
-erDiagram
     Calendar_Date_Dimension ||--o{ Fact_Proprietary_Net_Trade_Snapshot : " "
 ```
 
-| Datamart Entity | Loại | Mô tả | Grain | KPI |
-|---|---|---|---|---|
-| Fact Proprietary Net Trade Snapshot | Fact Snapshot | Giao dịch ròng tự doanh per mã CK | 1 row / mã CK / ngày | K_PTTT_41, K_PTTT_153, K_PTTT_157, K_PTTT_158, K_PTTT_159 |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Chiều thời gian | 1 row / ngày | — |
+| Investor Group Dimension | Dimension | new | Chiều nhóm nhà đầu tư (NĐTNN/Tự doanh/Tổ chức/Cá nhân) | 1 row / nhóm NĐT | — |
+| Fact Investor Flow Snapshot | Fact Snapshot | new | GTGD mua/bán/dòng tiền ròng theo nhóm NĐT | 1 row / nhóm NĐT / ngày | K_PTTT_43,114,120,133~155 |
+| Fact Foreign Net Trade Snapshot | Fact Snapshot | new | GTGD mua/bán/dòng tiền ròng NĐTNN per mã CK | 1 row / mã CK / ngày | K_PTTT_43,133,134,156~159 |
+| Fact Proprietary Net Trade Snapshot | Fact Snapshot | new | GTGD mua/bán/dòng tiền ròng tự doanh per mã CK | 1 row / mã CK / ngày | K_PTTT_43,136,137,156,160~162 |
 
 ---
 
-## Tab Dashboard Giám sát trái phiếu doanh nghiệp
-
-### Nhóm 18–20: Thống kê TPDN theo ngành
-
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Corporate_Bond_Sector_Snapshot : " "
-    Corp_Bond_Sector_Dimension ||--o{ Fact_Corporate_Bond_Sector_Snapshot : " "
-```
-
-| Datamart Entity | Loại | Mô tả | Grain | KPI |
-|---|---|---|---|---|
-| Corp Bond Sector Dimension | Dimension | Chiều ngành TCPH trái phiếu DN (SCD4A) | 1 row / ngành TCPH | — |
-| Fact Corporate Bond Sector Snapshot | Fact Snapshot | GTGD và tỷ trọng TPDN theo ngành TCPH | 1 row / ngành / ngày | K_PTTT_41, K_PTTT_160, K_PTTT_161, K_PTTT_162, K_PTTT_163, K_PTTT_164, K_PTTT_165, K_PTTT_166, K_PTTT_167, K_PTTT_168, K_PTTT_169, K_PTTT_170, K_PTTT_171, K_PTTT_172, K_PTTT_173, K_PTTT_174, K_PTTT_175, K_PTTT_176, K_PTTT_177 |
-
-### Nhóm 21: Danh mục giám sát tín dụng TCPH
-
-| Datamart Entity | Loại | Mô tả | Grain | KPI |
-|---|---|---|---|---|
-| Operational Corporate Bond Issuer Credit Monitor | Operational | Theo dõi tín dụng TCPH: D/E, ROE, xếp hạng (partial pending) | 1 row / mã TP / kỳ | K_PTTT_41, K_PTTT_160, K_PTTT_161, K_PTTT_173, K_PTTT_178, K_PTTT_179, K_PTTT_180, K_PTTT_181, K_PTTT_182, K_PTTT_183, K_PTTT_184, K_PTTT_185, K_PTTT_186, K_PTTT_187, K_PTTT_188 |
-
----
-
-## Tab Dashboard An toàn tài chính CTCK
-
-### Nhóm 22–25: Chỉ số ATTC hệ thống & per CTCK
+## Tab Dashboard An toàn CTCK (Nhóm 22-25)
 
 ```mermaid
 erDiagram
@@ -180,35 +117,84 @@ erDiagram
     Securities_Company_Dimension ||--o{ Fact_Member_Safety_Per_Member_Snapshot : " "
 ```
 
-| Datamart Entity | Loại | Mô tả | Grain | KPI |
-|---|---|---|---|---|
-| Securities Company Dimension | Dimension | Chiều công ty chứng khoán thành viên (SCD4A) | 1 row / CTCK | — |
-| Fact Member Safety Snapshot | Fact Snapshot | Tổng hợp ATTC toàn hệ thống CTCK | 1 row / ngày | K_PTTT_41, K_PTTT_55, K_PTTT_189, K_PTTT_190, K_PTTT_191, K_PTTT_192, K_PTTT_193, K_PTTT_194, K_PTTT_195, K_PTTT_196, K_PTTT_197, K_PTTT_198, K_PTTT_199, K_PTTT_200 |
-| Fact Member Safety Per Member Snapshot | Fact Snapshot | Chỉ số ATTC per CTCK | 1 row / CTCK / ngày | K_PTTT_41, K_PTTT_55, K_PTTT_189, K_PTTT_190, K_PTTT_191, K_PTTT_192, K_PTTT_193, K_PTTT_194, K_PTTT_195, K_PTTT_196, K_PTTT_197, K_PTTT_198, K_PTTT_199, K_PTTT_200 |
-| Operational Member Safety Monitor | Operational | Danh sách giám sát rủi ro dư nợ margin per CTCK | 1 row / CTCK / ngày | K_PTTT_41, K_PTTT_55, K_PTTT_189, K_PTTT_191, K_PTTT_195, K_PTTT_200 |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Chiều thời gian | 1 row / ngày | — |
+| Securities Company Dimension | Dimension | new | Chiều công ty chứng khoán | 1 row / CTCK | — |
+| Fact Member Safety Snapshot | Fact Snapshot | new | Dư nợ margin, VCSH, nợ phải trả, D/E toàn hệ thống CTCK — PENDING (gap EAV báo cáo định kỳ CTCK, O_PTTT_13) | 1 row / ngày | K_PTTT_43,58,197~208 |
+| Fact Member Safety Per Member Snapshot | Fact Snapshot | new | VCSH, dư nợ margin, xếp hạng ATTC per CTCK — PENDING (cùng gap O_PTTT_13) | 1 row / CTCK / ngày | K_PTTT_43,58,197,199,202,203,204~208 |
+| Operational Member Safety Monitor | Operational | new | Danh sách CTCK giám sát rủi ro dư nợ margin — PENDING (cùng gap O_PTTT_13) | 1 row / CTCK / ngày | — |
+
+> Toàn bộ measure chính (Dư nợ margin, VCSH, D/E) của Tab này còn PENDING — chỉ Chiều Mã CTCK (dùng `securities_company` READY) và vài KPI phụ trợ đã READY. Xem O_PTTT_13.
 
 ---
 
-## Danh sách toàn bộ entity
+## Tab Dashboard Phái sinh (Nhóm 26-31)
 
-| Datamart Entity | Loại | Mô tả | Grain | KPI |
-|---|---|---|---|---|
-| Sector Dimension | Dimension | Chiều ngành CK (SCD4A) | 1 row / ngành | — |
-| Corp Bond Sector Dimension | Dimension | Chiều ngành TCPH TPDN (SCD4A) | 1 row / ngành TCPH | — |
-| Investor Group Dimension | Dimension | Chiều nhóm NĐT 4 loại (SCD4A) | 1 row / nhóm | — |
-| Securities Company Dimension | Dimension | Chiều CTCK thành viên (SCD4A) | 1 row / CTCK | — |
-| Fact Market Risk Snapshot | Fact Snapshot | Chỉ số rủi ro hệ thống + tâm lý + thanh khoản VN-Index | 1 row / ngày | K_PTTT_1, K_PTTT_2, K_PTTT_3, K_PTTT_4, K_PTTT_5, K_PTTT_6, K_PTTT_7, K_PTTT_8, K_PTTT_9, K_PTTT_10, K_PTTT_11, K_PTTT_12, K_PTTT_13, K_PTTT_14, K_PTTT_15, K_PTTT_16, K_PTTT_17, K_PTTT_18, K_PTTT_19, K_PTTT_20, K_PTTT_21, K_PTTT_22, K_PTTT_23, K_PTTT_24, K_PTTT_25, K_PTTT_26, K_PTTT_27, K_PTTT_28, K_PTTT_29, K_PTTT_41, K_PTTT_42, K_PTTT_43, K_PTTT_44, K_PTTT_45, K_PTTT_46, K_PTTT_47, K_PTTT_48, K_PTTT_49, K_PTTT_50, K_PTTT_51, K_PTTT_52, K_PTTT_53, K_PTTT_54, K_PTTT_55, K_PTTT_56, K_PTTT_57, K_PTTT_58, K_PTTT_59, K_PTTT_60, K_PTTT_61, K_PTTT_62, K_PTTT_63, K_PTTT_64, K_PTTT_65, K_PTTT_66, K_PTTT_67, K_PTTT_68, K_PTTT_69, K_PTTT_70, K_PTTT_71, K_PTTT_72, K_PTTT_73, K_PTTT_74, K_PTTT_75, K_PTTT_76, K_PTTT_77, K_PTTT_78, K_PTTT_96, K_PTTT_97, K_PTTT_104, K_PTTT_105, K_PTTT_106, K_PTTT_107, K_PTTT_108, K_PTTT_109, K_PTTT_110, K_PTTT_111, K_PTTT_112, K_PTTT_113, K_PTTT_114, K_PTTT_115, K_PTTT_116, K_PTTT_117, K_PTTT_118, K_PTTT_119, K_PTTT_120, K_PTTT_121, K_PTTT_122, K_PTTT_123 |
-| Fact Macro Indicator Snapshot | Fact Snapshot | Chỉ tiêu vĩ mô per chỉ tiêu / kỳ báo cáo | 1 row / chỉ tiêu / kỳ | K_PTTT_28, K_PTTT_29, K_PTTT_30, K_PTTT_31, K_PTTT_32, K_PTTT_33, K_PTTT_34, K_PTTT_35, K_PTTT_36, K_PTTT_37, K_PTTT_38, K_PTTT_39, K_PTTT_40, K_PTTT_41, K_PTTT_59, K_PTTT_65, K_PTTT_66, K_PTTT_67, K_PTTT_68, K_PTTT_69, K_PTTT_70, K_PTTT_71, K_PTTT_72, K_PTTT_73, K_PTTT_74, K_PTTT_75, K_PTTT_76, K_PTTT_77, K_PTTT_78 |
-| Fact Sector Risk Snapshot | Fact Snapshot | Áp lực rủi ro per ngành CK | 1 row / ngành / ngày | K_PTTT_41, K_PTTT_79, K_PTTT_80, K_PTTT_81, K_PTTT_82, K_PTTT_83, K_PTTT_84, K_PTTT_85, K_PTTT_86, K_PTTT_87, K_PTTT_88, K_PTTT_89, K_PTTT_90, K_PTTT_91, K_PTTT_92, K_PTTT_93, K_PTTT_94, K_PTTT_95, K_PTTT_96, K_PTTT_97, K_PTTT_98, K_PTTT_99, K_PTTT_100, K_PTTT_101, K_PTTT_102, K_PTTT_103, K_PTTT_111, K_PTTT_117, K_PTTT_126, K_PTTT_127, K_PTTT_128, K_PTTT_129, K_PTTT_160, K_PTTT_161, K_PTTT_174, K_PTTT_175, K_PTTT_176, K_PTTT_177 |
-| Fact Order Size Snapshot | Fact Snapshot | Quy mô lệnh per mã CK / band | 1 row / mã CK / band / ngày | K_PTTT_41, K_PTTT_111, K_PTTT_117, K_PTTT_124, K_PTTT_125 |
-| Fact Investor Flow Snapshot | Fact Snapshot | Dòng tiền theo nhóm NĐT | 1 row / nhóm NĐT / ngày | K_PTTT_41, K_PTTT_104, K_PTTT_111, K_PTTT_117, K_PTTT_130, K_PTTT_131, K_PTTT_132, K_PTTT_133, K_PTTT_134, K_PTTT_135, K_PTTT_136, K_PTTT_137, K_PTTT_138, K_PTTT_139, K_PTTT_140, K_PTTT_141, K_PTTT_142, K_PTTT_143, K_PTTT_144, K_PTTT_145, K_PTTT_146, K_PTTT_147, K_PTTT_148, K_PTTT_149, K_PTTT_150, K_PTTT_151, K_PTTT_152 |
-| Fact Foreign Net Trade Snapshot | Fact Snapshot | Giao dịch ròng NĐTNN per mã CK | 1 row / mã CK / ngày | K_PTTT_41, K_PTTT_153, K_PTTT_154, K_PTTT_155, K_PTTT_156 |
-| Fact Proprietary Net Trade Snapshot | Fact Snapshot | Giao dịch ròng tự doanh per mã CK | 1 row / mã CK / ngày | K_PTTT_41, K_PTTT_153, K_PTTT_157, K_PTTT_158, K_PTTT_159 |
-| Fact Corporate Bond Sector Snapshot | Fact Snapshot | GTGD TPDN per ngành TCPH | 1 row / ngành / ngày | K_PTTT_41, K_PTTT_160, K_PTTT_161, K_PTTT_162, K_PTTT_163, K_PTTT_164, K_PTTT_165, K_PTTT_166, K_PTTT_167, K_PTTT_168, K_PTTT_169, K_PTTT_170, K_PTTT_171, K_PTTT_172, K_PTTT_173, K_PTTT_174, K_PTTT_175, K_PTTT_176, K_PTTT_177 |
-| Fact Member Safety Snapshot | Fact Snapshot | ATTC tổng hợp toàn hệ thống CTCK | 1 row / ngày | K_PTTT_41, K_PTTT_55, K_PTTT_189, K_PTTT_190, K_PTTT_191, K_PTTT_192, K_PTTT_193, K_PTTT_194, K_PTTT_195, K_PTTT_196, K_PTTT_197, K_PTTT_198, K_PTTT_199, K_PTTT_200 |
-| Fact Member Safety Per Member Snapshot | Fact Snapshot | ATTC per CTCK | 1 row / CTCK / ngày | K_PTTT_41, K_PTTT_55, K_PTTT_189, K_PTTT_190, K_PTTT_191, K_PTTT_192, K_PTTT_193, K_PTTT_194, K_PTTT_195, K_PTTT_196, K_PTTT_197, K_PTTT_198, K_PTTT_199, K_PTTT_200 |
-| Operational Corporate Bond Issuer Credit Monitor | Operational | Giám sát tín dụng TCPH TPDN (partial pending) | 1 row / mã TP / kỳ | K_PTTT_41, K_PTTT_160, K_PTTT_161, K_PTTT_173, K_PTTT_178, K_PTTT_179, K_PTTT_180, K_PTTT_181, K_PTTT_182, K_PTTT_183, K_PTTT_184, K_PTTT_185, K_PTTT_186, K_PTTT_187, K_PTTT_188 |
-| Operational Member Safety Monitor | Operational | Danh sách giám sát dư nợ margin per CTCK | 1 row / CTCK / ngày | K_PTTT_41, K_PTTT_55, K_PTTT_189, K_PTTT_191, K_PTTT_195, K_PTTT_200 |
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Futures_Intraday_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Futures_Investor_Flow_Snapshot : " "
+```
 
-> **Ghi chú:** Calendar Date Dimension tái sử dụng từ module khác — không thiết kế mới cho PTTT.
-> Tất cả Dimension áp dụng SCD Type 4A.
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Chiều thời gian | 1 row / ngày | — |
+| Fact Futures Intraday Snapshot | Fact Snapshot | new | Biến động giá/KLGD trong phiên của HĐTL chỉ số (VN30/VN100) — dùng chung entity equity | 1 row / mã HĐTL / mốc thời gian | K_PTTT_43,209~220 |
+| Fact Futures Investor Flow Snapshot | Fact Snapshot | new | GTGD mua/bán/dòng tiền ròng NĐTNN + Tự doanh trên HĐTL chỉ số | 1 row / nhóm NĐT / mã HĐTL / ngày | K_PTTT_43,221~226 |
+
+> Nhóm 29/30/31 (VN100) 100% reuse ID từ Nhóm 26/27/28 (VN30) — cùng Fact, chỉ khác điều kiện lọc `underlying_symbol`. Chỉ `Vị thế mở (OI)` (K_PTTT_214) còn PENDING — nguồn VSDC BM2 chưa có CSDL (O_PTTT_10).
+
+---
+
+## Tab Dashboard Trái phiếu doanh nghiệp (Nhóm 18-21)
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Corporate_Bond_Market_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Corporate_Bond_Maturity_Wall : " "
+    Securities_Dimension ||--o{ Fact_Corporate_Bond_Maturity_Wall : " "
+    Calendar_Date_Dimension ||--o{ Fact_Corporate_Bond_Sector_Snapshot : " "
+    Corp_Bond_Sector_Dimension ||--o{ Fact_Corporate_Bond_Sector_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Chiều thời gian | 1 row / ngày | — |
+| Securities Dimension | Dimension | reuse | Chiều mã CK/mã TP (reuse module NDTNN) | 1 row / mã CK | — |
+| Corp Bond Sector Dimension | Dimension | new | Chiều ngành nghề TCPH | 1 row / ngành | — |
+| Fact Corporate Bond Market Snapshot | Fact Snapshot | new | Quy mô thị trường TPDN tổng hợp — mệnh giá, dư nợ, áp lực đáo hạn, GTGD, YTM | 1 row / ngày | K_PTTT_46,163~173 |
+| Fact Corporate Bond Maturity Wall | Fact Snapshot | new | Lịch biểu đáo hạn per mã TP — 2 luồng (niêm yết READY / riêng lẻ VSDC BM29 PENDING) | 1 row / mã TP / kỳ (quý) | K_PTTT_46,163~166,174~178,238 |
+| Fact Corporate Bond Sector Snapshot | Fact Snapshot | new | GTGD và tỷ trọng dư nợ theo ngành TCPH | 1 row / ngành TCPH / ngày | K_PTTT_43,81,164,165,166,179~182 |
+| Operational Corporate Bond Issuer Credit Monitor | Operational | new | Danh sách TCPH kèm D/E, ROE, xếp hạng tín nhiệm để giám sát rủi ro | 1 row / TCPH / kỳ báo cáo | K_PTTT_43,177,178,183~196 |
+
+> Nhánh riêng lẻ (không niêm yết, nguồn VSDC.BM29) của `Fact Corporate Bond Maturity Wall` còn PENDING — O_PTTT_7. Nhánh niêm yết đã READY.
+
+---
+
+## Tab Data Explorer (Nhóm 32-34)
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Market_Statistics_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Market_Statistics_By_Industry_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Market_Statistics_By_Cap_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Chiều thời gian | 1 row / ngày | — |
+| Fact Market Statistics Snapshot | Fact Snapshot | new | KLGD, giá, P/E, EPS, LNST, số CP lưu hành, GTGD, Margin per chỉ số | 1 row / chỉ số / ngày | K_PTTT_227~240 |
+| Fact Market Statistics By Industry Snapshot | Fact Snapshot | new | GTGD, dòng tiền NĐTNN/Tự doanh, P/E, LNST theo ngành | 1 row / ngành / ngày | K_PTTT_230,234,236,237,241~244 |
+| Fact Market Statistics By Cap Snapshot | Fact Snapshot | new | Chiều Sàn/Ngành, GTGD, GTGD/GDP theo nhóm vốn hóa | 1 row / (ngành × nhóm vốn hóa) / ngày | K_PTTT_30,228,229,237,241,245~250 |
+
+> Chiều "Chỉ số" (`market_code`) và "Ngành nghề kinh tế" (`IDS.CATEGORIES`) hiện dùng trực tiếp text trên Fact, chưa tách Dimension riêng — chưa có Atomic entity/Classification Value chuẩn hóa (O_PTTT_14). EPS/LNST/Số CP lưu hành/Margin/GDP đều PENDING (O_PTTT_11/O_PTTT_13, VSDC BM1).
+
+---
+
+## Bảng PENDING (không thiết kế trong Phase 2)
+
+| Datamart Entity | Lý do PENDING | Issue |
+|---|---|---|
+| Fact Macro Indicator Snapshot | 100% KPI (13/13, Nhóm 3) PENDING — gap Atomic `Risk Indicator`/`Risk Indicator Value`, chưa có entity nào tồn tại trên Atomic repo | O_PTTT_11 |
+| Fact Cap Group Snapshot | 100% KPI (10/10, Nhóm 12) PENDING — gap KL CP lưu hành từ VSDC BM1, cần Atomic entity `Security Listing Volume` | O_PTTT_3, O_PTTT_6 |

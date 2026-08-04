@@ -35,6 +35,7 @@ CREATE TABLE IF NOT EXISTS datamart.ndtnn_fct_securities_foreign_trading_snpst_f
     issuer_nm                       Nullable(String)         COMMENT 'Tổ chức phát hành — từ Securities Dimension',
     listing_dt                      Nullable(Date)           COMMENT 'Ngày niêm yết — từ Securities Dimension',
     symbol_status_code              Nullable(String)         COMMENT 'Trạng thái mã CK — từ Securities Dimension',
+    securities_src_stm_code         Nullable(String)         COMMENT 'Mã hệ thống nguồn — từ Securities Dimension',
 
     -- From: PUBLIC COMPANY DIMENSION
     public_company_code             Nullable(String)         COMMENT 'Mã công ty đại chúng — từ Public Company Dimension',
@@ -62,7 +63,8 @@ CREATE TABLE IF NOT EXISTS datamart.ndtnn_fct_securities_foreign_trading_snpst_f
     has_parent_company_indicator    Nullable(Int64)          COMMENT 'Có công ty mẹ — từ Public Company Dimension',
     has_subsidiary_indicator        Nullable(Int64)          COMMENT 'Có công ty con — từ Public Company Dimension',
     has_joint_venture_indicator     Nullable(Int64)          COMMENT 'Có liên doanh — từ Public Company Dimension',
-    ipo_company_indicator           Nullable(Int64)          COMMENT '1-Công ty đang IPO, 0-Công ty đại chúng — từ Public Company Dimension'
+    ipo_company_indicator           Nullable(Int64)          COMMENT '1-Công ty đang IPO, 0-Công ty đại chúng — từ Public Company Dimension',
+    public_company_src_stm_code     Nullable(String)         COMMENT 'Mã hệ thống nguồn — từ Public Company Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(trade_cdr_dt))

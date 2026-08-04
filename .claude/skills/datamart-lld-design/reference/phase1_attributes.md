@@ -117,11 +117,15 @@ etl_logic_type, source_entity, atomic_table, source_attribute, atomic_column
 > "BK" nhưng `key` ghi "NK"). Ý nghĩa join-anchor của NK cũ vẫn giữ nguyên, ghi trong `description`.
 > Xem chi tiết [`examples/key_constraints.md`](../examples/key_constraints.md).
 
+> **Đổi quy ước 2026-08-03:** `key` trên Fact chỉ ghi token thuần **`FK`** (không còn `FK → <Dim>`).
+> Tên Dimension đích chuyển hoàn toàn vào `description`. Áp dụng cho thiết kế mới; module cũ dùng
+> `FK -> <Dim>` chưa hồi tố. Xem chi tiết [`examples/key_constraints.md`](../examples/key_constraints.md).
+
 | key | Chỉ dùng trên | Không dùng trên |
 |---|---|---|
 | `PK` | Dimension, Operational | Fact |
 | `BK` | Dimension, Operational | Fact |
-| `FK → <Dim>` | Fact | Dimension, Operational |
+| `FK` | Fact | Dimension, Operational |
 | `DD` | Fact | — |
 | (trống) | Mọi loại | — |
 
@@ -130,9 +134,9 @@ etl_logic_type, source_entity, atomic_table, source_attribute, atomic_column
 
 ❌ `nullable = true` cho PK / BK / FK.
 ❌ `data_domain = Classification Value` mà `key` không trống.
-❌ `data_domain = Surrogate Dimension Key` mà `key` không phải `FK → <Dim>`.
+❌ `data_domain = Surrogate Dimension Key` mà `key` không phải `FK`.
 ❌ `data_domain = Surrogate Key` trên Fact table — Fact **không có `key = PK`** dù có cột surrogate id kỹ thuật cho ETL merge/upsert (cột đó để `key` trống).
-❌ `key = FK → Classification Dimension (scheme: X)` — không hợp lệ ở bất kỳ đâu.
+❌ `key = FK → <bất kỳ tên Dimension/scheme>` — `key` chỉ ghi token thuần `FK`, tên Dimension đích và scheme (nếu có) ghi trong `description`, không nhồi vào `key`.
 ❌ `key = DD` trên Operational — DD chỉ hợp lệ trên Fact. Branch key của pivot trên Operational dùng `key` trống.
 ❌ `key = BK` mà `etl_logic`/`etl_logic_type` để trống — BK là business key thật (map từ Atomic), không phải surrogate generated; chỉ `PK` mới hợp lệ để trống (`source_entity = Generated`). Xem Vi phạm 5 trong `key_constraints.md`.
 ❌ `description` dùng chữ khác với token `key` thực tế của chính dòng đó (VD: `key="BK"` nhưng description viết "NK — ...", hoặc ngược lại) — nhất quán 1 token duy nhất.
@@ -152,8 +156,8 @@ etl_logic_type, source_entity, atomic_table, source_attribute, atomic_column
 | `pending` | Chưa có Atomic source | *(để trống)* |
 
 **ETL runtime parameter — tên biến chuẩn:**
-Mọi tham chiếu đến ngày ETL chạy (snapshot date, population date, runtime date) đều dùng **`{etl_date}`** — không dùng `{etl_snapshot_dt}`, `{etl_population_dt}`, hay tên biến tùy ý khác.
-Ví dụ đúng: `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = {etl_date}`, `YEAR({etl_date}) - scr_prac.brth_yr`
+Mọi tham chiếu đến ngày ETL chạy (snapshot date, population date, runtime date) đều dùng **`:etl_date`** — không dùng `{etl_date}`, `{etl_snapshot_dt}`, `{etl_population_dt}`, hay tên biến tùy ý khác. Đổi quy ước 2026-08-03 (khớp cú pháp binding parameter dùng ở flat-table SQL, tránh 2 hình thức khác nhau giữa LLD và flat-table cho cùng 1 khái niệm).
+Ví dụ đúng: `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = :etl_date`, `YEAR(:etl_date) - scr_prac.brth_yr`
 
 ❌ `etl_logic_type = framework` — không tồn tại.
 ❌ `etl_logic` để trống cho attribute READY không phải `key = PK` (Surrogate, `Generated`). **`BK` KHÔNG được để trống** — xem mục "Cột `key`" bên trên.

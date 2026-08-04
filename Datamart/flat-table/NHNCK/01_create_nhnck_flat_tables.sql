@@ -38,10 +38,12 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_fct_practitioner_license_certificate_s
     practitioner_nationality_code   Nullable(String)    COMMENT 'Mã quốc tịch — từ Securities Practitioner Dimension',
     practitioner_birth_dt           Nullable(Date)      COMMENT 'Ngày sinh — từ Securities Practitioner Dimension',
     practitioner_practice_status_code    Nullable(String)    COMMENT 'Trạng thái hành nghề — từ Securities Practitioner Dimension',
+    practitioner_src_stm_code       Nullable(String)    COMMENT 'Mã hệ thống nguồn — từ Securities Practitioner Dimension',
 
     -- From: SP LICENSE CERTIFICATE TYPE DIMENSION
     certificate_tp_dim_code         Nullable(String)    COMMENT 'Mã loại CCHN — từ SP License Certificate Type Dimension',
-    certificate_tp_dim_nm           Nullable(String)    COMMENT 'Tên loại CCHN — từ SP License Certificate Type Dimension'
+    certificate_tp_dim_nm           Nullable(String)    COMMENT 'Tên loại CCHN — từ SP License Certificate Type Dimension',
+    certificate_tp_src_stm_code     Nullable(String)    COMMENT 'Mã hệ thống nguồn — từ SP License Certificate Type Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
@@ -72,7 +74,8 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_fct_practitioner_daily_snpst_flat ON C
     practitioner_education_level_code        Nullable(String)    COMMENT 'Trình độ học vấn — từ Securities Practitioner Dimension',
     practitioner_nationality_code           Nullable(String)    COMMENT 'Mã quốc tịch — từ Securities Practitioner Dimension',
     practitioner_birth_dt            Nullable(Date)      COMMENT 'Ngày sinh — từ Securities Practitioner Dimension',
-    practitioner_practice_status_code   Nullable(String)    COMMENT 'Trạng thái hành nghề — từ Securities Practitioner Dimension'
+    practitioner_practice_status_code   Nullable(String)    COMMENT 'Trạng thái hành nghề — từ Securities Practitioner Dimension',
+    practitioner_src_stm_code           Nullable(String)    COMMENT 'Mã hệ thống nguồn — từ Securities Practitioner Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))

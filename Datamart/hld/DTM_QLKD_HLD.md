@@ -781,7 +781,7 @@ flowchart LR
 | K_QLKD_12 | Số tài khoản có phát sinh giao dịch | Cơ sở | Cơ sở | PENDING — BA đánh dấu "Dữ liệu động", nguồn `SSC_SCMS.REPORT_CELL_VALUE` + `CAT_INDICATOR` chưa chốt `Report_Indicator_Code` cụ thể. Xem **O_QLKD_1** | PENDING |
 | K_QLKD_13 | Số dư tiền gửi giao dịch | Cơ sở | Cơ sở | PENDING — cùng lý do K_QLKD_12. Xem **O_QLKD_1** | PENDING |
 
-> **Thiết kế grain K_QLKD_4–11:** Fact lưu 1 row per CTCK × ngày, join `Securities_Company_Dimension` để lấy `Company_Status_Code` — derive từ `Classification Firm Status Name` bằng CASE/LIKE (7 nhóm, xem Cụm 1). Điều kiện snapshot: `License_Issue_Date <= D`, với `License_Issue_Date` lấy từ `Involved Party Alternative Identification.Identification Issue Date` (filter `OPERATION_LICENSE`). COUNT GROUP BY `Company_Status_Code` → ra K_QLKD_5–11. SUM tất cả → K_QLKD_4. Không cần tách Fact riêng cho từng trạng thái.
+> **Thiết kế grain K_QLKD_4–11:** Fact lưu 1 row per CTCK × ngày D (D = ngày ETL chạy, `:etl_date`), driving table = `Securities Company` (qua `Securities_Company_Dimension`) — full-scan toàn bộ danh sách CTCK mỗi lần chạy, join để lấy `Company_Status_Code` — derive từ `Classification Firm Status Name` bằng CASE/LIKE (7 nhóm, xem Cụm 1). Điều kiện lọc KPI (không phải grain): `License_Issue_Date <= D`, với `License_Issue_Date` lấy qua FK riêng `License_Issue_Date_Dimension_Id` (từ `Involved Party Alternative Identification.Identification Issue Date`, filter `OPERATION_LICENSE`, nullable). COUNT GROUP BY `Company_Status_Code` → ra K_QLKD_5–11. SUM tất cả → K_QLKD_4. Không cần tách Fact riêng cho từng trạng thái. **(Sửa 2026-08-03)** Trước đây `Snapshot_Date_Dimension_Id` bị lookup nhầm trực tiếp qua `Identification_Issue_Date` — đã tách thành 2 FK riêng: `Snapshot_Date_Dimension_Id` (ngày ETL chạy) và `License_Issue_Date_Dimension_Id` (Chiều riêng).
 >
 > **Atomic cần bổ sung cho K_QLKD_12–13:** Không có gap Atomic — `Member Report Indicator Value` (SCMS.BC_BAO_CAO_GT) đã READY. Vấn đề là **giá trị `Report_Indicator_Code` cụ thể** chưa được BA/phân hệ nguồn xác nhận (candidate: `SO_TAI_KHOAN_PHAT_SINH_GIAO_DICH`, `SO_DU_TIEN_GUI_GIAO_DICH`). Khi thống nhất xong: bổ sung 2 measure vào `Fact Securities Company Status Snapshot` — cùng grain 1 CTCK × 1 ngày, SUM toàn thị trường.
 
@@ -792,6 +792,7 @@ erDiagram
     Fact_Securities_Company_Status_Snapshot {
         int Snapshot_Date_Dimension_Id FK
         int Securities_Company_Dimension_Id FK
+        int License_Issue_Date_Dimension_Id FK
     }
 
     Securities_Company_Dimension {
@@ -814,9 +815,12 @@ erDiagram
         string Source_System_Code
     }
 
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Status_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Status_Snapshot : "Snapshot Date"
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Status_Snapshot : "License Issue Date"
     Securities_Company_Dimension ||--o{ Fact_Securities_Company_Status_Snapshot : " "
 ```
+
+> **Ghi chú erDiagram (sửa 2026-08-03):** `Snapshot_Date_Dimension_Id` = ngày ETL chạy (`:etl_date`), driving table = `Securities Company` (qua Securities Company Dimension) — full-scan toàn bộ danh sách CTCK mỗi lần chạy. `License_Issue_Date_Dimension_Id` (nullable) là Chiều/thuộc tính riêng của CTCK — ngày cấp phép hoạt động, KHÔNG dùng làm grain/snapshot date, chỉ phục vụ điều kiện lọc `License_Issue_Date <= selected_date` của K_QLKD_4-11. Trước đây `Snapshot_Date_Dimension_Id` bị lookup nhầm qua `Identification_Issue_Date` (ngày cấp phép cố định của từng CTCK) — sai bản chất Periodic Snapshot vì mỗi CTCK có ngày cấp phép khác nhau, filter cứng theo etl_date sẽ bỏ sót phần lớn CTCK mỗi lần ETL chạy.
 
 **Lineage Mart → Báo cáo:**
 
@@ -841,7 +845,7 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| Fact Securities Company Status Snapshot | 1 CTCK × 1 ngày snapshot |
+| Fact Securities Company Status Snapshot | 1 CTCK × 1 ngày snapshot D (ETL runtime date, full-scan toàn bộ Securities Company Dimension mỗi lần chạy; License Issue Date là Chiều riêng, không phải grain) |
 | Securities Company Dimension | 1 CTCK per SCD4A (current state) |
 | Calendar Date Dimension | 1 ngày |
 
@@ -880,7 +884,7 @@ flowchart LR
 > Atomic: `Classification Service` ← SCMS.CAT_SERVICE — **READY**
 > Ghi chú: Dùng `Fact Securities Company Service Registration` (Cụm 2), dùng chung Star Schema với Nhóm 4. Phân loại dịch vụ bằng CASE/LIKE trên `Classification_Service_Name` (`cl_service_nm`) — không có code sẵn phân biệt ký quỹ/ứng trước/lưu ký. Phân biệt với Nhóm 4 (dịch vụ phái sinh) bằng pattern LIKE riêng trên tên dịch vụ phái sinh (xem Nhóm 4).
 >
-> **ETL filter khi populate Fact (không xuất hiện trong schema Fact đã build):** `Record_Status_Code = '1'` (ACTIVE) AND `Registration_Date <= D` AND `(End_Date IS NULL OR End_Date > D)` — đây là điều kiện SCD4A current-state để chọn đúng 1 bản ghi hiệu lực per CTCK × dịch vụ tại ngày snapshot D. Sau khi ETL lọc xong, `Record_Status_Code` và `End_Date` không còn cần thiết trên Fact (đã dùng để quyết định row có được đưa vào Fact hay không) — không đưa vào Star Schema.
+> **ETL filter khi populate Fact (không xuất hiện trong schema Fact đã build):** `Record_Status_Code = '1'` (ACTIVE) AND `Registration_Date = :etl_date` — Event log APPEND, mỗi lần ETL chạy chỉ nạp đăng ký MỚI phát sinh đúng ngày, không update/rebuild lại các đăng ký cũ. Sau khi ETL lọc xong, `Record_Status_Code` không còn cần thiết trên Fact (đã dùng để loại đăng ký không hợp lệ ngay lúc ghi nhận) — không đưa vào Star Schema. **(Sửa 2026-08-03)** Đã bỏ điều kiện `End_Date IS NULL OR End_Date > D` (current-state range check) — không phù hợp Event log, vì mỗi dòng chỉ ghi nhận đúng 1 lần tại ngày đăng ký, không kiểm tra hiệu lực lại theo ngày D mỗi lần ETL chạy.
 >
 > **Fact chỉ giữ FK, không giữ attribute mô tả không phục vụ KPI:** `Registration_Document_Number`, `Valid_Dossier_Date`, `Provisional_Indicator` (thuộc `Securities Company Licensed Service`) đã bị loại khỏi Fact — không KPI nào (K_QLKD_20-29, cả Nhóm 3 và Nhóm 4) tham chiếu tới. Các cột này lọt vào thiết kế ban đầu do đưa nguyên attribute còn lại của entity nguồn vào Fact thay vì chỉ chọn đúng attribute mà KPI/mockup cần — nếu sau này có yêu cầu drill-down chi tiết hồ sơ đăng ký thì bổ sung lại khi có KPI cụ thể.
 >
@@ -975,7 +979,7 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| Fact Securities Company Service Registration | 1 CTCK × 1 dịch vụ × 1 lần đăng ký (Event) |
+| Fact Securities Company Service Registration | 1 CTCK × 1 dịch vụ × 1 lần đăng ký (Event log APPEND — mỗi ngày ETL chỉ nạp đăng ký mới phát sinh đúng ngày :etl_date) |
 | Securities Company Dimension | 1 CTCK per SCD4A (current state) |
 | Service Type Dimension | 1 dịch vụ per SCD4A (current state) — Atomic entity `Classification Service` |
 | Calendar Date Dimension | 1 ngày |
@@ -989,7 +993,7 @@ flowchart LR
 > Atomic: `Classification Service` ← SCMS.CAT_SERVICE — **READY**
 > Ghi chú: Dùng chung `Fact Securities Company Service Registration` với Nhóm 3 và cùng Star Schema. Phân loại dịch vụ phái sinh bằng CASE/LIKE trên `Classification_Service_Name`: `LIKE '%phái sinh%' AND LIKE '%môi giới%'` (môi giới PS) / `LIKE '%phái sinh%' AND LIKE '%tư vấn%'` (tư vấn PS) / `LIKE '%phái sinh%' AND LIKE '%tự doanh%'` (tự doanh PS) — theo đúng BA SQL STT 4.
 >
-> **ETL filter khi populate Fact (không xuất hiện trong schema Fact đã build):** `Record_Status_Code = '1'` AND `Registration_Date <= D` AND `(End_Date IS NULL OR End_Date > D)` — cùng cơ chế SCD4A current-state như Nhóm 3, xem ghi chú Nhóm 3.
+> **ETL filter khi populate Fact (không xuất hiện trong schema Fact đã build):** `Record_Status_Code = '1'` AND `Registration_Date = :etl_date` — Event log APPEND, cùng cơ chế Nhóm 3 (sửa 2026-08-03, xem ghi chú Nhóm 3).
 
 **Mockup:**
 ```
@@ -1051,7 +1055,7 @@ flowchart LR
 > Atomic: `Securities Company Alert Indicator` ← SCMS.ALERT_INDICATOR — **READY** (cùng ghi chú trên)
 > Ghi chú: **Cập nhật 13/07/2026 (BA v4.2):** BA đổi hẳn nguồn — không còn dùng `BC_CANH_BAO + DM_CANH_BAO + BM_BAO_CAO` (Atomic gap `Member Report Alert` cũ, xem O_QLKD_2/O_QLKD_7) mà chuyển sang `SC_FIRM_ALERT_VIOLATION` JOIN `ALERT_INDICATOR`. Phân loại 3 mức duy trì lấy trực tiếp từ `Violation_Severity_Code`/`Severity_Level` (SEVERITY_LEVEL: 1=Đang duy trì tốt, 2=Gần đến giới hạn duy trì, 3=Không duy trì điều kiện cấp phép) — không cần tính ngưỡng ATTTC thủ công. Filter theo loại giấy phép: `Securities Company Alert Indicator.Indicator_Code = 'DUY_TRI_DKCP_GPKD'` (khác Nhóm 6 `_KDCKPS`, Nhóm 7 `_BTTT` — 2 nhóm này giữ nguyên PENDING, xem block PENDING bên dưới).
 >
-> **ETL filter khi populate Fact (không xuất hiện trong schema Fact đã build):** Lấy bản ghi cảnh báo mới nhất per CTCK per ngày snapshot D: `ROW_NUMBER() OVER (PARTITION BY Securities_Company_Id ORDER BY Processing_Date DESC) = 1 AND TRUNC(Processing_Date) = D` — SCD4A current-state.
+> **ETL filter khi populate Fact (không xuất hiện trong schema Fact đã build):** Lấy bản ghi cảnh báo mới nhất per CTCK per ngày snapshot D: `ROW_NUMBER() OVER (PARTITION BY Securities_Company_Id ORDER BY Processing_Date DESC) = 1 AND TRUNC(Processing_Date) = D` — SCD4A current-state. **(Sửa 2026-08-03)** `D = :etl_date` — etl_logic gốc thiếu ràng buộc này (chỉ LOOKUP `Processing_Date`, không ép bằng `:etl_date`), đã bổ sung `AND Processing_Date = :etl_date` để khớp đúng công thức "TRUNC(Processing_Date) = D".
 >
 > **Sửa 14/07/2026 (LLD review, thống nhất với BA):** Cột trục ngày đổi từ `Created_Date` (không tồn tại làm attribute riêng trên Atomic, chỉ có trong metadata notes) sang **`Processing Date`** (`SC_FIRM_ALERT_VIOLATION.PROCESSING_DATE`, đã có sẵn attribute trong `lld_SCMS_SC_FIRM_ALERT_VIOLATION.yaml`) — theo thống nhất với BA. Không còn gap Atomic — **O_QLKD_22 Closed**.
 >
@@ -1137,7 +1141,7 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| Fact Securities Company License Condition Snapshot | 1 CTCK × 1 loại giấy phép × 1 ngày snapshot |
+| Fact Securities Company License Condition Snapshot | 1 CTCK × 1 loại giấy phép × 1 ngày snapshot (Periodic Snapshot APPEND — Processing Date = :etl_date) |
 | Securities Company Dimension | 1 CTCK per SCD4A (current state) |
 | Calendar Date Dimension | 1 ngày |
 
@@ -1456,7 +1460,7 @@ erDiagram
     Offering_Form_Dimension ||--o{ Fact_Securities_Company_Capital_Raising_Event : " "
 ```
 
-> **ETL filter khi populate Fact (không xuất hiện trong schema Fact đã build):** `Record_Status_Code = '1'`. Mỗi row Fact = 1 đợt chào bán/phát hành hợp lệ, group theo tháng của `Result_Report_Date` và `Capital_Raising_Form_Code`.
+> **ETL filter khi populate Fact (không xuất hiện trong schema Fact đã build):** `Record_Status_Code = '1'`. Mỗi row Fact = 1 đợt chào bán/phát hành hợp lệ, group theo tháng của `Result_Report_Date` và `Capital_Raising_Form_Code`. **(Sửa 2026-08-03)** Periodic Snapshot theo THÁNG (không phải ngày) — tháng quá khứ cố định, chỉ tháng chứa `:etl_date` còn thay đổi. ETL hàng ngày chỉ refresh lại đúng tháng hiện tại: `TRUNC(Result_Report_Date,'MM') = TRUNC(:etl_date,'MM')`, DELETE-scoped theo tháng rồi INSERT lại (không TRUNCATE toàn bộ).
 
 **Lineage Mart → Báo cáo:**
 
@@ -1479,7 +1483,7 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| Fact Securities Company Capital Raising Event | 1 đợt chào bán/phát hành hợp lệ (aggregated theo tháng × hình thức tăng vốn) |
+| Fact Securities Company Capital Raising Event | 1 tháng × 1 hình thức tăng vốn (aggregated toàn thị trường, Periodic Snapshot theo tháng — tháng quá khứ cố định, tháng chứa :etl_date còn thay đổi) |
 | Offering Form Dimension | 1 hình thức tăng vốn (5 giá trị ETL-derived) per SCD4A (current state) |
 | Calendar Date Dimension | 1 ngày |
 

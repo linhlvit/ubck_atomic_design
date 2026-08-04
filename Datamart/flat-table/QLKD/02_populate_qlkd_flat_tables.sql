@@ -9,17 +9,23 @@
 
 -- ============================================================
 -- 1. FACT: qlkd_fct_securities_company_status_snpst_flat
---    cal: JOIN + WHERE cdr_dt = :etl_date
+--    Grain APPEND (Periodic Snapshot theo ngày) — DELETE đúng ngày :etl_date
+--    (không TRUNCATE) rồi INSERT, giữ nguyên lịch sử các ngày snapshot khác.
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.qlkd_fct_securities_company_status_snpst_flat ON CLUSTER 'my_cluster';
+DELETE FROM datamart.qlkd_fct_securities_company_status_snpst_flat ON CLUSTER 'my_cluster'
+WHERE cdr_dt = :etl_date;
 INSERT INTO datamart.qlkd_fct_securities_company_status_snpst_flat
 SELECT
     -- From: FACT Fact Securities Company Status Snapshot
     f.snpst_dt_dim_id,
     f.securities_company_dim_id,
+    f.license_issue_dt_dim_id,
 
-    -- From: CALENDAR DATE DIMENSION
+    -- From: CALENDAR DATE DIMENSION (Snapshot Date)
     cal.cdr_dt                      AS cdr_dt,
+
+    -- From: CALENDAR DATE DIMENSION (License Issue Date)
+    license_cal.cdr_dt              AS license_issue_cdr_dt,
 
     -- From: SECURITIES COMPANY DIMENSION
     sc_dim.sc_id                       AS sc_id,
@@ -28,11 +34,14 @@ SELECT
     sc_dim.company_tp_code             AS company_tp_code,
     sc_dim.company_status_code         AS company_status_code,
     sc_dim.is_listed_indicator         AS is_listed_indicator,
-    sc_dim.stock_exchange_nm           AS stock_exchange_nm
+    sc_dim.stock_exchange_nm           AS stock_exchange_nm,
+    sc_dim.src_stm_code                AS securities_company_src_stm_code
 
 FROM datamart.fct_securities_company_status_snpst f
 JOIN datamart.cdr_dt_dim cal
     ON cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+LEFT JOIN datamart.cdr_dt_dim license_cal
+    ON license_cal.cdr_dt_dim_id = f.license_issue_dt_dim_id
 LEFT JOIN datamart.securities_company_dim sc_dim
     ON sc_dim.securities_company_dim_id = f.securities_company_dim_id
 WHERE cal.cdr_dt = :etl_date
@@ -41,9 +50,12 @@ WHERE cal.cdr_dt = :etl_date
 
 -- ============================================================
 -- 2. FACT: qlkd_fct_securities_company_service_registration_flat
---    cal: JOIN + WHERE cdr_dt = :etl_date
+--    Grain APPEND (Event log — mỗi ngày chỉ thêm đăng ký MỚI phát sinh, không
+--    update lại dòng cũ) — DELETE đúng ngày :etl_date (idempotent re-run,
+--    không TRUNCATE) rồi INSERT, giữ nguyên lịch sử các ngày khác.
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.qlkd_fct_securities_company_service_registration_flat ON CLUSTER 'my_cluster';
+DELETE FROM datamart.qlkd_fct_securities_company_service_registration_flat ON CLUSTER 'my_cluster'
+WHERE cdr_dt = :etl_date;
 INSERT INTO datamart.qlkd_fct_securities_company_service_registration_flat
 SELECT
     -- From: FACT Fact Securities Company Service Registration
@@ -62,10 +74,12 @@ SELECT
     sc_dim.company_status_code         AS company_status_code,
     sc_dim.is_listed_indicator         AS is_listed_indicator,
     sc_dim.stock_exchange_nm           AS stock_exchange_nm,
+    sc_dim.src_stm_code                AS securities_company_src_stm_code,
 
     -- From: SERVICE TYPE DIMENSION
     svc_dim.cl_service_code             AS cl_service_code,
-    svc_dim.cl_service_nm               AS cl_service_nm
+    svc_dim.cl_service_nm               AS cl_service_nm,
+    svc_dim.src_stm_code                AS service_tp_src_stm_code
 
 FROM datamart.fct_securities_company_service_registration f
 JOIN datamart.cdr_dt_dim cal
@@ -80,9 +94,11 @@ WHERE cal.cdr_dt = :etl_date
 
 -- ============================================================
 -- 3. FACT: qlkd_fct_securities_company_license_condition_snpst_flat
---    cal: JOIN + WHERE cdr_dt = :etl_date
+--    Grain APPEND (Periodic Snapshot — mỗi ngày lấy bản ghi cảnh báo mới nhất
+--    per CTCK) — DELETE đúng ngày :etl_date (không TRUNCATE) rồi INSERT.
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.qlkd_fct_securities_company_license_condition_snpst_flat ON CLUSTER 'my_cluster';
+DELETE FROM datamart.qlkd_fct_securities_company_license_condition_snpst_flat ON CLUSTER 'my_cluster'
+WHERE cdr_dt = :etl_date;
 INSERT INTO datamart.qlkd_fct_securities_company_license_condition_snpst_flat
 SELECT
     -- From: FACT Fact Securities Company License Condition Snapshot
@@ -101,7 +117,8 @@ SELECT
     sc_dim.company_tp_code             AS company_tp_code,
     sc_dim.company_status_code         AS company_status_code,
     sc_dim.is_listed_indicator         AS is_listed_indicator,
-    sc_dim.stock_exchange_nm           AS stock_exchange_nm
+    sc_dim.stock_exchange_nm           AS stock_exchange_nm,
+    sc_dim.src_stm_code                AS securities_company_src_stm_code
 
 FROM datamart.fct_securities_company_license_condition_snpst f
 JOIN datamart.cdr_dt_dim cal
@@ -114,9 +131,12 @@ WHERE cal.cdr_dt = :etl_date
 
 -- ============================================================
 -- 4. FACT: qlkd_fct_securities_company_capital_raising_event_flat
---    cal: JOIN + WHERE cdr_dt = :etl_date
+--    Grain Periodic Snapshot theo THÁNG (date-spine, SUM GROUP BY tháng) —
+--    tháng quá khứ cố định, chỉ tháng hiện tại còn thay đổi. DELETE đúng
+--    tháng chứa :etl_date (không TRUNCATE) rồi INSERT lại tháng đó.
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.qlkd_fct_securities_company_capital_raising_event_flat ON CLUSTER 'my_cluster';
+DELETE FROM datamart.qlkd_fct_securities_company_capital_raising_event_flat ON CLUSTER 'my_cluster'
+WHERE toYYYYMM(cdr_dt) = toYYYYMM(:etl_date);
 INSERT INTO datamart.qlkd_fct_securities_company_capital_raising_event_flat
 SELECT
     -- From: FACT Fact Securities Company Capital Raising Event
@@ -129,14 +149,15 @@ SELECT
 
     -- From: OFFERING FORM DIMENSION
     offer_dim.capital_raising_form_code   AS capital_raising_form_code,
-    offer_dim.capital_raising_form_nm     AS capital_raising_form_nm
+    offer_dim.capital_raising_form_nm     AS capital_raising_form_nm,
+    offer_dim.src_stm_code                AS offering_form_src_stm_code
 
 FROM datamart.fct_securities_company_capital_raising_event f
 JOIN datamart.cdr_dt_dim cal
     ON cal.cdr_dt_dim_id = f.event_dt_dim_id
 LEFT JOIN datamart.offering_form_dim offer_dim
     ON offer_dim.offering_form_dim_id = f.offering_form_dim_id
-WHERE cal.cdr_dt = :etl_date
+WHERE toYYYYMM(cal.cdr_dt) = toYYYYMM(:etl_date)
 ;
 
 
@@ -147,21 +168,43 @@ WHERE cal.cdr_dt = :etl_date
 --    QLKD (cần số liệu cuối tháng, K_QLKD_88-91) tự filter đúng ngày cuối tháng của
 --    :etl_month trên Fact grain-ngày này — không còn nhận nguyên mọi ngày trong tháng.
 --    cal: JOIN + WHERE cdr_dt = LAST_DAY(:etl_month)
+--    Sửa 2026-08-03: Grain APPEND tích lũy nhiều tháng — DELETE đúng tháng cuối của
+--    :etl_month (không TRUNCATE) rồi INSERT, giữ nguyên lịch sử các tháng khác.
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.qlkd_fct_market_index_snpst_flat ON CLUSTER 'my_cluster';
+DELETE FROM datamart.qlkd_fct_market_index_snpst_flat ON CLUSTER 'my_cluster'
+WHERE cdr_dt = LAST_DAY(:etl_month);
 INSERT INTO datamart.qlkd_fct_market_index_snpst_flat
 SELECT
     -- From: FACT Market Index Snapshot
     f.snpst_dt_dim_id,
     f.market_index_dim_id,
     f.market_index_val,
+    f.open_index,
+    f.high_index,
+    f.low_index,
+    f.prior_index,
+    f.index_change,
+    f.index_percent_change,
+    f.advances_count,
+    f.declines_count,
+    f.no_change_count,
+    f.ceiling_count,
+    f.floor_count,
+    f.odd_lot_total_vol,
+    f.odd_lot_total_val,
+    f.pt_total_vol,
+    f.pt_total_val,
 
     -- From: CALENDAR DATE DIMENSION
     cal.cdr_dt                      AS cdr_dt,
 
     -- From: MARKET INDEX DIMENSION
     idx_dim.market_id               AS market_id,
-    idx_dim.market_code             AS market_code
+    idx_dim.market_code             AS market_code,
+    idx_dim.index_tp_code           AS index_tp_code,
+    idx_dim.tsc_product_group_id     AS tsc_product_group_id,
+    idx_dim.market_status_code      AS market_status_code,
+    idx_dim.src_stm_code             AS market_index_src_stm_code
 
 FROM datamart.fct_market_index_snpst f
 JOIN datamart.cdr_dt_dim cal
