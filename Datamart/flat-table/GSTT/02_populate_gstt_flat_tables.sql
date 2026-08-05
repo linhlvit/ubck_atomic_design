@@ -49,6 +49,14 @@ SELECT
     f.proprietary_sell_vol,
     f.bond_trading_vol,
     f.bond_trading_val,
+    f.individual_buy_val,
+    f.individual_sell_val,
+    f.individual_buy_vol,
+    f.individual_sell_vol,
+    f.domestic_institution_buy_val,
+    f.domestic_institution_sell_val,
+    f.domestic_institution_buy_vol,
+    f.domestic_institution_sell_vol,
 
     -- From: CALENDAR DATE DIMENSION
     cal.cdr_dt                                     AS cdr_dt,
