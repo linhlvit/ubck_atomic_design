@@ -159,7 +159,7 @@ flowchart LR
 | K_GSTT_3 | Sàn | — | Chiều | `Security Trading Snapshot Dimension.Floor Code` | Scheme MDDS_FLOOR_CODE: 10-HOSE, 02-HNX, 04-UPCOM, 03-FDS | READY |
 | K_GSTT_4 | Chỉ số | — | Chiều | `Index Constituent Dimension.Index Code` | FK optional (nullable) trực tiếp trên Fact (grain Fact = .../rổ chỉ số/...; grain Dimension = 1 row/(Index Code, Symbol)). Filter: `WHERE Index_Code = :selected_index`. Xem ghi chú thiết kế ở Section 1 | READY |
 | K_GSTT_5 | Loại phái sinh | — | Chiều | `Security Trading Snapshot Dimension.Stock Type Code`, `Underlying Symbol` | Chỉ có giá trị khi Floor Code = '03' | READY |
-| K_GSTT_6 | Phương thức khớp lệnh (thỏa thuận) | — | Chiều | `Securities Trade.Board Type Code IN ('T1','T2','T3','T4','T6')` | Slicer phân biệt Khớp lệnh / Thỏa thuận | READY |
+| K_GSTT_6 | Phương thức khớp lệnh (thỏa thuận) | — | Chiều | `Fact Stock Portfolio Snapshot.Total Volume` (Khớp lệnh) hoặc `Total Negotiated Volume` (Thỏa thuận) | Slicer phân biệt Khớp lệnh / Thỏa thuận — 2 cột đã tách sẵn từ ETL (Board Type Code đã filter tại tầng populate Fact), không filter lại ở tầng Datamart | READY |
 | K_GSTT_7 | Ngày | — | Chiều | `Calendar Date Dimension.Calendar Date` | Tham số lọc theo ngày giao dịch | READY |
 | K_GSTT_8 | Ngày đáo hạn phái sinh | Ngày | Cơ sở | `Security Trading Snapshot Dimension.Maturity Date` | Chỉ có giá trị khi Floor Code = '03' | READY |
 | K_GSTT_9 | Giá tham chiếu | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Reference Price` | — | READY |
@@ -243,6 +243,29 @@ erDiagram
         int Total_Negotiated_Volume
         decimal Total_Negotiated_Value
         int Foreign_Net_Volume
+        int Outstanding_Share_Quantity
+        decimal Net_Profit_After_Tax
+        decimal Owner_Equity
+        int Foreign_Buy_Volume
+        int Foreign_Sell_Volume
+        decimal Foreign_Buy_Value
+        decimal Foreign_Sell_Value
+        decimal Proprietary_Buy_Value
+        decimal Proprietary_Sell_Value
+        decimal Individual_Net_Value
+        decimal Domestic_Institution_Net_Value
+        int Proprietary_Buy_Volume
+        int Proprietary_Sell_Volume
+        int Bond_Trading_Volume
+        decimal Bond_Trading_Value
+        decimal Individual_Buy_Value
+        decimal Individual_Sell_Value
+        int Individual_Buy_Volume
+        int Individual_Sell_Volume
+        decimal Domestic_Institution_Buy_Value
+        decimal Domestic_Institution_Sell_Value
+        int Domestic_Institution_Buy_Volume
+        int Domestic_Institution_Sell_Volume
     }
     Security_Trading_Snapshot_Dimension ||--o{ Fact_Stock_Portfolio_Snapshot : " "
     Public_Company_Dimension ||--o{ Fact_Stock_Portfolio_Snapshot : " "
@@ -349,7 +372,7 @@ flowchart LR
 | K_GSTT_1 | Mã CK | — | Chiều | `Security Trading Snapshot Dimension.Symbol` | Reuse từ Nhóm 1. BA lọc riêng "Mã CK cổ phiếu" (`Stock Type Code <> '1' AND Floor Code IN ('04','10','03','02') AND Market Id Code NOT IN ('BDO','HCX')`) — filter con của K_GSTT_1, không khai KPI mới | READY |
 | K_GSTT_4 | Chỉ số | — | Chiều | `Index Constituent Dimension.Index Code` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_5 | Loại phái sinh | — | Chiều | `Security Trading Snapshot Dimension.Stock Type Code`, `Underlying Symbol` | Reuse từ Nhóm 1 | READY |
-| K_GSTT_6 | Phương thức khớp lệnh (thỏa thuận) | — | Chiều | `Securities Trade.Board Type Code IN ('T1','T2','T3','T4','T6')` | Reuse từ Nhóm 1 | READY |
+| K_GSTT_6 | Phương thức khớp lệnh (thỏa thuận) | — | Chiều | `Fact Stock Portfolio Snapshot.Total Volume` (Khớp lệnh) hoặc `Total Negotiated Volume` (Thỏa thuận) | Reuse từ Nhóm 1 | READY |
 | K_GSTT_7 | Ngày | — | Chiều | `Calendar Date Dimension.Calendar Date` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_27 | Giá mở cửa | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Open Price` | Mới — bổ sung cột lên Dimension theo coverage rule | READY |
 | K_GSTT_28 | Giá cao nhất | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.High Price` | Mới — bổ sung cột lên Dimension theo coverage rule | READY |
@@ -458,8 +481,8 @@ flowchart LR
 | K_GSTT_44 | Số lượng mã giảm sàn | Mã | Cơ sở | `Fact Market Index Snapshot.Floor Count` | Mới — bổ sung cột (mở rộng Fact QLKD) | READY |
 | K_GSTT_45 | Giá trị GD theo realtime | VNĐ | Cơ sở | `Fact Market Index Intraday.Total Value At Time` | Grain riêng (1 row/Market Code/Index Time) — xem Fact Market Index Intraday bên dưới | READY |
 | K_GSTT_46 | Điểm của chỉ số theo realtime | Điểm | Cơ sở | `Fact Market Index Intraday.Market Index Value At Time` | Grain riêng (1 row/Market Code/Index Time) — xem Fact Market Index Intraday bên dưới | READY |
-| K_GSTT_47 | KLGD của chỉ số | Cổ phiếu | Phái sinh | `SUM(Securities Trade.Execution Volume WHERE Symbol IN (Index Constituent Dimension.Symbol WHERE Index Code = mapping(Market Code)) AND Market Id Code IN ('STO','STX','UPX')) GROUP BY Index Code, Trade Date` | Pre-aggregate qua 2 tầng nguồn (Index Constituent + Securities Trade) — cần mapping Market Code↔Index Code, xem ghi chú Cụm 2 | READY |
-| K_GSTT_48 | GTGD của chỉ số | VNĐ | Phái sinh | `SUM(Securities Trade.Execution Value WHERE Symbol IN (Index Constituent Dimension.Symbol WHERE Index Code = mapping(Market Code)) AND Market Id Code IN ('STO','STX','UPX')) GROUP BY Index Code, Trade Date` | Pre-aggregate — cùng ghi chú K_GSTT_47 | READY |
+| K_GSTT_47 | KLGD của chỉ số | Cổ phiếu | Phái sinh | `SUM(Fact Stock Portfolio Snapshot.Total Volume WHERE Symbol IN (Index Constituent Dimension.Symbol WHERE Index Code = mapping(Market Code))) GROUP BY Index Code, Trade Date` | Total Volume đã filter Market Id Code IN ('UPX','STX','STO') sẵn từ ETL populate Fact — chỉ cần join thêm Index Constituent qua Symbol; cần mapping Market Code↔Index Code, xem ghi chú Cụm 2 | READY |
+| K_GSTT_48 | GTGD của chỉ số | VNĐ | Phái sinh | `SUM(Fact Stock Portfolio Snapshot.Total Value WHERE Symbol IN (Index Constituent Dimension.Symbol WHERE Index Code = mapping(Market Code))) GROUP BY Index Code, Trade Date` | Cùng ghi chú K_GSTT_47 | READY |
 | K_GSTT_49 | KLNN ròng (theo chỉ số) | Cổ phiếu | Phái sinh | `SUM(Buy Foreign Investor Type Code IN ('10','20') → Execution Volume) − SUM(Sell Foreign Investor Type Code IN ('10','20') → Execution Volume) WHERE Symbol IN (mã thuộc Index Code) GROUP BY Index Code, Trade Date` | Kỹ thuật đủ nguồn giống K_GSTT_47/48 (JOIN Index Constituent + Securities Trade) — thiết kế READY dù BA ghi "Chưa có CSDL - Map biểu mẫu" (đánh giá: đây là ghi chú BA chưa chốt biểu mẫu hiển thị, không phải thiếu nguồn) | READY |
 | K_GSTT_50 | GTNN ròng (theo chỉ số) | VNĐ | Phái sinh | `SUM(Buy Foreign Investor Type Code IN ('10','20') → Execution Value) − SUM(Sell Foreign Investor Type Code IN ('10','20') → Execution Value) WHERE Symbol IN (mã thuộc Index Code) GROUP BY Index Code, Trade Date` | Cùng ghi chú K_GSTT_49 | READY |
 | K_GSTT_51 | KLGD thỏa thuận (chỉ số) | Cổ phiếu | Phái sinh | `Fact Market Index Snapshot.PT Total Volume` | Mới — bổ sung cột (mở rộng Fact QLKD), có sẵn trên Market Index Snapshot, không cần pre-aggregate qua Securities Trade | READY |
@@ -2394,7 +2417,7 @@ flowchart LR
 |---|---|---|---|---|---|---|
 | K_GSTT_3 | Sàn | — | Chiều | `Security Trading Snapshot Dimension.Floor Code` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_1 | Mã ck | — | Chiều | `Security Trading Snapshot Dimension.Symbol` | Reuse từ Nhóm 1 | READY |
-| K_GSTT_81 | Phân loại của giao dịch tự doanh | — | Chiều | `Securities Trade.Buy/Sell Client House Classification Code = '30'` | Mới — Atomic Nguồn 1 `Securities Trade`, scheme `ORDERTRADE_CLIENT_HOUSE_TYPE` (`30`=House/Tự doanh, `10`=Client) | READY |
+| K_GSTT_81 | Phân loại của giao dịch tự doanh | — | Chiều | `Fact Stock Portfolio Snapshot.Proprietary Buy Value IS NOT NULL OR Proprietary Sell Value IS NOT NULL` | Client House Classification Code='30' (scheme `ORDERTRADE_CLIENT_HOUSE_TYPE`) đã tách sẵn thành cột riêng trên Fact — không filter lại Securities Trade ở tầng Datamart | READY |
 | K_GSTT_10 | Giá đóng cửa | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Close Price` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_82 | GT tự doanh mua | VNĐ | Phái sinh | `SUM(Securities Trade.Execution Value WHERE Buy Client House Classification Code = '30') GROUP BY Symbol, Trade Date` | Mới — Atomic Nguồn 1, cột mới trên `Fact Stock Portfolio Snapshot` | READY |
 | K_GSTT_83 | GT tự doanh ròng | VNĐ | Phái sinh | `K_GSTT_82 − K_GSTT_84` | Mới — derive tại tầng BI, không cần cột Fact riêng | READY |
@@ -2441,7 +2464,7 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_GSTT_85 | Phân loại nhà đầu tư | — | Chiều | `Securities Trade.Buy/Sell Account Number` — `SUBSTRING(Account Number, 4, 1)` | Mới — Chiều slicer 4 giá trị: Cá nhân/Tổ chức trong nước/Tự doanh/Nước ngoài. Cá nhân/Tổ chức trong nước xác định qua ký tự thứ 4 của số tài khoản (xem công thức phân loại ở ghi chú trên); Tự doanh/Nước ngoài vẫn dùng Client House Classification Code/Foreign Investor Type Code như Nhóm 39/41 | READY |
+| K_GSTT_85 | Phân loại nhà đầu tư | — | Chiều | Chọn nhóm cột `Fact Stock Portfolio Snapshot`: `Individual Buy/Sell Value` (Cá nhân), `Domestic Institution Buy/Sell Value` (Tổ chức trong nước), `Proprietary Buy/Sell Value` (Tự doanh), `Foreign Buy/Sell Value` (Nước ngoài) | Chiều slicer 4 giá trị: Cá nhân/Tổ chức trong nước/Tự doanh/Nước ngoài — mỗi phân loại đã có cột Buy/Sell riêng trên Fact (tách sẵn từ Account Number/Client House Classification Code/Foreign Investor Type Code tại ETL), không cần SUBSTRING ở tầng Datamart | READY |
 | K_GSTT_1 | Mã ck | — | Chiều | `Security Trading Snapshot Dimension.Symbol` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_4 | Chỉ số | — | Chiều | `Index Constituent Dimension.Index Code` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_28 | Giá cao nhất | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.High Price` | Reuse từ Nhóm 3 | READY |
@@ -2493,9 +2516,9 @@ flowchart LR
 |---|---|---|---|---|---|---|
 | K_GSTT_1 | Mã chứng khoán | — | Chiều | `Security Trading Snapshot Dimension.Symbol` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_4 | Chỉ số | — | Chiều | `Index Constituent Dimension.Index Code` | Reuse từ Nhóm 1 | READY |
-| K_GSTT_85 | Phân loại nhà đầu tư | — | Chiều | `Securities Trade.Buy/Sell Account Number` — `SUBSTRING(Account Number, 4, 1)` (Cá nhân/Tổ chức trong nước), kết hợp Foreign/Client House (Tự doanh/Nước ngoài) | Reuse từ Nhóm 42 — đã sửa nguồn 2026-07-29 | READY |
-| K_GSTT_88 | GT khớp lệnh | VNĐ | Phái sinh | `SUM(Securities Trade.Execution Value WHERE Board Type Code NOT IN ('T1','T2','T3','T4','T6')) GROUP BY Symbol, Trade Date, Phân loại NĐT` | Mới — phần bù của K_GSTT_6 (Nhóm 1), thêm chiều Phân loại NĐT | READY |
-| K_GSTT_89 | GT thỏa thuận | VNĐ | Phái sinh | `SUM(Securities Trade.Execution Value WHERE Board Type Code IN ('T1','T2','T3','T4','T6')) GROUP BY Symbol, Trade Date, Phân loại NĐT` | Mới — cùng điều kiện K_GSTT_18 (Nhóm 1), thêm chiều Phân loại NĐT | READY |
+| K_GSTT_85 | Phân loại nhà đầu tư | — | Chiều | Chọn nhóm cột `Fact Stock Portfolio Snapshot`: `Individual Buy/Sell Value` (Cá nhân), `Domestic Institution Buy/Sell Value` (Tổ chức trong nước), `Proprietary Buy/Sell Value` (Tự doanh), `Foreign Buy/Sell Value` (Nước ngoài) | Reuse từ Nhóm 42 | READY |
+| K_GSTT_88 | GT khớp lệnh | — | — | TBD — chờ Atomic | PENDING — cần tổ hợp 2 chiều Khớp lệnh/Thỏa thuận × Phân loại NĐT. `Fact Stock Portfolio Snapshot` hiện chỉ tách Khớp lệnh/Thỏa thuận trên `Total Volume`/`Total Negotiated Volume` (không phân loại NĐT) VÀ tách Phân loại NĐT trên `Individual/Domestic Institution/Proprietary/Foreign Buy-Sell Value` (không phân biệt khớp lệnh/thỏa thuận) — cần bổ sung measure breakdown theo cả 2 chiều mới tính được. Mart dự kiến: mở rộng `Fact Stock Portfolio Snapshot` | PENDING |
+| K_GSTT_89 | GT thỏa thuận | — | — | TBD — chờ Atomic | PENDING — cùng lý do K_GSTT_88, thiếu breakdown 2 chiều Khớp lệnh/Thỏa thuận × Phân loại NĐT. Mart dự kiến: mở rộng `Fact Stock Portfolio Snapshot` | PENDING |
 | K_GSTT_14 | Tổng GTGD | VNĐ | Phái sinh | `SUM(Securities Trade.Execution Value) GROUP BY Symbol, Trade Date` | Trùng hoàn toàn K_GSTT_14 (Nhóm 1) — không khai KPI mới, đã bao gồm filter Market Id Code IN ('UPX','STX','STO') tại tầng Fact total_val | READY |
 | K_GSTT_90 | GT mua | VNĐ | Phái sinh | `SUM(Execution Value) WHERE Buy-side filter theo nhánh Phân loại NĐT được chọn (K_GSTT_85: SUBSTRING(Buy Account Number,4,1) cho Cá nhân/Tổ chức trong nước, Client House/Foreign Investor Type cho Tự doanh/Nước ngoài) GROUP BY Symbol, Trade Date, Phân loại NĐT` | Mới — công thức tổng quát hóa của K_GSTT_70/71/81/85/86 (Nhóm 33/41/42), filter động theo K_GSTT_85 thay vì 4 cột cố định riêng. Sửa nguồn (2026-07-29) đồng bộ K_GSTT_85 | READY |
 | K_GSTT_91 | GT bán | VNĐ | Phái sinh | `SUM(Execution Value) WHERE Sell-side filter theo nhánh Phân loại NĐT được chọn (K_GSTT_85, cùng cơ chế K_GSTT_90) GROUP BY Symbol, Trade Date, Phân loại NĐT` | Mới — cùng cơ chế K_GSTT_90, chiều bán | READY |
@@ -2937,7 +2960,7 @@ Không có.
 
 | Datamart Entity | datamart_table | reuse_status | Ghi chú |
 |---|---|---|---|
-| Fact Stock Portfolio Snapshot | fct_stock_portfolio_snpst | new | Chưa có trong master — Nhóm đầu tiên của module GSTT. Grain = mã CK/rổ chỉ số/ngày, FK Index Constituent nullable — xem ghi chú Index Constituent ở Section 1. Nhóm 6 mở rộng thêm 3 cột PENDING (Outstanding Share Quantity, Net Profit After Tax, Owner Equity) — không đổi grain, join qua FK Public Company Dimension đã có sẵn. Nhóm 33 mở rộng thêm 4 cột READY (Foreign Buy/Sell Volume, Foreign Buy/Sell Value — nguồn `Securities Trade.Buy/Sell Foreign Investor Type Code`, Atomic Nguồn 1 approved) — không đổi grain. Nhóm 41 mở rộng thêm 2 cột READY (Proprietary Buy/Sell Value — nguồn `Securities Trade.Buy/Sell Client House Classification Code`). Nhóm 42 mở rộng thêm 2 cột READY (Individual/Domestic Institution Net Value — nguồn kết hợp `Investor Type Code` + `Foreign Investor Type Code` + `Client House Classification Code`). Nhóm 47 mở rộng thêm 2 cột READY (Proprietary Buy/Sell Volume — cùng nguồn Client House Classification Code, đo Volume thay Value) — tất cả không đổi grain mã CK/ngày |
+| Fact Stock Portfolio Snapshot | fct_stock_portfolio_snpst | new | Chưa có trong master — Nhóm đầu tiên của module GSTT. Grain = mã CK/rổ chỉ số/ngày, FK Index Constituent nullable — xem ghi chú Index Constituent ở Section 1. Nhóm 6 mở rộng thêm 3 cột PENDING (Outstanding Share Quantity, Net Profit After Tax, Owner Equity) — không đổi grain, join qua FK Public Company Dimension đã có sẵn. Nhóm 33 mở rộng thêm 4 cột READY (Foreign Buy/Sell Volume, Foreign Buy/Sell Value — nguồn `Securities Trade.Buy/Sell Foreign Investor Type Code`, Atomic Nguồn 1 approved) — không đổi grain. Nhóm 41 mở rộng thêm 2 cột READY (Proprietary Buy/Sell Value — nguồn `Securities Trade.Buy/Sell Client House Classification Code`). Nhóm 42 mở rộng thêm 2 cột READY (Individual/Domestic Institution Net Value — nguồn kết hợp `Investor Type Code` + `Foreign Investor Type Code` + `Client House Classification Code`); **cập nhật 2026-08-05:** bổ sung thêm 8 cột READY (Individual Buy/Sell Value, Individual Buy/Sell Volume, Domestic Institution Buy/Sell Value, Domestic Institution Buy/Sell Volume — cùng nguồn Account Number breakdown, tách riêng Buy/Sell thay vì chỉ Net, đối xứng với Foreign/Proprietary — phục vụ Nhóm 42/43/47 breakdown theo Phân loại NĐT qua K_GSTT_85) — không đổi grain. Nhóm 47 mở rộng thêm 2 cột READY (Proprietary Buy/Sell Volume — cùng nguồn Client House Classification Code, đo Volume thay Value) — tất cả không đổi grain mã CK/ngày |
 | Security Trading Snapshot Dimension | security_trading_snpst_dim | new | Chưa có trong master. Schema đã áp dụng coverage rule (Bước 1a) ngay từ Nhóm 1 — bao gồm sẵn cột phục vụ Nhóm 2 (Coupon Rate, Yield) và các Nhóm biểu đồ/phái sinh sau này (ISIN, Issuer, CW/OP/HĐTL...). Nhóm 3 bổ sung `Open Price`, `High Price`, `Low Price` (nguồn Atomic Nguồn 2, `design_status: approved` 2026-07-03) |
 | Index Constituent Dimension | index_constituent_dim | new | Chưa có trong master. Driving entity `Index Constituent Snapshot` ← MDDS.JAD_CSIDXINFOR — tách riêng khỏi `Security Trading Snapshot Dimension` vì khác driving Atomic entity/nguồn (xem lịch sử 3 lần sửa ở Section 1). Grain = 1 row/(Index Code, Symbol) có thật trong nguồn, kéo đủ 5 attribute mô tả theo coverage rule (Index Code, Index Id, Symbol, Floor Code, Add Date). FK trực tiếp vào Fact (nullable), không qua bridge Fact, đổi grain Fact để tránh Fact-to-Fact join fanout ở tầng báo cáo |
 | Fact Market Index Snapshot | fct_market_index_snpst | partial | Đã có trong master, sở hữu **QLKD** (reuse NDTNN K_NDTNN_34). GSTT (Nhóm 5) **mở rộng thêm 15 measure** (Open/High/Low/Prior Index, Change, %Change, Advances/Declines/No Change/Ceiling/Floor Count, Odd Lot Volume/Value, PT Total Volume/Value) — không đổi grain, không sửa 3 cột hiện có. Đã cập nhật `modules_using` (+GSTT) và ghi chú tại `DTM_QLKD_HLD.md` Cụm 6b |
