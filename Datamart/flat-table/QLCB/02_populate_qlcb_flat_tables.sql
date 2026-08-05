@@ -120,6 +120,7 @@ SELECT
 
     om.offering_method_code,
     om.offering_method_nm,
+    om.offering_method_group_nm,
     om.src_stm_code                        AS offering_method_src_stm_code
 FROM datamart.fct_securities_offering_plan_snpst f
 JOIN datamart.cdr_dt_dim snpst_cal
@@ -183,6 +184,7 @@ SELECT
 
     om.offering_method_code,
     om.offering_method_nm,
+    om.offering_method_group_nm,
     om.src_stm_code                        AS offering_method_src_stm_code
 FROM datamart.fct_securities_offering_result_snpst f
 JOIN datamart.cdr_dt_dim snpst_cal
@@ -217,6 +219,7 @@ SELECT
 
     om.offering_method_code,
     om.offering_method_nm,
+    om.offering_method_group_nm,
     om.src_stm_code                        AS offering_method_src_stm_code
 FROM datamart.fct_securities_offering_application_snpst f
 JOIN datamart.cdr_dt_dim snpst_cal
@@ -238,6 +241,7 @@ INSERT INTO datamart.qlcb_opr_securities_offering_360_profile_flat
 SELECT
     o.securities_offering_code,
     o.offering_method_code,
+    cl.cl_nm                            AS offering_method_nm,
     o.public_company_code,
     o.public_company_nm,
     o.equity_ticker_symbol,
@@ -267,4 +271,6 @@ SELECT
     o.capital_src,
     o.src_stm_code
 FROM datamart.opr_securities_offering_360_profile o
+LEFT JOIN datamart.cl_value cl
+    ON cl.cl_code = o.offering_method_code AND cl.schema_code = 'SO_OFFERING_METHOD'
 ;

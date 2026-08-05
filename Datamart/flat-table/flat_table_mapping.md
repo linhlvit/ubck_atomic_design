@@ -759,78 +759,100 @@ _Không có dim join (operational / self-contained table)._
 
 ## NHNCK
 
-**10 bảng flat** · **86 KPI unique**
+**11 bảng flat** (2 fact + 9 operational) · **121 KPI unique**
+
+*(Sửa 2026-08) Đồng bộ lại toàn bộ theo `Datamart/flat-table/NHNCK/01_create_nhnck_flat_tables.sql` + `Datamart/lld/DTM_NHNCK_Detail_Mapping.csv` hiện tại — bản trước lệch tên bảng/cột và thiếu 1 bảng so với SQL thực tế.*
 
 ---
 
-### `datamart.nhnck_fact_practitioner_license_certificate_snapshot_flat`
+### `datamart.nhnck_fct_practitioner_license_certificate_snpst_flat`
 
 | Thuộc tính | Giá trị |
 |------------|---------|
 | **Loại** | `fact` |
 | **Entity nguồn** | Fact Practitioner License Certificate Snapshot |
-| **Bảng fact/operational** | `datamart.nhnck_fact_practitioner_license_certificate_snapshot` |
+| **Bảng fact/operational** | `datamart.fct_practitioner_license_certificate_snpst` |
 | **PK** | `—` |
 | **Số dim join** | 3 |
 
 **Joins (FK → PK)**
 
-| Dimension Entity | Bảng Dim | FK (Fact) | PK (Dim) | SCD2 |
+| Dimension Entity | Bảng Dim | FK (Fact) | PK (Dim) | SCD |
 |-----------------|----------|-----------|----------|:----:|
-| Calendar Date Dimension | `datamart.nhnck_calendar_date_dimension` | `issue_date_dimension_id` | `date_dimension_id` | ✗ |
-| Calendar Date Dimension | `datamart.nhnck_calendar_date_dimension` | `snapshot_date_dimension_id` | `date_dimension_id` | ✗ |
-| Securities Practitioner Dimension | `datamart.nhnck_securities_practitioner_dimension` | `practitioner_dimension_id` | `practitioner_dimension_id` | ✗ |
+| Calendar Date Dimension | `datamart.cdr_dt_dim` | `issue_dt_dim_id` | `cdr_dt_dim_id` | SCD4A |
+| Calendar Date Dimension | `datamart.cdr_dt_dim` | `snpst_dt_dim_id` | `cdr_dt_dim_id` | SCD4A |
+| Securities Practitioner Dimension | `datamart.securities_practitioner_dim` | `practitioner_dim_id` | `securities_practitioner_dim_id` | SCD4A |
+| SP License Certificate Type Dimension | `datamart.sp_license_certificate_type_dim` | `certificate_tp_dim_id` | `certificate_tp_dim_id` | SCD4A |
+
+*(Sửa 2026-08) `Is Reissue Indicator`/`Certificate Issue Date` nay lấy từ Certificate Document/Decision Document (không còn qua Application). Cột `certificate_tp_code` dư thừa đã xoá khỏi Fact — chỉ giữ FK `certificate_tp_dim_id`.*
 
 **Nhóm KPI**
 
 | Nhóm | Số KPI unique |
 |------|:-------------:|
-| Nhóm 1 - Các chỉ tiêu tổng hợp thông tin chung | 14 |
-| Nhóm 2 — Tổng người hành nghề & Cảnh báo NHNCK | 2 |
-| Nhóm 3 — Biểu đồ cơ cấu theo loại hình CCHN | 6 |
-| Nhóm 4 — Biểu đồ trình độ chuyên môn | 6 |
-| Nhóm 5 — Biểu đồ phân bổ độ tuổi | 10 |
-| Nhóm 6 — Màn hình danh sách & Header NHN 360° | 1 |
-| Nhóm 8 — Sub-tab Quá trình hành nghề | 1 |
-| Nhóm 11 — Sub-tab Cập nhật kiến thức hành nghề | 2 |
+| Nhóm 1a — Thống kê tổng hợp (KPI thẻ CCHN) | 7 |
+| Nhóm 3 — Biểu đồ cơ cấu theo loại hình CCHN | 3 |
 
 ---
 
-### `datamart.nhnck_fact_practitioner_daily_snapshot_flat`
+### `datamart.nhnck_fct_practitioner_daily_snpst_flat`
 
 | Thuộc tính | Giá trị |
 |------------|---------|
 | **Loại** | `fact` |
 | **Entity nguồn** | Fact Practitioner Daily Snapshot |
-| **Bảng fact/operational** | `datamart.nhnck_fact_practitioner_daily_snapshot` |
+| **Bảng fact/operational** | `datamart.fct_practitioner_daily_snpst` |
 | **PK** | `—` |
 | **Số dim join** | 2 |
 
 **Joins (FK → PK)**
 
-| Dimension Entity | Bảng Dim | FK (Fact) | PK (Dim) | SCD2 |
+| Dimension Entity | Bảng Dim | FK (Fact) | PK (Dim) | SCD |
 |-----------------|----------|-----------|----------|:----:|
-| Calendar Date Dimension | `datamart.nhnck_calendar_date_dimension` | `snapshot_date_dimension_id` | `date_dimension_id` | ✗ |
-| Securities Practitioner Dimension | `datamart.nhnck_securities_practitioner_dimension` | `practitioner_dimension_id` | `practitioner_dimension_id` | ✗ |
+| Calendar Date Dimension | `datamart.cdr_dt_dim` | `snpst_dt_dim_id` | `cdr_dt_dim_id` | SCD4A |
+| Securities Practitioner Dimension | `datamart.securities_practitioner_dim` | `practitioner_dim_id` | `securities_practitioner_dim_id` | SCD4A |
 
 **Nhóm KPI**
 
 | Nhóm | Số KPI unique |
 |------|:-------------:|
-| Nhóm 2 — Tổng người hành nghề & Cảnh báo NHNCK | 2 |
-| Nhóm 4 — Biểu đồ trình độ chuyên môn | 3 |
-| Nhóm 5 — Biểu đồ phân bổ độ tuổi | 10 |
+| Nhóm 1b — Thống kê tổng hợp (KPI thẻ NHN) | 2 |
+| Nhóm 2 — Biểu đồ Trình độ chuyên môn | 3 |
+| Nhóm 4 — Biểu đồ Phân bổ độ tuổi | 10 |
 
 ---
 
-### `datamart.nhnck_practitioner_360_profile_flat`
+### `datamart.nhnck_opr_practitioner_360_profile_flat`
 
 | Thuộc tính | Giá trị |
 |------------|---------|
 | **Loại** | `operational` |
-| **Entity nguồn** | Practitioner 360 Profile |
-| **Bảng fact/operational** | `datamart.nhnck_practitioner_360_profile` |
-| **PK** | `practitioner_id` |
+| **Entity nguồn** | Operational Practitioner 360 Profile |
+| **Bảng fact/operational** | `datamart.opr_practitioner_360_profile` |
+| **PK** | `practitioner_code` |
+| **Số dim join** | 0 |
+
+_Không có dim join (operational / self-contained table)._
+
+*(Sửa 2026-08) `Nationality_Code/Name` tự JOIN Geographic Area filter COUNTRY. `Active_Certificate_Type_Code/Name`/`Active_Certificate_Number` JOIN trực tiếp Certificate Document (bản ghi Issue Date mới nhất per NHN), không còn qua Organization Employment Report. `Workplace` về lại PROFESSIONALS.WORKPLACE.*
+
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| Nhóm 5 — Thông tin chung của NHNCK | 9 |
+| Nhóm 13 — Practitioner Data Explorer | 5 |
+
+---
+
+### `datamart.nhnck_opr_practitioner_related_party_profile_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `operational` |
+| **Entity nguồn** | Operational Practitioner Related Party Profile |
+| **Bảng fact/operational** | `datamart.opr_practitioner_related_party_profile` |
+| **PK** | `practitioner_code, related_party_code` |
 | **Số dim join** | 0 |
 
 _Không có dim join (operational / self-contained table)._
@@ -839,18 +861,19 @@ _Không có dim join (operational / self-contained table)._
 
 | Nhóm | Số KPI unique |
 |------|:-------------:|
-| Nhóm 6 — Màn hình danh sách & Header NHN 360° | 9 |
+| Nhóm 6 — Sub-tab Mạng lưới người liên quan | 6 |
+| Nhóm 7 — Dashboard Hồ sơ & Danh mục của NHNCK | 3 |
 
 ---
 
-### `datamart.nhnck_practitioner_certificate_history_flat`
+### `datamart.nhnck_opr_practitioner_list_company_role_flat`
 
 | Thuộc tính | Giá trị |
 |------------|---------|
 | **Loại** | `operational` |
-| **Entity nguồn** | Practitioner Certificate History |
-| **Bảng fact/operational** | `datamart.nhnck_practitioner_certificate_history` |
-| **PK** | `practitioner_id` |
+| **Entity nguồn** | Operational Practitioner Listed Company Role |
+| **Bảng fact/operational** | `datamart.opr_practitioner_list_company_role` |
+| **PK** | `practitioner_code, organization_employment_rpt_code` |
 | **Số dim join** | 0 |
 
 _Không có dim join (operational / self-contained table)._
@@ -859,18 +882,39 @@ _Không có dim join (operational / self-contained table)._
 
 | Nhóm | Số KPI unique |
 |------|:-------------:|
-| Nhóm 7 — Sub-tab Lịch sử cấp chứng chỉ hành nghề | 6 |
+| Nhóm 6 — Sub-tab Mạng lưới người liên quan | 2 |
+| Nhóm 7 — Dashboard Hồ sơ & Danh mục của NHNCK | 5 |
 
 ---
 
-### `datamart.nhnck_practitioner_employment_history_flat`
+### `datamart.nhnck_opr_practitioner_certificate_hist_flat`
 
 | Thuộc tính | Giá trị |
 |------------|---------|
 | **Loại** | `operational` |
-| **Entity nguồn** | Practitioner Employment History |
-| **Bảng fact/operational** | `datamart.nhnck_practitioner_employment_history` |
-| **PK** | `practitioner_id` |
+| **Entity nguồn** | Operational Practitioner Certificate History |
+| **Bảng fact/operational** | `datamart.opr_practitioner_certificate_hist` |
+| **PK** | `practitioner_code, license_certificate_document_code` |
+| **Số dim join** | 0 |
+
+_Không có dim join (operational / self-contained table). `certificate_tp_code/nm` giữ nguồn Certificate Document trực tiếp — không thuộc phạm vi đổi nguồn 2026-08 (khác `opr_practitioner_360_profile`)._
+
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| Nhóm 9 — Sub-tab Lịch sử cấp chứng chỉ hành nghề | 6 |
+
+---
+
+### `datamart.nhnck_opr_practitioner_employment_hist_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `operational` |
+| **Entity nguồn** | Operational Practitioner Employment History |
+| **Bảng fact/operational** | `datamart.opr_practitioner_employment_hist` |
+| **PK** | `practitioner_code, organization_employment_rpt_code` |
 | **Số dim join** | 0 |
 
 _Không có dim join (operational / self-contained table)._
@@ -879,18 +923,18 @@ _Không có dim join (operational / self-contained table)._
 
 | Nhóm | Số KPI unique |
 |------|:-------------:|
-| Nhóm 8 — Sub-tab Quá trình hành nghề | 4 |
+| Nhóm 8 — Sub-tab Quá trình hành nghề | 7 |
 
 ---
 
-### `datamart.nhnck_practitioner_violation_history_flat`
+### `datamart.nhnck_opr_practitioner_violation_hist_flat`
 
 | Thuộc tính | Giá trị |
 |------------|---------|
 | **Loại** | `operational` |
-| **Entity nguồn** | Practitioner Violation History |
-| **Bảng fact/operational** | `datamart.nhnck_practitioner_violation_history` |
-| **PK** | `practitioner_id` |
+| **Entity nguồn** | Operational Practitioner Violation History |
+| **Bảng fact/operational** | `datamart.opr_practitioner_violation_hist` |
+| **PK** | `practitioner_code, conduct_violation_code` |
 | **Số dim join** | 0 |
 
 _Không có dim join (operational / self-contained table)._
@@ -899,18 +943,19 @@ _Không có dim join (operational / self-contained table)._
 
 | Nhóm | Số KPI unique |
 |------|:-------------:|
-| Nhóm 9 — Sub-tab Lịch sử vi phạm & xử phạt hành chính | 5 |
+| Nhóm 12 — Sub-tab Lịch sử vi phạm & xử phạt hành chính | 4 |
+| Nhóm 13 — Practitioner Data Explorer | 3 |
 
 ---
 
-### `datamart.nhnck_practitioner_exam_history_flat`
+### `datamart.nhnck_opr_practitioner_exam_hist_flat`
 
 | Thuộc tính | Giá trị |
 |------------|---------|
 | **Loại** | `operational` |
-| **Entity nguồn** | Practitioner Exam History |
-| **Bảng fact/operational** | `datamart.nhnck_practitioner_exam_history` |
-| **PK** | `practitioner_id` |
+| **Entity nguồn** | Operational Practitioner Exam History |
+| **Bảng fact/operational** | `datamart.opr_practitioner_exam_hist` |
+| **PK** | `practitioner_code, examination_assessment_result_code` |
 | **Số dim join** | 0 |
 
 _Không có dim join (operational / self-contained table)._
@@ -919,18 +964,19 @@ _Không có dim join (operational / self-contained table)._
 
 | Nhóm | Số KPI unique |
 |------|:-------------:|
-| Nhóm 10 — Sub-tab Đợt thi sát hạch | 5 |
+| Nhóm 10 — Sub-tab Đợt thi sát hạch | 8 |
+| Nhóm 13 — Practitioner Data Explorer | 5 |
 
 ---
 
-### `datamart.nhnck_practitioner_training_history_flat`
+### `datamart.nhnck_opr_practitioner_training_hist_flat`
 
 | Thuộc tính | Giá trị |
 |------------|---------|
 | **Loại** | `operational` |
-| **Entity nguồn** | Practitioner Training History |
-| **Bảng fact/operational** | `datamart.nhnck_practitioner_training_history` |
-| **PK** | `practitioner_id` |
+| **Entity nguồn** | Operational Practitioner Training History |
+| **Bảng fact/operational** | `datamart.opr_practitioner_training_hist` |
+| **PK** | `practitioner_code, enrollment_code` |
 | **Số dim join** | 0 |
 
 _Không có dim join (operational / self-contained table)._
@@ -939,47 +985,27 @@ _Không có dim join (operational / self-contained table)._
 
 | Nhóm | Số KPI unique |
 |------|:-------------:|
-| Nhóm 11 — Sub-tab Cập nhật kiến thức hành nghề | 2 |
+| Nhóm 11 — Sub-tab Cập nhật kiến thức hành nghề | 7 |
 
 ---
 
-### `datamart.nhnck_practitioner_related_party_profile_flat`
+### `datamart.nhnck_opr_practitioner_data_explorer_flat`
 
 | Thuộc tính | Giá trị |
 |------------|---------|
 | **Loại** | `operational` |
-| **Entity nguồn** | Practitioner Related Party Profile |
-| **Bảng fact/operational** | `datamart.nhnck_practitioner_related_party_profile` |
-| **PK** | `practitioner_id` |
+| **Entity nguồn** | Operational Practitioner Data Explorer |
+| **Bảng fact/operational** | `datamart.opr_practitioner_data_explorer` |
+| **PK** | `practitioner_code, license_certificate_document_code` |
 | **Số dim join** | 0 |
 
-_Không có dim join (operational / self-contained table)._
+_Không có dim join — nhưng (Sửa 2026-07-22) LEFT JOIN thêm Practitioner 360 Profile (1-1), Practitioner Exam History (1-N, fan-out), Practitioner Violation History (1-N, fan-out). Grain thực tế = 1 CCHN × 1 đợt thi × 1 vi phạm._
 
 **Nhóm KPI**
 
 | Nhóm | Số KPI unique |
 |------|:-------------:|
-| Nhóm 12 — Sub-tab Hồ sơ / Mạng lưới người liên quan | 4 |
-
----
-
-### `datamart.nhnck_practitioner_data_explorer_flat`
-
-| Thuộc tính | Giá trị |
-|------------|---------|
-| **Loại** | `operational` |
-| **Entity nguồn** | Practitioner Data Explorer |
-| **Bảng fact/operational** | `datamart.nhnck_practitioner_data_explorer` |
-| **PK** | `practitioner_id` |
-| **Số dim join** | 0 |
-
-_Không có dim join (operational / self-contained table)._
-
-**Nhóm KPI**
-
-| Nhóm | Số KPI unique |
-|------|:-------------:|
-| Nhóm 13 — Practitioner Data Explorer (bảng tra cứu tổng hợp) | 7 |
+| Nhóm 13 — Practitioner Data Explorer (bảng tra cứu tổng hợp) | 9 |
 
 ---
 

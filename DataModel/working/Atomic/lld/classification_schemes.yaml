@@ -148,13 +148,26 @@ schemes:
     deprecated: true
     deprecated_reason: "NHNCK.DOCUMENTS đã nâng cấp thành Atomic entity thật 'Classification Document' (table_type Classification, 2026-07-09; đổi tên bỏ tiền tố nguồn theo CLAUDE.md #7 rev. 2026-07-14) — không còn dùng scheme này. Entity tiêu thụ (Securities Practitioner License Application Employment Experience) đã đổi sang cặp FK Classification Document Id + Classification Document Code."
 
-  - scheme_code: "EDUCATION_LEVEL"
+  - scheme_code: "EDUCATIONAL_LEVEL"
     name: "Trình độ học vấn — values from EducationLevels"
     source_type: "source_table"
     source_table: "NHNCK.EducationLevels"
     used_in_entities:
       - "Securities Practitioner"
-    values: []
+    notes: "(Bổ sung 2026-08) Đã xác nhận giá trị thật qua cl_value export (src_stm_code=NHNCK_EDUCATION_LEVELS). cl_code lưu trực tiếp bằng tên tiếng Việt (không phải code tiếng Anh) — sửa scheme_code từ 'EDUCATION_LEVEL' (sai, thiếu AL) thành đúng 'EDUCATIONAL_LEVEL'."
+    values:
+      - code: "Đại học"
+        name: "Đại học"
+        source_table: null
+      - code: "Cử nhân"
+        name: "Cử nhân"
+        source_table: null
+      - code: "Thạc sĩ"
+        name: "Thạc sĩ"
+        source_table: null
+      - code: "Tiến sĩ"
+        name: "Tiến sĩ"
+        source_table: null
 
   - scheme_code: "EXAM_RESULT"
     name: "Kết quả thi/đào tạo (Đạt/Không đạt/Không thi)"
@@ -1423,7 +1436,7 @@ schemes:
     deprecated_reason: "Gộp vào scheme 'EXAM_RESULT' (2026-07-09) — cùng domain giá trị (-1 Không thi/0 Không đạt/1 Đạt) với EXAM_SCORE_RESULT và EXAMINATION_RESULT. Entity tiêu thụ đổi classification_context sang EXAM_RESULT."
 
   - scheme_code: "VIOLATION_STATUS"
-    name: "Trạng thái vi phạm (Hiệu lực/Không hiệu lực)"
+    name: "Trạng thái vi phạm (Hiệu lực/Không hiệu lực/Đã xóa)"
     source_type: "source_table"
     source_table: "NHNCK.VIOLATIONS.STATUS"
     used_in_entities:
@@ -1435,14 +1448,25 @@ schemes:
       - code: "INACTIVE"
         name: "Không hoạt động"
         source_value: "0"
+      - code: "DELETED"
+        name: "Đã xóa"
+        source_value: "-1"
+    notes: "(Sửa 2026-08) Bổ sung giá trị DELETED (-1) — BA xác nhận lại (BA_analyst_NHNCK.csv, Nhóm 12, đã hỏi Liên - Tinh Vân): STATUS chỉ có 3 mức kỹ thuật ACTIVE/INACTIVE/DELETED, KHÔNG phải 6 trạng thái nghiệp vụ 'thực thi quyết định' như mô tả KPI ban đầu."
 
   - scheme_code: "VIOLATION_TYPE"
-    name: "Loại/phân loại vi phạm — cần xác nhận từ data"
-    source_type: "modeler_defined"
+    name: "Loại/phân loại vi phạm"
+    source_type: "source_table"
     source_table: "NHNCK.VIOLATIONS.TYPE"
     used_in_entities:
       - "Securities Practitioner Conduct Violation"
-    values: []
+    values:
+      - code: "ADMINISTRATIVE"
+        name: "Hành chính"
+        source_value: "1"
+      - code: "LEGAL"
+        name: "Pháp luật"
+        source_value: "2"
+    notes: "(Sửa 2026-08) Bổ sung giá trị theo BA xác nhận (BA_analyst_NHNCK.csv, Nhóm 12): 1=Hành chính (ADMINISTRATIVE), 2=Pháp luật (LEGAL)."
 
   - scheme_code: "WORK_STATUS_ORGANIZATION"
     name: null

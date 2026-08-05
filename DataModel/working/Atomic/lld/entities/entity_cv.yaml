@@ -2,7 +2,7 @@ schema_type: "entity_consolidation"
 schema_version: "1.0"
 entity:
   entity_name: "Classification Value"
-  physical_name: "cv"
+  physical_name: "cl_value"
   bcv_core_object: "Common"
   bcv_concept: "[Classification] Common"
   table_type: "Classification"
@@ -16,25 +16,25 @@ attributes:
 - attribute_name: "Classification Code"
   physical_name: "cl_code"
   data_type: "string"
-  description: "Mã giá trị phân loại. BK."
+  description: "Mã giá trị phân loại. BK. Có thể là mã số dạng text (VD: '1','2') hoặc text thuần (VD: 'Đại học') tuỳ scheme."
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
   comment: "BK chính. Dùng để lookup trong các entity khác."
   classification_context: null
   etl_derived_value: null
-- attribute_name: "Scheme Code"
-  physical_name: "scm_code"
+- attribute_name: "Schema Code"
+  physical_name: "schema_code"
   data_type: "string"
   description: "Mã loại phân loại (scheme). BK phụ."
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
-  comment: "BK phụ — kết hợp Scheme Code + Classification Code tạo thành BK duy nhất."
+  comment: "BK phụ — kết hợp Schema Code + Classification Code tạo thành BK duy nhất."
   classification_context: null
   etl_derived_value: null
-- attribute_name: "Scheme Name"
-  physical_name: "scm_nm"
+- attribute_name: "Schema Name"
+  physical_name: "schema_nm"
   data_type: "string"
   description: "Tên loại phân loại."
   data_domain: "Text"
@@ -61,5 +61,65 @@ attributes:
   nullable: true
   is_primary_key: false
   comment: null
+  classification_context: null
+  etl_derived_value: null
+- attribute_name: "Classification Name English"
+  physical_name: "cl_nm_english"
+  data_type: "string"
+  description: "Tên giá trị phân loại (tiếng Anh)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+- attribute_name: "Classification Description"
+  physical_name: "cl_description"
+  data_type: "string"
+  description: "Diễn giải chi tiết ý nghĩa giá trị phân loại."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+- attribute_name: "Record Status"
+  physical_name: "ds_rcrd_st"
+  data_type: "string"
+  description: "Trạng thái hiệu lực bản ghi (ACTIVE/INACTIVE)."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  comment: "Technical field — SCD4A current-state."
+  classification_context: null
+  etl_derived_value: null
+- attribute_name: "Record Effective Date"
+  physical_name: "ds_rcrd_eff_dt"
+  data_type: "date"
+  description: "Ngày bản ghi bắt đầu có hiệu lực."
+  data_domain: "Date"
+  nullable: false
+  is_primary_key: false
+  comment: "Technical field."
+  classification_context: null
+  etl_derived_value: null
+- attribute_name: "Record End Date"
+  physical_name: "ds_rcrd_end_dt"
+  data_type: "date"
+  description: "Ngày bản ghi hết hiệu lực (2400-01-01 nếu còn hiệu lực)."
+  data_domain: "Date"
+  nullable: false
+  is_primary_key: false
+  comment: "Technical field."
+  classification_context: null
+  etl_derived_value: null
+- attribute_name: "ETL Process Timestamp"
+  physical_name: "ds_etl_pcs_tms"
+  data_type: "timestamp"
+  description: "Thời điểm ETL xử lý bản ghi."
+  data_domain: "Timestamp"
+  nullable: false
+  is_primary_key: false
+  comment: "Technical field."
   classification_context: null
   etl_derived_value: null

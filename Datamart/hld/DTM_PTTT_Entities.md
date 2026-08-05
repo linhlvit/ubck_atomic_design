@@ -82,7 +82,7 @@ erDiagram
 |---|---|---|---|---|---|
 | Calendar Date Dimension | Dimension | reuse | Chiều thời gian | 1 row / ngày | — |
 | Fact Market Risk Snapshot | Fact Snapshot | new | GTGD phiên, Dư nợ margin, Margin Stress, TVI (reuse từ Nhóm 1/4) | 1 row / ngày | K_PTTT_43,58,60,107~126 |
-| Fact Order Size Snapshot | Fact Snapshot | new | GTGD và phân loại quy mô lệnh per mã CK | 1 row / mã CK / order_size_band / ngày | K_PTTT_43,107,114,120,127,128 |
+| Fact Order Size Snapshot | Fact Snapshot | new | GTGD và phân loại quy mô lệnh per mã CK | 1 row / mã CK / order_size_band / ngày | K_PTTT_43,114,120,127,128 |
 
 > Nhóm 12 (Phân bổ thanh khoản theo nhóm vốn hóa) 100% PENDING — gap KL CP lưu hành VSDC BM1 (O_PTTT_3/O_PTTT_6), Mart dự kiến `Fact Cap Group Snapshot` — không đưa vào Entities.csv, xem mục "Bảng PENDING".
 
@@ -112,7 +112,6 @@ erDiagram
 
 ```mermaid
 erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Member_Safety_Snapshot : " "
     Calendar_Date_Dimension ||--o{ Fact_Member_Safety_Per_Member_Snapshot : " "
     Securities_Company_Dimension ||--o{ Fact_Member_Safety_Per_Member_Snapshot : " "
 ```
@@ -121,11 +120,10 @@ erDiagram
 |---|---|---|---|---|---|
 | Calendar Date Dimension | Dimension | reuse | Chiều thời gian | 1 row / ngày | — |
 | Securities Company Dimension | Dimension | new | Chiều công ty chứng khoán | 1 row / CTCK | — |
-| Fact Member Safety Snapshot | Fact Snapshot | new | Dư nợ margin, VCSH, nợ phải trả, D/E toàn hệ thống CTCK — PENDING (gap EAV báo cáo định kỳ CTCK, O_PTTT_13) | 1 row / ngày | K_PTTT_43,58,197~208 |
-| Fact Member Safety Per Member Snapshot | Fact Snapshot | new | VCSH, dư nợ margin, xếp hạng ATTC per CTCK — PENDING (cùng gap O_PTTT_13) | 1 row / CTCK / ngày | K_PTTT_43,58,197,199,202,203,204~208 |
+| Fact Member Safety Per Member Snapshot | Fact Snapshot | new | VCSH, dư nợ margin, xếp hạng ATTC per CTCK — chỉ Chiều Mã CTCK (K_PTTT_208) READY, còn lại PENDING (O_PTTT_13) | 1 row / CTCK / ngày | K_PTTT_43,58,197,199,202,203,204~208 |
 | Operational Member Safety Monitor | Operational | new | Danh sách CTCK giám sát rủi ro dư nợ margin — PENDING (cùng gap O_PTTT_13) | 1 row / CTCK / ngày | — |
 
-> Toàn bộ measure chính (Dư nợ margin, VCSH, D/E) của Tab này còn PENDING — chỉ Chiều Mã CTCK (dùng `securities_company` READY) và vài KPI phụ trợ đã READY. Xem O_PTTT_13.
+> Toàn bộ measure chính (Dư nợ margin, VCSH, D/E) của Tab này còn PENDING — chỉ Chiều Mã CTCK (dùng `securities_company` READY) đã READY. Xem O_PTTT_13. `Fact Member Safety Snapshot` (Nhóm 22/23, grain toàn hệ thống) 100% PENDING — loại khỏi Entities.csv, xem mục "Bảng PENDING" cuối file.
 
 ---
 
@@ -198,3 +196,4 @@ erDiagram
 |---|---|---|
 | Fact Macro Indicator Snapshot | 100% KPI (13/13, Nhóm 3) PENDING — gap Atomic `Risk Indicator`/`Risk Indicator Value`, chưa có entity nào tồn tại trên Atomic repo | O_PTTT_11 |
 | Fact Cap Group Snapshot | 100% KPI (10/10, Nhóm 12) PENDING — gap KL CP lưu hành từ VSDC BM1, cần Atomic entity `Security Listing Volume` | O_PTTT_3, O_PTTT_6 |
+| Fact Member Safety Snapshot | 100% KPI (9/9 Nhóm 22 + 9/9 Nhóm 23) PENDING — gap EAV báo cáo định kỳ CTCK, entity `mbr_rpt_ind_val` không tồn tại trên Atomic repo | O_PTTT_13 |
