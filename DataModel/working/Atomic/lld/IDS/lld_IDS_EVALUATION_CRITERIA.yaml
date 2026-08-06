@@ -22,7 +22,9 @@ metadata:
     \ với Public Company Evaluation Group/Period (T1). GROUP_ID không map — Public\
     \ Company Evaluation Group Id/Code hash trực tiếp từ GROUP_CD (đã có sẵn trên\
     \ cùng dòng nguồn), không join qua EVALUATION_GROUPS.ID kỹ thuật (quyết định Data\
-    \ Modeler 2026-07-15). Xem pending_design.yaml."
+    \ Modeler 2026-07-15). Xem pending_design.yaml. Bổ sung Display Order sau review\
+    \ coverage 2026-08-06 (gap so với IDS_Columns.csv) — downgrade approved→draft,\
+    \ cần review/approve lại."
 attributes:
 - attribute_name: "Public Company Evaluation Criterion Id"
   physical_name: "pc_evaluation_criterion_id"
@@ -169,6 +171,19 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.EVALUATION_CRITERIA.DISPLAY_ORDER_SUBGROUP"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Display Order"
+  physical_name: "display_order"
+  description: "Sắp xếp chỉ tiêu."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.EVALUATION_CRITERIA.DISPLAY_ORDER"
   comment: null
   classification_context: null
   etl_derived_value: null

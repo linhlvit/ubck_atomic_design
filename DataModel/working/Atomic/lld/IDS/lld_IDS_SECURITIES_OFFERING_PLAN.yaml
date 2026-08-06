@@ -19,7 +19,9 @@ metadata:
   approved_at: null
   notes: "Con của Public Company Securities Offering (T3) — 1-N. TOTAL_REGISTERED_QTY\
     \ và TOTAL_EXPECTED_AM là denormalized snapshot lấy từ bảng cha SECURITIES_OFFERING\
-    \ theo BRD note."
+    \ theo BRD note. Bổ sung Single Offering Object sau review coverage 2026-08-06\
+    \ (gap so với IDS_Columns.csv) — downgrade approved→draft, cần review/approve\
+    \ lại."
 attributes:
 - attribute_name: "Public Company Securities Offering Plan Id"
   physical_name: "pc_securities_offering_plan_id"
@@ -781,3 +783,16 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "int"
+- attribute_name: "Single Offering Object"
+  physical_name: "single_offering_object"
+  description: "Đối tượng chào bán phát hành riêng lẻ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.PLAN_SINGLE_OBJ"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

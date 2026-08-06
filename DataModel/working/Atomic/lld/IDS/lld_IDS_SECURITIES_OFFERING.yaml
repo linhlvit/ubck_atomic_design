@@ -19,7 +19,9 @@ metadata:
   approved_at: null
   notes: "FK loại trừ nhau (per HLD Tier3 T3-04, xác nhận): Public Company Id (tổ\
     \ chức) hoặc Legal Entity Id (cá nhân) — dùng APPLICANT_TYPE_FLG để xác định.\
-    \ Giữ cả 2 FK nullable trên Atomic entity."
+    \ Giữ cả 2 FK nullable trên Atomic entity. Bổ sung Submission Date, Project Investment\
+    \ Indicator, Capital Purpose sau review coverage 2026-08-06 (gap so với IDS_Columns.csv)\
+    \ — downgrade approved→draft, cần review/approve lại."
 attributes:
 - attribute_name: "Public Company Securities Offering Id"
   physical_name: "pc_securities_offering_id"
@@ -541,6 +543,45 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.SECURITIES_OFFERING.APPROVER_COMMENT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Submission Date"
+  physical_name: "submission_dt"
+  description: "Ngày nộp hồ sơ."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.SUBMISSION_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Project Investment Indicator"
+  physical_name: "project_investment_indicator"
+  description: "Chỉ báo có phải dự án đầu tư hay không."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.PROJECT_INVESTMENT_FLG"
+  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Capital Purpose"
+  physical_name: "capital_purpose"
+  description: "Mục đích sử dụng vốn."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.CAPITAL_PURPOSE"
   comment: null
   classification_context: null
   etl_derived_value: null
