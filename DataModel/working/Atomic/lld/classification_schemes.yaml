@@ -2753,6 +2753,22 @@ schemes:
         label: "Nghiêm trọng"
         source_value: "3"
 
+  - scheme_code: "SCMS_ALERT_PERIOD_TYPE"
+    name: "Loại kỳ của cảnh báo — cần Data Modeler xác nhận danh sách giá trị (cột mới DDL UAT 2026-08, không có mô tả nghiệp vụ)"
+    source_type: "modeler_defined"
+    source_table: "SCMS.SC_FIRM_ALERT_VIOLATION.PERIOD_TYPE"
+    used_in_entities:
+      - "Securities Company Alert Violation"
+    values: []
+
+  - scheme_code: "SCMS_ALERT_SEVERITY_LEVEL_ALT"
+    name: "Mức độ nghiêm trọng của vi phạm cảnh báo (mã số thay thế) — cần Data Modeler xác nhận danh sách giá trị (cột mới DDL UAT 2026-08, không có mô tả nghiệp vụ)"
+    source_type: "modeler_defined"
+    source_table: "SCMS.SC_FIRM_ALERT_VIOLATION.SEVERITY_LEVEL_ALT"
+    used_in_entities:
+      - "Securities Company Alert Violation"
+    values: []
+
   - scheme_code: "SCMS_ALERT_ENTITY_TYPE"
     name: "Loại đối tượng của cảnh báo giám sát: CTCK, Chi nhánh nước ngoài, Văn phòng đại diện nước ngoài"
     source_type: "source_table"
@@ -3241,7 +3257,7 @@ schemes:
     source_type: "source_table"
     source_table: "IDS.lookup_values"
     used_in_entities:
-      - "Disclosure Form Definition Notification Recipient"
+      - "Notification Recipient"
     values: []
 
   - scheme_code: "IDS_SECURITIES_TYPE"
@@ -3287,17 +3303,18 @@ schemes:
     source_type: "source_table"
     source_table: "IDS.lookup_values"
     used_in_entities:
-      - "Disclosure Form Definition"
+      - "Financial Report Template"
     values: []
     deprecated: true
     deprecated_reason: "Nguồn không có FK/lookup annotation — field liên quan (Form Type Code) đã revert về Text."
 
   - scheme_code: "IDS_NEWS_TYPE"
-    name: "Loại tin gốc — dùng chung cho Disclosure Form Definition và Disclosure Notification"
+    name: "Loại tin gốc — dùng chung cho Financial Report Template và Notification"
     source_type: "source_table"
     source_table: "IDS.lookup_values"
     used_in_entities:
-      - "Disclosure Notification"
+      - "Notification"
+      - "Public Company Report Submission"
     values: []
 
   - scheme_code: "IDS_SUB_NEWS_TYPE"
@@ -3305,7 +3322,7 @@ schemes:
     source_type: "source_table"
     source_table: "IDS.lookup_values"
     used_in_entities:
-      - "Disclosure Form Definition"
+      - "Financial Report Template"
     values: []
     deprecated: true
     deprecated_reason: "Nguồn không có FK/lookup annotation — field liên quan (Sub News Type Code) đã revert về Text."
@@ -3316,7 +3333,7 @@ schemes:
     source_table: "IDS.lookup_values"
     used_in_entities:
       - "Disclosure Notification Config"
-      - "Disclosure Notification"
+      - "Notification"
     values: []
 
   - scheme_code: "IDS_NOTIFICATION_TARGET_SYSTEM"
@@ -3343,6 +3360,8 @@ schemes:
     source_table: "IDS.report_catalog"
     used_in_entities:
       - "Financial Report Catalog"
+      - "Financial Report Row Template"
+      - "Financial Report Column Template"
     values: []
 
   - scheme_code: "IDS_REPORT_SCOPE"
@@ -3351,7 +3370,39 @@ schemes:
     source_table: "IDS.lookup_values"
     used_in_entities:
       - "Financial Report Catalog"
-      - "Disclosure Form Definition Violation Template"
+      - "Violation Report Template"
+    values: []
+
+  - scheme_code: "IDS_REPORT_ROW_TYPE"
+    name: "Loại hàng BCTC (value/formula/description) — row_type_cd từ rrow"
+    source_type: "etl_derived"
+    source_table: "IDS.rrow"
+    used_in_entities:
+      - "Financial Report Row Template"
+    values: []
+
+  - scheme_code: "IDS_REPORT_CELL_TYPE"
+    name: "Kiểu ô BCTC (I=input, O=output) — rc_type từ data"
+    source_type: "etl_derived"
+    source_table: "IDS.data"
+    used_in_entities:
+      - "Financial Report Value"
+    values: []
+
+  - scheme_code: "IDS_SUBMISSION_STATUS"
+    name: "Trạng thái duyệt lần nộp báo cáo/tin CBTT — news_status_cd từ company_data"
+    source_type: "source_table"
+    source_table: "IDS.lookup_values"
+    used_in_entities:
+      - "Public Company Report Submission"
+    values: []
+
+  - scheme_code: "IDS_LANGUAGE"
+    name: "Mã ngôn ngữ tin CBTT (VI/EN) — language_cd từ company_data"
+    source_type: "etl_derived"
+    source_table: "IDS.company_data"
+    used_in_entities:
+      - "Public Company Report Submission"
     values: []
 
   - scheme_code: "IDS_PERIODIC_REPORT_FREQUENCY"
@@ -3359,7 +3410,7 @@ schemes:
     source_type: "etl_derived"
     source_table: "IDS.rep_forms"
     used_in_entities:
-      - "Periodic Report Form"
+      - "Financial Report Sub Template"
     values: []
 
   # --- Tier 2 schemes ---
@@ -3432,7 +3483,7 @@ schemes:
     source_type: "source_table"
     source_table: "IDS.lookup_values"
     used_in_entities:
-      - "Disclosure Notification"
+      - "Notification"
     values: []
 
   - scheme_code: "IDS_NOTIFICATION_SEND_SCHEDULE"
@@ -3440,7 +3491,7 @@ schemes:
     source_type: "source_table"
     source_table: "IDS.lookup_values"
     used_in_entities:
-      - "Disclosure Notification"
+      - "Notification"
       - "Disclosure Notification Config"
     values: []
 
@@ -3449,7 +3500,7 @@ schemes:
     source_type: "etl_derived"
     source_table: "IDS.rep_row"
     used_in_entities:
-      - "Periodic Report Form Row Template"
+      - "Financial Report Sub Row Template"
     values: []
 
   - scheme_code: "IDS_PERIODIC_FORM_COLUMN_DATA_TYPE"
@@ -3457,7 +3508,7 @@ schemes:
     source_type: "etl_derived"
     source_table: "IDS.rep_column"
     used_in_entities:
-      - "Periodic Report Form Column Template"
+      - "Financial Report Sub Column Template"
     values: []
 
   # --- Tier 3 schemes ---
@@ -4804,7 +4855,7 @@ schemes:
     source_type: "source_table"
     source_table: "IDS.LOOKUP_VALUES"
     used_in_entities:
-      - "Disclosure Form Definition"
+      - "Financial Report Template"
     values: []
     deprecated: true
     deprecated_reason: "Nguồn không có FK/lookup annotation — field liên quan (News Type Group Code) đã revert về Text."
@@ -4814,7 +4865,7 @@ schemes:
     source_type: "source_table"
     source_table: "IDS.FORMS.REPORT_TYPE"
     used_in_entities:
-      - "Disclosure Form Definition"
+      - "Financial Report Template"
     values: []
     deprecated: true
     deprecated_reason: "Nguồn không có FK/lookup annotation — field liên quan (Form Report Type Code) đã revert về Text."
@@ -4824,7 +4875,7 @@ schemes:
     source_type: "modeler_defined"
     source_table: "IDS.FORMS.CONTROL_UNIT_CD"
     used_in_entities:
-      - "Disclosure Form Definition"
+      - "Financial Report Template"
     values: []
 
   - scheme_code: "IDS_OPERATING_UNIT"
@@ -4832,7 +4883,7 @@ schemes:
     source_type: "modeler_defined"
     source_table: "IDS.FORMS.OPERATING_UNIT_CD"
     used_in_entities:
-      - "Disclosure Form Definition"
+      - "Financial Report Template"
     values: []
 
   - scheme_code: "IDS_SYSTEM_CD"
@@ -4840,9 +4891,9 @@ schemes:
     source_type: "modeler_defined"
     source_table: "IDS.FORMS.SYSTEM_CD"
     used_in_entities:
-      - "Disclosure Form Definition"
+      - "Financial Report Template"
       - "Financial Report Catalog"
-      - "Periodic Report Form"
+      - "Financial Report Sub Template"
     values: []
     deprecated: true
     deprecated_reason: "Nguồn không có FK/lookup annotation — field SYSTEM_CD ở toàn bộ 8 bảng dùng scheme này (FORMS, RCOL, REPORT_CATALOG, REP_FORMS, REP_COLUMN, REP_ROW, RROW, NOTIFICATIONS) đã revert về Text."
@@ -4945,7 +4996,7 @@ schemes:
     source_type: "source_table"
     source_table: "IDS.LOOKUP_VALUES"
     used_in_entities:
-      - "Disclosure Form Definition Violation Template"
+      - "Violation Report Template"
     values: []
 
   - scheme_code: "IDS_VIOLATION_SUBTYPE"
@@ -4953,7 +5004,7 @@ schemes:
     source_type: "modeler_defined"
     source_table: "IDS.VIOLATION_TEMPLATES.VIOLATION_SUBTYPE_CD"
     used_in_entities:
-      - "Disclosure Form Definition Violation Template"
+      - "Violation Report Template"
     values: []
 
   - scheme_code: "IDS_VIOLATION_REPORT_TYPE"
@@ -4961,7 +5012,7 @@ schemes:
     source_type: "modeler_defined"
     source_table: "IDS.VIOLATION_TEMPLATES.REPORT_TYPE_CD"
     used_in_entities:
-      - "Disclosure Form Definition Violation Template"
+      - "Violation Report Template"
     values: []
 
   - scheme_code: "IDS_REPORT_PERIOD_TYPE"
@@ -4969,7 +5020,7 @@ schemes:
     source_type: "modeler_defined"
     source_table: "IDS.VIOLATION_TEMPLATES.PERIOD_TYPE_CD"
     used_in_entities:
-      - "Disclosure Form Definition Violation Template"
+      - "Violation Report Template"
     values: []
 
   - scheme_code: "IDS_VIOLATION_TRIGGER_POINT"
@@ -4977,7 +5028,7 @@ schemes:
     source_type: "modeler_defined"
     source_table: "IDS.VIOLATION_TEMPLATES.VIOLATION_TRIGGER_POINT_CD"
     used_in_entities:
-      - "Disclosure Form Definition Violation Template"
+      - "Violation Report Template"
     values: []
 
   - scheme_code: "IDS_DAY_TYPE"
@@ -4985,7 +5036,7 @@ schemes:
     source_type: "modeler_defined"
     source_table: "IDS.VIOLATION_TEMPLATES.DAY_TYPE_CD"
     used_in_entities:
-      - "Disclosure Form Definition Violation Template"
+      - "Violation Report Template"
     values: []
 
   - scheme_code: "IDS_NOTIFICATION_CATEGORY"
@@ -4993,7 +5044,7 @@ schemes:
     source_type: "modeler_defined"
     source_table: "IDS.NOTIFICATIONS.NOTI_CATEGORY_CD"
     used_in_entities:
-      - "Disclosure Notification"
+      - "Notification"
     values: []
 
   - scheme_code: "IDS_NOTIFICATION_OBJECT_TYPE"
@@ -5002,8 +5053,8 @@ schemes:
     source_type: "etl_derived"
     source_table: "IDS.NOTIFICATIONS.OBJECT_TYPE"
     used_in_entities:
-      - "Disclosure Notification"
-      - "Disclosure Form Definition Notification Recipient"
+      - "Notification"
+      - "Notification Recipient"
     values:
       - code: "1"
         label: "Nội bộ UBCK"
@@ -5020,7 +5071,7 @@ schemes:
     source_type: "modeler_defined"
     source_table: "IDS.NOTIFICATIONS.RECIPIENT_TYPE_CD"
     used_in_entities:
-      - "Disclosure Notification"
+      - "Notification"
     values: []
 
   - scheme_code: "IDS_POSITION"
@@ -5082,7 +5133,7 @@ schemes:
     source_type: "source_table"
     source_table: "IDS.VIOLATION_PENALTY_CONFIG.ACTION_TYPE_CD"
     used_in_entities:
-      - "Public Company Violation Penalty Config"
+      - "Violation Report Penalty Config"
     values: []
 
   - scheme_code: "IDS_VIOLATION_PENALTY_PARAGRAPH"
@@ -5090,7 +5141,7 @@ schemes:
     source_type: "source_table"
     source_table: "IDS.VIOLATION_PENALTY_CONFIG.PARA_CD"
     used_in_entities:
-      - "Public Company Violation Penalty Config"
+      - "Violation Report Penalty Config"
     values: []
 
   - scheme_code: "IDS_WARNING_TYPE"
@@ -5130,7 +5181,7 @@ schemes:
     source_type: "source_table"
     source_table: "IDS.NOTIFICATIONS_DTL.DEPT_CD"
     used_in_entities:
-      - "Disclosure Form Definition Notification Recipient"
+      - "Notification Recipient"
     values: []
 
   - scheme_code: "IDS_LOGIN_TYPE"
@@ -5138,7 +5189,7 @@ schemes:
     source_type: "source_table"
     source_table: "IDS.NOTIFICATIONS_DTL.LOGIN_TYPE"
     used_in_entities:
-      - "Disclosure Form Definition Notification Recipient"
+      - "Notification Recipient"
     values: []
     deprecated: true
     deprecated_reason: "Nguồn không có FK/lookup annotation — field liên quan (Login Type Code) đã revert về Text."
@@ -5206,7 +5257,7 @@ schemes:
     source_type: "modeler_defined"
     source_table: "IDS.VIOLATION_REPORT.PERIOD_QUARTER"
     used_in_entities:
-      - "Public Company Violation Report"
+      - "Violation Report"
     values:
       - code: "1"
         label: "Quý 1"
@@ -5232,7 +5283,7 @@ schemes:
     source_type: "modeler_defined"
     source_table: "IDS.VIOLATION_REPORT.STATUS"
     used_in_entities:
-      - "Public Company Violation Report"
+      - "Violation Report"
     values: []
 
   - scheme_code: "IDS_ENTITY_ROLE_TYPE"
