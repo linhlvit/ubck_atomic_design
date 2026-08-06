@@ -19,7 +19,6 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_fct_practitioner_license_certificate_s
     snpst_dt_dim_id                 String              COMMENT 'FK → Calendar Date Dimension (ngày snapshot)',
     certificate_tp_dim_id           String              COMMENT 'FK → SP License Certificate Type Dimension',
     license_certificate_document_code    String              COMMENT 'DD — BK CCHN',
-    certificate_tp_code             String              COMMENT 'Mã loại CCHN — dư thừa để filter/display nhanh',
     is_reissue_indicator            String              COMMENT 'Là CCHN cấp lại (Y/N)',
     certificate_issue_dt            Nullable(Date)      COMMENT 'Ngày cấp CCHN',
     revocation_dt                   Nullable(Date)      COMMENT 'Ngày thu hồi CCHN — NULL nếu chưa thu hồi',
@@ -125,7 +124,7 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_related_party_profile
     rltnp_tp_nm         Nullable(String)    COMMENT 'Tên loại quan hệ',
     related_individual_occupation         Nullable(String)    COMMENT 'Nghề nghiệp người liên quan',
     related_individual_workplace   Nullable(String)    COMMENT 'Nơi làm việc người liên quan',
-    related_individual_identity_nbr      Nullable(String)    COMMENT 'Số CMND/CCCD người liên quan',
+    related_individual_identity_nbr      Nullable(String)    COMMENT '(Sửa 2026-08) Số CMND/CCCD người liên quan — direct từ PROFESSIONAL_RELATIONSHIPS.IDENTITY_ID',
     country_code            Nullable(String)    COMMENT 'Mã quốc gia người liên quan',
     country_nm              Nullable(String)    COMMENT 'Tên quốc gia',
     related_individual_adr         Nullable(String)    COMMENT 'Địa chỉ người liên quan',
@@ -178,8 +177,8 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_certificate_hist_flat
     revocation_dt           Nullable(Date)      COMMENT 'Ngày thu hồi — NULL nếu chưa thu hồi',
     issue_decision_nbr           Nullable(String)    COMMENT 'Số quyết định cấp',
     revocation_decision_nbr     Nullable(String)    COMMENT 'Số quyết định thu hồi',
-    process_status_code             Nullable(String)    COMMENT 'Trạng thái xử lý hồ sơ — scheme: PROCESS_STATUS',
-    process_status_nm               Nullable(String)    COMMENT 'Tên trạng thái xử lý hồ sơ',
+    certificate_status_code             Nullable(String)    COMMENT '(Sửa 2026-08) Trạng thái hiệu lực CCHN — scheme: CERTIFICATE_STATUS (đổi tên từ process_status_code, khác ý nghĩa)',
+    certificate_status_nm               Nullable(String)    COMMENT 'Tên trạng thái hiệu lực CCHN',
     src_stm_code            String              COMMENT 'Mã hệ thống nguồn'
 )
 ENGINE = ReplicatedReplacingMergeTree()
@@ -222,11 +221,11 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_violation_hist_flat O
     -- From: OPERATIONAL Practitioner Violation History
     practitioner_code           String              COMMENT 'PK (1/2) — Mã NHN',
     conduct_violation_code    String              COMMENT 'PK (2/2) — Mã vi phạm',
-    record_tp_code        Nullable(String)    COMMENT 'Hình thức xử phạt — scheme: RECORD_TYPE',
-    record_tp_nm          Nullable(String)    COMMENT 'Tên hình thức xử phạt',
+    violation_tp_code        Nullable(String)    COMMENT '(Sửa 2026-08) Hình thức xử phạt — scheme: VIOLATION_TYPE (đổi tên từ record_tp_code)',
+    violation_tp_nm          Nullable(String)    COMMENT 'Tên hình thức xử phạt',
     note                Nullable(String)    COMMENT 'Nội dung vi phạm',
-    record_status_code        String              COMMENT 'Trạng thái vi phạm — scheme: RECORD_STATUS',
-    record_status_nm          Nullable(String)    COMMENT 'Tên trạng thái vi phạm',
+    violation_status_code        String              COMMENT '(Sửa 2026-08) Trạng thái vi phạm — scheme: VIOLATION_STATUS (1=ACTIVE, 0=INACTIVE, -1=DELETED; đổi tên từ record_status_code)',
+    violation_status_nm          Nullable(String)    COMMENT 'Tên trạng thái vi phạm',
     decision_nbr            Nullable(String)    COMMENT 'Số quyết định xử phạt',
     decision_signed_dt      Nullable(Date)      COMMENT 'Ngày quyết định xử phạt',
     src_stm_code        String              COMMENT 'Mã hệ thống nguồn'
@@ -271,26 +270,30 @@ COMMENT 'Flat table — Practitioner Exam History (1 lần thi per NHN)'
 
 -- ============================================================
 -- 10. OPERATIONAL: opr_practitioner_training_hist_flat
+--    (Sửa 2026-08) Driving đổi sang sp_post_certification_training_result
+--    (NHNCK.POST_CERT_TRAINING_RESULTS) — grain: 1 lần bồi dưỡng per NHN,
+--    không còn 1 enrollment per NHN (SPECIALIZATION_COURSE_DETAILS).
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_training_hist_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Practitioner Training History
     practitioner_code       String                  COMMENT 'PK (1/2) — Mã NHN',
-    enrollment_code String                  COMMENT 'PK (2/2) — Mã đăng ký khóa học',
-    training_class_code   String                  COMMENT 'Mã khóa học',
-    training_class_nm     Nullable(String)        COMMENT 'Tên khóa học',
-    academic_year     Nullable(Int64)         COMMENT 'Năm học',
-    exam_start_dt           Nullable(Date)          COMMENT 'Ngày bắt đầu thi',
-    exam_end_dt             Nullable(String)        COMMENT 'Ngày kết thúc thi (Text — nguồn VARCHAR2(200))',
-    exam_score              Nullable(Decimal(5,2))  COMMENT 'Điểm thi — nullable nếu chưa thi',
-    training_result_code    Nullable(String)        COMMENT 'Kết quả thi — scheme: EXAM_RESULT',
-    training_result_nm      Nullable(String)        COMMENT 'Tên kết quả thi',
+    training_result_code    String                  COMMENT 'PK (2/2) — Mã bản ghi bồi dưỡng (đổi từ enrollment_code)',
+    training_class_code   Nullable(String)        COMMENT 'Mã khóa học — nguồn POST_CERT_TRAINING_COURSES (đổi từ SPECIALIZATION_COURSES)',
+    training_class_nm     Nullable(String)        COMMENT 'Tên khóa học — nguồn POST_CERT_TRAINING_COURSES',
+    training_start_dt       Nullable(Date)          COMMENT 'Ngày bắt đầu bồi dưỡng (đổi từ Exam Start Date)',
+    training_end_dt         Nullable(Date)          COMMENT 'Ngày kết thúc bồi dưỡng (đổi từ Exam End Date)',
+    training_hours           Nullable(Int64)         COMMENT 'Số giờ đào tạo — K_NHNCK_67',
+    hours_sufficiency_indicator Nullable(String)     COMMENT 'Đã đủ 8h (Y/N) — ETL-derived: Training Hours >= 8 — K_NHNCK_67',
+    exam_score              Nullable(Decimal(5,2))  COMMENT 'Điểm thi — JOIN phụ qua sp_code (fan-out), nullable nếu chưa thi',
+    exam_result_code    Nullable(String)        COMMENT 'Kết quả kiểm tra chuyên môn — scheme: EXAM_RESULT, JOIN phụ qua sp_code (fan-out, đổi tên từ training_result_code)',
+    exam_result_nm      Nullable(String)        COMMENT 'Tên kết quả kiểm tra (đổi tên từ training_result_nm)',
     src_stm_code            String                  COMMENT 'Mã hệ thống nguồn'
 )
 ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(assumeNotNull(exam_start_dt))
-ORDER BY (assumeNotNull(exam_start_dt), practitioner_code, enrollment_code)
-COMMENT 'Flat table — Practitioner Training History (1 enrollment per NHN)'
+PARTITION BY toYYYYMM(assumeNotNull(training_start_dt))
+ORDER BY (assumeNotNull(training_start_dt), practitioner_code, training_result_code)
+COMMENT 'Flat table — Practitioner Training History (1 lần bồi dưỡng per NHN, driving sp_post_certification_training_result)'
 ;
 
 

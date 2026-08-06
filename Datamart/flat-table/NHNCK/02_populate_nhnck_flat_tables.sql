@@ -27,7 +27,6 @@ SELECT
     f.snpst_dt_dim_id,
     f.certificate_tp_dim_id,
     f.license_certificate_document_code,
-    f.certificate_tp_code,
     f.is_reissue_indicator,
     f.certificate_issue_dt,
     f.revocation_dt,
@@ -183,8 +182,8 @@ SELECT
     o.revocation_dt,
     o.issue_decision_nbr,
     o.revocation_decision_nbr,
-    o.process_status_code,
-    o.process_status_nm,
+    o.certificate_status_code,
+    o.certificate_status_nm,
     o.src_stm_code
 FROM datamart.opr_practitioner_certificate_hist o
 ;
@@ -219,11 +218,11 @@ INSERT INTO datamart.nhnck_opr_practitioner_violation_hist_flat
 SELECT
     o.practitioner_code,
     o.conduct_violation_code,
-    o.record_tp_code,
-    o.record_tp_nm,
+    o.violation_tp_code,
+    o.violation_tp_nm,
     o.note,
-    o.record_status_code,
-    o.record_status_nm,
+    o.violation_status_code,
+    o.violation_status_nm,
     o.decision_nbr,
     o.decision_signed_dt,
     o.src_stm_code
@@ -265,15 +264,16 @@ TRUNCATE TABLE IF EXISTS datamart.nhnck_opr_practitioner_training_hist_flat ON C
 INSERT INTO datamart.nhnck_opr_practitioner_training_hist_flat
 SELECT
     o.practitioner_code,
-    o.enrollment_code,
+    o.training_result_code,
     o.training_class_code,
     o.training_class_nm,
-    o.academic_year,
-    o.exam_start_dt,
-    o.exam_end_dt,
+    o.training_start_dt,
+    o.training_end_dt,
+    o.training_hours,
+    o.hours_sufficiency_indicator,
     o.exam_score,
-    o.training_result_code,
-    o.training_result_nm,
+    o.exam_result_code,
+    o.exam_result_nm,
     o.src_stm_code
 FROM datamart.opr_practitioner_training_hist o
 ;

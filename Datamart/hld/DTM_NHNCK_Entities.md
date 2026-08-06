@@ -228,7 +228,7 @@ erDiagram
 |---|---|---|---|---|---|
 | Calendar Date Dimension | Dimension | new | Lịch ngày — năm/quý/tháng/ngày lễ (Conformed, SCD4A) | 1 ngày | — |
 | Securities Practitioner Dimension | Dimension | new | NHN — định danh, trình độ, quốc tịch, trạng thái (SCD4A) | 1 NHN (current state) | — |
-| Classification Dimension | Dimension | new | Danh mục phân loại — toàn bộ cv Atomic. PK surrogate cl_dim_id. BK: (scm_code, cl_code). Conformed Dim | 1 giá trị phân loại per scheme | — |
+| Classification Dimension | Dimension | new | Danh mục phân loại — toàn bộ cl_value Atomic. PK surrogate cl_dim_id. BK: (schema_code, cl_code). Conformed Dim | 1 giá trị phân loại per scheme | — |
 | SP License Certificate Type Dimension | Dimension | new | (Sửa 2026-07-20) Loại CCHN — Fundamental entity riêng (không phải Classification Value). SCD4A | 1 loại CCHN | — |
 | Fact Practitioner License Certificate Snapshot | Fact Snapshot | new | Periodic Snapshot CCHN — đếm theo trạng thái, loại hình, cấp mới, thu hồi | 1 CCHN × 1 tháng | K_NHNCK_2, 2a, 2b, 3, 5–8, 17–22 |
 | Fact Practitioner Daily Snapshot | Fact Snapshot | new | Periodic Snapshot NHN — tổng NHN, cảnh báo, trình độ, độ tuổi | 1 NHN × 1 ngày | K_NHNCK_1, 4, 9–14, 23–32 |

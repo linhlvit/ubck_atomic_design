@@ -122,7 +122,8 @@ CREATE TABLE IF NOT EXISTS datamart.qlcb_fct_securities_offering_plan_snpst_flat
 
     -- From: OFFERING METHOD DIMENSION
     offering_method_code                 Nullable(String)        COMMENT 'Mã hình thức chào bán — từ Offering Method Dimension',
-    offering_method_nm                   Nullable(String)        COMMENT 'Tên hiển thị hình thức chào bán — từ Offering Method Dimension',
+    offering_method_nm                   Nullable(String)        COMMENT 'Tên gốc hình thức chào bán (từ danh mục Classification Value) — từ Offering Method Dimension',
+    offering_method_group_nm             Nullable(String)        COMMENT 'Tên nhóm hiển thị hình thức chào bán (Công chúng/Riêng lẻ/ESOP/Trả cổ tức/Tăng vốn từ VCSH/Khác) — từ Offering Method Dimension',
     offering_method_src_stm_code         Nullable(String)        COMMENT 'Mã hệ thống nguồn — từ Offering Method Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
@@ -187,7 +188,8 @@ CREATE TABLE IF NOT EXISTS datamart.qlcb_fct_securities_offering_result_snpst_fl
 
     -- From: OFFERING METHOD DIMENSION
     offering_method_code                 Nullable(String)        COMMENT 'Mã hình thức chào bán — từ Offering Method Dimension',
-    offering_method_nm                   Nullable(String)        COMMENT 'Tên hiển thị hình thức chào bán — từ Offering Method Dimension',
+    offering_method_nm                   Nullable(String)        COMMENT 'Tên gốc hình thức chào bán (từ danh mục Classification Value) — từ Offering Method Dimension',
+    offering_method_group_nm             Nullable(String)        COMMENT 'Tên nhóm hiển thị hình thức chào bán (Công chúng/Riêng lẻ/ESOP/Trả cổ tức/Tăng vốn từ VCSH/Khác) — từ Offering Method Dimension',
     offering_method_src_stm_code         Nullable(String)        COMMENT 'Mã hệ thống nguồn — từ Offering Method Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
@@ -222,7 +224,8 @@ CREATE TABLE IF NOT EXISTS datamart.qlcb_fct_securities_offering_application_snp
 
     -- From: OFFERING METHOD DIMENSION
     offering_method_code                 Nullable(String)        COMMENT 'Mã hình thức chào bán — từ Offering Method Dimension',
-    offering_method_nm                   Nullable(String)        COMMENT 'Tên hiển thị hình thức chào bán — từ Offering Method Dimension',
+    offering_method_nm                   Nullable(String)        COMMENT 'Tên gốc hình thức chào bán (từ danh mục Classification Value) — từ Offering Method Dimension',
+    offering_method_group_nm             Nullable(String)        COMMENT 'Tên nhóm hiển thị hình thức chào bán (Công chúng/Riêng lẻ/ESOP/Trả cổ tức/Tăng vốn từ VCSH/Khác) — từ Offering Method Dimension',
     offering_method_src_stm_code         Nullable(String)        COMMENT 'Mã hệ thống nguồn — từ Offering Method Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
@@ -243,6 +246,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlcb_opr_securities_offering_360_profile_fla
     -- From: OPERATIONAL Securities Offering 360 Profile
     securities_offering_code            String                  COMMENT 'Composite BK component 1 — BK đợt chào bán',
     offering_method_code                 String                  COMMENT 'Composite BK component 2 — mã hình thức chào bán',
+    offering_method_nm                   Nullable(String)        COMMENT 'Tên hiển thị hình thức chào bán — gom offering_method_code vào 6 nhóm',
     public_company_code                  Nullable(String)        COMMENT 'Mã công ty đại chúng',
     public_company_nm                    Nullable(String)        COMMENT 'Tên doanh nghiệp',
     equity_ticker_symbol                 Nullable(String)        COMMENT 'Mã chứng khoán',
