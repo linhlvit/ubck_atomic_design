@@ -3,8 +3,8 @@ schema_version: "2.0"
 metadata:
   source_system: "IDS"
   source_table: "NOTIFICATIONS"
-  atomic_entity: "Disclosure Notification"
-  entity_physical_name: "disclosure_notification"
+  atomic_entity: "Notification"
+  entity_physical_name: "notification"
   bcv_core_object: "Communication"
   bcv_concept: "[Communication] Notification"
   table_type: "Fact Append"
@@ -20,10 +20,11 @@ metadata:
   notes: "ID kỹ thuật loại khỏi model — NOTI_CD (mã nghiệp vụ) → Code (BK duy nhất),\
     \ Id hash từ Code. LOGIN_ID/LOGIN_NAME = người quản lý thông báo — FK pending\
     \ sang Identity and Access Management User (cùng pattern Created/Updated By User,\
-    \ khác cột nghiệp vụ)."
+    \ khác cột nghiệp vụ). Đổi tên từ \"Disclosure Notification\" (2026-08-05, theo\
+    \ yêu cầu tường minh Data Modeler)."
 attributes:
-- attribute_name: "Disclosure Notification Id"
-  physical_name: "disclosure_notification_id"
+- attribute_name: "Notification Id"
+  physical_name: "notification_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -35,8 +36,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Disclosure Notification Code"
-  physical_name: "disclosure_notification_code"
+- attribute_name: "Notification Code"
+  physical_name: "notification_code"
   description: "Mã thông báo. BK duy nhất — Id hash từ trường này."
   data_domain: "Text"
   nullable: false
@@ -62,8 +63,8 @@ attributes:
   classification_context: "SOURCE_SYSTEM=IDS.NOTIFICATIONS"
   etl_derived_value: "IDS.NOTIFICATIONS"
   data_type: "string"
-- attribute_name: "Disclosure Form Definition Id"
-  physical_name: "disclosure_form_definition_id"
+- attribute_name: "Financial Report Template Id"
+  physical_name: "fr_template_id"
   description: "Link đến bảng FORMS."
   data_domain: "Surrogate Key"
   nullable: true
@@ -71,27 +72,12 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.NOTIFICATIONS.FORM_ID"
-  comment: "FK target: Disclosure Form Definition.Disclosure Form Definition Id. Resolve:\
-    \ join FORM_ID → IDS.FORMS.ID để lấy FORM_CD, rồi hash_id('IDS.FORMS', FORM_CD)."
+  comment: "FK target: fr_template.fr_template_id. Hash: hash_id('IDS.FORMS', FORM_CD)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Disclosure Form Definition Code"
-  physical_name: "disclosure_form_definition_code"
-  description: "Mã form CBTT."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.NOTIFICATIONS.FORM_ID"
-  comment: "Lookup pair: Disclosure Form Definition.Disclosure Form Definition Code.\
-    \ Pair with Disclosure Form Definition Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Disclosure Form Code Snapshot"
-  physical_name: "disclosure_form_code_snpst"
+- attribute_name: "Financial Report Template Code"
+  physical_name: "fr_template_code"
   description: "Mã form."
   data_domain: "Text"
   nullable: true
@@ -99,8 +85,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.NOTIFICATIONS.FORM_CD"
-  comment: "Denormalized snapshot — trùng lặp với Disclosure Form Definition.Disclosure\
-    \ Form Definition Code (FORM_CD), lưu dự phòng để tránh join."
+  comment: "Lookup pair: fr_template.fr_template_code. Pair with Financial Report Template Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -154,7 +139,7 @@ attributes:
   source_columns:
   - "IDS.NOTIFICATIONS.SEND_SCHEDULE_TYPE_CD"
   comment: "Scheme: IDS_NOTIFICATION_SEND_SCHEDULE. Values load từ LOOKUP_VALUES —\
-    \ scheme đã đăng ký sẵn cho Disclosure Notification."
+    \ scheme đã đăng ký sẵn cho Notification."
   classification_context: "IDS_NOTIFICATION_SEND_SCHEDULE"
   etl_derived_value: null
   data_type: "string"
@@ -246,8 +231,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.NOTIFICATIONS.NEWS_TYPE_CD"
-  comment: "Scheme: IDS_NEWS_TYPE. Dùng chung scheme với Disclosure Form Definition.News\
-    \ Type Code."
+  comment: "Scheme: IDS_NEWS_TYPE. Dùng chung scheme với fr_template.News Type Code."
   classification_context: "IDS_NEWS_TYPE"
   etl_derived_value: null
   data_type: "string"

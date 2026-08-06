@@ -27,7 +27,13 @@ metadata:
     \ không có LAST_MODIFIED_BY/AT. Hạ về draft (2026-07-27) để sửa lỗi hash-mismatch\
     \ trên 3 FK (Securities Company Id, Securities Company Alert Indicator Id, Securities\
     \ Company Alert Run Id) — trước đây hash trực tiếp theo ID kỹ thuật thay vì Code\
-    \ của bảng đích."
+    \ của bảng đích. Hạ về draft (2026-08-05) để đồng bộ DDL UAT mới (Source/DDL UAT\
+    \ 1/SCMS_UAT_schema.txt): GIA_TRI_SO_SANH/GIA_TRI_THUC_TE xác nhận tên chính thức\
+    \ là COMPARE_VALUE/ACTUAL_VALUE; widen data type trên CONDITION, NOTE, ALERT_YEAR,\
+    \ REPORT_PERIOD, RESOLUTION_NOTE, VIOLATION_DESCRIPTION, ENTITY_TYPE; bổ sung 5\
+    \ cột mới PERIOD_TYPE, PERIOD_VALUE, ALERT_DATE, SEVERITY_LEVEL_ALT, STRING_RESULT_VALUE\
+    \ (DDL không có mô tả nghiệp vụ — cần Data Modeler xác nhận, đặc biệt khả năng\
+    \ trùng ý nghĩa với REPORT_PERIOD/REPORT_PERIOD_VALUE và SEVERITY_LEVEL/VIOLATION_SEVERITY)."
 attributes:
 - attribute_name: "Securities Company Alert Violation Id"
   physical_name: "sc_alert_violation_id"
@@ -249,7 +255,7 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ALERT_VIOLATION.ENTITY_TYPE"
-  comment: "Scheme: SCMS_ALERT_ENTITY_TYPE. NVARCHAR2(50). Xác định ENTITY_ID trỏ\
+  comment: "Scheme: SCMS_ALERT_ENTITY_TYPE. NVARCHAR2(64). Xác định ENTITY_ID trỏ\
     \ về entity nào (polymorphic)."
   classification_context: "SCMS_ALERT_ENTITY_TYPE"
   etl_derived_value: null
@@ -279,7 +285,7 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ALERT_VIOLATION.CONDITION"
-  comment: "NVARCHAR2(2000). Chuỗi logic expression dạng text từ hệ thống."
+  comment: "NVARCHAR2(1000). Chuỗi logic expression dạng text từ hệ thống."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -291,9 +297,9 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "SCMS.SC_FIRM_ALERT_VIOLATION.GIA_TRI_SO_SANH"
+  - "SCMS.SC_FIRM_ALERT_VIOLATION.COMPARE_VALUE"
   comment: "NUMBER (no precision/scale — integer-like). Cần profile để xác nhận luôn\
-    \ là integer. Tên nguồn tiếng Việt: Giá trị so sánh."
+    \ là integer."
   classification_context: null
   etl_derived_value: null
   data_type: "int"
@@ -305,9 +311,9 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "SCMS.SC_FIRM_ALERT_VIOLATION.GIA_TRI_THUC_TE"
-  comment: "NUMBER(38,2). Tên nguồn tiếng Việt: Giá trị thực tế. Có thể là số tài\
-    \ chính hoặc tỉ lệ — dùng Currency Amount vì có decimal scale."
+  - "SCMS.SC_FIRM_ALERT_VIOLATION.ACTUAL_VALUE"
+  comment: "NUMBER(38,2). Có thể là số tài chính hoặc tỉ lệ — dùng Currency Amount\
+    \ vì có decimal scale."
   classification_context: null
   etl_derived_value: null
   data_type: "decimal(23,2)"
@@ -347,7 +353,9 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_YEAR"
-  comment: "VARCHAR2(4). Lưu dạng Text để bảo toàn format 4 ký tự."
+  comment: "VARCHAR2(40) (DDL UAT 2026-08 widen từ VARCHAR2(10)). Lưu dạng Text để\
+    \ bảo toàn format — nguồn cho phép chuỗi dài hơn 4 ký tự, cần profile để xác nhận\
+    \ format thực tế (năm đơn hoặc khoảng năm)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -373,7 +381,7 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ALERT_VIOLATION.REPORT_PERIOD"
-  comment: "Scheme: SCMS_REPORT_PERIOD. VARCHAR2(50)."
+  comment: "Scheme: SCMS_REPORT_PERIOD. VARCHAR2(200)."
   classification_context: "SCMS_REPORT_PERIOD"
   etl_derived_value: null
   data_type: "string"
@@ -426,7 +434,7 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ALERT_VIOLATION.RESOLUTION_NOTE"
-  comment: "NVARCHAR2(2000)."
+  comment: "VARCHAR2(4000)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -439,7 +447,7 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ALERT_VIOLATION.VIOLATION_DESCRIPTION"
-  comment: "NVARCHAR2(2000)."
+  comment: "VARCHAR2(4000)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -452,7 +460,7 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ALERT_VIOLATION.NOTE"
-  comment: "NVARCHAR2(2000)."
+  comment: "NVARCHAR2(4000)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -496,6 +504,81 @@ attributes:
   - "SCMS.SC_FIRM_ALERT_VIOLATION.PROCESSOR_ID"
   comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
     \ Pair with Processor IAM User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Alert Period Type Code"
+  physical_name: "alert_period_tp_code"
+  description: "Loại kỳ của cảnh báo (mã số)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.SC_FIRM_ALERT_VIOLATION.PERIOD_TYPE"
+  comment: "Scheme: SCMS_ALERT_PERIOD_TYPE. NUMBER(2) — ETL convert sang string. Cột\
+    \ mới trong DDL UAT 2026-08, không có mô tả nghiệp vụ — cần Data Modeler xác nhận\
+    \ danh sách giá trị và đối chiếu có trùng ý nghĩa với Report Period Code (REPORT_PERIOD)\
+    \ hay không trước go-live."
+  classification_context: "SCMS_ALERT_PERIOD_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Alert Period Value"
+  physical_name: "alert_period_val"
+  description: "Giá trị kỳ của cảnh báo (số thứ tự)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.SC_FIRM_ALERT_VIOLATION.PERIOD_VALUE"
+  comment: "NUMBER(10) (integer). Cột mới trong DDL UAT 2026-08 — cần xác nhận có\
+    \ trùng ý nghĩa với Report Period Value (REPORT_PERIOD_VALUE) hay không trước\
+    \ go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Alert Date"
+  physical_name: "alert_dt"
+  description: "Ngày phát sinh cảnh báo."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_DATE"
+  comment: "DATE. Cột mới trong DDL UAT 2026-08."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Severity Level Alt Code"
+  physical_name: "severity_level_alt_code"
+  description: "Mức độ nghiêm trọng của vi phạm (mã số thay thế)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.SC_FIRM_ALERT_VIOLATION.SEVERITY_LEVEL_ALT"
+  comment: "Scheme: SCMS_ALERT_SEVERITY_LEVEL_ALT. NUMBER(1) — ETL convert sang string.\
+    \ Cột mới trong DDL UAT 2026-08, không có mô tả nghiệp vụ — cần Data Modeler xác\
+    \ nhận danh sách giá trị và đối chiếu có trùng ý nghĩa với Severity Level (SEVERITY_LEVEL)\
+    \ và/hoặc Violation Severity Code (VIOLATION_SEVERITY) hay không trước go-live."
+  classification_context: "SCMS_ALERT_SEVERITY_LEVEL_ALT"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "String Result Value"
+  physical_name: "string_result_val"
+  description: "Giá trị kết quả dạng chuỗi khi kết quả điều kiện cảnh báo không phải\
+    \ dạng số."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ALERT_VIOLATION.STRING_RESULT_VALUE"
+  comment: "VARCHAR2(4000). Cột mới trong DDL UAT 2026-08 — đối xứng với Comparison\
+    \ Value/Actual Value (dạng số) khi kết quả điều kiện là chuỗi."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

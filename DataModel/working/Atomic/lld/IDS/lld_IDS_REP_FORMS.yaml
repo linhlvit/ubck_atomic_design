@@ -3,8 +3,8 @@ schema_version: "2.0"
 metadata:
   source_system: "IDS"
   source_table: "REP_FORMS"
-  atomic_entity: "Periodic Report Form"
-  entity_physical_name: "periodic_report_form"
+  atomic_entity: "Financial Report Sub Template"
+  entity_physical_name: "fr_sub_template"
   bcv_core_object: "Condition"
   bcv_concept: "[Condition] Form Definition"
   table_type: "Fundamental"
@@ -17,11 +17,12 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "ID kỹ thuật loại khỏi model — REPORT_CD (mã nghiệp vụ) → Periodic Report\
-    \ Form Code (BK duy nhất), Id hash từ Code."
+  notes: "ID kỹ thuật loại khỏi model — REPORT_CD (mã nghiệp vụ) → Financial Report\
+    \ Sub Template Code (BK duy nhất), Id hash từ Code. Đổi tên từ \"Periodic Report\
+    \ Form\" (2026-08-05, theo yêu cầu tường minh Data Modeler)."
 attributes:
-- attribute_name: "Periodic Report Form Id"
-  physical_name: "prf_id"
+- attribute_name: "Financial Report Sub Template Id"
+  physical_name: "fr_sub_template_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -33,8 +34,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Periodic Report Form Code"
-  physical_name: "prf_code"
+- attribute_name: "Financial Report Sub Template Code"
+  physical_name: "fr_sub_template_code"
   description: "Mã form. BK duy nhất — Id hash từ trường này."
   data_domain: "Text"
   nullable: false
@@ -60,8 +61,8 @@ attributes:
   classification_context: "SOURCE_SYSTEM=IDS.REP_FORMS"
   etl_derived_value: "IDS.REP_FORMS"
   data_type: "string"
-- attribute_name: "Periodic Report Form Name"
-  physical_name: "prf_nm"
+- attribute_name: "Financial Report Sub Template Name"
+  physical_name: "fr_sub_template_nm"
   description: "Tên form báo cáo (tiếng Việt)."
   data_domain: "Text"
   nullable: true
@@ -73,8 +74,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Periodic Report Form English Name"
-  physical_name: "prf_english_nm"
+- attribute_name: "Financial Report Sub Template English Name"
+  physical_name: "fr_sub_template_english_nm"
   description: "Tên form báo cáo (tiếng Anh)."
   data_domain: "Text"
   nullable: true
@@ -86,8 +87,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Report Frequency Code"
-  physical_name: "rpt_frequency_code"
+- attribute_name: "Financial Report Type Code"
+  physical_name: "fr_tp_code"
   description: "Tần suất báo cáo (tháng/quý/năm...)."
   data_domain: "Classification Value"
   nullable: true
@@ -113,8 +114,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "int"
-- attribute_name: "Report Link Url"
-  physical_name: "rpt_link_url"
+- attribute_name: "Financial Report Link"
+  physical_name: "fr_link"
   description: "Đường link cấu hình biểu mẫu."
   data_domain: "Text"
   nullable: true

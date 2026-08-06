@@ -3,8 +3,8 @@ schema_version: "2.0"
 metadata:
   source_system: "IDS"
   source_table: "HTE_VIOLATION_REPORT"
-  atomic_entity: "Public Company Violation Report"
-  entity_physical_name: "pc_violation_report"
+  atomic_entity: "Violation Report"
+  entity_physical_name: "violation_report"
   bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Business Activity"
   table_type: "Fundamental"
@@ -17,18 +17,20 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Gộp với IDS.VIOLATION_REPORT vào cùng entity Public Company Violation Report\
-    \ per HLD Tier3 xác nhận (mục 6/7a). Nguồn không có PK nghiệp vụ rõ ràng — cột\
-    \ RN_ (row number, PK kỹ thuật) bị loại (xem pending_design.yaml); dùng cột ID\
-    \ (NUMBER(19,0), không đánh dấu PK trong BRD nhưng đóng vai trò tương đương ID\
-    \ của VIOLATION_REPORT) làm BK. Disclosure Form Definition Id/Code nay hash trực\
-    \ tiếp từ FORM_CD (mã nghiệp vụ có sẵn tại bảng này) thay vì join qua FORMS_ID\
-    \ kỹ thuật — theo yêu cầu Data Modeler (2026-07-14); FORMS_ID không còn dùng,\
-    \ xem pending_design.yaml. Attribute Disclosure Form Definition Code Snapshot\
-    \ (từng denormalize FORM_CD) đã xóa — trùng lặp với Code chính thức."
+  notes: "Gộp với IDS.VIOLATION_REPORT vào cùng entity Violation Report per HLD Tier3\
+    \ xác nhận (mục 6/7a). Nguồn không có PK nghiệp vụ rõ ràng — cột RN_ (row number,\
+    \ PK kỹ thuật) bị loại (xem pending_design.yaml); dùng cột ID (NUMBER(19,0), không\
+    \ đánh dấu PK trong BRD nhưng đóng vai trò tương đương ID của VIOLATION_REPORT)\
+    \ làm BK. Financial Report Template Id/Code (đổi tên từ Disclosure Form Definition\
+    \ Id/Code, 2026-08-05) nay hash trực tiếp từ FORM_CD (mã nghiệp vụ có sẵn tại\
+    \ bảng này) thay vì join qua FORMS_ID kỹ thuật — theo yêu cầu Data Modeler (2026-07-14);\
+    \ FORMS_ID không còn dùng, xem pending_design.yaml. Attribute Code Snapshot (từng\
+    \ denormalize FORM_CD) đã xóa — trùng lặp với Code chính thức. Đổi tên entity\
+    \ từ \"Public Company Violation Report\" (2026-08-05, theo yêu cầu tường minh\
+    \ Data Modeler)."
 attributes:
-- attribute_name: "Public Company Violation Report Id"
-  physical_name: "pc_violation_report_id"
+- attribute_name: "Violation Report Id"
+  physical_name: "vr_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -39,8 +41,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Public Company Violation Report Code"
-  physical_name: "pc_violation_report_code"
+- attribute_name: "Violation Report Code"
+  physical_name: "vr_code"
   description: "Khóa chính. BK của entity — map từ cột ID bảng nguồn."
   data_domain: "Text"
   nullable: false
@@ -94,8 +96,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Disclosure Form Definition Violation Template Id"
-  physical_name: "disclosure_form_definition_violation_template_id"
+- attribute_name: "Violation Report Template Id"
+  physical_name: "vr_template_id"
   description: "Id mẫu quy tắc vi phạm áp dụng."
   data_domain: "Surrogate Key"
   nullable: true
@@ -103,17 +105,15 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.HTE_VIOLATION_REPORT.VIOLATION_TEMPLATE_ID"
-  comment: "FK target: disclosure_form_definition_violation_template.disclosure_form_definition_violation_template_id.\
-    \ Cần ETL crosswalk sang IDS.VIOLATION_TEMPLATES: HTE_VIOLATION_REPORT.VIOLATION_TEMPLATE_ID\
+  comment: "FK target: vr_template.vr_template_id. Cần ETL\
+    \ crosswalk sang IDS.VIOLATION_TEMPLATES: HTE_VIOLATION_REPORT.VIOLATION_TEMPLATE_ID\
     \ = VIOLATION_TEMPLATES.ID để xác nhận VIOLATION_CD sau đó hash_id('IDS.VIOLATION_TEMPLATES',\
-    \ VIOLATION_CD) | Trước đây hash trực tiếp theo VIOLATION_TEMPLATE_ID (ID kỹ thuật)\
-    \ gây sai lệch với Id của bảng main (hash từ VIOLATION_CD) — đã sửa sang crosswalk\
-    \ 2026-07-27."
+    \ VIOLATION_CD)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Disclosure Form Definition Violation Template Code"
-  physical_name: "disclosure_form_definition_violation_template_code"
+- attribute_name: "Violation Report Template Code"
+  physical_name: "vr_template_code"
   description: "Mã mẫu quy tắc vi phạm."
   data_domain: "Text"
   nullable: true
@@ -121,14 +121,13 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.HTE_VIOLATION_REPORT.VIOLATION_TEMPLATE_ID"
-  comment: "Lookup pair: Disclosure Form Definition Violation Template.Disclosure\
-    \ Form Definition Violation Template Code. Pair with Disclosure Form Definition\
-    \ Violation Template Id."
+  comment: "Lookup pair: vr_template.vr_template_code. Pair\
+    \ with Violation Report Template Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Disclosure Form Definition Id"
-  physical_name: "disclosure_form_definition_id"
+- attribute_name: "Financial Report Template Id"
+  physical_name: "fr_template_id"
   description: "Id mẫu form CBTT áp dụng."
   data_domain: "Surrogate Key"
   nullable: true
@@ -136,28 +135,25 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.HTE_VIOLATION_REPORT.FORM_CD"
-  comment: "FK target: Disclosure Form Definition.Disclosure Form Definition Id. Hash:\
-    \ hash_id('IDS.FORMS', FORM_CD). Dùng trực tiếp mã nghiệp vụ FORM_CD (đã trùng\
-    \ khớp FORMS.FORM_CD) — không cần join qua FORMS_ID kỹ thuật như trước đây."
+  comment: "FK target: fr_template.fr_template_id. Hash: hash_id('IDS.FORMS', FORM_CD)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Disclosure Form Definition Code"
-  physical_name: "disclosure_form_definition_code"
-  description: "Mã mẫu form CBTT."
+- attribute_name: "Financial Report Template Code"
+  physical_name: "fr_template_code"
+  description: "Mã mẫu báo cáo."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.HTE_VIOLATION_REPORT.FORM_CD"
-  comment: "Lookup pair: Disclosure Form Definition.Disclosure Form Definition Code.\
-    \ Pair with Disclosure Form Definition Id."
+  comment: "Lookup pair: fr_template.fr_template_code. Pair with Financial Report Template Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Report Period Name"
-  physical_name: "rpt_period_nm"
+- attribute_name: "Period Name"
+  physical_name: "period_nm"
   description: "Tên kỳ tính."
   data_domain: "Text"
   nullable: true
@@ -169,8 +165,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Report Period Type Code"
-  physical_name: "rpt_period_tp_code"
+- attribute_name: "Period Type Code"
+  physical_name: "period_tp_code"
   description: "Loại kỳ tính: Quý 1-4, Năm, hoặc Bán niên."
   data_domain: "Classification Value"
   nullable: true
@@ -184,8 +180,8 @@ attributes:
   classification_context: "IDS_VIOLATION_REPORT_PERIOD_TYPE"
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Report Period Year"
-  physical_name: "rpt_period_year"
+- attribute_name: "Period Year"
+  physical_name: "period_year"
   description: "Năm."
   data_domain: "Small Counter"
   nullable: true

@@ -1,0 +1,480 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "IDS"
+  source_table: "COMPANY_DATA"
+  atomic_entity: "Public Company Report Submission"
+  entity_physical_name: "pc_report_submission"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: "Fundamental"
+  group: "T2"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "ID kỹ thuật là BK duy nhất (không có cột mã nghiệp vụ riêng — mirror pattern\
+    \ Public Company/lld_IDS_COMPANY_PROFILES.yaml) → Public Company Report Submission\
+    \ Code, Id hash từ Code. BRD hiện tại (brd_IDS_COMPANY_DATA.yaml, 30 cột) thiếu\
+    \ 11 cột đã có trên DDL thực tế (Source/DDL UAT 1/GMS_IDS_UAT_schema.txt, 41 cột):\
+    \ ALERT_AUDIT, SYSTEM_CD, CLOSE_DATE, SECURITIES_OFFERING_ID (FK), DISCLOSURE_TYPE,\
+    \ LEGAL_ENTITY_ID (FK), COMPANY_TENDER_OFFER_ID (FK), COMPANY_TREASURY_SHARE_ID\
+    \ (FK), APPROVER_USER_ID, APPROVER_USER_NAME, FLATTENED_FLG — thiết kế lần này\
+    \ chỉ dùng cột đã có trong BRD (xem HLD Tier2.md 6f T2-12). Khuyến nghị chạy source-survey\
+    \ reconcile trước khi entity này chuyển sang approved — 4 FK thiếu có thể đưa\
+    \ entity lên Tier 3. Audit block (CREATED_BY/CREATED_DATE/UPDATED_BY/UPDATED_DATE)\
+    \ loại bỏ — mirror quyết định đã áp dụng cho toàn phân hệ IDS (xem pending_design.yaml).\
+    \ Table Type = Fundamental theo quyết định tường minh Data Modeler, khớp quyết\
+    \ định lịch sử trước khi loại scope (HLD Overview 7e #13, 2026-07-23) — xem 7e\
+    \ #15."
+attributes:
+- attribute_name: "Public Company Report Submission Id"
+  physical_name: "pc_rpt_submission_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. Hash: hash_id('IDS.COMPANY_DATA', ID). BCV: \"[Documentation]\
+    \ Regulatory Report\"."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Company Report Submission Code"
+  physical_name: "pc_rpt_submission_code"
+  description: "Khóa chính. BK của entity — map từ PK bảng nguồn (không có cột mã\
+    \ nghiệp vụ riêng)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.ID"
+  comment: "BK chính. PK nguồn NUMBER(19) tự tăng — mirror pattern public_company.Public\
+    \ Company Code."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=IDS.COMPANY_DATA"
+  etl_derived_value: "IDS.COMPANY_DATA"
+  data_type: "string"
+- attribute_name: "Public Company Id"
+  physical_name: "pc_id"
+  description: "ID Hồ sơ doanh nghiệp."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.COMPANY_PROFILE_ID"
+  comment: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES', COMPANY_PROFILE_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Company Code"
+  physical_name: "pc_code"
+  description: "Mã Hồ sơ doanh nghiệp."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.COMPANY_PROFILE_ID"
+  comment: "Lookup pair: public_company.pc_code. Pair with Public Company Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Financial Report Template Id"
+  physical_name: "fr_template_id"
+  description: "ID form."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.FORM_ID"
+  comment: "FK target: fr_template.fr_template_id. Cần ETL crosswalk sang IDS.FORMS:\
+    \ COMPANY_DATA.FORM_ID = FORMS.ID để xác nhận FORM_CD sau đó hash_id('IDS.FORMS',\
+    \ FORM_CD)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Financial Report Template Code"
+  physical_name: "fr_template_code"
+  description: "Mã form."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.FORM_ID"
+  comment: "Lookup pair: fr_template.fr_template_code. Pair with Financial Report\
+    \ Template Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Parent Submission Id"
+  physical_name: "parent_submission_id"
+  description: "là parent id của company_data."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.PARENT_ID"
+  comment: "FK target: pc_report_submission.pc_rpt_submission_id. Hash: hash_id('IDS.COMPANY_DATA', PARENT_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Parent Submission Code"
+  physical_name: "parent_submission_code"
+  description: "Mã lần nộp cha."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.PARENT_ID"
+  comment: "Lookup pair: pc_report_submission.pc_rpt_submission_code. Pair with Parent\
+    \ Submission Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Original Submission Id"
+  physical_name: "original_submission_id"
+  description: "Id của company_data, dùng trong trường hợp có tin đính chính - Luôn\
+    \ Lưu id của tin gốc."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.REF_ID"
+  comment: "FK target: pc_report_submission.pc_rpt_submission_id.\
+    \ Hash: hash_id('IDS.COMPANY_DATA', REF_ID) | Nullable — chỉ có khi tin này là\
+    \ đính chính của tin khác."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Original Submission Code"
+  physical_name: "original_submission_code"
+  description: "Mã lần nộp được đính chính."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.REF_ID"
+  comment: "Lookup pair: pc_report_submission.pc_rpt_submission_code. Pair with Original Submission Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Document Title"
+  physical_name: "document_title"
+  description: "Mô tả tiêu đề tin/hồ sơ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.DOC_TITLE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Submission Status Code"
+  physical_name: "submission_status_code"
+  description: "Trạng thái (Chờ duyệt; Đã duyệt; Từ chối; Đóng quy trình)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.NEWS_STATUS_CD"
+  comment: "Scheme: IDS_SUBMISSION_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_APPROVAL_STATUS')."
+  classification_context: "IDS_SUBMISSION_STATUS"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Year"
+  physical_name: "rpt_year"
+  description: "Năm báo cáo tài chính."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.REPORT_YEAR"
+  comment: "Nguồn NUMBER(4,0)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Report Quarter"
+  physical_name: "rpt_quarter"
+  description: "Quý báo cáo tài chính."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.REPORT_QUARTER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Report Month"
+  physical_name: "rpt_month"
+  description: "Tháng báo cáo."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.REPORT_MONTH"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Document Number"
+  physical_name: "document_nbr"
+  description: "Số công văn."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.DOC_NO"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Document Date"
+  physical_name: "document_dt"
+  description: "Ngày công văn."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.DOC_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Document Summary"
+  physical_name: "document_summary"
+  description: "Trích yếu."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.DOC_SUMMARY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Document Sign Date"
+  physical_name: "document_sign_dt"
+  description: "Ngày ký văn bản."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.DOC_SIGN_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Submission Date"
+  physical_name: "submission_dt"
+  description: "Ngày gửi duyệt (submit to worklist)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.SUBMISSION_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Approval Date"
+  physical_name: "approval_dt"
+  description: "Ngày phê duyệt."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.APPROVAL_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Rejection Date"
+  physical_name: "rejection_dt"
+  description: "Ngày từ chối."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.REJECTION_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Submission Deadline Date"
+  physical_name: "submission_deadline_dt"
+  description: "Ngày gửi tin (deadline) - chạy job hàng ngày, hoặc khi gửi tin thì\
+    \ tính ngay."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.SUBMISSION_DEADLINE_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Overdue Days"
+  physical_name: "overdue_days"
+  description: "Thời gian quá hạn (theo ngày): = SUBMISSION_DATE - SUBMISSION_DEADLINE_DATE\
+    \ (=0 - Đúng hạn, >0 - Quá hạn x ngày)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.OVERDUE_DAYS"
+  comment: "Nguồn NUMBER(38,0)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Has Digital Signature Indicator"
+  physical_name: "has_digital_signature_indicator"
+  description: "File đính kèm có chữ ký số hay ko (1 - có, 0 - không có)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.DIGITAL_SIGNATURE_FLG"
+  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(2) — đồng nhất pattern với financial_report_catalog.Active\
+    \ Indicator."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "News Type Code"
+  physical_name: "news_tp_code"
+  description: "Loại báo cáo (Báo cáo tài chính; Báo cáo định kỳ khác; Báo cáo bất\
+    \ thường 24h...)."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.NEWS_TYPE_CD"
+  comment: "Scheme: IDS_NEWS_TYPE. Dùng chung scheme với Disclosure Notification.\
+    \ Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_TYPE')."
+  classification_context: "IDS_NEWS_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Reject Reason"
+  physical_name: "reject_reason"
+  description: "Lý do từ chối/gửi lại tin từ chuyên viên/lãnh đạo HNX (nullable, latest\
+    \ only)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.REJECT_REASON"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Review Timestamp"
+  physical_name: "review_tms"
+  description: "Ngày chuyên viên trình phê duyệt (transition SUBMITTED → REVIEWED)."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.REVIEW_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Send Back Timestamp"
+  physical_name: "send_back_tms"
+  description: "Ngày chuyên viên gửi lại tin yêu cầu bổ sung (transition SUBMITTED\
+    \ → NOT_APPROVED)."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.SEND_BACK_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Linked Submission Id"
+  physical_name: "linked_submission_id"
+  description: "Id link giữa tin tiếng anh và tin tiếng việt."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.LINK_ID"
+  comment: "FK target: pc_report_submission.pc_rpt_submission_id. Hash: hash_id('IDS.COMPANY_DATA', LINK_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Linked Submission Code"
+  physical_name: "linked_submission_code"
+  description: "Mã lần nộp liên kết (bản dịch VI/EN)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.LINK_ID"
+  comment: "Lookup pair: pc_report_submission.pc_rpt_submission_code. Pair with Linked\
+    \ Submission Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Language Code"
+  physical_name: "language_code"
+  description: "Mã ngôn ngữ (VI - Tiếng việt, EN - Tiếng Anh)."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.LANGUAGE_CD"
+  comment: "Scheme: IDS_LANGUAGE. Values lấy trực tiếp từ cột nguồn (VARCHAR2(20),\
+    \ VI/EN)."
+  classification_context: "IDS_LANGUAGE"
+  etl_derived_value: null
+  data_type: "string"

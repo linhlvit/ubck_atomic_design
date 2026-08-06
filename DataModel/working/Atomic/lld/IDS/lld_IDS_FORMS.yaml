@@ -3,8 +3,8 @@ schema_version: "2.0"
 metadata:
   source_system: "IDS"
   source_table: "FORMS"
-  atomic_entity: "Disclosure Form Definition"
-  entity_physical_name: "disclosure_form_definition"
+  atomic_entity: "Financial Report Template"
+  entity_physical_name: "fr_template"
   bcv_core_object: "Condition"
   bcv_concept: "[Condition] Form Definition"
   table_type: "Fundamental"
@@ -18,11 +18,14 @@ metadata:
   approved_by: null
   approved_at: null
   notes: "PARENT_ID self-ref (cấu trúc form cha-con). ID kỹ thuật loại khỏi model\
-    \ — FORM_CD (mã nghiệp vụ) → Disclosure Form Definition Code (BK duy nhất), Id\
-    \ hash từ Code."
+    \ — FORM_CD (mã nghiệp vụ) → Financial Report Template Code (BK duy nhất), Id\
+    \ hash từ Code. Đổi tên từ \"Disclosure Form Definition\" (2026-08-05, theo yêu\
+    \ cầu tường minh Data Modeler). LƯU Ý: \"Disclosure Form Definition Notification\
+    \ Recipient\" / \"Disclosure Form Definition Violation Template\" (FK tới entity\
+    \ này) chưa đổi tên theo — xem atomic_entities.yaml."
 attributes:
-- attribute_name: "Disclosure Form Definition Id"
-  physical_name: "disclosure_form_definition_id"
+- attribute_name: "Financial Report Template Id"
+  physical_name: "fr_template_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -30,12 +33,12 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "PK surrogate. Hash: hash_id('IDS.FORMS', FORM_CD). BCV: \"[Condition]\
-    \ Form Definition\"."
+    \ Form Definition\". Đổi tên entity 2026-08-05."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Disclosure Form Definition Code"
-  physical_name: "disclosure_form_definition_code"
+- attribute_name: "Financial Report Template Code"
+  physical_name: "fr_template_code"
   description: "Mã form. BK duy nhất — Id hash từ trường này."
   data_domain: "Text"
   nullable: false
@@ -61,8 +64,8 @@ attributes:
   classification_context: "SOURCE_SYSTEM=IDS.FORMS"
   etl_derived_value: "IDS.FORMS"
   data_type: "string"
-- attribute_name: "Parent Disclosure Form Definition Id"
-  physical_name: "parent_disclosure_form_definition_id"
+- attribute_name: "Parent Financial Report Template Id"
+  physical_name: "parent_fr_template_id"
   description: "Khóa cha (tự tham chiếu)."
   data_domain: "Surrogate Key"
   nullable: true
@@ -70,14 +73,13 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.FORMS.PARENT_ID"
-  comment: "FK target: Disclosure Form Definition.Disclosure Form Definition Id. Self-reference.\
-    \ Resolve: join PARENT_ID → IDS.FORMS.ID để lấy FORM_CD, rồi hash_id('IDS.FORMS',\
-    \ FORM_CD_CHA)."
+  comment: "FK target: fr_template.fr_template_id (self-reference). Resolve: join\
+    \ PARENT_ID → IDS.FORMS.ID để lấy FORM_CD, rồi hash_id('IDS.FORMS', FORM_CD_CHA)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Parent Disclosure Form Definition Code"
-  physical_name: "parent_disclosure_form_definition_code"
+- attribute_name: "Parent Financial Report Template Code"
+  physical_name: "parent_fr_template_code"
   description: "Mã form cha."
   data_domain: "Text"
   nullable: true
@@ -85,13 +87,13 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.FORMS.PARENT_ID"
-  comment: "Lookup pair: Disclosure Form Definition.Disclosure Form Definition Code.\
-    \ Pair with Parent Disclosure Form Definition Id."
+  comment: "Lookup pair: fr_template.fr_template_code. Pair with Parent Financial\
+    \ Report Template Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Disclosure Form Definition Name"
-  physical_name: "disclosure_form_definition_nm"
+- attribute_name: "Financial Report Template Name"
+  physical_name: "fr_template_nm"
   description: "Tên form (tiếng Việt)."
   data_domain: "Text"
   nullable: true
@@ -103,8 +105,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Disclosure Form Definition English Name"
-  physical_name: "disclosure_form_definition_english_nm"
+- attribute_name: "Financial Report Template English Name"
+  physical_name: "fr_template_english_nm"
   description: "Tên form (tiếng Anh)."
   data_domain: "Text"
   nullable: true
@@ -116,8 +118,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Form Type Code"
-  physical_name: "form_tp_code"
+- attribute_name: "Financial Report Template Type Code"
+  physical_name: "fr_template_tp_code"
   description: "Loại tin hay hồ sơ."
   data_domain: "Text"
   nullable: true
@@ -144,8 +146,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Sub News Type Code"
-  physical_name: "sub_news_tp_code"
+- attribute_name: "News Sub Type Code"
+  physical_name: "news_sub_tp_code"
   description: "Loại tin con."
   data_domain: "Text"
   nullable: true
@@ -158,8 +160,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "News Type Group Code"
-  physical_name: "news_tp_group_code"
+- attribute_name: "News Group Type Code"
+  physical_name: "news_group_tp_code"
   description: "Nhóm loại tin."
   data_domain: "Text"
   nullable: true
@@ -263,8 +265,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Form Report Type Code"
-  physical_name: "form_rpt_tp_code"
+- attribute_name: "Report Type Code"
+  physical_name: "rpt_tp_code"
   description: "Loại báo cáo."
   data_domain: "Text"
   nullable: true

@@ -1,0 +1,223 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "IDS"
+  source_table: "DATA"
+  atomic_entity: "Financial Report Value"
+  entity_physical_name: "fr_value"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: "Fundamental"
+  group: "T2"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "ID kỹ thuật là BK duy nhất (không có cột mã nghiệp vụ riêng — mirror pattern\
+    \ Public Company/lld_IDS_COMPANY_PROFILES.yaml) → Financial Report Value Code,\
+    \ Id hash từ Code. Không có cột company_data_id — khác giả định bản thiết kế LinhLV\
+    \ tham chiếu; FK trực tiếp COMPANY_PROFILE_ID → Public Company, độc lập hoàn toàn\
+    \ với Public Company Report Submission (xem HLD Tier2.md 6f T2-11). Audit block\
+    \ (CREATED_BY/CREATED_DATE/UPDATED_BY/UPDATED_DATE) loại bỏ — mirror quyết định\
+    \ đã áp dụng cho toàn phân hệ IDS (xem pending_design.yaml). Table Type = Fundamental\
+    \ theo quyết định tường minh Data Modeler (HLD Overview 7e #15/#16, 2026-08-05)."
+attributes:
+- attribute_name: "Financial Report Value Id"
+  physical_name: "fr_val_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. Hash: hash_id('IDS.DATA', ID). BCV: \"[Documentation] Regulatory\
+    \ Report\"."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Financial Report Value Code"
+  physical_name: "fr_val_code"
+  description: "Khóa chính. BK của entity — map từ PK bảng nguồn (không có cột mã\
+    \ nghiệp vụ riêng)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.DATA.ID"
+  comment: "BK chính. PK nguồn NUMBER(19) tự tăng — mirror pattern public_company.Public\
+    \ Company Code (không có business code riêng)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=IDS.DATA"
+  etl_derived_value: "IDS.DATA"
+  data_type: "string"
+- attribute_name: "Financial Report Catalog Id"
+  physical_name: "fr_catalog_id"
+  description: "ID của báo cáo."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.DATA.REPORT_CATALOG_ID"
+  comment: "FK target: fr_catalog.fr_catalog_id. Cần ETL crosswalk\
+    \ sang IDS.REPORT_CATALOG: DATA.REPORT_CATALOG_ID = REPORT_CATALOG.ID để xác\
+    \ nhận REPORT_CD sau đó hash_id('IDS.REPORT_CATALOG', REPORT_CD)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Financial Report Catalog Code"
+  physical_name: "fr_catalog_code"
+  description: "Mã báo cáo."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.DATA.REPORT_CATALOG_ID"
+  comment: "Lookup pair: fr_catalog.fr_catalog_code. Pair with Financial\
+    \ Report Catalog Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Company Id"
+  physical_name: "pc_id"
+  description: "ID Hồ sơ doanh nghiệp."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.DATA.COMPANY_PROFILE_ID"
+  comment: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES',\
+    \ COMPANY_PROFILE_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Company Code"
+  physical_name: "pc_code"
+  description: "Mã Hồ sơ doanh nghiệp."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.DATA.COMPANY_PROFILE_ID"
+  comment: "Lookup pair: public_company.pc_code. Pair with Public Company Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Row Code"
+  physical_name: "row_code"
+  description: "Mã hàng."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.DATA.ROW_CD"
+  comment: "Denormalized — đối chiếu giá trị text với fr_row_template.Financial Report\
+    \ Row Template Code, không phải FK constraint (không join theo surrogate key).\
+    \ Kết hợp Row Code + Column Code xác định ô cụ thể trong biểu mẫu."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Column Code"
+  physical_name: "column_code"
+  description: "Mã cột."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.DATA.COL_CD"
+  comment: "Denormalized — đối chiếu giá trị text với fr_column_template.Financial\
+    \ Report Column Template Code, không phải FK constraint. Kết hợp Row Code + Column\
+    \ Code xác định ô cụ thể trong biểu mẫu."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Data Value"
+  physical_name: "data_val"
+  description: "Lưu lại dữ liệu trong báo cáo."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.DATA.DATA_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Report Year"
+  physical_name: "rpt_year"
+  description: "Năm báo cáo tài chính."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.DATA.REPORT_YEAR"
+  comment: "Nguồn NUMBER(4,0) — Small Counter (khác Text của fr_catalog.Report\
+    \ Year, vốn nguồn VARCHAR2(4))."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Report Quarter"
+  physical_name: "rpt_quarter"
+  description: "Quý báo cáo tài chính."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.DATA.REPORT_QUARTER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Cell Enabled Indicator"
+  physical_name: "cell_enabled_indicator"
+  description: "Trạng thái ô nhập liệu (0-disable, 1-enable). Phụ thuộc vào giá trị\
+    \ của trường APPROVAL_STATUS_CD trong bảng COMPANY_DATA, nếu là draft thì enable."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.DATA.CELL_ENABLED_FLG"
+  comment: "Giá trị 1 → true (enable); 0 → false (disable). Nguồn NUMBER(1) — đồng\
+    \ nhất pattern với fr_catalog.Active Indicator."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Cell Type Code"
+  physical_name: "cell_tp_code"
+  description: "Kiểu dữ liệu: I/O - Input/Output."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.DATA.RC_TYPE"
+  comment: "Scheme: IDS_REPORT_CELL_TYPE. Values lấy trực tiếp từ cột nguồn (CHAR(1),\
+    \ I/O)."
+  classification_context: "IDS_REPORT_CELL_TYPE"
+  etl_derived_value: null
+  data_type: "string"

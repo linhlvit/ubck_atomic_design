@@ -3,8 +3,8 @@ schema_version: "2.0"
 metadata:
   source_system: "IDS"
   source_table: "NOTIFICATIONS_DTL"
-  atomic_entity: "Disclosure Form Definition Notification Recipient"
-  entity_physical_name: "disclosure_form_definition_notification_recipient"
+  atomic_entity: "Notification Recipient"
+  entity_physical_name: "notification_recipient"
   bcv_core_object: "Communication"
   bcv_concept: "[Communication] Notification"
   table_type: "Relative"
@@ -20,10 +20,11 @@ metadata:
   notes: "LOGIN_ID = người nhận thông báo — FK pending sang Identity and Access Management\
     \ User (cùng pattern Created/Updated By User, khác cột nghiệp vụ, tên attribute\
     \ 'Recipient User Id/Code'). COMPANY_PROFILE_ID nullable (chỉ có khi người nhận\
-    \ là công ty đại chúng)."
+    \ là công ty đại chúng). Đổi tên từ \"Disclosure Form Definition Notification\
+    \ Recipient\" (2026-08-05, theo yêu cầu tường minh Data Modeler)."
 attributes:
-- attribute_name: "Disclosure Form Definition Notification Recipient Id"
-  physical_name: "disclosure_form_definition_notification_recipient_id"
+- attribute_name: "Notification Recipient Id"
+  physical_name: "notification_recipient_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -34,8 +35,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Disclosure Form Definition Notification Recipient Code"
-  physical_name: "disclosure_form_definition_notification_recipient_code"
+- attribute_name: "Notification Recipient Code"
+  physical_name: "notification_recipient_code"
   description: "Khóa chính. BK của entity — map từ PK bảng nguồn."
   data_domain: "Text"
   nullable: false
@@ -59,8 +60,8 @@ attributes:
   classification_context: "SOURCE_SYSTEM=IDS.NOTIFICATIONS_DTL"
   etl_derived_value: "IDS.NOTIFICATIONS_DTL"
   data_type: "string"
-- attribute_name: "Disclosure Notification Id"
-  physical_name: "disclosure_notification_id"
+- attribute_name: "Notification Id"
+  physical_name: "notification_id"
   description: "Khóa link đến bảng NOTIFICATIONS."
   data_domain: "Surrogate Key"
   nullable: false
@@ -68,16 +69,16 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.NOTIFICATIONS_DTL.NOTIFICATIONS_ID"
-  comment: "FK target: disclosure_notification.disclosure_notification_id. Cần ETL\
-    \ crosswalk sang IDS.NOTIFICATIONS: NOTIFICATIONS_DTL.NOTIFICATIONS_ID = NOTIFICATIONS.ID\
-    \ để xác nhận NOTI_CD sau đó hash_id('IDS.NOTIFICATIONS', NOTI_CD) | Trước đây\
-    \ hash trực tiếp theo NOTIFICATIONS_ID (ID kỹ thuật) gây sai lệch với Id của bảng\
-    \ main (hash từ NOTI_CD) — đã sửa sang crosswalk 2026-07-27."
+  comment: "FK target: notification.notification_id. Cần ETL crosswalk sang IDS.NOTIFICATIONS:\
+    \ NOTIFICATIONS_DTL.NOTIFICATIONS_ID = NOTIFICATIONS.ID để xác nhận NOTI_CD sau\
+    \ đó hash_id('IDS.NOTIFICATIONS', NOTI_CD) | Trước đây hash trực tiếp theo NOTIFICATIONS_ID\
+    \ (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ NOTI_CD) — đã sửa sang\
+    \ crosswalk 2026-07-27."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Disclosure Notification Code"
-  physical_name: "disclosure_notification_code"
+- attribute_name: "Notification Code"
+  physical_name: "notification_code"
   description: "Mã thông báo."
   data_domain: "Text"
   nullable: false
@@ -85,8 +86,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.NOTIFICATIONS_DTL.NOTIFICATIONS_ID"
-  comment: "Lookup pair: Disclosure Notification.Disclosure Notification Code. Pair\
-    \ with Disclosure Notification Id."
+  comment: "Lookup pair: notification.notification_code. Pair with Notification Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -172,9 +172,8 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.NOTIFICATIONS_DTL.OBJECT_TYPE"
-  comment: "Scheme: IDS_NOTIFICATION_OBJECT_TYPE. Dùng chung scheme với Disclosure\
-    \ Notification.Object Type Code. Nguồn lưu dạng số — ETL cần convert sang string\
-    \ code."
+  comment: "Scheme: IDS_NOTIFICATION_OBJECT_TYPE. Dùng chung scheme với Notification.Object\
+    \ Type Code. Nguồn lưu dạng số — ETL cần convert sang string code."
   classification_context: "IDS_NOTIFICATION_OBJECT_TYPE"
   etl_derived_value: null
   data_type: "string"

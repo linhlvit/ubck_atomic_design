@@ -3,8 +3,8 @@ schema_version: "2.0"
 metadata:
   source_system: "IDS"
   source_table: "VIOLATION_PENALTY_CONFIG"
-  atomic_entity: "Public Company Violation Penalty Config"
-  entity_physical_name: "pc_violation_penalty_config"
+  atomic_entity: "Violation Report Penalty Config"
+  entity_physical_name: "vr_penalty_config"
   bcv_core_object: "Condition"
   bcv_concept: "[Condition] Compliance Rule"
   table_type: "Relative"
@@ -17,10 +17,12 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Relative (SCD4A) — quy định ngưỡng phạt có hiệu lực theo thời gian (EFFECTIVE_START/END_DATE)."
+  notes: "Relative (SCD4A) — quy định ngưỡng phạt có hiệu lực theo thời gian (EFFECTIVE_START/END_DATE).\
+    \ Đổi tên từ \"Public Company Violation Penalty Config\" (2026-08-05, theo yêu\
+    \ cầu tường minh Data Modeler)."
 attributes:
-- attribute_name: "Public Company Violation Penalty Config Id"
-  physical_name: "pc_violation_penalty_config_id"
+- attribute_name: "Violation Report Penalty Config Id"
+  physical_name: "vr_penalty_config_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -31,8 +33,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Public Company Violation Penalty Config Code"
-  physical_name: "pc_violation_penalty_config_code"
+- attribute_name: "Violation Report Penalty Config Code"
+  physical_name: "vr_penalty_config_code"
   description: "Khóa chính. BK của entity — map từ PK bảng nguồn."
   data_domain: "Text"
   nullable: false
@@ -56,8 +58,8 @@ attributes:
   classification_context: "SOURCE_SYSTEM=IDS.VIOLATION_PENALTY_CONFIG"
   etl_derived_value: "IDS.VIOLATION_PENALTY_CONFIG"
   data_type: "string"
-- attribute_name: "Disclosure Form Definition Violation Template Id"
-  physical_name: "disclosure_form_definition_violation_template_id"
+- attribute_name: "Violation Report Template Id"
+  physical_name: "vr_template_id"
   description: "ID của mẫu vi phạm (FK liên kết với bảng VIOLATION_TEMPLATES)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -65,8 +67,8 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.VIOLATION_PENALTY_CONFIG.VIOLATION_TEMPLATE_ID"
-  comment: "FK target: disclosure_form_definition_violation_template.disclosure_form_definition_violation_template_id.\
-    \ Cần ETL crosswalk sang IDS.VIOLATION_TEMPLATES: VIOLATION_PENALTY_CONFIG.VIOLATION_TEMPLATE_ID\
+  comment: "FK target: vr_template.vr_template_id. Cần ETL\
+    \ crosswalk sang IDS.VIOLATION_TEMPLATES: VIOLATION_PENALTY_CONFIG.VIOLATION_TEMPLATE_ID\
     \ = VIOLATION_TEMPLATES.ID để xác nhận VIOLATION_CD sau đó hash_id('IDS.VIOLATION_TEMPLATES',\
     \ VIOLATION_CD) | Trước đây hash trực tiếp theo VIOLATION_TEMPLATE_ID (ID kỹ thuật)\
     \ gây sai lệch với Id của bảng main (hash từ VIOLATION_CD) — đã sửa sang crosswalk\
@@ -74,8 +76,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Disclosure Form Definition Violation Template Code"
-  physical_name: "disclosure_form_definition_violation_template_code"
+- attribute_name: "Violation Report Template Code"
+  physical_name: "vr_template_code"
   description: "Mã mẫu vi phạm (denormalized lookup)."
   data_domain: "Text"
   nullable: false
@@ -83,9 +85,8 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.VIOLATION_PENALTY_CONFIG.VIOLATION_TEMPLATE_ID"
-  comment: "Lookup pair: Disclosure Form Definition Violation Template.Disclosure\
-    \ Form Definition Violation Template Code. Pair with Disclosure Form Definition\
-    \ Violation Template Id."
+  comment: "Lookup pair: vr_template.vr_template_code. Pair\
+    \ with Violation Report Template Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

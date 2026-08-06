@@ -3,8 +3,8 @@ schema_version: "2.0"
 metadata:
   source_system: "IDS"
   source_table: "REP_ROW"
-  atomic_entity: "Periodic Report Form Row Template"
-  entity_physical_name: "prf_row_template"
+  atomic_entity: "Financial Report Sub Row Template"
+  entity_physical_name: "fr_sub_row_template"
   bcv_core_object: "Condition"
   bcv_concept: "[Condition] Form Definition"
   table_type: "Fundamental"
@@ -17,10 +17,11 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: null
+  notes: "Đổi tên từ \"Periodic Report Form Row Template\" (2026-08-05, theo yêu\
+    \ cầu tường minh Data Modeler)."
 attributes:
-- attribute_name: "Periodic Report Form Row Template Id"
-  physical_name: "prf_row_template_id"
+- attribute_name: "Financial Report Sub Row Template Id"
+  physical_name: "fr_sub_row_template_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -32,8 +33,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Periodic Report Form Row Template Code"
-  physical_name: "prf_row_template_code"
+- attribute_name: "Financial Report Sub Row Template Code"
+  physical_name: "fr_sub_row_template_code"
   description: "Lưu mã tự sinh của chỉ tiêu hàng. BK duy nhất — Id hash từ trường\
     \ này."
   data_domain: "Text"
@@ -60,8 +61,8 @@ attributes:
   classification_context: "SOURCE_SYSTEM=IDS.REP_ROW"
   etl_derived_value: "IDS.REP_ROW"
   data_type: "string"
-- attribute_name: "Periodic Report Form Id"
-  physical_name: "prf_id"
+- attribute_name: "Financial Report Sub Template Id"
+  physical_name: "fr_sub_template_id"
   description: "ID của form báo cáo tương ứng."
   data_domain: "Surrogate Key"
   nullable: false
@@ -69,14 +70,13 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.REP_ROW.REP_FORM_ID"
-  comment: "FK target: Periodic Report Form.Periodic Report Form Id. Resolve: join\
-    \ REP_FORM_ID → IDS.REP_FORMS.ID để lấy REPORT_CD, rồi hash_id('IDS.REP_FORMS',\
-    \ REPORT_CD)."
+  comment: "FK target: fr_sub_template.fr_sub_template_id. Resolve: join REP_FORM_ID\
+    \ → IDS.REP_FORMS.ID để lấy REPORT_CD, rồi hash_id('IDS.REP_FORMS', REPORT_CD)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Periodic Report Form Code"
-  physical_name: "prf_code"
+- attribute_name: "Financial Report Sub Template Code"
+  physical_name: "fr_sub_template_code"
   description: "Mã form báo cáo."
   data_domain: "Text"
   nullable: false
@@ -84,8 +84,8 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.REP_ROW.REP_FORM_ID"
-  comment: "Lookup pair: Periodic Report Form.Periodic Report Form Code. Pair with\
-    \ Periodic Report Form Id."
+  comment: "Lookup pair: fr_sub_template.fr_sub_template_code. Pair with Financial\
+    \ Report Sub Template Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

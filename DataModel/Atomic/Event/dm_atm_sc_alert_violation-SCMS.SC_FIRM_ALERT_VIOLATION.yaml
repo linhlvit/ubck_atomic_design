@@ -144,7 +144,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_ALERT_VIOLATION
     source_column: SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_CONDITION_ID
-    comment: "FK target: Securities Company Alert Indicator Condition.Securities Company Alert Indicator Condition Id. Hash: hash_id('SCMS.ALERT_INDICATOR_CONDITION', ALERT_CONDITION_ID)."
+    comment: "FK target: securities_company_alert_indicator_condition.securities_company_alert_indicator_condition_id. Hash: hash_id('SCMS.ALERT_INDICATOR_CONDITION', ALERT_CONDITION_ID)."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
     etl_derived_value: null
 
@@ -158,7 +158,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_ALERT_VIOLATION
     source_column: SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_CONDITION_ID
-    comment: "Lookup pair: Securities Company Alert Indicator Condition.Securities Company Alert Indicator Condition Code. Pair with Securities Company Alert Indicator Condition Id."
+    comment: "Lookup pair: securities_company_alert_indicator_condition.securities_company_alert_indicator_condition_code. Pair with Securities Company Alert Indicator Condition Id."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
     etl_derived_value: null
 
@@ -186,7 +186,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_ALERT_VIOLATION
     source_column: SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_RUN_ID
-    comment: "Lookup pair: Securities Company Alert Run.Securities Company Alert Run Code. Pair with Securities Company Alert Run Id."
+    comment: "Lookup pair: sc_alert_run.sc_alert_run_code. Pair with Securities Company Alert Run Id."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
     etl_derived_value: null
 
@@ -228,7 +228,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_ALERT_VIOLATION
     source_column: SCMS.SC_FIRM_ALERT_VIOLATION.ENTITY_TYPE
-    comment: "Scheme: SCMS_ALERT_ENTITY_TYPE. NVARCHAR2(50). Xác định ENTITY_ID trỏ về entity nào (polymorphic)."
+    comment: "Scheme: SCMS_ALERT_ENTITY_TYPE. NVARCHAR2(64). Xác định ENTITY_ID trỏ về entity nào (polymorphic)."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
     etl_derived_value: null
 
@@ -256,7 +256,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_ALERT_VIOLATION
     source_column: SCMS.SC_FIRM_ALERT_VIOLATION.CONDITION
-    comment: NVARCHAR2(2000). Chuỗi logic expression dạng text từ hệ thống.
+    comment: NVARCHAR2(1000). Chuỗi logic expression dạng text từ hệ thống.
     classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
     etl_derived_value: null
 
@@ -269,8 +269,8 @@ attributes:
     is_primary_key: false
     source_system: SCMS
     source_table: SC_FIRM_ALERT_VIOLATION
-    source_column: SCMS.SC_FIRM_ALERT_VIOLATION.GIA_TRI_SO_SANH
-    comment: "NUMBER (no precision/scale — integer-like). Cần profile để xác nhận luôn là integer. Tên nguồn tiếng Việt: Giá trị so sánh."
+    source_column: SCMS.SC_FIRM_ALERT_VIOLATION.COMPARE_VALUE
+    comment: "NUMBER (no precision/scale — integer-like). Cần profile để xác nhận luôn là integer."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
     etl_derived_value: null
 
@@ -283,8 +283,8 @@ attributes:
     is_primary_key: false
     source_system: SCMS
     source_table: SC_FIRM_ALERT_VIOLATION
-    source_column: SCMS.SC_FIRM_ALERT_VIOLATION.GIA_TRI_THUC_TE
-    comment: "NUMBER(38,2). Tên nguồn tiếng Việt: Giá trị thực tế. Có thể là số tài chính hoặc tỉ lệ — dùng Currency Amount vì có decimal scale."
+    source_column: SCMS.SC_FIRM_ALERT_VIOLATION.ACTUAL_VALUE
+    comment: "NUMBER(38,2). Có thể là số tài chính hoặc tỉ lệ — dùng Currency Amount vì có decimal scale."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
     etl_derived_value: null
 
@@ -326,7 +326,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_ALERT_VIOLATION
     source_column: SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_YEAR
-    comment: VARCHAR2(4). Lưu dạng Text để bảo toàn format 4 ký tự.
+    comment: "VARCHAR2(40) (DDL UAT 2026-08 widen từ VARCHAR2(10)). Lưu dạng Text để bảo toàn format — nguồn cho phép chuỗi dài hơn 4 ký tự, cần profile để xác nhận format thực tế (năm đơn hoặc khoảng năm)."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
     etl_derived_value: null
 
@@ -354,7 +354,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_ALERT_VIOLATION
     source_column: SCMS.SC_FIRM_ALERT_VIOLATION.REPORT_PERIOD
-    comment: "Scheme: SCMS_REPORT_PERIOD. VARCHAR2(50)."
+    comment: "Scheme: SCMS_REPORT_PERIOD. VARCHAR2(200)."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
     etl_derived_value: null
 
@@ -410,7 +410,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_ALERT_VIOLATION
     source_column: SCMS.SC_FIRM_ALERT_VIOLATION.RESOLUTION_NOTE
-    comment: NVARCHAR2(2000).
+    comment: VARCHAR2(4000).
     classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
     etl_derived_value: null
 
@@ -424,7 +424,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_ALERT_VIOLATION
     source_column: SCMS.SC_FIRM_ALERT_VIOLATION.VIOLATION_DESCRIPTION
-    comment: NVARCHAR2(2000).
+    comment: VARCHAR2(4000).
     classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
     etl_derived_value: null
 
@@ -438,7 +438,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_ALERT_VIOLATION
     source_column: SCMS.SC_FIRM_ALERT_VIOLATION.NOTE
-    comment: NVARCHAR2(2000).
+    comment: NVARCHAR2(4000).
     classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
     etl_derived_value: null
 
@@ -481,5 +481,75 @@ attributes:
     source_table: SC_FIRM_ALERT_VIOLATION
     source_column: SCMS.SC_FIRM_ALERT_VIOLATION.PROCESSOR_ID
     comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Processor IAM User Id."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
+    etl_derived_value: null
+
+  - name: Alert Period Type Code
+    physical_name: alert_period_tp_code
+    business_meaning: Loại kỳ của cảnh báo (mã số).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_ALERT_VIOLATION
+    source_column: SCMS.SC_FIRM_ALERT_VIOLATION.PERIOD_TYPE
+    comment: "Scheme: SCMS_ALERT_PERIOD_TYPE. NUMBER(2) — ETL convert sang string. Cột mới trong DDL UAT 2026-08, không có mô tả nghiệp vụ — cần Data Modeler xác nhận danh sách giá trị và đối chiếu có trùng ý nghĩa với Report Period Code (REPORT_PERIOD) hay không trước go-live."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
+    etl_derived_value: null
+
+  - name: Alert Period Value
+    physical_name: alert_period_val
+    business_meaning: Giá trị kỳ của cảnh báo (số thứ tự).
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_ALERT_VIOLATION
+    source_column: SCMS.SC_FIRM_ALERT_VIOLATION.PERIOD_VALUE
+    comment: "NUMBER(10) (integer). Cột mới trong DDL UAT 2026-08 — cần xác nhận có trùng ý nghĩa với Report Period Value (REPORT_PERIOD_VALUE) hay không trước go-live."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
+    etl_derived_value: null
+
+  - name: Alert Date
+    physical_name: alert_dt
+    business_meaning: Ngày phát sinh cảnh báo.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_ALERT_VIOLATION
+    source_column: SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_DATE
+    comment: "DATE. Cột mới trong DDL UAT 2026-08."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
+    etl_derived_value: null
+
+  - name: Severity Level Alt Code
+    physical_name: severity_level_alt_code
+    business_meaning: Mức độ nghiêm trọng của vi phạm (mã số thay thế).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_ALERT_VIOLATION
+    source_column: SCMS.SC_FIRM_ALERT_VIOLATION.SEVERITY_LEVEL_ALT
+    comment: "Scheme: SCMS_ALERT_SEVERITY_LEVEL_ALT. NUMBER(1) — ETL convert sang string. Cột mới trong DDL UAT 2026-08, không có mô tả nghiệp vụ — cần Data Modeler xác nhận danh sách giá trị và đối chiếu có trùng ý nghĩa với Severity Level (SEVERITY_LEVEL) và/hoặc Violation Severity Code (VIOLATION_SEVERITY) hay không trước go-live."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
+    etl_derived_value: null
+
+  - name: String Result Value
+    physical_name: string_result_val
+    business_meaning: Giá trị kết quả dạng chuỗi khi kết quả điều kiện cảnh báo không phải dạng số.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_ALERT_VIOLATION
+    source_column: SCMS.SC_FIRM_ALERT_VIOLATION.STRING_RESULT_VALUE
+    comment: "VARCHAR2(4000). Cột mới trong DDL UAT 2026-08 — đối xứng với Comparison Value/Actual Value (dạng số) khi kết quả điều kiện là chuỗi."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
     etl_derived_value: null
