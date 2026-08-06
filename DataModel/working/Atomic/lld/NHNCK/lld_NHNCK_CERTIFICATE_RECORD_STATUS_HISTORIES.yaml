@@ -21,7 +21,10 @@ metadata:
     \ khỏi scope dạng Audit Log nguồn (xem NHNCK_HLD_Overview.md 7f cũ). Tái dùng\
     \ BCV concept của entity cha Securities Practitioner License Certificate Document\
     \ — không có BCV term riêng cho 'status history'. Mirror pattern Securities Practitioner\
-    \ Reason Change History (PROFESSIONAL_HISTORIES)."
+    \ Reason Change History (PROFESSIONAL_HISTORIES). Bổ sung 2026-08-06 (giữ nguyên\
+    \ approved, không hạ status): thêm attribute \"Data Date\" từ CREATED_AT — bảng\
+    \ là Fact Append (insert-only), CREATED_AT trước đó bị loại trừ nhầm như audit\
+    \ block thuần túy; mirror amendment đã áp dụng cho lld_NHNCK_ORGANIZATION_REPORTS.yaml."
 attributes:
 - attribute_name: "Securities Practitioner License Certificate Status Change History\
     \ Id"
@@ -62,6 +65,25 @@ attributes:
   classification_context: "SOURCE_SYSTEM=NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES"
   etl_derived_value: "NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES"
   data_type: "string"
+- attribute_name: "Data Date"
+  physical_name: "data_dt"
+  description: "Thời điểm ghi nhận thay đổi trạng thái CCHN (nguồn: CREATED_AT). Dùng làm căn\
+    \ cứ partition Delta Lake / incremental filter — bảng nguồn là Fact Append (insert-only,\
+    \ xem BRD/Source/brd_NHNCK.yaml)."
+  data_domain: "Date"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.CREATED_AT"
+  comment: "BCV: không có term riêng. CREATED_AT bị loại theo quyết định audit-block Data\
+    \ Modeler (2026-07-07) nhưng bảng là Fact Append (mỗi dòng = 1 lần đổi trạng thái, insert-only,\
+    \ xác nhận 2026-07-24) — cần giữ lại làm Data Date, mirror pattern lld_NHNCK_ORGANIZATION_REPORTS.yaml.\
+    \ Đổi tên từ 'created_at' sang 'Data Date' để phản ánh vai trò ngày dữ liệu/phân vùng, tách\
+    \ biệt khỏi audit block (CREATED_BY/UPDATED_AT/UPDATED_BY vẫn loại trừ)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
 - attribute_name: "Securities Practitioner License Certificate Document Id"
   physical_name: "sp_license_certificate_document_id"
   description: "FK đến chứng chỉ hành nghề bị thay đổi trạng thái"
