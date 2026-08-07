@@ -256,6 +256,7 @@ SELECT
     o.official_letter_dt,
     o.capital_usage_plan,
     o.business_line_level_1_code,
+    o.classification_business_line_nm,
     o.equity_listing_exchange_code,
     o.consulting_organization_nm,
     o.audit_organization_nm,
