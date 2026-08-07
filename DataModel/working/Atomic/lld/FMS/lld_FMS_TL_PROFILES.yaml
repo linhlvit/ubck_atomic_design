@@ -72,7 +72,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.TL_PROFILES.SEC_ID"
-  comment: "FK target: Fund Management Company.Fund Management Company Id. Hash: hash_id('FMS.SECURITIES',\
+  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS.SECURITIES',\
     \ SEC_ID)."
   classification_context: null
   etl_derived_value: null
@@ -86,8 +86,8 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.TL_PROFILES.SEC_ID"
-  comment: "Lookup pair: Fund Management Company.Fund Management Company Code. Pair\
-    \ with Fund Management Company Id."
+  comment: "Lookup pair: fund_management_company.fmc_code. Pair with Fund Management\
+    \ Company Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -100,8 +100,8 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.TL_PROFILES.BRANCH_ID"
-  comment: "FK target: Fund Management Company Organization Unit.Fund Management Company\
-    \ Organization Unit Id. Hash: hash_id('FMS.BRANCHS', BRANCH_ID)."
+  comment: "FK target: fmc_organization_unit.fmc_ou_id. Hash: hash_id('FMS.BRANCHS',\
+    \ BRANCH_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -114,9 +114,8 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.TL_PROFILES.BRANCH_ID"
-  comment: "Lookup pair: Fund Management Company Organization Unit.Fund Management\
-    \ Company Organization Unit Code. Pair with Fund Management Company Organization\
-    \ Unit Id."
+  comment: "Lookup pair: fmc_organization_unit.fmc_ou_code. Pair with Fund Management\
+    \ Company Organization Unit Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -439,7 +438,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Employment Active Indicator"
-  physical_name: "employment_active_indicator"
+  physical_name: "employment_active_ind"
   description: "Cờ đang có hợp đồng lao động hiệu lực: Y=Còn HĐLĐ, N=Không."
   data_domain: "Indicator"
   nullable: true
@@ -564,9 +563,8 @@ attributes:
   status: "pending"
   source_columns:
   - "FMS.TL_PROFILES.INSDER_ID"
-  comment: "FK target: Fund Management Company Insider.Fund Management Company Insider\
-    \ Id. Hash: hash_id('FMS.INSIDER', INSDER_ID). Pending — entity thiết kế ở Tier\
-    \ 5."
+  comment: "FK target: fmc_insider.fmc_insider_id. Hash: hash_id('FMS.INSIDER', INSDER_ID).\
+    \ Pending — entity thiết kế ở Tier 5."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -579,9 +577,8 @@ attributes:
   status: "pending"
   source_columns:
   - "FMS.TL_PROFILES.INSDER_ID"
-  comment: "Lookup pair: Fund Management Company Insider.Fund Management Company Insider\
-    \ Code. Pair with Fund Management Company Insider Id. Pending — entity thiết kế\
-    \ ở Tier 5."
+  comment: "Lookup pair: fmc_insider.fmc_insider_code. Pair with Fund Management Company\
+    \ Insider Id. Pending — entity thiết kế ở Tier 5."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

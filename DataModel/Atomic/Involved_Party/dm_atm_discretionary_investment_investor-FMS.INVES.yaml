@@ -115,8 +115,8 @@ attributes:
     is_primary_key: false
     source_system: FMS
     source_table: INVES
-    source_column: FMS.INVES.NAT_ID
-    comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality Id. Giá trị lấy từ SNAME (join FMS.NATIONAL qua NAT_ID = FMS.NATIONAL.ID)."
+    source_column: FMS.NATIONAL.SNAME
+    comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality Id. Giá trị lấy từ SNAME (join FMS.NATIONAL qua NAT_ID = FMS.NATIONAL.ID). Giá trị lấy từ FMS.NATIONAL.SNAME sau ETL crosswalk — chi tiết xem comment Nationality Id."
     classification_context: "Source System Code = 'FMS_INVES'"
     etl_derived_value: null
 

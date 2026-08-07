@@ -69,7 +69,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.INSIDER.SC_ID"
-  comment: "FK target: Fund Management Company.Fund Management Company Id. Hash: hash_id('FMS.SECURITIES',\
+  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS.SECURITIES',\
     \ SC_ID)."
   classification_context: null
   etl_derived_value: null
@@ -83,8 +83,8 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.INSIDER.SC_ID"
-  comment: "Lookup pair: Fund Management Company.Fund Management Company Code. Pair\
-    \ with Fund Management Company Id."
+  comment: "Lookup pair: fund_management_company.fmc_code. Pair with Fund Management\
+    \ Company Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -97,7 +97,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.INSIDER.S_ID"
-  comment: "FK target: Fund Management Company.Fund Management Company Id. Hash: hash_id('FMS.SECURITIES',\
+  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS.SECURITIES',\
     \ S_ID). Xem T5-04 — cần xác nhận quan hệ với Fund Management Company Id (SC_ID)."
   classification_context: null
   etl_derived_value: null
@@ -111,8 +111,8 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.INSIDER.S_ID"
-  comment: "Lookup pair: Fund Management Company.Fund Management Company Code. Pair\
-    \ with Employer Fund Management Company Id."
+  comment: "Lookup pair: fund_management_company.fmc_code. Pair with Employer Fund\
+    \ Management Company Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -140,9 +140,10 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FMS.INSIDER.NAT_ID"
-  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT). Pair with\
-    \ Nationality Id."
+  - "FMS.NATIONAL.SNAME"
+  comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with\
+    \ Nationality Id. Giá trị lấy từ FMS.NATIONAL.SNAME sau ETL crosswalk — chi tiết\
+    \ xem comment Nationality Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -155,7 +156,8 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.INSIDER.TLPRO_ID"
-  comment: "FK target: fmc_employee.fmc_employee_id. Hash: hash_id('FMS.TL_PROFILES', TLPRO_ID)."
+  comment: "FK target: fmc_employee.fmc_employee_id. Hash: hash_id('FMS.TL_PROFILES',\
+    \ TLPRO_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -168,7 +170,8 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.INSIDER.TLPRO_ID"
-  comment: "Lookup pair: fmc_employee.fmc_employee_code. Pair with Fund Management Company Employee Id."
+  comment: "Lookup pair: fmc_employee.fmc_employee_code. Pair with Fund Management\
+    \ Company Employee Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

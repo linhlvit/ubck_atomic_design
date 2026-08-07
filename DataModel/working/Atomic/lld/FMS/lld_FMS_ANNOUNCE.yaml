@@ -69,7 +69,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.ANNOUNCE.SEC_ID"
-  comment: "FK target: Fund Management Company.Fund Management Company Id. Hash: hash_id('FMS.SECURITIES',\
+  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS.SECURITIES',\
     \ SEC_ID). Nullable — xem T6-05."
   classification_context: null
   etl_derived_value: null
@@ -83,8 +83,8 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.ANNOUNCE.SEC_ID"
-  comment: "Lookup pair: Fund Management Company.Fund Management Company Code. Pair\
-    \ with Fund Management Company Id."
+  comment: "Lookup pair: fund_management_company.fmc_code. Pair with Fund Management\
+    \ Company Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -97,7 +97,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.ANNOUNCE.FUND_ID"
-  comment: "FK target: Investment Fund.Investment Fund Id. Hash: hash_id('FMS.FUNDS',\
+  comment: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS.FUNDS',\
     \ FUND_ID). Nullable — xem T6-05."
   classification_context: null
   etl_derived_value: null
@@ -111,7 +111,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.ANNOUNCE.FUND_ID"
-  comment: "Lookup pair: Investment Fund.Investment Fund Code. Pair with Investment\
+  comment: "Lookup pair: investment_fund.investment_fund_code. Pair with Investment\
     \ Fund Id."
   classification_context: null
   etl_derived_value: null
@@ -125,8 +125,8 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.ANNOUNCE.TL_PRO_ID"
-  comment: "FK target: Fund Management Company Employee.Fund Management Company Key\
-    \ Person Id. Hash: hash_id('FMS.TL_PROFILES', TL_PRO_ID). Nullable — xem T6-05."
+  comment: "FK target: fmc_employee.fmc_employee_id. Hash: hash_id('FMS.TL_PROFILES',\
+    \ TL_PRO_ID). Nullable — xem T6-05."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -139,8 +139,8 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.ANNOUNCE.TL_PRO_ID"
-  comment: "Lookup pair: Fund Management Company Employee.Fund Management Company\
-    \ Key Person Code. Pair with Fund Management Company Employee Id."
+  comment: "Lookup pair: fmc_employee.fmc_employee_code. Pair with Fund Management\
+    \ Company Employee Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -153,9 +153,8 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.ANNOUNCE.FR_BR_ID"
-  comment: "FK target: Foreign Fund Management Organization Unit.Foreign Fund Management\
-    \ Organization Unit Id. Hash: hash_id('FMS.FOR_BRCH', FR_BR_ID). Nullable — xem\
-    \ T6-05."
+  comment: "FK target: foreign_fm_ou.foreign_fm_ou_id. Hash: hash_id('FMS.FOR_BRCH',\
+    \ FR_BR_ID). Nullable — xem T6-05."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -168,9 +167,8 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.ANNOUNCE.FR_BR_ID"
-  comment: "Lookup pair: Foreign Fund Management Organization Unit.Foreign Fund Management\
-    \ Organization Unit Code. Pair with Foreign Fund Management Organization Unit\
-    \ Id."
+  comment: "Lookup pair: foreign_fm_ou.foreign_fm_ou_code. Pair with Foreign Fund\
+    \ Management Organization Unit Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -183,9 +181,8 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.ANNOUNCE.STF_FB_ID"
-  comment: "FK target: Foreign Fund Management Organization Unit Staff.Foreign Fund\
-    \ Management Organization Unit Staff Id. Hash: hash_id('FMS.STF_FG_BRCH', STF_FB_ID).\
-    \ Nullable — xem T6-05."
+  comment: "FK target: foreign_fm_ou_staff.foreign_fm_ou_staff_id. Hash: hash_id('FMS.STF_FG_BRCH',\
+    \ STF_FB_ID). Nullable — xem T6-05."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -198,9 +195,8 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.ANNOUNCE.STF_FB_ID"
-  comment: "Lookup pair: Foreign Fund Management Organization Unit Staff.Foreign Fund\
-    \ Management Organization Unit Staff Code. Pair with Foreign Fund Management Organization\
-    \ Unit Staff Id."
+  comment: "Lookup pair: foreign_fm_ou_staff.foreign_fm_ou_staff_code. Pair with Foreign\
+    \ Fund Management Organization Unit Staff Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -213,7 +209,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.ANNOUNCE.PENSION_FUND_ID"
-  comment: "FK target: Pension Fund.Pension Fund Id. Hash: hash_id('FMS.PENSION_FUND',\
+  comment: "FK target: pension_fund.pension_fund_id. Hash: hash_id('FMS.PENSION_FUND',\
     \ PENSION_FUND_ID). Nullable — xem T6-05."
   classification_context: null
   etl_derived_value: null
@@ -227,7 +223,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.ANNOUNCE.PENSION_FUND_ID"
-  comment: "Lookup pair: Pension Fund.Pension Fund Code. Pair with Pension Fund Id."
+  comment: "Lookup pair: pension_fund.pension_fund_code. Pair with Pension Fund Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -240,10 +236,10 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.ANNOUNCE.EVENT_TYPE_ID"
-  comment: "FK target: Classification FMS Event Type.Classification FMS Event Type\
-    \ Id. [ĐỔI 2026-07-19] Đổi từ Classification Value đơn sang cặp FK Id/Code theo\
-    \ yêu cầu Data Modeler — EVENT_TYPE nay là entity riêng (giải quyết Tier6 T6-06).\
-    \ Hash: hash_id('FMS.EVENT_TYPE', EVENT_CODE resolve từ ID)."
+  comment: "FK target: cl_fms_event_type.cl_fms_event_tp_id. [ĐỔI 2026-07-19] Đổi\
+    \ từ Classification Value đơn sang cặp FK Id/Code theo yêu cầu Data Modeler —\
+    \ EVENT_TYPE nay là entity riêng (giải quyết Tier6 T6-06). Hash: hash_id('FMS.EVENT_TYPE',\
+    \ EVENT_CODE resolve từ ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -256,8 +252,8 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.ANNOUNCE.EVENT_TYPE_ID"
-  comment: "Lookup pair: Classification FMS Event Type.Classification FMS Event Type\
-    \ Code. Pair with Event Type Id."
+  comment: "Lookup pair: cl_fms_event_type.cl_fms_event_tp_code. Pair with Event Type\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
