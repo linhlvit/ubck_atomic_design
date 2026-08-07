@@ -27,6 +27,7 @@ SELECT
     f.snpst_dt_dim_id,
     f.certificate_tp_dim_id,
     f.license_certificate_document_code,
+    f.certificate_nbr,
     f.is_reissue_indicator,
     f.certificate_issue_dt,
     f.revocation_dt,
