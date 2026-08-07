@@ -165,6 +165,102 @@ flowchart LR
     G4 --> G1
 ```
 
+##### Cụm 1e: Cơ cấu vi phạm theo loại hành vi (Fact Inspection Team Violation Behavior)
+
+Phục vụ Nhóm 3. Thiết kế lại 2026-08-07 (phát hiện qua `/datamart-review`) — thay thế thiết kế cũ dùng text-matching trên `Content`. Grain 1 đoàn × 1 biên bản vi phạm × 1 hành vi — `VIOLATION_RECORD_BEHAVIOR` quan hệ N:1 với `VIOLATION_RECORD` (1 biên bản có thể ghi nhiều hành vi) và N:1 với `VIOLATION_BEHAVIOR` → tách Fact riêng, không gắn vào `Fact Inspection Team Activity` để tránh fanout K_TT_1-10. `Violation Record` lọc `INSPECTION_TEAM_ID IS NOT NULL`, join trực tiếp `INSPECTION_TEAM` — không qua `VIOLATION_CASE`/`PENALTY_DECISION`/`PENALTY_DECISION_VIOLATION_RECORD` (bảng cuối chưa có Atomic YAML, không cần thiết vì có đường ngắn hơn).
+
+```mermaid
+flowchart LR
+    subgraph SRC["Staging"]
+        S1["INSPECT.INSPECTION_TEAM"]
+        S2["INSPECT.VIOLATION_RECORD"]
+        S3["INSPECT.VIOLATION_RECORD_BEHAVIOR"]
+        S4["INSPECT.VIOLATION_BEHAVIOR"]
+        ECAT_HolidayInfo["ECAT.ECAT_29_HolidayInfo"]
+    end
+
+    subgraph SIL["Atomic"]
+        SV1["Inspection Team"]
+        SV2["Violation Record"]
+        SV3["Violation Record Behavior"]
+        SV4["Violation Behavior"]
+        Calendar_Date["Calendar Date"]
+    end
+
+    subgraph GOLD["Datamart"]
+        G1["Fact Inspection Team Violation Behavior"]
+        G2["Calendar Date Dimension"]
+        G3["Inspection Team Violation Behavior Dimension"]
+        G4["Inspection Team Dimension"]
+    end
+
+    S1 --> SV1
+    S2 --> SV2
+    S3 --> SV3
+    S4 --> SV4
+    ECAT_HolidayInfo --> Calendar_Date
+
+    SV1 --> G1
+    SV1 --> G4
+    SV2 --> G1
+    SV3 --> G1
+    SV3 --> G3
+    SV4 --> G3
+
+    Calendar_Date --> G2
+    G2 --> G1
+    G3 --> G1
+    G4 --> G1
+```
+
+##### Cụm 1f: Cơ cấu kiểm tra theo loại hành vi (Fact Examination Team Violation Behavior)
+
+Phục vụ Nhóm 8. Cùng kiến trúc Cụm 1e — `Violation Record` lọc `EXAMINATION_TEAM_ID IS NOT NULL`, join trực tiếp `EXAMINATION_TEAM`.
+
+```mermaid
+flowchart LR
+    subgraph SRC["Staging"]
+        S1["INSPECT.EXAMINATION_TEAM"]
+        S2["INSPECT.VIOLATION_RECORD"]
+        S3["INSPECT.VIOLATION_RECORD_BEHAVIOR"]
+        S4["INSPECT.VIOLATION_BEHAVIOR"]
+        ECAT_HolidayInfo["ECAT.ECAT_29_HolidayInfo"]
+    end
+
+    subgraph SIL["Atomic"]
+        SV1["Examination Team"]
+        SV2["Violation Record"]
+        SV3["Violation Record Behavior"]
+        SV4["Violation Behavior"]
+        Calendar_Date["Calendar Date"]
+    end
+
+    subgraph GOLD["Datamart"]
+        G1["Fact Examination Team Violation Behavior"]
+        G2["Calendar Date Dimension"]
+        G3["Examination Team Violation Behavior Dimension"]
+        G4["Examination Team Dimension"]
+    end
+
+    S1 --> SV1
+    S2 --> SV2
+    S3 --> SV3
+    S4 --> SV4
+    ECAT_HolidayInfo --> Calendar_Date
+
+    SV1 --> G1
+    SV1 --> G4
+    SV2 --> G1
+    SV3 --> G1
+    SV3 --> G3
+    SV4 --> G3
+
+    Calendar_Date --> G2
+    G2 --> G1
+    G3 --> G1
+    G4 --> G1
+```
+
 ##### Cụm 2: Danh sách vụ việc Thanh tra (Operational Inspection Case List)
 
 Nguồn: `Inspection Team` + `Inspection Team Target` (cùng nguồn Cụm 1/1c), grain 1 đoàn × 1 đối tượng. Phục vụ Nhóm 5. Lấy trực tiếp từ Atomic, không qua Dimension.
@@ -560,59 +656,103 @@ flowchart LR
 
 #### Nhóm 3 — Cơ cấu vi phạm theo loại hành vi (STT 3)
 
-> Reuse 100% `Fact Inspection Team Activity` (Nhóm 1/2). `Content` nằm trên `Inspection Team Dimension`.
 > Phân loại: **Phân tích**
-> Atomic: `Inspection Team` ← THANHTRA.INSPECTION_TEAM (`INSPECT.INSPECTION_TEAM`) — **READY** (reuse Nhóm 1/2)
+> Atomic: `Violation Record` ← THANHTRA.VIOLATION_RECORD — **READY** (`DataModel/Atomic/Business_Activity/dm_atm_violation_record-THANHTRA.VIOLATION_RECORD.yaml`)
+> Atomic: `Violation Record Behavior` ← THANHTRA.VIOLATION_RECORD_BEHAVIOR — **READY** (`DataModel/Atomic/Business_Activity/dm_atm_violation_record_behavior-THANHTRA.VIOLATION_RECORD_BEHAVIOR.yaml`)
+> Atomic: `Violation Behavior` ← THANHTRA.VIOLATION_BEHAVIOR — **READY** (`DataModel/Atomic/Business_Activity/dm_atm_violation_behavior-THANHTRA.VIOLATION_BEHAVIOR.yaml`, reuse Nhóm 13)
 > Ghi chú:
-> - Phân loại hành vi derive bằng text-matching trên `Inspection Team Dimension.Content` — không qua Classification Dimension/scheme: `CASE WHEN LOWER(Content) LIKE '%thao túng thị trường%' THEN 'Thao túng thị trường' WHEN LOWER(Content) LIKE '%cho mượn tài khoản%' THEN 'Cho mượn tài khoản' WHEN LOWER(Content) LIKE '%công bố thông tin%' THEN 'Công bố thông tin' ELSE NULL END`. Không khớp cả 3 mẫu → `NULL`, loại khỏi thống kê.
-> - "CBTT" là tên viết tắt hiển thị của "Công bố thông tin" — dùng `'Công bố thông tin'` làm giá trị so khớp/lưu trữ.
-> - **Sửa 2026-07-21 (phát hiện qua `/datamart-review`):** Đây là biểu đồ tròn GROUP BY theo 1 chiều phân loại — 3 pattern LIKE trong Mô tả BA chỉ là danh sách minh họa/suy đoán nghiệp vụ, không phải danh sách đầy đủ chắc chắn khớp mọi giá trị Content thực tế. Đồng bộ hoá với Nhóm 4/9 (cùng là pie chart group theo chiều): thiết kế lại 1 KPI Base tổng quát GROUP BY động (số lát/dòng kết quả tùy dữ liệu, không cố định N cặp Base/Derived) + 1 KPI Chiều. Tỷ lệ % chuyển xuống tầng Detail Mapping/Báo cáo (COUNT theo nhóm / SUM COUNT toàn bộ nhóm khớp ELSE NULL cùng năm × 100%).
+> - **Sửa 2026-08-07 (phát hiện qua `/datamart-review`):** BA cập nhật SQL tham khảo — thiết kế cũ dùng text-matching 3 pattern trên `Inspection Team Dimension.Content` (ELSE NULL, loại khỏi thống kê) không còn khớp. Nguồn đúng: `Violation Behavior.Violation Behavior Name` — danh mục hành vi chuẩn hoá thật, lấy qua join `Violation Record` (filter `Inspection_Team_Id IS NOT NULL`) → `Violation Record Behavior` → `Violation Behavior` (`Life_Cycle_Status_Code = 'ACTIVE'`). Không dùng lại đường JOIN của SQL BA (`VIOLATION_CASE → PENALTY_DECISION → PENALTY_DECISION_VIOLATION_RECORD`) vì `PENALTY_DECISION_VIOLATION_RECORD` chưa có Atomic YAML — `Violation Record` đã có sẵn FK trực tiếp `Inspection_Team_Id`, đường ngắn hơn và không cần Gap Atomic.
+> - Grain khác Nhóm 1/2 — 1 biên bản vi phạm (`VIOLATION_RECORD`) có thể ghi nhận N hành vi qua `VIOLATION_RECORD_BEHAVIOR` (N:1 với `Violation Record`, N:1 với `Violation Behavior`). Tách Fact riêng **Fact Inspection Team Violation Behavior** (grain 1 đoàn × 1 biên bản × 1 hành vi) — không gắn vào `Fact Inspection Team Activity` (grain 1 đoàn) để tránh fanout.
+> - `Violation_Behavior_Name` denormalize trực tiếp vào Dimension mới (không tách `Violation Behavior Dimension` riêng) — theo đúng pattern đã dùng ở `Penalty Decision Subject Behavior Dimension` (Nhóm 13).
+> - `Inspection_Team_Dimension_Id` là FK trên Fact, trỏ thẳng `Inspection Team Dimension` (Nhóm 1) — reuse, không denormalize `Inspection_Team_Code` vào Dimension mới.
+> - ELSE 'Khác' (không loại bỏ) khi `Violation_Behavior_Name` NULL — khác thiết kế cũ (ELSE NULL, loại khỏi thống kê).
 
 **Mockup:**
 
 ```mermaid
 pie title Cơ cấu vi phạm theo loại hành vi
-    "Công bố thông tin (CBTT)" : 40
+    "Công bố thông tin" : 40
     "Cho mượn tài khoản" : 35
     "Thao túng thị trường" : 25
 ```
 
-> Số lát pie chart thực tế tùy nội dung `Content` khớp pattern nào (tối đa 3 pattern BA định nghĩa, dòng không khớp bị loại khỏi thống kê) — mockup chỉ minh họa trường hợp phổ biến.
+> Số lát pie chart thực tế tùy giá trị `Violation_Behavior_Name` phát sinh trong data (GROUP BY động, không giới hạn số pattern) — mockup chỉ minh họa trường hợp phổ biến.
 
-**Source:** `Fact Inspection Team Activity` → `Calendar Date Dimension`, `Inspection Team Dimension`
+**Source:** `Fact Inspection Team Violation Behavior` → `Calendar Date Dimension`, `Inspection Team Dimension`, `Inspection Team Violation Behavior Dimension`
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
 |---|---|---|---|---|---|
-| K_TT_11 | Số vi phạm theo loại hành vi | Vụ | Base | COUNT(Fact_Inspection_Team_Activity JOIN Inspection Team Dimension) WHERE Year(Decision_Date)=selected_year AND [Content khớp 1 trong 3 pattern] GROUP BY CASE WHEN LOWER(Content) LIKE '%thao túng thị trường%' THEN 'Thao túng thị trường' WHEN LIKE '%cho mượn tài khoản%' THEN 'Cho mượn tài khoản' WHEN LIKE '%công bố thông tin%' THEN 'Công bố thông tin' ELSE NULL END | GROUP BY động — số dòng kết quả tùy Content khớp pattern nào (tối đa 3). Không khớp → NULL, loại khỏi thống kê. Tỷ lệ % tính ở tầng Báo cáo: COUNT(nhóm)/SUM(COUNT toàn bộ nhóm khớp cùng năm) × 100%, không phải KPI Derived |
-| K_TT_12 | Phân loại vi phạm | — | Chiều | `CASE WHEN LOWER(Inspection Team Dimension.Content) LIKE '%thao túng thị trường%' THEN 'Thao túng thị trường' WHEN LIKE '%cho mượn tài khoản%' THEN 'Cho mượn tài khoản' WHEN LIKE '%công bố thông tin%' THEN 'Công bố thông tin' ELSE NULL END` | Chiều lọc/nhóm dùng chung cho K_TT_11 |
+| K_TT_11 | Số vi phạm theo loại hành vi | Vụ | Base | COUNT(Fact_Inspection_Team_Violation_Behavior) WHERE Year(Decision_Date)=selected_year GROUP BY Violation_Behavior_Name | GROUP BY động — số dòng kết quả tùy `Violation_Behavior_Name` thực tế phát sinh. NULL → gộp 'Khác' (không loại bỏ). Tỷ lệ % tính ở tầng Báo cáo: COUNT(nhóm)/SUM(COUNT toàn bộ nhóm cùng năm) × 100%, không phải KPI Derived |
+| K_TT_12 | Phân loại vi phạm | — | Chiều | `COALESCE(Violation_Behavior_Name, 'Khác')` — lấy trực tiếp giá trị thực tế, GROUP BY động | Chiều lọc/nhóm dùng chung cho K_TT_11 |
 
-**Star Schema:** giống Nhóm 1 (reuse 100%, `Content` đã có sẵn trên Dimension từ Nhóm 1).
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Inspection_Team_Violation_Behavior : " "
+    Inspection_Team_Dimension ||--o{ Fact_Inspection_Team_Violation_Behavior : " "
+    Inspection_Team_Violation_Behavior_Dimension ||--o{ Fact_Inspection_Team_Violation_Behavior : " "
+    Fact_Inspection_Team_Violation_Behavior {
+        string Decision_Date_Dimension_Id FK
+        string Inspection_Team_Dimension_Id FK
+        string Inspection_Team_Violation_Behavior_Dimension_Id FK
+    }
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
+        int Year
+        int Quarter
+        int Month
+        int Day_Of_Week
+        string Is_Weekend
+        string Holiday_Flag
+    }
+    Inspection_Team_Dimension {
+        string Inspection_Team_Dimension_Id PK
+        varchar Inspection_Team_Code
+        date Start_Date
+        date End_Date
+        string Content
+        string Source_System_Code
+    }
+    Inspection_Team_Violation_Behavior_Dimension {
+        string Inspection_Team_Violation_Behavior_Dimension_Id PK
+        varchar Violation_Record_Behavior_Code
+        varchar Violation_Behavior_Name
+        string Source_System_Code
+    }
+```
+
+> `Inspection_Team_Dimension_Id` là FK trên Fact, trỏ thẳng tới `Inspection Team Dimension` (Nhóm 1) — Dimension hành vi (`Inspection_Team_Violation_Behavior_Dimension`) không lưu `Inspection_Team_Code`. Muốn lấy thuộc tính đoàn cha thì Fact join trực tiếp `Inspection Team Dimension` qua FK này.
+>
+> Field mapping Atomic source: `Violation_Record_Behavior_Code` ← `Violation Record Behavior.Violation Record Behavior Code` (`VIOLATION_RECORD_BEHAVIOR.ID`, BK per-row unique); `Violation_Behavior_Name` ← lookup `Violation Behavior.Violation Behavior Name` WHERE `Violation_Behavior_Id` = `Violation Record Behavior.Violation Behavior Id` (filter `Violation Behavior.Life_Cycle_Status_Code = 'ACTIVE'`); `Inspection_Team_Dimension_Id` ← lookup `Inspection_Team_Dimension` WHERE `Inspection_Team_Code` = `Violation Record.Inspection Team Code` (`VIOLATION_RECORD_BEHAVIOR.VIOLATION_RECORD_ID` join `VIOLATION_RECORD.ID`, filter `VIOLATION_RECORD.INSPECTION_TEAM_ID IS NOT NULL`). Decision_Date lấy từ `Inspection Team` (ETL join qua `Inspection_Team_Dimension_Id`). KPI COUNT() dùng `COUNT(DISTINCT Inspection_Team_Violation_Behavior_Dimension_Id)`.
 
 **Lineage Mart → Báo cáo:**
 
 ```mermaid
 flowchart LR
     subgraph Datamart["Datamart"]
-        G1["Fact Inspection Team Activity"]
+        G1["Fact Inspection Team Violation Behavior"]
         G2["Calendar Date Dimension"]
         G3["Inspection Team Dimension"]
+        G4["Inspection Team Violation Behavior Dimension"]
     end
     subgraph RPT["Báo cáo — Nhóm 3"]
         R1["K_TT_11-12: Cơ cấu vi phạm theo loại hành vi"]
     end
     G2 --> G1
     G3 --> G1
+    G4 --> G1
     G1 --> R1
 ```
 
 **Bảng grain:**
 
-| Tên bảng | Grain | Date key | Filter mặc định | Phân tích theo hành vi |
-|---|---|---|---|---|
-| Fact Inspection Team Activity | reuse — 1 đoàn thanh tra | `Decision_Date_Dimension_Id` | Year=selected_year | GROUP BY CASE WHEN LOWER(Inspection Team Dimension.Content) LIKE ... ở query time |
-| Inspection Team Dimension | reuse — 1 đoàn thanh tra (`INSPECTION_TEAM`), SCD Type 4A | — | — | — |
+| Tên bảng | Grain | Date key | Filter mặc định |
+|---|---|---|---|
+| Fact Inspection Team Violation Behavior | 1 đoàn thanh tra × 1 biên bản × 1 hành vi (`VIOLATION_RECORD` × `VIOLATION_RECORD_BEHAVIOR`, filter `INSPECTION_TEAM_ID IS NOT NULL`) — 3 FK: Calendar Date Dimension, Inspection Team Dimension, Inspection Team Violation Behavior Dimension | `Decision_Date_Dimension_Id` ← join Inspection Team → Calendar Date Dimension | Year=selected_year (slicer NĂM 202X) |
 
 ---
 
@@ -937,64 +1077,102 @@ flowchart LR
 #### Nhóm 8 — Cơ cấu kiểm tra theo loại hành vi (STT 8)
 
 > Phân loại: **Phân tích**
-> Atomic: `Examination Team` ← THANHTRA.EXAMINATION_TEAM (`INSPECT.EXAMINATION_TEAM`) — **READY** (reuse Nhóm 6/7)
+> Atomic: `Violation Record` ← THANHTRA.VIOLATION_RECORD — **READY** (reuse Nhóm 3)
+> Atomic: `Violation Record Behavior` ← THANHTRA.VIOLATION_RECORD_BEHAVIOR — **READY** (reuse Nhóm 3)
+> Atomic: `Violation Behavior` ← THANHTRA.VIOLATION_BEHAVIOR — **READY** (reuse Nhóm 3/13)
 > Ghi chú:
-> - Phân loại hành vi derive bằng text-matching trên `Examination Team Dimension.Content` — không qua Classification Dimension/scheme: `CASE WHEN LOWER(Content) LIKE '%công bố thông tin%' THEN 'Vi phạm CBTT' WHEN LOWER(Content) LIKE '%hoạt động chào bán%' THEN 'Vi phạm hoạt động chào bán' WHEN LOWER(Content) LIKE '%hoạt động của cổ động%' THEN 'Vi phạm hoạt động của Cổ đông nội bộ, cổ đông lớn' WHEN LOWER(Content) LIKE '%giao dịch%' THEN 'Giao dịch' WHEN LOWER(Content) LIKE '%công ty đại chúng%' THEN 'Vi phạm hoạt động của Công ty đại chúng' WHEN LOWER(Content) LIKE '%công ty chứng khoán%' THEN 'Vi phạm hoạt động của Công ty chứng khoán' WHEN LOWER(Content) LIKE '%tổ chức phát hành trái phiếu%' THEN 'Vi phạm hoạt động của tổ chức PHTP' WHEN LOWER(Content) LIKE '%thao túng%' THEN 'Thao túng' WHEN LOWER(Content) LIKE '%cho mượn%' THEN 'Cho mượn' WHEN LOWER(Content) LIKE '%tổ chức kiểm toán%' THEN 'Vi phạm hoạt động của tổ chức kiểm toán' WHEN LOWER(Content) LIKE '%sở giao dịch%' THEN 'Vi phạm hoạt động của sở giao dịch' ELSE NULL END`. Không khớp mẫu nào → `NULL`, loại khỏi thống kê.
-> - **Sửa 2026-07-21 (phát hiện qua `/datamart-review`):** Đây là biểu đồ tròn GROUP BY theo 1 chiều phân loại — 11 pattern LIKE trong Mô tả BA chỉ là danh sách minh họa/suy đoán nghiệp vụ, không phải danh sách đầy đủ chắc chắn khớp mọi giá trị Content thực tế. Đồng bộ hoá với Nhóm 4/9/3 (cùng là pie chart group theo chiều): thiết kế lại 1 KPI Base tổng quát GROUP BY động (số lát/dòng kết quả tùy dữ liệu, không cố định N cặp Base/Derived) + 1 KPI Chiều. Tỷ lệ % chuyển xuống tầng Detail Mapping/Báo cáo (COUNT theo nhóm / SUM COUNT toàn bộ nhóm khớp ELSE NULL cùng năm × 100%).
+> - **Sửa 2026-08-07 (phát hiện qua `/datamart-review`):** Đồng bộ với Nhóm 3 (Thanh tra) — BA cập nhật SQL tham khảo, thiết kế cũ dùng text-matching 11 pattern trên `Examination Team Dimension.Content` (ELSE NULL) không còn khớp. Nguồn đúng: `Violation Behavior.Violation Behavior Name`, lấy qua join `Violation Record` (filter `Examination_Team_Id IS NOT NULL`) → `Violation Record Behavior` → `Violation Behavior`. SQL BA Nhóm 8 không filter `Life_Cycle_Status_Code = 'ACTIVE'` (khác Nhóm 3) — giữ nguyên không filter theo đúng BA.
+> - Grain khác Nhóm 6/7 — 1 biên bản vi phạm có thể ghi nhận N hành vi. Tách Fact riêng **Fact Examination Team Violation Behavior** (grain 1 vụ kiểm tra × 1 biên bản × 1 hành vi), cùng kiến trúc Fact Inspection Team Violation Behavior (Nhóm 3).
+> - `Violation_Behavior_Name` denormalize vào Dimension mới, không tách `Violation Behavior Dimension` riêng — cùng pattern Nhóm 3.
+> - ELSE 'Khác' (không loại bỏ) khi `Violation_Behavior_Name` NULL.
 
 **Mockup:**
 
 ```mermaid
 pie title Cơ cấu kiểm tra theo loại hành vi
-    "CBTT" : 15
-    "Chào bán" : 12
-    "Cổ đông nội bộ/lớn" : 10
-    "Giao dịch" : 10
-    "CTĐC" : 10
-    "CTCK" : 10
-    "Tổ chức PHTP" : 8
-    "Thao túng" : 8
-    "Cho mượn" : 7
-    "Tổ chức kiểm toán" : 5
-    "Sở giao dịch" : 5
+    "Công bố thông tin" : 30
+    "Giao dịch" : 25
+    "Thao túng" : 20
+    "Khác" : 25
 ```
 
-> Số lát pie chart thực tế tùy nội dung `Content` khớp pattern nào (tối đa 11 pattern BA định nghĩa, dòng không khớp bị loại khỏi thống kê) — mockup chỉ minh họa trường hợp phổ biến.
+> Số lát pie chart thực tế tùy giá trị `Violation_Behavior_Name` phát sinh trong data (GROUP BY động) — mockup chỉ minh họa trường hợp phổ biến.
 
-**Source:** `Fact Examination Team Activity` → `Calendar Date Dimension`, `Examination Team Dimension`
+**Source:** `Fact Examination Team Violation Behavior` → `Calendar Date Dimension`, `Examination Team Dimension`, `Examination Team Violation Behavior Dimension`
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
 |---|---|---|---|---|---|
-| K_TT_30 | Số vi phạm theo loại hành vi (KT) | Cuộc | Base | COUNT(Fact_Examination_Team_Activity JOIN Examination Team Dimension) WHERE Year(Decision_Date)=selected_year AND [Content khớp 1 trong 11 pattern] GROUP BY CASE WHEN LOWER(Content) LIKE '%công bố thông tin%' THEN 'Vi phạm CBTT' WHEN LIKE '%hoạt động chào bán%' THEN 'Vi phạm hoạt động chào bán' WHEN LIKE '%hoạt động của cổ động%' THEN 'Vi phạm hoạt động của Cổ đông nội bộ, cổ đông lớn' WHEN LIKE '%giao dịch%' THEN 'Giao dịch' WHEN LIKE '%công ty đại chúng%' THEN 'Vi phạm hoạt động của Công ty đại chúng' WHEN LIKE '%công ty chứng khoán%' THEN 'Vi phạm hoạt động của Công ty chứng khoán' WHEN LIKE '%tổ chức phát hành trái phiếu%' THEN 'Vi phạm hoạt động của tổ chức PHTP' WHEN LIKE '%thao túng%' THEN 'Thao túng' WHEN LIKE '%cho mượn%' THEN 'Cho mượn' WHEN LIKE '%tổ chức kiểm toán%' THEN 'Vi phạm hoạt động của tổ chức kiểm toán' WHEN LIKE '%sở giao dịch%' THEN 'Vi phạm hoạt động của sở giao dịch' ELSE NULL END | GROUP BY động — số dòng kết quả tùy Content khớp pattern nào (tối đa 11). Không khớp → NULL, loại khỏi thống kê. Tỷ lệ % tính ở tầng Báo cáo: COUNT(nhóm)/SUM(COUNT toàn bộ nhóm khớp cùng năm) × 100%, không phải KPI Derived |
-| K_TT_31 | Phân loại hành vi | — | Chiều | `CASE WHEN LOWER(Examination Team Dimension.Content) LIKE '%công bố thông tin%' THEN 'Vi phạm CBTT' WHEN LIKE '%hoạt động chào bán%' THEN 'Vi phạm hoạt động chào bán' WHEN LIKE '%hoạt động của cổ động%' THEN 'Vi phạm hoạt động của Cổ đông nội bộ, cổ đông lớn' WHEN LIKE '%giao dịch%' THEN 'Giao dịch' WHEN LIKE '%công ty đại chúng%' THEN 'Vi phạm hoạt động của Công ty đại chúng' WHEN LIKE '%công ty chứng khoán%' THEN 'Vi phạm hoạt động của Công ty chứng khoán' WHEN LIKE '%tổ chức phát hành trái phiếu%' THEN 'Vi phạm hoạt động của tổ chức PHTP' WHEN LIKE '%thao túng%' THEN 'Thao túng' WHEN LIKE '%cho mượn%' THEN 'Cho mượn' WHEN LIKE '%tổ chức kiểm toán%' THEN 'Vi phạm hoạt động của tổ chức kiểm toán' WHEN LIKE '%sở giao dịch%' THEN 'Vi phạm hoạt động của sở giao dịch' ELSE NULL END` | Chiều lọc/nhóm dùng chung cho K_TT_30 |
+| K_TT_30 | Số vi phạm theo loại hành vi (KT) | Cuộc | Base | COUNT(Fact_Examination_Team_Violation_Behavior) WHERE Year(Decision_Date)=selected_year GROUP BY Violation_Behavior_Name | GROUP BY động — số dòng kết quả tùy `Violation_Behavior_Name` thực tế phát sinh. NULL → gộp 'Khác'. Tỷ lệ % tính ở tầng Báo cáo: COUNT(nhóm)/SUM(COUNT toàn bộ nhóm cùng năm) × 100%, không phải KPI Derived |
+| K_TT_31 | Phân loại hành vi | — | Chiều | `COALESCE(Violation_Behavior_Name, 'Khác')` — lấy trực tiếp giá trị thực tế, GROUP BY động | Chiều lọc/nhóm dùng chung cho K_TT_30 |
 
-**Star Schema:** giống Nhóm 6/7 (reuse 100%, `Content` đã có sẵn trên Dimension).
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Examination_Team_Violation_Behavior : " "
+    Examination_Team_Dimension ||--o{ Fact_Examination_Team_Violation_Behavior : " "
+    Examination_Team_Violation_Behavior_Dimension ||--o{ Fact_Examination_Team_Violation_Behavior : " "
+    Fact_Examination_Team_Violation_Behavior {
+        string Decision_Date_Dimension_Id FK
+        string Examination_Team_Dimension_Id FK
+        string Examination_Team_Violation_Behavior_Dimension_Id FK
+    }
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
+        int Year
+        int Quarter
+        int Month
+        int Day_Of_Week
+        string Is_Weekend
+        string Holiday_Flag
+    }
+    Examination_Team_Dimension {
+        string Examination_Team_Dimension_Id PK
+        varchar Examination_Team_Code
+        date Start_Date
+        date End_Date
+        string Content
+        string Source_System_Code
+    }
+    Examination_Team_Violation_Behavior_Dimension {
+        string Examination_Team_Violation_Behavior_Dimension_Id PK
+        varchar Violation_Record_Behavior_Code
+        varchar Violation_Behavior_Name
+        string Source_System_Code
+    }
+```
+
+> `Examination_Team_Dimension_Id` là FK trên Fact, trỏ thẳng tới `Examination Team Dimension` (Nhóm 6) — Dimension hành vi không lưu `Examination_Team_Code`.
+>
+> Field mapping Atomic source: giống hệt Nhóm 3, thay `Inspection_Team_Id`/`Inspection Team Code` bằng `Examination_Team_Id`/`Examination Team Code` (filter `VIOLATION_RECORD.EXAMINATION_TEAM_ID IS NOT NULL`), KHÔNG filter `Violation Behavior.Life_Cycle_Status_Code` (khác Nhóm 3, theo đúng SQL BA). KPI COUNT() dùng `COUNT(DISTINCT Examination_Team_Violation_Behavior_Dimension_Id)`.
 
 **Lineage Mart → Báo cáo:**
 
 ```mermaid
 flowchart LR
     subgraph Datamart["Datamart"]
-        G1["Fact Examination Team Activity"]
+        G1["Fact Examination Team Violation Behavior"]
         G2["Calendar Date Dimension"]
         G3["Examination Team Dimension"]
+        G4["Examination Team Violation Behavior Dimension"]
     end
     subgraph RPT["Báo cáo — Nhóm 8"]
         R1["K_TT_30-31: Cơ cấu kiểm tra theo loại hành vi"]
     end
     G2 --> G1
     G3 --> G1
+    G4 --> G1
     G1 --> R1
 ```
 
 **Bảng grain:**
 
-| Tên bảng | Grain | Date key | Filter mặc định | Phân tích theo hành vi |
-|---|---|---|---|---|
-| Fact Examination Team Activity | reuse — 1 vụ việc kiểm tra | `Decision_Date_Dimension_Id` | Year=selected_year | GROUP BY CASE WHEN LOWER(Examination Team Dimension.Content) LIKE ... ở query time |
-| Examination Team Dimension | reuse — 1 vụ việc kiểm tra (`EXAMINATION_TEAM`), SCD Type 4A | — | — | — |
+| Tên bảng | Grain | Date key | Filter mặc định |
+|---|---|---|---|
+| Fact Examination Team Violation Behavior | 1 vụ kiểm tra × 1 biên bản × 1 hành vi (`VIOLATION_RECORD` × `VIOLATION_RECORD_BEHAVIOR`, filter `EXAMINATION_TEAM_ID IS NOT NULL`) — 3 FK: Calendar Date Dimension, Examination Team Dimension, Examination Team Violation Behavior Dimension | `Decision_Date_Dimension_Id` ← join Examination Team → Calendar Date Dimension | Year=selected_year (slicer NĂM 202X) |
 
 ---
 
@@ -1320,29 +1498,23 @@ flowchart LR
 > Atomic: `Penalty Decision Subject Behavior` ← THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR (`INSPECT.PENALTY_DECISION_SUBJECT_BEHAVIOR`) — **READY** (`DataModel/Atomic/Event/dm_atm_pd_subject_behavior-THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR.yaml`)
 > Atomic: `Violation Behavior` ← THANHTRA.VIOLATION_BEHAVIOR (`INSPECT.VIOLATION_BEHAVIOR`) — **READY** (`DataModel/Atomic/Business_Activity/dm_atm_violation_behavior-THANHTRA.VIOLATION_BEHAVIOR.yaml`)
 > Ghi chú:
-> - Field nguồn: `Violation Behavior.Violation Behavior Name` (← `VIOLATION_BEHAVIOR.NAME`). Phân loại hành vi derive bằng text-matching trên `Violation_Behavior_Name` (không qua Classification Dimension): `CASE WHEN LOWER(Name) LIKE '%công bố thông tin%' THEN 'CBTT' WHEN LIKE '%hoạt động chào bán%' THEN 'Vi phạm hoạt động chào bán' WHEN LIKE '%cổ đông%' THEN 'Vi phạm hoạt động của cổ đông nội bộ, cổ đông lớn' WHEN LIKE '%giao dịch%' THEN 'Vi phạm hoạt động giao dịch' WHEN LIKE '%công ty đại chúng%' THEN 'Vi phạm hoạt động của CTĐC' WHEN LIKE '%công ty chứng khoán%' THEN 'Vi phạm hoạt động của CTCK' WHEN LIKE '%tổ chức phát hành trái phiếu%' THEN 'Vi phạm hoạt động của tổ chức PHTP' WHEN LIKE '%thao túng%' THEN 'Vi phạm hoạt động thao túng' WHEN LIKE '%cho mượn%' THEN 'Vi phạm hoạt động cho mượn' WHEN LIKE '%tổ chức kiểm toán%' THEN 'Vi phạm hoạt động của tổ chức kiểm toán' WHEN LIKE '%sở giao dịch%' THEN 'Vi phạm hoạt động của sở giao dịch' ELSE NULL END`.
+> - Field nguồn: `Violation Behavior.Violation Behavior Name` (← `VIOLATION_BEHAVIOR.NAME`), lấy trực tiếp giá trị thật — GROUP BY động, không giới hạn danh sách pattern cố định.
 > - Grain khác Nhóm 11/12 — 4-way join `PENALTY_DECISION` → `PENALTY_DECISION_SUBJECT` → `PENALTY_DECISION_SUBJECT_BEHAVIOR` → `VIOLATION_BEHAVIOR`. Tách riêng **Fact Penalty Decision Subject Behavior**.
 > - Date key: `Issued_Date` (← `PENALTY_DECISION.ISSUED_DATE`, qua join với Penalty Decision).
-> - **Sửa 2026-07-21 (phát hiện qua `/datamart-review`):** Đây là biểu đồ tròn GROUP BY theo 1 chiều phân loại — 11 pattern LIKE trong Mô tả BA chỉ là danh sách minh họa/suy đoán nghiệp vụ, không phải danh sách đầy đủ chắc chắn khớp mọi giá trị `Violation_Behavior_Name` thực tế. Đồng bộ hoá với Nhóm 3/4/8/9 (cùng là pie chart group theo chiều): thiết kế lại 1 KPI Base tổng quát GROUP BY động (số lát/dòng kết quả tùy dữ liệu, không cố định N cặp Base/Derived) + 1 KPI Chiều. Tỷ lệ % chuyển xuống tầng Detail Mapping/Báo cáo (COUNT theo nhóm / SUM COUNT toàn bộ nhóm khớp ELSE NULL cùng năm × 100%).
+> - **Sửa 2026-07-21 (phát hiện qua `/datamart-review`):** Đây là biểu đồ tròn GROUP BY theo 1 chiều phân loại — thiết kế lại 1 KPI Base tổng quát GROUP BY động + 1 KPI Chiều. Tỷ lệ % chuyển xuống tầng Detail Mapping/Báo cáo.
+> - **Sửa 2026-08-07 (phát hiện qua `/datamart-review`, đối chiếu sâu SQL BA đầy đủ):** BA đã cập nhật SQL tham khảo — bỏ hẳn text-matching 11 pattern LIKE (`CASE WHEN LOWER(Name) LIKE '%...' THEN ... ELSE NULL END`), chuyển sang lấy trực tiếp `Violation_Behavior_Name` thật (`CASE WHEN Name IS NOT NULL THEN Name ELSE 'Khác' END`, GROUP BY động không giới hạn, ELSE 'Khác' — không loại bỏ dữ liệu không khớp). Không cần đổi cấu trúc Attributes/Dimension — `Violation_Behavior_Name` đã có sẵn trên `Penalty Decision Subject Behavior Dimension`, chỉ đổi công thức KPI. Xem O_TT_12. **Không ảnh hưởng Nhóm 20** — Nhóm 20 dùng công thức "Loại hình xử lý" riêng (6 nhóm cố định + "Vi phạm khác"), BA không đổi SQL Nhóm 20, 2 Nhóm độc lập nhau dù cùng dùng 1 Dimension.
 
 **Mockup:**
 
 ```mermaid
 pie title Cơ cấu xử phạt theo loại hành vi
-    "CBTT" : 20
-    "Chào bán" : 15
-    "Cổ đông nội bộ" : 10
-    "Giao dịch" : 10
-    "CTĐC" : 10
-    "CTCK" : 10
-    "Tổ chức PHTP" : 8
-    "Thao túng" : 7
-    "Cho mượn" : 5
-    "Tổ chức KT" : 3
-    "Sở giao dịch" : 2
+    "Công bố thông tin" : 20
+    "Chào bán chứng khoán" : 15
+    "Thao túng thị trường" : 15
+    "Khác" : 50
 ```
 
-> Số lát pie chart thực tế tùy `Violation_Behavior_Name` khớp pattern nào (tối đa 11 pattern BA định nghĩa, dòng không khớp bị loại khỏi thống kê) — mockup chỉ minh họa trường hợp phổ biến.
+> Số lát pie chart thực tế tùy giá trị `Violation_Behavior_Name` phát sinh trong data (GROUP BY động, không giới hạn số pattern) — mockup chỉ minh họa trường hợp phổ biến.
 
 **Source:** `Fact Penalty Decision Subject Behavior` → `Calendar Date Dimension`
 
@@ -1350,8 +1522,8 @@ pie title Cơ cấu xử phạt theo loại hành vi
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
 |---|---|---|---|---|---|
-| K_TT_46 | Số QĐ XP theo loại hành vi | Cuộc | Base | COUNT(Fact_Penalty_Decision_Subject_Behavior) WHERE Year(Issued_Date)=selected_year AND [Violation_Behavior_Name khớp 1 trong 11 pattern] GROUP BY CASE WHEN LOWER(Violation_Behavior_Name) LIKE '%công bố thông tin%' THEN 'CBTT' WHEN LIKE '%hoạt động chào bán%' THEN 'Vi phạm hoạt động chào bán' WHEN LIKE '%cổ đông%' THEN 'Vi phạm hoạt động của cổ đông nội bộ, cổ đông lớn' WHEN LIKE '%giao dịch%' THEN 'Vi phạm hoạt động giao dịch' WHEN LIKE '%công ty đại chúng%' THEN 'Vi phạm hoạt động của CTĐC' WHEN LIKE '%công ty chứng khoán%' THEN 'Vi phạm hoạt động của CTCK' WHEN LIKE '%tổ chức phát hành trái phiếu%' THEN 'Vi phạm hoạt động của tổ chức PHTP' WHEN LIKE '%thao túng%' THEN 'Vi phạm hoạt động thao túng' WHEN LIKE '%cho mượn%' THEN 'Vi phạm hoạt động cho mượn' WHEN LIKE '%tổ chức kiểm toán%' THEN 'Vi phạm hoạt động của tổ chức kiểm toán' WHEN LIKE '%sở giao dịch%' THEN 'Vi phạm hoạt động của sở giao dịch' ELSE NULL END | GROUP BY động — số dòng kết quả tùy Violation_Behavior_Name khớp pattern nào (tối đa 11). Không khớp → NULL, loại khỏi thống kê. Tỷ lệ % tính ở tầng Báo cáo: COUNT(nhóm)/SUM(COUNT toàn bộ nhóm khớp cùng năm) × 100%, không phải KPI Derived |
-| K_TT_47 | Phân loại hành vi | — | Chiều | `CASE WHEN LOWER(Violation Behavior.Violation_Behavior_Name) LIKE '%công bố thông tin%' THEN 'CBTT' WHEN LIKE '%hoạt động chào bán%' THEN 'Vi phạm hoạt động chào bán' WHEN LIKE '%cổ đông%' THEN 'Vi phạm hoạt động của cổ đông nội bộ, cổ đông lớn' WHEN LIKE '%giao dịch%' THEN 'Vi phạm hoạt động giao dịch' WHEN LIKE '%công ty đại chúng%' THEN 'Vi phạm hoạt động của CTĐC' WHEN LIKE '%công ty chứng khoán%' THEN 'Vi phạm hoạt động của CTCK' WHEN LIKE '%tổ chức phát hành trái phiếu%' THEN 'Vi phạm hoạt động của tổ chức PHTP' WHEN LIKE '%thao túng%' THEN 'Vi phạm hoạt động thao túng' WHEN LIKE '%cho mượn%' THEN 'Vi phạm hoạt động cho mượn' WHEN LIKE '%tổ chức kiểm toán%' THEN 'Vi phạm hoạt động của tổ chức kiểm toán' WHEN LIKE '%sở giao dịch%' THEN 'Vi phạm hoạt động của sở giao dịch' ELSE NULL END` | Chiều lọc/nhóm dùng chung cho K_TT_46 |
+| K_TT_46 | Số QĐ XP theo loại hành vi | Cuộc | Base | COUNT(Fact_Penalty_Decision_Subject_Behavior) WHERE Year(Issued_Date)=selected_year GROUP BY COALESCE(Violation_Behavior_Name, 'Khác') | Sửa 2026-08-07 — GROUP BY động trên giá trị thật, NULL gộp 'Khác' (không loại bỏ). Tỷ lệ % tính ở tầng Báo cáo: COUNT(nhóm)/SUM(COUNT toàn bộ nhóm cùng năm) × 100%, không phải KPI Derived |
+| K_TT_47 | Phân loại hành vi | — | Chiều | `COALESCE(Violation Behavior.Violation_Behavior_Name, 'Khác')` — lấy trực tiếp giá trị thực tế, GROUP BY động | Chiều lọc/nhóm dùng chung cho K_TT_46. Sửa 2026-08-07 — xem ghi chú K_TT_46 |
 
 **Star Schema:**
 
@@ -1533,7 +1705,8 @@ flowchart LR
 > Atomic: `Violation Case` ← THANHTRA.VIOLATION_CASE (`INSPECT.VIOLATION_CASE`) — **READY** (`DataModel/Atomic/Business_Activity/dm_atm_violation_case-THANHTRA.VIOLATION_CASE.yaml`)
 > Ghi chú:
 > - Grain giống Fact Penalty Decision Subject (Nhóm 14) — 1 QĐ × 1 đối tượng. Không reuse Fact Penalty Decision Subject vì khác `table_type` (`fact` vs `operational`).
-> - Cột **"Mã vụ việc"** ← `Penalty Decision.Penalty Decision Code` (`PENALTY_DECISION.ID`)
+> - **Sửa 2026-08-07 (phát hiện qua `/datamart-review`):** Cột **"Mã vụ việc"** đổi nguồn từ `Penalty Decision.Penalty Decision Code` (mã quyết định xử phạt) sang `Violation Case.Violation Case Code` (mã hồ sơ thanh tra/kiểm tra gốc) — BA xác nhận SQL tham khảo lấy `VIOLATION_CASE.CODE`, không phải `PENALTY_DECISION.ID`. Join qua `Penalty Decision.Violation_Case_Id` (đã có sẵn trong scope, dùng chung JOIN với cột "Loại hình").
+> - Cột **"Mã vụ việc"** ← `Violation Case.Violation Case Code` (`VIOLATION_CASE.CODE`, join qua `PENALTY_DECISION.VIOLATION_CASE_ID = VIOLATION_CASE.ID`)
 > - Cột **"Đối tượng"** ← `Penalty Decision Subject.Subject Name` (`PENALTY_DECISION_SUBJECT.SUBJECT_NAME`)
 > - Cột **"Phân loại đối tượng"** ← `Penalty Decision Subject.Subject Type Code` (`PENALTY_DECISION_SUBJECT.SUBJECT_TYPE`), lấy nguyên giá trị thực tế (INDIVIDUAL/ORGANIZATION)
 > - Cột **"Loại hình"** ← ETL-derived: `PENALTY_DECISION.VIOLATION_CASE_ID` → `Violation Case` → nếu `Inspection_Team_Id IS NOT NULL` thì lấy `Inspection Team.Form_Type_Code`, nếu `Examination_Team_Id IS NOT NULL` thì lấy `Examination Team.Form_Type_Code` (Định kỳ/Đột xuất, scheme `TT_REVIEW_FORM_TYPE`) — nullable nếu hồ sơ không phát sinh từ đoàn TT/KT.
@@ -1554,7 +1727,7 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
 |---|---|---|---|---|---|
-| K_TT_50 | Mã vụ việc | — | Attribute | `Penalty Decision Subject.Penalty Decision Code` | |
+| K_TT_50 | Mã vụ việc | — | Attribute | `Violation Case.Violation Case Code` (join qua Penalty Decision) | Sửa 2026-08-07 — trước đây dùng `Penalty Decision Code`, đổi sang mã hồ sơ TT/KT gốc |
 | K_TT_51 | Đối tượng | — | Attribute | `Penalty Decision Subject.Subject Name` | |
 | K_TT_52 | Phân loại đối tượng | — | Attribute | `Penalty Decision Subject.Subject Type Code` | |
 | K_TT_53 | Loại hình | — | Attribute | ETL-derived qua `Violation Case` → `Inspection Team`/`Examination Team` | nullable nếu hồ sơ không từ đoàn TT/KT |
@@ -1565,7 +1738,8 @@ flowchart LR
 ```mermaid
 erDiagram
     Operational_Penalty_Decision_List {
-        varchar Penalty_Decision_Code PK
+        varchar Penalty_Decision_Subject_Code PK
+        varchar Violation_Case_Code
         varchar Subject_Name
         varchar Subject_Type_Code
         varchar Form_Type_Code
@@ -1813,7 +1987,7 @@ flowchart LR
 > - Filter theo tháng (`LAST_DAY(a.ISSUED_DATE) = LAST_DAY(TO_DATE(:filter_month,'MM/YYYY'))`), khác slicer Năm của Nhóm 11-15.
 > - Phân loại **6 nhóm "Loại hình xử lý"** derive bằng text-matching trên `Violation_Behavior_Name`: `CASE WHEN (LOWER(Name) LIKE '%công ty đại chúng%' OR LIKE '%tổ chức chào bán chứng khoán%') THEN 'Vi phạm của CTĐC, tổ chức CBCK' WHEN LIKE '%công ty chứng khoán%' THEN 'Vi phạm của CTCK' WHEN LIKE '%công ty quản lý quỹ%' THEN 'Vi phạm của CTQLQ' WHEN LIKE '%cổ đông%' THEN 'Vi phạm của CĐ lớn, CĐ nội bộ, người có liên quan của CĐ nội bộ' WHEN LIKE '%giao dịch%' THEN 'Vi phạm giao dịch thao túng, giao dịch nội bộ' WHEN LIKE '%chào bán chứng khoán%' THEN 'Vi phạm về CBCK' ELSE 'Vi phạm khác' END`. Khác Nhóm 13 ở chỗ dùng `ELSE 'Vi phạm khác'` (không loại NULL) — mọi hành vi không khớp 6 mẫu đều gộp vào nhóm "Vi phạm khác".
 > - 2 measure mỗi nhóm: `COUNT(DISTINCT Penalty_Decision_Subject_Behavior_Dimension_Id)` (số lượng) và `ROUND(SUM(Total_Fine_Amount)/1000000, 2)` (số tiền, triệu đồng).
-> - Số tiền KHÔNG lấy trực tiếp `Total_Fine_Amount` trên Fact (Fact không có measure này — xem Nhóm 13). Vì 1 đối tượng có thể có nhiều hành vi, SUM thẳng theo `Penalty_Decision_Subject.Total_Fine_Amount` sẽ đếm lặp mỗi khi 1 đối tượng khớp ≥2 hành vi trong cùng nhóm. Công thức đúng: pre-aggregate theo `Penalty_Decision_Subject_Code` trước khi SUM —
+> - **Sửa/ghi chú 2026-08-07 (phát hiện qua `/datamart-review`, đối chiếu sâu SQL BA đầy đủ):** SQL tham khảo của BA dùng `SUM(a.TOTAL_FINE_AMOUNT)` trực tiếp trên `PENALTY_DECISION` (alias `a`, grain 1 QĐ) trong khi query có `LEFT JOIN` qua `PENALTY_DECISION_SUBJECT` → `PENALTY_DECISION_SUBJECT_BEHAVIOR` → `VIOLATION_BEHAVIOR` (không `DISTINCT`) — nếu 1 QĐ có N đối tượng × M hành vi, `a.TOTAL_FINE_AMOUNT` bị lặp N×M lần trước `GROUP BY`, khiến `SUM` thổi phồng theo số dòng fanout thay vì phản ánh đúng số tiền phạt thật. Thiết kế Datamart **cố ý không copy nguyên SQL tham khảo này** — pre-aggregate theo `Penalty_Decision_Subject_Code` trước khi SUM (xem công thức dưới) để tránh đúng lỗi fanout tiềm ẩn đó. Số tiền KHÔNG lấy trực tiếp `Total_Fine_Amount` trên Fact (Fact không có measure này — xem Nhóm 13). Vì 1 đối tượng có thể có nhiều hành vi, SUM thẳng theo `Penalty_Decision_Subject.Total_Fine_Amount` sẽ đếm lặp mỗi khi 1 đối tượng khớp ≥2 hành vi trong cùng nhóm. Công thức đúng: pre-aggregate theo `Penalty_Decision_Subject_Code` trước khi SUM —
 >   ```sql
 >   SELECT Loai_hinh_xu_ly, SUM(subject_total_fine_amount) AS total_fine
 >   FROM (
@@ -1907,10 +2081,14 @@ graph TB
     DIM_PENDECISION(["Penalty Decision Dimension"]):::dim
     DIM_PENSUBJECT(["Penalty Decision Subject Dimension"]):::dim
     DIM_PENBEHAVIOR(["Penalty Decision Subject Behavior Dimension"]):::dim
+    DIM_INSPVIOLBEHAVIOR(["Inspection Team Violation Behavior Dimension"]):::dim
+    DIM_EXAMVIOLBEHAVIOR(["Examination Team Violation Behavior Dimension"]):::dim
     FACT_INSPTEAM(["Fact Inspection Team Activity"]):::fact
     FACT_EXAMTEAM(["Fact Examination Team Activity"]):::fact
     FACT_INSPTARGET(["Fact Inspection Team Target Activity"]):::fact
     FACT_EXAMTARGET(["Fact Examination Team Target Activity"]):::fact
+    FACT_INSPVIOLBEHAVIOR(["Fact Inspection Team Violation Behavior"]):::fact
+    FACT_EXAMVIOLBEHAVIOR(["Fact Examination Team Violation Behavior"]):::fact
     FACT_PEN(["Fact Penalty Decision"]):::fact
     FACT_PENBEHAVIOR(["Fact Penalty Decision Subject Behavior"]):::fact
     FACT_PENSUBJECT(["Fact Penalty Decision Subject"]):::fact
@@ -1929,6 +2107,12 @@ graph TB
     DIM_DATE --> FACT_EXAMTARGET
     DIM_EXAMTARGET --> FACT_EXAMTARGET
     DIM_EXAMTEAM --> FACT_EXAMTARGET
+    DIM_DATE --> FACT_INSPVIOLBEHAVIOR
+    DIM_INSPTEAM --> FACT_INSPVIOLBEHAVIOR
+    DIM_INSPVIOLBEHAVIOR --> FACT_INSPVIOLBEHAVIOR
+    DIM_DATE --> FACT_EXAMVIOLBEHAVIOR
+    DIM_EXAMTEAM --> FACT_EXAMVIOLBEHAVIOR
+    DIM_EXAMVIOLBEHAVIOR --> FACT_EXAMVIOLBEHAVIOR
     DIM_DATE --> FACT_PEN
     DIM_PENDECISION --> FACT_PEN
     DIM_DATE --> FACT_PENBEHAVIOR
@@ -1944,10 +2128,12 @@ graph TB
 
 | Bảng | Pattern | Grain | KPI | Trạng thái |
 |---|---|---|---|---|
-| Fact Inspection Team Activity | Event | 1 đoàn thanh tra (`INSPECTION_TEAM`) — 2 FK: Calendar Date Dimension, Inspection Team Dimension. Date key: Decision Date | K_TT_1–7 (Nhóm 1), K_TT_8–10 (Nhóm 2), K_TT_11–12 (Nhóm 3) | READY — xem Cụm 1 |
-| Fact Examination Team Activity | Event | 1 vụ việc kiểm tra (`EXAMINATION_TEAM`) — 2 FK: Calendar Date Dimension, Examination Team Dimension. Date key: Decision Date | K_TT_20–26 (Nhóm 6), K_TT_27–29 (Nhóm 7), K_TT_30–31 (Nhóm 8) | READY — xem Cụm 1b |
+| Fact Inspection Team Activity | Event | 1 đoàn thanh tra (`INSPECTION_TEAM`) — 2 FK: Calendar Date Dimension, Inspection Team Dimension. Date key: Decision Date | K_TT_1–7 (Nhóm 1), K_TT_8–10 (Nhóm 2) | READY — xem Cụm 1 |
+| Fact Examination Team Activity | Event | 1 vụ việc kiểm tra (`EXAMINATION_TEAM`) — 2 FK: Calendar Date Dimension, Examination Team Dimension. Date key: Decision Date | K_TT_20–26 (Nhóm 6), K_TT_27–29 (Nhóm 7) | READY — xem Cụm 1b |
 | Fact Inspection Team Target Activity | Event | 1 đoàn thanh tra × 1 đối tượng (`INSPECTION_TEAM` × `INSPECTION_TEAM_TARGET`, N:1) — 3 FK: Calendar Date Dimension, Inspection Team Target Dimension, Inspection Team Dimension. Date key: Decision Date (join qua Inspection Team) | K_TT_13–14 (Nhóm 4) | READY — xem Cụm 1c |
 | Fact Examination Team Target Activity | Event | 1 vụ kiểm tra × 1 đối tượng (`EXAMINATION_TEAM` × `EXAMINATION_TEAM_TARGET`, N:1) — 3 FK: Calendar Date Dimension, Examination Team Target Dimension, Examination Team Dimension. Date key: Decision Date (join qua Examination Team) | K_TT_32–33 (Nhóm 9) | READY — xem Cụm 1d |
+| Fact Inspection Team Violation Behavior | Event | 1 đoàn thanh tra × 1 biên bản × 1 hành vi (`VIOLATION_RECORD` × `VIOLATION_RECORD_BEHAVIOR`, filter `INSPECTION_TEAM_ID IS NOT NULL`) — 3 FK: Calendar Date Dimension, Inspection Team Dimension, Inspection Team Violation Behavior Dimension. Date key: Decision Date (join qua Inspection Team) | K_TT_11–12 (Nhóm 3) | READY — xem Nhóm 3 |
+| Fact Examination Team Violation Behavior | Event | 1 vụ kiểm tra × 1 biên bản × 1 hành vi (`VIOLATION_RECORD` × `VIOLATION_RECORD_BEHAVIOR`, filter `EXAMINATION_TEAM_ID IS NOT NULL`) — 3 FK: Calendar Date Dimension, Examination Team Dimension, Examination Team Violation Behavior Dimension. Date key: Decision Date (join qua Examination Team) | K_TT_30–31 (Nhóm 8) | READY — xem Nhóm 8 |
 | Fact Penalty Decision | Event | 1 quyết định xử phạt (`PENALTY_DECISION`) — 2 FK: Calendar Date Dimension, Penalty Decision Dimension. Date key: Issued Date | K_TT_39–43 (Nhóm 11), K_TT_44–45 (Nhóm 12) | READY — xem Cụm 3 |
 | Fact Penalty Decision Subject Behavior | Event | 1 QĐ × 1 đối tượng × 1 hành vi (`PENALTY_DECISION` × `PENALTY_DECISION_SUBJECT` × `PENALTY_DECISION_SUBJECT_BEHAVIOR` × `VIOLATION_BEHAVIOR`, 4-way join) — 4 FK: Calendar Date Dimension, Penalty Decision Subject Behavior Dimension, Penalty Decision Dimension, Penalty Decision Subject Dimension. Date key: Issued Date (join qua Penalty Decision) | K_TT_46–47 (Nhóm 13), K_TT_70–84 (Nhóm 20 — reuse) | READY — xem Cụm 3b |
 | Fact Penalty Decision Subject | Event | 1 QĐ × 1 đối tượng (`PENALTY_DECISION` × `PENALTY_DECISION_SUBJECT`, N:1) — 3 FK: Calendar Date Dimension, Penalty Decision Subject Dimension, Penalty Decision Dimension. Date key: Issued Date (join qua Penalty Decision) | K_TT_48–49 (Nhóm 14) | READY — xem Cụm 3c |
@@ -1976,6 +2162,8 @@ graph TB
 | Penalty Decision Dimension | Reference per module | Thuộc tính định danh quyết định xử phạt — `Penalty_Decision_Code` (BK, PK nguồn `THANHTRA.PENALTY_DECISION.ID`). `Total_Fine_Amount` vẫn là measure trên Fact Penalty Decision, không chuyển sang Dimension này | READY |
 | Penalty Decision Subject Dimension | Reference per module | Thuộc tính mô tả đối tượng bị xử phạt — `Penalty_Decision_Subject_Code` (BK, per-row unique — PK nguồn `THANHTRA.PENALTY_DECISION_SUBJECT.ID`), `Subject_Type_Code`. Không chứa `Penalty_Decision_Code` (FK riêng `Penalty_Decision_Dimension_Id` trên Fact) | READY |
 | Penalty Decision Subject Behavior Dimension | Reference per module | Thuộc tính mô tả hành vi vi phạm bị xử phạt theo từng đối tượng — `Penalty_Decision_Subject_Behavior_Code` (BK, per-row unique — PK nguồn `THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR.ID`), `Violation_Behavior_Name`. Không chứa `Penalty_Decision_Code`/`Penalty_Decision_Subject_Code` (2 FK riêng trên Fact) | READY |
+| Inspection Team Violation Behavior Dimension | Reference per module | Thuộc tính mô tả hành vi vi phạm ghi nhận qua biên bản của đoàn thanh tra — `Violation_Record_Behavior_Code` (BK, per-row unique — PK nguồn `THANHTRA.VIOLATION_RECORD_BEHAVIOR.ID`), `Violation_Behavior_Name`. Không chứa `Inspection_Team_Code` (FK riêng `Inspection_Team_Dimension_Id` trên Fact — xem Nhóm 3) | READY |
+| Examination Team Violation Behavior Dimension | Reference per module | Thuộc tính mô tả hành vi vi phạm ghi nhận qua biên bản của đoàn kiểm tra — `Violation_Record_Behavior_Code` (BK, per-row unique), `Violation_Behavior_Name`. Không chứa `Examination_Team_Code` (FK riêng trên Fact — xem Nhóm 8) | READY |
 
 ---
 
@@ -1999,6 +2187,10 @@ graph TB
 | Fact Penalty Decision | fct_penalty_decision | partial | Nguồn `PENALTY_DECISION`. FK `Penalty_Decision_Dimension_Id` trỏ tới Penalty Decision Dimension; `Total_Fine_Amount` là measure trên Fact |
 | Fact Penalty Decision Subject Behavior | fct_penalty_decision_subject_behavior | partial | Nhóm 13 tách riêng grain 4-way join. 2 FK trên Fact trỏ tới Penalty Decision Dimension và Penalty Decision Subject Dimension. Không có measure `Total_Fine_Amount` (thuộc grain QĐ/đối tượng, không phải grain Fact này — xem Nhóm 20 cách tính số tiền qua pre-aggregate) |
 | Fact Penalty Decision Subject | fct_penalty_decision_subject | partial | Nhóm 14 tách riêng grain 2-way join. FK `Penalty_Decision_Dimension_Id` trên Fact trỏ tới Penalty Decision Dimension |
+| Inspection Team Violation Behavior Dimension | inspection_team_violation_behavior_dim | new | 2026-08-07 — tách khỏi Fact Inspection Team Violation Behavior. BK = `violation_record_behavior_code` (PK nguồn UUID). Thay thế thiết kế cũ (text-matching trên `Inspection Team Dimension.Content`) |
+| Examination Team Violation Behavior Dimension | examination_team_violation_behavior_dim | new | 2026-08-07 — cùng lý do và kiến trúc Inspection Team Violation Behavior Dimension |
+| Fact Inspection Team Violation Behavior | fct_inspection_team_violation_behavior | new | 2026-08-07 — Nhóm 3 thiết kế lại (phát hiện qua `/datamart-review`). Nguồn `Violation Record` + `Violation Record Behavior` + `Violation Behavior`, thay thế thiết kế cũ reuse `Fact Inspection Team Activity` |
+| Fact Examination Team Violation Behavior | fct_examination_team_violation_behavior | new | 2026-08-07 — Nhóm 8 thiết kế lại, cùng kiến trúc Fact Inspection Team Violation Behavior |
 | Operational Inspection Case List | opr_inspection_case_list | new | Không reuse `securities_company_compliance_hist` (module QLKD) — khác `table_type` và mục đích. Đã merge vào registry qua Phase 1 LLD |
 | Operational Examination Case List | opr_examination_case_list | new | Nhóm 10 tách riêng, không reuse `Operational Inspection Case List` (khác nguồn Atomic). Đã merge vào registry qua Phase 1 LLD |
 | Operational Penalty Decision List | opr_penalty_decision_list | new | Nhóm 15, nguồn `PENALTY_DECISION`/`PENALTY_DECISION_SUBJECT`/`VIOLATION_CASE`. Đã merge vào registry qua Phase 1 LLD |
@@ -2010,7 +2202,7 @@ graph TB
 
 | ID | Vấn đề | Kết luận | KPI liên quan | Trạng thái |
 |---|---|---|---|---|
-| O_TT_1 | `Violation_Type_Code` — 1 hồ sơ có thể có nhiều kết luận (sơ bộ/chính thức/bổ sung). | ETL lấy kết luận có `MAX(Conclusion_Sequence_Number)` per hồ sơ — grain Fact không fanout. | K_TT_11–12 | **Closed** |
+| O_TT_1 | `Violation_Type_Code` — 1 hồ sơ có thể có nhiều kết luận (sơ bộ/chính thức/bổ sung). | **Superseded 2026-08-07** — Nhóm 3/8 thiết kế lại hoàn toàn theo nguồn `Violation Record`/`Violation Record Behavior`/`Violation Behavior` (xem O_TT_11), không còn dùng `Violation_Type_Code` derive từ text-matching Content. Vấn đề gốc (nhiều kết luận/hồ sơ) không còn áp dụng — grain mới là 1 biên bản × 1 hành vi, không phải 1 hồ sơ. | K_TT_11–12 | **Closed (Superseded)** |
 | O_TT_2 | "Số ngày trễ" — BA không có KPI này. | Out of scope — đã loại khỏi thiết kế. | — | **Closed (Out of scope)** |
 | O_TT_3 | Trục thời gian biểu đồ bar: `Received Date` hay `Issue Date`? | Tạm giữ `Received Date` từ `Inspection Case` làm date key. Chờ BA xác nhận. | K_TT_8–10 | Open |
 | O_TT_4 | `Subject_Category_Code` — polymorphic FK không phân biệt CTKT/NHLK/TO_CHUC_PHTP. | Nhóm 4 (TT) và Nhóm 9 (KT) dùng thẳng `Target_Type_Code` (`Inspection Team Target`/`Examination Team Target`) — map 1:1 trực tiếp, không cần polymorphic resolve. | K_TT_13–14 (TT), K_TT_32–33 (KT) | **Closed** |
@@ -2020,3 +2212,5 @@ graph TB
 | O_TT_8 | Tab XỬ PHẠT — `Violation_Type_Code` cần cho cột "Loại hình" và donut cơ cấu theo hành vi. | `Violation Behavior.Violation Behavior Name` (← `VIOLATION_BEHAVIOR.NAME`), phân loại bằng text-matching. | K_TT_46–47 (Nhóm 13), K_TT_70–84 (Nhóm 20) | **Closed** |
 | O_TT_9 | Tab XỬ PHẠT — `Penalty_Subject_Category_Code` cần cho donut và danh sách. | `Penalty Decision Subject.Subject Type Code` — chỉ 2 giá trị `INDIVIDUAL`/`ORGANIZATION`, lấy trực tiếp giá trị thực tế. Atomic chỉ 2 giá trị nên không thiết kế riêng 4 nhóm minh họa BA — gộp toàn bộ tổ chức vào 1 cặp KPI. | K_TT_48–49 (Nhóm 14) | **Closed** |
 | O_TT_10 | Tab ĐƠN THƯ — thiết kế cũ giả định 4 giá trị loại đơn. | `Petition.Petition_Category_Code` có sẵn đúng 3 giá trị: `FEEDBACK_SUGGESTION`/`COMPLAINT`/`DENUNCIATION` — map 1:1 trực tiếp, không cần ETL gộp giá trị. | K_TT_59–65 (Nhóm 18), Nhóm 19 | **Closed** |
+| O_TT_11 | Nhóm 3/8 — thiết kế cũ (text-matching 3/11 pattern trên `Content`) không khớp SQL BA cập nhật 2026-08-07 — nguồn đúng là danh mục hành vi chuẩn hoá `Violation Behavior`. | Thiết kế lại: tách `Fact Inspection/Examination Team Violation Behavior` (grain 1 đoàn × 1 biên bản × 1 hành vi) qua `Violation Record` (FK trực tiếp `Inspection_Team_Id`/`Examination_Team_Id`, không cần qua `Violation Case`/`Penalty Decision`) → `Violation Record Behavior` → `Violation Behavior`. `PENALTY_DECISION_VIOLATION_RECORD` (bảng SQL BA tham chiếu để join) chưa có Atomic YAML nhưng không cần thiết — đường qua `Violation Record` ngắn hơn và đã đủ Atomic READY. | K_TT_11–12 (Nhóm 3), K_TT_30–31 (Nhóm 8) | **Closed** |
+| O_TT_12 | Nhóm 13 — thiết kế cũ (text-matching 11 pattern trên `Violation_Behavior_Name`, ELSE NULL) không khớp SQL BA cập nhật 2026-08-07 — phát hiện qua đối chiếu sâu bổ sung, cùng ngày với O_TT_11 nhưng bị bỏ sót ở lượt review đầu vì SQL 80 ký tự đầu giống bản cũ. | BA đổi CASE WHEN sang lấy trực tiếp `Violation_Behavior_Name` thật, ELSE 'Khác' (không loại bỏ). Không cần đổi Fact/Dimension — field đã có sẵn trên `Penalty Decision Subject Behavior Dimension`, chỉ đổi công thức KPI K_TT_46/47. Nhóm 20 (reuse cùng Fact/Dimension, công thức "Loại hình xử lý" riêng biệt) xác nhận BA không đổi SQL — không bị ảnh hưởng. | K_TT_46–47 (Nhóm 13) | **Closed** |

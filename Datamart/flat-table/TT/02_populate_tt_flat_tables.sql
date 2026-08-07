@@ -1,6 +1,6 @@
 -- ============================================================
 -- Module TT (Thanh Tra) — Flat Table POPULATE
--- 7 Fact + 4 Operational = 11 bảng flat
+-- 9 Fact + 4 Operational = 13 bảng flat
 -- Sửa 2026-08-03 (audit Case 3): 7 Fact là transaction log theo ngày (Decision
 -- Date/Issued Date), ETL filter WHERE cdr_dt = :etl_date — DELETE-scoped theo
 -- ngày (không TRUNCATE) để giữ nguyên lịch sử các ngày khác. 4 Operational là
@@ -241,4 +241,56 @@ SELECT
     o.received_year,
     o.src_stm_code
 FROM datamart.opr_petition_list o
+;
+
+-- ------------------------------------------------------------
+-- 12. Fact Inspection Team Violation Behavior
+-- ------------------------------------------------------------
+DELETE FROM datamart.tt_fct_inspection_team_violation_behavior_flat ON CLUSTER 'my_cluster'
+WHERE cdr_dt = :etl_date;
+INSERT INTO datamart.tt_fct_inspection_team_violation_behavior_flat
+SELECT
+    cal.cdr_dt                          AS cdr_dt,
+    behavior_dim.violation_record_behavior_code,
+    behavior_dim.violation_behavior_nm,
+    behavior_dim.src_stm_code           AS inspection_team_violation_behavior_src_stm_code,
+    team_dim.inspection_team_code,
+    team_dim.start_dt,
+    team_dim.end_dt,
+    team_dim.content,
+    team_dim.src_stm_code               AS inspection_team_src_stm_code
+FROM datamart.fct_inspection_team_violation_behavior f
+JOIN datamart.cdr_dt_dim cal
+    ON cal.cdr_dt_dim_id = f.calendar_dt_dim_id
+JOIN datamart.inspection_team_violation_behavior_dim behavior_dim
+    ON behavior_dim.inspection_team_violation_behavior_dim_id = f.inspection_team_violation_behavior_dim_id
+JOIN datamart.inspection_team_dim team_dim
+    ON team_dim.inspection_team_dim_id = f.inspection_team_dim_id
+WHERE cal.cdr_dt = :etl_date
+;
+
+-- ------------------------------------------------------------
+-- 13. Fact Examination Team Violation Behavior
+-- ------------------------------------------------------------
+DELETE FROM datamart.tt_fct_examination_team_violation_behavior_flat ON CLUSTER 'my_cluster'
+WHERE cdr_dt = :etl_date;
+INSERT INTO datamart.tt_fct_examination_team_violation_behavior_flat
+SELECT
+    cal.cdr_dt                          AS cdr_dt,
+    behavior_dim.violation_record_behavior_code,
+    behavior_dim.violation_behavior_nm,
+    behavior_dim.src_stm_code           AS examination_team_violation_behavior_src_stm_code,
+    team_dim.examination_team_code,
+    team_dim.start_dt,
+    team_dim.end_dt,
+    team_dim.content,
+    team_dim.src_stm_code               AS examination_team_src_stm_code
+FROM datamart.fct_examination_team_violation_behavior f
+JOIN datamart.cdr_dt_dim cal
+    ON cal.cdr_dt_dim_id = f.calendar_dt_dim_id
+JOIN datamart.examination_team_violation_behavior_dim behavior_dim
+    ON behavior_dim.examination_team_violation_behavior_dim_id = f.examination_team_violation_behavior_dim_id
+JOIN datamart.examination_team_dim team_dim
+    ON team_dim.examination_team_dim_id = f.examination_team_dim_id
+WHERE cal.cdr_dt = :etl_date
 ;
