@@ -261,6 +261,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlcb_opr_securities_offering_360_profile_fla
     official_letter_dt                   Nullable(Date)          COMMENT 'Ngày công văn',
     capital_usage_plan                   Nullable(String)        COMMENT 'Mục đích sử dụng vốn',
     business_line_level_1_code           Nullable(String)        COMMENT 'Ngành kinh tế cấp 1',
+    classification_business_line_nm      Nullable(String)        COMMENT 'Tên ngành (đệm sẵn)',
     equity_listing_exchange_code         Nullable(String)        COMMENT 'Sàn niêm yết',
     consulting_organization_nm           Nullable(String)        COMMENT 'Đơn vị tư vấn',
     audit_organization_nm                Nullable(String)        COMMENT 'Tổ chức kiểm toán',
