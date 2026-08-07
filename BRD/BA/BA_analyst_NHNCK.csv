@@ -215,7 +215,7 @@ QLNHN_UAT.DECISIONS";"---CCHN bị hủy
 SELECT t.* 
 --Count distinct t.Certificate_Number 
 from QLNHN_UAT.Certificate_Records t 
-JOIN QLNHN_UAT.DECISIONS d ON d.ID =t.ISSUE_DECISION_ID 
+JOIN QLNHN_UAT.DECISIONS d ON d.ID =t.cancellation_decision_id
 AND d.DECISION_TYPE_ID ='6' -- Hủy CCHN
 --and t.Revocation_Date <= 'p_to_date'----(ngày thu hồi) lũy kế thời gian đã chọn
 ;";where d.DECISION_TYPE_ID ='6' -- Hủy CCHN;;"DECISIONS.DECISION_TYPE_ID: Loại quyết định: 
@@ -245,32 +245,30 @@ Web: 2
 1;Dashboard tổng quan của Người hành nghề chứng khoán toàn thị trường/Các chỉ tiêu tổng hợp thông tin chung;Cảnh báo NHNCK;Số NHN có vi phạm lũy kế đến ngày cuối cùng năm đã chọn;Dashboard;Chỉ tiêu phái sinh;TB;Mã người hành nghề;NHNCK;x;x;;Done;;"QLNHN_UAT.CERTIFICATE_RECORDS
 QLNHN_UAT.DECISIONS
 QLNHN_UAT.VIOLATIONS";"--- So CCHN có vi phạm 
-SELECT Count (distinct t.Certificate_Number)
-from QLNHN_UAT.Certificate_Records t 
-JOIN QLNHN_UAT.Professionals a ON t.PROFESSIONAL_ID = a.ID 
+SELECT Count (distinct a.identity_number)
+from QLNHN_UAT.Professionals a 
 join QLNHN_UAT.Violations v on a.ID = v.Professional_Id
 ;";;;;;;;Done;Dữ liệu tĩnh;"--- So CCHN có vi phạm 
 SELECT Count (distinct t.Certificate_Number)
 from NHNCK_UAT.Certificate_Records t 
 JOIN NHNCK_UAT.Professionals a ON t.PROFESSIONAL_ID = a.ID 
 join NHNCK_UAT.Violations v on a.ID = v.Professional_Id
-;";5;BẢNG DECISIONS, BẢNG VIOLATIONS CÓ THÊM CỘT STATUS;"--- So CCHN có vi phạm 
-SELECT Count (distinct t.Certificate_Number) 
-from UAT_NHNCK_STG.Certificate_Records t 
-JOIN UAT_NHNCK_STG.Professionals a ON t.PROFESSIONAL_ID = a.ID 
-join UAT_NHNCK_STG.Violations v on a.ID = v.Professional_Id 
-where 1=1 
-and t.ds_snpst_dt ='2026-07-22' 
-and a.ds_snpst_dt ='2026-07-22' 
+;";5;BẢNG DECISIONS, BẢNG VIOLATIONS CÓ THÊM CỘT STATUS;"--- So NHNCK có vi phạm 
+select count (distinct a.identity_number ) 
+from UAT_NHNCK_STG.Professionals a 
+left join UAT_NHNCK_STG.Violations v on a.ID = v.Professional_Id 
+left JOIN UAT_NHNCK_STG.DECISIONS d ON d.ID = v.DECISION_ID 
+where a.ds_snpst_dt ='2026-07-22' 
 and v.ds_snpst_dt ='2026-07-22' 
+and d.ds_snpst_dt ='2026-07-22' 
 ;";"SQL: 6
 Web: 0
 => Lệch"
 2;Dashboard tổng quan của Người hành nghề chứng khoán toàn thị trường/Biểu đồ Trình độ chuyên môn;Số lượng Tiến sĩ;Số lượng NHN trình độ Tiến sĩ lũy kế đến ngày cuối cùng năm đã chọn.;Dashboard;Chỉ tiêu phái sinh;TB;Mã người hành nghề;NHNCK;x;x;;Done;;PROFESSIONALS;"select --e.LEVEL_NAME , a.* 
-count (*) 
+count (distinct a.identity_number)
 from QLNHN_UAT.Professionals a
 join QLNHN_UAT.EDUCATION_LEVELS e on a.Education_Level_Id = e.ID
-where e.Level_Name = 'Tiến sĩ'
+where e.Level_Name LIKE '%Tiến sĩ%'
 ;";;;;;;;Done;Dữ liệu tĩnh;"---Số lượng NHN trình độ Tiến sĩ
 select -- a.Education_Level_Id, E.* 
 count (*) 
@@ -288,10 +286,10 @@ and a.ds_snpst_dt ='2026-07-22'
 Web: 0
 => Lệch"
 2;Dashboard tổng quan của Người hành nghề chứng khoán toàn thị trường/Biểu đồ Trình độ chuyên môn;Số lượng Thạc sĩ;Số lượng NHN trình độ Thạc sĩ lũy kế đến ngày cuối cùng năm đã chọn.;Dashboard;Chỉ tiêu phái sinh;TB;Mã người hành nghề;NHNCK;x;x;;Done;;PROFESSIONALS;"select --e.LEVEL_NAME , a.* 
-count (*) 
+count (distinct a.identity_number)
 from QLNHN_UAT.Professionals a
 join QLNHN_UAT.EDUCATION_LEVELS e on a.Education_Level_Id = e.ID
-where e.Level_Name = 'Thạc sĩ'
+where e.Level_Name LIKE '%Thạc sĩ%'
 ;";;;;;;;Done;Dữ liệu tĩnh;"-- SO LUONG NHN TRINH DO THAC SĨ 
 select --e.LEVEL_NAME , a.* 
 count (*) 
@@ -309,10 +307,10 @@ and a.ds_snpst_dt ='2026-07-22'
 Web: 0
 => Lệch"
 2;Dashboard tổng quan của Người hành nghề chứng khoán toàn thị trường/Biểu đồ Trình độ chuyên môn;Số lượng Đại học;Số lượng NHN trình độ Đại học lũy kế đến ngày cuối cùng năm đã chọn.;Dashboard;Chỉ tiêu phái sinh;TB;Mã người hành nghề;NHNCK;x;x;;Done;;PROFESSIONALS;"select --e.LEVEL_NAME , a.* 
-count (*) 
+count (distinct a.identity_number)
 from QLNHN_UAT.Professionals a
 join QLNHN_UAT.EDUCATION_LEVELS e on a.Education_Level_Id = e.ID
-where e.Level_Name = 'Đại học'
+where e.Level_Name LIKE '%Đại học%'
 ;";;;;;;;Done;Dữ liệu tĩnh;"-- SO LUONG NHN TRINH DO ĐẠI HỌC
 select --e.LEVEL_NAME , a.* 
 count (*) 
@@ -821,47 +819,94 @@ Quan hệ (1: Vợ/Chồng, 2: Con, 3: Bố, 4: Mẹ, 5: Ông, 6: Bà)";Dashboar
 6;Dashboard Mạng lưới của NHNCK;Mã định danh của người có liên quan;CMND/ CCCD của của thành viên gia đình;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;;;;Done;;Professional_Relationships;IDENTITY_ID;;Professional_Relationships;;;;;;Dữ liệu tĩnh;;;;;
 6;Dashboard Mạng lưới của NHNCK;Quốc tịch của người có liên quan;;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;;;;Done;;PROFESSIONAL_RELATIONSHIPS;COUNTRY_ID;;;;;;;Dữ liệu tĩnh;;;;;;
 6;Dashboard Mạng lưới của NHNCK;Địa chỉ người có liên quan;;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;;;;Done;;PROFESSIONAL_RELATIONSHIPS;ADDRESS;;;;;;;Dữ liệu tĩnh;;;;;;
-7;Dashboard Hồ sơ & Danh mục của NHNCK;Tên DN niêm yết/ đăng ký giao dịch (UPCOM);Tên DN niêm yết/ đăng ký giao dịch (UPCOM) mà NHN tham gia trong bộ máy quản trị doanh nghiệp hoặc cổ đông lớn;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;Done;;ORGANIZATION_REPORTS;Organization_Reports.Workplace;;;;;;;Chưa có SQL;Dữ liệu tĩnh;;;;;
-7;Dashboard Hồ sơ & Danh mục của NHNCK;Vai trò;Chức vụ, vai trò trong bộ máy quản trị doanh nghiệp hoặc cổ đông lớn của DN niêm yết/ đăng ký giao dịch (UPCOM);Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;Done;;ORGANIZATION_REPORTS;Organization_Reports.Position;;;;;;;Chưa có SQL;Dữ liệu tĩnh;;;;;
-7;Dashboard Hồ sơ & Danh mục của NHNCK;Trạng thái;Trạng thái hiện tại;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;Professional_Histories.Status_Work;Done;;Professional_Histories;"Hệ thống tự tính: Nếu 'Đến tháng"" null thì ""Đang làm việc"", nếu đến tháng có giá trị thì cập nhật ""đã nghỉ/ Không còn làm việc""
-Professional_Histories.Status_Work";;;;;;;Chưa có SQL;Dữ liệu tĩnh;;;;;
+7;Dashboard Hồ sơ & Danh mục của NHNCK;Tên DN niêm yết/ đăng ký giao dịch (UPCOM);Tên DN niêm yết/ đăng ký giao dịch (UPCOM) mà NHN tham gia trong bộ máy quản trị doanh nghiệp hoặc cổ đông lớn;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;Done;ORGANIZATION_REPORTS.Work_place;SSC_SCMS.SC_FIRM_INFO;SHORT_NAME;;"---Dashboard Hồ sơ & Danh mục của NHNCK
+---Danh sách Vai trò của NHNCK tại DN niêm yết/ đăng ký giao dịch (UPCOM)
+SELECT --s.* 
+p.full_name as ten_NHNCK,
+p.IDENTITY_NUMBER as CCCD_NHNCK,
+i.CODE as Ma_CTCK,
+i.SHORT_NAME as ten_viet_tat_ctck,
+s.REPRESENTATIVE_POSITION as Vai_tro,
+h.status_work as Trang_Thai,
+s.COMPANY_EMPLOYEE, 
+s.SHAREHOLDER_NAME, 
+s.INDIVIDUAL, s.ID_NUMBER, 
+r.NATIONAL_ID AS Co_DONG_CCCD, 
+s.SHARES_HELD AS SL_CP_dang_nam_giu
+FROM UAT_NHNCK_STG.PROFESSIONALS p 
+left JOIN SSC_SCMS.SC_FIRM_INSIDER_RELATION r on p.IDENTITY_NUMBER = r.NATIONAL_ID 
+left join SSC_SCMS.SC_FIRM_SHAREHOLDER s on s.SC_FIRM_INFO_ID = r.SC_FIRM_INFO_ID
+left join SSC_SCMS.SC_FIRM_INFO i on i.SC_FIRM_INFO_ID = s.SC_FIRM_INFO_ID
+left join UAT_NHNCK_STG.Professional_Histories h on h.professional_id = p.ID
+WHERE s.INDIVIDUAL = '1' --- canhan
+AND P.ds_snpst_dt ='2026-07-22'
+and i.LISTED = '1' -- có niêm yết
+and i.LISTING_EXCHANGE = 'UPCOM' -- sàn niêm yết Upcom
+;";;;;;Chưa có SQL;Dữ liệu tĩnh;;;;;
+7;Dashboard Hồ sơ & Danh mục của NHNCK;Vai trò;Chức vụ, vai trò trong bộ máy quản trị doanh nghiệp hoặc cổ đông lớn của DN niêm yết/ đăng ký giao dịch (UPCOM);Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;Done;Organization_Reports.Position;SSC_SCMS.SC_FIRM_SHAREHOLDER;REPRESENTATIVE_POSITION;;;;;;Chưa có SQL;Dữ liệu tĩnh;;;;;;
+7;Dashboard Hồ sơ & Danh mục của NHNCK;Trạng thái;Trạng thái hiện tại;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;Professional_Histories.Status_Work;Done;;Professional_Histories;Status_Work;"---Lịch sử , trạng thái hành nghề
+select p.full_name, p.identity_number ,h.workplace , h.status_work,
+case when h.status_work = '0' then 'Chưa hành nghề'
+when h.status_work = '1' then 'Đang hành nghề'
+when h.status_work = '2' then 'Thu hồi có cấp lại'
+when h.status_work = '3' then 'Thu hồi không cấp lại'
+when h.status_work = '4' then 'Cấp hành nghề có thời hạn'
+else 'Trạng thái khác'
+end as TRANG_THAI_hanh_nghe,
+r.status_organization as trang_thai_DN
+from uat_nhnck_stg.PROFESSIONALS P
+left join uat_nhnck_stg.Professional_Histories h on h.professional_id = p.id
+left join UAT_NHNCK_STG.ORGANIZATION_REPORTS R ON P.id = R.PROFESSIONAL_ID and r.organization_id = h.organization_id 
+where 1=1
+and p.ds_snpst_dt ='2026-07-22'
+and h.ds_snpst_dt ='2026-07-22'
+;";"case when h.status_work = '0' then 'Chưa hành nghề'
+when h.status_work = '1' then 'Đang hành nghề'
+when h.status_work = '2' then 'Thu hồi có cấp lại'
+when h.status_work = '3' then 'Thu hồi không cấp lại'
+when h.status_work = '4' then 'Cấp hành nghề có thời hạn'
+else 'Trạng thái khác'
+end as TRANG_THAI_hanh_nghe";;;;Chưa có SQL;Dữ liệu tĩnh;;;;;;
 7;Dashboard Hồ sơ & Danh mục của NHNCK;Số lượng cổ phiếu sở hữu;"Số lượng cổ phiếu sở hữu của NHN tại DN niêm yết/ đăng ký giao dịch (UPCOM)
-Nối thông tin qua CCCD và mã CK";Dashboard;Chỉ tiêu phái sinh;TB;Mã người hành nghề;NHNCK, SCMS;x;x;;Done;;SSC_SCMS.SC_FIRM_SHAREHOLDER;SHARES_HELD;Nối qua số CCCD của NHN;"SELECT --s.* 
-s.COMPANY_EMPLOYEE, s.SHAREHOLDER_NAME, s.INDIVIDUAL, s.ID_NUMBER, r.NATIONAL_ID AS Co_DONG_CCCD, s.SHARES_HELD AS SL_CP_dang_nam_giu
-FROM SSC_SCMS.SC_FIRM_SHAREHOLDER s
-JOIN SSC_SCMS.SC_FIRM_INSIDER_RELATION r ON s.SC_FIRM_INFO_ID =r.SC_FIRM_INFO_ID 
-JOIN QLNHN_UAT.PROFESSIONALS p ON p.IDENTITY_NUMBER = r.NATIONAL_ID 
---WHERE s.INDIVIDUAL = '1' --- canhan
-;";;;;;Chưa có SQL;Dữ liệu tĩnh;"SELECT s.SHARES_HELD AS SL_CP_SO_HUU 
+Nối thông tin qua CCCD và mã CK";Dashboard;Chỉ tiêu phái sinh;TB;Mã người hành nghề;NHNCK, SCMS;x;x;;Done;;SSC_SCMS.SC_FIRM_SHAREHOLDER;SHARES_HELD;Nối qua số CCCD của NHN;;;;;Chưa có SQL;Dữ liệu tĩnh;"SELECT s.SHARES_HELD AS SL_CP_SO_HUU 
 FROM SCMS_UAT.SC_FIRM_SHAREHOLDER s
 WHERE s.ID_NUMBER = '033193008601'
-AND S.INDIVIDUAL = '1' --- 1: CANHAN, 0: TOCHUC ;";;Đang không nối giữa schema NHNCK và SCMS => chưa test join nhau được;;
+AND S.INDIVIDUAL = '1' --- 1: CANHAN, 0: TOCHUC ;";;Đang không nối giữa schema NHNCK và SCMS => chưa test join nhau được;;;
 7;Dashboard Hồ sơ & Danh mục của NHNCK;Họ và tên;Họ và tên của người có liên quan;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;Done;;PROFESSIONAL_RELATIONSHIPS;Full_Name;;;;;;;Done;Dữ liệu tĩnh;;;;;
 7;Dashboard Hồ sơ & Danh mục của NHNCK;Mối quan hệ;Mối quan hệ của người có liên quan với NHNCK;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;Done;;PROFESSIONAL_RELATIONSHIPS;Relationship_Type;;;"Loại quan hệ gia đình:
 1=Chồng/vợ, 2=Con, 3=Bố, 4=Mẹ, 5=Ông, 6=Bà";;;;Done;Dữ liệu tĩnh;;;;;
 7;Dashboard Hồ sơ & Danh mục của NHNCK;Nghề nghiệp;Nghề nghiệp của người có liên quan;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;Done;;PROFESSIONAL_RELATIONSHIPS;Occupation;;;Nghề nghiệp của thành viên gia đình;;;;Done;Dữ liệu tĩnh;;;;;
 7;Dashboard Hồ sơ & Danh mục của NHNCK;CCCD/CMND/HC;CCCD/CMND/HC của người có liên quan;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;Done;;PROFESSIONAL_RELATIONSHIPS;IDENTITY_ID;;;Số CMND/CCCD của thành viên gia đình;;;;;Dữ liệu tĩnh;;;;;
-7;Dashboard Hồ sơ & Danh mục của NHNCK;Mã CTCK;Tên viết tắt của CTCK mà NHN mở tài khoản;Dashboard;Chỉ tiêu phái sinh;Dễ;Mã người hành nghề;NHNCK;x;x;;Done;;ORGANIZATIONS;"ORGANIZATION_CODE
-ORGANIZATION_NAME";Where Organizations.OrganizationTypeId =1;;"FK -> loại tổ chức kinh doanh CK:
+7;Dashboard Hồ sơ & Danh mục của NHNCK;Mã CTCK;Tên viết tắt của CTCK mà NHN mở tài khoản;Dashboard;Chỉ tiêu phái sinh;Dễ;Mã người hành nghề;NHNCK;x;x;;Done;;major_shareholder;ma_ck;;"----TÀI KHOẢN 
+select 
+P.FULL_NAME, 
+P.IDENTITY_NUMBER, 
+ma_ck as Ma_CTCK, 
+ma_tkgd as SO_TK, 
+ten_khach_hang AS CHU_TK, 
+ma_ck AS MA_CK_NAM_GIU, 
+so_luong_ck_cuoi_ky as SL_CK_SOHUU_CUOIKY 
+from UAT_NHNCK_STG.PROFESSIONAL p 
+join open_investors OI on OI.so_dang_ky_so_huu = p.IDENTITY_NUMBER and OI.loai_hinh ='cá nhân' 
+join major_shareholder m on OI.so_dang_ky_so_huu = m.so_dang_ky_so_huu 
+WHERE 1=1 
+AND P.ds_snpst_dt ='2026-07-22' 
+;";"Organizations.OrganizationTypeId
+FK -> loại tổ chức kinh doanh CK:
 0=Khác, 
 1=Công ty chứng khoán (CTCK), 
 2=Công ty quản lý quỹ (QLQ), 
 3=Ngân hàng";;;;Chưa có SQL;Dữ liệu tĩnh;;;;;
-7;Dashboard Hồ sơ & Danh mục của NHNCK;Số tài khoản;Số tài khoản của NHN đã mở;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;VSDC, MSS;x;x;;Done;;VSDC_BM 5_Thông tin và danh tính NĐT mở tài khoản;Mã TKGD;"where VSDC_BM 5_Thông tin và danh tính NĐT mở tài khoản. ""Số đăng ký sở hữu"" = QLNHN_UAT.PROFESSIONAL.IDENTITY_NUMBER
+7;Dashboard Hồ sơ & Danh mục của NHNCK;Số tài khoản;Số tài khoản của NHN đã mở;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;VSDC, MSS;x;x;;Done;VSDC_BM 5_Thông tin và danh tính NĐT mở tài khoản;open_investors;ma_tkgd;"where open_investors.so_dang_ky_so_huu = PROFESSIONAL.IDENTITY_NUMBER
+and open_investors.loai_hinh ='cá nhân'";"where VSDC_BM 5_Thông tin và danh tính NĐT mở tài khoản. ""Số đăng ký sở hữu"" = QLNHN_UAT.PROFESSIONAL.IDENTITY_NUMBER
 
 and 
 Trading_Hose/Trading_HNX. Buy_Client/House Classification Code = '10' -- cá nhân
-Buy_Foreigner Investor type = '00' -- không phải TK của NĐT NN";"select Mã TKGD, Tên khách hàng, Loại hình, Số đăng ký sở hữu 
-from VSDC_BM 5_Thông tin và danh tính NĐT mở tài khoản
-where VSDC_BM 5_Thông tin và danh tính NĐT mở tài khoản. ""Số đăng ký sở hữu"" = QLNHN_UAT.PROFESSIONAL.IDENTITY_NUMBER
-
-and 
-Trading_Hose/Trading_HNX. Buy_Client/House Classification Code = '10' -- cá nhân
-Buy_Foreigner Investor type = '00' -- không phải TK của NĐT NN";;;;;Chưa có SQL;Chưa có CSDL - Map biểu mẫu;Map biểu mẫu;;;;
-7;Dashboard Hồ sơ & Danh mục của NHNCK;Tên chủ tài khoản;Tên chủ tài khoản;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;VSDC, MSS;x;x;;Done;;VSDC_BM 5_Thông tin và danh tính NĐT mở tài khoản;Tên khách hàng;"Trading_Hose/Trading_HNX. Buy_Client/House Classification Code = '10' -- cá nhân
-Buy_Foreigner Investor type = '00' -- không phải TK của NĐT NN";;;;;Chưa có SQL;Chưa có CSDL - Map biểu mẫu;Map biểu mẫu;;;;;
-7;Dashboard Hồ sơ & Danh mục của NHNCK;Mã CK nắm giữ chính;Tối đa 2 mã CK nắm giữ có giá trị lớn nhất;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;VSDC;x;x;;Done;;VSDC_BM 8_Danh sách cổ đông lớn của các công ty đăng ký chứng khoán tại Tổng công ty lưu ký và bù trừ chứng khoán Việt Nam và công ty con;Mã CK;"where VSDC_BM_5.""Số đăng ký sở hữu"" = VSDC_BM 8.Số đăng ký sở hữu";;;;;;Chưa có SQL;Chưa có CSDL - Map biểu mẫu;Map biểu mẫu;;;;
-7;Dashboard Hồ sơ & Danh mục của NHNCK;;Số lượng chứng khoán VSDC sở hữu (Cuối kỳ);Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;VSDC;x;x;;Done;;VSDC_BM 8_Danh sách cổ đông lớn của các công ty đăng ký chứng khoán tại Tổng công ty lưu ký và bù trừ chứng khoán Việt Nam và công ty con;Số lượng chứng khoán VSDC sở hữu (Cuối kỳ);where VSDC_BM 5.Số đăng ký sở hữu = VSDC_BM 8.Số đăng ký sở hữu;;;;;;Chưa có SQL;Chưa có CSDL - Map biểu mẫu;Map biểu mẫu;;;;
+Buy_Foreigner Investor type = '00' -- không phải TK của NĐT NN";;;;Chưa có SQL;Chưa có CSDL - Map biểu mẫu;Map biểu mẫu;;;;;
+7;Dashboard Hồ sơ & Danh mục của NHNCK;Tên chủ tài khoản;Tên chủ tài khoản;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;VSDC, MSS;x;x;;Done;VSDC_BM 5_Thông tin và danh tính NĐT mở tài khoản;open_investors;ten_khach_hang;"where open_investors.so_dang_ky_so_huu = PROFESSIONAL.IDENTITY_NUMBER
+and open_investors.loai_hinh ='cá nhân'";;;;;Chưa có SQL;Chưa có CSDL - Map biểu mẫu;Map biểu mẫu;;;;;
+7;Dashboard Hồ sơ & Danh mục của NHNCK;Mã CK nắm giữ chính;Tối đa 2 mã CK nắm giữ có giá trị lớn nhất;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;VSDC;x;x;;Done;VSDC_BM 8_Danh sách cổ đông lớn của các công ty đăng ký chứng khoán tại Tổng công ty lưu ký và bù trừ chứng khoán Việt Nam và công ty con;major_shareholder;ma_ck;where open_investors.so_dang_ky_so_huu = major_shareholder.so_dang_ky_so_huu;;;;;Chưa có SQL;Chưa có CSDL - Map biểu mẫu;Map biểu mẫu;;;;;
+7;Dashboard Hồ sơ & Danh mục của NHNCK;Số lượng chứng khoán VSDC sở hữu (Cuối kỳ);Số lượng chứng khoán VSDC sở hữu (Cuối kỳ);Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;VSDC;x;x;;Done;VSDC_BM 8_Danh sách cổ đông lớn của các công ty đăng ký chứng khoán tại Tổng công ty lưu ký và bù trừ chứng khoán Việt Nam và công ty con;major_shareholder;so_luong_ck_cuoi_ky;where open_investors.so_dang_ky_so_huu = major_shareholder.so_dang_ky_so_huu;;;;;Chưa có SQL;Chưa có CSDL - Map biểu mẫu;Map biểu mẫu;;;;;
 8;Dashboard Quá trình hành nghề của NHNCK;Tổ chức;Tên tổ chức (CTCK, CTQLQ, Chi nhánh CTCK nước ngoài, chi nhánh Cty QLQ nước ngoài) mà NHN đã/ đang công tác;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;Done;;ORGANIZATIONS;"Organizations.Organization_Code
 Organizations.Organization_Name
 ";;;;;;;Done;Dữ liệu tĩnh;"---Quá trình hành nghề của NHNCK
@@ -910,10 +955,29 @@ Mã loại tổ chức (1: CTCK, 2: QLQ, 3: Ngân hàng, 4: Khác)";Dashboard;Ch
 8;Dashboard Quá trình hành nghề của NHNCK;Đến tháng;Thời gian kết thúc làm việc, nếu còn đang làm việc thì hiển thị “Hiện nay”;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;Done;;ORGANIZATION_REPORTS;TERMINATION_DATE;;;Ngày chấm dứt hợp đồng lao động của NHNCK;;;;Done;Dữ liệu tĩnh;;;;;
 8;Dashboard Quá trình hành nghề của NHNCK;Trạng thái;"Trạng thái làm việc tại từng nơi công tác:
 - Quá khứ: Không còn làm việc
-- Hiện tại: Đang làm việc";Dashboard;Chỉ tiêu phái sinh;Dễ;Mã người hành nghề;NHNCK;x;x;ProfessionalHistories.StatusWork;Done;;ORGANIZATION_REPORTS;"Hệ thống tự tính: Nếu 'Đến tháng"" null thì ""Đang làm việc"", nếu đến tháng có giá trị thì cập nhật ""đã nghỉ/ Không còn làm việc""";"Organization_Reports.TERMINATION_DATE is null then ""Hiện nay""";"CASE WHEN Organization_Reports..TERMINATION_DATE IS NULL
-THEN 'ĐANG LÀM VIỆC' 
-ELSE 'ĐÃ NGHỈ' 
-END AS TRANG_THAI_LAM_VIEC";;;;;Done;Dữ liệu tĩnh;;;;;
+- Hiện tại: Đang làm việc";Dashboard;Chỉ tiêu phái sinh;Dễ;Mã người hành nghề;NHNCK;x;x;ProfessionalHistories.StatusWork;Done;;Professional_Histories;Professional_Histories.Status_Work;;"---Lịch sử , trạng thái hành nghề
+select p.full_name, p.identity_number ,h.workplace , h.status_work,
+case when h.status_work = '0' then 'Chưa hành nghề'
+when h.status_work = '1' then 'Đang hành nghề'
+when h.status_work = '2' then 'Thu hồi có cấp lại'
+when h.status_work = '3' then 'Thu hồi không cấp lại'
+when h.status_work = '4' then 'Cấp hành nghề có thời hạn'
+else 'Trạng thái khác'
+end as TRANG_THAI_hanh_nghe,
+r.status_organization as trang_thai_DN
+from uat_nhnck_stg.PROFESSIONALS P
+left join uat_nhnck_stg.Professional_Histories h on h.professional_id = p.id
+left join UAT_NHNCK_STG.ORGANIZATION_REPORTS R ON P.id = R.PROFESSIONAL_ID and r.organization_id = h.organization_id 
+where 1=1
+and p.ds_snpst_dt ='2026-07-22'
+and h.ds_snpst_dt ='2026-07-22'
+;";"case when h.status_work = '0' then 'Chưa hành nghề'
+when h.status_work = '1' then 'Đang hành nghề'
+when h.status_work = '2' then 'Thu hồi có cấp lại'
+when h.status_work = '3' then 'Thu hồi không cấp lại'
+when h.status_work = '4' then 'Cấp hành nghề có thời hạn'
+else 'Trạng thái khác'
+end as TRANG_THAI_hanh_nghe";;;;Done;Dữ liệu tĩnh;;;;;
 9;Dashboard Lịch sử cấp chứng chỉ của NHNCK;Số CCHN;Thông tin số CCHN đã cấp;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;Done;;ORGANIZATION_REPORTS;CERTIFICATE_NUMBER;;;;;;;Done;Dữ liệu tĩnh;"--- Dashboard Lịch sử cấp chứng chỉ của NHNCK
 SELECT --*
 R.CERTIFICATE_NUMBER AS SO_CCHN,
@@ -1045,10 +1109,12 @@ and d.ds_snpst_dt ='2026-07-22'
 SESSION_";;"Nối 2 trường với nhau thêm dấu gạch ngang (Ship_) ở giữa
 Ví dụ: 2026_1 
 (được hiểu kỳ thi số 1 năm 2026)";;;;;;Dữ liệu tĩnh;;;;;
-10;Dashboard Đợt thi sát hạch của NHNCK;Ngày thi;Ngày thi NHN đã tham gia;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;Done;;EXAM_SESSIONS;"EXAM_START_DATE: Ngày bắt đầu kỳ thi sát hạch
-Exam_End_Date: ngày kết thúc kỳ thi sát hạch";;;;;;;Done;Dữ liệu tĩnh;;;;;
+10;Dashboard Đợt thi sát hạch của NHNCK;Ngày bắt đầu thi;Ngày bắt đầu thi NHN đã tham gia;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;Done;;EXAM_SESSIONS;"EXAM_START_DATE: Ngày bắt đầu kỳ thi sát hạch
+";;;;;;;Done;Dữ liệu tĩnh;;;;;
+10;Dashboard Đợt thi sát hạch của NHNCK;Ngày bắt kết thúc thi;Ngày kết thúc thi NHN đã tham gia;;;;Mã người hành nghề;NHNCK;;;;Done;;EXAM_SESSIONS;Exam_End_Date: ngày kết thúc kỳ thi sát hạch;;;;;;;;Dữ liệu tĩnh;;;;;
 10;Dashboard Đợt thi sát hạch của NHNCK;Điểm thi luật;Điểm thi luật;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;;;;Done;;EXAM_DETAILS;LAW_SCORE;;;;;;;;Dữ liệu tĩnh;;;;;
 10;Dashboard Đợt thi sát hạch của NHNCK;Kết quả thi luật;Kết quả luật (1: Đạt, 0: Không đạt);Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;;;;Done;;EXAM_DETAILS;LAW_RESULT;;Kết quả phần thi pháp luật: -1=Không thi, 0=Không đạt, 1=Đạt;;;;;;Dữ liệu tĩnh;;;;;
+10;Dashboard Đợt thi sát hạch của NHNCK;Điểm thi chuyên môn;;;;;Mã người hành nghề;NHNCK;;;;Done;;EXAM_DETAILS;SPECIALIZATION_SCORE;;;;;;;;Dữ liệu tĩnh;;;;;
 10;Dashboard Đợt thi sát hạch của NHNCK;Kết quả thi chuyên môn;Kết quả chuyên môn (1: Đạt, 0: Không đạt);Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;;;;Done;;EXAM_DETAILS;SPECIALIZATION_RESULT;;Kết quả phần thi chuyên ngành: -1=Không thi, 0=Không đạt, 1=Đạt;;;;;;Dữ liệu tĩnh;;;;;
 10;Dashboard Đợt thi sát hạch của NHNCK;Số quyết định công bố;Số quyết định công bố xác nhận danh sách thí sinh đạt / không đạt, điểm thi chính thức, làm căn cứ để cấp chứng chỉ chuyên môn chứng khoán;Dashboard;Chỉ tiêu cơ sở;Dễ;Mã người hành nghề;NHNCK;x;x;;Done;;"EXAM_SESSIONS
 DECISIONS";"Exam_Sessions.DECISION_ID
