@@ -1,6 +1,6 @@
 -- ============================================================
 -- Module TT (Thanh Tra) — Flat Table CREATE
--- 7 Fact + 4 Operational = 11 bảng flat
+-- 9 Fact + 4 Operational = 13 bảng flat
 -- ============================================================
 
 -- ------------------------------------------------------------
@@ -254,4 +254,56 @@ ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(received_dt))
 ORDER BY (assumeNotNull(received_dt), petition_code)
 COMMENT 'Flat table — Operational Petition List'
+;
+
+-- ------------------------------------------------------------
+-- 12. Fact Inspection Team Violation Behavior
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS datamart.tt_fct_inspection_team_violation_behavior_flat ON CLUSTER 'my_cluster'
+(
+    -- From: CALENDAR DATE DIMENSION
+    cdr_dt                                          Nullable(Date)   COMMENT 'Ngày quyết định thanh tra (join qua Inspection Team) — từ Calendar Date Dimension',
+
+    -- From: INSPECTION TEAM VIOLATION BEHAVIOR DIMENSION
+    violation_record_behavior_code                  String           COMMENT 'BK per-row unique — từ Inspection Team Violation Behavior Dimension',
+    violation_behavior_nm                           Nullable(String) COMMENT 'Tên hành vi vi phạm — từ Inspection Team Violation Behavior Dimension',
+    inspection_team_violation_behavior_src_stm_code Nullable(String) COMMENT 'Mã hệ thống nguồn — từ Inspection Team Violation Behavior Dimension',
+
+    -- From: INSPECTION TEAM DIMENSION (Dimension cha)
+    inspection_team_code                            String           COMMENT 'BK — mã hồ sơ đoàn thanh tra — từ Inspection Team Dimension',
+    start_dt                                        Nullable(Date)   COMMENT 'Ngày bắt đầu đoàn thanh tra — từ Inspection Team Dimension',
+    end_dt                                          Nullable(Date)   COMMENT 'Ngày kết thúc đoàn thanh tra — từ Inspection Team Dimension',
+    content                                         Nullable(String) COMMENT 'Nội dung tổng quát cuộc thanh tra — từ Inspection Team Dimension',
+    inspection_team_src_stm_code                    Nullable(String) COMMENT 'Mã hệ thống nguồn — từ Inspection Team Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
+ORDER BY (assumeNotNull(cdr_dt), violation_record_behavior_code)
+COMMENT 'Flat table — Fact Inspection Team Violation Behavior × Calendar Date Dimension × Inspection Team Violation Behavior Dimension × Inspection Team Dimension'
+;
+
+-- ------------------------------------------------------------
+-- 13. Fact Examination Team Violation Behavior
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS datamart.tt_fct_examination_team_violation_behavior_flat ON CLUSTER 'my_cluster'
+(
+    -- From: CALENDAR DATE DIMENSION
+    cdr_dt                                          Nullable(Date)   COMMENT 'Ngày quyết định kiểm tra (join qua Examination Team) — từ Calendar Date Dimension',
+
+    -- From: EXAMINATION TEAM VIOLATION BEHAVIOR DIMENSION
+    violation_record_behavior_code                  String           COMMENT 'BK per-row unique — từ Examination Team Violation Behavior Dimension',
+    violation_behavior_nm                           Nullable(String) COMMENT 'Tên hành vi vi phạm — từ Examination Team Violation Behavior Dimension',
+    examination_team_violation_behavior_src_stm_code Nullable(String) COMMENT 'Mã hệ thống nguồn — từ Examination Team Violation Behavior Dimension',
+
+    -- From: EXAMINATION TEAM DIMENSION (Dimension cha)
+    examination_team_code                           String           COMMENT 'BK — mã hồ sơ đoàn kiểm tra — từ Examination Team Dimension',
+    start_dt                                        Nullable(Date)   COMMENT 'Ngày bắt đầu đoàn kiểm tra — từ Examination Team Dimension',
+    end_dt                                          Nullable(Date)   COMMENT 'Ngày kết thúc đoàn kiểm tra — từ Examination Team Dimension',
+    content                                         Nullable(String) COMMENT 'Nội dung kiểm tra tổng quát — từ Examination Team Dimension',
+    examination_team_src_stm_code                   Nullable(String) COMMENT 'Mã hệ thống nguồn — từ Examination Team Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
+ORDER BY (assumeNotNull(cdr_dt), violation_record_behavior_code)
+COMMENT 'Flat table — Fact Examination Team Violation Behavior × Calendar Date Dimension × Examination Team Violation Behavior Dimension × Examination Team Dimension'
 ;
