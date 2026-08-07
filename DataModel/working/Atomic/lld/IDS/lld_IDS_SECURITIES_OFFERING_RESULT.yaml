@@ -18,7 +18,10 @@ metadata:
   approved_by: null
   approved_at: null
   notes: "Con của Public Company Securities Offering (T3) — 1-N. OFFERING_METHOD_CD\
-    \ lấy từ bảng SECURITIES_OFFERING_PLAN theo BRD note (denormalized snapshot)."
+    \ lấy từ bảng SECURITIES_OFFERING_PLAN theo BRD note (denormalized snapshot).\
+    \ Bổ sung Extension Date, Bond Ticker, Result Single Object sau review coverage\
+    \ 2026-08-06 (gap so với IDS_Columns.csv) — downgrade approved→draft, cần review/approve\
+    \ lại."
 attributes:
 - attribute_name: "Public Company Securities Offering Result Id"
   physical_name: "pc_securities_offering_result_id"
@@ -892,6 +895,45 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.SECURITIES_OFFERING_RESULT.APPROVER_COMMENT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Extension Date"
+  physical_name: "extension_dt"
+  description: "Gia hạn đến ngày."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_RESULT.EXTENSION_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Bond Ticker"
+  physical_name: "bond_ticker"
+  description: "Mã trái phiếu."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_RESULT.BOND_TICKER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Result Single Object"
+  physical_name: "result_single_object"
+  description: "Đối tượng kết quả chào bán riêng lẻ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_RESULT.RESULT_SINGLE_OBJ"
   comment: null
   classification_context: null
   etl_derived_value: null

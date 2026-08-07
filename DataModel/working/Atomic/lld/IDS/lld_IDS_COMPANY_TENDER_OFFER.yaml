@@ -17,8 +17,14 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "OFFEROR_ID_NO không tách IP Alt Identification (không có type-code scheme\
-    \ kèm theo), giữ denormalized Text."
+  notes: "Rework 2026-08-06 sau review coverage: đổi tên + repoint 4 ghost mapping\
+    \ cho sát tên cột nguồn thật (Target Company Name/English Name — trước đó 'Tender\
+    \ Offeror Name/English Name' trỏ cột không tồn tại; Pre Offer Ownership Ratio\
+    \ Percentage — trước đó 'Pre Offer Share Ratio Percentage'; Relationship With\
+    \ Target Description — trước đó 'Offeror Relationship Description'), xóa 6 attribute\
+    \ không có cột nguồn hỗ trợ (Offeror Identification Number/OFFEROR_ID_NO, Acquired/Post\
+    \ Offer Quantity/Ratio, Sync Indicator), bổ sung 24 attribute cho cột thật chưa\
+    \ thiết kế."
 attributes:
 - attribute_name: "Public Company Tender Offer Id"
   physical_name: "pc_tender_offer_id"
@@ -85,29 +91,29 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Tender Offeror Name"
-  physical_name: "tender_offeror_nm"
-  description: "Tên tổ chức/cá nhân chào mua công khai (tiếng Việt)."
+- attribute_name: "Target Company Name"
+  physical_name: "target_company_nm"
+  description: "Tên công ty mục tiêu bị chào mua (tiếng Việt)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IDS.COMPANY_TENDER_OFFER.TENDER_OFFEROR_NAME_VI"
-  comment: "Denormalized — bên chào mua không FK sang Public Company/Legal Entity\
+  - "IDS.COMPANY_TENDER_OFFER.TARGET_COMPANY_NAME_VI"
+  comment: "Denormalized — công ty mục tiêu không FK sang Public Company/Legal Entity\
     \ trong scope IDS."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Tender Offeror English Name"
-  physical_name: "tender_offeror_english_nm"
-  description: "Tên tổ chức/cá nhân chào mua công khai (tiếng Anh)."
+- attribute_name: "Target Company English Name"
+  physical_name: "target_company_english_nm"
+  description: "Tên công ty mục tiêu bị chào mua (tiếng Anh)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IDS.COMPANY_TENDER_OFFER.TENDER_OFFEROR_NAME_EN"
+  - "IDS.COMPANY_TENDER_OFFER.TARGET_COMPANY_NAME_EN"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -139,29 +145,15 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Offeror Identification Number"
-  physical_name: "offeror_identification_nbr"
-  description: "Số CMND/hộ chiếu/GCN ĐKDN."
+- attribute_name: "Relationship With Target"
+  physical_name: "rltnp_with_target"
+  description: "Mối quan hệ với công ty mục tiêu."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IDS.COMPANY_TENDER_OFFER.OFFEROR_ID_NO"
-  comment: "Denormalized text — không gộp vào IP Alt Identification (không có type-code\
-    \ scheme kèm theo)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Offeror Relationship Description"
-  physical_name: "offeror_rltnp_description"
-  description: "Mối quan hệ giữa tổ chức/cá nhân chào mua với công ty mục tiêu."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.COMPANY_TENDER_OFFER.OFFEROR_RELATIONSHIP"
+  - "IDS.COMPANY_TENDER_OFFER.RELATIONSHIP_WITH_TARGET"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -205,15 +197,15 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "int"
-- attribute_name: "Pre Offer Share Ratio Percentage"
-  physical_name: "pre_offer_share_ratio_percentage"
-  description: "%Cổ phiếu sở hữu trước khi chào mua."
+- attribute_name: "Pre Offer Ownership Ratio Percentage"
+  physical_name: "pre_offer_ownership_ratio_percentage"
+  description: "Tỷ lệ nắm giữ hiện tại trước khi chào mua."
   data_domain: "Percentage"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IDS.COMPANY_TENDER_OFFER.PRE_OFFER_SHARE_RATIO"
+  - "IDS.COMPANY_TENDER_OFFER.PRE_OFFER_OWNERSHIP_RATIO"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -257,58 +249,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "decimal(23,2)"
-- attribute_name: "Acquired Share Quantity"
-  physical_name: "acquired_share_quantity"
-  description: "Cổ phiếu mua được trong đợt chào mua."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.COMPANY_TENDER_OFFER.ACQUIRED_SHARE_QTY"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-- attribute_name: "Acquired Share Ratio Percentage"
-  physical_name: "acquired_share_ratio_percentage"
-  description: "%Cổ phiếu mua được trong đợt chào mua."
-  data_domain: "Percentage"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.COMPANY_TENDER_OFFER.ACQUIRED_SHARE_RATIO"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "decimal(5,2)"
-- attribute_name: "Post Offer Share Quantity"
-  physical_name: "post_offer_share_quantity"
-  description: "Cổ phiếu sau khi chào mua."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.COMPANY_TENDER_OFFER.POST_OFFER_SHARE_QTY"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-- attribute_name: "Post Offer Share Ratio Percentage"
-  physical_name: "post_offer_share_ratio_percentage"
-  description: "%Cổ phiếu sau khi chào mua."
-  data_domain: "Percentage"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.COMPANY_TENDER_OFFER.POST_OFFER_SHARE_RATIO"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "decimal(5,2)"
 - attribute_name: "Deleted Indicator"
   physical_name: "deleted_indicator"
   description: "Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa)."
@@ -322,16 +262,325 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "int"
-- attribute_name: "Sync Indicator"
-  physical_name: "sync_indicator"
-  description: "Đánh dấu đồng bộ dữ liệu (1 - Đã đồng bộ, 0 - Chưa đồng bộ)."
-  data_domain: "Small Counter"
+- attribute_name: "Target Equity Ticker"
+  physical_name: "target_equity_ticker"
+  description: "Mã chứng khoán (Cổ phiếu) của công ty mục tiêu."
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IDS.COMPANY_TENDER_OFFER.ID_SYNC"
-  comment: "Giá trị 1 → true (đồng bộ); 0 → false. Nguồn NUMBER(1)."
+  - "IDS.COMPANY_TENDER_OFFER.TARGET_EQUITY_TICKER"
+  comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "string"
+- attribute_name: "Target Listing Exchange Code"
+  physical_name: "target_listing_exchange_code"
+  description: "Sàn niêm yết của công ty mục tiêu."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TENDER_OFFER.TARGET_LISTING_EXCH"
+  comment: "Scheme: IDS_EQUITY_LISTING_EXCH. Dùng chung scheme với Public Company.Equity\
+    \ Listing Exchange Code."
+  classification_context: "IDS_EQUITY_LISTING_EXCH"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Target Head Office Address"
+  physical_name: "target_head_office_adr"
+  description: "Địa chỉ trụ sở chính của công ty mục tiêu."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TENDER_OFFER.TARGET_HO_ADDR"
+  comment: "Denormalized — công ty mục tiêu không FK sang Public Company/Legal Entity\
+    \ trong scope IDS, không tách IP Postal Address."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Target Website"
+  physical_name: "target_website"
+  description: "Website của công ty mục tiêu."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TENDER_OFFER.TARGET_WEBSITE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Target Charter Capital Amount"
+  physical_name: "target_charter_capital_amt"
+  description: "Vốn điều lệ của công ty mục tiêu."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TENDER_OFFER.TARGET_CHARTER_CAPITAL"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(24,0)"
+- attribute_name: "Target Share Type"
+  physical_name: "target_share_type"
+  description: "Loại cổ phiếu đăng ký chào mua."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TENDER_OFFER.TARGET_SHARE_TYPE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Planned Total Value Amount"
+  physical_name: "planned_total_value_amt"
+  description: "Tổng giá trị dự kiến chào mua (VND)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TENDER_OFFER.PLANNED_TOTAL_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(24,0)"
+- attribute_name: "Funding Source Description"
+  physical_name: "funding_source_description"
+  description: "Nguồn vốn thực hiện."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TENDER_OFFER.FUNDING_SOURCE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Payment Terms And Method Description"
+  physical_name: "payment_terms_and_method_description"
+  description: "Thời hạn và phương thức thanh toán."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TENDER_OFFER.PAYMENT_TERMS_AND_METHOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Application Code"
+  physical_name: "application_code"
+  description: "Mã hồ sơ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TENDER_OFFER.APPLICATION_CD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Administrative Procedure Code"
+  physical_name: "administrative_procedure_code"
+  description: "Thủ tục hành chính."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TENDER_OFFER.ADMINISTRATIVE_PROC_CD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Certificate Number"
+  physical_name: "certificate_nbr"
+  description: "Số giấy chứng nhận."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TENDER_OFFER.CERTIFICATE_NO"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Certificate Date"
+  physical_name: "certificate_dt"
+  description: "Ngày giấy chứng nhận."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TENDER_OFFER.CERTIFICATE_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Official Letter Number"
+  physical_name: "official_letter_nbr"
+  description: "Số công văn của UBCKNN."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TENDER_OFFER.OFFICIAL_LETTER_NO"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Official Letter Date"
+  physical_name: "official_letter_dt"
+  description: "Ngày công văn."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TENDER_OFFER.OFFICIAL_LETTER_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Approval Status Code"
+  physical_name: "approval_status_code"
+  description: "Trạng thái phê duyệt phương án."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TENDER_OFFER.APPROVAL_STATUS_CD"
+  comment: "Scheme: IDS_SO_APPROVAL_STATUS. Dùng chung scheme với Public Company\
+    \ Securities Offering.Approval Status Code (cùng LOOKUP_GROUP = SO_APPROVAL_STATUS)."
+  classification_context: "IDS_SO_APPROVAL_STATUS"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Approver User Id"
+  physical_name: "approver_user_id"
+  description: "ID Login của Lãnh đạo phê duyệt."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.COMPANY_TENDER_OFFER.APPROVER_USER_ID"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: LOGINS.ID NUMBER(10)\
+    \ tự tăng vs IAM.USERS.ID VARCHAR2(36) GUID, chưa xác nhận crosswalk nên chưa\
+    \ thêm Hash."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Approver User Name"
+  physical_name: "approver_user_nm"
+  description: "Lãnh đạo duyệt phương án."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TENDER_OFFER.APPROVER_USER_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Processor User Id"
+  physical_name: "processor_user_id"
+  description: "ID Login của Chuyên viên xử lý."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.COMPANY_TENDER_OFFER.PROCESSOR_USER_ID"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: LOGINS.ID NUMBER(10)\
+    \ tự tăng vs IAM.USERS.ID VARCHAR2(36) GUID, chưa xác nhận crosswalk nên chưa\
+    \ thêm Hash."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Processor User Name"
+  physical_name: "processor_user_nm"
+  description: "Chuyên viên xử lý."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TENDER_OFFER.PROCESSOR_USER_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Revision Reason"
+  physical_name: "revision_reason"
+  description: "Lý do chỉnh sửa."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TENDER_OFFER.REVISION_REASON"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Approver Comment"
+  physical_name: "approver_comment"
+  description: "Nội dung đề xuất phê duyệt / Lý do từ chối."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TENDER_OFFER.APPROVER_COMMENT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Submission Date"
+  physical_name: "submission_dt"
+  description: "Ngày nộp hồ sơ."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TENDER_OFFER.SUBMISSION_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Administrative Status Code"
+  physical_name: "administrative_status_code"
+  description: "Trạng thái hành chính."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TENDER_OFFER.ADMINISTRATIVE_STATUS_CD"
+  comment: "Scheme: IDS_SO_ADMINISTRATIVE_STATUS. Dùng chung scheme với Public Company\
+    \ Securities Offering.Administrative Status Code."
+  classification_context: "IDS_SO_ADMINISTRATIVE_STATUS"
+  etl_derived_value: null
+  data_type: "string"

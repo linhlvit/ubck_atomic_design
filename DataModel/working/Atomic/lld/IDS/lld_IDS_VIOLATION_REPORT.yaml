@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Business Activity] Business Activity"
   table_type: "Fundamental"
   group: "T3"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -252,5 +252,31 @@ attributes:
   comment: "Scheme: IDS_VIOLATION_REPORT_STATUS (no_lookup) — chưa có trong HLD 6d,\
     \ bổ sung scheme mới."
   classification_context: "IDS_VIOLATION_REPORT_STATUS"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Original Deadline Date"
+  physical_name: "original_deadline_dt"
+  description: "Hạn ban đầu (trước khi gia hạn nếu có)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.VIOLATION_REPORT.ORIGINAL_DEADLINE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Language Code"
+  physical_name: "language_code"
+  description: "Mã ngôn ngữ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.VIOLATION_REPORT.LANGUAGE_CD"
+  comment: null
+  classification_context: null
   etl_derived_value: null
   data_type: "string"

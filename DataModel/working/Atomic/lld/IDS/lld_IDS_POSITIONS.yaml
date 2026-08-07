@@ -17,7 +17,9 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: null
+  notes: "Bổ sung FK Public Company Id/Code (COMPANY_PROFILE_ID) sau review coverage\
+    \ 2026-08-06 (gap so với IDS_Columns.csv) — downgrade approved→draft, cần review/approve\
+    \ lại."
 attributes:
 - attribute_name: "Legal Entity Position Id"
   physical_name: "legal_entity_position_id"
@@ -80,6 +82,34 @@ attributes:
   source_columns:
   - "IDS.POSITIONS.LEGAL_ENTITY_ID"
   comment: "Lookup pair: Legal Entity.Legal Entity Code. Pair with Legal Entity Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Company Id"
+  physical_name: "pc_id"
+  description: "Khóa link đến bảng COMPANY_PROFILES."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.POSITIONS.COMPANY_PROFILE_ID"
+  comment: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES',\
+    \ COMPANY_PROFILE_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Company Code"
+  physical_name: "pc_code"
+  description: "Mã công ty đại chúng."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.POSITIONS.COMPANY_PROFILE_ID"
+  comment: "Lookup pair: public_company.pc_code. Pair with Public Company\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
