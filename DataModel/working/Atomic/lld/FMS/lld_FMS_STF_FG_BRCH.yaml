@@ -73,8 +73,8 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.STF_FG_BRCH.FOR_BRCH_ID"
-  comment: "FK target: Foreign Fund Management Organization Unit.Foreign Fund Management\
-    \ Organization Unit Id. Hash: hash_id('FMS.FOR_BRCH', FOR_BRCH_ID)."
+  comment: "FK target: foreign_fm_ou.foreign_fm_ou_id. Hash: hash_id('FMS.FOR_BRCH',\
+    \ FOR_BRCH_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -87,9 +87,8 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.STF_FG_BRCH.FOR_BRCH_ID"
-  comment: "Lookup pair: Foreign Fund Management Organization Unit.Foreign Fund Management\
-    \ Organization Unit Code. Pair with Foreign Fund Management Organization Unit\
-    \ Id."
+  comment: "Lookup pair: foreign_fm_ou.foreign_fm_ou_code. Pair with Foreign Fund\
+    \ Management Organization Unit Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -132,9 +131,11 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FMS.STF_FG_BRCH.NAT_ID"
-  comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Nationality\
-    \ Id. Giá trị lấy từ SNAME (join FMS.NATIONAL qua NAT_ID = FMS.NATIONAL.ID)."
+  - "FMS.NATIONAL.SNAME"
+  comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality\
+    \ Id. Giá trị lấy từ SNAME (join FMS.NATIONAL qua NAT_ID = FMS.NATIONAL.ID). Giá\
+    \ trị lấy từ FMS.NATIONAL.SNAME sau ETL crosswalk — chi tiết xem comment Nationality\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

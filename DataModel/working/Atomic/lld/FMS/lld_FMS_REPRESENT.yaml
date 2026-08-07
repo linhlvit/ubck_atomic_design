@@ -72,7 +72,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.REPRESENT.FUND_ID"
-  comment: "FK target: Investment Fund.Investment Fund Id. Hash: hash_id('FMS.FUNDS',\
+  comment: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS.FUNDS',\
     \ FUND_ID)."
   classification_context: null
   etl_derived_value: null
@@ -86,7 +86,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.REPRESENT.FUND_ID"
-  comment: "Lookup pair: Investment Fund.Investment Fund Code. Pair with Investment\
+  comment: "Lookup pair: investment_fund.investment_fund_code. Pair with Investment\
     \ Fund Id."
   classification_context: null
   etl_derived_value: null
@@ -129,9 +129,11 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FMS.REPRESENT.NAT_ID"
-  comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Nationality\
-    \ Id. Giá trị lấy từ SNAME (join FMS.NATIONAL qua NAT_ID = FMS.NATIONAL.ID)."
+  - "FMS.NATIONAL.SNAME"
+  comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality\
+    \ Id. Giá trị lấy từ SNAME (join FMS.NATIONAL qua NAT_ID = FMS.NATIONAL.ID). Giá\
+    \ trị lấy từ FMS.NATIONAL.SNAME sau ETL crosswalk — chi tiết xem comment Nationality\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

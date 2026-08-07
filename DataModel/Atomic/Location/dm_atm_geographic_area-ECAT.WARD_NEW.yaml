@@ -106,6 +106,20 @@ attributes:
     classification_context: "Source System Code = 'ECAT_WARD_NEW'"
     etl_derived_value: null
 
+  - name: Geographic Area Category Code
+    physical_name: geographic_area_category_code
+    business_meaning: Loại đơn vị hành chính cấp phường/xã (Phường/Xã/Thị trấn)
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: WARD_NEW
+    source_column: ECAT.WARD_NEW.CATEGORY
+    comment: "Scheme: GEOGRAPHIC_AREA_WARD_CATEGORY."
+    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    etl_derived_value: null
+
   - name: Parent Geographic Area Id
     physical_name: parent_geographic_area_id
     business_meaning: FK đến tỉnh/thành phố cha
@@ -135,7 +149,7 @@ attributes:
     etl_derived_value: null
 
   - name: Effective Indicator
-    physical_name: effective_indicator
+    physical_name: effective_ind
     business_meaning: "Tình trạng hiệu lực: true=Hiệu lực; false=Hết hiệu lực"
     data_domain: Small Counter
     data_type: int
@@ -149,7 +163,7 @@ attributes:
     etl_derived_value: null
 
   - name: Active Indicator
-    physical_name: active_indicator
+    physical_name: active_ind
     business_meaning: "Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng"
     data_domain: Small Counter
     data_type: int
@@ -163,7 +177,7 @@ attributes:
     etl_derived_value: null
 
   - name: Deleted Indicator
-    physical_name: deleted_indicator
+    physical_name: deleted_ind
     business_meaning: "Cờ xóa mềm: true=Đã xóa; false=Chưa xóa"
     data_domain: Small Counter
     data_type: int
@@ -369,19 +383,5 @@ attributes:
     source_table: WARD_NEW
     source_column: ECAT.WARD_NEW.UPDATED_BY_NAME
     comment: "Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên hiển thị, không phải mã nhân viên)."
-    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
-    etl_derived_value: null
-
-  - name: Geographic Area Category Code
-    physical_name: geographic_area_category_code
-    business_meaning: Loại đơn vị hành chính cấp phường/xã (Phường/Xã/Thị trấn)
-    data_domain: Classification Value
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: ECAT
-    source_table: WARD_NEW
-    source_column: ECAT.WARD_NEW.CATEGORY
-    comment: "Scheme: GEOGRAPHIC_AREA_WARD_CATEGORY."
     classification_context: "Source System Code = 'ECAT_WARD_NEW'"
     etl_derived_value: null

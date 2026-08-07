@@ -20,8 +20,7 @@ metadata:
   notes: "Shared entity IP Electronic Address — extend từ SC_FIRM_INFO. 4 loại: PHONE,\
     \ FAX, EMAIL, WEBSITE. Mỗi loại kênh liên lạc là 1 block riêng. Format đồng bộ\
     \ theo chuẩn NHNCK. Hạ về draft (2026-07-27) để sửa lỗi hash-mismatch FK Involved\
-    \ Party Id — trước đây hash trực tiếp theo ID kỹ thuật thay vì CODE của bảng\
-    \ đích."
+    \ Party Id — trước đây hash trực tiếp theo ID kỹ thuật thay vì CODE của bảng đích."
 attributes:
 - attribute_name: "Involved Party Id"
   physical_name: "ip_id"
@@ -48,9 +47,10 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "SCMS.SC_FIRM_INFO.ID"
+  - "SCMS.SC_FIRM_INFO.CODE"
   comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Involved\
-    \ Party Id."
+    \ Party Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết\
+    \ xem comment Involved Party Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

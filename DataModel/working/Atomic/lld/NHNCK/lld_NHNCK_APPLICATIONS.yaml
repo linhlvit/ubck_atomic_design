@@ -101,9 +101,11 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "NHNCK.APPLICATIONS.STATUS_ID"
+  - "NHNCK.APPLICATION_STATUSES.STATUS_CODE"
   comment: "Lookup pair: Classification Application Status.Classification Application\
-    \ Status Code. Pair with Classification Application Status Id."
+    \ Status Code. Pair with Classification Application Status Id. Giá trị lấy từ\
+    \ NHNCK.APPLICATION_STATUSES.STATUS_CODE sau ETL crosswalk — chi tiết xem comment\
+    \ Classification Application Status Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -145,9 +147,11 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "NHNCK.APPLICATIONS.CERTIFICATE_ID"
+  - "NHNCK.CERTIFICATES.CERTIFICATE_CODE"
   comment: "Lookup pair: sp_license_certificate_type.sp_license_certificate_tp_code.\
-    \ Pair with Securities Practitioner License Certificate Type Id."
+    \ Pair with Securities Practitioner License Certificate Type Id. Giá trị lấy từ\
+    \ NHNCK.CERTIFICATES.CERTIFICATE_CODE sau ETL crosswalk — chi tiết xem comment\
+    \ Securities Practitioner License Certificate Type Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -281,8 +285,11 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "NHNCK.APPLICATIONS.PREVIOUS_CERTIFICATE_ID"
-  comment: "Lookup pair: sp_license_certificate_type.sp_license_certificate_tp_code. Pair with Previous Securities Practitioner License Certificate Type Id."
+  - "NHNCK.CERTIFICATES.CERTIFICATE_CODE"
+  comment: "Lookup pair: sp_license_certificate_type.sp_license_certificate_tp_code.\
+    \ Pair with Previous Securities Practitioner License Certificate Type Id. Giá\
+    \ trị lấy từ NHNCK.CERTIFICATES.CERTIFICATE_CODE sau ETL crosswalk — chi tiết\
+    \ xem comment Previous Securities Practitioner License Certificate Type Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -366,7 +373,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Violated Indicator"
-  physical_name: "violated_indicator"
+  physical_name: "violated_ind"
   description: "Cờ người hành nghề vi phạm quy định."
   data_domain: "Small Counter"
   nullable: true
@@ -379,7 +386,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Data Exploitable Indicator"
-  physical_name: "data_exploitable_indicator"
+  physical_name: "data_exploitable_ind"
   description: "Cờ dữ liệu có thể khai thác."
   data_domain: "Small Counter"
   nullable: true

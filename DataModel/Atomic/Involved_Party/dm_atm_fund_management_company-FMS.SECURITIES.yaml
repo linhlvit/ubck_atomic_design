@@ -387,7 +387,7 @@ attributes:
     etl_derived_value: null
 
   - name: Legal Representative Indicator
-    physical_name: legal_representative_indicator
+    physical_name: legal_representative_ind
     business_meaning: "Cờ là người đại diện theo pháp luật: 1=Có, 0=Không."
     data_domain: Indicator
     data_type: string
@@ -443,7 +443,7 @@ attributes:
     etl_derived_value: null
 
   - name: Public Listed Indicator
-    physical_name: public_listed_indicator
+    physical_name: public_listed_ind
     business_meaning: "Cờ công ty đại chúng đang niêm yết: Y=Có, N=Không."
     data_domain: Indicator
     data_type: string
@@ -703,7 +703,7 @@ attributes:
     is_primary_key: false
     source_system: FMS
     source_table: SECURITIES
-    source_column: FMS.SECURITIES.EVENT_TYPE_ID
-    comment: "Lookup pair: cl_fms_event_type.cl_fms_event_tp_code. Pair with Event Type Id."
+    source_column: FMS.EVENT_TYPE.ITEM_NAME
+    comment: "Lookup pair: cl_fms_event_type.cl_fms_event_tp_code. Pair with Event Type Id. Giá trị lấy từ FMS.EVENT_TYPE.ITEM_NAME sau ETL crosswalk — chi tiết xem comment Event Type Id."
     classification_context: "Source System Code = 'FMS_SECURITIES'"
     etl_derived_value: null

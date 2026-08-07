@@ -4,7 +4,7 @@ metadata:
   source_system: "FMS"
   source_table: "INSPECTION_PENALTY_DECISION"
   atomic_entity: "Member Inspection Penalty Decision"
-  entity_physical_name: "member_inspection_penalty_decision"
+  entity_physical_name: "member_inspection_pd"
   bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Conduct Violation"
   table_type: "Fundamental"
@@ -71,7 +71,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.INSPECTION_PENALTY_DECISION.INSPECTION_ROUND_ID"
-  comment: "FK target: Member Inspection Round.Member Inspection Round Id. Hash: hash_id('FMS.INSPECTION_ROUND',\
+  comment: "FK target: member_inspection_round.member_inspection_round_id. Hash: hash_id('FMS.INSPECTION_ROUND',\
     \ INSPECTION_ROUND_ID)."
   classification_context: null
   etl_derived_value: null
@@ -85,7 +85,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.INSPECTION_PENALTY_DECISION.INSPECTION_ROUND_ID"
-  comment: "Lookup pair: Member Inspection Round.Member Inspection Round Code. Pair\
+  comment: "Lookup pair: member_inspection_round.member_inspection_round_code. Pair\
     \ with Member Inspection Round Id."
   classification_context: null
   etl_derived_value: null
@@ -99,7 +99,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.INSPECTION_PENALTY_DECISION.TARGET_ID"
-  comment: "FK target: Member Inspection Target.Member Inspection Target Id. Hash:\
+  comment: "FK target: member_inspection_target.member_inspection_target_id. Hash:\
     \ hash_id('FMS.INSPECTION_TARGET', TARGET_ID)."
   classification_context: null
   etl_derived_value: null
@@ -113,7 +113,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.INSPECTION_PENALTY_DECISION.TARGET_ID"
-  comment: "Lookup pair: Member Inspection Target.Member Inspection Target Code. Pair\
+  comment: "Lookup pair: member_inspection_target.member_inspection_target_code. Pair\
     \ with Member Inspection Target Id."
   classification_context: null
   etl_derived_value: null

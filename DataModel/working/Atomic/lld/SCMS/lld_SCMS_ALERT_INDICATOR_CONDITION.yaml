@@ -27,7 +27,7 @@ metadata:
     \ (new). SORT_ORDER (NUMBER 10): thứ tự sắp xếp."
 attributes:
 - attribute_name: "Securities Company Alert Indicator Condition Id"
-  physical_name: "sc_alert_indicator_condition_id"
+  physical_name: "sc_alert_ind_condition_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -39,7 +39,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Alert Indicator Condition Code"
-  physical_name: "sc_alert_indicator_condition_code"
+  physical_name: "sc_alert_ind_condition_code"
   description: "Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity."
   data_domain: "Text"
   nullable: false
@@ -64,7 +64,7 @@ attributes:
   etl_derived_value: "SCMS.ALERT_INDICATOR_CONDITION"
   data_type: "string"
 - attribute_name: "Securities Company Alert Indicator Id"
-  physical_name: "sc_alert_indicator_id"
+  physical_name: "sc_alert_ind_id"
   description: "FK đến Chỉ tiêu cảnh báo mà điều kiện này thuộc về."
   data_domain: "Surrogate Key"
   nullable: false
@@ -81,16 +81,18 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Alert Indicator Code"
-  physical_name: "sc_alert_indicator_code"
+  physical_name: "sc_alert_ind_code"
   description: "Mã Chỉ tiêu cảnh báo."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "SCMS.ALERT_INDICATOR_CONDITION.ALERT_INDICATOR_ID"
+  - "SCMS.ALERT_INDICATOR.ALERT_CODE"
   comment: "Lookup pair: Securities Company Alert Indicator.Securities Company Alert\
-    \ Indicator Code. Pair with Securities Company Alert Indicator Id."
+    \ Indicator Code. Pair with Securities Company Alert Indicator Id. Giá trị lấy\
+    \ từ SCMS.ALERT_INDICATOR.ALERT_CODE sau ETL crosswalk — chi tiết xem comment\
+    \ Securities Company Alert Indicator Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

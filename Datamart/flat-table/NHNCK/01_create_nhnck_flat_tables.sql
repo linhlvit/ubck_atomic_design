@@ -18,7 +18,8 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_fct_practitioner_license_certificate_s
     issue_dt_dim_id                 String              COMMENT 'FK → Calendar Date Dimension (ngày cấp)',
     snpst_dt_dim_id                 String              COMMENT 'FK → Calendar Date Dimension (ngày snapshot)',
     certificate_tp_dim_id           String              COMMENT 'FK → SP License Certificate Type Dimension',
-    license_certificate_document_code    String              COMMENT 'DD — BK CCHN',
+    license_certificate_document_code    String              COMMENT 'DD — BK bản ghi cấp/thu hồi CCHN (degenerate key)',
+    certificate_nbr                 String              COMMENT 'DD — business key CCHN thật; đơn vị đếm COUNT(DISTINCT ...)',
     is_reissue_indicator            String              COMMENT 'Là CCHN cấp lại (Y/N)',
     certificate_issue_dt            Nullable(Date)      COMMENT 'Ngày cấp CCHN',
     revocation_dt                   Nullable(Date)      COMMENT 'Ngày thu hồi CCHN — NULL nếu chưa thu hồi',
@@ -34,9 +35,11 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_fct_practitioner_license_certificate_s
     practitioner_code               Nullable(String)    COMMENT 'Mã NHN — từ Securities Practitioner Dimension',
     practitioner_full_nm            Nullable(String)    COMMENT 'Họ tên NHN — từ Securities Practitioner Dimension',
     practitioner_education_level_code    Nullable(String)    COMMENT 'Trình độ học vấn — từ Securities Practitioner Dimension',
+    practitioner_education_level_nm      Nullable(String)    COMMENT '(Bổ sung 2026-08) Tên trình độ học vấn — từ Securities Practitioner Dimension',
     practitioner_nationality_code   Nullable(String)    COMMENT 'Mã quốc tịch — từ Securities Practitioner Dimension',
     practitioner_birth_dt           Nullable(Date)      COMMENT 'Ngày sinh — từ Securities Practitioner Dimension',
     practitioner_practice_status_code    Nullable(String)    COMMENT 'Trạng thái hành nghề — từ Securities Practitioner Dimension',
+    practitioner_practice_status_nm      Nullable(String)    COMMENT '(Bổ sung 2026-08) Tên trạng thái hành nghề — từ Securities Practitioner Dimension',
     practitioner_src_stm_code       Nullable(String)    COMMENT 'Mã hệ thống nguồn — từ Securities Practitioner Dimension',
 
     -- From: SP LICENSE CERTIFICATE TYPE DIMENSION
@@ -71,9 +74,11 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_fct_practitioner_daily_snpst_flat ON C
     practitioner_code               Nullable(String)    COMMENT 'Mã NHN — từ Securities Practitioner Dimension',
     practitioner_full_nm            Nullable(String)    COMMENT 'Họ tên NHN — từ Securities Practitioner Dimension',
     practitioner_education_level_code        Nullable(String)    COMMENT 'Trình độ học vấn — từ Securities Practitioner Dimension',
+    practitioner_education_level_nm          Nullable(String)    COMMENT '(Bổ sung 2026-08) Tên trình độ học vấn — từ Securities Practitioner Dimension',
     practitioner_nationality_code           Nullable(String)    COMMENT 'Mã quốc tịch — từ Securities Practitioner Dimension',
     practitioner_birth_dt            Nullable(Date)      COMMENT 'Ngày sinh — từ Securities Practitioner Dimension',
     practitioner_practice_status_code   Nullable(String)    COMMENT 'Trạng thái hành nghề — từ Securities Practitioner Dimension',
+    practitioner_practice_status_nm     Nullable(String)    COMMENT '(Bổ sung 2026-08) Tên trạng thái hành nghề — từ Securities Practitioner Dimension',
     practitioner_src_stm_code           Nullable(String)    COMMENT 'Mã hệ thống nguồn — từ Securities Practitioner Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
@@ -96,6 +101,8 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_360_profile_flat ON C
     nationality_code            Nullable(String)    COMMENT 'Mã quốc tịch',
     nationality_nm              Nullable(String)    COMMENT 'Tên quốc tịch',
     identification_nbr          Nullable(String)    COMMENT 'Số CCCD/Hộ chiếu',
+    education_level_code        Nullable(String)    COMMENT '(Bổ sung 2026-08-07) Trình độ học vấn — scheme: EDUCATIONAL_LEVEL',
+    education_level_nm          Nullable(String)    COMMENT '(Bổ sung 2026-08-07) Tên trình độ học vấn',
     workplace_nm        Nullable(String)    COMMENT 'Nơi công tác hiện tại',
     practice_status_code    Nullable(String)    COMMENT 'Trạng thái hành nghề — scheme: PRACTITIONER_PRACTICE_STATUS',
     practice_status_nm      Nullable(String)    COMMENT 'Tên trạng thái hành nghề',
@@ -153,6 +160,10 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_list_company_role_fla
     hire_dt                 Nullable(Date)      COMMENT 'Ngày bắt đầu làm việc',
     termination_dt                  Nullable(Date)      COMMENT 'Ngày kết thúc làm việc — NULL nếu hiện tại',
     shares_held              Nullable(Int64)     COMMENT 'Số lượng cổ phiếu sở hữu (K_NHNCK_85) — nguồn thật SCMS, không phải NHNCK; NULL nếu không phải cổ đông/người nội bộ',
+    account_nbr              Nullable(String)    COMMENT '(Bổ sung 2026-08-07) Số tài khoản (K_NHNCK_87) — nguồn open_investors',
+    account_holder_nm        Nullable(String)    COMMENT '(Bổ sung 2026-08-07) Tên chủ tài khoản (K_NHNCK_88) — nguồn open_investors',
+    main_held_securities_code    Nullable(String)    COMMENT '(Bổ sung 2026-08-07) Mã CK nắm giữ chính (K_NHNCK_89) — nguồn major_shareholder',
+    vsdc_held_securities_vol     Nullable(Int64)     COMMENT '(Bổ sung 2026-08-07) Số lượng CK VSDC sở hữu cuối kỳ (K_NHNCK_103) — nguồn major_shareholder',
     src_stm_code            String              COMMENT 'Mã hệ thống nguồn'
 )
 ENGINE = ReplicatedReplacingMergeTree()
@@ -249,8 +260,10 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_exam_hist_flat ON CLU
     rpt_year                      Nullable(Int64)     COMMENT 'Năm báo cáo đợt thi',
     examination_session_nbr                Nullable(Int64)     COMMENT 'Kỳ thi trong năm',
     examination_period                 Nullable(String)    COMMENT 'Kỳ thi dạng chuỗi (VD: 2025_1)',
-    examination_start_dt                Nullable(Date)      COMMENT 'Ngày thi',
+    examination_start_dt                Nullable(Date)      COMMENT '(Sửa 2026-08-07) Ngày bắt đầu thi',
+    examination_end_dt                  Nullable(Date)      COMMENT '(Thêm 2026-08-07) Ngày kết thúc thi',
     law_score                    Nullable(String)    COMMENT 'Điểm thi pháp luật',
+    specialization_score         Nullable(String)    COMMENT '(Thêm 2026-08-07) Điểm thi chuyên môn',
     law_result_code               Nullable(String)    COMMENT 'Kết quả thi pháp luật — scheme: EXAM_RESULT',
     law_result_nm                 Nullable(String)    COMMENT 'Tên kết quả thi pháp luật',
     specialization_result_code    Nullable(String)    COMMENT 'Kết quả thi chuyên môn — scheme: EXAM_RESULT',

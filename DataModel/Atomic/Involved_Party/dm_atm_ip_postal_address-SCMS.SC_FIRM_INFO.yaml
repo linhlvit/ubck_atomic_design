@@ -45,10 +45,11 @@ attributes:
     is_primary_key: false
     source_system: SCMS
     source_table: SC_FIRM_INFO
-    source_column: SCMS.SC_FIRM_INFO.ID
-    comment: "Lookup pair: securities_company.securities_company_code. Pair with Involved Party Id."
+    source_column: SCMS.SC_FIRM_INFO.CODE
+    comment: "Lookup pair: securities_company.securities_company_code. Pair with Involved Party Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết xem comment Involved Party Id."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Address Type Code = 'HEAD_OFFICE'"
     etl_derived_value: null
+
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning: Mã hệ thống nguồn dữ liệu.
@@ -114,8 +115,8 @@ attributes:
     is_primary_key: false
     source_system: SCMS
     source_table: SC_FIRM_INFO
-    source_column: SCMS.SC_FIRM_INFO.PROVINCE_ID
-    comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Province Id."
+    source_column: SCMS.CAT_PROVINCE.PROVINCE_CODE
+    comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Province Id. Giá trị lấy từ SCMS.CAT_PROVINCE.PROVINCE_CODE sau ETL crosswalk — chi tiết xem comment Province Id."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Address Type Code = 'HEAD_OFFICE'"
     etl_derived_value: null
 
@@ -142,8 +143,8 @@ attributes:
     is_primary_key: false
     source_system: SCMS
     source_table: SC_FIRM_INFO
-    source_column: SCMS.SC_FIRM_INFO.DISTRICT_ID
-    comment: "Lookup pair: geographic_area_old.geographic_area_old_code (nguồn ECAT — ĐỔI TARGET, xem District Id). Pair with District Id."
+    source_column: SCMS.CAT_DISTRICT.DISTRICT_CODE
+    comment: "Lookup pair: geographic_area_old.geographic_area_old_code (nguồn ECAT — ĐỔI TARGET, xem District Id). Pair with District Id. Giá trị lấy từ SCMS.CAT_DISTRICT.DISTRICT_CODE sau ETL crosswalk — chi tiết xem comment District Id."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Address Type Code = 'HEAD_OFFICE'"
     etl_derived_value: null
 
@@ -184,8 +185,8 @@ attributes:
     is_primary_key: false
     source_system: SCMS
     source_table: SC_FIRM_INFO
-    source_column: SCMS.SC_FIRM_INFO.WARD_ID
-    comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Ward Id."
+    source_column: SCMS.CAT_WARD.WARD_CODE
+    comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Ward Id. Giá trị lấy từ SCMS.CAT_WARD.WARD_CODE sau ETL crosswalk — chi tiết xem comment Ward Id."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Address Type Code = 'HEAD_OFFICE'"
     etl_derived_value: null
 
@@ -202,4 +203,3 @@ attributes:
     comment: Denormalized từ CAT_WARD.WARD_NAME — ETL lookup theo WARD_ID. Lưu dự phòng để tránh join nhiều tầng.
     classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Address Type Code = 'HEAD_OFFICE'"
     etl_derived_value: null
-

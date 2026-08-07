@@ -71,7 +71,7 @@ attributes:
   etl_derived_value: "SCMS.ALERT_RUN"
   data_type: "string"
 - attribute_name: "Securities Company Alert Indicator Id"
-  physical_name: "sc_alert_indicator_id"
+  physical_name: "sc_alert_ind_id"
   description: "FK đến chỉ tiêu cảnh báo được kiểm tra trong lần chạy này."
   data_domain: "Surrogate Key"
   nullable: false
@@ -88,16 +88,18 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Alert Indicator Code"
-  physical_name: "sc_alert_indicator_code"
+  physical_name: "sc_alert_ind_code"
   description: "Mã chỉ tiêu cảnh báo được kiểm tra."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "SCMS.ALERT_RUN.ALERT_INDICATOR_ID"
+  - "SCMS.ALERT_INDICATOR.ALERT_CODE"
   comment: "Lookup pair: Securities Company Alert Indicator.Securities Company Alert\
-    \ Indicator Code. Pair with Securities Company Alert Indicator Id."
+    \ Indicator Code. Pair with Securities Company Alert Indicator Id. Giá trị lấy\
+    \ từ SCMS.ALERT_INDICATOR.ALERT_CODE sau ETL crosswalk — chi tiết xem comment\
+    \ Securities Company Alert Indicator Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

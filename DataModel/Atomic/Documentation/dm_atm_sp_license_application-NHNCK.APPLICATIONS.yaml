@@ -101,8 +101,8 @@ attributes:
     is_primary_key: false
     source_system: NHNCK
     source_table: APPLICATIONS
-    source_column: NHNCK.APPLICATIONS.STATUS_ID
-    comment: "Lookup pair: cl_application_status.cl_application_status_code. Pair with Classification Application Status Id."
+    source_column: NHNCK.APPLICATION_STATUSES.STATUS_CODE
+    comment: "Lookup pair: cl_application_status.cl_application_status_code. Pair with Classification Application Status Id. Giá trị lấy từ NHNCK.APPLICATION_STATUSES.STATUS_CODE sau ETL crosswalk — chi tiết xem comment Classification Application Status Id."
     classification_context: "Source System Code = 'NHNCK_APPLICATIONS'"
     etl_derived_value: null
 
@@ -143,8 +143,8 @@ attributes:
     is_primary_key: false
     source_system: NHNCK
     source_table: APPLICATIONS
-    source_column: NHNCK.APPLICATIONS.CERTIFICATE_ID
-    comment: "Lookup pair: sp_license_certificate_type.sp_license_certificate_tp_code. Pair with Securities Practitioner License Certificate Type Id."
+    source_column: NHNCK.CERTIFICATES.CERTIFICATE_CODE
+    comment: "Lookup pair: sp_license_certificate_type.sp_license_certificate_tp_code. Pair with Securities Practitioner License Certificate Type Id. Giá trị lấy từ NHNCK.CERTIFICATES.CERTIFICATE_CODE sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Certificate Type Id."
     classification_context: "Source System Code = 'NHNCK_APPLICATIONS'"
     etl_derived_value: null
 
@@ -283,8 +283,8 @@ attributes:
     is_primary_key: false
     source_system: NHNCK
     source_table: APPLICATIONS
-    source_column: NHNCK.APPLICATIONS.PREVIOUS_CERTIFICATE_ID
-    comment: "Lookup pair: sp_license_certificate_type.sp_license_certificate_tp_code. Pair with Previous Securities Practitioner License Certificate Type Id."
+    source_column: NHNCK.CERTIFICATES.CERTIFICATE_CODE
+    comment: "Lookup pair: sp_license_certificate_type.sp_license_certificate_tp_code. Pair with Previous Securities Practitioner License Certificate Type Id. Giá trị lấy từ NHNCK.CERTIFICATES.CERTIFICATE_CODE sau ETL crosswalk — chi tiết xem comment Previous Securities Practitioner License Certificate Type Id."
     classification_context: "Source System Code = 'NHNCK_APPLICATIONS'"
     etl_derived_value: null
 
@@ -373,7 +373,7 @@ attributes:
     etl_derived_value: null
 
   - name: Violated Indicator
-    physical_name: violated_indicator
+    physical_name: violated_ind
     business_meaning: Cờ người hành nghề vi phạm quy định.
     data_domain: Small Counter
     data_type: int
@@ -387,7 +387,7 @@ attributes:
     etl_derived_value: null
 
   - name: Data Exploitable Indicator
-    physical_name: data_exploitable_indicator
+    physical_name: data_exploitable_ind
     business_meaning: Cờ dữ liệu có thể khai thác.
     data_domain: Small Counter
     data_type: int

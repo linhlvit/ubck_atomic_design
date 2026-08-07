@@ -90,9 +90,10 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "SCMS.SC_FIRM_PROFILE_CHANGE.SC_FIRM_INFO_ID"
+  - "SCMS.SC_FIRM_INFO.CODE"
   comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities\
-    \ Company Id."
+    \ Company Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết\
+    \ xem comment Securities Company Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -127,7 +128,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Classification Event Type Id"
-  physical_name: "cl_event_type_id"
+  physical_name: "cl_event_tp_id"
   description: "FK đến loại sự vụ/sự kiện nghiệp vụ (loại thay đổi hồ sơ)."
   data_domain: "Surrogate Key"
   nullable: true
@@ -141,7 +142,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Classification Event Type Code"
-  physical_name: "cl_event_type_code"
+  physical_name: "cl_event_tp_code"
   description: "Mã loại sự vụ/sự kiện nghiệp vụ."
   data_domain: "Text"
   nullable: true
@@ -235,7 +236,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Approval Document Indicator"
-  physical_name: "approval_document_indicator"
+  physical_name: "approval_document_ind"
   description: "Cờ có văn bản chấp thuận: 1=Có; 0=Không."
   data_domain: "Small Counter"
   nullable: true

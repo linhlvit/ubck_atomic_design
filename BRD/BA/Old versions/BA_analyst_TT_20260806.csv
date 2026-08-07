@@ -1,0 +1,477 @@
+﻿;;;;;;;;;;;;;;;Khai thác nguồn;;;;;;;;;
+STT;Mã;Dashboard/báo cáo;Thông tin;Mô tả;Nhóm yêu cầu;Phân loại;Đánh giá;Độ chi tiết;Nguồn;Cần phân tích?;Cần test?;DL lịch sử?;Trạng thái mapping;Mapping (nghiệp vụ);Bảng nguồn;Trường nguồn;Điều kiện chung;Câu lệnh tham khảo;Note;Kết quả Test;Model;DMT;Hoàn thành DEV;Loại dữ liệu
+;;;Tên chiều/chỉ tiêu/thuộc tính;;Dashboard/báo cáo/Data Explorer;Chiều/Chỉ tiêu cơ sở/Chỉ tiêu phái sinh;"Dễ: chỉ cần tính toán
+TB: cần phân tích nguồn lấy
+Khó: Có logic phức tạp và lấy nhiều mốc thời gian
+Trùng: Trong phạm vi ban của mình làm đã có tính thông tin này rồi";;;;;;;;;;;;;;;;;
+1;;Dashboard Hoạt động Thanh tra >> Thống kê chung;Thời gian;Ngày thống kê (năm);Dashboard;Chiều;Dễ;;Thanh tra;;x;;Done;;INSPECTION_TEAM;DECISION_DATE;;"WITH cte AS 
+(SELECT EXTRACT(YEAR FROM DECISION_DATE) ""Yearr"",
+COUNT(ID) ""Total"",
+SUM(CASE WHEN END_DATE IS NOT NULL AND START_DATE IS NOT NULL THEN 1 ELSE NULL END) ""Done"",
+SUM(CASE WHEN END_DATE IS NULL AND START_DATE IS NOT NULL THEN 1 ELSE NULL END) ""Progress""
+FROM INSPECT.INSPECTION_TEAM
+GROUP BY EXTRACT(YEAR FROM DECISION_DATE))
+SELECT a.""Yearr"" ""Năm"", 
+a.""Total"" ""Tổng số đoàn thanh tra"",
+a.""Total""/b.""Total"" ""Tổng đoàn SSCK"",
+a.""Done"" ""Số đoàn hoàn thành"",
+a.""Done""/b.""Done"" ""Đoàn hoàn thành SSCK"",
+a.""Progress"" ""Số đoàn đang thực hiện"",
+a.""Progress""/b.""Progress"" ""Đoàn đang thực hiện SSCK""
+FROM cte a
+LEFT JOIN cte b ON a.""Yearr"" = b.""Yearr"" + 1
+WHERE a.""Yearr"" = :filter_year --Điều kiện lọc
+ORDER BY a.""Yearr"" DESC";;;;;Done;Dữ liệu tĩnh
+1;;Dashboard Hoạt động Thanh tra >> Thống kê chung;Tổng số đoàn thanh tra;Thể hiện số đoàn thanh tra định kỳ/đột xuất đã và đang triển khai trong năm/tất cả các năm.;Dashboard;Chỉ tiêu cơ sở;TB;Năm;Thanh tra;x;x;;Done;;INSPECTION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+1;;Dashboard Hoạt động Thanh tra >> Thống kê chung;Tổng số thanh tra SSCK (%);So sánh cùng kỳ năm trước số liệu về số đoàn thanh tra đã và đang triển khai;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm;Thanh tra;;x;;Done;;INSPECTION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+1;;Dashboard Hoạt động Thanh tra >> Thống kê chung;Số đoàn thanh tra đã hoàn thành;Số đoàn thanh tra đã hoàn thành;Dashboard;Chỉ tiêu cơ sở;TB;Năm;Thanh tra;x;x;;Done;;INSPECTION_TEAM;ID;"START_DATE
+END_DATE";;;;;Done;Dữ liệu tĩnh;
+1;;Dashboard Hoạt động Thanh tra >> Thống kê chung;Số đoàn thanh tra đã hoàn thành SSCK (%);So sánh cùng kỳ năm trước số liệu về số đoàn thanh tra đã hoàn thành;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm;Thanh tra;;x;;Done;;INSPECTION_TEAM;ID;"START_DATE
+END_DATE";;;;;Done;Dữ liệu tĩnh;
+1;;Dashboard Hoạt động Thanh tra >> Thống kê chung;Số đoàn thanh tra đang thực hiện;Số đoàn thanh tra đang thực hiện thanh tra;Dashboard;Chỉ tiêu cơ sở;TB;Năm;Thanh tra;x;x;;Done;;INSPECTION_TEAM;ID;"START_DATE
+END_DATE";;;;;Done;Dữ liệu tĩnh;
+1;;Dashboard Hoạt động Thanh tra >> Thống kê chung;Số đoàn thanh tra đang thực hiện SSCK (%);So sánh cùng kỳ năm trước số liệu về số đoàn thanh tra đang triển khai;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm;Thanh tra;;x;;Done;;INSPECTION_TEAM;ID;"START_DATE
+END_DATE";;;;;Done;Dữ liệu tĩnh;
+2;;Dashboard Hoạt động Thanh tra >> Biểu đồ thống kê;Số lượng vụ việc thanh tra;Thể hiện số lượng vụ việc theo tháng trong năm tra cứu;Dashboard;Chỉ tiêu cơ sở;TB;Năm, tháng;Thanh tra;x;x;;Done;;INSPECTION_TEAM;ID;;"SELECT EXTRACT(YEAR FROM DECISION_DATE) ""Năm"",
+EXTRACT(MONTH FROM DECISION_DATE) ""Tháng"",
+COUNT(ID) ""Số vụ việc thanh tra"",
+COUNT(CASE WHEN END_DATE IS NOT NULL AND START_DATE IS NOT NULL THEN ID ELSE NULL END) ""Số đoàn hoàn thành"",
+COUNT(CASE WHEN END_DATE IS NULL AND START_DATE IS NOT NULL THEN ID ELSE NULL END) ""Số đoàn đang thực hiện""
+FROM INSPECT.INSPECTION_TEAM 
+WHERE EXTRACT(YEAR FROM DECISION_DATE) = :filter_year --Điều kiện lọc
+GROUP BY EXTRACT(YEAR FROM DECISION_DATE), EXTRACT(MONTH FROM DECISION_DATE)
+ORDER BY EXTRACT(YEAR FROM DECISION_DATE) DESC, EXTRACT(MONTH FROM DECISION_DATE) DESC";;;;;Done;Dữ liệu tĩnh
+2;;Dashboard Hoạt động Thanh tra >> Biểu đồ thống kê;Số vụ việc thanh tra đang thực hiện;Thể hiện số lượng vụ việc thanh tra đang thực hiện;Dashboard;Chỉ tiêu cơ sở;TB;Năm, tháng;Thanh tra;x;x;;Done;;INSPECTION_TEAM;ID;"START_DATE
+END_DATE";;;;;Done;Dữ liệu tĩnh;
+2;;Dashboard Hoạt động Thanh tra >> Biểu đồ thống kê;Số lượng vụ thanh tra đã hoàn thành;Thể hiện số lượng vụ việc thanh tra đã hoàn thành;Dashboard;Chỉ tiêu cơ sở;TB;Năm, tháng;Thanh tra;x;x;;Done;;INSPECTION_TEAM;ID;"START_DATE
+END_DATE";;;;;Done;Dữ liệu tĩnh;
+3;;Dashboard Hoạt động Thanh tra >> Biểu đồ cơ cấu theo hành vi;Phân loại vi phạm;"Phân loại hành vi: 
+- Tháo túng thị trường
+- Cho mượn tài khoản
+- CBTT";Dashboard;Chiều;Dễ;;Thanh tra;;x;;Done;;INSPECTION_TEAM;CONTENT;;"SELECT EXTRACT(YEAR FROM DECISION_DATE) ""Năm"",
+CASE WHEN LOWER(CONTENT) LIKE '%thao túng thị trường%' THEN 'Thao túng thị trường'
+WHEN LOWER(CONTENT) LIKE '%cho mượn tài khoản%' THEN 'Cho mượn tài khoản'
+WHEN LOWER(CONTENT) LIKE '%công bố thông tin%' THEN 'Công bố thông tin'
+ELSE NULL 
+END ""Phân loại hành vi"",
+COUNT(ID) ""Số lượng"",
+COUNT(ID)*100/(SUM(COUNT(ID)) OVER (PARTITION BY COALESCE(EXTRACT(YEAR FROM DECISION_DATE),0))) ""Tỷ lệ""
+FROM INSPECT.INSPECTION_TEAM a
+WHERE EXTRACT(YEAR FROM DECISION_DATE) = :filter_year --Điều kiện lọc
+GROUP BY EXTRACT(YEAR FROM DECISION_DATE),
+CASE WHEN LOWER(CONTENT) LIKE '%thao túng thị trường%' THEN 'Thao túng thị trường'
+WHEN LOWER(CONTENT) LIKE '%cho mượn tài khoản%' THEN 'Cho mượn tài khoản'
+WHEN LOWER(CONTENT) LIKE '%công bố thông tin%' THEN 'Công bố thông tin'
+ELSE NULL 
+END 
+ORDER BY EXTRACT(YEAR FROM DECISION_DATE) DESC";;;;;Done;Dữ liệu tĩnh
+3;;Dashboard Hoạt động Thanh tra >> Biểu đồ cơ cấu theo hành vi;Số lượng vi phạm hành vi Thao túng thị trường;Số lượng vi phạm theo hành vi Thao túng thị trường;Dashboard;Chỉ tiêu cơ sở;TB;Năm, loại vi phạm;Thanh tra;x;x;;Done;;INSPECTION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+3;;Dashboard Hoạt động Thanh tra >> Biểu đồ cơ cấu theo hành vi;Tỷ lệ % số lượng vi phạm hành vi Thao túng thị trường (%);Tỷ lệ % số lượng vi phạm theo hành vi Thao túng thị trường;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm, loại vi phạm;Thanh tra;;x;;Done;;INSPECTION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+3;;Dashboard Hoạt động Thanh tra >> Biểu đồ cơ cấu theo hành vi;Số lượng vi phạm hành vi Cho mượn tài khoản;Số lượng vi phạm theo hành vi Cho mượn tài khoản;Dashboard;Chỉ tiêu cơ sở;TB;Năm, loại vi phạm;Thanh tra;x;x;;Done;;INSPECTION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+3;;Dashboard Hoạt động Thanh tra >> Biểu đồ cơ cấu theo hành vi;Tỷ lệ % số lượng vi phạm hành vi Cho mượn tài khoản (%);Tỷ lệ % số lượng vi phạm theo hành vi Cho mượn tài khoản;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm, loại vi phạm;Thanh tra;;x;;Done;;INSPECTION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+3;;Dashboard Hoạt động Thanh tra >> Biểu đồ cơ cấu theo hành vi;Số lượng vi phạm hành vi CBTT;Số lượng vi phạm theo hành vi CBTT;Dashboard;Chỉ tiêu cơ sở;TB;Năm, loại vi phạm;Thanh tra;x;x;;Done;;INSPECTION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+3;;Dashboard Hoạt động Thanh tra >> Biểu đồ cơ cấu theo hành vi;Tỷ lệ % số lượng vi phạm hành vi CBTT (%);Tỷ lệ % số lượng vi phạm theo hành vi CBTT;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm, loại vi phạm;Thanh tra;;x;;Done;;INSPECTION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+4;;Dashboard Hoạt động Thanh tra >> Biểu đồ cơ cấu theo đối tượng;Phân loại vi phạm;"Phân loại đối tượng: 
+- Cá nhân 
+- CTĐC 
+- CTCK 
+- CTQLQ";Dashboard;Chiều;Dễ;;Thanh tra;;x;;Done;;INSPECTION_TEAM_TARGET;TARGET_TYPE;;"SELECT EXTRACT(YEAR FROM a.DECISION_DATE) ""Năm"",
+b.TARGET_TYPE ""Phân loại đối tượng"",
+COUNT(a.ID) ""Số lượng"",
+COUNT(a.ID)*100/(SUM(COUNT(a.ID)) OVER (PARTITION BY COALESCE(EXTRACT(YEAR FROM a.DECISION_DATE),0))) ""Tỷ lệ""
+FROM INSPECT.INSPECTION_TEAM a
+JOIN INSPECT.INSPECTION_TEAM_TARGET b ON a.ID = b.INSPECTION_TEAM_ID
+WHERE EXTRACT(YEAR FROM a.DECISION_DATE) = :filter_year --Điều kiện lọc
+GROUP BY EXTRACT(YEAR FROM a.DECISION_DATE),
+b.TARGET_TYPE
+ORDER BY EXTRACT(YEAR FROM a.DECISION_DATE) DESC";;;;;Done;Dữ liệu tĩnh
+4;;Dashboard Hoạt động Thanh tra >> Biểu đồ cơ cấu theo đối tượng;Số lượng vi phạm đối tượng Cá nhân;Số lượng vi phạm theo đối tượng Cá nhân;Dashboard;Chỉ tiêu cơ sở;TB;Năm, loại vi phạm;Thanh tra;x;x;;Done;;INSPECTION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+4;;Dashboard Hoạt động Thanh tra >> Biểu đồ cơ cấu theo đối tượng;Tỷ lệ % số lượng vi phạm đối tượng Cá nhân (%);Tỷ lệ % số lượng vi phạm theo đối tượng Cá nhân;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm, loại vi phạm;Thanh tra;;x;;Done;;INSPECTION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+4;;Dashboard Hoạt động Thanh tra >> Biểu đồ cơ cấu theo đối tượng;Số lượng vi phạm đối tượng CTĐC;Số lượng vi phạm theo đối tượng CTĐC;Dashboard;Chỉ tiêu cơ sở;TB;Năm, loại vi phạm;Thanh tra;x;x;;Done;;INSPECTION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+4;;Dashboard Hoạt động Thanh tra >> Biểu đồ cơ cấu theo đối tượng;Tỷ lệ % số lượng vi phạm đối tượng CTĐC (%);Tỷ lệ % số lượng vi phạm theo đối tượng CTĐC;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm, loại vi phạm;Thanh tra;;x;;Done;;INSPECTION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+4;;Dashboard Hoạt động Thanh tra >> Biểu đồ cơ cấu theo đối tượng;Số lượng vi phạm đối tượng CTCK;Số lượng vi phạm theo đối tượng CTCK;Dashboard;Chỉ tiêu cơ sở;TB;Năm, loại vi phạm;Thanh tra;x;x;;Done;;INSPECTION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+4;;Dashboard Hoạt động Thanh tra >> Biểu đồ cơ cấu theo đối tượng;Tỷ lệ % số lượng vi phạm đối tượng CTCK (%);Tỷ lệ % số lượng vi phạm theo đối tượng CTCK;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm, loại vi phạm;Thanh tra;;x;;Done;;INSPECTION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+4;;Dashboard Hoạt động Thanh tra >> Biểu đồ cơ cấu theo đối tượng;Số lượng vi phạm đối tượng CTQLQ;Số lượng vi phạm theo đối tượng CTQLQ;Dashboard;Chỉ tiêu cơ sở;TB;Năm, loại vi phạm;Thanh tra;x;x;;Done;;INSPECTION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+4;;Dashboard Hoạt động Thanh tra >> Biểu đồ cơ cấu theo đối tượng;Tỷ lệ % số lượng vi phạm đối tượng CTQLQ (%);Tỷ lệ % số lượng vi phạm theo đối tượng CTQLQ;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm, loại vi phạm;Thanh tra;;x;;Done;;INSPECTION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+5;;Dashboard Hoạt động Thanh tra >> Danh sách;Mã vụ việc;Mã vụ việc;Dashboard;Chiều;Dễ;;Thanh tra;;x;;Done;;INSPECTION_TEAM;CODE;;"SELECT EXTRACT(YEAR FROM a.DECISION_DATE) ""Năm"",
+a.CODE ""Mã vụ việc"",
+b.TARGET_NAME ""Đối tượng"",
+b.TARGET_TYPE ""Phân loại đối tượng"",
+a.FORM_TYPE ""Loại hình"",
+CASE WHEN a.START_DATE IS NOT NULL AND a.END_DATE IS NULL THEN 'Đang thực hiện'
+WHEN a.START_DATE IS NOT NULL AND a.END_DATE IS NOT NULL THEN 'Đã hoàn thành'
+WHEN a.START_DATE IS NULL AND a.END_DATE IS NULL THEN 'Chưa thực hiện'
+ELSE NULL
+END ""Trạng thái""
+FROM INSPECT.INSPECTION_TEAM a
+JOIN INSPECT.INSPECTION_TEAM_TARGET b ON a.ID = b.INSPECTION_TEAM_ID
+WHERE EXTRACT(YEAR FROM a.DECISION_DATE) = :filter_year --Điều kiện lọc
+ORDER BY EXTRACT(YEAR FROM a.DECISION_DATE) DESC";;;;;Done;Dữ liệu tĩnh
+5;;Dashboard Hoạt động Thanh tra >> Danh sách;Đối tượng;Tên đối tượng bị thanh tra/kiểm tra;Dashboard;Chiều;Dễ;Năm, vụ việc;Thanh tra;;x;;Done;;INSPECTION_TEAM_TARGET;TARGET_NAME;;;;;;Done;Dữ liệu tĩnh;
+5;;Dashboard Hoạt động Thanh tra >> Danh sách;Phân loại đối tượng;Phân loại đối tượng;Dashboard;Chiều;Dễ;Năm, vụ việc;Thanh tra;;x;;Done;;INSPECTION_TEAM_TARGET;TARGET_TYPE;;;;;;Done;Dữ liệu tĩnh;
+5;;Dashboard Hoạt động Thanh tra >> Danh sách;Loại hình;Loại hình thanh tra là định kỳ hoặc đột xuất;Dashboard;Chiều;Dễ;Năm, vụ việc;Thanh tra;;x;;Done;;INSPECTION_TEAM;FORM_TYPE;;;;;;Done;Dữ liệu tĩnh;
+5;;Dashboard Hoạt động Thanh tra >> Danh sách;Trạng thái;Thể hiện các trạng thái xử lý như đang tại hiện trường hay đang xử lý hồ sơ;Dashboard;Chiều;Dễ;Năm, vụ việc;Thanh tra;;x;;Done;;INSPECTION_TEAM;"START_DATE
+END_DATE";;;;;;Done;Dữ liệu tĩnh;
+6;;Dashboard Hoạt động Kiểm tra >> Thống kê chung;Thời gian;Ngày thống kê (năm);Dashboard;Chiều;Dễ;;Thanh tra;;x;;Done;;EXAMINATION_TEAM;DECISION_DATE;;"WITH cte AS
+(SELECT EXTRACT(YEAR FROM DECISION_DATE) ""Yearr"",
+COUNT(ID) ""Total"",
+SUM(CASE WHEN END_DATE IS NOT NULL AND START_DATE IS NOT NULL THEN 1 ELSE NULL END) ""Done"",
+SUM(CASE WHEN END_DATE IS NULL AND START_DATE IS NOT NULL THEN 1 ELSE NULL END) ""Progress""
+FROM INSPECT.EXAMINATION_TEAM 
+GROUP BY EXTRACT(YEAR FROM DECISION_DATE))
+SELECT a.""Yearr"" ""Năm"",
+a.""Total"" ""Tổng số vụ việc kiểm tra"",
+a.""Total""/b.""Total"" ""Tổng vụ việc SSCK"",
+a.""Done"" ""Số vụ việc hoàn thành"",
+a.""Done""/b.""Done"" ""Vụ việc hoàn thành SSCK"",
+a.""Progress"" ""Số vụ việc đang thực hiện"",
+a.""Progress""/b.""Progress"" ""Vụ việc đang thực hiện SSCK""
+FROM cte a
+LEFT JOIN cte b ON a.""Yearr"" = b.""Yearr"" + 1
+WHERE a.""Yearr"" = :filter_year --Điều kiện lọc
+ORDER BY a.""Yearr"" DESC";;;;;Done;Dữ liệu tĩnh
+6;;Dashboard Hoạt động Kiểm tra >> Thống kê chung;Tổng số vụ việc kiểm tra;Thể hiện số vụ việc kiểm tra đã và đang triển khai trong năm/tất cả các năm.;Dashboard;Chỉ tiêu cơ sở;TB;Năm;Thanh tra;x;x;;Done;;EXAMINATION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+6;;Dashboard Hoạt động Kiểm tra >> Thống kê chung;Tổng số vụ việc kiểm tra SSCK (%);So sánh cùng kỳ năm trước số liệu về số vụ việc kiểm tra đã và đang triển khai;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm;Thanh tra;;x;;Done;;EXAMINATION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+6;;Dashboard Hoạt động Kiểm tra >> Thống kê chung;Số vụ việc kiểm tra đã hoàn thành;Số vụ việc kiểm tra đã hoàn thành;Dashboard;Chỉ tiêu cơ sở;TB;Năm;Thanh tra;x;x;;Done;;EXAMINATION_TEAM;ID;"START_DATE
+END_DATE";;;;;Done;Dữ liệu tĩnh;
+6;;Dashboard Hoạt động Kiểm tra >> Thống kê chung;Số vụ kiểm tra đã hoàn thành SSCK (%);So sánh cùng kỳ năm trước số liệu về số vụ việc kiểm tra đã hoàn thành;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm;Thanh tra;;x;;Done;;EXAMINATION_TEAM;ID;"START_DATE
+END_DATE";;;;;Done;Dữ liệu tĩnh;
+6;;Dashboard Hoạt động Kiểm tra >> Thống kê chung;Số vụ kiểm tra đang thực hiện;Số vụ kiểm tra đang thực hiện kiểm tra;Dashboard;Chỉ tiêu cơ sở;TB;Năm;Thanh tra;x;x;;Done;;EXAMINATION_TEAM;ID;"START_DATE
+END_DATE";;;;;Done;Dữ liệu tĩnh;
+6;;Dashboard Hoạt động Kiểm tra >> Thống kê chung;Số vụ thanh tra đang thực hiện SSCK (%);So sánh cùng kỳ năm trước số liệu về số đoàn thanh tra đang triển khai;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm;Thanh tra;;x;;Done;;EXAMINATION_TEAM;ID;"START_DATE
+END_DATE";;;;;Done;Dữ liệu tĩnh;
+7;;Dashboard Hoạt động Kiểm tra >> Biểu đồ thống kê;Số lượng vụ việc kiểm tra;Thể hiện số lượng vụ việc theo tháng trong năm tra cứu;Dashboard;Chỉ tiêu cơ sở;TB;Năm, tháng;Thanh tra;x;x;;Done;;EXAMINATION_TEAM;ID;;"SELECT EXTRACT(YEAR FROM DECISION_DATE) ""Năm"",
+EXTRACT(MONTH FROM DECISION_DATE) ""Tháng"",
+COUNT(ID) ""Tổng số vụ việc kiểm tra"",
+COUNT(CASE WHEN END_DATE IS NOT NULL AND START_DATE IS NOT NULL THEN ID ELSE NULL END) ""Số vụ việc hoàn thành"",
+COUNT(CASE WHEN END_DATE IS NULL AND START_DATE IS NOT NULL THEN ID ELSE NULL END) ""Số vụ việc đang thực hiện""
+FROM INSPECT.EXAMINATION_TEAM 
+WHERE EXTRACT(YEAR FROM DECISION_DATE) = :filter_year --Điều kiện lọc
+GROUP BY EXTRACT(YEAR FROM DECISION_DATE), EXTRACT(MONTH FROM DECISION_DATE)
+ORDER BY EXTRACT(YEAR FROM DECISION_DATE) DESC, EXTRACT(MONTH FROM DECISION_DATE) DESC";;;;;Done;Dữ liệu tĩnh
+7;;Dashboard Hoạt động Kiểm tra >> Biểu đồ thống kê;Số lượng đã hoàn thành;Thể hiện số lượng vụ việc kiểm tra đang thực hiện;Dashboard;Chỉ tiêu cơ sở;TB;Năm, tháng;Thanh tra;x;x;;Done;;EXAMINATION_TEAM;ID;"START_DATE
+END_DATE";;;;;Done;Dữ liệu tĩnh;
+7;;Dashboard Hoạt động Kiểm tra >> Biểu đồ thống kê;Số lượng đang triển khai;Thể hiện số lượng vụ việc kiểm tra đã hoàn thành;Dashboard;Chỉ tiêu cơ sở;TB;Năm, tháng;Thanh tra;x;x;;Done;;EXAMINATION_TEAM;ID;"START_DATE
+END_DATE";;;;;Done;Dữ liệu tĩnh;
+8;;Dashboard Hoạt động Kiểm tra >> Biều đồ cơ cấu theo hành vi;Phân loại vi phạm;Phân loại hành vi: CBTT, Vi phạm hoạt động chào bán, Vi phạm hoạt động của Cổ đông nội bộ, cổ đông lớn, Giao dịch, Công ty đại chúng, Công ty chứng khoán, Tổ chức phát hành trái phiếu, Thao túng, Cho mượn, Tổ chức kiểm toán, Sở giao dịch, …;Dashboard;Chiều;Dễ;;Thanh tra;;x;;Done;;EXAMINATION_TEAM;CONTENT;;"SELECT EXTRACT(YEAR FROM DECISION_DATE) ""Năm"",
+CASE WHEN LOWER(CONTENT) LIKE '%công bố thông tin%' THEN 'Vi phạm CBTT'
+WHEN LOWER(CONTENT) LIKE '%hoạt động chào bán%' THEN 'Vi phạm hoạt động chào bán'
+WHEN LOWER(CONTENT) LIKE '%hoạt động của cổ động%' THEN 'Vi phạm hoạt động của Cổ đông nội bộ, cổ đông lớn'
+WHEN LOWER(CONTENT) LIKE '%giao dịch%' THEN 'Giao dịch'
+WHEN LOWER(CONTENT) LIKE '%công ty đại chúng%' THEN 'Vi phạm hoạt động của Công ty đại chúng'
+WHEN LOWER(CONTENT) LIKE '%công ty chứng khoán%' THEN 'Vi phạm hoạt động của Công ty chứng khoán'
+WHEN LOWER(CONTENT) LIKE '%tổ chức phát hành trái phiếu%' THEN 'Vi phạm hoạt động của tổ chức PHTP'
+WHEN LOWER(CONTENT) LIKE '%thao túng%' THEN 'Thao túng'
+WHEN LOWER(CONTENT) LIKE '%cho mượn%' THEN 'Cho mượn'
+WHEN LOWER(CONTENT) LIKE '%tổ chức kiểm toán%' THEN 'Vi phạm hoạt động của tổ chức kiểm toán'
+WHEN LOWER(CONTENT) LIKE '%sở giao dịch%' THEN 'Vi phạm hoạt động của sở giao dịch'
+ELSE NULL 
+END ""Phân loại hành vi"",
+COUNT(ID) ""Số lượng"",
+COUNT(ID)*100/(SUM(COUNT(ID)) OVER (PARTITION BY COALESCE(EXTRACT(YEAR FROM DECISION_DATE),0))) ""Tỷ lệ""
+FROM INSPECT.EXAMINATION_TEAM 
+WHERE EXTRACT(YEAR FROM DECISION_DATE) = :filter_year --Điều kiện lọc
+GROUP BY EXTRACT(YEAR FROM DECISION_DATE),
+CASE WHEN LOWER(CONTENT) LIKE '%công bố thông tin%' THEN 'Vi phạm CBTT'
+WHEN LOWER(CONTENT) LIKE '%hoạt động chào bán%' THEN 'Vi phạm hoạt động chào bán'
+WHEN LOWER(CONTENT) LIKE '%hoạt động của cổ động%' THEN 'Vi phạm hoạt động của Cổ đông nội bộ, cổ đông lớn'
+WHEN LOWER(CONTENT) LIKE '%giao dịch%' THEN 'Giao dịch'
+WHEN LOWER(CONTENT) LIKE '%công ty đại chúng%' THEN 'Vi phạm hoạt động của Công ty đại chúng'
+WHEN LOWER(CONTENT) LIKE '%công ty chứng khoán%' THEN 'Vi phạm hoạt động của Công ty chứng khoán'
+WHEN LOWER(CONTENT) LIKE '%tổ chức phát hành trái phiếu%' THEN 'Vi phạm hoạt động của tổ chức PHTP'
+WHEN LOWER(CONTENT) LIKE '%thao túng%' THEN 'Thao túng'
+WHEN LOWER(CONTENT) LIKE '%cho mượn%' THEN 'Cho mượn'
+WHEN LOWER(CONTENT) LIKE '%tổ chức kiểm toán%' THEN 'Vi phạm hoạt động của tổ chức kiểm toán'
+WHEN LOWER(CONTENT) LIKE '%sở giao dịch%' THEN 'Vi phạm hoạt động của sở giao dịch'
+ELSE NULL 
+END
+ORDER BY EXTRACT(YEAR FROM DECISION_DATE) DESC";;;;;Done;Dữ liệu tĩnh
+8;;Dashboard Hoạt động Kiểm tra >> Biều đồ cơ cấu theo hành vi;Số lượng vi phạm hành vi CBTT;Tính số lượng theo hành vi CBTT;Dashboard;Chỉ tiêu cơ sở;TB;Năm, loại vi phạm;Thanh tra;x;x;;Done;;EXAMINATION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+8;;Dashboard Hoạt động Kiểm tra >> Biều đồ cơ cấu theo hành vi;Tỷ lệ % số lượng vi phạm hành vi CBTT (%);Tỷ lệ % số lượng vi phạm theo hành vi CBTT;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm, loại vi phạm;Thanh tra;;x;;Done;;EXAMINATION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+8;;Dashboard Hoạt động Kiểm tra >> Biều đồ cơ cấu theo hành vi;Số lượng vi phạm hành vi Hoạt động chào bán;Tính số lượng theo hành vi Hoạt động chào bán;Dashboard;Chỉ tiêu cơ sở;TB;Năm, loại vi phạm;Thanh tra;x;x;;Done;;EXAMINATION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+8;;Dashboard Hoạt động Kiểm tra >> Biều đồ cơ cấu theo hành vi;Tỷ lệ % số lượng vi phạm hành vi Hoạt động chào bán (%);Tỷ lệ % số lượng vi phạm theo hành vi Hoạt động chào bán;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm, loại vi phạm;Thanh tra;;x;;Done;;EXAMINATION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+8;;Dashboard Hoạt động Kiểm tra >> Biều đồ cơ cấu theo hành vi;Số lượng vi phạm hành vi Hoạt động của Cổ đông nội bộ, Cổ đông lớn;Tính số lượng theo hành vi Hoạt động của Cổ đông nội bộ, Cổ đông lớn;Dashboard;Chỉ tiêu cơ sở;TB;Năm, loại vi phạm;Thanh tra;x;x;;Done;;EXAMINATION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+8;;Dashboard Hoạt động Kiểm tra >> Biều đồ cơ cấu theo hành vi;Tỷ lệ % số lượng vi phạm hành vi Hoạt động của Cổ đông nội bộ, Cổ đông lớn (%);Tỷ lệ % số lượng vi phạm theo hành vi Hoạt động của Cổ đông nội bộ, Cổ đông lớn;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm, loại vi phạm;Thanh tra;;x;;Done;;EXAMINATION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+8;;Dashboard Hoạt động Kiểm tra >> Biều đồ cơ cấu theo hành vi;Số lượng vi phạm hành vi Giao dịch;Tính số lượng theo hành vi Giao dịch;Dashboard;Chỉ tiêu cơ sở;TB;Năm, loại vi phạm;Thanh tra;x;x;;Done;;EXAMINATION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+8;;Dashboard Hoạt động Kiểm tra >> Biều đồ cơ cấu theo hành vi;Tỷ lệ % số lượng vi phạm hành vi Giao dịch (%);Tỷ lệ % số lượng vi phạm theo hành vi Giao dịch;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm, loại vi phạm;Thanh tra;;x;;Done;;EXAMINATION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+8;;Dashboard Hoạt động Kiểm tra >> Biều đồ cơ cấu theo hành vi;Số lượng vi phạm hành vi CTĐC;Tính số lượng theo hành vi CTĐC;Dashboard;Chỉ tiêu cơ sở;TB;Năm, loại vi phạm;Thanh tra;x;x;;Done;;EXAMINATION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+8;;Dashboard Hoạt động Kiểm tra >> Biều đồ cơ cấu theo hành vi;Tỷ lệ % số lượng vi phạm hành vi CTĐC (%);Tỷ lệ % số lượng vi phạm theo hành vi CTĐC;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm, loại vi phạm;Thanh tra;;x;;Done;;EXAMINATION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+8;;Dashboard Hoạt động Kiểm tra >> Biều đồ cơ cấu theo hành vi;Số lượng vi phạm hành vi CTCK;Tính số lượng theo hành vi CTCK;Dashboard;Chỉ tiêu cơ sở;TB;Năm, loại vi phạm;Thanh tra;x;x;;Done;;EXAMINATION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+8;;Dashboard Hoạt động Kiểm tra >> Biều đồ cơ cấu theo hành vi;Tỷ lệ % số lượng vi phạm hành vi CTCK (%);Tỷ lệ % số lượng vi phạm theo hành vi CTCK;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm, loại vi phạm;Thanh tra;;x;;Done;;EXAMINATION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+8;;Dashboard Hoạt động Kiểm tra >> Biều đồ cơ cấu theo hành vi;Số lượng vi phạm hành vi Tổ chức phát hành trái phiếu;Tính số lượng theo hành vi Tổ chức phát hành trái phiếu;Dashboard;Chỉ tiêu cơ sở;TB;Năm, loại vi phạm;Thanh tra;x;x;;Done;;EXAMINATION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+8;;Dashboard Hoạt động Kiểm tra >> Biều đồ cơ cấu theo hành vi;Tỷ lệ % số lượng vi phạm hành vi Tổ chức phát hành trái phiếu (%);Tỷ lệ % số lượng vi phạm theo hành vi Tổ chức phát hành trái phiếu;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm, loại vi phạm;Thanh tra;;x;;Done;;EXAMINATION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+8;;Dashboard Hoạt động Kiểm tra >> Biều đồ cơ cấu theo hành vi;Số lượng vi phạm hành vi Thao túng;Tính số lượng theo hành vi Thao túng;Dashboard;Chỉ tiêu cơ sở;TB;Năm, loại vi phạm;Thanh tra;x;x;;Done;;EXAMINATION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+8;;Dashboard Hoạt động Kiểm tra >> Biều đồ cơ cấu theo hành vi;Tỷ lệ % số lượng vi phạm hành vi Thao túng (%);Tỷ lệ % số lượng vi phạm theo hành vi Thao túng;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm, loại vi phạm;Thanh tra;;x;;Done;;EXAMINATION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+8;;Dashboard Hoạt động Kiểm tra >> Biều đồ cơ cấu theo hành vi;Số lượng vi phạm hành vi Cho mượn;Tính số lượng theo hành vi Cho mượn;Dashboard;Chỉ tiêu cơ sở;TB;Năm, loại vi phạm;Thanh tra;x;x;;Done;;EXAMINATION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+8;;Dashboard Hoạt động Kiểm tra >> Biều đồ cơ cấu theo hành vi;Tỷ lệ % số lượng vi phạm hành vi Cho mượn (%);Tỷ lệ % số lượng vi phạm theo hành vi Cho mượn;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm, loại vi phạm;Thanh tra;;x;;Done;;EXAMINATION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+8;;Dashboard Hoạt động Kiểm tra >> Biều đồ cơ cấu theo hành vi;Số lượng vi phạm hành vi Tổ chức kiểm toán;Tính số lượng theo hành vi Tổ chức kiểm toán;Dashboard;Chỉ tiêu cơ sở;TB;Năm, loại vi phạm;Thanh tra;x;x;;Done;;EXAMINATION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+8;;Dashboard Hoạt động Kiểm tra >> Biều đồ cơ cấu theo hành vi;Tỷ lệ % số lượng vi phạm hành vi Tổ chức kiểm toán (%);Tỷ lệ % số lượng vi phạm theo hành vi Tổ chức kiểm toán;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm, loại vi phạm;Thanh tra;;x;;Done;;EXAMINATION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+8;;Dashboard Hoạt động Kiểm tra >> Biều đồ cơ cấu theo hành vi;Số lượng vi phạm hành vi Sở giao dịch;Tính số lượng theo hành vi Sở giao dịch;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm, loại vi phạm;Thanh tra;;x;;Done;;EXAMINATION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+8;;Dashboard Hoạt động Kiểm tra >> Biều đồ cơ cấu theo hành vi;Tỷ lệ % số lượng vi phạm hành vi Sở giao dịch (%);Tỷ lệ % số lượng vi phạm theo hành vi Sở giao dịch;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm, loại vi phạm;Thanh tra;;x;;Done;;EXAMINATION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+9;;Dashboard Hoạt động Kiểm tra >> Biểu đồ cơ cấu theo đối tượng;Phân loại đối tượng: CTCK;"Phân loại đối tượng: 
+- CTCK 
+- CTQLQ, Ngân hàng lưu ký 
+- CTĐC 
+- CTKT 
+- Tổ chức PHTP";Dashboard;Chiều;Dễ;;Thanh tra;;x;;Done;;EXAMINATION_TEAM_TARGET;TARGET_TYPE;;"SELECT EXTRACT(YEAR FROM a.DECISION_DATE) ""Năm"",
+b.TARGET_TYPE ""Phân loại đối tượng"",
+COUNT(a.ID) ""Số lượng"",
+COUNT(a.ID)*100/(SUM(COUNT(a.ID)) OVER (PARTITION BY COALESCE(EXTRACT(YEAR FROM a.DECISION_DATE),0))) ""Tỷ lệ""
+FROM INSPECT.EXAMINATION_TEAM a
+JOIN INSPECT.EXAMINATION_TEAM_TARGET b ON a.ID = b.EXAMINATION_TEAM_ID
+WHERE EXTRACT(YEAR FROM a.DECISION_DATE) = :filter_year --Điều kiện lọc
+GROUP BY EXTRACT(YEAR FROM a.DECISION_DATE),
+b.TARGET_TYPE
+ORDER BY EXTRACT(YEAR FROM a.DECISION_DATE) DESC";;;;;Done;Dữ liệu tĩnh
+9;;Dashboard Hoạt động Kiểm tra >> Biểu đồ cơ cấu theo đối tượng;Số lượng vi phạm đối tượng CTCK;Tính số lượng theo đối tượng CTCK;Dashboard;Chỉ tiêu cơ sở;TB;Năm, loại vi phạm;Thanh tra;x;x;;Done;;EXAMINATION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+9;;Dashboard Hoạt động Kiểm tra >> Biểu đồ cơ cấu theo đối tượng;Tỷ lệ % số lượng vi phạm đối tượng CTCK (%);Tỷ lệ % số lượng vi phạm theo đối tượng CTCK;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm, loại vi phạm;Thanh tra;;x;;Done;;EXAMINATION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+9;;Dashboard Hoạt động Kiểm tra >> Biểu đồ cơ cấu theo đối tượng;Số lượng vi phạm đối tượng CTQLQ, Ngân hàng lưu ký;Tính số lượng theo đối tượng CTQLQ, Ngân hàng lưu ký;Dashboard;Chỉ tiêu cơ sở;TB;Năm, loại vi phạm;Thanh tra;x;x;;Done;;EXAMINATION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+9;;Dashboard Hoạt động Kiểm tra >> Biểu đồ cơ cấu theo đối tượng;Tỷ lệ % số lượng vi phạm đối tượng CTQLQ, Ngân hàng lưu ký (%);Tỷ lệ % số lượng vi phạm theo đối tượng CTQLQ, Ngân hàng lưu ký;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm, loại vi phạm;Thanh tra;;x;;Done;;EXAMINATION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+9;;Dashboard Hoạt động Kiểm tra >> Biểu đồ cơ cấu theo đối tượng;Số lượng vi phạm đối tượng CTĐC;Tính số lượng theo đối tượng CTĐC;Dashboard;Chỉ tiêu cơ sở;TB;Năm, loại vi phạm;Thanh tra;x;x;;Done;;EXAMINATION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+9;;Dashboard Hoạt động Kiểm tra >> Biểu đồ cơ cấu theo đối tượng;Tỷ lệ % số lượng vi phạm CTĐC (%);Tỷ lệ % số lượng vi phạm theo đối tượng CTĐC;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm, loại vi phạm;Thanh tra;;x;;Done;;EXAMINATION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+9;;Dashboard Hoạt động Kiểm tra >> Biểu đồ cơ cấu theo đối tượng;Số lượng đối tượng CTKT;Tính số lượng theo đối tượng CTKT;Dashboard;Chỉ tiêu cơ sở;TB;Năm, loại vi phạm;Thanh tra;x;x;;Done;;EXAMINATION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+9;;Dashboard Hoạt động Kiểm tra >> Biểu đồ cơ cấu theo đối tượng;Tỷ lệ % số lượng vi phạm đối tượng CTKT (%);Tỷ lệ % số lượng vi phạm theo đối tượng CTKT;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm, loại vi phạm;Thanh tra;;x;;Done;;EXAMINATION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+9;;Dashboard Hoạt động Kiểm tra >> Biểu đồ cơ cấu theo đối tượng;Số lượng đối tượng Tổ chức PHTP;Tính số lượng theo đối tượng Tổ chức PHTP;Dashboard;Chỉ tiêu cơ sở;TB;Năm, loại vi phạm;Thanh tra;x;x;;Done;;EXAMINATION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+9;;Dashboard Hoạt động Kiểm tra >> Biểu đồ cơ cấu theo đối tượng;Tỷ lệ % số lượng vi phạm đối tượng Tổ chức PHTP(%);Tỷ lệ % số lượng vi phạm theo đối tượng Tổ chức PHTP;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm, loại vi phạm;Thanh tra;;x;;Done;;EXAMINATION_TEAM;ID;;;;;;Done;Dữ liệu tĩnh;
+10;;Dashboard Hoạt động Kiểm tra >> Danh sách;Mã vụ việc;Mã hồ sơ vụ việc;Dashboard;Chiều;Dễ;;Thanh tra;;x;;Done;;EXAMINATION_TEAM;CODE;;"SELECT EXTRACT(YEAR FROM a.DECISION_DATE) ""Năm"",
+a.CODE ""Mã vụ việc"",
+b.TARGET_NAME ""Đối tượng"",
+b.TARGET_TYPE ""Phân loại đối tượng"",
+a.FORM_TYPE ""Loại hình"",
+CASE WHEN a.START_DATE IS NOT NULL AND a.END_DATE IS NULL THEN 'Đang thực hiện'
+WHEN a.START_DATE IS NOT NULL AND a.END_DATE IS NOT NULL THEN 'Đã hoàn thành'
+WHEN a.START_DATE IS NULL AND a.END_DATE IS NULL THEN 'Chưa thực hiện'
+ELSE NULL
+END ""Trạng thái""
+FROM INSPECT.EXAMINATION_TEAM a
+JOIN INSPECT.EXAMINATION_TEAM_TARGET b ON a.ID = b.EXAMINATION_TEAM_ID
+WHERE EXTRACT(YEAR FROM a.DECISION_DATE) = :filter_year --Điều kiện lọc
+ORDER BY EXTRACT(YEAR FROM a.DECISION_DATE) DESC";;;;;Done;Dữ liệu tĩnh
+10;;Dashboard Hoạt động Kiểm tra >> Danh sách;Đối tượng;Tên đối tượng bị thanh tra, kiểm tra;Dashboard;Chiều;Dễ;Năm, vụ việc;Thanh tra;;x;;Done;;EXAMINATION_TEAM_TARGET;TARGET_NAME;;;;;;Done;Dữ liệu tĩnh;
+10;;Dashboard Hoạt động Kiểm tra >> Danh sách;Phân loại đối tượng;Phân loại đối tượng: CTCK, QLQ,…;Dashboard;Chiều;Dễ;Năm, vụ việc;Thanh tra;;x;;Done;;EXAMINATION_TEAM_TARGET;TARGET_TYPE;;;;;;Done;Dữ liệu tĩnh;
+10;;Dashboard Hoạt động Kiểm tra >> Danh sách;Loại hình;Loại hình thanh tra là định kỳ hoặc đột xuất;Dashboard;Chiều;Dễ;Năm, vụ việc;Thanh tra;;x;;Done;;EXAMINATION_TEAM;FORM_TYPE;;;;;;Done;Dữ liệu tĩnh;
+10;;Dashboard Hoạt động Kiểm tra >> Danh sách;Trạng thái;Thể hiện các trạng thái xử lý như đang tại hiện trường hay đang xử lý hồ sơ;Dashboard;Chiều;Dễ;Năm, vụ việc;Thanh tra;;x;;Done;;EXAMINATION_TEAM;"START_DATE
+END_DATE";;;;;;Done;Dữ liệu tĩnh;
+11;;Dashboard Hoạt động Xử phạt >> Thống kê chung;Thời gian;Ngày thống kê (năm);Dashboard;Chiều;Dễ;;Thanh tra;;x;;Done;;PENALTY_DECISION;ISSUED_DATE;;"WITH cte AS 
+(SELECT EXTRACT(YEAR FROM ISSUED_DATE) ""Yearr"",
+COUNT(ID) ""Total"",
+SUM(TOTAL_FINE_AMOUNT) ""Money""
+FROM INSPECT.PENALTY_DECISION 
+GROUP BY EXTRACT(YEAR FROM ISSUED_DATE))
+SELECT a.""Yearr"" ""Năm"",
+a.""Total"" ""Tổng QĐ xử phạt"",
+a.""Total""/b.""Total"" ""QĐ xử phạt SSCK"",
+a.""Money"" ""Tiền phạt"",
+a.""Money""/b.""Money"" ""Tiền phạt SSCK""
+FROM cte a
+LEFT JOIN cte b ON a.""Yearr"" = b.""Yearr"" + 1
+WHERE a.""Yearr"" = :filter_year --Điều kiện lọc
+ORDER BY a.""Yearr"" DESC";;;;;Done;Dữ liệu tĩnh
+11;;Dashboard Hoạt động Xử phạt >> Thống kê chung;Tổng quyết định xử phạt;Thể hiện số lượng quyết định xử phạt đã ban hành;Dashboard;Chỉ tiêu cơ sở;TB;Năm;Thanh tra;x;x;;Done;;PENALTY_DECISION;ID;;;;;;Done;Dữ liệu tĩnh;
+11;;Dashboard Hoạt động Xử phạt >> Thống kê chung;Tổng quyết định xử phạt SSCK (%);So sánh cùng kỳ năm trước số liệu về số quyết định xử phạt;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm;Thanh tra;;x;;Done;;PENALTY_DECISION;ID;;;;;;Done;Dữ liệu tĩnh;
+11;;Dashboard Hoạt động Xử phạt >> Thống kê chung;Tiền phạt (tỉ đồng);Tổng số tiền phạt tương ứng với quyết định xử phạt;Dashboard;Chỉ tiêu cơ sở;TB;Năm;Thanh tra;x;x;;Done;;PENALTY_DECISION;TOTAL_FINE_AMOUNT;;;;;;Done;Dữ liệu tĩnh;
+11;;Dashboard Hoạt động Xử phạt >> Thống kê chung;Tiền phạt SSCK (%);So sánh cùng kỳ năm trước về tiền phạt;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm;Thanh tra;;x;;Done;;PENALTY_DECISION;TOTAL_FINE_AMOUNT;;;;;;Done;Dữ liệu tĩnh;
+12;;Dashboard Hoạt động Xử phạt >> Biểu đồ thống kê;Số lượng QĐXP;Thể hiện số lượng quyết định xử phạt đã ban hành;Dashboard;Chỉ tiêu cơ sở;TB;Năm, tháng;Thanh tra;x;x;;Done;;PENALTY_DECISION;ID;;"SELECT EXTRACT(YEAR FROM ISSUED_DATE) ""Năm"",
+EXTRACT(MONTH FROM ISSUED_DATE) ""Tháng"",
+COUNT(ID) ""Tổng QĐ xử phạt"",
+SUM(TOTAL_FINE_AMOUNT) ""Tiền phạt""
+FROM INSPECT.PENALTY_DECISION 
+WHERE EXTRACT(YEAR FROM ISSUED_DATE) = :filter_year --Điều kiện lọc
+GROUP BY EXTRACT(YEAR FROM ISSUED_DATE), EXTRACT(MONTH FROM ISSUED_DATE)
+ORDER BY EXTRACT(YEAR FROM ISSUED_DATE) DESC, EXTRACT(MONTH FROM ISSUED_DATE) DESC";;;;;Done;Dữ liệu tĩnh
+12;;Dashboard Hoạt động Xử phạt >> Biểu đồ thống kê;Tiền phạt (tỉ đồng);Tổng số tiền phạt tương ứng với quyết định xử phạt;Dashboard;Chỉ tiêu cơ sở;TB;Năm, tháng;Thanh tra;x;x;;Done;;PENALTY_DECISION;TOTAL_FINE_AMOUNT;;;;;;Done;Dữ liệu tĩnh;
+13;;Dashboard Hoạt động Xử phạt >> Biểu đồ cơ cấu theo hành vi;Phân loại vi phạm;Phân loại hành vi: CBTT, Vi phạm hoạt động chào bán, Vi phạm hoạt động của Cổ đông nội bộ, cổ đông lớn, Giao dịch, Công ty đại chúng, Công ty chứng khoán, Tổ chức phát hành trái phiếu, Thao túng, Cho mượn, Tổ chức kiểm toán, Sở giao dịch, …;Dashboard;Chiều;Dễ;;Thanh tra;;x;;Done;;VIOLATION_BEHAVIOR;NAME;;"SELECT EXTRACT(YEAR FROM a.ISSUED_DATE) ""Năm"",
+CASE WHEN LOWER(d.NAME) LIKE '%công bố thông tin%' THEN 'CBTT'
+WHEN LOWER(d.NAME) LIKE '%hoạt động chào bán%' THEN 'Vi phạm hoạt động chào bán'
+WHEN LOWER(d.NAME) LIKE '%cổ đông%' THEN 'Vi phạm hoạt động của cổ đông nội bộ, cổ đông lớn'
+WHEN LOWER(d.NAME) LIKE '%giao dịch%' THEN 'Vi phạm hoạt động giao dịch'
+WHEN LOWER(d.NAME) LIKE '%công ty đại chúng%' THEN 'Vi phạm hoạt động của CTĐC'
+WHEN LOWER(d.NAME) LIKE '%công ty chứng khoán%' THEN 'Vi phạm hoạt động của CTCK'
+WHEN LOWER(d.NAME) LIKE '%tổ chức phát hành trái phiếu%' THEN 'Vi phạm hoạt động của tổ chức PHTP'
+WHEN LOWER(d.NAME) LIKE '%thao túng%' THEN 'Vi phạm hoạt động thao túng'
+WHEN LOWER(d.NAME) LIKE '%cho mượn%' THEN 'Vi phạm hoạt động cho mượn'
+WHEN LOWER(d.NAME) LIKE '%tổ chức kiểm toán%' THEN 'Vi phạm hoạt động của tổ chức kiểm toán'
+WHEN LOWER(d.NAME) LIKE '%sở giao dịch%' THEN 'Vi phạm hoạt động của sở giao dịch'
+ELSE NULL 
+END ""Phân loại hành vi"",
+COUNT(a.ID) ""Số lượng vi phạm"",
+COUNT(a.ID)/(SUM(COUNT(a.ID)) OVER (PARTITION BY COALESCE(EXTRACT(YEAR FROM a.ISSUED_DATE),0))) ""Tỷ lệ""
+FROM INSPECT.PENALTY_DECISION a
+JOIN INSPECT.PENALTY_DECISION_SUBJECT b ON a.ID = b.PENALTY_DECISION_ID 
+JOIN INSPECT.PENALTY_DECISION_SUBJECT_BEHAVIOR c ON b.ID = c.PENALTY_DECISION_SUBJECT_ID 
+JOIN INSPECT.VIOLATION_BEHAVIOR d ON c.VIOLATION_BEHAVIOR_ID = d.ID
+WHERE EXTRACT(YEAR FROM a.ISSUED_DATE) = :filter_year --Điều kiện lọc 
+GROUP BY EXTRACT(YEAR FROM a.ISSUED_DATE),
+CASE WHEN LOWER(d.NAME) LIKE '%công bố thông tin%' THEN 'CBTT'
+WHEN LOWER(d.NAME) LIKE '%hoạt động chào bán%' THEN 'Vi phạm hoạt động chào bán'
+WHEN LOWER(d.NAME) LIKE '%cổ đông%' THEN 'Vi phạm hoạt động của cổ đông nội bộ, cổ đông lớn'
+WHEN LOWER(d.NAME) LIKE '%giao dịch%' THEN 'Vi phạm hoạt động giao dịch'
+WHEN LOWER(d.NAME) LIKE '%công ty đại chúng%' THEN 'Vi phạm hoạt động của CTĐC'
+WHEN LOWER(d.NAME) LIKE '%công ty chứng khoán%' THEN 'Vi phạm hoạt động của CTCK'
+WHEN LOWER(d.NAME) LIKE '%tổ chức phát hành trái phiếu%' THEN 'Vi phạm hoạt động của tổ chức PHTP'
+WHEN LOWER(d.NAME) LIKE '%thao túng%' THEN 'Vi phạm hoạt động thao túng'
+WHEN LOWER(d.NAME) LIKE '%cho mượn%' THEN 'Vi phạm hoạt động cho mượn'
+WHEN LOWER(d.NAME) LIKE '%tổ chức kiểm toán%' THEN 'Vi phạm hoạt động của tổ chức kiểm toán'
+WHEN LOWER(d.NAME) LIKE '%sở giao dịch%' THEN 'Vi phạm hoạt động của sở giao dịch'
+ELSE NULL 
+END
+ORDER BY EXTRACT(YEAR FROM a.ISSUED_DATE) DESC";;;;;Done;Dữ liệu tĩnh
+13;;Dashboard Hoạt động Xử phạt >> Biểu đồ cơ cấu theo hành vi;Số lượng vi phạm hành vi CBTT;Số lượng vi phạm theo hành vi CBTT;Dashboard;Chỉ tiêu cơ sở;TB;Năm, loại vi phạm;Thanh tra;x;x;;Done;;PENALTY_DECISION;ID;;;;;;Done;Dữ liệu tĩnh;
+13;;Dashboard Hoạt động Xử phạt >> Biểu đồ cơ cấu theo hành vi;Tỷ lệ % số lượng vi phạm hành vi CBTT (%);Tỷ lệ % số lượng vi phạm theo hành vi CBTT;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm, loại vi phạm;Thanh tra;;x;;Done;;PENALTY_DECISION;ID;;;;;;Done;Dữ liệu tĩnh;
+13;;Dashboard Hoạt động Xử phạt >> Biểu đồ cơ cấu theo hành vi;Số lượng hành vi Hoạt động chào bán;Số lượng vi phạm theo hành vi Hoạt động chào bán;Dashboard;Chỉ tiêu cơ sở;TB;Năm, loại vi phạm;Thanh tra;x;x;;Done;;PENALTY_DECISION;ID;;;;;;Done;Dữ liệu tĩnh;
+13;;Dashboard Hoạt động Xử phạt >> Biểu đồ cơ cấu theo hành vi;Tỷ lệ % số lượng vi phạm hành vi Hoạt động chào bán (%);Tỷ lệ % số lượng vi phạm theo hành vi Hoạt động chào bán;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm, loại vi phạm;Thanh tra;;x;;Done;;PENALTY_DECISION;ID;;;;;;Done;Dữ liệu tĩnh;
+13;;Dashboard Hoạt động Xử phạt >> Biểu đồ cơ cấu theo hành vi;Số lượng vi phạm hành vi Hoạt động của Cổ đông nội bộ, cổ đông lớn;Số lượng vi phạm theo hành vi Hoạt động của Cổ đông nội bộ, cổ đông lớn;Dashboard;Chỉ tiêu cơ sở;TB;Năm, loại vi phạm;Thanh tra;x;x;;Done;;PENALTY_DECISION;ID;;;;;;Done;Dữ liệu tĩnh;
+13;;Dashboard Hoạt động Xử phạt >> Biểu đồ cơ cấu theo hành vi;Tỷ lệ % số lượng vi phạm hành vi Hoạt động của Cổ đông nội bộ, cổ đông lớn (%);Tỷ lệ % số lượng vi phạm theo hành vi Hoạt động của Cổ đông nội bộ, cổ đông lớn;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm, loại vi phạm;Thanh tra;;x;;Done;;PENALTY_DECISION;ID;;;;;;Done;Dữ liệu tĩnh;
+13;;Dashboard Hoạt động Xử phạt >> Biểu đồ cơ cấu theo hành vi;Số lượng vi phạm hành vi Giao dịch;Số lượng vi phạm theo hành vi Giao dịch;Dashboard;Chỉ tiêu cơ sở;TB;Năm, loại vi phạm;Thanh tra;x;x;;Done;;PENALTY_DECISION;ID;;;;;;Done;Dữ liệu tĩnh;
+13;;Dashboard Hoạt động Xử phạt >> Biểu đồ cơ cấu theo hành vi;Tỷ lệ % số lượng vi phạm hành vi Giao dịch (%);Tỷ lệ % số lượng vi phạm theo hành vi Giao dịch;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm, loại vi phạm;Thanh tra;;x;;Done;;PENALTY_DECISION;ID;;;;;;Done;Dữ liệu tĩnh;
+13;;Dashboard Hoạt động Xử phạt >> Biểu đồ cơ cấu theo hành vi;Số lượng vi phạm theo hành vi CTĐC;Số lượng vi phạm theo hành vi CTĐC;Dashboard;Chỉ tiêu cơ sở;TB;Năm, loại vi phạm;Thanh tra;x;x;;Done;;PENALTY_DECISION;ID;;;;;;Done;Dữ liệu tĩnh;
+13;;Dashboard Hoạt động Xử phạt >> Biểu đồ cơ cấu theo hành vi;Tỷ lệ % số lượng vi phạm theo hành vi CTĐC (%);Tỷ lệ % số lượng vi phạm theo hành vi CTĐC;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm, loại vi phạm;Thanh tra;;x;;Done;;PENALTY_DECISION;ID;;;;;;Done;Dữ liệu tĩnh;
+13;;Dashboard Hoạt động Xử phạt >> Biểu đồ cơ cấu theo hành vi;Số lượng vi phạm theo hành vi CTCK;Số lượng vi phạm theo hành vi CTCK;Dashboard;Chỉ tiêu cơ sở;TB;Năm, loại vi phạm;Thanh tra;x;x;;Done;;PENALTY_DECISION;ID;;;;;;Done;Dữ liệu tĩnh;
+13;;Dashboard Hoạt động Xử phạt >> Biểu đồ cơ cấu theo hành vi;Tỷ lệ % số lượng vi phạm hành vi CTCK (%);Tỷ lệ % số lượng vi phạm theo hành vi CTCK;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm, loại vi phạm;Thanh tra;;x;;Done;;PENALTY_DECISION;ID;;;;;;Done;Dữ liệu tĩnh;
+13;;Dashboard Hoạt động Xử phạt >> Biểu đồ cơ cấu theo hành vi;Số lượng vi phạm theo hành vi Tổ chức phát hành trái phiếu;Số lượng vi phạm theo hành vi Tổ chức phát hành trái phiếu;Dashboard;Chỉ tiêu cơ sở;TB;Năm, loại vi phạm;Thanh tra;x;x;;Done;;PENALTY_DECISION;ID;;;;;;Done;Dữ liệu tĩnh;
+13;;Dashboard Hoạt động Xử phạt >> Biểu đồ cơ cấu theo hành vi;Tỷ lệ % số lượng vi phạm hành vi Tổ chức phát hành trái phiếu (%);Tỷ lệ % số lượng vi phạm theo hành vi Tổ chức phát hành trái phiếu;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm, loại vi phạm;Thanh tra;;x;;Done;;PENALTY_DECISION;ID;;;;;;Done;Dữ liệu tĩnh;
+13;;Dashboard Hoạt động Xử phạt >> Biểu đồ cơ cấu theo hành vi;Số lượng vi phạm theo hành vi Thao túng;Số lượng vi phạm theo hành vi Thao túng;Dashboard;Chỉ tiêu cơ sở;TB;Năm, loại vi phạm;Thanh tra;x;x;;Done;;PENALTY_DECISION;ID;;;;;;Done;Dữ liệu tĩnh;
+13;;Dashboard Hoạt động Xử phạt >> Biểu đồ cơ cấu theo hành vi;Tỷ lệ % số lượng vi phạm hành vi Thao túng (%);Tỷ lệ % số lượng vi phạm theo hành vi Thao túng;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm, loại vi phạm;Thanh tra;;x;;Done;;PENALTY_DECISION;ID;;;;;;Done;Dữ liệu tĩnh;
+13;;Dashboard Hoạt động Xử phạt >> Biểu đồ cơ cấu theo hành vi;Số lượng vi phạm theo hành vi Cho mượn;Số lượng vi phạm theo hành vi Cho mượn;Dashboard;Chỉ tiêu cơ sở;TB;Năm, loại vi phạm;Thanh tra;x;x;;Done;;PENALTY_DECISION;ID;;;;;;Done;Dữ liệu tĩnh;
+13;;Dashboard Hoạt động Xử phạt >> Biểu đồ cơ cấu theo hành vi;Tỷ lệ % số lượng vi phạm hành vi Cho mượn (%);Tỷ lệ % số lượng vi phạm theo hành vi Cho mượn;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm, loại vi phạm;Thanh tra;;x;;Done;;PENALTY_DECISION;ID;;;;;;Done;Dữ liệu tĩnh;
+13;;Dashboard Hoạt động Xử phạt >> Biểu đồ cơ cấu theo hành vi;Số lượng vi phạm theo hành vi Tổ chức kiểm toán;Số lượng vi phạm theo hành vi Tổ chức kiểm toán;Dashboard;Chỉ tiêu cơ sở;TB;Năm, loại vi phạm;Thanh tra;x;x;;Done;;PENALTY_DECISION;ID;;;;;;Done;Dữ liệu tĩnh;
+13;;Dashboard Hoạt động Xử phạt >> Biểu đồ cơ cấu theo hành vi;Tỷ lệ % số lượng vi phạm hành vi Tổ chức kiểm toán (%);Tỷ lệ % số lượng vi phạm theo hành vi Tổ chức kiểm toán;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm, loại vi phạm;Thanh tra;;x;;Done;;PENALTY_DECISION;ID;;;;;;Done;Dữ liệu tĩnh;
+13;;Dashboard Hoạt động Xử phạt >> Biểu đồ cơ cấu theo hành vi;Số lượng vi phạm theo hành vi Sở giao dịch;Số lượng vi phạm theo hành vi Sở giao dịch;Dashboard;Chỉ tiêu cơ sở;TB;Năm, loại vi phạm;Thanh tra;x;x;;Done;;PENALTY_DECISION;ID;;;;;;Done;Dữ liệu tĩnh;
+13;;Dashboard Hoạt động Xử phạt >> Biểu đồ cơ cấu theo hành vi;Tỷ lệ % số lượng vi phạm hành vi Sở giao dịch (%);Tỷ lệ % số lượng vi phạm theo hành vi Sở giao dịch;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm, loại vi phạm;Thanh tra;;x;;Done;;PENALTY_DECISION;ID;;;;;;Done;Dữ liệu tĩnh;
+14;;Dashboard Hoạt động Xử phạt >> Biểu đồ cơ cấu theo đối tượng;Phân loại vi phạm;"Phân loại đối tượng: 
+Tổ chức khác, CTKT, Giao dịch nhà đầu tư, Cá nhân";Dashboard;Chiều;Dễ;;Thanh tra;;x;;Done;;PENALTY_DECISION_SUBJECT;SUBJECT_TYPE;;"SELECT EXTRACT(YEAR FROM a.ISSUED_DATE) ""Năm"",
+b.SUBJECT_TYPE ""Phân loại đối tượng"",
+COUNT(a.ID) ""Số lượng vi phạm"",
+COUNT(a.ID)/(SUM(COUNT(a.ID)) OVER (PARTITION BY COALESCE(EXTRACT(YEAR FROM a.ISSUED_DATE),0))) ""Tỷ lệ""
+FROM INSPECT.PENALTY_DECISION a
+LEFT JOIN INSPECT.PENALTY_DECISION_SUBJECT b ON a.ID = b.PENALTY_DECISION_ID 
+WHERE EXTRACT(YEAR FROM a.ISSUED_DATE) = :filter_year --Điều kiện lọc
+GROUP BY EXTRACT(YEAR FROM a.ISSUED_DATE),
+b.SUBJECT_TYPE
+ORDER BY EXTRACT(YEAR FROM a.ISSUED_DATE) DESC";;;;;Done;Dữ liệu tĩnh
+14;;Dashboard Hoạt động Xử phạt >> Biểu đồ cơ cấu theo đối tượng;Số lượng vi phạm theo đối tượng Tổ chức khác;Số lượng vi phạm theo đối tượng Tổ chức khác;Dashboard;Chỉ tiêu cơ sở;TB;Năm, loại vi phạm;Thanh tra;x;x;;Done;;PENALTY_DECISION;ID;;;;;;Done;Dữ liệu tĩnh;
+14;;Dashboard Hoạt động Xử phạt >> Biểu đồ cơ cấu theo đối tượng;Tỷ lệ % số lượng vi phạm đối tượng Tổ chức khác (%);Tỷ lệ % số lượng vi phạm theo đối tượng Tổ chức khác;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm, loại vi phạm;Thanh tra;;x;;Done;;PENALTY_DECISION;ID;;;;;;Done;Dữ liệu tĩnh;
+14;;Dashboard Hoạt động Xử phạt >> Biểu đồ cơ cấu theo đối tượng;Số lượng vi phạm theo đối tượng CTKT;Số lượng vi phạm theo đối tượng CTKT;Dashboard;Chỉ tiêu cơ sở;TB;Năm, loại vi phạm;Thanh tra;x;x;;Done;;PENALTY_DECISION;ID;;;;;;Done;Dữ liệu tĩnh;
+14;;Dashboard Hoạt động Xử phạt >> Biểu đồ cơ cấu theo đối tượng;Tỷ lệ % số lượng vi phạm đối tượng CTKT (%);Tỷ lệ % số lượng vi phạm theo đối tượng CTKT;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm, loại vi phạm;Thanh tra;;x;;Done;;PENALTY_DECISION;ID;;;;;;Done;Dữ liệu tĩnh;
+14;;Dashboard Hoạt động Xử phạt >> Biểu đồ cơ cấu theo đối tượng;Số lượng vi phạm theo đối tượng Giao dịch nhà đầu tư;Số lượng vi phạm theo đối tượng Giao dịch nhà đầu tư;Dashboard;Chỉ tiêu cơ sở;TB;Năm, loại vi phạm;Thanh tra;x;x;;Done;;PENALTY_DECISION;ID;;;;;;Done;Dữ liệu tĩnh;
+14;;Dashboard Hoạt động Xử phạt >> Biểu đồ cơ cấu theo đối tượng;Tỷ lệ % số lượng vi phạm đối tượng Giao dịch nhà đầu tư (%);Tỷ lệ % số lượng vi phạm theo đối tượng Giao dịch nhà đầu tư;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm, loại vi phạm;Thanh tra;;x;;Done;;PENALTY_DECISION;ID;;;;;;Done;Dữ liệu tĩnh;
+14;;Dashboard Hoạt động Xử phạt >> Biểu đồ cơ cấu theo đối tượng;Số lượng vi phạm theo đối tượng Cá nhân;Số lượng vi phạm theo đối tượng Cá nhân;Dashboard;Chỉ tiêu cơ sở;TB;Năm, loại vi phạm;Thanh tra;x;x;;Done;;PENALTY_DECISION;ID;;;;;;Done;Dữ liệu tĩnh;
+14;;Dashboard Hoạt động Xử phạt >> Biểu đồ cơ cấu theo đối tượng;Tỷ lệ % số lượng vi phạm đối tượng Cá nhân (%);Tỷ lệ % số lượng vi phạm theo đối tượng Cá nhân;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm, loại vi phạm;Thanh tra;;x;;Done;;PENALTY_DECISION;ID;;;;;;Done;Dữ liệu tĩnh;
+15;;Dashboard Hoạt động Xử phạt >> Danh sách;Mã vụ việc;Mã hồ sơ vụ việc;Dashboard;Chiều;Dễ;;Thanh tra;;x;;Done;;PENALTY_DECISION;ID;;"SELECT EXTRACT(YEAR FROM a.ISSUED_DATE) ""Năm"", 
+a.ID ""Mã vụ việc"",
+b.SUBJECT_NAME ""Đối tượng"",
+b.SUBJECT_TYPE ""Phân loại đối tượng"",
+CASE WHEN c.INSPECTION_TEAM_ID IS NULL THEN e.FORM_TYPE
+WHEN c.EXAMINATION_TEAM_ID IS NULL THEN d.FORM_TYPE
+ELSE NULL 
+END ""Loại hình"",
+a.STATUS ""Trạng thái""
+FROM INSPECT.PENALTY_DECISION a
+LEFT JOIN INSPECT.PENALTY_DECISION_SUBJECT b ON a.ID = b.PENALTY_DECISION_ID 
+LEFT JOIN INSPECT.VIOLATION_CASE c ON a.VIOLATION_CASE_ID = c.ID 
+LEFT JOIN INSPECT.INSPECTION_TEAM d ON c.INSPECTION_TEAM_ID = d.ID 
+LEFT JOIN INSPECT.EXAMINATION_TEAM e ON c.EXAMINATION_TEAM_ID = e.ID
+WHERE EXTRACT(YEAR FROM a.ISSUED_DATE) = :filter_year --Điều kiện lọc
+ORDER BY EXTRACT(YEAR FROM a.ISSUED_DATE) DESC";;;;;Done;Dữ liệu tĩnh
+15;;Dashboard Hoạt động Xử phạt >> Danh sách;Đối tượng;Tên đối tượng bị thanh tra/kiểm tra;Dashboard;Chiều;Dễ;Năm, vụ việc;Thanh tra;;x;;Done;;PENALTY_DECISION_SUBJECT;SUBJECT_NAME;;;;;;Done;Dữ liệu tĩnh;
+15;;Dashboard Hoạt động Xử phạt >> Danh sách;Phân loại đối tượng;Phân loại đối tượng;Dashboard;Chiều;Dễ;Năm, vụ việc;Thanh tra;;x;;Done;;PENALTY_DECISION_SUBJECT;SUBJECT_TYPE;;;;;;Done;Dữ liệu tĩnh;
+15;;Dashboard Hoạt động Xử phạt >> Danh sách;Loại hình;Loại hình thanh tra là định kỳ hoặc đột xuất;Dashboard;Chiều;Dễ;Năm, vụ việc;Thanh tra;;x;;Done;;"INSPECTION_TEAM
+EXAMINATION_TEAM";FORM_TYPE;;;;;;Done;Dữ liệu tĩnh;
+15;;Dashboard Hoạt động Xử phạt >> Danh sách;Trạng thái;Thể hiện các trạng thái xử lý như đang tại hiện trường hay đang xử lý hồ sơ;Dashboard;Chiều;Dễ;Năm, vụ việc;Thanh tra;;x;;Done;;PENALTY_DECISION;STATUS;;;;;;Done;Dữ liệu tĩnh;
+16;;Dashboard Tình hình Đơn thư >> Thống kê chung;Thời gian;Ngày thống kê (năm);Dashboard;Chiều;Dễ;;Thanh tra;;x;;Done;;PETITION;RECEIVED_DATE;;"SELECT EXTRACT(YEAR FROM a.RECEIVED_DATE) ""Năm"",
+COUNT(a.CODE) ""Số đơn đã xử lý"",
+COUNT(a.CODE)/b.COUNT ""Số đơn đã xử lý SSCK""
+FROM INSPECT.PETITION a
+LEFT JOIN 
+(SELECT EXTRACT(YEAR FROM RECEIVED_DATE)""YEAR"", COUNT(CODE) ""COUNT"" FROM INSPECT.PETITION 
+WHERE 1=1
+AND STATUS = 'PROCESSED'
+GROUP BY EXTRACT(YEAR FROM RECEIVED_DATE)) b ON EXTRACT(YEAR FROM a.RECEIVED_DATE) - 1 = b.YEAR
+WHERE 1=1
+AND a.STATUS = 'PROCESSED'
+AND EXTRACT(YEAR FROM a.RECEIVED_DATE) = :filter_year --Điều kiện lọc
+GROUP BY EXTRACT(YEAR FROM a.RECEIVED_DATE), b.COUNT
+ORDER BY EXTRACT(YEAR FROM a.RECEIVED_DATE) DESC";;;;;Done;Dữ liệu tĩnh
+16;;Dashboard Tình hình Đơn thư >> Thống kê chung;Số đơn thư đã xử lý;Số đơn đã hoàn thành;Dashboard;Chỉ tiêu cơ sở;TB;Năm;Thanh tra;x;x;;Done;;PETITION;CODE;;;;;;Done;Dữ liệu tĩnh;
+16;;Dashboard Tình hình Đơn thư >> Thống kê chung;Số đơn thư đã xử lý SSCK (%);So sánh cùng kỳ năm trước số liệu về số đơn thư đã xử lý;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm;Thanh tra;;x;;Done;;PETITION;CODE;;;;;;Done;Dữ liệu tĩnh;
+17;;Dashboard Tình hình Đơn thư >> Biểu đồ thống kê;Số lượng đơn thư đã xử lý;Tính số lượng đơn thư đã xử lý đã chọn trên điều kiện tra cứu theo từng tháng.;Dashboard;Chỉ tiêu cơ sở;TB;Năm, tháng;Thanh tra;x;x;;Done;;PETITION;CODE;;"SELECT EXTRACT(YEAR FROM RECEIVED_DATE) ""Năm"",
+EXTRACT(MONTH FROM RECEIVED_DATE) ""Tháng"", 
+COUNT(CODE) ""Số đơn đã xử lý""
+FROM INSPECT.PETITION 
+WHERE 1=1
+AND STATUS = 'PROCESSED'
+AND EXTRACT(YEAR FROM RECEIVED_DATE) = :filter_year --Điều kiện lọc
+GROUP BY EXTRACT(YEAR FROM RECEIVED_DATE), EXTRACT(MONTH FROM RECEIVED_DATE)
+ORDER BY EXTRACT(YEAR FROM RECEIVED_DATE) DESC, EXTRACT(MONTH FROM RECEIVED_DATE) DESC";;;;;Done;Dữ liệu tĩnh
+18;;Dashboard Tình hình Đơn thư >> Biểu đồ cơ cấu theo đối tượng;Phân loại vi phạm;"Phân loại theo loại đối tượng: 
+- Khiếu nại 
+- Tố cáo  
+- Phản ánh kiến nghị";Dashboard;Chiều;Dễ;;Thanh tra;;x;;Done;;PETITION;PETITION_CATEGORY;;"SELECT EXTRACT(YEAR FROM RECEIVED_DATE) ""Năm"",
+EXTRACT(MONTH FROM RECEIVED_DATE) ""Tháng"",
+PETITION_CATEGORY ""Phân loại đối tượng"",
+COUNT(CODE) ""Số lượng"",
+COUNT(CODE)*100/(SUM(COUNT(CODE)) OVER (PARTITION BY COALESCE(EXTRACT(YEAR FROM RECEIVED_DATE),0))) ""Tỷ lệ""
+FROM INSPECT.PETITION 
+WHERE EXTRACT(YEAR FROM RECEIVED_DATE) = :filter_year --Điều kiện lọc
+GROUP BY PETITION_CATEGORY, EXTRACT(YEAR FROM RECEIVED_DATE), EXTRACT(MONTH FROM RECEIVED_DATE)
+ORDER BY EXTRACT(YEAR FROM RECEIVED_DATE) DESC, EXTRACT(MONTH FROM RECEIVED_DATE) DESC";;;;;Done;Dữ liệu tĩnh
+18;;Dashboard Tình hình Đơn thư >> Biểu đồ cơ cấu theo đối tượng;Số lượng đơn thư theo đối tượng Khiếu nại;Số lượng đơn thư theo đối tượng Khiếu nại;Dashboard;Chỉ tiêu cơ sở;TB;Năm, tháng, loại vi phạm;Thanh tra;x;x;;Done;;PETITION;CODE;;;;;;Done;Dữ liệu tĩnh;
+18;;Dashboard Tình hình Đơn thư >> Biểu đồ cơ cấu theo đối tượng;Tỷ lệ % số lượng đơn thư đối tượng Khiếu nại (%);Tỷ lệ % số lượng đơn thư theo đối tượng Khiếu nại;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm, tháng, loại vi phạm;Thanh tra;;x;;Done;;PETITION;CODE;;;;;;Done;Dữ liệu tĩnh;
+18;;Dashboard Tình hình Đơn thư >> Biểu đồ cơ cấu theo đối tượng;Số lượng đơn thư theo đối tượng Tố cáo;Số lượng đơn thư theo đối tượng Tố cáo;Dashboard;Chỉ tiêu cơ sở;TB;Năm, tháng, loại vi phạm;Thanh tra;x;x;;Done;;PETITION;CODE;;;;;;Done;Dữ liệu tĩnh;
+18;;Dashboard Tình hình Đơn thư >> Biểu đồ cơ cấu theo đối tượng;Tỷ lệ % số lượng đơn thư đối tượng Tố cáo (%);Tỷ lệ % số lượng đơn thư theo đối tượng Tố cáo;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm, tháng, loại vi phạm;Thanh tra;;x;;Done;;PETITION;CODE;;;;;;Done;Dữ liệu tĩnh;
+18;;Dashboard Tình hình Đơn thư >> Biểu đồ cơ cấu theo đối tượng;Số lượng đơn thư theo đối tượng Phản ánh kiến nghị;Số lượng đơn thư theo đối tượng Phản ánh kiến nghị;Dashboard;Chỉ tiêu cơ sở;TB;Năm, tháng, loại vi phạm;Thanh tra;x;x;;Done;;PETITION;CODE;;;;;;Done;Dữ liệu tĩnh;
+18;;Dashboard Tình hình Đơn thư >> Biểu đồ cơ cấu theo đối tượng;Tỷ lệ % số lượng đơn thư đối tượng Phản ánh kiến nghị;Tỷ lệ % số lượng đơn thư theo đối tượng Phản ánh kiến nghị;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm, tháng, loại vi phạm;Thanh tra;;x;;Done;;PETITION;CODE;;;;;;Done;Dữ liệu tĩnh;
+19;;Dashboard Tình hình Đơn thư >> Danh sách;Mã đơn;Mã đơn;Dashboard;Chiều;Dễ;;Thanh tra;;x;;Done;;PETITION;CODE;;"SELECT EXTRACT(YEAR FROM RECEIVED_DATE) ""Năm"",
+CODE ""Mã đơn"",
+PETITION_CATEGORY ""Loại đơn"",
+CONTENT ""Đối tượng"",
+STATUS ""Trạng thái""
+FROM INSPECT.PETITION 
+WHERE EXTRACT(YEAR FROM RECEIVED_DATE) = :filter_year --Điều kiện lọc
+ORDER BY EXTRACT(YEAR FROM RECEIVED_DATE) DESC";;;;;Done;Dữ liệu tĩnh
+19;;Dashboard Tình hình Đơn thư >> Danh sách;Loại đơn;Loại đơn;Dashboard;Chiều;Dễ;Năm, mã đơn;Thanh tra;;x;;Done;;PETITION;PETITION_CATEGORY;;;;;;Done;Dữ liệu tĩnh;
+19;;Dashboard Tình hình Đơn thư >> Danh sách;Đối tượng;Đối tượng;Dashboard;Chiều;Dễ;Năm, mã đơn;Thanh tra;;x;;Done;;PETITION;CONTENT;;dựa vào data test để mapp --> bên nguồn cf chưa có trường riêng cho chỉ tiêu này và trường đang mapp đã lấy đúng (nguồn cf có tên đối tượng trong trường CONTENT);;;;Done;Dữ liệu tĩnh;
+19;;Dashboard Tình hình Đơn thư >> Danh sách;Trạng thái;Thể hiện các trạng thái xử lý như đang tại hiện trường hay đang xử lý hồ sơ;Dashboard;Chiều;Dễ;Năm, mã đơn;Thanh tra;;x;;Done;;PETITION;STATUS;;;;;;Done;Dữ liệu tĩnh;
+20;;Báo cáo hoạt động vi phạm trên TTCK;Loại hình xử lý: Vi phạm của CTĐC, tổ chức CBCK;Phân loại theo: Vi phạm của CTĐC, tổ chức CBCK;Báo cáo;Chiều;Dễ;;Thanh tra;;x;;Done;;VIOLATION_BEHAVIOR;NAME;;"SELECT CASE WHEN (LOWER(d.NAME) LIKE '%công ty đại chúng%' OR LOWER(d.NAME) LIKE '%tổ chức chào bán chứng khoán%') THEN 'Vi phạm của CTĐC, tổ chức CBCK'
+WHEN (LOWER(d.NAME) LIKE '%công ty chứng khoán%') THEN 'Vi phạm của CTCK'
+WHEN (LOWER(d.NAME) LIKE '%công ty quản lý quỹ%') THEN 'Vi phạm của CTQLQ'
+WHEN (LOWER(d.NAME) LIKE '%cổ đông%') THEN 'Vi phạm của CĐ lớn, CĐ nội bộ, người có liên quan của CĐ nội bộ'
+WHEN (LOWER(d.NAME) LIKE '%giao dịch%') THEN 'Vi phạm giao dịch thao túng, giao dịch nội bộ'
+WHEN (LOWER(d.NAME) LIKE '%chào bán chứng khoán%') THEN 'Vi phạm về CBCK'
+ELSE 'Vi phạm khác'
+END ""Loại hình xử lý vi phạm"",
+COUNT(a.ID) ""Số lượng"",
+ROUND(SUM(a.TOTAL_FINE_AMOUNT)/1000000,2) ""Số tiền xử phạt (triệu đồng)""
+FROM INSPECT.PENALTY_DECISION a
+LEFT JOIN INSPECT.PENALTY_DECISION_SUBJECT b ON a.ID = b.PENALTY_DECISION_ID 
+LEFT JOIN INSPECT.PENALTY_DECISION_SUBJECT_BEHAVIOR c ON b.ID = c.PENALTY_DECISION_SUBJECT_ID 
+LEFT JOIN INSPECT.VIOLATION_BEHAVIOR d ON c.VIOLATION_BEHAVIOR_ID = d.ID 
+WHERE LAST_DAY(a.ISSUED_DATE) = LAST_DAY(TO_DATE(:filter_month,'MM/YYYY')) --Điều kiện lọc
+GROUP BY CASE WHEN (LOWER(d.NAME) LIKE '%công ty đại chúng%' OR LOWER(d.NAME) LIKE '%tổ chức chào bán chứng khoán%') THEN 'Vi phạm của CTĐC, tổ chức CBCK'
+WHEN (LOWER(d.NAME) LIKE '%công ty chứng khoán%') THEN 'Vi phạm của CTCK'
+WHEN (LOWER(d.NAME) LIKE '%công ty quản lý quỹ%') THEN 'Vi phạm của CTQLQ'
+WHEN (LOWER(d.NAME) LIKE '%cổ đông%') THEN 'Vi phạm của CĐ lớn, CĐ nội bộ, người có liên quan của CĐ nội bộ'
+WHEN (LOWER(d.NAME) LIKE '%giao dịch%') THEN 'Vi phạm giao dịch thao túng, giao dịch nội bộ'
+WHEN (LOWER(d.NAME) LIKE '%chào bán chứng khoán%') THEN 'Vi phạm về CBCK'
+ELSE 'Vi phạm khác'
+END";;;;;Chưa có SQL;Dữ liệu tĩnh
+20;;Báo cáo hoạt động vi phạm trên TTCK;Số lượng vi phạm của CTĐC, tổ chức CBCK;Tính số lượng từng vi phạm theo Vi phạm của CTĐC, tổ chức CBCK;Báo cáo;Chỉ tiêu cơ sở;TB;Loại vi phạm;Thanh tra;x;x;;Done;;PENALTY_DECISION;ID;;;;;;Chưa có SQL;Dữ liệu tĩnh;
+20;;Báo cáo hoạt động vi phạm trên TTCK;Số tiền xử phạt (triệu đồng);Số tiền áp dụng xử phạt khi xử lý Vi phạm của CTĐC, tổ chức CBCK;Báo cáo;Chỉ tiêu cơ sở;TB;Loại vi phạm;Thanh tra;x;x;;Done;;PENALTY_DECISION;TOTAL_FINE_AMOUNT;;;;;;Chưa có SQL;Dữ liệu tĩnh;
+20;;Báo cáo hoạt động vi phạm trên TTCK;Loại hình xử lý: Vi phạm của CTCK;Phân loại theo: Vi phạm của CTCK;Báo cáo;Chiều;Dễ;;Thanh tra;;x;;Done;;VIOLATION_BEHAVIOR;NAME;;;;;;Chưa có SQL;Dữ liệu tĩnh;
+20;;Báo cáo hoạt động vi phạm trên TTCK;Số lượng vi phạm của CTCK;Tính số lượng từng vi phạm theo Vi phạm của CTCK;Báo cáo;Chỉ tiêu cơ sở;TB;Loại vi phạm;Thanh tra;x;x;;Done;;PENALTY_DECISION;ID;;;;;;Chưa có SQL;Dữ liệu tĩnh;
+20;;Báo cáo hoạt động vi phạm trên TTCK;Số tiền xử phạt (triệu đồng);Số tiền áp dụng xử phạt khi xử lý Vi phạm của CTCK;Báo cáo;Chỉ tiêu cơ sở;TB;Loại vi phạm;Thanh tra;x;x;;Done;;PENALTY_DECISION;TOTAL_FINE_AMOUNT;;;;;;Chưa có SQL;Dữ liệu tĩnh;
+20;;Báo cáo hoạt động vi phạm trên TTCK;Loại hình xử lý: Vi phạm của CTQLQ;Phân loại theo: Vi phạm của CTQLQ;Báo cáo;Chiều;Dễ;;Thanh tra;;x;;Done;;VIOLATION_BEHAVIOR;NAME;;;;;;Chưa có SQL;Dữ liệu tĩnh;
+20;;Báo cáo hoạt động vi phạm trên TTCK;Số lượng vi phạm của CTQLQ;Tính số lượng từng vi phạm theo Vi phạm của CTQLQ;Báo cáo;Chỉ tiêu cơ sở;TB;Loại vi phạm;Thanh tra;x;x;;Done;;PENALTY_DECISION;ID;;;;;;Chưa có SQL;Dữ liệu tĩnh;
+20;;Báo cáo hoạt động vi phạm trên TTCK;Số tiền xử phạt (triệu đồng);Số tiền áp dụng xử phạt khi xử lý Vi phạm của CTQLQ;Báo cáo;Chỉ tiêu cơ sở;TB;Loại vi phạm;Thanh tra;x;x;;Done;;PENALTY_DECISION;TOTAL_FINE_AMOUNT;;;;;;Chưa có SQL;Dữ liệu tĩnh;
+20;;Báo cáo hoạt động vi phạm trên TTCK;Loại hình xử lý: Vi phạm của CĐ lớn, CĐ nội bộ, người có liên quan của CĐ nội bộ;Phân loại theo: Vi phạm của CĐ lớn, CĐ nội bộ, người có liên quan của CĐ nội bộ;Báo cáo;Chiều;Dễ;;Thanh tra;;x;;Done;;VIOLATION_BEHAVIOR;NAME;;;;;;Chưa có SQL;Dữ liệu tĩnh;
+20;;Báo cáo hoạt động vi phạm trên TTCK;Số lượng vi phạm của CĐ lớn, CĐ nội bộ, người có liên quan của CĐ nội bộ;Tính số lượng từng vi phạm theo Vi phạm của CĐ lớn, CĐ nội bộ, người có liên quan của CĐ nội bộ;Báo cáo;Chỉ tiêu cơ sở;TB;Loại vi phạm;Thanh tra;x;x;;Done;;PENALTY_DECISION;ID;;;;;;Chưa có SQL;Dữ liệu tĩnh;
+20;;Báo cáo hoạt động vi phạm trên TTCK;Số tiền xử phạt (triệu đồng);Số tiền áp dụng xử phạt khi xử lý Vi phạm của CĐ lớn, CĐ nội bộ, người có liên quan của CĐ nội bộ;Báo cáo;Chỉ tiêu cơ sở;TB;Loại vi phạm;Thanh tra;x;x;;Done;;PENALTY_DECISION;TOTAL_FINE_AMOUNT;;;;;;Chưa có SQL;Dữ liệu tĩnh;
+20;;Báo cáo hoạt động vi phạm trên TTCK;Loại hình xử lý: Vi phạm giao dịch thao túng, giao dịch nội bộ;Phân loại theo: Vi phạm giao dịch thao túng, giao dịch nội bộ;Báo cáo;Chiều;Dễ;;Thanh tra;;x;;Done;;VIOLATION_BEHAVIOR;NAME;;;;;;Chưa có SQL;Dữ liệu tĩnh;
+20;;Báo cáo hoạt động vi phạm trên TTCK;Số lượng vi phạm giao dịch thao túng, giao dịch nội bộ;Tính số lượng từng vi phạm theo Vi phạm giao dịch thao túng, giao dịch nội bộ;Báo cáo;Chỉ tiêu cơ sở;TB;Loại vi phạm;Thanh tra;x;x;;Done;;PENALTY_DECISION;ID;;;;;;Chưa có SQL;Dữ liệu tĩnh;
+20;;Báo cáo hoạt động vi phạm trên TTCK;Số tiền xử phạt (triệu đồng);Số tiền áp dụng xử phạt khi xử lý Vi phạm giao dịch thao túng, giao dịch nội bộ;Báo cáo;Chỉ tiêu cơ sở;TB;Loại vi phạm;Thanh tra;x;x;;Done;;PENALTY_DECISION;TOTAL_FINE_AMOUNT;;;;;;Chưa có SQL;Dữ liệu tĩnh;
+20;;Báo cáo hoạt động vi phạm trên TTCK;Loại hình xử lý: Vi phạm về CBCK;Phân loại theo: Vi phạm về CBCK;Báo cáo;Chiều;Dễ;;Thanh tra;;x;;Done;;VIOLATION_BEHAVIOR;NAME;;;;;;Chưa có SQL;Dữ liệu tĩnh;
+20;;Báo cáo hoạt động vi phạm trên TTCK;Số lượng vi phạm về CBCK;Tính số lượng từng vi phạm theo Vi phạm về CBCK;Báo cáo;Chỉ tiêu cơ sở;TB;Loại vi phạm;Thanh tra;x;x;;Done;;PENALTY_DECISION;ID;;;;;;Chưa có SQL;Dữ liệu tĩnh;
+20;;Báo cáo hoạt động vi phạm trên TTCK;Số tiền xử phạt (triệu đồng);Số tiền áp dụng xử phạt khi xử lý Vi phạm về CBCK;Báo cáo;Chỉ tiêu cơ sở;TB;Loại vi phạm;Thanh tra;x;x;;Done;;PENALTY_DECISION;TOTAL_FINE_AMOUNT;;;;;;Chưa có SQL;Dữ liệu tĩnh;
+20;;Báo cáo hoạt động vi phạm trên TTCK;Loại hình xử lý: Vi phạm khác;Phân loại theo: Vi phạm khác;Báo cáo;Chiều;Dễ;;Thanh tra;;x;;Done;;VIOLATION_BEHAVIOR;NAME;;;;;;Chưa có SQL;Dữ liệu tĩnh;
+20;;Báo cáo hoạt động vi phạm trên TTCK;Số lượng vi phạm khác;Tính số lượng từng vi phạm theo Vi phạm khác;Báo cáo;Chỉ tiêu cơ sở;TB;Loại vi phạm;Thanh tra;x;x;;Done;;PENALTY_DECISION;ID;;;;;;Chưa có SQL;Dữ liệu tĩnh;
+20;;Báo cáo hoạt động vi phạm trên TTCK;Số tiền xử phạt (triệu đồng);Số tiền áp dụng xử phạt khi xử lý Vi phạm khác;Báo cáo;Chỉ tiêu cơ sở;TB;Loại vi phạm;Thanh tra;x;x;;Done;;PENALTY_DECISION;TOTAL_FINE_AMOUNT;;;;;;Chưa có SQL;Dữ liệu tĩnh;
