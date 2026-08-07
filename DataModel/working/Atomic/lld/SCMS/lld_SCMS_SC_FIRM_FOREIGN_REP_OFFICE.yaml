@@ -99,9 +99,10 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "SCMS.SC_FIRM_FOREIGN_REP_OFFICE.SC_FIRM_INFO_ID"
+  - "SCMS.SC_FIRM_INFO.CODE"
   comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities\
-    \ Company Id."
+    \ Company Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết\
+    \ xem comment Securities Company Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -161,7 +162,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Classification Event Type Id"
-  physical_name: "cl_event_type_id"
+  physical_name: "cl_event_tp_id"
   description: "Loại sự vụ/sự kiện nghiệp vụ."
   data_domain: "Surrogate Key"
   nullable: true
@@ -175,7 +176,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Classification Event Type Code"
-  physical_name: "cl_event_type_code"
+  physical_name: "cl_event_tp_code"
   description: "Mã loại sự vụ/sự kiện nghiệp vụ."
   data_domain: "Text"
   nullable: true
@@ -228,7 +229,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Amendment Declaration Indicator"
-  physical_name: "amendment_declaration_indicator"
+  physical_name: "amendment_declaration_ind"
   description: "Cờ có khai bổ sung/sửa đổi: 1=Có; 0=Không."
   data_domain: "Small Counter"
   nullable: true
@@ -346,7 +347,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Reporting Enabled Indicator"
-  physical_name: "reporting_enabled_indicator"
+  physical_name: "reporting_enabled_ind"
   description: "Cờ kích hoạt báo cáo định kỳ: 1=Có; 0=Không."
   data_domain: "Small Counter"
   nullable: true
@@ -359,7 +360,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Synced From Admin Process Indicator"
-  physical_name: "synced_from_admin_process_indicator"
+  physical_name: "synced_from_admin_process_ind"
   description: "Cờ đồng bộ từ thủ tục hành chính: 1=Đồng bộ từ TTHC; 0=Nhập tay."
   data_domain: "Small Counter"
   nullable: true

@@ -129,9 +129,10 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SC_FIRM_INFO_ID"
+  - "SCMS.SC_FIRM_INFO.CODE"
   comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities\
-    \ Company Id."
+    \ Company Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết\
+    \ xem comment Securities Company Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -469,7 +470,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Synced Indicator"
-  physical_name: "synced_indicator"
+  physical_name: "synced_ind"
   description: "Cờ đã đồng bộ với hệ thống NHNCK: 1=Đã sync; 0=Chưa sync."
   data_domain: "Small Counter"
   nullable: true
@@ -508,7 +509,7 @@ attributes:
   etl_derived_value: null
   data_type: "timestamp"
 - attribute_name: "Insider Indicator"
-  physical_name: "insider_indicator"
+  physical_name: "insider_ind"
   description: "Là người nội bộ của CTCK theo quy định CBTT: 1=Người nội bộ; 0=Không\
     \ phải."
   data_domain: "Small Counter"
@@ -522,7 +523,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Labor Contract Termination Report Indicator"
-  physical_name: "labor_contract_termination_rpt_indicator"
+  physical_name: "labor_contract_termination_rpt_ind"
   description: "Đã nộp báo cáo chấm dứt hợp đồng lao động: 1=Đã nộp; 0=Chưa nộp."
   data_domain: "Small Counter"
   nullable: true
@@ -535,7 +536,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Deleted Indicator"
-  physical_name: "deleted_indicator"
+  physical_name: "deleted_ind"
   description: "Cờ xóa mềm: 1=Đã xóa; 0=Chưa xóa."
   data_domain: "Small Counter"
   nullable: true
