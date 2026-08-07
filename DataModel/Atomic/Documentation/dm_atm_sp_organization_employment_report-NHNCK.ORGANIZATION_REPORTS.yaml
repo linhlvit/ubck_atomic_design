@@ -185,8 +185,8 @@ attributes:
     is_primary_key: false
     source_system: NHNCK
     source_table: ORGANIZATION_REPORTS
-    source_column: NHNCK.ORGANIZATION_REPORTS.CERTIFICATE_ID
-    comment: "Lookup pair: sp_license_certificate_type.sp_license_certificate_tp_code. Pair with Securities Practitioner License Certificate Type Id."
+    source_column: NHNCK.CERTIFICATES.CERTIFICATE_CODE
+    comment: "Lookup pair: sp_license_certificate_type.sp_license_certificate_tp_code. Pair with Securities Practitioner License Certificate Type Id. Giá trị lấy từ NHNCK.CERTIFICATES.CERTIFICATE_CODE sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Certificate Type Id."
     classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
     etl_derived_value: null
 
@@ -200,7 +200,7 @@ attributes:
     source_system: NHNCK
     source_table: ORGANIZATION_REPORTS
     source_column: NHNCK.ORGANIZATION_REPORTS.PARENT_REPORT_ID
-    comment: "FK target: sp_organization_employment_report.sp_organization_employment_rpt_id. Self-referencing. Hash: hash_id('NHNCK.ORGANIZATION_REPORTS', PARENT_REPORT_ID)."
+    comment: "FK target: sp_organization_employment_report.sp_organization_employment_report_id. Self-referencing. Hash: hash_id('NHNCK.ORGANIZATION_REPORTS', PARENT_REPORT_ID)."
     classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
     etl_derived_value: null
 
@@ -214,7 +214,7 @@ attributes:
     source_system: NHNCK
     source_table: ORGANIZATION_REPORTS
     source_column: NHNCK.ORGANIZATION_REPORTS.PARENT_REPORT_ID
-    comment: "Lookup pair: sp_organization_employment_report.sp_organization_employment_rpt_code. Pair with Parent Securities Practitioner Organization Employment Report Id."
+    comment: "Lookup pair: sp_organization_employment_report.sp_organization_employment_report_code. Pair with Parent Securities Practitioner Organization Employment Report Id."
     classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
     etl_derived_value: null
 
