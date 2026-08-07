@@ -2,9 +2,9 @@ schema_type: data_model
 schema_version: "1.0"
 
 ldm:
-  id: ATM-foreign_fund_management_organization_unit-FMS.FOR_BRCH
+  id: ATM-foreign_fm_ou-FMS.FOR_BRCH
   logical_name: Foreign Fund Management Organization Unit
-  physical_name: foreign_fund_management_organization_unit
+  physical_name: foreign_fm_ou
   layer: Atomic
   version: "1.0"
   status: draft
@@ -101,8 +101,8 @@ attributes:
     is_primary_key: false
     source_system: FMS
     source_table: FOR_BRCH
-    source_column: FMS.FOR_BRCH.NAT_ID
-    comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Country of Registration Id. Giá trị lấy từ SNAME (join FMS.NATIONAL qua NAT_ID = FMS.NATIONAL.ID)."
+    source_column: FMS.NATIONAL.SNAME
+    comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Country of Registration Id. Giá trị lấy từ SNAME (join FMS.NATIONAL qua NAT_ID = FMS.NATIONAL.ID). Giá trị lấy từ FMS.NATIONAL.SNAME sau ETL crosswalk — chi tiết xem comment Country of Registration Id."
     classification_context: "Source System Code = 'FMS_FOR_BRCH'"
     etl_derived_value: null
 
@@ -311,7 +311,7 @@ attributes:
     is_primary_key: false
     source_system: FMS
     source_table: FOR_BRCH
-    source_column: FMS.FOR_BRCH.EVENT_TYPE_ID
-    comment: "Lookup pair: cl_fms_event_type.cl_fms_event_tp_code. Pair with Event Type Id."
+    source_column: FMS.EVENT_TYPE.ITEM_NAME
+    comment: "Lookup pair: cl_fms_event_type.cl_fms_event_tp_code. Pair with Event Type Id. Giá trị lấy từ FMS.EVENT_TYPE.ITEM_NAME sau ETL crosswalk — chi tiết xem comment Event Type Id."
     classification_context: "Source System Code = 'FMS_FOR_BRCH'"
     etl_derived_value: null
