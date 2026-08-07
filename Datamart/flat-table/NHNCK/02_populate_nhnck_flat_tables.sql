@@ -47,6 +47,7 @@ SELECT
     prac_dim.nationality_code           AS practitioner_nationality_code,
     prac_dim.birth_dt                   AS practitioner_birth_dt,
     prac_dim.practice_status_code       AS practitioner_practice_status_code,
+    prac_dim.practice_status_nm         AS practitioner_practice_status_nm,
     prac_dim.src_stm_code               AS practitioner_src_stm_code,
 
     -- From: SP LICENSE CERTIFICATE TYPE DIMENSION
@@ -92,6 +93,7 @@ SELECT
     prac_dim.nationality_code           AS practitioner_nationality_code,
     prac_dim.birth_dt            AS practitioner_birth_dt,
     prac_dim.practice_status_code   AS practitioner_practice_status_code,
+    prac_dim.practice_status_nm     AS practitioner_practice_status_nm,
     prac_dim.src_stm_code           AS practitioner_src_stm_code
 
 FROM datamart.fct_practitioner_daily_snpst f
@@ -116,6 +118,8 @@ SELECT
     o.nationality_code,
     o.nationality_nm,
     o.identification_nbr,
+    o.education_level_code,
+    o.education_level_nm,
     o.workplace_nm,
     o.practice_status_code,
     o.practice_status_nm,
@@ -165,6 +169,10 @@ SELECT
     o.hire_dt,
     o.termination_dt,
     o.shares_held,
+    o.account_nbr,
+    o.account_holder_nm,
+    o.main_held_securities_code,
+    o.vsdc_held_securities_vol,
     o.src_stm_code
 FROM datamart.opr_practitioner_list_company_role o
 ;
@@ -246,7 +254,9 @@ SELECT
     o.examination_session_nbr,
     o.examination_period,
     o.examination_start_dt,
+    o.examination_end_dt,
     o.law_score,
+    o.specialization_score,
     o.law_result_code,
     o.law_result_nm,
     o.specialization_result_code,
