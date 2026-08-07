@@ -82,14 +82,15 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "KNT.TAX_REPORT_DETAIL.TAX_REPORT_ID"
+  - "KNT.TAX_REPORT.DECLARATION_CODE"
   comment: "Lookup pair: et_declaration_report.et_declaration_rpt_code. Pair with\
-    \ et_declaration_rpt_id."
+    \ et_declaration_rpt_id. Giá trị lấy từ KNT.TAX_REPORT.DECLARATION_CODE sau ETL\
+    \ crosswalk — chi tiết xem comment External Tax Declaration Report Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Indicator Code"
-  physical_name: "indicator_code"
+  physical_name: "ind_code"
   description: "Mã chỉ tiêu trong biểu mẫu báo cáo."
   data_domain: "Text"
   nullable: true
@@ -102,7 +103,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Indicator Name"
-  physical_name: "indicator_nm"
+  physical_name: "ind_nm"
   description: "Tên chỉ tiêu trong biểu mẫu báo cáo."
   data_domain: "Text"
   nullable: true

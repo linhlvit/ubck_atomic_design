@@ -259,3 +259,31 @@ attributes:
     comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không tạo FK sang MSG_PACKET (bảng kỹ thuật gói tin trao đổi, ngoài scope thiết kế). Nguồn lưu dạng số (NUMBER) — ETL cần convert sang string."
     classification_context: "Source System Code = 'KNT_TAX_VIOLATION_HANDLING'"
     etl_derived_value: null
+
+  - name: Start Year
+    physical_name: start_year
+    business_meaning: Năm bắt đầu.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_VIOLATION_HANDLING
+    source_column: KNT.TAX_VIOLATION_HANDLING.NAM_BAT_DAU
+    comment: "Nguồn lưu dạng số NUMBER(4,0) — ETL cần convert sang string. Giữ nguyên 4 ký tự năm."
+    classification_context: "Source System Code = 'KNT_TAX_VIOLATION_HANDLING'"
+    etl_derived_value: null
+
+  - name: End Year
+    physical_name: end_year
+    business_meaning: Năm kết thúc.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_VIOLATION_HANDLING
+    source_column: KNT.TAX_VIOLATION_HANDLING.NAM_KET_THUC
+    comment: "Nguồn lưu dạng số NUMBER(4,0) — ETL cần convert sang string. Giữ nguyên 4 ký tự năm."
+    classification_context: "Source System Code = 'KNT_TAX_VIOLATION_HANDLING'"
+    etl_derived_value: null

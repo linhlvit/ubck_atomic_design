@@ -87,8 +87,8 @@ attributes:
     is_primary_key: false
     source_system: SCMS
     source_table: SC_FIRM_RELATED_PERSON
-    source_column: SCMS.SC_FIRM_RELATED_PERSON.SC_FIRM_INFO_ID
-    comment: "Lookup pair: securities_company.securities_company_code. Pair with Securities Company Id."
+    source_column: SCMS.SC_FIRM_INFO.CODE
+    comment: "Lookup pair: securities_company.securities_company_code. Pair with Securities Company Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết xem comment Securities Company Id."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_RELATED_PERSON'"
     etl_derived_value: null
 
@@ -185,8 +185,8 @@ attributes:
     is_primary_key: false
     source_system: SCMS
     source_table: SC_FIRM_RELATED_PERSON
-    source_column: SCMS.SC_FIRM_RELATED_PERSON.COUNTRY_ID
-    comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Country Id."
+    source_column: SCMS.CAT_NATIONALITY.NATIONALITY_CODE
+    comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Country Id. Giá trị lấy từ SCMS.CAT_NATIONALITY.NATIONALITY_CODE sau ETL crosswalk — chi tiết xem comment Country Id."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_RELATED_PERSON'"
     etl_derived_value: null
 
@@ -387,7 +387,7 @@ attributes:
     etl_derived_value: null
 
   - name: Founding Shareholder Indicator
-    physical_name: founding_shareholder_indicator
+    physical_name: founding_shareholder_ind
     business_meaning: "Cờ là cổ đông sáng lập: 1=Có; 0=Không."
     data_domain: Small Counter
     data_type: int

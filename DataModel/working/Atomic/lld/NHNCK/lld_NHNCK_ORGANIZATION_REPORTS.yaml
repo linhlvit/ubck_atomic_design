@@ -177,8 +177,8 @@ attributes:
     \ Cần ETL crosswalk sang NHNCK.CERTIFICATES: ORGANIZATION_REPORTS.CERTIFICATE_ID\
     \ = CERTIFICATES.ID để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK.CERTIFICATES',\
     \ CERTIFICATE_CODE) | Trước đây hash trực tiếp theo CERTIFICATE_ID (ID kỹ thuật)\
-    \ gây sai lệch với Id của bảng main (hash từ CERTIFICATE_CODE) — đã sửa sang\
-    \ crosswalk 2026-07-27."
+    \ gây sai lệch với Id của bảng main (hash từ CERTIFICATE_CODE) — đã sửa sang crosswalk\
+    \ 2026-07-27."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -190,8 +190,11 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "NHNCK.ORGANIZATION_REPORTS.CERTIFICATE_ID"
-  comment: "Lookup pair: sp_license_certificate_type.sp_license_certificate_tp_code. Pair with Securities Practitioner License Certificate Type Id."
+  - "NHNCK.CERTIFICATES.CERTIFICATE_CODE"
+  comment: "Lookup pair: sp_license_certificate_type.sp_license_certificate_tp_code.\
+    \ Pair with Securities Practitioner License Certificate Type Id. Giá trị lấy từ\
+    \ NHNCK.CERTIFICATES.CERTIFICATE_CODE sau ETL crosswalk — chi tiết xem comment\
+    \ Securities Practitioner License Certificate Type Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

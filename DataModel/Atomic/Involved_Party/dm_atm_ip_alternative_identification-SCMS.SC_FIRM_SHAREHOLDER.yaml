@@ -22,6 +22,34 @@ ldm:
     brd: BRD-SRC-SCMS-SC_FIRM_SHAREHOLDER
 
 attributes:
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến Securities Company Shareholder.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.ID
+    comment: "FK target: sc_shareholder.sc_shareholder_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_SHAREHOLDER', ID)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER' | Identification Type Code = 'LEGACY_NATIONAL_ID'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã Securities Company Shareholder.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.ID
+    comment: "Lookup pair: sc_shareholder.sc_shareholder_code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER' | Identification Type Code = 'LEGACY_NATIONAL_ID'"
+    etl_derived_value: null
+
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning: Mã hệ thống nguồn dữ liệu.
@@ -61,33 +89,5 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: SCMS.SC_FIRM_SHAREHOLDER.ID_NUMBER
     comment: NVARCHAR2(250).
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER' | Identification Type Code = 'LEGACY_NATIONAL_ID'"
-    etl_derived_value: null
-
-  - name: Identification Issue Date
-    physical_name: identification_issue_dt
-    business_meaning: Ngày cấp CMND cũ.
-    data_domain: Date
-    data_type: date
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_SHAREHOLDER
-    source_column: null
-    comment: Gắn với row LEGACY_NATIONAL_ID (ID_NUMBER). NATIONAL_ID (mới) không có Issue Date riêng trong nguồn — cần xác nhận. Không áp dụng cho SCMS.SC_FIRM_SHAREHOLDER — thuộc tính không có dữ liệu nguồn ở source này (nullable placeholder cho shared entity).
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER' | Identification Type Code = 'LEGACY_NATIONAL_ID'"
-    etl_derived_value: null
-
-  - name: Identification Issue Place
-    physical_name: identification_issue_place
-    business_meaning: Nơi cấp CMND cũ.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_SHAREHOLDER
-    source_column: null
-    comment: Gắn với row LEGACY_NATIONAL_ID (ID_NUMBER). Cần xác nhận có áp dụng cho NATIONAL_ID không. Không áp dụng cho SCMS.SC_FIRM_SHAREHOLDER — thuộc tính không có dữ liệu nguồn ở source này (nullable placeholder cho shared entity).
     classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER' | Identification Type Code = 'LEGACY_NATIONAL_ID'"
     etl_derived_value: null

@@ -35,7 +35,7 @@ metadata:
     \ loại bỏ theo convention SCMS (cùng quyết định đã áp dụng cho SC_FIRM_SERVICE)."
 attributes:
 - attribute_name: "Securities Company Form Report Id"
-  physical_name: "sc_form_report_id"
+  physical_name: "sc_form_rpt_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -50,7 +50,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Form Report Code"
-  physical_name: "sc_form_report_code"
+  physical_name: "sc_form_rpt_code"
   description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID). BK của entity."
   data_domain: "Text"
   nullable: false
@@ -91,7 +91,7 @@ attributes:
   etl_derived_value: "SCMS.FORM_REPORT"
   data_type: "string"
 - attribute_name: "Securities Company Form Report Name"
-  physical_name: "sc_form_report_nm"
+  physical_name: "sc_form_rpt_nm"
   description: "Tên báo cáo/biểu mẫu."
   data_domain: "Text"
   nullable: false
@@ -132,7 +132,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Disclosure Required Indicator"
-  physical_name: "disclosure_required_indicator"
+  physical_name: "disclosure_required_ind"
   description: "Có phải công bố thông tin khi nộp báo cáo: 1 = Có; 0 = Không."
   data_domain: "Small Counter"
   nullable: true
@@ -145,7 +145,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Import Required Indicator"
-  physical_name: "import_required_indicator"
+  physical_name: "import_required_ind"
   description: "Có yêu cầu nhập liệu qua file Excel: 1 = Có; 0 = Không."
   data_domain: "Small Counter"
   nullable: true
@@ -252,7 +252,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Related Securities Company Form Report Id"
-  physical_name: "related_sc_form_report_id"
+  physical_name: "related_sc_form_rpt_id"
   description: "FK -> form_report: Biểu mẫu báo cáo liên quan."
   data_domain: "Surrogate Key"
   nullable: true
@@ -267,7 +267,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Related Securities Company Form Report Code"
-  physical_name: "related_sc_form_report_code"
+  physical_name: "related_sc_form_rpt_code"
   description: "Mã biểu mẫu báo cáo liên quan."
   data_domain: "Text"
   nullable: true
@@ -309,7 +309,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Next Securities Company Form Report Id"
-  physical_name: "next_sc_form_report_id"
+  physical_name: "next_sc_form_rpt_id"
   description: "BM ID báo cáo tiếp theo."
   data_domain: "Surrogate Key"
   nullable: true
@@ -325,7 +325,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Next Securities Company Form Report Code"
-  physical_name: "next_sc_form_report_code"
+  physical_name: "next_sc_form_rpt_code"
   description: "Mã biểu mẫu báo cáo tiếp theo."
   data_domain: "Text"
   nullable: true
@@ -367,7 +367,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Active Indicator"
-  physical_name: "active_indicator"
+  physical_name: "active_ind"
   description: "Cờ đang sử dụng/hoạt động: 1=Đang dùng, 0=Không dùng."
   data_domain: "Small Counter"
   nullable: true
@@ -381,7 +381,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Summary Indicator"
-  physical_name: "summary_indicator"
+  physical_name: "summary_ind"
   description: "Cột summary (mô tả gốc BRD trống)."
   data_domain: "Small Counter"
   nullable: true
@@ -396,7 +396,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Input Report Indicator"
-  physical_name: "input_rpt_indicator"
+  physical_name: "input_rpt_ind"
   description: "Cờ là báo cáo đầu vào do đơn vị nộp: 1=Đầu vào, 0=Đầu ra."
   data_domain: "Small Counter"
   nullable: true
@@ -423,7 +423,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Parent Securities Company Form Report Id"
-  physical_name: "parent_sc_form_report_id"
+  physical_name: "parent_sc_form_rpt_id"
   description: "FK -> cùng bảng: ID bản ghi cha trong cấu trúc phân cấp."
   data_domain: "Surrogate Key"
   nullable: true
@@ -437,7 +437,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Parent Securities Company Form Report Code"
-  physical_name: "parent_sc_form_report_code"
+  physical_name: "parent_sc_form_rpt_code"
   description: "Mã biểu mẫu báo cáo cha."
   data_domain: "Text"
   nullable: true
@@ -478,7 +478,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Eform Enabled Indicator"
-  physical_name: "eform_enabled_indicator"
+  physical_name: "eform_enabled_ind"
   description: "Cờ có eform (biểu mẫu điện tử tương tác): 1=Có, 0=Không."
   data_domain: "Small Counter"
   nullable: true

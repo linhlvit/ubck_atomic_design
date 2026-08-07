@@ -115,8 +115,8 @@ attributes:
     is_primary_key: false
     source_system: SCMS
     source_table: SC_FIRM_TRANSACTION_OFFICE
-    source_column: SCMS.SC_FIRM_TRANSACTION_OFFICE.PROVINCE_ID
-    comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT — không còn CAT_PROVINCE). Pair with Province Id."
+    source_column: SCMS.CAT_PROVINCE.PROVINCE_CODE
+    comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT — không còn CAT_PROVINCE). Pair with Province Id. Giá trị lấy từ SCMS.CAT_PROVINCE.PROVINCE_CODE sau ETL crosswalk — chi tiết xem comment Province Id."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_TRANSACTION_OFFICE' | Address Type Code = 'TRANSACTION_OFFICE'"
     etl_derived_value: null
 
@@ -143,8 +143,8 @@ attributes:
     is_primary_key: false
     source_system: SCMS
     source_table: SC_FIRM_TRANSACTION_OFFICE
-    source_column: SCMS.SC_FIRM_TRANSACTION_OFFICE.DISTRICT_ID
-    comment: "Lookup pair: geographic_area_old.geographic_area_old_code (nguồn ECAT — ĐỔI TARGET, xem District Id). Pair with District Id."
+    source_column: SCMS.CAT_DISTRICT.DISTRICT_CODE
+    comment: "Lookup pair: geographic_area_old.geographic_area_old_code (nguồn ECAT — ĐỔI TARGET, xem District Id). Pair with District Id. Giá trị lấy từ SCMS.CAT_DISTRICT.DISTRICT_CODE sau ETL crosswalk — chi tiết xem comment District Id."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_TRANSACTION_OFFICE' | Address Type Code = 'TRANSACTION_OFFICE'"
     etl_derived_value: null
 
@@ -171,7 +171,7 @@ attributes:
     is_primary_key: false
     source_system: SCMS
     source_table: SC_FIRM_TRANSACTION_OFFICE
-    source_column: SCMS.SC_FIRM_TRANSACTION_OFFICE.WARD_ID
-    comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT — không còn CAT_WARD). Pair with Ward Id."
+    source_column: SCMS.CAT_WARD.WARD_CODE
+    comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT — không còn CAT_WARD). Pair with Ward Id. Giá trị lấy từ SCMS.CAT_WARD.WARD_CODE sau ETL crosswalk — chi tiết xem comment Ward Id."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_TRANSACTION_OFFICE' | Address Type Code = 'TRANSACTION_OFFICE'"
     etl_derived_value: null
