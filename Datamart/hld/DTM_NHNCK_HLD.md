@@ -1098,7 +1098,8 @@ flowchart LR
 > Atomic chính: `Securities Practitioner Organization Employment Report` (`sp_organization_employment_report`) ← NHNCK.ORGANIZATION_REPORTS — **READY**
 > Atomic phụ: `Securities Organization Reference` (`securities_organization_reference`) ← NHNCK.ORGANIZATIONS — join để lấy tên tổ chức và lọc loại hình CTCK
 > Atomic phụ (K_NHNCK_85): `Securities Company Shareholder` (`sc_shareholder`) ← SCMS.SC_FIRM_SHAREHOLDER — **READY**; `Involved Party Alternative Identification` (`ip_alternative_identification`, nguồn NHNCK.PROFESSIONALS và nguồn SCMS.SC_FIRM_SHAREHOLDER) — **READY**, dùng làm cầu nối xác định đúng NHN theo CCCD giữa 2 hệ nguồn, có FK trực tiếp (`ip_id`) tới `sc_shareholder`. (Sửa 2026-07-20) Đã bỏ `Sc Insider Related Person` khỏi chuỗi join — entity này không có FK trực tiếp tới `sc_shareholder`, join qua `sc_id` (CTCK) chỉ đảm bảo cùng công ty chứng khoán, không xác định đúng người và gây fan-out
-> Ghi chú: Panel "Vai trò tại DN niêm yết" và panel "Mạng lưới người liên quan" là 2 bảng tác nghiệp độc lập. Panel "Tài khoản & Số dư" (VSDC/MSS) PENDING — không thiết kế bảng riêng, gom PENDING KPI vào bảng `Operational Practitioner Listed Company Role` (còn lại K_NHNCK_87/88/89/103). K_NHNCK_85 "Số lượng cổ phiếu sở hữu" đã xác nhận nguồn thật là SCMS (không phải VSDC) — chuyển READY, xem O_NHNCK_6. Sửa tên attribute: `Workplace Name` → `Practitioner Workplace At Report`; `Position Name` → `Practitioner Position At Report` (theo YAML `sp_organization_employment_report`). (Sửa 2026-07-20) Attributes bổ sung 4 cột PENDING (`account_nbr`, `account_holder_nm`, `main_held_securities_code`, `vsdc_held_securities_vol`, `etl_logic_type=pending`) theo đúng convention Nhóm 12 — không đưa vào mermaid schema (chỉ track trong Attributes + bảng KPI, chờ Atomic VSDC/MSS).
+> Atomic phụ (K_NHNCK_87/88/89/103 — Sửa 2026-08-07, ngoại lệ đã xác nhận với user): `open_investors` (VSDC/MSS) và `major_shareholder` (VSDC) — chưa có thiết kế Atomic LLD chính thức (chưa qua `atomic-lld-design`, không có YAML trong `DataModel/Atomic/`). Theo xác nhận của user, coi tên bảng/cột BA ghi (tiếng Việt, physical name thô) là Atomic entity/column thật luôn — tương tự ngoại lệ `rsk_wgt_cfg` (module PTTT). Không tự áp dụng ngoại lệ này cho case khác nếu chưa được xác nhận riêng.
+> Ghi chú: Panel "Vai trò tại DN niêm yết" và panel "Mạng lưới người liên quan" là 2 bảng tác nghiệp độc lập. K_NHNCK_85 "Số lượng cổ phiếu sở hữu" đã xác nhận nguồn thật là SCMS (không phải VSDC) — chuyển READY, xem O_NHNCK_6. Sửa tên attribute: `Workplace Name` → `Practitioner Workplace At Report`; `Position Name` → `Practitioner Position At Report` (theo YAML `sp_organization_employment_report`). **(Sửa 2026-08-07)** Panel "Tài khoản & Số dư" (K_NHNCK_87/88/89/103) chuyển từ PENDING sang READY — BA đã bổ sung tên bảng/cột nguồn cụ thể (`open_investors.ma_tkgd`, `open_investors.ten_khach_hang`, `major_shareholder.ma_ck`, `major_shareholder.so_luong_ck_cuoi_ky`), coi là Atomic thật theo xác nhận user (xem Atomic phụ ở trên). Xem O_NHNCK_6.
 
 **Bảng KPI:**
 
@@ -1113,10 +1114,10 @@ flowchart LR
 | K_NHNCK_76 | Mối quan hệ | Base | READY | `Securities Practitioner Related Party`.Relationship Type Code — ETL denormalize Relationship Type Name (scheme: RELATIONSHIP_TYPE) khi populate bảng | Reuse từ Nhóm 6 |
 | K_NHNCK_77 | Nghề nghiệp người liên quan | Base | READY | `Securities Practitioner Related Party`.Related Individual Occupation | Reuse từ Nhóm 6 |
 | K_NHNCK_79 | CCCD/CMND người liên quan | Base | READY | `Securities Practitioner Related Party`.Related Individual Identity Number | (Sửa 2026-08) Reuse từ Nhóm 6 — đóng O_NHNCK_11 |
-| K_NHNCK_87 | Số tài khoản | Base | PENDING — nguồn VSDC/MSS chưa có Atomic | — | |
-| K_NHNCK_88 | Tên chủ tài khoản | Base | PENDING — nguồn VSDC/MSS chưa có Atomic | — | |
-| K_NHNCK_89 | Mã CK nắm giữ chính | Base | PENDING — nguồn VSDC chưa có Atomic | — | |
-| K_NHNCK_103 | Số lượng chứng khoán VSDC sở hữu (Cuối kỳ) | Base | PENDING — nguồn VSDC chưa có Atomic | — | (Thêm 2026-07-20) BA row 60, cùng nguồn `VSDC_BM 8` với K_NHNCK_89 — BA quên điền tên KPI ở cột "Thông tin", đã bổ sung theo "Trường nguồn" |
+| K_NHNCK_87 | Số tài khoản | Base | READY | `open_investors`.`ma_tkgd` | (Sửa 2026-08-07) PENDING → READY — Atomic VSDC/MSS chưa có thiết kế LLD chính thức, coi tên bảng/cột BA ghi là Atomic thật theo xác nhận của user (ngoại lệ, tương tự `rsk_wgt_cfg`/PTTT), không qua `atomic-lld-design` |
+| K_NHNCK_88 | Tên chủ tài khoản | Base | READY | `open_investors`.`ten_khach_hang` | (Sửa 2026-08-07) PENDING → READY — xem ghi chú K_NHNCK_87 |
+| K_NHNCK_89 | Mã CK nắm giữ chính | Base | READY | `major_shareholder`.`ma_ck` | (Sửa 2026-08-07) PENDING → READY — xem ghi chú K_NHNCK_87 |
+| K_NHNCK_103 | Số lượng chứng khoán VSDC sở hữu (Cuối kỳ) | Base | READY | `major_shareholder`.`so_luong_ck_cuoi_ky` | (Thêm 2026-07-20) BA row 60, cùng nguồn `VSDC_BM 8` với K_NHNCK_89 — BA quên điền tên KPI ở cột "Thông tin", đã bổ sung theo "Trường nguồn". (Sửa 2026-08-07) PENDING → READY — xem ghi chú K_NHNCK_87 |
 
 **Schema bảng tác nghiệp:**
 
@@ -1133,12 +1134,16 @@ erDiagram
         date Hire_Date
         date Termination_Date
         int Shares_Held
+        varchar Account_Number
+        varchar Account_Holder_Name
+        varchar Main_Held_Securities_Code
+        int Vsdc_Held_Securities_Volume
         string Source_System_Code
 
     }
 ```
 
-> **Ghi chú schema Nhóm 7:** `Shares_Held` (K_NHNCK_85) ETL-populate từ `Securities Company Shareholder.Shares Held` (SCMS) — không phải từ `Securities Practitioner Organization Employment Report` như các cột còn lại. ETL xác định đúng NHN bằng cách đối chiếu CCCD: `Involved Party Alternative Identification` (nguồn NHNCK, `identification_nbr`) so khớp với `Involved Party Alternative Identification` (nguồn SCMS `SC_FIRM_SHAREHOLDER`, `identification_nbr` ← `SC_FIRM_SHAREHOLDER.ID_NUMBER`), entity này có FK trực tiếp (`ip_id`) tới `Securities Company Shareholder` — lấy `Shares_Held` trực tiếp, không qua bảng trung gian nào. NULL nếu NHN không phải cổ đông của DN niêm yết đang xét. (Sửa 2026-07-20) Đã fix gap: chuỗi join cũ đi qua `Sc Insider Related Person` rồi join `sc_id` (CTCK) tới `Securities Company Shareholder` — entity này KHÔNG có FK trực tiếp tới `Securities Company Shareholder`, join theo `sc_id` chỉ đảm bảo cùng 1 CTCK (nhiều insider × nhiều shareholder cùng công ty) → sai người + fan-out nhân dòng.
+> **Ghi chú schema Nhóm 7:** `Shares_Held` (K_NHNCK_85) ETL-populate từ `Securities Company Shareholder.Shares Held` (SCMS) — không phải từ `Securities Practitioner Organization Employment Report` như các cột còn lại. ETL xác định đúng NHN bằng cách đối chiếu CCCD: `Involved Party Alternative Identification` (nguồn NHNCK, `identification_nbr`) so khớp với `Involved Party Alternative Identification` (nguồn SCMS `SC_FIRM_SHAREHOLDER`, `identification_nbr` ← `SC_FIRM_SHAREHOLDER.ID_NUMBER`), entity này có FK trực tiếp (`ip_id`) tới `Securities Company Shareholder` — lấy `Shares_Held` trực tiếp, không qua bảng trung gian nào. NULL nếu NHN không phải cổ đông của DN niêm yết đang xét. (Sửa 2026-07-20) Đã fix gap: chuỗi join cũ đi qua `Sc Insider Related Person` rồi join `sc_id` (CTCK) tới `Securities Company Shareholder` — entity này KHÔNG có FK trực tiếp tới `Securities Company Shareholder`, join theo `sc_id` chỉ đảm bảo cùng 1 CTCK (nhiều insider × nhiều shareholder cùng công ty) → sai người + fan-out nhân dòng. **(Sửa 2026-08-07)** `Account_Number`/`Account_Holder_Name` (K_NHNCK_87/88) direct từ `open_investors` (`ma_tkgd`/`ten_khach_hang`); `Main_Held_Securities_Code`/`Vsdc_Held_Securities_Volume` (K_NHNCK_89/103) direct từ `major_shareholder` (`ma_ck`/`so_luong_ck_cuoi_ky`) — cả 2 bảng nguồn coi là Atomic thật theo ngoại lệ đã xác nhận (xem ghi chú đầu Nhóm 7), không qua `join_atomic` chuẩn vì chưa có YAML entity chính thức để xác nhận FK/join key.
 
 **Lineage Mart → Báo cáo — Nhóm 7:**
 
@@ -1319,11 +1324,11 @@ flowchart LR
 
 **Mockup:**
 
-| Đợt thi | Ngày thi | Điểm luật | KQ luật | KQ CM | Số quyết định công bố | Trạng thái |
-|---|---|---|---|---|---|---|
-| Đợt 1/2025 | 15/03/2025 | 82 | Đạt | Đạt | 45/QĐ-UBCK · 20/03/2025 | Đạt |
-| Đợt 2/2024 | 10/09/2023 | 45 | Không đạt | Không đạt | — | Không đạt |
-| Đợt 1/2023 | 18/03/2023 | 75 | Đạt | Đạt | 28/QĐ-UBCK · 25/03/2023 | Đạt |
+| Đợt thi | Ngày bắt đầu thi | Ngày kết thúc thi | Điểm luật | KQ luật | Điểm CM | KQ CM | Số quyết định công bố | Trạng thái |
+|---|---|---|---|---|---|---|---|---|
+| Đợt 1/2025 | 15/03/2025 | 16/03/2025 | 82 | Đạt | 78 | Đạt | 45/QĐ-UBCK · 20/03/2025 | Đạt |
+| Đợt 2/2024 | 10/09/2023 | 11/09/2023 | 45 | Không đạt | 40 | Không đạt | — | Không đạt |
+| Đợt 1/2023 | 18/03/2023 | 19/03/2023 | 75 | Đạt | 70 | Đạt | 28/QĐ-UBCK · 25/03/2023 | Đạt |
 
 **Source:** `Operational Practitioner Exam History` (Tác nghiệp)
 
@@ -1333,9 +1338,11 @@ flowchart LR
 |---|---|---|---|---|---|
 | K_NHNCK_59 | Tên đợt thi | Text | Base | `Securities Practitioner Qualification Examination Assessment`.Assessment Name | Khai sinh tại Nhóm 10 |
 | K_NHNCK_102 | Kỳ thi | Text | Derived | `Securities Practitioner Qualification Examination Assessment`.Report Year + Examination Session Number — ETL concat thành chuỗi hiển thị (VD: "2025_1") khi populate bảng | Khai sinh tại Nhóm 10 |
-| K_NHNCK_60 | Ngày thi | Date | Base | `Securities Practitioner Qualification Examination Assessment`.Examination Start Date | Khai sinh tại Nhóm 10 |
+| K_NHNCK_60 | Ngày bắt đầu thi | Date | Base | `Securities Practitioner Qualification Examination Assessment`.Examination Start Date | (Sửa 2026-08-07) Đổi tên từ "Ngày thi" — BA tách rõ 2 mốc ngày, xem K_NHNCK_118. Khai sinh tại Nhóm 10 |
+| K_NHNCK_118 | Ngày kết thúc thi | Date | Base | `Securities Practitioner Qualification Examination Assessment`.Examination End Date | (Thêm 2026-08-07) BA bổ sung yêu cầu hiển thị — field đã có sẵn trên schema (join cùng pattern K_NHNCK_60) nhưng trước đây chưa có KPI riêng. Khai sinh tại Nhóm 10 |
 | K_NHNCK_61 | Điểm thi luật | Text | Base | `Securities Practitioner Qualification Examination Assessment Result`.Law Score | Khai sinh tại Nhóm 10 |
 | K_NHNCK_94 | Kết quả thi luật | Text | Base | `Securities Practitioner Qualification Examination Assessment Result`.Law Result Code — ETL denormalize Law Result Name (scheme: EXAM_RESULT: -1=Không thi, 0=Không đạt, 1=Đạt) khi populate bảng | Khai sinh tại Nhóm 10 |
+| K_NHNCK_119 | Điểm thi chuyên môn | Text | Base | `Securities Practitioner Qualification Examination Assessment Result`.Specialization Score | (Thêm 2026-08-07) BA bổ sung — cùng entity với K_NHNCK_61 (Điểm thi luật). Khai sinh tại Nhóm 10 |
 | K_NHNCK_95 | Kết quả thi chuyên môn | Text | Base | `Securities Practitioner Qualification Examination Assessment Result`.Specialization Result Code — ETL denormalize Specialization Result Name (scheme: EXAM_RESULT) khi populate bảng | Khai sinh tại Nhóm 10 |
 | K_NHNCK_62 | Số quyết định công bố | Text | Base | (Sửa 2026-08) `Securities Practitioner Qualification Examination Assessment`.Securities Practitioner License Decision Document Id — ETL join `Securities Practitioner License Decision Document`.Decision Number theo `sp_license_decision_document_id` khi populate bảng; INNER JOIN — chỉ giữ lại lần thi đã có quyết định công bố kết quả | Khai sinh tại Nhóm 10 |
 | K_NHNCK_63 | Trạng thái Đạt/Không đạt | Text | Base | `Securities Practitioner Qualification Examination Assessment Result`.Overall Result Code — ETL denormalize Overall Result Name (scheme: EXAM_RESULT: -1=Không thi, 0=Không đạt, 1=Đạt) khi populate bảng | Khai sinh tại Nhóm 10 |
@@ -1356,6 +1363,7 @@ erDiagram
         varchar Law_Score
         varchar Law_Result_Code
         varchar Law_Result_Name
+        varchar Specialization_Score
         varchar Specialization_Result_Code
         varchar Specialization_Result_Name
         varchar Overall_Result_Code
@@ -1367,7 +1375,7 @@ erDiagram
     }
 ```
 
-> **Ghi chú schema Nhóm 10:** `Law_Result_Name`, `Specialization_Result_Name`, `Overall_Result_Name` là ETL-derived — denormalize từ Classification (scheme: EXAM_RESULT, giá trị: -1=Không thi, 0=Không đạt, 1=Đạt) tại thời điểm populate bảng. `Decision_Number` NULL nếu đợt thi chưa có quyết định công bố. Presentation layer đọc trực tiếp, không join ở query time. `Examination_End_Date` (Sửa 2026-07-22) — direct từ Atomic driving-phụ `sp_qualification_examination_assessment`, cùng pattern JOIN với `Examination_Start_Date`. Không có KPI riêng ở Nhóm 10 (BA không yêu cầu hiển thị trên dashboard 360°) — cột này tồn tại để phục vụ JOIN từ Nhóm 13 (Data Explorer), nơi khai sinh K_NHNCK_113.
+> **Ghi chú schema Nhóm 10:** `Law_Result_Name`, `Specialization_Result_Name`, `Overall_Result_Name` là ETL-derived — denormalize từ Classification (scheme: EXAM_RESULT, giá trị: -1=Không thi, 0=Không đạt, 1=Đạt) tại thời điểm populate bảng. `Decision_Number` NULL nếu đợt thi chưa có quyết định công bố. Presentation layer đọc trực tiếp, không join ở query time. `Examination_End_Date` (Sửa 2026-07-22) — direct từ Atomic driving-phụ `sp_qualification_examination_assessment`, cùng pattern JOIN với `Examination_Start_Date`. **(Sửa 2026-08-07)** BA cập nhật tách "Ngày thi" thành 2 cột riêng (Ngày bắt đầu/Ngày kết thúc) — khai sinh KPI K_NHNCK_118 cho `Examination_End_Date`, không còn là cột chỉ phục vụ JOIN nội bộ. `Specialization_Score` (Thêm 2026-08-07) — direct từ `sp_qualification_examination_assessment_result`, cùng entity với `Law_Score`, khai sinh K_NHNCK_119.
 
 **Lineage Mart → Báo cáo — Nhóm 10:**
 
@@ -1377,7 +1385,7 @@ flowchart LR
         G1["Operational Practitioner Exam History"]
     end
     subgraph RPT["Bao cao - Nhom 10"]
-        R1["K_NHNCK_59-63,94-95,102: Dot thi sat hach"]
+        R1["K_NHNCK_59-63,94-95,102,118-119: Dot thi sat hach"]
     end
     G1 --> R1
 ```
@@ -1688,10 +1696,10 @@ graph TB
 | `Operational Practitioner Certificate History` | 1 CCHN per NHN | K_NHNCK_43–48 READY; K_NHNCK_92 (Số quyết định thu hồi) READY | READY |
 | `Operational Practitioner Employment History` | 1 lần công tác per NHN | K_NHNCK_49–53, K_NHNCK_90 (Phân loại tổ chức), K_NHNCK_91 (Phòng ban) | READY |
 | `Operational Practitioner Violation History` | 1 vi phạm per NHN | K_NHNCK_54, K_NHNCK_55, K_NHNCK_56, K_NHNCK_57, K_NHNCK_58 READY (Sửa 2026-08 — đóng O_NHNCK_17, O_NHNCK_15) | READY |
-| `Operational Practitioner Exam History` | 1 lần thi per NHN | K_NHNCK_59–63 READY; K_NHNCK_94 (KQ luật), K_NHNCK_95 (KQ CM), K_NHNCK_102 (Kỳ thi) READY. (Sửa 2026-07-20) K_NHNCK_93 (Điểm CM) đã xóa — BA v2 không còn yêu cầu field này | READY |
+| `Operational Practitioner Exam History` | 1 lần thi per NHN | K_NHNCK_59–63 READY; K_NHNCK_94 (KQ luật), K_NHNCK_95 (KQ CM), K_NHNCK_102 (Kỳ thi) READY. (Sửa 2026-07-20) K_NHNCK_93 (Điểm CM) đã xóa — BA v2 không còn yêu cầu field này. **(Sửa 2026-08-07)** BA bổ sung lại yêu cầu điểm thi chuyên môn — khai sinh ID mới K_NHNCK_119 (không tái dùng K_NHNCK_93 đã gap). Thêm K_NHNCK_118 (Ngày kết thúc thi) | READY |
 | `Operational Practitioner Training History` | (Sửa 2026-08) 1 lần bồi dưỡng per NHN | K_NHNCK_100, K_NHNCK_96, K_NHNCK_97, K_NHNCK_98, K_NHNCK_99, K_NHNCK_66, K_NHNCK_67 READY (đóng O_NHNCK_9) | READY |
 | `Operational Practitioner Related Party Profile` | 1 người liên quan per NHN | K_NHNCK_75–80 READY; K_NHNCK_86 (Địa chỉ) READY | READY |
-| `Operational Practitioner Listed Company Role` | 1 vai trò per NHN per DN niêm yết | K_NHNCK_81–85 READY; K_NHNCK_87–89 PENDING (VSDC/MSS) | PARTIAL |
+| `Operational Practitioner Listed Company Role` | 1 vai trò per NHN per DN niêm yết | K_NHNCK_81–85 READY; K_NHNCK_87–89, K_NHNCK_103 READY (Sửa 2026-08-07, ngoại lệ VSDC/MSS — xem O_NHNCK_6) | READY |
 | `Operational Practitioner Data Explorer` | 1 CCHN per NHN (slicer filter tại query time) | K_NHNCK_68–74 READY; K_NHNCK_101 (Mã định danh) READY | READY |
 
 **Bảng Dimension:**
@@ -1734,7 +1742,7 @@ graph TB
 | O_NHNCK_3 | Logic YTD: năm hiện tại đến today; năm quá khứ đến 31/12/Y. | Đã xác nhận. | K_NHNCK_2, 2a, 2b | Closed |
 | O_NHNCK_4 | Tuổi tính từ `Birth_Date` (date) từ `ProfessionalHistories.BirthDate`. | `Age = Year(Snapshot_Date) − Year(Birth_Date)`. Đã xác nhận. | K_NHNCK_23–32, K_NHNCK_35 | Closed |
 | O_NHNCK_5 | (Sửa 2026-07-21 — review datamart-review) `Has_Active_Violation`: thiết kế trước đó (2026-07-17) ghi công thức `Violation_Status_Code = 1 (ACTIVE)` — cột này không tồn tại trong Atomic `sp_conduct_violation` (chỉ 10 attribute: Id/Code, Source System Code, Practitioner Id/Code, License Decision Document Id/Code, Practitioner Name/Birth Date/Identity Number At Violation, Violation Record Date, Note). Đối chiếu lại SQL BA gốc (`SELECT COUNT(DISTINCT t.Certificate_Number) FROM Certificate_Records t JOIN Professionals a ON t.PROFESSIONAL_ID = a.ID JOIN Violations v ON a.ID = v.Professional_Id`) xác nhận BA **không có điều kiện lọc trạng thái** — chỉ cần tồn tại ít nhất 1 bản ghi vi phạm. Kết luận: `Has_Active_Violation = 'Y'` nếu NHN có ít nhất 1 `Conduct Violation` (bất kỳ, không phân biệt trạng thái), `'N'` nếu không có — khớp đúng SQL BA, không phải gap Atomic. Attributes/Detail Mapping (`IS NOT NULL`) đã triển khai đúng ngay từ đầu; chỉ có Ghi chú công thức trong HLD (Nhóm 1b/2/4) mô tả sai — đã sửa khớp BA. | Đã xác nhận khớp SQL BA gốc — không cần bổ sung Atomic. K_NHNCK_4 giữ READY. | K_NHNCK_4 | Closed |
-| O_NHNCK_6 | (Cập nhật v6.5) K_NHNCK_81–84 đã READY. K_NHNCK_84 (Mã CTCK): `sp_organization_employment_report.securities_organization_reference_code` JOIN `securities_organization_reference` filter `Organization Type Code = 'CTCK'` — xác nhận Atomic có attribute này. Tên DN: `Practitioner Workplace At Report` (đã fix từ "Workplace Name"). (Cập nhật 2026-07-17) **K_NHNCK_85 reopen review — chuyển READY**: nguồn thật là SCMS (`SC_FIRM_SHAREHOLDER.SHARES_HELD`), không phải VSDC như ghi nhận trước đó — người thiết kế đã xác nhận qua kiểm tra Atomic. (Sửa 2026-07-20) **Fix gap logic join (2 lỗi)**: (1) chuỗi ban đầu đi qua `Sc Insider Related Person` rồi join `sc_id` (CTCK) tới `Securities Company Shareholder` — 2 entity này KHÔNG có FK trực tiếp, join theo `sc_id` chỉ đảm bảo cùng 1 CTCK (nhiều insider × nhiều shareholder) → sai người + fan-out; (2) driving-placeholder sai — `Securities Practitioner` không phải bảng nguồn khai báo của mapping này, phải bắt cầu qua `sp_id` có sẵn trên driving table `Securities Practitioner Organization Employment Report` (FK trực tiếp tới `Securities Practitioner`). Join đúng đã xác nhận: `Securities Practitioner Organization Employment Report`.sp_id (driving) → `Involved Party Alternative Identification` (NHNCK, CCCD) = `Involved Party Alternative Identification` (SCMS nguồn `SC_FIRM_SHAREHOLDER`, `ID_NUMBER`) → FK trực tiếp (`ip_id`) → `Securities Company Shareholder`.Shares Held — không qua `Sc Insider Related Person`. Cả 3 entity Atomic trong chuỗi join đều đã approved — không còn gap. PENDING còn lại: K_NHNCK_87/88/89 (Tài khoản cross-broker — VSDC/MSS, nguồn dạng biểu mẫu thủ công, chưa có CSDL). | K_NHNCK_81–85 READY. K_NHNCK_87–89 PENDING. | K_NHNCK_81–89 | Closed (K_NHNCK_85) — Open (K_NHNCK_87–89, chờ CSDL VSDC/MSS) |
+| O_NHNCK_6 | (Cập nhật v6.5) K_NHNCK_81–84 đã READY. K_NHNCK_84 (Mã CTCK): `sp_organization_employment_report.securities_organization_reference_code` JOIN `securities_organization_reference` filter `Organization Type Code = 'CTCK'` — xác nhận Atomic có attribute này. Tên DN: `Practitioner Workplace At Report` (đã fix từ "Workplace Name"). (Cập nhật 2026-07-17) **K_NHNCK_85 reopen review — chuyển READY**: nguồn thật là SCMS (`SC_FIRM_SHAREHOLDER.SHARES_HELD`), không phải VSDC như ghi nhận trước đó — người thiết kế đã xác nhận qua kiểm tra Atomic. (Sửa 2026-07-20) **Fix gap logic join (2 lỗi)**: (1) chuỗi ban đầu đi qua `Sc Insider Related Person` rồi join `sc_id` (CTCK) tới `Securities Company Shareholder` — 2 entity này KHÔNG có FK trực tiếp, join theo `sc_id` chỉ đảm bảo cùng 1 CTCK (nhiều insider × nhiều shareholder) → sai người + fan-out; (2) driving-placeholder sai — `Securities Practitioner` không phải bảng nguồn khai báo của mapping này, phải bắt cầu qua `sp_id` có sẵn trên driving table `Securities Practitioner Organization Employment Report` (FK trực tiếp tới `Securities Practitioner`). Join đúng đã xác nhận: `Securities Practitioner Organization Employment Report`.sp_id (driving) → `Involved Party Alternative Identification` (NHNCK, CCCD) = `Involved Party Alternative Identification` (SCMS nguồn `SC_FIRM_SHAREHOLDER`, `ID_NUMBER`) → FK trực tiếp (`ip_id`) → `Securities Company Shareholder`.Shares Held — không qua `Sc Insider Related Person`. Cả 3 entity Atomic trong chuỗi join đều đã approved — không còn gap. PENDING trước đây: K_NHNCK_87/88/89 (Tài khoản cross-broker — VSDC/MSS, nguồn dạng biểu mẫu thủ công, chưa có CSDL). **(Sửa 2026-08-07)** BA bổ sung tên bảng/cột nguồn cụ thể (`open_investors.ma_tkgd`/`ten_khach_hang`, `major_shareholder.ma_ck`/`so_luong_ck_cuoi_ky`) — user xác nhận coi đây là Atomic thật, không chờ thiết kế Atomic LLD chính thức (ngoại lệ, tương tự `rsk_wgt_cfg`/PTTT). K_NHNCK_87/88/89/103 chuyển PENDING → READY. | K_NHNCK_81–85 READY. K_NHNCK_87–89, K_NHNCK_103 READY (2026-08-07). | K_NHNCK_81–89, K_NHNCK_103 | Closed |
 | O_NHNCK_7 | Counter "N N/Quan": nguồn `Securities Practitioner Related Party` (NHNCK) READY. Cần BA xác nhận filter loại quan hệ: toàn bộ hay chỉ một số loại (vợ/chồng, con, bố/mẹ...)? Counter "N Doanh nghiệp": PENDING chờ Atomic SGDCK. | K_NHNCK_42 đã bị xóa khỏi BA analyst — KPI không còn tồn tại trong scope. Issue tự đóng. | K_NHNCK_42 | Closed |
 | O_NHNCK_8 | Logic Đạt/Không đạt trong `Operational Practitioner Exam History`: Atomic `ExamDetails` có `Examination_Result_Code` (scheme: EXAMINATION_RESULT — 1: Đạt, 0: Không đạt) — đã có sẵn, không cần derive. | Dùng `Examination_Result_Code` trực tiếp từ Atomic. Đã xác nhận. | K_NHNCK_63 | Closed |
 | O_NHNCK_9 | **[ĐÃ XỬ LÝ 2026-08]** (Sửa 2026-07-17) `POST_CERT_TRAINING_RESULTS` chưa có Atomic entity — blocking K_NHNCK_67 "Trạng thái đủ 8h". Atomic đã bổ sung entity `sp_post_certification_training_result` (2026-07-24). Đối chiếu lại BA đã cập nhật (BA_analyst_NHNCK.csv, Nhóm 11) xác nhận: driving Operational Practitioner Training History đổi hẳn sang `sp_post_certification_training_result` (grain: 1 lần bồi dưỡng per NHN, không còn 1 enrollment); tên/mã khóa học đổi nguồn sang `POST_CERT_TRAINING_COURSES` (không còn `SPECIALIZATION_COURSES`); Exam Score/Result Code trở thành JOIN phụ qua `sp_code` (chấp nhận fan-out, đúng SQL BA JOIN SPECIALIZATION_COURSE_DETAILS SD ON SD.PROFESSIONAL_ID = P.ID). | K_NHNCK_67 READY — `training_hours`/`hours_sufficiency_indicator` trên driving mới. K_NHNCK_96–100, K_NHNCK_66 cập nhật nguồn theo driving mới. | K_NHNCK_66, K_NHNCK_67, K_NHNCK_96, K_NHNCK_97, K_NHNCK_98, K_NHNCK_99, K_NHNCK_100 | Closed |
