@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Business Activity] Conduct Violation"
   table_type: "Fundamental"
   group: "T3"
-  design_status: "approved"
+  design_status: "draft"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -18,7 +18,12 @@ metadata:
   approved_by: null
   approved_at: null
   notes: "Hồ sơ xử lý vi phạm hành chính (VPHC). Grain: 1 dòng = 1 hồ sơ VPHC. Cả\
-    \ 2 FK đoàn đều nullable — case có thể phát sinh từ COMPLAINT/MEDIA/OTHER."
+    \ 2 FK đoàn đều nullable — case có thể phát sinh từ COMPLAINT/MEDIA/OTHER. Hạ\
+    \ về draft (2026-08-07) để bổ sung SOURCE_UNIT_ID — phát hiện qua post_check_source_coverage.py.\
+    \ Không dùng crosswalk sang NHNCK.UNITS vì Source Category Code có giá trị STOCK_EXCHANGE/VSDC/OTHER_SUPERVISION\
+    \ (đơn vị ngoài UBCKNN) song song INTERNAL_UNIT — SOURCE_UNIT_ID polymorphic theo\
+    \ Source Category Code, không đảm bảo luôn trỏ NHNCK.UNITS như các UNIT_ID khác\
+    \ của THANHTRA."
 attributes:
 - attribute_name: "Violation Case Id"
   physical_name: "violation_case_id"
@@ -93,8 +98,10 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "THANHTRA.VIOLATION_CASE.INSPECTION_TEAM_ID"
-  comment: "Lookup pair: inspection_team.inspection_team_code. Pair with Inspection Team Id."
+  - "THANHTRA.INSPECTION_TEAM.CODE"
+  comment: "Lookup pair: inspection_team.inspection_team_code. Pair with Inspection\
+    \ Team Id. Giá trị lấy từ THANHTRA.INSPECTION_TEAM.CODE sau ETL crosswalk — chi\
+    \ tiết xem comment Inspection Team Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -119,8 +126,10 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "THANHTRA.VIOLATION_CASE.EXAMINATION_TEAM_ID"
-  comment: "Lookup pair: examination_team.examination_team_code. Pair with Examination Team Id."
+  - "THANHTRA.EXAMINATION_TEAM.CODE"
+  comment: "Lookup pair: examination_team.examination_team_code. Pair with Examination\
+    \ Team Id. Giá trị lấy từ THANHTRA.EXAMINATION_TEAM.CODE sau ETL crosswalk — chi\
+    \ tiết xem comment Examination Team Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -138,6 +147,22 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
+- attribute_name: "Source Unit Reference Id"
+  physical_name: "src_unit_reference_id"
+  description: "ID tham chiếu đơn vị gửi kết quả giám sát/vi phạm trong hệ thống nguồn\
+    \ (nội bộ UBCKNN hoặc bên ngoài tùy Source Category Code)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "THANHTRA.VIOLATION_CASE.SOURCE_UNIT_ID"
+  comment: "Denormalized reference — không FK formal. Đơn vị nguồn có thể là đơn vị\
+    \ nội bộ UBCKNN (Source Category Code = INTERNAL_UNIT) hoặc tổ chức ngoài (STOCK_EXCHANGE,\
+    \ VSDC, OTHER_SUPERVISION) nên không crosswalk cố định sang 1 catalog duy nhất."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
 - attribute_name: "Source Unit Name"
   physical_name: "src_unit_nm"
   description: "Tên đơn vị gửi kết quả giám sát/vi phạm (snapshot)."
@@ -147,7 +172,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.VIOLATION_CASE.SOURCE_UNIT_NAME"
-  comment: "Denormalized — SOURCE_UNIT_ID là FK suy luận không formal."
+  comment: "Denormalized snapshot tên đơn vị. Pair with Source Unit Reference Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Event] Event"
   table_type: "Fundamental"
   group: "T4"
-  design_status: "approved"
+  design_status: "draft"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -19,8 +19,12 @@ metadata:
   approved_at: null
   notes: "Quyết định xử phạt VPHC. Grain: 1 dòng = 1 quyết định. FK→VIOLATION_CASE\
     \ (T3). Ghi nhận T4-01: dùng parent [Event] vì không có term Judicial Event cho\
-    \ hành chính. Hạ về draft (2026-07-27) để sửa lỗi hash-mismatch FK Violation\
-    \ Case Id — trước đây hash trực tiếp theo ID kỹ thuật thay vì CODE của bảng đích."
+    \ hành chính. Hạ về draft (2026-07-27) để sửa lỗi hash-mismatch FK Violation Case\
+    \ Id — trước đây hash trực tiếp theo ID kỹ thuật thay vì CODE của bảng đích. Hạ\
+    \ về draft (2026-08-07) để bổ sung REVIEWER_ID/REVIEWER_NAME/REVIEWED_AT/SOURCE_DOCUMENT_URL/REVIEWED_BY_ID/APPROVER_NAME\
+    \ — phát hiện qua post_check_source_coverage.py. APPROVER_NAME mới xuất hiện nên\
+    \ cập nhật lại Approver Officer Code để lấy đúng nguồn (trước đây tạm dùng APPROVER_ID\
+    \ do chưa có cột tên)."
 attributes:
 - attribute_name: "Penalty Decision Id"
   physical_name: "pd_id"
@@ -80,8 +84,10 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "THANHTRA.PENALTY_DECISION.VIOLATION_CASE_ID"
-  comment: "Lookup pair: violation_case.violation_case_code. Pair with Violation Case Id."
+  - "THANHTRA.VIOLATION_CASE.CODE"
+  comment: "Lookup pair: violation_case.violation_case_code. Pair with Violation Case\
+    \ Id. Giá trị lấy từ THANHTRA.VIOLATION_CASE.CODE sau ETL crosswalk — chi tiết\
+    \ xem comment Violation Case Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -244,20 +250,21 @@ attributes:
   data_type: "string"
 - attribute_name: "Approver Officer Code"
   physical_name: "approver_officer_code"
-  description: "Mã người phê duyệt (snapshot)."
+  description: "Tên người phê duyệt (snapshot)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "THANHTRA.PENALTY_DECISION.APPROVER_ID"
+  - "THANHTRA.PENALTY_DECISION.APPROVER_NAME"
   comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Approver Officer Id."
+    \ Pair with Approver Officer Id. Nguồn lưu APPROVER_NAME (text snapshot) — trước\
+    \ đây tạm dùng APPROVER_ID do chưa có cột tên, đã sửa 2026-08-07."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Anti Money Laundering Indicator"
-  physical_name: "anti_money_laundering_indicator"
+  physical_name: "anti_money_laundering_ind"
   description: "Quyết định có nội dung PCRT: 0=Không, 1=Có."
   data_domain: "Indicator"
   nullable: true
@@ -309,7 +316,7 @@ attributes:
   etl_derived_value: null
   data_type: "timestamp"
 - attribute_name: "Complaint Exists Indicator"
-  physical_name: "complaint_exists_indicator"
+  physical_name: "complaint_exists_ind"
   description: "Có khiếu nại: 0=Không, 1=Có."
   data_domain: "Indicator"
   nullable: true
@@ -374,7 +381,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Lawsuit Exists Indicator"
-  physical_name: "lawsuit_exists_indicator"
+  physical_name: "lawsuit_exists_ind"
   description: "Có khởi kiện: 0=Không, 1=Có."
   data_domain: "Indicator"
   nullable: true
@@ -422,6 +429,92 @@ attributes:
   source_columns:
   - "THANHTRA.PENALTY_DECISION.SUMMARY"
   comment: "Nguồn CLOB — ETL truncate."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Reviewer Officer Id"
+  physical_name: "reviewer_officer_id"
+  description: "FK đến cán bộ thực hiện review quyết định."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION.REVIEWER_ID"
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
+    \ Hash: hash_id('IAM.USERS', REVIEWER_ID) | Chưa xác nhận join key THANHTRA.PENALTY_DECISION.REVIEWER_ID\
+    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Reviewer Officer Code"
+  physical_name: "reviewer_officer_code"
+  description: "Tên cán bộ thực hiện review (snapshot)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION.REVIEWER_NAME"
+  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
+    \ Pair with Reviewer Officer Id. Nguồn lưu REVIEWER_NAME (text snapshot)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Reviewed Timestamp"
+  physical_name: "reviewed_tms"
+  description: "Thời điểm review quyết định."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION.REVIEWED_AT"
+  comment: "Nguồn TIMESTAMP(6)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Source Document URL"
+  physical_name: "src_document_url"
+  description: "URL file văn bản nguồn đính kèm quyết định."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION.SOURCE_DOCUMENT_URL"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Reviewed By Officer Id"
+  physical_name: "reviewed_by_officer_id"
+  description: "FK đến cán bộ thực hiện thao tác review (có thể khác cán bộ được phân\
+    \ công review)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION.REVIEWED_BY_ID"
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
+    \ Hash: hash_id('IAM.USERS', REVIEWED_BY_ID) | Chưa xác nhận join key THANHTRA.PENALTY_DECISION.REVIEWED_BY_ID\
+    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live. Chưa rõ phân biệt nghiệp\
+    \ vụ chính xác với Reviewer Officer Id — cần Data Modeler/BA xác nhận."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Reviewed By Officer Code"
+  physical_name: "reviewed_by_officer_code"
+  description: "Mã cán bộ thực hiện thao tác review (snapshot)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION.REVIEWED_BY_ID"
+  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
+    \ Pair with Reviewed By Officer Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

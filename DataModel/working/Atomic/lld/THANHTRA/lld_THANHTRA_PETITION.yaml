@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Communication] Feedback"
   table_type: "Fundamental"
   group: "T1"
-  design_status: "approved"
+  design_status: "draft"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -18,7 +18,10 @@ metadata:
   approved_by: null
   approved_at: null
   notes: "Self-reference qua ORIGINAL_PETITION_ID khi duplicate_type=DUPLICATE. Grain:\
-    \ 1 dòng = 1 hồ sơ đơn thư."
+    \ 1 dòng = 1 hồ sơ đơn thư. Hạ về draft (2026-08-07) để bổ sung INTERNAL_TRANSFER_UNIT_ID/TARGET_TYPE/TARGET_REFERENCE_ID/TARGET_NAME\
+    \ — phát hiện qua post_check_source_coverage.py. Internal Transfer Unit Id/Code\
+    \ FK crosswalk sang NHNCK.UNITS qua Regulatory Authority Organization Unit; Target\
+    \ Type/Reference Id/Name theo đúng pattern polymorphic reference đã dùng ở INSPECTION_CONCLUSION/EXAMINATION_ANNUAL_PLAN_TARGET."
 attributes:
 - attribute_name: "Petition Id"
   physical_name: "petition_id"
@@ -140,7 +143,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Related To Corporate Bond Indicator"
-  physical_name: "related_to_corporate_bond_indicator"
+  physical_name: "related_to_corporate_bond_ind"
   description: "Liên quan TPDN: 0=Không, 1=Có."
   data_domain: "Indicator"
   nullable: true
@@ -153,7 +156,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Eligible For Processing Indicator"
-  physical_name: "eligible_for_processing_indicator"
+  physical_name: "eligible_for_processing_ind"
   description: "Đủ điều kiện xử lý: 0=Không, 1=Có."
   data_domain: "Indicator"
   nullable: true
@@ -166,7 +169,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Within Jurisdiction Indicator"
-  physical_name: "within_jurisdiction_indicator"
+  physical_name: "within_jurisdiction_ind"
   description: "Thuộc thẩm quyền: 0=Không, 1=Có."
   data_domain: "Indicator"
   nullable: true
@@ -242,8 +245,10 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "THANHTRA.PETITION.ORIGINAL_PETITION_ID"
-  comment: "Lookup pair: petition.petition_code. Pair with Original Petition Id."
+  - "THANHTRA.PETITION.CODE"
+  comment: "Lookup pair: petition.petition_code. Pair with Original Petition Id. Giá\
+    \ trị lấy từ THANHTRA.PETITION.CODE sau ETL crosswalk — chi tiết xem comment Original\
+    \ Petition Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -273,6 +278,38 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
+- attribute_name: "Internal Transfer Unit Id"
+  physical_name: "internal_transfer_unit_id"
+  description: "FK đến ban/đơn vị nội bộ UBCKNN nhận chuyển đơn."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "THANHTRA.PETITION.INTERNAL_TRANSFER_UNIT_ID"
+  comment: "FK target: ra_organization_unit.ra_ou_id (ou_tp_code = 'UNIT'). Cần ETL\
+    \ crosswalk sang NHNCK.UNITS: PETITION.INTERNAL_TRANSFER_UNIT_ID = UNITS.ID để\
+    \ xác nhận UNIT_CODE sau đó hash_id('NHNCK.UNITS', UNIT_CODE) | Crosswalk khác\
+    \ phân hệ (THANHTRA → NHNCK) — chưa xác nhận INTERNAL_TRANSFER_UNIT_ID nguồn khớp\
+    \ NHNCK.UNITS.ID, cần Data Modeler xác nhận trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Internal Transfer Unit Code"
+  physical_name: "internal_transfer_unit_code"
+  description: "Mã ban/đơn vị nội bộ nhận chuyển đơn (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.UNITS.UNIT_CODE"
+  comment: "Lookup pair: ra_organization_unit.ra_ou_code. Pair with Internal Transfer\
+    \ Unit Id. Giá trị lấy từ NHNCK.UNITS.UNIT_CODE sau ETL crosswalk — chi tiết xem\
+    \ comment Internal Transfer Unit Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
 - attribute_name: "Internal Transfer Unit Name"
   physical_name: "internal_transfer_unit_nm"
   description: "Tên ban/đơn vị nội bộ UBCKNN nhận chuyển đơn."
@@ -282,13 +319,12 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.PETITION.INTERNAL_TRANSFER_UNIT_NAME"
-  comment: "Denormalized — không có link FK sang đơn vị nội bộ trên Atomic. Nguồn\
-    \ có INTERNAL_TRANSFER_UNIT_ID nhưng thiếu FK formal."
+  comment: "Denormalized snapshot tên đơn vị. Pair with Internal Transfer Unit Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Archived Indicator"
-  physical_name: "archived_indicator"
+  physical_name: "archived_ind"
   description: "Lưu đơn: 0=Không, 1=Có."
   data_domain: "Indicator"
   nullable: true
@@ -362,6 +398,45 @@ attributes:
   source_columns:
   - "THANHTRA.PETITION.NOTE"
   comment: "Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Target Type Code"
+  physical_name: "target_tp_code"
+  description: "Loại đối tượng liên quan đến đơn thư."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PETITION.TARGET_TYPE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Target Reference Id"
+  physical_name: "target_reference_id"
+  description: "ID tham chiếu đối tượng liên quan trong hệ thống nguồn."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PETITION.TARGET_REFERENCE_ID"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Target Name"
+  physical_name: "target_nm"
+  description: "Tên đối tượng liên quan đến đơn thư."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PETITION.TARGET_NAME"
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"

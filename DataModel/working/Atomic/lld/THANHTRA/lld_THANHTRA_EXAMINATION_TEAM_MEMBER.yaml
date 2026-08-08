@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Business Activity] Business Review"
   table_type: "Fundamental"
   group: "T3"
-  design_status: "approved"
+  design_status: "draft"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -17,7 +17,11 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Danh sách thành viên đoàn kiểm tra. Cấu trúc đồng nhất với INSPECTION_TEAM_MEMBER."
+  notes: "Danh sách thành viên đoàn kiểm tra. Cấu trúc đồng nhất với INSPECTION_TEAM_MEMBER.\
+    \ Hạ về draft (2026-08-07) để bổ sung DEPARTMENT_ID — phát hiện qua post_check_source_coverage.py.\
+    \ Thêm cặp Member Department Id/Code (FK crosswalk sang NHNCK.DEPARTMENTS qua\
+    \ Regulatory Authority Organization Unit); Member Department Name giữ nguyên làm\
+    \ snapshot tên đi kèm."
 attributes:
 - attribute_name: "Examination Team Member Id"
   physical_name: "examination_team_member_id"
@@ -77,8 +81,10 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "THANHTRA.EXAMINATION_TEAM_MEMBER.EXAMINATION_TEAM_ID"
-  comment: "Lookup pair: examination_team.examination_team_code. Pair with Examination Team Id."
+  - "THANHTRA.EXAMINATION_TEAM.CODE"
+  comment: "Lookup pair: examination_team.examination_team_code. Pair with Examination\
+    \ Team Id. Giá trị lấy từ THANHTRA.EXAMINATION_TEAM.CODE sau ETL crosswalk — chi\
+    \ tiết xem comment Examination Team Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -124,6 +130,39 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
+- attribute_name: "Member Department Id"
+  physical_name: "member_department_id"
+  description: "FK đến phòng ban/đơn vị của thành viên."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "THANHTRA.EXAMINATION_TEAM_MEMBER.DEPARTMENT_ID"
+  comment: "FK target: ra_organization_unit.ra_ou_id (ou_tp_code = 'DEPARTMENT').\
+    \ Cần ETL crosswalk sang NHNCK.DEPARTMENTS: EXAMINATION_TEAM_MEMBER.DEPARTMENT_ID\
+    \ = DEPARTMENTS.ID để xác nhận DEPARTMENT_CODE sau đó hash_id('NHNCK.DEPARTMENTS',\
+    \ DEPARTMENT_CODE) | Crosswalk khác phân hệ (THANHTRA → NHNCK) — chưa xác nhận\
+    \ DEPARTMENT_ID nguồn khớp NHNCK.DEPARTMENTS.ID, cần Data Modeler xác nhận trước\
+    \ go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Member Department Code"
+  physical_name: "member_department_code"
+  description: "Mã phòng ban/đơn vị của thành viên (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.DEPARTMENTS.DEPARTMENT_CODE"
+  comment: "Lookup pair: ra_organization_unit.ra_ou_code. Pair with Member Department\
+    \ Id. Giá trị lấy từ NHNCK.DEPARTMENTS.DEPARTMENT_CODE sau ETL crosswalk — chi\
+    \ tiết xem comment Member Department Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
 - attribute_name: "Member Department Name"
   physical_name: "member_department_nm"
   description: "Tên phòng ban/đơn vị của thành viên (snapshot)."
@@ -133,7 +172,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.EXAMINATION_TEAM_MEMBER.DEPARTMENT_NAME"
-  comment: "Denormalized — DEPARTMENT_ID là FK suy luận → DEPARTMENTS.ID không formal."
+  comment: "Denormalized snapshot tên phòng ban. Pair with Member Department Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

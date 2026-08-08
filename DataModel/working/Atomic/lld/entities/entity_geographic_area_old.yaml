@@ -111,8 +111,7 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  comment: "FK target: Geographic Area Old.Geographic Area Old Id. NULL vì PROVINCE_OLD\
-    \ không có parent nội bộ trong Geographic Area Old."
+  comment: null
   classification_context: null
   etl_derived_value: null
   source_mappings:
@@ -125,7 +124,7 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  comment: "Lookup pair: Geographic Area Old.Geographic Area Old Code. NULL cho PROVINCE_OLD."
+  comment: null
   classification_context: null
   etl_derived_value: null
   source_mappings:
@@ -196,7 +195,7 @@ attributes:
     ECAT.DISTRICT_OLD: null
     ECAT.WARD_OLD: "ECAT.WARD_OLD.WARD_NEW_ID"
 - attribute_name: "Effective Indicator"
-  physical_name: "effective_indicator"
+  physical_name: "effective_ind"
   description: "Tình trạng hiệu lực: true=Hiệu lực; false=Hết hiệu lực"
   data_domain: "Small Counter"
   nullable: false
@@ -209,7 +208,7 @@ attributes:
     ECAT.DISTRICT_OLD: "ECAT.DISTRICT_OLD.EFFECTIVE"
     ECAT.WARD_OLD: "ECAT.WARD_OLD.EFFECTIVE"
 - attribute_name: "Active Indicator"
-  physical_name: "active_indicator"
+  physical_name: "active_ind"
   description: "Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng"
   data_domain: "Small Counter"
   nullable: false
@@ -223,7 +222,7 @@ attributes:
     ECAT.DISTRICT_OLD: "ECAT.DISTRICT_OLD.ACTIVE"
     ECAT.WARD_OLD: "ECAT.WARD_OLD.ACTIVE"
 - attribute_name: "Deleted Indicator"
-  physical_name: "deleted_indicator"
+  physical_name: "deleted_ind"
   description: "Cờ xóa mềm: true=Đã xóa; false=Chưa xóa"
   data_domain: "Small Counter"
   nullable: false

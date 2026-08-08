@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Documentation] Form Document"
   table_type: "Fundamental"
   group: "T3"
-  design_status: "approved"
+  design_status: "draft"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -18,7 +18,10 @@ metadata:
   approved_by: null
   approved_at: null
   notes: "Kết luận thanh tra chính thức kết thúc đoàn thanh tra. FK→Inspection Team\
-    \ (T2). Grain: 1 dòng = 1 kết luận thanh tra."
+    \ (T2). Grain: 1 dòng = 1 kết luận thanh tra. Hạ về draft (2026-08-07) để bổ sung\
+    \ TRANSFERRED — phát hiện qua post_check_source_coverage.py. Nguồn không có mô\
+    \ tả (bare NUMBER) — map tạm dạng Indicator pending, cần Data Modeler/BA xác nhận\
+    \ ý nghĩa."
 attributes:
 - attribute_name: "Inspection Conclusion Id"
   physical_name: "inspection_conclusion_id"
@@ -78,8 +81,10 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "THANHTRA.INSPECTION_CONCLUSION.INSPECTION_TEAM_ID"
-  comment: "Lookup pair: inspection_team.inspection_team_code. Pair with Inspection Team Id."
+  - "THANHTRA.INSPECTION_TEAM.CODE"
+  comment: "Lookup pair: inspection_team.inspection_team_code. Pair with Inspection\
+    \ Team Id. Giá trị lấy từ THANHTRA.INSPECTION_TEAM.CODE sau ETL crosswalk — chi\
+    \ tiết xem comment Inspection Team Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -211,6 +216,22 @@ attributes:
   source_columns:
   - "THANHTRA.INSPECTION_CONCLUSION.EXECUTION_DESCRIPTION"
   comment: "Nguồn CLOB — ETL truncate."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Transferred Indicator"
+  physical_name: "transferred_ind"
+  description: "Đã chuyển giao xử lý hay chưa (cờ đánh dấu)."
+  data_domain: "Indicator"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "THANHTRA.INSPECTION_CONCLUSION.TRANSFERRED"
+  comment: "Nguồn NUMBER không kèm mô tả trong BRD/DDL (không rõ precision/giá trị\
+    \ hợp lệ) — map tạm theo pattern Indicator đồng dạng với các cờ NUMBER(1,0) khác\
+    \ của phân hệ THANHTRA. Cần Data Modeler/BA xác nhận ý nghĩa nghiệp vụ chính xác\
+    \ trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

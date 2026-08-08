@@ -115,8 +115,8 @@ attributes:
     is_primary_key: false
     source_system: THANHTRA
     source_table: PENALTY_DECISION_SUBJECT_BEHAVIOR
-    source_column: THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR.VIOLATION_BEHAVIOR_ID
-    comment: "Lookup pair: violation_behavior.violation_behavior_code. Pair with Violation Behavior Id."
+    source_column: THANHTRA.VIOLATION_BEHAVIOR.CODE
+    comment: "Lookup pair: violation_behavior.violation_behavior_code. Pair with Violation Behavior Id. Giá trị lấy từ THANHTRA.VIOLATION_BEHAVIOR.CODE sau ETL crosswalk — chi tiết xem comment Violation Behavior Id."
     classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT_BEHAVIOR'"
     etl_derived_value: null
 
@@ -143,8 +143,8 @@ attributes:
     is_primary_key: false
     source_system: THANHTRA
     source_table: PENALTY_DECISION_SUBJECT_BEHAVIOR
-    source_column: THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR.PENALTY_TYPE_ID
-    comment: "Lookup pair: penalty_type.penalty_type_code. Pair with Penalty Type Id."
+    source_column: THANHTRA.PENALTY_TYPE.CODE
+    comment: "Lookup pair: penalty_type.penalty_type_code. Pair with Penalty Type Id. Giá trị lấy từ THANHTRA.PENALTY_TYPE.CODE sau ETL crosswalk — chi tiết xem comment Penalty Type Id."
     classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT_BEHAVIOR'"
     etl_derived_value: null
 
@@ -243,5 +243,33 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT_BEHAVIOR
     source_column: THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR.LEGAL_BASIS
     comment: Nguồn CLOB — ETL truncate.
+    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT_BEHAVIOR'"
+    etl_derived_value: null
+
+  - name: Violation Record Id
+    physical_name: violation_record_id
+    business_meaning: FK đến biên bản VPHC liên quan (nếu có).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: PENALTY_DECISION_SUBJECT_BEHAVIOR
+    source_column: THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR.VIOLATION_RECORD_ID
+    comment: "FK target: violation_record.violation_record_id. Hash: hash_id('THANHTRA.VIOLATION_RECORD', VIOLATION_RECORD_ID)."
+    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT_BEHAVIOR'"
+    etl_derived_value: null
+
+  - name: Violation Record Code
+    physical_name: violation_record_code
+    business_meaning: Mã biên bản VPHC liên quan (denormalized lookup).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: PENALTY_DECISION_SUBJECT_BEHAVIOR
+    source_column: THANHTRA.VIOLATION_RECORD.ID
+    comment: "Lookup pair: violation_record.violation_record_code. Pair with Violation Record Id."
     classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT_BEHAVIOR'"
     etl_derived_value: null

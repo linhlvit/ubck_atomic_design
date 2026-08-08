@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Event] Event"
   table_type: "Fundamental"
   group: "T1"
-  design_status: "approved"
+  design_status: "draft"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -18,7 +18,8 @@ metadata:
   approved_by: null
   approved_at: null
   notes: "BCV Notification (sub-type của Event) — thông báo chủ động phát đi từ thanh\
-    \ tra, không gắn với hồ sơ cụ thể."
+    \ tra, không gắn với hồ sơ cụ thể. Hạ về draft (2026-08-07) để bổ sung ATTACHMENT_IDS_JSON\
+    \ — phát hiện qua post_check_source_coverage.py."
 attributes:
 - attribute_name: "Proactive Notice Id"
   physical_name: "proactive_notice_id"
@@ -166,3 +167,17 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
+- attribute_name: "Attachment File Ids"
+  physical_name: "attachment_file_ids"
+  description: "Danh sách ID file đính kèm thông báo."
+  data_domain: "Array<Text>"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "THANHTRA.PROACTIVE_NOTICE.ATTACHMENT_IDS_JSON"
+  comment: "Nguồn lưu dạng JSON array (CLOB) — ETL parse thành mảng string. Không\
+    \ có FK formal đến bảng file đính kèm (out of scope)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "array<string>"

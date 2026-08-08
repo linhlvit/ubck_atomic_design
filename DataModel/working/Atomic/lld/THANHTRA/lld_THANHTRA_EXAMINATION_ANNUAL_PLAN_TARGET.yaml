@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Business Activity] Business Review"
   table_type: "Fundamental"
   group: "T2"
-  design_status: "approved"
+  design_status: "draft"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -123,6 +123,38 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
+- attribute_name: "Leading Unit Id"
+  physical_name: "leading_unit_id"
+  description: "FK đến đơn vị chủ trì kiểm tra."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "THANHTRA.EXAMINATION_ANNUAL_PLAN_TARGET.LEADING_UNIT_ID"
+  comment: "FK target: ra_organization_unit.ra_ou_id (ou_tp_code = 'UNIT'). Cần ETL\
+    \ crosswalk sang NHNCK.UNITS: EXAMINATION_ANNUAL_PLAN_TARGET.LEADING_UNIT_ID =\
+    \ UNITS.ID để xác nhận UNIT_CODE sau đó hash_id('NHNCK.UNITS', UNIT_CODE) | Crosswalk\
+    \ khác phân hệ (THANHTRA → NHNCK) — chưa xác nhận LEADING_UNIT_ID nguồn khớp NHNCK.UNITS.ID,\
+    \ cần Data Modeler xác nhận trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Leading Unit Code"
+  physical_name: "leading_unit_code"
+  description: "Mã đơn vị chủ trì kiểm tra (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.UNITS.UNIT_CODE"
+  comment: "Lookup pair: ra_organization_unit.ra_ou_code. Pair with Leading Unit Id.\
+    \ Giá trị lấy từ NHNCK.UNITS.UNIT_CODE sau ETL crosswalk — chi tiết xem comment\
+    \ Leading Unit Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
 - attribute_name: "Leading Unit Name"
   physical_name: "leading_unit_nm"
   description: "Tên đơn vị chủ trì kiểm tra (snapshot tại thời điểm lập kế hoạch)."
@@ -132,8 +164,8 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.EXAMINATION_ANNUAL_PLAN_TARGET.LEADING_UNIT_NAME"
-  comment: "LEADING_UNIT_ID không map — không có FK formal đến UNITS. Lưu snapshot\
-    \ text thay thế."
+  comment: "Denormalized snapshot tên đơn vị tại thời điểm lập kế hoạch. Pair with\
+    \ Leading Unit Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

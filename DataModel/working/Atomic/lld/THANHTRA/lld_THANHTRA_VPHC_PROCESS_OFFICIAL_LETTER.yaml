@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Documentation] Form Document"
   table_type: "Fundamental"
   group: "T5"
-  design_status: "approved"
+  design_status: "draft"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -20,7 +20,14 @@ metadata:
   notes: "Công văn trong quy trình xử lý VPHC. Tất cả 3 FK đều nullable. 3 CLOB form\
     \ rendering (FIELD_HTML_JSON, FIELD_SOURCE_JSON, MANUAL_MERGE_DATA_JSON) không\
     \ map lên Atomic theo T5-03. Ghi nhận T5-02: xem xét thêm constraint ít nhất 1\
-    \ FK phải có giá trị."
+    \ FK phải có giá trị. Hạ về draft (2026-08-07) để bổ sung DOCUMENT_TEMPLATE_ID/VIOLATION_CASE_CODE/VIOLATION_RECORD_NUMBER/PENALTY_DECISION_NUMBER/FIELD_HTML_JSON/FIELD_SOURCE_JSON/MANUAL_MERGE_DATA_JSON\
+    \ — phát hiện qua post_check_source_coverage.py. DOCUMENT_TEMPLATE_ID + 3 JSON\
+    \ đã có quyết định loại trừ (out_of_scope/T5-03) nhưng chưa formalize vào pending_design.yaml\
+    \ — đã bổ sung. VIOLATION_CASE_CODE là snapshot trùng giá trị với Violation Case\
+    \ Code hiện có — chuyển nguồn từ crosswalk sang đọc trực tiếp cột snapshot này.\
+    \ VIOLATION_RECORD_NUMBER/PENALTY_DECISION_NUMBER là snapshot số văn bản nghiệp\
+    \ vụ (khác Violation Record Code/Penalty Decision Code vốn là BK dạng UUID) —\
+    \ thêm attribute mới riêng."
 attributes:
 - attribute_name: "Official Letter Administrative Violation Process Id"
   physical_name: "official_letter_administrative_violation_process_id"
@@ -121,7 +128,22 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.VPHC_PROCESS_OFFICIAL_LETTER.VIOLATION_RECORD_ID"
-  comment: "Lookup pair: violation_record.violation_record_code. Pair with Violation Record Id."
+  comment: "Lookup pair: violation_record.violation_record_code. Pair with Violation\
+    \ Record Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Violation Record Number"
+  physical_name: "violation_record_nbr"
+  description: "Số biên bản VPHC liên kết (snapshot số văn bản nghiệp vụ)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.VPHC_PROCESS_OFFICIAL_LETTER.VIOLATION_RECORD_NUMBER"
+  comment: "Denormalized snapshot Record Number (số văn bản nghiệp vụ VBĐH) — khác\
+    \ Violation Record Code (BK dạng UUID, dùng để hash Id)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -147,7 +169,22 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.VPHC_PROCESS_OFFICIAL_LETTER.PENALTY_DECISION_ID"
-  comment: "Lookup pair: penalty_decision.penalty_decision_code. Pair with Penalty Decision Id."
+  comment: "Lookup pair: penalty_decision.penalty_decision_code. Pair with Penalty\
+    \ Decision Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Penalty Decision Number"
+  physical_name: "pd_nbr"
+  description: "Số quyết định xử phạt liên kết (snapshot số văn bản nghiệp vụ)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.VPHC_PROCESS_OFFICIAL_LETTER.PENALTY_DECISION_NUMBER"
+  comment: "Denormalized snapshot Decision Number (số quyết định cấp từ VBĐH) — khác\
+    \ Penalty Decision Code (BK dạng UUID, dùng để hash Id)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

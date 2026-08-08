@@ -149,7 +149,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Petition Attached Indicator"
-  physical_name: "petition_attached_indicator"
+  physical_name: "petition_attached_ind"
   description: "Cờ cho biết có đơn thư kèm theo hay không (0=Không, 1=Có)."
   data_domain: "Indicator"
   nullable: true
@@ -210,8 +210,10 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "THANHTRA.CITIZEN_RECEPTION.PETITION_ID"
-  comment: "Lookup pair: petition.petition_code. Pair with Petition Id."
+  - "THANHTRA.PETITION.CODE"
+  comment: "Lookup pair: petition.petition_code. Pair with Petition Id. Giá trị lấy\
+    \ từ THANHTRA.PETITION.CODE sau ETL crosswalk — chi tiết xem comment Petition\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

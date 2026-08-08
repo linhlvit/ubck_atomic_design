@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Business Activity] Conduct Violation"
   table_type: "Fundamental"
   group: "T3"
-  design_status: "approved"
+  design_status: "draft"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -19,7 +19,10 @@ metadata:
   approved_at: null
   notes: "Biên bản vi phạm hành chính (VPHC). FK đến INSPECTION_TEAM và EXAMINATION_TEAM\
     \ là suy luận (không formal FK trong BRD) — cả 2 nullable. Grain: 1 dòng = 1 biên\
-    \ bản VPHC. BK nullable khi status=DRAFT."
+    \ bản VPHC. BK nullable khi status=DRAFT. Hạ về draft (2026-08-07) để bổ sung\
+    \ RECORD_NUMBER/RECORDER_UNIT_ID/RECEIPT_STATUS/VIEWED_AT/DOWNLOADED_AT/UPLOADED_SIGNED_AT/ASSIGNED_SIGNER_NAME/ASSIGNED_SIGNER_ID/ASSIGNED_LEADER_SIGNER_ID/ASSIGNED_LEADER_SIGNER_NAME/CREATED_BY_BAN_ROLE/SIGNING_FLOW\
+    \ — phát hiện qua post_check_source_coverage.py. RECORDER_UNIT_ID mô tả nguồn\
+    \ ghi \"(eCAT)\" — TBD, cần Data Modeler/BA xác nhận ý nghĩa (tương tự NHNCK.DEPARTMENTS.ECATALOG_ID)."
 attributes:
 - attribute_name: "Violation Record Id"
   physical_name: "violation_record_id"
@@ -79,8 +82,10 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "THANHTRA.VIOLATION_RECORD.INSPECTION_TEAM_ID"
-  comment: "Lookup pair: inspection_team.inspection_team_code. Pair with Inspection Team Id."
+  - "THANHTRA.INSPECTION_TEAM.CODE"
+  comment: "Lookup pair: inspection_team.inspection_team_code. Pair with Inspection\
+    \ Team Id. Giá trị lấy từ THANHTRA.INSPECTION_TEAM.CODE sau ETL crosswalk — chi\
+    \ tiết xem comment Inspection Team Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -105,8 +110,25 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "THANHTRA.VIOLATION_RECORD.EXAMINATION_TEAM_ID"
-  comment: "Lookup pair: examination_team.examination_team_code. Pair with Examination Team Id."
+  - "THANHTRA.EXAMINATION_TEAM.CODE"
+  comment: "Lookup pair: examination_team.examination_team_code. Pair with Examination\
+    \ Team Id. Giá trị lấy từ THANHTRA.EXAMINATION_TEAM.CODE sau ETL crosswalk — chi\
+    \ tiết xem comment Examination Team Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Record Number"
+  physical_name: "record_nbr"
+  description: "Số biên bản VPHC (tự sinh từ hệ thống VBĐH sau khi cấp số)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.VIOLATION_RECORD.RECORD_NUMBER"
+  comment: "Số văn bản chính thức, chỉ có sau khi cấp số từ VBĐH (null khi status=DRAFT).\
+    \ Không dùng làm BK — BK entity vẫn là Violation Record Code (PK UUID nguồn, luôn\
+    \ có giá trị kể cả khi DRAFT)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -210,7 +232,24 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.VIOLATION_RECORD.RECORDER_UNIT"
-  comment: null
+  comment: "Pair with Recorder Unit Reference Code."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Recorder Unit Reference Code"
+  physical_name: "recorder_unit_reference_code"
+  description: "Mã tham chiếu đơn vị công tác của người lập biên bản — TBD."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "THANHTRA.VIOLATION_RECORD.RECORDER_UNIT_ID"
+  comment: "Mô tả nguồn: \"ID đơn vị (eCAT); recorder_unit giữ tên hiển thị\" — ý\
+    \ nghĩa \"eCAT\" chưa rõ ràng (không phải NHNCK.UNITS nội bộ theo mô tả nguồn),\
+    \ tương tự trường hợp NHNCK.DEPARTMENTS.ECATALOG_ID còn TBD. Cần Data Modeler/BA\
+    \ xác nhận ý nghĩa nghiệp vụ chính xác trước khi hoàn thiện thiết kế (đổi domain/FK\
+    \ nếu cần)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -466,7 +505,7 @@ attributes:
   etl_derived_value: null
   data_type: "timestamp"
 - attribute_name: "Sent To Inspector Indicator"
-  physical_name: "sent_to_inspector_indicator"
+  physical_name: "sent_to_inspector_ind"
   description: "Đã gửi Thanh tra (dành cho ĐVGS): 0=Chưa, 1=Đã gửi."
   data_domain: "Indicator"
   nullable: true
@@ -479,7 +518,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Forwarded To Inspection Indicator"
-  physical_name: "forwarded_to_inspection_indicator"
+  physical_name: "forwarded_to_inspection_ind"
   description: "Đã gửi biên bản đến Thanh tra: 0=Chưa, 1=Đã."
   data_domain: "Indicator"
   nullable: true
@@ -532,6 +571,59 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
+- attribute_name: "Receipt Status Code"
+  physical_name: "receipt_status_code"
+  description: "Trạng thái nhận biên bản của đối tượng vi phạm."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.VIOLATION_RECORD.RECEIPT_STATUS"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Viewed Timestamp"
+  physical_name: "viewed_tms"
+  description: "Thời điểm đối tượng mở xem biên bản (portal)."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.VIOLATION_RECORD.VIEWED_AT"
+  comment: "Nguồn TIMESTAMP(6)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Downloaded Timestamp"
+  physical_name: "downloaded_tms"
+  description: "Thời điểm đối tượng tải file biên bản."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.VIOLATION_RECORD.DOWNLOADED_AT"
+  comment: "Nguồn TIMESTAMP(6)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Uploaded Signed Timestamp"
+  physical_name: "uploaded_signed_tms"
+  description: "Thời điểm người vi phạm/đại diện tổ chức upload file biên bản đã ký\
+    \ (Bước 7.1 QT 7)."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.VIOLATION_RECORD.UPLOADED_SIGNED_AT"
+  comment: "Nguồn TIMESTAMP(6). Pair with Violator Signed File URL."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
 - attribute_name: "Violator Confirmed By"
   physical_name: "violator_confirmed_by"
   description: "Tên người vi phạm xác nhận qua VNeID."
@@ -581,6 +673,96 @@ attributes:
   source_columns:
   - "THANHTRA.VIOLATION_RECORD.VIOLATOR_SIGNED_FILE_URL"
   comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Assigned Signer Officer Id"
+  physical_name: "assigned_signer_officer_id"
+  description: "FK đến cán bộ được phân công ký số biên bản (Chuyên viên/TTV)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "THANHTRA.VIOLATION_RECORD.ASSIGNED_SIGNER_ID"
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
+    \ Hash: hash_id('IAM.USERS', ASSIGNED_SIGNER_ID) | Chưa xác nhận join key THANHTRA.VIOLATION_RECORD.ASSIGNED_SIGNER_ID\
+    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Assigned Signer Officer Code"
+  physical_name: "assigned_signer_officer_code"
+  description: "Tên cán bộ được phân công ký số (snapshot)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.VIOLATION_RECORD.ASSIGNED_SIGNER_NAME"
+  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
+    \ Pair with Assigned Signer Officer Id. Nguồn lưu ASSIGNED_SIGNER_NAME (text snapshot)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Assigned Leader Signer Officer Id"
+  physical_name: "assigned_leader_signer_officer_id"
+  description: "FK đến lãnh đạo được phân công ký duyệt biên bản (ký 2 bước)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "THANHTRA.VIOLATION_RECORD.ASSIGNED_LEADER_SIGNER_ID"
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
+    \ Hash: hash_id('IAM.USERS', ASSIGNED_LEADER_SIGNER_ID) | Chưa xác nhận join key\
+    \ THANHTRA.VIOLATION_RECORD.ASSIGNED_LEADER_SIGNER_ID ↔ IAM.USERS, cần Data Modeler\
+    \ xác nhận trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Assigned Leader Signer Officer Code"
+  physical_name: "assigned_leader_signer_officer_code"
+  description: "Tên lãnh đạo được phân công ký duyệt (snapshot)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.VIOLATION_RECORD.ASSIGNED_LEADER_SIGNER_NAME"
+  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
+    \ Pair with Assigned Leader Signer Officer Id. Nguồn lưu ASSIGNED_LEADER_SIGNER_NAME\
+    \ (text snapshot)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Signing Flow Code"
+  physical_name: "signing_flow_code"
+  description: "Luồng ký số áp dụng cho biên bản."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.VIOLATION_RECORD.SIGNING_FLOW"
+  comment: "Nguồn không có mô tả trong BRD/DDL — lưu Text tự do đồng dạng Signature\
+    \ Type Code/Record Type Code (chưa có scheme chuẩn)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created By Ban Role Code"
+  physical_name: "created_by_ban_role_code"
+  description: "Vai trò/Ban của người tạo bản ghi tại thời điểm tạo (snapshot)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "THANHTRA.VIOLATION_RECORD.CREATED_BY_BAN_ROLE"
+  comment: "Mô tả nguồn không có trong BRD/DDL (VARCHAR2(50), không kèm mô tả) — tên\
+    \ cột gợi ý vai trò/Ban nội bộ của người tạo bản ghi tại thời điểm tạo, đồng dạng\
+    \ THANHTRA.EXAMINATION_TEAM.CREATED_BY_BAN_ROLE. Cần Data Modeler/BA xác nhận\
+    \ ý nghĩa nghiệp vụ chính xác và Scheme Code trước khi hoàn thiện classification_context."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

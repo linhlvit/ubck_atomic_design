@@ -329,3 +329,157 @@ attributes:
     comment: Nguồn TIMESTAMP(6).
     classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
     etl_derived_value: null
+
+  - name: Subject Email
+    physical_name: subject_email
+    business_meaning: Email đối tượng bị xử phạt (dùng gửi thông báo quyết định điện tử).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: PENALTY_DECISION_SUBJECT
+    source_column: THANHTRA.PENALTY_DECISION_SUBJECT.SUBJECT_EMAIL
+    comment: null
+    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
+    etl_derived_value: null
+
+  - name: Subject Phone
+    physical_name: subject_phone
+    business_meaning: Số điện thoại đối tượng bị xử phạt (dùng gửi SMS thông báo).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: PENALTY_DECISION_SUBJECT
+    source_column: THANHTRA.PENALTY_DECISION_SUBJECT.SUBJECT_PHONE
+    comment: null
+    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
+    etl_derived_value: null
+
+  - name: Email Sent Timestamp
+    physical_name: email_sent_tms
+    business_meaning: Thời điểm gửi email thông báo quyết định.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: PENALTY_DECISION_SUBJECT
+    source_column: THANHTRA.PENALTY_DECISION_SUBJECT.EMAIL_SENT_AT
+    comment: Nguồn TIMESTAMP(6).
+    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
+    etl_derived_value: null
+
+  - name: SMS Sent Timestamp
+    physical_name: sms_sent_tms
+    business_meaning: Thời điểm gửi SMS thông báo quyết định.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: PENALTY_DECISION_SUBJECT
+    source_column: THANHTRA.PENALTY_DECISION_SUBJECT.SMS_SENT_AT
+    comment: Nguồn TIMESTAMP(6).
+    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
+    etl_derived_value: null
+
+  - name: Violation Record Id
+    physical_name: violation_record_id
+    business_meaning: FK đến biên bản VPHC liên quan (nếu có).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: PENALTY_DECISION_SUBJECT
+    source_column: THANHTRA.PENALTY_DECISION_SUBJECT.VIOLATION_RECORD_ID
+    comment: "FK target: violation_record.violation_record_id. Hash: hash_id('THANHTRA.VIOLATION_RECORD', VIOLATION_RECORD_ID)."
+    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
+    etl_derived_value: null
+
+  - name: Violation Record Code
+    physical_name: violation_record_code
+    business_meaning: Mã biên bản VPHC liên quan (denormalized lookup).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: PENALTY_DECISION_SUBJECT
+    source_column: THANHTRA.VIOLATION_RECORD.ID
+    comment: "Lookup pair: violation_record.violation_record_code. Pair with Violation Record Id."
+    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
+    etl_derived_value: null
+
+  - name: Receipt Status Code
+    physical_name: receipt_status_code
+    business_meaning: "Trạng thái nhận quyết định: Chưa nhận / Đã nhận."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: PENALTY_DECISION_SUBJECT
+    source_column: THANHTRA.PENALTY_DECISION_SUBJECT.RECEIPT_STATUS
+    comment: null
+    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
+    etl_derived_value: null
+
+  - name: Viewed Timestamp
+    physical_name: viewed_tms
+    business_meaning: Thời điểm đối tượng mở xem quyết định (portal).
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: PENALTY_DECISION_SUBJECT
+    source_column: THANHTRA.PENALTY_DECISION_SUBJECT.VIEWED_AT
+    comment: Nguồn TIMESTAMP(6).
+    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
+    etl_derived_value: null
+
+  - name: Downloaded Timestamp
+    physical_name: downloaded_tms
+    business_meaning: Thời điểm đối tượng tải file quyết định.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: PENALTY_DECISION_SUBJECT
+    source_column: THANHTRA.PENALTY_DECISION_SUBJECT.DOWNLOADED_AT
+    comment: Nguồn TIMESTAMP(6).
+    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
+    etl_derived_value: null
+
+  - name: Confirmed Timestamp
+    physical_name: confirmed_tms
+    business_meaning: Thời điểm đối tượng xác nhận đã nhận quyết định.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: PENALTY_DECISION_SUBJECT
+    source_column: THANHTRA.PENALTY_DECISION_SUBJECT.CONFIRMED_AT
+    comment: Nguồn TIMESTAMP(6).
+    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
+    etl_derived_value: null
+
+  - name: Received Timestamp
+    physical_name: received_tms
+    business_meaning: Thời điểm chuyển sang trạng thái Đã nhận (lần đầu trong 3 thao tác xem/tải/xác nhận).
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: PENALTY_DECISION_SUBJECT
+    source_column: THANHTRA.PENALTY_DECISION_SUBJECT.RECEIVED_AT
+    comment: Nguồn TIMESTAMP(6).
+    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
+    etl_derived_value: null
