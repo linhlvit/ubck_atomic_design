@@ -254,7 +254,7 @@ SELECT
     o.certificate_dt,
     o.official_letter_nbr,
     o.official_letter_dt,
-    o.capital_usage_plan,
+    o.offering_purpose,
     o.business_line_level_1_code,
     o.classification_business_line_nm,
     o.equity_listing_exchange_code,

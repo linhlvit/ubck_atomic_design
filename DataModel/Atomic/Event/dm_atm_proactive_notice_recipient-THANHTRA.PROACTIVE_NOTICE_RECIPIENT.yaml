@@ -203,3 +203,17 @@ attributes:
     comment: null
     classification_context: "Source System Code = 'THANHTRA_PROACTIVE_NOTICE_RECIPIENT'"
     etl_derived_value: null
+
+  - name: FMS Event Reference Code
+    physical_name: fms_event_reference_code
+    business_meaning: Mã tham chiếu sự kiện đẩy thông báo sang FMS (correlation id kỹ thuật).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: PROACTIVE_NOTICE_RECIPIENT
+    source_column: THANHTRA.PROACTIVE_NOTICE_RECIPIENT.FMS_EVENT_ID
+    comment: "Không có FK formal — mã tương quan (correlation id) kỹ thuật dùng để đối chiếu log đẩy thông báo sang hệ thống FMS, không phải business key của entity FMS nào đã thiết kế."
+    classification_context: "Source System Code = 'THANHTRA_PROACTIVE_NOTICE_RECIPIENT'"
+    etl_derived_value: null

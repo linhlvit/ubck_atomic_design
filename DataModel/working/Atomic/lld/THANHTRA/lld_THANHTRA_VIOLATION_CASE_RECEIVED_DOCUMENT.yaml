@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Documentation] Documentation Item"
   table_type: "Fundamental"
   group: "T4"
-  design_status: "approved"
+  design_status: "draft"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -17,7 +17,10 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: null
+  notes: "Hạ về draft (2026-08-07) để bổ sung ISSUING_UNIT_ID — phát hiện qua post_check_source_coverage.py.\
+    \ Không dùng crosswalk sang NHNCK.UNITS — cùng lý do với VIOLATION_CASE.SOURCE_UNIT_ID\
+    \ (đơn vị phát hành văn bản tiếp nhận có thể là tổ chức ngoài UBCKNN như Sở GDCK,\
+    \ VSDC)."
 attributes:
 - attribute_name: "Violation Case Received Document Id"
   physical_name: "violation_case_received_document_id"
@@ -77,8 +80,10 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "THANHTRA.VIOLATION_CASE_RECEIVED_DOCUMENT.VIOLATION_CASE_ID"
-  comment: "Lookup pair: violation_case.violation_case_code. Pair with Violation Case Id."
+  - "THANHTRA.VIOLATION_CASE.CODE"
+  comment: "Lookup pair: violation_case.violation_case_code. Pair with Violation Case\
+    \ Id. Giá trị lấy từ THANHTRA.VIOLATION_CASE.CODE sau ETL crosswalk — chi tiết\
+    \ xem comment Violation Case Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -108,6 +113,21 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "date"
+- attribute_name: "Issuing Unit Reference Id"
+  physical_name: "issuing_unit_reference_id"
+  description: "ID tham chiếu đơn vị lập/gửi văn bản tiếp nhận trong hệ thống nguồn."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "THANHTRA.VIOLATION_CASE_RECEIVED_DOCUMENT.ISSUING_UNIT_ID"
+  comment: "Denormalized reference — không FK formal. Đơn vị phát hành có thể là đơn\
+    \ vị nội bộ UBCKNN hoặc tổ chức ngoài (Sở GDCK, VSDC...) tương tự Violation Case.Source\
+    \ Unit Reference Id nên không crosswalk cố định sang 1 catalog duy nhất."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
 - attribute_name: "Issuing Unit Name"
   physical_name: "issuing_unit_nm"
   description: "Tên đơn vị lập/gửi văn bản tiếp nhận (snapshot)."
@@ -117,7 +137,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.VIOLATION_CASE_RECEIVED_DOCUMENT.ISSUING_UNIT_NAME"
-  comment: "Denormalized — ISSUING_UNIT_ID là FK suy luận không formal."
+  comment: "Denormalized snapshot tên đơn vị. Pair with Issuing Unit Reference Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

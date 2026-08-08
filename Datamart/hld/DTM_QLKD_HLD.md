@@ -2283,8 +2283,10 @@ Slicer: date picker (31-12-2024) + HIỆN TẠI
 
 > Phân loại: **Tác nghiệp**
 > Atomic: `Securities Company Organization Unit` ← SCMS.SC_FIRM_BRANCH/TRANSACTION_OFFICE/REP_OFFICE — **READY** (đơn vị, xem Nhóm 32)
-> Atomic: `Securities Company Licensed Service` ← SCMS.SC_FIRM_SERVICE — **READY** (ETL-derived LIKE để filter dịch vụ)
-> Atomic: `Classification Service` ← SCMS.CAT_SERVICE — **READY**
+> Atomic: `Securities Company Licensed Service` ← SCMS.SC_FIRM_SERVICE — **READY** (dùng để derive Indicator tại tầng ETL populate Operational, KHÔNG join runtime ở tầng BI)
+> Atomic: `Classification Service` ← SCMS.CAT_SERVICE — **READY** (dùng để derive Indicator, cùng cơ chế trên)
+> **Sửa 06/08/2026 (Datamart review):** Phát hiện thiết kế cũ để `Operational Securities Company Organization Unit Profile` (bảng tác nghiệp) JOIN thẳng `Service Type Dimension` ở tầng BI — vi phạm nguyên tắc "1 chart chỉ dùng thuần Fact+Dim hoặc thuần Operational dàn phẳng theo 1 đối tượng, không trộn Operational với Fact/Dim khác domain". Đã sửa: thêm 3 cột Indicator (`margin_trading_svc_ind`/`advance_payment_svc_ind`/`custody_svc_ind`) dàn phẳng trực tiếp vào `opr_securities_company_organization_unit_profile`, derive bằng EXISTS-aggregate qua `Securities Company Licensed Service` JOIN `Classification Service` (theo `sc_code` của CTCK mẹ) tại tầng ETL populate — chart Nhóm 34 giờ chỉ đọc 1 bảng duy nhất, không JOIN runtime. Bỏ K_QLKD_170 (Chiều dịch vụ kinh doanh chứng khoán) — không còn cần Dimension riêng vì dịch vụ nay là thuộc tính có sẵn trên Operational.
+> **Vấn đề mở:** BA comment (SQL STT 34) ghi "PGD chỉ đếm khi CTCK mẹ có hỗ trợ Lưu ký", nhưng SQL thực thi lại UNION ALL PGD vào cùng join `SC_FIRM_SERVICE` cho cả 3 dịch vụ (ký quỹ/ứng trước/lưu ký) giống CN, không phân biệt riêng. Đang thiết kế theo đúng SQL thực thi (áp cả 3 Indicator cho CN + PGD, VPĐD không xuất hiện trong SQL này nên = N mặc định) — cần BA xác nhận lại ý định đúng.
 > **Cập nhật 13/07/2026 (BA v4.2, re-verify):** BA vẫn dùng `SC_FIRM_SERVICE`/`CAT_SERVICE` LIKE trên `service_name` (`'%giao dịch ký quỹ%'`/`'%ứng trước tiền bán%'`/`'%lưu ký%'`) — cùng pattern Nhóm 3, không đổi. Chỉ khác nguồn bảng đơn vị CN/PGD/VPĐD (nay `SC_FIRM_BRANCH`/`SC_FIRM_TRANSACTION_OFFICE`/`SC_FIRM_REP_OFFICE`, xem Nhóm 32) — không ảnh hưởng, vẫn **READY**. Ghi chú: 3 dịch vụ: giao dịch ký quỹ / ứng trước tiền bán / lưu ký. Pattern LIKE xem O_QLKD_12/O_QLKD_19. Hiển thị cùng Sub-tab với Nhóm 32/33/35-37 — xem [Nhóm 32](#nhóm-32---các-chỉ-tiêu-thống-kê-chung-stt-32).
 
 **Mockup:**
@@ -2294,17 +2296,17 @@ DỊCH VỤ ĐƯỢC CHẤP THUẬN:
 Ký quỹ: 2 | Ứng trước: 1 | Lưu ký: 1
 ```
 
-**Source:** `Operational Securities Company Organization Unit Profile` (tác nghiệp)
+**Source:** `Operational Securities Company Organization Unit Profile` (tác nghiệp, đã dàn phẳng Indicator dịch vụ)
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
 |---|---|---|---|---|
 | K_QLKD_161 | Chiều thời gian theo Ngày | — | Chiều | Reuse từ Nhóm 32 — `Calendar Date Dimension`, date-spine từ `MIN(Decision_Date)` đến hiện tại |
-| K_QLKD_170 | Chiều dịch vụ kinh doanh chứng khoán | — | Chiều | `Service Type Dimension` (Atomic `Classification Service`) |
-| K_QLKD_171 | SL CN, PGD, VPĐD theo dịch vụ giao dịch ký quỹ — per CTCK | Đơn vị | Cơ sở | COUNT (UNION CN+PGD+VPĐD) WHERE EXISTS (`CTCK_DICH_VU` JOIN `DM_DICH_VU` filter `LOWER(TEN_DICH_VU) LIKE '%giao dịch ký quỹ%'`). Pattern LIKE xem O_QLKD_12 | READY (ETL-derived LIKE) |
-| K_QLKD_172 | SL CN, PGD, VPĐD theo dịch vụ ứng trước tiền bán — per CTCK | Đơn vị | Cơ sở | COUNT (UNION CN+PGD+VPĐD) WHERE EXISTS (`CTCK_DICH_VU` JOIN `DM_DICH_VU` filter `LOWER(TEN_DICH_VU) LIKE '%ứng trước tiền bán%'`) | READY (ETL-derived LIKE) |
-| K_QLKD_173 | SL CN, PGD, VPĐD theo dịch vụ lưu ký — per CTCK | Đơn vị | Cơ sở | COUNT (UNION CN+PGD+VPĐD) WHERE EXISTS (`CTCK_DICH_VU` JOIN `DM_DICH_VU` filter `LOWER(TEN_DICH_VU) LIKE '%lưu ký%'`) | READY (ETL-derived LIKE) |
+| K_QLKD_170 | Chiều dịch vụ kinh doanh chứng khoán | — | Chiều | Không còn Dimension riêng — dịch vụ nay là 3 cột Indicator dàn phẳng (`Margin_Trading_Service_Indicator`/`Advance_Payment_Service_Indicator`/`Custody_Service_Indicator`) trực tiếp trên `Operational Securities Company Organization Unit Profile`, derive EXISTS-aggregate tại tầng ETL populate (xem Vấn đề mở — sửa 06/08/2026) |
+| K_QLKD_171 | SL CN, PGD, VPĐD theo dịch vụ giao dịch ký quỹ — per CTCK | Đơn vị | Cơ sở | COUNT (UNION CN+PGD+VPĐD) WHERE `Margin_Trading_Service_Indicator = 'Y'` (dàn phẳng trên Operational, EXISTS-aggregate từ `Securities Company Licensed Service` JOIN `Classification Service` LIKE `'%giao dịch ký quỹ%'`). Pattern LIKE xem O_QLKD_12 | READY (ETL-derived LIKE) |
+| K_QLKD_172 | SL CN, PGD, VPĐD theo dịch vụ ứng trước tiền bán — per CTCK | Đơn vị | Cơ sở | COUNT (UNION CN+PGD+VPĐD) WHERE `Advance_Payment_Service_Indicator = 'Y'` | READY (ETL-derived LIKE) |
+| K_QLKD_173 | SL CN, PGD, VPĐD theo dịch vụ lưu ký — per CTCK | Đơn vị | Cơ sở | COUNT (UNION CN+PGD+VPĐD) WHERE `Custody_Service_Indicator = 'Y'` | READY (ETL-derived LIKE) |
 
 **Bảng grain:**
 
@@ -2318,8 +2320,10 @@ Ký quỹ: 2 | Ứng trước: 1 | Lưu ký: 1
 
 > Phân loại: **Tác nghiệp**
 > Atomic: `Securities Company Organization Unit` ← SCMS.SC_FIRM_BRANCH/TRANSACTION_OFFICE/REP_OFFICE — **READY** (đơn vị, xem Nhóm 32)
-> Atomic: `Securities Company Licensed Service` ← SCMS.SC_FIRM_SERVICE — **READY** (ETL-derived LIKE để filter dịch vụ phái sinh)
-> Atomic: `Classification Service` ← SCMS.CAT_SERVICE — **READY**
+> Atomic: `Securities Company Licensed Service` ← SCMS.SC_FIRM_SERVICE — **READY** (dùng để derive Indicator tại tầng ETL populate Operational, KHÔNG join runtime ở tầng BI)
+> Atomic: `Classification Service` ← SCMS.CAT_SERVICE — **READY** (dùng để derive Indicator, cùng cơ chế trên)
+> **Sửa 06/08/2026 (Datamart review):** Cùng lỗi và cùng cách sửa như Nhóm 34 — bỏ JOIN thẳng Operational→Dimension ở tầng BI, thay bằng 3 cột Indicator dàn phẳng (`derivative_broker_svc_ind`/`derivative_advisory_svc_ind`/`derivative_dealing_svc_ind`) trên `opr_securities_company_organization_unit_profile`, derive EXISTS-aggregate qua `Securities Company Licensed Service` JOIN `Classification Service` (LIKE `'%phái sinh%'` AND `'%môi giới%'/'%tư vấn%'/'%tự doanh%'`). Bỏ K_QLKD_174 (Chiều Dịch vụ phái sinh) — không còn cần Dimension riêng.
+> **Vấn đề mở:** BA comment (SQL STT 35) ghi "PGD chỉ hỗ trợ Môi giới/Tư vấn PS" và "VPĐD không có dịch vụ PS", nhưng SQL thực thi lại UNION ALL cả PGD và VPĐD vào cùng join `SC_FIRM_SERVICE` cho cả 3 dịch vụ PS giống CN, không phân biệt riêng. Đang thiết kế theo đúng SQL thực thi (áp cả 3 Indicator cho CN+PGD+VPĐD như nhau) — cần BA xác nhận lại ý định đúng, cùng vấn đề mở với Nhóm 34.
 > **Cập nhật 13/07/2026 (BA v4.2, re-verify):** Cùng pattern Nhóm 34 — vẫn dùng `SC_FIRM_SERVICE`/`CAT_SERVICE` LIKE (`'%phái sinh%' AND '%môi giới%'/'%tư vấn%'/'%tự doanh%'`), không đổi logic phân loại. Nguồn bảng đơn vị đổi sang `SC_FIRM_BRANCH`/`SC_FIRM_TRANSACTION_OFFICE`/`SC_FIRM_REP_OFFICE` (xem Nhóm 32) — không ảnh hưởng, vẫn **READY**. Ghi chú: Phái sinh: LIKE '%phái sinh%' AND LIKE '%môi giới%/%tư vấn%/%tự doanh%'. 3 dịch vụ: môi giới PS / tư vấn PS / tự doanh PS. Pattern LIKE xem O_QLKD_12/O_QLKD_19. Hiển thị cùng Sub-tab với Nhóm 32-34/36/37 — xem [Nhóm 32](#nhóm-32---các-chỉ-tiêu-thống-kê-chung-stt-32).
 
 **Mockup:**
@@ -2329,17 +2333,17 @@ DỊCH VỤ CHỨNG KHOÁN PHÁI SINH:
 Môi giới PS: 1 | Tư vấn PS: 1 | Tự doanh PS: 1
 ```
 
-**Source:** `Operational Securities Company Organization Unit Profile` (tác nghiệp)
+**Source:** `Operational Securities Company Organization Unit Profile` (tác nghiệp, đã dàn phẳng Indicator dịch vụ phái sinh)
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
 |---|---|---|---|---|
 | K_QLKD_161 | Chiều thời gian theo Ngày | — | Chiều | Reuse từ Nhóm 32 — `Calendar Date Dimension`, date-spine từ `MIN(Decision_Date)` đến hiện tại |
-| K_QLKD_174 | Chiều Dịch vụ phái sinh | — | Chiều | `Service Type Dimension` (Atomic `Classification Service`, filter `Classification_Service_Name LIKE '%phái sinh%'`) |
-| K_QLKD_175 | SL CN, PGD, VPĐD liên quan CK phái sinh theo dịch vụ môi giới — per CTCK | Đơn vị | Cơ sở | COUNT (UNION CN+PGD+VPĐD) WHERE EXISTS (`CTCK_DICH_VU` JOIN `DM_DICH_VU` filter `LOWER(TEN_DICH_VU) LIKE '%phái sinh%' AND LIKE '%môi giới%'`) | READY (ETL-derived LIKE) |
-| K_QLKD_176 | SL CN, PGD, VPĐD liên quan CK phái sinh theo dịch vụ tư vấn — per CTCK | Đơn vị | Cơ sở | COUNT (UNION CN+PGD+VPĐD) WHERE EXISTS (`CTCK_DICH_VU` JOIN `DM_DICH_VU` filter `LOWER(TEN_DICH_VU) LIKE '%phái sinh%' AND LIKE '%tư vấn%'`) | READY (ETL-derived LIKE) |
-| K_QLKD_177 | SL CN, PGD, VPĐD liên quan CK phái sinh theo dịch vụ tự doanh — per CTCK | Đơn vị | Cơ sở | COUNT (UNION CN+PGD+VPĐD) WHERE EXISTS (`CTCK_DICH_VU` JOIN `DM_DICH_VU` filter `LOWER(TEN_DICH_VU) LIKE '%phái sinh%' AND LIKE '%tự doanh%'`) | READY (ETL-derived LIKE) |
+| K_QLKD_174 | Chiều Dịch vụ phái sinh | — | Chiều | Không còn Dimension riêng — dịch vụ phái sinh nay là 3 cột Indicator dàn phẳng (`Derivative_Broker_Service_Indicator`/`Derivative_Advisory_Service_Indicator`/`Derivative_Dealing_Service_Indicator`) trực tiếp trên `Operational Securities Company Organization Unit Profile`, derive EXISTS-aggregate tại tầng ETL populate (xem Vấn đề mở — sửa 06/08/2026) |
+| K_QLKD_175 | SL CN, PGD, VPĐD liên quan CK phái sinh theo dịch vụ môi giới — per CTCK | Đơn vị | Cơ sở | COUNT (UNION CN+PGD+VPĐD) WHERE `Derivative_Broker_Service_Indicator = 'Y'` (dàn phẳng trên Operational, EXISTS-aggregate LIKE `'%phái sinh%' AND '%môi giới%'`) | READY (ETL-derived LIKE) |
+| K_QLKD_176 | SL CN, PGD, VPĐD liên quan CK phái sinh theo dịch vụ tư vấn — per CTCK | Đơn vị | Cơ sở | COUNT (UNION CN+PGD+VPĐD) WHERE `Derivative_Advisory_Service_Indicator = 'Y'` | READY (ETL-derived LIKE) |
+| K_QLKD_177 | SL CN, PGD, VPĐD liên quan CK phái sinh theo dịch vụ tự doanh — per CTCK | Đơn vị | Cơ sở | COUNT (UNION CN+PGD+VPĐD) WHERE `Derivative_Dealing_Service_Indicator = 'Y'` | READY (ETL-derived LIKE) |
 
 **Bảng grain:**
 

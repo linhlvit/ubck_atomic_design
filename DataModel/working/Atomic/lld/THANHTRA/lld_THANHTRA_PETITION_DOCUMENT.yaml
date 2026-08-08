@@ -18,7 +18,9 @@ metadata:
   approved_by: null
   approved_at: null
   notes: "DOCUMENT_TEMPLATE_ID (FK→DOCUMENT_TEMPLATE, out_of_scope) không map. FIELD_HTML_JSON\
-    \ (CLOB form data) không map."
+    \ (CLOB form data) không map. Hạ về draft (2026-08-07) để formalize 2 loại trừ\
+    \ này vào pending_design.yaml — post_check_source_coverage.py trước đó báo unmapped\
+    \ vì quyết định chỉ ghi trong notes, chưa có entry pending_design.yaml."
 attributes:
 - attribute_name: "Petition Document Id"
   physical_name: "petition_document_id"
@@ -78,8 +80,10 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "THANHTRA.PETITION_DOCUMENT.PETITION_ID"
-  comment: "Lookup pair: petition.petition_code. Pair with Petition Id."
+  - "THANHTRA.PETITION.CODE"
+  comment: "Lookup pair: petition.petition_code. Pair with Petition Id. Giá trị lấy\
+    \ từ THANHTRA.PETITION.CODE sau ETL crosswalk — chi tiết xem comment Petition\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

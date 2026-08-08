@@ -19,7 +19,7 @@ metadata:
   approved_at: null
   notes: "COMPANY_TYPE, CONFIRMATION_STATUS, PUSH_STATUS chưa có scheme chuẩn — lưu\
     \ Text + ghi chú đề xuất scheme. Cần profile giá trị thực tế trước khi thêm Classification\
-    \ Value."
+    \ Value. Hạ về draft (2026-08-07) để bổ sung FMS_EVENT_ID — phát hiện qua post_check_source_coverage.py."
 attributes:
 - attribute_name: "Proactive Notice Recipient Id"
   physical_name: "proactive_notice_recipient_id"
@@ -192,6 +192,21 @@ attributes:
   source_columns:
   - "THANHTRA.PROACTIVE_NOTICE_RECIPIENT.PUSH_ERROR"
   comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "FMS Event Reference Code"
+  physical_name: "fms_event_reference_code"
+  description: "Mã tham chiếu sự kiện đẩy thông báo sang FMS (correlation id kỹ thuật)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PROACTIVE_NOTICE_RECIPIENT.FMS_EVENT_ID"
+  comment: "Không có FK formal — mã tương quan (correlation id) kỹ thuật dùng để đối\
+    \ chiếu log đẩy thông báo sang hệ thống FMS, không phải business key của entity\
+    \ FMS nào đã thiết kế."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

@@ -18,7 +18,8 @@ metadata:
   approved_by: null
   approved_at: null
   notes: "Quyết định biện pháp ngăn chặn/khẩn cấp độc lập — không FK đến VIOLATION_CASE\
-    \ (T1-01 pending xác nhận)."
+    \ (T1-01 pending xác nhận). Hạ về draft (2026-08-07) để bổ sung SENT_BY — phát\
+    \ hiện qua post_check_source_coverage.py."
 attributes:
 - attribute_name: "Security Measure Decision Id"
   physical_name: "sm_decision_id"
@@ -186,6 +187,35 @@ attributes:
   source_columns:
   - "THANHTRA.SECURITY_MEASURE_DECISION.NOTE"
   comment: "Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Sent By Officer Id"
+  physical_name: "sent_by_officer_id"
+  description: "FK đến cán bộ thực hiện gửi quyết định."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "THANHTRA.SECURITY_MEASURE_DECISION.SENT_BY"
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
+    \ Hash: hash_id('IAM.USERS', SENT_BY) | Chưa xác nhận join key THANHTRA.SECURITY_MEASURE_DECISION.SENT_BY\
+    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Sent By Officer Code"
+  physical_name: "sent_by_officer_code"
+  description: "Mã cán bộ thực hiện gửi quyết định (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.SECURITY_MEASURE_DECISION.SENT_BY"
+  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
+    \ Pair with Sent By Officer Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

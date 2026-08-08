@@ -20,7 +20,8 @@ metadata:
   notes: "Hạ về draft (2026-07-27) để gộp lại field SUBJECT_ADDRESS và SUBJECT_TAX_CODE\
     \ — trước đây tách sai thành shared entity IP Postal Address / IP Alt Identification\
     \ dù grain của entity này là Event, không phải Involved Party (vi phạm rule Bước\
-    \ 4 skill atomic-lld-design)."
+    \ 4 skill atomic-lld-design). Hạ về draft (2026-08-07) để bổ sung SUBJECT_EMAIL/SUBJECT_PHONE/EMAIL_SENT_AT/SMS_SENT_AT/VIOLATION_RECORD_ID/RECEIPT_STATUS/VIEWED_AT/DOWNLOADED_AT/CONFIRMED_AT/RECEIVED_AT\
+    \ — luồng gửi/nhận thông báo điện tử quyết định xử phạt — phát hiện qua post_check_source_coverage.py."
 attributes:
 - attribute_name: "Penalty Decision Subject Id"
   physical_name: "pd_subject_id"
@@ -305,6 +306,152 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.PENALTY_DECISION_SUBJECT.PAYMENT_PROOF_UPLOADED_AT"
+  comment: "Nguồn TIMESTAMP(6)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Subject Email"
+  physical_name: "subject_email"
+  description: "Email đối tượng bị xử phạt (dùng gửi thông báo quyết định điện tử)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION_SUBJECT.SUBJECT_EMAIL"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Subject Phone"
+  physical_name: "subject_phone"
+  description: "Số điện thoại đối tượng bị xử phạt (dùng gửi SMS thông báo)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION_SUBJECT.SUBJECT_PHONE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Email Sent Timestamp"
+  physical_name: "email_sent_tms"
+  description: "Thời điểm gửi email thông báo quyết định."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION_SUBJECT.EMAIL_SENT_AT"
+  comment: "Nguồn TIMESTAMP(6)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "SMS Sent Timestamp"
+  physical_name: "sms_sent_tms"
+  description: "Thời điểm gửi SMS thông báo quyết định."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION_SUBJECT.SMS_SENT_AT"
+  comment: "Nguồn TIMESTAMP(6)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Violation Record Id"
+  physical_name: "violation_record_id"
+  description: "FK đến biên bản VPHC liên quan (nếu có)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION_SUBJECT.VIOLATION_RECORD_ID"
+  comment: "FK target: violation_record.violation_record_id. Hash: hash_id('THANHTRA.VIOLATION_RECORD',\
+    \ VIOLATION_RECORD_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Violation Record Code"
+  physical_name: "violation_record_code"
+  description: "Mã biên bản VPHC liên quan (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.VIOLATION_RECORD.ID"
+  comment: "Lookup pair: violation_record.violation_record_code. Pair with Violation\
+    \ Record Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Receipt Status Code"
+  physical_name: "receipt_status_code"
+  description: "Trạng thái nhận quyết định: Chưa nhận / Đã nhận."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION_SUBJECT.RECEIPT_STATUS"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Viewed Timestamp"
+  physical_name: "viewed_tms"
+  description: "Thời điểm đối tượng mở xem quyết định (portal)."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION_SUBJECT.VIEWED_AT"
+  comment: "Nguồn TIMESTAMP(6)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Downloaded Timestamp"
+  physical_name: "downloaded_tms"
+  description: "Thời điểm đối tượng tải file quyết định."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION_SUBJECT.DOWNLOADED_AT"
+  comment: "Nguồn TIMESTAMP(6)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Confirmed Timestamp"
+  physical_name: "confirmed_tms"
+  description: "Thời điểm đối tượng xác nhận đã nhận quyết định."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION_SUBJECT.CONFIRMED_AT"
+  comment: "Nguồn TIMESTAMP(6)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Received Timestamp"
+  physical_name: "received_tms"
+  description: "Thời điểm chuyển sang trạng thái Đã nhận (lần đầu trong 3 thao tác\
+    \ xem/tải/xác nhận)."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION_SUBJECT.RECEIVED_AT"
   comment: "Nguồn TIMESTAMP(6)."
   classification_context: null
   etl_derived_value: null

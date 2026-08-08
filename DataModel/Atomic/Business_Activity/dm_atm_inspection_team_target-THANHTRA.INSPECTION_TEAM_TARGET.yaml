@@ -87,8 +87,8 @@ attributes:
     is_primary_key: false
     source_system: THANHTRA
     source_table: INSPECTION_TEAM_TARGET
-    source_column: THANHTRA.INSPECTION_TEAM_TARGET.INSPECTION_TEAM_ID
-    comment: "Lookup pair: inspection_team.inspection_team_code. Pair with Inspection Team Id."
+    source_column: THANHTRA.INSPECTION_TEAM.CODE
+    comment: "Lookup pair: inspection_team.inspection_team_code. Pair with Inspection Team Id. Giá trị lấy từ THANHTRA.INSPECTION_TEAM.CODE sau ETL crosswalk — chi tiết xem comment Inspection Team Id."
     classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM_TARGET'"
     etl_derived_value: null
 
@@ -163,7 +163,7 @@ attributes:
     etl_derived_value: null
 
   - name: Anti Money Laundering Indicator
-    physical_name: anti_money_laundering_indicator
+    physical_name: anti_money_laundering_ind
     business_meaning: "Có/không thanh tra về PCRT: 1=Có, 0=Không."
     data_domain: Indicator
     data_type: string
@@ -177,7 +177,7 @@ attributes:
     etl_derived_value: null
 
   - name: Abnormal Transaction Check Indicator
-    physical_name: abnormal_transaction_check_indicator
+    physical_name: abnormal_transaction_check_ind
     business_meaning: "Kiểm tra giao dịch bất thường: 1=Có, 0=Không."
     data_domain: Indicator
     data_type: string

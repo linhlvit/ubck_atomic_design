@@ -114,12 +114,13 @@ attributes:
   is_primary_key: false
   comment: "Lookup pair: Regulatory Authority Organization Unit.Regulatory Authority\
     \ Organization Unit Code. Pair with Parent Regulatory Authority Organization Unit\
-    \ Id."
+    \ Id. Giá trị lấy từ NHNCK.UNITS.UNIT_CODE sau ETL crosswalk — chi tiết xem comment\
+    \ Parent Regulatory Authority Organization Unit Id."
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    NHNCK.UNITS: "NHNCK.UNITS.PARENT_ID"
-    NHNCK.DEPARTMENTS: "NHNCK.DEPARTMENTS.UNIT_ID"
+    NHNCK.UNITS: "NHNCK.UNITS.UNIT_CODE"
+    NHNCK.DEPARTMENTS: "NHNCK.UNITS.UNIT_CODE"
 - attribute_name: "Description"
   physical_name: "description"
   description: "Mô tả chi tiết phòng ban"
@@ -150,10 +151,10 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  comment: "Mô tả nguồn\
-    \ còn TBD trong BRD — tên cột gợi ý mã tham chiếu tới danh mục/hệ thống ngoài\
-    \ (VD: danh mục đơn vị hành chính chuẩn quốc gia). Cần BA xác nhận ý nghĩa nghiệp\
-    \ vụ chính xác trước khi hoàn thiện thiết kế (đổi domain/FK nếu cần)."
+  comment: "Mô tả nguồn còn TBD trong BRD — tên cột gợi ý mã tham chiếu tới danh mục/hệ\
+    \ thống ngoài (VD: danh mục đơn vị hành chính chuẩn quốc gia). Cần BA xác nhận\
+    \ ý nghĩa nghiệp vụ chính xác trước khi hoàn thiện thiết kế (đổi domain/FK nếu\
+    \ cần)."
   classification_context: null
   etl_derived_value: null
   source_mappings:

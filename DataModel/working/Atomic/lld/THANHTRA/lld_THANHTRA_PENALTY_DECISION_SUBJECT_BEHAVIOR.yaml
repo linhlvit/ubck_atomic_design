@@ -21,7 +21,8 @@ metadata:
     \ đến 3 entities: PENALTY_DECISION_SUBJECT (T5), VIOLATION_BEHAVIOR (T2), PENALTY_TYPE\
     \ (T1) — cross-tier FK bình thường. Hạ về draft (2026-07-27) để sửa lỗi hash-mismatch\
     \ FK Violation Behavior Id và FK Penalty Type Id — trước đây hash trực tiếp theo\
-    \ ID kỹ thuật thay vì CODE của bảng đích."
+    \ ID kỹ thuật thay vì CODE của bảng đích. Hạ về draft (2026-08-07) để bổ sung\
+    \ VIOLATION_RECORD_ID — phát hiện qua post_check_source_coverage.py."
 attributes:
 - attribute_name: "Penalty Decision Subject Behavior Id"
   physical_name: "pd_subject_behavior_id"
@@ -107,8 +108,10 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR.VIOLATION_BEHAVIOR_ID"
-  comment: "Lookup pair: violation_behavior.violation_behavior_code. Pair with Violation Behavior Id."
+  - "THANHTRA.VIOLATION_BEHAVIOR.CODE"
+  comment: "Lookup pair: violation_behavior.violation_behavior_code. Pair with Violation\
+    \ Behavior Id. Giá trị lấy từ THANHTRA.VIOLATION_BEHAVIOR.CODE sau ETL crosswalk\
+    \ — chi tiết xem comment Violation Behavior Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -133,8 +136,10 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR.PENALTY_TYPE_ID"
-  comment: "Lookup pair: penalty_type.penalty_type_code. Pair with Penalty Type Id."
+  - "THANHTRA.PENALTY_TYPE.CODE"
+  comment: "Lookup pair: penalty_type.penalty_type_code. Pair with Penalty Type Id.\
+    \ Giá trị lấy từ THANHTRA.PENALTY_TYPE.CODE sau ETL crosswalk — chi tiết xem comment\
+    \ Penalty Type Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -226,6 +231,34 @@ attributes:
   source_columns:
   - "THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR.LEGAL_BASIS"
   comment: "Nguồn CLOB — ETL truncate."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Violation Record Id"
+  physical_name: "violation_record_id"
+  description: "FK đến biên bản VPHC liên quan (nếu có)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR.VIOLATION_RECORD_ID"
+  comment: "FK target: violation_record.violation_record_id. Hash: hash_id('THANHTRA.VIOLATION_RECORD',\
+    \ VIOLATION_RECORD_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Violation Record Code"
+  physical_name: "violation_record_code"
+  description: "Mã biên bản VPHC liên quan (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.VIOLATION_RECORD.ID"
+  comment: "Lookup pair: violation_record.violation_record_code. Pair with Violation\
+    \ Record Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

@@ -278,9 +278,9 @@ attributes:
     NHNCK.ORGANIZATIONS: "NHNCK.ORGANIZATIONS.ID"
     NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.ID"
     IAM.USERS: "IAM.USERS.ID"
-    SCMS.AUDIT_FIRM: "SCMS.AUDIT_FIRM.ID"
+    SCMS.AUDIT_FIRM: "SCMS.AUDIT_FIRM.CODE"
     SCMS.BANK: "SCMS.BANK.ID"
-    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.ID"
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.CODE"
     SCMS.SC_FIRM_BRANCH: "SCMS.SC_FIRM_BRANCH.ID"
     SCMS.SC_FIRM_REP_OFFICE: "SCMS.SC_FIRM_REP_OFFICE.ID"
     SCMS.SC_FIRM_TRANSACTION_OFFICE: "SCMS.SC_FIRM_TRANSACTION_OFFICE.ID"
@@ -689,14 +689,15 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT). Pair with\
-    \ Country Id."
+  comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Country Id.\
+    \ Giá trị lấy từ NHNCK.COUNTRIES.COUNTRY_CODE sau ETL crosswalk (nguồn NHNCK.PROFESSIONALS)\
+    \ — chi tiết xem comment Country Id."
   classification_context: "IP_ADDR_TYPE=PERMANENT"
   etl_derived_value: null
   source_mappings:
     NHNCK.UNITS: null
     NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.PERMANENT_COUNTRY_ID"
+    NHNCK.PROFESSIONALS: "NHNCK.COUNTRIES.COUNTRY_CODE"
     IAM.USERS: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
@@ -813,14 +814,15 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT). Pair with\
-    \ Province Id."
+  comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Province\
+    \ Id. Giá trị lấy từ NHNCK.PROVINCES.PROVINCE_CODE sau ETL crosswalk (nguồn NHNCK.PROFESSIONALS)\
+    \ — chi tiết xem comment Province Id."
   classification_context: "IP_ADDR_TYPE=PERMANENT"
   etl_derived_value: null
   source_mappings:
     NHNCK.UNITS: null
     NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.PERMANENT_PROVINCE_ID"
+    NHNCK.PROFESSIONALS: "NHNCK.PROVINCES.PROVINCE_CODE"
     IAM.USERS: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
@@ -939,14 +941,15 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  comment: "Lookup pair: Geographic Area Old.Geographic Area Old Code (nguồn ECAT\
-    \ — ĐỔI TARGET, xem District Id). Pair with District Id."
+  comment: "Lookup pair: geographic_area_old.geographic_area_old_code. Pair with District\
+    \ Id. Giá trị lấy từ NHNCK.DISTRICTS.DISTRICT_CODE sau ETL crosswalk (nguồn NHNCK.PROFESSIONALS)\
+    \ — chi tiết xem comment District Id."
   classification_context: "IP_ADDR_TYPE=PERMANENT"
   etl_derived_value: null
   source_mappings:
     NHNCK.UNITS: null
     NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.PERMANENT_DISTRICT_ID"
+    NHNCK.PROFESSIONALS: "NHNCK.DISTRICTS.DISTRICT_CODE"
     IAM.USERS: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
@@ -1000,8 +1003,8 @@ attributes:
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
-  comment: "Scheme: IP_ADDR_TYPE.\
-    \ Nguồn có 2 loại địa chỉ: PERMANENT và CURRENT (trước đây chỉ thiết kế PERMANENT)."
+  comment: "Scheme: IP_ADDR_TYPE. Nguồn có 2 loại địa chỉ: PERMANENT và CURRENT (trước\
+    \ đây chỉ thiết kế PERMANENT)."
   classification_context: "IP_ADDR_TYPE=CURRENT"
   etl_derived_value: "CURRENT"
   source_mappings:
@@ -1122,14 +1125,15 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  comment: "Lookup pair: Geographic Area.Geographic Area Code\
-    \ (nguồn ECAT). Pair with Country Id."
+  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT). Pair with\
+    \ Country Id. Giá trị lấy từ NHNCK.COUNTRIES.COUNTRY_CODE sau ETL crosswalk —\
+    \ chi tiết xem comment Country Id."
   classification_context: "IP_ADDR_TYPE=CURRENT"
   etl_derived_value: null
   source_mappings:
     NHNCK.UNITS: null
     NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.CURRENT_COUNTRY_ID"
+    NHNCK.PROFESSIONALS: "NHNCK.COUNTRIES.COUNTRY_CODE"
     IAM.USERS: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
@@ -1246,14 +1250,15 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  comment: "Lookup pair: Geographic Area.Geographic Area Code\
-    \ (nguồn ECAT). Pair with Province Id."
+  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT). Pair with\
+    \ Province Id. Giá trị lấy từ NHNCK.PROVINCES.PROVINCE_CODE sau ETL crosswalk\
+    \ — chi tiết xem comment Province Id."
   classification_context: "IP_ADDR_TYPE=CURRENT"
   etl_derived_value: null
   source_mappings:
     NHNCK.UNITS: null
     NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.CURRENT_PROVINCE_ID"
+    NHNCK.PROFESSIONALS: "NHNCK.PROVINCES.PROVINCE_CODE"
     IAM.USERS: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
@@ -1306,13 +1311,12 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  comment: "FK target: geographic_area_old.geographic_area_old_id\
-    \ (geographic_area_old_tp_code = 'DISTRICT_OLD', ĐỔI TARGET — xem District Id\
-    \ khối PERMANENT ở trên). Cần ETL crosswalk sang NHNCK.DISTRICTS: PROFESSIONALS.CURRENT_DISTRICT_ID\
-    \ = DISTRICTS.ID để xác nhận DISTRICT_CODE sau đó hash_id('ECAT.DISTRICT_OLD',\
-    \ DISTRICT_CODE) | NHNCK.DISTRICTS ngừng thiết kế Atomic entity riêng — chỉ dùng\
-    \ để crosswalk. Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu\
-    \ trước go-live."
+  comment: "FK target: geographic_area_old.geographic_area_old_id (geographic_area_old_tp_code\
+    \ = 'DISTRICT_OLD', ĐỔI TARGET — xem District Id khối PERMANENT ở trên). Cần ETL\
+    \ crosswalk sang NHNCK.DISTRICTS: PROFESSIONALS.CURRENT_DISTRICT_ID = DISTRICTS.ID\
+    \ để xác nhận DISTRICT_CODE sau đó hash_id('ECAT.DISTRICT_OLD', DISTRICT_CODE)\
+    \ | NHNCK.DISTRICTS ngừng thiết kế Atomic entity riêng — chỉ dùng để crosswalk.\
+    \ Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   classification_context: "IP_ADDR_TYPE=CURRENT"
   etl_derived_value: null
   source_mappings:
@@ -1371,14 +1375,15 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  comment: "Lookup pair: Geographic Area Old.Geographic Area Old\
-    \ Code (nguồn ECAT — ĐỔI TARGET). Pair with District Id."
+  comment: "Lookup pair: geographic_area_old.geographic_area_old_code. Pair with District\
+    \ Id. Giá trị lấy từ NHNCK.DISTRICTS.DISTRICT_CODE sau ETL crosswalk — chi tiết\
+    \ xem comment District Id."
   classification_context: "IP_ADDR_TYPE=CURRENT"
   etl_derived_value: null
   source_mappings:
     NHNCK.UNITS: null
     NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.CURRENT_DISTRICT_ID"
+    NHNCK.PROFESSIONALS: "NHNCK.DISTRICTS.DISTRICT_CODE"
     IAM.USERS: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
@@ -1496,7 +1501,8 @@ attributes:
   nullable: true
   is_primary_key: false
   comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT). Pair with\
-    \ Province Id."
+    \ Province Id. Giá trị lấy từ SCMS.CAT_PROVINCE.PROVINCE_CODE sau ETL crosswalk\
+    \ — chi tiết xem comment Province Id."
   classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
   etl_derived_value: null
   source_mappings:
@@ -1506,7 +1512,7 @@ attributes:
     IAM.USERS: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.PROVINCE_ID"
+    SCMS.SC_FIRM_INFO: "SCMS.CAT_PROVINCE.PROVINCE_CODE"
     SCMS.SC_FIRM_BRANCH: null
     SCMS.SC_FIRM_REP_OFFICE: null
     SCMS.SC_FIRM_TRANSACTION_OFFICE: null
@@ -1543,7 +1549,7 @@ attributes:
     FMS.TRANSFER_AGENT: null
     FMS.INSDER_RELA: null
     FMS.DISTRIBUTOR_LOCATION: null
-    IDS.COMPANY_PROFILES: "IDS.COMPANY_PROFILES.PROVINCE_ID"
+    IDS.COMPANY_PROFILES: "IDS.PROVINCES.PROVINCE_CD"
     IDS.LEGAL_ENTITIES: null
     FIMS.INVESTOR: null
     FIMS.TRADINGREPRESENTATIVE: null
@@ -1622,7 +1628,8 @@ attributes:
   nullable: true
   is_primary_key: false
   comment: "Lookup pair: Geographic Area Old.Geographic Area Old Code (nguồn ECAT\
-    \ — ĐỔI TARGET, xem District Id). Pair with District Id."
+    \ — ĐỔI TARGET, xem District Id). Pair with District Id. Giá trị lấy từ SCMS.CAT_DISTRICT.DISTRICT_CODE\
+    \ sau ETL crosswalk — chi tiết xem comment District Id."
   classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
   etl_derived_value: null
   source_mappings:
@@ -1632,7 +1639,7 @@ attributes:
     IAM.USERS: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.DISTRICT_ID"
+    SCMS.SC_FIRM_INFO: "SCMS.CAT_DISTRICT.DISTRICT_CODE"
     SCMS.SC_FIRM_BRANCH: null
     SCMS.SC_FIRM_REP_OFFICE: null
     SCMS.SC_FIRM_TRANSACTION_OFFICE: null
@@ -1805,7 +1812,8 @@ attributes:
   nullable: true
   is_primary_key: false
   comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT). Pair with\
-    \ Ward Id."
+    \ Ward Id. Giá trị lấy từ SCMS.CAT_WARD.WARD_CODE sau ETL crosswalk — chi tiết\
+    \ xem comment Ward Id."
   classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
   etl_derived_value: null
   source_mappings:
@@ -1815,7 +1823,7 @@ attributes:
     IAM.USERS: null
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.WARD_ID"
+    SCMS.SC_FIRM_INFO: "SCMS.CAT_WARD.WARD_CODE"
     SCMS.SC_FIRM_BRANCH: null
     SCMS.SC_FIRM_REP_OFFICE: null
     SCMS.SC_FIRM_TRANSACTION_OFFICE: null
@@ -2108,7 +2116,8 @@ attributes:
   nullable: true
   is_primary_key: false
   comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT — không\
-    \ còn CAT_PROVINCE). Pair with Province Id."
+    \ còn CAT_PROVINCE). Pair with Province Id. Giá trị lấy từ SCMS.CAT_PROVINCE.PROVINCE_CODE\
+    \ sau ETL crosswalk — chi tiết xem comment Province Id."
   classification_context: "IP_ADDR_TYPE=BRANCH"
   etl_derived_value: null
   source_mappings:
@@ -2119,7 +2128,7 @@ attributes:
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: "SCMS.SC_FIRM_BRANCH.PROVINCE_ID"
+    SCMS.SC_FIRM_BRANCH: "SCMS.CAT_PROVINCE.PROVINCE_CODE"
     SCMS.SC_FIRM_REP_OFFICE: null
     SCMS.SC_FIRM_TRANSACTION_OFFICE: null
     SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
@@ -2234,7 +2243,8 @@ attributes:
   nullable: true
   is_primary_key: false
   comment: "Lookup pair: Geographic Area Old.Geographic Area Old Code (nguồn ECAT\
-    \ — ĐỔI TARGET, xem District Id). Pair with District Id."
+    \ — ĐỔI TARGET, xem District Id). Pair with District Id. Giá trị lấy từ SCMS.CAT_DISTRICT.DISTRICT_CODE\
+    \ sau ETL crosswalk — chi tiết xem comment District Id."
   classification_context: "IP_ADDR_TYPE=BRANCH"
   etl_derived_value: null
   source_mappings:
@@ -2245,7 +2255,7 @@ attributes:
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: "SCMS.SC_FIRM_BRANCH.DISTRICT_ID"
+    SCMS.SC_FIRM_BRANCH: "SCMS.CAT_DISTRICT.DISTRICT_CODE"
     SCMS.SC_FIRM_REP_OFFICE: null
     SCMS.SC_FIRM_TRANSACTION_OFFICE: null
     SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
@@ -2416,7 +2426,8 @@ attributes:
   nullable: true
   is_primary_key: false
   comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT — không\
-    \ còn CAT_WARD). Pair with Ward Id."
+    \ còn CAT_WARD). Pair with Ward Id. Giá trị lấy từ SCMS.CAT_WARD.WARD_CODE sau\
+    \ ETL crosswalk — chi tiết xem comment Ward Id."
   classification_context: "IP_ADDR_TYPE=BRANCH"
   etl_derived_value: null
   source_mappings:
@@ -2427,7 +2438,7 @@ attributes:
     SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: "SCMS.SC_FIRM_BRANCH.WARD_ID"
+    SCMS.SC_FIRM_BRANCH: "SCMS.CAT_WARD.WARD_CODE"
     SCMS.SC_FIRM_REP_OFFICE: null
     SCMS.SC_FIRM_TRANSACTION_OFFICE: null
     SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
@@ -2718,7 +2729,8 @@ attributes:
   nullable: true
   is_primary_key: false
   comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT — không\
-    \ còn CAT_PROVINCE). Pair with Province Id."
+    \ còn CAT_PROVINCE). Pair with Province Id. Giá trị lấy từ SCMS.CAT_PROVINCE.PROVINCE_CODE\
+    \ sau ETL crosswalk — chi tiết xem comment Province Id."
   classification_context: "IP_ADDR_TYPE=REP_OFFICE"
   etl_derived_value: null
   source_mappings:
@@ -2730,7 +2742,7 @@ attributes:
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
     SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_REP_OFFICE: "SCMS.SC_FIRM_REP_OFFICE.PROVINCE_ID"
+    SCMS.SC_FIRM_REP_OFFICE: "SCMS.CAT_PROVINCE.PROVINCE_CODE"
     SCMS.SC_FIRM_TRANSACTION_OFFICE: null
     SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
@@ -2844,7 +2856,8 @@ attributes:
   nullable: true
   is_primary_key: false
   comment: "Lookup pair: Geographic Area Old.Geographic Area Old Code (nguồn ECAT\
-    \ — ĐỔI TARGET, xem District Id). Pair with District Id."
+    \ — ĐỔI TARGET, xem District Id). Pair with District Id. Giá trị lấy từ SCMS.CAT_DISTRICT.DISTRICT_CODE\
+    \ sau ETL crosswalk — chi tiết xem comment District Id."
   classification_context: "IP_ADDR_TYPE=REP_OFFICE"
   etl_derived_value: null
   source_mappings:
@@ -2856,7 +2869,7 @@ attributes:
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
     SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_REP_OFFICE: "SCMS.SC_FIRM_REP_OFFICE.DISTRICT_ID"
+    SCMS.SC_FIRM_REP_OFFICE: "SCMS.CAT_DISTRICT.DISTRICT_CODE"
     SCMS.SC_FIRM_TRANSACTION_OFFICE: null
     SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
@@ -2967,7 +2980,8 @@ attributes:
   nullable: true
   is_primary_key: false
   comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT — không\
-    \ còn CAT_WARD). Pair with Ward Id."
+    \ còn CAT_WARD). Pair with Ward Id. Giá trị lấy từ SCMS.CAT_WARD.WARD_CODE sau\
+    \ ETL crosswalk — chi tiết xem comment Ward Id."
   classification_context: "IP_ADDR_TYPE=REP_OFFICE"
   etl_derived_value: null
   source_mappings:
@@ -2979,7 +2993,7 @@ attributes:
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
     SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_REP_OFFICE: "SCMS.SC_FIRM_REP_OFFICE.WARD_ID"
+    SCMS.SC_FIRM_REP_OFFICE: "SCMS.CAT_WARD.WARD_CODE"
     SCMS.SC_FIRM_TRANSACTION_OFFICE: null
     SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
@@ -3211,7 +3225,8 @@ attributes:
   nullable: true
   is_primary_key: false
   comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT — không\
-    \ còn CAT_PROVINCE). Pair with Province Id."
+    \ còn CAT_PROVINCE). Pair with Province Id. Giá trị lấy từ SCMS.CAT_PROVINCE.PROVINCE_CODE\
+    \ sau ETL crosswalk — chi tiết xem comment Province Id."
   classification_context: "IP_ADDR_TYPE=TRANSACTION_OFFICE"
   etl_derived_value: null
   source_mappings:
@@ -3224,7 +3239,7 @@ attributes:
     SCMS.SC_FIRM_INFO: null
     SCMS.SC_FIRM_BRANCH: null
     SCMS.SC_FIRM_REP_OFFICE: null
-    SCMS.SC_FIRM_TRANSACTION_OFFICE: "SCMS.SC_FIRM_TRANSACTION_OFFICE.PROVINCE_ID"
+    SCMS.SC_FIRM_TRANSACTION_OFFICE: "SCMS.CAT_PROVINCE.PROVINCE_CODE"
     SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
@@ -3337,7 +3352,8 @@ attributes:
   nullable: true
   is_primary_key: false
   comment: "Lookup pair: Geographic Area Old.Geographic Area Old Code (nguồn ECAT\
-    \ — ĐỔI TARGET, xem District Id). Pair with District Id."
+    \ — ĐỔI TARGET, xem District Id). Pair with District Id. Giá trị lấy từ SCMS.CAT_DISTRICT.DISTRICT_CODE\
+    \ sau ETL crosswalk — chi tiết xem comment District Id."
   classification_context: "IP_ADDR_TYPE=TRANSACTION_OFFICE"
   etl_derived_value: null
   source_mappings:
@@ -3350,7 +3366,7 @@ attributes:
     SCMS.SC_FIRM_INFO: null
     SCMS.SC_FIRM_BRANCH: null
     SCMS.SC_FIRM_REP_OFFICE: null
-    SCMS.SC_FIRM_TRANSACTION_OFFICE: "SCMS.SC_FIRM_TRANSACTION_OFFICE.DISTRICT_ID"
+    SCMS.SC_FIRM_TRANSACTION_OFFICE: "SCMS.CAT_DISTRICT.DISTRICT_CODE"
     SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
@@ -3460,7 +3476,8 @@ attributes:
   nullable: true
   is_primary_key: false
   comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT — không\
-    \ còn CAT_WARD). Pair with Ward Id."
+    \ còn CAT_WARD). Pair with Ward Id. Giá trị lấy từ SCMS.CAT_WARD.WARD_CODE sau\
+    \ ETL crosswalk — chi tiết xem comment Ward Id."
   classification_context: "IP_ADDR_TYPE=TRANSACTION_OFFICE"
   etl_derived_value: null
   source_mappings:
@@ -3473,7 +3490,7 @@ attributes:
     SCMS.SC_FIRM_INFO: null
     SCMS.SC_FIRM_BRANCH: null
     SCMS.SC_FIRM_REP_OFFICE: null
-    SCMS.SC_FIRM_TRANSACTION_OFFICE: "SCMS.SC_FIRM_TRANSACTION_OFFICE.WARD_ID"
+    SCMS.SC_FIRM_TRANSACTION_OFFICE: "SCMS.CAT_WARD.WARD_CODE"
     SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
@@ -4764,65 +4781,6 @@ attributes:
     FIMS.TRADINGREPRESENTATIVE: "FIMS.TRADINGREPRESENTATIVE.ID"
     KNT.TAX_REGISTRATION_INFO: null
     NHNCK.IDENTITY_INFO_C06S: null
-- attribute_name: "Province Name"
-  physical_name: "province_nm"
-  description: "Tên tỉnh/thành phố kinh doanh."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: "IP_ADDR_TYPE=BUSINESS"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.UNITS: null
-    NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_REP_OFFICE: null
-    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.BANK_MONI: null
-    FMS.AGENCIES: null
-    FMS.BRANCHS: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.INVES: null
-    FMS.AGENCIES_BRA: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: null
-    FMS.DISTRIBUTOR_LOCATION: null
-    IDS.COMPANY_PROFILES: null
-    IDS.LEGAL_ENTITIES: null
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.BUSINESS_PROVINCE_NAME"
-    NHNCK.IDENTITY_INFO_C06S: null
 - attribute_name: "Province Code"
   physical_name: "province_code"
   description: "Mã tỉnh/thành phố địa chỉ kinh doanh."
@@ -4883,9 +4841,9 @@ attributes:
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.BUSINESS_PROVINCE_CODE"
     NHNCK.IDENTITY_INFO_C06S: null
-- attribute_name: "District Name"
-  physical_name: "district_nm"
-  description: "Tên quận/huyện kinh doanh."
+- attribute_name: "Province Name"
+  physical_name: "province_nm"
+  description: "Tên tỉnh/thành phố kinh doanh."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
@@ -4940,7 +4898,7 @@ attributes:
     IDS.LEGAL_ENTITIES: null
     FIMS.INVESTOR: null
     FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.BUSINESS_DISTRICT_NAME"
+    KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.BUSINESS_PROVINCE_NAME"
     NHNCK.IDENTITY_INFO_C06S: null
 - attribute_name: "District Code"
   physical_name: "district_code"
@@ -5001,9 +4959,9 @@ attributes:
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.BUSINESS_DISTRICT_CODE"
     NHNCK.IDENTITY_INFO_C06S: null
-- attribute_name: "Ward Name"
-  physical_name: "ward_nm"
-  description: "Tên xã/phường địa chỉ kinh doanh."
+- attribute_name: "District Name"
+  physical_name: "district_nm"
+  description: "Tên quận/huyện kinh doanh."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
@@ -5058,7 +5016,7 @@ attributes:
     IDS.LEGAL_ENTITIES: null
     FIMS.INVESTOR: null
     FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.BUSINESS_WARD_NAME"
+    KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.BUSINESS_DISTRICT_NAME"
     NHNCK.IDENTITY_INFO_C06S: null
 - attribute_name: "Ward Code"
   physical_name: "ward_code"
@@ -5118,4 +5076,63 @@ attributes:
     FIMS.INVESTOR: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.BUSINESS_WARD_CODE"
+    NHNCK.IDENTITY_INFO_C06S: null
+- attribute_name: "Ward Name"
+  physical_name: "ward_nm"
+  description: "Tên xã/phường địa chỉ kinh doanh."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: "IP_ADDR_TYPE=BUSINESS"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.UNITS: null
+    NHNCK.ORGANIZATIONS: null
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_REP_OFFICE: null
+    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.BANK_MONI: null
+    FMS.AGENCIES: null
+    FMS.BRANCHS: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.INVES: null
+    FMS.AGENCIES_BRA: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.DISTRIBUTOR_LOCATION: null
+    IDS.COMPANY_PROFILES: null
+    IDS.LEGAL_ENTITIES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.BUSINESS_WARD_NAME"
     NHNCK.IDENTITY_INFO_C06S: null

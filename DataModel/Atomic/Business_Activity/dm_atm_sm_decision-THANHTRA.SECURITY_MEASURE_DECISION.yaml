@@ -203,3 +203,31 @@ attributes:
     comment: Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng.
     classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION'"
     etl_derived_value: null
+
+  - name: Sent By Officer Id
+    physical_name: sent_by_officer_id
+    business_meaning: FK đến cán bộ thực hiện gửi quyết định.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: SECURITY_MEASURE_DECISION
+    source_column: THANHTRA.SECURITY_MEASURE_DECISION.SENT_BY
+    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM.USERS', SENT_BY) | Chưa xác nhận join key THANHTRA.SECURITY_MEASURE_DECISION.SENT_BY ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION'"
+    etl_derived_value: null
+
+  - name: Sent By Officer Code
+    physical_name: sent_by_officer_code
+    business_meaning: Mã cán bộ thực hiện gửi quyết định (denormalized lookup).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: SECURITY_MEASURE_DECISION
+    source_column: THANHTRA.SECURITY_MEASURE_DECISION.SENT_BY
+    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Sent By Officer Id."
+    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION'"
+    etl_derived_value: null
