@@ -256,7 +256,13 @@ SELECT
     o.decision_dt,
     o.director_nm,
     o.cl_firm_status_code,
-    o.src_stm_code
+    o.src_stm_code,
+    o.margin_trading_svc_ind,
+    o.advance_payment_svc_ind,
+    o.custody_svc_ind,
+    o.derivative_broker_svc_ind,
+    o.derivative_advisory_svc_ind,
+    o.derivative_dealing_svc_ind
 
 FROM datamart.opr_securities_company_organization_unit_profile o
 ;

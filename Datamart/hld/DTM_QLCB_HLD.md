@@ -631,7 +631,7 @@ erDiagram
         date Certificate_Date
         string Official_Letter_Number
         date Official_Letter_Date
-        string Capital_Usage_Plan
+        string Offering_Purpose
         string Business_Line_Level_1_Code
         string Classification_Business_Line_Name
         string Equity_Listing_Exchange_Code
@@ -985,7 +985,7 @@ flowchart LR
 
 > Phân loại: **Tác nghiệp**
 > Atomic: `Public Company Securities Offering Plan` ← IDS.SECURITIES_OFFERING_PLAN — **READY** (Atomic draft — chưa approved chính thức)
-> Atomic: `Public Company Securities Offering` ← IDS.SECURITIES_OFFERING — **READY** (Atomic draft, dùng cho `total_registered_quantity`, `capital_usage_plan`)
+> Atomic: `Public Company Securities Offering` ← IDS.SECURITIES_OFFERING — **READY** (Atomic draft, dùng cho `total_registered_quantity`, `offering_purpose`)
 > Ghi chú: Với model 1-N, mỗi row 360 Profile là 1 loại hình cụ thể (Plan) — `swap_target`, `employee_quantity`, `offering_price` lấy trực tiếp từ Plan tương ứng, không cần ETL pick.
 
 **Mockup:**
@@ -1005,7 +1005,7 @@ flowchart LR
 | K_QLCB_56 | Giá trị cấp phép | Tỷ VNĐ | Attribute | `Public Company Securities Offering.total_expected_amt` — bảng cha, IDS.SECURITIES_OFFERING.TOTAL_EXPECTED_AM (BA ghi rõ nguồn bảng cha, không phải Plan snapshot) | — | READY |
 | K_QLCB_57 | Số lượng người lao động | Người | Attribute | `Public Company Securities Offering Plan.employee_quantity` — IDS.SECURITIES_OFFERING_PLAN.EMPLOYEE_QTY; chỉ có giá trị với 1 số thủ tục (ESOP/Bonus Share), NULL với loại hình khác | — | READY |
 | K_QLCB_58 | Đối tượng | Text | Attribute | `Public Company Securities Offering Plan.swap_target` — IDS.SECURITIES_OFFERING_PLAN.SWAP_TARGET | — | READY |
-| K_QLCB_59 | Mục đích sử dụng vốn | Text | Attribute | `Public Company Securities Offering.capital_usage_plan` — bảng cha, IDS.SECURITIES_OFFERING.CAPITAL_USAGE_PLAN | — | READY |
+| K_QLCB_59 | Mục đích sử dụng vốn | Text | Attribute | `Public Company Securities Offering.offering_purpose` — bảng cha, IDS.SECURITIES_OFFERING.OFFERING_PURPOSE | — | READY |
 
 **Schema bảng tác nghiệp:** Kế thừa `Operational Securities Offering 360 Profile` — bổ sung 3 cột `Offering_Price`, `Employee_Quantity`, `Swap_Target` (xem erDiagram Nhóm 4).
 
