@@ -68,7 +68,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.EVALUATIONS.COMPANY_ID"
-  comment: "FK target: Public Company.Public Company Id. Hash: hash_id('IDS.COMPANY_PROFILES',\
+  comment: "FK target: Public_Company.Public_Company_Id. Hash: hash_id('IDS.COMPANY_PROFILES',\
     \ COMPANY_ID). Nguồn không có fk_note tường minh nhưng ngữ cảnh và HLD Tier3 xác\
     \ nhận đây là FK đến COMPANY_PROFILES."
   classification_context: null
@@ -83,7 +83,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.EVALUATIONS.COMPANY_ID"
-  comment: "Lookup pair: Public Company.Public Company Code. Pair with Public Company\
+  comment: "Lookup pair: Public_Company.Public_Company_Code. Pair with Public Company\
     \ Id."
   classification_context: null
   etl_derived_value: null
@@ -97,7 +97,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.EVALUATIONS.PERIOD_ID"
-  comment: "FK target: Public Company Evaluation Period.Public Company Evaluation\
+  comment: "FK target: Public_Company_Evaluation_Period.Public Company Evaluation\
     \ Period Id. Hash: hash_id('IDS.EVALUATION_PERIODS', PERIOD_ID). Nguồn không có\
     \ fk_note tường minh nhưng ngữ cảnh và HLD Tier3 xác nhận đây là FK đến EVALUATION_PERIODS."
   classification_context: null
@@ -112,7 +112,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.EVALUATIONS.PERIOD_ID"
-  comment: "Lookup pair: Public Company Evaluation Period.Public Company Evaluation\
+  comment: "Lookup pair: Public_Company_Evaluation_Period.Public Company Evaluation\
     \ Period Code. Pair with Public Company Evaluation Period Id."
   classification_context: null
   etl_derived_value: null
@@ -148,29 +148,27 @@ attributes:
 - attribute_name: "Evaluation Type Code"
   physical_name: "evaluation_tp_code"
   description: "Xếp Loại (A,B,C - theo tổng điểm)."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.EVALUATIONS.TYPE"
-  comment: "Scheme: IDS_EVALUATION_TYPE. Values lấy trực tiếp từ cột nguồn — scheme\
-    \ đã đăng ký sẵn (xem HLD Tier3 6d)."
-  classification_context: "IDS_EVALUATION_TYPE"
+  comment: null
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Evaluation Status Code"
   physical_name: "evaluation_status_code"
   description: "Trạng thái đánh giá."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.EVALUATIONS.STATUS"
-  comment: "Scheme: IDS_PUBLIC_COMPANY_EVALUATION_STATUS (no_lookup) — chưa liệt kê\
-    \ trong HLD Tier3 6d, bổ sung scheme mới."
-  classification_context: "IDS_PUBLIC_COMPANY_EVALUATION_STATUS"
+  comment: null
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Approved By User Id"

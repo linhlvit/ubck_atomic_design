@@ -1,0 +1,90 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "IDS"
+  source_table: "COMPANY_RELATIONSHIP"
+  atomic_entity: "Involved Party Alternative Identification"
+  entity_physical_name: "ip_alternative_identification"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "Shared Entity"
+  table_type: "Fundamental"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "1 loại giấy tờ: ENTERPRISE_CODE (mã số đăng ký kinh doanh của pháp nhân\
+    \ liên quan, từ BUSINESS_REG_NO). Tách ra từ lld_IDS_COMPANY_RELATIONSHIP.yaml\
+    \ — field denormalized đã được chuyển sang shared entity."
+attributes:
+- attribute_name: "Involved Party Id"
+  physical_name: "ip_id"
+  description: "FK đến Public Company Related Entity (Involved Party)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_RELATIONSHIP.ID"
+  comment: "FK target: Public Company Related Entity.Public Company Related Entity\
+    \ Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('IDS.COMPANY_RELATIONSHIP',\
+    \ ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Involved Party Code"
+  physical_name: "ip_code"
+  description: "Mã pháp nhân liên quan."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_RELATIONSHIP.ID"
+  comment: "Lookup pair: Public Company Related Entity.Public Company Related Entity\
+    \ Code. Pair with Involved Party Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=IDS.COMPANY_RELATIONSHIP"
+  etl_derived_value: "IDS.COMPANY_RELATIONSHIP"
+  data_type: "string"
+- attribute_name: "Identification Type Code"
+  physical_name: "identification_tp_code"
+  description: "Loại giấy tờ — mã số đăng ký kinh doanh."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode ENTERPRISE_CODE."
+  classification_context: "IP_ALT_ID_TYPE=ENTERPRISE_CODE"
+  etl_derived_value: "ENTERPRISE_CODE"
+  data_type: "string"
+- attribute_name: "Identification Number"
+  physical_name: "identification_nbr"
+  description: "Mã số đăng ký kinh doanh của pháp nhân liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_RELATIONSHIP.BUSINESS_REG_NO"
+  comment: "BK của shared entity cùng với Involved Party Id + Identification Type\
+    \ Code."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

@@ -69,7 +69,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.SECURITIES_OFFERING_RESULT.SECURITIES_OFFERING_ID"
-  comment: "FK target: Public Company Securities Offering.Public Company Securities\
+  comment: "FK target: Public_Company_Securities_Offering.Public_Company_Securities\
     \ Offering Id. Hash: hash_id('IDS.SECURITIES_OFFERING', SECURITIES_OFFERING_ID)."
   classification_context: null
   etl_derived_value: null
@@ -83,7 +83,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.SECURITIES_OFFERING_RESULT.SECURITIES_OFFERING_ID"
-  comment: "Lookup pair: Public Company Securities Offering.Public Company Securities\
+  comment: "Lookup pair: Public_Company_Securities_Offering.Public_Company_Securities\
     \ Offering Code. Pair with Public Company Securities Offering Id."
   classification_context: null
   etl_derived_value: null
@@ -672,15 +672,14 @@ attributes:
   physical_name: "approval_status_code"
   description: "Trạng thái phê duyệt kết quả (dùng để Ban Quản lý chào bán phê duyệt:\
     \ Chờ kiểm tra; Chờ duyệt; Đã duyệt; Từ chối)."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.SECURITIES_OFFERING_RESULT.APPROVAL_STATUS_CD"
-  comment: "Scheme: IDS_SO_APPROVAL_STATUS (source_table, LOOKUP_GROUP = 'SO_APPROVAL_STATUS')\
-    \ — dùng chung với Public Company Securities Offering."
-  classification_context: "IDS_SO_APPROVAL_STATUS"
+  comment: null
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Approver User Id"
