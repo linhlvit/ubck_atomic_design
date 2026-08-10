@@ -215,7 +215,7 @@ TRUNCATE TABLE IF EXISTS datamart.tt_opr_penalty_decision_list_flat ON CLUSTER '
 INSERT INTO datamart.tt_opr_penalty_decision_list_flat
 SELECT
     o.pd_subject_code,
-    o.pd_code,
+    o.violation_case_code,
     o.subject_nm,
     o.subject_tp_code,
     o.form_tp_code,
