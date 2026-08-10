@@ -47,7 +47,7 @@ SELECT
     dim.has_subsidiary_indicator,
     dim.has_joint_venture_indicator,
     dim.ipo_company_indicator
-FROM datamart.gsdc_fct_public_company_risk_score_snpst f
+FROM datamart.fct_public_company_risk_score_snpst f
 JOIN datamart.cdr_dt_dim snpst_cal
     ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
 LEFT JOIN datamart.cdr_dt_dim evaluation_cal
@@ -111,7 +111,7 @@ SELECT
     dim.has_subsidiary_indicator,
     dim.has_joint_venture_indicator,
     dim.ipo_company_indicator
-FROM datamart.gsdc_fct_public_company_compliance_score_snpst f
+FROM datamart.fct_public_company_compliance_score_snpst f
 JOIN datamart.cdr_dt_dim snpst_cal
     ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
 LEFT JOIN datamart.cdr_dt_dim evaluation_cal
@@ -168,7 +168,7 @@ SELECT
     dim.has_subsidiary_indicator,
     dim.has_joint_venture_indicator,
     dim.ipo_company_indicator
-FROM datamart.gsdc_fct_public_company_issuance_score_snpst f
+FROM datamart.fct_public_company_issuance_score_snpst f
 JOIN datamart.cdr_dt_dim snpst_cal
     ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
 LEFT JOIN datamart.cdr_dt_dim evaluation_cal
@@ -228,7 +228,7 @@ SELECT
     dim.has_subsidiary_indicator,
     dim.has_joint_venture_indicator,
     dim.ipo_company_indicator
-FROM datamart.gsdc_fct_public_company_financial_score_snpst f
+FROM datamart.fct_public_company_financial_score_snpst f
 JOIN datamart.cdr_dt_dim snpst_cal
     ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
 LEFT JOIN datamart.cdr_dt_dim evaluation_cal
@@ -280,7 +280,7 @@ SELECT
     dim.has_subsidiary_indicator,
     dim.has_joint_venture_indicator,
     dim.ipo_company_indicator
-FROM datamart.gsdc_fct_public_company_nonfinancial_score_snpst f
+FROM datamart.fct_public_company_nonfinancial_score_snpst f
 JOIN datamart.cdr_dt_dim snpst_cal
     ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
 LEFT JOIN datamart.cdr_dt_dim evaluation_cal
@@ -330,7 +330,7 @@ SELECT
     dim.has_subsidiary_indicator,
     dim.has_joint_venture_indicator,
     dim.ipo_company_indicator
-FROM datamart.gsdc_fct_violation_rpt_snpst f
+FROM datamart.fct_violation_rpt_snpst f
 JOIN datamart.cdr_dt_dim snpst_cal
     ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
 LEFT JOIN datamart.public_company_dim dim
@@ -385,7 +385,7 @@ SELECT
     catalog_dim.enterprise_tp_code       AS fr_catalog_enterprise_tp_code,
     catalog_dim.row_description_reference,
     catalog_dim.column_description_reference
-FROM datamart.gsdc_fct_public_company_financial_rpt_val f
+FROM datamart.fct_public_company_financial_rpt_val f
 JOIN datamart.cdr_dt_dim snpst_cal
     ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
 LEFT JOIN datamart.public_company_dim dim
