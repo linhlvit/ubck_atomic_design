@@ -1626,10 +1626,11 @@ entities:
     module: "NHNCK"
     status: "draft"
     reuse_status: "new"
-    description: "Bảng tra cứu tổng hợp CCHN per NHN — flat denormalized từ Atomic. Grain: 1 CCHN per NHN. Slicer Loại hình filter trên ctf_tp_code; slicer Trạng thái filter trên practice_st_code."
+    description: "Bảng tra cứu tổng hợp CCHN toàn thị trường — flat denormalized từ Atomic. Grain: 1 NHN × 1 CCHN, bao gồm cả NHN chưa có CCHN nào (cột CCHN NULL). Slicer Loại hình filter trên certificate_tp_code; slicer Trạng thái filter trên practice_status_code."
     source_atomic:
-      - "sp_license_certificate_document"
       - "securities_practitioner"
+      - "sp_license_certificate_document"
+      - "sp_license_certificate_type"
       - "sp_organization_employment_report"
       - "securities_organization_reference"
       - "ip_alt_identn"
@@ -1643,16 +1644,16 @@ entities:
         data_type: "string"
         nullable: false
         key: "PK"
-        description: "PK (1/2) — Driving: sp_license_certificate_document (NHNCK.CERTIFICATE_RECORDS). Grain: 1 CCHN per NHN"
-        source_atomic_table: "sp_license_certificate_document"
-        source_atomic_column: "sp_license_certificate_document.sp_code"
+        description: "PK (1/2, documentation-only — không enforce constraint vật lý) — Driving: securities_practitioner (NHNCK.PROFESSIONALS). Grain: 1 NHN × 1 CCHN, bao gồm cả NHN chưa có CCHN nào"
+        source_atomic_table: "securities_practitioner"
+        source_atomic_column: "securities_practitioner.sp_code"
       - logical_name: "License Certificate Document Code"
         physical_name: "license_certificate_document_code"
         data_domain: "Text"
         data_type: "string"
-        nullable: false
+        nullable: true
         key: "PK"
-        description: "PK (2/2) — BK bản ghi CCHN"
+        description: "PK (2/2, documentation-only) — BK bản ghi CCHN. NULL khi NHN chưa có CCHN nào — chấp nhận NULL trên cột PK logical, không enforce constraint vật lý"
         source_atomic_table: "sp_license_certificate_document"
         source_atomic_column: "sp_license_certificate_document.sp_license_certificate_document_code"
       - logical_name: "Full Name"
@@ -1661,7 +1662,7 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Họ tên người hành nghề — ETL-derived: join securities_practitioner theo sp_code"
+        description: "Họ tên người hành nghề"
         source_atomic_table: "securities_practitioner"
         source_atomic_column: "securities_practitioner.full_nm"
       - logical_name: "Certificate Number"
@@ -1670,7 +1671,7 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Số CCHN"
+        description: "Số CCHN — NULL khi NHN chưa có CCHN nào"
         source_atomic_table: "sp_license_certificate_document"
         source_atomic_column: "sp_license_certificate_document.certificate_nbr"
       - logical_name: "Certificate Type Code"
@@ -1679,9 +1680,9 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Mã loại hình hành nghề (= CERTIFICATES.CERTIFICATE_CODE) — slicer Loại hình filter trên cột này"
-        source_atomic_table: "sp_license_certificate_type"
-        source_atomic_column: "sp_license_certificate_type.sp_license_certificate_tp_code"
+        description: "Mã loại hình hành nghề (= CERTIFICATES.CERTIFICATE_CODE) — slicer Loại hình filter trên cột này. NULL khi NHN chưa có CCHN nào"
+        source_atomic_table: "sp_license_certificate_document"
+        source_atomic_column: "sp_license_certificate_document.sp_license_certificate_tp_code"
       - logical_name: "Certificate Type Name"
         physical_name: "certificate_tp_nm"
         data_domain: "Text"
@@ -1715,7 +1716,7 @@ entities:
         data_type: "date"
         nullable: true
         key: ""
-        description: "Ngày cấp CCHN"
+        description: "Ngày cấp CCHN — NULL khi NHN chưa có CCHN nào"
         source_atomic_table: "sp_license_certificate_document"
         source_atomic_column: "sp_license_certificate_document.issue_dt"
       - logical_name: "Current Organization Name"
@@ -1743,8 +1744,8 @@ entities:
         nullable: false
         key: ""
         description: "Mã hệ thống nguồn — ETL-derived"
-        source_atomic_table: "sp_license_certificate_document"
-        source_atomic_column: "sp_license_certificate_document.src_stm_code"
+        source_atomic_table: "securities_practitioner"
+        source_atomic_column: "securities_practitioner.src_stm_code"
 
   - id: "DTM-securities_company_dim"
     logical_name: "Securities Company Dimension"

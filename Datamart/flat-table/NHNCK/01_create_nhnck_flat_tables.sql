@@ -316,12 +316,15 @@ COMMENT 'Flat table — Practitioner Training History (1 lần bồi dưỡng pe
 --    Practitioner 360 Profile (1-1) + Exam History (1-N) + Violation History (1-N).
 --    Grain: 1 CCHN × 1 đợt thi × 1 vi phạm — chấp nhận cartesian khi 1 NHN
 --    vừa có nhiều đợt thi vừa có nhiều vi phạm đồng thời (theo xác nhận người thiết kế).
+--    (Sửa 2026-08) Driving đổi sang Securities Practitioner (toàn bộ NHN, kể cả
+--    chưa có CCHN) — license_certificate_document_code đổi Nullable vì NHN
+--    chưa có CCHN sẽ NULL ở cột này (PK logical, không enforce constraint vật lý).
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_data_explorer_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Practitioner Data Explorer
     practitioner_code               String              COMMENT 'PK (1/2) — Mã NHN',
-    license_certificate_document_code    String              COMMENT 'PK (2/2) — Mã CCHN',
+    license_certificate_document_code    Nullable(String)    COMMENT 'PK (2/2, documentation-only) — Mã CCHN. NULL nếu NHN chưa có CCHN nào',
     full_nm                 Nullable(String)    COMMENT 'Họ tên NHN',
     certificate_nbr                 Nullable(String)    COMMENT 'Số CCHN',
     certificate_tp_code             Nullable(String)    COMMENT 'Loại hình hành nghề — SP License Certificate Type (Fundamental entity, không phải Classification)',
@@ -353,7 +356,7 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_data_explorer_flat ON
     violation_note                Nullable(String)    COMMENT '(Sửa 2026-07-22) Nội dung vi phạm — K_NHNCK_117, từ Practitioner Violation History'
 )
 ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(assumeNotNull(issue_dt))
-ORDER BY (assumeNotNull(issue_dt), practitioner_code, license_certificate_document_code)
-COMMENT 'Flat table — Practitioner Data Explorer × Practitioner 360 Profile × Practitioner Exam History × Practitioner Violation History (Sửa 2026-07-22: grain mở rộng 1 CCHN × 1 đợt thi × 1 vi phạm, chấp nhận cartesian)'
+PARTITION BY tuple()
+ORDER BY (practitioner_code, license_certificate_document_code)
+COMMENT 'Flat table — Practitioner Data Explorer × Practitioner 360 Profile × Practitioner Exam History × Practitioner Violation History (Sửa 2026-07-22: grain mở rộng 1 CCHN × 1 đợt thi × 1 vi phạm, chấp nhận cartesian) (Sửa 2026-08: đổi PARTITION BY tuple() — issue_dt nay NULL hợp lệ khi NHN chưa có CCHN, không còn phù hợp làm partition key qua assumeNotNull)'
 ;
