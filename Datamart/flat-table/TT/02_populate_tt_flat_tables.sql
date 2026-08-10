@@ -128,6 +128,7 @@ DELETE FROM datamart.tt_fct_penalty_decision_subject_behavior_flat ON CLUSTER 'm
 WHERE cdr_dt = :etl_date;
 INSERT INTO datamart.tt_fct_penalty_decision_subject_behavior_flat
 SELECT
+    f.applied_fine_amt,
     cal.cdr_dt                          AS cdr_dt,
     behavior_dim.penalty_decision_subject_behavior_code,
     behavior_dim.violation_behavior_nm,

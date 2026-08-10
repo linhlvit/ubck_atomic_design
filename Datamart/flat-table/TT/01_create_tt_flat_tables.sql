@@ -123,6 +123,9 @@ COMMENT 'Flat table — Fact Penalty Decision × Calendar Date Dimension × Pena
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS datamart.tt_fct_penalty_decision_subject_behavior_flat ON CLUSTER 'my_cluster'
 (
+    -- From: FACT PENALTY DECISION SUBJECT BEHAVIOR
+    applied_fine_amt                           Nullable(Decimal(23,2)) COMMENT 'Mức phạt tiền áp dụng thực tế cho hành vi này — đúng grain Fact — measure',
+
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                                     Nullable(Date)   COMMENT 'Ngày ban hành quyết định xử phạt (join qua Penalty Decision Subject → Penalty Decision) — từ Calendar Date Dimension',
 
