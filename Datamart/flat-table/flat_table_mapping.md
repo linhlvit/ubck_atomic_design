@@ -1865,6 +1865,7 @@ _Cập nhật 2026-07-22: thiết kế lại theo `DTM_TT_HLD.md` hiện hành (
 | Penalty Decision Subject Dimension | `datamart.penalty_decision_subject_dim` | `penalty_decision_subject_dim_id` | `penalty_decision_subject_dim_id` | ✗ |
 
 > `Total_Fine_Amount` KHÔNG có trên bảng này (grain per-hành vi mịn hơn per-đối tượng — đặt measure sẽ fanout khi SUM). Xem Nhóm 20 / `tt_opr_penalty_decision_list_flat` để lấy đúng số tiền per-subject.
+> (Thêm 2026-08-08) `applied_fine_amt` (Applied Fine Amount) — mức phạt tiền áp dụng thực tế cho từng hành vi, đúng grain Fact này — direct từ `pd_subject_behavior.applied_fine_amt`.
 
 **Nhóm KPI**
 

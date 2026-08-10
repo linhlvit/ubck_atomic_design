@@ -442,17 +442,17 @@ CASE WHEN b.SUBJECT_TYPE = 'INDIVIDUAL' THEN 'Cá nhân'
 WHEN b.SUBJECT_TYPE = 'ORGANIZATION' THEN 'Tổ chức'
 ELSE 'Khác'
 END ""Phân loại đối tượng"",
-CASE WHEN e.ID IS NOT NULL THEN 
+CASE WHEN c.INSPECTION_TEAM_ID IS NULL THEN 
 (CASE WHEN e.FORM_TYPE = 'UNSCHEDULED' THEN 'Đột xuất'
 WHEN e.FORM_TYPE = 'PERIODIC' THEN 'Định kỳ'
 ELSE 'Khác'
 END)
-WHEN d.ID IS NOT NULL THEN 
+WHEN c.EXAMINATION_TEAM_ID IS NULL THEN 
 (CASE WHEN d.FORM_TYPE = 'UNSCHEDULED' THEN 'Đột xuất'
 WHEN d.FORM_TYPE = 'PERIODIC' THEN 'Định kỳ'
 ELSE 'Khác'
 END)
-ELSE 'Khác' 
+ELSE NULL 
 END ""Loại hình"",
 CASE WHEN c.STATUS = 'NEW' THEN 'Mới tiếp nhận'
 WHEN c.STATUS = 'PROCESSING' THEN 'Đang xử lý'
@@ -466,9 +466,8 @@ LEFT JOIN THANHTRA_UAT.PENALTY_DECISION_SUBJECT b ON a.ID = b.PENALTY_DECISION_I
 LEFT JOIN THANHTRA_UAT.VIOLATION_CASE c ON a.VIOLATION_CASE_ID = c.ID 
 LEFT JOIN THANHTRA_UAT.INSPECTION_TEAM d ON c.INSPECTION_TEAM_ID = d.ID 
 LEFT JOIN THANHTRA_UAT.EXAMINATION_TEAM e ON c.EXAMINATION_TEAM_ID = e.ID
-WHERE 1=1
-AND EXTRACT(YEAR FROM a.ISSUED_DATE) = :filter_year --Điều kiện lọc
-AND a.DELETED = 0 AND b.DELETED = 0 AND c.DELETED = 0 AND (d.DELETED = 0 OR e.DELETED = 0)
+WHERE EXTRACT(YEAR FROM a.ISSUED_DATE) = :filter_year --Điều kiện lọc
+AND a.DELETED = 0 AND b.DELETED = 0 AND c.DELETED = 0 AND d.DELETED = 0 AND e.DELETED = 0
 ORDER BY EXTRACT(YEAR FROM a.ISSUED_DATE) DESC";;;;;Done;Dữ liệu tĩnh
 15;;Dashboard Hoạt động Xử phạt >> Danh sách;Đối tượng;Tên đối tượng bị thanh tra/kiểm tra;Dashboard;Chiều;Dễ;Năm, vụ việc;Thanh tra;;x;;Done;;PENALTY_DECISION_SUBJECT;SUBJECT_NAME;;;;;;Done;Dữ liệu tĩnh;
 15;;Dashboard Hoạt động Xử phạt >> Danh sách;Phân loại đối tượng;Phân loại đối tượng;Dashboard;Chiều;Dễ;Năm, vụ việc;Thanh tra;;x;;Done;;PENALTY_DECISION_SUBJECT;SUBJECT_TYPE;;;;;;Done;Dữ liệu tĩnh;
@@ -561,8 +560,8 @@ WHEN (LOWER(d.NAME) LIKE '%giao dịch%') THEN 'Vi phạm giao dịch thao túng
 WHEN (LOWER(d.NAME) LIKE '%chào bán chứng khoán%') THEN 'Vi phạm về CBCK'
 ELSE 'Vi phạm khác'
 END ""Loại hình xử lý vi phạm"",
-COUNT(DISTINCT a.ID) ""Số lượng"",
-ROUND(SUM(c.APPLIED_FINE_AMOUNT)/1000000,2) ""Số tiền xử phạt (triệu đồng)""
+COUNT(a.ID) ""Số lượng"",
+ROUND(SUM(a.TOTAL_FINE_AMOUNT)/1000000,2) ""Số tiền xử phạt (triệu đồng)""
 FROM THANHTRA_UAT.PENALTY_DECISION a
 LEFT JOIN THANHTRA_UAT.PENALTY_DECISION_SUBJECT b ON a.ID = b.PENALTY_DECISION_ID 
 LEFT JOIN THANHTRA_UAT.PENALTY_DECISION_SUBJECT_BEHAVIOR c ON b.ID = c.PENALTY_DECISION_SUBJECT_ID 

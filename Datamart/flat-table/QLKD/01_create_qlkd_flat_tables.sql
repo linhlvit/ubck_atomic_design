@@ -230,7 +230,13 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_securities_company_organization_uni
     decision_dt                     Nullable(Date)          COMMENT 'Ngày thành lập',
     director_nm                     Nullable(String)        COMMENT 'Giám đốc/Trưởng đơn vị — BRANCH dùng Director Name, TRANSACTION_OFFICE/REP_OFFICE dùng Representative Name',
     cl_firm_status_code             Nullable(String)        COMMENT 'Trạng thái pháp lý đơn vị',
-    src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn — 3 giá trị khác nhau theo bộ (SC_FIRM_BRANCH/SC_FIRM_TRANSACTION_OFFICE/SC_FIRM_REP_OFFICE)'
+    src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn — 3 giá trị khác nhau theo bộ (SC_FIRM_BRANCH/SC_FIRM_TRANSACTION_OFFICE/SC_FIRM_REP_OFFICE)',
+    margin_trading_svc_ind          String                  COMMENT 'ETL-derived: Y/N — CTCK mẹ có dịch vụ Giao dịch ký quỹ, EXISTS-aggregate qua Securities Company Licensed Service',
+    advance_payment_svc_ind         String                  COMMENT 'ETL-derived: Y/N — CTCK mẹ có dịch vụ Ứng trước tiền bán, EXISTS-aggregate qua Securities Company Licensed Service',
+    custody_svc_ind                 String                  COMMENT 'ETL-derived: Y/N — CTCK mẹ có dịch vụ Lưu ký, EXISTS-aggregate qua Securities Company Licensed Service',
+    derivative_broker_svc_ind       String                  COMMENT 'ETL-derived: Y/N — CTCK mẹ có dịch vụ Môi giới chứng khoán phái sinh, EXISTS-aggregate qua Securities Company Licensed Service',
+    derivative_advisory_svc_ind     String                  COMMENT 'ETL-derived: Y/N — CTCK mẹ có dịch vụ Tư vấn đầu tư chứng khoán phái sinh, EXISTS-aggregate qua Securities Company Licensed Service',
+    derivative_dealing_svc_ind      String                  COMMENT 'ETL-derived: Y/N — CTCK mẹ có dịch vụ Tự doanh chứng khoán phái sinh, EXISTS-aggregate qua Securities Company Licensed Service'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(decision_dt))

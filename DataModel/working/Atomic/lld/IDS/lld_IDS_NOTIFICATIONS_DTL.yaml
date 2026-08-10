@@ -175,19 +175,30 @@ attributes:
   classification_context: "IDS_NOTIFICATION_OBJECT_TYPE"
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Department Code"
-  physical_name: "department_code"
-  description: "Mã phòng ban."
-  data_domain: "Classification Value"
+- attribute_name: "Department Id"
+  physical_name: "department_id"
+  description: "FK đến bảng DEPARTMENTS."
+  data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.NOTIFICATIONS_DTL.DEPT_CD"
-  comment: "Scheme: IDS_DEPARTMENT_CODE (no_lookup) — chưa xác nhận cross-source FK\
-    \ đến phòng ban cụ thể, giữ Classification Value cho đến khi Data Modeler xác\
-    \ nhận."
-  classification_context: "IDS_DEPARTMENT_CODE"
+  comment: "FK target: Department.Department_Id. Hash: hash_id('IDS.DEPARTMENTS', DEPT_CD)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Department Code"
+  physical_name: "department_code"
+  description: "Mã phòng ban."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.NOTIFICATIONS_DTL.DEPT_CD"
+  comment: "Lookup pair: Department.Department_Code. Pair with Department Id."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Login Type Code"
