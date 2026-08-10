@@ -54,7 +54,7 @@ attributes:
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
   classification_context: "SOURCE_SYSTEM=IDS.AF_AUDITOR_STATUS_HISTORY"
-  etl_derived_value: "IDS.AF_AUDITOR_STATUS_HISTORY"
+  etl_derived_value: "IDS_AF_AUDITOR_STATUS_HISTORY"
   data_type: "string"
 - attribute_name: "Audit Firm Auditor Id"
   physical_name: "af_auditor_id"
@@ -65,7 +65,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.AF_AUDITOR_STATUS_HISTORY.AF_AUDITOR_PROFILE_ID"
-  comment: "FK target: Audit Firm Auditor.Audit Firm Auditor Id. Hash: hash_id('IDS.AF_AUDITOR_PROFILES',\
+  comment: "FK target: af_auditor.af_auditor_id. Hash: hash_id('IDS.AF_AUDITOR_PROFILES',\
     \ AF_AUDITOR_PROFILE_ID)."
   classification_context: null
   etl_derived_value: null
@@ -79,7 +79,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.AF_AUDITOR_STATUS_HISTORY.AF_AUDITOR_PROFILE_ID"
-  comment: "Lookup pair: Audit Firm Auditor.Audit Firm Auditor Code. Pair with Audit\
+  comment: "Lookup pair: af_auditor.af_auditor_code. Pair with Audit\
     \ Firm Auditor Id."
   classification_context: null
   etl_derived_value: null
@@ -138,7 +138,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Deleted Indicator"
-  physical_name: "deleted_indicator"
+  physical_name: "deleted_ind"
   description: "Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa)."
   data_domain: "Small Counter"
   nullable: true

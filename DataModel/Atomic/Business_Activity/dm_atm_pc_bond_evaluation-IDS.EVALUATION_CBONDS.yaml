@@ -33,7 +33,7 @@ attributes:
     source_table: EVALUATION_CBONDS
     source_column: null
     comment: "PK surrogate. BCV: \"[Business Activity] Evaluation\"."
-    classification_context: "Source System Code = 'IDS_EVALUATION_CBONDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Public Company Bond Evaluation Code
@@ -47,7 +47,7 @@ attributes:
     source_table: EVALUATION_CBONDS
     source_column: IDS.EVALUATION_CBONDS.ID
     comment: BK chính. PK nguồn NUMBER(10) tự tăng.
-    classification_context: "Source System Code = 'IDS_EVALUATION_CBONDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     classification_context: "Source System Code = 'IDS_EVALUATION_CBONDS'"
-    etl_derived_value: IDS.EVALUATION_CBONDS
+    etl_derived_value: IDS_EVALUATION_CBONDS
 
   - name: Public Company Id
     physical_name: pc_id
@@ -74,8 +74,8 @@ attributes:
     source_system: IDS
     source_table: EVALUATION_CBONDS
     source_column: IDS.EVALUATION_CBONDS.COMPANY_ID
-    comment: "FK target: public_company.public_company_id. Hash: hash_id('IDS.COMPANY_PROFILES', COMPANY_ID). Cột nguồn COMPANY_ID (khác tên chuẩn COMPANY_PROFILE_ID ở các bảng khác) — chưa có ràng buộc NOT NULL rõ ràng nên để nullable."
-    classification_context: "Source System Code = 'IDS_EVALUATION_CBONDS'"
+    comment: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES', COMPANY_ID). Cột nguồn COMPANY_ID (khác tên chuẩn COMPANY_PROFILE_ID ở các bảng khác) — chưa có ràng buộc NOT NULL rõ ràng nên để nullable."
+    classification_context: null
     etl_derived_value: null
 
   - name: Public Company Code
@@ -88,8 +88,8 @@ attributes:
     source_system: IDS
     source_table: EVALUATION_CBONDS
     source_column: IDS.EVALUATION_CBONDS.COMPANY_ID
-    comment: "Lookup pair: public_company.public_company_code. Pair with Public Company Id."
-    classification_context: "Source System Code = 'IDS_EVALUATION_CBONDS'"
+    comment: "Lookup pair: public_company.pc_code. Pair with Public Company Id."
+    classification_context: null
     etl_derived_value: null
 
   - name: Business Registration Number Snapshot
@@ -103,7 +103,7 @@ attributes:
     source_table: EVALUATION_CBONDS
     source_column: IDS.EVALUATION_CBONDS.BUSINESS_REG_NO
     comment: "Denormalized snapshot — trùng lặp với Involved Party Alternative Identification (Identification Number, type TAX_ID) của Public Company này tại thời điểm ghi nhận, giữ lại để đối chiếu."
-    classification_context: "Source System Code = 'IDS_EVALUATION_CBONDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Equity Ticker Symbol Snapshot
@@ -117,7 +117,7 @@ attributes:
     source_table: EVALUATION_CBONDS
     source_column: IDS.EVALUATION_CBONDS.EQUITY_TICKER
     comment: Denormalized snapshot — trùng lặp với Public Company.Equity Ticker Symbol.
-    classification_context: "Source System Code = 'IDS_EVALUATION_CBONDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Public Company Name Snapshot
@@ -131,7 +131,7 @@ attributes:
     source_table: EVALUATION_CBONDS
     source_column: IDS.EVALUATION_CBONDS.NAME
     comment: Denormalized snapshot — trùng lặp với Public Company.Public Company Name.
-    classification_context: "Source System Code = 'IDS_EVALUATION_CBONDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Ranking Code
@@ -145,7 +145,7 @@ attributes:
     source_table: EVALUATION_CBONDS
     source_column: IDS.EVALUATION_CBONDS.RANKING
     comment: "Map 1:1 từ nguồn — không phải Classification Value theo yêu cầu Data Modeler (2026-07-15)."
-    classification_context: "Source System Code = 'IDS_EVALUATION_CBONDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Evaluation Year
@@ -159,7 +159,7 @@ attributes:
     source_table: EVALUATION_CBONDS
     source_column: IDS.EVALUATION_CBONDS.YEAR
     comment: null
-    classification_context: "Source System Code = 'IDS_EVALUATION_CBONDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Evaluation Month
@@ -173,7 +173,7 @@ attributes:
     source_table: EVALUATION_CBONDS
     source_column: IDS.EVALUATION_CBONDS.MONTH
     comment: null
-    classification_context: "Source System Code = 'IDS_EVALUATION_CBONDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Bond Collateral Ratio Percentage
@@ -187,7 +187,7 @@ attributes:
     source_table: EVALUATION_CBONDS
     source_column: IDS.EVALUATION_CBONDS.PER_TP_DB
     comment: "Nguồn NUMBER không khai báo scale — cần profile để xác nhận thang đo (0-1 hay 0-100)."
-    classification_context: "Source System Code = 'IDS_EVALUATION_CBONDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Bond Outstanding To Equity Ratio Percentage
@@ -201,5 +201,5 @@ attributes:
     source_table: EVALUATION_CBONDS
     source_column: IDS.EVALUATION_CBONDS.PRICE_TP_LH
     comment: "Nguồn NUMBER không khai báo scale — cần profile để xác nhận thang đo (0-1 hay 0-100)."
-    classification_context: "Source System Code = 'IDS_EVALUATION_CBONDS'"
+    classification_context: null
     etl_derived_value: null

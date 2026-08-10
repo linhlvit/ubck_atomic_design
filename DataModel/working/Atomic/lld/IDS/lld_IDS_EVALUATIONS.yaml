@@ -57,7 +57,7 @@ attributes:
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
   classification_context: "SOURCE_SYSTEM=IDS.EVALUATIONS"
-  etl_derived_value: "IDS.EVALUATIONS"
+  etl_derived_value: "IDS_EVALUATIONS"
   data_type: "string"
 - attribute_name: "Public Company Id"
   physical_name: "pc_id"
@@ -68,7 +68,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.EVALUATIONS.COMPANY_ID"
-  comment: "FK target: Public Company.Public Company Id. Hash: hash_id('IDS.COMPANY_PROFILES',\
+  comment: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES',\
     \ COMPANY_ID). Nguồn không có fk_note tường minh nhưng ngữ cảnh và HLD Tier3 xác\
     \ nhận đây là FK đến COMPANY_PROFILES."
   classification_context: null
@@ -83,7 +83,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.EVALUATIONS.COMPANY_ID"
-  comment: "Lookup pair: Public Company.Public Company Code. Pair with Public Company\
+  comment: "Lookup pair: public_company.pc_code. Pair with Public Company\
     \ Id."
   classification_context: null
   etl_derived_value: null
@@ -97,8 +97,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.EVALUATIONS.PERIOD_ID"
-  comment: "FK target: Public Company Evaluation Period.Public Company Evaluation\
-    \ Period Id. Hash: hash_id('IDS.EVALUATION_PERIODS', PERIOD_ID). Nguồn không có\
+  comment: "FK target: pc_evaluation_period.pc_evaluation_period_id. Hash: hash_id('IDS.EVALUATION_PERIODS', PERIOD_ID). Nguồn không có\
     \ fk_note tường minh nhưng ngữ cảnh và HLD Tier3 xác nhận đây là FK đến EVALUATION_PERIODS."
   classification_context: null
   etl_derived_value: null
@@ -112,8 +111,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.EVALUATIONS.PERIOD_ID"
-  comment: "Lookup pair: Public Company Evaluation Period.Public Company Evaluation\
-    \ Period Code. Pair with Public Company Evaluation Period Id."
+  comment: "Lookup pair: pc_evaluation_period.pc_evaluation_period_code. Pair with Public Company Evaluation Period Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

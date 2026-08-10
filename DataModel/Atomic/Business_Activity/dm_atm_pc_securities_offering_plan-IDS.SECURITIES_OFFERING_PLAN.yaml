@@ -33,7 +33,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: null
     comment: "PK surrogate. BCV: \"[Business Activity] Business Activity\"."
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Public Company Securities Offering Plan Code
@@ -47,7 +47,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.ID
     comment: BK chính. PK nguồn NUMBER(10) tự tăng.
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
-    etl_derived_value: IDS.SECURITIES_OFFERING_PLAN
+    etl_derived_value: IDS_SECURITIES_OFFERING_PLAN
 
   - name: Public Company Securities Offering Id
     physical_name: pc_securities_offering_id
@@ -75,7 +75,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.SECURITIES_OFFERING_ID
     comment: "FK target: pc_securities_offering.pc_securities_offering_id. Hash: hash_id('IDS.SECURITIES_OFFERING', SECURITIES_OFFERING_ID)."
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Public Company Securities Offering Code
@@ -89,7 +89,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.SECURITIES_OFFERING_ID
     comment: "Lookup pair: pc_securities_offering.pc_securities_offering_code. Pair with Public Company Securities Offering Id."
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Offering Method Code
@@ -103,7 +103,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.OFFERING_METHOD_CD
     comment: "Scheme: IDS_SO_OFFERING_METHOD (source_table, LOOKUP_GROUP = 'SO_OFFERING_METHOD') — chưa có trong HLD 6d, bổ sung scheme mới."
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: IDS_SO_OFFERING_METHOD
     etl_derived_value: null
 
   - name: Distribution Method Code
@@ -117,7 +117,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.DISTRIBUTION_METHOD_CD
     comment: "Scheme: IDS_SO_DISTRIBUTION_METHOD (source_table, LOOKUP_GROUP = 'SO_DISTRIBUTION_METHOD') — chưa có trong HLD 6d, bổ sung scheme mới."
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: IDS_SO_DISTRIBUTION_METHOD
     etl_derived_value: null
 
   - name: Security Type Code
@@ -131,7 +131,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.SECURITY_TYPE_CD
     comment: "Scheme: IDS_SO_SECURITY_TYPE (source_table, LOOKUP_GROUP = 'SO_SECURITY_TYPE') — dùng chung với Public Company Securities Offering Result. Chưa có trong HLD 6d, bổ sung scheme mới."
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: IDS_SO_SECURITY_TYPE
     etl_derived_value: null
 
   - name: Security Name
@@ -145,7 +145,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.SECURITY_NAME
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Par Value
@@ -159,7 +159,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.PAR_VALUE
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Total Registered Quantity Snapshot
@@ -173,7 +173,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.TOTAL_REGISTERED_QTY
     comment: Denormalized snapshot từ Public Company Securities Offering — xem BRD note.
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Offering Price
@@ -187,7 +187,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.OFFERING_PRICE
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Total Expected Amount Snapshot
@@ -201,7 +201,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.TOTAL_EXPECTED_AM
     comment: Denormalized snapshot từ Public Company Securities Offering — xem BRD note.
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Issuer Total Registered Quantity
@@ -215,7 +215,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.ISSUER_TOTAL_REGISTERED_QTY
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Shareholder Registered Quantity
@@ -229,7 +229,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.SHAREHOLDER_REGISTERED_QTY
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Issuer Total Expected Amount
@@ -243,7 +243,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.ISSUER_TOTAL_EXPECTED_AM
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Shareholder Expected Amount
@@ -257,7 +257,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.SHAREHOLDER_EXPECTED_AM
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Offering Start Date
@@ -271,7 +271,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.OFFERING_START_DATE
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Offering End Date
@@ -285,7 +285,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.OFFERING_END_DATE
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Owned Share Quantity
@@ -299,7 +299,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.OWNED_SHARE_QTY
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Unrestricted Share Quantity
@@ -313,7 +313,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.UNRESTRICTED_SHARE_QTY
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Offer To Owned Percentage
@@ -327,7 +327,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.OFFER_TO_OWNED_PCT
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Transfer Restrict Period
@@ -341,7 +341,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.TRANSFER_RESTRICT_PERIOD
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Offer Success Percentage
@@ -355,7 +355,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.OFFER_SUCCESS_PCT
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Offer To Outstanding Percentage
@@ -369,7 +369,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.OFFER_TO_OUTSTANDING_PCT
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Employee Quantity
@@ -383,7 +383,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.EMPLOYEE_QTY
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Capital Source
@@ -397,7 +397,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.CAPITAL_SOURCE
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Exercise Period
@@ -411,7 +411,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.EXERCISE_PERIOD
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Rights Ratio
@@ -425,7 +425,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.RIGHTS_RATIO
     comment: "Chuỗi tỷ lệ dạng tự do (VD: \"1:10\") — không phải trường số."
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Swap Ratio
@@ -439,7 +439,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.SWAP_RATIO
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Swap Target
@@ -453,7 +453,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.SWAP_TARGET
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Issuance Market
@@ -467,7 +467,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.ISSUANCE_MARKET
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Interest Rate
@@ -481,7 +481,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.INTEREST_RATE
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Bond Term Value
@@ -495,7 +495,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.BOND_TERM_VALUE
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Interest Payment Period
@@ -509,7 +509,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.INTEREST_PAYMENT_PERIOD
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Conversion Period Value
@@ -523,7 +523,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.CONVERSION_PERIOD_VALUE
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Conversion Ratio Percentage
@@ -537,7 +537,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.CONVERSION_RATIO
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Conversion Guarantee Plan
@@ -551,7 +551,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.CONVERSION_GUARANTEE_PLAN
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Exercise Period Value
@@ -565,7 +565,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.EXERCISE_PERIOD_VALUE
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Exercise Ratio Percentage
@@ -579,7 +579,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.EXERCISE_RATIO
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Exercise Guarantee Plan
@@ -593,7 +593,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.EXERCISE_GUARANTEE_PLAN
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Guarantee Type Code
@@ -607,7 +607,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.GUARANTEE_TYPE_CD
     comment: "Scheme: IDS_SO_GUARANTEE_TYPE (source_table, LOOKUP_GROUP = 'GUARANTEE_TYPE') — chưa có trong HLD 6d, bổ sung scheme mới."
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: IDS_SO_GUARANTEE_TYPE
     etl_derived_value: null
 
   - name: Guaranteed Bond Value
@@ -621,7 +621,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.GUARANTEED_BOND_VALUE
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Payment Guarantor Organization Name
@@ -635,7 +635,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.PAYMENT_GUARANTOR_ORG
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Payment Guarantee Value
@@ -649,7 +649,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.PAYMENT_GUARANTEE_VALUE
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Secured Asset
@@ -663,7 +663,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.SECURED_ASSET
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Secured Asset Value
@@ -677,7 +677,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.SECURED_ASSET_VALUE
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Secured Asset Owner
@@ -691,7 +691,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.SECURED_ASSET_OWNER
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Secured Asset Organization Name
@@ -705,7 +705,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.SECURED_ASSET_ORG
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Public Offering Value
@@ -719,7 +719,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.PUBLIC_OFFERING_VAL
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Private Placement Value
@@ -733,7 +733,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.PRIVATE_PLACEMENT_VAL
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Total Outstanding Value
@@ -747,7 +747,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.TOTAL_OUTSTANDING_VAL
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Public Offering 12 Month Value
@@ -761,7 +761,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.PUBLIC_OFFERING_12M_VAL
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Private Placement 12 Month Value
@@ -775,7 +775,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.PRIVATE_PLACEMENT_12M_VAL
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Total 12 Month Value
@@ -789,7 +789,7 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.TOTAL_12M_VAL
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Registered To Outstanding Percentage
@@ -803,11 +803,11 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.REG_TO_OUTSTANDING_PCT
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Deleted Indicator
-    physical_name: deleted_indicator
+    physical_name: deleted_ind
     business_meaning: "Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa)."
     data_domain: Small Counter
     data_type: int
@@ -817,5 +817,19 @@ attributes:
     source_table: SECURITIES_OFFERING_PLAN
     source_column: IDS.SECURITIES_OFFERING_PLAN.DELETE_FLG
     comment: Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1).
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_PLAN'"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Single Offering Object
+    physical_name: single_offering_object
+    business_meaning: Đối tượng chào bán phát hành riêng lẻ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: SECURITIES_OFFERING_PLAN
+    source_column: IDS.SECURITIES_OFFERING_PLAN.PLAN_SINGLE_OBJ
+    comment: null
+    classification_context: null
     etl_derived_value: null

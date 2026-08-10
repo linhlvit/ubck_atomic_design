@@ -288,7 +288,7 @@ entries:
   source_system: THANHTRA
   source_table: VIOLATION_CASE
   atomic_entity: Violation Case
-  design_status: approved
+  design_status: draft
 - lld_file: THANHTRA/lld_THANHTRA_VIOLATION_RECORD.yaml
   source_system: THANHTRA
   source_table: VIOLATION_RECORD
@@ -328,7 +328,7 @@ entries:
   source_system: THANHTRA
   source_table: PENALTY_DECISION
   atomic_entity: Penalty Decision
-  design_status: approved
+  design_status: draft
 - lld_file: THANHTRA/lld_THANHTRA_VIOLATION_CASE_OUTPUT_DOCUMENT.yaml
   source_system: THANHTRA
   source_table: VIOLATION_CASE_OUTPUT_DOCUMENT
@@ -363,7 +363,7 @@ entries:
   source_system: THANHTRA
   source_table: PENALTY_DECISION_SUBJECT
   atomic_entity: Penalty Decision Subject
-  design_status: approved
+  design_status: draft
 - lld_file: THANHTRA/lld_THANHTRA_VPHC_PROCESS_OFFICIAL_LETTER.yaml
   source_system: THANHTRA
   source_table: VPHC_PROCESS_OFFICIAL_LETTER
@@ -373,7 +373,7 @@ entries:
   source_system: THANHTRA
   source_table: PENALTY_DECISION_SUBJECT_BEHAVIOR
   atomic_entity: Penalty Decision Subject Behavior
-  design_status: approved
+  design_status: draft
 - lld_file: THANHTRA/lld_THANHTRA_PENALTY_DECISION_CIRCUMSTANCE.yaml
   source_system: THANHTRA
   source_table: PENALTY_DECISION_CIRCUMSTANCE
@@ -390,7 +390,7 @@ entries:
   atomic_entity: Examination Team
   group: T2
   lld_file: THANHTRA/lld_THANHTRA_EXAMINATION_TEAM.yaml
-  design_status: approved
+  design_status: draft
 - source_system: THANHTRA
   source_table: INSPECTION_ANNUAL_PLAN
   atomic_entity: Inspection Annual Plan
@@ -414,7 +414,7 @@ entries:
   atomic_entity: Petition
   group: T1
   lld_file: THANHTRA/lld_THANHTRA_PETITION.yaml
-  design_status: approved
+  design_status: draft
 - source_system: THANHTRA
   source_table: LEGAL_DOCUMENT
   atomic_entity: Legal Document
@@ -1887,7 +1887,7 @@ entries:
   design_status: draft
 - source_system: IDS
   source_table: FORMS
-  atomic_entity: Disclosure Form Definition
+  atomic_entity: Financial Report Template
   group: T1
   lld_file: IDS/lld_IDS_FORMS.yaml
   design_status: draft
@@ -1899,7 +1899,7 @@ entries:
   design_status: draft
 - source_system: IDS
   source_table: REP_FORMS
-  atomic_entity: Periodic Report Form
+  atomic_entity: Financial Report Sub Template
   group: T1
   lld_file: IDS/lld_IDS_REP_FORMS.yaml
   design_status: draft
@@ -1959,13 +1959,13 @@ entries:
   design_status: draft
 - source_system: IDS
   source_table: VIOLATION_TEMPLATES
-  atomic_entity: Disclosure Form Definition Violation Template
+  atomic_entity: Violation Report Template
   group: T2
   lld_file: IDS/lld_IDS_VIOLATION_TEMPLATES.yaml
   design_status: draft
 - source_system: IDS
   source_table: NOTIFICATIONS
-  atomic_entity: Disclosure Notification
+  atomic_entity: Notification
   group: T2
   lld_file: IDS/lld_IDS_NOTIFICATIONS.yaml
   design_status: draft
@@ -1977,13 +1977,13 @@ entries:
   design_status: draft
 - source_system: IDS
   source_table: REP_COLUMN
-  atomic_entity: Periodic Report Form Column Template
+  atomic_entity: Financial Report Sub Column Template
   group: T2
   lld_file: IDS/lld_IDS_REP_COLUMN.yaml
   design_status: draft
 - source_system: IDS
   source_table: REP_ROW
-  atomic_entity: Periodic Report Form Row Template
+  atomic_entity: Financial Report Sub Row Template
   group: T2
   lld_file: IDS/lld_IDS_REP_ROW.yaml
   design_status: draft
@@ -2028,6 +2028,30 @@ entries:
   atomic_entity: Public Company Foreign Ownership Limit
   group: T2
   lld_file: IDS/lld_IDS_FOREIGN_OWNER_LIMIT.yaml
+  design_status: draft
+- source_system: IDS
+  source_table: RROW
+  atomic_entity: Financial Report Row Template
+  group: T2
+  lld_file: IDS/lld_IDS_RROW.yaml
+  design_status: draft
+- source_system: IDS
+  source_table: RCOL
+  atomic_entity: Financial Report Column Template
+  group: T2
+  lld_file: IDS/lld_IDS_RCOL.yaml
+  design_status: draft
+- source_system: IDS
+  source_table: DATA
+  atomic_entity: Financial Report Value
+  group: T2
+  lld_file: IDS/lld_IDS_DATA.yaml
+  design_status: draft
+- source_system: IDS
+  source_table: COMPANY_DATA
+  atomic_entity: Public Company Report Submission
+  group: T3
+  lld_file: IDS/lld_IDS_COMPANY_DATA.yaml
   design_status: draft
 - source_system: IDS
   source_table: COMPANY_INSPECTION
@@ -2108,6 +2132,18 @@ entries:
   lld_file: IDS/lld_IDS_COMPANY_TREASURY_STOCKS.yaml
   design_status: draft
 - source_system: IDS
+  source_table: COMPANY_TREASURY_SHARES
+  atomic_entity: Public Company Treasury Share Transaction
+  group: T2
+  lld_file: IDS/lld_IDS_COMPANY_TREASURY_SHARES.yaml
+  design_status: draft
+- source_system: IDS
+  source_table: TREASURY_SHARE_TRANS_RESULT
+  atomic_entity: Public Company Treasury Share Transaction Result
+  group: T3
+  lld_file: IDS/lld_IDS_TREASURY_SHARE_TRANS_RESULT.yaml
+  design_status: draft
+- source_system: IDS
   source_table: AF_SANCTIONS
   atomic_entity: Audit Firm Sanction
   group: T3
@@ -2139,7 +2175,7 @@ entries:
   design_status: approved
 - source_system: IDS
   source_table: VIOLATION_PENALTY_CONFIG
-  atomic_entity: Public Company Violation Penalty Config
+  atomic_entity: Violation Report Penalty Config
   group: T3
   lld_file: IDS/lld_IDS_VIOLATION_PENALTY_CONFIG.yaml
   design_status: draft
@@ -2175,7 +2211,7 @@ entries:
   design_status: draft
 - source_system: IDS
   source_table: NOTIFICATIONS_DTL
-  atomic_entity: Disclosure Form Definition Notification Recipient
+  atomic_entity: Notification Recipient
   group: T3
   lld_file: IDS/lld_IDS_NOTIFICATIONS_DTL.yaml
   design_status: draft
@@ -2199,13 +2235,13 @@ entries:
   design_status: approved
 - source_system: IDS
   source_table: VIOLATION_REPORT
-  atomic_entity: Public Company Violation Report
+  atomic_entity: Violation Report
   group: T3
   lld_file: IDS/lld_IDS_VIOLATION_REPORT.yaml
   design_status: draft
 - source_system: IDS
   source_table: HTE_VIOLATION_REPORT
-  atomic_entity: Public Company Violation Report
+  atomic_entity: Violation Report
   group: T3
   lld_file: IDS/lld_IDS_HTE_VIOLATION_REPORT.yaml
   design_status: draft

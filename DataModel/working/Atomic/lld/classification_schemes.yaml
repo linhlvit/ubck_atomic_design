@@ -464,11 +464,13 @@ schemes:
         source_table: null
 
   - scheme_code: "RECEIPT_STATUS"
-    name: "Trạng thái nhận chứng chỉ"
+    name: "Trạng thái nhận văn bản/chứng chỉ"
     source_type: "modeler_defined"
     source_table: null
     used_in_entities:
       - "Securities Practitioner License Application"
+      - "Penalty Decision Subject"
+      - "Violation Record"
     values:
       - code: "0"
         name: "Chưa nhận"
@@ -3429,6 +3431,28 @@ schemes:
       - "Public Company Report Submission"
     values: []
 
+  - scheme_code: "IDS_DISCLOSURE_TYPE"
+    name: "Loại công bố chào bán phát hành — disclosure_type từ company_data (chỉ có giá trị khi tin công bố liên quan Securities Offering)"
+    source_type: "modeler_defined"
+    source_table: "IDS.COMPANY_DATA.DISCLOSURE_TYPE"
+    used_in_entities:
+      - "Public Company Report Submission"
+    values:
+      - code: "NOTICE"
+        label: "Thông báo"
+        source_value: "NOTICE"
+      - code: "RESULT"
+        label: "Báo cáo kết quả"
+        source_value: "RESULT"
+
+  - scheme_code: "IDS_COMPANY_DATA_SYSTEM_CD"
+    name: "Mã hệ thống phát sinh bản ghi — system_cd từ company_data (cột nguồn không có mô tả; suy luận từ pattern SYSTEM_CD dùng chung trong CSDL IDS, một số bảng khác ghi rõ giá trị 'IDS'/'AUDIT' — chưa xác nhận, cần Data Modeler xác nhận trước go-live)"
+    source_type: "modeler_defined"
+    source_table: "IDS.COMPANY_DATA.SYSTEM_CD"
+    used_in_entities:
+      - "Public Company Report Submission"
+    values: []
+
   - scheme_code: "IDS_PERIODIC_REPORT_FREQUENCY"
     name: "Tần suất báo cáo định kỳ (tháng / quý / năm / bán niên) — rf_report_type_cd từ rep_forms"
     source_type: "etl_derived"
@@ -5257,6 +5281,47 @@ schemes:
     used_in_entities:
       - "Public Company Securities Offering"
       - "Public Company Securities Offering Result"
+    values: []
+
+  - scheme_code: "IDS_TS_TRANSACTION_TYPE"
+    name: "Loại giao dịch (Mua/Bán) đợt mua/bán cổ phiếu quỹ — IDS"
+    source_type: "source_table"
+    source_table: "IDS.COMPANY_TREASURY_SHARES.TRANSACTION_TYPE_CD"
+    used_in_entities:
+      - "Public Company Treasury Share Transaction"
+    values: []
+
+  - scheme_code: "IDS_TS_APPROVAL_STATUS"
+    name: "Trạng thái phê duyệt đợt mua/bán cổ phiếu quỹ — IDS"
+    source_type: "source_table"
+    source_table: "IDS.COMPANY_TREASURY_SHARES.APPROVAL_STATUS_CD"
+    used_in_entities:
+      - "Public Company Treasury Share Transaction"
+      - "Public Company Treasury Share Transaction Result"
+    values: []
+
+  - scheme_code: "IDS_TS_ADMINISTRATIVE_STATUS"
+    name: "Trạng thái thủ tục hành chính đợt mua/bán cổ phiếu quỹ — IDS"
+    source_type: "source_table"
+    source_table: "IDS.COMPANY_TREASURY_SHARES.ADMINISTRATIVE_STATUS_CD"
+    used_in_entities:
+      - "Public Company Treasury Share Transaction"
+    values: []
+
+  - scheme_code: "IDS_TS_ADMINISTRATIVE_PROC"
+    name: "Thủ tục hành chính đợt mua/bán cổ phiếu quỹ — IDS"
+    source_type: "source_table"
+    source_table: "IDS.COMPANY_TREASURY_SHARES.ADMINISTRATIVE_PROC_CD"
+    used_in_entities:
+      - "Public Company Treasury Share Transaction"
+    values: []
+
+  - scheme_code: "IDS_TS_APPLICATION"
+    name: "Mã hồ sơ đợt mua/bán cổ phiếu quỹ — IDS"
+    source_type: "source_table"
+    source_table: "IDS.COMPANY_TREASURY_SHARES.APPLICATION_CD"
+    used_in_entities:
+      - "Public Company Treasury Share Transaction"
     values: []
 
   - scheme_code: "IDS_LE_DATA_SOURCE"

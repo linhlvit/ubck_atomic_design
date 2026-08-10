@@ -33,7 +33,7 @@ attributes:
     source_table: EVALUATION_GROUPS
     source_column: null
     comment: "PK surrogate. Hash: hash_id('IDS.EVALUATION_GROUPS', GROUP_CD). BCV: \"[Group] Group\"."
-    classification_context: "Source System Code = 'IDS_EVALUATION_GROUPS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Public Company Evaluation Group Code
@@ -47,7 +47,7 @@ attributes:
     source_table: EVALUATION_GROUPS
     source_column: IDS.EVALUATION_GROUPS.GROUP_CD
     comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID) + Unique Key cũ — gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique trước go-live."
-    classification_context: "Source System Code = 'IDS_EVALUATION_GROUPS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     classification_context: "Source System Code = 'IDS_EVALUATION_GROUPS'"
-    etl_derived_value: IDS.EVALUATION_GROUPS
+    etl_derived_value: IDS_EVALUATION_GROUPS
 
   - name: Public Company Evaluation Group Name
     physical_name: pc_evaluation_group_nm
@@ -75,7 +75,7 @@ attributes:
     source_table: EVALUATION_GROUPS
     source_column: IDS.EVALUATION_GROUPS.GROUP_NAME
     comment: null
-    classification_context: "Source System Code = 'IDS_EVALUATION_GROUPS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Description
@@ -89,7 +89,7 @@ attributes:
     source_table: EVALUATION_GROUPS
     source_column: IDS.EVALUATION_GROUPS.DESCRIPTION
     comment: null
-    classification_context: "Source System Code = 'IDS_EVALUATION_GROUPS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Weight Percentage
@@ -103,7 +103,7 @@ attributes:
     source_table: EVALUATION_GROUPS
     source_column: IDS.EVALUATION_GROUPS.WEIGHT
     comment: "Nguồn NUMBER(5,2) lưu theo thang 0-1 (không phải 0-100) — giữ nguyên giá trị gốc, không nhân 100 khi ETL."
-    classification_context: "Source System Code = 'IDS_EVALUATION_GROUPS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Display Order
@@ -117,5 +117,5 @@ attributes:
     source_table: EVALUATION_GROUPS
     source_column: IDS.EVALUATION_GROUPS.DISPLAY_ORDER
     comment: null
-    classification_context: "Source System Code = 'IDS_EVALUATION_GROUPS'"
+    classification_context: null
     etl_derived_value: null

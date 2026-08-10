@@ -62,7 +62,7 @@ attributes:
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
   classification_context: "SOURCE_SYSTEM=IDS.RCOL"
-  etl_derived_value: "IDS.RCOL"
+  etl_derived_value: "IDS_RCOL"
   data_type: "string"
 - attribute_name: "Financial Report Column Template Name"
   physical_name: "fr_column_template_nm"
@@ -126,9 +126,10 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IDS.RCOL.REPORT_CATALOG_ID"
-  comment: "Lookup pair: fr_catalog.fr_catalog_code. Pair with Financial\
-    \ Report Catalog Id."
+  - "IDS.REPORT_CATALOG.REPORT_CD"
+  comment: "Lookup pair: fr_catalog.fr_catalog_code. Pair with Financial Report Catalog\
+    \ Id. Giá trị lấy từ IDS.REPORT_CATALOG.REPORT_CD sau ETL crosswalk — chi tiết\
+    \ xem comment Financial Report Catalog Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -189,7 +190,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Active Indicator"
-  physical_name: "active_indicator"
+  physical_name: "active_ind"
   description: "Trạng thái - (0 - không sử dụng, 1 - đang sử dụng)."
   data_domain: "Small Counter"
   nullable: true

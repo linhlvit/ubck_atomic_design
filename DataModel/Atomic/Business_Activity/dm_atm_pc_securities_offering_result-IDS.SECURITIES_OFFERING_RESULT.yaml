@@ -33,7 +33,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: null
     comment: "PK surrogate. BCV: \"[Business Activity] Business Activity\"."
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Public Company Securities Offering Result Code
@@ -47,7 +47,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.ID
     comment: "BK chính. PK nguồn NUMBER(10,0) tự tăng."
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
-    etl_derived_value: IDS.SECURITIES_OFFERING_RESULT
+    etl_derived_value: IDS_SECURITIES_OFFERING_RESULT
 
   - name: Public Company Securities Offering Id
     physical_name: pc_securities_offering_id
@@ -75,7 +75,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.SECURITIES_OFFERING_ID
     comment: "FK target: pc_securities_offering.pc_securities_offering_id. Hash: hash_id('IDS.SECURITIES_OFFERING', SECURITIES_OFFERING_ID)."
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Public Company Securities Offering Code
@@ -89,7 +89,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.SECURITIES_OFFERING_ID
     comment: "Lookup pair: pc_securities_offering.pc_securities_offering_code. Pair with Public Company Securities Offering Id."
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Offering Phase Name
@@ -103,7 +103,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.OFFERING_PHASE_NAME
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Result Report Date
@@ -117,7 +117,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.RESULT_REPORT_DATE
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Offering End Date
@@ -131,7 +131,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.OFFERING_END_DATE
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Offering Method Code Snapshot
@@ -145,7 +145,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.OFFERING_METHOD_CD
     comment: "Scheme: IDS_SO_OFFERING_METHOD (source_table, LOOKUP_GROUP = 'SO_OFFERING_METHOD') — denormalized snapshot lấy từ Public Company Securities Offering Plan theo BRD note."
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: IDS_SO_OFFERING_METHOD
     etl_derived_value: null
 
   - name: Security Type Code
@@ -159,7 +159,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.SECURITY_TYPE_CD
     comment: "Scheme: IDS_SO_SECURITY_TYPE (source_table, LOOKUP_GROUP = 'SO_SECURITY_TYPE') — dùng chung với Public Company Securities Offering Plan."
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: IDS_SO_SECURITY_TYPE
     etl_derived_value: null
 
   - name: Total Successful Quantity
@@ -173,7 +173,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.TOTAL_SUCCESSFUL_QTY
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Actual Offering Price
@@ -187,7 +187,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.ACTUAL_OFFERING_PRICE
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Total Collected Amount
@@ -201,7 +201,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.TOTAL_COLLECTED_AM
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Successful Ratio Percentage
@@ -215,7 +215,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.SUCCESSFUL_RATIO
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Issuer Successful Quantity
@@ -229,7 +229,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.ISSUER_SUCCESSFUL_QTY
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Shareholder Successful Quantity
@@ -243,7 +243,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.SHAREHOLDER_SUCCESSFUL_QTY
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Issuer Collected Amount
@@ -257,7 +257,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.ISSUER_COLLECTED_AM
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Shareholder Collected Amount
@@ -271,7 +271,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.SHAREHOLDER_COLLECTED_AM
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Capital Source
@@ -285,7 +285,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.CAPITAL_SOURCE
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Employee Quantity
@@ -299,7 +299,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.EMPLOYEE_QTY
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Domestic Successful Quantity
@@ -313,7 +313,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.DOMESTIC_SUCCESSFUL_QTY
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Domestic Collected Amount
@@ -327,7 +327,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.DOMESTIC_COLLECTED_AM
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Foreign Successful Quantity
@@ -341,7 +341,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.FOREIGN_SUCCESSFUL_QTY
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Foreign Collected Amount
@@ -355,7 +355,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.FOREIGN_COLLECTED_AM
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Post Issuance Total Quantity
@@ -369,7 +369,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.POST_ISSUANCE_TOTAL_QTY
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Total Treasury Share
@@ -383,7 +383,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.TOTAL_TREASURY_SHARE
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Total Outstanding Share
@@ -397,7 +397,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.TOTAL_OUTSTANDING_SHARE
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Domestic Offering Price
@@ -411,7 +411,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.DOMESTIC_OFFERING_PRICE
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Domestic Offering Quantity
@@ -425,7 +425,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.DOMESTIC_OFFERING_QTY
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Domestic Registered Quantity
@@ -439,7 +439,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.DOMESTIC_REGISTERED_QTY
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Domestic Distributed Quantity
@@ -453,7 +453,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.DOMESTIC_DISTRIBUTED_QTY
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Domestic Registered Investor Quantity
@@ -467,7 +467,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.DOMESTIC_REG_INVESTOR_QTY
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Domestic Distributed Investor Quantity
@@ -481,7 +481,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.DOMESTIC_DIST_INVESTOR_QTY
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Domestic Undistributed Investor Quantity
@@ -495,7 +495,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.DOMESTIC_UNDIST_INVESTOR_QTY
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Domestic Remaining Quantity
@@ -509,7 +509,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.DOMESTIC_REMAINING_QTY
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Domestic Distributed Percentage
@@ -523,7 +523,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.DOMESTIC_DISTRIBUTED_PCT
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Foreign Offering Price
@@ -537,7 +537,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.FOREIGN_OFFERING_PRICE
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Foreign Offering Quantity
@@ -551,7 +551,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.FOREIGN_OFFERING_QTY
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Foreign Registered Quantity
@@ -565,7 +565,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.FOREIGN_REGISTERED_QTY
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Foreign Distributed Quantity
@@ -579,7 +579,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.FOREIGN_DISTRIBUTED_QTY
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Foreign Registered Investor Quantity
@@ -593,7 +593,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.FOREIGN_REG_INVESTOR_QTY
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Foreign Distributed Investor Quantity
@@ -607,7 +607,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.FOREIGN_DIST_INVESTOR_QTY
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Foreign Undistributed Investor Quantity
@@ -621,7 +621,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.FOREIGN_UNDIST_INVESTOR_QTY
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Foreign Remaining Quantity
@@ -635,7 +635,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.FOREIGN_REMAINING_QTY
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Foreign Distributed Percentage
@@ -649,7 +649,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.FOREIGN_DISTRIBUTED_PCT
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Certificate Number
@@ -663,7 +663,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.CERTIFICATE_NO
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Certificate Date
@@ -677,7 +677,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.CERTIFICATE_DATE
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Official Letter Number
@@ -691,7 +691,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.OFFICIAL_LETTER_NO
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Official Letter Date
@@ -705,7 +705,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.OFFICIAL_LETTER_DATE
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Approval Status Code
@@ -719,7 +719,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.APPROVAL_STATUS_CD
     comment: "Scheme: IDS_SO_APPROVAL_STATUS (source_table, LOOKUP_GROUP = 'SO_APPROVAL_STATUS') — dùng chung với Public Company Securities Offering."
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: IDS_SO_APPROVAL_STATUS
     etl_derived_value: null
 
   - name: Approver User Id
@@ -733,7 +733,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.APPROVER_USER_ID
     comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM.USERS', APPROVER_USER_ID) | Chưa xác nhận join key IDS.SECURITIES_OFFERING_RESULT.APPROVER_USER_ID ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Approver User Code
@@ -747,7 +747,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.APPROVER_USER_ID
     comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Approver User Id."
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Approver User Name Snapshot
@@ -761,7 +761,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.APPROVER_USER_NAME
     comment: "Denormalized snapshot — nguồn lưu tên tự do song song với APPROVER_USER_ID, khác với pattern Code (lookup qua Id)."
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Processor User Id
@@ -775,7 +775,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.PROCESSOR_USER_ID
     comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM.USERS', PROCESSOR_USER_ID) | Chưa xác nhận join key IDS.SECURITIES_OFFERING_RESULT.PROCESSOR_USER_ID ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Processor User Code
@@ -789,7 +789,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.PROCESSOR_USER_ID
     comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Processor User Id."
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Processor User Name Snapshot
@@ -803,7 +803,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.PROCESSOR_USER_NAME
     comment: Denormalized snapshot — nguồn lưu tên tự do song song với PROCESSOR_USER_ID.
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Revision Reason
@@ -817,7 +817,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.REVISION_REASON
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Total Expense
@@ -831,7 +831,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.TOTAL_EXPENSE
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Underwriting Fee
@@ -845,7 +845,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.UNDERWRITING_FEE
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Distribution Fee
@@ -859,7 +859,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.DISTRIBUTION_FEE
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Audit Fee
@@ -873,7 +873,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.AUDIT_FEE
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Other Expense
@@ -887,7 +887,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.OTHER_EXPENSE
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Net Offering Proceeds
@@ -901,11 +901,11 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.NET_OFFERING_PROCEEDS
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Synced From External System Indicator
-    physical_name: synced_from_external_stm_indicator
+    physical_name: synced_from_external_stm_ind
     business_meaning: Đánh dấu đồng bộ dữ liệu từ hệ thống CBTT hay tạo mới tại IDS.
     data_domain: Small Counter
     data_type: int
@@ -915,11 +915,11 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.IS_SYNC
     comment: "Encoding nguồn: 1 = Đồng bộ từ CBTT, 0 = Tạo mới tại IDS."
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Deleted Indicator
-    physical_name: deleted_indicator
+    physical_name: deleted_ind
     business_meaning: Đánh dấu trạng thái xóa mềm.
     data_domain: Small Counter
     data_type: int
@@ -929,7 +929,7 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.DELETE_FLG
     comment: "Encoding nguồn: 1 = Xóa, 0 = Chưa xóa."
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Approver Comment
@@ -943,5 +943,47 @@ attributes:
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.APPROVER_COMMENT
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Extension Date
+    physical_name: extension_dt
+    business_meaning: Gia hạn đến ngày.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: SECURITIES_OFFERING_RESULT
+    source_column: IDS.SECURITIES_OFFERING_RESULT.EXTENSION_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Bond Ticker
+    physical_name: bond_ticker
+    business_meaning: Mã trái phiếu.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: SECURITIES_OFFERING_RESULT
+    source_column: IDS.SECURITIES_OFFERING_RESULT.BOND_TICKER
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Result Single Object
+    physical_name: result_single_object
+    business_meaning: Đối tượng kết quả chào bán riêng lẻ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: SECURITIES_OFFERING_RESULT
+    source_column: IDS.SECURITIES_OFFERING_RESULT.RESULT_SINGLE_OBJ
+    comment: null
+    classification_context: null
     etl_derived_value: null

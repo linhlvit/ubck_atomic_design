@@ -8,88 +8,121 @@
 7,CAPITAL_MOBILIZATION,Lưu thông tin về Qua trình tăng vốn trước khi thành đại chúng
 8,COMPANY_ADD_CAPITAL,Lưu thông tin về Quá trình tăng vốn
 9,COMPANY_TENDER_OFFER,Lưu thông tin phương án về quá trình chào mua công khai
-10,COMPANY_TREASURY_STOCKS,Lưu thông tin về cổ phiếu quỹ
-11,COMPANY_INSPECTION,"Lưu thông tin về thanh tra, kiểm tra"
-12,COMPANY_PENALTIES,Lưu thông tin về xử phạt hành chính
-13,COMPANY_CHANGE_ROLE_HIS,Lịch sử thay đổi thông tin quản lý công ty
-14,LOGINS,Bảng tài khoản đăng nhập
-15,COUNTRIES,Bảng lưu quốc gia
-16,PROVINCES,Bảng lưu dữ liệu tỉnh thành
-17,LOOKUP_VALUES,Bảng lưu dữ liệu danh mục
-18,USER_AUDIT_LOG,Bảng lưu log người dùng thao tác trên hệ thống
-19,REPORT_CATALOG,Bảng lưu mẫu biểu dữ liệu tài chính
-20,RROW,Bảng lưu Chỉ tiêu tài chính
-21,REP_FORMS,Bảng lưu sub form cho các mẫu báo cáo đầu vào khác
-22,REP_ROW,Bảng lưu hàng trong sub form cho các mẫu báo cáo đầu vào khác
-23,REP_COLUMN,Bảng lưu cột trong sub form cho các mẫu báo cáo đầu vào khác
-24,NOTIFICATIONS,Lưu thông tin về notifications
-25,FORMS,Lưu mẫu báo cáo
-26,FIELDS,Trường dữ liệu chi tiết
-27,FORM_FIELDS,Lưu cấu hình trường dữ liệu của các mẫu báo cáo
-28,FORM_FIELD_HISTORY,Lưu lại lịch sử khi cấu hình form_fields
-29,DEPARTMENTS,Lưu dữ liệu phòng ban
-30,DATA_TYPES,Lưu kiểu dữ liệu sử dụng cho các fields trong hệ thống
-31,ACCOUNT_NUMBERS,Bảng lữu trữ tài khoản của cổ đông
-32,POSITIONS,Bảng lữu trữ chức vụ của cổ đông
-33,IDENTITY,Bảng lữu trữ giấy tờ cổ đông
-34,STOCK_CONTROLS,Lưu thông tin cổ phiếu hạn chế
-35,HOLDER_RELATIONSHIP,"Lưu thông tin quan hệ của NNB, NLQ…."
-36,SMS_LOG,Lưu trữ log gửi SMS
-37,SYS_PARAMETERS,Lưu trữ cấu hình tham số hệ thống
-38,REPORT_EXTENSIONS,Lưu trữ dữ liệu gia hạn báo cáo định kỳ của công ty đại chúng
-39,COMPANY_DATA,Lưu FORMS dữ liệu thuộc COMPANY_PROFILES
-40,DATA,Lưu trữ dữ liệu của hàng và cột của báo cáo tài chính
-41,DATA_VALUES,"Lưu dữ liệu khi nhập vào tương ứng với các Form, Fields"
-42,BOND_LISTING_HISTORY,"Lưu trữ lịch sử thông tin phát hành trái phiếu ra công chúng, trái phiếu riêng lẻ của công ty đại chúng."
-43,COMPANY_DIGITAL_CERTIFICATES,Lưu trữ dữ liệu ký số của các công ty
-44,COMPANY_ENTITY_ROLE,"Lữu trữ thông tin vài trò cổ đông, người NB trong công ty đại chúng."
-45,COMPANY_SHAREHOLDING,Lưu trữ thông tin cổ đông.
-46,COMPANY_SHARE_STATISTICS,Lưu thông tin về số CP sau mỗi đợt mua/ bán
-47,EVALUATIONS,Lưu trữ thông tin đánh giá công ty đại chúng.
-48,EVALUATION_CBONDS,Lưu trữ dữ liệu xếp hạng trái phiếu (lấy từ sở HNX)
-49,EVALUATION_CRITERIA,"Lưu trữ chỉ tiêu đánh giá, xếp hạng công ty đại chúng."
-50,EVALUATION_DETAILS,"Lưu trữ chi tiết đánh giá, xếp hạng công ty đại chúng theo kỳ."
-51,EVALUATION_GROUPS,"Lưu trữ nhóm chỉ tiêu đánh giá, xếp hàng công ty đại chúng."
-52,EVALUATION_PERIODS,"Lưu trữ kỳ đánh giá, xếp hạng công ty đại chúng"
-53,FILES,Lữu trữ thông tin file đính kèm của các object trong hệ thống.
-54,HISTORY_CHANGE_LOG,Lưu trữ dữ liệu lịch sử thay đổi từng trường của các object trong hệ thống khi được cấu hình.
-55,HOLIDAY_CALENDAR,Lưu trữ dữ  liệu ngày nghỉ.
-56,INTEGRATION_JOB_DEFINITION,Định nghĩa job inbound — JOB_CODE khớp REST path + JobHandler bean trong DIS
-57,INTEGRATION_SYNC_LOG,"Job-level log cho mỗi lần xử lý tích hợp (Quartz job, Kafka message, outbound)"
-58,INTG_FINANCIAL_STATEMENT,Cấu hình mapping chỉ tiêu BCTC của IDS với Chỉ tiêu của Sở
-59,INTG_FORM_MAPPING,Cấu hình mapping Form ID của Sở với Form ID của IDS
-60,INTG_IMPORT_DATA_LOG,Lưu thông tin log import dữ liệu của Sở vào IDS
-61,INTG_REPORT_CONFIG,Lưu thông tin cấu hình mẫu báo cáo cần đẩy lên IDS
-62,INTG_REPORT_FIELD,Cấu hình ràng buộc chỉ tiêu của từng báo cáo
-63,INTG_SIGNATURE_CONFIG,"Cấu hình master cho các lịch trình và chữ ký chứng khoán (HNX, HOSE)"
-64,LEGAL_ENTITIES,"Bảng chứa thông tin Người nội bộ, Cổ đông (cá nhân, tổ chức), Người liên quan"
-65,MANUAL_DOCUMENT,Lưu trữ cấu hình tài liệu hướng dẫn trong hệ thống
-66,NOTIFICATIONS_DTL,Lưu trữ đối tượng gửi thông báo chi tiết.
-67,PUB_COMPANY_CANCELLATION,Thông tin lịch sử hủy đăng ký công ty đại chúng
-68,PUB_COMPANY_REGISTRATION,Thông tin lịch sử đăng ký công ty đại chúng
-69,SECURITIES_OFFERING,"Lưu thông tin về Hoạt động chào bán, phát hành chứng khoán"
-70,SECURITIES_OFFERING_PLAN,"Lưu thông tin về Hoạt động chào bán, phát hành chứng khoán"
-71,SECURITIES_OFFERING_RESULT,"Lưu thông tin về Hoạt động chào bán, phát hành chứng khoán"
-72,STOCK_LISTING_HISTORY,Thông tin lịch sử niêm yết/ đăng ký giao dịch cổ phiếu
-73,UBCK_SYNC_ITEM_LOG,Log per-record cho job UBCK (CSDLTT) liên kết INTEGRATION_SYNC_LOG qua CORRELATION_ID
-74,VIOLATION_PENALTY_CONFIG,Bảng cấu hình các mức phạt/xử lý khi vi phạm
-75,VIOLATION_REPORT,Lưu trữ thông tin hạn nộp BC định kỳ của công ty đại chúng.
-76,VIOLATION_TEMPLATES,Bảng lưu trữ thông tin cấu hình mẫu vi phạm
-77,WARDS,Lưu trữ thông tin xã/phường
-78,RCOL,
-79,AF_PROFILES,Bảng lưu thông tin công ty kiểm toán
-80,AF_LEGAL_REPRESENTATIVE,Bảng Người đại diện theo pháp luật
-81,AF_APPROVAL,Bảng lưu thông tin quyết định chấp thuận
-82,AF_AUDITOR_PROFILES,Lưu thông tin chung kiểm toán viên
-83,AF_WARNING,Bảng lưu thông tin nhắc nhở
-84,AF_SANCTIONS,Bảng lưu thông tin xử phạt
-85,AF_AUDITOR_STATUS_HISTORY,
-86,AF_INSPECTION,Bảng lưu thông tin kiểm tra công ty kiểm toán
-87,AF_STATUS_HISTORY,Bảng lưu lịch sử trạng thái
-88,AF_SUSPENSION,Bảng lưu thông tin đình chỉ
-89,AF_TECHNICAL_AUDIT,Bảng lưu thông tin kiểm tra hồ sơ kiểm toán
-90,LOGIN_PERMISSION_BY_CODE,Bảng LOGIN_PERMISSION_BY_CODE
-91,FIELDS_MGR,Quản lý field (fields_mgr)
-92,HTE_VIOLATION_REPORT,Vi phạm nộp báo cáo (hte_violation_report)
-93,MIGRATION_EXECUTIONS,Lịch sử thực thi migration
-94,MIGRATION_LOGS,Log chi tiết migration
+10,COMPANY_TENDER_OFFER_RESULT,Lưu thông tin kết quả thực hiện chào mua công khai
+11,TENDER_OFFER,Lưu thông tin phương án chào mua công khai (Public Tender Offer)
+12,TENDER_OFFER_RESULT,Lưu thông tin kết quả chào mua công khai (Public Tender Offer Result)
+13,COMPANY_TREASURY_STOCKS,Lưu thông tin về cổ phiếu quỹ
+14,COMPANY_TREASURY_SHARES,Lưu thông tin đợt mua/bán cổ phiếu quỹ (Treasury Share Transaction)
+15,TREASURY_SHARE_TRANS_RESULT,Lưu thông tin kết quả giao dịch cổ phiếu quỹ (Treasury Share Transaction Result)
+16,COMPANY_INSPECTION,"Lưu thông tin về thanh tra, kiểm tra"
+17,COMPANY_PENALTIES,Lưu thông tin về xử phạt hành chính
+18,COMPANY_CHANGE_ROLE_HIS,Lịch sử thay đổi thông tin quản lý công ty
+19,LOGINS,Bảng tài khoản đăng nhập
+20,COUNTRIES,Bảng lưu quốc gia
+21,PROVINCES,Bảng lưu dữ liệu tỉnh thành
+22,LOOKUP_VALUES,Bảng lưu dữ liệu danh mục
+23,USER_AUDIT_LOG,Bảng lưu log người dùng thao tác trên hệ thống
+24,REPORT_CATALOG,Bảng lưu mẫu biểu dữ liệu tài chính
+25,RROW,Bảng lưu Chỉ tiêu tài chính
+26,REP_FORMS,Bảng lưu sub form cho các mẫu báo cáo đầu vào khác
+27,REP_ROW,Bảng lưu hàng trong sub form cho các mẫu báo cáo đầu vào khác
+28,REP_COLUMN,Bảng lưu cột trong sub form cho các mẫu báo cáo đầu vào khác
+29,RCOL_MGR,Danh mục cột báo cáo tài chính (phiên bản quản lý - song song với RCOL)
+30,REPORT_CATALOG_MGR,Danh mục mẫu báo cáo tài chính (phiên bản quản lý - song song với REPORT_CATALOG)
+31,RROW_MGR,Danh mục hàng báo cáo tài chính (phiên bản quản lý - song song với RROW)
+32,REP_DATA,Lưu trữ dữ liệu của hàng và cột của báo cáo có cấu trúc
+33,DYNAMIC_REPORT_TEMPLATES,Mẫu báo cáo động — header
+34,DYNAMIC_REPORT_TEMPLATE_FIELDS,Chỉ tiêu thuộc mẫu báo cáo động
+35,NOTIFICATIONS,Lưu thông tin về notifications
+36,FORMS,Lưu mẫu báo cáo
+37,FIELDS,Trường dữ liệu chi tiết
+38,FORM_FIELDS,Lưu cấu hình trường dữ liệu của các mẫu báo cáo
+39,FORM_FIELD_HISTORY,Lưu lại lịch sử khi cấu hình form_fields
+40,ALERT_TEMPLATE_AUDIT_HDR,Danh sách mẫu template cảnh báo
+41,ALERT_TEMPLATE_AUDIT_DTL,Danh sách rule cấu hình cảnh báo
+42,DEPARTMENTS,Lưu dữ liệu phòng ban
+43,DATA_TYPES,Lưu kiểu dữ liệu sử dụng cho các fields trong hệ thống
+44,ACCOUNT_NUMBERS,Bảng lữu trữ tài khoản của cổ đông
+45,POSITIONS,Bảng lữu trữ chức vụ của cổ đông
+46,IDENTITY,Bảng lữu trữ giấy tờ cổ đông
+47,STOCK_CONTROLS,Lưu thông tin cổ phiếu hạn chế
+48,HOLDER_RELATIONSHIP,"Lưu thông tin quan hệ của NNB, NLQ…."
+49,SMS_LOG,Lưu trữ log gửi SMS
+50,SYS_PARAMETERS,Lưu trữ cấu hình tham số hệ thống
+51,REPORT_EXTENSIONS,Lưu trữ dữ liệu gia hạn báo cáo định kỳ của công ty đại chúng
+52,COMPANY_DATA,Lưu FORMS dữ liệu thuộc COMPANY_PROFILES
+53,DATA,Lưu trữ dữ liệu của hàng và cột của báo cáo tài chính
+54,DATA_VALUES,"Lưu dữ liệu khi nhập vào tương ứng với các Form, Fields"
+55,BOND_LISTING_HISTORY,"Lưu trữ lịch sử thông tin phát hành trái phiếu ra công chúng, trái phiếu riêng lẻ của công ty đại chúng."
+56,COMPANY_DIGITAL_CERTIFICATES,Lưu trữ dữ liệu ký số của các công ty
+57,COMPANY_ENTITY_ROLE,"Lữu trữ thông tin vài trò cổ đông, người NB trong công ty đại chúng."
+58,COMPANY_SHAREHOLDING,Lưu trữ thông tin cổ đông.
+59,COMPANY_SHARE_STATISTICS,Lưu thông tin về số CP sau mỗi đợt mua/ bán
+60,EVALUATIONS,Lưu trữ thông tin đánh giá công ty đại chúng.
+61,EVALUATION_CBONDS,Lưu trữ dữ liệu xếp hạng trái phiếu (lấy từ sở HNX)
+62,EVALUATION_CRITERIA,"Lưu trữ chỉ tiêu đánh giá, xếp hạng công ty đại chúng."
+63,EVALUATION_DETAILS,"Lưu trữ chi tiết đánh giá, xếp hạng công ty đại chúng theo kỳ."
+64,EVALUATION_GROUPS,"Lưu trữ nhóm chỉ tiêu đánh giá, xếp hàng công ty đại chúng."
+65,EVALUATION_PERIODS,"Lưu trữ kỳ đánh giá, xếp hạng công ty đại chúng"
+66,EVALUATION_ERROR_LOG,"Nhật ký lỗi phát sinh trong quá trình đánh giá, xếp hạng công ty đại chúng"
+67,EVALUATION_LEVEL_SCORE,Cấu hình điểm áp dụng chung cho tất cả chỉ tiêu theo mức đánh giá
+68,FILES,Lữu trữ thông tin file đính kèm của các object trong hệ thống.
+69,HISTORY_CHANGE_LOG,Lưu trữ dữ liệu lịch sử thay đổi từng trường của các object trong hệ thống khi được cấu hình.
+70,HOLIDAY_CALENDAR,Lưu trữ dữ  liệu ngày nghỉ.
+71,INTEGRATION_JOB_DEFINITION,Định nghĩa job inbound — JOB_CODE khớp REST path + JobHandler bean trong DIS
+72,INTEGRATION_SYNC_LOG,"Job-level log cho mỗi lần xử lý tích hợp (Quartz job, Kafka message, outbound)"
+73,INTG_API_LOG,Log gọi API tích hợp giữa IDS và các hệ thống ngoài
+74,HTE_INTG_API_LOG,Log gọi API tích hợp module HTE
+75,INTG_FINANCIAL_STATEMENT,Cấu hình mapping chỉ tiêu BCTC của IDS với Chỉ tiêu của Sở
+76,INTG_FORM_MAPPING,Cấu hình mapping Form ID của Sở với Form ID của IDS
+77,INTG_IMPORT_DATA_LOG,Lưu thông tin log import dữ liệu của Sở vào IDS
+78,HTE_INTG_IMPORT_DATA_LOG,Log import dữ liệu tích hợp module HTE
+79,INTG_REPORT_CONFIG,Lưu thông tin cấu hình mẫu báo cáo cần đẩy lên IDS
+80,INTG_REPORT_FIELD,Cấu hình ràng buộc chỉ tiêu của từng báo cáo
+81,INTG_SIGNATURE_CONFIG,"Cấu hình master cho các lịch trình và chữ ký chứng khoán (HNX, HOSE)"
+82,LEGAL_ENTITIES,"Bảng chứa thông tin Người nội bộ, Cổ đông (cá nhân, tổ chức), Người liên quan"
+83,MANUAL_DOCUMENT,Lưu trữ cấu hình tài liệu hướng dẫn trong hệ thống
+84,NOTIFICATIONS_DTL,Lưu trữ đối tượng gửi thông báo chi tiết.
+85,HTE_NOTIFICATIONS_DTL,Đối tượng gửi thông báo chi tiết module HTE
+86,PUB_COMPANY_CANCELLATION,Thông tin lịch sử hủy đăng ký công ty đại chúng
+87,PUB_COMPANY_REGISTRATION,Thông tin lịch sử đăng ký công ty đại chúng
+88,SECURITIES_OFFERING,"Lưu thông tin về Hoạt động chào bán, phát hành chứng khoán"
+89,SECURITIES_OFFERING_PLAN,"Lưu thông tin về Hoạt động chào bán, phát hành chứng khoán"
+90,SECURITIES_OFFERING_RESULT,"Lưu thông tin về Hoạt động chào bán, phát hành chứng khoán"
+91,STOCK_LISTING_HISTORY,Thông tin lịch sử niêm yết/ đăng ký giao dịch cổ phiếu
+92,UBCK_SYNC_ITEM_LOG,Log per-record cho job UBCK (CSDLTT) liên kết INTEGRATION_SYNC_LOG qua CORRELATION_ID
+93,VIOLATION_PENALTY_CONFIG,Bảng cấu hình các mức phạt/xử lý khi vi phạm
+94,VIOLATION_REPORT,Lưu trữ thông tin hạn nộp BC định kỳ của công ty đại chúng.
+95,VIOLATION_TEMPLATES,Bảng lưu trữ thông tin cấu hình mẫu vi phạm
+96,WARDS,Lưu trữ thông tin xã/phường
+97,RCOL,
+98,BK_AF_PROFILES,Bảng lưu thông tin công ty kiểm toán
+99,BK_AF_LEGAL_REPRESENTATIVE,Bảng Người đại diện theo pháp luật
+100,BK_AF_APPROVAL,Bảng lưu thông tin quyết định chấp thuận
+101,BK_AF_AUDITOR_PROFILES,Lưu thông tin chung kiểm toán viên
+102,BK_AF_WARNING,Bảng lưu thông tin nhắc nhở
+103,BK_AF_SANCTIONS,Bảng lưu thông tin xử phạt
+104,BK_AF_AUDITOR_STATUS_HISTORY,
+105,BK_AF_INSPECTION,Bảng lưu thông tin kiểm tra công ty kiểm toán
+106,BK_AF_STATUS_HISTORY,Bảng lưu lịch sử trạng thái
+107,BK_AF_SUSPENSION,Bảng lưu thông tin đình chỉ
+108,BK_AF_TECHNICAL_AUDIT,Bảng lưu thông tin kiểm tra hồ sơ kiểm toán
+109,LOGIN_PERMISSION_BY_CODE,Bảng LOGIN_PERMISSION_BY_CODE
+110,FIELDS_MGR,Quản lý field (fields_mgr)
+111,HTE_VIOLATION_REPORT,Vi phạm nộp báo cáo (hte_violation_report)
+112,MIGRATION_EXECUTIONS,Lịch sử thực thi migration
+113,MIGRATION_LOGS,Log chi tiết migration
+114,DATABASECHANGELOG,Lịch sử migration cơ sở dữ liệu
+115,DATABASECHANGELOGLOCK,Lock khi Liquibase đang chạy
+116,DBTOOLS$MCP_LOG,Bảng kỹ thuật Oracle Database Tools ghi log truy vấn MCP (không dùng cho nghiệp vụ)
+117,QRTZ_JOB_DETAILS,"Quartz - Thông tin chi tiết Job (bảng kỹ thuật lập lịch job, out_of_scope)"
+118,QRTZ_TRIGGERS,"Quartz - Thông tin Trigger (bảng kỹ thuật lập lịch job, out_of_scope)"
+119,QRTZ_SIMPLE_TRIGGERS,"Quartz - Simple Trigger (bảng kỹ thuật lập lịch job, out_of_scope)"
+120,QRTZ_CRON_TRIGGERS,"Quartz - Cron Trigger (bảng kỹ thuật lập lịch job, out_of_scope)"
+121,QRTZ_BLOB_TRIGGERS,"Quartz - Blob Trigger (bảng kỹ thuật lập lịch job, out_of_scope)"
+122,QRTZ_SIMPROP_TRIGGERS,"Quartz - Simple Property Trigger (bảng kỹ thuật lập lịch job, out_of_scope)"
+123,QRTZ_FIRED_TRIGGERS,"Quartz - Trigger đã được kích hoạt (bảng kỹ thuật lập lịch job, out_of_scope)"
+124,QRTZ_PAUSED_TRIGGER_GRPS,"Quartz - Nhóm Trigger bị tạm dừng (bảng kỹ thuật lập lịch job, out_of_scope)"
+125,QRTZ_SCHEDULER_STATE,"Quartz - Trạng thái Scheduler (bảng kỹ thuật lập lịch job, out_of_scope)"
+126,QRTZ_LOCKS,"Quartz - Lock cho cluster (bảng kỹ thuật lập lịch job, out_of_scope)"
+127,QRTZ_CALENDARS,"Quartz - Calendar (bảng kỹ thuật lập lịch job, out_of_scope)"

@@ -55,7 +55,7 @@ attributes:
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
   classification_context: "SOURCE_SYSTEM=IDS.AF_TECHNICAL_AUDIT"
-  etl_derived_value: "IDS.AF_TECHNICAL_AUDIT"
+  etl_derived_value: "IDS_AF_TECHNICAL_AUDIT"
   data_type: "string"
 - attribute_name: "Audit Firm Id"
   physical_name: "af_id"
@@ -66,7 +66,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.AF_TECHNICAL_AUDIT.AF_PROFILE_ID"
-  comment: "FK target: Audit Firm.Audit Firm Id. Hash: hash_id('IDS.AF_PROFILES',\
+  comment: "FK target: audit_firm.af_id. Hash: hash_id('IDS.AF_PROFILES',\
     \ AF_PROFILE_ID)."
   classification_context: null
   etl_derived_value: null
@@ -80,7 +80,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.AF_TECHNICAL_AUDIT.AF_PROFILE_ID"
-  comment: "Lookup pair: Audit Firm.Audit Firm Code. Pair with Audit Firm Id."
+  comment: "Lookup pair: audit_firm.af_code. Pair with Audit Firm Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -93,7 +93,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.AF_TECHNICAL_AUDIT.AF_INSPECTION_ID"
-  comment: "FK target: Audit Firm Inspection.Audit Firm Inspection Id. Hash: hash_id('IDS.AF_INSPECTION',\
+  comment: "FK target: af_inspection.af_inspection_id. Hash: hash_id('IDS.AF_INSPECTION',\
     \ AF_INSPECTION_ID)."
   classification_context: null
   etl_derived_value: null
@@ -107,7 +107,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.AF_TECHNICAL_AUDIT.AF_INSPECTION_ID"
-  comment: "Lookup pair: Audit Firm Inspection.Audit Firm Inspection Code. Pair with\
+  comment: "Lookup pair: af_inspection.af_inspection_code. Pair with\
     \ Audit Firm Inspection Id."
   classification_context: null
   etl_derived_value: null
@@ -273,7 +273,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Deleted Indicator"
-  physical_name: "deleted_indicator"
+  physical_name: "deleted_ind"
   description: "Soft delete flag - 0: Active, 1: Deleted."
   data_domain: "Small Counter"
   nullable: true

@@ -33,7 +33,7 @@ attributes:
     source_table: EVALUATION_CRITERIA
     source_column: null
     comment: "PK surrogate. Hash: hash_id('IDS.EVALUATION_CRITERIA', CRITERION_CD). BCV: \"[Condition] Evaluation Criteria\"."
-    classification_context: "Source System Code = 'IDS_EVALUATION_CRITERIA'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Public Company Evaluation Criterion Code
@@ -47,7 +47,7 @@ attributes:
     source_table: EVALUATION_CRITERIA
     source_column: IDS.EVALUATION_CRITERIA.CRITERION_CD
     comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID) + Unique Key cũ — gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique trước go-live."
-    classification_context: "Source System Code = 'IDS_EVALUATION_CRITERIA'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     classification_context: "Source System Code = 'IDS_EVALUATION_CRITERIA'"
-    etl_derived_value: IDS.EVALUATION_CRITERIA
+    etl_derived_value: IDS_EVALUATION_CRITERIA
 
   - name: Public Company Evaluation Group Id
     physical_name: pc_evaluation_group_id
@@ -75,7 +75,7 @@ attributes:
     source_table: EVALUATION_CRITERIA
     source_column: IDS.EVALUATION_CRITERIA.GROUP_CD
     comment: "FK target: pc_evaluation_group.pc_evaluation_group_id. Hash: hash_id('IDS.EVALUATION_GROUPS', GROUP_CD). Hash trực tiếp từ GROUP_CD (đã có sẵn trên cùng dòng nguồn) — không join qua EVALUATION_GROUPS.ID kỹ thuật, theo yêu cầu Data Modeler (2026-07-15). Cần profile dữ liệu nguồn xác nhận NOT NULL trước go-live."
-    classification_context: "Source System Code = 'IDS_EVALUATION_CRITERIA'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Public Company Evaluation Group Code
@@ -89,7 +89,7 @@ attributes:
     source_table: EVALUATION_CRITERIA
     source_column: IDS.EVALUATION_CRITERIA.GROUP_CD
     comment: "Lookup pair: pc_evaluation_group.pc_evaluation_group_code. Pair with Public Company Evaluation Group Id."
-    classification_context: "Source System Code = 'IDS_EVALUATION_CRITERIA'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Public Company Evaluation Criterion Name
@@ -103,7 +103,7 @@ attributes:
     source_table: EVALUATION_CRITERIA
     source_column: IDS.EVALUATION_CRITERIA.CRITERION_NAME
     comment: null
-    classification_context: "Source System Code = 'IDS_EVALUATION_CRITERIA'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Description
@@ -117,7 +117,7 @@ attributes:
     source_table: EVALUATION_CRITERIA
     source_column: IDS.EVALUATION_CRITERIA.DESCRIPTION
     comment: null
-    classification_context: "Source System Code = 'IDS_EVALUATION_CRITERIA'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Subgroup Name
@@ -131,11 +131,11 @@ attributes:
     source_table: EVALUATION_CRITERIA
     source_column: IDS.EVALUATION_CRITERIA.SUBGROUP_NAME
     comment: null
-    classification_context: "Source System Code = 'IDS_EVALUATION_CRITERIA'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Basic Criterion Indicator
-    physical_name: basic_criterion_indicator
+    physical_name: basic_criterion_ind
     business_meaning: Là chỉ tiêu cơ bản hay không.
     data_domain: Small Counter
     data_type: int
@@ -145,7 +145,7 @@ attributes:
     source_table: EVALUATION_CRITERIA
     source_column: IDS.EVALUATION_CRITERIA.BASIC_FLG
     comment: Giá trị 1 → true (cơ bản); 0 → false (bình thường). Nguồn NUMBER(1).
-    classification_context: "Source System Code = 'IDS_EVALUATION_CRITERIA'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Display Order Group
@@ -159,7 +159,7 @@ attributes:
     source_table: EVALUATION_CRITERIA
     source_column: IDS.EVALUATION_CRITERIA.DISPLAY_ORDER_GROUP
     comment: null
-    classification_context: "Source System Code = 'IDS_EVALUATION_CRITERIA'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Display Order Subgroup
@@ -173,5 +173,19 @@ attributes:
     source_table: EVALUATION_CRITERIA
     source_column: IDS.EVALUATION_CRITERIA.DISPLAY_ORDER_SUBGROUP
     comment: null
-    classification_context: "Source System Code = 'IDS_EVALUATION_CRITERIA'"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Display Order
+    physical_name: display_order
+    business_meaning: Sắp xếp chỉ tiêu.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: EVALUATION_CRITERIA
+    source_column: IDS.EVALUATION_CRITERIA.DISPLAY_ORDER
+    comment: null
+    classification_context: null
     etl_derived_value: null

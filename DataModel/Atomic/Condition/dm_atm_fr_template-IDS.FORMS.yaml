@@ -1,0 +1,359 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-fr_template-IDS.FORMS
+  logical_name: Financial Report Template
+  physical_name: fr_template
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Condition
+  bcv_concept: "[Condition] Form Definition"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  description: |
+    Template/form dùng để công bố thông tin (CBTT): xác định cấu trúc, phiên bản, và hệ thống phân cấp form qua self-reference. Đổi tên từ "Disclosure Form Definition" (2026-08-05, theo yêu cầu tường minh Data Modeler). LƯU Ý: "Disclosure Form Definition Notification Recipient" và "Disclosure Form Definition Violation Template" chưa đổi tên theo — vi phạm rule#8 (entity con chứa tên entity cha) cho tới khi Data Modeler xác nhận đổi tên 2 entity này.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-IDS-FORMS
+
+attributes:
+  - name: Financial Report Template Id
+    physical_name: fr_template_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: IDS
+    source_table: FORMS
+    source_column: null
+    comment: "PK surrogate. Hash: hash_id('IDS.FORMS', FORM_CD). BCV: \"[Condition] Form Definition\". Đổi tên entity 2026-08-05."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Financial Report Template Code
+    physical_name: fr_template_code
+    business_meaning: Mã form. BK duy nhất — Id hash từ trường này.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: FORMS
+    source_column: IDS.FORMS.FORM_CD
+    comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID) + Unique Key cũ — gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique trước go-live."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: FORMS
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'IDS_FORMS'"
+    etl_derived_value: IDS_FORMS
+
+  - name: Parent Financial Report Template Id
+    physical_name: parent_fr_template_id
+    business_meaning: Khóa cha (tự tham chiếu).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: FORMS
+    source_column: IDS.FORMS.PARENT_ID
+    comment: "FK target: fr_template.fr_template_id (self-reference). Resolve: join PARENT_ID → IDS.FORMS.ID để lấy FORM_CD, rồi hash_id('IDS.FORMS', FORM_CD_CHA)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Parent Financial Report Template Code
+    physical_name: parent_fr_template_code
+    business_meaning: Mã form cha.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: FORMS
+    source_column: IDS.FORMS.PARENT_ID
+    comment: "Lookup pair: fr_template.fr_template_code. Pair with Parent Financial Report Template Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Financial Report Template Name
+    physical_name: fr_template_nm
+    business_meaning: Tên form (tiếng Việt).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: FORMS
+    source_column: IDS.FORMS.FORM_NAME_VI
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Financial Report Template English Name
+    physical_name: fr_template_english_nm
+    business_meaning: Tên form (tiếng Anh).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: FORMS
+    source_column: IDS.FORMS.FORM_NAME_EN
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Financial Report Template Type Code
+    physical_name: fr_template_tp_code
+    business_meaning: Loại tin hay hồ sơ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: FORMS
+    source_column: IDS.FORMS.FORM_TYPE_CD
+    comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: News Type Code
+    physical_name: news_tp_code
+    business_meaning: Loại tin gốc.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: FORMS
+    source_column: IDS.FORMS.NEWS_TYPE_CD
+    comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: News Sub Type Code
+    physical_name: news_sub_tp_code
+    business_meaning: Loại tin con.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: FORMS
+    source_column: IDS.FORMS.SUB_NEWS_TYPE_CD
+    comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: News Group Type Code
+    physical_name: news_group_tp_code
+    business_meaning: Nhóm loại tin.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: FORMS
+    source_column: IDS.FORMS.NEWS_TYPE_GROUP_CD
+    comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Officer Auto Approval Indicator
+    physical_name: officer_auto_approval_ind
+    business_meaning: Chuyên viên tự động duyệt.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: FORMS
+    source_column: IDS.FORMS.OFFICER_APPROVAL_FLG
+    comment: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1).
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Post Checked Indicator
+    physical_name: post_checked_ind
+    business_meaning: Hậu kiểm tin.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: FORMS
+    source_column: IDS.FORMS.POST_CHECKED_FLG
+    comment: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1).
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Activated Indicator
+    physical_name: activated_ind
+    business_meaning: Kích hoạt.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: FORMS
+    source_column: IDS.FORMS.ACTIVATED_FLG
+    comment: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1).
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Ca Signed Indicator
+    physical_name: ca_signed_ind
+    business_meaning: Ký CA (chứng thư số).
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: FORMS
+    source_column: IDS.FORMS.CA_SIGNED_FLG
+    comment: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1).
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Leader Auto Approval Indicator
+    physical_name: leader_auto_approval_ind
+    business_meaning: Form tự động duyệt (Lãnh đạo).
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: FORMS
+    source_column: IDS.FORMS.LEADER_APPROVAL_FLG
+    comment: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1).
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Published Indicator
+    physical_name: published_ind
+    business_meaning: Form được công bố.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: FORMS
+    source_column: IDS.FORMS.PUBLISHED_FLG
+    comment: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1).
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Title Formula
+    physical_name: title_formula
+    business_meaning: Công thức tiêu đề.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: FORMS
+    source_column: IDS.FORMS.TITLE_FORMULA
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Title Formula English
+    physical_name: title_formula_english
+    business_meaning: Công thức tiêu đề (tiếng Anh).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: FORMS
+    source_column: IDS.FORMS.TITLE_FORMULA_EN
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Type Code
+    physical_name: rpt_tp_code
+    business_meaning: Loại báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: FORMS
+    source_column: IDS.FORMS.REPORT_TYPE
+    comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn. Nguồn lưu dạng số (NUMBER(1)) — ETL cần convert sang string."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Control Unit Code
+    physical_name: control_unit_code
+    business_meaning: Đơn vị kiểm soát.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: FORMS
+    source_column: IDS.FORMS.CONTROL_UNIT_CD
+    comment: "Scheme: IDS_CONTROL_UNIT (no_lookup) — chưa xác nhận cross-source FK đến Regulatory Authority Organization Unit; giữ Classification Value cho đến khi Data Modeler xác nhận."
+    classification_context: IDS_CONTROL_UNIT
+    etl_derived_value: null
+
+  - name: Operating Unit Code
+    physical_name: operating_unit_code
+    business_meaning: Đơn vị sử dụng.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: FORMS
+    source_column: IDS.FORMS.OPERATING_UNIT_CD
+    comment: "Scheme: IDS_OPERATING_UNIT (no_lookup) — chưa xác nhận cross-source FK đến Regulatory Authority Organization Unit; giữ Classification Value cho đến khi Data Modeler xác nhận."
+    classification_context: IDS_OPERATING_UNIT
+    etl_derived_value: null
+
+  - name: System Code
+    physical_name: stm_code
+    business_meaning: Hệ thống con trong IDS.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: FORMS
+    source_column: IDS.FORMS.SYSTEM_CD
+    comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Deleted Indicator
+    physical_name: deleted_ind
+    business_meaning: Trạng thái xóa.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: FORMS
+    source_column: IDS.FORMS.DELETE_FLG
+    comment: Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1).
+    classification_context: null
+    etl_derived_value: null

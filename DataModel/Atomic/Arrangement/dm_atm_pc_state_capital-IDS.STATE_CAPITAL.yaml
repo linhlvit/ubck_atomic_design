@@ -33,7 +33,7 @@ attributes:
     source_table: STATE_CAPITAL
     source_column: null
     comment: "PK surrogate. BCV: \"[Arrangement] Ownership\"."
-    classification_context: "Source System Code = 'IDS_STATE_CAPITAL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Public Company State Capital Code
@@ -47,7 +47,7 @@ attributes:
     source_table: STATE_CAPITAL
     source_column: IDS.STATE_CAPITAL.ID
     comment: BK chính. PK nguồn NUMBER(19) tự tăng.
-    classification_context: "Source System Code = 'IDS_STATE_CAPITAL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     classification_context: "Source System Code = 'IDS_STATE_CAPITAL'"
-    etl_derived_value: IDS.STATE_CAPITAL
+    etl_derived_value: IDS_STATE_CAPITAL
 
   - name: Public Company Id
     physical_name: pc_id
@@ -74,8 +74,8 @@ attributes:
     source_system: IDS
     source_table: STATE_CAPITAL
     source_column: IDS.STATE_CAPITAL.COMPANY_PROFILE_ID
-    comment: "FK target: public_company.public_company_id. Hash: hash_id('IDS.COMPANY_PROFILES', COMPANY_PROFILE_ID)."
-    classification_context: "Source System Code = 'IDS_STATE_CAPITAL'"
+    comment: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES', COMPANY_PROFILE_ID)."
+    classification_context: null
     etl_derived_value: null
 
   - name: Public Company Code
@@ -88,8 +88,8 @@ attributes:
     source_system: IDS
     source_table: STATE_CAPITAL
     source_column: IDS.STATE_CAPITAL.COMPANY_PROFILE_ID
-    comment: "Lookup pair: public_company.public_company_code. Pair with Public Company Id."
-    classification_context: "Source System Code = 'IDS_STATE_CAPITAL'"
+    comment: "Lookup pair: public_company.pc_code. Pair with Public Company Id."
+    classification_context: null
     etl_derived_value: null
 
   - name: State Representative Name
@@ -103,7 +103,7 @@ attributes:
     source_table: STATE_CAPITAL
     source_column: IDS.STATE_CAPITAL.STATE_REP_NAME_VI
     comment: null
-    classification_context: "Source System Code = 'IDS_STATE_CAPITAL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: State Representative English Name
@@ -117,7 +117,7 @@ attributes:
     source_table: STATE_CAPITAL
     source_column: IDS.STATE_CAPITAL.STATE_REP_NAME_EN
     comment: null
-    classification_context: "Source System Code = 'IDS_STATE_CAPITAL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: State Owner Organization Name
@@ -131,7 +131,7 @@ attributes:
     source_table: STATE_CAPITAL
     source_column: IDS.STATE_CAPITAL.STATE_OWNER_ORG_VI
     comment: "Denormalized — không phải FK đến Regulatory Authority Organization Unit (chưa xác nhận cross-source)."
-    classification_context: "Source System Code = 'IDS_STATE_CAPITAL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: State Owner Organization English Name
@@ -145,7 +145,7 @@ attributes:
     source_table: STATE_CAPITAL
     source_column: IDS.STATE_CAPITAL.STATE_OWNER_ORG_EN
     comment: null
-    classification_context: "Source System Code = 'IDS_STATE_CAPITAL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Owned Share Quantity
@@ -159,7 +159,7 @@ attributes:
     source_table: STATE_CAPITAL
     source_column: IDS.STATE_CAPITAL.OWNED_SHARE_QTY
     comment: null
-    classification_context: "Source System Code = 'IDS_STATE_CAPITAL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Ownership Ratio Percentage
@@ -173,11 +173,11 @@ attributes:
     source_table: STATE_CAPITAL
     source_column: IDS.STATE_CAPITAL.OWNERSHIP_RATIO
     comment: "Nguồn NUMBER không khai báo scale — cần profile để xác nhận thang đo (0-1 hay 0-100)."
-    classification_context: "Source System Code = 'IDS_STATE_CAPITAL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Deleted Indicator
-    physical_name: deleted_indicator
+    physical_name: deleted_ind
     business_meaning: "Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa)."
     data_domain: Small Counter
     data_type: int
@@ -187,5 +187,5 @@ attributes:
     source_table: STATE_CAPITAL
     source_column: IDS.STATE_CAPITAL.DELETE_FLG
     comment: Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1).
-    classification_context: "Source System Code = 'IDS_STATE_CAPITAL'"
+    classification_context: null
     etl_derived_value: null

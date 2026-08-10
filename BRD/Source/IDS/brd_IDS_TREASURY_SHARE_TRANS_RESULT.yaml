@@ -1,0 +1,161 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: TREASURY_SHARE_TRANS_RESULT
+brd_ref: BRD-SRC-IDS-TREASURY_SHARE_TRANS_RESULT
+columns:
+  - name: ID
+    data_type: NUMBER(10,0)
+    description: "Khóa chính"
+    key: PK
+    fk_note: null
+  - name: COMPANY_TREASURY_SHARE_ID
+    data_type: NUMBER(10,0)
+    description: "Khóa link đến bảng COMPANY_TREASURY_SHARES (phương án mua/bán cổ phiếu quỹ)"
+    key: FK
+    fk_note: "FK → COMPANY_TREASURY_SHARES.ID"
+  - name: REGISTERED_TRANS_QTY
+    data_type: NUMBER(15,0)
+    description: "Số lượng đăng ký giao dịch"
+    key: null
+    fk_note: null
+  - name: EXECUTED_TRANS_QTY
+    data_type: NUMBER(15,0)
+    description: "Số lượng thực hiện giao dịch"
+    key: null
+    fk_note: null
+  - name: TOTAL_TREASURY_SHARE_BEFORE
+    data_type: NUMBER(15,0)
+    description: "Tổng số cổ phiếu quỹ trước khi thực hiện"
+    key: null
+    fk_note: null
+  - name: TOTAL_TREASURY_SHARE_AFTER
+    data_type: NUMBER(15,0)
+    description: "Tổng số cổ phiếu quỹ sau khi thực hiện"
+    key: null
+    fk_note: null
+  - name: TREASURY_TRANS_PURPOSE
+    data_type: VARCHAR2(512)
+    description: "Mục đích mua/bán cổ phiếu quỹ"
+    key: null
+    fk_note: null
+  - name: FUNDING_SOURCE
+    data_type: NUMBER(24,0)
+    description: "Nguồn vốn thực hiện — kiểu dữ liệu NUMBER(24,0) bất thường so với nội dung text, cần verify dữ liệu thật trước LLD"
+    key: null
+    fk_note: null
+  - name: AVERAGE_TRANS_PRICE
+    data_type: NUMBER(10,0)
+    description: "Giá giao dịch bình quân thực tế"
+    key: null
+    fk_note: null
+  - name: TRANS_START_DATE
+    data_type: DATE
+    description: "Ngày bắt đầu giao dịch thực tế"
+    key: null
+    fk_note: null
+  - name: TRANS_END_DATE
+    data_type: DATE
+    description: "Ngày kết thúc giao dịch thực tế"
+    key: null
+    fk_note: null
+  - name: TRANSACTION_METHOD
+    data_type: VARCHAR2(128)
+    description: "Phương thức giao dịch"
+    key: null
+    fk_note: null
+  - name: SECURITIES_AGENT_NAME_VI
+    data_type: VARCHAR2(255)
+    description: "Tên đại lý chứng khoán (tiếng Việt)"
+    key: null
+    fk_note: null
+  - name: SECURITIES_AGENT_NAME_EN
+    data_type: VARCHAR2(255)
+    description: "Tên đại lý chứng khoán (tiếng Anh)"
+    key: null
+    fk_note: null
+  - name: UNEXECUTED_QTY_REASON
+    data_type: VARCHAR2(512)
+    description: "Lý do không thực hiện hết số lượng đăng ký"
+    key: null
+    fk_note: null
+  - name: CERTIFICATE_NO
+    data_type: VARCHAR2(18)
+    description: "Số giấy chứng nhận"
+    key: null
+    fk_note: null
+  - name: CERTIFICATE_DATE
+    data_type: DATE
+    description: "Ngày giấy chứng nhận"
+    key: null
+    fk_note: null
+  - name: OFFICIAL_LETTER_NO
+    data_type: VARCHAR2(18)
+    description: "Số công văn của UBCKNN"
+    key: null
+    fk_note: null
+  - name: OFFICIAL_LETTER_DATE
+    data_type: DATE
+    description: "Ngày công văn"
+    key: null
+    fk_note: null
+  - name: APPROVAL_STATUS_CD
+    data_type: VARCHAR2(100)
+    description: "Trạng thái phê duyệt kết quả giao dịch: LOOKUP_VALUES LOOKUP_GROUP = 'TS_APPROVAL_STATUS'"
+    key: null
+    fk_note: null
+  - name: APPROVER_USER_ID
+    data_type: VARCHAR2(30)
+    description: "ID Login của Lãnh đạo phê duyệt"
+    key: null
+    fk_note: null
+  - name: APPROVER_USER_NAME
+    data_type: VARCHAR2(128)
+    description: "Lãnh đạo phê duyệt kết quả"
+    key: null
+    fk_note: null
+  - name: PROCESSOR_USER_ID
+    data_type: VARCHAR2(30)
+    description: "ID Login của Chuyên viên xử lý"
+    key: null
+    fk_note: null
+  - name: PROCESSOR_USER_NAME
+    data_type: VARCHAR2(128)
+    description: "Chuyên viên xử lý hồ sơ"
+    key: null
+    fk_note: null
+  - name: REVISION_REASON
+    data_type: VARCHAR2(512)
+    description: "Lý do chỉnh sửa"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người tạo"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: CREATED_DATE
+    data_type: DATE
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: VARCHAR2(30)
+    description: "Người sửa"
+    key: null
+    fk_note: "FK → LOGINS.ID"
+  - name: UPDATED_DATE
+    data_type: DATE
+    description: "Ngày sửa"
+    key: null
+    fk_note: null
+  - name: DELETE_FLG
+    data_type: NUMBER(1,0)
+    description: "Đánh dấu trạng thái xóa mềm: 1 - Xóa; 0 - Chưa xóa"
+    key: null
+    fk_note: null
+  - name: APPROVER_COMMENT
+    data_type: VARCHAR2(1020)
+    description: "Nội dung đề xuất phê duyệt / Lý do từ chối (uc.md 2.14.2)"
+    key: null
+    fk_note: null

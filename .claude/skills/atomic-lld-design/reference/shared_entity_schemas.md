@@ -92,9 +92,9 @@ Scheme áp dụng:
 | `classification_context` | `etl_derived_value` | Ví dụ |
 |---|---|---|
 | `SCHEME=VALUE` (giá trị cố định) | Điền literal VALUE | `IP_ELEC_ADDR_TYPE=PHONE` → `PHONE` |
-| `SOURCE_SYSTEM=SRC.TABLE` | Điền literal `SRC.TABLE` | `SOURCE_SYSTEM=NHNCK.PROFESSIONALS` → `NHNCK.PROFESSIONALS` |
-| `SCHEME` (dynamic — nguồn thực sự có cột type lookup) | null hoặc expression mapping | `IP_ALT_ID_TYPE=(source)` → null |
-| `SCHEME=(source)` (lookup từ nguồn) | Expression mapping nếu biết | `NHNCK_IDENTITY_TYPE` → `1=CMND;2=CCCD;3=PASSPORT` |
+| `SOURCE_SYSTEM=SRC.TABLE` | Điền literal `SRC_TABLE` (**gạch dưới**, không dùng dấu chấm) | `SOURCE_SYSTEM=NHNCK.PROFESSIONALS` → `NHNCK_PROFESSIONALS` |
+| `SCHEME` (dynamic — nguồn thực sự có cột type lookup) | Luôn null | `IP_ALT_ID_TYPE=(source)` → null |
+| `SCHEME=(source)` (lookup từ nguồn) | Luôn null — KHÔNG ghi expression mapping CODE=VALUE, mapping đã có trong `classification_schemes.yaml` | `NHNCK_IDENTITY_TYPE` → null |
 
 **Lý do:** ETL engineer đọc `etl_derived_value` để biết giá trị nào cần hardcode vào cột này mà không cần parse `classification_context`. Bỏ trống = ETL phải đoán.
 

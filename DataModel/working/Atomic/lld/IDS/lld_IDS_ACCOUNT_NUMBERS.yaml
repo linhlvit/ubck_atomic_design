@@ -54,7 +54,7 @@ attributes:
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
   classification_context: "SOURCE_SYSTEM=IDS.ACCOUNT_NUMBERS"
-  etl_derived_value: "IDS.ACCOUNT_NUMBERS"
+  etl_derived_value: "IDS_ACCOUNT_NUMBERS"
   data_type: "string"
 - attribute_name: "Legal Entity Id"
   physical_name: "legal_entity_id"
@@ -65,7 +65,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.ACCOUNT_NUMBERS.LEGAL_ENTITY_ID"
-  comment: "FK target: Legal Entity.Legal Entity Id. Hash: hash_id('IDS.LEGAL_ENTITIES',\
+  comment: "FK target: legal_entity.legal_entity_id. Hash: hash_id('IDS.LEGAL_ENTITIES',\
     \ LEGAL_ENTITY_ID)."
   classification_context: null
   etl_derived_value: null
@@ -79,7 +79,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.ACCOUNT_NUMBERS.LEGAL_ENTITY_ID"
-  comment: "Lookup pair: Legal Entity.Legal Entity Code. Pair with Legal Entity Id."
+  comment: "Lookup pair: legal_entity.legal_entity_code. Pair with Legal Entity Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -124,7 +124,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Active Indicator"
-  physical_name: "active_indicator"
+  physical_name: "active_ind"
   description: "Đánh dấu tài khoản hoạt động (0-inactive, 1-active)."
   data_domain: "Small Counter"
   nullable: true
@@ -137,7 +137,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Primary Account Indicator"
-  physical_name: "primary_account_indicator"
+  physical_name: "primary_account_ind"
   description: "Đánh dấu tài khoản chính (1-key, 0-không key)."
   data_domain: "Small Counter"
   nullable: true
@@ -150,7 +150,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Deleted Indicator"
-  physical_name: "deleted_indicator"
+  physical_name: "deleted_ind"
   description: "Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa)."
   data_domain: "Small Counter"
   nullable: true

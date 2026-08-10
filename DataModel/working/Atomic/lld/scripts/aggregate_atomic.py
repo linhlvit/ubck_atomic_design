@@ -386,6 +386,25 @@ def build_ctx_string(source_system: str, source_table: str, addr_part: Optional[
     return src_ctx
 
 
+def resolve_output_ctx(attr_name: str, master_addr_part: Optional[str], ctx_key: str,
+                       multi_context: bool, own_ctx: Optional[str]) -> Optional[str]:
+    """Trả về classification_context ĐÚNG để ghi vào output row.
+
+    `ctx_key` (composite "Source System Code = 'SRC_TABLE'" [+ addr-type]) chỉ có ý
+    nghĩa cho 2 trường hợp: (1) chính attribute "Source System Code" — đó là định nghĩa
+    của nó; (2) source có thật nhiều context khác nhau (multi_context=True, VD 1 source
+    có 2 address type) — cần ctx_key để phân biệt các dòng trùng tên attribute.
+
+    Mọi attribute khác PHẢI giữ đúng classification_context gốc của chính nó (own_ctx,
+    đọc từ LLD — VD "GSGD_INVESTOR_TYPE", hoặc null cho field thường) — KHÔNG bị ghi đè
+    bằng ctx_key của entity/source. Trước bản sửa 2026-08-10, mọi attribute đều bị stamp
+    ctx_key vô điều kiện, xoá mất scheme thật của chính nó (bug — xem review 2026-08-10).
+    """
+    if attr_name == "Source System Code" or master_addr_part is not None or multi_context:
+        return ctx_key
+    return own_ctx or None
+
+
 def get_distinct_context_keys(attr_rows: list[dict], source_system: str, source_table: str) -> list[str]:
     """Trả về list context strings riêng biệt có trong attr file.
 
@@ -557,6 +576,11 @@ def build_attributes(manifest_rows: list[dict],
         # "Source System Code", "Involved Party Id/Code") mang tính entity-level —
         # chỉ emit 1 lần cho cả source, không lặp lại theo từng context_key.
         emitted_context_free: set = set()
+        # >1 context khác nhau cho cùng source (VD 1 source có 2 address type) → mọi
+        # attribute PHẢI dùng ctx_key để phân biệt dòng. Chỉ 1 context (đa số trường
+        # hợp) → attribute thường giữ đúng classification_context gốc của chính nó
+        # (xem resolve_output_ctx()).
+        multi_context = len(context_keys) > 1
 
         for ctx_key in context_keys:
             for (attr_name, master_addr_part), master_row in master_attrs.items():
@@ -580,6 +604,7 @@ def build_attributes(manifest_rows: list[dict],
                 matched = find_attr_in_ctx(attr_rows, attr_name, ctx_key, source_system, source_table)
 
                 if matched:
+                    own_ctx = matched.get("classification_context")
                     all_rows.append({
                         "bcv_core_object":        bcv_core_object,
                         "bcv_concept":            bcv_concept,
@@ -593,7 +618,8 @@ def build_attributes(manifest_rows: list[dict],
                         "source_table":           source_table,
                         "source_column":          matched.get("source_columns", ""),
                         "comment":                matched.get("comment", ""),
-                        "classification_context": ctx_key,
+                        "classification_context": resolve_output_ctx(
+                            attr_name, master_addr_part, ctx_key, multi_context, own_ctx),
                         "etl_derived_value":      matched.get("etl_derived_value", ""),
                     })
                 else:
@@ -603,6 +629,7 @@ def build_attributes(manifest_rows: list[dict],
                     # nguyên văn comment của master (comment đó có thể là FK/crosswalk chi
                     # tiết của 1 source khác, không áp dụng cho source này vì không có
                     # source_column — xem rule "FK luôn NULL" ở Bước 5 SKILL.md).
+                    own_ctx = master_row.get("classification_context")
                     all_rows.append({
                         "bcv_core_object":        bcv_core_object,
                         "bcv_concept":            bcv_concept,
@@ -616,7 +643,8 @@ def build_attributes(manifest_rows: list[dict],
                         "source_table":           source_table,
                         "source_column":          "",
                         "comment":                _generic_fk_comment(master_row.get("comment", ""), source_system, source_table),
-                        "classification_context": ctx_key,
+                        "classification_context": resolve_output_ctx(
+                            attr_name, master_addr_part, ctx_key, multi_context, own_ctx),
                         "etl_derived_value":      "",
                     })
 

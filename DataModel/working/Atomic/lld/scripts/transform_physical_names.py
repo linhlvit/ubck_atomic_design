@@ -11,6 +11,13 @@ Thuật toán (xem `.claude/skills/atomic-lld-design/SKILL.md` mục
     abbreviate_domain_prefix() chỉ viết tắt cụm từ có trong
     system/rules/rule_domain_prefix_abbreviations.csv (longest-match-first, curated list, KHÔNG
     lấy initials mù quáng của mọi từ) — cụm không có trong list giữ nguyên full word.
+    domain_prefix PHẢI là rỗng "" hoặc khớp đúng 1 trong các giá trị "Name" của
+    rule_domain_prefix_abbreviations.csv (không còn tự do ghép cụm dài tuỳ ý như trước
+    2026-08-07) — cụm dài hơn bị cắt về đúng giá trị curated (VD "Public Company ABC"
+    -> "Public Company"); không khớp cụm curated nào -> "". Khi domain_prefix rỗng,
+    entity_physical_name vẫn quét toàn bộ atomic_entity qua cùng dictionary đó (không
+    chỉ full_words trơ) để bắt cụm curated nằm giữa tên (VD "Foreign Fund Management
+    Organization Unit" -> "foreign_fm_ou").
     Domain Prefix + entity_physical_name đã chuẩn hóa lấy từ
     DataModel/working/Atomic/hld/atomic_entities.yaml (nguồn chuẩn duy nhất — script
     KHÔNG tự transform lại tên entity, chỉ lookup).
@@ -213,7 +220,11 @@ def transform_table_name(domain_prefix: str, atomic_entity: str) -> str:
     dp = (domain_prefix or "").strip()
     entity = atomic_entity.strip()
     if not dp:
-        return full_words(entity)
+        # domain_prefix rong (khong thuoc 15 gia tri curated) -> van quet toan bo
+        # ten entity de bat cum curated xuat hien giua chung (VD "Foreign Fund
+        # Management Organization Unit" -> "foreign_fm_ou"), thay vi bo qua hoan
+        # toan viec viet tat chi vi khong co domain_prefix chinh thuc.
+        return abbreviate_domain_prefix(entity)
     if not entity.lower().startswith(dp.lower()):
         raise ValueError(
             f"domain_prefix '{dp}' khong phai leading substring cua atomic_entity '{entity}'"

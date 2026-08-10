@@ -33,7 +33,7 @@ attributes:
     source_table: SECURITIES_OFFERING
     source_column: null
     comment: "PK surrogate. BCV: \"[Business Activity] Business Activity\"."
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Public Company Securities Offering Code
@@ -47,7 +47,7 @@ attributes:
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.ID
     comment: "BK chính. PK nguồn NUMBER(10,0) tự tăng."
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,10 +62,10 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING'"
-    etl_derived_value: IDS.SECURITIES_OFFERING
+    etl_derived_value: IDS_SECURITIES_OFFERING
 
   - name: Applicant Type Indicator
-    physical_name: applicant_tp_indicator
+    physical_name: applicant_tp_ind
     business_meaning: "Phân loại bên đăng ký chào bán: tổ chức hay cá nhân."
     data_domain: Small Counter
     data_type: int
@@ -75,7 +75,7 @@ attributes:
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.APPLICANT_TYPE_FLG
     comment: "Encoding nguồn: 1 = Tổ chức (dùng Public Company Id), 0 = Cá nhân (dùng Legal Entity Id)."
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Public Company Id
@@ -88,8 +88,8 @@ attributes:
     source_system: IDS
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.COMPANY_PROFILE_ID
-    comment: "FK target: public_company.public_company_id. Hash: hash_id('IDS.COMPANY_PROFILES', COMPANY_PROFILE_ID). Loại trừ nhau với Legal Entity Id — xem metadata.notes."
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING'"
+    comment: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES', COMPANY_PROFILE_ID) | Loại trừ nhau với Legal Entity Id — xem metadata.notes."
+    classification_context: null
     etl_derived_value: null
 
   - name: Public Company Code
@@ -102,8 +102,8 @@ attributes:
     source_system: IDS
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.COMPANY_PROFILE_ID
-    comment: "Lookup pair: public_company.public_company_code. Pair with Public Company Id."
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING'"
+    comment: "Lookup pair: public_company.pc_code. Pair with Public Company Id."
+    classification_context: null
     etl_derived_value: null
 
   - name: Legal Entity Id
@@ -116,8 +116,8 @@ attributes:
     source_system: IDS
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.LEGAL_ENTITY_ID
-    comment: "FK target: legal_entity.legal_entity_id. Hash: hash_id('IDS.LEGAL_ENTITIES', LEGAL_ENTITY_ID). Loại trừ nhau với Public Company Id — xem metadata.notes."
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING'"
+    comment: "FK target: legal_entity.legal_entity_id. Hash: hash_id('IDS.LEGAL_ENTITIES', LEGAL_ENTITY_ID) | Loại trừ nhau với Public Company Id — xem metadata.notes."
+    classification_context: null
     etl_derived_value: null
 
   - name: Legal Entity Code
@@ -131,7 +131,7 @@ attributes:
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.LEGAL_ENTITY_ID
     comment: "Lookup pair: legal_entity.legal_entity_code. Pair with Legal Entity Id."
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Application Code
@@ -145,7 +145,7 @@ attributes:
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.APPLICATION_CD
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Administrative Procedure Code
@@ -159,7 +159,7 @@ attributes:
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.ADMINISTRATIVE_PROC_CD
     comment: "Scheme: IDS_SO_ADMINISTRATIVE_PROC (source_table, LOOKUP_VALUES LOOKUP_GROUP = 'SO_ADMINISTRATIVE_PROCEDURE') — chưa có trong HLD 6d, bổ sung scheme mới."
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING'"
+    classification_context: IDS_SO_ADMINISTRATIVE_PROC
     etl_derived_value: null
 
   - name: Administrative Status Code
@@ -173,7 +173,7 @@ attributes:
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.ADMINISTRATIVE_STATUS_CD
     comment: "Scheme: IDS_SO_ADMINISTRATIVE_STATUS (source_table, LOOKUP_GROUP = 'SO_ADMINISTRATIVE_STATUS') — chưa có trong HLD 6d, bổ sung scheme mới."
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING'"
+    classification_context: IDS_SO_ADMINISTRATIVE_STATUS
     etl_derived_value: null
 
   - name: Certificate Number
@@ -187,7 +187,7 @@ attributes:
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.CERTIFICATE_NO
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Certificate Date
@@ -201,7 +201,7 @@ attributes:
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.CERTIFICATE_DATE
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Official Letter Number
@@ -215,7 +215,7 @@ attributes:
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.OFFICIAL_LETTER_NO
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Official Letter Date
@@ -229,7 +229,7 @@ attributes:
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.OFFICIAL_LETTER_DATE
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Offering Purpose
@@ -243,7 +243,7 @@ attributes:
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.OFFERING_PURPOSE
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Total Registered Quantity
@@ -257,7 +257,7 @@ attributes:
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.TOTAL_REGISTERED_QTY
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Total Expected Amount
@@ -271,7 +271,7 @@ attributes:
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.TOTAL_EXPECTED_AM
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Capital Usage Plan
@@ -285,7 +285,7 @@ attributes:
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.CAPITAL_USAGE_PLAN
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Expected Schedule
@@ -299,7 +299,7 @@ attributes:
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.EXPECTED_SCHEDULE
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Matching Capital Source
@@ -313,7 +313,7 @@ attributes:
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.MATCHING_CAPITAL
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Consulting Organization Name
@@ -327,7 +327,7 @@ attributes:
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.CONSULTING_ORG
     comment: "Tên tổ chức dạng text tự do, không có FK — nguồn không cung cấp bảng danh mục tổ chức tư vấn."
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Audit Organization Name
@@ -341,7 +341,7 @@ attributes:
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.AUDIT_ORG
     comment: "Tên tổ chức dạng text tự do — không FK sang Audit Firm vì nguồn lưu tên tự do, không phải mã tham chiếu."
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Bond Representative Organization Name
@@ -355,7 +355,7 @@ attributes:
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.BOND_REPRESENTATIVE_ORG
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Underwriting Organization Name
@@ -369,7 +369,7 @@ attributes:
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.UNDERWWRITING_ORG
     comment: Tên cột nguồn có lỗi chính tả (UNDERWWRITING_ORG) — giữ nguyên khi map source_columns.
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Credit Rating Organization Name
@@ -383,7 +383,7 @@ attributes:
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.CREDIT_RATING_ORG
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Other Related Organization Name
@@ -397,7 +397,7 @@ attributes:
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.OTHER_ORG
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Approval Status Code
@@ -411,7 +411,7 @@ attributes:
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.APPROVAL_STATUS_CD
     comment: "Scheme: IDS_SO_APPROVAL_STATUS (source_table, LOOKUP_GROUP = 'SO_APPROVAL_STATUS') — chưa có trong HLD 6d, bổ sung scheme mới."
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING'"
+    classification_context: IDS_SO_APPROVAL_STATUS
     etl_derived_value: null
 
   - name: Approver User Id
@@ -425,7 +425,7 @@ attributes:
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.APPROVER_USER_ID
     comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM.USERS', APPROVER_USER_ID) | Chưa xác nhận join key IDS.SECURITIES_OFFERING.APPROVER_USER_ID ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Approver User Code
@@ -439,7 +439,7 @@ attributes:
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.APPROVER_USER_ID
     comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Approver User Id."
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Approver User Name Snapshot
@@ -453,7 +453,7 @@ attributes:
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.APPROVER_USER_NAME
     comment: "Denormalized snapshot — nguồn lưu tên tự do song song với APPROVER_USER_ID, khác với pattern Code (lookup qua Id)."
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Processor User Id
@@ -467,7 +467,7 @@ attributes:
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.PROCESSOR_USER_ID
     comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM.USERS', PROCESSOR_USER_ID) | Chưa xác nhận join key IDS.SECURITIES_OFFERING.PROCESSOR_USER_ID ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Processor User Code
@@ -481,7 +481,7 @@ attributes:
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.PROCESSOR_USER_ID
     comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Processor User Id."
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Processor User Name Snapshot
@@ -495,7 +495,7 @@ attributes:
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.PROCESSOR_USER_NAME
     comment: Denormalized snapshot — nguồn lưu tên tự do song song với PROCESSOR_USER_ID.
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Revision Reason
@@ -509,11 +509,11 @@ attributes:
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.REVISION_REASON
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Multi Turn Indicator
-    physical_name: multi_turn_indicator
+    physical_name: multi_turn_ind
     business_meaning: Hồ sơ đăng ký chào bán phát hành có nhiều đợt hay không.
     data_domain: Small Counter
     data_type: int
@@ -523,11 +523,11 @@ attributes:
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.MULTI_TURN_FLG
     comment: "Encoding nguồn: 1 = Có nhiều đợt, 0 = Không."
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Synced From External System Indicator
-    physical_name: synced_from_external_stm_indicator
+    physical_name: synced_from_external_stm_ind
     business_meaning: Đánh dấu hồ sơ được đồng bộ từ hệ thống TTHC hay tạo mới tại IDS.
     data_domain: Small Counter
     data_type: int
@@ -537,11 +537,11 @@ attributes:
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.IS_SYNC
     comment: "Encoding nguồn: 1 = Đồng bộ từ TTHC, 0 = Tạo mới tại IDS."
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Deleted Indicator
-    physical_name: deleted_indicator
+    physical_name: deleted_ind
     business_meaning: Đánh dấu trạng thái xóa mềm.
     data_domain: Small Counter
     data_type: int
@@ -551,7 +551,7 @@ attributes:
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.DELETE_FLG
     comment: "Encoding nguồn: 1 = Đã xóa, 0 = Chưa xóa."
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Approver Comment
@@ -565,5 +565,47 @@ attributes:
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.APPROVER_COMMENT
     comment: null
-    classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING'"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Submission Date
+    physical_name: submission_dt
+    business_meaning: Ngày nộp hồ sơ.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: SECURITIES_OFFERING
+    source_column: IDS.SECURITIES_OFFERING.SUBMISSION_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Project Investment Indicator
+    physical_name: project_investment_ind
+    business_meaning: Chỉ báo có phải dự án đầu tư hay không.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: SECURITIES_OFFERING
+    source_column: IDS.SECURITIES_OFFERING.PROJECT_INVESTMENT_FLG
+    comment: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1).
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Capital Purpose
+    physical_name: capital_purpose
+    business_meaning: Mục đích sử dụng vốn.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: SECURITIES_OFFERING
+    source_column: IDS.SECURITIES_OFFERING.CAPITAL_PURPOSE
+    comment: null
+    classification_context: null
     etl_derived_value: null

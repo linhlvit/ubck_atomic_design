@@ -33,7 +33,7 @@ attributes:
     source_table: EVALUATION_PERIODS
     source_column: null
     comment: "PK surrogate. BCV: \"[Event] Period\"."
-    classification_context: "Source System Code = 'IDS_EVALUATION_PERIODS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Public Company Evaluation Period Code
@@ -47,7 +47,7 @@ attributes:
     source_table: EVALUATION_PERIODS
     source_column: IDS.EVALUATION_PERIODS.ID
     comment: BK chính. PK nguồn NUMBER(10) tự tăng.
-    classification_context: "Source System Code = 'IDS_EVALUATION_PERIODS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     classification_context: "Source System Code = 'IDS_EVALUATION_PERIODS'"
-    etl_derived_value: IDS.EVALUATION_PERIODS
+    etl_derived_value: IDS_EVALUATION_PERIODS
 
   - name: Evaluation Year
     physical_name: evaluation_year
@@ -75,7 +75,7 @@ attributes:
     source_table: EVALUATION_PERIODS
     source_column: IDS.EVALUATION_PERIODS.YEAR
     comment: Nguồn VARCHAR2(30) — giữ Text thay vì Date/số vì chỉ lưu năm.
-    classification_context: "Source System Code = 'IDS_EVALUATION_PERIODS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Evaluation Month
@@ -89,7 +89,7 @@ attributes:
     source_table: EVALUATION_PERIODS
     source_column: IDS.EVALUATION_PERIODS.MONTH
     comment: Nguồn VARCHAR2(100) — giữ Text.
-    classification_context: "Source System Code = 'IDS_EVALUATION_PERIODS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Description
@@ -103,7 +103,7 @@ attributes:
     source_table: EVALUATION_PERIODS
     source_column: IDS.EVALUATION_PERIODS.DESCRIPTION
     comment: null
-    classification_context: "Source System Code = 'IDS_EVALUATION_PERIODS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Evaluation Period Status Code
@@ -117,5 +117,5 @@ attributes:
     source_table: EVALUATION_PERIODS
     source_column: IDS.EVALUATION_PERIODS.STATUS
     comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
-    classification_context: "Source System Code = 'IDS_EVALUATION_PERIODS'"
+    classification_context: null
     etl_derived_value: null

@@ -54,7 +54,7 @@ attributes:
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
   classification_context: "SOURCE_SYSTEM=IDS.STOCK_CONTROLS"
-  etl_derived_value: "IDS.STOCK_CONTROLS"
+  etl_derived_value: "IDS_STOCK_CONTROLS"
   data_type: "string"
 - attribute_name: "Legal Entity Id"
   physical_name: "legal_entity_id"
@@ -65,7 +65,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.STOCK_CONTROLS.LEGAL_ENTITY_ID"
-  comment: "FK target: Legal Entity.Legal Entity Id. Hash: hash_id('IDS.LEGAL_ENTITIES',\
+  comment: "FK target: legal_entity.legal_entity_id. Hash: hash_id('IDS.LEGAL_ENTITIES',\
     \ LEGAL_ENTITY_ID)."
   classification_context: null
   etl_derived_value: null
@@ -79,7 +79,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.STOCK_CONTROLS.LEGAL_ENTITY_ID"
-  comment: "Lookup pair: Legal Entity.Legal Entity Code. Pair with Legal Entity Id."
+  comment: "Lookup pair: legal_entity.legal_entity_code. Pair with Legal Entity Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -152,7 +152,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Deleted Indicator"
-  physical_name: "deleted_indicator"
+  physical_name: "deleted_ind"
   description: "Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa)."
   data_domain: "Small Counter"
   nullable: true

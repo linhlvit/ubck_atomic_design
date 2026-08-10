@@ -64,7 +64,7 @@ attributes:
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
   classification_context: "SOURCE_SYSTEM=IDS.DATA"
-  etl_derived_value: "IDS.DATA"
+  etl_derived_value: "IDS_DATA"
   data_type: "string"
 - attribute_name: "Financial Report Catalog Id"
   physical_name: "fr_catalog_id"
@@ -89,9 +89,10 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IDS.DATA.REPORT_CATALOG_ID"
-  comment: "Lookup pair: fr_catalog.fr_catalog_code. Pair with Financial\
-    \ Report Catalog Id."
+  - "IDS.REPORT_CATALOG.REPORT_CD"
+  comment: "Lookup pair: fr_catalog.fr_catalog_code. Pair with Financial Report Catalog\
+    \ Id. Giá trị lấy từ IDS.REPORT_CATALOG.REPORT_CD sau ETL crosswalk — chi tiết\
+    \ xem comment Financial Report Catalog Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -193,7 +194,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Cell Enabled Indicator"
-  physical_name: "cell_enabled_indicator"
+  physical_name: "cell_enabled_ind"
   description: "Trạng thái ô nhập liệu (0-disable, 1-enable). Phụ thuộc vào giá trị\
     \ của trường APPROVAL_STATUS_CD trong bảng COMPANY_DATA, nếu là draft thì enable."
   data_domain: "Small Counter"

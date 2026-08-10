@@ -8,7 +8,7 @@ metadata:
   bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Regulatory Report"
   table_type: "Fundamental"
-  group: "T2"
+  group: "T3"
   design_status: "approved"
   version: "1.0"
   designed_by: null
@@ -19,18 +19,28 @@ metadata:
   approved_at: null
   notes: "ID kỹ thuật là BK duy nhất (không có cột mã nghiệp vụ riêng — mirror pattern\
     \ Public Company/lld_IDS_COMPANY_PROFILES.yaml) → Public Company Report Submission\
-    \ Code, Id hash từ Code. BRD hiện tại (brd_IDS_COMPANY_DATA.yaml, 30 cột) thiếu\
-    \ 11 cột đã có trên DDL thực tế (Source/DDL UAT 1/GMS_IDS_UAT_schema.txt, 41 cột):\
-    \ ALERT_AUDIT, SYSTEM_CD, CLOSE_DATE, SECURITIES_OFFERING_ID (FK), DISCLOSURE_TYPE,\
-    \ LEGAL_ENTITY_ID (FK), COMPANY_TENDER_OFFER_ID (FK), COMPANY_TREASURY_SHARE_ID\
-    \ (FK), APPROVER_USER_ID, APPROVER_USER_NAME, FLATTENED_FLG — thiết kế lần này\
-    \ chỉ dùng cột đã có trong BRD (xem HLD Tier2.md 6f T2-12). Khuyến nghị chạy source-survey\
-    \ reconcile trước khi entity này chuyển sang approved — 4 FK thiếu có thể đưa\
-    \ entity lên Tier 3. Audit block (CREATED_BY/CREATED_DATE/UPDATED_BY/UPDATED_DATE)\
+    \ Code, Id hash từ Code. Audit block (CREATED_BY/CREATED_DATE/UPDATED_BY/UPDATED_DATE)\
     \ loại bỏ — mirror quyết định đã áp dụng cho toàn phân hệ IDS (xem pending_design.yaml).\
     \ Table Type = Fundamental theo quyết định tường minh Data Modeler, khớp quyết\
     \ định lịch sử trước khi loại scope (HLD Overview 7e #13, 2026-07-23) — xem 7e\
-    \ #15."
+    \ #15. ĐÃ BỔ SUNG (2026-08-08) 11 cột từng thiếu so với DDL thực tế (xem HLD Tier2.md\
+    \ 6f T2-12 — BRD/IDS_Columns.csv đã reconcile trước đó): ALERT_AUDIT, SYSTEM_CD,\
+    \ CLOSE_DATE, SECURITIES_OFFERING_ID (FK → pc_securities_offering, hash trực tiếp),\
+    \ DISCLOSURE_TYPE (Scheme IDS_DISCLOSURE_TYPE), LEGAL_ENTITY_ID (FK → legal_entity,\
+    \ hash trực tiếp), COMPANY_TENDER_OFFER_ID (FK → pc_tender_offer, hash trực tiếp),\
+    \ COMPANY_TREASURY_SHARE_ID (FK → pc_treasury_share_transaction, hash trực tiếp\
+    \ — sửa lại 2026-08-09 từ chỗ hash nhầm vào pc_treasury_stock_activity do entity\
+    \ thật COMPANY_TREASURY_SHARES chưa được thiết kế lúc đó, xem Tier2.md 6f T2-17),\
+    \ APPROVER_USER_ID/APPROVER_USER_NAME (mirror pattern Approver User Id/Code/Name\
+    \ Snapshot đã dùng ở lld_IDS_SECURITIES_OFFERING_RESULT.yaml, status=pending do\
+    \ chưa xác nhận join key IAM.USERS), FLATTENED_FLG. 2 cột SYSTEM_CD và CLOSE_DATE\
+    \ không có mô tả nguồn (blank cả IDS_Columns.csv lẫn DDL UAT) — ý nghĩa suy luận,\
+    \ cần Data Modeler xác nhận trước go-live (xem comment từng attribute). CHƯA XỬ\
+    \ LÝ (2026-08-08): Data Modeler xác nhận bump Tier 2→3 (khớp lịch sử thiết kế\
+    \ cũ trước khi loại scope) do nay có FK đến Public Company Securities Offering\
+    \ (Tier 3). group đổi T2→T3; entity đã chuyển từ IDS_HLD_Tier2.md (6a + 6f T2-12)\
+    \ sang IDS_HLD_Tier3.md; manifest.yaml đồng bộ group=T3. design_status revert\
+    \ về draft để chờ review lại toàn bộ (không chỉ 11 cột mới)."
 attributes:
 - attribute_name: "Public Company Report Submission Id"
   physical_name: "pc_rpt_submission_id"
@@ -70,7 +80,7 @@ attributes:
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
   classification_context: "SOURCE_SYSTEM=IDS.COMPANY_DATA"
-  etl_derived_value: "IDS.COMPANY_DATA"
+  etl_derived_value: "IDS_COMPANY_DATA"
   data_type: "string"
 - attribute_name: "Public Company Id"
   physical_name: "pc_id"
@@ -81,7 +91,8 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.COMPANY_DATA.COMPANY_PROFILE_ID"
-  comment: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES', COMPANY_PROFILE_ID)."
+  comment: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES',\
+    \ COMPANY_PROFILE_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -121,9 +132,10 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IDS.COMPANY_DATA.FORM_ID"
+  - "IDS.FORMS.FORM_CD"
   comment: "Lookup pair: fr_template.fr_template_code. Pair with Financial Report\
-    \ Template Id."
+    \ Template Id. Giá trị lấy từ IDS.FORMS.FORM_CD sau ETL crosswalk — chi tiết xem\
+    \ comment Financial Report Template Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -136,7 +148,8 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.COMPANY_DATA.PARENT_ID"
-  comment: "FK target: pc_report_submission.pc_rpt_submission_id. Hash: hash_id('IDS.COMPANY_DATA', PARENT_ID)."
+  comment: "FK target: pc_report_submission.pc_rpt_submission_id. Hash: hash_id('IDS.COMPANY_DATA',\
+    \ PARENT_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -164,9 +177,8 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.COMPANY_DATA.REF_ID"
-  comment: "FK target: pc_report_submission.pc_rpt_submission_id.\
-    \ Hash: hash_id('IDS.COMPANY_DATA', REF_ID) | Nullable — chỉ có khi tin này là\
-    \ đính chính của tin khác."
+  comment: "FK target: pc_report_submission.pc_rpt_submission_id. Hash: hash_id('IDS.COMPANY_DATA',\
+    \ REF_ID) | Nullable — chỉ có khi tin này là đính chính của tin khác."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -179,7 +191,8 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.COMPANY_DATA.REF_ID"
-  comment: "Lookup pair: pc_report_submission.pc_rpt_submission_code. Pair with Original Submission Id."
+  comment: "Lookup pair: pc_report_submission.pc_rpt_submission_code. Pair with Original\
+    \ Submission Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -368,7 +381,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Has Digital Signature Indicator"
-  physical_name: "has_digital_signature_indicator"
+  physical_name: "has_digital_signature_ind"
   description: "File đính kèm có chữ ký số hay ko (1 - có, 0 - không có)."
   data_domain: "Small Counter"
   nullable: true
@@ -376,7 +389,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.COMPANY_DATA.DIGITAL_SIGNATURE_FLG"
-  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(2) — đồng nhất pattern với financial_report_catalog.Active\
+  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(2) — đồng nhất pattern với fr_catalog.Active\
     \ Indicator."
   classification_context: null
   etl_derived_value: null
@@ -478,3 +491,229 @@ attributes:
   classification_context: "IDS_LANGUAGE"
   etl_derived_value: null
   data_type: "string"
+- attribute_name: "Alert Audit Content"
+  physical_name: "alert_audit_content"
+  description: "Nội dung cảnh báo kiểm toán tự động."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.ALERT_AUDIT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "System Origin Code"
+  physical_name: "stm_origin_code"
+  description: "Mã hệ thống phát sinh bản ghi."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.SYSTEM_CD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Close Timestamp"
+  physical_name: "close_tms"
+  description: "Thời điểm đóng hồ sơ/tin."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.CLOSE_DATE"
+  comment: "Cột nguồn không có mô tả (blank trong cả IDS_Columns.csv và DDL UAT).\
+    \ Tạm suy luận là thời điểm đóng quy trình duyệt (khác giả thuyết ngày khóa sổ\
+    \ kỳ báo cáo) dựa theo các mốc lifecycle khác đã có trên entity (Submission/Approval/Rejection\
+    \ Date). Cần Data Modeler xác nhận trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Public Company Securities Offering Id"
+  physical_name: "pc_securities_offering_id"
+  description: "Id phương án đăng ký chào bán/phát hành gắn với tin công bố — chỉ\
+    \ có khi tin liên quan chào bán/phát hành."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.SECURITIES_OFFERING_ID"
+  comment: "FK target: pc_securities_offering.pc_securities_offering_id. Hash: hash_id('IDS.SECURITIES_OFFERING', SECURITIES_OFFERING_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Company Securities Offering Code"
+  physical_name: "pc_securities_offering_code"
+  description: "Mã phương án chào bán/phát hành (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.SECURITIES_OFFERING_ID"
+  comment: "Lookup pair: pc_securities_offering.pc_securities_offering_code. Pair\
+    \ with Public Company Securities Offering Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Offering Disclosure Type Code"
+  physical_name: "offering_disclosure_tp_code"
+  description: "Loại công bố chào bán phát hành: NOTICE (Thông báo) / RESULT (Báo\
+    \ cáo kết quả)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.DISCLOSURE_TYPE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Legal Entity Id"
+  physical_name: "legal_entity_id"
+  description: "Id cổ đông/nhà đầu tư phát hành khi đối tượng công bố = Cổ đông."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.LEGAL_ENTITY_ID"
+  comment: "FK target: legal_entity.legal_entity_id. Hash: hash_id('IDS.LEGAL_ENTITIES',\
+    \ LEGAL_ENTITY_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Legal Entity Code"
+  physical_name: "legal_entity_code"
+  description: "Mã cổ đông/nhà đầu tư phát hành (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.LEGAL_ENTITY_ID"
+  comment: "Lookup pair: legal_entity.legal_entity_code. Pair with Legal Entity Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Company Tender Offer Id"
+  physical_name: "pc_tender_offer_id"
+  description: "Id phương án đăng ký chào mua công khai gắn với tin công bố (form\
+    \ TBCMCK/KQCMCK)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.COMPANY_TENDER_OFFER_ID"
+  comment: "FK target: pc_tender_offer.pc_tender_offer_id. Hash: hash_id('IDS.COMPANY_TENDER_OFFER', COMPANY_TENDER_OFFER_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Company Tender Offer Code"
+  physical_name: "pc_tender_offer_code"
+  description: "Mã phương án chào mua công khai (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.COMPANY_TENDER_OFFER_ID"
+  comment: "Lookup pair: pc_tender_offer.pc_tender_offer_code. Pair with Public Company\
+    \ Tender Offer Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Company Treasury Share Transaction Id"
+  physical_name: "pc_treasury_share_transaction_id"
+  description: "Id phương án mua/bán cổ phiếu quỹ gắn với tin công bố (form TBCPQ/KQCPQ)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.COMPANY_TREASURY_SHARE_ID"
+  comment: "FK target: pc_treasury_share_transaction.pc_treasury_share_transaction_id.\
+    \ Hash: hash_id('IDS.COMPANY_TREASURY_SHARES', COMPANY_TREASURY_SHARE_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Company Treasury Share Transaction Code"
+  physical_name: "pc_treasury_share_transaction_code"
+  description: "Mã phương án mua/bán cổ phiếu quỹ (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.COMPANY_TREASURY_SHARE_ID"
+  comment: "Lookup pair: pc_treasury_share_transaction.pc_treasury_share_transaction_code.\
+    \ Pair with Public Company Treasury Share Transaction Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Approver User Id"
+  physical_name: "approver_user_id"
+  description: "Id Login của lãnh đạo phê duyệt do chuyên viên chọn khi trình phê\
+    \ duyệt (SRS 2.12.3)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.COMPANY_DATA.APPROVER_USER_ID"
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
+    \ Hash: hash_id('IAM.USERS', APPROVER_USER_ID) | Chưa xác nhận join key IDS.COMPANY_DATA.APPROVER_USER_ID\
+    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Approver User Code"
+  physical_name: "approver_user_code"
+  description: "Mã người phê duyệt (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.COMPANY_DATA.APPROVER_USER_ID"
+  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
+    \ Pair with Approver User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Approver User Name"
+  physical_name: "approver_user_nm"
+  description: "Tên lãnh đạo phê duyệt (denormalize để hiển thị, không join auth-service)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.APPROVER_USER_NAME"
+  comment: "Denormalized snapshot — nguồn lưu tên tự do song song với APPROVER_USER_ID,\
+    \ khác với pattern Code (lookup qua Id)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Flattened Indicator"
+  physical_name: "flattened_ind"
+  description: "Đã làm phẳng BCTC vào FINANCIAL_RATIOS_DETAIL chưa (0/1). Chỉ dùng\
+    \ cho tin định kỳ (DINH_KY); reader batch lọc = 0."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_DATA.FLATTENED_FLG"
+  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1) — đồng nhất pattern với Has\
+    \ Digital Signature Indicator (Bước 3b)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"

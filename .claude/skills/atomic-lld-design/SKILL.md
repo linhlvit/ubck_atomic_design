@@ -231,8 +231,8 @@ Mục đích của Bước 2 là **không thay đổi domain đã chọn** mà l
   | Dạng `classification_context` | `etl_derived_value` |
   |---|---|
   | `SCHEME=VALUE` (cố định, VD: `IP_ELEC_ADDR_TYPE=PHONE`) | Điền literal VALUE: `PHONE` |
-  | `SOURCE_SYSTEM=SRC.TABLE` | Điền literal: `SRC.TABLE` |
-  | `SCHEME` (không có `=VALUE`, dynamic — VD: `IP_ADDR_TYPE`) | Để **null** hoặc ghi expression mapping ETL (VD: `1=CMND;2=CCCD;3=PASSPORT`) |
+  | `SOURCE_SYSTEM=SRC.TABLE` | Điền literal `SRC_TABLE` — **gạch dưới, KHÔNG dùng dấu chấm** (VD: `SOURCE_SYSTEM=NHNCK.PROFESSIONALS` → `NHNCK_PROFESSIONALS`). `classification_context` vẫn giữ dấu chấm như cũ — chỉ đổi giá trị lưu ở `etl_derived_value`. |
+  | `SCHEME` (không có `=VALUE`, dynamic — VD: `IP_ADDR_TYPE`) | **Luôn để null** — KHÔNG ghi expression mapping CODE=VALUE. Toàn bộ mapping Code→Value của Classification Value đã được quản lý tập trung tại `classification_schemes.yaml` (và bảng Fundamental `cl_value`) — không lặp lại ở `etl_derived_value` từng attribute. |
   | Không có `classification_context` | Để null |
 
   > **Lưu ý quan trọng — IP Postal Address:** Nếu bảng nguồn **chỉ có 1 loại địa chỉ cụ thể** (VD: chỉ có `PERMANENT_ADDRESS`, không có cột address_type), KHÔNG dùng bare `IP_ADDR_TYPE` — phải hardcode: `IP_ADDR_TYPE=PERMANENT`. Bare context khiến aggregate bỏ sót `Address Type Code` khi merge nhiều source. Chỉ dùng `IP_ADDR_TYPE` (bare/dynamic) khi nguồn thực sự có cột type động qua lookup.
@@ -253,10 +253,12 @@ Format bắt buộc — **cả 2 trường phải nhất quán:**
 
 | Trường | Giá trị bắt buộc |
 |---|---|
-| `classification_context` | `SOURCE_SYSTEM=NHNCK.TABLE_NAME` |
-| `etl_derived_value` | `NHNCK.TABLE_NAME` (phần VALUE sau dấu `=`) |
+| `classification_context` | `SOURCE_SYSTEM=NHNCK.TABLE_NAME` (giữ dấu chấm) |
+| `etl_derived_value` | `NHNCK_TABLE_NAME` — **gạch dưới**, thay dấu `.` bằng `_` từ phần VALUE sau dấu `=` của `classification_context` |
 
 `TABLE_NAME` = tên bảng nguồn cụ thể (không phải chỉ tên source system).
+
+**Vì sao 2 trường khác định dạng dấu phân cách:** `classification_context` là scheme identifier cho con người/tool tra cứu, giữ dấu chấm cho dễ đọc (namespace SOURCE.TABLE). `etl_derived_value` là giá trị literal thực sự sẽ được hardcode/lưu vào cột dữ liệu — dùng gạch dưới để tránh nhầm với ký hiệu path/namespace ở phía ETL.
 
 **Pattern sai — KHÔNG dùng:**
 
@@ -436,6 +438,38 @@ Phân biệt **Id** (FK constraint thực sự) vs **Code** (denormalized lookup
   → Casing: physical_name viết thường, cùng quy tắc như Id — KHÔNG dùng Title Case Atomic Entity
     Name (kể cả khi Id cặp cùng nó là FK bình thường không cần crosswalk).
 
+  **`source_columns` của Code khi Id đi kèm là case crosswalk (xem mục "FK cần crosswalk sang
+  bảng danh mục nguồn để lấy Code" ở trên) — lỗi thường gặp cần tránh:** Code **KHÔNG** được map
+  `source_columns` bằng chính `{SOURCE_TABLE}.{FK_COLUMN}` (ID kỹ thuật) giống Id — đó là lỗi sai
+  bản chất, vì giá trị Atomic lưu vào Code là kết quả **sau khi** ETL join qua bảng danh mục, không
+  phải ID kỹ thuật. `source_columns` của Code phải là:
+  ```
+  {SOURCE_SYSTEM}.{LOOKUP_TABLE}.{CODE_COLUMN}
+  ```
+  (đúng 3 thành phần đã dùng trong comment `Cần ETL crosswalk sang {SOURCE_SYSTEM}.{LOOKUP_TABLE}:
+  ... để xác nhận {CODE_COLUMN}` của Id — lấy lại y nguyên, không tự suy ra tên khác).
+
+  Comment của Code trong case này giữ nguyên cú pháp `Lookup pair:` ở trên — **quan trọng: `{entity_physical_name}.{entity_physical_name}_code` phải tra đúng physical_name attribute Code thật của target entity trong file LLD/entity của nó, KHÔNG tự suy ra bằng cách ghép `{target_entity_physical_name}` (tên bảng) + `"_code"`.** 2 giá trị này không phải luôn giống nhau — VD entity `cl_fms_event_type` (bảng) nhưng attribute Code thật của chính entity đó lại là `cl_fms_event_tp_code` (viết tắt "Type"→"tp" ở cấp attribute, khác với tên bảng). Nếu không chắc, giữ nguyên nguyên văn phần `Lookup pair: X.Y.` đã có sẵn trong file (do lượt thiết kế trước đã tra đúng), chỉ bổ sung 1 câu ngắn dẫn về nguồn crosswalk vào cuối (không lặp lại toàn bộ chi tiết join — đã có ở comment của Id):
+  ```
+  {Lookup pair: X.Y. Pair with {Id attribute name}.} Giá trị lấy từ {SOURCE_SYSTEM}.{LOOKUP_TABLE}.{CODE_COLUMN} sau ETL crosswalk — chi tiết xem comment {Id attribute name}.
+  ```
+
+  Ví dụ (khớp với case Id ở mục crosswalk khác phân hệ trên — NHNCK PROFESSIONALS.NATIONALITY_ID):
+  ```yaml
+  - attribute_name: "Nationality Id"
+    source_columns:
+    - "NHNCK.PROFESSIONALS.NATIONALITY_ID"
+    comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang NHNCK.COUNTRIES: PROFESSIONALS.NATIONALITY_ID = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT.COUNTRY', COUNTRY_CODE) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
+
+  - attribute_name: "Nationality Code"
+    source_columns:
+    - "NHNCK.COUNTRIES.COUNTRY_CODE"
+    comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality Id. Giá trị lấy từ NHNCK.COUNTRIES.COUNTRY_CODE sau ETL crosswalk — chi tiết xem comment Nationality Id."
+  ```
+  Trái lại, với **FK bình thường (không crosswalk)** — `FK_COLUMN` đã chính là business code lưu
+  trực tiếp ở bảng nguồn, không cần join qua bảng danh mục nào — Code's `source_columns` vẫn dùng
+  đúng `{SOURCE_TABLE}.{FK_COLUMN}` như trước, KHÔNG áp dụng thay đổi này.
+
 - **Currency Code** (Classification Value pattern, không có Id surrogate):
   `FK target: currency.currency_code. {notes}`
   → vẫn dùng `FK target:` vì đây là FK constraint trực tiếp đến Currency entity (không có cặp Id+Code).
@@ -473,6 +507,7 @@ Trước khi xuất file:
 - [ ] **FK comment** (xem Bước 5): Id ghi `FK target: ...`, Code ghi `Lookup pair: ... Pair with {Id field}` — KHÔNG ghi `FK target:` cho cả Id+Code. Currency Code (Classification Value pattern, không có Id) ghi `FK target:`.
 - [ ] **FK hash comment** (xem Bước 5): Mọi FK Id có `source_columns` không rỗng → comment phải có `Hash: hash_id('SRC.TARGET_TABLE', COL).` (FK_SOURCE tra từ `Source/{SOURCE}_Columns.csv`). FK với `source_columns: []` → không thêm hash, `comment: null` (không ghi lý do NULL).
 - [ ] **FK cần crosswalk qua bảng danh mục** (xem Bước 5): Nếu `COL` dùng trong `hash_id()` là ID kỹ thuật của bảng đích chứ không phải Code thật (đối chiếu `"{Entity} Code"` attribute của chính entity đích) → phải dùng cú pháp `FK target: {entity}.{attribute} (...). Cần ETL crosswalk sang ...` (physical_name viết thường), KHÔNG hash trực tiếp theo ID kỹ thuật.
+- [ ] **Code đi kèm Id crosswalk** (xem Bước 5): Khi Id là case crosswalk, Code's `source_columns` phải là `{SOURCE_SYSTEM}.{LOOKUP_TABLE}.{CODE_COLUMN}` (cột Code thật ở bảng danh mục, lấy đúng từ comment crosswalk của Id) — KHÔNG lặp lại `{SOURCE_TABLE}.{FK_COLUMN}` (ID kỹ thuật) giống Id.
 - [ ] **Audit block** (xem Bước 3k): Bảng nguồn có `CREATED_AT / CREATED_BY / UPDATED_AT / UPDATED_BY` → đủ 6 attribute chuẩn. Comment FK target dùng **tên attribute đầy đủ** (có prefix entity). Self-reference vẫn có cặp Id + Code.
 - [ ] **Technical bundle** (xem Bước 2c): Nếu bảng nguồn có đủ 9 cột audit/soft-delete/optimistic-locking chuẩn (`STATUS, DELETED, CREATED_AT, UPDATED_AT, CREATED_BY_ID, CREATED_BY_NAME, UPDATED_BY_ID, UPDATED_BY_NAME, VERSION`) → đã loại trừ và ghi 9 dòng `pending_design.yaml` chưa? Nếu chỉ có một phần → đã ghi "Điểm cần xác nhận" trong HLD Tier chưa?
 - [ ] **ID + CODE pattern** (xem Bước 3e): PK kỹ thuật nguồn (`ID`) loại khỏi model — mã nghiệp vụ (`CODE`) map vào `{Entity} Code` duy nhất (không đặt tên generic như `Organization Code`, không còn `{Entity} Unique Key`), và Id hash từ chính `{Entity} Code`?
@@ -486,9 +521,9 @@ Trước khi xuất file:
 - [ ] **Merge entity 1-1:** `source_columns` KHÔNG dùng format comma-separated `"X.col1, Y.col2"` — chỉ 1 bảng primary, bảng còn lại document pending.
 - [ ] **scope_status sync:** Sau khi lưu LLD file → chạy sync script (xem section "Cập nhật scope_status trong BRD Source YAML") → kiểm tra tất cả source_tables (metadata + source_columns) đã là `in_scope` trong `brd_{SOURCE}.yaml`.
 - [ ] **Encoding:** mọi file CSV ghi UTF-8 with BOM (`utf-8-sig`) — xem [`reference/file_layout.md`](reference/file_layout.md).
-- [ ] **`etl_derived_value` cho Classification Value:** Mọi row có `classification_context = SCHEME=VALUE` → `etl_derived_value = VALUE`. Mọi row `SOURCE_SYSTEM=SRC.TABLE` → `etl_derived_value = SRC.TABLE`. Dynamic context (không có `=VALUE`) → null hoặc expression mapping.
-- [ ] **Source System Code:** `classification_context = SOURCE_SYSTEM=NHNCK.TABLE_NAME` (không free-text, không bare, không trống); `etl_derived_value = NHNCK.TABLE_NAME` (bắt buộc, không trống).
-- [ ] **Post-check C7 + C8:** Sau aggregate, chạy `post_check_atomic.py` — C7 kiểm tra mọi `Classification Value` có context `SCHEME=VALUE` đều có `etl_derived_value`; C8 kiểm tra riêng `Source System Code`.
+- [ ] **`etl_derived_value` cho Classification Value:** Mọi row có `classification_context = SCHEME=VALUE` → `etl_derived_value = VALUE`. Mọi row `SOURCE_SYSTEM=SRC.TABLE` → `etl_derived_value = SRC_TABLE` (**gạch dưới**, không dùng dấu chấm). Dynamic context (không có `=VALUE`) → **luôn null**, KHÔNG ghi expression mapping CODE=VALUE (mapping đã có trong `classification_schemes.yaml` / bảng `cl_value`).
+- [ ] **Source System Code:** `classification_context = SOURCE_SYSTEM=NHNCK.TABLE_NAME` (không free-text, không bare, không trống — giữ dấu chấm); `etl_derived_value = NHNCK_TABLE_NAME` (bắt buộc, không trống, **gạch dưới**).
+- [ ] **Post-check C7 + C8 + C9:** Sau aggregate, chạy `post_check_atomic.py` — C7 kiểm tra mọi `Classification Value` có context `SCHEME=VALUE` đều có `etl_derived_value`; C8 kiểm tra riêng `Source System Code` (format gạch dưới); C9 kiểm tra không còn sót expression mapping CODE=VALUE trên context dynamic.
 - [ ] **Post-check:** Sau khi chạy aggregate, chạy `post_check_atomic.py` (xem [`reference/post_check_codes.md`](reference/post_check_codes.md)) và xử lý mọi warning trước khi kết thúc Tier.
 - [ ] **Source coverage:** Chạy `post_check_source_coverage.py --source {SOURCE}` — mọi bảng đã thiết kế đều có 100% cột map (hoặc pending với reason rõ).
 
@@ -562,7 +597,7 @@ attributes:
     source_columns: []
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: SOURCE_SYSTEM=NHNCK.PROFESSIONALS
-    etl_derived_value: NHNCK.PROFESSIONALS
+    etl_derived_value: NHNCK_PROFESSIONALS
 ```
 
 **Physical name:** Sinh `physical_name` theo quy tắc B trong section **[QUY TẮC ĐẶT `physical_name`](#quy-tắc-đặt-physical_name)** ở cuối file. `entity_physical_name` lấy từ cột tương ứng trong `atomic_entities.yaml` (quy tắc A), không tự tính lại. `data_type` để trống — `transform_physical_names.py` tự patch sau.
@@ -795,6 +830,13 @@ entity_physical_name = abbreviate_domain_prefix(Domain Prefix) + "_" + full_word
 - **Domain Prefix**: phần đầu tên entity dùng chung cho 1 nhóm entity cùng nghiệp vụ — quyết định
   ở HLD Bước 4 (xem `atomic-hld-design/SKILL.md`), lưu tường minh tại cột `domain_prefix` trong
   `atomic_entities.yaml`.
+  - **Chuẩn hoá bắt buộc (2026-08-07)**: `domain_prefix` chỉ được là chuỗi **rỗng `""`** hoặc
+    khớp **đúng nguyên văn** 1 giá trị `Name` trong
+    [`system/rules/rule_domain_prefix_abbreviations.csv`](../../../system/rules/rule_domain_prefix_abbreviations.csv)
+    — không còn tự ghép chuỗi dài tuỳ ý (VD `"Public Company Evaluation"`,
+    `"Securities Company Risk Indicator"`). Nếu Domain Prefix mong muốn dài hơn 1 giá trị curated
+    (VD `"Public Company Evaluation Criterion"`), cắt về đúng giá trị curated đứng đầu
+    (`"Public Company"`), phần dư đẩy xuống BCV Term.
 - **abbreviate_domain_prefix()** = áp dụng danh sách cụm từ **curated**
   [`system/rules/rule_domain_prefix_abbreviations.csv`](../../../system/rules/rule_domain_prefix_abbreviations.csv)
   lên Domain Prefix theo thuật toán longest-match-first (duyệt trái sang phải, mỗi vị trí thử
@@ -808,8 +850,13 @@ entity_physical_name = abbreviate_domain_prefix(Domain Prefix) + "_" + full_word
     giữ nguyên `qualification_examination_assessment` (không có trong CSV).
 - **full_words()** = viết thường toàn bộ, nối bằng `_`, **giữ nguyên đầy đủ từ — KHÔNG viết tắt**.
 - **BCV Term** = phần còn lại của `atomic_entity` sau khi bỏ Domain Prefix.
-- **Domain Prefix rỗng** (entity không có sibling nào cùng nhóm nghiệp vụ) →
-  `entity_physical_name = full_words(atomic_entity)` (không có phần abbreviate_domain_prefix).
+- **Domain Prefix rỗng** (entity không có sibling nào cùng nhóm nghiệp vụ, hoặc Domain Prefix mong
+  muốn không khớp cụm curated nào nên bị chuẩn hoá về rỗng) →
+  `entity_physical_name = abbreviate_domain_prefix(atomic_entity)` — vẫn quét **toàn bộ** tên entity
+  qua danh sách curated (không chỉ full_words trơ) để bắt cụm curated nằm ở giữa/cuối tên, không chỉ
+  ở đầu. VD `"Foreign Fund Management Organization Unit"` (Domain Prefix rỗng vì không bắt đầu bằng
+  cụm curated nào) → `foreign_fm_ou` (bắt được `Fund Management`→`fm` và `Organization Unit`→`ou`
+  nằm giữa chuỗi), không phải `foreign_fund_management_organization_unit`.
 - **BCV Term rỗng** (entity chính là "gốc" của cả nhóm — tên entity trùng khớp Domain Prefix) →
   `entity_physical_name = full_words(Domain Prefix)` (KHÔNG dùng abbreviation trơ trụi như `sc` —
   quá ngắn, dễ trùng giữa các nhóm khác nhau).

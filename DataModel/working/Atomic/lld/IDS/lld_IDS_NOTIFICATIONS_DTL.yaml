@@ -58,7 +58,7 @@ attributes:
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
   classification_context: "SOURCE_SYSTEM=IDS.NOTIFICATIONS_DTL"
-  etl_derived_value: "IDS.NOTIFICATIONS_DTL"
+  etl_derived_value: "IDS_NOTIFICATIONS_DTL"
   data_type: "string"
 - attribute_name: "Notification Id"
   physical_name: "notification_id"
@@ -85,8 +85,10 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IDS.NOTIFICATIONS_DTL.NOTIFICATIONS_ID"
-  comment: "Lookup pair: notification.notification_code. Pair with Notification Id."
+  - "IDS.NOTIFICATIONS.NOTI_CD"
+  comment: "Lookup pair: notification.notification_code. Pair with Notification Id.\
+    \ Giá trị lấy từ IDS.NOTIFICATIONS.NOTI_CD sau ETL crosswalk — chi tiết xem comment\
+    \ Notification Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -99,7 +101,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.NOTIFICATIONS_DTL.COMPANY_PROFILE_ID"
-  comment: "FK target: Public Company.Public Company Id. Hash: hash_id('IDS.COMPANY_PROFILES',\
+  comment: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES',\
     \ COMPANY_PROFILE_ID). Nullable — người nhận có thể không phải công ty đại chúng."
   classification_context: null
   etl_derived_value: null
@@ -113,7 +115,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.NOTIFICATIONS_DTL.COMPANY_PROFILE_ID"
-  comment: "Lookup pair: Public Company.Public Company Code. Pair with Public Company\
+  comment: "Lookup pair: public_company.pc_code. Pair with Public Company\
     \ Id."
   classification_context: null
   etl_derived_value: null
@@ -127,10 +129,7 @@ attributes:
   status: "pending"
   source_columns:
   - "IDS.NOTIFICATIONS_DTL.LOGIN_ID"
-  comment: "FK target: Identity and Access Management User.Identity and Access Management\
-    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: LOGINS.ID NUMBER(10)\
-    \ tự tăng vs IAM.USERS.ID VARCHAR2(36) GUID, chưa xác nhận crosswalk nên chưa\
-    \ thêm Hash."
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM.USERS', LOGIN_ID) | Chưa xác nhận join key IDS.NOTIFICATIONS_DTL.LOGIN_ID ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -143,8 +142,7 @@ attributes:
   status: "pending"
   source_columns:
   - "IDS.NOTIFICATIONS_DTL.LOGIN_ID"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pair with Recipient User Id. Pending — xem ghi chú ở Recipient User\
+  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Recipient User Id. Pending — xem ghi chú ở Recipient User\
     \ Id."
   classification_context: null
   etl_derived_value: null
@@ -248,7 +246,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Deleted Indicator"
-  physical_name: "deleted_indicator"
+  physical_name: "deleted_ind"
   description: "Đánh dấu xóa mềm."
   data_domain: "Small Counter"
   nullable: true

@@ -64,7 +64,7 @@ attributes:
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
   classification_context: "SOURCE_SYSTEM=IDS.EVALUATION_CRITERIA"
-  etl_derived_value: "IDS.EVALUATION_CRITERIA"
+  etl_derived_value: "IDS_EVALUATION_CRITERIA"
   data_type: "string"
 - attribute_name: "Public Company Evaluation Group Id"
   physical_name: "pc_evaluation_group_id"
@@ -75,8 +75,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.EVALUATION_CRITERIA.GROUP_CD"
-  comment: "FK target: Public Company Evaluation Group.Public Company Evaluation Group\
-    \ Id. Hash: hash_id('IDS.EVALUATION_GROUPS', GROUP_CD). Hash trực tiếp từ GROUP_CD\
+  comment: "FK target: pc_evaluation_group.pc_evaluation_group_id. Hash: hash_id('IDS.EVALUATION_GROUPS', GROUP_CD). Hash trực tiếp từ GROUP_CD\
     \ (đã có sẵn trên cùng dòng nguồn) — không join qua EVALUATION_GROUPS.ID kỹ thuật,\
     \ theo yêu cầu Data Modeler (2026-07-15). Cần profile dữ liệu nguồn xác nhận NOT\
     \ NULL trước go-live."
@@ -92,8 +91,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.EVALUATION_CRITERIA.GROUP_CD"
-  comment: "Lookup pair: Public Company Evaluation Group.Public Company Evaluation\
-    \ Group Code. Pair with Public Company Evaluation Group Id."
+  comment: "Lookup pair: pc_evaluation_group.pc_evaluation_group_code. Pair with Public Company Evaluation Group Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -137,7 +135,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Basic Criterion Indicator"
-  physical_name: "basic_criterion_indicator"
+  physical_name: "basic_criterion_ind"
   description: "Là chỉ tiêu cơ bản hay không."
   data_domain: "Small Counter"
   nullable: true

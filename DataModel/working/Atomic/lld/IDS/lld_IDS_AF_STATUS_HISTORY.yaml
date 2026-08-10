@@ -54,7 +54,7 @@ attributes:
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
   classification_context: "SOURCE_SYSTEM=IDS.AF_STATUS_HISTORY"
-  etl_derived_value: "IDS.AF_STATUS_HISTORY"
+  etl_derived_value: "IDS_AF_STATUS_HISTORY"
   data_type: "string"
 - attribute_name: "Audit Firm Id"
   physical_name: "af_id"
@@ -65,7 +65,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.AF_STATUS_HISTORY.AF_PROFILE_ID"
-  comment: "FK target: Audit Firm.Audit Firm Id. Hash: hash_id('IDS.AF_PROFILES',\
+  comment: "FK target: audit_firm.af_id. Hash: hash_id('IDS.AF_PROFILES',\
     \ AF_PROFILE_ID)."
   classification_context: null
   etl_derived_value: null
@@ -79,7 +79,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.AF_STATUS_HISTORY.AF_PROFILE_ID"
-  comment: "Lookup pair: Audit Firm.Audit Firm Code. Pair with Audit Firm Id."
+  comment: "Lookup pair: audit_firm.af_code. Pair with Audit Firm Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -203,7 +203,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Deleted Indicator"
-  physical_name: "deleted_indicator"
+  physical_name: "deleted_ind"
   description: "Trạng thái xóa."
   data_domain: "Small Counter"
   nullable: true

@@ -1,0 +1,604 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "IDS"
+  source_table: "COMPANY_TREASURY_SHARES"
+  atomic_entity: "Public Company Treasury Share Transaction"
+  entity_physical_name: "pc_treasury_share_transaction"
+  bcv_core_object: "Business Activity"
+  bcv_concept: "[Business Activity] Business Activity"
+  table_type: "Fundamental"
+  group: "T2"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Entity mới (2026-08-09) — tách khỏi Public Company Treasury Stock Activity\
+    \ (COMPANY_TREASURY_STOCKS, chỉ là thống kê tổng hợp theo năm). Bảng này lưu từng\
+    \ đợt/phương án mua-bán cổ phiếu quỹ có quy trình phê duyệt riêng. Xem IDS_HLD_Tier2.md\
+    \ 6f T2-17."
+attributes:
+- attribute_name: "Public Company Treasury Share Transaction Id"
+  physical_name: "pc_treasury_share_transaction_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Business Activity] Business Activity\"."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Company Treasury Share Transaction Code"
+  physical_name: "pc_treasury_share_transaction_code"
+  description: "Khóa chính. BK của entity — map từ PK bảng nguồn."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TREASURY_SHARES.ID"
+  comment: "BK chính. PK nguồn NUMBER(10) tự tăng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=IDS.COMPANY_TREASURY_SHARES"
+  etl_derived_value: "IDS_COMPANY_TREASURY_SHARES"
+  data_type: "string"
+- attribute_name: "Public Company Id"
+  physical_name: "pc_id"
+  description: "Khóa link đến bảng COMPANY_PROFILES."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TREASURY_SHARES.COMPANY_PROFILE_ID"
+  comment: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES', COMPANY_PROFILE_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Company Code"
+  physical_name: "pc_code"
+  description: "Mã công ty đại chúng."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TREASURY_SHARES.COMPANY_PROFILE_ID"
+  comment: "Lookup pair: public_company.pc_code. Pair with Public Company Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Transaction Type Code"
+  physical_name: "transaction_tp_code"
+  description: "Loại giao dịch (Mua/Bán cổ phiếu quỹ)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TREASURY_SHARES.TRANSACTION_TYPE_CD"
+  comment: "Scheme: IDS_TS_TRANSACTION_TYPE."
+  classification_context: "IDS_TS_TRANSACTION_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Consulting Organization Name"
+  physical_name: "consulting_organization_nm"
+  description: "Bên liên quan đến Tổ chức tư vấn."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TREASURY_SHARES.CONSULTING_ORG"
+  comment: "Denormalized — tổ chức tư vấn không FK sang entity trong scope IDS."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Audit Organization Name"
+  physical_name: "audit_organization_nm"
+  description: "Bên liên quan đến Tổ chức kiểm toán."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TREASURY_SHARES.AUDIT_ORG"
+  comment: "Denormalized — tổ chức kiểm toán không FK sang Audit Firm (chưa xác nhận\
+    \ cross-source)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Other Organization Name"
+  physical_name: "other_organization_nm"
+  description: "Bên liên quan đến Tổ chức liên quan khác."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TREASURY_SHARES.OTHER_ORG"
+  comment: "Denormalized — tổ chức liên quan khác không FK sang entity trong scope\
+    \ IDS."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Official Letter Number"
+  physical_name: "official_letter_nbr"
+  description: "Số công văn của UBCKNN."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TREASURY_SHARES.OFFICIAL_LETTER_NO"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Official Letter Date"
+  physical_name: "official_letter_dt"
+  description: "Ngày công văn."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TREASURY_SHARES.OFFICIAL_LETTER_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Approval Status Code"
+  physical_name: "approval_status_code"
+  description: "Trạng thái phê duyệt đợt mua/bán cổ phiếu quỹ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TREASURY_SHARES.APPROVAL_STATUS_CD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Administrative Status Code"
+  physical_name: "administrative_status_code"
+  description: "Trạng thái thủ tục hành chính."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TREASURY_SHARES.ADMINISTRATIVE_STATUS_CD"
+  comment: "Scheme: IDS_TS_ADMINISTRATIVE_STATUS."
+  classification_context: "IDS_TS_ADMINISTRATIVE_STATUS"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Approver User Id"
+  physical_name: "approver_user_id"
+  description: "ID Login của Lãnh đạo phê duyệt."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.COMPANY_TREASURY_SHARES.APPROVER_USER_ID"
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
+    \ Hash: hash_id('IAM.USERS', APPROVER_USER_ID) | Chưa xác nhận join key IDS.COMPANY_TREASURY_SHARES.APPROVER_USER_ID\
+    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Approver User Name"
+  physical_name: "approver_user_nm"
+  description: "Lãnh đạo phê duyệt phương án."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TREASURY_SHARES.APPROVER_USER_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Processor User Id"
+  physical_name: "processor_user_id"
+  description: "ID Login của Chuyên viên xử lý."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.COMPANY_TREASURY_SHARES.PROCESSOR_USER_ID"
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
+    \ Hash: hash_id('IAM.USERS', PROCESSOR_USER_ID) | Chưa xác nhận join key IDS.COMPANY_TREASURY_SHARES.PROCESSOR_USER_ID\
+    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Processor User Name"
+  physical_name: "processor_user_nm"
+  description: "Chuyên viên xử lý hồ sơ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TREASURY_SHARES.PROCESSOR_USER_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Revision Reason"
+  physical_name: "revision_reason"
+  description: "Lý do chỉnh sửa."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TREASURY_SHARES.REVISION_REASON"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Total Treasury Share Before Quantity"
+  physical_name: "total_treasury_share_before_quantity"
+  description: "Tổng số cổ phiếu quỹ trước khi thực hiện đợt giao dịch."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TREASURY_SHARES.TOTAL_TREASURY_SHARE_BEFORE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Latest Treasury Transaction Quantity"
+  physical_name: "latest_treasury_transaction_quantity"
+  description: "Số lượng cổ phiếu quỹ giao dịch gần nhất."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TREASURY_SHARES.LASTEST_TREASURY_TRANS_QTY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Latest Treasury Transaction Date"
+  physical_name: "latest_treasury_transaction_dt"
+  description: "Ngày giao dịch cổ phiếu quỹ gần nhất."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TREASURY_SHARES.LASTEST_TREASURY_TRANS_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Latest Offering End Date"
+  physical_name: "latest_offering_end_dt"
+  description: "Ngày kết thúc chào bán/phát hành gần nhất."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TREASURY_SHARES.LASTEST_OFFERING_END_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Total Registered Transaction Quantity"
+  physical_name: "total_registered_transaction_quantity"
+  description: "Tổng số lượng cổ phiếu quỹ đăng ký giao dịch."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TREASURY_SHARES.TOTAL_REGISTERED_TRANS_QTY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Par Value Amount"
+  physical_name: "par_val_amt"
+  description: "Mệnh giá cổ phiếu."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TREASURY_SHARES.PAR_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Treasury Transaction Purpose"
+  physical_name: "treasury_transaction_purpose"
+  description: "Mục đích mua/bán cổ phiếu quỹ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TREASURY_SHARES.TREASURY_TRANS_PURPOSE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Funding Source Description"
+  physical_name: "funding_src_description"
+  description: "Nguồn vốn thực hiện."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TREASURY_SHARES.FUNDING_SOURCE"
+  comment: "Nguồn lưu dạng số (NUMBER(24,0)) nhưng nội dung mô tả có vẻ là text —\
+    \ ETL cần convert sang string. Cần profile dữ liệu thật xác nhận trước khi thiết\
+    \ kế cast logic."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Planned Transaction Start Date"
+  physical_name: "planned_transaction_start_dt"
+  description: "Ngày dự kiến bắt đầu giao dịch."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TREASURY_SHARES.PLANNED_TRANS_START_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Planned Transaction End Date"
+  physical_name: "planned_transaction_end_dt"
+  description: "Ngày dự kiến kết thúc giao dịch."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TREASURY_SHARES.PLANNED_TRANS_END_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Transaction Method"
+  physical_name: "transaction_method"
+  description: "Phương thức giao dịch."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TREASURY_SHARES.TRANSACTION_METHOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Pricing Method"
+  physical_name: "pricing_method"
+  description: "Phương thức xác định giá."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TREASURY_SHARES.PRICING_METHOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Daily Transaction Quantity"
+  physical_name: "daily_transaction_quantity"
+  description: "Khối lượng giao dịch dự kiến mỗi ngày."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TREASURY_SHARES.DAILY_TRANS_QTY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Minimum Transaction Price Amount"
+  physical_name: "minimum_transaction_price_amt"
+  description: "Giá giao dịch tối thiểu dự kiến."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TREASURY_SHARES.MIN_TRANS_PRICE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Maximum Transaction Price Amount"
+  physical_name: "maximum_transaction_price_amt"
+  description: "Giá giao dịch tối đa dự kiến."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TREASURY_SHARES.MAX_TRANS_PRICE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Securities Agent Name"
+  physical_name: "securities_agent_nm"
+  description: "Tên đại lý chứng khoán (tiếng Việt)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TREASURY_SHARES.SECURITIES_AGENT_NAME_VI"
+  comment: "Denormalized — không FK sang Securities Company entity (không xác nhận\
+    \ cross-source)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Agent English Name"
+  physical_name: "securities_agent_english_nm"
+  description: "Tên đại lý chứng khoán (tiếng Anh)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TREASURY_SHARES.SECURITIES_AGENT_NAME_EN"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Agent Address"
+  physical_name: "securities_agent_adr"
+  description: "Địa chỉ đại lý chứng khoán."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TREASURY_SHARES.SECURITIES_AGENT_ADDR"
+  comment: "Denormalized — grain của entity không phải Involved Party, không tách\
+    \ IP Postal Address."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Agent Phone Number"
+  physical_name: "securities_agent_phone_nbr"
+  description: "Số điện thoại đại lý chứng khoán."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TREASURY_SHARES.SECURITIES_AGENT_PHONE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Certificate Number"
+  physical_name: "certificate_nbr"
+  description: "Số giấy chứng nhận."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TREASURY_SHARES.CERTIFICATE_NO"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Certificate Date"
+  physical_name: "certificate_dt"
+  description: "Ngày giấy chứng nhận."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TREASURY_SHARES.CERTIFICATE_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Administrative Procedure Code"
+  physical_name: "administrative_procedure_code"
+  description: "Thủ tục hành chính."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TREASURY_SHARES.ADMINISTRATIVE_PROC_CD"
+  comment: "Scheme: IDS_TS_ADMINISTRATIVE_PROC."
+  classification_context: "IDS_TS_ADMINISTRATIVE_PROC"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Application Code"
+  physical_name: "application_code"
+  description: "Mã hồ sơ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TREASURY_SHARES.APPLICATION_CD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Deleted Indicator"
+  physical_name: "deleted_ind"
+  description: "Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TREASURY_SHARES.DELETE_FLG"
+  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1,0)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Approver Comment"
+  physical_name: "approver_comment"
+  description: "Nội dung đề xuất phê duyệt / Lý do từ chối."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TREASURY_SHARES.APPROVER_COMMENT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Submission Date"
+  physical_name: "submission_dt"
+  description: "Ngày nộp hồ sơ."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_TREASURY_SHARES.SUBMISSION_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"

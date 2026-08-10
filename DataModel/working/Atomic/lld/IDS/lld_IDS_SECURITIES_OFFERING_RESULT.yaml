@@ -58,7 +58,7 @@ attributes:
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
   classification_context: "SOURCE_SYSTEM=IDS.SECURITIES_OFFERING_RESULT"
-  etl_derived_value: "IDS.SECURITIES_OFFERING_RESULT"
+  etl_derived_value: "IDS_SECURITIES_OFFERING_RESULT"
   data_type: "string"
 - attribute_name: "Public Company Securities Offering Id"
   physical_name: "pc_securities_offering_id"
@@ -69,8 +69,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.SECURITIES_OFFERING_RESULT.SECURITIES_OFFERING_ID"
-  comment: "FK target: Public Company Securities Offering.Public Company Securities\
-    \ Offering Id. Hash: hash_id('IDS.SECURITIES_OFFERING', SECURITIES_OFFERING_ID)."
+  comment: "FK target: pc_securities_offering.pc_securities_offering_id. Hash: hash_id('IDS.SECURITIES_OFFERING', SECURITIES_OFFERING_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -83,8 +82,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.SECURITIES_OFFERING_RESULT.SECURITIES_OFFERING_ID"
-  comment: "Lookup pair: Public Company Securities Offering.Public Company Securities\
-    \ Offering Code. Pair with Public Company Securities Offering Id."
+  comment: "Lookup pair: pc_securities_offering.pc_securities_offering_code. Pair with Public Company Securities Offering Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -861,7 +859,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
 - attribute_name: "Synced From External System Indicator"
-  physical_name: "synced_from_external_stm_indicator"
+  physical_name: "synced_from_external_stm_ind"
   description: "Đánh dấu đồng bộ dữ liệu từ hệ thống CBTT hay tạo mới tại IDS."
   data_domain: "Small Counter"
   nullable: true
@@ -874,7 +872,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Deleted Indicator"
-  physical_name: "deleted_indicator"
+  physical_name: "deleted_ind"
   description: "Đánh dấu trạng thái xóa mềm."
   data_domain: "Small Counter"
   nullable: true

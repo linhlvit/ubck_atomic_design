@@ -66,7 +66,7 @@ attributes:
   comment: "Scheme: SOURCE_SYSTEM. Hardcode. Dùng để phân biệt nguồn HTE_VIOLATION_REPORT\
     \ vs VIOLATION_REPORT khi gộp entity."
   classification_context: "SOURCE_SYSTEM=IDS.HTE_VIOLATION_REPORT"
-  etl_derived_value: "IDS.HTE_VIOLATION_REPORT"
+  etl_derived_value: "IDS_HTE_VIOLATION_REPORT"
   data_type: "string"
 - attribute_name: "Public Company Id"
   physical_name: "pc_id"
@@ -77,7 +77,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.HTE_VIOLATION_REPORT.COMPANY_PROFILE_ID"
-  comment: "FK target: Public Company.Public Company Id. Hash: hash_id('IDS.COMPANY_PROFILES',\
+  comment: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES',\
     \ COMPANY_PROFILE_ID)."
   classification_context: null
   etl_derived_value: null
@@ -91,7 +91,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.HTE_VIOLATION_REPORT.COMPANY_PROFILE_ID"
-  comment: "Lookup pair: Public Company.Public Company Code. Pair with Public Company\
+  comment: "Lookup pair: public_company.pc_code. Pair with Public Company\
     \ Id."
   classification_context: null
   etl_derived_value: null
@@ -120,9 +120,10 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IDS.HTE_VIOLATION_REPORT.VIOLATION_TEMPLATE_ID"
-  comment: "Lookup pair: vr_template.vr_template_code. Pair\
-    \ with Violation Report Template Id."
+  - "IDS.VIOLATION_TEMPLATES.VIOLATION_CD"
+  comment: "Lookup pair: vr_template.vr_template_code. Pair with Violation Report\
+    \ Template Id. Giá trị lấy từ IDS.VIOLATION_TEMPLATES.VIOLATION_CD sau ETL crosswalk\
+    \ — chi tiết xem comment Violation Report Template Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

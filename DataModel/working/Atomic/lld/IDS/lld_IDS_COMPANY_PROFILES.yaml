@@ -60,7 +60,7 @@ attributes:
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
   classification_context: "SOURCE_SYSTEM=IDS.COMPANY_PROFILES"
-  etl_derived_value: "IDS.COMPANY_PROFILES"
+  etl_derived_value: "IDS_COMPANY_PROFILES"
   data_type: "string"
 - attribute_name: "Public Company Name"
   physical_name: "pc_nm"
@@ -165,12 +165,12 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.COMPANY_PROFILES.CATEGORY_L1_ID"
-  comment: "FK target: Classification Business Line.Classification Business Line Id.\
-    \ CATEGORY_L1_ID lưu ID kỹ thuật của IDS.CATEGORIES (không phải INDUSTRY_CD) —\
-    \ PHẢI join: CATEGORY_L1_ID = IDS.CATEGORIES.ID để lấy INDUSTRY_CD, rồi hash_id('ECAT.BUSINESS_LINE_LEVEL_1',\
-    \ INDUSTRY_CD) — Id phải trùng với Id đã sinh từ chính ECAT.BUSINESS_LINE_LEVEL_1\
-    \ (IDS.CATEGORIES chỉ dùng làm bảng join, không tự sinh entity — quyết định lại\
-    \ 2026-07-23). Xem IDS_HLD_Tier1.md T1-13."
+  comment: "FK target: cl_business_line.cl_business_line_id. Cần ETL crosswalk\
+    \ sang IDS.CATEGORIES: COMPANY_PROFILES.CATEGORY_L1_ID = CATEGORIES.ID để xác\
+    \ nhận INDUSTRY_CD sau đó hash_id('ECAT.BUSINESS_LINE_LEVEL_1', INDUSTRY_CD)\
+    \ | IDS.CATEGORIES chỉ dùng làm bảng join, không tự sinh entity — quyết định\
+    \ 2026-07-23. Chưa xác nhận value set khớp danh mục ECAT.BUSINESS_LINE_LEVEL_1\
+    \ — cần profile dữ liệu trước go-live. Xem IDS_HLD_Tier1.md T1-13."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -182,10 +182,10 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IDS.COMPANY_PROFILES.CATEGORY_L1_ID"
-  comment: "Lookup pair: Classification Business Line.Classification Business Line\
-    \ Code. Pair with Business Line Level 1 Id. Giá trị lấy qua join (xem Business\
-    \ Line Level 1 Id)."
+  - "IDS.CATEGORIES.INDUSTRY_CD"
+  comment: "Lookup pair: cl_business_line.cl_business_line_code. Pair with Business\
+    \ Line Level 1 Id. Giá trị lấy từ IDS.CATEGORIES.INDUSTRY_CD sau ETL crosswalk\
+    \ — chi tiết xem comment Business Line Level 1 Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -198,12 +198,13 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.COMPANY_PROFILES.CATEGORY_L2_ID"
-  comment: "FK target: Classification Business Line.Classification Business Line Id.\
-    \ CATEGORY_L2_ID lưu ID kỹ thuật của IDS.CATEGORIES — PHẢI join: CATEGORY_L2_ID\
-    \ = IDS.CATEGORIES.ID để lấy INDUSTRY_CD, rồi hash_id('ECAT.BUSINESS_LINE_LEVEL_2',\
-    \ INDUSTRY_CD) — Id phải trùng với Id đã sinh từ chính ECAT.BUSINESS_LINE_LEVEL_2\
-    \ (IDS.CATEGORIES chỉ dùng làm bảng join, không tự sinh entity — quyết định lại\
-    \ 2026-07-23). Xem ghi chú tại Business Line Level 1 Id."
+  comment: "FK target: cl_business_line.cl_business_line_id. Cần ETL crosswalk\
+    \ sang IDS.CATEGORIES: COMPANY_PROFILES.CATEGORY_L2_ID = CATEGORIES.ID để xác\
+    \ nhận INDUSTRY_CD sau đó hash_id('ECAT.BUSINESS_LINE_LEVEL_2', INDUSTRY_CD)\
+    \ | IDS.CATEGORIES chỉ dùng làm bảng join, không tự sinh entity — quyết định\
+    \ 2026-07-23. Chưa xác nhận value set khớp danh mục ECAT.BUSINESS_LINE_LEVEL_2\
+    \ — cần profile dữ liệu trước go-live. Xem ghi chú tại Business Line Level 1\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -215,10 +216,10 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IDS.COMPANY_PROFILES.CATEGORY_L2_ID"
-  comment: "Lookup pair: Classification Business Line.Classification Business Line\
-    \ Code. Pair with Business Line Level 2 Id. Giá trị lấy qua join (xem Business\
-    \ Line Level 2 Id)."
+  - "IDS.CATEGORIES.INDUSTRY_CD"
+  comment: "Lookup pair: cl_business_line.cl_business_line_code. Pair with Business\
+    \ Line Level 2 Id. Giá trị lấy từ IDS.CATEGORIES.INDUSTRY_CD sau ETL crosswalk\
+    \ — chi tiết xem comment Business Line Level 2 Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -292,7 +293,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Equity Security Indicator"
-  physical_name: "equity_security_indicator"
+  physical_name: "equity_security_ind"
   description: "Cờ chứng khoán cổ phiếu."
   data_domain: "Small Counter"
   nullable: true
@@ -345,7 +346,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Bond Security Indicator"
-  physical_name: "bond_security_indicator"
+  physical_name: "bond_security_ind"
   description: "Cờ chứng khoán trái phiếu."
   data_domain: "Small Counter"
   nullable: true
@@ -411,7 +412,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Auto Approval Indicator"
-  physical_name: "auto_approval_indicator"
+  physical_name: "auto_approval_ind"
   description: "Tự động phê duyệt."
   data_domain: "Small Counter"
   nullable: true
@@ -464,7 +465,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Ids Registration Indicator"
-  physical_name: "ids_registration_indicator"
+  physical_name: "ids_registration_ind"
   description: "Trạng thái đăng ký IDS."
   data_domain: "Small Counter"
   nullable: true
@@ -545,7 +546,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Public Bond Issuer Indicator"
-  physical_name: "public_bond_issuer_indicator"
+  physical_name: "public_bond_issuer_ind"
   description: "Doanh nghiệp phát hành trái phiếu."
   data_domain: "Small Counter"
   nullable: true
@@ -558,7 +559,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Former State Owned Indicator"
-  physical_name: "former_state_owned_indicator"
+  physical_name: "former_state_owned_ind"
   description: "Doanh nghiệp nhà nước (trước đây)."
   data_domain: "Small Counter"
   nullable: true
@@ -597,7 +598,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
 - attribute_name: "Has State Ownership Indicator"
-  physical_name: "has_state_ownership_indicator"
+  physical_name: "has_state_ownership_ind"
   description: "Có vốn nhà nước."
   data_domain: "Small Counter"
   nullable: true
@@ -610,7 +611,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Foreign Direct Investment Indicator"
-  physical_name: "foreign_direct_investment_indicator"
+  physical_name: "foreign_direct_investment_ind"
   description: "Doanh nghiệp FDI."
   data_domain: "Small Counter"
   nullable: true
@@ -623,7 +624,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Has Parent Company Indicator"
-  physical_name: "has_parent_company_indicator"
+  physical_name: "has_parent_company_ind"
   description: "Có công ty mẹ."
   data_domain: "Small Counter"
   nullable: true
@@ -636,7 +637,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Has Subsidiary Indicator"
-  physical_name: "has_subsidiary_indicator"
+  physical_name: "has_subsidiary_ind"
   description: "Có công ty con."
   data_domain: "Small Counter"
   nullable: true
@@ -649,7 +650,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Has Joint Venture Indicator"
-  physical_name: "has_joint_venture_indicator"
+  physical_name: "has_joint_venture_ind"
   description: "Có liên doanh."
   data_domain: "Small Counter"
   nullable: true
@@ -678,7 +679,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Ipo Company Indicator"
-  physical_name: "ipo_company_indicator"
+  physical_name: "ipo_company_ind"
   description: "1-Công ty đang IPO, 0-Công ty đại chúng."
   data_domain: "Small Counter"
   nullable: true
@@ -705,7 +706,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Deleted Indicator"
-  physical_name: "deleted_indicator"
+  physical_name: "deleted_ind"
   description: "Trạng thái xoá."
   data_domain: "Small Counter"
   nullable: true

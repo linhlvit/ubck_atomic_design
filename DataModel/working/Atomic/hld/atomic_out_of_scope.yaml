@@ -943,20 +943,6 @@ entries:
   reason: Audit Log nguồn — cơ chế ghi lịch sử đặc thù source system, không phải sự
     kiện nghiệp vụ
 - source_system: IDS
-  source_table: '`COMPANY_DATA`'
-  description: Lần nộp báo cáo/tin CBTT của CTĐC.
-  group: Fact Data
-  reason: Loại khỏi scope theo quyết định tường minh của Data Modeler (2026-07-24)
-    — trước đây thiết kế thành entity `Public Company Report Submission` (T3), nay
-    bỏ hoàn toàn HLD + LLD.
-- source_system: IDS
-  source_table: '`DATA`'
-  description: Giá trị số liệu từng ô trong báo cáo tài chính của CTĐC theo kỳ.
-  group: Fact Data
-  reason: Loại khỏi scope theo quyết định tường minh của Data Modeler (2026-07-14)
-    — trước đây thiết kế thành entity `Public Company Financial Report Value` (T2),
-    nay bỏ hoàn toàn HLD + LLD. Xem `pending_design.yaml`.
-- source_system: IDS
   source_table: '`DATA_VALUES`'
   description: Bảng giá trị tham chiếu cho field trong form.
   group: Form Metadata
@@ -1586,6 +1572,13 @@ entries:
   reason: Không có trong danh sách entity đã review — thông tin điểm nhóm CAMEL có
     thể suy ra từ RISK_SCORING_SC_FIRM_DETAIL group by RISK_INDICATOR_GROUP.
 - source_system: SCMS
+  source_table: CUSTODIAN_BANK
+  description: Ngân hàng lưu ký
+  group: Loại theo quyết định Data Modeler
+  reason: Quyết định Data Modeler (2026-07-24) — bỏ hoàn toàn khỏi phạm vi thiết kế,
+    không map bất kỳ entity nào (bao gồm Securities Company Custodian Bank, IP Postal
+    Address, IP Electronic Address, IP Alt Identification).
+- source_system: SCMS
   source_table: BANK_PERIODIC_REPORT
   description: Báo cáo định kỳ ngân hàng đối tác
   group: Operational / System
@@ -2010,17 +2003,3 @@ entries:
   description: Lịch sử migration schema database
   group: Operational / System
   reason: Operational/system data — database maintenance
-- source_system: IDS
-  source_table: AF_PROFILES
-  description: Hồ sơ công ty kiểm toán (Audit Firm)
-  group: Loại theo quyết định Data Modeler
-  reason: Quyết định Data Modeler (2026-07-24) — bỏ hoàn toàn khỏi phạm vi thiết kế,
-    không map bất kỳ entity nào (bao gồm Audit Firm, IP Postal Address, IP Electronic
-    Address, IP Alt Identification).
-- source_system: SCMS
-  source_table: CUSTODIAN_BANK
-  description: Ngân hàng lưu ký
-  group: Loại theo quyết định Data Modeler
-  reason: Quyết định Data Modeler (2026-07-24) — bỏ hoàn toàn khỏi phạm vi thiết kế,
-    không map bất kỳ entity nào (bao gồm Securities Company Custodian Bank, IP Postal
-    Address, IP Electronic Address, IP Alt Identification).

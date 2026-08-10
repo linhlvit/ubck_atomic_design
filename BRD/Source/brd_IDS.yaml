@@ -32,6 +32,8 @@ brd_entries:
       relation: 1-N — Chào mua công khai
     - table: COMPANY_TREASURY_STOCKS
       relation: 1-N — Cổ phiếu quỹ
+    - table: COMPANY_TREASURY_SHARES
+      relation: 1-N — Đợt mua/bán cổ phiếu quỹ
     - table: COMPANY_INSPECTION
       relation: 1-N — Thanh tra kiểm tra
     - table: COMPANY_PENALTIES
@@ -204,6 +206,34 @@ brd_entries:
       data_change_mode: Update
       filter_logic: null
       filter_note: null
+- brd_id: BRD-SRC-IDS-COMPANY_TREASURY_SHARES
+  content:
+    table: COMPANY_TREASURY_SHARES
+    description: Lưu thông tin đợt mua/bán cổ phiếu quỹ (phương án, quy trình phê duyệt)
+    functional_group: capital_activity
+    scope_status: in_scope
+    scope_reason: null
+    related_tables:
+    - table: COMPANY_PROFILES
+      relation: FK cha — Hồ sơ công ty đại chúng
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-TREASURY_SHARE_TRANS_RESULT
+  content:
+    table: TREASURY_SHARE_TRANS_RESULT
+    description: Lưu thông tin kết quả thực hiện từng đợt mua/bán cổ phiếu quỹ
+    functional_group: capital_activity
+    scope_status: in_scope
+    scope_reason: null
+    related_tables:
+    - table: COMPANY_TREASURY_SHARES
+      relation: FK cha — Đợt mua/bán cổ phiếu quỹ
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-IDS-COMPANY_INSPECTION
   content:
     table: COMPANY_INSPECTION
@@ -349,8 +379,8 @@ brd_entries:
     table: RROW
     description: Bảng lưu Chỉ tiêu tài chính
     functional_group: reporting
-    scope_status: out_of_scope
-    scope_reason: "Retired 2026-07-22 — Financial Report Form Row Template không còn nằm trong scope thiết kế Atomic (quyết định Data Modeler)."
+    scope_status: in_scope
+    scope_reason: null
     related_tables:
     - table: REPORT_CATALOG
       relation: FK cha — Mẫu biểu báo cáo tài chính
@@ -645,9 +675,8 @@ brd_entries:
     table: COMPANY_DATA
     description: Lưu FORMS dữ liệu thuộc COMPANY_PROFILES
     functional_group: reporting
-    scope_status: out_of_scope
-    scope_reason: Loại khỏi scope theo quyết định tường minh của Data Modeler (2026-07-24)
-      — bỏ hoàn toàn HLD + LLD đã thiết kế cho bảng này.
+    scope_status: in_scope
+    scope_reason: null
     related_tables:
     - table: COMPANY_PROFILES
       relation: FK cha — Hồ sơ công ty
@@ -664,9 +693,8 @@ brd_entries:
     table: DATA
     description: Lưu trữ dữ liệu của hàng và cột của báo cáo tài chính
     functional_group: reporting
-    scope_status: out_of_scope
-    scope_reason: Loại khỏi scope theo quyết định tường minh của Data Modeler (2026-07-14)
-      — bỏ hoàn toàn HLD + LLD đã thiết kế cho bảng này.
+    scope_status: in_scope
+    scope_reason: null
     related_tables:
     - table: REPORT_CATALOG
       relation: FK cha — Mẫu biểu báo cáo tài chính
@@ -1223,8 +1251,8 @@ brd_entries:
     table: RCOL
     description: ""
     functional_group: reporting
-    scope_status: out_of_scope
-    scope_reason: "Retired 2026-07-22 — Financial Report Form Column Template không còn nằm trong scope thiết kế Atomic (quyết định Data Modeler)."
+    scope_status: in_scope
+    scope_reason: null
     related_tables:
     - table: REPORT_CATALOG
       relation: FK cha — Mẫu biểu báo cáo tài chính

@@ -56,7 +56,7 @@ attributes:
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
   classification_context: "SOURCE_SYSTEM=IDS.COMPANY_SHAREHOLDING"
-  etl_derived_value: "IDS.COMPANY_SHAREHOLDING"
+  etl_derived_value: "IDS_COMPANY_SHAREHOLDING"
   data_type: "string"
 - attribute_name: "Public Company Id"
   physical_name: "pc_id"
@@ -67,7 +67,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.COMPANY_SHAREHOLDING.COMPANY_PROFILE_ID"
-  comment: "FK target: Public Company.Public Company Id. Hash: hash_id('IDS.COMPANY_PROFILES',\
+  comment: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES',\
     \ COMPANY_PROFILE_ID)."
   classification_context: null
   etl_derived_value: null
@@ -81,7 +81,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.COMPANY_SHAREHOLDING.COMPANY_PROFILE_ID"
-  comment: "Lookup pair: Public Company.Public Company Code. Pair with Public Company\
+  comment: "Lookup pair: public_company.pc_code. Pair with Public Company\
     \ Id."
   classification_context: null
   etl_derived_value: null
@@ -95,7 +95,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.COMPANY_SHAREHOLDING.LEGAL_ENTITY_ID"
-  comment: "FK target: Legal Entity.Legal Entity Id. Hash: hash_id('IDS.LEGAL_ENTITIES',\
+  comment: "FK target: legal_entity.legal_entity_id. Hash: hash_id('IDS.LEGAL_ENTITIES',\
     \ LEGAL_ENTITY_ID)."
   classification_context: null
   etl_derived_value: null
@@ -109,12 +109,12 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.COMPANY_SHAREHOLDING.LEGAL_ENTITY_ID"
-  comment: "Lookup pair: Legal Entity.Legal Entity Code. Pair with Legal Entity Id."
+  comment: "Lookup pair: legal_entity.legal_entity_code. Pair with Legal Entity Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Founder Shareholder Indicator"
-  physical_name: "founder_shareholder_indicator"
+  physical_name: "founder_shareholder_ind"
   description: "Là cổ đông sáng lập."
   data_domain: "Small Counter"
   nullable: true
@@ -153,7 +153,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Major Shareholder Indicator"
-  physical_name: "major_shareholder_indicator"
+  physical_name: "major_shareholder_ind"
   description: "Là cổ đông lớn."
   data_domain: "Small Counter"
   nullable: true
@@ -192,7 +192,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Strategic Shareholder Indicator"
-  physical_name: "strategic_shareholder_indicator"
+  physical_name: "strategic_shareholder_ind"
   description: "Là cổ đông chiến lược."
   data_domain: "Small Counter"
   nullable: true
@@ -231,7 +231,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Insider Shareholder Indicator"
-  physical_name: "insider_shareholder_indicator"
+  physical_name: "insider_shareholder_ind"
   description: "Là cổ đông nội bộ."
   data_domain: "Small Counter"
   nullable: true
@@ -272,7 +272,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Government Shareholder Indicator"
-  physical_name: "government_shareholder_indicator"
+  physical_name: "government_shareholder_ind"
   description: "Là cổ đông nhà nước."
   data_domain: "Small Counter"
   nullable: true
@@ -311,7 +311,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Related Shareholder Indicator"
-  physical_name: "related_shareholder_indicator"
+  physical_name: "related_shareholder_ind"
   description: "Là cổ đông liên quan."
   data_domain: "Small Counter"
   nullable: true
@@ -350,7 +350,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Other Shareholder Indicator"
-  physical_name: "other_shareholder_indicator"
+  physical_name: "other_shareholder_ind"
   description: "Cổ đông khác (không thuộc các nhóm phân loại chuẩn)."
   data_domain: "Small Counter"
   nullable: true
@@ -456,7 +456,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Approval Indicator"
-  physical_name: "approval_indicator"
+  physical_name: "approval_ind"
   description: "Trạng thái phê duyệt thông tin cổ đông."
   data_domain: "Small Counter"
   nullable: true
@@ -496,7 +496,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Deleted Indicator"
-  physical_name: "deleted_indicator"
+  physical_name: "deleted_ind"
   description: "Đánh dấu xóa mềm."
   data_domain: "Small Counter"
   nullable: true

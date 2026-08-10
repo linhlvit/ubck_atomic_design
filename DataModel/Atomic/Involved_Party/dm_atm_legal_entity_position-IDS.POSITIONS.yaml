@@ -33,7 +33,7 @@ attributes:
     source_table: POSITIONS
     source_column: null
     comment: "PK surrogate. BCV: \"[Involved Party] Individual Employment Status\"."
-    classification_context: "Source System Code = 'IDS_POSITIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Legal Entity Position Code
@@ -47,7 +47,7 @@ attributes:
     source_table: POSITIONS
     source_column: IDS.POSITIONS.ID
     comment: BK chính. PK nguồn NUMBER(10) tự tăng.
-    classification_context: "Source System Code = 'IDS_POSITIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     classification_context: "Source System Code = 'IDS_POSITIONS'"
-    etl_derived_value: IDS.POSITIONS
+    etl_derived_value: IDS_POSITIONS
 
   - name: Legal Entity Id
     physical_name: legal_entity_id
@@ -75,7 +75,7 @@ attributes:
     source_table: POSITIONS
     source_column: IDS.POSITIONS.LEGAL_ENTITY_ID
     comment: "FK target: legal_entity.legal_entity_id. Hash: hash_id('IDS.LEGAL_ENTITIES', LEGAL_ENTITY_ID)."
-    classification_context: "Source System Code = 'IDS_POSITIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Legal Entity Code
@@ -89,7 +89,35 @@ attributes:
     source_table: POSITIONS
     source_column: IDS.POSITIONS.LEGAL_ENTITY_ID
     comment: "Lookup pair: legal_entity.legal_entity_code. Pair with Legal Entity Id."
-    classification_context: "Source System Code = 'IDS_POSITIONS'"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Public Company Id
+    physical_name: pc_id
+    business_meaning: Khóa link đến bảng COMPANY_PROFILES.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: POSITIONS
+    source_column: IDS.POSITIONS.COMPANY_PROFILE_ID
+    comment: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES', COMPANY_PROFILE_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Public Company Code
+    physical_name: pc_code
+    business_meaning: Mã công ty đại chúng.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: POSITIONS
+    source_column: IDS.POSITIONS.COMPANY_PROFILE_ID
+    comment: "Lookup pair: public_company.pc_code. Pair with Public Company Id."
+    classification_context: null
     etl_derived_value: null
 
   - name: Position Code
@@ -103,7 +131,7 @@ attributes:
     source_table: POSITIONS
     source_column: IDS.POSITIONS.POSITION_CD
     comment: "Scheme: IDS_POSITION. Values load từ LOOKUP_VALUES (LOOKUP_GROUP = POSITION). Dùng chung scheme với Public Company Penalty/Public Company Legal Representative."
-    classification_context: "Source System Code = 'IDS_POSITIONS'"
+    classification_context: IDS_POSITION
     etl_derived_value: null
 
   - name: Appointment Date
@@ -117,7 +145,7 @@ attributes:
     source_table: POSITIONS
     source_column: IDS.POSITIONS.APPOINTMENT_DATE
     comment: null
-    classification_context: "Source System Code = 'IDS_POSITIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Dismissal Date
@@ -131,11 +159,11 @@ attributes:
     source_table: POSITIONS
     source_column: IDS.POSITIONS.DISMISSAL_DATE
     comment: null
-    classification_context: "Source System Code = 'IDS_POSITIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Active Indicator
-    physical_name: active_indicator
+    physical_name: active_ind
     business_meaning: "Có trạng thái chức vụ hiện tại (0-Không, 1-Có)."
     data_domain: Small Counter
     data_type: int
@@ -145,11 +173,11 @@ attributes:
     source_table: POSITIONS
     source_column: IDS.POSITIONS.ACTIVE_FLG
     comment: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1).
-    classification_context: "Source System Code = 'IDS_POSITIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Deleted Indicator
-    physical_name: deleted_indicator
+    physical_name: deleted_ind
     business_meaning: "Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa)."
     data_domain: Small Counter
     data_type: int
@@ -159,5 +187,5 @@ attributes:
     source_table: POSITIONS
     source_column: IDS.POSITIONS.DELETE_FLG
     comment: Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1).
-    classification_context: "Source System Code = 'IDS_POSITIONS'"
+    classification_context: null
     etl_derived_value: null

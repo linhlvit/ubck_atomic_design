@@ -55,7 +55,7 @@ attributes:
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
   classification_context: "SOURCE_SYSTEM=IDS.COMPANY_RELATIONSHIP"
-  etl_derived_value: "IDS.COMPANY_RELATIONSHIP"
+  etl_derived_value: "IDS_COMPANY_RELATIONSHIP"
   data_type: "string"
 - attribute_name: "Public Company Id"
   physical_name: "pc_id"
@@ -66,7 +66,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.COMPANY_RELATIONSHIP.COMPANY_PROFILE_ID"
-  comment: "FK target: Public Company.Public Company Id. Hash: hash_id('IDS.COMPANY_PROFILES',\
+  comment: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES',\
     \ COMPANY_PROFILE_ID)."
   classification_context: null
   etl_derived_value: null
@@ -80,7 +80,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.COMPANY_RELATIONSHIP.COMPANY_PROFILE_ID"
-  comment: "Lookup pair: Public Company.Public Company Code. Pair with Public Company\
+  comment: "Lookup pair: public_company.pc_code. Pair with Public Company\
     \ Id."
   classification_context: null
   etl_derived_value: null
@@ -244,7 +244,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Deleted Indicator"
-  physical_name: "deleted_indicator"
+  physical_name: "deleted_ind"
   description: "Đánh dấu xóa mềm (0 - Chưa xóa; 1 - Đã xóa)."
   data_domain: "Small Counter"
   nullable: true
@@ -257,7 +257,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Sync Indicator"
-  physical_name: "sync_indicator"
+  physical_name: "sync_ind"
   description: "Đánh dấu đồng bộ (1- Đồng bộ; 0 - Thêm tay)."
   data_domain: "Small Counter"
   nullable: true

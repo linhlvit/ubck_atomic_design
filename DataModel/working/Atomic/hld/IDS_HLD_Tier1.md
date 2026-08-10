@@ -12,9 +12,9 @@
 | Involved Party | [Involved Party] Organization | Organization | `COMPANY_PROFILES` | Update | Thông tin cơ bản của công ty đại chúng: tên VI/EN, mã CK, sàn niêm yết, trạng thái, vốn điều lệ, loại hình doanh nghiệp. Hạt nhân của toàn bộ IDS — hầu hết bảng nghiệp vụ FK về đây. | Public Company | Fundamental | (1) Term candidate: `[Involved Party] Organization` — BCV mô tả tổ chức/pháp nhân có lifecycle riêng, được UBCKNN quản lý. (2) Cấu trúc trường: tên VI/EN/viết tắt, mã CK, sàn niêm yết (EQUITY_LISTING_EXCH), trạng thái (STATUS_IDS_CD), vốn điều lệ (CAPITAL_PAID_REPORTED), loại doanh nghiệp (ENTERPRISE_TYPE_CD), loại BCTC (FINANCIAL_STMT_TYPE_CD) — rõ ràng là profile của pháp nhân tổ chức; không có bảng `company_detail` riêng trong BRD thực tế. (3) Chọn `[Involved Party] Organization` — công ty đại chúng là pháp nhân tổ chức; shared entity với SCMS.DM_CONG_TY_DC. |
 | Involved Party | [Involved Party] Individual | Involved Party | `LEGAL_ENTITIES` | Update | Cổ đông giao dịch, người nội bộ, người liên quan của công ty đại chúng (cá nhân hoặc tổ chức). Grain = 1 thực thể pháp lý độc lập — không FK đến COMPANY_PROFILES ở bảng này; quan hệ với công ty thể hiện qua COMPANY_ENTITY_ROLE và COMPANY_SHAREHOLDING (Tier 3). | Legal Entity | Fundamental | (1) Term candidate: `[Involved Party] Individual` — BCV mô tả cá nhân hoặc tổ chức là Involved Party có lifecycle riêng. (2) Cấu trúc trường: ENTITY_NAME, ENTITY_TYPE_CD (cá nhân/tổ chức), GENDER_CD, BIRTH_DATE, ADDRESS, PHONE_NO, FAX_NO, NATIONALITY, EDUCATION_LEVEL_CD, BUSINESS_REG_NO (nếu là tổ chức), PAID_UP_CHARTER_CAPITAL, WEBSITE — đây là profile đầy đủ của một thực thể pháp lý độc lập không gắn với công ty cụ thể. (3) Chọn `[Involved Party] Individual` — LEGAL_ENTITIES là Involved Party với lifecycle riêng; grain = 1 thực thể, không phải 1 giao dịch. Fundamental vì không FK đến bảng nghiệp vụ ở T1. |
 | Involved Party | [Involved Party] Organization | Organization | `AF_PROFILES` | Update | Hồ sơ công ty kiểm toán được BTC/UBCKNN chấp thuận: tên VI/EN, vốn điều lệ thực góp, thành viên hãng kiểm toán quốc tế. | Audit Firm | Fundamental | (1) Term candidate: `[Involved Party] Organization` — BCV mô tả pháp nhân tổ chức. (2) Cấu trúc trường: tên VI/EN/viết tắt, số ĐKKD, vốn điều lệ, trạng thái, ngày chấp thuận, thành viên hãng nước ngoài — đây là profile của một tổ chức kiểm toán độc lập. (3) Chọn `[Involved Party] Organization` — công ty kiểm toán là pháp nhân tổ chức; shared entity với SCMS.CT_KIEM_TOAN. |
-| Condition | [Condition] Form Definition | Condition | `FORMS` | Update | Định nghĩa template form CBTT — mỗi form là một loại hồ sơ/tin công bố; self-ref qua `parent_form_id` tạo cấu trúc cha-con. | Disclosure Form Definition | Fundamental | (1) Term candidate: `[Condition] Form Definition` — BCV mô tả quy định/template chuẩn hóa được áp dụng cho từng loại hoạt động CBTT. (2) Cấu trúc trường: form_type_cd, news_type_cd, parent_form_id (self-ref), tên biểu mẫu — đây là định nghĩa template dùng làm tiêu chuẩn cho việc nộp hồ sơ CBTT. (3) Chọn `[Condition] Form Definition` — FORMS là điều kiện/quy định nghiệp vụ, không phải sự kiện thực tế. |
+| Condition | [Condition] Form Definition | Condition | `FORMS` | Update | Định nghĩa template form CBTT — mỗi form là một loại hồ sơ/tin công bố; self-ref qua `parent_form_id` tạo cấu trúc cha-con. | Financial Report Template | Fundamental | (1) Term candidate: `[Condition] Form Definition` — BCV mô tả quy định/template chuẩn hóa được áp dụng cho từng loại hoạt động CBTT. (2) Cấu trúc trường: form_type_cd, news_type_cd, parent_form_id (self-ref), tên biểu mẫu — đây là định nghĩa template dùng làm tiêu chuẩn cho việc nộp hồ sơ CBTT. (3) Chọn `[Condition] Form Definition` — FORMS là điều kiện/quy định nghiệp vụ, không phải sự kiện thực tế. Đổi tên từ `Disclosure Form Definition` (2026-08-05, theo yêu cầu tường minh Data Modeler); domain prefix `Financial Report` (`fr`, xem `rule_domain_prefix_abbreviations.csv`). |
 | Condition | [Condition] Form Definition | Condition | `REPORT_CATALOG` | Update | Danh mục báo cáo tài chính: định nghĩa loại báo cáo (BCTC, KQKD...) với tập hàng/cột tương ứng. | Financial Report Catalog | Fundamental | (1) Term candidate: `[Condition] Form Definition` — BCV mô tả mẫu biểu/danh mục được định nghĩa sẵn. (2) Cấu trúc trường: rc_type_cd, tên catalog, phạm vi (rc_scope_cd), loại doanh nghiệp (report_type_cd), kỳ báo cáo — đây là định nghĩa danh mục mẫu báo cáo BCTC, không phải dữ liệu thực. (3) Chọn `[Condition] Form Definition` — REPORT_CATALOG là template mẫu được duy trì làm quy chuẩn. |
-| Condition | [Condition] Form Definition | Condition | `REP_FORMS` | Update | Template báo cáo định kỳ (tháng/quý/năm/bán niên) — bộ mẫu độc lập với báo cáo tài chính. | Periodic Report Form | Fundamental | (1) Term candidate: `[Condition] Form Definition` — BCV mô tả mẫu biểu quy chuẩn. (2) Cấu trúc trường: rf_report_type_cd (tần suất), tên form, mô tả — đây là mẫu template độc lập cho báo cáo định kỳ thống kê. (3) Chọn `[Condition] Form Definition` — REP_FORMS là template định nghĩa cấu trúc báo cáo định kỳ, không phải dữ liệu thực tế. |
+| Condition | [Condition] Form Definition | Condition | `REP_FORMS` | Update | Template báo cáo định kỳ (tháng/quý/năm/bán niên) — bộ mẫu độc lập với báo cáo tài chính. | Financial Report Sub Template | Fundamental | (1) Term candidate: `[Condition] Form Definition` — BCV mô tả mẫu biểu quy chuẩn. (2) Cấu trúc trường: rf_report_type_cd (tần suất), tên form, mô tả — đây là mẫu template độc lập cho báo cáo định kỳ thống kê. (3) Chọn `[Condition] Form Definition` — REP_FORMS là template định nghĩa cấu trúc báo cáo định kỳ, không phải dữ liệu thực tế. Đổi tên từ `Periodic Report Form` (2026-08-05, theo yêu cầu tường minh Data Modeler); domain prefix `Financial Report` (`fr`). |
 | Group | [Group] Group | Group | `EVALUATION_GROUPS` | Update | Nhóm chỉ tiêu đánh giá xếp hạng công ty đại chúng (không có FK đến bảng nghiệp vụ khác). | Public Company Evaluation Group | Classification | (1) Term candidate: `[Group] Group` — BCV mô tả nhóm phân loại. (2) Cấu trúc trường: GROUP_NAME, GROUP_CD, WEIGHT, DISPLAY_ORDER — đây là danh mục nhóm chỉ tiêu phục vụ đánh giá, có CODE + NAME + metadata. Tuy nhiên có WEIGHT (trọng số) là attribute nghiệp vụ quan trọng. (3) Chọn `[Group] Group` — EVALUATION_GROUPS là bảng phân nhóm chỉ tiêu đánh giá; TABLE_TYPE = Classification vì đây là reference data được duy trì để phân loại chỉ tiêu. |
 | Event | [Event] Period | Event | `EVALUATION_PERIODS` | Update | Kỳ đánh giá xếp hạng công ty đại chúng (năm + tháng + trạng thái đã duyệt). | Public Company Evaluation Period | Fundamental | (1) Term candidate: `[Event] Period` — BCV mô tả khoảng thời gian nghiệp vụ có lifecycle riêng (draft → approved). (2) Cấu trúc trường: YEAR, MONTH, STATUS (approved/draft) — đây là kỳ đánh giá có lifecycle riêng, không chỉ là reference data Code + Name. (3) Chọn `[Event] Period` — EVALUATION_PERIODS là kỳ nghiệp vụ độc lập phục vụ đánh giá. Fundamental vì không FK đến entity nghiệp vụ khác. |
 | Common | [Common] Industry Classification | Common | `CATEGORIES` | Update | Danh mục ngành nghề kinh doanh 2 cấp của CTĐC, self-referencing qua `PARENT_ID` — dùng cho `COMPANY_PROFILES.CATEGORY_L1_ID`/`CATEGORY_L2_ID`. | **Classification Business Line** (shared với ECAT) | Relative | (1) Term candidate: `[Common] Industry Classification` (BCV id 8291, category `Common`) — "phân loại tổ chức dựa trên những gì tổ chức sản xuất, kinh doanh hoặc chế tạo". (2) Cấu trúc trường: `INDUSTRY_CD`/`INDUSTRY_NAME`/`DESCRIPTION` là nội dung nghiệp vụ; `PARENT_ID` (self-ref) tạo cấu trúc cha-con 2 cấp — cấu trúc gần như đồng nhất với `ECAT.BUSINESS_LINE_LEVEL_1`/`BUSINESS_LINE_LEVEL_2` (đã gộp thành entity `Classification Business Line`, self-referencing, cùng BCV Concept `[Common] Industry Classification`, `ECAT_HLD_Tier1.md` T1-07). (3) Theo yêu cầu tường minh của Data Modeler (2026-07-17), coi `IDS.CATEGORIES` và `ECAT.BUSINESS_LINE_LEVEL_1/2` là **cùng một concept nghiệp vụ** (danh mục ngành nghề 2 cấp) → gộp thành **shared entity** `Classification Business Line` thay vì tạo entity riêng — đảo ngược lý do "khác nguồn dữ liệu" của quyết định T1-11. Table Type = `Relative` (giữ nguyên theo entity gốc từ ECAT, không theo rule mặc định Common→Classification). Xem 6f T1-13. |
@@ -163,12 +163,12 @@ erDiagram
         boolean frgn_audt_mbr_f
     }
 
-    Disclosure_Form_Definition {
-        string dscl_form_defn_id PK
-        string dscl_form_defn_code
+    Financial_Report_Template {
+        string fr_template_id PK
+        string fr_template_code
         string form_tp_code
         string news_tp_code
-        string prnt_dscl_form_defn_id FK
+        string parent_fr_template_id FK
     }
 
     Financial_Report_Catalog {
@@ -179,9 +179,9 @@ erDiagram
         string entp_tp_code
     }
 
-    Periodic_Report_Form {
-        string prd_rpt_form_id PK
-        string prd_rpt_form_code
+    Financial_Report_Sub_Template {
+        string fr_sub_template_id PK
+        string fr_sub_template_code
         string prd_rpt_freq_code
     }
 
@@ -207,7 +207,7 @@ erDiagram
         bigint prn_biz_line_id FK
     }
 
-    Disclosure_Form_Definition ||--o{ Disclosure_Form_Definition : "parent_form_id"
+    Financial_Report_Template ||--o{ Financial_Report_Template : "parent_form_id"
     Classification_Business_Line ||--o{ Classification_Business_Line : "prn_biz_line_id (self-join)"
     Classification_Business_Line ||--o{ Public_Company : "biz_line_lv1_id"
     Classification_Business_Line ||--o{ Public_Company : "biz_line_lv2_id"

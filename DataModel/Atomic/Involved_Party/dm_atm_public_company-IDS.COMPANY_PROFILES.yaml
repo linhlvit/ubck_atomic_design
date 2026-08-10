@@ -33,7 +33,7 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: null
     comment: "PK surrogate. BCV: \"[Involved Party] Organization\"."
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Public Company Code
@@ -47,7 +47,7 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.ID
     comment: BK chính. PK nguồn NUMBER(19) tự tăng.
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
-    etl_derived_value: IDS.COMPANY_PROFILES
+    etl_derived_value: IDS_COMPANY_PROFILES
 
   - name: Public Company Name
     physical_name: pc_nm
@@ -75,7 +75,7 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.COMPANY_NAME_VN
     comment: "BCV: [Involved Party] Organization Name."
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Public Company English Name
@@ -89,7 +89,7 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.COMPANY_NAME_EN
     comment: null
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: First Registration Date
@@ -103,7 +103,7 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.FIRST_REG_DATE
     comment: null
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Latest Registration Date
@@ -117,7 +117,7 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.LATEST_REG_DATE
     comment: null
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Latest Registration Province Name
@@ -131,7 +131,7 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.LATEST_REG_PROV
     comment: "Text denormalized — provinces là reference data set chưa map vào shared Geographic Area trong scope IDS (khác PROVINCE_ID — xem Involved Party Postal Address). Không có fk_note tại nguồn, chỉ lưu tên/mã tỉnh dạng snapshot lịch sử."
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Charter Capital Amount
@@ -145,7 +145,7 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.CAPITAL_PAID_REPORTED
     comment: null
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Treasury Share Quantity
@@ -159,7 +159,7 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.TREASURY_SHARES
     comment: null
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Business Line Level 1 Id
@@ -172,8 +172,8 @@ attributes:
     source_system: IDS
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.CATEGORY_L1_ID
-    comment: "FK target: cl_business_line.cl_business_line_id. CATEGORY_L1_ID lưu ID kỹ thuật của IDS.CATEGORIES (không phải INDUSTRY_CD) — PHẢI join: CATEGORY_L1_ID = IDS.CATEGORIES.ID để lấy INDUSTRY_CD, rồi hash_id('ECAT.BUSINESS_LINE_LEVEL_1', INDUSTRY_CD) — Id phải trùng với Id đã sinh từ chính ECAT.BUSINESS_LINE_LEVEL_1 (IDS.CATEGORIES chỉ dùng làm bảng join, không tự sinh entity — quyết định lại 2026-07-23). Xem IDS_HLD_Tier1.md T1-13."
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    comment: "FK target: cl_business_line.cl_business_line_id. Cần ETL crosswalk sang IDS.CATEGORIES: COMPANY_PROFILES.CATEGORY_L1_ID = CATEGORIES.ID để xác nhận INDUSTRY_CD sau đó hash_id('ECAT.BUSINESS_LINE_LEVEL_1', INDUSTRY_CD) | IDS.CATEGORIES chỉ dùng làm bảng join, không tự sinh entity — quyết định 2026-07-23. Chưa xác nhận value set khớp danh mục ECAT.BUSINESS_LINE_LEVEL_1 — cần profile dữ liệu trước go-live. Xem IDS_HLD_Tier1.md T1-13."
+    classification_context: null
     etl_derived_value: null
 
   - name: Business Line Level 1 Code
@@ -185,9 +185,9 @@ attributes:
     is_primary_key: false
     source_system: IDS
     source_table: COMPANY_PROFILES
-    source_column: IDS.COMPANY_PROFILES.CATEGORY_L1_ID
-    comment: "Lookup pair: cl_business_line.cl_business_line_code. Pair with Business Line Level 1 Id. Giá trị lấy qua join (xem Business Line Level 1 Id)."
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    source_column: IDS.CATEGORIES.INDUSTRY_CD
+    comment: "Lookup pair: cl_business_line.cl_business_line_code. Pair with Business Line Level 1 Id. Giá trị lấy từ IDS.CATEGORIES.INDUSTRY_CD sau ETL crosswalk — chi tiết xem comment Business Line Level 1 Id."
+    classification_context: null
     etl_derived_value: null
 
   - name: Business Line Level 2 Id
@@ -200,8 +200,8 @@ attributes:
     source_system: IDS
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.CATEGORY_L2_ID
-    comment: "FK target: cl_business_line.cl_business_line_id. CATEGORY_L2_ID lưu ID kỹ thuật của IDS.CATEGORIES — PHẢI join: CATEGORY_L2_ID = IDS.CATEGORIES.ID để lấy INDUSTRY_CD, rồi hash_id('ECAT.BUSINESS_LINE_LEVEL_2', INDUSTRY_CD) — Id phải trùng với Id đã sinh từ chính ECAT.BUSINESS_LINE_LEVEL_2 (IDS.CATEGORIES chỉ dùng làm bảng join, không tự sinh entity — quyết định lại 2026-07-23). Xem ghi chú tại Business Line Level 1 Id."
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    comment: "FK target: cl_business_line.cl_business_line_id. Cần ETL crosswalk sang IDS.CATEGORIES: COMPANY_PROFILES.CATEGORY_L2_ID = CATEGORIES.ID để xác nhận INDUSTRY_CD sau đó hash_id('ECAT.BUSINESS_LINE_LEVEL_2', INDUSTRY_CD) | IDS.CATEGORIES chỉ dùng làm bảng join, không tự sinh entity — quyết định 2026-07-23. Chưa xác nhận value set khớp danh mục ECAT.BUSINESS_LINE_LEVEL_2 — cần profile dữ liệu trước go-live. Xem ghi chú tại Business Line Level 1 Id."
+    classification_context: null
     etl_derived_value: null
 
   - name: Business Line Level 2 Code
@@ -213,9 +213,9 @@ attributes:
     is_primary_key: false
     source_system: IDS
     source_table: COMPANY_PROFILES
-    source_column: IDS.COMPANY_PROFILES.CATEGORY_L2_ID
-    comment: "Lookup pair: cl_business_line.cl_business_line_code. Pair with Business Line Level 2 Id. Giá trị lấy qua join (xem Business Line Level 2 Id)."
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    source_column: IDS.CATEGORIES.INDUSTRY_CD
+    comment: "Lookup pair: cl_business_line.cl_business_line_code. Pair with Business Line Level 2 Id. Giá trị lấy từ IDS.CATEGORIES.INDUSTRY_CD sau ETL crosswalk — chi tiết xem comment Business Line Level 2 Id."
+    classification_context: null
     etl_derived_value: null
 
   - name: Enterprise Type Code
@@ -229,7 +229,7 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.ENTERPRISE_TYPE_CD
     comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Financial Statement Type Code
@@ -243,7 +243,7 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.FINANCIAL_STMT_TYPE_CD
     comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Type Code
@@ -257,7 +257,7 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.SECURITIES_TYPE_CD
     comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Equity Listing Exchange Code
@@ -271,7 +271,7 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.EQUITY_LISTING_EXCH
     comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Equity Ticker Symbol
@@ -285,11 +285,11 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.EQUITY_TICKER
     comment: null
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Equity Security Indicator
-    physical_name: equity_security_indicator
+    physical_name: equity_security_ind
     business_meaning: Cờ chứng khoán cổ phiếu.
     data_domain: Small Counter
     data_type: int
@@ -299,7 +299,7 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.EQUITY_SECURITY_FLG
     comment: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1).
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Equity Listed Quantity
@@ -313,7 +313,7 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.EQUITY_LISTED_QTY
     comment: null
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Bond Listing Exchange Code
@@ -327,7 +327,7 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.BOND_LISTING_EXCH
     comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Bond Ticker Symbol
@@ -341,11 +341,11 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.BOND_TICKER
     comment: null
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Bond Security Indicator
-    physical_name: bond_security_indicator
+    physical_name: bond_security_ind
     business_meaning: Cờ chứng khoán trái phiếu.
     data_domain: Small Counter
     data_type: int
@@ -355,7 +355,7 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.BOND_SECURITY_FLG
     comment: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1).
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Bond Listed Quantity
@@ -369,7 +369,7 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.BOND_LISTED_QTY
     comment: null
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: International Exchange Name
@@ -383,7 +383,7 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.INTL_EXCH
     comment: Denormalized text — không có LOOKUP_GROUP khai báo cho sàn quốc tế.
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: International Ticker Symbol
@@ -397,7 +397,7 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.INTL_TICKER
     comment: null
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Public Company Status Code
@@ -411,11 +411,11 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.STATUS_IDS_CD
     comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Auto Approval Indicator
-    physical_name: auto_approval_indicator
+    physical_name: auto_approval_ind
     business_meaning: Tự động phê duyệt.
     data_domain: Small Counter
     data_type: int
@@ -425,7 +425,7 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.AUTO_APPROVAL_FLG
     comment: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1).
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Company Login Username
@@ -439,7 +439,7 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.COMPANY_LOGIN
     comment: "Denormalized text — không có fk_note tại nguồn (khác CREATED_BY/UPDATED_BY). Giữ dạng username, không tạo FK."
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Approver Comment
@@ -453,7 +453,7 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.APPROVER_COMMENT
     comment: null
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Specialist Note
@@ -467,11 +467,11 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.SPECIALIST_NOTES
     comment: null
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Ids Registration Indicator
-    physical_name: ids_registration_indicator
+    physical_name: ids_registration_ind
     business_meaning: Trạng thái đăng ký IDS.
     data_domain: Small Counter
     data_type: int
@@ -481,7 +481,7 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.IDS_REG_STATUS_FLG
     comment: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1).
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Ids Registration Date
@@ -495,7 +495,7 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.IDS_REG_DATE
     comment: null
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Operating Status Code
@@ -509,7 +509,7 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.OPERATING_STATUS_CD
     comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Fiscal Year End Date
@@ -523,7 +523,7 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.FY_END_DATE
     comment: null
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Public Company Form Code
@@ -537,7 +537,7 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.PUBLIC_COMPANY_FORM_CD
     comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Public Company Type Code
@@ -551,11 +551,11 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.PUBLIC_COM_TYPE_CD
     comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Public Bond Issuer Indicator
-    physical_name: public_bond_issuer_indicator
+    physical_name: public_bond_issuer_ind
     business_meaning: Doanh nghiệp phát hành trái phiếu.
     data_domain: Small Counter
     data_type: int
@@ -565,11 +565,11 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.PUBLIC_BOND_ISSUER_FLG
     comment: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1).
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Former State Owned Indicator
-    physical_name: former_state_owned_indicator
+    physical_name: former_state_owned_ind
     business_meaning: Doanh nghiệp nhà nước (trước đây).
     data_domain: Small Counter
     data_type: int
@@ -579,7 +579,7 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.FORMER_STATE_OWNED_FLG
     comment: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1).
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Equitization License Date
@@ -593,7 +593,7 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.EQUIT_LICENSE_DATE
     comment: null
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Equitization Capital Amount
@@ -607,11 +607,11 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.CAPITAL_AT_EQUIT
     comment: null
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Has State Ownership Indicator
-    physical_name: has_state_ownership_indicator
+    physical_name: has_state_ownership_ind
     business_meaning: Có vốn nhà nước.
     data_domain: Small Counter
     data_type: int
@@ -621,11 +621,11 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.HAS_STATE_OWN_FLG
     comment: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1).
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Foreign Direct Investment Indicator
-    physical_name: foreign_direct_investment_indicator
+    physical_name: foreign_direct_investment_ind
     business_meaning: Doanh nghiệp FDI.
     data_domain: Small Counter
     data_type: int
@@ -635,11 +635,11 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.FDI_COM_FLG
     comment: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1).
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Has Parent Company Indicator
-    physical_name: has_parent_company_indicator
+    physical_name: has_parent_company_ind
     business_meaning: Có công ty mẹ.
     data_domain: Small Counter
     data_type: int
@@ -649,11 +649,11 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.HAS_PARENT_COM_FLG
     comment: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1).
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Has Subsidiary Indicator
-    physical_name: has_subsidiary_indicator
+    physical_name: has_subsidiary_ind
     business_meaning: Có công ty con.
     data_domain: Small Counter
     data_type: int
@@ -663,11 +663,11 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.HAS_SUBSIDIARIES_FLG
     comment: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1).
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Has Joint Venture Indicator
-    physical_name: has_joint_venture_indicator
+    physical_name: has_joint_venture_ind
     business_meaning: Có liên doanh.
     data_domain: Small Counter
     data_type: int
@@ -677,7 +677,7 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.HAS_JOINT_VENTURES_FLG
     comment: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1).
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Head Office Province Name
@@ -691,11 +691,11 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.HEAD_OFFICE_PROV
     comment: "Text denormalized — provinces là reference data set chưa map vào shared Geographic Area trong scope IDS (xem reference/shared_entity_schemas.md, ví dụ IDS: head_office_prov). Khác PROVINCE_ID (xem Involved Party Postal Address) — cột này không có fk_note tại nguồn."
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Ipo Company Indicator
-    physical_name: ipo_company_indicator
+    physical_name: ipo_company_ind
     business_meaning: "1-Công ty đang IPO, 0-Công ty đại chúng."
     data_domain: Small Counter
     data_type: int
@@ -705,7 +705,7 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.IPO_COMPANY_FLG
     comment: Giá trị 1 → true (đang IPO); 0 → false (đã là CTĐC). Nguồn NUMBER(1).
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Approval Status Code
@@ -719,11 +719,11 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.APPROVAL_STATUS_CD
     comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Deleted Indicator
-    physical_name: deleted_indicator
+    physical_name: deleted_ind
     business_meaning: Trạng thái xoá.
     data_domain: Small Counter
     data_type: int
@@ -733,5 +733,5 @@ attributes:
     source_table: COMPANY_PROFILES
     source_column: IDS.COMPANY_PROFILES.DELETE_FLG
     comment: Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1).
-    classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
+    classification_context: null
     etl_derived_value: null

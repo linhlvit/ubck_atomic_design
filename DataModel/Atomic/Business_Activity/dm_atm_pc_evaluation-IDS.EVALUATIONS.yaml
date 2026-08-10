@@ -33,7 +33,7 @@ attributes:
     source_table: EVALUATIONS
     source_column: null
     comment: "PK surrogate. BCV: \"[Business Activity] Evaluation\"."
-    classification_context: "Source System Code = 'IDS_EVALUATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Public Company Evaluation Code
@@ -47,7 +47,7 @@ attributes:
     source_table: EVALUATIONS
     source_column: IDS.EVALUATIONS.ID
     comment: BK chính. PK nguồn NUMBER(10) tự tăng.
-    classification_context: "Source System Code = 'IDS_EVALUATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     classification_context: "Source System Code = 'IDS_EVALUATIONS'"
-    etl_derived_value: IDS.EVALUATIONS
+    etl_derived_value: IDS_EVALUATIONS
 
   - name: Public Company Id
     physical_name: pc_id
@@ -74,8 +74,8 @@ attributes:
     source_system: IDS
     source_table: EVALUATIONS
     source_column: IDS.EVALUATIONS.COMPANY_ID
-    comment: "FK target: public_company.public_company_id. Hash: hash_id('IDS.COMPANY_PROFILES', COMPANY_ID). Nguồn không có fk_note tường minh nhưng ngữ cảnh và HLD Tier3 xác nhận đây là FK đến COMPANY_PROFILES."
-    classification_context: "Source System Code = 'IDS_EVALUATIONS'"
+    comment: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES', COMPANY_ID). Nguồn không có fk_note tường minh nhưng ngữ cảnh và HLD Tier3 xác nhận đây là FK đến COMPANY_PROFILES."
+    classification_context: null
     etl_derived_value: null
 
   - name: Public Company Code
@@ -88,8 +88,8 @@ attributes:
     source_system: IDS
     source_table: EVALUATIONS
     source_column: IDS.EVALUATIONS.COMPANY_ID
-    comment: "Lookup pair: public_company.public_company_code. Pair with Public Company Id."
-    classification_context: "Source System Code = 'IDS_EVALUATIONS'"
+    comment: "Lookup pair: public_company.pc_code. Pair with Public Company Id."
+    classification_context: null
     etl_derived_value: null
 
   - name: Public Company Evaluation Period Id
@@ -103,7 +103,7 @@ attributes:
     source_table: EVALUATIONS
     source_column: IDS.EVALUATIONS.PERIOD_ID
     comment: "FK target: pc_evaluation_period.pc_evaluation_period_id. Hash: hash_id('IDS.EVALUATION_PERIODS', PERIOD_ID). Nguồn không có fk_note tường minh nhưng ngữ cảnh và HLD Tier3 xác nhận đây là FK đến EVALUATION_PERIODS."
-    classification_context: "Source System Code = 'IDS_EVALUATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Public Company Evaluation Period Code
@@ -117,7 +117,7 @@ attributes:
     source_table: EVALUATIONS
     source_column: IDS.EVALUATIONS.PERIOD_ID
     comment: "Lookup pair: pc_evaluation_period.pc_evaluation_period_code. Pair with Public Company Evaluation Period Id."
-    classification_context: "Source System Code = 'IDS_EVALUATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Total Score Percentage
@@ -131,7 +131,7 @@ attributes:
     source_table: EVALUATIONS
     source_column: IDS.EVALUATIONS.TOTAL_SCORE
     comment: "Nguồn NUMBER(5,2) là tổng điểm đánh giá (không hẳn là tỷ lệ phần trăm) — dùng domain Percentage vì cùng hình dạng decimal(5,2), nhất quán với Public Company Evaluation Group.Weight Percentage. Giữ nguyên giá trị gốc."
-    classification_context: "Source System Code = 'IDS_EVALUATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Evaluation Date
@@ -145,7 +145,7 @@ attributes:
     source_table: EVALUATIONS
     source_column: IDS.EVALUATIONS.EVALUATION_DATE
     comment: null
-    classification_context: "Source System Code = 'IDS_EVALUATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Evaluation Type Code
@@ -159,7 +159,7 @@ attributes:
     source_table: EVALUATIONS
     source_column: IDS.EVALUATIONS.TYPE
     comment: "Scheme: IDS_EVALUATION_TYPE. Values lấy trực tiếp từ cột nguồn — scheme đã đăng ký sẵn (xem HLD Tier3 6d)."
-    classification_context: "Source System Code = 'IDS_EVALUATIONS'"
+    classification_context: IDS_EVALUATION_TYPE
     etl_derived_value: null
 
   - name: Evaluation Status Code
@@ -173,7 +173,7 @@ attributes:
     source_table: EVALUATIONS
     source_column: IDS.EVALUATIONS.STATUS
     comment: "Scheme: IDS_PUBLIC_COMPANY_EVALUATION_STATUS (no_lookup) — chưa liệt kê trong HLD Tier3 6d, bổ sung scheme mới."
-    classification_context: "Source System Code = 'IDS_EVALUATIONS'"
+    classification_context: IDS_PUBLIC_COMPANY_EVALUATION_STATUS
     etl_derived_value: null
 
   - name: Approved By User Id
@@ -187,7 +187,7 @@ attributes:
     source_table: EVALUATIONS
     source_column: IDS.EVALUATIONS.APPROVED_BY
     comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM.USERS', APPROVED_BY) | Chưa xác nhận join key IDS.EVALUATIONS.APPROVED_BY ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
-    classification_context: "Source System Code = 'IDS_EVALUATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Approved By User Code
@@ -201,7 +201,7 @@ attributes:
     source_table: EVALUATIONS
     source_column: IDS.EVALUATIONS.APPROVED_BY
     comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Approved By User Id."
-    classification_context: "Source System Code = 'IDS_EVALUATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Approved Date
@@ -215,5 +215,5 @@ attributes:
     source_table: EVALUATIONS
     source_column: IDS.EVALUATIONS.APPROVED_DATE
     comment: null
-    classification_context: "Source System Code = 'IDS_EVALUATIONS'"
+    classification_context: null
     etl_derived_value: null

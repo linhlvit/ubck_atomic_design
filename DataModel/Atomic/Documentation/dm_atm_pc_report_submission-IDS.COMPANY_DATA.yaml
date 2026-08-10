@@ -1,0 +1,709 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-pc_report_submission-IDS.COMPANY_DATA
+  logical_name: Public Company Report Submission
+  physical_name: pc_report_submission
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  description: |
+    Lần nộp báo cáo/tin công bố thông tin (CBTT) của CTĐC: form, trạng thái duyệt, ngày nộp/duyệt/từ chối, tin đính chính. BRD hiện tại thiếu 4 FK có trên DDL thực tế (Legal Entity, Securities Offering, Company Tender Offer, Company Treasury Stock). Khôi phục scope 2026-08-05 — xem IDS_HLD_Overview.md 7e #15.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-IDS-COMPANY_DATA
+
+attributes:
+  - name: Public Company Report Submission Id
+    physical_name: pc_rpt_submission_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: null
+    comment: "PK surrogate. Hash: hash_id('IDS.COMPANY_DATA', ID). BCV: \"[Documentation] Regulatory Report\"."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Public Company Report Submission Code
+    physical_name: pc_rpt_submission_code
+    business_meaning: Khóa chính. BK của entity — map từ PK bảng nguồn (không có cột mã nghiệp vụ riêng).
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.ID
+    comment: BK chính. PK nguồn NUMBER(19) tự tăng — mirror pattern public_company.Public Company Code.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'IDS_COMPANY_DATA'"
+    etl_derived_value: IDS_COMPANY_DATA
+
+  - name: Public Company Id
+    physical_name: pc_id
+    business_meaning: ID Hồ sơ doanh nghiệp.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.COMPANY_PROFILE_ID
+    comment: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES', COMPANY_PROFILE_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Public Company Code
+    physical_name: pc_code
+    business_meaning: Mã Hồ sơ doanh nghiệp.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.COMPANY_PROFILE_ID
+    comment: "Lookup pair: public_company.pc_code. Pair with Public Company Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Financial Report Template Id
+    physical_name: fr_template_id
+    business_meaning: ID form.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.FORM_ID
+    comment: "FK target: fr_template.fr_template_id. Cần ETL crosswalk sang IDS.FORMS: COMPANY_DATA.FORM_ID = FORMS.ID để xác nhận FORM_CD sau đó hash_id('IDS.FORMS', FORM_CD)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Financial Report Template Code
+    physical_name: fr_template_code
+    business_meaning: Mã form.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.FORMS.FORM_CD
+    comment: "Lookup pair: fr_template.fr_template_code. Pair with Financial Report Template Id. Giá trị lấy từ IDS.FORMS.FORM_CD sau ETL crosswalk — chi tiết xem comment Financial Report Template Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Parent Submission Id
+    physical_name: parent_submission_id
+    business_meaning: là parent id của company_data.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.PARENT_ID
+    comment: "FK target: pc_report_submission.pc_rpt_submission_id. Hash: hash_id('IDS.COMPANY_DATA', PARENT_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Parent Submission Code
+    physical_name: parent_submission_code
+    business_meaning: Mã lần nộp cha.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.PARENT_ID
+    comment: "Lookup pair: pc_report_submission.pc_rpt_submission_code. Pair with Parent Submission Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Original Submission Id
+    physical_name: original_submission_id
+    business_meaning: "Id của company_data, dùng trong trường hợp có tin đính chính - Luôn Lưu id của tin gốc."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.REF_ID
+    comment: "FK target: pc_report_submission.pc_rpt_submission_id. Hash: hash_id('IDS.COMPANY_DATA', REF_ID) | Nullable — chỉ có khi tin này là đính chính của tin khác."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Original Submission Code
+    physical_name: original_submission_code
+    business_meaning: Mã lần nộp được đính chính.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.REF_ID
+    comment: "Lookup pair: pc_report_submission.pc_rpt_submission_code. Pair with Original Submission Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Document Title
+    physical_name: document_title
+    business_meaning: Mô tả tiêu đề tin/hồ sơ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.DOC_TITLE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Submission Status Code
+    physical_name: submission_status_code
+    business_meaning: Trạng thái (Chờ duyệt; Đã duyệt; Từ chối; Đóng quy trình).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.NEWS_STATUS_CD
+    comment: "Scheme: IDS_SUBMISSION_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_APPROVAL_STATUS')."
+    classification_context: IDS_SUBMISSION_STATUS
+    etl_derived_value: null
+
+  - name: Report Year
+    physical_name: rpt_year
+    business_meaning: Năm báo cáo tài chính.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.REPORT_YEAR
+    comment: "Nguồn NUMBER(4,0)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Quarter
+    physical_name: rpt_quarter
+    business_meaning: Quý báo cáo tài chính.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.REPORT_QUARTER
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Month
+    physical_name: rpt_month
+    business_meaning: Tháng báo cáo.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.REPORT_MONTH
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Document Number
+    physical_name: document_nbr
+    business_meaning: Số công văn.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.DOC_NO
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Document Date
+    physical_name: document_dt
+    business_meaning: Ngày công văn.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.DOC_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Document Summary
+    physical_name: document_summary
+    business_meaning: Trích yếu.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.DOC_SUMMARY
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Document Sign Date
+    physical_name: document_sign_dt
+    business_meaning: Ngày ký văn bản.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.DOC_SIGN_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Submission Date
+    physical_name: submission_dt
+    business_meaning: Ngày gửi duyệt (submit to worklist).
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.SUBMISSION_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Approval Date
+    physical_name: approval_dt
+    business_meaning: Ngày phê duyệt.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.APPROVAL_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Rejection Date
+    physical_name: rejection_dt
+    business_meaning: Ngày từ chối.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.REJECTION_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Submission Deadline Date
+    physical_name: submission_deadline_dt
+    business_meaning: "Ngày gửi tin (deadline) - chạy job hàng ngày, hoặc khi gửi tin thì tính ngay."
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.SUBMISSION_DEADLINE_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Overdue Days
+    physical_name: overdue_days
+    business_meaning: "Thời gian quá hạn (theo ngày): = SUBMISSION_DATE - SUBMISSION_DEADLINE_DATE (=0 - Đúng hạn, >0 - Quá hạn x ngày)."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.OVERDUE_DAYS
+    comment: "Nguồn NUMBER(38,0)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Has Digital Signature Indicator
+    physical_name: has_digital_signature_ind
+    business_meaning: "File đính kèm có chữ ký số hay ko (1 - có, 0 - không có)."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.DIGITAL_SIGNATURE_FLG
+    comment: Giá trị 1 → true; 0 → false. Nguồn NUMBER(2) — đồng nhất pattern với fr_catalog.Active Indicator.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: News Type Code
+    physical_name: news_tp_code
+    business_meaning: Loại báo cáo (Báo cáo tài chính; Báo cáo định kỳ khác; Báo cáo bất thường 24h...).
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.NEWS_TYPE_CD
+    comment: "Scheme: IDS_NEWS_TYPE. Dùng chung scheme với Disclosure Notification. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_TYPE')."
+    classification_context: IDS_NEWS_TYPE
+    etl_derived_value: null
+
+  - name: Reject Reason
+    physical_name: reject_reason
+    business_meaning: "Lý do từ chối/gửi lại tin từ chuyên viên/lãnh đạo HNX (nullable, latest only)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.REJECT_REASON
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Review Timestamp
+    physical_name: review_tms
+    business_meaning: Ngày chuyên viên trình phê duyệt (transition SUBMITTED → REVIEWED).
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.REVIEW_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Send Back Timestamp
+    physical_name: send_back_tms
+    business_meaning: Ngày chuyên viên gửi lại tin yêu cầu bổ sung (transition SUBMITTED → NOT_APPROVED).
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.SEND_BACK_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Linked Submission Id
+    physical_name: linked_submission_id
+    business_meaning: Id link giữa tin tiếng anh và tin tiếng việt.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.LINK_ID
+    comment: "FK target: pc_report_submission.pc_rpt_submission_id. Hash: hash_id('IDS.COMPANY_DATA', LINK_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Linked Submission Code
+    physical_name: linked_submission_code
+    business_meaning: Mã lần nộp liên kết (bản dịch VI/EN).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.LINK_ID
+    comment: "Lookup pair: pc_report_submission.pc_rpt_submission_code. Pair with Linked Submission Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Language Code
+    physical_name: language_code
+    business_meaning: "Mã ngôn ngữ (VI - Tiếng việt, EN - Tiếng Anh)."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.LANGUAGE_CD
+    comment: "Scheme: IDS_LANGUAGE. Values lấy trực tiếp từ cột nguồn (VARCHAR2(20), VI/EN)."
+    classification_context: IDS_LANGUAGE
+    etl_derived_value: null
+
+  - name: Alert Audit Content
+    physical_name: alert_audit_content
+    business_meaning: Nội dung cảnh báo kiểm toán tự động.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.ALERT_AUDIT
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: System Origin Code
+    physical_name: stm_origin_code
+    business_meaning: Mã hệ thống phát sinh bản ghi.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.SYSTEM_CD
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Close Timestamp
+    physical_name: close_tms
+    business_meaning: Thời điểm đóng hồ sơ/tin.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.CLOSE_DATE
+    comment: "Cột nguồn không có mô tả (blank trong cả IDS_Columns.csv và DDL UAT). Tạm suy luận là thời điểm đóng quy trình duyệt (khác giả thuyết ngày khóa sổ kỳ báo cáo) dựa theo các mốc lifecycle khác đã có trên entity (Submission/Approval/Rejection Date). Cần Data Modeler xác nhận trước go-live."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Public Company Securities Offering Id
+    physical_name: pc_securities_offering_id
+    business_meaning: Id phương án đăng ký chào bán/phát hành gắn với tin công bố — chỉ có khi tin liên quan chào bán/phát hành.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.SECURITIES_OFFERING_ID
+    comment: "FK target: pc_securities_offering.pc_securities_offering_id. Hash: hash_id('IDS.SECURITIES_OFFERING', SECURITIES_OFFERING_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Public Company Securities Offering Code
+    physical_name: pc_securities_offering_code
+    business_meaning: Mã phương án chào bán/phát hành (denormalized lookup).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.SECURITIES_OFFERING_ID
+    comment: "Lookup pair: pc_securities_offering.pc_securities_offering_code. Pair with Public Company Securities Offering Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Offering Disclosure Type Code
+    physical_name: offering_disclosure_tp_code
+    business_meaning: "Loại công bố chào bán phát hành: NOTICE (Thông báo) / RESULT (Báo cáo kết quả)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.DISCLOSURE_TYPE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Legal Entity Id
+    physical_name: legal_entity_id
+    business_meaning: "Id cổ đông/nhà đầu tư phát hành khi đối tượng công bố = Cổ đông."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.LEGAL_ENTITY_ID
+    comment: "FK target: legal_entity.legal_entity_id. Hash: hash_id('IDS.LEGAL_ENTITIES', LEGAL_ENTITY_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Legal Entity Code
+    physical_name: legal_entity_code
+    business_meaning: Mã cổ đông/nhà đầu tư phát hành (denormalized lookup).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.LEGAL_ENTITY_ID
+    comment: "Lookup pair: legal_entity.legal_entity_code. Pair with Legal Entity Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Public Company Tender Offer Id
+    physical_name: pc_tender_offer_id
+    business_meaning: Id phương án đăng ký chào mua công khai gắn với tin công bố (form TBCMCK/KQCMCK).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.COMPANY_TENDER_OFFER_ID
+    comment: "FK target: pc_tender_offer.pc_tender_offer_id. Hash: hash_id('IDS.COMPANY_TENDER_OFFER', COMPANY_TENDER_OFFER_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Public Company Tender Offer Code
+    physical_name: pc_tender_offer_code
+    business_meaning: Mã phương án chào mua công khai (denormalized lookup).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.COMPANY_TENDER_OFFER_ID
+    comment: "Lookup pair: pc_tender_offer.pc_tender_offer_code. Pair with Public Company Tender Offer Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Public Company Treasury Share Transaction Id
+    physical_name: pc_treasury_share_transaction_id
+    business_meaning: Id phương án mua/bán cổ phiếu quỹ gắn với tin công bố (form TBCPQ/KQCPQ).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.COMPANY_TREASURY_SHARE_ID
+    comment: "FK target: pc_treasury_share_transaction.pc_treasury_share_transaction_id. Hash: hash_id('IDS.COMPANY_TREASURY_SHARES', COMPANY_TREASURY_SHARE_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Public Company Treasury Share Transaction Code
+    physical_name: pc_treasury_share_transaction_code
+    business_meaning: Mã phương án mua/bán cổ phiếu quỹ (denormalized lookup).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.COMPANY_TREASURY_SHARE_ID
+    comment: "Lookup pair: pc_treasury_share_transaction.pc_treasury_share_transaction_code. Pair with Public Company Treasury Share Transaction Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Approver User Id
+    physical_name: approver_user_id
+    business_meaning: Id Login của lãnh đạo phê duyệt do chuyên viên chọn khi trình phê duyệt (SRS 2.12.3).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.APPROVER_USER_ID
+    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM.USERS', APPROVER_USER_ID) | Chưa xác nhận join key IDS.COMPANY_DATA.APPROVER_USER_ID ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Approver User Code
+    physical_name: approver_user_code
+    business_meaning: Mã người phê duyệt (denormalized lookup).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.APPROVER_USER_ID
+    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Approver User Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Approver User Name
+    physical_name: approver_user_nm
+    business_meaning: "Tên lãnh đạo phê duyệt (denormalize để hiển thị, không join auth-service)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.APPROVER_USER_NAME
+    comment: "Denormalized snapshot — nguồn lưu tên tự do song song với APPROVER_USER_ID, khác với pattern Code (lookup qua Id)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Flattened Indicator
+    physical_name: flattened_ind
+    business_meaning: "Đã làm phẳng BCTC vào FINANCIAL_RATIOS_DETAIL chưa (0/1). Chỉ dùng cho tin định kỳ (DINH_KY); reader batch lọc = 0."
+    data_domain: Small Counter
+    data_type: int
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_DATA
+    source_column: IDS.COMPANY_DATA.FLATTENED_FLG
+    comment: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1) — đồng nhất pattern với Has Digital Signature Indicator (Bước 3b).
+    classification_context: null
+    etl_derived_value: null

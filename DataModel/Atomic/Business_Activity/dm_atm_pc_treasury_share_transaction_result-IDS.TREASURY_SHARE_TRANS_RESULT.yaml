@@ -1,0 +1,443 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-pc_treasury_share_transaction_result-IDS.TREASURY_SHARE_TRANS_RESULT
+  logical_name: Public Company Treasury Share Transaction Result
+  physical_name: pc_treasury_share_transaction_result
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Business Activity"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  description: |
+    Kết quả thực hiện thực tế của một đợt mua/bán cổ phiếu quỹ: số lượng đăng ký/thực hiện, giá bình quân, thời gian thực tế.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-IDS-TREASURY_SHARE_TRANS_RESULT
+
+attributes:
+  - name: Public Company Treasury Share Transaction Result Id
+    physical_name: pc_treasury_share_transaction_result_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: IDS
+    source_table: TREASURY_SHARE_TRANS_RESULT
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Business Activity] Business Activity\"."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Public Company Treasury Share Transaction Result Code
+    physical_name: pc_treasury_share_transaction_result_code
+    business_meaning: Khóa chính. BK của entity — map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: TREASURY_SHARE_TRANS_RESULT
+    source_column: IDS.TREASURY_SHARE_TRANS_RESULT.ID
+    comment: BK chính. PK nguồn NUMBER(10) tự tăng.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: TREASURY_SHARE_TRANS_RESULT
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'IDS_TREASURY_SHARE_TRANS_RESULT'"
+    etl_derived_value: IDS_TREASURY_SHARE_TRANS_RESULT
+
+  - name: Public Company Treasury Share Transaction Id
+    physical_name: pc_treasury_share_transaction_id
+    business_meaning: Khóa link đến bảng COMPANY_TREASURY_SHARES (đợt mua/bán cổ phiếu quỹ cha).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: TREASURY_SHARE_TRANS_RESULT
+    source_column: IDS.TREASURY_SHARE_TRANS_RESULT.COMPANY_TREASURY_SHARE_ID
+    comment: "FK target: pc_treasury_share_transaction.pc_treasury_share_transaction_id. Hash: hash_id('IDS.COMPANY_TREASURY_SHARES', COMPANY_TREASURY_SHARE_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Public Company Treasury Share Transaction Code
+    physical_name: pc_treasury_share_transaction_code
+    business_meaning: Mã đợt mua/bán cổ phiếu quỹ cha (denormalized lookup).
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: TREASURY_SHARE_TRANS_RESULT
+    source_column: IDS.TREASURY_SHARE_TRANS_RESULT.COMPANY_TREASURY_SHARE_ID
+    comment: "Lookup pair: pc_treasury_share_transaction.pc_treasury_share_transaction_code. Pair with Public Company Treasury Share Transaction Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Registered Transaction Quantity
+    physical_name: registered_transaction_quantity
+    business_meaning: Số lượng đăng ký giao dịch.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: TREASURY_SHARE_TRANS_RESULT
+    source_column: IDS.TREASURY_SHARE_TRANS_RESULT.REGISTERED_TRANS_QTY
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Executed Transaction Quantity
+    physical_name: executed_transaction_quantity
+    business_meaning: Số lượng thực hiện giao dịch.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: TREASURY_SHARE_TRANS_RESULT
+    source_column: IDS.TREASURY_SHARE_TRANS_RESULT.EXECUTED_TRANS_QTY
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Total Treasury Share Before Quantity
+    physical_name: total_treasury_share_before_quantity
+    business_meaning: Tổng số cổ phiếu quỹ trước khi thực hiện.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: TREASURY_SHARE_TRANS_RESULT
+    source_column: IDS.TREASURY_SHARE_TRANS_RESULT.TOTAL_TREASURY_SHARE_BEFORE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Total Treasury Share After Quantity
+    physical_name: total_treasury_share_after_quantity
+    business_meaning: Tổng số cổ phiếu quỹ sau khi thực hiện.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: TREASURY_SHARE_TRANS_RESULT
+    source_column: IDS.TREASURY_SHARE_TRANS_RESULT.TOTAL_TREASURY_SHARE_AFTER
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Treasury Transaction Purpose
+    physical_name: treasury_transaction_purpose
+    business_meaning: Mục đích mua/bán cổ phiếu quỹ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: TREASURY_SHARE_TRANS_RESULT
+    source_column: IDS.TREASURY_SHARE_TRANS_RESULT.TREASURY_TRANS_PURPOSE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Funding Source Description
+    physical_name: funding_src_description
+    business_meaning: Nguồn vốn thực hiện.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: TREASURY_SHARE_TRANS_RESULT
+    source_column: IDS.TREASURY_SHARE_TRANS_RESULT.FUNDING_SOURCE
+    comment: "Nguồn lưu dạng số (NUMBER(24,0)) nhưng nội dung mô tả có vẻ là text — ETL cần convert sang string. Cần profile dữ liệu thật xác nhận trước khi thiết kế cast logic."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Average Transaction Price Amount
+    physical_name: average_transaction_price_amt
+    business_meaning: Giá giao dịch bình quân thực tế.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: TREASURY_SHARE_TRANS_RESULT
+    source_column: IDS.TREASURY_SHARE_TRANS_RESULT.AVERAGE_TRANS_PRICE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Transaction Start Date
+    physical_name: transaction_start_dt
+    business_meaning: Ngày bắt đầu giao dịch thực tế.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: TREASURY_SHARE_TRANS_RESULT
+    source_column: IDS.TREASURY_SHARE_TRANS_RESULT.TRANS_START_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Transaction End Date
+    physical_name: transaction_end_dt
+    business_meaning: Ngày kết thúc giao dịch thực tế.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: TREASURY_SHARE_TRANS_RESULT
+    source_column: IDS.TREASURY_SHARE_TRANS_RESULT.TRANS_END_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Transaction Method
+    physical_name: transaction_method
+    business_meaning: Phương thức giao dịch.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: TREASURY_SHARE_TRANS_RESULT
+    source_column: IDS.TREASURY_SHARE_TRANS_RESULT.TRANSACTION_METHOD
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Securities Agent Name
+    physical_name: securities_agent_nm
+    business_meaning: Tên đại lý chứng khoán (tiếng Việt).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: TREASURY_SHARE_TRANS_RESULT
+    source_column: IDS.TREASURY_SHARE_TRANS_RESULT.SECURITIES_AGENT_NAME_VI
+    comment: "Denormalized — không FK sang Securities Company entity (không xác nhận cross-source)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Securities Agent English Name
+    physical_name: securities_agent_english_nm
+    business_meaning: Tên đại lý chứng khoán (tiếng Anh).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: TREASURY_SHARE_TRANS_RESULT
+    source_column: IDS.TREASURY_SHARE_TRANS_RESULT.SECURITIES_AGENT_NAME_EN
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Unexecuted Quantity Reason
+    physical_name: unexecuted_quantity_reason
+    business_meaning: Lý do không thực hiện hết số lượng đăng ký.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: TREASURY_SHARE_TRANS_RESULT
+    source_column: IDS.TREASURY_SHARE_TRANS_RESULT.UNEXECUTED_QTY_REASON
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Certificate Number
+    physical_name: certificate_nbr
+    business_meaning: Số giấy chứng nhận.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: TREASURY_SHARE_TRANS_RESULT
+    source_column: IDS.TREASURY_SHARE_TRANS_RESULT.CERTIFICATE_NO
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Certificate Date
+    physical_name: certificate_dt
+    business_meaning: Ngày giấy chứng nhận.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: TREASURY_SHARE_TRANS_RESULT
+    source_column: IDS.TREASURY_SHARE_TRANS_RESULT.CERTIFICATE_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Official Letter Number
+    physical_name: official_letter_nbr
+    business_meaning: Số công văn của UBCKNN.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: TREASURY_SHARE_TRANS_RESULT
+    source_column: IDS.TREASURY_SHARE_TRANS_RESULT.OFFICIAL_LETTER_NO
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Official Letter Date
+    physical_name: official_letter_dt
+    business_meaning: Ngày công văn.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: TREASURY_SHARE_TRANS_RESULT
+    source_column: IDS.TREASURY_SHARE_TRANS_RESULT.OFFICIAL_LETTER_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Approval Status Code
+    physical_name: approval_status_code
+    business_meaning: Trạng thái phê duyệt kết quả giao dịch.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: TREASURY_SHARE_TRANS_RESULT
+    source_column: IDS.TREASURY_SHARE_TRANS_RESULT.APPROVAL_STATUS_CD
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Approver User Id
+    physical_name: approver_user_id
+    business_meaning: ID Login của Lãnh đạo phê duyệt.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: TREASURY_SHARE_TRANS_RESULT
+    source_column: IDS.TREASURY_SHARE_TRANS_RESULT.APPROVER_USER_ID
+    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM.USERS', APPROVER_USER_ID) | Chưa xác nhận join key IDS.TREASURY_SHARE_TRANS_RESULT.APPROVER_USER_ID ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Approver User Name
+    physical_name: approver_user_nm
+    business_meaning: Lãnh đạo phê duyệt kết quả.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: TREASURY_SHARE_TRANS_RESULT
+    source_column: IDS.TREASURY_SHARE_TRANS_RESULT.APPROVER_USER_NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Processor User Id
+    physical_name: processor_user_id
+    business_meaning: ID Login của Chuyên viên xử lý.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: TREASURY_SHARE_TRANS_RESULT
+    source_column: IDS.TREASURY_SHARE_TRANS_RESULT.PROCESSOR_USER_ID
+    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM.USERS', PROCESSOR_USER_ID) | Chưa xác nhận join key IDS.TREASURY_SHARE_TRANS_RESULT.PROCESSOR_USER_ID ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Processor User Name
+    physical_name: processor_user_nm
+    business_meaning: Chuyên viên xử lý hồ sơ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: TREASURY_SHARE_TRANS_RESULT
+    source_column: IDS.TREASURY_SHARE_TRANS_RESULT.PROCESSOR_USER_NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Revision Reason
+    physical_name: revision_reason
+    business_meaning: Lý do chỉnh sửa.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: TREASURY_SHARE_TRANS_RESULT
+    source_column: IDS.TREASURY_SHARE_TRANS_RESULT.REVISION_REASON
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Deleted Indicator
+    physical_name: deleted_ind
+    business_meaning: "Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa)."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: TREASURY_SHARE_TRANS_RESULT
+    source_column: IDS.TREASURY_SHARE_TRANS_RESULT.DELETE_FLG
+    comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1,0)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Approver Comment
+    physical_name: approver_comment
+    business_meaning: Nội dung đề xuất phê duyệt / Lý do từ chối.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: TREASURY_SHARE_TRANS_RESULT
+    source_column: IDS.TREASURY_SHARE_TRANS_RESULT.APPROVER_COMMENT
+    comment: null
+    classification_context: null
+    etl_derived_value: null

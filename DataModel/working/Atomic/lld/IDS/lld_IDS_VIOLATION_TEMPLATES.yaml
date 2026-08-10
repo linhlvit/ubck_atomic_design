@@ -59,7 +59,7 @@ attributes:
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
   classification_context: "SOURCE_SYSTEM=IDS.VIOLATION_TEMPLATES"
-  etl_derived_value: "IDS.VIOLATION_TEMPLATES"
+  etl_derived_value: "IDS_VIOLATION_TEMPLATES"
   data_type: "string"
 - attribute_name: "Financial Report Template Id"
   physical_name: "fr_template_id"
@@ -84,8 +84,10 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IDS.VIOLATION_TEMPLATES.FORM_ID"
-  comment: "Lookup pair: fr_template.fr_template_code. Pair with Financial Report Template Id."
+  - "IDS.FORMS.FORM_CD"
+  comment: "Lookup pair: fr_template.fr_template_code. Pair with Financial Report\
+    \ Template Id. Giá trị lấy từ IDS.FORMS.FORM_CD sau ETL crosswalk — chi tiết xem\
+    \ comment Financial Report Template Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -279,7 +281,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Active Indicator"
-  physical_name: "active_indicator"
+  physical_name: "active_ind"
   description: "Cờ trạng thái hoạt động (1: Hoạt động, 0: Vô hiệu)."
   data_domain: "Small Counter"
   nullable: true
@@ -305,7 +307,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Deleted Indicator"
-  physical_name: "deleted_indicator"
+  physical_name: "deleted_ind"
   description: "Cờ xóa logic (1: Đã xóa, 0: Chưa xóa)."
   data_domain: "Small Counter"
   nullable: true

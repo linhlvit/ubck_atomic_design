@@ -145,7 +145,12 @@ def check_physical_name_chars(rows):
 
 def check_etl_derived_missing(rows):
     """C7: Classification Value có classification_context dạng SCHEME=VALUE hoặc SOURCE_SYSTEM=...
-    nhưng etl_derived_value trống — ETL engineer sẽ không biết giá trị cần hardcode."""
+    nhưng etl_derived_value trống — ETL engineer sẽ không biết giá trị cần hardcode.
+
+    Loại trừ placeholder dynamic-lookup "(source)" — giá trị thật chỉ xác định được lúc ETL
+    chạy (case-when dựa trên dữ liệu nguồn thực tế), không thể hardcode etl_derived_value.
+    Có 2 dạng cần loại trừ: bare "SCHEME=(source)" (context gốc từ LLD) và dạng composite có
+    quote "...| Field Name = '(source)'" (context đã build cho shared entity nhiều context)."""
     seen = set()
     issues = []
     for r in rows:
@@ -154,7 +159,7 @@ def check_etl_derived_missing(rows):
         ctx = r.get("classification_context", "").strip()
         etl = r.get("etl_derived_value", "").strip()
         # Chỉ check khi context có dạng SCHEME=VALUE (có dấu =, không phải placeholder =(source))
-        if "=" not in ctx or ctx.endswith("=(source)"):
+        if "=" not in ctx or ctx.endswith("=(source)") or ctx.endswith("'(source)'"):
             continue
         key = (r["atomic_entity"], r["source_system"], r["source_table"],
                r["atomic_attribute"], ctx)
@@ -172,8 +177,8 @@ def check_etl_derived_missing(rows):
 
 def check_source_system_code(rows):
     """C8: Source System Code (src_stm_code) phải có:
-    - classification_context = SOURCE_SYSTEM=NHNCK.TABLE (không free-text, không bare, không trống)
-    - etl_derived_value = NHNCK.TABLE (không trống)
+    - classification_context = SOURCE_SYSTEM=NHNCK.TABLE (không free-text, không bare, không trống, giữ dấu chấm)
+    - etl_derived_value = NHNCK_TABLE (không trống, gạch dưới — KHÔNG dùng dấu chấm)
     """
     seen = set()
     issues = []
@@ -192,9 +197,44 @@ def check_source_system_code(rows):
                 f"{prefix}  classification_context='{ctx}' (phải là SOURCE_SYSTEM=...)"
             )
         elif not etl:
+            expected = ctx.split("=", 1)[1].replace(".", "_")
             issues.append(
-                f"{prefix}  etl_derived_value trống (phải là '{ctx.split('=', 1)[1]}')"
+                f"{prefix}  etl_derived_value trống (phải là '{expected}')"
             )
+        elif "." in etl:
+            issues.append(
+                f"{prefix}  etl_derived_value='{etl}' còn dùng dấu chấm (phải là '{etl.replace('.', '_')}')"
+            )
+    return issues
+
+
+def check_leftover_expression_mapping(rows):
+    """C9: Classification Value có classification_context dynamic (bare, hoặc placeholder
+    '=(source)') nhưng etl_derived_value vẫn còn giá trị — sót expression mapping CODE=VALUE
+    theo rule cũ. Từ 2026-08-10, dynamic context luôn phải null (mapping code/value đã có trong
+    classification_schemes.yaml / bảng cl_value)."""
+    seen = set()
+    issues = []
+    for r in rows:
+        if r.get("data_domain", "").strip() != "Classification Value":
+            continue
+        etl = r.get("etl_derived_value", "").strip()
+        if not etl:
+            continue
+        ctx = r.get("classification_context", "").strip()
+        # Bỏ qua context cố định (SCHEME=VALUE / SOURCE_SYSTEM=SRC.TABLE) — case này BẮT BUỘC có etl.
+        if ctx and "=" in ctx and not ctx.endswith("=(source)"):
+            continue
+        key = (r["atomic_entity"], r["source_system"], r["source_table"],
+               r["atomic_attribute"], ctx)
+        if key in seen:
+            continue
+        seen.add(key)
+        issues.append(
+            f"  {r['atomic_entity']}.{r['atomic_attribute']}"
+            f"  [{r['source_system']}.{r['source_table']}]"
+            f"  ctx='{ctx}'  etl_derived_value='{etl}' (phải null)"
+        )
     return issues
 
 
@@ -247,6 +287,10 @@ def main():
     report("C8 – Source System Code: classification_context hoặc etl_derived_value sai/trống",
            check_source_system_code(rows),
            "Mọi src_stm_code đều có classification_context và etl_derived_value chuẩn.")
+
+    report("C9 – Classification Value context dynamic nhưng etl_derived_value còn giá trị (sót expression mapping)",
+           check_leftover_expression_mapping(rows),
+           "Không còn expression mapping CODE=VALUE nào trên context dynamic.")
 
     print(f"\n{'=' * 60}")
     print("Hoàn thành post-check.")

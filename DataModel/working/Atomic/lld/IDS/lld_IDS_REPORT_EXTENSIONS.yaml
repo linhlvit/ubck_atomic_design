@@ -21,7 +21,7 @@ metadata:
     \ Form Definition — không có cột FORM_ID trong bảng này, chỉ có FORM_CD)."
 attributes:
 - attribute_name: "Public Company Report Extension Id"
-  physical_name: "pc_report_extension_id"
+  physical_name: "pc_rpt_extension_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -33,7 +33,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Public Company Report Extension Code"
-  physical_name: "pc_report_extension_code"
+  physical_name: "pc_rpt_extension_code"
   description: "Khóa chính. BK của entity — map từ PK bảng nguồn."
   data_domain: "Text"
   nullable: false
@@ -55,7 +55,7 @@ attributes:
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
   classification_context: "SOURCE_SYSTEM=IDS.REPORT_EXTENSIONS"
-  etl_derived_value: "IDS.REPORT_EXTENSIONS"
+  etl_derived_value: "IDS_REPORT_EXTENSIONS"
   data_type: "string"
 - attribute_name: "Public Company Id"
   physical_name: "pc_id"
@@ -66,7 +66,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.REPORT_EXTENSIONS.COMPANY_PROFILE_ID"
-  comment: "FK target: Public Company.Public Company Id. Hash: hash_id('IDS.COMPANY_PROFILES',\
+  comment: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES',\
     \ COMPANY_PROFILE_ID)."
   classification_context: null
   etl_derived_value: null
@@ -80,7 +80,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.REPORT_EXTENSIONS.COMPANY_PROFILE_ID"
-  comment: "Lookup pair: Public Company.Public Company Code. Pair with Public Company\
+  comment: "Lookup pair: public_company.pc_code. Pair with Public Company\
     \ Id."
   classification_context: null
   etl_derived_value: null

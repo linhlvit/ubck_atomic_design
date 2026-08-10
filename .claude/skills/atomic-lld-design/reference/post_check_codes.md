@@ -6,7 +6,7 @@
 python DataModel/working/Atomic/lld/scripts/post_check_atomic.py --source {SOURCE}
 ```
 
-Script kiểm tra 7 tiêu chí và in báo cáo — không sửa file nào.
+Script kiểm tra 8 tiêu chí và in báo cáo — không sửa file nào.
 
 | Check | Mô tả | Nguyên nhân phổ biến | Hành động |
 |---|---|---|---|
@@ -17,7 +17,8 @@ Script kiểm tra 7 tiêu chí và in báo cáo — không sửa file nào.
 | C5 | source_column không đúng 3 phần | Thừa schema (VD: `SCMS.scms.table.col`) hoặc thiếu source prefix | Sửa về đúng `SOURCE.table.column` |
 | C6 | Physical name chứa ký tự không hợp lệ | Dấu `-` hoặc ký tự đặc biệt trong logical name chưa transform đúng | Sửa logical name trong lld file, chạy lại aggregate |
 | C7 | Classification Value có `classification_context = SCHEME=VALUE` nhưng `etl_derived_value` trống | Bỏ sót điền `etl_derived_value` ở Phase 1 LLD | Điền literal VALUE vào `etl_derived_value` trong lld file, chạy lại aggregate |
-| C8 | `Source System Code` có `classification_context` sai format (free-text, bare, trống, đảo ngược) hoặc `etl_derived_value` trống | Nhập sai format khi viết LLD; phải là `SOURCE_SYSTEM=NHNCK.TABLE` + `etl_derived_value=NHNCK.TABLE` | Sửa `classification_context` và `etl_derived_value` trong lld file theo pattern chuẩn |
+| C8 | `Source System Code` có `classification_context` sai format (free-text, bare, trống, đảo ngược) hoặc `etl_derived_value` trống | Nhập sai format khi viết LLD; phải là `SOURCE_SYSTEM=NHNCK.TABLE` + `etl_derived_value=NHNCK_TABLE` (**gạch dưới**) | Sửa `classification_context` (giữ dấu chấm) và `etl_derived_value` (gạch dưới) trong lld file theo pattern chuẩn |
+| C9 | Classification Value có `classification_context` dynamic (không `=VALUE`) nhưng `etl_derived_value` vẫn còn giá trị (sót expression mapping CODE=VALUE cũ) | LLD thiết kế trước 2026-08 theo rule cũ, chưa dọn lại khi rule đổi (2026-08-10) | Xoá giá trị, đặt `etl_derived_value: null` — mapping code/value đã có trong `classification_schemes.yaml` |
 
 ## post_check_source_coverage.py
 
