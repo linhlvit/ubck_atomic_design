@@ -10,29 +10,41 @@ target:
   namespace: dtm
   physical_name: practitioner_emp_hist
   etl_handle: SCD4A
-  description: 'Quá trình hành nghề — toàn bộ lần công tác per NHN: tổ chức, vị trí,
-    từ tháng, đến tháng.'
+  description: 'Quá trình hành nghề — toàn bộ lần công tác per NHN: tổ chức, phân
+    loại tổ chức, vị trí, phòng ban, từ tháng, đến tháng.'
 input:
 - source_type: physical_table
   namespace: atm
   table_name: atm_scr_prac_org_emp_rpt_hstr
   alias: at_sc_pr_or_em_rp_hs
-  select_fields: prac_code, org_emp_rpt_code, pos_nm, hire_dt, tmt_dt, src_stm_code,
-    scr_org_id
+  select_fields: prac_code, org_emp_rpt_code, practitioner_position_at_rpt, practitioner_department_at_rpt,
+    hire_dt, termination_dt, src_stm_code, scr_org_refr_code
   filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1 AND src_stm_code = 'NHNCK_OrganizationReports'
-  description: ''
+  description: Driving table.
 - source_type: physical_table
   namespace: atm
   table_name: atm_scr_org_refr_hstr
   alias: at_sc_or_re_hs
-  select_fields: org_nm, scr_org_refr_id
+  select_fields: org_nm, org_tp_code, scr_org_refr_id, src_stm_code
   filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 1
-  description: ''
+  description: LEFT JOIN — không loại dòng khi tổ chức chưa xác định.
+- source_type: physical_table
+  namespace: atm
+  table_name: atm_cv
+  alias: at_cv
+  select_fields: cl_nm, cl_code
+  filter: scm_code = 'ORGANIZATION_TYPE'
+  description: LEFT JOIN — denormalize tên loại hình tổ chức, không lọc dữ liệu.
 relationship:
 - main_alias: at_sc_pr_or_em_rp_hs
   join_type: LEFT JOIN
   join_alias: at_sc_or_re_hs
   join_on: at_sc_or_re_hs.scr_org_refr_id = at_sc_pr_or_em_rp_hs.scr_org_id
+  description: ''
+- main_alias: at_sc_or_re_hs
+  join_type: LEFT JOIN
+  join_alias: at_cv
+  join_on: at_cv.cl_code = at_sc_or_re_hs.org_tp_code
   description: ''
 mapping_columns:
 - target_column: practitioner_code
@@ -40,28 +52,48 @@ mapping_columns:
   data_type: string
   target_attr_name: ''
   description: PK composite (NHN)
-- target_column: org_emp_rpt_code
+- target_column: organization_employment_rpt_code
   transformation: at_sc_pr_or_em_rp_hs.org_emp_rpt_code
   data_type: string
   target_attr_name: ''
   description: PK báo cáo công tác
-- target_column: scr_org_nm
+- target_column: securities_organization_reference_code
+  transformation: at_sc_pr_or_em_rp_hs.scr_org_refr_code
+  data_type: string
+  target_attr_name: ''
+  description: Mã tổ chức — dùng join và filter nhanh
+- target_column: securities_organization_reference_nm
   transformation: at_sc_or_re_hs.org_nm
   data_type: string
   target_attr_name: ''
   description: Tên tổ chức — join Securities Organization Reference theo OrganizationId
-- target_column: pos_nm
-  transformation: at_sc_pr_or_em_rp_hs.pos_nm
+- target_column: organization_tp_code
+  transformation: at_sc_or_re_hs.org_tp_code
   data_type: string
   target_attr_name: ''
-  description: Chức vụ
+  description: 'Loại hình tổ chức — scheme: ORGANIZATION_TYPE'
+- target_column: organization_tp_nm
+  transformation: at_cv.cl_nm
+  data_type: string
+  target_attr_name: ''
+  description: 'Tên loại hình tổ chức — ETL denormalize từ Classification (scheme: ORGANIZATION_TYPE)'
+- target_column: practitioner_position_at_rpt
+  transformation: at_sc_pr_or_em_rp_hs.practitioner_position_at_rpt
+  data_type: string
+  target_attr_name: ''
+  description: Chức vụ — snapshot tại thời điểm báo cáo
+- target_column: practitioner_department_at_rpt
+  transformation: at_sc_pr_or_em_rp_hs.practitioner_department_at_rpt
+  data_type: string
+  target_attr_name: ''
+  description: Phòng ban — snapshot tại thời điểm báo cáo
 - target_column: hire_dt
   transformation: at_sc_pr_or_em_rp_hs.hire_dt
   data_type: date
   target_attr_name: ''
   description: Ngày tiếp nhận
-- target_column: tmt_dt
-  transformation: at_sc_pr_or_em_rp_hs.tmt_dt
+- target_column: termination_dt
+  transformation: at_sc_pr_or_em_rp_hs.termination_dt
   data_type: date
   target_attr_name: ''
   description: Ngày thôi việc — NULL = đang làm việc
