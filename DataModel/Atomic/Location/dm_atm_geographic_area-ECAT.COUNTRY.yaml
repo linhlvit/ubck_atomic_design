@@ -33,7 +33,7 @@ attributes:
     source_table: COUNTRY
     source_column: null
     comment: "PK surrogate. Hash: hash_id('ECAT.COUNTRY', CODE). BCV: \"Geographic Area\" (Location)."
-    classification_context: "Source System Code = 'ECAT_COUNTRY'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -48,7 +48,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
     classification_context: "Source System Code = 'ECAT_COUNTRY'"
-    etl_derived_value: ECAT.COUNTRY
+    etl_derived_value: ECAT_COUNTRY
 
   - name: Geographic Area Type Code
     physical_name: geographic_area_tp_code
@@ -61,7 +61,7 @@ attributes:
     source_table: COUNTRY
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'ECAT_COUNTRY'"
+    classification_context: "GEOGRAPHIC_AREA_TYPE=COUNTRY"
     etl_derived_value: COUNTRY
 
   - name: Geographic Area Code
@@ -75,7 +75,7 @@ attributes:
     source_table: COUNTRY
     source_column: ECAT.COUNTRY.CODE
     comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (STABLE_ID) — gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique trước go-live."
-    classification_context: "Source System Code = 'ECAT_COUNTRY'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Geographic Area Name
@@ -89,7 +89,7 @@ attributes:
     source_table: COUNTRY
     source_column: ECAT.COUNTRY.NAME_VN
     comment: null
-    classification_context: "Source System Code = 'ECAT_COUNTRY'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Geographic Area English Name
@@ -103,7 +103,7 @@ attributes:
     source_table: COUNTRY
     source_column: ECAT.COUNTRY.NAME_EN
     comment: null
-    classification_context: "Source System Code = 'ECAT_COUNTRY'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Parent Geographic Area Id
@@ -117,7 +117,7 @@ attributes:
     source_table: COUNTRY
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'ECAT_COUNTRY'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Parent Geographic Area Code
@@ -131,7 +131,7 @@ attributes:
     source_table: COUNTRY
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'ECAT_COUNTRY'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Effective Indicator
@@ -145,7 +145,7 @@ attributes:
     source_table: COUNTRY
     source_column: ECAT.COUNTRY.EFFECTIVE
     comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Active/Deleted Indicator."
-    classification_context: "Source System Code = 'ECAT_COUNTRY'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Active Indicator
@@ -159,7 +159,7 @@ attributes:
     source_table: COUNTRY
     source_column: ECAT.COUNTRY.ACTIVE
     comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Deleted Indicator."
-    classification_context: "Source System Code = 'ECAT_COUNTRY'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Deleted Indicator
@@ -173,7 +173,7 @@ attributes:
     source_table: COUNTRY
     source_column: ECAT.COUNTRY.DELETED
     comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Active Indicator."
-    classification_context: "Source System Code = 'ECAT_COUNTRY'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Effective Start Date
@@ -187,7 +187,7 @@ attributes:
     source_table: COUNTRY
     source_column: ECAT.COUNTRY.EFFECTIVE_START_DATE
     comment: null
-    classification_context: "Source System Code = 'ECAT_COUNTRY'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Effective End Date
@@ -201,7 +201,7 @@ attributes:
     source_table: COUNTRY
     source_column: ECAT.COUNTRY.EFFECTIVE_END_DATE
     comment: null
-    classification_context: "Source System Code = 'ECAT_COUNTRY'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Version Number
@@ -215,7 +215,7 @@ attributes:
     source_table: COUNTRY
     source_column: ECAT.COUNTRY.VERSION
     comment: "Đẩy 1:1 theo yêu cầu."
-    classification_context: "Source System Code = 'ECAT_COUNTRY'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Display Label
@@ -229,7 +229,7 @@ attributes:
     source_table: COUNTRY
     source_column: ECAT.COUNTRY.DISPLAY_LABEL
     comment: "Đẩy 1:1 theo yêu cầu."
-    classification_context: "Source System Code = 'ECAT_COUNTRY'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Active Reason
@@ -243,7 +243,7 @@ attributes:
     source_table: COUNTRY
     source_column: ECAT.COUNTRY.ACTIVE_REASON
     comment: "Đẩy 1:1 theo yêu cầu."
-    classification_context: "Source System Code = 'ECAT_COUNTRY'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Deleted Reason
@@ -257,7 +257,7 @@ attributes:
     source_table: COUNTRY
     source_column: ECAT.COUNTRY.DELETED_REASON
     comment: "Đẩy 1:1 theo yêu cầu."
-    classification_context: "Source System Code = 'ECAT_COUNTRY'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Created Timestamp
@@ -271,7 +271,7 @@ attributes:
     source_table: COUNTRY
     source_column: ECAT.COUNTRY.CREATED_AT
     comment: null
-    classification_context: "Source System Code = 'ECAT_COUNTRY'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Updated Timestamp
@@ -285,7 +285,7 @@ attributes:
     source_table: COUNTRY
     source_column: ECAT.COUNTRY.UPDATED_AT
     comment: null
-    classification_context: "Source System Code = 'ECAT_COUNTRY'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Created By Staff Id
@@ -299,7 +299,7 @@ attributes:
     source_table: COUNTRY
     source_column: ECAT.COUNTRY.CREATED_BY_ID
     comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT.UBCK_STAFF', CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
-    classification_context: "Source System Code = 'ECAT_COUNTRY'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Created By Staff Code
@@ -313,7 +313,7 @@ attributes:
     source_table: COUNTRY
     source_column: ECAT.COUNTRY.CREATED_BY_ID
     comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff Code. Pending — xem ghi chú ở Created By Staff Id."
-    classification_context: "Source System Code = 'ECAT_COUNTRY'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Created By Staff Name
@@ -327,7 +327,7 @@ attributes:
     source_table: COUNTRY
     source_column: ECAT.COUNTRY.CREATED_BY_NAME
     comment: "Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên hiển thị, không phải mã nhân viên). Có thể lệch với tên hiện tại trên Regulatory Authority Staff nếu cán bộ đổi tên sau đó."
-    classification_context: "Source System Code = 'ECAT_COUNTRY'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Updated By Staff Id
@@ -341,7 +341,7 @@ attributes:
     source_table: COUNTRY
     source_column: ECAT.COUNTRY.UPDATED_BY_ID
     comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT.UBCK_STAFF', CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
-    classification_context: "Source System Code = 'ECAT_COUNTRY'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Updated By Staff Code
@@ -355,7 +355,7 @@ attributes:
     source_table: COUNTRY
     source_column: ECAT.COUNTRY.UPDATED_BY_ID
     comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff Code. Pending — xem ghi chú ở Updated By Staff Id."
-    classification_context: "Source System Code = 'ECAT_COUNTRY'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Updated By Staff Name
@@ -369,5 +369,5 @@ attributes:
     source_table: COUNTRY
     source_column: ECAT.COUNTRY.UPDATED_BY_NAME
     comment: "Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên hiển thị, không phải mã nhân viên)."
-    classification_context: "Source System Code = 'ECAT_COUNTRY'"
+    classification_context: null
     etl_derived_value: null

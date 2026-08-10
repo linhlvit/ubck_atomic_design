@@ -33,7 +33,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.ID
     comment: "FK target: fund_management_company.fmc_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.SECURITIES', ID)."
-    classification_context: "Source System Code = 'FMS_SECURITIES' | Address Type Code = 'HEAD_OFFICE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Involved Party Code
@@ -47,7 +47,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.ID
     comment: "Lookup pair: fund_management_company.fmc_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'FMS_SECURITIES' | Address Type Code = 'HEAD_OFFICE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: null
     classification_context: "Source System Code = 'FMS_SECURITIES' | Address Type Code = 'HEAD_OFFICE'"
-    etl_derived_value: FMS.SECURITIES
+    etl_derived_value: FMS_SECURITIES
 
   - name: Address Type Code
     physical_name: adr_tp_code

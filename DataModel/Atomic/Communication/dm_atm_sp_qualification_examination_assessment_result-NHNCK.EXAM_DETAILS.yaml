@@ -33,7 +33,7 @@ attributes:
     source_table: EXAM_DETAILS
     source_column: null
     comment: "PK surrogate. BCV: \"Assessment\" (Communication). Kết quả thi sát hạch chứng chỉ hành nghề của thí sinh."
-    classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner Qualification Examination Assessment Result Code
@@ -47,7 +47,7 @@ attributes:
     source_table: EXAM_DETAILS
     source_column: NHNCK.EXAM_DETAILS.ID
     comment: BK chính.
-    classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
     classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
-    etl_derived_value: NHNCK.EXAM_DETAILS
+    etl_derived_value: NHNCK_EXAM_DETAILS
 
   - name: Securities Practitioner Qualification Examination Assessment Id
     physical_name: sp_qualification_examination_assessment_id
@@ -75,7 +75,7 @@ attributes:
     source_table: EXAM_DETAILS
     source_column: NHNCK.EXAM_DETAILS.EXAM_SESSION_ID
     comment: "FK target: sp_qualification_examination_assessment.sp_qualification_examination_assessment_id. Cần ETL crosswalk sang NHNCK.EXAM_SESSIONS: EXAM_DETAILS.EXAM_SESSION_ID = EXAM_SESSIONS.ID để xác nhận CODE sau đó hash_id('NHNCK.EXAM_SESSIONS', CODE)"
-    classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner Qualification Examination Assessment Code
@@ -89,7 +89,7 @@ attributes:
     source_table: EXAM_DETAILS
     source_column: NHNCK.EXAM_SESSIONS.CODE
     comment: "Lookup pair: sp_qualification_examination_assessment.sp_qualification_examination_assessment_code. Pair with Securities Practitioner Qualification Examination Assessment Id. Giá trị lấy từ NHNCK.EXAM_SESSIONS.CODE sau ETL crosswalk — chi tiết xem comment Securities Practitioner Qualification Examination Assessment Id."
-    classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner Id
@@ -103,7 +103,7 @@ attributes:
     source_table: EXAM_DETAILS
     source_column: NHNCK.EXAM_DETAILS.PROFESSIONAL_ID
     comment: "FK target: securities_practitioner.securities_practitioner_id. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
-    classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner Code
@@ -117,7 +117,7 @@ attributes:
     source_table: EXAM_DETAILS
     source_column: NHNCK.EXAM_DETAILS.PROFESSIONAL_ID
     comment: "Lookup pair: securities_practitioner.securities_practitioner_code. Pair with Securities Practitioner Id."
-    classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner License Certificate Type Id
@@ -131,7 +131,7 @@ attributes:
     source_table: EXAM_DETAILS
     source_column: NHNCK.EXAM_DETAILS.CERTIFICATE_ID
     comment: "FK target: sp_license_certificate_type.sp_license_certificate_tp_id. Cần ETL crosswalk sang NHNCK.CERTIFICATES: EXAM_DETAILS.CERTIFICATE_ID = CERTIFICATES.ID để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK.CERTIFICATES', CERTIFICATE_CODE) | Trước đây hash trực tiếp theo CERTIFICATE_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CERTIFICATE_CODE) — đã sửa sang crosswalk 2026-07-27."
-    classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner License Certificate Type Code
@@ -145,7 +145,7 @@ attributes:
     source_table: EXAM_DETAILS
     source_column: NHNCK.CERTIFICATES.CERTIFICATE_CODE
     comment: "Lookup pair: sp_license_certificate_type.sp_license_certificate_tp_code. Pair with Securities Practitioner License Certificate Type Id. Giá trị lấy từ NHNCK.CERTIFICATES.CERTIFICATE_CODE sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Certificate Type Id."
-    classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner License Application Id
@@ -159,7 +159,7 @@ attributes:
     source_table: EXAM_DETAILS
     source_column: NHNCK.EXAM_DETAILS.APPLICATION_ID
     comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL crosswalk sang NHNCK.APPLICATIONS: EXAM_DETAILS.APPLICATION_ID = APPLICATIONS.ID để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK.APPLICATIONS', APPLICATION_CODE) | Trước đây hash trực tiếp theo APPLICATION_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ APPLICATION_CODE) — đã sửa sang crosswalk 2026-07-27."
-    classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner License Application Code
@@ -173,7 +173,7 @@ attributes:
     source_table: EXAM_DETAILS
     source_column: NHNCK.APPLICATIONS.APPLICATION_CODE
     comment: "Lookup pair: sp_license_application.sp_license_application_code. Pair with Securities Practitioner License Application Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Application Id."
-    classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Sequence Number
@@ -187,7 +187,7 @@ attributes:
     source_table: EXAM_DETAILS
     source_column: NHNCK.EXAM_DETAILS.SEQUENCE_NUMBER
     comment: null
-    classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Exam Number
@@ -201,7 +201,7 @@ attributes:
     source_table: EXAM_DETAILS
     source_column: NHNCK.EXAM_DETAILS.EXAM_NUMBER
     comment: null
-    classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Law Score
@@ -215,7 +215,7 @@ attributes:
     source_table: EXAM_DETAILS
     source_column: NHNCK.EXAM_DETAILS.LAW_SCORE
     comment: null
-    classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Law Result Code
@@ -229,7 +229,7 @@ attributes:
     source_table: EXAM_DETAILS
     source_column: NHNCK.EXAM_DETAILS.LAW_RESULT
     comment: "Scheme: EXAM_RESULT (gộp từ EXAM_SCORE_RESULT, 2026-07-09)."
-    classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
+    classification_context: EXAM_RESULT
     etl_derived_value: null
 
   - name: Specialization Score
@@ -243,7 +243,7 @@ attributes:
     source_table: EXAM_DETAILS
     source_column: NHNCK.EXAM_DETAILS.SPECIALIZATION_SCORE
     comment: null
-    classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Specialization Result Code
@@ -257,7 +257,7 @@ attributes:
     source_table: EXAM_DETAILS
     source_column: NHNCK.EXAM_DETAILS.SPECIALIZATION_RESULT
     comment: "Scheme: EXAM_RESULT (gộp từ EXAM_SCORE_RESULT, 2026-07-09)."
-    classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
+    classification_context: EXAM_RESULT
     etl_derived_value: null
 
   - name: Overall Result Code
@@ -271,7 +271,7 @@ attributes:
     source_table: EXAM_DETAILS
     source_column: NHNCK.EXAM_DETAILS.RESULT
     comment: "Scheme: EXAM_RESULT (gộp từ EXAMINATION_RESULT, 2026-07-09)."
-    classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
+    classification_context: EXAM_RESULT
     etl_derived_value: null
 
   - name: Examination Note
@@ -285,5 +285,5 @@ attributes:
     source_table: EXAM_DETAILS
     source_column: NHNCK.EXAM_DETAILS.NOTE
     comment: null
-    classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
+    classification_context: null
     etl_derived_value: null

@@ -33,7 +33,7 @@ attributes:
     source_table: PROACTIVE_NOTICE_RECIPIENT
     source_column: null
     comment: "PK surrogate. BCV: [Event] Event."
-    classification_context: "Source System Code = 'THANHTRA_PROACTIVE_NOTICE_RECIPIENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Proactive Notice Recipient Code
@@ -47,7 +47,7 @@ attributes:
     source_table: PROACTIVE_NOTICE_RECIPIENT
     source_column: THANHTRA.PROACTIVE_NOTICE_RECIPIENT.ID
     comment: BK chính. PK nguồn (VARCHAR2 UUID).
-    classification_context: "Source System Code = 'THANHTRA_PROACTIVE_NOTICE_RECIPIENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'THANHTRA_PROACTIVE_NOTICE_RECIPIENT'"
-    etl_derived_value: THANHTRA.PROACTIVE_NOTICE_RECIPIENT
+    etl_derived_value: THANHTRA_PROACTIVE_NOTICE_RECIPIENT
 
   - name: Proactive Notice Id
     physical_name: proactive_notice_id
@@ -75,7 +75,7 @@ attributes:
     source_table: PROACTIVE_NOTICE_RECIPIENT
     source_column: THANHTRA.PROACTIVE_NOTICE_RECIPIENT.PROACTIVE_NOTICE_ID
     comment: "FK target: proactive_notice.proactive_notice_id. Hash: hash_id('THANHTRA.PROACTIVE_NOTICE', PROACTIVE_NOTICE_ID)."
-    classification_context: "Source System Code = 'THANHTRA_PROACTIVE_NOTICE_RECIPIENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Proactive Notice Code
@@ -89,7 +89,7 @@ attributes:
     source_table: PROACTIVE_NOTICE_RECIPIENT
     source_column: THANHTRA.PROACTIVE_NOTICE_RECIPIENT.PROACTIVE_NOTICE_ID
     comment: "Lookup pair: proactive_notice.proactive_notice_code. Pair with Proactive Notice Id."
-    classification_context: "Source System Code = 'THANHTRA_PROACTIVE_NOTICE_RECIPIENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Company Code
@@ -103,7 +103,7 @@ attributes:
     source_table: PROACTIVE_NOTICE_RECIPIENT
     source_column: THANHTRA.PROACTIVE_NOTICE_RECIPIENT.COMPANY_CODE
     comment: Mã định danh công ty — không FK formal sang SCMS/NHNCK.
-    classification_context: "Source System Code = 'THANHTRA_PROACTIVE_NOTICE_RECIPIENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Company Name
@@ -117,7 +117,7 @@ attributes:
     source_table: PROACTIVE_NOTICE_RECIPIENT
     source_column: THANHTRA.PROACTIVE_NOTICE_RECIPIENT.COMPANY_NAME
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_PROACTIVE_NOTICE_RECIPIENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Company Type
@@ -131,7 +131,7 @@ attributes:
     source_table: PROACTIVE_NOTICE_RECIPIENT
     source_column: THANHTRA.PROACTIVE_NOTICE_RECIPIENT.COMPANY_TYPE
     comment: "Lưu Text — chưa có scheme COMPANY_TYPE. Cần thêm scheme: SECURITIES_COMPANY, FUND_MANAGEMENT_COMPANY. Profile giá trị thực tế trước khi chuyển sang Classification Value."
-    classification_context: "Source System Code = 'THANHTRA_PROACTIVE_NOTICE_RECIPIENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Confirmation Status
@@ -145,7 +145,7 @@ attributes:
     source_table: PROACTIVE_NOTICE_RECIPIENT
     source_column: THANHTRA.PROACTIVE_NOTICE_RECIPIENT.CONFIRMATION_STATUS
     comment: "Lưu Text — chưa có scheme NOTICE_RECIPIENT_STATUS. Cần thêm scheme: PENDING, CONFIRMED. Profile giá trị thực tế trước khi chuyển sang Classification Value."
-    classification_context: "Source System Code = 'THANHTRA_PROACTIVE_NOTICE_RECIPIENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Confirmed Timestamp
@@ -159,7 +159,7 @@ attributes:
     source_table: PROACTIVE_NOTICE_RECIPIENT
     source_column: THANHTRA.PROACTIVE_NOTICE_RECIPIENT.CONFIRMED_AT
     comment: Nguồn TIMESTAMP(6).
-    classification_context: "Source System Code = 'THANHTRA_PROACTIVE_NOTICE_RECIPIENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Confirmed By
@@ -173,7 +173,7 @@ attributes:
     source_table: PROACTIVE_NOTICE_RECIPIENT
     source_column: THANHTRA.PROACTIVE_NOTICE_RECIPIENT.CONFIRMED_BY
     comment: Không có FK formal đến Officer hoặc tổ chức — lưu dạng text denormalized.
-    classification_context: "Source System Code = 'THANHTRA_PROACTIVE_NOTICE_RECIPIENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Push Status
@@ -187,7 +187,7 @@ attributes:
     source_table: PROACTIVE_NOTICE_RECIPIENT
     source_column: THANHTRA.PROACTIVE_NOTICE_RECIPIENT.PUSH_STATUS
     comment: "Lưu Text — chưa có scheme PUSH_STATUS. Cần thêm scheme: PENDING, SUCCESS, FAILED. Profile giá trị thực tế trước khi chuyển sang Classification Value."
-    classification_context: "Source System Code = 'THANHTRA_PROACTIVE_NOTICE_RECIPIENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Push Error
@@ -201,7 +201,7 @@ attributes:
     source_table: PROACTIVE_NOTICE_RECIPIENT
     source_column: THANHTRA.PROACTIVE_NOTICE_RECIPIENT.PUSH_ERROR
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_PROACTIVE_NOTICE_RECIPIENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: FMS Event Reference Code
@@ -215,5 +215,5 @@ attributes:
     source_table: PROACTIVE_NOTICE_RECIPIENT
     source_column: THANHTRA.PROACTIVE_NOTICE_RECIPIENT.FMS_EVENT_ID
     comment: "Không có FK formal — mã tương quan (correlation id) kỹ thuật dùng để đối chiếu log đẩy thông báo sang hệ thống FMS, không phải business key của entity FMS nào đã thiết kế."
-    classification_context: "Source System Code = 'THANHTRA_PROACTIVE_NOTICE_RECIPIENT'"
+    classification_context: null
     etl_derived_value: null

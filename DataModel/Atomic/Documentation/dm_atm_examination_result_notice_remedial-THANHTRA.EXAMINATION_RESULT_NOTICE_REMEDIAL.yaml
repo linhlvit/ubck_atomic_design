@@ -33,7 +33,7 @@ attributes:
     source_table: EXAMINATION_RESULT_NOTICE_REMEDIAL
     source_column: null
     comment: "PK surrogate. BCV: [Documentation] Form Document."
-    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_RESULT_NOTICE_REMEDIAL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Examination Result Notice Remedial Code
@@ -47,7 +47,7 @@ attributes:
     source_table: EXAMINATION_RESULT_NOTICE_REMEDIAL
     source_column: THANHTRA.EXAMINATION_RESULT_NOTICE_REMEDIAL.ID
     comment: BK chính. PK nguồn (VARCHAR2 UUID).
-    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_RESULT_NOTICE_REMEDIAL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'THANHTRA_EXAMINATION_RESULT_NOTICE_REMEDIAL'"
-    etl_derived_value: THANHTRA.EXAMINATION_RESULT_NOTICE_REMEDIAL
+    etl_derived_value: THANHTRA_EXAMINATION_RESULT_NOTICE_REMEDIAL
 
   - name: Examination Result Notice Id
     physical_name: examination_result_notice_id
@@ -75,7 +75,7 @@ attributes:
     source_table: EXAMINATION_RESULT_NOTICE_REMEDIAL
     source_column: THANHTRA.EXAMINATION_RESULT_NOTICE_REMEDIAL.EXAMINATION_RESULT_NOTICE_ID
     comment: "FK target: examination_result_notice.examination_result_notice_id. Hash: hash_id('THANHTRA.EXAMINATION_RESULT_NOTICE', EXAMINATION_RESULT_NOTICE_ID)."
-    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_RESULT_NOTICE_REMEDIAL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Examination Result Notice Code
@@ -89,7 +89,7 @@ attributes:
     source_table: EXAMINATION_RESULT_NOTICE_REMEDIAL
     source_column: THANHTRA.EXAMINATION_RESULT_NOTICE_REMEDIAL.EXAMINATION_RESULT_NOTICE_ID
     comment: "Lookup pair: examination_result_notice.examination_result_notice_code. Pair with Examination Result Notice Id."
-    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_RESULT_NOTICE_REMEDIAL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Description
@@ -103,7 +103,7 @@ attributes:
     source_table: EXAMINATION_RESULT_NOTICE_REMEDIAL
     source_column: THANHTRA.EXAMINATION_RESULT_NOTICE_REMEDIAL.DESCRIPTION
     comment: Nguồn CLOB — ETL truncate.
-    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_RESULT_NOTICE_REMEDIAL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Sort Order
@@ -117,5 +117,5 @@ attributes:
     source_table: EXAMINATION_RESULT_NOTICE_REMEDIAL
     source_column: THANHTRA.EXAMINATION_RESULT_NOTICE_REMEDIAL.SORT_ORDER
     comment: "Nguồn NUMBER(5,0) — ETL cast sang integer."
-    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_RESULT_NOTICE_REMEDIAL'"
+    classification_context: null
     etl_derived_value: null

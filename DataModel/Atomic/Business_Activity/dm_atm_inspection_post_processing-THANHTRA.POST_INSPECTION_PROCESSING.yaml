@@ -33,7 +33,7 @@ attributes:
     source_table: POST_INSPECTION_PROCESSING
     source_column: null
     comment: "PK surrogate. BCV: [Business Activity] Business Review — Status Review sub-type."
-    classification_context: "Source System Code = 'THANHTRA_POST_INSPECTION_PROCESSING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Inspection Post Processing Code
@@ -47,7 +47,7 @@ attributes:
     source_table: POST_INSPECTION_PROCESSING
     source_column: THANHTRA.POST_INSPECTION_PROCESSING.ID
     comment: BK chính. PK nguồn (VARCHAR2 UUID).
-    classification_context: "Source System Code = 'THANHTRA_POST_INSPECTION_PROCESSING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'THANHTRA_POST_INSPECTION_PROCESSING'"
-    etl_derived_value: THANHTRA.POST_INSPECTION_PROCESSING
+    etl_derived_value: THANHTRA_POST_INSPECTION_PROCESSING
 
   - name: Inspection Conclusion Id
     physical_name: inspection_conclusion_id
@@ -75,7 +75,7 @@ attributes:
     source_table: POST_INSPECTION_PROCESSING
     source_column: THANHTRA.POST_INSPECTION_PROCESSING.INSPECTION_CONCLUSION_ID
     comment: "FK target: inspection_conclusion.inspection_conclusion_id. Hash: hash_id('THANHTRA.INSPECTION_CONCLUSION', INSPECTION_CONCLUSION_ID)."
-    classification_context: "Source System Code = 'THANHTRA_POST_INSPECTION_PROCESSING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Inspection Conclusion Code
@@ -89,7 +89,7 @@ attributes:
     source_table: POST_INSPECTION_PROCESSING
     source_column: THANHTRA.POST_INSPECTION_PROCESSING.INSPECTION_CONCLUSION_ID
     comment: "Lookup pair: inspection_conclusion.inspection_conclusion_code. Pair with Inspection Conclusion Id."
-    classification_context: "Source System Code = 'THANHTRA_POST_INSPECTION_PROCESSING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Requirement Type Code
@@ -103,7 +103,7 @@ attributes:
     source_table: POST_INSPECTION_PROCESSING
     source_column: THANHTRA.POST_INSPECTION_PROCESSING.REQUIREMENT_TYPE
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_POST_INSPECTION_PROCESSING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Responsible Party
@@ -117,7 +117,7 @@ attributes:
     source_table: POST_INSPECTION_PROCESSING
     source_column: THANHTRA.POST_INSPECTION_PROCESSING.RESPONSIBLE_PARTY
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_POST_INSPECTION_PROCESSING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Due Date
@@ -131,7 +131,7 @@ attributes:
     source_table: POST_INSPECTION_PROCESSING
     source_column: THANHTRA.POST_INSPECTION_PROCESSING.DUE_DATE
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_POST_INSPECTION_PROCESSING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Life Cycle Status Code
@@ -145,7 +145,7 @@ attributes:
     source_table: POST_INSPECTION_PROCESSING
     source_column: THANHTRA.POST_INSPECTION_PROCESSING.STATUS
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_POST_INSPECTION_PROCESSING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Requirement Summary
@@ -159,7 +159,7 @@ attributes:
     source_table: POST_INSPECTION_PROCESSING
     source_column: THANHTRA.POST_INSPECTION_PROCESSING.REQUIREMENT_SUMMARY
     comment: Nguồn CLOB — ETL truncate.
-    classification_context: "Source System Code = 'THANHTRA_POST_INSPECTION_PROCESSING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Implementation Notes
@@ -173,7 +173,7 @@ attributes:
     source_table: POST_INSPECTION_PROCESSING
     source_column: THANHTRA.POST_INSPECTION_PROCESSING.IMPLEMENTATION_NOTES
     comment: Nguồn CLOB — ETL truncate.
-    classification_context: "Source System Code = 'THANHTRA_POST_INSPECTION_PROCESSING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Result Summary
@@ -187,7 +187,7 @@ attributes:
     source_table: POST_INSPECTION_PROCESSING
     source_column: THANHTRA.POST_INSPECTION_PROCESSING.RESULT_SUMMARY
     comment: Nguồn CLOB — ETL truncate.
-    classification_context: "Source System Code = 'THANHTRA_POST_INSPECTION_PROCESSING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Last Updated Date
@@ -201,7 +201,7 @@ attributes:
     source_table: POST_INSPECTION_PROCESSING
     source_column: THANHTRA.POST_INSPECTION_PROCESSING.LAST_UPDATED_DATE
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_POST_INSPECTION_PROCESSING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Monitoring Officer Id
@@ -215,7 +215,7 @@ attributes:
     source_table: POST_INSPECTION_PROCESSING
     source_column: THANHTRA.POST_INSPECTION_PROCESSING.MONITORING_OFFICER_ID
     comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM.USERS', MONITORING_OFFICER_ID) | Chưa xác nhận join key THANHTRA.POST_INSPECTION_PROCESSING.MONITORING_OFFICER_ID ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
-    classification_context: "Source System Code = 'THANHTRA_POST_INSPECTION_PROCESSING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Monitoring Officer Code
@@ -229,5 +229,5 @@ attributes:
     source_table: POST_INSPECTION_PROCESSING
     source_column: THANHTRA.POST_INSPECTION_PROCESSING.MONITORING_OFFICER_NAME
     comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Monitoring Officer Id."
-    classification_context: "Source System Code = 'THANHTRA_POST_INSPECTION_PROCESSING'"
+    classification_context: null
     etl_derived_value: null

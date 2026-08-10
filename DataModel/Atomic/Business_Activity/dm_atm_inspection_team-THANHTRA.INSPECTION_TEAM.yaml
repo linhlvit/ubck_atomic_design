@@ -33,7 +33,7 @@ attributes:
     source_table: INSPECTION_TEAM
     source_column: null
     comment: "PK surrogate. Hash: hash_id('THANHTRA.INSPECTION_TEAM', CODE). BCV: [Business Activity] Business Review."
-    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Inspection Team Code
@@ -47,7 +47,7 @@ attributes:
     source_table: INSPECTION_TEAM
     source_column: THANHTRA.INSPECTION_TEAM.CODE
     comment: BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID UUID) + Unique Key cũ — gộp còn 1 trường Code duy nhất.
-    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM'"
-    etl_derived_value: THANHTRA.INSPECTION_TEAM
+    etl_derived_value: THANHTRA_INSPECTION_TEAM
 
   - name: Inspection Annual Plan Id
     physical_name: inspection_annual_plan_id
@@ -75,7 +75,7 @@ attributes:
     source_table: INSPECTION_TEAM
     source_column: THANHTRA.INSPECTION_TEAM.INSPECTION_ANNUAL_PLAN_ID
     comment: "FK target: inspection_annual_plan.inspection_annual_plan_id. Hash: hash_id('THANHTRA.INSPECTION_ANNUAL_PLAN', INSPECTION_ANNUAL_PLAN_ID)."
-    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Inspection Annual Plan Code
@@ -89,7 +89,7 @@ attributes:
     source_table: INSPECTION_TEAM
     source_column: THANHTRA.INSPECTION_TEAM.INSPECTION_ANNUAL_PLAN_ID
     comment: "Lookup pair: inspection_annual_plan.inspection_annual_plan_code. Pair with Inspection Annual Plan Id."
-    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Plan Year
@@ -103,7 +103,7 @@ attributes:
     source_table: INSPECTION_TEAM
     source_column: THANHTRA.INSPECTION_TEAM.PLAN_YEAR
     comment: "Nguồn NUMBER(4,0) — ETL cast sang integer."
-    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Form Type Code
@@ -117,7 +117,7 @@ attributes:
     source_table: INSPECTION_TEAM
     source_column: THANHTRA.INSPECTION_TEAM.FORM_TYPE
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Start Date
@@ -131,7 +131,7 @@ attributes:
     source_table: INSPECTION_TEAM
     source_column: THANHTRA.INSPECTION_TEAM.START_DATE
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM'"
+    classification_context: null
     etl_derived_value: null
 
   - name: End Date
@@ -145,7 +145,7 @@ attributes:
     source_table: INSPECTION_TEAM
     source_column: THANHTRA.INSPECTION_TEAM.END_DATE
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Duration Days
@@ -159,7 +159,7 @@ attributes:
     source_table: INSPECTION_TEAM
     source_column: THANHTRA.INSPECTION_TEAM.DURATION_DAYS
     comment: "Nguồn NUMBER(5,0) — ETL cast sang integer."
-    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Decision Number
@@ -173,7 +173,7 @@ attributes:
     source_table: INSPECTION_TEAM
     source_column: THANHTRA.INSPECTION_TEAM.DECISION_NUMBER
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Decision Date
@@ -187,7 +187,7 @@ attributes:
     source_table: INSPECTION_TEAM
     source_column: THANHTRA.INSPECTION_TEAM.DECISION_DATE
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Decision Name
@@ -201,7 +201,7 @@ attributes:
     source_table: INSPECTION_TEAM
     source_column: THANHTRA.INSPECTION_TEAM.DECISION_NAME
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Announcement Date
@@ -215,7 +215,7 @@ attributes:
     source_table: INSPECTION_TEAM
     source_column: THANHTRA.INSPECTION_TEAM.ANNOUNCEMENT_DATE
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Content
@@ -229,7 +229,7 @@ attributes:
     source_table: INSPECTION_TEAM
     source_column: THANHTRA.INSPECTION_TEAM.CONTENT
     comment: Nguồn CLOB — ETL cần truncate nếu vượt ngưỡng.
-    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Inspection Period From Date
@@ -243,7 +243,7 @@ attributes:
     source_table: INSPECTION_TEAM
     source_column: THANHTRA.INSPECTION_TEAM.INSPECTION_PERIOD_FROM
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Inspection Period To Date
@@ -257,7 +257,7 @@ attributes:
     source_table: INSPECTION_TEAM
     source_column: THANHTRA.INSPECTION_TEAM.INSPECTION_PERIOD_TO
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Anti Money Laundering Indicator
@@ -271,7 +271,7 @@ attributes:
     source_table: INSPECTION_TEAM
     source_column: THANHTRA.INSPECTION_TEAM.ANTI_MONEY_LAUNDERING
     comment: "Nguồn NUMBER(1,0) — map sang indicator."
-    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Abnormal Transaction Check Indicator
@@ -285,7 +285,7 @@ attributes:
     source_table: INSPECTION_TEAM
     source_column: THANHTRA.INSPECTION_TEAM.ABNORMAL_TRANSACTION_CHECK
     comment: "Nguồn NUMBER(1,0) — map sang indicator."
-    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Verification Minutes Sign Date
@@ -299,7 +299,7 @@ attributes:
     source_table: INSPECTION_TEAM
     source_column: THANHTRA.INSPECTION_TEAM.VERIFICATION_MINUTES_SIGN_DATE
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Note
@@ -313,5 +313,5 @@ attributes:
     source_table: INSPECTION_TEAM
     source_column: THANHTRA.INSPECTION_TEAM.NOTE
     comment: Nguồn CLOB — ETL cần truncate nếu vượt ngưỡng.
-    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM'"
+    classification_context: null
     etl_derived_value: null

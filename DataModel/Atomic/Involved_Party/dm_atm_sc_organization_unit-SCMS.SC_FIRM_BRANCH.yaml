@@ -33,7 +33,7 @@ attributes:
     source_table: SC_FIRM_BRANCH
     source_column: null
     comment: "PK surrogate. BCV: \"[Involved Party] Branch\". Chi nhánh CTCK trong nước."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Company Organization Unit Code
@@ -47,7 +47,7 @@ attributes:
     source_table: SC_FIRM_BRANCH
     source_column: SCMS.SC_FIRM_BRANCH.ID
     comment: BK chính. PK nguồn (NUMBER — ETL cần convert sang string).
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
-    etl_derived_value: SCMS.SC_FIRM_BRANCH
+    etl_derived_value: SCMS_SC_FIRM_BRANCH
 
   - name: Organization Unit Type Code
     physical_name: ou_tp_code
@@ -75,7 +75,7 @@ attributes:
     source_table: SC_FIRM_BRANCH
     source_column: null
     comment: "Scheme: SCMS_ORG_UNIT_TYPE. ETL hardcode từ source table. SC_FIRM_BRANCH → BRANCH."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
+    classification_context: "SCMS_ORG_UNIT_TYPE=BRANCH"
     etl_derived_value: BRANCH
 
   - name: Securities Company Id
@@ -89,7 +89,7 @@ attributes:
     source_table: SC_FIRM_BRANCH
     source_column: SCMS.SC_FIRM_BRANCH.SC_FIRM_INFO_ID
     comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO: SC_FIRM_BRANCH.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE sau đó hash_id('SCMS.SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Company Code
@@ -103,7 +103,7 @@ attributes:
     source_table: SC_FIRM_BRANCH
     source_column: SCMS.SC_FIRM_INFO.CODE
     comment: "Lookup pair: securities_company.securities_company_code. Pair with Securities Company Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết xem comment Securities Company Id."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Parent Organization Unit Id
@@ -117,7 +117,7 @@ attributes:
     source_table: SC_FIRM_BRANCH
     source_column: SCMS.SC_FIRM_BRANCH.SC_FIRM_BRANCH_ID
     comment: "FK target: sc_organization_unit.sc_organization_unit_id. Self-referencing. Hash: hash_id('SCMS.SC_FIRM_BRANCH', SC_FIRM_BRANCH_ID)."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Parent Organization Unit Code
@@ -131,7 +131,7 @@ attributes:
     source_table: SC_FIRM_BRANCH
     source_column: SCMS.SC_FIRM_BRANCH.SC_FIRM_BRANCH_ID
     comment: "Lookup pair: sc_organization_unit.sc_organization_unit_code. Pair with Parent Organization Unit Id."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Organization Unit Code
@@ -145,7 +145,7 @@ attributes:
     source_table: SC_FIRM_BRANCH
     source_column: SCMS.SC_FIRM_BRANCH.BRANCH_CODE
     comment: null
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Organization Unit Name
@@ -159,7 +159,7 @@ attributes:
     source_table: SC_FIRM_BRANCH
     source_column: SCMS.SC_FIRM_BRANCH.FULL_NAME
     comment: BRANCH_NAME (VARCHAR2 500) có thể là tên từ phiên bản schema cũ hơn — xem thêm attribute Organization Unit Legacy Name.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Organization Unit Legacy Name
@@ -173,7 +173,7 @@ attributes:
     source_table: SC_FIRM_BRANCH
     source_column: SCMS.SC_FIRM_BRANCH.BRANCH_NAME
     comment: Trường legacy — cần xác nhận với team SCMS xem BRANCH_NAME và FULL_NAME có cùng nội dung không.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Organization Unit English Name
@@ -187,7 +187,7 @@ attributes:
     source_table: SC_FIRM_BRANCH
     source_column: SCMS.SC_FIRM_BRANCH.NAME_EN
     comment: null
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Classification Firm Status Id
@@ -201,7 +201,7 @@ attributes:
     source_table: SC_FIRM_BRANCH
     source_column: SCMS.SC_FIRM_BRANCH.BRANCH_STATUS
     comment: "FK target: cl_firm_status.cl_firm_status_id. Hash: hash_id('SCMS.CAT_SC_FIRM_STATUS', BRANCH_STATUS)."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Classification Firm Status Code
@@ -215,7 +215,7 @@ attributes:
     source_table: SC_FIRM_BRANCH
     source_column: SCMS.SC_FIRM_BRANCH.BRANCH_STATUS
     comment: "Lookup pair: cl_firm_status.cl_firm_status_code. Pair with Classification Firm Status Id."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Record Status Code
@@ -229,7 +229,7 @@ attributes:
     source_table: SC_FIRM_BRANCH
     source_column: SCMS.SC_FIRM_BRANCH.RECORD_STATUS
     comment: "Scheme: SCMS_USAGE_STATUS. Khác BRANCH_STATUS — đây là cờ 0/1 kỹ thuật, không phải trạng thái pháp lý."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Provisional Indicator
@@ -243,7 +243,7 @@ attributes:
     source_table: SC_FIRM_BRANCH
     source_column: SCMS.SC_FIRM_BRANCH.PROVISIONAL
     comment: NUMBER(1) — ETL convert sang boolean.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Decision Number
@@ -257,7 +257,7 @@ attributes:
     source_table: SC_FIRM_BRANCH
     source_column: SCMS.SC_FIRM_BRANCH.DECISION_NUMBER
     comment: null
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Decision Date
@@ -271,7 +271,7 @@ attributes:
     source_table: SC_FIRM_BRANCH
     source_column: SCMS.SC_FIRM_BRANCH.DECISION_DATE
     comment: null
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Valid Dossier Date
@@ -285,7 +285,7 @@ attributes:
     source_table: SC_FIRM_BRANCH
     source_column: SCMS.SC_FIRM_BRANCH.VALID_DOSSIER_DATE
     comment: null
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Operation Date
@@ -299,7 +299,7 @@ attributes:
     source_table: SC_FIRM_BRANCH
     source_column: SCMS.SC_FIRM_BRANCH.OPERATION_DATE
     comment: Mô tả gốc BRD trống. Cần xác nhận khác biệt với OFFICIAL_OPERATION_DATE.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Official Operation Date
@@ -313,7 +313,7 @@ attributes:
     source_table: SC_FIRM_BRANCH
     source_column: SCMS.SC_FIRM_BRANCH.OFFICIAL_OPERATION_DATE
     comment: Nguồn lưu TIMESTAMP(6) — ETL truncate lấy phần date.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Director Name
@@ -327,7 +327,7 @@ attributes:
     source_table: SC_FIRM_BRANCH
     source_column: SCMS.SC_FIRM_BRANCH.DIRECTOR_NAME
     comment: null
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Representative Name
@@ -341,7 +341,7 @@ attributes:
     source_table: SC_FIRM_BRANCH
     source_column: SCMS.SC_FIRM_BRANCH.REPRESENTATIVE_NAME
     comment: null
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Representative Title
@@ -355,7 +355,7 @@ attributes:
     source_table: SC_FIRM_BRANCH
     source_column: SCMS.SC_FIRM_BRANCH.REPRESENTATIVE_TITLE
     comment: null
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Personnel Director Id
@@ -369,7 +369,7 @@ attributes:
     source_table: SC_FIRM_BRANCH
     source_column: SCMS.SC_FIRM_BRANCH.NHAN_SU_GIAM_DOC_ID
     comment: Denormalized — không có FK target trong scope. Nguồn lưu NUMBER(10) — ETL convert sang string.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Administrative Authority Name
@@ -383,7 +383,7 @@ attributes:
     source_table: SC_FIRM_BRANCH
     source_column: SCMS.SC_FIRM_BRANCH.CO_QUAN_CAP
     comment: "Mô tả gốc BRD: 'co_quan_cap — xem thêm tài liệu đặc tả SCMS'."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Business Lines
@@ -397,7 +397,7 @@ attributes:
     source_table: SC_FIRM_BRANCH
     source_column: SCMS.SC_FIRM_BRANCH.BUSINESS_LINES
     comment: "Map 1:1 từ nguồn — giữ nguyên dạng string thô (không parse ARRAY). Sau này đánh giá có FK sang bảng danh mục nghiệp vụ hay không."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Attachment Path
@@ -411,7 +411,7 @@ attributes:
     source_table: SC_FIRM_BRANCH
     source_column: SCMS.SC_FIRM_BRANCH.ATTACHMENT_PATH
     comment: null
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Note
@@ -425,5 +425,5 @@ attributes:
     source_table: SC_FIRM_BRANCH
     source_column: SCMS.SC_FIRM_BRANCH.NOTE
     comment: null
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
+    classification_context: null
     etl_derived_value: null

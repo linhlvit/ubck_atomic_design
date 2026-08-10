@@ -33,7 +33,7 @@ attributes:
     source_table: DISTRICT_OLD
     source_column: null
     comment: "PK surrogate. Hash: hash_id('ECAT.DISTRICT_OLD', CODE). BCV: \"Geographic Area\" (Location) — entity riêng Geographic Area Old cho phân cấp lịch sử pre-2025."
-    classification_context: "Source System Code = 'ECAT_DISTRICT_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -48,7 +48,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
     classification_context: "Source System Code = 'ECAT_DISTRICT_OLD'"
-    etl_derived_value: ECAT.DISTRICT_OLD
+    etl_derived_value: ECAT_DISTRICT_OLD
 
   - name: Geographic Area Old Type Code
     physical_name: geographic_area_old_tp_code
@@ -61,7 +61,7 @@ attributes:
     source_table: DISTRICT_OLD
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'ECAT_DISTRICT_OLD'"
+    classification_context: "GEOGRAPHIC_AREA_OLD_TYPE=DISTRICT_OLD"
     etl_derived_value: DISTRICT_OLD
 
   - name: Geographic Area Old Code
@@ -75,7 +75,7 @@ attributes:
     source_table: DISTRICT_OLD
     source_column: ECAT.DISTRICT_OLD.CODE
     comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (STABLE_ID) — gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique trước go-live."
-    classification_context: "Source System Code = 'ECAT_DISTRICT_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Geographic Area Old Name
@@ -89,7 +89,7 @@ attributes:
     source_table: DISTRICT_OLD
     source_column: ECAT.DISTRICT_OLD.NAME
     comment: DISTRICT_OLD chỉ có 1 cột NAME (không có NAME_VN/NAME_EN như PROVINCE_OLD/WARD_OLD).
-    classification_context: "Source System Code = 'ECAT_DISTRICT_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Parent Geographic Area Old Id
@@ -103,7 +103,7 @@ attributes:
     source_table: DISTRICT_OLD
     source_column: ECAT.DISTRICT_OLD.PROVINCE_OLD_ID
     comment: "FK target: geographic_area_old.geographic_area_old_id. Parent là PROVINCE_OLD. Resolve: join PROVINCE_OLD_ID → ECAT.PROVINCE_OLD.ID để lấy CODE, rồi hash_id('ECAT.PROVINCE_OLD', CODE_CHA)."
-    classification_context: "Source System Code = 'ECAT_DISTRICT_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Parent Geographic Area Old Code
@@ -117,7 +117,7 @@ attributes:
     source_table: DISTRICT_OLD
     source_column: ECAT.DISTRICT_OLD.PROVINCE_OLD_ID
     comment: "Lookup pair: geographic_area_old.geographic_area_old_code. Pair with Parent Geographic Area Old Id."
-    classification_context: "Source System Code = 'ECAT_DISTRICT_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Effective Indicator
@@ -131,7 +131,7 @@ attributes:
     source_table: DISTRICT_OLD
     source_column: ECAT.DISTRICT_OLD.EFFECTIVE
     comment: "Giá trị 1 → true; 0 → false. Cột phát hiện thêm khi đối chiếu Source/ECAT_Columns.csv bản cập nhật — trước đây DISTRICT_OLD tưởng không có EFFECTIVE. Đẩy 1:1, không gộp với Active/Deleted Indicator."
-    classification_context: "Source System Code = 'ECAT_DISTRICT_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Active Indicator
@@ -145,7 +145,7 @@ attributes:
     source_table: DISTRICT_OLD
     source_column: ECAT.DISTRICT_OLD.ACTIVE
     comment: Giá trị 1 → true; 0 → false.
-    classification_context: "Source System Code = 'ECAT_DISTRICT_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Deleted Indicator
@@ -159,7 +159,7 @@ attributes:
     source_table: DISTRICT_OLD
     source_column: ECAT.DISTRICT_OLD.DELETED
     comment: Giá trị 1 → true; 0 → false.
-    classification_context: "Source System Code = 'ECAT_DISTRICT_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Effective Start Date
@@ -173,7 +173,7 @@ attributes:
     source_table: DISTRICT_OLD
     source_column: ECAT.DISTRICT_OLD.EFFECTIVE_START_DATE
     comment: null
-    classification_context: "Source System Code = 'ECAT_DISTRICT_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Effective End Date
@@ -187,7 +187,7 @@ attributes:
     source_table: DISTRICT_OLD
     source_column: ECAT.DISTRICT_OLD.EFFECTIVE_END_DATE
     comment: null
-    classification_context: "Source System Code = 'ECAT_DISTRICT_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Version Number
@@ -201,7 +201,7 @@ attributes:
     source_table: DISTRICT_OLD
     source_column: ECAT.DISTRICT_OLD.VERSION
     comment: "Đẩy 1:1 theo yêu cầu."
-    classification_context: "Source System Code = 'ECAT_DISTRICT_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Display Label
@@ -215,7 +215,7 @@ attributes:
     source_table: DISTRICT_OLD
     source_column: ECAT.DISTRICT_OLD.DISPLAY_LABEL
     comment: "Đẩy 1:1 theo yêu cầu."
-    classification_context: "Source System Code = 'ECAT_DISTRICT_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Active Reason
@@ -229,7 +229,7 @@ attributes:
     source_table: DISTRICT_OLD
     source_column: ECAT.DISTRICT_OLD.ACTIVE_REASON
     comment: "Đẩy 1:1 theo yêu cầu."
-    classification_context: "Source System Code = 'ECAT_DISTRICT_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Deleted Reason
@@ -243,7 +243,7 @@ attributes:
     source_table: DISTRICT_OLD
     source_column: ECAT.DISTRICT_OLD.DELETED_REASON
     comment: Cột phát hiện thêm khi đối chiếu Source/ECAT_Columns.csv bản cập nhật — trước đây DISTRICT_OLD tưởng không có DELETED_REASON.
-    classification_context: "Source System Code = 'ECAT_DISTRICT_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Created Timestamp
@@ -257,7 +257,7 @@ attributes:
     source_table: DISTRICT_OLD
     source_column: ECAT.DISTRICT_OLD.CREATED_AT
     comment: null
-    classification_context: "Source System Code = 'ECAT_DISTRICT_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Updated Timestamp
@@ -271,7 +271,7 @@ attributes:
     source_table: DISTRICT_OLD
     source_column: ECAT.DISTRICT_OLD.UPDATED_AT
     comment: null
-    classification_context: "Source System Code = 'ECAT_DISTRICT_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Created By Staff Id
@@ -285,7 +285,7 @@ attributes:
     source_table: DISTRICT_OLD
     source_column: ECAT.DISTRICT_OLD.CREATED_BY_ID
     comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT.UBCK_STAFF', CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
-    classification_context: "Source System Code = 'ECAT_DISTRICT_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Created By Staff Code
@@ -299,7 +299,7 @@ attributes:
     source_table: DISTRICT_OLD
     source_column: ECAT.DISTRICT_OLD.CREATED_BY_ID
     comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff Code. Pending — xem ghi chú ở Created By Staff Id."
-    classification_context: "Source System Code = 'ECAT_DISTRICT_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Created By Staff Name
@@ -313,7 +313,7 @@ attributes:
     source_table: DISTRICT_OLD
     source_column: ECAT.DISTRICT_OLD.CREATED_BY_NAME
     comment: "Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên hiển thị, không phải mã nhân viên)."
-    classification_context: "Source System Code = 'ECAT_DISTRICT_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Updated By Staff Id
@@ -327,7 +327,7 @@ attributes:
     source_table: DISTRICT_OLD
     source_column: ECAT.DISTRICT_OLD.UPDATED_BY_ID
     comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT.UBCK_STAFF', CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
-    classification_context: "Source System Code = 'ECAT_DISTRICT_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Updated By Staff Code
@@ -341,7 +341,7 @@ attributes:
     source_table: DISTRICT_OLD
     source_column: ECAT.DISTRICT_OLD.UPDATED_BY_ID
     comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff Code. Pending — xem ghi chú ở Updated By Staff Id."
-    classification_context: "Source System Code = 'ECAT_DISTRICT_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Updated By Staff Name
@@ -355,5 +355,5 @@ attributes:
     source_table: DISTRICT_OLD
     source_column: ECAT.DISTRICT_OLD.UPDATED_BY_NAME
     comment: "Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên hiển thị, không phải mã nhân viên)."
-    classification_context: "Source System Code = 'ECAT_DISTRICT_OLD'"
+    classification_context: null
     etl_derived_value: null

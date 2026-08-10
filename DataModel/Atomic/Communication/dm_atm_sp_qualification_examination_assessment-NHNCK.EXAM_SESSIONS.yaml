@@ -33,7 +33,7 @@ attributes:
     source_table: EXAM_SESSIONS
     source_column: null
     comment: "PK surrogate. BCV: \"Assessment\" (Communication). Đợt thi sát hạch chứng chỉ hành nghề."
-    classification_context: "Source System Code = 'NHNCK_EXAM_SESSIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner Qualification Examination Assessment Code
@@ -47,7 +47,7 @@ attributes:
     source_table: EXAM_SESSIONS
     source_column: NHNCK.EXAM_SESSIONS.CODE
     comment: BK chính. Mã đợt thi.
-    classification_context: "Source System Code = 'NHNCK_EXAM_SESSIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: null
     classification_context: "Source System Code = 'NHNCK_EXAM_SESSIONS'"
-    etl_derived_value: NHNCK.EXAM_SESSIONS
+    etl_derived_value: NHNCK_EXAM_SESSIONS
 
   - name: Assessment Name
     physical_name: assessment_nm
@@ -75,7 +75,7 @@ attributes:
     source_table: EXAM_SESSIONS
     source_column: NHNCK.EXAM_SESSIONS.NAME
     comment: null
-    classification_context: "Source System Code = 'NHNCK_EXAM_SESSIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Report Year
@@ -89,7 +89,7 @@ attributes:
     source_table: EXAM_SESSIONS
     source_column: NHNCK.EXAM_SESSIONS.YEAR
     comment: "Xác nhận DDL UAT không có REPORT_YEAR (2026-07-28) — YEAR là cột thật duy nhất, rename từ REPORT_YEAR đã áp dụng đúng trong lần đối chiếu 2026-07-15/20."
-    classification_context: "Source System Code = 'NHNCK_EXAM_SESSIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Examination Session Number
@@ -103,7 +103,7 @@ attributes:
     source_table: EXAM_SESSIONS
     source_column: NHNCK.EXAM_SESSIONS.SESSION_
     comment: null
-    classification_context: "Source System Code = 'NHNCK_EXAM_SESSIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Organizing Unit Name
@@ -117,7 +117,7 @@ attributes:
     source_table: EXAM_SESSIONS
     source_column: NHNCK.EXAM_SESSIONS.ORGANIZING_UNIT
     comment: Denormalized text — không FK. Lưu tên tự do từ nguồn.
-    classification_context: "Source System Code = 'NHNCK_EXAM_SESSIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Application Registration Start Date
@@ -131,7 +131,7 @@ attributes:
     source_table: EXAM_SESSIONS
     source_column: NHNCK.EXAM_SESSIONS.APPLICATION_START_DATE
     comment: VARCHAR2 nguồn — conversion risk. Lưu dạng Text tránh lỗi parse.
-    classification_context: "Source System Code = 'NHNCK_EXAM_SESSIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Application Registration End Date
@@ -145,7 +145,7 @@ attributes:
     source_table: EXAM_SESSIONS
     source_column: NHNCK.EXAM_SESSIONS.APPLICATION_END_DATE
     comment: VARCHAR2 nguồn — conversion risk. Lưu dạng Text tránh lỗi parse.
-    classification_context: "Source System Code = 'NHNCK_EXAM_SESSIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Examination Start Date
@@ -159,7 +159,7 @@ attributes:
     source_table: EXAM_SESSIONS
     source_column: NHNCK.EXAM_SESSIONS.EXAM_START_DATE
     comment: VARCHAR2 nguồn — conversion risk. Lưu dạng Text tránh lỗi parse.
-    classification_context: "Source System Code = 'NHNCK_EXAM_SESSIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Examination End Date
@@ -173,7 +173,7 @@ attributes:
     source_table: EXAM_SESSIONS
     source_column: NHNCK.EXAM_SESSIONS.EXAM_END_DATE
     comment: VARCHAR2 nguồn — conversion risk. Lưu dạng Text tránh lỗi parse.
-    classification_context: "Source System Code = 'NHNCK_EXAM_SESSIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Result Notification Date
@@ -187,7 +187,7 @@ attributes:
     source_table: EXAM_SESSIONS
     source_column: NHNCK.EXAM_SESSIONS.NOTI_DATE
     comment: VARCHAR2 nguồn — conversion risk. Lưu dạng Text tránh lỗi parse.
-    classification_context: "Source System Code = 'NHNCK_EXAM_SESSIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Examination Locations
@@ -201,7 +201,7 @@ attributes:
     source_table: EXAM_SESSIONS
     source_column: NHNCK.EXAM_SESSIONS.EXAM_LOCATIONS
     comment: Text tự do. Có thể chứa nhiều địa điểm phân cách dấu phẩy.
-    classification_context: "Source System Code = 'NHNCK_EXAM_SESSIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Submission Methods
@@ -215,7 +215,7 @@ attributes:
     source_table: EXAM_SESSIONS
     source_column: NHNCK.EXAM_SESSIONS.SUBMISSION_METHODS
     comment: Text tự do.
-    classification_context: "Source System Code = 'NHNCK_EXAM_SESSIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Notification File Path
@@ -229,7 +229,7 @@ attributes:
     source_table: EXAM_SESSIONS
     source_column: NHNCK.EXAM_SESSIONS.FILE_PATH
     comment: null
-    classification_context: "Source System Code = 'NHNCK_EXAM_SESSIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner License Decision Document Id
@@ -243,7 +243,7 @@ attributes:
     source_table: EXAM_SESSIONS
     source_column: NHNCK.EXAM_SESSIONS.DECISION_ID
     comment: "FK target: sp_license_decision_document.sp_license_decision_document_id. Hash: hash_id('NHNCK.DECISIONS', DECISION_ID)."
-    classification_context: "Source System Code = 'NHNCK_EXAM_SESSIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner License Decision Document Code
@@ -257,7 +257,7 @@ attributes:
     source_table: EXAM_SESSIONS
     source_column: NHNCK.EXAM_SESSIONS.DECISION_ID
     comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code. Pair with Securities Practitioner License Decision Document Id."
-    classification_context: "Source System Code = 'NHNCK_EXAM_SESSIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Bank Code
@@ -271,7 +271,7 @@ attributes:
     source_table: EXAM_SESSIONS
     source_column: NHNCK.EXAM_SESSIONS.BANK_ID
     comment: "Scheme: BANK. Classification Value lookup từ bảng BANKS."
-    classification_context: "Source System Code = 'NHNCK_EXAM_SESSIONS'"
+    classification_context: BANK
     etl_derived_value: null
 
   - name: Bank Account Number
@@ -285,7 +285,7 @@ attributes:
     source_table: EXAM_SESSIONS
     source_column: NHNCK.EXAM_SESSIONS.BANK_ACCOUNT_NUMBER
     comment: null
-    classification_context: "Source System Code = 'NHNCK_EXAM_SESSIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Bank Account Name
@@ -299,5 +299,5 @@ attributes:
     source_table: EXAM_SESSIONS
     source_column: NHNCK.EXAM_SESSIONS.BANK_ACCOUNT_NAME
     comment: null
-    classification_context: "Source System Code = 'NHNCK_EXAM_SESSIONS'"
+    classification_context: null
     etl_derived_value: null

@@ -33,7 +33,7 @@ attributes:
     source_table: SECURITY_MEASURE_EXECUTION
     source_column: null
     comment: "PK surrogate. BCV: [Business Activity] Business Review (Status Review — báo cáo kết quả thực thi biện pháp ngăn chặn)."
-    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_EXECUTION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Security Measure Execution Code
@@ -47,7 +47,7 @@ attributes:
     source_table: SECURITY_MEASURE_EXECUTION
     source_column: THANHTRA.SECURITY_MEASURE_EXECUTION.ID
     comment: BK chính. PK nguồn (VARCHAR2 UUID).
-    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_EXECUTION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_EXECUTION'"
-    etl_derived_value: THANHTRA.SECURITY_MEASURE_EXECUTION
+    etl_derived_value: THANHTRA_SECURITY_MEASURE_EXECUTION
 
   - name: Security Measure Decision Id
     physical_name: sm_decision_id
@@ -75,7 +75,7 @@ attributes:
     source_table: SECURITY_MEASURE_EXECUTION
     source_column: THANHTRA.SECURITY_MEASURE_EXECUTION.SECURITY_MEASURE_DECISION_ID
     comment: "FK target: sm_decision.sm_decision_id. Hash: hash_id('THANHTRA.SECURITY_MEASURE_DECISION', SECURITY_MEASURE_DECISION_ID)."
-    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_EXECUTION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Security Measure Decision Code
@@ -89,7 +89,7 @@ attributes:
     source_table: SECURITY_MEASURE_EXECUTION
     source_column: THANHTRA.SECURITY_MEASURE_EXECUTION.SECURITY_MEASURE_DECISION_ID
     comment: "Lookup pair: sm_decision.sm_decision_code. Pair with Security Measure Decision Id."
-    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_EXECUTION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Reporter Name
@@ -103,7 +103,7 @@ attributes:
     source_table: SECURITY_MEASURE_EXECUTION
     source_column: THANHTRA.SECURITY_MEASURE_EXECUTION.REPORTER_NAME
     comment: Denormalized text — không FK formal đến tổ chức.
-    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_EXECUTION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Report Date
@@ -117,7 +117,7 @@ attributes:
     source_table: SECURITY_MEASURE_EXECUTION
     source_column: THANHTRA.SECURITY_MEASURE_EXECUTION.REPORT_DATE
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_EXECUTION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Content
@@ -131,7 +131,7 @@ attributes:
     source_table: SECURITY_MEASURE_EXECUTION
     source_column: THANHTRA.SECURITY_MEASURE_EXECUTION.CONTENT
     comment: Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng.
-    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_EXECUTION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Execution Result Code
@@ -145,7 +145,7 @@ attributes:
     source_table: SECURITY_MEASURE_EXECUTION
     source_column: THANHTRA.SECURITY_MEASURE_EXECUTION.EXECUTION_RESULT
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_EXECUTION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Note
@@ -159,5 +159,5 @@ attributes:
     source_table: SECURITY_MEASURE_EXECUTION
     source_column: THANHTRA.SECURITY_MEASURE_EXECUTION.NOTE
     comment: Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng.
-    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_EXECUTION'"
+    classification_context: null
     etl_derived_value: null

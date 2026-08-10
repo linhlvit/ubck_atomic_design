@@ -33,7 +33,7 @@ attributes:
     source_table: IDENTITY_INFO_C06S
     source_column: null
     comment: "PK surrogate. BCV: [Involved Party] Individual."
-    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Individual Code
@@ -47,7 +47,7 @@ attributes:
     source_table: IDENTITY_INFO_C06S
     source_column: NHNCK.IDENTITY_INFO_C06S.IDENTITY_NUMBER
     comment: "BK chính — không có cột CODE nghiệp vụ riêng trên bảng nguồn. Cần profile dữ liệu xác nhận NOT NULL/unique trước go-live."
-    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S'"
-    etl_derived_value: NHNCK.IDENTITY_INFO_C06S
+    etl_derived_value: NHNCK_IDENTITY_INFO_C06S
 
   - name: Full Name
     physical_name: full_nm
@@ -75,7 +75,7 @@ attributes:
     source_table: IDENTITY_INFO_C06S
     source_column: NHNCK.IDENTITY_INFO_C06S.FULL_NAME
     comment: null
-    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Given Name
@@ -89,7 +89,7 @@ attributes:
     source_table: IDENTITY_INFO_C06S
     source_column: NHNCK.IDENTITY_INFO_C06S.FIRST_NAME
     comment: null
-    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Birth Date
@@ -103,7 +103,7 @@ attributes:
     source_table: IDENTITY_INFO_C06S
     source_column: NHNCK.IDENTITY_INFO_C06S.BIRTH_DATE
     comment: null
-    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Birth Year
@@ -117,7 +117,7 @@ attributes:
     source_table: IDENTITY_INFO_C06S
     source_column: NHNCK.IDENTITY_INFO_C06S.BIRTH_YEAR
     comment: Nguồn lưu NVARCHAR2(4) — giữ dạng text.
-    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Gender Code
@@ -131,7 +131,7 @@ attributes:
     source_table: IDENTITY_INFO_C06S
     source_column: NHNCK.IDENTITY_INFO_C06S.GENDER
     comment: "Scheme: INDIVIDUAL_GENDER (reuse — cùng scheme với Securities Practitioner.Gender Code)."
-    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S'"
+    classification_context: INDIVIDUAL_GENDER
     etl_derived_value: null
 
   - name: Ethnicity Name
@@ -145,7 +145,7 @@ attributes:
     source_table: IDENTITY_INFO_C06S
     source_column: NHNCK.IDENTITY_INFO_C06S.NATIONAL
     comment: Denormalized text — mirror Securities Practitioner.Ethnicity Name.
-    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Religion Name
@@ -159,7 +159,7 @@ attributes:
     source_table: IDENTITY_INFO_C06S
     source_column: NHNCK.IDENTITY_INFO_C06S.RELIGION
     comment: null
-    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Country Code
@@ -173,7 +173,7 @@ attributes:
     source_table: IDENTITY_INFO_C06S
     source_column: NHNCK.IDENTITY_INFO_C06S.COUNTRY_CODE
     comment: "Scheme: NHNCK_C06_COUNTRY. Dữ liệu tích hợp C06 (API ngoài) — no_lookup, không tạo FK Geographic Area."
-    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S'"
+    classification_context: NHNCK_C06_COUNTRY
     etl_derived_value: null
 
   - name: Place of Birth Description
@@ -187,7 +187,7 @@ attributes:
     source_table: IDENTITY_INFO_C06S
     source_column: NHNCK.IDENTITY_INFO_C06S.PLACE_OF_BIRTH
     comment: Mirror Securities Practitioner.Place of Birth Description.
-    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Place of Birth Country Code
@@ -201,7 +201,7 @@ attributes:
     source_table: IDENTITY_INFO_C06S
     source_column: NHNCK.IDENTITY_INFO_C06S.PLACE_OF_BIRTH_COUNTRY_CODE
     comment: "Scheme: NHNCK_C06_COUNTRY. Dữ liệu tích hợp C06 — no_lookup."
-    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S'"
+    classification_context: NHNCK_C06_COUNTRY
     etl_derived_value: null
 
   - name: Place of Birth Province Code
@@ -215,7 +215,7 @@ attributes:
     source_table: IDENTITY_INFO_C06S
     source_column: NHNCK.IDENTITY_INFO_C06S.PLACE_OF_BIRTH_PROVINCE_CODE
     comment: "Scheme: NHNCK_C06_PROVINCE. Dữ liệu tích hợp C06 — no_lookup."
-    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S'"
+    classification_context: NHNCK_C06_PROVINCE
     etl_derived_value: null
 
   - name: Place of Birth District Code
@@ -229,7 +229,7 @@ attributes:
     source_table: IDENTITY_INFO_C06S
     source_column: NHNCK.IDENTITY_INFO_C06S.PLACE_OF_BIRTH_DISTRICT_CODE
     comment: "Scheme: NHNCK_C06_DISTRICT. Dữ liệu tích hợp C06 — no_lookup."
-    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S'"
+    classification_context: NHNCK_C06_DISTRICT
     etl_derived_value: null
 
   - name: Hometown
@@ -243,7 +243,7 @@ attributes:
     source_table: IDENTITY_INFO_C06S
     source_column: NHNCK.IDENTITY_INFO_C06S.HOMETOWN
     comment: null
-    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Father Full Name
@@ -257,7 +257,7 @@ attributes:
     source_table: IDENTITY_INFO_C06S
     source_column: NHNCK.IDENTITY_INFO_C06S.FATHER_FULL_NAME
     comment: "Prefix chủ thể 'Father' — mô tả thân nhân, không phải chủ thể chính."
-    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Father Country Code
@@ -271,7 +271,7 @@ attributes:
     source_table: IDENTITY_INFO_C06S
     source_column: NHNCK.IDENTITY_INFO_C06S.FATHER_COUNTRY_CODE
     comment: "Scheme: NHNCK_C06_COUNTRY. Dữ liệu tích hợp C06 — no_lookup."
-    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S'"
+    classification_context: NHNCK_C06_COUNTRY
     etl_derived_value: null
 
   - name: Father Identity Number
@@ -285,7 +285,7 @@ attributes:
     source_table: IDENTITY_INFO_C06S
     source_column: NHNCK.IDENTITY_INFO_C06S.FATHER_IDENTITY_NUMBER
     comment: null
-    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Father Previous Identity Number
@@ -299,7 +299,7 @@ attributes:
     source_table: IDENTITY_INFO_C06S
     source_column: NHNCK.IDENTITY_INFO_C06S.FATHER_IDENTITY_NUMBER_OLD
     comment: null
-    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Mother Full Name
@@ -313,7 +313,7 @@ attributes:
     source_table: IDENTITY_INFO_C06S
     source_column: NHNCK.IDENTITY_INFO_C06S.MOTHER_FULL_NAME
     comment: "Prefix chủ thể 'Mother' — mô tả thân nhân, không phải chủ thể chính."
-    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Mother Country Code
@@ -327,7 +327,7 @@ attributes:
     source_table: IDENTITY_INFO_C06S
     source_column: NHNCK.IDENTITY_INFO_C06S.MOTHER_COUNTRY_CODE
     comment: "Scheme: NHNCK_C06_COUNTRY. Dữ liệu tích hợp C06 — no_lookup."
-    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S'"
+    classification_context: NHNCK_C06_COUNTRY
     etl_derived_value: null
 
   - name: Mother Identity Number
@@ -341,7 +341,7 @@ attributes:
     source_table: IDENTITY_INFO_C06S
     source_column: NHNCK.IDENTITY_INFO_C06S.MOTHER_IDENTITY_NUMBER
     comment: null
-    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Mother Previous Identity Number
@@ -355,7 +355,7 @@ attributes:
     source_table: IDENTITY_INFO_C06S
     source_column: NHNCK.IDENTITY_INFO_C06S.MOTHER_IDENTITY_NUMBER_OLD
     comment: null
-    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Spouse Full Name
@@ -369,7 +369,7 @@ attributes:
     source_table: IDENTITY_INFO_C06S
     source_column: NHNCK.IDENTITY_INFO_C06S.COUPLE_FULL_NAME
     comment: "Prefix chủ thể 'Spouse' — mô tả thân nhân, không phải chủ thể chính. Nguồn đặt tên COUPLE_*, đổi sang Spouse cho tự nhiên trong tiếng Anh."
-    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Spouse Country Code
@@ -383,7 +383,7 @@ attributes:
     source_table: IDENTITY_INFO_C06S
     source_column: NHNCK.IDENTITY_INFO_C06S.COUPLE_COUNTRY_CODE
     comment: "Scheme: NHNCK_C06_COUNTRY. Dữ liệu tích hợp C06 — no_lookup."
-    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S'"
+    classification_context: NHNCK_C06_COUNTRY
     etl_derived_value: null
 
   - name: Spouse Identity Number
@@ -397,7 +397,7 @@ attributes:
     source_table: IDENTITY_INFO_C06S
     source_column: NHNCK.IDENTITY_INFO_C06S.COUPLE_IDENTITY_NUMBER
     comment: null
-    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Spouse Previous Identity Number
@@ -411,7 +411,7 @@ attributes:
     source_table: IDENTITY_INFO_C06S
     source_column: NHNCK.IDENTITY_INFO_C06S.COUPLE_IDENTITY_NUMBER_OLD
     comment: null
-    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Updated By Officer Id
@@ -425,7 +425,7 @@ attributes:
     source_table: IDENTITY_INFO_C06S
     source_column: NHNCK.IDENTITY_INFO_C06S.USER_UPDATED_ID
     comment: "Pending — FK target Identity and Access Management User (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join key giữa NHNCK.USERS.ID và IAM.USERS, và lld_IAM_USERS.yaml lên approved. Đây là FK xác nhận thực (không phải suy luận) — khác với CREATED_BY/UPDATED_BY audit chung đã loại khỏi thiết kế (xem pending_design.yaml)."
-    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Updated By Officer Code
@@ -439,5 +439,5 @@ attributes:
     source_table: IDENTITY_INFO_C06S
     source_column: NHNCK.IDENTITY_INFO_C06S.USER_UPDATED_ID
     comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pending — xem ghi chú ở Updated By Officer Id."
-    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S'"
+    classification_context: null
     etl_derived_value: null

@@ -33,7 +33,7 @@ attributes:
     source_table: SECURITY_MEASURE_DECISION_SUBJECT
     source_column: null
     comment: "PK surrogate. BCV: [Business Activity] Conduct Violation."
-    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION_SUBJECT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Security Measure Decision Subject Code
@@ -47,7 +47,7 @@ attributes:
     source_table: SECURITY_MEASURE_DECISION_SUBJECT
     source_column: THANHTRA.SECURITY_MEASURE_DECISION_SUBJECT.ID
     comment: BK chính. PK nguồn (VARCHAR2 UUID).
-    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION_SUBJECT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION_SUBJECT'"
-    etl_derived_value: THANHTRA.SECURITY_MEASURE_DECISION_SUBJECT
+    etl_derived_value: THANHTRA_SECURITY_MEASURE_DECISION_SUBJECT
 
   - name: Security Measure Decision Id
     physical_name: sm_decision_id
@@ -75,7 +75,7 @@ attributes:
     source_table: SECURITY_MEASURE_DECISION_SUBJECT
     source_column: THANHTRA.SECURITY_MEASURE_DECISION_SUBJECT.SECURITY_MEASURE_DECISION_ID
     comment: "FK target: sm_decision.sm_decision_id. Hash: hash_id('THANHTRA.SECURITY_MEASURE_DECISION', SECURITY_MEASURE_DECISION_ID)."
-    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION_SUBJECT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Security Measure Decision Code
@@ -89,7 +89,7 @@ attributes:
     source_table: SECURITY_MEASURE_DECISION_SUBJECT
     source_column: THANHTRA.SECURITY_MEASURE_DECISION_SUBJECT.SECURITY_MEASURE_DECISION_ID
     comment: "Lookup pair: sm_decision.sm_decision_code. Pair with Security Measure Decision Id."
-    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION_SUBJECT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Subject Type Code
@@ -103,7 +103,7 @@ attributes:
     source_table: SECURITY_MEASURE_DECISION_SUBJECT
     source_column: THANHTRA.SECURITY_MEASURE_DECISION_SUBJECT.SUBJECT_TYPE
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION_SUBJECT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Subject Name
@@ -117,7 +117,7 @@ attributes:
     source_table: SECURITY_MEASURE_DECISION_SUBJECT
     source_column: THANHTRA.SECURITY_MEASURE_DECISION_SUBJECT.SUBJECT_NAME
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION_SUBJECT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Subject Id Number
@@ -131,7 +131,7 @@ attributes:
     source_table: SECURITY_MEASURE_DECISION_SUBJECT
     source_column: THANHTRA.SECURITY_MEASURE_DECISION_SUBJECT.SUBJECT_ID_NUMBER
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION_SUBJECT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Subject Date Of Birth
@@ -145,7 +145,7 @@ attributes:
     source_table: SECURITY_MEASURE_DECISION_SUBJECT
     source_column: THANHTRA.SECURITY_MEASURE_DECISION_SUBJECT.SUBJECT_DOB
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION_SUBJECT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Subject Address
@@ -159,7 +159,7 @@ attributes:
     source_table: SECURITY_MEASURE_DECISION_SUBJECT
     source_column: THANHTRA.SECURITY_MEASURE_DECISION_SUBJECT.SUBJECT_ADDRESS
     comment: "Denormalized text — không tách IP Postal Address vì grain bảng nguồn là quyết định ngăn chặn, không phải Involved Party."
-    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION_SUBJECT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Subject Legal Representative
@@ -173,5 +173,5 @@ attributes:
     source_table: SECURITY_MEASURE_DECISION_SUBJECT
     source_column: THANHTRA.SECURITY_MEASURE_DECISION_SUBJECT.SUBJECT_LEGAL_REP
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION_SUBJECT'"
+    classification_context: null
     etl_derived_value: null

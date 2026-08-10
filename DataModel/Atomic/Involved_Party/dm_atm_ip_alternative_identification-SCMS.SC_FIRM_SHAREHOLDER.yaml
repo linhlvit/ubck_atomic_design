@@ -33,7 +33,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: SCMS.SC_FIRM_SHAREHOLDER.ID
     comment: "FK target: sc_shareholder.sc_shareholder_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_SHAREHOLDER', ID)."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER' | Identification Type Code = 'LEGACY_NATIONAL_ID'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Involved Party Code
@@ -47,7 +47,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: SCMS.SC_FIRM_SHAREHOLDER.ID
     comment: "Lookup pair: sc_shareholder.sc_shareholder_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER' | Identification Type Code = 'LEGACY_NATIONAL_ID'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER' | Identification Type Code = 'LEGACY_NATIONAL_ID'"
-    etl_derived_value: SCMS.SC_FIRM_SHAREHOLDER
+    etl_derived_value: SCMS_SC_FIRM_SHAREHOLDER
 
   - name: Identification Type Code
     physical_name: identification_tp_code

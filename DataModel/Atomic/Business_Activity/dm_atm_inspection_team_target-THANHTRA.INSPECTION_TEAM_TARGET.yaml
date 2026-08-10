@@ -33,7 +33,7 @@ attributes:
     source_table: INSPECTION_TEAM_TARGET
     source_column: null
     comment: "PK surrogate. BCV: [Business Activity] Business Review."
-    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM_TARGET'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Inspection Team Target Code
@@ -47,7 +47,7 @@ attributes:
     source_table: INSPECTION_TEAM_TARGET
     source_column: THANHTRA.INSPECTION_TEAM_TARGET.ID
     comment: BK chính. PK nguồn (VARCHAR2 UUID).
-    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM_TARGET'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM_TARGET'"
-    etl_derived_value: THANHTRA.INSPECTION_TEAM_TARGET
+    etl_derived_value: THANHTRA_INSPECTION_TEAM_TARGET
 
   - name: Inspection Team Id
     physical_name: inspection_team_id
@@ -75,7 +75,7 @@ attributes:
     source_table: INSPECTION_TEAM_TARGET
     source_column: THANHTRA.INSPECTION_TEAM_TARGET.INSPECTION_TEAM_ID
     comment: "FK target: inspection_team.inspection_team_id. Cần ETL crosswalk sang THANHTRA.INSPECTION_TEAM: INSPECTION_TEAM_TARGET.INSPECTION_TEAM_ID = INSPECTION_TEAM.ID để xác nhận CODE sau đó hash_id('THANHTRA.INSPECTION_TEAM', CODE) | Trước đây hash trực tiếp theo INSPECTION_TEAM_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
-    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM_TARGET'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Inspection Team Code
@@ -89,7 +89,7 @@ attributes:
     source_table: INSPECTION_TEAM_TARGET
     source_column: THANHTRA.INSPECTION_TEAM.CODE
     comment: "Lookup pair: inspection_team.inspection_team_code. Pair with Inspection Team Id. Giá trị lấy từ THANHTRA.INSPECTION_TEAM.CODE sau ETL crosswalk — chi tiết xem comment Inspection Team Id."
-    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM_TARGET'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Target Type Code
@@ -103,7 +103,7 @@ attributes:
     source_table: INSPECTION_TEAM_TARGET
     source_column: THANHTRA.INSPECTION_TEAM_TARGET.TARGET_TYPE
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM_TARGET'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Target Reference Id
@@ -117,7 +117,7 @@ attributes:
     source_table: INSPECTION_TEAM_TARGET
     source_column: THANHTRA.INSPECTION_TEAM_TARGET.TARGET_REFERENCE_ID
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM_TARGET'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Target Name
@@ -131,7 +131,7 @@ attributes:
     source_table: INSPECTION_TEAM_TARGET
     source_column: THANHTRA.INSPECTION_TEAM_TARGET.TARGET_NAME
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM_TARGET'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Inspection Period From Date
@@ -145,7 +145,7 @@ attributes:
     source_table: INSPECTION_TEAM_TARGET
     source_column: THANHTRA.INSPECTION_TEAM_TARGET.INSPECTION_PERIOD_FROM
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM_TARGET'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Inspection Period To Date
@@ -159,7 +159,7 @@ attributes:
     source_table: INSPECTION_TEAM_TARGET
     source_column: THANHTRA.INSPECTION_TEAM_TARGET.INSPECTION_PERIOD_TO
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM_TARGET'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Anti Money Laundering Indicator
@@ -173,7 +173,7 @@ attributes:
     source_table: INSPECTION_TEAM_TARGET
     source_column: THANHTRA.INSPECTION_TEAM_TARGET.ANTI_MONEY_LAUNDERING
     comment: "Nguồn NUMBER(1,0)."
-    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM_TARGET'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Abnormal Transaction Check Indicator
@@ -187,7 +187,7 @@ attributes:
     source_table: INSPECTION_TEAM_TARGET
     source_column: THANHTRA.INSPECTION_TEAM_TARGET.ABNORMAL_TRANSACTION_CHECK
     comment: "Nguồn NUMBER(1,0)."
-    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM_TARGET'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Content
@@ -201,7 +201,7 @@ attributes:
     source_table: INSPECTION_TEAM_TARGET
     source_column: THANHTRA.INSPECTION_TEAM_TARGET.CONTENT
     comment: Nguồn CLOB — ETL truncate.
-    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM_TARGET'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Note
@@ -215,5 +215,5 @@ attributes:
     source_table: INSPECTION_TEAM_TARGET
     source_column: THANHTRA.INSPECTION_TEAM_TARGET.NOTE
     comment: Nguồn CLOB — ETL truncate.
-    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM_TARGET'"
+    classification_context: null
     etl_derived_value: null

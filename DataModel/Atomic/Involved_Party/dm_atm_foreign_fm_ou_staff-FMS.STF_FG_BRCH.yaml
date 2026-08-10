@@ -33,7 +33,7 @@ attributes:
     source_table: STF_FG_BRCH
     source_column: null
     comment: "PK surrogate. BCV: \"[Involved Party] Individual Employment Status\". Cá nhân giữ vị trí trong VPĐD/CN QLQ nước ngoài."
-    classification_context: "Source System Code = 'FMS_STF_FG_BRCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Foreign Fund Management Organization Unit Staff Code
@@ -47,7 +47,7 @@ attributes:
     source_table: STF_FG_BRCH
     source_column: FMS.STF_FG_BRCH.ID
     comment: BK chính. PK nguồn.
-    classification_context: "Source System Code = 'FMS_STF_FG_BRCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'FMS_STF_FG_BRCH'"
-    etl_derived_value: FMS.STF_FG_BRCH
+    etl_derived_value: FMS_STF_FG_BRCH
 
   - name: Foreign Fund Management Organization Unit Id
     physical_name: foreign_fm_ou_id
@@ -74,8 +74,8 @@ attributes:
     source_system: FMS
     source_table: STF_FG_BRCH
     source_column: FMS.STF_FG_BRCH.FOR_BRCH_ID
-    comment: "FK target: foreign_fund_management_organization_unit.foreign_fund_management_organization_unit_id. Hash: hash_id('FMS.FOR_BRCH', FOR_BRCH_ID)."
-    classification_context: "Source System Code = 'FMS_STF_FG_BRCH'"
+    comment: "FK target: foreign_fm_ou.foreign_fm_ou_id. Hash: hash_id('FMS.FOR_BRCH', FOR_BRCH_ID)."
+    classification_context: null
     etl_derived_value: null
 
   - name: Foreign Fund Management Organization Unit Code
@@ -88,8 +88,8 @@ attributes:
     source_system: FMS
     source_table: STF_FG_BRCH
     source_column: FMS.STF_FG_BRCH.FOR_BRCH_ID
-    comment: "Lookup pair: foreign_fund_management_organization_unit.foreign_fund_management_organization_unit_code. Pair with Foreign Fund Management Organization Unit Id."
-    classification_context: "Source System Code = 'FMS_STF_FG_BRCH'"
+    comment: "Lookup pair: foreign_fm_ou.foreign_fm_ou_code. Pair with Foreign Fund Management Organization Unit Id."
+    classification_context: null
     etl_derived_value: null
 
   - name: Job Title Code
@@ -103,7 +103,7 @@ attributes:
     source_table: STF_FG_BRCH
     source_column: FMS.STF_FG_BRCH.JOBS_ID
     comment: "Scheme: FMS_JOB_TITLE. [PROPOSE NEW SCHEME] — nguồn FMS.JOBS khác FMS.JOBTYPE (đã đăng ký FMS_JOB_TYPE ở Tier 1). Nguồn JOBS_ID là UUID FK — ETL resolve sang mã JOBS tương ứng."
-    classification_context: "Source System Code = 'FMS_STF_FG_BRCH'"
+    classification_context: FMS_JOB_TITLE
     etl_derived_value: null
 
   - name: Nationality Id
@@ -117,7 +117,7 @@ attributes:
     source_table: STF_FG_BRCH
     source_column: FMS.STF_FG_BRCH.NAT_ID
     comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang FMS.NATIONAL: STF_FG_BRCH.NAT_ID = NATIONAL.ID để xác nhận SNAME sau đó hash_id('ECAT.COUNTRY', SNAME) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
-    classification_context: "Source System Code = 'FMS_STF_FG_BRCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Nationality Code
@@ -131,7 +131,7 @@ attributes:
     source_table: STF_FG_BRCH
     source_column: FMS.NATIONAL.SNAME
     comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality Id. Giá trị lấy từ SNAME (join FMS.NATIONAL qua NAT_ID = FMS.NATIONAL.ID). Giá trị lấy từ FMS.NATIONAL.SNAME sau ETL crosswalk — chi tiết xem comment Nationality Id."
-    classification_context: "Source System Code = 'FMS_STF_FG_BRCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Staff Branch Type Code
@@ -145,8 +145,8 @@ attributes:
     source_table: STF_FG_BRCH
     source_column: FMS.STF_FG_BRCH.STAFF_BRANCH
     comment: "Scheme: FMS_BRANCH_TYPE (tái sử dụng từ FOR_BRCH.BRANCH_FLAG — cùng khái niệm Chi nhánh/VPĐD)."
-    classification_context: "Source System Code = 'FMS_STF_FG_BRCH'"
-    etl_derived_value: "1=BRANCH;0=REPRESENTATIVE_OFFICE"
+    classification_context: FMS_BRANCH_TYPE
+    etl_derived_value: null
 
   - name: Foreign Fund Management Organization Unit Staff Full Name
     physical_name: foreign_fm_ou_staff_full_nm
@@ -159,7 +159,7 @@ attributes:
     source_table: STF_FG_BRCH
     source_column: FMS.STF_FG_BRCH.ITEM_NAME
     comment: null
-    classification_context: "Source System Code = 'FMS_STF_FG_BRCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Gender Code
@@ -173,7 +173,7 @@ attributes:
     source_table: STF_FG_BRCH
     source_column: FMS.STF_FG_BRCH.SEX
     comment: "Scheme: FMS_GENDER (tái sử dụng — đã đăng ký Tier 2)."
-    classification_context: "Source System Code = 'FMS_STF_FG_BRCH'"
+    classification_context: FMS_GENDER
     etl_derived_value: null
 
   - name: Active Status Flag
@@ -187,7 +187,7 @@ attributes:
     source_table: STF_FG_BRCH
     source_column: FMS.STF_FG_BRCH.RECORD_STATUS
     comment: Giá trị 1 → true; 0 → false.
-    classification_context: "Source System Code = 'FMS_STF_FG_BRCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Legal Representative Flag
@@ -201,7 +201,7 @@ attributes:
     source_table: STF_FG_BRCH
     source_column: FMS.STF_FG_BRCH.REPRESENT
     comment: Giá trị 1 → true; 0 → false.
-    classification_context: "Source System Code = 'FMS_STF_FG_BRCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Operating License Number
@@ -215,7 +215,7 @@ attributes:
     source_table: STF_FG_BRCH
     source_column: FMS.STF_FG_BRCH.LICENSE
     comment: null
-    classification_context: "Source System Code = 'FMS_STF_FG_BRCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Operating License Date
@@ -229,7 +229,7 @@ attributes:
     source_table: STF_FG_BRCH
     source_column: FMS.STF_FG_BRCH.LICENSE_DATE
     comment: null
-    classification_context: "Source System Code = 'FMS_STF_FG_BRCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Note
@@ -243,7 +243,7 @@ attributes:
     source_table: STF_FG_BRCH
     source_column: FMS.STF_FG_BRCH.NOTE
     comment: null
-    classification_context: "Source System Code = 'FMS_STF_FG_BRCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Held Unit Quantity
@@ -257,7 +257,7 @@ attributes:
     source_table: STF_FG_BRCH
     source_column: FMS.STF_FG_BRCH.ISP
     comment: null
-    classification_context: "Source System Code = 'FMS_STF_FG_BRCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Branch Director Flag
@@ -271,7 +271,7 @@ attributes:
     source_table: STF_FG_BRCH
     source_column: FMS.STF_FG_BRCH.BRANCH_DIRECTOR
     comment: Giá trị 1 → true; 0 → false.
-    classification_context: "Source System Code = 'FMS_STF_FG_BRCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Director Appointment License Number
@@ -285,7 +285,7 @@ attributes:
     source_table: STF_FG_BRCH
     source_column: FMS.STF_FG_BRCH.DIRECTOR_APPOINT_LICENSE_NO
     comment: null
-    classification_context: "Source System Code = 'FMS_STF_FG_BRCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Director Appointment Approval Date
@@ -299,5 +299,5 @@ attributes:
     source_table: STF_FG_BRCH
     source_column: FMS.STF_FG_BRCH.DIRECTOR_APPROVAL_DATE
     comment: null
-    classification_context: "Source System Code = 'FMS_STF_FG_BRCH'"
+    classification_context: null
     etl_derived_value: null

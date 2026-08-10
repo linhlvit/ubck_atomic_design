@@ -33,7 +33,7 @@ attributes:
     source_table: CAT_SC_FIRM_STATUS
     source_column: SCMS.CAT_SC_FIRM_STATUS.ID
     comment: "PK surrogate. BCV: \"[Common] Firm Status\". Danh mục trạng thái pháp lý CTCK/Chi nhánh/VPĐD/PGD/Ngân hàng. Hash: hash_id('SCMS.CAT_SC_FIRM_STATUS', ID)."
-    classification_context: "Source System Code = 'SCMS_CAT_SC_FIRM_STATUS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Classification Firm Status Code
@@ -47,7 +47,7 @@ attributes:
     source_table: CAT_SC_FIRM_STATUS
     source_column: SCMS.CAT_SC_FIRM_STATUS.SC_FIRM_STATUS_CODE
     comment: BK chính. Dùng SC_FIRM_STATUS_CODE (mã nghiệp vụ chuyên biệt) thay vì ID kỹ thuật (NUMBER tự tăng) — xem pending_design.yaml.
-    classification_context: "Source System Code = 'SCMS_CAT_SC_FIRM_STATUS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'SCMS_CAT_SC_FIRM_STATUS'"
-    etl_derived_value: SCMS.CAT_SC_FIRM_STATUS
+    etl_derived_value: SCMS_CAT_SC_FIRM_STATUS
 
   - name: Data Date
     physical_name: data_dt
@@ -75,7 +75,7 @@ attributes:
     source_table: CAT_SC_FIRM_STATUS
     source_column: SCMS.CAT_SC_FIRM_STATUS.CREATED_AT
     comment: "BCV: không có term riêng. Reinstated 2026-07-15 — CREATED_AT bị loại theo quyết định audit-block SCMS (xem pending_design.yaml) nhưng bảng dùng Append/incremental filter theo created_at, cần giữ lại làm partition key. Đổi tên từ 'created_at' sang 'Data Date' để phản ánh vai trò ngày dữ liệu/phân vùng, tách biệt khỏi audit block (CREATED_BY vẫn loại trừ). Nguồn lưu TIMESTAMP(6) — ETL truncate về Date (00:00:00) khi map vào Data Date, phù hợp granularity partition theo ngày."
-    classification_context: "Source System Code = 'SCMS_CAT_SC_FIRM_STATUS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Classification Firm Status Name
@@ -89,7 +89,7 @@ attributes:
     source_table: CAT_SC_FIRM_STATUS
     source_column: SCMS.CAT_SC_FIRM_STATUS.SC_FIRM_STATUS_NAME
     comment: null
-    classification_context: "Source System Code = 'SCMS_CAT_SC_FIRM_STATUS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Applicable Entity
@@ -103,7 +103,7 @@ attributes:
     source_table: CAT_SC_FIRM_STATUS
     source_column: SCMS.CAT_SC_FIRM_STATUS.APPLICABLE_ENTITY
     comment: "Map 1:1 từ nguồn — không phải Classification Value theo chỉ đạo Data Modeler (2026-07-15). NVARCHAR2(100)."
-    classification_context: "Source System Code = 'SCMS_CAT_SC_FIRM_STATUS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Report Submission Required Indicator
@@ -117,7 +117,7 @@ attributes:
     source_table: CAT_SC_FIRM_STATUS
     source_column: SCMS.CAT_SC_FIRM_STATUS.REPORT_SUBMISSION_ENABLED
     comment: NUMBER(1).
-    classification_context: "Source System Code = 'SCMS_CAT_SC_FIRM_STATUS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Disclosure Required Indicator
@@ -131,7 +131,7 @@ attributes:
     source_table: CAT_SC_FIRM_STATUS
     source_column: SCMS.CAT_SC_FIRM_STATUS.DISCLOSURE_ENABLED
     comment: NUMBER(1).
-    classification_context: "Source System Code = 'SCMS_CAT_SC_FIRM_STATUS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Record Status Code
@@ -145,7 +145,7 @@ attributes:
     source_table: CAT_SC_FIRM_STATUS
     source_column: SCMS.CAT_SC_FIRM_STATUS.RECORD_STATUS
     comment: "Scheme: SCMS_FIRM_STATUS_RECORD_STATUS."
-    classification_context: "Source System Code = 'SCMS_CAT_SC_FIRM_STATUS'"
+    classification_context: SCMS_FIRM_STATUS_RECORD_STATUS
     etl_derived_value: null
 
   - name: Description
@@ -159,7 +159,7 @@ attributes:
     source_table: CAT_SC_FIRM_STATUS
     source_column: SCMS.CAT_SC_FIRM_STATUS.DESCRIPTION
     comment: null
-    classification_context: "Source System Code = 'SCMS_CAT_SC_FIRM_STATUS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Note
@@ -173,7 +173,7 @@ attributes:
     source_table: CAT_SC_FIRM_STATUS
     source_column: SCMS.CAT_SC_FIRM_STATUS.NOTE
     comment: null
-    classification_context: "Source System Code = 'SCMS_CAT_SC_FIRM_STATUS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Item Code
@@ -187,7 +187,7 @@ attributes:
     source_table: CAT_SC_FIRM_STATUS
     source_column: SCMS.CAT_SC_FIRM_STATUS.CODE
     comment: "Map 1:1 theo chỉ đạo Data Modeler (2026-07-10) — không coi là trùng lặp với Classification Firm Status Code (SC_FIRM_STATUS_CODE)."
-    classification_context: "Source System Code = 'SCMS_CAT_SC_FIRM_STATUS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Item Name
@@ -201,7 +201,7 @@ attributes:
     source_table: CAT_SC_FIRM_STATUS
     source_column: SCMS.CAT_SC_FIRM_STATUS.ITEM_NAME
     comment: "Map 1:1 theo chỉ đạo Data Modeler (2026-07-10) — không coi là trùng lặp với Classification Firm Status Name (SC_FIRM_STATUS_NAME)."
-    classification_context: "Source System Code = 'SCMS_CAT_SC_FIRM_STATUS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Active Indicator
@@ -215,5 +215,5 @@ attributes:
     source_table: CAT_SC_FIRM_STATUS
     source_column: SCMS.CAT_SC_FIRM_STATUS.ACTIVE
     comment: "Map 1:1 theo chỉ đạo Data Modeler (2026-07-10) — không coi là trùng lặp với Record Status Code (RECORD_STATUS)."
-    classification_context: "Source System Code = 'SCMS_CAT_SC_FIRM_STATUS'"
+    classification_context: null
     etl_derived_value: null

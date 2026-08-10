@@ -33,7 +33,7 @@ attributes:
     source_table: BANK
     source_column: null
     comment: "PK surrogate. BCV: \"[Involved Party] Depositary Bank\". Ngân hàng thanh toán/lưu ký cho CTCK."
-    classification_context: "Source System Code = 'SCMS_BANK'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Company Depositary Bank Code
@@ -47,7 +47,7 @@ attributes:
     source_table: BANK
     source_column: SCMS.BANK.ID
     comment: BK chính. PK nguồn (NUMBER — ETL cần convert sang string).
-    classification_context: "Source System Code = 'SCMS_BANK'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     classification_context: "Source System Code = 'SCMS_BANK'"
-    etl_derived_value: SCMS.BANK
+    etl_derived_value: SCMS_BANK
 
   - name: Securities Company Depositary Bank Name
     physical_name: sc_depositary_bank_nm
@@ -75,7 +75,7 @@ attributes:
     source_table: BANK
     source_column: SCMS.BANK.BANK_NAME
     comment: null
-    classification_context: "Source System Code = 'SCMS_BANK'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Company Depositary Bank English Name
@@ -89,7 +89,7 @@ attributes:
     source_table: BANK
     source_column: SCMS.BANK.NAME_EN
     comment: null
-    classification_context: "Source System Code = 'SCMS_BANK'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Company Depositary Bank Short Name
@@ -103,7 +103,7 @@ attributes:
     source_table: BANK
     source_column: SCMS.BANK.SHORT_NAME
     comment: null
-    classification_context: "Source System Code = 'SCMS_BANK'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Enterprise Code
@@ -117,7 +117,7 @@ attributes:
     source_table: BANK
     source_column: SCMS.BANK.ENTERPRISE_CODE
     comment: null
-    classification_context: "Source System Code = 'SCMS_BANK'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Tax Code
@@ -131,7 +131,7 @@ attributes:
     source_table: BANK
     source_column: SCMS.BANK.TAX_CODE
     comment: null
-    classification_context: "Source System Code = 'SCMS_BANK'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Charter Capital Amount
@@ -145,7 +145,7 @@ attributes:
     source_table: BANK
     source_column: SCMS.BANK.CHARTER_CAPITAL
     comment: "NUMBER(20,2)."
-    classification_context: "Source System Code = 'SCMS_BANK'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Bank Category
@@ -159,7 +159,7 @@ attributes:
     source_table: BANK
     source_column: SCMS.BANK.CATEGORY
     comment: "Map 1:1 từ nguồn — không phải Classification Value theo chỉ đạo Data Modeler (2026-07-15). Nguồn lưu dạng số (NUMBER(1)) — ETL cần convert sang string, giữ nguyên giá trị gốc. Mô tả gốc BRD thiếu — cần bổ sung từ tài liệu đặc tả SCMS nếu có."
-    classification_context: "Source System Code = 'SCMS_BANK'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Operation License Number
@@ -173,7 +173,7 @@ attributes:
     source_table: BANK
     source_column: SCMS.BANK.OPERATION_LICENSE_NUMBER
     comment: Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_BANK'"
+    classification_context: null
     etl_derived_value: null
 
   - name: License Issue Date
@@ -187,7 +187,7 @@ attributes:
     source_table: BANK
     source_column: SCMS.BANK.LICENSE_ISSUE_DATE
     comment: Nguồn lưu DATE.
-    classification_context: "Source System Code = 'SCMS_BANK'"
+    classification_context: null
     etl_derived_value: null
 
   - name: License Issuer Name
@@ -201,7 +201,7 @@ attributes:
     source_table: BANK
     source_column: SCMS.BANK.LICENSE_ISSUER
     comment: Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_BANK'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Settlement Bank Decision Number
@@ -215,7 +215,7 @@ attributes:
     source_table: BANK
     source_column: SCMS.BANK.SETTLEMENT_BANK_DECISION_NUMBER
     comment: null
-    classification_context: "Source System Code = 'SCMS_BANK'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Settlement Bank Decision Date
@@ -229,7 +229,7 @@ attributes:
     source_table: BANK
     source_column: SCMS.BANK.SETTLEMENT_BANK_DECISION_DATE
     comment: Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_BANK'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Settlement Start Date
@@ -243,7 +243,7 @@ attributes:
     source_table: BANK
     source_column: SCMS.BANK.SETTLEMENT_START_DATE
     comment: null
-    classification_context: "Source System Code = 'SCMS_BANK'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Settlement Function Description
@@ -257,7 +257,7 @@ attributes:
     source_table: BANK
     source_column: SCMS.BANK.SETTLEMENT_FUNCTION_DESCRIPTION
     comment: Nguồn lưu NCLOB — ETL cần xử lý large object.
-    classification_context: "Source System Code = 'SCMS_BANK'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Business Registration Certificate Number
@@ -271,7 +271,7 @@ attributes:
     source_table: BANK
     source_column: SCMS.BANK.BUSINESS_REG_CERT_NUMBER
     comment: Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_BANK'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Business Registration Certificate Date
@@ -285,7 +285,7 @@ attributes:
     source_table: BANK
     source_column: SCMS.BANK.BUSINESS_REG_CERT_DATE
     comment: Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_BANK'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Custodian Start Date
@@ -299,7 +299,7 @@ attributes:
     source_table: BANK
     source_column: SCMS.BANK.CUSTODIAN_START_DATE
     comment: Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_BANK'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Custodian Member Certificate Number
@@ -313,7 +313,7 @@ attributes:
     source_table: BANK
     source_column: SCMS.BANK.CUSTODIAN_MEMBER_CERT_NUMBER
     comment: Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_BANK'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Custodian Certificate Date
@@ -327,7 +327,7 @@ attributes:
     source_table: BANK
     source_column: SCMS.BANK.CUSTODIAN_CERT_DATE
     comment: Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_BANK'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Custodian Member Code
@@ -341,7 +341,7 @@ attributes:
     source_table: BANK
     source_column: SCMS.BANK.CUSTODIAN_MEMBER_CODE
     comment: Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_BANK'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Custodian Function Description
@@ -355,7 +355,7 @@ attributes:
     source_table: BANK
     source_column: SCMS.BANK.CUSTODIAN_FUNCTION_DESCRIPTION
     comment: Nguồn lưu NCLOB — ETL cần xử lý large object.
-    classification_context: "Source System Code = 'SCMS_BANK'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Attachment Path
@@ -369,7 +369,7 @@ attributes:
     source_table: BANK
     source_column: SCMS.BANK.ATTACHMENT_PATH
     comment: null
-    classification_context: "Source System Code = 'SCMS_BANK'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Note
@@ -383,7 +383,7 @@ attributes:
     source_table: BANK
     source_column: SCMS.BANK.NOTE
     comment: Nguồn lưu NCLOB — ETL cần xử lý large object.
-    classification_context: "Source System Code = 'SCMS_BANK'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Input Report Data Indicator
@@ -397,7 +397,7 @@ attributes:
     source_table: BANK
     source_column: SCMS.BANK.INPUT_REPORT_DATA
     comment: NUMBER(1) — ETL cần convert sang boolean. Mô tả gốc BRD trống — cần bổ sung từ tài liệu đặc tả SCMS.
-    classification_context: "Source System Code = 'SCMS_BANK'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Record Status Code
@@ -411,5 +411,5 @@ attributes:
     source_table: BANK
     source_column: SCMS.BANK.RECORD_STATUS
     comment: "Scheme: SCMS_USAGE_STATUS. Nguồn lưu NUMBER(1) — ETL cần convert sang string."
-    classification_context: "Source System Code = 'SCMS_BANK'"
+    classification_context: null
     etl_derived_value: null

@@ -33,7 +33,7 @@ attributes:
     source_table: SPECIALIZATION_COURSES
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner Professional Training Class Code
@@ -47,7 +47,7 @@ attributes:
     source_table: SPECIALIZATION_COURSES
     source_column: NHNCK.SPECIALIZATION_COURSES.COURSE_CODE
     comment: null
-    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "ETL-derived: luôn = 'NHNCK.SPECIALIZATION_COURSES'"
     classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
-    etl_derived_value: NHNCK.SPECIALIZATION_COURSES
+    etl_derived_value: NHNCK_SPECIALIZATION_COURSES
 
   - name: Training Class Name
     physical_name: training_class_nm
@@ -75,7 +75,7 @@ attributes:
     source_table: SPECIALIZATION_COURSES
     source_column: NHNCK.SPECIALIZATION_COURSES.COURSE_NAME
     comment: null
-    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Academic Year
@@ -89,7 +89,7 @@ attributes:
     source_table: SPECIALIZATION_COURSES
     source_column: NHNCK.SPECIALIZATION_COURSES.ACADEMIC_YEAR
     comment: null
-    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Specialization Type Code
@@ -103,7 +103,7 @@ attributes:
     source_table: SPECIALIZATION_COURSES
     source_column: NHNCK.SPECIALIZATION_COURSES.SPECIALIZATION_ID
     comment: "Scheme: SPECIALIZATION. FK nguồn đến SPECIALIZATIONS."
-    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
+    classification_context: SPECIALIZATION
     etl_derived_value: null
 
   - name: Exam Start Date
@@ -117,7 +117,7 @@ attributes:
     source_table: SPECIALIZATION_COURSES
     source_column: NHNCK.SPECIALIZATION_COURSES.EXAM_DATE_FROM
     comment: null
-    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Exam End Date
@@ -131,7 +131,7 @@ attributes:
     source_table: SPECIALIZATION_COURSES
     source_column: NHNCK.SPECIALIZATION_COURSES.EXAM_DATE_TO
     comment: null
-    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Exam Location Address
@@ -145,7 +145,7 @@ attributes:
     source_table: SPECIALIZATION_COURSES
     source_column: NHNCK.SPECIALIZATION_COURSES.ADDRESS
     comment: null
-    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Province Id
@@ -159,7 +159,7 @@ attributes:
     source_table: SPECIALIZATION_COURSES
     source_column: NHNCK.SPECIALIZATION_COURSES.PROVINCE_ID
     comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'PROVINCE'). Cần ETL crosswalk sang NHNCK.PROVINCES: SPECIALIZATION_COURSES.PROVINCE_ID = PROVINCES.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT.PROVINCE_NEW', PROVINCE_CODE) | NHNCK.PROVINCES ngừng thiết kế Atomic entity riêng — chỉ dùng để crosswalk. Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
-    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Province Code
@@ -173,5 +173,5 @@ attributes:
     source_table: SPECIALIZATION_COURSES
     source_column: NHNCK.PROVINCES.PROVINCE_CODE
     comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Province Id. Giá trị lấy từ NHNCK.PROVINCES.PROVINCE_CODE sau ETL crosswalk — chi tiết xem comment Province Id."
-    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
+    classification_context: null
     etl_derived_value: null

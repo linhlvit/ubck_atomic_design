@@ -32,7 +32,7 @@ attributes:
     source_table: APPLICATION_STATUSES
     source_column: NHNCK.APPLICATION_STATUSES.ID
     comment: "PK surrogate. BCV: [Common] Application Status. Hash: hash_id('NHNCK.APPLICATION_STATUSES', STATUS_CODE). Sửa 2026-07-27: trước đây hash từ ID kỹ thuật, sai lệch với chính Code (STATUS_CODE) của entity — gây mismatch cho mọi FK downstream tham chiếu entity này."
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_STATUSES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Classification Application Status Code
@@ -46,7 +46,7 @@ attributes:
     source_table: APPLICATION_STATUSES
     source_column: NHNCK.APPLICATION_STATUSES.STATUS_CODE
     comment: "BK chính. Mô tả nguồn ghi \"Mã trạng thái HTTP phản hồi (200, 201, 400...)\" — có vẻ là mô tả copy-paste chưa đúng ngữ cảnh; xử lý STATUS_CODE là mã trạng thái hồ sơ nghiệp vụ theo đúng mục đích bảng. Cần Data Modeler xác nhận lại với BRD."
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_STATUSES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -61,7 +61,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     classification_context: "Source System Code = 'NHNCK_APPLICATION_STATUSES'"
-    etl_derived_value: NHNCK.APPLICATION_STATUSES
+    etl_derived_value: NHNCK_APPLICATION_STATUSES
 
   - name: Classification Application Status Name
     physical_name: cl_application_status_nm
@@ -74,7 +74,7 @@ attributes:
     source_table: APPLICATION_STATUSES
     source_column: NHNCK.APPLICATION_STATUSES.STATUS_NAME
     comment: null
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_STATUSES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Label
@@ -88,7 +88,7 @@ attributes:
     source_table: APPLICATION_STATUSES
     source_column: NHNCK.APPLICATION_STATUSES.LABEL
     comment: null
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_STATUSES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Description
@@ -102,7 +102,7 @@ attributes:
     source_table: APPLICATION_STATUSES
     source_column: NHNCK.APPLICATION_STATUSES.DESCRIPTION
     comment: null
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_STATUSES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Sort Order
@@ -116,7 +116,7 @@ attributes:
     source_table: APPLICATION_STATUSES
     source_column: NHNCK.APPLICATION_STATUSES.SORT_ORDER
     comment: null
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_STATUSES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Active Indicator
@@ -130,7 +130,7 @@ attributes:
     source_table: APPLICATION_STATUSES
     source_column: NHNCK.APPLICATION_STATUSES.IS_ACTIVE
     comment: "Nguồn lưu NUMBER(1): 1=Đang dùng, 0=Vô hiệu."
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_STATUSES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Original Data Indicator
@@ -144,5 +144,5 @@ attributes:
     source_table: APPLICATION_STATUSES
     source_column: NHNCK.APPLICATION_STATUSES.IS_ORIGINAL_DATA
     comment: "Nguồn lưu NUMBER(1): 1=Dữ liệu gốc, 0=Người dùng tạo."
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_STATUSES'"
+    classification_context: null
     etl_derived_value: null

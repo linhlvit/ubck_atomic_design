@@ -33,7 +33,7 @@ attributes:
     source_table: PROFESSIONAL_WORK_HISTORIES
     source_column: null
     comment: "PK surrogate. BCV: \"\"Individual Employment Status\"\" (Involved Party)."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_WORK_HISTORIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner Employment Status Code
@@ -47,7 +47,7 @@ attributes:
     source_table: PROFESSIONAL_WORK_HISTORIES
     source_column: NHNCK.PROFESSIONAL_WORK_HISTORIES.ID
     comment: BK chính. PK nguồn (NUMBER — ETL cần convert sang string).
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_WORK_HISTORIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_WORK_HISTORIES'"
-    etl_derived_value: NHNCK.PROFESSIONAL_WORK_HISTORIES
+    etl_derived_value: NHNCK_PROFESSIONAL_WORK_HISTORIES
 
   - name: Securities Practitioner Id
     physical_name: sp_id
@@ -75,7 +75,7 @@ attributes:
     source_table: PROFESSIONAL_WORK_HISTORIES
     source_column: NHNCK.PROFESSIONAL_WORK_HISTORIES.PROFESSIONAL_ID
     comment: "FK target: securities_practitioner.securities_practitioner_id. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_WORK_HISTORIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner Code
@@ -89,7 +89,7 @@ attributes:
     source_table: PROFESSIONAL_WORK_HISTORIES
     source_column: NHNCK.PROFESSIONAL_WORK_HISTORIES.PROFESSIONAL_ID
     comment: "Lookup pair: securities_practitioner.securities_practitioner_code. Pair with Securities Practitioner Id."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_WORK_HISTORIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Organization Reference Id
@@ -103,7 +103,7 @@ attributes:
     source_table: PROFESSIONAL_WORK_HISTORIES
     source_column: NHNCK.PROFESSIONAL_WORK_HISTORIES.ORGANIZATION_ID
     comment: "FK target: securities_organization_reference.securities_organization_reference_id. Hash: hash_id('NHNCK.ORGANIZATIONS', ORGANIZATION_ID)."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_WORK_HISTORIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Organization Reference Code
@@ -117,7 +117,7 @@ attributes:
     source_table: PROFESSIONAL_WORK_HISTORIES
     source_column: NHNCK.PROFESSIONAL_WORK_HISTORIES.ORGANIZATION_ID
     comment: "Lookup pair: securities_organization_reference.securities_organization_reference_code. Pair with Securities Organization Reference Id."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_WORK_HISTORIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Department Name
@@ -131,7 +131,7 @@ attributes:
     source_table: PROFESSIONAL_WORK_HISTORIES
     source_column: NHNCK.PROFESSIONAL_WORK_HISTORIES.UNIT_NAME
     comment: Denormalized snapshot — lưu nguyên giá trị text tại thời điểm ghi nhận.
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_WORK_HISTORIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Workplace Name
@@ -145,7 +145,7 @@ attributes:
     source_table: PROFESSIONAL_WORK_HISTORIES
     source_column: NHNCK.PROFESSIONAL_WORK_HISTORIES.WORKPLACE
     comment: Denormalized — giữ lại vì có thể không trùng với Securities Organization Reference Name.
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_WORK_HISTORIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Employment Start Date
@@ -159,7 +159,7 @@ attributes:
     source_table: PROFESSIONAL_WORK_HISTORIES
     source_column: NHNCK.PROFESSIONAL_WORK_HISTORIES.START_DATE
     comment: null
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_WORK_HISTORIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Employment End Date
@@ -173,7 +173,7 @@ attributes:
     source_table: PROFESSIONAL_WORK_HISTORIES
     source_column: NHNCK.PROFESSIONAL_WORK_HISTORIES.END_DATE
     comment: "Null = đang làm việc hiện tại."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_WORK_HISTORIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Position Code
@@ -187,7 +187,7 @@ attributes:
     source_table: PROFESSIONAL_WORK_HISTORIES
     source_column: NHNCK.PROFESSIONAL_WORK_HISTORIES.POSITION_ID
     comment: "Scheme: POSITION. Nguồn lưu FK NUMBER đến bảng POSITIONS — ETL cần lookup và convert sang string code."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_WORK_HISTORIES'"
+    classification_context: POSITION
     etl_derived_value: null
 
   - name: Position Name
@@ -201,7 +201,7 @@ attributes:
     source_table: PROFESSIONAL_WORK_HISTORIES
     source_column: NHNCK.PROFESSIONAL_WORK_HISTORIES.POSITION_NAME
     comment: Snapshot text — lưu nguyên giá trị không chuẩn hóa.
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_WORK_HISTORIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Awards
@@ -215,7 +215,7 @@ attributes:
     source_table: PROFESSIONAL_WORK_HISTORIES
     source_column: NHNCK.PROFESSIONAL_WORK_HISTORIES.AWARDS
     comment: null
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_WORK_HISTORIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Disciplines
@@ -229,5 +229,5 @@ attributes:
     source_table: PROFESSIONAL_WORK_HISTORIES
     source_column: NHNCK.PROFESSIONAL_WORK_HISTORIES.DISCIPLINES
     comment: null
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_WORK_HISTORIES'"
+    classification_context: null
     etl_derived_value: null

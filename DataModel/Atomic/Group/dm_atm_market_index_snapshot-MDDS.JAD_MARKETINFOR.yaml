@@ -33,7 +33,7 @@ attributes:
     source_table: JAD_MARKETINFOR
     source_column: null
     comment: "PK surrogate. BCV: [Group] Share Index. Snapshot trạng thái chỉ số thị trường tại 1 thời điểm."
-    classification_context: "Source System Code = 'MDDS_JAD_MARKETINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Market Index Snapshot Code
@@ -47,7 +47,7 @@ attributes:
     source_table: JAD_MARKETINFOR
     source_column: MDDS.JAD_MARKETINFOR.HISTORYID
     comment: BK chính. PK nguồn historyid — unique per lần chụp chỉ số.
-    classification_context: "Source System Code = 'MDDS_JAD_MARKETINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'MDDS_JAD_MARKETINFOR'"
-    etl_derived_value: MDDS.JAD_MARKETINFOR
+    etl_derived_value: MDDS_JAD_MARKETINFOR
 
   - name: Market Code
     physical_name: market_code
@@ -75,7 +75,7 @@ attributes:
     source_table: JAD_MARKETINFOR
     source_column: MDDS.JAD_MARKETINFOR.MARKETCODE
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_MARKETINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Market Id
@@ -89,7 +89,7 @@ attributes:
     source_table: JAD_MARKETINFOR
     source_column: MDDS.JAD_MARKETINFOR.MARKETID
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_MARKETINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Jadapter Id
@@ -103,7 +103,7 @@ attributes:
     source_table: JAD_MARKETINFOR
     source_column: MDDS.JAD_MARKETINFOR.ID
     comment: Metadata kỹ thuật jadapter — giữ để traceability.
-    classification_context: "Source System Code = 'MDDS_JAD_MARKETINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Trading Date
@@ -117,7 +117,7 @@ attributes:
     source_table: JAD_MARKETINFOR
     source_column: MDDS.JAD_MARKETINFOR.TRADINGDATE
     comment: Nguồn lưu dạng string — ETL cần parse sang date.
-    classification_context: "Source System Code = 'MDDS_JAD_MARKETINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Index Time
@@ -131,7 +131,7 @@ attributes:
     source_table: JAD_MARKETINFOR
     source_column: MDDS.JAD_MARKETINFOR.INDEXTIME
     comment: Nguồn lưu dạng string — giữ Text vì format chưa chuẩn hóa. Cần profile trước khi convert sang Timestamp.
-    classification_context: "Source System Code = 'MDDS_JAD_MARKETINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Index Type Code
@@ -145,7 +145,7 @@ attributes:
     source_table: JAD_MARKETINFOR
     source_column: MDDS.JAD_MARKETINFOR.INDEXTYPECODE
     comment: "Scheme: MDDS_INDEX_TYPE."
-    classification_context: "Source System Code = 'MDDS_JAD_MARKETINFOR'"
+    classification_context: MDDS_INDEX_TYPE
     etl_derived_value: null
 
   - name: Market Status Code
@@ -159,7 +159,7 @@ attributes:
     source_table: JAD_MARKETINFOR
     source_column: MDDS.JAD_MARKETINFOR.MARKETSTATUS
     comment: "Scheme: MDDS_MARKET_STATUS."
-    classification_context: "Source System Code = 'MDDS_JAD_MARKETINFOR'"
+    classification_context: MDDS_MARKET_STATUS
     etl_derived_value: null
 
   - name: Index Color Code
@@ -173,7 +173,7 @@ attributes:
     source_table: JAD_MARKETINFOR
     source_column: MDDS.JAD_MARKETINFOR.INDEXCOLOR
     comment: "Scheme: MDDS_PRICE_CHANGE_COLOR. Cùng scheme với TransLog.changeColor — indicator chiều giá so với tham chiếu, áp dụng cho chỉ số."
-    classification_context: "Source System Code = 'MDDS_JAD_MARKETINFOR'"
+    classification_context: MDDS_PRICE_CHANGE_COLOR
     etl_derived_value: null
 
   - name: Halt Reason Code
@@ -187,7 +187,7 @@ attributes:
     source_table: JAD_MARKETINFOR
     source_column: MDDS.JAD_MARKETINFOR.HALTRSNCODE
     comment: Cần profile giá trị — có thể promote sang Classification Value sau khi profile.
-    classification_context: "Source System Code = 'MDDS_JAD_MARKETINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Market Index Value
@@ -201,7 +201,7 @@ attributes:
     source_table: JAD_MARKETINFOR
     source_column: MDDS.JAD_MARKETINFOR.MARKETINDEX
     comment: Domain Currency Amount vì đây là điểm số tài chính. Nguồn double precision — không mất dữ liệu.
-    classification_context: "Source System Code = 'MDDS_JAD_MARKETINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Index Change
@@ -215,7 +215,7 @@ attributes:
     source_table: JAD_MARKETINFOR
     source_column: MDDS.JAD_MARKETINFOR.INDEXCHANGE
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_MARKETINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Index Percent Change
@@ -229,7 +229,7 @@ attributes:
     source_table: JAD_MARKETINFOR
     source_column: MDDS.JAD_MARKETINFOR.INDEXPERCENTCHANGE
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_MARKETINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Open Index
@@ -243,7 +243,7 @@ attributes:
     source_table: JAD_MARKETINFOR
     source_column: MDDS.JAD_MARKETINFOR.OPEN
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_MARKETINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: High Index
@@ -257,7 +257,7 @@ attributes:
     source_table: JAD_MARKETINFOR
     source_column: MDDS.JAD_MARKETINFOR.HIGH
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_MARKETINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Low Index
@@ -271,7 +271,7 @@ attributes:
     source_table: JAD_MARKETINFOR
     source_column: MDDS.JAD_MARKETINFOR.LOW
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_MARKETINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Prior Index
@@ -285,7 +285,7 @@ attributes:
     source_table: JAD_MARKETINFOR
     source_column: MDDS.JAD_MARKETINFOR.PRV_PRIOR_MARKET_INDEX
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_MARKETINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Total Volume
@@ -299,7 +299,7 @@ attributes:
     source_table: JAD_MARKETINFOR
     source_column: MDDS.JAD_MARKETINFOR.TOTALVOLUME
     comment: "Nguồn double precision — ETL cần cast sang bigint. Ý nghĩa là số lượng CK, cùng pattern với advancesvolumn/declinesvolumn."
-    classification_context: "Source System Code = 'MDDS_JAD_MARKETINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Total Value
@@ -313,7 +313,7 @@ attributes:
     source_table: JAD_MARKETINFOR
     source_column: MDDS.JAD_MARKETINFOR.TOTALVALUE
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_MARKETINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Advances Count
@@ -327,7 +327,7 @@ attributes:
     source_table: JAD_MARKETINFOR
     source_column: MDDS.JAD_MARKETINFOR.ADVANCES
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_MARKETINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Declines Count
@@ -341,7 +341,7 @@ attributes:
     source_table: JAD_MARKETINFOR
     source_column: MDDS.JAD_MARKETINFOR.DECLINES
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_MARKETINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: No Change Count
@@ -355,7 +355,7 @@ attributes:
     source_table: JAD_MARKETINFOR
     source_column: MDDS.JAD_MARKETINFOR.NOCHANGE
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_MARKETINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Ceiling Count
@@ -369,7 +369,7 @@ attributes:
     source_table: JAD_MARKETINFOR
     source_column: MDDS.JAD_MARKETINFOR.NUMBEROFCE
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_MARKETINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Floor Count
@@ -383,7 +383,7 @@ attributes:
     source_table: JAD_MARKETINFOR
     source_column: MDDS.JAD_MARKETINFOR.NUMBEROFFL
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_MARKETINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Advances Volume
@@ -397,7 +397,7 @@ attributes:
     source_table: JAD_MARKETINFOR
     source_column: MDDS.JAD_MARKETINFOR.ADVANCESVOLUMN
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_MARKETINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Declines Volume
@@ -411,7 +411,7 @@ attributes:
     source_table: JAD_MARKETINFOR
     source_column: MDDS.JAD_MARKETINFOR.DECLINESVOLUMN
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_MARKETINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: No Change Volume
@@ -425,7 +425,7 @@ attributes:
     source_table: JAD_MARKETINFOR
     source_column: MDDS.JAD_MARKETINFOR.NOCHANGEVOLUMN
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_MARKETINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Odd Lot Total Value
@@ -439,7 +439,7 @@ attributes:
     source_table: JAD_MARKETINFOR
     source_column: MDDS.JAD_MARKETINFOR.ODDLOTTOTALVALUE
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_MARKETINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Odd Lot Total Volume
@@ -453,7 +453,7 @@ attributes:
     source_table: JAD_MARKETINFOR
     source_column: MDDS.JAD_MARKETINFOR.ODDLOTTOTALVOLUME
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_MARKETINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: PT Total Volume
@@ -467,7 +467,7 @@ attributes:
     source_table: JAD_MARKETINFOR
     source_column: MDDS.JAD_MARKETINFOR.PT_TOTAL_QTTY
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_MARKETINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: PT Total Value
@@ -481,7 +481,7 @@ attributes:
     source_table: JAD_MARKETINFOR
     source_column: MDDS.JAD_MARKETINFOR.PT_TOTAL_VALUE
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_MARKETINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: PT Total Trade Count
@@ -495,7 +495,7 @@ attributes:
     source_table: JAD_MARKETINFOR
     source_column: MDDS.JAD_MARKETINFOR.PT_TOTAL_TRADE
     comment: "Nguồn double precision — widening, không mất dữ liệu."
-    classification_context: "Source System Code = 'MDDS_JAD_MARKETINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: TSC Product Group Id
@@ -509,5 +509,5 @@ attributes:
     source_table: JAD_MARKETINFOR
     source_column: MDDS.JAD_MARKETINFOR.TSCPRODGRPID
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_MARKETINFOR'"
+    classification_context: null
     etl_derived_value: null

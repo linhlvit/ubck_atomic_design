@@ -32,7 +32,7 @@ attributes:
     source_table: BRANCHS
     source_column: null
     comment: "PK surrogate. BCV: \"[Involved Party] Organization\". Chi nhánh/VPĐD trực thuộc Fund Management Company trong nước."
-    classification_context: "Source System Code = 'FMS_BRANCHS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Fund Management Company Organization Unit Code
@@ -46,7 +46,7 @@ attributes:
     source_table: BRANCHS
     source_column: FMS.BRANCHS.ID
     comment: BK chính. PK nguồn.
-    classification_context: "Source System Code = 'FMS_BRANCHS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -61,7 +61,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'FMS_BRANCHS'"
-    etl_derived_value: FMS.BRANCHS
+    etl_derived_value: FMS_BRANCHS
 
   - name: Fund Management Company Id
     physical_name: fmc_id
@@ -74,7 +74,7 @@ attributes:
     source_table: BRANCHS
     source_column: FMS.BRANCHS.SEC_ID
     comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS.SECURITIES', SEC_ID)."
-    classification_context: "Source System Code = 'FMS_BRANCHS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Fund Management Company Code
@@ -88,7 +88,7 @@ attributes:
     source_table: BRANCHS
     source_column: FMS.BRANCHS.SEC_ID
     comment: "Lookup pair: fund_management_company.fmc_code. Pair with Fund Management Company Id."
-    classification_context: "Source System Code = 'FMS_BRANCHS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Fund Management Company Organization Unit Full Name
@@ -102,7 +102,7 @@ attributes:
     source_table: BRANCHS
     source_column: FMS.BRANCHS.ITEM_NAME
     comment: null
-    classification_context: "Source System Code = 'FMS_BRANCHS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Organization Unit Type Code
@@ -116,8 +116,8 @@ attributes:
     source_table: BRANCHS
     source_column: FMS.BRANCHS.BR_TYPE
     comment: "Scheme: FMS_ORG_UNIT_TYPE. [PROPOSE NEW SCHEME] chưa có trong HLD 6d — bổ sung classification_schemes.yaml. ETL map: 1=BRANCH;2=REPRESENTATIVE_OFFICE."
-    classification_context: "Source System Code = 'FMS_BRANCHS'"
-    etl_derived_value: "1=BRANCH;2=REPRESENTATIVE_OFFICE"
+    classification_context: FMS_ORG_UNIT_TYPE
+    etl_derived_value: null
 
   - name: Head Office Flag
     physical_name: head_office_flag
@@ -130,7 +130,7 @@ attributes:
     source_table: BRANCHS
     source_column: FMS.BRANCHS.HOST_OFFICE
     comment: Giá trị 1 → true; 0 → false.
-    classification_context: "Source System Code = 'FMS_BRANCHS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Fund Management Company Employee Id
@@ -144,7 +144,7 @@ attributes:
     source_table: BRANCHS
     source_column: FMS.BRANCHS.TL_ID
     comment: "FK target: fmc_employee.fmc_employee_id. Hash: hash_id('FMS.TL_PROFILES', TL_ID)."
-    classification_context: "Source System Code = 'FMS_BRANCHS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Fund Management Company Employee Code
@@ -158,7 +158,7 @@ attributes:
     source_table: BRANCHS
     source_column: FMS.BRANCHS.TL_ID
     comment: "Lookup pair: fmc_employee.fmc_employee_code. Pair with Fund Management Company Employee Id."
-    classification_context: "Source System Code = 'FMS_BRANCHS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Head Person Full Name
@@ -172,7 +172,7 @@ attributes:
     source_table: BRANCHS
     source_column: FMS.BRANCHS.TL_NAME
     comment: "Denormalized snapshot — khác với FK Fund Management Company Employee Id (giữ giá trị tại thời điểm ghi nhận, không tự cập nhật theo entity)."
-    classification_context: "Source System Code = 'FMS_BRANCHS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Description
@@ -186,7 +186,7 @@ attributes:
     source_table: BRANCHS
     source_column: FMS.BRANCHS.DESCRIPTION
     comment: null
-    classification_context: "Source System Code = 'FMS_BRANCHS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Content Note
@@ -200,7 +200,7 @@ attributes:
     source_table: BRANCHS
     source_column: FMS.BRANCHS.CONTENT
     comment: null
-    classification_context: "Source System Code = 'FMS_BRANCHS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Organization Territory Type Code
@@ -214,8 +214,8 @@ attributes:
     source_table: BRANCHS
     source_column: FMS.BRANCHS.DORF
     comment: "Scheme: FMS_ORG_TERRITORY_TYPE (tái sử dụng từ SECURITIES.BORF_FLAG, Tier 1). ETL derived: 1=DOMESTIC;2=FOREIGN — LƯU Ý encoding khác BORF_FLAG (1=DOMESTIC;0=FOREIGN)."
-    classification_context: "Source System Code = 'FMS_BRANCHS'"
-    etl_derived_value: "1=DOMESTIC;2=FOREIGN"
+    classification_context: FMS_ORG_TERRITORY_TYPE
+    etl_derived_value: null
 
   - name: Suspension Date
     physical_name: suspension_dt
@@ -228,7 +228,7 @@ attributes:
     source_table: BRANCHS
     source_column: FMS.BRANCHS.STOP_DATE
     comment: null
-    classification_context: "Source System Code = 'FMS_BRANCHS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Operation Commencement Date
@@ -242,7 +242,7 @@ attributes:
     source_table: BRANCHS
     source_column: FMS.BRANCHS.ACTIVE_DATE
     comment: null
-    classification_context: "Source System Code = 'FMS_BRANCHS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: License Decision Number
@@ -256,7 +256,7 @@ attributes:
     source_table: BRANCHS
     source_column: FMS.BRANCHS.DECISION
     comment: null
-    classification_context: "Source System Code = 'FMS_BRANCHS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: License Decision Date
@@ -270,7 +270,7 @@ attributes:
     source_table: BRANCHS
     source_column: FMS.BRANCHS.DECISION_DATE
     comment: null
-    classification_context: "Source System Code = 'FMS_BRANCHS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Amendment Document Number
@@ -284,7 +284,7 @@ attributes:
     source_table: BRANCHS
     source_column: FMS.BRANCHS.VOUCHER_NO
     comment: null
-    classification_context: "Source System Code = 'FMS_BRANCHS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Amendment Document Date
@@ -298,7 +298,7 @@ attributes:
     source_table: BRANCHS
     source_column: FMS.BRANCHS.VOUCHER_DATE
     comment: null
-    classification_context: "Source System Code = 'FMS_BRANCHS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Change Description
@@ -312,7 +312,7 @@ attributes:
     source_table: BRANCHS
     source_column: FMS.BRANCHS.DES_CHANGE
     comment: null
-    classification_context: "Source System Code = 'FMS_BRANCHS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Active Status Flag
@@ -326,5 +326,5 @@ attributes:
     source_table: BRANCHS
     source_column: FMS.BRANCHS.RECORD_STATUS
     comment: Giá trị 1 → true; 0 → false.
-    classification_context: "Source System Code = 'FMS_BRANCHS'"
+    classification_context: null
     etl_derived_value: null

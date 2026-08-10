@@ -33,7 +33,7 @@ attributes:
     source_table: APPLICATION_FEES
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner License Application Fee Code
@@ -47,7 +47,7 @@ attributes:
     source_table: APPLICATION_FEES
     source_column: NHNCK.APPLICATION_FEES.ID
     comment: null
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: null
     classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
-    etl_derived_value: NHNCK.APPLICATION_FEES
+    etl_derived_value: NHNCK_APPLICATION_FEES
 
   - name: Securities Practitioner License Application Id
     physical_name: sp_license_application_id
@@ -75,7 +75,7 @@ attributes:
     source_table: APPLICATION_FEES
     source_column: NHNCK.APPLICATION_FEES.APPLICATION_ID
     comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL crosswalk sang NHNCK.APPLICATIONS: APPLICATION_FEES.APPLICATION_ID = APPLICATIONS.ID để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK.APPLICATIONS', APPLICATION_CODE) | Trước đây hash trực tiếp theo APPLICATION_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ APPLICATION_CODE) — đã sửa sang crosswalk 2026-07-27."
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner License Application Code
@@ -89,7 +89,7 @@ attributes:
     source_table: APPLICATION_FEES
     source_column: NHNCK.APPLICATIONS.APPLICATION_CODE
     comment: "Lookup pair: sp_license_application.sp_license_application_code. Pair with Securities Practitioner License Application Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Application Id."
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner Id
@@ -103,7 +103,7 @@ attributes:
     source_table: APPLICATION_FEES
     source_column: NHNCK.APPLICATION_FEES.PROFESSIONAL_ID
     comment: "FK target: securities_practitioner.securities_practitioner_id. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner Code
@@ -117,7 +117,7 @@ attributes:
     source_table: APPLICATION_FEES
     source_column: NHNCK.APPLICATION_FEES.PROFESSIONAL_ID
     comment: "Lookup pair: securities_practitioner.securities_practitioner_code. Pair with Securities Practitioner Id."
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Fee Type Code
@@ -131,7 +131,7 @@ attributes:
     source_table: APPLICATION_FEES
     source_column: NHNCK.APPLICATION_FEES.FEE_TYPE
     comment: "Scheme: FEE_TYPE."
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
+    classification_context: FEE_TYPE
     etl_derived_value: null
 
   - name: Fee Content
@@ -145,7 +145,7 @@ attributes:
     source_table: APPLICATION_FEES
     source_column: NHNCK.APPLICATION_FEES.CONTENT
     comment: null
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Fee Amount
@@ -159,7 +159,7 @@ attributes:
     source_table: APPLICATION_FEES
     source_column: NHNCK.APPLICATION_FEES.FEE
     comment: null
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Payment Request Date
@@ -173,7 +173,7 @@ attributes:
     source_table: APPLICATION_FEES
     source_column: NHNCK.APPLICATION_FEES.REQUEST_DATE
     comment: null
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Payment Date
@@ -187,7 +187,7 @@ attributes:
     source_table: APPLICATION_FEES
     source_column: NHNCK.APPLICATION_FEES.PAYMENT_DATE
     comment: null
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Payment Expiry Date
@@ -201,7 +201,7 @@ attributes:
     source_table: APPLICATION_FEES
     source_column: NHNCK.APPLICATION_FEES.EXPIRY_DATE
     comment: null
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Payment Evidence File Path
@@ -215,7 +215,7 @@ attributes:
     source_table: APPLICATION_FEES
     source_column: NHNCK.APPLICATION_FEES.FILE_PATH
     comment: null
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Note
@@ -229,5 +229,5 @@ attributes:
     source_table: APPLICATION_FEES
     source_column: NHNCK.APPLICATION_FEES.NOTE
     comment: null
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
+    classification_context: null
     etl_derived_value: null

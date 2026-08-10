@@ -33,7 +33,7 @@ attributes:
     source_table: FOR_BRCH
     source_column: null
     comment: "PK surrogate. BCV: \"[Involved Party] Organization\". Tổ chức quản lý quỹ nước ngoài có hiện diện (VPĐD/CN) tại Việt Nam."
-    classification_context: "Source System Code = 'FMS_FOR_BRCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Foreign Fund Management Organization Unit Code
@@ -47,7 +47,7 @@ attributes:
     source_table: FOR_BRCH
     source_column: FMS.FOR_BRCH.ID
     comment: BK chính. PK nguồn.
-    classification_context: "Source System Code = 'FMS_FOR_BRCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'FMS_FOR_BRCH'"
-    etl_derived_value: FMS.FOR_BRCH
+    etl_derived_value: FMS_FOR_BRCH
 
   - name: Operation Status Code
     physical_name: operation_status_code
@@ -75,7 +75,7 @@ attributes:
     source_table: FOR_BRCH
     source_column: FMS.FOR_BRCH.STATUS_ID
     comment: "Scheme: FMS_OPERATION_STATUS. Nguồn STATUS_ID là UUID FK — ETL resolve sang mã STATUS.CODE tương ứng."
-    classification_context: "Source System Code = 'FMS_FOR_BRCH'"
+    classification_context: FMS_OPERATION_STATUS
     etl_derived_value: null
 
   - name: Country of Registration Id
@@ -89,7 +89,7 @@ attributes:
     source_table: FOR_BRCH
     source_column: FMS.FOR_BRCH.NAT_ID
     comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang FMS.NATIONAL: FOR_BRCH.NAT_ID = NATIONAL.ID để xác nhận SNAME sau đó hash_id('ECAT.COUNTRY', SNAME) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
-    classification_context: "Source System Code = 'FMS_FOR_BRCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Country of Registration Code
@@ -103,7 +103,7 @@ attributes:
     source_table: FOR_BRCH
     source_column: FMS.NATIONAL.SNAME
     comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Country of Registration Id. Giá trị lấy từ SNAME (join FMS.NATIONAL qua NAT_ID = FMS.NATIONAL.ID). Giá trị lấy từ FMS.NATIONAL.SNAME sau ETL crosswalk — chi tiết xem comment Country of Registration Id."
-    classification_context: "Source System Code = 'FMS_FOR_BRCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Branch Type Code
@@ -117,8 +117,8 @@ attributes:
     source_table: FOR_BRCH
     source_column: FMS.FOR_BRCH.BRANCH_FLAG
     comment: "Scheme: FMS_BRANCH_TYPE."
-    classification_context: "Source System Code = 'FMS_FOR_BRCH'"
-    etl_derived_value: "1=BRANCH;0=REPRESENTATIVE_OFFICE"
+    classification_context: FMS_BRANCH_TYPE
+    etl_derived_value: null
 
   - name: Foreign Fund Management Organization Unit Full Name
     physical_name: foreign_fm_ou_full_nm
@@ -131,7 +131,7 @@ attributes:
     source_table: FOR_BRCH
     source_column: FMS.FOR_BRCH.ITEM_NAME
     comment: null
-    classification_context: "Source System Code = 'FMS_FOR_BRCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Foreign Fund Management Organization Unit English Name
@@ -145,7 +145,7 @@ attributes:
     source_table: FOR_BRCH
     source_column: FMS.FOR_BRCH.EN_NAME
     comment: null
-    classification_context: "Source System Code = 'FMS_FOR_BRCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Foreign Fund Management Organization Unit Short Name
@@ -159,7 +159,7 @@ attributes:
     source_table: FOR_BRCH
     source_column: FMS.FOR_BRCH.SHORT_NAME
     comment: null
-    classification_context: "Source System Code = 'FMS_FOR_BRCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Effective Start Date
@@ -173,7 +173,7 @@ attributes:
     source_table: FOR_BRCH
     source_column: FMS.FOR_BRCH.START_DATE
     comment: null
-    classification_context: "Source System Code = 'FMS_FOR_BRCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Effective End Date
@@ -187,7 +187,7 @@ attributes:
     source_table: FOR_BRCH
     source_column: FMS.FOR_BRCH.END_DATE
     comment: null
-    classification_context: "Source System Code = 'FMS_FOR_BRCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Parent Company Name
@@ -201,7 +201,7 @@ attributes:
     source_table: FOR_BRCH
     source_column: FMS.FOR_BRCH.PARENT_NAME
     comment: Denormalized — công ty mẹ nước ngoài không có Atomic entity riêng trong scope FMS.
-    classification_context: "Source System Code = 'FMS_FOR_BRCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Parent Company Code
@@ -215,7 +215,7 @@ attributes:
     source_table: FOR_BRCH
     source_column: FMS.FOR_BRCH.PARENT_CODE
     comment: "Denormalized — không phải FK constraint, chỉ mã tham chiếu tự do."
-    classification_context: "Source System Code = 'FMS_FOR_BRCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Amendment License Number
@@ -229,7 +229,7 @@ attributes:
     source_table: FOR_BRCH
     source_column: FMS.FOR_BRCH.CHANGE_LICENSE
     comment: null
-    classification_context: "Source System Code = 'FMS_FOR_BRCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Amendment License Date
@@ -243,7 +243,7 @@ attributes:
     source_table: FOR_BRCH
     source_column: FMS.FOR_BRCH.CHANGE_LICENSE_DATE
     comment: null
-    classification_context: "Source System Code = 'FMS_FOR_BRCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Amendment Note
@@ -257,7 +257,7 @@ attributes:
     source_table: FOR_BRCH
     source_column: FMS.FOR_BRCH.CHANGE_NOTE
     comment: null
-    classification_context: "Source System Code = 'FMS_FOR_BRCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Note
@@ -271,7 +271,7 @@ attributes:
     source_table: FOR_BRCH
     source_column: FMS.FOR_BRCH.NOTE
     comment: null
-    classification_context: "Source System Code = 'FMS_FOR_BRCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Charter Capital Amount
@@ -285,7 +285,7 @@ attributes:
     source_table: FOR_BRCH
     source_column: FMS.FOR_BRCH.CAPITAL
     comment: null
-    classification_context: "Source System Code = 'FMS_FOR_BRCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Event Type Id
@@ -299,7 +299,7 @@ attributes:
     source_table: FOR_BRCH
     source_column: FMS.FOR_BRCH.EVENT_TYPE_ID
     comment: "FK target: cl_fms_event_type.cl_fms_event_tp_id. Cần ETL crosswalk sang FMS.EVENT_TYPE: FOR_BRCH.EVENT_TYPE_ID = EVENT_TYPE.ID để xác nhận ITEM_NAME sau đó hash_id('FMS.EVENT_TYPE', ITEM_NAME) |"
-    classification_context: "Source System Code = 'FMS_FOR_BRCH'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Event Type Code
@@ -313,5 +313,5 @@ attributes:
     source_table: FOR_BRCH
     source_column: FMS.EVENT_TYPE.ITEM_NAME
     comment: "Lookup pair: cl_fms_event_type.cl_fms_event_tp_code. Pair with Event Type Id. Giá trị lấy từ FMS.EVENT_TYPE.ITEM_NAME sau ETL crosswalk — chi tiết xem comment Event Type Id."
-    classification_context: "Source System Code = 'FMS_FOR_BRCH'"
+    classification_context: null
     etl_derived_value: null

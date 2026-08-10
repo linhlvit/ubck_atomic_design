@@ -33,7 +33,7 @@ attributes:
     source_table: CITIZEN_RECEPTION
     source_column: null
     comment: "PK surrogate. BCV: [Business Activity] Business Review."
-    classification_context: "Source System Code = 'THANHTRA_CITIZEN_RECEPTION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Citizen Reception Code
@@ -47,7 +47,7 @@ attributes:
     source_table: CITIZEN_RECEPTION
     source_column: THANHTRA.CITIZEN_RECEPTION.ID
     comment: BK chính. PK nguồn (VARCHAR2 UUID).
-    classification_context: "Source System Code = 'THANHTRA_CITIZEN_RECEPTION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'THANHTRA_CITIZEN_RECEPTION'"
-    etl_derived_value: THANHTRA.CITIZEN_RECEPTION
+    etl_derived_value: THANHTRA_CITIZEN_RECEPTION
 
   - name: Reception Date
     physical_name: reception_dt
@@ -75,7 +75,7 @@ attributes:
     source_table: CITIZEN_RECEPTION
     source_column: THANHTRA.CITIZEN_RECEPTION.RECEPTION_DATE
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_CITIZEN_RECEPTION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Receiver Officer Id
@@ -89,7 +89,7 @@ attributes:
     source_table: CITIZEN_RECEPTION
     source_column: THANHTRA.CITIZEN_RECEPTION.RECEIVER_ID
     comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM.USERS', RECEIVER_ID) | Chưa xác nhận join key THANHTRA.CITIZEN_RECEPTION.RECEIVER_ID ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
-    classification_context: "Source System Code = 'THANHTRA_CITIZEN_RECEPTION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Receiver Officer Name
@@ -103,7 +103,7 @@ attributes:
     source_table: CITIZEN_RECEPTION
     source_column: THANHTRA.CITIZEN_RECEPTION.RECEIVER_NAME
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_CITIZEN_RECEPTION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Subject Type Code
@@ -117,7 +117,7 @@ attributes:
     source_table: CITIZEN_RECEPTION
     source_column: THANHTRA.CITIZEN_RECEPTION.SUBJECT_TYPE
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_CITIZEN_RECEPTION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Subject Name
@@ -131,7 +131,7 @@ attributes:
     source_table: CITIZEN_RECEPTION
     source_column: THANHTRA.CITIZEN_RECEPTION.SUBJECT_NAME
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_CITIZEN_RECEPTION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Number Of People
@@ -145,7 +145,7 @@ attributes:
     source_table: CITIZEN_RECEPTION
     source_column: THANHTRA.CITIZEN_RECEPTION.NUMBER_OF_PEOPLE
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_CITIZEN_RECEPTION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Summary
@@ -159,7 +159,7 @@ attributes:
     source_table: CITIZEN_RECEPTION
     source_column: THANHTRA.CITIZEN_RECEPTION.SUMMARY
     comment: Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng.
-    classification_context: "Source System Code = 'THANHTRA_CITIZEN_RECEPTION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Petition Attached Indicator
@@ -173,7 +173,7 @@ attributes:
     source_table: CITIZEN_RECEPTION
     source_column: THANHTRA.CITIZEN_RECEPTION.PETITION_ATTACHED
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_CITIZEN_RECEPTION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Petition Category Code
@@ -187,7 +187,7 @@ attributes:
     source_table: CITIZEN_RECEPTION
     source_column: THANHTRA.CITIZEN_RECEPTION.PETITION_CATEGORY
     comment: "Chỉ điền khi Petition Attached Indicator = 1."
-    classification_context: "Source System Code = 'THANHTRA_CITIZEN_RECEPTION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Processing Status Code
@@ -201,7 +201,7 @@ attributes:
     source_table: CITIZEN_RECEPTION
     source_column: THANHTRA.CITIZEN_RECEPTION.PROCESSING_STATUS
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_CITIZEN_RECEPTION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Petition Id
@@ -215,7 +215,7 @@ attributes:
     source_table: CITIZEN_RECEPTION
     source_column: THANHTRA.CITIZEN_RECEPTION.PETITION_ID
     comment: "FK target: petition.petition_id. Cần ETL crosswalk sang THANHTRA.PETITION: CITIZEN_RECEPTION.PETITION_ID = PETITION.ID để xác nhận CODE sau đó hash_id('THANHTRA.PETITION', CODE) | Trước đây hash trực tiếp theo PETITION_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27. Nullable — không phải buổi tiếp nào cũng có đơn thư."
-    classification_context: "Source System Code = 'THANHTRA_CITIZEN_RECEPTION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Petition Code
@@ -229,7 +229,7 @@ attributes:
     source_table: CITIZEN_RECEPTION
     source_column: THANHTRA.PETITION.CODE
     comment: "Lookup pair: petition.petition_code. Pair with Petition Id. Giá trị lấy từ THANHTRA.PETITION.CODE sau ETL crosswalk — chi tiết xem comment Petition Id."
-    classification_context: "Source System Code = 'THANHTRA_CITIZEN_RECEPTION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Note
@@ -243,5 +243,5 @@ attributes:
     source_table: CITIZEN_RECEPTION
     source_column: THANHTRA.CITIZEN_RECEPTION.NOTE
     comment: Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng.
-    classification_context: "Source System Code = 'THANHTRA_CITIZEN_RECEPTION'"
+    classification_context: null
     etl_derived_value: null

@@ -33,7 +33,7 @@ attributes:
     source_table: VIOLATIONS
     source_column: null
     comment: "PK surrogate. BCV: \"Business Activity\" (Conduct Violation). Vi phạm đạo đức nghề nghiệp của người hành nghề chứng khoán."
-    classification_context: "Source System Code = 'NHNCK_VIOLATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner Conduct Violation Code
@@ -47,7 +47,7 @@ attributes:
     source_table: VIOLATIONS
     source_column: NHNCK.VIOLATIONS.ID
     comment: BK chính. PK nguồn (NUMBER — ETL cần convert sang string).
-    classification_context: "Source System Code = 'NHNCK_VIOLATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     classification_context: "Source System Code = 'NHNCK_VIOLATIONS'"
-    etl_derived_value: NHNCK.VIOLATIONS
+    etl_derived_value: NHNCK_VIOLATIONS
 
   - name: Securities Practitioner Id
     physical_name: sp_id
@@ -75,7 +75,7 @@ attributes:
     source_table: VIOLATIONS
     source_column: NHNCK.VIOLATIONS.PROFESSIONAL_ID
     comment: "FK target: securities_practitioner.securities_practitioner_id. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
-    classification_context: "Source System Code = 'NHNCK_VIOLATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner Code
@@ -89,7 +89,7 @@ attributes:
     source_table: VIOLATIONS
     source_column: NHNCK.VIOLATIONS.PROFESSIONAL_ID
     comment: "Lookup pair: securities_practitioner.securities_practitioner_code. Pair with Securities Practitioner Id."
-    classification_context: "Source System Code = 'NHNCK_VIOLATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner License Decision Document Id
@@ -103,7 +103,7 @@ attributes:
     source_table: VIOLATIONS
     source_column: NHNCK.VIOLATIONS.DECISION_ID
     comment: "FK target: sp_license_decision_document.sp_license_decision_document_id. Hash: hash_id('NHNCK.DECISIONS', DECISION_ID)."
-    classification_context: "Source System Code = 'NHNCK_VIOLATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner License Decision Document Code
@@ -117,7 +117,7 @@ attributes:
     source_table: VIOLATIONS
     source_column: NHNCK.VIOLATIONS.DECISION_ID
     comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code. Pair with Securities Practitioner License Decision Document Id."
-    classification_context: "Source System Code = 'NHNCK_VIOLATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Practitioner Name At Violation
@@ -131,7 +131,7 @@ attributes:
     source_table: VIOLATIONS
     source_column: NHNCK.VIOLATIONS.FULL_NAME
     comment: Snapshot — lưu giá trị tại thời điểm ghi nhận vi phạm. Không join lại PROFESSIONALS.
-    classification_context: "Source System Code = 'NHNCK_VIOLATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Practitioner Birth Date At Violation
@@ -145,7 +145,7 @@ attributes:
     source_table: VIOLATIONS
     source_column: NHNCK.VIOLATIONS.BIRTH_DATE
     comment: Snapshot — lưu giá trị tại thời điểm ghi nhận vi phạm. Không join lại PROFESSIONALS.
-    classification_context: "Source System Code = 'NHNCK_VIOLATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Practitioner Identity Number At Violation
@@ -159,7 +159,7 @@ attributes:
     source_table: VIOLATIONS
     source_column: NHNCK.VIOLATIONS.IDENTITY_NUMBER
     comment: Snapshot — lưu giá trị tại thời điểm ghi nhận vi phạm. Grain ≠ Involved Party nên không tách IP Alt Identification.
-    classification_context: "Source System Code = 'NHNCK_VIOLATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Violation Record Date
@@ -173,7 +173,7 @@ attributes:
     source_table: VIOLATIONS
     source_column: NHNCK.VIOLATIONS.CREATED_AT
     comment: Ngày ghi nhận vi phạm vào hệ thống.
-    classification_context: "Source System Code = 'NHNCK_VIOLATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Note
@@ -187,7 +187,7 @@ attributes:
     source_table: VIOLATIONS
     source_column: NHNCK.VIOLATIONS.NOTE
     comment: null
-    classification_context: "Source System Code = 'NHNCK_VIOLATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Violation Status Code
@@ -201,7 +201,7 @@ attributes:
     source_table: VIOLATIONS
     source_column: NHNCK.VIOLATIONS.STATUS
     comment: "Scheme: VIOLATION_STATUS. Nguồn lưu dạng NUMBER — ETL convert sang string."
-    classification_context: "Source System Code = 'NHNCK_VIOLATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Violation Type Code
@@ -215,5 +215,5 @@ attributes:
     source_table: VIOLATIONS
     source_column: NHNCK.VIOLATIONS.TYPE
     comment: "Scheme: VIOLATION_TYPE. Nguồn lưu dạng NUMBER — ETL convert sang string. Giá trị scheme chưa xác định — cần profile dữ liệu thực tế để liệt kê đủ giá trị."
-    classification_context: "Source System Code = 'NHNCK_VIOLATIONS'"
+    classification_context: null
     etl_derived_value: null

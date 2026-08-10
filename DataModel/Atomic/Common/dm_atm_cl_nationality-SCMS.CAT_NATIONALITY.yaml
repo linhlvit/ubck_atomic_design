@@ -33,7 +33,7 @@ attributes:
     source_table: CAT_NATIONALITY
     source_column: SCMS.CAT_NATIONALITY.ID
     comment: "PK surrogate. BCV: \"[Common] Nationality\". Danh mục quốc tịch. Hash: hash_id('SCMS.CAT_NATIONALITY', ID)."
-    classification_context: "Source System Code = 'SCMS_CAT_NATIONALITY'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Classification Nationality Code
@@ -47,7 +47,7 @@ attributes:
     source_table: CAT_NATIONALITY
     source_column: SCMS.CAT_NATIONALITY.NATIONALITY_CODE
     comment: BK chính. Dùng NATIONALITY_CODE (mã nghiệp vụ) thay vì ID kỹ thuật — xem pending_design.yaml.
-    classification_context: "Source System Code = 'SCMS_CAT_NATIONALITY'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'SCMS_CAT_NATIONALITY'"
-    etl_derived_value: SCMS.CAT_NATIONALITY
+    etl_derived_value: SCMS_CAT_NATIONALITY
 
   - name: Data Date
     physical_name: data_dt
@@ -75,7 +75,7 @@ attributes:
     source_table: CAT_NATIONALITY
     source_column: SCMS.CAT_NATIONALITY.CREATED_AT
     comment: "BCV: không có term riêng. Reinstated 2026-07-15 — CREATED_AT bị loại theo quyết định audit-block SCMS (xem pending_design.yaml) nhưng bảng dùng Append/incremental filter theo created_at, cần giữ lại làm partition key. Đổi tên từ 'created_at' sang 'Data Date' để phản ánh vai trò ngày dữ liệu/phân vùng, tách biệt khỏi audit block (CREATED_BY vẫn loại trừ). Nguồn lưu TIMESTAMP(6) — ETL truncate về Date (00:00:00) khi map vào Data Date, phù hợp granularity partition theo ngày."
-    classification_context: "Source System Code = 'SCMS_CAT_NATIONALITY'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Classification Nationality Name
@@ -89,7 +89,7 @@ attributes:
     source_table: CAT_NATIONALITY
     source_column: SCMS.CAT_NATIONALITY.NATIONALITY_NAME
     comment: null
-    classification_context: "Source System Code = 'SCMS_CAT_NATIONALITY'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Record Status Code
@@ -103,7 +103,7 @@ attributes:
     source_table: CAT_NATIONALITY
     source_column: SCMS.CAT_NATIONALITY.RECORD_STATUS
     comment: "Scheme: SCMS_NATIONALITY_RECORD_STATUS."
-    classification_context: "Source System Code = 'SCMS_CAT_NATIONALITY'"
+    classification_context: SCMS_NATIONALITY_RECORD_STATUS
     etl_derived_value: null
 
   - name: Note
@@ -117,5 +117,5 @@ attributes:
     source_table: CAT_NATIONALITY
     source_column: SCMS.CAT_NATIONALITY.NOTE
     comment: null
-    classification_context: "Source System Code = 'SCMS_CAT_NATIONALITY'"
+    classification_context: null
     etl_derived_value: null

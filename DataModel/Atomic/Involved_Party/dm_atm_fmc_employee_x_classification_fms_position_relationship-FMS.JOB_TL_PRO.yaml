@@ -33,7 +33,7 @@ attributes:
     source_table: JOB_TL_PRO
     source_column: null
     comment: "PK surrogate. BCV: \"[Involved Party] Individual Employment Status\" (tạm dùng). Quan hệ gán chức danh/vị trí công việc cho nhân sự chủ chốt công ty QLQ."
-    classification_context: "Source System Code = 'FMS_JOB_TL_PRO'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Fund Management Company Employee X Classification FMS Position Relationship Code
@@ -47,7 +47,7 @@ attributes:
     source_table: JOB_TL_PRO
     source_column: null
     comment: "BK composite: JOB_ID || '|' || TLPRO_ID. Không có PK/code kỹ thuật riêng trên bảng nguồn."
-    classification_context: "Source System Code = 'FMS_JOB_TL_PRO'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'FMS_JOB_TL_PRO'"
-    etl_derived_value: FMS.JOB_TL_PRO
+    etl_derived_value: FMS_JOB_TL_PRO
 
   - name: Fund Management Company Employee Id
     physical_name: fmc_employee_id
@@ -75,7 +75,7 @@ attributes:
     source_table: JOB_TL_PRO
     source_column: FMS.JOB_TL_PRO.TLPRO_ID
     comment: "FK target: fmc_employee.fmc_employee_id. Hash: hash_id('FMS.TL_PROFILES', TLPRO_ID)."
-    classification_context: "Source System Code = 'FMS_JOB_TL_PRO'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Fund Management Company Employee Code
@@ -89,7 +89,7 @@ attributes:
     source_table: JOB_TL_PRO
     source_column: FMS.JOB_TL_PRO.TLPRO_ID
     comment: "Lookup pair: fmc_employee.fmc_employee_code. Pair with Fund Management Company Employee Id."
-    classification_context: "Source System Code = 'FMS_JOB_TL_PRO'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Classification FMS Position Id
@@ -103,7 +103,7 @@ attributes:
     source_table: JOB_TL_PRO
     source_column: FMS.JOB_TL_PRO.JOB_ID
     comment: "FK target: cl_fms_position.cl_fms_position_id. Hash: hash_id('FMS.JOBS', JOB_ID)."
-    classification_context: "Source System Code = 'FMS_JOB_TL_PRO'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Classification FMS Position Code
@@ -117,5 +117,5 @@ attributes:
     source_table: JOB_TL_PRO
     source_column: FMS.JOB_TL_PRO.JOB_ID
     comment: "Lookup pair: cl_fms_position.cl_fms_position_code. Pair with Classification FMS Position Id."
-    classification_context: "Source System Code = 'FMS_JOB_TL_PRO'"
+    classification_context: null
     etl_derived_value: null

@@ -33,7 +33,7 @@ attributes:
     source_table: USERS
     source_column: null
     comment: "PK surrogate. BCV: [Involved Party] Individual. Domain prefix 'Identity and Access Management User' theo HLD IAM Tier 1."
-    classification_context: "Source System Code = 'IAM_USERS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Identity and Access Management User Code
@@ -47,7 +47,7 @@ attributes:
     source_table: USERS
     source_column: IAM.USERS.ID
     comment: BK chính. PK nguồn dạng UUIDv7.
-    classification_context: "Source System Code = 'IAM_USERS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     classification_context: "Source System Code = 'IAM_USERS'"
-    etl_derived_value: IAM.USERS
+    etl_derived_value: IAM_USERS
 
   - name: Full Name
     physical_name: full_nm
@@ -75,7 +75,7 @@ attributes:
     source_table: USERS
     source_column: IAM.USERS.FULL_NAME
     comment: "BCV: Full Name (Involved Party)."
-    classification_context: "Source System Code = 'IAM_USERS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Username
@@ -89,7 +89,7 @@ attributes:
     source_table: USERS
     source_column: IAM.USERS.USERNAME
     comment: "BCV: không có term riêng — đặt tên theo nghĩa kỹ thuật IAM."
-    classification_context: "Source System Code = 'IAM_USERS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Date Of Birth
@@ -103,7 +103,7 @@ attributes:
     source_table: USERS
     source_column: IAM.USERS.DATE_OF_BIRTH
     comment: "BCV: Date Of Birth (Individual). Nguồn: Oracle DATE."
-    classification_context: "Source System Code = 'IAM_USERS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Individual Gender Code
@@ -117,7 +117,7 @@ attributes:
     source_table: USERS
     source_column: IAM.USERS.GENDER
     comment: "Scheme: IAM_GENDER. Nguồn NUMBER(1): 1=MALE, 2=FEMALE, 3=OTHER — ETL map sang string code. Nguồn lưu dạng số — ETL cần convert sang string."
-    classification_context: "Source System Code = 'IAM_USERS'"
+    classification_context: IAM_GENDER
     etl_derived_value: null
 
   - name: Involved Party Type Code
@@ -131,7 +131,7 @@ attributes:
     source_table: USERS
     source_column: IAM.USERS.USER_TYPE
     comment: "Scheme: IAM_USER_TYPE. Nguồn NUMBER(1) — cần profile values từ team IAM. Nguồn lưu dạng số — ETL cần convert sang string code."
-    classification_context: "Source System Code = 'IAM_USERS'"
+    classification_context: IAM_USER_TYPE
     etl_derived_value: null
 
   - name: Involved Party Sub Type Code
@@ -145,7 +145,7 @@ attributes:
     source_table: USERS
     source_column: IAM.USERS.USER_SUB_TYPE
     comment: "Scheme: IAM_USER_SUB_TYPE. Nguồn VARCHAR50 — lấy distinct values từ USERS.USER_SUB_TYPE."
-    classification_context: "Source System Code = 'IAM_USERS'"
+    classification_context: IAM_USER_SUB_TYPE
     etl_derived_value: null
 
   - name: Super Admin Indicator
@@ -159,7 +159,7 @@ attributes:
     source_table: USERS
     source_column: IAM.USERS.IS_SUPER_ADMIN
     comment: "BCV: không có term riêng — dùng Indicator vì chỉ là flag Yes/No. Nguồn NUMBER(1)."
-    classification_context: "Source System Code = 'IAM_USERS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Keycloak Id
@@ -173,7 +173,7 @@ attributes:
     source_table: USERS
     source_column: IAM.USERS.KEY_CLOAK_ID
     comment: "BCV: không có term riêng. Giữ lại để trace cross-system — xem T1-05 HLD."
-    classification_context: "Source System Code = 'IAM_USERS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Organization Code
@@ -187,7 +187,7 @@ attributes:
     source_table: USERS
     source_column: IAM.USERS.ORGANIZATION_CODE
     comment: "Denormalized text — chưa xác nhận FK đến bảng tổ chức nào (xem T1-04 HLD). Giữ dạng Text cho đến khi xác nhận cross-source FK."
-    classification_context: "Source System Code = 'IAM_USERS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Organization Name
@@ -201,7 +201,7 @@ attributes:
     source_table: USERS
     source_column: IAM.USERS.ORGANIZATION_NAME
     comment: Denormalized text — cặp với Organization Code.
-    classification_context: "Source System Code = 'IAM_USERS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Department Id
@@ -215,7 +215,7 @@ attributes:
     source_table: USERS
     source_column: IAM.USERS.DEPARTMENT_ID
     comment: "Nguồn VARCHAR2(36) — chưa có FK constraint rõ. Giữ dạng Text; nếu xác nhận FK đến bảng entity → đổi sang Surrogate Key và tạo cặp Id+Code (xem T1-01 HLD)."
-    classification_context: "Source System Code = 'IAM_USERS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Position Id
@@ -229,7 +229,7 @@ attributes:
     source_table: USERS
     source_column: IAM.USERS.POSTION_ID
     comment: "Nguồn VARCHAR2(36). Tên cột nguồn có typo 'POSTION_ID'. Chưa có FK constraint rõ — giữ dạng Text (xem T1-01 HLD)."
-    classification_context: "Source System Code = 'IAM_USERS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Stock Code
@@ -243,7 +243,7 @@ attributes:
     source_table: USERS
     source_column: IAM.USERS.STOCK_CODE
     comment: "BCV: không có term riêng. VARCHAR2(3) — mã CK 3 ký tự của tổ chức nơi người dùng làm việc."
-    classification_context: "Source System Code = 'IAM_USERS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Practice Certificate Type Id
@@ -257,7 +257,7 @@ attributes:
     source_table: USERS
     source_column: IAM.USERS.PRACTICE_CERTIFICATE_TYPE_ID
     comment: "FK target: sp_license_certificate_type.sp_license_certificate_tp_id. Cross-source FK (IAM → NHNCK), trả lời T1-02 HLD. Pending — nguồn IAM lưu VARCHAR2(36) dạng GUID, trong khi NHNCK.CERTIFICATES.ID là NUMBER tự tăng; chưa xác nhận join key giá trị thực tế giữa 2 hệ thống nên chưa thêm Hash."
-    classification_context: "Source System Code = 'IAM_USERS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Practice Certificate Type Code
@@ -271,7 +271,7 @@ attributes:
     source_table: USERS
     source_column: IAM.USERS.PRACTICE_CERTIFICATE_TYPE_ID
     comment: "Lookup pair: sp_license_certificate_type.sp_license_certificate_tp_code. Pair with Practice Certificate Type Id. Pending — xem ghi chú ở Id."
-    classification_context: "Source System Code = 'IAM_USERS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Avatar Path
@@ -285,7 +285,7 @@ attributes:
     source_table: USERS
     source_column: IAM.USERS.AVATAR_PATH
     comment: "BCV: không có term riêng. Lưu đường dẫn file ảnh đại diện."
-    classification_context: "Source System Code = 'IAM_USERS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Status Reason
@@ -299,7 +299,7 @@ attributes:
     source_table: USERS
     source_column: IAM.USERS.STATUS_REASON
     comment: "BCV: không có term riêng. Mô tả lý do trạng thái hiện tại (STATUS đã loại khỏi scope)."
-    classification_context: "Source System Code = 'IAM_USERS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Login Failure Count
@@ -313,7 +313,7 @@ attributes:
     source_table: USERS
     source_column: IAM.USERS.COUNT_LOGIN_FALSE
     comment: "BCV: không có term riêng. Nguồn NUMBER(1) — đếm số lần login fail, domain Small Counter phù hợp."
-    classification_context: "Source System Code = 'IAM_USERS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Lock Expiry Timestamp
@@ -327,7 +327,7 @@ attributes:
     source_table: USERS
     source_column: IAM.USERS.EXPIRE_LOCK_USER
     comment: "BCV: không có term riêng. Nguồn TIMESTAMP(6)."
-    classification_context: "Source System Code = 'IAM_USERS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Last Login Timestamp
@@ -341,7 +341,7 @@ attributes:
     source_table: USERS
     source_column: IAM.USERS.LAST_LOGIN
     comment: "BCV: không có term riêng. Nguồn TIMESTAMP(6)."
-    classification_context: "Source System Code = 'IAM_USERS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Representative Name
@@ -355,7 +355,7 @@ attributes:
     source_table: USERS
     source_column: IAM.USERS.REPRESENTATIVE_NAME
     comment: "Denormalized — giữ đến khi xác nhận T1-03 HLD (người đại diện có phải Involved Party độc lập không)."
-    classification_context: "Source System Code = 'IAM_USERS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Representative Citizen Id Number
@@ -369,7 +369,7 @@ attributes:
     source_table: USERS
     source_column: IAM.USERS.REPRESENTATIVE_CITIZEN_ID
     comment: "Denormalized — giữ đến khi xác nhận T1-03 HLD."
-    classification_context: "Source System Code = 'IAM_USERS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Representative Phone
@@ -383,7 +383,7 @@ attributes:
     source_table: USERS
     source_column: IAM.USERS.REPRESENTATIVE_PHONE
     comment: "Denormalized — giữ đến khi xác nhận T1-03 HLD."
-    classification_context: "Source System Code = 'IAM_USERS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Representative Email
@@ -397,7 +397,7 @@ attributes:
     source_table: USERS
     source_column: IAM.USERS.REPRESENTATIVE_EMAIL
     comment: "Tên cột nguồn có typo 'REPRESENTATIVE _EMAIL' (dấu cách thừa) — ETL cần dùng tên thực tế trên DB. Denormalized — giữ đến khi xác nhận T1-03 HLD."
-    classification_context: "Source System Code = 'IAM_USERS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Representative Position Id
@@ -411,5 +411,5 @@ attributes:
     source_table: USERS
     source_column: IAM.USERS.REPRESENTATIVE_POSITION_ID
     comment: "Denormalized VARCHAR2(255) — giữ dạng Text đến khi xác nhận T1-03 HLD."
-    classification_context: "Source System Code = 'IAM_USERS'"
+    classification_context: null
     etl_derived_value: null

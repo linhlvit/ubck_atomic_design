@@ -33,7 +33,7 @@ attributes:
     source_table: TAX_ENFORCEMENT_INVOICE
     source_column: null
     comment: "PK surrogate. BCV: \"[Documentation] Gov. Registration Document\". Quyết định cưỡng chế ngừng sử dụng hóa đơn do Cục Thuế ban hành. Hash: hash_id('KNT.TAX_ENFORCEMENT_INVOICE', DECISION_NUMBER)."
-    classification_context: "Source System Code = 'KNT_TAX_ENFORCEMENT_INVOICE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: External Tax Enforcement Invoice Decision Code
@@ -47,7 +47,7 @@ attributes:
     source_table: TAX_ENFORCEMENT_INVOICE
     source_column: KNT.TAX_ENFORCEMENT_INVOICE.DECISION_NUMBER
     comment: "BK chính. Cần profile dữ liệu xác nhận NOT NULL/unique trước go-live."
-    classification_context: "Source System Code = 'KNT_TAX_ENFORCEMENT_INVOICE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'KNT_TAX_ENFORCEMENT_INVOICE'"
-    etl_derived_value: KNT.TAX_ENFORCEMENT_INVOICE
+    etl_derived_value: KNT_TAX_ENFORCEMENT_INVOICE
 
   - name: External Tax Registration Id
     physical_name: et_registration_id
@@ -75,7 +75,7 @@ attributes:
     source_table: TAX_ENFORCEMENT_INVOICE
     source_column: KNT.TAX_ENFORCEMENT_INVOICE.TAXPAYER_TAX_CODE
     comment: "FK target: et_registration.et_registration_id. Hash: hash_id('KNT.TAX_REGISTRATION_INFO', TAX_CODE)."
-    classification_context: "Source System Code = 'KNT_TAX_ENFORCEMENT_INVOICE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: External Tax Registration Code
@@ -89,7 +89,7 @@ attributes:
     source_table: TAX_ENFORCEMENT_INVOICE
     source_column: KNT.TAX_ENFORCEMENT_INVOICE.TAXPAYER_TAX_CODE
     comment: "Lookup pair: et_registration.et_registration_code. Pair with External Tax Registration Id."
-    classification_context: "Source System Code = 'KNT_TAX_ENFORCEMENT_INVOICE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Taxpayer Name
@@ -103,7 +103,7 @@ attributes:
     source_table: TAX_ENFORCEMENT_INVOICE
     source_column: KNT.TAX_ENFORCEMENT_INVOICE.TAXPAYER_NAME
     comment: Denormalized snapshot tại thời điểm ban hành quyết định.
-    classification_context: "Source System Code = 'KNT_TAX_ENFORCEMENT_INVOICE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Direct Tax Authority Code
@@ -117,7 +117,7 @@ attributes:
     source_table: TAX_ENFORCEMENT_INVOICE
     source_column: KNT.TAX_ENFORCEMENT_INVOICE.DIRECT_TAX_AUTHORITY_CODE
     comment: Denormalized — nguồn không có danh mục cơ quan thuế trong scope thiết kế hiện tại.
-    classification_context: "Source System Code = 'KNT_TAX_ENFORCEMENT_INVOICE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Direct Tax Authority Name
@@ -131,7 +131,7 @@ attributes:
     source_table: TAX_ENFORCEMENT_INVOICE
     source_column: KNT.TAX_ENFORCEMENT_INVOICE.DIRECT_TAX_AUTHORITY_NAME
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_ENFORCEMENT_INVOICE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Enforcement Method Code
@@ -145,7 +145,7 @@ attributes:
     source_table: TAX_ENFORCEMENT_INVOICE
     source_column: KNT.TAX_ENFORCEMENT_INVOICE.ENFORCEMENT_METHOD_CODE
     comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không phải Classification Value. Trước đây dùng chung scheme KNT_ENFORCEMENT_METHOD với External Tax Enforcement Debt Decision — nay cả 2 đều map Text 1:1."
-    classification_context: "Source System Code = 'KNT_TAX_ENFORCEMENT_INVOICE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Enforcement Method Name
@@ -159,7 +159,7 @@ attributes:
     source_table: TAX_ENFORCEMENT_INVOICE
     source_column: KNT.TAX_ENFORCEMENT_INVOICE.ENFORCEMENT_METHOD_NAME
     comment: Denormalized — tên tương ứng Enforcement Method Code.
-    classification_context: "Source System Code = 'KNT_TAX_ENFORCEMENT_INVOICE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Electronic Transaction Code
@@ -173,7 +173,7 @@ attributes:
     source_table: TAX_ENFORCEMENT_INVOICE
     source_column: KNT.TAX_ENFORCEMENT_INVOICE.E_TRANSACTION_CODE
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_ENFORCEMENT_INVOICE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Decision Date
@@ -187,7 +187,7 @@ attributes:
     source_table: TAX_ENFORCEMENT_INVOICE
     source_column: KNT.TAX_ENFORCEMENT_INVOICE.DECISION_DATE
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_ENFORCEMENT_INVOICE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Enforced Entity Business Line Name
@@ -201,7 +201,7 @@ attributes:
     source_table: TAX_ENFORCEMENT_INVOICE
     source_column: KNT.TAX_ENFORCEMENT_INVOICE.ENFORCED_ENTITY_BUSINESS_LINE
     comment: Denormalized snapshot — không phải FK Classification Value KNT_BUSINESS_LINE vì đây là mô tả tự do.
-    classification_context: "Source System Code = 'KNT_TAX_ENFORCEMENT_INVOICE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Decision Effective From Date
@@ -215,7 +215,7 @@ attributes:
     source_table: TAX_ENFORCEMENT_INVOICE
     source_column: KNT.TAX_ENFORCEMENT_INVOICE.DECISION_EFFECTIVE_FROM
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_ENFORCEMENT_INVOICE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Decision Effective To Date
@@ -229,7 +229,7 @@ attributes:
     source_table: TAX_ENFORCEMENT_INVOICE
     source_column: KNT.TAX_ENFORCEMENT_INVOICE.DECISION_EFFECTIVE_TO
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_ENFORCEMENT_INVOICE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Notice Taxpayer Tax Code
@@ -243,7 +243,7 @@ attributes:
     source_table: TAX_ENFORCEMENT_INVOICE
     source_column: KNT.TAX_ENFORCEMENT_INVOICE.NOTICE_TAXPAYER_TAX_CODE
     comment: "Denormalized — snapshot MST ghi trên thông báo, có thể trùng External Tax Registration Code nhưng không tạo FK riêng (tránh trùng lặp constraint)."
-    classification_context: "Source System Code = 'KNT_TAX_ENFORCEMENT_INVOICE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Notice Taxpayer Name
@@ -257,7 +257,7 @@ attributes:
     source_table: TAX_ENFORCEMENT_INVOICE
     source_column: KNT.TAX_ENFORCEMENT_INVOICE.NOTICE_TAXPAYER_NAME
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_ENFORCEMENT_INVOICE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Notice Code
@@ -271,7 +271,7 @@ attributes:
     source_table: TAX_ENFORCEMENT_INVOICE
     source_column: KNT.TAX_ENFORCEMENT_INVOICE.NOTICE_CODE
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_ENFORCEMENT_INVOICE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Notice Name
@@ -285,7 +285,7 @@ attributes:
     source_table: TAX_ENFORCEMENT_INVOICE
     source_column: KNT.TAX_ENFORCEMENT_INVOICE.NOTICE_NAME
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_ENFORCEMENT_INVOICE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Basis Decision Number
@@ -299,7 +299,7 @@ attributes:
     source_table: TAX_ENFORCEMENT_INVOICE
     source_column: KNT.TAX_ENFORCEMENT_INVOICE.BASIS_DECISION_NUMBER
     comment: "Nghi vấn liên kết logic → et_enforcement_debt_decision.et_enforcement_debt_decision_code (xem KNT_HLD_Overview.md mục 7e#1) — chưa xác nhận nghiệp vụ, giữ denormalized Text, không tạo FK."
-    classification_context: "Source System Code = 'KNT_TAX_ENFORCEMENT_INVOICE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Basis Decision Date
@@ -313,7 +313,7 @@ attributes:
     source_table: TAX_ENFORCEMENT_INVOICE
     source_column: KNT.TAX_ENFORCEMENT_INVOICE.BASIS_DECISION_DATE
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_ENFORCEMENT_INVOICE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Notice Debt Amount
@@ -327,7 +327,7 @@ attributes:
     source_table: TAX_ENFORCEMENT_INVOICE
     source_column: KNT.TAX_ENFORCEMENT_INVOICE.NOTICE_DEBT_AMOUNT
     comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần validate không có giá trị non-numeric."
-    classification_context: "Source System Code = 'KNT_TAX_ENFORCEMENT_INVOICE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Notice Debt Date
@@ -341,7 +341,7 @@ attributes:
     source_table: TAX_ENFORCEMENT_INVOICE
     source_column: KNT.TAX_ENFORCEMENT_INVOICE.NOTICE_DEBT_DATE
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_ENFORCEMENT_INVOICE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Validity Flag
@@ -355,7 +355,7 @@ attributes:
     source_table: TAX_ENFORCEMENT_INVOICE
     source_column: KNT.TAX_ENFORCEMENT_INVOICE.VALIDITY_FLAG
     comment: Nguồn lưu dạng string (VARCHAR2(100)) — ETL cần cast sang boolean. Cần profile giá trị thực tế (có thể không phải true/false đơn thuần).
-    classification_context: "Source System Code = 'KNT_TAX_ENFORCEMENT_INVOICE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Global Unique Identifier
@@ -369,7 +369,7 @@ attributes:
     source_table: TAX_ENFORCEMENT_INVOICE
     source_column: KNT.TAX_ENFORCEMENT_INVOICE.GUID
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_ENFORCEMENT_INVOICE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Message Packet Id
@@ -383,5 +383,5 @@ attributes:
     source_table: TAX_ENFORCEMENT_INVOICE
     source_column: KNT.TAX_ENFORCEMENT_INVOICE.MSG_PACKET_ID
     comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không tạo FK sang MSG_PACKET (bảng kỹ thuật gói tin trao đổi, ngoài scope thiết kế). Nguồn lưu dạng số (NUMBER) — ETL cần convert sang string."
-    classification_context: "Source System Code = 'KNT_TAX_ENFORCEMENT_INVOICE'"
+    classification_context: null
     etl_derived_value: null

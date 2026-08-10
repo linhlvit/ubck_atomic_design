@@ -33,7 +33,7 @@ attributes:
     source_table: BUSINESS_LINE_LEVEL_2
     source_column: null
     comment: "PK surrogate. Hash: hash_id('ECAT.BUSINESS_LINE_LEVEL_2', CODE). BCV Term: \"Industry Classification\" (Common)."
-    classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -48,7 +48,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
     classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
-    etl_derived_value: ECAT.BUSINESS_LINE_LEVEL_2
+    etl_derived_value: ECAT_BUSINESS_LINE_LEVEL_2
 
   - name: Classification Business Line Level Code
     physical_name: cl_business_line_level_code
@@ -61,7 +61,7 @@ attributes:
     source_table: BUSINESS_LINE_LEVEL_2
     source_column: null
     comment: "Scheme: ECAT_BUSINESS_LINE_LEVEL."
-    classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
+    classification_context: "ECAT_BUSINESS_LINE_LEVEL=LEVEL_2"
     etl_derived_value: LEVEL_2
 
   - name: Classification Business Line Code
@@ -75,7 +75,7 @@ attributes:
     source_table: BUSINESS_LINE_LEVEL_2
     source_column: ECAT.BUSINESS_LINE_LEVEL_2.CODE
     comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (STABLE_ID) + Unique Key cũ — gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique trước go-live."
-    classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Classification Business Line Name
@@ -89,7 +89,7 @@ attributes:
     source_table: BUSINESS_LINE_LEVEL_2
     source_column: ECAT.BUSINESS_LINE_LEVEL_2.NAME
     comment: null
-    classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Parent Classification Business Line Id
@@ -103,7 +103,7 @@ attributes:
     source_table: BUSINESS_LINE_LEVEL_2
     source_column: ECAT.BUSINESS_LINE_LEVEL_2.PARENT_LINE_ID
     comment: "FK target: cl_business_line.cl_business_line_id. Parent luôn là bản ghi LEVEL_1. PARENT_LINE_ID lưu STABLE_ID của cha (không phải CODE) — nay Code/Id hash dựa trên CODE nên PHẢI join: match PARENT_LINE_ID = ECAT.BUSINESS_LINE_LEVEL_1.STABLE_ID để lấy CODE, rồi hash_id('ECAT.BUSINESS_LINE_LEVEL_1', CODE_CHA). Trước đây không cần join do Code cũ = STABLE_ID; nay Code đổi sang CODE nên phát sinh thêm 1 bước resolve so với thiết kế cũ."
-    classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Parent Classification Business Line Code
@@ -117,7 +117,7 @@ attributes:
     source_table: BUSINESS_LINE_LEVEL_2
     source_column: ECAT.BUSINESS_LINE_LEVEL_2.PARENT_LINE_ID
     comment: "Lookup pair: cl_business_line.cl_business_line_code. Pair with Parent Classification Business Line Id. Giá trị lấy qua join (xem Parent Classification Business Line Id) — không còn dùng trực tiếp PARENT_LINE_ID vì Code cha nay là CODE, không phải STABLE_ID."
-    classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Display Label
@@ -131,7 +131,7 @@ attributes:
     source_table: BUSINESS_LINE_LEVEL_2
     source_column: ECAT.BUSINESS_LINE_LEVEL_2.DISPLAY_LABEL
     comment: "Đẩy 1:1 theo yêu cầu."
-    classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Effective Indicator
@@ -145,7 +145,7 @@ attributes:
     source_table: BUSINESS_LINE_LEVEL_2
     source_column: ECAT.BUSINESS_LINE_LEVEL_2.EFFECTIVE
     comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Active/Deleted Indicator."
-    classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Active Indicator
@@ -159,7 +159,7 @@ attributes:
     source_table: BUSINESS_LINE_LEVEL_2
     source_column: ECAT.BUSINESS_LINE_LEVEL_2.ACTIVE
     comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Deleted Indicator."
-    classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Deleted Indicator
@@ -173,7 +173,7 @@ attributes:
     source_table: BUSINESS_LINE_LEVEL_2
     source_column: ECAT.BUSINESS_LINE_LEVEL_2.DELETED
     comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Active Indicator."
-    classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Effective Start Date
@@ -187,7 +187,7 @@ attributes:
     source_table: BUSINESS_LINE_LEVEL_2
     source_column: ECAT.BUSINESS_LINE_LEVEL_2.EFFECTIVE_START_DATE
     comment: null
-    classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Effective End Date
@@ -201,7 +201,7 @@ attributes:
     source_table: BUSINESS_LINE_LEVEL_2
     source_column: ECAT.BUSINESS_LINE_LEVEL_2.EFFECTIVE_END_DATE
     comment: null
-    classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Version Number
@@ -215,7 +215,7 @@ attributes:
     source_table: BUSINESS_LINE_LEVEL_2
     source_column: ECAT.BUSINESS_LINE_LEVEL_2.VERSION
     comment: "Đẩy 1:1 theo yêu cầu — giữ nguyên, không loại bỏ dù là field kỹ thuật versioning của nguồn."
-    classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Active Reason
@@ -229,7 +229,7 @@ attributes:
     source_table: BUSINESS_LINE_LEVEL_2
     source_column: ECAT.BUSINESS_LINE_LEVEL_2.ACTIVE_REASON
     comment: "Đẩy 1:1 theo yêu cầu."
-    classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Deleted Reason
@@ -243,5 +243,5 @@ attributes:
     source_table: BUSINESS_LINE_LEVEL_2
     source_column: ECAT.BUSINESS_LINE_LEVEL_2.DELETED_REASON
     comment: "Đẩy 1:1 theo yêu cầu."
-    classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
+    classification_context: null
     etl_derived_value: null

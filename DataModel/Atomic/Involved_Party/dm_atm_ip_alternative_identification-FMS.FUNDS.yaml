@@ -33,7 +33,7 @@ attributes:
     source_table: FUNDS
     source_column: FMS.FUNDS.ID
     comment: "FK target: investment_fund.investment_fund_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.FUNDS', ID)."
-    classification_context: "Source System Code = 'FMS_FUNDS' | Identification Type Code = 'TAX_ID'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Involved Party Code
@@ -47,7 +47,7 @@ attributes:
     source_table: FUNDS
     source_column: FMS.FUNDS.ID
     comment: "Lookup pair: investment_fund.investment_fund_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'FMS_FUNDS' | Identification Type Code = 'TAX_ID'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: null
     classification_context: "Source System Code = 'FMS_FUNDS' | Identification Type Code = 'TAX_ID'"
-    etl_derived_value: FMS.FUNDS
+    etl_derived_value: FMS_FUNDS
 
   - name: Identification Type Code
     physical_name: identification_tp_code

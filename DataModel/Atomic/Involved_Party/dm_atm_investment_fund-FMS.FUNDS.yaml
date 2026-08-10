@@ -33,7 +33,7 @@ attributes:
     source_table: FUNDS
     source_column: null
     comment: "PK surrogate. BCV: \"[Involved Party] Funds\" (id 10821). Quỹ đầu tư chứng khoán — định chế đầu tư đóng vai trò Involved Party."
-    classification_context: "Source System Code = 'FMS_FUNDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Investment Fund Code
@@ -47,7 +47,7 @@ attributes:
     source_table: FUNDS
     source_column: FMS.FUNDS.ID
     comment: BK chính. PK nguồn.
-    classification_context: "Source System Code = 'FMS_FUNDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'FMS_FUNDS'"
-    etl_derived_value: FMS.FUNDS
+    etl_derived_value: FMS_FUNDS
 
   - name: Fund Management Company Id
     physical_name: fmc_id
@@ -75,7 +75,7 @@ attributes:
     source_table: FUNDS
     source_column: FMS.FUNDS.SEC_ID
     comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS.SECURITIES', SEC_ID)."
-    classification_context: "Source System Code = 'FMS_FUNDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Fund Management Company Code
@@ -89,7 +89,7 @@ attributes:
     source_table: FUNDS
     source_column: FMS.FUNDS.SEC_ID
     comment: "Lookup pair: fund_management_company.fmc_code. Pair with Fund Management Company Id."
-    classification_context: "Source System Code = 'FMS_FUNDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Custodian Bank Id
@@ -103,7 +103,7 @@ attributes:
     source_table: FUNDS
     source_column: FMS.FUNDS.BANK_ID
     comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS.BANK_MONI', BANK_ID)."
-    classification_context: "Source System Code = 'FMS_FUNDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Custodian Bank Code
@@ -117,7 +117,7 @@ attributes:
     source_table: FUNDS
     source_column: FMS.FUNDS.BANK_ID
     comment: "Lookup pair: custodian_bank.custodian_bank_code. Pair with Custodian Bank Id."
-    classification_context: "Source System Code = 'FMS_FUNDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Operation Status Code
@@ -131,7 +131,7 @@ attributes:
     source_table: FUNDS
     source_column: FMS.FUNDS.STATUS_ID
     comment: "Scheme: FMS_OPERATION_STATUS. Nguồn STATUS_ID là UUID FK — ETL resolve sang mã STATUS.CODE tương ứng."
-    classification_context: "Source System Code = 'FMS_FUNDS'"
+    classification_context: FMS_OPERATION_STATUS
     etl_derived_value: null
 
   - name: Investment Fund Full Name
@@ -145,7 +145,7 @@ attributes:
     source_table: FUNDS
     source_column: FMS.FUNDS.ITEM_NAME
     comment: null
-    classification_context: "Source System Code = 'FMS_FUNDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Investment Fund English Name
@@ -159,7 +159,7 @@ attributes:
     source_table: FUNDS
     source_column: FMS.FUNDS.ENAME
     comment: null
-    classification_context: "Source System Code = 'FMS_FUNDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Investment Fund Short Name
@@ -173,7 +173,7 @@ attributes:
     source_table: FUNDS
     source_column: FMS.FUNDS.SHORT_NAME
     comment: null
-    classification_context: "Source System Code = 'FMS_FUNDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Fund Certificate Ticker Code
@@ -187,7 +187,7 @@ attributes:
     source_table: FUNDS
     source_column: FMS.FUNDS.CER_CODE
     comment: null
-    classification_context: "Source System Code = 'FMS_FUNDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Fund Type Code
@@ -201,7 +201,7 @@ attributes:
     source_table: FUNDS
     source_column: FMS.FUNDS.FTYPE_ID
     comment: "Scheme: FMS_FUND_TYPE (đã đăng ký). Nguồn FTYPE_ID là UUID FK — ETL resolve sang mã FUND_TYPE.CODE tương ứng."
-    classification_context: "Source System Code = 'FMS_FUNDS'"
+    classification_context: FMS_FUND_TYPE
     etl_derived_value: null
 
   - name: Charter Capital Amount
@@ -215,7 +215,7 @@ attributes:
     source_table: FUNDS
     source_column: FMS.FUNDS.CAPITAL
     comment: null
-    classification_context: "Source System Code = 'FMS_FUNDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Total Outstanding Unit Quantity
@@ -229,7 +229,7 @@ attributes:
     source_table: FUNDS
     source_column: FMS.FUNDS.TOTAL_QTTY
     comment: null
-    classification_context: "Source System Code = 'FMS_FUNDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Description
@@ -243,7 +243,7 @@ attributes:
     source_table: FUNDS
     source_column: FMS.FUNDS.DESCRIPTION
     comment: null
-    classification_context: "Source System Code = 'FMS_FUNDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Fund Type Decision Number
@@ -257,7 +257,7 @@ attributes:
     source_table: FUNDS
     source_column: FMS.FUNDS.TYPE_OF_FUND_NO
     comment: null
-    classification_context: "Source System Code = 'FMS_FUNDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Fund Type Par Value Description
@@ -271,7 +271,7 @@ attributes:
     source_table: FUNDS
     source_column: FMS.FUNDS.TYPE_OF_FUND_MNP
     comment: "Mô tả nguồn gợi ý giá trị tiền tệ nhưng data type là NVARCHAR2 và tên cột lẫn giữa 'type' và 'mệnh giá' — giữ Text denormalized, cần xác nhận nghiệp vụ trước khi tách sang Currency Amount."
-    classification_context: "Source System Code = 'FMS_FUNDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Fund Type Identifier Description
@@ -285,7 +285,7 @@ attributes:
     source_table: FUNDS
     source_column: FMS.FUNDS.TYPE_OF_FUND_DENT
     comment: null
-    classification_context: "Source System Code = 'FMS_FUNDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Fund Duration Description
@@ -299,7 +299,7 @@ attributes:
     source_table: FUNDS
     source_column: FMS.FUNDS.TIME_OF_FUND
     comment: null
-    classification_context: "Source System Code = 'FMS_FUNDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Amendment Document Number
@@ -313,7 +313,7 @@ attributes:
     source_table: FUNDS
     source_column: FMS.FUNDS.VOUCHER_NO
     comment: null
-    classification_context: "Source System Code = 'FMS_FUNDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Net Asset Value Amount
@@ -327,7 +327,7 @@ attributes:
     source_table: FUNDS
     source_column: FMS.FUNDS.NAV
     comment: null
-    classification_context: "Source System Code = 'FMS_FUNDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Net Asset Value Per Unit Amount
@@ -341,7 +341,7 @@ attributes:
     source_table: FUNDS
     source_column: FMS.FUNDS.NAV_CCQ
     comment: null
-    classification_context: "Source System Code = 'FMS_FUNDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Decision Issue Date
@@ -355,7 +355,7 @@ attributes:
     source_table: FUNDS
     source_column: FMS.FUNDS.DEC_DATE
     comment: null
-    classification_context: "Source System Code = 'FMS_FUNDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Unit Par Value Amount
@@ -369,7 +369,7 @@ attributes:
     source_table: FUNDS
     source_column: FMS.FUNDS.PAR_VALUE
     comment: null
-    classification_context: "Source System Code = 'FMS_FUNDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Investment Strategy Description
@@ -383,7 +383,7 @@ attributes:
     source_table: FUNDS
     source_column: FMS.FUNDS.INVES_STRATEGY
     comment: null
-    classification_context: "Source System Code = 'FMS_FUNDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Change Description
@@ -397,7 +397,7 @@ attributes:
     source_table: FUNDS
     source_column: FMS.FUNDS.DESCHANGE
     comment: null
-    classification_context: "Source System Code = 'FMS_FUNDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Listing Date
@@ -411,7 +411,7 @@ attributes:
     source_table: FUNDS
     source_column: FMS.FUNDS.LISTING_DATE
     comment: null
-    classification_context: "Source System Code = 'FMS_FUNDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Initial Offering Unit Quantity
@@ -425,7 +425,7 @@ attributes:
     source_table: FUNDS
     source_column: FMS.FUNDS.NUMBER_FUND_CER_FIRST
     comment: null
-    classification_context: "Source System Code = 'FMS_FUNDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Stock Exchange Name
@@ -439,5 +439,5 @@ attributes:
     source_table: FUNDS
     source_column: FMS.FUNDS.STOCK_EXCHANGE
     comment: "[ĐỔI 2026-07-19] Đổi từ Classification Value sang Text 1:1 theo yêu cầu Data Modeler — map trực tiếp từ nguồn, không qua classification. Đổi tên từ 'Listing Market Code' (tránh trùng tên với attribute cùng ý nghĩa của SECURITIES.MARKET — nay là 'Market Code', vẫn giữ Classification Value FMS_LISTING_MARKET, không đổi)."
-    classification_context: "Source System Code = 'FMS_FUNDS'"
+    classification_context: null
     etl_derived_value: null

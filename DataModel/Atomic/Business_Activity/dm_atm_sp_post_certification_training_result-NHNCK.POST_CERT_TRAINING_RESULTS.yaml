@@ -33,7 +33,7 @@ attributes:
     source_table: POST_CERT_TRAINING_RESULTS
     source_column: null
     comment: "PK surrogate. BCV: [Business Activity] Business Activity."
-    classification_context: "Source System Code = 'NHNCK_POST_CERT_TRAINING_RESULTS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner Post Certification Training Result Code
@@ -47,7 +47,7 @@ attributes:
     source_table: POST_CERT_TRAINING_RESULTS
     source_column: NHNCK.POST_CERT_TRAINING_RESULTS.ID
     comment: BK chính. Nguồn lưu NUMBER — ETL convert sang string.
-    classification_context: "Source System Code = 'NHNCK_POST_CERT_TRAINING_RESULTS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     classification_context: "Source System Code = 'NHNCK_POST_CERT_TRAINING_RESULTS'"
-    etl_derived_value: NHNCK.POST_CERT_TRAINING_RESULTS
+    etl_derived_value: NHNCK_POST_CERT_TRAINING_RESULTS
 
   - name: Securities Practitioner Id
     physical_name: sp_id
@@ -75,7 +75,7 @@ attributes:
     source_table: POST_CERT_TRAINING_RESULTS
     source_column: NHNCK.POST_CERT_TRAINING_RESULTS.PROFESSIONAL_ID
     comment: "FK target: securities_practitioner.securities_practitioner_id. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
-    classification_context: "Source System Code = 'NHNCK_POST_CERT_TRAINING_RESULTS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner Code
@@ -89,7 +89,7 @@ attributes:
     source_table: POST_CERT_TRAINING_RESULTS
     source_column: NHNCK.POST_CERT_TRAINING_RESULTS.PROFESSIONAL_ID
     comment: "Lookup pair: securities_practitioner.securities_practitioner_code. Pair with Securities Practitioner Id."
-    classification_context: "Source System Code = 'NHNCK_POST_CERT_TRAINING_RESULTS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner Post Certification Training Course Id
@@ -103,7 +103,7 @@ attributes:
     source_table: POST_CERT_TRAINING_RESULTS
     source_column: NHNCK.POST_CERT_TRAINING_RESULTS.TRAINING_COURSE_ID
     comment: "FK target: sp_post_certification_training_course.sp_post_certification_training_course_id. Cần ETL crosswalk sang NHNCK.POST_CERT_TRAINING_COURSES: POST_CERT_TRAINING_RESULTS.TRAINING_COURSE_ID = POST_CERT_TRAINING_COURSES.ID để xác nhận COURSE_CODE sau đó hash_id('NHNCK.POST_CERT_TRAINING_COURSES', COURSE_CODE) | Trước đây hash trực tiếp theo TRAINING_COURSE_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ COURSE_CODE) — đã sửa sang crosswalk 2026-07-27."
-    classification_context: "Source System Code = 'NHNCK_POST_CERT_TRAINING_RESULTS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner Post Certification Training Course Code
@@ -117,7 +117,7 @@ attributes:
     source_table: POST_CERT_TRAINING_RESULTS
     source_column: NHNCK.POST_CERT_TRAINING_COURSES.COURSE_CODE
     comment: "Lookup pair: sp_post_certification_training_course.sp_post_certification_training_course_code. Pair with Securities Practitioner Post Certification Training Course Id. Giá trị lấy từ NHNCK.POST_CERT_TRAINING_COURSES.COURSE_CODE sau ETL crosswalk — chi tiết xem comment Securities Practitioner Post Certification Training Course Id."
-    classification_context: "Source System Code = 'NHNCK_POST_CERT_TRAINING_RESULTS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Training Start Date
@@ -131,7 +131,7 @@ attributes:
     source_table: POST_CERT_TRAINING_RESULTS
     source_column: NHNCK.POST_CERT_TRAINING_RESULTS.START_DATE
     comment: Mô tả cột nguồn còn TBD — suy luận từ tên cột.
-    classification_context: "Source System Code = 'NHNCK_POST_CERT_TRAINING_RESULTS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Training End Date
@@ -145,7 +145,7 @@ attributes:
     source_table: POST_CERT_TRAINING_RESULTS
     source_column: NHNCK.POST_CERT_TRAINING_RESULTS.END_DATE
     comment: Mô tả cột nguồn còn TBD — suy luận từ tên cột.
-    classification_context: "Source System Code = 'NHNCK_POST_CERT_TRAINING_RESULTS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Training Hours
@@ -159,7 +159,7 @@ attributes:
     source_table: POST_CERT_TRAINING_RESULTS
     source_column: NHNCK.POST_CERT_TRAINING_RESULTS.TRAINING_HOURS
     comment: Mô tả cột nguồn còn TBD — suy luận từ tên cột.
-    classification_context: "Source System Code = 'NHNCK_POST_CERT_TRAINING_RESULTS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Training Result Status Code
@@ -173,7 +173,7 @@ attributes:
     source_table: POST_CERT_TRAINING_RESULTS
     source_column: NHNCK.POST_CERT_TRAINING_RESULTS.RESULT_STATUS
     comment: "Scheme: NHNCK_POST_CERT_TRAINING_RESULT_STATUS. Mô tả cột nguồn còn TBD — cần BA xác nhận giá trị cụ thể trước khi hoàn thiện ETL mapping."
-    classification_context: "Source System Code = 'NHNCK_POST_CERT_TRAINING_RESULTS'"
+    classification_context: NHNCK_POST_CERT_TRAINING_RESULT_STATUS
     etl_derived_value: null
 
   - name: Training Classification Result Code
@@ -187,7 +187,7 @@ attributes:
     source_table: POST_CERT_TRAINING_RESULTS
     source_column: NHNCK.POST_CERT_TRAINING_RESULTS.CLASSIFICATION_RESULT
     comment: "Scheme: NHNCK_POST_CERT_TRAINING_CLASSIFICATION. Nguồn lưu NVARCHAR2(510) — mô tả cột còn TBD, cần BA xác nhận giá trị cụ thể."
-    classification_context: "Source System Code = 'NHNCK_POST_CERT_TRAINING_RESULTS'"
+    classification_context: NHNCK_POST_CERT_TRAINING_CLASSIFICATION
     etl_derived_value: null
 
   - name: Note
@@ -201,5 +201,5 @@ attributes:
     source_table: POST_CERT_TRAINING_RESULTS
     source_column: NHNCK.POST_CERT_TRAINING_RESULTS.NOTE
     comment: null
-    classification_context: "Source System Code = 'NHNCK_POST_CERT_TRAINING_RESULTS'"
+    classification_context: null
     etl_derived_value: null

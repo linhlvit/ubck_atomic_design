@@ -33,7 +33,7 @@ attributes:
     source_table: SECURITY_MEASURE_DECISION_RECIPIENT
     source_column: null
     comment: "PK surrogate. BCV: [Business Activity] Conduct Violation."
-    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION_RECIPIENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Security Measure Decision Recipient Code
@@ -47,7 +47,7 @@ attributes:
     source_table: SECURITY_MEASURE_DECISION_RECIPIENT
     source_column: THANHTRA.SECURITY_MEASURE_DECISION_RECIPIENT.ID
     comment: BK chính. PK nguồn (VARCHAR2 UUID).
-    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION_RECIPIENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION_RECIPIENT'"
-    etl_derived_value: THANHTRA.SECURITY_MEASURE_DECISION_RECIPIENT
+    etl_derived_value: THANHTRA_SECURITY_MEASURE_DECISION_RECIPIENT
 
   - name: Security Measure Decision Id
     physical_name: sm_decision_id
@@ -75,7 +75,7 @@ attributes:
     source_table: SECURITY_MEASURE_DECISION_RECIPIENT
     source_column: THANHTRA.SECURITY_MEASURE_DECISION_RECIPIENT.SECURITY_MEASURE_DECISION_ID
     comment: "FK target: sm_decision.sm_decision_id. Hash: hash_id('THANHTRA.SECURITY_MEASURE_DECISION', SECURITY_MEASURE_DECISION_ID)."
-    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION_RECIPIENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Security Measure Decision Code
@@ -89,7 +89,7 @@ attributes:
     source_table: SECURITY_MEASURE_DECISION_RECIPIENT
     source_column: THANHTRA.SECURITY_MEASURE_DECISION_RECIPIENT.SECURITY_MEASURE_DECISION_ID
     comment: "Lookup pair: sm_decision.sm_decision_code. Pair with Security Measure Decision Id."
-    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION_RECIPIENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Recipient Type Code
@@ -103,7 +103,7 @@ attributes:
     source_table: SECURITY_MEASURE_DECISION_RECIPIENT
     source_column: THANHTRA.SECURITY_MEASURE_DECISION_RECIPIENT.RECIPIENT_TYPE
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION_RECIPIENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Recipient Name
@@ -117,7 +117,7 @@ attributes:
     source_table: SECURITY_MEASURE_DECISION_RECIPIENT
     source_column: THANHTRA.SECURITY_MEASURE_DECISION_RECIPIENT.RECIPIENT_NAME
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION_RECIPIENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Recipient Reference Id
@@ -131,7 +131,7 @@ attributes:
     source_table: SECURITY_MEASURE_DECISION_RECIPIENT
     source_column: THANHTRA.SECURITY_MEASURE_DECISION_RECIPIENT.RECIPIENT_REFERENCE_ID
     comment: Denormalized reference — không FK formal sang hệ thống nguồn.
-    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION_RECIPIENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Sent Date
@@ -145,7 +145,7 @@ attributes:
     source_table: SECURITY_MEASURE_DECISION_RECIPIENT
     source_column: THANHTRA.SECURITY_MEASURE_DECISION_RECIPIENT.SENT_DATE
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION_RECIPIENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Confirmation Status Code
@@ -159,7 +159,7 @@ attributes:
     source_table: SECURITY_MEASURE_DECISION_RECIPIENT
     source_column: THANHTRA.SECURITY_MEASURE_DECISION_RECIPIENT.CONFIRMATION_STATUS
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION_RECIPIENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Confirmed Date
@@ -173,7 +173,7 @@ attributes:
     source_table: SECURITY_MEASURE_DECISION_RECIPIENT
     source_column: THANHTRA.SECURITY_MEASURE_DECISION_RECIPIENT.CONFIRMED_AT
     comment: Nguồn DATE — không có giờ.
-    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION_RECIPIENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Confirmed By
@@ -187,5 +187,5 @@ attributes:
     source_table: SECURITY_MEASURE_DECISION_RECIPIENT
     source_column: THANHTRA.SECURITY_MEASURE_DECISION_RECIPIENT.CONFIRMED_BY
     comment: Không có FK formal đến Officer — lưu dạng text denormalized.
-    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION_RECIPIENT'"
+    classification_context: null
     etl_derived_value: null

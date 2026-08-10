@@ -33,7 +33,7 @@ attributes:
     source_table: INVES
     source_column: null
     comment: "PK surrogate. BCV: \"[Involved Party] Individual\". Nhà đầu tư cá nhân/tổ chức ủy thác đầu tư cho Fund Management Company."
-    classification_context: "Source System Code = 'FMS_INVES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Discretionary Investment Investor Code
@@ -47,7 +47,7 @@ attributes:
     source_table: INVES
     source_column: FMS.INVES.ID
     comment: BK chính. PK nguồn.
-    classification_context: "Source System Code = 'FMS_INVES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'FMS_INVES'"
-    etl_derived_value: FMS.INVES
+    etl_derived_value: FMS_INVES
 
   - name: Fund Management Company Id
     physical_name: fmc_id
@@ -75,7 +75,7 @@ attributes:
     source_table: INVES
     source_column: FMS.INVES.SEC_ID
     comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS.SECURITIES', SEC_ID)."
-    classification_context: "Source System Code = 'FMS_INVES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Fund Management Company Code
@@ -89,7 +89,7 @@ attributes:
     source_table: INVES
     source_column: FMS.INVES.SEC_ID
     comment: "Lookup pair: fund_management_company.fmc_code. Pair with Fund Management Company Id."
-    classification_context: "Source System Code = 'FMS_INVES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Nationality Id
@@ -103,7 +103,7 @@ attributes:
     source_table: INVES
     source_column: FMS.INVES.NAT_ID
     comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang FMS.NATIONAL: INVES.NAT_ID = NATIONAL.ID để xác nhận SNAME sau đó hash_id('ECAT.COUNTRY', SNAME) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
-    classification_context: "Source System Code = 'FMS_INVES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Nationality Code
@@ -117,7 +117,7 @@ attributes:
     source_table: INVES
     source_column: FMS.NATIONAL.SNAME
     comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality Id. Giá trị lấy từ SNAME (join FMS.NATIONAL qua NAT_ID = FMS.NATIONAL.ID). Giá trị lấy từ FMS.NATIONAL.SNAME sau ETL crosswalk — chi tiết xem comment Nationality Id."
-    classification_context: "Source System Code = 'FMS_INVES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Stockholder Type Code
@@ -131,7 +131,7 @@ attributes:
     source_table: INVES
     source_column: FMS.INVES.STO_ID
     comment: "Scheme: FMS_STOCKHOLDER_TYPE (tái sử dụng — đã đăng ký, nguồn FMS.STOCKHOLDERTYPE). Nguồn STO_ID là UUID FK — ETL resolve sang mã tương ứng."
-    classification_context: "Source System Code = 'FMS_INVES'"
+    classification_context: FMS_STOCKHOLDER_TYPE
     etl_derived_value: null
 
   - name: Discretionary Investment Investor Full Name
@@ -145,7 +145,7 @@ attributes:
     source_table: INVES
     source_column: FMS.INVES.ITEM_NAME
     comment: null
-    classification_context: "Source System Code = 'FMS_INVES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Organization Territory Type Code
@@ -159,8 +159,8 @@ attributes:
     source_table: INVES
     source_column: FMS.INVES.DORF
     comment: "Scheme: FMS_ORG_TERRITORY_TYPE (tái sử dụng). ETL derived: 1=DOMESTIC;2=FOREIGN."
-    classification_context: "Source System Code = 'FMS_INVES'"
-    etl_derived_value: "1=DOMESTIC;2=FOREIGN"
+    classification_context: FMS_ORG_TERRITORY_TYPE
+    etl_derived_value: null
 
   - name: Relationship Description
     physical_name: rltnp_description
@@ -173,7 +173,7 @@ attributes:
     source_table: INVES
     source_column: FMS.INVES.RELATION_SHIP
     comment: null
-    classification_context: "Source System Code = 'FMS_INVES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Committed Entrustment Scale Amount
@@ -187,7 +187,7 @@ attributes:
     source_table: INVES
     source_column: FMS.INVES.AD_SCALE
     comment: null
-    classification_context: "Source System Code = 'FMS_INVES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Actual Entrustment Scale Amount
@@ -201,7 +201,7 @@ attributes:
     source_table: INVES
     source_column: FMS.INVES.ACT_SCALE
     comment: null
-    classification_context: "Source System Code = 'FMS_INVES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Portfolio Value Amount
@@ -215,5 +215,5 @@ attributes:
     source_table: INVES
     source_column: FMS.INVES.LIST_VALUE
     comment: null
-    classification_context: "Source System Code = 'FMS_INVES'"
+    classification_context: null
     etl_derived_value: null

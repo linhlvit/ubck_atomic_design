@@ -33,7 +33,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: null
     comment: "PK surrogate. BCV: \"[Transaction] Financial Market Transaction\". Khớp lệnh thành công trên HOSE — mỗi trade là 1 bản ghi Fact Append."
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Trade Code
@@ -47,7 +47,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.TRADE_ID
     comment: BK chính. PK nguồn TRADE_BOOK_HOSE.
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. HOSE và HNX đều map vào Securities Trade — src_stm_code phân biệt nguồn."
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
-    etl_derived_value: ORDERTRADE.TRADE_BOOK_HOSE
+    etl_derived_value: ORDERTRADE_TRADE_BOOK_HOSE
 
   - name: Trade Date
     physical_name: trade_dt
@@ -75,7 +75,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.TRADE_DATE
     comment: null
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Market Id Code
@@ -89,7 +89,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.MARKET_ID
     comment: "Scheme: ORDERTRADE_MARKET_ID."
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: ORDERTRADE_MARKET_ID
     etl_derived_value: null
 
   - name: Security Symbol Code
@@ -103,7 +103,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.SYMBOL
     comment: null
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Currency Code
@@ -117,7 +117,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.CURRENCY
     comment: "FK target: Currency.Currency Code. Chỉ có ở HOSE — HNX không có field này."
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Board Type Code
@@ -131,7 +131,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.BOARD_TYPE
     comment: "Scheme: ORDERTRADE_BOARD_TYPE."
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: ORDERTRADE_BOARD_TYPE
     etl_derived_value: null
 
   - name: Trade Time
@@ -145,7 +145,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.TIME
     comment: Nguồn lưu dạng varchar — ETL giữ nguyên định dạng KRX.
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Session Code
@@ -159,7 +159,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.SESSION
     comment: "Scheme: ORDERTRADE_SESSION."
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: ORDERTRADE_SESSION
     etl_derived_value: null
 
   - name: Execution Price
@@ -173,7 +173,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.EXECUTION_EXEC_PRICE
     comment: null
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Execution Price Versus LTP
@@ -187,7 +187,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.EXECUTION_EXEC_PRICE_LTP
     comment: Chỉ có ở HOSE — HNX không có field này.
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Execution Volume
@@ -201,7 +201,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.EXECUTION_VOLUME
     comment: Nguồn bigint.
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Execution Value
@@ -215,7 +215,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.EXECUTION_VALUE
     comment: "nullable=false — HOSE có sẵn; HNX ETL derive = trade_price × trade_qty (quyết định Q6 HLD). Nguồn decimal(22,4)."
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Execution Last Traded Price
@@ -229,7 +229,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.EXECUTION_LTP
     comment: Chỉ có ở HOSE — HNX không có field này.
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Execution New High Low Price Indicator
@@ -243,7 +243,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.EXECUTION_NEW_HIGH_LOW_PRICE
     comment: Chỉ có ở HOSE — HNX không có field này.
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Buy Order Date
@@ -257,7 +257,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.BUY_ORDER_DATE
     comment: Chỉ có ở HOSE — HNX không có field này.
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Buy Order Time
@@ -271,7 +271,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.BUY_ORDER_TIME
     comment: Chỉ có ở HOSE — HNX không có field này.
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Buy Securities Order Id
@@ -285,7 +285,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.BUY_ORDER_ACCEPT_ID
     comment: "FK target: securities_order.securities_order_id. Hash: hash_id('ORDERTRADE.ORDER_BOOK_HOSE', BUY_ORDER_ACCEPT_ID). nullable=true — ETL best-effort resolve trong batch ngày (quyết định Q7 HLD)."
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Buy Securities Order Code
@@ -299,7 +299,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.BUY_ORDER_ACCEPT_ID
     comment: "Lookup pair: securities_order.securities_order_code. Pair with Buy Securities Order Id. FK-BK join target tại Gold layer (quyết định Q3 HLD)."
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Buy Broker Id
@@ -313,7 +313,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.BUY_BRK_ID
     comment: null
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Buy Broker Name
@@ -327,7 +327,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.BUY_BRK
     comment: Chỉ có ở HOSE — HNX không có field này.
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Buy Account Pin Code
@@ -341,7 +341,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.BUY_PIN
     comment: Lưu raw tại Atomic — masking quyết định ở lớp truy cập (quyết định Q4 HLD). Chỉ có ở HOSE — HNX không có field này.
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Buy Account Number
@@ -355,7 +355,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.BUY_ACCT_NO
     comment: null
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Buy Account Holder Name
@@ -369,7 +369,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.BUY_NAME
     comment: Chỉ có ở HOSE — HNX không có field này.
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Buy Client House Classification Code
@@ -383,7 +383,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.BUY_CLIENT_HOUSE_CLASSIFICATION_CODE
     comment: "Scheme: ORDERTRADE_CLIENT_HOUSE_TYPE."
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: ORDERTRADE_CLIENT_HOUSE_TYPE
     etl_derived_value: null
 
   - name: Buy Investor Type Code
@@ -397,7 +397,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.BUY_INVEST_TYPE
     comment: "Scheme: ORDERTRADE_INVESTOR_TYPE. Lưu raw — phân biệt HOSE/HNX qua src_stm_code (quyết định Q1 HLD)."
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: ORDERTRADE_INVESTOR_TYPE
     etl_derived_value: null
 
   - name: Buy Foreign Investor Type Code
@@ -411,7 +411,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.BUY_FOREIGNER_INVESTOR_TYPE
     comment: "Scheme: ORDERTRADE_FOREIGN_INVESTOR_TYPE."
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: ORDERTRADE_FOREIGN_INVESTOR_TYPE
     etl_derived_value: null
 
   - name: Buy Order Price
@@ -425,7 +425,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.BUY_ORDER_PRICE
     comment: null
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Buy Order Volume
@@ -439,7 +439,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.BUY_ORDER_VOL
     comment: Nguồn bigint. Chỉ có ở HOSE — HNX dùng buy_order_qty.
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Buy Trader Number
@@ -453,7 +453,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.BUY_TRADER_NO
     comment: Chỉ có ở HOSE — HNX không có field này.
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Buy Trader Name
@@ -467,7 +467,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.BUY_TRADER_NAME
     comment: Chỉ có ở HOSE — HNX không có field này.
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Buy Reference Sequence Number
@@ -481,7 +481,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.BUY_REFERENCE_SEQUENCE_NO
     comment: Chỉ có ở HOSE — HNX Trade không có field Reference Sequence riêng; nullable cho HNX (quyết định Q5 HLD).
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Sell Order Date
@@ -495,7 +495,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.SELL_ORDER_DATE
     comment: Chỉ có ở HOSE — HNX không có field này.
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Sell Order Time
@@ -509,7 +509,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.SELL_ORDER_TIME
     comment: Chỉ có ở HOSE — HNX không có field này.
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Sell Securities Order Id
@@ -523,7 +523,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.SELL_ORDER_ACCEPT_ID
     comment: "FK target: securities_order.securities_order_id. Hash: hash_id('ORDERTRADE.ORDER_BOOK_HOSE', SELL_ORDER_ACCEPT_ID). nullable=true — ETL best-effort resolve trong batch ngày (quyết định Q7 HLD)."
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Sell Securities Order Code
@@ -537,7 +537,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.SELL_ORDER_ACCEPT_ID
     comment: "Lookup pair: securities_order.securities_order_code. Pair with Sell Securities Order Id. FK-BK join target tại Gold layer (quyết định Q3 HLD)."
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Sell Broker Id
@@ -551,7 +551,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.SELL_BRK_ID
     comment: null
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Sell Broker Name
@@ -565,7 +565,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.SELL_BRK
     comment: Chỉ có ở HOSE — HNX không có field này.
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Sell Account Pin Code
@@ -579,7 +579,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.SELL_PIN
     comment: Lưu raw tại Atomic — masking quyết định ở lớp truy cập (quyết định Q4 HLD). Chỉ có ở HOSE — HNX không có field này.
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Sell Account Number
@@ -593,7 +593,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.SELL_ACCT_NO
     comment: null
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Sell Account Holder Name
@@ -607,7 +607,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.SELL_NAME
     comment: Chỉ có ở HOSE — HNX không có field này.
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Sell Client House Classification Code
@@ -621,7 +621,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.SELL_CLIENT_HOUSE_CLASSIFICATION_CODE
     comment: "Scheme: ORDERTRADE_CLIENT_HOUSE_TYPE."
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: ORDERTRADE_CLIENT_HOUSE_TYPE
     etl_derived_value: null
 
   - name: Sell Investor Type Code
@@ -635,7 +635,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.SELL_INVEST_TYPE
     comment: "Scheme: ORDERTRADE_INVESTOR_TYPE. Lưu raw — phân biệt HOSE/HNX qua src_stm_code (quyết định Q1 HLD)."
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: ORDERTRADE_INVESTOR_TYPE
     etl_derived_value: null
 
   - name: Sell Foreign Investor Type Code
@@ -649,7 +649,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.SELL_FOREIGNER_INVESTOR_TYPE
     comment: "Scheme: ORDERTRADE_FOREIGN_INVESTOR_TYPE."
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: ORDERTRADE_FOREIGN_INVESTOR_TYPE
     etl_derived_value: null
 
   - name: Sell Order Price
@@ -663,7 +663,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.SELL_ORDER_PRICE
     comment: null
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Sell Order Volume
@@ -677,7 +677,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.SELL_ORDER_VOL
     comment: Nguồn bigint. Chỉ có ở HOSE — HNX dùng sell_order_qty.
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Sell Trader Number
@@ -691,7 +691,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.SELL_TRADER_NO
     comment: Chỉ có ở HOSE — HNX không có field này.
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Sell Trader Name
@@ -705,7 +705,7 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.SELL_TRADER_NAME
     comment: Chỉ có ở HOSE — HNX không có field này.
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Sell Reference Sequence Number
@@ -719,5 +719,5 @@ attributes:
     source_table: TRADE_BOOK_HOSE
     source_column: ORDERTRADE.TRADE_BOOK_HOSE.SELL_REFERENCE_SEQUENCE_NO
     comment: Chỉ có ở HOSE — HNX Trade không có field Reference Sequence riêng; nullable cho HNX (quyết định Q5 HLD).
-    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HOSE'"
+    classification_context: null
     etl_derived_value: null

@@ -33,7 +33,7 @@ attributes:
     source_table: SC_FIRM_RELATED_PERSON
     source_column: null
     comment: PK surrogate.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_RELATED_PERSON'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Company Related Person Code
@@ -47,7 +47,7 @@ attributes:
     source_table: SC_FIRM_RELATED_PERSON
     source_column: SCMS.SC_FIRM_RELATED_PERSON.ID
     comment: BK. NUMBER(19) — ETL convert sang string.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_RELATED_PERSON'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_RELATED_PERSON'"
-    etl_derived_value: SCMS.SC_FIRM_RELATED_PERSON
+    etl_derived_value: SCMS_SC_FIRM_RELATED_PERSON
 
   - name: Securities Company Id
     physical_name: sc_id
@@ -75,7 +75,7 @@ attributes:
     source_table: SC_FIRM_RELATED_PERSON
     source_column: SCMS.SC_FIRM_RELATED_PERSON.SC_FIRM_INFO_ID
     comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO: SC_FIRM_RELATED_PERSON.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE sau đó hash_id('SCMS.SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_RELATED_PERSON'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Company Code
@@ -89,7 +89,7 @@ attributes:
     source_table: SC_FIRM_RELATED_PERSON
     source_column: SCMS.SC_FIRM_INFO.CODE
     comment: "Lookup pair: securities_company.securities_company_code. Pair with Securities Company Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết xem comment Securities Company Id."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_RELATED_PERSON'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Entity Type Code
@@ -103,7 +103,7 @@ attributes:
     source_table: SC_FIRM_RELATED_PERSON
     source_column: SCMS.SC_FIRM_RELATED_PERSON.ENTITY_TYPE
     comment: "Scheme: SCMS_ENTITY_TYPE. NVARCHAR2(20)."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_RELATED_PERSON'"
+    classification_context: SCMS_ENTITY_TYPE
     etl_derived_value: null
 
   - name: Record Status Code
@@ -117,7 +117,7 @@ attributes:
     source_table: SC_FIRM_RELATED_PERSON
     source_column: SCMS.SC_FIRM_RELATED_PERSON.RECORD_STATUS
     comment: "Scheme: SCMS_USAGE_STATUS. NUMBER(1)."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_RELATED_PERSON'"
+    classification_context: SCMS_USAGE_STATUS
     etl_derived_value: null
 
   - name: Gender Code
@@ -131,7 +131,7 @@ attributes:
     source_table: SC_FIRM_RELATED_PERSON
     source_column: SCMS.SC_FIRM_RELATED_PERSON.GENDER
     comment: "Scheme: SCMS_GENDER. NUMBER(10) — ETL convert sang string."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_RELATED_PERSON'"
+    classification_context: SCMS_GENDER
     etl_derived_value: null
 
   - name: Position Id
@@ -145,7 +145,7 @@ attributes:
     source_table: SC_FIRM_RELATED_PERSON
     source_column: SCMS.SC_FIRM_RELATED_PERSON.POSITION_ID
     comment: Pending — FK target CAT_POSITION nằm ngoài scope. VARCHAR2(200) — kiểu dữ liệu gốc là string (có thể lưu ID hoặc code).
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_RELATED_PERSON'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Position Code
@@ -159,7 +159,7 @@ attributes:
     source_table: SC_FIRM_RELATED_PERSON
     source_column: SCMS.SC_FIRM_RELATED_PERSON.POSITION_ID
     comment: Pending — Pair with Position Id.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_RELATED_PERSON'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Country Id
@@ -173,7 +173,7 @@ attributes:
     source_table: SC_FIRM_RELATED_PERSON
     source_column: SCMS.SC_FIRM_RELATED_PERSON.COUNTRY_ID
     comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang SCMS.CAT_NATIONALITY: SC_FIRM_RELATED_PERSON.COUNTRY_ID = CAT_NATIONALITY.ID để xác nhận NATIONALITY_CODE sau đó hash_id('ECAT.COUNTRY', NATIONALITY_CODE) | Cột nguồn tên COUNTRY_ID nhưng crosswalk trỏ tới danh mục quốc tịch (CAT_NATIONALITY) theo xác nhận Data Modeler 2026-07-29 — SCMS không có bảng danh mục quốc gia riêng (CAT_COUNTRY không tồn tại trong khảo sát nguồn). Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_RELATED_PERSON'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Country Code
@@ -187,7 +187,7 @@ attributes:
     source_table: SC_FIRM_RELATED_PERSON
     source_column: SCMS.CAT_NATIONALITY.NATIONALITY_CODE
     comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Country Id. Giá trị lấy từ SCMS.CAT_NATIONALITY.NATIONALITY_CODE sau ETL crosswalk — chi tiết xem comment Country Id."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_RELATED_PERSON'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Full Name
@@ -201,7 +201,7 @@ attributes:
     source_table: SC_FIRM_RELATED_PERSON
     source_column: SCMS.SC_FIRM_RELATED_PERSON.FULL_NAME
     comment: NVARCHAR2(500).
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_RELATED_PERSON'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Org Name En
@@ -215,7 +215,7 @@ attributes:
     source_table: SC_FIRM_RELATED_PERSON
     source_column: SCMS.SC_FIRM_RELATED_PERSON.ORG_NAME_EN
     comment: "VARCHAR2(500). Mô tả gốc BRD trống. Chỉ áp dụng khi ENTITY_TYPE=TO_CHUC."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_RELATED_PERSON'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Org Short Name
@@ -229,7 +229,7 @@ attributes:
     source_table: SC_FIRM_RELATED_PERSON
     source_column: SCMS.SC_FIRM_RELATED_PERSON.ORG_SHORT_NAME
     comment: VARCHAR2(200). Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_RELATED_PERSON'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Date Of Birth
@@ -243,7 +243,7 @@ attributes:
     source_table: SC_FIRM_RELATED_PERSON
     source_column: SCMS.SC_FIRM_RELATED_PERSON.DATE_OF_BIRTH
     comment: DATE.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_RELATED_PERSON'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Issue Date
@@ -257,7 +257,7 @@ attributes:
     source_table: SC_FIRM_RELATED_PERSON
     source_column: SCMS.SC_FIRM_RELATED_PERSON.ISSUE_DATE
     comment: DATE.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_RELATED_PERSON'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Issue Place
@@ -271,7 +271,7 @@ attributes:
     source_table: SC_FIRM_RELATED_PERSON
     source_column: SCMS.SC_FIRM_RELATED_PERSON.ISSUE_PLACE
     comment: VARCHAR2(500).
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_RELATED_PERSON'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Representative Title
@@ -285,7 +285,7 @@ attributes:
     source_table: SC_FIRM_RELATED_PERSON
     source_column: SCMS.SC_FIRM_RELATED_PERSON.REPRESENTATIVE_TITLE
     comment: VARCHAR2(200). Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_RELATED_PERSON'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Legal Representative
@@ -299,7 +299,7 @@ attributes:
     source_table: SC_FIRM_RELATED_PERSON
     source_column: SCMS.SC_FIRM_RELATED_PERSON.LEGAL_REPRESENTATIVE
     comment: "VARCHAR2(500). Mô tả gốc BRD ghi '1=Có; 0=Không' nhưng data type là VARCHAR2(500) — không dùng Boolean. Cần profile để xác nhận format thực tế."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_RELATED_PERSON'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Appointment Date
@@ -313,7 +313,7 @@ attributes:
     source_table: SC_FIRM_RELATED_PERSON
     source_column: SCMS.SC_FIRM_RELATED_PERSON.APPOINTMENT_DATE
     comment: DATE.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_RELATED_PERSON'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Workplace
@@ -327,7 +327,7 @@ attributes:
     source_table: SC_FIRM_RELATED_PERSON
     source_column: SCMS.SC_FIRM_RELATED_PERSON.WORKPLACE
     comment: VARCHAR2(500). Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_RELATED_PERSON'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Relationship
@@ -341,7 +341,7 @@ attributes:
     source_table: SC_FIRM_RELATED_PERSON
     source_column: SCMS.SC_FIRM_RELATED_PERSON.RELATIONSHIP
     comment: NVARCHAR2(500).
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_RELATED_PERSON'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Ownership Ratio
@@ -355,7 +355,7 @@ attributes:
     source_table: SC_FIRM_RELATED_PERSON
     source_column: SCMS.SC_FIRM_RELATED_PERSON.OWNERSHIP_RATIO
     comment: "NUMBER(12,4). Lưu dạng thập phân (VD: 5.25 = 5.25%)."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_RELATED_PERSON'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Ownership Ratio Date
@@ -369,7 +369,7 @@ attributes:
     source_table: SC_FIRM_RELATED_PERSON
     source_column: SCMS.SC_FIRM_RELATED_PERSON.OWNERSHIP_RATIO_DATE
     comment: DATE. Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_RELATED_PERSON'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Shares Count
@@ -383,7 +383,7 @@ attributes:
     source_table: SC_FIRM_RELATED_PERSON
     source_column: SCMS.SC_FIRM_RELATED_PERSON.SHARES_COUNT
     comment: NUMBER(19). Large integer. Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_RELATED_PERSON'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Founding Shareholder Indicator
@@ -397,7 +397,7 @@ attributes:
     source_table: SC_FIRM_RELATED_PERSON
     source_column: SCMS.SC_FIRM_RELATED_PERSON.FOUNDING_SHAREHOLDER
     comment: "NUMBER(10). ETL: 1→true, 0/null→false."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_RELATED_PERSON'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Note
@@ -411,5 +411,5 @@ attributes:
     source_table: SC_FIRM_RELATED_PERSON
     source_column: SCMS.SC_FIRM_RELATED_PERSON.NOTE
     comment: NCLOB.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_RELATED_PERSON'"
+    classification_context: null
     etl_derived_value: null

@@ -33,7 +33,7 @@ attributes:
     source_table: VIOLATION_RECORD_BEHAVIOR
     source_column: null
     comment: "PK surrogate. BCV: [Business Activity] Conduct Violation."
-    classification_context: "Source System Code = 'THANHTRA_VIOLATION_RECORD_BEHAVIOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Violation Record Behavior Code
@@ -47,7 +47,7 @@ attributes:
     source_table: VIOLATION_RECORD_BEHAVIOR
     source_column: THANHTRA.VIOLATION_RECORD_BEHAVIOR.ID
     comment: BK chính. PK nguồn (VARCHAR2 UUID).
-    classification_context: "Source System Code = 'THANHTRA_VIOLATION_RECORD_BEHAVIOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'THANHTRA_VIOLATION_RECORD_BEHAVIOR'"
-    etl_derived_value: THANHTRA.VIOLATION_RECORD_BEHAVIOR
+    etl_derived_value: THANHTRA_VIOLATION_RECORD_BEHAVIOR
 
   - name: Violation Record Id
     physical_name: violation_record_id
@@ -75,7 +75,7 @@ attributes:
     source_table: VIOLATION_RECORD_BEHAVIOR
     source_column: THANHTRA.VIOLATION_RECORD_BEHAVIOR.VIOLATION_RECORD_ID
     comment: "FK target: violation_record.violation_record_id. Hash: hash_id('THANHTRA.VIOLATION_RECORD', VIOLATION_RECORD_ID)."
-    classification_context: "Source System Code = 'THANHTRA_VIOLATION_RECORD_BEHAVIOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Violation Record Code
@@ -89,7 +89,7 @@ attributes:
     source_table: VIOLATION_RECORD_BEHAVIOR
     source_column: THANHTRA.VIOLATION_RECORD_BEHAVIOR.VIOLATION_RECORD_ID
     comment: "Lookup pair: violation_record.violation_record_code. Pair with Violation Record Id."
-    classification_context: "Source System Code = 'THANHTRA_VIOLATION_RECORD_BEHAVIOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Violation Behavior Id
@@ -103,7 +103,7 @@ attributes:
     source_table: VIOLATION_RECORD_BEHAVIOR
     source_column: THANHTRA.VIOLATION_RECORD_BEHAVIOR.VIOLATION_BEHAVIOR_ID
     comment: "FK target: violation_behavior.violation_behavior_id. Cần ETL crosswalk sang THANHTRA.VIOLATION_BEHAVIOR: VIOLATION_RECORD_BEHAVIOR.VIOLATION_BEHAVIOR_ID = VIOLATION_BEHAVIOR.ID để xác nhận CODE sau đó hash_id('THANHTRA.VIOLATION_BEHAVIOR', CODE) | Trước đây hash trực tiếp theo VIOLATION_BEHAVIOR_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
-    classification_context: "Source System Code = 'THANHTRA_VIOLATION_RECORD_BEHAVIOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Violation Behavior Code
@@ -117,7 +117,7 @@ attributes:
     source_table: VIOLATION_RECORD_BEHAVIOR
     source_column: THANHTRA.VIOLATION_BEHAVIOR.CODE
     comment: "Lookup pair: violation_behavior.violation_behavior_code. Pair with Violation Behavior Id. Giá trị lấy từ THANHTRA.VIOLATION_BEHAVIOR.CODE sau ETL crosswalk — chi tiết xem comment Violation Behavior Id."
-    classification_context: "Source System Code = 'THANHTRA_VIOLATION_RECORD_BEHAVIOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Description
@@ -131,7 +131,7 @@ attributes:
     source_table: VIOLATION_RECORD_BEHAVIOR
     source_column: THANHTRA.VIOLATION_RECORD_BEHAVIOR.DESCRIPTION
     comment: Nguồn CLOB — ETL truncate.
-    classification_context: "Source System Code = 'THANHTRA_VIOLATION_RECORD_BEHAVIOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Legal Basis
@@ -145,5 +145,5 @@ attributes:
     source_table: VIOLATION_RECORD_BEHAVIOR
     source_column: THANHTRA.VIOLATION_RECORD_BEHAVIOR.LEGAL_BASIS
     comment: Nguồn CLOB — ETL truncate.
-    classification_context: "Source System Code = 'THANHTRA_VIOLATION_RECORD_BEHAVIOR'"
+    classification_context: null
     etl_derived_value: null

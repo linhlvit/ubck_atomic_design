@@ -33,7 +33,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT_BEHAVIOR
     source_column: null
     comment: "PK surrogate. BCV: [Event] Event — Conduct Violation detail per subject."
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT_BEHAVIOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Penalty Decision Subject Behavior Code
@@ -47,7 +47,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT_BEHAVIOR
     source_column: THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR.ID
     comment: BK chính. PK nguồn (VARCHAR2 UUID).
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT_BEHAVIOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT_BEHAVIOR'"
-    etl_derived_value: THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR
+    etl_derived_value: THANHTRA_PENALTY_DECISION_SUBJECT_BEHAVIOR
 
   - name: Penalty Decision Subject Id
     physical_name: pd_subject_id
@@ -75,7 +75,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT_BEHAVIOR
     source_column: THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR.PENALTY_DECISION_SUBJECT_ID
     comment: "FK target: pd_subject.pd_subject_id. Hash: hash_id('THANHTRA.PENALTY_DECISION_SUBJECT', PENALTY_DECISION_SUBJECT_ID)."
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT_BEHAVIOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Penalty Decision Subject Code
@@ -89,7 +89,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT_BEHAVIOR
     source_column: THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR.PENALTY_DECISION_SUBJECT_ID
     comment: "Lookup pair: pd_subject.pd_subject_code. Pair with Penalty Decision Subject Id."
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT_BEHAVIOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Violation Behavior Id
@@ -103,7 +103,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT_BEHAVIOR
     source_column: THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR.VIOLATION_BEHAVIOR_ID
     comment: "FK target: violation_behavior.violation_behavior_id. Cần ETL crosswalk sang THANHTRA.VIOLATION_BEHAVIOR: PENALTY_DECISION_SUBJECT_BEHAVIOR.VIOLATION_BEHAVIOR_ID = VIOLATION_BEHAVIOR.ID để xác nhận CODE sau đó hash_id('THANHTRA.VIOLATION_BEHAVIOR', CODE) | Trước đây hash trực tiếp theo VIOLATION_BEHAVIOR_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT_BEHAVIOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Violation Behavior Code
@@ -117,7 +117,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT_BEHAVIOR
     source_column: THANHTRA.VIOLATION_BEHAVIOR.CODE
     comment: "Lookup pair: violation_behavior.violation_behavior_code. Pair with Violation Behavior Id. Giá trị lấy từ THANHTRA.VIOLATION_BEHAVIOR.CODE sau ETL crosswalk — chi tiết xem comment Violation Behavior Id."
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT_BEHAVIOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Penalty Type Id
@@ -131,7 +131,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT_BEHAVIOR
     source_column: THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR.PENALTY_TYPE_ID
     comment: "FK target: penalty_type.penalty_tp_id. Cần ETL crosswalk sang THANHTRA.PENALTY_TYPE: PENALTY_DECISION_SUBJECT_BEHAVIOR.PENALTY_TYPE_ID = PENALTY_TYPE.ID để xác nhận CODE sau đó hash_id('THANHTRA.PENALTY_TYPE', CODE) | Trước đây hash trực tiếp theo PENALTY_TYPE_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT_BEHAVIOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Penalty Type Code
@@ -145,7 +145,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT_BEHAVIOR
     source_column: THANHTRA.PENALTY_TYPE.CODE
     comment: "Lookup pair: penalty_type.penalty_type_code. Pair with Penalty Type Id. Giá trị lấy từ THANHTRA.PENALTY_TYPE.CODE sau ETL crosswalk — chi tiết xem comment Penalty Type Id."
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT_BEHAVIOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Description
@@ -159,7 +159,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT_BEHAVIOR
     source_column: THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR.DESCRIPTION
     comment: Nguồn CLOB — ETL truncate.
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT_BEHAVIOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Min Fine Amount
@@ -173,7 +173,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT_BEHAVIOR
     source_column: THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR.MIN_FINE_AMOUNT
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT_BEHAVIOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Max Fine Amount
@@ -187,7 +187,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT_BEHAVIOR
     source_column: THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR.MAX_FINE_AMOUNT
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT_BEHAVIOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Applied Fine Amount
@@ -201,7 +201,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT_BEHAVIOR
     source_column: THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR.APPLIED_FINE_AMOUNT
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT_BEHAVIOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Remedial Measure
@@ -215,7 +215,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT_BEHAVIOR
     source_column: THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR.REMEDIAL_MEASURE
     comment: Nguồn CLOB — ETL truncate.
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT_BEHAVIOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Remedial Deadline
@@ -229,7 +229,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT_BEHAVIOR
     source_column: THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR.REMEDIAL_DEADLINE
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT_BEHAVIOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Legal Basis
@@ -243,7 +243,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT_BEHAVIOR
     source_column: THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR.LEGAL_BASIS
     comment: Nguồn CLOB — ETL truncate.
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT_BEHAVIOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Violation Record Id
@@ -257,7 +257,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT_BEHAVIOR
     source_column: THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR.VIOLATION_RECORD_ID
     comment: "FK target: violation_record.violation_record_id. Hash: hash_id('THANHTRA.VIOLATION_RECORD', VIOLATION_RECORD_ID)."
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT_BEHAVIOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Violation Record Code
@@ -271,5 +271,5 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT_BEHAVIOR
     source_column: THANHTRA.VIOLATION_RECORD.ID
     comment: "Lookup pair: violation_record.violation_record_code. Pair with Violation Record Id."
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT_BEHAVIOR'"
+    classification_context: null
     etl_derived_value: null

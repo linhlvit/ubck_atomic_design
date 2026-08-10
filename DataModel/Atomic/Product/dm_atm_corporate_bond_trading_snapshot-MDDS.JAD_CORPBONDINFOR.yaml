@@ -33,7 +33,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: null
     comment: "PK surrogate. BCV: [Product] Financial Market Instrument. Snapshot TPDN tại 1 thời điểm."
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Corporate Bond Trading Snapshot Code
@@ -47,7 +47,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.KID
     comment: "BK kỹ thuật từ jadapter. Điểm cần xác nhận T1-03: nếu grain thực sự là (symbol, tradingdate) thì kid chỉ là technical — cần xác nhận với nguồn."
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
-    etl_derived_value: MDDS.JAD_CORPBONDINFOR
+    etl_derived_value: MDDS_JAD_CORPBONDINFOR
 
   - name: Symbol
     physical_name: symbol
@@ -75,7 +75,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.SYMBOL
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Trading Date
@@ -89,7 +89,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.TRADINGDATE
     comment: Nguồn lưu dạng string dd/mm/yyyy — ETL cần parse sang date.
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Bond Full Name
@@ -103,7 +103,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.FULLNAME
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Trading Time
@@ -117,7 +117,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.TRADINGTIME
     comment: Nguồn lưu dạng string — giữ Text vì format chưa chuẩn hóa.
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Floor Code
@@ -131,7 +131,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.FLOORCODE
     comment: "Scheme: MDDS_FLOOR_CODE. Cùng scheme với StockInfor.floorcode."
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: MDDS_FLOOR_CODE
     etl_derived_value: null
 
   - name: Stock Type Code
@@ -145,7 +145,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.STOCKTYPE
     comment: "Scheme: MDDS_STOCK_TYPE. Cùng scheme với StockInfor.stocktype. Thường = 12 cho TPDN."
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: MDDS_STOCK_TYPE
     etl_derived_value: null
 
   - name: Trading Session Status Code
@@ -159,7 +159,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.TRADINGSESSIONID
     comment: "Scheme: MDDS_TRADING_SESSION_STATUS. Cùng scheme với StockInfor.tradingsessionid."
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: MDDS_TRADING_SESSION_STATUS
     etl_derived_value: null
 
   - name: Security Trading Status Code
@@ -173,7 +173,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.SECURITYTRADINGSTATUS
     comment: "Scheme: MDDS_SECURITY_TRADING_STATUS."
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: MDDS_SECURITY_TRADING_STATUS
     etl_derived_value: null
 
   - name: Trading Session Status 2 Code
@@ -187,7 +187,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.TRADSESSTATUS
     comment: "Scheme: MDDS_TRADING_SESSION_STATUS. Cùng scheme với tradingsessionid — cần profile sự khác biệt giữa 2 trường này."
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: MDDS_TRADING_SESSION_STATUS
     etl_derived_value: null
 
   - name: Period Unit Code
@@ -201,7 +201,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.PERIOD_UNIT
     comment: "Scheme: MDDS_PERIOD_UNIT."
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: MDDS_PERIOD_UNIT
     etl_derived_value: null
 
   - name: Interest Period Unit Code
@@ -215,7 +215,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.INTEREST_PERIOD_UNIT
     comment: "Scheme: MDDS_PERIOD_UNIT. Cùng scheme với period_unit."
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: MDDS_PERIOD_UNIT
     etl_derived_value: null
 
   - name: Coupon Type Code
@@ -229,7 +229,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.INTEREST_COUPON_TYPE
     comment: "Scheme: MDDS_COUPON_TYPE."
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: MDDS_COUPON_TYPE
     etl_derived_value: null
 
   - name: Interest Rate Type Code
@@ -243,7 +243,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.INTERESTRATE_TYPE
     comment: "Scheme: MDDS_INTEREST_RATE_TYPE."
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: MDDS_INTEREST_RATE_TYPE
     etl_derived_value: null
 
   - name: Interest Type Code
@@ -257,7 +257,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.INTEREST_TYPE
     comment: "Scheme: MDDS_INTEREST_TYPE. Cùng pattern với interest_coupon_type — danh mục cố định của HNX."
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: MDDS_INTEREST_TYPE
     etl_derived_value: null
 
   - name: Interest Payment Type Code
@@ -271,7 +271,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.INTEREST_PAYMENT_TYPE
     comment: "Scheme: MDDS_INTEREST_PAYMENT_TYPE. Cùng pattern với interest_coupon_type — danh mục cố định của HNX."
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: MDDS_INTEREST_PAYMENT_TYPE
     etl_derived_value: null
 
   - name: Ceiling Price
@@ -285,7 +285,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.CEILING
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Floor Price
@@ -299,7 +299,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.FLOOR
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Reference Price
@@ -313,7 +313,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.REFERENCE
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Close Price
@@ -327,7 +327,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.CLOSEPRICE
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Close Volume
@@ -341,7 +341,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.CLOSEVOL
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Price Change
@@ -355,7 +355,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.CHANGE
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Open Price
@@ -369,7 +369,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.OPEN
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: High Price
@@ -383,7 +383,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.HIGH
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Low Price
@@ -397,7 +397,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.LOW
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Average Price
@@ -411,7 +411,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.AVERAGEPRICE
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Total Trading Volume
@@ -425,7 +425,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.TOTALTRADING
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Total Trading Value
@@ -439,7 +439,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.TOTALTRADINGVALUE
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Total Listing Volume
@@ -453,7 +453,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.TOTALLISTINGQTTY
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Foreign Remain Volume
@@ -467,7 +467,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.FOREIGNREMAIN
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: PT Match Volume
@@ -481,7 +481,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.PT_MATCH_QTTY
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: PT Match Price
@@ -495,7 +495,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.PT_MATCH_PRICE
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: PT Total Traded Volume
@@ -509,7 +509,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.PT_TOTAL_TRADED_QTTY
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: PT Total Traded Value
@@ -523,7 +523,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.PT_TOTAL_TRADED_VALUE
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: PT Best Bid Volume
@@ -537,7 +537,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.PT_BESTBIDQTTY
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: PT Best Bid Price
@@ -551,7 +551,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.PT_BESTBIDPRICE
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: PT Best Offer Volume
@@ -565,7 +565,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.PT_BESTOFFERQTTY
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: PT Best Offer Price
@@ -579,7 +579,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.PT_BESTOFFERPRICE
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: PT Total Bid Volume
@@ -593,7 +593,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.PT_TOTALBIDQTTY
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: PT Total Offer Volume
@@ -607,7 +607,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.PT_TOTALOFFERQTTY
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: PT Max Volume
@@ -621,7 +621,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.PT_MAXQTTY
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: PT Max Price
@@ -635,7 +635,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.PT_MAXPRICE
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: PT Min Volume
@@ -649,7 +649,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.PT_MINQTTY
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: PT Min Price
@@ -663,7 +663,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.PT_MINPRICE
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Issuer Name
@@ -677,7 +677,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.ISSUERNAME
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Issue Date
@@ -691,7 +691,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.ISSUEDATE
     comment: Nguồn lưu dạng string — ETL cần parse sang date.
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Maturity Date
@@ -705,7 +705,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.MATURITYDATE
     comment: Nguồn lưu dạng string — ETL cần parse sang date.
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Par Value
@@ -719,7 +719,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.PARVALUE
     comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate không có giá trị non-numeric."
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Bond Period
@@ -733,7 +733,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.BOND_PERIOD
     comment: Nguồn lưu dạng string — giữ Text vì đơn vị phụ thuộc period_unit.
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Period Remain Days
@@ -747,7 +747,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.PERIOD_REMAIN
     comment: "Nguồn lưu dạng string — ETL cần cast/parse sang integer. Cần validate không có giá trị non-numeric."
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Interest Period
@@ -761,7 +761,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.INTEREST_PERIOD
     comment: Nguồn lưu dạng string — giữ Text vì đơn vị phụ thuộc interest_period_unit.
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Interest Rate
@@ -775,7 +775,7 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.INTEREST_RATE
     comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate không có giá trị non-numeric."
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Bond Characteristics
@@ -789,5 +789,5 @@ attributes:
     source_table: JAD_CORPBONDINFOR
     source_column: MDDS.JAD_CORPBONDINFOR.CHARACTERISTICS
     comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
+    classification_context: null
     etl_derived_value: null

@@ -33,12 +33,12 @@ attributes:
     source_table: CERTIFICATES
     source_column: null
     comment: "PK surrogate. Hash: hash_id('NHNCK.CERTIFICATES', CERTIFICATE_CODE). BCV: [Documentation] Gov. Registration Document."
-    classification_context: "Source System Code = 'NHNCK_CERTIFICATES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner License Certificate Type Code
     physical_name: sp_license_certificate_tp_code
-    business_meaning: "Mã định danh nghiệp vụ duy nhất của loại chứng chỉ (VD: MGCK, PTTC, QLQ — sửa 2026-08, khớp giá trị BA thật, ví dụ cũ QLQY/PTDT/MTCK không khớp CERTIFICATES.CERTIFICATE_CODE). BK duy nhất — Id hash từ trường này."
+    business_meaning: "Mã định danh nghiệp vụ duy nhất của loại chứng chỉ (VD: MGCK, PTTC, QLQ). BK duy nhất — Id hash từ trường này."
     data_domain: Text
     data_type: string
     nullable: false
@@ -47,7 +47,7 @@ attributes:
     source_table: CERTIFICATES
     source_column: NHNCK.CERTIFICATES.CERTIFICATE_CODE
     comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID) + Unique Key cũ — gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique trước go-live."
-    classification_context: "Source System Code = 'NHNCK_CERTIFICATES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     classification_context: "Source System Code = 'NHNCK_CERTIFICATES'"
-    etl_derived_value: NHNCK.CERTIFICATES
+    etl_derived_value: NHNCK_CERTIFICATES
 
   - name: Certificate Type Name
     physical_name: certificate_tp_nm
@@ -75,7 +75,7 @@ attributes:
     source_table: CERTIFICATES
     source_column: NHNCK.CERTIFICATES.CERTIFICATE_NAME
     comment: "BCV: không có term riêng — đặt tên theo nghĩa nghiệp vụ. Đổi tên từ Certificate Name (2026-08-04) để nhất quán với Datamart SP License Certificate Type Dimension."
-    classification_context: "Source System Code = 'NHNCK_CERTIFICATES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Description
@@ -89,7 +89,7 @@ attributes:
     source_table: CERTIFICATES
     source_column: NHNCK.CERTIFICATES.DESCRIPTION
     comment: null
-    classification_context: "Source System Code = 'NHNCK_CERTIFICATES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Processing Days
@@ -103,7 +103,7 @@ attributes:
     source_table: CERTIFICATES
     source_column: NHNCK.CERTIFICATES.PROCESSING_DAYS
     comment: null
-    classification_context: "Source System Code = 'NHNCK_CERTIFICATES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Sort Order
@@ -117,7 +117,7 @@ attributes:
     source_table: CERTIFICATES
     source_column: NHNCK.CERTIFICATES.SORT_ORDER
     comment: null
-    classification_context: "Source System Code = 'NHNCK_CERTIFICATES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Displayed Indicator
@@ -131,7 +131,7 @@ attributes:
     source_table: CERTIFICATES
     source_column: NHNCK.CERTIFICATES.IS_DISPLAYED
     comment: "BCV: không có term riêng — dùng Indicator vì chỉ là flag 1/0. Nguồn NUMBER(1)."
-    classification_context: "Source System Code = 'NHNCK_CERTIFICATES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Original Data Indicator
@@ -145,5 +145,5 @@ attributes:
     source_table: CERTIFICATES
     source_column: NHNCK.CERTIFICATES.IS_ORIGINAL_DATA
     comment: "BCV: không có term riêng. Nguồn NUMBER(1)."
-    classification_context: "Source System Code = 'NHNCK_CERTIFICATES'"
+    classification_context: null
     etl_derived_value: null

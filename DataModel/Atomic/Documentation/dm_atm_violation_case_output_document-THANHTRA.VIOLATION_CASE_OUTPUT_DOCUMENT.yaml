@@ -33,7 +33,7 @@ attributes:
     source_table: VIOLATION_CASE_OUTPUT_DOCUMENT
     source_column: null
     comment: "PK surrogate. BCV: [Documentation] Form Document."
-    classification_context: "Source System Code = 'THANHTRA_VIOLATION_CASE_OUTPUT_DOCUMENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Violation Case Output Document Code
@@ -47,7 +47,7 @@ attributes:
     source_table: VIOLATION_CASE_OUTPUT_DOCUMENT
     source_column: THANHTRA.VIOLATION_CASE_OUTPUT_DOCUMENT.ID
     comment: BK chính. PK nguồn (VARCHAR2 UUID).
-    classification_context: "Source System Code = 'THANHTRA_VIOLATION_CASE_OUTPUT_DOCUMENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'THANHTRA_VIOLATION_CASE_OUTPUT_DOCUMENT'"
-    etl_derived_value: THANHTRA.VIOLATION_CASE_OUTPUT_DOCUMENT
+    etl_derived_value: THANHTRA_VIOLATION_CASE_OUTPUT_DOCUMENT
 
   - name: Violation Case Id
     physical_name: violation_case_id
@@ -75,7 +75,7 @@ attributes:
     source_table: VIOLATION_CASE_OUTPUT_DOCUMENT
     source_column: THANHTRA.VIOLATION_CASE_OUTPUT_DOCUMENT.VIOLATION_CASE_ID
     comment: "FK target: violation_case.violation_case_id. Cần ETL crosswalk sang THANHTRA.VIOLATION_CASE: VIOLATION_CASE_OUTPUT_DOCUMENT.VIOLATION_CASE_ID = VIOLATION_CASE.ID để xác nhận CODE sau đó hash_id('THANHTRA.VIOLATION_CASE', CODE) | Trước đây hash trực tiếp theo VIOLATION_CASE_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
-    classification_context: "Source System Code = 'THANHTRA_VIOLATION_CASE_OUTPUT_DOCUMENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Violation Case Code
@@ -89,7 +89,7 @@ attributes:
     source_table: VIOLATION_CASE_OUTPUT_DOCUMENT
     source_column: THANHTRA.VIOLATION_CASE.CODE
     comment: "Lookup pair: violation_case.violation_case_code. Pair with Violation Case Id. Giá trị lấy từ THANHTRA.VIOLATION_CASE.CODE sau ETL crosswalk — chi tiết xem comment Violation Case Id."
-    classification_context: "Source System Code = 'THANHTRA_VIOLATION_CASE_OUTPUT_DOCUMENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Document Type Code
@@ -103,7 +103,7 @@ attributes:
     source_table: VIOLATION_CASE_OUTPUT_DOCUMENT
     source_column: THANHTRA.VIOLATION_CASE_OUTPUT_DOCUMENT.DOCUMENT_TYPE
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_VIOLATION_CASE_OUTPUT_DOCUMENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Document Number
@@ -117,7 +117,7 @@ attributes:
     source_table: VIOLATION_CASE_OUTPUT_DOCUMENT
     source_column: THANHTRA.VIOLATION_CASE_OUTPUT_DOCUMENT.DOCUMENT_NUMBER
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_VIOLATION_CASE_OUTPUT_DOCUMENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Document Name
@@ -131,7 +131,7 @@ attributes:
     source_table: VIOLATION_CASE_OUTPUT_DOCUMENT
     source_column: THANHTRA.VIOLATION_CASE_OUTPUT_DOCUMENT.DOCUMENT_NAME
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_VIOLATION_CASE_OUTPUT_DOCUMENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Document Date
@@ -145,7 +145,7 @@ attributes:
     source_table: VIOLATION_CASE_OUTPUT_DOCUMENT
     source_column: THANHTRA.VIOLATION_CASE_OUTPUT_DOCUMENT.DOCUMENT_DATE
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_VIOLATION_CASE_OUTPUT_DOCUMENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Penalty Decision Id
@@ -159,7 +159,7 @@ attributes:
     source_table: VIOLATION_CASE_OUTPUT_DOCUMENT
     source_column: THANHTRA.VIOLATION_CASE_OUTPUT_DOCUMENT.PENALTY_DECISION_ID
     comment: "FK target: penalty_decision.penalty_decision_id. Hash: hash_id('THANHTRA.PENALTY_DECISION', PENALTY_DECISION_ID). Nullable — chỉ có khi document_type=PENALTY_DECISION."
-    classification_context: "Source System Code = 'THANHTRA_VIOLATION_CASE_OUTPUT_DOCUMENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Penalty Decision Code
@@ -173,7 +173,7 @@ attributes:
     source_table: VIOLATION_CASE_OUTPUT_DOCUMENT
     source_column: THANHTRA.VIOLATION_CASE_OUTPUT_DOCUMENT.PENALTY_DECISION_ID
     comment: "Lookup pair: penalty_decision.penalty_decision_code. Pair with Penalty Decision Id."
-    classification_context: "Source System Code = 'THANHTRA_VIOLATION_CASE_OUTPUT_DOCUMENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Note
@@ -187,5 +187,5 @@ attributes:
     source_table: VIOLATION_CASE_OUTPUT_DOCUMENT
     source_column: THANHTRA.VIOLATION_CASE_OUTPUT_DOCUMENT.NOTE
     comment: Nguồn CLOB — ETL truncate.
-    classification_context: "Source System Code = 'THANHTRA_VIOLATION_CASE_OUTPUT_DOCUMENT'"
+    classification_context: null
     etl_derived_value: null

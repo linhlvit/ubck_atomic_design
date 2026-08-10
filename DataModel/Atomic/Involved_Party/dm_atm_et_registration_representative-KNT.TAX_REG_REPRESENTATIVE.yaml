@@ -33,7 +33,7 @@ attributes:
     source_table: TAX_REG_REPRESENTATIVE
     source_column: null
     comment: "PK surrogate. BCV: \"[Involved Party] Designated Representative\". Người đại diện pháp luật/chủ hộ kinh doanh của 1 hồ sơ External Tax Registration. Hash: hash_id('KNT.TAX_REG_REPRESENTATIVE', ID)."
-    classification_context: "Source System Code = 'KNT_TAX_REG_REPRESENTATIVE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: External Tax Registration Representative Code
@@ -47,7 +47,7 @@ attributes:
     source_table: TAX_REG_REPRESENTATIVE
     source_column: KNT.TAX_REG_REPRESENTATIVE.ID
     comment: BK chính. PK nguồn.
-    classification_context: "Source System Code = 'KNT_TAX_REG_REPRESENTATIVE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'KNT_TAX_REG_REPRESENTATIVE'"
-    etl_derived_value: KNT.TAX_REG_REPRESENTATIVE
+    etl_derived_value: KNT_TAX_REG_REPRESENTATIVE
 
   - name: External Tax Registration Id
     physical_name: et_registration_id
@@ -75,7 +75,7 @@ attributes:
     source_table: TAX_REG_REPRESENTATIVE
     source_column: KNT.TAX_REG_REPRESENTATIVE.TAX_REGISTRATION_ID
     comment: "FK target: et_registration.et_registration_id. Nguồn lưu ID kỹ thuật của TAX_REGISTRATION_INFO — ETL join TAX_REGISTRATION_ID → KNT.TAX_REGISTRATION_INFO.ID để lấy TAX_CODE rồi hash_id('KNT.TAX_REGISTRATION_INFO', TAX_CODE)."
-    classification_context: "Source System Code = 'KNT_TAX_REG_REPRESENTATIVE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: External Tax Registration Code
@@ -89,7 +89,7 @@ attributes:
     source_table: TAX_REG_REPRESENTATIVE
     source_column: KNT.TAX_REG_REPRESENTATIVE.TAX_REGISTRATION_ID
     comment: "Lookup pair: et_registration.et_registration_code. Pair with External Tax Registration Id."
-    classification_context: "Source System Code = 'KNT_TAX_REG_REPRESENTATIVE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Full Name
@@ -103,7 +103,7 @@ attributes:
     source_table: TAX_REG_REPRESENTATIVE
     source_column: KNT.TAX_REG_REPRESENTATIVE.REPRESENTATIVE_NAME
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REG_REPRESENTATIVE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Position
@@ -117,5 +117,5 @@ attributes:
     source_table: TAX_REG_REPRESENTATIVE
     source_column: KNT.TAX_REG_REPRESENTATIVE.POSITION
     comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — xác nhận là free text, không phải Classification Value cố định. Đổi tên từ \"Position Code\" vì mô tả nguồn là \"tên hoặc mã\", không chỉ mã."
-    classification_context: "Source System Code = 'KNT_TAX_REG_REPRESENTATIVE'"
+    classification_context: null
     etl_derived_value: null

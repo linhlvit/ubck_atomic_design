@@ -33,7 +33,7 @@ attributes:
     source_table: AGEN_FUNDS
     source_column: null
     comment: "PK surrogate. BCV: \"[Arrangement] Investment Fund\" (tạm dùng). Quan hệ đại lý phân phối CCQ được ủy quyền cho quỹ đầu tư."
-    classification_context: "Source System Code = 'FMS_AGEN_FUNDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Investment Fund X Fund Distribution Agent Relationship Code
@@ -47,7 +47,7 @@ attributes:
     source_table: AGEN_FUNDS
     source_column: null
     comment: "BK composite: AGENCY_ID || '|' || FUND_ID. Không có PK/code kỹ thuật riêng trên bảng nguồn."
-    classification_context: "Source System Code = 'FMS_AGEN_FUNDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'FMS_AGEN_FUNDS'"
-    etl_derived_value: FMS.AGEN_FUNDS
+    etl_derived_value: FMS_AGEN_FUNDS
 
   - name: Investment Fund Id
     physical_name: investment_fund_id
@@ -75,7 +75,7 @@ attributes:
     source_table: AGEN_FUNDS
     source_column: FMS.AGEN_FUNDS.FUND_ID
     comment: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS.FUNDS', FUND_ID)."
-    classification_context: "Source System Code = 'FMS_AGEN_FUNDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Investment Fund Code
@@ -89,7 +89,7 @@ attributes:
     source_table: AGEN_FUNDS
     source_column: FMS.AGEN_FUNDS.FUND_ID
     comment: "Lookup pair: investment_fund.investment_fund_code. Pair with Investment Fund Id."
-    classification_context: "Source System Code = 'FMS_AGEN_FUNDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Fund Distribution Agent Id
@@ -103,7 +103,7 @@ attributes:
     source_table: AGEN_FUNDS
     source_column: FMS.AGEN_FUNDS.AGENCY_ID
     comment: "FK target: fund_distribution_agent.fund_distribution_agent_id. Hash: hash_id('FMS.AGENCIES', AGENCY_ID)."
-    classification_context: "Source System Code = 'FMS_AGEN_FUNDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Fund Distribution Agent Code
@@ -117,5 +117,5 @@ attributes:
     source_table: AGEN_FUNDS
     source_column: FMS.AGEN_FUNDS.AGENCY_ID
     comment: "Lookup pair: fund_distribution_agent.fund_distribution_agent_code. Pair with Fund Distribution Agent Id."
-    classification_context: "Source System Code = 'FMS_AGEN_FUNDS'"
+    classification_context: null
     etl_derived_value: null

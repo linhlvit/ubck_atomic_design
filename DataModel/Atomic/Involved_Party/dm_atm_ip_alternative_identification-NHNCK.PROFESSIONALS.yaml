@@ -33,7 +33,7 @@ attributes:
     source_table: PROFESSIONALS
     source_column: NHNCK.PROFESSIONALS.ID
     comment: "FK target: securities_practitioner.securities_practitioner_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.PROFESSIONALS', ID)."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Involved Party Code
@@ -47,7 +47,7 @@ attributes:
     source_table: PROFESSIONALS
     source_column: NHNCK.PROFESSIONALS.ID
     comment: "Lookup pair: securities_practitioner.securities_practitioner_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: null
     classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-    etl_derived_value: NHNCK.PROFESSIONALS
+    etl_derived_value: NHNCK_PROFESSIONALS
 
   - name: Identification Type Code
     physical_name: identification_tp_code
@@ -75,7 +75,7 @@ attributes:
     source_table: PROFESSIONALS
     source_column: NHNCK.PROFESSIONALS.IDENTITY_TYPE
     comment: "PENDING — Data Modeler sẽ profile dữ liệu thực tế của IDENTITY_TYPE trước khi xác nhận mapping ETL sang scheme IP_ALT_ID_TYPE. Tạm thời KHÔNG derive giá trị (mapping 1=NATIONAL_ID;2=CITIZEN_ID;3=PASSPORT trước đây chưa được xác nhận, tạm gỡ)."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Identification Number
@@ -89,7 +89,7 @@ attributes:
     source_table: PROFESSIONALS
     source_column: NHNCK.PROFESSIONALS.IDENTITY_NUMBER
     comment: BK của shared entity cùng với Involved Party Id + Identification Type Code.
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Identification Issue Date
@@ -103,7 +103,7 @@ attributes:
     source_table: PROFESSIONALS
     source_column: NHNCK.PROFESSIONALS.IDENTITY_ISSUE_DATE
     comment: null
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Identification Issue Place
@@ -117,5 +117,5 @@ attributes:
     source_table: PROFESSIONALS
     source_column: NHNCK.PROFESSIONALS.IDENTITY_ISSUE_PLACE
     comment: null
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null

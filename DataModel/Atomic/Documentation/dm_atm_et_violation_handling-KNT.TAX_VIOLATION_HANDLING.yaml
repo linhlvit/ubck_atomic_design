@@ -33,7 +33,7 @@ attributes:
     source_table: TAX_VIOLATION_HANDLING
     source_column: null
     comment: "PK surrogate. BCV: \"[Documentation] Gov. Registration Document\". Quyết định xử lý vi phạm pháp luật về thuế do Cục Thuế cung cấp. Hash: hash_id('KNT.TAX_VIOLATION_HANDLING', HANDLING_DECISION_NUMBER)."
-    classification_context: "Source System Code = 'KNT_TAX_VIOLATION_HANDLING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: External Tax Violation Handling Code
@@ -47,7 +47,7 @@ attributes:
     source_table: TAX_VIOLATION_HANDLING
     source_column: KNT.TAX_VIOLATION_HANDLING.HANDLING_DECISION_NUMBER
     comment: "BK chính. Cần profile dữ liệu xác nhận NOT NULL/unique trước go-live."
-    classification_context: "Source System Code = 'KNT_TAX_VIOLATION_HANDLING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'KNT_TAX_VIOLATION_HANDLING'"
-    etl_derived_value: KNT.TAX_VIOLATION_HANDLING
+    etl_derived_value: KNT_TAX_VIOLATION_HANDLING
 
   - name: External Tax Registration Id
     physical_name: et_registration_id
@@ -75,7 +75,7 @@ attributes:
     source_table: TAX_VIOLATION_HANDLING
     source_column: KNT.TAX_VIOLATION_HANDLING.TAX_CODE
     comment: "FK target: et_registration.et_registration_id. Hash: hash_id('KNT.TAX_REGISTRATION_INFO', TAX_CODE)."
-    classification_context: "Source System Code = 'KNT_TAX_VIOLATION_HANDLING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: External Tax Registration Code
@@ -89,7 +89,7 @@ attributes:
     source_table: TAX_VIOLATION_HANDLING
     source_column: KNT.TAX_VIOLATION_HANDLING.TAX_CODE
     comment: "Lookup pair: et_registration.et_registration_code. Pair with External Tax Registration Id."
-    classification_context: "Source System Code = 'KNT_TAX_VIOLATION_HANDLING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Subject Name
@@ -103,7 +103,7 @@ attributes:
     source_table: TAX_VIOLATION_HANDLING
     source_column: KNT.TAX_VIOLATION_HANDLING.SUBJECT_NAME
     comment: Denormalized snapshot tại thời điểm ban hành quyết định.
-    classification_context: "Source System Code = 'KNT_TAX_VIOLATION_HANDLING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Inspection Period
@@ -117,7 +117,7 @@ attributes:
     source_table: TAX_VIOLATION_HANDLING
     source_column: KNT.TAX_VIOLATION_HANDLING.INSPECTION_PERIOD
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_VIOLATION_HANDLING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Violation Fine Amount
@@ -131,7 +131,7 @@ attributes:
     source_table: TAX_VIOLATION_HANDLING
     source_column: KNT.TAX_VIOLATION_HANDLING.VIOLATION_FINE
     comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần validate không có giá trị non-numeric."
-    classification_context: "Source System Code = 'KNT_TAX_VIOLATION_HANDLING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Administrative Violation Fine Amount
@@ -145,7 +145,7 @@ attributes:
     source_table: TAX_VIOLATION_HANDLING
     source_column: KNT.TAX_VIOLATION_HANDLING.ADMIN_VIOLATION_FINE
     comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần validate không có giá trị non-numeric."
-    classification_context: "Source System Code = 'KNT_TAX_VIOLATION_HANDLING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Tax Recovery Amount
@@ -159,7 +159,7 @@ attributes:
     source_table: TAX_VIOLATION_HANDLING
     source_column: KNT.TAX_VIOLATION_HANDLING.TAX_RECOVERY_AMOUNT
     comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần validate không có giá trị non-numeric."
-    classification_context: "Source System Code = 'KNT_TAX_VIOLATION_HANDLING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Issuing Organization Name
@@ -173,7 +173,7 @@ attributes:
     source_table: TAX_VIOLATION_HANDLING
     source_column: KNT.TAX_VIOLATION_HANDLING.ISSUING_ORG
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_VIOLATION_HANDLING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Issuing Tax Authority Name
@@ -187,7 +187,7 @@ attributes:
     source_table: TAX_VIOLATION_HANDLING
     source_column: KNT.TAX_VIOLATION_HANDLING.ISSUING_TAX_AUTHORITY_NAME
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_VIOLATION_HANDLING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Decision Type Code
@@ -201,7 +201,7 @@ attributes:
     source_table: TAX_VIOLATION_HANDLING
     source_column: KNT.TAX_VIOLATION_HANDLING.DECISION_TYPE
     comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không phải Classification Value."
-    classification_context: "Source System Code = 'KNT_TAX_VIOLATION_HANDLING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Decision Date
@@ -215,7 +215,7 @@ attributes:
     source_table: TAX_VIOLATION_HANDLING
     source_column: KNT.TAX_VIOLATION_HANDLING.DECISION_DATE
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_VIOLATION_HANDLING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Total Fine Amount
@@ -229,7 +229,7 @@ attributes:
     source_table: TAX_VIOLATION_HANDLING
     source_column: KNT.TAX_VIOLATION_HANDLING.TOTAL_FINE_AMOUNT
     comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần validate không có giá trị non-numeric."
-    classification_context: "Source System Code = 'KNT_TAX_VIOLATION_HANDLING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Other Fine Amount
@@ -243,7 +243,7 @@ attributes:
     source_table: TAX_VIOLATION_HANDLING
     source_column: KNT.TAX_VIOLATION_HANDLING.OTHER_FINE_AMOUNT
     comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần validate không có giá trị non-numeric."
-    classification_context: "Source System Code = 'KNT_TAX_VIOLATION_HANDLING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Message Packet Id
@@ -257,7 +257,7 @@ attributes:
     source_table: TAX_VIOLATION_HANDLING
     source_column: KNT.TAX_VIOLATION_HANDLING.MSG_PACKET_ID
     comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không tạo FK sang MSG_PACKET (bảng kỹ thuật gói tin trao đổi, ngoài scope thiết kế). Nguồn lưu dạng số (NUMBER) — ETL cần convert sang string."
-    classification_context: "Source System Code = 'KNT_TAX_VIOLATION_HANDLING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Start Year
@@ -271,7 +271,7 @@ attributes:
     source_table: TAX_VIOLATION_HANDLING
     source_column: KNT.TAX_VIOLATION_HANDLING.NAM_BAT_DAU
     comment: "Nguồn lưu dạng số NUMBER(4,0) — ETL cần convert sang string. Giữ nguyên 4 ký tự năm."
-    classification_context: "Source System Code = 'KNT_TAX_VIOLATION_HANDLING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: End Year
@@ -285,5 +285,5 @@ attributes:
     source_table: TAX_VIOLATION_HANDLING
     source_column: KNT.TAX_VIOLATION_HANDLING.NAM_KET_THUC
     comment: "Nguồn lưu dạng số NUMBER(4,0) — ETL cần convert sang string. Giữ nguyên 4 ký tự năm."
-    classification_context: "Source System Code = 'KNT_TAX_VIOLATION_HANDLING'"
+    classification_context: null
     etl_derived_value: null

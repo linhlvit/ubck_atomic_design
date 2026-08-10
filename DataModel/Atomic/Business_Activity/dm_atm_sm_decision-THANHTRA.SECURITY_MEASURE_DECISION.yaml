@@ -33,7 +33,7 @@ attributes:
     source_table: SECURITY_MEASURE_DECISION
     source_column: null
     comment: "PK surrogate. BCV: [Business Activity] Conduct Violation."
-    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Security Measure Decision Code
@@ -47,7 +47,7 @@ attributes:
     source_table: SECURITY_MEASURE_DECISION
     source_column: THANHTRA.SECURITY_MEASURE_DECISION.ID
     comment: BK chính. PK nguồn (VARCHAR2 UUID).
-    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION'"
-    etl_derived_value: THANHTRA.SECURITY_MEASURE_DECISION
+    etl_derived_value: THANHTRA_SECURITY_MEASURE_DECISION
 
   - name: Decision Number
     physical_name: decision_nbr
@@ -75,7 +75,7 @@ attributes:
     source_table: SECURITY_MEASURE_DECISION
     source_column: THANHTRA.SECURITY_MEASURE_DECISION.DECISION_NUMBER
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Decision Date
@@ -89,7 +89,7 @@ attributes:
     source_table: SECURITY_MEASURE_DECISION
     source_column: THANHTRA.SECURITY_MEASURE_DECISION.DECISION_DATE
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Measure Type Code
@@ -103,7 +103,7 @@ attributes:
     source_table: SECURITY_MEASURE_DECISION
     source_column: THANHTRA.SECURITY_MEASURE_DECISION.MEASURE_TYPE
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Effective Date
@@ -117,7 +117,7 @@ attributes:
     source_table: SECURITY_MEASURE_DECISION
     source_column: THANHTRA.SECURITY_MEASURE_DECISION.EFFECTIVE_DATE
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Duration Months
@@ -131,7 +131,7 @@ attributes:
     source_table: SECURITY_MEASURE_DECISION
     source_column: THANHTRA.SECURITY_MEASURE_DECISION.DURATION_MONTHS
     comment: "Nguồn NUMBER(5,0) — ETL cast sang integer."
-    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Signer Name
@@ -145,7 +145,7 @@ attributes:
     source_table: SECURITY_MEASURE_DECISION
     source_column: THANHTRA.SECURITY_MEASURE_DECISION.SIGNER_NAME
     comment: Không có FK formal đến Officer — lưu dạng text denormalized.
-    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Summary
@@ -159,7 +159,7 @@ attributes:
     source_table: SECURITY_MEASURE_DECISION
     source_column: THANHTRA.SECURITY_MEASURE_DECISION.SUMMARY
     comment: Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng.
-    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Sent Status Code
@@ -173,7 +173,7 @@ attributes:
     source_table: SECURITY_MEASURE_DECISION
     source_column: THANHTRA.SECURITY_MEASURE_DECISION.SENT_STATUS
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Sent Date
@@ -187,7 +187,7 @@ attributes:
     source_table: SECURITY_MEASURE_DECISION
     source_column: THANHTRA.SECURITY_MEASURE_DECISION.SENT_AT
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Note
@@ -201,7 +201,7 @@ attributes:
     source_table: SECURITY_MEASURE_DECISION
     source_column: THANHTRA.SECURITY_MEASURE_DECISION.NOTE
     comment: Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng.
-    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Sent By Officer Id
@@ -215,7 +215,7 @@ attributes:
     source_table: SECURITY_MEASURE_DECISION
     source_column: THANHTRA.SECURITY_MEASURE_DECISION.SENT_BY
     comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM.USERS', SENT_BY) | Chưa xác nhận join key THANHTRA.SECURITY_MEASURE_DECISION.SENT_BY ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
-    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Sent By Officer Code
@@ -229,5 +229,5 @@ attributes:
     source_table: SECURITY_MEASURE_DECISION
     source_column: THANHTRA.SECURITY_MEASURE_DECISION.SENT_BY
     comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Sent By Officer Id."
-    classification_context: "Source System Code = 'THANHTRA_SECURITY_MEASURE_DECISION'"
+    classification_context: null
     etl_derived_value: null

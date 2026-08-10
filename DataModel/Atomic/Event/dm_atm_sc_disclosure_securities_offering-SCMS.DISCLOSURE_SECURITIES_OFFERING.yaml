@@ -33,7 +33,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: null
     comment: PK surrogate.
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Company Disclosure Securities Offering Code
@@ -47,7 +47,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.ID
     comment: BK. NUMBER(10) — ETL convert sang string.
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
-    etl_derived_value: SCMS.DISCLOSURE_SECURITIES_OFFERING
+    etl_derived_value: SCMS_DISCLOSURE_SECURITIES_OFFERING
 
   - name: Securities Company Id
     physical_name: sc_id
@@ -75,7 +75,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.SC_FIRM_INFO_ID
     comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO: DISCLOSURE_SECURITIES_OFFERING.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE sau đó hash_id('SCMS.SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Company Code
@@ -89,7 +89,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.SC_FIRM_INFO.CODE
     comment: "Lookup pair: securities_company.securities_company_code. Pair with Securities Company Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết xem comment Securities Company Id."
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Classification Event Type Id
@@ -103,7 +103,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.EVENT_TYPE_ID
     comment: "FK target: Classification Event Type.Classification Event Type Id. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Classification Event Type Code
@@ -117,7 +117,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.EVENT_TYPE_ID
     comment: "Lookup pair: Classification Event Type.Classification Event Type Code. Pair with Classification Event Type Id."
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Admin Procedure Id
@@ -131,7 +131,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.ADMIN_PROC_ID
     comment: Pending — FK target phân hệ TTHC nằm ngoài scope. NUMBER(10).
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Offering Type Code
@@ -145,7 +145,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.OFFERING_TYPE
     comment: "Scheme: SCMS_OFFERING_TYPE. NUMBER(10) với values 1-10."
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Type Code
@@ -159,7 +159,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.SECURITIES_TYPE
     comment: "Scheme: SCMS_SECURITIES_TYPE. VARCHAR2(50)."
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Record Status Code
@@ -173,7 +173,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.RECORD_STATUS
     comment: "Scheme: SCMS_USAGE_STATUS. NUMBER(1)."
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Data Source Code
@@ -187,7 +187,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.DATA_SOURCE
     comment: "Scheme: SCMS_DATA_SOURCE. VARCHAR2(50)."
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Assessment Code
@@ -201,7 +201,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.ASSESSMENT
     comment: "NVARCHAR2(50), mô tả gốc BRD trống. Cần xác nhận values."
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Item Category Code
@@ -215,7 +215,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.ITEM_CATEGORY
     comment: "NVARCHAR2(10), mô tả gốc BRD trống. Cần xác nhận scheme."
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: SU VU
@@ -229,7 +229,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.SU_VU
     comment: NUMBER — lưu dạng số nhưng mô tả cho thấy đây là ID sự vụ. Pending — cần xác nhận FK target.
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Document Number
@@ -243,7 +243,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.DOCUMENT_NUMBER
     comment: VARCHAR2(200).
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Document Date
@@ -257,7 +257,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.DOCUMENT_DATE
     comment: null
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Document File Path
@@ -271,7 +271,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.DOCUMENT_FILE_PATH
     comment: VARCHAR2(2000).
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Offering Method
@@ -285,7 +285,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.OFFERING_METHOD
     comment: NVARCHAR2(250).
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Target Investors
@@ -299,7 +299,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.TARGET_INVESTORS
     comment: NVARCHAR2(250). Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Offering Purpose
@@ -313,7 +313,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.OFFERING_PURPOSE
     comment: NCLOB.
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Underwriter
@@ -327,7 +327,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.UNDERWRITER
     comment: VARCHAR2(500). Denormalized — tên tổ chức dạng text.
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Underwriting Company
@@ -341,7 +341,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.UNDERWRITING_COMPANY
     comment: NVARCHAR2(500). Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Advisor
@@ -355,7 +355,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.ADVISOR
     comment: VARCHAR2(500). Denormalized.
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Disclosure Person Name
@@ -369,7 +369,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.DISCLOSURE_PERSON_NAME
     comment: NVARCHAR2(250). Denormalized snapshot.
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Quantity
@@ -383,7 +383,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.QUANTITY
     comment: NUMBER(38). Mô tả gốc BRD trống. Giá trị lớn — Small Counter có thể không phù hợp nếu vượt 2B; ETL cần validate.
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Offered Quantity
@@ -397,7 +397,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.OFFERED_QUANTITY
     comment: "NUMBER(19). [PROPOSE NEW DOMAIN] Quantity — số lượng chứng khoán, vượt Small Counter. Tạm dùng Small Counter với ETL note."
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Total Offered Quantity
@@ -411,7 +411,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.TOTAL_OFFERED_QUANTITY
     comment: NUMBER(19).
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Total Offered Completed
@@ -425,7 +425,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.TOTAL_OFFERED_COMPLETED
     comment: NUMBER(19). Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Item Value Amount
@@ -439,7 +439,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.ITEM_VALUE
     comment: NUMBER(38). Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Offering Price Amount
@@ -453,7 +453,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.OFFERING_PRICE
     comment: "NUMBER(38,2)."
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Total Value Amount
@@ -467,7 +467,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.TOTAL_VALUE
     comment: "NUMBER(38,2)."
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Expected Total Amount
@@ -481,7 +481,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.EXPECTED_TOTAL_AMOUNT
     comment: "NUMBER(38,2). Mô tả gốc BRD trống."
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Proceeds Collected Amount
@@ -495,7 +495,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.PROCEEDS_COLLECTED
     comment: "NUMBER(38,2)."
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Valid Date
@@ -509,7 +509,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.VALID_DATE
     comment: TIMESTAMP(6). Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Offering Date
@@ -523,7 +523,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.OFFERING_DATE
     comment: TIMESTAMP(6). Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Start Date
@@ -537,7 +537,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.START_DATE
     comment: null
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: End Date
@@ -551,7 +551,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.END_DATE
     comment: null
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Offering Start Date
@@ -565,7 +565,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.OFFERING_START_DATE
     comment: Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Offering End Date
@@ -579,7 +579,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.OFFERING_END_DATE
     comment: Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Expected Start Date
@@ -593,7 +593,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.EXPECTED_START_DATE
     comment: Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Expected End Date
@@ -607,7 +607,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.EXPECTED_END_DATE
     comment: Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Result Report Date
@@ -621,7 +621,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.RESULT_REPORT_DATE
     comment: null
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: First Dossier Submission Date
@@ -635,7 +635,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.FIRST_DOSSIER_SUBMISSION_DATE
     comment: Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Complete Dossier Submission Date
@@ -649,7 +649,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.COMPLETE_DOSSIER_SUBMISSION_DATE
     comment: Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Extension To Date
@@ -663,7 +663,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.EXTENSION_TO_DATE
     comment: Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Disclosure Date
@@ -677,7 +677,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.DISCLOSURE_DATE
     comment: TIMESTAMP(6).
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Sent Timestamp
@@ -691,7 +691,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.SENT_AT
     comment: TIMESTAMP(6).
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Collateral Required Indicator
@@ -705,7 +705,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.COLLATERAL_REQUIRED
     comment: "NUMBER(1). Áp dụng khi SECURITIES_TYPE=TP."
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Synced From Admin Procedure Indicator
@@ -719,7 +719,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.SYNCED_FROM_ADMIN_PROC
     comment: NUMBER(1). Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Bond Type Code
@@ -733,7 +733,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.BOND_TYPE
     comment: "Scheme: SCMS_BOND_TYPE. NVARCHAR2(80). Chỉ populate khi SECURITIES_TYPE=TP."
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Bond Code
@@ -747,7 +747,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.BOND_CODE
     comment: NVARCHAR2(50).
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Bond Face Value Amount
@@ -761,7 +761,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.BOND_FACE_VALUE
     comment: "NUMBER(20,2)."
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Maturity Years
@@ -775,7 +775,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.MATURITY_YEARS
     comment: NUMBER(10).
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Interest Payment Period
@@ -789,7 +789,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.INTEREST_PAYMENT_PERIOD
     comment: NVARCHAR2(500).
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Bond Holder Representative
@@ -803,7 +803,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.BOND_HOLDER_REPRESENTATIVE
     comment: NVARCHAR2(500). Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Issuance Date
@@ -817,7 +817,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.ISSUANCE_DATE
     comment: "Chỉ populate khi SECURITIES_TYPE=TP."
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Covered Warrant Type Code
@@ -831,7 +831,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.COVERED_WARRANT_TYPE
     comment: "Scheme: SCMS_COVERED_WARRANT_TYPE. NVARCHAR2(30). Chỉ populate khi SECURITIES_TYPE=CW."
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Covered Warrant Name
@@ -845,7 +845,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.COVERED_WARRANT_NAME
     comment: NVARCHAR2(500).
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Listed CW Code
@@ -859,7 +859,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.LISTED_CW_CODE
     comment: NVARCHAR2(50).
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Underlying Securities Code
@@ -873,7 +873,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.UNDERLYING_SECURITIES_CODE
     comment: NVARCHAR2(50).
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Underlying Securities Issuer
@@ -887,7 +887,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.UNDERLYING_SECURITIES_ISSUER
     comment: NVARCHAR2(500). Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: CW Term Months
@@ -901,7 +901,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.CW_TERM_MONTHS
     comment: NUMBER(10).
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: CW Registered Quantity
@@ -915,7 +915,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.CW_REGISTERED_QUANTITY
     comment: NUMBER(19). Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: CW Permitted Quantity
@@ -929,7 +929,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.CW_PERMITTED_QUANTITY
     comment: NUMBER(19). Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: CW Distributed Quantity
@@ -943,7 +943,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.CW_DISTRIBUTED_QUANTITY
     comment: NUMBER(19). Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: CW Shares Per Warrant
@@ -957,7 +957,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.CW_SHARES_PER_WARRANT
     comment: NUMBER(19). Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Conversion Ratio
@@ -971,7 +971,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.CONVERSION_RATIO
     comment: NUMBER(19).
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Converted Shares Quantity
@@ -985,7 +985,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.CONVERTED_SHARES_QUANTITY
     comment: NUMBER(19). Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Registered Offering Price Amount
@@ -999,7 +999,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.REGISTERED_OFFERING_PRICE
     comment: "NUMBER(20,2). Mô tả gốc BRD trống."
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: CW Actual Offering Price Amount
@@ -1013,7 +1013,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.CW_ACTUAL_OFFERING_PRICE
     comment: "NUMBER(20,2). Mô tả gốc BRD trống."
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: CW Offering Date
@@ -1027,7 +1027,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.CW_OFFERING_DATE
     comment: Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: CW Maturity Date
@@ -1041,7 +1041,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.CW_MATURITY_DATE
     comment: null
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Collateral Settlement Value Amount
@@ -1055,7 +1055,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.COLLATERAL_SETTLEMENT_VALUE
     comment: "NUMBER(20,2). Mô tả gốc BRD trống."
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Collateral Deposit Bank
@@ -1069,7 +1069,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.COLLATERAL_DEPOSIT_BANK
     comment: NVARCHAR2(500). Denormalized — tên ngân hàng dạng text.
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: CW Deposit Amount
@@ -1083,7 +1083,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.CW_DEPOSIT_AMOUNT
     comment: "NUMBER(20,2). Mô tả gốc BRD trống."
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: CW Proceeds Amount
@@ -1097,7 +1097,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.CW_PROCEEDS
     comment: "NUMBER(20,2). Mô tả gốc BRD trống."
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Attachment Path
@@ -1111,7 +1111,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.ATTACHMENT_PATH
     comment: NVARCHAR2(1000).
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Result Attachment Path
@@ -1125,7 +1125,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.RESULT_ATTACHMENT_PATH
     comment: VARCHAR2(2000). Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Error Description
@@ -1139,7 +1139,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.ERROR_DESCRIPTION
     comment: NVARCHAR2(1000). Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Legacy Filename
@@ -1153,7 +1153,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.LEGACY_FILENAME
     comment: VARCHAR2(1000 BYTE). LEGACY_FILEDATA (BLOB) excluded. LEGACY_ROWTEXT (VARCHAR2 40) — reference legacy.
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Legacy Row Text
@@ -1167,7 +1167,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.LEGACY_ROWTEXT
     comment: VARCHAR2(40 BYTE). Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Legacy Updated Date
@@ -1181,7 +1181,7 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.NGAY_SUA
     comment: TIMESTAMP(6). Legacy audit duplicate của LAST_MODIFIED_AT. ETL dùng LAST_MODIFIED_AT làm canonical.
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Legacy Updated By Id
@@ -1195,5 +1195,5 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.NGUOI_SUA_ID
     comment: NUMBER(10) — ETL convert sang string. Legacy audit duplicate của LAST_MODIFIED_BY.
-    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    classification_context: null
     etl_derived_value: null

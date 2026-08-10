@@ -33,7 +33,7 @@ attributes:
     source_table: SECURITIES
     source_column: null
     comment: "PK surrogate. BCV: \"[Involved Party] Portfolio Fund Management Company\". Công ty quản lý quỹ (QLQ) trong nước hoặc nước ngoài tại VN."
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Fund Management Company Code
@@ -47,7 +47,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.ID
     comment: BK chính. PK nguồn.
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'FMS_SECURITIES'"
-    etl_derived_value: FMS.SECURITIES
+    etl_derived_value: FMS_SECURITIES
 
   - name: Operation Status Code
     physical_name: operation_status_code
@@ -75,7 +75,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.STATUS_ID
     comment: "Scheme: FMS_OPERATION_STATUS. Nguồn STATUS_ID là UUID FK đến bảng danh mục STATUS — ETL resolve sang mã STATUS.CODE tương ứng."
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: FMS_OPERATION_STATUS
     etl_derived_value: null
 
   - name: Fund Management Company Full Name
@@ -89,7 +89,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.ITEM_NAME
     comment: null
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Fund Management Company Trading Name
@@ -103,7 +103,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.TNAME
     comment: null
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Fund Management Company English Name
@@ -117,7 +117,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.ENAME
     comment: null
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Fund Management Company Short Name
@@ -131,7 +131,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.SHORT_NAME
     comment: null
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Fund Management Company Short Code
@@ -145,7 +145,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.CODE
     comment: Mã nghiệp vụ do UBCK/nội bộ cấp — khác Fund Management Company Code (BK derived từ ID kỹ thuật).
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Charter Capital Amount
@@ -159,7 +159,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.CAPITAL
     comment: null
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Total Outstanding Unit Quantity
@@ -173,7 +173,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.TOTAL_QTTY
     comment: null
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Business Type Description
@@ -187,7 +187,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.BUSINESS_TYPE
     comment: "Denormalized text — khác với ngành nghề kinh doanh chi tiết (BUSINESS_TYPE_CODES ARRAY, xem 7d SEC_BUSINESS junction)."
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Organization Territory Type Code
@@ -201,8 +201,8 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.BORF_FLAG
     comment: "Scheme: FMS_ORG_TERRITORY_TYPE. ETL derived: 1=DOMESTIC;0=FOREIGN."
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
-    etl_derived_value: "1=DOMESTIC;0=FOREIGN"
+    classification_context: FMS_ORG_TERRITORY_TYPE
+    etl_derived_value: null
 
   - name: Fund Management Company Insider Id
     physical_name: fmc_insider_id
@@ -215,7 +215,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.INSIDER_ID
     comment: "FK target: fmc_insider.fmc_insider_id. Hash: hash_id('FMS.INSIDER', INSIDER_ID). Pending — entity thiết kế ở Tier 5."
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Fund Management Company Insider Code
@@ -229,7 +229,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.INSIDER_ID
     comment: "Lookup pair: fmc_insider.fmc_insider_code. Pair with Fund Management Company Insider Id. Pending — entity thiết kế ở Tier 5."
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Description
@@ -243,7 +243,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.DESCRIPTION
     comment: null
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Stock Ticker Code
@@ -257,7 +257,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.STOCK_CODE
     comment: null
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Market Code
@@ -271,8 +271,8 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.MARKET
     comment: "Scheme: FMS_LISTING_MARKET. ETL map: 1=HOSE;2=HNX;3=UPCOM. [PROPOSE NEW SCHEME] chưa có trong HLD 6d — bổ sung classification_schemes.yaml."
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
-    etl_derived_value: "1=HOSE;2=HNX;3=UPCOM"
+    classification_context: FMS_LISTING_MARKET
+    etl_derived_value: null
 
   - name: Country of Registration Name
     physical_name: country_of_registration_nm
@@ -285,7 +285,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.NATIONAL
     comment: "Denormalized text — nguồn lưu tên/mã quốc gia tự do, không có FK rõ ràng đến FMS.NATIONAL.ID (fk_note nguồn = null) nên không tạo FK Geographic Area."
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Custodian Bank Id
@@ -299,7 +299,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.BANK_ID
     comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS.BANK_MONI', BANK_ID)."
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Custodian Bank Code
@@ -313,7 +313,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.BANK_ID
     comment: "Lookup pair: custodian_bank.custodian_bank_code. Pair with Custodian Bank Id."
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Effective Start Date
@@ -327,7 +327,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.FR_DATE
     comment: null
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Effective End Date
@@ -341,7 +341,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.TO_DATE
     comment: null
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Suspension Date
@@ -355,7 +355,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.STOP_DATE
     comment: null
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Operation Commencement Date
@@ -369,7 +369,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.ACTIVE_DATE
     comment: null
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Record Classification Text
@@ -383,7 +383,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.RECORD_TYPE
     comment: "Mô tả nguồn chung chung — giữ dạng Text denormalized, cần xác nhận nghiệp vụ nếu có domain giá trị cố định."
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Legal Representative Indicator
@@ -397,7 +397,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.PEPRESENT_ATIVE
     comment: null
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Parent Organization Name
@@ -411,7 +411,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.ORG_NAME
     comment: Denormalized text — không có FK cấu trúc đến tổ chức chủ quản.
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Internal Transaction Code
@@ -425,7 +425,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.TR_CODE
     comment: null
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Listing Description
@@ -439,7 +439,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.LISTED
     comment: null
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Public Listed Indicator
@@ -453,7 +453,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.PUBLIC_LISTED
     comment: null
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Registration Date
@@ -467,7 +467,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.REG_DATE
     comment: null
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Financial Activity End Date
@@ -481,7 +481,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.FIN_DATE
     comment: null
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Decision Issue Date
@@ -495,7 +495,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.DEC_DATE
     comment: null
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Amendment Document Number
@@ -509,7 +509,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.VOUCHER_NO
     comment: null
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Director Full Name
@@ -523,7 +523,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.DIREC_NAME
     comment: Denormalized — chưa có FK cấu trúc đến Fund Management Company Employee (Tier 2).
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Deputy Director Full Name
@@ -537,7 +537,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.DEPUT_NAME
     comment: Denormalized — chưa có FK cấu trúc đến Fund Management Company Employee (Tier 2).
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Change Description
@@ -551,7 +551,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.DES_CHANGE
     comment: null
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Other Business Activity Description
@@ -565,7 +565,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.ACTIV_OTHER
     comment: "Nguồn NCLOB chứa JSON — ETL lưu nguyên chuỗi JSON dạng text, không tách cấu trúc ở Atomic."
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Foreign Organization Type Description
@@ -579,7 +579,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.FOREIGN_TYPE
     comment: null
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Foreign Organization Country Name
@@ -593,7 +593,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.ORG_NATIONAL
     comment: Denormalized text — cùng lý do với Country of Registration Name (không có FK rõ ràng).
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Foreign Organization Registration Number
@@ -607,7 +607,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.ORG_ID_NO
     comment: null
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Actual Business Type Description
@@ -621,7 +621,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.REAL_BUSINESS_TYPE
     comment: null
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Parent Fund Management Company Id
@@ -635,7 +635,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.PAR_ID
     comment: "Self-reference. FK target: fund_management_company.fmc_id. Hash: hash_id('FMS.SECURITIES', PAR_ID)."
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Parent Fund Management Company Code
@@ -649,7 +649,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.PAR_ID
     comment: "Self-reference. Lookup pair: fund_management_company.fmc_code. Pair with Parent Fund Management Company Id."
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Actual Operation Commencement Date
@@ -663,7 +663,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.REAL_ACTIVE_DATE
     comment: null
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Company Type Code
@@ -677,7 +677,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.CT_ID
     comment: "Scheme: FMS_COMPANY_TYPE. FMS.COMPANY_TYPE là reference data set (chỉ Code/Name, không có instance data riêng) — theo quyết định Data Modeler (2026-07-24), đẩy vào Classification Value, không thiết kế thành Atomic entity riêng. Nguồn CT_ID là UUID FK — ETL resolve sang mã COMPANY_TYPE tương ứng."
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: FMS_COMPANY_TYPE
     etl_derived_value: null
 
   - name: Event Type Id
@@ -691,7 +691,7 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.EVENT_TYPE_ID
     comment: "FK target: cl_fms_event_type.cl_fms_event_tp_id. Cần ETL crosswalk sang FMS.EVENT_TYPE: SECURITIES.EVENT_TYPE_ID = EVENT_TYPE.ID để xác nhận ITEM_NAME sau đó hash_id('FMS.EVENT_TYPE', ITEM_NAME) |"
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Event Type Code
@@ -705,5 +705,5 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.EVENT_TYPE.ITEM_NAME
     comment: "Lookup pair: cl_fms_event_type.cl_fms_event_tp_code. Pair with Event Type Id. Giá trị lấy từ FMS.EVENT_TYPE.ITEM_NAME sau ETL crosswalk — chi tiết xem comment Event Type Id."
-    classification_context: "Source System Code = 'FMS_SECURITIES'"
+    classification_context: null
     etl_derived_value: null

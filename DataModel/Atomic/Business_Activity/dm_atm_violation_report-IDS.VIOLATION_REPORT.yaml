@@ -33,7 +33,7 @@ attributes:
     source_table: VIOLATION_REPORT
     source_column: null
     comment: "PK surrogate. BCV: \"[Business Activity] Business Activity\"."
-    classification_context: "Source System Code = 'IDS_VIOLATION_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Violation Report Code
@@ -47,7 +47,7 @@ attributes:
     source_table: VIOLATION_REPORT
     source_column: IDS.VIOLATION_REPORT.ID
     comment: "BK chính. PK nguồn NUMBER(38,0) tự tăng."
-    classification_context: "Source System Code = 'IDS_VIOLATION_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -75,7 +75,7 @@ attributes:
     source_table: VIOLATION_REPORT
     source_column: IDS.VIOLATION_REPORT.COMPANY_PROFILE_ID
     comment: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES', COMPANY_PROFILE_ID)."
-    classification_context: "Source System Code = 'IDS_VIOLATION_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Public Company Code
@@ -89,7 +89,7 @@ attributes:
     source_table: VIOLATION_REPORT
     source_column: IDS.VIOLATION_REPORT.COMPANY_PROFILE_ID
     comment: "Lookup pair: public_company.pc_code. Pair with Public Company Id."
-    classification_context: "Source System Code = 'IDS_VIOLATION_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Violation Report Template Id
@@ -103,7 +103,7 @@ attributes:
     source_table: VIOLATION_REPORT
     source_column: IDS.VIOLATION_REPORT.VIOLATION_TEMPLATE_ID
     comment: "FK target: vr_template.vr_template_id. Cần ETL crosswalk sang IDS.VIOLATION_TEMPLATES: VIOLATION_REPORT.VIOLATION_TEMPLATE_ID = VIOLATION_TEMPLATES.ID để xác nhận VIOLATION_CD sau đó hash_id('IDS.VIOLATION_TEMPLATES', VIOLATION_CD)."
-    classification_context: "Source System Code = 'IDS_VIOLATION_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Violation Report Template Code
@@ -117,7 +117,7 @@ attributes:
     source_table: VIOLATION_REPORT
     source_column: IDS.VIOLATION_TEMPLATES.VIOLATION_CD
     comment: "Lookup pair: vr_template.vr_template_code. Pair with Violation Report Template Id. Giá trị lấy từ IDS.VIOLATION_TEMPLATES.VIOLATION_CD sau ETL crosswalk — chi tiết xem comment Violation Report Template Id."
-    classification_context: "Source System Code = 'IDS_VIOLATION_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Financial Report Template Id
@@ -131,7 +131,7 @@ attributes:
     source_table: VIOLATION_REPORT
     source_column: IDS.VIOLATION_REPORT.FORM_CD
     comment: "FK target: fr_template.fr_template_id. Hash: hash_id('IDS.FORMS', FORM_CD)."
-    classification_context: "Source System Code = 'IDS_VIOLATION_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Financial Report Template Code
@@ -145,7 +145,7 @@ attributes:
     source_table: VIOLATION_REPORT
     source_column: IDS.VIOLATION_REPORT.FORM_CD
     comment: "Lookup pair: fr_template.fr_template_code. Pair with Financial Report Template Id."
-    classification_context: "Source System Code = 'IDS_VIOLATION_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Period Name
@@ -159,7 +159,7 @@ attributes:
     source_table: VIOLATION_REPORT
     source_column: IDS.VIOLATION_REPORT.PERIOD_NAME
     comment: null
-    classification_context: "Source System Code = 'IDS_VIOLATION_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Period Type Code
@@ -173,7 +173,7 @@ attributes:
     source_table: VIOLATION_REPORT
     source_column: IDS.VIOLATION_REPORT.PERIOD_QUARTER
     comment: "Scheme: IDS_VIOLATION_REPORT_PERIOD_TYPE (modeler_defined, no_lookup) — chưa có trong HLD 6d, bổ sung scheme mới. Nguồn NUMBER encode: 1-4 = Quý 1-4, 5 = Năm, 6 = Bán niên (không phải counter thuần túy nên map Classification Value thay vì Small Counter)."
-    classification_context: "Source System Code = 'IDS_VIOLATION_REPORT'"
+    classification_context: IDS_VIOLATION_REPORT_PERIOD_TYPE
     etl_derived_value: null
 
   - name: Period Year
@@ -187,7 +187,7 @@ attributes:
     source_table: VIOLATION_REPORT
     source_column: IDS.VIOLATION_REPORT.PERIOD_YEAR
     comment: null
-    classification_context: "Source System Code = 'IDS_VIOLATION_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Base Column Name
@@ -201,7 +201,7 @@ attributes:
     source_table: VIOLATION_REPORT
     source_column: IDS.VIOLATION_REPORT.BASE_COLUMN
     comment: null
-    classification_context: "Source System Code = 'IDS_VIOLATION_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Base Date
@@ -215,7 +215,7 @@ attributes:
     source_table: VIOLATION_REPORT
     source_column: IDS.VIOLATION_REPORT.BASE_DATE
     comment: null
-    classification_context: "Source System Code = 'IDS_VIOLATION_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Deadline Date
@@ -229,7 +229,7 @@ attributes:
     source_table: VIOLATION_REPORT
     source_column: IDS.VIOLATION_REPORT.DEADLINE_DATE
     comment: null
-    classification_context: "Source System Code = 'IDS_VIOLATION_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Actual Submit Date
@@ -243,7 +243,7 @@ attributes:
     source_table: VIOLATION_REPORT
     source_column: IDS.VIOLATION_REPORT.ACTUAL_SUBMIT_DATE
     comment: null
-    classification_context: "Source System Code = 'IDS_VIOLATION_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Submission Status Code
@@ -257,7 +257,7 @@ attributes:
     source_table: VIOLATION_REPORT
     source_column: IDS.VIOLATION_REPORT.STATUS
     comment: "Scheme: IDS_VIOLATION_REPORT_STATUS (no_lookup) — chưa có trong HLD 6d, bổ sung scheme mới."
-    classification_context: "Source System Code = 'IDS_VIOLATION_REPORT'"
+    classification_context: IDS_VIOLATION_REPORT_STATUS
     etl_derived_value: null
 
   - name: Original Deadline Date
@@ -271,7 +271,7 @@ attributes:
     source_table: VIOLATION_REPORT
     source_column: IDS.VIOLATION_REPORT.ORIGINAL_DEADLINE
     comment: null
-    classification_context: "Source System Code = 'IDS_VIOLATION_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Language Code
@@ -285,5 +285,5 @@ attributes:
     source_table: VIOLATION_REPORT
     source_column: IDS.VIOLATION_REPORT.LANGUAGE_CD
     comment: null
-    classification_context: "Source System Code = 'IDS_VIOLATION_REPORT'"
+    classification_context: null
     etl_derived_value: null

@@ -33,7 +33,7 @@ attributes:
     source_table: WARD_NEW
     source_column: null
     comment: "PK surrogate. Hash: hash_id('ECAT.WARD_NEW', CODE). BCV: \"Geographic Area\" (Location)."
-    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -48,7 +48,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
     classification_context: "Source System Code = 'ECAT_WARD_NEW'"
-    etl_derived_value: ECAT.WARD_NEW
+    etl_derived_value: ECAT_WARD_NEW
 
   - name: Geographic Area Type Code
     physical_name: geographic_area_tp_code
@@ -61,7 +61,7 @@ attributes:
     source_table: WARD_NEW
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    classification_context: "GEOGRAPHIC_AREA_TYPE=WARD"
     etl_derived_value: WARD
 
   - name: Geographic Area Code
@@ -75,7 +75,7 @@ attributes:
     source_table: WARD_NEW
     source_column: ECAT.WARD_NEW.CODE
     comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (STABLE_ID) — gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique trước go-live."
-    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Geographic Area Name
@@ -89,7 +89,7 @@ attributes:
     source_table: WARD_NEW
     source_column: ECAT.WARD_NEW.NAME_VN
     comment: null
-    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Geographic Area English Name
@@ -103,7 +103,7 @@ attributes:
     source_table: WARD_NEW
     source_column: ECAT.WARD_NEW.NAME_EN
     comment: null
-    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Geographic Area Category Code
@@ -117,7 +117,7 @@ attributes:
     source_table: WARD_NEW
     source_column: ECAT.WARD_NEW.CATEGORY
     comment: "Scheme: GEOGRAPHIC_AREA_WARD_CATEGORY."
-    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    classification_context: "GEOGRAPHIC_AREA_WARD_CATEGORY=(source)"
     etl_derived_value: null
 
   - name: Parent Geographic Area Id
@@ -131,7 +131,7 @@ attributes:
     source_table: WARD_NEW
     source_column: ECAT.WARD_NEW.PROVINCE_NEW_ID
     comment: "FK target: geographic_area.geographic_area_id. Parent là PROVINCE_NEW (không qua cấp quận/huyện — đã bỏ sau sáp nhập 2025). Resolve: join PROVINCE_NEW_ID → ECAT.PROVINCE_NEW.ID để lấy CODE, rồi hash_id('ECAT.PROVINCE_NEW', CODE_CHA)."
-    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Parent Geographic Area Code
@@ -145,7 +145,7 @@ attributes:
     source_table: WARD_NEW
     source_column: ECAT.WARD_NEW.PROVINCE_NEW_ID
     comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Parent Geographic Area Id."
-    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Effective Indicator
@@ -159,7 +159,7 @@ attributes:
     source_table: WARD_NEW
     source_column: ECAT.WARD_NEW.EFFECTIVE
     comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Active/Deleted Indicator."
-    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Active Indicator
@@ -173,7 +173,7 @@ attributes:
     source_table: WARD_NEW
     source_column: ECAT.WARD_NEW.ACTIVE
     comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Deleted Indicator."
-    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Deleted Indicator
@@ -187,7 +187,7 @@ attributes:
     source_table: WARD_NEW
     source_column: ECAT.WARD_NEW.DELETED
     comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Active Indicator."
-    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Effective Start Date
@@ -201,7 +201,7 @@ attributes:
     source_table: WARD_NEW
     source_column: ECAT.WARD_NEW.EFFECTIVE_START_DATE
     comment: null
-    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Effective End Date
@@ -215,7 +215,7 @@ attributes:
     source_table: WARD_NEW
     source_column: ECAT.WARD_NEW.EFFECTIVE_END_DATE
     comment: null
-    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Version Number
@@ -229,7 +229,7 @@ attributes:
     source_table: WARD_NEW
     source_column: ECAT.WARD_NEW.VERSION
     comment: "Đẩy 1:1 theo yêu cầu."
-    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Display Label
@@ -243,7 +243,7 @@ attributes:
     source_table: WARD_NEW
     source_column: ECAT.WARD_NEW.DISPLAY_LABEL
     comment: "Đẩy 1:1 theo yêu cầu."
-    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Active Reason
@@ -257,7 +257,7 @@ attributes:
     source_table: WARD_NEW
     source_column: ECAT.WARD_NEW.ACTIVE_REASON
     comment: "Đẩy 1:1 theo yêu cầu."
-    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Deleted Reason
@@ -271,7 +271,7 @@ attributes:
     source_table: WARD_NEW
     source_column: ECAT.WARD_NEW.DELETED_REASON
     comment: "Đẩy 1:1 theo yêu cầu."
-    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Created Timestamp
@@ -285,7 +285,7 @@ attributes:
     source_table: WARD_NEW
     source_column: ECAT.WARD_NEW.CREATED_AT
     comment: null
-    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Updated Timestamp
@@ -299,7 +299,7 @@ attributes:
     source_table: WARD_NEW
     source_column: ECAT.WARD_NEW.UPDATED_AT
     comment: null
-    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Created By Staff Id
@@ -313,7 +313,7 @@ attributes:
     source_table: WARD_NEW
     source_column: ECAT.WARD_NEW.CREATED_BY_ID
     comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT.UBCK_STAFF', CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
-    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Created By Staff Code
@@ -327,7 +327,7 @@ attributes:
     source_table: WARD_NEW
     source_column: ECAT.WARD_NEW.CREATED_BY_ID
     comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff Code. Pending — xem ghi chú ở Created By Staff Id."
-    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Created By Staff Name
@@ -341,7 +341,7 @@ attributes:
     source_table: WARD_NEW
     source_column: ECAT.WARD_NEW.CREATED_BY_NAME
     comment: "Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên hiển thị, không phải mã nhân viên)."
-    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Updated By Staff Id
@@ -355,7 +355,7 @@ attributes:
     source_table: WARD_NEW
     source_column: ECAT.WARD_NEW.UPDATED_BY_ID
     comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT.UBCK_STAFF', CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
-    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Updated By Staff Code
@@ -369,7 +369,7 @@ attributes:
     source_table: WARD_NEW
     source_column: ECAT.WARD_NEW.UPDATED_BY_ID
     comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff Code. Pending — xem ghi chú ở Updated By Staff Id."
-    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Updated By Staff Name
@@ -383,5 +383,5 @@ attributes:
     source_table: WARD_NEW
     source_column: ECAT.WARD_NEW.UPDATED_BY_NAME
     comment: "Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên hiển thị, không phải mã nhân viên)."
-    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    classification_context: null
     etl_derived_value: null

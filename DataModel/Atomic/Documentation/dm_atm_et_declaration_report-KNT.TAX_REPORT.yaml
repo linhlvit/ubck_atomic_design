@@ -33,7 +33,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: null
     comment: "PK surrogate. BCV: \"[Documentation] Declaration Document\". Tờ khai/báo cáo tài chính do Cục Thuế cung cấp theo từng kỳ kê khai. Hash: hash_id('KNT.TAX_REPORT', DECLARATION_CODE)."
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: External Tax Declaration Report Code
@@ -47,7 +47,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.DECLARATION_CODE
     comment: "BK chính. Cần profile dữ liệu xác nhận unique — Fact Append cho phép nộp bổ sung nhiều lần (ATTEMPT_COUNT); nếu DECLARATION_CODE không đổi giữa các lần nộp bổ sung, có thể cần ghép thêm ATTEMPT_COUNT vào business key trước go-live."
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'KNT_TAX_REPORT'"
-    etl_derived_value: KNT.TAX_REPORT
+    etl_derived_value: KNT_TAX_REPORT
 
   - name: External Tax Registration Id
     physical_name: et_registration_id
@@ -75,7 +75,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.TAX_CODE
     comment: "FK target: et_registration.et_registration_id. Hash: hash_id('KNT.TAX_REGISTRATION_INFO', TAX_CODE)."
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: External Tax Registration Code
@@ -89,7 +89,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.TAX_CODE
     comment: "Lookup pair: et_registration.et_registration_code. Pair with External Tax Registration Id."
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Service Code
@@ -103,7 +103,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.SERVICE_CODE
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Service Name
@@ -117,7 +117,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.SERVICE_NAME
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Service Version
@@ -131,7 +131,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.SERVICE_VERSION
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Service Provider Information
@@ -145,7 +145,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.SERVICE_PROVIDER_INFO
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Declaration Name
@@ -159,7 +159,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.DECLARATION_NAME
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Form Description
@@ -173,7 +173,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.FORM_DESCRIPTION
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Declaration XML Version
@@ -187,7 +187,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.DECLARATION_XML_VERSION
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Declaration Type Code
@@ -201,7 +201,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.DECLARATION_TYPE
     comment: "Scheme: KNT_DECLARATION_TYPE. [PROPOSE NEW SCHEME] — chưa có trong HLD 7c, cần profile dữ liệu để liệt kê values."
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: KNT_DECLARATION_TYPE
     etl_derived_value: null
 
   - name: Attempt Count
@@ -215,7 +215,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.ATTEMPT_COUNT
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Period Type Code
@@ -229,7 +229,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.PERIOD_TYPE
     comment: "Scheme: KNT_REPORT_PERIOD_TYPE."
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: KNT_REPORT_PERIOD_TYPE
     etl_derived_value: null
 
   - name: Declaration Period
@@ -243,7 +243,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.DECLARATION_PERIOD
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Declaration From Date
@@ -257,7 +257,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.DECLARATION_FROM_DATE
     comment: Nguồn lưu dạng string — ETL cần cast/parse sang date. Cần validate format ngày thực tế.
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Declaration To Date
@@ -271,7 +271,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.DECLARATION_TO_DATE
     comment: Nguồn lưu dạng string — ETL cần cast/parse sang date. Cần validate format ngày thực tế.
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Declaration From Month
@@ -285,7 +285,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.DECLARATION_FROM_MONTH
     comment: Giữ Text — nguồn có thể lưu dạng MM/YYYY không phải ngày đầy đủ.
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Declaration To Month
@@ -299,7 +299,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.DECLARATION_TO_MONTH
     comment: Giữ Text — nguồn có thể lưu dạng MM/YYYY không phải ngày đầy đủ.
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Tax Office Code
@@ -313,7 +313,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.TAX_OFFICE_CODE
     comment: Denormalized — nguồn không có danh mục cơ quan thuế trong scope thiết kế hiện tại.
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Tax Office Name
@@ -327,7 +327,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.TAX_OFFICE_NAME
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Declaration Date
@@ -341,7 +341,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.DECLARATION_DATE
     comment: Nguồn lưu dạng string — ETL cần cast/parse sang date.
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Extension Reason Code
@@ -355,7 +355,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.EXTENSION_REASON_CODE
     comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không phải Classification Value."
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Extension Reason Description
@@ -369,7 +369,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.EXTENSION_REASON
     comment: Denormalized — tên tương ứng Extension Reason Code.
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Signatory Full Name
@@ -383,7 +383,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.SIGNATORY
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Signed Date
@@ -397,7 +397,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.SIGNED_AT
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Business Line Name
@@ -411,7 +411,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.BUSINESS_LINE
     comment: "Denormalized snapshot tại thời điểm báo cáo — không phải FK, grain của entity là Declaration Document."
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Representative Full Name
@@ -425,7 +425,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.REPRESENTATIVE_NAME
     comment: "Prefix chủ thể — denormalized snapshot, không có FK link."
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Taxpayer Address
@@ -439,7 +439,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.TAXPAYER_ADDRESS
     comment: "Denormalized — grain của entity là Declaration Document, không phải Involved Party, không tách IP Postal Address."
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Taxpayer Ward Name
@@ -453,7 +453,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.WARD
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Taxpayer District Code
@@ -467,7 +467,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.TAXPAYER_DISTRICT_CODE
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Taxpayer District Name
@@ -481,7 +481,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.TAXPAYER_DISTRICT_NAME
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Taxpayer Province Code
@@ -495,7 +495,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.TAXPAYER_PROVINCE_CODE
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Taxpayer Province Name
@@ -509,7 +509,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.TAXPAYER_PROVINCE_NAME
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Taxpayer Phone Number
@@ -523,7 +523,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.TAXPAYER_PHONE
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Taxpayer Fax Number
@@ -537,7 +537,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.TAXPAYER_FAX
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Taxpayer Email
@@ -551,7 +551,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.TAXPAYER_EMAIL
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Audit Status Description
@@ -565,7 +565,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.AUDIT_STATUS_TEXT
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Audit Firm Tax Code
@@ -579,7 +579,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.AUDIT_FIRM_TAX_CODE
     comment: "Denormalized — liên kết ngầm → AUDIT_FIRM (out of scope hiện tại), không tạo FK."
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Audit Firm Name
@@ -593,7 +593,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.AUDIT_FIRM_NAME
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Auditor Code
@@ -607,7 +607,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.AUDITOR_CODE
     comment: "Denormalized — liên kết ngầm → AUDITOR (out of scope hiện tại), không tạo FK."
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Auditor Full Name
@@ -621,7 +621,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.AUDITOR_NAME
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Audited Flag
@@ -635,7 +635,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.AUDITED
     comment: "Nguồn lưu dạng string (\"true\"/\"false\") — ETL cần cast sang boolean."
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Audit Opinion Code
@@ -649,7 +649,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.AUDIT_OPINION_CODE
     comment: Denormalized — nguồn không có danh mục chuẩn hóa trong scope thiết kế hiện tại.
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Audit Opinion Description
@@ -663,7 +663,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.AUDIT_OPINION
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Audit Date
@@ -677,7 +677,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.AUDIT_DATE
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Created Timestamp
@@ -691,7 +691,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.CREATED_AT
     comment: "Nguồn lưu dạng số (epoch millis, NUMBER) — ETL cần convert sang timestamp."
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Additional Info Submission Date
@@ -705,7 +705,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.ADD_INFO_SUBMISSION_DATE
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Additional Info Received Date
@@ -719,7 +719,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.ADD_INFO_RECEIVED_DATE
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Additional Info Preparation Period
@@ -733,7 +733,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.ADD_INFO_PREPARATION_PERIOD
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Additional Info Source
@@ -747,7 +747,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.ADD_INFO_SOURCE
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Additional Info Entered By Name
@@ -761,7 +761,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.ADD_INFO_ENTERED_BY
     comment: "Denormalized — không tạo FK, nguồn không có entity người dùng trong scope."
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Additional Info Received At Date
@@ -775,7 +775,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.ADD_INFO_RECEIVED_AT
     comment: Khác Additional Info Received Date — nguồn lưu 2 cột ngày nhận riêng biệt.
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Additional Info Declaration Id
@@ -789,7 +789,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.ADD_INFO_DECLARATION_ID
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Additional Info Sent From Name
@@ -803,7 +803,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.ADD_INFO_SENT_FROM
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Additional Info Received At Location
@@ -817,7 +817,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.ADD_INFO_RECEIVED_AT_LOCATION
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Global Unique Identifier
@@ -831,7 +831,7 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.GUID
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Message Packet Id
@@ -845,5 +845,5 @@ attributes:
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.MSG_PACKET_ID
     comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không tạo FK sang MSG_PACKET (bảng kỹ thuật gói tin trao đổi, ngoài scope thiết kế). Nguồn lưu dạng số (NUMBER) — ETL cần convert sang string."
-    classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+    classification_context: null
     etl_derived_value: null

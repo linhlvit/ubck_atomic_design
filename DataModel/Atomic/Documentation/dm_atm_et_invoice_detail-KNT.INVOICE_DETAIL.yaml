@@ -33,7 +33,7 @@ attributes:
     source_table: INVOICE_DETAIL
     source_column: null
     comment: "PK surrogate. BCV: \"[Documentation] Invoice\". 1 hóa đơn cụ thể bị áp dụng biện pháp cưỡng chế ngừng sử dụng. Hash: hash_id('KNT.INVOICE_DETAIL', ID)."
-    classification_context: "Source System Code = 'KNT_INVOICE_DETAIL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: External Tax Invoice Detail Code
@@ -47,7 +47,7 @@ attributes:
     source_table: INVOICE_DETAIL
     source_column: KNT.INVOICE_DETAIL.ID
     comment: BK chính. PK nguồn.
-    classification_context: "Source System Code = 'KNT_INVOICE_DETAIL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'KNT_INVOICE_DETAIL'"
-    etl_derived_value: KNT.INVOICE_DETAIL
+    etl_derived_value: KNT_INVOICE_DETAIL
 
   - name: External Tax Enforcement Invoice Decision Id
     physical_name: et_enforcement_invoice_decision_id
@@ -75,7 +75,7 @@ attributes:
     source_table: INVOICE_DETAIL
     source_column: KNT.INVOICE_DETAIL.TAX_ENFORCEMENT_INVOICE_ID
     comment: "FK target: et_enforcement_invoice_decision.et_enforcement_invoice_decision_id. Nguồn lưu ID kỹ thuật của TAX_ENFORCEMENT_INVOICE — ETL join TAX_ENFORCEMENT_INVOICE_ID → KNT.TAX_ENFORCEMENT_INVOICE.ID để lấy DECISION_NUMBER rồi hash_id('KNT.TAX_ENFORCEMENT_INVOICE', DECISION_NUMBER)."
-    classification_context: "Source System Code = 'KNT_INVOICE_DETAIL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: External Tax Enforcement Invoice Decision Code
@@ -89,7 +89,7 @@ attributes:
     source_table: INVOICE_DETAIL
     source_column: KNT.INVOICE_DETAIL.TAX_ENFORCEMENT_INVOICE_ID
     comment: "Lookup pair: et_enforcement_invoice_decision.et_enforcement_invoice_decision_code. Pair with External Tax Enforcement Invoice Decision Id."
-    classification_context: "Source System Code = 'KNT_INVOICE_DETAIL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Invoice Template Symbol
@@ -103,7 +103,7 @@ attributes:
     source_table: INVOICE_DETAIL
     source_column: KNT.INVOICE_DETAIL.INVOICE_TEMPLATE_SYMBOL
     comment: null
-    classification_context: "Source System Code = 'KNT_INVOICE_DETAIL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Invoice Symbol
@@ -117,7 +117,7 @@ attributes:
     source_table: INVOICE_DETAIL
     source_column: KNT.INVOICE_DETAIL.INVOICE_SYMBOL
     comment: null
-    classification_context: "Source System Code = 'KNT_INVOICE_DETAIL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Invoice Number
@@ -131,7 +131,7 @@ attributes:
     source_table: INVOICE_DETAIL
     source_column: KNT.INVOICE_DETAIL.INVOICE_NUMBER
     comment: null
-    classification_context: "Source System Code = 'KNT_INVOICE_DETAIL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Invoice Type Code
@@ -145,7 +145,7 @@ attributes:
     source_table: INVOICE_DETAIL
     source_column: KNT.INVOICE_DETAIL.INVOICE_TYPE
     comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không phải Classification Value. Giữ nguyên giá trị text từ nguồn."
-    classification_context: "Source System Code = 'KNT_INVOICE_DETAIL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Object Id
@@ -159,5 +159,5 @@ attributes:
     source_table: INVOICE_DETAIL
     source_column: KNT.INVOICE_DETAIL.OBJ_ID
     comment: "Denormalized — nguồn không xác định rõ entity đích, không tạo FK."
-    classification_context: "Source System Code = 'KNT_INVOICE_DETAIL'"
+    classification_context: null
     etl_derived_value: null

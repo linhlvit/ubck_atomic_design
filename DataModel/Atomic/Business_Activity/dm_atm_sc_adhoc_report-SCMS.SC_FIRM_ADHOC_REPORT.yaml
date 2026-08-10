@@ -33,7 +33,7 @@ attributes:
     source_table: SC_FIRM_ADHOC_REPORT
     source_column: null
     comment: PK surrogate.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Company Adhoc Report Code
@@ -47,7 +47,7 @@ attributes:
     source_table: SC_FIRM_ADHOC_REPORT
     source_column: SCMS.SC_FIRM_ADHOC_REPORT.ID
     comment: BK. NUMBER(10) — ETL convert sang string.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
-    etl_derived_value: SCMS.SC_FIRM_ADHOC_REPORT
+    etl_derived_value: SCMS_SC_FIRM_ADHOC_REPORT
 
   - name: Securities Company Id
     physical_name: sc_id
@@ -75,7 +75,7 @@ attributes:
     source_table: SC_FIRM_ADHOC_REPORT
     source_column: SCMS.SC_FIRM_ADHOC_REPORT.SC_FIRM_INFO_ID
     comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO: SC_FIRM_ADHOC_REPORT.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE sau đó hash_id('SCMS.SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Company Code
@@ -89,7 +89,7 @@ attributes:
     source_table: SC_FIRM_ADHOC_REPORT
     source_column: SCMS.SC_FIRM_INFO.CODE
     comment: "Lookup pair: securities_company.securities_company_code. Pair with Securities Company Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết xem comment Securities Company Id."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Company Foreign Branch Id
@@ -103,7 +103,7 @@ attributes:
     source_table: SC_FIRM_ADHOC_REPORT
     source_column: SCMS.SC_FIRM_ADHOC_REPORT.SC_FIRM_FOREIGN_BRANCH_ID
     comment: "FK target: Securities Company Foreign Branch.Securities Company Foreign Branch Id. Hash: hash_id('SCMS.SC_FIRM_FOREIGN_BRANCH', SC_FIRM_FOREIGN_BRANCH_ID)."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Company Foreign Branch Code
@@ -117,7 +117,7 @@ attributes:
     source_table: SC_FIRM_ADHOC_REPORT
     source_column: SCMS.SC_FIRM_ADHOC_REPORT.SC_FIRM_FOREIGN_BRANCH_ID
     comment: "Lookup pair: Securities Company Foreign Branch.Securities Company Foreign Branch Code. Pair with Securities Company Foreign Branch Id."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Bank Id
@@ -131,7 +131,7 @@ attributes:
     source_table: SC_FIRM_ADHOC_REPORT
     source_column: SCMS.SC_FIRM_ADHOC_REPORT.BANK_ID
     comment: "FK target: Bank.Bank Id. Hash: hash_id('SCMS.BANK', BANK_ID)."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Bank Code
@@ -145,7 +145,7 @@ attributes:
     source_table: SC_FIRM_ADHOC_REPORT
     source_column: SCMS.SC_FIRM_ADHOC_REPORT.BANK_ID
     comment: "Lookup pair: Bank.Bank Code. Pair with Bank Id."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Form Report Id
@@ -159,7 +159,7 @@ attributes:
     source_table: SC_FIRM_ADHOC_REPORT
     source_column: SCMS.SC_FIRM_ADHOC_REPORT.FORM_REPORT_ID
     comment: Pending — FK target FORM_REPORT nằm ngoài scope. NUMBER(19).
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Form Version Id
@@ -173,7 +173,7 @@ attributes:
     source_table: SC_FIRM_ADHOC_REPORT
     source_column: SCMS.SC_FIRM_ADHOC_REPORT.FORM_VERSION_ID
     comment: Pending — FK target chưa xác định. NUMBER(19). Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Report Input Submission Id
@@ -187,7 +187,7 @@ attributes:
     source_table: SC_FIRM_ADHOC_REPORT
     source_column: SCMS.SC_FIRM_ADHOC_REPORT.REPORT_INPUT_SUBMISSION_ID
     comment: Pending — FK target REPORT_INPUT_SUBMISSION nằm ngoài scope. NUMBER(19).
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Report Name
@@ -201,7 +201,7 @@ attributes:
     source_table: SC_FIRM_ADHOC_REPORT
     source_column: SCMS.SC_FIRM_ADHOC_REPORT.REPORT_NAME
     comment: VARCHAR2(2000).
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Report Year
@@ -215,7 +215,7 @@ attributes:
     source_table: SC_FIRM_ADHOC_REPORT
     source_column: SCMS.SC_FIRM_ADHOC_REPORT.REPORT_YEAR
     comment: NUMBER(10).
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Document Number
@@ -229,7 +229,7 @@ attributes:
     source_table: SC_FIRM_ADHOC_REPORT
     source_column: SCMS.SC_FIRM_ADHOC_REPORT.DOCUMENT_NUMBER
     comment: VARCHAR2(200).
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Period Value
@@ -243,7 +243,7 @@ attributes:
     source_table: SC_FIRM_ADHOC_REPORT
     source_column: SCMS.SC_FIRM_ADHOC_REPORT.PERIOD_VALUE
     comment: NVARCHAR2(200).
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Adhoc Report Type Code
@@ -257,7 +257,7 @@ attributes:
     source_table: SC_FIRM_ADHOC_REPORT
     source_column: SCMS.SC_FIRM_ADHOC_REPORT.DETAIL_TYPE
     comment: "Scheme: SCMS_ADHOC_REPORT_TYPE. NVARCHAR2(100)."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Category Code
@@ -271,7 +271,7 @@ attributes:
     source_table: SC_FIRM_ADHOC_REPORT
     source_column: SCMS.SC_FIRM_ADHOC_REPORT.CATEGORY
     comment: "Pending — VARCHAR2(30), mô tả gốc BRD trống. Cần xác nhận values để tạo scheme. Tạm để pending."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Signature Type Code
@@ -285,7 +285,7 @@ attributes:
     source_table: SC_FIRM_ADHOC_REPORT
     source_column: SCMS.SC_FIRM_ADHOC_REPORT.SIGNATURE_TYPE
     comment: "Scheme: SCMS_SIGNATURE_TYPE. NVARCHAR2(30)."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Report Submission Status Code
@@ -299,7 +299,7 @@ attributes:
     source_table: SC_FIRM_ADHOC_REPORT
     source_column: SCMS.SC_FIRM_ADHOC_REPORT.RECORD_STATUS
     comment: "Scheme: SCMS_REPORT_SUBMISSION_STATUS. NUMBER(10). Lưu ý: values khác với PERIODIC_REPORT (không có -1=Từ chối)."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Overdue Days
@@ -313,7 +313,7 @@ attributes:
     source_table: SC_FIRM_ADHOC_REPORT
     source_column: SCMS.SC_FIRM_ADHOC_REPORT.SO_NGAY_GUI_MUON
     comment: NUMBER(10). Tên cột tiếng Việt — SO_NGAY_GUI_MUON.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Allow Import Indicator
@@ -327,7 +327,7 @@ attributes:
     source_table: SC_FIRM_ADHOC_REPORT
     source_column: SCMS.SC_FIRM_ADHOC_REPORT.ALLOW_IMPORT
     comment: NUMBER(1).
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Requires Disclosure Indicator
@@ -341,7 +341,7 @@ attributes:
     source_table: SC_FIRM_ADHOC_REPORT
     source_column: SCMS.SC_FIRM_ADHOC_REPORT.REQUIRES_DISCLOSURE
     comment: NUMBER(1).
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Classification Event Type Id
@@ -355,7 +355,7 @@ attributes:
     source_table: SC_FIRM_ADHOC_REPORT
     source_column: SCMS.SC_FIRM_ADHOC_REPORT.EVENT_TYPE_ID
     comment: "FK target: Classification Event Type.Classification Event Type Id. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Classification Event Type Code
@@ -369,7 +369,7 @@ attributes:
     source_table: SC_FIRM_ADHOC_REPORT
     source_column: SCMS.SC_FIRM_ADHOC_REPORT.EVENT_TYPE_ID
     comment: "Lookup pair: Classification Event Type.Classification Event Type Code. Pair with Classification Event Type Id."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Submission Deadline Timestamp
@@ -383,7 +383,7 @@ attributes:
     source_table: SC_FIRM_ADHOC_REPORT
     source_column: SCMS.SC_FIRM_ADHOC_REPORT.HAN_GUI
     comment: "TIMESTAMP(6). Tên cột tiếng Việt HAN_GUI = Hạn gửi."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Event Date
@@ -397,7 +397,7 @@ attributes:
     source_table: SC_FIRM_ADHOC_REPORT
     source_column: SCMS.SC_FIRM_ADHOC_REPORT.EVENT_DATE
     comment: Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Document Date
@@ -411,7 +411,7 @@ attributes:
     source_table: SC_FIRM_ADHOC_REPORT
     source_column: SCMS.SC_FIRM_ADHOC_REPORT.DOCUMENT_DATE
     comment: null
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Sent Timestamp
@@ -425,7 +425,7 @@ attributes:
     source_table: SC_FIRM_ADHOC_REPORT
     source_column: SCMS.SC_FIRM_ADHOC_REPORT.SENT_AT
     comment: TIMESTAMP(6).
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Cancelled Timestamp
@@ -439,7 +439,7 @@ attributes:
     source_table: SC_FIRM_ADHOC_REPORT
     source_column: SCMS.SC_FIRM_ADHOC_REPORT.CANCELLED_AT
     comment: TIMESTAMP(6).
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Sender IAM User Id
@@ -453,7 +453,7 @@ attributes:
     source_table: SC_FIRM_ADHOC_REPORT
     source_column: SCMS.SC_FIRM_ADHOC_REPORT.SENDER_ID
     comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM.USERS', SENDER_ID) | Chưa xác nhận join key SCMS.SC_FIRM_ADHOC_REPORT.SENDER_ID ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Sender IAM User Code
@@ -467,7 +467,7 @@ attributes:
     source_table: SC_FIRM_ADHOC_REPORT
     source_column: SCMS.SC_FIRM_ADHOC_REPORT.SENDER_ID
     comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Sender IAM User Id."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Cancelled By IAM User Id
@@ -481,7 +481,7 @@ attributes:
     source_table: SC_FIRM_ADHOC_REPORT
     source_column: SCMS.SC_FIRM_ADHOC_REPORT.CANCELLED_BY
     comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM.USERS', CANCELLED_BY) | Chưa xác nhận join key SCMS.SC_FIRM_ADHOC_REPORT.CANCELLED_BY ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Cancelled By IAM User Code
@@ -495,7 +495,7 @@ attributes:
     source_table: SC_FIRM_ADHOC_REPORT
     source_column: SCMS.SC_FIRM_ADHOC_REPORT.CANCELLED_BY
     comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Cancelled By IAM User Id."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Summary
@@ -509,7 +509,7 @@ attributes:
     source_table: SC_FIRM_ADHOC_REPORT
     source_column: SCMS.SC_FIRM_ADHOC_REPORT.SUMMARY
     comment: NCLOB.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Import File Path
@@ -523,7 +523,7 @@ attributes:
     source_table: SC_FIRM_ADHOC_REPORT
     source_column: SCMS.SC_FIRM_ADHOC_REPORT.IMPORT_FILE_PATH
     comment: VARCHAR2(2000).
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Attachment Path
@@ -537,7 +537,7 @@ attributes:
     source_table: SC_FIRM_ADHOC_REPORT
     source_column: SCMS.SC_FIRM_ADHOC_REPORT.ATTACHMENT_PATH
     comment: NCLOB.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Note
@@ -551,7 +551,7 @@ attributes:
     source_table: SC_FIRM_ADHOC_REPORT
     source_column: SCMS.SC_FIRM_ADHOC_REPORT.NOTE
     comment: NCLOB.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Cancellation Reason
@@ -565,5 +565,5 @@ attributes:
     source_table: SC_FIRM_ADHOC_REPORT
     source_column: SCMS.SC_FIRM_ADHOC_REPORT.CANCELLATION_REASON
     comment: NCLOB.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
+    classification_context: null
     etl_derived_value: null

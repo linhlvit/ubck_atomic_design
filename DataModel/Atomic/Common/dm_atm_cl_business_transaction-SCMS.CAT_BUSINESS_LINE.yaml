@@ -33,7 +33,7 @@ attributes:
     source_table: CAT_BUSINESS_LINE
     source_column: null
     comment: "PK surrogate. Hash: hash_id('SCMS.CAT_BUSINESS_LINE', BUSINESS_LINE_CODE). BCV: \"[Common] Business Line\"."
-    classification_context: "Source System Code = 'SCMS_CAT_BUSINESS_LINE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -48,7 +48,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'SCMS_CAT_BUSINESS_LINE'"
-    etl_derived_value: SCMS.CAT_BUSINESS_LINE
+    etl_derived_value: SCMS_CAT_BUSINESS_LINE
 
   - name: Data Date
     physical_name: data_dt
@@ -61,7 +61,7 @@ attributes:
     source_table: CAT_BUSINESS_LINE
     source_column: SCMS.CAT_BUSINESS_LINE.CREATED_AT
     comment: "BCV: không có term riêng. Reinstated 2026-07-15 — CREATED_AT bị loại theo quyết định audit-block SCMS (xem pending_design.yaml) nhưng bảng dùng Append/incremental filter theo created_at, cần giữ lại làm partition key. Đổi tên từ 'created_at' sang 'Data Date' để phản ánh vai trò ngày dữ liệu/phân vùng, tách biệt khỏi audit block (CREATED_BY vẫn loại trừ). Nguồn lưu TIMESTAMP(6) — ETL truncate về Date (00:00:00) khi map vào Data Date, phù hợp granularity partition theo ngày."
-    classification_context: "Source System Code = 'SCMS_CAT_BUSINESS_LINE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Classification Business Transaction Code
@@ -75,7 +75,7 @@ attributes:
     source_table: CAT_BUSINESS_LINE
     source_column: SCMS.CAT_BUSINESS_LINE.BUSINESS_LINE_CODE
     comment: "BK chính (mã nghiệp vụ). Thay thế PK kỹ thuật ID — không map ID vào model (xem pending_design.yaml). Cần profile dữ liệu nguồn xác nhận NOT NULL/unique trước go-live."
-    classification_context: "Source System Code = 'SCMS_CAT_BUSINESS_LINE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Classification Business Transaction Name
@@ -89,7 +89,7 @@ attributes:
     source_table: CAT_BUSINESS_LINE
     source_column: SCMS.CAT_BUSINESS_LINE.BUSINESS_LINE_NAME
     comment: null
-    classification_context: "Source System Code = 'SCMS_CAT_BUSINESS_LINE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Note
@@ -103,7 +103,7 @@ attributes:
     source_table: CAT_BUSINESS_LINE
     source_column: SCMS.CAT_BUSINESS_LINE.NOTE
     comment: null
-    classification_context: "Source System Code = 'SCMS_CAT_BUSINESS_LINE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Legal Capital Amount
@@ -117,7 +117,7 @@ attributes:
     source_table: CAT_BUSINESS_LINE
     source_column: SCMS.CAT_BUSINESS_LINE.LEGAL_CAPITAL
     comment: "Nguồn NUMBER(38) không khai báo đơn vị/scale — cần profile xác nhận đơn vị tiền (VND?) và số chữ số thập phân trước go-live. Mô tả bổ sung theo SCMS_HLD_Overview.md #55 (\"vốn pháp định tối thiểu\")."
-    classification_context: "Source System Code = 'SCMS_CAT_BUSINESS_LINE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Record Status Code
@@ -131,5 +131,5 @@ attributes:
     source_table: CAT_BUSINESS_LINE
     source_column: SCMS.CAT_BUSINESS_LINE.RECORD_STATUS
     comment: "Scheme: SCMS_CLASSIFICATION_BUSINESS_LINE_RECORD_STATUS (đã pre-đăng ký trong classification_schemes.yaml, xem SCMS_HLD_Tier1.md 6f T1-09)."
-    classification_context: "Source System Code = 'SCMS_CAT_BUSINESS_LINE'"
+    classification_context: SCMS_CLASSIFICATION_BUSINESS_LINE_RECORD_STATUS
     etl_derived_value: null

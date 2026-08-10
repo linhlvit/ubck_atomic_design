@@ -33,7 +33,7 @@ attributes:
     source_table: TAX_REPORT_DETAIL
     source_column: null
     comment: "PK surrogate. BCV: \"[Documentation] Reported Information\". Dòng chỉ tiêu chi tiết trong 1 External Tax Declaration Report. Hash: hash_id('KNT.TAX_REPORT_DETAIL', ID)."
-    classification_context: "Source System Code = 'KNT_TAX_REPORT_DETAIL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: External Tax Declaration Report Detail Code
@@ -47,7 +47,7 @@ attributes:
     source_table: TAX_REPORT_DETAIL
     source_column: KNT.TAX_REPORT_DETAIL.ID
     comment: BK chính. PK nguồn.
-    classification_context: "Source System Code = 'KNT_TAX_REPORT_DETAIL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'KNT_TAX_REPORT_DETAIL'"
-    etl_derived_value: KNT.TAX_REPORT_DETAIL
+    etl_derived_value: KNT_TAX_REPORT_DETAIL
 
   - name: External Tax Declaration Report Id
     physical_name: et_declaration_rpt_id
@@ -75,7 +75,7 @@ attributes:
     source_table: TAX_REPORT_DETAIL
     source_column: KNT.TAX_REPORT_DETAIL.TAX_REPORT_ID
     comment: "FK target: et_declaration_report.et_declaration_rpt_id. Cần ETL crosswalk sang KNT.TAX_REPORT: TAX_REPORT_DETAIL.TAX_REPORT_ID = TAX_REPORT.ID để xác nhận DECLARATION_CODE sau đó hash_id('KNT.TAX_REPORT', DECLARATION_CODE) |"
-    classification_context: "Source System Code = 'KNT_TAX_REPORT_DETAIL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: External Tax Declaration Report Code
@@ -89,7 +89,7 @@ attributes:
     source_table: TAX_REPORT_DETAIL
     source_column: KNT.TAX_REPORT.DECLARATION_CODE
     comment: "Lookup pair: et_declaration_report.et_declaration_rpt_code. Pair with et_declaration_rpt_id. Giá trị lấy từ KNT.TAX_REPORT.DECLARATION_CODE sau ETL crosswalk — chi tiết xem comment External Tax Declaration Report Id."
-    classification_context: "Source System Code = 'KNT_TAX_REPORT_DETAIL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Indicator Code
@@ -103,7 +103,7 @@ attributes:
     source_table: TAX_REPORT_DETAIL
     source_column: KNT.TAX_REPORT_DETAIL.INDICATOR_CODE
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REPORT_DETAIL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Indicator Name
@@ -117,7 +117,7 @@ attributes:
     source_table: TAX_REPORT_DETAIL
     source_column: KNT.TAX_REPORT_DETAIL.INDICATOR_NAME
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REPORT_DETAIL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Explanation Note
@@ -131,7 +131,7 @@ attributes:
     source_table: TAX_REPORT_DETAIL
     source_column: KNT.TAX_REPORT_DETAIL.EXPLANATION_NOTE
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REPORT_DETAIL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Sheet Name Code
@@ -145,7 +145,7 @@ attributes:
     source_table: TAX_REPORT_DETAIL
     source_column: KNT.TAX_REPORT_DETAIL.SHEET_NAME
     comment: "Scheme: KNT_REPORT_SHEET."
-    classification_context: "Source System Code = 'KNT_TAX_REPORT_DETAIL'"
+    classification_context: KNT_REPORT_SHEET
     etl_derived_value: null
 
   - name: Year End Value
@@ -159,7 +159,7 @@ attributes:
     source_table: TAX_REPORT_DETAIL
     source_column: KNT.TAX_REPORT_DETAIL.YEAR_END_VALUE
     comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần validate không có giá trị non-numeric (một số chỉ tiêu có thể là ghi chú thay vì số liệu)."
-    classification_context: "Source System Code = 'KNT_TAX_REPORT_DETAIL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Year Begin Value
@@ -173,7 +173,7 @@ attributes:
     source_table: TAX_REPORT_DETAIL
     source_column: KNT.TAX_REPORT_DETAIL.YEAR_BEGIN_VALUE
     comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần validate không có giá trị non-numeric."
-    classification_context: "Source System Code = 'KNT_TAX_REPORT_DETAIL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Current Year Value
@@ -187,7 +187,7 @@ attributes:
     source_table: TAX_REPORT_DETAIL
     source_column: KNT.TAX_REPORT_DETAIL.CURRENT_YEAR_VALUE
     comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần validate không có giá trị non-numeric."
-    classification_context: "Source System Code = 'KNT_TAX_REPORT_DETAIL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Prior Year Value
@@ -201,7 +201,7 @@ attributes:
     source_table: TAX_REPORT_DETAIL
     source_column: KNT.TAX_REPORT_DETAIL.PRIOR_YEAR_VALUE
     comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần validate không có giá trị non-numeric."
-    classification_context: "Source System Code = 'KNT_TAX_REPORT_DETAIL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Preparer Full Name
@@ -215,7 +215,7 @@ attributes:
     source_table: TAX_REPORT_DETAIL
     source_column: KNT.TAX_REPORT_DETAIL.PREPARER_NAME
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REPORT_DETAIL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Chief Accountant Full Name
@@ -229,7 +229,7 @@ attributes:
     source_table: TAX_REPORT_DETAIL
     source_column: KNT.TAX_REPORT_DETAIL.CHIEF_ACCOUNTANT
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REPORT_DETAIL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Preparation Date
@@ -243,7 +243,7 @@ attributes:
     source_table: TAX_REPORT_DETAIL
     source_column: KNT.TAX_REPORT_DETAIL.PREPARATION_DATE
     comment: Nguồn lưu dạng string — ETL cần cast/parse sang date.
-    classification_context: "Source System Code = 'KNT_TAX_REPORT_DETAIL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Director Full Name
@@ -257,7 +257,7 @@ attributes:
     source_table: TAX_REPORT_DETAIL
     source_column: KNT.TAX_REPORT_DETAIL.DIRECTOR_NAME
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REPORT_DETAIL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Practice Certificate Number
@@ -271,7 +271,7 @@ attributes:
     source_table: TAX_REPORT_DETAIL
     source_column: KNT.TAX_REPORT_DETAIL.PRACTICE_CERT_NUMBER
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REPORT_DETAIL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Audit Service Unit Name
@@ -285,7 +285,7 @@ attributes:
     source_table: TAX_REPORT_DETAIL
     source_column: KNT.TAX_REPORT_DETAIL.AUDIT_SERVICE_UNIT
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REPORT_DETAIL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Going Concern Yes Flag
@@ -299,7 +299,7 @@ attributes:
     source_table: TAX_REPORT_DETAIL
     source_column: KNT.TAX_REPORT_DETAIL.GOING_CONCERN_YES
     comment: "Nguồn lưu dạng string (\"true\"/\"false\") — ETL cần cast sang boolean."
-    classification_context: "Source System Code = 'KNT_TAX_REPORT_DETAIL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Going Concern No Flag
@@ -313,7 +313,7 @@ attributes:
     source_table: TAX_REPORT_DETAIL
     source_column: KNT.TAX_REPORT_DETAIL.GOING_CONCERN_NO
     comment: "Nguồn lưu dạng string (\"true\"/\"false\") — ETL cần cast sang boolean."
-    classification_context: "Source System Code = 'KNT_TAX_REPORT_DETAIL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Increase Prior Year Amount
@@ -327,7 +327,7 @@ attributes:
     source_table: TAX_REPORT_DETAIL
     source_column: KNT.TAX_REPORT_DETAIL.INCREASE_PRIOR_YEAR
     comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2)."
-    classification_context: "Source System Code = 'KNT_TAX_REPORT_DETAIL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Current Year Amount
@@ -341,7 +341,7 @@ attributes:
     source_table: TAX_REPORT_DETAIL
     source_column: KNT.TAX_REPORT_DETAIL.CURRENT_YEAR_AMOUNT
     comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2)."
-    classification_context: "Source System Code = 'KNT_TAX_REPORT_DETAIL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Previous Year Amount
@@ -355,7 +355,7 @@ attributes:
     source_table: TAX_REPORT_DETAIL
     source_column: KNT.TAX_REPORT_DETAIL.PREVIOUS_YEAR_AMOUNT
     comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2)."
-    classification_context: "Source System Code = 'KNT_TAX_REPORT_DETAIL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Begin Balance Current Year Amount
@@ -369,7 +369,7 @@ attributes:
     source_table: TAX_REPORT_DETAIL
     source_column: KNT.TAX_REPORT_DETAIL.BEGIN_BALANCE_CURRENT_YEAR
     comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2)."
-    classification_context: "Source System Code = 'KNT_TAX_REPORT_DETAIL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: End Balance Current Year Amount
@@ -383,7 +383,7 @@ attributes:
     source_table: TAX_REPORT_DETAIL
     source_column: KNT.TAX_REPORT_DETAIL.END_BALANCE_CURRENT_YEAR
     comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2)."
-    classification_context: "Source System Code = 'KNT_TAX_REPORT_DETAIL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: End Balance Prior Year Amount
@@ -397,7 +397,7 @@ attributes:
     source_table: TAX_REPORT_DETAIL
     source_column: KNT.TAX_REPORT_DETAIL.END_BALANCE_PRIOR_YEAR
     comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2)."
-    classification_context: "Source System Code = 'KNT_TAX_REPORT_DETAIL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Begin Balance Prior Year Amount
@@ -411,7 +411,7 @@ attributes:
     source_table: TAX_REPORT_DETAIL
     source_column: KNT.TAX_REPORT_DETAIL.BEGIN_BALANCE_PRIOR_YEAR
     comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2)."
-    classification_context: "Source System Code = 'KNT_TAX_REPORT_DETAIL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Increase Current Year Amount
@@ -425,7 +425,7 @@ attributes:
     source_table: TAX_REPORT_DETAIL
     source_column: KNT.TAX_REPORT_DETAIL.INCREASE_CURRENT_YEAR
     comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2)."
-    classification_context: "Source System Code = 'KNT_TAX_REPORT_DETAIL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Decrease Current Year Amount
@@ -439,7 +439,7 @@ attributes:
     source_table: TAX_REPORT_DETAIL
     source_column: KNT.TAX_REPORT_DETAIL.DECREASE_CURRENT_YEAR
     comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2)."
-    classification_context: "Source System Code = 'KNT_TAX_REPORT_DETAIL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Decrease Prior Year Amount
@@ -453,5 +453,5 @@ attributes:
     source_table: TAX_REPORT_DETAIL
     source_column: KNT.TAX_REPORT_DETAIL.DECREASE_PRIOR_YEAR
     comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2)."
-    classification_context: "Source System Code = 'KNT_TAX_REPORT_DETAIL'"
+    classification_context: null
     etl_derived_value: null

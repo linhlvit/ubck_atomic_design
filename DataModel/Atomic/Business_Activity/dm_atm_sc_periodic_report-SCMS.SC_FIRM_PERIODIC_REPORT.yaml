@@ -33,7 +33,7 @@ attributes:
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: null
     comment: PK surrogate.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Company Periodic Report Code
@@ -47,7 +47,7 @@ attributes:
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.ID
     comment: BK. NUMBER(19) — ETL convert sang string.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
-    etl_derived_value: SCMS.SC_FIRM_PERIODIC_REPORT
+    etl_derived_value: SCMS_SC_FIRM_PERIODIC_REPORT
 
   - name: Securities Company Id
     physical_name: sc_id
@@ -75,7 +75,7 @@ attributes:
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.SC_FIRM_INFO_ID
     comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO: SC_FIRM_PERIODIC_REPORT.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE sau đó hash_id('SCMS.SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Company Code
@@ -89,7 +89,7 @@ attributes:
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_INFO.CODE
     comment: "Lookup pair: securities_company.securities_company_code. Pair with Securities Company Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết xem comment Securities Company Id."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Company Form Report Id
@@ -103,7 +103,7 @@ attributes:
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.FORM_REPORT_ID
     comment: "FK target: Securities Company Form Report.Securities Company Form Report Id. Hash: hash_id('SCMS.FORM_REPORT', FORM_REPORT_ID)."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Company Form Report Code
@@ -117,7 +117,7 @@ attributes:
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.FORM_REPORT_ID
     comment: "Lookup pair: Securities Company Form Report.Securities Company Form Report Code. Pair with Securities Company Form Report Id."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Report Name
@@ -131,7 +131,7 @@ attributes:
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.REPORT_NAME
     comment: NVARCHAR2(2000).
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Report Year
@@ -145,7 +145,7 @@ attributes:
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.REPORT_YEAR
     comment: "NUMBER(10) — giá trị năm (VD: 2024)."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Period
@@ -159,7 +159,7 @@ attributes:
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.PERIOD
     comment: NUMBER(10). Kết hợp với Report Month/Quarter để xác định kỳ báo cáo.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Quarter
@@ -173,7 +173,7 @@ attributes:
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.QUARTER
     comment: NUMBER(10).
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Report Month
@@ -187,7 +187,7 @@ attributes:
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.REPORT_MONTH
     comment: NUMBER(10). Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Report Period
@@ -201,7 +201,7 @@ attributes:
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.REPORT_PERIOD
     comment: "VARCHAR2(20). Map 1:1 từ nguồn — không dùng Classification Value theo quyết định thiết kế."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Start Date
@@ -215,7 +215,7 @@ attributes:
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.START_DATE
     comment: null
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: End Date
@@ -229,7 +229,7 @@ attributes:
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.END_DATE
     comment: null
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Submission Deadline Date
@@ -243,7 +243,7 @@ attributes:
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.SUBMISSION_DEADLINE
     comment: SUBMISSION_DEADLINE_AT (TIMESTAMP 0) là duplicate dạng Timestamp — ETL dùng SUBMISSION_DEADLINE (DATE).
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Submission Deadline Timestamp
@@ -257,7 +257,7 @@ attributes:
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.SUBMISSION_DEADLINE_AT
     comment: TIMESTAMP(0) — bản đầy đủ giờ của SUBMISSION_DEADLINE. ETL dùng cột này nếu cần độ chính xác giờ.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Report Submission Status Code
@@ -271,7 +271,7 @@ attributes:
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.RECORD_STATUS
     comment: "Scheme: SCMS_REPORT_SUBMISSION_STATUS. NUMBER(10) với giá trị 0/1/2/-1/3."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Overdue Days
@@ -285,7 +285,7 @@ attributes:
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.OVERDUE_DAYS
     comment: NUMBER(10).
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Classification Event Type Id
@@ -299,7 +299,7 @@ attributes:
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.EVENT_TYPE_ID
     comment: "FK target: Classification Event Type.Classification Event Type Id. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Classification Event Type Code
@@ -313,7 +313,7 @@ attributes:
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.EVENT_TYPE_ID
     comment: "Lookup pair: Classification Event Type.Classification Event Type Code. Pair with Classification Event Type Id."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Sent Timestamp
@@ -327,7 +327,7 @@ attributes:
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.SENT_AT
     comment: TIMESTAMP(6).
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Approved Timestamp
@@ -341,7 +341,7 @@ attributes:
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.APPROVED_AT
     comment: TIMESTAMP(6).
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Cancelled Timestamp
@@ -355,7 +355,7 @@ attributes:
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.CANCELLED_AT
     comment: TIMESTAMP(6).
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Approved By IAM User Id
@@ -369,7 +369,7 @@ attributes:
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.APPROVED_BY
     comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM.USERS', APPROVED_BY) | Chưa xác nhận join key SCMS.SC_FIRM_PERIODIC_REPORT.APPROVED_BY ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Approved By IAM User Code
@@ -383,7 +383,7 @@ attributes:
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.APPROVED_BY
     comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Approved By IAM User Id."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Sender IAM User Id
@@ -397,7 +397,7 @@ attributes:
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.SENDER_ID
     comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM.USERS', SENDER_ID) | Chưa xác nhận join key SCMS.SC_FIRM_PERIODIC_REPORT.SENDER_ID ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Sender IAM User Code
@@ -411,7 +411,7 @@ attributes:
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.SENDER_ID
     comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Sender IAM User Id."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Cancelled By IAM User Id
@@ -425,7 +425,7 @@ attributes:
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.CANCELLED_BY
     comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM.USERS', CANCELLED_BY) | Chưa xác nhận join key SCMS.SC_FIRM_PERIODIC_REPORT.CANCELLED_BY ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Cancelled By IAM User Code
@@ -439,7 +439,7 @@ attributes:
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.CANCELLED_BY
     comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Cancelled By IAM User Id."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Valid Digital Signature Indicator
@@ -453,7 +453,7 @@ attributes:
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.VALID_DIGITAL_SIGNATURE
     comment: NUMBER(1). Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Valid Data Indicator
@@ -467,7 +467,7 @@ attributes:
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.VALID_DATA
     comment: NUMBER(1). Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Digital Signature File
@@ -481,7 +481,7 @@ attributes:
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.DIGITAL_SIGNATURE_FILE
     comment: VARCHAR2(2000). Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Summary
@@ -495,7 +495,7 @@ attributes:
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.SUMMARY
     comment: NCLOB.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Import File Path
@@ -509,7 +509,7 @@ attributes:
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.IMPORT_FILE_PATH
     comment: VARCHAR2(2000).
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Attachment Path
@@ -523,7 +523,7 @@ attributes:
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.ATTACHMENT_PATH
     comment: NCLOB.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Note
@@ -537,7 +537,7 @@ attributes:
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.NOTE
     comment: NCLOB.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Cancellation Reason
@@ -551,7 +551,7 @@ attributes:
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.CANCELLATION_REASON
     comment: NCLOB.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Rejection Reason
@@ -565,5 +565,5 @@ attributes:
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.REJECTION_REASON
     comment: NCLOB.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    classification_context: null
     etl_derived_value: null

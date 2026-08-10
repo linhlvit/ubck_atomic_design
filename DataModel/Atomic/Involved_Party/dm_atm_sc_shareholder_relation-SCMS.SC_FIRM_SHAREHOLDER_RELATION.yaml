@@ -33,7 +33,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER_RELATION
     source_column: null
     comment: PK surrogate.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_RELATION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Company Shareholder Relation Code
@@ -47,7 +47,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER_RELATION
     source_column: SCMS.SC_FIRM_SHAREHOLDER_RELATION.ID
     comment: BK. NUMBER(10) — ETL convert sang string.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_RELATION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_RELATION'"
-    etl_derived_value: SCMS.SC_FIRM_SHAREHOLDER_RELATION
+    etl_derived_value: SCMS_SC_FIRM_SHAREHOLDER_RELATION
 
   - name: Securities Company Id
     physical_name: sc_id
@@ -75,7 +75,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER_RELATION
     source_column: SCMS.SC_FIRM_SHAREHOLDER_RELATION.SC_FIRM_INFO_ID
     comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO: SC_FIRM_SHAREHOLDER_RELATION.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE sau đó hash_id('SCMS.SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_RELATION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Company Code
@@ -89,7 +89,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER_RELATION
     source_column: SCMS.SC_FIRM_INFO.CODE
     comment: "Lookup pair: securities_company.securities_company_code. Pair with Securities Company Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết xem comment Securities Company Id."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_RELATION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Company Shareholder Id
@@ -103,7 +103,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER_RELATION
     source_column: SCMS.SC_FIRM_SHAREHOLDER_RELATION.SC_FIRM_SHAREHOLDER_ID
     comment: "FK target: sc_shareholder.sc_shareholder_id. Hash: hash_id('SCMS.SC_FIRM_SHAREHOLDER', SC_FIRM_SHAREHOLDER_ID)."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_RELATION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Company Shareholder Code
@@ -117,7 +117,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER_RELATION
     source_column: SCMS.SC_FIRM_SHAREHOLDER_RELATION.SC_FIRM_SHAREHOLDER_ID
     comment: "Lookup pair: sc_shareholder.sc_shareholder_code. Pair with Securities Company Shareholder Id."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_RELATION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Record Status Code
@@ -131,7 +131,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER_RELATION
     source_column: SCMS.SC_FIRM_SHAREHOLDER_RELATION.RECORD_STATUS
     comment: "Scheme: SCMS_USAGE_STATUS. NUMBER(1)."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_RELATION'"
+    classification_context: SCMS_USAGE_STATUS
     etl_derived_value: null
 
   - name: Full Name
@@ -145,7 +145,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER_RELATION
     source_column: SCMS.SC_FIRM_SHAREHOLDER_RELATION.FULL_NAME
     comment: NVARCHAR2(250).
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_RELATION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Relationship
@@ -159,7 +159,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER_RELATION
     source_column: SCMS.SC_FIRM_SHAREHOLDER_RELATION.RELATIONSHIP
     comment: NVARCHAR2(10). Giá trị ngắn — cần profile để xem xét có nên chuẩn hóa Classification Value không.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_RELATION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Identification Number
@@ -173,7 +173,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER_RELATION
     source_column: SCMS.SC_FIRM_SHAREHOLDER_RELATION.ID_NUMBER
     comment: "NVARCHAR2(30). ID_NUMBER = Số CMND (định danh cũ)."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_RELATION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Issue Date
@@ -187,7 +187,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER_RELATION
     source_column: SCMS.SC_FIRM_SHAREHOLDER_RELATION.ISSUE_DATE
     comment: DATE.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_RELATION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Issue Place
@@ -201,7 +201,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER_RELATION
     source_column: SCMS.SC_FIRM_SHAREHOLDER_RELATION.ISSUE_PLACE
     comment: NVARCHAR2(250).
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_RELATION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Workplace
@@ -215,7 +215,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER_RELATION
     source_column: SCMS.SC_FIRM_SHAREHOLDER_RELATION.WORKPLACE
     comment: VARCHAR2(500). Mô tả gốc BRD null.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_RELATION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Job Title
@@ -229,7 +229,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER_RELATION
     source_column: SCMS.SC_FIRM_SHAREHOLDER_RELATION.JOB_TITLE
     comment: VARCHAR2(255). Mô tả gốc BRD null.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_RELATION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Sc Firm With Shares Reference Id
@@ -243,7 +243,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER_RELATION
     source_column: SCMS.SC_FIRM_SHAREHOLDER_RELATION.SC_FIRM_WITH_SHARES_ID
     comment: "NUMBER(10) — lưu dạng Text. BRD key:null, desc:null — không phải FK constraint. Tham chiếu mềm đến SC_FIRM_INFO nếu người liên quan cũng là cổ đông ở CTCK đó."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_RELATION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Shares Count
@@ -257,7 +257,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER_RELATION
     source_column: SCMS.SC_FIRM_SHAREHOLDER_RELATION.SHARES_COUNT
     comment: NUMBER(38). Mô tả gốc BRD null — large integer.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_RELATION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Ownership Ratio
@@ -271,7 +271,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER_RELATION
     source_column: SCMS.SC_FIRM_SHAREHOLDER_RELATION.OWNERSHIP_RATIO
     comment: "NUMBER(10,4). Lưu dạng thập phân (VD: 5.25 = 5.25%)."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_RELATION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Attachment Path
@@ -285,7 +285,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER_RELATION
     source_column: SCMS.SC_FIRM_SHAREHOLDER_RELATION.ATTACHMENT_PATH
     comment: NVARCHAR2(2000). Reference path — không load binary vào Atomic.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_RELATION'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Note
@@ -299,5 +299,5 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER_RELATION
     source_column: SCMS.SC_FIRM_SHAREHOLDER_RELATION.NOTE
     comment: NVARCHAR2(1000).
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_RELATION'"
+    classification_context: null
     etl_derived_value: null

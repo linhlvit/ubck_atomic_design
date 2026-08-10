@@ -33,7 +33,7 @@ attributes:
     source_table: VIOLATION_BEHAVIOR
     source_column: null
     comment: "PK surrogate. Hash: hash_id('THANHTRA.VIOLATION_BEHAVIOR', CODE). BCV: [Business Activity] Conduct Violation."
-    classification_context: "Source System Code = 'THANHTRA_VIOLATION_BEHAVIOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Violation Behavior Code
@@ -47,7 +47,7 @@ attributes:
     source_table: VIOLATION_BEHAVIOR
     source_column: THANHTRA.VIOLATION_BEHAVIOR.CODE
     comment: BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID UUID) + Unique Key cũ — gộp còn 1 trường Code duy nhất.
-    classification_context: "Source System Code = 'THANHTRA_VIOLATION_BEHAVIOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'THANHTRA_VIOLATION_BEHAVIOR'"
-    etl_derived_value: THANHTRA.VIOLATION_BEHAVIOR
+    etl_derived_value: THANHTRA_VIOLATION_BEHAVIOR
 
   - name: Violation Behavior Name
     physical_name: violation_behavior_nm
@@ -75,7 +75,7 @@ attributes:
     source_table: VIOLATION_BEHAVIOR
     source_column: THANHTRA.VIOLATION_BEHAVIOR.NAME
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_VIOLATION_BEHAVIOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Description
@@ -89,7 +89,7 @@ attributes:
     source_table: VIOLATION_BEHAVIOR
     source_column: THANHTRA.VIOLATION_BEHAVIOR.DESCRIPTION
     comment: Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng.
-    classification_context: "Source System Code = 'THANHTRA_VIOLATION_BEHAVIOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Penalty Type Id
@@ -103,7 +103,7 @@ attributes:
     source_table: VIOLATION_BEHAVIOR
     source_column: THANHTRA.VIOLATION_BEHAVIOR.PRIMARY_PENALTY_TYPE_ID
     comment: "FK target: penalty_type.penalty_tp_id. Cần ETL crosswalk sang THANHTRA.PENALTY_TYPE: VIOLATION_BEHAVIOR.PRIMARY_PENALTY_TYPE_ID = PENALTY_TYPE.ID để xác nhận CODE sau đó hash_id('THANHTRA.PENALTY_TYPE', CODE) | Trước đây hash trực tiếp theo PRIMARY_PENALTY_TYPE_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27. Capture từ junction PENALTY_TYPE_VIOLATION_BEHAVIOR (out_of_scope) qua trường trực tiếp."
-    classification_context: "Source System Code = 'THANHTRA_VIOLATION_BEHAVIOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Penalty Type Code
@@ -117,7 +117,7 @@ attributes:
     source_table: VIOLATION_BEHAVIOR
     source_column: THANHTRA.PENALTY_TYPE.CODE
     comment: "Lookup pair: penalty_type.penalty_type_code. Pair with Penalty Type Id. Giá trị lấy từ THANHTRA.PENALTY_TYPE.CODE sau ETL crosswalk — chi tiết xem comment Penalty Type Id."
-    classification_context: "Source System Code = 'THANHTRA_VIOLATION_BEHAVIOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Min Fine Amount
@@ -131,7 +131,7 @@ attributes:
     source_table: VIOLATION_BEHAVIOR
     source_column: THANHTRA.VIOLATION_BEHAVIOR.MIN_FINE_AMOUNT
     comment: "Nguồn NUMBER(19,4) — ETL cast sang decimal. Đơn vị VNĐ."
-    classification_context: "Source System Code = 'THANHTRA_VIOLATION_BEHAVIOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Max Fine Amount
@@ -145,7 +145,7 @@ attributes:
     source_table: VIOLATION_BEHAVIOR
     source_column: THANHTRA.VIOLATION_BEHAVIOR.MAX_FINE_AMOUNT
     comment: "Nguồn NUMBER(19,4) — ETL cast sang decimal. Đơn vị VNĐ."
-    classification_context: "Source System Code = 'THANHTRA_VIOLATION_BEHAVIOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Remedial Measure
@@ -159,7 +159,7 @@ attributes:
     source_table: VIOLATION_BEHAVIOR
     source_column: THANHTRA.VIOLATION_BEHAVIOR.REMEDIAL_MEASURE
     comment: Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng.
-    classification_context: "Source System Code = 'THANHTRA_VIOLATION_BEHAVIOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Life Cycle Status Code
@@ -173,7 +173,7 @@ attributes:
     source_table: VIOLATION_BEHAVIOR
     source_column: THANHTRA.VIOLATION_BEHAVIOR.STATUS
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_VIOLATION_BEHAVIOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Note
@@ -187,7 +187,7 @@ attributes:
     source_table: VIOLATION_BEHAVIOR
     source_column: THANHTRA.VIOLATION_BEHAVIOR.NOTE
     comment: Nguồn VARCHAR2(2000).
-    classification_context: "Source System Code = 'THANHTRA_VIOLATION_BEHAVIOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Legal Document
@@ -201,7 +201,7 @@ attributes:
     source_table: VIOLATION_BEHAVIOR
     source_column: THANHTRA.VIOLATION_BEHAVIOR.LEGAL_DOCUMENT
     comment: "Nguồn VARCHAR2(2000). Denormalized free-text — không có FK formal đến LEGAL_DOCUMENT entity."
-    classification_context: "Source System Code = 'THANHTRA_VIOLATION_BEHAVIOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Violation Clause
@@ -215,5 +215,5 @@ attributes:
     source_table: VIOLATION_BEHAVIOR
     source_column: THANHTRA.VIOLATION_BEHAVIOR.VIOLATION_CLAUSE
     comment: Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng.
-    classification_context: "Source System Code = 'THANHTRA_VIOLATION_BEHAVIOR'"
+    classification_context: null
     etl_derived_value: null

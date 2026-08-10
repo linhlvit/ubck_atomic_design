@@ -33,7 +33,7 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: null
     comment: "PK surrogate. BCV: \"[Involved Party] Organization\". Hồ sơ đăng ký thuế của 1 doanh nghiệp/hộ kinh doanh trên TTCK. Hash: hash_id('KNT.TAX_REGISTRATION_INFO', TAX_CODE)."
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    classification_context: null
     etl_derived_value: null
 
   - name: External Tax Registration Code
@@ -47,7 +47,7 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.TAX_CODE
     comment: BK chính.
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
-    etl_derived_value: KNT.TAX_REGISTRATION_INFO
+    etl_derived_value: KNT_TAX_REGISTRATION_INFO
 
   - name: Taxpayer Name
     physical_name: taxpayer_nm
@@ -75,7 +75,7 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.TAXPAYER_NAME
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Charter Capital Amount
@@ -89,7 +89,7 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.CHARTER_CAPITAL
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Primary Business Line Code
@@ -103,7 +103,7 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.BUSINESS_LINE_CODE
     comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không phải Classification Value. Giữ nguyên giá trị text từ nguồn."
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Primary Business Line Name
@@ -117,7 +117,7 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.BUSINESS_LINE
     comment: Denormalized — tên tương ứng Primary Business Line Code.
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Business License Number
@@ -131,7 +131,7 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.LICENSE_NUMBER
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Business License Issue Date
@@ -145,7 +145,7 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.ISSUE_DATE
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Business License Issuing Authority Name
@@ -159,7 +159,7 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.ISSUING_AUTHORITY
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Establishment Decision Number
@@ -173,7 +173,7 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.DECISION_NUMBER
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Establishment Decision Issue Date
@@ -187,7 +187,7 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.ISSUED_DATE
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Establishment Decision Issuing Organization Name
@@ -201,7 +201,7 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.ISSUING_ORG
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Supervising Unit Name
@@ -215,7 +215,7 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.SUPERVISING_UNIT
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Supervising Unit Address
@@ -229,7 +229,7 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.SUPERVISING_UNIT_ADDRESS
     comment: "Denormalized — địa chỉ của 1 tổ chức khác (đơn vị chủ quản), không phải IP Postal Address của chính External Tax Registration."
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Business Start Date
@@ -243,7 +243,7 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.BUSINESS_START_DATE
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Legal Representative Full Name
@@ -257,7 +257,7 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.LEGAL_REPRESENTATIVE_NAME
     comment: "Prefix chủ thể — thông tin người đại diện khác chủ thể chính (doanh nghiệp). Denormalized, không có FK link trực tiếp tới External Tax Registration Representative (entity riêng, Tier 2)."
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Legal Representative Identification Number
@@ -271,7 +271,7 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.ID_CARD_NUMBER
     comment: Denormalized — không tách IP Alt Identification vì đây không phải grain chính của entity.
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Legal Representative Phone Number
@@ -285,7 +285,7 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.SO_DIEN_THOAI
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Director Full Name
@@ -299,7 +299,7 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.DIRECTOR_NAME
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Director Phone Number
@@ -313,7 +313,7 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.DIRECTOR_PHONE
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Operation Status Code
@@ -327,7 +327,7 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.OPERATION_STATUS
     comment: "Scheme: KNT_OPERATION_STATUS."
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    classification_context: KNT_OPERATION_STATUS
     etl_derived_value: null
 
   - name: Operation Status Name
@@ -341,7 +341,7 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.STATUS_NAME
     comment: Denormalized — tên hiển thị tương ứng Operation Status Code.
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Suspension Reason Description
@@ -355,7 +355,7 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.SUSPENSION_REASON
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Suspension Type Code
@@ -369,7 +369,7 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.SUSPENSION_TYPE
     comment: "Scheme: KNT_SUSPENSION_TYPE."
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    classification_context: KNT_SUSPENSION_TYPE
     etl_derived_value: null
 
   - name: Direct Supervising Authority Name
@@ -383,7 +383,7 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.DIRECT_SUPERVISING_AUTHORITY
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Tax Authority Code
@@ -397,7 +397,7 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.TAX_AUTHORITY_CODE
     comment: Denormalized — nguồn không có danh mục cơ quan thuế trong scope thiết kế hiện tại.
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Domestic Capital Currency Code
@@ -411,7 +411,7 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.DOMESTIC_CAPITAL_CURRENCY
     comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không phải Classification Value/FK Currency. Giữ nguyên giá trị text từ nguồn."
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Foreign Capital Amount
@@ -425,7 +425,7 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.FOREIGN_CAPITAL_AMOUNT
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Foreign Capital Currency Code
@@ -439,7 +439,7 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.FOREIGN_CAPITAL_CURRENCY
     comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không phải Classification Value/FK Currency. Giữ nguyên giá trị text từ nguồn."
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Foreign Capital Ratio
@@ -453,7 +453,7 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.FOREIGN_CAPITAL_RATIO
     comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(5,2). Cần validate không có giá trị non-numeric."
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Temporary Suspension From Date
@@ -467,7 +467,7 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.SUSPENSION_FROM_DATE
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Temporary Suspension To Date
@@ -481,7 +481,7 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.SUSPENSION_TO_DATE
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Temporary Suspension Reason Description
@@ -495,7 +495,7 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.SUSPENSION_REASON_TEXT
     comment: "Khác Suspension Reason Description (lý do ngừng hoạt động vĩnh viễn) — đây là lý do tạm nghỉ có thời hạn, đi kèm Temporary Suspension From/To Date."
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Temporary Suspension Notice Number
@@ -509,7 +509,7 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.SUSPENSION_NOTICE_NUMBER
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Temporary Suspension Notice Date
@@ -523,7 +523,7 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.SUSPENSION_NOTICE_DATE
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Operation Stop Date
@@ -537,7 +537,7 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.OPERATION_STOP_DATE
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Operation Stop Reason Description
@@ -551,7 +551,7 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.OPERATION_STOP_REASON
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Operation Stop Note
@@ -565,7 +565,7 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.OPERATION_STOP_NOTE
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Operation Stop Notice Number
@@ -579,7 +579,7 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.OPERATION_STOP_NOTICE_NUMBER
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Secondary Business Line Code
@@ -593,7 +593,7 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REG_BUSINESS_LINE.BUSINESS_LINE_CODE
     comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không phải Array<Text>. Trước đây denormalize thành ARRAY do xem TAX_REG_BUSINESS_LINE là junction 1:N; nay map trực tiếp giả định 1 dòng/TAX_CODE. Không còn dùng scheme KNT_BUSINESS_LINE (đã revert về Text). HLD decision cũ (ARRAY): KNT_HLD_Overview.md mục 7d — cần cập nhật lại nếu áp dụng."
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Message Packet Id
@@ -607,5 +607,5 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.MSG_PACKET_ID
     comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không tạo FK sang MSG_PACKET (bảng kỹ thuật gói tin trao đổi, ngoài scope thiết kế). Nguồn lưu dạng số (NUMBER) — ETL cần convert sang string."
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    classification_context: null
     etl_derived_value: null

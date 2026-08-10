@@ -32,7 +32,7 @@ attributes:
     source_table: SPECIALIZATIONS
     source_column: NHNCK.SPECIALIZATIONS.ID
     comment: "PK surrogate. BCV: [Common] Specialization. Hash: hash_id('NHNCK.SPECIALIZATIONS', SPECIALIZATION_CODE). Sửa 2026-07-27: trước đây hash từ ID kỹ thuật, sai lệch với chính Code (SPECIALIZATION_CODE) của entity — gây mismatch cho FK downstream tham chiếu entity này."
-    classification_context: "Source System Code = 'NHNCK_SPECIALIZATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Classification Specialization Code
@@ -46,7 +46,7 @@ attributes:
     source_table: SPECIALIZATIONS
     source_column: NHNCK.SPECIALIZATIONS.SPECIALIZATION_CODE
     comment: BK chính. Mã định danh duy nhất trong danh mục chuyên môn.
-    classification_context: "Source System Code = 'NHNCK_SPECIALIZATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -61,7 +61,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     classification_context: "Source System Code = 'NHNCK_SPECIALIZATIONS'"
-    etl_derived_value: NHNCK.SPECIALIZATIONS
+    etl_derived_value: NHNCK_SPECIALIZATIONS
 
   - name: Classification Specialization Name
     physical_name: cl_specialization_nm
@@ -74,7 +74,7 @@ attributes:
     source_table: SPECIALIZATIONS
     source_column: NHNCK.SPECIALIZATIONS.SPECIALIZATION_NAME
     comment: null
-    classification_context: "Source System Code = 'NHNCK_SPECIALIZATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Legal Reference
@@ -88,7 +88,7 @@ attributes:
     source_table: SPECIALIZATIONS
     source_column: NHNCK.SPECIALIZATIONS.REFERENCE
     comment: "Nguồn lưu NCLOB — ETL convert sang string. Mô tả BRD ghi \"của quyết định\" — có thể là mô tả mẫu dùng chung, không riêng cho SPECIALIZATIONS; cần Data Modeler xác nhận ý nghĩa thực tế."
-    classification_context: "Source System Code = 'NHNCK_SPECIALIZATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Active Indicator
@@ -102,7 +102,7 @@ attributes:
     source_table: SPECIALIZATIONS
     source_column: NHNCK.SPECIALIZATIONS.IS_ACTIVE
     comment: "Nguồn lưu NUMBER(1): 1=Đang dùng, 0=Vô hiệu."
-    classification_context: "Source System Code = 'NHNCK_SPECIALIZATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Original Data Indicator
@@ -116,7 +116,7 @@ attributes:
     source_table: SPECIALIZATIONS
     source_column: NHNCK.SPECIALIZATIONS.IS_ORIGINAL_DATA
     comment: "Nguồn lưu NUMBER(1): 1=Dữ liệu gốc, 0=Người dùng tạo."
-    classification_context: "Source System Code = 'NHNCK_SPECIALIZATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Public Service Portal Code
@@ -130,5 +130,5 @@ attributes:
     source_table: SPECIALIZATIONS
     source_column: NHNCK.SPECIALIZATIONS.MCDT_CODE
     comment: null
-    classification_context: "Source System Code = 'NHNCK_SPECIALIZATIONS'"
+    classification_context: null
     etl_derived_value: null

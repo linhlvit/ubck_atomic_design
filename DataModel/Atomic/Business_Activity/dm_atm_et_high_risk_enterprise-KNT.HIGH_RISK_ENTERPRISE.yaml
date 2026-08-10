@@ -33,7 +33,7 @@ attributes:
     source_table: HIGH_RISK_ENTERPRISE
     source_column: null
     comment: "PK surrogate. BCV: \"[Business Activity] Involved Party Rating Activity\". Cục Thuế xếp hạng/đánh giá 1 DN thuộc diện rủi ro cao theo từng năm đánh giá. Hash: hash_id('KNT.HIGH_RISK_ENTERPRISE', ENTERPRISE_CODE)."
-    classification_context: "Source System Code = 'KNT_HIGH_RISK_ENTERPRISE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: External Tax High Risk Enterprise Code
@@ -47,7 +47,7 @@ attributes:
     source_table: HIGH_RISK_ENTERPRISE
     source_column: KNT.HIGH_RISK_ENTERPRISE.ENTERPRISE_CODE
     comment: "BK chính. Grain thực tế = 1 DN × 1 năm đánh giá (Fact Append) — cần profile dữ liệu xác nhận ENTERPRISE_CODE có lặp lại qua nhiều năm hay không; nếu có, cần ghép thêm RISK_ASSESSMENT_YEAR vào business key trước go-live. Nghi vấn liên kết logic → et_registration.et_registration_code (xem KNT_HLD_Overview.md mục 7e#6) — chưa xác nhận nghiệp vụ, giữ 2 entity độc lập, không tạo FK."
-    classification_context: "Source System Code = 'KNT_HIGH_RISK_ENTERPRISE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'KNT_HIGH_RISK_ENTERPRISE'"
-    etl_derived_value: KNT.HIGH_RISK_ENTERPRISE
+    etl_derived_value: KNT_HIGH_RISK_ENTERPRISE
 
   - name: Enterprise Name
     physical_name: enterprise_nm
@@ -75,7 +75,7 @@ attributes:
     source_table: HIGH_RISK_ENTERPRISE
     source_column: KNT.HIGH_RISK_ENTERPRISE.ENTERPRISE_NAME
     comment: null
-    classification_context: "Source System Code = 'KNT_HIGH_RISK_ENTERPRISE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Headquarters Address
@@ -89,7 +89,7 @@ attributes:
     source_table: HIGH_RISK_ENTERPRISE
     source_column: KNT.HIGH_RISK_ENTERPRISE.HQ_ADDRESS
     comment: "Denormalized — grain của entity là Rating Activity (Business Activity), không phải Involved Party, không tách IP Postal Address."
-    classification_context: "Source System Code = 'KNT_HIGH_RISK_ENTERPRISE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Managing Tax Authority Name
@@ -103,7 +103,7 @@ attributes:
     source_table: HIGH_RISK_ENTERPRISE
     source_column: KNT.HIGH_RISK_ENTERPRISE.MANAGING_TAX_AUTHORITY
     comment: "Denormalized — cần profile dữ liệu để xác nhận free text hay trùng danh mục cơ quan thuế (xem KNT_HLD_Overview.md mục 7e#7)."
-    classification_context: "Source System Code = 'KNT_HIGH_RISK_ENTERPRISE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Risk Assessment Year
@@ -117,7 +117,7 @@ attributes:
     source_table: HIGH_RISK_ENTERPRISE
     source_column: KNT.HIGH_RISK_ENTERPRISE.RISK_ASSESSMENT_YEAR
     comment: Giữ Text theo data type nguồn (VARCHAR2) — cùng 1 DN có thể xuất hiện lại ở nhiều năm khác nhau (grain Fact Append).
-    classification_context: "Source System Code = 'KNT_HIGH_RISK_ENTERPRISE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Message Packet Id
@@ -131,5 +131,5 @@ attributes:
     source_table: HIGH_RISK_ENTERPRISE
     source_column: KNT.HIGH_RISK_ENTERPRISE.MSG_PACKET_ID
     comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không tạo FK sang MSG_PACKET (bảng kỹ thuật gói tin trao đổi, ngoài scope thiết kế). Nguồn lưu dạng số (NUMBER) — ETL cần convert sang string."
-    classification_context: "Source System Code = 'KNT_HIGH_RISK_ENTERPRISE'"
+    classification_context: null
     etl_derived_value: null

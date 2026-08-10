@@ -33,7 +33,7 @@ attributes:
     source_table: INVESTOR
     source_column: null
     comment: "PK surrogate. BCV: \"[Involved Party] Individual\". Nhà đầu tư nước ngoài (cá nhân/tổ chức) đăng ký hoạt động tại Việt Nam. Hash: hash_id('FIMS.INVESTOR', TransactionCode)."
-    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Foreign Investor Code
@@ -47,7 +47,7 @@ attributes:
     source_table: INVESTOR
     source_column: FIMS.INVESTOR.TransactionCode
     comment: "BK chính. Cần profile dữ liệu xác nhận NOT NULL/unique trước go-live (nguồn không khai báo ràng buộc)."
-    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'FIMS_INVESTOR'"
-    etl_derived_value: FIMS.INVESTOR
+    etl_derived_value: FIMS_INVESTOR
 
   - name: Investor Object Type Code
     physical_name: investor_object_tp_code
@@ -75,7 +75,7 @@ attributes:
     source_table: INVESTOR
     source_column: FIMS.INVESTOR.ObjectType
     comment: "Scheme: FIMS_STOCKHOLDER_TYPE. Nguồn lưu dạng số — ETL cần convert sang string code."
-    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    classification_context: FIMS_STOCKHOLDER_TYPE
     etl_derived_value: null
 
   - name: Full Name
@@ -89,7 +89,7 @@ attributes:
     source_table: INVESTOR
     source_column: FIMS.INVESTOR.Name
     comment: null
-    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: English Name
@@ -103,7 +103,7 @@ attributes:
     source_table: INVESTOR
     source_column: FIMS.INVESTOR.EName
     comment: null
-    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Gender Code
@@ -117,7 +117,7 @@ attributes:
     source_table: INVESTOR
     source_column: FIMS.INVESTOR.Sex
     comment: "Scheme: FIMS_GENDER. [PROPOSE NEW SCHEME] — chưa có trong HLD 6d, đăng ký bổ sung cùng lượt LLD này. Chỉ áp dụng NĐT cá nhân (ObjectType=1)."
-    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    classification_context: FIMS_GENDER
     etl_derived_value: null
 
   - name: Date of Birth
@@ -131,7 +131,7 @@ attributes:
     source_table: INVESTOR
     source_column: FIMS.INVESTOR.DateOfBirth
     comment: null
-    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Nationality Id
@@ -145,7 +145,7 @@ attributes:
     source_table: INVESTOR
     source_column: FIMS.INVESTOR.NaId
     comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang FIMS.NATIONAL: INVESTOR.NaId = NATIONAL.Id để xác nhận SName sau đó hash_id('ECAT.COUNTRY', SName) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
-    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Nationality Code
@@ -159,7 +159,7 @@ attributes:
     source_table: INVESTOR
     source_column: FIMS.NATIONAL.SName
     comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Nationality Id. Giá trị lấy từ FIMS.NATIONAL.SName sau ETL crosswalk — chi tiết xem comment Nationality Id."
-    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Business Registration Number
@@ -173,7 +173,7 @@ attributes:
     source_table: INVESTOR
     source_column: FIMS.INVESTOR.BusinessNumber
     comment: "Chỉ áp dụng NĐT tổ chức (ObjectType=2)."
-    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Director Full Name
@@ -187,7 +187,7 @@ attributes:
     source_table: INVESTOR
     source_column: FIMS.INVESTOR.Director
     comment: "Denormalized — không có FK, chỉ áp dụng NĐT tổ chức."
-    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Investor Type Code
@@ -201,7 +201,7 @@ attributes:
     source_table: INVESTOR
     source_column: FIMS.INVESTOR.InvestorTypeId
     comment: "Scheme: FIMS_INVESTOR_TYPE."
-    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    classification_context: FIMS_INVESTOR_TYPE
     etl_derived_value: null
 
   - name: Depository Account Number
@@ -215,7 +215,7 @@ attributes:
     source_table: INVESTOR
     source_column: FIMS.INVESTOR.DepAccountNumber
     comment: null
-    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Investor System Object Type Code
@@ -229,7 +229,7 @@ attributes:
     source_table: INVESTOR
     source_column: FIMS.INVESTOR.SysObjectType
     comment: "Không phải Classification Value — map 1:1 nguyên giá trị nguồn (quyết định Data Modeler 2026-07-20). Không tạo classification_context/scheme."
-    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Trading Securities Company Id
@@ -243,7 +243,7 @@ attributes:
     source_table: INVESTOR
     source_column: FIMS.INVESTOR.SecComAddId
     comment: "Pending — FK target: Market Participant Organization.Market Participant Organization Id (chưa thiết kế LLD — nguồn FIMS.SECURITIESCOMPANY). Hash: hash_id('FIMS.SECURITIESCOMPANY', CODE) sau khi Market Participant Organization được thiết kế và xác định cột BK."
-    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Trading Securities Company Code
@@ -257,7 +257,7 @@ attributes:
     source_table: INVESTOR
     source_column: FIMS.INVESTOR.SecComAddId
     comment: "Lookup pair: Market Participant Organization.Market Participant Organization Code. Pending — xem ghi chú ở Trading Securities Company Id."
-    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Custodian Bank Id
@@ -271,7 +271,7 @@ attributes:
     source_table: INVESTOR
     source_column: FIMS.INVESTOR.BankAddId
     comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS.BANK_MONI', BankAddId) | Cần đánh giá thêm FMS.BANK_MONI chứa đủ dữ liệu của bảng FIMS.BANKMONI hay không."
-    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Custodian Bank Code
@@ -285,7 +285,7 @@ attributes:
     source_table: INVESTOR
     source_column: FIMS.INVESTOR.BankAddId
     comment: "Lookup pair: custodian_bank.custodian_bank_code. Pair with Custodian Bank Id."
-    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Capital Investment Account Number
@@ -299,7 +299,7 @@ attributes:
     source_table: INVESTOR
     source_column: FIMS.INVESTOR.AccountInvesCapital
     comment: null
-    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Capital Custodian Bank Id
@@ -313,7 +313,7 @@ attributes:
     source_table: INVESTOR
     source_column: FIMS.INVESTOR.BankAddCapId
     comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS.BANK_MONI', BankAddCapId) | Cần đánh giá thêm FMS.BANK_MONI chứa đủ dữ liệu của bảng FIMS.BANKMONI hay không."
-    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Capital Custodian Bank Code
@@ -327,7 +327,7 @@ attributes:
     source_table: INVESTOR
     source_column: FIMS.INVESTOR.BankAddCapId
     comment: "Lookup pair: custodian_bank.custodian_bank_code. Pair with Capital Custodian Bank Id."
-    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Company Type Code
@@ -341,7 +341,7 @@ attributes:
     source_table: INVESTOR
     source_column: FIMS.INVESTOR.CompanyTypeId
     comment: "Scheme: FIMS_COMPANY_TYPE. Bổ sung Foreign Investor vào used_in_entities (trước đây chỉ Market Participant Organization)."
-    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    classification_context: FIMS_COMPANY_TYPE
     etl_derived_value: null
 
   - name: Activity Status Code
@@ -355,7 +355,7 @@ attributes:
     source_table: INVESTOR
     source_column: FIMS.INVESTOR.StatusId
     comment: "Scheme: FIMS_ACTIVITY_STATUS."
-    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    classification_context: FIMS_ACTIVITY_STATUS
     etl_derived_value: null
 
   - name: Description
@@ -369,7 +369,7 @@ attributes:
     source_table: INVESTOR
     source_column: FIMS.INVESTOR.Description
     comment: null
-    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Attachment File Name
@@ -383,5 +383,5 @@ attributes:
     source_table: INVESTOR
     source_column: FIMS.INVESTOR.FileName
     comment: null
-    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    classification_context: null
     etl_derived_value: null

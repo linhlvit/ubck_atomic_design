@@ -33,7 +33,7 @@ attributes:
     source_table: CERTIFICATE_RECORD_STATUS_HISTORIES
     source_column: null
     comment: "PK surrogate. BCV: [Documentation] Gov. Registration Document."
-    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORD_STATUS_HISTORIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner License Certificate Status Change History Code
@@ -47,7 +47,7 @@ attributes:
     source_table: CERTIFICATE_RECORD_STATUS_HISTORIES
     source_column: NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.ID
     comment: BK chính. Nguồn lưu NUMBER — ETL convert sang string.
-    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORD_STATUS_HISTORIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORD_STATUS_HISTORIES'"
-    etl_derived_value: NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES
+    etl_derived_value: NHNCK_CERTIFICATE_RECORD_STATUS_HISTORIES
 
   - name: Data Date
     physical_name: data_dt
@@ -75,7 +75,7 @@ attributes:
     source_table: CERTIFICATE_RECORD_STATUS_HISTORIES
     source_column: NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.CREATED_AT
     comment: "BCV: không có term riêng. CREATED_AT bị loại theo quyết định audit-block Data Modeler (2026-07-07) nhưng bảng là Fact Append (mỗi dòng = 1 lần đổi trạng thái, insert-only, xác nhận 2026-07-24) — cần giữ lại làm Data Date, mirror pattern lld_NHNCK_ORGANIZATION_REPORTS.yaml. Đổi tên từ 'created_at' sang 'Data Date' để phản ánh vai trò ngày dữ liệu/phân vùng, tách biệt khỏi audit block (CREATED_BY/UPDATED_AT/UPDATED_BY vẫn loại trừ)."
-    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORD_STATUS_HISTORIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner License Certificate Document Id
@@ -89,7 +89,7 @@ attributes:
     source_table: CERTIFICATE_RECORD_STATUS_HISTORIES
     source_column: NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.CERTIFICATE_RECORD_ID
     comment: "FK target: sp_license_certificate_document.sp_license_certificate_document_id. Hash: hash_id('NHNCK.CERTIFICATE_RECORDS', CERTIFICATE_RECORD_ID)."
-    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORD_STATUS_HISTORIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner License Certificate Document Code
@@ -103,7 +103,7 @@ attributes:
     source_table: CERTIFICATE_RECORD_STATUS_HISTORIES
     source_column: NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.CERTIFICATE_RECORD_ID
     comment: "Lookup pair: sp_license_certificate_document.sp_license_certificate_document_code. Pair with Securities Practitioner License Certificate Document Id."
-    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORD_STATUS_HISTORIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Update Type
@@ -117,7 +117,7 @@ attributes:
     source_table: CERTIFICATE_RECORD_STATUS_HISTORIES
     source_column: NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.UPDATE_TYPE
     comment: "BCV: không có term riêng — đặt tên theo nghĩa nghiệp vụ. Nguồn lưu dạng chuỗi tự do, không phải Classification Value cố định."
-    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORD_STATUS_HISTORIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Old Certificate Status Code
@@ -131,7 +131,7 @@ attributes:
     source_table: CERTIFICATE_RECORD_STATUS_HISTORIES
     source_column: NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.OLD_STATUS
     comment: "Scheme: CERTIFICATE_STATUS. Nguồn: 0=Chưa sử dụng, 1=Đang sử dụng, 2=Thu hồi có cấp lại, 3=Thu hồi không cấp lại, 4=Đã hủy, 5=Hết hiệu lực. Khác với STATUS (RECORD_STATUS đổi tên) trên CERTIFICATE_RECORDS — cột đó bị loại trừ theo chính sách Data Modeler (2026-07-07, xem pending_design.yaml), không liên quan đến scheme 6 giá trị này."
-    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORD_STATUS_HISTORIES'"
+    classification_context: CERTIFICATE_STATUS
     etl_derived_value: null
 
   - name: New Certificate Status Code
@@ -145,7 +145,7 @@ attributes:
     source_table: CERTIFICATE_RECORD_STATUS_HISTORIES
     source_column: NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.NEW_STATUS
     comment: "Scheme: CERTIFICATE_STATUS. Cùng bảng giá trị với Old Certificate Status Code."
-    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORD_STATUS_HISTORIES'"
+    classification_context: CERTIFICATE_STATUS
     etl_derived_value: null
 
   - name: Securities Practitioner License Decision Document Id
@@ -159,7 +159,7 @@ attributes:
     source_table: CERTIFICATE_RECORD_STATUS_HISTORIES
     source_column: NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.DECISION_ID
     comment: "FK target: sp_license_decision_document.sp_license_decision_document_id. Hash: hash_id('NHNCK.DECISIONS', DECISION_ID). Nullable — cần xác nhận có luôn gắn quyết định hay không (VD: hết hiệu lực tự động có thể không có quyết định)."
-    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORD_STATUS_HISTORIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner License Decision Document Code
@@ -173,7 +173,7 @@ attributes:
     source_table: CERTIFICATE_RECORD_STATUS_HISTORIES
     source_column: NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.DECISION_ID
     comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code. Pair with Securities Practitioner License Decision Document Id."
-    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORD_STATUS_HISTORIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Change Reason
@@ -187,5 +187,5 @@ attributes:
     source_table: CERTIFICATE_RECORD_STATUS_HISTORIES
     source_column: NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.REASON
     comment: "BCV: không có term riêng — đặt tên theo nghĩa nghiệp vụ, mirror Change Reason trên Securities Practitioner Reason Change History."
-    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORD_STATUS_HISTORIES'"
+    classification_context: null
     etl_derived_value: null

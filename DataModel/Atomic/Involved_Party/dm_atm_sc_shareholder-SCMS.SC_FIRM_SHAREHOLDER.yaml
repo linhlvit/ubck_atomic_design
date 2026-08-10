@@ -33,7 +33,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: null
     comment: PK surrogate.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Company Shareholder Code
@@ -47,7 +47,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: SCMS.SC_FIRM_SHAREHOLDER.ID
     comment: BK. NUMBER(10) — ETL convert sang string.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
-    etl_derived_value: SCMS.SC_FIRM_SHAREHOLDER
+    etl_derived_value: SCMS_SC_FIRM_SHAREHOLDER
 
   - name: Securities Company Id
     physical_name: sc_id
@@ -75,7 +75,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: SCMS.SC_FIRM_SHAREHOLDER.SC_FIRM_INFO_ID
     comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO: SC_FIRM_SHAREHOLDER.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE sau đó hash_id('SCMS.SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Company Code
@@ -89,7 +89,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: SCMS.SC_FIRM_INFO.CODE
     comment: "Lookup pair: securities_company.securities_company_code. Pair with Securities Company Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết xem comment Securities Company Id."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Company Senior Personnel Id
@@ -103,7 +103,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: SCMS.SC_FIRM_SHAREHOLDER.SC_FIRM_PERSONNEL_ID
     comment: "FK target: sc_senior_personnel.sc_senior_personnel_id. Hash: hash_id('SCMS.SC_FIRM_SENIOR_PERSONNEL', SC_FIRM_PERSONNEL_ID). Nullable — cổ đông có thể không phải nhân sự cao cấp."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Company Senior Personnel Code
@@ -117,7 +117,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: SCMS.SC_FIRM_SHAREHOLDER.SC_FIRM_PERSONNEL_ID
     comment: "Lookup pair: sc_senior_personnel.sc_senior_personnel_code. Pair with Securities Company Senior Personnel Id."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Shareholder Type Code
@@ -131,7 +131,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: SCMS.SC_FIRM_SHAREHOLDER.SHAREHOLDER_TYPE
     comment: "Scheme: SCMS_SHAREHOLDER_TYPE. NVARCHAR2(100)."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    classification_context: SCMS_SHAREHOLDER_TYPE
     etl_derived_value: null
 
   - name: Shareholder Entity Type Code
@@ -145,7 +145,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: SCMS.SC_FIRM_SHAREHOLDER.SHAREHOLDER_ENTITY_TYPE
     comment: "Scheme: SCMS_SHAREHOLDER_ENTITY_TYPE. VARCHAR2(100). Chi tiết hơn INDIVIDUAL (chỉ CA_NHAN/TO_CHUC)."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    classification_context: SCMS_SHAREHOLDER_ENTITY_TYPE
     etl_derived_value: null
 
   - name: Record Status Code
@@ -159,7 +159,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: SCMS.SC_FIRM_SHAREHOLDER.RECORD_STATUS
     comment: "Scheme: SCMS_USAGE_STATUS. NUMBER(1)."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    classification_context: SCMS_USAGE_STATUS
     etl_derived_value: null
 
   - name: Classification Nationality Id
@@ -173,7 +173,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: SCMS.SC_FIRM_SHAREHOLDER.NATIONALITY_ID
     comment: "FK target: cl_nationality.cl_nationality_id. Hash: hash_id('SCMS.CAT_NATIONALITY', NATIONALITY_ID)."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Classification Nationality Code
@@ -187,7 +187,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: SCMS.SC_FIRM_SHAREHOLDER.NATIONALITY_ID
     comment: "Lookup pair: cl_nationality.cl_nationality_code. Pair with Classification Nationality Id."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Individual Indicator
@@ -201,7 +201,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: SCMS.SC_FIRM_SHAREHOLDER.INDIVIDUAL
     comment: "NUMBER(1). ETL: 1→true, 0/null→false."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Shareholder Name
@@ -215,7 +215,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: SCMS.SC_FIRM_SHAREHOLDER.SHAREHOLDER_NAME
     comment: NVARCHAR2(250). Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Date Of Birth
@@ -229,7 +229,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: SCMS.SC_FIRM_SHAREHOLDER.DATE_OF_BIRTH
     comment: DATE.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Place Of Birth
@@ -243,7 +243,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: SCMS.SC_FIRM_SHAREHOLDER.PLACE_OF_BIRTH
     comment: NVARCHAR2(1000).
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Issue Date
@@ -257,7 +257,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: SCMS.SC_FIRM_SHAREHOLDER.ISSUE_DATE
     comment: DATE.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Issue Place
@@ -271,7 +271,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: SCMS.SC_FIRM_SHAREHOLDER.ISSUE_PLACE
     comment: NVARCHAR2(250).
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Education Level
@@ -285,7 +285,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: SCMS.SC_FIRM_SHAREHOLDER.EDUCATION_LEVEL
     comment: NVARCHAR2(100). Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Degree
@@ -299,7 +299,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: SCMS.SC_FIRM_SHAREHOLDER.DEGREE
     comment: NVARCHAR2(100). Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Occupation
@@ -313,7 +313,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: SCMS.SC_FIRM_SHAREHOLDER.OCCUPATION
     comment: VARCHAR2(200). Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Workplace
@@ -327,7 +327,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: SCMS.SC_FIRM_SHAREHOLDER.WORKPLACE
     comment: NVARCHAR2(1000). Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Job Title
@@ -341,7 +341,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: SCMS.SC_FIRM_SHAREHOLDER.JOB_TITLE
     comment: NVARCHAR2(250). Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Trading Account
@@ -355,7 +355,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: SCMS.SC_FIRM_SHAREHOLDER.TRADING_ACCOUNT
     comment: NVARCHAR2(30). Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Org Short Name
@@ -369,7 +369,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: SCMS.SC_FIRM_SHAREHOLDER.ORG_SHORT_NAME
     comment: "NVARCHAR2(200). Chỉ áp dụng khi INDIVIDUAL=0."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Legal Representative Name
@@ -383,7 +383,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: SCMS.SC_FIRM_SHAREHOLDER.LEGAL_REPRESENTATIVE_NAME
     comment: NVARCHAR2(500). Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Representative Position
@@ -397,7 +397,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: SCMS.SC_FIRM_SHAREHOLDER.REPRESENTATIVE_POSITION
     comment: NVARCHAR2(200). Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Shares Held
@@ -411,7 +411,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: SCMS.SC_FIRM_SHAREHOLDER.SHARES_HELD
     comment: "NUMBER(38). Không có scale — integer-like. ETL cần long/BigInteger type."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Freely Tradable Shares
@@ -425,7 +425,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: SCMS.SC_FIRM_SHAREHOLDER.FREELY_TRADABLE_SHARES
     comment: NUMBER(19). Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Pledged Shares
@@ -439,7 +439,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: SCMS.SC_FIRM_SHAREHOLDER.PLEDGED_SHARES
     comment: NUMBER(19). Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Restricted Shares
@@ -453,7 +453,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: SCMS.SC_FIRM_SHAREHOLDER.RESTRICTED_SHARES
     comment: NUMBER(19). Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Ownership Ratio
@@ -467,7 +467,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: SCMS.SC_FIRM_SHAREHOLDER.OWNERSHIP_RATIO
     comment: "NUMBER(10,4). Lưu dạng thập phân (VD: 15.25 = 15.25%)."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Contributed Capital
@@ -481,7 +481,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: SCMS.SC_FIRM_SHAREHOLDER.CONTRIBUTED_CAPITAL
     comment: "NUMBER(22,4). Đơn vị VND."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Large Shareholder Date
@@ -495,7 +495,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: SCMS.SC_FIRM_SHAREHOLDER.LARGE_SHAREHOLDER_DATE
     comment: DATE.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Controlling Shareholder
@@ -509,7 +509,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: SCMS.SC_FIRM_SHAREHOLDER.CONTROLLING_SHAREHOLDER
     comment: NVARCHAR2(40). Mô tả gốc BRD trống — data type gợi ý là chuỗi text (tên/mã) không phải Boolean.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Founding Shareholder Indicator
@@ -523,7 +523,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: SCMS.SC_FIRM_SHAREHOLDER.FOUNDING_SHAREHOLDER
     comment: "NUMBER(1). ETL: 1→true, 0/null→false."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Owner Indicator
@@ -537,7 +537,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: SCMS.SC_FIRM_SHAREHOLDER.OWNER
     comment: "NUMBER(1). Mô tả gốc BRD trống. ETL: 1→true, 0/null→false."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Party Member Indicator
@@ -551,7 +551,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: SCMS.SC_FIRM_SHAREHOLDER.PARTY_MEMBER
     comment: "NUMBER(1). Mô tả gốc BRD trống. ETL: 1→true, 0/null→false."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Legal Entity Representative Indicator
@@ -565,7 +565,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: SCMS.SC_FIRM_SHAREHOLDER.LEGAL_ENTITY_REPRESENTATIVE
     comment: "NUMBER(1). Mô tả gốc BRD trống. ETL: 1→true, 0/null→false."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Company Employee Indicator
@@ -579,7 +579,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: SCMS.SC_FIRM_SHAREHOLDER.COMPANY_EMPLOYEE
     comment: "NUMBER(1). Mô tả gốc BRD trống. ETL: 1→true, 0/null→false."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Foreign Investment Indicator
@@ -593,7 +593,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: SCMS.SC_FIRM_SHAREHOLDER.FOREIGN_INVESTMENT
     comment: "NUMBER(1). ETL: 1→true, 0/null→false."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Practitioner Legacy Id
@@ -607,7 +607,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: SCMS.SC_FIRM_SHAREHOLDER.PRACTITIONER_LEGACY_ID
     comment: "NUMBER(5) — ETL convert sang string. ID tham chiếu hệ thống legacy, không phải FK constraint."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Note
@@ -621,5 +621,5 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER
     source_column: SCMS.SC_FIRM_SHAREHOLDER.NOTE
     comment: VARCHAR2(2000).
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    classification_context: null
     etl_derived_value: null

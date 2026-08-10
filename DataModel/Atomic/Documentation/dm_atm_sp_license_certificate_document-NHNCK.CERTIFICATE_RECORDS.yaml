@@ -33,7 +33,7 @@ attributes:
     source_table: CERTIFICATE_RECORDS
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner License Certificate Document Code
@@ -47,7 +47,7 @@ attributes:
     source_table: CERTIFICATE_RECORDS
     source_column: NHNCK.CERTIFICATE_RECORDS.ID
     comment: null
-    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: null
     classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
-    etl_derived_value: NHNCK.CERTIFICATE_RECORDS
+    etl_derived_value: NHNCK_CERTIFICATE_RECORDS
 
   - name: Certificate Number
     physical_name: certificate_nbr
@@ -75,7 +75,7 @@ attributes:
     source_table: CERTIFICATE_RECORDS
     source_column: NHNCK.CERTIFICATE_RECORDS.CERTIFICATE_NUMBER
     comment: null
-    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner License Certificate Type Id
@@ -89,7 +89,7 @@ attributes:
     source_table: CERTIFICATE_RECORDS
     source_column: NHNCK.CERTIFICATE_RECORDS.CERTIFICATE_ID
     comment: "FK target: sp_license_certificate_type.sp_license_certificate_tp_id. Cần ETL crosswalk sang NHNCK.CERTIFICATES: CERTIFICATE_RECORDS.CERTIFICATE_ID = CERTIFICATES.ID để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK.CERTIFICATES', CERTIFICATE_CODE) | Trước đây hash trực tiếp theo CERTIFICATE_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CERTIFICATE_CODE) — đã sửa sang crosswalk 2026-07-27."
-    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner License Certificate Type Code
@@ -103,7 +103,7 @@ attributes:
     source_table: CERTIFICATE_RECORDS
     source_column: NHNCK.CERTIFICATES.CERTIFICATE_CODE
     comment: "Lookup pair: sp_license_certificate_type.sp_license_certificate_tp_code. Pair with Securities Practitioner License Certificate Type Id. Giá trị lấy từ NHNCK.CERTIFICATES.CERTIFICATE_CODE sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Certificate Type Id."
-    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner Id
@@ -117,7 +117,7 @@ attributes:
     source_table: CERTIFICATE_RECORDS
     source_column: NHNCK.CERTIFICATE_RECORDS.PROFESSIONAL_ID
     comment: "FK target: securities_practitioner.securities_practitioner_id. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
-    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner Code
@@ -131,7 +131,7 @@ attributes:
     source_table: CERTIFICATE_RECORDS
     source_column: NHNCK.CERTIFICATE_RECORDS.PROFESSIONAL_ID
     comment: "Lookup pair: securities_practitioner.securities_practitioner_code. Pair with Securities Practitioner Id."
-    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Issue Securities Practitioner License Decision Document Id
@@ -145,7 +145,7 @@ attributes:
     source_table: CERTIFICATE_RECORDS
     source_column: NHNCK.CERTIFICATE_RECORDS.ISSUE_DECISION_ID
     comment: "FK target: sp_license_decision_document.sp_license_decision_document_id. Hash: hash_id('NHNCK.DECISIONS', ISSUE_DECISION_ID)."
-    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Issue Securities Practitioner License Decision Document Code
@@ -159,7 +159,7 @@ attributes:
     source_table: CERTIFICATE_RECORDS
     source_column: NHNCK.CERTIFICATE_RECORDS.ISSUE_DECISION_ID
     comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code. Pair with Issue Securities Practitioner License Decision Document Id."
-    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Revocation Securities Practitioner License Decision Document Id
@@ -173,7 +173,7 @@ attributes:
     source_table: CERTIFICATE_RECORDS
     source_column: NHNCK.CERTIFICATE_RECORDS.REVOCATION_DECISION_ID
     comment: "FK target: sp_license_decision_document.sp_license_decision_document_id. Hash: hash_id('NHNCK.DECISIONS', REVOCATION_DECISION_ID)."
-    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Revocation Securities Practitioner License Decision Document Code
@@ -187,7 +187,7 @@ attributes:
     source_table: CERTIFICATE_RECORDS
     source_column: NHNCK.CERTIFICATE_RECORDS.REVOCATION_DECISION_ID
     comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code. Pair with Revocation Securities Practitioner License Decision Document Id."
-    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Cancellation Securities Practitioner License Decision Document Id
@@ -201,7 +201,7 @@ attributes:
     source_table: CERTIFICATE_RECORDS
     source_column: NHNCK.CERTIFICATE_RECORDS.CANCELLATION_DECISION_ID
     comment: "FK target: sp_license_decision_document.sp_license_decision_document_id. Hash: hash_id('NHNCK.DECISIONS', CANCELLATION_DECISION_ID)."
-    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Cancellation Securities Practitioner License Decision Document Code
@@ -215,7 +215,7 @@ attributes:
     source_table: CERTIFICATE_RECORDS
     source_column: NHNCK.CERTIFICATE_RECORDS.CANCELLATION_DECISION_ID
     comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code. Pair with Cancellation Securities Practitioner License Decision Document Id."
-    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Issue Date
@@ -229,7 +229,7 @@ attributes:
     source_table: CERTIFICATE_RECORDS
     source_column: NHNCK.CERTIFICATE_RECORDS.ISSUE_DATE
     comment: null
-    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Revocation Date
@@ -243,7 +243,7 @@ attributes:
     source_table: CERTIFICATE_RECORDS
     source_column: NHNCK.CERTIFICATE_RECORDS.REVOCATION_DATE
     comment: null
-    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Revocation Reason
@@ -257,7 +257,7 @@ attributes:
     source_table: CERTIFICATE_RECORDS
     source_column: NHNCK.CERTIFICATE_RECORDS.REVOCATION_REASON
     comment: null
-    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Practitioner Name At Issuance
@@ -271,7 +271,7 @@ attributes:
     source_table: CERTIFICATE_RECORDS
     source_column: NHNCK.CERTIFICATE_RECORDS.PROFESSIONAL_FULL_NAME
     comment: Snapshot value captured at time of issuance; not updated when practitioner name changes.
-    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Reissuance Allowed Count
@@ -285,7 +285,7 @@ attributes:
     source_table: CERTIFICATE_RECORDS
     source_column: NHNCK.CERTIFICATE_RECORDS.ALLOW_REISSUE
     comment: null
-    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Process Status Code
@@ -299,7 +299,7 @@ attributes:
     source_table: CERTIFICATE_RECORDS
     source_column: NHNCK.CERTIFICATE_RECORDS.PROCESS_STATUS
     comment: "Scheme: LICENSE_CERTIFICATE_PROCESS_STATUS."
-    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    classification_context: LICENSE_CERTIFICATE_PROCESS_STATUS
     etl_derived_value: null
 
   - name: Certificate File Path
@@ -313,7 +313,7 @@ attributes:
     source_table: CERTIFICATE_RECORDS
     source_column: NHNCK.CERTIFICATE_RECORDS.CER_PATH
     comment: null
-    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Conversion Status Code
@@ -327,7 +327,7 @@ attributes:
     source_table: CERTIFICATE_RECORDS
     source_column: NHNCK.CERTIFICATE_RECORDS.CONVERSION_STATUS
     comment: "Scheme: LICENSE_CERTIFICATE_CONVERSION_STATUS."
-    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    classification_context: LICENSE_CERTIFICATE_CONVERSION_STATUS
     etl_derived_value: null
 
   - name: Description
@@ -341,5 +341,5 @@ attributes:
     source_table: CERTIFICATE_RECORDS
     source_column: NHNCK.CERTIFICATE_RECORDS.DESCRIPTION
     comment: null
-    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    classification_context: null
     etl_derived_value: null

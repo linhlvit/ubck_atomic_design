@@ -33,7 +33,7 @@ attributes:
     source_table: UNITS
     source_column: null
     comment: "PK surrogate. BCV: \"Organization\" (Involved Party). Đơn vị thuộc UBCKNN."
-    classification_context: "Source System Code = 'NHNCK_UNITS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Regulatory Authority Organization Unit Code
@@ -47,7 +47,7 @@ attributes:
     source_table: UNITS
     source_column: NHNCK.UNITS.UNIT_CODE
     comment: BK chính.
-    classification_context: "Source System Code = 'NHNCK_UNITS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
     classification_context: "Source System Code = 'NHNCK_UNITS'"
-    etl_derived_value: NHNCK.UNITS
+    etl_derived_value: NHNCK_UNITS
 
   - name: Organization Unit Type Code
     physical_name: ou_tp_code
@@ -75,7 +75,7 @@ attributes:
     source_table: UNITS
     source_column: null
     comment: "Scheme: ORGANIZATION_UNIT_TYPE. ETL-derived."
-    classification_context: "Source System Code = 'NHNCK_UNITS'"
+    classification_context: "ORGANIZATION_UNIT_TYPE=UNIT"
     etl_derived_value: UNIT
 
   - name: Regulatory Authority Organization Unit Name
@@ -89,7 +89,7 @@ attributes:
     source_table: UNITS
     source_column: NHNCK.UNITS.UNIT_NAME
     comment: null
-    classification_context: "Source System Code = 'NHNCK_UNITS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Hierarchy Level Code
@@ -103,7 +103,7 @@ attributes:
     source_table: UNITS
     source_column: NHNCK.UNITS.LEVEL_
     comment: "Scheme: ORGANIZATION_UNIT_TYPE. Cấp tổ chức từ nguồn."
-    classification_context: "Source System Code = 'NHNCK_UNITS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Parent Regulatory Authority Organization Unit Id
@@ -117,7 +117,7 @@ attributes:
     source_table: UNITS
     source_column: NHNCK.UNITS.PARENT_ID
     comment: "FK target: ra_organization_unit.ra_ou_id. Cần ETL crosswalk sang NHNCK.UNITS: UNITS.PARENT_ID = UNITS.ID để xác nhận UNIT_CODE sau đó hash_id('NHNCK.UNITS', UNIT_CODE) | Trước đây hash trực tiếp theo PARENT_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ UNIT_CODE) — đã sửa sang crosswalk 2026-07-27."
-    classification_context: "Source System Code = 'NHNCK_UNITS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Parent Regulatory Authority Organization Unit Code
@@ -131,7 +131,7 @@ attributes:
     source_table: UNITS
     source_column: NHNCK.UNITS.UNIT_CODE
     comment: "Lookup pair: ra_organization_unit.ra_organization_unit_code. Pair with Parent Regulatory Authority Organization Unit Id. Giá trị lấy từ NHNCK.UNITS.UNIT_CODE sau ETL crosswalk — chi tiết xem comment Parent Regulatory Authority Organization Unit Id."
-    classification_context: "Source System Code = 'NHNCK_UNITS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Description
@@ -145,5 +145,5 @@ attributes:
     source_table: UNITS
     source_column: NHNCK.UNITS.DESCRIPTION
     comment: null
-    classification_context: "Source System Code = 'NHNCK_UNITS'"
+    classification_context: null
     etl_derived_value: null

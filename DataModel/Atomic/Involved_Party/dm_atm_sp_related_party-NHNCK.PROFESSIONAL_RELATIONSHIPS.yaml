@@ -33,7 +33,7 @@ attributes:
     source_table: PROFESSIONAL_RELATIONSHIPS
     source_column: null
     comment: "PK surrogate. BCV: \"Involved Party Relationship\" (Involved Party)."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_RELATIONSHIPS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner Related Party Code
@@ -47,7 +47,7 @@ attributes:
     source_table: PROFESSIONAL_RELATIONSHIPS
     source_column: NHNCK.PROFESSIONAL_RELATIONSHIPS.ID
     comment: BK chính.
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_RELATIONSHIPS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_RELATIONSHIPS'"
-    etl_derived_value: NHNCK.PROFESSIONAL_RELATIONSHIPS
+    etl_derived_value: NHNCK_PROFESSIONAL_RELATIONSHIPS
 
   - name: Securities Practitioner Id
     physical_name: sp_id
@@ -75,7 +75,7 @@ attributes:
     source_table: PROFESSIONAL_RELATIONSHIPS
     source_column: NHNCK.PROFESSIONAL_RELATIONSHIPS.PROFESSIONAL_ID
     comment: "FK target: securities_practitioner.securities_practitioner_id. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_RELATIONSHIPS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner Code
@@ -89,7 +89,7 @@ attributes:
     source_table: PROFESSIONAL_RELATIONSHIPS
     source_column: NHNCK.PROFESSIONAL_RELATIONSHIPS.PROFESSIONAL_ID
     comment: "Lookup pair: securities_practitioner.securities_practitioner_code. Pair with Securities Practitioner Id."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_RELATIONSHIPS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Relationship Type Code
@@ -103,7 +103,7 @@ attributes:
     source_table: PROFESSIONAL_RELATIONSHIPS
     source_column: NHNCK.PROFESSIONAL_RELATIONSHIPS.RELATIONSHIP_TYPE
     comment: "Scheme: RELATIONSHIP_TYPE."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_RELATIONSHIPS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Related Individual Full Name
@@ -117,7 +117,7 @@ attributes:
     source_table: PROFESSIONAL_RELATIONSHIPS
     source_column: NHNCK.PROFESSIONAL_RELATIONSHIPS.FULL_NAME
     comment: null
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_RELATIONSHIPS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Related Individual Birth Year
@@ -131,7 +131,7 @@ attributes:
     source_table: PROFESSIONAL_RELATIONSHIPS
     source_column: NHNCK.PROFESSIONAL_RELATIONSHIPS.BIRTH_YEAR
     comment: null
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_RELATIONSHIPS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Related Individual Address
@@ -145,7 +145,7 @@ attributes:
     source_table: PROFESSIONAL_RELATIONSHIPS
     source_column: NHNCK.PROFESSIONAL_RELATIONSHIPS.ADDRESS
     comment: null
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_RELATIONSHIPS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Related Individual Occupation
@@ -159,7 +159,7 @@ attributes:
     source_table: PROFESSIONAL_RELATIONSHIPS
     source_column: NHNCK.PROFESSIONAL_RELATIONSHIPS.OCCUPATION
     comment: null
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_RELATIONSHIPS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Related Individual Workplace
@@ -173,7 +173,7 @@ attributes:
     source_table: PROFESSIONAL_RELATIONSHIPS
     source_column: NHNCK.PROFESSIONAL_RELATIONSHIPS.WORKPLACE
     comment: null
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_RELATIONSHIPS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Related Individual Identity Number
@@ -187,7 +187,7 @@ attributes:
     source_table: PROFESSIONAL_RELATIONSHIPS
     source_column: NHNCK.PROFESSIONAL_RELATIONSHIPS.IDENTITY_ID
     comment: null
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_RELATIONSHIPS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Country Id
@@ -201,7 +201,7 @@ attributes:
     source_table: PROFESSIONAL_RELATIONSHIPS
     source_column: NHNCK.PROFESSIONAL_RELATIONSHIPS.COUNTRY_ID
     comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang NHNCK.COUNTRIES: PROFESSIONAL_RELATIONSHIPS.COUNTRY_ID = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT.COUNTRY', COUNTRY_CODE) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_RELATIONSHIPS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Country Code
@@ -215,7 +215,7 @@ attributes:
     source_table: PROFESSIONAL_RELATIONSHIPS
     source_column: NHNCK.COUNTRIES.COUNTRY_CODE
     comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Country Id. Giá trị lấy từ NHNCK.COUNTRIES.COUNTRY_CODE sau ETL crosswalk — chi tiết xem comment Country Id."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_RELATIONSHIPS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Note
@@ -229,5 +229,5 @@ attributes:
     source_table: PROFESSIONAL_RELATIONSHIPS
     source_column: NHNCK.PROFESSIONAL_RELATIONSHIPS.NOTE
     comment: null
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_RELATIONSHIPS'"
+    classification_context: null
     etl_derived_value: null

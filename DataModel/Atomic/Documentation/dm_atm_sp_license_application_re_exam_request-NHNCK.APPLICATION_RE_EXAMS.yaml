@@ -33,7 +33,7 @@ attributes:
     source_table: APPLICATION_RE_EXAMS
     source_column: null
     comment: "PK surrogate. BCV: \"Documentation\" (Resource Item). Yêu cầu thi lại CCHN."
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_RE_EXAMS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: "Securities Practitioner License Application Re-Exam Request Code"
@@ -47,7 +47,7 @@ attributes:
     source_table: APPLICATION_RE_EXAMS
     source_column: NHNCK.APPLICATION_RE_EXAMS.ID
     comment: BK chính. PK nguồn.
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_RE_EXAMS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
     classification_context: "Source System Code = 'NHNCK_APPLICATION_RE_EXAMS'"
-    etl_derived_value: NHNCK.APPLICATION_RE_EXAMS
+    etl_derived_value: NHNCK_APPLICATION_RE_EXAMS
 
   - name: Securities Practitioner License Application Id
     physical_name: sp_license_application_id
@@ -75,7 +75,7 @@ attributes:
     source_table: APPLICATION_RE_EXAMS
     source_column: NHNCK.APPLICATION_RE_EXAMS.APPLICATION_ID
     comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL crosswalk sang NHNCK.APPLICATIONS: APPLICATION_RE_EXAMS.APPLICATION_ID = APPLICATIONS.ID để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK.APPLICATIONS', APPLICATION_CODE) | Trước đây hash trực tiếp theo APPLICATION_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ APPLICATION_CODE) — đã sửa sang crosswalk 2026-07-27."
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_RE_EXAMS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner License Application Code
@@ -89,7 +89,7 @@ attributes:
     source_table: APPLICATION_RE_EXAMS
     source_column: NHNCK.APPLICATIONS.APPLICATION_CODE
     comment: "Lookup pair: sp_license_application.sp_license_application_code. Pair with Securities Practitioner License Application Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Application Id."
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_RE_EXAMS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner Qualification Examination Assessment Result Id
@@ -103,7 +103,7 @@ attributes:
     source_table: APPLICATION_RE_EXAMS
     source_column: NHNCK.APPLICATION_RE_EXAMS.EXAM_DETAIL_ID
     comment: "FK target: sp_qualification_examination_assessment_result.sp_qualification_examination_assessment_result_id. Hash: hash_id('NHNCK.EXAM_DETAILS', EXAM_DETAIL_ID)."
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_RE_EXAMS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner Qualification Examination Assessment Result Code
@@ -117,7 +117,7 @@ attributes:
     source_table: APPLICATION_RE_EXAMS
     source_column: NHNCK.APPLICATION_RE_EXAMS.EXAM_DETAIL_ID
     comment: "Lookup pair: sp_qualification_examination_assessment_result.sp_qualification_examination_assessment_result_code. Pair with Securities Practitioner Qualification Examination Assessment Result Id."
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_RE_EXAMS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: "Re-Exam Securities Practitioner License Application Id"
@@ -131,7 +131,7 @@ attributes:
     source_table: APPLICATION_RE_EXAMS
     source_column: NHNCK.APPLICATION_RE_EXAMS.RE_APPLICATION_ID
     comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL crosswalk sang NHNCK.APPLICATIONS: APPLICATION_RE_EXAMS.RE_APPLICATION_ID = APPLICATIONS.ID để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK.APPLICATIONS', APPLICATION_CODE) | Trước đây hash trực tiếp theo RE_APPLICATION_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ APPLICATION_CODE) — đã sửa sang crosswalk 2026-07-27."
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_RE_EXAMS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: "Re-Exam Securities Practitioner License Application Code"
@@ -145,5 +145,5 @@ attributes:
     source_table: APPLICATION_RE_EXAMS
     source_column: NHNCK.APPLICATIONS.APPLICATION_CODE
     comment: "Lookup pair: sp_license_application.sp_license_application_code. Pair with Re-Exam Securities Practitioner License Application Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE sau ETL crosswalk — chi tiết xem comment Re-Exam Securities Practitioner License Application Id."
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_RE_EXAMS'"
+    classification_context: null
     etl_derived_value: null

@@ -33,7 +33,7 @@ attributes:
     source_table: PENALTY_DECISION_CIRCUMSTANCE
     source_column: null
     comment: "PK surrogate. BCV: [Event] Event — aggravating/mitigating circumstance."
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_CIRCUMSTANCE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Penalty Decision Circumstance Code
@@ -47,7 +47,7 @@ attributes:
     source_table: PENALTY_DECISION_CIRCUMSTANCE
     source_column: THANHTRA.PENALTY_DECISION_CIRCUMSTANCE.ID
     comment: BK chính. PK nguồn (VARCHAR2 UUID).
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_CIRCUMSTANCE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_CIRCUMSTANCE'"
-    etl_derived_value: THANHTRA.PENALTY_DECISION_CIRCUMSTANCE
+    etl_derived_value: THANHTRA_PENALTY_DECISION_CIRCUMSTANCE
 
   - name: Penalty Decision Subject Behavior Id
     physical_name: pd_subject_behavior_id
@@ -75,7 +75,7 @@ attributes:
     source_table: PENALTY_DECISION_CIRCUMSTANCE
     source_column: THANHTRA.PENALTY_DECISION_CIRCUMSTANCE.PENALTY_DECISION_SUBJECT_BEHAVIOR_ID
     comment: "FK target: pd_subject_behavior.pd_subject_behavior_id. Hash: hash_id('THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR', PENALTY_DECISION_SUBJECT_BEHAVIOR_ID)."
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_CIRCUMSTANCE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Penalty Decision Subject Behavior Code
@@ -89,7 +89,7 @@ attributes:
     source_table: PENALTY_DECISION_CIRCUMSTANCE
     source_column: THANHTRA.PENALTY_DECISION_CIRCUMSTANCE.PENALTY_DECISION_SUBJECT_BEHAVIOR_ID
     comment: "Lookup pair: pd_subject_behavior.pd_subject_behavior_code. Pair with Penalty Decision Subject Behavior Id."
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_CIRCUMSTANCE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Circumstance Type Code
@@ -103,7 +103,7 @@ attributes:
     source_table: PENALTY_DECISION_CIRCUMSTANCE
     source_column: THANHTRA.PENALTY_DECISION_CIRCUMSTANCE.CIRCUMSTANCE_TYPE
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_CIRCUMSTANCE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Content
@@ -117,5 +117,5 @@ attributes:
     source_table: PENALTY_DECISION_CIRCUMSTANCE
     source_column: THANHTRA.PENALTY_DECISION_CIRCUMSTANCE.CONTENT
     comment: Nguồn CLOB — ETL truncate.
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_CIRCUMSTANCE'"
+    classification_context: null
     etl_derived_value: null

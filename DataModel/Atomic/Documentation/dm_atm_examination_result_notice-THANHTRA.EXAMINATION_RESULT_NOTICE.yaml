@@ -33,7 +33,7 @@ attributes:
     source_table: EXAMINATION_RESULT_NOTICE
     source_column: null
     comment: "PK surrogate. BCV: [Documentation] Form Document."
-    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_RESULT_NOTICE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Examination Result Notice Code
@@ -47,7 +47,7 @@ attributes:
     source_table: EXAMINATION_RESULT_NOTICE
     source_column: THANHTRA.EXAMINATION_RESULT_NOTICE.ID
     comment: BK chính. PK nguồn (VARCHAR2 UUID).
-    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_RESULT_NOTICE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'THANHTRA_EXAMINATION_RESULT_NOTICE'"
-    etl_derived_value: THANHTRA.EXAMINATION_RESULT_NOTICE
+    etl_derived_value: THANHTRA_EXAMINATION_RESULT_NOTICE
 
   - name: Examination Team Id
     physical_name: examination_team_id
@@ -75,7 +75,7 @@ attributes:
     source_table: EXAMINATION_RESULT_NOTICE
     source_column: THANHTRA.EXAMINATION_RESULT_NOTICE.EXAMINATION_TEAM_ID
     comment: "FK target: examination_team.examination_team_id. Cần ETL crosswalk sang THANHTRA.EXAMINATION_TEAM: EXAMINATION_RESULT_NOTICE.EXAMINATION_TEAM_ID = EXAMINATION_TEAM.ID để xác nhận CODE sau đó hash_id('THANHTRA.EXAMINATION_TEAM', CODE) | Trước đây hash trực tiếp theo EXAMINATION_TEAM_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
-    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_RESULT_NOTICE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Examination Team Code
@@ -89,7 +89,7 @@ attributes:
     source_table: EXAMINATION_RESULT_NOTICE
     source_column: THANHTRA.EXAMINATION_TEAM.CODE
     comment: "Lookup pair: examination_team.examination_team_code. Pair with Examination Team Id. Giá trị lấy từ THANHTRA.EXAMINATION_TEAM.CODE sau ETL crosswalk — chi tiết xem comment Examination Team Id."
-    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_RESULT_NOTICE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Notice Number
@@ -103,7 +103,7 @@ attributes:
     source_table: EXAMINATION_RESULT_NOTICE
     source_column: THANHTRA.EXAMINATION_RESULT_NOTICE.NOTICE_NUMBER
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_RESULT_NOTICE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Issued Date
@@ -117,7 +117,7 @@ attributes:
     source_table: EXAMINATION_RESULT_NOTICE
     source_column: THANHTRA.EXAMINATION_RESULT_NOTICE.ISSUED_DATE
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_RESULT_NOTICE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Announced Date
@@ -131,7 +131,7 @@ attributes:
     source_table: EXAMINATION_RESULT_NOTICE
     source_column: THANHTRA.EXAMINATION_RESULT_NOTICE.ANNOUNCED_DATE
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_RESULT_NOTICE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Target Type Code
@@ -145,7 +145,7 @@ attributes:
     source_table: EXAMINATION_RESULT_NOTICE
     source_column: THANHTRA.EXAMINATION_RESULT_NOTICE.TARGET_TYPE
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_RESULT_NOTICE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Target Reference Id
@@ -159,7 +159,7 @@ attributes:
     source_table: EXAMINATION_RESULT_NOTICE
     source_column: THANHTRA.EXAMINATION_RESULT_NOTICE.TARGET_REFERENCE_ID
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_RESULT_NOTICE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Target Name
@@ -173,7 +173,7 @@ attributes:
     source_table: EXAMINATION_RESULT_NOTICE
     source_column: THANHTRA.EXAMINATION_RESULT_NOTICE.TARGET_NAME
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_RESULT_NOTICE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Content
@@ -187,7 +187,7 @@ attributes:
     source_table: EXAMINATION_RESULT_NOTICE
     source_column: THANHTRA.EXAMINATION_RESULT_NOTICE.CONTENT
     comment: Nguồn CLOB — ETL truncate.
-    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_RESULT_NOTICE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Recommendation
@@ -201,7 +201,7 @@ attributes:
     source_table: EXAMINATION_RESULT_NOTICE
     source_column: THANHTRA.EXAMINATION_RESULT_NOTICE.RECOMMENDATION
     comment: Nguồn CLOB — ETL truncate.
-    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_RESULT_NOTICE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Execution Status Code
@@ -215,7 +215,7 @@ attributes:
     source_table: EXAMINATION_RESULT_NOTICE
     source_column: THANHTRA.EXAMINATION_RESULT_NOTICE.EXECUTION_STATUS
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_RESULT_NOTICE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Execution Description
@@ -229,5 +229,5 @@ attributes:
     source_table: EXAMINATION_RESULT_NOTICE
     source_column: THANHTRA.EXAMINATION_RESULT_NOTICE.EXECUTION_DESCRIPTION
     comment: Nguồn CLOB — ETL truncate.
-    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_RESULT_NOTICE'"
+    classification_context: null
     etl_derived_value: null

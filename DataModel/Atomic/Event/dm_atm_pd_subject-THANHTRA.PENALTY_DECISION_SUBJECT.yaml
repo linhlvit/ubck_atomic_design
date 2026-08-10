@@ -33,7 +33,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT
     source_column: null
     comment: "PK surrogate. BCV: [Event] Event — Involved Party in context of administrative penalty."
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Penalty Decision Subject Code
@@ -47,7 +47,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT
     source_column: THANHTRA.PENALTY_DECISION_SUBJECT.ID
     comment: BK chính. PK nguồn (VARCHAR2 UUID).
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
-    etl_derived_value: THANHTRA.PENALTY_DECISION_SUBJECT
+    etl_derived_value: THANHTRA_PENALTY_DECISION_SUBJECT
 
   - name: Penalty Decision Id
     physical_name: pd_id
@@ -75,7 +75,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT
     source_column: THANHTRA.PENALTY_DECISION_SUBJECT.PENALTY_DECISION_ID
     comment: "FK target: penalty_decision.penalty_decision_id. Hash: hash_id('THANHTRA.PENALTY_DECISION', PENALTY_DECISION_ID)."
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Penalty Decision Code
@@ -89,7 +89,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT
     source_column: THANHTRA.PENALTY_DECISION_SUBJECT.PENALTY_DECISION_ID
     comment: "Lookup pair: penalty_decision.penalty_decision_code. Pair with Penalty Decision Id."
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Subject Type Code
@@ -103,7 +103,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT
     source_column: THANHTRA.PENALTY_DECISION_SUBJECT.SUBJECT_TYPE
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Subject Name
@@ -117,7 +117,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT
     source_column: THANHTRA.PENALTY_DECISION_SUBJECT.SUBJECT_NAME
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Subject Id Number
@@ -131,7 +131,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT
     source_column: THANHTRA.PENALTY_DECISION_SUBJECT.SUBJECT_ID_NUMBER
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Subject Address
@@ -145,7 +145,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT
     source_column: THANHTRA.PENALTY_DECISION_SUBJECT.SUBJECT_ADDRESS
     comment: "Denormalized — Penalty Decision Subject là Event, không phải Involved Party, nên không tách IP Postal Address (rule Bước 4 skill atomic-lld-design)."
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Subject Tax Code
@@ -159,7 +159,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT
     source_column: THANHTRA.PENALTY_DECISION_SUBJECT.SUBJECT_TAX_CODE
     comment: "Denormalized — Penalty Decision Subject là Event, không phải Involved Party, nên không tách IP Alt Identification (rule Bước 4 skill atomic-lld-design)."
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Subject Date Of Birth
@@ -173,7 +173,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT
     source_column: THANHTRA.PENALTY_DECISION_SUBJECT.SUBJECT_DOB
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Subject Legal Rep
@@ -187,7 +187,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT
     source_column: THANHTRA.PENALTY_DECISION_SUBJECT.SUBJECT_LEGAL_REP
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Subject Legal Rep Title
@@ -201,7 +201,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT
     source_column: THANHTRA.PENALTY_DECISION_SUBJECT.SUBJECT_LEGAL_REP_TITLE
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Total Fine Amount
@@ -215,7 +215,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT
     source_column: THANHTRA.PENALTY_DECISION_SUBJECT.TOTAL_FINE_AMOUNT
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Paid Amount
@@ -229,7 +229,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT
     source_column: THANHTRA.PENALTY_DECISION_SUBJECT.PAID_AMOUNT
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Coerced Amount
@@ -243,7 +243,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT
     source_column: THANHTRA.PENALTY_DECISION_SUBJECT.COERCED_AMOUNT
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Payment Received Date
@@ -257,7 +257,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT
     source_column: THANHTRA.PENALTY_DECISION_SUBJECT.PAYMENT_RECEIVED_DATE
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Compliance Status Code
@@ -271,7 +271,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT
     source_column: THANHTRA.PENALTY_DECISION_SUBJECT.COMPLIANCE_STATUS
     comment: "Scheme: COMPLIANCE_STATUS."
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
+    classification_context: COMPLIANCE_STATUS
     etl_derived_value: null
 
   - name: Enforcement Progress
@@ -285,7 +285,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT
     source_column: THANHTRA.PENALTY_DECISION_SUBJECT.ENFORCEMENT_PROGRESS
     comment: Nguồn CLOB — ETL truncate.
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Note
@@ -299,7 +299,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT
     source_column: THANHTRA.PENALTY_DECISION_SUBJECT.NOTE
     comment: Nguồn CLOB — ETL truncate.
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Payment Proof URL
@@ -313,7 +313,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT
     source_column: THANHTRA.PENALTY_DECISION_SUBJECT.PAYMENT_PROOF_URL
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Payment Proof Uploaded Timestamp
@@ -327,7 +327,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT
     source_column: THANHTRA.PENALTY_DECISION_SUBJECT.PAYMENT_PROOF_UPLOADED_AT
     comment: Nguồn TIMESTAMP(6).
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Subject Email
@@ -341,7 +341,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT
     source_column: THANHTRA.PENALTY_DECISION_SUBJECT.SUBJECT_EMAIL
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Subject Phone
@@ -355,7 +355,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT
     source_column: THANHTRA.PENALTY_DECISION_SUBJECT.SUBJECT_PHONE
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Email Sent Timestamp
@@ -369,7 +369,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT
     source_column: THANHTRA.PENALTY_DECISION_SUBJECT.EMAIL_SENT_AT
     comment: Nguồn TIMESTAMP(6).
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: SMS Sent Timestamp
@@ -383,7 +383,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT
     source_column: THANHTRA.PENALTY_DECISION_SUBJECT.SMS_SENT_AT
     comment: Nguồn TIMESTAMP(6).
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Violation Record Id
@@ -397,7 +397,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT
     source_column: THANHTRA.PENALTY_DECISION_SUBJECT.VIOLATION_RECORD_ID
     comment: "FK target: violation_record.violation_record_id. Hash: hash_id('THANHTRA.VIOLATION_RECORD', VIOLATION_RECORD_ID)."
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Violation Record Code
@@ -411,7 +411,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT
     source_column: THANHTRA.VIOLATION_RECORD.ID
     comment: "Lookup pair: violation_record.violation_record_code. Pair with Violation Record Id."
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Receipt Status Code
@@ -425,7 +425,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT
     source_column: THANHTRA.PENALTY_DECISION_SUBJECT.RECEIPT_STATUS
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Viewed Timestamp
@@ -439,7 +439,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT
     source_column: THANHTRA.PENALTY_DECISION_SUBJECT.VIEWED_AT
     comment: Nguồn TIMESTAMP(6).
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Downloaded Timestamp
@@ -453,7 +453,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT
     source_column: THANHTRA.PENALTY_DECISION_SUBJECT.DOWNLOADED_AT
     comment: Nguồn TIMESTAMP(6).
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Confirmed Timestamp
@@ -467,7 +467,7 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT
     source_column: THANHTRA.PENALTY_DECISION_SUBJECT.CONFIRMED_AT
     comment: Nguồn TIMESTAMP(6).
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Received Timestamp
@@ -481,5 +481,5 @@ attributes:
     source_table: PENALTY_DECISION_SUBJECT
     source_column: THANHTRA.PENALTY_DECISION_SUBJECT.RECEIVED_AT
     comment: Nguồn TIMESTAMP(6).
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT'"
+    classification_context: null
     etl_derived_value: null

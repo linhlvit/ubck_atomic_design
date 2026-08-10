@@ -33,7 +33,7 @@ attributes:
     source_table: PROVINCE_OLD
     source_column: null
     comment: "PK surrogate. Hash: hash_id('ECAT.PROVINCE_OLD', CODE). BCV: \"Geographic Area\" (Location) — entity riêng Geographic Area Old cho phân cấp lịch sử pre-2025."
-    classification_context: "Source System Code = 'ECAT_PROVINCE_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -48,7 +48,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
     classification_context: "Source System Code = 'ECAT_PROVINCE_OLD'"
-    etl_derived_value: ECAT.PROVINCE_OLD
+    etl_derived_value: ECAT_PROVINCE_OLD
 
   - name: Geographic Area Old Type Code
     physical_name: geographic_area_old_tp_code
@@ -61,7 +61,7 @@ attributes:
     source_table: PROVINCE_OLD
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'ECAT_PROVINCE_OLD'"
+    classification_context: "GEOGRAPHIC_AREA_OLD_TYPE=PROVINCE_OLD"
     etl_derived_value: PROVINCE_OLD
 
   - name: Geographic Area Old Code
@@ -75,7 +75,7 @@ attributes:
     source_table: PROVINCE_OLD
     source_column: ECAT.PROVINCE_OLD.CODE
     comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (STABLE_ID) — gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique trước go-live."
-    classification_context: "Source System Code = 'ECAT_PROVINCE_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Geographic Area Old Name
@@ -89,7 +89,7 @@ attributes:
     source_table: PROVINCE_OLD
     source_column: ECAT.PROVINCE_OLD.NAME_VN
     comment: null
-    classification_context: "Source System Code = 'ECAT_PROVINCE_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Geographic Area Old English Name
@@ -103,7 +103,7 @@ attributes:
     source_table: PROVINCE_OLD
     source_column: ECAT.PROVINCE_OLD.NAME_EN
     comment: null
-    classification_context: "Source System Code = 'ECAT_PROVINCE_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Parent Geographic Area Old Id
@@ -117,7 +117,7 @@ attributes:
     source_table: PROVINCE_OLD
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'ECAT_PROVINCE_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Parent Geographic Area Old Code
@@ -131,7 +131,7 @@ attributes:
     source_table: PROVINCE_OLD
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'ECAT_PROVINCE_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Region Geographic Area Id
@@ -145,7 +145,7 @@ attributes:
     source_table: PROVINCE_OLD
     source_column: ECAT.PROVINCE_OLD.REGION_ID
     comment: "FK target: geographic_area.geographic_area_id (KHÁC entity — cross-entity anchor, không phải self-ref). Resolve: join REGION_ID → ECAT.REGION.ID để lấy CODE, rồi hash_id('ECAT.REGION', CODE). COUNTRY_ID trên bảng nguồn denormalized qua REGION_ID → REGION.COUNTRY_ID, không map riêng."
-    classification_context: "Source System Code = 'ECAT_PROVINCE_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Region Geographic Area Code
@@ -159,7 +159,7 @@ attributes:
     source_table: PROVINCE_OLD
     source_column: ECAT.PROVINCE_OLD.REGION_ID
     comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Region Geographic Area Id."
-    classification_context: "Source System Code = 'ECAT_PROVINCE_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Successor Geographic Area Id
@@ -173,7 +173,7 @@ attributes:
     source_table: PROVINCE_OLD
     source_column: ECAT.PROVINCE_OLD.PROVINCE_NEW_ID
     comment: "FK target: geographic_area.geographic_area_id (KHÁC entity — successor mapping sau sáp nhập hành chính, không phải hierarchy cha-con). Resolve: join PROVINCE_NEW_ID → ECAT.PROVINCE_NEW.ID để lấy CODE, rồi hash_id('ECAT.PROVINCE_NEW', CODE)."
-    classification_context: "Source System Code = 'ECAT_PROVINCE_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Successor Geographic Area Code
@@ -187,7 +187,7 @@ attributes:
     source_table: PROVINCE_OLD
     source_column: ECAT.PROVINCE_OLD.PROVINCE_NEW_ID
     comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Successor Geographic Area Id."
-    classification_context: "Source System Code = 'ECAT_PROVINCE_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Effective Indicator
@@ -201,7 +201,7 @@ attributes:
     source_table: PROVINCE_OLD
     source_column: ECAT.PROVINCE_OLD.EFFECTIVE
     comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Active/Deleted Indicator."
-    classification_context: "Source System Code = 'ECAT_PROVINCE_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Active Indicator
@@ -215,7 +215,7 @@ attributes:
     source_table: PROVINCE_OLD
     source_column: ECAT.PROVINCE_OLD.ACTIVE
     comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Deleted Indicator."
-    classification_context: "Source System Code = 'ECAT_PROVINCE_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Deleted Indicator
@@ -229,7 +229,7 @@ attributes:
     source_table: PROVINCE_OLD
     source_column: ECAT.PROVINCE_OLD.DELETED
     comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Active Indicator."
-    classification_context: "Source System Code = 'ECAT_PROVINCE_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Effective Start Date
@@ -243,7 +243,7 @@ attributes:
     source_table: PROVINCE_OLD
     source_column: ECAT.PROVINCE_OLD.EFFECTIVE_START_DATE
     comment: null
-    classification_context: "Source System Code = 'ECAT_PROVINCE_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Effective End Date
@@ -257,7 +257,7 @@ attributes:
     source_table: PROVINCE_OLD
     source_column: ECAT.PROVINCE_OLD.EFFECTIVE_END_DATE
     comment: null
-    classification_context: "Source System Code = 'ECAT_PROVINCE_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Version Number
@@ -271,7 +271,7 @@ attributes:
     source_table: PROVINCE_OLD
     source_column: ECAT.PROVINCE_OLD.VERSION
     comment: "Đẩy 1:1 theo yêu cầu."
-    classification_context: "Source System Code = 'ECAT_PROVINCE_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Display Label
@@ -285,7 +285,7 @@ attributes:
     source_table: PROVINCE_OLD
     source_column: ECAT.PROVINCE_OLD.DISPLAY_LABEL
     comment: "Đẩy 1:1 theo yêu cầu."
-    classification_context: "Source System Code = 'ECAT_PROVINCE_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Active Reason
@@ -299,7 +299,7 @@ attributes:
     source_table: PROVINCE_OLD
     source_column: ECAT.PROVINCE_OLD.ACTIVE_REASON
     comment: "Đẩy 1:1 theo yêu cầu."
-    classification_context: "Source System Code = 'ECAT_PROVINCE_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Deleted Reason
@@ -313,7 +313,7 @@ attributes:
     source_table: PROVINCE_OLD
     source_column: ECAT.PROVINCE_OLD.DELETED_REASON
     comment: "Đẩy 1:1 theo yêu cầu."
-    classification_context: "Source System Code = 'ECAT_PROVINCE_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Created Timestamp
@@ -327,7 +327,7 @@ attributes:
     source_table: PROVINCE_OLD
     source_column: ECAT.PROVINCE_OLD.CREATED_AT
     comment: null
-    classification_context: "Source System Code = 'ECAT_PROVINCE_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Updated Timestamp
@@ -341,7 +341,7 @@ attributes:
     source_table: PROVINCE_OLD
     source_column: ECAT.PROVINCE_OLD.UPDATED_AT
     comment: null
-    classification_context: "Source System Code = 'ECAT_PROVINCE_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Created By Staff Id
@@ -355,7 +355,7 @@ attributes:
     source_table: PROVINCE_OLD
     source_column: ECAT.PROVINCE_OLD.CREATED_BY_ID
     comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT.UBCK_STAFF', CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
-    classification_context: "Source System Code = 'ECAT_PROVINCE_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Created By Staff Code
@@ -369,7 +369,7 @@ attributes:
     source_table: PROVINCE_OLD
     source_column: ECAT.PROVINCE_OLD.CREATED_BY_ID
     comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff Code. Pending — xem ghi chú ở Created By Staff Id."
-    classification_context: "Source System Code = 'ECAT_PROVINCE_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Created By Staff Name
@@ -383,7 +383,7 @@ attributes:
     source_table: PROVINCE_OLD
     source_column: ECAT.PROVINCE_OLD.CREATED_BY_NAME
     comment: "Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên hiển thị, không phải mã nhân viên)."
-    classification_context: "Source System Code = 'ECAT_PROVINCE_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Updated By Staff Id
@@ -397,7 +397,7 @@ attributes:
     source_table: PROVINCE_OLD
     source_column: ECAT.PROVINCE_OLD.UPDATED_BY_ID
     comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT.UBCK_STAFF', CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
-    classification_context: "Source System Code = 'ECAT_PROVINCE_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Updated By Staff Code
@@ -411,7 +411,7 @@ attributes:
     source_table: PROVINCE_OLD
     source_column: ECAT.PROVINCE_OLD.UPDATED_BY_ID
     comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff Code. Pending — xem ghi chú ở Updated By Staff Id."
-    classification_context: "Source System Code = 'ECAT_PROVINCE_OLD'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Updated By Staff Name
@@ -425,5 +425,5 @@ attributes:
     source_table: PROVINCE_OLD
     source_column: ECAT.PROVINCE_OLD.UPDATED_BY_NAME
     comment: "Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên hiển thị, không phải mã nhân viên)."
-    classification_context: "Source System Code = 'ECAT_PROVINCE_OLD'"
+    classification_context: null
     etl_derived_value: null

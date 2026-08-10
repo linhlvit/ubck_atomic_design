@@ -33,7 +33,7 @@ attributes:
     source_table: PETITION_DOCUMENT
     source_column: null
     comment: "PK surrogate. BCV: [Communication] Feedback."
-    classification_context: "Source System Code = 'THANHTRA_PETITION_DOCUMENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Petition Document Code
@@ -47,7 +47,7 @@ attributes:
     source_table: PETITION_DOCUMENT
     source_column: THANHTRA.PETITION_DOCUMENT.ID
     comment: BK chính. PK nguồn (VARCHAR2 UUID).
-    classification_context: "Source System Code = 'THANHTRA_PETITION_DOCUMENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'THANHTRA_PETITION_DOCUMENT'"
-    etl_derived_value: THANHTRA.PETITION_DOCUMENT
+    etl_derived_value: THANHTRA_PETITION_DOCUMENT
 
   - name: Petition Id
     physical_name: petition_id
@@ -75,7 +75,7 @@ attributes:
     source_table: PETITION_DOCUMENT
     source_column: THANHTRA.PETITION_DOCUMENT.PETITION_ID
     comment: "FK target: petition.petition_id. Cần ETL crosswalk sang THANHTRA.PETITION: PETITION_DOCUMENT.PETITION_ID = PETITION.ID để xác nhận CODE sau đó hash_id('THANHTRA.PETITION', CODE) | Trước đây hash trực tiếp theo PETITION_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
-    classification_context: "Source System Code = 'THANHTRA_PETITION_DOCUMENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Petition Code
@@ -89,7 +89,7 @@ attributes:
     source_table: PETITION_DOCUMENT
     source_column: THANHTRA.PETITION.CODE
     comment: "Lookup pair: petition.petition_code. Pair with Petition Id. Giá trị lấy từ THANHTRA.PETITION.CODE sau ETL crosswalk — chi tiết xem comment Petition Id."
-    classification_context: "Source System Code = 'THANHTRA_PETITION_DOCUMENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Document Type Code
@@ -103,7 +103,7 @@ attributes:
     source_table: PETITION_DOCUMENT
     source_column: THANHTRA.PETITION_DOCUMENT.DOCUMENT_TYPE
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_PETITION_DOCUMENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Document Number
@@ -117,7 +117,7 @@ attributes:
     source_table: PETITION_DOCUMENT
     source_column: THANHTRA.PETITION_DOCUMENT.DOCUMENT_NUMBER
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_PETITION_DOCUMENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Document Date
@@ -131,7 +131,7 @@ attributes:
     source_table: PETITION_DOCUMENT
     source_column: THANHTRA.PETITION_DOCUMENT.DOCUMENT_DATE
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_PETITION_DOCUMENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Content
@@ -145,7 +145,7 @@ attributes:
     source_table: PETITION_DOCUMENT
     source_column: THANHTRA.PETITION_DOCUMENT.CONTENT
     comment: Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng.
-    classification_context: "Source System Code = 'THANHTRA_PETITION_DOCUMENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Classification Result Code
@@ -159,7 +159,7 @@ attributes:
     source_table: PETITION_DOCUMENT
     source_column: THANHTRA.PETITION_DOCUMENT.CLASSIFICATION_RESULT
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_PETITION_DOCUMENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Proposed Action
@@ -173,7 +173,7 @@ attributes:
     source_table: PETITION_DOCUMENT
     source_column: THANHTRA.PETITION_DOCUMENT.PROPOSED_ACTION
     comment: Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng.
-    classification_context: "Source System Code = 'THANHTRA_PETITION_DOCUMENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Transfer Target Unit
@@ -187,7 +187,7 @@ attributes:
     source_table: PETITION_DOCUMENT
     source_column: THANHTRA.PETITION_DOCUMENT.TRANSFER_TARGET_UNIT
     comment: Không có FK formal — lưu dạng text denormalized.
-    classification_context: "Source System Code = 'THANHTRA_PETITION_DOCUMENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Resolution Deadline
@@ -201,7 +201,7 @@ attributes:
     source_table: PETITION_DOCUMENT
     source_column: THANHTRA.PETITION_DOCUMENT.RESOLUTION_DEADLINE
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_PETITION_DOCUMENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Signer Name
@@ -215,7 +215,7 @@ attributes:
     source_table: PETITION_DOCUMENT
     source_column: THANHTRA.PETITION_DOCUMENT.SIGNER_NAME
     comment: Không có FK formal đến Officer — lưu dạng text denormalized.
-    classification_context: "Source System Code = 'THANHTRA_PETITION_DOCUMENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Acceptance Proposal Type
@@ -229,7 +229,7 @@ attributes:
     source_table: PETITION_DOCUMENT
     source_column: THANHTRA.PETITION_DOCUMENT.ACCEPTANCE_PROPOSAL_TYPE
     comment: Lưu text tự do — chưa có scheme chuẩn phù hợp. Cần profile giá trị thực tế từ nguồn trước khi thêm scheme.
-    classification_context: "Source System Code = 'THANHTRA_PETITION_DOCUMENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Rejection Reason
@@ -243,7 +243,7 @@ attributes:
     source_table: PETITION_DOCUMENT
     source_column: THANHTRA.PETITION_DOCUMENT.REJECTION_REASON
     comment: Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng.
-    classification_context: "Source System Code = 'THANHTRA_PETITION_DOCUMENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Prepared By Officer Id
@@ -257,7 +257,7 @@ attributes:
     source_table: PETITION_DOCUMENT
     source_column: THANHTRA.PETITION_DOCUMENT.PREPARED_BY
     comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM.USERS', PREPARED_BY) | Chưa xác nhận join key THANHTRA.PETITION_DOCUMENT.PREPARED_BY ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
-    classification_context: "Source System Code = 'THANHTRA_PETITION_DOCUMENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Prepared By Officer Code
@@ -271,7 +271,7 @@ attributes:
     source_table: PETITION_DOCUMENT
     source_column: THANHTRA.PETITION_DOCUMENT.PREPARED_BY
     comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Prepared By Officer Id."
-    classification_context: "Source System Code = 'THANHTRA_PETITION_DOCUMENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Prepared Date
@@ -285,7 +285,7 @@ attributes:
     source_table: PETITION_DOCUMENT
     source_column: THANHTRA.PETITION_DOCUMENT.PREPARED_AT
     comment: null
-    classification_context: "Source System Code = 'THANHTRA_PETITION_DOCUMENT'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Document Template Name
@@ -299,5 +299,5 @@ attributes:
     source_table: PETITION_DOCUMENT
     source_column: THANHTRA.PETITION_DOCUMENT.DOCUMENT_TEMPLATE_NAME
     comment: Snapshot text. DOCUMENT_TEMPLATE_ID (FK→DOCUMENT_TEMPLATE out_of_scope) không map.
-    classification_context: "Source System Code = 'THANHTRA_PETITION_DOCUMENT'"
+    classification_context: null
     etl_derived_value: null

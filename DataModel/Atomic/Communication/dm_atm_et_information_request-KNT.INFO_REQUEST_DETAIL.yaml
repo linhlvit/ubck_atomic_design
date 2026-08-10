@@ -33,7 +33,7 @@ attributes:
     source_table: INFO_REQUEST_DETAIL
     source_column: null
     comment: "PK surrogate. BCV: \"[Communication] Information Request\". 1 lần trao đổi yêu cầu thông tin từ Cục Thuế gửi UBCKNN. Hash: hash_id('KNT.INFO_REQUEST_DETAIL', ID)."
-    classification_context: "Source System Code = 'KNT_INFO_REQUEST_DETAIL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: External Tax Information Request Code
@@ -47,7 +47,7 @@ attributes:
     source_table: INFO_REQUEST_DETAIL
     source_column: KNT.INFO_REQUEST_DETAIL.ID
     comment: BK chính. PK nguồn.
-    classification_context: "Source System Code = 'KNT_INFO_REQUEST_DETAIL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'KNT_INFO_REQUEST_DETAIL'"
-    etl_derived_value: KNT.INFO_REQUEST_DETAIL
+    etl_derived_value: KNT_INFO_REQUEST_DETAIL
 
   - name: External Tax Registration Id
     physical_name: et_registration_id
@@ -75,7 +75,7 @@ attributes:
     source_table: INFO_REQUEST_DETAIL
     source_column: KNT.INFO_REQUEST_DETAIL.TAX_CODE
     comment: "FK target: et_registration.et_registration_id. Hash: hash_id('KNT.TAX_REGISTRATION_INFO', TAX_CODE)."
-    classification_context: "Source System Code = 'KNT_INFO_REQUEST_DETAIL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: External Tax Registration Code
@@ -89,7 +89,7 @@ attributes:
     source_table: INFO_REQUEST_DETAIL
     source_column: KNT.INFO_REQUEST_DETAIL.TAX_CODE
     comment: "Lookup pair: et_registration.et_registration_code. Pair with External Tax Registration Id."
-    classification_context: "Source System Code = 'KNT_INFO_REQUEST_DETAIL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Request Name
@@ -103,7 +103,7 @@ attributes:
     source_table: INFO_REQUEST_DETAIL
     source_column: KNT.INFO_REQUEST_DETAIL.REQUEST_NAME
     comment: null
-    classification_context: "Source System Code = 'KNT_INFO_REQUEST_DETAIL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Status Description
@@ -117,7 +117,7 @@ attributes:
     source_table: INFO_REQUEST_DETAIL
     source_column: KNT.INFO_REQUEST_DETAIL.STATUS_DESCRIPTION
     comment: Denormalized — mô tả tương ứng Response Status Code.
-    classification_context: "Source System Code = 'KNT_INFO_REQUEST_DETAIL'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Response Status Code
@@ -131,7 +131,7 @@ attributes:
     source_table: INFO_REQUEST_DETAIL
     source_column: KNT.INFO_REQUEST_DETAIL.STATUS
     comment: "Scheme: KNT_INFO_REQUEST_STATUS. Nguồn lưu dạng số — ETL cần convert sang string code."
-    classification_context: "Source System Code = 'KNT_INFO_REQUEST_DETAIL'"
+    classification_context: KNT_INFO_REQUEST_STATUS
     etl_derived_value: null
 
   - name: Message Packet Id
@@ -145,5 +145,5 @@ attributes:
     source_table: INFO_REQUEST_DETAIL
     source_column: KNT.INFO_REQUEST_DETAIL.MSG_PACKET_ID
     comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không tạo FK sang MSG_PACKET (bảng kỹ thuật gói tin trao đổi, ngoài scope thiết kế). Nguồn lưu dạng số (NUMBER) — ETL cần convert sang string."
-    classification_context: "Source System Code = 'KNT_INFO_REQUEST_DETAIL'"
+    classification_context: null
     etl_derived_value: null

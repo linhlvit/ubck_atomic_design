@@ -33,7 +33,7 @@ attributes:
     source_table: PROFESSIONAL_TRAININGS
     source_column: null
     comment: "PK surrogate. BCV: \"Individual Education / Training History\" (Involved Party)."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_TRAININGS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner Professional Training History Code
@@ -47,7 +47,7 @@ attributes:
     source_table: PROFESSIONAL_TRAININGS
     source_column: NHNCK.PROFESSIONAL_TRAININGS.ID
     comment: BK chính. PK nguồn (NUMBER — ETL cần convert sang string).
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_TRAININGS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_TRAININGS'"
-    etl_derived_value: NHNCK.PROFESSIONAL_TRAININGS
+    etl_derived_value: NHNCK_PROFESSIONAL_TRAININGS
 
   - name: Securities Practitioner Id
     physical_name: sp_id
@@ -75,7 +75,7 @@ attributes:
     source_table: PROFESSIONAL_TRAININGS
     source_column: NHNCK.PROFESSIONAL_TRAININGS.PROFESSIONAL_ID
     comment: "FK target: securities_practitioner.securities_practitioner_id. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_TRAININGS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner Code
@@ -89,7 +89,7 @@ attributes:
     source_table: PROFESSIONAL_TRAININGS
     source_column: NHNCK.PROFESSIONAL_TRAININGS.PROFESSIONAL_ID
     comment: "Lookup pair: securities_practitioner.securities_practitioner_code. Pair with Securities Practitioner Id."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_TRAININGS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Training Start Date
@@ -103,7 +103,7 @@ attributes:
     source_table: PROFESSIONAL_TRAININGS
     source_column: NHNCK.PROFESSIONAL_TRAININGS.START_DATE
     comment: Nguồn lưu dạng NVARCHAR2(10) — ETL cần parse sang Date; giữ Text domain để tránh lỗi chuyển đổi khi dữ liệu không chuẩn.
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_TRAININGS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Training End Date
@@ -117,7 +117,7 @@ attributes:
     source_table: PROFESSIONAL_TRAININGS
     source_column: NHNCK.PROFESSIONAL_TRAININGS.END_DATE
     comment: Nguồn lưu dạng NVARCHAR2(10) — ETL cần parse sang Date; nullable khi khóa học chưa kết thúc.
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_TRAININGS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Training Place
@@ -131,7 +131,7 @@ attributes:
     source_table: PROFESSIONAL_TRAININGS
     source_column: NHNCK.PROFESSIONAL_TRAININGS.TRAINING_PLACE
     comment: null
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_TRAININGS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Specialization Description
@@ -145,7 +145,7 @@ attributes:
     source_table: PROFESSIONAL_TRAININGS
     source_column: NHNCK.PROFESSIONAL_TRAININGS.SPECIALIZATION
     comment: Lưu nguyên giá trị text — không chuẩn hóa thành Classification Value vì dữ liệu tự do.
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_TRAININGS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Awards
@@ -159,7 +159,7 @@ attributes:
     source_table: PROFESSIONAL_TRAININGS
     source_column: NHNCK.PROFESSIONAL_TRAININGS.AWARDS
     comment: null
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_TRAININGS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Disciplines
@@ -173,5 +173,5 @@ attributes:
     source_table: PROFESSIONAL_TRAININGS
     source_column: NHNCK.PROFESSIONAL_TRAININGS.DISCIPLINES
     comment: null
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_TRAININGS'"
+    classification_context: null
     etl_derived_value: null

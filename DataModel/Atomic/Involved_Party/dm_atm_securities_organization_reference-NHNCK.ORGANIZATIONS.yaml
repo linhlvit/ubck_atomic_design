@@ -33,7 +33,7 @@ attributes:
     source_table: ORGANIZATIONS
     source_column: null
     comment: "PK surrogate. BCV: \"Organization\" (Involved Party). Tổ chức tham gia TTCK (CTCK, QLQ, NH, Khác)."
-    classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Organization Reference Code
@@ -47,7 +47,7 @@ attributes:
     source_table: ORGANIZATIONS
     source_column: NHNCK.ORGANIZATIONS.ID
     comment: BK chính. PK nguồn (NUMBER — ETL cần convert sang string).
-    classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
-    etl_derived_value: NHNCK.ORGANIZATIONS
+    etl_derived_value: NHNCK_ORGANIZATIONS
 
   - name: Organization Code
     physical_name: organization_code
@@ -75,7 +75,7 @@ attributes:
     source_table: ORGANIZATIONS
     source_column: NHNCK.ORGANIZATIONS.ORGANIZATION_CODE
     comment: Mã nghiệp vụ — khác BK (ORGANIZATION_CODE khác ID nguồn).
-    classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Organization Reference Name
@@ -89,7 +89,7 @@ attributes:
     source_table: ORGANIZATIONS
     source_column: NHNCK.ORGANIZATIONS.ORGANIZATION_NAME
     comment: null
-    classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Organization Reference English Name
@@ -103,7 +103,7 @@ attributes:
     source_table: ORGANIZATIONS
     source_column: NHNCK.ORGANIZATIONS.ENGLISH_NAME
     comment: null
-    classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Organization Reference Short Name
@@ -117,7 +117,7 @@ attributes:
     source_table: ORGANIZATIONS
     source_column: NHNCK.ORGANIZATIONS.ABBREVIATION
     comment: null
-    classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Organization Type Code
@@ -131,7 +131,7 @@ attributes:
     source_table: ORGANIZATIONS
     source_column: NHNCK.ORGANIZATIONS.ORGANIZATION_TYPE_ID
     comment: "Scheme: ORGANIZATION_TYPE. Nguồn lưu dạng số (NUMBER) — ETL cần convert"
-    classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Organization Level Code
@@ -145,7 +145,7 @@ attributes:
     source_table: ORGANIZATIONS
     source_column: NHNCK.ORGANIZATIONS.LEVEL_
     comment: "Scheme: ORGANIZATION_LEVEL."
-    classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Parent Securities Organization Reference Id
@@ -159,7 +159,7 @@ attributes:
     source_table: ORGANIZATIONS
     source_column: NHNCK.ORGANIZATIONS.PARENT_ID
     comment: "FK target: securities_organization_reference.securities_organization_reference_id. Self-referencing. Hash: hash_id('NHNCK.ORGANIZATIONS', PARENT_ID)."
-    classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Parent Securities Organization Reference Code
@@ -173,7 +173,7 @@ attributes:
     source_table: ORGANIZATIONS
     source_column: NHNCK.ORGANIZATIONS.PARENT_ID
     comment: "Lookup pair: securities_organization_reference.securities_organization_reference_code. Pair with Parent Securities Organization Reference Id."
-    classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: External System Linked Id
@@ -187,7 +187,7 @@ attributes:
     source_table: ORGANIZATIONS
     source_column: NHNCK.ORGANIZATIONS.LINKED_ID
     comment: "Nguồn lưu dạng số (NUMBER) — ETL cần convert sang string. Metadata liên kết hệ thống ngoài, lưu dạng text."
-    classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: External System Sync Id
@@ -201,7 +201,7 @@ attributes:
     source_table: ORGANIZATIONS
     source_column: NHNCK.ORGANIZATIONS.SYNC_ID
     comment: Metadata đồng bộ hệ thống ngoài.
-    classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Legal Representative Name
@@ -215,7 +215,7 @@ attributes:
     source_table: ORGANIZATIONS
     source_column: NHNCK.ORGANIZATIONS.REPRESENTATIVE
     comment: "BCV: \"Designated Representative\" (Involved Party). Chủ thể khác — không thuộc shared entity."
-    classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: License Number
@@ -229,7 +229,7 @@ attributes:
     source_table: ORGANIZATIONS
     source_column: NHNCK.ORGANIZATIONS.LICENSE_NUMBER
     comment: null
-    classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: License Issuer Name
@@ -243,7 +243,7 @@ attributes:
     source_table: ORGANIZATIONS
     source_column: NHNCK.ORGANIZATIONS.LICENSE_ISSUER
     comment: null
-    classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: License Date
@@ -257,7 +257,7 @@ attributes:
     source_table: ORGANIZATIONS
     source_column: NHNCK.ORGANIZATIONS.LICENSE_DATE
     comment: null
-    classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Charter Capital Amount
@@ -271,7 +271,7 @@ attributes:
     source_table: ORGANIZATIONS
     source_column: NHNCK.ORGANIZATIONS.CHARTER_CAPITAL
     comment: "Nguồn lưu dạng string (NVARCHAR2) — ETL cần cast/parse sang decimal. Cần validate không có giá trị non-numeric."
-    classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Description
@@ -285,7 +285,7 @@ attributes:
     source_table: ORGANIZATIONS
     source_column: NHNCK.ORGANIZATIONS.DESCRIPTION
     comment: null
-    classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Sort Order
@@ -299,7 +299,7 @@ attributes:
     source_table: ORGANIZATIONS
     source_column: NHNCK.ORGANIZATIONS.SORT_ORDER
     comment: null
-    classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Last Sync Date
@@ -313,7 +313,7 @@ attributes:
     source_table: ORGANIZATIONS
     source_column: NHNCK.ORGANIZATIONS.LAST_SYNC_DATE
     comment: null
-    classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Sync Status Code
@@ -327,5 +327,5 @@ attributes:
     source_table: ORGANIZATIONS
     source_column: NHNCK.ORGANIZATIONS.SYNC_STATUS
     comment: "Scheme: SYNC_STATUS. Nguồn lưu dạng số (NUMBER) — ETL cần convert sang string."
-    classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
+    classification_context: null
     etl_derived_value: null

@@ -33,7 +33,7 @@ attributes:
     source_table: INVES
     source_column: FMS.INVES.ID
     comment: "FK target: discretionary_investment_investor.discretionary_investment_investor_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.INVES', ID)."
-    classification_context: "Source System Code = 'FMS_INVES' | Identification Type Code = '(SOURCE)'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Involved Party Code
@@ -47,7 +47,7 @@ attributes:
     source_table: INVES
     source_column: FMS.INVES.ID
     comment: "Lookup pair: discretionary_investment_investor.discretionary_investment_investor_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'FMS_INVES' | Identification Type Code = '(SOURCE)'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: null
     classification_context: "Source System Code = 'FMS_INVES' | Identification Type Code = '(SOURCE)'"
-    etl_derived_value: FMS.INVES
+    etl_derived_value: FMS_INVES
 
   - name: Identification Type Code
     physical_name: identification_tp_code
@@ -76,7 +76,7 @@ attributes:
     source_column: FMS.INVES.ID_TYPE
     comment: "Scheme: IP_ALT_ID_TYPE. (source) — type lấy động từ nguồn. ETL map: 1=NATIONAL_ID;2=CITIZEN_ID;3=PASSPORT;4=ENTERPRISE_CODE."
     classification_context: "Source System Code = 'FMS_INVES' | Identification Type Code = '(SOURCE)'"
-    etl_derived_value: "1=NATIONAL_ID;2=CITIZEN_ID;3=PASSPORT;4=ENTERPRISE_CODE"
+    etl_derived_value: null
 
   - name: Identification Number
     physical_name: identification_nbr

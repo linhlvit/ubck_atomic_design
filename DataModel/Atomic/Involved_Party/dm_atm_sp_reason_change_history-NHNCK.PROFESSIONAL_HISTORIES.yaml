@@ -33,7 +33,7 @@ attributes:
     source_table: PROFESSIONAL_HISTORIES
     source_column: null
     comment: "PK surrogate. BCV: [Involved Party] Individual."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_HISTORIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner Reason Change History Code
@@ -47,7 +47,7 @@ attributes:
     source_table: PROFESSIONAL_HISTORIES
     source_column: NHNCK.PROFESSIONAL_HISTORIES.ID
     comment: BK chính. Nguồn lưu NUMBER — ETL convert sang string.
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_HISTORIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_HISTORIES'"
-    etl_derived_value: NHNCK.PROFESSIONAL_HISTORIES
+    etl_derived_value: NHNCK_PROFESSIONAL_HISTORIES
 
   - name: Securities Practitioner Id
     physical_name: sp_id
@@ -75,7 +75,7 @@ attributes:
     source_table: PROFESSIONAL_HISTORIES
     source_column: NHNCK.PROFESSIONAL_HISTORIES.PROFESSIONAL_ID
     comment: "FK target: securities_practitioner.securities_practitioner_id. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_HISTORIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner Code
@@ -89,7 +89,7 @@ attributes:
     source_table: PROFESSIONAL_HISTORIES
     source_column: NHNCK.PROFESSIONAL_HISTORIES.PROFESSIONAL_ID
     comment: "Lookup pair: securities_practitioner.securities_practitioner_code. Pair with Securities Practitioner Id."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_HISTORIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Change Date
@@ -103,7 +103,7 @@ attributes:
     source_table: PROFESSIONAL_HISTORIES
     source_column: NHNCK.PROFESSIONAL_HISTORIES.CHANGE_DATE
     comment: "BCV: không có term riêng — đặt tên theo nghĩa nghiệp vụ (ngày phát sinh sự kiện thay đổi)."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_HISTORIES'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Change Reason
@@ -117,5 +117,5 @@ attributes:
     source_table: PROFESSIONAL_HISTORIES
     source_column: NHNCK.PROFESSIONAL_HISTORIES.REASON_UPDATE
     comment: "BCV: không có term riêng — đặt tên theo nghĩa nghiệp vụ. Xác nhận với người thiết kế: nguồn là REASON_UPDATE (không có cột REASON_DATE)."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_HISTORIES'"
+    classification_context: null
     etl_derived_value: null

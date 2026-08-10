@@ -33,7 +33,7 @@ attributes:
     source_table: EVENT_TYPE
     source_column: null
     comment: "PK surrogate. BCV: \"[Common] Event Type\". Danh mục loại sự vụ báo cáo/CBTT của thành viên thị trường FMS."
-    classification_context: "Source System Code = 'FMS_EVENT_TYPE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Classification FMS Event Type Code
@@ -47,7 +47,7 @@ attributes:
     source_table: EVENT_TYPE
     source_column: FMS.EVENT_TYPE.EVENT_CODE
     comment: BK chính — mã nghiệp vụ EVENT_CODE (không dùng ID kỹ thuật).
-    classification_context: "Source System Code = 'FMS_EVENT_TYPE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "Source System Code = 'FMS_EVENT_TYPE'"
-    etl_derived_value: FMS.EVENT_TYPE
+    etl_derived_value: FMS_EVENT_TYPE
 
   - name: Classification FMS Event Type Name
     physical_name: cl_fms_event_tp_nm
@@ -75,7 +75,7 @@ attributes:
     source_table: EVENT_TYPE
     source_column: FMS.EVENT_TYPE.ITEM_NAME
     comment: null
-    classification_context: "Source System Code = 'FMS_EVENT_TYPE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Event Category Description
@@ -89,7 +89,7 @@ attributes:
     source_table: EVENT_TYPE
     source_column: FMS.EVENT_TYPE.CATEGORY
     comment: "Denormalized text — chưa xác nhận enum đóng hay mở, cần profile dữ liệu thực tế trước khi cân nhắc chuyển sang Classification Value."
-    classification_context: "Source System Code = 'FMS_EVENT_TYPE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Event Category Type Code
@@ -103,8 +103,8 @@ attributes:
     source_table: EVENT_TYPE
     source_column: FMS.EVENT_TYPE.EVENT_CATEGORY
     comment: "Scheme: FMS_EVENT_CATEGORY_TYPE."
-    classification_context: "Source System Code = 'FMS_EVENT_TYPE'"
-    etl_derived_value: "DINH_KY=PERIODIC;BAT_THUONG=IRREGULAR;THEO_YEU_CAU=ON_REQUEST;KHAC=OTHER"
+    classification_context: FMS_EVENT_CATEGORY_TYPE
+    etl_derived_value: null
 
   - name: Obligation Type Code
     physical_name: obligation_tp_code
@@ -117,8 +117,8 @@ attributes:
     source_table: EVENT_TYPE
     source_column: FMS.EVENT_TYPE.OBLIGATION_TYPE
     comment: "Scheme: FMS_EVENT_OBLIGATION_TYPE."
-    classification_context: "Source System Code = 'FMS_EVENT_TYPE'"
-    etl_derived_value: "CHI_BAO_CAO=REPORT_ONLY;CHI_CBTT=DISCLOSURE_ONLY;BAO_CAO_VA_CBTT=REPORT_AND_DISCLOSURE;THAY_DOI=PROFILE_CHANGE"
+    classification_context: FMS_EVENT_OBLIGATION_TYPE
+    etl_derived_value: null
 
   - name: Deadline Calc Method Code
     physical_name: deadline_calc_method_code
@@ -131,8 +131,8 @@ attributes:
     source_table: EVENT_TYPE
     source_column: FMS.EVENT_TYPE.DEADLINE_CALC_METHOD
     comment: "Scheme: FMS_EVENT_DEADLINE_CALC_METHOD."
-    classification_context: "Source System Code = 'FMS_EVENT_TYPE'"
-    etl_derived_value: "DINH_KY=FIXED_PERIODIC;SU_KIEN=EVENT_BASED"
+    classification_context: FMS_EVENT_DEADLINE_CALC_METHOD
+    etl_derived_value: null
 
   - name: Description
     physical_name: description
@@ -145,7 +145,7 @@ attributes:
     source_table: EVENT_TYPE
     source_column: FMS.EVENT_TYPE.DESCRIPTION
     comment: null
-    classification_context: "Source System Code = 'FMS_EVENT_TYPE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Note
@@ -159,7 +159,7 @@ attributes:
     source_table: EVENT_TYPE
     source_column: FMS.EVENT_TYPE.NOTE
     comment: null
-    classification_context: "Source System Code = 'FMS_EVENT_TYPE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Metadata Config
@@ -173,7 +173,7 @@ attributes:
     source_table: EVENT_TYPE
     source_column: FMS.EVENT_TYPE.METADATA
     comment: "Nguồn lưu dạng CLOB (JSON) — ETL cần cast/parse sang string. Không structured-parse nội dung JSON ở Atomic layer."
-    classification_context: "Source System Code = 'FMS_EVENT_TYPE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Business Rule Config
@@ -187,7 +187,7 @@ attributes:
     source_table: EVENT_TYPE
     source_column: FMS.EVENT_TYPE.BUSINESS_RULE_CONFIG
     comment: "Nguồn lưu dạng CLOB (JSON) — ETL cần cast/parse sang string. Không structured-parse nội dung JSON ở Atomic layer."
-    classification_context: "Source System Code = 'FMS_EVENT_TYPE'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Event Type Record Status Code
@@ -201,5 +201,5 @@ attributes:
     source_table: EVENT_TYPE
     source_column: FMS.EVENT_TYPE.RECORD_STATUS
     comment: "Scheme: FMS_EVENT_TYPE_RECORD_STATUS. ETL derived: 1=ACTIVE;0=INACTIVE."
-    classification_context: "Source System Code = 'FMS_EVENT_TYPE'"
-    etl_derived_value: "1=ACTIVE;0=INACTIVE"
+    classification_context: FMS_EVENT_TYPE_RECORD_STATUS
+    etl_derived_value: null

@@ -33,7 +33,7 @@ attributes:
     source_table: ALERT_INDICATOR
     source_column: null
     comment: "PK surrogate. BCV: \"[Event] Alert Indicator\". Chỉ tiêu cảnh báo tài chính/tuân thủ. Hash: hash_id('SCMS.ALERT_INDICATOR', ALERT_CODE)."
-    classification_context: "Source System Code = 'SCMS_ALERT_INDICATOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Company Alert Indicator Code
@@ -47,7 +47,7 @@ attributes:
     source_table: ALERT_INDICATOR
     source_column: SCMS.ALERT_INDICATOR.ID
     comment: BK chính. PK nguồn (NUMBER — ETL cần convert sang string).
-    classification_context: "Source System Code = 'SCMS_ALERT_INDICATOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     classification_context: "Source System Code = 'SCMS_ALERT_INDICATOR'"
-    etl_derived_value: SCMS.ALERT_INDICATOR
+    etl_derived_value: SCMS_ALERT_INDICATOR
 
   - name: Alert Code
     physical_name: alert_code
@@ -75,7 +75,7 @@ attributes:
     source_table: ALERT_INDICATOR
     source_column: SCMS.ALERT_INDICATOR.ALERT_CODE
     comment: "BK của entity — Id hash từ trường này theo chỉ đạo Data Modeler (2026-07-15). Ưu tiên so với INDICATOR_CODE."
-    classification_context: "Source System Code = 'SCMS_ALERT_INDICATOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Indicator Code
@@ -89,7 +89,7 @@ attributes:
     source_table: ALERT_INDICATOR
     source_column: SCMS.ALERT_INDICATOR.INDICATOR_CODE
     comment: BRD có cả ALERT_CODE và INDICATOR_CODE — cần xác nhận sự khác biệt với team nguồn. Giữ cả 2 để bảo toàn dữ liệu.
-    classification_context: "Source System Code = 'SCMS_ALERT_INDICATOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Company Alert Indicator Name
@@ -103,7 +103,7 @@ attributes:
     source_table: ALERT_INDICATOR
     source_column: SCMS.ALERT_INDICATOR.ALERT_NAME
     comment: Tên chính của chỉ tiêu cảnh báo. Ưu tiên ALERT_NAME so với INDICATOR_NAME.
-    classification_context: "Source System Code = 'SCMS_ALERT_INDICATOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Indicator Name
@@ -117,7 +117,7 @@ attributes:
     source_table: ALERT_INDICATOR
     source_column: SCMS.ALERT_INDICATOR.INDICATOR_NAME
     comment: BRD có cả ALERT_NAME và INDICATOR_NAME — cần xác nhận sự khác biệt với team nguồn. Giữ cả 2.
-    classification_context: "Source System Code = 'SCMS_ALERT_INDICATOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Alert Indicator Type Code
@@ -131,7 +131,7 @@ attributes:
     source_table: ALERT_INDICATOR
     source_column: SCMS.ALERT_INDICATOR.ALERT_INDICATOR_TYPE
     comment: "Scheme: SCMS_ALERT_INDICATOR_TYPE. Nguồn lưu NUMBER(1) — ETL map số → text code. Cần profile values thực tế."
-    classification_context: "Source System Code = 'SCMS_ALERT_INDICATOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Indicator Type Id
@@ -145,7 +145,7 @@ attributes:
     source_table: ALERT_INDICATOR
     source_column: SCMS.ALERT_INDICATOR.INDICATOR_TYPE_ID
     comment: "FK target chưa xác định trong BRD — lưu dạng text denormalized. Nguồn lưu NUMBER(10) — ETL convert sang string. Đã review 2026-07-10 — giữ nguyên map 1:1 dạng Text, KHÔNG tạo FK do tài liệu BRD không đủ thông tin xác định target. Sẽ đánh giá lại khi có thêm tài liệu."
-    classification_context: "Source System Code = 'SCMS_ALERT_INDICATOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Legal Reference
@@ -159,7 +159,7 @@ attributes:
     source_table: ALERT_INDICATOR
     source_column: SCMS.ALERT_INDICATOR.LEGAL_REFERENCE
     comment: null
-    classification_context: "Source System Code = 'SCMS_ALERT_INDICATOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Legal Reference Id
@@ -173,7 +173,7 @@ attributes:
     source_table: ALERT_INDICATOR
     source_column: SCMS.ALERT_INDICATOR.LEGAL_REFERENCE_ID
     comment: "BRD ghi chú 'Chưa liên kết đến bảng khác' — lưu dạng text denormalized. Nguồn lưu NUMBER(10) — ETL convert sang string. Đã review 2026-07-10 — giữ nguyên map 1:1 dạng Text, KHÔNG tạo FK do tài liệu BRD không đủ thông tin xác định target. Sẽ đánh giá lại khi có thêm tài liệu."
-    classification_context: "Source System Code = 'SCMS_ALERT_INDICATOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Legal Basis
@@ -187,7 +187,7 @@ attributes:
     source_table: ALERT_INDICATOR
     source_column: SCMS.ALERT_INDICATOR.LEGAL_BASIS
     comment: Nguồn lưu NCLOB — ETL cần xử lý large object.
-    classification_context: "Source System Code = 'SCMS_ALERT_INDICATOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Severity Level
@@ -201,7 +201,7 @@ attributes:
     source_table: ALERT_INDICATOR
     source_column: SCMS.ALERT_INDICATOR.SEVERITY_LEVEL
     comment: "NUMBER(3). BRD có cả SEVERITY_LEVEL và SEVERITY — dùng SEVERITY_LEVEL là trường chính (NUMBER(3), mô tả rõ Cấp 1/2/3)."
-    classification_context: "Source System Code = 'SCMS_ALERT_INDICATOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Severity Code
@@ -215,8 +215,8 @@ attributes:
     source_table: ALERT_INDICATOR
     source_column: SCMS.ALERT_INDICATOR.SEVERITY
     comment: "Scheme: SCMS_ALERT_INDICATOR_SEVERITY. NUMBER(10). BRD có cả SEVERITY và SEVERITY_LEVEL — cần xác nhận sự khác biệt với team nguồn. Giữ cả 2."
-    classification_context: "Source System Code = 'SCMS_ALERT_INDICATOR'"
-    etl_derived_value: "1=Thấp;2=Trung bình;3=Cao"
+    classification_context: SCMS_ALERT_INDICATOR_SEVERITY
+    etl_derived_value: null
 
   - name: Lower Threshold
     physical_name: lower_threshold
@@ -229,7 +229,7 @@ attributes:
     source_table: ALERT_INDICATOR
     source_column: SCMS.ALERT_INDICATOR.LOWER_THRESHOLD
     comment: "NUMBER(38,2) — lưu dạng text để đồng nhất khi unit khác nhau (Triệu đồng/Phần trăm/Số lượng)."
-    classification_context: "Source System Code = 'SCMS_ALERT_INDICATOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Upper Threshold
@@ -243,7 +243,7 @@ attributes:
     source_table: ALERT_INDICATOR
     source_column: SCMS.ALERT_INDICATOR.UPPER_THRESHOLD
     comment: "NUMBER(38,2) — lưu dạng text để đồng nhất khi unit khác nhau. Xem Lower Threshold."
-    classification_context: "Source System Code = 'SCMS_ALERT_INDICATOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Unit
@@ -257,7 +257,7 @@ attributes:
     source_table: ALERT_INDICATOR
     source_column: SCMS.ALERT_INDICATOR.UNIT
     comment: null
-    classification_context: "Source System Code = 'SCMS_ALERT_INDICATOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Default Value
@@ -271,7 +271,7 @@ attributes:
     source_table: ALERT_INDICATOR
     source_column: SCMS.ALERT_INDICATOR.DEFAULT_VALUE
     comment: Nguồn lưu NUMBER — ETL convert sang string để đồng nhất.
-    classification_context: "Source System Code = 'SCMS_ALERT_INDICATOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Description
@@ -285,7 +285,7 @@ attributes:
     source_table: ALERT_INDICATOR
     source_column: SCMS.ALERT_INDICATOR.DESCRIPTION
     comment: null
-    classification_context: "Source System Code = 'SCMS_ALERT_INDICATOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Note
@@ -299,7 +299,7 @@ attributes:
     source_table: ALERT_INDICATOR
     source_column: SCMS.ALERT_INDICATOR.NOTE
     comment: null
-    classification_context: "Source System Code = 'SCMS_ALERT_INDICATOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Formula Text
@@ -313,7 +313,7 @@ attributes:
     source_table: ALERT_INDICATOR
     source_column: SCMS.ALERT_INDICATOR.FORMULA_TEXT
     comment: Nguồn lưu CLOB — ETL cần xử lý large object.
-    classification_context: "Source System Code = 'SCMS_ALERT_INDICATOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Formula
@@ -327,7 +327,7 @@ attributes:
     source_table: ALERT_INDICATOR
     source_column: SCMS.ALERT_INDICATOR.FORMULA
     comment: Nguồn lưu CLOB — ETL cần xử lý large object.
-    classification_context: "Source System Code = 'SCMS_ALERT_INDICATOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Sum Formula
@@ -341,7 +341,7 @@ attributes:
     source_table: ALERT_INDICATOR
     source_column: SCMS.ALERT_INDICATOR.SUM_FORMULA
     comment: Nguồn lưu CLOB — ETL cần xử lý large object.
-    classification_context: "Source System Code = 'SCMS_ALERT_INDICATOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Weight
@@ -355,7 +355,7 @@ attributes:
     source_table: ALERT_INDICATOR
     source_column: SCMS.ALERT_INDICATOR.WEIGHT
     comment: "NUMBER(38,2) — trọng số phần trăm."
-    classification_context: "Source System Code = 'SCMS_ALERT_INDICATOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Sort Order
@@ -369,7 +369,7 @@ attributes:
     source_table: ALERT_INDICATOR
     source_column: SCMS.ALERT_INDICATOR.SORT_ORDER
     comment: null
-    classification_context: "Source System Code = 'SCMS_ALERT_INDICATOR'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Record Status Code
@@ -383,5 +383,5 @@ attributes:
     source_table: ALERT_INDICATOR
     source_column: SCMS.ALERT_INDICATOR.RECORD_STATUS
     comment: "Scheme: SCMS_USAGE_STATUS. Nguồn lưu NUMBER(1) — ETL cần convert sang string."
-    classification_context: "Source System Code = 'SCMS_ALERT_INDICATOR'"
+    classification_context: null
     etl_derived_value: null

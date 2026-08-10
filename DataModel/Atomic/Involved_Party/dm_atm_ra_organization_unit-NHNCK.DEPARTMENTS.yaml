@@ -33,7 +33,7 @@ attributes:
     source_table: DEPARTMENTS
     source_column: null
     comment: "PK surrogate. BCV: \"Organization\" (Involved Party). Phòng ban thuộc đơn vị UBCKNN."
-    classification_context: "Source System Code = 'NHNCK_DEPARTMENTS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Regulatory Authority Organization Unit Code
@@ -47,7 +47,7 @@ attributes:
     source_table: DEPARTMENTS
     source_column: NHNCK.DEPARTMENTS.DEPARTMENT_CODE
     comment: BK chính.
-    classification_context: "Source System Code = 'NHNCK_DEPARTMENTS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
     classification_context: "Source System Code = 'NHNCK_DEPARTMENTS'"
-    etl_derived_value: NHNCK.DEPARTMENTS
+    etl_derived_value: NHNCK_DEPARTMENTS
 
   - name: Organization Unit Type Code
     physical_name: ou_tp_code
@@ -75,7 +75,7 @@ attributes:
     source_table: DEPARTMENTS
     source_column: null
     comment: "Scheme: ORGANIZATION_UNIT_TYPE. ETL-derived."
-    classification_context: "Source System Code = 'NHNCK_DEPARTMENTS'"
+    classification_context: "ORGANIZATION_UNIT_TYPE=DEPARTMENT"
     etl_derived_value: DEPARTMENT
 
   - name: Regulatory Authority Organization Unit Name
@@ -89,7 +89,7 @@ attributes:
     source_table: DEPARTMENTS
     source_column: NHNCK.DEPARTMENTS.DEPARTMENT_NAME
     comment: null
-    classification_context: "Source System Code = 'NHNCK_DEPARTMENTS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Hierarchy Level Code
@@ -103,7 +103,7 @@ attributes:
     source_table: DEPARTMENTS
     source_column: null
     comment: "ETL-derived: null. DEPARTMENTS không có trường LEVEL_."
-    classification_context: "Source System Code = 'NHNCK_DEPARTMENTS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Parent Regulatory Authority Organization Unit Id
@@ -117,7 +117,7 @@ attributes:
     source_table: DEPARTMENTS
     source_column: NHNCK.DEPARTMENTS.UNIT_ID
     comment: "FK target: ra_organization_unit.ra_ou_id. Cần ETL crosswalk sang NHNCK.UNITS: DEPARTMENTS.UNIT_ID = UNITS.ID để xác nhận UNIT_CODE sau đó hash_id('NHNCK.UNITS', UNIT_CODE) | Trước đây hash trực tiếp theo UNIT_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ UNIT_CODE) — đã sửa sang crosswalk 2026-07-27. Parent là Unit không phải Department."
-    classification_context: "Source System Code = 'NHNCK_DEPARTMENTS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Parent Regulatory Authority Organization Unit Code
@@ -131,7 +131,7 @@ attributes:
     source_table: DEPARTMENTS
     source_column: NHNCK.UNITS.UNIT_CODE
     comment: "Lookup pair: ra_organization_unit.ra_organization_unit_code. Pair with Parent Regulatory Authority Organization Unit Id. Giá trị lấy từ NHNCK.UNITS.UNIT_CODE sau ETL crosswalk — chi tiết xem comment Parent Regulatory Authority Organization Unit Id."
-    classification_context: "Source System Code = 'NHNCK_DEPARTMENTS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Description
@@ -145,7 +145,7 @@ attributes:
     source_table: DEPARTMENTS
     source_column: NHNCK.DEPARTMENTS.DESCRIPTION
     comment: null
-    classification_context: "Source System Code = 'NHNCK_DEPARTMENTS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Sort Order
@@ -159,7 +159,7 @@ attributes:
     source_table: DEPARTMENTS
     source_column: NHNCK.DEPARTMENTS.SORT_ORDER
     comment: null
-    classification_context: "Source System Code = 'NHNCK_DEPARTMENTS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: External Catalog Reference Code
@@ -173,5 +173,5 @@ attributes:
     source_table: DEPARTMENTS
     source_column: NHNCK.DEPARTMENTS.ECATALOG_ID
     comment: "Mô tả nguồn còn TBD trong BRD — tên cột gợi ý mã tham chiếu tới danh mục/hệ thống ngoài (VD: danh mục đơn vị hành chính chuẩn quốc gia). Cần BA xác nhận ý nghĩa nghiệp vụ chính xác trước khi hoàn thiện thiết kế (đổi domain/FK nếu cần)."
-    classification_context: "Source System Code = 'NHNCK_DEPARTMENTS'"
+    classification_context: null
     etl_derived_value: null

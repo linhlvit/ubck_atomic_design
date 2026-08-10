@@ -33,7 +33,7 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: null
     comment: "PK surrogate. BCV: \"Individual\" (Involved Party). Grain = 1 snapshot hồ sơ — không phải 1 IP."
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner License Application Snapshot Code
@@ -47,7 +47,7 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.APPLICATION_PROFESSIONALS.ID
     comment: BK chính. Nguồn lưu NUMBER — ETL convert sang string.
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Source System Code
@@ -62,7 +62,7 @@ attributes:
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
-    etl_derived_value: NHNCK.APPLICATION_PROFESSIONALS
+    etl_derived_value: NHNCK_APPLICATION_PROFESSIONALS
 
   - name: Securities Practitioner License Application Id
     physical_name: sp_license_application_id
@@ -75,7 +75,7 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.APPLICATION_PROFESSIONALS.APPLICATION_ID
     comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL crosswalk sang NHNCK.APPLICATIONS: APPLICATION_PROFESSIONALS.APPLICATION_ID = APPLICATIONS.ID để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK.APPLICATIONS', APPLICATION_CODE) | Trước đây hash trực tiếp theo APPLICATION_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ APPLICATION_CODE) — đã sửa sang crosswalk 2026-07-27."
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner License Application Code
@@ -89,7 +89,7 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.APPLICATIONS.APPLICATION_CODE
     comment: "Lookup pair: sp_license_application.sp_license_application_code. Pair with Securities Practitioner License Application Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Application Id."
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner Id
@@ -103,7 +103,7 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.APPLICATION_PROFESSIONALS.PROFESSIONAL_ID
     comment: "FK target: securities_practitioner.securities_practitioner_id. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner Code
@@ -117,7 +117,7 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.APPLICATION_PROFESSIONALS.PROFESSIONAL_ID
     comment: "Lookup pair: securities_practitioner.securities_practitioner_code. Pair with Securities Practitioner Id."
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Organization Reference Id
@@ -131,7 +131,7 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.APPLICATION_PROFESSIONALS.ORGANIZATION_ID
     comment: "FK target: securities_organization_reference.securities_organization_reference_id. Hash: hash_id('NHNCK.ORGANIZATIONS', ORGANIZATION_ID)."
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Organization Reference Code
@@ -145,7 +145,7 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.APPLICATION_PROFESSIONALS.ORGANIZATION_ID
     comment: "Lookup pair: securities_organization_reference.securities_organization_reference_code. Pair with Securities Organization Reference Id."
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Nationality Id
@@ -159,7 +159,7 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.APPLICATION_PROFESSIONALS.NATIONALITY_ID
     comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang NHNCK.COUNTRIES: APPLICATION_PROFESSIONALS.NATIONALITY_ID = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT.COUNTRY', COUNTRY_CODE) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Nationality Code
@@ -173,7 +173,7 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.COUNTRIES.COUNTRY_CODE
     comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Nationality Id. Giá trị lấy từ NHNCK.COUNTRIES.COUNTRY_CODE sau ETL crosswalk — chi tiết xem comment Nationality Id."
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Snapshot Full Name
@@ -187,7 +187,7 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.APPLICATION_PROFESSIONALS.FULL_NAME
     comment: "Snapshot — prefix \"Snapshot\" phân biệt với entity chính."
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Snapshot Given Name
@@ -201,7 +201,7 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.APPLICATION_PROFESSIONALS.FIRST_NAME
     comment: null
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Snapshot Birth Date
@@ -215,7 +215,7 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.APPLICATION_PROFESSIONALS.BIRTH_DATE
     comment: null
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Snapshot Birth Year
@@ -229,7 +229,7 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.APPLICATION_PROFESSIONALS.BIRTH_YEAR
     comment: Nguồn lưu NVARCHAR2(4).
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Snapshot Gender Code
@@ -243,7 +243,7 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.APPLICATION_PROFESSIONALS.GENDER
     comment: "Scheme: INDIVIDUAL_GENDER."
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    classification_context: INDIVIDUAL_GENDER
     etl_derived_value: null
 
   - name: Snapshot Education Level Code
@@ -257,7 +257,7 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.APPLICATION_PROFESSIONALS.EDUCATION_LEVEL_ID
     comment: "Scheme: EDUCATION_LEVEL."
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    classification_context: EDUCATION_LEVEL
     etl_derived_value: null
 
   - name: Snapshot Practitioner Registration Type Code
@@ -271,7 +271,7 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.APPLICATION_PROFESSIONALS.REGISTRATION_TYPE
     comment: "Scheme: PRACTITIONER_REGISTRATION_TYPE."
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    classification_context: PRACTITIONER_REGISTRATION_TYPE
     etl_derived_value: null
 
   - name: Snapshot Identity Type Code
@@ -285,7 +285,7 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.APPLICATION_PROFESSIONALS.IDENTITY_TYPE
     comment: "Scheme: IDENTIFICATION_DOCUMENT_TYPE. Nguồn: 1=CMND / 2=CCCD / 3=Hộ chiếu. Grain ≠ Involved Party → không tách IP Alt ID."
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    classification_context: IDENTIFICATION_DOCUMENT_TYPE
     etl_derived_value: null
 
   - name: Snapshot Identity Number
@@ -299,7 +299,7 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.APPLICATION_PROFESSIONALS.IDENTITY_NUMBER
     comment: null
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Snapshot Identity Issue Date
@@ -313,7 +313,7 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.APPLICATION_PROFESSIONALS.IDENTITY_ISSUE_DATE
     comment: null
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Snapshot Identity Issue Place
@@ -327,7 +327,7 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.APPLICATION_PROFESSIONALS.IDENTITY_ISSUE_PLACE
     comment: null
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Snapshot Previous Identity Number
@@ -341,7 +341,7 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.APPLICATION_PROFESSIONALS.PREVIOUS_IDENTITY_NUMBER
     comment: null
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Snapshot Phone Number
@@ -355,7 +355,7 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.APPLICATION_PROFESSIONALS.PHONE_NUMBER
     comment: null
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Snapshot Mobile Number
@@ -369,7 +369,7 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.APPLICATION_PROFESSIONALS.MOBILE_NUMBER
     comment: null
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Snapshot Email
@@ -383,7 +383,7 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.APPLICATION_PROFESSIONALS.EMAIL
     comment: null
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Snapshot Workplace Name
@@ -397,7 +397,7 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.APPLICATION_PROFESSIONALS.WORKPLACE
     comment: null
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Snapshot Position Name
@@ -411,7 +411,7 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.APPLICATION_PROFESSIONALS.POSITION
     comment: null
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Snapshot Department Name
@@ -425,7 +425,7 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.APPLICATION_PROFESSIONALS.DEPARTMENT
     comment: null
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Snapshot Place of Birth
@@ -439,7 +439,7 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.APPLICATION_PROFESSIONALS.PLACE_OF_BIRTH
     comment: null
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Snapshot Address
@@ -453,7 +453,7 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.APPLICATION_PROFESSIONALS.ADDRESS
     comment: null
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Snapshot Permanent Address
@@ -467,7 +467,7 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.APPLICATION_PROFESSIONALS.PERMANENT_ADDRESS
     comment: null
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Snapshot Permanent Country Id
@@ -481,7 +481,7 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.APPLICATION_PROFESSIONALS.PERMANENT_COUNTRY_ID
     comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang NHNCK.COUNTRIES: APPLICATION_PROFESSIONALS.PERMANENT_COUNTRY_ID = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT.COUNTRY', COUNTRY_CODE) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Snapshot Permanent Country Code
@@ -495,7 +495,7 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.COUNTRIES.COUNTRY_CODE
     comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Snapshot Permanent Country Id. Giá trị lấy từ NHNCK.COUNTRIES.COUNTRY_CODE sau ETL crosswalk — chi tiết xem comment Snapshot Permanent Country Id."
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Snapshot Permanent Province Id
@@ -509,7 +509,7 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.APPLICATION_PROFESSIONALS.PERMANENT_PROVINCE_ID
     comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'PROVINCE'). Cần ETL crosswalk sang NHNCK.PROVINCES: APPLICATION_PROFESSIONALS.PERMANENT_PROVINCE_ID = PROVINCES.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT.PROVINCE_NEW', PROVINCE_CODE) | NHNCK.PROVINCES ngừng thiết kế Atomic entity riêng — chỉ dùng để crosswalk. Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Snapshot Permanent Province Code
@@ -523,7 +523,7 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.PROVINCES.PROVINCE_CODE
     comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Snapshot Permanent Province Id. Giá trị lấy từ NHNCK.PROVINCES.PROVINCE_CODE sau ETL crosswalk — chi tiết xem comment Snapshot Permanent Province Id."
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Snapshot Permanent District Id
@@ -537,7 +537,7 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.APPLICATION_PROFESSIONALS.PERMANENT_DISTRICT_ID
     comment: "FK target: geographic_area_old.geographic_area_old_id (geographic_area_old_tp_code = 'DISTRICT_OLD'). Cần ETL crosswalk sang NHNCK.DISTRICTS: APPLICATION_PROFESSIONALS.PERMANENT_DISTRICT_ID = DISTRICTS.ID để xác nhận DISTRICT_CODE sau đó hash_id('ECAT.DISTRICT_OLD', DISTRICT_CODE) | ĐỔI TARGET — không còn Geographic Area: cấp quận/huyện đã bị loại bỏ trong cấu trúc địa giới hiện hành (post-sáp nhập 2025); ECAT chỉ còn lưu ở Geographic Area Old. NHNCK.DISTRICTS ngừng thiết kế Atomic entity riêng — chỉ dùng để crosswalk. Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Snapshot Permanent District Code
@@ -551,7 +551,7 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.DISTRICTS.DISTRICT_CODE
     comment: "Lookup pair: geographic_area_old.geographic_area_old_code (nguồn ECAT — ĐỔI TARGET, xem Snapshot Permanent District Id). Pair with Snapshot Permanent District Id. Giá trị lấy từ NHNCK.DISTRICTS.DISTRICT_CODE sau ETL crosswalk — chi tiết xem comment Snapshot Permanent District Id."
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Snapshot Current Country Id
@@ -565,7 +565,7 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.APPLICATION_PROFESSIONALS.CURRENT_COUNTRY_ID
     comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang NHNCK.COUNTRIES: APPLICATION_PROFESSIONALS.CURRENT_COUNTRY_ID = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT.COUNTRY', COUNTRY_CODE) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Snapshot Current Country Code
@@ -579,7 +579,7 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.COUNTRIES.COUNTRY_CODE
     comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Snapshot Current Country Id. Giá trị lấy từ NHNCK.COUNTRIES.COUNTRY_CODE sau ETL crosswalk — chi tiết xem comment Snapshot Current Country Id."
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Snapshot Current Province Id
@@ -593,7 +593,7 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.APPLICATION_PROFESSIONALS.CURRENT_PROVINCE_ID
     comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'PROVINCE'). Cần ETL crosswalk sang NHNCK.PROVINCES: APPLICATION_PROFESSIONALS.CURRENT_PROVINCE_ID = PROVINCES.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT.PROVINCE_NEW', PROVINCE_CODE) | NHNCK.PROVINCES ngừng thiết kế Atomic entity riêng — chỉ dùng để crosswalk. Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Snapshot Current Province Code
@@ -607,7 +607,7 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.PROVINCES.PROVINCE_CODE
     comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Snapshot Current Province Id. Giá trị lấy từ NHNCK.PROVINCES.PROVINCE_CODE sau ETL crosswalk — chi tiết xem comment Snapshot Current Province Id."
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Snapshot Current District Id
@@ -621,7 +621,7 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.APPLICATION_PROFESSIONALS.CURRENT_DISTRICT_ID
     comment: "FK target: geographic_area_old.geographic_area_old_id (geographic_area_old_tp_code = 'DISTRICT_OLD'). Cần ETL crosswalk sang NHNCK.DISTRICTS: APPLICATION_PROFESSIONALS.CURRENT_DISTRICT_ID = DISTRICTS.ID để xác nhận DISTRICT_CODE sau đó hash_id('ECAT.DISTRICT_OLD', DISTRICT_CODE) | ĐỔI TARGET — không còn Geographic Area: cấp quận/huyện đã bị loại bỏ trong cấu trúc địa giới hiện hành (post-sáp nhập 2025); ECAT chỉ còn lưu ở Geographic Area Old. NHNCK.DISTRICTS ngừng thiết kế Atomic entity riêng — chỉ dùng để crosswalk. Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Snapshot Current District Code
@@ -635,7 +635,7 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.DISTRICTS.DISTRICT_CODE
     comment: "Lookup pair: geographic_area_old.geographic_area_old_code (nguồn ECAT — ĐỔI TARGET, xem Snapshot Current District Id). Pair with Snapshot Current District Id. Giá trị lấy từ NHNCK.DISTRICTS.DISTRICT_CODE sau ETL crosswalk — chi tiết xem comment Snapshot Current District Id."
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
 
   - name: Snapshot Avatar File Path
@@ -649,5 +649,5 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.APPLICATION_PROFESSIONALS.AVATAR
     comment: Mirror pattern Avatar File Path trên Securities Practitioner (NHNCK.PROFESSIONALS).
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    classification_context: null
     etl_derived_value: null
