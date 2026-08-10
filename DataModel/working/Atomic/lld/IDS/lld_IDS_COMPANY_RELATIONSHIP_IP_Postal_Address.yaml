@@ -1,0 +1,89 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "IDS"
+  source_table: "COMPANY_RELATIONSHIP"
+  atomic_entity: "Involved Party Postal Address"
+  entity_physical_name: "ip_postal_address"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "Shared Entity"
+  table_type: "Fundamental"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "1 loại địa chỉ: HEAD_OFFICE (trụ sở của pháp nhân liên quan, lưu dạng\
+    \ free-text). Không có FK sang geographic_area — nguồn chỉ lưu text, không có\
+    \ cột PROVINCE_ID hay địa giới hành chính riêng."
+attributes:
+- attribute_name: "Involved Party Id"
+  physical_name: "ip_id"
+  description: "FK đến Public Company Related Entity (Involved Party)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_RELATIONSHIP.ID"
+  comment: "FK target: Public Company Related Entity.Public Company Related Entity\
+    \ Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('IDS.COMPANY_RELATIONSHIP',\
+    \ ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Involved Party Code"
+  physical_name: "ip_code"
+  description: "Mã pháp nhân liên quan."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_RELATIONSHIP.ID"
+  comment: "Lookup pair: Public Company Related Entity.Public Company Related Entity\
+    \ Code. Pair with Involved Party Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=IDS.COMPANY_RELATIONSHIP"
+  etl_derived_value: "IDS.COMPANY_RELATIONSHIP"
+  data_type: "string"
+- attribute_name: "Address Type Code"
+  physical_name: "adr_tp_code"
+  description: "Loại địa chỉ — trụ sở chính pháp nhân liên quan."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: IP_ADDR_TYPE. Hardcode HEAD_OFFICE."
+  classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
+  etl_derived_value: "HEAD_OFFICE"
+  data_type: "string"
+- attribute_name: "Address Value"
+  physical_name: "adr_val"
+  description: "Địa chỉ trụ sở của pháp nhân liên quan (free-text)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_RELATIONSHIP.HEAD_OFFICE_ADDR"
+  comment: null
+  classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
+  etl_derived_value: null
+  data_type: "string"
