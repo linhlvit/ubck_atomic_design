@@ -227,7 +227,7 @@ CREATE TABLE IF NOT EXISTS datamart.tt_opr_penalty_decision_list_flat ON CLUSTER
     subject_nm                 Nullable(String)            COMMENT 'Tên đối tượng bị xử phạt',
     subject_tp_code            Nullable(String)            COMMENT 'Phân loại đối tượng (INDIVIDUAL/ORGANIZATION)',
     form_tp_code                Nullable(String)            COMMENT 'Loại hình — ETL-derived qua Violation Case → Inspection/Examination Team, nullable nếu không từ đoàn TT/KT',
-    life_cycle_status_code     String                      COMMENT 'Trạng thái — scheme PENALTY_DECISION_STATUS (7 giá trị)',
+    life_cycle_status_code     String                      COMMENT '(Sửa 2026-08-11) Trạng thái — nguồn Violation Case, ETL-derived CASE WHEN map 5 giá trị code sang nhãn tiếng Việt',
     issued_dt                  Nullable(Date)              COMMENT 'Ngày ban hành quyết định',
     issued_year                Nullable(Int64)             COMMENT 'Năm ban hành quyết định — slicer',
     total_fine_amt              Nullable(Decimal(23,2))     COMMENT 'Tổng mức phạt tiền đối với đối tượng này',

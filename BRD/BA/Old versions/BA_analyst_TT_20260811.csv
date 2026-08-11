@@ -341,38 +341,20 @@ ORDER BY EXTRACT(YEAR FROM a.DECISION_DATE) DESC";;;;;Done;Dữ liệu tĩnh
 10;;Dashboard Hoạt động Kiểm tra >> Danh sách;Trạng thái;Thể hiện các trạng thái xử lý như đang tại hiện trường hay đang xử lý hồ sơ;Dashboard;Chiều;Dễ;Năm, vụ việc;Thanh tra;;x;;Done;;EXAMINATION_TEAM;"START_DATE
 END_DATE";;;;;;Done;Dữ liệu tĩnh;
 11;;Dashboard Hoạt động Xử phạt >> Thống kê chung;Thời gian;Ngày thống kê (năm);Dashboard;Chiều;Dễ;;Thanh tra;;x;;Done;;PENALTY_DECISION;ISSUED_DATE;;"WITH cte AS 
-(SELECT EXTRACT(YEAR FROM ISSUED_DATE) ""Yearr"", 
-COUNT(ID) ""Total"", 
-SUM(TOTAL_FINE_AMOUNT) ""Money"" 
+(SELECT EXTRACT(YEAR FROM ISSUED_DATE) ""Yearr"",
+COUNT(ID) ""Total"",
+SUM(TOTAL_FINE_AMOUNT) ""Money""
 FROM THANHTRA_UAT.PENALTY_DECISION 
-WHERE DELETED = 0 
-GROUP BY EXTRACT(YEAR FROM ISSUED_DATE)) 
-SELECT a.""Yearr"" ""Năm"", 
-a.""Total"" ""Tổng QĐ xử phạt"", 
-CASE WHEN a.""Yearr"" = EXTRACT(YEAR FROM SYSDATE) THEN 
-(SELECT COUNT(ID) FROM THANHTRA_UAT.PENALTY_DECISION 
-WHERE DELETED = 0 
-AND ISSUED_DATE BETWEEN TO_DATE('01/01/' || TO_CHAR(SYSDATE,'YYYY'),'DD/MM/YYYY') AND SYSDATE 
-)/ 
-NULLIF((SELECT COUNT(ID) FROM THANHTRA_UAT.PENALTY_DECISION 
-WHERE DELETED = 0 
-AND ISSUED_DATE BETWEEN TO_DATE('01/01/' || TO_CHAR(ADD_MONTHS(SYSDATE,-12),'YYYY'),'DD/MM/YYYY') AND ADD_MONTHS(SYSDATE,-12)) 
-,0) 
-ELSE a.""Total""/b.""Total"" END ""QĐ xử phạt SSCK"", 
-a.""Money"" ""Tiền phạt"", 
-CASE WHEN a.""Yearr"" = EXTRACT(YEAR FROM SYSDATE) THEN 
-(SELECT SUM(TOTAL_FINE_AMOUNT) FROM THANHTRA_UAT.PENALTY_DECISION 
-WHERE DELETED = 0 
-AND ISSUED_DATE BETWEEN TO_DATE('01/01/' || TO_CHAR(SYSDATE,'YYYY'),'DD/MM/YYYY') AND SYSDATE 
-)/ 
-NULLIF((SELECT SUM(TOTAL_FINE_AMOUNT) FROM THANHTRA_UAT.PENALTY_DECISION 
-WHERE DELETED = 0 
-AND ISSUED_DATE BETWEEN TO_DATE('01/01/' || TO_CHAR(ADD_MONTHS(SYSDATE,-12),'YYYY'),'DD/MM/YYYY') AND ADD_MONTHS(SYSDATE,-12)) 
-,0) 
-ELSE a.""Money""/b.""Money"" END ""Tiền phạt SSCK"" 
-FROM cte a 
-LEFT JOIN cte b ON a.""Yearr"" = b.""Yearr"" + 1 
-WHERE a.""Yearr"" = :filter_year --Điều kiện lọc 
+WHERE DELETED = 0
+GROUP BY EXTRACT(YEAR FROM ISSUED_DATE))
+SELECT a.""Yearr"" ""Năm"",
+a.""Total"" ""Tổng QĐ xử phạt"",
+a.""Total""/b.""Total"" ""QĐ xử phạt SSCK"",
+a.""Money"" ""Tiền phạt"",
+a.""Money""/b.""Money"" ""Tiền phạt SSCK""
+FROM cte a
+LEFT JOIN cte b ON a.""Yearr"" = b.""Yearr"" + 1
+WHERE a.""Yearr"" = :filter_year --Điều kiện lọc
 ORDER BY a.""Yearr"" DESC";;;;;Done;Dữ liệu tĩnh
 11;;Dashboard Hoạt động Xử phạt >> Thống kê chung;Tổng quyết định xử phạt;Thể hiện số lượng quyết định xử phạt đã ban hành;Dashboard;Chỉ tiêu cơ sở;TB;Năm;Thanh tra;x;x;;Done;;PENALTY_DECISION;ID;;;;;;Done;Dữ liệu tĩnh;
 11;;Dashboard Hoạt động Xử phạt >> Thống kê chung;Tổng quyết định xử phạt SSCK (%);So sánh cùng kỳ năm trước số liệu về số quyết định xử phạt;Dashboard;Chỉ tiêu phái sinh;Dễ;Năm;Thanh tra;;x;;Done;;PENALTY_DECISION;ID;;;;;;Done;Dữ liệu tĩnh;

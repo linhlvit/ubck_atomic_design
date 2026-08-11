@@ -1308,7 +1308,7 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
 |---|---|---|---|---|---|
-| K_TT_34 | Mã vụ việc | — | Attribute | `Examination Team Target.Examination Team Code` | |
+| K_TT_34 | Mã vụ việc | — | Attribute | `Examination Team.Examination Team Code` (join qua Examination Team) | Sửa 2026-08-11 — trước đây ghi nhầm `Examination Team Target.Examination Team Code`, mâu thuẫn với Ghi chú (đúng từ đầu). Khớp SQL BA: alias `a`=EXAMINATION_TEAM, `a.CODE` |
 | K_TT_35 | Đối tượng | — | Attribute | `Examination Team Target.Target Name` | |
 | K_TT_36 | Phân loại đối tượng | — | Attribute | `Examination Team Target.Target Type Code` | |
 | K_TT_37 | Loại hình | — | Attribute | `Examination Team.Form Type Code` (join qua Examination Team) | scheme TT_REVIEW_FORM_TYPE |
@@ -1703,7 +1703,7 @@ flowchart LR
 > Phân loại: **Tác nghiệp**
 > Atomic: `Penalty Decision` ← THANHTRA.PENALTY_DECISION — **READY** (reuse Nhóm 11)
 > Atomic: `Penalty Decision Subject` ← THANHTRA.PENALTY_DECISION_SUBJECT — **READY** (reuse Nhóm 13/14)
-> Atomic: `Violation Case` ← THANHTRA.VIOLATION_CASE (`INSPECT.VIOLATION_CASE`) — **READY** (`DataModel/Atomic/Business_Activity/dm_atm_violation_case-THANHTRA.VIOLATION_CASE.yaml`)
+> Atomic: `Violation Case` ← THANHTRA.VIOLATION_CASE (`INSPECT.VIOLATION_CASE`) — **READY** (`DataModel/working/Atomic/lld/THANHTRA/lld_THANHTRA_VIOLATION_CASE.yaml`)
 > Ghi chú:
 > - Grain giống Fact Penalty Decision Subject (Nhóm 14) — 1 QĐ × 1 đối tượng. Không reuse Fact Penalty Decision Subject vì khác `table_type` (`fact` vs `operational`).
 > - **Sửa 2026-08-07 (phát hiện qua `/datamart-review`):** Cột **"Mã vụ việc"** đổi nguồn từ `Penalty Decision.Penalty Decision Code` (mã quyết định xử phạt) sang `Violation Case.Violation Case Code` (mã hồ sơ thanh tra/kiểm tra gốc) — BA xác nhận SQL tham khảo lấy `VIOLATION_CASE.CODE`, không phải `PENALTY_DECISION.ID`. Join qua `Penalty Decision.Violation_Case_Id` (đã có sẵn trong scope, dùng chung JOIN với cột "Loại hình").
@@ -1711,7 +1711,8 @@ flowchart LR
 > - Cột **"Đối tượng"** ← `Penalty Decision Subject.Subject Name` (`PENALTY_DECISION_SUBJECT.SUBJECT_NAME`)
 > - Cột **"Phân loại đối tượng"** ← `Penalty Decision Subject.Subject Type Code` (`PENALTY_DECISION_SUBJECT.SUBJECT_TYPE`), lấy nguyên giá trị thực tế (INDIVIDUAL/ORGANIZATION)
 > - Cột **"Loại hình"** ← ETL-derived: `PENALTY_DECISION.VIOLATION_CASE_ID` → `Violation Case` → nếu `Inspection_Team_Id IS NOT NULL` thì lấy `Inspection Team.Form_Type_Code`, nếu `Examination_Team_Id IS NOT NULL` thì lấy `Examination Team.Form_Type_Code` (Định kỳ/Đột xuất, scheme `TT_REVIEW_FORM_TYPE`) — **(Sửa 2026-08-08)** trả về `'Khác'` nếu hồ sơ không phát sinh từ đoàn TT/KT (không còn để NULL, khớp SQL BA cập nhật). Đóng O_TT_14.
-> - Cột **"Trạng thái"** ← `Penalty Decision.Life Cycle Status Code` (`PENALTY_DECISION.STATUS`, scheme `PENALTY_DECISION_STATUS`, 7 giá trị: DRAFT/SUBMITTED/APPROVED/REJECTED/ISSUED/SENT_TO_SUBJECT/ENFORCED).
+> - **Sửa 2026-08-11 (BA cập nhật SQL):** Cột **"Trạng thái"** đổi nguồn từ `Penalty Decision.Life Cycle Status Code` (`PENALTY_DECISION.STATUS`) sang `Violation Case.Life Cycle Status Code` (`VIOLATION_CASE.STATUS`) — SQL BA dùng alias `c` = `VIOLATION_CASE`. Đồng thời SQL BA **không lấy nguyên code** mà ETL-derived qua `CASE WHEN` map thành nhãn tiếng Việt cố định: `NEW`→"Mới tiếp nhận", `PROCESSING`→"Đang xử lý", `DECISION_ISSUED`→"Đã ban hành quyết định", `ENFORCED`→"Đang cưỡng chế", `CLOSED`→"Đã kết thúc", `ELSE`→"Khác". Không còn dùng scheme Classification Value 7 giá trị `PENALTY_DECISION_STATUS` cũ — nhãn đã cố định trong ETL. Join qua `Penalty_Decision.Violation_Case_Id` (đã có sẵn, dùng chung JOIN với "Mã vụ việc"/"Loại hình"). Đóng O_TT_15.
+> - Cột **"Trạng thái"** ← ETL-derived: `Violation Case.Life Cycle Status Code` (`VIOLATION_CASE.STATUS`) qua `CASE WHEN` map 5 giá trị code → nhãn tiếng Việt (Mới tiếp nhận/Đang xử lý/Đã ban hành quyết định/Đang cưỡng chế/Đã kết thúc), `ELSE 'Khác'`.
 > - Date key: `Issued_Date` (← `PENALTY_DECISION.ISSUED_DATE`).
 
 **Mockup:**
@@ -1719,10 +1720,10 @@ flowchart LR
 | Mã vụ việc | Đối tượng | Phân loại đối tượng | Loại hình | Trạng thái |
 |---|---|---|---|---|
 | QD-2024-001 | Nguyễn Văn A | Cá nhân | Định kỳ | ENFORCED |
-| QD-2024-002 | Công ty Chứng khoán X | Tổ chức | Đột xuất | ISSUED |
+| QD-2024-002 | Công ty Chứng khoán X | Tổ chức | Đột xuất | DECISION_ISSUED |
 | QD-2024-003 | Tập đoàn Bất động sản Y | Tổ chức | Định kỳ | ENFORCED |
-| QD-2024-004 | Công ty Quản lý Quỹ Z | Tổ chức | Định kỳ | APPROVED |
-| QD-2024-005 | CTCP Thương mại M | Tổ chức | — | ENFORCED |
+| QD-2024-004 | Công ty Quản lý Quỹ Z | Tổ chức | Định kỳ | PROCESSING |
+| QD-2024-005 | CTCP Thương mại M | Tổ chức | — | CLOSED |
 
 **Bảng KPI (Attribute hiển thị — Tác nghiệp):**
 
@@ -1732,7 +1733,7 @@ flowchart LR
 | K_TT_51 | Đối tượng | — | Attribute | `Penalty Decision Subject.Subject Name` | |
 | K_TT_52 | Phân loại đối tượng | — | Attribute | `Penalty Decision Subject.Subject Type Code` | |
 | K_TT_53 | Loại hình | — | Attribute | ETL-derived qua `Violation Case` → `Inspection Team`/`Examination Team`, `CASE WHEN ... ELSE 'Khác' END` | (Sửa 2026-08-08) 'Khác' nếu hồ sơ không từ đoàn TT/KT — trước đây NULL |
-| K_TT_54 | Trạng thái | — | Attribute | `Penalty Decision.Life Cycle Status Code` | scheme PENALTY_DECISION_STATUS, 7 giá trị |
+| K_TT_54 | Trạng thái | — | Attribute | ETL-derived qua `Violation Case` (join qua Penalty Decision), `CASE WHEN ... END` map code → nhãn tiếng Việt | Sửa 2026-08-11 — trước đây dùng nguyên code `Penalty Decision.Life Cycle Status Code` (7 giá trị), đổi sang `Violation Case` + CASE WHEN map 5 giá trị → nhãn (Mới tiếp nhận/Đang xử lý/Đã ban hành quyết định/Đang cưỡng chế/Đã kết thúc/Khác) |
 
 **Schema bảng tác nghiệp:**
 
@@ -2202,3 +2203,4 @@ graph TB
 | O_TT_12 | Nhóm 13 — thiết kế cũ (text-matching 11 pattern trên `Violation_Behavior_Name`, ELSE NULL) không khớp SQL BA cập nhật 2026-08-07 — phát hiện qua đối chiếu sâu bổ sung, cùng ngày với O_TT_11 nhưng bị bỏ sót ở lượt review đầu vì SQL 80 ký tự đầu giống bản cũ. | BA đổi CASE WHEN sang lấy trực tiếp `Violation_Behavior_Name` thật, ELSE 'Khác' (không loại bỏ). Không cần đổi Fact/Dimension — field đã có sẵn trên `Penalty Decision Subject Behavior Dimension`, chỉ đổi công thức KPI K_TT_46/47. Nhóm 20 (reuse cùng Fact/Dimension, công thức "Loại hình xử lý" riêng biệt) xác nhận BA không đổi SQL — không bị ảnh hưởng. | K_TT_46–47 (Nhóm 13) | **Closed** |
 | O_TT_13 | Nhóm 20 — SQL BA cũ `SUM(a.TOTAL_FINE_AMOUNT)` (a = PENALTY_DECISION, grain QĐ) trong khi JOIN qua Subject × Behavior không DISTINCT — fanout N×M tiềm ẩn nếu chạy trực tiếp. Thiết kế Datamart trước đó (2026-08-07) phải né bằng pre-aggregate sub-query phức tạp. | (Sửa 2026-08-08) BA tự cập nhật SQL — đổi `COUNT(a.ID)` → `COUNT(DISTINCT a.ID)` và `SUM(a.TOTAL_FINE_AMOUNT)` → `SUM(c.APPLIED_FINE_AMOUNT)` (c = PENALTY_DECISION_SUBJECT_BEHAVIOR, đúng grain Fact). Bổ sung measure `Applied_Fine_Amount` trực tiếp lên `Fact Penalty Decision Subject Behavior`, xóa toàn bộ pre-aggregate sub-query — không còn fanout. | K_TT_71–84 (Nhóm 20) | **Closed** |
 | O_TT_14 | Nhóm 15 — cột "Loại hình" dùng `ELSE NULL` khi hồ sơ không phát sinh từ đoàn TT/KT, không khớp SQL BA cập nhật 2026-08-08 (`ELSE 'Khác'`). | Đổi `ELSE NULL` → `ELSE 'Khác'` trong công thức K_TT_53. Điều kiện chính (`IS NOT NULL`) đã đúng từ trước, không cần sửa. | K_TT_53 (Nhóm 15) | **Closed** |
+| O_TT_15 | Nhóm 15 — cột "Trạng thái" thiết kế cũ lấy nguyên code `Penalty Decision.Life Cycle Status Code` (`PENALTY_DECISION.STATUS`, scheme 7 giá trị), không khớp SQL BA cập nhật 2026-08-11 — SQL dùng `c.STATUS` với `c` = alias `VIOLATION_CASE`, và **không lấy nguyên code** mà `CASE WHEN c.STATUS = 'NEW' THEN 'Mới tiếp nhận' WHEN 'PROCESSING' THEN 'Đang xử lý' WHEN 'DECISION_ISSUED' THEN 'Đã ban hành quyết định' WHEN 'ENFORCED' THEN 'Đang cưỡng chế' WHEN 'CLOSED' THEN 'Đã kết thúc' ELSE 'Khác' END` — map thành nhãn tiếng Việt cố định trong ETL. Dòng metadata BA_analyst_TT.csv STT 15 "Trạng thái" vẫn ghi nguồn `PENALTY_DECISION;STATUS` — sai/lỗi thời so với SQL tham khảo mới, chưa đồng bộ. | Đổi nguồn sang `Violation Case.Life Cycle Status Code` (`VIOLATION_CASE.STATUS`, Atomic READY tại `working/Atomic/lld/THANHTRA/lld_THANHTRA_VIOLATION_CASE.yaml`), ETL-derived qua `CASE WHEN` map 5 giá trị code → nhãn tiếng Việt (không còn dùng scheme Classification Value `PENALTY_DECISION_STATUS` cũ). Join thêm `→ Violation Case` qua `Penalty_Decision.Violation_Case_Id` (đã có sẵn, dùng chung JOIN với "Mã vụ việc"/"Loại hình"). | K_TT_54 (Nhóm 15) | **Closed** |
