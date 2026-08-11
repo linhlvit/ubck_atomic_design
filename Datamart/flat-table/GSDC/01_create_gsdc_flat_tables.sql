@@ -306,7 +306,7 @@ CREATE TABLE IF NOT EXISTS datamart.gsdc_fct_violation_rpt_snpst_flat ON CLUSTER
     public_company_dim_id      String              COMMENT 'FK sang Public Company Dimension (surrogate key).',
     snpst_dt_dim_id             String              COMMENT 'FK tới Calendar Date Dimension — ngày chạy ETL (snapshot date).',
     rpt_year                     Nullable(String)    COMMENT 'Năm của kỳ báo cáo nghĩa vụ.',
-    rpt_quarter                  Nullable(Int64)     COMMENT 'Quý của kỳ báo cáo (1-4).',
+    rpt_quarter                  Nullable(String)    COMMENT 'Loại kỳ báo cáo: 1-4 = Quý 1-4; 5 = Năm; 6 = Bán niên.',
     rpt_due_count                Nullable(Int64)     COMMENT 'Số hồ sơ báo cáo định kỳ đã đến hạn nộp trong kỳ.',
     rpt_submitted_count          Nullable(Int64)     COMMENT 'Số hồ sơ báo cáo định kỳ đã nộp thực tế trong kỳ.',
     profitable_indicator         Nullable(Int64)     COMMENT 'Công ty có LNST > 0 trong kỳ hay không (1/0).',
