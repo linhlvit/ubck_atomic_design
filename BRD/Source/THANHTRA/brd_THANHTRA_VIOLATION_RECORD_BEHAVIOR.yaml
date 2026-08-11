@@ -5,17 +5,17 @@ table: VIOLATION_RECORD_BEHAVIOR
 brd_ref: BRD-SRC-THANHTRA-VIOLATION_RECORD_BEHAVIOR
 columns:
   - name: ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "Khóa chính UUID"
     key: PK
     fk_note: null
   - name: VIOLATION_RECORD_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "FK -> violation_record"
     key: FK
     fk_note: "FK → VIOLATION_RECORD.id"
   - name: VIOLATION_BEHAVIOR_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "FK -> violation_behavior: hành vi vi phạm được ghi nhận"
     key: FK
     fk_note: "FK → VIOLATION_BEHAVIOR.id"
@@ -35,12 +35,12 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng tạo bản ghi"
     key: null
     fk_note: "FK suy luận → system_user.id"
   - name: LAST_MODIFIED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng cập nhật gần nhất"
     key: null
     fk_note: "FK suy luận → system_user.id"

@@ -135,12 +135,12 @@ columns:
     key: null
     fk_note: null
   - name: REVIEW_DATE
-    data_type: TIMESTAMP
+    data_type: TIMESTAMP(6)
     description: "Ngày chuyên viên trình phê duyệt (transition SUBMITTED → REVIEWED)"
     key: null
     fk_note: null
   - name: SEND_BACK_DATE
-    data_type: TIMESTAMP
+    data_type: TIMESTAMP(6)
     description: "Ngày chuyên viên gửi lại tin yêu cầu bổ sung (transition SUBMITTED → NOT_APPROVED)"
     key: null
     fk_note: null
@@ -150,7 +150,62 @@ columns:
     key: null
     fk_note: null
   - name: LANGUAGE_CD
-    data_type: VARCHAR2(20)
+    data_type: VARCHAR2(80)
     description: "Mã ngôn ngữ (VI - Tiếng việt, EN - Tiếng Anh)"
+    key: null
+    fk_note: null
+  - name: ALERT_AUDIT
+    data_type: VARCHAR2(4000)
+    description: "Noi dung canh bao kiem toan tu dong"
+    key: null
+    fk_note: null
+  - name: APPROVER_USER_ID
+    data_type: VARCHAR2(480)
+    description: "Id user Lãnh đạo phê duyệt do Chuyên viên chọn khi Trình phê duyệt (SRS 2.12.3)."
+    key: null
+    fk_note: null
+  - name: APPROVER_USER_NAME
+    data_type: VARCHAR2(2048)
+    description: "Tên Lãnh đạo phê duyệt (denormalize để hiển thị, không join auth-service)."
+    key: null
+    fk_note: null
+  - name: CLOSE_DATE
+    data_type: TIMESTAMP(6)
+    description: null
+    key: null
+    fk_note: null
+  - name: COMPANY_TENDER_OFFER_ID
+    data_type: NUMBER(10,0)
+    description: "Id phương án đăng ký chào mua công khai (COMPANY_TENDER_OFFER.ID) gắn với tin công bố (form TBCMCK%/KQCMCK%)."
+    key: null
+    fk_note: null
+  - name: COMPANY_TREASURY_SHARE_ID
+    data_type: NUMBER(10,0)
+    description: "Id phương án mua bán cổ phiếu quỹ (COMPANY_TREASURY_SHARES.ID) gắn với tin công bố (form TBCPQ%/KQCPQ%)."
+    key: null
+    fk_note: null
+  - name: DISCLOSURE_TYPE
+    data_type: VARCHAR2(80)
+    description: "Loại công bố chào bán phát hành: NOTICE (Thông báo) / RESULT (Báo cáo kết quả)."
+    key: null
+    fk_note: null
+  - name: FLATTENED_FLG
+    data_type: NUMBER(1,0)
+    description: "Đã làm phẳng BCTC vào FINANCIAL_RATIOS_DETAIL chưa (0/1). Chỉ dùng cho tin DINH_KY; reader batch lọc = 0."
+    key: null
+    fk_note: null
+  - name: LEGAL_ENTITY_ID
+    data_type: NUMBER(10,0)
+    description: "Id cổ đông/NĐT phát hành (LEGAL_ENTITIES.ID) khi đối tượng = Cổ đông."
+    key: null
+    fk_note: null
+  - name: SECURITIES_OFFERING_ID
+    data_type: NUMBER(10,0)
+    description: "Id phương án đăng ký chào bán phát hành (SECURITIES_OFFERING.ID) gắn với tin công bố."
+    key: null
+    fk_note: null
+  - name: SYSTEM_CD
+    data_type: VARCHAR2(80)
+    description: null
     key: null
     fk_note: null

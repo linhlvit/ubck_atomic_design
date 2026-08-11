@@ -5,27 +5,27 @@ table: DOCUMENT_TEMPLATE
 brd_ref: BRD-SRC-THANHTRA-DOCUMENT_TEMPLATE
 columns:
   - name: ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "Khóa chính UUID"
     key: PK
     fk_note: null
   - name: CODE
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "Mã biểu mẫu, UNIQUE"
     key: null
     fk_note: null
   - name: NAME
-    data_type: VARCHAR2(500 CHAR)
+    data_type: VARCHAR2(2000)
     description: "Tên biểu mẫu văn bản"
     key: null
     fk_note: null
   - name: TEMPLATE_TYPE
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "Loại biểu mẫu: BB_VPHC (Biên bản VPHC), QD_XU_PHAT (Quyết định xử phạt), CONG_VAN (Công văn), BAO_CAO (Báo cáo)"
     key: null
     fk_note: null
   - name: STATUS
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "Trạng thái: DRAFT (Nháp), ACTIVE (Đang hiệu lực), INACTIVE (Ngừng sử dụng)"
     key: null
     fk_note: null
@@ -40,7 +40,7 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: VARCHAR2(200 CHAR)
+    data_type: VARCHAR2(800)
     description: "ID người dùng tạo bản ghi"
     key: null
     fk_note: "FK suy luận → system_user.id"
@@ -50,7 +50,7 @@ columns:
     key: null
     fk_note: null
   - name: LAST_MODIFIED_BY
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "ID người dùng cập nhật gần nhất"
     key: null
     fk_note: "FK suy luận → system_user.id"
@@ -65,7 +65,7 @@ columns:
     key: null
     fk_note: null
   - name: OFFICIAL_LETTER_SUBTYPE
-    data_type: VARCHAR2(80 CHAR)
+    data_type: VARCHAR2(320)
     description: "Mã loại công văn khi template_type=CONG_VAN: PRE_VIOLATION_NOTICE_1 (TB vi phạm lần 1), REMINDER (Nhắc nhở), PRE_VIOLATION_NOTICE_N (TB vi phạm lần N), INFO_REQUEST (Yêu cầu cung cấp thông tin), PRE_DECISION_NOTICE (TB trước khi ban hành QĐ), PAYMENT_GUIDE (Hướng dẫn nộp phạt), PAYMENT_REMINDER (Đôn đốc nộp phạt), REMEDIAL_REMINDER (Đôn đốc khắc phục)"
     key: null
     fk_note: null

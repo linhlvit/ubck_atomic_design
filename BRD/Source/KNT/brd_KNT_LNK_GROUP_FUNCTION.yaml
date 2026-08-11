@@ -1,0 +1,56 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: KNT
+table: LNK_GROUP_FUNCTION
+brd_ref: BRD-SRC-KNT-LNK_GROUP_FUNCTION
+columns:
+- name: CREATED_AT
+  data_type: "DATE"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: "VARCHAR2(400)"
+  description: "Tài khoản/tên người tạo bản ghi"
+  key: null
+  fk_note: "FK suy luận → SYS_USER.ID"
+- name: CREATED_BY_ID
+  data_type: "NUMBER"
+  description: "ID người dùng tạo bản ghi"
+  key: null
+  fk_note: null
+- name: FUNCTION_ID
+  data_type: "NUMBER"
+  description: "FK -> sys_function: Chức năng liên quan"
+  key: null
+  fk_note: null
+- name: ID
+  data_type: "VARCHAR2(200)"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: LAST_MODIFIED_AT
+  data_type: "DATE"
+  description: "Thời điểm cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: LAST_MODIFIED_BY
+  data_type: "VARCHAR2(400)"
+  description: "Tài khoản/tên người cập nhật lần cuối"
+  key: null
+  fk_note: "FK suy luận → SYS_USER.ID"
+- name: LAST_MODIFIED_BY_ID
+  data_type: "NUMBER"
+  description: "ID người dùng cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: PERMISSION
+  data_type: "NUMBER"
+  description: "Quyền truy cập bitmask (QuyenEnum, OR kết hợp): 1=Thêm, 2=Sửa, 4=Xóa, 8=Duyệt, 16=Theo đơn vị, 32=Xem"
+  key: null
+  fk_note: null
+- name: USER_GROUP_ID
+  data_type: "NUMBER"
+  description: "FK -> sys_user_group: Nhóm người dùng liên quan"
+  key: null
+  fk_note: "FK suy luận → SYS_USER_GROUP.ID"

@@ -15,7 +15,7 @@ columns:
     key: null
     fk_note: "FK → LOGINS.ID"
   - name: LOGIN_NAME
-    data_type: VARCHAR2(50)
+    data_type: VARCHAR2(200)
     description: "User name"
     key: null
     fk_note: null
@@ -35,7 +35,7 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: VARCHAR2(50)
+    data_type: VARCHAR2(200)
     description: "Người tạo"
     key: null
     fk_note: "FK → LOGINS.ID"
@@ -45,12 +45,17 @@ columns:
     key: null
     fk_note: null
   - name: UPDATED_BY
-    data_type: VARCHAR2(50)
+    data_type: VARCHAR2(200)
     description: "Người cập nhật"
     key: null
     fk_note: "FK → LOGINS.ID"
   - name: UPDATED_DATE
     data_type: DATE
     description: "Ngày cập nhật"
+    key: null
+    fk_note: null
+  - name: AF_PROFILE_ID
+    data_type: NUMBER(10,0)
+    description: "ID hồ sơ công ty kiểm toán được phân quyền (FK -> AF_PROFILES.ID)"
     key: null
     fk_note: null

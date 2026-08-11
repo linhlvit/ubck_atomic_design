@@ -10,22 +10,22 @@ columns:
     key: PK
     fk_note: null
   - name: EXCHANGE_CODE
-    data_type: VARCHAR2(20)
+    data_type: VARCHAR2(80)
     description: "Sở giao dịch (HOSE, HNX)"
     key: null
     fk_note: null
   - name: REPORT_YEAR
-    data_type: VARCHAR2(4)
+    data_type: VARCHAR2(16)
     description: "Lưu trữ năm báo cáo"
     key: null
     fk_note: null
   - name: ENTERPRISE_TYPE_CD
-    data_type: VARCHAR2(100)
+    data_type: VARCHAR2(400)
     description: "Loại hình doanh nghiệp"
     key: null
     fk_note: null
   - name: FINANCIAL_STATEMENT_CD
-    data_type: VARCHAR2(100)
+    data_type: VARCHAR2(400)
     description: "Loại báo cáo tài chính"
     key: null
     fk_note: null
@@ -40,22 +40,22 @@ columns:
     key: null
     fk_note: null
   - name: IDS_ROW_NAME
-    data_type: VARCHAR2(255)
+    data_type: VARCHAR2(1020)
     description: "Tên chỉ tiêu"
     key: null
     fk_note: null
   - name: IDS_ROW_DESC
-    data_type: VARCHAR2(100)
+    data_type: VARCHAR2(400)
     description: "Mã chỉ tiêu"
     key: null
     fk_note: null
   - name: EXCH_INDICATOR_CODE
-    data_type: VARCHAR2(100)
+    data_type: VARCHAR2(400)
     description: "Mã chỉ tiêu của Sở"
     key: null
     fk_note: null
   - name: EXCH_INDICATOR_NAME
-    data_type: VARCHAR2(255)
+    data_type: VARCHAR2(1020)
     description: "Tên chỉ tiêu của Sở"
     key: null
     fk_note: null
@@ -75,7 +75,7 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: VARCHAR2(30)
+    data_type: VARCHAR2(120)
     description: "Người tạo"
     key: null
     fk_note: "FK → LOGINS.ID"
@@ -85,12 +85,17 @@ columns:
     key: null
     fk_note: null
   - name: UPDATED_BY
-    data_type: VARCHAR2(30)
+    data_type: VARCHAR2(120)
     description: "Người cập nhật"
     key: null
     fk_note: "FK → LOGINS.ID"
   - name: UPDATED_DATE
     data_type: DATE
     description: "Ngày cập nhật"
+    key: null
+    fk_note: null
+  - name: REPORTING_PERIOD_CD
+    data_type: VARCHAR2(400)
+    description: "Kỳ báo cáo Q - Quý/Quarter Y - Năm/Year HY - Bán niên/Half Year Lấy từ LOOKUP_VALUES với LOOKUP_GROUP=' REPORT_TYPE'"
     key: null
     fk_note: null

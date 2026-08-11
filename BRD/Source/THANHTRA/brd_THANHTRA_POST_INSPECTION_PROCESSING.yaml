@@ -5,22 +5,22 @@ table: POST_INSPECTION_PROCESSING
 brd_ref: BRD-SRC-THANHTRA-POST_INSPECTION_PROCESSING
 columns:
   - name: ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "Khóa chính UUID"
     key: PK
     fk_note: null
   - name: INSPECTION_CONCLUSION_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "FK -> inspection_conclusion: kết luận thanh tra liên quan"
     key: FK
     fk_note: "FK → INSPECTION_CONCLUSION.id"
   - name: REQUIREMENT_TYPE
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "Loại yêu cầu xử lý sau thanh tra"
     key: null
     fk_note: null
   - name: RESPONSIBLE_PARTY
-    data_type: VARCHAR2(500 CHAR)
+    data_type: VARCHAR2(2000)
     description: "Đơn vị/cá nhân chịu trách nhiệm thực hiện kiến nghị"
     key: null
     fk_note: null
@@ -30,7 +30,7 @@ columns:
     key: null
     fk_note: null
   - name: STATUS
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "Trạng thái: PENDING (Chưa thực hiện - mặc định), IN_PROGRESS (Đang thực hiện), PARTIALLY_DONE (Thực hiện một phần), COMPLETED (Hoàn thành), OVERDUE (Quá hạn)"
     key: null
     fk_note: null
@@ -45,12 +45,12 @@ columns:
     key: null
     fk_note: null
   - name: MONITORING_OFFICER_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "ID cán bộ phụ trách theo dõi xử lý sau thanh tra"
     key: null
     fk_note: "FK suy luận → system_user.id"
   - name: MONITORING_OFFICER_NAME
-    data_type: VARCHAR2(200 CHAR)
+    data_type: VARCHAR2(800)
     description: "Tên cán bộ phụ trách theo dõi xử lý sau thanh tra"
     key: null
     fk_note: null
@@ -60,7 +60,7 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: VARCHAR2(200 CHAR)
+    data_type: VARCHAR2(800)
     description: "ID người dùng tạo bản ghi"
     key: null
     fk_note: "FK suy luận → system_user.id"
@@ -70,7 +70,7 @@ columns:
     key: null
     fk_note: null
   - name: LAST_MODIFIED_BY
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "ID người dùng cập nhật gần nhất"
     key: null
     fk_note: "FK suy luận → system_user.id"

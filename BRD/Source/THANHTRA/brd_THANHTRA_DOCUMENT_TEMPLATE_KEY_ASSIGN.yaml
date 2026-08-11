@@ -5,17 +5,17 @@ table: DOCUMENT_TEMPLATE_KEY_ASSIGN
 brd_ref: BRD-SRC-THANHTRA-DOCUMENT_TEMPLATE_KEY_ASSIGN
 columns:
   - name: ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "Khóa chính UUID"
     key: PK
     fk_note: null
   - name: TEMPLATE_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "FK -> document_template"
     key: FK
     fk_note: "FK → DOCUMENT_TEMPLATE.id"
   - name: KEY_DEFINITION_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "FK -> document_template_key_definition"
     key: FK
     fk_note: "FK → DOCUMENT_TEMPLATE_KEY_DEFINITION.id"
@@ -25,7 +25,7 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: VARCHAR2(200 CHAR)
+    data_type: VARCHAR2(800)
     description: "ID người dùng tạo bản ghi"
     key: null
     fk_note: "FK suy luận → system_user.id"
@@ -35,7 +35,7 @@ columns:
     key: null
     fk_note: null
   - name: LAST_MODIFIED_BY
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "ID người dùng cập nhật gần nhất"
     key: null
     fk_note: "FK suy luận → system_user.id"
@@ -50,7 +50,7 @@ columns:
     key: null
     fk_note: null
   - name: TEMPLATE_VERSION_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "FK -> document_template_version: phiên bản file mẫu áp dụng key này"
     key: FK
     fk_note: "FK → DOCUMENT_TEMPLATE_VERSION.id"

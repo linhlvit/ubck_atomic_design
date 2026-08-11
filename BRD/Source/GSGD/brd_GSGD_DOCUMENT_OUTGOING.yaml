@@ -5,17 +5,17 @@ table: DOCUMENT_OUTGOING
 brd_ref: BRD-SRC-GSGD-DOCUMENT_OUTGOING
 columns:
   - name: ID
-    data_type: "VARCHAR2(36)"
+    data_type: "VARCHAR2(144)"
     description: "Primary key"
     key: PK
     fk_note: null
   - name: TEMPLATE_ID
-    data_type: "VARCHAR2(36)"
+    data_type: "VARCHAR2(144)"
     description: "Tham chiếu DOCUMENT_TEMPLATE.ID"
     key: FK
     fk_note: "FK suy luận → DOCUMENT_TEMPLATE.ID"
   - name: NAME
-    data_type: "VARCHAR2(500 CHAR)"
+    data_type: "VARCHAR2(2000)"
     description: "Tên văn bản đi — mặc định = template name, user có thể override"
     key: null
     fk_note: null
@@ -25,82 +25,82 @@ columns:
     key: null
     fk_note: null
   - name: EXCEL_FILE_NAME
-    data_type: "VARCHAR2(500 CHAR)"
+    data_type: "VARCHAR2(2000)"
     description: "Tên file Excel user upload"
     key: null
     fk_note: null
   - name: EXCEL_FILE_PATH
-    data_type: "VARCHAR2(1000 CHAR)"
+    data_type: "VARCHAR2(4000)"
     description: "MinIO object key của Excel input"
     key: null
     fk_note: null
   - name: EXCEL_FILE_SIZE
-    data_type: "NUMBER(19)"
+    data_type: "NUMBER(19,0)"
     description: "Bytes"
     key: null
     fk_note: null
   - name: OUTPUT_KIND
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "1=SINGLE_DOCX, 2=ZIP_BUNDLE"
     key: null
     fk_note: null
   - name: OUTPUT_FILE_NAME
-    data_type: "VARCHAR2(500 CHAR)"
+    data_type: "VARCHAR2(2000)"
     description: "Tên file đầu ra (.docx hoặc .zip)"
     key: null
     fk_note: null
   - name: OUTPUT_FILE_PATH
-    data_type: "VARCHAR2(1000 CHAR)"
+    data_type: "VARCHAR2(4000)"
     description: "MinIO object key của artifact đầu ra"
     key: null
     fk_note: null
   - name: OUTPUT_FILE_SIZE
-    data_type: "NUMBER(19)"
+    data_type: "NUMBER(19,0)"
     description: "Bytes"
     key: null
     fk_note: null
   - name: OUTPUT_FILE_TYPE
-    data_type: "VARCHAR2(100 CHAR)"
+    data_type: "VARCHAR2(400)"
     description: "MIME (docx hoặc zip)"
     key: null
     fk_note: null
   - name: GENERATED_COUNT
-    data_type: "NUMBER(10)"
+    data_type: "NUMBER(10,0)"
     description: "Số file Word đã sinh (1 cho single, N cho ZIP)"
     key: null
     fk_note: null
   - name: CREATED_AT
-    data_type: "TIMESTAMP"
+    data_type: "TIMESTAMP(6)"
     description: "Ngày tạo"
     key: null
     fk_note: null
   - name: UPDATED_AT
-    data_type: "TIMESTAMP"
+    data_type: "TIMESTAMP(6)"
     description: "Ngày sửa cuối"
     key: null
     fk_note: null
   - name: CREATED_BY_ID
-    data_type: "VARCHAR2(255)"
+    data_type: "VARCHAR2(1020)"
     description: "User_id người tạo"
     key: null
     fk_note: null
   - name: UPDATED_BY_ID
-    data_type: "VARCHAR2(255)"
+    data_type: "VARCHAR2(1020)"
     description: "User_id người cập nhật"
     key: null
     fk_note: null
   - name: CREATED_BY_NAME
-    data_type: "VARCHAR2(250)"
+    data_type: "VARCHAR2(1000)"
     description: "Tên người tạo"
     key: null
     fk_note: null
   - name: UPDATED_BY_NAME
-    data_type: "VARCHAR2(250)"
+    data_type: "VARCHAR2(1000)"
     description: "Tên người cập nhật"
     key: null
     fk_note: null
   - name: DELETED
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "Soft delete: 0=Active, 1=Deleted"
     key: null
     fk_note: null

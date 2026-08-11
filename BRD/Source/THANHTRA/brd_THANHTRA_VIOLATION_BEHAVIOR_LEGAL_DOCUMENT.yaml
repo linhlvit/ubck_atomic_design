@@ -5,17 +5,17 @@ table: VIOLATION_BEHAVIOR_LEGAL_DOCUMENT
 brd_ref: BRD-SRC-THANHTRA-VIOLATION_BEHAVIOR_LEGAL_DOCUMENT
 columns:
   - name: ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "Khóa chính UUID"
     key: PK
     fk_note: null
   - name: VIOLATION_BEHAVIOR_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "FK -> violation_behavior.id"
     key: FK
     fk_note: "FK → VIOLATION_BEHAVIOR.id"
   - name: LEGAL_DOCUMENT_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "FK -> legal_document.id"
     key: FK
     fk_note: "FK → LEGAL_DOCUMENT.id"
@@ -25,7 +25,7 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: VARCHAR2(200 CHAR)
+    data_type: VARCHAR2(800)
     description: "ID người dùng tạo bản ghi"
     key: null
     fk_note: "FK suy luận → system_user.id"
@@ -35,7 +35,7 @@ columns:
     key: null
     fk_note: null
   - name: LAST_MODIFIED_BY
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "ID người dùng cập nhật gần nhất"
     key: null
     fk_note: "FK suy luận → system_user.id"

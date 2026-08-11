@@ -20,27 +20,27 @@ columns:
     key: FK
     fk_note: null
   - name: ROW_NO
-    data_type: "NUMBER(5)"
+    data_type: "NUMBER(5,0)"
     description: "Số thứ tự hàng trong dashboard"
     key: null
     fk_note: null
   - name: COLUMN_COUNT
-    data_type: "NUMBER(2)"
+    data_type: "NUMBER(2,0)"
     description: "Số cột của hàng. Giá trị hợp lệ: 1, 2, 3, 4"
     key: null
     fk_note: null
   - name: DISPLAY_ORDER
-    data_type: "NUMBER(5)"
+    data_type: "NUMBER(5,0)"
     description: "Thứ tự hiển thị hàng"
     key: null
     fk_note: null
   - name: CREATED_AT
-    data_type: "TIMESTAMP"
+    data_type: "TIMESTAMP(6)"
     description: "Ngày tạo"
     key: null
     fk_note: null
   - name: UPDATED_AT
-    data_type: "TIMESTAMP"
+    data_type: "TIMESTAMP(6)"
     description: "Ngày sửa cuối"
     key: null
     fk_note: null
@@ -62,5 +62,10 @@ columns:
   - name: UPDATED_BY_NAME
     data_type: "VARCHAR2(250)"
     description: "Tên người cập nhật"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: "NUMBER(1,0)"
+    description: null
     key: null
     fk_note: null

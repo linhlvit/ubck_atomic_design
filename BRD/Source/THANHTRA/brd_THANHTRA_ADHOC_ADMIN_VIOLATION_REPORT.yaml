@@ -5,22 +5,22 @@ table: ADHOC_ADMIN_VIOLATION_REPORT
 brd_ref: BRD-SRC-THANHTRA-ADHOC_ADMIN_VIOLATION_REPORT
 columns:
   - name: ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "Khóa chính UUID"
     key: PK
     fk_note: null
   - name: NAME
-    data_type: VARCHAR2(500 CHAR)
+    data_type: VARCHAR2(2000)
     description: "Tên báo cáo xử lý VPHC đột xuất/theo yêu cầu"
     key: null
     fk_note: null
   - name: REPORT_TYPE
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "Loại báo cáo: PERIODIC (Định kỳ), ON_DEMAND (Theo yêu cầu)"
     key: null
     fk_note: null
   - name: REQUESTING_UNIT
-    data_type: VARCHAR2(500 CHAR)
+    data_type: VARCHAR2(2000)
     description: "Đơn vị yêu cầu lập báo cáo (VD: Lãnh đạo UBCKNN, Bộ Tư pháp)"
     key: null
     fk_note: null
@@ -55,12 +55,12 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng tạo bản ghi"
     key: null
     fk_note: "FK suy luận → system_user.id"
   - name: LAST_MODIFIED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng cập nhật gần nhất"
     key: null
     fk_note: "FK suy luận → system_user.id"
@@ -75,7 +75,7 @@ columns:
     key: null
     fk_note: null
   - name: STATUS
-    data_type: VARCHAR2(50 BYTE)
+    data_type: VARCHAR2(50)
     description: "Trạng thái: DRAFT (Nháp - mặc định), COMPLETED (Hoàn thành)"
     key: null
     fk_note: null

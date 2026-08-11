@@ -5,52 +5,52 @@ table: VPHC_PROCESS_OFFICIAL_LETTER
 brd_ref: BRD-SRC-THANHTRA-VPHC_PROCESS_OFFICIAL_LETTER
 columns:
   - name: ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "Khóa chính UUID"
     key: PK
     fk_note: null
   - name: OFFICIAL_LETTER_SUBTYPE
-    data_type: VARCHAR2(80 CHAR)
+    data_type: VARCHAR2(320)
     description: "Loại công văn VPHC: PRE_VIOLATION_NOTICE_1 (TB vi phạm lần 1), REMINDER (Nhắc nhở), PRE_VIOLATION_NOTICE_N (TB vi phạm lần N), INFO_REQUEST (Yêu cầu cung cấp thông tin), PRE_DECISION_NOTICE (TB trước khi ban hành QĐ), PAYMENT_GUIDE (Hướng dẫn nộp phạt), PAYMENT_REMINDER (Đôn đốc nộp phạt), REMEDIAL_REMINDER (Đôn đốc khắc phục)"
     key: null
     fk_note: null
   - name: DOCUMENT_TEMPLATE_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "FK -> document_template: biểu mẫu công văn được sử dụng"
     key: FK
     fk_note: "FK → DOCUMENT_TEMPLATE.id"
   - name: DOCUMENT_TEMPLATE_NAME
-    data_type: VARCHAR2(500 CHAR)
+    data_type: VARCHAR2(2000)
     description: "Tên biểu mẫu công văn (snapshot tại thời điểm tạo)"
     key: null
     fk_note: null
   - name: VIOLATION_CASE_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "FK -> violation_case: hồ sơ xử lý VPHC liên kết"
     key: FK
     fk_note: "FK → VIOLATION_CASE.id"
   - name: VIOLATION_CASE_CODE
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "Mã hồ sơ VPHC liên kết (snapshot)"
     key: null
     fk_note: null
   - name: VIOLATION_RECORD_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "FK -> violation_record: biên bản VPHC liên kết"
     key: FK
     fk_note: "FK → VIOLATION_RECORD.id"
   - name: VIOLATION_RECORD_NUMBER
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "Số biên bản VPHC liên kết (snapshot)"
     key: null
     fk_note: null
   - name: PENALTY_DECISION_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "FK -> penalty_decision: quyết định xử phạt liên kết"
     key: FK
     fk_note: "FK → PENALTY_DECISION.id"
   - name: PENALTY_DECISION_NUMBER
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "Số quyết định xử phạt liên kết (snapshot)"
     key: null
     fk_note: null
@@ -60,7 +60,7 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: VARCHAR2(200 CHAR)
+    data_type: VARCHAR2(800)
     description: "ID người dùng tạo bản ghi"
     key: null
     fk_note: "FK suy luận → system_user.id"
@@ -70,7 +70,7 @@ columns:
     key: null
     fk_note: null
   - name: LAST_MODIFIED_BY
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "ID người dùng cập nhật gần nhất"
     key: null
     fk_note: "FK suy luận → system_user.id"
@@ -100,7 +100,7 @@ columns:
     key: null
     fk_note: null
   - name: OUTPUT_DOCUMENT_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "Liên kết tới văn bản đầu ra trong hồ sơ xử lý VPHC khi công văn đã được đồng bộ"
     key: null
     fk_note: "FK suy luận → VIOLATION_CASE_OUTPUT_DOCUMENT.id"

@@ -1,0 +1,176 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: KNT
+table: SSC_REPORT
+brd_ref: BRD-SRC-KNT-SSC_REPORT
+columns:
+- name: AUDITOR_NAME
+  data_type: "VARCHAR2(2000)"
+  description: "Họ tên kiểm toán viên"
+  key: null
+  fk_note: null
+- name: AUDIT_DATE
+  data_type: "DATE"
+  description: "Ngày ký báo cáo kiểm toán"
+  key: null
+  fk_note: null
+- name: AUDIT_FIRM_NAME
+  data_type: "VARCHAR2(800)"
+  description: "Tên tổ chức kiểm toán thực hiện kiểm toán báo cáo"
+  key: null
+  fk_note: null
+- name: AUDIT_FIRM_TAX_CODE
+  data_type: "VARCHAR2(200)"
+  description: "Mã số thuế của tổ chức kiểm toán"
+  key: null
+  fk_note: null
+- name: AUDIT_OPINION
+  data_type: "VARCHAR2(2000)"
+  description: "Nội dung ý kiến kiểm toán"
+  key: null
+  fk_note: null
+- name: AUDIT_OPINION_CODE
+  data_type: "VARCHAR2(80)"
+  description: "Mã ý kiến kiểm toán (theo chuẩn mực kiểm toán)"
+  key: null
+  fk_note: null
+- name: AUDIT_STATUS
+  data_type: "NUMBER"
+  description: "Trạng thái kiểm toán: 0=Trước kiểm toán, 1=Sau kiểm toán"
+  key: null
+  fk_note: null
+- name: BUSINESS_REG_CERT
+  data_type: "VARCHAR2(200)"
+  description: "Số giấy phép đăng ký kinh doanh của công ty kiểm toán"
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: "DATE"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: ENTERPRISE_CODE
+  data_type: "VARCHAR2(80)"
+  description: "Mã số doanh nghiệp đăng ký kinh doanh"
+  key: null
+  fk_note: null
+- name: EXTENSION_REASON
+  data_type: "VARCHAR2(2000)"
+  description: "Nội dung lý do gia hạn nộp báo cáo"
+  key: null
+  fk_note: null
+- name: EXTENSION_REASON_CODE
+  data_type: "VARCHAR2(80)"
+  description: "Mã lý do gia hạn nộp báo cáo"
+  key: null
+  fk_note: null
+- name: GOING_CONCERN_NO
+  data_type: "VARCHAR2(200)"
+  description: "Cờ không hoạt động liên tục: true/false"
+  key: null
+  fk_note: null
+- name: GOING_CONCERN_YES
+  data_type: "VARCHAR2(200)"
+  description: "Cờ hoạt động liên tục: true/false"
+  key: null
+  fk_note: null
+- name: GUID
+  data_type: "VARCHAR2(200)"
+  description: "Định danh duy nhất toàn cục (GUID/UUID) của bản ghi"
+  key: null
+  fk_note: null
+- name: ID
+  data_type: "NUMBER"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: MSG_PACKET_ID
+  data_type: "NUMBER"
+  description: "FK -> msg_packet: Gói tin trao đổi liên quan"
+  key: FK
+  fk_note: "FK → MSG_PACKET.ID"
+- name: ORG_UNIT_CODE
+  data_type: "VARCHAR2(800)"
+  description: "Mã đơn vị gửi báo cáo (CTCK/QLQ/CN QLQ NN...)"
+  key: null
+  fk_note: null
+- name: PERIOD_FROM_DATE
+  data_type: "VARCHAR2(80)"
+  description: "Kỳ báo cáo từ ngày (định dạng DD/MM/YYYY)"
+  key: null
+  fk_note: null
+- name: PERIOD_FROM_MONTH
+  data_type: "VARCHAR2(80)"
+  description: "Kỳ báo cáo từ tháng (định dạng MM/YYYY)"
+  key: null
+  fk_note: null
+- name: PERIOD_TO_DATE
+  data_type: "VARCHAR2(80)"
+  description: "Kỳ báo cáo đến ngày (định dạng DD/MM/YYYY)"
+  key: null
+  fk_note: null
+- name: PERIOD_TO_MONTH
+  data_type: "VARCHAR2(80)"
+  description: "Kỳ báo cáo đến tháng (định dạng MM/YYYY)"
+  key: null
+  fk_note: null
+- name: PERIOD_TYPE
+  data_type: "VARCHAR2(80)"
+  description: "Kiểu kỳ báo cáo: Y=Năm, H=Bán niên, Q=Quý, M=Tháng"
+  key: null
+  fk_note: null
+- name: PRACTICE_CERT_NUMBER
+  data_type: "VARCHAR2(320)"
+  description: "Số chứng chỉ hành nghề kiểm toán"
+  key: null
+  fk_note: null
+- name: REPORT_CODE
+  data_type: "VARCHAR2(200)"
+  description: "Mã báo cáo tài chính"
+  key: null
+  fk_note: null
+- name: REPORT_NAME
+  data_type: "VARCHAR2(800)"
+  description: "Tên báo cáo tài chính"
+  key: null
+  fk_note: null
+- name: REPORT_PERIOD
+  data_type: "VARCHAR2(80)"
+  description: "Kỳ báo cáo (định dạng yyyy hoặc yyyyQn)"
+  key: null
+  fk_note: null
+- name: REPORT_SOURCE_URL
+  data_type: "VARCHAR2(600)"
+  description: "Đường dẫn báo cáo trực tuyến (link online)"
+  key: null
+  fk_note: null
+- name: REPORT_TYPE
+  data_type: "NUMBER"
+  description: "Loại báo cáo: theo danh sách enum trong hệ thống (BCTC, BCLCTT...)"
+  key: null
+  fk_note: null
+- name: SENT_AT
+  data_type: "DATE"
+  description: "Thời điểm gửi gói tin"
+  key: null
+  fk_note: null
+- name: SIGNATORY
+  data_type: "VARCHAR2(200)"
+  description: "Người ký báo cáo (Giám đốc/TGĐ)"
+  key: null
+  fk_note: null
+- name: SIGNED_AT
+  data_type: "DATE"
+  description: "Ngày ký báo cáo"
+  key: null
+  fk_note: null
+- name: SYSTEM_CODE
+  data_type: "NUMBER"
+  description: "Mã hệ thống nguồn (HeThongEnum): 1=IDS, 2=IDM, 3=Thanh tra, 4=SCMS, 5=FMS, 6=THUE (TCT)"
+  key: null
+  fk_note: null
+- name: TAX_CODE
+  data_type: "VARCHAR2(80)"
+  description: "Mã số thuế doanh nghiệp"
+  key: null
+  fk_note: null

@@ -15,17 +15,17 @@ columns:
     key: FK
     fk_note: "FK suy luận → CASE_FILE.ID"
   - name: REPORT_TYPE
-    data_type: "VARCHAR2(50 CHAR)"
+    data_type: "VARCHAR2(200)"
     description: ""
     key: null
     fk_note: null
   - name: SECURITIES_CODE_ID
-    data_type: "VARCHAR2(36)"
+    data_type: "VARCHAR2(50)"
     description: "Mã chứng khoán"
     key: null
     fk_note: null
   - name: SECURITIES_CODE
-    data_type: "VARCHAR2(50 CHAR)"
+    data_type: "VARCHAR2(10)"
     description: "Mã chứng khoán"
     key: null
     fk_note: null
@@ -40,7 +40,7 @@ columns:
     key: null
     fk_note: null
   - name: REPORT_FILE_PATH
-    data_type: "VARCHAR2(500 CHAR)"
+    data_type: "VARCHAR2(2000)"
     description: "Đường dẫn file báo cáo"
     key: null
     fk_note: null
@@ -50,12 +50,12 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_AT
-    data_type: "TIMESTAMP"
+    data_type: "TIMESTAMP(6)"
     description: "Ngày tạo"
     key: null
     fk_note: null
   - name: UPDATED_AT
-    data_type: "TIMESTAMP"
+    data_type: "TIMESTAMP(6)"
     description: "Ngày sửa cuối"
     key: null
     fk_note: null
@@ -80,7 +80,62 @@ columns:
     key: null
     fk_note: null
   - name: DELETED
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "Soft delete: 0=Active, 1=Deleted"
+    key: null
+    fk_note: null
+  - name: ANALYSIS_DATE
+    data_type: "TIMESTAMP(6)"
+    description: "Ngày phân tích"
+    key: null
+    fk_note: null
+  - name: ANALYSIS_EXECUTION_LOG_ID
+    data_type: "VARCHAR2(36)"
+    description: "Id log thuc thi phan tich (ANALYSIS_EXECUTION_LOG)"
+    key: null
+    fk_note: null
+  - name: REPORT_NAME
+    data_type: "VARCHAR2(255)"
+    description: "Tên báo cáo"
+    key: null
+    fk_note: null
+  - name: REPORT_RESULT_ANALYSIS
+    data_type: "CLOB"
+    description: "Kết quả phân tích"
+    key: null
+    fk_note: null
+  - name: RESULT_TYPE
+    data_type: "VARCHAR2(50)"
+    description: "Loại kết quả"
+    key: null
+    fk_note: null
+  - name: START_TIME
+    data_type: "TIMESTAMP(6)"
+    description: "Thời gian bắt đầu"
+    key: null
+    fk_note: null
+  - name: STATUS
+    data_type: "VARCHAR2(50)"
+    description: "Trạng thái"
+    key: null
+    fk_note: null
+  - name: TEMPLATE_TYPE
+    data_type: "NUMBER"
+    description: "Loai bao cao: 1=Bao cao tong hop, 2=Bao cao phan tich"
+    key: null
+    fk_note: null
+  - name: VERSION
+    data_type: "NUMBER(10,0)"
+    description: null
+    key: null
+    fk_note: null
+  - name: WORKFLOW_ID
+    data_type: "VARCHAR2(36)"
+    description: "Id quy trình phân tích (analysis_workflow.id)"
+    key: null
+    fk_note: null
+  - name: WORKFLOW_TYPE
+    data_type: "VARCHAR2(50)"
+    description: "Loại quy trình"
     key: null
     fk_note: null

@@ -15,52 +15,52 @@ columns:
     key: FK
     fk_note: "FK → COMPLIANCE_REPORT_FORM_TEMPLATE.ID"
   - name: COLUMN_CODE
-    data_type: "VARCHAR2(50 CHAR)"
+    data_type: "VARCHAR2(200)"
     description: "Mã cột (VD: COL_01, COL_02). Dùng làm key trong JSON ROW_DATA"
     key: null
     fk_note: null
   - name: COLUMN_LABEL
-    data_type: "VARCHAR2(200 CHAR)"
+    data_type: "VARCHAR2(800)"
     description: "Nhãn hiển thị cột (header Excel)"
     key: null
     fk_note: null
   - name: DATA_TYPE
-    data_type: "VARCHAR2(20 CHAR)"
+    data_type: "VARCHAR2(80)"
     description: "Kiểu dữ liệu: TEXT, NUMBER, DATE, BOOLEAN"
     key: null
     fk_note: null
   - name: DISPLAY_ORDER
-    data_type: "NUMBER(3)"
+    data_type: "NUMBER(3,0)"
     description: "Thứ tự hiển thị cột"
     key: null
     fk_note: null
   - name: IS_REQUIRED
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "Bắt buộc nhập: 0=Không, 1=Có"
     key: null
     fk_note: null
   - name: IS_VISIBLE
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "Hiển thị cột: 0=Ẩn, 1=Hiện"
     key: null
     fk_note: null
   - name: VALIDATION_RULE
-    data_type: "VARCHAR2(1000 CHAR)"
+    data_type: "VARCHAR2(4000)"
     description: "Quy tắc validate (JSON). VD: {\"min\":0,\"max\":999999999,\"pattern\":\"\\d+\"}"
     key: null
     fk_note: null
   - name: DESCRIPTION
-    data_type: "VARCHAR2(500 CHAR)"
+    data_type: "VARCHAR2(2000)"
     description: "Mô tả cột"
     key: null
     fk_note: null
   - name: CREATED_AT
-    data_type: "TIMESTAMP"
+    data_type: "TIMESTAMP(6)"
     description: "Ngày tạo"
     key: null
     fk_note: null
   - name: UPDATED_AT
-    data_type: "TIMESTAMP"
+    data_type: "TIMESTAMP(6)"
     description: "Ngày sửa cuối"
     key: null
     fk_note: null
@@ -85,7 +85,7 @@ columns:
     key: null
     fk_note: null
   - name: DELETED
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "Soft delete: 0=Active, 1=Deleted"
     key: null
     fk_note: null

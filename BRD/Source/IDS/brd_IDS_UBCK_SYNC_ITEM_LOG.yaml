@@ -10,57 +10,57 @@ columns:
     key: PK
     fk_note: null
   - name: CORRELATION_ID
-    data_type: VARCHAR2(64)
+    data_type: VARCHAR2(256)
     description: "Khớp INTEGRATION_SYNC_LOG.CORRELATION_ID — không FK cứng để tránh ràng buộc tx"
     key: null
     fk_note: null
   - name: JOB_CODE
-    data_type: VARCHAR2(100)
+    data_type: VARCHAR2(400)
     description: ""
     key: null
     fk_note: null
   - name: BUSINESS_REG_NO
-    data_type: VARCHAR2(100)
+    data_type: VARCHAR2(400)
     description: "MST công ty (nếu có)"
     key: null
     fk_note: null
   - name: IDENTITY_NO
-    data_type: VARCHAR2(50)
+    data_type: VARCHAR2(200)
     description: "Số giấy tờ NĐT (IDS011/015)"
     key: null
     fk_note: null
   - name: ITEM_STATUS
-    data_type: VARCHAR2(30)
+    data_type: VARCHAR2(120)
     description: "UPDATED │ NO_CHANGE │ EMPTY_FROM_API │ UNMAPPED │ NOT_FOUND_LOCAL │ FAILED"
     key: null
     fk_note: null
   - name: API_RAW_VALUE
-    data_type: VARCHAR2(500)
+    data_type: VARCHAR2(2000)
     description: "Giá trị raw từ API CSDLTT (vd. 'Suspended')"
     key: null
     fk_note: null
   - name: MAPPED_VALUE
-    data_type: VARCHAR2(500)
+    data_type: VARCHAR2(2000)
     description: "Giá trị sau khi map sang code IDS"
     key: null
     fk_note: null
   - name: PREVIOUS_VALUE
-    data_type: VARCHAR2(500)
+    data_type: VARCHAR2(2000)
     description: "Giá trị cũ trong IDS trước update"
     key: null
     fk_note: null
   - name: API_UPDATED_DATE
-    data_type: VARCHAR2(20)
+    data_type: VARCHAR2(80)
     description: "updatedDate gốc từ API (dd/MM/yyyy)"
     key: null
     fk_note: null
   - name: REASON
-    data_type: VARCHAR2(1000)
+    data_type: VARCHAR2(4000)
     description: "Lý do skip/fail; null cho UPDATED/NO_CHANGE"
     key: null
     fk_note: null
   - name: CREATED_AT
-    data_type: TIMESTAMP
+    data_type: TIMESTAMP(6)
     description: ""
     key: null
     fk_note: null

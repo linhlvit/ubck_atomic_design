@@ -1,0 +1,61 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: KNT
+table: SCHEDULE_CONFIG
+brd_ref: BRD-SRC-KNT-SCHEDULE_CONFIG
+columns:
+- name: API_PACKET_CODE
+  data_type: "VARCHAR2(200)"
+  description: "Mã gói API/nghiệp vụ gắn với lịch (MA_GOI_API): map job Quartz sinh dữ liệu hoặc push"
+  key: null
+  fk_note: null
+- name: CRON_EXPRESSION
+  data_type: "VARCHAR2(400)"
+  description: "Biểu thức CRON tính thời gian chạy job tự động"
+  key: null
+  fk_note: null
+- name: FREQUENCY
+  data_type: "VARCHAR2(80)"
+  description: "Tần suất: 0=Hàng ngày, 1=Hàng tháng, 2=Hàng năm, 3=Khi có yêu cầu, 4=Quý, 5=Nửa năm"
+  key: null
+  fk_note: null
+- name: FUNCTION_ID
+  data_type: "NUMBER"
+  description: "FK -> sys_function: Chức năng liên quan"
+  key: null
+  fk_note: null
+- name: ID
+  data_type: "NUMBER"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: ORG_UNIT_ID
+  data_type: "NUMBER"
+  description: "FK -> cat_org_unit: Đơn vị tổ chức của người dùng"
+  key: FK
+  fk_note: "FK → CAT_ORG_UNIT.ID"
+- name: START_DATE
+  data_type: "DATE"
+  description: "Ngày bắt đầu tiến hành truyền/nhận (định dạng dd)"
+  key: null
+  fk_note: null
+- name: START_HOUR
+  data_type: "VARCHAR2(80)"
+  description: "Giờ bắt đầu tiến hành truyền/nhận"
+  key: null
+  fk_note: null
+- name: START_MINUTE
+  data_type: "VARCHAR2(80)"
+  description: "Phút bắt đầu tiến hành truyền/nhận"
+  key: null
+  fk_note: null
+- name: STATUS
+  data_type: "VARCHAR2(80)"
+  description: "Trạng thái lịch (TrangThaiSuDungEnum): 1=Sử dụng, 2=Ngừng sử dụng"
+  key: null
+  fk_note: null
+- name: TYPE
+  data_type: "NUMBER"
+  description: "Loại lịch/nghiệp vụ (SysThietLapLichEnum): 0=CT đại chúng, 1-5=BCTC IDS (TT200/202/49/232/Bảo hiểm), 6=CTCK, 7=BCTC SCMS TT334, 8=CT QLQ, 9=XLVP, 10=KTV, 11=BCTC FMS TT125, 12-21=dữ liệu TCT, 22=Đối soát"
+  key: null
+  fk_note: null

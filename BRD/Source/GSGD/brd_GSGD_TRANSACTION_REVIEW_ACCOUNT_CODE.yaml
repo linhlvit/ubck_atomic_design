@@ -20,62 +20,62 @@ columns:
     key: FK
     fk_note: "FK suy luận → TRANSACTION_REVIEW.ID"
   - name: WORKFLOW_TYPE
-    data_type: "NUMBER(2)"
+    data_type: "NUMBER(10,0)"
     description: "1=Sơ bộ, 2=Thao túng, 3=Nội gián, 4=Liên thị trường"
     key: null
     fk_note: null
   - name: ACCOUNT_CODE
-    data_type: "VARCHAR2(50 CHAR)"
+    data_type: "VARCHAR2(50)"
     description: "Mã tài khoản"
     key: null
     fk_note: null
   - name: ACCOUNT_NAME
-    data_type: "VARCHAR2(200 CHAR)"
+    data_type: "VARCHAR2(200)"
     description: "Họ và tên"
     key: null
     fk_note: null
   - name: ACCOUNT_TYPE
-    data_type: "NUMBER(1,0)"
+    data_type: "NUMBER(10,0)"
     description: "Loại tài khoản"
     key: null
     fk_note: null
   - name: CONTACT_ADDRESS
-    data_type: "VARCHAR2(500 CHAR)"
+    data_type: "VARCHAR2(500)"
     description: "Địa chỉ liên lạc (từ CTCK, có thể sửa)"
     key: null
     fk_note: null
   - name: IDENTITY_NUMBER
-    data_type: "VARCHAR2(50 CHAR)"
+    data_type: "VARCHAR2(50)"
     description: "Số CCCD/Số đăng ký sở hữu"
     key: null
     fk_note: null
   - name: IDENTITY_ISSUE_DATE
-    data_type: "TIMESTAMP"
+    data_type: "TIMESTAMP(6)"
     description: "Ngày cấp"
     key: null
     fk_note: null
   - name: IDENTITY_ISSUE_PLACE
-    data_type: "VARCHAR2(200 CHAR)"
+    data_type: "VARCHAR2(200)"
     description: "Nơi cấp"
     key: null
     fk_note: null
   - name: DOMESTIC_FOREIGN_FLAG
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(10,0)"
     description: "Trong nước/Nước ngoài: 0=Trong nước, 1=Nước ngoài"
     key: null
     fk_note: null
   - name: PHONE_NUMBER
-    data_type: "VARCHAR2(50 CHAR)"
+    data_type: "VARCHAR2(50)"
     description: "Số điện thoại (từ CTCK, có thể sửa)"
     key: null
     fk_note: null
   - name: EMAIL
-    data_type: "VARCHAR2(200 CHAR)"
+    data_type: "VARCHAR2(200)"
     description: "Email (từ CTCK, có thể sửa)"
     key: null
     fk_note: null
   - name: ACCOUNT_STATUS
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(10,0)"
     description: "Trạng thái: 0=Đóng, 1=Mở"
     key: null
     fk_note: null
@@ -85,17 +85,17 @@ columns:
     key: null
     fk_note: null
   - name: SECURITIES_CODE
-    data_type: "VARCHAR2(50 CHAR)"
+    data_type: "VARCHAR2(10)"
     description: "Mã chứng khoán"
     key: null
     fk_note: null
   - name: CREATED_AT
-    data_type: "TIMESTAMP"
+    data_type: "TIMESTAMP(6)"
     description: "Ngày tạo"
     key: null
     fk_note: null
   - name: UPDATED_AT
-    data_type: "TIMESTAMP"
+    data_type: "TIMESTAMP(6)"
     description: "Ngày sửa cuối"
     key: null
     fk_note: null
@@ -120,7 +120,12 @@ columns:
     key: null
     fk_note: null
   - name: DELETED
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "Soft delete: 0=Active, 1=Deleted"
+    key: null
+    fk_note: null
+  - name: WORKFLOW_ID
+    data_type: "VARCHAR2(36)"
+    description: "Id quy trình phân tích (analysis_workflow.id)"
     key: null
     fk_note: null

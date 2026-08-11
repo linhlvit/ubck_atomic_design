@@ -15,17 +15,17 @@ columns:
     key: null
     fk_note: null
   - name: WORKFLOW_TYPE
-    data_type: "NUMBER(2)"
+    data_type: "NUMBER(10,0)"
     description: "1=Sơ bộ, 2=Thao túng, 3=Nội gián, 4=Liên thị trường"
     key: null
     fk_note: null
   - name: ESSENTIAL
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(10,0)"
     description: "Biểu mẫu báo cáo được coi là Trọng yếu"
     key: null
     fk_note: null
   - name: TEMPLATE_TYPE
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(10,0)"
     description: "1=Báo cáo tổng hợp 2=Báo cáo phân tích"
     key: null
     fk_note: null
@@ -35,7 +35,7 @@ columns:
     key: null
     fk_note: "FK suy luận → TRANSACTION_REVIEW.ID"
   - name: REPORT_TYPE
-    data_type: "NUMBER(1,0)"
+    data_type: "NUMBER(10,0)"
     description: "1=Báo cáo cơ sở, 2=Báo cáo phái sinh"
     key: null
     fk_note: null
@@ -55,27 +55,42 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY_ID
-    data_type: "VARCHAR2(255)"
+    data_type: "VARCHAR2(36)"
     description: "User_id người tạo"
     key: null
     fk_note: null
   - name: UPDATED_BY_ID
-    data_type: "VARCHAR2(255)"
+    data_type: "VARCHAR2(36)"
     description: "User_id người cập nhật"
     key: null
     fk_note: null
   - name: CREATED_BY_NAME
-    data_type: "VARCHAR2(250)"
+    data_type: "VARCHAR2(255)"
     description: "Tên người tạo"
     key: null
     fk_note: null
   - name: UPDATED_BY_NAME
-    data_type: "VARCHAR2(250)"
+    data_type: "VARCHAR2(255)"
     description: "Tên người cập nhật"
     key: null
     fk_note: null
   - name: DELETED
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "Soft delete: 0=Active, 1=Deleted"
+    key: null
+    fk_note: null
+  - name: SECURITIES_CODE
+    data_type: "VARCHAR2(10)"
+    description: null
+    key: null
+    fk_note: null
+  - name: SECURITIES_ID
+    data_type: "VARCHAR2(36)"
+    description: null
+    key: null
+    fk_note: null
+  - name: WORKFLOW_ID
+    data_type: "VARCHAR2(36)"
+    description: "Id quy trình phân tích (analysis_workflow.id)"
     key: null
     fk_note: null

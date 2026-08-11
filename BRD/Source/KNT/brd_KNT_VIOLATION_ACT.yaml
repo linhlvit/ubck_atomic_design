@@ -1,0 +1,101 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: KNT
+table: VIOLATION_ACT
+brd_ref: BRD-SRC-KNT-VIOLATION_ACT
+columns:
+- name: ACCOUNT_NUMBER
+  data_type: "VARCHAR2(400)"
+  description: "Số tài khoản chứng khoán liên quan"
+  key: null
+  fk_note: null
+- name: BUY_QUANTITY
+  data_type: "NUMBER"
+  description: "Số lượng cổ phần mua vào trong giao dịch vi phạm"
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: "DATE"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: "VARCHAR2(200)"
+  description: "Tài khoản/tên người tạo bản ghi"
+  key: null
+  fk_note: "FK suy luận → SYS_USER.ID"
+- name: FINE_AMOUNT
+  data_type: "NUMBER"
+  description: "Số tiền phạt đối với hành vi vi phạm (đơn vị: đồng)"
+  key: null
+  fk_note: null
+- name: HOLDING_RATIO
+  data_type: "VARCHAR2(200)"
+  description: "Tỷ lệ nắm giữ cổ phần của đối tượng vi phạm (%)"
+  key: null
+  fk_note: null
+- name: ID
+  data_type: "VARCHAR2(200)"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: null
+  fk_note: null
+- name: LEGAL_BASIS_DOC
+  data_type: "VARCHAR2(4000)"
+  description: "Văn bản pháp luật áp dụng làm căn cứ xử lý"
+  key: null
+  fk_note: null
+- name: PENALTY_DECISION_ID
+  data_type: "VARCHAR2(200)"
+  description: "FK -> penalty_decision: Quyết định xử phạt chứa hành vi này"
+  key: null
+  fk_note: "FK suy luận → PENALTY_DECISION.ID"
+- name: REMEDIAL_MEASURE
+  data_type: "VARCHAR2(1020)"
+  description: "Biện pháp khắc phục hậu quả áp dụng"
+  key: null
+  fk_note: null
+- name: SECURITIES_CODE
+  data_type: "VARCHAR2(200)"
+  description: "Mã chứng khoán liên quan đến hành vi vi phạm giao dịch"
+  key: null
+  fk_note: null
+- name: SELL_QUANTITY
+  data_type: "NUMBER"
+  description: "Số lượng cổ phần bán ra trong giao dịch vi phạm"
+  key: null
+  fk_note: null
+- name: SHARES_QUANTITY
+  data_type: "NUMBER"
+  description: "Số lượng cổ phần liên quan đến hành vi vi phạm"
+  key: null
+  fk_note: null
+- name: SUBJECT_PROFILE_ID
+  data_type: "VARCHAR2(200)"
+  description: "FK -> subject_profile: Hồ sơ đối tượng có hành vi này (khi chuyển hồ sơ về thanh tra)"
+  key: null
+  fk_note: "FK suy luận → SUBJECT_PROFILE.ID"
+- name: TRANSACTION_DATE
+  data_type: "VARCHAR2(200)"
+  description: "Ngày thực hiện giao dịch vi phạm"
+  key: null
+  fk_note: null
+- name: VIOLATION_ACT_ID
+  data_type: "VARCHAR2(4000)"
+  description: "FK -> cat_violation_act: Loại hành vi vi phạm từ danh mục"
+  key: null
+  fk_note: null
+- name: VIOLATION_ACT_NAME
+  data_type: "VARCHAR2(4000)"
+  description: "Tên hành vi vi phạm pháp luật chứng khoán"
+  key: null
+  fk_note: null
+- name: VIOLATION_HANDLING_DOC
+  data_type: "VARCHAR2(4000)"
+  description: "Văn bản xử lý vi phạm tương ứng"
+  key: null
+  fk_note: null
+- name: VIOLATION_TYPE
+  data_type: "NUMBER"
+  description: "Loại vi phạm: 1=Giao dịch nội gián, 2=Thao túng, 3=Khác"
+  key: null
+  fk_note: null

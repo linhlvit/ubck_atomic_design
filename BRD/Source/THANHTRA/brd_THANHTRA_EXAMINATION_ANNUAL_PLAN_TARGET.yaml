@@ -5,27 +5,27 @@ table: EXAMINATION_ANNUAL_PLAN_TARGET
 brd_ref: BRD-SRC-THANHTRA-EXAMINATION_ANNUAL_PLAN_TARGET
 columns:
   - name: ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "Khóa chính UUID"
     key: PK
     fk_note: null
   - name: EXAMINATION_ANNUAL_PLAN_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "FK -> examination_annual_plan"
     key: FK
     fk_note: "FK → EXAMINATION_ANNUAL_PLAN.id"
   - name: TARGET_TYPE
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "Loại đối tượng: SECURITIES_COMPANY (CTCK), FUND_MANAGEMENT_COMPANY (CTQLQ), PUBLIC_COMPANY (CTĐC)"
     key: null
     fk_note: null
   - name: TARGET_REFERENCE_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "ID tham chiếu đối tượng trong hệ thống nguồn (IDS/SCMS/FMS)"
     key: null
     fk_note: null
   - name: TARGET_NAME
-    data_type: VARCHAR2(500 CHAR)
+    data_type: VARCHAR2(2000)
     description: "Tên đối tượng kiểm tra"
     key: null
     fk_note: null
@@ -40,12 +40,12 @@ columns:
     key: null
     fk_note: null
   - name: LEADING_UNIT_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "ID đơn vị chủ trì kiểm tra"
     key: null
     fk_note: null
   - name: LEADING_UNIT_NAME
-    data_type: VARCHAR2(200 CHAR)
+    data_type: VARCHAR2(800)
     description: "Tên đơn vị chủ trì kiểm tra"
     key: null
     fk_note: null
@@ -60,12 +60,12 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng tạo bản ghi"
     key: null
     fk_note: "FK suy luận → system_user.id"
   - name: LAST_MODIFIED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng cập nhật gần nhất"
     key: null
     fk_note: "FK suy luận → system_user.id"

@@ -5,32 +5,32 @@ table: PROACTIVE_NOTICE_RECIPIENT
 brd_ref: BRD-SRC-THANHTRA-PROACTIVE_NOTICE_RECIPIENT
 columns:
   - name: ID
-    data_type: VARCHAR2(36 BYTE)
+    data_type: VARCHAR2(36)
     description: "Khóa chính UUID"
     key: PK
     fk_note: null
   - name: PROACTIVE_NOTICE_ID
-    data_type: VARCHAR2(36 BYTE)
+    data_type: VARCHAR2(36)
     description: "FK -> proactive_notice"
     key: FK
     fk_note: "FK → PROACTIVE_NOTICE.id"
   - name: COMPANY_CODE
-    data_type: VARCHAR2(100 BYTE)
+    data_type: VARCHAR2(100)
     description: "Mã công ty nhận thông báo (CTCK hoặc CTQLQ)"
     key: null
     fk_note: null
   - name: COMPANY_NAME
-    data_type: VARCHAR2(500 BYTE)
+    data_type: VARCHAR2(500)
     description: "Tên công ty nhận thông báo"
     key: null
     fk_note: null
   - name: COMPANY_TYPE
-    data_type: VARCHAR2(50 BYTE)
+    data_type: VARCHAR2(50)
     description: "Loại công ty: SECURITIES_COMPANY (CTCK), FUND_MANAGEMENT_COMPANY (CT QLQ)"
     key: null
     fk_note: null
   - name: CONFIRMATION_STATUS
-    data_type: VARCHAR2(50 BYTE)
+    data_type: VARCHAR2(50)
     description: "Trạng thái xác nhận: PENDING (Chưa xác nhận), CONFIRMED (Đã xác nhận)"
     key: null
     fk_note: null
@@ -40,17 +40,17 @@ columns:
     key: null
     fk_note: null
   - name: CONFIRMED_BY
-    data_type: VARCHAR2(200 BYTE)
+    data_type: VARCHAR2(200)
     description: "Người đại diện công ty xác nhận nhận thông báo"
     key: null
     fk_note: null
   - name: PUSH_STATUS
-    data_type: VARCHAR2(50 BYTE)
+    data_type: VARCHAR2(50)
     description: "Trạng thái đẩy thông báo sang SCMS/FMS: PENDING (Chờ gửi), SUCCESS (Thành công), FAILED (Thất bại)"
     key: null
     fk_note: null
   - name: PUSH_ERROR
-    data_type: VARCHAR2(1000 BYTE)
+    data_type: VARCHAR2(1000)
     description: "Thông tin lỗi khi đẩy thông báo thất bại"
     key: null
     fk_note: null
@@ -65,12 +65,12 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: VARCHAR2(200 BYTE)
+    data_type: VARCHAR2(200)
     description: "ID người dùng tạo bản ghi"
     key: null
     fk_note: "FK suy luận → system_user.id"
   - name: LAST_MODIFIED_BY
-    data_type: VARCHAR2(200 BYTE)
+    data_type: VARCHAR2(200)
     description: "ID người dùng cập nhật gần nhất"
     key: null
     fk_note: "FK suy luận → system_user.id"
@@ -82,5 +82,10 @@ columns:
   - name: DELETED
     data_type: NUMBER(1,0)
     description: "Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa"
+    key: null
+    fk_note: null
+  - name: FMS_EVENT_ID
+    data_type: VARCHAR2(400)
+    description: null
     key: null
     fk_note: null

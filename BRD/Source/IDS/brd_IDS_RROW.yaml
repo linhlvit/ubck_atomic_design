@@ -10,27 +10,27 @@ columns:
     key: PK
     fk_note: null
   - name: ROW_NAME_VI
-    data_type: VARCHAR2(255)
+    data_type: VARCHAR2(1020)
     description: "Tên hàng (tiếng Việt)"
     key: null
     fk_note: null
   - name: ROW_NAME_EN
-    data_type: VARCHAR2(255)
+    data_type: VARCHAR2(1020)
     description: "Tên hàng (tiếng Anh)"
     key: null
     fk_note: null
   - name: ROW_CD
-    data_type: VARCHAR2(30)
+    data_type: VARCHAR2(120)
     description: "Lưu mã tự sinh của chỉ tiêu hàng. Quy tắc r+ sequence"
     key: null
     fk_note: null
   - name: ROW_TYPE_CD
-    data_type: VARCHAR2(100)
+    data_type: VARCHAR2(400)
     description: "Kiểu giá trị của hàng V/F/D - Value/Formula/Description  LOOKUP_VALUES với LOOKUP_GROUP='REPORT_ROW_TYPE'"
     key: null
     fk_note: null
   - name: ROW_FORMULA
-    data_type: VARCHAR2(1500)
+    data_type: VARCHAR2(4000)
     description: "Lưu công thức của hàng"
     key: null
     fk_note: null
@@ -45,12 +45,12 @@ columns:
     key: FK
     fk_note: "FK → REPORT_CATALOG.ID"
   - name: REPORT_YEAR
-    data_type: VARCHAR2(4)
+    data_type: VARCHAR2(16)
     description: "Lưu năm tạo báo cáo chứa, lấy từ bảng REPORT_CATALOG"
     key: null
     fk_note: null
   - name: RC_TYPE_CD
-    data_type: VARCHAR2(100)
+    data_type: VARCHAR2(400)
     description: "Loại báo cáo, lấy từ bảng REPORT_CATALOG"
     key: null
     fk_note: null
@@ -60,7 +60,7 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: VARCHAR2(30)
+    data_type: VARCHAR2(120)
     description: "Người tạo"
     key: null
     fk_note: "FK → LOGINS.ID"
@@ -70,7 +70,7 @@ columns:
     key: null
     fk_note: null
   - name: UPDATED_BY
-    data_type: VARCHAR2(30)
+    data_type: VARCHAR2(120)
     description: "Người sửa"
     key: null
     fk_note: "FK → LOGINS.ID"
@@ -80,7 +80,7 @@ columns:
     key: null
     fk_note: null
   - name: DESCRIPTION
-    data_type: VARCHAR2(1000)
+    data_type: VARCHAR2(4000)
     description: "Mô tả"
     key: null
     fk_note: null

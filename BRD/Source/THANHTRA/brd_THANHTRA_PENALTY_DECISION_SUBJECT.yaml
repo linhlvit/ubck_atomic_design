@@ -5,27 +5,27 @@ table: PENALTY_DECISION_SUBJECT
 brd_ref: BRD-SRC-THANHTRA-PENALTY_DECISION_SUBJECT
 columns:
   - name: ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "Khóa chính UUID"
     key: PK
     fk_note: null
   - name: PENALTY_DECISION_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "FK -> penalty_decision"
     key: FK
     fk_note: "FK → PENALTY_DECISION.id"
   - name: SUBJECT_TYPE
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "Loại đối tượng: INDIVIDUAL (Cá nhân), ORGANIZATION (Tổ chức)"
     key: null
     fk_note: null
   - name: SUBJECT_NAME
-    data_type: VARCHAR2(500 CHAR)
+    data_type: VARCHAR2(2000)
     description: "Tên đối tượng bị xử phạt (cá nhân hoặc tổ chức)"
     key: null
     fk_note: null
   - name: SUBJECT_ID_NUMBER
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "Số CCCD/CMND (cá nhân) hoặc Mã số thuế/GPKD (tổ chức)"
     key: null
     fk_note: null
@@ -35,17 +35,17 @@ columns:
     key: null
     fk_note: null
   - name: SUBJECT_ADDRESS
-    data_type: VARCHAR2(1000 CHAR)
+    data_type: VARCHAR2(4000)
     description: "Địa chỉ cư trú/trụ sở đối tượng bị xử phạt"
     key: null
     fk_note: null
   - name: SUBJECT_LEGAL_REP
-    data_type: VARCHAR2(200 CHAR)
+    data_type: VARCHAR2(800)
     description: "Tên người đại diện theo pháp luật (chỉ dùng cho tổ chức)"
     key: null
     fk_note: null
   - name: SUBJECT_LEGAL_REP_TITLE
-    data_type: VARCHAR2(200 CHAR)
+    data_type: VARCHAR2(800)
     description: "Chức vụ người đại diện theo pháp luật (chỉ dùng cho tổ chức)"
     key: null
     fk_note: null
@@ -70,7 +70,7 @@ columns:
     key: null
     fk_note: null
   - name: COMPLIANCE_STATUS
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "Trạng thái thi hành: NOT_PAID (Chưa nộp phạt - mặc định), PAID (Đã nộp phạt đủ), PARTIAL (Đã nộp một phần), COMPLAINING (Đang khiếu nại/khởi kiện)"
     key: null
     fk_note: null
@@ -95,12 +95,12 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng tạo bản ghi"
     key: null
     fk_note: "FK suy luận → system_user.id"
   - name: LAST_MODIFIED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng cập nhật gần nhất"
     key: null
     fk_note: "FK suy luận → system_user.id"
@@ -115,7 +115,7 @@ columns:
     key: null
     fk_note: null
   - name: PAYMENT_PROOF_URL
-    data_type: VARCHAR2(1000 CHAR)
+    data_type: VARCHAR2(4000)
     description: "URL file chứng từ nộp tiền phạt do người vi phạm upload"
     key: null
     fk_note: null
@@ -125,7 +125,57 @@ columns:
     key: null
     fk_note: null
   - name: SUBJECT_TAX_CODE
-    data_type: VARCHAR2(50 BYTE)
+    data_type: VARCHAR2(50)
     description: "Mã số thuế của đối tượng bị xử phạt"
+    key: null
+    fk_note: null
+  - name: CONFIRMED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm đối tượng xác nhận đã nhận quyết định"
+    key: null
+    fk_note: null
+  - name: DOWNLOADED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm đối tượng tải file quyết định"
+    key: null
+    fk_note: null
+  - name: EMAIL_SENT_AT
+    data_type: TIMESTAMP(6)
+    description: null
+    key: null
+    fk_note: null
+  - name: RECEIPT_STATUS
+    data_type: VARCHAR2(200)
+    description: "Trạng thái nhận QĐ (text): Chưa nhận / Đã nhận"
+    key: null
+    fk_note: null
+  - name: RECEIVED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm chuyển sang Đã nhận (lần đầu trong 3 thao tác)"
+    key: null
+    fk_note: null
+  - name: SMS_SENT_AT
+    data_type: TIMESTAMP(6)
+    description: null
+    key: null
+    fk_note: null
+  - name: SUBJECT_EMAIL
+    data_type: VARCHAR2(200)
+    description: null
+    key: null
+    fk_note: null
+  - name: SUBJECT_PHONE
+    data_type: VARCHAR2(50)
+    description: null
+    key: null
+    fk_note: null
+  - name: VIEWED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm đối tượng mở xem quyết định (portal)"
+    key: null
+    fk_note: null
+  - name: VIOLATION_RECORD_ID
+    data_type: VARCHAR2(36)
+    description: null
     key: null
     fk_note: null

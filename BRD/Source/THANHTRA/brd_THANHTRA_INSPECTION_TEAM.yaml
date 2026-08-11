@@ -5,17 +5,17 @@ table: INSPECTION_TEAM
 brd_ref: BRD-SRC-THANHTRA-INSPECTION_TEAM
 columns:
   - name: ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "Khóa chính UUID"
     key: PK
     fk_note: null
   - name: CODE
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "Mã hồ sơ tự sinh: HSTT-YYYY-XXX"
     key: null
     fk_note: null
   - name: INSPECTION_ANNUAL_PLAN_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "FK -> inspection_annual_plan (chỉ có khi form_type=PERIODIC)"
     key: FK
     fk_note: "FK → INSPECTION_ANNUAL_PLAN.id"
@@ -25,7 +25,7 @@ columns:
     key: null
     fk_note: null
   - name: FORM_TYPE
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "Hình thức: PERIODIC (Định kỳ), UNSCHEDULED (Đột xuất)"
     key: null
     fk_note: null
@@ -45,7 +45,7 @@ columns:
     key: null
     fk_note: null
   - name: DECISION_NUMBER
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "Số quyết định thanh tra (UNIQUE trên phân hệ)"
     key: null
     fk_note: null
@@ -55,7 +55,7 @@ columns:
     key: null
     fk_note: null
   - name: DECISION_NAME
-    data_type: VARCHAR2(500 CHAR)
+    data_type: VARCHAR2(2000)
     description: "Tên quyết định thanh tra"
     key: null
     fk_note: null
@@ -105,12 +105,12 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng tạo bản ghi"
     key: null
     fk_note: "FK suy luận → system_user.id"
   - name: LAST_MODIFIED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng cập nhật gần nhất"
     key: null
     fk_note: "FK suy luận → system_user.id"

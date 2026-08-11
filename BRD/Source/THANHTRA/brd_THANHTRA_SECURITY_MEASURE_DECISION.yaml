@@ -5,12 +5,12 @@ table: SECURITY_MEASURE_DECISION
 brd_ref: BRD-SRC-THANHTRA-SECURITY_MEASURE_DECISION
 columns:
   - name: ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "Khóa chính UUID"
     key: PK
     fk_note: null
   - name: DECISION_NUMBER
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "Số quyết định áp dụng biện pháp bảo đảm an ninh TTCK"
     key: null
     fk_note: null
@@ -20,7 +20,7 @@ columns:
     key: null
     fk_note: null
   - name: MEASURE_TYPE
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "Loại biện pháp: BAN_POSITION (Cấm đảm nhiệm chức vụ), BAN_ACTIVITY (Cấm thực hiện hoạt động CK), FREEZE_ACCOUNT (Phong tỏa tài khoản CK), OTHER (Khác)"
     key: null
     fk_note: null
@@ -35,7 +35,7 @@ columns:
     key: null
     fk_note: null
   - name: SIGNER_NAME
-    data_type: VARCHAR2(200 CHAR)
+    data_type: VARCHAR2(800)
     description: "Tên người ký quyết định (Lãnh đạo UBCKNN)"
     key: null
     fk_note: null
@@ -45,7 +45,7 @@ columns:
     key: null
     fk_note: null
   - name: SENT_STATUS
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "Trạng thái gửi: NOT_SENT (Chưa gửi), SENT (Đã gửi)"
     key: null
     fk_note: null
@@ -55,7 +55,7 @@ columns:
     key: null
     fk_note: null
   - name: SENT_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID cán bộ thực hiện gửi quyết định"
     key: null
     fk_note: null
@@ -75,12 +75,12 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng tạo bản ghi"
     key: null
     fk_note: "FK suy luận → system_user.id"
   - name: LAST_MODIFIED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng cập nhật gần nhất"
     key: null
     fk_note: "FK suy luận → system_user.id"

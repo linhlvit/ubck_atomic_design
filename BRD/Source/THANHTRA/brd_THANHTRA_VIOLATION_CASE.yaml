@@ -5,82 +5,82 @@ table: VIOLATION_CASE
 brd_ref: BRD-SRC-THANHTRA-VIOLATION_CASE
 columns:
   - name: ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "Khóa chính UUID"
     key: PK
     fk_note: null
   - name: CODE
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "Mã hồ sơ tự động sinh"
     key: null
     fk_note: null
   - name: NAME
-    data_type: VARCHAR2(500 CHAR)
+    data_type: VARCHAR2(2000)
     description: "Tên hồ sơ/vụ việc vi phạm hành chính"
     key: null
     fk_note: null
   - name: SOURCE_CATEGORY
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "Nguồn phát sinh: INSPECTION_RESULT (KQ thanh tra), INTERNAL_UNIT (Đơn vị nội bộ UBCKNN), STOCK_EXCHANGE (Sở GDCK), VSDC (VSDC), OTHER_SUPERVISION (KQ giám sát của đơn vị khác)"
     key: null
     fk_note: null
   - name: SOURCE_UNIT_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "ID đơn vị gửi kết quả giám sát/vi phạm"
     key: null
     fk_note: null
   - name: SOURCE_UNIT_NAME
-    data_type: VARCHAR2(200 CHAR)
+    data_type: VARCHAR2(800)
     description: "Tên đơn vị gửi kết quả (Sở GDCK, Ban giám sát, VSDC...)"
     key: null
     fk_note: null
   - name: INSPECTION_TEAM_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "FK -> inspection_team (liên kết hồ sơ đoàn thanh tra nếu phát sinh từ thanh tra)"
     key: FK
     fk_note: "FK → INSPECTION_TEAM.id"
   - name: EXAMINATION_TEAM_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "FK -> examination_team (liên kết hồ sơ đoàn kiểm tra nếu phát sinh từ kiểm tra)"
     key: FK
     fk_note: "FK → EXAMINATION_TEAM.id"
   - name: ASSIGNED_OFFICER_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "ID cán bộ phụ trách xử lý hồ sơ VPHC"
     key: null
     fk_note: "FK suy luận → system_user.id"
   - name: ASSIGNED_OFFICER_NAME
-    data_type: VARCHAR2(200 CHAR)
+    data_type: VARCHAR2(800)
     description: "Tên cán bộ phụ trách xử lý hồ sơ VPHC"
     key: null
     fk_note: null
   - name: SUPERVISING_LEADER_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "ID lãnh đạo phụ trách hồ sơ VPHC"
     key: null
     fk_note: "FK suy luận → system_user.id"
   - name: SUPERVISING_LEADER_NAME
-    data_type: VARCHAR2(200 CHAR)
+    data_type: VARCHAR2(800)
     description: "Tên lãnh đạo phụ trách hồ sơ VPHC"
     key: null
     fk_note: null
   - name: STATUS
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "Trạng thái: NEW (Mới tiếp nhận), PROCESSING (Đang xử lý), DECISION_ISSUED (Đã ban hành quyết định), ENFORCED (Đang cưỡng chế), CLOSED (Đã kết thúc)"
     key: null
     fk_note: null
   - name: BOND_ISSUER_CODE
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "Mã tổ chức phát hành trái phiếu (nếu hồ sơ liên quan TPDN)"
     key: null
     fk_note: null
   - name: MARKET_TYPE
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "Thị trường: DOMESTIC (Trong nước), INTERNATIONAL (Quốc tế)"
     key: null
     fk_note: null
   - name: BOND_CODE
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "Mã trái phiếu (nếu hồ sơ liên quan vi phạm về TPDN)"
     key: null
     fk_note: null
@@ -105,12 +105,12 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng tạo bản ghi"
     key: null
     fk_note: "FK suy luận → system_user.id"
   - name: LAST_MODIFIED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng cập nhật gần nhất"
     key: null
     fk_note: "FK suy luận → system_user.id"

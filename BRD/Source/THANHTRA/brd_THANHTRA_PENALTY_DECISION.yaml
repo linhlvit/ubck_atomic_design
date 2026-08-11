@@ -5,12 +5,12 @@ table: PENALTY_DECISION
 brd_ref: BRD-SRC-THANHTRA-PENALTY_DECISION
 columns:
   - name: ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "Khóa chính UUID"
     key: PK
     fk_note: null
   - name: DECISION_NUMBER
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "Số quyết định xử phạt VPHC (cập nhật sau khi ký, cấp số từ VBĐH)"
     key: null
     fk_note: null
@@ -20,32 +20,32 @@ columns:
     key: null
     fk_note: null
   - name: SIGNER_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "ID người ký quyết định (Lãnh đạo Thanh tra hoặc LĐ UBCKNN)"
     key: null
     fk_note: "FK suy luận → system_user.id"
   - name: SIGNER_NAME
-    data_type: VARCHAR2(200 CHAR)
+    data_type: VARCHAR2(800)
     description: "Tên người ký quyết định xử phạt"
     key: null
     fk_note: null
   - name: VIOLATION_CASE_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "FK -> violation_case: hồ sơ xử lý VPHC liên kết"
     key: FK
     fk_note: "FK → VIOLATION_CASE.id"
   - name: DECISION_CATEGORY
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "Phân loại: INSPECTOR_SIGNED (LĐ Thanh tra ký), SSC_LEADER_SIGNED (LĐ UBCKNN ký)"
     key: null
     fk_note: null
   - name: ASSIGNED_OFFICER_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "ID cán bộ được phân công theo dõi quyết định"
     key: null
     fk_note: "FK suy luận → system_user.id"
   - name: ASSIGNED_OFFICER_NAME
-    data_type: VARCHAR2(200 CHAR)
+    data_type: VARCHAR2(800)
     description: "Tên cán bộ được phân công theo dõi quyết định"
     key: null
     fk_note: null
@@ -65,7 +65,7 @@ columns:
     key: null
     fk_note: null
   - name: STATUS
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "Trạng thái: DRAFT (Nháp), PENDING_APPROVAL (Chờ phê duyệt), APPROVED (Đã phê duyệt - chờ cấp số), REJECTED (Bị từ chối), ISSUED (Đã ban hành), SENT_TO_SUBJECT (Đã gửi đối tượng), ENFORCED (Đang thi hành)"
     key: null
     fk_note: null
@@ -85,7 +85,7 @@ columns:
     key: null
     fk_note: null
   - name: COMPLAINT_STATUS
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "Trạng thái khiếu nại: PROCESSING (Đang xử lý), RESOLVED (Đã giải quyết)"
     key: null
     fk_note: null
@@ -115,12 +115,12 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng tạo bản ghi"
     key: null
     fk_note: "FK suy luận → system_user.id"
   - name: LAST_MODIFIED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng cập nhật gần nhất"
     key: null
     fk_note: "FK suy luận → system_user.id"
@@ -135,12 +135,12 @@ columns:
     key: null
     fk_note: null
   - name: SUBMITTED_BY_ID
-    data_type: VARCHAR2(100 BYTE)
+    data_type: VARCHAR2(100)
     description: "ID cán bộ trình phê duyệt quyết định"
     key: null
     fk_note: "FK suy luận → system_user.id"
   - name: APPROVER_ID
-    data_type: VARCHAR2(100 BYTE)
+    data_type: VARCHAR2(100)
     description: "ID Lãnh đạo Thanh tra được chọn phê duyệt"
     key: null
     fk_note: "FK suy luận → system_user.id"
@@ -150,12 +150,42 @@ columns:
     key: null
     fk_note: null
   - name: SIGNED_DOCUMENT_URL
-    data_type: VARCHAR2(1000 CHAR)
+    data_type: VARCHAR2(4000)
     description: "URL file PDF đã ký số, cập nhật sau khi VBĐH callback"
     key: null
     fk_note: null
   - name: SUMMARY
     data_type: CLOB
     description: "Trích yếu nội dung quyết định xử phạt"
+    key: null
+    fk_note: null
+  - name: APPROVER_NAME
+    data_type: VARCHAR2(200)
+    description: null
+    key: null
+    fk_note: null
+  - name: REVIEWED_AT
+    data_type: TIMESTAMP(6)
+    description: null
+    key: null
+    fk_note: null
+  - name: REVIEWED_BY_ID
+    data_type: VARCHAR2(100)
+    description: null
+    key: null
+    fk_note: null
+  - name: REVIEWER_ID
+    data_type: VARCHAR2(100)
+    description: null
+    key: null
+    fk_note: null
+  - name: REVIEWER_NAME
+    data_type: VARCHAR2(200)
+    description: null
+    key: null
+    fk_note: null
+  - name: SOURCE_DOCUMENT_URL
+    data_type: VARCHAR2(4000)
+    description: null
     key: null
     fk_note: null

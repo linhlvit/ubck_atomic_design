@@ -5,27 +5,27 @@ table: SUPERVISION_ACTIVITY_REPORT
 brd_ref: BRD-SRC-THANHTRA-SUPERVISION_ACTIVITY_REPORT
 columns:
   - name: ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "Khóa chính UUID"
     key: PK
     fk_note: null
   - name: UNIT_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "ID đơn vị báo cáo (tự động gán)"
     key: null
     fk_note: null
   - name: UNIT_NAME
-    data_type: VARCHAR2(200 CHAR)
+    data_type: VARCHAR2(800)
     description: "Tên đơn vị giám sát lập báo cáo (tự động gán theo Ban của người dùng)"
     key: null
     fk_note: null
   - name: TITLE
-    data_type: VARCHAR2(500 CHAR)
+    data_type: VARCHAR2(2000)
     description: "Tiêu đề báo cáo hoạt động kiểm tra của đơn vị giám sát"
     key: null
     fk_note: null
   - name: PERIOD_TYPE
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "Loại kỳ: MONTH (Tháng), QUARTER (Quý), HALF_YEAR (6 tháng), NINE_MONTHS (9 tháng), YEAR (Cả năm), OTHER (Khác)"
     key: null
     fk_note: null
@@ -45,7 +45,7 @@ columns:
     key: null
     fk_note: null
   - name: STATUS
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "Trạng thái: DRAFT (Nháp), SENT_TO_INSPECTOR (Đã gửi Thanh tra)"
     key: null
     fk_note: null
@@ -60,12 +60,12 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng tạo bản ghi"
     key: null
     fk_note: "FK suy luận → system_user.id"
   - name: LAST_MODIFIED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng cập nhật gần nhất"
     key: null
     fk_note: "FK suy luận → system_user.id"
@@ -77,5 +77,10 @@ columns:
   - name: DELETED
     data_type: NUMBER(1,0)
     description: "Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_BAN_ROLE
+    data_type: VARCHAR2(50)
+    description: null
     key: null
     fk_note: null

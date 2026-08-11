@@ -15,7 +15,7 @@ columns:
     key: FK
     fk_note: "FK → SECURITIES_OFFERING.ID"
   - name: OFFERING_PHASE_NAME
-    data_type: VARCHAR2(128)
+    data_type: VARCHAR2(512)
     description: "Tên đợt chào bán"
     key: null
     fk_note: null
@@ -30,12 +30,12 @@ columns:
     key: null
     fk_note: null
   - name: OFFERING_METHOD_CD
-    data_type: VARCHAR2(100)
+    data_type: VARCHAR2(400)
     description: "Hình thức chào bán phát hành --> Lấy từ bảng SECURITIES_OFFERING_PLANS"
     key: null
     fk_note: null
   - name: SECURITY_TYPE_CD
-    data_type: VARCHAR2(100)
+    data_type: VARCHAR2(400)
     description: "Loại chứng khoán: (gồm: Cổ phiếu; Cổ phiếu ưu đãi; Trái phiếu; Trái phiếu kèm chứng quyền; Trái phiếu chuyển đổi): LOOKUP_VALUES LOOKUP_GROUP = 'SO_SECURITY_TYPE'"
     key: null
     fk_note: null
@@ -80,7 +80,7 @@ columns:
     key: null
     fk_note: null
   - name: CAPITAL_SOURCE
-    data_type: VARCHAR2(255)
+    data_type: VARCHAR2(1020)
     description: "Nguồn (hiển thị đối với 1 số thủ tục)"
     key: null
     fk_note: null
@@ -215,7 +215,7 @@ columns:
     key: null
     fk_note: null
   - name: CERTIFICATE_NO
-    data_type: VARCHAR2(18)
+    data_type: VARCHAR2(72)
     description: "Số giấy chứng nhận"
     key: null
     fk_note: null
@@ -225,7 +225,7 @@ columns:
     key: null
     fk_note: null
   - name: OFFICIAL_LETTER_NO
-    data_type: VARCHAR2(18)
+    data_type: VARCHAR2(72)
     description: "Số công văn của UBCKNN"
     key: null
     fk_note: null
@@ -235,17 +235,17 @@ columns:
     key: null
     fk_note: null
   - name: APPROVAL_STATUS_CD
-    data_type: VARCHAR2(100)
+    data_type: VARCHAR2(400)
     description: "Trạng thái phê duyệt kết quả (dùng để Ban QLCB phê duyệt gồm: Chờ kiểm tra; Chờ duyệt; Đã duyệt; Từ chối) : LOOKUP_VALUES LOOKUP_GROUP = 'SO_APPROVAL_STATUS'"
     key: null
     fk_note: null
   - name: APPROVER_USER_ID
-    data_type: VARCHAR2(30)
+    data_type: VARCHAR2(120)
     description: "ID Login của Lãnh đạo phê duyệt"
     key: null
     fk_note: null
   - name: APPROVER_USER_NAME
-    data_type: VARCHAR2(128)
+    data_type: VARCHAR2(512)
     description: "Lãnh đạo duyệt phương án (Chuyên viên chọn lãnh đạo phê duyệt dữ liệu phương án)"
     key: null
     fk_note: null
@@ -255,12 +255,12 @@ columns:
     key: null
     fk_note: null
   - name: PROCESSOR_USER_NAME
-    data_type: VARCHAR2(128)
+    data_type: VARCHAR2(512)
     description: "Chuyên viên xử lý (đồng bộ từ TTHC về, có thể chọn user nếu thêm mới tại IDS)"
     key: null
     fk_note: null
   - name: REVISION_REASON
-    data_type: VARCHAR2(512)
+    data_type: VARCHAR2(2048)
     description: "Lý do chỉnh sửa"
     key: null
     fk_note: null
@@ -305,7 +305,7 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: VARCHAR2(30)
+    data_type: VARCHAR2(120)
     description: "Người tạo"
     key: null
     fk_note: "FK → LOGINS.ID"
@@ -315,7 +315,7 @@ columns:
     key: null
     fk_note: null
   - name: UPDATED_BY
-    data_type: VARCHAR2(30)
+    data_type: VARCHAR2(120)
     description: "Người sửa"
     key: null
     fk_note: "FK → LOGINS.ID"
@@ -327,5 +327,20 @@ columns:
   - name: APPROVER_COMMENT
     data_type: VARCHAR2(255)
     description: ""
+    key: null
+    fk_note: null
+  - name: BOND_TICKER
+    data_type: VARCHAR2(80)
+    description: "Mã trái phiếu"
+    key: null
+    fk_note: null
+  - name: EXTENSION_DATE
+    data_type: DATE
+    description: "Gia hạn đến ngày"
+    key: null
+    fk_note: null
+  - name: RESULT_SINGLE_OBJ
+    data_type: VARCHAR2(512)
+    description: null
     key: null
     fk_note: null

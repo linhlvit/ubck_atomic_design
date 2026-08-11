@@ -5,22 +5,22 @@ table: PENALTY_DECISION_APPROVAL_HISTORY
 brd_ref: BRD-SRC-THANHTRA-PENALTY_DECISION_APPROVAL_HISTORY
 columns:
   - name: ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "Khóa chính UUID"
     key: PK
     fk_note: null
   - name: PENALTY_DECISION_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "FK -> penalty_decision"
     key: FK
     fk_note: "FK → PENALTY_DECISION.id"
   - name: ACTION
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "Thao tác: CREATED (Tạo mới), EDITED (Chỉnh sửa), SUBMITTED (Trình duyệt), APPROVED (Phê duyệt), REJECTED (Từ chối), SENT_TO_SUBJECT (Gửi đối tượng)"
     key: null
     fk_note: null
   - name: PERFORMED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người thực hiện thao tác"
     key: null
     fk_note: "FK suy luận → system_user.id"
@@ -50,12 +50,12 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng tạo bản ghi"
     key: null
     fk_note: "FK suy luận → system_user.id"
   - name: LAST_MODIFIED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng cập nhật gần nhất"
     key: null
     fk_note: "FK suy luận → system_user.id"
@@ -67,5 +67,10 @@ columns:
   - name: DELETED
     data_type: NUMBER(1,0)
     description: "Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa"
+    key: null
+    fk_note: null
+  - name: ASSIGNEE_NAME
+    data_type: VARCHAR2(800)
+    description: "Người được chuyển ở bước trình/chuyển lãnh đạo (reviewer/approver được chọn)"
     key: null
     fk_note: null

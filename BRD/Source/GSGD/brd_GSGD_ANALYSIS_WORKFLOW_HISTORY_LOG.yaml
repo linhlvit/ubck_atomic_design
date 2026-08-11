@@ -15,7 +15,7 @@ columns:
     key: FK
     fk_note: "FK suy luận → ANALYSIS_WORKFLOW.ID"
   - name: ACTION_TYPE
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "0= DELETE 1=UPDATE"
     key: null
     fk_note: null
@@ -35,7 +35,7 @@ columns:
     key: null
     fk_note: null
   - name: ACTION_AT
-    data_type: "TIMESTAMP"
+    data_type: "TIMESTAMP(6)"
     description: "Thời điểm thực hiện thao tác"
     key: null
     fk_note: null
@@ -45,12 +45,12 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_AT
-    data_type: "TIMESTAMP"
+    data_type: "TIMESTAMP(6)"
     description: "Ngày tạo log"
     key: null
     fk_note: null
   - name: UPDATED_AT
-    data_type: "TIMESTAMP"
+    data_type: "TIMESTAMP(6)"
     description: "Ngày sửa cuối"
     key: null
     fk_note: null
@@ -75,7 +75,7 @@ columns:
     key: null
     fk_note: null
   - name: DELETED
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "Soft delete: 0=Active, 1=Deleted"
     key: null
     fk_note: null

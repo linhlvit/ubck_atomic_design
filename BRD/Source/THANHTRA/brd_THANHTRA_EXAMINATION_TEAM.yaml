@@ -5,27 +5,27 @@ table: EXAMINATION_TEAM
 brd_ref: BRD-SRC-THANHTRA-EXAMINATION_TEAM
 columns:
   - name: ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "Khóa chính UUID"
     key: PK
     fk_note: null
   - name: CODE
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "Mã hồ sơ đoàn kiểm tra tự sinh: HSKT-YYYY-XXX"
     key: null
     fk_note: null
   - name: EXAMINATION_ANNUAL_PLAN_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "FK -> examination_annual_plan (chỉ có khi form_type=PERIODIC)"
     key: FK
     fk_note: "FK → EXAMINATION_ANNUAL_PLAN.id"
   - name: UNIT_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "Đơn vị kiểm tra (tự động gán theo Ban của người dùng)"
     key: null
     fk_note: null
   - name: UNIT_NAME
-    data_type: VARCHAR2(200 CHAR)
+    data_type: VARCHAR2(800)
     description: "Tên đơn vị chủ trì kiểm tra (tự động gán theo Ban của người dùng đăng nhập)"
     key: null
     fk_note: null
@@ -35,7 +35,7 @@ columns:
     key: null
     fk_note: null
   - name: FORM_TYPE
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "Hình thức: PERIODIC (Định kỳ), UNSCHEDULED (Đột xuất)"
     key: null
     fk_note: null
@@ -55,7 +55,7 @@ columns:
     key: null
     fk_note: null
   - name: DECISION_NUMBER
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "Số quyết định kiểm tra (UNIQUE trên phân hệ)"
     key: null
     fk_note: null
@@ -65,7 +65,7 @@ columns:
     key: null
     fk_note: null
   - name: DECISION_NAME
-    data_type: VARCHAR2(500 CHAR)
+    data_type: VARCHAR2(2000)
     description: "Tên quyết định kiểm tra"
     key: null
     fk_note: null
@@ -115,12 +115,12 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng tạo bản ghi"
     key: null
     fk_note: "FK suy luận → system_user.id"
   - name: LAST_MODIFIED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng cập nhật gần nhất"
     key: null
     fk_note: "FK suy luận → system_user.id"
@@ -132,5 +132,10 @@ columns:
   - name: DELETED
     data_type: NUMBER(1,0)
     description: "Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_BAN_ROLE
+    data_type: VARCHAR2(50)
+    description: null
     key: null
     fk_note: null

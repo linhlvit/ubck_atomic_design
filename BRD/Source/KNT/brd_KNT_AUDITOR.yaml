@@ -1,0 +1,36 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: KNT
+table: AUDITOR
+brd_ref: BRD-SRC-KNT-AUDITOR
+columns:
+- name: APPROVAL_DATE
+  data_type: "DATE"
+  description: "Ngày UBCKNN chấp thuận kiểm toán viên"
+  key: null
+  fk_note: null
+- name: APPROVAL_REVOCATION_DATE
+  data_type: "DATE"
+  description: "Ngày UBCKNN hủy chấp thuận kiểm toán viên"
+  key: null
+  fk_note: null
+- name: AUDITOR_NAME
+  data_type: "VARCHAR2(800)"
+  description: "Họ tên kiểm toán viên"
+  key: null
+  fk_note: null
+- name: AUDIT_FIRM_ID
+  data_type: "NUMBER"
+  description: "FK -> audit_firm: Công ty kiểm toán của kiểm toán viên"
+  key: FK
+  fk_note: "FK → AUDIT_FIRM.ID"
+- name: ID
+  data_type: "NUMBER"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: PRACTICE_CERT_NUMBER
+  data_type: "VARCHAR2(200)"
+  description: "Số chứng chỉ hành nghề kiểm toán"
+  key: null
+  fk_note: null

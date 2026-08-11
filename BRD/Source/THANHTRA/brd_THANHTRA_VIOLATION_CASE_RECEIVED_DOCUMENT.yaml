@@ -5,17 +5,17 @@ table: VIOLATION_CASE_RECEIVED_DOCUMENT
 brd_ref: BRD-SRC-THANHTRA-VIOLATION_CASE_RECEIVED_DOCUMENT
 columns:
   - name: ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "Khóa chính UUID"
     key: PK
     fk_note: null
   - name: VIOLATION_CASE_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "FK -> violation_case"
     key: FK
     fk_note: "FK → VIOLATION_CASE.id"
   - name: DOCUMENT_NUMBER
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "Số văn bản tiếp nhận (kết quả giám sát, biên bản từ đơn vị khác)"
     key: null
     fk_note: null
@@ -25,17 +25,17 @@ columns:
     key: null
     fk_note: null
   - name: ISSUING_UNIT_NAME
-    data_type: VARCHAR2(200 CHAR)
+    data_type: VARCHAR2(800)
     description: "Tên đơn vị lập/gửi văn bản tiếp nhận"
     key: null
     fk_note: null
   - name: VIOLATION_SUBJECT_NAME
-    data_type: VARCHAR2(500 CHAR)
+    data_type: VARCHAR2(2000)
     description: "Tên đối tượng vi phạm trong văn bản tiếp nhận"
     key: null
     fk_note: null
   - name: VIOLATION_RECORD_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "FK -> violation_record (nếu chọn từ BB VPHC trên phân hệ, thêm FK sau khi tạo bảng violation_record)"
     key: FK
     fk_note: "FK → VIOLATION_RECORD.id"
@@ -50,12 +50,12 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng tạo bản ghi"
     key: null
     fk_note: "FK suy luận → system_user.id"
   - name: LAST_MODIFIED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng cập nhật gần nhất"
     key: null
     fk_note: "FK suy luận → system_user.id"
@@ -70,7 +70,7 @@ columns:
     key: null
     fk_note: null
   - name: ISSUING_UNIT_ID
-    data_type: VARCHAR2(36 BYTE)
+    data_type: VARCHAR2(36)
     description: "ID đơn vị lập/gửi văn bản tiếp nhận"
     key: null
     fk_note: null

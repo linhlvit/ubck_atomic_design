@@ -5,32 +5,32 @@ table: BUSINESS_LINE_LEVEL_1
 brd_ref: BRD-SRC-ECAT-BUSINESS_LINE_LEVEL_1
 columns:
 - name: ID
-  data_type: "VARCHAR2(144)"
+  data_type: "VARCHAR2(36 CHAR)"
   description: "Khóa chính (UUID v7)"
   key: PK
   fk_note: null
 - name: CODE
-  data_type: "VARCHAR2(80)"
+  data_type: "VARCHAR2(20 CHAR)"
   description: "Mã ngành nghề cấp 1"
   key: null
   fk_note: null
 - name: NAME
-  data_type: "VARCHAR2(1020)"
+  data_type: "VARCHAR2(255 CHAR)"
   description: "Tên ngành nghề cấp 1"
   key: null
   fk_note: null
 - name: EFFECTIVE
-  data_type: "NUMBER(1,0)"
+  data_type: "NUMBER(1)"
   description: "Tình trạng (1: Hiệu lực, 0: Hết hiệu lực)"
   key: null
   fk_note: null
 - name: DISPLAY_LABEL
-  data_type: "VARCHAR2(1020)"
+  data_type: "VARCHAR2(255 CHAR)"
   description: "Nhãn hiển thị"
   key: null
   fk_note: null
 - name: ACTIVE
-  data_type: "NUMBER(1,0)"
+  data_type: "NUMBER(1)"
   description: "Trạng thái (1: Đang sử dụng, 0: Không sử dụng)"
   key: null
   fk_note: null
@@ -40,7 +40,7 @@ columns:
   key: null
   fk_note: null
 - name: DELETED
-  data_type: "NUMBER(1,0)"
+  data_type: "NUMBER(1)"
   description: "Đánh dấu xóa mềm"
   key: null
   fk_note: null
@@ -50,7 +50,7 @@ columns:
   key: null
   fk_note: null
 - name: VERSION
-  data_type: "NUMBER"
+  data_type: "NUMBER(MAX)"
   description: "Phiên bản bản ghi"
   key: null
   fk_note: null
@@ -65,7 +65,7 @@ columns:
   key: null
   fk_note: null
 - name: OLD_ID
-  data_type: "VARCHAR2(144)"
+  data_type: "VARCHAR2(36 CHAR)"
   description: "ID của phiên bản trước đó"
   key: null
   fk_note: null
@@ -80,27 +80,27 @@ columns:
   key: null
   fk_note: null
 - name: CREATED_BY_ID
-  data_type: "VARCHAR2(144)"
+  data_type: "VARCHAR2(36 CHAR)"
   description: "ID người tạo"
   key: null
   fk_note: null
 - name: CREATED_BY_NAME
-  data_type: "VARCHAR2(1020)"
+  data_type: "VARCHAR2(255 CHAR)"
   description: "Tên người tạo"
   key: null
   fk_note: null
 - name: UPDATED_BY_ID
-  data_type: "VARCHAR2(144)"
+  data_type: "VARCHAR2(36 CHAR)"
   description: "ID người cập nhật"
   key: null
   fk_note: null
 - name: UPDATED_BY_NAME
-  data_type: "VARCHAR2(1020)"
+  data_type: "VARCHAR2(255 CHAR)"
   description: "Tên người cập nhật"
   key: null
   fk_note: null
 - name: STABLE_ID
-  data_type: "VARCHAR2(144)"
+  data_type: "VARCHAR2(36 CHAR)"
   description: "ID bản ghi ổn định - không đổi qua các version"
   key: null
   fk_note: null

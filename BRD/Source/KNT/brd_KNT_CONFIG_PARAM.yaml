@@ -1,0 +1,61 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: KNT
+table: CONFIG_PARAM
+brd_ref: BRD-SRC-KNT-CONFIG_PARAM
+columns:
+- name: CREATED_AT
+  data_type: "DATE"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: DESCRIPTION
+  data_type: "VARCHAR2(800)"
+  description: "Mô tả chi tiết"
+  key: null
+  fk_note: null
+- name: PARAM_CODE
+  data_type: "VARCHAR2(100)"
+  description: "Mã tham số hệ thống (key tra cứu)"
+  key: null
+  fk_note: null
+- name: PARAM_ID
+  data_type: "NUMBER"
+  description: "ID tham số (khóa chính bổ sung)"
+  key: PK
+  fk_note: null
+- name: PARAM_NAME
+  data_type: "VARCHAR2(400)"
+  description: "Tên tham số hệ thống"
+  key: null
+  fk_note: null
+- name: PARENT_ID
+  data_type: "NUMBER"
+  description: "FK -> cùng bảng: ID gói tin/tham số cha"
+  key: null
+  fk_note: "FK suy luận → CONFIG_PARAM.ID"
+- name: STATUS
+  data_type: "NUMBER"
+  description: "Trạng thái bản ghi: 1=Đang sử dụng, 0=Không sử dụng"
+  key: null
+  fk_note: null
+- name: SYSTEM_CODE
+  data_type: "NUMBER"
+  description: "Mã hệ thống nguồn (HeThongEnum): 1=IDS, 2=IDM, 3=Thanh tra, 4=SCMS, 5=FMS, 6=THUE (TCT)"
+  key: null
+  fk_note: null
+- name: TITLE
+  data_type: "VARCHAR2(400)"
+  description: "Tiêu đề hiển thị"
+  key: null
+  fk_note: null
+- name: TYPE
+  data_type: "NUMBER(2,0)"
+  description: "Loại/nhóm tham số cấu hình (phân loại theo nghiệp vụ hệ thống; không phải kiểu dữ liệu TEXT/NUMBER)"
+  key: null
+  fk_note: null
+- name: VALUE
+  data_type: "VARCHAR2(800)"
+  description: "Giá trị tham số/chỉ tiêu/cấu hình"
+  key: null
+  fk_note: null
