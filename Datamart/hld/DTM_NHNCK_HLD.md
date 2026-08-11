@@ -1248,8 +1248,7 @@ flowchart LR
 > Phân loại: **Tác nghiệp**
 > Atomic chính: `Securities Practitioner License Certificate Document` (`sp_license_certificate_document`) ← NHNCK.CertificateRecords — **READY**
 > Atomic phụ: `Securities Practitioner License Decision Document` (`sp_license_decision_document`) ← NHNCK.Decisions — join để lấy số quyết định cấp và thu hồi
-> Atomic phụ (K_NHNCK_43 — Sửa 2026-07-20): `Securities Practitioner Organization Employment Report` (`sp_organization_employment_report`) ← NHNCK.OrganizationReports — join qua FK `Securities Practitioner License Certificate Document Id` để lấy Certificate Number denormalized tại báo cáo gần nhất, theo đúng BA v2
-> Ghi chú: Cột "Trạng thái" trong Mockup (K_NHNCK_48) — (Sửa 2026-08) READY, xem O_NHNCK_16.
+> Ghi chú: Cột "Trạng thái" trong Mockup (K_NHNCK_48) — (Sửa 2026-08) READY, xem O_NHNCK_16. (Sửa 2026-08-11, K_NHNCK_43) Certificate Number đổi nguồn về `sp_license_certificate_document.certificate_nbr` (cột trực tiếp trên CERTIFICATE_RECORDS, direct — không còn join `sp_organization_employment_report`).
 
 **Mockup:**
 
@@ -1265,7 +1264,7 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Nguồn | Ghi chú |
 |---|---|---|---|---|---|
-| K_NHNCK_43 | Số CCHN | Text | Base | (Sửa 2026-07-20 — BA v2) `Securities Practitioner Organization Employment Report`.Certificate Number At Report — bản ghi báo cáo gần nhất theo Report Date CỦA CHÍNH CCHN đang xét (join qua FK Certificate Document Id trên ORGANIZATION_REPORTS, không phải gần nhất của NHN) | Khai sinh tại Nhóm 9 |
+| K_NHNCK_43 | Số CCHN | Text | Base | (Sửa 2026-08-11) `Securities Practitioner License Certificate Document`.Certificate Number — direct, cột gốc trên chính driving table (CERTIFICATE_RECORDS), không còn join `Securities Practitioner Organization Employment Report` như quyết định 2026-07-20 | Khai sinh tại Nhóm 9 |
 | K_NHNCK_44 | Loại hình hành nghề | Text | Base | `Securities Practitioner License Certificate Document`.Certificate Type Code — ETL join `SP License Certificate Type` (Fundamental entity), denormalize Certificate Type Name khi populate bảng | Khai sinh tại Nhóm 9 |
 | K_NHNCK_45 | Ngày cấp | Date | Base | `Securities Practitioner License Certificate Document`.Issue Date | Khai sinh tại Nhóm 9 |
 | K_NHNCK_46 | Ngày thu hồi | Date | Base | `Securities Practitioner License Certificate Document`.Revocation Date — NULL nếu chưa thu hồi | Khai sinh tại Nhóm 9 |

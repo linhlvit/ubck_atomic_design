@@ -1113,11 +1113,11 @@ entities:
         physical_name: "certificate_nbr"
         data_domain: "Text"
         data_type: "string"
-        nullable: true
+        nullable: false
         key: ""
-        description: "(Sửa 2026-07-20) Số CCHN — lấy từ báo cáo tổ chức gần nhất CỦA CHÍNH CCHN đang xét (join qua FK Certificate Document Id trên ORGANIZATION_REPORTS), không phải direct từ Certificate Document"
-        source_atomic_table: "sp_organization_employment_report"
-        source_atomic_column: "sp_organization_employment_report.certificate_nbr_at_rpt"
+        description: "(Sửa 2026-08-11) Số CCHN — đổi nguồn về CERTIFICATE_RECORDS: lấy trực tiếp từ sp_license_certificate_document.certificate_nbr (cột gốc trên driving table, không qua join report)"
+        source_atomic_table: "sp_license_certificate_document"
+        source_atomic_column: "sp_license_certificate_document.certificate_nbr"
       - logical_name: "Certificate Type Code"
         physical_name: "certificate_tp_code"
         data_domain: "Text"
