@@ -1,0 +1,56 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: QRTZ_JOB_DETAILS
+brd_ref: BRD-SRC-IDS-QRTZ_JOB_DETAILS
+columns:
+- name: SCHED_NAME
+  data_type: "VARCHAR2(120)"
+  description: "tên scheduler"
+  key: PK
+  fk_note: null
+- name: JOB_NAME
+  data_type: "VARCHAR2(200)"
+  description: "tên job"
+  key: PK
+  fk_note: null
+- name: JOB_GROUP
+  data_type: "VARCHAR2(200)"
+  description: "nhóm job"
+  key: PK
+  fk_note: null
+- name: DESCRIPTION
+  data_type: "VARCHAR2(250)"
+  description: "mô tả"
+  key: null
+  fk_note: null
+- name: JOB_CLASS_NAME
+  data_type: "VARCHAR2(250)"
+  description: "class Java thực thi"
+  key: null
+  fk_note: null
+- name: IS_DURABLE
+  data_type: "VARCHAR2(1)"
+  description: "durable job"
+  key: null
+  fk_note: null
+- name: IS_NONCONCURRENT
+  data_type: "VARCHAR2(1)"
+  description: "có cho chạy song song"
+  key: null
+  fk_note: null
+- name: IS_UPDATE_DATA
+  data_type: "VARCHAR2(1)"
+  description: "update JobDataMap sau execute"
+  key: null
+  fk_note: null
+- name: REQUESTS_RECOVERY
+  data_type: "VARCHAR2(1)"
+  description: "recovery khi node chết"
+  key: null
+  fk_note: null
+- name: JOB_DATA
+  data_type: "BLOB"
+  description: "serialized job data"
+  key: null
+  fk_note: null

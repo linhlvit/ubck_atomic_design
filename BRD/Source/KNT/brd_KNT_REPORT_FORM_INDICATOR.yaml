@@ -4,11 +4,6 @@ source: KNT
 table: REPORT_FORM_INDICATOR
 brd_ref: BRD-SRC-KNT-REPORT_FORM_INDICATOR
 columns:
-- name: FORM_INDICATOR_ID
-  data_type: "NUMBER"
-  description: "FK -> report_indicator: Chỉ tiêu biểu mẫu liên quan"
-  key: FK
-  fk_note: "FK → REPORT_INDICATOR.ID"
 - name: ID
   data_type: "NUMBER"
   description: "Khóa chính của bản ghi (ID số tự tăng)"
@@ -19,13 +14,18 @@ columns:
   description: "FK -> report_form: Biểu mẫu báo cáo liên quan"
   key: FK
   fk_note: "FK → REPORT_FORM.ID"
-- name: SHEET_NAME
-  data_type: "VARCHAR2(400)"
-  description: "Mã sheet trong biểu mẫu (LoaiBaoCaoChiTietEnum): 1=BCDKT, 2=KQKD, 3=KQKDHD, 4=LCTT-TT, 5=LCTT-GT, 6=CTTKC, 9=THBDVCSH"
-  key: null
-  fk_note: null
+- name: FORM_INDICATOR_ID
+  data_type: "NUMBER"
+  description: "FK -> report_indicator: Chỉ tiêu biểu mẫu liên quan"
+  key: FK
+  fk_note: "FK → REPORT_INDICATOR.ID"
 - name: SORT_ORDER
   data_type: "NUMBER"
   description: "Số thứ tự hiển thị/sắp xếp"
+  key: null
+  fk_note: null
+- name: SHEET_NAME
+  data_type: "VARCHAR2(400)"
+  description: "Mã sheet trong biểu mẫu (LoaiBaoCaoChiTietEnum): 1=BCDKT, 2=KQKD, 3=KQKDHD, 4=LCTT-TT, 5=LCTT-GT, 6=CTTKC, 9=THBDVCSH"
   key: null
   fk_note: null

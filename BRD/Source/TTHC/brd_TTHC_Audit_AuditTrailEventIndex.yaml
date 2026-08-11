@@ -4,19 +4,9 @@ source: TTHC
 table: Audit_AuditTrailEventIndex
 brd_ref: BRD-SRC-TTHC-Audit_AuditTrailEventIndex
 columns:
-- name: CATEGORY
-  data_type: "VARCHAR2(100)"
-  description: "Category"
-  key: null
-  fk_note: null
-- name: CORRELATIONID
-  data_type: "VARCHAR2(100)"
-  description: "Correlationid"
-  key: null
-  fk_note: null
-- name: CREATEDUTC
-  data_type: "VARCHAR2(100)"
-  description: "Createdutc"
+- name: ID
+  data_type: "NUMBER"
+  description: "Khóa chính (tự tăng)"
   key: null
   fk_note: null
 - name: DOCUMENTID
@@ -29,9 +19,9 @@ columns:
   description: "Eventid"
   key: null
   fk_note: null
-- name: ID
-  data_type: "NUMBER"
-  description: "Khóa chính (tự tăng)"
+- name: CATEGORY
+  data_type: "VARCHAR2(100)"
+  description: "Category"
   key: null
   fk_note: null
 - name: NAME
@@ -39,13 +29,23 @@ columns:
   description: "Tên hiển thị"
   key: null
   fk_note: null
-- name: NORMALIZEDUSERNAME
+- name: CORRELATIONID
   data_type: "VARCHAR2(100)"
-  description: "Normalizedusername"
+  description: "Correlationid"
   key: null
   fk_note: null
 - name: USERID
   data_type: "VARCHAR2(100)"
   description: "Userid"
+  key: null
+  fk_note: null
+- name: NORMALIZEDUSERNAME
+  data_type: "VARCHAR2(100)"
+  description: "Normalizedusername"
+  key: null
+  fk_note: null
+- name: CREATEDUTC
+  data_type: "VARCHAR2(100)"
+  description: "Createdutc"
   key: null
   fk_note: null

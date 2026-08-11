@@ -988,3 +988,349 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+  - brd_id: BRD-SRC-KNT-COMPANY_COMPARISON
+    brd_name: Design Atomic từ nguồn KNT bảng COMPANY_COMPARISON
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Kết quả đối chiếu thông tin công ty giữa UBCKNN và Cục Thuế theo MST
+      functional_group: KNT - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: COMPANY_COMPARISON
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-KNT-COMPANY_COMPARISON_QUEUE
+    brd_name: Design Atomic từ nguồn KNT bảng COMPANY_COMPARISON_QUEUE
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Hàng đợi xử lý đối chiếu thông tin công ty (worker, retry, trạng thái)
+      functional_group: KNT - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: COMPANY_COMPARISON_QUEUE
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: created_at >= {{etl_date}} AND created_at < {{etl_date}} + 1
+        filter_note: Lọc theo cột CREATED_AT — bảng chỉ append, không cập nhật dòng cũ
+  - brd_id: BRD-SRC-KNT-DATA_GEN_ERROR_LOG
+    brd_name: Design Atomic từ nguồn KNT bảng DATA_GEN_ERROR_LOG
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: 'Nhật ký lỗi sinh dữ liệu hoặc gửi push Trục: giai đoạn, HTTP status, mã lỗi, người/job xử lý'
+      functional_group: KNT - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: DATA_GEN_ERROR_LOG
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: create_date >= {{etl_date}} AND create_date < {{etl_date}} + 1
+        filter_note: Lọc theo cột CREATE_DATE — bảng chỉ append, không cập nhật dòng cũ
+  - brd_id: BRD-SRC-KNT-DATA_RECONCILIATION
+    brd_name: Design Atomic từ nguồn KNT bảng DATA_RECONCILIATION
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Data reconciliation result by date — SSC (UB) or Tax (CT)
+      functional_group: KNT - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: DATA_RECONCILIATION
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-KNT-DATA_RECONCILIATION_OUTBOUND
+    brd_name: Design Atomic từ nguồn KNT bảng DATA_RECONCILIATION_OUTBOUND
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Outbound reconciliation packet log from SSC (msg_id, packet_code)
+      functional_group: KNT - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: DATA_RECONCILIATION_OUTBOUND
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-KNT-HUB_NOTIFICATION
+    brd_name: Design Atomic từ nguồn KNT bảng HUB_NOTIFICATION
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: 'Thông báo hiển thị trên panel chuông (hub): nội dung + metadata điều hướng / thử lại'
+      functional_group: KNT - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: HUB_NOTIFICATION
+      related_tables:
+        - table: HUB_NOTIFICATION_USER
+          relation: '1-N — Trạng thái thông báo theo user: persist khi user bấm Bỏ qua / đánh dấu đã đọc'
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: created_at >= {{etl_date}} AND created_at < {{etl_date}} + 1
+        filter_note: Lọc theo cột CREATED_AT — bảng chỉ append, không cập nhật dòng cũ
+  - brd_id: BRD-SRC-KNT-HUB_NOTIFICATION_USER
+    brd_name: Design Atomic từ nguồn KNT bảng HUB_NOTIFICATION_USER
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: 'Trạng thái thông báo theo user: persist khi user bấm Bỏ qua / đánh dấu đã đọc'
+      functional_group: KNT - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: HUB_NOTIFICATION_USER
+      related_tables:
+        - table: HUB_NOTIFICATION
+          relation: 'FK cha — Thông báo hiển thị trên panel chuông (hub): nội dung + metadata điều hướng / thử lại'
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-KNT-LOG_CREATE_DATA_SSC
+    brd_name: Design Atomic từ nguồn KNT bảng LOG_CREATE_DATA_SSC
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Nhật ký sinh dữ liệu báo cáo gửi UBCKNN (XML, trạng thái, lỗi phát sinh)
+      functional_group: KNT - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: LOG_CREATE_DATA_SSC
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: created_by >= {{etl_date}} AND created_by < {{etl_date}} + 1
+        filter_note: Lọc theo cột CREATED_BY — bảng chỉ append, không cập nhật dòng cũ
+  - brd_id: BRD-SRC-KNT-MSG_PACKET_CODE_SLOT
+    brd_name: Design Atomic từ nguồn KNT bảng MSG_PACKET_CODE_SLOT
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Bộ đếm slot sinh mã gói tin theo khóa (tránh trùng MA_GOI_TIN khi tạo hàng loạt)
+      functional_group: KNT - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: MSG_PACKET_CODE_SLOT
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-KNT-MSG_PACKET_CONTENT
+    brd_name: Design Atomic từ nguồn KNT bảng MSG_PACKET_CONTENT
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: 'Payload CLOB tách khỏi msg_packet: XML đầu vào, XML gửi/ký, JSON logic và phản hồi Trục CT/BTC'
+      functional_group: KNT - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: MSG_PACKET_CONTENT
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-KNT-MSG_PACKET_YC_TT_RESPONSE_LOG
+    brd_name: Design Atomic từ nguồn KNT bảng MSG_PACKET_YC_TT_RESPONSE_LOG
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Log JSON response YC TT từ CT — mỗi response 1 dòng; msg_packet_id chung cho lần YC
+      functional_group: KNT - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: MSG_PACKET_YC_TT_RESPONSE_LOG
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: created_at >= {{etl_date}} AND created_at < {{etl_date}} + 1
+        filter_note: Lọc theo cột CREATED_AT — bảng chỉ append, không cập nhật dòng cũ
+  - brd_id: BRD-SRC-KNT-REPORT_COMPARISON_QUEUE
+    brd_name: Design Atomic từ nguồn KNT bảng REPORT_COMPARISON_QUEUE
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Hàng đợi xử lý đối chiếu báo cáo tài chính (worker, retry, trạng thái)
+      functional_group: KNT - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: REPORT_COMPARISON_QUEUE
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: created_at >= {{etl_date}} AND created_at < {{etl_date}} + 1
+        filter_note: Lọc theo cột CREATED_AT — bảng chỉ append, không cập nhật dòng cũ
+  - brd_id: BRD-SRC-KNT-SYS_EXCHANGE_API
+    brd_name: Design Atomic từ nguồn KNT bảng SYS_EXCHANGE_API
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Danh mục API trao đổi dữ liệu cung cấp cho hệ thống ngoài
+      functional_group: KNT - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: SYS_EXCHANGE_API
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: created_at >= {{etl_date}} AND created_at < {{etl_date}} + 1
+        filter_note: Lọc theo cột CREATED_AT — bảng chỉ append, không cập nhật dòng cũ
+  - brd_id: BRD-SRC-KNT-SYS_EXCHANGE_REGISTRATION
+    brd_name: Design Atomic từ nguồn KNT bảng SYS_EXCHANGE_REGISTRATION
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Đăng ký hệ thống ngoài được phép gọi API trao đổi dữ liệu (API key, chứng thư xác minh)
+      functional_group: KNT - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: SYS_EXCHANGE_REGISTRATION
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: created_at >= {{etl_date}} AND created_at < {{etl_date}} + 1
+        filter_note: Lọc theo cột CREATED_AT — bảng chỉ append, không cập nhật dòng cũ
+  - brd_id: BRD-SRC-KNT-SYS_EXPORT_SCHEMA_04
+    brd_name: Design Atomic từ nguồn KNT bảng SYS_EXPORT_SCHEMA_04
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Data Pump Master Table EXPORT                         SCHEMA
+      functional_group: KNT - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: SYS_EXPORT_SCHEMA_04
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-KNT-SYS_FUNCTION
+    brd_name: Design Atomic từ nguồn KNT bảng SYS_FUNCTION
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Danh mục chức năng/menu hệ thống KNT theo cấu trúc phân cấp cha-con
+      functional_group: KNT - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: SYS_FUNCTION
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-KNT-TTCS_REQUEST_TAX_CODE_CACHE
+    brd_name: Design Atomic từ nguồn KNT bảng TTCS_REQUEST_TAX_CODE_CACHE
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Cache MST/tên DN phục vụ yêu cầu thông tin TTCS (tra cứu nhanh theo hệ thống nguồn)
+      functional_group: KNT - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: TTCS_REQUEST_TAX_CODE_CACHE
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-KNT-T_TRIG_Q_TEST
+    brd_name: Design Atomic từ nguồn KNT bảng T_TRIG_Q_TEST
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Bảng kỹ thuật thử nghiệm trigger/queue (không dùng cho nghiệp vụ)
+      functional_group: KNT - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: T_TRIG_Q_TEST
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null

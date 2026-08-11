@@ -1,0 +1,91 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: REP_DATA
+brd_ref: BRD-SRC-IDS-REP_DATA
+columns:
+- name: ID
+  data_type: "NUMBER(19,0)"
+  description: "Khóa chính"
+  key: PK
+  fk_note: null
+- name: COMPANY_PROFILE_ID
+  data_type: "NUMBER(10,0)"
+  description: "ID Hồ sơ doanh nghiệp"
+  key: FK
+  fk_note: "FK → COMPANY_PROFILES.ID"
+- name: LEGAL_ENTITY_ID
+  data_type: "NUMBER(10,0)"
+  description: "ID Nhà đầu tư (NNB, NLQ, CĐ)"
+  key: null
+  fk_note: null
+- name: COMPANY_DATA_ID
+  data_type: "NUMBER(10,0)"
+  description: "Lưu ID tin"
+  key: null
+  fk_note: null
+- name: REP_FORM_ID
+  data_type: "NUMBER(10,0)"
+  description: "ID của báo cáo có cấu trúc"
+  key: null
+  fk_note: null
+- name: DATA_VALUE
+  data_type: "FLOAT"
+  description: "Lưu dữ liệu kiểu số (cả số; tỷ lệ)"
+  key: null
+  fk_note: null
+- name: TEXT_VALUE
+  data_type: "VARCHAR2(4000)"
+  description: "Lưu dữ liệu kiểu chuỗi"
+  key: null
+  fk_note: null
+- name: REP_ROW_ID
+  data_type: "NUMBER(10,0)"
+  description: "ID của Hàng"
+  key: null
+  fk_note: null
+- name: REP_COL_ID
+  data_type: "NUMBER(10,0)"
+  description: "ID của cột"
+  key: null
+  fk_note: null
+- name: REP_ROW_INDEX
+  data_type: "NUMBER(3,0)"
+  description: "STT của hàng"
+  key: null
+  fk_note: null
+- name: REP_COL_INDEX
+  data_type: "NUMBER(3,0)"
+  description: "STT của cột - sử dụng để hiển thị lần lượt trên ds theo số TT này"
+  key: null
+  fk_note: null
+- name: COL_DATA_TYPE
+  data_type: "VARCHAR2(400)"
+  description: "Kiểu dữ liệu N(Number), T(Text): LOOKUP_VALUES với LOOKUP_GROUP='RF_C_DATA_TYPE'"
+  key: null
+  fk_note: null
+- name: ROW_DATA_TYPE
+  data_type: "VARCHAR2(400)"
+  description: "Kiểu dữ liệu: V(Value), D(Description): LOOKUP_VALUES với LOOKUP_GROUP='RF_R_DATA_TYPE'"
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: "VARCHAR2(120)"
+  description: "Người tạo"
+  key: null
+  fk_note: null
+- name: CREATED_DATE
+  data_type: "DATE"
+  description: "Ngày tạo"
+  key: null
+  fk_note: null
+- name: UPDATED_BY
+  data_type: "VARCHAR2(120)"
+  description: "Người sửa"
+  key: null
+  fk_note: null
+- name: UPDATED_DATE
+  data_type: "DATE"
+  description: "Ngày sửa"
+  key: null
+  fk_note: null

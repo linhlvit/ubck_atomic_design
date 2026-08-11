@@ -64,11 +64,6 @@ columns:
     description: "*Đơn vị tính thời gian*"
     key: null
     fk_note: null
-  - name: FEE_AMOUNT
-    data_type: "NUMBER(15,0)"
-    description: "*Lệ phí*"
-    key: null
-    fk_note: null
   - name: FEE_UNIT_CURRENCY_ID
     data_type: "VARCHAR2(36 CHAR)"
     description: "*Stable Id** tiền tệ lệ phí (tham chiếu currency.**stableI**d)*"
@@ -77,11 +72,6 @@ columns:
   - name: FEE_PAYMENT_METHOD
     data_type: "VARCHAR2(50 CHAR)"
     description: "*Hình thức nộp lệ phí*"
-    key: null
-    fk_note: null
-  - name: COMPETENT_AUTHORITY
-    data_type: "CLOB"
-    description: "*Cơ quan có thẩm quyền*"
     key: null
     fk_note: null
   - name: COORDINATING_AGENCY
@@ -174,6 +164,11 @@ columns:
     description: "*Tên người cập nhật*"
     key: null
     fk_note: null
+  - name: IMPLEMENTATION_RESULT
+    data_type: "CLOB"
+    description: ""
+    key: null
+    fk_note: null
   - name: STABLE_ID
     data_type: "VARCHAR2(36 CHAR)"
     description: "*ID bản ghi ổn định - không đổi qua các version*"
@@ -184,13 +179,18 @@ columns:
     description: "*ID của đơn vị tiền tệ phí*"
     key: null
     fk_note: null
-  - name: IMPLEMENTATION_RESULT
-    data_type: "CLOB"
-    description: ""
+  - name: FEE_AMOUNT
+    data_type: "NUMBER(15,0)"
+    description: "*Lệ phí*"
     key: null
     fk_note: null
   - name: EFFECTIVE
     data_type: "NUMBER(1,0)"
     description: "Tình trạng (1: Hiệu lực, 0: Hết hiệu lực)"
+    key: null
+    fk_note: null
+  - name: COMPETENT_AUTHORITY
+    data_type: "CLOB"
+    description: "*Cơ quan có thẩm quyền*"
     key: null
     fk_note: null

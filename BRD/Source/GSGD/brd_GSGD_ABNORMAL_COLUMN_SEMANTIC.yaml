@@ -1,0 +1,66 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: GSGD
+table: ABNORMAL_COLUMN_SEMANTIC
+brd_ref: BRD-SRC-GSGD-ABNORMAL_COLUMN_SEMANTIC
+columns:
+- name: ID
+  data_type: "VARCHAR2(36)"
+  description: "Primary key (UUID)"
+  key: PK
+  fk_note: null
+- name: FORM_CODE
+  data_type: "VARCHAR2(200)"
+  description: "Ma phu luc, vd ABT_CTCK_F01"
+  key: null
+  fk_note: null
+- name: COLUMN_CODE
+  data_type: "VARCHAR2(50)"
+  description: "Ma cot vi tri trong row_data, vd COL_02"
+  key: null
+  fk_note: null
+- name: SEMANTIC_FIELD
+  data_type: "VARCHAR2(40)"
+  description: "Nghia nghiep vu cua cot (enum SemanticField)"
+  key: null
+  fk_note: null
+- name: EXPECTED_LABEL
+  data_type: "VARCHAR2(2000)"
+  description: "Snapshot nhan tieng Viet luc seed, dung phat hien layout drift"
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: "TIMESTAMP(6)"
+  description: "Ngay tao"
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: "TIMESTAMP(6)"
+  description: "Ngay sua cuoi"
+  key: null
+  fk_note: null
+- name: CREATED_BY_ID
+  data_type: "VARCHAR2(255)"
+  description: "User_id nguoi tao"
+  key: null
+  fk_note: null
+- name: UPDATED_BY_ID
+  data_type: "VARCHAR2(255)"
+  description: "User_id nguoi cap nhat"
+  key: null
+  fk_note: null
+- name: CREATED_BY_NAME
+  data_type: "VARCHAR2(250)"
+  description: "Ten nguoi tao"
+  key: null
+  fk_note: null
+- name: UPDATED_BY_NAME
+  data_type: "VARCHAR2(250)"
+  description: "Ten nguoi cap nhat"
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: "NUMBER(1,0)"
+  description: "Soft delete: 0=Active, 1=Deleted"
+  key: null
+  fk_note: null

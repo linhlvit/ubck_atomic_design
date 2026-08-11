@@ -24,6 +24,11 @@ columns:
     description: "*Stable Id** tỉnh/thành phố cũ (tham chiếu province_old.**stableId**)*"
     key: null
     fk_note: null
+  - name: EFFECTIVE
+    data_type: "NUMBER(1,0)"
+    description: "Tình trạng (1: Hiệu lực, 0: Hết hiệu lực)"
+    key: null
+    fk_note: null
   - name: DISPLAY_LABEL
     data_type: "VARCHAR2(255 CHAR)"
     description: "*Nhãn hiển thị*"
@@ -42,6 +47,11 @@ columns:
   - name: DELETED
     data_type: "NUMBER(1,0)"
     description: "*Thời điểm cập nhật*"
+    key: null
+    fk_note: null
+  - name: DELETED_REASON
+    data_type: "CLOB"
+    description: "Lý do xóa"
     key: null
     fk_note: null
   - name: VERSION
@@ -102,16 +112,6 @@ columns:
   - name: PROVINCE_OLD_VERSION_ID
     data_type: "VARCHAR2(36 CHAR)"
     description: "*ID phiên bản của ProvinceOld (lưu **province_old.id hiện tại)*"
-    key: null
-    fk_note: null
-  - name: DELETED_REASON
-    data_type: "CLOB"
-    description: "Lý do xóa"
-    key: null
-    fk_note: null
-  - name: EFFECTIVE
-    data_type: "NUMBER(1,0)"
-    description: "Tình trạng (1: Hiệu lực, 0: Hết hiệu lực)"
     key: null
     fk_note: null
   - name: ID_SYNC

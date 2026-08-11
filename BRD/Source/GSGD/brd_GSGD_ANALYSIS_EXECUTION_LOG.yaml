@@ -9,19 +9,14 @@ columns:
     description: "Primary key"
     key: PK
     fk_note: null
-  - name: ANALYSIS _NAME
+  - name: ANALYSIS_NAME
     data_type: "VARCHAR2(100)"
-    description: "Tên phân tích  biểu mẫu"
+    description: null
     key: null
     fk_note: null
   - name: CASE_FILE_ID
     data_type: "VARCHAR2(36)"
     description: "case_file.id"
-    key: null
-    fk_note: null
-  - name: SECURITIES_CODE_ID
-    data_type: "VARCHAR2(36)"
-    description: "Mã chứng khoán"
     key: null
     fk_note: null
   - name: REPORT_TEMPLATE_ID
@@ -54,6 +49,16 @@ columns:
     description: "Thông tin parameters"
     key: null
     fk_note: null
+  - name: DURATION_MS
+    data_type: "NUMBER(38,0)"
+    description: null
+    key: null
+    fk_note: null
+  - name: EXECUTION_DETAILS
+    data_type: "CLOB"
+    description: null
+    key: null
+    fk_note: null
   - name: ERROR_MESSAGE
     data_type: "CLOB"
     description: "Id item cha (nếu có)"
@@ -62,16 +67,6 @@ columns:
   - name: PATH
     data_type: "VARCHAR2(500)"
     description: "Đường dẫn file"
-    key: null
-    fk_note: null
-  - name: TEMPLATE_TYPE
-    data_type: "NUMBER(1,0)"
-    description: "1: Báo cáo tổng hợp 2: Báo cáo phân tích"
-    key: null
-    fk_note: null
-  - name: FILE_NAME
-    data_type: "VARCHAR2(800)"
-    description: "Tên file"
     key: null
     fk_note: null
   - name: CREATED_AT
@@ -109,18 +104,18 @@ columns:
     description: "Soft delete: 0=Active, 1=Deleted"
     key: null
     fk_note: null
-  - name: ANALYSIS_NAME
-    data_type: "VARCHAR2(100)"
-    description: null
+  - name: TEMPLATE_TYPE
+    data_type: "NUMBER(1,0)"
+    description: "1: Báo cáo tổng hợp 2: Báo cáo phân tích"
     key: null
     fk_note: null
-  - name: DURATION_MS
-    data_type: "NUMBER(38,0)"
-    description: null
+  - name: FILE_NAME
+    data_type: "VARCHAR2(800)"
+    description: "Tên file"
     key: null
     fk_note: null
-  - name: EXECUTION_DETAILS
-    data_type: "CLOB"
+  - name: SECURITIES_ID
+    data_type: "VARCHAR2(36)"
     description: null
     key: null
     fk_note: null
@@ -129,13 +124,13 @@ columns:
     description: null
     key: null
     fk_note: null
-  - name: SECURITIES_ID
-    data_type: "VARCHAR2(36)"
-    description: null
-    key: null
-    fk_note: null
   - name: WORKFLOW_ID
     data_type: "VARCHAR2(36)"
     description: "Id quy trình phân tích (analysis_workflow.id)"
+    key: null
+    fk_note: null
+  - name: SECURITIES_CODE_ID
+    data_type: "VARCHAR2(36)"
+    description: "Mã chứng khoán"
     key: null
     fk_note: null

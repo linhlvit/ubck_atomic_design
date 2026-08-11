@@ -1,0 +1,41 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: KNT
+table: MSG_PACKET_CONTENT
+brd_ref: BRD-SRC-KNT-MSG_PACKET_CONTENT
+columns:
+- name: MSG_PACKET_ID
+  data_type: "NUMBER(19,0)"
+  description: "MSG_PACKET.ID             PK/FK -> msg_packet.id (quan hệ 1-1)"
+  key: PK
+  fk_note: null
+- name: XML_INPUT
+  data_type: "CLOB"
+  description: "XML import đầu vào (cu GOI_TIN.XML_INPUT hoặc payload gốc)"
+  key: null
+  fk_note: null
+- name: XML_OUT
+  data_type: "CLOB"
+  description: "XML nội dung gửi/ký (cu GOI_TIN.NOI_DUNG)"
+  key: null
+  fk_note: null
+- name: JSON_OUT
+  data_type: "CLOB"
+  description: "JSON cùng cây logic với payload XML (cu GOI_TIN.JSON_CONTENT)"
+  key: null
+  fk_note: null
+- name: RESPONSE_TCT_XML
+  data_type: "CLOB"
+  description: "XML phản hồi Cục Thuế (TCT) — khối DATA trong callback getPhanHoiCT"
+  key: null
+  fk_note: null
+- name: RESPONSE_MOF_XML
+  data_type: "CLOB"
+  description: "XML phản hồi Bộ Tài chính — khối DATA trong callback getPhanHoiBTC"
+  key: null
+  fk_note: null
+- name: MSG_ERROR
+  data_type: "CLOB"
+  description: "Thông báo lỗi xử lý/phản hồi Trục (nếu có)"
+  key: null
+  fk_note: null

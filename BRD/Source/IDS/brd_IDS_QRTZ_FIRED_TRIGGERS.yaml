@@ -1,0 +1,71 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: QRTZ_FIRED_TRIGGERS
+brd_ref: BRD-SRC-IDS-QRTZ_FIRED_TRIGGERS
+columns:
+- name: SCHED_NAME
+  data_type: "VARCHAR2(120)"
+  description: "tên scheduler"
+  key: PK
+  fk_note: null
+- name: ENTRY_ID
+  data_type: "VARCHAR2(95)"
+  description: "execution id"
+  key: PK
+  fk_note: null
+- name: TRIGGER_NAME
+  data_type: "VARCHAR2(200)"
+  description: "tên trigger"
+  key: null
+  fk_note: null
+- name: TRIGGER_GROUP
+  data_type: "VARCHAR2(200)"
+  description: "nhóm trigger"
+  key: null
+  fk_note: null
+- name: INSTANCE_NAME
+  data_type: "VARCHAR2(200)"
+  description: "node Quartz đang chạy"
+  key: null
+  fk_note: null
+- name: FIRED_TIME
+  data_type: "NUMBER(13,0)"
+  description: "thời điểm trigger fire"
+  key: null
+  fk_note: null
+- name: SCHED_TIME
+  data_type: "NUMBER(13,0)"
+  description: "scheduled time"
+  key: null
+  fk_note: null
+- name: PRIORITY
+  data_type: "NUMBER(13,0)"
+  description: "priority"
+  key: null
+  fk_note: null
+- name: STATE
+  data_type: "VARCHAR2(16)"
+  description: "trạng thái fired trigger"
+  key: null
+  fk_note: null
+- name: JOB_NAME
+  data_type: "VARCHAR2(200)"
+  description: "job name"
+  key: null
+  fk_note: null
+- name: JOB_GROUP
+  data_type: "VARCHAR2(200)"
+  description: "job group"
+  key: null
+  fk_note: null
+- name: IS_NONCONCURRENT
+  data_type: "VARCHAR2(1)"
+  description: "có block concurrent không"
+  key: null
+  fk_note: null
+- name: REQUESTS_RECOVERY
+  data_type: "VARCHAR2(1)"
+  description: "có recovery không"
+  key: null
+  fk_note: null

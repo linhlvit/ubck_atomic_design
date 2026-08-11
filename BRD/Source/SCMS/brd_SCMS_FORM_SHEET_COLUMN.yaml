@@ -64,9 +64,9 @@ columns:
     description: "Mô tả chi tiết nội dung/mục đích của bản ghi"
     key: null
     fk_note: null
-  - name: LAST_MODIFIED_AT
-    data_type: TIMESTAMP(6)
-    description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"
+  - name: LAST_MODIFIED_AT_LEGACY
+    data_type: DATE
+    description: null
     key: null
     fk_note: null
   - name: ACTIVE
@@ -84,9 +84,9 @@ columns:
     description: ""
     key: null
     fk_note: null
-  - name: MACOTSYNC
-    data_type: VARCHAR2(2000 BYTE)
-    description: "Cột macotsync — xem thêm tài liệu đặc tả SCMS"
+  - name: SYNC_COLUMN_CODE
+    data_type: VARCHAR2(2000)
+    description: null
     key: null
     fk_note: null
   - name: HIDDEN_COLUMN
@@ -124,9 +124,9 @@ columns:
     description: "Kieu du lieu cot: TEXT = Van ban; NUMBER = So; DATE = Ngay thang; BOOLEAN = Co/Khong; SELECT = Chon tu danh sach"
     key: null
     fk_note: null
-  - name: NGAY_SUA
+  - name: LAST_MODIFIED_AT
     data_type: TIMESTAMP(6)
-    description: ""
+    description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"
     key: null
     fk_note: null
   - name: CREATED_AT
@@ -147,15 +147,5 @@ columns:
   - name: RECORD_STATUS
     data_type: NUMBER(1,0)
     description: "Trang thai cot: 1 = Dang su dung; 0 = Khong su dung"
-    key: null
-    fk_note: null
-  - name: LAST_MODIFIED_AT_LEGACY
-    data_type: DATE
-    description: null
-    key: null
-    fk_note: null
-  - name: SYNC_COLUMN_CODE
-    data_type: VARCHAR2(2000)
-    description: null
     key: null
     fk_note: null

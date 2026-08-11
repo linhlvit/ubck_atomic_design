@@ -1,0 +1,111 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: GSGD
+table: ABNORMAL_EXTRACTED_SIGNAL
+brd_ref: BRD-SRC-GSGD-ABNORMAL_EXTRACTED_SIGNAL
+columns:
+- name: ID
+  data_type: "VARCHAR2(36)"
+  description: "Primary key (UUID)"
+  key: PK
+  fk_note: null
+- name: CASE_FILE_ID
+  data_type: "VARCHAR2(36)"
+  description: null
+  key: FK
+  fk_note: "FK → case_file.id"
+- name: REPORT_TYPE
+  data_type: "VARCHAR2(400)"
+  description: "Scope tag rebuild (dung template_code, vd ABT_CTCK)"
+  key: null
+  fk_note: null
+- name: REPORT_ID
+  data_type: "VARCHAR2(36)"
+  description: null
+  key: FK
+  fk_note: "FK → abnormal_report_master.id"
+- name: REPORT_FORM_ID
+  data_type: "VARCHAR2(36)"
+  description: null
+  key: FK
+  fk_note: "FK → abnormal_report_form.id"
+- name: SUBMITTER_ID
+  data_type: "VARCHAR2(36)"
+  description: "ID don vi nop"
+  key: null
+  fk_note: null
+- name: FORM_CODE
+  data_type: "VARCHAR2(200)"
+  description: "Ma phu luc nguon"
+  key: null
+  fk_note: null
+- name: ROW_INDEX
+  data_type: "NUMBER(10,0)"
+  description: "Chi so dong trong phu luc"
+  key: null
+  fk_note: null
+- name: COLUMN_CODE
+  data_type: "VARCHAR2(50)"
+  description: "Cot nguon COL_xx"
+  key: null
+  fk_note: null
+- name: ACCOUNT_CODE
+  data_type: "VARCHAR2(400)"
+  description: "TK neo cua tin hieu (NULL chi voi CTCK_INTERNAL_IP)"
+  key: null
+  fk_note: null
+- name: SEMANTIC_FIELD
+  data_type: "VARCHAR2(40)"
+  description: "Nghia nghiep vu (enum SemanticField)"
+  key: null
+  fk_note: null
+- name: VALUE_NORM
+  data_type: "VARCHAR2(4000)"
+  description: "Gia tri da chuan hoa, dung lam khoa so khop"
+  key: null
+  fk_note: null
+- name: PAIRED_ACCOUNT
+  data_type: "VARCHAR2(400)"
+  description: "TK doi ung/lien ket truc tiep (F04 mua-ban, F08 doi ung)"
+  key: null
+  fk_note: null
+- name: OCCURRED_DATE
+  data_type: "DATE"
+  description: "Ngay phat sinh, dung rang buoc cung-ngay cho IP"
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: "TIMESTAMP(6)"
+  description: "Ngay tao"
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: "TIMESTAMP(6)"
+  description: "Ngay sua cuoi"
+  key: null
+  fk_note: null
+- name: CREATED_BY_ID
+  data_type: "VARCHAR2(255)"
+  description: "User_id nguoi tao"
+  key: null
+  fk_note: null
+- name: UPDATED_BY_ID
+  data_type: "VARCHAR2(255)"
+  description: "User_id nguoi cap nhat"
+  key: null
+  fk_note: null
+- name: CREATED_BY_NAME
+  data_type: "VARCHAR2(250)"
+  description: "Ten nguoi tao"
+  key: null
+  fk_note: null
+- name: UPDATED_BY_NAME
+  data_type: "VARCHAR2(250)"
+  description: "Ten nguoi cap nhat"
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: "NUMBER(1,0)"
+  description: "Soft delete: 0=Active, 1=Deleted"
+  key: null
+  fk_note: null

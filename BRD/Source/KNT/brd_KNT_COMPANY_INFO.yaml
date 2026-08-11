@@ -4,29 +4,14 @@ source: KNT
 table: COMPANY_INFO
 brd_ref: BRD-SRC-KNT-COMPANY_INFO
 columns:
-- name: ADDRESS
-  data_type: "VARCHAR2(2000)"
-  description: "Địa chỉ"
-  key: null
+- name: ID
+  data_type: "NUMBER"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
   fk_note: null
-- name: BUSINESS_LICENSE
-  data_type: "VARCHAR2(800)"
-  description: "Số giấy phép đăng ký kinh doanh (GPKD)"
-  key: null
-  fk_note: null
-- name: BUSINESS_LINE
-  data_type: "VARCHAR2(800)"
-  description: "Ngành nghề kinh doanh chính"
-  key: null
-  fk_note: null
-- name: CHANGED_AT
-  data_type: "DATE"
-  description: "Ngày thay đổi thông tin công ty"
-  key: null
-  fk_note: null
-- name: CHARTER_CAPITAL
-  data_type: "VARCHAR2(400)"
-  description: "Vốn điều lệ/vốn đầu tư của chủ sở hữu (đơn vị: đồng)"
+- name: NAME
+  data_type: "VARCHAR2(4000)"
+  description: "Tên đầy đủ"
   key: null
   fk_note: null
 - name: COMPANY_TYPE
@@ -34,14 +19,24 @@ columns:
   description: "Loại hình công ty (LoaiHinhCongTyEnum): 1=Công ty thông thường, 2=Tổ chức tín dụng, 3=Công ty bảo hiểm, 4=Công ty chứng khoán, 5=Công ty quản lý quỹ"
   key: null
   fk_note: null
-- name: DECISION_NUMBER
-  data_type: "VARCHAR2(800)"
-  description: "Số quyết định thành lập/xử phạt"
+- name: CHANGED_AT
+  data_type: "DATE"
+  description: "Ngày thay đổi thông tin công ty"
   key: null
   fk_note: null
-- name: DELISTING_DATE
-  data_type: "DATE"
-  description: "Ngày hủy niêm yết"
+- name: TAX_CODE
+  data_type: "VARCHAR2(400)"
+  description: "Mã số thuế doanh nghiệp"
+  key: null
+  fk_note: null
+- name: ADDRESS
+  data_type: "VARCHAR2(2000)"
+  description: "Địa chỉ"
+  key: null
+  fk_note: null
+- name: PHONE
+  data_type: "VARCHAR2(400)"
+  description: "Số điện thoại liên hệ"
   key: null
   fk_note: null
 - name: FAX
@@ -49,24 +44,39 @@ columns:
   description: "Số fax"
   key: null
   fk_note: null
-- name: FIRST_LISTING_DATE
-  data_type: "DATE"
-  description: "Ngày niêm yết/giao dịch cổ phiếu lần đầu tiên trên sàn"
+- name: WEBSITE
+  data_type: "VARCHAR2(800)"
+  description: "Địa chỉ website"
   key: null
   fk_note: null
-- name: GUID
-  data_type: "VARCHAR2(200)"
-  description: "Định danh duy nhất toàn cục (GUID/UUID) của bản ghi"
+- name: BUSINESS_LINE
+  data_type: "VARCHAR2(800)"
+  description: "Ngành nghề kinh doanh chính"
   key: null
-  fk_note: null
-- name: ID
-  data_type: "NUMBER"
-  description: "Khóa chính của bản ghi (ID số tự tăng)"
-  key: PK
   fk_note: null
 - name: LEGAL_REPRESENTATIVE_NAME
   data_type: "VARCHAR2(4000)"
   description: "Họ tên người đại diện theo pháp luật"
+  key: null
+  fk_note: null
+- name: CHARTER_CAPITAL
+  data_type: "VARCHAR2(400)"
+  description: "Vốn điều lệ/vốn đầu tư của chủ sở hữu (đơn vị: đồng)"
+  key: null
+  fk_note: null
+- name: PUBLIC_COMPANY_REG_DATE
+  data_type: "DATE"
+  description: "Ngày đăng ký là công ty đại chúng"
+  key: null
+  fk_note: null
+- name: DECISION_NUMBER
+  data_type: "VARCHAR2(800)"
+  description: "Số quyết định thành lập/xử phạt"
+  key: null
+  fk_note: null
+- name: TICKER_SYMBOL
+  data_type: "VARCHAR2(200)"
+  description: "Ký hiệu mã cổ phiếu niêm yết"
   key: null
   fk_note: null
 - name: LISTING_DATE
@@ -79,34 +89,9 @@ columns:
   description: "Nơi niêm yết/giao dịch (HOSE, HNX, UPCOM)"
   key: null
   fk_note: null
-- name: MSG_PACKET_ID
-  data_type: "NUMBER"
-  description: "FK -> msg_packet: Gói tin trao đổi liên quan"
-  key: FK
-  fk_note: "FK → MSG_PACKET.ID"
-- name: NAME
-  data_type: "VARCHAR2(4000)"
-  description: "Tên đầy đủ"
-  key: null
-  fk_note: null
-- name: PHONE
-  data_type: "VARCHAR2(400)"
-  description: "Số điện thoại liên hệ"
-  key: null
-  fk_note: null
-- name: PUBLIC_COMPANY_END_DATE
+- name: FIRST_LISTING_DATE
   data_type: "DATE"
-  description: "Ngày hủy đăng ký công ty đại chúng"
-  key: null
-  fk_note: null
-- name: PUBLIC_COMPANY_REG_DATE
-  data_type: "DATE"
-  description: "Ngày đăng ký là công ty đại chúng"
-  key: null
-  fk_note: null
-- name: RECORD_COUNT
-  data_type: "NUMBER"
-  description: "Số bản ghi công ty có cùng gói tin và loại công ty"
+  description: "Ngày niêm yết/giao dịch cổ phiếu lần đầu tiên trên sàn"
   key: null
   fk_note: null
 - name: SHAREHOLDER_COUNT
@@ -114,18 +99,33 @@ columns:
   description: "Số lượng cổ đông"
   key: null
   fk_note: null
-- name: TAX_CODE
-  data_type: "VARCHAR2(400)"
-  description: "Mã số thuế doanh nghiệp"
+- name: DELISTING_DATE
+  data_type: "DATE"
+  description: "Ngày hủy niêm yết"
   key: null
   fk_note: null
-- name: TICKER_SYMBOL
+- name: PUBLIC_COMPANY_END_DATE
+  data_type: "DATE"
+  description: "Ngày hủy đăng ký công ty đại chúng"
+  key: null
+  fk_note: null
+- name: MSG_PACKET_ID
+  data_type: "NUMBER"
+  description: "FK -> msg_packet: Gói tin trao đổi liên quan"
+  key: FK
+  fk_note: "FK → MSG_PACKET.ID"
+- name: GUID
   data_type: "VARCHAR2(200)"
-  description: "Ký hiệu mã cổ phiếu niêm yết"
+  description: "Định danh duy nhất toàn cục (GUID/UUID) của bản ghi"
   key: null
   fk_note: null
-- name: WEBSITE
+- name: BUSINESS_LICENSE
   data_type: "VARCHAR2(800)"
-  description: "Địa chỉ website"
+  description: "Số giấy phép đăng ký kinh doanh (GPKD)"
+  key: null
+  fk_note: null
+- name: RECORD_COUNT
+  data_type: "NUMBER"
+  description: "Số bản ghi công ty có cùng gói tin và loại công ty"
   key: null
   fk_note: null

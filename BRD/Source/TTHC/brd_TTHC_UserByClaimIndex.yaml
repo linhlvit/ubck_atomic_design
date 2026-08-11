@@ -4,6 +4,16 @@ source: TTHC
 table: UserByClaimIndex
 brd_ref: BRD-SRC-TTHC-UserByClaimIndex
 columns:
+- name: ID
+  data_type: "NUMBER"
+  description: "Khóa chính (tự tăng)"
+  key: null
+  fk_note: null
+- name: DOCUMENTID
+  data_type: "NUMBER"
+  description: "Khóa ngoại tới Document.Id của Orchard (kho lưu document JSON)"
+  key: null
+  fk_note: null
 - name: CLAIMTYPE
   data_type: "VARCHAR2(100)"
   description: "Claimtype"
@@ -12,15 +22,5 @@ columns:
 - name: CLAIMVALUE
   data_type: "VARCHAR2(100)"
   description: "Claimvalue"
-  key: null
-  fk_note: null
-- name: DOCUMENTID
-  data_type: "NUMBER"
-  description: "Khóa ngoại tới Document.Id của Orchard (kho lưu document JSON)"
-  key: null
-  fk_note: null
-- name: ID
-  data_type: "NUMBER"
-  description: "Khóa chính (tự tăng)"
   key: null
   fk_note: null

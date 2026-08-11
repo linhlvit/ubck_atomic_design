@@ -29,6 +29,21 @@ columns:
   description: Loại hành động kích hoạt thông báo (mã sự kiện nghiệp vụ)
   key: null
   fk_note: null
+- name: IS_NOTI
+  data_type: NUMBER(1,0)
+  description: 'Cờ bật thông báo in-app: 1=Gửi thông báo in-app, 0=Không gửi'
+  key: null
+  fk_note: null
+- name: IS_SMS
+  data_type: NUMBER(1,0)
+  description: 'Cờ bật gửi SMS: 1=Gửi SMS, 0=Không gửi'
+  key: null
+  fk_note: null
+- name: IS_EMAIL
+  data_type: NUMBER(1,0)
+  description: 'Cờ bật gửi email: 1=Gửi email, 0=Không gửi'
+  key: null
+  fk_note: null
 - name: CONTENT_NOTI
   data_type: NCLOB
   description: Template nội dung thông báo in-app (NCLOB, có placeholder {variable})
@@ -62,20 +77,5 @@ columns:
 - name: RECEIVERS_JSON
   data_type: NCLOB
   description: 'Danh sách đối tượng nhận thông báo (JSON NCLOB: roles, units, users)'
-  key: null
-  fk_note: null
-- name: IS_EMAIL
-  data_type: NUMBER(1,0)
-  description: 'Cờ bật gửi email: 1=Gửi email, 0=Không gửi'
-  key: null
-  fk_note: null
-- name: IS_NOTI
-  data_type: NUMBER(1,0)
-  description: 'Cờ bật thông báo in-app: 1=Gửi thông báo in-app, 0=Không gửi'
-  key: null
-  fk_note: null
-- name: IS_SMS
-  data_type: NUMBER(1,0)
-  description: 'Cờ bật gửi SMS: 1=Gửi SMS, 0=Không gửi'
   key: null
   fk_note: null

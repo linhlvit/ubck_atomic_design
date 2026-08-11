@@ -4,29 +4,14 @@ source: KNT
 table: MSG_PACKET_CONFIG
 brd_ref: BRD-SRC-KNT-MSG_PACKET_CONFIG
 columns:
-- name: DATA_DIRECTION
-  data_type: "NUMBER"
-  description: "Chiều dữ liệu gói tin (LoaiDuLieuEnum): 1=Gói tin đi (UBCKNN→CT), 2=Gói tin đến (CT→UBCKNN)"
-  key: null
-  fk_note: null
-- name: FUNCTION_NAME
-  data_type: "VARCHAR2(800)"
-  description: "Tên chức năng/menu hiển thị trên giao diện"
-  key: null
-  fk_note: null
 - name: ID
   data_type: "NUMBER"
   description: "Khóa chính của bản ghi (ID số tự tăng)"
   key: PK
   fk_note: null
-- name: LAST_MODIFIED_AT
-  data_type: "DATE"
-  description: "Thời điểm cập nhật lần cuối"
-  key: null
-  fk_note: null
-- name: LAST_MODIFIED_BY
-  data_type: "VARCHAR2(400)"
-  description: "Tài khoản/tên người cập nhật lần cuối"
+- name: FUNCTION_NAME
+  data_type: "VARCHAR2(800)"
+  description: "Tên chức năng/menu hiển thị trên giao diện"
   key: null
   fk_note: null
 - name: ORG_UNIT_CODE
@@ -39,8 +24,23 @@ columns:
   description: "Mã hệ thống nguồn (HeThongEnum): 1=IDS, 2=IDM, 3=Thanh tra, 4=SCMS, 5=FMS, 6=THUE (TCT)"
   key: null
   fk_note: null
+- name: DATA_DIRECTION
+  data_type: "NUMBER"
+  description: "Chiều dữ liệu gói tin (LoaiDuLieuEnum): 1=Gói tin đi (UBCKNN→CT), 2=Gói tin đến (CT→UBCKNN)"
+  key: null
+  fk_note: null
 - name: TRANSFER_METHOD
   data_type: "NUMBER"
   description: "Phương thức truyền nhận (PhuongThucTruyenNhanEnum): 1=WebService, 2=MQ, 3=Cả hai"
+  key: null
+  fk_note: null
+- name: LAST_MODIFIED_AT
+  data_type: "DATE"
+  description: "Thời điểm cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: LAST_MODIFIED_BY
+  data_type: "VARCHAR2(400)"
+  description: "Tài khoản/tên người cập nhật lần cuối"
   key: null
   fk_note: null

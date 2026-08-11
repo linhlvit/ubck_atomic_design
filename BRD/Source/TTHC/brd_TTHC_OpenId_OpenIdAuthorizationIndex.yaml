@@ -4,19 +4,9 @@ source: TTHC
 table: OpenId_OpenIdAuthorizationIndex
 brd_ref: BRD-SRC-TTHC-OpenId_OpenIdAuthorizationIndex
 columns:
-- name: APPLICATIONID
-  data_type: "VARCHAR2(100)"
-  description: "Applicationid"
-  key: null
-  fk_note: null
-- name: AUTHORIZATIONID
-  data_type: "VARCHAR2(100)"
-  description: "Authorizationid"
-  key: null
-  fk_note: null
-- name: CREATIONDATE
-  data_type: "VARCHAR2(100)"
-  description: "Creationdate"
+- name: ID
+  data_type: "NUMBER"
+  description: "Khóa chính (tự tăng)"
   key: null
   fk_note: null
 - name: DOCUMENTID
@@ -24,9 +14,14 @@ columns:
   description: "Khóa ngoại tới Document.Id của Orchard (kho lưu document JSON)"
   key: null
   fk_note: null
-- name: ID
-  data_type: "NUMBER"
-  description: "Khóa chính (tự tăng)"
+- name: AUTHORIZATIONID
+  data_type: "VARCHAR2(100)"
+  description: "Authorizationid"
+  key: null
+  fk_note: null
+- name: APPLICATIONID
+  data_type: "VARCHAR2(100)"
+  description: "Applicationid"
   key: null
   fk_note: null
 - name: STATUS
@@ -42,5 +37,10 @@ columns:
 - name: TYPE
   data_type: "VARCHAR2(100)"
   description: "Bộ phân biệt loại bản ghi"
+  key: null
+  fk_note: null
+- name: CREATIONDATE
+  data_type: "VARCHAR2(100)"
+  description: "Creationdate"
   key: null
   fk_note: null

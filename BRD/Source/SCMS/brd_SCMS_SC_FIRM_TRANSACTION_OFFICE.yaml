@@ -54,14 +54,14 @@ columns:
     description: "Số fax"
     key: null
     fk_note: null
-  - name: SO_QUYET_DINH
-    data_type: NVARCHAR2(30)
-    description: "Cột so_quyet_dinh — xem thêm tài liệu đặc tả SCMS"
+  - name: DECISION_NUMBER
+    data_type: NVARCHAR2(60)
+    description: ""
     key: null
     fk_note: null
-  - name: NGAY_QUYET_DINH
+  - name: DECISION_DATE
     data_type: TIMESTAMP(6)
-    description: "Cột ngay_quyet_dinh — xem thêm tài liệu đặc tả SCMS"
+    description: ""
     key: null
     fk_note: null
   - name: VALID_DOSSIER_DATE
@@ -94,14 +94,14 @@ columns:
     description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
     key: null
     fk_note: null
-  - name: LAST_MODIFIED_BY
-    data_type: NUMBER(19,0)
-    description: "ID tài khoản người dùng cập nhật lần cuối"
+  - name: LAST_MODIFIED_BY_ALT
+    data_type: NUMBER(10,0)
+    description: null
     key: null
     fk_note: null
-  - name: LAST_MODIFIED_AT
+  - name: LAST_MODIFIED_AT_ALT
     data_type: TIMESTAMP(6)
-    description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"
+    description: null
     key: null
     fk_note: null
   - name: RECORD_STATUS
@@ -169,9 +169,9 @@ columns:
     description: ""
     key: null
     fk_note: null
-  - name: DECISION_DATE
-    data_type: TIMESTAMP(6)
-    description: ""
+  - name: DECISION_DATE_ALT
+    data_type: DATE
+    description: null
     key: null
     fk_note: null
   - name: DOCUMENT_DATE
@@ -179,9 +179,9 @@ columns:
     description: "Ngày ký/ban hành văn bản"
     key: null
     fk_note: null
-  - name: DECISION_NUMBER
-    data_type: NVARCHAR2(60)
-    description: ""
+  - name: DECISION_NUMBER_ALT
+    data_type: VARCHAR2(800)
+    description: null
     key: null
     fk_note: null
   - name: DOCUMENT_NUMBER
@@ -199,33 +199,13 @@ columns:
     description: ""
     key: null
     fk_note: null
-  - name: NGAY_SUA
+  - name: LAST_MODIFIED_AT
     data_type: TIMESTAMP(6)
-    description: ""
+    description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"
     key: null
     fk_note: null
-  - name: NGUOI_SUA_ID
-    data_type: NUMBER(19)
-    description: ""
-    key: null
-    fk_note: null
-  - name: LAST_MODIFIED_BY_ALT
-    data_type: NUMBER(10,0)
-    description: null
-    key: null
-    fk_note: null
-  - name: LAST_MODIFIED_AT_ALT
-    data_type: TIMESTAMP(6)
-    description: null
-    key: null
-    fk_note: null
-  - name: DECISION_DATE_ALT
-    data_type: DATE
-    description: null
-    key: null
-    fk_note: null
-  - name: DECISION_NUMBER_ALT
-    data_type: VARCHAR2(800)
-    description: null
+  - name: LAST_MODIFIED_BY
+    data_type: NUMBER(19,0)
+    description: "ID tài khoản người dùng cập nhật lần cuối"
     key: null
     fk_note: null

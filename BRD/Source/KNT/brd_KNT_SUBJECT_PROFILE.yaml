@@ -4,19 +4,34 @@ source: KNT
 table: SUBJECT_PROFILE
 brd_ref: BRD-SRC-KNT-SUBJECT_PROFILE
 columns:
-- name: ACCOUNT_NUMBER
+- name: ID
   data_type: "VARCHAR2(200)"
-  description: "Số tài khoản chứng khoán liên quan"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
   key: null
   fk_note: null
-- name: ACCOUNT_OPENING_PLACE
+- name: PROFILE_ID
   data_type: "VARCHAR2(200)"
-  description: "Nơi mở tài khoản chứng khoán"
+  description: "ID hồ sơ thanh tra/giám sát gốc"
   key: null
   fk_note: null
-- name: ADDRESS
+- name: SUBJECT_TYPE
+  data_type: "NUMBER"
+  description: "Loại đối tượng: 1=CTĐC, 2=CTCK, 3=QLQ, 4=Cá nhân, 5=Ngoài danh mục"
+  key: null
+  fk_note: null
+- name: SUBJECT_NAME
   data_type: "VARCHAR2(1020)"
-  description: "Địa chỉ"
+  description: "Tên tổ chức/cá nhân đối tượng"
+  key: null
+  fk_note: null
+- name: SHORT_NAME
+  data_type: "VARCHAR2(200)"
+  description: "Tên viết tắt của đối tượng"
+  key: null
+  fk_note: null
+- name: OFFICIAL_LETTER_ID
+  data_type: "VARCHAR2(200)"
+  description: "ID công văn liên quan đến hồ sơ"
   key: null
   fk_note: null
 - name: BUSINESS_LICENSE_NUMBER
@@ -29,74 +44,14 @@ columns:
   description: "FK -> danh mục quốc gia của đối tượng"
   key: FK
   fk_note: null
-- name: CREATED_AT
-  data_type: "DATE"
-  description: "Thời điểm tạo bản ghi"
+- name: WEBSITE
+  data_type: "VARCHAR2(1020)"
+  description: "Địa chỉ website"
   key: null
-  fk_note: null
-- name: CREATED_BY
-  data_type: "VARCHAR2(200)"
-  description: "Tài khoản/tên người tạo bản ghi"
-  key: null
-  fk_note: null
-- name: DATE_OF_BIRTH
-  data_type: "DATE"
-  description: "Ngày sinh"
-  key: null
-  fk_note: null
-- name: DECISION_ID
-  data_type: "VARCHAR2(50)"
-  description: "FK -> quyết định liên quan đến hồ sơ"
-  key: FK
   fk_note: null
 - name: EMAIL
   data_type: "VARCHAR2(1020)"
   description: "Địa chỉ email liên hệ"
-  key: null
-  fk_note: null
-- name: FAX
-  data_type: "VARCHAR2(1020)"
-  description: "Số fax"
-  key: null
-  fk_note: null
-- name: FULL_SEARCH
-  data_type: "VARCHAR2(4000)"
-  description: "Chuỗi tìm kiếm toàn văn (full-text search) tổng hợp các trường"
-  key: null
-  fk_note: null
-- name: GENDER
-  data_type: "NUMBER"
-  description: "Giới tính: 1=Nam, 0=Nữ"
-  key: null
-  fk_note: null
-- name: ID
-  data_type: "VARCHAR2(200)"
-  description: "Khóa chính của bản ghi (ID số tự tăng)"
-  key: null
-  fk_note: null
-- name: ID_CARD_NUMBER
-  data_type: "VARCHAR2(200)"
-  description: "Số CMND/hộ chiếu người đại diện theo pháp luật"
-  key: null
-  fk_note: null
-- name: MARKET
-  data_type: "NUMBER"
-  description: "Thị trường: 1=HOSE, 2=HNX, 3=UPCOM"
-  key: null
-  fk_note: null
-- name: NOTE
-  data_type: "VARCHAR2(1020)"
-  description: "Ghi chú bổ sung"
-  key: null
-  fk_note: null
-- name: OFFICIAL_LETTER_ID
-  data_type: "VARCHAR2(200)"
-  description: "ID công văn liên quan đến hồ sơ"
-  key: null
-  fk_note: null
-- name: ORG_REPRESENTATIVE_NAME
-  data_type: "VARCHAR2(200)"
-  description: "Họ tên người đại diện tổ chức"
   key: null
   fk_note: null
 - name: PHONE
@@ -104,19 +59,19 @@ columns:
   description: "Số điện thoại liên hệ"
   key: null
   fk_note: null
-- name: PROFILE_ID
-  data_type: "VARCHAR2(200)"
-  description: "ID hồ sơ thanh tra/giám sát gốc"
+- name: FAX
+  data_type: "VARCHAR2(1020)"
+  description: "Số fax"
   key: null
   fk_note: null
-- name: SECURITIES_CODE
-  data_type: "VARCHAR2(200)"
-  description: "Mã chứng khoán liên quan đến hành vi vi phạm giao dịch"
+- name: ADDRESS
+  data_type: "VARCHAR2(1020)"
+  description: "Địa chỉ"
   key: null
   fk_note: null
-- name: SHORT_NAME
-  data_type: "VARCHAR2(200)"
-  description: "Tên viết tắt của đối tượng"
+- name: NOTE
+  data_type: "VARCHAR2(1020)"
+  description: "Ghi chú bổ sung"
   key: null
   fk_note: null
 - name: SORT_ORDER
@@ -124,14 +79,29 @@ columns:
   description: "Số thứ tự hiển thị/sắp xếp"
   key: null
   fk_note: null
-- name: SUBJECT_NAME
-  data_type: "VARCHAR2(1020)"
-  description: "Tên tổ chức/cá nhân đối tượng"
+- name: DATE_OF_BIRTH
+  data_type: "DATE"
+  description: "Ngày sinh"
   key: null
   fk_note: null
-- name: SUBJECT_TYPE
+- name: GENDER
   data_type: "NUMBER"
-  description: "Loại đối tượng: 1=CTĐC, 2=CTCK, 3=QLQ, 4=Cá nhân, 5=Ngoài danh mục"
+  description: "Giới tính: 1=Nam, 0=Nữ"
+  key: null
+  fk_note: null
+- name: ID_CARD_NUMBER
+  data_type: "VARCHAR2(200)"
+  description: "Số CMND/hộ chiếu người đại diện theo pháp luật"
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: "VARCHAR2(200)"
+  description: "Tài khoản/tên người tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: "DATE"
+  description: "Thời điểm tạo bản ghi"
   key: null
   fk_note: null
 - name: SUBJECT_TYPE_CATALOG_ID
@@ -139,8 +109,38 @@ columns:
   description: "FK -> danh mục loại đối tượng"
   key: FK
   fk_note: null
-- name: WEBSITE
-  data_type: "VARCHAR2(1020)"
-  description: "Địa chỉ website"
+- name: SECURITIES_CODE
+  data_type: "VARCHAR2(200)"
+  description: "Mã chứng khoán liên quan đến hành vi vi phạm giao dịch"
+  key: null
+  fk_note: null
+- name: ORG_REPRESENTATIVE_NAME
+  data_type: "VARCHAR2(200)"
+  description: "Họ tên người đại diện tổ chức"
+  key: null
+  fk_note: null
+- name: FULL_SEARCH
+  data_type: "VARCHAR2(4000)"
+  description: "Chuỗi tìm kiếm toàn văn (full-text search) tổng hợp các trường"
+  key: null
+  fk_note: null
+- name: ACCOUNT_NUMBER
+  data_type: "VARCHAR2(200)"
+  description: "Số tài khoản chứng khoán liên quan"
+  key: null
+  fk_note: null
+- name: ACCOUNT_OPENING_PLACE
+  data_type: "VARCHAR2(200)"
+  description: "Nơi mở tài khoản chứng khoán"
+  key: null
+  fk_note: null
+- name: DECISION_ID
+  data_type: "VARCHAR2(50)"
+  description: "FK -> quyết định liên quan đến hồ sơ"
+  key: FK
+  fk_note: null
+- name: MARKET
+  data_type: "NUMBER"
+  description: "Thị trường: 1=HOSE, 2=HNX, 3=UPCOM"
   key: null
   fk_note: null

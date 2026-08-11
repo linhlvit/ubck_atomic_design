@@ -4,9 +4,9 @@ source: TTHC
 table: UserIndex
 brd_ref: BRD-SRC-TTHC-UserIndex
 columns:
-- name: ACCESSFAILEDCOUNT
+- name: ID
   data_type: "NUMBER"
-  description: "Accessfailedcount"
+  description: "Khóa chính (tự tăng)"
   key: null
   fk_note: null
 - name: DOCUMENTID
@@ -14,9 +14,14 @@ columns:
   description: "Khóa ngoại tới Document.Id của Orchard (kho lưu document JSON)"
   key: null
   fk_note: null
-- name: ID
-  data_type: "NUMBER"
-  description: "Khóa chính (tự tăng)"
+- name: NORMALIZEDUSERNAME
+  data_type: "VARCHAR2(255)"
+  description: "Tên đăng nhập in hoa để tra cứu duy nhất không phân biệt hoa thường"
+  key: null
+  fk_note: null
+- name: NORMALIZEDEMAIL
+  data_type: "VARCHAR2(255)"
+  description: "Normalizedemail"
   key: null
   fk_note: null
 - name: ISENABLED
@@ -34,29 +39,9 @@ columns:
   description: "Lockoutendutc"
   key: null
   fk_note: null
-- name: NORMALIZEDDISPLAYNAME
-  data_type: "VARCHAR2(256)"
-  description: "Normalizeddisplayname"
-  key: null
-  fk_note: null
-- name: NORMALIZEDEMAIL
-  data_type: "VARCHAR2(255)"
-  description: "Normalizedemail"
-  key: null
-  fk_note: null
-- name: NORMALIZEDPHONE
-  data_type: "VARCHAR2(64)"
-  description: "Normalizedphone"
-  key: null
-  fk_note: null
-- name: NORMALIZEDUSERNAME
-  data_type: "VARCHAR2(255)"
-  description: "Tên đăng nhập in hoa để tra cứu duy nhất không phân biệt hoa thường"
-  key: null
-  fk_note: null
-- name: POSITION
-  data_type: "VARCHAR2(64)"
-  description: "Position"
+- name: ACCESSFAILEDCOUNT
+  data_type: "NUMBER"
+  description: "Accessfailedcount"
   key: null
   fk_note: null
 - name: USERID
@@ -64,8 +49,23 @@ columns:
   description: "Userid"
   key: null
   fk_note: null
+- name: NORMALIZEDDISPLAYNAME
+  data_type: "VARCHAR2(256)"
+  description: "Normalizeddisplayname"
+  key: null
+  fk_note: null
+- name: NORMALIZEDPHONE
+  data_type: "VARCHAR2(64)"
+  description: "Normalizedphone"
+  key: null
+  fk_note: null
 - name: USERTYPE
   data_type: "VARCHAR2(64)"
   description: "Usertype"
+  key: null
+  fk_note: null
+- name: POSITION
+  data_type: "VARCHAR2(64)"
+  description: "Position"
   key: null
   fk_note: null

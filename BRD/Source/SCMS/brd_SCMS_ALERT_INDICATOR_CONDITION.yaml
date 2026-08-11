@@ -19,9 +19,9 @@ columns:
     description: "Điều kiện áp dụng (biểu thức logic)"
     key: null
     fk_note: null
-  - name: GIA_TRI_SO_SANH
+  - name: COMPARE_VALUE
     data_type: NUMBER
-    description: "Cột gia_tri_so_sanh — xem thêm tài liệu đặc tả SCMS"
+    description: null
     key: null
     fk_note: null
   - name: NOTE
@@ -39,14 +39,14 @@ columns:
     description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
     key: null
     fk_note: null
-  - name: LAST_MODIFIED_BY
+  - name: LAST_MODIFIED_BY_LEGACY
     data_type: NUMBER(10,0)
-    description: "ID tài khoản người dùng cập nhật lần cuối"
+    description: null
     key: null
     fk_note: null
-  - name: LAST_MODIFIED_AT
+  - name: LAST_MODIFIED_AT_LEGACY
     data_type: TIMESTAMP(6)
-    description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"
+    description: null
     key: null
     fk_note: null
   - name: RECORD_STATUS
@@ -89,14 +89,14 @@ columns:
     description: "Mức độ nghiêm trọng: 1=Thấp, 2=Trung bình, 3=Cao"
     key: null
     fk_note: null
-  - name: NGAY_SUA
+  - name: LAST_MODIFIED_AT
     data_type: TIMESTAMP(6)
-    description: ""
+    description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"
     key: null
     fk_note: null
-  - name: NGUOI_SUA_ID
-    data_type: NUMBER(10)
-    description: ""
+  - name: LAST_MODIFIED_BY
+    data_type: NUMBER(10,0)
+    description: "ID tài khoản người dùng cập nhật lần cuối"
     key: null
     fk_note: null
   - name: SORT_ORDER
@@ -122,21 +122,6 @@ columns:
   - name: OPERATOR_2
     data_type: NVARCHAR2(20)
     description: ""
-    key: null
-    fk_note: null
-  - name: COMPARE_VALUE
-    data_type: NUMBER
-    description: null
-    key: null
-    fk_note: null
-  - name: LAST_MODIFIED_BY_LEGACY
-    data_type: NUMBER(10,0)
-    description: null
-    key: null
-    fk_note: null
-  - name: LAST_MODIFIED_AT_LEGACY
-    data_type: TIMESTAMP(6)
-    description: null
     key: null
     fk_note: null
   - name: PERIOD_TYPE

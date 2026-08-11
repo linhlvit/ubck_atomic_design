@@ -1,0 +1,31 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: KNT
+table: HUB_NOTIFICATION_USER
+brd_ref: BRD-SRC-KNT-HUB_NOTIFICATION_USER
+columns:
+- name: ID
+  data_type: "CHAR(36)"
+  description: "UUID bản ghi trạng thái theo user"
+  key: PK
+  fk_note: null
+- name: NOTIFICATION_ID
+  data_type: "CHAR(36)"
+  description: "FK -> hub_notification.id"
+  key: FK
+  fk_note: "FK → HUB_NOTIFICATION.ID"
+- name: USER_LOGIN
+  data_type: "VARCHAR2(100)"
+  description: "Khớp ten_dang_nhap từ JWT / UC"
+  key: null
+  fk_note: null
+- name: DISMISSED_AT
+  data_type: "TIMESTAMP(6)"
+  description: "Khác NULL = user đã bỏ qua, không hiện lại trên panel"
+  key: null
+  fk_note: null
+- name: READ_AT
+  data_type: "TIMESTAMP(6)"
+  description: "Tùy chọn: đánh dấu đã đọc cho badge số lượng"
+  key: null
+  fk_note: null

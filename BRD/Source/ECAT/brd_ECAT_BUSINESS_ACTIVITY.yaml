@@ -19,11 +19,6 @@ columns:
     description: "*Tên hoạt động kinh doanh*"
     key: null
     fk_note: null
-  - name: LEGAL_CAPITAL_AMOUNT
-    data_type: "NUMBER(15,0)"
-    description: "*Số vốn pháp định*"
-    key: null
-    fk_note: null
   - name: DESCRIPTION
     data_type: "CLOB"
     description: "*Mô tả*"
@@ -34,14 +29,14 @@ columns:
     description: "*Stable Id loại hình doanh nghiệp (tham chiếu enterprise_type.stableId)*"
     key: null
     fk_note: null
-  - name: CURRENCY_ID
-    data_type: "VARCHAR2(36 CHAR)"
-    description: "*Stable Id** tiền tệ (**tham chiếu currency.stableId)*"
-    key: null
-    fk_note: null
   - name: ACTIVE
     data_type: "NUMBER(1,0)"
     description: "Trạng thái hoạt động (1: Đang sử dụng, 0: Không sử dụng)"
+    key: null
+    fk_note: null
+  - name: CURRENCY_ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*Stable Id** tiền tệ (**tham chiếu currency.stableId)*"
     key: null
     fk_note: null
   - name: ACTIVE_REASON
@@ -122,6 +117,11 @@ columns:
   - name: CURRENCY_VERSION_ID
     data_type: "VARCHAR2(36 CHAR)"
     description: "*ID phiên bản của **Currency**(lưu** currency**.id hiện tại)*"
+    key: null
+    fk_note: null
+  - name: LEGAL_CAPITAL_AMOUNT
+    data_type: "NUMBER(15,0)"
+    description: "*Số vốn pháp định*"
     key: null
     fk_note: null
   - name: ORGANIZATION_TYPE_ID

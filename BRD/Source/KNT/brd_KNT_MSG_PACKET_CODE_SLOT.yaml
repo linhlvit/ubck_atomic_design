@@ -1,0 +1,16 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: KNT
+table: MSG_PACKET_CODE_SLOT
+brd_ref: BRD-SRC-KNT-MSG_PACKET_CODE_SLOT
+columns:
+- name: SLOT_KEY
+  data_type: "VARCHAR2(24)"
+  description: "Khóa slot sinh mã (VD: prefix + ngày + loại gói tin)"
+  key: PK
+  fk_note: null
+- name: SLOT_COUNT
+  data_type: "NUMBER(10,0)"
+  description: "Bộ đếm tuần tự trong slot — tăng mỗi lần cấp mã mới"
+  key: null
+  fk_note: null

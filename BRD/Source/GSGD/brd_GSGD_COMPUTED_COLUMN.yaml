@@ -1,0 +1,86 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: GSGD
+table: COMPUTED_COLUMN
+brd_ref: BRD-SRC-GSGD-COMPUTED_COLUMN
+columns:
+- name: ID
+  data_type: "VARCHAR2(36)"
+  description: null
+  key: PK
+  fk_note: null
+- name: TEMPLATE_ID
+  data_type: "VARCHAR2(36)"
+  description: "ID biểu mẫu"
+  key: null
+  fk_note: null
+- name: COL_NAME
+  data_type: "VARCHAR2(255)"
+  description: "Tên cột tính toán"
+  key: null
+  fk_note: null
+- name: FORMULA
+  data_type: "VARCHAR2(20)"
+  description: "Công thức tính (ADD, SUB, MUL, DIV)"
+  key: null
+  fk_note: null
+- name: LEFT_REPORT_COL_ID
+  data_type: "VARCHAR2(36)"
+  description: "ID cột trái"
+  key: null
+  fk_note: null
+- name: RIGHT_REPORT_COL_ID
+  data_type: "VARCHAR2(36)"
+  description: "Cột bên phải (có thể null nếu formula là unary)"
+  key: null
+  fk_note: null
+- name: DISPLAY_ORDER
+  data_type: "NUMBER(10,0)"
+  description: "Thứ tự hiển thị"
+  key: null
+  fk_note: null
+- name: FORMAT_PATTERN
+  data_type: "VARCHAR2(100)"
+  description: "Định dạng hiển thị dữ liệu"
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: "TIMESTAMP(6)"
+  description: null
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: "TIMESTAMP(6)"
+  description: null
+  key: null
+  fk_note: null
+- name: CREATED_BY_ID
+  data_type: "VARCHAR2(36)"
+  description: null
+  key: null
+  fk_note: null
+- name: UPDATED_BY_ID
+  data_type: "VARCHAR2(36)"
+  description: null
+  key: null
+  fk_note: null
+- name: CREATED_BY_NAME
+  data_type: "VARCHAR2(250)"
+  description: null
+  key: null
+  fk_note: null
+- name: UPDATED_BY_NAME
+  data_type: "VARCHAR2(250)"
+  description: null
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: "NUMBER(1,0)"
+  description: null
+  key: null
+  fk_note: null
+- name: ATTRIBUTE_ID
+  data_type: "VARCHAR2(36)"
+  description: "Mã định danh logic cho cột tính toán (do người dùng nhập, ví dụ: totalBuyVolume)"
+  key: null
+  fk_note: null

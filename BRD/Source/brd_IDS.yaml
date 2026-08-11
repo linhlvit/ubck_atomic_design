@@ -1526,3 +1526,583 @@ brd_entries:
       data_change_mode: Append
       filter_logic: timestamp >= {etl_date} AND timestamp < {etl_date} + 1
       filter_note: null
+- brd_id: BRD-SRC-IDS-ALERT_TEMPLATE_AUDIT_DTL
+  content:
+    table: ALERT_TEMPLATE_AUDIT_DTL
+    description: Danh sách rule cấu hình cảnh báo
+    functional_group: unclassified_pending
+    scope_status: pending
+    scope_reason: null
+    related_tables:
+    - table: ALERT_TEMPLATE_AUDIT_HDR
+      relation: FK cha — Danh sách mẫu template cảnh báo
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-ALERT_TEMPLATE_AUDIT_HDR
+  content:
+    table: ALERT_TEMPLATE_AUDIT_HDR
+    description: Danh sách mẫu template cảnh báo
+    functional_group: unclassified_pending
+    scope_status: pending
+    scope_reason: null
+    related_tables:
+    - table: ALERT_TEMPLATE_AUDIT_DTL
+      relation: 1-N — Danh sách rule cấu hình cảnh báo
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-BK_AF_APPROVAL
+  content:
+    table: BK_AF_APPROVAL
+    description: Bảng lưu thông tin quyết định chấp thuận
+    functional_group: unclassified_pending
+    scope_status: pending
+    scope_reason: null
+    related_tables:
+    - table: BK_AF_AUDITOR_PROFILES
+      relation: FK cha — Lưu thông tin chung kiểm toán viên
+    - table: BK_AF_PROFILES
+      relation: FK cha — Bảng lưu thông tin công ty kiểm toán
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-BK_AF_AUDITOR_PROFILES
+  content:
+    table: BK_AF_AUDITOR_PROFILES
+    description: Lưu thông tin chung kiểm toán viên
+    functional_group: unclassified_pending
+    scope_status: pending
+    scope_reason: null
+    related_tables:
+    - table: BK_AF_APPROVAL
+      relation: 1-N — Bảng lưu thông tin quyết định chấp thuận
+    - table: BK_AF_AUDITOR_STATUS_HISTORY
+      relation: '1-N — '
+    - table: BK_AF_PROFILES
+      relation: FK cha — Bảng lưu thông tin công ty kiểm toán
+    - table: BK_AF_SUSPENSION
+      relation: 1-N — Bảng lưu thông tin đình chỉ
+    - table: BK_AF_WARNING
+      relation: 1-N — Bảng lưu thông tin nhắc nhở
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-BK_AF_AUDITOR_STATUS_HISTORY
+  content:
+    table: BK_AF_AUDITOR_STATUS_HISTORY
+    description: null
+    functional_group: unclassified_pending
+    scope_status: pending
+    scope_reason: null
+    related_tables:
+    - table: BK_AF_AUDITOR_PROFILES
+      relation: FK cha — Lưu thông tin chung kiểm toán viên
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-BK_AF_INSPECTION
+  content:
+    table: BK_AF_INSPECTION
+    description: Bảng lưu thông tin kiểm tra công ty kiểm toán
+    functional_group: unclassified_pending
+    scope_status: pending
+    scope_reason: null
+    related_tables:
+    - table: BK_AF_PROFILES
+      relation: FK cha — Bảng lưu thông tin công ty kiểm toán
+    - table: BK_AF_SUSPENSION
+      relation: 1-N — Bảng lưu thông tin đình chỉ
+    - table: BK_AF_TECHNICAL_AUDIT
+      relation: 1-N — Bảng lưu thông tin kiểm tra hồ sơ kiểm toán
+    - table: BK_AF_WARNING
+      relation: 1-N — Bảng lưu thông tin nhắc nhở
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-BK_AF_LEGAL_REPRESENTATIVE
+  content:
+    table: BK_AF_LEGAL_REPRESENTATIVE
+    description: Bảng Người đại diện theo pháp luật
+    functional_group: unclassified_pending
+    scope_status: pending
+    scope_reason: null
+    related_tables:
+    - table: BK_AF_PROFILES
+      relation: FK cha — Bảng lưu thông tin công ty kiểm toán
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-BK_AF_PROFILES
+  content:
+    table: BK_AF_PROFILES
+    description: Bảng lưu thông tin công ty kiểm toán
+    functional_group: unclassified_pending
+    scope_status: pending
+    scope_reason: null
+    related_tables:
+    - table: BK_AF_APPROVAL
+      relation: 1-N — Bảng lưu thông tin quyết định chấp thuận
+    - table: BK_AF_AUDITOR_PROFILES
+      relation: 1-N — Lưu thông tin chung kiểm toán viên
+    - table: BK_AF_INSPECTION
+      relation: 1-N — Bảng lưu thông tin kiểm tra công ty kiểm toán
+    - table: BK_AF_LEGAL_REPRESENTATIVE
+      relation: 1-N — Bảng Người đại diện theo pháp luật
+    - table: BK_AF_SANCTIONS
+      relation: 1-N — Bảng lưu thông tin xử phạt
+    - table: BK_AF_STATUS_HISTORY
+      relation: 1-N — Bảng lưu lịch sử trạng thái
+    - table: BK_AF_SUSPENSION
+      relation: 1-N — Bảng lưu thông tin đình chỉ
+    - table: BK_AF_TECHNICAL_AUDIT
+      relation: 1-N — Bảng lưu thông tin kiểm tra hồ sơ kiểm toán
+    - table: BK_AF_WARNING
+      relation: 1-N — Bảng lưu thông tin nhắc nhở
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-BK_AF_SANCTIONS
+  content:
+    table: BK_AF_SANCTIONS
+    description: Bảng lưu thông tin xử phạt
+    functional_group: unclassified_pending
+    scope_status: pending
+    scope_reason: null
+    related_tables:
+    - table: BK_AF_PROFILES
+      relation: FK cha — Bảng lưu thông tin công ty kiểm toán
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-BK_AF_STATUS_HISTORY
+  content:
+    table: BK_AF_STATUS_HISTORY
+    description: Bảng lưu lịch sử trạng thái
+    functional_group: unclassified_pending
+    scope_status: pending
+    scope_reason: null
+    related_tables:
+    - table: BK_AF_PROFILES
+      relation: FK cha — Bảng lưu thông tin công ty kiểm toán
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-BK_AF_SUSPENSION
+  content:
+    table: BK_AF_SUSPENSION
+    description: Bảng lưu thông tin đình chỉ
+    functional_group: unclassified_pending
+    scope_status: pending
+    scope_reason: null
+    related_tables:
+    - table: BK_AF_AUDITOR_PROFILES
+      relation: FK cha — Lưu thông tin chung kiểm toán viên
+    - table: BK_AF_INSPECTION
+      relation: FK cha — Bảng lưu thông tin kiểm tra công ty kiểm toán
+    - table: BK_AF_PROFILES
+      relation: FK cha — Bảng lưu thông tin công ty kiểm toán
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-BK_AF_TECHNICAL_AUDIT
+  content:
+    table: BK_AF_TECHNICAL_AUDIT
+    description: Bảng lưu thông tin kiểm tra hồ sơ kiểm toán
+    functional_group: unclassified_pending
+    scope_status: pending
+    scope_reason: null
+    related_tables:
+    - table: BK_AF_INSPECTION
+      relation: FK cha — Bảng lưu thông tin kiểm tra công ty kiểm toán
+    - table: BK_AF_PROFILES
+      relation: FK cha — Bảng lưu thông tin công ty kiểm toán
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-BK_AF_WARNING
+  content:
+    table: BK_AF_WARNING
+    description: Bảng lưu thông tin nhắc nhở
+    functional_group: unclassified_pending
+    scope_status: pending
+    scope_reason: null
+    related_tables:
+    - table: BK_AF_AUDITOR_PROFILES
+      relation: FK cha — Lưu thông tin chung kiểm toán viên
+    - table: BK_AF_INSPECTION
+      relation: FK cha — Bảng lưu thông tin kiểm tra công ty kiểm toán
+    - table: BK_AF_PROFILES
+      relation: FK cha — Bảng lưu thông tin công ty kiểm toán
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-COMPANY_TENDER_OFFER_RESULT
+  content:
+    table: COMPANY_TENDER_OFFER_RESULT
+    description: Lưu thông tin kết quả thực hiện chào mua công khai
+    functional_group: capital_activity
+    scope_status: pending
+    scope_reason: null
+    related_tables:
+    - table: COMPANY_TENDER_OFFER
+      relation: FK cha — Lưu thông tin phương án về quá trình chào mua công khai
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-DATABASECHANGELOG
+  content:
+    table: DATABASECHANGELOG
+    description: Lịch sử migration cơ sở dữ liệu
+    functional_group: unclassified_pending
+    scope_status: pending
+    scope_reason: null
+    related_tables: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-DATABASECHANGELOGLOCK
+  content:
+    table: DATABASECHANGELOGLOCK
+    description: Lock khi Liquibase đang chạy
+    functional_group: unclassified_pending
+    scope_status: pending
+    scope_reason: null
+    related_tables: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-DBTOOLS$MCP_LOG
+  content:
+    table: DBTOOLS$MCP_LOG
+    description: Bảng kỹ thuật Oracle Database Tools ghi log truy vấn MCP (không dùng cho nghiệp vụ)
+    functional_group: unclassified_pending
+    scope_status: pending
+    scope_reason: null
+    related_tables: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-DYNAMIC_REPORT_TEMPLATES
+  content:
+    table: DYNAMIC_REPORT_TEMPLATES
+    description: Mẫu báo cáo động — header
+    functional_group: unclassified_pending
+    scope_status: pending
+    scope_reason: null
+    related_tables: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-DYNAMIC_REPORT_TEMPLATE_FIELDS
+  content:
+    table: DYNAMIC_REPORT_TEMPLATE_FIELDS
+    description: Chỉ tiêu thuộc mẫu báo cáo động
+    functional_group: unclassified_pending
+    scope_status: pending
+    scope_reason: null
+    related_tables: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-EVALUATION_ERROR_LOG
+  content:
+    table: EVALUATION_ERROR_LOG
+    description: Nhật ký lỗi phát sinh trong quá trình đánh giá, xếp hạng công ty đại chúng
+    functional_group: unclassified_pending
+    scope_status: pending
+    scope_reason: null
+    related_tables: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-EVALUATION_LEVEL_SCORE
+  content:
+    table: EVALUATION_LEVEL_SCORE
+    description: Cấu hình điểm áp dụng chung cho tất cả chỉ tiêu theo mức đánh giá
+    functional_group: unclassified_pending
+    scope_status: pending
+    scope_reason: null
+    related_tables: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-HTE_INTG_API_LOG
+  content:
+    table: HTE_INTG_API_LOG
+    description: Log gọi API tích hợp module HTE
+    functional_group: unclassified_pending
+    scope_status: pending
+    scope_reason: null
+    related_tables: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-HTE_INTG_IMPORT_DATA_LOG
+  content:
+    table: HTE_INTG_IMPORT_DATA_LOG
+    description: Log import dữ liệu tích hợp module HTE
+    functional_group: unclassified_pending
+    scope_status: pending
+    scope_reason: null
+    related_tables: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-HTE_NOTIFICATIONS_DTL
+  content:
+    table: HTE_NOTIFICATIONS_DTL
+    description: Đối tượng gửi thông báo chi tiết module HTE
+    functional_group: unclassified_pending
+    scope_status: pending
+    scope_reason: null
+    related_tables: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-INTG_API_LOG
+  content:
+    table: INTG_API_LOG
+    description: Log gọi API tích hợp giữa IDS và các hệ thống ngoài
+    functional_group: unclassified_pending
+    scope_status: pending
+    scope_reason: null
+    related_tables: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-QRTZ_BLOB_TRIGGERS
+  content:
+    table: QRTZ_BLOB_TRIGGERS
+    description: Quartz - Blob Trigger (bảng kỹ thuật lập lịch job, out_of_scope)
+    functional_group: unclassified_pending
+    scope_status: pending
+    scope_reason: null
+    related_tables: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-QRTZ_CALENDARS
+  content:
+    table: QRTZ_CALENDARS
+    description: Quartz - Calendar (bảng kỹ thuật lập lịch job, out_of_scope)
+    functional_group: unclassified_pending
+    scope_status: pending
+    scope_reason: null
+    related_tables: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-QRTZ_CRON_TRIGGERS
+  content:
+    table: QRTZ_CRON_TRIGGERS
+    description: Quartz - Cron Trigger (bảng kỹ thuật lập lịch job, out_of_scope)
+    functional_group: unclassified_pending
+    scope_status: pending
+    scope_reason: null
+    related_tables: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-QRTZ_FIRED_TRIGGERS
+  content:
+    table: QRTZ_FIRED_TRIGGERS
+    description: Quartz - Trigger đã được kích hoạt (bảng kỹ thuật lập lịch job, out_of_scope)
+    functional_group: unclassified_pending
+    scope_status: pending
+    scope_reason: null
+    related_tables: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-QRTZ_JOB_DETAILS
+  content:
+    table: QRTZ_JOB_DETAILS
+    description: Quartz - Thông tin chi tiết Job (bảng kỹ thuật lập lịch job, out_of_scope)
+    functional_group: unclassified_pending
+    scope_status: pending
+    scope_reason: null
+    related_tables:
+    - table: QRTZ_TRIGGERS
+      relation: '1-N — '
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-QRTZ_LOCKS
+  content:
+    table: QRTZ_LOCKS
+    description: Quartz - Lock cho cluster (bảng kỹ thuật lập lịch job, out_of_scope)
+    functional_group: unclassified_pending
+    scope_status: pending
+    scope_reason: null
+    related_tables: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-QRTZ_PAUSED_TRIGGER_GRPS
+  content:
+    table: QRTZ_PAUSED_TRIGGER_GRPS
+    description: Quartz - Nhóm Trigger bị tạm dừng (bảng kỹ thuật lập lịch job, out_of_scope)
+    functional_group: unclassified_pending
+    scope_status: pending
+    scope_reason: null
+    related_tables: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-QRTZ_SCHEDULER_STATE
+  content:
+    table: QRTZ_SCHEDULER_STATE
+    description: Quartz - Trạng thái Scheduler (bảng kỹ thuật lập lịch job, out_of_scope)
+    functional_group: unclassified_pending
+    scope_status: pending
+    scope_reason: null
+    related_tables: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-QRTZ_SIMPLE_TRIGGERS
+  content:
+    table: QRTZ_SIMPLE_TRIGGERS
+    description: Quartz - Simple Trigger (bảng kỹ thuật lập lịch job, out_of_scope)
+    functional_group: unclassified_pending
+    scope_status: pending
+    scope_reason: null
+    related_tables: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-QRTZ_SIMPROP_TRIGGERS
+  content:
+    table: QRTZ_SIMPROP_TRIGGERS
+    description: Quartz - Simple Property Trigger (bảng kỹ thuật lập lịch job, out_of_scope)
+    functional_group: unclassified_pending
+    scope_status: pending
+    scope_reason: null
+    related_tables: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-QRTZ_TRIGGERS
+  content:
+    table: QRTZ_TRIGGERS
+    description: Quartz - Thông tin Trigger (bảng kỹ thuật lập lịch job, out_of_scope)
+    functional_group: unclassified_pending
+    scope_status: pending
+    scope_reason: null
+    related_tables:
+    - table: QRTZ_JOB_DETAILS
+      relation: 'FK cha — '
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-RCOL_MGR
+  content:
+    table: RCOL_MGR
+    description: Danh mục cột báo cáo tài chính (phiên bản quản lý - song song với RCOL)
+    functional_group: unclassified_pending
+    scope_status: pending
+    scope_reason: null
+    related_tables: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-REP_DATA
+  content:
+    table: REP_DATA
+    description: Lưu trữ dữ liệu của hàng và cột của báo cáo có cấu trúc
+    functional_group: public_company
+    scope_status: pending
+    scope_reason: null
+    related_tables:
+    - table: COMPANY_PROFILES
+      relation: FK cha — Bảng lưu trữ thông tin hồ sơ và chi tiết công ty
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-RROW_MGR
+  content:
+    table: RROW_MGR
+    description: Danh mục hàng báo cáo tài chính (phiên bản quản lý - song song với RROW)
+    functional_group: unclassified_pending
+    scope_status: pending
+    scope_reason: null
+    related_tables: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-TENDER_OFFER
+  content:
+    table: TENDER_OFFER
+    description: Lưu thông tin phương án chào mua công khai (Public Tender Offer)
+    functional_group: unclassified_pending
+    scope_status: pending
+    scope_reason: null
+    related_tables: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-TENDER_OFFER_RESULT
+  content:
+    table: TENDER_OFFER_RESULT
+    description: Lưu thông tin kết quả chào mua công khai (Public Tender Offer Result)
+    functional_group: unclassified_pending
+    scope_status: pending
+    scope_reason: null
+    related_tables: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-REPORT_CATALOG_MGR
+  content:
+    table: REPORT_CATALOG_MGR
+    description: Danh mục mẫu báo cáo tài chính (phiên bản quản lý - song song với REPORT_CATALOG)
+    functional_group: unclassified_pending
+    scope_status: pending
+    scope_reason: null
+    related_tables: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null

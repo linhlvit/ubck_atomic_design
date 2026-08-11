@@ -34,9 +34,9 @@ columns:
     description: "Mã vụ việc (nếu có)"
     key: null
     fk_note: null
-  - name: DESCRIPTION
-    data_type: "VARCHAR2(1000 CHAR)"
-    description: "Mô tả nhóm"
+  - name: CASE_CODE
+    data_type: "VARCHAR2(50)"
+    description: "Mã vụ việc"
     key: null
     fk_note: null
   - name: RELATION_TYPE_ID
@@ -49,6 +49,11 @@ columns:
     description: "Đặc điểm"
     key: null
     fk_note: null
+  - name: GROUP_TYPE
+    data_type: "NUMBER(2,0)"
+    description: "Loại nhóm: 1=Thường, 2=Nghi vấn"
+    key: null
+    fk_note: null
   - name: CONTACT_PERSON_ACCOUNT
     data_type: "VARCHAR2(50)"
     description: "Người liên hệ"
@@ -59,29 +64,9 @@ columns:
     description: "Trạng thái phê duyệt"
     key: null
     fk_note: null
-  - name: GROUP_TYPE
-    data_type: "NUMBER(2,0)"
-    description: "Loại nhóm: 1=Thường, 2=Nghi vấn"
-    key: null
-    fk_note: null
-  - name: CREATED_AT
-    data_type: "TIMESTAMP(6)"
-    description: "Ngày tạo"
-    key: null
-    fk_note: null
-  - name: UPDATED_AT
-    data_type: "TIMESTAMP(6)"
-    description: "Ngày sửa cuối"
-    key: null
-    fk_note: null
   - name: CREATED_BY_ID
     data_type: "VARCHAR2(36)"
     description: "User_id người tạo"
-    key: null
-    fk_note: null
-  - name: UPDATED_BY_ID
-    data_type: "VARCHAR2(36)"
-    description: "User_id người cập nhật"
     key: null
     fk_note: null
   - name: CREATED_BY_NAME
@@ -89,18 +74,28 @@ columns:
     description: "Tên người tạo"
     key: null
     fk_note: null
+  - name: CREATED_AT
+    data_type: "TIMESTAMP(6)"
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(36)"
+    description: "User_id người cập nhật"
+    key: null
+    fk_note: null
   - name: UPDATED_BY_NAME
     data_type: "VARCHAR2(250)"
     description: "Tên người cập nhật"
     key: null
     fk_note: null
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP(6)"
+    description: "Ngày sửa cuối"
+    key: null
+    fk_note: null
   - name: DELETED
     data_type: "NUMBER(1,0)"
     description: "Soft delete: 0=Active, 1=Deleted"
-    key: null
-    fk_note: null
-  - name: CASE_CODE
-    data_type: "VARCHAR2(50)"
-    description: "Mã vụ việc"
     key: null
     fk_note: null

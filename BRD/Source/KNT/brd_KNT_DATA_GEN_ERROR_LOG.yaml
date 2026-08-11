@@ -1,0 +1,121 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: KNT
+table: DATA_GEN_ERROR_LOG
+brd_ref: BRD-SRC-KNT-DATA_GEN_ERROR_LOG
+columns:
+- name: ID
+  data_type: "NUMBER(18,0)"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: CREATE_DATE
+  data_type: "TIMESTAMP(6)"
+  description: null
+  key: null
+  fk_note: null
+- name: STATUS
+  data_type: "NUMBER(1,0)"
+  description: "Trạng thái xử lý log: 0=Chưa xử lý, 1=Đã xử lý (theo nghiệp vụ SinhDlLoiLog)"
+  key: null
+  fk_note: null
+- name: PROCESSED_AT
+  data_type: "TIMESTAMP(6)"
+  description: "Thời điểm đánh dấu đã xử lý"
+  key: null
+  fk_note: null
+- name: PROCESSED_BY
+  data_type: "VARCHAR2(100)"
+  description: "Người đánh dấu đã xử lý log lỗi"
+  key: null
+  fk_note: null
+- name: EXECUTION_SOURCE
+  data_type: "VARCHAR2(20)"
+  description: "Nguồn thực thi: JOB, UI, SEND_HUB, ..."
+  key: null
+  fk_note: null
+- name: API_PACKET_CODE
+  data_type: "VARCHAR2(80)"
+  description: "Mã gói API/nghiệp vụ liên quan (MA_GOI_API)"
+  key: null
+  fk_note: null
+- name: SCHEDULE_CONFIG_ID
+  data_type: "NUMBER(18,0)"
+  description: "-> schedule_config: Lịch job gây ra lỗi (nếu chạy tự động)"
+  key: FK
+  fk_note: null
+- name: EXECUTED_BY
+  data_type: "VARCHAR2(100)"
+  description: "Tài khoản/tiến trình thực hiện khi phát sinh lỗi"
+  key: null
+  fk_note: null
+- name: SYSTEM_CODE
+  data_type: "NUMBER(3,0)"
+  description: "Mã hệ thống nguồn (HeThongEnum): 1=IDS, 2=IDM, 3=Thanh tra, 4=SCMS, 5=FMS, 6=THUE (TCT)"
+  key: null
+  fk_note: null
+- name: FORM_TYPE
+  data_type: "NUMBER(3,0)"
+  description: "Loại form/nghiệp vụ (FRM): map CreateData / SendXml"
+  key: null
+  fk_note: null
+- name: SUBJECT_TYPE
+  data_type: "VARCHAR2(50)"
+  description: "Mã loại đối tượng dữ liệu (CTĐC, CTCK, QLQ...)"
+  key: null
+  fk_note: null
+- name: SUBJECT_TYPE_NAME
+  data_type: "VARCHAR2(200)"
+  description: "Tên loại đối tượng dữ liệu"
+  key: null
+  fk_note: null
+- name: REPORT_PERIOD
+  data_type: "VARCHAR2(50)"
+  description: "Kỳ báo cáo liên quan đến lỗi sinh dữ liệu"
+  key: null
+  fk_note: null
+- name: MSG_PACKET_ID
+  data_type: "NUMBER(18,0)"
+  description: "-> msg_packet: Gói tin liên quan (nếu có)"
+  key: FK
+  fk_note: null
+- name: PACKET_CODE
+  data_type: "VARCHAR2(100)"
+  description: "Mã gói tin (MA_GOI_TIN) tại thời điểm lỗi"
+  key: null
+  fk_note: null
+- name: TAX_CODE
+  data_type: "VARCHAR2(20)"
+  description: "Mã số thuế doanh nghiệp liên quan"
+  key: null
+  fk_note: null
+- name: API_LINK
+  data_type: "VARCHAR2(2000)"
+  description: "URL API outbound gây lỗi (push Trục hoặc gọi nguồn dữ liệu)"
+  key: null
+  fk_note: null
+- name: PHASE
+  data_type: "VARCHAR2(30)"
+  description: "Giai đoạn lỗi: SINH_DL, PUSH_CT, PUSH_BTC, VALIDATE..."
+  key: null
+  fk_note: null
+- name: ERROR_CODE
+  data_type: "VARCHAR2(50)"
+  description: "Mã lỗi nghiệp vụ hoặc HTTP/API"
+  key: null
+  fk_note: null
+- name: ERROR_MESSAGE
+  data_type: "VARCHAR2(4000)"
+  description: "Mô tả chi tiết lỗi"
+  key: null
+  fk_note: null
+- name: HTTP_STATUS
+  data_type: "NUMBER(5,0)"
+  description: "Mã HTTP response khi lỗi gọi API (nếu có)"
+  key: null
+  fk_note: null
+- name: MSG_REF_ID
+  data_type: "VARCHAR2(100)"
+  description: null
+  key: null
+  fk_note: null

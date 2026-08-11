@@ -4,14 +4,24 @@ source: KNT
 table: SYS_FUNCTION_ROLE
 brd_ref: BRD-SRC-KNT-SYS_FUNCTION_ROLE
 columns:
+- name: ID
+  data_type: "NUMBER"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
 - name: FUNCTION_NAME
   data_type: "VARCHAR2(1000)"
   description: "Tên chức năng/menu hiển thị trên giao diện"
   key: null
   fk_note: null
-- name: FUNCTION_NAME_EN
-  data_type: "VARCHAR2(250)"
-  description: "Tên chức năng bằng tiếng Anh"
+- name: PARENT_ID
+  data_type: "NUMBER"
+  description: "FK -> cùng bảng: ID gói tin/tham số cha"
+  key: FK
+  fk_note: null
+- name: LAST_MODIFIED_AT
+  data_type: "DATE"
+  description: "Thời điểm cập nhật lần cuối"
   key: null
   fk_note: null
 - name: FUNCTION_PATH
@@ -24,28 +34,18 @@ columns:
   description: "Role được phép truy cập chức năng này"
   key: null
   fk_note: null
-- name: ID
+- name: SORT_ORDER
   data_type: "NUMBER"
-  description: "Khóa chính của bản ghi (ID số tự tăng)"
-  key: PK
-  fk_note: null
-- name: LAST_MODIFIED_AT
-  data_type: "DATE"
-  description: "Thời điểm cập nhật lần cuối"
+  description: "Số thứ tự hiển thị/sắp xếp"
   key: null
-  fk_note: null
-- name: PARENT_ID
-  data_type: "NUMBER"
-  description: "FK -> cùng bảng: ID gói tin/tham số cha"
-  key: FK
   fk_note: null
 - name: PUBLIC_COMPANY
   data_type: "NUMBER"
   description: "Cờ chức năng dành riêng cho công ty đại chúng: 1=Có, 0=Không"
   key: null
   fk_note: null
-- name: SORT_ORDER
-  data_type: "NUMBER"
-  description: "Số thứ tự hiển thị/sắp xếp"
+- name: FUNCTION_NAME_EN
+  data_type: "VARCHAR2(250)"
+  description: "Tên chức năng bằng tiếng Anh"
   key: null
   fk_note: null

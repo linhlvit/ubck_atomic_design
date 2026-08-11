@@ -1,0 +1,26 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: QRTZ_SCHEDULER_STATE
+brd_ref: BRD-SRC-IDS-QRTZ_SCHEDULER_STATE
+columns:
+- name: SCHED_NAME
+  data_type: "VARCHAR2(120)"
+  description: "tên scheduler"
+  key: PK
+  fk_note: null
+- name: INSTANCE_NAME
+  data_type: "VARCHAR2(200)"
+  description: "tên instance/node"
+  key: PK
+  fk_note: null
+- name: LAST_CHECKIN_TIME
+  data_type: "NUMBER(13,0)"
+  description: "heartbeat cuối"
+  key: null
+  fk_note: null
+- name: CHECKIN_INTERVAL
+  data_type: "NUMBER(13,0)"
+  description: "interval heartbeat"
+  key: null
+  fk_note: null

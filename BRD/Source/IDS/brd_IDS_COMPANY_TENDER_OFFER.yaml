@@ -14,44 +14,49 @@ columns:
     description: "Khóa link đến bảng COMPANY_PROFILES"
     key: FK
     fk_note: "FK → COMPANY_PROFILES.ID"
-  - name: TENDER_OFFEROR_NAME_VI
-    data_type: VARCHAR2(255)
-    description: "Tên tổ chức/cá nhân chào mua công khai (tiếng Việt)"
-    key: null
-    fk_note: null
-  - name: TENDER_OFFEROR_NAME_EN
-    data_type: VARCHAR2(255)
-    description: "Tên tổ chức/cá nhân chào mua công khai (tiếng Anh)"
-    key: null
-    fk_note: null
-  - name: SECURITIES_AGENT_NAME_VI
+  - name: TARGET_COMPANY_NAME_VI
     data_type: VARCHAR2(1020)
-    description: "Tên công ty chứng khoán làm đại lý (tiếng Việt)"
+    description: "Tên công ty (tiếng Việt)"
     key: null
     fk_note: null
-  - name: SECURITIES_AGENT_NAME_EN
+  - name: TARGET_COMPANY_NAME_EN
     data_type: VARCHAR2(1020)
-    description: "Tên công ty chứng khoán làm đại lý (tiếng Anh)"
+    description: "Tên công ty (tiếng Anh)"
     key: null
     fk_note: null
-  - name: OFFEROR_ID_NO
-    data_type: VARCHAR2(15)
-    description: "Số CMND/hộ chiếu/GCN ĐKDN"
+  - name: TARGET_EQUITY_TICKER
+    data_type: VARCHAR2(80)
+    description: "Mã chứng khoán (Cổ phiếu)"
     key: null
     fk_note: null
-  - name: OFFEROR_RELATIONSHIP
-    data_type: VARCHAR2(255)
-    description: "Mối quan hệ giữa tổ chức/cá nhân chào mua với công ty mục tiêu"
+  - name: TARGET_LISTING_EXCH
+    data_type: VARCHAR2(400)
+    description: "Sàn niêm yết LOOKUP_GROUP = EQUITY_LISTING_EXCH"
     key: null
     fk_note: null
-  - name: PLANNED_OFFER_FROM_DATE
-    data_type: DATE
-    description: "Thời gian dự kiến chào mua từ ngày"
+  - name: TARGET_HO_ADDR
+    data_type: VARCHAR2(1020)
+    description: "Địa chỉ trụ sở chính"
     key: null
     fk_note: null
-  - name: PLANNED_OFFER_TO_DATE
-    data_type: DATE
-    description: "Thời gian dự kiến chào mua đến ngày"
+  - name: TARGET_WEBSITE
+    data_type: VARCHAR2(1020)
+    description: "Website"
+    key: null
+    fk_note: null
+  - name: TARGET_CHARTER_CAPITAL
+    data_type: NUMBER(24,0)
+    description: "Vốn điều lệ"
+    key: null
+    fk_note: null
+  - name: TARGET_SHARE_TYPE
+    data_type: VARCHAR2(512)
+    description: "Loại cổ phiếu đăng ký chào mua"
+    key: null
+    fk_note: null
+  - name: RELATIONSHIP_WITH_TARGET
+    data_type: VARCHAR2(1020)
+    description: "Mối quan hệ với CT mục tiêu"
     key: null
     fk_note: null
   - name: PRE_OFFER_SHARE_QTY
@@ -59,9 +64,9 @@ columns:
     description: "Cổ phiếu sở hữu trước khi chào mua"
     key: null
     fk_note: null
-  - name: PRE_OFFER_SHARE_RATIO
-    data_type: NUMBER(8,6)
-    description: "%Cổ phiếu sở hữu trước khi chào mua"
+  - name: PRE_OFFER_OWNERSHIP_RATIO
+    data_type: NUMBER(7,4)
+    description: "Tỷ lệ nắm giữ hiện tại"
     key: null
     fk_note: null
   - name: PLANNED_OFFER_SHARE_QTY
@@ -79,24 +84,99 @@ columns:
     description: "Giá mua"
     key: null
     fk_note: null
-  - name: ACQUIRED_SHARE_QTY
-    data_type: NUMBER(19,0)
-    description: "Cổ phiếu mua được trong đợt chào mua"
+  - name: PLANNED_TOTAL_VALUE
+    data_type: NUMBER(24,0)
+    description: "Tổng giá trị dự kiến chào mua (VND)"
     key: null
     fk_note: null
-  - name: ACQUIRED_SHARE_RATIO
-    data_type: NUMBER(8,6)
-    description: "%Cổ phiếu mua được trong đợt chào mua"
+  - name: FUNDING_SOURCE
+    data_type: VARCHAR2(2048)
+    description: "Nguồn vốn thực hiện"
     key: null
     fk_note: null
-  - name: POST_OFFER_SHARE_QTY
-    data_type: NUMBER(19,0)
-    description: "Cổ phiếu sau khi chào mua"
+  - name: PAYMENT_TERMS_AND_METHOD
+    data_type: VARCHAR2(2048)
+    description: "Thời hạn và phương thức thanh toán"
     key: null
     fk_note: null
-  - name: POST_OFFER_SHARE_RATIO
-    data_type: NUMBER(8,6)
-    description: "%Cổ phiếu sau khi chào mua"
+  - name: PLANNED_OFFER_FROM_DATE
+    data_type: DATE
+    description: "Thời gian dự kiến chào mua từ ngày"
+    key: null
+    fk_note: null
+  - name: PLANNED_OFFER_TO_DATE
+    data_type: DATE
+    description: "Thời gian dự kiến chào mua đến ngày"
+    key: null
+    fk_note: null
+  - name: SECURITIES_AGENT_NAME_VI
+    data_type: VARCHAR2(1020)
+    description: "Tên công ty chứng khoán làm đại lý (tiếng Việt)"
+    key: null
+    fk_note: null
+  - name: SECURITIES_AGENT_NAME_EN
+    data_type: VARCHAR2(1020)
+    description: "Tên công ty chứng khoán làm đại lý (tiếng Anh)"
+    key: null
+    fk_note: null
+  - name: APPLICATION_CD
+    data_type: VARCHAR2(400)
+    description: "Mã hồ sơ"
+    key: null
+    fk_note: null
+  - name: ADMINISTRATIVE_PROC_CD
+    data_type: VARCHAR2(400)
+    description: "Thủ tục hành chính (LOOKUP_GROUP = SO_ADMINISTRATIVE_PROCEDURE)"
+    key: null
+    fk_note: null
+  - name: CERTIFICATE_NO
+    data_type: VARCHAR2(72)
+    description: "Số giấy chứng nhận"
+    key: null
+    fk_note: null
+  - name: CERTIFICATE_DATE
+    data_type: DATE
+    description: "Ngày giấy chứng nhận"
+    key: null
+    fk_note: null
+  - name: OFFICIAL_LETTER_NO
+    data_type: VARCHAR2(72)
+    description: "Số công văn của UBCKNN"
+    key: null
+    fk_note: null
+  - name: OFFICIAL_LETTER_DATE
+    data_type: DATE
+    description: "Ngày công văn"
+    key: null
+    fk_note: null
+  - name: APPROVAL_STATUS_CD
+    data_type: VARCHAR2(400)
+    description: "Trạng thái phê duyệt phương án (LOOKUP_GROUP = SO_APPROVAL_STATUS)"
+    key: null
+    fk_note: null
+  - name: APPROVER_USER_ID
+    data_type: VARCHAR2(120)
+    description: "ID Login của Lãnh đạo phê duyệt"
+    key: null
+    fk_note: null
+  - name: APPROVER_USER_NAME
+    data_type: VARCHAR2(512)
+    description: "Lãnh đạo duyệt phương án"
+    key: null
+    fk_note: null
+  - name: PROCESSOR_USER_ID
+    data_type: VARCHAR2(120)
+    description: "ID Login của Chuyên viên xử lý"
+    key: null
+    fk_note: null
+  - name: PROCESSOR_USER_NAME
+    data_type: VARCHAR2(512)
+    description: "Chuyên viên xử lý"
+    key: null
+    fk_note: null
+  - name: REVISION_REASON
+    data_type: VARCHAR2(2048)
+    description: "Lý do chỉnh sửa"
     key: null
     fk_note: null
   - name: CREATED_BY
@@ -124,104 +204,9 @@ columns:
     description: ""
     key: null
     fk_note: null
-  - name: ID_SYNC
-    data_type: NUMBER(1,0)
-    description: ""
-    key: null
-    fk_note: null
-  - name: ADMINISTRATIVE_PROC_CD
-    data_type: VARCHAR2(400)
-    description: "Thủ tục hành chính (LOOKUP_GROUP = SO_ADMINISTRATIVE_PROCEDURE)"
-    key: null
-    fk_note: null
-  - name: ADMINISTRATIVE_STATUS_CD
-    data_type: VARCHAR2(12)
-    description: null
-    key: null
-    fk_note: null
-  - name: APPLICATION_CD
-    data_type: VARCHAR2(400)
-    description: "Mã hồ sơ"
-    key: null
-    fk_note: null
-  - name: APPROVAL_STATUS_CD
-    data_type: VARCHAR2(400)
-    description: "Trạng thái phê duyệt phương án (LOOKUP_GROUP = SO_APPROVAL_STATUS)"
-    key: null
-    fk_note: null
   - name: APPROVER_COMMENT
     data_type: VARCHAR2(1020)
     description: "Nội dung đề xuất phê duyệt / Lý do từ chối (uc.md 2.4.3)"
-    key: null
-    fk_note: null
-  - name: APPROVER_USER_ID
-    data_type: VARCHAR2(120)
-    description: "ID Login của Lãnh đạo phê duyệt"
-    key: null
-    fk_note: null
-  - name: APPROVER_USER_NAME
-    data_type: VARCHAR2(512)
-    description: "Lãnh đạo duyệt phương án"
-    key: null
-    fk_note: null
-  - name: CERTIFICATE_DATE
-    data_type: DATE
-    description: "Ngày giấy chứng nhận"
-    key: null
-    fk_note: null
-  - name: CERTIFICATE_NO
-    data_type: VARCHAR2(72)
-    description: "Số giấy chứng nhận"
-    key: null
-    fk_note: null
-  - name: FUNDING_SOURCE
-    data_type: VARCHAR2(2048)
-    description: "Nguồn vốn thực hiện"
-    key: null
-    fk_note: null
-  - name: OFFICIAL_LETTER_DATE
-    data_type: DATE
-    description: "Ngày công văn"
-    key: null
-    fk_note: null
-  - name: OFFICIAL_LETTER_NO
-    data_type: VARCHAR2(72)
-    description: "Số công văn của UBCKNN"
-    key: null
-    fk_note: null
-  - name: PAYMENT_TERMS_AND_METHOD
-    data_type: VARCHAR2(2048)
-    description: "Thời hạn và phương thức thanh toán"
-    key: null
-    fk_note: null
-  - name: PLANNED_TOTAL_VALUE
-    data_type: NUMBER(24,0)
-    description: "Tổng giá trị dự kiến chào mua (VND)"
-    key: null
-    fk_note: null
-  - name: PRE_OFFER_OWNERSHIP_RATIO
-    data_type: NUMBER(7,4)
-    description: "Tỷ lệ nắm giữ hiện tại"
-    key: null
-    fk_note: null
-  - name: PROCESSOR_USER_ID
-    data_type: VARCHAR2(120)
-    description: "ID Login của Chuyên viên xử lý"
-    key: null
-    fk_note: null
-  - name: PROCESSOR_USER_NAME
-    data_type: VARCHAR2(512)
-    description: "Chuyên viên xử lý"
-    key: null
-    fk_note: null
-  - name: RELATIONSHIP_WITH_TARGET
-    data_type: VARCHAR2(1020)
-    description: "Mối quan hệ với CT mục tiêu"
-    key: null
-    fk_note: null
-  - name: REVISION_REASON
-    data_type: VARCHAR2(2048)
-    description: "Lý do chỉnh sửa"
     key: null
     fk_note: null
   - name: SUBMISSION_DATE
@@ -229,43 +214,8 @@ columns:
     description: null
     key: null
     fk_note: null
-  - name: TARGET_CHARTER_CAPITAL
-    data_type: NUMBER(24,0)
-    description: "Vốn điều lệ"
-    key: null
-    fk_note: null
-  - name: TARGET_COMPANY_NAME_EN
-    data_type: VARCHAR2(1020)
-    description: "Tên công ty (tiếng Anh)"
-    key: null
-    fk_note: null
-  - name: TARGET_COMPANY_NAME_VI
-    data_type: VARCHAR2(1020)
-    description: "Tên công ty (tiếng Việt)"
-    key: null
-    fk_note: null
-  - name: TARGET_EQUITY_TICKER
-    data_type: VARCHAR2(80)
-    description: "Mã chứng khoán (Cổ phiếu)"
-    key: null
-    fk_note: null
-  - name: TARGET_HO_ADDR
-    data_type: VARCHAR2(1020)
-    description: "Địa chỉ trụ sở chính"
-    key: null
-    fk_note: null
-  - name: TARGET_LISTING_EXCH
-    data_type: VARCHAR2(400)
-    description: "Sàn niêm yết LOOKUP_GROUP = EQUITY_LISTING_EXCH"
-    key: null
-    fk_note: null
-  - name: TARGET_SHARE_TYPE
-    data_type: VARCHAR2(512)
-    description: "Loại cổ phiếu đăng ký chào mua"
-    key: null
-    fk_note: null
-  - name: TARGET_WEBSITE
-    data_type: VARCHAR2(1020)
-    description: "Website"
+  - name: ADMINISTRATIVE_STATUS_CD
+    data_type: VARCHAR2(12)
+    description: null
     key: null
     fk_note: null

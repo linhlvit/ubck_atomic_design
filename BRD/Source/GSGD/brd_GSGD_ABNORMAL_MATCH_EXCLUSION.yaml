@@ -1,0 +1,61 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: GSGD
+table: ABNORMAL_MATCH_EXCLUSION
+brd_ref: BRD-SRC-GSGD-ABNORMAL_MATCH_EXCLUSION
+columns:
+- name: ID
+  data_type: "VARCHAR2(36)"
+  description: "Primary key (UUID)"
+  key: PK
+  fk_note: null
+- name: VALUE_TYPE
+  data_type: "VARCHAR2(30)"
+  description: "Loai gia tri: IP | DEVICE | BANK_ACCOUNT | IDENTITY"
+  key: null
+  fk_note: null
+- name: VALUE_NORM
+  data_type: "VARCHAR2(4000)"
+  description: "Gia tri da chuan hoa can loai tru"
+  key: null
+  fk_note: null
+- name: NOTE
+  data_type: "VARCHAR2(2000)"
+  description: "Ghi chu ly do loai tru"
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: "TIMESTAMP(6)"
+  description: "Ngay tao"
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: "TIMESTAMP(6)"
+  description: "Ngay sua cuoi"
+  key: null
+  fk_note: null
+- name: CREATED_BY_ID
+  data_type: "VARCHAR2(255)"
+  description: "User_id nguoi tao"
+  key: null
+  fk_note: null
+- name: UPDATED_BY_ID
+  data_type: "VARCHAR2(255)"
+  description: "User_id nguoi cap nhat"
+  key: null
+  fk_note: null
+- name: CREATED_BY_NAME
+  data_type: "VARCHAR2(250)"
+  description: "Ten nguoi tao"
+  key: null
+  fk_note: null
+- name: UPDATED_BY_NAME
+  data_type: "VARCHAR2(250)"
+  description: "Ten nguoi cap nhat"
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: "NUMBER(1,0)"
+  description: "Soft delete: 0=Active, 1=Deleted"
+  key: null
+  fk_note: null

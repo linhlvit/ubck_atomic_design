@@ -1,0 +1,81 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: ALERT_TEMPLATE_AUDIT_DTL
+brd_ref: BRD-SRC-IDS-ALERT_TEMPLATE_AUDIT_DTL
+columns:
+- name: ID
+  data_type: "NUMBER(10,0)"
+  description: "Khóa chính"
+  key: PK
+  fk_note: null
+- name: ID_HDR
+  data_type: "NUMBER(10,0)"
+  description: "ID BẢNG ALERT_TEMPLATE_AUDIT_HDR"
+  key: FK
+  fk_note: "FK → ALERT_TEMPLATE_AUDIT_HDR.ID"
+- name: FORM_ID
+  data_type: "NUMBER(10,0)"
+  description: "ID BẢNG FORMS"
+  key: null
+  fk_note: null
+- name: EXPECTED_FORM_ID
+  data_type: "NUMBER(10,0)"
+  description: "ID BẢNG FORMS. ID của biểu mẫu vế phải"
+  key: null
+  fk_note: null
+- name: CONDITION_TYPE
+  data_type: "VARCHAR2(1020)"
+  description: "Lưu EQUAL;NOT EQUAL dùng để so sánh ACTUAL và EXPECTED"
+  key: null
+  fk_note: null
+- name: COMPARE_TYPE
+  data_type: "VARCHAR2(1020)"
+  description: "Lưu VALUE; FIELD Quyết định dùng cột EXPECTED_FIELD hay EXPECTED_VALUE nào để so sánh với ACTUAL_FIELD"
+  key: null
+  fk_note: null
+- name: ACTUAL_FIELD
+  data_type: "NUMBER"
+  description: "ID field vế trái (năm nay)"
+  key: null
+  fk_note: null
+- name: EXPECTED_FIELD
+  data_type: "NUMBER"
+  description: "ID field vế phải (năm trước)"
+  key: null
+  fk_note: null
+- name: EXPECTED_VALUE
+  data_type: "VARCHAR2(1020)"
+  description: "Giá trị vế phải"
+  key: null
+  fk_note: null
+- name: ACTUAL_TIME_OFFSET
+  data_type: "NUMBER"
+  description: "Mốc thời gian vế trái: 0 - Năm nay, -1- Năm trước"
+  key: null
+  fk_note: null
+- name: EXPECTED_TIME_OFFSET
+  data_type: "NUMBER"
+  description: "Mốc thời gian vế phải: 0 - Năm nay, 1- Năm trước"
+  key: null
+  fk_note: null
+- name: CREATED_DATE
+  data_type: "DATE"
+  description: "Ngày tạo"
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: "VARCHAR2(1020)"
+  description: "Người tạo"
+  key: null
+  fk_note: null
+- name: UPDATED_DATE
+  data_type: "DATE"
+  description: "Ngày sửa"
+  key: null
+  fk_note: null
+- name: UPDATED_BY
+  data_type: "VARCHAR2(1020)"
+  description: "Người sửa"
+  key: null
+  fk_note: null

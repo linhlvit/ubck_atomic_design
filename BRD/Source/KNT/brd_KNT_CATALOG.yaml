@@ -4,28 +4,28 @@ source: KNT
 table: CATALOG
 brd_ref: BRD-SRC-KNT-CATALOG
 columns:
-- name: CATALOG_GROUP_ID
-  data_type: "NUMBER"
-  description: "FK -> catalog_group: Nhóm danh mục chứa mục này"
-  key: FK
-  fk_note: "FK → CATALOG_GROUP.ID"
-- name: CODE
-  data_type: "VARCHAR2(400)"
-  description: "Mã định danh (mã viết tắt nghiệp vụ)"
-  key: null
-  fk_note: null
-- name: COMPANY_TYPE
-  data_type: "NUMBER"
-  description: "Loại hình công ty (LoaiHinhCongTyEnum): 1=Công ty thông thường, 2=Tổ chức tín dụng, 3=Công ty bảo hiểm, 4=Công ty chứng khoán, 5=Công ty quản lý quỹ"
-  key: null
-  fk_note: null
 - name: ID
   data_type: "NUMBER"
   description: "Khóa chính của bản ghi (ID số tự tăng)"
   key: PK
   fk_note: null
+- name: CODE
+  data_type: "VARCHAR2(400)"
+  description: "Mã định danh (mã viết tắt nghiệp vụ)"
+  key: null
+  fk_note: null
 - name: NAME
   data_type: "VARCHAR2(800)"
   description: "Tên đầy đủ"
+  key: null
+  fk_note: null
+- name: CATALOG_GROUP_ID
+  data_type: "NUMBER"
+  description: "FK -> catalog_group: Nhóm danh mục chứa mục này"
+  key: FK
+  fk_note: "FK → CATALOG_GROUP.ID"
+- name: COMPANY_TYPE
+  data_type: "NUMBER"
+  description: "Loại hình công ty (LoaiHinhCongTyEnum): 1=Công ty thông thường, 2=Tổ chức tín dụng, 3=Công ty bảo hiểm, 4=Công ty chứng khoán, 5=Công ty quản lý quỹ"
   key: null
   fk_note: null

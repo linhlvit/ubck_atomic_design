@@ -1,0 +1,121 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: KNT
+table: HUB_NOTIFICATION
+brd_ref: BRD-SRC-KNT-HUB_NOTIFICATION
+columns:
+- name: ID
+  data_type: "CHAR(36)"
+  description: "UUID; map sang field id trên Angular"
+  key: PK
+  fk_note: null
+- name: LEVEL_CODE
+  data_type: "VARCHAR2(20)"
+  description: "ERROR|WARNING|SUCCESS|INFO; map lower-case cho CSS panel chuông"
+  key: null
+  fk_note: null
+- name: TITLE
+  data_type: "VARCHAR2(500)"
+  description: "Tiêu đề ngắn thông báo hub"
+  key: null
+  fk_note: null
+- name: DESCRIPTION
+  data_type: "CLOB"
+  description: "Mô tả đầy đủ (CLOB nếu nội dung dài)"
+  key: null
+  fk_note: null
+- name: NOTIFICATION_TYPE
+  data_type: "VARCHAR2(50)"
+  description: "Phân loại nghiệp vụ: INTEGRATION, DEADLINE, RISK_ALERT, SYNC_SUCCESS..."
+  key: null
+  fk_note: null
+- name: SHOW_RETRY
+  data_type: "NUMBER(1,0)"
+  description: "1 = hiện nút Thử lại; 0 = ẩn"
+  key: null
+  fk_note: null
+- name: ACTIVE
+  data_type: "NUMBER(1,0)"
+  description: "0 = ẩn khỏi feed mà không xóa lịch sử"
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: "TIMESTAMP(6)"
+  description: "Thời điểm tạo; API sinh timeLabel kiểu \"2 phút trước\""
+  key: null
+  fk_note: null
+- name: EXPIRES_AT
+  data_type: "TIMESTAMP(6)"
+  description: "Sau thời điểm này không đẩy ra client (tùy chọn)"
+  key: null
+  fk_note: null
+- name: PUBLISHED_AT
+  data_type: "TIMESTAMP(6)"
+  description: "Lên lịch hiển thị; NULL = hiển thị ngay khi created"
+  key: null
+  fk_note: null
+- name: SOURCE_SYSTEM
+  data_type: "VARCHAR2(100)"
+  description: "LGSP, DMDC, TCT, nội bộ KNT..."
+  key: null
+  fk_note: null
+- name: REF_TYPE
+  data_type: "VARCHAR2(80)"
+  description: "Khóa nghiệp vụ tham chiếu: MSG_PACKET, DOI_CHIEU_JOB..."
+  key: null
+  fk_note: null
+- name: REF_ID
+  data_type: "VARCHAR2(100)"
+  description: "ID đối tượng nghiệp vụ (UUID hoặc mã)"
+  key: null
+  fk_note: null
+- name: DETAIL_ROUTE
+  data_type: "VARCHAR2(500)"
+  description: "Đường dẫn Angular — nút Xem chi tiết"
+  key: null
+  fk_note: null
+- name: DETAIL_QUERY_JSON
+  data_type: "CLOB"
+  description: "Query params JSON cho router.navigate"
+  key: null
+  fk_note: null
+- name: RETRY_ACTION_KEY
+  data_type: "VARCHAR2(100)"
+  description: "Khóa cấu hình job/API thử lại"
+  key: null
+  fk_note: null
+- name: PAYLOAD_JSON
+  data_type: "CLOB"
+  description: "Dữ liệu bổ sung cho modal chi tiết"
+  key: null
+  fk_note: null
+- name: PRIORITY
+  data_type: "NUMBER(5,0)"
+  description: "Sắp xếp trong list: lớn hơn = quan trọng hơn"
+  key: null
+  fk_note: null
+- name: AUDIENCE_SCOPE
+  data_type: "VARCHAR2(30)"
+  description: "ALL|ROLE|USER|MODULE — phạm vi người nhận"
+  key: null
+  fk_note: null
+- name: TARGET_ROLE_CODES
+  data_type: "VARCHAR2(1000)"
+  description: "Khi audience_scope=ROLE: danh sách mã role"
+  key: null
+  fk_note: null
+- name: TARGET_USER_LOGIN
+  data_type: "VARCHAR2(100)"
+  description: "Khi audience_scope=USER: ten_dang_nhap đích danh"
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: "VARCHAR2(100)"
+  description: "Người/tiến trình tạo thông báo"
+  key: null
+  fk_note: null
+- name: MSG_PACKET_STATUS
+  data_type: "NUMBER(3,0)"
+  description: "Snapshot msg_packet.status tại thời điểm tạo thông báo (không cập nhật khi gói tin đổi sau đó)"
+  key: null
+  fk_note: null

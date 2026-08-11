@@ -4,6 +4,16 @@ source: TTHC
 table: OpenId_OpenIdApplicationIndex
 brd_ref: BRD-SRC-TTHC-OpenId_OpenIdApplicationIndex
 columns:
+- name: ID
+  data_type: "NUMBER"
+  description: "Khóa chính (tự tăng)"
+  key: null
+  fk_note: null
+- name: DOCUMENTID
+  data_type: "NUMBER"
+  description: "Khóa ngoại tới Document.Id của Orchard (kho lưu document JSON)"
+  key: null
+  fk_note: null
 - name: APPLICATIONID
   data_type: "VARCHAR2(100)"
   description: "Applicationid"
@@ -12,15 +22,5 @@ columns:
 - name: CLIENTID
   data_type: "VARCHAR2(100)"
   description: "Clientid"
-  key: null
-  fk_note: null
-- name: DOCUMENTID
-  data_type: "NUMBER"
-  description: "Khóa ngoại tới Document.Id của Orchard (kho lưu document JSON)"
-  key: null
-  fk_note: null
-- name: ID
-  data_type: "NUMBER"
-  description: "Khóa chính (tự tăng)"
   key: null
   fk_note: null
