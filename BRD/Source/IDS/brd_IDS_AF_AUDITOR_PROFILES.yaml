@@ -12,25 +12,25 @@ columns:
   - name: AF_PROFILE_ID
     data_type: NUMBER(10,0)
     description: "Link đến bảng AF_PROFILES"
-    key: FK
-    fk_note: "FK → AF_PROFILES.ID"
+    key: null
+    fk_note: null
   - name: FULL_NAME
-    data_type: VARCHAR2(50)
+    data_type: VARCHAR2(200)
     description: "Họ và tên"
     key: null
     fk_note: null
   - name: IDENTITY_NO
-    data_type: VARCHAR2(18)
+    data_type: VARCHAR2(72)
     description: "Số CCCD"
     key: null
     fk_note: null
   - name: POSITION_TITLE_CD
-    data_type: VARCHAR2(100)
+    data_type: VARCHAR2(400)
     description: "Chức vụ"
     key: null
     fk_note: null
   - name: PRACTICE_CERT_NO
-    data_type: VARCHAR2(100)
+    data_type: VARCHAR2(400)
     description: "Số GCN đăng ký hành nghề kiểm toán"
     key: null
     fk_note: null
@@ -50,7 +50,7 @@ columns:
     key: null
     fk_note: null
   - name: AUDIT_CERT_NO
-    data_type: VARCHAR2(100)
+    data_type: VARCHAR2(400)
     description: "Số chứng chỉ kiểm toán viên"
     key: null
     fk_note: null
@@ -60,7 +60,7 @@ columns:
     key: null
     fk_note: null
   - name: STATUS_CD
-    data_type: VARCHAR2(100)
+    data_type: VARCHAR2(400)
     description: "Trạng thái kiểm toán viên"
     key: null
     fk_note: null
@@ -85,25 +85,25 @@ columns:
     key: null
     fk_note: null
   - name: APPROVAL_STATUS_CD
-    data_type: VARCHAR2(100)
+    data_type: VARCHAR2(400)
     description: "Trạng thái duyệt hồ sơ"
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: VARCHAR2(30)
+    data_type: VARCHAR2(120)
     description: "Người tạo"
     key: null
-    fk_note: "FK → LOGINS.ID"
+    fk_note: null
   - name: CREATED_DATE
     data_type: DATE
     description: "Ngày tạo"
     key: null
     fk_note: null
   - name: UPDATED_BY
-    data_type: VARCHAR2(30)
+    data_type: VARCHAR2(120)
     description: "Người sửa"
     key: null
-    fk_note: "FK → LOGINS.ID"
+    fk_note: null
   - name: UPDATED_DATE
     data_type: DATE
     description: "Ngày sửa"
@@ -112,5 +112,10 @@ columns:
   - name: DELETE_FLG
     data_type: NUMBER(1,0)
     description: ""
+    key: null
+    fk_note: null
+  - name: APPROVER_COMMENT
+    data_type: VARCHAR2(1020)
+    description: "Ý kiến người duyệt"
     key: null
     fk_note: null

@@ -5,15 +5,15 @@ table: SC_FIRM_ADHOC_REPORT
 brd_ref: BRD-SRC-SCMS-SC_FIRM_ADHOC_REPORT
 columns:
   - name: ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
     key: PK
     fk_note: null
   - name: SC_FIRM_INFO_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> sc_firm_info: Công ty chứng khoán liên quan"
-    key: FK
-    fk_note: "FK → SC_FIRM_INFO.ID"
+    key: null
+    fk_note: null
   - name: ATTACHMENT_PATH
     data_type: NCLOB
     description: "Đường dẫn file đính kèm trên hệ thống lưu trữ"
@@ -40,7 +40,7 @@ columns:
     key: null
     fk_note: null
   - name: REPORT_YEAR
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: ""
     key: null
     fk_note: null
@@ -75,10 +75,10 @@ columns:
     key: null
     fk_note: null
   - name: CANCELLED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> sys_user: Người hủy báo cáo"
-    key: FK
-    fk_note: "FK suy luận → SYS_USER.ID"
+    key: null
+    fk_note: null
   - name: SUMMARY
     data_type: NCLOB
     description: "Tóm tắt nội dung trích yếu"
@@ -100,17 +100,17 @@ columns:
     key: null
     fk_note: null
   - name: EVENT_TYPE_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> cat_event_type: Loại sự vụ/sự kiện nghiệp vụ"
-    key: FK
-    fk_note: "FK → CAT_EVENT_TYPE.ID"
+    key: null
+    fk_note: null
   - name: REPORT_NAME
     data_type: VARCHAR2(2000)
     description: "Tên báo cáo/biểu mẫu"
     key: null
     fk_note: null
   - name: RECORD_STATUS
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Trang thai bao cao dot xuat/bat thuong: 0 = Chua gui; 1 = Gui dung han; 2 = Gui muon; 3 = Bi huy"
     key: null
     fk_note: null
@@ -125,17 +125,17 @@ columns:
     key: null
     fk_note: null
   - name: ALLOW_IMPORT
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Co cho phep nhap du lieu qua file Excel: 1 = Cho phep; 0 = Khong cho phep"
     key: null
     fk_note: null
   - name: FORM_REPORT_ID
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: "FK -> form_report: Biểu mẫu báo cáo liên quan"
-    key: FK
-    fk_note: "FK → FORM_REPORT.ID"
+    key: null
+    fk_note: null
   - name: FORM_VERSION_ID
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: ""
     key: null
     fk_note: null
@@ -150,12 +150,12 @@ columns:
     key: null
     fk_note: null
   - name: SENDER_ID
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: "FK -> sys_user: Người gửi thông báo/tin nhắn"
-    key: FK
-    fk_note: "FK suy luận → SYS_USER.ID"
+    key: null
+    fk_note: null
   - name: REQUIRES_DISCLOSURE
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Co phai cong bo thong tin khi nop bao cao: 1 = Co; 0 = Khong"
     key: null
     fk_note: null
@@ -165,17 +165,37 @@ columns:
     key: null
     fk_note: null
   - name: REPORT_INPUT_SUBMISSION_ID
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: "FK -> report_input_submission: Phiên gửi báo cáo liên quan"
     key: FK
     fk_note: "FK → REPORT_INPUT_SUBMISSION.ID"
   - name: SC_FIRM_FOREIGN_BRANCH_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> sc_firm_foreign_branch: Chi nhánh CTCK NN liên quan"
-    key: FK
-    fk_note: "FK → SC_FIRM_FOREIGN_BRANCH.ID"
+    key: null
+    fk_note: null
   - name: BANK_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> bank: Ngân hàng liên quan"
-    key: FK
-    fk_note: "FK → BANK.ID"
+    key: null
+    fk_note: null
+  - name: SUBMISSION_DEADLINE
+    data_type: TIMESTAMP(6)
+    description: null
+    key: null
+    fk_note: null
+  - name: LATE_SUBMISSION_DAYS
+    data_type: NUMBER(10,0)
+    description: null
+    key: null
+    fk_note: null
+  - name: IMPORT_DATA_JSON
+    data_type: NCLOB
+    description: null
+    key: null
+    fk_note: null
+  - name: BANK_SCOPE
+    data_type: VARCHAR2(80)
+    description: "LUU_KY|GIAM_SAT - phan loai NH luc tao BC"
+    key: null
+    fk_note: null

@@ -5,22 +5,22 @@ table: PERMISSIONS
 brd_ref: BRD-SRC-FIMS-PERMISSIONS
 columns:
 - name: ID
-  data_type: "VARCHAR2(36 BYTE)"
+  data_type: "VARCHAR2(36)"
   description: "UUID permission"
-  key: null
+  key: PK
   fk_note: null
 - name: MODULE_ID
-  data_type: "VARCHAR2(36 BYTE)"
+  data_type: "VARCHAR2(36)"
   description: "FK module"
-  key: null
-  fk_note: null
+  key: FK
+  fk_note: FK → MODULES.ID
 - name: FORM_ID
-  data_type: "VARCHAR2(36 BYTE)"
+  data_type: "VARCHAR2(36)"
   description: "FK form"
-  key: null
-  fk_note: null
+  key: FK
+  fk_note: FK → FORM_SCHEMAS.ID
 - name: ROLE_CODE
-  data_type: "VARCHAR2(50 BYTE)"
+  data_type: "VARCHAR2(50)"
   description: "ADMIN, USER..."
   key: null
   fk_note: null

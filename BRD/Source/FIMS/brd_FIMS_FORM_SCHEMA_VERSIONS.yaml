@@ -5,15 +5,15 @@ table: FORM_SCHEMA_VERSIONS
 brd_ref: BRD-SRC-FIMS-FORM_SCHEMA_VERSIONS
 columns:
 - name: ID
-  data_type: "VARCHAR2(36 BYTE)"
+  data_type: "VARCHAR2(36)"
   description: "UUID version"
-  key: null
+  key: PK
   fk_note: null
 - name: FORM_SCHEMA_ID
-  data_type: "VARCHAR2(36 BYTE)"
+  data_type: "VARCHAR2(36)"
   description: "FK form_schemas"
-  key: null
-  fk_note: null
+  key: FK
+  fk_note: FK → FORM_SCHEMAS.ID
 - name: VERSION
   data_type: "NUMBER"
   description: "Số version"
@@ -25,7 +25,7 @@ columns:
   key: null
   fk_note: null
 - name: CHANGE_LOG
-  data_type: "VARCHAR2(500 BYTE)"
+  data_type: "VARCHAR2(500)"
   description: "Mô tả thay đổi"
   key: null
   fk_note: null
@@ -35,7 +35,7 @@ columns:
   key: null
   fk_note: null
 - name: CREATED_BY
-  data_type: "VARCHAR2(50 BYTE)"
+  data_type: "VARCHAR2(50)"
   description: "User thao tác"
   key: null
-  fk_note: "FK suy luận → USERS.ID"
+  fk_note: null

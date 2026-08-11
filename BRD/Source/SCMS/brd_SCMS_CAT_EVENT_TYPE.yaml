@@ -5,9 +5,9 @@ table: CAT_EVENT_TYPE
 brd_ref: BRD-SRC-SCMS-CAT_EVENT_TYPE
 columns:
   - name: ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
-    key: PK
+    key: null
     fk_note: null
   - name: EVENT_TYPE_CODE
     data_type: NVARCHAR2(50)
@@ -25,22 +25,22 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "ID tài khoản người dùng tạo bản ghi"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: CREATED_AT
     data_type: TIMESTAMP(6)
     description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
     key: null
     fk_note: null
   - name: RECORD_STATUS
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Trang thai danh muc su vu: 1 = Dang su dung; 0 = Ngung su dung"
     key: null
     fk_note: null
   - name: REQUIRES_LICENSE
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Cờ sự vụ này cần có giấy phép/văn bản chấp thuận: 1=Có, 0=Không"
     key: null
     fk_note: null
@@ -55,22 +55,22 @@ columns:
     key: null
     fk_note: null
   - name: OBLIGATION_TYPE
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Loai nghia vu ap dung: 1 = Chi bao cao (khong CBTT); 2 = Chi CBTT (khong bao cao); 3 = Vua bao cao vua CBTT; 4 = Thay doi ho so CTCK"
     key: null
     fk_note: null
   - name: EVENT_GROUP_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: ""
     key: null
     fk_note: null
   - name: CYCLE
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: ""
     key: null
     fk_note: null
   - name: FREQUENCY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: ""
     key: null
     fk_note: null
@@ -80,7 +80,7 @@ columns:
     key: null
     fk_note: null
   - name: SUBMISSION_METHOD
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: ""
     key: null
     fk_note: null
@@ -100,22 +100,27 @@ columns:
     key: null
     fk_note: null
   - name: UPDATED_BY
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: "Cột updated_by — xem thêm tài liệu đặc tả SCMS"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: EVENT_CATEGORY
-    data_type: NUMBER(5)
+    data_type: NUMBER(5,0)
     description: "Phân loại sự vụ (loại thay đổi hồ sơ)"
     key: null
     fk_note: null
   - name: DEADLINE_CALCULATION_METHOD
-    data_type: NUMBER(5)
+    data_type: NUMBER(5,0)
     description: ""
     key: null
     fk_note: null
   - name: DU_LIEU_MO_RONG
     data_type: NCLOB
     description: "Cột du_lieu_mo_rong — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: EXTENDED_DATA
+    data_type: NCLOB
+    description: null
     key: null
     fk_note: null

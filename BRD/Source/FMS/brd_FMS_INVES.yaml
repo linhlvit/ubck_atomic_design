@@ -15,47 +15,47 @@ columns:
   key: null
   fk_note: null
 - name: CREATED_BY
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Tài khoản người tạo bản ghi"
   key: null
-  fk_note: "FK suy luận → USERS.ID"
+  fk_note: null
 - name: DATE_MODIFIED
   data_type: DATE
   description: "Thời điểm cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
 - name: MODIFY_BY
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Tài khoản người cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
 - name: SEC_ID
   data_type: RAW(16)
   description: "FK -> SECURITIES: Công ty QLQ liên quan"
-  key: null
-  fk_note: "FK suy luận → SECURITIES.ID"
+  key: FK
+  fk_note: "FK → SECURITIES.ID"
 - name: NAT_ID
   data_type: RAW(16)
   description: "FK -> NATIONAL: Quốc gia/quốc tịch"
-  key: null
-  fk_note: "FK suy luận → NATIONAL.ID"
+  key: FK
+  fk_note: "FK → NATIONAL.ID"
 - name: STO_ID
   data_type: RAW(16)
   description: "FK -> STOCKHOLDER_TYPE: Loại cổ đông"
-  key: null
-  fk_note: "FK suy luận → STOCKHOLDER_TYPE.ID"
+  key: FK
+  fk_note: "FK → STOCKHOLDER_TYPE.ID"
 - name: ITEM_NAME
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(1000)
   description: "Tên hiển thị chính"
   key: null
   fk_note: null
 - name: ID_TYPE
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Loại giấy tờ định danh: 1=CMND, 2=CCCD, 3=Hộ chiếu, 4=Mã số DN"
   key: null
   fk_note: null
 - name: ID_NO
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(100)
   description: "Số CMND/CCCD/Hộ chiếu/Mã số doanh nghiệp"
   key: null
   fk_note: null
@@ -70,12 +70,12 @@ columns:
   key: null
   fk_note: null
 - name: DORF
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Loại tổ chức thành viên: 1=Trong nước, 2=Nước ngoài"
   key: null
   fk_note: null
 - name: ADDRESS
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(1600)
   description: "Địa chỉ trụ sở"
   key: null
   fk_note: null
@@ -85,27 +85,27 @@ columns:
   key: null
   fk_note: null
 - name: DELETED
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động"
   key: null
   fk_note: null
 - name: AD_SCALE
-  data_type: NUMBER(22)
+  data_type: NUMBER(18,2)
   description: "Quy mô uỷ thác cam kết (đơn vị: VNĐ)"
   key: null
   fk_note: null
 - name: ACT_SCALE
-  data_type: NUMBER(22)
+  data_type: NUMBER(18,2)
   description: "Quy mô uỷ thác thực tế (đơn vị: VNĐ)"
   key: null
   fk_note: null
 - name: LIST_VALUE
-  data_type: NUMBER(22)
+  data_type: NUMBER(18,2)
   description: "Giá trị danh mục đầu tư (đơn vị: VNĐ)"
   key: null
   fk_note: null
 - name: DATA_MIGRATION
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ dữ liệu từ hệ thống cũ (legacy migration): 1=Dữ liệu cũ, 0=Dữ liệu mới"
   key: null
   fk_note: null

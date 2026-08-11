@@ -12,10 +12,10 @@ columns:
   - name: USER_ID
     data_type: NUMBER
     description: "FK -> sys_user: Người dùng liên quan"
-    key: FK
-    fk_note: "FK → SYS_USER.ID"
+    key: null
+    fk_note: null
   - name: ENTITY_TYPE
-    data_type: VARCHAR2(32 BYTE)
+    data_type: VARCHAR2(32)
     description: "Loai thuc the phan quyen du lieu: SC_FIRM = CTCK; BRANCH = Chi nhanh; REP_OFFICE = Van phong dai dien; TRANSACTION_OFFICE = Phong giao dich"
     key: null
     fk_note: null
@@ -25,7 +25,7 @@ columns:
     key: null
     fk_note: null
   - name: ENTITY_DISPLAY_NAME
-    data_type: VARCHAR2(500 BYTE)
+    data_type: VARCHAR2(500)
     description: ""
     key: null
     fk_note: null
@@ -38,7 +38,7 @@ columns:
     data_type: NUMBER
     description: "ID tài khoản người dùng tạo bản ghi"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: LAST_MODIFIED_AT
     data_type: TIMESTAMP(6)
     description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"
@@ -48,4 +48,4 @@ columns:
     data_type: NUMBER
     description: "ID tài khoản người dùng cập nhật lần cuối"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null

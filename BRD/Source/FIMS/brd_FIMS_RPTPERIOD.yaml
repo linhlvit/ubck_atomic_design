@@ -7,7 +7,7 @@ columns:
 - name: Id
   data_type: "NUMBER(18,2)"
   description: "Khóa chính của bản ghi (ID số tự tăng)"
-  key: PK
+  key: null
   fk_note: null
 - name: Deleted
   data_type: "NUMBER(1,0)"
@@ -38,12 +38,12 @@ columns:
   data_type: "NUMBER(18,2)"
   description: "FK -> RPTTEMP: Biểu mẫu báo cáo liên quan"
   key: FK
-  fk_note: "FK → RPTTEMP"
+  fk_note: "FK → RPTTEMP.Id"
 - name: SfPdId
   data_type: "NUMBER(18,2)"
   description: "FK -> kỳ báo cáo cha (kỳ tự thiết lập tham chiếu)"
   key: FK
-  fk_note: "FK → K"
+  fk_note: null
 - name: PeriodType
   data_type: "NUMBER(18,2)"
   description: "Loại kỳ báo cáo (PeriodTypeEnum): 1=Ngày, 2=Tuần, 3=Nửa tháng, 4=Tháng, 5=Quý, 6=Bán niên, 7=Năm"

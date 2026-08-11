@@ -15,97 +15,97 @@ columns:
   key: null
   fk_note: null
 - name: CREATED_BY
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Tài khoản người tạo bản ghi"
   key: null
-  fk_note: "FK suy luận → USERS.ID"
+  fk_note: null
 - name: DATE_MODIFIED
   data_type: DATE
   description: "Thời điểm cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
 - name: MODIFY_BY
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Tài khoản người cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
 - name: PR_WID
   data_type: RAW(16)
   description: "FK -> PARA_WARN: Tham số cảnh báo chính"
-  key: null
-  fk_note: "FK suy luận → PARA_WARN.ID"
+  key: FK
+  fk_note: "FK → PARA_WARN.ID"
 - name: COMPARE_TYPE
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Kiểu so sánh trong điều kiện cảnh báo: 1=Lớn hơn, 2=Nhỏ hơn, 3=Bằng..."
   key: null
   fk_note: null
 - name: OTHER_WID
   data_type: RAW(16)
   description: "FK -> PARA_WARN: Tham số cảnh báo so sánh thứ hai (tùy chọn)"
-  key: null
-  fk_note: "FK suy luận → PARA_WARN.ID"
+  key: FK
+  fk_note: "FK → PARA_WARN.ID"
 - name: OTHER_WID_CONDITION
-  data_type: NUMBER(22)
+  data_type: NUMBER(18,2)
   description: "Điều kiện so sánh với tham số cảnh báo thứ hai"
   key: null
   fk_note: null
 - name: FROM_VALUE
-  data_type: NUMBER(22)
+  data_type: NUMBER(38,0)
   description: "Giá trị ngưỡng dưới của điều kiện cảnh báo"
   key: null
   fk_note: null
 - name: FROM_VALUE_CONDITION
-  data_type: NUMBER(22)
+  data_type: NUMBER(10,0)
   description: "Toán tử so sánh ngưỡng dưới: 1=>=, 2=>"
   key: null
   fk_note: null
 - name: TO_VALUE
-  data_type: NUMBER(22)
+  data_type: NUMBER(38,0)
   description: "Giá trị ngưỡng trên của điều kiện cảnh báo"
   key: null
   fk_note: null
 - name: TO_VALUE_CONDITION
-  data_type: NUMBER(22)
+  data_type: NUMBER(10,0)
   description: "Toán tử so sánh ngưỡng trên: 1=<=, 2=<"
   key: null
   fk_note: null
 - name: RECORD_STATUS
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực"
   key: null
   fk_note: null
 - name: ITEM_NAME
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(4000)
   description: "Tên hiển thị chính"
   key: null
   fk_note: null
 - name: OTHER_WPERIOD_TYPE
-  data_type: NUMBER(22)
+  data_type: NUMBER(10,0)
   description: "Loại kỳ của tham số so sánh thứ hai"
   key: null
   fk_note: null
 - name: OTHER_WPERIOD_VALUE
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(4000)
   description: "Giá trị kỳ của tham số so sánh thứ hai"
   key: null
   fk_note: null
 - name: PR_WPERIOD_TYPE
-  data_type: NUMBER(22)
+  data_type: NUMBER(10,0)
   description: "Loại kỳ của tham số chính: 1=Kỳ hiện tại, 2=Kỳ liền trước..."
   key: null
   fk_note: null
 - name: PR_WPERIOD_VALUE
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(4000)
   description: "Giá trị kỳ của tham số chính (VD: '1' = 1 kỳ trước)"
   key: null
   fk_note: null
 - name: NUMBER_DAY_RUN
-  data_type: NUMBER(22)
+  data_type: NUMBER(38,0)
   description: "Số ngày batch chạy kiểm tra cảnh báo (tính từ đầu kỳ)"
   key: null
   fk_note: null
 - name: WARNING_TYPE
-  data_type: NUMBER(22)
+  data_type: NUMBER(10,0)
   description: "Loại cảnh báo: 0=Cảnh báo so sánh số liệu, 1=Cảnh báo nội dung bất thường"
   key: null
   fk_note: null

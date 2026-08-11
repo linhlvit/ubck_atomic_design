@@ -5,15 +5,15 @@ table: DISCLOSURE_SECURITIES_OFFERING
 brd_ref: BRD-SRC-SCMS-DISCLOSURE_SECURITIES_OFFERING
 columns:
   - name: ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
-    key: PK
+    key: null
     fk_note: null
   - name: SC_FIRM_INFO_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> sc_firm_info: Công ty chứng khoán liên quan"
-    key: FK
-    fk_note: "FK → SC_FIRM_INFO.ID"
+    key: null
+    fk_note: null
   - name: DOCUMENT_NUMBER
     data_type: VARCHAR2(200)
     description: "Số văn bản pháp lý (QĐ/GP/CV/Thông tư)"
@@ -50,12 +50,12 @@ columns:
     key: null
     fk_note: null
   - name: QUANTITY
-    data_type: NUMBER(38)
+    data_type: NUMBER(38,0)
     description: ""
     key: null
     fk_note: null
   - name: ITEM_VALUE
-    data_type: NUMBER(38)
+    data_type: NUMBER(38,0)
     description: ""
     key: null
     fk_note: null
@@ -85,20 +85,20 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "ID tài khoản người dùng tạo bản ghi"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: CREATED_AT
     data_type: TIMESTAMP(6)
     description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
     key: null
     fk_note: null
   - name: LAST_MODIFIED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "ID tài khoản người dùng cập nhật lần cuối"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: LAST_MODIFIED_AT
     data_type: TIMESTAMP(6)
     description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"
@@ -110,7 +110,7 @@ columns:
     key: null
     fk_note: null
   - name: RECORD_STATUS
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Trang thai ban ghi chao ban chung khoan: 1 = Dang hoat dong/con hieu luc; 0 = Ngung hoat dong/het hieu luc"
     key: null
     fk_note: null
@@ -120,7 +120,7 @@ columns:
     key: null
     fk_note: null
   - name: LEGACY_FILENAME
-    data_type: VARCHAR2(1000 BYTE)
+    data_type: VARCHAR2(1000)
     description: ""
     key: null
     fk_note: null
@@ -130,15 +130,15 @@ columns:
     key: null
     fk_note: null
   - name: LEGACY_ROWTEXT
-    data_type: VARCHAR2(40 BYTE)
+    data_type: VARCHAR2(40)
     description: ""
     key: null
     fk_note: null
   - name: EVENT_TYPE_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> cat_event_type: Loại sự vụ/sự kiện nghiệp vụ"
-    key: FK
-    fk_note: "FK → CAT_EVENT_TYPE.ID"
+    key: null
+    fk_note: null
   - name: EXPECTED_END_DATE
     data_type: DATE
     description: ""
@@ -150,7 +150,7 @@ columns:
     key: null
     fk_note: null
   - name: SYNCED_FROM_ADMIN_PROC
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: ""
     key: null
     fk_note: null
@@ -175,7 +175,7 @@ columns:
     key: null
     fk_note: null
   - name: OFFERING_TYPE
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Loai chao ban: 1 = Chao ban ra cong chung; 2 = Co phieu thuong; 3 = Tra co tuc bang CP; 4 = CTLC NLD tren 100 nguoi; 5 = CTLC NLD duoi 100 nguoi; 6 = Dau gia; 7 = Chao ban rieng le; 8 = Khac; 9 = Phat hanh CP hoan doi; 10 = CB co dong lon"
     key: null
     fk_note: null
@@ -235,7 +235,7 @@ columns:
     key: null
     fk_note: null
   - name: OFFERED_QUANTITY
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: "Số lượng chứng khoán dự kiến chào bán"
     key: null
     fk_note: null
@@ -255,12 +255,12 @@ columns:
     key: null
     fk_note: null
   - name: TOTAL_OFFERED_QUANTITY
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: ""
     key: null
     fk_note: null
   - name: TOTAL_OFFERED_COMPLETED
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: ""
     key: null
     fk_note: null
@@ -275,9 +275,9 @@ columns:
     key: null
     fk_note: null
   - name: ADMIN_PROC_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> Phân hệ TTHC: ID thủ tục hành chính liên quan"
-    key: FK
+    key: null
     fk_note: null
   - name: EXTENSION_TO_DATE
     data_type: DATE
@@ -320,7 +320,7 @@ columns:
     key: null
     fk_note: null
   - name: MATURITY_YEARS
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Kỳ hạn trái phiếu (số năm)"
     key: null
     fk_note: null
@@ -335,7 +335,7 @@ columns:
     key: null
     fk_note: null
   - name: COLLATERAL_REQUIRED
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Cờ có tài sản bảo đảm: 1=Có, 0=Không"
     key: null
     fk_note: null
@@ -380,17 +380,17 @@ columns:
     key: null
     fk_note: null
   - name: CW_REGISTERED_QUANTITY
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: ""
     key: null
     fk_note: null
   - name: CONVERSION_RATIO
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: "Tỷ lệ chuyển đổi (số CW/1 cổ phiếu cơ sở)"
     key: null
     fk_note: null
   - name: CONVERTED_SHARES_QUANTITY
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: ""
     key: null
     fk_note: null
@@ -400,7 +400,7 @@ columns:
     key: null
     fk_note: null
   - name: CW_TERM_MONTHS
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Thời hạn chứng quyền (số tháng)"
     key: null
     fk_note: null
@@ -415,17 +415,17 @@ columns:
     key: null
     fk_note: null
   - name: CW_PERMITTED_QUANTITY
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: ""
     key: null
     fk_note: null
   - name: CW_SHARES_PER_WARRANT
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: ""
     key: null
     fk_note: null
   - name: CW_DISTRIBUTED_QUANTITY
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: ""
     key: null
     fk_note: null
@@ -452,5 +452,25 @@ columns:
   - name: CW_PROCEEDS
     data_type: NUMBER(20,2)
     description: ""
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_BY_LEGACY
+    data_type: NUMBER(10,0)
+    description: null
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_AT_LEGACY
+    data_type: TIMESTAMP(6)
+    description: null
+    key: null
+    fk_note: null
+  - name: MATTER
+    data_type: NUMBER
+    description: null
+    key: null
+    fk_note: null
+  - name: COMPLETE_DOSSIER_SUBMISSION_DATEDATE
+    data_type: YES
+    description: null
     key: null
     fk_note: null

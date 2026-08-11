@@ -12,45 +12,45 @@ columns:
 - name: SHEET_ID
   data_type: RAW(16)
   description: "FK -> SHEET: Sheet biểu mẫu báo cáo"
-  key: null
-  fk_note: "FK suy luận → SHEET.ID"
+  key: FK
+  fk_note: "FK → SHEET.ID"
 - name: ROW_INDEX
-  data_type: NUMBER(22)
+  data_type: NUMBER(10,0)
   description: "Chỉ số hàng của ô trong sheet (bắt đầu từ 0)"
   key: null
   fk_note: null
 - name: COL_INDEX
-  data_type: NUMBER(22)
+  data_type: NUMBER(10,0)
   description: "Chỉ số cột của ô trong sheet (bắt đầu từ 0)"
   key: null
   fk_note: null
 - name: CELL_KEY
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(32)
   description: "Khóa duy nhất của ô trong sheet (VD: A1, B3...)"
   key: null
   fk_note: null
 - name: INDICATOR_TYPE
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(30)
   description: "Loại chỉ tiêu trong ô: INPUT=nhập liệu, FORMULA=tính toán, LABEL=nhãn hiển thị"
   key: null
   fk_note: null
 - name: FORMAT_CODE
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(50)
   description: "Mã định dạng hiển thị ô (số, %, tiền tệ, ngày...)"
   key: null
   fk_note: null
 - name: UNIT_SCALE
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(50)
   description: "Đơn vị tính và hệ số quy đổi (VD: triệu đồng, tỷ đồng...)"
   key: null
   fk_note: null
 - name: TARGET_CODE_FLAG
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ ô là mã mục tiêu định danh hàng: 1=Có, 0=Không"
   key: null
   fk_note: null
 - name: IDENTIFIER_FLAG
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ ô là trường định danh bản ghi: 1=Có, 0=Không"
   key: null
   fk_note: null
@@ -60,37 +60,37 @@ columns:
   key: null
   fk_note: null
 - name: SECTION_ID
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(100)
   description: "ID section (nhóm hàng/cột) chứa ô này"
   key: null
   fk_note: null
 - name: SECTION_TYPE
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(30)
   description: "Loại section: HEADER=Tiêu đề nhóm, DATA=Dữ liệu, TOTAL=Tổng cộng"
   key: null
   fk_note: null
 - name: SECTION_ANCHOR
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ ô là điểm neo (anchor) của section: 1=Anchor, 0=Không"
   key: null
   fk_note: null
 - name: SECTION_END
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ ô đánh dấu kết thúc section: 1=Kết thúc, 0=Không"
   key: null
   fk_note: null
 - name: MAPPING_TARGET
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(100)
   description: "Bảng đích khi ánh xạ dữ liệu từ ô sang cơ sở dữ liệu"
   key: null
   fk_note: null
 - name: MAPPING_FIELD
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(150)
   description: "Tên field trong bảng đích khi ánh xạ ô"
   key: null
   fk_note: null
 - name: MAPPING_FIELD_TYPE
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(30)
   description: "Kiểu dữ liệu của field ánh xạ (NUMBER, VARCHAR, DATE...)"
   key: null
   fk_note: null
@@ -100,17 +100,17 @@ columns:
   key: null
   fk_note: null
 - name: REQUIRED_FIELD
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ ô bắt buộc nhập: 1=Bắt buộc, 0=Tùy chọn"
   key: null
   fk_note: null
 - name: MIN_VALUE
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(100)
   description: "Giá trị tối thiểu cho phép nhập vào ô"
   key: null
   fk_note: null
 - name: MAX_VALUE
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(100)
   description: "Giá trị tối đa cho phép nhập vào ô"
   key: null
   fk_note: null
@@ -130,22 +130,22 @@ columns:
   key: null
   fk_note: null
 - name: DATE_CREATED
-  data_type: TIMESTAMP
+  data_type: TIMESTAMP(6)
   description: "Thời điểm tạo bản ghi"
   key: null
   fk_note: null
 - name: CREATED_BY
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(100)
   description: "Tài khoản người tạo bản ghi"
   key: null
-  fk_note: "FK suy luận → USERS.ID"
+  fk_note: null
 - name: DATE_MODIFIED
-  data_type: TIMESTAMP
+  data_type: TIMESTAMP(6)
   description: "Thời điểm cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
 - name: MODIFY_BY
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(100)
   description: "Tài khoản người cập nhật bản ghi lần cuối"
   key: null
   fk_note: null

@@ -13,7 +13,7 @@ columns:
   data_type: "VARCHAR2(36 CHAR)"
   description: "ID ngành nghề cấp 1 (FK tham chiếu business_line_level_1.id)"
   key: null
-  fk_note: "FK -> BUSINESS_LINE_LEVEL_1.ID"
+  fk_note: null
 - name: CODE
   data_type: "VARCHAR2(20 CHAR)"
   description: "Mã ngành nghề cấp 2"
@@ -25,7 +25,7 @@ columns:
   key: null
   fk_note: null
 - name: EFFECTIVE
-  data_type: "NUMBER(1)"
+  data_type: "NUMBER(1,0)"
   description: "Tình trạng (1: Hiệu lực, 0: Hết hiệu lực)"
   key: null
   fk_note: null
@@ -35,7 +35,7 @@ columns:
   key: null
   fk_note: null
 - name: ACTIVE
-  data_type: "NUMBER(1)"
+  data_type: "NUMBER(1,0)"
   description: "Trạng thái (1: Đang sử dụng, 0: Không sử dụng)"
   key: null
   fk_note: null
@@ -45,7 +45,7 @@ columns:
   key: null
   fk_note: null
 - name: DELETED
-  data_type: "NUMBER(1)"
+  data_type: "NUMBER(1,0)"
   description: "Đánh dấu xóa mềm"
   key: null
   fk_note: null
@@ -55,7 +55,7 @@ columns:
   key: null
   fk_note: null
 - name: VERSION
-  data_type: "NUMBER(MAX)"
+  data_type: "NUMBER"
   description: "Phiên bản bản ghi"
   key: null
   fk_note: null
@@ -113,4 +113,4 @@ columns:
   data_type: "VARCHAR2(36 CHAR)"
   description: "ID phiên bản của bản ghi cha (business_line_level_1) — chưa rõ trỏ ID hay STABLE_ID, cần xác nhận (xem HLD 6f)"
   key: null
-  fk_note: "FK -> BUSINESS_LINE_LEVEL_1 (version-specific, chưa xác nhận cột đích)"
+  fk_note: null

@@ -10,22 +10,22 @@ columns:
   key: PK
   fk_note: null
 - name: VIEWED
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ người nhận đã xem thông báo: 1=Đã xem, 0=Chưa xem"
   key: null
   fk_note: null
 - name: TITLE
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(4000)
   description: "Tiêu đề thông báo/CBTT (tiếng Việt)"
   key: null
   fk_note: null
 - name: LINK_TO_DETAIL
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(4000)
   description: "Đường dẫn URL đến trang chi tiết của thông báo nội bộ"
   key: null
   fk_note: null
 - name: RECORD_TYPE
-  data_type: NUMBER(22)
+  data_type: NUMBER(10,0)
   description: "Loại/phân loại của bản ghi"
   key: null
   fk_note: null
@@ -37,13 +37,13 @@ columns:
 - name: UFROM_ID
   data_type: RAW(16)
   description: "FK -> USERS: Người gửi thông báo/email"
-  key: null
-  fk_note: "FK suy luận → USERS.ID"
+  key: FK
+  fk_note: "FK → USERS.ID"
 - name: UTO_ID
   data_type: RAW(16)
   description: "FK -> USERS: Người nhận thông báo/email"
-  key: null
-  fk_note: "FK suy luận → USERS.ID"
+  key: FK
+  fk_note: "FK → USERS.ID"
 - name: CONTENT
   data_type: CLOB
   description: "Nội dung thông báo chi tiết gửi đến người dùng hệ thống"
@@ -55,42 +55,42 @@ columns:
   key: null
   fk_note: null
 - name: RECORD_STATUS
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực"
   key: null
   fk_note: null
 - name: SEND_EMAIL
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ gửi kèm email: 1=Có gửi email, 0=Không gửi"
   key: null
   fk_note: null
 - name: SEND_SMS
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ gửi kèm SMS: 1=Có gửi SMS, 0=Không gửi"
   key: null
   fk_note: null
 - name: SEND_DATE
-  data_type: TIMESTAMP
+  data_type: TIMESTAMP(6)
   description: "Ngày thành viên gửi thông báo/email"
   key: null
   fk_note: null
 - name: SEND_BY
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(100)
   description: "Tài khoản gửi thông báo/email"
   key: null
   fk_note: null
 - name: CREATED_BY
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(100)
   description: "Tài khoản người tạo bản ghi"
   key: null
-  fk_note: "FK suy luận → USERS.ID"
+  fk_note: null
 - name: DATE_MODIFIED
-  data_type: TIMESTAMP
+  data_type: TIMESTAMP(6)
   description: "Thời điểm cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
 - name: MODIFY_BY
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(100)
   description: "Tài khoản người cập nhật bản ghi lần cuối"
   key: null
   fk_note: null

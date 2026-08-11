@@ -12,8 +12,8 @@ columns:
   - name: COMPANY_PROFILE_ID
     data_type: NUMBER(10,0)
     description: "ID Hồ sơ doanh nghiệp"
-    key: FK
-    fk_note: "FK → COMPANY_PROFILES.ID"
+    key: null
+    fk_note: null
   - name: DOC_TITLE
     data_type: VARCHAR2(512)
     description: "Mô tả tiêu đề tin/hồ sơ"
@@ -48,7 +48,7 @@ columns:
     data_type: NUMBER(19,0)
     description: "là parent id của company_data"
     key: FK
-    fk_note: null
+    fk_note: FK → COMPANY_DATA.ID
   - name: DOC_NO
     data_type: VARCHAR2(1000)
     description: "Số công văn"
@@ -98,7 +98,7 @@ columns:
     data_type: NUMBER(10,0)
     description: "Id của company_data, dùng trong trường hợp có tin đính chính - Luôn Lưu id của tin gốc"
     key: FK
-    fk_note: null
+    fk_note: FK → COMPANY_DATA.ID
   - name: DIGITAL_SIGNATURE_FLG
     data_type: NUMBER(2,0)
     description: "File đính kèm có chữ ký số hay ko (1 - có, 0 - không có)"
@@ -108,7 +108,7 @@ columns:
     data_type: VARCHAR2(255)
     description: "Người tạo"
     key: null
-    fk_note: "FK → LOGINS.ID"
+    fk_note: null
   - name: CREATED_DATE
     data_type: DATE
     description: "Ngày tạo"
@@ -118,7 +118,7 @@ columns:
     data_type: VARCHAR2(255)
     description: "Người sửa"
     key: null
-    fk_note: "FK → LOGINS.ID"
+    fk_note: null
   - name: UPDATED_DATE
     data_type: DATE
     description: "Ngày sửa"

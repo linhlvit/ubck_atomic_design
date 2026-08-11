@@ -5,17 +5,17 @@ table: DATABASECHANGELOGLOCK
 brd_ref: BRD-SRC-ECAT-DATABASECHANGELOGLOCK
 columns:
   - name: ID
-    data_type: "VARCHAR2(36 CHAR)"
+    data_type: "NUMBER"
     description: "*Khóa chính (UUIDv7)*"
     key: PK
     fk_note: null
   - name: LOCKED
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "*Trạng thái lock** * *(1: khóa, 0: Không khóa)*"
     key: null
     fk_note: null
   - name: LOCKEDBY
-    data_type: "VARCHAR2(255 CHAR)"
+    data_type: "VARCHAR2(255)"
     description: "*Thông tin** người log*"
     key: null
     fk_note: null

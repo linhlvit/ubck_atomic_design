@@ -5,9 +5,9 @@ table: RISK_INDICATOR
 brd_ref: BRD-SRC-SCMS-RISK_INDICATOR
 columns:
   - name: ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
-    key: PK
+    key: null
     fk_note: null
   - name: INDICATOR_CODE
     data_type: NVARCHAR2(50)
@@ -30,25 +30,25 @@ columns:
     key: null
     fk_note: null
   - name: IMPLEMENTATION_METHOD
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Phuong phap tinh toan: 1 = Thu cong (nhap tay); 2 = Tu dong (tinh theo cong thuc)"
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "ID tài khoản người dùng tạo bản ghi"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: CREATED_AT
     data_type: TIMESTAMP(6)
     description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
     key: null
     fk_note: null
   - name: LAST_MODIFIED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "ID tài khoản người dùng cập nhật lần cuối"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: LAST_MODIFIED_AT
     data_type: TIMESTAMP(6)
     description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"
@@ -60,7 +60,7 @@ columns:
     key: null
     fk_note: null
   - name: RECORD_STATUS
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Trang thai chi tieu rui ro: 0 = Khong su dung; 1 = Dang su dung"
     key: null
     fk_note: null

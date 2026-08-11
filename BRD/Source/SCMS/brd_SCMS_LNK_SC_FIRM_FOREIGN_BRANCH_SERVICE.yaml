@@ -5,20 +5,20 @@ table: LNK_SC_FIRM_FOREIGN_BRANCH_SERVICE
 brd_ref: BRD-SRC-SCMS-LNK_SC_FIRM_FOREIGN_BRANCH_SERVICE
 columns:
   - name: ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
     key: PK
     fk_note: null
   - name: SC_FIRM_FOREIGN_BRANCH_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> sc_firm_foreign_branch: Chi nhánh CTCK NN liên quan"
-    key: FK
-    fk_note: "FK → SC_FIRM_FOREIGN_BRANCH.ID"
+    key: null
+    fk_note: null
   - name: SERVICE_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> cat_service: Dịch vụ chứng khoán"
-    key: FK
-    fk_note: "FK → CAT_SERVICE.ID"
+    key: null
+    fk_note: null
   - name: CREATED_AT
     data_type: TIMESTAMP(6)
     description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"

@@ -7,30 +7,30 @@ columns:
 - name: RK_ID
   data_type: RAW(16)
   description: "FK -> RANK: Kết quả xếp hạng liên quan"
-  key: null
-  fk_note: "FK suy luận → RANK.ID"
+  key: PK
+  fk_note: null
 - name: GR_FT_ID
   data_type: RAW(16)
   description: "FK -> GRP_FACTOR: Nhóm tiêu chí đánh giá liên quan"
-  key: null
-  fk_note: "FK suy luận → GRP_FACTOR.ID"
+  key: PK
+  fk_note: null
 - name: ITEM_VALUE
-  data_type: NUMBER(22)
+  data_type: NUMBER(18,2)
   description: "Giá trị của bản ghi (số tiền, mệnh giá, điểm số...)"
   key: null
   fk_note: null
 - name: CODE
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(1000)
   description: "Mã định danh ngắn gọn"
   key: null
   fk_note: null
 - name: ITEM_NAME
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(2000)
   description: "Tên hiển thị chính"
   key: null
   fk_note: null
 - name: WEIGHT
-  data_type: NUMBER(22)
+  data_type: NUMBER(38,0)
   description: "Trọng số của tiêu chí/nhóm tiêu chí trong đánh giá (%)"
   key: null
   fk_note: null

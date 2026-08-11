@@ -12,45 +12,45 @@ columns:
 - name: INSDER_RELA_ID
   data_type: RAW(16)
   description: "FK -> INSIDER_RELATION: Bản ghi quan hệ người nội bộ"
-  key: null
-  fk_note: "FK suy luận → INSDER_RELA.ID"
+  key: FK
+  fk_note: null
 - name: DATE_CREATED
-  data_type: TIMESTAMP
+  data_type: TIMESTAMP(6)
   description: "Thời điểm tạo bản ghi"
   key: null
   fk_note: null
 - name: CREATED_BY
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(200)
   description: "Tài khoản người tạo bản ghi"
   key: null
-  fk_note: "FK suy luận → USERS.ID"
+  fk_note: null
 - name: MODIFY_REASON
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(4000)
   description: "Lý do sửa đổi bản ghi"
   key: null
   fk_note: null
 - name: CHANGE_SUMMARY
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(4000)
   description: "Tóm tắt nội dung thay đổi"
   key: null
   fk_note: null
 - name: EVENT_TYPE
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(50)
   description: "Loại sự vụ ghi nhận thay đổi thông tin người liên quan (mã sự vụ dạng chuỗi)"
   key: null
   fk_note: null
 - name: PREV_VALUE
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(4000)
   description: "Giá trị trước khi thay đổi (NCLOB/JSON)"
   key: null
   fk_note: null
 - name: VALUE_CHANGE
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(4000)
   description: "Giá trị sau khi thay đổi (NCLOB/JSON)"
   key: null
   fk_note: null
 - name: GP_QD_NO
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(200)
   description: "Số GP/QĐ liên quan đến giao dịch chuyển nhượng hoặc thay đổi hồ sơ"
   key: null
   fk_note: null

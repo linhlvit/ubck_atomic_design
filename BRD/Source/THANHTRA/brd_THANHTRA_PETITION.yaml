@@ -63,7 +63,7 @@ columns:
     data_type: VARCHAR2(144)
     description: "ID chuyên viên được phân công xử lý đơn thư"
     key: null
-    fk_note: "FK suy luận → system_user.id"
+    fk_note: null
   - name: ASSIGNED_OFFICER_NAME
     data_type: VARCHAR2(800)
     description: "Tên chuyên viên được phân công xử lý đơn thư"
@@ -78,7 +78,7 @@ columns:
     data_type: VARCHAR2(144)
     description: "FK tự tham chiếu -> petition (đơn gốc). Bắt buộc khi duplicate_type=DUPLICATE"
     key: FK
-    fk_note: "FK → PETITION.id"
+    fk_note: "FK → PETITION.ID"
   - name: SUBMISSION_NUMBER
     data_type: VARCHAR2(400)
     description: "Số tờ trình Thanh tra trình lãnh đạo (lấy từ eDoc)"
@@ -143,12 +143,12 @@ columns:
     data_type: VARCHAR2(400)
     description: "ID người dùng tạo bản ghi"
     key: null
-    fk_note: "FK suy luận → system_user.id"
+    fk_note: null
   - name: LAST_MODIFIED_BY
     data_type: VARCHAR2(400)
     description: "ID người dùng cập nhật gần nhất"
     key: null
-    fk_note: "FK suy luận → system_user.id"
+    fk_note: null
   - name: VERSION
     data_type: NUMBER(10,0)
     description: "Số phiên bản bản ghi (optimistic locking)"

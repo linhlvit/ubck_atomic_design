@@ -5,30 +5,30 @@ table: SC_FIRM_SENIOR_PERSONNEL
 brd_ref: BRD-SRC-SCMS-SC_FIRM_SENIOR_PERSONNEL
 columns:
   - name: ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
-    key: PK
+    key: null
     fk_note: null
   - name: SC_FIRM_INFO_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> sc_firm_info: Công ty chứng khoán liên quan"
-    key: FK
-    fk_note: "FK → SC_FIRM_INFO.ID"
+    key: null
+    fk_note: null
   - name: SC_FIRM_BRANCH_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> sc_firm_branch: Chi nhánh CTCK liên quan"
-    key: FK
-    fk_note: "FK → SC_FIRM_BRANCH.ID"
+    key: null
+    fk_note: null
   - name: SC_FIRM_TRANSACTION_OFFICE_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> sc_firm_transaction_office: Phòng giao dịch CTCK liên quan"
-    key: FK
-    fk_note: "FK → SC_FIRM_TRANSACTION_OFFICE.ID"
+    key: null
+    fk_note: null
   - name: SC_FIRM_REP_OFFICE_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> sc_firm_rep_office: VPDD CTCK liên quan"
-    key: FK
-    fk_note: "FK → SC_FIRM_REP_OFFICE.ID"
+    key: null
+    fk_note: null
   - name: DEPARTMENT
     data_type: NVARCHAR2(500)
     description: "Phòng/Ban công tác"
@@ -37,7 +37,7 @@ columns:
   - name: POSITION_ID
     data_type: NVARCHAR2(500)
     description: "FK -> cat_position: Chức vụ trong danh mục"
-    key: FK
+    key: null
     fk_note: null
   - name: FULL_NAME
     data_type: NVARCHAR2(500)
@@ -45,7 +45,7 @@ columns:
     key: null
     fk_note: null
   - name: PERSONNEL_STATUS
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Trang thai nhan su cap cao: 1 = Duong nhiem; 0 = Mien nhiem; 2 = Nghi viec"
     key: null
     fk_note: null
@@ -70,7 +70,7 @@ columns:
     key: null
     fk_note: null
   - name: GENDER
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Giới tính: 1=Nam, 2=Nữ"
     key: null
     fk_note: null
@@ -135,62 +135,62 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "ID tài khoản người dùng tạo bản ghi"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: CREATED_AT
     data_type: TIMESTAMP(6)
     description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
     key: null
     fk_note: null
   - name: LAST_MODIFIED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "ID tài khoản người dùng cập nhật lần cuối"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: LAST_MODIFIED_AT
     data_type: TIMESTAMP(6)
     description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"
     key: null
     fk_note: null
   - name: RECORD_STATUS
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Trang thai ban ghi: 1 = Dang hoat dong/con hieu luc; 0 = Ngung hoat dong/het hieu luc"
     key: null
     fk_note: null
   - name: PROVISIONAL
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Co ban nhap: 1 = Ban nhap; 0 = Chinh thuc"
     key: null
     fk_note: null
   - name: PRACTICE_CERTIFICATE
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Co chung chi hanh nghe chung khoan: 1 = Co; 0 = Khong"
     key: null
     fk_note: null
   - name: DISCLOSURE_PERSON_ID
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "FK -> sys_user: ID người đại diện công bố thông tin"
-    key: FK
-    fk_note: "FK → SYS_USER.ID"
+    key: null
+    fk_note: null
   - name: ATTACHMENT_PATH
-    data_type: VARCHAR2(1000 BYTE)
+    data_type: VARCHAR2(1000)
     description: "Đường dẫn file đính kèm trên hệ thống lưu trữ"
     key: null
     fk_note: null
   - name: LEGAL_REPRESENTATIVE
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Co la nguoi dai dien theo phap luat: 1 = Co; 0 = Khong"
     key: null
     fk_note: null
   - name: DELETED
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Co xoa mem: 1 = Da xoa; 0 = Chua xoa"
     key: null
     fk_note: null
   - name: PRACTITIONER_LEGACY_ID
-    data_type: NUMBER(5)
+    data_type: NUMBER(5,0)
     description: "TLID tu he thong cu"
     key: null
     fk_note: null
@@ -200,7 +200,7 @@ columns:
     key: null
     fk_note: null
   - name: BUSINESS_DIVISION_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Cột business_division_id — xem thêm tài liệu đặc tả SCMS"
     key: null
     fk_note: null
@@ -220,17 +220,17 @@ columns:
     key: null
     fk_note: null
   - name: SECURITIES_LICENSE
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Co chung chi hanh nghe chung khoan: 1 = Co; 0 = Khong"
     key: null
     fk_note: null
   - name: STATUTORY_REPRESENTATIVE
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: ""
     key: null
     fk_note: null
   - name: RESPONSIBLE_SERVICE_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: ""
     key: null
     fk_note: null
@@ -265,10 +265,10 @@ columns:
     key: null
     fk_note: null
   - name: NATIONALITY_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> cat_nationality: Quốc tịch (khóa ngoại tới danh mục quốc tịch)"
-    key: FK
-    fk_note: "FK → CAT_NATIONALITY.ID"
+    key: null
+    fk_note: null
   - name: SECURITIES_LICENSE_NUMBER
     data_type: VARCHAR2(100)
     description: "Số chứng chỉ hành nghề chứng khoán (CCHN)"
@@ -282,5 +282,25 @@ columns:
   - name: OWNERSHIP_RATIO_DATE
     data_type: DATE
     description: ""
+    key: null
+    fk_note: null
+  - name: NATIONALITY_ID_LEGACY
+    data_type: NUMBER(10,0)
+    description: null
+    key: null
+    fk_note: null
+  - name: DISCLOSURE_PERSON_ID_ALT
+    data_type: NUMBER(1,0)
+    description: null
+    key: null
+    fk_note: null
+  - name: DISCLOSURE_EFFECTIVE_DATE
+    data_type: DATE
+    description: null
+    key: null
+    fk_note: null
+  - name: DISCLOSURE_AUTHORIZATION_DOC_NUMBERVARCHAR2(1020)
+    data_type: YES
+    description: null
     key: null
     fk_note: null

@@ -5,17 +5,17 @@ table: MESSAGE_RECIPIENT
 brd_ref: BRD-SRC-SCMS-MESSAGE_RECIPIENT
 columns:
   - name: ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
     key: PK
     fk_note: null
   - name: RECIPIENT_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> sys_user: Người nhận thông báo/tin nhắn"
-    key: FK
-    fk_note: "FK → SYS_USER.ID"
+    key: null
+    fk_note: null
   - name: MESSAGE_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: ""
     key: null
-    fk_note: "FK suy luận → MESSAGE.ID"
+    fk_note: null

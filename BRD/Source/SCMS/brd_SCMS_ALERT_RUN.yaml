@@ -5,7 +5,7 @@ table: ALERT_RUN
 brd_ref: BRD-SRC-SCMS-ALERT_RUN
 columns:
   - name: ID
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
     key: PK
     fk_note: null
@@ -20,7 +20,7 @@ columns:
     key: null
     fk_note: null
   - name: DATA_YEAR
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Năm dữ liệu được lấy để kiểm tra cảnh báo"
     key: null
     fk_note: null
@@ -30,10 +30,10 @@ columns:
     key: null
     fk_note: null
   - name: ALERT_INDICATOR_ID
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: ""
     key: null
-    fk_note: "FK suy luận → ALERT_INDICATOR.ID"
+    fk_note: null
   - name: PERFORMER_NAME
     data_type: NVARCHAR2(200)
     description: ""
@@ -55,7 +55,7 @@ columns:
     key: null
     fk_note: null
   - name: ALERT_COUNT_GENERATED
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: ""
     key: null
     fk_note: null
@@ -67,5 +67,25 @@ columns:
   - name: CREATED_AT
     data_type: TIMESTAMP(6)
     description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
+    key: null
+    fk_note: null
+  - name: ALERT_INDICATOR_CONDITION_ID
+    data_type: NUMBER(19,0)
+    description: null
+    key: null
+    fk_note: null
+  - name: PERIOD_TYPE
+    data_type: NUMBER(2,0)
+    description: null
+    key: null
+    fk_note: null
+  - name: PERIOD_VALUE
+    data_type: NUMBER(10,0)
+    description: null
+    key: null
+    fk_note: null
+  - name: RUN_MODE
+    data_type: VARCHAR2(80)
+    description: null
     key: null
     fk_note: null

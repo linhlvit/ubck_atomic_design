@@ -5,7 +5,7 @@ table: RPTVALUES
 brd_ref: BRD-SRC-FIMS-RPTVALUES
 columns:
 - name: Id
-  data_type: "RAW"
+  data_type: "RAW(16)"
   description: "Khóa chính của bản ghi (ID số tự tăng)"
   key: PK
   fk_note: null
@@ -38,26 +38,26 @@ columns:
   data_type: "NUMBER(18,2)"
   description: "FK -> RPTMEMBER: Báo cáo thành viên chứa giá trị này"
   key: FK
-  fk_note: "FK → RPTMEMBER"
+  fk_note: "FK → RPTMEMBER.Id"
 - name: PrdId
   data_type: "NUMBER(18,2)"
   description: "FK -> RPTPERIOD: Kỳ báo cáo liên quan"
   key: FK
-  fk_note: "FK → RPTPERIOD"
+  fk_note: null
 - name: SheetId
   data_type: "NUMBER(18,2)"
   description: "FK -> SHEET: Sheet biểu mẫu chứa giá trị này"
   key: FK
-  fk_note: "FK → SHEET"
+  fk_note: "FK → SHEET.Id"
 - name: RptId
   data_type: "NUMBER(18,2)"
   description: "FK -> RPTTEMP: Biểu mẫu báo cáo liên quan"
   key: FK
-  fk_note: "FK → RPTTEMP"
+  fk_note: "FK → RPTTEMP.Id"
 - name: TgtId
-  data_type: "RAW"
+  data_type: "RAW(16)"
   description: "FK -> đối tượng target liên quan đến giá trị báo cáo"
-  key: null
+  key: FK
   fk_note: null
 - name: Type
   data_type: "NUMBER(38,0)"
@@ -123,34 +123,34 @@ columns:
   data_type: "NUMBER(18,2)"
   description: "FK -> FUNDCOMPANY: Công ty QLQ liên quan"
   key: FK
-  fk_note: "FK → FUNDCOMPANY"
+  fk_note: "FK → FUNDCOMPANY.Id"
 - name: SecId
   data_type: "NUMBER(18,2)"
   description: "FK -> SECURITIESCOMPANY: Công ty CK liên quan"
   key: FK
-  fk_note: "FK → SECURITIESCOMPANY"
+  fk_note: "FK → SECURITIESCOMPANY.Id"
 - name: BankId
   data_type: "NUMBER(18,2)"
   description: "FK -> BANKMONI: Ngân hàng lưu ký liên quan"
   key: FK
-  fk_note: "FK → BANKMONI"
+  fk_note: "FK → BANKMONI.Id"
 - name: DepId
   data_type: "NUMBER(18,2)"
   description: "FK -> DEPOSITORYCENTER: VSDC nộp báo cáo"
   key: FK
-  fk_note: "FK → DEPOSITORYCENTER"
+  fk_note: "FK → DEPOSITORYCENTER.Id"
 - name: StockId
   data_type: "NUMBER(18,2)"
   description: "FK -> STOCKEXCHANGE: Sở GD liên kết với người hành nghề"
   key: FK
-  fk_note: "FK → STOCKEXCHANGE"
+  fk_note: "FK → STOCKEXCHANGE.Id"
 - name: InId
   data_type: "NUMBER(18,2)"
   description: "FK -> INFODISCREPRES: Đại diện CBTT/giao dịch nộp báo cáo"
   key: FK
-  fk_note: "FK → INFODISCREPRES"
+  fk_note: "FK → INFODISCREPRES.Id"
 - name: BranId
   data_type: "NUMBER(18,2)"
   description: "FK -> BRANCHS: Chi nhánh QLQ NN nộp báo cáo"
   key: FK
-  fk_note: "FK → BRANCHS"
+  fk_note: "FK → BRANCHS.Id"

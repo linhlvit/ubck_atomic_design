@@ -5,20 +5,20 @@ table: SC_FIRM_SHAREHOLDER_RELATION
 brd_ref: BRD-SRC-SCMS-SC_FIRM_SHAREHOLDER_RELATION
 columns:
   - name: ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
-    key: PK
+    key: null
     fk_note: null
   - name: SC_FIRM_INFO_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> sc_firm_info: Công ty chứng khoán liên quan"
-    key: FK
-    fk_note: "FK → SC_FIRM_INFO.ID"
+    key: null
+    fk_note: null
   - name: SC_FIRM_SHAREHOLDER_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> sc_firm_shareholder: Cổ đông CTCK liên quan"
-    key: FK
-    fk_note: "FK → SC_FIRM_SHAREHOLDER.ID"
+    key: null
+    fk_note: null
   - name: FULL_NAME
     data_type: NVARCHAR2(250)
     description: "Họ và tên đầy đủ (cá nhân) hoặc tên đầy đủ (tổ chức)"
@@ -55,12 +55,12 @@ columns:
     key: null
     fk_note: null
   - name: SC_FIRM_WITH_SHARES_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: ""
     key: null
     fk_note: null
   - name: SHARES_COUNT
-    data_type: NUMBER(38)
+    data_type: NUMBER(38,0)
     description: ""
     key: null
     fk_note: null
@@ -80,27 +80,27 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "ID tài khoản người dùng tạo bản ghi"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: CREATED_AT
     data_type: TIMESTAMP(6)
     description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
     key: null
     fk_note: null
   - name: LAST_MODIFIED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "ID tài khoản người dùng cập nhật lần cuối"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: LAST_MODIFIED_AT
     data_type: TIMESTAMP(6)
     description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"
     key: null
     fk_note: null
   - name: RECORD_STATUS
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Trang thai ban ghi quan he co dong: 1 = Dang hoat dong/con hieu luc; 0 = Ngung hoat dong/het hieu luc"
     key: null
     fk_note: null

@@ -5,7 +5,7 @@ table: REPORT_INPUT_SUBMISSION
 brd_ref: BRD-SRC-SCMS-REPORT_INPUT_SUBMISSION
 columns:
   - name: ID
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
     key: PK
     fk_note: null
@@ -15,17 +15,17 @@ columns:
     key: null
     fk_note: null
   - name: REF_ID
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: "ID đối tượng tham chiếu (báo cáo/hồ sơ liên quan đến thông báo)"
     key: null
     fk_note: null
   - name: FORM_REPORT_ID
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: "FK -> form_report: Biểu mẫu báo cáo liên quan"
     key: FK
     fk_note: "FK → FORM_REPORT.ID"
   - name: FORM_VERSION_ID
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: ""
     key: null
     fk_note: null

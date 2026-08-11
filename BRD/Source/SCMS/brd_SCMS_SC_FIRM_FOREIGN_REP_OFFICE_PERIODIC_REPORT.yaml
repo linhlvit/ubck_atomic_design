@@ -12,10 +12,10 @@ columns:
   - name: SC_FIRM_FOREIGN_REP_OFFICE_ID
     data_type: NUMBER
     description: "FK -> sc_firm_foreign_rep_office: VPDD CTCK NN liên quan"
-    key: FK
-    fk_note: "FK → SC_FIRM_FOREIGN_REP_OFFICE.ID"
+    key: null
+    fk_note: null
   - name: REPORT_NAME
-    data_type: VARCHAR2(500 BYTE)
+    data_type: VARCHAR2(500)
     description: "Tên báo cáo/biểu mẫu"
     key: null
     fk_note: null
@@ -32,10 +32,10 @@ columns:
   - name: EVENT_TYPE_ID
     data_type: NUMBER
     description: "FK -> cat_event_type: Loại sự vụ/sự kiện nghiệp vụ"
-    key: FK
-    fk_note: "FK → CAT_EVENT_TYPE.ID"
+    key: null
+    fk_note: null
   - name: CATEGORY
-    data_type: VARCHAR2(50 BYTE)
+    data_type: VARCHAR2(50)
     description: "Cột category — xem thêm tài liệu đặc tả SCMS"
     key: null
     fk_note: null
@@ -45,12 +45,12 @@ columns:
     key: null
     fk_note: null
   - name: SUMMARY
-    data_type: VARCHAR2(2000 BYTE)
+    data_type: VARCHAR2(2000)
     description: "Tóm tắt nội dung trích yếu"
     key: null
     fk_note: null
   - name: DOCUMENT_NUMBER
-    data_type: VARCHAR2(255 BYTE)
+    data_type: VARCHAR2(255)
     description: "Số văn bản pháp lý (QĐ/GP/CV/Thông tư)"
     key: null
     fk_note: null
@@ -60,7 +60,7 @@ columns:
     key: null
     fk_note: null
   - name: NOTE
-    data_type: VARCHAR2(2000 BYTE)
+    data_type: VARCHAR2(2000)
     description: "Ghi chú bổ sung, không bắt buộc"
     key: null
     fk_note: null
@@ -75,12 +75,12 @@ columns:
     key: null
     fk_note: null
   - name: IMPORT_FILE_PATH
-    data_type: VARCHAR2(1000 BYTE)
+    data_type: VARCHAR2(1000)
     description: "Đường dẫn file Excel import dữ liệu"
     key: null
     fk_note: null
   - name: ATTACHMENT_PATH
-    data_type: VARCHAR2(2000 BYTE)
+    data_type: VARCHAR2(2000)
     description: "Đường dẫn file đính kèm trên hệ thống lưu trữ"
     key: null
     fk_note: null
@@ -95,15 +95,15 @@ columns:
     key: null
     fk_note: null
   - name: CANCELLATION_REASON
-    data_type: VARCHAR2(2000 BYTE)
+    data_type: VARCHAR2(2000)
     description: "Lý do hủy báo cáo"
     key: null
     fk_note: null
   - name: CANCELLED_BY
     data_type: NUMBER
     description: "FK -> sys_user: Người hủy báo cáo"
-    key: FK
-    fk_note: "FK suy luận → SYS_USER.ID"
+    key: null
+    fk_note: null
   - name: CANCELLED_AT
     data_type: TIMESTAMP(6)
     description: "Thời điểm hủy báo cáo"
@@ -120,7 +120,7 @@ columns:
     key: null
     fk_note: null
   - name: REPORT_PERIOD
-    data_type: VARCHAR2(20 BYTE)
+    data_type: VARCHAR2(20)
     description: "Kỳ báo cáo (Ngày/Tuần/Tháng/Quý/Bán niên/Năm)"
     key: null
     fk_note: null
@@ -137,5 +137,10 @@ columns:
   - name: SUBMISSION_DEADLINE_AT
     data_type: TIMESTAMP(0)
     description: ""
+    key: null
+    fk_note: null
+  - name: EFORM_DATA
+    data_type: VARCHAR2(4000)
+    description: null
     key: null
     fk_note: null

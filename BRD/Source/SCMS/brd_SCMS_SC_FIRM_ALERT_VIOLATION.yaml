@@ -5,17 +5,17 @@ table: SC_FIRM_ALERT_VIOLATION
 brd_ref: BRD-SRC-SCMS-SC_FIRM_ALERT_VIOLATION
 columns:
   - name: ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
-    key: PK
+    key: null
     fk_note: null
   - name: SC_FIRM_INFO_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> sc_firm_info: Công ty chứng khoán liên quan"
     key: FK
     fk_note: "FK → SC_FIRM_INFO.ID"
   - name: SEVERITY_LEVEL
-    data_type: NUMBER(3)
+    data_type: NUMBER(3,0)
     description: ""
     key: null
     fk_note: null
@@ -45,10 +45,10 @@ columns:
     key: null
     fk_note: null
   - name: ALERT_INDICATOR_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: ""
     key: null
-    fk_note: "FK suy luận → ALERT_INDICATOR.ID"
+    fk_note: null
   - name: ALERT_YEAR
     data_type: VARCHAR2(40)
     description: "Năm kiểm tra cảnh báo"
@@ -60,12 +60,12 @@ columns:
     key: null
     fk_note: null
   - name: REPORT_PERIOD_VALUE
-    data_type: VARCHAR2(100 BYTE)
+    data_type: VARCHAR2(100)
     description: ""
     key: null
     fk_note: null
   - name: RESOLVED
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Cờ đã được xử lý: 1=Đã xử lý, 0=Chưa xử lý"
     key: null
     fk_note: null
@@ -80,7 +80,7 @@ columns:
     key: null
     fk_note: null
   - name: PERIOD
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Kỳ số (1-4 cho quý, 1-12 cho tháng)"
     key: null
     fk_note: null
@@ -90,12 +90,12 @@ columns:
     key: null
     fk_note: null
   - name: VIOLATION_SEVERITY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Mức độ vi phạm: 1=Nhẹ, 2=Trung bình, 3=Nghiêm trọng"
     key: null
     fk_note: null
   - name: REPORT_YEAR
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: ""
     key: null
     fk_note: null
@@ -105,22 +105,22 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "ID tài khoản người dùng tạo bản ghi"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: PROCESSOR_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> sys_user: Người thực hiện xử lý"
-    key: FK
-    fk_note: "FK → SYS_USER.ID"
+    key: null
+    fk_note: null
   - name: THRESHOLD
     data_type: NUMBER(38,2)
     description: "Ngưỡng vi phạm tại thời điểm phát hiện cảnh báo"
     key: null
     fk_note: null
   - name: ALERT_CONDITION_ID
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: ""
     key: null
     fk_note: null
@@ -130,15 +130,15 @@ columns:
     key: null
     fk_note: null
   - name: ENTITY_ID
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: ""
     key: null
     fk_note: null
   - name: ALERT_RUN_ID
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: ""
     key: null
-    fk_note: "FK suy luận → ALERT_RUN.ID"
+    fk_note: null
   - name: ACTUAL_VALUE
     data_type: NUMBER(38,2)
     description: "Giá trị thực tế của chỉ số tại thời điểm cảnh báo"
@@ -155,17 +155,17 @@ columns:
     key: null
     fk_note: null
   - name: PERIOD_TYPE
-    data_type: NUMBER(2)
+    data_type: NUMBER(2,0)
     description: "Loại kỳ của cảnh báo (mã số)"
     key: null
     fk_note: null
   - name: PERIOD_VALUE
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Giá trị kỳ của cảnh báo (số thứ tự)"
     key: null
     fk_note: null
   - name: SEVERITY_LEVEL_ALT
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Mức độ nghiêm trọng (mã số thay thế cho SEVERITY_LEVEL)"
     key: null
     fk_note: null

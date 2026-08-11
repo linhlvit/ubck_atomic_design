@@ -37,40 +37,40 @@ columns:
   - name: FUND_TYPE_ID
     data_type: "VARCHAR2(50)"
     description: "*Loại hình quỹ*"
-    key: FK
-    fk_note: "FK → FUND_TYPE.ID"
+    key: null
+    fk_note: null
   - name: FUND_MANAGEMENT_COMPANY_ID
     data_type: "VARCHAR2(36 char)"
     description: "*Công ty quản lý quỹ*"
-    key: FK
-    fk_note: "FK → FUND_MANAGEMENT_COMPANY.ID"
+    key: null
+    fk_note: null
   - name: CUSTODIAN_BANK_ID
     data_type: "VARCHAR2(36 char)"
     description: "*Ngân hàng lưu ký*"
-    key: FK
-    fk_note: "FK → CUSTODIAN_BANK.ID"
+    key: null
+    fk_note: null
   - name: CHARTER_CAPITAL
-    data_type: "NUMBER(20, 2)"
+    data_type: "NUMBER(15,0)"
     description: "*Vốn điều lệ*"
     key: null
     fk_note: null
   - name: PAR_VALUE
-    data_type: "NUMBER(20, 2)"
+    data_type: "NUMBER(15,0)"
     description: "*Mệnh giá*"
     key: null
     fk_note: null
   - name: TOTAL_QUANTITY
-    data_type: "NUMBER(20, 2)"
+    data_type: "NUMBER(15,0)"
     description: "*Tổng số lượng CCQ*"
     key: null
     fk_note: null
   - name: NAV
-    data_type: "NUMBER(20, 2)"
+    data_type: "NUMBER(15,0)"
     description: "*NAV kỳ gần nhất*"
     key: null
     fk_note: null
   - name: NAV_PER_UNIT
-    data_type: "NUMBER(20, 2)"
+    data_type: "NUMBER(15,0)"
     description: "*NAV/CCQ*"
     key: null
     fk_note: null
@@ -115,7 +115,7 @@ columns:
     key: null
     fk_note: null
   - name: FILE_NAME
-    data_type: "VARCHAR2(200),"
+    data_type: "VARCHAR2(200)"
     description: "*Tên file*"
     key: null
     fk_note: null
@@ -125,12 +125,12 @@ columns:
     key: null
     fk_note: null
   - name: STATUS
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "*Trạng thái hoạt động*"
     key: null
     fk_note: null
   - name: ACTIVE
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "*Trạng thái hoạt động (1: Đang sử dụng, 0: Không sử dụng)*"
     key: null
     fk_note: null
@@ -140,7 +140,7 @@ columns:
     key: null
     fk_note: null
   - name: DELETED
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "*Xóa mềm (0: Chưa xóa, 1: Đã xóa)*"
     key: null
     fk_note: null
@@ -150,7 +150,7 @@ columns:
     key: null
     fk_note: null
   - name: VERSION
-    data_type: "NUMBER(MAX)"
+    data_type: "NUMBER"
     description: "*Phiên bản*"
     key: null
     fk_note: null
@@ -182,23 +182,23 @@ columns:
   - name: CREATED_BY_ID
     data_type: "VARCHAR2(36 CHAR)"
     description: "*Người tạo*"
-    key: FK
-    fk_note: "FK → UBCK_STAFF.ID"
+    key: null
+    fk_note: null
   - name: CREATED_BY_NAME
-    data_type: "VARCHAR2(255 CHAR)"
+    data_type: "VARCHAR2(800)"
     description: "*Tên người tạo*"
-    key: FK
-    fk_note: "FK → UBCK_STAFF.ID"
+    key: null
+    fk_note: null
   - name: UPDATED_BY_ID
     data_type: "VARCHAR2(36 CHAR)"
     description: "*Người cập nhật*"
-    key: FK
-    fk_note: "FK → UBCK_STAFF.ID"
+    key: null
+    fk_note: null
   - name: UPDATED_BY_NAME
-    data_type: "VARCHAR2(255 CHAR)"
+    data_type: "VARCHAR2(800)"
     description: "*Tên người cập nhật*"
-    key: FK
-    fk_note: "FK → UBCK_STAFF.ID"
+    key: null
+    fk_note: null
   - name: STABLE_ID
     data_type: "VARCHAR2(36 CHAR)"
     description: "*ID bản ghi ổn định - không đổi qua các version*"
@@ -217,5 +217,10 @@ columns:
   - name: FUND_TYPE_VERSION_ID
     data_type: "VARCHAR2(36 CHAR)"
     description: "*Id bảng FUND_TYPE*"
+    key: null
+    fk_note: null
+  - name: FUND_MANAGEMENT_COMPANY_VERSION_IDVARCHAR2(144)
+    data_type: "YES"
+    description: null
     key: null
     fk_note: null

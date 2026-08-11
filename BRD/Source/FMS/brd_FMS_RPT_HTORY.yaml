@@ -12,20 +12,20 @@ columns:
 - name: RPT_ID
   data_type: RAW(16)
   description: "FK -> RPT_TEMP: Biểu mẫu báo cáo"
-  key: null
-  fk_note: "FK suy luận → RPT_TEMP.ID"
+  key: FK
+  fk_note: "FK → RPT_TEMP.ID"
 - name: ACTION
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(4000)
   description: "Hành động đang thực hiện khi xảy ra lỗi"
   key: null
   fk_note: null
 - name: VERSION
-  data_type: NUMBER(22)
+  data_type: NUMBER(18,2)
   description: "Số phiên bản biểu mẫu/báo cáo"
   key: null
   fk_note: null
 - name: DOWNLOADED
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ đã tải xuống: 1=Đã tải, 0=Chưa tải"
   key: null
   fk_note: null
@@ -35,12 +35,12 @@ columns:
   key: null
   fk_note: null
 - name: CREATED_BY
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Tài khoản người tạo bản ghi"
   key: null
-  fk_note: "FK suy luận → USERS.ID"
+  fk_note: null
 - name: CODE
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(4000)
   description: "Mã định danh ngắn gọn"
   key: null
   fk_note: null

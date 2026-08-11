@@ -20,22 +20,22 @@ columns:
     key: null
     fk_note: null
   - name: FINE_AMOUNT
-    data_type: "NUMBER(MAX)"
+    data_type: "NUMBER"
     description: "*Mức tiền phạt*"
     key: null
     fk_note: null
   - name: CURRENCY_ID
     data_type: "VARCHAR2(36 CHAR)"
     description: "*Stable Id đơn vị tiền tệ (bảng currency.stableId)*"
-    key: FK
-    fk_note: "FK → CURRENCY.ID"
+    key: null
+    fk_note: null
   - name: CURRENCY_VERSION_ID
     data_type: "VARCHAR2(36 CHAR)"
     description: "*ID của đơn vị tiền tệ *"
     key: null
     fk_note: null
   - name: ACTIVE
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "Trạng thái hoạt động (1: Đang sử dụng, 0: Không sử dụng)"
     key: null
     fk_note: null
@@ -45,7 +45,7 @@ columns:
     key: null
     fk_note: null
   - name: DELETED
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "Xóa mềm (0: Chưa xóa, 1: Đã xóa)"
     key: null
     fk_note: null
@@ -55,7 +55,7 @@ columns:
     key: null
     fk_note: null
   - name: VERSION
-    data_type: "NUMBER(MAX)"
+    data_type: "NUMBER"
     description: "*Phiên bản*"
     key: null
     fk_note: null
@@ -87,25 +87,30 @@ columns:
   - name: CREATED_BY_ID
     data_type: "VARCHAR2(36 CHAR)"
     description: "*Người tạo*"
-    key: FK
-    fk_note: "FK → UBCK_STAFF.ID"
+    key: null
+    fk_note: null
   - name: CREATED_BY_NAME
     data_type: "VARCHAR2(255 CHAR)"
     description: "*Tên người tạo*"
-    key: FK
-    fk_note: "FK → UBCK_STAFF.ID"
+    key: null
+    fk_note: null
   - name: UPDATED_BY_ID
     data_type: "VARCHAR2(36 CHAR)"
     description: "*Người cập nhật*"
-    key: FK
-    fk_note: "FK → UBCK_STAFF.ID"
+    key: null
+    fk_note: null
   - name: UPDATED_BY_NAME
     data_type: "VARCHAR2(255 CHAR)"
     description: "*Tên người cập nhật*"
-    key: FK
-    fk_note: "FK → UBCK_STAFF.ID"
+    key: null
+    fk_note: null
   - name: STABLE_ID
     data_type: "VARCHAR2(36 CHAR)"
     description: "*ID bản ghi ổn định - không đổi qua các version*"
+    key: null
+    fk_note: null
+  - name: EFFECTIVE
+    data_type: "NUMBER(1,0)"
+    description: "Tình trạng (1: Hiệu lực, 0: Hết hiệu lực)"
     key: null
     fk_note: null

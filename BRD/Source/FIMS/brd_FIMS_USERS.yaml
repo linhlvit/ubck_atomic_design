@@ -98,17 +98,17 @@ columns:
   data_type: "NUMBER(18,2)"
   description: "FK -> UNIT: Đơn vị tổ chức cha của phòng/ban"
   key: FK
-  fk_note: "FK → UNIT"
+  fk_note: null
 - name: DepartmentId
   data_type: "NUMBER(18,2)"
   description: "FK -> DEPARTMENT: Phòng/ban của người dùng nội bộ UBCKNN"
   key: FK
-  fk_note: "FK → DEPARTMENT"
+  fk_note: null
 - name: JobTypeId
   data_type: "NUMBER(18,2)"
   description: "FK -> JOBTYPE: Loại công việc/chức danh của người dùng"
   key: FK
-  fk_note: "FK → JOBTYPE"
+  fk_note: null
 - name: AccountType
   data_type: "NUMBER(18,2)"
   description: "Loại tài khoản: 1=Nội bộ UBCKNN, 2=Đối tượng gửi báo cáo, 3=Đại diện giao dịch"
@@ -118,37 +118,37 @@ columns:
   data_type: "NUMBER(18,2)"
   description: "FK -> FUNDCOMPANY: QLQ nơi người hành nghề làm việc"
   key: FK
-  fk_note: "FK → FUNDCOMPANY"
+  fk_note: "FK → FUNDCOMPANY.Id"
 - name: SecComId
   data_type: "NUMBER(18,2)"
   description: "FK -> SECURITIESCOMPANY: CTCK nơi người hành nghề làm việc"
   key: FK
-  fk_note: "FK → SECURITIESCOMPANY"
+  fk_note: "FK → SECURITIESCOMPANY.Id"
 - name: BankId
   data_type: "NUMBER(18,2)"
   description: "FK -> BANKMONI: Ngân hàng lưu ký liên quan"
   key: FK
-  fk_note: "FK → BANKMONI"
+  fk_note: "FK → BANKMONI.Id"
 - name: DepCenId
   data_type: "NUMBER(18,2)"
   description: "FK -> DEPOSITORYCENTER: VSDC nơi người hành nghề làm việc"
   key: FK
-  fk_note: "FK → DEPOSITORYCENTER"
+  fk_note: "FK → DEPOSITORYCENTER.Id"
 - name: StockCenId
   data_type: "NUMBER(18,2)"
   description: "FK -> STOCKEXCHANGE: Sở GD nơi người hành nghề làm việc"
   key: FK
-  fk_note: "FK → STOCKEXCHANGE"
+  fk_note: "FK → STOCKEXCHANGE.Id"
 - name: InDiRepCenId
   data_type: "NUMBER(18,2)"
   description: "FK -> INFODISCREPRES: Đối tượng gửi báo cáo mà NHNCK làm việc"
   key: FK
-  fk_note: "FK → INFODISCREPRES"
+  fk_note: "FK → INFODISCREPRES.Id"
 - name: BranchsId
   data_type: "NUMBER(18,2)"
   description: "FK -> BRANCHS: Chi nhánh QLQ NN liên quan"
   key: FK
-  fk_note: "FK → BRANCHS"
+  fk_note: "FK → BRANCHS.Id"
 - name: CountPassFail
   data_type: "NUMBER(18,2)"
   description: "Số lần nhập sai mật khẩu liên tiếp (khóa tài khoản khi đủ ngưỡng)"
@@ -183,9 +183,14 @@ columns:
   data_type: "NUMBER(18,0)"
   description: "FK -> INVESTOR: Nhà đầu tư nước ngoài trong phiên bản hợp đồng"
   key: FK
-  fk_note: "FK → INVESTOR"
+  fk_note: null
 - name: TradingRepresentativeId
   data_type: "NUMBER(18,0)"
   description: "FK -> TRADINGREPRESENTATIVE: Đại diện giao dịch liên kết với tài khoản người dùng"
   key: FK
-  fk_note: "FK → TRADINGREPRESENTATIVE"
+  fk_note: null
+- name: SSO_USER_ID
+  data_type: "VARCHAR2(36)"
+  description: null
+  key: null
+  fk_note: null

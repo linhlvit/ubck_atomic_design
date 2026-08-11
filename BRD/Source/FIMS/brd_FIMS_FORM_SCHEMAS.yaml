@@ -5,22 +5,22 @@ table: FORM_SCHEMAS
 brd_ref: BRD-SRC-FIMS-FORM_SCHEMAS
 columns:
 - name: ID
-  data_type: "VARCHAR2(36 BYTE)"
+  data_type: "VARCHAR2(36)"
   description: "UUID form"
-  key: null
+  key: PK
   fk_note: null
 - name: MODULE_ID
-  data_type: "VARCHAR2(36 BYTE)"
+  data_type: "VARCHAR2(36)"
   description: "FK -> modules.id"
-  key: null
-  fk_note: "FK suy luận → MODULES.ID"
+  key: FK
+  fk_note: "FK → MODULES.ID"
 - name: FORM_CODE
-  data_type: "VARCHAR2(100 BYTE)"
+  data_type: "VARCHAR2(100)"
   description: "Mã form nghiệp vụ"
   key: null
   fk_note: null
 - name: FORM_NAME
-  data_type: "VARCHAR2(255 BYTE)"
+  data_type: "VARCHAR2(255)"
   description: "Tên hiển thị form"
   key: null
   fk_note: null
@@ -50,17 +50,17 @@ columns:
   key: null
   fk_note: null
 - name: CREATED_BY
-  data_type: "VARCHAR2(50 BYTE)"
+  data_type: "VARCHAR2(50)"
   description: "User tạo"
   key: null
-  fk_note: "FK suy luận → USERS.ID"
+  fk_note: null
 - name: UPDATED_AT
   data_type: "TIMESTAMP(6)"
   description: "Ngày cập nhật"
   key: null
   fk_note: null
 - name: UPDATED_BY
-  data_type: "VARCHAR2(50 BYTE)"
+  data_type: "VARCHAR2(50)"
   description: "User cập nhật"
   key: null
-  fk_note: "FK suy luận → USERS.ID"
+  fk_note: null

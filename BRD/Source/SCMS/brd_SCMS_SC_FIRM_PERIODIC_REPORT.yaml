@@ -5,17 +5,17 @@ table: SC_FIRM_PERIODIC_REPORT
 brd_ref: BRD-SRC-SCMS-SC_FIRM_PERIODIC_REPORT
 columns:
   - name: ID
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
     key: PK
     fk_note: null
   - name: SC_FIRM_INFO_ID
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: "FK -> sc_firm_info: Công ty chứng khoán liên quan"
     key: FK
     fk_note: "FK → SC_FIRM_INFO.ID"
   - name: FORM_REPORT_ID
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: "FK -> form_report: Biểu mẫu báo cáo liên quan"
     key: FK
     fk_note: "FK → FORM_REPORT.ID"
@@ -25,12 +25,12 @@ columns:
     key: null
     fk_note: null
   - name: REPORT_YEAR
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: ""
     key: null
     fk_note: null
   - name: PERIOD
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Kỳ số (1-4 cho quý, 1-12 cho tháng)"
     key: null
     fk_note: null
@@ -40,7 +40,7 @@ columns:
     key: null
     fk_note: null
   - name: RECORD_STATUS
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Trang thai bao cao dinh ky CTCK: 0 = Chua gui; 1 = Da gui (dung han hoac muon); 2 = Da duyet; -1 = Tu choi; 3 = Bi huy"
     key: null
     fk_note: null
@@ -50,12 +50,12 @@ columns:
     key: null
     fk_note: null
   - name: VALID_DIGITAL_SIGNATURE
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: ""
     key: null
     fk_note: null
   - name: VALID_DATA
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: ""
     key: null
     fk_note: null
@@ -120,40 +120,40 @@ columns:
     key: null
     fk_note: null
   - name: APPROVED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> sys_user: Người phê duyệt/chấp thuận"
-    key: FK
-    fk_note: "FK suy luận → SYS_USER.ID"
+    key: null
+    fk_note: null
   - name: SENDER_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> sys_user: Người gửi thông báo/tin nhắn"
-    key: FK
-    fk_note: "FK suy luận → SYS_USER.ID"
+    key: null
+    fk_note: null
   - name: CANCELLED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> sys_user: Người hủy báo cáo"
-    key: FK
-    fk_note: "FK suy luận → SYS_USER.ID"
+    key: null
+    fk_note: null
   - name: QUARTER
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Quý trong năm (1, 2, 3, 4)"
     key: null
     fk_note: null
   - name: OVERDUE_DAYS
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Số ngày nộp báo cáo quá hạn"
     key: null
     fk_note: null
   - name: REPORT_MONTH
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: ""
     key: null
     fk_note: null
   - name: EVENT_TYPE_ID
     data_type: NUMBER
     description: "FK -> cat_event_type: Loại sự vụ/sự kiện nghiệp vụ"
-    key: FK
-    fk_note: "FK → CAT_EVENT_TYPE.ID"
+    key: null
+    fk_note: null
   - name: SUMMARY
     data_type: NCLOB
     description: "Tóm tắt nội dung trích yếu"
@@ -177,5 +177,15 @@ columns:
   - name: CBTT_EFORM_DATA
     data_type: NCLOB
     description: "Cột cbtt_eform_data — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: DISCLOSURE_EFORM_DATA
+    data_type: NCLOB
+    description: null
+    key: null
+    fk_note: null
+  - name: IMPORT_FILE_NAME
+    data_type: NVARCHAR2(1000)
+    description: null
     key: null
     fk_note: null

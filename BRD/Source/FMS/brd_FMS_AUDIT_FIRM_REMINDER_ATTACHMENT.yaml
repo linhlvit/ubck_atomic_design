@@ -12,45 +12,45 @@ columns:
 - name: REMINDER_ID
   data_type: RAW(16)
   description: "FK -> AUDIT_FIRM_REMINDER: Công văn nhắc nhở kiểm toán"
-  key: null
-  fk_note: "FK suy luận → AUDIT_FIRM_REMINDER.ID"
+  key: FK
+  fk_note: "FK → AUDIT_FIRM_REMINDER.ID"
 - name: FILE_NAME
   data_type: VARCHAR2(255)
   description: "Tên file hoặc danh sách tên file đính kèm"
   key: null
   fk_note: null
 - name: FILE_PATH
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(1000)
   description: "Đường dẫn lưu trữ file trên storage"
   key: null
   fk_note: null
 - name: FILE_SIZE
-  data_type: NUMBER(22)
+  data_type: NUMBER(19,0)
   description: "Kích thước file (bytes)"
   key: null
   fk_note: null
 - name: DELETED
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động"
   key: null
   fk_note: null
 - name: DATE_CREATED
-  data_type: TIMESTAMP
+  data_type: TIMESTAMP(6)
   description: "Thời điểm tạo bản ghi"
   key: null
   fk_note: null
 - name: DATE_MODIFIED
-  data_type: TIMESTAMP
+  data_type: TIMESTAMP(6)
   description: "Thời điểm cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
 - name: CREATED_BY
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(200)
   description: "Tài khoản người tạo bản ghi"
   key: null
-  fk_note: "FK suy luận → USERS.ID"
+  fk_note: null
 - name: MODIFY_BY
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(200)
   description: "Tài khoản người cập nhật bản ghi lần cuối"
   key: null
   fk_note: null

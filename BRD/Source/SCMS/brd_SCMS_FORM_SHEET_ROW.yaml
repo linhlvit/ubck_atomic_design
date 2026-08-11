@@ -5,20 +5,20 @@ table: FORM_SHEET_ROW
 brd_ref: BRD-SRC-SCMS-FORM_SHEET_ROW
 columns:
   - name: ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
-    key: PK
+    key: null
     fk_note: null
   - name: FORM_REPORT_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> form_report: Biểu mẫu báo cáo liên quan"
-    key: FK
-    fk_note: "FK → FORM_REPORT.ID"
+    key: null
+    fk_note: null
   - name: FORM_SHEET_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: ""
     key: null
-    fk_note: "FK suy luận → FORM_SHEET.ID"
+    fk_note: null
   - name: ROW_CODE
     data_type: VARCHAR2(50)
     description: "Mã hàng trong sheet biểu mẫu"
@@ -50,7 +50,7 @@ columns:
     key: null
     fk_note: null
   - name: FROZEN_ROW
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Cờ hàng cố định khi cuộn: 1=Có, 0=Không"
     key: null
     fk_note: null
@@ -60,12 +60,12 @@ columns:
     key: null
     fk_note: null
   - name: ACTIVE
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Cờ đang sử dụng/hoạt động: 1=Đang dùng, 0=Không dùng"
     key: null
     fk_note: null
   - name: RECORD_STATUS
-    data_type: NUMBER(2)
+    data_type: NUMBER(2,0)
     description: "Trang thai hang: 1 = Dang su dung; 0 = Khong su dung"
     key: null
     fk_note: null
@@ -75,7 +75,7 @@ columns:
     key: null
     fk_note: null
   - name: LAST_MODIFIED_AT
-    data_type: DATE
+    data_type: TIMESTAMP(6)
     description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"
     key: null
     fk_note: null
@@ -90,17 +90,17 @@ columns:
     key: null
     fk_note: null
   - name: HIDDEN_ROW
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Cờ ẩn hàng: 1=Ẩn, 0=Hiển thị"
     key: null
     fk_note: null
   - name: HIERARCHY_LEVEL
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: ""
     key: null
     fk_note: null
   - name: EDITABLE
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Cờ cho phép nhập liệu: 1=Có, 0=Không"
     key: null
     fk_note: null
@@ -110,22 +110,22 @@ columns:
     key: null
     fk_note: null
   - name: PARENT_ROW_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> form_sheet_row: Hàng cha trong cấu trúc phân cấp"
-    key: FK
-    fk_note: "FK → FORM_SHEET_ROW.ID"
+    key: null
+    fk_note: null
   - name: BOLD
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Cờ in đậm: 1=In đậm, 0=Thường"
     key: null
     fk_note: null
   - name: ITALIC
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Cờ in nghiêng: 1=In nghiêng, 0=Thường"
     key: null
     fk_note: null
   - name: ROW_TYPE
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Loai hang du lieu: DU_LIEU = Hang nhap lieu chinh; TONG_CONG = Hang tong cong/tong hop; TIEU_DE = Hang tieu de"
     key: null
     fk_note: null
@@ -145,12 +145,22 @@ columns:
     key: null
     fk_note: null
   - name: LAST_MODIFIED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "ID tài khoản người dùng cập nhật lần cuối"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: CREATED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "ID tài khoản người dùng tạo bản ghi"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
+  - name: LAST_MODIFIED_AT_LEGACY
+    data_type: DATE
+    description: null
+    key: null
+    fk_note: null
+  - name: SYNC_ROW_CODE
+    data_type: NVARCHAR2(4000)
+    description: null
+    key: null
+    fk_note: null

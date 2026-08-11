@@ -7,7 +7,7 @@ columns:
 - name: Id
   data_type: "NUMBER(18,2)"
   description: "Khóa chính của bản ghi (ID số tự tăng)"
-  key: PK
+  key: null
   fk_note: null
 - name: Deleted
   data_type: "NUMBER(1,0)"
@@ -38,7 +38,7 @@ columns:
   data_type: "NUMBER(18,2)"
   description: "FK -> RPTTEMP: Biểu mẫu báo cáo liên quan"
   key: FK
-  fk_note: "FK → RPTTEMP"
+  fk_note: "FK → RPTTEMP.Id"
 - name: IsSend
   data_type: "NUMBER(1,0)"
   description: "Cờ đã gửi báo cáo trong kỳ tự thiết lập: 1=Đã gửi, 0=Chưa"
@@ -58,4 +58,4 @@ columns:
   data_type: "NUMBER(18,0)"
   description: "FK -> BC_SU_VU: Loại sự vụ báo cáo liên quan"
   key: FK
-  fk_note: "FK → BC_SU_VU"
+  fk_note: null

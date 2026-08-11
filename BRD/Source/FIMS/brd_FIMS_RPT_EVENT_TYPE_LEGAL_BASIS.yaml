@@ -7,7 +7,7 @@ columns:
 - name: ID
   data_type: "NUMBER(18,0)"
   description: "Khóa chính của bản ghi"
-  key: null
+  key: PK
   fk_note: null
 - name: BC_SU_VU_ID
   data_type: "NUMBER(18,0)"
@@ -21,6 +21,21 @@ columns:
   fk_note: null
 - name: NOI_DUNG
   data_type: "VARCHAR2(2000 CHAR)"
+  description: "Nội dung căn cứ pháp lý (tên/số thông tư, nghị định)"
+  key: null
+  fk_note: null
+- name: RPT_EVENT_TYPE_ID
+  data_type: "NUMBER(18,0)"
+  description: "FK -> BC_SU_VU: Loại sự vụ báo cáo liên quan"
+  key: FK
+  fk_note: "FK → RPT_EVENT_TYPE.ID"
+- name: SORT_ORDER
+  data_type: "NUMBER(10,0)"
+  description: "Số thứ tự trong danh sách"
+  key: null
+  fk_note: null
+- name: CONTENT
+  data_type: "VARCHAR2(4000)"
   description: "Nội dung căn cứ pháp lý (tên/số thông tư, nghị định)"
   key: null
   fk_note: null

@@ -23,7 +23,7 @@ columns:
     data_type: VARCHAR2(144)
     description: "ID người ký quyết định (Lãnh đạo Thanh tra hoặc LĐ UBCKNN)"
     key: null
-    fk_note: "FK suy luận → system_user.id"
+    fk_note: null
   - name: SIGNER_NAME
     data_type: VARCHAR2(800)
     description: "Tên người ký quyết định xử phạt"
@@ -33,7 +33,7 @@ columns:
     data_type: VARCHAR2(144)
     description: "FK -> violation_case: hồ sơ xử lý VPHC liên kết"
     key: FK
-    fk_note: "FK → VIOLATION_CASE.id"
+    fk_note: "FK → VIOLATION_CASE.ID"
   - name: DECISION_CATEGORY
     data_type: VARCHAR2(200)
     description: "Phân loại: INSPECTOR_SIGNED (LĐ Thanh tra ký), SSC_LEADER_SIGNED (LĐ UBCKNN ký)"
@@ -43,7 +43,7 @@ columns:
     data_type: VARCHAR2(144)
     description: "ID cán bộ được phân công theo dõi quyết định"
     key: null
-    fk_note: "FK suy luận → system_user.id"
+    fk_note: null
   - name: ASSIGNED_OFFICER_NAME
     data_type: VARCHAR2(800)
     description: "Tên cán bộ được phân công theo dõi quyết định"
@@ -118,12 +118,12 @@ columns:
     data_type: VARCHAR2(400)
     description: "ID người dùng tạo bản ghi"
     key: null
-    fk_note: "FK suy luận → system_user.id"
+    fk_note: null
   - name: LAST_MODIFIED_BY
     data_type: VARCHAR2(400)
     description: "ID người dùng cập nhật gần nhất"
     key: null
-    fk_note: "FK suy luận → system_user.id"
+    fk_note: null
   - name: VERSION
     data_type: NUMBER(10,0)
     description: "Số phiên bản bản ghi (optimistic locking)"
@@ -138,12 +138,12 @@ columns:
     data_type: VARCHAR2(100)
     description: "ID cán bộ trình phê duyệt quyết định"
     key: null
-    fk_note: "FK suy luận → system_user.id"
+    fk_note: null
   - name: APPROVER_ID
     data_type: VARCHAR2(100)
     description: "ID Lãnh đạo Thanh tra được chọn phê duyệt"
     key: null
-    fk_note: "FK suy luận → system_user.id"
+    fk_note: null
   - name: SUBMITTED_AT
     data_type: TIMESTAMP(6)
     description: "Thời điểm trình phê duyệt quyết định"

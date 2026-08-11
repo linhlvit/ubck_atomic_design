@@ -5,17 +5,17 @@ table: DISCLOSURE_SHAREHOLDER
 brd_ref: BRD-SRC-SCMS-DISCLOSURE_SHAREHOLDER
 columns:
   - name: ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
-    key: PK
+    key: null
     fk_note: null
   - name: SC_FIRM_INFO_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> sc_firm_info: Công ty chứng khoán liên quan"
-    key: FK
-    fk_note: "FK → SC_FIRM_INFO.ID"
+    key: null
+    fk_note: null
   - name: TRANSACTION_TYPE_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: ""
     key: null
     fk_note: null
@@ -35,17 +35,17 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "ID tài khoản người dùng tạo bản ghi"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: CREATED_AT
     data_type: TIMESTAMP(6)
     description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
     key: null
     fk_note: null
   - name: RECORD_STATUS
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Trang thai ban ghi cong bo co dong: 1 = Dang hoat dong/con hieu luc; 0 = Ngung hoat dong/het hieu luc"
     key: null
     fk_note: null
@@ -75,7 +75,92 @@ columns:
     key: null
     fk_note: null
   - name: LEGACY_ROWTEXT
-    data_type: VARCHAR2(40 BYTE)
+    data_type: VARCHAR2(40)
     description: ""
+    key: null
+    fk_note: null
+  - name: SUBJECT_NAME
+    data_type: NVARCHAR2(1000)
+    description: null
+    key: null
+    fk_note: null
+  - name: SUBJECT_TYPE
+    data_type: VARCHAR2(80)
+    description: null
+    key: null
+    fk_note: null
+  - name: IDENTIFICATION_NUMBER
+    data_type: VARCHAR2(400)
+    description: null
+    key: null
+    fk_note: null
+  - name: POSITION_TITLE
+    data_type: NVARCHAR2(500)
+    description: null
+    key: null
+    fk_note: null
+  - name: EVENT_DATE
+    data_type: TIMESTAMP(6)
+    description: null
+    key: null
+    fk_note: null
+  - name: DISCLOSURE_DEADLINE
+    data_type: TIMESTAMP(6)
+    description: null
+    key: null
+    fk_note: null
+  - name: DISCLOSURE_PERSON_NAME
+    data_type: NVARCHAR2(500)
+    description: null
+    key: null
+    fk_note: null
+  - name: SENDER_ID
+    data_type: NUMBER(10,0)
+    description: null
+    key: null
+    fk_note: null
+  - name: NOTE
+    data_type: NCLOB
+    description: null
+    key: null
+    fk_note: null
+  - name: EFORM_DATA
+    data_type: NCLOB
+    description: null
+    key: null
+    fk_note: null
+  - name: LATE_DAYS
+    data_type: NUMBER(10,0)
+    description: null
+    key: null
+    fk_note: null
+  - name: UPDATED_AT
+    data_type: TIMESTAMP(6)
+    description: null
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: NUMBER(10,0)
+    description: null
+    key: null
+    fk_note: null
+  - name: IMPORT_FILE_PATH
+    data_type: NVARCHAR2(2000)
+    description: "Ä\x90Æ°á»\x9Dng dáº«n file Excel import CBTT cá»• Ä‘Ã´ng"
+    key: null
+    fk_note: null
+  - name: IMPORT_FILE_NAME
+    data_type: NVARCHAR2(1000)
+    description: "TÃªn file Excel gá»‘c khi import CBTT cá»• Ä‘Ã´ng"
+    key: null
+    fk_note: null
+  - name: IMPORT_DATA
+    data_type: NCLOB
+    description: "JSON lÆ°á»›i Excel import CBTT cá»• Ä‘Ã´ng"
+    key: null
+    fk_note: null
+  - name: IMPORT_BM_ID
+    data_type: NUMBER(19,0)
+    description: "BM_BAO_CAO.ID dÃ¹ng khi commit import Excel CBTT cá»• Ä‘Ã´ng"
     key: null
     fk_note: null

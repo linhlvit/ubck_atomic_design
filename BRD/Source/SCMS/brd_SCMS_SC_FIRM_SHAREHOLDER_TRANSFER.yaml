@@ -5,25 +5,25 @@ table: SC_FIRM_SHAREHOLDER_TRANSFER
 brd_ref: BRD-SRC-SCMS-SC_FIRM_SHAREHOLDER_TRANSFER
 columns:
   - name: ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
     key: PK
     fk_note: null
   - name: SC_FIRM_INFO_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> sc_firm_info: Công ty chứng khoán liên quan"
-    key: FK
-    fk_note: "FK → SC_FIRM_INFO.ID"
+    key: null
+    fk_note: null
   - name: TRANSFEROR_SHAREHOLDER_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> sc_firm_shareholder: Cổ đông chuyển nhượng (bên bán)"
-    key: FK
-    fk_note: "FK → SC_FIRM_SHAREHOLDER.ID"
+    key: null
+    fk_note: null
   - name: TRANSFEREE_SHAREHOLDER_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> sc_firm_shareholder: Cổ đông nhận chuyển nhượng (bên mua)"
-    key: FK
-    fk_note: "FK → SC_FIRM_SHAREHOLDER.ID"
+    key: null
+    fk_note: null
   - name: DOCUMENT_NUMBER
     data_type: NVARCHAR2(30)
     description: "Số văn bản pháp lý (QĐ/GP/CV/Thông tư)"
@@ -40,7 +40,7 @@ columns:
     key: null
     fk_note: null
   - name: TRANSFERRED_SHARES
-    data_type: NUMBER(38)
+    data_type: NUMBER(38,0)
     description: "Số lượng cổ phần được chuyển nhượng"
     key: null
     fk_note: null
@@ -60,32 +60,32 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "ID tài khoản người dùng tạo bản ghi"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: CREATED_AT
     data_type: TIMESTAMP(6)
     description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
     key: null
     fk_note: null
   - name: LAST_MODIFIED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "ID tài khoản người dùng cập nhật lần cuối"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: LAST_MODIFIED_AT
     data_type: TIMESTAMP(6)
     description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"
     key: null
     fk_note: null
   - name: RECORD_STATUS
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Trang thai ban ghi chuyen nhuong: 1 = Con hieu luc; 0 = Het hieu luc"
     key: null
     fk_note: null
   - name: EVENT_TYPE_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> cat_event_type: Loại sự vụ/sự kiện nghiệp vụ"
-    key: FK
-    fk_note: "FK → CAT_EVENT_TYPE.ID"
+    key: null
+    fk_note: null

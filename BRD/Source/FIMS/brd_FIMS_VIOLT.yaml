@@ -13,17 +13,17 @@ columns:
   data_type: "NUMBER(18,2)"
   description: "FK -> USERS: Người thực hiện thao tác xử lý báo cáo"
   key: FK
-  fk_note: "FK → USERS"
+  fk_note: "FK → USERS.Id"
 - name: PrWId
   data_type: "NUMBER(18,2)"
   description: "FK -> PARAWARN: Tham số cảnh báo chính bị vi phạm"
   key: FK
-  fk_note: "FK → PARAWARN"
+  fk_note: "FK → PARAWARN.Id"
 - name: CdtWId
   data_type: "NUMBER(18,2)"
   description: "FK -> CDTWARN: Điều kiện cảnh báo vi phạm phát hiện"
   key: FK
-  fk_note: "FK → CDTWARN"
+  fk_note: "FK → CDTWARN.Id"
 - name: SystemObject
   data_type: "NUMBER(18,2)"
   description: "Loại đối tượng áp dụng (SystemObject): 0=UBCK, 1=QLQ, 2=CTCK, 3=NHLK, 4=VSDC, 5=Sở GD, 6=Đại diện CBTT, 7=CN QLQ NN, 8=NĐT NN, 9=NĐT, 12=Đại diện GD"
@@ -68,37 +68,37 @@ columns:
   data_type: "NUMBER(18,2)"
   description: "FK -> FUNDCOMPANY: QLQ nơi người hành nghề làm việc"
   key: FK
-  fk_note: "FK → FUNDCOMPANY"
+  fk_note: "FK → FUNDCOMPANY.Id"
 - name: SecComId
   data_type: "NUMBER(18,2)"
   description: "FK -> SECURITIESCOMPANY: CTCK nơi người hành nghề làm việc"
   key: FK
-  fk_note: "FK → SECURITIESCOMPANY"
+  fk_note: "FK → SECURITIESCOMPANY.Id"
 - name: BankId
   data_type: "NUMBER(18,2)"
   description: "FK -> BANKMONI: Ngân hàng lưu ký liên quan"
   key: FK
-  fk_note: "FK → BANKMONI"
+  fk_note: "FK → BANKMONI.Id"
 - name: DepCenId
   data_type: "NUMBER(18,2)"
   description: "FK -> DEPOSITORYCENTER: VSDC nơi người hành nghề làm việc"
   key: FK
-  fk_note: "FK → DEPOSITORYCENTER"
+  fk_note: "FK → DEPOSITORYCENTER.Id"
 - name: StockCenId
   data_type: "NUMBER(18,2)"
   description: "FK -> STOCKEXCHANGE: Sở GD nơi người hành nghề làm việc"
   key: FK
-  fk_note: "FK → STOCKEXCHANGE"
+  fk_note: "FK → STOCKEXCHANGE.Id"
 - name: InDiRepCenId
   data_type: "NUMBER(18,2)"
   description: "FK -> INFODISCREPRES: Đối tượng gửi báo cáo mà NHNCK làm việc"
   key: FK
-  fk_note: "FK → INFODISCREPRES"
+  fk_note: "FK → INFODISCREPRES.Id"
 - name: BranchsId
   data_type: "NUMBER(18,2)"
   description: "FK -> BRANCHS: Chi nhánh QLQ NN liên quan"
   key: FK
-  fk_note: "FK → BRANCHS"
+  fk_note: "FK → BRANCHS.Id"
 - name: PeriodTypeOther
   data_type: "NUMBER(10,0)"
   description: "Loại kỳ của tham số cảnh báo thứ 2 (PeriodTypeEnum): 1=Ngày, 2=Tuần, 3=Nửa tháng, 4=Tháng, 5=Quý, 6=Bán niên, 7=Năm"
@@ -115,15 +115,15 @@ columns:
   key: null
   fk_note: null
 - name: ParaName
-  data_type: "VARCHAR2(500 BYTE)"
+  data_type: "VARCHAR2(500)"
   description: "Tên tham số cảnh báo bị vi phạm (snapshot tên)"
   key: null
   fk_note: null
 - name: ResolvedBy
-  data_type: "VARCHAR2(200 BYTE)"
+  data_type: "VARCHAR2(200)"
   description: "FK -> USERS: Chuyên viên xử lý/đóng cảnh báo vi phạm"
   key: FK
-  fk_note: "FK → USERS"
+  fk_note: null
 - name: ResolvedDate
   data_type: "TIMESTAMP(6)"
   description: "Thời điểm xử lý/đóng cảnh báo vi phạm"

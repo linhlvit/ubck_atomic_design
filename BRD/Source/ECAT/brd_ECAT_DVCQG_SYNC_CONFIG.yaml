@@ -47,8 +47,8 @@ columns:
   - name: CREATED_BY_ID
     data_type: "VARCHAR2(144)"
     description: "ID người tạo"
-    key: FK
-    fk_note: "FK → UBCK_STAFF.ID"
+    key: null
+    fk_note: null
   - name: CREATED_BY_NAME
     data_type: "VARCHAR2(1020)"
     description: "Tên người tạo"
@@ -62,8 +62,8 @@ columns:
   - name: UPDATED_BY_ID
     data_type: "VARCHAR2(144)"
     description: "ID người cập nhật"
-    key: FK
-    fk_note: "FK → UBCK_STAFF.ID"
+    key: null
+    fk_note: null
   - name: UPDATED_BY_NAME
     data_type: "VARCHAR2(1020)"
     description: "Tên người cập nhật"
@@ -102,5 +102,25 @@ columns:
   - name: OLD_ID
     data_type: "VARCHAR2(144)"
     description: "ID của version trước"
+    key: null
+    fk_note: null
+  - name: PERIOD_TYPE
+    data_type: "NUMBER(2,0)"
+    description: "Chu kỳ đồng bộ"
+    key: null
+    fk_note: null
+  - name: SYNC_PER_TIME
+    data_type: "NUMBER(10,0)"
+    description: "Khoảng thời gian đồng bộ (Đơn vị của khoảng thời gian phụ thuộc chu kỳ đồng bộ)"
+    key: null
+    fk_note: null
+  - name: START_SYNC_TIME
+    data_type: "VARCHAR2(400)"
+    description: "Thời gian bắt đầu đồng bộ"
+    key: null
+    fk_note: null
+  - name: END_SYNC_TIME
+    data_type: "VARCHAR2(400)"
+    description: "Thời gian kết thúc đồng bộ"
     key: null
     fk_note: null

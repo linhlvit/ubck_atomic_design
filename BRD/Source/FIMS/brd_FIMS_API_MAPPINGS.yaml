@@ -5,22 +5,22 @@ table: API_MAPPINGS
 brd_ref: BRD-SRC-FIMS-API_MAPPINGS
 columns:
 - name: ID
-  data_type: "VARCHAR2(36 BYTE)"
+  data_type: "VARCHAR2(36)"
   description: "UUID mapping"
-  key: null
+  key: PK
   fk_note: null
 - name: FORM_SCHEMA_ID
-  data_type: "VARCHAR2(36 BYTE)"
+  data_type: "VARCHAR2(36)"
   description: "FK form"
-  key: null
-  fk_note: null
+  key: FK
+  fk_note: FK → FORM_SCHEMAS.ID
 - name: HTTP_METHOD
-  data_type: "VARCHAR2(10 BYTE)"
+  data_type: "VARCHAR2(10)"
   description: "GET/POST/PUT/DELETE"
   key: null
   fk_note: null
 - name: ENDPOINT
-  data_type: "VARCHAR2(255 BYTE)"
+  data_type: "VARCHAR2(255)"
   description: "API endpoint"
   key: null
   fk_note: null
@@ -35,7 +35,7 @@ columns:
   key: null
   fk_note: null
 - name: SERVICE_NAME
-  data_type: "VARCHAR2(50 BYTE)"
+  data_type: "VARCHAR2(50)"
   description: "Tên service đích"
   key: null
   fk_note: null

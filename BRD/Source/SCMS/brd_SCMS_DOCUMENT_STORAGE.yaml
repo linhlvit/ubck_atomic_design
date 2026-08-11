@@ -5,9 +5,9 @@ table: DOCUMENT_STORAGE
 brd_ref: BRD-SRC-SCMS-DOCUMENT_STORAGE
 columns:
   - name: ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
-    key: PK
+    key: null
     fk_note: null
   - name: COMPANY_NAME
     data_type: NVARCHAR2(1000)
@@ -15,10 +15,10 @@ columns:
     key: null
     fk_note: null
   - name: FOLDER_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> document_folder: Thư mục chứa tài liệu"
-    key: FK
-    fk_note: "FK → DOCUMENT_FOLDER.ID"
+    key: null
+    fk_note: null
   - name: ATTACHMENT_PATH
     data_type: VARCHAR2(500)
     description: "Đường dẫn file đính kèm trên hệ thống lưu trữ"

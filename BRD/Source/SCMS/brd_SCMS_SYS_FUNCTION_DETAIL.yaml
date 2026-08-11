@@ -5,9 +5,9 @@ table: SYS_FUNCTION_DETAIL
 brd_ref: BRD-SRC-SCMS-SYS_FUNCTION_DETAIL
 columns:
   - name: ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
-    key: PK
+    key: null
     fk_note: null
   - name: FUNCTION_NAME
     data_type: NVARCHAR2(250)
@@ -25,7 +25,7 @@ columns:
     key: null
     fk_note: null
   - name: RECORD_STATUS
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Trang thai chi tiet chuc nang: 1 = Dang hoat dong; 0 = Vo hieu hoa"
     key: null
     fk_note: null

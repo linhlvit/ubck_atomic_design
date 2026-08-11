@@ -12,20 +12,20 @@ columns:
 - name: USER_ID
   data_type: RAW(16)
   description: "FK -> USERS: Người dùng liên quan"
-  key: null
-  fk_note: "FK suy luận → USERS.ID"
+  key: FK
+  fk_note: "FK → USERS.ID"
 - name: MODULE_NAME
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(4000)
   description: "Tên module phát sinh lỗi"
   key: null
   fk_note: null
 - name: ACTION
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(4000)
   description: "Hành động đang thực hiện khi xảy ra lỗi"
   key: null
   fk_note: null
 - name: CONTENT
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(4000)
   description: "Nội dung/mô tả ngắn của lỗi"
   key: null
   fk_note: null
@@ -40,12 +40,12 @@ columns:
   key: null
   fk_note: null
 - name: ACTION_FOR_END_USER
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(4000)
   description: "Thông báo lỗi thân thiện hiển thị cho người dùng cuối"
   key: null
   fk_note: null
 - name: ERROR_FLAG
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ là bản ghi lỗi: 1=Lỗi, 0=Bình thường"
   key: null
   fk_note: null

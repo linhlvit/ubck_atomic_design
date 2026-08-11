@@ -38,52 +38,52 @@ columns:
   data_type: "NUMBER(18,2)"
   description: "FK -> RPTTEMP: Biểu mẫu báo cáo liên quan"
   key: FK
-  fk_note: "FK → RPTTEMP"
+  fk_note: "FK → RPTTEMP.Id"
 - name: PrdId
   data_type: "NUMBER(18,2)"
   description: "FK -> RPTPERIOD: Kỳ báo cáo liên quan"
   key: FK
-  fk_note: "FK → RPTPERIOD"
+  fk_note: null
 - name: FundId
   data_type: "NUMBER(18,2)"
   description: "FK -> FUNDCOMPANY: Công ty QLQ liên quan"
   key: FK
-  fk_note: "FK → FUNDCOMPANY"
+  fk_note: "FK → FUNDCOMPANY.Id"
 - name: SecId
   data_type: "NUMBER(18,2)"
   description: "FK -> SECURITIESCOMPANY: Công ty CK liên quan"
   key: FK
-  fk_note: "FK → SECURITIESCOMPANY"
+  fk_note: "FK → SECURITIESCOMPANY.Id"
 - name: BankId
   data_type: "NUMBER(18,2)"
   description: "FK -> BANKMONI: Ngân hàng lưu ký liên quan"
   key: FK
-  fk_note: "FK → BANKMONI"
+  fk_note: "FK → BANKMONI.Id"
 - name: DepId
   data_type: "NUMBER(18,2)"
   description: "FK -> DEPOSITORYCENTER: VSDC nộp báo cáo"
   key: FK
-  fk_note: "FK → DEPOSITORYCENTER"
+  fk_note: "FK → DEPOSITORYCENTER.Id"
 - name: StockId
   data_type: "NUMBER(18,2)"
   description: "FK -> STOCKEXCHANGE: Sở GD liên kết với người hành nghề"
   key: FK
-  fk_note: "FK → STOCKEXCHANGE"
+  fk_note: "FK → STOCKEXCHANGE.Id"
 - name: InId
   data_type: "NUMBER(18,2)"
   description: "FK -> INFODISCREPRES: Đại diện CBTT/giao dịch nộp báo cáo"
   key: FK
-  fk_note: "FK → INFODISCREPRES"
+  fk_note: "FK → INFODISCREPRES.Id"
 - name: BranId
   data_type: "NUMBER(18,2)"
   description: "FK -> BRANCHS: Chi nhánh QLQ NN nộp báo cáo"
   key: FK
-  fk_note: "FK → BRANCHS"
+  fk_note: "FK → BRANCHS.Id"
 - name: ReportTypeId
   data_type: "NUMBER(18,2)"
   description: "FK -> REPORTTYPE: Loại báo cáo"
   key: FK
-  fk_note: "FK → REPORTTYPE"
+  fk_note: null
 - name: ObjectType
   data_type: "NUMBER(18,2)"
   description: "Loại đối tượng nộp báo cáo (SystemObject): 0=UBCK, 1=QLQ, 2=CTCK, 3=NHLK, 4=VSDC, 5=Sở GD, 6=Đại diện CBTT, 7=CN QLQ NN, 8=NĐT NN, 9=NĐT, 12=Đại diện GD"
@@ -183,12 +183,12 @@ columns:
   data_type: "NUMBER(18,0)"
   description: "FK -> INVESTOR: Nhà đầu tư nước ngoài trong phiên bản hợp đồng"
   key: FK
-  fk_note: "FK → INVESTOR"
+  fk_note: null
 - name: TradingRepresentativeId
   data_type: "NUMBER(18,0)"
   description: "FK -> TRADINGREPRESENTATIVE: Đại diện giao dịch liên kết với tài khoản người dùng"
   key: FK
-  fk_note: "FK → TRADINGREPRESENTATIVE"
+  fk_note: null
 - name: BcSuVuId
   data_type: "NUMBER(18,0)"
   description: "FK -> RPT_EVENT_TYPE: Sự vụ/báo cáo sự vụ liên quan đến kỳ nộp báo cáo này (nếu có)"
@@ -208,4 +208,9 @@ columns:
   data_type: "NCLOB"
   description: "Snapshot schema eform tại thời điểm nộp báo cáo (để render lại khi xem)"
   key: null
+  fk_note: null
+- name: RPT_EVENT_TYPE_ID
+  data_type: "NUMBER(18,0)"
+  description: "-> RPT_EVENT_TYPE: Sự vụ/báo cáo sự vụ liên quan đến kỳ nộp báo cáo này (nếu có)"
+  key: FK
   fk_note: null

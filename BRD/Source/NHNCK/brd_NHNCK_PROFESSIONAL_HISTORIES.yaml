@@ -158,7 +158,7 @@ columns:
   data_type: NUMBER(10,0)
   description: ID tài khoản người tạo bản ghi
   key: null
-  fk_note: FK suy luận → USERS.ID
+  fk_note: null
 - name: UPDATED_AT
   data_type: DATE
   description: Thời điểm cập nhật bản ghi lần cuối
@@ -168,7 +168,7 @@ columns:
   data_type: NUMBER(10,0)
   description: ID tài khoản người cập nhật bản ghi lần cuối
   key: null
-  fk_note: FK suy luận → USERS.ID
+  fk_note: null
 - name: STATUS
   data_type: NUMBER(10,0)
   description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
@@ -197,8 +197,8 @@ columns:
 - name: PROFESSIONAL_ID
   data_type: NUMBER(10,0)
   description: 'FK -> PROFESSIONALS: Người hành nghề liên quan'
-  key: FK
-  fk_note: FK → PROFESSIONALS.ID
+  key: null
+  fk_note: null
 - name: CHANGE_DATE
   data_type: DATE
   description: Ngày ghi nhận thay đổi thông tin
@@ -221,8 +221,7 @@ columns:
   fk_note: null
 - name: STATUS_WORK
   data_type: NUMBER(10,0)
-  description: 'Trạng thái hành nghề: 0=Chưa hành nghề, 1=Đang hành nghề, 2=Thu hồi
-    có cấp lại, 3=Thu hồi không cấp lại, 4=Cấp hành nghề có thời hạn'
+  description: 'Trạng thái hành nghề: 0=Chưa hành nghề, 1=Đang hành nghề, 2=Thu hồi có cấp lại, 3=Thu hồi không cấp lại, 4=Cấp hành nghề có thời hạn'
   key: null
   fk_note: null
 - name: REASON_UPDATE
@@ -232,7 +231,6 @@ columns:
   fk_note: null
 - name: STATUS_ACCOUNT
   data_type: NUMBER(10,0)
-  description: 'Trạng thái tài khoản người hành nghề: 0=Chưa kích hoạt, 1=Đang hoạt
-    động, 2=Khóa'
+  description: 'Trạng thái tài khoản người hành nghề: 0=Chưa kích hoạt, 1=Đang hoạt động, 2=Khóa'
   key: null
   fk_note: null

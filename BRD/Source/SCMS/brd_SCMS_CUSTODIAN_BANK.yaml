@@ -5,52 +5,52 @@ table: CUSTODIAN_BANK
 brd_ref: BRD-SRC-SCMS-CUSTODIAN_BANK
 columns:
   - name: ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
     key: PK
     fk_note: null
   - name: NAME_VI
-    data_type: VARCHAR2(500 BYTE)
+    data_type: VARCHAR2(500)
     description: "Tên đầy đủ bằng tiếng Việt"
     key: null
     fk_note: null
   - name: NAME_EN
-    data_type: VARCHAR2(500 BYTE)
+    data_type: VARCHAR2(500)
     description: "Tên đầy đủ bằng tiếng Anh"
     key: null
     fk_note: null
   - name: SHORT_NAME
-    data_type: VARCHAR2(100 BYTE)
+    data_type: VARCHAR2(100)
     description: "Tên viết tắt (VD: SSI, VPS, MBS)"
     key: null
     fk_note: null
   - name: ADDRESS
-    data_type: VARCHAR2(1000 BYTE)
+    data_type: VARCHAR2(1000)
     description: "Địa chỉ trụ sở chính/văn phòng"
     key: null
     fk_note: null
   - name: PHONE
-    data_type: VARCHAR2(50 BYTE)
+    data_type: VARCHAR2(50)
     description: "Số điện thoại liên hệ"
     key: null
     fk_note: null
   - name: EMAIL
-    data_type: VARCHAR2(200 BYTE)
+    data_type: VARCHAR2(200)
     description: "Địa chỉ email liên hệ"
     key: null
     fk_note: null
   - name: FAX
-    data_type: VARCHAR2(50 BYTE)
+    data_type: VARCHAR2(50)
     description: "Số fax"
     key: null
     fk_note: null
   - name: WEBSITE
-    data_type: VARCHAR2(500 BYTE)
+    data_type: VARCHAR2(500)
     description: "Địa chỉ website"
     key: null
     fk_note: null
   - name: ESTABLISHMENT_LICENSE
-    data_type: VARCHAR2(200 BYTE)
+    data_type: VARCHAR2(200)
     description: "Giấy phép thành lập ngân hàng"
     key: null
     fk_note: null
@@ -60,22 +60,22 @@ columns:
     key: null
     fk_note: null
   - name: ISSUE_PLACE
-    data_type: VARCHAR2(500 BYTE)
+    data_type: VARCHAR2(500)
     description: "Nơi cấp giấy tờ/chứng chỉ"
     key: null
     fk_note: null
   - name: CHARTER_CAPITAL
-    data_type: VARCHAR2(100 BYTE)
+    data_type: VARCHAR2(100)
     description: "Vốn điều lệ (đơn vị: đồng)"
     key: null
     fk_note: null
   - name: BANK_CATEGORY
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Loai ngan hang luu ky: 1 = Ngan hang thanh toan; 2 = Ngan hang luu ky; 3 = Ca hai chuc nang"
     key: null
     fk_note: null
   - name: APPROVAL_DECISION_NUMBER
-    data_type: VARCHAR2(200 BYTE)
+    data_type: VARCHAR2(200)
     description: ""
     key: null
     fk_note: null
@@ -90,7 +90,7 @@ columns:
     key: null
     fk_note: null
   - name: BUSINESS_REG_CERT_NUMBER
-    data_type: VARCHAR2(200 BYTE)
+    data_type: VARCHAR2(200)
     description: ""
     key: null
     fk_note: null
@@ -105,7 +105,7 @@ columns:
     key: null
     fk_note: null
   - name: CUSTODIAN_MEMBER_CERT_NUMBER
-    data_type: VARCHAR2(200 BYTE)
+    data_type: VARCHAR2(200)
     description: ""
     key: null
     fk_note: null
@@ -115,7 +115,7 @@ columns:
     key: null
     fk_note: null
   - name: LIQUIDATION_DECISION
-    data_type: VARCHAR2(200 BYTE)
+    data_type: VARCHAR2(200)
     description: ""
     key: null
     fk_note: null
@@ -125,37 +125,37 @@ columns:
     key: null
     fk_note: null
   - name: NOTE
-    data_type: VARCHAR2(2000 BYTE)
+    data_type: VARCHAR2(2000)
     description: "Ghi chú bổ sung, không bắt buộc"
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "ID tài khoản người dùng tạo bản ghi"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: CREATED_AT
     data_type: TIMESTAMP(6)
     description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
     key: null
     fk_note: null
   - name: LAST_MODIFIED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "ID tài khoản người dùng cập nhật lần cuối"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: LAST_MODIFIED_AT
     data_type: TIMESTAMP(6)
     description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"
     key: null
     fk_note: null
   - name: RECORD_STATUS
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Trang thai ngan hang luu ky: 1 = Hoat dong; 2 = Ngung hoat dong"
     key: null
     fk_note: null
   - name: SC_FIRM_INFO_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> sc_firm_info: Công ty chứng khoán liên quan"
-    key: FK
-    fk_note: "FK → SC_FIRM_INFO.ID"
+    key: null
+    fk_note: null

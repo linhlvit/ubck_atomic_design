@@ -5,25 +5,25 @@ table: SC_FIRM_FOREIGN_REP_OFFICE_HISTORY
 brd_ref: BRD-SRC-SCMS-SC_FIRM_FOREIGN_REP_OFFICE_HISTORY
 columns:
   - name: ID
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
     key: PK
     fk_note: null
   - name: SC_FIRM_FOREIGN_REP_OFFICE_ID
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: "FK -> sc_firm_foreign_rep_office: VPDD CTCK NN liên quan"
-    key: FK
-    fk_note: "FK → SC_FIRM_FOREIGN_REP_OFFICE.ID"
+    key: null
+    fk_note: null
   - name: PERFORMED_AT
     data_type: TIMESTAMP(6)
     description: "Thời điểm thực hiện"
     key: null
     fk_note: null
   - name: EVENT_TYPE_ID
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: "FK -> cat_event_type: Loại sự vụ/sự kiện nghiệp vụ"
-    key: FK
-    fk_note: "FK → CAT_EVENT_TYPE.ID"
+    key: null
+    fk_note: null
   - name: EVENT_TYPE_NAME
     data_type: NVARCHAR2(1000)
     description: ""
@@ -60,10 +60,10 @@ columns:
     key: null
     fk_note: null
   - name: PERFORMED_BY
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: "FK -> sys_user: Người thực hiện"
-    key: FK
-    fk_note: "FK suy luận → SYS_USER.ID"
+    key: null
+    fk_note: null
   - name: PERFORMER_NAME
     data_type: NVARCHAR2(255)
     description: ""
@@ -77,5 +77,10 @@ columns:
   - name: AFTER_DATA_JSON
     data_type: NCLOB
     description: "Trạng thái dữ liệu sau khi thay đổi (JSON)"
+    key: null
+    fk_note: null
+  - name: ADMIN_PROCEDURE_PROFILE_ID
+    data_type: VARCHAR2(100)
+    description: null
     key: null
     fk_note: null

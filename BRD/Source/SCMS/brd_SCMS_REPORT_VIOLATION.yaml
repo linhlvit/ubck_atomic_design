@@ -5,15 +5,15 @@ table: REPORT_VIOLATION
 brd_ref: BRD-SRC-SCMS-REPORT_VIOLATION
 columns:
   - name: ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
-    key: PK
+    key: null
     fk_note: null
   - name: SC_FIRM_INFO_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> sc_firm_info: Công ty chứng khoán liên quan"
-    key: FK
-    fk_note: "FK → SC_FIRM_INFO.ID"
+    key: null
+    fk_note: null
   - name: REASON
     data_type: NVARCHAR2(2000)
     description: ""
@@ -25,10 +25,10 @@ columns:
     key: null
     fk_note: null
   - name: USER_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> sys_user: Người dùng liên quan"
-    key: FK
-    fk_note: "FK → SYS_USER.ID"
+    key: null
+    fk_note: null
   - name: LAST_MODIFIED_AT
     data_type: DATE
     description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"

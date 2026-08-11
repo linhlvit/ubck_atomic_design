@@ -5,9 +5,9 @@ table: REFRESHTOKEN
 brd_ref: BRD-SRC-FIMS-REFRESHTOKEN
 columns:
 - name: Id
-  data_type: "RAW"
+  data_type: "RAW(16)"
   description: "Khóa chính của bản ghi (ID số tự tăng)"
-  key: PK
+  key: null
   fk_note: null
 - name: ExpiresUtc
   data_type: "TIMESTAMP(7)"
@@ -23,4 +23,4 @@ columns:
   data_type: "NUMBER(18,2)"
   description: "FK -> USERS: Người dùng được phân quyền"
   key: FK
-  fk_note: "FK → USERS"
+  fk_note: "FK → USERS.Id"

@@ -5,20 +5,20 @@ table: FORM_ROW_HEADER_COLUMN
 brd_ref: BRD-SRC-SCMS-FORM_ROW_HEADER_COLUMN
 columns:
   - name: ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
-    key: PK
+    key: null
     fk_note: null
   - name: FORM_SHEET_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: ""
     key: null
-    fk_note: "FK suy luận → FORM_SHEET.ID"
+    fk_note: null
   - name: FORM_ROW_HEADER_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: ""
     key: null
-    fk_note: "FK suy luận → FORM_ROW_HEADER.ID"
+    fk_note: null
   - name: COLUMN_NAME
     data_type: NVARCHAR2(200)
     description: "Tên hiển thị của cột"
@@ -30,42 +30,42 @@ columns:
     key: null
     fk_note: null
   - name: SORT_ORDER
-    data_type: NUMBER(4)
+    data_type: NUMBER(4,0)
     description: "Thứ tự sắp xếp hiển thị"
     key: null
     fk_note: null
   - name: FIRST_ROW
-    data_type: NUMBER(4)
+    data_type: NUMBER(4,0)
     description: "Số hàng bắt đầu của ô header"
     key: null
     fk_note: null
   - name: LAST_ROW
-    data_type: NUMBER(4)
+    data_type: NUMBER(4,0)
     description: "Số hàng kết thúc của ô header"
     key: null
     fk_note: null
   - name: FIRST_COLUMN
-    data_type: NUMBER(4)
+    data_type: NUMBER(4,0)
     description: "Số cột bắt đầu của ô header"
     key: null
     fk_note: null
   - name: LAST_COLUMN
-    data_type: NUMBER(4)
+    data_type: NUMBER(4,0)
     description: "Số cột kết thúc của ô header"
     key: null
     fk_note: null
   - name: ROW_SPAN
-    data_type: NUMBER(2)
+    data_type: NUMBER(2,0)
     description: "Số hàng được gộp (rowspan trong HTML/Excel)"
     key: null
     fk_note: null
   - name: COL_SPAN
-    data_type: NUMBER(2)
+    data_type: NUMBER(2,0)
     description: "Số cột được gộp (colspan trong HTML/Excel)"
     key: null
     fk_note: null
   - name: HIDDEN
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Cờ ẩn: 1=Ẩn, 0=Hiển thị"
     key: null
     fk_note: null

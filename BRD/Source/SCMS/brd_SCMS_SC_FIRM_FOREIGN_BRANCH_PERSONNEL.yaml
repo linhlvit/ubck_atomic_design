@@ -5,7 +5,7 @@ table: SC_FIRM_FOREIGN_BRANCH_PERSONNEL
 brd_ref: BRD-SRC-SCMS-SC_FIRM_FOREIGN_BRANCH_PERSONNEL
 columns:
   - name: ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
     key: PK
     fk_note: null
@@ -25,17 +25,17 @@ columns:
     key: null
     fk_note: null
   - name: SECURITIES_LICENSE
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Cờ có chứng chỉ hành nghề chứng khoán: 1=Có, 0=Không"
     key: null
     fk_note: null
   - name: SC_FIRM_FOREIGN_BRANCH_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> sc_firm_foreign_branch: Chi nhánh CTCK NN liên quan"
-    key: FK
-    fk_note: "FK → SC_FIRM_FOREIGN_BRANCH.ID"
+    key: null
+    fk_note: null
   - name: DISCLOSURE_REPRESENTATIVE
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Cờ là người đại diện công bố thông tin (ĐDCBTT): 1=Có, 0=Không"
     key: null
     fk_note: null
@@ -125,7 +125,7 @@ columns:
     key: null
     fk_note: null
   - name: BRANCH_HEAD_USER_ID
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: ""
     key: null
     fk_note: null
@@ -150,17 +150,32 @@ columns:
     key: null
     fk_note: null
   - name: RECORD_STATUS
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Trang thai ban ghi nhan su chi nhanh NN: 1 = Duong nhiem; 0 = Mien nhiem"
     key: null
     fk_note: null
   - name: WORK_STATUS
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Trang thai lam viec hien tai: 1 = Duong nhiem; 2 = Mien nhiem; 3 = Da nghi viec"
     key: null
     fk_note: null
   - name: VERIFICATION_STATUS
     data_type: VARCHAR2(50)
     description: "Trang thai xac minh chung chi hanh nghe: CHO_XAC_MINH = Cho xac minh; KHOP = Khop (da xac minh); KHONG_KHOP = Khong khop"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: NUMBER(19,0)
+    description: "Nguoi tao (QT_NGUOI_DUNG.ID)"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_BY
+    data_type: NUMBER(19,0)
+    description: "Nguoi sua gan nhat (QT_NGUOI_DUNG.ID)"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thoi diem sua gan nhat"
     key: null
     fk_note: null

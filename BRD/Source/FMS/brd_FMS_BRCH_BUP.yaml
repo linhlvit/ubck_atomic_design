@@ -15,77 +15,77 @@ columns:
   key: null
   fk_note: null
 - name: CREATED_BY
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Tài khoản người tạo bản ghi"
   key: null
-  fk_note: "FK suy luận → USERS.ID"
+  fk_note: null
 - name: DATE_MODIFIED
   data_type: DATE
   description: "Thời điểm cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
 - name: MODIFY_BY
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Tài khoản người cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
 - name: SEC_HS_ID
   data_type: RAW(16)
   description: "FK -> backup: ID lịch sử hồ sơ công ty QLQ"
-  key: null
-  fk_note: null
+  key: FK
+  fk_note: FK → SEC_HISTORY.ID
 - name: STR_STATUS
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(4000)
   description: "Trạng thái dạng chuỗi (snapshot tại thời điểm backup)"
   key: null
   fk_note: null
 - name: ITEM_NAME
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(2000)
   description: "Tên hiển thị chính"
   key: null
   fk_note: null
 - name: STR_BR_TYPE
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(4000)
   description: "Loại chi nhánh dạng chuỗi (snapshot tại thời điểm backup)"
   key: null
   fk_note: null
 - name: ADDRESS
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(2000)
   description: "Địa chỉ trụ sở"
   key: null
   fk_note: null
 - name: TELEPHONE
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Số điện thoại"
   key: null
   fk_note: null
 - name: FAX
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Số fax"
   key: null
   fk_note: null
 - name: HOST_OFFICE
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ là trụ sở chính: 1=Trụ sở chính, 0=Chi nhánh/VPĐD"
   key: null
   fk_note: null
 - name: DESCRIPTION
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(2000)
   description: "Mô tả chi tiết"
   key: null
   fk_note: null
 - name: CONTENT
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(4000)
   description: "Nội dung/ghi chú bổ sung về lịch sử chi nhánh"
   key: null
   fk_note: null
 - name: DORF
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Loại tổ chức thành viên: 1=Trong nước, 2=Nước ngoài"
   key: null
   fk_note: null
 - name: FILE_NAME
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(4000)
   description: "Tên file hoặc danh sách tên file đính kèm"
   key: null
   fk_note: null
@@ -105,7 +105,7 @@ columns:
   key: null
   fk_note: null
 - name: DECISION
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Số quyết định/giấy phép thành lập hoặc chấp thuận hoạt động"
   key: null
   fk_note: null
@@ -115,22 +115,22 @@ columns:
   key: null
   fk_note: null
 - name: BR_IDOWNER
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(20)
   description: "Mã/ID cũ của chi nhánh trong hệ thống trước khi migrate"
   key: null
   fk_note: null
 - name: DELETED
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động"
   key: null
   fk_note: null
 - name: TL_NAME
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Tên người phụ trách chi nhánh (snapshot)"
   key: null
   fk_note: null
 - name: VOUCHER_NO
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(400)
   description: "Số văn bản/giấy phép điều chỉnh (khi cập nhật hồ sơ)"
   key: null
   fk_note: null
@@ -140,27 +140,27 @@ columns:
   key: null
   fk_note: null
 - name: DES_CHANGE
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(2000)
   description: "Mô tả nội dung thay đổi khi cập nhật hồ sơ"
   key: null
   fk_note: null
 - name: STR_SECURITIES
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(4000)
   description: "Thông tin công ty QLQ dạng chuỗi/JSON (snapshot)"
   key: null
   fk_note: null
 - name: STR_TLPROFILES
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(4000)
   description: "Danh sách người hành nghề dạng JSON (snapshot)"
   key: null
   fk_note: null
 - name: STR_BUSINESS
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(4000)
   description: "Lĩnh vực kinh doanh dạng JSON (snapshot)"
   key: null
   fk_note: null
 - name: SEC_CAPITAL
-  data_type: NUMBER(22)
+  data_type: NUMBER(18,2)
   description: "Vốn điều lệ của công ty QLQ tại thời điểm backup (đơn vị: VNĐ)"
   key: null
   fk_note: null
@@ -175,37 +175,37 @@ columns:
   key: null
   fk_note: null
 - name: STR_SEC_ADDRESS
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(2000)
   description: "Địa chỉ công ty QLQ (snapshot)"
   key: null
   fk_note: null
 - name: STR_SEC_FAX
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(100)
   description: "Số fax công ty QLQ (snapshot)"
   key: null
   fk_note: null
 - name: STR_SEC_ID_ADD
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(400)
   description: "Nơi cấp giấy phép QLQ (snapshot)"
   key: null
   fk_note: null
 - name: STR_SEC_ID_NO
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(100)
   description: "Số giấy phép QLQ (snapshot)"
   key: null
   fk_note: null
 - name: STR_SEC_NAME
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(2000)
   description: "Tên công ty QLQ (snapshot)"
   key: null
   fk_note: null
 - name: STR_SEC_REG_NO
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(100)
   description: "Số đăng ký QLQ (snapshot)"
   key: null
   fk_note: null
 - name: STR_SEC_TELEPHONE
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(100)
   description: "Số điện thoại QLQ (snapshot)"
   key: null
   fk_note: null

@@ -13,12 +13,12 @@ columns:
   data_type: "NUMBER(18,0)"
   description: "FK -> INVESTOR: Nhà đầu tư nước ngoài sở hữu chứng khoán"
   key: FK
-  fk_note: "FK → INVESTOR"
+  fk_note: null
 - name: SecId
   data_type: "NVARCHAR2(50 CHAR)"
   description: "FK -> SECURITIESCOMPANY: Công ty CK liên quan"
   key: FK
-  fk_note: "FK → SECURITIESCOMPANY"
+  fk_note: null
 - name: Quantity
   data_type: "NUMBER(18,0)"
   description: "Số lượng chứng khoán nắm giữ"
@@ -52,5 +52,10 @@ columns:
 - name: Rate
   data_type: "NUMBER(18,6)"
   description: "Tỷ lệ nắm giữ so với tổng số lượng lưu hành (%)"
+  key: null
+  fk_note: null
+- name: IsSynced
+  data_type: "NUMBER(1,0)"
+  description: null
   key: null
   fk_note: null

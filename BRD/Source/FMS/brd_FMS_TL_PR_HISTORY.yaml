@@ -12,8 +12,8 @@ columns:
 - name: TL_ID
   data_type: RAW(16)
   description: "FK -> TL_PROFILES: Người phụ trách/giám đốc chi nhánh"
-  key: null
-  fk_note: "FK suy luận → TL_PROFILES.ID"
+  key: FK
+  fk_note: "FK → TL_PROFILES.ID"
 - name: DATE_CHANGE
   data_type: DATE
   description: "Thời điểm/ngày tháng liên quan"
@@ -25,12 +25,12 @@ columns:
   key: null
   fk_note: null
 - name: ITEM_NAME
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(2000)
   description: "Tên hiển thị chính"
   key: null
   fk_note: null
 - name: ID_NO
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(100)
   description: "Số CMND/CCCD/Hộ chiếu/Mã số doanh nghiệp"
   key: null
   fk_note: null
@@ -50,7 +50,7 @@ columns:
   key: null
   fk_note: null
 - name: CREATED_BY
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Tài khoản người tạo bản ghi"
   key: null
-  fk_note: "FK suy luận → USERS.ID"
+  fk_note: null

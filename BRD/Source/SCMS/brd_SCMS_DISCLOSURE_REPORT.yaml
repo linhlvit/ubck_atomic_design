@@ -5,15 +5,15 @@ table: DISCLOSURE_REPORT
 brd_ref: BRD-SRC-SCMS-DISCLOSURE_REPORT
 columns:
   - name: ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
-    key: PK
+    key: null
     fk_note: null
   - name: SC_FIRM_INFO_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> sc_firm_info: Công ty chứng khoán liên quan"
-    key: FK
-    fk_note: "FK → SC_FIRM_INFO.ID"
+    key: null
+    fk_note: null
   - name: NEWS_TYPE
     data_type: VARCHAR2(255)
     description: "Loai tin cong bo: 1 = Dinh ky; 2 = Bat thuong; 3 = Theo yeu cau"
@@ -35,17 +35,17 @@ columns:
     key: null
     fk_note: null
   - name: TITLE
-    data_type: VARCHAR2(255)
+    data_type: VARCHAR2(4000)
     description: "Tiêu đề thông báo/tin nhắn/báo cáo"
     key: null
     fk_note: null
   - name: DESCRIPTION
-    data_type: VARCHAR2(255)
+    data_type: NCLOB
     description: "Mô tả chi tiết nội dung/mục đích của bản ghi"
     key: null
     fk_note: null
   - name: SUMMARY
-    data_type: VARCHAR2(255)
+    data_type: NCLOB
     description: "Tóm tắt nội dung trích yếu"
     key: null
     fk_note: null
@@ -70,10 +70,10 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "ID tài khoản người dùng tạo bản ghi"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: CREATED_AT
     data_type: TIMESTAMP(6)
     description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
@@ -85,7 +85,7 @@ columns:
     key: null
     fk_note: null
   - name: RECORD_STATUS
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Trang thai gui CBTT tu he thong BA: 0 = Chua gui; 1 = Da gui thanh cong; -1 = Loi khi gui"
     key: null
     fk_note: null
@@ -95,12 +95,12 @@ columns:
     key: null
     fk_note: null
   - name: MEMBER_REPORT_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> member_report: Báo cáo thành viên liên quan"
-    key: FK
-    fk_note: "FK → MEMBER_REPORT.ID"
+    key: null
+    fk_note: null
   - name: LEGACY_NEWS_ID
-    data_type: NUMBER(20)
+    data_type: NUMBER(20,0)
     description: ""
     key: null
     fk_note: null
@@ -115,22 +115,22 @@ columns:
     key: null
     fk_note: null
   - name: ORIGINAL_DISCLOSURE_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: ""
     key: null
     fk_note: null
   - name: EVENT_TYPE_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> cat_event_type: Loại sự vụ/sự kiện nghiệp vụ"
-    key: FK
-    fk_note: "FK → CAT_EVENT_TYPE.ID"
+    key: null
+    fk_note: null
   - name: NOTE
-    data_type: VARCHAR2(255)
+    data_type: NCLOB
     description: "Ghi chú bổ sung, không bắt buộc"
     key: null
     fk_note: null
   - name: CORRECTION
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Cờ tin đính chính: 1=Đính chính, 0=Tin gốc"
     key: null
     fk_note: null
@@ -155,22 +155,22 @@ columns:
     key: null
     fk_note: null
   - name: APPROVED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> sys_user: Người phê duyệt/chấp thuận"
-    key: FK
-    fk_note: "FK suy luận → SYS_USER.ID"
+    key: null
+    fk_note: null
   - name: SENDER_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> sys_user: Người gửi thông báo/tin nhắn"
-    key: FK
-    fk_note: "FK suy luận → SYS_USER.ID"
+    key: null
+    fk_note: null
   - name: CANCELLED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> sys_user: Người hủy báo cáo"
-    key: FK
-    fk_note: "FK suy luận → SYS_USER.ID"
+    key: null
+    fk_note: null
   - name: LATE_DAYS
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: ""
     key: null
     fk_note: null
@@ -185,32 +185,57 @@ columns:
     key: null
     fk_note: null
   - name: UPDATED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Cột updated_by — xem thêm tài liệu đặc tả SCMS"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: EFORM_DATA
     data_type: NCLOB
     description: ""
     key: null
     fk_note: null
   - name: SC_FIRM_ADHOC_REPORT_ID
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: ""
     key: null
-    fk_note: "FK suy luận → SC_FIRM_ADHOC_REPORT.ID"
+    fk_note: null
   - name: PERIODIC_REPORT_ID
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: "FK -> sc_firm_periodic_report: Báo cáo định kỳ liên quan"
-    key: FK
-    fk_note: "FK → SC_FIRM_PERIODIC_REPORT.ID"
+    key: null
+    fk_note: null
   - name: SC_FIRM_FOREIGN_BRANCH_ID
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: "FK -> sc_firm_foreign_branch: Chi nhánh CTCK NN liên quan"
     key: FK
     fk_note: "FK → SC_FIRM_FOREIGN_BRANCH.ID"
   - name: SC_FIRM_FOREIGN_BRANCH_REPORT_ID
     data_type: NUMBER(19)
     description: ""
+    key: null
+    fk_note: null
+  - name: SC_FIRM_FOREIGN_BRANCH_REPORT_IDNUMBER(19,0)
+    data_type: YES
+    description: null
+    key: null
+    fk_note: null
+  - name: IMPORT_FILE_PATH
+    data_type: NVARCHAR2(2000)
+    description: "Ä\x90Æ°á»\x9Dng dáº«n file Excel import CBTT (stored path)"
+    key: null
+    fk_note: null
+  - name: IMPORT_FILE_NAME
+    data_type: NVARCHAR2(1000)
+    description: "TÃªn file Excel gá»‘c khi import CBTT"
+    key: null
+    fk_note: null
+  - name: IMPORT_DATA
+    data_type: NCLOB
+    description: "JSON lÆ°á»›i Excel import CBTT (parity importDuLieuJson)"
+    key: null
+    fk_note: null
+  - name: IMPORT_BM_ID
+    data_type: NUMBER(19,0)
+    description: "BM_BAO_CAO.ID dÃ¹ng khi commit import Excel CBTT"
     key: null
     fk_note: null

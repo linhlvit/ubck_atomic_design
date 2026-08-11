@@ -5,15 +5,15 @@ table: BANK_PERIODIC_REPORT_HISTORY
 brd_ref: BRD-SRC-SCMS-BANK_PERIODIC_REPORT_HISTORY
 columns:
   - name: ID
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
     key: PK
     fk_note: null
   - name: BANK_PERIODIC_REPORT_ID
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: "FK -> bank_periodic_report: Báo cáo định kỳ ngân hàng liên quan"
-    key: FK
-    fk_note: "FK → BANK_PERIODIC_REPORT.ID"
+    key: null
+    fk_note: null
   - name: PERFORMED_AT
     data_type: TIMESTAMP(6)
     description: "Thời điểm thực hiện"
@@ -30,7 +30,7 @@ columns:
     key: null
     fk_note: null
   - name: RECORD_STATUS
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Trang thai lich su bao cao ngan hang (tham chieu BANK_PERIODIC_REPORT.RECORD_STATUS)"
     key: null
     fk_note: null

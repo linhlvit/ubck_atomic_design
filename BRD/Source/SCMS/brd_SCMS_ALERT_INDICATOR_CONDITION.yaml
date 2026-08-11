@@ -5,15 +5,15 @@ table: ALERT_INDICATOR_CONDITION
 brd_ref: BRD-SRC-SCMS-ALERT_INDICATOR_CONDITION
 columns:
   - name: ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
-    key: PK
+    key: null
     fk_note: null
   - name: ALERT_INDICATOR_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: ""
     key: null
-    fk_note: "FK suy luận → ALERT_INDICATOR.ID"
+    fk_note: null
   - name: CONDITION
     data_type: NVARCHAR2(50)
     description: "Điều kiện áp dụng (biểu thức logic)"
@@ -30,27 +30,27 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "ID tài khoản người dùng tạo bản ghi"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: CREATED_AT
     data_type: TIMESTAMP(6)
     description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
     key: null
     fk_note: null
   - name: LAST_MODIFIED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "ID tài khoản người dùng cập nhật lần cuối"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: LAST_MODIFIED_AT
     data_type: TIMESTAMP(6)
     description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"
     key: null
     fk_note: null
   - name: RECORD_STATUS
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Trang thai dieu kien canh bao: 0 = Khong su dung; 1 = Dang su dung"
     key: null
     fk_note: null
@@ -60,7 +60,7 @@ columns:
     key: null
     fk_note: null
   - name: UPPER_CONDITION
-    data_type: VARCHAR2(50 BYTE)
+    data_type: VARCHAR2(50)
     description: ""
     key: null
     fk_note: null
@@ -85,7 +85,7 @@ columns:
     key: null
     fk_note: null
   - name: SEVERITY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Mức độ nghiêm trọng: 1=Thấp, 2=Trung bình, 3=Cao"
     key: null
     fk_note: null
@@ -100,7 +100,7 @@ columns:
     key: null
     fk_note: null
   - name: SORT_ORDER
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Thứ tự sắp xếp hiển thị"
     key: null
     fk_note: null
@@ -122,5 +122,75 @@ columns:
   - name: OPERATOR_2
     data_type: NVARCHAR2(20)
     description: ""
+    key: null
+    fk_note: null
+  - name: COMPARE_VALUE
+    data_type: NUMBER
+    description: null
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_BY_LEGACY
+    data_type: NUMBER(10,0)
+    description: null
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_AT_LEGACY
+    data_type: TIMESTAMP(6)
+    description: null
+    key: null
+    fk_note: null
+  - name: PERIOD_TYPE
+    data_type: NUMBER(2,0)
+    description: null
+    key: null
+    fk_note: null
+  - name: PERIOD_VALUE
+    data_type: NUMBER(10,0)
+    description: null
+    key: null
+    fk_note: null
+  - name: RUN_OFFSET_DAYS
+    data_type: NUMBER(5,0)
+    description: null
+    key: null
+    fk_note: null
+  - name: MAX_WAIT_DAYS
+    data_type: NUMBER(5,0)
+    description: null
+    key: null
+    fk_note: null
+  - name: CONDITION_TYPE
+    data_type: NUMBER(1,0)
+    description: null
+    key: null
+    fk_note: null
+  - name: COMPARE_ALERT_INDICATOR_ID
+    data_type: NUMBER(19,0)
+    description: null
+    key: null
+    fk_note: null
+  - name: COMPARE_PERIOD_TYPE
+    data_type: NUMBER(2,0)
+    description: null
+    key: null
+    fk_note: null
+  - name: COMPARE_PERIOD_VALUE
+    data_type: NUMBER(10,0)
+    description: null
+    key: null
+    fk_note: null
+  - name: COMPARE_OPERATOR
+    data_type: NVARCHAR2(40)
+    description: null
+    key: null
+    fk_note: null
+  - name: STRING_COMPARE_VALUE
+    data_type: NVARCHAR2(4000)
+    description: null
+    key: null
+    fk_note: null
+  - name: SEVERITY_LEVEL
+    data_type: NUMBER(1,0)
+    description: null
     key: null
     fk_note: null

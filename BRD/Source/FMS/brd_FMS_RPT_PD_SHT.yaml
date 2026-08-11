@@ -7,30 +7,30 @@ columns:
 - name: SHT_ID
   data_type: RAW(16)
   description: "FK -> RPT_SHEET: Sheet/tab trong biểu mẫu báo cáo"
-  key: null
+  key: PK
   fk_note: null
 - name: RPT_PD_ID
   data_type: RAW(16)
   description: "FK -> RPT_PERIOD: Kỳ báo cáo"
-  key: null
-  fk_note: "FK suy luận → RPT_PERIOD.ID"
+  key: PK
+  fk_note: null
 - name: DATE_CREATED
   data_type: DATE
   description: "Thời điểm tạo bản ghi"
   key: null
   fk_note: null
 - name: CREATED_BY
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Tài khoản người tạo bản ghi"
   key: null
-  fk_note: "FK suy luận → USERS.ID"
+  fk_note: null
 - name: DATE_MODIFIED
   data_type: DATE
   description: "Thời điểm cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
 - name: MODIFY_BY
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Tài khoản người cập nhật bản ghi lần cuối"
   key: null
   fk_note: null

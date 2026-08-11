@@ -15,32 +15,32 @@ columns:
   key: null
   fk_note: null
 - name: CREATED_BY
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Tài khoản người tạo bản ghi"
   key: null
-  fk_note: "FK suy luận → USERS.ID"
+  fk_note: null
 - name: DATE_MODIFIED
   data_type: DATE
   description: "Thời điểm cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
 - name: MODIFY_BY
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Tài khoản người cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
 - name: BANK_ID
   data_type: RAW(16)
   description: "FK -> BANK_MONI: Ngân hàng lưu ký/giám sát liên quan"
-  key: null
-  fk_note: "FK suy luận → BANK_MONI.ID"
+  key: FK
+  fk_note: "FK → BANK_MONI.ID"
 - name: ITEM_NAME
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(2000)
   description: "Tên hiển thị chính"
   key: null
   fk_note: null
 - name: ID_NO
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(100)
   description: "Số CMND/CCCD/Hộ chiếu/Mã số doanh nghiệp"
   key: null
   fk_note: null
@@ -50,17 +50,17 @@ columns:
   key: null
   fk_note: null
 - name: CERT_NO
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(400)
   description: "Số chứng chỉ hành nghề (CCHN) quản lý quỹ/phân tích đầu tư"
   key: null
   fk_note: null
 - name: CERT_LAW
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Số chứng chỉ pháp lý/luật của nhân sự ngân hàng"
   key: null
   fk_note: null
 - name: CERT_AUDIT
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Số chứng chỉ kiểm toán nội bộ của nhân sự ngân hàng"
   key: null
   fk_note: null
@@ -70,22 +70,22 @@ columns:
   key: null
   fk_note: null
 - name: RECORD_STATUS
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực"
   key: null
   fk_note: null
 - name: DELETED
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động"
   key: null
   fk_note: null
 - name: POSITION
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(2)
   description: "Chức vụ/vị trí công tác hiện tại"
   key: null
   fk_note: null
 - name: DATA_MIGRATION
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ dữ liệu từ hệ thống cũ (legacy migration): 1=Dữ liệu cũ, 0=Dữ liệu mới"
   key: null
   fk_note: null

@@ -5,20 +5,20 @@ table: SC_FIRM_FOREIGN_BRANCH_HISTORY
 brd_ref: BRD-SRC-SCMS-SC_FIRM_FOREIGN_BRANCH_HISTORY
 columns:
   - name: ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
     key: PK
     fk_note: null
   - name: SC_FIRM_FOREIGN_BRANCH_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> sc_firm_foreign_branch: Chi nhánh CTCK NN liên quan"
-    key: FK
-    fk_note: "FK → SC_FIRM_FOREIGN_BRANCH.ID"
+    key: null
+    fk_note: null
   - name: EVENT_TYPE_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> cat_event_type: Loại sự vụ/sự kiện nghiệp vụ"
-    key: FK
-    fk_note: "FK → CAT_EVENT_TYPE.ID"
+    key: null
+    fk_note: null
   - name: AFTER_DATA_JSON
     data_type: NCLOB
     description: "Trạng thái dữ liệu sau khi thay đổi (JSON)"
@@ -45,10 +45,10 @@ columns:
     key: null
     fk_note: null
   - name: PERFORMED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> sys_user: Người thực hiện"
-    key: FK
-    fk_note: "FK suy luận → SYS_USER.ID"
+    key: null
+    fk_note: null
   - name: PERFORMER_NAME
     data_type: VARCHAR2(255)
     description: ""
@@ -77,5 +77,10 @@ columns:
   - name: BEFORE_INFO
     data_type: NCLOB
     description: "Thông tin hồ sơ trước khi thay đổi (dạng văn bản)"
+    key: null
+    fk_note: null
+  - name: ADMIN_PROCEDURE_PROFILE_ID
+    data_type: VARCHAR2(100)
+    description: null
     key: null
     fk_note: null

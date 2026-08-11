@@ -12,45 +12,45 @@ columns:
 - name: INVES_ACC_ID
   data_type: RAW(16)
   description: "FK -> INVES_ACC: Tài khoản nhà đầu tư ủy thác"
-  key: null
-  fk_note: "FK suy luận → INVES_ACC.ID"
+  key: FK
+  fk_note: null
 - name: INVES_ID
   data_type: RAW(16)
   description: "FK -> INVESTOR: Nhà đầu tư ủy thác"
-  key: null
-  fk_note: "FK suy luận → INVES.ID"
+  key: FK
+  fk_note: null
 - name: EXCUTION_DATE
-  data_type: TIMESTAMP
+  data_type: TIMESTAMP(7)
   description: "Thời điểm thực hiện/nộp báo cáo"
   key: null
   fk_note: null
 - name: PERIOD_TYPE
-  data_type: NUMBER(22)
+  data_type: NUMBER(18,2)
   description: "Loại kỳ báo cáo: 1=Ngày, 2=Tuần, 3=Tháng, 4=Quý, 5=Bán niên, 6=Năm, 7=Nửa tháng"
   key: null
   fk_note: null
 - name: AD_SCALE
-  data_type: NUMBER(22)
+  data_type: NUMBER(38,0)
   description: "Quy mô uỷ thác cam kết (đơn vị: VNĐ)"
   key: null
   fk_note: null
 - name: ACT_SCALE
-  data_type: NUMBER(22)
+  data_type: NUMBER(38,0)
   description: "Quy mô uỷ thác thực tế (đơn vị: VNĐ)"
   key: null
   fk_note: null
 - name: LIST_VALUE
-  data_type: NUMBER(22)
+  data_type: NUMBER(38,0)
   description: "Giá trị danh mục đầu tư (đơn vị: VNĐ)"
   key: null
   fk_note: null
 - name: MANAGER_FEE
-  data_type: NUMBER(22)
+  data_type: NUMBER(38,0)
   description: "Phí quản lý danh mục (%/năm)"
   key: null
   fk_note: null
 - name: PERIOD_REPORT
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(4000)
   description: "Kỳ báo cáo dạng chuỗi (VD: Q1/2024, T03/2024)"
   key: null
   fk_note: null

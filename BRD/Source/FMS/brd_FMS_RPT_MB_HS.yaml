@@ -12,15 +12,15 @@ columns:
 - name: RPT_MB_ID
   data_type: RAW(16)
   description: "FK -> RPT_MEMBER: Báo cáo thành viên liên quan"
-  key: null
-  fk_note: "FK suy luận → RPT_MEMBER.ID"
+  key: FK
+  fk_note: "FK → RPT_MEMBER.ID"
 - name: RPT_NAME
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(4000)
   description: "Tên báo cáo"
   key: null
   fk_note: null
 - name: RECORD_STATUS
-  data_type: NUMBER(22)
+  data_type: NUMBER(10,0)
   description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực"
   key: null
   fk_note: null
@@ -32,10 +32,10 @@ columns:
 - name: CHG_BY_ID
   data_type: RAW(16)
   description: "FK -> USERS: Người thay đổi trạng thái báo cáo"
-  key: null
-  fk_note: "FK suy luận → USERS.ID"
+  key: FK
+  fk_note: "FK → USERS.ID"
 - name: CONTENT_SUMMARY
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(4000)
   description: "Nội dung trích yếu của báo cáo (bắt buộc khi là báo cáo CBTT)"
   key: null
   fk_note: null
@@ -45,7 +45,7 @@ columns:
   key: null
   fk_note: null
 - name: NOTE
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(4000)
   description: "Ghi chú bổ sung"
   key: null
   fk_note: null

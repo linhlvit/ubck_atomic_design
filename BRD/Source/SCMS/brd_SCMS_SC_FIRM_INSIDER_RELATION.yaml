@@ -5,17 +5,17 @@ table: SC_FIRM_INSIDER_RELATION
 brd_ref: BRD-SRC-SCMS-SC_FIRM_INSIDER_RELATION
 columns:
   - name: ID
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
     key: PK
     fk_note: null
   - name: SC_FIRM_INFO_ID
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: "FK -> sc_firm_info: Công ty chứng khoán liên quan"
-    key: FK
-    fk_note: "FK → SC_FIRM_INFO.ID"
+    key: null
+    fk_note: null
   - name: SENIOR_PERSONNEL_ID
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: ""
     key: null
     fk_note: null
@@ -40,7 +40,7 @@ columns:
     key: null
     fk_note: null
   - name: RECORD_STATUS
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Trang thai ban ghi: 1 = Con hieu luc; 0 = Het hieu luc"
     key: null
     fk_note: null
@@ -50,12 +50,12 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: "ID tài khoản người dùng tạo bản ghi"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: FOUNDING_SHAREHOLDER
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Co la co dong sang lap: 1 = Co; 0 = Khong"
     key: null
     fk_note: null
@@ -80,7 +80,7 @@ columns:
     key: null
     fk_note: null
   - name: GENDER
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Giới tính: 1=Nam, 2=Nữ"
     key: null
     fk_note: null
@@ -115,20 +115,20 @@ columns:
     key: null
     fk_note: null
   - name: NATIONALITY_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> cat_nationality: Quốc tịch (khóa ngoại tới danh mục quốc tịch)"
-    key: FK
-    fk_note: "FK → CAT_NATIONALITY.ID"
+    key: null
+    fk_note: null
   - name: SHARES_COUNT
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: ""
     key: null
     fk_note: null
   - name: LAST_MODIFIED_BY
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: "ID tài khoản người dùng cập nhật lần cuối"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: ENTITY_TYPE
     data_type: NVARCHAR2(20)
     description: "Loai doi tuong nguoi noi bo: CA_NHAN = Ca nhan; TO_CHUC = To chuc (CTCK/NH/CN)"

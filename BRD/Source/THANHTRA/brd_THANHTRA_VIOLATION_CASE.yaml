@@ -38,17 +38,17 @@ columns:
     data_type: VARCHAR2(144)
     description: "FK -> inspection_team (liên kết hồ sơ đoàn thanh tra nếu phát sinh từ thanh tra)"
     key: FK
-    fk_note: "FK → INSPECTION_TEAM.id"
+    fk_note: "FK → INSPECTION_TEAM.ID"
   - name: EXAMINATION_TEAM_ID
     data_type: VARCHAR2(144)
     description: "FK -> examination_team (liên kết hồ sơ đoàn kiểm tra nếu phát sinh từ kiểm tra)"
     key: FK
-    fk_note: "FK → EXAMINATION_TEAM.id"
+    fk_note: "FK → EXAMINATION_TEAM.ID"
   - name: ASSIGNED_OFFICER_ID
     data_type: VARCHAR2(144)
     description: "ID cán bộ phụ trách xử lý hồ sơ VPHC"
     key: null
-    fk_note: "FK suy luận → system_user.id"
+    fk_note: null
   - name: ASSIGNED_OFFICER_NAME
     data_type: VARCHAR2(800)
     description: "Tên cán bộ phụ trách xử lý hồ sơ VPHC"
@@ -58,7 +58,7 @@ columns:
     data_type: VARCHAR2(144)
     description: "ID lãnh đạo phụ trách hồ sơ VPHC"
     key: null
-    fk_note: "FK suy luận → system_user.id"
+    fk_note: null
   - name: SUPERVISING_LEADER_NAME
     data_type: VARCHAR2(800)
     description: "Tên lãnh đạo phụ trách hồ sơ VPHC"
@@ -108,12 +108,12 @@ columns:
     data_type: VARCHAR2(400)
     description: "ID người dùng tạo bản ghi"
     key: null
-    fk_note: "FK suy luận → system_user.id"
+    fk_note: null
   - name: LAST_MODIFIED_BY
     data_type: VARCHAR2(400)
     description: "ID người dùng cập nhật gần nhất"
     key: null
-    fk_note: "FK suy luận → system_user.id"
+    fk_note: null
   - name: VERSION
     data_type: NUMBER(10,0)
     description: "Số phiên bản bản ghi (optimistic locking)"

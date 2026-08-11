@@ -12,15 +12,15 @@ columns:
 - name: PENSION_PROVIDER_ID
   data_type: RAW(16)
   description: "FK -> PENSION_PROVIDER: Tổ chức cung cấp dịch vụ hưu trí"
-  key: null
-  fk_note: "FK suy luận → PENSION_PROVIDER.ID"
+  key: FK
+  fk_note: "FK → PENSION_PROVIDER.ID"
 - name: EVENT_NAME
   data_type: VARCHAR2(255)
   description: "Dữ liệu lịch sử cột EVENT_NAME tại thời điểm backup"
   key: null
   fk_note: null
 - name: LICENSE_AMENDMENT_NO
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(200)
   description: "Dữ liệu lịch sử cột LICENSE_AMENDMENT_NO tại thời điểm backup"
   key: null
   fk_note: null
@@ -30,7 +30,7 @@ columns:
   key: null
   fk_note: null
 - name: AMENDMENT_REASON
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(2000)
   description: "Dữ liệu lịch sử cột AMENDMENT_REASON tại thời điểm backup"
   key: null
   fk_note: null
@@ -40,22 +40,27 @@ columns:
   key: null
   fk_note: null
 - name: DATE_CREATED
-  data_type: TIMESTAMP
+  data_type: TIMESTAMP(6)
   description: "Thời điểm tạo bản ghi"
   key: null
   fk_note: null
 - name: CREATED_BY
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(200)
   description: "Tài khoản người tạo bản ghi"
   key: null
-  fk_note: "FK suy luận → USERS.ID"
+  fk_note: null
 - name: DATE_MODIFIED
-  data_type: TIMESTAMP
+  data_type: TIMESTAMP(6)
   description: "Thời điểm cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
 - name: MODIFY_BY
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(200)
   description: "Tài khoản người cập nhật bản ghi lần cuối"
+  key: null
+  fk_note: null
+- name: SNAPSHOT_AFTER
+  data_type: CLOB
+  description: "JSON array [{field, label, value}] ? snapshot sau thay ??i"
   key: null
   fk_note: null

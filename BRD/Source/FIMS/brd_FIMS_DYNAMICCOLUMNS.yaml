@@ -7,20 +7,20 @@ columns:
 - name: ID
   data_type: "NUMBER"
   description: "Khóa chính của bản ghi"
-  key: null
+  key: PK
   fk_note: null
 - name: TABLECONFIGID
   data_type: "NUMBER"
   description: "FK -> DYNAMICTABLES: Bảng động chứa cột này"
   key: FK
-  fk_note: "FK → DYNAMICTABLES"
+  fk_note: "FK → DYNAMICTABLES.ID"
 - name: COLUMNNAME
-  data_type: "VARCHAR2(255 BYTE)"
+  data_type: "VARCHAR2(255)"
   description: "Tên cột trong bảng động (tương ứng tên field trong DB)"
   key: null
   fk_note: null
 - name: DATATYPE
-  data_type: "VARCHAR2(100 BYTE)"
+  data_type: "VARCHAR2(100)"
   description: "Kiểu dữ liệu của cột động: TEXT/NUMBER/DATE/BOOLEAN"
   key: null
   fk_note: null
@@ -35,7 +35,7 @@ columns:
   key: null
   fk_note: null
 - name: DEFAULTVALUE
-  data_type: "VARCHAR2(500 BYTE)"
+  data_type: "VARCHAR2(500)"
   description: "Giá trị mặc định của cột động khi không có dữ liệu"
   key: null
   fk_note: null

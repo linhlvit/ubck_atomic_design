@@ -70,50 +70,6 @@ brd_entries:
       refresh_frequency: null
       ingestion: null
 
-  - brd_id: BRD-SRC-GSGD-ACCOUNT_FINANCIAL_SERVICE
-    brd_name: "Design Atomic từ nguồn GSGD bảng ACCOUNT_FINANCIAL_SERVICE"
-    type: Theo Source
-    ba_email: huy.pham@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Dịch vụ tài chính của tài khoản"
-      functional_group: "UID1.1 Quản lý tài khoản nhà đầu tư"
-      scope_status: in_scope
-      scope_reason: null
-      table: ACCOUNT_FINANCIAL_SERVICE
-      related_tables:
-        - table: INVESTOR_ACCOUNT
-          relation: "FK cha — Thông tin tài khoản nhà đầu tư"
-      notes: "Atomic entity: Investor Trading Account Financial Service (ký quỹ/ứng trước/HĐ khác)"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-GSGD-ACCOUNT_AUTHORIZATION
-    brd_name: "Design Atomic từ nguồn GSGD bảng ACCOUNT_AUTHORIZATION"
-    type: Theo Source
-    ba_email: huy.pham@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Thông tin ủy quyền tài khoản"
-      functional_group: "UID1.1 Quản lý tài khoản nhà đầu tư"
-      scope_status: out_of_scope
-      scope_reason: "Bảng không tồn tại trong DDL UAT thực tế (schema UAT_TMS, xem Source/DDL UAT/TMS_UAT_schema.txt) — nghiệp vụ ủy quyền đã nằm sẵn trên INVESTOR_ACCOUNT.AUTHORIZED_PERSON_NAME/AUTHORIZATION_DATE. Dữ liệu khảo sát cũ (GSGD_Columns.csv/BRD) là lỗi thời — đã reconcile 2026-07-23."
-      table: ACCOUNT_AUTHORIZATION
-      related_tables:
-        - table: INVESTOR_ACCOUNT
-          relation: "FK cha — Thông tin tài khoản nhà đầu tư (lịch sử khảo sát cũ, bảng đã ngoài scope)"
-      notes: "Atomic entity: Investor Trading Account Authorization — KHÔNG THIẾT KẾ, bảng không tồn tại trong CSDL thật."
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
   - brd_id: BRD-SRC-GSGD-ACCOUNT_GROUP
     brd_name: "Design Atomic từ nguồn GSGD bảng ACCOUNT_GROUP"
     type: Theo Source
@@ -501,30 +457,6 @@ brd_entries:
         filter_logic: null
         filter_note: null
 
-  - brd_id: BRD-SRC-GSGD-SUSPICIOUS_ACCOUNT_GROUP
-    brd_name: "Design Atomic từ nguồn GSGD bảng SUSPICIOUS_ACCOUNT_GROUP"
-    type: Theo Source
-    ba_email: huy.pham@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Nhóm tài khoản nghi vấn"
-      functional_group: "UID2.4 Tài khoản nghi vấn (kết luận vụ việc)"
-      scope_status: in_scope
-      scope_reason: null
-      table: SUSPICIOUS_ACCOUNT_GROUP
-      related_tables:
-        - table: CASE_FILE
-          relation: "FK cha — Vụ việc"
-      notes: "Atomic entity: Market Surveillance Suspicious Account Group"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  # ─── UID2.3 Thực thi và kết quả phân tích ────────────────────────────
-
   - brd_id: BRD-SRC-GSGD-ANALYSIS_REPORT
     brd_name: "Design Atomic từ nguồn GSGD bảng ANALYSIS_REPORT"
     type: Theo Source
@@ -707,28 +639,6 @@ brd_entries:
         filter_logic: null
         filter_note: null
 
-  - brd_id: BRD-SRC-GSGD-ANALYSIS_ATTRIBUTE_VALUE
-    brd_name: "Design Atomic từ nguồn GSGD bảng ANALYSIS_ATTRIBUTE_VALUE"
-    type: Theo Source
-    ba_email: huy.pham@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Giá trị tiêu chí phân tích theo từng vụ việc/quy trình"
-      functional_group: "UID2.2 Tiêu chí và tham số phân tích"
-      scope_status: in_scope
-      scope_reason: null
-      table: ANALYSIS_ATTRIBUTE_VALUE
-      related_tables: null
-      notes: "Atomic entity: Market Surveillance Analysis Criterion Value — lưu theo từng lần chạy để tái hiện kết quả"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Append
-        filter_logic: "created_at >= {etl_date}"
-        filter_note: "Giá trị tiêu chí phân tích — append theo lần chạy phân tích"
-
-  # ─── UID3.2 Cấu hình & vận hành hệ thống ─────────────────────────────
-
   - brd_id: BRD-SRC-GSGD-ANALYSIS_DEFINE_REPORT_TEMPLATE
     brd_name: "Design Atomic từ nguồn GSGD bảng ANALYSIS_DEFINE_REPORT_TEMPLATE"
     type: Theo Source
@@ -840,40 +750,6 @@ brd_entries:
       refresh_frequency: null
       ingestion: null
 
-  - brd_id: BRD-SRC-GSGD-SYSTEM_CONFIG
-    brd_name: "Design Atomic từ nguồn GSGD bảng SYSTEM_CONFIG"
-    type: Theo Source
-    ba_email: huy.pham@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Cấu hình hệ thống"
-      functional_group: "UID3.2 Cấu hình & vận hành hệ thống"
-      scope_status: out_of_scope
-      scope_reason: "Operational/system data — tham số cấu hình hệ thống"
-      table: SYSTEM_CONFIG
-      related_tables: null
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion: null
-
-  - brd_id: BRD-SRC-GSGD-SYSTEM_PARAMETER
-    brd_name: "Design Atomic từ nguồn GSGD bảng SYSTEM_PARAMETER"
-    type: Theo Source
-    ba_email: huy.pham@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Tham số hệ thống"
-      functional_group: "UID3.2 Cấu hình & vận hành hệ thống"
-      scope_status: out_of_scope
-      scope_reason: "Operational/system data — tham số vận hành hệ thống"
-      table: SYSTEM_PARAMETER
-      related_tables: null
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion: null
-
   - brd_id: BRD-SRC-GSGD-AUDIT_LOG
     brd_name: "Design Atomic từ nguồn GSGD bảng AUDIT_LOG"
     type: Theo Source
@@ -920,44 +796,6 @@ brd_entries:
       scope_reason: "Operational/system data — tài liệu hướng dẫn sử dụng"
       table: USER_MANUAL
       related_tables: null
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion: null
-
-  - brd_id: BRD-SRC-GSGD-NOTIFICATION
-    brd_name: "Design Atomic từ nguồn GSGD bảng NOTIFICATION"
-    type: Theo Source
-    ba_email: huy.pham@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Lưu thông báo"
-      functional_group: "UID3.2 Cấu hình & vận hành hệ thống"
-      scope_status: out_of_scope
-      scope_reason: "Operational — hạ tầng thông báo hệ thống"
-      table: NOTIFICATION
-      related_tables:
-        - table: NOTIFICATION_RECIPIENT
-          relation: "1-N — Lưu trạng thái thông báo đến người nhận"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion: null
-
-  - brd_id: BRD-SRC-GSGD-NOTIFICATION_RECIPIENT
-    brd_name: "Design Atomic từ nguồn GSGD bảng NOTIFICATION_RECIPIENT"
-    type: Theo Source
-    ba_email: huy.pham@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Lưu trạng thái thông báo đến người nhận"
-      functional_group: "UID3.2 Cấu hình & vận hành hệ thống"
-      scope_status: out_of_scope
-      scope_reason: "Operational — trạng thái thông báo tới từng người nhận"
-      table: NOTIFICATION_RECIPIENT
-      related_tables:
-        - table: NOTIFICATION
-          relation: "FK cha — Lưu thông báo"
       notes: null
       data_volume_hint: null
       refresh_frequency: null
@@ -1529,63 +1367,6 @@ brd_entries:
       ingestion: null
 
   # ─── UID3.1 Người dùng & phân quyền ──────────────────────────────────
-
-  - brd_id: BRD-SRC-GSGD-USER_GROUP
-    brd_name: "Design Atomic từ nguồn GSGD bảng USER_GROUP"
-    type: Theo Source
-    ba_email: huy.pham@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Nhóm người dùng"
-      functional_group: "UID3.1 Người dùng & phân quyền"
-      scope_status: out_of_scope
-      scope_reason: "Operational/system data — nhóm người dùng ứng dụng"
-      table: USER_GROUP
-      related_tables:
-        - table: USER_GROUP_MEMBER
-          relation: "1-N — Thành viên nhóm người dùng"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion: null
-
-  - brd_id: BRD-SRC-GSGD-USER_GROUP_MEMBER
-    brd_name: "Design Atomic từ nguồn GSGD bảng USER_GROUP_MEMBER"
-    type: Theo Source
-    ba_email: huy.pham@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Thành viên nhóm người dùng"
-      functional_group: "UID3.1 Người dùng & phân quyền"
-      scope_status: out_of_scope
-      scope_reason: "Operational/system data — junction nhóm-người dùng"
-      table: USER_GROUP_MEMBER
-      related_tables:
-        - table: USER_GROUP
-          relation: "FK cha — Nhóm người dùng"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion: null
-
-  - brd_id: BRD-SRC-GSGD-SYSTEM_PERMISSION
-    brd_name: "Design Atomic từ nguồn GSGD bảng SYSTEM_PERMISSION"
-    type: Theo Source
-    ba_email: huy.pham@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Quyền hệ thống"
-      functional_group: "UID3.1 Người dùng & phân quyền"
-      scope_status: out_of_scope
-      scope_reason: "Operational/system data — danh sách quyền hệ thống"
-      table: SYSTEM_PERMISSION
-      related_tables: null
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion: null
-
-  # ─── UID3.4 Danh mục dùng chung (Reference Data) ─────────────────────
 
   - brd_id: BRD-SRC-GSGD-CATEGORY_CONFIG
     brd_name: "Design Atomic từ nguồn GSGD bảng CATEGORY_CONFIG"

@@ -18,7 +18,7 @@ columns:
     data_type: VARCHAR2(144)
     description: "FK -> inspection_annual_plan (chỉ có khi form_type=PERIODIC)"
     key: FK
-    fk_note: "FK → INSPECTION_ANNUAL_PLAN.id"
+    fk_note: "FK → INSPECTION_ANNUAL_PLAN.ID"
   - name: PLAN_YEAR
     data_type: NUMBER(4,0)
     description: "Năm thanh tra"
@@ -108,12 +108,12 @@ columns:
     data_type: VARCHAR2(400)
     description: "ID người dùng tạo bản ghi"
     key: null
-    fk_note: "FK suy luận → system_user.id"
+    fk_note: null
   - name: LAST_MODIFIED_BY
     data_type: VARCHAR2(400)
     description: "ID người dùng cập nhật gần nhất"
     key: null
-    fk_note: "FK suy luận → system_user.id"
+    fk_note: null
   - name: VERSION
     data_type: NUMBER(10,0)
     description: "Số phiên bản bản ghi (optimistic locking)"
@@ -126,6 +126,11 @@ columns:
     fk_note: null
   - name: VERIFICATION_MINUTES_SIGN_DATE
     data_type: DATE
+    description: "Ngày ký biên bản xác minh — mốc tính thời hạn lập kết luận thanh tra; phải nhập trước khi hệ thống gửi nhắc nhở kết luận"
+    key: null
+    fk_note: null
+  - name: VERIFICATION_MINUTES_SIGN_DATEDATE
+    data_type: YES
     description: "Ngày ký biên bản xác minh — mốc tính thời hạn lập kết luận thanh tra; phải nhập trước khi hệ thống gửi nhắc nhở kết luận"
     key: null
     fk_note: null

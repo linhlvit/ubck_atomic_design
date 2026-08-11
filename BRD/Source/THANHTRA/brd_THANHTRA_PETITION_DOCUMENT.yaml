@@ -13,7 +13,7 @@ columns:
     data_type: VARCHAR2(144)
     description: "FK -> petition: hồ sơ đơn thư liên quan"
     key: FK
-    fk_note: "FK → PETITION.id"
+    fk_note: "FK → PETITION.ID"
   - name: DOCUMENT_TYPE
     data_type: VARCHAR2(200)
     description: "Loại: CLASSIFICATION_REPORT (Tờ trình phân loại), MULTI_CONTENT_GUIDE (Phiếu hướng dẫn đơn nhiều ND), ACCEPTANCE_NOTICE (CV thông báo thụ lý KN-TC), FEEDBACK_PROPOSAL (Phiếu đề xuất xử lý PAKN), ACCEPTANCE_PROPOSAL (Phiếu đề xuất thụ lý KN/TC), FEEDBACK_TRANSFER (Phiếu chuyển đơn PAKN), DENUNCIATION_TRANSFER (Phiếu chuyển đơn TC), INVESTOR_RESPONSE (CV trả lời NĐT)"
@@ -73,7 +73,7 @@ columns:
     data_type: VARCHAR2(800)
     description: "ID cán bộ soạn thảo văn bản"
     key: null
-    fk_note: "FK suy luận → system_user.id"
+    fk_note: null
   - name: PREPARED_AT
     data_type: DATE
     description: "Ngày soạn thảo văn bản"
@@ -93,12 +93,12 @@ columns:
     data_type: VARCHAR2(400)
     description: "ID người dùng tạo bản ghi"
     key: null
-    fk_note: "FK suy luận → system_user.id"
+    fk_note: null
   - name: LAST_MODIFIED_BY
     data_type: VARCHAR2(400)
     description: "ID người dùng cập nhật gần nhất"
     key: null
-    fk_note: "FK suy luận → system_user.id"
+    fk_note: null
   - name: VERSION
     data_type: NUMBER(10,0)
     description: "Số phiên bản bản ghi (optimistic locking)"
@@ -113,7 +113,7 @@ columns:
     data_type: VARCHAR2(36)
     description: "FK -> document_template: mẫu sử dụng cho màn nhập liệu biểu mẫu đơn thư"
     key: FK
-    fk_note: "FK → DOCUMENT_TEMPLATE.id"
+    fk_note: null
   - name: DOCUMENT_TEMPLATE_NAME
     data_type: VARCHAR2(500)
     description: "Tên biểu mẫu sử dụng để tạo văn bản"

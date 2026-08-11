@@ -5,9 +5,9 @@ table: SC_FIRM_PROFILE_HISTORY
 brd_ref: BRD-SRC-SCMS-SC_FIRM_PROFILE_HISTORY
 columns:
   - name: ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
-    key: PK
+    key: null
     fk_note: null
   - name: CHI_TIET_ID
     data_type: NUMBER(10)
@@ -85,47 +85,47 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "ID tài khoản người dùng tạo bản ghi"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: CREATED_AT
     data_type: TIMESTAMP(6)
     description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
     key: null
     fk_note: null
   - name: APPROVED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: ""
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: APPROVED_AT
     data_type: TIMESTAMP(6)
     description: "Thời điểm phê duyệt"
     key: null
     fk_note: null
   - name: RECORD_STATUS
-    data_type: NUMBER(4)
+    data_type: NUMBER(4,0)
     description: "Trang thai phe duyet ho so: 0 = Cho duyet; 1 = Da duyet; 2 = Tu choi"
     key: null
     fk_note: null
   - name: EVENT_TYPE_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> cat_event_type: Loại sự vụ/sự kiện nghiệp vụ"
-    key: FK
-    fk_note: "FK → CAT_EVENT_TYPE.ID"
+    key: null
+    fk_note: null
   - name: SC_FIRM_INFO_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> sc_firm_info: Công ty chứng khoán liên quan"
-    key: FK
-    fk_note: "FK → SC_FIRM_INFO.ID"
+    key: null
+    fk_note: null
   - name: CHANGE_HISTORY
     data_type: CLOB
     description: "Thay d?i nh?ng tru?ng nao"
     key: null
     fk_note: null
   - name: ID_OLD
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Cột id_old — xem thêm tài liệu đặc tả SCMS"
     key: null
     fk_note: null
@@ -135,7 +135,7 @@ columns:
     key: null
     fk_note: null
   - name: LEGACY_FILENAME
-    data_type: VARCHAR2(1000 BYTE)
+    data_type: VARCHAR2(1000)
     description: ""
     key: null
     fk_note: null
@@ -145,7 +145,12 @@ columns:
     key: null
     fk_note: null
   - name: LEGACY_ROWID
-    data_type: VARCHAR2(200 BYTE)
+    data_type: VARCHAR2(200)
     description: ""
+    key: null
+    fk_note: null
+  - name: DETAIL_ID
+    data_type: NUMBER(10,0)
+    description: null
     key: null
     fk_note: null
