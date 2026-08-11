@@ -4,7 +4,7 @@ STT;Mã dashboard/BC;Dashboard/báo cáo;Thông tin;Mô tả;Nhóm yêu cầu;Ph
 TB: có tính toán tổng hợp
 Khó: Có logic phức tạp và lấy nhiều mốc thời gian
 Trùng: Trong phạm vi ban của mình làm đã có tính thông tin này rồi";;;;;;;;;;;;;;;;;
-1;;Chào bán phát hành/Tình hình thực hiện chào bán phát hành theo ngành;Ngày;Ngày;Dashboard;Chiều;Dễ;ngày/theo ngành;IDS;x;x;;Done;;SECURITIES_OFFERING;SECURITIES_OFFERING.official_letter_date;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');"WITH result_agg AS (
+1;;Chào bán phát hành/Tình hình thực hiện chào bán phát hành theo ngành;Ngày;Ngày;Dashboard;Chiều;Dễ;ngày/theo ngành;IDS;x;x;;Done;;SECURITIES_OFFERING;SECURITIES_OFFERING.certificate_date;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');"WITH result_agg AS (
 -- Gom nhóm kết quả phát hành theo từng đợt chào bán trước khi JOIN
 SELECT 
 securities_offering_id,
@@ -15,7 +15,6 @@ GROUP BY securities_offering_id
 )
 SELECT
 c.INDUSTRY_NAME AS nganh_cap1_id,
-TO_CHAR(so.official_letter_date, 'YYYY-MM') AS thang_cong_van,
 SUM(so.total_expected_am) AS gia_tri_cap_phep,
 SUM(NVL(sor.total_collected_am, 0)) AS gia_tri_huy_dong,
 SUM(so.total_expected_am) - SUM(NVL(sor.total_collected_am, 0)) AS chua_thanh_cong
@@ -26,9 +25,8 @@ LEFT JOIN result_agg sor ON sor.securities_offering_id = so.id
 WHERE NVL(so.delete_flg, 0) = 0
 AND so.certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd')
 GROUP BY
-c.INDUSTRY_NAME,
-TO_CHAR(so.official_letter_date, 'YYYY-MM')
-ORDER BY thang_cong_van, nganh_cap1_id;";;;;;Done;Dữ liệu tĩnh
+c.INDUSTRY_NAME
+ORDER BY nganh_cap1_id;";;;;;Done;Dữ liệu tĩnh
 1;;Chào bán phát hành/Tình hình thực hiện chào bán phát hành theo ngành;Ngành;ngành;Dashboard;Chiều;Dễ;ngày/theo ngành;IDS;x;x;;Done;;"CATEGORIES
 COMPANY_PROFILES";"CATEGORIES.INDUSTRY_NAME
 COMPANY_PROFILES.category_l1_id";certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;;;;;Dữ liệu tĩnh;
@@ -227,8 +225,8 @@ GROUP BY securities_offering_id
 )
 SELECT
 lv.LOOKUP_VALUE_VN AS hinh_thuc_chao_ban,
-EXTRACT(YEAR FROM t.official_letter_date) AS nam,
-round((COUNT(CASE WHEN t.approval_status_cd = 'PENDING_REVIEW' THEN 1 END)/COUNT(t.application_cd))*100,2) AS sl_dang_ky,
+EXTRACT(YEAR FROM t.certificate_date) AS nam,
+COUNT(CASE WHEN t.approval_status_cd = 'PENDING_REVIEW' THEN 1 END) AS sl_dang_ky,
 COUNT(CASE WHEN t.approval_status_cd = 'PENDING_APPROVE' THEN 1 END) AS sl_dang_xu_ly,
 COUNT(CASE WHEN t.approval_status_cd = 'APPROVED' THEN 1 END) AS sl_cap_phep,
 COUNT(CASE WHEN t.approval_status_cd = 'REJECTED' THEN 1 END) AS sl_tu_choi,
@@ -245,14 +243,14 @@ t.official_letter_date
 ORDER BY
 t.official_letter_date,
 hinh_thuc_chao_ban;";check chéo với TTHC;;;;Done;Dữ liệu tĩnh
-6;;Hồ sơ đăng ký chào bán/Bảng chi tiết hồ sơ chào bán & phát hành;Năm;Thời gian hồ sơ đăng ký;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày;IDS;x;x;;Done;;SECURITIES_OFFERING;official_letter_date;;check chéo với TTHC;;;;Done;Dữ liệu tĩnh;
+6;;Hồ sơ đăng ký chào bán/Bảng chi tiết hồ sơ chào bán & phát hành;Năm;Thời gian hồ sơ đăng ký;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày;IDS;x;x;;Done;;SECURITIES_OFFERING;Year(certificate_date);;check chéo với TTHC;;;;Done;Dữ liệu tĩnh;
 6;;Hồ sơ đăng ký chào bán/Bảng chi tiết hồ sơ chào bán & phát hành;Số lượng hồ sơ đăng ký;Số lượng hồ sơ đăng ký chào bán;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày;IDS;x;x;;Done;;SECURITIES_OFFERING;application_cd;approval_status_cd = 'PENDING_REVIEW';check chéo với TTHC;;;;Done;Dữ liệu tĩnh;
 6;;Hồ sơ đăng ký chào bán/Bảng chi tiết hồ sơ chào bán & phát hành;Số lượng hồ sơ đang xử lý;Số lượng hồ sơ đăng ký chào bán đang xử lý;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày;IDS;x;x;;Done;;SECURITIES_OFFERING;application_cd;approval_status_cd = 'PENDING_APPROVE';check chéo với TTHC;;;;Done;Dữ liệu tĩnh;
 6;;Hồ sơ đăng ký chào bán/Bảng chi tiết hồ sơ chào bán & phát hành;Số lượng hồ sơ đã cấp phép;Số lượng hồ sơ đăng ký chào bán đã được cấp phép;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày;IDS;x;x;;Done;;SECURITIES_OFFERING;application_cd;approval_status_cd = 'APPROVED';check chéo với TTHC;;;;Done;Dữ liệu tĩnh;
 6;;Hồ sơ đăng ký chào bán/Bảng chi tiết hồ sơ chào bán & phát hành;Số lượng hồ sơ bị từ chối;Số lượng hồ sơ đăng ký chào bán bị từ chối;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày;IDS;x;x;;Done;;SECURITIES_OFFERING;application_cd;approval_status_cd = 'REJECTED';check chéo với TTHC;;;;Done;Dữ liệu tĩnh;
 6;;Hồ sơ đăng ký chào bán/Bảng chi tiết hồ sơ chào bán & phát hành;Tổng hồ sơ;Tổng số lượng hồ sơ đăng ký chào bán;Dashboard;Chỉ tiêu phái sinh;TB;ngày;IDS;;x;;Done;;SECURITIES_OFFERING;application_cd;;check chéo với TTHC;;;;Done;Dữ liệu tĩnh;
 7;;Chào bán và phát hành/Thông tin cơ sở;Thời điểm báo cáo;Thời điểm báo cáo;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày;IDS;x;x;;Done;;SECURITIES_OFFERING;month(certificate_date);certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');"SELECT
-month(so.official_letter_date) AS thoi_diem_bao_cao, 
+month(so.certificate_date) AS thoi_diem_bao_cao, 
 so.processor_user_name AS chuyen_vien, 
 cp.company_name_vn AS ten_cong_ty, 
 cp.equity_ticker AS ma_ck, 

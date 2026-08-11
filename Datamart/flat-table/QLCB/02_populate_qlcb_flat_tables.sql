@@ -8,7 +8,7 @@
 -- Application Status Code — luôn phản ánh đúng trạng thái mới nhất).
 -- KHÔNG TRUNCATE — chỉ DELETE đúng ngày :etl_date (idempotent re-run) rồi
 -- INSERT lại, giữ nguyên lịch sử các ngày snapshot khác.
--- Official Letter Date giữ nguyên vai trò Chiều/slicer (JOIN riêng, không đổi).
+-- Certificate Date giữ nguyên vai trò Chiều/slicer (JOIN riêng, không đổi).
 -- ============================================================
 
 
@@ -22,11 +22,10 @@ INSERT INTO datamart.qlcb_fct_securities_offering_snpst_flat
 SELECT
     f.securities_offering_code,
     f.snpst_dt_dim_id,
-    f.official_letter_dt_dim_id,
+    f.certificate_dt_dim_id,
     f.public_company_dim_id,
     f.total_expected_amt,
     f.total_collected_amt,
-    f.certificate_dt,
     f.official_letter_dt,
 
     snpst_cal.cdr_dt                    AS snpst_cdr_dt,
@@ -64,7 +63,7 @@ FROM datamart.fct_securities_offering_snpst f
 JOIN datamart.cdr_dt_dim snpst_cal
     ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
 JOIN datamart.cdr_dt_dim cal
-    ON cal.cdr_dt_dim_id = f.official_letter_dt_dim_id
+    ON cal.cdr_dt_dim_id = f.certificate_dt_dim_id
 LEFT JOIN datamart.public_company_dim pc
     ON pc.public_company_dim_id = f.public_company_dim_id
 WHERE snpst_cal.cdr_dt = :etl_date
@@ -81,7 +80,7 @@ INSERT INTO datamart.qlcb_fct_securities_offering_plan_snpst_flat
 SELECT
     f.securities_offering_code,
     f.snpst_dt_dim_id,
-    f.official_letter_dt_dim_id,
+    f.certificate_dt_dim_id,
     f.public_company_dim_id,
     f.offering_method_dim_id,
     f.total_expected_amt_snpst,
@@ -126,7 +125,7 @@ FROM datamart.fct_securities_offering_plan_snpst f
 JOIN datamart.cdr_dt_dim snpst_cal
     ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
 JOIN datamart.cdr_dt_dim cal
-    ON cal.cdr_dt_dim_id = f.official_letter_dt_dim_id
+    ON cal.cdr_dt_dim_id = f.certificate_dt_dim_id
 LEFT JOIN datamart.public_company_dim pc
     ON pc.public_company_dim_id = f.public_company_dim_id
 LEFT JOIN datamart.offering_method_dim om
@@ -145,7 +144,7 @@ INSERT INTO datamart.qlcb_fct_securities_offering_result_snpst_flat
 SELECT
     f.securities_offering_code,
     f.snpst_dt_dim_id,
-    f.official_letter_dt_dim_id,
+    f.certificate_dt_dim_id,
     f.public_company_dim_id,
     f.offering_method_dim_id,
     f.total_collected_amt,
@@ -190,7 +189,7 @@ FROM datamart.fct_securities_offering_result_snpst f
 JOIN datamart.cdr_dt_dim snpst_cal
     ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
 JOIN datamart.cdr_dt_dim cal
-    ON cal.cdr_dt_dim_id = f.official_letter_dt_dim_id
+    ON cal.cdr_dt_dim_id = f.certificate_dt_dim_id
 LEFT JOIN datamart.public_company_dim pc
     ON pc.public_company_dim_id = f.public_company_dim_id
 LEFT JOIN datamart.offering_method_dim om
@@ -209,7 +208,7 @@ INSERT INTO datamart.qlcb_fct_securities_offering_application_snpst_flat
 SELECT
     f.securities_offering_code,
     f.snpst_dt_dim_id,
-    f.official_letter_dt_dim_id,
+    f.certificate_dt_dim_id,
     f.application_status_code,
     f.offering_method_dim_id,
 
@@ -225,7 +224,7 @@ FROM datamart.fct_securities_offering_application_snpst f
 JOIN datamart.cdr_dt_dim snpst_cal
     ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
 JOIN datamart.cdr_dt_dim cal
-    ON cal.cdr_dt_dim_id = f.official_letter_dt_dim_id
+    ON cal.cdr_dt_dim_id = f.certificate_dt_dim_id
 LEFT JOIN datamart.offering_method_dim om
     ON om.offering_method_dim_id = f.offering_method_dim_id
 WHERE snpst_cal.cdr_dt = :etl_date
