@@ -15,32 +15,32 @@ columns:
   key: null
   fk_note: null
 - name: CREATED_BY
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Tài khoản người tạo bản ghi"
   key: null
-  fk_note: "FK suy luận → USERS.ID"
+  fk_note: null
 - name: DATE_MODIFIED
   data_type: DATE
   description: "Thời điểm cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
 - name: MODIFY_BY
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Tài khoản người cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
 - name: INSDR_ID
   data_type: RAW(16)
   description: "FK -> INSIDER: Cổ đông nội bộ liên quan"
-  key: null
-  fk_note: "FK suy luận → INSIDER.ID"
+  key: FK
+  fk_note: "FK → INSIDER.ID"
 - name: ITEM_NAME
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(400)
   description: "Tên hiển thị chính"
   key: null
   fk_note: null
 - name: ID_NO
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Số CMND/CCCD/Hộ chiếu/Mã số doanh nghiệp"
   key: null
   fk_note: null
@@ -50,22 +50,22 @@ columns:
   key: null
   fk_note: null
 - name: ID_PLACE
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(400)
   description: "Nơi cấp giấy tờ định danh"
   key: null
   fk_note: null
 - name: JOB
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(400)
   description: "Chức vụ/nghề nghiệp của người liên quan"
   key: null
   fk_note: null
 - name: RECORD_STATUS
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực"
   key: null
   fk_note: null
 - name: DELETED
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động"
   key: null
   fk_note: null
@@ -80,12 +80,12 @@ columns:
   key: null
   fk_note: null
 - name: PER_REP
-  data_type: NUMBER(22)
+  data_type: NUMBER(18,2)
   description: "Tỷ lệ đại diện theo ủy quyền (%)"
   key: null
   fk_note: null
 - name: DATA_MIGRATION
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ dữ liệu từ hệ thống cũ (legacy migration): 1=Dữ liệu cũ, 0=Dữ liệu mới"
   key: null
   fk_note: null

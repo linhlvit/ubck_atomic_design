@@ -15,37 +15,37 @@ columns:
   key: null
   fk_note: null
 - name: CREATED_BY
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Tài khoản người tạo bản ghi"
   key: null
-  fk_note: "FK suy luận → USERS.ID"
+  fk_note: null
 - name: DATE_MODIFIED
   data_type: DATE
   description: "Thời điểm cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
 - name: MODIFY_BY
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Tài khoản người cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
 - name: ITEM_NAME
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(4000)
   description: "Tên hiển thị chính"
   key: null
   fk_note: null
 - name: CHART_TYPE
-  data_type: NUMBER(22)
+  data_type: NUMBER(10,0)
   description: "Loại biểu đồ đầu ra: 1=Cột, 2=Đường, 3=Tròn, 4=Vùng, 5=Thanh ngang..."
   key: null
   fk_note: null
 - name: SYSTEM_OBJECT
-  data_type: NUMBER(22)
+  data_type: NUMBER(10,0)
   description: "Loại đối tượng hệ thống: 1=UBCK, 2=Công ty QLQ, 3=Ngân hàng LKGS, 4=CN CTQLQ NN, 5=VPĐD CTQLQ NN, 6=ĐTCK riêng lẻ tự quản lý, 7=Quỹ đầu tư, 8=Đại lý PP, 9=Đại lý CN, 10=Đại lý HT, 11=TCCCDV, 12=Đại lý khác, 13=Quỹ HT, 14=CT kiểm toán, 15=Kiểm toán viên"
   key: null
   fk_note: null
 - name: PERIOD_TYPE
-  data_type: NUMBER(22)
+  data_type: NUMBER(10,0)
   description: "Loại kỳ báo cáo: 1=Ngày, 2=Tuần, 3=Tháng, 4=Quý, 5=Bán niên, 6=Năm, 7=Nửa tháng"
   key: null
   fk_note: null
@@ -57,10 +57,10 @@ columns:
 - name: TP_OUT_ID
   data_type: RAW(16)
   description: "FK -> RPT_TP_OUT: Báo cáo tổng hợp đầu ra"
-  key: null
-  fk_note: "FK suy luận → RPT_TP_OUT.ID"
+  key: FK
+  fk_note: "FK → RPT_TP_OUT.ID"
 - name: RECORD_STATUS
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực"
   key: null
   fk_note: null

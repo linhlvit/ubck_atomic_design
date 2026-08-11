@@ -5,15 +5,15 @@ table: SYS_USER_LOGIN_LOG
 brd_ref: BRD-SRC-SCMS-SYS_USER_LOGIN_LOG
 columns:
   - name: ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
     key: PK
     fk_note: null
   - name: USER_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> sys_user: Người dùng liên quan"
-    key: FK
-    fk_note: "FK → SYS_USER.ID"
+    key: null
+    fk_note: null
   - name: LOGIN_AT
     data_type: TIMESTAMP(6)
     description: "Thời điểm đăng nhập"
@@ -25,7 +25,7 @@ columns:
     key: null
     fk_note: null
   - name: ACTIVE
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: ""
     key: null
     fk_note: null

@@ -5,9 +5,9 @@ table: CAT_SHAREHOLDER_TRANSACTION_TYPE
 brd_ref: BRD-SRC-SCMS-CAT_SHAREHOLDER_TRANSACTION_TYPE
 columns:
   - name: ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
-    key: PK
+    key: null
     fk_note: null
   - name: TRANSACTION_TYPE_CODE
     data_type: NVARCHAR2(50)
@@ -30,17 +30,22 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "ID tài khoản người dùng tạo bản ghi"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: CREATED_AT
     data_type: TIMESTAMP(6)
     description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
     key: null
     fk_note: null
   - name: RECORD_STATUS
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Trang thai ban ghi loai giao dich co dong: 1 = Dang su dung; 0 = Ngung su dung"
+    key: null
+    fk_note: null
+  - name: ECATALOG_ID
+    data_type: VARCHAR2(36)
+    description: null
     key: null
     fk_note: null

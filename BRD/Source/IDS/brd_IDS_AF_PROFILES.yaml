@@ -10,52 +10,52 @@ columns:
     key: PK
     fk_note: null
   - name: AUDIT_FIRM_CD
-    data_type: VARCHAR2(50)
+    data_type: VARCHAR2(200)
     description: "Mã"
     key: null
     fk_note: null
   - name: FULL_NAME_VI
-    data_type: VARCHAR2(255)
+    data_type: VARCHAR2(1020)
     description: "Tên đầy đủ (tiếng Việt)"
     key: null
     fk_note: null
   - name: FULL_NAME_EN
-    data_type: VARCHAR2(255)
+    data_type: VARCHAR2(1020)
     description: "Tên đầy đủ (tiếng Anh)"
     key: null
     fk_note: null
   - name: SHORT_NAME
-    data_type: VARCHAR2(50)
+    data_type: VARCHAR2(200)
     description: "Tên viết tắt"
     key: null
     fk_note: null
   - name: BUSINESS_REG_NO
-    data_type: VARCHAR2(50)
+    data_type: VARCHAR2(200)
     description: "Giấy chứng nhận ĐKKD"
     key: null
     fk_note: null
   - name: ELIGIBILITY_CERT_NO
-    data_type: VARCHAR2(20)
+    data_type: VARCHAR2(80)
     description: "Giấy chứng nhận đủ điều kiện KD"
     key: null
     fk_note: null
   - name: ADDRESS
-    data_type: VARCHAR2(255)
+    data_type: VARCHAR2(1020)
     description: "Địa chỉ"
     key: null
     fk_note: null
   - name: PHONE_NO
-    data_type: VARCHAR2(18)
+    data_type: VARCHAR2(72)
     description: "Điện thoại"
     key: null
     fk_note: null
   - name: FAX_NO
-    data_type: VARCHAR2(18)
+    data_type: VARCHAR2(72)
     description: "Số Fax"
     key: null
     fk_note: null
   - name: WEBSITE
-    data_type: VARCHAR2(255)
+    data_type: VARCHAR2(1020)
     description: "Website"
     key: null
     fk_note: null
@@ -80,7 +80,7 @@ columns:
     key: null
     fk_note: null
   - name: STATUS_CD
-    data_type: VARCHAR2(255)
+    data_type: VARCHAR2(1020)
     description: "Trạng thái công ty kiểm toán (LOOKUP_GROUP = AF_STATUS)"
     key: null
     fk_note: null
@@ -90,37 +90,42 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: VARCHAR2(30)
+    data_type: VARCHAR2(120)
     description: "Người tạo"
     key: null
-    fk_note: "FK → LOGINS.ID"
+    fk_note: null
   - name: CREATED_DATE
     data_type: DATE
     description: "Ngày tạo"
     key: null
     fk_note: null
   - name: UPDATED_BY
-    data_type: VARCHAR2(30)
+    data_type: VARCHAR2(120)
     description: "Người sửa"
     key: null
-    fk_note: "FK → LOGINS.ID"
+    fk_note: null
   - name: UPDATED_DATE
     data_type: DATE
     description: "Ngày sửa"
     key: null
     fk_note: null
   - name: FOREIGN_AUDIT_FIRM_NAME
-    data_type: VARCHAR2(255)
+    data_type: VARCHAR2(1020)
     description: "Tên hãng kiểm toán nước ngoài (nếu là thành viên)"
     key: null
     fk_note: null
   - name: APPROVAL_STATUS_CD
-    data_type: VARCHAR2(100)
+    data_type: VARCHAR2(400)
     description: ""
     key: null
     fk_note: null
   - name: APPROVER_COMMENT
-    data_type: VARCHAR2(255)
+    data_type: VARCHAR2(1020)
     description: ""
+    key: null
+    fk_note: null
+  - name: DELETE_FLG
+    data_type: NUMBER(1,0)
+    description: null
     key: null
     fk_note: null

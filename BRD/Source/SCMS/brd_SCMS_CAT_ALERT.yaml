@@ -5,20 +5,20 @@ table: CAT_ALERT
 brd_ref: BRD-SRC-SCMS-CAT_ALERT
 columns:
   - name: ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
-    key: PK
+    key: null
     fk_note: null
   - name: FORM_REPORT_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> form_report: Biểu mẫu báo cáo liên quan"
-    key: FK
-    fk_note: "FK → FORM_REPORT.ID"
+    key: null
+    fk_note: null
   - name: FORM_SHEET_CELL_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: ""
     key: null
-    fk_note: "FK suy luận → FORM_SHEET_CELL.ID"
+    fk_note: null
   - name: ALERT_CODE
     data_type: NVARCHAR2(200)
     description: "Mã chỉ tiêu cảnh báo"
@@ -45,7 +45,7 @@ columns:
     key: null
     fk_note: null
   - name: HIERARCHY_LEVEL
-    data_type: NUMBER(4)
+    data_type: NUMBER(4,0)
     description: ""
     key: null
     fk_note: null
@@ -70,22 +70,22 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "ID tài khoản người dùng tạo bản ghi"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: LAST_MODIFIED_AT
     data_type: DATE
     description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"
     key: null
     fk_note: null
   - name: LAST_MODIFIED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "ID tài khoản người dùng cập nhật lần cuối"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: DELETED
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Cờ xóa mềm: 0=Chưa xóa (đang sử dụng), 1=Đã xóa"
     key: null
     fk_note: null

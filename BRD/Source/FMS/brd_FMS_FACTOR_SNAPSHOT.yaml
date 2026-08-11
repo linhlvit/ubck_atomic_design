@@ -5,7 +5,7 @@ table: FACTOR_SNAPSHOT
 brd_ref: BRD-SRC-FMS-FACTOR_SNAPSHOT
 columns:
 - name: ID
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(36)
   description: "Khóa chính của bản ghi (UUID dạng RAW(16))"
   key: PK
   fk_note: null
@@ -15,22 +15,22 @@ columns:
   key: null
   fk_note: null
 - name: NOTE
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(2000)
   description: "Ghi chú bổ sung"
   key: null
   fk_note: null
 - name: SNAPSHOT_AT
-  data_type: TIMESTAMP
+  data_type: TIMESTAMP(6)
   description: "Thời điểm chụp snapshot dữ liệu đánh giá"
   key: null
   fk_note: null
 - name: DATE_CREATED
-  data_type: TIMESTAMP
+  data_type: TIMESTAMP(6)
   description: "Thời điểm tạo bản ghi"
   key: null
   fk_note: null
 - name: CREATED_BY
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(100)
   description: "Tài khoản người tạo bản ghi"
   key: null
-  fk_note: "FK suy luận → USERS.ID"
+  fk_note: null

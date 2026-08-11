@@ -12,10 +12,10 @@ columns:
 - name: SEC_ID
   data_type: RAW(16)
   description: "FK -> SECURITIES: Công ty QLQ liên quan"
-  key: null
-  fk_note: "FK suy luận → SECURITIES.ID"
+  key: FK
+  fk_note: null
 - name: DELETED
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động"
   key: null
   fk_note: null
@@ -25,12 +25,12 @@ columns:
   key: null
   fk_note: null
 - name: OFFERING_TYPE
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(5)
   description: "Loại chào bán: PUBLIC=Chào bán ra công chúng, PRIVATE=Chào bán riêng lẻ"
   key: null
   fk_note: null
 - name: SECURITIES_TYPE
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(5)
   description: "Loại chứng khoán chào bán: CP=Cổ phần, TP=Trái phiếu"
   key: null
   fk_note: null
@@ -40,32 +40,32 @@ columns:
   key: null
   fk_note: null
 - name: PAR_VALUE
-  data_type: NUMBER(22)
+  data_type: NUMBER(38,2)
   description: "Mệnh giá CCQ (đơn vị: VNĐ)"
   key: null
   fk_note: null
 - name: QUANTITY_OFFERED
-  data_type: NUMBER(22)
+  data_type: NUMBER(38,0)
   description: "Số lượng chứng khoán đăng ký chào bán"
   key: null
   fk_note: null
 - name: OFFERING_PRICE
-  data_type: NUMBER(22)
+  data_type: NUMBER(38,2)
   description: "Giá chào bán theo kế hoạch (đơn vị: VNĐ)"
   key: null
   fk_note: null
 - name: TOTAL_REGISTERED_VALUE
-  data_type: NUMBER(22)
+  data_type: NUMBER(38,2)
   description: "Tổng giá trị đăng ký chào bán (đơn vị: VNĐ)"
   key: null
   fk_note: null
 - name: PURPOSE
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(2000)
   description: "Mục đích sử dụng vốn huy động được từ đợt chào bán"
   key: null
   fk_note: null
 - name: CAPITAL_USAGE_PLAN
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(2000)
   description: "Kế hoạch sử dụng vốn chi tiết sau chào bán"
   key: null
   fk_note: null
@@ -95,12 +95,12 @@ columns:
   key: null
   fk_note: null
 - name: TARGET_AUDIENCE
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(5)
   description: "Đối tượng chào bán mục tiêu (mô tả hoặc mã danh mục)"
   key: null
   fk_note: null
 - name: CAPITAL_PURPOSE
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(2000)
   description: "Mục đích sử dụng vốn (mã danh mục)"
   key: null
   fk_note: null
@@ -115,7 +115,7 @@ columns:
   key: null
   fk_note: null
 - name: EXTENDED
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ đã gia hạn thời gian chào bán: 1=Đã gia hạn, 0=Chưa"
   key: null
   fk_note: null
@@ -125,57 +125,57 @@ columns:
   key: null
   fk_note: null
 - name: QUANTITY_SOLD
-  data_type: NUMBER(22)
+  data_type: NUMBER(38,0)
   description: "Số lượng chứng khoán đã bán được trong đợt chào bán"
   key: null
   fk_note: null
 - name: ACTUAL_PRICE
-  data_type: NUMBER(22)
+  data_type: NUMBER(38,2)
   description: "Giá bán thực tế (đơn vị: VNĐ)"
   key: null
   fk_note: null
 - name: ACTUAL_TOTAL_VALUE
-  data_type: NUMBER(22)
+  data_type: NUMBER(38,2)
   description: "Tổng giá trị thực tế huy động được (đơn vị: VNĐ)"
   key: null
   fk_note: null
 - name: EMPLOYEE_COUNT
-  data_type: NUMBER(22)
+  data_type: NUMBER(10,0)
   description: "Số lượng nhân viên tham gia mua trong chào bán nội bộ"
   key: null
   fk_note: null
 - name: FOREIGN_INVESTOR_COUNT
-  data_type: NUMBER(22)
+  data_type: NUMBER(10,0)
   description: "Số lượng nhà đầu tư nước ngoài tham gia đợt chào bán"
   key: null
   fk_note: null
 - name: ISSUANCE_VALUE
-  data_type: NUMBER(22)
+  data_type: NUMBER(38,2)
   description: "Giá trị phát hành thực tế (đơn vị: VNĐ)"
   key: null
   fk_note: null
 - name: DATE_CREATED
-  data_type: TIMESTAMP
+  data_type: TIMESTAMP(6)
   description: "Thời điểm tạo bản ghi"
   key: null
   fk_note: null
 - name: CREATED_BY
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(100)
   description: "Tài khoản người tạo bản ghi"
   key: null
-  fk_note: "FK suy luận → USERS.ID"
+  fk_note: null
 - name: DATE_MODIFIED
-  data_type: TIMESTAMP
+  data_type: TIMESTAMP(6)
   description: "Thời điểm cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
 - name: MODIFY_BY
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(100)
   description: "Tài khoản người cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
 - name: APPROVAL_DOCUMENT_NO
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(100)
   description: "Số văn bản chấp thuận đợt chào bán của UBCKNN"
   key: null
   fk_note: null
@@ -185,22 +185,22 @@ columns:
   key: null
   fk_note: null
 - name: DATA_SOURCE
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(100)
   description: "Nguồn dữ liệu: MANUAL=Nhập trên FMS, TTHC=Đồng bộ từ phân hệ TTHC"
   key: null
   fk_note: null
 - name: AFFAIR_CODE
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(100)
   description: "Mã sự vụ chào bán (mã danh mục loại sự vụ)"
   key: null
   fk_note: null
 - name: STOCK_CLASS
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(5)
   description: "Loại cổ phần: 01=Cổ phần phổ thông, 02=Cổ phần ưu đãi"
   key: null
   fk_note: null
 - name: TTHC_EXTERNAL_ID
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(100)
   description: "ID hồ sơ TTHC tương ứng (chống trùng khi đồng bộ từ TTHC)"
   key: null
   fk_note: null
@@ -220,7 +220,7 @@ columns:
   key: null
   fk_note: null
 - name: ASSESSMENT
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(1000)
   description: "Đánh giá kết quả đợt chào bán"
   key: null
   fk_note: null
@@ -230,17 +230,17 @@ columns:
   key: null
   fk_note: null
 - name: NOTE_TEXT
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(4000)
   description: "Ghi chú về đợt chào bán"
   key: null
   fk_note: null
 - name: BOND_TYPE
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(5)
   description: "Loại trái phiếu: 01=Không chuyển đổi, 02=Không kèm chứng quyền, 03=Có chứng quyền..."
   key: null
   fk_note: null
 - name: BOND_TERM_YEARS
-  data_type: NUMBER(22)
+  data_type: NUMBER(10,0)
   description: "Kỳ hạn trái phiếu (đơn vị: năm)"
   key: null
   fk_note: null
@@ -255,7 +255,7 @@ columns:
   key: null
   fk_note: null
 - name: COLLATERAL_SECURED
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ có tài sản bảo đảm: 1=Có tài sản bảo đảm, 0=Không"
   key: null
   fk_note: null

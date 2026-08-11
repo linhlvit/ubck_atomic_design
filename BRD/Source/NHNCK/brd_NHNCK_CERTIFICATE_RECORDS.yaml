@@ -17,8 +17,8 @@ columns:
 - name: PROFESSIONAL_ID
   data_type: NUMBER(10,0)
   description: 'FK -> PROFESSIONALS: Người hành nghề liên quan'
-  key: FK
-  fk_note: FK → PROFESSIONALS.ID
+  key: null
+  fk_note: null
 - name: ISSUE_DECISION_ID
   data_type: NUMBER(10,0)
   description: 'FK -> DECISIONS: Quyết định cấp CCHN'
@@ -68,7 +68,7 @@ columns:
   data_type: NUMBER(10,0)
   description: ID tài khoản người tạo bản ghi
   key: null
-  fk_note: FK suy luận → USERS.ID
+  fk_note: null
 - name: ALLOW_REISSUE
   data_type: NUMBER(10,0)
   description: Số lần được phép cấp lại CCHN (0=không được cấp lại)
@@ -86,8 +86,7 @@ columns:
   fk_note: null
 - name: PROCESS_STATUS
   data_type: NUMBER(10,0)
-  description: 'Trạng thái quy trình xử lý CCHN: 1=Đã cấp, 2=Đã ký nháy, 3=Đã ký,
-    4=Đã trả'
+  description: 'Trạng thái quy trình xử lý CCHN: 1=Đã cấp, 2=Đã ký nháy, 3=Đã ký, 4=Đã trả'
   key: null
   fk_note: null
 - name: CER_PATH
@@ -102,12 +101,11 @@ columns:
   fk_note: FK → DECISIONS.ID
 - name: CONVERSION_STATUS
   data_type: NUMBER(10,0)
-  description: 'Trạng thái chuyển đổi CCHN điện tử: 1=Chứng chỉ giấy, 2=Chờ chuyển
-    đổi điện tử, 3=Chứng chỉ số'
+  description: 'Trạng thái chuyển đổi CCHN điện tử: 1=Chứng chỉ giấy, 2=Chờ chuyển đổi điện tử, 3=Chứng chỉ số'
   key: null
   fk_note: null
 - name: UPDATED_BY
   data_type: NUMBER(10,0)
   description: ID tài khoản người cập nhật bản ghi lần cuối
   key: null
-  fk_note: FK suy luận → USERS.ID
+  fk_note: null

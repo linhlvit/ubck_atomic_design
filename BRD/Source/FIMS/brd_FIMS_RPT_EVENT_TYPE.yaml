@@ -7,7 +7,7 @@ columns:
 - name: ID
   data_type: "NUMBER(18,0)"
   description: "Khóa chính của bản ghi"
-  key: null
+  key: PK
   fk_note: null
 - name: MA_SU_VU
   data_type: "VARCHAR2(50 CHAR)"
@@ -73,7 +73,7 @@ columns:
   data_type: "VARCHAR2(100 CHAR)"
   description: "Username người tạo template báo cáo"
   key: null
-  fk_note: "FK suy luận → USERS.ID"
+  fk_note: null
 - name: MODIFY_BY
   data_type: "VARCHAR2(100 CHAR)"
   description: "Tài khoản người cập nhật lần cuối"
@@ -135,6 +135,121 @@ columns:
   key: null
   fk_note: null
 - name: TH_SK_DON_VI
+  data_type: "NUMBER(1,0)"
+  description: "Đơn vị tính ngày: 1=Ngày làm việc, 2=Ngày lịch"
+  key: null
+  fk_note: null
+- name: EVENT_CODE
+  data_type: "VARCHAR2(200)"
+  description: "Mã loại sự vụ/nghĩa vụ báo cáo"
+  key: null
+  fk_note: null
+- name: EVENT_NAME
+  data_type: "VARCHAR2(2000)"
+  description: "Tên đầy đủ loại sự vụ/nghĩa vụ báo cáo"
+  key: null
+  fk_note: null
+- name: NOTE
+  data_type: "VARCHAR2(4000)"
+  description: "Ghi chú bổ sung về loại sự vụ"
+  key: null
+  fk_note: null
+- name: EVENT_CATEGORY
+  data_type: "NUMBER(2,0)"
+  description: "Phân loại sự vụ: 1=Định kỳ, 2=Bất thường, 3=Theo yêu cầu"
+  key: null
+  fk_note: null
+- name: OBLIGATION_TYPE
+  data_type: "NUMBER(2,0)"
+  description: "Loại nghĩa vụ: 1=Báo cáo, 2=CBTT, 3=Hồ sơ, 4=Khác"
+  key: null
+  fk_note: null
+- name: REQUIRES_LICENSE
+  data_type: "NUMBER(1,0)"
+  description: "Cờ sự vụ cần giấy phép/văn bản chấp thuận: 1=Có, 0=Không"
+  key: null
+  fk_note: null
+- name: DEADLINE_CALCULATION_METHOD
+  data_type: "NUMBER(2,0)"
+  description: "Cách tính thời hạn nộp: 1=Ngày làm việc, 2=Ngày lịch"
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: "NUMBER(1,0)"
+  description: "Cờ xóa mềm: 1=Đã xóa, 0=Chưa xóa"
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: "TIMESTAMP(6)"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: LAST_MODIFIED_AT
+  data_type: "TIMESTAMP(6)"
+  description: "Thời điểm cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: LAST_MODIFIED_BY
+  data_type: "VARCHAR2(400)"
+  description: "Tài khoản người cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: LEGAL_BASIS
+  data_type: "VARCHAR2(4000)"
+  description: "Căn cứ pháp lý tổng hợp (tên/số văn bản áp dụng)"
+  key: null
+  fk_note: null
+- name: SELF_SET_REPORT_PERIOD
+  data_type: "NUMBER(1,0)"
+  description: "Cờ cho phép tự thiết lập kỳ báo cáo: 1=Cho phép, 0=Không"
+  key: null
+  fk_note: null
+- name: REPORT_NET_ASSET_CHANGE
+  data_type: "NUMBER(1,0)"
+  description: "Cờ báo cáo thay đổi giá trị tài sản ròng (NAV): 1=Có, 0=Không"
+  key: null
+  fk_note: null
+- name: FUND_TYPE_ID
+  data_type: "NUMBER(10,0)"
+  description: "-> loại hình quỹ được áp dụng sự vụ này"
+  key: FK
+  fk_note: null
+- name: AGENT_TYPE_ID
+  data_type: "NUMBER(10,0)"
+  description: "-> loại đại lý được áp dụng sự vụ này"
+  key: FK
+  fk_note: null
+- name: RPT_TEMPLATE_REPORT_ID
+  data_type: "VARCHAR2(200)"
+  description: "-> RPTTEMP: Mã biểu mẫu báo cáo đầu vào tương ứng"
+  key: FK
+  fk_note: null
+- name: RPT_TEMPLATE_DISCLOSURE_ID
+  data_type: "VARCHAR2(200)"
+  description: "-> RPTTEMP: Mã biểu mẫu CBTT tương ứng"
+  key: FK
+  fk_note: null
+- name: RPT_TEMPLATE_DOSSIER_ID
+  data_type: "VARCHAR2(200)"
+  description: "-> RPTTEMP: Mã biểu mẫu hồ sơ tương ứng"
+  key: FK
+  fk_note: null
+- name: LICENSED_ACTIVITY
+  data_type: "NUMBER(1,0)"
+  description: "Cờ sự vụ liên quan hoạt động cấp phép: 1=Có, 0=Không"
+  key: null
+  fk_note: null
+- name: EVENT_TIMING_BEFORE_AFTER
+  data_type: "NUMBER(1,0)"
+  description: "Thực hiện so với sự kiện: 0=Trước sự kiện, 1=Sau sự kiện"
+  key: null
+  fk_note: null
+- name: EVENT_TIMING_DAYS
+  data_type: "NUMBER(10,0)"
+  description: "Số ngày trước/sau sự kiện để thực hiện sự vụ"
+  key: null
+  fk_note: null
+- name: EVENT_TIMING_UNIT
   data_type: "NUMBER(1,0)"
   description: "Đơn vị tính ngày: 1=Ngày làm việc, 2=Ngày lịch"
   key: null

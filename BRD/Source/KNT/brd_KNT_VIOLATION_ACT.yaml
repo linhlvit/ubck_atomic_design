@@ -23,7 +23,7 @@ columns:
   data_type: "VARCHAR2(200)"
   description: "Tài khoản/tên người tạo bản ghi"
   key: null
-  fk_note: "FK suy luận → SYS_USER.ID"
+  fk_note: null
 - name: FINE_AMOUNT
   data_type: "NUMBER"
   description: "Số tiền phạt đối với hành vi vi phạm (đơn vị: đồng)"
@@ -47,8 +47,8 @@ columns:
 - name: PENALTY_DECISION_ID
   data_type: "VARCHAR2(200)"
   description: "FK -> penalty_decision: Quyết định xử phạt chứa hành vi này"
-  key: null
-  fk_note: "FK suy luận → PENALTY_DECISION.ID"
+  key: FK
+  fk_note: null
 - name: REMEDIAL_MEASURE
   data_type: "VARCHAR2(1020)"
   description: "Biện pháp khắc phục hậu quả áp dụng"
@@ -72,8 +72,8 @@ columns:
 - name: SUBJECT_PROFILE_ID
   data_type: "VARCHAR2(200)"
   description: "FK -> subject_profile: Hồ sơ đối tượng có hành vi này (khi chuyển hồ sơ về thanh tra)"
-  key: null
-  fk_note: "FK suy luận → SUBJECT_PROFILE.ID"
+  key: FK
+  fk_note: null
 - name: TRANSACTION_DATE
   data_type: "VARCHAR2(200)"
   description: "Ngày thực hiện giao dịch vi phạm"
@@ -82,7 +82,7 @@ columns:
 - name: VIOLATION_ACT_ID
   data_type: "VARCHAR2(4000)"
   description: "FK -> cat_violation_act: Loại hành vi vi phạm từ danh mục"
-  key: null
+  key: FK
   fk_note: null
 - name: VIOLATION_ACT_NAME
   data_type: "VARCHAR2(4000)"

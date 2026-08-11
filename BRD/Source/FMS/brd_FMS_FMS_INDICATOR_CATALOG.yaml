@@ -10,57 +10,57 @@ columns:
   key: PK
   fk_note: null
 - name: INDICATOR_CODE
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(50)
   description: "Mã chỉ tiêu dữ liệu duy nhất trong danh mục FMS"
   key: null
   fk_note: null
 - name: INDICATOR_NAME
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(1000)
   description: "Tên chỉ tiêu dữ liệu hiển thị trên giao diện"
   key: null
   fk_note: null
 - name: DESCRIPTION
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(4000)
   description: "Mô tả chi tiết"
   key: null
   fk_note: null
 - name: STATUS
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "null"
   key: null
   fk_note: null
 - name: CREATED_AT
-  data_type: TIMESTAMP
+  data_type: TIMESTAMP(6)
   description: "Thời điểm tạo bản ghi (TIMESTAMP với múi giờ)"
   key: null
   fk_note: null
 - name: UPDATED_AT
-  data_type: TIMESTAMP
+  data_type: TIMESTAMP(6)
   description: "Thời điểm cập nhật lần cuối (TIMESTAMP với múi giờ)"
   key: null
   fk_note: null
 - name: DATA_TYPE
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(20)
   description: "Kiểu dữ liệu của chỉ tiêu: NUMBER, TEXT, DATE, PERCENT, ENUM..."
   key: null
   fk_note: null
 - name: REFERENCE_CATALOG_ID
   data_type: RAW(16)
   description: "FK -> FMS_REFERENCE_CATALOG: Danh mục tham chiếu"
-  key: null
-  fk_note: "FK suy luận → FMS_REFERENCE_CATALOG.ID"
+  key: FK
+  fk_note: "FK → FMS_REFERENCE_CATALOG.ID"
 - name: CREATED_BY
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(400)
   description: "Tài khoản người tạo bản ghi"
   key: null
-  fk_note: "FK suy luận → USERS.ID"
+  fk_note: null
 - name: UPDATED_BY
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(400)
   description: "Tài khoản người cập nhật lần cuối"
   key: null
-  fk_note: "FK suy luận → USERS.ID"
+  fk_note: null
 - name: REFERENCE_SOURCE_CODE
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(50)
   description: "Mã nguồn dữ liệu tham chiếu: SECURITIES, FUNDS, INSIDER..."
   key: null
   fk_note: null

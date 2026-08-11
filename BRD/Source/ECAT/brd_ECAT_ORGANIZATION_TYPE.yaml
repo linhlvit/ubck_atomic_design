@@ -10,7 +10,7 @@ columns:
     key: PK
     fk_note: null
   - name: CODE
-    data_type: "VARCHAR2(56 CHAR)"
+    data_type: "VARCHAR2(200)"
     description: "*Mã loại tổ chức*"
     key: null
     fk_note: null
@@ -20,7 +20,12 @@ columns:
     key: null
     fk_note: null
   - name: USER_TYPE
-    data_type: "NUMBER(2)"
+    data_type: "NUMBER(2,0)"
     description: "*Đối tượng (INTERNAL_UBCKNN, EXTERNAL_ORGANIZATION, EXTERNAL_INDIVIDUAL)*"
+    key: null
+    fk_note: null
+  - name: USER_GROUP
+    data_type: "VARCHAR2(80)"
+    description: "Nhóm người dùng (ORGANIZATION: Tổ chức, INDIVIDUAL: Cá nhân)"
     key: null
     fk_note: null

@@ -15,7 +15,7 @@ columns:
     key: null
     fk_note: null
   - name: NAME
-    data_type: "VARCHAR2(255 CHAR)"
+    data_type: "VARCHAR2(4000)"
     description: "*Tên thành phần TTHC*"
     key: null
     fk_note: null
@@ -25,27 +25,27 @@ columns:
     key: null
     fk_note: null
   - name: ORIGINAL_QUANTITY
-    data_type: "NUMBER(10)"
+    data_type: "NUMBER(13,0)"
     description: "*Số lượng bản chính*"
     key: null
     fk_note: null
   - name: COPY_QUANTITY
-    data_type: "NUMBER(10)"
+    data_type: "NUMBER(13,0)"
     description: "*Số lượng bản sao*"
     key: null
     fk_note: null
   - name: DISPLAY_ORDER
-    data_type: "NUMBER(10)"
+    data_type: "NUMBER(13,0)"
     description: "*Thứ tự hiển thị*"
     key: null
     fk_note: null
   - name: REQUIRED
-    data_type: "NUMBER(10)"
+    data_type: "NUMBER(1,0)"
     description: "*Bắt buộc (1: Có, 0: Không)*"
     key: null
     fk_note: null
   - name: E_FORM
-    data_type: "NUMBER(10)"
+    data_type: "NUMBER(1,0)"
     description: "*Biểu mẫu điện tử (1: Có, 0: Không)*"
     key: null
     fk_note: null
@@ -55,7 +55,7 @@ columns:
     key: null
     fk_note: null
   - name: ACTIVE
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "Trạng thái hoạt động (1: Đang sử dụng, 0: Không sử dụng)"
     key: null
     fk_note: null
@@ -65,7 +65,7 @@ columns:
     key: null
     fk_note: null
   - name: DELETED
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "Xóa mềm (0: Chưa xóa, 1: Đã xóa)"
     key: null
     fk_note: null
@@ -75,7 +75,7 @@ columns:
     key: null
     fk_note: null
   - name: VERSION
-    data_type: "NUMBER(MAX)"
+    data_type: "NUMBER"
     description: "*Phiên bản*"
     key: null
     fk_note: null
@@ -107,25 +107,30 @@ columns:
   - name: CREATED_BY_ID
     data_type: "VARCHAR2(36 CHAR)"
     description: "*Người tạo*"
-    key: FK
-    fk_note: "FK → UBCK_STAFF.ID"
+    key: null
+    fk_note: null
   - name: CREATED_BY_NAME
     data_type: "VARCHAR2(255 CHAR)"
     description: "*Tên người tạo*"
-    key: FK
-    fk_note: "FK → UBCK_STAFF.ID"
+    key: null
+    fk_note: null
   - name: UPDATED_BY_ID
     data_type: "VARCHAR2(36 CHAR)"
     description: "*Người cập nhật*"
-    key: FK
-    fk_note: "FK → UBCK_STAFF.ID"
+    key: null
+    fk_note: null
   - name: UPDATED_BY_NAME
     data_type: "VARCHAR2(255 CHAR)"
     description: "*Tên người cập nhật*"
-    key: FK
-    fk_note: "FK → UBCK_STAFF.ID"
+    key: null
+    fk_note: null
   - name: STABLE_ID
     data_type: "VARCHAR2(36 CHAR)"
     description: "*ID bản ghi ổn định - không đổi qua các version*"
+    key: null
+    fk_note: null
+  - name: EFFECTIVE
+    data_type: "NUMBER(1,0)"
+    description: "Tình trạng (1: Hiệu lực, 0: Hết hiệu lực)"
     key: null
     fk_note: null

@@ -15,62 +15,62 @@ columns:
   key: null
   fk_note: null
 - name: CREATED_BY
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Tài khoản người tạo bản ghi"
   key: null
-  fk_note: "FK suy luận → USERS.ID"
+  fk_note: null
 - name: DATE_MODIFIED
   data_type: DATE
   description: "Thời điểm cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
 - name: MODIFY_BY
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Tài khoản người cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
 - name: SC_ID
   data_type: RAW(16)
   description: "FK -> SECURITIES: Công ty QLQ liên quan đến giao dịch nội bộ"
-  key: null
-  fk_note: "FK suy luận → SECURITIES.ID"
+  key: FK
+  fk_note: "FK → SECURITIES.ID"
 - name: IN_FRM_ID
   data_type: RAW(16)
   description: "FK -> INSIDER: Người bán (chuyển nhượng đi) quyền sở hữu"
-  key: null
-  fk_note: "FK suy luận → INSIDER.ID"
+  key: FK
+  fk_note: "FK → INSIDER.ID"
 - name: IN_TO_ID
   data_type: RAW(16)
   description: "FK -> INSIDER: Người mua (nhận chuyển nhượng) quyền sở hữu"
-  key: null
-  fk_note: "FK suy luận → INSIDER.ID"
+  key: FK
+  fk_note: "FK → INSIDER.ID"
 - name: ID_NO
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Số CMND/CCCD/Hộ chiếu/Mã số doanh nghiệp"
   key: null
   fk_note: null
 - name: INSIDER_FLAG
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ là người nội bộ: 1=Người nội bộ, 0=Người ngoài"
   key: null
   fk_note: null
 - name: CURR_QTTY
-  data_type: NUMBER(22)
+  data_type: NUMBER(18,2)
   description: "Số lượng hiện tại"
   key: null
   fk_note: null
 - name: CURR_PER
-  data_type: NUMBER(22)
+  data_type: NUMBER(18,2)
   description: "Tỷ lệ sở hữu hiện tại (%)"
   key: null
   fk_note: null
 - name: AF_QTTY
-  data_type: NUMBER(22)
+  data_type: NUMBER(18,2)
   description: "Số lượng sau giao dịch"
   key: null
   fk_note: null
 - name: AF_PER
-  data_type: NUMBER(22)
+  data_type: NUMBER(18,2)
   description: "Tỷ lệ sau giao dịch (%)"
   key: null
   fk_note: null
@@ -80,12 +80,12 @@ columns:
   key: null
   fk_note: null
 - name: CO_CURR_QTTY
-  data_type: NUMBER(22)
+  data_type: NUMBER(18,2)
   description: "Số lượng cam kết hiện tại"
   key: null
   fk_note: null
 - name: CO_CURR_PER
-  data_type: NUMBER(22)
+  data_type: NUMBER(18,2)
   description: "Tỷ lệ cam kết hiện tại (%)"
   key: null
   fk_note: null
@@ -95,17 +95,17 @@ columns:
   key: null
   fk_note: null
 - name: CO_AF_QTTY
-  data_type: NUMBER(22)
+  data_type: NUMBER(18,2)
   description: "Số lượng cam kết sau giao dịch"
   key: null
   fk_note: null
 - name: CO_AF_PER
-  data_type: NUMBER(22)
+  data_type: NUMBER(18,2)
   description: "Tỷ lệ cam kết sau giao dịch (%)"
   key: null
   fk_note: null
 - name: TRANS_QTTY
-  data_type: NUMBER(22)
+  data_type: NUMBER(18,2)
   description: "Số lượng CCQ/cổ phần chuyển nhượng"
   key: null
   fk_note: null
@@ -115,17 +115,17 @@ columns:
   key: null
   fk_note: null
 - name: PER_CENT
-  data_type: NUMBER(22)
+  data_type: NUMBER(18,2)
   description: "Tỷ lệ phần trăm sở hữu (%)"
   key: null
   fk_note: null
 - name: DELETED
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động"
   key: null
   fk_note: null
 - name: FILE_NAME
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Tên file hoặc danh sách tên file đính kèm"
   key: null
   fk_note: null
@@ -135,12 +135,12 @@ columns:
   key: null
   fk_note: null
 - name: DATA_MIGRATION
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ dữ liệu từ hệ thống cũ (legacy migration): 1=Dữ liệu cũ, 0=Dữ liệu mới"
   key: null
   fk_note: null
 - name: GP_QD_NO
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(200)
   description: "Số GP/QĐ liên quan đến giao dịch chuyển nhượng hoặc thay đổi hồ sơ"
   key: null
   fk_note: null

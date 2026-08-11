@@ -7,7 +7,7 @@ columns:
 - name: ID
   data_type: "NUMBER(18,0)"
   description: "Khóa chính của bản ghi"
-  key: null
+  key: PK
   fk_note: null
 - name: BC_SU_VU_ID
   data_type: "NUMBER(18,0)"
@@ -60,6 +60,61 @@ columns:
   key: null
   fk_note: null
 - name: GUI_TRONG_VONG
+  data_type: "NUMBER(10,0)"
+  description: "Thời hạn nộp trong vòng N đơn vị sau kỳ kết thúc"
+  key: null
+  fk_note: null
+- name: RPT_EVENT_TYPE_ID
+  data_type: "NUMBER(18,0)"
+  description: "FK -> BC_SU_VU: Loại sự vụ báo cáo liên quan"
+  key: FK
+  fk_note: "FK → RPT_EVENT_TYPE.ID"
+- name: SORT_ORDER
+  data_type: "NUMBER(10,0)"
+  description: "Số thứ tự trong danh sách"
+  key: null
+  fk_note: null
+- name: PERIOD_TYPE
+  data_type: "NUMBER(2,0)"
+  description: "Loại kỳ báo cáo: 1=Ngày, 2=Tuần, 3=Tháng, 4=Quý, 5=Năm"
+  key: null
+  fk_note: null
+- name: DAY_VALUE
+  data_type: "DATE"
+  description: "Ngày cụ thể trong kỳ (VD: ngày 15 của tháng)"
+  key: null
+  fk_note: null
+- name: NUMERIC_VALUE
+  data_type: "NUMBER(10,0)"
+  description: "Giá trị số của kỳ (VD: tháng 3, quý 1...)"
+  key: null
+  fk_note: null
+- name: LATEST_SUBMISSION_HOUR
+  data_type: "VARCHAR2(32)"
+  description: "Giờ/phút nộp muộn nhất trong ngày hạn chót (định dạng HH:mm)"
+  key: null
+  fk_note: null
+- name: REPEAT_AFTER
+  data_type: "NUMBER(10,0)"
+  description: "Số đơn vị lặp lại sau khi kết thúc kỳ trước"
+  key: null
+  fk_note: null
+- name: UNIT
+  data_type: "NUMBER(2,0)"
+  description: "Đơn vị tính lặp lại: 1=Ngày, 2=Tuần, 3=Tháng, 4=Năm"
+  key: null
+  fk_note: null
+- name: ACTIVE
+  data_type: "NUMBER(1,0)"
+  description: "Cờ lịch đang áp dụng: 1=Đang dùng, 0=Không dùng"
+  key: null
+  fk_note: null
+- name: ROW_NOTE
+  data_type: "VARCHAR2(4000)"
+  description: "Ghi chú cho dòng lịch định kỳ này"
+  key: null
+  fk_note: null
+- name: SUBMIT_WITHIN
   data_type: "NUMBER(10,0)"
   description: "Thời hạn nộp trong vòng N đơn vị sau kỳ kết thúc"
   key: null

@@ -18,22 +18,22 @@ columns:
   data_type: "NUMBER(18,0)"
   description: "FK -> FUNDCOMPANY: QLQ nơi người hành nghề làm việc"
   key: FK
-  fk_note: "FK → FUNDCOMPANY"
+  fk_note: null
 - name: SecComId
   data_type: "NUMBER(18,0)"
   description: "FK -> SECURITIESCOMPANY: CTCK nơi người hành nghề làm việc"
   key: FK
-  fk_note: "FK → SECURITIESCOMPANY"
+  fk_note: null
 - name: InvestorId
   data_type: "NUMBER(18,0)"
   description: "FK -> INVESTOR: Nhà đầu tư nước ngoài trong phiên bản hợp đồng"
   key: FK
-  fk_note: "FK → INVESTOR"
+  fk_note: null
 - name: AuthorizationTypeId
   data_type: "NUMBER(18,0)"
   description: "FK -> loại hình ủy quyền giao dịch"
   key: FK
-  fk_note: "FK → LO"
+  fk_note: null
 - name: Status
   data_type: "NUMBER(18,0)"
   description: "Trạng thái bản ghi (tra cứu danh mục STATUS tương ứng)"
@@ -65,7 +65,7 @@ columns:
   key: null
   fk_note: null
 - name: InvestorIds
-  data_type: "VARCHAR2(4000 CHAR)"
+  data_type: "VARCHAR2(4000)"
   description: "Danh sách ID nhà đầu tư liên quan (lưu dạng JSON/CSV)"
   key: null
   fk_note: null
@@ -102,5 +102,5 @@ columns:
 - name: TradingRepresentativeId
   data_type: "NUMBER(18,0)"
   description: "FK đến TRADINGREPRESENTATIVE.ID — Người đại diện giao dịch (SRS §7.2 mục II)"
-  key: null
-  fk_note: null
+  key: FK
+  fk_note: FK → TRADINGREPRESENTATIVE.ID

@@ -5,20 +5,20 @@ table: SC_FIRM_REP_OFFICE
 brd_ref: BRD-SRC-SCMS-SC_FIRM_REP_OFFICE
 columns:
   - name: ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
-    key: PK
+    key: null
     fk_note: null
   - name: SC_FIRM_INFO_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> sc_firm_info: Công ty chứng khoán liên quan"
-    key: FK
-    fk_note: "FK → SC_FIRM_INFO.ID"
+    key: null
+    fk_note: null
   - name: SC_FIRM_BRANCH_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> sc_firm_branch: Chi nhánh CTCK liên quan"
-    key: FK
-    fk_note: "FK → SC_FIRM_BRANCH.ID"
+    key: null
+    fk_note: null
   - name: FULL_NAME
     data_type: NVARCHAR2(500)
     description: ""
@@ -30,10 +30,10 @@ columns:
     key: null
     fk_note: null
   - name: PROVINCE_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> cat_province: Tỉnh/thành phố"
-    key: FK
-    fk_note: "FK → CAT_PROVINCE.ID"
+    key: null
+    fk_note: null
   - name: DISTRICT_NAME
     data_type: NVARCHAR2(250)
     description: "Tên quận/huyện (lưu trực tiếp)"
@@ -75,7 +75,7 @@ columns:
     key: null
     fk_note: null
   - name: REP_OFFICE_STATUS
-    data_type: NUMBER(2)
+    data_type: NUMBER(2,0)
     description: "Trang thai phap ly van phong dai dien: 1 = Hoat dong; 2 = Dong cua; 3 = Tam ngung hoat dong; 4 = Dinh chi hoat dong"
     key: null
     fk_note: null
@@ -85,52 +85,52 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "ID tài khoản người dùng tạo bản ghi"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: CREATED_AT
     data_type: TIMESTAMP(6)
     description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
     key: null
     fk_note: null
   - name: LAST_MODIFIED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "ID tài khoản người dùng cập nhật lần cuối"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: LAST_MODIFIED_AT
     data_type: TIMESTAMP(6)
     description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"
     key: null
     fk_note: null
   - name: RECORD_STATUS
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Trang thai ban ghi: 1 = Dang hoat dong/con hieu luc; 0 = Ngung hoat dong/het hieu luc"
     key: null
     fk_note: null
   - name: PROVISIONAL
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Co ban nhap: 1 = Ban nhap; 0 = Chinh thuc"
     key: null
     fk_note: null
   - name: SC_FIRM_REP_OFFICE_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> sc_firm_rep_office: VPDD CTCK liên quan"
-    key: FK
-    fk_note: "FK → SC_FIRM_REP_OFFICE.ID"
+    key: null
+    fk_note: null
   - name: DISTRICT_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> cat_district: Quận/huyện"
-    key: FK
-    fk_note: "FK → CAT_DISTRICT.ID"
+    key: null
+    fk_note: null
   - name: WARD_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> cat_ward: Phường/xã"
-    key: FK
-    fk_note: "FK → CAT_WARD.ID"
+    key: null
+    fk_note: null
   - name: REPRESENTATIVE_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "id nhan s? ngu?i d?i di?n"
     key: null
     fk_note: null
@@ -150,7 +150,7 @@ columns:
     key: null
     fk_note: null
   - name: ATTACHMENT_PATH
-    data_type: VARCHAR2(2000 BYTE)
+    data_type: VARCHAR2(2000)
     description: "Đường dẫn file đính kèm trên hệ thống lưu trữ"
     key: null
     fk_note: null
@@ -160,22 +160,22 @@ columns:
     key: null
     fk_note: null
   - name: SCOPE_OF_OPERATION
-    data_type: VARCHAR2(1000 BYTE)
+    data_type: VARCHAR2(1000)
     description: ""
     key: null
     fk_note: null
   - name: EVENT_TYPE_ID
     data_type: NUMBER
     description: "FK -> cat_event_type: Loại sự vụ/sự kiện nghiệp vụ"
-    key: FK
-    fk_note: "FK → CAT_EVENT_TYPE.ID"
+    key: null
+    fk_note: null
   - name: DOCUMENT_DECLARATION
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: ""
     key: null
     fk_note: null
   - name: DOCUMENT_NUMBER
-    data_type: VARCHAR2(200 BYTE)
+    data_type: VARCHAR2(200)
     description: "Số văn bản pháp lý (QĐ/GP/CV/Thông tư)"
     key: null
     fk_note: null
@@ -195,12 +195,22 @@ columns:
     key: null
     fk_note: null
   - name: DOCUMENT_FILE_PATH
-    data_type: VARCHAR2(2000 BYTE)
+    data_type: VARCHAR2(2000)
     description: "Đường dẫn file văn bản"
     key: null
     fk_note: null
   - name: FORM_DATA_JSON
     data_type: NCLOB
     description: ""
+    key: null
+    fk_note: null
+  - name: DECISION_NUMBER_ALT
+    data_type: NVARCHAR2(60)
+    description: null
+    key: null
+    fk_note: null
+  - name: DECISION_DATE_ALT
+    data_type: DATE
+    description: null
     key: null
     fk_note: null

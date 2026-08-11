@@ -12,90 +12,90 @@ columns:
 - name: OFFERING_ID
   data_type: RAW(16)
   description: "FK -> OFFERING: Đợt chào bán liên quan"
-  key: null
-  fk_note: "FK suy luận → OFFERING.ID"
+  key: FK
+  fk_note: null
 - name: SORT_ORDER
-  data_type: NUMBER(22)
+  data_type: NUMBER(10,0)
   description: "Thứ tự hiển thị của kế hoạch trong đợt chào bán (số nhỏ hơn hiển thị trước)"
   key: null
   fk_note: null
 - name: TARGET_AUDIENCE
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(5)
   description: "Đối tượng chào bán mục tiêu (mô tả hoặc mã danh mục)"
   key: null
   fk_note: null
 - name: METHOD_CODE
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(5)
   description: "Mã hình thức chào bán (enum StockOfferingPlanMethodEnum)"
   key: null
   fk_note: null
 - name: QUANTITY_CB
-  data_type: NUMBER(22)
+  data_type: NUMBER(38,0)
   description: "Số lượng chứng khoán trong kế hoạch chào bán"
   key: null
   fk_note: null
 - name: PRICE_CB
-  data_type: NUMBER(22)
+  data_type: NUMBER(38,2)
   description: "Giá chào bán theo kế hoạch (đơn vị: VNĐ)"
   key: null
   fk_note: null
 - name: VALUE_CB
-  data_type: NUMBER(22)
+  data_type: NUMBER(38,2)
   description: "Giá trị chào bán theo kế hoạch, có thể nhập tay (đơn vị: VNĐ)"
   key: null
   fk_note: null
 - name: PEOPLE_COUNT
-  data_type: NUMBER(22)
+  data_type: NUMBER(10,0)
   description: "Số lượng người/tổ chức tham gia theo kế hoạch"
   key: null
   fk_note: null
 - name: AUDIENCE_DESCRIPTION
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(2000)
   description: "Mô tả đối tượng mua theo kế hoạch"
   key: null
   fk_note: null
 - name: SWAP_PURPOSE
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(2000)
   description: "Mục đích hoán đổi (nếu chào bán kèm hoán đổi)"
   key: null
   fk_note: null
 - name: ACTUAL_QUANTITY_CB
-  data_type: NUMBER(22)
+  data_type: NUMBER(38,0)
   description: "Số lượng thực tế đã bán trong kế hoạch"
   key: null
   fk_note: null
 - name: ACTUAL_PRICE_CB
-  data_type: NUMBER(22)
+  data_type: NUMBER(38,2)
   description: "Giá bán thực tế (đơn vị: VNĐ)"
   key: null
   fk_note: null
 - name: ACTUAL_VALUE_CB
-  data_type: NUMBER(22)
+  data_type: NUMBER(38,2)
   description: "Giá trị bán thực tế (đơn vị: VNĐ)"
   key: null
   fk_note: null
 - name: ACTUAL_PEOPLE_COUNT
-  data_type: NUMBER(22)
+  data_type: NUMBER(10,0)
   description: "Số người/tổ chức tham gia thực tế"
   key: null
   fk_note: null
 - name: ACTUAL_AUDIENCE_DESCRIPTION
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(2000)
   description: "Mô tả đối tượng tham gia thực tế"
   key: null
   fk_note: null
 - name: ACTUAL_SWAP_PURPOSE
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(2000)
   description: "Mục đích hoán đổi thực tế"
   key: null
   fk_note: null
 - name: FOREIGN_INVESTOR_COUNT
-  data_type: NUMBER(22)
+  data_type: NUMBER(10,0)
   description: "Số lượng nhà đầu tư nước ngoài tham gia đợt chào bán"
   key: null
   fk_note: null
 - name: ISSUANCE_VALUE_FOREIGN
-  data_type: NUMBER(22)
+  data_type: NUMBER(38,2)
   description: "Giá trị phát hành cho nhà đầu tư nước ngoài (đơn vị: VNĐ)"
   key: null
   fk_note: null

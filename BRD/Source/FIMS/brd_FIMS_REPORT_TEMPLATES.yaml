@@ -5,22 +5,22 @@ table: REPORT_TEMPLATES
 brd_ref: BRD-SRC-FIMS-REPORT_TEMPLATES
 columns:
 - name: ID
-  data_type: "VARCHAR2(36 BYTE)"
+  data_type: "VARCHAR2(36)"
   description: "UUID report"
-  key: null
+  key: PK
   fk_note: null
 - name: MODULE_ID
-  data_type: "VARCHAR2(36 BYTE)"
+  data_type: "VARCHAR2(36)"
   description: "FK module"
-  key: null
-  fk_note: null
+  key: FK
+  fk_note: FK → MODULES.ID
 - name: REPORT_CODE
-  data_type: "VARCHAR2(100 BYTE)"
+  data_type: "VARCHAR2(100)"
   description: "Mã báo cáo"
   key: null
   fk_note: null
 - name: REPORT_NAME
-  data_type: "VARCHAR2(255 BYTE)"
+  data_type: "VARCHAR2(255)"
   description: "Tên hiển thị"
   key: null
   fk_note: null
@@ -45,7 +45,7 @@ columns:
   key: null
   fk_note: null
 - name: CREATED_BY
-  data_type: "VARCHAR2(50 BYTE)"
+  data_type: "VARCHAR2(50)"
   description: "User tạo"
   key: null
-  fk_note: "FK suy luận → USERS.ID"
+  fk_note: null

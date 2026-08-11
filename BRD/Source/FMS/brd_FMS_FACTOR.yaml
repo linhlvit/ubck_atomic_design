@@ -15,67 +15,67 @@ columns:
   key: null
   fk_note: null
 - name: CREATED_BY
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Tài khoản người tạo bản ghi"
   key: null
-  fk_note: "FK suy luận → USERS.ID"
+  fk_note: null
 - name: DATE_MODIFIED
   data_type: DATE
   description: "Thời điểm cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
 - name: MODIFY_BY
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Tài khoản người cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
 - name: GRP_FTOR_ID
   data_type: RAW(16)
   description: "FK -> GRP_FACTOR: Nhóm tiêu chí đánh giá"
-  key: null
-  fk_note: "FK suy luận → GRP_FACTOR.ID"
+  key: FK
+  fk_note: "FK → GRP_FACTOR.ID"
 - name: PARENT_ID
   data_type: RAW(16)
   description: "FK -> FACTOR: Tiêu chí cha trong hệ thống phân cấp tiêu chí đánh giá"
-  key: null
-  fk_note: "FK suy luận → FACTOR.ID"
+  key: FK
+  fk_note: "FK → FACTOR.ID"
 - name: ITEM_NAME
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(2000)
   description: "Tên hiển thị chính"
   key: null
   fk_note: null
 - name: WEIGHT
-  data_type: NUMBER(22)
+  data_type: NUMBER(38,0)
   description: "Trọng số của tiêu chí/nhóm tiêu chí trong đánh giá (%)"
   key: null
   fk_note: null
 - name: CODE
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(1000)
   description: "Mã định danh ngắn gọn"
   key: null
   fk_note: null
 - name: RECORD_STATUS
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực"
   key: null
   fk_note: null
 - name: GRADING_METHOD
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Phương pháp chấm điểm: 1=Thang điểm, 2=Điểm cộng, 3=Điểm trừ"
   key: null
   fk_note: null
 - name: BASED_GRADING
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cơ sở chấm điểm: 1=Dựa trên giá trị thực tế, 2=Dựa trên xếp hạng"
   key: null
   fk_note: null
 - name: RANKING_ORDER
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Thứ tự xếp hạng (1=Tốt nhất, số lớn hơn=Kém hơn)"
   key: null
   fk_note: null
 - name: NOTE
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(4000)
   description: "Ghi chú bổ sung"
   key: null
   fk_note: null
@@ -85,7 +85,7 @@ columns:
   key: null
   fk_note: null
 - name: E4_FACTOR
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ tiêu chí thuộc nhóm E4 (Quản lý rủi ro): 1=Tiêu chí E4, 0=Không phải"
   key: null
   fk_note: null

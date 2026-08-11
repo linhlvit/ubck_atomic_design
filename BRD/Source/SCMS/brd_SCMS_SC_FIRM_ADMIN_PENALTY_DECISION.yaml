@@ -5,15 +5,15 @@ table: SC_FIRM_ADMIN_PENALTY_DECISION
 brd_ref: BRD-SRC-SCMS-SC_FIRM_ADMIN_PENALTY_DECISION
 columns:
   - name: ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
     key: PK
     fk_note: null
   - name: SC_FIRM_INFO_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> sc_firm_info: Công ty chứng khoán liên quan"
-    key: FK
-    fk_note: "FK → SC_FIRM_INFO.ID"
+    key: null
+    fk_note: null
   - name: REGISTERED_ADDRESS
     data_type: VARCHAR2(2000)
     description: ""
@@ -65,20 +65,20 @@ columns:
     key: null
     fk_note: null
   - name: LAST_MODIFIED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "ID tài khoản người dùng cập nhật lần cuối"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: SIGNATORY
     data_type: VARCHAR2(500)
     description: "Người ký/vị trí ký trên báo cáo in"
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "ID tài khoản người dùng tạo bản ghi"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: DATA_SOURCE
     data_type: VARCHAR2(50)
     description: "Nguồn gốc dữ liệu (Đồng bộ tự động/Nhập tay/Cổng báo cáo)"

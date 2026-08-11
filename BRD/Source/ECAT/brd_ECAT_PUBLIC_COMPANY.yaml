@@ -15,12 +15,12 @@ columns:
     key: null
     fk_note: null
   - name: COMPANY_NAME_VN
-    data_type: "VARCHAR2(200 CHAR)"
+    data_type: "VARCHAR2(1020)"
     description: "*Tên công ty (tiếng Việt)*"
     key: null
     fk_note: null
   - name: COMPANY_NAME_EN
-    data_type: "VARCHAR2(200 CHAR)"
+    data_type: "VARCHAR2(1020)"
     description: "*Tên công ty (tiếng Anh)*"
     key: null
     fk_note: null
@@ -32,10 +32,10 @@ columns:
   - name: SECURITY_ID
     data_type: "VARCHAR2(36 CHAR)"
     description: "*Stable Id bảng Security (security.stableId)*"
-    key: FK
-    fk_note: "FK → SECURITY.ID"
+    key: null
+    fk_note: null
   - name: LISTED_FLAG
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "*Trạng thái niêm **yết(0: Không, 1: Có)*"
     key: null
     fk_note: null
@@ -50,7 +50,7 @@ columns:
     key: null
     fk_note: null
   - name: AUTO_APPROVAL_FLG
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "*Tự động duyệt (0: Không, 1: Có)*"
     key: null
     fk_note: null
@@ -60,15 +60,15 @@ columns:
     key: null
     fk_note: null
   - name: PARENT_COMPANY_FLAG
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "*Là công ty mẹ**( 0: Không, 1: Có)*"
     key: null
     fk_note: null
   - name: SECURITY_TYPE_ID
     data_type: "VARCHAR2(36 CHAR)"
     description: "*Stable Id **bảng SecurityType (security_type.stableId)*"
-    key: FK
-    fk_note: "FK → SECURITY_TYPE.ID"
+    key: null
+    fk_note: null
   - name: REPORT_TYPE
     data_type: "VARCHAR2(36 CHAR)"
     description: "*L**oại báo cáo** (Bảo hiểm/ Tín dụng/ Chứng khoán/ Doanh nghiệp)*"
@@ -90,27 +90,27 @@ columns:
     key: null
     fk_note: null
   - name: ACTIVE
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "*Trạng thái hoạt động (1: Đang sử dụng, **0: Không sử dụng)*"
     key: null
     fk_note: null
   - name: ACTIVE_REASON
-    data_type: "CLOB"
+    data_type: "VARCHAR2(4000)"
     description: "*Lý do hoạt động*"
     key: null
     fk_note: null
   - name: DELETED
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "*Xóa mềm (0: Chưa xóa, 1: Đã xóa)*"
     key: null
     fk_note: null
   - name: DELETED_REASON
-    data_type: "CLOB"
+    data_type: "VARCHAR2(4000)"
     description: "*Lý do xóa*"
     key: null
     fk_note: null
   - name: VERSION
-    data_type: "NUMBER(MAX)"
+    data_type: "NUMBER"
     description: "*Phiên bản*"
     key: null
     fk_note: null
@@ -142,23 +142,23 @@ columns:
   - name: CREATED_BY_ID
     data_type: "VARCHAR2(36 CHAR)"
     description: "*Người tạo*"
-    key: FK
-    fk_note: "FK → UBCK_STAFF.ID"
+    key: null
+    fk_note: null
   - name: CREATED_BY_NAME
-    data_type: "VARCHAR2(255 CHAR)"
+    data_type: "VARCHAR2(800)"
     description: "*Tên người tạo*"
-    key: FK
-    fk_note: "FK → UBCK_STAFF.ID"
+    key: null
+    fk_note: null
   - name: UPDATED_BY_ID
     data_type: "VARCHAR2(36 CHAR)"
     description: "*Người cập nhật*"
-    key: FK
-    fk_note: "FK → UBCK_STAFF.ID"
+    key: null
+    fk_note: null
   - name: UPDATED_BY_NAME
-    data_type: "VARCHAR2(255 CHAR)"
+    data_type: "VARCHAR2(800)"
     description: "*Tên người cập nhật*"
-    key: FK
-    fk_note: "FK → UBCK_STAFF.ID"
+    key: null
+    fk_note: null
   - name: STABLE_ID
     data_type: "VARCHAR2(36 CHAR)"
     description: "*ID bản ghi ổn định - không đổi qua các version*"

@@ -5,22 +5,22 @@ table: CAT_SERVICE_LEGAL_CAPITAL
 brd_ref: BRD-SRC-SCMS-CAT_SERVICE_LEGAL_CAPITAL
 columns:
   - name: SERVICE_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> cat_service: Dịch vụ chứng khoán"
-    key: FK
-    fk_note: "FK → CAT_SERVICE.ID"
+    key: PK
+    fk_note: null
   - name: SERVICE_NAME
     data_type: VARCHAR2(500)
     description: "Tên dịch vụ chứng khoán"
     key: null
     fk_note: null
   - name: RECORD_STATUS
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Trang thai ban ghi danh muc von phap dinh: 1 = Dang su dung; 0 = Ngung su dung"
     key: null
     fk_note: null
   - name: LEGAL_CAPITAL
-    data_type: NUMBER(20)
+    data_type: NUMBER(20,0)
     description: ""
     key: null
     fk_note: null
@@ -30,7 +30,7 @@ columns:
     key: null
     fk_note: null
   - name: CATALOG_TYPE
-    data_type: VARCHAR2(20 BYTE)
+    data_type: VARCHAR2(20)
     description: "Loai danh muc ap dung: CTCK = Ap dung cho CTCK; CN_NUOC_NGOAI = Ap dung cho chi nhanh NN"
     key: null
     fk_note: null
@@ -40,7 +40,7 @@ columns:
     key: null
     fk_note: null
   - name: APPLICATION_TYPE
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Loai ap dung von phap dinh: KINH_DOANH = Von kinh doanh; LUU_KY = Von luu ky; TU_VAN = Von tu van; BACH_LANH = Von bao lanh phat hanh"
     key: null
     fk_note: null

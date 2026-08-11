@@ -5,15 +5,15 @@ table: FORM_SHEET
 brd_ref: BRD-SRC-SCMS-FORM_SHEET
 columns:
   - name: ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
     key: PK
     fk_note: null
   - name: FORM_REPORT_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> form_report: Biểu mẫu báo cáo liên quan"
-    key: FK
-    fk_note: "FK → FORM_REPORT.ID"
+    key: null
+    fk_note: null
   - name: SHEET_CODE
     data_type: NVARCHAR2(200)
     description: "Mã định danh sheet trong biểu mẫu"
@@ -35,7 +35,7 @@ columns:
     key: null
     fk_note: null
   - name: COVER_PAGE
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Cờ là trang bìa: 1=Có, 0=Không"
     key: null
     fk_note: null
@@ -50,7 +50,7 @@ columns:
     key: null
     fk_note: null
   - name: SORT_ORDER
-    data_type: NUMBER(4)
+    data_type: NUMBER(4,0)
     description: "Thứ tự sắp xếp hiển thị"
     key: null
     fk_note: null
@@ -70,20 +70,20 @@ columns:
     key: null
     fk_note: null
   - name: ACTIVE
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Cờ đang sử dụng/hoạt động: 1=Đang dùng, 0=Không dùng"
     key: null
     fk_note: null
   - name: RECORD_STATUS
-    data_type: NUMBER(2)
+    data_type: NUMBER(2,0)
     description: "Trang thai sheet bieu mau: 1 = Dang su dung; 0 = Khong su dung"
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "ID tài khoản người dùng tạo bản ghi"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: CREATED_AT
     data_type: TIMESTAMP(6)
     description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
@@ -105,10 +105,10 @@ columns:
     key: null
     fk_note: null
   - name: FORM_SHEET_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: ""
     key: null
-    fk_note: "FK suy luận → FORM_SHEET.ID"
+    fk_note: null
   - name: LEGACY_SHEET_CODE
     data_type: NVARCHAR2(200)
     description: ""
@@ -125,7 +125,7 @@ columns:
     key: null
     fk_note: null
   - name: RPTDETAILID
-    data_type: VARCHAR2(20 BYTE)
+    data_type: VARCHAR2(20)
     description: "ID sheet he thong cu"
     key: null
     fk_note: null
@@ -135,22 +135,32 @@ columns:
     key: null
     fk_note: null
   - name: RECORD_TYPE
-    data_type: NUMBER(2)
+    data_type: NUMBER(2,0)
     description: "Loai sheet: DATA = Sheet du lieu chinh; SUMMARY = Sheet tong hop; HEADER = Sheet tieu de"
     key: null
     fk_note: null
   - name: COLUMNORDER
-    data_type: VARCHAR2(500 BYTE)
+    data_type: VARCHAR2(500)
     description: "Order theo cot"
     key: null
     fk_note: null
   - name: START_ROW
-    data_type: NUMBER(3)
+    data_type: NUMBER(3,0)
     description: "Thu tu Hang bat dau dem"
     key: null
     fk_note: null
   - name: MACOTSTT
     data_type: VARCHAR2(20 BYTE)
     description: "Ma cot la cot tinh theo STT"
+    key: null
+    fk_note: null
+  - name: SYNC_COLUMN_CODE
+    data_type: VARCHAR2(2000)
+    description: null
+    key: null
+    fk_note: null
+  - name: STT_COLUMN_CODE
+    data_type: VARCHAR2(20)
+    description: null
     key: null
     fk_note: null

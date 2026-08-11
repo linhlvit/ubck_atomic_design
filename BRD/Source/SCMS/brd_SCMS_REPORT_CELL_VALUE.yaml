@@ -5,32 +5,32 @@ table: REPORT_CELL_VALUE
 brd_ref: BRD-SRC-SCMS-REPORT_CELL_VALUE
 columns:
   - name: ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
     key: PK
     fk_note: null
   - name: FORM_REPORT_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> form_report: Biểu mẫu báo cáo liên quan"
-    key: FK
-    fk_note: "FK → FORM_REPORT.ID"
+    key: null
+    fk_note: null
   - name: SC_FIRM_INFO_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> sc_firm_info: Công ty chứng khoán liên quan"
-    key: FK
-    fk_note: "FK → SC_FIRM_INFO.ID"
+    key: null
+    fk_note: null
   - name: MEMBER_REPORT_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> member_report: Báo cáo thành viên liên quan"
-    key: FK
-    fk_note: "FK → MEMBER_REPORT.ID"
+    key: null
+    fk_note: null
   - name: FORM_SHEET_CELL_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: ""
     key: null
-    fk_note: "FK suy luận → FORM_SHEET_CELL.ID"
+    fk_note: null
   - name: INDICATOR_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: ""
     key: null
     fk_note: null
@@ -50,20 +50,20 @@ columns:
     key: null
     fk_note: null
   - name: FORM_SHEET_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: ""
     key: null
-    fk_note: "FK suy luận → FORM_SHEET.ID"
+    fk_note: null
   - name: FORM_SHEET_ROW_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: ""
     key: null
-    fk_note: "FK suy luận → FORM_SHEET_ROW.ID"
+    fk_note: null
   - name: FORM_SHEET_COLUMN_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: ""
     key: null
-    fk_note: "FK suy luận → FORM_SHEET_COLUMN.ID"
+    fk_note: null
   - name: ROW_NAME
     data_type: NVARCHAR2(1000)
     description: "Tên hiển thị của hàng trong biểu mẫu"
@@ -80,12 +80,12 @@ columns:
     key: null
     fk_note: null
   - name: ROW_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Số thứ tự dòng dữ liệu trong báo cáo động"
     key: null
     fk_note: null
   - name: VERSION
-    data_type: NUMBER(2)
+    data_type: NUMBER(2,0)
     description: "Số phiên bản (biểu mẫu, bản ghi) dùng cho optimistic locking"
     key: null
     fk_note: null
@@ -100,20 +100,20 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "ID tài khoản người dùng tạo bản ghi"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: LAST_MODIFIED_AT
     data_type: TIMESTAMP(6)
     description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"
     key: null
     fk_note: null
   - name: FORM_PERIODIC_REPORT_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> form_report_periodic: Lịch kỳ biểu mẫu liên quan"
-    key: FK
-    fk_note: "FK → FORM_REPORT_PERIODIC.ID"
+    key: null
+    fk_note: null
   - name: REPORT_PERIOD_VALUE
     data_type: NVARCHAR2(50)
     description: ""
@@ -130,12 +130,12 @@ columns:
     key: null
     fk_note: null
   - name: FORM_SHEET_CELL_INPUT_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: ""
     key: null
     fk_note: null
   - name: SUBMISSION_STATUS
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Trang thai gui bao cao tai thoi diem ghi nhan o du lieu (tham chieu MEMBER_REPORT.RECORD_STATUS): 1 = Chua gui; 2 = Da gui; 3 = Gui muon; 4 = Bi huy"
     key: null
     fk_note: null
@@ -170,10 +170,10 @@ columns:
     key: null
     fk_note: null
   - name: PERIODIC_REPORT_ID
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: "FK -> sc_firm_periodic_report: Báo cáo định kỳ liên quan"
-    key: FK
-    fk_note: "FK → SC_FIRM_PERIODIC_REPORT.ID"
+    key: null
+    fk_note: null
   - name: NOTE
     data_type: VARCHAR2(2000)
     description: "Ghi chú bổ sung, không bắt buộc"
@@ -195,7 +195,17 @@ columns:
     key: null
     fk_note: null
   - name: LAST_MODIFIED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "ID tài khoản người dùng cập nhật lần cuối"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
+  - name: CATALOG_TEXT
+    data_type: NVARCHAR2(2000)
+    description: null
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_AT_LEGACY
+    data_type: TIMESTAMP(6)
+    description: null
+    key: null
+    fk_note: null

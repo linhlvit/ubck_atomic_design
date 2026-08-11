@@ -5,7 +5,7 @@ table: CAT_SC_FIRM_POSITION
 brd_ref: BRD-SRC-SCMS-CAT_SC_FIRM_POSITION
 columns:
   - name: ID
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
     key: PK
     fk_note: null
@@ -25,12 +25,17 @@ columns:
     key: null
     fk_note: null
   - name: RECORD_STATUS
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Trang thai ban ghi chuc vu CTCK: 1 = Dang su dung; 0 = Ngung su dung"
     key: null
     fk_note: null
   - name: APPLICABLE_ENTITY
     data_type: NVARCHAR2(100)
     description: "Đối tượng áp dụng (CTCK/CN/VPDD/NH/Cả hai)"
+    key: null
+    fk_note: null
+  - name: ECATALOG_ID
+    data_type: VARCHAR2(36)
+    description: null
     key: null
     fk_note: null

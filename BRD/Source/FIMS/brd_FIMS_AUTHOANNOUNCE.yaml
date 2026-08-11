@@ -38,17 +38,17 @@ columns:
   data_type: "NUMBER(18,2)"
   description: "FK -> INFODISCREPRES: Đại diện CBTT/giao dịch nhận ủy quyền"
   key: FK
-  fk_note: "FK → INFODISCREPRES"
+  fk_note: "FK → INFODISCREPRES.Id"
 - name: RelatedPropertiesId
   data_type: "NUMBER(18,2)"
   description: "FK -> RELATEDPROPERTIES: Loại tài sản liên quan trong hợp đồng ủy quyền"
   key: FK
-  fk_note: "FK → RELATEDPROPERTIES"
+  fk_note: null
 - name: RelationshipId
   data_type: "NUMBER(18,2)"
   description: "FK -> RELATIONSHIP: Mối quan hệ giữa NĐT NN và người đại diện"
   key: FK
-  fk_note: "FK → RELATIONSHIP"
+  fk_note: null
 - name: FileData
   data_type: "NCLOB"
   description: "Nội dung file đính kèm (BLOB/CLOB)"
@@ -70,7 +70,7 @@ columns:
   key: null
   fk_note: null
 - name: InvestorIds
-  data_type: "VARCHAR2(4000 BYTE)"
+  data_type: "VARCHAR2(4000)"
   description: "Danh sách ID nhà đầu tư liên quan (lưu dạng JSON/CSV)"
   key: null
   fk_note: null
@@ -83,32 +83,32 @@ columns:
   data_type: "NUMBER(18,0)"
   description: "FK -> FUNDCOMPANY: QLQ nơi người hành nghề làm việc"
   key: FK
-  fk_note: "FK → FUNDCOMPANY"
+  fk_note: null
 - name: SecComId
   data_type: "NUMBER(18,0)"
   description: "FK -> SECURITIESCOMPANY: CTCK nơi người hành nghề làm việc"
   key: FK
-  fk_note: "FK → SECURITIESCOMPANY"
+  fk_note: null
 - name: BankId
   data_type: "NUMBER(18,0)"
   description: "FK -> BANKMONI: Ngân hàng lưu ký liên quan"
   key: FK
-  fk_note: "FK → BANKMONI"
+  fk_note: null
 - name: DepCenId
   data_type: "NUMBER(18,0)"
   description: "FK -> DEPOSITORYCENTER: VSDC nơi người hành nghề làm việc"
   key: FK
-  fk_note: "FK → DEPOSITORYCENTER"
+  fk_note: null
 - name: StockCenId
   data_type: "NUMBER(18,0)"
   description: "FK -> STOCKEXCHANGE: Sở GD nơi người hành nghề làm việc"
   key: FK
-  fk_note: "FK → STOCKEXCHANGE"
+  fk_note: null
 - name: BranchsId
   data_type: "NUMBER(18,0)"
   description: "FK -> BRANCHS: Chi nhánh QLQ NN liên quan"
   key: FK
-  fk_note: "FK → BRANCHS"
+  fk_note: null
 - name: IsTradingRep
   data_type: "NUMBER(1,0)"
   description: "Cờ là đại diện giao dịch: 1=Đại diện giao dịch, 0=Đại diện CBTT"

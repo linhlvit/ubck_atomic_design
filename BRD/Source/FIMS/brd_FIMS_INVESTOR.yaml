@@ -68,7 +68,7 @@ columns:
   data_type: "NUMBER(18,2)"
   description: "FK -> NATIONAL: Quốc gia/quốc tịch"
   key: FK
-  fk_note: "FK → NATIONAL"
+  fk_note: null
 - name: Address
   data_type: "NVARCHAR2(1000 CHAR)"
   description: "Địa chỉ trụ sở/văn phòng"
@@ -123,7 +123,7 @@ columns:
   data_type: "NUMBER(18,2)"
   description: "FK -> INVESTORTYPE: Loại nhà đầu tư nước ngoài"
   key: FK
-  fk_note: "FK → INVESTORTYPE"
+  fk_note: "FK → INVESTORTYPE.Id"
 - name: DepAccountNumber
   data_type: "NVARCHAR2(50 CHAR)"
   description: "Số tài khoản lưu ký tại VSDC"
@@ -138,12 +138,12 @@ columns:
   data_type: "NUMBER(18,2)"
   description: "FK -> SECURITIESCOMPANY: Công ty CK nơi mở tài khoản"
   key: FK
-  fk_note: "FK → SECURITIESCOMPANY"
+  fk_note: "FK → SECURITIESCOMPANY.Id"
 - name: BankAddId
   data_type: "NUMBER(18,2)"
   description: "FK -> BANKMONI: Ngân hàng lưu ký đăng ký tài khoản giao dịch"
   key: FK
-  fk_note: "FK → BANKMONI"
+  fk_note: "FK → BANKMONI.Id"
 - name: AccountInvesCapital
   data_type: "NVARCHAR2(50 CHAR)"
   description: "Số tài khoản đầu tư vốn của NĐT NN"
@@ -153,17 +153,17 @@ columns:
   data_type: "NUMBER(18,2)"
   description: "FK -> BANKMONI: Ngân hàng lưu ký đăng ký tài khoản vốn"
   key: FK
-  fk_note: "FK → BANKMONI"
+  fk_note: "FK → BANKMONI.Id"
 - name: CompanyTypeId
   data_type: "NUMBER(18,2)"
   description: "FK -> COMPANYTYPE: Loại hình doanh nghiệp"
   key: FK
-  fk_note: "FK → COMPANYTYPE"
+  fk_note: "FK → COMPANYTYPE.Id"
 - name: StatusId
   data_type: "NUMBER(18,2)"
   description: "FK -> STATUS: Trạng thái hoạt động của đối tượng"
   key: FK
-  fk_note: "FK → STATUS"
+  fk_note: null
 - name: Description
   data_type: "NVARCHAR2(2000 CHAR)"
   description: "Mô tả chi tiết / ghi chú bổ sung"
@@ -182,5 +182,10 @@ columns:
 - name: IdOld
   data_type: "NVARCHAR2(2000 CHAR)"
   description: "ID trạng thái trong hệ thống cũ"
+  key: null
+  fk_note: null
+- name: DMDC_COUNTRY_ID
+  data_type: "VARCHAR2(256)"
+  description: null
   key: null
   fk_note: null

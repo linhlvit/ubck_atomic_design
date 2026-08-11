@@ -18,7 +18,7 @@ columns:
     data_type: VARCHAR2(144)
     description: "FK -> document_template: biểu mẫu công văn được sử dụng"
     key: FK
-    fk_note: "FK → DOCUMENT_TEMPLATE.id"
+    fk_note: null
   - name: DOCUMENT_TEMPLATE_NAME
     data_type: VARCHAR2(2000)
     description: "Tên biểu mẫu công văn (snapshot tại thời điểm tạo)"
@@ -28,7 +28,7 @@ columns:
     data_type: VARCHAR2(144)
     description: "FK -> violation_case: hồ sơ xử lý VPHC liên kết"
     key: FK
-    fk_note: "FK → VIOLATION_CASE.id"
+    fk_note: null
   - name: VIOLATION_CASE_CODE
     data_type: VARCHAR2(400)
     description: "Mã hồ sơ VPHC liên kết (snapshot)"
@@ -38,7 +38,7 @@ columns:
     data_type: VARCHAR2(144)
     description: "FK -> violation_record: biên bản VPHC liên kết"
     key: FK
-    fk_note: "FK → VIOLATION_RECORD.id"
+    fk_note: null
   - name: VIOLATION_RECORD_NUMBER
     data_type: VARCHAR2(400)
     description: "Số biên bản VPHC liên kết (snapshot)"
@@ -48,7 +48,7 @@ columns:
     data_type: VARCHAR2(144)
     description: "FK -> penalty_decision: quyết định xử phạt liên kết"
     key: FK
-    fk_note: "FK → PENALTY_DECISION.id"
+    fk_note: null
   - name: PENALTY_DECISION_NUMBER
     data_type: VARCHAR2(400)
     description: "Số quyết định xử phạt liên kết (snapshot)"
@@ -63,7 +63,7 @@ columns:
     data_type: VARCHAR2(800)
     description: "ID người dùng tạo bản ghi"
     key: null
-    fk_note: "FK suy luận → system_user.id"
+    fk_note: null
   - name: LAST_MODIFIED_AT
     data_type: TIMESTAMP(6)
     description: "Thời điểm cập nhật gần nhất"
@@ -73,7 +73,7 @@ columns:
     data_type: VARCHAR2(200)
     description: "ID người dùng cập nhật gần nhất"
     key: null
-    fk_note: "FK suy luận → system_user.id"
+    fk_note: null
   - name: VERSION
     data_type: NUMBER(10,0)
     description: "Số phiên bản bản ghi (optimistic locking)"
@@ -103,4 +103,4 @@ columns:
     data_type: VARCHAR2(144)
     description: "Liên kết tới văn bản đầu ra trong hồ sơ xử lý VPHC khi công văn đã được đồng bộ"
     key: null
-    fk_note: "FK suy luận → VIOLATION_CASE_OUTPUT_DOCUMENT.id"
+    fk_note: null

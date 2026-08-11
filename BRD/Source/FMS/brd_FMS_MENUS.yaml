@@ -15,47 +15,47 @@ columns:
   key: null
   fk_note: null
 - name: CREATED_BY
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Tài khoản người tạo bản ghi"
   key: null
-  fk_note: "FK suy luận → USERS.ID"
+  fk_note: null
 - name: DATE_MODIFIED
   data_type: DATE
   description: "Thời điểm cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
 - name: MODIFY_BY
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Tài khoản người cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
 - name: TITLE
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(1000)
   description: "Tiêu đề thông báo/CBTT (tiếng Việt)"
   key: null
   fk_note: null
 - name: ICON
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Icon hiển thị trên menu/giao diện (CSS class hoặc URL icon)"
   key: null
   fk_note: null
 - name: URL
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(1000)
   description: "Đường dẫn URL của menu/chức năng"
   key: null
   fk_note: null
 - name: PARENT_ID
   data_type: RAW(16)
   description: "FK -> FACTOR: Tiêu chí cha trong hệ thống phân cấp tiêu chí đánh giá"
-  key: null
-  fk_note: "FK suy luận → FACTOR.ID"
+  key: FK
+  fk_note: null
 - name: MENU_TYPE
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Loại menu: 1=Module chính, 2=SubMenu, 3=Chức năng lá"
   key: null
   fk_note: null
 - name: SORT_ORDER
-  data_type: NUMBER(22)
+  data_type: NUMBER(10,0)
   description: "Thứ tự sắp xếp hiển thị menu trên giao diện (số nhỏ hơn hiển thị trước)"
   key: null
   fk_note: null
@@ -65,12 +65,17 @@ columns:
   key: null
   fk_note: null
 - name: ACTIVE
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ đang kích hoạt: 1=Đang hoạt động, 0=Vô hiệu"
   key: null
   fk_note: null
 - name: ACCESS_URL
   data_type: CLOB
   description: "Danh sách URL con được phép truy cập (JSON CLOB)"
+  key: null
+  fk_note: null
+- name: CODE
+  data_type: VARCHAR2(200)
+  description: "Mã menu phân cấp (dot notation), vd. qlq-fg.vpdd-staff.add. Nullable cho đến khi backfill."
   key: null
   fk_note: null

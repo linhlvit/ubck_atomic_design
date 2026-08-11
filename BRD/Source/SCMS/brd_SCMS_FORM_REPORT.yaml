@@ -5,15 +5,15 @@ table: FORM_REPORT
 brd_ref: BRD-SRC-SCMS-FORM_REPORT
 columns:
   - name: ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
-    key: PK
+    key: null
     fk_note: null
   - name: SYS_FUNCTION_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: ""
     key: null
-    fk_note: "FK suy luận → SYS_FUNCTION.ID"
+    fk_note: null
   - name: REPORT_CODE
     data_type: NVARCHAR2(200)
     description: "Mã báo cáo/biểu mẫu (VD: BCTC-Q, ATCT-T)"
@@ -35,12 +35,12 @@ columns:
     key: null
     fk_note: null
   - name: REQUIRES_DISCLOSURE
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Co phai cong bo thong tin khi nop bao cao: 1 = Co; 0 = Khong"
     key: null
     fk_note: null
   - name: REQUIRES_IMPORT
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Co yeu cau nhap lieu qua file Excel: 1 = Co; 0 = Khong"
     key: null
     fk_note: null
@@ -55,12 +55,12 @@ columns:
     key: null
     fk_note: null
   - name: ACTIVE
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Cờ đang sử dụng/hoạt động: 1=Đang dùng, 0=Không dùng"
     key: null
     fk_note: null
   - name: RECORD_STATUS
-    data_type: NUMBER(2)
+    data_type: NUMBER(2,0)
     description: "Trang thai bieu mau bao cao: 0 = Khong su dung; 1 = Dang su dung (hoat dong); 2 = Ban nhap"
     key: null
     fk_note: null
@@ -80,25 +80,25 @@ columns:
     key: null
     fk_note: null
   - name: SUMMARY
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: ""
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "ID tài khoản người dùng tạo bản ghi"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: CREATED_AT
     data_type: DATE
     description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
     key: null
     fk_note: null
   - name: LAST_MODIFIED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "ID tài khoản người dùng cập nhật lần cuối"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: LAST_MODIFIED_AT
     data_type: DATE
     description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"
@@ -110,17 +110,17 @@ columns:
     key: null
     fk_note: null
   - name: FORM_REPORT_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> form_report: Biểu mẫu báo cáo liên quan"
-    key: FK
-    fk_note: "FK → FORM_REPORT.ID"
+    key: null
+    fk_note: null
   - name: REPORT_STYLE
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Phong cach bao cao: 0 = Bao cao dau vao (nhap lieu); 1 = Bao cao dau ra (xuat du lieu)"
     key: null
     fk_note: null
   - name: DISCLOSURE_NEWS_TYPE
-    data_type: VARCHAR2(30 BYTE)
+    data_type: VARCHAR2(30)
     description: "Loai tin CBTT tao ra khi gui bao cao: 1 = Dinh ky; 2 = Bat thuong; 3 = Theo yeu cau"
     key: null
     fk_note: null
@@ -130,7 +130,7 @@ columns:
     key: null
     fk_note: null
   - name: NEXT_FORM_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "BM ID bao cao tip theo"
     key: null
     fk_note: null
@@ -150,22 +150,52 @@ columns:
     key: null
     fk_note: null
   - name: PARENT_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> cùng bảng: ID bản ghi cha trong cấu trúc phân cấp"
-    key: FK
-    fk_note: "FK suy luận → FORM_REPORT.ID"
+    key: null
+    fk_note: null
   - name: SIGNATURE_TYPE
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Loai chu ky yeu cau: DIEN_TU = Chu ky dien tu; SO_HOA = So hoa/upload file ky; NONE = Khong yeu cau chu ky"
     key: null
     fk_note: null
   - name: SORT_ORDER
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Thứ tự sắp xếp hiển thị"
     key: null
     fk_note: null
   - name: EFORM_ENABLED
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Cờ có eform (biểu mẫu điện tử tương tác): 1=Có, 0=Không"
+    key: null
+    fk_note: null
+  - name: STRUCTURE_FORMAT
+    data_type: VARCHAR2(200)
+    description: null
+    key: null
+    fk_note: null
+  - name: PRIMARY_SOURCE_TYPE
+    data_type: VARCHAR2(200)
+    description: null
+    key: null
+    fk_note: null
+  - name: IDENTIFIER_FIELD
+    data_type: VARCHAR2(800)
+    description: null
+    key: null
+    fk_note: null
+  - name: DISPLAY_LOCATION
+    data_type: VARCHAR2(200)
+    description: null
+    key: null
+    fk_note: null
+  - name: PRIMARY_SOURCE_API_ID
+    data_type: NUMBER(19,0)
+    description: null
+    key: null
+    fk_note: null
+  - name: SHOW_GRAND_TOTAL_ROW
+    data_type: NUMBER(1,0)
+    description: null
     key: null
     fk_note: null

@@ -13,7 +13,7 @@ columns:
   data_type: "VARCHAR2(400)"
   description: "Tài khoản/tên người tạo bản ghi"
   key: null
-  fk_note: "FK suy luận → SYS_USER.ID"
+  fk_note: null
 - name: CREATED_BY_ID
   data_type: "NUMBER"
   description: "ID người dùng tạo bản ghi"
@@ -22,7 +22,7 @@ columns:
 - name: FUNCTION_ID
   data_type: "NUMBER"
   description: "FK -> sys_function: Chức năng liên quan"
-  key: null
+  key: FK
   fk_note: null
 - name: ID
   data_type: "VARCHAR2(200)"
@@ -38,7 +38,7 @@ columns:
   data_type: "VARCHAR2(400)"
   description: "Tài khoản/tên người cập nhật lần cuối"
   key: null
-  fk_note: "FK suy luận → SYS_USER.ID"
+  fk_note: null
 - name: LAST_MODIFIED_BY_ID
   data_type: "NUMBER"
   description: "ID người dùng cập nhật lần cuối"
@@ -52,5 +52,5 @@ columns:
 - name: USER_GROUP_ID
   data_type: "NUMBER"
   description: "FK -> sys_user_group: Nhóm người dùng liên quan"
-  key: null
-  fk_note: "FK suy luận → SYS_USER_GROUP.ID"
+  key: FK
+  fk_note: null

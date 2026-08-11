@@ -12,50 +12,50 @@ columns:
 - name: USER_ID
   data_type: RAW(16)
   description: "FK -> USERS: Người dùng liên quan"
-  key: null
-  fk_note: "FK suy luận → USERS.ID"
+  key: FK
+  fk_note: "FK → USERS.ID"
 - name: PR_WID
   data_type: RAW(16)
   description: "FK -> PARA_WARN: Tham số cảnh báo chính"
-  key: null
-  fk_note: "FK suy luận → PARA_WARN.ID"
+  key: FK
+  fk_note: "FK → PARA_WARN.ID"
 - name: CDT_WID
   data_type: RAW(16)
   description: "FK -> CDT_WARN: Chi tiết điều kiện cảnh báo"
-  key: null
-  fk_note: "FK suy luận → CDT_WARN.ID"
+  key: FK
+  fk_note: "FK → CDT_WARN.ID"
 - name: SYSTEM_OBJECT
-  data_type: NUMBER(22)
+  data_type: NUMBER(10,0)
   description: "Đối tượng hệ thống: 1=QLQ, 2=QĐT, 3=BKGS, 4=ĐLPP, 5=ĐLCN..."
   key: null
   fk_note: null
 - name: SEC_ID
   data_type: RAW(16)
   description: "FK -> SECURITIES: Công ty QLQ liên quan"
-  key: null
-  fk_note: "FK suy luận → SECURITIES.ID"
+  key: FK
+  fk_note: "FK → SECURITIES.ID"
 - name: FUD_ID
   data_type: RAW(16)
   description: "FK -> FUNDS: Quỹ đầu tư liên quan đến vi phạm"
-  key: null
-  fk_note: "FK suy luận → FUNDS.ID"
+  key: FK
+  fk_note: "FK → FUNDS.ID"
 - name: BKM_ID
   data_type: RAW(16)
   description: "FK -> BANK_MONI: Ngân hàng lưu ký/giám sát liên quan đến báo cáo"
-  key: null
-  fk_note: "FK suy luận → BANK_MONI.ID"
+  key: FK
+  fk_note: "FK → BANK_MONI.ID"
 - name: FR_BR_ID
   data_type: RAW(16)
   description: "FK -> FOR_BRCH: Chi nhánh/VPĐD nước ngoài liên quan đến báo cáo"
-  key: null
-  fk_note: "FK suy luận → FOR_BRCH.ID"
+  key: FK
+  fk_note: "FK → FOR_BRCH.ID"
 - name: REPORT_YEAR
-  data_type: NUMBER(22)
+  data_type: NUMBER(10,0)
   description: "Năm báo cáo (định dạng YYYY)"
   key: null
   fk_note: null
 - name: ITEM_VALUE
-  data_type: NUMBER(22)
+  data_type: NUMBER(38,0)
   description: "Giá trị của bản ghi (số tiền, mệnh giá, điểm số...)"
   key: null
   fk_note: null
@@ -65,32 +65,32 @@ columns:
   key: null
   fk_note: null
 - name: PERIOD_TYPE
-  data_type: NUMBER(22)
+  data_type: NUMBER(10,0)
   description: "Loại kỳ báo cáo: 1=Ngày, 2=Tuần, 3=Tháng, 4=Quý, 5=Bán niên, 6=Năm, 7=Nửa tháng"
   key: null
   fk_note: null
 - name: PERIOD_VALUE
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(4000)
   description: "Giá trị kỳ báo cáo dạng chuỗi (VD: Q1/2024, T03/2024, 2024...)"
   key: null
   fk_note: null
 - name: PERIOD_TYPE_OTHER
-  data_type: NUMBER(22)
+  data_type: NUMBER(10,0)
   description: "Loại kỳ của tham số so sánh thứ hai trong cảnh báo vi phạm"
   key: null
   fk_note: null
 - name: PERIOD_VALUE_OTHER
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(4000)
   description: "Giá trị kỳ của tham số so sánh thứ hai trong cảnh báo vi phạm"
   key: null
   fk_note: null
 - name: VALUE_OTHER
-  data_type: NUMBER(22)
+  data_type: NUMBER(18,2)
   description: "Giá trị thực tế của tham số so sánh thứ hai trong cảnh báo vi phạm"
   key: null
   fk_note: null
 - name: RECORD_STATUS
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực"
   key: null
   fk_note: null
@@ -100,37 +100,37 @@ columns:
   key: null
   fk_note: null
 - name: RECOVERY_STATUS
-  data_type: NUMBER(22)
+  data_type: NUMBER(10,0)
   description: "Trạng thái khắc phục vi phạm: 1=Đã khắc phục, 0=Chưa khắc phục"
   key: null
   fk_note: null
 - name: DISTRIBUTOR_ID
   data_type: RAW(16)
   description: "FK -> DISTRIBUTOR_AGENT: Đại lý phân phối liên quan"
-  key: null
-  fk_note: "FK suy luận → DISTRIBUTOR_AGENT.ID"
+  key: FK
+  fk_note: null
 - name: TRANSFER_AGENT_ID
   data_type: RAW(16)
   description: "FK -> TRANSFER_AGENT: Đại lý chuyển nhượng liên quan"
-  key: null
-  fk_note: "FK suy luận → TRANSFER_AGENT.ID"
+  key: FK
+  fk_note: null
 - name: PENSION_AGENT_ID
   data_type: RAW(16)
   description: "FK -> PENSION_AGENT: Đại lý hưu trí liên quan"
-  key: null
-  fk_note: "FK suy luận → PENSION_AGENT.ID"
+  key: FK
+  fk_note: null
 - name: PENSION_PROVIDER_ID
   data_type: RAW(16)
   description: "FK -> PENSION_PROVIDER: Tổ chức cung cấp dịch vụ hưu trí"
-  key: null
-  fk_note: "FK suy luận → PENSION_PROVIDER.ID"
+  key: FK
+  fk_note: null
 - name: OTHER_AGENT_ID
   data_type: RAW(16)
   description: "FK -> OTHER_AGENT: Đại lý khác liên quan"
-  key: null
-  fk_note: "FK suy luận → OTHER_AGENT.ID"
+  key: FK
+  fk_note: null
 - name: PENSION_FUND_ID
   data_type: RAW(16)
   description: "FK -> PENSION_FUND: Quỹ hưu trí liên quan"
-  key: null
-  fk_note: "FK suy luận → PENSION_FUND.ID"
+  key: FK
+  fk_note: null

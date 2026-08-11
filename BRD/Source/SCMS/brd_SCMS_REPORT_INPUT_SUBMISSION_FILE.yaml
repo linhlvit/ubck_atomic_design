@@ -5,12 +5,12 @@ table: REPORT_INPUT_SUBMISSION_FILE
 brd_ref: BRD-SRC-SCMS-REPORT_INPUT_SUBMISSION_FILE
 columns:
   - name: ID
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
     key: PK
     fk_note: null
   - name: REPORT_INPUT_SUBMISSION_ID
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: "FK -> report_input_submission: Phiên gửi báo cáo liên quan"
     key: FK
     fk_note: "FK → REPORT_INPUT_SUBMISSION.ID"
@@ -27,5 +27,10 @@ columns:
   - name: TEN_FILE_GOC
     data_type: NVARCHAR2(500)
     description: "Cột ten_file_goc — xem thêm tài liệu đặc tả SCMS"
+    key: null
+    fk_note: null
+  - name: ORIGINAL_FILE_NAME
+    data_type: NVARCHAR2(1000)
+    description: null
     key: null
     fk_note: null

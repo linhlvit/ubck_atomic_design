@@ -97,13 +97,13 @@ columns:
 - name: SSC_REPORT_DETAIL_ID
   data_type: "NUMBER"
   description: "FK -> ssc_report_detail: Chi tiết báo cáo UBCKNN đối chiếu"
-  key: null
-  fk_note: "FK suy luận → SSC_REPORT_DETAIL.ID"
+  key: FK
+  fk_note: null
 - name: SSC_REPORT_ID
   data_type: "NUMBER"
   description: "FK -> ssc_report: Báo cáo tài chính UBCKNN liên quan"
-  key: null
-  fk_note: "FK suy luận → SSC_REPORT.ID"
+  key: FK
+  fk_note: null
 - name: SSC_REPORT_TYPE
   data_type: "VARCHAR2(5)"
   description: "Loại báo cáo trong hệ thống UBCKNN"
@@ -207,13 +207,13 @@ columns:
 - name: TAX_REPORT_DETAIL_ID
   data_type: "NUMBER"
   description: "FK -> tax_report_detail: Chi tiết báo cáo TCT đối chiếu"
-  key: null
-  fk_note: "FK suy luận → TAX_REPORT_DETAIL.ID"
+  key: FK
+  fk_note: null
 - name: TAX_REPORT_ID
   data_type: "NUMBER"
   description: "FK -> tax_report: Báo cáo tài chính TCT liên quan"
-  key: null
-  fk_note: "FK suy luận → TAX_REPORT.ID"
+  key: FK
+  fk_note: null
 - name: TAX_SHEET_NAME
   data_type: "VARCHAR2(1)"
   description: "Tên sheet trong báo cáo Cục Thuế"
@@ -232,5 +232,15 @@ columns:
 - name: TOTAL_RECORDS
   data_type: "NUMBER"
   description: "Tổng số bản ghi trong kết quả đối chiếu"
+  key: null
+  fk_note: null
+- name: TAX_BEGIN_BALANCE_CURRENT_YEARVARCHAR2(400)
+  data_type: "YES"
+  description: "Số dư đầu năm nay (Cục Thuế)"
+  key: null
+  fk_note: null
+- name: SSC_BEGIN_BALANCE_CURRENT_YEARVARCHAR2(400)
+  data_type: "YES"
+  description: "Số dư đầu năm nay (UBCKNN)"
   key: null
   fk_note: null

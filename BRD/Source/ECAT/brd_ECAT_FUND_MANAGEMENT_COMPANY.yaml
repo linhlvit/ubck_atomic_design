@@ -42,8 +42,8 @@ columns:
   - name: ENTERPRISE_TYPE_ID
     data_type: "VARCHAR2(36 CHAR)"
     description: "Stable Id loại hình doanh nghiệp"
-    key: FK
-    fk_note: "FK → ENTERPRISE_TYPE.ID"
+    key: null
+    fk_note: null
   - name: EFFECTIVE_STATUS_START_DATE
     data_type: "TIMESTAMP(6)"
     description: "Ngày bắt đầu trạng thái hoạt động"
@@ -55,7 +55,7 @@ columns:
     key: null
     fk_note: null
   - name: EFFECTIVE_STATUS
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "Trạng thái hiệu lực (1: Hiệu lực, 0: Hết hiệu lực)"
     key: null
     fk_note: null
@@ -67,8 +67,8 @@ columns:
   - name: PROVINCE_NEW_ID
     data_type: "VARCHAR2(36 CHAR)"
     description: "Stable Id tỉnh/thành phố mới"
-    key: FK
-    fk_note: "FK → PROVINCE_NEW.ID"
+    key: null
+    fk_note: null
   - name: PHONE
     data_type: "VARCHAR2(20 CHAR)"
     description: "Số điện thoại"
@@ -110,7 +110,7 @@ columns:
     key: null
     fk_note: null
   - name: BUSINESS_LICENSE_PLACE
-    data_type: "VARCHAR2(50 CHAR)"
+    data_type: "VARCHAR2(2000)"
     description: "Nơi cấp giấy phép"
     key: null
     fk_note: null
@@ -130,12 +130,12 @@ columns:
     key: null
     fk_note: null
   - name: PAR_VALUE
-    data_type: "NUMBER(20, 2)"
+    data_type: "NUMBER(15,0)"
     description: "Mệnh giá"
     key: null
     fk_note: null
   - name: TOTAL_SHARES
-    data_type: "NUMBER(20, 2)"
+    data_type: "NUMBER(15,0)"
     description: "Tổng số cổ phiếu"
     key: null
     fk_note: null
@@ -145,12 +145,12 @@ columns:
     key: null
     fk_note: null
   - name: CHARTER_CAPITAL
-    data_type: "NUMBER(20, 2)"
+    data_type: "NUMBER(15,0)"
     description: "Vốn điều lệ'"
     key: null
     fk_note: null
   - name: ACTIVE
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "Trạng thái hoạt động (1: Đang sử dụng, 0: Không sử dụng)"
     key: null
     fk_note: null
@@ -160,7 +160,7 @@ columns:
     key: null
     fk_note: null
   - name: DELETED
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "Xóa mềm (0: Chưa xóa, 1: Đã xóa)"
     key: null
     fk_note: null
@@ -170,7 +170,7 @@ columns:
     key: null
     fk_note: null
   - name: VERSION
-    data_type: "NUMBER(MAX)"
+    data_type: "NUMBER"
     description: "*Phiên bản*"
     key: null
     fk_note: null
@@ -202,23 +202,23 @@ columns:
   - name: CREATED_BY_ID
     data_type: "VARCHAR2(36 CHAR)"
     description: "*Người tạo*"
-    key: FK
-    fk_note: "FK → UBCK_STAFF.ID"
+    key: null
+    fk_note: null
   - name: CREATED_BY_NAME
     data_type: "VARCHAR2(255 CHAR)"
     description: "*Tên người tạo*"
-    key: FK
-    fk_note: "FK → UBCK_STAFF.ID"
+    key: null
+    fk_note: null
   - name: UPDATED_BY_ID
     data_type: "VARCHAR2(36 CHAR)"
     description: "*Người cập nhật*"
-    key: FK
-    fk_note: "FK → UBCK_STAFF.ID"
+    key: null
+    fk_note: null
   - name: UPDATED_BY_NAME
     data_type: "VARCHAR2(255 CHAR)"
     description: "*Tên người cập nhật*"
-    key: FK
-    fk_note: "FK → UBCK_STAFF.ID"
+    key: null
+    fk_note: null
   - name: STABLE_ID
     data_type: "VARCHAR2(36 CHAR)"
     description: "*ID bản ghi ổn định - không đổi qua các version*"
@@ -237,20 +237,25 @@ columns:
   - name: DISTRICT_OLD_ID
     data_type: "VARCHAR2(144)"
     description: "ID quận/huyện"
-    key: FK
-    fk_note: "FK → DISTRICT_OLD.ID - đổi tên từ DISTRICT_NEW_ID theo DDL UAT"
+    key: null
+    fk_note: null
   - name: DISTRICT_OLD_VERSION_ID
     data_type: "VARCHAR2(144)"
     description: ""
-    key: FK
-    fk_note: "FK → DISTRICT_OLD.ID - đổi tên từ DISTRICT_NEW_VERSION_ID theo DDL UAT"
+    key: null
+    fk_note: null
   - name: WARD_NEW_ID
     data_type: "VARCHAR2(144)"
     description: "ID phường/xã"
-    key: FK
-    fk_note: "FK → WARD_NEW.ID - đổi tên từ WARD_OLD_ID theo DDL UAT"
+    key: null
+    fk_note: null
   - name: WARD_NEW_VERSION_ID
     data_type: "VARCHAR2(144)"
     description: ""
-    key: FK
-    fk_note: "FK → WARD_NEW.ID - đổi tên từ WARD_OLD_VERSION_ID theo DDL UAT"
+    key: null
+    fk_note: null
+  - name: BUSINESS_LICENSE_NUMBER_MODIFYVARCHAR2(200)
+    data_type: "YES"
+    description: "Số giấy phép thay đổi"
+    key: null
+    fk_note: null

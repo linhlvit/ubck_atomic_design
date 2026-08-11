@@ -15,37 +15,37 @@ columns:
   key: null
   fk_note: null
 - name: CREATED_BY
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Tài khoản người tạo bản ghi"
   key: null
-  fk_note: "FK suy luận → USERS.ID"
+  fk_note: null
 - name: DATE_MODIFIED
   data_type: DATE
   description: "Thời điểm cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
 - name: MODIFY_BY
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Tài khoản người cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
 - name: INSDER_ID
   data_type: RAW(16)
   description: "FK -> INSIDER: Cổ đông nội bộ liên kết với người hành nghề"
-  key: null
-  fk_note: "FK suy luận → INSIDER.ID"
+  key: FK
+  fk_note: "FK → INSIDER.ID"
 - name: RELA_ID
   data_type: RAW(16)
   description: "FK -> RELATION: Loại quan hệ"
-  key: null
-  fk_note: "FK suy luận → RELATION.ID"
+  key: FK
+  fk_note: "FK → RELATION.ID"
 - name: ITEM_NAME
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(400)
   description: "Tên hiển thị chính"
   key: null
   fk_note: null
 - name: ID_NO
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Số CMND/CCCD/Hộ chiếu/Mã số doanh nghiệp"
   key: null
   fk_note: null
@@ -55,32 +55,32 @@ columns:
   key: null
   fk_note: null
 - name: ID_PLACE
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(400)
   description: "Nơi cấp giấy tờ định danh"
   key: null
   fk_note: null
 - name: DELETED
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động"
   key: null
   fk_note: null
 - name: ADDRESS
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(1000)
   description: "Địa chỉ trụ sở"
   key: null
   fk_note: null
 - name: DESCRIPTION
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(2000)
   description: "Mô tả chi tiết"
   key: null
   fk_note: null
 - name: DATA_MIGRATION
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ dữ liệu từ hệ thống cũ (legacy migration): 1=Dữ liệu cũ, 0=Dữ liệu mới"
   key: null
   fk_note: null
 - name: GP_QD_NO
-  data_type: VARCHAR2(255)
+  data_type: VARCHAR2(200)
   description: "Số GP/QĐ liên quan đến giao dịch chuyển nhượng hoặc thay đổi hồ sơ"
   key: null
   fk_note: null

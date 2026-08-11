@@ -23,7 +23,7 @@ columns:
   data_type: "NUMBER"
   description: "Tài khoản/tên người tạo bản ghi"
   key: null
-  fk_note: "FK suy luận → SYS_USER.ID"
+  fk_note: null
 - name: DATE_OF_BIRTH
   data_type: "DATE"
   description: "Ngày sinh"
@@ -73,7 +73,7 @@ columns:
   data_type: "NUMBER"
   description: "Tài khoản/tên người cập nhật lần cuối"
   key: null
-  fk_note: "FK suy luận → SYS_USER.ID"
+  fk_note: null
 - name: LDAP
   data_type: "VARCHAR2(1020)"
   description: "Thông tin xác thực LDAP (nếu tích hợp Active Directory)"
@@ -82,8 +82,8 @@ columns:
 - name: ORG_UNIT_ID
   data_type: "NUMBER"
   description: "FK -> cat_org_unit: Đơn vị tổ chức của người dùng"
-  key: null
-  fk_note: "FK suy luận → CAT_ORG_UNIT.ID"
+  key: FK
+  fk_note: null
 - name: PASSWORD
   data_type: "VARCHAR2(400)"
   description: "Mật khẩu (đã mã hóa hash)"
@@ -97,8 +97,8 @@ columns:
 - name: POSITION_ID
   data_type: "NUMBER"
   description: "FK -> cat_position: Chức vụ của người dùng"
-  key: null
-  fk_note: "FK suy luận → CAT_POSITION.ID"
+  key: FK
+  fk_note: null
 - name: STATUS
   data_type: "NUMBER"
   description: "Trạng thái tài khoản (TrangThaiChucNangEnum): 1=Đang hoạt động, 0=Ngừng hoạt động"

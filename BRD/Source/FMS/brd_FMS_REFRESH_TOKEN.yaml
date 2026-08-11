@@ -10,17 +10,17 @@ columns:
   key: PK
   fk_note: null
 - name: EXPIRES_UTC
-  data_type: TIMESTAMP
+  data_type: TIMESTAMP(7)
   description: "Thời điểm refresh token hết hạn (UTC)"
   key: null
   fk_note: null
 - name: TOKEN
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(4000)
   description: "Giá trị refresh token (JWT)"
   key: null
   fk_note: null
 - name: USERS_ID
   data_type: RAW(16)
   description: "FK -> USERS: Tài khoản người dùng sở hữu token"
-  key: null
-  fk_note: "FK suy luận → USERS.ID"
+  key: FK
+  fk_note: "FK → USERS.ID"

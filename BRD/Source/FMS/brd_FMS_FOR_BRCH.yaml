@@ -15,57 +15,57 @@ columns:
   key: null
   fk_note: null
 - name: CREATED_BY
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Tài khoản người tạo bản ghi"
   key: null
-  fk_note: "FK suy luận → USERS.ID"
+  fk_note: null
 - name: DATE_MODIFIED
   data_type: DATE
   description: "Thời điểm cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
 - name: MODIFY_BY
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Tài khoản người cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
 - name: STATUS_ID
   data_type: RAW(16)
   description: "FK -> STATUS: Trạng thái hoạt động của đối tượng (bảng danh mục STATUS)"
-  key: null
-  fk_note: "FK suy luận → STATUS.ID"
+  key: FK
+  fk_note: "FK → STATUS.ID"
 - name: NAT_ID
   data_type: RAW(16)
   description: "FK -> NATIONAL: Quốc gia/quốc tịch"
-  key: null
-  fk_note: "FK suy luận → NATIONAL.ID"
+  key: FK
+  fk_note: "FK → NATIONAL.ID"
 - name: BRANCH_FLAG
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ là chi nhánh: 1=Chi nhánh, 0=Văn phòng đại diện"
   key: null
   fk_note: null
 - name: ITEM_NAME
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(1000)
   description: "Tên hiển thị chính"
   key: null
   fk_note: null
 - name: EN_NAME
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(1000)
   description: "Tên tiếng Anh"
   key: null
   fk_note: null
 - name: SHORT_NAME
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(510)
   description: "Tên viết tắt"
   key: null
   fk_note: null
 - name: ADDRESS
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(2000)
   description: "Địa chỉ trụ sở"
   key: null
   fk_note: null
 - name: LICENSE
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(1000)
   description: "Số giấy phép hoạt động"
   key: null
   fk_note: null
@@ -75,22 +75,22 @@ columns:
   key: null
   fk_note: null
 - name: PHONE
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(40)
   description: "Số điện thoại"
   key: null
   fk_note: null
 - name: FAX
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(40)
   description: "Số fax"
   key: null
   fk_note: null
 - name: EMAIL
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Địa chỉ email"
   key: null
   fk_note: null
 - name: WEBSITE
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Địa chỉ website"
   key: null
   fk_note: null
@@ -105,22 +105,22 @@ columns:
   key: null
   fk_note: null
 - name: PARENT_NAME
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(1000)
   description: "Tên công ty mẹ (tổ chức nước ngoài sở hữu)"
   key: null
   fk_note: null
 - name: PARENT_CODE
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(510)
   description: "Mã công ty mẹ trong hệ thống"
   key: null
   fk_note: null
 - name: PARENT_ADDRESS
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(2000)
   description: "Địa chỉ công ty mẹ"
   key: null
   fk_note: null
 - name: CHANGE_LICENSE
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(1000)
   description: "Số giấy phép điều chỉnh tại lần thay đổi"
   key: null
   fk_note: null
@@ -130,7 +130,7 @@ columns:
   key: null
   fk_note: null
 - name: CHANGE_NOTE
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(2000)
   description: "Ghi chú về nội dung điều chỉnh"
   key: null
   fk_note: null
@@ -140,42 +140,57 @@ columns:
   key: null
   fk_note: null
 - name: NOTE
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(2000)
   description: "Ghi chú bổ sung"
   key: null
   fk_note: null
 - name: DELETED
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động"
   key: null
   fk_note: null
 - name: REG_NO
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(1000)
   description: "Số đăng ký kinh doanh của chi nhánh/VPĐD"
   key: null
   fk_note: null
 - name: TAX_CODE
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(1000)
   description: "Mã số thuế doanh nghiệp (MST)"
   key: null
   fk_note: null
 - name: CAPITAL
-  data_type: NUMBER(22)
+  data_type: NUMBER(18,2)
   description: "Vốn điều lệ/vốn góp (đơn vị: VNĐ)"
   key: null
   fk_note: null
 - name: DATA_MIGRATION
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ dữ liệu từ hệ thống cũ (legacy migration): 1=Dữ liệu cũ, 0=Dữ liệu mới"
   key: null
   fk_note: null
 - name: ID_DB_OLD
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "ID trong hệ thống cũ (trước khi migration dữ liệu)"
   key: null
   fk_note: null
 - name: EVENT_TYPE_ID
   data_type: RAW(16)
   description: "FK -> EVENT_TYPE: Loại sự vụ áp dụng"
+  key: FK
+  fk_note: null
+- name: PARENT_ISSUE_PLACE
+  data_type: NVARCHAR2(1000)
+  description: null
   key: null
-  fk_note: "FK suy luận → EVENT_TYPE.ID"
+  fk_note: null
+- name: PARENT_ISSUE_DATE
+  data_type: DATE
+  description: null
+  key: null
+  fk_note: null
+- name: ACTIVITY_PERIOD
+  data_type: NVARCHAR2(200)
+  description: "Thời hạn hoạt động (text tự do)"
+  key: null
+  fk_note: null

@@ -15,47 +15,47 @@ columns:
   key: null
   fk_note: null
 - name: CREATED_BY
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Tài khoản người tạo bản ghi"
   key: null
-  fk_note: "FK suy luận → USERS.ID"
+  fk_note: null
 - name: DATE_MODIFIED
   data_type: DATE
   description: "Thời điểm cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
 - name: MODIFY_BY
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Tài khoản người cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
 - name: SEC_ID
   data_type: RAW(16)
   description: "FK -> SECURITIES: Công ty QLQ liên quan"
-  key: null
-  fk_note: "FK suy luận → SECURITIES.ID"
+  key: FK
+  fk_note: "FK → SECURITIES.ID"
 - name: BKM_ID
   data_type: RAW(16)
   description: "FK -> BANK_MONI: Ngân hàng lưu ký/giám sát liên quan đến báo cáo"
-  key: null
-  fk_note: "FK suy luận → BANK_MONI.ID"
+  key: FK
+  fk_note: "FK → BANK_MONI.ID"
 - name: FR_BR_ID
   data_type: RAW(16)
   description: "FK -> FOR_BRCH: Chi nhánh/VPĐD nước ngoài liên quan đến báo cáo"
-  key: null
-  fk_note: "FK suy luận → FOR_BRCH.ID"
+  key: FK
+  fk_note: "FK → FOR_BRCH.ID"
 - name: FUD_ID
   data_type: RAW(16)
   description: "FK -> FUNDS: Quỹ đầu tư áp dụng kỳ tự lập"
   key: null
-  fk_note: "FK suy luận → FUNDS.ID"
+  fk_note: null
 - name: RPT_ID
   data_type: RAW(16)
   description: "FK -> RPT_TEMP: Biểu mẫu báo cáo"
-  key: null
-  fk_note: "FK suy luận → RPT_TEMP.ID"
+  key: FK
+  fk_note: "FK → RPT_TEMP.ID"
 - name: SENT
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ đã gửi báo cáo: 1=Đã gửi, 0=Chưa gửi"
   key: null
   fk_note: null

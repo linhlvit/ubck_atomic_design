@@ -5,12 +5,12 @@ table: SC_FIRM_FOREIGN_REP_OFFICE
 brd_ref: BRD-SRC-SCMS-SC_FIRM_FOREIGN_REP_OFFICE
 columns:
   - name: ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
     key: PK
     fk_note: null
   - name: AMENDMENT_DECLARATION
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: ""
     key: null
     fk_note: null
@@ -80,17 +80,17 @@ columns:
     key: null
     fk_note: null
   - name: RECORD_STATUS
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Trang thai ban ghi VPDD CTCK NN: 1 = Dang hoat dong/con hieu luc; 0 = Ngung hoat dong/het hieu luc"
     key: null
     fk_note: null
   - name: SC_FIRM_INFO_ID
     data_type: NUMBER
     description: "FK -> sc_firm_info: Công ty chứng khoán liên quan"
-    key: FK
-    fk_note: "FK → SC_FIRM_INFO.ID"
+    key: null
+    fk_note: null
   - name: PARENT_COMPANY_LICENSE
-    data_type: VARCHAR2(200 BYTE)
+    data_type: VARCHAR2(200)
     description: ""
     key: null
     fk_note: null
@@ -100,27 +100,27 @@ columns:
     key: null
     fk_note: null
   - name: PARENT_HQ_ADDRESS
-    data_type: VARCHAR2(1000 BYTE)
+    data_type: VARCHAR2(1000)
     description: ""
     key: null
     fk_note: null
   - name: PHONE
-    data_type: VARCHAR2(50 BYTE)
+    data_type: VARCHAR2(50)
     description: "Số điện thoại liên hệ"
     key: null
     fk_note: null
   - name: FAX
-    data_type: VARCHAR2(50 BYTE)
+    data_type: VARCHAR2(50)
     description: "Số fax"
     key: null
     fk_note: null
   - name: EMAIL
-    data_type: VARCHAR2(255 BYTE)
+    data_type: VARCHAR2(255)
     description: "Địa chỉ email liên hệ"
     key: null
     fk_note: null
   - name: OPERATION_TERM_YEARS
-    data_type: NUMBER(2)
+    data_type: NUMBER(2,0)
     description: ""
     key: null
     fk_note: null
@@ -130,17 +130,17 @@ columns:
     key: null
     fk_note: null
   - name: SCOPE_JSON
-    data_type: VARCHAR2(4000 BYTE)
+    data_type: VARCHAR2(4000)
     description: ""
     key: null
     fk_note: null
   - name: ATTACHMENT_PATH
-    data_type: VARCHAR2(500 BYTE)
+    data_type: VARCHAR2(500)
     description: "Đường dẫn file đính kèm trên hệ thống lưu trữ"
     key: null
     fk_note: null
   - name: NOTE
-    data_type: VARCHAR2(4000 BYTE)
+    data_type: VARCHAR2(4000)
     description: "Ghi chú bổ sung, không bắt buộc"
     key: null
     fk_note: null
@@ -152,15 +152,15 @@ columns:
   - name: EVENT_TYPE_ID
     data_type: NUMBER
     description: "FK -> cat_event_type: Loại sự vụ/sự kiện nghiệp vụ"
-    key: FK
-    fk_note: "FK → CAT_EVENT_TYPE.ID"
+    key: null
+    fk_note: null
   - name: REPORTING_ENABLED
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Co kich hoat bao cao dinh ky cho VPDD NN: 1 = Co; 0 = Khong"
     key: null
     fk_note: null
   - name: ADMIN_PROC_DATA
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Co du lieu tu thu tuc hanh chinh: 1 = Dong bo tu TTHC; 0 = Nhap tay"
     key: null
     fk_note: null
@@ -168,12 +168,12 @@ columns:
     data_type: NUMBER
     description: "ID tài khoản người dùng tạo bản ghi"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: LAST_MODIFIED_BY
     data_type: NUMBER
     description: "ID tài khoản người dùng cập nhật lần cuối"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: LAST_MODIFIED_AT
     data_type: TIMESTAMP(6)
     description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"

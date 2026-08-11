@@ -12,20 +12,20 @@ columns:
   - name: AF_PROFILE_ID
     data_type: NUMBER(10,0)
     description: "Link đến bảng AF_PROFILES"
-    key: FK
-    fk_note: "FK → AF_PROFILES.ID"
+    key: null
+    fk_note: null
   - name: STATUS_TYPE
-    data_type: VARCHAR2(100)
+    data_type: VARCHAR2(400)
     description: "Loại trạng thái (Đình chỉ, Tạm ngừng, Chấm dứt, Thu hồi, Đang hoạt động)"
     key: null
     fk_note: null
   - name: SUSPENSION_STATUS_TYPE
-    data_type: VARCHAR2(100)
+    data_type: VARCHAR2(400)
     description: "Trạng thái đình chỉ (đang đình chỉ, đã kết thúc, chưa đến thời hạn)"
     key: null
     fk_note: null
   - name: DECISION_NO
-    data_type: VARCHAR2(18)
+    data_type: VARCHAR2(72)
     description: "Số quyết định"
     key: null
     fk_note: null
@@ -50,30 +50,30 @@ columns:
     key: null
     fk_note: null
   - name: REASON
-    data_type: VARCHAR2(255)
+    data_type: VARCHAR2(1020)
     description: "Lý do (chọn từ lý do từ dropdown lấy từ BTC)"
     key: null
     fk_note: null
   - name: ADDITIONAL_DESC
-    data_type: VARCHAR2(1000)
+    data_type: VARCHAR2(4000)
     description: "Mô tả bổ sung"
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: VARCHAR2(30)
+    data_type: VARCHAR2(120)
     description: "Người tạo"
     key: null
-    fk_note: "FK → LOGINS.ID"
+    fk_note: null
   - name: CREATED_DATE
     data_type: DATE
     description: "Ngày tạo"
     key: null
     fk_note: null
   - name: UPDATED_BY
-    data_type: VARCHAR2(30)
+    data_type: VARCHAR2(120)
     description: "Người sửa"
     key: null
-    fk_note: "FK → LOGINS.ID"
+    fk_note: null
   - name: UPDATED_DATE
     data_type: DATE
     description: "Ngày sửa"

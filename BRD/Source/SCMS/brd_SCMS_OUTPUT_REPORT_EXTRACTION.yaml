@@ -5,15 +5,15 @@ table: OUTPUT_REPORT_EXTRACTION
 brd_ref: BRD-SRC-SCMS-OUTPUT_REPORT_EXTRACTION
 columns:
   - name: ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
-    key: PK
+    key: null
     fk_note: null
   - name: FORM_REPORT_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> form_report: Biểu mẫu báo cáo liên quan"
-    key: FK
-    fk_note: "FK → FORM_REPORT.ID"
+    key: null
+    fk_note: null
   - name: FROM_DATE
     data_type: DATE
     description: ""
@@ -30,27 +30,27 @@ columns:
     key: null
     fk_note: null
   - name: USER_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> sys_user: Người dùng liên quan"
-    key: FK
-    fk_note: "FK → SYS_USER.ID"
+    key: null
+    fk_note: null
   - name: REPORT_PERIOD
-    data_type: VARCHAR2(4000 BYTE)
+    data_type: VARCHAR2(4000)
     description: "Kỳ báo cáo (Ngày/Tuần/Tháng/Quý/Bán niên/Năm)"
     key: null
     fk_note: null
   - name: UNIT
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Đơn vị tính (Triệu đồng/Tỷ đồng/Phần trăm/Số lượng)"
     key: null
     fk_note: null
   - name: DATE_RANGE
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Cờ lọc theo khoảng thời gian: 1=Lọc khoảng, 0=Lọc ngày cụ thể"
     key: null
     fk_note: null
   - name: AUDITED_REPORT_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: ""
     key: null
     fk_note: null
@@ -60,7 +60,7 @@ columns:
     key: null
     fk_note: null
   - name: RECORD_STATUS
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: ""
     key: null
     fk_note: null
@@ -75,7 +75,7 @@ columns:
     key: null
     fk_note: null
   - name: REPORT_TYPE
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Loại báo cáo (định kỳ/bất thường/theo yêu cầu/CBTT)"
     key: null
     fk_note: null
@@ -95,19 +95,19 @@ columns:
     key: null
     fk_note: null
   - name: LAST_MODIFIED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "ID tài khoản người dùng cập nhật lần cuối"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: CREATED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "ID tài khoản người dùng tạo bản ghi"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: REPORT_GROUP_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> nhóm báo cáo đầu ra"
-    key: FK
+    key: null
     fk_note: null
   - name: TEMPLATE_FILE_PATH
     data_type: VARCHAR2(500)
@@ -125,7 +125,7 @@ columns:
     key: null
     fk_note: null
   - name: SORT_ORDER
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Thứ tự sắp xếp hiển thị"
     key: null
     fk_note: null

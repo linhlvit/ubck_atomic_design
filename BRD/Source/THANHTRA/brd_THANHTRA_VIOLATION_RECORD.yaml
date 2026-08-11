@@ -27,13 +27,13 @@ columns:
   - name: INSPECTION_TEAM_ID
     data_type: VARCHAR2(144)
     description: "ID đoàn thanh tra liên kết với biên bản VPHC (không bắt buộc)"
-    key: null
-    fk_note: "FK suy luận → INSPECTION_TEAM.id"
+    key: FK
+    fk_note: "FK → INSPECTION_TEAM.ID"
   - name: EXAMINATION_TEAM_ID
     data_type: VARCHAR2(144)
     description: "ID đoàn kiểm tra liên kết với biên bản VPHC (không bắt buộc)"
-    key: null
-    fk_note: "FK suy luận → EXAMINATION_TEAM.id"
+    key: FK
+    fk_note: "FK → EXAMINATION_TEAM.ID"
   - name: VIOLATION_TIME
     data_type: TIMESTAMP(6)
     description: "Thời gian xảy ra vi phạm"
@@ -118,7 +118,7 @@ columns:
     data_type: VARCHAR2(800)
     description: "ID người ký số biên bản điện tử (lần ký cuối)"
     key: null
-    fk_note: "FK suy luận → system_user.id"
+    fk_note: null
   - name: SIGNED_AT
     data_type: TIMESTAMP(6)
     description: "Thời điểm ký số biên bản điện tử"
@@ -153,12 +153,12 @@ columns:
     data_type: VARCHAR2(400)
     description: "ID người dùng tạo bản ghi"
     key: null
-    fk_note: "FK suy luận → system_user.id"
+    fk_note: null
   - name: LAST_MODIFIED_BY
     data_type: VARCHAR2(400)
     description: "ID người dùng cập nhật gần nhất"
     key: null
-    fk_note: "FK suy luận → system_user.id"
+    fk_note: null
   - name: VERSION
     data_type: NUMBER(10,0)
     description: "Số phiên bản bản ghi (optimistic locking)"
@@ -183,7 +183,7 @@ columns:
     data_type: VARCHAR2(400)
     description: "ID cán bộ ĐVGS thực hiện gửi biên bản sang Thanh tra"
     key: null
-    fk_note: "FK suy luận → system_user.id"
+    fk_note: null
   - name: VIOLATOR_SIGNED_FILE_URL
     data_type: VARCHAR2(4000)
     description: "URL file biên bản VPHC đã có chữ ký của người vi phạm/đại diện tổ chức (Bước 7.1 QT 7)"
@@ -213,7 +213,7 @@ columns:
     data_type: VARCHAR2(800)
     description: "ID người ký số đầu tiên (Chuyên viên/TTV ký nháy)"
     key: null
-    fk_note: "FK suy luận → system_user.id"
+    fk_note: null
   - name: FIRST_SIGNED_AT
     data_type: TIMESTAMP(6)
     description: "Thời điểm ký số đầu tiên"

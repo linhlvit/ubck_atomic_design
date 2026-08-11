@@ -5,9 +5,9 @@ table: CAT_SC_FIRM_STATUS
 brd_ref: BRD-SRC-SCMS-CAT_SC_FIRM_STATUS
 columns:
   - name: ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
-    key: PK
+    key: null
     fk_note: null
   - name: SC_FIRM_STATUS_CODE
     data_type: NVARCHAR2(50)
@@ -25,17 +25,17 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "ID tài khoản người dùng tạo bản ghi"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: REPORT_SUBMISSION_ENABLED
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Cờ CTCK ở trạng thái này phải nộp báo cáo: 1=Phải nộp, 0=Không"
     key: null
     fk_note: null
   - name: DISCLOSURE_ENABLED
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Cờ CTCK ở trạng thái này phải CBTT: 1=Phải CBTT, 0=Không"
     key: null
     fk_note: null
@@ -45,12 +45,12 @@ columns:
     key: null
     fk_note: null
   - name: RECORD_STATUS
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Trang thai ban ghi danh muc: 1 = Dang su dung; 0 = Ngung su dung"
     key: null
     fk_note: null
   - name: ACTIVE
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: ""
     key: null
     fk_note: null

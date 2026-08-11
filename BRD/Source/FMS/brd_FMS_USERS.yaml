@@ -15,37 +15,37 @@ columns:
   key: null
   fk_note: null
 - name: CREATED_BY
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Tài khoản người tạo bản ghi"
   key: null
-  fk_note: "FK suy luận → USERS.ID"
+  fk_note: null
 - name: DATE_MODIFIED
   data_type: DATE
   description: "Thời điểm cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
 - name: MODIFY_BY
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Tài khoản người cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
 - name: USER_NAME
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Tên đăng nhập (username) của tài khoản người dùng"
   key: null
   fk_note: null
 - name: DISPLAY_NAME
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Tên hiển thị của người dùng trên giao diện"
   key: null
   fk_note: null
 - name: PASSWORD
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(64)
   description: "Mật khẩu đã mã hóa (bcrypt hash)"
   key: null
   fk_note: null
 - name: RECORD_STATUS
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực"
   key: null
   fk_note: null
@@ -57,45 +57,45 @@ columns:
 - name: SEC_ID
   data_type: RAW(16)
   description: "FK -> SECURITIES: Công ty QLQ liên quan"
-  key: null
-  fk_note: "FK suy luận → SECURITIES.ID"
+  key: FK
+  fk_note: "FK → SECURITIES.ID"
 - name: LEV
-  data_type: NUMBER(22)
+  data_type: NUMBER(38,0)
   description: "Cấp độ quyền hạn của tài khoản người dùng"
   key: null
   fk_note: null
 - name: RECORD_TYPE
-  data_type: NUMBER(22)
+  data_type: NUMBER(38,0)
   description: "Loại/phân loại của bản ghi"
   key: null
   fk_note: null
 - name: JOB_ID
   data_type: RAW(16)
   description: "FK -> JOBS: Chức danh/vị trí công việc"
-  key: null
-  fk_note: "FK suy luận → JOBS.ID"
+  key: FK
+  fk_note: "FK → JOBS.ID"
 - name: JOB_NAME
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(4000)
   description: "Tên chức danh công việc (snapshot tại thời điểm tạo tài khoản)"
   key: null
   fk_note: null
 - name: ORG_PASSWORD
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(64)
   description: "Mật khẩu gốc mã hóa legacy (cần nâng cấp, không dùng mới)"
   key: null
   fk_note: null
 - name: DELETED
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động"
   key: null
   fk_note: null
 - name: CERTIFICATE_FLAG
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ sử dụng chứng chỉ số xác thực: 1=Có chứng chỉ số, 0=Không"
   key: null
   fk_note: null
 - name: EMAIL
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(100)
   description: "Địa chỉ email"
   key: null
   fk_note: null
@@ -107,15 +107,20 @@ columns:
 - name: BKM_ID
   data_type: RAW(16)
   description: "FK -> BANK_MONI: Ngân hàng lưu ký/giám sát liên quan đến báo cáo"
-  key: null
-  fk_note: "FK suy luận → BANK_MONI.ID"
+  key: FK
+  fk_note: "FK → BANK_MONI.ID"
 - name: FR_BR_ID
   data_type: RAW(16)
   description: "FK -> FOR_BRCH: Chi nhánh/VPĐD nước ngoài liên quan đến báo cáo"
-  key: null
-  fk_note: "FK suy luận → FOR_BRCH.ID"
+  key: FK
+  fk_note: "FK → FOR_BRCH.ID"
 - name: DATA_MIGRATION
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ dữ liệu từ hệ thống cũ (legacy migration): 1=Dữ liệu cũ, 0=Dữ liệu mới"
+  key: null
+  fk_note: null
+- name: CHECK_DIGITAL_SIGNATURE
+  data_type: NUMBER(1,0)
+  description: "Bật (1) / tắt (0) kiểm tra chữ ký số cho tài khoản ngoài UBCK"
   key: null
   fk_note: null

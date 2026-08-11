@@ -15,97 +15,97 @@ columns:
   key: null
   fk_note: null
 - name: CREATED_BY
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Tài khoản người tạo bản ghi"
   key: null
-  fk_note: "FK suy luận → USERS.ID"
+  fk_note: null
 - name: DATE_MODIFIED
   data_type: DATE
   description: "Thời điểm cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
 - name: MODIFY_BY
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Tài khoản người cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
 - name: RPT_ID
   data_type: RAW(16)
   description: "FK -> RPT_TEMP: Biểu mẫu báo cáo"
-  key: null
-  fk_note: "FK suy luận → RPT_TEMP.ID"
+  key: FK
+  fk_note: "FK → RPT_TEMP.ID"
 - name: PERIOD_TYPE
-  data_type: NUMBER(22)
+  data_type: NUMBER(18,2)
   description: "Loại kỳ báo cáo: 1=Ngày, 2=Tuần, 3=Tháng, 4=Quý, 5=Bán niên, 6=Năm, 7=Nửa tháng"
   key: null
   fk_note: null
 - name: RECORD_STATUS
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực"
   key: null
   fk_note: null
 - name: WORKING_DAY
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ ngày này là ngày làm việc: 1=Ngày làm việc, 0=Ngày nghỉ"
   key: null
   fk_note: null
 - name: SEND_IN_DAY
-  data_type: NUMBER(22)
+  data_type: NUMBER(10,0)
   description: "Số ngày phải gửi trong kỳ báo cáo tính từ đầu kỳ"
   key: null
   fk_note: null
 - name: LATEST_SEND_DATE
-  data_type: TIMESTAMP
+  data_type: TIMESTAMP(7)
   description: "Thời điểm gửi muộn nhất trong kỳ (ngày/giờ)"
   key: null
   fk_note: null
 - name: LATEST_SEND_WEEK
-  data_type: NUMBER(22)
+  data_type: NUMBER(10,0)
   description: "Thứ gửi muộn nhất trong tuần: 0=Chủ nhật, 1=Thứ hai...6=Thứ bảy"
   key: null
   fk_note: null
 - name: DESCRIPTION
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(4000)
   description: "Mô tả chi tiết"
   key: null
   fk_note: null
 - name: SF_PD_ID
   data_type: RAW(16)
   description: "FK -> RPT_PERIOD: Kỳ báo cáo cha (tham chiếu kỳ tự đặt)"
-  key: null
-  fk_note: "FK suy luận → RPT_PERIOD.ID"
+  key: FK
+  fk_note: "FK → SELF_SET_PD.ID"
 - name: REPEAT_TIME
-  data_type: NUMBER(22)
+  data_type: NUMBER(10,0)
   description: "Số kỳ lặp lại trong một chu kỳ báo cáo"
   key: null
   fk_note: null
 - name: ANNOUNCE_IS_WORKING_DAY
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ hạn CBTT tính theo ngày làm việc: 1=Ngày LV, 0=Ngày dương lịch"
   key: null
   fk_note: null
 - name: ANNOUNCE_LATEST_SEND_DATE
-  data_type: TIMESTAMP
+  data_type: TIMESTAMP(7)
   description: "Thời điểm CBTT muộn nhất trong kỳ"
   key: null
   fk_note: null
 - name: ANNOUNCE_SEND_IN_DAY
-  data_type: NUMBER(22)
+  data_type: NUMBER(10,0)
   description: "Số ngày phải CBTT tính từ đầu kỳ"
   key: null
   fk_note: null
 - name: ANNOUNCE_LATEST_SEND_WEEK
-  data_type: NUMBER(22)
+  data_type: NUMBER(10,0)
   description: "Thứ CBTT muộn nhất trong tuần (0=CN, 1=T2...6=T7)"
   key: null
   fk_note: null
 - name: DELETED
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động"
   key: null
   fk_note: null
 - name: FILE_NAME
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(4000)
   description: "Tên file hoặc danh sách tên file đính kèm"
   key: null
   fk_note: null

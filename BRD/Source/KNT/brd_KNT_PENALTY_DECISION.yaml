@@ -22,12 +22,12 @@ columns:
 - name: COMPLAINT_DOSSIER_ID
   data_type: "VARCHAR2(200)"
   description: "FK -> hồ sơ đơn thư gốc (nếu từ đơn thư)"
-  key: null
+  key: FK
   fk_note: null
 - name: COMPLAINT_ID
   data_type: "VARCHAR2(200)"
   description: "FK -> đơn thư khiếu nại liên quan"
-  key: null
+  key: FK
   fk_note: null
 - name: CONTENT
   data_type: "CLOB"
@@ -43,7 +43,7 @@ columns:
   data_type: "VARCHAR2(200)"
   description: "Tài khoản/tên người tạo bản ghi"
   key: null
-  fk_note: "FK suy luận → SYS_USER.ID"
+  fk_note: null
 - name: DECISION_NAME
   data_type: "VARCHAR2(4000)"
   description: "Tên đầy đủ của quyết định xử phạt"
@@ -87,12 +87,12 @@ columns:
 - name: INSPECTED_SUBJECT_ID
   data_type: "VARCHAR2(200)"
   description: "FK -> đối tượng thanh tra trong hồ sơ thanh tra"
-  key: null
+  key: FK
   fk_note: null
 - name: INSPECTION_DOSSIER_ID
   data_type: "VARCHAR2(200)"
   description: "FK -> hồ sơ thanh tra gốc (nếu từ thanh tra)"
-  key: null
+  key: FK
   fk_note: null
 - name: MAIN_PENALTY_TYPE
   data_type: "NUMBER"
@@ -127,8 +127,8 @@ columns:
 - name: SUBJECT_ID
   data_type: "VARCHAR2(200)"
   description: "FK -> đối tượng bị xử phạt"
-  key: null
-  fk_note: "FK suy luận → SUBJECT_PROFILE.ID"
+  key: FK
+  fk_note: null
 - name: SUBJECT_NAME
   data_type: "VARCHAR2(4000)"
   description: "Tên tổ chức/cá nhân đối tượng"

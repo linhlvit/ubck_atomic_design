@@ -12,120 +12,120 @@ columns:
 - name: FUND_ID
   data_type: RAW(16)
   description: "FK -> FUNDS: Quỹ đầu tư liên quan"
-  key: null
-  fk_note: "FK suy luận → FUNDS.ID"
+  key: FK
+  fk_note: null
 - name: SEC_ID
   data_type: RAW(16)
   description: "FK -> SECURITIES: Công ty QLQ liên quan"
-  key: null
-  fk_note: "FK suy luận → SECURITIES.ID"
+  key: FK
+  fk_note: null
 - name: EXCUTION_DATE
-  data_type: TIMESTAMP
+  data_type: TIMESTAMP(7)
   description: "Thời điểm thực hiện/nộp báo cáo"
   key: null
   fk_note: null
 - name: PERIOD_TYPE
-  data_type: NUMBER(22)
+  data_type: NUMBER(18,2)
   description: "Loại kỳ báo cáo: 1=Ngày, 2=Tuần, 3=Tháng, 4=Quý, 5=Bán niên, 6=Năm, 7=Nửa tháng"
   key: null
   fk_note: null
 - name: NAV
-  data_type: NUMBER(22)
+  data_type: NUMBER(38,0)
   description: "Giá trị tài sản ròng (NAV) của quỹ (đơn vị: VNĐ)"
   key: null
   fk_note: null
 - name: TOTAL_PROPERTY
-  data_type: NUMBER(22)
+  data_type: NUMBER(38,0)
   description: "Tổng tài sản của quỹ (đơn vị: VNĐ)"
   key: null
   fk_note: null
 - name: TOTAL_CCQ
-  data_type: NUMBER(22)
+  data_type: NUMBER(38,0)
   description: "Tổng số CCQ đang lưu hành trong kỳ báo cáo"
   key: null
   fk_note: null
 - name: NAV_CCQ
-  data_type: NUMBER(22)
+  data_type: NUMBER(38,0)
   description: "NAV trên mỗi chứng chỉ quỹ - NAV/CCQ (đơn vị: VNĐ)"
   key: null
   fk_note: null
 - name: PERIOD_REPORT
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(4000)
   description: "Kỳ báo cáo dạng chuỗi (VD: Q1/2024, T03/2024)"
   key: null
   fk_note: null
 - name: SUM_VAL_PUBLIC_STOCK
-  data_type: NUMBER(22)
+  data_type: NUMBER(38,0)
   description: "Tổng giá trị cổ phiếu niêm yết trong danh mục quỹ (đơn vị: VNĐ)"
   key: null
   fk_note: null
 - name: SUM_VAL_PRIVATE_STOCK
-  data_type: NUMBER(22)
+  data_type: NUMBER(38,0)
   description: "Tổng giá trị cổ phiếu chưa niêm yết (đơn vị: VNĐ)"
   key: null
   fk_note: null
 - name: SUM_VAL_BONDS
-  data_type: NUMBER(22)
+  data_type: NUMBER(38,0)
   description: "Tổng giá trị trái phiếu trong danh mục quỹ (đơn vị: VNĐ)"
   key: null
   fk_note: null
 - name: SUM_VAL_OTHER_STOCK
-  data_type: NUMBER(22)
+  data_type: NUMBER(38,0)
   description: "Tổng giá trị chứng khoán khác (đơn vị: VNĐ)"
   key: null
   fk_note: null
 - name: SUM_VAL_OTHER_PROPERTY
-  data_type: NUMBER(22)
+  data_type: NUMBER(38,0)
   description: "Tổng giá trị tài sản khác ngoài CK (đơn vị: VNĐ)"
   key: null
   fk_note: null
 - name: SUM_VAL_MONEY
-  data_type: NUMBER(22)
+  data_type: NUMBER(38,0)
   description: "Tổng giá trị tiền và tương đương tiền (đơn vị: VNĐ)"
   key: null
   fk_note: null
 - name: PROP_PUBLIC_STOCK
-  data_type: NUMBER(22)
+  data_type: NUMBER(38,0)
   description: "Tỷ trọng cổ phiếu niêm yết trên tổng tài sản (%)"
   key: null
   fk_note: null
 - name: PROP_PRIVATE_STOCK
-  data_type: NUMBER(22)
+  data_type: NUMBER(38,0)
   description: "Tỷ trọng cổ phiếu chưa niêm yết trên tổng tài sản (%)"
   key: null
   fk_note: null
 - name: PROP_BONDS
-  data_type: NUMBER(22)
+  data_type: NUMBER(38,0)
   description: "Tỷ trọng trái phiếu trên tổng tài sản (%)"
   key: null
   fk_note: null
 - name: PROP_OTHER_STOCK
-  data_type: NUMBER(22)
+  data_type: NUMBER(38,0)
   description: "Tỷ trọng chứng khoán khác trên tổng tài sản (%)"
   key: null
   fk_note: null
 - name: PROP_OTHER_PROPERTY
-  data_type: NUMBER(22)
+  data_type: NUMBER(38,0)
   description: "Tỷ trọng tài sản khác trên tổng tài sản (%)"
   key: null
   fk_note: null
 - name: PROP_MONEY
-  data_type: NUMBER(22)
+  data_type: NUMBER(38,0)
   description: "Tỷ trọng tiền và tương đương tiền trên tổng tài sản (%)"
   key: null
   fk_note: null
 - name: PERIOD_REPORT_LIST
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(4000)
   description: "Kỳ báo cáo danh sách (chuỗi định dạng hiển thị trên giao diện)"
   key: null
   fk_note: null
 - name: NUMBER_CER_FUNDS
-  data_type: NUMBER(22)
+  data_type: NUMBER(38,0)
   description: "Số lượng CCQ lưu hành trong kỳ báo cáo"
   key: null
   fk_note: null
 - name: PERIOD_REPORT_NUM_CER
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(4000)
   description: "Kỳ xác định số CCQ lưu hành (chuỗi định dạng hiển thị)"
   key: null
   fk_note: null

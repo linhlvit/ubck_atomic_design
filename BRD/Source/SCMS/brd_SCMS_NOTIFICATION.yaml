@@ -5,9 +5,9 @@ table: NOTIFICATION
 brd_ref: BRD-SRC-SCMS-NOTIFICATION
 columns:
   - name: ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
-    key: PK
+    key: null
     fk_note: null
   - name: TITLE
     data_type: NVARCHAR2(500)
@@ -35,37 +35,37 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "ID tài khoản người dùng tạo bản ghi"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: CREATED_AT
     data_type: TIMESTAMP(6)
     description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
     key: null
     fk_note: null
   - name: RECORD_STATUS
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Trang thai thong bao: 0 = Chua doc; 1 = Da doc"
     key: null
     fk_note: null
   - name: RECIPIENT_ID
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: "FK -> sys_user: Người nhận thông báo/tin nhắn"
-    key: FK
-    fk_note: "FK → SYS_USER.ID"
+    key: null
+    fk_note: null
   - name: NOTIFICATION_TYPE
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Loai thong bao: 1 = Thay doi thong tin; 2 = Gui bao cao; 3 = CBTT; 4 = Canh bao vi pham; 5 = Phe duyet; 6 = Tu choi; 7 = Chung thu so sap het han; 8 = Huy bao cao; 9 = Nhac nho nop bao cao; 10 = He thong; 11 = Khac"
     key: null
     fk_note: null
   - name: PATH_URL
-    data_type: VARCHAR2(1000 BYTE)
+    data_type: VARCHAR2(1000)
     description: ""
     key: null
     fk_note: null
   - name: READ
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Cờ đã đọc: 1=Đã đọc, 0=Chưa đọc"
     key: null
     fk_note: null
@@ -75,12 +75,57 @@ columns:
     key: null
     fk_note: null
   - name: REF_ID
-    data_type: NUMBER(19)
+    data_type: NUMBER(19,0)
     description: "ID đối tượng tham chiếu (báo cáo/hồ sơ liên quan đến thông báo)"
     key: null
     fk_note: null
   - name: REF_TYPE
-    data_type: VARCHAR2(100 BYTE)
+    data_type: VARCHAR2(100)
     description: "Loai doi tuong tham chieu: PERIODIC_REPORT = Bao cao dinh ky; ADHOC_REPORT = Bao cao dot xuat; DISCLOSURE = Cong bo thong tin; ALERT = Canh bao; PROFILE = Ho so CTCK"
+    key: null
+    fk_note: null
+  - name: EXTERNAL_NOTICE_ID
+    data_type: VARCHAR2(36)
+    description: null
+    key: null
+    fk_note: null
+  - name: COMPANY_CODE
+    data_type: VARCHAR2(100)
+    description: null
+    key: null
+    fk_note: null
+  - name: CONFIRM_CALLBACK_URL
+    data_type: VARCHAR2(2000)
+    description: null
+    key: null
+    fk_note: null
+  - name: PROACTIVE_NOTICE_TYPE
+    data_type: VARCHAR2(50)
+    description: null
+    key: null
+    fk_note: null
+  - name: PRIORITY
+    data_type: VARCHAR2(20)
+    description: null
+    key: null
+    fk_note: null
+  - name: SENDER_NAME
+    data_type: VARCHAR2(500)
+    description: null
+    key: null
+    fk_note: null
+  - name: CONFIRMED
+    data_type: NUMBER(1,0)
+    description: null
+    key: null
+    fk_note: null
+  - name: CONFIRMED_AT
+    data_type: TIMESTAMP(6)
+    description: null
+    key: null
+    fk_note: null
+  - name: CONFIRMED_BY
+    data_type: VARCHAR2(500)
+    description: null
     key: null
     fk_note: null

@@ -5,15 +5,15 @@ table: AUDITOR
 brd_ref: BRD-SRC-SCMS-AUDITOR
 columns:
   - name: ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
-    key: PK
+    key: null
     fk_note: null
   - name: AUDIT_FIRM_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> audit_firm: Công ty kiểm toán"
-    key: FK
-    fk_note: "FK → AUDIT_FIRM.ID"
+    key: null
+    fk_note: null
   - name: FULL_NAME
     data_type: NVARCHAR2(250)
     description: "Họ và tên đầy đủ (cá nhân) hoặc tên đầy đủ (tổ chức)"
@@ -55,7 +55,7 @@ columns:
     key: null
     fk_note: null
   - name: RECORD_STATUS
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Trang thai kiem toan vien: 1 = Hoat dong/Con hanh nghe; 0 = Ngung hanh nghe"
     key: null
     fk_note: null

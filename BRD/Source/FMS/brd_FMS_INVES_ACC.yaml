@@ -15,32 +15,32 @@ columns:
   key: null
   fk_note: null
 - name: CREATED_BY
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Tài khoản người tạo bản ghi"
   key: null
-  fk_note: "FK suy luận → USERS.ID"
+  fk_note: null
 - name: DATE_MODIFIED
   data_type: DATE
   description: "Thời điểm cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
 - name: MODIFY_BY
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Tài khoản người cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
 - name: INVES_ID
   data_type: RAW(16)
   description: "FK -> INVESTOR: Nhà đầu tư ủy thác sở hữu tài khoản"
-  key: null
-  fk_note: "FK suy luận → INVES.ID"
+  key: FK
+  fk_note: "FK → INVES.ID"
 - name: ACCOUNT
   data_type: NVARCHAR2(300)
   description: "Số tài khoản đầu tư"
   key: null
   fk_note: null
 - name: RECORD_STATUS
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực"
   key: null
   fk_note: null
@@ -50,7 +50,7 @@ columns:
   key: null
   fk_note: null
 - name: ACC_PLACE
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(2000)
   description: "Tổ chức/địa điểm mở tài khoản đầu tư"
   key: null
   fk_note: null
@@ -60,32 +60,32 @@ columns:
   key: null
   fk_note: null
 - name: DELETED
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động"
   key: null
   fk_note: null
 - name: AD_SCALE
-  data_type: NUMBER(22)
+  data_type: NUMBER(18,2)
   description: "Quy mô uỷ thác cam kết (đơn vị: VNĐ)"
   key: null
   fk_note: null
 - name: ACT_SCALE
-  data_type: NUMBER(22)
+  data_type: NUMBER(18,2)
   description: "Quy mô uỷ thác thực tế (đơn vị: VNĐ)"
   key: null
   fk_note: null
 - name: LIST_VALUE
-  data_type: NUMBER(22)
+  data_type: NUMBER(18,2)
   description: "Giá trị danh mục đầu tư (đơn vị: VNĐ)"
   key: null
   fk_note: null
 - name: MANAGER_FEE
-  data_type: NUMBER(22)
+  data_type: NUMBER(18,2)
   description: "Phí quản lý danh mục (%/năm)"
   key: null
   fk_note: null
 - name: DATA_MIGRATION
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ dữ liệu từ hệ thống cũ (legacy migration): 1=Dữ liệu cũ, 0=Dữ liệu mới"
   key: null
   fk_note: null

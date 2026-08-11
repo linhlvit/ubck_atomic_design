@@ -15,82 +15,82 @@ columns:
   key: null
   fk_note: null
 - name: CREATED_BY
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Tài khoản người tạo bản ghi"
   key: null
-  fk_note: "FK suy luận → USERS.ID"
+  fk_note: null
 - name: DATE_MODIFIED
   data_type: DATE
   description: "Thời điểm cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
 - name: MODIFY_BY
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Tài khoản người cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
 - name: INSDR_ID
   data_type: RAW(16)
   description: "FK -> INSIDER: Cổ đông nội bộ liên quan"
-  key: null
-  fk_note: "FK suy luận → INSIDER.ID"
+  key: FK
+  fk_note: "FK → INSIDER.ID"
 - name: TX_DATE
-  data_type: TIMESTAMP
+  data_type: TIMESTAMP(7)
   description: "Thời điểm giao dịch chuyển nhượng"
   key: null
   fk_note: null
 - name: TX_NUM
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(400)
   description: "Số hiệu giao dịch chuyển nhượng"
   key: null
   fk_note: null
 - name: AOORP
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(2)
   description: "Mua vào (A) hoặc Bán ra (O) hoặc Đăng ký (R/P) trong giao dịch"
   key: null
   fk_note: null
 - name: BUS_DATE
-  data_type: TIMESTAMP
+  data_type: TIMESTAMP(7)
   description: "Ngày thanh toán/giải quyết giao dịch (business date)"
   key: null
   fk_note: null
 - name: PREPERCENT
-  data_type: NUMBER(22)
+  data_type: NUMBER(18,2)
   description: "Tỷ lệ sở hữu trước giao dịch (%)"
   key: null
   fk_note: null
 - name: AFT_PERCENT
-  data_type: NUMBER(22)
+  data_type: NUMBER(18,2)
   description: "Tỷ lệ sở hữu sau giao dịch (%)"
   key: null
   fk_note: null
 - name: PRE_QTTY
-  data_type: NUMBER(22)
+  data_type: NUMBER(18,2)
   description: "Số lượng CCQ/cổ phần trước giao dịch"
   key: null
   fk_note: null
 - name: AFT_QTTY
-  data_type: NUMBER(22)
+  data_type: NUMBER(18,2)
   description: "Số lượng CCQ/cổ phần sau giao dịch"
   key: null
   fk_note: null
 - name: PRECAPITAL
-  data_type: NUMBER(22)
+  data_type: NUMBER(18,2)
   description: "Vốn góp trước giao dịch (đơn vị: VNĐ)"
   key: null
   fk_note: null
 - name: AFT_CAPITAL
-  data_type: NUMBER(22)
+  data_type: NUMBER(18,2)
   description: "Vốn góp sau giao dịch (đơn vị: VNĐ)"
   key: null
   fk_note: null
 - name: DATA_MIGRATION
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ dữ liệu từ hệ thống cũ (legacy migration): 1=Dữ liệu cũ, 0=Dữ liệu mới"
   key: null
   fk_note: null
 - name: TRANSFER_INSIDER
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ giao dịch chuyển nhượng từ người nội bộ: 1=Nội bộ, 0=Bên ngoài"
   key: null
   fk_note: null

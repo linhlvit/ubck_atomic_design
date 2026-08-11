@@ -5,15 +5,15 @@ table: FORM_REPORT_PERIODIC
 brd_ref: BRD-SRC-SCMS-FORM_REPORT_PERIODIC
 columns:
   - name: ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
-    key: PK
+    key: null
     fk_note: null
   - name: FORM_REPORT_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> form_report: Biểu mẫu báo cáo liên quan"
-    key: FK
-    fk_note: "FK → FORM_REPORT.ID"
+    key: null
+    fk_note: null
   - name: REPORT_PERIOD
     data_type: NVARCHAR2(20)
     description: "Kỳ báo cáo (Ngày/Tuần/Tháng/Quý/Bán niên/Năm)"
@@ -30,7 +30,7 @@ columns:
     key: null
     fk_note: null
   - name: UNIT
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Đơn vị tính (Triệu đồng/Tỷ đồng/Phần trăm/Số lượng)"
     key: null
     fk_note: null
@@ -50,12 +50,12 @@ columns:
     key: null
     fk_note: null
   - name: ACTIVE
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Cờ đang sử dụng/hoạt động: 1=Đang dùng, 0=Không dùng"
     key: null
     fk_note: null
   - name: RECORD_STATUS
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Trang thai lich ky bieu mau: 1 = Dang hoat dong; 0 = Khong su dung"
     key: null
     fk_note: null
@@ -65,17 +65,17 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "ID tài khoản người dùng tạo bản ghi"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: CREATED_AT
     data_type: TIMESTAMP(6)
     description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
     key: null
     fk_note: null
   - name: ON_DAY
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Vào ngày cụ thể trong tháng (VD: ngày 15, ngày cuối tháng)"
     key: null
     fk_note: null
@@ -85,12 +85,12 @@ columns:
     key: null
     fk_note: null
   - name: PREV_FORM_PERIODIC_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "id d?nh k? cu"
     key: null
     fk_note: null
   - name: LEGACY_REPORT_ID
-    data_type: VARCHAR2(10 BYTE)
+    data_type: VARCHAR2(10)
     description: "ID bao cao he thong cu"
     key: null
     fk_note: null

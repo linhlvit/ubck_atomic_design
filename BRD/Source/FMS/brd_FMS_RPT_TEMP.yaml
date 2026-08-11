@@ -15,47 +15,47 @@ columns:
   key: null
   fk_note: null
 - name: CREATED_BY
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Tài khoản người tạo bản ghi"
   key: null
-  fk_note: "FK suy luận → USERS.ID"
+  fk_note: null
 - name: DATE_MODIFIED
   data_type: DATE
   description: "Thời điểm cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
 - name: MODIFY_BY
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(200)
   description: "Tài khoản người cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
 - name: ITEM_NAME
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(4000)
   description: "Tên hiển thị chính"
   key: null
   fk_note: null
 - name: LEGAL_BASIS
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(4000)
   description: "Cơ sở pháp lý của biểu mẫu báo cáo (tên thông tư/nghị định)"
   key: null
   fk_note: null
 - name: REPORT_TYPE
-  data_type: NUMBER(22)
+  data_type: NUMBER(18,2)
   description: "Loại báo cáo: 1=Báo cáo định kỳ, 2=Báo cáo bất thường, 3=Báo cáo theo yêu cầu, 4=Báo cáo khác"
   key: null
   fk_note: null
 - name: REQUIRE_DISCLOSURE
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ báo cáo cần công bố thông tin: 1=Cần CBTT, 0=Không"
   key: null
   fk_note: null
 - name: REQUIRE_IMPORT
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ báo cáo bắt buộc import file: 1=Phải import, 0=Không bắt buộc"
   key: null
   fk_note: null
 - name: DESCRIPTION
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(4000)
   description: "Mô tả chi tiết"
   key: null
   fk_note: null
@@ -65,57 +65,57 @@ columns:
   key: null
   fk_note: null
 - name: RECORD_STATUS
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực"
   key: null
   fk_note: null
 - name: SELF_MEMBER_SETTING
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ thành viên tự cấu hình kỳ báo cáo: 1=Tự cấu hình, 0=Hệ thống cấu hình"
   key: null
   fk_note: null
 - name: DELETED
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động"
   key: null
   fk_note: null
 - name: FINANCIAL_REPORT
-  data_type: NUMBER(22)
+  data_type: NUMBER(18,2)
   description: "Cờ là báo cáo tài chính: 1=Báo cáo TC, 0=Không"
   key: null
   fk_note: null
 - name: VERSION
-  data_type: NUMBER(22)
+  data_type: NUMBER(18,2)
   description: "Số phiên bản biểu mẫu/báo cáo"
   key: null
   fk_note: null
 - name: FTYPE_ID
   data_type: RAW(16)
   description: "FK -> FUND_TYPE: Loại quỹ đầu tư"
-  key: null
-  fk_note: "FK suy luận → FUND_TYPE.ID"
+  key: FK
+  fk_note: "FK → FUND_TYPE.ID"
 - name: REPORT_GROUP
-  data_type: NUMBER(22)
+  data_type: NUMBER(10,0)
   description: "Nhóm báo cáo: 1=Công ty QLQ, 2=Quỹ đầu tư, 3=Quỹ hưu trí, 4=Đại lý..."
   key: null
   fk_note: null
 - name: SYSTEM_OBJECTS
-  data_type: NUMBER(22)
+  data_type: NUMBER(10,0)
   description: "Đối tượng hệ thống áp dụng: 1=QLQ, 2=QĐT, 3=BKGS, 4=ĐLPP, 5=ĐLCN..."
   key: null
   fk_note: null
 - name: CODE
-  data_type: NVARCHAR2(300)
+  data_type: NVARCHAR2(4000)
   description: "Mã định danh ngắn gọn"
   key: null
   fk_note: null
 - name: AUDIT_REPORT
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ là báo cáo kiểm toán: 1=Báo cáo kiểm toán, 0=Không"
   key: null
   fk_note: null
 - name: CHECK_PRICE_SETTING
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ kiểm tra cài đặt giá khi nộp báo cáo: 1=Có kiểm tra, 0=Không"
   key: null
   fk_note: null
@@ -125,7 +125,7 @@ columns:
   key: null
   fk_note: null
 - name: EFORM_ENABLED
-  data_type: NUMBER(22)
+  data_type: NUMBER(1,0)
   description: "Cờ bật cấu hình eForm điện tử: 1=Có bản khai trực tuyến, 0=Không"
   key: null
   fk_note: null

@@ -5,15 +5,15 @@ table: SC_FIRM_SERVICE
 brd_ref: BRD-SRC-SCMS-SC_FIRM_SERVICE
 columns:
   - name: ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
-    key: PK
+    key: null
     fk_note: null
   - name: SC_FIRM_INFO_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> sc_firm_info: Công ty chứng khoán liên quan"
-    key: FK
-    fk_note: "FK → SC_FIRM_INFO.ID"
+    key: null
+    fk_note: null
   - name: DM_DICH_VU_ID
     data_type: NUMBER(10)
     description: "Cột dm_dich_vu_id — xem thêm tài liệu đặc tả SCMS"
@@ -50,32 +50,32 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "ID tài khoản người dùng tạo bản ghi"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: CREATED_AT
     data_type: TIMESTAMP(6)
     description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
     key: null
     fk_note: null
   - name: LAST_MODIFIED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "ID tài khoản người dùng cập nhật lần cuối"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: LAST_MODIFIED_AT
     data_type: TIMESTAMP(6)
     description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)"
     key: null
     fk_note: null
   - name: RECORD_STATUS
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Trang thai dich vu duoc cap phep: 1 = Dang hoat dong/con hieu luc; 0 = Ngung hoat dong/het hieu luc"
     key: null
     fk_note: null
   - name: PROVISIONAL
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Co ban nhap: 1 = Ban nhap; 0 = Chinh thuc"
     key: null
     fk_note: null
@@ -85,10 +85,10 @@ columns:
     key: null
     fk_note: null
   - name: SERVICE_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> cat_service: Dịch vụ chứng khoán"
-    key: FK
-    fk_note: "FK → CAT_SERVICE.ID"
+    key: null
+    fk_note: null
   - name: EFFECTIVE_DATE
     data_type: DATE
     description: "Ngày văn bản/thay đổi có hiệu lực"
@@ -97,5 +97,10 @@ columns:
   - name: DOCUMENT_NUMBER
     data_type: VARCHAR2(200)
     description: "Số văn bản pháp lý (QĐ/GP/CV/Thông tư)"
+    key: null
+    fk_note: null
+  - name: SERVICE_CATALOG_ID
+    data_type: NUMBER(10,0)
+    description: null
     key: null
     fk_note: null

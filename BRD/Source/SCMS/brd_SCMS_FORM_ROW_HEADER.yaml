@@ -5,17 +5,17 @@ table: FORM_ROW_HEADER
 brd_ref: BRD-SRC-SCMS-FORM_ROW_HEADER
 columns:
   - name: ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
     key: PK
     fk_note: null
   - name: FORM_SHEET_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: ""
     key: null
-    fk_note: "FK suy luận → FORM_SHEET.ID"
+    fk_note: null
   - name: SORT_ORDER
-    data_type: NUMBER(4)
+    data_type: NUMBER(4,0)
     description: "Thứ tự sắp xếp hiển thị"
     key: null
     fk_note: null
@@ -30,7 +30,7 @@ columns:
     key: null
     fk_note: null
   - name: HIERARCHY_LEVEL
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: ""
     key: null
     fk_note: null
@@ -45,7 +45,7 @@ columns:
     key: null
     fk_note: null
   - name: BOLD
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Cờ in đậm: 1=In đậm, 0=Thường"
     key: null
     fk_note: null
@@ -65,27 +65,37 @@ columns:
     key: null
     fk_note: null
   - name: LAST_MODIFIED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "ID tài khoản người dùng cập nhật lần cuối"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: CREATED_BY
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "ID tài khoản người dùng tạo bản ghi"
     key: null
-    fk_note: "FK suy luận → SYS_USER.ID"
+    fk_note: null
   - name: HEADER_TITLE
     data_type: VARCHAR2(500)
     description: "Tiêu đề của nhóm hàng header"
     key: null
     fk_note: null
   - name: PARENT_HEADER_ID
-    data_type: NUMBER(10)
+    data_type: NUMBER(10,0)
     description: "FK -> form_row_header: Header cha trong cấu trúc phân cấp"
-    key: FK
-    fk_note: "FK → FORM_ROW_HEADER.ID"
+    key: null
+    fk_note: null
   - name: RECORD_STATUS
-    data_type: NUMBER(1)
+    data_type: NUMBER(1,0)
     description: "Trang thai tieu de hang: 1 = Dang su dung; 0 = Khong su dung"
+    key: null
+    fk_note: null
+  - name: START_COLUMN
+    data_type: NUMBER(10,0)
+    description: null
+    key: null
+    fk_note: null
+  - name: END_COLUMN
+    data_type: NUMBER(10,0)
+    description: null
     key: null
     fk_note: null

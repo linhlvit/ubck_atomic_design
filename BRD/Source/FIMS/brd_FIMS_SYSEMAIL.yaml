@@ -38,17 +38,17 @@ columns:
   data_type: "NUMBER(18,2)"
   description: "FK -> USERS: Người gửi email"
   key: FK
-  fk_note: "FK → USERS"
+  fk_note: "FK → USERS.Id"
 - name: UToId
   data_type: "NUMBER(18,2)"
   description: "FK -> USERS: Người nhận thông báo"
   key: FK
-  fk_note: "FK → USERS"
+  fk_note: "FK → USERS.Id"
 - name: ParentId
   data_type: "NUMBER(18,2)"
   description: "FK -> MENUS: Menu cha trong cây phân cấp menu"
   key: FK
-  fk_note: "FK → MENUS"
+  fk_note: "FK → SYSEMAIL.Id"
 - name: Title
   data_type: "NVARCHAR2(2000 CHAR)"
   description: "Tiêu đề thông báo"
@@ -90,12 +90,17 @@ columns:
   key: null
   fk_note: null
 - name: UFromUsername
-  data_type: "VARCHAR2(100 BYTE)"
+  data_type: "VARCHAR2(100)"
   description: "Username người gửi email"
   key: null
   fk_note: null
 - name: UToUsername
-  data_type: "VARCHAR2(100 BYTE)"
+  data_type: "VARCHAR2(100)"
   description: "Username người nhận thông báo"
+  key: null
+  fk_note: null
+- name: FileName
+  data_type: "NVARCHAR2(1000)"
+  description: null
   key: null
   fk_note: null

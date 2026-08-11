@@ -38,7 +38,7 @@ columns:
   data_type: "NUMBER(18,2)"
   description: "FK -> INFODISCREPRES: Đối tượng gửi báo cáo thực hiện CBTT này"
   key: FK
-  fk_note: "FK → INFODISCREPRES"
+  fk_note: "FK → INFODISCREPRES.Id"
 - name: YearValue
   data_type: "NUMBER(18,2)"
   description: "Năm của kỳ CBTT/báo cáo"
@@ -58,7 +58,7 @@ columns:
   data_type: "NUMBER(18,2)"
   description: "FK -> ANNOUNCETYPE: Loại hình công bố thông tin"
   key: FK
-  fk_note: "FK → ANNOUNCETYPE"
+  fk_note: null
 - name: Name
   data_type: "NVARCHAR2(2000 CHAR)"
   description: "Tên đầy đủ (tiếng Việt)"
@@ -118,42 +118,42 @@ columns:
   data_type: "NUMBER(18,0)"
   description: "FK -> FUNDCOMPANY: QLQ nơi người hành nghề làm việc"
   key: FK
-  fk_note: "FK → FUNDCOMPANY"
+  fk_note: null
 - name: SecComId
   data_type: "NUMBER(18,0)"
   description: "FK -> SECURITIESCOMPANY: CTCK nơi người hành nghề làm việc"
   key: FK
-  fk_note: "FK → SECURITIESCOMPANY"
+  fk_note: null
 - name: BankId
   data_type: "NUMBER(18,0)"
   description: "FK -> BANKMONI: Ngân hàng lưu ký liên quan"
   key: FK
-  fk_note: "FK → BANKMONI"
+  fk_note: null
 - name: DepCenId
   data_type: "NUMBER(18,0)"
   description: "FK -> DEPOSITORYCENTER: VSDC nơi người hành nghề làm việc"
   key: FK
-  fk_note: "FK → DEPOSITORYCENTER"
+  fk_note: null
 - name: StockCenId
   data_type: "NUMBER(18,0)"
   description: "FK -> STOCKEXCHANGE: Sở GD nơi người hành nghề làm việc"
   key: FK
-  fk_note: "FK → STOCKEXCHANGE"
+  fk_note: null
 - name: BranchsId
   data_type: "NUMBER(18,0)"
   description: "FK -> BRANCHS: Chi nhánh QLQ NN liên quan"
   key: FK
-  fk_note: "FK → BRANCHS"
+  fk_note: null
 - name: InvestorId
   data_type: "NUMBER(18,0)"
   description: "FK -> INVESTOR: Nhà đầu tư nước ngoài trong phiên bản hợp đồng"
   key: FK
-  fk_note: "FK → INVESTOR"
+  fk_note: null
 - name: RptMemberId
   data_type: "NUMBER(18,0)"
   description: "FK -> RPTMEMBER: Báo cáo thành viên liên quan đến CBTT này"
   key: FK
-  fk_note: "FK → RPTMEMBER"
+  fk_note: null
 - name: IncidentMatterType
   data_type: "NUMBER(18,0)"
   description: "Loại sự cố/sự vụ phát sinh (dùng khi CBTT là báo cáo sự vụ)"
@@ -168,4 +168,9 @@ columns:
   data_type: "NCLOB"
   description: "Dữ liệu eform đã điền (JSON) khi NĐT nộp báo cáo qua form động"
   key: null
+  fk_note: null
+- name: RPT_EVENT_TYPE_ID
+  data_type: "NUMBER(18,0)"
+  description: "-> RPT_EVENT_TYPE: Sự vụ/báo cáo sự vụ liên quan đến bản CBTT này (nếu có)"
+  key: FK
   fk_note: null
