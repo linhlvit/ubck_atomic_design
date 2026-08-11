@@ -66,7 +66,7 @@ flowchart LR
 
 Phục vụ Tab CHÀO BÁN PHÁT HÀNH — Nhóm 2 (giá trị cấp phép theo loại hình).
 
-> Nguồn Atomic: `Public Company Securities Offering Plan` (quan hệ 1-N với Offering cha theo `offering_method_code`) + `Public Company Securities Offering` (JOIN lấy `official_letter_dt` làm FK date, vì Plan không có ngày riêng). `Offering Method Dimension` ETL-derived (DISTINCT) trực tiếp từ `Public Company Securities Offering Plan.offering_method_code`; `Offering_Method_Name` JOIN sang `Classification Value` (`cl_value`, bảng Fundamental vật lý ở Atomic — theo `cl_value.cl_code = offering_method_code AND cl_value.schema_code = 'SO_OFFERING_METHOD'`) lấy `cl_nm` — không tự CASE WHEN gộp nhóm trên Dimension.
+> Nguồn Atomic: `Public Company Securities Offering Plan` (quan hệ 1-N với Offering cha theo `offering_method_code`) + `Public Company Securities Offering` (JOIN lấy `certificate_dt` làm FK date, vì Plan không có ngày riêng). `Offering Method Dimension` ETL-derived (DISTINCT) trực tiếp từ `Public Company Securities Offering Plan.offering_method_code`; `Offering_Method_Name` JOIN sang `Classification Value` (`cl_value`, bảng Fundamental vật lý ở Atomic — theo `cl_value.cl_code = offering_method_code AND cl_value.schema_code = 'SO_OFFERING_METHOD'`) lấy `cl_nm` — không tự CASE WHEN gộp nhóm trên Dimension.
 
 ```mermaid
 flowchart LR
@@ -107,7 +107,7 @@ flowchart LR
     cdr_dt_dim --> fct_securities_offering_plan_snpst
 ```
 
-> **Ghi chú:** `Public Company Securities Offering` (Offering cha) feed vào Fact vì `Official_Letter_Date` (FK date) và `Public Company Code` (FK company) chỉ tồn tại trên bảng cha — Plan phải JOIN ngược lên cha để lấy 2 giá trị này.
+> **Ghi chú:** `Public Company Securities Offering` (Offering cha) feed vào Fact vì `Certificate_Date` (FK date) và `Public Company Code` (FK company) chỉ tồn tại trên bảng cha — Plan phải JOIN ngược lên cha để lấy 2 giá trị này.
 
 ---
 
@@ -115,7 +115,7 @@ flowchart LR
 
 Phục vụ Tab CHÀO BÁN PHÁT HÀNH — Nhóm 3 (giá trị huy động theo loại hình × ngành).
 
-> Nguồn Atomic: `Public Company Securities Offering Result` (quan hệ 1-N với Offering cha theo `offering_method_code`) + `Public Company Securities Offering` (JOIN lấy `official_letter_dt` làm FK date). Dùng chung `Offering Method Dimension` với Cụm 1b (reuse, cùng scheme `IDS_SO_OFFERING_METHOD`).
+> Nguồn Atomic: `Public Company Securities Offering Result` (quan hệ 1-N với Offering cha theo `offering_method_code`) + `Public Company Securities Offering` (JOIN lấy `certificate_dt` làm FK date). Dùng chung `Offering Method Dimension` với Cụm 1b (reuse, cùng scheme `IDS_SO_OFFERING_METHOD`).
 
 ```mermaid
 flowchart LR
@@ -271,7 +271,7 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_QLCB_1 | Ngày | — | Chiều | `GROUP BY Official Letter Date` — FK date trên Fact, dùng làm slicer/period cho toàn Nhóm — `Public Company Securities Offering.official_letter_dt` | — | READY |
+| K_QLCB_1 | Ngày | — | Chiều | `GROUP BY Certificate Date` — FK date trên Fact, dùng làm slicer/period cho toàn Nhóm — `Public Company Securities Offering.certificate_dt` | BA cập nhật 2026-08-11: đổi field lọc kỳ báo cáo từ Official Letter Date (ngày công văn) sang Certificate Date (ngày cấp GCN) | READY |
 | K_QLCB_2 | Ngành | — | Chiều | `GROUP BY Business Line Level 1 Code` — FK Public Company Dimension (reuse `public_company_dim`), dùng làm slicer ngành cho toàn Nhóm | — | READY |
 | K_QLCB_3 | Giá trị Cấp phép | Tỷ VNĐ | Cơ sở | `SUM(Total Expected Amount)` per ngành × kỳ — `Public Company Securities Offering.total_expected_amt` | — | READY |
 | K_QLCB_4 | Giá trị Huy động thành công | Tỷ VNĐ | Cơ sở | `SUM(Total Collected Amount)` per ngành × kỳ — aggregate từ `Public Company Securities Offering Result.total_collected_amt` GROUP BY `pc_securities_offering_id` trước khi cộng vào Fact | — | READY |
@@ -306,11 +306,10 @@ erDiagram
     Fact_Securities_Offering_Snapshot {
         string Securities_Offering_Code
         string Snapshot_Date_Dimension_Id FK
-        string Official_Letter_Date_Dimension_Id FK
+        string Certificate_Date_Dimension_Id FK
         string Public_Company_Dimension_Id FK
         float Total_Expected_Amount
         float Total_Collected_Amount
-        date Certificate_Date
         date Official_Letter_Date
     }
 
@@ -341,9 +340,9 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| Fact Securities Offering Snapshot | 1 row = 1 hồ sơ chào bán/phát hành CK của 1 công ty đại chúng × 1 ngày snapshot (ETL full-scan hàng ngày để Total Collected Amount luôn phản ánh đúng kết quả huy động mới nhất; Official Letter Date giữ nguyên vai trò Chiều/slicer) |
+| Fact Securities Offering Snapshot | 1 row = 1 hồ sơ chào bán/phát hành CK của 1 công ty đại chúng × 1 ngày snapshot (ETL full-scan hàng ngày để Total Collected Amount luôn phản ánh đúng kết quả huy động mới nhất; Certificate Date giữ nguyên vai trò Chiều/slicer) |
 | Public Company Dimension (reuse `public_company_dim`) | 1 row = 1 công ty đại chúng (SCD4A — theo quy ước module GSDC) |
-| Calendar Date Dimension | 1 row = 1 ngày (Official Letter Date — ngày công văn UBCKNN) |
+| Calendar Date Dimension | 1 row = 1 ngày (Certificate Date — ngày cấp giấy chứng nhận) |
 
 ---
 
@@ -351,7 +350,7 @@ flowchart LR
 
 > Phân loại: **Phân tích**
 > Atomic: `Public Company Securities Offering Plan` ← IDS.SECURITIES_OFFERING_PLAN — **READY** (Atomic draft — chưa approved chính thức)
-> Atomic: `Public Company Securities Offering` ← IDS.SECURITIES_OFFERING — **READY** (Atomic draft, dùng để lấy `official_letter_dt` FK date)
+> Atomic: `Public Company Securities Offering` ← IDS.SECURITIES_OFFERING — **READY** (Atomic draft, dùng để lấy `certificate_dt` FK date)
 
 **Mockup:**
 
@@ -423,7 +422,7 @@ erDiagram
     Fact_Securities_Offering_Plan_Snapshot {
         string Securities_Offering_Code
         string Snapshot_Date_Dimension_Id FK
-        string Official_Letter_Date_Dimension_Id FK
+        string Certificate_Date_Dimension_Id FK
         string Public_Company_Dimension_Id FK
         string Offering_Method_Dimension_Id FK
         float Total_Expected_Amount_Snapshot
@@ -438,7 +437,7 @@ erDiagram
 > - `Securities_Offering_Code` — BK đợt chào bán (degenerate dimension), denormalized sẵn trên Plan (`pc_securities_offering_code`) — bổ sung khi Phase 3 phát hiện 2 FK dim hiện có (Public Company + Offering Method) không đủ phân biệt các đợt chào bán khác nhau của cùng 1 công ty cùng loại hình; dùng làm grain key cho ORDER BY flat table
 > - `Offering_Method_Dimension` — `Offering_Method_Dimension_Id` = PK, `Offering_Method_Code` = NK, ETL-derived (DISTINCT) trực tiếp từ `Public Company Securities Offering Plan.offering_method_code`; `Offering_Method_Name` JOIN `Classification Value` (`cl_value.cl_code = offering_method_code AND cl_value.schema_code = 'SO_OFFERING_METHOD'`) lấy `cl_nm` (tên gốc); `Offering_Method_Group_Name` computed CASE WHEN theo `offering_method_code` gom vào 6 nhóm (Công chúng/Riêng lẻ/ESOP/Trả cổ tức/Tăng vốn từ VCSH/Khác) — cả 2 cột tính 1 lần ngay trên Dimension (dùng chung Nhóm 2/3/6), flat table chỉ SELECT thẳng, không tự CASE WHEN lại. Nhóm 2/6 hiển thị tên gốc (`Offering_Method_Name`); Nhóm 3 hiển thị nhóm (`Offering_Method_Group_Name`).
 > - `Public_Company_Dimension` = reuse `public_company_dim` (schema đầy đủ xem Nhóm 1) — FK join qua `Public Company Securities Offering.Public Company Code` (JOIN từ Offering cha, vì Plan không có trực tiếp Public Company Code — cần JOIN 2 tầng Plan → Offering → Public Company)
-> - `Official_Letter_Date_Dimension_Id` — cùng FK date với Nhóm 1, join từ `Public Company Securities Offering.official_letter_dt` (Plan không có ngày riêng)
+> - `Certificate_Date_Dimension_Id` — cùng FK date với Nhóm 1, join từ `Public Company Securities Offering.certificate_dt` (Plan không có ngày riêng)
 
 **Lineage Mart → Báo cáo:**
 
@@ -461,7 +460,7 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| Fact Securities Offering Plan Snapshot | 1 row = 1 đợt chào bán × 1 loại hình kế hoạch × 1 ngày snapshot (ETL full-scan hàng ngày; Official Letter Date giữ nguyên vai trò Chiều/slicer) |
+| Fact Securities Offering Plan Snapshot | 1 row = 1 đợt chào bán × 1 loại hình kế hoạch × 1 ngày snapshot (ETL full-scan hàng ngày; Certificate Date giữ nguyên vai trò Chiều/slicer) |
 | Offering Method Dimension | 1 row = 1 mã hình thức chào bán (scheme `IDS_SO_OFFERING_METHOD`) |
 | Public Company Dimension (reuse `public_company_dim`) | 1 row = 1 công ty đại chúng |
 | Calendar Date Dimension | 1 row = 1 ngày |
@@ -472,7 +471,7 @@ flowchart LR
 
 > Phân loại: **Phân tích**
 > Atomic: `Public Company Securities Offering Result` ← IDS.SECURITIES_OFFERING_RESULT — **READY** (Atomic draft — chưa approved chính thức)
-> Atomic: `Public Company Securities Offering` ← IDS.SECURITIES_OFFERING — **READY** (Atomic draft, dùng để lấy `official_letter_dt` FK date)
+> Atomic: `Public Company Securities Offering` ← IDS.SECURITIES_OFFERING — **READY** (Atomic draft, dùng để lấy `certificate_dt` FK date)
 
 **Mockup:**
 
@@ -532,7 +531,7 @@ erDiagram
     Fact_Securities_Offering_Result_Snapshot {
         string Securities_Offering_Code
         string Snapshot_Date_Dimension_Id FK
-        string Official_Letter_Date_Dimension_Id FK
+        string Certificate_Date_Dimension_Id FK
         string Public_Company_Dimension_Id FK
         string Offering_Method_Dimension_Id FK
         float Total_Collected_Amount
@@ -566,7 +565,7 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| Fact Securities Offering Result Snapshot | 1 row = 1 đợt chào bán × 1 loại hình kết quả thực tế × 1 ngày snapshot (ETL full-scan hàng ngày để Total Collected Amount luôn phản ánh đúng kết quả huy động mới nhất; Official Letter Date giữ nguyên vai trò Chiều/slicer) |
+| Fact Securities Offering Result Snapshot | 1 row = 1 đợt chào bán × 1 loại hình kết quả thực tế × 1 ngày snapshot (ETL full-scan hàng ngày để Total Collected Amount luôn phản ánh đúng kết quả huy động mới nhất; Certificate Date giữ nguyên vai trò Chiều/slicer) |
 | Offering Method Dimension | 1 row = 1 mã hình thức chào bán (reuse từ Nhóm 2) |
 | Public Company Dimension (reuse `public_company_dim`) | 1 row = 1 công ty đại chúng |
 | Calendar Date Dimension | 1 row = 1 ngày |
@@ -756,7 +755,8 @@ erDiagram
     Fact_Securities_Offering_Application_Snapshot {
         string Securities_Offering_Code
         string Snapshot_Date_Dimension_Id FK
-        string Official_Letter_Date_Dimension_Id FK
+        string Certificate_Date_Dimension_Id FK
+        string Offering_Method_Dimension_Id FK
         string Application_Status_Code
     }
 ```
@@ -765,7 +765,8 @@ erDiagram
 >
 > **`Fact_Securities_Offering_Application_Snapshot`:**
 > - `Securities_Offering_Code` → `key = DD` (Degenerate Dimension) — Business key hồ sơ (`Public Company Securities Offering.pc_securities_offering_code`), lưu trực tiếp trên Fact để tra cứu, không tạo Dimension riêng. Fact Event không có Surrogate PK.
-> - `Official_Letter_Date_Dimension_Id` → `key = FK → Calendar Date Dimension` — cùng FK date dùng ở Nhóm 1 (`official_letter_dt`)
+> - `Certificate_Date_Dimension_Id` → `key = FK → Calendar Date Dimension` — cùng FK date dùng ở Nhóm 1 (`certificate_dt`)
+> - `Offering_Method_Dimension_Id` → `key = FK → Offering Method Dimension`, nullable — chỉ Nhóm 6 dùng (xem Nhóm 6), Nhóm 5 không GROUP BY hình thức nên field này NULL, không ảnh hưởng COUNT
 > - `Application_Status_Code` → `key` trống — Classification Value, `etl_logic_type = direct` từ `approval_status_code`
 >
 > `Offering_Type_Dimension` không dùng ở Nhóm 5 — chỉ Nhóm 6 cần chiều hình thức (xem `Offering Method Dimension`, dùng chung với Nhóm 2/3). Nhóm 5 không GROUP BY năm.
@@ -789,8 +790,8 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| `Fact Securities Offering Application Snapshot` | 1 row = 1 hồ sơ đăng ký chào bán × 1 ngày snapshot (ETL full-scan hàng ngày để Application Status Code luôn phản ánh đúng trạng thái xử lý mới nhất; Official Letter Date giữ nguyên vai trò Chiều/slicer) |
-| `Calendar Date Dimension` | 1 row = 1 ngày (`official_letter_dt`) |
+| `Fact Securities Offering Application Snapshot` | 1 row = 1 hồ sơ đăng ký chào bán × 1 ngày snapshot (ETL full-scan hàng ngày để Application Status Code luôn phản ánh đúng trạng thái xử lý mới nhất; Certificate Date giữ nguyên vai trò Chiều/slicer) |
+| `Calendar Date Dimension` | 1 row = 1 ngày (`certificate_dt`) |
 
 ---
 
@@ -816,7 +817,7 @@ flowchart LR
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
 | K_QLCB_36 | Hình thức chào bán | — | Chiều | `GROUP BY Offering Method Dimension.Offering Method Code` — reuse Dimension từ Nhóm 2/3 (scheme `IDS_SO_OFFERING_METHOD`) | — | READY |
-| K_QLCB_37 | Năm | — | Chiều | `GROUP BY Year` của `Official Letter Date Dimension` (reuse `Calendar Date Dimension`, không cần Degenerate Dimension riêng) | — | READY |
+| K_QLCB_37 | Năm | — | Chiều | `GROUP BY Year` của `Certificate Date Dimension` (reuse `Calendar Date Dimension`, không cần Degenerate Dimension riêng) | BA cập nhật 2026-08-11: đổi từ Official Letter Date sang Certificate Date | READY |
 | K_QLCB_38 | Số lượng hồ sơ chờ xử lý | Hồ sơ | Cơ sở | `COUNT WHERE Application Status Code = 'PENDING_REVIEW'` | — | READY |
 | K_QLCB_39 | Số lượng hồ sơ đang xử lý | Hồ sơ | Cơ sở | `COUNT WHERE Application Status Code = 'PENDING_APPROVE'` | — | READY |
 | K_QLCB_40 | Số lượng hồ sơ đã cấp phép | Hồ sơ | Cơ sở | `COUNT WHERE Application Status Code = 'APPROVED'` | — | READY |
@@ -839,7 +840,7 @@ erDiagram
     Fact_Securities_Offering_Application_Snapshot {
         string Securities_Offering_Code
         string Snapshot_Date_Dimension_Id FK
-        string Official_Letter_Date_Dimension_Id FK
+        string Certificate_Date_Dimension_Id FK
         string Offering_Method_Dimension_Id FK
         string Application_Status_Code
     }
@@ -903,7 +904,7 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_QLCB_43 | Thời điểm báo cáo | Ngày | Attribute | `Public Company Securities Offering.official_letter_dt` — IDS.SECURITIES_OFFERING.OFFICIAL_LETTER_DATE | Ngày công văn UBCKNN — dùng làm thời điểm báo cáo (FK date chính) | READY |
+| K_QLCB_43 | Thời điểm báo cáo | Ngày | Attribute | `Public Company Securities Offering.certificate_dt` — IDS.SECURITIES_OFFERING.CERTIFICATE_DATE | BA cập nhật 2026-08-11: đổi từ Official Letter Date sang Certificate Date — ngày cấp GCN, dùng làm thời điểm báo cáo (FK date chính) | READY |
 | K_QLCB_44 | Chuyên viên | Text | Attribute | `Public Company Securities Offering.processor_user_nm_snpst` — IDS.SECURITIES_OFFERING.PROCESSOR_USER_NAME | Tên người xử lý hồ sơ dạng snapshot | READY |
 | K_QLCB_45 | Tên công ty | Text | Attribute | `Public Company.public_company_nm` | — | READY |
 | K_QLCB_46 | Mã chứng khoán | Text | Attribute | `Public Company.equity_ticker_symbol` — IDS.COMPANY_PROFILES | — | READY |
@@ -1004,7 +1005,7 @@ flowchart LR
 | K_QLCB_55 | Giá (cấp phép) | VNĐ | Attribute | `Public Company Securities Offering Plan.offering_price` — IDS.SECURITIES_OFFERING_PLAN.OFFERING_PRICE (giá trực tiếp trên Plan, không cần Derived) | — | READY |
 | K_QLCB_56 | Giá trị cấp phép | Tỷ VNĐ | Attribute | `Public Company Securities Offering.total_expected_amt` — bảng cha, IDS.SECURITIES_OFFERING.TOTAL_EXPECTED_AM (BA ghi rõ nguồn bảng cha, không phải Plan snapshot) | — | READY |
 | K_QLCB_57 | Số lượng người lao động | Người | Attribute | `Public Company Securities Offering Plan.employee_quantity` — IDS.SECURITIES_OFFERING_PLAN.EMPLOYEE_QTY; chỉ có giá trị với 1 số thủ tục (ESOP/Bonus Share), NULL với loại hình khác | — | READY |
-| K_QLCB_58 | Đối tượng | Text | Attribute | `Public Company Securities Offering Plan.swap_target` — IDS.SECURITIES_OFFERING_PLAN.SWAP_TARGET | — | READY |
+| K_QLCB_58 | Đối tượng | Text | Attribute | `CASE WHEN Operational Securities Offering 360 Profile.Offering_Method_Code = '5' THEN Public Company.Public_Company_Name ELSE NULL END` — chỉ có giá trị khi phát hành riêng lẻ, IDS.COMPANY_PROFILES.COMPANY_NAME_VN | BA cập nhật 2026-08-10: đổi từ SWAP_TARGET sang tên công ty khi offering_method_cd = 5; các hình thức khác NULL | READY |
 | K_QLCB_59 | Mục đích sử dụng vốn | Text | Attribute | `Public Company Securities Offering.offering_purpose` — bảng cha, IDS.SECURITIES_OFFERING.OFFERING_PURPOSE | — | READY |
 
 **Schema bảng tác nghiệp:** Kế thừa `Operational Securities Offering 360 Profile` — bổ sung 3 cột `Offering_Price`, `Employee_Quantity`, `Swap_Target` (xem erDiagram Nhóm 4).
@@ -1051,7 +1052,7 @@ flowchart LR
 | K_QLCB_61 | Giá thực tế | VNĐ | Attribute | `Public Company Securities Offering Result.actual_offering_price` — IDS.SECURITIES_OFFERING_RESULT.ACTUAL_OFFERING_PRICE (giá trực tiếp trên Result, không cần Derived) | — | READY |
 | K_QLCB_62 | Giá trị thực tế | Tỷ VNĐ | Attribute | `Public Company Securities Offering Result.total_collected_amt` — IDS.SECURITIES_OFFERING_RESULT.TOTAL_COLLECTED_AM | — | READY |
 | K_QLCB_63 | Số lượng người lao động (TT) | Người | Attribute | `Public Company Securities Offering Result.employee_quantity` — IDS.SECURITIES_OFFERING_RESULT.EMPLOYEE_QTY | — | READY |
-| K_QLCB_64 | Đối tượng (thực tế) | Text | Attribute | `Public Company Securities Offering Result.capital_src` — IDS.SECURITIES_OFFERING_RESULT.CAPITAL_SOURCE (field khác Plan, không phải `swap_target`) | — | READY |
+| K_QLCB_64 | Đối tượng (thực tế) | Text | Attribute | `CASE WHEN Public Company Securities Offering Result.offering_method_code_snpst = '5' THEN Public Company.Public_Company_Name ELSE NULL END` — điều kiện lấy theo field snapshot trên Result (khác Plan), IDS.SECURITIES_OFFERING_RESULT.OFFERING_METHOD_CD = 5, tên công ty IDS.COMPANY_PROFILES.COMPANY_NM_VN | BA cập nhật 2026-08-10: đổi từ CAPITAL_SOURCE sang tên công ty khi offering_method_cd = 5 (điều kiện theo Result, không dùng lại Offering_Method_Code composite BK của Plan vì 2 field có thể lệch); các hình thức khác NULL | READY |
 
 **Schema bảng tác nghiệp:** Kế thừa `Operational Securities Offering 360 Profile` — bổ sung 3 cột `Actual_Offering_Price`, `Employee_Quantity_Result`, `Capital_Source`.
 
