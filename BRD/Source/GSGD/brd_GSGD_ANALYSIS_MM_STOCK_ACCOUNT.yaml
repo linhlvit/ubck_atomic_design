@@ -20,12 +20,12 @@ columns:
     key: FK
     fk_note: "FK suy luận → CASE_FILE.ID"
   - name: WORKFLOW_TYPE
-    data_type: "NUMBER(2)"
+    data_type: "NUMBER(10,0)"
     description: "Quy trình: 1=Sơ bộ, 2=Thao túng, 3=Nội gián, 4=Liên thị trường"
     key: null
     fk_note: null
   - name: RESULT_TYPE
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(10,0)"
     description: "Loại kết quả phân tích"
     key: null
     fk_note: null
@@ -35,82 +35,87 @@ columns:
     key: null
     fk_note: null
   - name: SECURITIES_CODE
-    data_type: "VARCHAR2(50 CHAR)"
+    data_type: "VARCHAR2(10)"
     description: "Mã chứng khoán"
     key: null
     fk_note: null
   - name: ACCOUNT_CODE
-    data_type: "VARCHAR2(50 CHAR)"
+    data_type: "VARCHAR2(50)"
     description: "Mã tài khoản"
     key: null
     fk_note: null
   - name: TRADING_VALUE
-    data_type: "NUMBER(19,4)"
+    data_type: "NUMBER(19,0)"
     description: "Giá trị giao dịch"
     key: null
     fk_note: null
   - name: TRADING_VALUE_DISPLAY
-    data_type: "NUMBER(19,4)"
+    data_type: "NUMBER(20,4)"
     description: "Giá trị giao dịch (hiển thị)"
     key: null
     fk_note: null
   - name: TRADING_VOLUME
-    data_type: "NUMBER(19,4)"
+    data_type: "NUMBER(19,0)"
     description: "Khối lượng giao dịch"
     key: null
     fk_note: null
   - name: BC01_MATCHED
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "Khớp điều kiện BC01"
     key: null
     fk_note: null
   - name: BC02_MATCHED
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "Khớp điều kiện BC02"
     key: null
     fk_note: null
   - name: BC03_MATCHED
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "Khớp điều kiện BC03"
     key: null
     fk_note: null
   - name: BC04_MATCHED
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "Khớp điều kiện BC04"
     key: null
     fk_note: null
   - name: CREATED_AT
-    data_type: "TIMESTAMP"
+    data_type: "TIMESTAMP(6)"
     description: "Ngày tạo"
     key: null
     fk_note: null
   - name: UPDATED_AT
-    data_type: "TIMESTAMP"
+    data_type: "TIMESTAMP(6)"
     description: "Ngày sửa cuối"
     key: null
     fk_note: null
   - name: CREATED_BY_ID
-    data_type: "VARCHAR2(255)"
+    data_type: "VARCHAR2(1020)"
     description: "User_id người tạo"
     key: null
     fk_note: null
   - name: UPDATED_BY_ID
-    data_type: "VARCHAR2(255)"
+    data_type: "VARCHAR2(1020)"
     description: "User_id người cập nhật"
     key: null
     fk_note: null
   - name: CREATED_BY_NAME
-    data_type: "VARCHAR2(250)"
+    data_type: "VARCHAR2(1020)"
     description: "Tên người tạo"
     key: null
     fk_note: null
   - name: UPDATED_BY_NAME
-    data_type: "VARCHAR2(250)"
+    data_type: "VARCHAR2(1020)"
     description: "Tên người cập nhật"
     key: null
     fk_note: null
   - name: DELETED
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "Soft delete: 0=Active, 1=Deleted"
+    key: null
+    fk_note: null
+  - name: WORKFLOW_ID
+    data_type: "VARCHAR2(36)"
+    description: "Id quy trình phân tích (analysis_workflow.id)"
     key: null
     fk_note: null

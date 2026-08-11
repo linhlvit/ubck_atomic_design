@@ -5,37 +5,37 @@ table: NOTIFICATION
 brd_ref: BRD-SRC-THANHTRA-NOTIFICATION
 columns:
   - name: ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "Khóa chính UUID"
     key: PK
     fk_note: null
   - name: RECIPIENT_ID
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng nhận thông báo"
     key: null
     fk_note: null
   - name: NOTIFICATION_TYPE
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "Loại thông báo: FINE_DUE, FINE_OVERDUE, CONCLUSION_DUE, PETITION_DUE, APPROVAL_REQUEST, APPROVAL_RESULT"
     key: null
     fk_note: null
   - name: TITLE
-    data_type: VARCHAR2(500 CHAR)
+    data_type: VARCHAR2(2000)
     description: "Tiêu đề thông báo nhắc việc"
     key: null
     fk_note: null
   - name: MESSAGE
-    data_type: VARCHAR2(2000 CHAR)
+    data_type: VARCHAR2(4000)
     description: "Nội dung chi tiết thông báo"
     key: null
     fk_note: null
   - name: REFERENCE_TYPE
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "Loại đối tượng liên kết: violation_case, inspection_team, petition, penalty_decision..."
     key: null
     fk_note: null
   - name: REFERENCE_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "ID bản ghi đối tượng liên kết (dùng để truy cập nhanh)"
     key: null
     fk_note: null
@@ -55,12 +55,12 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng tạo bản ghi"
     key: null
     fk_note: "FK suy luận → system_user.id"
   - name: LAST_MODIFIED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng cập nhật gần nhất"
     key: null
     fk_note: "FK suy luận → system_user.id"

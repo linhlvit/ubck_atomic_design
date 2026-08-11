@@ -15,27 +15,27 @@ columns:
   key: FK
   fk_note: "FK → MSG_PACKET.ID"
 - name: TAXPAYER_NAME
-  data_type: "VARCHAR2(200 CHAR)"
+  data_type: "VARCHAR2(800)"
   description: "Tên người nộp thuế (doanh nghiệp trên thị trường chứng khoán)"
   key: null
   fk_note: null
 - name: TAX_CODE
-  data_type: "VARCHAR2(20 CHAR)"
+  data_type: "VARCHAR2(80)"
   description: "Mã số thuế doanh nghiệp"
   key: null
   fk_note: null
 - name: HQ_ADDRESS
-  data_type: "VARCHAR2(500 CHAR)"
+  data_type: "VARCHAR2(2000)"
   description: "Địa chỉ trụ sở chính của doanh nghiệp"
   key: null
   fk_note: null
 - name: PHONE
-  data_type: "VARCHAR2(20 CHAR)"
+  data_type: "VARCHAR2(80)"
   description: "Số điện thoại liên hệ"
   key: null
   fk_note: null
 - name: FAX
-  data_type: "VARCHAR2(300 CHAR)"
+  data_type: "VARCHAR2(1200)"
   description: "Số fax"
   key: null
   fk_note: null
@@ -45,12 +45,12 @@ columns:
   key: null
   fk_note: null
 - name: BUSINESS_LINE
-  data_type: "VARCHAR2(500 CHAR)"
+  data_type: "VARCHAR2(2000)"
   description: "Ngành nghề kinh doanh chính"
   key: null
   fk_note: null
 - name: LICENSE_NUMBER
-  data_type: "VARCHAR2(50 CHAR)"
+  data_type: "VARCHAR2(200)"
   description: "Số giấy phép thành lập doanh nghiệp"
   key: null
   fk_note: null
@@ -60,12 +60,12 @@ columns:
   key: null
   fk_note: null
 - name: ISSUING_AUTHORITY
-  data_type: "VARCHAR2(200 CHAR)"
+  data_type: "VARCHAR2(800)"
   description: "Cơ quan cấp giấy phép thành lập"
   key: null
   fk_note: null
 - name: DECISION_NUMBER
-  data_type: "VARCHAR2(50 CHAR)"
+  data_type: "VARCHAR2(200)"
   description: "Số quyết định thành lập/xử phạt"
   key: null
   fk_note: null
@@ -75,12 +75,12 @@ columns:
   key: null
   fk_note: null
 - name: ISSUING_ORG
-  data_type: "VARCHAR2(200 CHAR)"
+  data_type: "VARCHAR2(800)"
   description: "Cơ quan ban hành quyết định"
   key: null
   fk_note: null
 - name: SUPERVISING_UNIT
-  data_type: "VARCHAR2(200 CHAR)"
+  data_type: "VARCHAR2(800)"
   description: "Đơn vị chủ quản/quản lý trực tiếp doanh nghiệp"
   key: null
   fk_note: null
@@ -90,57 +90,57 @@ columns:
   key: null
   fk_note: null
 - name: LEGAL_REPRESENTATIVE_NAME
-  data_type: "VARCHAR2(50 CHAR)"
+  data_type: "VARCHAR2(200)"
   description: "Họ tên người đại diện theo pháp luật"
   key: null
   fk_note: null
 - name: ID_CARD_NUMBER
-  data_type: "VARCHAR2(20 CHAR)"
+  data_type: "VARCHAR2(80)"
   description: "Số CMND/hộ chiếu người đại diện theo pháp luật"
   key: null
   fk_note: null
 - name: SO_DIEN_THOAI
-  data_type: "VARCHAR2(20 CHAR)"
+  data_type: "VARCHAR2(80)"
   description: "So DT nguoi dai dien theo phap luat/ chu doanh nghiep tu nhan"
   key: null
   fk_note: null
 - name: DIRECTOR_NAME
-  data_type: "VARCHAR2(50 CHAR)"
+  data_type: "VARCHAR2(200)"
   description: "Họ tên Giám đốc/Tổng giám đốc ký báo cáo"
   key: null
   fk_note: null
 - name: DIRECTOR_PHONE
-  data_type: "VARCHAR2(20 CHAR)"
+  data_type: "VARCHAR2(80)"
   description: "Số điện thoại Giám đốc/Tổng giám đốc"
   key: null
   fk_note: null
 - name: OPERATION_STATUS
-  data_type: "VARCHAR2(20 CHAR)"
+  data_type: "VARCHAR2(80)"
   description: "Trạng thái hoạt động DN (TrangThaiHoatDongEnum): 0/4=Đang hoạt động, 1=Ngừng HĐ đã hoàn thành thủ tục MST, 3=Ngừng HĐ chưa hoàn thành thủ tục MST, 5=Ngừng KD có thời hạn, 6=Không HĐ tại địa chỉ ĐK"
   key: null
   fk_note: null
 - name: SUSPENSION_REASON
-  data_type: "VARCHAR2(1000 CHAR)"
+  data_type: "VARCHAR2(4000)"
   description: "Lý do ngừng hoạt động (nhập sau khi chọn loại ngừng)"
   key: null
   fk_note: null
 - name: SUSPENSION_TYPE
-  data_type: "VARCHAR2(200 CHAR)"
+  data_type: "VARCHAR2(800)"
   description: "Lý do ngừng hoạt động (LyDoNgungHoatDongEnum): 1=Giải thể, 2=Phá sản, 3=Chuyển đổi loại hình"
   key: null
   fk_note: null
 - name: DIRECT_SUPERVISING_AUTHORITY
-  data_type: "VARCHAR2(200 CHAR)"
+  data_type: "VARCHAR2(800)"
   description: "Cơ quan quản lý trực tiếp"
   key: null
   fk_note: null
 - name: TAX_AUTHORITY_CODE
-  data_type: "VARCHAR2(100 CHAR)"
+  data_type: "VARCHAR2(400)"
   description: "Mã cơ quan thuế ban hành thông báo cưỡng chế"
   key: null
   fk_note: null
 - name: DOMESTIC_CAPITAL_CURRENCY
-  data_type: "VARCHAR2(2050 CHAR)"
+  data_type: "VARCHAR2(4000)"
   description: "Loại tiền vốn điều lệ trong nước"
   key: null
   fk_note: null
@@ -150,47 +150,47 @@ columns:
   key: null
   fk_note: null
 - name: FOREIGN_CAPITAL_CURRENCY
-  data_type: "VARCHAR2(50 CHAR)"
+  data_type: "VARCHAR2(200)"
   description: "Loại tiền vốn điều lệ nước ngoài"
   key: null
   fk_note: null
 - name: SUPERVISING_UNIT_ADDRESS
-  data_type: "VARCHAR2(200 CHAR)"
+  data_type: "VARCHAR2(800)"
   description: "Địa chỉ đơn vị chủ quản"
   key: null
   fk_note: null
 - name: BUSINESS_ADDRESS_DESC
-  data_type: "VARCHAR2(200 CHAR)"
+  data_type: "VARCHAR2(800)"
   description: "Mô tả địa chỉ kinh doanh"
   key: null
   fk_note: null
 - name: BUSINESS_PROVINCE_CODE
-  data_type: "VARCHAR2(100 CHAR)"
+  data_type: "VARCHAR2(400)"
   description: "Mã tỉnh/thành phố địa chỉ kinh doanh"
   key: null
   fk_note: null
 - name: BUSINESS_DISTRICT_CODE
-  data_type: "VARCHAR2(100 CHAR)"
+  data_type: "VARCHAR2(400)"
   description: "Mã quận/huyện địa chỉ kinh doanh"
   key: null
   fk_note: null
 - name: BUSINESS_WARD_CODE
-  data_type: "VARCHAR2(100 CHAR)"
+  data_type: "VARCHAR2(400)"
   description: "Mã xã/phường địa chỉ kinh doanh"
   key: null
   fk_note: null
 - name: BUSINESS_PHONE
-  data_type: "VARCHAR2(50 CHAR)"
+  data_type: "VARCHAR2(200)"
   description: "Số điện thoại địa chỉ kinh doanh"
   key: null
   fk_note: null
 - name: BUSINESS_EMAIL
-  data_type: "VARCHAR2(300 CHAR)"
+  data_type: "VARCHAR2(1200)"
   description: "Email kinh doanh"
   key: null
   fk_note: null
 - name: BUSINESS_FAX
-  data_type: "VARCHAR2(300 CHAR)"
+  data_type: "VARCHAR2(1200)"
   description: "Số fax địa chỉ kinh doanh"
   key: null
   fk_note: null
@@ -205,12 +205,12 @@ columns:
   key: null
   fk_note: null
 - name: SUSPENSION_REASON_TEXT
-  data_type: "VARCHAR2(200 CHAR)"
+  data_type: "VARCHAR2(800)"
   description: "Lý do tạm nghỉ"
   key: null
   fk_note: null
 - name: SUSPENSION_NOTICE_NUMBER
-  data_type: "VARCHAR2(50 CHAR)"
+  data_type: "VARCHAR2(200)"
   description: "Số thông báo tạm nghỉ"
   key: null
   fk_note: null
@@ -225,47 +225,47 @@ columns:
   key: null
   fk_note: null
 - name: OPERATION_STOP_REASON
-  data_type: "VARCHAR2(200 CHAR)"
+  data_type: "VARCHAR2(800)"
   description: "Lý do ngừng hoạt động"
   key: null
   fk_note: null
 - name: OPERATION_STOP_NOTE
-  data_type: "VARCHAR2(200 CHAR)"
+  data_type: "VARCHAR2(800)"
   description: "Ghi chú ngừng hoạt động"
   key: null
   fk_note: null
 - name: OPERATION_STOP_NOTICE_NUMBER
-  data_type: "VARCHAR2(100 CHAR)"
+  data_type: "VARCHAR2(400)"
   description: "Số thông báo ngừng hoạt động"
   key: null
   fk_note: null
 - name: STATUS_NAME
-  data_type: "VARCHAR2(200 CHAR)"
+  data_type: "VARCHAR2(800)"
   description: "Tên trạng thái người nộp thuế"
   key: null
   fk_note: null
 - name: BUSINESS_LINE_CODE
-  data_type: "VARCHAR2(50 CHAR)"
+  data_type: "VARCHAR2(200)"
   description: "Mã ngành nghề kinh doanh"
   key: null
   fk_note: null
 - name: BUSINESS_PROVINCE_NAME
-  data_type: "VARCHAR2(100 CHAR)"
+  data_type: "VARCHAR2(400)"
   description: "Tên tỉnh/thành phố kinh doanh"
   key: null
   fk_note: null
 - name: BUSINESS_DISTRICT_NAME
-  data_type: "VARCHAR2(100 CHAR)"
+  data_type: "VARCHAR2(400)"
   description: "Tên quận/huyện kinh doanh"
   key: null
   fk_note: null
 - name: BUSINESS_WARD_NAME
-  data_type: "VARCHAR2(100 CHAR)"
+  data_type: "VARCHAR2(400)"
   description: "Tên xã/phường kinh doanh"
   key: null
   fk_note: null
 - name: FOREIGN_CAPITAL_RATIO
-  data_type: "VARCHAR2(50 CHAR)"
+  data_type: "VARCHAR2(200)"
   description: "Tỷ trọng vốn nước ngoài (%)"
   key: null
   fk_note: null

@@ -10,42 +10,42 @@ columns:
     key: PK
     fk_note: null
   - name: CORRELATION_ID
-    data_type: VARCHAR2(64)
+    data_type: VARCHAR2(256)
     description: "UUID — liên kết với log per-record (vd. UBCK_SYNC_ITEM_LOG.CORRELATION_ID)"
     key: null
     fk_note: null
   - name: JOB_CODE
-    data_type: VARCHAR2(100)
+    data_type: VARCHAR2(400)
     description: "Mã job nếu trigger qua Quartz; null cho Kafka/outbound"
     key: null
     fk_note: null
   - name: EVENT_TYPE
-    data_type: VARCHAR2(100)
+    data_type: VARCHAR2(400)
     description: "Event type của message Kafka (nếu là kafka trigger)"
     key: null
     fk_note: null
   - name: TRIGGER_TYPE
-    data_type: VARCHAR2(30)
+    data_type: VARCHAR2(120)
     description: "QUARTZ_JOB │ KAFKA │ MANUAL"
     key: null
     fk_note: null
   - name: DIRECTION
-    data_type: VARCHAR2(20)
+    data_type: VARCHAR2(80)
     description: "INBOUND │ OUTBOUND"
     key: null
     fk_note: null
   - name: STATUS
-    data_type: VARCHAR2(20)
+    data_type: VARCHAR2(80)
     description: "PENDING │ RUNNING │ SUCCESS │ FAILED"
     key: null
     fk_note: null
   - name: STARTED_AT
-    data_type: TIMESTAMP
+    data_type: TIMESTAMP(6)
     description: ""
     key: null
     fk_note: null
   - name: FINISHED_AT
-    data_type: TIMESTAMP
+    data_type: TIMESTAMP(6)
     description: ""
     key: null
     fk_note: null
@@ -65,22 +65,22 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: VARCHAR2(100)
+    data_type: VARCHAR2(400)
     description: ""
     key: null
     fk_note: "FK → LOGINS.ID"
   - name: CREATED_DATE
-    data_type: TIMESTAMP
+    data_type: TIMESTAMP(6)
     description: ""
     key: null
     fk_note: null
   - name: UPDATED_BY
-    data_type: VARCHAR2(100)
+    data_type: VARCHAR2(400)
     description: ""
     key: null
     fk_note: "FK → LOGINS.ID"
   - name: UPDATED_DATE
-    data_type: TIMESTAMP
+    data_type: TIMESTAMP(6)
     description: ""
     key: null
     fk_note: null

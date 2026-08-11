@@ -5,32 +5,32 @@ table: PRIVATE_CATALOG_ITEM
 brd_ref: BRD-SRC-THANHTRA-PRIVATE_CATALOG_ITEM
 columns:
   - name: ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "Khóa chính UUID"
     key: PK
     fk_note: null
   - name: CATALOG_TYPE
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "Loại danh mục dùng riêng của phân hệ"
     key: null
     fk_note: null
   - name: CODE
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "Mã danh mục"
     key: null
     fk_note: null
   - name: NAME
-    data_type: VARCHAR2(500 CHAR)
+    data_type: VARCHAR2(2000)
     description: "Tên danh mục"
     key: null
     fk_note: null
   - name: ITEM_VALUE
-    data_type: VARCHAR2(1000 CHAR)
+    data_type: VARCHAR2(4000)
     description: "Giá trị lưu trữ của mục danh mục"
     key: null
     fk_note: null
   - name: STATUS
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "Trạng thái: ACTIVE (Đang sử dụng), INACTIVE (Ngừng sử dụng)"
     key: null
     fk_note: null
@@ -40,7 +40,7 @@ columns:
     key: null
     fk_note: null
   - name: NOTE
-    data_type: VARCHAR2(2000 CHAR)
+    data_type: VARCHAR2(4000)
     description: "Ghi chú bổ sung"
     key: null
     fk_note: null
@@ -55,12 +55,12 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng tạo bản ghi"
     key: null
     fk_note: "FK suy luận → system_user.id"
   - name: LAST_MODIFIED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng cập nhật gần nhất"
     key: null
     fk_note: "FK suy luận → system_user.id"

@@ -30,22 +30,22 @@ columns:
     key: null
     fk_note: "FK suy luận → REPORT_TEMPLATE.ID"
   - name: WORKFLOW_TYPE
-    data_type: "NUMBER(2)"
+    data_type: "NUMBER(2,0)"
     description: "1=Sơ bộ, 2=Thao túng, 3=Nội gián, 4=Liên thị trường"
     key: null
     fk_note: null
   - name: START_TIME
-    data_type: "TIMESTAMP"
+    data_type: "TIMESTAMP(6)"
     description: "Thời gian bắt đầu"
     key: null
     fk_note: null
   - name: END_TIME
-    data_type: "TIMESTAMP"
+    data_type: "TIMESTAMP(6)"
     description: "Thời gian kết thúc"
     key: null
     fk_note: null
   - name: STATUS
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "Trạng thái  1: Active  0: Inactive"
     key: null
     fk_note: null
@@ -65,22 +65,22 @@ columns:
     key: null
     fk_note: null
   - name: TEMPLATE_TYPE
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "1: Báo cáo tổng hợp 2: Báo cáo phân tích"
     key: null
     fk_note: null
   - name: FILE_NAME
-    data_type: "VARCHAR2(200)"
+    data_type: "VARCHAR2(800)"
     description: "Tên file"
     key: null
     fk_note: null
   - name: CREATED_AT
-    data_type: "TIMESTAMP"
+    data_type: "TIMESTAMP(6)"
     description: "Ngày tạo"
     key: null
     fk_note: null
   - name: UPDATED_AT
-    data_type: "TIMESTAMP"
+    data_type: "TIMESTAMP(6)"
     description: "Ngày sửa cuối"
     key: null
     fk_note: null
@@ -105,7 +105,37 @@ columns:
     key: null
     fk_note: null
   - name: DELETED
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "Soft delete: 0=Active, 1=Deleted"
+    key: null
+    fk_note: null
+  - name: ANALYSIS_NAME
+    data_type: "VARCHAR2(100)"
+    description: null
+    key: null
+    fk_note: null
+  - name: DURATION_MS
+    data_type: "NUMBER(38,0)"
+    description: null
+    key: null
+    fk_note: null
+  - name: EXECUTION_DETAILS
+    data_type: "CLOB"
+    description: null
+    key: null
+    fk_note: null
+  - name: SECURITIES_CODE
+    data_type: "VARCHAR2(10)"
+    description: null
+    key: null
+    fk_note: null
+  - name: SECURITIES_ID
+    data_type: "VARCHAR2(36)"
+    description: null
+    key: null
+    fk_note: null
+  - name: WORKFLOW_ID
+    data_type: "VARCHAR2(36)"
+    description: "Id quy trình phân tích (analysis_workflow.id)"
     key: null
     fk_note: null

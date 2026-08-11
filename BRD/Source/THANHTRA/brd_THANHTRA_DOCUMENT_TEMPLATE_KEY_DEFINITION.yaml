@@ -5,17 +5,17 @@ table: DOCUMENT_TEMPLATE_KEY_DEFINITION
 brd_ref: BRD-SRC-THANHTRA-DOCUMENT_TEMPLATE_KEY_DEFINITION
 columns:
   - name: ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "Khóa chính UUID"
     key: PK
     fk_note: null
   - name: KEY_CODE
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "Tên biến trong Word (không gồm {{ }}), ví dụ: tenDoiTuong"
     key: null
     fk_note: null
   - name: TEMPLATE_TYPE
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "Nhóm biểu mẫu: BB_VPHC (Biên bản VPHC), QD_XU_PHAT (Quyết định xử phạt), CONG_VAN (Công văn), BAO_CAO (Báo cáo)"
     key: null
     fk_note: null
@@ -25,7 +25,7 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: VARCHAR2(200 CHAR)
+    data_type: VARCHAR2(800)
     description: "ID người dùng tạo bản ghi"
     key: null
     fk_note: "FK suy luận → system_user.id"
@@ -35,7 +35,7 @@ columns:
     key: null
     fk_note: null
   - name: LAST_MODIFIED_BY
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "ID người dùng cập nhật gần nhất"
     key: null
     fk_note: "FK suy luận → system_user.id"
@@ -50,22 +50,22 @@ columns:
     key: null
     fk_note: null
   - name: KEY_KIND
-    data_type: VARCHAR2(20 CHAR)
+    data_type: VARCHAR2(80)
     description: "Loại key: STATIC (Cố định - tự động điền từ API field), DYNAMIC (Động - người dùng nhập thủ công)"
     key: null
     fk_note: null
   - name: OFFICIAL_LETTER_SUBTYPE
-    data_type: VARCHAR2(80 CHAR)
+    data_type: VARCHAR2(320)
     description: "Loại công văn áp dụng (khi template_type=CONG_VAN): PRE_VIOLATION_NOTICE_1 (TB vi phạm lần 1), REMINDER (Nhắc nhở), PRE_VIOLATION_NOTICE_N (TB vi phạm lần N), INFO_REQUEST (Yêu cầu cung cấp thông tin), PRE_DECISION_NOTICE (TB trước khi ban hành QĐ), PAYMENT_GUIDE (Hướng dẫn nộp phạt), PAYMENT_REMINDER (Đôn đốc nộp phạt), REMEDIAL_REMINDER (Đôn đốc khắc phục)"
     key: null
     fk_note: null
   - name: API_FIELD_KEY
-    data_type: VARCHAR2(80 CHAR)
+    data_type: VARCHAR2(320)
     description: "Map với GET .../payment-guide-data (ví dụ: totalFineAmount) — chỉ dùng khi key_kind=STATIC"
     key: null
     fk_note: null
   - name: INTERACTION_MODE
-    data_type: VARCHAR2(20 CHAR)
+    data_type: VARCHAR2(80)
     description: "Cách dùng key khi merge: PLAIN (Điền giá trị đơn), SINGLE_SELECT (Chọn một từ danh sách), LOOP_BLOCK (Lặp theo danh sách)"
     key: null
     fk_note: null

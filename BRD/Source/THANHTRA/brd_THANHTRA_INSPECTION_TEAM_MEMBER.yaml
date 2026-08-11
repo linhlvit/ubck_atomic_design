@@ -5,42 +5,42 @@ table: INSPECTION_TEAM_MEMBER
 brd_ref: BRD-SRC-THANHTRA-INSPECTION_TEAM_MEMBER
 columns:
   - name: ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "Khóa chính UUID"
     key: PK
     fk_note: null
   - name: INSPECTION_TEAM_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "FK -> inspection_team"
     key: FK
     fk_note: "FK → INSPECTION_TEAM.id"
   - name: USER_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "ID người dùng trong hệ thống"
     key: null
     fk_note: "FK suy luận → system_user.id"
   - name: USER_FULL_NAME
-    data_type: VARCHAR2(200 CHAR)
+    data_type: VARCHAR2(800)
     description: "Họ tên đầy đủ thành viên đoàn thanh tra"
     key: null
     fk_note: null
   - name: USER_ACCOUNT
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "Tài khoản đăng nhập hệ thống của thành viên"
     key: null
     fk_note: null
   - name: DEPARTMENT_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "ID phòng ban/đơn vị của thành viên"
     key: null
     fk_note: null
   - name: DEPARTMENT_NAME
-    data_type: VARCHAR2(200 CHAR)
+    data_type: VARCHAR2(800)
     description: "Tên phòng ban/đơn vị của thành viên"
     key: null
     fk_note: null
   - name: ROLE_IN_TEAM
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "Vai trò: LEADER (Trưởng đoàn), SECRETARY (Thư ký đoàn), MEMBER (Thành viên - mặc định)"
     key: null
     fk_note: null
@@ -55,12 +55,12 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng tạo bản ghi"
     key: null
     fk_note: "FK suy luận → system_user.id"
   - name: LAST_MODIFIED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng cập nhật gần nhất"
     key: null
     fk_note: "FK suy luận → system_user.id"

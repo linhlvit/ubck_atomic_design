@@ -10,27 +10,27 @@ columns:
     key: PK
     fk_note: null
   - name: METRIC_CODE
-    data_type: "VARCHAR2(100 CHAR)"
+    data_type: "VARCHAR2(400)"
     description: "Mã định danh duy nhất của metric"
     key: null
     fk_note: null
   - name: METRIC_NAME
-    data_type: "VARCHAR2(255 CHAR)"
+    data_type: "VARCHAR2(1020)"
     description: "Tên hiển thị của metric"
     key: null
     fk_note: null
   - name: CATEGORY
-    data_type: "VARCHAR2(100 CHAR)"
+    data_type: "VARCHAR2(400)"
     description: "Nhóm phân loại metric (VD: Giao dịch cổ phiếu, Chỉ số thị trường)"
     key: null
     fk_note: null
   - name: DESCRIPTION
-    data_type: "VARCHAR2(255 CHAR)"
+    data_type: "VARCHAR2(1020)"
     description: "Mô tả chi tiết metric"
     key: null
     fk_note: null
   - name: SERVICE_URL
-    data_type: "VARCHAR2(500 CHAR)"
+    data_type: "VARCHAR2(2000)"
     description: "URL API để lấy dữ liệu cho metric này"
     key: null
     fk_note: null
@@ -40,42 +40,47 @@ columns:
     key: null
     fk_note: null
   - name: STATUS
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "Trạng thái: 0=Inactive, 1=Active"
     key: null
     fk_note: null
   - name: CREATED_AT
-    data_type: "TIMESTAMP"
+    data_type: "TIMESTAMP(6)"
     description: "Ngày tạo"
     key: null
     fk_note: null
   - name: UPDATED_AT
-    data_type: "TIMESTAMP"
+    data_type: "TIMESTAMP(6)"
     description: "Ngày sửa cuối"
     key: null
     fk_note: null
   - name: CREATED_BY_ID
-    data_type: "VARCHAR2(255)"
+    data_type: "VARCHAR2(1020)"
     description: "User_id người tạo"
     key: null
     fk_note: null
   - name: UPDATED_BY_ID
-    data_type: "VARCHAR2(255)"
+    data_type: "VARCHAR2(1020)"
     description: "User_id người cập nhật"
     key: null
     fk_note: null
   - name: CREATED_BY_NAME
-    data_type: "VARCHAR2(250)"
+    data_type: "VARCHAR2(1020)"
     description: "Tên người tạo"
     key: null
     fk_note: null
   - name: UPDATED_BY_NAME
-    data_type: "VARCHAR2(250)"
+    data_type: "VARCHAR2(1020)"
     description: "Tên người cập nhật"
     key: null
     fk_note: null
   - name: DELETED
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "Soft delete: 0=Active, 1=Deleted"
+    key: null
+    fk_note: null
+  - name: METRIC_TYPE
+    data_type: "NUMBER(1,0)"
+    description: "Loại metric: 0=Excel, 1=Word"
     key: null
     fk_note: null

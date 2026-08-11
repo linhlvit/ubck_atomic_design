@@ -5,7 +5,7 @@ table: HISTORY_CHANGE_LOG
 brd_ref: BRD-SRC-IDS-HISTORY_CHANGE_LOG
 columns:
   - name: ID
-    data_type: VARCHAR2(255)
+    data_type: VARCHAR2(1020)
     description: "Khóa chính của bản ghi lịch sử thay đổi, sinh UUID tại ứng dụng để tránh dùng IDENTITY trên Oracle"
     key: PK
     fk_note: null
@@ -30,7 +30,7 @@ columns:
     key: null
     fk_note: null
   - name: CHANGED_AT
-    data_type: TIMESTAMP
+    data_type: TIMESTAMP(6)
     description: "Thời điểm phát sinh thay đổi dữ liệu"
     key: null
     fk_note: null

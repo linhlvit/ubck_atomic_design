@@ -20,7 +20,7 @@ columns:
     key: null
     fk_note: null
   - name: CONDITION
-    data_type: NVARCHAR2(500)
+    data_type: NVARCHAR2(1000)
     description: "Điều kiện áp dụng (biểu thức logic)"
     key: null
     fk_note: null
@@ -35,7 +35,7 @@ columns:
     key: null
     fk_note: null
   - name: NOTE
-    data_type: NVARCHAR2(2000)
+    data_type: NVARCHAR2(4000)
     description: "Ghi chú bổ sung, không bắt buộc"
     key: null
     fk_note: null
@@ -50,12 +50,12 @@ columns:
     key: null
     fk_note: "FK suy luận → ALERT_INDICATOR.ID"
   - name: ALERT_YEAR
-    data_type: VARCHAR2(10)
+    data_type: VARCHAR2(40)
     description: "Năm kiểm tra cảnh báo"
     key: null
     fk_note: null
   - name: REPORT_PERIOD
-    data_type: VARCHAR2(50)
+    data_type: VARCHAR2(200)
     description: "Kỳ báo cáo (Ngày/Tuần/Tháng/Quý/Bán niên/Năm)"
     key: null
     fk_note: null
@@ -75,7 +75,7 @@ columns:
     key: null
     fk_note: null
   - name: RESOLUTION_NOTE
-    data_type: VARCHAR2(2000)
+    data_type: VARCHAR2(4000)
     description: "Ghi chú xử lý cảnh báo vi phạm"
     key: null
     fk_note: null
@@ -85,7 +85,7 @@ columns:
     key: null
     fk_note: null
   - name: VIOLATION_DESCRIPTION
-    data_type: VARCHAR2(2000)
+    data_type: VARCHAR2(4000)
     description: "Mô tả chi tiết nội dung vi phạm phát hiện"
     key: null
     fk_note: null
@@ -125,7 +125,7 @@ columns:
     key: null
     fk_note: null
   - name: ENTITY_TYPE
-    data_type: NVARCHAR2(32)
+    data_type: NVARCHAR2(64)
     description: "Loai doi tuong vi pham: CTCK = Cong ty chung khoan; CN_NUOC_NGOAI = Chi nhanh CTCK nuoc ngoai; VPDD_NUOC_NGOAI = Van phong dai dien CTCK nuoc ngoai"
     key: null
     fk_note: null
@@ -139,3 +139,38 @@ columns:
     description: ""
     key: null
     fk_note: "FK suy luận → ALERT_RUN.ID"
+  - name: ACTUAL_VALUE
+    data_type: NUMBER(38,2)
+    description: "Giá trị thực tế của chỉ số tại thời điểm cảnh báo"
+    key: null
+    fk_note: null
+  - name: ALERT_DATE
+    data_type: DATE
+    description: "Ngày phát sinh cảnh báo"
+    key: null
+    fk_note: null
+  - name: COMPARE_VALUE
+    data_type: NUMBER
+    description: "Giá trị so sánh dùng trong điều kiện cảnh báo"
+    key: null
+    fk_note: null
+  - name: PERIOD_TYPE
+    data_type: NUMBER(2)
+    description: "Loại kỳ của cảnh báo (mã số)"
+    key: null
+    fk_note: null
+  - name: PERIOD_VALUE
+    data_type: NUMBER(10)
+    description: "Giá trị kỳ của cảnh báo (số thứ tự)"
+    key: null
+    fk_note: null
+  - name: SEVERITY_LEVEL_ALT
+    data_type: NUMBER(1)
+    description: "Mức độ nghiêm trọng (mã số thay thế cho SEVERITY_LEVEL)"
+    key: null
+    fk_note: null
+  - name: STRING_RESULT_VALUE
+    data_type: VARCHAR2(4000)
+    description: "Giá trị kết quả dạng chuỗi khi kết quả điều kiện không phải dạng số"
+    key: null
+    fk_note: null

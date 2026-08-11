@@ -1,0 +1,71 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: KNT
+table: CAT_POSITION
+brd_ref: BRD-SRC-KNT-CAT_POSITION
+columns:
+- name: CREATED_AT
+  data_type: "DATE"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: "VARCHAR2(200)"
+  description: "Tài khoản/tên người tạo bản ghi"
+  key: null
+  fk_note: "FK suy luận → SYS_USER.ID"
+- name: DATA_TYPE
+  data_type: "NUMBER"
+  description: "Kiểu dữ liệu: TEXT=1, PASS=2, NUMBER=3, CHECKBOX=4, DROP=5, EMAIL=6"
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: "NUMBER"
+  description: "Cờ xóa mềm: 1=Đã xóa, 0=Chưa xóa"
+  key: null
+  fk_note: null
+- name: ID
+  data_type: "NUMBER"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: LAST_MODIFIED_AT
+  data_type: "DATE"
+  description: "Thời điểm cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: LAST_MODIFIED_BY
+  data_type: "VARCHAR2(200)"
+  description: "Tài khoản/tên người cập nhật lần cuối"
+  key: null
+  fk_note: "FK suy luận → SYS_USER.ID"
+- name: ORIGINAL_DATA
+  data_type: "NUMBER"
+  description: "Cờ dữ liệu gốc từ danh mục điện tử dùng chung: 1=Dữ liệu gốc, 0=Dữ liệu thêm mới"
+  key: null
+  fk_note: null
+- name: POSITION_CODE
+  data_type: "VARCHAR2(200)"
+  description: "Mã chức vụ"
+  key: null
+  fk_note: null
+- name: POSITION_NAME
+  data_type: "VARCHAR2(1020)"
+  description: "Tên chức vụ"
+  key: null
+  fk_note: null
+- name: SYNC_ENABLED
+  data_type: "NUMBER"
+  description: "Cờ đồng bộ dữ liệu: 1=Cho phép đồng bộ, 0=Không đồng bộ"
+  key: null
+  fk_note: null
+- name: SYNC_ID
+  data_type: "VARCHAR2(200)"
+  description: "ID đồng bộ từ hệ thống nguồn"
+  key: null
+  fk_note: null
+- name: SYNC_ID_SC_FIRM
+  data_type: "VARCHAR2(200)"
+  description: "ID đồng bộ từ phân hệ quản lý CTCK"
+  key: null
+  fk_note: null

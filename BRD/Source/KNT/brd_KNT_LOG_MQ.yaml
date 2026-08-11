@@ -1,0 +1,46 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: KNT
+table: LOG_MQ
+brd_ref: BRD-SRC-KNT-LOG_MQ
+columns:
+- name: CREATED_AT
+  data_type: "DATE"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: ID
+  data_type: "VARCHAR2(50)"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: MSG_ERROR
+  data_type: "VARCHAR2(1000)"
+  description: "Thông báo lỗi khi xử lý message MQ"
+  key: null
+  fk_note: null
+- name: MSG_MQ
+  data_type: "CLOB"
+  description: "Nội dung message MQ đầy đủ (CLOB)"
+  key: null
+  fk_note: null
+- name: SENDER_CODE
+  data_type: "VARCHAR2(100)"
+  description: "Mã hệ thống gửi message"
+  key: null
+  fk_note: null
+- name: SENDER_NAME
+  data_type: "VARCHAR2(500)"
+  description: "Tên hệ thống gửi message"
+  key: null
+  fk_note: null
+- name: SENT_AT
+  data_type: "DATE"
+  description: "Thời điểm gửi gói tin"
+  key: null
+  fk_note: null
+- name: TRAN_CODE
+  data_type: "VARCHAR2(50)"
+  description: "Mã giao dịch (transaction code) theo chuẩn trao đổi dữ liệu"
+  key: null
+  fk_note: null

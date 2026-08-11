@@ -5,17 +5,17 @@ table: VIOLATION_BEHAVIOR
 brd_ref: BRD-SRC-THANHTRA-VIOLATION_BEHAVIOR
 columns:
   - name: ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "Khóa chính UUID"
     key: PK
     fk_note: null
   - name: CODE
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "Mã hành vi, tự động sinh, UNIQUE"
     key: null
     fk_note: null
   - name: NAME
-    data_type: VARCHAR2(500 CHAR)
+    data_type: VARCHAR2(2000)
     description: "Tên hành vi vi phạm"
     key: null
     fk_note: null
@@ -25,7 +25,7 @@ columns:
     key: null
     fk_note: null
   - name: PRIMARY_PENALTY_TYPE_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "FK -> penalty_type: Hình thức xử phạt chính (chỉ chọn 1)"
     key: FK
     fk_note: "FK → PENALTY_TYPE.id"
@@ -45,12 +45,12 @@ columns:
     key: null
     fk_note: null
   - name: STATUS
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "Trạng thái: ACTIVE (Đang sử dụng), INACTIVE (Ngừng sử dụng)"
     key: null
     fk_note: null
   - name: NOTE
-    data_type: VARCHAR2(2000 CHAR)
+    data_type: VARCHAR2(4000)
     description: "Ghi chú"
     key: null
     fk_note: null
@@ -65,12 +65,12 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng tạo bản ghi"
     key: null
     fk_note: "FK suy luận → system_user.id"
   - name: LAST_MODIFIED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng cập nhật gần nhất"
     key: null
     fk_note: "FK suy luận → system_user.id"
@@ -85,7 +85,7 @@ columns:
     key: null
     fk_note: null
   - name: LEGAL_DOCUMENT
-    data_type: VARCHAR2(2000 CHAR)
+    data_type: VARCHAR2(4000)
     description: "Văn bản pháp luật (nhập text tham chiếu)"
     key: null
     fk_note: null

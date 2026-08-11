@@ -1,0 +1,206 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: KNT
+table: MSG_PACKET
+brd_ref: BRD-SRC-KNT-MSG_PACKET
+columns:
+- name: CONTENT
+  data_type: "CLOB"
+  description: "Nội dung gói tin dạng XML (CLOB)"
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: "VARCHAR2(800)"
+  description: "Tài khoản/tên người tạo bản ghi"
+  key: null
+  fk_note: "FK suy luận → SYS_USER.ID"
+- name: DESCRIPTION
+  data_type: "VARCHAR2(4000)"
+  description: "Mô tả chi tiết"
+  key: null
+  fk_note: null
+- name: ERROR_CODE
+  data_type: "VARCHAR2(200)"
+  description: "Mã lỗi khi xử lý gói tin (nếu có)"
+  key: null
+  fk_note: null
+- name: ERROR_DESC
+  data_type: "VARCHAR2(200)"
+  description: "Mô tả lỗi khi xử lý gói tin"
+  key: null
+  fk_note: null
+- name: ID
+  data_type: "NUMBER"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: IS_SENT_MOF
+  data_type: "NUMBER(1,0)"
+  description: "Đã gửi XML sang Bộ Tài chính (BTC): 0=chưa gửi, 1=đã gửi"
+  key: null
+  fk_note: null
+- name: IS_SENT_TCT
+  data_type: "NUMBER(1,0)"
+  description: "Đã gửi XML sang Cục Thuế (CT): 0=chưa gửi, 1=đã gửi ít nhất một lần thành công"
+  key: null
+  fk_note: null
+- name: LINK_ID
+  data_type: "VARCHAR2(2000)"
+  description: "ID liên kết với message gốc trong chuỗi trao đổi"
+  key: null
+  fk_note: null
+- name: MSG_ERROR
+  data_type: "CLOB"
+  description: "Loi phan hoi ve tu API"
+  key: null
+  fk_note: null
+- name: MSG_ID
+  data_type: "VARCHAR2(200)"
+  description: "Mã định danh message trong hệ thống trao đổi dữ liệu"
+  key: null
+  fk_note: null
+- name: MSG_REF_ID
+  data_type: "VARCHAR2(200)"
+  description: "Mã tham chiếu message gốc (khi là message phản hồi)"
+  key: null
+  fk_note: null
+- name: ORIGINAL_CODE
+  data_type: "VARCHAR2(200)"
+  description: "Mã hệ thống gốc gửi dữ liệu"
+  key: null
+  fk_note: null
+- name: ORIGINAL_DATE
+  data_type: "VARCHAR2(200)"
+  description: "Ngày tạo dữ liệu tại hệ thống gốc"
+  key: null
+  fk_note: null
+- name: ORIGINAL_NAME
+  data_type: "VARCHAR2(400)"
+  description: "Tên hệ thống gốc gửi dữ liệu"
+  key: null
+  fk_note: null
+- name: PACKET_CODE
+  data_type: "VARCHAR2(200)"
+  description: "Mã gói tin trao đổi dữ liệu (do hệ thống sinh tự động)"
+  key: null
+  fk_note: null
+- name: PARENT_ID
+  data_type: "NUMBER"
+  description: "FK -> cùng bảng: ID gói tin/tham số cha"
+  key: null
+  fk_note: "FK suy luận → MSG_PACKET.ID"
+- name: RECEIVED_AT
+  data_type: "DATE"
+  description: null
+  key: null
+  fk_note: null
+- name: RECEIVER_CODE
+  data_type: "VARCHAR2(200)"
+  description: "Mã hệ thống nhận message"
+  key: null
+  fk_note: null
+- name: RECEIVER_NAME
+  data_type: "VARCHAR2(400)"
+  description: "Tên hệ thống nhận message"
+  key: null
+  fk_note: null
+- name: RECEIVER_UNIT
+  data_type: "NUMBER"
+  description: "Đơn vị nhận (DonViTruyenNhanEnum): 1=TCT (Cục Thuế), 2=UBCKNN, 3=BTC (Bộ Tài chính)"
+  key: null
+  fk_note: null
+- name: REPRESENTATIVE_NAME
+  data_type: "VARCHAR2(800)"
+  description: "Họ tên người đại diện/chủ hộ kinh doanh"
+  key: null
+  fk_note: null
+- name: SENDER_CODE
+  data_type: "VARCHAR2(200)"
+  description: "Mã hệ thống gửi message"
+  key: null
+  fk_note: null
+- name: SENDER_NAME
+  data_type: "VARCHAR2(400)"
+  description: "Tên hệ thống gửi message"
+  key: null
+  fk_note: null
+- name: SENDER_UNIT
+  data_type: "NUMBER"
+  description: "Đơn vị gửi (DonViTruyenNhanEnum): 1=TCT (Cục Thuế), 2=UBCKNN, 3=BTC (Bộ Tài chính)"
+  key: null
+  fk_note: null
+- name: SEND_MOF_COUNT
+  data_type: "NUMBER(10,0)"
+  description: "Số lần đã gửi XML sang Bộ Tài chính (BTC)"
+  key: null
+  fk_note: null
+- name: SEND_TCT_COUNT
+  data_type: "NUMBER(10,0)"
+  description: "Số lần đã gửi XML sang Cục Thuế (CT)"
+  key: null
+  fk_note: null
+- name: SENT_AT
+  data_type: "DATE"
+  description: "Thời điểm gửi gói tin"
+  key: null
+  fk_note: null
+- name: SENT_BY
+  data_type: "VARCHAR2(400)"
+  description: "Tài khoản người thực hiện gửi gói tin"
+  key: null
+  fk_note: null
+- name: SPARE1
+  data_type: "VARCHAR2(200)"
+  description: "Trường dự phòng 1 (mở rộng theo yêu cầu)"
+  key: null
+  fk_note: null
+- name: SPARE2
+  data_type: "VARCHAR2(200)"
+  description: "Trường dự phòng 2: loại dữ liệu CTY=công ty, BC=báo cáo"
+  key: null
+  fk_note: null
+- name: SPARE3
+  data_type: "VARCHAR2(200)"
+  description: "Trường dự phòng 3: mô tả gói tin"
+  key: null
+  fk_note: null
+- name: STATUS
+  data_type: "NUMBER"
+  description: "Trang thai truyen nhan nhanh CT/TCT (Cuc thue)"
+  key: null
+  fk_note: null
+- name: STATUS_MOF
+  data_type: "NUMBER(10,0)"
+  description: "Trang thai truyen nhan nhanh BTC/MOF (Bo Tai chinh)"
+  key: null
+  fk_note: null
+- name: TAX_CODE
+  data_type: "VARCHAR2(200)"
+  description: "Mã số thuế doanh nghiệp"
+  key: null
+  fk_note: null
+- name: TIME_END
+  data_type: "DATE"
+  description: "Thời điểm kết thúc xử lý import XML thành công"
+  key: null
+  fk_note: null
+- name: TIME_START
+  data_type: "DATE"
+  description: "Thời điểm bắt đầu tạo/xử lý gói tin khi import XML"
+  key: null
+  fk_note: null
+- name: TRAN_CODE
+  data_type: "VARCHAR2(80)"
+  description: "Mã giao dịch (transaction code) theo chuẩn trao đổi dữ liệu"
+  key: null
+  fk_note: null
+- name: TYPE
+  data_type: "NUMBER"
+  description: "Loại gói tin/doanh nghiệp (GOI_TIN.LOAI): 1=Công ty đại chúng (IDS), 4=Công ty chứng khoán (SCMS), 5=Công ty quản lý quỹ (FMS); giá trị khác theo nghiệp vụ import XML"
+  key: null
+  fk_note: null
+- name: VERSION
+  data_type: "VARCHAR2(80)"
+  description: "Phiên bản giao thức trao đổi dữ liệu"
+  key: null
+  fk_note: null

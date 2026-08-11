@@ -10,17 +10,17 @@ columns:
     key: PK
     fk_note: null
   - name: COMPANY_EVENT_ID
-    data_type: "VARCHAR2(36)"
+    data_type: "VARCHAR2(50)"
     description: "Id của sự kiện tổ chức niêm yết"
     key: FK
     fk_note: "FK suy luận → COMPANY_EVENT.ID"
   - name: CHANGE_DATE
-    data_type: "TIMESTAMP"
+    data_type: "TIMESTAMP(6)"
     description: "Ngày thay đổi"
     key: null
     fk_note: null
   - name: CHANGE_TYPE
-    data_type: "VARCHAR2(50 CHAR)"
+    data_type: "VARCHAR2(50)"
     description: "Loại thay đổi"
     key: null
     fk_note: null
@@ -40,12 +40,12 @@ columns:
     key: null
     fk_note: null
   - name: APPROVAL_STATUS
-    data_type: "NUMBER(1,0)"
+    data_type: "NUMBER(2,0)"
     description: "Trạng thái phê duyệt"
     key: null
     fk_note: null
   - name: APPROVAL_COMMENT
-    data_type: "VARCHAR(1000 CHAR)"
+    data_type: "VARCHAR2(1000)"
     description: "Nội dung phê duyệt"
     key: null
     fk_note: null
@@ -60,12 +60,12 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_AT
-    data_type: "TIMESTAMP"
+    data_type: "TIMESTAMP(6)"
     description: "Ngày tạo"
     key: null
     fk_note: null
   - name: UPDATED_AT
-    data_type: "TIMESTAMP"
+    data_type: "TIMESTAMP(6)"
     description: "Ngày sửa cuối"
     key: null
     fk_note: null
@@ -90,7 +90,32 @@ columns:
     key: null
     fk_note: null
   - name: DELETED
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "Soft delete: 0=Active, 1=Deleted"
+    key: null
+    fk_note: null
+  - name: APPROVED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: null
+    key: null
+    fk_note: null
+  - name: APPROVED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: null
+    key: null
+    fk_note: null
+  - name: CHANGED_BY
+    data_type: "VARCHAR2(100)"
+    description: null
+    key: null
+    fk_note: null
+  - name: CHANGE_SOURCE
+    data_type: "VARCHAR2(20)"
+    description: null
+    key: null
+    fk_note: null
+  - name: VERSION
+    data_type: "NUMBER(10,0)"
+    description: null
     key: null
     fk_note: null

@@ -5,17 +5,17 @@ table: PENALTY_TYPE_VIOLATION_BEHAVIOR
 brd_ref: BRD-SRC-THANHTRA-PENALTY_TYPE_VIOLATION_BEHAVIOR
 columns:
   - name: ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "Khóa chính UUID"
     key: PK
     fk_note: null
   - name: PENALTY_TYPE_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "FK -> penalty_type: hình thức xử phạt bổ sung"
     key: FK
     fk_note: "FK → PENALTY_TYPE.id"
   - name: VIOLATION_BEHAVIOR_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "FK -> violation_behavior: hành vi vi phạm liên kết"
     key: FK
     fk_note: "FK → VIOLATION_BEHAVIOR.id"
@@ -30,12 +30,12 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng tạo bản ghi"
     key: null
     fk_note: "FK suy luận → system_user.id"
   - name: LAST_MODIFIED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng cập nhật gần nhất"
     key: null
     fk_note: "FK suy luận → system_user.id"

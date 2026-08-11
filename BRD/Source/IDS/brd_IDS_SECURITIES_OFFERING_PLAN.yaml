@@ -15,7 +15,7 @@ columns:
     key: FK
     fk_note: "FK → SECURITIES_OFFERING.ID"
   - name: OFFERING_METHOD_CD
-    data_type: VARCHAR2(100)
+    data_type: VARCHAR2(400)
     description: "Hình thức chào bán phát hành: lấy từ danh mục lookup_value (Chào bán ra công chúng theo hình thức khác; Chào bán của cổ đông công ty đại chúng ra công chúng; Chào bán riêng lẻ; Hoán đổi; Phát hành trả cổ tức;....): LOOKUP_VALUES LOOKUP_GROUP = 'SO_OFFERING_METHOD'"
     key: null
     fk_note: null
@@ -25,12 +25,12 @@ columns:
     key: null
     fk_note: null
   - name: SECURITY_TYPE_CD
-    data_type: VARCHAR2(100)
+    data_type: VARCHAR2(400)
     description: "Loại chứng khoán: (gồm: Cổ phiếu; Cổ phiếu ưu đãi; Trái phiếu; Trái phiếu kèm chứng quyền; Trái phiếu chuyển đổi): LOOKUP_VALUES LOOKUP_GROUP = 'SO_SECURITY_TYPE'"
     key: null
     fk_note: null
   - name: SECURITY_NAME
-    data_type: VARCHAR2(255)
+    data_type: VARCHAR2(1020)
     description: "Tên chứng khoán"
     key: null
     fk_note: null
@@ -100,7 +100,7 @@ columns:
     key: null
     fk_note: null
   - name: TRANSFER_RESTRICT_PERIOD
-    data_type: VARCHAR2(50)
+    data_type: VARCHAR2(200)
     description: "Thời gian hạn chế chuyển nhượng (hiển thị 1 số thủ tục)"
     key: null
     fk_note: null
@@ -120,32 +120,32 @@ columns:
     key: null
     fk_note: null
   - name: CAPITAL_SOURCE
-    data_type: VARCHAR2(255)
+    data_type: VARCHAR2(1020)
     description: "Nguồn vốn (hiển thị đối với 1 số thủ tục)"
     key: null
     fk_note: null
   - name: EXERCISE_PERIOD
-    data_type: VARCHAR2(50)
+    data_type: VARCHAR2(200)
     description: "Thời hạn thực hiện quyền (hiển thị đối với 1 số thủ tục)"
     key: null
     fk_note: null
   - name: RIGHTS_RATIO
-    data_type: VARCHAR2(20)
+    data_type: VARCHAR2(80)
     description: "Tỷ lệ thực hiện quyềN (hiển thị đối với 1 số thủ tục)"
     key: null
     fk_note: null
   - name: SWAP_RATIO
-    data_type: VARCHAR2(20)
+    data_type: VARCHAR2(80)
     description: "Tỷ lệ hoán đổi (hiển thị đối với 1 số thủ tục)"
     key: null
     fk_note: null
   - name: SWAP_TARGET
-    data_type: VARCHAR2(512)
+    data_type: VARCHAR2(2048)
     description: "Đối tượng phát hành để hoán đổi (hiển thị đối với 1 số thủ tục)"
     key: null
     fk_note: null
   - name: ISSUANCE_MARKET
-    data_type: VARCHAR2(512)
+    data_type: VARCHAR2(2048)
     description: "Thị trường phát hành (đối với chào bán tại nước ngoài)"
     key: null
     fk_note: null
@@ -155,17 +155,17 @@ columns:
     key: null
     fk_note: null
   - name: BOND_TERM_VALUE
-    data_type: VARCHAR2(100)
+    data_type: VARCHAR2(400)
     description: "Kỳ hạn trái phiếu (tháng)"
     key: null
     fk_note: null
   - name: INTEREST_PAYMENT_PERIOD
-    data_type: VARCHAR2(100)
+    data_type: VARCHAR2(400)
     description: "Kỳ trả lãi"
     key: null
     fk_note: null
   - name: CONVERSION_PERIOD_VALUE
-    data_type: VARCHAR2(100)
+    data_type: VARCHAR2(400)
     description: "Thời hạn chuyển đổi"
     key: null
     fk_note: null
@@ -175,12 +175,12 @@ columns:
     key: null
     fk_note: null
   - name: CONVERSION_GUARANTEE_PLAN
-    data_type: VARCHAR2(1024)
+    data_type: VARCHAR2(4000)
     description: "Phương án đảm bảo tỷ lệ sở hữu nước ngoài về chuyển đổi"
     key: null
     fk_note: null
   - name: EXERCISE_PERIOD_VALUE
-    data_type: VARCHAR2(100)
+    data_type: VARCHAR2(400)
     description: "Thời hạn thực hiện quyền"
     key: null
     fk_note: null
@@ -190,12 +190,12 @@ columns:
     key: null
     fk_note: null
   - name: EXERCISE_GUARANTEE_PLAN
-    data_type: VARCHAR2(1024)
+    data_type: VARCHAR2(4000)
     description: "Phương án đảm bảo tỷ lệ sở hữu nước ngoài về thực hiện quyền"
     key: null
     fk_note: null
   - name: GUARANTEE_TYPE_CD
-    data_type: VARCHAR2(100)
+    data_type: VARCHAR2(400)
     description: "Hình thức bảo đảm (gồm : Thanh toán bằng bảo lãnh; Thanh toán bằng tài sản) LOOKUP_VALUES LOOKUP_GROUP = 'GUARANTEE_TYPE'"
     key: null
     fk_note: null
@@ -205,7 +205,7 @@ columns:
     key: null
     fk_note: null
   - name: PAYMENT_GUARANTOR_ORG
-    data_type: VARCHAR2(255)
+    data_type: VARCHAR2(1020)
     description: "Tên tổ chức bảo lãnh thanh toán"
     key: null
     fk_note: null
@@ -215,7 +215,7 @@ columns:
     key: null
     fk_note: null
   - name: SECURED_ASSET
-    data_type: VARCHAR2(512)
+    data_type: VARCHAR2(2048)
     description: "Tài sản bảo đảm"
     key: null
     fk_note: null
@@ -225,12 +225,12 @@ columns:
     key: null
     fk_note: null
   - name: SECURED_ASSET_OWNER
-    data_type: VARCHAR2(255)
+    data_type: VARCHAR2(1020)
     description: "Chủ sở hữu tài sản bảo đảm"
     key: null
     fk_note: null
   - name: SECURED_ASSET_ORG
-    data_type: VARCHAR2(255)
+    data_type: VARCHAR2(1020)
     description: "Tổ chức nhận tài sản bảo đảm"
     key: null
     fk_note: null
@@ -270,7 +270,7 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: VARCHAR2(30)
+    data_type: VARCHAR2(120)
     description: "Người tạo"
     key: null
     fk_note: "FK → LOGINS.ID"
@@ -280,7 +280,7 @@ columns:
     key: null
     fk_note: null
   - name: UPDATED_BY
-    data_type: VARCHAR2(30)
+    data_type: VARCHAR2(120)
     description: "Người sửa"
     key: null
     fk_note: "FK → LOGINS.ID"
@@ -292,5 +292,10 @@ columns:
   - name: DELETE_FLG
     data_type: NUMBER(1,0)
     description: ""
+    key: null
+    fk_note: null
+  - name: PLAN_SINGLE_OBJ
+    data_type: VARCHAR2(512)
+    description: "Đối tượng chào bán phát hành riêng lẻ"
     key: null
     fk_note: null

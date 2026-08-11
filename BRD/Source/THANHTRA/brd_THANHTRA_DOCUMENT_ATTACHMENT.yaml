@@ -5,27 +5,27 @@ table: DOCUMENT_ATTACHMENT
 brd_ref: BRD-SRC-THANHTRA-DOCUMENT_ATTACHMENT
 columns:
   - name: ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "Khóa chính UUID"
     key: PK
     fk_note: null
   - name: ENTITY_TYPE
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "Tên bảng gốc: inspection_team, examination_team, inspection_conclusion, adhoc_inspection_report..."
     key: null
     fk_note: null
   - name: ENTITY_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "ID bản ghi trong bảng gốc"
     key: null
     fk_note: null
   - name: DOCUMENT_NUMBER
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "Số văn bản (nullable, dùng cho hồ sơ đoàn)"
     key: null
     fk_note: null
   - name: DOCUMENT_NAME
-    data_type: VARCHAR2(500 CHAR)
+    data_type: VARCHAR2(2000)
     description: "Tên văn bản đính kèm"
     key: null
     fk_note: null
@@ -35,17 +35,17 @@ columns:
     key: null
     fk_note: null
   - name: DOCUMENT_CATEGORY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "Phân loại văn bản: SURVEY_REPORT, INSPECTION_DECISION, SUPERVISION_DECISION, INSPECTION_PLAN, CONCLUSION, PENALTY_DECISION, FOLLOW_UP_LETTER, REQUEST_LETTER, REPORT_FILE, APPENDIX, OTHER"
     key: null
     fk_note: null
   - name: FILE_PATH
-    data_type: VARCHAR2(1000 CHAR)
+    data_type: VARCHAR2(4000)
     description: "Đường dẫn file trên storage"
     key: null
     fk_note: null
   - name: FILE_NAME
-    data_type: VARCHAR2(500 CHAR)
+    data_type: VARCHAR2(2000)
     description: "Tên file gốc khi upload"
     key: null
     fk_note: null
@@ -70,12 +70,12 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng tạo bản ghi"
     key: null
     fk_note: "FK suy luận → system_user.id"
   - name: LAST_MODIFIED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng cập nhật gần nhất"
     key: null
     fk_note: "FK suy luận → system_user.id"
@@ -87,5 +87,10 @@ columns:
   - name: DELETED
     data_type: NUMBER(1,0)
     description: "Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa"
+    key: null
+    fk_note: null
+  - name: CONTENT_TYPE
+    data_type: VARCHAR2(200)
+    description: null
     key: null
     fk_note: null

@@ -15,12 +15,12 @@ columns:
     key: null
     fk_note: null
   - name: REPORT_TYPE
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "1=Báo cáo tuân thủ, 2=Báo cáo bất thường"
     key: null
     fk_note: null
   - name: ASSIGNMENT_TYPE
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "1=Phê duyệt (chỉ 1 người/báo cáo), 2=Nhận xét (nhiều người/báo cáo)"
     key: null
     fk_note: null
@@ -30,12 +30,12 @@ columns:
     key: null
     fk_note: "FK suy luận → SYSTEM_USER.ID"
   - name: ASSIGNEE_NAME
-    data_type: "VARCHAR2(250 CHAR)"
+    data_type: "VARCHAR2(1000)"
     description: "Họ và tên người được phân công"
     key: null
     fk_note: null
   - name: ASSIGNEE_TITLE
-    data_type: "VARCHAR2(200 CHAR)"
+    data_type: "VARCHAR2(800)"
     description: "Chức vụ người được phân công"
     key: null
     fk_note: null
@@ -45,27 +45,27 @@ columns:
     key: null
     fk_note: null
   - name: ASSIGNED_BY_NAME
-    data_type: "VARCHAR2(250 CHAR)"
+    data_type: "VARCHAR2(1000)"
     description: "Họ và tên người phân công"
     key: null
     fk_note: null
   - name: ASSIGNED_BY_TITLE
-    data_type: "VARCHAR2(200 CHAR)"
+    data_type: "VARCHAR2(800)"
     description: "Chức vụ người phân công"
     key: null
     fk_note: null
   - name: ASSIGNED_DATE
-    data_type: "TIMESTAMP"
+    data_type: "TIMESTAMP(6)"
     description: "Thời gian phân công"
     key: null
     fk_note: null
   - name: REVOKED_BY_TITLE
-    data_type: "VARCHAR2(200 CHAR)"
+    data_type: "VARCHAR2(800)"
     description: "Chức vụ người huỷ phân công"
     key: null
     fk_note: null
   - name: REVOKED_DATE
-    data_type: "TIMESTAMP"
+    data_type: "TIMESTAMP(6)"
     description: "Thời gian thu hồi quyền (NULL nếu chưa bị thu hồi)"
     key: null
     fk_note: null
@@ -75,27 +75,27 @@ columns:
     key: null
     fk_note: null
   - name: REVOKED_BY_NAME
-    data_type: "VARCHAR2(250 CHAR)"
+    data_type: "VARCHAR2(1000)"
     description: "Tên người thu hồi"
     key: null
     fk_note: null
   - name: STATUS
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "1=Đang hiệu lực, 0=Đã thu hồi"
     key: null
     fk_note: null
   - name: NOTIFICATION_SENT
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "Đã gửi thông báo/email chưa: 0=Chưa, 1=Đã gửi"
     key: null
     fk_note: null
   - name: CREATED_AT
-    data_type: "TIMESTAMP"
+    data_type: "TIMESTAMP(6)"
     description: "Ngày tạo"
     key: null
     fk_note: null
   - name: UPDATED_AT
-    data_type: "TIMESTAMP"
+    data_type: "TIMESTAMP(6)"
     description: "Ngày sửa cuối"
     key: null
     fk_note: null
@@ -120,7 +120,7 @@ columns:
     key: null
     fk_note: null
   - name: DELETED
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "Soft delete: 0=Active, 1=Deleted"
     key: null
     fk_note: null

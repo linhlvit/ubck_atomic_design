@@ -1,0 +1,36 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: KNT
+table: LOG_SEND_MOF
+brd_ref: BRD-SRC-KNT-LOG_SEND_MOF
+columns:
+- name: MSG_ID
+  data_type: "VARCHAR2(100)"
+  description: "Mã định danh message trong hệ thống trao đổi dữ liệu"
+  key: null
+  fk_note: null
+- name: MSG_PACKET_ID
+  data_type: "NUMBER"
+  description: "FK -> msg_packet: Gói tin trao đổi liên quan"
+  key: null
+  fk_note: "FK suy luận → MSG_PACKET.ID"
+- name: PACKET_CODE
+  data_type: "VARCHAR2(100)"
+  description: "Mã gói tin trao đổi dữ liệu (do hệ thống sinh tự động)"
+  key: null
+  fk_note: null
+- name: SENT_AT
+  data_type: "DATE"
+  description: "Thời điểm gửi gói tin"
+  key: null
+  fk_note: null
+- name: STATUS
+  data_type: "NUMBER"
+  description: "Trạng thái gửi hub (MSG_STATUS): 0=Thành công/tiếp nhận, khác 0=Lỗi/từ chối"
+  key: null
+  fk_note: null
+- name: TYPE
+  data_type: "NUMBER"
+  description: "Kênh gửi (PUSH_SYSTEM): 0=Trục CT (Cục Thuế), 1=Trục BTC (Bộ Tài chính)"
+  key: null
+  fk_note: null

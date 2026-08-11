@@ -10,42 +10,42 @@ columns:
   key: PK
   fk_note: null
 - name: TAXPAYER_TAX_CODE
-  data_type: "VARCHAR2(100 CHAR)"
+  data_type: "VARCHAR2(400)"
   description: "Mã số thuế người nộp thuế bị cưỡng chế"
   key: null
   fk_note: "Liên kết ngầm → TAX_REGISTRATION_INFO.TAX_CODE"
 - name: TAXPAYER_NAME
-  data_type: "VARCHAR2(200 CHAR)"
+  data_type: "VARCHAR2(800)"
   description: "Tên người nộp thuế (doanh nghiệp trên thị trường chứng khoán)"
   key: null
   fk_note: null
 - name: DIRECT_TAX_AUTHORITY_CODE
-  data_type: "VARCHAR2(100 CHAR)"
+  data_type: "VARCHAR2(400)"
   description: "Mã cơ quan thuế quản lý trực tiếp"
   key: null
   fk_note: null
 - name: DIRECT_TAX_AUTHORITY_NAME
-  data_type: "VARCHAR2(200 CHAR)"
+  data_type: "VARCHAR2(800)"
   description: "Tên cơ quan thuế quản lý trực tiếp"
   key: null
   fk_note: null
 - name: ENFORCEMENT_METHOD_CODE
-  data_type: "VARCHAR2(50 CHAR)"
+  data_type: "VARCHAR2(200)"
   description: "Mã hình thức cưỡng chế"
   key: null
   fk_note: null
 - name: ENFORCEMENT_METHOD_NAME
-  data_type: "VARCHAR2(250 CHAR)"
+  data_type: "VARCHAR2(1000)"
   description: "Tên hình thức cưỡng chế"
   key: null
   fk_note: null
 - name: E_TRANSACTION_CODE
-  data_type: "VARCHAR2(50 CHAR)"
+  data_type: "VARCHAR2(200)"
   description: "Mã giao dịch điện tử trong hệ thống Cục Thuế"
   key: null
   fk_note: null
 - name: DECISION_NUMBER
-  data_type: "VARCHAR2(100 CHAR)"
+  data_type: "VARCHAR2(400)"
   description: "Số quyết định thành lập/xử phạt"
   key: null
   fk_note: null
@@ -55,7 +55,7 @@ columns:
   key: null
   fk_note: null
 - name: ENFORCED_ENTITY_BUSINESS_LINE
-  data_type: "VARCHAR2(200 CHAR)"
+  data_type: "VARCHAR2(800)"
   description: "Ngành kinh doanh của đối tượng bị cưỡng chế"
   key: null
   fk_note: null
@@ -70,27 +70,27 @@ columns:
   key: null
   fk_note: null
 - name: NOTICE_TAXPAYER_TAX_CODE
-  data_type: "VARCHAR2(100 CHAR)"
+  data_type: "VARCHAR2(400)"
   description: "Thông báo: MST người nộp thuế"
   key: null
   fk_note: null
 - name: NOTICE_TAXPAYER_NAME
-  data_type: "VARCHAR2(200 CHAR)"
+  data_type: "VARCHAR2(800)"
   description: "Thông báo: tên người nộp thuế"
   key: null
   fk_note: null
 - name: NOTICE_CODE
-  data_type: "VARCHAR2(100 CHAR)"
+  data_type: "VARCHAR2(400)"
   description: "Thông báo: mã thông báo cưỡng chế"
   key: null
   fk_note: null
 - name: NOTICE_NAME
-  data_type: "VARCHAR2(200 CHAR)"
+  data_type: "VARCHAR2(800)"
   description: "Thông báo: tên thông báo cưỡng chế"
   key: null
   fk_note: null
 - name: BASIS_DECISION_NUMBER
-  data_type: "VARCHAR2(100 CHAR)"
+  data_type: "VARCHAR2(400)"
   description: "Căn cứ: số quyết định gốc"
   key: null
   fk_note: "Nghi ngờ liên kết logic → TAX_ENFORCEMENT_DEBT.DECISION_NUMBER (chưa xác nhận nghiệp vụ)"
@@ -100,7 +100,7 @@ columns:
   key: null
   fk_note: null
 - name: NOTICE_DEBT_AMOUNT
-  data_type: "VARCHAR2(100 CHAR)"
+  data_type: "VARCHAR2(400)"
   description: "Thông báo: số tiền nợ và tiền phạt nộp chậm"
   key: null
   fk_note: null
@@ -110,7 +110,7 @@ columns:
   key: null
   fk_note: null
 - name: VALIDITY_FLAG
-  data_type: "VARCHAR2(100 CHAR)"
+  data_type: "VARCHAR2(400)"
   description: "Cờ hiệu lực của quyết định/thông báo cưỡng chế"
   key: null
   fk_note: null
@@ -120,7 +120,7 @@ columns:
   key: FK
   fk_note: "FK → MSG_PACKET.ID"
 - name: GUID
-  data_type: "VARCHAR2(50 CHAR)"
+  data_type: "VARCHAR2(200)"
   description: "Định danh duy nhất toàn cục (GUID/UUID) của bản ghi"
   key: null
   fk_note: null

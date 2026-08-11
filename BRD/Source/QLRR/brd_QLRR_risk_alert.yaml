@@ -1,0 +1,157 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: QLRR
+table: risk_alert
+brd_ref: BRD-SRC-QLRR-risk_alert
+columns:
+- name: alert_config_id
+  data_type: null
+  description: "Cấu hình cảnh báo"
+  key: FK
+  fk_note: "FK → risk_alert_config.id"
+- name: alert_message
+  data_type: null
+  description: "Nội dung cảnh báo (từ template)"
+  key: null
+  fk_note: null
+- name: assigned_at
+  data_type: null
+  description: "Thời điểm phân công"
+  key: null
+  fk_note: null
+- name: change_amount
+  data_type: null
+  description: "Giá trị chênh lệch"
+  key: null
+  fk_note: null
+- name: change_percent
+  data_type: null
+  description: "Chênh lệch %"
+  key: null
+  fk_note: null
+- name: compare_period_time
+  data_type: null
+  description: "Số kỳ cần so sánh"
+  key: null
+  fk_note: null
+- name: created_at
+  data_type: null
+  description: "Ngày tạo"
+  key: null
+  fk_note: null
+- name: created_by_id
+  data_type: null
+  description: "User_id người tạo"
+  key: null
+  fk_note: "FK suy luận → system_user.id"
+- name: created_by_name
+  data_type: null
+  description: "Tên người tạo"
+  key: null
+  fk_note: null
+- name: current_value
+  data_type: null
+  description: "Giá trị hiện tại"
+  key: null
+  fk_note: null
+- name: custom_indicator_id
+  data_type: null
+  description: "Id chỉ tiêu tự tạo"
+  key: FK
+  fk_note: "FK → risk_indicator_custom.id"
+- name: deleted
+  data_type: null
+  description: "Soft delete"
+  key: null
+  fk_note: null
+- name: handler_user_id
+  data_type: null
+  description: "Người được giao xử lý (user id)"
+  key: null
+  fk_note: "FK suy luận → system_user.id"
+- name: handler_user_name
+  data_type: null
+  description: "Tên người xử lý"
+  key: null
+  fk_note: null
+- name: id
+  data_type: null
+  description: "Primary key"
+  key: PK
+  fk_note: null
+- name: indicator_id
+  data_type: null
+  description: "Id chỉ tiêu hệ thống"
+  key: FK
+  fk_note: "FK → risk_indicator.id"
+- name: indicator_type
+  data_type: null
+  description: "1=Chỉ tiêu hệ thống
+2=Chỉ tiêu tự tạo"
+  key: null
+  fk_note: null
+- name: period_date
+  data_type: null
+  description: "Kỳ dữ liệu bị cảnh báo"
+  key: null
+  fk_note: null
+- name: previous_value
+  data_type: null
+  description: "Giá trị kỳ trước (dùng để hiển thị, có thể null nếu không xác định)"
+  key: null
+  fk_note: null
+- name: status
+  data_type: null
+  description: "Trạng thái: 0=Chưa xử lý, 1=Đang xử lý, 2=Đã xử lý, 3=Đã huỷ/Đã bỏ qua"
+  key: null
+  fk_note: null
+- name: threshold_direction
+  data_type: null
+  description: "1=Tăng, 2=Giảm, 3=Tăng/Giảm"
+  key: null
+  fk_note: null
+- name: threshold_unit_code
+  data_type: null
+  description: "Đơn vị 
+1=%
+2=Điểm
+3=Tỷ VND
+4=Triệu USD
+5=Hợp đồng
+6=Cổ phiếu
+7=Công ty
+8=VND
+9=Số tài khoản 
+10=Đơn vị tính"
+  key: null
+  fk_note: null
+- name: threshold_value
+  data_type: null
+  description: "Giá trị ngưỡng"
+  key: null
+  fk_note: null
+- name: triggered_at
+  data_type: null
+  description: "Thời điểm phát sinh cảnh báo"
+  key: null
+  fk_note: null
+- name: triggered_by_job_id
+  data_type: null
+  description: "Job ID đồng bộ chỉ tiêu"
+  key: FK
+  fk_note: "FK suy luận → risk_indicator_schedule.id"
+- name: updated_at
+  data_type: null
+  description: "Ngày sửa cuối"
+  key: null
+  fk_note: null
+- name: updated_by_id
+  data_type: null
+  description: "User_id người cập nhật"
+  key: null
+  fk_note: "FK suy luận → system_user.id"
+- name: updated_by_name
+  data_type: null
+  description: "Tên người cập nhật"
+  key: null
+  fk_note: null

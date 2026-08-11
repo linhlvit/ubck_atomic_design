@@ -10,17 +10,17 @@ columns:
     key: PK
     fk_note: null
   - name: COMPANY_NAME_VN
-    data_type: VARCHAR2(255)
+    data_type: VARCHAR2(1020)
     description: "Tên công ty (tiếng Việt)"
     key: null
     fk_note: null
   - name: COMPANY_NAME_EN
-    data_type: VARCHAR2(255)
+    data_type: VARCHAR2(1020)
     description: "Tên công ty (tiếng Anh)"
     key: null
     fk_note: null
   - name: BUSINESS_REG_NO
-    data_type: VARCHAR2(100)
+    data_type: VARCHAR2(400)
     description: "Mã số thuế"
     key: null
     fk_note: null
@@ -35,7 +35,7 @@ columns:
     key: null
     fk_note: null
   - name: LATEST_REG_PROV
-    data_type: VARCHAR2(50)
+    data_type: VARCHAR2(200)
     description: "Tỉnh/TP đăng ký gần nhất"
     key: null
     fk_note: null
@@ -50,32 +50,32 @@ columns:
     key: null
     fk_note: null
   - name: HEAD_OFFICE_ADDR
-    data_type: VARCHAR2(255)
+    data_type: VARCHAR2(1020)
     description: "Địa chỉ trụ sở"
     key: null
     fk_note: null
   - name: PROVINCE_ID
-    data_type: VARCHAR2(50)
+    data_type: VARCHAR2(200)
     description: "Tỉnh/TP"
     key: null
     fk_note: "FK → PROVINCES.ID"
   - name: TRADING_OFFICE_ADDR
-    data_type: VARCHAR2(255)
+    data_type: VARCHAR2(1020)
     description: "Địa chỉ giao dịch"
     key: null
     fk_note: null
   - name: WEBSITE
-    data_type: VARCHAR2(255)
+    data_type: VARCHAR2(1020)
     description: "Website"
     key: null
     fk_note: null
   - name: PHONE_NO
-    data_type: VARCHAR2(20)
+    data_type: VARCHAR2(80)
     description: "Số điện thoại"
     key: null
     fk_note: null
   - name: FAX_NO
-    data_type: VARCHAR2(20)
+    data_type: VARCHAR2(80)
     description: "Số fax"
     key: null
     fk_note: null
@@ -90,27 +90,27 @@ columns:
     key: null
     fk_note: "FK → CATEGORIES.ID"
   - name: ENTERPRISE_TYPE_CD
-    data_type: VARCHAR2(100)
+    data_type: VARCHAR2(400)
     description: "Loại doanh nghiệp"
     key: null
     fk_note: null
   - name: FINANCIAL_STMT_TYPE_CD
-    data_type: VARCHAR2(100)
+    data_type: VARCHAR2(400)
     description: "Loại báo cáo tài chính"
     key: null
     fk_note: null
   - name: SECURITIES_TYPE_CD
-    data_type: VARCHAR2(100)
+    data_type: VARCHAR2(400)
     description: "Loại chứng khoán"
     key: null
     fk_note: null
   - name: EQUITY_LISTING_EXCH
-    data_type: VARCHAR2(100)
+    data_type: VARCHAR2(400)
     description: "Sàn niêm yết"
     key: null
     fk_note: null
   - name: EQUITY_TICKER
-    data_type: VARCHAR2(20)
+    data_type: VARCHAR2(80)
     description: "Mã cổ phiếu"
     key: null
     fk_note: null
@@ -125,12 +125,12 @@ columns:
     key: null
     fk_note: null
   - name: BOND_LISTING_EXCH
-    data_type: VARCHAR2(20)
+    data_type: VARCHAR2(80)
     description: "Sàn trái phiếu"
     key: null
     fk_note: null
   - name: BOND_TICKER
-    data_type: VARCHAR2(20)
+    data_type: VARCHAR2(80)
     description: "Mã trái phiếu"
     key: null
     fk_note: null
@@ -145,17 +145,17 @@ columns:
     key: null
     fk_note: null
   - name: INTL_EXCH
-    data_type: VARCHAR2(20)
+    data_type: VARCHAR2(80)
     description: "Sàn quốc tế"
     key: null
     fk_note: null
   - name: INTL_TICKER
-    data_type: VARCHAR2(20)
+    data_type: VARCHAR2(80)
     description: "Mã quốc tế"
     key: null
     fk_note: null
   - name: STATUS_IDS_CD
-    data_type: VARCHAR2(100)
+    data_type: VARCHAR2(400)
     description: "Trạng thái"
     key: null
     fk_note: null
@@ -165,17 +165,17 @@ columns:
     key: null
     fk_note: null
   - name: COMPANY_LOGIN
-    data_type: VARCHAR2(50)
+    data_type: VARCHAR2(200)
     description: "Tài khoản đăng nhập"
     key: null
     fk_note: null
   - name: APPROVER_COMMENT
-    data_type: VARCHAR2(255)
+    data_type: VARCHAR2(1020)
     description: "Ghi chú phê duyệt"
     key: null
     fk_note: null
   - name: SPECIALIST_NOTES
-    data_type: VARCHAR2(2000)
+    data_type: VARCHAR2(4000)
     description: "Ghi chú chuyên viên"
     key: null
     fk_note: null
@@ -190,7 +190,7 @@ columns:
     key: null
     fk_note: null
   - name: OPERATING_STATUS_CD
-    data_type: VARCHAR2(100)
+    data_type: VARCHAR2(400)
     description: "Trạng thái hoạt động"
     key: null
     fk_note: null
@@ -200,12 +200,12 @@ columns:
     key: null
     fk_note: null
   - name: PUBLIC_COMPANY_FORM_CD
-    data_type: VARCHAR2(100)
+    data_type: VARCHAR2(400)
     description: "Hình thức công ty đại chúng"
     key: null
     fk_note: null
   - name: PUBLIC_COM_TYPE_CD
-    data_type: VARCHAR2(100)
+    data_type: VARCHAR2(400)
     description: "Loại công ty đại chúng"
     key: null
     fk_note: null
@@ -260,7 +260,7 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: VARCHAR2(255)
+    data_type: VARCHAR2(1020)
     description: "Người tạo"
     key: null
     fk_note: "FK → LOGINS.ID"
@@ -270,7 +270,7 @@ columns:
     key: null
     fk_note: null
   - name: UPDATED_BY
-    data_type: VARCHAR2(255)
+    data_type: VARCHAR2(1020)
     description: "Người cập nhật"
     key: null
     fk_note: "FK → LOGINS.ID"
@@ -280,7 +280,7 @@ columns:
     key: null
     fk_note: null
   - name: HEAD_OFFICE_PROV
-    data_type: VARCHAR2(50)
+    data_type: VARCHAR2(200)
     description: "Tỉnh/TP trụ sở chính"
     key: null
     fk_note: null
@@ -290,7 +290,7 @@ columns:
     key: null
     fk_note: null
   - name: APPROVAL_STATUS_CD
-    data_type: VARCHAR2(100)
+    data_type: VARCHAR2(400)
     description: "Trạng thái phê duyệt hồ sơ"
     key: null
     fk_note: null

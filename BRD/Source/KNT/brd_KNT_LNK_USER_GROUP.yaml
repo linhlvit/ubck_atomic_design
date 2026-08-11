@@ -1,0 +1,21 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: KNT
+table: LNK_USER_GROUP
+brd_ref: BRD-SRC-KNT-LNK_USER_GROUP
+columns:
+- name: ID
+  data_type: "VARCHAR2(200)"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: USER_GROUP_ID
+  data_type: "NUMBER"
+  description: "FK -> sys_user_group: Nhóm người dùng liên quan"
+  key: null
+  fk_note: "FK suy luận → SYS_USER_GROUP.ID"
+- name: USER_ID
+  data_type: "NUMBER"
+  description: "FK -> sys_user: Người dùng liên quan"
+  key: null
+  fk_note: "FK suy luận → SYS_USER.ID"

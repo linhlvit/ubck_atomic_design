@@ -5,27 +5,27 @@ table: INSPECTION_TEAM_TARGET
 brd_ref: BRD-SRC-THANHTRA-INSPECTION_TEAM_TARGET
 columns:
   - name: ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "Khóa chính UUID"
     key: PK
     fk_note: null
   - name: INSPECTION_TEAM_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "FK -> inspection_team"
     key: FK
     fk_note: "FK → INSPECTION_TEAM.id"
   - name: TARGET_TYPE
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "Loại đối tượng thanh tra: SECURITIES_COMPANY, FUND_MANAGEMENT_COMPANY, PUBLIC_COMPANY, AUDIT_COMPANY, CRYPTO_SERVICE_PROVIDER, INDIVIDUAL, ORGANIZATION"
     key: null
     fk_note: null
   - name: TARGET_REFERENCE_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "ID tham chiếu đối tượng thanh tra trong hệ thống nguồn (SCMS/FMS/IDS)"
     key: null
     fk_note: null
   - name: TARGET_NAME
-    data_type: VARCHAR2(500 CHAR)
+    data_type: VARCHAR2(2000)
     description: "Tên đối tượng thanh tra"
     key: null
     fk_note: null
@@ -40,12 +40,12 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng tạo bản ghi"
     key: null
     fk_note: "FK suy luận → system_user.id"
   - name: LAST_MODIFIED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng cập nhật gần nhất"
     key: null
     fk_note: "FK suy luận → system_user.id"

@@ -15,12 +15,12 @@ columns:
     key: null
     fk_note: null
   - name: REPORT_TYPE
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "1=Báo cáo tuân thủ, 2=Báo cáo bất thường"
     key: null
     fk_note: null
   - name: ACTION_TYPE
-    data_type: "NUMBER(2)"
+    data_type: "NUMBER(2,0)"
     description: "1=Nộp báo cáo,  2=Kiểm tra tự động,  3=Chờ duyệt,  4=Phê duyệt,  5=Từ chối,  6=Phân công xử lý,  7=Huỷ phân công,  8=Yêu cầu nộp bổ sung,  9=Nộp bổ sung"
     key: null
     fk_note: null
@@ -30,27 +30,27 @@ columns:
     key: null
     fk_note: null
   - name: ACTION_BY_NAME
-    data_type: "VARCHAR2(250 CHAR)"
+    data_type: "VARCHAR2(1000)"
     description: "Tên người thực hiện. \"Hệ thống\" nếu tự động"
     key: null
     fk_note: null
   - name: ACTION_BY_TITLE
-    data_type: "VARCHAR2(200 CHAR)"
+    data_type: "VARCHAR2(800)"
     description: "Chức vụ người thực hiện"
     key: null
     fk_note: null
   - name: ACTION_DATE
-    data_type: "TIMESTAMP"
+    data_type: "TIMESTAMP(6)"
     description: "Thời gian thực hiện"
     key: null
     fk_note: null
   - name: ACTION_RESULT
-    data_type: "VARCHAR2(50 CHAR)"
+    data_type: "VARCHAR2(200)"
     description: "Kết quả: PASS, FAIL, APPROVED, REJECTED,  ASSIGNED,  REVOKED"
     key: null
     fk_note: null
   - name: REASON
-    data_type: "VARCHAR2(2000 CHAR)"
+    data_type: "VARCHAR2(4000)"
     description: "Lý do (từ chối, không đạt kiểm tra)"
     key: null
     fk_note: null
@@ -65,12 +65,12 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_AT
-    data_type: "TIMESTAMP"
+    data_type: "TIMESTAMP(6)"
     description: "Ngày tạo"
     key: null
     fk_note: null
   - name: UPDATED_AT
-    data_type: "TIMESTAMP"
+    data_type: "TIMESTAMP(6)"
     description: "Ngày sửa cuối"
     key: null
     fk_note: null
@@ -95,7 +95,7 @@ columns:
     key: null
     fk_note: null
   - name: DELETED
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "Soft delete: 0=Active, 1=Deleted"
     key: null
     fk_note: null

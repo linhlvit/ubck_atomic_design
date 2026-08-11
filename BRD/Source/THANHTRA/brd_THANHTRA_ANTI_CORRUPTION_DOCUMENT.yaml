@@ -5,17 +5,17 @@ table: ANTI_CORRUPTION_DOCUMENT
 brd_ref: BRD-SRC-THANHTRA-ANTI_CORRUPTION_DOCUMENT
 columns:
   - name: ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "Khóa chính UUID"
     key: PK
     fk_note: null
   - name: DOCUMENT_TYPE
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "Loại văn bản PCTN: SENT (Văn bản đi), RECEIVED (Văn bản đến)"
     key: null
     fk_note: null
   - name: DOCUMENT_NUMBER
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "Số hiệu văn bản PCTN"
     key: null
     fk_note: null
@@ -35,7 +35,7 @@ columns:
     key: null
     fk_note: null
   - name: RECEIVING_UNIT
-    data_type: VARCHAR2(500 CHAR)
+    data_type: VARCHAR2(2000)
     description: "Đơn vị nhận văn bản"
     key: null
     fk_note: null
@@ -55,12 +55,12 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng tạo bản ghi"
     key: null
     fk_note: "FK suy luận → system_user.id"
   - name: LAST_MODIFIED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng cập nhật gần nhất"
     key: null
     fk_note: "FK suy luận → system_user.id"
@@ -75,7 +75,7 @@ columns:
     key: null
     fk_note: null
   - name: QUARTER
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "Quý ban hành văn bản: QUARTER_1, QUARTER_2, QUARTER_3, QUARTER_4"
     key: null
     fk_note: null

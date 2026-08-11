@@ -15,22 +15,22 @@ columns:
     key: null
     fk_note: null
   - name: JOB_TYPE
-    data_type: "NUMBER(2)"
+    data_type: "NUMBER(10,0)"
     description: "Loại công việc"
     key: null
     fk_note: null
   - name: ANALYSIS_START_DATE
-    data_type: "TIMESTAMP"
+    data_type: "TIMESTAMP(6)"
     description: "Thời gian phân tích. Ngày bắt đầu"
     key: null
     fk_note: null
   - name: ANALYSIS_END_DATE
-    data_type: "TIMESTAMP"
+    data_type: "TIMESTAMP(6)"
     description: "Thời gian phân tích. Ngày kết thúc"
     key: null
     fk_note: null
   - name: PROCESSING_START_DATE
-    data_type: "TIMESTAMP"
+    data_type: "TIMESTAMP(6)"
     description: "Thời gian xử lý. Ngày bắt đầu"
     key: null
     fk_note: null
@@ -40,17 +40,17 @@ columns:
     key: null
     fk_note: null
   - name: DESCRIPTION
-    data_type: "VARCHAR2(1000 CHAR)"
+    data_type: "VARCHAR2(4000)"
     description: "Chi tiết"
     key: null
     fk_note: null
   - name: JOB_NAME
-    data_type: "VARCHAR2(255)"
+    data_type: "VARCHAR2(1020)"
     description: "Tên công việc"
     key: null
     fk_note: null
   - name: STATUS
-    data_type: "NUMBER(2)"
+    data_type: "NUMBER(10,0)"
     description: "Trạng thái"
     key: null
     fk_note: null
@@ -65,12 +65,12 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_AT
-    data_type: "TIMESTAMP"
+    data_type: "TIMESTAMP(6)"
     description: "Ngày tạo"
     key: null
     fk_note: null
   - name: UPDATED_AT
-    data_type: "TIMESTAMP"
+    data_type: "TIMESTAMP(6)"
     description: "Ngày sửa cuối"
     key: null
     fk_note: null
@@ -95,7 +95,27 @@ columns:
     key: null
     fk_note: null
   - name: DELETED
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "Soft delete: 0=Active, 1=Deleted"
+    key: null
+    fk_note: null
+  - name: ASSIGNED_TO
+    data_type: "VARCHAR2(4000)"
+    description: "Nguoi duoc giao viec"
+    key: null
+    fk_note: null
+  - name: INFORMATION_SOURCE
+    data_type: "VARCHAR2(2000)"
+    description: "Nguon thong tin"
+    key: null
+    fk_note: null
+  - name: PROCESSING_END_DATE
+    data_type: "TIMESTAMP(6)"
+    description: "Ngay ket thuc xu ly"
+    key: null
+    fk_note: null
+  - name: REJECTION_REASON
+    data_type: "VARCHAR2(100)"
+    description: "Ly do tu choi"
     key: null
     fk_note: null

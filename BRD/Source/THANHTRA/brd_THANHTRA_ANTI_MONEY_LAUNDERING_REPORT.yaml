@@ -5,17 +5,17 @@ table: ANTI_MONEY_LAUNDERING_REPORT
 brd_ref: BRD-SRC-THANHTRA-ANTI_MONEY_LAUNDERING_REPORT
 columns:
   - name: ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "Khóa chính UUID"
     key: PK
     fk_note: null
   - name: NAME
-    data_type: VARCHAR2(500 CHAR)
+    data_type: VARCHAR2(2000)
     description: "Tên báo cáo phòng chống rửa tiền/tài trợ khủng bố"
     key: null
     fk_note: null
   - name: REPORT_TYPE
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "Loại báo cáo: PERIODIC (Định kỳ), ON_DEMAND (Theo yêu cầu)"
     key: null
     fk_note: null
@@ -25,17 +25,17 @@ columns:
     key: null
     fk_note: null
   - name: PERIOD_TYPE
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "Kỳ báo cáo: QUARTER_1, QUARTER_2, QUARTER_3, QUARTER_4, HALF_YEAR, NINE_MONTHS, YEAR"
     key: null
     fk_note: null
   - name: REQUESTING_AUTHORITY
-    data_type: VARCHAR2(500 CHAR)
+    data_type: VARCHAR2(2000)
     description: "Cơ quan yêu cầu (bắt buộc khi report_type=ON_DEMAND)"
     key: null
     fk_note: null
   - name: REQUEST_DOCUMENT_NUMBER
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "Số công văn yêu cầu (bắt buộc khi report_type=ON_DEMAND)"
     key: null
     fk_note: null
@@ -60,12 +60,12 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng tạo bản ghi"
     key: null
     fk_note: "FK suy luận → system_user.id"
   - name: LAST_MODIFIED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng cập nhật gần nhất"
     key: null
     fk_note: "FK suy luận → system_user.id"

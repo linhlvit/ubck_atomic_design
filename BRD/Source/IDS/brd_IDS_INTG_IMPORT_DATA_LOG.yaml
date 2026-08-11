@@ -10,67 +10,67 @@ columns:
     key: PK
     fk_note: null
   - name: EXCHANGE_CODE
-    data_type: VARCHAR2(20)
+    data_type: VARCHAR2(400)
     description: "Nguồn dữ liệu (HNX, HOSE)"
     key: null
     fk_note: null
   - name: FILE_NAME
-    data_type: VARCHAR2(255)
+    data_type: VARCHAR2(1020)
     description: "Tên file import"
     key: null
     fk_note: null
   - name: NEWS_ID_SOURCE
-    data_type: VARCHAR2(255)
+    data_type: VARCHAR2(1020)
     description: "ID tin từ nguồn (Sở)"
     key: null
     fk_note: null
   - name: NEWS_ID_IDS
-    data_type: NUMBER(10,0)
+    data_type: NUMBER(25,0)
     description: "ID tin đã tạo trên hệ thống IDS"
     key: FK
     fk_note: null
   - name: EQUITY_TICKER
-    data_type: VARCHAR2(20)
+    data_type: VARCHAR2(80)
     description: "Mã chứng khoán"
     key: null
     fk_note: null
   - name: BUSINESS_REG_NO
-    data_type: VARCHAR2(15)
+    data_type: VARCHAR2(60)
     description: "Mã doanh nghiệp"
     key: null
     fk_note: null
   - name: TITLE
-    data_type: VARCHAR2(2000)
+    data_type: VARCHAR2(4000)
     description: "Tiêu đề tin báo cáo"
     key: null
     fk_note: null
   - name: NEWS_TYPE_CD
-    data_type: VARCHAR2(100)
+    data_type: VARCHAR2(400)
     description: "Loại tin báo cáo"
     key: null
     fk_note: null
   - name: FORM_ID
-    data_type: VARCHAR2(100)
+    data_type: VARCHAR2(400)
     description: "ID mẫu báo cáo"
     key: null
     fk_note: null
   - name: ENTERPRISE_TYPE_CD
-    data_type: VARCHAR2(100)
+    data_type: VARCHAR2(400)
     description: "Loại hình doanh nghiệp"
     key: null
     fk_note: null
   - name: TARGET_TYPE_CD
-    data_type: VARCHAR2(100)
+    data_type: VARCHAR2(400)
     description: "Loại tin (LOOKUP_GROUP = 'TARGET_TYPE')"
     key: null
     fk_note: null
   - name: REPORT_YEAR
-    data_type: VARCHAR2(10)
+    data_type: VARCHAR2(40)
     description: "Năm báo cáo"
     key: null
     fk_note: null
   - name: REPORT_QUARTER
-    data_type: VARCHAR2(10)
+    data_type: VARCHAR2(40)
     description: "Quý báo cáo"
     key: null
     fk_note: null
@@ -90,7 +90,7 @@ columns:
     key: null
     fk_note: null
   - name: STATUS_FLG
-    data_type: VARCHAR2(50)
+    data_type: VARCHAR2(200)
     description: "Trạng thái xử lý (SUCCESS/FAILED)"
     key: null
     fk_note: null
@@ -100,12 +100,12 @@ columns:
     key: null
     fk_note: null
   - name: REQUEST_AT
-    data_type: TIMESTAMP
+    data_type: TIMESTAMP(6)
     description: "Thời gian bắt đầu request import"
     key: null
     fk_note: null
   - name: RESPONSE_AT
-    data_type: TIMESTAMP
+    data_type: TIMESTAMP(6)
     description: "Thời gian nhận response/kết thúc"
     key: null
     fk_note: null
@@ -120,7 +120,7 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: VARCHAR2(50)
+    data_type: VARCHAR2(400)
     description: "Người tạo"
     key: null
     fk_note: "FK → LOGINS.ID"
@@ -130,7 +130,7 @@ columns:
     key: null
     fk_note: null
   - name: UPDATED_BY
-    data_type: VARCHAR2(50)
+    data_type: VARCHAR2(400)
     description: "Người cập nhật cuối"
     key: null
     fk_note: "FK → LOGINS.ID"

@@ -10,17 +10,17 @@ columns:
     key: PK
     fk_note: null
   - name: TEMPLATE_CODE
-    data_type: "VARCHAR2(50 CHAR)"
+    data_type: "VARCHAR2(200)"
     description: "Mã phụ lục (VD: PL01_W, PL01_M, PL02_D)"
     key: null
     fk_note: null
   - name: TEMPLATE_NAME
-    data_type: "VARCHAR2(500 CHAR)"
+    data_type: "VARCHAR2(2000)"
     description: "Tên đầy đủ (VD: \"Phụ lục I_ Báo cáo giám sát giao dịch tại SGDCK và công ty con - Mẫu số 1_Báo cáo tuần\")"
     key: null
     fk_note: null
   - name: APPENDIX_NAME
-    data_type: "VARCHAR2(200 CHAR)"
+    data_type: "VARCHAR2(800)"
     description: "Tên phụ lục (VD: \"Phụ lục I\", \"Phụ lục II\", \"Phụ lục III\", \"Phụ lục IV\", \"Phụ lục V\")"
     key: null
     fk_note: null
@@ -30,27 +30,27 @@ columns:
     key: null
     fk_note: null
   - name: SUBMITTER_TYPES
-    data_type: "VARCHAR2(100 CHAR)"
+    data_type: "VARCHAR2(400)"
     description: "Đơn vị phải nộp, phân cách dấu phẩy (VD: \"1,2,3\" = HNX,HOSE,VNX)"
     key: null
     fk_note: null
   - name: DESCRIPTION
-    data_type: "VARCHAR2(1000 CHAR)"
+    data_type: "VARCHAR2(4000)"
     description: "Mô tả chi tiết phụ lục"
     key: null
     fk_note: null
   - name: STATUS
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "Trạng thái: 0=Không hoạt động, 1=Hoạt động"
     key: null
     fk_note: null
   - name: CREATED_AT
-    data_type: "TIMESTAMP"
+    data_type: "TIMESTAMP(6)"
     description: "Ngày tạo"
     key: null
     fk_note: null
   - name: UPDATED_AT
-    data_type: "TIMESTAMP"
+    data_type: "TIMESTAMP(6)"
     description: "Ngày sửa cuối"
     key: null
     fk_note: null
@@ -75,7 +75,7 @@ columns:
     key: null
     fk_note: null
   - name: DELETED
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "Soft delete: 0=Active, 1=Deleted"
     key: null
     fk_note: null

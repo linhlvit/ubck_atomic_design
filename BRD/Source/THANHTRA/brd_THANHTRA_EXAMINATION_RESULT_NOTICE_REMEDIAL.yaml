@@ -5,12 +5,12 @@ table: EXAMINATION_RESULT_NOTICE_REMEDIAL
 brd_ref: BRD-SRC-THANHTRA-EXAMINATION_RESULT_NOTICE_REMEDIAL
 columns:
   - name: ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "Khóa chính UUID"
     key: PK
     fk_note: null
   - name: EXAMINATION_RESULT_NOTICE_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "FK -> examination_result_notice"
     key: FK
     fk_note: "FK → EXAMINATION_RESULT_NOTICE.id"
@@ -35,12 +35,12 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng tạo bản ghi"
     key: null
     fk_note: "FK suy luận → system_user.id"
   - name: LAST_MODIFIED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng cập nhật gần nhất"
     key: null
     fk_note: "FK suy luận → system_user.id"

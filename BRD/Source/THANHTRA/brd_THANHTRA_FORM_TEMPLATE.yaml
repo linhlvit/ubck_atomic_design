@@ -5,22 +5,22 @@ table: FORM_TEMPLATE
 brd_ref: BRD-SRC-THANHTRA-FORM_TEMPLATE
 columns:
   - name: ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "Khóa chính UUID"
     key: PK
     fk_note: null
   - name: CODE
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "Mã biểu mẫu, UNIQUE"
     key: null
     fk_note: null
   - name: NAME
-    data_type: VARCHAR2(500 CHAR)
+    data_type: VARCHAR2(2000)
     description: "Tên biểu mẫu"
     key: null
     fk_note: null
   - name: CATEGORY
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "Loại biểu mẫu: VIOLATION_REPORT (BB VPHC), PENALTY_DECISION (QĐ xử phạt), OFFICIAL_LETTER (Công văn), REPORT (Báo cáo)"
     key: null
     fk_note: null
@@ -30,7 +30,7 @@ columns:
     key: null
     fk_note: null
   - name: STATUS
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "Trạng thái: ACTIVE (Đang sử dụng), INACTIVE (Ngừng sử dụng)"
     key: null
     fk_note: null
@@ -45,12 +45,12 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng tạo bản ghi"
     key: null
     fk_note: "FK suy luận → system_user.id"
   - name: LAST_MODIFIED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng cập nhật gần nhất"
     key: null
     fk_note: "FK suy luận → system_user.id"

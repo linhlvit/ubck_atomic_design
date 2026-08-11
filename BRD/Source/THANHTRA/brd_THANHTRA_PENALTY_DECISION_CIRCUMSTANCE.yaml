@@ -5,17 +5,17 @@ table: PENALTY_DECISION_CIRCUMSTANCE
 brd_ref: BRD-SRC-THANHTRA-PENALTY_DECISION_CIRCUMSTANCE
 columns:
   - name: ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "Khóa chính UUID"
     key: PK
     fk_note: null
   - name: PENALTY_DECISION_SUBJECT_BEHAVIOR_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "FK -> penalty_decision_subject_behavior"
     key: FK
     fk_note: "FK → PENALTY_DECISION_SUBJECT_BEHAVIOR.id"
   - name: CIRCUMSTANCE_TYPE
-    data_type: VARCHAR2(50 CHAR)
+    data_type: VARCHAR2(200)
     description: "Loại: AGGRAVATING (Tăng nặng), MITIGATING (Giảm nhẹ)"
     key: null
     fk_note: null
@@ -30,12 +30,12 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng tạo bản ghi"
     key: null
     fk_note: "FK suy luận → system_user.id"
   - name: LAST_MODIFIED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng cập nhật gần nhất"
     key: null
     fk_note: "FK suy luận → system_user.id"

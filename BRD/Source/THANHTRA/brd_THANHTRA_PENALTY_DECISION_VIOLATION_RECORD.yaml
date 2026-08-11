@@ -5,17 +5,17 @@ table: PENALTY_DECISION_VIOLATION_RECORD
 brd_ref: BRD-SRC-THANHTRA-PENALTY_DECISION_VIOLATION_RECORD
 columns:
   - name: ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "Khóa chính UUID"
     key: PK
     fk_note: null
   - name: PENALTY_DECISION_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "FK -> penalty_decision"
     key: FK
     fk_note: "FK → PENALTY_DECISION.id"
   - name: VIOLATION_RECORD_ID
-    data_type: VARCHAR2(36 CHAR)
+    data_type: VARCHAR2(144)
     description: "FK -> violation_record: biên bản VPHC liên kết với quyết định xử phạt"
     key: FK
     fk_note: "FK → VIOLATION_RECORD.id"
@@ -30,12 +30,12 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng tạo bản ghi"
     key: null
     fk_note: "FK suy luận → system_user.id"
   - name: LAST_MODIFIED_BY
-    data_type: VARCHAR2(100 CHAR)
+    data_type: VARCHAR2(400)
     description: "ID người dùng cập nhật gần nhất"
     key: null
     fk_note: "FK suy luận → system_user.id"

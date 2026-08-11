@@ -20,32 +20,32 @@ columns:
     key: FK
     fk_note: "FK → COMPLIANCE_REPORT_FORM_TEMPLATE.ID"
   - name: FILE_NAME
-    data_type: "VARCHAR2(500 CHAR)"
+    data_type: "VARCHAR2(2000)"
     description: "Tên file Excel gốc khi upload"
     key: null
     fk_note: null
   - name: FILE_PATH
-    data_type: "VARCHAR2(1000 CHAR)"
+    data_type: "VARCHAR2(4000)"
     description: "Đường dẫn lưu trữ trên MinIO/Storage"
     key: null
     fk_note: null
   - name: FILE_SIZE
-    data_type: "NUMBER(19)"
+    data_type: "NUMBER(19,0)"
     description: "Kích thước file (bytes)"
     key: null
     fk_note: null
   - name: FILE_TYPE
-    data_type: "VARCHAR2(50 CHAR)"
+    data_type: "VARCHAR2(200)"
     description: "Định dạng: XLSX, XLS, CSV"
     key: null
     fk_note: null
   - name: UPLOAD_DATE
-    data_type: "TIMESTAMP"
+    data_type: "TIMESTAMP(6)"
     description: "Thời gian upload"
     key: null
     fk_note: null
   - name: VALIDATION_STATUS
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "Kết quả validate: 0=Lỗi, 1=Hợp lệ. NULL=Chưa validate"
     key: null
     fk_note: null
@@ -55,7 +55,7 @@ columns:
     key: null
     fk_note: null
   - name: TOTAL_ROWS
-    data_type: "NUMBER(10)"
+    data_type: "NUMBER(10,0)"
     description: "Tổng số dòng dữ liệu đã import"
     key: null
     fk_note: null
@@ -65,12 +65,12 @@ columns:
     key: null
     fk_note: null
   - name: CREATED_AT
-    data_type: "TIMESTAMP"
+    data_type: "TIMESTAMP(6)"
     description: "Ngày tạo"
     key: null
     fk_note: null
   - name: UPDATED_AT
-    data_type: "TIMESTAMP"
+    data_type: "TIMESTAMP(6)"
     description: "Ngày sửa cuối"
     key: null
     fk_note: null
@@ -95,7 +95,32 @@ columns:
     key: null
     fk_note: null
   - name: DELETED
-    data_type: "NUMBER(1)"
+    data_type: "NUMBER(1,0)"
     description: "Soft delete: 0=Active, 1=Deleted"
+    key: null
+    fk_note: null
+  - name: PERIOD_TYPE
+    data_type: "VARCHAR2(20)"
+    description: null
+    key: null
+    fk_note: null
+  - name: PERIOD_VALUE
+    data_type: "NUMBER(4,0)"
+    description: null
+    key: null
+    fk_note: null
+  - name: PERIOD_YEAR
+    data_type: "NUMBER(4,0)"
+    description: null
+    key: null
+    fk_note: null
+  - name: SUBMITTER_TYPE
+    data_type: "VARCHAR2(400)"
+    description: null
+    key: null
+    fk_note: null
+  - name: TEMPLATE_ID
+    data_type: "VARCHAR2(36)"
+    description: null
     key: null
     fk_note: null
