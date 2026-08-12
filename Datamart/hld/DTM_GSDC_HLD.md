@@ -2842,6 +2842,7 @@ flowchart LR
 erDiagram
     Public_Company_Industry_Financial_Report {
         string Business_Line_Level_1_Code PK
+        string Business_Line_Level_1_Name
         int Report_Year PK
         float Net_Revenue_Amount_Year_N
         float Net_Profit_Amount_Year_N
@@ -2855,7 +2856,7 @@ erDiagram
     }
 ```
 
-> **Ghi chú thiết kế:** `Business_Line_Level_1_Code` denormalize trực tiếp dạng text (filter Active áp dụng ở tầng ETL populate report — `cl_business_line.active_indicator = 1`). `Report_Year` = Năm N; cột N-1 lưu kèm trên cùng row (không tạo thêm PK) — khớp đúng pattern "Năm N/N-1 trong cùng 1 query" của SQL BA. Không FK Dimension — đúng đặc tính Fact-report.
+> **Ghi chú thiết kế:** `Business_Line_Level_1_Code` denormalize trực tiếp dạng text (filter Active áp dụng ở tầng ETL populate report — `cl_business_line.active_indicator = 1`). `Business_Line_Level_1_Name` denormalize dạng text — LOOKUP `cl_business_line` theo `cl_business_line_code = Business_Line_Level_1_Code`, lấy tên hiệu lực tại thời điểm chạy ETL (`effective_start_dt`/`effective_end_dt` so khớp `:etl_date`) — không versioning theo lịch sử SCD2 gốc, khớp cách `Business_Line_Level_1_Code` đang xử lý UPSERT theo khóa nghiệp vụ. `Report_Year` = Năm N; cột N-1 lưu kèm trên cùng row (không tạo thêm PK) — khớp đúng pattern "Năm N/N-1 trong cùng 1 query" của SQL BA. Không FK Dimension — đúng đặc tính Fact-report.
 
 **Lineage Mart → Báo cáo:**
 

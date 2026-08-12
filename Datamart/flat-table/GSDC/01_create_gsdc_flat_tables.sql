@@ -437,6 +437,7 @@ CREATE TABLE IF NOT EXISTS datamart.gsdc_public_company_industry_financial_rpt_f
 (
     -- From: PUBLIC COMPANY INDUSTRY FINANCIAL REPORT
     business_line_level_1_code     String              COMMENT 'Mã ngành cấp 1 — grain key của báo cáo.',
+    business_line_level_1_name     Nullable(String)    COMMENT 'Tên ngành cấp 1 — denormalize theo tên hiệu lực tại thời điểm chạy ETL.',
     rpt_year                        Int64               COMMENT 'Năm báo cáo (Năm N) — grain key.',
     net_revenue_amt_year_n           Nullable(Decimal(23,2)) COMMENT 'Doanh thu thuần Năm N theo ngành.',
     net_profit_amt_year_n            Nullable(Decimal(23,2)) COMMENT 'Lợi nhuận sau thuế Năm N theo ngành.',

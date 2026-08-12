@@ -420,6 +420,7 @@ TRUNCATE TABLE IF EXISTS datamart.gsdc_public_company_industry_financial_rpt_fla
 INSERT INTO datamart.gsdc_public_company_industry_financial_rpt_flat
 SELECT
     o.business_line_level_1_code,
+    o.business_line_level_1_name,
     o.rpt_year,
     o.net_revenue_amt_year_n,
     o.net_profit_amt_year_n,
