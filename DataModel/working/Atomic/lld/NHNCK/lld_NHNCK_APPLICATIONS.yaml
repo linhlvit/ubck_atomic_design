@@ -550,12 +550,13 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
   - "NHNCK.APPLICATIONS.ASSIGNEE_ID"
   comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM.USERS', ASSIGNEE_ID) | Chưa xác nhận join key NHNCK.APPLICATIONS.ASSIGNEE_ID\
-    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+    \ Cần ETL crosswalk sang NHNCK.USERS: APPLICATIONS.ASSIGNEE_ID = USERS.ID để xác\
+    \ nhận USERNAME sau đó hash_id('IAM.USERS', USERNAME) | Chưa xác nhận value set\
+    \ khớp danh mục IAM.USERS — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -565,11 +566,12 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
-  - "NHNCK.APPLICATIONS.ASSIGNEE_ID"
+  - "NHNCK.USERS.USERNAME"
   comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Assignee Officer Id."
+    \ Pair with Assignee Officer Id. Giá trị lấy từ NHNCK.USERS.USERNAME sau ETL crosswalk\
+    \ — chi tiết xem comment Assignee Officer Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -579,12 +581,13 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
   - "NHNCK.APPLICATIONS.INFO_VERIFY_ID"
   comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM.USERS', INFO_VERIFY_ID) | Chưa xác nhận join key NHNCK.APPLICATIONS.INFO_VERIFY_ID\
-    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+    \ Cần ETL crosswalk sang NHNCK.USERS: APPLICATIONS.INFO_VERIFY_ID = USERS.ID để\
+    \ xác nhận USERNAME sau đó hash_id('IAM.USERS', USERNAME) | Chưa xác nhận value\
+    \ set khớp danh mục IAM.USERS — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -594,11 +597,12 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
-  - "NHNCK.APPLICATIONS.INFO_VERIFY_ID"
+  - "NHNCK.USERS.USERNAME"
   comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Info Verify Officer Id."
+    \ Pair with Info Verify Officer Id. Giá trị lấy từ NHNCK.USERS.USERNAME sau ETL\
+    \ crosswalk — chi tiết xem comment Info Verify Officer Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -611,9 +615,9 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATIONS.MCDT_CONTENT_ITEM_ID"
-  comment: "Mirror pattern\
-    \ Public Service Portal Code (MCDT_CODE) trên Classification Document/Classification\
-    \ Specialization — mã đồng bộ với Cổng Dịch vụ công quốc gia."
+  comment: "Mirror pattern Public Service Portal Code (MCDT_CODE) trên Classification\
+    \ Document/Classification Specialization — mã đồng bộ với Cổng Dịch vụ công quốc\
+    \ gia."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

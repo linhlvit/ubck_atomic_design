@@ -1698,8 +1698,7 @@ attributes:
   source_system: "IDS"
   source_table: "STATE_CAPITAL"
   source_column: "IDS.STATE_CAPITAL.STATE_OWNER_ORG_VI"
-  comment: "Denormalized — không phải FK đến Regulatory Authority Organization Unit\
-    \ (chưa xác nhận cross-source)."
+  comment: null
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_state_capital"
@@ -3825,7 +3824,7 @@ attributes:
   classification_context: null
   etl_derived_value: null
   atomic_table: "member_rating_period"
-  atomic_column: "m_ember_rating_period_id"
+  atomic_column: "member_rating_period_id"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Member Rating Period"
@@ -3841,7 +3840,7 @@ attributes:
   classification_context: null
   etl_derived_value: null
   atomic_table: "member_rating_period"
-  atomic_column: "m_ember_rating_period_code"
+  atomic_column: "member_rating_period_code"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Member Rating Period"
@@ -4312,15 +4311,14 @@ attributes:
   atomic_entity: "Public Company Evaluation"
   atomic_attribute: "Evaluation Type Code"
   description: "Xếp Loại (A,B,C - theo tổng điểm)."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
   source_table: "EVALUATIONS"
   source_column: "IDS.EVALUATIONS.TYPE"
-  comment: "Scheme: IDS_EVALUATION_TYPE. Values lấy trực tiếp từ cột nguồn — scheme\
-    \ đã đăng ký sẵn (xem HLD Tier3 6d)."
-  classification_context: "IDS_EVALUATION_TYPE"
+  comment: null
+  classification_context: null
   etl_derived_value: null
   atomic_table: "pc_evaluation"
   atomic_column: "evaluation_tp_code"
@@ -4329,15 +4327,14 @@ attributes:
   atomic_entity: "Public Company Evaluation"
   atomic_attribute: "Evaluation Status Code"
   description: "Trạng thái đánh giá."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
   source_table: "EVALUATIONS"
   source_column: "IDS.EVALUATIONS.STATUS"
-  comment: "Scheme: IDS_PUBLIC_COMPANY_EVALUATION_STATUS (no_lookup) — chưa liệt kê\
-    \ trong HLD Tier3 6d, bổ sung scheme mới."
-  classification_context: "IDS_PUBLIC_COMPANY_EVALUATION_STATUS"
+  comment: null
+  classification_context: null
   etl_derived_value: null
   atomic_table: "pc_evaluation"
   atomic_column: "evaluation_status_code"
@@ -7003,15 +7000,14 @@ attributes:
   atomic_attribute: "Approval Status Code"
   description: "Trạng thái phê duyệt kết quả (dùng để Ban Quản lý chào bán phê duyệt:\
     \ Chờ kiểm tra; Chờ duyệt; Đã duyệt; Từ chối)."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
   source_table: "SECURITIES_OFFERING_RESULT"
   source_column: "IDS.SECURITIES_OFFERING_RESULT.APPROVAL_STATUS_CD"
-  comment: "Scheme: IDS_SO_APPROVAL_STATUS (source_table, LOOKUP_GROUP = 'SO_APPROVAL_STATUS')\
-    \ — dùng chung với Public Company Securities Offering."
-  classification_context: "IDS_SO_APPROVAL_STATUS"
+  comment: null
+  classification_context: null
   etl_derived_value: null
   atomic_table: "pc_securities_offering_result"
   atomic_column: "approval_status_code"
@@ -10064,307 +10060,6 @@ attributes:
   atomic_column: "violation_tp_code"
   data_type: "string"
 - bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Practitioner Post Certification Training Course"
-  atomic_attribute: "Securities Practitioner Post Certification Training Course Id"
-  description: "Id tự sinh (surrogate key)"
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: true
-  source_system: "NHNCK"
-  source_table: "POST_CERT_TRAINING_COURSES"
-  source_column: null
-  comment: "PK surrogate. BCV: [Business Activity] Business Activity."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sp_post_certification_training_course"
-  atomic_column: "sp_post_certification_training_course_id"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Practitioner Post Certification Training Course"
-  atomic_attribute: "Securities Practitioner Post Certification Training Course Code"
-  description: "Mã khóa học/lớp học. BK duy nhất của entity"
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "POST_CERT_TRAINING_COURSES"
-  source_column: "NHNCK.POST_CERT_TRAINING_COURSES.COURSE_CODE"
-  comment: "BK chính."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sp_post_certification_training_course"
-  atomic_column: "sp_post_certification_training_course_code"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Practitioner Post Certification Training Course"
-  atomic_attribute: "Source System Code"
-  description: "Mã nguồn dữ liệu"
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "POST_CERT_TRAINING_COURSES"
-  source_column: null
-  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "Source System Code = 'NHNCK_POST_CERT_TRAINING_COURSES'"
-  etl_derived_value: "NHNCK_POST_CERT_TRAINING_COURSES"
-  atomic_table: "sp_post_certification_training_course"
-  atomic_column: "src_stm_code"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Practitioner Post Certification Training Course"
-  atomic_attribute: "Training Course Name"
-  description: "Tên khóa học/lớp học"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "POST_CERT_TRAINING_COURSES"
-  source_column: "NHNCK.POST_CERT_TRAINING_COURSES.COURSE_NAME"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sp_post_certification_training_course"
-  atomic_column: "training_course_nm"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Practitioner Post Certification Training Course"
-  atomic_attribute: "Training Class Code"
-  description: "Mã lớp học (định danh lớp cụ thể trong khóa)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "POST_CERT_TRAINING_COURSES"
-  source_column: "NHNCK.POST_CERT_TRAINING_COURSES.CLASS_CODE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sp_post_certification_training_course"
-  atomic_column: "training_class_code"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Practitioner Post Certification Training Result"
-  atomic_attribute: "Securities Practitioner Post Certification Training Result Id"
-  description: "Id tự sinh (surrogate key)"
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: true
-  source_system: "NHNCK"
-  source_table: "POST_CERT_TRAINING_RESULTS"
-  source_column: null
-  comment: "PK surrogate. BCV: [Business Activity] Business Activity."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sp_post_certification_training_result"
-  atomic_column: "sp_post_certification_training_result_id"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Practitioner Post Certification Training Result"
-  atomic_attribute: "Securities Practitioner Post Certification Training Result Code"
-  description: "Mã định danh (BK từ PK nguồn — nguồn không có cột mã nghiệp vụ riêng)"
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "POST_CERT_TRAINING_RESULTS"
-  source_column: "NHNCK.POST_CERT_TRAINING_RESULTS.ID"
-  comment: "BK chính. Nguồn lưu NUMBER — ETL convert sang string."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sp_post_certification_training_result"
-  atomic_column: "sp_post_certification_training_result_code"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Practitioner Post Certification Training Result"
-  atomic_attribute: "Source System Code"
-  description: "Mã nguồn dữ liệu"
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "POST_CERT_TRAINING_RESULTS"
-  source_column: null
-  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "Source System Code = 'NHNCK_POST_CERT_TRAINING_RESULTS'"
-  etl_derived_value: "NHNCK_POST_CERT_TRAINING_RESULTS"
-  atomic_table: "sp_post_certification_training_result"
-  atomic_column: "src_stm_code"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Practitioner Post Certification Training Result"
-  atomic_attribute: "Securities Practitioner Id"
-  description: "FK đến người hành nghề tham gia đào tạo"
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "POST_CERT_TRAINING_RESULTS"
-  source_column: "NHNCK.POST_CERT_TRAINING_RESULTS.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
-    \ PROFESSIONAL_ID)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sp_post_certification_training_result"
-  atomic_column: "sp_id"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Practitioner Post Certification Training Result"
-  atomic_attribute: "Securities Practitioner Code"
-  description: "Mã người hành nghề (denormalized lookup)"
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "POST_CERT_TRAINING_RESULTS"
-  source_column: "NHNCK.POST_CERT_TRAINING_RESULTS.PROFESSIONAL_ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Securities Practitioner Id."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sp_post_certification_training_result"
-  atomic_column: "sp_code"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Practitioner Post Certification Training Result"
-  atomic_attribute: "Securities Practitioner Post Certification Training Course Id"
-  description: "FK đến khóa bồi dưỡng sau cấp CCHN"
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "POST_CERT_TRAINING_RESULTS"
-  source_column: "NHNCK.POST_CERT_TRAINING_RESULTS.TRAINING_COURSE_ID"
-  comment: "FK target: sp_post_certification_training_course.sp_post_certification_training_course_id.\
-    \ Cần ETL crosswalk sang NHNCK.POST_CERT_TRAINING_COURSES: POST_CERT_TRAINING_RESULTS.TRAINING_COURSE_ID\
-    \ = POST_CERT_TRAINING_COURSES.ID để xác nhận COURSE_CODE sau đó hash_id('NHNCK.POST_CERT_TRAINING_COURSES',\
-    \ COURSE_CODE) | Trước đây hash trực tiếp theo TRAINING_COURSE_ID (ID kỹ thuật)\
-    \ gây sai lệch với Id của bảng main (hash từ COURSE_CODE) — đã sửa sang crosswalk\
-    \ 2026-07-27."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sp_post_certification_training_result"
-  atomic_column: "sp_post_certification_training_course_id"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Practitioner Post Certification Training Result"
-  atomic_attribute: "Securities Practitioner Post Certification Training Course Code"
-  description: "Mã khóa bồi dưỡng (denormalized lookup)"
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "POST_CERT_TRAINING_RESULTS"
-  source_column: "NHNCK.POST_CERT_TRAINING_COURSES.COURSE_CODE"
-  comment: "Lookup pair: Securities Practitioner Post Certification Training Course.Securities\
-    \ Practitioner Post Certification Training Course Code. Pair with Securities Practitioner\
-    \ Post Certification Training Course Id. Giá trị lấy từ NHNCK.POST_CERT_TRAINING_COURSES.COURSE_CODE\
-    \ sau ETL crosswalk — chi tiết xem comment Securities Practitioner Post Certification\
-    \ Training Course Id."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sp_post_certification_training_result"
-  atomic_column: "sp_post_certification_training_course_code"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Practitioner Post Certification Training Result"
-  atomic_attribute: "Training Start Date"
-  description: "Ngày bắt đầu tham gia khóa bồi dưỡng"
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "POST_CERT_TRAINING_RESULTS"
-  source_column: "NHNCK.POST_CERT_TRAINING_RESULTS.START_DATE"
-  comment: "Mô tả cột nguồn còn TBD — suy luận từ tên cột."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sp_post_certification_training_result"
-  atomic_column: "training_start_dt"
-  data_type: "date"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Practitioner Post Certification Training Result"
-  atomic_attribute: "Training End Date"
-  description: "Ngày kết thúc tham gia khóa bồi dưỡng"
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "POST_CERT_TRAINING_RESULTS"
-  source_column: "NHNCK.POST_CERT_TRAINING_RESULTS.END_DATE"
-  comment: "Mô tả cột nguồn còn TBD — suy luận từ tên cột."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sp_post_certification_training_result"
-  atomic_column: "training_end_dt"
-  data_type: "date"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Practitioner Post Certification Training Result"
-  atomic_attribute: "Training Hours"
-  description: "Số giờ đào tạo"
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "POST_CERT_TRAINING_RESULTS"
-  source_column: "NHNCK.POST_CERT_TRAINING_RESULTS.TRAINING_HOURS"
-  comment: "Mô tả cột nguồn còn TBD — suy luận từ tên cột."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sp_post_certification_training_result"
-  atomic_column: "training_hours"
-  data_type: "int"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Practitioner Post Certification Training Result"
-  atomic_attribute: "Training Result Status Code"
-  description: "Trạng thái kết quả khóa bồi dưỡng (Đạt/Không đạt — suy đoán từ NUMBER(1,0))"
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "POST_CERT_TRAINING_RESULTS"
-  source_column: "NHNCK.POST_CERT_TRAINING_RESULTS.RESULT_STATUS"
-  comment: "Scheme: NHNCK_POST_CERT_TRAINING_RESULT_STATUS. Mô tả cột nguồn còn TBD\
-    \ — cần BA xác nhận giá trị cụ thể trước khi hoàn thiện ETL mapping."
-  classification_context: "NHNCK_POST_CERT_TRAINING_RESULT_STATUS"
-  etl_derived_value: null
-  atomic_table: "sp_post_certification_training_result"
-  atomic_column: "training_result_status_code"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Practitioner Post Certification Training Result"
-  atomic_attribute: "Training Classification Result Code"
-  description: "Phân loại kết quả khóa bồi dưỡng (VD: Giỏi/Khá/Trung bình — suy đoán)"
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "POST_CERT_TRAINING_RESULTS"
-  source_column: "NHNCK.POST_CERT_TRAINING_RESULTS.CLASSIFICATION_RESULT"
-  comment: "Scheme: NHNCK_POST_CERT_TRAINING_CLASSIFICATION. Nguồn lưu NVARCHAR2(510)\
-    \ — mô tả cột còn TBD, cần BA xác nhận giá trị cụ thể."
-  classification_context: "NHNCK_POST_CERT_TRAINING_CLASSIFICATION"
-  etl_derived_value: null
-  atomic_table: "sp_post_certification_training_result"
-  atomic_column: "training_cl_result_code"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Practitioner Post Certification Training Result"
-  atomic_attribute: "Note"
-  description: "Ghi chú"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "POST_CERT_TRAINING_RESULTS"
-  source_column: "NHNCK.POST_CERT_TRAINING_RESULTS.NOTE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sp_post_certification_training_result"
-  atomic_column: "note"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
   atomic_entity: "Securities Practitioner Professional Training Class"
   atomic_attribute: "Securities Practitioner Professional Training Class Id"
   description: "Surrogate key cho khóa học chuyên môn"
@@ -11013,8 +10708,9 @@ attributes:
   source_table: "SPECIALIZATION_COURSE_DETAILS"
   source_column: "NHNCK.SPECIALIZATION_COURSE_DETAILS.ASSIGNEE_ID"
   comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM.USERS', ASSIGNEE_ID) | Chưa xác nhận join key NHNCK.SPECIALIZATION_COURSE_DETAILS.ASSIGNEE_ID\
-    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+    \ Cần ETL crosswalk sang NHNCK.USERS: SPECIALIZATION_COURSE_DETAILS.ASSIGNEE_ID\
+    \ = USERS.ID để xác nhận USERNAME sau đó hash_id('IAM.USERS', USERNAME) | Chưa\
+    \ xác nhận value set khớp danh mục IAM.USERS — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_professional_training_class_enrollment"
@@ -11029,9 +10725,10 @@ attributes:
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "SPECIALIZATION_COURSE_DETAILS"
-  source_column: "NHNCK.SPECIALIZATION_COURSE_DETAILS.ASSIGNEE_ID"
+  source_column: "NHNCK.USERS.USERNAME"
   comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Assignee Officer Id."
+    \ Pair with Assignee Officer Id. Giá trị lấy từ NHNCK.USERS.USERNAME sau ETL crosswalk\
+    \ — chi tiết xem comment Assignee Officer Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_professional_training_class_enrollment"
@@ -22271,8 +21968,9 @@ attributes:
   source_table: "APPLICATIONS"
   source_column: "NHNCK.APPLICATIONS.ASSIGNEE_ID"
   comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM.USERS', ASSIGNEE_ID) | Chưa xác nhận join key NHNCK.APPLICATIONS.ASSIGNEE_ID\
-    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+    \ Cần ETL crosswalk sang NHNCK.USERS: APPLICATIONS.ASSIGNEE_ID = USERS.ID để xác\
+    \ nhận USERNAME sau đó hash_id('IAM.USERS', USERNAME) | Chưa xác nhận value set\
+    \ khớp danh mục IAM.USERS — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application"
@@ -22287,9 +21985,10 @@ attributes:
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "APPLICATIONS"
-  source_column: "NHNCK.APPLICATIONS.ASSIGNEE_ID"
+  source_column: "NHNCK.USERS.USERNAME"
   comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Assignee Officer Id."
+    \ Pair with Assignee Officer Id. Giá trị lấy từ NHNCK.USERS.USERNAME sau ETL crosswalk\
+    \ — chi tiết xem comment Assignee Officer Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application"
@@ -22306,8 +22005,9 @@ attributes:
   source_table: "APPLICATIONS"
   source_column: "NHNCK.APPLICATIONS.INFO_VERIFY_ID"
   comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM.USERS', INFO_VERIFY_ID) | Chưa xác nhận join key NHNCK.APPLICATIONS.INFO_VERIFY_ID\
-    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+    \ Cần ETL crosswalk sang NHNCK.USERS: APPLICATIONS.INFO_VERIFY_ID = USERS.ID để\
+    \ xác nhận USERNAME sau đó hash_id('IAM.USERS', USERNAME) | Chưa xác nhận value\
+    \ set khớp danh mục IAM.USERS — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application"
@@ -22322,9 +22022,10 @@ attributes:
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "APPLICATIONS"
-  source_column: "NHNCK.APPLICATIONS.INFO_VERIFY_ID"
+  source_column: "NHNCK.USERS.USERNAME"
   comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Info Verify Officer Id."
+    \ Pair with Info Verify Officer Id. Giá trị lấy từ NHNCK.USERS.USERNAME sau ETL\
+    \ crosswalk — chi tiết xem comment Info Verify Officer Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application"
@@ -22548,8 +22249,9 @@ attributes:
   source_table: "APPLICATION_SPECIALIZATIONS"
   source_column: "NHNCK.APPLICATION_SPECIALIZATIONS.ASSIGNEE_ID"
   comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM.USERS', ASSIGNEE_ID) | Chưa xác nhận join key NHNCK.APPLICATION_SPECIALIZATIONS.ASSIGNEE_ID\
-    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+    \ Cần ETL crosswalk sang NHNCK.USERS: APPLICATION_SPECIALIZATIONS.ASSIGNEE_ID\
+    \ = USERS.ID để xác nhận USERNAME sau đó hash_id('IAM.USERS', USERNAME) | Chưa\
+    \ xác nhận value set khớp danh mục IAM.USERS — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application_education_certificate_document"
@@ -22565,9 +22267,10 @@ attributes:
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "APPLICATION_SPECIALIZATIONS"
-  source_column: "NHNCK.APPLICATION_SPECIALIZATIONS.ASSIGNEE_ID"
+  source_column: "NHNCK.USERS.USERNAME"
   comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Appraised By Officer Id."
+    \ Pair with Appraised By Officer Id. Giá trị lấy từ NHNCK.USERS.USERNAME sau ETL\
+    \ crosswalk — chi tiết xem comment Appraised By Officer Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application_education_certificate_document"
@@ -23170,223 +22873,6 @@ attributes:
   atomic_column: "description"
   data_type: "string"
 - bcv_core_object: "Documentation"
-  atomic_entity: "Securities Practitioner License Certificate Status Change History"
-  atomic_attribute: "Securities Practitioner License Certificate Status Change History\
-    \ Id"
-  description: "Id tự sinh (surrogate key)"
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: true
-  source_system: "NHNCK"
-  source_table: "CERTIFICATE_RECORD_STATUS_HISTORIES"
-  source_column: null
-  comment: "PK surrogate. BCV: [Documentation] Gov. Registration Document."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sp_license_certificate_status_change_history"
-  atomic_column: "sp_license_certificate_status_change_history_id"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Securities Practitioner License Certificate Status Change History"
-  atomic_attribute: "Securities Practitioner License Certificate Status Change History\
-    \ Code"
-  description: "Mã định danh (BK từ PK nguồn — nguồn không có cột mã nghiệp vụ riêng)"
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "CERTIFICATE_RECORD_STATUS_HISTORIES"
-  source_column: "NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.ID"
-  comment: "BK chính. Nguồn lưu NUMBER — ETL convert sang string."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sp_license_certificate_status_change_history"
-  atomic_column: "sp_license_certificate_status_change_history_code"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Securities Practitioner License Certificate Status Change History"
-  atomic_attribute: "Source System Code"
-  description: "Mã nguồn dữ liệu"
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "CERTIFICATE_RECORD_STATUS_HISTORIES"
-  source_column: null
-  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORD_STATUS_HISTORIES'"
-  etl_derived_value: "NHNCK_CERTIFICATE_RECORD_STATUS_HISTORIES"
-  atomic_table: "sp_license_certificate_status_change_history"
-  atomic_column: "src_stm_code"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Securities Practitioner License Certificate Status Change History"
-  atomic_attribute: "Data Date"
-  description: "Thời điểm ghi nhận thay đổi trạng thái CCHN (nguồn: CREATED_AT). Dùng\
-    \ làm căn cứ partition Delta Lake / incremental filter — bảng nguồn là Fact Append\
-    \ (insert-only, xem BRD/Source/brd_NHNCK.yaml)."
-  data_domain: "Date"
-  nullable: false
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "CERTIFICATE_RECORD_STATUS_HISTORIES"
-  source_column: "NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.CREATED_AT"
-  comment: "BCV: không có term riêng. CREATED_AT bị loại theo quyết định audit-block\
-    \ Data Modeler (2026-07-07) nhưng bảng là Fact Append (mỗi dòng = 1 lần đổi trạng\
-    \ thái, insert-only, xác nhận 2026-07-24) — cần giữ lại làm Data Date, mirror\
-    \ pattern lld_NHNCK_ORGANIZATION_REPORTS.yaml. Đổi tên từ 'created_at' sang 'Data\
-    \ Date' để phản ánh vai trò ngày dữ liệu/phân vùng, tách biệt khỏi audit block\
-    \ (CREATED_BY/UPDATED_AT/UPDATED_BY vẫn loại trừ)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sp_license_certificate_status_change_history"
-  atomic_column: "data_dt"
-  data_type: "date"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Securities Practitioner License Certificate Status Change History"
-  atomic_attribute: "Securities Practitioner License Certificate Document Id"
-  description: "FK đến chứng chỉ hành nghề bị thay đổi trạng thái"
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "CERTIFICATE_RECORD_STATUS_HISTORIES"
-  source_column: "NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.CERTIFICATE_RECORD_ID"
-  comment: "FK target: Securities Practitioner License Certificate Document.Securities\
-    \ Practitioner License Certificate Document Id. Hash: hash_id('NHNCK.CERTIFICATE_RECORDS',\
-    \ CERTIFICATE_RECORD_ID)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sp_license_certificate_status_change_history"
-  atomic_column: "sp_license_certificate_document_id"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Securities Practitioner License Certificate Status Change History"
-  atomic_attribute: "Securities Practitioner License Certificate Document Code"
-  description: "Mã chứng chỉ hành nghề (denormalized lookup)"
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "CERTIFICATE_RECORD_STATUS_HISTORIES"
-  source_column: "NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.CERTIFICATE_RECORD_ID"
-  comment: "Lookup pair: Securities Practitioner License Certificate Document.Securities\
-    \ Practitioner License Certificate Document Code. Pair with Securities Practitioner\
-    \ License Certificate Document Id."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sp_license_certificate_status_change_history"
-  atomic_column: "sp_license_certificate_document_code"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Securities Practitioner License Certificate Status Change History"
-  atomic_attribute: "Update Type"
-  description: "Loại cập nhật trạng thái CCHN (chuỗi mô tả hành động thay đổi)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "CERTIFICATE_RECORD_STATUS_HISTORIES"
-  source_column: "NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.UPDATE_TYPE"
-  comment: "BCV: không có term riêng — đặt tên theo nghĩa nghiệp vụ. Nguồn lưu dạng\
-    \ chuỗi tự do, không phải Classification Value cố định."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sp_license_certificate_status_change_history"
-  atomic_column: "update_tp"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Securities Practitioner License Certificate Status Change History"
-  atomic_attribute: "Old Certificate Status Code"
-  description: "Trạng thái CCHN trước khi thay đổi"
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "CERTIFICATE_RECORD_STATUS_HISTORIES"
-  source_column: "NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.OLD_STATUS"
-  comment: "Scheme: CERTIFICATE_STATUS. Nguồn: 0=Chưa sử dụng, 1=Đang sử dụng, 2=Thu\
-    \ hồi có cấp lại, 3=Thu hồi không cấp lại, 4=Đã hủy, 5=Hết hiệu lực. Khác với\
-    \ STATUS (RECORD_STATUS đổi tên) trên CERTIFICATE_RECORDS — cột đó bị loại trừ\
-    \ theo chính sách Data Modeler (2026-07-07, xem pending_design.yaml), không liên\
-    \ quan đến scheme 6 giá trị này."
-  classification_context: "CERTIFICATE_STATUS"
-  etl_derived_value: null
-  atomic_table: "sp_license_certificate_status_change_history"
-  atomic_column: "old_certificate_status_code"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Securities Practitioner License Certificate Status Change History"
-  atomic_attribute: "New Certificate Status Code"
-  description: "Trạng thái CCHN sau khi thay đổi"
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "CERTIFICATE_RECORD_STATUS_HISTORIES"
-  source_column: "NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.NEW_STATUS"
-  comment: "Scheme: CERTIFICATE_STATUS. Cùng bảng giá trị với Old Certificate Status\
-    \ Code."
-  classification_context: "CERTIFICATE_STATUS"
-  etl_derived_value: null
-  atomic_table: "sp_license_certificate_status_change_history"
-  atomic_column: "new_certificate_status_code"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Securities Practitioner License Certificate Status Change History"
-  atomic_attribute: "Securities Practitioner License Decision Document Id"
-  description: "FK đến quyết định hành chính liên quan đến lần thay đổi trạng thái"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "CERTIFICATE_RECORD_STATUS_HISTORIES"
-  source_column: "NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.DECISION_ID"
-  comment: "FK target: Securities Practitioner License Decision Document.Securities\
-    \ Practitioner License Decision Document Id. Hash: hash_id('NHNCK.DECISIONS',\
-    \ DECISION_ID). Nullable — cần xác nhận có luôn gắn quyết định hay không (VD:\
-    \ hết hiệu lực tự động có thể không có quyết định)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sp_license_certificate_status_change_history"
-  atomic_column: "sp_license_decision_document_id"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Securities Practitioner License Certificate Status Change History"
-  atomic_attribute: "Securities Practitioner License Decision Document Code"
-  description: "Mã quyết định (denormalized lookup)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "CERTIFICATE_RECORD_STATUS_HISTORIES"
-  source_column: "NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.DECISION_ID"
-  comment: "Lookup pair: Securities Practitioner License Decision Document.Securities\
-    \ Practitioner License Decision Document Code. Pair with Securities Practitioner\
-    \ License Decision Document Id."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sp_license_certificate_status_change_history"
-  atomic_column: "sp_license_decision_document_code"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Securities Practitioner License Certificate Status Change History"
-  atomic_attribute: "Change Reason"
-  description: "Lý do thực hiện thao tác hoặc thay đổi"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "CERTIFICATE_RECORD_STATUS_HISTORIES"
-  source_column: "NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.REASON"
-  comment: "BCV: không có term riêng — đặt tên theo nghĩa nghiệp vụ, mirror Change\
-    \ Reason trên Securities Practitioner Reason Change History."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sp_license_certificate_status_change_history"
-  atomic_column: "change_reason"
-  data_type: "string"
-- bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Certificate Type"
   atomic_attribute: "Securities Practitioner License Certificate Type Id"
   description: "Id tự sinh (surrogate key)"
@@ -23875,8 +23361,12 @@ attributes:
   source_system: "NHNCK"
   source_table: "ORGANIZATION_REPORTS"
   source_column: "NHNCK.ORGANIZATION_REPORTS.ORGANIZATION_ID"
-  comment: "FK target: Securities Organization Reference.Securities Organization Reference\
-    \ Id. Hash: hash_id('NHNCK.ORGANIZATIONS', ORGANIZATION_ID)."
+  comment: "FK target: securities_organization_reference.securities_organization_reference_id.\
+    \ Cần ETL crosswalk sang NHNCK.ORGANIZATIONS: ORGANIZATION_REPORTS.ORGANIZATION_ID\
+    \ = ORGANIZATIONS.ID để xác nhận ORGANIZATION_CODE sau đó hash_id('NHNCK.ORGANIZATIONS',\
+    \ ORGANIZATION_CODE) | Trước đây hash trực tiếp theo ORGANIZATION_ID (ID kỹ thuật)\
+    \ gây sai lệch với Id của bảng main (hash từ ORGANIZATION_CODE) — đã sửa sang\
+    \ crosswalk 2026-08-11."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_organization_employment_report"
@@ -23891,9 +23381,10 @@ attributes:
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "ORGANIZATION_REPORTS"
-  source_column: "NHNCK.ORGANIZATION_REPORTS.ORGANIZATION_ID"
-  comment: "Lookup pair: Securities Organization Reference.Securities Organization\
-    \ Reference Code. Pair with Securities Organization Reference Id."
+  source_column: "NHNCK.ORGANIZATIONS.ORGANIZATION_CODE"
+  comment: "Lookup pair: securities_organization_reference.securities_organization_reference_code.\
+    \ Pair with Securities Organization Reference Id. Giá trị lấy từ NHNCK.ORGANIZATIONS.ORGANIZATION_CODE\
+    \ sau ETL crosswalk — chi tiết xem comment Securities Organization Reference Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_organization_employment_report"
@@ -32823,7 +32314,8 @@ attributes:
   source_table: "USERS"
   source_column: null
   comment: "PK surrogate. BCV: [Involved Party] Individual. Domain prefix 'Identity\
-    \ and Access Management User' theo HLD IAM Tier 1."
+    \ and Access Management User' theo HLD IAM Tier 1. Hash: hash_id('IAM.USERS',\
+    \ USERNAME)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "identity_and_access_management_user"
@@ -32832,14 +32324,17 @@ attributes:
 - bcv_core_object: "Involved Party"
   atomic_entity: "Identity and Access Management User"
   atomic_attribute: "Identity and Access Management User Code"
-  description: "Khóa chính (UUIDv7). BK của entity — map từ PK bảng nguồn."
+  description: "Username đăng nhập hệ thống. BK của entity — map từ USERNAME (đổi\
+    \ từ PK kỹ thuật ID theo quyết định Data Modeler 2026-08-11)."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   source_system: "IAM"
   source_table: "USERS"
-  source_column: "IAM.USERS.ID"
-  comment: "BK chính. PK nguồn dạng UUIDv7."
+  source_column: "IAM.USERS.USERNAME"
+  comment: "BK chính = USERNAME (đổi từ ID kỹ thuật UUIDv7 theo quyết định 2026-08-11).\
+    \ Cần Data Modeler xác nhận USERNAME NOT NULL + UNIQUE trên toàn bộ IAM.USERS\
+    \ trước go-live."
   classification_context: null
   etl_derived_value: null
   atomic_table: "identity_and_access_management_user"
@@ -32879,19 +32374,21 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Identity and Access Management User"
-  atomic_attribute: "Username"
-  description: "Username đăng nhập hệ thống."
+  atomic_attribute: "User Code"
+  description: "Mã người dùng nội bộ (cột CODE nguồn)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "IAM"
   source_table: "USERS"
-  source_column: "IAM.USERS.USERNAME"
-  comment: "BCV: không có term riêng — đặt tên theo nghĩa kỹ thuật IAM."
+  source_column: "IAM.USERS.CODE"
+  comment: "BCV: không có term riêng. Khác với Identity and Access Management User\
+    \ Code (BK = USERNAME) — đây là mã nội bộ riêng của nguồn, không phải BK/FK pattern,\
+    \ không có Id đi kèm. Tên attribute tạm đặt — Data Modeler xác nhận lại khi review."
   classification_context: null
   etl_derived_value: null
   atomic_table: "identity_and_access_management_user"
-  atomic_column: "username"
+  atomic_column: "user_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Identity and Access Management User"
@@ -33276,495 +32773,6 @@ attributes:
   etl_derived_value: null
   atomic_table: "identity_and_access_management_user"
   atomic_column: "representative_position_id"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Individual"
-  atomic_attribute: "Individual Id"
-  description: "Id tự sinh (surrogate key)"
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: true
-  source_system: "NHNCK"
-  source_table: "IDENTITY_INFO_C06S"
-  source_column: null
-  comment: "PK surrogate. BCV: [Involved Party] Individual."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "individual"
-  atomic_column: "individual_id"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Individual"
-  atomic_attribute: "Individual Code"
-  description: "Số CMND/CCCD/Hộ chiếu của người hành nghề. BK duy nhất của entity"
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "IDENTITY_INFO_C06S"
-  source_column: "NHNCK.IDENTITY_INFO_C06S.IDENTITY_NUMBER"
-  comment: "BK chính — không có cột CODE nghiệp vụ riêng trên bảng nguồn. Cần profile\
-    \ dữ liệu xác nhận NOT NULL/unique trước go-live."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "individual"
-  atomic_column: "individual_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Individual"
-  atomic_attribute: "Source System Code"
-  description: "Mã nguồn dữ liệu"
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "IDENTITY_INFO_C06S"
-  source_column: null
-  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S'"
-  etl_derived_value: "NHNCK_IDENTITY_INFO_C06S"
-  atomic_table: "individual"
-  atomic_column: "src_stm_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Individual"
-  atomic_attribute: "Full Name"
-  description: "Họ và tên đầy đủ của người hành nghề"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "IDENTITY_INFO_C06S"
-  source_column: "NHNCK.IDENTITY_INFO_C06S.FULL_NAME"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "individual"
-  atomic_column: "full_nm"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Individual"
-  atomic_attribute: "Given Name"
-  description: "Tên đệm và tên riêng (tên gọi) của người hành nghề"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "IDENTITY_INFO_C06S"
-  source_column: "NHNCK.IDENTITY_INFO_C06S.FIRST_NAME"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "individual"
-  atomic_column: "given_nm"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Individual"
-  atomic_attribute: "Birth Date"
-  description: "Ngày sinh (trong bản ghi vi phạm, snapshot tại thời điểm ghi)"
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "IDENTITY_INFO_C06S"
-  source_column: "NHNCK.IDENTITY_INFO_C06S.BIRTH_DATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "individual"
-  atomic_column: "birth_dt"
-  data_type: "date"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Individual"
-  atomic_attribute: "Birth Year"
-  description: "Năm sinh (lưu dạng chuỗi, dùng khi chỉ biết năm không có ngày tháng)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "IDENTITY_INFO_C06S"
-  source_column: "NHNCK.IDENTITY_INFO_C06S.BIRTH_YEAR"
-  comment: "Nguồn lưu NVARCHAR2(4) — giữ dạng text."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "individual"
-  atomic_column: "birth_year"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Individual"
-  atomic_attribute: "Gender Code"
-  description: "Giới tính: 0=Nam, 1=Nữ"
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "IDENTITY_INFO_C06S"
-  source_column: "NHNCK.IDENTITY_INFO_C06S.GENDER"
-  comment: "Scheme: INDIVIDUAL_GENDER (reuse — cùng scheme với Securities Practitioner.Gender\
-    \ Code)."
-  classification_context: "INDIVIDUAL_GENDER"
-  etl_derived_value: null
-  atomic_table: "individual"
-  atomic_column: "gender_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Individual"
-  atomic_attribute: "Ethnicity Name"
-  description: "Dân tộc (theo dữ liệu C06 CSDL quốc gia về dân cư)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "IDENTITY_INFO_C06S"
-  source_column: "NHNCK.IDENTITY_INFO_C06S.NATIONAL"
-  comment: "Denormalized text — mirror Securities Practitioner.Ethnicity Name."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "individual"
-  atomic_column: "ethnicity_nm"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Individual"
-  atomic_attribute: "Religion Name"
-  description: "Tôn giáo (theo dữ liệu C06 CSDL quốc gia về dân cư)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "IDENTITY_INFO_C06S"
-  source_column: "NHNCK.IDENTITY_INFO_C06S.RELIGION"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "individual"
-  atomic_column: "religion_nm"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Individual"
-  atomic_attribute: "Country Code"
-  description: "Mã quốc gia theo chuẩn ISO 3166-1 alpha-2"
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "IDENTITY_INFO_C06S"
-  source_column: "NHNCK.IDENTITY_INFO_C06S.COUNTRY_CODE"
-  comment: "Scheme: NHNCK_C06_COUNTRY. Dữ liệu tích hợp C06 (API ngoài) — no_lookup,\
-    \ không tạo FK Geographic Area."
-  classification_context: "NHNCK_C06_COUNTRY"
-  etl_derived_value: null
-  atomic_table: "individual"
-  atomic_column: "country_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Individual"
-  atomic_attribute: "Place of Birth Description"
-  description: "Nơi sinh của người hành nghề"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "IDENTITY_INFO_C06S"
-  source_column: "NHNCK.IDENTITY_INFO_C06S.PLACE_OF_BIRTH"
-  comment: "Mirror Securities Practitioner.Place of Birth Description."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "individual"
-  atomic_column: "place_of_birth_description"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Individual"
-  atomic_attribute: "Place of Birth Country Code"
-  description: "Mã quốc gia nơi sinh (theo C06)"
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "IDENTITY_INFO_C06S"
-  source_column: "NHNCK.IDENTITY_INFO_C06S.PLACE_OF_BIRTH_COUNTRY_CODE"
-  comment: "Scheme: NHNCK_C06_COUNTRY. Dữ liệu tích hợp C06 — no_lookup."
-  classification_context: "NHNCK_C06_COUNTRY"
-  etl_derived_value: null
-  atomic_table: "individual"
-  atomic_column: "place_of_birth_country_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Individual"
-  atomic_attribute: "Place of Birth Province Code"
-  description: "Mã tỉnh/thành phố nơi sinh (theo C06)"
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "IDENTITY_INFO_C06S"
-  source_column: "NHNCK.IDENTITY_INFO_C06S.PLACE_OF_BIRTH_PROVINCE_CODE"
-  comment: "Scheme: NHNCK_C06_PROVINCE. Dữ liệu tích hợp C06 — no_lookup."
-  classification_context: "NHNCK_C06_PROVINCE"
-  etl_derived_value: null
-  atomic_table: "individual"
-  atomic_column: "place_of_birth_province_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Individual"
-  atomic_attribute: "Place of Birth District Code"
-  description: "Mã quận/huyện nơi sinh (theo C06)"
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "IDENTITY_INFO_C06S"
-  source_column: "NHNCK.IDENTITY_INFO_C06S.PLACE_OF_BIRTH_DISTRICT_CODE"
-  comment: "Scheme: NHNCK_C06_DISTRICT. Dữ liệu tích hợp C06 — no_lookup."
-  classification_context: "NHNCK_C06_DISTRICT"
-  etl_derived_value: null
-  atomic_table: "individual"
-  atomic_column: "place_of_birth_district_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Individual"
-  atomic_attribute: "Hometown"
-  description: "Quê quán theo C06 CSDL quốc gia về dân cư"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "IDENTITY_INFO_C06S"
-  source_column: "NHNCK.IDENTITY_INFO_C06S.HOMETOWN"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "individual"
-  atomic_column: "hometown"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Individual"
-  atomic_attribute: "Father Full Name"
-  description: "Họ tên đầy đủ của bố (theo C06)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "IDENTITY_INFO_C06S"
-  source_column: "NHNCK.IDENTITY_INFO_C06S.FATHER_FULL_NAME"
-  comment: "Prefix chủ thể 'Father' — mô tả thân nhân, không phải chủ thể chính."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "individual"
-  atomic_column: "father_full_nm"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Individual"
-  atomic_attribute: "Father Country Code"
-  description: "Mã quốc tịch của bố (theo C06)"
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "IDENTITY_INFO_C06S"
-  source_column: "NHNCK.IDENTITY_INFO_C06S.FATHER_COUNTRY_CODE"
-  comment: "Scheme: NHNCK_C06_COUNTRY. Dữ liệu tích hợp C06 — no_lookup."
-  classification_context: "NHNCK_C06_COUNTRY"
-  etl_derived_value: null
-  atomic_table: "individual"
-  atomic_column: "father_country_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Individual"
-  atomic_attribute: "Father Identity Number"
-  description: "Số CMND/CCCD của bố (theo C06)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "IDENTITY_INFO_C06S"
-  source_column: "NHNCK.IDENTITY_INFO_C06S.FATHER_IDENTITY_NUMBER"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "individual"
-  atomic_column: "father_identity_nbr"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Individual"
-  atomic_attribute: "Father Previous Identity Number"
-  description: "Số CMND cũ của bố (trước khi đổi CCCD, theo C06)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "IDENTITY_INFO_C06S"
-  source_column: "NHNCK.IDENTITY_INFO_C06S.FATHER_IDENTITY_NUMBER_OLD"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "individual"
-  atomic_column: "father_previous_identity_nbr"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Individual"
-  atomic_attribute: "Mother Full Name"
-  description: "Họ tên đầy đủ của mẹ (theo C06)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "IDENTITY_INFO_C06S"
-  source_column: "NHNCK.IDENTITY_INFO_C06S.MOTHER_FULL_NAME"
-  comment: "Prefix chủ thể 'Mother' — mô tả thân nhân, không phải chủ thể chính."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "individual"
-  atomic_column: "mother_full_nm"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Individual"
-  atomic_attribute: "Mother Country Code"
-  description: "Mã quốc tịch của mẹ (theo C06)"
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "IDENTITY_INFO_C06S"
-  source_column: "NHNCK.IDENTITY_INFO_C06S.MOTHER_COUNTRY_CODE"
-  comment: "Scheme: NHNCK_C06_COUNTRY. Dữ liệu tích hợp C06 — no_lookup."
-  classification_context: "NHNCK_C06_COUNTRY"
-  etl_derived_value: null
-  atomic_table: "individual"
-  atomic_column: "mother_country_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Individual"
-  atomic_attribute: "Mother Identity Number"
-  description: "Số CMND/CCCD của mẹ (theo C06)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "IDENTITY_INFO_C06S"
-  source_column: "NHNCK.IDENTITY_INFO_C06S.MOTHER_IDENTITY_NUMBER"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "individual"
-  atomic_column: "mother_identity_nbr"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Individual"
-  atomic_attribute: "Mother Previous Identity Number"
-  description: "Số CMND cũ của mẹ (theo C06)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "IDENTITY_INFO_C06S"
-  source_column: "NHNCK.IDENTITY_INFO_C06S.MOTHER_IDENTITY_NUMBER_OLD"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "individual"
-  atomic_column: "mother_previous_identity_nbr"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Individual"
-  atomic_attribute: "Spouse Full Name"
-  description: "Họ tên đầy đủ của vợ/chồng (theo C06)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "IDENTITY_INFO_C06S"
-  source_column: "NHNCK.IDENTITY_INFO_C06S.COUPLE_FULL_NAME"
-  comment: "Prefix chủ thể 'Spouse' — mô tả thân nhân, không phải chủ thể chính. Nguồn\
-    \ đặt tên COUPLE_*, đổi sang Spouse cho tự nhiên trong tiếng Anh."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "individual"
-  atomic_column: "spouse_full_nm"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Individual"
-  atomic_attribute: "Spouse Country Code"
-  description: "Mã quốc tịch của vợ/chồng (theo C06)"
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "IDENTITY_INFO_C06S"
-  source_column: "NHNCK.IDENTITY_INFO_C06S.COUPLE_COUNTRY_CODE"
-  comment: "Scheme: NHNCK_C06_COUNTRY. Dữ liệu tích hợp C06 — no_lookup."
-  classification_context: "NHNCK_C06_COUNTRY"
-  etl_derived_value: null
-  atomic_table: "individual"
-  atomic_column: "spouse_country_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Individual"
-  atomic_attribute: "Spouse Identity Number"
-  description: "Số CMND/CCCD của vợ/chồng (theo C06)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "IDENTITY_INFO_C06S"
-  source_column: "NHNCK.IDENTITY_INFO_C06S.COUPLE_IDENTITY_NUMBER"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "individual"
-  atomic_column: "spouse_identity_nbr"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Individual"
-  atomic_attribute: "Spouse Previous Identity Number"
-  description: "Số CMND cũ của vợ/chồng (theo C06)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "IDENTITY_INFO_C06S"
-  source_column: "NHNCK.IDENTITY_INFO_C06S.COUPLE_IDENTITY_NUMBER_OLD"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "individual"
-  atomic_column: "spouse_previous_identity_nbr"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Individual"
-  atomic_attribute: "Updated By Officer Id"
-  description: "FK -> USERS: Người cập nhật thông tin C06 lần cuối"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "IDENTITY_INFO_C06S"
-  source_column: "NHNCK.IDENTITY_INFO_C06S.USER_UPDATED_ID"
-  comment: "Pending — FK target Identity and Access Management User (định hướng dùng\
-    \ chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join key giữa NHNCK.USERS.ID\
-    \ và IAM.USERS, và lld_IAM_USERS.yaml lên approved. Đây là FK xác nhận thực (không\
-    \ phải suy luận) — khác với CREATED_BY/UPDATED_BY audit chung đã loại khỏi thiết\
-    \ kế (xem pending_design.yaml)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "individual"
-  atomic_column: "updated_by_officer_id"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Individual"
-  atomic_attribute: "Updated By Officer Code"
-  description: "Mã cán bộ cập nhật (denormalized lookup)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "IDENTITY_INFO_C06S"
-  source_column: "NHNCK.IDENTITY_INFO_C06S.USER_UPDATED_ID"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pending — xem ghi chú ở Updated By Officer Id."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "individual"
-  atomic_column: "updated_by_officer_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Investment Fund"
@@ -42764,7 +41772,9 @@ attributes:
   source_table: "ORGANIZATIONS"
   source_column: null
   comment: "PK surrogate. BCV: \"Organization\" (Involved Party). Tổ chức tham gia\
-    \ TTCK (CTCK, QLQ, NH, Khác)."
+    \ TTCK (CTCK, QLQ, NH, Khác). Hash: hash_id('NHNCK.ORGANIZATIONS', ORGANIZATION_CODE)\
+    \ — đổi từ hash theo ID kỹ thuật (qua Securities Organization Reference Code cũ)\
+    \ sang ORGANIZATION_CODE, 2026-08-11."
   classification_context: null
   etl_derived_value: null
   atomic_table: "securities_organization_reference"
@@ -42773,14 +41783,16 @@ attributes:
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Organization Reference"
   atomic_attribute: "Securities Organization Reference Code"
-  description: "Mã định danh kỹ thuật tự tăng. BK của entity. Map từ PK bảng nguồn."
+  description: "Mã tổ chức kinh doanh chứng khoán do hệ thống cấp. BK của entity.\
+    \ Map từ ORGANIZATION_CODE."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "ORGANIZATIONS"
-  source_column: "NHNCK.ORGANIZATIONS.ID"
-  comment: "BK chính. PK nguồn (NUMBER — ETL cần convert sang string)."
+  source_column: "NHNCK.ORGANIZATIONS.ORGANIZATION_CODE"
+  comment: "BK chính. Cần profile dữ liệu xác nhận NOT NULL/unique trước go-live (ORGANIZATION_CODE\
+    \ hiện không đánh dấu khóa trong CSDL nguồn)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "securities_organization_reference"
@@ -42801,22 +41813,6 @@ attributes:
   etl_derived_value: "NHNCK_ORGANIZATIONS"
   atomic_table: "securities_organization_reference"
   atomic_column: "src_stm_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Organization Reference"
-  atomic_attribute: "Organization Code"
-  description: "Mã tổ chức (mã nghiệp vụ do hệ thống gán)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "ORGANIZATIONS"
-  source_column: "NHNCK.ORGANIZATIONS.ORGANIZATION_CODE"
-  comment: "Mã nghiệp vụ — khác BK (ORGANIZATION_CODE khác ID nguồn)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "securities_organization_reference"
-  atomic_column: "organization_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Organization Reference"
@@ -42908,8 +41904,12 @@ attributes:
   source_system: "NHNCK"
   source_table: "ORGANIZATIONS"
   source_column: "NHNCK.ORGANIZATIONS.PARENT_ID"
-  comment: "FK target: Securities Organization Reference.Securities Organization Reference\
-    \ Id. Self-referencing. Hash: hash_id('NHNCK.ORGANIZATIONS', PARENT_ID)."
+  comment: "FK target: securities_organization_reference.securities_organization_reference_id.\
+    \ Self-referencing. Cần ETL crosswalk sang NHNCK.ORGANIZATIONS: ORGANIZATIONS.PARENT_ID\
+    \ = ORGANIZATIONS.ID để xác nhận ORGANIZATION_CODE sau đó hash_id('NHNCK.ORGANIZATIONS',\
+    \ ORGANIZATION_CODE) | Trước đây hash trực tiếp theo PARENT_ID (ID kỹ thuật) gây\
+    \ sai lệch với Id của bảng main (hash từ ORGANIZATION_CODE) — đã sửa sang crosswalk\
+    \ 2026-08-11."
   classification_context: null
   etl_derived_value: null
   atomic_table: "securities_organization_reference"
@@ -42924,9 +41924,11 @@ attributes:
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "ORGANIZATIONS"
-  source_column: "NHNCK.ORGANIZATIONS.PARENT_ID"
-  comment: "Lookup pair: Securities Organization Reference.Securities Organization\
-    \ Reference Code. Pair with Parent Securities Organization Reference Id."
+  source_column: "NHNCK.ORGANIZATIONS.ORGANIZATION_CODE"
+  comment: "Lookup pair: securities_organization_reference.securities_organization_reference_code.\
+    \ Pair with Parent Securities Organization Reference Id. Giá trị lấy từ NHNCK.ORGANIZATIONS.ORGANIZATION_CODE\
+    \ sau ETL crosswalk (self-join qua PARENT_ID) — chi tiết xem comment Parent Securities\
+    \ Organization Reference Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "securities_organization_reference"
@@ -43317,9 +42319,12 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONALS"
   source_column: "NHNCK.PROFESSIONALS.ORGANIZATION_ID"
-  comment: "FK target: Securities Organization Reference.Securities Organization Reference\
-    \ Id. Nullable — người hành nghề có thể chưa công tác. Hash: hash_id('NHNCK.ORGANIZATIONS',\
-    \ ORGANIZATION_ID)."
+  comment: "FK target: securities_organization_reference.securities_organization_reference_id.\
+    \ Cần ETL crosswalk sang NHNCK.ORGANIZATIONS: PROFESSIONALS.ORGANIZATION_ID =\
+    \ ORGANIZATIONS.ID để xác nhận ORGANIZATION_CODE sau đó hash_id('NHNCK.ORGANIZATIONS',\
+    \ ORGANIZATION_CODE) | Nullable — người hành nghề có thể chưa công tác. Trước\
+    \ đây hash trực tiếp theo ORGANIZATION_ID (ID kỹ thuật) gây sai lệch với Id của\
+    \ bảng main (hash từ ORGANIZATION_CODE) — đã sửa sang crosswalk 2026-08-11."
   classification_context: null
   etl_derived_value: null
   atomic_table: "securities_practitioner"
@@ -43334,9 +42339,10 @@ attributes:
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "PROFESSIONALS"
-  source_column: "NHNCK.PROFESSIONALS.ORGANIZATION_ID"
-  comment: "Lookup pair: Securities Organization Reference.Securities Organization\
-    \ Reference Code. Pair with Securities Organization Reference Id."
+  source_column: "NHNCK.ORGANIZATIONS.ORGANIZATION_CODE"
+  comment: "Lookup pair: securities_organization_reference.securities_organization_reference_code.\
+    \ Pair with Securities Organization Reference Id. Giá trị lấy từ NHNCK.ORGANIZATIONS.ORGANIZATION_CODE\
+    \ sau ETL crosswalk — chi tiết xem comment Securities Organization Reference Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "securities_practitioner"
@@ -43667,8 +42673,9 @@ attributes:
   source_table: "PROFESSIONALS"
   source_column: "NHNCK.PROFESSIONALS.SSO_USER_ID"
   comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM.USERS', SSO_USER_ID) | Chưa xác nhận join key NHNCK.PROFESSIONALS.SSO_USER_ID\
-    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+    \ Cần ETL crosswalk sang NHNCK.USERS: PROFESSIONALS.SSO_USER_ID = USERS.ID để\
+    \ xác nhận USERNAME sau đó hash_id('IAM.USERS', USERNAME) | Chưa xác nhận value\
+    \ set khớp danh mục IAM.USERS — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
   atomic_table: "securities_practitioner"
@@ -43683,9 +42690,11 @@ attributes:
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "PROFESSIONALS"
-  source_column: "NHNCK.PROFESSIONALS.SSO_USER_ID"
+  source_column: "NHNCK.USERS.USERNAME"
   comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Identity and Access Management User Id."
+    \ Pair with Identity and Access Management User Id. Giá trị lấy từ NHNCK.USERS.USERNAME\
+    \ sau ETL crosswalk — chi tiết xem comment Identity and Access Management User\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "securities_practitioner"
@@ -43785,8 +42794,12 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONAL_WORK_HISTORIES"
   source_column: "NHNCK.PROFESSIONAL_WORK_HISTORIES.ORGANIZATION_ID"
-  comment: "FK target: Securities Organization Reference.Securities Organization Reference\
-    \ Id. Hash: hash_id('NHNCK.ORGANIZATIONS', ORGANIZATION_ID)."
+  comment: "FK target: securities_organization_reference.securities_organization_reference_id.\
+    \ Cần ETL crosswalk sang NHNCK.ORGANIZATIONS: PROFESSIONAL_WORK_HISTORIES.ORGANIZATION_ID\
+    \ = ORGANIZATIONS.ID để xác nhận ORGANIZATION_CODE sau đó hash_id('NHNCK.ORGANIZATIONS',\
+    \ ORGANIZATION_CODE) | Trước đây hash trực tiếp theo ORGANIZATION_ID (ID kỹ thuật)\
+    \ gây sai lệch với Id của bảng main (hash từ ORGANIZATION_CODE) — đã sửa sang\
+    \ crosswalk 2026-08-11."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_employment_status"
@@ -43801,9 +42814,10 @@ attributes:
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "PROFESSIONAL_WORK_HISTORIES"
-  source_column: "NHNCK.PROFESSIONAL_WORK_HISTORIES.ORGANIZATION_ID"
-  comment: "Lookup pair: Securities Organization Reference.Securities Organization\
-    \ Reference Code. Pair with Securities Organization Reference Id."
+  source_column: "NHNCK.ORGANIZATIONS.ORGANIZATION_CODE"
+  comment: "Lookup pair: securities_organization_reference.securities_organization_reference_code.\
+    \ Pair with Securities Organization Reference Id. Giá trị lấy từ NHNCK.ORGANIZATIONS.ORGANIZATION_CODE\
+    \ sau ETL crosswalk — chi tiết xem comment Securities Organization Reference Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_employment_status"
@@ -44081,8 +43095,12 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_EXPERIENCES"
   source_column: "NHNCK.APPLICATION_EXPERIENCES.ORGANIZATION_ID"
-  comment: "FK target: Securities Organization Reference.Securities Organization Reference\
-    \ Id. Hash: hash_id('NHNCK.ORGANIZATIONS', ORGANIZATION_ID)."
+  comment: "FK target: securities_organization_reference.securities_organization_reference_id.\
+    \ Cần ETL crosswalk sang NHNCK.ORGANIZATIONS: APPLICATION_EXPERIENCES.ORGANIZATION_ID\
+    \ = ORGANIZATIONS.ID để xác nhận ORGANIZATION_CODE sau đó hash_id('NHNCK.ORGANIZATIONS',\
+    \ ORGANIZATION_CODE) | Trước đây hash trực tiếp theo ORGANIZATION_ID (ID kỹ thuật)\
+    \ gây sai lệch với Id của bảng main (hash từ ORGANIZATION_CODE) — đã sửa sang\
+    \ crosswalk 2026-08-11."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application_employment_experience"
@@ -44097,9 +43115,10 @@ attributes:
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "APPLICATION_EXPERIENCES"
-  source_column: "NHNCK.APPLICATION_EXPERIENCES.ORGANIZATION_ID"
-  comment: "Lookup pair: Securities Organization Reference.Securities Organization\
-    \ Reference Code. Pair with Securities Organization Reference Id."
+  source_column: "NHNCK.ORGANIZATIONS.ORGANIZATION_CODE"
+  comment: "Lookup pair: securities_organization_reference.securities_organization_reference_code.\
+    \ Pair with Securities Organization Reference Id. Giá trị lấy từ NHNCK.ORGANIZATIONS.ORGANIZATION_CODE\
+    \ sau ETL crosswalk — chi tiết xem comment Securities Organization Reference Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application_employment_experience"
@@ -44415,8 +43434,12 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_PROFESSIONALS"
   source_column: "NHNCK.APPLICATION_PROFESSIONALS.ORGANIZATION_ID"
-  comment: "FK target: Securities Organization Reference.Securities Organization Reference\
-    \ Id. Hash: hash_id('NHNCK.ORGANIZATIONS', ORGANIZATION_ID)."
+  comment: "FK target: securities_organization_reference.securities_organization_reference_id.\
+    \ Cần ETL crosswalk sang NHNCK.ORGANIZATIONS: APPLICATION_PROFESSIONALS.ORGANIZATION_ID\
+    \ = ORGANIZATIONS.ID để xác nhận ORGANIZATION_CODE sau đó hash_id('NHNCK.ORGANIZATIONS',\
+    \ ORGANIZATION_CODE) | Trước đây hash trực tiếp theo ORGANIZATION_ID (ID kỹ thuật)\
+    \ gây sai lệch với Id của bảng main (hash từ ORGANIZATION_CODE) — đã sửa sang\
+    \ crosswalk 2026-08-11."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application_snapshot"
@@ -44431,9 +43454,10 @@ attributes:
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "APPLICATION_PROFESSIONALS"
-  source_column: "NHNCK.APPLICATION_PROFESSIONALS.ORGANIZATION_ID"
-  comment: "Lookup pair: Securities Organization Reference.Securities Organization\
-    \ Reference Code. Pair with Securities Organization Reference Id."
+  source_column: "NHNCK.ORGANIZATIONS.ORGANIZATION_CODE"
+  comment: "Lookup pair: securities_organization_reference.securities_organization_reference_code.\
+    \ Pair with Securities Organization Reference Id. Giá trị lấy từ NHNCK.ORGANIZATIONS.ORGANIZATION_CODE\
+    \ sau ETL crosswalk — chi tiết xem comment Securities Organization Reference Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application_snapshot"
@@ -53777,7 +52801,7 @@ attributes:
   atomic_table: "af_warning"
   atomic_column: "deleted_ind"
   data_type: "int"
-- bcv_core_object: "Common"
+- bcv_core_object: null
   atomic_entity: "Classification Application Status"
   atomic_attribute: "Classification Application Status Id"
   description: "Id tự sinh (surrogate key)."
@@ -53796,7 +52820,7 @@ attributes:
   atomic_table: "cl_application_status"
   atomic_column: "cl_application_status_id"
   data_type: "string"
-- bcv_core_object: "Common"
+- bcv_core_object: null
   atomic_entity: "Classification Application Status"
   atomic_attribute: "Classification Application Status Code"
   description: "Mã trạng thái hồ sơ — BK của entity."
@@ -53815,7 +52839,7 @@ attributes:
   atomic_table: "cl_application_status"
   atomic_column: "cl_application_status_code"
   data_type: "string"
-- bcv_core_object: "Common"
+- bcv_core_object: null
   atomic_entity: "Classification Application Status"
   atomic_attribute: "Source System Code"
   description: "Mã hệ thống nguồn."
@@ -53831,7 +52855,7 @@ attributes:
   atomic_table: "cl_application_status"
   atomic_column: "src_stm_code"
   data_type: "string"
-- bcv_core_object: "Common"
+- bcv_core_object: null
   atomic_entity: "Classification Application Status"
   atomic_attribute: "Classification Application Status Name"
   description: "Tên trạng thái hồ sơ hiển thị trên giao diện."
@@ -53847,7 +52871,7 @@ attributes:
   atomic_table: "cl_application_status"
   atomic_column: "cl_application_status_nm"
   data_type: "string"
-- bcv_core_object: "Common"
+- bcv_core_object: null
   atomic_entity: "Classification Application Status"
   atomic_attribute: "Label"
   description: "Nhãn hiển thị ngắn gọn trên badge/tag."
@@ -53863,7 +52887,7 @@ attributes:
   atomic_table: "cl_application_status"
   atomic_column: "label"
   data_type: "string"
-- bcv_core_object: "Common"
+- bcv_core_object: null
   atomic_entity: "Classification Application Status"
   atomic_attribute: "Description"
   description: "Mô tả chi tiết trạng thái."
@@ -53879,7 +52903,7 @@ attributes:
   atomic_table: "cl_application_status"
   atomic_column: "description"
   data_type: "string"
-- bcv_core_object: "Common"
+- bcv_core_object: null
   atomic_entity: "Classification Application Status"
   atomic_attribute: "Sort Order"
   description: "Thứ tự sắp xếp hiển thị (số nhỏ hơn hiển thị trước)."
@@ -53895,7 +52919,7 @@ attributes:
   atomic_table: "cl_application_status"
   atomic_column: "sort_order"
   data_type: "int"
-- bcv_core_object: "Common"
+- bcv_core_object: null
   atomic_entity: "Classification Application Status"
   atomic_attribute: "Active Indicator"
   description: "Cờ đang kích hoạt/hiệu lực."
@@ -53911,7 +52935,7 @@ attributes:
   atomic_table: "cl_application_status"
   atomic_column: "active_ind"
   data_type: "string"
-- bcv_core_object: "Common"
+- bcv_core_object: null
   atomic_entity: "Classification Application Status"
   atomic_attribute: "Original Data Indicator"
   description: "Cờ dữ liệu gốc của hệ thống (không được xóa)."
@@ -54603,7 +53627,7 @@ attributes:
   atomic_table: "cl_business_transaction"
   atomic_column: "record_status_code"
   data_type: "string"
-- bcv_core_object: "Common"
+- bcv_core_object: null
   atomic_entity: "Classification Document"
   atomic_attribute: "Classification Document Id"
   description: "Id tự sinh (surrogate key)."
@@ -54622,7 +53646,7 @@ attributes:
   atomic_table: "cl_document"
   atomic_column: "cl_document_id"
   data_type: "string"
-- bcv_core_object: "Common"
+- bcv_core_object: null
   atomic_entity: "Classification Document"
   atomic_attribute: "Classification Document Code"
   description: "Mã tài liệu — BK của entity."
@@ -54638,7 +53662,7 @@ attributes:
   atomic_table: "cl_document"
   atomic_column: "cl_document_code"
   data_type: "string"
-- bcv_core_object: "Common"
+- bcv_core_object: null
   atomic_entity: "Classification Document"
   atomic_attribute: "Source System Code"
   description: "Mã hệ thống nguồn."
@@ -54654,7 +53678,7 @@ attributes:
   atomic_table: "cl_document"
   atomic_column: "src_stm_code"
   data_type: "string"
-- bcv_core_object: "Common"
+- bcv_core_object: null
   atomic_entity: "Classification Document"
   atomic_attribute: "Classification Document Name"
   description: "Tên tài liệu."
@@ -54670,7 +53694,7 @@ attributes:
   atomic_table: "cl_document"
   atomic_column: "cl_document_nm"
   data_type: "string"
-- bcv_core_object: "Common"
+- bcv_core_object: null
   atomic_entity: "Classification Document"
   atomic_attribute: "Legal Reference"
   description: "Trích dẫn căn cứ pháp lý liên quan đến tài liệu."
@@ -54688,7 +53712,7 @@ attributes:
   atomic_table: "cl_document"
   atomic_column: "legal_reference"
   data_type: "string"
-- bcv_core_object: "Common"
+- bcv_core_object: null
   atomic_entity: "Classification Document"
   atomic_attribute: "Sort Order"
   description: "Thứ tự sắp xếp hiển thị (số nhỏ hơn hiển thị trước)."
@@ -54704,7 +53728,7 @@ attributes:
   atomic_table: "cl_document"
   atomic_column: "sort_order"
   data_type: "int"
-- bcv_core_object: "Common"
+- bcv_core_object: null
   atomic_entity: "Classification Document"
   atomic_attribute: "Active Indicator"
   description: "Cờ đang kích hoạt/hiệu lực."
@@ -54720,7 +53744,7 @@ attributes:
   atomic_table: "cl_document"
   atomic_column: "active_ind"
   data_type: "string"
-- bcv_core_object: "Common"
+- bcv_core_object: null
   atomic_entity: "Classification Document"
   atomic_attribute: "Original Data Indicator"
   description: "Cờ dữ liệu gốc của hệ thống (không được xóa)."
@@ -54736,7 +53760,7 @@ attributes:
   atomic_table: "cl_document"
   atomic_column: "original_data_ind"
   data_type: "string"
-- bcv_core_object: "Common"
+- bcv_core_object: null
   atomic_entity: "Classification Document"
   atomic_attribute: "Public Service Portal Code"
   description: "Mã đồng bộ chuyên ngành trên hệ thống Cổng Dịch vụ công quốc gia (MCĐT)."
@@ -55911,7 +54935,7 @@ attributes:
   atomic_table: "cl_service"
   atomic_column: "note"
   data_type: "string"
-- bcv_core_object: "Common"
+- bcv_core_object: null
   atomic_entity: "Classification Specialization"
   atomic_attribute: "Classification Specialization Id"
   description: "Id tự sinh (surrogate key)."
@@ -55930,7 +54954,7 @@ attributes:
   atomic_table: "cl_specialization"
   atomic_column: "cl_specialization_id"
   data_type: "string"
-- bcv_core_object: "Common"
+- bcv_core_object: null
   atomic_entity: "Classification Specialization"
   atomic_attribute: "Classification Specialization Code"
   description: "Mã chuyên ngành CCHN — BK của entity."
@@ -55946,7 +54970,7 @@ attributes:
   atomic_table: "cl_specialization"
   atomic_column: "cl_specialization_code"
   data_type: "string"
-- bcv_core_object: "Common"
+- bcv_core_object: null
   atomic_entity: "Classification Specialization"
   atomic_attribute: "Source System Code"
   description: "Mã hệ thống nguồn."
@@ -55962,7 +54986,7 @@ attributes:
   atomic_table: "cl_specialization"
   atomic_column: "src_stm_code"
   data_type: "string"
-- bcv_core_object: "Common"
+- bcv_core_object: null
   atomic_entity: "Classification Specialization"
   atomic_attribute: "Classification Specialization Name"
   description: "Tên chuyên ngành CCHN (VD: Phân tích đầu tư, Quản lý quỹ...)."
@@ -55978,7 +55002,7 @@ attributes:
   atomic_table: "cl_specialization"
   atomic_column: "cl_specialization_nm"
   data_type: "string"
-- bcv_core_object: "Common"
+- bcv_core_object: null
   atomic_entity: "Classification Specialization"
   atomic_attribute: "Legal Reference"
   description: "Trích dẫn căn cứ pháp lý liên quan đến chuyên ngành."
@@ -55996,7 +55020,7 @@ attributes:
   atomic_table: "cl_specialization"
   atomic_column: "legal_reference"
   data_type: "string"
-- bcv_core_object: "Common"
+- bcv_core_object: null
   atomic_entity: "Classification Specialization"
   atomic_attribute: "Active Indicator"
   description: "Cờ đang kích hoạt/hiệu lực."
@@ -56012,7 +55036,7 @@ attributes:
   atomic_table: "cl_specialization"
   atomic_column: "active_ind"
   data_type: "string"
-- bcv_core_object: "Common"
+- bcv_core_object: null
   atomic_entity: "Classification Specialization"
   atomic_attribute: "Original Data Indicator"
   description: "Cờ dữ liệu gốc của hệ thống (không được xóa)."
@@ -56028,7 +55052,7 @@ attributes:
   atomic_table: "cl_specialization"
   atomic_column: "original_data_ind"
   data_type: "string"
-- bcv_core_object: "Common"
+- bcv_core_object: null
   atomic_entity: "Classification Specialization"
   atomic_attribute: "Public Service Portal Code"
   description: "Mã đồng bộ chuyên ngành trên hệ thống Cổng Dịch vụ công quốc gia (MCĐT)."
@@ -63479,6 +62503,497 @@ attributes:
   atomic_table: "index_constituent_snapshot"
   atomic_column: "total_match_vol"
   data_type: "int"
+- bcv_core_object: null
+  atomic_entity: "Individual"
+  atomic_attribute: "Individual Id"
+  description: "Id tự sinh (surrogate key)"
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "NHNCK"
+  source_table: "IDENTITY_INFO_C06S"
+  source_column: null
+  comment: "PK surrogate. BCV: [Involved Party] Individual."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "individual"
+  atomic_column: "individual_id"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Individual"
+  atomic_attribute: "Individual Code"
+  description: "Số CMND/CCCD/Hộ chiếu của người hành nghề. BK duy nhất của entity"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "IDENTITY_INFO_C06S"
+  source_column: "NHNCK.IDENTITY_INFO_C06S.IDENTITY_NUMBER"
+  comment: "BK chính — không có cột CODE nghiệp vụ riêng trên bảng nguồn. Cần profile\
+    \ dữ liệu xác nhận NOT NULL/unique trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "individual"
+  atomic_column: "individual_code"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Individual"
+  atomic_attribute: "Source System Code"
+  description: "Mã nguồn dữ liệu"
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "IDENTITY_INFO_C06S"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S'"
+  etl_derived_value: "NHNCK_IDENTITY_INFO_C06S"
+  atomic_table: "individual"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Individual"
+  atomic_attribute: "Full Name"
+  description: "Họ và tên đầy đủ của người hành nghề"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "IDENTITY_INFO_C06S"
+  source_column: "NHNCK.IDENTITY_INFO_C06S.FULL_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "individual"
+  atomic_column: "full_nm"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Individual"
+  atomic_attribute: "Given Name"
+  description: "Tên đệm và tên riêng (tên gọi) của người hành nghề"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "IDENTITY_INFO_C06S"
+  source_column: "NHNCK.IDENTITY_INFO_C06S.FIRST_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "individual"
+  atomic_column: "given_nm"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Individual"
+  atomic_attribute: "Birth Date"
+  description: "Ngày sinh (trong bản ghi vi phạm, snapshot tại thời điểm ghi)"
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "IDENTITY_INFO_C06S"
+  source_column: "NHNCK.IDENTITY_INFO_C06S.BIRTH_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "individual"
+  atomic_column: "birth_dt"
+  data_type: "date"
+- bcv_core_object: null
+  atomic_entity: "Individual"
+  atomic_attribute: "Birth Year"
+  description: "Năm sinh (lưu dạng chuỗi, dùng khi chỉ biết năm không có ngày tháng)"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "IDENTITY_INFO_C06S"
+  source_column: "NHNCK.IDENTITY_INFO_C06S.BIRTH_YEAR"
+  comment: "Nguồn lưu NVARCHAR2(4) — giữ dạng text."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "individual"
+  atomic_column: "birth_year"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Individual"
+  atomic_attribute: "Gender Code"
+  description: "Giới tính: 0=Nam, 1=Nữ"
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "IDENTITY_INFO_C06S"
+  source_column: "NHNCK.IDENTITY_INFO_C06S.GENDER"
+  comment: "Scheme: INDIVIDUAL_GENDER (reuse — cùng scheme với Securities Practitioner.Gender\
+    \ Code)."
+  classification_context: "INDIVIDUAL_GENDER"
+  etl_derived_value: null
+  atomic_table: "individual"
+  atomic_column: "gender_code"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Individual"
+  atomic_attribute: "Ethnicity Name"
+  description: "Dân tộc (theo dữ liệu C06 CSDL quốc gia về dân cư)"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "IDENTITY_INFO_C06S"
+  source_column: "NHNCK.IDENTITY_INFO_C06S.NATIONAL"
+  comment: "Denormalized text — mirror Securities Practitioner.Ethnicity Name."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "individual"
+  atomic_column: "ethnicity_nm"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Individual"
+  atomic_attribute: "Religion Name"
+  description: "Tôn giáo (theo dữ liệu C06 CSDL quốc gia về dân cư)"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "IDENTITY_INFO_C06S"
+  source_column: "NHNCK.IDENTITY_INFO_C06S.RELIGION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "individual"
+  atomic_column: "religion_nm"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Individual"
+  atomic_attribute: "Country Code"
+  description: "Mã quốc gia theo chuẩn ISO 3166-1 alpha-2"
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "IDENTITY_INFO_C06S"
+  source_column: "NHNCK.IDENTITY_INFO_C06S.COUNTRY_CODE"
+  comment: "Scheme: NHNCK_C06_COUNTRY. Dữ liệu tích hợp C06 (API ngoài) — no_lookup,\
+    \ không tạo FK Geographic Area."
+  classification_context: "NHNCK_C06_COUNTRY"
+  etl_derived_value: null
+  atomic_table: "individual"
+  atomic_column: "country_code"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Individual"
+  atomic_attribute: "Place of Birth Description"
+  description: "Nơi sinh của người hành nghề"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "IDENTITY_INFO_C06S"
+  source_column: "NHNCK.IDENTITY_INFO_C06S.PLACE_OF_BIRTH"
+  comment: "Mirror Securities Practitioner.Place of Birth Description."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "individual"
+  atomic_column: "place_of_birth_description"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Individual"
+  atomic_attribute: "Place of Birth Country Code"
+  description: "Mã quốc gia nơi sinh (theo C06)"
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "IDENTITY_INFO_C06S"
+  source_column: "NHNCK.IDENTITY_INFO_C06S.PLACE_OF_BIRTH_COUNTRY_CODE"
+  comment: "Scheme: NHNCK_C06_COUNTRY. Dữ liệu tích hợp C06 — no_lookup."
+  classification_context: "NHNCK_C06_COUNTRY"
+  etl_derived_value: null
+  atomic_table: "individual"
+  atomic_column: "place_of_birth_country_code"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Individual"
+  atomic_attribute: "Place of Birth Province Code"
+  description: "Mã tỉnh/thành phố nơi sinh (theo C06)"
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "IDENTITY_INFO_C06S"
+  source_column: "NHNCK.IDENTITY_INFO_C06S.PLACE_OF_BIRTH_PROVINCE_CODE"
+  comment: "Scheme: NHNCK_C06_PROVINCE. Dữ liệu tích hợp C06 — no_lookup."
+  classification_context: "NHNCK_C06_PROVINCE"
+  etl_derived_value: null
+  atomic_table: "individual"
+  atomic_column: "place_of_birth_province_code"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Individual"
+  atomic_attribute: "Place of Birth District Code"
+  description: "Mã quận/huyện nơi sinh (theo C06)"
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "IDENTITY_INFO_C06S"
+  source_column: "NHNCK.IDENTITY_INFO_C06S.PLACE_OF_BIRTH_DISTRICT_CODE"
+  comment: "Scheme: NHNCK_C06_DISTRICT. Dữ liệu tích hợp C06 — no_lookup."
+  classification_context: "NHNCK_C06_DISTRICT"
+  etl_derived_value: null
+  atomic_table: "individual"
+  atomic_column: "place_of_birth_district_code"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Individual"
+  atomic_attribute: "Hometown"
+  description: "Quê quán theo C06 CSDL quốc gia về dân cư"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "IDENTITY_INFO_C06S"
+  source_column: "NHNCK.IDENTITY_INFO_C06S.HOMETOWN"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "individual"
+  atomic_column: "hometown"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Individual"
+  atomic_attribute: "Father Full Name"
+  description: "Họ tên đầy đủ của bố (theo C06)"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "IDENTITY_INFO_C06S"
+  source_column: "NHNCK.IDENTITY_INFO_C06S.FATHER_FULL_NAME"
+  comment: "Prefix chủ thể 'Father' — mô tả thân nhân, không phải chủ thể chính."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "individual"
+  atomic_column: "father_full_nm"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Individual"
+  atomic_attribute: "Father Country Code"
+  description: "Mã quốc tịch của bố (theo C06)"
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "IDENTITY_INFO_C06S"
+  source_column: "NHNCK.IDENTITY_INFO_C06S.FATHER_COUNTRY_CODE"
+  comment: "Scheme: NHNCK_C06_COUNTRY. Dữ liệu tích hợp C06 — no_lookup."
+  classification_context: "NHNCK_C06_COUNTRY"
+  etl_derived_value: null
+  atomic_table: "individual"
+  atomic_column: "father_country_code"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Individual"
+  atomic_attribute: "Father Identity Number"
+  description: "Số CMND/CCCD của bố (theo C06)"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "IDENTITY_INFO_C06S"
+  source_column: "NHNCK.IDENTITY_INFO_C06S.FATHER_IDENTITY_NUMBER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "individual"
+  atomic_column: "father_identity_nbr"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Individual"
+  atomic_attribute: "Father Previous Identity Number"
+  description: "Số CMND cũ của bố (trước khi đổi CCCD, theo C06)"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "IDENTITY_INFO_C06S"
+  source_column: "NHNCK.IDENTITY_INFO_C06S.FATHER_IDENTITY_NUMBER_OLD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "individual"
+  atomic_column: "father_previous_identity_nbr"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Individual"
+  atomic_attribute: "Mother Full Name"
+  description: "Họ tên đầy đủ của mẹ (theo C06)"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "IDENTITY_INFO_C06S"
+  source_column: "NHNCK.IDENTITY_INFO_C06S.MOTHER_FULL_NAME"
+  comment: "Prefix chủ thể 'Mother' — mô tả thân nhân, không phải chủ thể chính."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "individual"
+  atomic_column: "mother_full_nm"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Individual"
+  atomic_attribute: "Mother Country Code"
+  description: "Mã quốc tịch của mẹ (theo C06)"
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "IDENTITY_INFO_C06S"
+  source_column: "NHNCK.IDENTITY_INFO_C06S.MOTHER_COUNTRY_CODE"
+  comment: "Scheme: NHNCK_C06_COUNTRY. Dữ liệu tích hợp C06 — no_lookup."
+  classification_context: "NHNCK_C06_COUNTRY"
+  etl_derived_value: null
+  atomic_table: "individual"
+  atomic_column: "mother_country_code"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Individual"
+  atomic_attribute: "Mother Identity Number"
+  description: "Số CMND/CCCD của mẹ (theo C06)"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "IDENTITY_INFO_C06S"
+  source_column: "NHNCK.IDENTITY_INFO_C06S.MOTHER_IDENTITY_NUMBER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "individual"
+  atomic_column: "mother_identity_nbr"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Individual"
+  atomic_attribute: "Mother Previous Identity Number"
+  description: "Số CMND cũ của mẹ (theo C06)"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "IDENTITY_INFO_C06S"
+  source_column: "NHNCK.IDENTITY_INFO_C06S.MOTHER_IDENTITY_NUMBER_OLD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "individual"
+  atomic_column: "mother_previous_identity_nbr"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Individual"
+  atomic_attribute: "Spouse Full Name"
+  description: "Họ tên đầy đủ của vợ/chồng (theo C06)"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "IDENTITY_INFO_C06S"
+  source_column: "NHNCK.IDENTITY_INFO_C06S.COUPLE_FULL_NAME"
+  comment: "Prefix chủ thể 'Spouse' — mô tả thân nhân, không phải chủ thể chính. Nguồn\
+    \ đặt tên COUPLE_*, đổi sang Spouse cho tự nhiên trong tiếng Anh."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "individual"
+  atomic_column: "spouse_full_nm"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Individual"
+  atomic_attribute: "Spouse Country Code"
+  description: "Mã quốc tịch của vợ/chồng (theo C06)"
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "IDENTITY_INFO_C06S"
+  source_column: "NHNCK.IDENTITY_INFO_C06S.COUPLE_COUNTRY_CODE"
+  comment: "Scheme: NHNCK_C06_COUNTRY. Dữ liệu tích hợp C06 — no_lookup."
+  classification_context: "NHNCK_C06_COUNTRY"
+  etl_derived_value: null
+  atomic_table: "individual"
+  atomic_column: "spouse_country_code"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Individual"
+  atomic_attribute: "Spouse Identity Number"
+  description: "Số CMND/CCCD của vợ/chồng (theo C06)"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "IDENTITY_INFO_C06S"
+  source_column: "NHNCK.IDENTITY_INFO_C06S.COUPLE_IDENTITY_NUMBER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "individual"
+  atomic_column: "spouse_identity_nbr"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Individual"
+  atomic_attribute: "Spouse Previous Identity Number"
+  description: "Số CMND cũ của vợ/chồng (theo C06)"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "IDENTITY_INFO_C06S"
+  source_column: "NHNCK.IDENTITY_INFO_C06S.COUPLE_IDENTITY_NUMBER_OLD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "individual"
+  atomic_column: "spouse_previous_identity_nbr"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Individual"
+  atomic_attribute: "Updated By Officer Id"
+  description: "FK -> USERS: Người cập nhật thông tin C06 lần cuối"
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "IDENTITY_INFO_C06S"
+  source_column: "NHNCK.IDENTITY_INFO_C06S.USER_UPDATED_ID"
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
+    \ Cần ETL crosswalk sang NHNCK.USERS: IDENTITY_INFO_C06S.USER_UPDATED_ID = USERS.ID\
+    \ để xác nhận USERNAME sau đó hash_id('IAM.USERS', USERNAME) | Đây là FK xác nhận\
+    \ thực (không phải suy luận) — khác với CREATED_BY/UPDATED_BY audit chung đã loại\
+    \ khỏi thiết kế (xem pending_design.yaml). Chưa xác nhận value set khớp danh mục\
+    \ IAM.USERS — cần profile dữ liệu trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "individual"
+  atomic_column: "updated_by_officer_id"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Individual"
+  atomic_attribute: "Updated By Officer Code"
+  description: "Mã cán bộ cập nhật (denormalized lookup)"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "IDENTITY_INFO_C06S"
+  source_column: "NHNCK.USERS.USERNAME"
+  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
+    \ Pair with Updated By Officer Id. Giá trị lấy từ NHNCK.USERS.USERNAME sau ETL\
+    \ crosswalk — chi tiết xem comment Updated By Officer Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "individual"
+  atomic_column: "updated_by_officer_code"
+  data_type: "string"
 - bcv_core_object: "Business Direction"
   atomic_entity: "Inspection Annual Plan"
   atomic_attribute: "Inspection Annual Plan Id"
@@ -67363,7 +66878,7 @@ attributes:
   classification_context: null
   etl_derived_value: null
   atomic_table: "member_rating"
-  atomic_column: "m_ember_rating_period_id"
+  atomic_column: "member_rating_period_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Member Rating"
@@ -67380,7 +66895,7 @@ attributes:
   classification_context: null
   etl_derived_value: null
   atomic_table: "member_rating"
-  atomic_column: "m_ember_rating_period_code"
+  atomic_column: "member_rating_period_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Member Rating"
@@ -69774,18 +69289,33 @@ attributes:
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Notification Recipient"
-  atomic_attribute: "Department Code"
-  description: "Mã phòng ban."
-  data_domain: "Classification Value"
+  atomic_attribute: "Department Id"
+  description: "FK đến bảng DEPARTMENTS."
+  data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
   source_table: "NOTIFICATIONS_DTL"
   source_column: "IDS.NOTIFICATIONS_DTL.DEPT_CD"
-  comment: "Scheme: IDS_DEPARTMENT_CODE (no_lookup) — chưa xác nhận cross-source FK\
-    \ đến phòng ban cụ thể, giữ Classification Value cho đến khi Data Modeler xác\
-    \ nhận."
-  classification_context: "IDS_DEPARTMENT_CODE"
+  comment: "FK target: Department.Department_Id. Hash: hash_id('IDS.DEPARTMENTS',\
+    \ DEPT_CD)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "notification_recipient"
+  atomic_column: "department_id"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Notification Recipient"
+  atomic_attribute: "Department Code"
+  description: "Mã phòng ban."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "NOTIFICATIONS_DTL"
+  source_column: "IDS.NOTIFICATIONS_DTL.DEPT_CD"
+  comment: "Lookup pair: Department.Department_Code. Pair with Department Id."
+  classification_context: null
   etl_derived_value: null
   atomic_table: "notification_recipient"
   atomic_column: "department_code"
@@ -74690,15 +74220,14 @@ attributes:
   atomic_entity: "Public Company Registration"
   atomic_attribute: "Approval Status Code"
   description: "Mã trạng thái phê duyệt."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
   source_table: "PUB_COMPANY_REGISTRATION"
   source_column: "IDS.PUB_COMPANY_REGISTRATION.APPROVAL_STATUS_CD"
-  comment: "Scheme: IDS_APPROVAL_STATUS. Dùng chung scheme với Public Company.Approval\
-    \ Status Code."
-  classification_context: "IDS_APPROVAL_STATUS"
+  comment: null
+  classification_context: null
   etl_derived_value: null
   atomic_table: "pc_registration"
   atomic_column: "approval_status_code"
@@ -74912,39 +74441,6 @@ attributes:
   etl_derived_value: null
   atomic_table: "pc_related_entity"
   atomic_column: "related_entity_english_nm"
-  data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Public Company Related Entity"
-  atomic_attribute: "Related Entity Business Registration Number"
-  description: "Mã số doanh nghiệp."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_RELATIONSHIP"
-  source_column: "IDS.COMPANY_RELATIONSHIP.BUSINESS_REG_NO"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_related_entity"
-  atomic_column: "related_entity_business_registration_nbr"
-  data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Public Company Related Entity"
-  atomic_attribute: "Related Entity Head Office Address"
-  description: "Địa chỉ trụ sở chính."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_RELATIONSHIP"
-  source_column: "IDS.COMPANY_RELATIONSHIP.HEAD_OFFICE_ADDR"
-  comment: "Denormalized — không tách IP Postal Address (không có grain Involved Party\
-    \ riêng biệt của entity Related Entity này)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_related_entity"
-  atomic_column: "related_entity_head_office_adr"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Public Company Related Entity"
@@ -76322,7 +75818,7 @@ attributes:
   atomic_entity: "Public Company Tender Offer"
   atomic_attribute: "Approval Status Code"
   description: "Trạng thái phê duyệt phương án."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
@@ -86693,6 +86189,524 @@ attributes:
   atomic_table: "securities_distribution_agent_personnel"
   atomic_column: "current_position_title"
   data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Securities Practitioner License Certificate Status Change History"
+  atomic_attribute: "Securities Practitioner License Certificate Status Change History\
+    \ Id"
+  description: "Id tự sinh (surrogate key)"
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "NHNCK"
+  source_table: "CERTIFICATE_RECORD_STATUS_HISTORIES"
+  source_column: null
+  comment: "PK surrogate. BCV: [Documentation] Gov. Registration Document."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sp_license_certificate_status_change_history"
+  atomic_column: "sp_license_certificate_status_change_history_id"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Securities Practitioner License Certificate Status Change History"
+  atomic_attribute: "Securities Practitioner License Certificate Status Change History\
+    \ Code"
+  description: "Mã định danh (BK từ PK nguồn — nguồn không có cột mã nghiệp vụ riêng)"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "CERTIFICATE_RECORD_STATUS_HISTORIES"
+  source_column: "NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.ID"
+  comment: "BK chính. Nguồn lưu NUMBER — ETL convert sang string."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sp_license_certificate_status_change_history"
+  atomic_column: "sp_license_certificate_status_change_history_code"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Securities Practitioner License Certificate Status Change History"
+  atomic_attribute: "Source System Code"
+  description: "Mã nguồn dữ liệu"
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "CERTIFICATE_RECORD_STATUS_HISTORIES"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORD_STATUS_HISTORIES'"
+  etl_derived_value: "NHNCK_CERTIFICATE_RECORD_STATUS_HISTORIES"
+  atomic_table: "sp_license_certificate_status_change_history"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Securities Practitioner License Certificate Status Change History"
+  atomic_attribute: "Data Date"
+  description: "Thời điểm ghi nhận thay đổi trạng thái CCHN (nguồn: CREATED_AT). Dùng\
+    \ làm căn cứ partition Delta Lake / incremental filter — bảng nguồn là Fact Append\
+    \ (insert-only, xem BRD/Source/brd_NHNCK.yaml)."
+  data_domain: "Date"
+  nullable: false
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "CERTIFICATE_RECORD_STATUS_HISTORIES"
+  source_column: "NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.CREATED_AT"
+  comment: "BCV: không có term riêng. CREATED_AT bị loại theo quyết định audit-block\
+    \ Data Modeler (2026-07-07) nhưng bảng là Fact Append (mỗi dòng = 1 lần đổi trạng\
+    \ thái, insert-only, xác nhận 2026-07-24) — cần giữ lại làm Data Date, mirror\
+    \ pattern lld_NHNCK_ORGANIZATION_REPORTS.yaml. Đổi tên từ 'created_at' sang 'Data\
+    \ Date' để phản ánh vai trò ngày dữ liệu/phân vùng, tách biệt khỏi audit block\
+    \ (CREATED_BY/UPDATED_AT/UPDATED_BY vẫn loại trừ)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sp_license_certificate_status_change_history"
+  atomic_column: "data_dt"
+  data_type: "date"
+- bcv_core_object: null
+  atomic_entity: "Securities Practitioner License Certificate Status Change History"
+  atomic_attribute: "Securities Practitioner License Certificate Document Id"
+  description: "FK đến chứng chỉ hành nghề bị thay đổi trạng thái"
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "CERTIFICATE_RECORD_STATUS_HISTORIES"
+  source_column: "NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.CERTIFICATE_RECORD_ID"
+  comment: "FK target: Securities Practitioner License Certificate Document.Securities\
+    \ Practitioner License Certificate Document Id. Hash: hash_id('NHNCK.CERTIFICATE_RECORDS',\
+    \ CERTIFICATE_RECORD_ID)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sp_license_certificate_status_change_history"
+  atomic_column: "sp_license_certificate_document_id"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Securities Practitioner License Certificate Status Change History"
+  atomic_attribute: "Securities Practitioner License Certificate Document Code"
+  description: "Mã chứng chỉ hành nghề (denormalized lookup)"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "CERTIFICATE_RECORD_STATUS_HISTORIES"
+  source_column: "NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.CERTIFICATE_RECORD_ID"
+  comment: "Lookup pair: Securities Practitioner License Certificate Document.Securities\
+    \ Practitioner License Certificate Document Code. Pair with Securities Practitioner\
+    \ License Certificate Document Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sp_license_certificate_status_change_history"
+  atomic_column: "sp_license_certificate_document_code"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Securities Practitioner License Certificate Status Change History"
+  atomic_attribute: "Update Type"
+  description: "Loại cập nhật trạng thái CCHN (chuỗi mô tả hành động thay đổi)"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "CERTIFICATE_RECORD_STATUS_HISTORIES"
+  source_column: "NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.UPDATE_TYPE"
+  comment: "BCV: không có term riêng — đặt tên theo nghĩa nghiệp vụ. Nguồn lưu dạng\
+    \ chuỗi tự do, không phải Classification Value cố định."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sp_license_certificate_status_change_history"
+  atomic_column: "update_tp"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Securities Practitioner License Certificate Status Change History"
+  atomic_attribute: "Old Certificate Status Code"
+  description: "Trạng thái CCHN trước khi thay đổi"
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "CERTIFICATE_RECORD_STATUS_HISTORIES"
+  source_column: "NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.OLD_STATUS"
+  comment: "Scheme: CERTIFICATE_STATUS. Nguồn: 0=Chưa sử dụng, 1=Đang sử dụng, 2=Thu\
+    \ hồi có cấp lại, 3=Thu hồi không cấp lại, 4=Đã hủy, 5=Hết hiệu lực. Khác với\
+    \ STATUS (RECORD_STATUS đổi tên) trên CERTIFICATE_RECORDS — cột đó bị loại trừ\
+    \ theo chính sách Data Modeler (2026-07-07, xem pending_design.yaml), không liên\
+    \ quan đến scheme 6 giá trị này."
+  classification_context: "CERTIFICATE_STATUS"
+  etl_derived_value: null
+  atomic_table: "sp_license_certificate_status_change_history"
+  atomic_column: "old_certificate_status_code"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Securities Practitioner License Certificate Status Change History"
+  atomic_attribute: "New Certificate Status Code"
+  description: "Trạng thái CCHN sau khi thay đổi"
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "CERTIFICATE_RECORD_STATUS_HISTORIES"
+  source_column: "NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.NEW_STATUS"
+  comment: "Scheme: CERTIFICATE_STATUS. Cùng bảng giá trị với Old Certificate Status\
+    \ Code."
+  classification_context: "CERTIFICATE_STATUS"
+  etl_derived_value: null
+  atomic_table: "sp_license_certificate_status_change_history"
+  atomic_column: "new_certificate_status_code"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Securities Practitioner License Certificate Status Change History"
+  atomic_attribute: "Securities Practitioner License Decision Document Id"
+  description: "FK đến quyết định hành chính liên quan đến lần thay đổi trạng thái"
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "CERTIFICATE_RECORD_STATUS_HISTORIES"
+  source_column: "NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.DECISION_ID"
+  comment: "FK target: Securities Practitioner License Decision Document.Securities\
+    \ Practitioner License Decision Document Id. Hash: hash_id('NHNCK.DECISIONS',\
+    \ DECISION_ID). Nullable — cần xác nhận có luôn gắn quyết định hay không (VD:\
+    \ hết hiệu lực tự động có thể không có quyết định)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sp_license_certificate_status_change_history"
+  atomic_column: "sp_license_decision_document_id"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Securities Practitioner License Certificate Status Change History"
+  atomic_attribute: "Securities Practitioner License Decision Document Code"
+  description: "Mã quyết định (denormalized lookup)"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "CERTIFICATE_RECORD_STATUS_HISTORIES"
+  source_column: "NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.DECISION_ID"
+  comment: "Lookup pair: Securities Practitioner License Decision Document.Securities\
+    \ Practitioner License Decision Document Code. Pair with Securities Practitioner\
+    \ License Decision Document Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sp_license_certificate_status_change_history"
+  atomic_column: "sp_license_decision_document_code"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Securities Practitioner License Certificate Status Change History"
+  atomic_attribute: "Change Reason"
+  description: "Lý do thực hiện thao tác hoặc thay đổi"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "CERTIFICATE_RECORD_STATUS_HISTORIES"
+  source_column: "NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.REASON"
+  comment: "BCV: không có term riêng — đặt tên theo nghĩa nghiệp vụ, mirror Change\
+    \ Reason trên Securities Practitioner Reason Change History."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sp_license_certificate_status_change_history"
+  atomic_column: "change_reason"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Securities Practitioner Post Certification Training Course"
+  atomic_attribute: "Securities Practitioner Post Certification Training Course Id"
+  description: "Id tự sinh (surrogate key)"
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "NHNCK"
+  source_table: "POST_CERT_TRAINING_COURSES"
+  source_column: null
+  comment: "PK surrogate. BCV: [Business Activity] Business Activity."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sp_post_certification_training_course"
+  atomic_column: "sp_post_certification_training_course_id"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Securities Practitioner Post Certification Training Course"
+  atomic_attribute: "Securities Practitioner Post Certification Training Course Code"
+  description: "Mã khóa học/lớp học. BK duy nhất của entity"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "POST_CERT_TRAINING_COURSES"
+  source_column: "NHNCK.POST_CERT_TRAINING_COURSES.COURSE_CODE"
+  comment: "BK chính."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sp_post_certification_training_course"
+  atomic_column: "sp_post_certification_training_course_code"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Securities Practitioner Post Certification Training Course"
+  atomic_attribute: "Source System Code"
+  description: "Mã nguồn dữ liệu"
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "POST_CERT_TRAINING_COURSES"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'NHNCK_POST_CERT_TRAINING_COURSES'"
+  etl_derived_value: "NHNCK_POST_CERT_TRAINING_COURSES"
+  atomic_table: "sp_post_certification_training_course"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Securities Practitioner Post Certification Training Course"
+  atomic_attribute: "Training Course Name"
+  description: "Tên khóa học/lớp học"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "POST_CERT_TRAINING_COURSES"
+  source_column: "NHNCK.POST_CERT_TRAINING_COURSES.COURSE_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sp_post_certification_training_course"
+  atomic_column: "training_course_nm"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Securities Practitioner Post Certification Training Course"
+  atomic_attribute: "Training Class Code"
+  description: "Mã lớp học (định danh lớp cụ thể trong khóa)"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "POST_CERT_TRAINING_COURSES"
+  source_column: "NHNCK.POST_CERT_TRAINING_COURSES.CLASS_CODE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sp_post_certification_training_course"
+  atomic_column: "training_class_code"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Securities Practitioner Post Certification Training Result"
+  atomic_attribute: "Securities Practitioner Post Certification Training Result Id"
+  description: "Id tự sinh (surrogate key)"
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "NHNCK"
+  source_table: "POST_CERT_TRAINING_RESULTS"
+  source_column: null
+  comment: "PK surrogate. BCV: [Business Activity] Business Activity."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sp_post_certification_training_result"
+  atomic_column: "sp_post_certification_training_result_id"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Securities Practitioner Post Certification Training Result"
+  atomic_attribute: "Securities Practitioner Post Certification Training Result Code"
+  description: "Mã định danh (BK từ PK nguồn — nguồn không có cột mã nghiệp vụ riêng)"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "POST_CERT_TRAINING_RESULTS"
+  source_column: "NHNCK.POST_CERT_TRAINING_RESULTS.ID"
+  comment: "BK chính. Nguồn lưu NUMBER — ETL convert sang string."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sp_post_certification_training_result"
+  atomic_column: "sp_post_certification_training_result_code"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Securities Practitioner Post Certification Training Result"
+  atomic_attribute: "Source System Code"
+  description: "Mã nguồn dữ liệu"
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "POST_CERT_TRAINING_RESULTS"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'NHNCK_POST_CERT_TRAINING_RESULTS'"
+  etl_derived_value: "NHNCK_POST_CERT_TRAINING_RESULTS"
+  atomic_table: "sp_post_certification_training_result"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Securities Practitioner Post Certification Training Result"
+  atomic_attribute: "Securities Practitioner Id"
+  description: "FK đến người hành nghề tham gia đào tạo"
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "POST_CERT_TRAINING_RESULTS"
+  source_column: "NHNCK.POST_CERT_TRAINING_RESULTS.PROFESSIONAL_ID"
+  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+    \ PROFESSIONAL_ID)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sp_post_certification_training_result"
+  atomic_column: "sp_id"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Securities Practitioner Post Certification Training Result"
+  atomic_attribute: "Securities Practitioner Code"
+  description: "Mã người hành nghề (denormalized lookup)"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "POST_CERT_TRAINING_RESULTS"
+  source_column: "NHNCK.POST_CERT_TRAINING_RESULTS.PROFESSIONAL_ID"
+  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
+    \ with Securities Practitioner Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sp_post_certification_training_result"
+  atomic_column: "sp_code"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Securities Practitioner Post Certification Training Result"
+  atomic_attribute: "Securities Practitioner Post Certification Training Course Id"
+  description: "FK đến khóa bồi dưỡng sau cấp CCHN"
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "POST_CERT_TRAINING_RESULTS"
+  source_column: "NHNCK.POST_CERT_TRAINING_RESULTS.TRAINING_COURSE_ID"
+  comment: "FK target: sp_post_certification_training_course.sp_post_certification_training_course_id.\
+    \ Cần ETL crosswalk sang NHNCK.POST_CERT_TRAINING_COURSES: POST_CERT_TRAINING_RESULTS.TRAINING_COURSE_ID\
+    \ = POST_CERT_TRAINING_COURSES.ID để xác nhận COURSE_CODE sau đó hash_id('NHNCK.POST_CERT_TRAINING_COURSES',\
+    \ COURSE_CODE) | Trước đây hash trực tiếp theo TRAINING_COURSE_ID (ID kỹ thuật)\
+    \ gây sai lệch với Id của bảng main (hash từ COURSE_CODE) — đã sửa sang crosswalk\
+    \ 2026-07-27."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sp_post_certification_training_result"
+  atomic_column: "sp_post_certification_training_course_id"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Securities Practitioner Post Certification Training Result"
+  atomic_attribute: "Securities Practitioner Post Certification Training Course Code"
+  description: "Mã khóa bồi dưỡng (denormalized lookup)"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "POST_CERT_TRAINING_RESULTS"
+  source_column: "NHNCK.POST_CERT_TRAINING_COURSES.COURSE_CODE"
+  comment: "Lookup pair: Securities Practitioner Post Certification Training Course.Securities\
+    \ Practitioner Post Certification Training Course Code. Pair with Securities Practitioner\
+    \ Post Certification Training Course Id. Giá trị lấy từ NHNCK.POST_CERT_TRAINING_COURSES.COURSE_CODE\
+    \ sau ETL crosswalk — chi tiết xem comment Securities Practitioner Post Certification\
+    \ Training Course Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sp_post_certification_training_result"
+  atomic_column: "sp_post_certification_training_course_code"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Securities Practitioner Post Certification Training Result"
+  atomic_attribute: "Training Start Date"
+  description: "Ngày bắt đầu tham gia khóa bồi dưỡng"
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "POST_CERT_TRAINING_RESULTS"
+  source_column: "NHNCK.POST_CERT_TRAINING_RESULTS.START_DATE"
+  comment: "Mô tả cột nguồn còn TBD — suy luận từ tên cột."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sp_post_certification_training_result"
+  atomic_column: "training_start_dt"
+  data_type: "date"
+- bcv_core_object: null
+  atomic_entity: "Securities Practitioner Post Certification Training Result"
+  atomic_attribute: "Training End Date"
+  description: "Ngày kết thúc tham gia khóa bồi dưỡng"
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "POST_CERT_TRAINING_RESULTS"
+  source_column: "NHNCK.POST_CERT_TRAINING_RESULTS.END_DATE"
+  comment: "Mô tả cột nguồn còn TBD — suy luận từ tên cột."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sp_post_certification_training_result"
+  atomic_column: "training_end_dt"
+  data_type: "date"
+- bcv_core_object: null
+  atomic_entity: "Securities Practitioner Post Certification Training Result"
+  atomic_attribute: "Training Hours"
+  description: "Số giờ đào tạo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "POST_CERT_TRAINING_RESULTS"
+  source_column: "NHNCK.POST_CERT_TRAINING_RESULTS.TRAINING_HOURS"
+  comment: "Mô tả cột nguồn còn TBD — suy luận từ tên cột."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sp_post_certification_training_result"
+  atomic_column: "training_hours"
+  data_type: "int"
+- bcv_core_object: null
+  atomic_entity: "Securities Practitioner Post Certification Training Result"
+  atomic_attribute: "Training Result Status Code"
+  description: "Trạng thái kết quả khóa bồi dưỡng (Đạt/Không đạt — suy đoán từ NUMBER(1,0))"
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "POST_CERT_TRAINING_RESULTS"
+  source_column: "NHNCK.POST_CERT_TRAINING_RESULTS.RESULT_STATUS"
+  comment: "Scheme: NHNCK_POST_CERT_TRAINING_RESULT_STATUS. Mô tả cột nguồn còn TBD\
+    \ — cần BA xác nhận giá trị cụ thể trước khi hoàn thiện ETL mapping."
+  classification_context: "NHNCK_POST_CERT_TRAINING_RESULT_STATUS"
+  etl_derived_value: null
+  atomic_table: "sp_post_certification_training_result"
+  atomic_column: "training_result_status_code"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Securities Practitioner Post Certification Training Result"
+  atomic_attribute: "Training Classification Result Code"
+  description: "Phân loại kết quả khóa bồi dưỡng (VD: Giỏi/Khá/Trung bình — suy đoán)"
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "POST_CERT_TRAINING_RESULTS"
+  source_column: "NHNCK.POST_CERT_TRAINING_RESULTS.CLASSIFICATION_RESULT"
+  comment: "Scheme: NHNCK_POST_CERT_TRAINING_CLASSIFICATION. Nguồn lưu NVARCHAR2(510)\
+    \ — mô tả cột còn TBD, cần BA xác nhận giá trị cụ thể."
+  classification_context: "NHNCK_POST_CERT_TRAINING_CLASSIFICATION"
+  etl_derived_value: null
+  atomic_table: "sp_post_certification_training_result"
+  atomic_column: "training_cl_result_code"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Securities Practitioner Post Certification Training Result"
+  atomic_attribute: "Note"
+  description: "Ghi chú"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "POST_CERT_TRAINING_RESULTS"
+  source_column: "NHNCK.POST_CERT_TRAINING_RESULTS.NOTE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sp_post_certification_training_result"
+  atomic_column: "note"
+  data_type: "string"
 - bcv_core_object: "Product"
   atomic_entity: "Security Trading Snapshot"
   atomic_attribute: "Security Trading Snapshot Id"
@@ -88184,10 +88198,8 @@ attributes:
   source_system: "IDS"
   source_table: "HOLDER_RELATIONSHIP"
   source_column: "IDS.HOLDER_RELATIONSHIP.RELATED_ENTITY_ID"
-  comment: "FK target: legal_entity.legal_entity_id. Self-reference (Legal Entity\
-    \ với chính nó qua 2 vai trò). Hash: hash_id('IDS.LEGAL_ENTITIES', RELATED_ENTITY_ID).\
-    \ Nguồn không có fk_note tường minh nhưng ngữ cảnh (\"ID cổ đông liên quan\")\
-    \ và HLD Tier3 xác nhận đây là FK tự tham chiếu đến LEGAL_ENTITIES."
+  comment: "FK target: legal_entity.legal_entity_id. Hash: hash_id('IDS.LEGAL_ENTITIES',\
+    \ RELATED_ENTITY_ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "stock_holder_relationship"
@@ -90920,9 +90932,9 @@ attributes:
   source_system: "IAM"
   source_table: "USERS"
   source_column: "IAM.USERS.ID"
-  comment: "FK target: Identity and Access Management User.Identity and Access Management\
-    \ User Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('IAM.USERS',\
-    \ ID)."
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
+    \ Shared entity — không có PK surrogate riêng, join theo IAM.USERS.ID cùng bảng\
+    \ để lấy USERNAME. Hash: hash_id('IAM.USERS', USERNAME)."
   classification_context: "Source System Code = 'IAM_USERS' | Identification Type\
     \ Code = 'NATIONAL_ID'"
   etl_derived_value: null
@@ -90938,9 +90950,9 @@ attributes:
   is_primary_key: false
   source_system: "IAM"
   source_table: "USERS"
-  source_column: "IAM.USERS.ID"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pair with Involved Party Id."
+  source_column: "IAM.USERS.USERNAME"
+  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
+    \ Pair with Involved Party Id."
   classification_context: "Source System Code = 'IAM_USERS' | Identification Type\
     \ Code = 'NATIONAL_ID'"
   etl_derived_value: null
@@ -97319,10 +97331,10 @@ attributes:
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "ORGANIZATIONS"
-  source_column: "NHNCK.ORGANIZATIONS.ID"
-  comment: "FK target: Securities Organization Reference.Securities Organization Reference\
-    \ Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.ORGANIZATIONS',\
-    \ ID)."
+  source_column: "NHNCK.ORGANIZATIONS.ORGANIZATION_CODE"
+  comment: "FK target: securities_organization_reference.securities_organization_reference_id.\
+    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.ORGANIZATIONS',\
+    \ ORGANIZATION_CODE)."
   classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS' | Electronic\
     \ Address Type Code = 'EMAIL'"
   etl_derived_value: null
@@ -97338,9 +97350,9 @@ attributes:
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "ORGANIZATIONS"
-  source_column: "NHNCK.ORGANIZATIONS.ID"
-  comment: "Lookup pair: Securities Organization Reference.Securities Organization\
-    \ Reference Code. Pair with Involved Party Id."
+  source_column: "NHNCK.ORGANIZATIONS.ORGANIZATION_CODE"
+  comment: "Lookup pair: securities_organization_reference.securities_organization_reference_code.\
+    \ Pair with Involved Party Id."
   classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS' | Electronic\
     \ Address Type Code = 'EMAIL'"
   etl_derived_value: null
@@ -97699,9 +97711,9 @@ attributes:
   source_system: "IAM"
   source_table: "USERS"
   source_column: "IAM.USERS.ID"
-  comment: "FK target: Identity and Access Management User.Identity and Access Management\
-    \ User Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('IAM.USERS',\
-    \ ID)."
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
+    \ Shared entity — không có PK surrogate riêng, join theo IAM.USERS.ID cùng bảng\
+    \ để lấy USERNAME. Hash: hash_id('IAM.USERS', USERNAME)."
   classification_context: "Source System Code = 'IAM_USERS' | Electronic Address Type\
     \ Code = 'EMAIL'"
   etl_derived_value: null
@@ -97717,9 +97729,9 @@ attributes:
   is_primary_key: false
   source_system: "IAM"
   source_table: "USERS"
-  source_column: "IAM.USERS.ID"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pair with Involved Party Id."
+  source_column: "IAM.USERS.USERNAME"
+  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
+    \ Pair with Involved Party Id."
   classification_context: "Source System Code = 'IAM_USERS' | Electronic Address Type\
     \ Code = 'EMAIL'"
   etl_derived_value: null
@@ -103988,10 +104000,10 @@ attributes:
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "ORGANIZATIONS"
-  source_column: "NHNCK.ORGANIZATIONS.ID"
-  comment: "FK target: Securities Organization Reference.Securities Organization Reference\
-    \ Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.ORGANIZATIONS',\
-    \ ID)."
+  source_column: "NHNCK.ORGANIZATIONS.ORGANIZATION_CODE"
+  comment: "FK target: securities_organization_reference.securities_organization_reference_id.\
+    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.ORGANIZATIONS',\
+    \ ORGANIZATION_CODE)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "ip_postal_address"
@@ -104006,9 +104018,9 @@ attributes:
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "ORGANIZATIONS"
-  source_column: "NHNCK.ORGANIZATIONS.ID"
-  comment: "Lookup pair: Securities Organization Reference.Securities Organization\
-    \ Reference Code. Pair with Involved Party Id."
+  source_column: "NHNCK.ORGANIZATIONS.ORGANIZATION_CODE"
+  comment: "Lookup pair: securities_organization_reference.securities_organization_reference_code.\
+    \ Pair with Involved Party Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "ip_postal_address"
@@ -104427,9 +104439,9 @@ attributes:
   source_system: "IAM"
   source_table: "USERS"
   source_column: "IAM.USERS.ID"
-  comment: "FK target: Identity and Access Management User.Identity and Access Management\
-    \ User Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('IAM.USERS',\
-    \ ID)."
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
+    \ Shared entity — không có PK surrogate riêng, join theo IAM.USERS.ID cùng bảng\
+    \ để lấy USERNAME. Hash: hash_id('IAM.USERS', USERNAME)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "ip_postal_address"
@@ -104444,9 +104456,9 @@ attributes:
   is_primary_key: false
   source_system: "IAM"
   source_table: "USERS"
-  source_column: "IAM.USERS.ID"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pair with Involved Party Id."
+  source_column: "IAM.USERS.USERNAME"
+  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
+    \ Pair with Involved Party Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "ip_postal_address"

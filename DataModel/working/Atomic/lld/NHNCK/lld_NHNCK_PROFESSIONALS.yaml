@@ -197,9 +197,12 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.PROFESSIONALS.ORGANIZATION_ID"
-  comment: "FK target: Securities Organization Reference.Securities Organization Reference\
-    \ Id. Nullable — người hành nghề có thể chưa công tác. Hash: hash_id('NHNCK.ORGANIZATIONS',\
-    \ ORGANIZATION_ID)."
+  comment: "FK target: securities_organization_reference.securities_organization_reference_id.\
+    \ Cần ETL crosswalk sang NHNCK.ORGANIZATIONS: PROFESSIONALS.ORGANIZATION_ID =\
+    \ ORGANIZATIONS.ID để xác nhận ORGANIZATION_CODE sau đó hash_id('NHNCK.ORGANIZATIONS',\
+    \ ORGANIZATION_CODE) | Nullable — người hành nghề có thể chưa công tác. Trước\
+    \ đây hash trực tiếp theo ORGANIZATION_ID (ID kỹ thuật) gây sai lệch với Id của\
+    \ bảng main (hash từ ORGANIZATION_CODE) — đã sửa sang crosswalk 2026-08-11."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -211,9 +214,10 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "NHNCK.PROFESSIONALS.ORGANIZATION_ID"
-  comment: "Lookup pair: Securities Organization Reference.Securities Organization\
-    \ Reference Code. Pair with Securities Organization Reference Id."
+  - "NHNCK.ORGANIZATIONS.ORGANIZATION_CODE"
+  comment: "Lookup pair: securities_organization_reference.securities_organization_reference_code.\
+    \ Pair with Securities Organization Reference Id. Giá trị lấy từ NHNCK.ORGANIZATIONS.ORGANIZATION_CODE\
+    \ sau ETL crosswalk — chi tiết xem comment Securities Organization Reference Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -484,10 +488,13 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
   - "NHNCK.PROFESSIONALS.SSO_USER_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM.USERS', SSO_USER_ID) | Chưa xác nhận join key NHNCK.PROFESSIONALS.SSO_USER_ID ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
+    \ Cần ETL crosswalk sang NHNCK.USERS: PROFESSIONALS.SSO_USER_ID = USERS.ID để\
+    \ xác nhận USERNAME sau đó hash_id('IAM.USERS', USERNAME) | Chưa xác nhận value\
+    \ set khớp danh mục IAM.USERS — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -497,11 +504,13 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
-  - "NHNCK.PROFESSIONALS.SSO_USER_ID"
+  - "NHNCK.USERS.USERNAME"
   comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Identity and Access Management User Id."
+    \ Pair with Identity and Access Management User Id. Giá trị lấy từ NHNCK.USERS.USERNAME\
+    \ sau ETL crosswalk — chi tiết xem comment Identity and Access Management User\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

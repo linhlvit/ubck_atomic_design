@@ -32,7 +32,7 @@ attributes:
     source_system: IAM
     source_table: USERS
     source_column: IAM.USERS.ID
-    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('IAM.USERS', ID)."
+    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Shared entity — không có PK surrogate riêng, join theo IAM.USERS.ID cùng bảng để lấy USERNAME. Hash: hash_id('IAM.USERS', USERNAME)."
     classification_context: null
     etl_derived_value: null
 
@@ -45,7 +45,7 @@ attributes:
     is_primary_key: false
     source_system: IAM
     source_table: USERS
-    source_column: IAM.USERS.ID
+    source_column: IAM.USERS.USERNAME
     comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Involved Party Id."
     classification_context: null
     etl_derived_value: null

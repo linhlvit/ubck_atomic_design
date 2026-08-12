@@ -1829,6 +1829,13 @@ entries:
     action: "Không map. Đã xóa 6 attribute audit khỏi lld_NHNCK_ORGANIZATIONS.yaml."
 
   - source_system: "NHNCK"
+    source_table: "ORGANIZATIONS"
+    source_column: "ORGANIZATION_CODE"
+    description: "Mã tổ chức kinh doanh chứng khoán."
+    reason: "Trùng lặp 100% với Securities Organization Reference Code sau khi BK đổi map sang ORGANIZATION_CODE (khảo sát nghiệp vụ 2026-08-11) — trước đây BK map từ ID nên cần giữ Organization Code làm mã nghiệp vụ riêng, nay không còn cần thiết."
+    action: "Excluded — đã capture qua Securities Organization Reference Code. Xóa attribute 'Organization Code' khỏi lld_NHNCK_ORGANIZATIONS.yaml 2026-08-11."
+
+  - source_system: "NHNCK"
     source_table: "ORGANIZATION_REPORTS"
     source_column: "CREATED_AT"
     description: "Thời điểm tạo bản ghi"
@@ -4571,4 +4578,18 @@ entries:
     description: "JSON patch dữ liệu merge do người dùng chọn thủ công khi nguồn API chính rỗng."
     reason: "Blob JSON kỹ thuật phục vụ UI form-builder (manual merge patch state), không có ý nghĩa nghiệp vụ analytics/báo cáo — quyết định T5-03 đã ghi trong metadata.notes của lld_THANHTRA_VPHC_PROCESS_OFFICIAL_LETTER.yaml trước khi phát hiện qua post_check_source_coverage.py (2026-08-07)."
     action: "Excluded — không map vào lld_THANHTRA_VPHC_PROCESS_OFFICIAL_LETTER.yaml."
+
+  - source_system: "IAM"
+    source_table: "USERS"
+    source_column: "USERNAME"
+    description: "Username đăng nhập hệ thống — trước đây có attribute riêng 'Username' trên lld_IAM_USERS.yaml."
+    reason: "Theo quyết định Data Modeler (2026-08-11), BK của entity Identity and Access Management User đổi từ ID (UUIDv7 kỹ thuật) sang USERNAME — attribute Identity and Access Management User Code nay map trực tiếp từ USERNAME, khiến attribute 'Username' riêng trở thành trùng lặp 100% giá trị."
+    action: "Excluded — đã xoá attribute 'Username' khỏi lld_IAM_USERS.yaml, gộp vào Identity and Access Management User Code."
+
+  - source_system: "IAM"
+    source_table: "USERS"
+    source_column: "ID"
+    description: "Khóa chính kỹ thuật (UUIDv7)."
+    reason: "Trước đây dùng làm nguồn cho Identity and Access Management User Code (BK). Theo quyết định Data Modeler (2026-08-11), BK đổi sang USERNAME — ID kỹ thuật không còn được map vào Atomic attribute nào (theo Bước 3e: có cả ID/CODE/USERNAME thì chỉ giữ 1 BK)."
+    action: "Excluded — không map vào lld_IAM_USERS.yaml. Vẫn dùng làm join key nội bộ (không phải attribute) khi crosswalk NHNCK.USERS.ID/IAM.USERS.ID theo hàng, xem comment các FK crosswalk liên quan."
 

@@ -4589,7 +4589,7 @@ entities:
       - BRD-SRC-FMS-RATING_PD
   attributes:
   - name: Member Rating Period Id
-    physical_name: m_ember_rating_period_id
+    physical_name: member_rating_period_id
     business_meaning_1st: Khóa đại diện (surrogate key).
     comment_1st: "PK surrogate. BCV: \"[Business Activity] Assessment Period\". Kỳ\
       \ đánh giá xếp loại công ty QLQ, được FK từ Member Rating (Tier 2)."
@@ -4608,7 +4608,7 @@ entities:
         comment: "PK surrogate. BCV: \"[Business Activity] Assessment Period\". Kỳ\
           \ đánh giá xếp loại công ty QLQ, được FK từ Member Rating (Tier 2)."
   - name: Member Rating Period Code
-    physical_name: m_ember_rating_period_code
+    physical_name: member_rating_period_code
     business_meaning_1st: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
     comment_1st: BK chính. PK nguồn.
     data_domain_most: Text
@@ -13813,8 +13813,9 @@ entities:
     physical_name: assignee_officer_id
     business_meaning_1st: FK đến cán bộ phụ trách (nullable)
     comment_1st: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-      \ Hash: hash_id('IAM.USERS', ASSIGNEE_ID) | Chưa xác nhận join key NHNCK.SPECIALIZATION_COURSE_DETAILS.ASSIGNEE_ID\
-      \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+      \ Cần ETL crosswalk sang NHNCK.USERS: SPECIALIZATION_COURSE_DETAILS.ASSIGNEE_ID\
+      \ = USERS.ID để xác nhận USERNAME sau đó hash_id('IAM.USERS', USERNAME) | Chưa\
+      \ xác nhận value set khớp danh mục IAM.USERS — cần profile dữ liệu trước go-live."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -13828,13 +13829,16 @@ entities:
         source_column: NHNCK.SPECIALIZATION_COURSE_DETAILS.ASSIGNEE_ID
         business_meaning: FK đến cán bộ phụ trách (nullable)
         comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-          \ Hash: hash_id('IAM.USERS', ASSIGNEE_ID) | Chưa xác nhận join key NHNCK.SPECIALIZATION_COURSE_DETAILS.ASSIGNEE_ID\
-          \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+          \ Cần ETL crosswalk sang NHNCK.USERS: SPECIALIZATION_COURSE_DETAILS.ASSIGNEE_ID\
+          \ = USERS.ID để xác nhận USERNAME sau đó hash_id('IAM.USERS', USERNAME)\
+          \ | Chưa xác nhận value set khớp danh mục IAM.USERS — cần profile dữ liệu\
+          \ trước go-live."
   - name: Assignee Officer Code
     physical_name: assignee_officer_code
     business_meaning_1st: Mã cán bộ phụ trách
     comment_1st: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-      \ Pair with Assignee Officer Id."
+      \ Pair with Assignee Officer Id. Giá trị lấy từ NHNCK.USERS.USERNAME sau ETL\
+      \ crosswalk — chi tiết xem comment Assignee Officer Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -13845,10 +13849,11 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: SPECIALIZATION_COURSE_DETAILS
-        source_column: NHNCK.SPECIALIZATION_COURSE_DETAILS.ASSIGNEE_ID
+        source_column: NHNCK.USERS.USERNAME
         business_meaning: Mã cán bộ phụ trách
         comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-          \ Pair with Assignee Officer Id."
+          \ Pair with Assignee Officer Id. Giá trị lấy từ NHNCK.USERS.USERNAME sau\
+          \ ETL crosswalk — chi tiết xem comment Assignee Officer Id."
 - ldm:
     id: ATM-violation_behavior
     logical_name_1st: Violation Behavior
@@ -27554,10 +27559,10 @@ entities:
   - name: Classification Application Status Code
     physical_name: cl_application_status_code
     business_meaning_1st: Mã trạng thái hồ sơ hiện tại (denormalized lookup).
-    comment_1st: "Lookup pair: cl_application_status.cl_application_status_code. Pair\
-      \ with Classification Application Status Id. Giá trị lấy từ NHNCK.APPLICATION_STATUSES.STATUS_CODE\
-      \ sau ETL crosswalk — chi tiết xem comment Classification Application Status\
-      \ Id."
+    comment_1st: "Lookup pair: Classification Application Status.Classification Application\
+      \ Status Code. Pair with Classification Application Status Id. Giá trị lấy từ\
+      \ NHNCK.APPLICATION_STATUSES.STATUS_CODE sau ETL crosswalk — chi tiết xem comment\
+      \ Classification Application Status Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -27570,10 +27575,10 @@ entities:
       - source_table: APPLICATIONS
         source_column: NHNCK.APPLICATION_STATUSES.STATUS_CODE
         business_meaning: Mã trạng thái hồ sơ hiện tại (denormalized lookup).
-        comment: "Lookup pair: cl_application_status.cl_application_status_code. Pair\
-          \ with Classification Application Status Id. Giá trị lấy từ NHNCK.APPLICATION_STATUSES.STATUS_CODE\
-          \ sau ETL crosswalk — chi tiết xem comment Classification Application Status\
-          \ Id."
+        comment: "Lookup pair: Classification Application Status.Classification Application\
+          \ Status Code. Pair with Classification Application Status Id. Giá trị lấy\
+          \ từ NHNCK.APPLICATION_STATUSES.STATUS_CODE sau ETL crosswalk — chi tiết\
+          \ xem comment Classification Application Status Id."
   - name: Registration Type Code
     physical_name: registration_tp_code
     business_meaning_1st: Nguồn tiếp nhận hồ sơ.
@@ -28164,8 +28169,9 @@ entities:
     business_meaning_1st: FK đến Regulatory Authority Officer — cán bộ được phân công
       xử lý hồ sơ.
     comment_1st: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-      \ Hash: hash_id('IAM.USERS', ASSIGNEE_ID) | Chưa xác nhận join key NHNCK.APPLICATIONS.ASSIGNEE_ID\
-      \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+      \ Cần ETL crosswalk sang NHNCK.USERS: APPLICATIONS.ASSIGNEE_ID = USERS.ID để\
+      \ xác nhận USERNAME sau đó hash_id('IAM.USERS', USERNAME) | Chưa xác nhận value\
+      \ set khớp danh mục IAM.USERS — cần profile dữ liệu trước go-live."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -28180,13 +28186,15 @@ entities:
         business_meaning: FK đến Regulatory Authority Officer — cán bộ được phân công
           xử lý hồ sơ.
         comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-          \ Hash: hash_id('IAM.USERS', ASSIGNEE_ID) | Chưa xác nhận join key NHNCK.APPLICATIONS.ASSIGNEE_ID\
-          \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+          \ Cần ETL crosswalk sang NHNCK.USERS: APPLICATIONS.ASSIGNEE_ID = USERS.ID\
+          \ để xác nhận USERNAME sau đó hash_id('IAM.USERS', USERNAME) | Chưa xác\
+          \ nhận value set khớp danh mục IAM.USERS — cần profile dữ liệu trước go-live."
   - name: Assignee Officer Code
     physical_name: assignee_officer_code
     business_meaning_1st: Mã cán bộ được phân công.
     comment_1st: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-      \ Pair with Assignee Officer Id."
+      \ Pair with Assignee Officer Id. Giá trị lấy từ NHNCK.USERS.USERNAME sau ETL\
+      \ crosswalk — chi tiết xem comment Assignee Officer Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -28197,17 +28205,19 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: APPLICATIONS
-        source_column: NHNCK.APPLICATIONS.ASSIGNEE_ID
+        source_column: NHNCK.USERS.USERNAME
         business_meaning: Mã cán bộ được phân công.
         comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-          \ Pair with Assignee Officer Id."
+          \ Pair with Assignee Officer Id. Giá trị lấy từ NHNCK.USERS.USERNAME sau\
+          \ ETL crosswalk — chi tiết xem comment Assignee Officer Id."
   - name: Info Verify Officer Id
     physical_name: info_verify_officer_id
     business_meaning_1st: FK đến Regulatory Authority Officer — cán bộ xác minh thông
       tin.
     comment_1st: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-      \ Hash: hash_id('IAM.USERS', INFO_VERIFY_ID) | Chưa xác nhận join key NHNCK.APPLICATIONS.INFO_VERIFY_ID\
-      \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+      \ Cần ETL crosswalk sang NHNCK.USERS: APPLICATIONS.INFO_VERIFY_ID = USERS.ID\
+      \ để xác nhận USERNAME sau đó hash_id('IAM.USERS', USERNAME) | Chưa xác nhận\
+      \ value set khớp danh mục IAM.USERS — cần profile dữ liệu trước go-live."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -28222,13 +28232,15 @@ entities:
         business_meaning: FK đến Regulatory Authority Officer — cán bộ xác minh thông
           tin.
         comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-          \ Hash: hash_id('IAM.USERS', INFO_VERIFY_ID) | Chưa xác nhận join key NHNCK.APPLICATIONS.INFO_VERIFY_ID\
-          \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+          \ Cần ETL crosswalk sang NHNCK.USERS: APPLICATIONS.INFO_VERIFY_ID = USERS.ID\
+          \ để xác nhận USERNAME sau đó hash_id('IAM.USERS', USERNAME) | Chưa xác\
+          \ nhận value set khớp danh mục IAM.USERS — cần profile dữ liệu trước go-live."
   - name: Info Verify Officer Code
     physical_name: info_verify_officer_code
     business_meaning_1st: Mã cán bộ xác minh thông tin.
     comment_1st: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-      \ Pair with Info Verify Officer Id."
+      \ Pair with Info Verify Officer Id. Giá trị lấy từ NHNCK.USERS.USERNAME sau\
+      \ ETL crosswalk — chi tiết xem comment Info Verify Officer Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -28239,10 +28251,11 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: APPLICATIONS
-        source_column: NHNCK.APPLICATIONS.INFO_VERIFY_ID
+        source_column: NHNCK.USERS.USERNAME
         business_meaning: Mã cán bộ xác minh thông tin.
         comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-          \ Pair with Info Verify Officer Id."
+          \ Pair with Info Verify Officer Id. Giá trị lấy từ NHNCK.USERS.USERNAME\
+          \ sau ETL crosswalk — chi tiết xem comment Info Verify Officer Id."
   - name: Public Service Portal Content Item Code
     physical_name: public_service_portal_content_item_code
     business_meaning_1st: ContentItemId hồ sơ TTHC trên DVC (MCĐT).
@@ -28427,8 +28440,8 @@ entities:
   - name: Classification Specialization Code
     physical_name: cl_specialization_code
     business_meaning_1st: Mã chuyên ngành CCHN đăng ký (denormalized lookup)
-    comment_1st: "Lookup pair: cl_specialization.cl_specialization_code. Pair with\
-      \ Classification Specialization Id. Giá trị lấy từ NHNCK.SPECIALIZATIONS.SPECIALIZATION_CODE\
+    comment_1st: "Lookup pair: Classification Specialization.Classification Specialization\
+      \ Code. Pair with Classification Specialization Id. Giá trị lấy từ NHNCK.SPECIALIZATIONS.SPECIALIZATION_CODE\
       \ sau ETL crosswalk — chi tiết xem comment Classification Specialization Id."
     data_domain_most: Text
     data_type_most: string
@@ -28442,8 +28455,8 @@ entities:
       - source_table: APPLICATION_SPECIALIZATIONS
         source_column: NHNCK.SPECIALIZATIONS.SPECIALIZATION_CODE
         business_meaning: Mã chuyên ngành CCHN đăng ký (denormalized lookup)
-        comment: "Lookup pair: cl_specialization.cl_specialization_code. Pair with\
-          \ Classification Specialization Id. Giá trị lấy từ NHNCK.SPECIALIZATIONS.SPECIALIZATION_CODE\
+        comment: "Lookup pair: Classification Specialization.Classification Specialization\
+          \ Code. Pair with Classification Specialization Id. Giá trị lấy từ NHNCK.SPECIALIZATIONS.SPECIALIZATION_CODE\
           \ sau ETL crosswalk — chi tiết xem comment Classification Specialization\
           \ Id."
   - name: Certificate Issue Date
@@ -28501,8 +28514,9 @@ entities:
     physical_name: appraised_by_officer_id
     business_meaning_1st: FK đến cán bộ thẩm định (Regulatory Authority Officer)
     comment_1st: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-      \ Hash: hash_id('IAM.USERS', ASSIGNEE_ID) | Chưa xác nhận join key NHNCK.APPLICATION_SPECIALIZATIONS.ASSIGNEE_ID\
-      \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+      \ Cần ETL crosswalk sang NHNCK.USERS: APPLICATION_SPECIALIZATIONS.ASSIGNEE_ID\
+      \ = USERS.ID để xác nhận USERNAME sau đó hash_id('IAM.USERS', USERNAME) | Chưa\
+      \ xác nhận value set khớp danh mục IAM.USERS — cần profile dữ liệu trước go-live."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -28516,13 +28530,16 @@ entities:
         source_column: NHNCK.APPLICATION_SPECIALIZATIONS.ASSIGNEE_ID
         business_meaning: FK đến cán bộ thẩm định (Regulatory Authority Officer)
         comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-          \ Hash: hash_id('IAM.USERS', ASSIGNEE_ID) | Chưa xác nhận join key NHNCK.APPLICATION_SPECIALIZATIONS.ASSIGNEE_ID\
-          \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+          \ Cần ETL crosswalk sang NHNCK.USERS: APPLICATION_SPECIALIZATIONS.ASSIGNEE_ID\
+          \ = USERS.ID để xác nhận USERNAME sau đó hash_id('IAM.USERS', USERNAME)\
+          \ | Chưa xác nhận value set khớp danh mục IAM.USERS — cần profile dữ liệu\
+          \ trước go-live."
   - name: Appraised By Officer Code
     physical_name: appraised_by_officer_code
     business_meaning_1st: Mã cán bộ thẩm định. Lookup pair
     comment_1st: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-      \ Pair with Appraised By Officer Id."
+      \ Pair with Appraised By Officer Id. Giá trị lấy từ NHNCK.USERS.USERNAME sau\
+      \ ETL crosswalk — chi tiết xem comment Appraised By Officer Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -28533,10 +28550,11 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: APPLICATION_SPECIALIZATIONS
-        source_column: NHNCK.APPLICATION_SPECIALIZATIONS.ASSIGNEE_ID
+        source_column: NHNCK.USERS.USERNAME
         business_meaning: Mã cán bộ thẩm định. Lookup pair
         comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-          \ Pair with Appraised By Officer Id."
+          \ Pair with Appraised By Officer Id. Giá trị lấy từ NHNCK.USERS.USERNAME\
+          \ sau ETL crosswalk — chi tiết xem comment Appraised By Officer Id."
   - name: Attachment Files
     physical_name: attachment_files
     business_meaning_1st: Danh sách file đính kèm (JSON CLOB)
@@ -30129,7 +30147,11 @@ entities:
     physical_name: securities_organization_reference_id
     business_meaning_1st: FK đến tổ chức kinh doanh chứng khoán.
     comment_1st: "FK target: securities_organization_reference.securities_organization_reference_id.\
-      \ Hash: hash_id('NHNCK.ORGANIZATIONS', ORGANIZATION_ID)."
+      \ Cần ETL crosswalk sang NHNCK.ORGANIZATIONS: ORGANIZATION_REPORTS.ORGANIZATION_ID\
+      \ = ORGANIZATIONS.ID để xác nhận ORGANIZATION_CODE sau đó hash_id('NHNCK.ORGANIZATIONS',\
+      \ ORGANIZATION_CODE) | Trước đây hash trực tiếp theo ORGANIZATION_ID (ID kỹ\
+      \ thuật) gây sai lệch với Id của bảng main (hash từ ORGANIZATION_CODE) — đã\
+      \ sửa sang crosswalk 2026-08-11."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -30143,12 +30165,18 @@ entities:
         source_column: NHNCK.ORGANIZATION_REPORTS.ORGANIZATION_ID
         business_meaning: FK đến tổ chức kinh doanh chứng khoán.
         comment: "FK target: securities_organization_reference.securities_organization_reference_id.\
-          \ Hash: hash_id('NHNCK.ORGANIZATIONS', ORGANIZATION_ID)."
+          \ Cần ETL crosswalk sang NHNCK.ORGANIZATIONS: ORGANIZATION_REPORTS.ORGANIZATION_ID\
+          \ = ORGANIZATIONS.ID để xác nhận ORGANIZATION_CODE sau đó hash_id('NHNCK.ORGANIZATIONS',\
+          \ ORGANIZATION_CODE) | Trước đây hash trực tiếp theo ORGANIZATION_ID (ID\
+          \ kỹ thuật) gây sai lệch với Id của bảng main (hash từ ORGANIZATION_CODE)\
+          \ — đã sửa sang crosswalk 2026-08-11."
   - name: Securities Organization Reference Code
     physical_name: securities_organization_reference_code
     business_meaning_1st: Mã tổ chức (denormalized).
     comment_1st: "Lookup pair: securities_organization_reference.securities_organization_reference_code.\
-      \ Pair with Securities Organization Reference Id."
+      \ Pair with Securities Organization Reference Id. Giá trị lấy từ NHNCK.ORGANIZATIONS.ORGANIZATION_CODE\
+      \ sau ETL crosswalk — chi tiết xem comment Securities Organization Reference\
+      \ Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -30159,10 +30187,12 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: ORGANIZATION_REPORTS
-        source_column: NHNCK.ORGANIZATION_REPORTS.ORGANIZATION_ID
+        source_column: NHNCK.ORGANIZATIONS.ORGANIZATION_CODE
         business_meaning: Mã tổ chức (denormalized).
         comment: "Lookup pair: securities_organization_reference.securities_organization_reference_code.\
-          \ Pair with Securities Organization Reference Id."
+          \ Pair with Securities Organization Reference Id. Giá trị lấy từ NHNCK.ORGANIZATIONS.ORGANIZATION_CODE\
+          \ sau ETL crosswalk — chi tiết xem comment Securities Organization Reference\
+          \ Id."
   - name: Securities Practitioner Id
     physical_name: sp_id
     business_meaning_1st: FK đến người hành nghề chứng khoán.
@@ -41541,7 +41571,8 @@ entities:
     physical_name: identity_and_access_management_user_id
     business_meaning_1st: Khóa đại diện (surrogate key).
     comment_1st: "PK surrogate. BCV: [Involved Party] Individual. Domain prefix 'Identity\
-      \ and Access Management User' theo HLD IAM Tier 1."
+      \ and Access Management User' theo HLD IAM Tier 1. Hash: hash_id('IAM.USERS',\
+      \ USERNAME)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -41555,11 +41586,15 @@ entities:
         source_column: null
         business_meaning: Khóa đại diện (surrogate key).
         comment: "PK surrogate. BCV: [Involved Party] Individual. Domain prefix 'Identity\
-          \ and Access Management User' theo HLD IAM Tier 1."
+          \ and Access Management User' theo HLD IAM Tier 1. Hash: hash_id('IAM.USERS',\
+          \ USERNAME)."
   - name: Identity and Access Management User Code
     physical_name: identity_and_access_management_user_code
-    business_meaning_1st: Khóa chính (UUIDv7). BK của entity — map từ PK bảng nguồn.
-    comment_1st: BK chính. PK nguồn dạng UUIDv7.
+    business_meaning_1st: Username đăng nhập hệ thống. BK của entity — map từ USERNAME
+      (đổi từ PK kỹ thuật ID theo quyết định Data Modeler 2026-08-11).
+    comment_1st: BK chính = USERNAME (đổi từ ID kỹ thuật UUIDv7 theo quyết định 2026-08-11).
+      Cần Data Modeler xác nhận USERNAME NOT NULL + UNIQUE trên toàn bộ IAM.USERS
+      trước go-live.
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -41570,9 +41605,12 @@ entities:
     - source_system: IAM
       source_tables:
       - source_table: USERS
-        source_column: IAM.USERS.ID
-        business_meaning: Khóa chính (UUIDv7). BK của entity — map từ PK bảng nguồn.
-        comment: BK chính. PK nguồn dạng UUIDv7.
+        source_column: IAM.USERS.USERNAME
+        business_meaning: Username đăng nhập hệ thống. BK của entity — map từ USERNAME
+          (đổi từ PK kỹ thuật ID theo quyết định Data Modeler 2026-08-11).
+        comment: BK chính = USERNAME (đổi từ ID kỹ thuật UUIDv7 theo quyết định 2026-08-11).
+          Cần Data Modeler xác nhận USERNAME NOT NULL + UNIQUE trên toàn bộ IAM.USERS
+          trước go-live.
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning_1st: Mã hệ thống nguồn dữ liệu.
@@ -41607,10 +41645,13 @@ entities:
         source_column: IAM.USERS.FULL_NAME
         business_meaning: Tên đầy đủ người dùng.
         comment: "BCV: Full Name (Involved Party)."
-  - name: Username
-    physical_name: username
-    business_meaning_1st: Username đăng nhập hệ thống.
-    comment_1st: "BCV: không có term riêng — đặt tên theo nghĩa kỹ thuật IAM."
+  - name: User Code
+    physical_name: user_code
+    business_meaning_1st: Mã người dùng nội bộ (cột CODE nguồn).
+    comment_1st: "BCV: không có term riêng. Khác với Identity and Access Management\
+      \ User Code (BK = USERNAME) — đây là mã nội bộ riêng của nguồn, không phải BK/FK\
+      \ pattern, không có Id đi kèm. Tên attribute tạm đặt — Data Modeler xác nhận\
+      \ lại khi review."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -41621,9 +41662,12 @@ entities:
     - source_system: IAM
       source_tables:
       - source_table: USERS
-        source_column: IAM.USERS.USERNAME
-        business_meaning: Username đăng nhập hệ thống.
-        comment: "BCV: không có term riêng — đặt tên theo nghĩa kỹ thuật IAM."
+        source_column: IAM.USERS.CODE
+        business_meaning: Mã người dùng nội bộ (cột CODE nguồn).
+        comment: "BCV: không có term riêng. Khác với Identity and Access Management\
+          \ User Code (BK = USERNAME) — đây là mã nội bộ riêng của nguồn, không phải\
+          \ BK/FK pattern, không có Id đi kèm. Tên attribute tạm đặt — Data Modeler\
+          \ xác nhận lại khi review."
   - name: Date Of Birth
     physical_name: dt_of_birth
     business_meaning_1st: Ngày sinh.
@@ -42573,11 +42617,12 @@ entities:
   - name: Updated By Officer Id
     physical_name: updated_by_officer_id
     business_meaning_1st: "FK -> USERS: Người cập nhật thông tin C06 lần cuối"
-    comment_1st: "Pending — FK target Identity and Access Management User (định hướng\
-      \ dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join key\
-      \ giữa NHNCK.USERS.ID và IAM.USERS, và lld_IAM_USERS.yaml lên approved. Đây\
-      \ là FK xác nhận thực (không phải suy luận) — khác với CREATED_BY/UPDATED_BY\
-      \ audit chung đã loại khỏi thiết kế (xem pending_design.yaml)."
+    comment_1st: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
+      \ Cần ETL crosswalk sang NHNCK.USERS: IDENTITY_INFO_C06S.USER_UPDATED_ID = USERS.ID\
+      \ để xác nhận USERNAME sau đó hash_id('IAM.USERS', USERNAME) | Đây là FK xác\
+      \ nhận thực (không phải suy luận) — khác với CREATED_BY/UPDATED_BY audit chung\
+      \ đã loại khỏi thiết kế (xem pending_design.yaml). Chưa xác nhận value set khớp\
+      \ danh mục IAM.USERS — cần profile dữ liệu trước go-live."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -42590,16 +42635,18 @@ entities:
       - source_table: IDENTITY_INFO_C06S
         source_column: NHNCK.IDENTITY_INFO_C06S.USER_UPDATED_ID
         business_meaning: "FK -> USERS: Người cập nhật thông tin C06 lần cuối"
-        comment: "Pending — FK target Identity and Access Management User (định hướng\
-          \ dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join\
-          \ key giữa NHNCK.USERS.ID và IAM.USERS, và lld_IAM_USERS.yaml lên approved.\
-          \ Đây là FK xác nhận thực (không phải suy luận) — khác với CREATED_BY/UPDATED_BY\
-          \ audit chung đã loại khỏi thiết kế (xem pending_design.yaml)."
+        comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
+          \ Cần ETL crosswalk sang NHNCK.USERS: IDENTITY_INFO_C06S.USER_UPDATED_ID\
+          \ = USERS.ID để xác nhận USERNAME sau đó hash_id('IAM.USERS', USERNAME)\
+          \ | Đây là FK xác nhận thực (không phải suy luận) — khác với CREATED_BY/UPDATED_BY\
+          \ audit chung đã loại khỏi thiết kế (xem pending_design.yaml). Chưa xác\
+          \ nhận value set khớp danh mục IAM.USERS — cần profile dữ liệu trước go-live."
   - name: Updated By Officer Code
     physical_name: updated_by_officer_code
     business_meaning_1st: Mã cán bộ cập nhật (denormalized lookup)
     comment_1st: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-      \ Pending — xem ghi chú ở Updated By Officer Id."
+      \ Pair with Updated By Officer Id. Giá trị lấy từ NHNCK.USERS.USERNAME sau ETL\
+      \ crosswalk — chi tiết xem comment Updated By Officer Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -42610,10 +42657,11 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: IDENTITY_INFO_C06S
-        source_column: NHNCK.IDENTITY_INFO_C06S.USER_UPDATED_ID
+        source_column: NHNCK.USERS.USERNAME
         business_meaning: Mã cán bộ cập nhật (denormalized lookup)
         comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-          \ Pending — xem ghi chú ở Updated By Officer Id."
+          \ Pair with Updated By Officer Id. Giá trị lấy từ NHNCK.USERS.USERNAME sau\
+          \ ETL crosswalk — chi tiết xem comment Updated By Officer Id."
 - ldm:
     id: ATM-investment_fund
     logical_name_1st: Investment Fund
@@ -43663,8 +43711,8 @@ entities:
         source_column: IAM.USERS.ID
         business_meaning: FK đến Identity and Access Management User.
         comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-          \ Shared entity — không có PK surrogate riêng. Hash: hash_id('IAM.USERS',\
-          \ ID)."
+          \ Shared entity — không có PK surrogate riêng, join theo IAM.USERS.ID cùng\
+          \ bảng để lấy USERNAME. Hash: hash_id('IAM.USERS', USERNAME)."
     - source_system: KNT
       source_tables:
       - source_table: TAX_REG_REPRESENTATIVE
@@ -43804,7 +43852,7 @@ entities:
     - source_system: IAM
       source_tables:
       - source_table: USERS
-        source_column: IAM.USERS.ID
+        source_column: IAM.USERS.USERNAME
         business_meaning: Mã người dùng IAM.
         comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
           \ Pair with Involved Party Id."
@@ -44666,8 +44714,8 @@ entities:
         source_column: IAM.USERS.ID
         business_meaning: FK đến Identity and Access Management User.
         comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-          \ Shared entity — không có PK surrogate riêng. Hash: hash_id('IAM.USERS',\
-          \ ID)."
+          \ Shared entity — không có PK surrogate riêng, join theo IAM.USERS.ID cùng\
+          \ bảng để lấy USERNAME. Hash: hash_id('IAM.USERS', USERNAME)."
     - source_system: KNT
       source_tables:
       - source_table: TAX_REG_REPRESENTATIVE
@@ -44684,11 +44732,11 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: ORGANIZATIONS
-        source_column: NHNCK.ORGANIZATIONS.ID
+        source_column: NHNCK.ORGANIZATIONS.ORGANIZATION_CODE
         business_meaning: FK đến Securities Organization Reference.
         comment: "FK target: securities_organization_reference.securities_organization_reference_id.\
           \ Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.ORGANIZATIONS',\
-          \ ID)."
+          \ ORGANIZATION_CODE)."
       - source_table: PROFESSIONALS
         source_column: NHNCK.PROFESSIONALS.ID
         business_meaning: FK đến Securities Practitioner.
@@ -44820,7 +44868,7 @@ entities:
     - source_system: IAM
       source_tables:
       - source_table: USERS
-        source_column: IAM.USERS.ID
+        source_column: IAM.USERS.USERNAME
         business_meaning: Mã người dùng IAM.
         comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
           \ Pair with Involved Party Id."
@@ -44839,7 +44887,7 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: ORGANIZATIONS
-        source_column: NHNCK.ORGANIZATIONS.ID
+        source_column: NHNCK.ORGANIZATIONS.ORGANIZATION_CODE
         business_meaning: Mã tổ chức.
         comment: "Lookup pair: securities_organization_reference.securities_organization_reference_code.\
           \ Pair with Involved Party Id."
@@ -45796,8 +45844,8 @@ entities:
         source_column: IAM.USERS.ID
         business_meaning: FK đến Identity and Access Management User.
         comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-          \ Shared entity — không có PK surrogate riêng. Hash: hash_id('IAM.USERS',\
-          \ ID)."
+          \ Shared entity — không có PK surrogate riêng, join theo IAM.USERS.ID cùng\
+          \ bảng để lấy USERNAME. Hash: hash_id('IAM.USERS', USERNAME)."
     - source_system: IDS
       source_tables:
       - source_table: COMPANY_PROFILES
@@ -45820,11 +45868,11 @@ entities:
         comment: "FK target: individual.individual_id. Shared entity — không có PK\
           \ surrogate riêng. Hash: hash_id('NHNCK.IDENTITY_INFO_C06S', IDENTITY_NUMBER)."
       - source_table: ORGANIZATIONS
-        source_column: NHNCK.ORGANIZATIONS.ID
+        source_column: NHNCK.ORGANIZATIONS.ORGANIZATION_CODE
         business_meaning: FK đến Securities Organization Reference.
         comment: "FK target: securities_organization_reference.securities_organization_reference_id.\
           \ Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.ORGANIZATIONS',\
-          \ ID)."
+          \ ORGANIZATION_CODE)."
       - source_table: PROFESSIONALS
         source_column: NHNCK.PROFESSIONALS.ID
         business_meaning: FK đến Securities Practitioner.
@@ -45967,7 +46015,7 @@ entities:
     - source_system: IAM
       source_tables:
       - source_table: USERS
-        source_column: IAM.USERS.ID
+        source_column: IAM.USERS.USERNAME
         business_meaning: Mã người dùng IAM.
         comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
           \ Pair with Involved Party Id."
@@ -45992,7 +46040,7 @@ entities:
         comment: "Lookup pair: individual.individual_code. Pair with Involved Party\
           \ Id."
       - source_table: ORGANIZATIONS
-        source_column: NHNCK.ORGANIZATIONS.ID
+        source_column: NHNCK.ORGANIZATIONS.ORGANIZATION_CODE
         business_meaning: Mã tổ chức.
         comment: "Lookup pair: securities_organization_reference.securities_organization_reference_code.\
           \ Pair with Involved Party Id."
@@ -54551,7 +54599,9 @@ entities:
     business_meaning_1st: Khóa đại diện cho tổ chức kinh doanh chứng khoán (surrogate
       key).
     comment_1st: "PK surrogate. BCV: \"Organization\" (Involved Party). Tổ chức tham\
-      \ gia TTCK (CTCK, QLQ, NH, Khác)."
+      \ gia TTCK (CTCK, QLQ, NH, Khác). Hash: hash_id('NHNCK.ORGANIZATIONS', ORGANIZATION_CODE)\
+      \ — đổi từ hash theo ID kỹ thuật (qua Securities Organization Reference Code\
+      \ cũ) sang ORGANIZATION_CODE, 2026-08-11."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -54566,12 +54616,15 @@ entities:
         business_meaning: Khóa đại diện cho tổ chức kinh doanh chứng khoán (surrogate
           key).
         comment: "PK surrogate. BCV: \"Organization\" (Involved Party). Tổ chức tham\
-          \ gia TTCK (CTCK, QLQ, NH, Khác)."
+          \ gia TTCK (CTCK, QLQ, NH, Khác). Hash: hash_id('NHNCK.ORGANIZATIONS', ORGANIZATION_CODE)\
+          \ — đổi từ hash theo ID kỹ thuật (qua Securities Organization Reference\
+          \ Code cũ) sang ORGANIZATION_CODE, 2026-08-11."
   - name: Securities Organization Reference Code
     physical_name: securities_organization_reference_code
-    business_meaning_1st: Mã định danh kỹ thuật tự tăng. BK của entity. Map từ PK
-      bảng nguồn.
-    comment_1st: BK chính. PK nguồn (NUMBER — ETL cần convert sang string).
+    business_meaning_1st: Mã tổ chức kinh doanh chứng khoán do hệ thống cấp. BK của
+      entity. Map từ ORGANIZATION_CODE.
+    comment_1st: BK chính. Cần profile dữ liệu xác nhận NOT NULL/unique trước go-live
+      (ORGANIZATION_CODE hiện không đánh dấu khóa trong CSDL nguồn).
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -54582,10 +54635,11 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: ORGANIZATIONS
-        source_column: NHNCK.ORGANIZATIONS.ID
-        business_meaning: Mã định danh kỹ thuật tự tăng. BK của entity. Map từ PK
-          bảng nguồn.
-        comment: BK chính. PK nguồn (NUMBER — ETL cần convert sang string).
+        source_column: NHNCK.ORGANIZATIONS.ORGANIZATION_CODE
+        business_meaning: Mã tổ chức kinh doanh chứng khoán do hệ thống cấp. BK của
+          entity. Map từ ORGANIZATION_CODE.
+        comment: BK chính. Cần profile dữ liệu xác nhận NOT NULL/unique trước go-live
+          (ORGANIZATION_CODE hiện không đánh dấu khóa trong CSDL nguồn).
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning_1st: Mã hệ thống nguồn.
@@ -54603,23 +54657,6 @@ entities:
         source_column: null
         business_meaning: Mã hệ thống nguồn.
         comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  - name: Organization Code
-    physical_name: organization_code
-    business_meaning_1st: Mã tổ chức (mã nghiệp vụ do hệ thống gán).
-    comment_1st: Mã nghiệp vụ — khác BK (ORGANIZATION_CODE khác ID nguồn).
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: ORGANIZATIONS
-        source_column: NHNCK.ORGANIZATIONS.ORGANIZATION_CODE
-        business_meaning: Mã tổ chức (mã nghiệp vụ do hệ thống gán).
-        comment: Mã nghiệp vụ — khác BK (ORGANIZATION_CODE khác ID nguồn).
   - name: Securities Organization Reference Name
     physical_name: securities_organization_reference_nm
     business_meaning_1st: Tên đầy đủ tổ chức.
@@ -54711,7 +54748,11 @@ entities:
     physical_name: parent_securities_organization_reference_id
     business_meaning_1st: FK tự tham chiếu — tổ chức cha trong cấu trúc phân cấp.
     comment_1st: "FK target: securities_organization_reference.securities_organization_reference_id.\
-      \ Self-referencing. Hash: hash_id('NHNCK.ORGANIZATIONS', PARENT_ID)."
+      \ Self-referencing. Cần ETL crosswalk sang NHNCK.ORGANIZATIONS: ORGANIZATIONS.PARENT_ID\
+      \ = ORGANIZATIONS.ID để xác nhận ORGANIZATION_CODE sau đó hash_id('NHNCK.ORGANIZATIONS',\
+      \ ORGANIZATION_CODE) | Trước đây hash trực tiếp theo PARENT_ID (ID kỹ thuật)\
+      \ gây sai lệch với Id của bảng main (hash từ ORGANIZATION_CODE) — đã sửa sang\
+      \ crosswalk 2026-08-11."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -54725,12 +54766,18 @@ entities:
         source_column: NHNCK.ORGANIZATIONS.PARENT_ID
         business_meaning: FK tự tham chiếu — tổ chức cha trong cấu trúc phân cấp.
         comment: "FK target: securities_organization_reference.securities_organization_reference_id.\
-          \ Self-referencing. Hash: hash_id('NHNCK.ORGANIZATIONS', PARENT_ID)."
+          \ Self-referencing. Cần ETL crosswalk sang NHNCK.ORGANIZATIONS: ORGANIZATIONS.PARENT_ID\
+          \ = ORGANIZATIONS.ID để xác nhận ORGANIZATION_CODE sau đó hash_id('NHNCK.ORGANIZATIONS',\
+          \ ORGANIZATION_CODE) | Trước đây hash trực tiếp theo PARENT_ID (ID kỹ thuật)\
+          \ gây sai lệch với Id của bảng main (hash từ ORGANIZATION_CODE) — đã sửa\
+          \ sang crosswalk 2026-08-11."
   - name: Parent Securities Organization Reference Code
     physical_name: parent_securities_organization_reference_code
     business_meaning_1st: Mã tổ chức cha.
     comment_1st: "Lookup pair: securities_organization_reference.securities_organization_reference_code.\
-      \ Pair with Parent Securities Organization Reference Id."
+      \ Pair with Parent Securities Organization Reference Id. Giá trị lấy từ NHNCK.ORGANIZATIONS.ORGANIZATION_CODE\
+      \ sau ETL crosswalk (self-join qua PARENT_ID) — chi tiết xem comment Parent\
+      \ Securities Organization Reference Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -54741,10 +54788,13 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: ORGANIZATIONS
-        source_column: NHNCK.ORGANIZATIONS.PARENT_ID
+        source_column: NHNCK.ORGANIZATIONS.ORGANIZATION_CODE
         business_meaning: Mã tổ chức cha.
         comment: "Lookup pair: securities_organization_reference.securities_organization_reference_code.\
-          \ Pair with Parent Securities Organization Reference Id."
+          \ Pair with Parent Securities Organization Reference Id. Giá trị lấy từ\
+          \ NHNCK.ORGANIZATIONS.ORGANIZATION_CODE sau ETL crosswalk (self-join qua\
+          \ PARENT_ID) — chi tiết xem comment Parent Securities Organization Reference\
+          \ Id."
   - name: External System Linked Id
     physical_name: external_stm_linked_id
     business_meaning_1st: ID liên kết sang hệ thống FMS/SCMS.
@@ -55179,8 +55229,11 @@ entities:
     physical_name: securities_organization_reference_id
     business_meaning_1st: FK đến tổ chức chứng khoán hiện tại (nullable)
     comment_1st: "FK target: securities_organization_reference.securities_organization_reference_id.\
-      \ Nullable — người hành nghề có thể chưa công tác. Hash: hash_id('NHNCK.ORGANIZATIONS',\
-      \ ORGANIZATION_ID)."
+      \ Cần ETL crosswalk sang NHNCK.ORGANIZATIONS: PROFESSIONALS.ORGANIZATION_ID\
+      \ = ORGANIZATIONS.ID để xác nhận ORGANIZATION_CODE sau đó hash_id('NHNCK.ORGANIZATIONS',\
+      \ ORGANIZATION_CODE) | Nullable — người hành nghề có thể chưa công tác. Trước\
+      \ đây hash trực tiếp theo ORGANIZATION_ID (ID kỹ thuật) gây sai lệch với Id\
+      \ của bảng main (hash từ ORGANIZATION_CODE) — đã sửa sang crosswalk 2026-08-11."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -55194,13 +55247,19 @@ entities:
         source_column: NHNCK.PROFESSIONALS.ORGANIZATION_ID
         business_meaning: FK đến tổ chức chứng khoán hiện tại (nullable)
         comment: "FK target: securities_organization_reference.securities_organization_reference_id.\
-          \ Nullable — người hành nghề có thể chưa công tác. Hash: hash_id('NHNCK.ORGANIZATIONS',\
-          \ ORGANIZATION_ID)."
+          \ Cần ETL crosswalk sang NHNCK.ORGANIZATIONS: PROFESSIONALS.ORGANIZATION_ID\
+          \ = ORGANIZATIONS.ID để xác nhận ORGANIZATION_CODE sau đó hash_id('NHNCK.ORGANIZATIONS',\
+          \ ORGANIZATION_CODE) | Nullable — người hành nghề có thể chưa công tác.\
+          \ Trước đây hash trực tiếp theo ORGANIZATION_ID (ID kỹ thuật) gây sai lệch\
+          \ với Id của bảng main (hash từ ORGANIZATION_CODE) — đã sửa sang crosswalk\
+          \ 2026-08-11."
   - name: Securities Organization Reference Code
     physical_name: securities_organization_reference_code
     business_meaning_1st: Mã tổ chức (denormalized lookup)
     comment_1st: "Lookup pair: securities_organization_reference.securities_organization_reference_code.\
-      \ Pair with Securities Organization Reference Id."
+      \ Pair with Securities Organization Reference Id. Giá trị lấy từ NHNCK.ORGANIZATIONS.ORGANIZATION_CODE\
+      \ sau ETL crosswalk — chi tiết xem comment Securities Organization Reference\
+      \ Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -55211,10 +55270,12 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: PROFESSIONALS
-        source_column: NHNCK.PROFESSIONALS.ORGANIZATION_ID
+        source_column: NHNCK.ORGANIZATIONS.ORGANIZATION_CODE
         business_meaning: Mã tổ chức (denormalized lookup)
         comment: "Lookup pair: securities_organization_reference.securities_organization_reference_code.\
-          \ Pair with Securities Organization Reference Id."
+          \ Pair with Securities Organization Reference Id. Giá trị lấy từ NHNCK.ORGANIZATIONS.ORGANIZATION_CODE\
+          \ sau ETL crosswalk — chi tiết xem comment Securities Organization Reference\
+          \ Id."
   - name: Nationality Id
     physical_name: nationality_id
     business_meaning_1st: FK đến Geographic Area (quốc tịch)
@@ -55584,8 +55645,9 @@ entities:
     physical_name: identity_and_access_management_user_id
     business_meaning_1st: UUID user trên IAM (provisioning SSO)
     comment_1st: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-      \ Hash: hash_id('IAM.USERS', SSO_USER_ID) | Chưa xác nhận join key NHNCK.PROFESSIONALS.SSO_USER_ID\
-      \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+      \ Cần ETL crosswalk sang NHNCK.USERS: PROFESSIONALS.SSO_USER_ID = USERS.ID để\
+      \ xác nhận USERNAME sau đó hash_id('IAM.USERS', USERNAME) | Chưa xác nhận value\
+      \ set khớp danh mục IAM.USERS — cần profile dữ liệu trước go-live."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -55599,13 +55661,16 @@ entities:
         source_column: NHNCK.PROFESSIONALS.SSO_USER_ID
         business_meaning: UUID user trên IAM (provisioning SSO)
         comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-          \ Hash: hash_id('IAM.USERS', SSO_USER_ID) | Chưa xác nhận join key NHNCK.PROFESSIONALS.SSO_USER_ID\
-          \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+          \ Cần ETL crosswalk sang NHNCK.USERS: PROFESSIONALS.SSO_USER_ID = USERS.ID\
+          \ để xác nhận USERNAME sau đó hash_id('IAM.USERS', USERNAME) | Chưa xác\
+          \ nhận value set khớp danh mục IAM.USERS — cần profile dữ liệu trước go-live."
   - name: Identity and Access Management User Code
     physical_name: identity_and_access_management_user_code
     business_meaning_1st: Mã user IAM (denormalized lookup)
     comment_1st: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-      \ Pair with Identity and Access Management User Id."
+      \ Pair with Identity and Access Management User Id. Giá trị lấy từ NHNCK.USERS.USERNAME\
+      \ sau ETL crosswalk — chi tiết xem comment Identity and Access Management User\
+      \ Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -55616,10 +55681,12 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: PROFESSIONALS
-        source_column: NHNCK.PROFESSIONALS.SSO_USER_ID
+        source_column: NHNCK.USERS.USERNAME
         business_meaning: Mã user IAM (denormalized lookup)
         comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-          \ Pair with Identity and Access Management User Id."
+          \ Pair with Identity and Access Management User Id. Giá trị lấy từ NHNCK.USERS.USERNAME\
+          \ sau ETL crosswalk — chi tiết xem comment Identity and Access Management\
+          \ User Id."
 - ldm:
     id: ATM-sp_employment_status
     logical_name_1st: Securities Practitioner Employment Status
@@ -55742,7 +55809,11 @@ entities:
     business_meaning_1st: Surrogate key FK đến tổ chức kinh doanh chứng khoán nơi
       người hành nghề làm việc.
     comment_1st: "FK target: securities_organization_reference.securities_organization_reference_id.\
-      \ Hash: hash_id('NHNCK.ORGANIZATIONS', ORGANIZATION_ID)."
+      \ Cần ETL crosswalk sang NHNCK.ORGANIZATIONS: PROFESSIONAL_WORK_HISTORIES.ORGANIZATION_ID\
+      \ = ORGANIZATIONS.ID để xác nhận ORGANIZATION_CODE sau đó hash_id('NHNCK.ORGANIZATIONS',\
+      \ ORGANIZATION_CODE) | Trước đây hash trực tiếp theo ORGANIZATION_ID (ID kỹ\
+      \ thuật) gây sai lệch với Id của bảng main (hash từ ORGANIZATION_CODE) — đã\
+      \ sửa sang crosswalk 2026-08-11."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -55757,12 +55828,18 @@ entities:
         business_meaning: Surrogate key FK đến tổ chức kinh doanh chứng khoán nơi
           người hành nghề làm việc.
         comment: "FK target: securities_organization_reference.securities_organization_reference_id.\
-          \ Hash: hash_id('NHNCK.ORGANIZATIONS', ORGANIZATION_ID)."
+          \ Cần ETL crosswalk sang NHNCK.ORGANIZATIONS: PROFESSIONAL_WORK_HISTORIES.ORGANIZATION_ID\
+          \ = ORGANIZATIONS.ID để xác nhận ORGANIZATION_CODE sau đó hash_id('NHNCK.ORGANIZATIONS',\
+          \ ORGANIZATION_CODE) | Trước đây hash trực tiếp theo ORGANIZATION_ID (ID\
+          \ kỹ thuật) gây sai lệch với Id của bảng main (hash từ ORGANIZATION_CODE)\
+          \ — đã sửa sang crosswalk 2026-08-11."
   - name: Securities Organization Reference Code
     physical_name: securities_organization_reference_code
     business_meaning_1st: Mã kỹ thuật của tổ chức (dư thừa).
     comment_1st: "Lookup pair: securities_organization_reference.securities_organization_reference_code.\
-      \ Pair with Securities Organization Reference Id."
+      \ Pair with Securities Organization Reference Id. Giá trị lấy từ NHNCK.ORGANIZATIONS.ORGANIZATION_CODE\
+      \ sau ETL crosswalk — chi tiết xem comment Securities Organization Reference\
+      \ Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -55773,10 +55850,12 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: PROFESSIONAL_WORK_HISTORIES
-        source_column: NHNCK.PROFESSIONAL_WORK_HISTORIES.ORGANIZATION_ID
+        source_column: NHNCK.ORGANIZATIONS.ORGANIZATION_CODE
         business_meaning: Mã kỹ thuật của tổ chức (dư thừa).
         comment: "Lookup pair: securities_organization_reference.securities_organization_reference_code.\
-          \ Pair with Securities Organization Reference Id."
+          \ Pair with Securities Organization Reference Id. Giá trị lấy từ NHNCK.ORGANIZATIONS.ORGANIZATION_CODE\
+          \ sau ETL crosswalk — chi tiết xem comment Securities Organization Reference\
+          \ Id."
   - name: Department Name
     physical_name: department_nm
     business_meaning_1st: Tên đơn vị / phòng ban trong tổ chức tại thời điểm làm việc
@@ -56081,9 +56160,9 @@ entities:
   - name: Classification Document Code
     physical_name: cl_document_code
     business_meaning_1st: Mã tài liệu yêu cầu kèm hồ sơ (denormalized lookup)
-    comment_1st: "Lookup pair: cl_document.cl_document_code. Pair with Classification\
-      \ Document Id. Giá trị lấy từ NHNCK.DOCUMENTS.DOCUMENT_CODE sau ETL crosswalk\
-      \ — chi tiết xem comment Classification Document Id."
+    comment_1st: "Lookup pair: Classification Document.Classification Document Code.\
+      \ Pair with Classification Document Id. Giá trị lấy từ NHNCK.DOCUMENTS.DOCUMENT_CODE\
+      \ sau ETL crosswalk — chi tiết xem comment Classification Document Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -56096,15 +56175,19 @@ entities:
       - source_table: APPLICATION_EXPERIENCES
         source_column: NHNCK.DOCUMENTS.DOCUMENT_CODE
         business_meaning: Mã tài liệu yêu cầu kèm hồ sơ (denormalized lookup)
-        comment: "Lookup pair: cl_document.cl_document_code. Pair with Classification\
-          \ Document Id. Giá trị lấy từ NHNCK.DOCUMENTS.DOCUMENT_CODE sau ETL crosswalk\
-          \ — chi tiết xem comment Classification Document Id."
+        comment: "Lookup pair: Classification Document.Classification Document Code.\
+          \ Pair with Classification Document Id. Giá trị lấy từ NHNCK.DOCUMENTS.DOCUMENT_CODE\
+          \ sau ETL crosswalk — chi tiết xem comment Classification Document Id."
   - name: Securities Organization Reference Id
     physical_name: securities_organization_reference_id
     business_meaning_1st: FK đến tổ chức kinh doanh chứng khoán trong hệ thống (nullable
       — nếu nơi làm việc là CTCK/QLQ đã đăng ký)
     comment_1st: "FK target: securities_organization_reference.securities_organization_reference_id.\
-      \ Hash: hash_id('NHNCK.ORGANIZATIONS', ORGANIZATION_ID)."
+      \ Cần ETL crosswalk sang NHNCK.ORGANIZATIONS: APPLICATION_EXPERIENCES.ORGANIZATION_ID\
+      \ = ORGANIZATIONS.ID để xác nhận ORGANIZATION_CODE sau đó hash_id('NHNCK.ORGANIZATIONS',\
+      \ ORGANIZATION_CODE) | Trước đây hash trực tiếp theo ORGANIZATION_ID (ID kỹ\
+      \ thuật) gây sai lệch với Id của bảng main (hash từ ORGANIZATION_CODE) — đã\
+      \ sửa sang crosswalk 2026-08-11."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -56119,12 +56202,18 @@ entities:
         business_meaning: FK đến tổ chức kinh doanh chứng khoán trong hệ thống (nullable
           — nếu nơi làm việc là CTCK/QLQ đã đăng ký)
         comment: "FK target: securities_organization_reference.securities_organization_reference_id.\
-          \ Hash: hash_id('NHNCK.ORGANIZATIONS', ORGANIZATION_ID)."
+          \ Cần ETL crosswalk sang NHNCK.ORGANIZATIONS: APPLICATION_EXPERIENCES.ORGANIZATION_ID\
+          \ = ORGANIZATIONS.ID để xác nhận ORGANIZATION_CODE sau đó hash_id('NHNCK.ORGANIZATIONS',\
+          \ ORGANIZATION_CODE) | Trước đây hash trực tiếp theo ORGANIZATION_ID (ID\
+          \ kỹ thuật) gây sai lệch với Id của bảng main (hash từ ORGANIZATION_CODE)\
+          \ — đã sửa sang crosswalk 2026-08-11."
   - name: Securities Organization Reference Code
     physical_name: securities_organization_reference_code
     business_meaning_1st: Mã tổ chức kinh doanh chứng khoán (dư thừa)
     comment_1st: "Lookup pair: securities_organization_reference.securities_organization_reference_code.\
-      \ Pair with Securities Organization Reference Id."
+      \ Pair with Securities Organization Reference Id. Giá trị lấy từ NHNCK.ORGANIZATIONS.ORGANIZATION_CODE\
+      \ sau ETL crosswalk — chi tiết xem comment Securities Organization Reference\
+      \ Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -56135,10 +56224,12 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: APPLICATION_EXPERIENCES
-        source_column: NHNCK.APPLICATION_EXPERIENCES.ORGANIZATION_ID
+        source_column: NHNCK.ORGANIZATIONS.ORGANIZATION_CODE
         business_meaning: Mã tổ chức kinh doanh chứng khoán (dư thừa)
         comment: "Lookup pair: securities_organization_reference.securities_organization_reference_code.\
-          \ Pair with Securities Organization Reference Id."
+          \ Pair with Securities Organization Reference Id. Giá trị lấy từ NHNCK.ORGANIZATIONS.ORGANIZATION_CODE\
+          \ sau ETL crosswalk — chi tiết xem comment Securities Organization Reference\
+          \ Id."
   - name: Organization Name
     physical_name: organization_nm
     business_meaning_1st: Tên tổ chức nơi làm việc (snapshot text — giữ kể cả khi
@@ -56499,7 +56590,11 @@ entities:
     physical_name: securities_organization_reference_id
     business_meaning_1st: FK đến tổ chức chứng khoán (nullable)
     comment_1st: "FK target: securities_organization_reference.securities_organization_reference_id.\
-      \ Hash: hash_id('NHNCK.ORGANIZATIONS', ORGANIZATION_ID)."
+      \ Cần ETL crosswalk sang NHNCK.ORGANIZATIONS: APPLICATION_PROFESSIONALS.ORGANIZATION_ID\
+      \ = ORGANIZATIONS.ID để xác nhận ORGANIZATION_CODE sau đó hash_id('NHNCK.ORGANIZATIONS',\
+      \ ORGANIZATION_CODE) | Trước đây hash trực tiếp theo ORGANIZATION_ID (ID kỹ\
+      \ thuật) gây sai lệch với Id của bảng main (hash từ ORGANIZATION_CODE) — đã\
+      \ sửa sang crosswalk 2026-08-11."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -56513,12 +56608,18 @@ entities:
         source_column: NHNCK.APPLICATION_PROFESSIONALS.ORGANIZATION_ID
         business_meaning: FK đến tổ chức chứng khoán (nullable)
         comment: "FK target: securities_organization_reference.securities_organization_reference_id.\
-          \ Hash: hash_id('NHNCK.ORGANIZATIONS', ORGANIZATION_ID)."
+          \ Cần ETL crosswalk sang NHNCK.ORGANIZATIONS: APPLICATION_PROFESSIONALS.ORGANIZATION_ID\
+          \ = ORGANIZATIONS.ID để xác nhận ORGANIZATION_CODE sau đó hash_id('NHNCK.ORGANIZATIONS',\
+          \ ORGANIZATION_CODE) | Trước đây hash trực tiếp theo ORGANIZATION_ID (ID\
+          \ kỹ thuật) gây sai lệch với Id của bảng main (hash từ ORGANIZATION_CODE)\
+          \ — đã sửa sang crosswalk 2026-08-11."
   - name: Securities Organization Reference Code
     physical_name: securities_organization_reference_code
     business_meaning_1st: Mã tổ chức (denormalized)
     comment_1st: "Lookup pair: securities_organization_reference.securities_organization_reference_code.\
-      \ Pair with Securities Organization Reference Id."
+      \ Pair with Securities Organization Reference Id. Giá trị lấy từ NHNCK.ORGANIZATIONS.ORGANIZATION_CODE\
+      \ sau ETL crosswalk — chi tiết xem comment Securities Organization Reference\
+      \ Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -56529,10 +56630,12 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: APPLICATION_PROFESSIONALS
-        source_column: NHNCK.APPLICATION_PROFESSIONALS.ORGANIZATION_ID
+        source_column: NHNCK.ORGANIZATIONS.ORGANIZATION_CODE
         business_meaning: Mã tổ chức (denormalized)
         comment: "Lookup pair: securities_organization_reference.securities_organization_reference_code.\
-          \ Pair with Securities Organization Reference Id."
+          \ Pair with Securities Organization Reference Id. Giá trị lấy từ NHNCK.ORGANIZATIONS.ORGANIZATION_CODE\
+          \ sau ETL crosswalk — chi tiết xem comment Securities Organization Reference\
+          \ Id."
   - name: Nationality Id
     physical_name: nationality_id
     business_meaning_1st: FK đến Geographic Area (quốc tịch snapshot)

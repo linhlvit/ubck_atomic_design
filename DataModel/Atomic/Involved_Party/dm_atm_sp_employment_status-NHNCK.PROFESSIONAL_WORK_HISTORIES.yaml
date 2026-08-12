@@ -102,7 +102,7 @@ attributes:
     source_system: NHNCK
     source_table: PROFESSIONAL_WORK_HISTORIES
     source_column: NHNCK.PROFESSIONAL_WORK_HISTORIES.ORGANIZATION_ID
-    comment: "FK target: securities_organization_reference.securities_organization_reference_id. Hash: hash_id('NHNCK.ORGANIZATIONS', ORGANIZATION_ID)."
+    comment: "FK target: securities_organization_reference.securities_organization_reference_id. Cần ETL crosswalk sang NHNCK.ORGANIZATIONS: PROFESSIONAL_WORK_HISTORIES.ORGANIZATION_ID = ORGANIZATIONS.ID để xác nhận ORGANIZATION_CODE sau đó hash_id('NHNCK.ORGANIZATIONS', ORGANIZATION_CODE) | Trước đây hash trực tiếp theo ORGANIZATION_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ ORGANIZATION_CODE) — đã sửa sang crosswalk 2026-08-11."
     classification_context: null
     etl_derived_value: null
 
@@ -115,8 +115,8 @@ attributes:
     is_primary_key: false
     source_system: NHNCK
     source_table: PROFESSIONAL_WORK_HISTORIES
-    source_column: NHNCK.PROFESSIONAL_WORK_HISTORIES.ORGANIZATION_ID
-    comment: "Lookup pair: securities_organization_reference.securities_organization_reference_code. Pair with Securities Organization Reference Id."
+    source_column: NHNCK.ORGANIZATIONS.ORGANIZATION_CODE
+    comment: "Lookup pair: securities_organization_reference.securities_organization_reference_code. Pair with Securities Organization Reference Id. Giá trị lấy từ NHNCK.ORGANIZATIONS.ORGANIZATION_CODE sau ETL crosswalk — chi tiết xem comment Securities Organization Reference Id."
     classification_context: null
     etl_derived_value: null
 

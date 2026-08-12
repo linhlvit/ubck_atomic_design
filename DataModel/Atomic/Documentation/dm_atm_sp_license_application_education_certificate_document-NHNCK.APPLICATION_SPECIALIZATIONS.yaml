@@ -116,7 +116,7 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATION_SPECIALIZATIONS
     source_column: NHNCK.SPECIALIZATIONS.SPECIALIZATION_CODE
-    comment: "Lookup pair: cl_specialization.cl_specialization_code. Pair with Classification Specialization Id. Giá trị lấy từ NHNCK.SPECIALIZATIONS.SPECIALIZATION_CODE sau ETL crosswalk — chi tiết xem comment Classification Specialization Id."
+    comment: "Lookup pair: Classification Specialization.Classification Specialization Code. Pair with Classification Specialization Id. Giá trị lấy từ NHNCK.SPECIALIZATIONS.SPECIALIZATION_CODE sau ETL crosswalk — chi tiết xem comment Classification Specialization Id."
     classification_context: null
     etl_derived_value: null
 
@@ -172,7 +172,7 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATION_SPECIALIZATIONS
     source_column: NHNCK.APPLICATION_SPECIALIZATIONS.ASSIGNEE_ID
-    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM.USERS', ASSIGNEE_ID) | Chưa xác nhận join key NHNCK.APPLICATION_SPECIALIZATIONS.ASSIGNEE_ID ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Cần ETL crosswalk sang NHNCK.USERS: APPLICATION_SPECIALIZATIONS.ASSIGNEE_ID = USERS.ID để xác nhận USERNAME sau đó hash_id('IAM.USERS', USERNAME) | Chưa xác nhận value set khớp danh mục IAM.USERS — cần profile dữ liệu trước go-live."
     classification_context: null
     etl_derived_value: null
 
@@ -185,8 +185,8 @@ attributes:
     is_primary_key: false
     source_system: NHNCK
     source_table: APPLICATION_SPECIALIZATIONS
-    source_column: NHNCK.APPLICATION_SPECIALIZATIONS.ASSIGNEE_ID
-    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Appraised By Officer Id."
+    source_column: NHNCK.USERS.USERNAME
+    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Appraised By Officer Id. Giá trị lấy từ NHNCK.USERS.USERNAME sau ETL crosswalk — chi tiết xem comment Appraised By Officer Id."
     classification_context: null
     etl_derived_value: null
 

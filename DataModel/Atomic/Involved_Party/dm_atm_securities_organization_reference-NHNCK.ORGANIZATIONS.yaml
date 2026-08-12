@@ -32,21 +32,21 @@ attributes:
     source_system: NHNCK
     source_table: ORGANIZATIONS
     source_column: null
-    comment: "PK surrogate. BCV: \"Organization\" (Involved Party). Tổ chức tham gia TTCK (CTCK, QLQ, NH, Khác)."
+    comment: "PK surrogate. BCV: \"Organization\" (Involved Party). Tổ chức tham gia TTCK (CTCK, QLQ, NH, Khác). Hash: hash_id('NHNCK.ORGANIZATIONS', ORGANIZATION_CODE) — đổi từ hash theo ID kỹ thuật (qua Securities Organization Reference Code cũ) sang ORGANIZATION_CODE, 2026-08-11."
     classification_context: null
     etl_derived_value: null
 
   - name: Securities Organization Reference Code
     physical_name: securities_organization_reference_code
-    business_meaning: Mã định danh kỹ thuật tự tăng. BK của entity. Map từ PK bảng nguồn.
+    business_meaning: Mã tổ chức kinh doanh chứng khoán do hệ thống cấp. BK của entity. Map từ ORGANIZATION_CODE.
     data_domain: Text
     data_type: string
     nullable: false
     is_primary_key: false
     source_system: NHNCK
     source_table: ORGANIZATIONS
-    source_column: NHNCK.ORGANIZATIONS.ID
-    comment: BK chính. PK nguồn (NUMBER — ETL cần convert sang string).
+    source_column: NHNCK.ORGANIZATIONS.ORGANIZATION_CODE
+    comment: "BK chính. Cần profile dữ liệu xác nhận NOT NULL/unique trước go-live (ORGANIZATION_CODE hiện không đánh dấu khóa trong CSDL nguồn)."
     classification_context: null
     etl_derived_value: null
 
@@ -63,20 +63,6 @@ attributes:
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
     etl_derived_value: NHNCK_ORGANIZATIONS
-
-  - name: Organization Code
-    physical_name: organization_code
-    business_meaning: Mã tổ chức (mã nghiệp vụ do hệ thống gán).
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: ORGANIZATIONS
-    source_column: NHNCK.ORGANIZATIONS.ORGANIZATION_CODE
-    comment: Mã nghiệp vụ — khác BK (ORGANIZATION_CODE khác ID nguồn).
-    classification_context: null
-    etl_derived_value: null
 
   - name: Securities Organization Reference Name
     physical_name: securities_organization_reference_nm
@@ -158,7 +144,7 @@ attributes:
     source_system: NHNCK
     source_table: ORGANIZATIONS
     source_column: NHNCK.ORGANIZATIONS.PARENT_ID
-    comment: "FK target: securities_organization_reference.securities_organization_reference_id. Self-referencing. Hash: hash_id('NHNCK.ORGANIZATIONS', PARENT_ID)."
+    comment: "FK target: securities_organization_reference.securities_organization_reference_id. Self-referencing. Cần ETL crosswalk sang NHNCK.ORGANIZATIONS: ORGANIZATIONS.PARENT_ID = ORGANIZATIONS.ID để xác nhận ORGANIZATION_CODE sau đó hash_id('NHNCK.ORGANIZATIONS', ORGANIZATION_CODE) | Trước đây hash trực tiếp theo PARENT_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ ORGANIZATION_CODE) — đã sửa sang crosswalk 2026-08-11."
     classification_context: null
     etl_derived_value: null
 
@@ -171,8 +157,8 @@ attributes:
     is_primary_key: false
     source_system: NHNCK
     source_table: ORGANIZATIONS
-    source_column: NHNCK.ORGANIZATIONS.PARENT_ID
-    comment: "Lookup pair: securities_organization_reference.securities_organization_reference_code. Pair with Parent Securities Organization Reference Id."
+    source_column: NHNCK.ORGANIZATIONS.ORGANIZATION_CODE
+    comment: "Lookup pair: securities_organization_reference.securities_organization_reference_code. Pair with Parent Securities Organization Reference Id. Giá trị lấy từ NHNCK.ORGANIZATIONS.ORGANIZATION_CODE sau ETL crosswalk (self-join qua PARENT_ID) — chi tiết xem comment Parent Securities Organization Reference Id."
     classification_context: null
     etl_derived_value: null
 

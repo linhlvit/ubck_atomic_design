@@ -19,7 +19,9 @@ metadata:
   approved_at: null
   notes: "Trường hệ thống loại khỏi scope theo yêu cầu người thiết kế: STATUS, DELETED,\
     \ CREATED_AT, UPDATED_AT, CREATED_BY_ID, CREATED_BY_NAME, UPDATED_BY_ID, UPDATED_BY_NAME,\
-    \ VERSION. REPRESENTATIVE_* giữ denormalized — chờ xác nhận T1-03."
+    \ VERSION. REPRESENTATIVE_* giữ denormalized — chờ xác nhận T1-03. BK đổi từ ID\
+    \ (UUIDv7 kỹ thuật) sang USERNAME theo quyết định Data Modeler 2026-08-11 — xem\
+    \ attribute Identity and Access Management User Code/Id."
 attributes:
 - attribute_name: "Identity and Access Management User Id"
   physical_name: "identity_and_access_management_user_id"
@@ -30,20 +32,24 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "PK surrogate. BCV: [Involved Party] Individual. Domain prefix 'Identity\
-    \ and Access Management User' theo HLD IAM Tier 1."
+    \ and Access Management User' theo HLD IAM Tier 1. Hash: hash_id('IAM.USERS',\
+    \ USERNAME)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Identity and Access Management User Code"
   physical_name: "identity_and_access_management_user_code"
-  description: "Khóa chính (UUIDv7). BK của entity — map từ PK bảng nguồn."
+  description: "Username đăng nhập hệ thống. BK của entity — map từ USERNAME (đổi\
+    \ từ PK kỹ thuật ID theo quyết định Data Modeler 2026-08-11)."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IAM.USERS.ID"
-  comment: "BK chính. PK nguồn dạng UUIDv7."
+  - "IAM.USERS.USERNAME"
+  comment: "BK chính = USERNAME (đổi từ ID kỹ thuật UUIDv7 theo quyết định 2026-08-11).\
+    \ Cần Data Modeler xác nhận USERNAME NOT NULL + UNIQUE trên toàn bộ IAM.USERS\
+    \ trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -72,16 +78,18 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Username"
-  physical_name: "username"
-  description: "Username đăng nhập hệ thống."
+- attribute_name: "User Code"
+  physical_name: "user_code"
+  description: "Mã người dùng nội bộ (cột CODE nguồn)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IAM.USERS.USERNAME"
-  comment: "BCV: không có term riêng — đặt tên theo nghĩa kỹ thuật IAM."
+  - "IAM.USERS.CODE"
+  comment: "BCV: không có term riêng. Khác với Identity and Access Management User\
+    \ Code (BK = USERNAME) — đây là mã nội bộ riêng của nguồn, không phải BK/FK pattern,\
+    \ không có Id đi kèm. Tên attribute tạm đặt — Data Modeler xác nhận lại khi review."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -245,7 +253,10 @@ attributes:
   status: "pending"
   source_columns:
   - "IAM.USERS.PRACTICE_CERTIFICATE_TYPE_ID"
-  comment: "FK target: sp_license_certificate_type.sp_license_certificate_tp_id. Cross-source FK (IAM → NHNCK), trả lời T1-02 HLD. Pending — nguồn IAM lưu VARCHAR2(36) dạng GUID, trong khi NHNCK.CERTIFICATES.ID là NUMBER tự tăng; chưa xác nhận join key giá trị thực tế giữa 2 hệ thống nên chưa thêm Hash."
+  comment: "FK target: sp_license_certificate_type.sp_license_certificate_tp_id. Cross-source\
+    \ FK (IAM → NHNCK), trả lời T1-02 HLD. Pending — nguồn IAM lưu VARCHAR2(36) dạng\
+    \ GUID, trong khi NHNCK.CERTIFICATES.ID là NUMBER tự tăng; chưa xác nhận join\
+    \ key giá trị thực tế giữa 2 hệ thống nên chưa thêm Hash."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -258,7 +269,8 @@ attributes:
   status: "pending"
   source_columns:
   - "IAM.USERS.PRACTICE_CERTIFICATE_TYPE_ID"
-  comment: "Lookup pair: sp_license_certificate_type.sp_license_certificate_tp_code. Pair with Practice Certificate Type Id. Pending — xem ghi chú ở Id."
+  comment: "Lookup pair: sp_license_certificate_type.sp_license_certificate_tp_code.\
+    \ Pair with Practice Certificate Type Id. Pending — xem ghi chú ở Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

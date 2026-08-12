@@ -102,7 +102,7 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATIONS
     source_column: NHNCK.APPLICATION_STATUSES.STATUS_CODE
-    comment: "Lookup pair: cl_application_status.cl_application_status_code. Pair with Classification Application Status Id. Giá trị lấy từ NHNCK.APPLICATION_STATUSES.STATUS_CODE sau ETL crosswalk — chi tiết xem comment Classification Application Status Id."
+    comment: "Lookup pair: Classification Application Status.Classification Application Status Code. Pair with Classification Application Status Id. Giá trị lấy từ NHNCK.APPLICATION_STATUSES.STATUS_CODE sau ETL crosswalk — chi tiết xem comment Classification Application Status Id."
     classification_context: null
     etl_derived_value: null
 
@@ -550,7 +550,7 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATIONS
     source_column: NHNCK.APPLICATIONS.ASSIGNEE_ID
-    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM.USERS', ASSIGNEE_ID) | Chưa xác nhận join key NHNCK.APPLICATIONS.ASSIGNEE_ID ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Cần ETL crosswalk sang NHNCK.USERS: APPLICATIONS.ASSIGNEE_ID = USERS.ID để xác nhận USERNAME sau đó hash_id('IAM.USERS', USERNAME) | Chưa xác nhận value set khớp danh mục IAM.USERS — cần profile dữ liệu trước go-live."
     classification_context: null
     etl_derived_value: null
 
@@ -563,8 +563,8 @@ attributes:
     is_primary_key: false
     source_system: NHNCK
     source_table: APPLICATIONS
-    source_column: NHNCK.APPLICATIONS.ASSIGNEE_ID
-    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Assignee Officer Id."
+    source_column: NHNCK.USERS.USERNAME
+    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Assignee Officer Id. Giá trị lấy từ NHNCK.USERS.USERNAME sau ETL crosswalk — chi tiết xem comment Assignee Officer Id."
     classification_context: null
     etl_derived_value: null
 
@@ -578,7 +578,7 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATIONS
     source_column: NHNCK.APPLICATIONS.INFO_VERIFY_ID
-    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM.USERS', INFO_VERIFY_ID) | Chưa xác nhận join key NHNCK.APPLICATIONS.INFO_VERIFY_ID ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Cần ETL crosswalk sang NHNCK.USERS: APPLICATIONS.INFO_VERIFY_ID = USERS.ID để xác nhận USERNAME sau đó hash_id('IAM.USERS', USERNAME) | Chưa xác nhận value set khớp danh mục IAM.USERS — cần profile dữ liệu trước go-live."
     classification_context: null
     etl_derived_value: null
 
@@ -591,8 +591,8 @@ attributes:
     is_primary_key: false
     source_system: NHNCK
     source_table: APPLICATIONS
-    source_column: NHNCK.APPLICATIONS.INFO_VERIFY_ID
-    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Info Verify Officer Id."
+    source_column: NHNCK.USERS.USERNAME
+    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Info Verify Officer Id. Giá trị lấy từ NHNCK.USERS.USERNAME sau ETL crosswalk — chi tiết xem comment Info Verify Officer Id."
     classification_context: null
     etl_derived_value: null
 

@@ -32,21 +32,21 @@ attributes:
     source_system: IAM
     source_table: USERS
     source_column: null
-    comment: "PK surrogate. BCV: [Involved Party] Individual. Domain prefix 'Identity and Access Management User' theo HLD IAM Tier 1."
+    comment: "PK surrogate. BCV: [Involved Party] Individual. Domain prefix 'Identity and Access Management User' theo HLD IAM Tier 1. Hash: hash_id('IAM.USERS', USERNAME)."
     classification_context: null
     etl_derived_value: null
 
   - name: Identity and Access Management User Code
     physical_name: identity_and_access_management_user_code
-    business_meaning: Khóa chính (UUIDv7). BK của entity — map từ PK bảng nguồn.
+    business_meaning: "Username đăng nhập hệ thống. BK của entity — map từ USERNAME (đổi từ PK kỹ thuật ID theo quyết định Data Modeler 2026-08-11)."
     data_domain: Text
     data_type: string
     nullable: false
     is_primary_key: false
     source_system: IAM
     source_table: USERS
-    source_column: IAM.USERS.ID
-    comment: BK chính. PK nguồn dạng UUIDv7.
+    source_column: IAM.USERS.USERNAME
+    comment: "BK chính = USERNAME (đổi từ ID kỹ thuật UUIDv7 theo quyết định 2026-08-11). Cần Data Modeler xác nhận USERNAME NOT NULL + UNIQUE trên toàn bộ IAM.USERS trước go-live."
     classification_context: null
     etl_derived_value: null
 
@@ -78,17 +78,17 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Username
-    physical_name: username
-    business_meaning: Username đăng nhập hệ thống.
+  - name: User Code
+    physical_name: user_code
+    business_meaning: Mã người dùng nội bộ (cột CODE nguồn).
     data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: IAM
     source_table: USERS
-    source_column: IAM.USERS.USERNAME
-    comment: "BCV: không có term riêng — đặt tên theo nghĩa kỹ thuật IAM."
+    source_column: IAM.USERS.CODE
+    comment: "BCV: không có term riêng. Khác với Identity and Access Management User Code (BK = USERNAME) — đây là mã nội bộ riêng của nguồn, không phải BK/FK pattern, không có Id đi kèm. Tên attribute tạm đặt — Data Modeler xác nhận lại khi review."
     classification_context: null
     etl_derived_value: null
 
