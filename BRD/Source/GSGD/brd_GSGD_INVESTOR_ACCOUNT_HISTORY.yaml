@@ -9,11 +9,6 @@ columns:
     description: "Primary key"
     key: PK
     fk_note: null
-  - name: ACCOUNT_ID
-    data_type: "VARCHAR2(36)"
-    description: "Foreign key với investor_account"
-    key: FK
-    fk_note: null
   - name: ACCOUNT_CODE
     data_type: "VARCHAR2(200)"
     description: "Số tài khoản"
@@ -39,9 +34,14 @@ columns:
     description: "Giá trị mới"
     key: null
     fk_note: null
-  - name: CHANGED_BY_ID
-    data_type: "VARCHAR(255)"
-    description: "Id người thay đổi"
+  - name: CHANGE_SOURCE
+    data_type: "VARCHAR2(80)"
+    description: "Nguồn thay đổi: VSDC, USER"
+    key: null
+    fk_note: null
+  - name: CHANGED_BY
+    data_type: "VARCHAR2(100)"
+    description: "Người thay đổi"
     key: null
     fk_note: null
   - name: APPROVAL_STATUS
@@ -54,14 +54,9 @@ columns:
     description: "Nội dung phê duyệt"
     key: null
     fk_note: null
-  - name: APPROVAL_BY_ID
-    data_type: "VARCHAR(255)"
+  - name: APPROVED_BY_ID
+    data_type: "VARCHAR2(255)"
     description: "Id người phê duyệt"
-    key: null
-    fk_note: null
-  - name: APPROVAL_NAME
-    data_type: "VARCHAR(255)"
-    description: "Tên người phê duyệt"
     key: null
     fk_note: null
   - name: CREATED_AT
@@ -104,28 +99,13 @@ columns:
     description: null
     key: null
     fk_note: null
-  - name: APPROVED_BY_ID
-    data_type: "VARCHAR2(255)"
-    description: "Id người phê duyệt"
-    key: null
-    fk_note: null
   - name: APPROVED_BY_NAME
     data_type: "VARCHAR2(250)"
     description: null
     key: null
     fk_note: null
-  - name: CHANGED_BY
-    data_type: "VARCHAR2(100)"
-    description: "Người thay đổi"
-    key: null
-    fk_note: null
   - name: CHANGE_DETAIL
     data_type: "CLOB"
     description: null
-    key: null
-    fk_note: null
-  - name: CHANGE_SOURCE
-    data_type: "VARCHAR2(80)"
-    description: "Nguồn thay đổi: VSDC, USER"
     key: null
     fk_note: null

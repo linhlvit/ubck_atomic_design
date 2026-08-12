@@ -24,6 +24,11 @@ columns:
     description: "*Tên tiếng Anh*"
     key: null
     fk_note: null
+  - name: DISPLAY_LABEL
+    data_type: "VARCHAR2(255 CHAR)"
+    description: "*Nhãn hiển thị*"
+    key: null
+    fk_note: null
   - name: COUNTRY_ID
     data_type: "VARCHAR2(36 CHAR)"
     description: "*Stable Id** quốc gia (tham chiếu country.**stableId**)**)*"
@@ -32,11 +37,6 @@ columns:
   - name: EFFECTIVE
     data_type: "NUMBER(1,0)"
     description: "Tình trạng (1: Hiệu lực, 0: Hết hiệu lực)"
-    key: null
-    fk_note: null
-  - name: DISPLAY_LABEL
-    data_type: "VARCHAR2(255 CHAR)"
-    description: "*Nhãn hiển thị*"
     key: null
     fk_note: null
   - name: ACTIVE
@@ -119,13 +119,13 @@ columns:
     description: "*ID phiên bản của **Country**(**lưu country**.id hiện tại)*"
     key: null
     fk_note: null
-  - name: COUNTRY_NAME
-    data_type: "VARCHAR2(2000)"
-    description: "Tên quốc gia (text, không mapping với bảng country)"
-    key: null
-    fk_note: null
   - name: ID_SYNC
     data_type: "NUMBER(22,0)"
     description: "ID gốc từ hệ thống BTC lúc sync SOAP (field ID trong XML)"
+    key: null
+    fk_note: null
+  - name: COUNTRY_NAME
+    data_type: "VARCHAR2(2000)"
+    description: "Tên quốc gia (text, không mapping với bảng country)"
     key: null
     fk_note: null

@@ -4,9 +4,29 @@ source: TTHC
 table: Document
 brd_ref: BRD-SRC-TTHC-Document
 columns:
+- name: ID
+  data_type: "NUMBER"
+  description: "Khóa chính (tự tăng)"
+  key: PK
+  fk_note: null
+- name: TYPE
+  data_type: "NVARCHAR2(255 CHAR)"
+  description: "Bộ phân biệt loại bản ghi"
+  key: null
+  fk_note: null
 - name: CONTENT
   data_type: "CLOB"
   description: "Content"
+  key: null
+  fk_note: null
+- name: VERSION
+  data_type: "NUMBER"
+  description: "Số phiên bản để khóa lạc quan (tăng mỗi lần cập nhật)"
+  key: null
+  fk_note: null
+- name: SITECONTENTITEMID
+  data_type: "VARCHAR2(255)"
+  description: "ID content item site - định danh phạm vi tenant/site"
   key: null
   fk_note: null
 - name: CREATEDAT
@@ -14,9 +34,9 @@ columns:
   description: "Thời điểm tạo bản ghi (UTC)"
   key: null
   fk_note: null
-- name: HASALIASPART
-  data_type: "CHAR(1)"
-  description: "Hasaliaspart"
+- name: UPDATEDAT
+  data_type: "TIMESTAMP(6)"
+  description: "Thời điểm cập nhật lần cuối (UTC)"
   key: null
   fk_note: null
 - name: HASAUTOROUTEPART
@@ -24,34 +44,14 @@ columns:
   description: "Hasautoroutepart"
   key: null
   fk_note: null
+- name: HASALIASPART
+  data_type: "CHAR(1)"
+  description: "Hasaliaspart"
+  key: null
+  fk_note: null
 - name: HASCONTAINEDPART
   data_type: "CHAR(1)"
   description: "Hascontainedpart"
-  key: null
-  fk_note: null
-- name: ID
-  data_type: "NUMBER"
-  description: "Khóa chính (tự tăng)"
-  key: PK
-  fk_note: null
-- name: SITECONTENTITEMID
-  data_type: "VARCHAR2(255)"
-  description: "ID content item site - định danh phạm vi tenant/site"
-  key: null
-  fk_note: null
-- name: TYPE
-  data_type: "NVARCHAR2(255 CHAR)"
-  description: "Bộ phân biệt loại bản ghi"
-  key: null
-  fk_note: null
-- name: UPDATEDAT
-  data_type: "TIMESTAMP(6)"
-  description: "Thời điểm cập nhật lần cuối (UTC)"
-  key: null
-  fk_note: null
-- name: VERSION
-  data_type: "NUMBER"
-  description: "Số phiên bản để khóa lạc quan (tăng mỗi lần cập nhật)"
   key: null
   fk_note: null
 - name: FRIENDLYURL

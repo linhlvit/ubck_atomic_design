@@ -4,9 +4,14 @@ source: TTHC
 table: HtmlFieldIndex
 brd_ref: BRD-SRC-TTHC-HtmlFieldIndex
 columns:
-- name: CONTENTFIELD
-  data_type: "NVARCHAR2(255 CHAR)"
-  description: "Contentfield"
+- name: ID
+  data_type: "NUMBER"
+  description: "Khóa chính (tự tăng)"
+  key: null
+  fk_note: null
+- name: DOCUMENTID
+  data_type: "NUMBER"
+  description: "Khóa ngoại tới Document.Id của Orchard (kho lưu document JSON)"
   key: null
   fk_note: null
 - name: CONTENTITEMID
@@ -19,29 +24,24 @@ columns:
   description: "Contentitemversionid"
   key: null
   fk_note: null
-- name: CONTENTPART
-  data_type: "NVARCHAR2(255 CHAR)"
-  description: "Contentpart"
-  key: null
-  fk_note: null
 - name: CONTENTTYPE
   data_type: "NVARCHAR2(255 CHAR)"
   description: "Tên loại nội dung Orchard (ví dụ: Page, Article, TTHC)"
   key: null
   fk_note: null
-- name: DOCUMENTID
-  data_type: "NUMBER"
-  description: "Khóa ngoại tới Document.Id của Orchard (kho lưu document JSON)"
+- name: CONTENTPART
+  data_type: "NVARCHAR2(255 CHAR)"
+  description: "Contentpart"
   key: null
   fk_note: null
-- name: HTML
-  data_type: "CLOB"
-  description: "Html"
+- name: CONTENTFIELD
+  data_type: "NVARCHAR2(255 CHAR)"
+  description: "Contentfield"
   key: null
   fk_note: null
-- name: ID
-  data_type: "NUMBER"
-  description: "Khóa chính (tự tăng)"
+- name: PUBLISHED
+  data_type: "NUMBER(38,0)"
+  description: "Trạng thái xuất bản (1=đã xuất bản, 0=nháp/chưa xuất bản)"
   key: null
   fk_note: null
 - name: LATEST
@@ -49,8 +49,8 @@ columns:
   description: "Phiên bản mới nhất hay không (1=có, 0=không)"
   key: null
   fk_note: null
-- name: PUBLISHED
-  data_type: "NUMBER(38,0)"
-  description: "Trạng thái xuất bản (1=đã xuất bản, 0=nháp/chưa xuất bản)"
+- name: HTML
+  data_type: "CLOB"
+  description: "Html"
   key: null
   fk_note: null

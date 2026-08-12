@@ -4,6 +4,16 @@ source: TTHC
 table: AliasPartIndex
 brd_ref: BRD-SRC-TTHC-AliasPartIndex
 columns:
+- name: ID
+  data_type: "NUMBER"
+  description: "Khóa chính (tự tăng)"
+  key: null
+  fk_note: null
+- name: DOCUMENTID
+  data_type: "NUMBER"
+  description: "Khóa ngoại tới Document.Id của Orchard (kho lưu document JSON)"
+  key: null
+  fk_note: null
 - name: ALIAS
   data_type: "NVARCHAR2(2000 CHAR)"
   description: "Alias"
@@ -12,16 +22,6 @@ columns:
 - name: CONTENTITEMID
   data_type: "NVARCHAR2(255 CHAR)"
   description: "ID content item Orchard (chuỗi duy nhất toàn hệ thống)"
-  key: null
-  fk_note: null
-- name: DOCUMENTID
-  data_type: "NUMBER"
-  description: "Khóa ngoại tới Document.Id của Orchard (kho lưu document JSON)"
-  key: null
-  fk_note: null
-- name: ID
-  data_type: "NUMBER"
-  description: "Khóa chính (tự tăng)"
   key: null
   fk_note: null
 - name: LATEST

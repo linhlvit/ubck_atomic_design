@@ -34,9 +34,14 @@ columns:
     description: "Giá trị mới"
     key: null
     fk_note: null
-  - name: CHANGED_BY_ID
-    data_type: "VARCHAR2(255)"
-    description: "Id người thay đổi"
+  - name: CHANGE_SOURCE
+    data_type: "VARCHAR2(20)"
+    description: null
+    key: null
+    fk_note: null
+  - name: CHANGED_BY
+    data_type: "VARCHAR2(100)"
+    description: null
     key: null
     fk_note: null
   - name: APPROVAL_STATUS
@@ -49,14 +54,14 @@ columns:
     description: "Nội dung phê duyệt"
     key: null
     fk_note: null
-  - name: APPROVAL_BY_ID
-    data_type: "VARCHAR(255)"
-    description: "Id người phê duyệt"
+  - name: APPROVED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: null
     key: null
     fk_note: null
-  - name: APPROVAL_NAME
-    data_type: "VARCHAR(255)"
-    description: "Tên người phê duyệt"
+  - name: APPROVED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: null
     key: null
     fk_note: null
   - name: CREATED_AT
@@ -92,26 +97,6 @@ columns:
   - name: DELETED
     data_type: "NUMBER(1,0)"
     description: "Soft delete: 0=Active, 1=Deleted"
-    key: null
-    fk_note: null
-  - name: APPROVED_BY_ID
-    data_type: "VARCHAR2(255)"
-    description: null
-    key: null
-    fk_note: null
-  - name: APPROVED_BY_NAME
-    data_type: "VARCHAR2(250)"
-    description: null
-    key: null
-    fk_note: null
-  - name: CHANGED_BY
-    data_type: "VARCHAR2(100)"
-    description: null
-    key: null
-    fk_note: null
-  - name: CHANGE_SOURCE
-    data_type: "VARCHAR2(20)"
-    description: null
     key: null
     fk_note: null
   - name: VERSION

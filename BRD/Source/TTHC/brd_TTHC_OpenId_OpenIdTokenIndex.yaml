@@ -4,6 +4,21 @@ source: TTHC
 table: OpenId_OpenIdTokenIndex
 brd_ref: BRD-SRC-TTHC-OpenId_OpenIdTokenIndex
 columns:
+- name: ID
+  data_type: "NUMBER"
+  description: "Khóa chính (tự tăng)"
+  key: null
+  fk_note: null
+- name: DOCUMENTID
+  data_type: "NUMBER"
+  description: "Khóa ngoại tới Document.Id của Orchard (kho lưu document JSON)"
+  key: null
+  fk_note: null
+- name: TOKENID
+  data_type: "VARCHAR2(100)"
+  description: "Tokenid"
+  key: null
+  fk_note: null
 - name: APPLICATIONID
   data_type: "VARCHAR2(100)"
   description: "Applicationid"
@@ -14,24 +29,9 @@ columns:
   description: "Authorizationid"
   key: null
   fk_note: null
-- name: CREATIONDATE
-  data_type: "VARCHAR2(100)"
-  description: "Creationdate"
-  key: null
-  fk_note: null
-- name: DOCUMENTID
-  data_type: "NUMBER"
-  description: "Khóa ngoại tới Document.Id của Orchard (kho lưu document JSON)"
-  key: null
-  fk_note: null
 - name: EXPIRATIONDATE
   data_type: "VARCHAR2(100)"
   description: "Expirationdate"
-  key: null
-  fk_note: null
-- name: ID
-  data_type: "NUMBER"
-  description: "Khóa chính (tự tăng)"
   key: null
   fk_note: null
 - name: REFERENCEID
@@ -49,13 +49,13 @@ columns:
   description: "Subject"
   key: null
   fk_note: null
-- name: TOKENID
-  data_type: "VARCHAR2(100)"
-  description: "Tokenid"
-  key: null
-  fk_note: null
 - name: TYPE
   data_type: "VARCHAR2(100)"
   description: "Bộ phân biệt loại bản ghi"
+  key: null
+  fk_note: null
+- name: CREATIONDATE
+  data_type: "VARCHAR2(100)"
+  description: "Creationdate"
   key: null
   fk_note: null

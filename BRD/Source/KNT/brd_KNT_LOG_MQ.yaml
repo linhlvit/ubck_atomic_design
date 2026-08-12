@@ -4,11 +4,6 @@ source: KNT
 table: LOG_MQ
 brd_ref: BRD-SRC-KNT-LOG_MQ
 columns:
-- name: CREATED_AT
-  data_type: "DATE"
-  description: "Thời điểm tạo bản ghi"
-  key: null
-  fk_note: null
 - name: ID
   data_type: "VARCHAR2(50)"
   description: "Khóa chính của bản ghi (ID số tự tăng)"
@@ -24,6 +19,11 @@ columns:
   description: "Nội dung message MQ đầy đủ (CLOB)"
   key: null
   fk_note: null
+- name: CREATED_AT
+  data_type: "DATE"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
 - name: SENDER_CODE
   data_type: "VARCHAR2(100)"
   description: "Mã hệ thống gửi message"
@@ -34,13 +34,13 @@ columns:
   description: "Tên hệ thống gửi message"
   key: null
   fk_note: null
-- name: SENT_AT
-  data_type: "DATE"
-  description: "Thời điểm gửi gói tin"
-  key: null
-  fk_note: null
 - name: TRAN_CODE
   data_type: "VARCHAR2(50)"
   description: "Mã giao dịch (transaction code) theo chuẩn trao đổi dữ liệu"
+  key: null
+  fk_note: null
+- name: SENT_AT
+  data_type: "DATE"
+  description: "Thời điểm gửi gói tin"
   key: null
   fk_note: null

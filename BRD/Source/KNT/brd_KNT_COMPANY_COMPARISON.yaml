@@ -1,0 +1,136 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: KNT
+table: COMPANY_COMPARISON
+brd_ref: BRD-SRC-KNT-COMPANY_COMPARISON
+columns:
+- name: ID
+  data_type: "NUMBER"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: COMPANY_INFO_ID
+  data_type: "NUMBER"
+  description: "-> company_info: Thông tin công ty phía UBCKNN"
+  key: FK
+  fk_note: null
+- name: TAX_REGISTRATION_ID
+  data_type: "NUMBER"
+  description: "-> tax_registration_info: Thông tin đăng ký thuế phía TCT"
+  key: FK
+  fk_note: null
+- name: TAX_CODE
+  data_type: "VARCHAR2(100)"
+  description: "Mã số thuế doanh nghiệp đối chiếu"
+  key: null
+  fk_note: null
+- name: SSC_NAME
+  data_type: "VARCHAR2(1000)"
+  description: "Tên công ty theo dữ liệu UBCKNN"
+  key: null
+  fk_note: null
+- name: SSC_ADDRESS
+  data_type: "VARCHAR2(2000)"
+  description: "Địa chỉ theo dữ liệu UBCKNN"
+  key: null
+  fk_note: null
+- name: SSC_PHONE
+  data_type: "VARCHAR2(50)"
+  description: "Số điện thoại theo dữ liệu UBCKNN"
+  key: null
+  fk_note: null
+- name: SSC_FAX
+  data_type: "VARCHAR2(50)"
+  description: "Fax theo dữ liệu UBCKNN"
+  key: null
+  fk_note: null
+- name: SSC_WEBSITE
+  data_type: "VARCHAR2(250)"
+  description: "Website theo dữ liệu UBCKNN"
+  key: null
+  fk_note: null
+- name: SSC_BUSINESS_LINE
+  data_type: "VARCHAR2(2000)"
+  description: "Ngành nghề kinh doanh theo UBCKNN"
+  key: null
+  fk_note: null
+- name: SSC_LEGAL_REPRESENTATIVE_NAME
+  data_type: "VARCHAR2(500)"
+  description: "Người đại diện theo UBCKNN"
+  key: null
+  fk_note: null
+- name: SSC_CHARTER_CAPITAL
+  data_type: "NUMBER"
+  description: "Vốn điều lệ theo UBCKNN"
+  key: null
+  fk_note: null
+- name: SSC_DECISION_NUMBER
+  data_type: "VARCHAR2(250)"
+  description: "Số quyết định/GPKD theo UBCKNN"
+  key: null
+  fk_note: null
+- name: SSC_BUSINESS_LICENSE
+  data_type: "VARCHAR2(250)"
+  description: "Giấy phép kinh doanh theo UBCKNN"
+  key: null
+  fk_note: null
+- name: TAX_NAME
+  data_type: "VARCHAR2(1000)"
+  description: "Tên công ty theo dữ liệu Cục Thuế"
+  key: null
+  fk_note: null
+- name: TAX_ADDRESS
+  data_type: "VARCHAR2(2000)"
+  description: "Địa chỉ theo dữ liệu Cục Thuế"
+  key: null
+  fk_note: null
+- name: TAX_PHONE
+  data_type: "VARCHAR2(50)"
+  description: "Số điện thoại theo dữ liệu Cục Thuế"
+  key: null
+  fk_note: null
+- name: TAX_FAX
+  data_type: "VARCHAR2(50)"
+  description: "Fax theo dữ liệu Cục Thuế"
+  key: null
+  fk_note: null
+- name: TAX_WEBSITE
+  data_type: "VARCHAR2(250)"
+  description: "Website theo dữ liệu Cục Thuế"
+  key: null
+  fk_note: null
+- name: TAX_BUSINESS_LINE
+  data_type: "VARCHAR2(2000)"
+  description: "Ngành nghề theo dữ liệu Cục Thuế"
+  key: null
+  fk_note: null
+- name: TAX_LEGAL_REPRESENTATIVE_NAME
+  data_type: "VARCHAR2(500)"
+  description: "Người đại diện theo dữ liệu Cục Thuế"
+  key: null
+  fk_note: null
+- name: TAX_CHARTER_CAPITAL
+  data_type: "NUMBER"
+  description: "Vốn điều lệ theo dữ liệu Cục Thuế"
+  key: null
+  fk_note: null
+- name: TAX_DECISION_NUMBER
+  data_type: "VARCHAR2(250)"
+  description: "Số quyết định theo dữ liệu Cục Thuế"
+  key: null
+  fk_note: null
+- name: TAX_BUSINESS_LICENSE
+  data_type: "VARCHAR2(250)"
+  description: "GPKD theo dữ liệu Cục Thuế"
+  key: null
+  fk_note: null
+- name: DIFF_FLAG
+  data_type: "NUMBER"
+  description: "Cờ chênh lệch: Y=Có khác biệt giữa UBCKNN và TCT, N/NULL=Khớp"
+  key: null
+  fk_note: null
+- name: COMPARISON_DATE
+  data_type: "DATE"
+  description: "Ngày thực hiện đối chiếu"
+  key: null
+  fk_note: null

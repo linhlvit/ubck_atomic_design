@@ -24,14 +24,14 @@ columns:
     description: "Điều kiện áp dụng (biểu thức logic)"
     key: null
     fk_note: null
-  - name: GIA_TRI_SO_SANH
+  - name: COMPARE_VALUE
     data_type: NUMBER
-    description: "Cột gia_tri_so_sanh — xem thêm tài liệu đặc tả SCMS"
+    description: "Giá trị so sánh dùng trong điều kiện cảnh báo"
     key: null
     fk_note: null
-  - name: GIA_TRI_THUC_TE
+  - name: ACTUAL_VALUE
     data_type: NUMBER(38,2)
-    description: "Cột gia_tri_thuc_te — xem thêm tài liệu đặc tả SCMS"
+    description: "Giá trị thực tế của chỉ số tại thời điểm cảnh báo"
     key: null
     fk_note: null
   - name: NOTE
@@ -139,21 +139,6 @@ columns:
     description: ""
     key: null
     fk_note: null
-  - name: ACTUAL_VALUE
-    data_type: NUMBER(38,2)
-    description: "Giá trị thực tế của chỉ số tại thời điểm cảnh báo"
-    key: null
-    fk_note: null
-  - name: ALERT_DATE
-    data_type: DATE
-    description: "Ngày phát sinh cảnh báo"
-    key: null
-    fk_note: null
-  - name: COMPARE_VALUE
-    data_type: NUMBER
-    description: "Giá trị so sánh dùng trong điều kiện cảnh báo"
-    key: null
-    fk_note: null
   - name: PERIOD_TYPE
     data_type: NUMBER(2,0)
     description: "Loại kỳ của cảnh báo (mã số)"
@@ -162,6 +147,11 @@ columns:
   - name: PERIOD_VALUE
     data_type: NUMBER(10,0)
     description: "Giá trị kỳ của cảnh báo (số thứ tự)"
+    key: null
+    fk_note: null
+  - name: ALERT_DATE
+    data_type: DATE
+    description: "Ngày phát sinh cảnh báo"
     key: null
     fk_note: null
   - name: SEVERITY_LEVEL_ALT

@@ -14,9 +14,9 @@ columns:
     description: "Tiêu đề hướng dẫn"
     key: null
     fk_note: null
-  - name: FILE_NAME
-    data_type: "VARCHAR2(500 CHAR)"
-    description: "Tên file"
+  - name: ORIGINAL_FILE_NAME
+    data_type: "VARCHAR2(500)"
+    description: null
     key: null
     fk_note: null
   - name: FILE_PATH
@@ -34,14 +34,9 @@ columns:
     description: "Loại file: PDF,MP4"
     key: null
     fk_note: null
-  - name: CREATED_AT
-    data_type: "TIMESTAMP(6)"
-    description: "Ngày tạo"
-    key: null
-    fk_note: null
-  - name: UPDATED_AT
-    data_type: "TIMESTAMP(6)"
-    description: "Ngày sửa cuối"
+  - name: STATUS
+    data_type: "VARCHAR2(20)"
+    description: null
     key: null
     fk_note: null
   - name: CREATED_BY_ID
@@ -49,14 +44,19 @@ columns:
     description: "User_id người tạo"
     key: null
     fk_note: null
-  - name: UPDATED_BY_ID
-    data_type: "VARCHAR2(36)"
-    description: "User_id người cập nhật"
-    key: null
-    fk_note: null
   - name: CREATED_BY_NAME
     data_type: "VARCHAR2(250)"
     description: "Tên người tạo"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: "TIMESTAMP(6)"
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(36)"
+    description: "User_id người cập nhật"
     key: null
     fk_note: null
   - name: UPDATED_BY_NAME
@@ -64,19 +64,14 @@ columns:
     description: "Tên người cập nhật"
     key: null
     fk_note: null
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP(6)"
+    description: "Ngày sửa cuối"
+    key: null
+    fk_note: null
   - name: DELETED
     data_type: "NUMBER(1,0)"
     description: "Soft delete: 0=Active, 1=Deleted"
-    key: null
-    fk_note: null
-  - name: ORIGINAL_FILE_NAME
-    data_type: "VARCHAR2(500)"
-    description: null
-    key: null
-    fk_note: null
-  - name: STATUS
-    data_type: "VARCHAR2(20)"
-    description: null
     key: null
     fk_note: null
   - name: VERSION

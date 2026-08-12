@@ -1,4 +1,4 @@
-﻿source: THANHTRA
+source: THANHTRA
 description: "Phân hệ Thanh tra — Quản lý hoạt động thanh tra, kiểm tra, xử lý vi phạm hành chính, tiếp công dân và đơn thư KNTC trong lĩnh vực chứng khoán"
 brd_entries:
 
@@ -1685,3 +1685,85 @@ brd_entries:
         data_change_mode: Append
         filter_logic: "installed_on >= {etl_date}"
         filter_note: "flyway_schema_history — append theo ngày tạo bản ghi"
+  - brd_id: BRD-SRC-THANHTRA-DIGITAL_CERTIFICATES
+    brd_name: Design Atomic từ nguồn THANHTRA bảng DIGITAL_CERTIFICATES
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Danh mục chứng thư số (chữ ký số) dùng để ký điện tử hồ sơ
+      functional_group: THANHTRA - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: DIGITAL_CERTIFICATES
+      related_tables:
+        - table: DIGITAL_CERTIFICATE_USERS
+          relation: '1-N — '
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-THANHTRA-DIGITAL_CERTIFICATE_USERS
+    brd_name: Design Atomic từ nguồn THANHTRA bảng DIGITAL_CERTIFICATE_USERS
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Người dùng được gán quyền sử dụng chứng thư số
+      functional_group: THANHTRA - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: DIGITAL_CERTIFICATE_USERS
+      related_tables:
+        - table: DIGITAL_CERTIFICATES
+          relation: 'FK cha — '
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-THANHTRA-DOCUMENT_ATTACHMENT_CONTENT
+    brd_name: Design Atomic từ nguồn THANHTRA bảng DOCUMENT_ATTACHMENT_CONTENT
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Nội dung file (BLOB) của tệp đính kèm văn bản
+      functional_group: THANHTRA - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: DOCUMENT_ATTACHMENT_CONTENT
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-THANHTRA-PENALTY_DECISION_SIGN_LOGS
+    brd_name: Design Atomic từ nguồn THANHTRA bảng PENALTY_DECISION_SIGN_LOGS
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Lịch sử ký số quyết định xử phạt
+      functional_group: "B.2 Xử lý vi phạm hành chính"
+      scope_status: pending
+      scope_reason: null
+      table: PENALTY_DECISION_SIGN_LOGS
+      related_tables:
+        - table: PENALTY_DECISION
+          relation: FK cha — Quyết định xử phạt vi phạm hành chính
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null

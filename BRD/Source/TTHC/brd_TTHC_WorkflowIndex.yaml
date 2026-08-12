@@ -4,19 +4,9 @@ source: TTHC
 table: WorkflowIndex
 brd_ref: BRD-SRC-TTHC-WorkflowIndex
 columns:
-- name: Check
-  data_type: "pausedDurationMs >= 0"
-  description: null
-  key: null
-  fk_note: null
-- name: CREATEDUTC
-  data_type: "VARCHAR2(100)"
-  description: "Createdutc"
-  key: null
-  fk_note: null
-- name: DEFINITIONVERSION
+- name: ID
   data_type: "NUMBER"
-  description: "Definitionversion"
+  description: "Khóa chính (tự tăng)"
   key: null
   fk_note: null
 - name: DOCUMENTID
@@ -24,19 +14,9 @@ columns:
   description: "Khóa ngoại tới Document.Id của Orchard (kho lưu document JSON)"
   key: null
   fk_note: null
-- name: ID
-  data_type: "NUMBER"
-  description: "Khóa chính (tự tăng)"
-  key: null
-  fk_note: null
-- name: Loai
-  data_type: "Mo ta / Dieu kien"
-  description: null
-  key: null
-  fk_note: null
-- name: PAUSEDDURATIONMS
-  data_type: "NUMBER(19,0)"
-  description: "Pauseddurationms"
+- name: WORKFLOWTYPEID
+  data_type: "NVARCHAR2(255 CHAR)"
+  description: "Workflowtypeid"
   key: null
   fk_note: null
 - name: WORKFLOWID
@@ -49,8 +29,18 @@ columns:
   description: "Workflowstatus"
   key: null
   fk_note: null
-- name: WORKFLOWTYPEID
-  data_type: "NVARCHAR2(255 CHAR)"
-  description: "Workflowtypeid"
+- name: CREATEDUTC
+  data_type: "VARCHAR2(100)"
+  description: "Createdutc"
+  key: null
+  fk_note: null
+- name: PAUSEDDURATIONMS
+  data_type: "NUMBER(19,0)"
+  description: "Pauseddurationms"
+  key: null
+  fk_note: null
+- name: DEFINITIONVERSION
+  data_type: "NUMBER"
+  description: "Definitionversion"
   key: null
   fk_note: null

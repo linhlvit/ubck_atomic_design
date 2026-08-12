@@ -1,0 +1,36 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: KNT
+table: MSG_PACKET_YC_TT_RESPONSE_LOG
+brd_ref: BRD-SRC-KNT-MSG_PACKET_YC_TT_RESPONSE_LOG
+columns:
+- name: ID
+  data_type: "NUMBER"
+  description: "PK"
+  key: PK
+  fk_note: null
+- name: MSG_PACKET_ID
+  data_type: "NUMBER"
+  description: "logic → msg_packet.id (gói tin YC)"
+  key: FK
+  fk_note: null
+- name: TYPE
+  data_type: "VARCHAR2(20)"
+  description: "DS = danh sách | DETAIL = chi tiết theo MST"
+  key: null
+  fk_note: null
+- name: MST
+  data_type: "VARCHAR2(20)"
+  description: "Mã số thuế (null với type=DS)"
+  key: null
+  fk_note: null
+- name: RESPONSE_BODY
+  data_type: "CLOB"
+  description: "Body JSON response từ Trục/CT"
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: "TIMESTAMP(6)"
+  description: "Thời điểm ghi log"
+  key: null
+  fk_note: null

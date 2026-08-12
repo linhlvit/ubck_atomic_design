@@ -1,0 +1,151 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: COMPANY_TENDER_OFFER_RESULT
+brd_ref: BRD-SRC-IDS-COMPANY_TENDER_OFFER_RESULT
+columns:
+- name: ID
+  data_type: "NUMBER(10,0)"
+  description: null
+  key: PK
+  fk_note: null
+- name: COMPANY_TENDER_OFFER_ID
+  data_type: "NUMBER(10,0)"
+  description: "Khóa link đến bảng COMPANY_TENDER_OFFER"
+  key: FK
+  fk_note: "FK → COMPANY_TENDER_OFFER.ID"
+- name: REGISTERED_SALE_SHARE_QTY
+  data_type: "NUMBER(15,0)"
+  description: "Số lượng cổ phiếu NĐT đăng ký bán"
+  key: null
+  fk_note: null
+- name: REGISTERED_SALE_INVESTOR_QTY
+  data_type: "NUMBER(7,0)"
+  description: "Số NĐT đăng ký bán"
+  key: null
+  fk_note: null
+- name: ACTUAL_PURCHASED_SHARE_QTY
+  data_type: "NUMBER(15,0)"
+  description: "Số lượng cổ phiếu thực tế đã mua"
+  key: null
+  fk_note: null
+- name: ACTUAL_PURCHASED_INVESTOR_QTY
+  data_type: "NUMBER(7,0)"
+  description: "Số NĐT thực tế đã mua"
+  key: null
+  fk_note: null
+- name: TOTAL_FUNDING_AM
+  data_type: "NUMBER(24,0)"
+  description: "Tổng nguồn vốn thực hiện chào mua"
+  key: null
+  fk_note: null
+- name: POST_OFFER_SHARE_QTY
+  data_type: "NUMBER(15,0)"
+  description: "Số lượng CP sở hữu SAU chào mua"
+  key: null
+  fk_note: null
+- name: POST_OFFER_OWNERSHIP_RATIO
+  data_type: "NUMBER(7,4)"
+  description: "Tỷ lệ CP sở hữu SAU chào mua"
+  key: null
+  fk_note: null
+- name: ACTUAL_OFFER_END_DATE
+  data_type: "DATE"
+  description: "Ngày kết thúc đợt chào mua"
+  key: null
+  fk_note: null
+- name: SECURITIES_AGENT_NAME_VI
+  data_type: "VARCHAR2(1020)"
+  description: "Tên công ty chứng khoán làm đại lý (tiếng Việt)"
+  key: null
+  fk_note: null
+- name: SECURITIES_AGENT_NAME_EN
+  data_type: "VARCHAR2(1020)"
+  description: "Tên công ty chứng khoán làm đại lý (tiếng Anh)"
+  key: null
+  fk_note: null
+- name: CERTIFICATE_NO
+  data_type: "VARCHAR2(72)"
+  description: "Số giấy chứng nhận"
+  key: null
+  fk_note: null
+- name: CERTIFICATE_DATE
+  data_type: "DATE"
+  description: "Ngày giấy chứng nhận"
+  key: null
+  fk_note: null
+- name: OFFICIAL_LETTER_NO
+  data_type: "VARCHAR2(72)"
+  description: "Số công văn của UBCKNN"
+  key: null
+  fk_note: null
+- name: OFFICIAL_LETTER_DATE
+  data_type: "DATE"
+  description: "Ngày công văn"
+  key: null
+  fk_note: null
+- name: APPROVAL_STATUS_CD
+  data_type: "VARCHAR2(400)"
+  description: "Trạng thái phê duyệt kết quả (LOOKUP_GROUP = SO_APPROVAL_STATUS)"
+  key: null
+  fk_note: null
+- name: APPROVER_USER_ID
+  data_type: "VARCHAR2(120)"
+  description: "ID Login của Lãnh đạo phê duyệt"
+  key: null
+  fk_note: null
+- name: APPROVER_USER_NAME
+  data_type: "VARCHAR2(512)"
+  description: "Lãnh đạo duyệt kết quả"
+  key: null
+  fk_note: null
+- name: PROCESSOR_USER_ID
+  data_type: "VARCHAR2(120)"
+  description: "ID Login của Chuyên viên xử lý"
+  key: null
+  fk_note: null
+- name: PROCESSOR_USER_NAME
+  data_type: "VARCHAR2(512)"
+  description: "Chuyên viên xử lý"
+  key: null
+  fk_note: null
+- name: REVISION_REASON
+  data_type: "VARCHAR2(2048)"
+  description: "Lý do chỉnh sửa"
+  key: null
+  fk_note: null
+- name: OFFERING_PHASE_NAME
+  data_type: "VARCHAR2(512)"
+  description: "Tên đợt chào mua"
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: "VARCHAR2(120)"
+  description: "Người tạo"
+  key: null
+  fk_note: null
+- name: CREATED_DATE
+  data_type: "DATE"
+  description: "Ngày tạo"
+  key: null
+  fk_note: null
+- name: UPDATED_BY
+  data_type: "VARCHAR2(120)"
+  description: "Người sửa"
+  key: null
+  fk_note: null
+- name: UPDATED_DATE
+  data_type: "DATE"
+  description: "Ngày sửa"
+  key: null
+  fk_note: null
+- name: DELETE_FLG
+  data_type: "NUMBER(1,0)"
+  description: "Đánh dấu xóa mềm (0 - Chưa xóa; 1 - Đã xóa)"
+  key: null
+  fk_note: null
+- name: APPROVER_COMMENT
+  data_type: "VARCHAR2(1020)"
+  description: "Nội dung đề xuất phê duyệt / Lý do từ chối (uc.md 2.4.3)"
+  key: null
+  fk_note: null

@@ -29,11 +29,6 @@ columns:
     description: "Phân loại báo cáo bất thường nếu có danh mục phân loại"
     key: null
     fk_note: null
-  - name: SUBMITTER_TYPE
-    data_type: "VARCHAR2(400)"
-    description: "Đơn vị phải nộp, phân cách dấu phẩy"
-    key: null
-    fk_note: null
   - name: SUBMITTER_ID
     data_type: "VARCHAR2(36)"
     description: "ID người nộp"
@@ -109,16 +104,6 @@ columns:
     description: "Ngày kết thúc cho phép nộp lại nếu nghiệp vụ cấu hình"
     key: null
     fk_note: null
-  - name: RESUBMIT_REASON
-    data_type: "VARCHAR2(4000)"
-    description: "Lý do nộp lại"
-    key: null
-    fk_note: null
-  - name: CASE_FILE_CODE
-    data_type: "VARCHAR2(200)"
-    description: "Mã vụ việc"
-    key: null
-    fk_note: null
   - name: CREATED_AT
     data_type: "TIMESTAMP(6)"
     description: "Ngày tạo"
@@ -154,8 +139,23 @@ columns:
     description: "Soft delete: 0=Active, 1=Deleted"
     key: null
     fk_note: null
+  - name: RESUBMIT_REASON
+    data_type: "VARCHAR2(4000)"
+    description: "Lý do nộp lại"
+    key: null
+    fk_note: null
   - name: CASE_FILE_ID
     data_type: "VARCHAR2(36)"
     description: null
+    key: null
+    fk_note: null
+  - name: CASE_FILE_CODE
+    data_type: "VARCHAR2(200)"
+    description: "Mã vụ việc"
+    key: null
+    fk_note: null
+  - name: SUBMITTER_TYPE
+    data_type: "VARCHAR2(400)"
+    description: "Đơn vị phải nộp, phân cách dấu phẩy"
     key: null
     fk_note: null

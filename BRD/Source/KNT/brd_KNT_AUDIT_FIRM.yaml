@@ -4,9 +4,39 @@ source: KNT
 table: AUDIT_FIRM
 brd_ref: BRD-SRC-KNT-AUDIT_FIRM
 columns:
+- name: ID
+  data_type: "NUMBER"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: DECISION_NUMBER
+  data_type: "VARCHAR2(800)"
+  description: "Số quyết định thành lập/xử phạt"
+  key: null
+  fk_note: null
+- name: DECISION_DATE
+  data_type: "DATE"
+  description: "Ngày ban hành quyết định"
+  key: null
+  fk_note: null
+- name: NAME
+  data_type: "VARCHAR2(1200)"
+  description: "Tên đầy đủ"
+  key: null
+  fk_note: null
 - name: ADDRESS
   data_type: "VARCHAR2(2000)"
   description: "Địa chỉ"
+  key: null
+  fk_note: null
+- name: PHONE
+  data_type: "VARCHAR2(400)"
+  description: "Số điện thoại liên hệ"
+  key: null
+  fk_note: null
+- name: FAX
+  data_type: "VARCHAR2(400)"
+  description: "Số fax"
   key: null
   fk_note: null
 - name: APPROVAL_YEAR
@@ -19,53 +49,23 @@ columns:
   description: "Số lượng kiểm toán viên được chấp thuận trong công ty"
   key: null
   fk_note: null
-- name: BUSINESS_REG_CERT
-  data_type: "VARCHAR2(100)"
-  description: "Số giấy phép đăng ký kinh doanh của công ty kiểm toán"
-  key: null
-  fk_note: null
-- name: DECISION_DATE
-  data_type: "DATE"
-  description: "Ngày ban hành quyết định"
-  key: null
-  fk_note: null
-- name: DECISION_NUMBER
-  data_type: "VARCHAR2(800)"
-  description: "Số quyết định thành lập/xử phạt"
-  key: null
-  fk_note: null
-- name: FAX
+- name: TAX_CODE
   data_type: "VARCHAR2(400)"
-  description: "Số fax"
+  description: "Mã số thuế doanh nghiệp"
   key: null
-  fk_note: null
-- name: GUID
-  data_type: "VARCHAR2(50)"
-  description: "Định danh duy nhất toàn cục (GUID/UUID) của bản ghi"
-  key: null
-  fk_note: null
-- name: ID
-  data_type: "NUMBER"
-  description: "Khóa chính của bản ghi (ID số tự tăng)"
-  key: PK
   fk_note: null
 - name: MSG_PACKET_ID
   data_type: "NUMBER"
   description: "FK -> msg_packet: Gói tin trao đổi liên quan"
   key: FK
   fk_note: "FK → MSG_PACKET.ID"
-- name: NAME
-  data_type: "VARCHAR2(1200)"
-  description: "Tên đầy đủ"
+- name: BUSINESS_REG_CERT
+  data_type: "VARCHAR2(100)"
+  description: "Số giấy phép đăng ký kinh doanh của công ty kiểm toán"
   key: null
   fk_note: null
-- name: PHONE
-  data_type: "VARCHAR2(400)"
-  description: "Số điện thoại liên hệ"
-  key: null
-  fk_note: null
-- name: TAX_CODE
-  data_type: "VARCHAR2(400)"
-  description: "Mã số thuế doanh nghiệp"
+- name: GUID
+  data_type: "VARCHAR2(50)"
+  description: "Định danh duy nhất toàn cục (GUID/UUID) của bản ghi"
   key: null
   fk_note: null

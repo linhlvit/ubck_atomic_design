@@ -4,14 +4,9 @@ source: TTHC
 table: Notification_NotificationIndex
 brd_ref: BRD-SRC-TTHC-Notification_NotificationIndex
 columns:
-- name: CONTENT
-  data_type: "VARCHAR2(100)"
-  description: "Content"
-  key: null
-  fk_note: null
-- name: CREATEDATUTC
-  data_type: "VARCHAR2(100)"
-  description: "Createdatutc"
+- name: ID
+  data_type: "NUMBER"
+  description: "Khóa chính (tự tăng)"
   key: null
   fk_note: null
 - name: DOCUMENTID
@@ -19,9 +14,14 @@ columns:
   description: "Khóa ngoại tới Document.Id của Orchard (kho lưu document JSON)"
   key: null
   fk_note: null
-- name: ID
-  data_type: "NUMBER"
-  description: "Khóa chính (tự tăng)"
+- name: NOTIFICATIONID
+  data_type: "VARCHAR2(100)"
+  description: "Notificationid"
+  key: null
+  fk_note: null
+- name: USERID
+  data_type: "VARCHAR2(100)"
+  description: "Userid"
   key: null
   fk_note: null
 - name: ISREAD
@@ -29,18 +29,18 @@ columns:
   description: "Isread"
   key: null
   fk_note: null
-- name: NOTIFICATIONID
-  data_type: "VARCHAR2(100)"
-  description: "Notificationid"
-  key: null
-  fk_note: null
 - name: READATUTC
   data_type: "VARCHAR2(100)"
   description: "Readatutc"
   key: null
   fk_note: null
-- name: USERID
+- name: CREATEDATUTC
   data_type: "VARCHAR2(100)"
-  description: "Userid"
+  description: "Createdatutc"
+  key: null
+  fk_note: null
+- name: CONTENT
+  data_type: "VARCHAR2(100)"
+  description: "Content"
   key: null
   fk_note: null

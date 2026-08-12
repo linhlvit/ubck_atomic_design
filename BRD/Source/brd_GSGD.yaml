@@ -2081,3 +2081,867 @@ brd_entries:
         data_change_mode: Update
         filter_logic: null
         filter_note: null
+  - brd_id: BRD-SRC-GSGD-ABNORMAL_COLUMN_SEMANTIC
+    brd_name: Design Atomic từ nguồn GSGD bảng ABNORMAL_COLUMN_SEMANTIC
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Mapping vi tri cot bao cao bat thuong sang semantic_field
+      functional_group: GSGD - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: ABNORMAL_COLUMN_SEMANTIC
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-GSGD-ABNORMAL_EXTRACTED_SIGNAL
+    brd_name: Design Atomic từ nguồn GSGD bảng ABNORMAL_EXTRACTED_SIGNAL
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Tin hieu chuan hoa trich tu bao cao bat thuong
+      functional_group: "UID1.4 Quản lý báo cáo bất thường"
+      scope_status: pending
+      scope_reason: null
+      table: ABNORMAL_EXTRACTED_SIGNAL
+      related_tables:
+        - table: ABNORMAL_REPORT_FORM
+          relation: FK cha — Mỗi file Excel uploaded trong 1 submission
+        - table: ABNORMAL_REPORT_MASTER
+          relation: FK cha — Thông tin tổng hợp báo cáo bất thường khác nhau
+        - table: CASE_FILE
+          relation: FK cha — Vụ việc
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-GSGD-ABNORMAL_MATCH_EXCLUSION
+    brd_name: Design Atomic từ nguồn GSGD bảng ABNORMAL_MATCH_EXCLUSION
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Loai tru gia tri khoi so khop quan he
+      functional_group: GSGD - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: ABNORMAL_MATCH_EXCLUSION
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-GSGD-BATCH_JOB_EXECUTION
+    brd_name: Design Atomic từ nguồn GSGD bảng BATCH_JOB_EXECUTION
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Spring Batch - Lượt thực thi của 1 job instance (bảng kỹ thuật, out_of_scope)
+      functional_group: GSGD - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: BATCH_JOB_EXECUTION
+      related_tables:
+        - table: BATCH_JOB_EXECUTION_PARAMS
+          relation: '1-N — '
+        - table: BATCH_JOB_INSTANCE
+          relation: 'FK cha — '
+        - table: BATCH_STEP_EXECUTION
+          relation: '1-N — '
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-GSGD-BATCH_JOB_EXECUTION_CONTEXT
+    brd_name: Design Atomic từ nguồn GSGD bảng BATCH_JOB_EXECUTION_CONTEXT
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Spring Batch - Context lưu trạng thái của lượt thực thi job (bảng kỹ thuật, out_of_scope)
+      functional_group: GSGD - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: BATCH_JOB_EXECUTION_CONTEXT
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-GSGD-BATCH_JOB_EXECUTION_PARAMS
+    brd_name: Design Atomic từ nguồn GSGD bảng BATCH_JOB_EXECUTION_PARAMS
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Spring Batch - Tham số đầu vào của lượt thực thi job (bảng kỹ thuật, out_of_scope)
+      functional_group: GSGD - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: BATCH_JOB_EXECUTION_PARAMS
+      related_tables:
+        - table: BATCH_JOB_EXECUTION
+          relation: 'FK cha — '
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-GSGD-BATCH_JOB_INSTANCE
+    brd_name: Design Atomic từ nguồn GSGD bảng BATCH_JOB_INSTANCE
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Spring Batch - Định danh instance của 1 job theo tên + tham số (bảng kỹ thuật, out_of_scope)
+      functional_group: GSGD - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: BATCH_JOB_INSTANCE
+      related_tables:
+        - table: BATCH_JOB_EXECUTION
+          relation: '1-N — '
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-GSGD-BATCH_STEP_EXECUTION
+    brd_name: Design Atomic từ nguồn GSGD bảng BATCH_STEP_EXECUTION
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Spring Batch - Lượt thực thi của từng step trong job (bảng kỹ thuật, out_of_scope)
+      functional_group: GSGD - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: BATCH_STEP_EXECUTION
+      related_tables:
+        - table: BATCH_JOB_EXECUTION
+          relation: 'FK cha — '
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-GSGD-BATCH_STEP_EXECUTION_CONTEXT
+    brd_name: Design Atomic từ nguồn GSGD bảng BATCH_STEP_EXECUTION_CONTEXT
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Spring Batch - Context lưu trạng thái của lượt thực thi step (bảng kỹ thuật, out_of_scope)
+      functional_group: GSGD - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: BATCH_STEP_EXECUTION_CONTEXT
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-GSGD-CASE_ANALYSIS_ATTRIBUTE_VALUE
+    brd_name: Design Atomic từ nguồn GSGD bảng CASE_ANALYSIS_ATTRIBUTE_VALUE
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Giá trị tiêu chí phân tích theo từng vụ việc/quy trình
+      functional_group: "UID2.2 Tiêu chí và tham số phân tích"
+      scope_status: pending
+      scope_reason: null
+      table: CASE_ANALYSIS_ATTRIBUTE_VALUE
+      related_tables:
+        - table: ANALYSIS_ATTRIBUTE_DEFINE
+          relation: FK cha — Định nghĩa tiêu chí/công thức phân tích vụ việc
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-GSGD-CASE_REPORT_PARAMETER_VALUE
+    brd_name: Design Atomic từ nguồn GSGD bảng CASE_REPORT_PARAMETER_VALUE
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Giá trị tham số báo cáo áp dụng cho từng vụ việc/quy trình phân tích
+      functional_group: GSGD - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: CASE_REPORT_PARAMETER_VALUE
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-GSGD-COMPLIANCE_OUTPUT_TEMPLATE
+    brd_name: Design Atomic từ nguồn GSGD bảng COMPLIANCE_OUTPUT_TEMPLATE
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Cấu hình mẫu xuất báo cáo tuân thủ (định dạng, layout, template Word)
+      functional_group: GSGD - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: COMPLIANCE_OUTPUT_TEMPLATE
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-GSGD-COMPLIANCE_REPORT
+    brd_name: Design Atomic từ nguồn GSGD bảng COMPLIANCE_REPORT
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Thông tin báo cáo tuân thủ nộp bởi đơn vị, kèm trạng thái phê duyệt
+      functional_group: GSGD - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: COMPLIANCE_REPORT
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-GSGD-COMPLIANCE_REPORT_FILE
+    brd_name: Design Atomic từ nguồn GSGD bảng COMPLIANCE_REPORT_FILE
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: File đính kèm của báo cáo tuân thủ
+      functional_group: GSGD - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: COMPLIANCE_REPORT_FILE
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-GSGD-COMPUTED_COLUMN
+    brd_name: Design Atomic từ nguồn GSGD bảng COMPUTED_COLUMN
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Cấu hình cột tính toán
+      functional_group: GSGD - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: COMPUTED_COLUMN
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-GSGD-DASHBOARD_USER_CONFIG
+    brd_name: Design Atomic từ nguồn GSGD bảng DASHBOARD_USER_CONFIG
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Cấu hình dashboard cá nhân hóa theo từng user (song song với dashboard_admin_config)
+      functional_group: GSGD - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: DASHBOARD_USER_CONFIG
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-GSGD-DASHBOARD_USER_CONFIG_ITEM
+    brd_name: Design Atomic từ nguồn GSGD bảng DASHBOARD_USER_CONFIG_ITEM
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Widget cụ thể trong cấu hình dashboard của user
+      functional_group: GSGD - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: DASHBOARD_USER_CONFIG_ITEM
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-GSGD-DASHBOARD_USER_CONFIG_REGION
+    brd_name: Design Atomic từ nguồn GSGD bảng DASHBOARD_USER_CONFIG_REGION
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Vùng layout trong cấu hình dashboard của user
+      functional_group: GSGD - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: DASHBOARD_USER_CONFIG_REGION
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-GSGD-DASHBOARD_USER_CONFIG_ROW
+    brd_name: Design Atomic từ nguồn GSGD bảng DASHBOARD_USER_CONFIG_ROW
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Cấu trúc hàng layout trong cấu hình dashboard của user
+      functional_group: GSGD - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: DASHBOARD_USER_CONFIG_ROW
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-GSGD-DATABASECHANGELOG
+    brd_name: Design Atomic từ nguồn GSGD bảng DATABASECHANGELOG
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Lịch sử migration cơ sở dữ liệu
+      functional_group: GSGD - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: DATABASECHANGELOG
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-GSGD-DATABASECHANGELOGLOCK
+    brd_name: Design Atomic từ nguồn GSGD bảng DATABASECHANGELOGLOCK
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Lock khi Liquibase đang chạy
+      functional_group: GSGD - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: DATABASECHANGELOGLOCK
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-GSGD-EXPORT_FILE
+    brd_name: Design Atomic từ nguồn GSGD bảng EXPORT_FILE
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Quản lý file xuất báo cáo/dữ liệu (trạng thái, đường dẫn, lỗi phát sinh)
+      functional_group: GSGD - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: EXPORT_FILE
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-GSGD-METRIC_JOIN_CONDITION
+    brd_name: Design Atomic từ nguồn GSGD bảng METRIC_JOIN_CONDITION
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Điều kiện join giữa các metric thông qua thuộc tính (attribute)
+      functional_group: GSGD - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: METRIC_JOIN_CONDITION
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-GSGD-METRIC_WORD_SQL
+    brd_name: Design Atomic từ nguồn GSGD bảng METRIC_WORD_SQL
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: 'Cấu hình N câu SQL (BM0xx) cho metric Word: mỗi dòng là 1 section nguồn dữ liệu gọi sang CSDL_TT'
+      functional_group: GSGD - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: METRIC_WORD_SQL
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-GSGD-NOTIFICATIONS
+    brd_name: Design Atomic từ nguồn GSGD bảng NOTIFICATIONS
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Lưu thông báo
+      functional_group: GSGD - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: NOTIFICATIONS
+      related_tables:
+        - table: NOTIFICATION_RECIPIENTS
+          relation: '1-N — '
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-GSGD-NOTIFICATION_CONFIG
+    brd_name: Design Atomic từ nguồn GSGD bảng NOTIFICATION_CONFIG
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Cấu hình danh mục thông báo mà user đăng ký nhận theo category_item
+      functional_group: GSGD - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: NOTIFICATION_CONFIG
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-GSGD-NOTIFICATION_RECIPIENTS
+    brd_name: Design Atomic từ nguồn GSGD bảng NOTIFICATION_RECIPIENTS
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Lưu trạng thái thông báo đến người nhận
+      functional_group: GSGD - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: NOTIFICATION_RECIPIENTS
+      related_tables:
+        - table: NOTIFICATIONS
+          relation: 'FK cha — '
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: created_at >= {{etl_date}} AND created_at < {{etl_date}} + 1
+        filter_note: Lọc theo cột CREATED_AT — bảng chỉ append, không cập nhật dòng cũ
+  - brd_id: BRD-SRC-GSGD-QRTZ_BLOB_TRIGGERS
+    brd_name: Design Atomic từ nguồn GSGD bảng QRTZ_BLOB_TRIGGERS
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Quartz - Blob Trigger (bảng kỹ thuật lập lịch job, out_of_scope)
+      functional_group: GSGD - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: QRTZ_BLOB_TRIGGERS
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-GSGD-QRTZ_CRON_TRIGGERS
+    brd_name: Design Atomic từ nguồn GSGD bảng QRTZ_CRON_TRIGGERS
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Quartz - Cron Trigger (bảng kỹ thuật lập lịch job, out_of_scope)
+      functional_group: GSGD - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: QRTZ_CRON_TRIGGERS
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-GSGD-QRTZ_FIRED_TRIGGERS
+    brd_name: Design Atomic từ nguồn GSGD bảng QRTZ_FIRED_TRIGGERS
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Quartz - Trigger đã được kích hoạt (bảng kỹ thuật lập lịch job, out_of_scope)
+      functional_group: GSGD - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: QRTZ_FIRED_TRIGGERS
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-GSGD-QRTZ_JOB_DETAILS
+    brd_name: Design Atomic từ nguồn GSGD bảng QRTZ_JOB_DETAILS
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Quartz - Thông tin chi tiết Job (bảng kỹ thuật lập lịch job, out_of_scope)
+      functional_group: GSGD - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: QRTZ_JOB_DETAILS
+      related_tables:
+        - table: QRTZ_TRIGGERS
+          relation: '1-N — '
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-GSGD-QRTZ_LOCKS
+    brd_name: Design Atomic từ nguồn GSGD bảng QRTZ_LOCKS
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Quartz - Lock cho cluster (bảng kỹ thuật lập lịch job, out_of_scope)
+      functional_group: GSGD - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: QRTZ_LOCKS
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-GSGD-QRTZ_PAUSED_TRIGGER_GRPS
+    brd_name: Design Atomic từ nguồn GSGD bảng QRTZ_PAUSED_TRIGGER_GRPS
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Quartz - Nhóm Trigger bị tạm dừng (bảng kỹ thuật lập lịch job, out_of_scope)
+      functional_group: GSGD - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: QRTZ_PAUSED_TRIGGER_GRPS
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-GSGD-QRTZ_SCHEDULER_STATE
+    brd_name: Design Atomic từ nguồn GSGD bảng QRTZ_SCHEDULER_STATE
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Quartz - Trạng thái Scheduler (bảng kỹ thuật lập lịch job, out_of_scope)
+      functional_group: GSGD - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: QRTZ_SCHEDULER_STATE
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-GSGD-QRTZ_SIMPLE_TRIGGERS
+    brd_name: Design Atomic từ nguồn GSGD bảng QRTZ_SIMPLE_TRIGGERS
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Quartz - Simple Trigger (bảng kỹ thuật lập lịch job, out_of_scope)
+      functional_group: GSGD - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: QRTZ_SIMPLE_TRIGGERS
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-GSGD-QRTZ_TRIGGERS
+    brd_name: Design Atomic từ nguồn GSGD bảng QRTZ_TRIGGERS
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Quartz - Thông tin Trigger (bảng kỹ thuật lập lịch job, out_of_scope)
+      functional_group: GSGD - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: QRTZ_TRIGGERS
+      related_tables:
+        - table: QRTZ_JOB_DETAILS
+          relation: 'FK cha — '
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-GSGD-REPORT_COLUMN
+    brd_name: Design Atomic từ nguồn GSGD bảng REPORT_COLUMN
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Cấu hình cột hiển thị của biểu mẫu
+      functional_group: GSGD - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: REPORT_COLUMN
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-GSGD-REPORT_COLUMN_GROUP
+    brd_name: Design Atomic từ nguồn GSGD bảng REPORT_COLUMN_GROUP
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Cấu hình nhóm cột hiển thị
+      functional_group: GSGD - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: REPORT_COLUMN_GROUP
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-GSGD-REPORT_FILTER
+    brd_name: Design Atomic từ nguồn GSGD bảng REPORT_FILTER
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Cấu hình bộ lọc của biểu mẫu
+      functional_group: GSGD - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: REPORT_FILTER
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-GSGD-REPORT_METRIC_JOIN
+    brd_name: Design Atomic từ nguồn GSGD bảng REPORT_METRIC_JOIN
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Cấu hình join giữa các metric
+      functional_group: GSGD - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: REPORT_METRIC_JOIN
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-GSGD-REPORT_SORT
+    brd_name: Design Atomic từ nguồn GSGD bảng REPORT_SORT
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Cấu hình sắp xếp của biểu mẫu
+      functional_group: GSGD - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: REPORT_SORT
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-GSGD-REPORT_TEMPLATE_CONFIG
+    brd_name: Design Atomic từ nguồn GSGD bảng REPORT_TEMPLATE_CONFIG
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Lưu metadata của các biểu mẫu báo cáo động do người dùng tạo
+      functional_group: GSGD - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: REPORT_TEMPLATE_CONFIG
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-GSGD-REPORT_TEMPLATE_METRIC
+    brd_name: Design Atomic từ nguồn GSGD bảng REPORT_TEMPLATE_METRIC
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Cấu hình metric cho biểu mẫu
+      functional_group: GSGD - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: REPORT_TEMPLATE_METRIC
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+  - brd_id: BRD-SRC-GSGD-TRANSACTION_REVIEW_REPORT_PARAMETER_VALUE
+    brd_name: Design Atomic từ nguồn GSGD bảng TRANSACTION_REVIEW_REPORT_PARAMETER_VALUE
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: Giá trị tham số báo cáo áp dụng cho từng hồ sơ rà soát giao dịch
+      functional_group: GSGD - Chưa phân loại (pending)
+      scope_status: pending
+      scope_reason: null
+      table: TRANSACTION_REVIEW_REPORT_PARAMETER_VALUE
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null

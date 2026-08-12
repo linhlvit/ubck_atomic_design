@@ -1,0 +1,71 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: GSGD
+table: METRIC_WORD_SQL
+brd_ref: BRD-SRC-GSGD-METRIC_WORD_SQL
+columns:
+- name: ID
+  data_type: "VARCHAR2(36)"
+  description: "Khóa chính UUID"
+  key: PK
+  fk_note: null
+- name: METRIC_ID
+  data_type: "VARCHAR2(36)"
+  description: "-> metric_catalog.id (metric Word cha)"
+  key: FK
+  fk_note: null
+- name: METRIC_CODE
+  data_type: "VARCHAR2(400)"
+  description: "Mã BM section, dùng làm namespace placeholder [[metric_code.field]] trong template .docx"
+  key: null
+  fk_note: null
+- name: METRIC_NAME
+  data_type: "VARCHAR2(1020)"
+  description: "Tên hiển thị của section"
+  key: null
+  fk_note: null
+- name: SQL_TEMPLATE
+  data_type: "CLOB"
+  description: "Câu SQL độc lập trả về result set, gửi sang CSDL_TT tự execute"
+  key: null
+  fk_note: null
+- name: DISPLAY_ORDER
+  data_type: "NUMBER"
+  description: "Thứ tự section"
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: "TIMESTAMP(6)"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: "TIMESTAMP(6)"
+  description: "Thời điểm cập nhật bản ghi gần nhất"
+  key: null
+  fk_note: null
+- name: CREATED_BY_ID
+  data_type: "VARCHAR2(1020)"
+  description: "ID người tạo"
+  key: null
+  fk_note: null
+- name: CREATED_BY_NAME
+  data_type: "VARCHAR2(1020)"
+  description: "Tên người tạo"
+  key: null
+  fk_note: null
+- name: UPDATED_BY_ID
+  data_type: "VARCHAR2(1020)"
+  description: "ID người cập nhật"
+  key: null
+  fk_note: null
+- name: UPDATED_BY_NAME
+  data_type: "VARCHAR2(1020)"
+  description: "Tên người cập nhật"
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: "NUMBER(1,0)"
+  description: "Soft delete: 0=Chưa xóa, 1=Đã xóa"
+  key: null
+  fk_note: null

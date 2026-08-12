@@ -64,11 +64,6 @@ columns:
     description: "Địa chỉ"
     key: null
     fk_note: null
-  - name: PROVINCE_NEW_ID
-    data_type: "VARCHAR2(36 CHAR)"
-    description: "Stable Id tỉnh/thành phố mới"
-    key: null
-    fk_note: null
   - name: PHONE
     data_type: "VARCHAR2(20 CHAR)"
     description: "Số điện thoại"
@@ -87,6 +82,21 @@ columns:
   - name: WEBSITE
     data_type: "VARCHAR2(1000 CHAR)"
     description: "Website"
+    key: null
+    fk_note: null
+  - name: PROVINCE_NEW_ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "Stable Id tỉnh/thành phố mới"
+    key: null
+    fk_note: null
+  - name: WARD_NEW_ID
+    data_type: "VARCHAR2(144)"
+    description: "ID phường/xã"
+    key: null
+    fk_note: null
+  - name: DISTRICT_OLD_ID
+    data_type: "VARCHAR2(144)"
+    description: "ID quận/huyện"
     key: null
     fk_note: null
   - name: LEGAL_REPRESENTATIVE
@@ -114,11 +124,6 @@ columns:
     description: "Nơi cấp giấy phép"
     key: null
     fk_note: null
-  - name: BUSINESS_LICENSE_NUMBER_MODIFY
-    data_type: "VARCHAR2(50 CHAR)"
-    description: "Số giấy phép thay đổi"
-    key: null
-    fk_note: null
   - name: ISSUE_DOCUMENT
     data_type: "VARCHAR2(500 CHAR)"
     description: "Văn bản cấp phép"
@@ -129,24 +134,9 @@ columns:
     description: "Ngày cấp"
     key: null
     fk_note: null
-  - name: PAR_VALUE
-    data_type: "NUMBER(15,0)"
-    description: "Mệnh giá"
-    key: null
-    fk_note: null
-  - name: TOTAL_SHARES
-    data_type: "NUMBER(15,0)"
-    description: "Tổng số cổ phiếu"
-    key: null
-    fk_note: null
   - name: FINANCIAL_ID
     data_type: "VARCHAR2(50 CHAR)"
     description: "ID tài chính"
-    key: null
-    fk_note: null
-  - name: CHARTER_CAPITAL
-    data_type: "NUMBER(15,0)"
-    description: "Vốn điều lệ'"
     key: null
     fk_note: null
   - name: ACTIVE
@@ -234,9 +224,9 @@ columns:
     description: "*ID tỉnh/thành **phố mới*"
     key: null
     fk_note: null
-  - name: DISTRICT_OLD_ID
+  - name: WARD_NEW_VERSION_ID
     data_type: "VARCHAR2(144)"
-    description: "ID quận/huyện"
+    description: ""
     key: null
     fk_note: null
   - name: DISTRICT_OLD_VERSION_ID
@@ -244,18 +234,18 @@ columns:
     description: ""
     key: null
     fk_note: null
-  - name: WARD_NEW_ID
-    data_type: "VARCHAR2(144)"
-    description: "ID phường/xã"
+  - name: TOTAL_SHARES
+    data_type: "NUMBER(15,0)"
+    description: "Tổng số cổ phiếu"
     key: null
     fk_note: null
-  - name: WARD_NEW_VERSION_ID
-    data_type: "VARCHAR2(144)"
-    description: ""
+  - name: CHARTER_CAPITAL
+    data_type: "NUMBER(15,0)"
+    description: "Vốn điều lệ'"
     key: null
     fk_note: null
-  - name: BUSINESS_LICENSE_NUMBER_MODIFYVARCHAR2(200)
-    data_type: "YES"
-    description: "Số giấy phép thay đổi"
+  - name: PAR_VALUE
+    data_type: "NUMBER(15,0)"
+    description: "Mệnh giá"
     key: null
     fk_note: null

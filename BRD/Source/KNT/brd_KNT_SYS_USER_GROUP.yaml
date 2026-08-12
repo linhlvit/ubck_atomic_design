@@ -4,24 +4,14 @@ source: KNT
 table: SYS_USER_GROUP
 brd_ref: BRD-SRC-KNT-SYS_USER_GROUP
 columns:
-- name: CREATED_AT
-  data_type: "DATE"
-  description: "Thời điểm tạo bản ghi"
-  key: null
+- name: ID
+  data_type: "NUMBER"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
   fk_note: null
-- name: CREATED_BY
+- name: GROUP_NAME
   data_type: "NVARCHAR2(400)"
-  description: "Tài khoản/tên người tạo bản ghi"
-  key: null
-  fk_note: null
-- name: CREATED_BY_ID
-  data_type: "NUMBER"
-  description: "ID người dùng tạo bản ghi"
-  key: null
-  fk_note: null
-- name: DELETED
-  data_type: "NUMBER"
-  description: "Cờ xóa mềm: 1=Đã xóa, 0=Chưa xóa"
+  description: "Tên nhóm người dùng"
   key: null
   fk_note: null
 - name: DESCRIPTION
@@ -29,24 +19,19 @@ columns:
   description: "Mô tả chi tiết"
   key: null
   fk_note: null
-- name: GROUP_NAME
+- name: CREATED_BY
   data_type: "NVARCHAR2(400)"
-  description: "Tên nhóm người dùng"
+  description: "Tài khoản/tên người tạo bản ghi"
   key: null
   fk_note: null
-- name: ID
-  data_type: "NUMBER"
-  description: "Khóa chính của bản ghi (ID số tự tăng)"
-  key: PK
-  fk_note: null
-- name: LAST_MODIFIED_AT
+- name: CREATED_AT
   data_type: "DATE"
-  description: "Thời điểm cập nhật lần cuối"
+  description: "Thời điểm tạo bản ghi"
   key: null
   fk_note: null
-- name: LAST_MODIFIED_BY
-  data_type: "NVARCHAR2(400)"
-  description: "Tài khoản/tên người cập nhật lần cuối"
+- name: CREATED_BY_ID
+  data_type: "NUMBER"
+  description: "ID người dùng tạo bản ghi"
   key: null
   fk_note: null
 - name: LAST_MODIFIED_BY_ID
@@ -54,8 +39,23 @@ columns:
   description: "ID người dùng cập nhật lần cuối"
   key: null
   fk_note: null
+- name: LAST_MODIFIED_BY
+  data_type: "NVARCHAR2(400)"
+  description: "Tài khoản/tên người cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: LAST_MODIFIED_AT
+  data_type: "DATE"
+  description: "Thời điểm cập nhật lần cuối"
+  key: null
+  fk_note: null
 - name: STATUS
   data_type: "NUMBER"
   description: "Trạng thái nhóm người dùng (TrangThaiChucNangEnum): 1=Đang hoạt động, 0=Ngừng hoạt động"
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: "NUMBER"
+  description: "Cờ xóa mềm: 1=Đã xóa, 0=Chưa xóa"
   key: null
   fk_note: null

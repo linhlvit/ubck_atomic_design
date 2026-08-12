@@ -48,7 +48,7 @@ columns:
     data_type: NUMBER(19,0)
     description: "là parent id của company_data"
     key: FK
-    fk_note: FK → COMPANY_DATA.ID
+    fk_note: "FK → COMPANY_DATA.ID"
   - name: DOC_NO
     data_type: VARCHAR2(1000)
     description: "Số công văn"
@@ -98,7 +98,7 @@ columns:
     data_type: NUMBER(10,0)
     description: "Id của company_data, dùng trong trường hợp có tin đính chính - Luôn Lưu id của tin gốc"
     key: FK
-    fk_note: FK → COMPANY_DATA.ID
+    fk_note: "FK → COMPANY_DATA.ID"
   - name: DIGITAL_SIGNATURE_FLG
     data_type: NUMBER(2,0)
     description: "File đính kèm có chữ ký số hay ko (1 - có, 0 - không có)"
@@ -159,19 +159,29 @@ columns:
     description: "Noi dung canh bao kiem toan tu dong"
     key: null
     fk_note: null
-  - name: APPROVER_USER_ID
-    data_type: VARCHAR2(480)
-    description: "Id user Lãnh đạo phê duyệt do Chuyên viên chọn khi Trình phê duyệt (SRS 2.12.3)."
-    key: null
-    fk_note: null
-  - name: APPROVER_USER_NAME
-    data_type: VARCHAR2(2048)
-    description: "Tên Lãnh đạo phê duyệt (denormalize để hiển thị, không join auth-service)."
+  - name: SYSTEM_CD
+    data_type: VARCHAR2(80)
+    description: null
     key: null
     fk_note: null
   - name: CLOSE_DATE
     data_type: TIMESTAMP(6)
     description: null
+    key: null
+    fk_note: null
+  - name: SECURITIES_OFFERING_ID
+    data_type: NUMBER(10,0)
+    description: "Id phương án đăng ký chào bán phát hành (SECURITIES_OFFERING.ID) gắn với tin công bố."
+    key: null
+    fk_note: null
+  - name: DISCLOSURE_TYPE
+    data_type: VARCHAR2(80)
+    description: "Loại công bố chào bán phát hành: NOTICE (Thông báo) / RESULT (Báo cáo kết quả)."
+    key: null
+    fk_note: null
+  - name: LEGAL_ENTITY_ID
+    data_type: NUMBER(10,0)
+    description: "Id cổ đông/NĐT phát hành (LEGAL_ENTITIES.ID) khi đối tượng = Cổ đông."
     key: null
     fk_note: null
   - name: COMPANY_TENDER_OFFER_ID
@@ -184,28 +194,18 @@ columns:
     description: "Id phương án mua bán cổ phiếu quỹ (COMPANY_TREASURY_SHARES.ID) gắn với tin công bố (form TBCPQ%/KQCPQ%)."
     key: null
     fk_note: null
-  - name: DISCLOSURE_TYPE
-    data_type: VARCHAR2(80)
-    description: "Loại công bố chào bán phát hành: NOTICE (Thông báo) / RESULT (Báo cáo kết quả)."
+  - name: APPROVER_USER_ID
+    data_type: VARCHAR2(480)
+    description: "Id user Lãnh đạo phê duyệt do Chuyên viên chọn khi Trình phê duyệt (SRS 2.12.3)."
+    key: null
+    fk_note: null
+  - name: APPROVER_USER_NAME
+    data_type: VARCHAR2(2048)
+    description: "Tên Lãnh đạo phê duyệt (denormalize để hiển thị, không join auth-service)."
     key: null
     fk_note: null
   - name: FLATTENED_FLG
     data_type: NUMBER(1,0)
     description: "Đã làm phẳng BCTC vào FINANCIAL_RATIOS_DETAIL chưa (0/1). Chỉ dùng cho tin DINH_KY; reader batch lọc = 0."
-    key: null
-    fk_note: null
-  - name: LEGAL_ENTITY_ID
-    data_type: NUMBER(10,0)
-    description: "Id cổ đông/NĐT phát hành (LEGAL_ENTITIES.ID) khi đối tượng = Cổ đông."
-    key: null
-    fk_note: null
-  - name: SECURITIES_OFFERING_ID
-    data_type: NUMBER(10,0)
-    description: "Id phương án đăng ký chào bán phát hành (SECURITIES_OFFERING.ID) gắn với tin công bố."
-    key: null
-    fk_note: null
-  - name: SYSTEM_CD
-    data_type: VARCHAR2(80)
-    description: null
     key: null
     fk_note: null

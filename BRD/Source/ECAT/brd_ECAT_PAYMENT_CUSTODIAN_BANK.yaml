@@ -104,11 +104,6 @@ columns:
     description: "*Ngày cấp giấy chứng nhận đăng ký hoạt động.*"
     key: null
     fk_note: null
-  - name: STATUS
-    data_type: "NUMBER(1,0)"
-    description: "*Trạng thái hoạt động*"
-    key: null
-    fk_note: null
   - name: CUSTODY_START_DATE
     data_type: "TIMESTAMP(6)"
     description: "*Ngày bắt đầu lưu ký*"
@@ -134,6 +129,11 @@ columns:
     description: "*Ngày ra quyết định thu hồi/giải thể.*"
     key: null
     fk_note: null
+  - name: STATUS
+    data_type: "NUMBER(1,0)"
+    description: "*Trạng thái hoạt động*"
+    key: null
+    fk_note: null
   - name: MANAGED_BY_COMPANY_ID
     data_type: "VARCHAR2(36 char)"
     description: "*Stable Id bảng Security*"
@@ -152,36 +152,6 @@ columns:
   - name: ACTIVE_REASON
     data_type: "CLOB"
     description: "*Lý do hoạt động*"
-    key: null
-    fk_note: null
-  - name: DELETED
-    data_type: "NUMBER(1,0)"
-    description: "*Xóa mềm (0: Chưa xóa, 1: Đã xóa)*"
-    key: null
-    fk_note: null
-  - name: DELETED_REASON
-    data_type: "CLOB"
-    description: "*Lý do xóa*"
-    key: null
-    fk_note: null
-  - name: VERSION
-    data_type: "NUMBER"
-    description: "*Phiên bản*"
-    key: null
-    fk_note: null
-  - name: EFFECTIVE_START_DATE
-    data_type: "TIMESTAMP(6)"
-    description: "*Ngày bắt đầu*"
-    key: null
-    fk_note: null
-  - name: EFFECTIVE_END_DATE
-    data_type: "TIMESTAMP(6)"
-    description: "*Ngày kết thúc*"
-    key: null
-    fk_note: null
-  - name: OLD_ID
-    data_type: "VARCHAR2(36 CHAR)"
-    description: "*ID cũ*"
     key: null
     fk_note: null
   - name: CREATED_AT
@@ -212,6 +182,36 @@ columns:
   - name: UPDATED_BY_NAME
     data_type: "VARCHAR2(800)"
     description: "*Tên người cập nhật*"
+    key: null
+    fk_note: null
+  - name: EFFECTIVE_START_DATE
+    data_type: "TIMESTAMP(6)"
+    description: "*Ngày bắt đầu*"
+    key: null
+    fk_note: null
+  - name: EFFECTIVE_END_DATE
+    data_type: "TIMESTAMP(6)"
+    description: "*Ngày kết thúc*"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: "NUMBER(1,0)"
+    description: "*Xóa mềm (0: Chưa xóa, 1: Đã xóa)*"
+    key: null
+    fk_note: null
+  - name: DELETED_REASON
+    data_type: "CLOB"
+    description: "*Lý do xóa*"
+    key: null
+    fk_note: null
+  - name: VERSION
+    data_type: "NUMBER"
+    description: "*Phiên bản*"
+    key: null
+    fk_note: null
+  - name: OLD_ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*ID cũ*"
     key: null
     fk_note: null
   - name: STABLE_ID

@@ -4,19 +4,9 @@ source: TTHC
 table: WorkflowBlockingActivitiesIndex
 brd_ref: BRD-SRC-TTHC-WorkflowBlockingActivitiesIndex
 columns:
-- name: ACTIVITYID
-  data_type: "NVARCHAR2(255 CHAR)"
-  description: "Activityid"
-  key: null
-  fk_note: null
-- name: ACTIVITYISSTART
-  data_type: "NUMBER(38,0)"
-  description: "Activityisstart"
-  key: null
-  fk_note: null
-- name: ACTIVITYNAME
-  data_type: "NVARCHAR2(255 CHAR)"
-  description: "Activityname"
+- name: ID
+  data_type: "NUMBER"
+  description: "Khóa chính (tự tăng)"
   key: null
   fk_note: null
 - name: DOCUMENTID
@@ -24,14 +14,24 @@ columns:
   description: "Khóa ngoại tới Document.Id của Orchard (kho lưu document JSON)"
   key: null
   fk_note: null
-- name: ID
-  data_type: "NUMBER"
-  description: "Khóa chính (tự tăng)"
+- name: ACTIVITYID
+  data_type: "NVARCHAR2(255 CHAR)"
+  description: "Activityid"
   key: null
   fk_note: null
-- name: WORKFLOWCORRELATIONID
+- name: ACTIVITYNAME
   data_type: "NVARCHAR2(255 CHAR)"
-  description: "Workflowcorrelationid"
+  description: "Activityname"
+  key: null
+  fk_note: null
+- name: ACTIVITYISSTART
+  data_type: "NUMBER(38,0)"
+  description: "Activityisstart"
+  key: null
+  fk_note: null
+- name: WORKFLOWTYPEID
+  data_type: "NVARCHAR2(255 CHAR)"
+  description: "Workflowtypeid"
   key: null
   fk_note: null
 - name: WORKFLOWID
@@ -39,8 +39,8 @@ columns:
   description: "Workflowid"
   key: null
   fk_note: null
-- name: WORKFLOWTYPEID
+- name: WORKFLOWCORRELATIONID
   data_type: "NVARCHAR2(255 CHAR)"
-  description: "Workflowtypeid"
+  description: "Workflowcorrelationid"
   key: null
   fk_note: null

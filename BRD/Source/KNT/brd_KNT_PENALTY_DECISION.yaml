@@ -4,99 +4,54 @@ source: KNT
 table: PENALTY_DECISION
 brd_ref: BRD-SRC-KNT-PENALTY_DECISION
 columns:
-- name: AGGRAVATING_MITIGATING
-  data_type: "VARCHAR2(1020)"
-  description: "Tình tiết tăng nặng/giảm nhẹ áp dụng"
-  key: null
-  fk_note: null
-- name: AML_VIOLATION
-  data_type: "NUMBER"
-  description: "Cờ có vi phạm về phòng chống rửa tiền: 1=Có, 0=Không"
-  key: null
-  fk_note: null
-- name: CLASSIFICATION
-  data_type: "NUMBER"
-  description: "Phân loại QĐ: 1=QĐ xử phạt từ thanh tra, 2=QĐ xử phạt từ giám sát"
-  key: null
-  fk_note: null
-- name: COMPLAINT_DOSSIER_ID
-  data_type: "VARCHAR2(200)"
-  description: "FK -> hồ sơ đơn thư gốc (nếu từ đơn thư)"
-  key: FK
-  fk_note: null
-- name: COMPLAINT_ID
-  data_type: "VARCHAR2(200)"
-  description: "FK -> đơn thư khiếu nại liên quan"
-  key: FK
-  fk_note: null
-- name: CONTENT
-  data_type: "CLOB"
-  description: "Nội dung gói tin dạng XML (CLOB)"
-  key: null
-  fk_note: null
-- name: CREATED_AT
-  data_type: "DATE"
-  description: "Thời điểm tạo bản ghi"
-  key: null
-  fk_note: null
-- name: CREATED_BY
-  data_type: "VARCHAR2(200)"
-  description: "Tài khoản/tên người tạo bản ghi"
-  key: null
-  fk_note: null
-- name: DECISION_NAME
-  data_type: "VARCHAR2(4000)"
-  description: "Tên đầy đủ của quyết định xử phạt"
-  key: null
-  fk_note: null
-- name: DECISION_REVISION_COUNT
-  data_type: "NUMBER"
-  description: "Số lần ban hành QĐ giải quyết (lần 1, 2, 3...)"
-  key: null
-  fk_note: null
-- name: DECISION_SIGNED_DATE
-  data_type: "DATE"
-  description: "Ngày ký ban hành quyết định xử phạt"
-  key: null
-  fk_note: null
-- name: END_DATE
-  data_type: "DATE"
-  description: "Ngày kết thúc hiệu lực quyết định xử phạt"
-  key: null
-  fk_note: null
-- name: ENFORCEMENT_FROM_DATE
-  data_type: "DATE"
-  description: "Ngày bắt đầu thi hành quyết định"
-  key: null
-  fk_note: null
-- name: ENFORCEMENT_TO_DATE
-  data_type: "DATE"
-  description: "Ngày kết thúc thi hành quyết định"
-  key: null
-  fk_note: null
-- name: FULL_SEARCH
-  data_type: "VARCHAR2(4000)"
-  description: "Chuỗi tìm kiếm toàn văn (full-text search) tổng hợp các trường"
-  key: null
-  fk_note: null
 - name: ID
   data_type: "VARCHAR2(200)"
   description: "Khóa chính của bản ghi (ID số tự tăng)"
   key: null
-  fk_note: null
-- name: INSPECTED_SUBJECT_ID
-  data_type: "VARCHAR2(200)"
-  description: "FK -> đối tượng thanh tra trong hồ sơ thanh tra"
-  key: FK
   fk_note: null
 - name: INSPECTION_DOSSIER_ID
   data_type: "VARCHAR2(200)"
   description: "FK -> hồ sơ thanh tra gốc (nếu từ thanh tra)"
   key: FK
   fk_note: null
+- name: COMPLAINT_DOSSIER_ID
+  data_type: "VARCHAR2(200)"
+  description: "FK -> hồ sơ đơn thư gốc (nếu từ đơn thư)"
+  key: FK
+  fk_note: null
+- name: PENALTY_DECISION_NUMBER
+  data_type: "VARCHAR2(200)"
+  description: "Số quyết định xử phạt vi phạm hành chính"
+  key: null
+  fk_note: null
+- name: VIOLATION_RECORD_NUMBER
+  data_type: "VARCHAR2(200)"
+  description: "Số biên bản vi phạm hành chính"
+  key: null
+  fk_note: null
+- name: VIOLATION_RECORD_DATE
+  data_type: "DATE"
+  description: "Ngày lập biên bản vi phạm hành chính"
+  key: null
+  fk_note: null
 - name: MAIN_PENALTY_TYPE
   data_type: "NUMBER"
   description: "Hình thức phạt chính: 1=Nhắc nhở, 2=Cảnh cáo, 3=Phạt tiền"
+  key: null
+  fk_note: null
+- name: SUPPLEMENTARY_PENALTY
+  data_type: "VARCHAR2(200)"
+  description: "Hình thức phạt bổ sung (nếu có)"
+  key: null
+  fk_note: null
+- name: AGGRAVATING_MITIGATING
+  data_type: "VARCHAR2(1020)"
+  description: "Tình tiết tăng nặng/giảm nhẹ áp dụng"
+  key: null
+  fk_note: null
+- name: TOTAL_FINE_AMOUNT
+  data_type: "NUMBER"
+  description: "Tổng số tiền phạt theo quyết định (đơn vị: đồng)"
   key: null
   fk_note: null
 - name: NOTE
@@ -104,24 +59,39 @@ columns:
   description: "Ghi chú bổ sung"
   key: null
   fk_note: null
+- name: STATUS
+  data_type: "NUMBER"
+  description: "Trạng thái quyết định xử phạt: 1=Hiệu lực, 0=Không hiệu lực/đã hủy"
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: "VARCHAR2(200)"
+  description: "Tài khoản/tên người tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: "DATE"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: AML_VIOLATION
+  data_type: "NUMBER"
+  description: "Cờ có vi phạm về phòng chống rửa tiền: 1=Có, 0=Không"
+  key: null
+  fk_note: null
 - name: PAID_FINE_AMOUNT
   data_type: "NUMBER"
   description: "Số tiền phạt đã nộp (nhưng chưa đủ tổng)"
   key: null
   fk_note: null
-- name: PENALTY_DECISION_NUMBER
+- name: COMPLAINT_ID
   data_type: "VARCHAR2(200)"
-  description: "Số quyết định xử phạt vi phạm hành chính"
-  key: null
+  description: "FK -> đơn thư khiếu nại liên quan"
+  key: FK
   fk_note: null
-- name: REVOKE_LICENSE_FLAG
+- name: SUBJECT_TYPE
   data_type: "NUMBER"
-  description: "Cờ tước quyền sử dụng GPHN/CCHN: 1=Có, 0=Không"
-  key: null
-  fk_note: null
-- name: STATUS
-  data_type: "NUMBER"
-  description: "Trạng thái quyết định xử phạt: 1=Hiệu lực, 0=Không hiệu lực/đã hủy"
+  description: "Loại đối tượng: 1=CTĐC, 2=CTCK, 3=QLQ, 4=Cá nhân, 5=Ngoài danh mục"
   key: null
   fk_note: null
 - name: SUBJECT_ID
@@ -134,14 +104,59 @@ columns:
   description: "Tên tổ chức/cá nhân đối tượng"
   key: null
   fk_note: null
-- name: SUBJECT_TYPE
+- name: INSPECTED_SUBJECT_ID
+  data_type: "VARCHAR2(200)"
+  description: "FK -> đối tượng thanh tra trong hồ sơ thanh tra"
+  key: FK
+  fk_note: null
+- name: CLASSIFICATION
   data_type: "NUMBER"
-  description: "Loại đối tượng: 1=CTĐC, 2=CTCK, 3=QLQ, 4=Cá nhân, 5=Ngoài danh mục"
+  description: "Phân loại QĐ: 1=QĐ xử phạt từ thanh tra, 2=QĐ xử phạt từ giám sát"
   key: null
   fk_note: null
-- name: SUPPLEMENTARY_PENALTY
-  data_type: "VARCHAR2(200)"
-  description: "Hình thức phạt bổ sung (nếu có)"
+- name: FULL_SEARCH
+  data_type: "VARCHAR2(4000)"
+  description: "Chuỗi tìm kiếm toàn văn (full-text search) tổng hợp các trường"
+  key: null
+  fk_note: null
+- name: END_DATE
+  data_type: "DATE"
+  description: "Ngày kết thúc hiệu lực quyết định xử phạt"
+  key: null
+  fk_note: null
+- name: VIOLATION_AMOUNT
+  data_type: "NUMBER"
+  description: "Số tiền vi phạm (giá trị giao dịch vi phạm, đơn vị: đồng)"
+  key: null
+  fk_note: null
+- name: DECISION_REVISION_COUNT
+  data_type: "NUMBER"
+  description: "Số lần ban hành QĐ giải quyết (lần 1, 2, 3...)"
+  key: null
+  fk_note: null
+- name: ENFORCEMENT_FROM_DATE
+  data_type: "DATE"
+  description: "Ngày bắt đầu thi hành quyết định"
+  key: null
+  fk_note: null
+- name: ENFORCEMENT_TO_DATE
+  data_type: "DATE"
+  description: "Ngày kết thúc thi hành quyết định"
+  key: null
+  fk_note: null
+- name: DECISION_SIGNED_DATE
+  data_type: "DATE"
+  description: "Ngày ký ban hành quyết định xử phạt"
+  key: null
+  fk_note: null
+- name: CONTENT
+  data_type: "CLOB"
+  description: "Nội dung gói tin dạng XML (CLOB)"
+  key: null
+  fk_note: null
+- name: REVOKE_LICENSE_FLAG
+  data_type: "NUMBER"
+  description: "Cờ tước quyền sử dụng GPHN/CCHN: 1=Có, 0=Không"
   key: null
   fk_note: null
 - name: SUSPEND_OPERATION_FLAG
@@ -154,23 +169,8 @@ columns:
   description: "Thời hạn đình chỉ hoạt động (VD: 3 tháng, 1 năm)"
   key: null
   fk_note: null
-- name: TOTAL_FINE_AMOUNT
-  data_type: "NUMBER"
-  description: "Tổng số tiền phạt theo quyết định (đơn vị: đồng)"
-  key: null
-  fk_note: null
-- name: VIOLATION_AMOUNT
-  data_type: "NUMBER"
-  description: "Số tiền vi phạm (giá trị giao dịch vi phạm, đơn vị: đồng)"
-  key: null
-  fk_note: null
-- name: VIOLATION_RECORD_DATE
-  data_type: "DATE"
-  description: "Ngày lập biên bản vi phạm hành chính"
-  key: null
-  fk_note: null
-- name: VIOLATION_RECORD_NUMBER
-  data_type: "VARCHAR2(200)"
-  description: "Số biên bản vi phạm hành chính"
+- name: DECISION_NAME
+  data_type: "VARCHAR2(4000)"
+  description: "Tên đầy đủ của quyết định xử phạt"
   key: null
   fk_note: null

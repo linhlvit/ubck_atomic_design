@@ -4,31 +4,6 @@ source: KNT
 table: SYS_AUDIT_LOG
 brd_ref: BRD-SRC-KNT-SYS_AUDIT_LOG
 columns:
-- name: ACTION
-  data_type: "NUMBER"
-  description: "Hành động nhật ký (HanhDongEnum): 0=Xem, 1=Thêm mới, 2=Cập nhật, 3=Xóa, 4=Thay đổi trạng thái, 5=Xóa chọn, 6=Cập nhật quyền, 7=Đăng nhập, 8=Đăng xuất, 9=Cập nhật TT người dùng, 10=Send Xml, 11=Sinh dữ liệu, 12=Xử lý DL, 13=Gửi msg, 14=Send Xml BTC, 15=Sinh DL tiếp, 16=Send thủ công TCT, 17=Send tiếp TCT, 18=Send tiếp BTC, 19=Tạo XML gói tin"
-  key: null
-  fk_note: null
-- name: CLIENT_IP
-  data_type: "VARCHAR2(50)"
-  description: "Địa chỉ IP của máy khách thực hiện thao tác"
-  key: null
-  fk_note: null
-- name: CREATED_AT
-  data_type: "DATE"
-  description: "Thời điểm tạo bản ghi"
-  key: null
-  fk_note: null
-- name: DESCRIPTION
-  data_type: "VARCHAR2(4000)"
-  description: "Mô tả chi tiết"
-  key: null
-  fk_note: null
-- name: FUNCTION_NAME
-  data_type: "VARCHAR2(800)"
-  description: "Tên chức năng/menu hiển thị trên giao diện"
-  key: null
-  fk_note: null
 - name: ID
   data_type: "NUMBER"
   description: "Khóa chính của bản ghi (ID số tự tăng)"
@@ -37,5 +12,30 @@ columns:
 - name: USERNAME
   data_type: "VARCHAR2(400)"
   description: "Tên đăng nhập"
+  key: null
+  fk_note: null
+- name: DESCRIPTION
+  data_type: "VARCHAR2(4000)"
+  description: "Mô tả chi tiết"
+  key: null
+  fk_note: null
+- name: ACTION
+  data_type: "NUMBER"
+  description: "Hành động nhật ký (HanhDongEnum): 0=Xem, 1=Thêm mới, 2=Cập nhật, 3=Xóa, 4=Thay đổi trạng thái, 5=Xóa chọn, 6=Cập nhật quyền, 7=Đăng nhập, 8=Đăng xuất, 9=Cập nhật TT người dùng, 10=Send Xml, 11=Sinh dữ liệu, 12=Xử lý DL, 13=Gửi msg, 14=Send Xml BTC, 15=Sinh DL tiếp, 16=Send thủ công TCT, 17=Send tiếp TCT, 18=Send tiếp BTC, 19=Tạo XML gói tin"
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: "DATE"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CLIENT_IP
+  data_type: "VARCHAR2(50)"
+  description: "Địa chỉ IP của máy khách thực hiện thao tác"
+  key: null
+  fk_note: null
+- name: FUNCTION_NAME
+  data_type: "VARCHAR2(800)"
+  description: "Tên chức năng/menu hiển thị trên giao diện"
   key: null
   fk_note: null

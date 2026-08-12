@@ -14,9 +14,9 @@ columns:
     description: "Mã công việc (tự sinh)"
     key: null
     fk_note: null
-  - name: JOB_TYPE
-    data_type: "NUMBER(10,0)"
-    description: "Loại công việc"
+  - name: JOB_NAME
+    data_type: "VARCHAR2(1020)"
+    description: "Tên công việc"
     key: null
     fk_note: null
   - name: ANALYSIS_START_DATE
@@ -34,9 +34,9 @@ columns:
     description: "Thời gian xử lý. Ngày bắt đầu"
     key: null
     fk_note: null
-  - name: PROCESSING _END_DATE
-    data_type: "TIMESTAMP"
-    description: "Thời gian xử lý. Ngày kết thúc"
+  - name: PROCESSING_END_DATE
+    data_type: "TIMESTAMP(6)"
+    description: "Ngay ket thuc xu ly"
     key: null
     fk_note: null
   - name: DESCRIPTION
@@ -44,24 +44,14 @@ columns:
     description: "Chi tiết"
     key: null
     fk_note: null
-  - name: JOB_NAME
-    data_type: "VARCHAR2(1020)"
-    description: "Tên công việc"
+  - name: JOB_TYPE
+    data_type: "NUMBER(10,0)"
+    description: "Loại công việc"
     key: null
     fk_note: null
   - name: STATUS
     data_type: "NUMBER(10,0)"
     description: "Trạng thái"
-    key: null
-    fk_note: null
-  - name: ASSAGIN_TO
-    data_type: "VARCHAR2(36)"
-    description: "Người được phân công"
-    key: null
-    fk_note: null
-  - name: REJECTION_REASION
-    data_type: "VARCHAR2(1000 CHAR)"
-    description: "Lý do từ chối"
     key: null
     fk_note: null
   - name: CREATED_AT
@@ -104,18 +94,13 @@ columns:
     description: "Nguoi duoc giao viec"
     key: null
     fk_note: null
-  - name: INFORMATION_SOURCE
-    data_type: "VARCHAR2(2000)"
-    description: "Nguon thong tin"
-    key: null
-    fk_note: null
-  - name: PROCESSING_END_DATE
-    data_type: "TIMESTAMP(6)"
-    description: "Ngay ket thuc xu ly"
-    key: null
-    fk_note: null
   - name: REJECTION_REASON
     data_type: "VARCHAR2(100)"
     description: "Ly do tu choi"
+    key: null
+    fk_note: null
+  - name: INFORMATION_SOURCE
+    data_type: "VARCHAR2(2000)"
+    description: "Nguon thong tin"
     key: null
     fk_note: null

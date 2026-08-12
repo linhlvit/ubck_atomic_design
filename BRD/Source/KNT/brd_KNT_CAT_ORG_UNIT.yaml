@@ -4,19 +4,44 @@ source: KNT
 table: CAT_ORG_UNIT
 brd_ref: BRD-SRC-KNT-CAT_ORG_UNIT
 columns:
+- name: ID
+  data_type: "NUMBER"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: ORG_UNIT_CODE
+  data_type: "VARCHAR2(200)"
+  description: "Mã đơn vị gửi báo cáo (CTCK/QLQ/CN QLQ NN...)"
+  key: null
+  fk_note: null
+- name: ORG_UNIT_NAME
+  data_type: "VARCHAR2(2000)"
+  description: "Tên đơn vị tổ chức"
+  key: null
+  fk_note: null
+- name: HIERARCHY_CODE
+  data_type: "VARCHAR2(200)"
+  description: "Mã phân cấp chức năng (dạng chuỗi phân cấp)"
+  key: null
+  fk_note: null
+- name: PARENT_HIERARCHY_CODE
+  data_type: "VARCHAR2(200)"
+  description: "Mã phân cấp cha"
+  key: null
+  fk_note: null
+- name: TAX_CODE
+  data_type: "VARCHAR2(1000)"
+  description: "Mã số thuế doanh nghiệp"
+  key: null
+  fk_note: null
 - name: ADDRESS
   data_type: "VARCHAR2(4000)"
   description: "Địa chỉ"
   key: null
   fk_note: null
-- name: CAT_LEVEL
-  data_type: "NUMBER"
-  description: null
-  key: null
-  fk_note: null
-- name: DESCRIPTION
-  data_type: "VARCHAR2(4000)"
-  description: "Mô tả chi tiết"
+- name: PHONE
+  data_type: "VARCHAR2(80)"
+  description: "Số điện thoại liên hệ"
   key: null
   fk_note: null
 - name: EMAIL
@@ -29,29 +54,9 @@ columns:
   description: "Số fax"
   key: null
   fk_note: null
-- name: HIERARCHY_CODE
-  data_type: "VARCHAR2(200)"
-  description: "Mã phân cấp chức năng (dạng chuỗi phân cấp)"
-  key: null
-  fk_note: null
-- name: ID
-  data_type: "NUMBER"
-  description: "Khóa chính của bản ghi (ID số tự tăng)"
-  key: PK
-  fk_note: null
-- name: LAST_MODIFIED_AT
-  data_type: "DATE"
-  description: "Thời điểm cập nhật lần cuối"
-  key: null
-  fk_note: null
-- name: ORG_UNIT_CODE
-  data_type: "VARCHAR2(200)"
-  description: "Mã đơn vị gửi báo cáo (CTCK/QLQ/CN QLQ NN...)"
-  key: null
-  fk_note: null
-- name: ORG_UNIT_NAME
-  data_type: "VARCHAR2(2000)"
-  description: "Tên đơn vị tổ chức"
+- name: WEBSITE
+  data_type: "VARCHAR2(400)"
+  description: "Địa chỉ website"
   key: null
   fk_note: null
 - name: ORG_UNIT_TYPE
@@ -59,23 +64,18 @@ columns:
   description: "Loại đơn vị: 1=Người dùng hệ thống (UBCKNN), 2=Đơn vị báo cáo (bên ngoài)"
   key: null
   fk_note: null
-- name: PARENT_HIERARCHY_CODE
-  data_type: "VARCHAR2(200)"
-  description: "Mã phân cấp cha"
+- name: DESCRIPTION
+  data_type: "VARCHAR2(4000)"
+  description: "Mô tả chi tiết"
   key: null
   fk_note: null
-- name: PHONE
-  data_type: "VARCHAR2(80)"
-  description: "Số điện thoại liên hệ"
+- name: LAST_MODIFIED_AT
+  data_type: "DATE"
+  description: "Thời điểm cập nhật lần cuối"
   key: null
   fk_note: null
-- name: TAX_CODE
-  data_type: "VARCHAR2(1000)"
-  description: "Mã số thuế doanh nghiệp"
-  key: null
-  fk_note: null
-- name: WEBSITE
-  data_type: "VARCHAR2(400)"
-  description: "Địa chỉ website"
+- name: CAT_LEVEL
+  data_type: "NUMBER"
+  description: null
   key: null
   fk_note: null

@@ -9,6 +9,11 @@ columns:
     description: "*Khóa chính (UUIDv7)*"
     key: PK
     fk_note: null
+  - name: STABLE_ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*ID bản ghi ổn định - không đổi qua các version*"
+    key: null
+    fk_note: null
   - name: CODE
     data_type: "VARCHAR2(20 CHAR)"
     description: "*Mã kiểm toán viên*"
@@ -24,6 +29,11 @@ columns:
     description: "*Stable Id Công ty kiểm toán*"
     key: null
     fk_note: null
+  - name: AF_PROFILE_VERSION_ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*ID phiên bản Công ty kiểm toán*"
+    key: null
+    fk_note: null
   - name: AUDIT_PRACTICE_CERT_NO
     data_type: "VARCHAR2(255 CHAR)"
     description: "*Số GCN đăng ký hành nghề kiểm toán*"
@@ -34,14 +44,14 @@ columns:
     description: "*Stable Id Chức vụ*"
     key: null
     fk_note: null
+  - name: POSITION_TITLE_VERSION_ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*ID phiên bản Chức vụ*"
+    key: null
+    fk_note: null
   - name: MOF_APPROVAL_DOC_NO
     data_type: "VARCHAR2(18 CHAR)"
     description: "*Số văn bản quyết định chấp thuận của Bộ Tài chính*"
-    key: null
-    fk_note: null
-  - name: STATUS
-    data_type: "NUMBER(1,0)"
-    description: "*Trạng thái hiệu lực (1: Hiệu lực, 0: Hết hiệu lực)*"
     key: null
     fk_note: null
   - name: MOF_APPROVAL_ISSUE_DATE
@@ -154,6 +164,11 @@ columns:
     description: "*ánh dấu bản ghi có bị thay đổi (0: Không, 1: Có)*"
     key: null
     fk_note: null
+  - name: STATUS
+    data_type: "NUMBER(1,0)"
+    description: "*Trạng thái hiệu lực (1: Hiệu lực, 0: Hết hiệu lực)*"
+    key: null
+    fk_note: null
   - name: ACTIVE_REASON
     data_type: "CLOB"
     description: "*Lý do hoạt động*"
@@ -217,21 +232,6 @@ columns:
   - name: UPDATED_BY_NAME
     data_type: "VARCHAR2(255 CHAR)"
     description: "*Tên người cập nhật*"
-    key: null
-    fk_note: null
-  - name: STABLE_ID
-    data_type: "VARCHAR2(36 CHAR)"
-    description: "*ID bản ghi ổn định - không đổi qua các version*"
-    key: null
-    fk_note: null
-  - name: AF_PROFILE_VERSION_ID
-    data_type: "VARCHAR2(36 CHAR)"
-    description: "*ID phiên bản Công ty kiểm toán*"
-    key: null
-    fk_note: null
-  - name: POSITION_TITLE_VERSION_ID
-    data_type: "VARCHAR2(36 CHAR)"
-    description: "*ID phiên bản Chức vụ*"
     key: null
     fk_note: null
   - name: CREATED_BY

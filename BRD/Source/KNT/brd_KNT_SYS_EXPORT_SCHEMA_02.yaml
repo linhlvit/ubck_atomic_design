@@ -4,114 +4,24 @@ source: KNT
 table: SYS_EXPORT_SCHEMA_02
 brd_ref: BRD-SRC-KNT-SYS_EXPORT_SCHEMA_02
 columns:
-- name: ABORT_STEP
+- name: PROCESS_ORDER
   data_type: "NUMBER"
-  description: "Bước dừng khi abort (nội bộ Oracle)"
+  description: "Thứ tự xử lý đối tượng trong Data Pump (nội bộ Oracle)"
   key: null
   fk_note: null
-- name: ANCESTOR_PROCESS_ORDER
+- name: DUPLICATE
   data_type: "NUMBER"
-  description: "Thứ tự xử lý tổ tiên (nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: BASE_OBJECT_NAME
-  data_type: "VARCHAR2(30)"
-  description: "Tên đối tượng cơ sở (nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: BASE_OBJECT_SCHEMA
-  data_type: "VARCHAR2(30)"
-  description: "Schema đối tượng cơ sở (nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: BASE_OBJECT_TYPE
-  data_type: "VARCHAR2(30)"
-  description: "Loại đối tượng cơ sở (nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: BASE_PROCESS_ORDER
-  data_type: "NUMBER"
-  description: "Thứ tự xử lý đối tượng cơ sở (nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: BLOCK_SIZE
-  data_type: "NUMBER"
-  description: "Kích thước block (nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: CLUSTER_OK
-  data_type: "NUMBER"
-  description: "Cờ cluster hợp lệ (nội bộ Oracle RAC)"
-  key: null
-  fk_note: null
-- name: COMPLETED_BYTES
-  data_type: "NUMBER"
-  description: "Số byte đã xử lý (nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: COMPLETED_ROWS
-  data_type: "NUMBER"
-  description: "Số hàng đã xử lý xong (nội bộ Oracle Data Pump)"
-  key: null
-  fk_note: null
-- name: COMPLETION_TIME
-  data_type: "DATE"
-  description: "Thời điểm hoàn thành xử lý đối tượng (nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: CONTROL_QUEUE
-  data_type: "VARCHAR2(30)"
-  description: "Tên queue điều khiển (nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: CREATION_LEVEL
-  data_type: "NUMBER"
-  description: "Cấp độ tạo đối tượng trong Data Pump (nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: CUMULATIVE_TIME
-  data_type: "NUMBER"
-  description: "Thời gian tích lũy (nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: DATAOBJ_NUM
-  data_type: "NUMBER"
-  description: "Số đối tượng dữ liệu Oracle (nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: DATA_BUFFER_SIZE
-  data_type: "NUMBER"
-  description: "Kích thước buffer dữ liệu (nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: DATA_IO
-  data_type: "NUMBER"
-  description: "I/O dữ liệu (nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: DB_VERSION
-  data_type: "VARCHAR2(30)"
-  description: "Phiên bản Oracle Database (nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: DEGREE
-  data_type: "NUMBER"
-  description: "Số degree song song (nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: DOMAIN_PROCESS_ORDER
-  data_type: "NUMBER"
-  description: "Thứ tự xử lý domain (nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: DUMP_ALLOCATION
-  data_type: "NUMBER"
-  description: "Dung lượng phân bổ trong file dump (nội bộ Oracle)"
+  description: "Cờ đối tượng bị trùng lặp (nội bộ Oracle)"
   key: null
   fk_note: null
 - name: DUMP_FILEID
   data_type: "NUMBER"
   description: "ID file dump chứa dữ liệu (nội bộ Oracle Data Pump)"
+  key: null
+  fk_note: null
+- name: DUMP_POSITION
+  data_type: "NUMBER"
+  description: "Vị trí bắt đầu trong file dump (nội bộ Oracle)"
   key: null
   fk_note: null
 - name: DUMP_LENGTH
@@ -124,19 +34,14 @@ columns:
   description: "Độ dài dữ liệu gốc trước nén (nội bộ Oracle)"
   key: null
   fk_note: null
-- name: DUMP_POSITION
+- name: DUMP_ALLOCATION
   data_type: "NUMBER"
-  description: "Vị trí bắt đầu trong file dump (nội bộ Oracle)"
+  description: "Dung lượng phân bổ trong file dump (nội bộ Oracle)"
   key: null
   fk_note: null
-- name: DUPLICATE
+- name: COMPLETED_ROWS
   data_type: "NUMBER"
-  description: "Cờ đối tượng bị trùng lặp (nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: ELAPSED_TIME
-  data_type: "NUMBER"
-  description: "Thời gian thực thi (nội bộ Oracle Data Pump)"
+  description: "Số hàng đã xử lý xong (nội bộ Oracle Data Pump)"
   key: null
   fk_note: null
 - name: ERROR_COUNT
@@ -144,149 +49,9 @@ columns:
   description: "Số lỗi phát sinh trong quá trình xuất/nhập (nội bộ Oracle)"
   key: null
   fk_note: null
-- name: EXTEND_SIZE
+- name: ELAPSED_TIME
   data_type: "NUMBER"
-  description: "Kích thước mở rộng file (nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: FILE_MAX_SIZE
-  data_type: "NUMBER"
-  description: "Kích thước tối đa file dump (nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: FILE_NAME
-  data_type: "VARCHAR2(4000)"
-  description: "Tên file dump thực tế trên đĩa (nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: FILE_TYPE
-  data_type: "NUMBER"
-  description: "Loại file dump (nội bộ Oracle Data Pump)"
-  key: null
-  fk_note: null
-- name: FLAGS
-  data_type: "NUMBER"
-  description: "Cờ trạng thái nội bộ Oracle Data Pump"
-  key: null
-  fk_note: null
-- name: GRANTOR
-  data_type: "VARCHAR2(30)"
-  description: "Người cấp quyền (nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: GRANULES
-  data_type: "NUMBER"
-  description: "Số granule xử lý (nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: GUID
-  data_type: "RAW(16)"
-  description: "Định danh duy nhất toàn cục (GUID/UUID) của bản ghi"
-  key: null
-  fk_note: null
-- name: INSTANCE
-  data_type: "VARCHAR2(60)"
-  description: "Tên instance Oracle (nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: INSTANCE_ID
-  data_type: "NUMBER"
-  description: "ID instance Oracle (nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: IN_PROGRESS
-  data_type: "CHAR(1)"
-  description: "Cờ đang xử lý: Y=Đang chạy (nội bộ Oracle Data Pump)"
-  key: null
-  fk_note: null
-- name: IS_DEFAULT
-  data_type: "NUMBER"
-  description: "Cờ giá trị mặc định (nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: JOB_MODE
-  data_type: "VARCHAR2(30)"
-  description: "Chế độ job: FULL/SCHEMA/TABLE (nội bộ Oracle Data Pump)"
-  key: null
-  fk_note: null
-- name: JOB_VERSION
-  data_type: "VARCHAR2(30)"
-  description: "Phiên bản Oracle của job (nội bộ Oracle Data Pump)"
-  key: null
-  fk_note: null
-- name: LAST_FILE
-  data_type: "NUMBER"
-  description: "File cuối cùng (nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: LAST_MODIFIED_AT
-  data_type: "DATE"
-  description: "Thời điểm cập nhật lần cuối"
-  key: null
-  fk_note: null
-- name: LOAD_METHOD
-  data_type: "NUMBER"
-  description: "Phương thức load dữ liệu (nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: METADATA_BUFFER_SIZE
-  data_type: "NUMBER"
-  description: "Kích thước buffer metadata (nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: METADATA_IO
-  data_type: "NUMBER"
-  description: "I/O metadata (nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: NAME
-  data_type: "VARCHAR2(30)"
-  description: "Tên đầy đủ"
-  key: null
-  fk_note: null
-- name: OBJECT_INT_OID
-  data_type: "VARCHAR2(32)"
-  description: "Object internal OID (nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: OBJECT_LONG_NAME
-  data_type: "VARCHAR2(4000)"
-  description: "Tên đầy đủ đối tượng Oracle (nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: OBJECT_NAME
-  data_type: "VARCHAR2(500)"
-  description: "Tên đối tượng Oracle cần xuất/nhập (nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: OBJECT_NUMBER
-  data_type: "NUMBER"
-  description: "Số thứ tự đối tượng trong schema (nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: OBJECT_PATH_SEQNO
-  data_type: "NUMBER"
-  description: "Số thứ tự đường dẫn đối tượng (nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: OBJECT_ROW
-  data_type: "NUMBER"
-  description: "Số hàng trong đối tượng (nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: OBJECT_SCHEMA
-  data_type: "VARCHAR2(30)"
-  description: "Schema chứa đối tượng Oracle (nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: OBJECT_TABLESPACE
-  data_type: "VARCHAR2(30)"
-  description: "Tablespace chứa đối tượng (nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: OBJECT_TYPE
-  data_type: "VARCHAR2(30)"
-  description: "Loại đối tượng Oracle: TABLE, INDEX, PROCEDURE... (nội bộ Oracle)"
+  description: "Thời gian thực thi (nội bộ Oracle Data Pump)"
   key: null
   fk_note: null
 - name: OBJECT_TYPE_PATH
@@ -294,19 +59,34 @@ columns:
   description: "Đường dẫn loại đối tượng trong Data Pump (nội bộ Oracle)"
   key: null
   fk_note: null
-- name: OLD_VALUE
-  data_type: "VARCHAR2(4000)"
-  description: "Giá trị cũ (nội bộ Oracle)"
+- name: OBJECT_PATH_SEQNO
+  data_type: "NUMBER"
+  description: "Số thứ tự đường dẫn đối tượng (nội bộ Oracle)"
   key: null
   fk_note: null
-- name: OPERATION
+- name: OBJECT_TYPE
   data_type: "VARCHAR2(30)"
-  description: "Loại thao tác: EXPORT/IMPORT (nội bộ Oracle Data Pump)"
+  description: "Loại đối tượng Oracle: TABLE, INDEX, PROCEDURE... (nội bộ Oracle)"
   key: null
   fk_note: null
-- name: ORIGINAL_OBJECT_NAME
+- name: IN_PROGRESS
+  data_type: "CHAR(1)"
+  description: "Cờ đang xử lý: Y=Đang chạy (nội bộ Oracle Data Pump)"
+  key: null
+  fk_note: null
+- name: OBJECT_NAME
+  data_type: "VARCHAR2(500)"
+  description: "Tên đối tượng Oracle cần xuất/nhập (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: OBJECT_LONG_NAME
   data_type: "VARCHAR2(4000)"
-  description: "Tên gốc của đối tượng trước khi xuất (nội bộ Oracle)"
+  description: "Tên đầy đủ đối tượng Oracle (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: OBJECT_SCHEMA
+  data_type: "VARCHAR2(30)"
+  description: "Schema chứa đối tượng Oracle (nội bộ Oracle)"
   key: null
   fk_note: null
 - name: ORIGINAL_OBJECT_SCHEMA
@@ -314,19 +94,9 @@ columns:
   description: "Schema gốc của đối tượng trước khi xuất (nội bộ Oracle)"
   key: null
   fk_note: null
-- name: PACKET_NUMBER
-  data_type: "NUMBER"
-  description: "Số packet (nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: PARALLELIZATION
-  data_type: "NUMBER"
-  description: "Số luồng song song xử lý (nội bộ Oracle Data Pump)"
-  key: null
-  fk_note: null
-- name: PARENT_PROCESS_ORDER
-  data_type: "NUMBER"
-  description: "Thứ tự xử lý đối tượng cha (nội bộ Oracle)"
+- name: ORIGINAL_OBJECT_NAME
+  data_type: "VARCHAR2(4000)"
+  description: "Tên gốc của đối tượng trước khi xuất (nội bộ Oracle)"
   key: null
   fk_note: null
 - name: PARTITION_NAME
@@ -334,14 +104,54 @@ columns:
   description: "Tên partition của bảng (nội bộ Oracle)"
   key: null
   fk_note: null
-- name: PHASE
-  data_type: "NUMBER"
-  description: "Pha thực thi job (nội bộ Oracle)"
+- name: SUBPARTITION_NAME
+  data_type: "VARCHAR2(30)"
+  description: "Tên sub-partition của bảng (nội bộ Oracle)"
   key: null
   fk_note: null
-- name: PLATFORM
-  data_type: "VARCHAR2(101)"
-  description: "Nền tảng OS (nội bộ Oracle)"
+- name: DATAOBJ_NUM
+  data_type: "NUMBER"
+  description: "Số đối tượng dữ liệu Oracle (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: FLAGS
+  data_type: "NUMBER"
+  description: "Cờ trạng thái nội bộ Oracle Data Pump"
+  key: null
+  fk_note: null
+- name: PROPERTY
+  data_type: "NUMBER"
+  description: "Thuộc tính đối tượng Oracle (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: TRIGFLAG
+  data_type: "NUMBER"
+  description: "Cờ trigger Oracle (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: CREATION_LEVEL
+  data_type: "NUMBER"
+  description: "Cấp độ tạo đối tượng trong Data Pump (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: COMPLETION_TIME
+  data_type: "DATE"
+  description: "Thời điểm hoàn thành xử lý đối tượng (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: OBJECT_TABLESPACE
+  data_type: "VARCHAR2(30)"
+  description: "Tablespace chứa đối tượng (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: SIZE_ESTIMATE
+  data_type: "NUMBER"
+  description: "Ước tính dung lượng đối tượng (byte, nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: OBJECT_ROW
+  data_type: "NUMBER"
+  description: "Số hàng trong đối tượng (nội bộ Oracle)"
   key: null
   fk_note: null
 - name: PROCESSING_STATE
@@ -354,29 +164,54 @@ columns:
   description: "Kết quả xử lý đối tượng (nội bộ Oracle Data Pump)"
   key: null
   fk_note: null
-- name: PROCESS_NAME
+- name: BASE_PROCESS_ORDER
+  data_type: "NUMBER"
+  description: "Thứ tự xử lý đối tượng cơ sở (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: BASE_OBJECT_TYPE
   data_type: "VARCHAR2(30)"
-  description: "Tên tiến trình Data Pump (nội bộ Oracle)"
+  description: "Loại đối tượng cơ sở (nội bộ Oracle)"
   key: null
   fk_note: null
-- name: PROCESS_ORDER
+- name: BASE_OBJECT_NAME
+  data_type: "VARCHAR2(30)"
+  description: "Tên đối tượng cơ sở (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: BASE_OBJECT_SCHEMA
+  data_type: "VARCHAR2(30)"
+  description: "Schema đối tượng cơ sở (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: ANCESTOR_PROCESS_ORDER
   data_type: "NUMBER"
-  description: "Thứ tự xử lý đối tượng trong Data Pump (nội bộ Oracle)"
+  description: "Thứ tự xử lý tổ tiên (nội bộ Oracle)"
   key: null
   fk_note: null
-- name: PROPERTY
+- name: DOMAIN_PROCESS_ORDER
   data_type: "NUMBER"
-  description: "Thuộc tính đối tượng Oracle (nội bộ Oracle)"
+  description: "Thứ tự xử lý domain (nội bộ Oracle)"
   key: null
   fk_note: null
-- name: QUEUE_TABNUM
+- name: PARALLELIZATION
   data_type: "NUMBER"
-  description: "Số bảng queue (nội bộ Oracle)"
+  description: "Số luồng song song xử lý (nội bộ Oracle Data Pump)"
   key: null
   fk_note: null
-- name: REMOTE_LINK
-  data_type: "VARCHAR2(4000)"
-  description: "Database link từ xa (nội bộ Oracle)"
+- name: UNLOAD_METHOD
+  data_type: "NUMBER"
+  description: "Phương thức unload dữ liệu (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: LOAD_METHOD
+  data_type: "NUMBER"
+  description: "Phương thức load dữ liệu (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: GRANULES
+  data_type: "NUMBER"
+  description: "Số granule xử lý (nội bộ Oracle)"
   key: null
   fk_note: null
 - name: SCN
@@ -384,59 +219,44 @@ columns:
   description: "System Change Number tại thời điểm xuất (nội bộ Oracle)"
   key: null
   fk_note: null
-- name: SEED
-  data_type: "NUMBER"
-  description: "Seed cho random (nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: SERVICE_NAME
-  data_type: "VARCHAR2(100)"
-  description: "Tên dịch vụ trao đổi dữ liệu"
-  key: null
-  fk_note: null
-- name: SIZE_ESTIMATE
-  data_type: "NUMBER"
-  description: "Ước tính dung lượng đối tượng (byte, nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: START_TIME
-  data_type: "DATE"
-  description: "Thời điểm bắt đầu job (nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: STATE
+- name: GRANTOR
   data_type: "VARCHAR2(30)"
-  description: "Trạng thái job Data Pump (nội bộ Oracle)"
+  description: "Người cấp quyền (nội bộ Oracle)"
   key: null
   fk_note: null
-- name: STATUS_QUEUE
+- name: XML_CLOB
+  data_type: "CLOB"
+  description: "Metadata XML của đối tượng (CLOB, nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: PARENT_PROCESS_ORDER
+  data_type: "NUMBER"
+  description: "Thứ tự xử lý đối tượng cha (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: NAME
   data_type: "VARCHAR2(30)"
-  description: "Tên queue trạng thái (nội bộ Oracle)"
+  description: "Tên đầy đủ"
   key: null
   fk_note: null
-- name: SUBPARTITION_NAME
-  data_type: "VARCHAR2(30)"
-  description: "Tên sub-partition của bảng (nội bộ Oracle)"
+- name: VALUE_T
+  data_type: "VARCHAR2(4000)"
+  description: "Giá trị kiểu text của tham số job (nội bộ Oracle)"
   key: null
   fk_note: null
-- name: TIMEZONE
-  data_type: "VARCHAR2(64)"
-  description: "Múi giờ của job (nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: TOTAL_BYTES
+- name: VALUE_N
   data_type: "NUMBER"
-  description: "Tổng số byte cần xử lý (nội bộ Oracle)"
+  description: "Giá trị kiểu số của tham số job (nội bộ Oracle)"
   key: null
   fk_note: null
-- name: TRIGFLAG
+- name: IS_DEFAULT
   data_type: "NUMBER"
-  description: "Cờ trigger Oracle (nội bộ Oracle)"
+  description: "Cờ giá trị mặc định (nội bộ Oracle)"
   key: null
   fk_note: null
-- name: UNLOAD_METHOD
+- name: FILE_TYPE
   data_type: "NUMBER"
-  description: "Phương thức unload dữ liệu (nội bộ Oracle)"
+  description: "Loại file dump (nội bộ Oracle Data Pump)"
   key: null
   fk_note: null
 - name: USER_DIRECTORY
@@ -449,24 +269,29 @@ columns:
   description: "Tên file do người dùng đặt (nội bộ Oracle)"
   key: null
   fk_note: null
-- name: USER_NAME
-  data_type: "VARCHAR2(30)"
-  description: "Tên người dùng thực hiện job (nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: VALUE_N
-  data_type: "NUMBER"
-  description: "Giá trị kiểu số của tham số job (nội bộ Oracle)"
-  key: null
-  fk_note: null
-- name: VALUE_T
+- name: FILE_NAME
   data_type: "VARCHAR2(4000)"
-  description: "Giá trị kiểu text của tham số job (nội bộ Oracle)"
+  description: "Tên file dump thực tế trên đĩa (nội bộ Oracle)"
   key: null
   fk_note: null
-- name: VERSION
+- name: EXTEND_SIZE
   data_type: "NUMBER"
-  description: "Phiên bản giao thức trao đổi dữ liệu"
+  description: "Kích thước mở rộng file (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: FILE_MAX_SIZE
+  data_type: "NUMBER"
+  description: "Kích thước tối đa file dump (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: PROCESS_NAME
+  data_type: "VARCHAR2(30)"
+  description: "Tên tiến trình Data Pump (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: LAST_MODIFIED_AT
+  data_type: "DATE"
+  description: "Thời điểm cập nhật lần cuối"
   key: null
   fk_note: null
 - name: WORK_ITEM
@@ -474,8 +299,183 @@ columns:
   description: "Mục công việc đang xử lý (nội bộ Oracle)"
   key: null
   fk_note: null
-- name: XML_CLOB
-  data_type: "CLOB"
-  description: "Metadata XML của đối tượng (CLOB, nội bộ Oracle)"
+- name: OBJECT_NUMBER
+  data_type: "NUMBER"
+  description: "Số thứ tự đối tượng trong schema (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: COMPLETED_BYTES
+  data_type: "NUMBER"
+  description: "Số byte đã xử lý (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: TOTAL_BYTES
+  data_type: "NUMBER"
+  description: "Tổng số byte cần xử lý (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: METADATA_IO
+  data_type: "NUMBER"
+  description: "I/O metadata (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: DATA_IO
+  data_type: "NUMBER"
+  description: "I/O dữ liệu (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: CUMULATIVE_TIME
+  data_type: "NUMBER"
+  description: "Thời gian tích lũy (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: PACKET_NUMBER
+  data_type: "NUMBER"
+  description: "Số packet (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: INSTANCE_ID
+  data_type: "NUMBER"
+  description: "ID instance Oracle (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: OLD_VALUE
+  data_type: "VARCHAR2(4000)"
+  description: "Giá trị cũ (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: SEED
+  data_type: "NUMBER"
+  description: "Seed cho random (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: LAST_FILE
+  data_type: "NUMBER"
+  description: "File cuối cùng (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: USER_NAME
+  data_type: "VARCHAR2(30)"
+  description: "Tên người dùng thực hiện job (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: OPERATION
+  data_type: "VARCHAR2(30)"
+  description: "Loại thao tác: EXPORT/IMPORT (nội bộ Oracle Data Pump)"
+  key: null
+  fk_note: null
+- name: JOB_MODE
+  data_type: "VARCHAR2(30)"
+  description: "Chế độ job: FULL/SCHEMA/TABLE (nội bộ Oracle Data Pump)"
+  key: null
+  fk_note: null
+- name: QUEUE_TABNUM
+  data_type: "NUMBER"
+  description: "Số bảng queue (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: CONTROL_QUEUE
+  data_type: "VARCHAR2(30)"
+  description: "Tên queue điều khiển (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: STATUS_QUEUE
+  data_type: "VARCHAR2(30)"
+  description: "Tên queue trạng thái (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: REMOTE_LINK
+  data_type: "VARCHAR2(4000)"
+  description: "Database link từ xa (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: VERSION
+  data_type: "NUMBER"
+  description: "Phiên bản giao thức trao đổi dữ liệu"
+  key: null
+  fk_note: null
+- name: JOB_VERSION
+  data_type: "VARCHAR2(30)"
+  description: "Phiên bản Oracle của job (nội bộ Oracle Data Pump)"
+  key: null
+  fk_note: null
+- name: DB_VERSION
+  data_type: "VARCHAR2(30)"
+  description: "Phiên bản Oracle Database (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: TIMEZONE
+  data_type: "VARCHAR2(64)"
+  description: "Múi giờ của job (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: STATE
+  data_type: "VARCHAR2(30)"
+  description: "Trạng thái job Data Pump (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: PHASE
+  data_type: "NUMBER"
+  description: "Pha thực thi job (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: GUID
+  data_type: "RAW(16)"
+  description: "Định danh duy nhất toàn cục (GUID/UUID) của bản ghi"
+  key: null
+  fk_note: null
+- name: START_TIME
+  data_type: "DATE"
+  description: "Thời điểm bắt đầu job (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: BLOCK_SIZE
+  data_type: "NUMBER"
+  description: "Kích thước block (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: METADATA_BUFFER_SIZE
+  data_type: "NUMBER"
+  description: "Kích thước buffer metadata (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: DATA_BUFFER_SIZE
+  data_type: "NUMBER"
+  description: "Kích thước buffer dữ liệu (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: DEGREE
+  data_type: "NUMBER"
+  description: "Số degree song song (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: PLATFORM
+  data_type: "VARCHAR2(101)"
+  description: "Nền tảng OS (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: ABORT_STEP
+  data_type: "NUMBER"
+  description: "Bước dừng khi abort (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: INSTANCE
+  data_type: "VARCHAR2(60)"
+  description: "Tên instance Oracle (nội bộ Oracle)"
+  key: null
+  fk_note: null
+- name: CLUSTER_OK
+  data_type: "NUMBER"
+  description: "Cờ cluster hợp lệ (nội bộ Oracle RAC)"
+  key: null
+  fk_note: null
+- name: SERVICE_NAME
+  data_type: "VARCHAR2(100)"
+  description: "Tên dịch vụ trao đổi dữ liệu"
+  key: null
+  fk_note: null
+- name: OBJECT_INT_OID
+  data_type: "VARCHAR2(32)"
+  description: "Object internal OID (nội bộ Oracle)"
   key: null
   fk_note: null

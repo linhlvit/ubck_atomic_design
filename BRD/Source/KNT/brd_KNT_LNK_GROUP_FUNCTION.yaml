@@ -4,6 +4,21 @@ source: KNT
 table: LNK_GROUP_FUNCTION
 brd_ref: BRD-SRC-KNT-LNK_GROUP_FUNCTION
 columns:
+- name: ID
+  data_type: "VARCHAR2(200)"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: USER_GROUP_ID
+  data_type: "NUMBER"
+  description: "FK -> sys_user_group: Nhóm người dùng liên quan"
+  key: FK
+  fk_note: null
+- name: FUNCTION_ID
+  data_type: "NUMBER"
+  description: "FK -> sys_function: Chức năng liên quan"
+  key: FK
+  fk_note: null
 - name: CREATED_AT
   data_type: "DATE"
   description: "Thời điểm tạo bản ghi"
@@ -18,16 +33,6 @@ columns:
   data_type: "NUMBER"
   description: "ID người dùng tạo bản ghi"
   key: null
-  fk_note: null
-- name: FUNCTION_ID
-  data_type: "NUMBER"
-  description: "FK -> sys_function: Chức năng liên quan"
-  key: FK
-  fk_note: null
-- name: ID
-  data_type: "VARCHAR2(200)"
-  description: "Khóa chính của bản ghi (ID số tự tăng)"
-  key: PK
   fk_note: null
 - name: LAST_MODIFIED_AT
   data_type: "DATE"
@@ -48,9 +53,4 @@ columns:
   data_type: "NUMBER"
   description: "Quyền truy cập bitmask (QuyenEnum, OR kết hợp): 1=Thêm, 2=Sửa, 4=Xóa, 8=Duyệt, 16=Theo đơn vị, 32=Xem"
   key: null
-  fk_note: null
-- name: USER_GROUP_ID
-  data_type: "NUMBER"
-  description: "FK -> sys_user_group: Nhóm người dùng liên quan"
-  key: FK
   fk_note: null

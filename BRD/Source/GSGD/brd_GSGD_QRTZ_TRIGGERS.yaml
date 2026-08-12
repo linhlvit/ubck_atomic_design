@@ -1,0 +1,86 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: GSGD
+table: QRTZ_TRIGGERS
+brd_ref: BRD-SRC-GSGD-QRTZ_TRIGGERS
+columns:
+- name: SCHED_NAME
+  data_type: "VARCHAR2(120)"
+  description: "QRTZ_JOB_DETAILS.SCHED_NAME"
+  key: PK
+  fk_note: null
+- name: TRIGGER_NAME
+  data_type: "VARCHAR2(200)"
+  description: null
+  key: PK
+  fk_note: null
+- name: TRIGGER_GROUP
+  data_type: "VARCHAR2(200)"
+  description: null
+  key: PK
+  fk_note: null
+- name: JOB_NAME
+  data_type: "VARCHAR2(200)"
+  description: null
+  key: FK
+  fk_note: "FK → QRTZ_JOB_DETAILS.JOB_NAME"
+- name: JOB_GROUP
+  data_type: "VARCHAR2(200)"
+  description: null
+  key: FK
+  fk_note: "FK → QRTZ_JOB_DETAILS.JOB_GROUP"
+- name: DESCRIPTION
+  data_type: "VARCHAR2(250)"
+  description: null
+  key: null
+  fk_note: null
+- name: NEXT_FIRE_TIME
+  data_type: "NUMBER(13,0)"
+  description: null
+  key: null
+  fk_note: null
+- name: PREV_FIRE_TIME
+  data_type: "NUMBER(13,0)"
+  description: null
+  key: null
+  fk_note: null
+- name: PRIORITY
+  data_type: "NUMBER(13,0)"
+  description: null
+  key: null
+  fk_note: null
+- name: TRIGGER_STATE
+  data_type: "VARCHAR2(16)"
+  description: null
+  key: null
+  fk_note: null
+- name: TRIGGER_TYPE
+  data_type: "VARCHAR2(8)"
+  description: null
+  key: null
+  fk_note: null
+- name: START_TIME
+  data_type: "NUMBER(13,0)"
+  description: null
+  key: null
+  fk_note: null
+- name: END_TIME
+  data_type: "NUMBER(13,0)"
+  description: null
+  key: null
+  fk_note: null
+- name: CALENDAR_NAME
+  data_type: "VARCHAR2(200)"
+  description: null
+  key: null
+  fk_note: null
+- name: MISFIRE_INSTR
+  data_type: "NUMBER(2,0)"
+  description: null
+  key: null
+  fk_note: null
+- name: JOB_DATA
+  data_type: "BLOB"
+  description: null
+  key: null
+  fk_note: null

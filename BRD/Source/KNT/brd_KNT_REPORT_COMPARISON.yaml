@@ -4,20 +4,20 @@ source: KNT
 table: REPORT_COMPARISON
 brd_ref: BRD-SRC-KNT-REPORT_COMPARISON
 columns:
-- name: AUDIT_STATUS
-  data_type: "VARCHAR2(80)"
-  description: "Trạng thái kiểm toán: 0=Trước kiểm toán, 1=Sau kiểm toán"
-  key: null
-  fk_note: null
-- name: DIFF_FLAG
-  data_type: "VARCHAR2(1)"
-  description: "Cờ chênh lệch so với UBCKNN: Y=Có chênh lệch (highlight vàng), N/NULL=Khớp"
-  key: null
-  fk_note: null
 - name: ID
   data_type: "NUMBER"
   description: "Khóa chính của bản ghi (ID số tự tăng)"
   key: PK
+  fk_note: null
+- name: TAX_REPORT_ID
+  data_type: "NUMBER"
+  description: "FK -> tax_report: Báo cáo tài chính TCT liên quan"
+  key: FK
+  fk_note: null
+- name: TAX_REPORT_DETAIL_ID
+  data_type: "NUMBER"
+  description: "FK -> tax_report_detail: Chi tiết báo cáo TCT đối chiếu"
+  key: FK
   fk_note: null
 - name: INDICATOR_CODE
   data_type: "VARCHAR2(400)"
@@ -29,119 +29,19 @@ columns:
   description: "Tên chỉ tiêu trong biểu mẫu báo cáo"
   key: null
   fk_note: null
-- name: SSC_BEGIN_BALANCE_CURRENT_YEAR
+- name: TAX_EXPLANATION_NOTE
   data_type: "VARCHAR2(400)"
-  description: "Số dư đầu năm nay (UBCKNN)"
+  description: "Thuyết minh chỉ tiêu từ báo cáo Cục Thuế"
   key: null
   fk_note: null
-- name: SSC_BEGIN_BALANCE_PRIOR_YEAR
+- name: TAX_YEAR_END_VALUE
   data_type: "VARCHAR2(400)"
-  description: "Số dư đầu năm trước (UBCKNN)"
+  description: "Giá trị cuối năm trong báo cáo Cục Thuế"
   key: null
   fk_note: null
-- name: SSC_CURRENT_YEAR_AMOUNT
+- name: TAX_YEAR_BEGIN_VALUE
   data_type: "VARCHAR2(400)"
-  description: "Số tiền năm nay (UBCKNN)"
-  key: null
-  fk_note: null
-- name: SSC_CURRENT_YEAR_VALUE
-  data_type: "VARCHAR2(400)"
-  description: "Giá trị năm nay trong báo cáo UBCKNN"
-  key: null
-  fk_note: null
-- name: SSC_DECREASE_CURRENT_YEAR
-  data_type: "VARCHAR2(400)"
-  description: "Số giảm năm nay (UBCKNN)"
-  key: null
-  fk_note: null
-- name: SSC_DECREASE_PRIOR_YEAR
-  data_type: "VARCHAR2(400)"
-  description: "Số giảm năm trước (UBCKNN)"
-  key: null
-  fk_note: null
-- name: SSC_END_BALANCE_CURRENT_YEAR
-  data_type: "VARCHAR2(400)"
-  description: "Số dư cuối năm nay (UBCKNN)"
-  key: null
-  fk_note: null
-- name: SSC_END_BALANCE_PRIOR_YEAR
-  data_type: "VARCHAR2(400)"
-  description: "Số dư cuối năm trước (UBCKNN)"
-  key: null
-  fk_note: null
-- name: SSC_EXPLANATION_NOTE
-  data_type: "VARCHAR2(400)"
-  description: "Thuyết minh chỉ tiêu từ báo cáo UBCKNN"
-  key: null
-  fk_note: null
-- name: SSC_INCREASE_CURRENT_YEAR
-  data_type: "VARCHAR2(400)"
-  description: "Số tăng năm nay (UBCKNN)"
-  key: null
-  fk_note: null
-- name: SSC_INCREASE_PRIOR_YEAR
-  data_type: "VARCHAR2(400)"
-  description: "Số tăng năm trước (UBCKNN)"
-  key: null
-  fk_note: null
-- name: SSC_PREVIOUS_YEAR_AMOUNT
-  data_type: "VARCHAR2(400)"
-  description: "Số tiền năm ngoái (UBCKNN)"
-  key: null
-  fk_note: null
-- name: SSC_PRIOR_YEAR_VALUE
-  data_type: "VARCHAR2(400)"
-  description: "Giá trị năm trước trong báo cáo UBCKNN"
-  key: null
-  fk_note: null
-- name: SSC_REPORT_DETAIL_ID
-  data_type: "NUMBER"
-  description: "FK -> ssc_report_detail: Chi tiết báo cáo UBCKNN đối chiếu"
-  key: FK
-  fk_note: null
-- name: SSC_REPORT_ID
-  data_type: "NUMBER"
-  description: "FK -> ssc_report: Báo cáo tài chính UBCKNN liên quan"
-  key: FK
-  fk_note: null
-- name: SSC_REPORT_TYPE
-  data_type: "VARCHAR2(5)"
-  description: "Loại báo cáo trong hệ thống UBCKNN"
-  key: null
-  fk_note: null
-- name: SSC_YEAR_BEGIN_VALUE
-  data_type: "VARCHAR2(400)"
-  description: "Giá trị đầu năm trong báo cáo UBCKNN"
-  key: null
-  fk_note: null
-- name: SSC_YEAR_END_VALUE
-  data_type: "VARCHAR2(400)"
-  description: "Giá trị cuối năm trong báo cáo UBCKNN"
-  key: null
-  fk_note: null
-- name: STATUS
-  data_type: "NUMBER(1,0)"
-  description: "Trạng thái dòng đối chiếu: 1=Hiệu lực, 0=Không hiệu lực (không phải trạng thái gói tin)"
-  key: null
-  fk_note: null
-- name: TAX_BEGIN_BALANCE_CURRENT_YEAR
-  data_type: "VARCHAR2(400)"
-  description: "Số dư đầu năm nay (Cục Thuế)"
-  key: null
-  fk_note: null
-- name: TAX_BEGIN_BALANCE_PRIOR_YEAR
-  data_type: "VARCHAR2(400)"
-  description: "Số dư đầu năm trước (Cục Thuế)"
-  key: null
-  fk_note: null
-- name: TAX_CODE
-  data_type: "VARCHAR2(20)"
-  description: "Mã số thuế doanh nghiệp"
-  key: null
-  fk_note: null
-- name: TAX_CURRENT_YEAR_AMOUNT
-  data_type: "VARCHAR2(400)"
-  description: "Số tiền năm nay (Cục Thuế)"
+  description: "Giá trị đầu năm trong báo cáo Cục Thuế"
   key: null
   fk_note: null
 - name: TAX_CURRENT_YEAR_VALUE
@@ -149,24 +49,29 @@ columns:
   description: "Giá trị năm nay trong báo cáo Cục Thuế"
   key: null
   fk_note: null
-- name: TAX_DECLARATION_CODE
-  data_type: "VARCHAR2(10)"
-  description: "Mã tờ khai trong báo cáo Cục Thuế"
-  key: null
-  fk_note: null
-- name: TAX_DECLARATION_PERIOD
-  data_type: "VARCHAR2(5)"
-  description: "Kỳ kê khai trong báo cáo Cục Thuế"
-  key: null
-  fk_note: null
-- name: TAX_DECREASE_CURRENT_YEAR
+- name: TAX_PRIOR_YEAR_VALUE
   data_type: "VARCHAR2(400)"
-  description: "Số giảm năm nay (Cục Thuế)"
+  description: "Giá trị năm trước trong báo cáo Cục Thuế"
   key: null
   fk_note: null
-- name: TAX_DECREASE_PRIOR_YEAR
+- name: TAX_SHEET_NAME
+  data_type: "VARCHAR2(1)"
+  description: "Tên sheet trong báo cáo Cục Thuế"
+  key: null
+  fk_note: null
+- name: TAX_INCREASE_PRIOR_YEAR
   data_type: "VARCHAR2(400)"
-  description: "Số giảm năm trước (Cục Thuế)"
+  description: "Số tăng năm trước (Cục Thuế)"
+  key: null
+  fk_note: null
+- name: TAX_CURRENT_YEAR_AMOUNT
+  data_type: "VARCHAR2(400)"
+  description: "Số tiền năm nay (Cục Thuế)"
+  key: null
+  fk_note: null
+- name: TAX_PREVIOUS_YEAR_AMOUNT
+  data_type: "VARCHAR2(400)"
+  description: "Số tiền năm ngoái (Cục Thuế)"
   key: null
   fk_note: null
 - name: TAX_END_BALANCE_CURRENT_YEAR
@@ -179,9 +84,9 @@ columns:
   description: "Số dư cuối năm trước (Cục Thuế)"
   key: null
   fk_note: null
-- name: TAX_EXPLANATION_NOTE
+- name: TAX_BEGIN_BALANCE_PRIOR_YEAR
   data_type: "VARCHAR2(400)"
-  description: "Thuyết minh chỉ tiêu từ báo cáo Cục Thuế"
+  description: "Số dư đầu năm trước (Cục Thuế)"
   key: null
   fk_note: null
 - name: TAX_INCREASE_CURRENT_YEAR
@@ -189,44 +94,124 @@ columns:
   description: "Số tăng năm nay (Cục Thuế)"
   key: null
   fk_note: null
-- name: TAX_INCREASE_PRIOR_YEAR
+- name: TAX_DECREASE_CURRENT_YEAR
   data_type: "VARCHAR2(400)"
-  description: "Số tăng năm trước (Cục Thuế)"
+  description: "Số giảm năm nay (Cục Thuế)"
   key: null
   fk_note: null
-- name: TAX_PREVIOUS_YEAR_AMOUNT
+- name: TAX_DECREASE_PRIOR_YEAR
   data_type: "VARCHAR2(400)"
-  description: "Số tiền năm ngoái (Cục Thuế)"
+  description: "Số giảm năm trước (Cục Thuế)"
   key: null
   fk_note: null
-- name: TAX_PRIOR_YEAR_VALUE
-  data_type: "VARCHAR2(400)"
-  description: "Giá trị năm trước trong báo cáo Cục Thuế"
+- name: TAX_DECLARATION_PERIOD
+  data_type: "VARCHAR2(5)"
+  description: "Kỳ kê khai trong báo cáo Cục Thuế"
   key: null
   fk_note: null
-- name: TAX_REPORT_DETAIL_ID
+- name: TAX_DECLARATION_CODE
+  data_type: "VARCHAR2(10)"
+  description: "Mã tờ khai trong báo cáo Cục Thuế"
+  key: null
+  fk_note: null
+- name: TAX_CODE
+  data_type: "VARCHAR2(20)"
+  description: "Mã số thuế doanh nghiệp"
+  key: null
+  fk_note: null
+- name: SSC_REPORT_ID
   data_type: "NUMBER"
-  description: "FK -> tax_report_detail: Chi tiết báo cáo TCT đối chiếu"
+  description: "FK -> ssc_report: Báo cáo tài chính UBCKNN liên quan"
   key: FK
   fk_note: null
-- name: TAX_REPORT_ID
+- name: SSC_REPORT_DETAIL_ID
   data_type: "NUMBER"
-  description: "FK -> tax_report: Báo cáo tài chính TCT liên quan"
+  description: "FK -> ssc_report_detail: Chi tiết báo cáo UBCKNN đối chiếu"
   key: FK
   fk_note: null
-- name: TAX_SHEET_NAME
+- name: SSC_EXPLANATION_NOTE
+  data_type: "VARCHAR2(400)"
+  description: "Thuyết minh chỉ tiêu từ báo cáo UBCKNN"
+  key: null
+  fk_note: null
+- name: SSC_YEAR_END_VALUE
+  data_type: "VARCHAR2(400)"
+  description: "Giá trị cuối năm trong báo cáo UBCKNN"
+  key: null
+  fk_note: null
+- name: SSC_YEAR_BEGIN_VALUE
+  data_type: "VARCHAR2(400)"
+  description: "Giá trị đầu năm trong báo cáo UBCKNN"
+  key: null
+  fk_note: null
+- name: SSC_CURRENT_YEAR_VALUE
+  data_type: "VARCHAR2(400)"
+  description: "Giá trị năm nay trong báo cáo UBCKNN"
+  key: null
+  fk_note: null
+- name: SSC_PRIOR_YEAR_VALUE
+  data_type: "VARCHAR2(400)"
+  description: "Giá trị năm trước trong báo cáo UBCKNN"
+  key: null
+  fk_note: null
+- name: SSC_INCREASE_PRIOR_YEAR
+  data_type: "VARCHAR2(400)"
+  description: "Số tăng năm trước (UBCKNN)"
+  key: null
+  fk_note: null
+- name: SSC_CURRENT_YEAR_AMOUNT
+  data_type: "VARCHAR2(400)"
+  description: "Số tiền năm nay (UBCKNN)"
+  key: null
+  fk_note: null
+- name: SSC_PREVIOUS_YEAR_AMOUNT
+  data_type: "VARCHAR2(400)"
+  description: "Số tiền năm ngoái (UBCKNN)"
+  key: null
+  fk_note: null
+- name: SSC_END_BALANCE_CURRENT_YEAR
+  data_type: "VARCHAR2(400)"
+  description: "Số dư cuối năm nay (UBCKNN)"
+  key: null
+  fk_note: null
+- name: SSC_END_BALANCE_PRIOR_YEAR
+  data_type: "VARCHAR2(400)"
+  description: "Số dư cuối năm trước (UBCKNN)"
+  key: null
+  fk_note: null
+- name: SSC_BEGIN_BALANCE_PRIOR_YEAR
+  data_type: "VARCHAR2(400)"
+  description: "Số dư đầu năm trước (UBCKNN)"
+  key: null
+  fk_note: null
+- name: SSC_INCREASE_CURRENT_YEAR
+  data_type: "VARCHAR2(400)"
+  description: "Số tăng năm nay (UBCKNN)"
+  key: null
+  fk_note: null
+- name: SSC_DECREASE_CURRENT_YEAR
+  data_type: "VARCHAR2(400)"
+  description: "Số giảm năm nay (UBCKNN)"
+  key: null
+  fk_note: null
+- name: SSC_DECREASE_PRIOR_YEAR
+  data_type: "VARCHAR2(400)"
+  description: "Số giảm năm trước (UBCKNN)"
+  key: null
+  fk_note: null
+- name: SSC_REPORT_TYPE
+  data_type: "VARCHAR2(5)"
+  description: "Loại báo cáo trong hệ thống UBCKNN"
+  key: null
+  fk_note: null
+- name: DIFF_FLAG
   data_type: "VARCHAR2(1)"
-  description: "Tên sheet trong báo cáo Cục Thuế"
+  description: "Cờ chênh lệch so với UBCKNN: Y=Có chênh lệch (highlight vàng), N/NULL=Khớp"
   key: null
   fk_note: null
-- name: TAX_YEAR_BEGIN_VALUE
-  data_type: "VARCHAR2(400)"
-  description: "Giá trị đầu năm trong báo cáo Cục Thuế"
-  key: null
-  fk_note: null
-- name: TAX_YEAR_END_VALUE
-  data_type: "VARCHAR2(400)"
-  description: "Giá trị cuối năm trong báo cáo Cục Thuế"
+- name: STATUS
+  data_type: "NUMBER(1,0)"
+  description: "Trạng thái dòng đối chiếu: 1=Hiệu lực, 0=Không hiệu lực (không phải trạng thái gói tin)"
   key: null
   fk_note: null
 - name: TOTAL_RECORDS
@@ -234,13 +219,8 @@ columns:
   description: "Tổng số bản ghi trong kết quả đối chiếu"
   key: null
   fk_note: null
-- name: TAX_BEGIN_BALANCE_CURRENT_YEARVARCHAR2(400)
-  data_type: "YES"
-  description: "Số dư đầu năm nay (Cục Thuế)"
-  key: null
-  fk_note: null
-- name: SSC_BEGIN_BALANCE_CURRENT_YEARVARCHAR2(400)
-  data_type: "YES"
-  description: "Số dư đầu năm nay (UBCKNN)"
+- name: AUDIT_STATUS
+  data_type: "VARCHAR2(80)"
+  description: "Trạng thái kiểm toán: 0=Trước kiểm toán, 1=Sau kiểm toán"
   key: null
   fk_note: null
