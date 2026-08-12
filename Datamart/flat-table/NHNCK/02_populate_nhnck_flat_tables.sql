@@ -160,14 +160,10 @@ TRUNCATE TABLE IF EXISTS datamart.nhnck_opr_practitioner_list_company_role_flat 
 INSERT INTO datamart.nhnck_opr_practitioner_list_company_role_flat
 SELECT
     o.practitioner_code,
-    o.organization_employment_rpt_code,
-    o.practitioner_workplace_at_rpt,
-    o.practitioner_position_at_rpt,
-    o.organization_tp_code,
-    o.securities_organization_reference_code,
-    o.employment_status,
-    o.hire_dt,
-    o.termination_dt,
+    o.securities_company_code,
+    o.securities_company_short_nm,
+    o.representative_position,
+    o.practice_status_code,
     o.shares_held,
     o.account_nbr,
     o.account_holder_nm,
