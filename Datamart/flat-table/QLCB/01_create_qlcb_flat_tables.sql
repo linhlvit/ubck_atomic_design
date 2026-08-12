@@ -210,6 +210,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlcb_fct_securities_offering_application_snp
 (
     -- From: FACT Securities Offering Application Snapshot
     securities_offering_code            String                  COMMENT 'BK hồ sơ (degenerate dimension)',
+    application_cd                       String                  COMMENT 'Degenerate Dimension — mã hồ sơ đăng ký (khác Securities Offering Code là mã đợt chào bán)',
     snpst_dt_dim_id                      String                  COMMENT 'FK → Calendar Date Dimension (ngày snapshot)',
     certificate_dt_dim_id                String                  COMMENT 'FK → Calendar Date Dimension (ngày cấp giấy chứng nhận — Chiều/slicer)',
     application_status_code             Nullable(String)        COMMENT 'Trạng thái xử lý hồ sơ — tính lại mỗi lần snapshot',

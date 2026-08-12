@@ -207,6 +207,7 @@ WHERE snpst_cdr_dt = :etl_date;
 INSERT INTO datamart.qlcb_fct_securities_offering_application_snpst_flat
 SELECT
     f.securities_offering_code,
+    f.application_cd,
     f.snpst_dt_dim_id,
     f.certificate_dt_dim_id,
     f.application_status_code,
