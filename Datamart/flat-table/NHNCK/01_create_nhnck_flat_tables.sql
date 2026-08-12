@@ -151,14 +151,10 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_list_company_role_fla
 (
     -- From: OPERATIONAL Practitioner Listed Company Role
     practitioner_code               String              COMMENT 'PK (1/2) — Mã NHN',
-    organization_employment_rpt_code        String              COMMENT 'PK (2/2) — Mã báo cáo tổ chức',
-    practitioner_workplace_at_rpt   Nullable(String)    COMMENT 'Tên nơi công tác tại thời điểm báo cáo',
-    practitioner_position_at_rpt         Nullable(String)    COMMENT 'Vị trí/chức vụ tại thời điểm báo cáo',
-    organization_tp_code             Nullable(String)    COMMENT 'Loại tổ chức — scheme: ORG_TYPE',
-    securities_organization_reference_code       Nullable(String)    COMMENT 'Mã tổ chức tham chiếu',
-    employment_status           Nullable(String)    COMMENT 'Trạng thái vai trò (Active/Inactive)',
-    hire_dt                 Nullable(Date)      COMMENT 'Ngày bắt đầu làm việc',
-    termination_dt                  Nullable(Date)      COMMENT 'Ngày kết thúc làm việc — NULL nếu hiện tại',
+    securities_company_code         String              COMMENT 'PK (2/2) — Mã DN niêm yết (cổ đông cá nhân)',
+    securities_company_short_nm     Nullable(String)    COMMENT 'Tên viết tắt DN niêm yết',
+    representative_position         Nullable(String)    COMMENT 'Vai trò NHN tại DN niêm yết',
+    practice_status_code            Nullable(String)    COMMENT 'Trạng thái hành nghề hiện tại của NHN — scheme PRACTITIONER_PRACTICE_STATUS',
     shares_held              Nullable(Int64)     COMMENT 'Số lượng cổ phiếu sở hữu (K_NHNCK_85) — nguồn thật SCMS, không phải NHNCK; NULL nếu không phải cổ đông/người nội bộ',
     account_nbr              Nullable(String)    COMMENT '(Bổ sung 2026-08-07) Số tài khoản (K_NHNCK_87) — nguồn open_investors',
     account_holder_nm        Nullable(String)    COMMENT '(Bổ sung 2026-08-07) Tên chủ tài khoản (K_NHNCK_88) — nguồn open_investors',
@@ -168,8 +164,8 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_list_company_role_fla
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY tuple()
-ORDER BY (practitioner_code, organization_employment_rpt_code)
-COMMENT 'Flat table — Practitioner Listed Company Role (1 báo cáo tổ chức per NHN)'
+ORDER BY (practitioner_code, securities_company_code)
+COMMENT 'Flat table — Practitioner Listed Company Role (1 DN niêm yết per NHN cổ đông cá nhân)'
 ;
 
 
