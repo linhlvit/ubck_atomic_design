@@ -3,9 +3,12 @@
 -- 9 Fact + 4 Operational = 13 bảng flat
 -- Sửa 2026-08-03 (audit Case 3): 7 Fact là transaction log theo ngày (Decision
 -- Date/Issued Date), ETL filter WHERE cdr_dt = :etl_date — DELETE-scoped theo
--- ngày (không TRUNCATE) để giữ nguyên lịch sử các ngày khác. 4 Operational là
--- danh sách hồ sơ hiện hành (không có filter ngày, full-scan mỗi lần) — giữ
--- TRUNCATE, đúng bản chất "current state list".
+-- ngày (không TRUNCATE) để giữ nguyên lịch sử các ngày khác.
+-- Sửa 2026-08-13: 4 Operational cũng là transaction log (mỗi vụ/QĐ/đơn phát
+-- sinh đúng 1 lần tại Decision_Date/Issued_Date/Received_Date) — đổi từ
+-- TRUNCATE (full-scan) sang DELETE-scoped + INSERT filtered theo etl_date,
+-- đồng bộ pattern Case 1/3 với 7 Fact, tránh full load lại toàn bộ danh sách
+-- mỗi ngày.
 -- ============================================================
 
 -- ------------------------------------------------------------
@@ -176,7 +179,8 @@ WHERE cal.cdr_dt = :etl_date
 -- ------------------------------------------------------------
 -- 8. Operational Inspection Case List
 -- ------------------------------------------------------------
-TRUNCATE TABLE IF EXISTS datamart.tt_opr_inspection_case_list_flat ON CLUSTER 'my_cluster';
+DELETE FROM datamart.tt_opr_inspection_case_list_flat ON CLUSTER 'my_cluster'
+WHERE decision_dt = :etl_date;
 INSERT INTO datamart.tt_opr_inspection_case_list_flat
 SELECT
     o.inspection_team_target_code,
@@ -189,12 +193,14 @@ SELECT
     o.decision_year,
     o.src_stm_code
 FROM datamart.opr_inspection_case_list o
+WHERE o.decision_dt = :etl_date
 ;
 
 -- ------------------------------------------------------------
 -- 9. Operational Examination Case List
 -- ------------------------------------------------------------
-TRUNCATE TABLE IF EXISTS datamart.tt_opr_examination_case_list_flat ON CLUSTER 'my_cluster';
+DELETE FROM datamart.tt_opr_examination_case_list_flat ON CLUSTER 'my_cluster'
+WHERE decision_dt = :etl_date;
 INSERT INTO datamart.tt_opr_examination_case_list_flat
 SELECT
     o.examination_team_target_code,
@@ -207,12 +213,14 @@ SELECT
     o.decision_year,
     o.src_stm_code
 FROM datamart.opr_examination_case_list o
+WHERE o.decision_dt = :etl_date
 ;
 
 -- ------------------------------------------------------------
 -- 10. Operational Penalty Decision List
 -- ------------------------------------------------------------
-TRUNCATE TABLE IF EXISTS datamart.tt_opr_penalty_decision_list_flat ON CLUSTER 'my_cluster';
+DELETE FROM datamart.tt_opr_penalty_decision_list_flat ON CLUSTER 'my_cluster'
+WHERE issued_dt = :etl_date;
 INSERT INTO datamart.tt_opr_penalty_decision_list_flat
 SELECT
     o.pd_subject_code,
@@ -226,12 +234,14 @@ SELECT
     o.total_fine_amt,
     o.src_stm_code
 FROM datamart.opr_penalty_decision_list o
+WHERE o.issued_dt = :etl_date
 ;
 
 -- ------------------------------------------------------------
 -- 11. Operational Petition List
 -- ------------------------------------------------------------
-TRUNCATE TABLE IF EXISTS datamart.tt_opr_petition_list_flat ON CLUSTER 'my_cluster';
+DELETE FROM datamart.tt_opr_petition_list_flat ON CLUSTER 'my_cluster'
+WHERE received_dt = :etl_date;
 INSERT INTO datamart.tt_opr_petition_list_flat
 SELECT
     o.petition_code,
@@ -242,6 +252,7 @@ SELECT
     o.received_year,
     o.src_stm_code
 FROM datamart.opr_petition_list o
+WHERE o.received_dt = :etl_date
 ;
 
 -- ------------------------------------------------------------

@@ -923,7 +923,7 @@ flowchart LR
 
 | Tên bảng | Grain | Nguồn chính | Filter mặc định | Ghi chú |
 |---|---|---|---|---|
-| Operational Inspection Case List | 1 đoàn thanh tra × 1 đối tượng (`INSPECTION_TEAM` × `INSPECTION_TEAM_TARGET`, N:1) | `Inspection Team` + `Inspection Team Target` (join qua `INSPECTION_TEAM_ID`) | Year=selected_year (Decision_Date); filter Loại hình và Trạng thái ở query time | Phân trang ở presentation layer |
+| Operational Inspection Case List | 1 đoàn thanh tra × 1 đối tượng (`INSPECTION_TEAM` × `INSPECTION_TEAM_TARGET`, N:1) | `Inspection Team` + `Inspection Team Target` (join qua `INSPECTION_TEAM_ID`) | (Sửa 2026-08-13) ETL load: `Inspection_Team.Decision_Date = :etl_date` — incremental theo ngày, không full load. Year=selected_year (Decision_Date); filter Loại hình và Trạng thái ở query time | Phân trang ở presentation layer |
 
 ---
 
@@ -1347,7 +1347,7 @@ flowchart LR
 
 | Tên bảng | Grain | Nguồn chính | Filter mặc định | Ghi chú |
 |---|---|---|---|---|
-| Operational Examination Case List | 1 vụ kiểm tra × 1 đối tượng (`EXAMINATION_TEAM` × `EXAMINATION_TEAM_TARGET`, N:1) | `Examination Team` + `Examination Team Target` (join qua `EXAMINATION_TEAM_ID`) | Year=selected_year (Decision_Date); filter Loại hình và Trạng thái ở query time | Phân trang ở presentation layer |
+| Operational Examination Case List | 1 vụ kiểm tra × 1 đối tượng (`EXAMINATION_TEAM` × `EXAMINATION_TEAM_TARGET`, N:1) | `Examination Team` + `Examination Team Target` (join qua `EXAMINATION_TEAM_ID`) | (Sửa 2026-08-13) ETL load: `Examination_Team.Decision_Date = :etl_date` — incremental theo ngày, không full load. Year=selected_year (Decision_Date); filter Loại hình và Trạng thái ở query time | Phân trang ở presentation layer |
 
 ---
 
@@ -1770,7 +1770,7 @@ flowchart LR
 
 | Tên bảng | Grain | Nguồn chính | Filter mặc định | Ghi chú |
 |---|---|---|---|---|
-| Operational Penalty Decision List | 1 QĐ × 1 đối tượng (`PENALTY_DECISION` × `PENALTY_DECISION_SUBJECT`, N:1) | `Penalty Decision` + `Penalty Decision Subject` + `Violation Case` (join Form Type) | Year=selected_year (Issued_Date) | Phân trang ở presentation layer |
+| Operational Penalty Decision List | 1 QĐ × 1 đối tượng (`PENALTY_DECISION` × `PENALTY_DECISION_SUBJECT`, N:1) | `Penalty Decision` + `Penalty Decision Subject` + `Violation Case` (join Form Type) | (Sửa 2026-08-13) ETL load: `Penalty_Decision.Issued_Date = :etl_date` — incremental theo ngày, không full load. Year=selected_year (Issued_Date) | Phân trang ở presentation layer |
 
 ---
 
@@ -1825,7 +1825,7 @@ flowchart LR
 
 | Tên bảng | Grain | Nguồn chính | Filter mặc định | Ghi chú |
 |---|---|---|---|---|
-| Operational Petition List | 1 đơn thư — mỗi row = 1 `PETITION` (latest state) | `Petition` | Year(Received_Date)=selected_year | Serve cả KPI aggregate lẫn danh sách chi tiết |
+| Operational Petition List | 1 đơn thư — mỗi row = 1 `PETITION` (latest state) | `Petition` | (Sửa 2026-08-13) ETL load: `Petition.Received_Date = :etl_date` — incremental theo ngày (theo xác nhận BA, áp dụng chung cho mọi bảng Petition), không full load. Year(Received_Date)=selected_year | Serve cả KPI aggregate lẫn danh sách chi tiết |
 
 ---
 
@@ -1974,7 +1974,7 @@ flowchart LR
 
 | Tên bảng | Grain | Nguồn chính | Filter mặc định | Ghi chú |
 |---|---|---|---|---|
-| Operational Petition List | 1 đơn thư — mỗi row = 1 `PETITION` (latest state) | `Petition` | Year(Received_Date)=selected_year | Phân trang ở presentation layer |
+| Operational Petition List | 1 đơn thư — mỗi row = 1 `PETITION` (latest state) | `Petition` | (Sửa 2026-08-13) ETL load: `Petition.Received_Date = :etl_date` — incremental theo ngày (theo xác nhận BA, áp dụng chung cho mọi bảng Petition), không full load. Year(Received_Date)=selected_year | Phân trang ở presentation layer |
 
 ---
 
