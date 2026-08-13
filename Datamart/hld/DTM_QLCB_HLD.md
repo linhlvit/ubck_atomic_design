@@ -663,7 +663,7 @@ erDiagram
 > - `Total_Registered_Quantity` (nguồn bảng cha Offering `total_registered_quantity`) — dùng ở Nhóm 4 (K_QLCB_27) và Nhóm 9 (K_QLCB_54) — Nhóm 4 sửa lại theo BA (trước đó sai map vào Plan snapshot) khi review cross-check phát hiện gap
 > - `Offering_Price` (nguồn Plan `offering_price`), `Employee_Quantity` (nguồn Plan `employee_quantity`), `Swap_Target` (nguồn Plan `swap_target`) — dùng ở Nhóm 9 (K_QLCB_55, 57, 58)
 > - `Actual_Offering_Price` (nguồn Result `actual_offering_price`), `Employee_Quantity_Result` (nguồn Result `employee_quantity`), `Capital_Source` (nguồn Result `capital_src`) — dùng ở Nhóm 10 (K_QLCB_61, 63, 64)
-> - `Source_System_Code` — mã hệ thống nguồn, hardcode `IDS.SECURITIES_OFFERING_PLAN` (driving table Plan), bắt buộc cho mọi bảng Operational
+> - `Source_System_Code` — mã hệ thống nguồn, hardcode `IDS.SECURITIES_OFFERING` (driving table `Public Company Securities Offering`, bảng cha Offering — không phải Plan), bắt buộc cho mọi bảng Operational
 
 **Lineage Mart → Báo cáo:**
 
@@ -730,10 +730,12 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_QLCB_32 | Số lượng hồ sơ đăng ký | Hồ sơ | Cơ sở | `COUNT(Fact Securities Offering Application Snapshot)` toàn bộ trong kỳ | — | READY |
-| K_QLCB_33 | Số lượng hồ sơ đang xử lý | Hồ sơ | Cơ sở | `COUNT WHERE Application Status Code = 'PENDING_APPROVE'` | — | READY |
-| K_QLCB_34 | Số lượng hồ sơ đã cấp phép | Hồ sơ | Cơ sở | `COUNT WHERE Application Status Code = 'APPROVED'` | — | READY |
-| K_QLCB_35 | Số lượng hồ sơ bị từ chối | Hồ sơ | Cơ sở | `COUNT WHERE Application Status Code = 'REJECTED'` | — | READY |
+| K_QLCB_32 | Số lượng hồ sơ đăng ký | Hồ sơ | Cơ sở | `COUNT(DISTINCT Application Code)` toàn bộ trong kỳ | FIX 2026-08-12: đổi grain đếm từ Securities Offering Code (mã đợt chào bán) sang Application Code (mã hồ sơ) theo đúng BA (`COUNT(DISTINCT application_cd)`, check chéo TTHC) | READY |
+| K_QLCB_33 | Số lượng hồ sơ đang xử lý | Hồ sơ | Cơ sở | `COUNT(DISTINCT Application Code) WHERE Application Status Code = 'PENDING_APPROVE'` | FIX 2026-08-12: cùng lý do K_QLCB_32 | READY |
+| K_QLCB_34 | Số lượng hồ sơ đã cấp phép | Hồ sơ | Cơ sở | `COUNT(DISTINCT Application Code) WHERE Application Status Code = 'APPROVED'` | FIX 2026-08-12: cùng lý do K_QLCB_32 | READY |
+| K_QLCB_35 | Số lượng hồ sơ bị từ chối | Hồ sơ | Cơ sở | `COUNT(DISTINCT Application Code) WHERE Application Status Code = 'REJECTED'` | FIX 2026-08-12: cùng lý do K_QLCB_32 | READY |
+
+> **Ghi chú `Application Code`:** Direct map từ `Public Company Securities Offering.application_cd` (IDS.SECURITIES_OFFERING.APPLICATION_CD) — mã hồ sơ đăng ký, khác `Securities_Offering_Code` (mã đợt chào bán). Grain đếm KPI Nhóm 5/6 theo BA phải dùng `COUNT(DISTINCT application_cd)`, không dùng `securities_offering_code`.
 
 > **Ghi chú `Application Status Code`:** Direct map từ `Public Company Securities Offering.approval_status_code` (IDS.SECURITIES_OFFERING.APPROVAL_STATUS_CD). 4 giá trị nguồn: `PENDING_REVIEW` (đăng ký), `PENDING_APPROVE` (đang xử lý), `APPROVED` (đã cấp phép), `REJECTED` (bị từ chối).
 
@@ -754,6 +756,7 @@ erDiagram
     }
     Fact_Securities_Offering_Application_Snapshot {
         string Securities_Offering_Code
+        string Application_Code
         string Snapshot_Date_Dimension_Id FK
         string Certificate_Date_Dimension_Id FK
         string Offering_Method_Dimension_Id FK
@@ -764,7 +767,8 @@ erDiagram
 > **Ghi chú Phase 2 — Key labels:**
 >
 > **`Fact_Securities_Offering_Application_Snapshot`:**
-> - `Securities_Offering_Code` → `key = DD` (Degenerate Dimension) — Business key hồ sơ (`Public Company Securities Offering.pc_securities_offering_code`), lưu trực tiếp trên Fact để tra cứu, không tạo Dimension riêng. Fact Event không có Surrogate PK.
+> - `Securities_Offering_Code` → `key = DD` (Degenerate Dimension) — Business key đợt chào bán (`Public Company Securities Offering.pc_securities_offering_code`), lưu trực tiếp trên Fact để tra cứu, không tạo Dimension riêng. Fact Event không có Surrogate PK.
+> - `Application_Code` → `key = DD` — Business key hồ sơ đăng ký (`Public Company Securities Offering.application_cd`), khác `Securities_Offering_Code` (mã đợt chào bán) — dùng làm grain đếm cho K_QLCB_32–35/38–42 (`COUNT(DISTINCT Application_Code)`) theo đúng BA — FIX 2026-08-12, trước đó Detail Mapping nhầm đếm theo `Securities_Offering_Code`
 > - `Certificate_Date_Dimension_Id` → `key = FK → Calendar Date Dimension` — cùng FK date dùng ở Nhóm 1 (`certificate_dt`)
 > - `Offering_Method_Dimension_Id` → `key = FK → Offering Method Dimension`, nullable — chỉ Nhóm 6 dùng (xem Nhóm 6), Nhóm 5 không GROUP BY hình thức nên field này NULL, không ảnh hưởng COUNT
 > - `Application_Status_Code` → `key` trống — Classification Value, `etl_logic_type = direct` từ `approval_status_code`
@@ -818,10 +822,10 @@ flowchart LR
 |---|---|---|---|---|---|---|
 | K_QLCB_36 | Hình thức chào bán | — | Chiều | `GROUP BY Offering Method Dimension.Offering Method Code` — reuse Dimension từ Nhóm 2/3 (scheme `IDS_SO_OFFERING_METHOD`) | — | READY |
 | K_QLCB_37 | Năm | — | Chiều | `GROUP BY Year` của `Certificate Date Dimension` (reuse `Calendar Date Dimension`, không cần Degenerate Dimension riêng) | BA cập nhật 2026-08-11: đổi từ Official Letter Date sang Certificate Date | READY |
-| K_QLCB_38 | Số lượng hồ sơ chờ xử lý | Hồ sơ | Cơ sở | `COUNT WHERE Application Status Code = 'PENDING_REVIEW'` | — | READY |
-| K_QLCB_39 | Số lượng hồ sơ đang xử lý | Hồ sơ | Cơ sở | `COUNT WHERE Application Status Code = 'PENDING_APPROVE'` | — | READY |
-| K_QLCB_40 | Số lượng hồ sơ đã cấp phép | Hồ sơ | Cơ sở | `COUNT WHERE Application Status Code = 'APPROVED'` | — | READY |
-| K_QLCB_41 | Số lượng hồ sơ bị từ chối | Hồ sơ | Cơ sở | `COUNT WHERE Application Status Code = 'REJECTED'` | — | READY |
+| K_QLCB_38 | Số lượng hồ sơ chờ xử lý | Hồ sơ | Cơ sở | `COUNT(DISTINCT Application Code) WHERE Application Status Code = 'PENDING_REVIEW'` | FIX 2026-08-12: đổi grain đếm từ Securities Offering Code sang Application Code theo đúng BA | READY |
+| K_QLCB_39 | Số lượng hồ sơ đang xử lý | Hồ sơ | Cơ sở | `COUNT(DISTINCT Application Code) WHERE Application Status Code = 'PENDING_APPROVE'` | FIX 2026-08-12: cùng lý do K_QLCB_38 | READY |
+| K_QLCB_40 | Số lượng hồ sơ đã cấp phép | Hồ sơ | Cơ sở | `COUNT(DISTINCT Application Code) WHERE Application Status Code = 'APPROVED'` | FIX 2026-08-12: cùng lý do K_QLCB_38 | READY |
+| K_QLCB_41 | Số lượng hồ sơ bị từ chối | Hồ sơ | Cơ sở | `COUNT(DISTINCT Application Code) WHERE Application Status Code = 'REJECTED'` | FIX 2026-08-12: cùng lý do K_QLCB_38 | READY |
 | K_QLCB_42 | Tổng hồ sơ | Hồ sơ | Derived | `K_QLCB_38 + K_QLCB_39 + K_QLCB_40 + K_QLCB_41` — tính tại presentation layer | — | READY |
 
 > **Ghi chú `Offering Method Dimension`:** Reuse Dimension đã thiết kế ở Cụm 1b/1c — không tạo mới. `Fact Securities Offering Application Snapshot` bổ sung FK `Offering_Method_Dimension_Id`, ETL join qua `Public Company Securities Offering Plan.offering_method_code` (theo `pc_securities_offering_id`). Vì 1 hồ sơ có thể có nhiều dòng Plan (nhiều loại hình), Fact Application ở Nhóm 6 mở rộng grain: 1 row = 1 hồ sơ × 1 loại hình (khác Nhóm 5 vốn 1 row = 1 hồ sơ).
@@ -839,6 +843,7 @@ erDiagram
     }
     Fact_Securities_Offering_Application_Snapshot {
         string Securities_Offering_Code
+        string Application_Code
         string Snapshot_Date_Dimension_Id FK
         string Certificate_Date_Dimension_Id FK
         string Offering_Method_Dimension_Id FK
