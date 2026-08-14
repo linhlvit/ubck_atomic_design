@@ -9709,11 +9709,13 @@ entities:
     module: "TT"
     status: "draft"
     reuse_status: "new"
-    description: "Event 1 đoàn thanh tra × 1 biên bản × 1 hành vi — tách riêng để tránh fanout. Grain: 1 row per VIOLATION_RECORD × VIOLATION_RECORD_BEHAVIOR, filter INSPECTION_TEAM_ID IS NOT NULL."
+    description: "Event 1 đoàn thanh tra × 1 biên bản × 1 hành vi — tách riêng để tránh fanout. Grain: 1 row per VIOLATION_RECORD × VIOLATION_RECORD_BEHAVIOR, filter INSPECTION_TEAM_ID IS NOT NULL (Nguồn A) hoặc lookup qua VIOLATION_CASE (Nguồn B) — 2 nguồn UNION+dedupe, xem HLD Cụm 1e."
     source_atomic:
       - "violation_record"
       - "violation_record_behavior"
       - "inspection_team"
+      - "violation_case"
+      - "violation_case_received_document"
     modules_using:
       - "TT"
     columns:
@@ -9723,7 +9725,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "FK"
-        description: "FK → Calendar Date Dimension. Date key: Decision Date (join qua Inspection Team)"
+        description: "FK → Calendar Date Dimension. Date key: Decision Date. 2 nguồn ETL UNION: Nguồn A join qua Violation Record trực tiếp, Nguồn B join qua Violation Case"
         source_atomic_table: "inspection_team"
         source_atomic_column: "inspection_team.decision_dt"
       - logical_name: "Inspection Team Dimension Id"
@@ -9732,7 +9734,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "FK"
-        description: "FK → Inspection Team Dimension (Nhóm 1) — Dimension cha, không qua Dimension con"
+        description: "FK → Inspection Team Dimension (Nhóm 1) — Dimension cha, không qua Dimension con. 2 nguồn ETL UNION: Nguồn A lookup qua Violation Record.Inspection_Team_Code, Nguồn B lookup qua Violation Case.Inspection_Team_Code"
         source_atomic_table: "violation_record"
         source_atomic_column: "violation_record.inspection_team_code"
       - logical_name: "Inspection Team Violation Behavior Dimension Id"
@@ -9741,7 +9743,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "FK"
-        description: "FK → Inspection Team Violation Behavior Dimension"
+        description: "FK → Inspection Team Violation Behavior Dimension. Dedupe key khi UNION 2 nguồn — ETL loại trùng trước khi insert"
         source_atomic_table: "violation_record_behavior"
         source_atomic_column: "violation_record_behavior.violation_record_behavior_code"
 
@@ -9803,11 +9805,13 @@ entities:
     module: "TT"
     status: "draft"
     reuse_status: "new"
-    description: "Event 1 vụ kiểm tra × 1 biên bản × 1 hành vi — tách riêng để tránh fanout. Grain: 1 row per VIOLATION_RECORD × VIOLATION_RECORD_BEHAVIOR, filter EXAMINATION_TEAM_ID IS NOT NULL."
+    description: "Event 1 vụ kiểm tra × 1 biên bản × 1 hành vi — tách riêng để tránh fanout. Grain: 1 row per VIOLATION_RECORD × VIOLATION_RECORD_BEHAVIOR, filter EXAMINATION_TEAM_ID IS NOT NULL (Nguồn A) hoặc lookup qua VIOLATION_CASE (Nguồn B) — 2 nguồn UNION+dedupe, xem HLD Cụm 1f."
     source_atomic:
       - "violation_record"
       - "violation_record_behavior"
       - "examination_team"
+      - "violation_case"
+      - "violation_case_received_document"
     modules_using:
       - "TT"
     columns:
@@ -9817,7 +9821,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "FK"
-        description: "FK → Calendar Date Dimension. Date key: Decision Date (join qua Examination Team)"
+        description: "FK → Calendar Date Dimension. Date key: Decision Date. 2 nguồn ETL UNION: Nguồn A join qua Violation Record trực tiếp, Nguồn B join qua Violation Case"
         source_atomic_table: "examination_team"
         source_atomic_column: "examination_team.decision_dt"
       - logical_name: "Examination Team Dimension Id"
@@ -9826,7 +9830,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "FK"
-        description: "FK → Examination Team Dimension (Nhóm 6) — Dimension cha, không qua Dimension con"
+        description: "FK → Examination Team Dimension (Nhóm 6) — Dimension cha, không qua Dimension con. 2 nguồn ETL UNION: Nguồn A lookup qua Violation Record.Examination_Team_Code, Nguồn B lookup qua Violation Case.Examination_Team_Code"
         source_atomic_table: "violation_record"
         source_atomic_column: "violation_record.examination_team_code"
       - logical_name: "Examination Team Violation Behavior Dimension Id"
@@ -9835,7 +9839,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "FK"
-        description: "FK → Examination Team Violation Behavior Dimension"
+        description: "FK → Examination Team Violation Behavior Dimension. Dedupe key khi UNION 2 nguồn — ETL loại trùng trước khi insert"
         source_atomic_table: "violation_record_behavior"
         source_atomic_column: "violation_record_behavior.violation_record_behavior_code"
 

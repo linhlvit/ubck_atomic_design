@@ -167,7 +167,13 @@ flowchart LR
 
 ##### Cụm 1e: Cơ cấu vi phạm theo loại hành vi (Fact Inspection Team Violation Behavior)
 
-Phục vụ Nhóm 3. Thiết kế lại 2026-08-07 (phát hiện qua `/datamart-review`) — thay thế thiết kế cũ dùng text-matching trên `Content`. Grain 1 đoàn × 1 biên bản vi phạm × 1 hành vi — `VIOLATION_RECORD_BEHAVIOR` quan hệ N:1 với `VIOLATION_RECORD` (1 biên bản có thể ghi nhiều hành vi) và N:1 với `VIOLATION_BEHAVIOR` → tách Fact riêng, không gắn vào `Fact Inspection Team Activity` để tránh fanout K_TT_1-10. `Violation Record` lọc `INSPECTION_TEAM_ID IS NOT NULL`, join trực tiếp `INSPECTION_TEAM` — không qua `VIOLATION_CASE`/`PENALTY_DECISION`/`PENALTY_DECISION_VIOLATION_RECORD` (bảng cuối chưa có Atomic YAML, không cần thiết vì có đường ngắn hơn).
+Phục vụ Nhóm 3. Thiết kế lại lần 2 — 2026-08-14 (phát hiện qua `/datamart-review`, BA cập nhật SQL tham khảo bổ sung nhánh nguồn thứ 2). Grain 1 đoàn × 1 biên bản vi phạm × 1 hành vi — `VIOLATION_RECORD_BEHAVIOR` quan hệ N:1 với `VIOLATION_RECORD` (1 biên bản có thể ghi nhiều hành vi) và N:1 với `VIOLATION_BEHAVIOR` → tách Fact riêng, không gắn vào `Fact Inspection Team Activity` để tránh fanout K_TT_1-10.
+
+**2 nguồn UNION độc lập, cùng đổ vào 1 Fact (dedupe khi ETL populate):**
+- **Nguồn A (trực tiếp):** `Inspection Team → Violation Record` (lọc `INSPECTION_TEAM_ID IS NOT NULL`) `→ Violation Record Behavior → Violation Behavior`.
+- **Nguồn B (qua hồ sơ vụ việc, MỚI bổ sung 2026-08-14):** `Inspection Team → Violation Case → Violation Case Received Document → Violation Record → Violation Record Behavior → Violation Behavior`. Lý do cần thiết: `Violation Case.Inspection_Team_Id` **nullable** ("case có thể không từ thanh tra") — có vụ việc gán trực tiếp cho 1 đoàn thanh tra qua `Violation Case` nhưng `Violation Record` liên kết gián tiếp qua `Violation Case Received Document.Violation_Record_Id` (cũng nullable, "chỉ có khi chọn từ biên bản VPHC trên hệ thống") thay vì có sẵn `Inspection_Team_Id` trực tiếp trên `Violation Record`. SQL BA dùng `UNION` (không phải `UNION ALL`) rồi `COUNT(DISTINCT ID)` — ETL phải **dedupe theo `Inspection_Team_Violation_Behavior_Dimension_Id`** khi 1 hành vi vi phạm xuất hiện ở cả 2 nguồn, tránh đếm trùng.
+- Atomic nguồn B: `Violation Case` ← THANHTRA.VIOLATION_CASE (`DataModel/working/Atomic/lld/THANHTRA/lld_THANHTRA_VIOLATION_CASE.yaml`, Nguồn 2 draft) — READY; `Violation Case Received Document` ← THANHTRA.VIOLATION_CASE_RECEIVED_DOCUMENT (`DataModel/working/Atomic/lld/THANHTRA/lld_THANHTRA_VIOLATION_CASE_RECEIVED_DOCUMENT.yaml`, Nguồn 2 draft) — READY.
+- Không dùng `PENALTY_DECISION`/`PENALTY_DECISION_VIOLATION_RECORD` — đường JOIN cũ của SQL BA trước 2026-08-14, đã thay bằng `VIOLATION_CASE_RECEIVED_DOCUMENT` trong bản BA hiện hành.
 
 ```mermaid
 flowchart LR
@@ -176,6 +182,8 @@ flowchart LR
         S2["INSPECT.VIOLATION_RECORD"]
         S3["INSPECT.VIOLATION_RECORD_BEHAVIOR"]
         S4["INSPECT.VIOLATION_BEHAVIOR"]
+        S5["INSPECT.VIOLATION_CASE"]
+        S6["INSPECT.VIOLATION_CASE_RECEIVED_DOCUMENT"]
         ECAT_HolidayInfo["ECAT.ECAT_29_HolidayInfo"]
     end
 
@@ -184,6 +192,8 @@ flowchart LR
         SV2["Violation Record"]
         SV3["Violation Record Behavior"]
         SV4["Violation Behavior"]
+        SV5["Violation Case"]
+        SV6["Violation Case Received Document"]
         Calendar_Date["Calendar Date"]
     end
 
@@ -198,6 +208,8 @@ flowchart LR
     S2 --> SV2
     S3 --> SV3
     S4 --> SV4
+    S5 --> SV5
+    S6 --> SV6
     ECAT_HolidayInfo --> Calendar_Date
 
     SV1 --> G1
@@ -206,6 +218,8 @@ flowchart LR
     SV3 --> G1
     SV3 --> G3
     SV4 --> G3
+    SV5 --> G1
+    SV6 --> G1
 
     Calendar_Date --> G2
     G2 --> G1
@@ -215,7 +229,13 @@ flowchart LR
 
 ##### Cụm 1f: Cơ cấu kiểm tra theo loại hành vi (Fact Examination Team Violation Behavior)
 
-Phục vụ Nhóm 8. Cùng kiến trúc Cụm 1e — `Violation Record` lọc `EXAMINATION_TEAM_ID IS NOT NULL`, join trực tiếp `EXAMINATION_TEAM`.
+Phục vụ Nhóm 8. Cùng kiến trúc Cụm 1e — thiết kế lại lần 2, 2026-08-14 (phát hiện qua `/datamart-review`, BA cập nhật SQL bổ sung UNION nguồn thứ 2, cùng đợt với Cụm 1e).
+
+**2 nguồn UNION độc lập, cùng đổ vào 1 Fact (dedupe khi ETL populate):**
+- **Nguồn A (trực tiếp):** `Examination Team → Violation Record` (lọc `Examination_Team_Id IS NOT NULL`) `→ Violation Record Behavior → Violation Behavior`.
+- **Nguồn B (qua hồ sơ vụ việc, MỚI bổ sung 2026-08-14):** `Examination Team → Violation Case → Violation Case Received Document → Violation Record → Violation Record Behavior → Violation Behavior`. Lý do giống hệt Cụm 1e: `Violation Case.Examination_Team_Id` **nullable** ("case có thể không từ kiểm tra") — `DataModel/working/Atomic/lld/THANHTRA/lld_THANHTRA_VIOLATION_CASE.yaml`.
+- Atomic nguồn B: `Violation Case`, `Violation Case Received Document` — reuse từ Cụm 1e (cùng entity, không phải nguồn riêng cho Kiểm tra).
+- ETL populate 1 Fact duy nhất từ 2 nguồn (UNION + DEDUPE theo `Examination_Team_Violation_Behavior_Dimension_Id`) — Attributes LLD tách 2 file theo nguồn, cùng pattern Cụm 1e: `DTM_TT_fct_examination_team_violation_behavior_THANHTRA_VIOLATION_RECORD.csv` (Nguồn A), `DTM_TT_fct_examination_team_violation_behavior_THANHTRA_VIOLATION_CASE.csv` (Nguồn B).
 
 ```mermaid
 flowchart LR
@@ -224,6 +244,8 @@ flowchart LR
         S2["INSPECT.VIOLATION_RECORD"]
         S3["INSPECT.VIOLATION_RECORD_BEHAVIOR"]
         S4["INSPECT.VIOLATION_BEHAVIOR"]
+        S5["INSPECT.VIOLATION_CASE"]
+        S6["INSPECT.VIOLATION_CASE_RECEIVED_DOCUMENT"]
         ECAT_HolidayInfo["ECAT.ECAT_29_HolidayInfo"]
     end
 
@@ -232,6 +254,8 @@ flowchart LR
         SV2["Violation Record"]
         SV3["Violation Record Behavior"]
         SV4["Violation Behavior"]
+        SV5["Violation Case"]
+        SV6["Violation Case Received Document"]
         Calendar_Date["Calendar Date"]
     end
 
@@ -246,6 +270,8 @@ flowchart LR
     S2 --> SV2
     S3 --> SV3
     S4 --> SV4
+    S5 --> SV5
+    S6 --> SV6
     ECAT_HolidayInfo --> Calendar_Date
 
     SV1 --> G1
@@ -254,6 +280,8 @@ flowchart LR
     SV3 --> G1
     SV3 --> G3
     SV4 --> G3
+    SV5 --> G1
+    SV6 --> G1
 
     Calendar_Date --> G2
     G2 --> G1
@@ -660,11 +688,18 @@ flowchart LR
 > Atomic: `Violation Record` ← THANHTRA.VIOLATION_RECORD — **READY** (`DataModel/Atomic/Business_Activity/dm_atm_violation_record-THANHTRA.VIOLATION_RECORD.yaml`)
 > Atomic: `Violation Record Behavior` ← THANHTRA.VIOLATION_RECORD_BEHAVIOR — **READY** (`DataModel/Atomic/Business_Activity/dm_atm_violation_record_behavior-THANHTRA.VIOLATION_RECORD_BEHAVIOR.yaml`)
 > Atomic: `Violation Behavior` ← THANHTRA.VIOLATION_BEHAVIOR — **READY** (`DataModel/Atomic/Business_Activity/dm_atm_violation_behavior-THANHTRA.VIOLATION_BEHAVIOR.yaml`, reuse Nhóm 13)
+> Atomic: `Violation Case` ← THANHTRA.VIOLATION_CASE — **READY** (`DataModel/working/Atomic/lld/THANHTRA/lld_THANHTRA_VIOLATION_CASE.yaml`, Nguồn 2 draft)
+> Atomic: `Violation Case Received Document` ← THANHTRA.VIOLATION_CASE_RECEIVED_DOCUMENT — **READY** (`DataModel/working/Atomic/lld/THANHTRA/lld_THANHTRA_VIOLATION_CASE_RECEIVED_DOCUMENT.yaml`, Nguồn 2 draft)
 > Ghi chú:
-> - **Sửa 2026-08-07 (phát hiện qua `/datamart-review`):** BA cập nhật SQL tham khảo — thiết kế cũ dùng text-matching 3 pattern trên `Inspection Team Dimension.Content` (ELSE NULL, loại khỏi thống kê) không còn khớp. Nguồn đúng: `Violation Behavior.Violation Behavior Name` — danh mục hành vi chuẩn hoá thật, lấy qua join `Violation Record` (filter `Inspection_Team_Id IS NOT NULL`) → `Violation Record Behavior` → `Violation Behavior` (`Life_Cycle_Status_Code = 'ACTIVE'`). Không dùng lại đường JOIN của SQL BA (`VIOLATION_CASE → PENALTY_DECISION → PENALTY_DECISION_VIOLATION_RECORD`) vì `PENALTY_DECISION_VIOLATION_RECORD` chưa có Atomic YAML — `Violation Record` đã có sẵn FK trực tiếp `Inspection_Team_Id`, đường ngắn hơn và không cần Gap Atomic.
+> - **Sửa lần 2 — 2026-08-14 (phát hiện qua `/datamart-review`):** BA cập nhật SQL tham khảo, đổi từ 1 nguồn sang **UNION 2 nguồn độc lập**. Thiết kế 2026-08-07 (xem lịch sử bên dưới) chỉ phủ Nguồn A — bỏ sót Nguồn B khiến có thể đếm thiếu vi phạm.
+>   - **Nguồn A (trực tiếp):** `Inspection Team → Violation Record` (filter `Inspection_Team_Id IS NOT NULL`) `→ Violation Record Behavior → Violation Behavior` (`Life_Cycle_Status_Code = 'ACTIVE'`).
+>   - **Nguồn B (qua hồ sơ vụ việc, MỚI):** `Inspection Team → Violation Case → Violation Case Received Document → Violation Record → Violation Record Behavior → Violation Behavior`. Cần thiết vì `Violation Case.Inspection_Team_Id` **nullable** ("case có thể không từ thanh tra") — tồn tại vụ việc gán trực tiếp cho 1 đoàn thanh tra qua `Violation Case` nhưng bản thân `Violation Record` không có `Inspection_Team_Id` trực tiếp, chỉ liên kết được qua `Violation Case Received Document.Violation_Record_Id` (cũng nullable).
+>   - **ETL populate 1 Fact duy nhất từ 2 nguồn (UNION + DEDUPE)** — theo đúng pattern SQL BA (`UNION` không phải `UNION ALL`): chạy 2 nhánh JOIN riêng, `DEDUPE theo Inspection_Team_Violation_Behavior_Dimension_Id` trước khi insert, tránh đếm trùng khi cùng 1 hành vi vi phạm xuất hiện ở cả 2 nhánh. Attributes LLD tách thành 2 file riêng theo nguồn (pattern giống `DTM_QLKD_opr_securities_company_compliance_hist_{SOURCE}.csv`) — `DTM_TT_fct_inspection_team_violation_behavior_THANHTRA_VIOLATION_RECORD.csv` (Nguồn A) và `DTM_TT_fct_inspection_team_violation_behavior_THANHTRA_VIOLATION_CASE.csv` (Nguồn B), cùng đổ vào 1 `datamart_table = fct_inspection_team_violation_behavior`.
+>   - Không dùng `PENALTY_DECISION → PENALTY_DECISION_VIOLATION_RECORD` — đây là đường JOIN của bản SQL BA **trước 2026-08-14** (đã lỗi thời), bản BA hiện hành dùng `VIOLATION_CASE → VIOLATION_CASE_RECEIVED_DOCUMENT`.
+> - *(Lịch sử 2026-08-07, chỉ còn áp dụng cho Nguồn A):* thiết kế cũ dùng text-matching 3 pattern trên `Inspection Team Dimension.Content` (ELSE NULL, loại khỏi thống kê) không còn khớp — đã đổi sang `Violation Behavior.Violation Behavior Name`.
 > - Grain khác Nhóm 1/2 — 1 biên bản vi phạm (`VIOLATION_RECORD`) có thể ghi nhận N hành vi qua `VIOLATION_RECORD_BEHAVIOR` (N:1 với `Violation Record`, N:1 với `Violation Behavior`). Tách Fact riêng **Fact Inspection Team Violation Behavior** (grain 1 đoàn × 1 biên bản × 1 hành vi) — không gắn vào `Fact Inspection Team Activity` (grain 1 đoàn) để tránh fanout.
 > - `Violation_Behavior_Name` denormalize trực tiếp vào Dimension mới (không tách `Violation Behavior Dimension` riêng) — theo đúng pattern đã dùng ở `Penalty Decision Subject Behavior Dimension` (Nhóm 13).
-> - `Inspection_Team_Dimension_Id` là FK trên Fact, trỏ thẳng `Inspection Team Dimension` (Nhóm 1) — reuse, không denormalize `Inspection_Team_Code` vào Dimension mới.
+> - `Inspection_Team_Dimension_Id` là FK trên Fact, trỏ thẳng `Inspection Team Dimension` (Nhóm 1) — reuse, không denormalize `Inspection_Team_Code` vào Dimension mới. Với Nguồn B, `Inspection_Team_Dimension_Id` lookup qua `Violation Case.Inspection_Team_Id` (không qua `Violation Record` vì `Violation Record` ở nhánh này không có `Inspection_Team_Id` trực tiếp).
 > - ELSE 'Khác' (không loại bỏ) khi `Violation_Behavior_Name` NULL — khác thiết kế cũ (ELSE NULL, loại khỏi thống kê).
 
 **Mockup:**
@@ -727,7 +762,11 @@ erDiagram
 
 > `Inspection_Team_Dimension_Id` là FK trên Fact, trỏ thẳng tới `Inspection Team Dimension` (Nhóm 1) — Dimension hành vi (`Inspection_Team_Violation_Behavior_Dimension`) không lưu `Inspection_Team_Code`. Muốn lấy thuộc tính đoàn cha thì Fact join trực tiếp `Inspection Team Dimension` qua FK này.
 >
-> Field mapping Atomic source: `Violation_Record_Behavior_Code` ← `Violation Record Behavior.Violation Record Behavior Code` (`VIOLATION_RECORD_BEHAVIOR.ID`, BK per-row unique); `Violation_Behavior_Name` ← lookup `Violation Behavior.Violation Behavior Name` WHERE `Violation_Behavior_Id` = `Violation Record Behavior.Violation Behavior Id` (filter `Violation Behavior.Life_Cycle_Status_Code = 'ACTIVE'`); `Inspection_Team_Dimension_Id` ← lookup `Inspection_Team_Dimension` WHERE `Inspection_Team_Code` = `Violation Record.Inspection Team Code` (`VIOLATION_RECORD_BEHAVIOR.VIOLATION_RECORD_ID` join `VIOLATION_RECORD.ID`, filter `VIOLATION_RECORD.INSPECTION_TEAM_ID IS NOT NULL`). Decision_Date lấy từ `Inspection Team` (ETL join qua `Inspection_Team_Dimension_Id`). KPI COUNT() dùng `COUNT(DISTINCT Inspection_Team_Violation_Behavior_Dimension_Id)`.
+> Field mapping Atomic source — **Nguồn A** (`Inspection Team → Violation Record` trực tiếp): `Violation_Record_Behavior_Code` ← `Violation Record Behavior.Violation Record Behavior Code` (`VIOLATION_RECORD_BEHAVIOR.ID`, BK per-row unique); `Violation_Behavior_Name` ← lookup `Violation Behavior.Violation Behavior Name` WHERE `Violation_Behavior_Id` = `Violation Record Behavior.Violation Behavior Id` (filter `Violation Behavior.Life_Cycle_Status_Code = 'ACTIVE'`); `Inspection_Team_Dimension_Id` ← lookup `Inspection_Team_Dimension` WHERE `Inspection_Team_Code` = `Violation Record.Inspection Team Code` (`VIOLATION_RECORD_BEHAVIOR.VIOLATION_RECORD_ID` join `VIOLATION_RECORD.ID`, filter `VIOLATION_RECORD.INSPECTION_TEAM_ID IS NOT NULL`).
+>
+> Field mapping Atomic source — **Nguồn B** (`Inspection Team → Violation Case → Violation Case Received Document → Violation Record`, MỚI): `Violation_Record_Behavior_Code`/`Violation_Behavior_Name` lấy giống Nguồn A (cùng join `Violation Record Behavior → Violation Behavior` sau khi đã xác định `Violation Record`); riêng `Violation Record` ở nhánh này xác định qua `Violation Case Received Document.Violation_Record_Id` (filter `IS NOT NULL` — "chỉ có khi chọn từ biên bản VPHC trên hệ thống") join `Violation Case Received Document.Violation_Case_Id` = `Violation Case.Violation_Case_Id`; `Inspection_Team_Dimension_Id` ← lookup `Inspection_Team_Dimension` WHERE `Inspection_Team_Code` = `Violation Case.Inspection Team Code` (filter `Violation_Case.Inspection_Team_Id IS NOT NULL`) — khác Nguồn A, lấy từ `Violation Case`, không phải `Violation Record`.
+>
+> Decision_Date lấy từ `Inspection Team` (ETL join qua `Inspection_Team_Dimension_Id`, áp dụng cho cả 2 nguồn). KPI COUNT() dùng `COUNT(DISTINCT Inspection_Team_Violation_Behavior_Dimension_Id)` sau khi đã UNION+dedupe 2 nguồn.
 
 **Lineage Mart → Báo cáo:**
 
@@ -763,10 +802,10 @@ flowchart LR
 > Atomic: `Inspection Team Target` ← THANHTRA.INSPECTION_TEAM_TARGET (`INSPECT.INSPECTION_TEAM_TARGET`) — **READY** (`DataModel/Atomic/Business_Activity/dm_atm_inspection_team_target-THANHTRA.INSPECTION_TEAM_TARGET.yaml`)
 > Ghi chú:
 > - Grain khác Nhóm 1/2/3 — `INSPECTION_TEAM_TARGET` quan hệ N:1 với `INSPECTION_TEAM`. Đếm theo số lượt đối tượng (không DISTINCT theo đoàn), tách riêng **Fact Inspection Team Target Activity** (grain 1 đoàn × 1 đối tượng — dữ liệu chi tiết từng lượt, chưa aggregate).
-> - `Target_Type_Code` (← `INSPECTION_TEAM_TARGET.TARGET_TYPE`) map 1:1 trực tiếp từ nguồn — KHÔNG phải Classification Value. Giá trị thực tế trong Atomic: `SECURITIES_COMPANY, FUND_MANAGEMENT_COMPANY, PUBLIC_COMPANY, AUDIT_COMPANY, CRYPTO_SERVICE_PROVIDER, INDIVIDUAL, ORGANIZATION` (7 giá trị).
-> - **Sửa 2026-07-21 (phát hiện qua `/datamart-review`):** Thiết kế cũ hardcode 4 cặp KPI Base/Derived cố định (Cá nhân/CTĐC/CTCK/CTQLQ) — bỏ sót 3 giá trị Atomic thật (`AUDIT_COMPANY`, `CRYPTO_SERVICE_PROVIDER`, `ORGANIZATION`) trong cả tử số lẫn mẫu số %, không khớp SQL BA tham khảo (`COUNT(a.ID)*100/SUM(COUNT(a.ID)) OVER (PARTITION BY Year)` — GROUP BY động theo toàn bộ `TARGET_TYPE` thực tế phát sinh, không giới hạn ở 4 loại BA liệt kê minh họa trong Mô tả). Thiết kế lại: 1 KPI Base tổng quát GROUP BY động (số dòng kết quả tùy dữ liệu, tối đa 7) + 1 KPI Chiều — không cố định N cặp Base/Derived. Tỷ lệ % không còn là KPI Derived ở tầng Datamart; tính ở tầng Detail Mapping/Báo cáo (COUNT theo nhóm / SUM COUNT toàn bộ nhóm cùng năm × 100%).
+> - `Target_Type_Code` (← `INSPECTION_TEAM_TARGET.TARGET_TYPE`) map 1:1 trực tiếp từ nguồn — KHÔNG phải Classification Value. Giá trị đã biết qua BA (không phải danh sách đóng — Atomic không hardcode enum): `SECURITIES_COMPANY, FUND_MANAGEMENT_COMPANY, PUBLIC_COMPANY, AUDIT_COMPANY, CRYPTO_SERVICE_PROVIDER, INDIVIDUAL, ORGANIZATION, BOND_ISSUER` (8 giá trị, cập nhật 2026-08-14 — BA bổ sung `BOND_ISSUER` so với bản trước).
+> - **Sửa 2026-07-21 (phát hiện qua `/datamart-review`):** Thiết kế cũ hardcode 4 cặp KPI Base/Derived cố định (Cá nhân/CTĐC/CTCK/CTQLQ) — bỏ sót 3 giá trị Atomic thật (`AUDIT_COMPANY`, `CRYPTO_SERVICE_PROVIDER`, `ORGANIZATION`) trong cả tử số lẫn mẫu số %, không khớp SQL BA tham khảo (`COUNT(a.ID)*100/SUM(COUNT(a.ID)) OVER (PARTITION BY Year)` — GROUP BY động theo toàn bộ `TARGET_TYPE` thực tế phát sinh, không giới hạn ở 4 loại BA liệt kê minh họa trong Mô tả). Thiết kế lại: 1 KPI Base tổng quát GROUP BY động (số dòng kết quả tùy dữ liệu) + 1 KPI Chiều — không cố định N cặp Base/Derived. Tỷ lệ % không còn là KPI Derived ở tầng Datamart; tính ở tầng Detail Mapping/Báo cáo (COUNT theo nhóm / SUM COUNT toàn bộ nhóm cùng năm × 100%). Nhờ thiết kế GROUP BY động này, `BOND_ISSUER` (bổ sung 2026-08-14) tự động được phản ánh mà không cần sửa logic ETL — chỉ cập nhật ghi chú mapping hiển thị.
 > - Date key: `Decision_Date` (← `INSPECTION_TEAM.DECISION_DATE`, qua join với Inspection Team).
-> - Mapping hiển thị tham khảo (label UI, không phải filter cố định): `INDIVIDUAL`=Cá nhân, `PUBLIC_COMPANY`=CTĐC, `SECURITIES_COMPANY`=CTCK, `FUND_MANAGEMENT_COMPANY`=CTQLQ, `AUDIT_COMPANY`=CTKT, `CRYPTO_SERVICE_PROVIDER`=Tổ chức cung cấp dịch vụ tài sản mã hoá, `ORGANIZATION`=Tổ chức khác.
+> - Mapping hiển thị tham khảo (label UI, không phải filter cố định — cập nhật 2026-08-14): `INDIVIDUAL`=Cá nhân, `PUBLIC_COMPANY`=CTĐC, `SECURITIES_COMPANY`=CTCK, `FUND_MANAGEMENT_COMPANY`=CTQLQ, `AUDIT_COMPANY`=CTKT, `CRYPTO_SERVICE_PROVIDER`=Tổ chức cung cấp dịch vụ tài sản mã hoá, `ORGANIZATION`=Tổ chức khác, `BOND_ISSUER`=Tổ chức phát hành trái phiếu.
 
 **Mockup:**
 
@@ -1080,8 +1119,14 @@ flowchart LR
 > Atomic: `Violation Record` ← THANHTRA.VIOLATION_RECORD — **READY** (reuse Nhóm 3)
 > Atomic: `Violation Record Behavior` ← THANHTRA.VIOLATION_RECORD_BEHAVIOR — **READY** (reuse Nhóm 3)
 > Atomic: `Violation Behavior` ← THANHTRA.VIOLATION_BEHAVIOR — **READY** (reuse Nhóm 3/13)
+> Atomic: `Violation Case` ← THANHTRA.VIOLATION_CASE — **READY** (reuse Nhóm 3, `DataModel/working/Atomic/lld/THANHTRA/lld_THANHTRA_VIOLATION_CASE.yaml`, Nguồn 2 draft)
+> Atomic: `Violation Case Received Document` ← THANHTRA.VIOLATION_CASE_RECEIVED_DOCUMENT — **READY** (reuse Nhóm 3, `DataModel/working/Atomic/lld/THANHTRA/lld_THANHTRA_VIOLATION_CASE_RECEIVED_DOCUMENT.yaml`, Nguồn 2 draft)
 > Ghi chú:
-> - **Sửa 2026-08-07 (phát hiện qua `/datamart-review`):** Đồng bộ với Nhóm 3 (Thanh tra) — BA cập nhật SQL tham khảo, thiết kế cũ dùng text-matching 11 pattern trên `Examination Team Dimension.Content` (ELSE NULL) không còn khớp. Nguồn đúng: `Violation Behavior.Violation Behavior Name`, lấy qua join `Violation Record` (filter `Examination_Team_Id IS NOT NULL`) → `Violation Record Behavior` → `Violation Behavior`. SQL BA Nhóm 8 không filter `Life_Cycle_Status_Code = 'ACTIVE'` (khác Nhóm 3) — giữ nguyên không filter theo đúng BA.
+> - **Sửa lần 2 — 2026-08-14 (phát hiện qua `/datamart-review`):** Đồng bộ với Nhóm 3 — BA cập nhật SQL tham khảo lần 2, đổi từ 1 nguồn sang **UNION 2 nguồn độc lập** (giống hệt cấu trúc Nhóm 3, đổi `Inspection Team` → `Examination Team`).
+>   - **Nguồn A (trực tiếp):** `Examination Team → Violation Record` (filter `Examination_Team_Id IS NOT NULL`) `→ Violation Record Behavior → Violation Behavior` (filter `vb.STATUS = 'ACTIVE'`).
+>   - **Nguồn B (qua hồ sơ vụ việc, MỚI):** `Examination Team → Violation Case → Violation Case Received Document → Violation Record → Violation Record Behavior → Violation Behavior` (cùng filter `ACTIVE`). Lý do giống Nhóm 3: `Violation Case.Examination_Team_Id` nullable ("case có thể không từ kiểm tra").
+>   - **Sửa lại filter Life_Cycle_Status_Code:** Bản HLD trước (2026-08-07) ghi "SQL BA Nhóm 8 không filter `Life_Cycle_Status_Code = 'ACTIVE'` — khác Nhóm 3" — đây là mô tả SQL BA **phiên bản trước 2026-08-14**. SQL BA hiện hành (14/08) đã CÓ filter `vb.STATUS = 'ACTIVE'` ở cả 2 nhánh (`vrb.DELETED = 0`/`vb.DELETED = 0 AND vb.STATUS = 'ACTIVE'`), giống hệt Nhóm 3 — không còn khác biệt, cần lọc `Life_Cycle_Status_Code = 'ACTIVE'` như Nhóm 3.
+>   - ETL populate 1 Fact duy nhất (UNION + DEDUPE theo `Examination_Team_Violation_Behavior_Dimension_Id`) — Attributes LLD tách 2 file theo nguồn, cùng pattern Nhóm 3.
 > - Grain khác Nhóm 6/7 — 1 biên bản vi phạm có thể ghi nhận N hành vi. Tách Fact riêng **Fact Examination Team Violation Behavior** (grain 1 vụ kiểm tra × 1 biên bản × 1 hành vi), cùng kiến trúc Fact Inspection Team Violation Behavior (Nhóm 3).
 > - `Violation_Behavior_Name` denormalize vào Dimension mới, không tách `Violation Behavior Dimension` riêng — cùng pattern Nhóm 3.
 > - ELSE 'Khác' (không loại bỏ) khi `Violation_Behavior_Name` NULL.
@@ -1147,7 +1192,7 @@ erDiagram
 
 > `Examination_Team_Dimension_Id` là FK trên Fact, trỏ thẳng tới `Examination Team Dimension` (Nhóm 6) — Dimension hành vi không lưu `Examination_Team_Code`.
 >
-> Field mapping Atomic source: giống hệt Nhóm 3, thay `Inspection_Team_Id`/`Inspection Team Code` bằng `Examination_Team_Id`/`Examination Team Code` (filter `VIOLATION_RECORD.EXAMINATION_TEAM_ID IS NOT NULL`), KHÔNG filter `Violation Behavior.Life_Cycle_Status_Code` (khác Nhóm 3, theo đúng SQL BA). KPI COUNT() dùng `COUNT(DISTINCT Examination_Team_Violation_Behavior_Dimension_Id)`.
+> Field mapping Atomic source — **Nguồn A** và **Nguồn B**: giống hệt Nhóm 3 (xem Cụm 1e/Nhóm 3), thay `Inspection_Team_Id`/`Inspection Team Code` bằng `Examination_Team_Id`/`Examination Team Code`. Nguồn A filter `VIOLATION_RECORD.EXAMINATION_TEAM_ID IS NOT NULL`; Nguồn B filter `VIOLATION_CASE.EXAMINATION_TEAM_ID IS NOT NULL` + `VIOLATION_CASE_RECEIVED_DOCUMENT.VIOLATION_RECORD_ID IS NOT NULL`. Cả 2 nguồn đều filter `Violation Behavior.Life_Cycle_Status_Code = 'ACTIVE'` (theo đúng SQL BA hiện hành — xem ghi chú sửa lần 2 ở trên). KPI COUNT() dùng `COUNT(DISTINCT Examination_Team_Violation_Behavior_Dimension_Id)` sau khi UNION+dedupe 2 nguồn.
 
 **Lineage Mart → Báo cáo:**
 
@@ -1183,10 +1228,11 @@ flowchart LR
 > Atomic: `Examination Team Target` ← THANHTRA.EXAMINATION_TEAM_TARGET (`INSPECT.EXAMINATION_TEAM_TARGET`) — **READY** (`DataModel/Atomic/Business_Activity/dm_atm_examination_team_target-THANHTRA.EXAMINATION_TEAM_TARGET.yaml`)
 > Ghi chú:
 > - Cùng kiến trúc Nhóm 4 — `EXAMINATION_TEAM_TARGET` quan hệ N:1 với `EXAMINATION_TEAM`. Tách riêng **Fact Examination Team Target Activity** (grain 1 vụ kiểm tra × 1 đối tượng — dữ liệu chi tiết từng lượt, chưa aggregate).
-> - `Target_Type_Code` (← `EXAMINATION_TEAM_TARGET.TARGET_TYPE`) map 1:1 trực tiếp từ nguồn — KHÔNG phải Classification Value. Giá trị thực tế trong Atomic: `SECURITIES_COMPANY, FUND_MANAGEMENT_COMPANY, PUBLIC_COMPANY, AUDIT_COMPANY, CRYPTO_SERVICE_PROVIDER, INDIVIDUAL, ORGANIZATION` (7 giá trị).
-> - **Sửa 2026-07-21 (phát hiện qua `/datamart-review`):** Thiết kế cũ hardcode 5 cặp KPI Base/Derived cố định (CTCK/CTKT/CTQLQ/CTĐC/Tổ chức khác-gộp) — bỏ sót 2 giá trị Atomic thật (`INDIVIDUAL`, `CRYPTO_SERVICE_PROVIDER`) hoàn toàn không xuất hiện ở bất kỳ KPI nào dù ghi chú cũ nói "Cá nhân=INDIVIDUAL". Mâu thuẫn với chính SQL BA (`GROUP BY b.TARGET_TYPE` động theo toàn bộ giá trị thực tế phát sinh, không giới hạn 5 loại BA liệt kê minh họa trong Mô tả). Thiết kế lại theo đúng bản chất GROUP BY động: 1 KPI Base tổng quát (số dòng kết quả tùy dữ liệu, tối đa 7) + 1 KPI Chiều — không cố định N cặp Base/Derived, không gộp "Tổ chức khác". Tỷ lệ % không còn là KPI Derived ở tầng Datamart; tính ở tầng Detail Mapping/Báo cáo (COUNT theo nhóm / SUM COUNT toàn bộ nhóm cùng năm × 100%).
+> - `Target_Type_Code` (← `EXAMINATION_TEAM_TARGET.TARGET_TYPE`) map 1:1 trực tiếp từ nguồn (`source_column: THANHTRA.EXAMINATION_TEAM_TARGET.TARGET_TYPE`, không có transform/gộp giá trị ở tầng Atomic) — KHÔNG phải Classification Value. Giá trị đã biết qua BA (không phải danh sách đóng): `SECURITIES_COMPANY, FUND_MANAGEMENT_COMPANY, PUBLIC_COMPANY, AUDIT_COMPANY, CRYPTO_SERVICE_PROVIDER, INDIVIDUAL, ORGANIZATION, BOND_ISSUER` (8 giá trị, cập nhật 2026-08-14 — BA bổ sung `BOND_ISSUER` xuất hiện riêng, KHÔNG gộp vào `ORGANIZATION`).
+> - **Sửa 2026-07-21 (phát hiện qua `/datamart-review`):** Thiết kế cũ hardcode 5 cặp KPI Base/Derived cố định (CTCK/CTKT/CTQLQ/CTĐC/Tổ chức khác-gộp) — bỏ sót 2 giá trị Atomic thật (`INDIVIDUAL`, `CRYPTO_SERVICE_PROVIDER`) hoàn toàn không xuất hiện ở bất kỳ KPI nào dù ghi chú cũ nói "Cá nhân=INDIVIDUAL". Mâu thuẫn với chính SQL BA (`GROUP BY b.TARGET_TYPE` động theo toàn bộ giá trị thực tế phát sinh, không giới hạn 5 loại BA liệt kê minh họa trong Mô tả). Thiết kế lại theo đúng bản chất GROUP BY động: 1 KPI Base tổng quát (số dòng kết quả tùy dữ liệu) + 1 KPI Chiều — không cố định N cặp Base/Derived, không gộp "Tổ chức khác". Tỷ lệ % không còn là KPI Derived ở tầng Datamart; tính ở tầng Detail Mapping/Báo cáo (COUNT theo nhóm / SUM COUNT toàn bộ nhóm cùng năm × 100%). Nhờ GROUP BY động, `BOND_ISSUER` (2026-08-14) tự động phản ánh, không cần sửa ETL.
+> - **Sửa lại 2026-08-14 (phát hiện qua `/datamart-review`):** Bản ghi chú trước (2026-07-21) suy đoán "`ORGANIZATION`=Tổ chức khác (gồm NHLK/Tổ chức PHTP/Organization khác — Atomic không phân biệt riêng)" — suy đoán này SAI. SQL BA hiện hành (14/08) liệt kê `BOND_ISSUER` như 1 giá trị `TARGET_TYPE` riêng biệt trong CASE WHEN, và Atomic map `TARGET_TYPE` 1:1 không gộp nhóm — nếu source phát sinh `BOND_ISSUER`, Atomic column cũng lưu đúng `BOND_ISSUER`, không tự gộp vào `ORGANIZATION`.
 > - Date key: `Decision_Date` (← `EXAMINATION_TEAM.DECISION_DATE`, qua join với Examination Team).
-> - Mapping hiển thị tham khảo (label UI, không phải filter cố định): `SECURITIES_COMPANY`=CTCK, `FUND_MANAGEMENT_COMPANY`=CTQLQ, `PUBLIC_COMPANY`=CTĐC, `AUDIT_COMPANY`=CTKT, `INDIVIDUAL`=Cá nhân, `CRYPTO_SERVICE_PROVIDER`=Tổ chức cung cấp dịch vụ tài sản mã hoá, `ORGANIZATION`=Tổ chức khác (gồm NHLK/Tổ chức PHTP/Organization khác — Atomic không phân biệt riêng).
+> - Mapping hiển thị tham khảo (label UI, không phải filter cố định — cập nhật 2026-08-14): `SECURITIES_COMPANY`=CTCK, `FUND_MANAGEMENT_COMPANY`=CTQLQ, `PUBLIC_COMPANY`=CTĐC, `AUDIT_COMPANY`=CTKT, `INDIVIDUAL`=Cá nhân, `CRYPTO_SERVICE_PROVIDER`=Tổ chức cung cấp dịch vụ tài sản mã hoá, `ORGANIZATION`=Tổ chức khác, `BOND_ISSUER`=Tổ chức phát hành trái phiếu (giá trị riêng, không gộp vào ORGANIZATION).
 
 **Mockup:**
 
@@ -1196,10 +1242,10 @@ pie title Cơ cấu kiểm tra theo đối tượng
     "CTQLQ" : 20
     "CTĐC" : 20
     "CTKT" : 20
-    "Tổ chức khác (NHLK/PHTP/...)" : 10
+    "Khác" : 10
 ```
 
-> Số lát pie chart thực tế tùy số giá trị `Target_Type_Code` phát sinh trong data (tối đa 7) — mockup chỉ minh họa trường hợp phổ biến.
+> Số lát pie chart thực tế tùy số giá trị `Target_Type_Code` phát sinh trong data — mockup chỉ minh họa trường hợp phổ biến.
 
 **Source:** `Fact Examination Team Target Activity` → `Calendar Date Dimension`
 
@@ -1367,7 +1413,7 @@ flowchart LR
 #### Nhóm 11 — KPI cards Thống kê chung Xử phạt (STT 11)
 
 > Phân loại: **Phân tích**
-> Atomic: `Penalty Decision` ← THANHTRA.PENALTY_DECISION (`INSPECT.PENALTY_DECISION`) — **READY** (`DataModel/Atomic/Event/dm_atm_penalty_decision-THANHTRA.PENALTY_DECISION.yaml`)
+> Atomic: `Penalty Decision` ← THANHTRA.PENALTY_DECISION (`INSPECT.PENALTY_DECISION`) — **READY** (`DataModel/working/Atomic/lld/THANHTRA/lld_THANHTRA_PENALTY_DECISION.yaml`, Nguồn 2 draft — sửa 2026-08-14, path cũ trỏ Nguồn 1 không tồn tại trên đĩa, phát hiện qua `/datamart-review`; Attributes đã tự dùng đúng physical_name thật `pd_id`/`pd_code` từ file này, chỉ path tham khảo trong text bị sai)
 > Ghi chú:
 > - `Total_Fine_Amount` ← `PENALTY_DECISION.TOTAL_FINE_AMOUNT` — measure tiền phạt, đã có sẵn trên `PENALTY_DECISION`.
 > - Date key: `Issued_Date` (← `PENALTY_DECISION.ISSUED_DATE`).
@@ -1713,6 +1759,11 @@ flowchart LR
 > - Cột **"Loại hình"** ← ETL-derived: `PENALTY_DECISION.VIOLATION_CASE_ID` → `Violation Case` → nếu `Inspection_Team_Id IS NOT NULL` thì lấy `Inspection Team.Form_Type_Code`, nếu `Examination_Team_Id IS NOT NULL` thì lấy `Examination Team.Form_Type_Code` (Định kỳ/Đột xuất, scheme `TT_REVIEW_FORM_TYPE`) — **(Sửa 2026-08-08)** trả về `'Khác'` nếu hồ sơ không phát sinh từ đoàn TT/KT (không còn để NULL, khớp SQL BA cập nhật). Đóng O_TT_14.
 > - **Sửa 2026-08-11 (BA cập nhật SQL):** Cột **"Trạng thái"** đổi nguồn từ `Penalty Decision.Life Cycle Status Code` (`PENALTY_DECISION.STATUS`) sang `Violation Case.Life Cycle Status Code` (`VIOLATION_CASE.STATUS`) — SQL BA dùng alias `c` = `VIOLATION_CASE`. Đồng thời SQL BA **không lấy nguyên code** mà ETL-derived qua `CASE WHEN` map thành nhãn tiếng Việt cố định: `NEW`→"Mới tiếp nhận", `PROCESSING`→"Đang xử lý", `DECISION_ISSUED`→"Đã ban hành quyết định", `ENFORCED`→"Đang cưỡng chế", `CLOSED`→"Đã kết thúc", `ELSE`→"Khác". Không còn dùng scheme Classification Value 7 giá trị `PENALTY_DECISION_STATUS` cũ — nhãn đã cố định trong ETL. Join qua `Penalty_Decision.Violation_Case_Id` (đã có sẵn, dùng chung JOIN với "Mã vụ việc"/"Loại hình"). Đóng O_TT_15.
 > - Cột **"Trạng thái"** ← ETL-derived: `Violation Case.Life Cycle Status Code` (`VIOLATION_CASE.STATUS`) qua `CASE WHEN` map 5 giá trị code → nhãn tiếng Việt (Mới tiếp nhận/Đang xử lý/Đã ban hành quyết định/Đang cưỡng chế/Đã kết thúc), `ELSE 'Khác'`.
+> - **Sửa 2026-08-14 (phát hiện qua `/datamart-review`) — bổ sung ETL dedupe khi 1 vụ việc + đối tượng có nhiều Penalty Decision:** SQL BA dùng `ROW_NUMBER() OVER (PARTITION BY Year(Issued_Date), Violation_Case.Code, Penalty_Decision_Subject.Subject_Name ORDER BY [priority theo Penalty_Decision.Life_Cycle_Status_Code])`, chỉ giữ dòng `ord = 1`. Lý do cần thiết: `Penalty_Decision.Violation_Case_Id` là FK N:1 tới `Violation Case` (không ràng buộc unique) — 1 hồ sơ có thể phát sinh nhiều Penalty Decision theo tiến trình xử lý (nháp → trình duyệt → ban hành → cưỡng chế), mỗi lần tạo/cập nhật có thể sinh 1 bản ghi mới thay vì update tại chỗ. Nếu không dedupe, danh sách sẽ hiển thị trùng nhiều dòng cho cùng 1 (vụ việc, đối tượng).
+>   - **Thứ tự ưu tiên** (dùng `Penalty Decision.Life_Cycle_Status_Code` — 7 giá trị, KHÁC với `Violation_Case.Life_Cycle_Status_Code` dùng cho cột hiển thị "Trạng thái" ở trên): `ENFORCED`(1) > `SENT_TO_SUBJECT`(2) > `ISSUED`(3) > `APPROVED`(4) > `REJECTED`(5) > `PENDING_APPROVAL`(6) > `DRAFT`(7) > khác(8) — số nhỏ hơn ưu tiên cao hơn.
+>   - **ETL populate:** trước khi INSERT vào `Operational Penalty Decision List`, nhóm các `Penalty_Decision_Subject` theo `(Year(Issued_Date), Violation_Case_Code, Subject_Name)`; trong mỗi nhóm, chỉ giữ 1 dòng có `Penalty_Decision.Life_Cycle_Status_Code` ưu tiên cao nhất theo thứ tự trên (tương đương `ROW_NUMBER()`/`RANK()` ở tầng ETL, không SCD lưu lại các bản ghi bị loại).
+>   - Không đổi PK/grain hiện tại (`Penalty_Decision_Subject_Code`) — dedupe là 1 bước lọc trước khi ghi, không đổi cấu trúc bảng hay pattern Operational.
+>   - Xem O_TT_17.
 > - Date key: `Issued_Date` (← `PENALTY_DECISION.ISSUED_DATE`).
 
 **Mockup:**
@@ -1729,7 +1780,7 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
 |---|---|---|---|---|---|
-| K_TT_50 | Mã vụ việc | — | Attribute | `Violation Case.Violation Case Code` (join qua Penalty Decision) | Sửa 2026-08-07 — trước đây dùng `Penalty Decision Code`, đổi sang mã hồ sơ TT/KT gốc |
+| K_TT_50 | Mã vụ việc | — | Attribute | `Violation Case.Violation Case Code` (join qua Penalty Decision) | Sửa 2026-08-07 — trước đây dùng `Penalty Decision Code`, đổi sang mã hồ sơ TT/KT gốc. Sửa 2026-08-14 — ETL dedupe theo (Năm, Mã vụ việc, Tên đối tượng), ưu tiên `Penalty Decision.Life Cycle Status Code` cao nhất khi 1 vụ việc+đối tượng có nhiều Penalty Decision. Xem O_TT_17 |
 | K_TT_51 | Đối tượng | — | Attribute | `Penalty Decision Subject.Subject Name` | |
 | K_TT_52 | Phân loại đối tượng | — | Attribute | `Penalty Decision Subject.Subject Type Code` | |
 | K_TT_53 | Loại hình | — | Attribute | ETL-derived qua `Violation Case` → `Inspection Team`/`Examination Team`, `CASE WHEN ... ELSE 'Khác' END` | (Sửa 2026-08-08) 'Khác' nếu hồ sơ không từ đoàn TT/KT — trước đây NULL |
@@ -2204,3 +2255,5 @@ graph TB
 | O_TT_13 | Nhóm 20 — SQL BA cũ `SUM(a.TOTAL_FINE_AMOUNT)` (a = PENALTY_DECISION, grain QĐ) trong khi JOIN qua Subject × Behavior không DISTINCT — fanout N×M tiềm ẩn nếu chạy trực tiếp. Thiết kế Datamart trước đó (2026-08-07) phải né bằng pre-aggregate sub-query phức tạp. | (Sửa 2026-08-08) BA tự cập nhật SQL — đổi `COUNT(a.ID)` → `COUNT(DISTINCT a.ID)` và `SUM(a.TOTAL_FINE_AMOUNT)` → `SUM(c.APPLIED_FINE_AMOUNT)` (c = PENALTY_DECISION_SUBJECT_BEHAVIOR, đúng grain Fact). Bổ sung measure `Applied_Fine_Amount` trực tiếp lên `Fact Penalty Decision Subject Behavior`, xóa toàn bộ pre-aggregate sub-query — không còn fanout. | K_TT_71–84 (Nhóm 20) | **Closed** |
 | O_TT_14 | Nhóm 15 — cột "Loại hình" dùng `ELSE NULL` khi hồ sơ không phát sinh từ đoàn TT/KT, không khớp SQL BA cập nhật 2026-08-08 (`ELSE 'Khác'`). | Đổi `ELSE NULL` → `ELSE 'Khác'` trong công thức K_TT_53. Điều kiện chính (`IS NOT NULL`) đã đúng từ trước, không cần sửa. | K_TT_53 (Nhóm 15) | **Closed** |
 | O_TT_15 | Nhóm 15 — cột "Trạng thái" thiết kế cũ lấy nguyên code `Penalty Decision.Life Cycle Status Code` (`PENALTY_DECISION.STATUS`, scheme 7 giá trị), không khớp SQL BA cập nhật 2026-08-11 — SQL dùng `c.STATUS` với `c` = alias `VIOLATION_CASE`, và **không lấy nguyên code** mà `CASE WHEN c.STATUS = 'NEW' THEN 'Mới tiếp nhận' WHEN 'PROCESSING' THEN 'Đang xử lý' WHEN 'DECISION_ISSUED' THEN 'Đã ban hành quyết định' WHEN 'ENFORCED' THEN 'Đang cưỡng chế' WHEN 'CLOSED' THEN 'Đã kết thúc' ELSE 'Khác' END` — map thành nhãn tiếng Việt cố định trong ETL. Dòng metadata BA_analyst_TT.csv STT 15 "Trạng thái" vẫn ghi nguồn `PENALTY_DECISION;STATUS` — sai/lỗi thời so với SQL tham khảo mới, chưa đồng bộ. | Đổi nguồn sang `Violation Case.Life Cycle Status Code` (`VIOLATION_CASE.STATUS`, Atomic READY tại `working/Atomic/lld/THANHTRA/lld_THANHTRA_VIOLATION_CASE.yaml`), ETL-derived qua `CASE WHEN` map 5 giá trị code → nhãn tiếng Việt (không còn dùng scheme Classification Value `PENALTY_DECISION_STATUS` cũ). Join thêm `→ Violation Case` qua `Penalty_Decision.Violation_Case_Id` (đã có sẵn, dùng chung JOIN với "Mã vụ việc"/"Loại hình"). | K_TT_54 (Nhóm 15) | **Closed** |
+| O_TT_16 | Nhóm 13 — SQL BA (cập nhật, phát hiện qua `/datamart-review` 2026-08-14) có 2 nhánh xác định `Violation_Behavior_Name`: nhánh chính `PENALTY_DECISION → PENALTY_DECISION_SUBJECT → PENALTY_DECISION_SUBJECT_BEHAVIOR → VIOLATION_BEHAVIOR` (đã thiết kế, Atomic READY), và nhánh fallback `PENALTY_DECISION → PENALTY_DECISION_VIOLATION_RECORD → VIOLATION_RECORD → VIOLATION_RECORD_BEHAVIOR → VIOLATION_BEHAVIOR` (`COALESCE`, dùng khi nhánh chính không xác định được tên hành vi). Đã verify lại (`grep -rl "PENALTY_DECISION_VIOLATION_RECORD" DataModel/Atomic/ DataModel/working/Atomic/lld/`) — bảng trung gian `PENALTY_DECISION_VIOLATION_RECORD` **chưa có Atomic YAML ở cả 2 nguồn**, khác với case Nhóm 3 (đã có YAML draft, phải thiết kế lại) — ở đây ghi chú "chưa có Atomic YAML" của thiết kế hiện tại vẫn đúng, KHÔNG lỗi thời. | Gap Atomic thật, chưa xử lý — thiết kế hiện tại (K_TT_46/47) chỉ dùng nhánh chính, bỏ qua nhánh fallback qua `PENALTY_DECISION_VIOLATION_RECORD`. Ảnh hưởng: một số bản ghi lẽ ra xác định được tên hành vi qua nhánh fallback sẽ bị rơi vào nhóm "Khác" thay vì tên hành vi thật — không mất dữ liệu (vẫn đếm được), chỉ sai phân loại hiển thị cho phần dữ liệu bị ảnh hưởng. Chờ `atomic-lld-design` bổ sung Atomic entity `Penalty Decision Violation Record` trước khi thiết kế lại nhánh fallback. | K_TT_46–47 (Nhóm 13) | **Open** |
+| O_TT_17 | Nhóm 15 — SQL BA (phát hiện qua `/datamart-review` 2026-08-14) dùng `ROW_NUMBER() OVER (PARTITION BY Year, Violation_Case.Code, Subject_Name ORDER BY [priority theo Penalty_Decision.Life_Cycle_Status_Code])`, chỉ giữ `ord = 1` — dedupe khi 1 vụ việc + đối tượng có nhiều `Penalty_Decision` (đã verify `Penalty_Decision.Violation_Case_Id` là FK N:1, không ràng buộc unique — 1 hồ sơ có thể phát sinh nhiều QĐ theo tiến trình xử lý DRAFT→...→ENFORCED). Thiết kế trước đó (Operational Penalty Decision List) không có logic dedupe này. | Bổ sung ETL dedupe: nhóm theo (Năm, Violation_Case_Code, Subject_Name), giữ 1 dòng có `Penalty_Decision.Life_Cycle_Status_Code` ưu tiên cao nhất theo thứ tự `ENFORCED > SENT_TO_SUBJECT > ISSUED > APPROVED > REJECTED > PENDING_APPROVAL > DRAFT > khác`. Không đổi PK/grain (`Penalty_Decision_Subject_Code`), chỉ thêm bước lọc trước khi ETL insert. | K_TT_50 (Nhóm 15) | **Closed** |
