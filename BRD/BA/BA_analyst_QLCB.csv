@@ -1,9 +1,9 @@
-﻿;;;;;;;;;;;;;;;Khai thác nguồn;;;;;;;;;
-STT;Mã dashboard/BC;Dashboard/báo cáo;Thông tin;Mô tả;Nhóm yêu cầu;Phân loại;Đánh giá;Độ chi tiết;Nguồn;Cần phân tích?;Cần test?;DL lịch sử?;Trạng thái mapping;Mapping (nghiệp vụ);Bảng nguồn;Trường nguồn;Điều kiện;Câu lệnh tham khảo;Note;Kết quả Test;Model;DMT;Hoàn thành DEV;Loại dữ liệu
+﻿;;;;;;;;;;;;;;;Khai thác nguồn;;;;;;;
+STT;Mã dashboard/BC;Dashboard/báo cáo;Thông tin;Mô tả;Nhóm yêu cầu;Phân loại;Đánh giá;Độ chi tiết;Nguồn;Cần phân tích?;Cần test?;DL lịch sử?;Trạng thái mapping;Mapping (nghiệp vụ);Bảng nguồn;Trường nguồn;Điều kiện;Câu lệnh tham khảo;Note;Hoàn thành DEV;Loại dữ liệu;Kết quả Test
 ;;;Tên chiều/chỉ tiêu/thuộc tính;;Dashboard/báo cáo/Data Explorer;Chiều/Chỉ tiêu cơ sở/Chỉ tiêu phái sinh;"Dễ: lấy 1: 1 từ nguồn
 TB: có tính toán tổng hợp
 Khó: Có logic phức tạp và lấy nhiều mốc thời gian
-Trùng: Trong phạm vi ban của mình làm đã có tính thông tin này rồi";;;;;;;;;;;;;;;;;
+Trùng: Trong phạm vi ban của mình làm đã có tính thông tin này rồi";;;;;;;;;;;;;;;
 1;;Chào bán phát hành/Tình hình thực hiện chào bán phát hành theo ngành;Ngày;Ngày;Dashboard;Chiều;Dễ;ngày/theo ngành;IDS;x;x;;Done;;SECURITIES_OFFERING;SECURITIES_OFFERING.certificate_date;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');"WITH result_agg AS (
 -- Gom nhóm kết quả phát hành theo từng đợt chào bán trước khi JOIN
 SELECT 
@@ -20,21 +20,21 @@ SUM(NVL(sor.total_collected_am, 0)) AS gia_tri_huy_dong,
 SUM(so.total_expected_am) - SUM(NVL(sor.total_collected_am, 0)) AS chua_thanh_cong
 FROM securities_offering so
 JOIN company_profiles cp ON cp.id = so.company_profile_id
-LEFT JOIN categories c ON c.id = cp.category_l1_id
+JOIN categories c ON c.id = cp.category_l1_id
 LEFT JOIN result_agg sor ON sor.securities_offering_id = so.id
 WHERE NVL(so.delete_flg, 0) = 0
 AND so.certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd')
 GROUP BY
 c.INDUSTRY_NAME
-ORDER BY nganh_cap1_id;";;;;;Done;Dữ liệu tĩnh
+ORDER BY nganh_cap1_id;";;Done;Dữ liệu tĩnh;P
 1;;Chào bán phát hành/Tình hình thực hiện chào bán phát hành theo ngành;Ngành;ngành;Dashboard;Chiều;Dễ;ngày/theo ngành;IDS;x;x;;Done;;"CATEGORIES
 COMPANY_PROFILES";"CATEGORIES.INDUSTRY_NAME
-COMPANY_PROFILES.category_l1_id";certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;;;;;Dữ liệu tĩnh;
-1;;Chào bán phát hành/Tình hình thực hiện chào bán phát hành theo ngành;Giá trị Cấp phép;Giá trị chào bán/phát hành đã cấp phép;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày/theo ngành;IDS;x;x;;Done;;SECURITIES_OFFERING;SECURITIES_OFFERING.total_expected_am;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;;;;Done;Dữ liệu tĩnh;
-1;;Chào bán phát hành/Tình hình thực hiện chào bán phát hành theo ngành;Giá trị huy động thành công;Giá trị chào bán/phát hành thành công thực tế;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày/theo ngành;IDS;x;x;;Done;;SECURITIES_OFFERING_RESULT;SECURITIES_OFFERING_RESULT.total_collected_am;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;;;;Done;Dữ liệu tĩnh;
+COMPANY_PROFILES.category_l1_id";certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;Done;Dữ liệu tĩnh;P;
+1;;Chào bán phát hành/Tình hình thực hiện chào bán phát hành theo ngành;Giá trị Cấp phép;Giá trị chào bán/phát hành đã cấp phép;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày/theo ngành;IDS;x;x;;Done;;SECURITIES_OFFERING;SECURITIES_OFFERING.total_expected_am;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;Done;Dữ liệu tĩnh;P;
+1;;Chào bán phát hành/Tình hình thực hiện chào bán phát hành theo ngành;Giá trị huy động thành công;Giá trị chào bán/phát hành thành công thực tế;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày/theo ngành;IDS;x;x;;Done;;SECURITIES_OFFERING_RESULT;SECURITIES_OFFERING_RESULT.total_collected_am;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;Done;Dữ liệu tĩnh;P;
 1;;Chào bán phát hành/Tình hình thực hiện chào bán phát hành theo ngành;Chưa thành công;Giá trị chào bán/phát hành còn lại;Dashboard;Chỉ tiêu phái sinh;TB;ngày/theo ngành;IDS;x;x;;Done;;"SECURITIES_OFFERING
 SECURITIES_OFFERING_RESULT";"SECURITIES_OFFERING.total_expected_am
-SECURITIES_OFFERING_RESULT.total_collected_am";certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;;;;Done;Dữ liệu tĩnh;
+SECURITIES_OFFERING_RESULT.total_collected_am";certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;Done;Dữ liệu tĩnh;P;
 2;;"Chào bán phát hành/ Giá trị cấp phép chào bán phát hành theo ngành
 ";Loại hình;"Hình thức phát hành gồm:
 - Công chúng
@@ -44,7 +44,7 @@ SECURITIES_OFFERING_RESULT.total_collected_am";certificate_date BETWEEN to_date(
 - Phát hành tăng vốn từ vốn chủ sở hữu
 - Khác";Dashboard;Chỉ tiêu cơ sở;Dễ;ngày/theo ngành;IDS;x;x;;Done;;"LOOKUP_VALUES
 SECURITIES_OFFERING_PLAN";"LOOKUP_VALUES.LOOKUP_VALUE_VN 
-SECURITIES_OFFERING_PLAN.offering_method_cd";;"WITH plan_agg AS (
+SECURITIES_OFFERING_PLAN.offering_method_cd";certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');"WITH plan_agg AS (
 -- Gom nhóm tổng giá trị cấp phép theo từng đợt chào bán & hình thức phát hành
 SELECT 
 securities_offering_id,
@@ -53,32 +53,56 @@ SUM(total_expected_am) AS total_expected_am
 FROM SECURITIES_OFFERING_PLAN
 WHERE NVL(delete_flg, 0) = 0
 GROUP BY securities_offering_id, offering_method_cd
-)
-SELECT
-lv.LOOKUP_VALUE_VN AS hinh_thuc_phat_hanh,
-SUM(p.total_expected_am) AS gia_tri_cap_phep
+),
+classified_data AS (
+-- Phân loại hình thức phát hành và gắn nhóm ngành
+SELECT 
+p.total_expected_am,
+c.INDUSTRY_NAME AS nhom_nganh,
+CASE 
+WHEN p.offering_method_cd IN ('1', '2', '3', '4') THEN 'Giá trị cấp phép loại hình công chúng'
+WHEN p.offering_method_cd = '5' THEN 'Giá trị cấp phép loại hình riêng lẻ'
+WHEN p.offering_method_cd IN ('9', '10') THEN 'Giá trị cấp phép loại hình ESOP'
+WHEN p.offering_method_cd = '7' THEN 'Giá trị cấp phép loại hình trả cổ tức'
+WHEN p.offering_method_cd = '8' THEN 'Giá trị cấp phép loại hình phát hành tăng vốn từ vốn chủ sở hữu'
+ELSE 'Giá trị cấp phép các loại khác'
+END AS hinh_thuc_phat_hanh
 FROM SECURITIES_OFFERING t
 JOIN plan_agg p ON p.securities_offering_id = t.id
-LEFT JOIN LOOKUP_VALUES lv ON p.offering_method_cd = lv.LOOKUP_CD 
-AND lv.LOOKUP_GROUP = 'SO_OFFERING_METHOD'
+JOIN COMPANY_PROFILES cp ON cp.id = t.company_profile_id
+JOIN CATEGORIES c ON c.id = cp.category_l1_id
 WHERE NVL(t.delete_flg, 0) = 0
-AND t.certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd')
-GROUP BY lv.LOOKUP_VALUE_VN;";;;;;Done;Dữ liệu tĩnh
+AND NVL(cp.delete_flg, 0) = 0
+AND t.certificate_date BETWEEN TO_DATE(:pdate1, 'yyyymmdd') AND TO_DATE(:pdate2, 'yyyymmdd')
+)
+SELECT
+nhom_nganh,
+hinh_thuc_phat_hanh,
+SUM(total_expected_am) AS gia_tri_cap_phep
+FROM classified_data
+GROUP BY
+nhom_nganh,
+hinh_thuc_phat_hanh
+ORDER BY nhom_nganh, hinh_thuc_phat_hanh;";;Done;Dữ liệu tĩnh;P
 2;;"Chào bán phát hành/ Giá trị cấp phép chào bán phát hành theo ngành
-";Giá trị cấp phép loại hình công chúng;Giá trị chào bán/phát hành đã cấp phép loại hình phát hành ra công chúng;Dashboard;Chỉ tiêu phái sinh;TB;ngày/theo ngành;IDS;;x;;Done;;SECURITIES_OFFERING_PLAN;SECURITIES_OFFERING_PLAN.total_expected_am;OFFERING_METHOD_CD IN ('1', '2','3','4');;;;;Done;Dữ liệu tĩnh;
+";Ngành;ngành;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày/theo ngành;IDS;;;;Done;;"CATEGORIES
+COMPANY_PROFILES";"CATEGORIES.INDUSTRY_NAME
+COMPANY_PROFILES.category_l1_id";certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;Done;Dữ liệu tĩnh;P;
 2;;"Chào bán phát hành/ Giá trị cấp phép chào bán phát hành theo ngành
-";Giá trị cấp phép loại hình riêng lẻ;Giá trị chào bán/phát hành đã cấp phép loại hình phát riêng lẻ;Dashboard;Chỉ tiêu phái sinh;TB;ngày/theo ngành;IDS;;x;;Done;;SECURITIES_OFFERING_PLAN;total_expected_am;offering_method_cd = '5';;;;;Done;Dữ liệu tĩnh;
+";Giá trị cấp phép loại hình công chúng;Giá trị chào bán/phát hành đã cấp phép loại hình phát hành ra công chúng;Dashboard;Chỉ tiêu phái sinh;TB;ngày/theo ngành;IDS;;x;;Done;;SECURITIES_OFFERING_PLAN;SECURITIES_OFFERING_PLAN.total_expected_am;OFFERING_METHOD_CD IN ('1', '2','3','4');;Done;Dữ liệu tĩnh;P;
 2;;"Chào bán phát hành/ Giá trị cấp phép chào bán phát hành theo ngành
-";Giá trị cấp phép loại hình ESOP;Giá trị chào bán/phát hành đã cấp phép loại hình phát hành ra ESOP;Dashboard;Chỉ tiêu phái sinh;TB;ngày/theo ngành;IDS;;x;;Done;;SECURITIES_OFFERING_PLAN;total_expected_am;offering_method_cd IN ('9','10');;;;;Done;Dữ liệu tĩnh;
+";Giá trị cấp phép loại hình riêng lẻ;Giá trị chào bán/phát hành đã cấp phép loại hình phát riêng lẻ;Dashboard;Chỉ tiêu phái sinh;TB;ngày/theo ngành;IDS;;x;;Done;;SECURITIES_OFFERING_PLAN;total_expected_am;offering_method_cd = '5';;Done;Dữ liệu tĩnh;P;
+2;;"Chào bán phát hành/ Giá trị cấp phép chào bán phát hành theo ngành
+";Giá trị cấp phép loại hình ESOP;Giá trị chào bán/phát hành đã cấp phép loại hình phát hành ra ESOP;Dashboard;Chỉ tiêu phái sinh;TB;ngày/theo ngành;IDS;;x;;Done;;SECURITIES_OFFERING_PLAN;total_expected_am;offering_method_cd IN ('9','10');;Done;Dữ liệu tĩnh;P;
 2;;"Chào bán phát hành/ Giá trị cấp phép chào bán phát hành theo ngành
 ";Giá trị cấp phép loại hình trả cổ tức;Giá trị chào bán/phát hành đã cấp phép loại hình trả cổ tức;Dashboard;Chỉ tiêu phái sinh;TB;ngày/theo ngành;IDS;;x;;Done;;"SECURITIES_OFFERING_PLAN
-";total_expected_am;offering_method_cd in ('7');;;;;Done;Dữ liệu tĩnh;
+";total_expected_am;offering_method_cd in ('7');;Done;Dữ liệu tĩnh;P;
 2;;"Chào bán phát hành/ Giá trị cấp phép chào bán phát hành theo ngành
 ";Giá trị cấp phép loại hình phát hành tăng vốn từ vốn chủ sở hữu;Giá trị chào bán/phát hành đã cấp phép loại hình phát hành tăng vốn từ vốn chủ sở hữu;Dashboard;Chỉ tiêu phái sinh;TB;ngày/theo ngành;IDS;;x;;Done;;"
-SECURITIES_OFFERING_PLAN";total_expected_am;SECURITIES_OFFERING_PLAN.method IN ('8');;;;;Done;Dữ liệu tĩnh;
+SECURITIES_OFFERING_PLAN";total_expected_am;SECURITIES_OFFERING_PLAN.method IN ('8');;Done;Dữ liệu tĩnh;P;
 2;;"Chào bán phát hành/ Giá trị cấp phép chào bán phát hành theo ngành
 ";Giá trị cấp phép các loại khác;Giá trị chào bán/phát hành đã cấp phép loại hình khác;Dashboard;Chỉ tiêu phái sinh;TB;ngày/theo ngành;IDS;;x;;Done;;"SECURITIES_OFFERING
-SECURITIES_OFFERING_PLAN";total_expected_am;;;;;;Done;Dữ liệu tĩnh;
+SECURITIES_OFFERING_PLAN";total_expected_am;;;Done;Dữ liệu tĩnh;P;
 3;;Chào bán phát hành/ Giá trị phát hành theo hình thức phát hành và nhóm ngành;Loại hình;"Hình thức phát hành gồm:
 - Công chúng
 - Riêng lẻ
@@ -87,7 +111,7 @@ SECURITIES_OFFERING_PLAN";total_expected_am;;;;;;Done;Dữ liệu tĩnh;
 - Phát hành tăng vốn từ vốn chủ sở hữu
 - Khác";Dashboard;Chỉ tiêu cơ sở;Dễ;ngày/theo ngành;IDS;x;x;;Done;;"LOOKUP_VALUES
 SECURITIES_OFFERING_RESULT";"LOOKUP_VALUES.LOOKUP_VALUE_VN 
-SECURITIES_OFFERING_RESULT.offering_method_cd";;"WITH result_agg AS (
+SECURITIES_OFFERING_RESULT.offering_method_cd";certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');"WITH result_agg AS (
 -- Gom nhóm giá trị huy động thực tế theo từng đợt chào bán & hình thức phát hành
 SELECT 
 securities_offering_id,
@@ -96,45 +120,70 @@ SUM(total_collected_am) AS total_collected_am
 FROM SECURITIES_OFFERING_RESULT
 WHERE NVL(delete_flg, 0) = 0
 GROUP BY securities_offering_id, offering_method_cd
-)
+),
+classified_data AS (
+-- Phân loại hình thức phát hành và gắn nhóm ngành
 SELECT
-lv.LOOKUP_VALUE_VN AS hinh_thuc_phat_hanh,
-SUM(r.total_collected_am) AS gia_tri_huy_dong
+r.total_collected_am,
+c.INDUSTRY_NAME AS nhom_nganh,
+CASE
+WHEN r.offering_method_cd IN ('1', '2', '3', '4') THEN 'Giá trị huy động loại hình công chúng'
+WHEN r.offering_method_cd = '5' THEN 'Giá trị huy động loại hình riêng lẻ'
+WHEN r.offering_method_cd IN ('9', '10') THEN 'Giá trị huy động loại hình ESOP'
+WHEN r.offering_method_cd = '7' THEN 'Giá trị huy động loại hình trả cổ tức'
+WHEN r.offering_method_cd = '8' THEN 'Giá trị huy động loại hình phát hành tăng vốn từ vốn chủ sở hữu'
+ELSE 'Giá trị huy động các loại khác'
+END AS hinh_thuc_phat_hanh
 FROM SECURITIES_OFFERING t
 JOIN result_agg r ON r.securities_offering_id = t.id
-LEFT JOIN LOOKUP_VALUES lv ON r.offering_method_cd = lv.LOOKUP_CD 
-AND lv.LOOKUP_GROUP = 'SO_OFFERING_METHOD'
+JOIN COMPANY_PROFILES cp ON cp.id = t.company_profile_id
+JOIN CATEGORIES c ON c.id = cp.category_l1_id
 WHERE NVL(t.delete_flg, 0) = 0
-AND t.certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd')
-GROUP BY lv.LOOKUP_VALUE_VN;";;;;;;
-3;;Chào bán phát hành/ Giá trị phát hành theo hình thức phát hành và nhóm ngành;Giá trị huy động loại hình công chúng;Giá trị huy động loại hình phát hành ra công chúng;Dashboard;Chỉ tiêu phái sinh;TB;ngày/theo hình thức phát hành;IDS;;x;;Done;;SECURITIES_OFFERING_RESULT;total_collected_am;OFFERING_METHOD_CD IN ('1', '2','3','4');;;;;Done;Dữ liệu tĩnh;
-3;;Chào bán phát hành/ Giá trị phát hành theo hình thức phát hành và nhóm ngành;Giá trị huy động loại hình riêng lẻ;Giá trị huy động loại hình phát riêng lẻ;Dashboard;Chỉ tiêu phái sinh;TB;ngày/theo hình thức phát hành;IDS;;x;;Done;;SECURITIES_OFFERING_RESULT;total_collected_am;offering_method_cd = '5';;;;;Done;Dữ liệu tĩnh;
-3;;Chào bán phát hành/ Giá trị phát hành theo hình thức phát hành và nhóm ngành;Giá trị huy động loại hình ESOP;Giá trị huy động loại hình phát hành ra ESOP;Dashboard;Chỉ tiêu phái sinh;TB;ngày/theo hình thức phát hành;IDS;;x;;Done;;SECURITIES_OFFERING_RESULT;total_collected_am;offering_method_cd IN ('9','10');;;;;Done;Dữ liệu tĩnh;
-3;;Chào bán phát hành/ Giá trị phát hành theo hình thức phát hành và nhóm ngành;Giá trị huy động loại hình trả cổ tức;Giá trị huy động loại hình trả cổ tức;Dashboard;Chỉ tiêu phái sinh;TB;ngày/theo hình thức phát hành;IDS;;x;;Done;;SECURITIES_OFFERING_RESULT;total_collected_am;offering_method_cd in ('7');;;;;Done;Dữ liệu tĩnh;
-3;;Chào bán phát hành/ Giá trị phát hành theo hình thức phát hành và nhóm ngành;Giá trị huy động loại hình phát hành tăng vốn từ vốn chủ sở hữu;Giá trị huy động loại hình phát hành tăng vốn từ vốn chủ sở hữu;Dashboard;Chỉ tiêu phái sinh;TB;ngày/theo hình thức phát hành;IDS;;x;;Done;;SECURITIES_OFFERING_RESULT;total_collected_am;SECURITIES_OFFERING_PLAN.method IN ('8');;;;;Done;Dữ liệu tĩnh;
+AND NVL(cp.delete_flg, 0) = 0
+AND t.certificate_date BETWEEN TO_DATE(:pdate1, 'yyyymmdd') AND TO_DATE(:pdate2, 'yyyymmdd')
+)
+SELECT
+nhom_nganh,
+hinh_thuc_phat_hanh,
+SUM(total_collected_am) AS gia_tri_huy_dong
+FROM classified_data
+GROUP BY
+nhom_nganh,
+hinh_thuc_phat_hanh
+ORDER BY nhom_nganh, hinh_thuc_phat_hanh;";;;;P
+3;;Chào bán phát hành/ Giá trị phát hành theo hình thức phát hành và nhóm ngành;Ngành;ngành;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày/theo ngành;IDS;;x;;Done;;"CATEGORIES
+COMPANY_PROFILES";"CATEGORIES.INDUSTRY_NAME
+COMPANY_PROFILES.category_l1_id";certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;Done;Dữ liệu tĩnh;P;
+3;;Chào bán phát hành/ Giá trị phát hành theo hình thức phát hành và nhóm ngành;Giá trị huy động loại hình công chúng;Giá trị huy động loại hình phát hành ra công chúng;Dashboard;Chỉ tiêu phái sinh;TB;ngày/theo hình thức phát hành;IDS;;x;;Done;;SECURITIES_OFFERING_RESULT;total_collected_am;OFFERING_METHOD_CD IN ('1', '2','3','4');;Done;Dữ liệu tĩnh;P;
+3;;Chào bán phát hành/ Giá trị phát hành theo hình thức phát hành và nhóm ngành;Giá trị huy động loại hình riêng lẻ;Giá trị huy động loại hình phát riêng lẻ;Dashboard;Chỉ tiêu phái sinh;TB;ngày/theo hình thức phát hành;IDS;;x;;Done;;SECURITIES_OFFERING_RESULT;total_collected_am;offering_method_cd = '5';;Done;Dữ liệu tĩnh;P;
+3;;Chào bán phát hành/ Giá trị phát hành theo hình thức phát hành và nhóm ngành;Giá trị huy động loại hình ESOP;Giá trị huy động loại hình phát hành ra ESOP;Dashboard;Chỉ tiêu phái sinh;TB;ngày/theo hình thức phát hành;IDS;;x;;Done;;SECURITIES_OFFERING_RESULT;total_collected_am;offering_method_cd IN ('9','10');;Done;Dữ liệu tĩnh;P;
+3;;Chào bán phát hành/ Giá trị phát hành theo hình thức phát hành và nhóm ngành;Giá trị huy động loại hình trả cổ tức;Giá trị huy động loại hình trả cổ tức;Dashboard;Chỉ tiêu phái sinh;TB;ngày/theo hình thức phát hành;IDS;;x;;Done;;SECURITIES_OFFERING_RESULT;total_collected_am;offering_method_cd in ('7');;Done;Dữ liệu tĩnh;P;
+3;;Chào bán phát hành/ Giá trị phát hành theo hình thức phát hành và nhóm ngành;Giá trị huy động loại hình phát hành tăng vốn từ vốn chủ sở hữu;Giá trị huy động loại hình phát hành tăng vốn từ vốn chủ sở hữu;Dashboard;Chỉ tiêu phái sinh;TB;ngày/theo hình thức phát hành;IDS;;x;;Done;;SECURITIES_OFFERING_RESULT;total_collected_am;SECURITIES_OFFERING_PLAN.method IN ('8');;Done;Dữ liệu tĩnh;P;
 3;;Chào bán phát hành/ Giá trị phát hành theo hình thức phát hành và nhóm ngành;Giá trị huy động các loại khác;Giá trị huy động loại hình khác;Dashboard;Chỉ tiêu phái sinh;TB;ngày/theo hình thức phát hành;IDS;;x;;Done;;"SECURITIES_OFFERING
-SECURITIES_OFFERING_RESULT";total_collected_am;;;;;;Done;Dữ liệu tĩnh;
+SECURITIES_OFFERING_RESULT";total_collected_am;;;Done;Dữ liệu tĩnh;P;
 4;;Chào bán phát hành/ Bảng Chi tiết số lượng chứng khoán Chào bán & Phát hành;Thông tin doanh nghiệp;Tên doanh nghiệp, Tên đối tượng chào bán phát hành;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày;IDS;x;x;;Done;;COMPANY_PROFILES;COMPANY_NAME_VN;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');"WITH plan_agg AS (
 -- Tổng hợp phương án phát hành theo đợt
 SELECT 
 securities_offering_id,
-MIN(offering_method_cd) AS offering_method_cd,
+offering_method_cd AS offering_method_cd,
 SUM(total_expected_am) AS total_expected_am
 FROM SECURITIES_OFFERING_PLAN
 WHERE NVL(delete_flg, 0) = 0
-GROUP BY securities_offering_id
+GROUP BY securities_offering_id,offering_method_cd 
 ),
 result_agg AS (
 -- Tổng hợp kết quả phát hành theo đợt
 SELECT 
 securities_offering_id,
+offering_method_cd AS offering_method_cd,
 SUM(total_successful_qty) AS total_successful_qty,
 SUM(total_collected_am) AS total_collected_am
 FROM SECURITIES_OFFERING_RESULT
 WHERE NVL(delete_flg, 0) = 0
-GROUP BY securities_offering_id
+GROUP BY securities_offering_id, offering_method_cd 
 )
 SELECT
+t.ID,
 cp.COMPANY_NAME_VN AS ten_doanh_nghiep,
 cp.equity_ticker AS ma_chung_khoan,
 lv.LOOKUP_VALUE_VN AS hinh_thuc_chao_ban,
@@ -146,39 +195,36 @@ t.total_registered_qty AS sl_ck_cap_phep,
 NVL(r.total_successful_qty, 0) AS sl_ck_thanh_cong,
 t.total_expected_am AS gia_tri_cap_phep,
 NVL(r.total_collected_am, 0) AS gia_tri_thanh_cong,
-ROUND(NVL(r.total_successful_qty, 0) / NULLIF(t.total_registered_qty, 0) * 100, 2) AS ty_le_thanh_cong
+ROUND(NVL(r.total_collected_am, 0)/t.total_expected_am,2)*100 AS ty_le_thanh_cong
 FROM SECURITIES_OFFERING t
 JOIN COMPANY_PROFILES cp ON cp.ID = t.company_profile_id
 LEFT JOIN plan_agg p ON p.securities_offering_id = t.ID
-LEFT JOIN LOOKUP_VALUES lv ON p.offering_method_cd = lv.LOOKUP_CD 
+JOIN LOOKUP_VALUES lv ON p.offering_method_cd = lv.LOOKUP_CD 
 AND lv.LOOKUP_GROUP = 'SO_OFFERING_METHOD'
 LEFT JOIN result_agg r ON r.securities_offering_id = t.ID
-WHERE NVL(t.delete_flg, 0) = 0
-AND t.certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');";;;;;Done;Dữ liệu tĩnh
-4;;Chào bán phát hành/ Bảng Chi tiết số lượng chứng khoán Chào bán & Phát hành;Mã chứng khoán;Mã chứng khoán;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày;IDS;x;x;;Done;;COMPANY_PROFILES;equity_ticker;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;;;;Done;Dữ liệu tĩnh;
+WHERE NVL(t.delete_flg, 0) = 0 AND cp.delete_flg = 0
+AND t.certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd')";;Done;Dữ liệu tĩnh;F
+4;;Chào bán phát hành/ Bảng Chi tiết số lượng chứng khoán Chào bán & Phát hành;Mã chứng khoán;Mã chứng khoán;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày;IDS;x;x;;Done;;COMPANY_PROFILES;equity_ticker;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;Done;Dữ liệu tĩnh;F;
 4;;Chào bán phát hành/ Bảng Chi tiết số lượng chứng khoán Chào bán & Phát hành;Hình thức chào bán;Hình thức chào bán/phát hành chứng khoán mà doanh nghiệp lựa chọn để huy động vốn từ thị trường.;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày;IDS;x;x;;Done;;"LOOKUP_VALUES
 SECURITIES_OFFERING_PLAN";"LOOKUP_VALUES.LOOKUP_VALUE_VN 
-SECURITIES_OFFERING_PLAN.offering_method_cd";certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;;;;Done;Dữ liệu tĩnh;
-4;;Chào bán phát hành/ Bảng Chi tiết số lượng chứng khoán Chào bán & Phát hành;Đơn vị tư vấn;Đơn vị tư vấn phát hành;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày;IDS;x;x;;Done;;SECURITIES_OFFERING;consulting_org;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');check chéo vs TTHC;;;;Done;Dữ liệu tĩnh;
-4;;Chào bán phát hành/ Bảng Chi tiết số lượng chứng khoán Chào bán & Phát hành;Tổ chức kiểm toán;Tổ chức kiểm toán;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày;IDS;x;x;;Done;;SECURITIES_OFFERING;audit_org;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');check chéo vs TTHC;;;;Done;Dữ liệu tĩnh;
-4;;Chào bán phát hành/ Bảng Chi tiết số lượng chứng khoán Chào bán & Phát hành;Đơn vị bảo lãnh;Đơn vị bảo lãnh phát hành;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày;IDS;x;x;;Done;;SECURITIES_OFFERING;underwwriting_org;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');check chéo vs TTHC;;;;Done;Dữ liệu tĩnh;
-4;;Chào bán phát hành/ Bảng Chi tiết số lượng chứng khoán Chào bán & Phát hành;Đơn vị xếp hạng tín nhiệm;Đơn vị xếp hạng tín nhiệm doanh nghiệp;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày;IDS;x;x;;Done;;SECURITIES_OFFERING;credit_rating_org;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');check chéo vs TTHC;;;;Done;Dữ liệu tĩnh;
-4;;Chào bán phát hành/ Bảng Chi tiết số lượng chứng khoán Chào bán & Phát hành;Số lượng CK được cấp phép;Tổng số lượng CK được cấp phép chào bán.;Dashboard;Chỉ tiêu phái sinh;TB;ngày;IDS;x;x;;Done;;SECURITIES_OFFERING;total_registered_qty;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');check chéo vs TTHC;;;;Done;Dữ liệu tĩnh;
-4;;Chào bán phát hành/ Bảng Chi tiết số lượng chứng khoán Chào bán & Phát hành;Số lượng CK chào bán thành công;Tổng số lượng CK chào bán thành công thực tế.;Dashboard;Chỉ tiêu phái sinh;TB;ngày;IDS;x;x;;Done;;SECURITIES_OFFERING_RESULT;total_successful_qty;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');check chéo vs TTHC;;;;Done;Dữ liệu tĩnh;
-4;;Chào bán phát hành/ Bảng Chi tiết số lượng chứng khoán Chào bán & Phát hành;Giá trị cấp phép;Giá trị CK được cấp phép;Dashboard;Chỉ tiêu phái sinh;TB;ngày;IDS;x;x;;Done;;SECURITIES_OFFERING;total_expected_am;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');check chéo vs TTHC;;;;Done;Dữ liệu tĩnh;
-4;;Chào bán phát hành/ Bảng Chi tiết số lượng chứng khoán Chào bán & Phát hành;Giá trị chào bán thành công;Giá trị CK chào bán thành công;Dashboard;Chỉ tiêu phái sinh;TB;ngày;IDS;x;x;;Done;;SECURITIES_OFFERING_RESULT;total_collected_am;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');check chéo vs TTHC;;;;Done;Dữ liệu tĩnh;
-4;;Chào bán phát hành/ Bảng Chi tiết số lượng chứng khoán Chào bán & Phát hành;Tỷ lệ chào bán thành công;chào bán thành công / Tổng số lượng CK được cấp phép chào bán.;Dashboard;Chỉ tiêu phái sinh;TB;ngày;IDS;x;x;;Done;;SECURITIES_OFFERING_RESULT;successful_ratio;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');check chéo vs TTHC;;;;Done;Dữ liệu tĩnh;
+SECURITIES_OFFERING_PLAN.offering_method_cd";certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;Done;Dữ liệu tĩnh;F;
+4;;Chào bán phát hành/ Bảng Chi tiết số lượng chứng khoán Chào bán & Phát hành;Đơn vị tư vấn;Đơn vị tư vấn phát hành;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày;IDS;x;x;;Done;;SECURITIES_OFFERING;consulting_org;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');check chéo vs TTHC;Done;Dữ liệu tĩnh;F;
+4;;Chào bán phát hành/ Bảng Chi tiết số lượng chứng khoán Chào bán & Phát hành;Tổ chức kiểm toán;Tổ chức kiểm toán;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày;IDS;x;x;;Done;;SECURITIES_OFFERING;audit_org;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');check chéo vs TTHC;Done;Dữ liệu tĩnh;F;
+4;;Chào bán phát hành/ Bảng Chi tiết số lượng chứng khoán Chào bán & Phát hành;Đơn vị bảo lãnh;Đơn vị bảo lãnh phát hành;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày;IDS;x;x;;Done;;SECURITIES_OFFERING;underwwriting_org;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');check chéo vs TTHC;Done;Dữ liệu tĩnh;F;
+4;;Chào bán phát hành/ Bảng Chi tiết số lượng chứng khoán Chào bán & Phát hành;Đơn vị xếp hạng tín nhiệm;Đơn vị xếp hạng tín nhiệm doanh nghiệp;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày;IDS;x;x;;Done;;SECURITIES_OFFERING;credit_rating_org;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');check chéo vs TTHC;Done;Dữ liệu tĩnh;F;
+4;;Chào bán phát hành/ Bảng Chi tiết số lượng chứng khoán Chào bán & Phát hành;Số lượng CK được cấp phép;Tổng số lượng CK được cấp phép chào bán.;Dashboard;Chỉ tiêu phái sinh;TB;ngày;IDS;x;x;;Done;;SECURITIES_OFFERING;total_registered_qty;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');check chéo vs TTHC;Done;Dữ liệu tĩnh;F;
+4;;Chào bán phát hành/ Bảng Chi tiết số lượng chứng khoán Chào bán & Phát hành;Số lượng CK chào bán thành công;Tổng số lượng CK chào bán thành công thực tế.;Dashboard;Chỉ tiêu phái sinh;TB;ngày;IDS;x;x;;Done;;SECURITIES_OFFERING_RESULT;total_successful_qty;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');check chéo vs TTHC;Done;Dữ liệu tĩnh;F;
+4;;Chào bán phát hành/ Bảng Chi tiết số lượng chứng khoán Chào bán & Phát hành;Giá trị cấp phép;Giá trị CK được cấp phép;Dashboard;Chỉ tiêu phái sinh;TB;ngày;IDS;x;x;;Done;;SECURITIES_OFFERING;total_expected_am;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');check chéo vs TTHC;Done;Dữ liệu tĩnh;F;
+4;;Chào bán phát hành/ Bảng Chi tiết số lượng chứng khoán Chào bán & Phát hành;Giá trị chào bán thành công;Giá trị CK chào bán thành công;Dashboard;Chỉ tiêu phái sinh;TB;ngày;IDS;x;x;;Done;;SECURITIES_OFFERING_RESULT;total_collected_am;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');check chéo vs TTHC;Done;Dữ liệu tĩnh;F;
+4;;Chào bán phát hành/ Bảng Chi tiết số lượng chứng khoán Chào bán & Phát hành;Tỷ lệ chào bán thành công;chào bán thành công / Tổng số lượng CK được cấp phép chào bán.;Dashboard;Chỉ tiêu phái sinh;TB;ngày;IDS;x;x;;Done;;SECURITIES_OFFERING_RESULT;successful_ratio;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');check chéo vs TTHC;Done;Dữ liệu tĩnh;F;
 5;;Hồ sơ đăng ký chào bán/ Tỷ lệ xử lý hồ sơ;Tỷ lệ hồ sơ đăng ký;Số lượng hồ sơ đăng ký/Tổng số lượng hồ sơ;Dashboard;Chỉ tiêu phái sinh;TB;ngày;IDS;x;x;;Done;;SECURITIES_OFFERING;application_cd;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');"WITH plan_agg AS (
--- Gom nhóm bảng PLAN để đảm bảo mỗi đợt chào bán chỉ trả về 1 dòng đại diện
 SELECT 
 securities_offering_id,
-MIN(offering_method_cd) AS offering_method_cd
+offering_method_cd AS offering_method_cd
 FROM SECURITIES_OFFERING_PLAN
 WHERE NVL(delete_flg, 0) = 0
-GROUP BY securities_offering_id
 ),
 offering_unique AS (
--- JOIN bảng chính với bảng PLAN đã gom nhóm
 SELECT 
 t.id,
 t.application_cd,
@@ -194,34 +240,57 @@ COUNT(CASE WHEN approval_status_cd = 'PENDING_REVIEW' THEN 1 END) AS sl_dang_ky,
 COUNT(CASE WHEN approval_status_cd = 'PENDING_APPROVE' THEN 1 END) AS sl_dang_xu_ly,
 COUNT(CASE WHEN approval_status_cd = 'APPROVED' THEN 1 END) AS sl_chap_thuan,
 COUNT(CASE WHEN approval_status_cd = 'REJECTED' THEN 1 END) AS sl_tu_choi,
-COUNT(DISTINCT application_cd) AS tong_ho_so,
--- Tính % Tỷ lệ
+-- Tổng hồ sơ = cộng tất cả các trạng thái
+COUNT(CASE WHEN approval_status_cd = 'PENDING_REVIEW' THEN 1 END)
++ COUNT(CASE WHEN approval_status_cd = 'PENDING_APPROVE' THEN 1 END)
++ COUNT(CASE WHEN approval_status_cd = 'APPROVED' THEN 1 END)
++ COUNT(CASE WHEN approval_status_cd = 'REJECTED' THEN 1 END) AS tong_ho_so,
+-- Tính % Tỷ lệ (mẫu số dùng tổng mới)
 ROUND(
 COUNT(CASE WHEN approval_status_cd = 'PENDING_REVIEW' THEN 1 END)
-/ NULLIF(COUNT(DISTINCT application_cd), 0) * 100, 2) AS ty_le_dang_ky_pct,
+/ NULLIF(
+COUNT(CASE WHEN approval_status_cd = 'PENDING_REVIEW' THEN 1 END)
++ COUNT(CASE WHEN approval_status_cd = 'PENDING_APPROVE' THEN 1 END)
++ COUNT(CASE WHEN approval_status_cd = 'APPROVED' THEN 1 END)
++ COUNT(CASE WHEN approval_status_cd = 'REJECTED' THEN 1 END), 0)
+* 100, 2) AS ty_le_dang_ky_pct,
 ROUND(
 COUNT(CASE WHEN approval_status_cd = 'PENDING_APPROVE' THEN 1 END)
-/ NULLIF(COUNT(DISTINCT application_cd), 0) * 100, 2) AS ty_le_dang_xu_ly_pct,
+/ NULLIF(
+COUNT(CASE WHEN approval_status_cd = 'PENDING_REVIEW' THEN 1 END)
++ COUNT(CASE WHEN approval_status_cd = 'PENDING_APPROVE' THEN 1 END)
++ COUNT(CASE WHEN approval_status_cd = 'APPROVED' THEN 1 END)
++ COUNT(CASE WHEN approval_status_cd = 'REJECTED' THEN 1 END), 0)
+* 100, 2) AS ty_le_dang_xu_ly_pct,
 ROUND(
 COUNT(CASE WHEN approval_status_cd = 'APPROVED' THEN 1 END)
-/ NULLIF(COUNT(DISTINCT application_cd), 0) * 100, 2) AS ty_le_chap_thuan_pct,
+/ NULLIF(
+COUNT(CASE WHEN approval_status_cd = 'PENDING_REVIEW' THEN 1 END)
++ COUNT(CASE WHEN approval_status_cd = 'PENDING_APPROVE' THEN 1 END)
++ COUNT(CASE WHEN approval_status_cd = 'APPROVED' THEN 1 END)
++ COUNT(CASE WHEN approval_status_cd = 'REJECTED' THEN 1 END), 0)
+* 100, 2) AS ty_le_chap_thuan_pct,
 ROUND(
 COUNT(CASE WHEN approval_status_cd = 'REJECTED' THEN 1 END)
-/ NULLIF(COUNT(DISTINCT application_cd), 0) * 100, 2) AS ty_le_tu_choi_pct
-FROM offering_unique;";check chéo với TTHC;;;;Done;Dữ liệu tĩnh
-5;;Hồ sơ đăng ký chào bán/ Tỷ lệ xử lý hồ sơ;Tỷ lệ hồ sơ đang xử lý;Số lượng hồ sơ đang xử lý/Tổng số lượng hồ sơ;Dashboard;Chỉ tiêu phái sinh;TB;ngày;IDS;;x;;Done;;SECURITIES_OFFERING;application_cd;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');check chéo với TTHC;;;;Done;Dữ liệu tĩnh;
-5;;Hồ sơ đăng ký chào bán/ Tỷ lệ xử lý hồ sơ;Tỷ lệ hồ sơ đã chấp thuận;Số lượng hồ sơ đã được chấp thuận/Tổng số lượng hồ sơ;Dashboard;Chỉ tiêu phái sinh;TB;ngày;IDS;;x;;Done;;SECURITIES_OFFERING;application_cd;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');check chéo với TTHC;;;;Done;Dữ liệu tĩnh;
-5;;Hồ sơ đăng ký chào bán/ Tỷ lệ xử lý hồ sơ;Tỷ lệ hồ sơ bị từ chối;Số lượng hồ sơ bị từ chối/Tổng số lượng hồ sơ;Dashboard;Chỉ tiêu phái sinh;TB;ngày;IDS;;x;;Done;;SECURITIES_OFFERING;application_cd;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');check chéo với TTHC;;;;Done;Dữ liệu tĩnh;
+/ NULLIF(
+COUNT(CASE WHEN approval_status_cd = 'PENDING_REVIEW' THEN 1 END)
++ COUNT(CASE WHEN approval_status_cd = 'PENDING_APPROVE' THEN 1 END)
++ COUNT(CASE WHEN approval_status_cd = 'APPROVED' THEN 1 END)
++ COUNT(CASE WHEN approval_status_cd = 'REJECTED' THEN 1 END), 0)
+* 100, 2) AS ty_le_tu_choi_pct
+FROM offering_unique;";check chéo với TTHC;Done;Dữ liệu tĩnh;P
+5;;Hồ sơ đăng ký chào bán/ Tỷ lệ xử lý hồ sơ;Tỷ lệ hồ sơ đang xử lý;Số lượng hồ sơ đang xử lý/Tổng số lượng hồ sơ;Dashboard;Chỉ tiêu phái sinh;TB;ngày;IDS;;x;;Done;;SECURITIES_OFFERING;application_cd;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');check chéo với TTHC;Done;Dữ liệu tĩnh;P;
+5;;Hồ sơ đăng ký chào bán/ Tỷ lệ xử lý hồ sơ;Tỷ lệ hồ sơ đã chấp thuận;Số lượng hồ sơ đã được chấp thuận/Tổng số lượng hồ sơ;Dashboard;Chỉ tiêu phái sinh;TB;ngày;IDS;;x;;Done;;SECURITIES_OFFERING;application_cd;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');check chéo với TTHC;Done;Dữ liệu tĩnh;P;
+5;;Hồ sơ đăng ký chào bán/ Tỷ lệ xử lý hồ sơ;Tỷ lệ hồ sơ bị từ chối;Số lượng hồ sơ bị từ chối/Tổng số lượng hồ sơ;Dashboard;Chỉ tiêu phái sinh;TB;ngày;IDS;;x;;Done;;SECURITIES_OFFERING;application_cd;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');check chéo với TTHC;Done;Dữ liệu tĩnh;P;
 6;;Hồ sơ đăng ký chào bán/Bảng chi tiết hồ sơ chào bán & phát hành;Hình thức chào bán;Hình thức chào bán/phát hành chứng khoán mà doanh nghiệp lựa chọn để huy động vốn từ thị trường.;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày;IDS;x;x;;Done;;"LOOKUP_VALUES
 SECURITIES_OFFERING_PLAN";"LOOKUP_VALUES.LOOKUP_VALUE_VN
 SECURITIES_OFFERING_PLAN.offering_method_cd";;"WITH plan_agg AS (
 -- Lấy duy nhất 1 hình thức chào bán chính cho mỗi đợt chào bán để không nhân bản hồ sơ
 SELECT 
 securities_offering_id,
-MIN(offering_method_cd) AS offering_method_cd
+offering_method_cd AS offering_method_cd
 FROM SECURITIES_OFFERING_PLAN
 WHERE NVL(delete_flg, 0) = 0
-GROUP BY securities_offering_id
 )
 SELECT
 lv.LOOKUP_VALUE_VN AS hinh_thuc_chao_ban,
@@ -230,7 +299,11 @@ COUNT(CASE WHEN t.approval_status_cd = 'PENDING_REVIEW' THEN 1 END) AS sl_dang_k
 COUNT(CASE WHEN t.approval_status_cd = 'PENDING_APPROVE' THEN 1 END) AS sl_dang_xu_ly,
 COUNT(CASE WHEN t.approval_status_cd = 'APPROVED' THEN 1 END) AS sl_cap_phep,
 COUNT(CASE WHEN t.approval_status_cd = 'REJECTED' THEN 1 END) AS sl_tu_choi,
-COUNT(t.application_cd) AS tong_ho_so
+-- Tổng hồ sơ = cộng tất cả các trạng thái
+COUNT(CASE WHEN t.approval_status_cd = 'PENDING_REVIEW' THEN 1 END)
++ COUNT(CASE WHEN t.approval_status_cd = 'PENDING_APPROVE' THEN 1 END)
++ COUNT(CASE WHEN t.approval_status_cd = 'APPROVED' THEN 1 END)
++ COUNT(CASE WHEN t.approval_status_cd = 'REJECTED' THEN 1 END) AS tong_ho_so
 FROM SECURITIES_OFFERING t
 LEFT JOIN plan_agg p ON p.securities_offering_id = t.ID
 LEFT JOIN LOOKUP_VALUES lv ON p.offering_method_cd = lv.LOOKUP_CD 
@@ -238,17 +311,13 @@ AND lv.LOOKUP_GROUP = 'SO_OFFERING_METHOD'
 WHERE NVL(t.delete_flg, 0) = 0
 AND t.certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd')
 GROUP BY
-lv.LOOKUP_VALUE_VN,
-t.official_letter_date
-ORDER BY
-t.official_letter_date,
-hinh_thuc_chao_ban;";check chéo với TTHC;;;;Done;Dữ liệu tĩnh
-6;;Hồ sơ đăng ký chào bán/Bảng chi tiết hồ sơ chào bán & phát hành;Năm;Thời gian hồ sơ đăng ký;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày;IDS;x;x;;Done;;SECURITIES_OFFERING;Year(certificate_date);;check chéo với TTHC;;;;Done;Dữ liệu tĩnh;
-6;;Hồ sơ đăng ký chào bán/Bảng chi tiết hồ sơ chào bán & phát hành;Số lượng hồ sơ đăng ký;Số lượng hồ sơ đăng ký chào bán;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày;IDS;x;x;;Done;;SECURITIES_OFFERING;application_cd;approval_status_cd = 'PENDING_REVIEW';check chéo với TTHC;;;;Done;Dữ liệu tĩnh;
-6;;Hồ sơ đăng ký chào bán/Bảng chi tiết hồ sơ chào bán & phát hành;Số lượng hồ sơ đang xử lý;Số lượng hồ sơ đăng ký chào bán đang xử lý;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày;IDS;x;x;;Done;;SECURITIES_OFFERING;application_cd;approval_status_cd = 'PENDING_APPROVE';check chéo với TTHC;;;;Done;Dữ liệu tĩnh;
-6;;Hồ sơ đăng ký chào bán/Bảng chi tiết hồ sơ chào bán & phát hành;Số lượng hồ sơ đã cấp phép;Số lượng hồ sơ đăng ký chào bán đã được cấp phép;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày;IDS;x;x;;Done;;SECURITIES_OFFERING;application_cd;approval_status_cd = 'APPROVED';check chéo với TTHC;;;;Done;Dữ liệu tĩnh;
-6;;Hồ sơ đăng ký chào bán/Bảng chi tiết hồ sơ chào bán & phát hành;Số lượng hồ sơ bị từ chối;Số lượng hồ sơ đăng ký chào bán bị từ chối;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày;IDS;x;x;;Done;;SECURITIES_OFFERING;application_cd;approval_status_cd = 'REJECTED';check chéo với TTHC;;;;Done;Dữ liệu tĩnh;
-6;;Hồ sơ đăng ký chào bán/Bảng chi tiết hồ sơ chào bán & phát hành;Tổng hồ sơ;Tổng số lượng hồ sơ đăng ký chào bán;Dashboard;Chỉ tiêu phái sinh;TB;ngày;IDS;;x;;Done;;SECURITIES_OFFERING;application_cd;;check chéo với TTHC;;;;Done;Dữ liệu tĩnh;
+lv.LOOKUP_VALUE_VN, t.certificate_date;";check chéo với TTHC;Done;Dữ liệu tĩnh;P
+6;;Hồ sơ đăng ký chào bán/Bảng chi tiết hồ sơ chào bán & phát hành;Năm;Thời gian hồ sơ đăng ký;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày;IDS;x;x;;Done;;SECURITIES_OFFERING;Year(certificate_date);;check chéo với TTHC;Done;Dữ liệu tĩnh;P;
+6;;Hồ sơ đăng ký chào bán/Bảng chi tiết hồ sơ chào bán & phát hành;Số lượng hồ sơ đăng ký;Số lượng hồ sơ đăng ký chào bán;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày;IDS;x;x;;Done;;SECURITIES_OFFERING;application_cd;approval_status_cd = 'PENDING_REVIEW';check chéo với TTHC;Done;Dữ liệu tĩnh;P;
+6;;Hồ sơ đăng ký chào bán/Bảng chi tiết hồ sơ chào bán & phát hành;Số lượng hồ sơ đang xử lý;Số lượng hồ sơ đăng ký chào bán đang xử lý;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày;IDS;x;x;;Done;;SECURITIES_OFFERING;application_cd;approval_status_cd = 'PENDING_APPROVE';check chéo với TTHC;Done;Dữ liệu tĩnh;P;
+6;;Hồ sơ đăng ký chào bán/Bảng chi tiết hồ sơ chào bán & phát hành;Số lượng hồ sơ đã cấp phép;Số lượng hồ sơ đăng ký chào bán đã được cấp phép;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày;IDS;x;x;;Done;;SECURITIES_OFFERING;application_cd;approval_status_cd = 'APPROVED';check chéo với TTHC;Done;Dữ liệu tĩnh;P;
+6;;Hồ sơ đăng ký chào bán/Bảng chi tiết hồ sơ chào bán & phát hành;Số lượng hồ sơ bị từ chối;Số lượng hồ sơ đăng ký chào bán bị từ chối;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày;IDS;x;x;;Done;;SECURITIES_OFFERING;application_cd;approval_status_cd = 'REJECTED';check chéo với TTHC;Done;Dữ liệu tĩnh;P;
+6;;Hồ sơ đăng ký chào bán/Bảng chi tiết hồ sơ chào bán & phát hành;Tổng hồ sơ;Tổng số lượng hồ sơ đăng ký chào bán;Dashboard;Chỉ tiêu phái sinh;TB;ngày;IDS;;x;;Done;;SECURITIES_OFFERING;application_cd;;check chéo với TTHC;Done;Dữ liệu tĩnh;P;
 7;;Chào bán và phát hành/Thông tin cơ sở;Thời điểm báo cáo;Thời điểm báo cáo;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày;IDS;x;x;;Done;;SECURITIES_OFFERING;month(certificate_date);certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');"SELECT
 month(so.certificate_date) AS thoi_diem_bao_cao, 
 so.processor_user_name AS chuyen_vien, 
@@ -262,19 +331,21 @@ LEFT JOIN report_catalog rc ON rc.report_year = TO_CHAR(:p_year)
 WHERE so.delete_flg = 0
 AND cp.delete_flg = 0
 AND so.certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd')
-ORDER BY cp.equity_ticker;";;;;;Done;Dữ liệu tĩnh
-7;;Chào bán và phát hành/Thông tin cơ sở;Chuyên viên;Chuyên viên;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS;x;x;;Done;;SECURITIES_OFFERING;processor_user_name;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;;;;Done;Dữ liệu tĩnh;
-7;;Chào bán và phát hành/Thông tin cơ sở;Tên công ty;Tên công ty;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS;x;x;;Done;;COMPANY_PROFILES;company_name_vn;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;;;;Done;Dữ liệu tĩnh;
-7;;Chào bán và phát hành/Thông tin cơ sở;Mã chứng khoán;Mã chứng khoán;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS;x;x;;Done;;COMPANY_PROFILES;equity_ticker;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;;;;Done;Dữ liệu tĩnh;
-7;;Chào bán và phát hành/Thông tin cơ sở;Sàn;Sàn;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS;x;x;;Done;;COMPANY_PROFILES;equity_listing_exch;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;;;;Done;Dữ liệu tĩnh;
-7;;Chào bán và phát hành/Thông tin cơ sở;Loại chứng khoán;Loại chứng khoán;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS;x;x;;Done;;COMPANY_PROFILES;securities_type_cd;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;;;;Done;Dữ liệu tĩnh;
+ORDER BY cp.equity_ticker;";;Done;Dữ liệu tĩnh;P
+7;;Chào bán và phát hành/Thông tin cơ sở;Chuyên viên;Chuyên viên;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS;x;x;;Done;;SECURITIES_OFFERING;processor_user_name;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;Done;Dữ liệu tĩnh;P;
+7;;Chào bán và phát hành/Thông tin cơ sở;Tên công ty;Tên công ty;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS;x;x;;Done;;COMPANY_PROFILES;company_name_vn;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;Done;Dữ liệu tĩnh;P;
+7;;Chào bán và phát hành/Thông tin cơ sở;Mã chứng khoán;Mã chứng khoán;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS;x;x;;Done;;COMPANY_PROFILES;equity_ticker;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;Done;Dữ liệu tĩnh;P;
+7;;Chào bán và phát hành/Thông tin cơ sở;Sàn;Sàn;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS;x;x;;Done;;COMPANY_PROFILES;equity_listing_exch;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;Done;Dữ liệu tĩnh;P;
+7;;Chào bán và phát hành/Thông tin cơ sở;Loại chứng khoán;Loại chứng khoán;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS;x;x;;Done;;COMPANY_PROFILES;securities_type_cd;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;Done;Dữ liệu tĩnh;P;
 8;;Chào bán và phát hành/Thông tin công văn cấp phép;Số giấy chứng nhận;Số giấy chứng nhận;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS;x;x;;Done;;SECURITIES_OFFERING;certificate_no;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');"WITH plan_agg AS (
 SELECT 
-securities_offering_id,
-MIN(offering_method_cd) AS offering_method_cd
-FROM SECURITIES_OFFERING_PLAN
-WHERE NVL(delete_flg, 0) = 0
-GROUP BY securities_offering_id
+securities_offering_id, 
+offering_method_cd AS offering_method_cd, 
+sum(TOTAL_EXPECTED_AM ) 
+FROM SECURITIES_OFFERING_PLAN 
+WHERE NVL(delete_flg, 0) = 0 
+GROUP BY securities_offering_id, offering_method_cd 
+ORDER BY securities_offering_id
 )
 SELECT
 t.certificate_no AS so_giay_chung_nhan,
@@ -287,13 +358,13 @@ LEFT JOIN plan_agg p ON p.securities_offering_id = t.ID
 LEFT JOIN LOOKUP_VALUES lv ON p.offering_method_cd = lv.LOOKUP_CD 
 AND lv.LOOKUP_GROUP = 'SO_OFFERING_METHOD'
 WHERE NVL(t.delete_flg, 0) = 0
-AND t.certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');";;;;;Done;Dữ liệu tĩnh
-8;;Chào bán và phát hành/Thông tin công văn cấp phép;Ngày cấp giấy chứng nhận;Ngày cấp giấy chứng nhận;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS;x;x;;Done;;SECURITIES_OFFERING;certificate_date;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;;;;Done;Dữ liệu tĩnh;
-8;;Chào bán và phát hành/Thông tin công văn cấp phép;Số công văn gửi công ty;Số công văn gửi công ty;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS;x;x;;Done;;SECURITIES_OFFERING;official_letter_no;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;;;;Done;Dữ liệu tĩnh;
-8;;Chào bán và phát hành/Thông tin công văn cấp phép;Ngày công văn;Ngày công văn;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS;x;x;;Done;;SECURITIES_OFFERING;official_letter_date;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;;;;Done;Dữ liệu tĩnh;
+AND t.certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');";;Done;Dữ liệu tĩnh;
+8;;Chào bán và phát hành/Thông tin công văn cấp phép;Ngày cấp giấy chứng nhận;Ngày cấp giấy chứng nhận;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS;x;x;;Done;;SECURITIES_OFFERING;certificate_date;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;Done;Dữ liệu tĩnh;;
+8;;Chào bán và phát hành/Thông tin công văn cấp phép;Số công văn gửi công ty;Số công văn gửi công ty;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS;x;x;;Done;;SECURITIES_OFFERING;official_letter_no;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;Done;Dữ liệu tĩnh;;
+8;;Chào bán và phát hành/Thông tin công văn cấp phép;Ngày công văn;Ngày công văn;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS;x;x;;Done;;SECURITIES_OFFERING;official_letter_date;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;Done;Dữ liệu tĩnh;;
 8;;Chào bán và phát hành/Thông tin công văn cấp phép;Hình thức phát hành;Hình thức phát hành;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS;x;x;;Done;;"LOOKUP_VALUES
 SECURITIES_OFFERING_PLAN";"LOOKUP_VALUES.LOOKUP_VALUE_VN 
-SECURITIES_OFFERING_PLAN.offering_method_cd";certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;;;;Done;Dữ liệu tĩnh;
+SECURITIES_OFFERING_PLAN.offering_method_cd";certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;Done;Dữ liệu tĩnh;;
 9;;Chào bán và phát hành/Thông tin cấp phép chào bán;Số lượng cấp phép;Số lượng cấp phép;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS;x;x;;Done;;SECURITIES_OFFERING;total_registered_qty;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');"WITH plan_agg AS (
 SELECT
 securities_offering_id,
@@ -326,51 +397,51 @@ WHERE NVL(so.delete_flg, 0) = 0
 AND NVL(cp.delete_flg, 0) = 0
 AND so.certificate_date BETWEEN to_date(:pdate1, 'yyyymmdd')
 AND to_date(:pdate2, 'yyyymmdd')
-ORDER BY so.certificate_date, cp.equity_ticker;";;;;;Done;Dữ liệu tĩnh
-9;;Chào bán và phát hành/Thông tin cấp phép chào bán;Giá (cấp phép);Giá theo quyết định cấp phép chào bán;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS;x;x;;Done;;SECURITIES_OFFERING_PLAN;offering_price;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;;;;Done;Dữ liệu tĩnh;
-9;;Chào bán và phát hành/Thông tin cấp phép chào bán;Giá trị cấp phép;Giá trị cấp phép chào bán;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS;x;x;;Done;;SECURITIES_OFFERING;total_expected_am;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;;;;Done;Dữ liệu tĩnh;
-9;;Chào bán và phát hành/Thông tin cấp phép chào bán;Số lượng người lao động;Số lượng người lao động;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS;x;x;;Done;;SECURITIES_OFFERING_PLAN;employee_qty;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;;;;Done;Dữ liệu tĩnh;
+ORDER BY so.certificate_date, cp.equity_ticker;";;Done;Dữ liệu tĩnh;F
+9;;Chào bán và phát hành/Thông tin cấp phép chào bán;Giá (cấp phép);Giá theo quyết định cấp phép chào bán;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS;x;x;;Done;;SECURITIES_OFFERING_PLAN;offering_price;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;Done;Dữ liệu tĩnh;F;
+9;;Chào bán và phát hành/Thông tin cấp phép chào bán;Giá trị cấp phép;Giá trị cấp phép chào bán;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS;x;x;;Done;;SECURITIES_OFFERING;total_expected_am;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;Done;Dữ liệu tĩnh;F;
+9;;Chào bán và phát hành/Thông tin cấp phép chào bán;Số lượng người lao động;Số lượng người lao động;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS;x;x;;Done;;SECURITIES_OFFERING_PLAN;employee_qty;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;Done;Dữ liệu tĩnh;F;
 9;;Chào bán và phát hành/Thông tin cấp phép chào bán;Đối tượng;Đối tượng được chào bán;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS;x;x;;Done;;"COMPANY_PROFILES
 SECURITIES_OFFERING
-SECURITIES_OFFERING_PLAN";COMPANY_PROFILES.COMPANY_NAME_VN;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd') and SECURITIES_OFFERING_PLAN.OFFERING_METHOD_CD = 5;;;;;Done;Dữ liệu tĩnh;
-9;;Chào bán và phát hành/Thông tin cấp phép chào bán;Mục đích sử dụng vốn;Mục đích sử dụng vốn;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS;x;x;;Done;;SECURITIES_OFFERING;offering_purpose;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;;;;Done;Dữ liệu tĩnh;
-10;;Chào bán và phát hành/Thông tin kết quả chào bán;Số lượng thực tế;Số lượng thực tế chào bán phát hành;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS;x;x;;Done;;SECURITIES_OFFERING_RESULT;total_successful_qty;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');"WITH result_agg AS ( 
-SELECT 
-securities_offering_id, 
-SUM(total_successful_qty) AS total_successful_qty, -- tổng SL thực tế 
-AVG(actual_offering_price) AS actual_offering_price, -- giá thực tế trung bình 
-SUM(total_collected_am) AS total_collected_am, -- tổng giá trị thực tế 
-SUM(employee_qty) AS employee_qty, -- tổng số lượng NLĐ 
-MIN(offering_method_cd) AS offering_method_cd -- hình thức phát hành đại diện 
-FROM SECURITIES_OFFERING_RESULT 
-WHERE NVL(delete_flg, 0) = 0 
-GROUP BY securities_offering_id 
-) 
-SELECT 
-r.total_successful_qty AS sl_thuc_te, 
-r.actual_offering_price AS gia_thuc_te, 
-r.total_collected_am AS gia_tri_thuc_te, 
-r.employee_qty AS sl_nguoi_lao_dong, 
--- Đối tượng: chỉ lấy tên công ty khi phát hành riêng lẻ (offering_method_cd = 5) 
--- Các hình thức khác trả về NULL 
-CASE 
-WHEN r.offering_method_cd = 5 
-THEN cp.company_name_vn -- company_name_vn (sửa từ COMPANY_NM_VN trong CSV) 
-ELSE NULL 
-END AS doi_tuong 
-FROM SECURITIES_OFFERING so 
-JOIN COMPANY_PROFILES cp 
-ON cp.id = so.company_profile_id -- FK: SECURITIES_OFFERING.company_profile_id → COMPANY_PROFILES.id 
-LEFT JOIN result_agg r 
-ON r.securities_offering_id = so.id 
-WHERE NVL(so.delete_flg, 0) = 0 
-AND NVL(cp.delete_flg, 0) = 0 
-AND so.certificate_date BETWEEN to_date(:pdate1, 'yyyymmdd') 
-AND to_date(:pdate2, 'yyyymmdd') 
-ORDER BY so.certificate_date, cp.equity_ticker;";;;;;Done;Dữ liệu tĩnh
-10;;Chào bán và phát hành/Thông tin kết quả chào bán;Giá thực tế;Giá thực tế chào bán phát hành;Data Explorer;Chỉ tiêu cơ sở;TB;Mã chứng khoán;IDS;x;x;;Done;;SECURITIES_OFFERING_RESULT;actual_offering_price;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;;;;Done;Dữ liệu tĩnh;
-10;;Chào bán và phát hành/Thông tin kết quả chào bán;Giá trị thực tế;Giá trị thực tế chào bán phát hành;Data Explorer;Chỉ tiêu cơ sở;TB;Mã chứng khoán;IDS;x;x;;Done;;SECURITIES_OFFERING_RESULT;total_collected_am;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;;;;Done;Dữ liệu tĩnh;
-10;;Chào bán và phát hành/Thông tin kết quả chào bán;Số lượng người lao động;Số lượng người lao động;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS;x;x;;Done;;SECURITIES_OFFERING_RESULT;employee_qty;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;;;;Done;Dữ liệu tĩnh;
+SECURITIES_OFFERING_PLAN";COMPANY_PROFILES.COMPANY_NAME_VN;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd') and SECURITIES_OFFERING_PLAN.OFFERING_METHOD_CD = 5;;Done;Dữ liệu tĩnh;F;
+9;;Chào bán và phát hành/Thông tin cấp phép chào bán;Mục đích sử dụng vốn;Mục đích sử dụng vốn;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS;x;x;;Done;;SECURITIES_OFFERING;offering_purpose;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;Done;Dữ liệu tĩnh;F;
+10;;Chào bán và phát hành/Thông tin kết quả chào bán;Số lượng thực tế;Số lượng thực tế chào bán phát hành;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS;x;x;;Done;;SECURITIES_OFFERING_RESULT;total_successful_qty;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');"WITH result_agg AS (
+SELECT
+securities_offering_id,
+SUM(total_successful_qty) AS total_successful_qty, -- tổng SL thực tế
+AVG(actual_offering_price) AS actual_offering_price, -- giá thực tế trung bình
+SUM(total_collected_am) AS total_collected_am, -- tổng giá trị thực tế
+SUM(employee_qty) AS employee_qty, -- tổng số lượng NLĐ
+MIN(offering_method_cd) AS offering_method_cd -- hình thức phát hành đại diện
+FROM SECURITIES_OFFERING_RESULT
+WHERE NVL(delete_flg, 0) = 0
+GROUP BY securities_offering_id
+)
+SELECT
+r.total_successful_qty AS sl_thuc_te,
+r.actual_offering_price AS gia_thuc_te,
+r.total_collected_am AS gia_tri_thuc_te,
+r.employee_qty AS sl_nguoi_lao_dong,
+-- Đối tượng: chỉ lấy tên công ty khi phát hành riêng lẻ (offering_method_cd = 5)
+-- Các hình thức khác trả về NULL
+CASE
+WHEN r.offering_method_cd = 5
+THEN cp.company_name_vn 
+ELSE NULL
+END AS doi_tuong
+FROM SECURITIES_OFFERING so
+JOIN COMPANY_PROFILES cp
+ON cp.id = so.company_profile_id -- FK: SECURITIES_OFFERING.company_profile_id → COMPANY_PROFILES.id
+LEFT JOIN result_agg r
+ON r.securities_offering_id = so.id
+WHERE NVL(so.delete_flg, 0) = 0
+AND NVL(cp.delete_flg, 0) = 0
+AND so.certificate_date BETWEEN to_date(:pdate1, 'yyyymmdd')
+AND to_date(:pdate2, 'yyyymmdd')
+ORDER BY so.certificate_date, cp.equity_ticker;";;Done;Dữ liệu tĩnh;
+10;;Chào bán và phát hành/Thông tin kết quả chào bán;Giá thực tế;Giá thực tế chào bán phát hành;Data Explorer;Chỉ tiêu cơ sở;TB;Mã chứng khoán;IDS;x;x;;Done;;SECURITIES_OFFERING_RESULT;actual_offering_price;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;Done;Dữ liệu tĩnh;;
+10;;Chào bán và phát hành/Thông tin kết quả chào bán;Giá trị thực tế;Giá trị thực tế chào bán phát hành;Data Explorer;Chỉ tiêu cơ sở;TB;Mã chứng khoán;IDS;x;x;;Done;;SECURITIES_OFFERING_RESULT;total_collected_am;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;Done;Dữ liệu tĩnh;;
+10;;Chào bán và phát hành/Thông tin kết quả chào bán;Số lượng người lao động;Số lượng người lao động;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS;x;x;;Done;;SECURITIES_OFFERING_RESULT;employee_qty;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd');;Done;Dữ liệu tĩnh;;
 10;;Chào bán và phát hành/Thông tin kết quả chào bán;Đối tượng;Đối tượng được chào bán;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS;x;x;;Done;;"COMPANY_PROFILES
 SECURITIES_OFFERING
-SECURITIES_OFFERING_RESULT";COMPANY_PROFILES.COMPANY_NM_VN;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd') and SECURITIES_OFFERING_RESULT.OFFERING_METHOD_CD = 5;;;;;Done;Dữ liệu tĩnh;
+SECURITIES_OFFERING_RESULT";COMPANY_PROFILES.COMPANY_NM_VN;certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd') and SECURITIES_OFFERING_RESULT.OFFERING_METHOD_CD = 5;;Done;Dữ liệu tĩnh;;

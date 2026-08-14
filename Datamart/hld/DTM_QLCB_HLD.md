@@ -205,6 +205,8 @@ flowchart LR
 Phục vụ Tab HỒ SƠ ĐĂNG KÝ CHÀO BÁN — Nhóm 5 (Tỷ lệ xử lý hồ sơ — KPI Card + donut), Nhóm 6 (bảng chi tiết hồ sơ theo hình thức × năm).
 
 > Toàn bộ chỉ tiêu hồ sơ đăng ký lấy trực tiếp từ `IDS.SECURITIES_OFFERING.APPROVAL_STATUS_CD` trên entity `Public Company Securities Offering` (cùng entity dùng ở Cụm 1a/1b/1c/2). `Application Status Code` là **direct map** từ `approval_status_code` (4 giá trị: `PENDING_REVIEW`/`PENDING_APPROVE`/`APPROVED`/`REJECTED`).
+>
+> **FIX 2026-08-14 — đổi grain đếm theo BA cập nhật:** BA cập nhật lại câu lệnh tham khảo Nhóm 5/6 — `plan_agg` không còn `GROUP BY securities_offering_id` (trước đó gom 1 dòng/hồ sơ bằng `MIN(offering_method_cd)`), và công thức đếm đổi từ `COUNT(DISTINCT application_cd)` sang `COUNT(CASE WHEN approval_status_cd = 'X' THEN 1 END)` không DISTINCT. Nghĩa là 1 hồ sơ có N loại hình chào bán (N dòng `Public Company Securities Offering Plan`) được tính N lần — đếm theo **hồ sơ × loại hình**, không còn đếm theo hồ sơ duy nhất. Xác nhận với user: đây là business rule thật (bám sát câu lệnh BA), không phải lỗi soạn SQL — **revert lại fix trước đó (2026-08-12, COUNT DISTINCT application_cd)**. Nhóm 5 từ nay dùng chung grain với Nhóm 6 (1 row = 1 hồ sơ × 1 loại hình) — không còn khác biệt về grain giữa 2 Nhóm.
 
 ```mermaid
 flowchart LR
@@ -231,6 +233,7 @@ flowchart LR
     ECAT_ECAT_29_HolidayInfo --> Calendar_Date
 
     Public_Company_Securities_Offering --> fct_securities_offering_application_snpst
+    Public_Company_Securities_Offering_Plan --> fct_securities_offering_application_snpst
     Public_Company_Securities_Offering_Plan --> offering_method_dim
     Calendar_Date --> cdr_dt_dim
 
@@ -238,7 +241,7 @@ flowchart LR
     offering_method_dim --> fct_securities_offering_application_snpst
 ```
 
-> **Ghi chú lineage:** `Fact Securities Offering Application Snapshot` grain = 1 row/hồ sơ (`Public Company Securities Offering`) × 1 ngày snapshot (ETL full-scan hàng ngày để `Application_Status_Code` luôn phản ánh đúng trạng thái xử lý mới nhất), `Application_Status_Code` direct map từ `approval_status_code`. `Offering Method Dimension` (dùng ở Nhóm 6, reuse từ Cụm 1b/1c) nguồn từ `Public Company Securities Offering Plan.offering_method_code`.
+> **Ghi chú lineage (FIX 2026-08-14):** `Fact Securities Offering Application Snapshot` grain = 1 row/hồ sơ (`Public Company Securities Offering`) × 1 loại hình chào bán (`Public Company Securities Offering Plan`) × 1 ngày snapshot (ETL full-scan hàng ngày để `Application_Status_Code` luôn phản ánh đúng trạng thái xử lý mới nhất), `Application_Status_Code` direct map từ `approval_status_code`. Trước đây (2026-08-12) grain chỉ 1 row/hồ sơ (đếm COUNT DISTINCT); nay theo BA cập nhật, `Public Company Securities Offering Plan` là driving JOIN thứ 2 của Fact (LEFT JOIN không GROUP BY) — 1 hồ sơ có N Plan sinh N dòng Fact, giữ NULL nếu hồ sơ chưa có Plan. `Offering Method Dimension` (dùng ở Nhóm 6, reuse từ Cụm 1b/1c) nguồn từ `Public Company Securities Offering Plan.offering_method_code`.
 
 ---
 
@@ -709,9 +712,9 @@ flowchart LR
 
 **Mockup (a) — 4 KPI Card:**
 
-| Hồ sơ đăng ký | Đang xử lý | Đã cấp phép | Bị từ chối |
+| Tỷ lệ hồ sơ đăng ký | Tỷ lệ đang xử lý | Tỷ lệ đã cấp phép | Tỷ lệ bị từ chối |
 |---|---|---|---|
-| 124 | 38 | 72 | 14 |
+| 19% | 31% | 42% | 11% |
 
 **Mockup (b) — Donut GROUP BY trạng thái:**
 
@@ -722,7 +725,7 @@ flowchart LR
 | Đã cấp phép | 72 | 42% |
 | Bị từ chối | 14 | 11% |
 
-> **Lưu ý:** Cả 2 mockup cùng dùng 4 Base KPI bên dưới — (a) hiển thị dạng 4 card riêng biệt, (b) hiển thị dạng GROUP BY pivot trên cùng 1 Fact. Tỷ lệ % là Derived tính tại presentation layer, không lưu Datamart.
+> **Lưu ý:** Cả 2 mockup cùng dùng 4 KPI Tỷ lệ % bên dưới — (a) hiển thị dạng 4 card riêng biệt (chỉ %), (b) hiển thị dạng GROUP BY pivot trên cùng 1 Fact (cả số lượng lẫn %). Tên dashboard gốc BA là "Tỷ lệ xử lý hồ sơ" — xác nhận toàn bộ 4 KPI của Nhóm này là tỷ lệ %, không phải số lượng thuần.
 
 **Source:** `Fact Securities Offering Application Snapshot`
 
@@ -730,16 +733,18 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_QLCB_32 | Số lượng hồ sơ đăng ký | Hồ sơ | Cơ sở | `COUNT(DISTINCT Application Code)` toàn bộ trong kỳ | FIX 2026-08-12: đổi grain đếm từ Securities Offering Code (mã đợt chào bán) sang Application Code (mã hồ sơ) theo đúng BA (`COUNT(DISTINCT application_cd)`, check chéo TTHC) | READY |
-| K_QLCB_33 | Số lượng hồ sơ đang xử lý | Hồ sơ | Cơ sở | `COUNT(DISTINCT Application Code) WHERE Application Status Code = 'PENDING_APPROVE'` | FIX 2026-08-12: cùng lý do K_QLCB_32 | READY |
-| K_QLCB_34 | Số lượng hồ sơ đã cấp phép | Hồ sơ | Cơ sở | `COUNT(DISTINCT Application Code) WHERE Application Status Code = 'APPROVED'` | FIX 2026-08-12: cùng lý do K_QLCB_32 | READY |
-| K_QLCB_35 | Số lượng hồ sơ bị từ chối | Hồ sơ | Cơ sở | `COUNT(DISTINCT Application Code) WHERE Application Status Code = 'REJECTED'` | FIX 2026-08-12: cùng lý do K_QLCB_32 | READY |
+| K_QLCB_32 | Tỷ lệ hồ sơ đăng ký | % | Phái sinh | `COUNT(Application Code WHERE Application Status Code = 'PENDING_REVIEW') / COUNT(Application Code WHERE Application Status Code IN ('PENDING_REVIEW','PENDING_APPROVE','APPROVED','REJECTED')) * 100` | FIX 2026-08-14 (v2): sửa lại đúng theo BA — BA STT=5 mô tả 4 dòng là "Tỷ lệ hồ sơ X = Số lượng hồ sơ X / Tổng số lượng hồ sơ" (Phân loại = Chỉ tiêu phái sinh), không phải COUNT thuần. Tính chất đổi từ Cơ sở → Phái sinh. Theo nguyên tắc tổ chức: phép chia tỷ lệ phải thể hiện ở Detail Mapping, không tính ở dashboard | READY |
+| K_QLCB_33 | Tỷ lệ hồ sơ đang xử lý | % | Phái sinh | `COUNT(Application Code WHERE Application Status Code = 'PENDING_APPROVE') / COUNT(Application Code WHERE Application Status Code IN ('PENDING_REVIEW','PENDING_APPROVE','APPROVED','REJECTED')) * 100` | FIX 2026-08-14 (v2): cùng lý do K_QLCB_32 | READY |
+| K_QLCB_34 | Tỷ lệ hồ sơ đã chấp thuận | % | Phái sinh | `COUNT(Application Code WHERE Application Status Code = 'APPROVED') / COUNT(Application Code WHERE Application Status Code IN ('PENDING_REVIEW','PENDING_APPROVE','APPROVED','REJECTED')) * 100` | FIX 2026-08-14 (v2): cùng lý do K_QLCB_32 | READY |
+| K_QLCB_35 | Tỷ lệ hồ sơ bị từ chối | % | Phái sinh | `COUNT(Application Code WHERE Application Status Code = 'REJECTED') / COUNT(Application Code WHERE Application Status Code IN ('PENDING_REVIEW','PENDING_APPROVE','APPROVED','REJECTED')) * 100` | FIX 2026-08-14 (v2): cùng lý do K_QLCB_32 | READY |
 
-> **Ghi chú `Application Code`:** Direct map từ `Public Company Securities Offering.application_cd` (IDS.SECURITIES_OFFERING.APPLICATION_CD) — mã hồ sơ đăng ký, khác `Securities_Offering_Code` (mã đợt chào bán). Grain đếm KPI Nhóm 5/6 theo BA phải dùng `COUNT(DISTINCT application_cd)`, không dùng `securities_offering_code`.
+> **Ghi chú `Application Code`:** Direct map từ `Public Company Securities Offering.application_cd` (IDS.SECURITIES_OFFERING.APPLICATION_CD) — mã hồ sơ đăng ký, khác `Securities_Offering_Code` (mã đợt chào bán). **FIX 2026-08-14:** grain đếm KPI Nhóm 5/6 theo BA cập nhật dùng `COUNT(Application Code)` không DISTINCT — Fact grain = 1 row/hồ sơ × 1 loại hình (Plan), nên 1 hồ sơ có N Plan được đếm N lần. Đây là revert của fix 2026-08-12 (khi đó BA yêu cầu COUNT DISTINCT, đếm theo hồ sơ duy nhất) — xác nhận với user 2026-08-14: bám sát đúng câu lệnh SQL BA mới cung cấp.
 
 > **Ghi chú `Application Status Code`:** Direct map từ `Public Company Securities Offering.approval_status_code` (IDS.SECURITIES_OFFERING.APPROVAL_STATUS_CD). 4 giá trị nguồn: `PENDING_REVIEW` (đăng ký), `PENDING_APPROVE` (đang xử lý), `APPROVED` (đã cấp phép), `REJECTED` (bị từ chối).
 
-> **Quyết định thiết kế — lưu số lượng, không lưu tỷ lệ:** Datamart chỉ lưu số lượng (COUNT theo status); tỷ lệ % (phép chia trên tổng) tính hoàn toàn ở lớp dashboard, không cần KPI_ID/Attributes/Detail Mapping riêng cho phần %. Cả 2 mockup (a) và (b) đều dùng chung 4 KPI này — mockup (b) chỉ là presentation-layer GROUP BY pivot.
+> **FIX 2026-08-14 (v2) — Tỷ lệ % tính DERIVED tại Detail Mapping, không tính ở dashboard:** Thay thế quyết định thiết kế cũ ("lưu số lượng, không lưu tỷ lệ — % tính ở lớp dashboard"). Theo nguyên tắc tổ chức: bước Datamart → Chỉ tiêu (Detail Mapping) phải thể hiện đầy đủ logic tính toán; presentation layer chỉ được lấy dữ liệu 1-1, không tự tính toán thêm. Do đó K_QLCB_32-35 là DERIVED tỷ lệ % có `logic` phép chia tường minh ngay tại Detail Mapping, có KPI_ID riêng — dashboard chỉ hiển thị (a) 4 card % hoặc (b) donut pivot, không tự thực hiện phép chia nào.
+>
+> **FIX 2026-08-14 — Nhóm 5 dùng chung grain với Nhóm 6:** Trước đây Nhóm 5 và Nhóm 6 khác grain (Nhóm 5 = 1 row/hồ sơ, Nhóm 6 = 1 row/hồ sơ × loại hình). Theo SQL BA cập nhật, cả 2 Nhóm nay dùng chung 1 Fact với grain 1 row/hồ sơ × 1 loại hình — KPI Nhóm 5 (K_QLCB_32-35) chỉ là tỷ lệ % không GROUP BY theo loại hình (không hiển thị `Offering_Method_Dimension_Id` trên UI), còn Nhóm 6 (K_QLCB_38-42) thêm GROUP BY `Offering_Method_Dimension_Id` + năm, giữ nguyên số lượng thuần (không phải %).
 
 **Star Schema:**
 
@@ -768,12 +773,12 @@ erDiagram
 >
 > **`Fact_Securities_Offering_Application_Snapshot`:**
 > - `Securities_Offering_Code` → `key = DD` (Degenerate Dimension) — Business key đợt chào bán (`Public Company Securities Offering.pc_securities_offering_code`), lưu trực tiếp trên Fact để tra cứu, không tạo Dimension riêng. Fact Event không có Surrogate PK.
-> - `Application_Code` → `key = DD` — Business key hồ sơ đăng ký (`Public Company Securities Offering.application_cd`), khác `Securities_Offering_Code` (mã đợt chào bán) — dùng làm grain đếm cho K_QLCB_32–35/38–42 (`COUNT(DISTINCT Application_Code)`) theo đúng BA — FIX 2026-08-12, trước đó Detail Mapping nhầm đếm theo `Securities_Offering_Code`
+> - `Application_Code` → `key = DD` — Business key hồ sơ đăng ký (`Public Company Securities Offering.application_cd`), khác `Securities_Offering_Code` (mã đợt chào bán). **FIX 2026-08-14:** không còn là grain đếm đơn nhất — grain đếm thật của Fact là `Application_Code` × `Offering_Method_Dimension_Id` (xem dòng dưới); mọi `COUNT(Application_Code)` dùng ở K_QLCB_32–35/38–42 đều KHÔNG DISTINCT (revert fix 2026-08-12). **FIX 2026-08-14 (v2):** K_QLCB_32-35 (Nhóm 5) là tỷ lệ % — tử số/mẫu số đều là `COUNT(Application_Code)` không DISTINCT theo status tương ứng; K_QLCB_38-42 (Nhóm 6) vẫn là số lượng thuần (không phải %)
 > - `Certificate_Date_Dimension_Id` → `key = FK → Calendar Date Dimension` — cùng FK date dùng ở Nhóm 1 (`certificate_dt`)
-> - `Offering_Method_Dimension_Id` → `key = FK → Offering Method Dimension`, nullable — chỉ Nhóm 6 dùng (xem Nhóm 6), Nhóm 5 không GROUP BY hình thức nên field này NULL, không ảnh hưởng COUNT
+> - `Offering_Method_Dimension_Id` → `key = FK → Offering Method Dimension`, nullable (NULL nếu hồ sơ chưa có Plan). **FIX 2026-08-14:** đây là driving JOIN thứ 2 tạo grain N dòng/hồ sơ (LEFT JOIN `Public Company Securities Offering Plan` không GROUP BY) — 1 hồ sơ có N loại hình sinh N dòng Fact, **ảnh hưởng trực tiếp đến COUNT** ở cả Nhóm 5 và Nhóm 6 (khác ghi chú cũ "không ảnh hưởng COUNT")
 > - `Application_Status_Code` → `key` trống — Classification Value, `etl_logic_type = direct` từ `approval_status_code`
 >
-> `Offering_Type_Dimension` không dùng ở Nhóm 5 — chỉ Nhóm 6 cần chiều hình thức (xem `Offering Method Dimension`, dùng chung với Nhóm 2/3). Nhóm 5 không GROUP BY năm.
+> Nhóm 5 không GROUP BY hiển thị theo `Offering_Method_Dimension_Id`/năm trên UI (chỉ 4 KPI Card/donut theo status), nhưng vẫn dùng chung 1 Fact grain với Nhóm 6 — không tạo Fact/grain riêng cho Nhóm 5.
 
 **Lineage Mart → Báo cáo:**
 
@@ -794,7 +799,7 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| `Fact Securities Offering Application Snapshot` | 1 row = 1 hồ sơ đăng ký chào bán × 1 ngày snapshot (ETL full-scan hàng ngày để Application Status Code luôn phản ánh đúng trạng thái xử lý mới nhất; Certificate Date giữ nguyên vai trò Chiều/slicer) |
+| `Fact Securities Offering Application Snapshot` | 1 row = 1 hồ sơ đăng ký chào bán × 1 loại hình chào bán (Plan) × 1 ngày snapshot (FIX 2026-08-14 — trước đó 1 row/hồ sơ; ETL full-scan hàng ngày để Application Status Code luôn phản ánh đúng trạng thái xử lý mới nhất; Certificate Date giữ nguyên vai trò Chiều/slicer) |
 | `Calendar Date Dimension` | 1 row = 1 ngày (`certificate_dt`) |
 
 ---
@@ -822,13 +827,13 @@ flowchart LR
 |---|---|---|---|---|---|---|
 | K_QLCB_36 | Hình thức chào bán | — | Chiều | `GROUP BY Offering Method Dimension.Offering Method Code` — reuse Dimension từ Nhóm 2/3 (scheme `IDS_SO_OFFERING_METHOD`) | — | READY |
 | K_QLCB_37 | Năm | — | Chiều | `GROUP BY Year` của `Certificate Date Dimension` (reuse `Calendar Date Dimension`, không cần Degenerate Dimension riêng) | BA cập nhật 2026-08-11: đổi từ Official Letter Date sang Certificate Date | READY |
-| K_QLCB_38 | Số lượng hồ sơ chờ xử lý | Hồ sơ | Cơ sở | `COUNT(DISTINCT Application Code) WHERE Application Status Code = 'PENDING_REVIEW'` | FIX 2026-08-12: đổi grain đếm từ Securities Offering Code sang Application Code theo đúng BA | READY |
-| K_QLCB_39 | Số lượng hồ sơ đang xử lý | Hồ sơ | Cơ sở | `COUNT(DISTINCT Application Code) WHERE Application Status Code = 'PENDING_APPROVE'` | FIX 2026-08-12: cùng lý do K_QLCB_38 | READY |
-| K_QLCB_40 | Số lượng hồ sơ đã cấp phép | Hồ sơ | Cơ sở | `COUNT(DISTINCT Application Code) WHERE Application Status Code = 'APPROVED'` | FIX 2026-08-12: cùng lý do K_QLCB_38 | READY |
-| K_QLCB_41 | Số lượng hồ sơ bị từ chối | Hồ sơ | Cơ sở | `COUNT(DISTINCT Application Code) WHERE Application Status Code = 'REJECTED'` | FIX 2026-08-12: cùng lý do K_QLCB_38 | READY |
+| K_QLCB_38 | Số lượng hồ sơ chờ xử lý | Hồ sơ | Cơ sở | `COUNT(Application Code) WHERE Application Status Code = 'PENDING_REVIEW'` | FIX 2026-08-14: revert COUNT không DISTINCT theo BA cập nhật (khác fix 2026-08-12). Số lượng thuần — KHÔNG phải % (khác K_QLCB_32, xem ghi chú v2 Nhóm 5) | READY |
+| K_QLCB_39 | Số lượng hồ sơ đang xử lý | Hồ sơ | Cơ sở | `COUNT(Application Code) WHERE Application Status Code = 'PENDING_APPROVE'` | FIX 2026-08-14: cùng lý do K_QLCB_38 | READY |
+| K_QLCB_40 | Số lượng hồ sơ đã cấp phép | Hồ sơ | Cơ sở | `COUNT(Application Code) WHERE Application Status Code = 'APPROVED'` | FIX 2026-08-14: cùng lý do K_QLCB_38 | READY |
+| K_QLCB_41 | Số lượng hồ sơ bị từ chối | Hồ sơ | Cơ sở | `COUNT(Application Code) WHERE Application Status Code = 'REJECTED'` | FIX 2026-08-14: cùng lý do K_QLCB_38 | READY |
 | K_QLCB_42 | Tổng hồ sơ | Hồ sơ | Derived | `K_QLCB_38 + K_QLCB_39 + K_QLCB_40 + K_QLCB_41` — tính tại presentation layer | — | READY |
 
-> **Ghi chú `Offering Method Dimension`:** Reuse Dimension đã thiết kế ở Cụm 1b/1c — không tạo mới. `Fact Securities Offering Application Snapshot` bổ sung FK `Offering_Method_Dimension_Id`, ETL join qua `Public Company Securities Offering Plan.offering_method_code` (theo `pc_securities_offering_id`). Vì 1 hồ sơ có thể có nhiều dòng Plan (nhiều loại hình), Fact Application ở Nhóm 6 mở rộng grain: 1 row = 1 hồ sơ × 1 loại hình (khác Nhóm 5 vốn 1 row = 1 hồ sơ).
+> **Ghi chú `Offering Method Dimension`:** Reuse Dimension đã thiết kế ở Cụm 1b/1c — không tạo mới. `Fact Securities Offering Application Snapshot` bổ sung FK `Offering_Method_Dimension_Id`, ETL join qua `Public Company Securities Offering Plan.offering_method_code` (theo `pc_securities_offering_id`), **không GROUP BY** (FIX 2026-08-14). Vì 1 hồ sơ có thể có nhiều dòng Plan (nhiều loại hình), Fact Application có grain: 1 row = 1 hồ sơ × 1 loại hình — **cùng grain với Nhóm 5** (trước đây 2 Nhóm khác grain, nay hợp nhất theo BA cập nhật).
 
 **Star Schema:** Kế thừa Fact từ Nhóm 5, bổ sung FK `Offering_Method_Dimension_Id`:
 
@@ -853,7 +858,7 @@ erDiagram
     Offering_Method_Dimension ||--o{ Fact_Securities_Offering_Application_Snapshot : " "
 ```
 
-> **Ghi chú grain:** Bảng KPI Nhóm 5 (K_QLCB_32–35) chỉ cần grain 1 row/hồ sơ. Nhóm 6 cần thêm chiều hình thức — ETL populate `Offering_Method_Dimension_Id` bằng cách join `Public Company Securities Offering Plan` (lấy `offering_method_code` đầu tiên nếu 1 hồ sơ có nhiều loại hình, hoặc giữ NULL nếu hồ sơ chưa có Plan). Field `Offering_Method_Dimension_Id` là nullable trên Fact — không ảnh hưởng COUNT ở Nhóm 5.
+> **Ghi chú grain (FIX 2026-08-14):** Nhóm 5 và Nhóm 6 nay dùng chung 1 Fact grain: 1 row = 1 hồ sơ × 1 loại hình. ETL populate `Offering_Method_Dimension_Id` bằng LEFT JOIN `Public Company Securities Offering Plan` theo `pc_securities_offering_id`, KHÔNG GROUP BY — nếu 1 hồ sơ có N Plan thì sinh N dòng Fact (giữ NULL nếu hồ sơ chưa có Plan). Field này ảnh hưởng trực tiếp đến COUNT ở cả 2 Nhóm — Nhóm 5 chỉ khác Nhóm 6 ở việc không GROUP BY hiển thị theo `Offering_Method_Dimension_Id`/năm trên UI.
 
 **Lineage Mart → Báo cáo:**
 
@@ -876,7 +881,7 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| `Fact Securities Offering Application Snapshot` | 1 row = 1 hồ sơ × 1 ngày snapshot (kế thừa Nhóm 5), nullable FK `Offering_Method_Dimension_Id` cho Nhóm 6 |
+| `Fact Securities Offering Application Snapshot` | 1 row = 1 hồ sơ × 1 loại hình chào bán (Plan) × 1 ngày snapshot (FIX 2026-08-14 — cùng grain với Nhóm 5), nullable FK `Offering_Method_Dimension_Id` nếu hồ sơ chưa có Plan |
 | `Offering Method Dimension` | 1 row = 1 mã hình thức chào bán (reuse từ Nhóm 2/3) |
 | `Calendar Date Dimension` | 1 row = 1 ngày |
 
@@ -992,7 +997,7 @@ flowchart LR
 > Phân loại: **Tác nghiệp**
 > Atomic: `Public Company Securities Offering Plan` ← IDS.SECURITIES_OFFERING_PLAN — **READY** (Atomic draft — chưa approved chính thức)
 > Atomic: `Public Company Securities Offering` ← IDS.SECURITIES_OFFERING — **READY** (Atomic draft, dùng cho `total_registered_quantity`, `offering_purpose`)
-> Ghi chú: Với model 1-N, mỗi row 360 Profile là 1 loại hình cụ thể (Plan) — `swap_target`, `employee_quantity`, `offering_price` lấy trực tiếp từ Plan tương ứng, không cần ETL pick.
+> Ghi chú (FIX 2026-08-14 — sửa lại mô tả sai): `offering_price` (giá trung bình các phương án) và `employee_quantity` (tổng số lượng NLĐ) là measure **gộp theo hồ sơ** — `AVG(offering_price)`/`SUM(employee_quantity)` qua `GROUP BY securities_offering_id` trên toàn bộ `Public Company Securities Offering Plan` của đợt chào bán, KHÔNG phân biệt loại hình — khớp đúng CTE `plan_agg` trong SQL BA. Xác nhận với user 2026-08-14: đây là thiết kế có chủ ý của BA (1 đợt chào bán có giá trung bình + tổng NLĐ + 1 hình thức đại diện), không phải lỗi độ chi tiết. Ghi chú cũ ("mỗi row là 1 loại hình cụ thể, lấy trực tiếp từ Plan tương ứng") đã sai — thay thế bằng ghi chú này.
 
 **Mockup:**
 
@@ -1010,10 +1015,10 @@ flowchart LR
 | K_QLCB_55 | Giá (cấp phép) | VNĐ | Attribute | `Public Company Securities Offering Plan.offering_price` — IDS.SECURITIES_OFFERING_PLAN.OFFERING_PRICE (giá trực tiếp trên Plan, không cần Derived) | — | READY |
 | K_QLCB_56 | Giá trị cấp phép | Tỷ VNĐ | Attribute | `Public Company Securities Offering.total_expected_amt` — bảng cha, IDS.SECURITIES_OFFERING.TOTAL_EXPECTED_AM (BA ghi rõ nguồn bảng cha, không phải Plan snapshot) | — | READY |
 | K_QLCB_57 | Số lượng người lao động | Người | Attribute | `Public Company Securities Offering Plan.employee_quantity` — IDS.SECURITIES_OFFERING_PLAN.EMPLOYEE_QTY; chỉ có giá trị với 1 số thủ tục (ESOP/Bonus Share), NULL với loại hình khác | — | READY |
-| K_QLCB_58 | Đối tượng | Text | Attribute | `CASE WHEN Operational Securities Offering 360 Profile.Offering_Method_Code = '5' THEN Public Company.Public_Company_Name ELSE NULL END` — chỉ có giá trị khi phát hành riêng lẻ, IDS.COMPANY_PROFILES.COMPANY_NAME_VN | BA cập nhật 2026-08-10: đổi từ SWAP_TARGET sang tên công ty khi offering_method_cd = 5; các hình thức khác NULL | READY |
+| K_QLCB_58 | Đối tượng | Text | Attribute | `CASE WHEN Offering_Method_Code_Representative = '5' THEN Public Company.Public_Company_Name ELSE NULL END` — `Offering_Method_Code_Representative` = `MIN(Offering Method Code)` gộp theo hồ sơ (cùng cách gộp với Giá cấp phép/Số lượng NLĐ ở trên), chỉ có giá trị khi phát hành riêng lẻ, IDS.COMPANY_PROFILES.COMPANY_NAME_VN | BA cập nhật 2026-08-10: đổi từ SWAP_TARGET sang tên công ty khi offering_method_cd = 5. **FIX 2026-08-14:** điều kiện lọc sửa từ `Offering_Method_Code` per-dòng (BK component 2, per-loại-hình thật) sang `Offering_Method_Code_Representative` (MIN đại diện, gộp theo hồ sơ) — khớp đúng SQL BA dùng `p.offering_method_cd = MIN(offering_method_cd) GROUP BY securities_offering_id`, nhất quán với cách gộp của Offering Price/Employee Quantity cùng Nhóm | READY |
 | K_QLCB_59 | Mục đích sử dụng vốn | Text | Attribute | `Public Company Securities Offering.offering_purpose` — bảng cha, IDS.SECURITIES_OFFERING.OFFERING_PURPOSE | — | READY |
 
-**Schema bảng tác nghiệp:** Kế thừa `Operational Securities Offering 360 Profile` — bổ sung 3 cột `Offering_Price`, `Employee_Quantity`, `Swap_Target` (xem erDiagram Nhóm 4).
+**Schema bảng tác nghiệp:** Kế thừa `Operational Securities Offering 360 Profile` — bổ sung 3 cột `Offering_Price`, `Employee_Quantity`, `Swap_Target` (xem erDiagram Nhóm 4). **FIX 2026-08-14:** bổ sung thêm cột `Offering_Method_Code_Representative` (giá trị đại diện `MIN(Offering Method Code)` gộp theo hồ sơ, dùng riêng cho điều kiện lọc K_QLCB_58 — khác `Offering_Method_Code` hiện có vốn là BK per-loại-hình thật, dùng cho Nhóm 4/7/8).
 
 **Lineage Mart → Báo cáo:**
 
