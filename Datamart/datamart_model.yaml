@@ -4114,6 +4114,7 @@ entities:
       - "financial_report_catalog"
       - "fr_row_template"
       - "fr_column_template"
+      - "pc_report_submission"
     modules_using:
       - "GSDC"
     columns:
@@ -4177,9 +4178,9 @@ entities:
         data_type: "int"
         nullable: true
         key: ""
-        description: "Công ty có LNST > 0 trong kỳ hay không (1/0). Lấy từ Financial Report Value — Row Description Reference '60' (dn/bh) hoặc '21' (td), Column Description Reference '1', Financial Report Catalog Code LIKE 'BCKQKD%'."
-        source_atomic_table: "fr_value / financial_report_catalog / fr_row_template / fr_column_template"
-        source_atomic_column: "fr_value / financial_report_catalog / fr_row_template / fr_column_template.data_val / fr_catalog_code / row_description_reference / column_description_reference"
+        description: "Công ty có LNST > 0 trong kỳ hay không (1/0). Lấy từ Financial Report Value — Row Description Reference '60' (dn/bh) hoặc '21' (td), Column Description Reference '1', Financial Report Catalog Code LIKE 'BCKQKD%'. Chỉ lấy từ bản báo cáo chính thức (ưu tiên hợp nhất trước riêng lẻ) đã phê duyệt, đúng loại biểu mẫu và đúng kỳ năm báo cáo."
+        source_atomic_table: "fr_value / pc_report_submission / fr_template / financial_report_catalog / fr_row_template / fr_column_template"
+        source_atomic_column: "fr_value.data_val / pc_report_submission.submission_status_code / fr_template.fr_template_code / financial_report_catalog.fr_year+financial_statement_reference+fr_catalog_code / fr_row_template.row_description_reference / fr_column_template.column_description_reference"
 
   - id: "DTM-financial_rpt_catalog_dim"
     logical_name: "Financial Report Catalog Dimension"
@@ -4188,7 +4189,7 @@ entities:
     module: "GSDC"
     status: "draft"
     reuse_status: "new"
-    description: "Template BCTC — báo cáo/dòng/cột, composite BK (Financial Report Catalog Code + Row Code + Column Code), denormalize từ financial_report_catalog/fr_row_template/fr_column_template. Grain: 1 row/báo cáo × dòng × cột."
+    description: "Template BCTC — báo cáo/dòng/cột, composite BK (Financial Report Catalog Code + Report Year + Row Code + Column Code), denormalize từ financial_report_catalog/fr_row_template/fr_column_template. Grain: 1 row/báo cáo/năm × dòng × cột."
     source_atomic:
       - "financial_report_catalog"
       - "fr_row_template"
@@ -4211,9 +4212,18 @@ entities:
         data_type: "string"
         nullable: false
         key: "BK"
-        description: "Mã báo cáo — 1 phần khóa nghiệp vụ composite (kèm Row Code + Column Code)."
+        description: "Mã báo cáo — 1 phần khóa nghiệp vụ composite (kèm Report Year + Row Code + Column Code)."
         source_atomic_table: "financial_report_catalog"
         source_atomic_column: "financial_report_catalog.fr_catalog_code"
+      - logical_name: "Report Year"
+        physical_name: "fr_year"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: false
+        key: "BK"
+        description: "Năm báo cáo — 1 phần khóa nghiệp vụ composite. Bắt buộc vì fr_catalog_id (Atomic) hash chỉ từ REPORT_CD, không kèm năm."
+        source_atomic_table: "financial_report_catalog"
+        source_atomic_column: "financial_report_catalog.fr_year"
       - logical_name: "Row Code"
         physical_name: "row_code"
         data_domain: "Text"
@@ -4337,6 +4347,7 @@ entities:
       - "fr_row_template"
       - "fr_column_template"
       - "pc_report_submission"
+      - "fr_template"
     modules_using:
       - "GSDC"
     columns:
@@ -4409,9 +4420,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị dữ liệu tại ô báo cáo (Row Code × Column Code)."
-        source_atomic_table: "fr_value / pc_report_submission"
-        source_atomic_column: "fr_value / pc_report_submission.data_val / (EXISTS filter)"
+        description: "Giá trị dữ liệu tại ô báo cáo (Row Code × Column Code). Chỉ lấy từ bản báo cáo chính thức (ưu tiên hợp nhất trước riêng lẻ) đã phê duyệt, đúng loại biểu mẫu và đúng kỳ năm báo cáo."
+        source_atomic_table: "fr_value / pc_report_submission / fr_template / financial_report_catalog"
+        source_atomic_column: "fr_value.data_val / pc_report_submission.submission_status_code / fr_template.fr_template_code / financial_report_catalog.fr_year+financial_statement_reference"
 
   - id: "DTM-public_company_regulatory_compliance_rpt"
     logical_name: "Public Company Regulatory Compliance Report"

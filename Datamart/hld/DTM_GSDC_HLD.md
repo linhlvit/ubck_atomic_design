@@ -1237,15 +1237,15 @@ flowchart LR
 #### Nhóm 9 — STT 9: Thống kê CTĐC chưa niêm yết (toàn thị trường)
 
 > Phân loại: **Phân tích**
-> Source: `Public Company Dimension` (không qua Fact) — filter `Public Company Status Code = 'APPROVED_PUBLIC'` AND `Equity Listing Exchange Code NOT IN ('HOSE', 'HNX')` (bao gồm NULL, UPCOM, OTC)
-> Filter: `Public Company Status Code = 'APPROVED_PUBLIC'` (Atomic: `pc_status_code`, nguồn `IDS.COMPANY_PROFILES.STATUS_IDS_CD`) AND `equity_listing_exchange_code NOT IN ('HOSE', 'HNX')` — BA định nghĩa "chưa niêm yết" là loại trừ 2 sàn niêm yết chính thức (HOSE/HNX); UPCOM/OTC/NULL/giá trị khác đều tính là chưa niêm yết.
+> Source: `Public Company Dimension` (không qua Fact) — filter `Public Company Status Code = 'APPROVED_PUBLIC'` AND `Equity Listing Exchange Code NOT IN ('HOSE', 'HNX', 'UPCOM')` (bao gồm NULL, OTC)
+> Filter: `Public Company Status Code = 'APPROVED_PUBLIC'` (Atomic: `pc_status_code`, nguồn `IDS.COMPANY_PROFILES.STATUS_IDS_CD`) AND `equity_listing_exchange_code NOT IN ('HOSE', 'HNX', 'UPCOM')` — BA định nghĩa "chưa niêm yết" là loại trừ 3 sàn niêm yết/đăng ký giao dịch chính thức (HOSE/HNX/UPCOM); OTC/NULL/giá trị khác đều tính là chưa niêm yết. Cập nhật 2026-08-14 theo SQL BA mới nhất (cột "Câu lệnh update SIT", `BA_analyst_GSDC_part1.csv` STT 9) — bản gốc chỉ loại trừ HOSE/HNX (coi UPCOM là chưa niêm yết), bản cập nhật thêm UPCOM vào danh sách loại trừ (coi UPCOM là đã niêm yết).
 > K_GSDC_77 tự đủ bằng COUNT DISTINCT trực tiếp trên `Public Company Dimension`, không cần Fact.
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_GSDC_77 | Số CTDC chưa niêm yết | DN | Phái sinh | ids_registration_dt (trực tiếp) | COUNT(DISTINCT pc_id) WHERE ids_registration_dt <= cuối kỳ AND pc_status_code = 'APPROVED_PUBLIC' AND equity_listing_exchange_code NOT IN ('HOSE', 'HNX') | READY |
+| K_GSDC_77 | Số CTDC chưa niêm yết | DN | Phái sinh | ids_registration_dt (trực tiếp) | COUNT(DISTINCT pc_id) WHERE ids_registration_dt <= cuối kỳ AND pc_status_code = 'APPROVED_PUBLIC' AND equity_listing_exchange_code NOT IN ('HOSE', 'HNX', 'UPCOM') | READY |
 
 **Star Schema:**
 
@@ -2774,7 +2774,7 @@ flowchart LR
 | K_GSDC_1455 | ROE | | Phái sinh | SUM(data_val, row 60 LNST) / NULLIF(AVG(data_val, row 400 VCSHBQ đầu+cuối kỳ), 0) * 100 | —| **READY** |
 | K_GSDC_1449 | Hàng tồn kho | | Cơ sở | SUM(data_val) WHERE row_desc='140', col_desc='1' (Hàng tồn kho) | —| **READY** |
 | K_GSDC_1450 | Doanh thu thuần | | Cơ sở | SUM(data_val) WHERE row_desc='10', col_desc='1' (Doanh thu thuần) | —| **READY** |
-| K_GSDC_1451 | Lợi nhuận dồn tích YTD | | Cơ sở | SUM(data_val) WHERE row_desc='421', col_desc='1' (LN dồn tích YTD) | —| **READY** |
+| K_GSDC_1451 | Lợi nhuận dồn tích YTD | | Cơ sở | SUM(data_val) WHERE row_desc='421' (dn/bh), col_desc='1' (LN dồn tích YTD) | td không có trong BA SQL (giống K_GSDC_59 Nhóm 7) | **READY** |
 | K_GSDC_1452 | Phải thu | | Cơ sở | SUM(data_val) WHERE row_desc='130+210', col_desc='1' (Phải thu) | —| **READY** |
 | K_GSDC_1453 | Tiền và tương đương tiền | | Cơ sở | SUM(data_val) WHERE row_desc='110', col_desc='1' (Tiền và tương đương tiền) | —| **READY** |
 | K_GSDC_1456 | Nợ / Vốn CSH | | Phái sinh | SUM(data_val, row 300 Nợ) / NULLIF(SUM(data_val, row 400 VCSH), 0) | —| **READY** |
