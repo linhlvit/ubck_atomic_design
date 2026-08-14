@@ -18,11 +18,11 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fact Public Company Risk Score Snapshot | Fact Snapshot | new | Điểm chấm & xếp loại — Risk Score | 1 CTDC × 1 ngày snapshot ETL | K_GSDC_1-6 (Nhóm 1); reuse Nhóm 32 |
-| Fact Public Company Compliance Score Snapshot | Fact Snapshot | new | Điểm chấm & xếp loại — Compliance Score | 1 CTDC × 1 ngày snapshot ETL | K_GSDC_9-23 (Nhóm 2); reuse Nhóm 33 |
-| Fact Public Company Issuance Score Snapshot | Fact Snapshot | new | Điểm chấm & xếp loại — Issuance Score | 1 CTDC × 1 ngày snapshot ETL | K_GSDC_24-31 (Nhóm 3); reuse Nhóm 35 |
-| Fact Public Company Financial Score Snapshot | Fact Snapshot | new | Điểm chấm & xếp loại — Financial Score | 1 CTDC × 1 ngày snapshot ETL | K_GSDC_32-42 (Nhóm 4); reuse Nhóm 34 |
-| Fact Public Company Non-Financial Score Snapshot | Fact Snapshot | new | Điểm chấm & xếp loại — Non-Financial Score & M-Score | 1 CTDC × 1 ngày snapshot ETL | K_GSDC_43-45 (Nhóm 5); reuse Nhóm 36 |
+| Fact Public Company Risk Score Snapshot | Fact Snapshot | new | Điểm chấm & xếp loại — Risk Score | 1 CTDC × 1 ngày snapshot ETL | K_GSDC_1-6 (Nhóm 1); K_GSDC_1391-1396 (Nhóm 32, KPI riêng — dùng chung Fact) |
+| Fact Public Company Compliance Score Snapshot | Fact Snapshot | new | Điểm chấm & xếp loại — Compliance Score | 1 CTDC × 1 ngày snapshot ETL | K_GSDC_9-23 (Nhóm 2); K_GSDC_1399-1415 (Nhóm 33, KPI riêng — dùng chung Fact) |
+| Fact Public Company Issuance Score Snapshot | Fact Snapshot | new | Điểm chấm & xếp loại — Issuance Score | 1 CTDC × 1 ngày snapshot ETL | K_GSDC_24-31 (Nhóm 3); K_GSDC_1429-1438 (Nhóm 35, KPI riêng — dùng chung Fact) |
+| Fact Public Company Financial Score Snapshot | Fact Snapshot | new | Điểm chấm & xếp loại — Financial Score | 1 CTDC × 1 ngày snapshot ETL | K_GSDC_32-42 (Nhóm 4); K_GSDC_1416-1428 (Nhóm 34, KPI riêng — dùng chung Fact) |
+| Fact Public Company Non-Financial Score Snapshot | Fact Snapshot | new | Điểm chấm & xếp loại — Non-Financial Score & M-Score | 1 CTDC × 1 ngày snapshot ETL | K_GSDC_43-45 (Nhóm 5); K_GSDC_1439-1443 (Nhóm 36, KPI riêng — dùng chung Fact) |
 
 ---
 
@@ -39,7 +39,7 @@ erDiagram
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
 | Fact Violation Report Snapshot | Fact Event | new | Nghĩa vụ báo cáo & nộp báo cáo (tỷ lệ nộp BCTC, số DN báo lãi) | 1 row/công ty/kỳ (Report_Year + Report_Quarter)/ngày ETL snapshot | K_GSDC_48/49 (Nhóm 6/10/12/14/16) |
-| Fact Public Company Financial Report Value | Fact Event | new | Chi tiết BCTC từng CTDC theo dòng/cột — dùng chung Màn hình 2 (tổng hợp/theo ngành/theo sàn) và Màn hình 3 (Data Explorer) | 1 CTĐC × 1 kỳ × Row_Code × Column_Code | K_GSDC_50-92+YOY (Nhóm 7/8/11/13/15/17); K_GSDC_50-62 (Nhóm 37, reuse); K_GSDC_99-689 (Nhóm 19-30, MH3 Data Explorer) |
+| Fact Public Company Financial Report Value | Fact Event | new | Chi tiết BCTC từng CTDC theo dòng/cột — dùng chung Màn hình 2 (tổng hợp/theo ngành/theo sàn) và Màn hình 3 (Data Explorer) | 1 CTĐC × 1 kỳ × Row_Code × Column_Code | K_GSDC_50-92+YOY (Nhóm 7/8/11/13/15/17); K_GSDC_1444-1456 (Nhóm 37, KPI riêng — dùng chung Fact); K_GSDC_762-1380 (Nhóm 19-30, MH3 Data Explorer, KPI riêng) |
 | Financial Report Catalog Dimension | Dimension | new | Template BCTC — báo cáo/dòng/cột | 1 row/báo cáo × dòng × cột | — |
 | Public Company Dimension | Dimension | reuse | Mã CK, Tên DN, Sàn, Ngành | 1 row/công ty đại chúng (current state) | — |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày — Conformed toàn hệ thống | 1 row/ngày | — |
@@ -67,4 +67,4 @@ erDiagram
 
 | Datamart Entity | Lý do PENDING | Issue |
 |---|---|---|
-| Fact Public Company Listing Info Snapshot | Nguồn MSS chưa có Atomic entity (MH5, DB33 — K_GSDC_690-699, Nhóm 31) | — |
+| Fact Public Company Listing Info Snapshot | Nguồn MSS chưa có Atomic entity (MH5, DB33 — K_GSDC_1381-1390, Nhóm 31) | — |

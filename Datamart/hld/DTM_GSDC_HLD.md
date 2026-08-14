@@ -1639,24 +1639,24 @@ flowchart LR
 
 > Phân loại: **Phân tích**
 > Source: `Financial Report Catalog Dimension` — tra cứu danh mục báo cáo/dòng/cột
-> `financial_report_catalog`/`fr_row_template`/`fr_column_template` đã có LLD (approved cho row/column template). Mã/Tên báo cáo lấy `financial_report_catalog.fr_catalog_code`/`fr_catalog_nm`, filter `fr_catalog_tp_code = 'i'` (báo cáo loại Input — comment Atomic YAML "I - Báo cáo đầu vào, O - Báo cáo xuất ra") + `active_indicator = 1`; Mã/Tên chỉ tiêu dòng lấy `fr_row_template.fr_row_template_code`/`row_description_reference || ' - ' || fr_row_template_nm`, sắp theo `row_index`; Mã/Tên chỉ tiêu cột tương tự trên `fr_column_template`, sắp theo `column_index`. 4 KPI reuse (Kỳ báo cáo/Sàn/Ngành/Mã CTĐC-Tên CTĐC) **READY**.
+> `financial_report_catalog`/`fr_row_template`/`fr_column_template` đã có LLD (approved cho row/column template). Mã/Tên báo cáo lấy `financial_report_catalog.fr_catalog_code`/`fr_catalog_nm`, filter `fr_catalog_tp_code = 'i'` (báo cáo loại Input — comment Atomic YAML "I - Báo cáo đầu vào, O - Báo cáo xuất ra") + `active_indicator = 1`; Mã/Tên chỉ tiêu dòng lấy `fr_row_template.fr_row_template_code`/`row_description_reference || ' - ' || fr_row_template_nm`, sắp theo `row_index`; Mã/Tên chỉ tiêu cột tương tự trên `fr_column_template`, sắp theo `column_index`. 4 KPI Chiều dùng chung Dimension (Kỳ báo cáo/Sàn/Ngành/Mã CTĐC-Tên CTĐC) — **READY**.
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_GSDC_93 | Mã báo cáo | Text | Chiều | fr_catalog_code (trực tiếp) | financial_report_catalog, filter fr_catalog_tp_code='i' + active_indicator=1 | READY |
-| K_GSDC_94 | Tên báo cáo | Text | Chiều | fr_catalog_nm (trực tiếp) | financial_report_catalog | READY |
-| K_GSDC_95 | Mã chỉ tiêu dòng | Text | Chiều | fr_row_template_code (trực tiếp) | fr_row_template | READY |
-| K_GSDC_96 | Tên chỉ tiêu dòng | Text | Chiều | row_description_reference \|\| ' - ' \|\| fr_row_template_nm | fr_row_template | READY |
-| K_GSDC_97 | Mã chỉ tiêu cột | Text | Chiều | fr_column_template_code (trực tiếp) | fr_column_template | READY |
-| K_GSDC_98 | Tên chỉ tiêu cột | Text | Chiều | column_description_reference \|\| ' - ' \|\| fr_column_template_nm | fr_column_template | READY |
-| K_GSDC_46 | Kỳ báo cáo (reuse từ Nhóm 6) | Text | Chiều | (tham số :year/:quarter) | Reuse từ Nhóm 6 | READY |
-| K_GSDC_78 | Sàn giao dịch (reuse từ Nhóm 10) | Text | Chiều | equity_listing_exchange_code (trực tiếp) | Reuse từ Nhóm 10 — public_company | READY |
-| K_GSDC_63 | Danh mục ngành (reuse từ Nhóm 8) | Text | Chiều | business_line_level_1_code (trực tiếp) | Reuse từ Nhóm 8 — public_company | READY |
-| K_GSDC_7 / K_GSDC_8 | Mã CTĐC - Tên CTĐC (reuse từ Nhóm 1) | Text | Chiều | equity_ticker_symbol / pc_nm (trực tiếp) | Reuse từ Nhóm 1 — public_company | READY |
+| K_GSDC_752 | Mã báo cáo | Text | Chiều | fr_catalog_code (trực tiếp) | financial_report_catalog, filter fr_catalog_tp_code='i' + active_indicator=1 | READY |
+| K_GSDC_753 | Tên báo cáo | Text | Chiều | fr_catalog_nm (trực tiếp) | financial_report_catalog | READY |
+| K_GSDC_754 | Mã chỉ tiêu dòng | Text | Chiều | fr_row_template_code (trực tiếp) | fr_row_template | READY |
+| K_GSDC_755 | Tên chỉ tiêu dòng | Text | Chiều | row_description_reference \|\| ' - ' \|\| fr_row_template_nm | fr_row_template | READY |
+| K_GSDC_756 | Mã chỉ tiêu cột | Text | Chiều | fr_column_template_code (trực tiếp) | fr_column_template | READY |
+| K_GSDC_757 | Tên chỉ tiêu cột | Text | Chiều | column_description_reference \|\| ' - ' \|\| fr_column_template_nm | fr_column_template | READY |
+| K_GSDC_758 | Kỳ báo cáo | Text | Chiều | (tham số :year/:quarter) | —| READY |
+| K_GSDC_759 | Sàn giao dịch | Text | Chiều | equity_listing_exchange_code (trực tiếp) | public_company| READY |
+| K_GSDC_760 | Danh mục ngành | Text | Chiều | business_line_level_1_code (trực tiếp) | public_company| READY |
+| K_GSDC_761 | Mã CTĐC - Tên CTĐC | Text | Chiều | equity_ticker_symbol / pc_nm (trực tiếp) | public_company| READY |
 
-> **Ghi chú filter:** `fr_catalog_tp_code = 'i'` (báo cáo Input) + `active_indicator = 1` áp dụng cho K_GSDC_93/94; kế thừa filter tương ứng `fr_row_template.active_indicator = 1`/`fr_column_template.active_indicator = 1` cho K_GSDC_95-98 (BA ghi `rc.active_flg = 1`, đã map đúng field `active_indicator` — không có filter Active riêng trên row/column template trong SQL BA, kế thừa qua JOIN `report_catalog_id`).
+> **Ghi chú filter:** `fr_catalog_tp_code = 'i'` (báo cáo Input) + `active_indicator = 1` áp dụng cho K_GSDC_752/753; kế thừa filter tương ứng `fr_row_template.active_indicator = 1`/`fr_column_template.active_indicator = 1` cho K_GSDC_754-757 (BA ghi `rc.active_flg = 1`, đã map đúng field `active_indicator` — không có filter Active riêng trên row/column template trong SQL BA, kế thừa qua JOIN `report_catalog_id`).
 
 **Star Schema:** dùng chung `Financial Report Catalog Dimension` với Nhóm 7 (không có erDiagram riêng — Dimension đã đủ field `Row_Description_Reference`/`Column_Description_Reference` cho Nhóm 18 lookup trực tiếp, không qua Fact).
 
@@ -1664,7 +1664,7 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    financial_rpt_catalog_dim_g18["Financial Report Catalog Dimension"] --> R18["K_GSDC_93-98,46,78,63,7-8: Metadata BCTC"]
+    financial_rpt_catalog_dim_g18["Financial Report Catalog Dimension"] --> R18["K_GSDC_752-757,758,759,760,761: Metadata BCTC"]
     public_company_dim_g18["Public Company Dimension"] --> R18
 ```
 
@@ -1693,123 +1693,123 @@ Data Explorer cho phép tra cứu BCTC chi tiết theo từng CTDC, kỳ báo c�
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_GSDC_99 | A – Tài sản ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=100, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_100 | I – Tiền và các khoản tương đương tiền | Tỉ đồng | Cơ sở | data_val WHERE row_desc=110, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_101 | 1. Tiền | Tỉ đồng | Cơ sở | data_val WHERE row_desc=111, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_102 | 2. Các khoản tương đương tiền | Tỉ đồng | Cơ sở | data_val WHERE row_desc=112, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_103 | II – Đầu tư tài chính ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=120, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_104 | 1. Chứng khoán kinh doanh | Tỉ đồng | Cơ sở | data_val WHERE row_desc=121, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_105 | 2. Dự phòng giảm giá chứng khoán kinh doanh | Tỉ đồng | Cơ sở | data_val WHERE row_desc=122, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_106 | 3. Đầu tư nắm giữ đến ngày đáo hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=123, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_107 | III – Các khoản phải thu ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=130, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_108 | 1. Phải thu ngắn hạn của khách hàng | Tỉ đồng | Cơ sở | data_val WHERE row_desc=131, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_109 | 2. Trả trước cho người bán ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=132, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_110 | 3. Phải thu nội bộ ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=133, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_111 | 4. Phải thu theo tiến độ HĐXD | Tỉ đồng | Cơ sở | data_val WHERE row_desc=134, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_112 | 5. Phải thu về cho vay ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=135, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_113 | 6. Phải thu ngắn hạn khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=136, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_114 | 7. Dự phòng phải thu ngắn hạn khó đòi | Tỉ đồng | Cơ sở | data_val WHERE row_desc=137, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_115 | 8. Tài sản thiếu chờ xử lý | Tỉ đồng | Cơ sở | data_val WHERE row_desc=139, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_116 | IV – Hàng tồn kho | Tỉ đồng | Cơ sở | data_val WHERE row_desc=140, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_117 | 1. Hàng tồn kho | Tỉ đồng | Cơ sở | data_val WHERE row_desc=141, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_118 | 2. Dự phòng giảm giá hàng tồn kho | Tỉ đồng | Cơ sở | data_val WHERE row_desc=149, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_119 | V – Tài sản ngắn hạn khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=150, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_120 | 1. Chi phí trả trước ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=151, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_121 | 2. Thuế GTGT được khấu trừ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=152, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_122 | 3. Thuế và các khoản khác phải thu Nhà nước | Tỉ đồng | Cơ sở | data_val WHERE row_desc=153, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_123 | 4. Giao dịch mua bán lại trái phiếu CP | Tỉ đồng | Cơ sở | data_val WHERE row_desc=154, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_124 | 5. Tài sản ngắn hạn khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=155, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_125 | B – Tài sản dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=200, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_126 | I – Các khoản phải thu dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=210, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_127 | 1. Phải thu dài hạn của khách hàng | Tỉ đồng | Cơ sở | data_val WHERE row_desc=211, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_128 | 2. Trả trước cho người bán dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=212, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_129 | 3. Vốn kinh doanh ở đơn vị trực thuộc | Tỉ đồng | Cơ sở | data_val WHERE row_desc=213, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_130 | 4. Phải thu nội bộ dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=214, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_131 | 5. Phải thu về cho vay dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=215, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_132 | 6. Phải thu dài hạn khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=216, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_133 | 7. Dự phòng phải thu dài hạn khó đòi | Tỉ đồng | Cơ sở | data_val WHERE row_desc=219, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_134 | II – Tài sản cố định | Tỉ đồng | Cơ sở | data_val WHERE row_desc=220, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_135 | 1. TSCĐ hữu hình — Nguyên giá | Tỉ đồng | Cơ sở | data_val WHERE row_desc=221, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_136 | 1. TSCĐ hữu hình — Giá trị còn lại | Tỉ đồng | Cơ sở | data_val WHERE row_desc=222, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_137 | 1. TSCĐ hữu hình — Hao mòn lũy kế | Tỉ đồng | Cơ sở | data_val WHERE row_desc=223, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_138 | 2. TSCĐ thuê tài chính — Nguyên giá | Tỉ đồng | Cơ sở | data_val WHERE row_desc=224, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_139 | 2. TSCĐ thuê tài chính — Giá trị còn lại | Tỉ đồng | Cơ sở | data_val WHERE row_desc=225, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_140 | 2. TSCĐ thuê tài chính — Hao mòn lũy kế | Tỉ đồng | Cơ sở | data_val WHERE row_desc=226, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_141 | 3. TSCĐ vô hình — Nguyên giá | Tỉ đồng | Cơ sở | data_val WHERE row_desc=227, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_142 | 3. TSCĐ vô hình — Giá trị còn lại | Tỉ đồng | Cơ sở | data_val WHERE row_desc=228, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_143 | 3. TSCĐ vô hình — Hao mòn lũy kế | Tỉ đồng | Cơ sở | data_val WHERE row_desc=229, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_144 | III – Bất động sản đầu tư — Nguyên giá | Tỉ đồng | Cơ sở | data_val WHERE row_desc=230, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_145 | III – Bất động sản đầu tư — Giá trị còn lại | Tỉ đồng | Cơ sở | data_val WHERE row_desc=231, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_146 | III – Bất động sản đầu tư — Hao mòn lũy kế | Tỉ đồng | Cơ sở | data_val WHERE row_desc=232, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_147 | IV – Tài sản dở dang dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=240, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_148 | 1. Chi phí SXKD dở dang dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=241, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_149 | 2. Chi phí xây dựng cơ bản dở dang | Tỉ đồng | Cơ sở | data_val WHERE row_desc=242, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_150 | V – Đầu tư tài chính dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=250, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_151 | 1. Đầu tư vào công ty con | Tỉ đồng | Cơ sở | data_val WHERE row_desc=251, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_152 | 2. Đầu tư vào công ty liên doanh, liên kết | Tỉ đồng | Cơ sở | data_val WHERE row_desc=252, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_153 | 3. Đầu tư góp vốn vào đơn vị khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=253, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_154 | 4. Dự phòng đầu tư tài chính dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=254, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_155 | 5. Đầu tư nắm giữ đến ngày đáo hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=255, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_156 | VI – Tài sản dài hạn khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=260, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_157 | 1. Chi phí trả trước dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=261, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_158 | 2. Tài sản thuế thu nhập hoãn lại | Tỉ đồng | Cơ sở | data_val WHERE row_desc=262, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_159 | 3. Thiết bị, vật tư, phụ tùng thay thế dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=263, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_160 | 4. Tài sản dài hạn khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=268, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_161 | 5. Lợi thế thương mại | Tỉ đồng | Cơ sở | data_val WHERE row_desc=269, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_162 | Tổng cộng tài sản | Tỉ đồng | Cơ sở | data_val WHERE row_desc=270, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_163 | C – Nợ phải trả | Tỉ đồng | Cơ sở | data_val WHERE row_desc=300, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_164 | I – Nợ ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=310, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_165 | 1. Phải trả người bán ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=311, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_166 | 2. Người mua trả tiền trước ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=312, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_167 | 3. Thuế và các khoản phải nộp Nhà nước | Tỉ đồng | Cơ sở | data_val WHERE row_desc=313, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_168 | 4. Phải trả người lao động | Tỉ đồng | Cơ sở | data_val WHERE row_desc=314, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_169 | 5. Chi phí phải trả ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=315, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_170 | 6. Phải trả nội bộ ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=316, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_171 | 7. Phải trả theo tiến độ HĐXD | Tỉ đồng | Cơ sở | data_val WHERE row_desc=317, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_172 | 8. Doanh thu chưa thực hiện ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=318, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_173 | 9. Phải trả ngắn hạn khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=319, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_174 | 10. Vay và nợ thuê tài chính ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=320, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_175 | 11. Dự phòng phải trả ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=321, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_176 | 12. Quỹ khen thưởng, phúc lợi | Tỉ đồng | Cơ sở | data_val WHERE row_desc=322, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_177 | 13. Quỹ bình ổn giá | Tỉ đồng | Cơ sở | data_val WHERE row_desc=323, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_178 | 14. Giao dịch mua bán lại trái phiếu CP | Tỉ đồng | Cơ sở | data_val WHERE row_desc=324, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_179 | II – Nợ dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=330, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_180 | 1. Phải trả người bán dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=331, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_181 | 2. Người mua trả tiền trước dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=332, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_182 | 3. Chi phí phải trả dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=333, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_183 | 4. Phải trả nội bộ về vốn kinh doanh | Tỉ đồng | Cơ sở | data_val WHERE row_desc=334, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_184 | 5. Phải trả nội bộ dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=335, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_185 | 6. Doanh thu chưa thực hiện dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=336, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_186 | 7. Phải trả dài hạn khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=337, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_187 | 8. Vay và nợ thuê tài chính dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=338, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_188 | 9. Trái phiếu chuyển đổi | Tỉ đồng | Cơ sở | data_val WHERE row_desc=339, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_189 | 10. Cổ phiếu ưu đãi | Tỉ đồng | Cơ sở | data_val WHERE row_desc=340, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_190 | 11. Thuế thu nhập hoãn lại phải trả | Tỉ đồng | Cơ sở | data_val WHERE row_desc=341, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_191 | 12. Dự phòng phải trả dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=342, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_192 | 13. Quỹ phát triển KH&CN | Tỉ đồng | Cơ sở | data_val WHERE row_desc=343, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_193 | D – Vốn chủ sở hữu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=400, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_194 | I – Vốn chủ sở hữu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=410, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_195 | 1. Vốn góp của chủ sở hữu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=411, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_196 | 1a. Cổ phiếu phổ thông có quyền biểu quyết | Tỉ đồng | Cơ sở | data_val WHERE row_desc=411a, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_197 | 1b. Cổ phiếu ưu đãi | Tỉ đồng | Cơ sở | data_val WHERE row_desc=411b, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_198 | 2. Thặng dư vốn cổ phần | Tỉ đồng | Cơ sở | data_val WHERE row_desc=412, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_199 | 3. Quyền chọn chuyển đổi trái phiếu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=413, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_200 | 4. Vốn khác của chủ sở hữu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=414, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_201 | 5. Cổ phiếu quỹ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=415, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_202 | 6. Chênh lệch đánh giá lại tài sản | Tỉ đồng | Cơ sở | data_val WHERE row_desc=416, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_203 | 7. Chênh lệch tỷ giá hối đoái | Tỉ đồng | Cơ sở | data_val WHERE row_desc=417, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_204 | 8. Quỹ đầu tư phát triển | Tỉ đồng | Cơ sở | data_val WHERE row_desc=418, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_205 | 9. Quỹ hỗ trợ sắp xếp doanh nghiệp | Tỉ đồng | Cơ sở | data_val WHERE row_desc=419, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_206 | 10. Quỹ khác thuộc vốn chủ sở hữu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=420, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_207 | 11. Lợi nhuận sau thuế chưa phân phối | Tỉ đồng | Cơ sở | data_val WHERE row_desc=421, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_208 | 11a. LNST chưa PP lũy kế đến đầu kỳ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=421a, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_209 | 11b. LNST chưa PP kỳ này | Tỉ đồng | Cơ sở | data_val WHERE row_desc=421b, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_210 | 12. Nguồn vốn đầu tư XDCB | Tỉ đồng | Cơ sở | data_val WHERE row_desc=422, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_211 | 13. Lợi ích của cổ đông không kiểm soát | Tỉ đồng | Cơ sở | data_val WHERE row_desc=429, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_212 | II – Nguồn kinh phí và quỹ khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=430, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_213 | 1. Nguồn kinh phí | Tỉ đồng | Cơ sở | data_val WHERE row_desc=431, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_214 | 2. Nguồn kinh phí đã hình thành TSCĐ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=432, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_215 | Tổng cộng nguồn vốn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=440, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_762 | A – Tài sản ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=100, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_763 | I – Tiền và các khoản tương đương tiền | Tỉ đồng | Cơ sở | data_val WHERE row_desc=110, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_764 | 1. Tiền | Tỉ đồng | Cơ sở | data_val WHERE row_desc=111, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_765 | 2. Các khoản tương đương tiền | Tỉ đồng | Cơ sở | data_val WHERE row_desc=112, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_766 | II – Đầu tư tài chính ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=120, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_767 | 1. Chứng khoán kinh doanh | Tỉ đồng | Cơ sở | data_val WHERE row_desc=121, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_768 | 2. Dự phòng giảm giá chứng khoán kinh doanh | Tỉ đồng | Cơ sở | data_val WHERE row_desc=122, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_769 | 3. Đầu tư nắm giữ đến ngày đáo hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=123, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_770 | III – Các khoản phải thu ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=130, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_771 | 1. Phải thu ngắn hạn của khách hàng | Tỉ đồng | Cơ sở | data_val WHERE row_desc=131, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_772 | 2. Trả trước cho người bán ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=132, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_773 | 3. Phải thu nội bộ ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=133, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_774 | 4. Phải thu theo tiến độ HĐXD | Tỉ đồng | Cơ sở | data_val WHERE row_desc=134, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_775 | 5. Phải thu về cho vay ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=135, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_776 | 6. Phải thu ngắn hạn khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=136, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_777 | 7. Dự phòng phải thu ngắn hạn khó đòi | Tỉ đồng | Cơ sở | data_val WHERE row_desc=137, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_778 | 8. Tài sản thiếu chờ xử lý | Tỉ đồng | Cơ sở | data_val WHERE row_desc=139, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_779 | IV – Hàng tồn kho | Tỉ đồng | Cơ sở | data_val WHERE row_desc=140, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_780 | 1. Hàng tồn kho | Tỉ đồng | Cơ sở | data_val WHERE row_desc=141, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_781 | 2. Dự phòng giảm giá hàng tồn kho | Tỉ đồng | Cơ sở | data_val WHERE row_desc=149, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_782 | V – Tài sản ngắn hạn khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=150, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_783 | 1. Chi phí trả trước ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=151, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_784 | 2. Thuế GTGT được khấu trừ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=152, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_785 | 3. Thuế và các khoản khác phải thu Nhà nước | Tỉ đồng | Cơ sở | data_val WHERE row_desc=153, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_786 | 4. Giao dịch mua bán lại trái phiếu CP | Tỉ đồng | Cơ sở | data_val WHERE row_desc=154, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_787 | 5. Tài sản ngắn hạn khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=155, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_788 | B – Tài sản dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=200, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_789 | I – Các khoản phải thu dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=210, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_790 | 1. Phải thu dài hạn của khách hàng | Tỉ đồng | Cơ sở | data_val WHERE row_desc=211, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_791 | 2. Trả trước cho người bán dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=212, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_792 | 3. Vốn kinh doanh ở đơn vị trực thuộc | Tỉ đồng | Cơ sở | data_val WHERE row_desc=213, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_793 | 4. Phải thu nội bộ dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=214, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_794 | 5. Phải thu về cho vay dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=215, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_795 | 6. Phải thu dài hạn khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=216, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_796 | 7. Dự phòng phải thu dài hạn khó đòi | Tỉ đồng | Cơ sở | data_val WHERE row_desc=219, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_797 | II – Tài sản cố định | Tỉ đồng | Cơ sở | data_val WHERE row_desc=220, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_798 | 1. TSCĐ hữu hình — Nguyên giá | Tỉ đồng | Cơ sở | data_val WHERE row_desc=221, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_799 | 1. TSCĐ hữu hình — Giá trị còn lại | Tỉ đồng | Cơ sở | data_val WHERE row_desc=222, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_800 | 1. TSCĐ hữu hình — Hao mòn lũy kế | Tỉ đồng | Cơ sở | data_val WHERE row_desc=223, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_801 | 2. TSCĐ thuê tài chính — Nguyên giá | Tỉ đồng | Cơ sở | data_val WHERE row_desc=224, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_802 | 2. TSCĐ thuê tài chính — Giá trị còn lại | Tỉ đồng | Cơ sở | data_val WHERE row_desc=225, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_803 | 2. TSCĐ thuê tài chính — Hao mòn lũy kế | Tỉ đồng | Cơ sở | data_val WHERE row_desc=226, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_804 | 3. TSCĐ vô hình — Nguyên giá | Tỉ đồng | Cơ sở | data_val WHERE row_desc=227, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_805 | 3. TSCĐ vô hình — Giá trị còn lại | Tỉ đồng | Cơ sở | data_val WHERE row_desc=228, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_806 | 3. TSCĐ vô hình — Hao mòn lũy kế | Tỉ đồng | Cơ sở | data_val WHERE row_desc=229, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_807 | III – Bất động sản đầu tư — Nguyên giá | Tỉ đồng | Cơ sở | data_val WHERE row_desc=230, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_808 | III – Bất động sản đầu tư — Giá trị còn lại | Tỉ đồng | Cơ sở | data_val WHERE row_desc=231, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_809 | III – Bất động sản đầu tư — Hao mòn lũy kế | Tỉ đồng | Cơ sở | data_val WHERE row_desc=232, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_810 | IV – Tài sản dở dang dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=240, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_811 | 1. Chi phí SXKD dở dang dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=241, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_812 | 2. Chi phí xây dựng cơ bản dở dang | Tỉ đồng | Cơ sở | data_val WHERE row_desc=242, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_813 | V – Đầu tư tài chính dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=250, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_814 | 1. Đầu tư vào công ty con | Tỉ đồng | Cơ sở | data_val WHERE row_desc=251, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_815 | 2. Đầu tư vào công ty liên doanh, liên kết | Tỉ đồng | Cơ sở | data_val WHERE row_desc=252, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_816 | 3. Đầu tư góp vốn vào đơn vị khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=253, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_817 | 4. Dự phòng đầu tư tài chính dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=254, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_818 | 5. Đầu tư nắm giữ đến ngày đáo hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=255, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_819 | VI – Tài sản dài hạn khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=260, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_820 | 1. Chi phí trả trước dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=261, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_821 | 2. Tài sản thuế thu nhập hoãn lại | Tỉ đồng | Cơ sở | data_val WHERE row_desc=262, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_822 | 3. Thiết bị, vật tư, phụ tùng thay thế dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=263, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_823 | 4. Tài sản dài hạn khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=268, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_824 | 5. Lợi thế thương mại | Tỉ đồng | Cơ sở | data_val WHERE row_desc=269, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_825 | Tổng cộng tài sản | Tỉ đồng | Cơ sở | data_val WHERE row_desc=270, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_826 | C – Nợ phải trả | Tỉ đồng | Cơ sở | data_val WHERE row_desc=300, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_827 | I – Nợ ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=310, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_828 | 1. Phải trả người bán ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=311, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_829 | 2. Người mua trả tiền trước ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=312, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_830 | 3. Thuế và các khoản phải nộp Nhà nước | Tỉ đồng | Cơ sở | data_val WHERE row_desc=313, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_831 | 4. Phải trả người lao động | Tỉ đồng | Cơ sở | data_val WHERE row_desc=314, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_832 | 5. Chi phí phải trả ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=315, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_833 | 6. Phải trả nội bộ ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=316, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_834 | 7. Phải trả theo tiến độ HĐXD | Tỉ đồng | Cơ sở | data_val WHERE row_desc=317, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_835 | 8. Doanh thu chưa thực hiện ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=318, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_836 | 9. Phải trả ngắn hạn khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=319, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_837 | 10. Vay và nợ thuê tài chính ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=320, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_838 | 11. Dự phòng phải trả ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=321, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_839 | 12. Quỹ khen thưởng, phúc lợi | Tỉ đồng | Cơ sở | data_val WHERE row_desc=322, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_840 | 13. Quỹ bình ổn giá | Tỉ đồng | Cơ sở | data_val WHERE row_desc=323, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_841 | 14. Giao dịch mua bán lại trái phiếu CP | Tỉ đồng | Cơ sở | data_val WHERE row_desc=324, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_842 | II – Nợ dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=330, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_843 | 1. Phải trả người bán dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=331, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_844 | 2. Người mua trả tiền trước dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=332, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_845 | 3. Chi phí phải trả dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=333, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_846 | 4. Phải trả nội bộ về vốn kinh doanh | Tỉ đồng | Cơ sở | data_val WHERE row_desc=334, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_847 | 5. Phải trả nội bộ dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=335, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_848 | 6. Doanh thu chưa thực hiện dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=336, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_849 | 7. Phải trả dài hạn khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=337, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_850 | 8. Vay và nợ thuê tài chính dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=338, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_851 | 9. Trái phiếu chuyển đổi | Tỉ đồng | Cơ sở | data_val WHERE row_desc=339, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_852 | 10. Cổ phiếu ưu đãi | Tỉ đồng | Cơ sở | data_val WHERE row_desc=340, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_853 | 11. Thuế thu nhập hoãn lại phải trả | Tỉ đồng | Cơ sở | data_val WHERE row_desc=341, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_854 | 12. Dự phòng phải trả dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=342, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_855 | 13. Quỹ phát triển KH&CN | Tỉ đồng | Cơ sở | data_val WHERE row_desc=343, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_856 | D – Vốn chủ sở hữu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=400, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_857 | I – Vốn chủ sở hữu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=410, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_858 | 1. Vốn góp của chủ sở hữu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=411, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_859 | 1a. Cổ phiếu phổ thông có quyền biểu quyết | Tỉ đồng | Cơ sở | data_val WHERE row_desc=411a, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_860 | 1b. Cổ phiếu ưu đãi | Tỉ đồng | Cơ sở | data_val WHERE row_desc=411b, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_861 | 2. Thặng dư vốn cổ phần | Tỉ đồng | Cơ sở | data_val WHERE row_desc=412, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_862 | 3. Quyền chọn chuyển đổi trái phiếu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=413, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_863 | 4. Vốn khác của chủ sở hữu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=414, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_864 | 5. Cổ phiếu quỹ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=415, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_865 | 6. Chênh lệch đánh giá lại tài sản | Tỉ đồng | Cơ sở | data_val WHERE row_desc=416, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_866 | 7. Chênh lệch tỷ giá hối đoái | Tỉ đồng | Cơ sở | data_val WHERE row_desc=417, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_867 | 8. Quỹ đầu tư phát triển | Tỉ đồng | Cơ sở | data_val WHERE row_desc=418, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_868 | 9. Quỹ hỗ trợ sắp xếp doanh nghiệp | Tỉ đồng | Cơ sở | data_val WHERE row_desc=419, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_869 | 10. Quỹ khác thuộc vốn chủ sở hữu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=420, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_870 | 11. Lợi nhuận sau thuế chưa phân phối | Tỉ đồng | Cơ sở | data_val WHERE row_desc=421, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_871 | 11a. LNST chưa PP lũy kế đến đầu kỳ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=421a, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_872 | 11b. LNST chưa PP kỳ này | Tỉ đồng | Cơ sở | data_val WHERE row_desc=421b, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_873 | 12. Nguồn vốn đầu tư XDCB | Tỉ đồng | Cơ sở | data_val WHERE row_desc=422, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_874 | 13. Lợi ích của cổ đông không kiểm soát | Tỉ đồng | Cơ sở | data_val WHERE row_desc=429, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_875 | II – Nguồn kinh phí và quỹ khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=430, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_876 | 1. Nguồn kinh phí | Tỉ đồng | Cơ sở | data_val WHERE row_desc=431, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_877 | 2. Nguồn kinh phí đã hình thành TSCĐ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=432, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_878 | Tổng cộng nguồn vốn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=440, report=BCDKT, col_desc=1 | fr_value | **READY** |
 
 **Star Schema:** dùng chung `Fact Public Company Financial Report Value` + `Financial Report Catalog Dimension` với Nhóm 7 (không có erDiagram riêng — aggregate 1 CTĐC/kỳ, không group-by, khớp Data Explorer tra cứu chi tiết).
 
@@ -1817,7 +1817,7 @@ Data Explorer cho phép tra cứu BCTC chi tiết theo từng CTDC, kỳ báo c�
 
 ```mermaid
 flowchart LR
-    fct_pc_fr_val_g19["Fact Public Company Financial Report Value"] --> R19["K_GSDC_99-215: DN thông thường — Bảng cân đối kế toán"]
+    fct_pc_fr_val_g19["Fact Public Company Financial Report Value"] --> R19["K_GSDC_762-878: DN thông thường — Bảng cân đối kế toán"]
     financial_rpt_catalog_dim_g19["Financial Report Catalog Dimension"] --> R19
 ```
 
@@ -1834,29 +1834,29 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_GSDC_216 | 1. Doanh thu bán hàng và cung cấp DV | Tỉ đồng | Cơ sở | data_val WHERE row_desc=01, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_217 | 2. Các khoản giảm trừ doanh thu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=02, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_218 | 3. Doanh thu thuần về bán hàng và cung cấp DV | Tỉ đồng | Cơ sở | data_val WHERE row_desc=10, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_219 | 4. Giá vốn hàng bán | Tỉ đồng | Cơ sở | data_val WHERE row_desc=11, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_220 | 5. Lợi nhuận gộp về bán hàng và cung cấp DV | Tỉ đồng | Cơ sở | data_val WHERE row_desc=20, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_221 | 6. Doanh thu hoạt động tài chính | Tỉ đồng | Cơ sở | data_val WHERE row_desc=21, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_222 | 7. Chi phí tài chính | Tỉ đồng | Cơ sở | data_val WHERE row_desc=22, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_223 | 7. Chi phí tài chính — Chi phí lãi vay | Tỉ đồng | Cơ sở | data_val WHERE row_desc=23, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_224 | 8. Phần lãi/lỗ trong công ty liên doanh, LK | Tỉ đồng | Cơ sở | data_val WHERE row_desc=24, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_225 | 9. Chi phí bán hàng | Tỉ đồng | Cơ sở | data_val WHERE row_desc=25, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_226 | 10. Chi phí quản lý doanh nghiệp | Tỉ đồng | Cơ sở | data_val WHERE row_desc=26, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_227 | 11. Lợi nhuận thuần từ HĐKD | Tỉ đồng | Cơ sở | data_val WHERE row_desc=30, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_228 | 12. Thu nhập khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=31, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_229 | 13. Chi phí khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=32, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_230 | 14. Lợi nhuận khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=40, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_231 | 15. Tổng lợi nhuận kế toán trước thuế | Tỉ đồng | Cơ sở | data_val WHERE row_desc=50, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_232 | 16. Chi phí thuế TNDN hiện hành | Tỉ đồng | Cơ sở | data_val WHERE row_desc=51, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_233 | 17. Chi phí thuế TNDN hoãn lại | Tỉ đồng | Cơ sở | data_val WHERE row_desc=52, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_234 | 18. Lợi nhuận sau thuế TNDN | Tỉ đồng | Cơ sở | data_val WHERE row_desc=60, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_235 | 19. LNST của công ty mẹ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=61, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_236 | 20. LNST của cổ đông không kiểm soát | Tỉ đồng | Cơ sở | data_val WHERE row_desc=62, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_237 | 21. Lãi cơ bản trên cổ phiếu (EPS) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=70, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_238 | 22. Lãi suy giảm trên cổ phiếu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=71, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_879 | 1. Doanh thu bán hàng và cung cấp DV | Tỉ đồng | Cơ sở | data_val WHERE row_desc=01, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_880 | 2. Các khoản giảm trừ doanh thu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=02, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_881 | 3. Doanh thu thuần về bán hàng và cung cấp DV | Tỉ đồng | Cơ sở | data_val WHERE row_desc=10, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_882 | 4. Giá vốn hàng bán | Tỉ đồng | Cơ sở | data_val WHERE row_desc=11, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_883 | 5. Lợi nhuận gộp về bán hàng và cung cấp DV | Tỉ đồng | Cơ sở | data_val WHERE row_desc=20, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_884 | 6. Doanh thu hoạt động tài chính | Tỉ đồng | Cơ sở | data_val WHERE row_desc=21, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_885 | 7. Chi phí tài chính | Tỉ đồng | Cơ sở | data_val WHERE row_desc=22, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_886 | 7. Chi phí tài chính — Chi phí lãi vay | Tỉ đồng | Cơ sở | data_val WHERE row_desc=23, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_887 | 8. Phần lãi/lỗ trong công ty liên doanh, LK | Tỉ đồng | Cơ sở | data_val WHERE row_desc=24, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_888 | 9. Chi phí bán hàng | Tỉ đồng | Cơ sở | data_val WHERE row_desc=25, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_889 | 10. Chi phí quản lý doanh nghiệp | Tỉ đồng | Cơ sở | data_val WHERE row_desc=26, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_890 | 11. Lợi nhuận thuần từ HĐKD | Tỉ đồng | Cơ sở | data_val WHERE row_desc=30, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_891 | 12. Thu nhập khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=31, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_892 | 13. Chi phí khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=32, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_893 | 14. Lợi nhuận khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=40, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_894 | 15. Tổng lợi nhuận kế toán trước thuế | Tỉ đồng | Cơ sở | data_val WHERE row_desc=50, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_895 | 16. Chi phí thuế TNDN hiện hành | Tỉ đồng | Cơ sở | data_val WHERE row_desc=51, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_896 | 17. Chi phí thuế TNDN hoãn lại | Tỉ đồng | Cơ sở | data_val WHERE row_desc=52, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_897 | 18. Lợi nhuận sau thuế TNDN | Tỉ đồng | Cơ sở | data_val WHERE row_desc=60, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_898 | 19. LNST của công ty mẹ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=61, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_899 | 20. LNST của cổ đông không kiểm soát | Tỉ đồng | Cơ sở | data_val WHERE row_desc=62, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_900 | 21. Lãi cơ bản trên cổ phiếu (EPS) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=70, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_901 | 22. Lãi suy giảm trên cổ phiếu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=71, report=BCKQKD, col_desc=1 | fr_value | **READY** |
 
 **Star Schema:** dùng chung `Fact Public Company Financial Report Value` + `Financial Report Catalog Dimension` với Nhóm 7 (không có erDiagram riêng — aggregate 1 CTĐC/kỳ, không group-by, khớp Data Explorer tra cứu chi tiết).
 
@@ -1864,7 +1864,7 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    fct_pc_fr_val_g20["Fact Public Company Financial Report Value"] --> R20["K_GSDC_216-238: DN thông thường — Báo cáo KQKD"]
+    fct_pc_fr_val_g20["Fact Public Company Financial Report Value"] --> R20["K_GSDC_879-901: DN thông thường — Báo cáo KQKD"]
     financial_rpt_catalog_dim_g20["Financial Report Catalog Dimension"] --> R20
 ```
 
@@ -1881,33 +1881,36 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_GSDC_239 | 1. Tiền thu từ bán hàng, cung cấp DV và DT khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=01, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_240 | 2. Tiền chi trả cho người cung cấp hàng hóa và DV | Tỉ đồng | Cơ sở | data_val WHERE row_desc=02, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_241 | 3. Tiền chi trả cho người lao động | Tỉ đồng | Cơ sở | data_val WHERE row_desc=03, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_242 | 4. Tiền lãi vay đã trả | Tỉ đồng | Cơ sở | data_val WHERE row_desc=04, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_243 | 5. Thuế TNDN đã nộp | Tỉ đồng | Cơ sở | data_val WHERE row_desc=05, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_244 | 6. Tiền thu khác từ HĐKD | Tỉ đồng | Cơ sở | data_val WHERE row_desc=06, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_245 | 7. Tiền chi khác cho HĐKD | Tỉ đồng | Cơ sở | data_val WHERE row_desc=07, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_246 | Lưu chuyển tiền thuần từ HĐKD | Tỉ đồng | Cơ sở | data_val WHERE row_desc=20, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_247 | 1. Tiền chi mua sắm TSCĐ và TSDH khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=21, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_248 | 2. Tiền thu từ thanh lý, nhượng bán TSCĐ và TSDH | Tỉ đồng | Cơ sở | data_val WHERE row_desc=22, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_249 | 3. Tiền chi cho vay, mua công cụ nợ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=23, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_250 | 4. Tiền thu hồi cho vay, bán lại công cụ nợ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=24, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_251 | 5. Tiền chi đầu tư góp vốn vào đơn vị khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=25, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_252 | 6. Tiền thu hồi đầu tư góp vốn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=26, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_253 | 7. Tiền thu lãi cho vay, cổ tức và LN được chia | Tỉ đồng | Cơ sở | data_val WHERE row_desc=27, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_254 | Lưu chuyển tiền thuần từ HĐ đầu tư | Tỉ đồng | Cơ sở | data_val WHERE row_desc=30, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_255 | 1. Tiền thu từ phát hành CP, nhận vốn góp | Tỉ đồng | Cơ sở | data_val WHERE row_desc=31, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_256 | 2. Tiền trả lại vốn góp, mua lại CP đã phát hành | Tỉ đồng | Cơ sở | data_val WHERE row_desc=32, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_257 | 3. Tiền thu từ đi vay | Tỉ đồng | Cơ sở | data_val WHERE row_desc=33, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_258 | 4. Tiền trả nợ gốc vay | Tỉ đồng | Cơ sở | data_val WHERE row_desc=34, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_259 | 5. Tiền trả nợ gốc thuê tài chính | Tỉ đồng | Cơ sở | data_val WHERE row_desc=35, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_260 | 6. Cổ tức, lợi nhuận đã trả cho chủ sở hữu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=36, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_261 | Lưu chuyển tiền thuần từ HĐ tài chính | Tỉ đồng | Cơ sở | data_val WHERE row_desc=40, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_262 | Lưu chuyển tiền thuần trong kỳ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=50, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_263 | Tiền và tương đương tiền đầu kỳ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=60, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_264 | Ảnh hưởng của thay đổi tỷ giá hối đoái | Tỉ đồng | Cơ sở | data_val WHERE row_desc=61, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_265 | Tiền và tương đương tiền cuối kỳ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=70, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_902 | I. Lưu chuyển tiền từ hoạt động kinh doanh | | N/A | — | Section label — không có logic tính toán | READY |
+| K_GSDC_903 | 1. Tiền thu từ bán hàng, cung cấp DV và DT khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=01, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_904 | 2. Tiền chi trả cho người cung cấp hàng hóa và DV | Tỉ đồng | Cơ sở | data_val WHERE row_desc=02, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_905 | 3. Tiền chi trả cho người lao động | Tỉ đồng | Cơ sở | data_val WHERE row_desc=03, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_906 | 4. Tiền lãi vay đã trả | Tỉ đồng | Cơ sở | data_val WHERE row_desc=04, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_907 | 5. Thuế TNDN đã nộp | Tỉ đồng | Cơ sở | data_val WHERE row_desc=05, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_908 | 6. Tiền thu khác từ HĐKD | Tỉ đồng | Cơ sở | data_val WHERE row_desc=06, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_909 | 7. Tiền chi khác cho HĐKD | Tỉ đồng | Cơ sở | data_val WHERE row_desc=07, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_910 | Lưu chuyển tiền thuần từ HĐKD | Tỉ đồng | Cơ sở | data_val WHERE row_desc=20, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_911 | II. Lưu chuyển tiền từ hoạt động đầu tư | | N/A | — | Section label — không có logic tính toán | READY |
+| K_GSDC_912 | 1. Tiền chi mua sắm TSCĐ và TSDH khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=21, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_913 | 2. Tiền thu từ thanh lý, nhượng bán TSCĐ và TSDH | Tỉ đồng | Cơ sở | data_val WHERE row_desc=22, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_914 | 3. Tiền chi cho vay, mua công cụ nợ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=23, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_915 | 4. Tiền thu hồi cho vay, bán lại công cụ nợ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=24, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_916 | 5. Tiền chi đầu tư góp vốn vào đơn vị khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=25, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_917 | 6. Tiền thu hồi đầu tư góp vốn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=26, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_918 | 7. Tiền thu lãi cho vay, cổ tức và LN được chia | Tỉ đồng | Cơ sở | data_val WHERE row_desc=27, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_919 | Lưu chuyển tiền thuần từ HĐ đầu tư | Tỉ đồng | Cơ sở | data_val WHERE row_desc=30, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_920 | III. Lưu chuyển tiền từ hoạt động tài chính | | N/A | — | Section label — không có logic tính toán | READY |
+| K_GSDC_921 | 1. Tiền thu từ phát hành CP, nhận vốn góp | Tỉ đồng | Cơ sở | data_val WHERE row_desc=31, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_922 | 2. Tiền trả lại vốn góp, mua lại CP đã phát hành | Tỉ đồng | Cơ sở | data_val WHERE row_desc=32, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_923 | 3. Tiền thu từ đi vay | Tỉ đồng | Cơ sở | data_val WHERE row_desc=33, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_924 | 4. Tiền trả nợ gốc vay | Tỉ đồng | Cơ sở | data_val WHERE row_desc=34, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_925 | 5. Tiền trả nợ gốc thuê tài chính | Tỉ đồng | Cơ sở | data_val WHERE row_desc=35, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_926 | 6. Cổ tức, lợi nhuận đã trả cho chủ sở hữu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=36, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_927 | Lưu chuyển tiền thuần từ HĐ tài chính | Tỉ đồng | Cơ sở | data_val WHERE row_desc=40, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_928 | Lưu chuyển tiền thuần trong kỳ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=50, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_929 | Tiền và tương đương tiền đầu kỳ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=60, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_930 | Ảnh hưởng của thay đổi tỷ giá hối đoái | Tỉ đồng | Cơ sở | data_val WHERE row_desc=61, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_931 | Tiền và tương đương tiền cuối kỳ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=70, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
 
 **Star Schema:** dùng chung `Fact Public Company Financial Report Value` + `Financial Report Catalog Dimension` với Nhóm 7 (không có erDiagram riêng — aggregate 1 CTĐC/kỳ, không group-by, khớp Data Explorer tra cứu chi tiết).
 
@@ -1915,7 +1918,7 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    fct_pc_fr_val_g21["Fact Public Company Financial Report Value"] --> R21["K_GSDC_239-265: DN thông thường — Báo cáo LCTT trực tiếp"]
+    fct_pc_fr_val_g21["Fact Public Company Financial Report Value"] --> R21["K_GSDC_902-931: DN thông thường — Báo cáo LCTT trực tiếp"]
     financial_rpt_catalog_dim_g21["Financial Report Catalog Dimension"] --> R21
 ```
 
@@ -1932,44 +1935,48 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_GSDC_266 | 1. Lợi nhuận trước thuế | Tỉ đồng | Cơ sở | data_val WHERE row_desc=01, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_267 | Khấu hao TSCĐ và BĐSĐT | Tỉ đồng | Cơ sở | data_val WHERE row_desc=02, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_268 | Các khoản dự phòng | Tỉ đồng | Cơ sở | data_val WHERE row_desc=03, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_269 | Lãi/lỗ chênh lệch tỷ giá do đánh giá lại | Tỉ đồng | Cơ sở | data_val WHERE row_desc=04, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_270 | Lãi/lỗ từ hoạt động đầu tư | Tỉ đồng | Cơ sở | data_val WHERE row_desc=05, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_271 | Chi phí lãi vay | Tỉ đồng | Cơ sở | data_val WHERE row_desc=06, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_272 | Các khoản điều chỉnh khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=07, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_273 | 3. LN từ HĐKD trước thay đổi vốn lưu động | Tỉ đồng | Cơ sở | data_val WHERE row_desc=8, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_274 | Tăng/giảm các khoản phải thu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=9, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_275 | Tăng/giảm hàng tồn kho | Tỉ đồng | Cơ sở | data_val WHERE row_desc=10, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_276 | Tăng/giảm các khoản phải trả | Tỉ đồng | Cơ sở | data_val WHERE row_desc=11, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_277 | Tăng/giảm chi phí trả trước | Tỉ đồng | Cơ sở | data_val WHERE row_desc=12, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_278 | Tăng/giảm chứng khoán kinh doanh | Tỉ đồng | Cơ sở | data_val WHERE row_desc=13, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_279 | Tiền lãi vay đã trả | Tỉ đồng | Cơ sở | data_val WHERE row_desc=14, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_280 | Thuế TNDN đã nộp | Tỉ đồng | Cơ sở | data_val WHERE row_desc=15, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_281 | Tiền thu khác từ HĐKD | Tỉ đồng | Cơ sở | data_val WHERE row_desc=16, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_282 | Tiền chi khác cho HĐKD | Tỉ đồng | Cơ sở | data_val WHERE row_desc=17, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_283 | Lưu chuyển tiền thuần từ HĐKD | Tỉ đồng | Cơ sở | data_val WHERE row_desc=20, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_284 | 1. Tiền chi mua sắm TSCĐ và TSDH khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=21, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_285 | 2. Tiền thu từ thanh lý, nhượng bán TSCĐ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=22, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_286 | 3. Tiền chi cho vay, mua công cụ nợ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=23, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_287 | 4. Tiền thu hồi cho vay, bán lại công cụ nợ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=24, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_288 | 5. Tiền chi đầu tư góp vốn vào đơn vị khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=25, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_289 | 6. Tiền thu hồi đầu tư góp vốn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=26, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_290 | 7. Tiền thu lãi cho vay, cổ tức và LN | Tỉ đồng | Cơ sở | data_val WHERE row_desc=27, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_291 | Lưu chuyển tiền thuần từ HĐ đầu tư | Tỉ đồng | Cơ sở | data_val WHERE row_desc=30, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_292 | 1. Tiền thu từ phát hành CP, nhận vốn góp | Tỉ đồng | Cơ sở | data_val WHERE row_desc=31, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_293 | 2. Tiền trả lại vốn góp, mua lại CP | Tỉ đồng | Cơ sở | data_val WHERE row_desc=32, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_294 | 3. Tiền thu từ đi vay | Tỉ đồng | Cơ sở | data_val WHERE row_desc=33, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_295 | 4. Tiền trả nợ gốc vay | Tỉ đồng | Cơ sở | data_val WHERE row_desc=34, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_296 | 5. Tiền trả nợ gốc thuê tài chính | Tỉ đồng | Cơ sở | data_val WHERE row_desc=35, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_297 | 6. Cổ tức, lợi nhuận đã trả cho chủ sở hữu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=36, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_298 | 7. Tiền thu từ vốn góp của CĐKKS | Tỉ đồng | Cơ sở | data_val WHERE row_desc=37, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_299 | Lưu chuyển tiền thuần từ HĐ tài chính | Tỉ đồng | Cơ sở | data_val WHERE row_desc=40, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_300 | Lưu chuyển tiền thuần trong kỳ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=50, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_301 | Tiền và tương đương tiền đầu kỳ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=60, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_302 | Ảnh hưởng của thay đổi tỷ giá hối đoái quy đổi ngoại tệ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=61, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_303 | Tiền và tương đương tiền cuối kỳ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=70, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_932 | I. Lưu chuyển tiền từ hoạt động kinh doanh | | N/A | — | Section label — không có logic tính toán | READY |
+| K_GSDC_933 | 1. Lợi nhuận trước thuế | Tỉ đồng | Cơ sở | data_val WHERE row_desc=01, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_934 | 2. Điều chỉnh cho các khoản | | N/A | — | Section label — không có logic tính toán | READY |
+| K_GSDC_935 | Khấu hao TSCĐ và BĐSĐT | Tỉ đồng | Cơ sở | data_val WHERE row_desc=02, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_936 | Các khoản dự phòng | Tỉ đồng | Cơ sở | data_val WHERE row_desc=03, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_937 | Lãi/lỗ chênh lệch tỷ giá do đánh giá lại | Tỉ đồng | Cơ sở | data_val WHERE row_desc=04, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_938 | Lãi/lỗ từ hoạt động đầu tư | Tỉ đồng | Cơ sở | data_val WHERE row_desc=05, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_939 | Chi phí lãi vay | Tỉ đồng | Cơ sở | data_val WHERE row_desc=06, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_940 | Các khoản điều chỉnh khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=07, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_941 | 3. LN từ HĐKD trước thay đổi vốn lưu động | Tỉ đồng | Cơ sở | data_val WHERE row_desc=8, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_942 | Tăng/giảm các khoản phải thu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=9, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_943 | Tăng/giảm hàng tồn kho | Tỉ đồng | Cơ sở | data_val WHERE row_desc=10, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_944 | Tăng/giảm các khoản phải trả | Tỉ đồng | Cơ sở | data_val WHERE row_desc=11, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_945 | Tăng/giảm chi phí trả trước | Tỉ đồng | Cơ sở | data_val WHERE row_desc=12, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_946 | Tăng/giảm chứng khoán kinh doanh | Tỉ đồng | Cơ sở | data_val WHERE row_desc=13, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_947 | Tiền lãi vay đã trả | Tỉ đồng | Cơ sở | data_val WHERE row_desc=14, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_948 | Thuế TNDN đã nộp | Tỉ đồng | Cơ sở | data_val WHERE row_desc=15, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_949 | Tiền thu khác từ HĐKD | Tỉ đồng | Cơ sở | data_val WHERE row_desc=16, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_950 | Tiền chi khác cho HĐKD | Tỉ đồng | Cơ sở | data_val WHERE row_desc=17, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_951 | Lưu chuyển tiền thuần từ HĐKD | Tỉ đồng | Cơ sở | data_val WHERE row_desc=20, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_952 | II. Lưu chuyển tiền từ hoạt động đầu tư | | N/A | — | Section label — không có logic tính toán | READY |
+| K_GSDC_953 | 1. Tiền chi mua sắm TSCĐ và TSDH khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=21, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_954 | 2. Tiền thu từ thanh lý, nhượng bán TSCĐ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=22, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_955 | 3. Tiền chi cho vay, mua công cụ nợ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=23, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_956 | 4. Tiền thu hồi cho vay, bán lại công cụ nợ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=24, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_957 | 5. Tiền chi đầu tư góp vốn vào đơn vị khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=25, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_958 | 6. Tiền thu hồi đầu tư góp vốn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=26, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_959 | 7. Tiền thu lãi cho vay, cổ tức và LN | Tỉ đồng | Cơ sở | data_val WHERE row_desc=27, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_960 | Lưu chuyển tiền thuần từ HĐ đầu tư | Tỉ đồng | Cơ sở | data_val WHERE row_desc=30, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_961 | III. Lưu chuyển tiền từ hoạt động tài chính | | N/A | — | Section label — không có logic tính toán | READY |
+| K_GSDC_962 | 1. Tiền thu từ phát hành CP, nhận vốn góp | Tỉ đồng | Cơ sở | data_val WHERE row_desc=31, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_963 | 2. Tiền trả lại vốn góp, mua lại CP | Tỉ đồng | Cơ sở | data_val WHERE row_desc=32, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_964 | 3. Tiền thu từ đi vay | Tỉ đồng | Cơ sở | data_val WHERE row_desc=33, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_965 | 4. Tiền trả nợ gốc vay | Tỉ đồng | Cơ sở | data_val WHERE row_desc=34, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_966 | 5. Tiền trả nợ gốc thuê tài chính | Tỉ đồng | Cơ sở | data_val WHERE row_desc=35, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_967 | 6. Cổ tức, lợi nhuận đã trả cho chủ sở hữu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=36, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_968 | 7. Tiền thu từ vốn góp của CĐKKS | Tỉ đồng | Cơ sở | data_val WHERE row_desc=37, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_969 | Lưu chuyển tiền thuần từ HĐ tài chính | Tỉ đồng | Cơ sở | data_val WHERE row_desc=40, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_970 | Lưu chuyển tiền thuần trong kỳ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=50, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_971 | Tiền và tương đương tiền đầu kỳ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=60, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_972 | Ảnh hưởng của thay đổi tỷ giá hối đoái quy đổi ngoại tệ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=61, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_973 | Tiền và tương đương tiền cuối kỳ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=70, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
 
 **Star Schema:** dùng chung `Fact Public Company Financial Report Value` + `Financial Report Catalog Dimension` với Nhóm 7 (không có erDiagram riêng — aggregate 1 CTĐC/kỳ, không group-by, khớp Data Explorer tra cứu chi tiết).
 
@@ -1977,7 +1984,7 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    fct_pc_fr_val_g22["Fact Public Company Financial Report Value"] --> R22["K_GSDC_266-303: DN thông thường — Báo cáo LCTT gián tiếp"]
+    fct_pc_fr_val_g22["Fact Public Company Financial Report Value"] --> R22["K_GSDC_932-973: DN thông thường — Báo cáo LCTT gián tiếp"]
     financial_rpt_catalog_dim_g22["Financial Report Catalog Dimension"] --> R22
 ```
 
@@ -1994,110 +2001,110 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_GSDC_304 | A - Tài sản ngắn hạn (100) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=100, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_305 | I. Tiền và các khoản tương đương tiền | Tỉ đồng | Cơ sở | data_val WHERE row_desc=110, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_306 | 1. Tiền | Tỉ đồng | Cơ sở | data_val WHERE row_desc=111, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_307 | 2. Các khoản tương đương tiền | Tỉ đồng | Cơ sở | data_val WHERE row_desc=112, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_308 | II. Các khoản đầu tư tài chính ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=120, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_309 | 1. Đầu tư ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=121, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_310 | 2. Dự phòng giảm giá đầu tư ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=129, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_311 | III. Các khoản phải thu ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=130, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_312 | 1. Phải thu của khách hàng | Tỉ đồng | Cơ sở | data_val WHERE row_desc=131, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_313 | 1.1 Phải thu về hợp đồng bảo hiểm | Tỉ đồng | Cơ sở | data_val WHERE row_desc=131.1, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_314 | 1.2 Phải thu khác của khách hàng | Tỉ đồng | Cơ sở | data_val WHERE row_desc=131.2, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_315 | 2. Trả trước cho người bán | Tỉ đồng | Cơ sở | data_val WHERE row_desc=132, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_316 | 3. Phải thu nội bộ ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=133, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_317 | 4. Các khoản phải thu khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=135, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_318 | 5. Dự phòng các khoản phải thu khó đòi | Tỉ đồng | Cơ sở | data_val WHERE row_desc=139, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_319 | IV. Hàng tồn kho | Tỉ đồng | Cơ sở | data_val WHERE row_desc=140, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_320 | 1. Hàng tồn kho | Tỉ đồng | Cơ sở | data_val WHERE row_desc=141, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_321 | 2. Dự phòng giảm giá hàng tồn kho | Tỉ đồng | Cơ sở | data_val WHERE row_desc=149, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_322 | V. Tài sản ngắn hạn khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=150, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_323 | 1. Chi phí trả trước ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=151, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_324 | 1.1. Chi phí hoa hồng chưa phân bổ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=151.1, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_325 | 1.2. Chi phí trả trước ngắn hạn khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=151.2, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_326 | 2. Thuế GTGT được khấu trừ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=152, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_327 | 3. Thuế và các khoản khác phải thu Nhà nước | Tỉ đồng | Cơ sở | data_val WHERE row_desc=154, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_328 | 4. Giao dịch mua bán lại trái phiếu Chính phủ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=157, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_329 | 5. Tài sản ngắn hạn khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=158, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_330 | VIII. Tài sản tái bảo hiểm | Tỉ đồng | Cơ sở | data_val WHERE row_desc=190, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_331 | 1. Dự phòng phí nhượng tái bảo hiểm | Tỉ đồng | Cơ sở | data_val WHERE row_desc=191, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_332 | 2. Dự phòng bồi thường nhượng tái bảo hiểm | Tỉ đồng | Cơ sở | data_val WHERE row_desc=192, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_333 | B - Tài sản dài hạn (200) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=200, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_334 | I. Các khoản phải thu dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=210, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_335 | 1. Phải thu dài hạn của khách hàng | Tỉ đồng | Cơ sở | data_val WHERE row_desc=211, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_336 | 2. Vốn kinh doanh của đơn vị trực thuộc | Tỉ đồng | Cơ sở | data_val WHERE row_desc=212, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_337 | 3. Phải thu dài hạn nội bộ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=213, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_338 | 4. Phải thu dài hạn khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=218, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_339 | 4.1. Kí quỹ bảo hiểm | Tỉ đồng | Cơ sở | data_val WHERE row_desc=218.1, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_340 | 4.2. Phải thu dài hạn khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=218.2, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_341 | II. Tài sản cố định | Tỉ đồng | Cơ sở | data_val WHERE row_desc=220, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_342 | 1. Tài sản cố định hữu hình | Tỉ đồng | Cơ sở | data_val WHERE row_desc=221, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_343 | · Nguyên giá | Tỉ đồng | Cơ sở | data_val WHERE row_desc=222, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_344 | · Giá trị hao mòn luỹ kế (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=223, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_345 | 2. Tài sản cố định thuê tài chính | Tỉ đồng | Cơ sở | data_val WHERE row_desc=224, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_346 | · Nguyên giá | Tỉ đồng | Cơ sở | data_val WHERE row_desc=225, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_347 | · Giá trị hao mòn luỹ kế (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=226, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_348 | 3. Tài sản cố định vô hình | Tỉ đồng | Cơ sở | data_val WHERE row_desc=227, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_349 | · Nguyên giá | Tỉ đồng | Cơ sở | data_val WHERE row_desc=228, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_350 | · Giá trị hao mòn luỹ kế (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=229, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_351 | 4. Chi phí xây dựng cơ bản dở dang | Tỉ đồng | Cơ sở | data_val WHERE row_desc=230, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_352 | III. Bất động sản đầu tư | Tỉ đồng | Cơ sở | data_val WHERE row_desc=240, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_353 | · Nguyên giá | Tỉ đồng | Cơ sở | data_val WHERE row_desc=241, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_354 | · Giá trị hao mòn luỹ kế | Tỉ đồng | Cơ sở | data_val WHERE row_desc=242, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_355 | IV. Các khoản đầu tư tài chính dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=250, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_356 | 1. Đầu tư vào công ty con | Tỉ đồng | Cơ sở | data_val WHERE row_desc=251, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_357 | 2. Đầu tư vào công ty liên kết, liên doanh | Tỉ đồng | Cơ sở | data_val WHERE row_desc=252, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_358 | 3. Đầu tư dài hạn khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=258, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_359 | 4. Dự phòng giảm giá đầu tư tài chính dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=259, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_360 | V. Tài sản dài hạn khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=260, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_361 | 1. Chi phí trả trước dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=261, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_362 | Tổng cộng tài sản (270) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=270, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_363 | A - Nợ phải trả (300) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=300, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_364 | I. Nợ ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=310, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_365 | 1. Vay và nợ ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=311, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_366 | 2. Phải trả cho người bán | Tỉ đồng | Cơ sở | data_val WHERE row_desc=312, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_367 | 2.1. Phải trả về hợp đồng bảo hiểm | Tỉ đồng | Cơ sở | data_val WHERE row_desc=312.1, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_368 | 2.2. Phải trả khác cho người bán | Tỉ đồng | Cơ sở | data_val WHERE row_desc=312.2, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_369 | 3. Người mua trả tiền trước | Tỉ đồng | Cơ sở | data_val WHERE row_desc=313, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_370 | 4. Thuế và các khoản phải nộp Nhà nước | Tỉ đồng | Cơ sở | data_val WHERE row_desc=314, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_371 | 5. Phải trả người lao động | Tỉ đồng | Cơ sở | data_val WHERE row_desc=315, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_372 | 6. Chi phí phải trả | Tỉ đồng | Cơ sở | data_val WHERE row_desc=316, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_373 | 7. Phải trả nội bộ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=317, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_374 | 8. Doanh thu chưa thực hiện ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=318, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_375 | 9. Các khoản phải trả, phải nộp khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=319, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_376 | 10. Doanh thu hoa hồng chưa được hưởng | Tỉ đồng | Cơ sở | data_val WHERE row_desc=319.1, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_377 | 11. Dự phòng phải trả ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=320, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_378 | 12. Quỹ khen thưởng, phúc lợi | Tỉ đồng | Cơ sở | data_val WHERE row_desc=323, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_379 | 13. Giao dịch mua bán lại trái phiếu Chính phủ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=327, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_380 | 14. Dự phòng nghiệp vụ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=329, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_381 | 14.1. Dự phòng phí bảo hiểm gốc và nhận TBH | Tỉ đồng | Cơ sở | data_val WHERE row_desc=329.1, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_382 | 14.2. Dự phòng bồi thường bảo hiểm gốc và nhận TBH | Tỉ đồng | Cơ sở | data_val WHERE row_desc=329.2, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_383 | 14.3. Dự phòng dao động lớn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=329.3, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_384 | II. Nợ dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=330, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_385 | 1. Phải trả dài hạn người bán | Tỉ đồng | Cơ sở | data_val WHERE row_desc=331, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_386 | 2. Phải trả dài hạn nội bộ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=332, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_387 | 3. Phải trả dài hạn khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=333, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_388 | 4. Vay và nợ dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=334, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_389 | 5. Thuế thu nhập hoãn lại phải trả | Tỉ đồng | Cơ sở | data_val WHERE row_desc=335, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_390 | 6. Dự phòng trợ cấp mất việc làm | Tỉ đồng | Cơ sở | data_val WHERE row_desc=336, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_391 | 7. Dự phòng phải trả dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=337, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_392 | 8. Doanh thu chưa thực hiện dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=338, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_393 | 9. Quỹ phát triển khoa học và công nghệ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=339, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_394 | B - Vốn chủ sở hữu (400) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=400, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_395 | I. Vốn chủ sở hữu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=410, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_396 | 1. Vốn đầu tư của chủ sở hữu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=411, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_397 | 2. Thặng dư vốn cổ phần | Tỉ đồng | Cơ sở | data_val WHERE row_desc=412, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_398 | 3. Vốn khác của chủ sở hữu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=413, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_399 | 4. Cổ phiếu quỹ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=414, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_400 | 5. Chênh lệch đánh giá lại tài sản | Tỉ đồng | Cơ sở | data_val WHERE row_desc=415, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_401 | 6. Chênh lệch tỷ giá hối đoái | Tỉ đồng | Cơ sở | data_val WHERE row_desc=416, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_402 | 7. Quỹ đầu tư phát triển | Tỉ đồng | Cơ sở | data_val WHERE row_desc=417, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_403 | 8. Quỹ dự phòng tài chính | Tỉ đồng | Cơ sở | data_val WHERE row_desc=418, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_404 | 9. Quỹ dự trữ bắt buộc | Tỉ đồng | Cơ sở | data_val WHERE row_desc=419, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_405 | 10. Quỹ khác thuộc vốn chủ sở hữu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=420, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_406 | 11. Lợi nhuận sau thuế chưa phân phối | Tỉ đồng | Cơ sở | data_val WHERE row_desc=421, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_407 | Tổng cộng nguồn vốn (440) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=440, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_974 | A - Tài sản ngắn hạn (100) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=100, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_975 | I. Tiền và các khoản tương đương tiền | Tỉ đồng | Cơ sở | data_val WHERE row_desc=110, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_976 | 1. Tiền | Tỉ đồng | Cơ sở | data_val WHERE row_desc=111, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_977 | 2. Các khoản tương đương tiền | Tỉ đồng | Cơ sở | data_val WHERE row_desc=112, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_978 | II. Các khoản đầu tư tài chính ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=120, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_979 | 1. Đầu tư ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=121, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_980 | 2. Dự phòng giảm giá đầu tư ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=129, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_981 | III. Các khoản phải thu ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=130, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_982 | 1. Phải thu của khách hàng | Tỉ đồng | Cơ sở | data_val WHERE row_desc=131, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_983 | 1.1 Phải thu về hợp đồng bảo hiểm | Tỉ đồng | Cơ sở | data_val WHERE row_desc=131.1, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_984 | 1.2 Phải thu khác của khách hàng | Tỉ đồng | Cơ sở | data_val WHERE row_desc=131.2, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_985 | 2. Trả trước cho người bán | Tỉ đồng | Cơ sở | data_val WHERE row_desc=132, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_986 | 3. Phải thu nội bộ ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=133, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_987 | 4. Các khoản phải thu khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=135, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_988 | 5. Dự phòng các khoản phải thu khó đòi | Tỉ đồng | Cơ sở | data_val WHERE row_desc=139, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_989 | IV. Hàng tồn kho | Tỉ đồng | Cơ sở | data_val WHERE row_desc=140, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_990 | 1. Hàng tồn kho | Tỉ đồng | Cơ sở | data_val WHERE row_desc=141, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_991 | 2. Dự phòng giảm giá hàng tồn kho | Tỉ đồng | Cơ sở | data_val WHERE row_desc=149, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_992 | V. Tài sản ngắn hạn khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=150, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_993 | 1. Chi phí trả trước ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=151, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_994 | 1.1. Chi phí hoa hồng chưa phân bổ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=151.1, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_995 | 1.2. Chi phí trả trước ngắn hạn khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=151.2, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_996 | 2. Thuế GTGT được khấu trừ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=152, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_997 | 3. Thuế và các khoản khác phải thu Nhà nước | Tỉ đồng | Cơ sở | data_val WHERE row_desc=154, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_998 | 4. Giao dịch mua bán lại trái phiếu Chính phủ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=157, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_999 | 5. Tài sản ngắn hạn khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=158, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1000 | VIII. Tài sản tái bảo hiểm | Tỉ đồng | Cơ sở | data_val WHERE row_desc=190, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1001 | 1. Dự phòng phí nhượng tái bảo hiểm | Tỉ đồng | Cơ sở | data_val WHERE row_desc=191, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1002 | 2. Dự phòng bồi thường nhượng tái bảo hiểm | Tỉ đồng | Cơ sở | data_val WHERE row_desc=192, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1003 | B - Tài sản dài hạn (200) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=200, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1004 | I. Các khoản phải thu dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=210, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1005 | 1. Phải thu dài hạn của khách hàng | Tỉ đồng | Cơ sở | data_val WHERE row_desc=211, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1006 | 2. Vốn kinh doanh của đơn vị trực thuộc | Tỉ đồng | Cơ sở | data_val WHERE row_desc=212, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1007 | 3. Phải thu dài hạn nội bộ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=213, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1008 | 4. Phải thu dài hạn khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=218, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1009 | 4.1. Kí quỹ bảo hiểm | Tỉ đồng | Cơ sở | data_val WHERE row_desc=218.1, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1010 | 4.2. Phải thu dài hạn khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=218.2, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1011 | II. Tài sản cố định | Tỉ đồng | Cơ sở | data_val WHERE row_desc=220, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1012 | 1. Tài sản cố định hữu hình | Tỉ đồng | Cơ sở | data_val WHERE row_desc=221, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1013 | · Nguyên giá | Tỉ đồng | Cơ sở | data_val WHERE row_desc=222, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1014 | · Giá trị hao mòn luỹ kế (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=223, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1015 | 2. Tài sản cố định thuê tài chính | Tỉ đồng | Cơ sở | data_val WHERE row_desc=224, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1016 | · Nguyên giá | Tỉ đồng | Cơ sở | data_val WHERE row_desc=225, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1017 | · Giá trị hao mòn luỹ kế (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=226, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1018 | 3. Tài sản cố định vô hình | Tỉ đồng | Cơ sở | data_val WHERE row_desc=227, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1019 | · Nguyên giá | Tỉ đồng | Cơ sở | data_val WHERE row_desc=228, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1020 | · Giá trị hao mòn luỹ kế (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=229, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1021 | 4. Chi phí xây dựng cơ bản dở dang | Tỉ đồng | Cơ sở | data_val WHERE row_desc=230, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1022 | III. Bất động sản đầu tư | Tỉ đồng | Cơ sở | data_val WHERE row_desc=240, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1023 | · Nguyên giá | Tỉ đồng | Cơ sở | data_val WHERE row_desc=241, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1024 | · Giá trị hao mòn luỹ kế | Tỉ đồng | Cơ sở | data_val WHERE row_desc=242, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1025 | IV. Các khoản đầu tư tài chính dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=250, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1026 | 1. Đầu tư vào công ty con | Tỉ đồng | Cơ sở | data_val WHERE row_desc=251, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1027 | 2. Đầu tư vào công ty liên kết, liên doanh | Tỉ đồng | Cơ sở | data_val WHERE row_desc=252, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1028 | 3. Đầu tư dài hạn khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=258, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1029 | 4. Dự phòng giảm giá đầu tư tài chính dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=259, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1030 | V. Tài sản dài hạn khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=260, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1031 | 1. Chi phí trả trước dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=261, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1032 | Tổng cộng tài sản (270) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=270, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1033 | A - Nợ phải trả (300) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=300, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1034 | I. Nợ ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=310, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1035 | 1. Vay và nợ ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=311, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1036 | 2. Phải trả cho người bán | Tỉ đồng | Cơ sở | data_val WHERE row_desc=312, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1037 | 2.1. Phải trả về hợp đồng bảo hiểm | Tỉ đồng | Cơ sở | data_val WHERE row_desc=312.1, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1038 | 2.2. Phải trả khác cho người bán | Tỉ đồng | Cơ sở | data_val WHERE row_desc=312.2, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1039 | 3. Người mua trả tiền trước | Tỉ đồng | Cơ sở | data_val WHERE row_desc=313, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1040 | 4. Thuế và các khoản phải nộp Nhà nước | Tỉ đồng | Cơ sở | data_val WHERE row_desc=314, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1041 | 5. Phải trả người lao động | Tỉ đồng | Cơ sở | data_val WHERE row_desc=315, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1042 | 6. Chi phí phải trả | Tỉ đồng | Cơ sở | data_val WHERE row_desc=316, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1043 | 7. Phải trả nội bộ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=317, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1044 | 8. Doanh thu chưa thực hiện ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=318, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1045 | 9. Các khoản phải trả, phải nộp khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=319, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1046 | 10. Doanh thu hoa hồng chưa được hưởng | Tỉ đồng | Cơ sở | data_val WHERE row_desc=319.1, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1047 | 11. Dự phòng phải trả ngắn hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=320, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1048 | 12. Quỹ khen thưởng, phúc lợi | Tỉ đồng | Cơ sở | data_val WHERE row_desc=323, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1049 | 13. Giao dịch mua bán lại trái phiếu Chính phủ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=327, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1050 | 14. Dự phòng nghiệp vụ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=329, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1051 | 14.1. Dự phòng phí bảo hiểm gốc và nhận TBH | Tỉ đồng | Cơ sở | data_val WHERE row_desc=329.1, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1052 | 14.2. Dự phòng bồi thường bảo hiểm gốc và nhận TBH | Tỉ đồng | Cơ sở | data_val WHERE row_desc=329.2, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1053 | 14.3. Dự phòng dao động lớn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=329.3, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1054 | II. Nợ dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=330, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1055 | 1. Phải trả dài hạn người bán | Tỉ đồng | Cơ sở | data_val WHERE row_desc=331, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1056 | 2. Phải trả dài hạn nội bộ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=332, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1057 | 3. Phải trả dài hạn khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=333, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1058 | 4. Vay và nợ dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=334, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1059 | 5. Thuế thu nhập hoãn lại phải trả | Tỉ đồng | Cơ sở | data_val WHERE row_desc=335, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1060 | 6. Dự phòng trợ cấp mất việc làm | Tỉ đồng | Cơ sở | data_val WHERE row_desc=336, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1061 | 7. Dự phòng phải trả dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=337, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1062 | 8. Doanh thu chưa thực hiện dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=338, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1063 | 9. Quỹ phát triển khoa học và công nghệ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=339, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1064 | B - Vốn chủ sở hữu (400) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=400, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1065 | I. Vốn chủ sở hữu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=410, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1066 | 1. Vốn đầu tư của chủ sở hữu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=411, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1067 | 2. Thặng dư vốn cổ phần | Tỉ đồng | Cơ sở | data_val WHERE row_desc=412, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1068 | 3. Vốn khác của chủ sở hữu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=413, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1069 | 4. Cổ phiếu quỹ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=414, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1070 | 5. Chênh lệch đánh giá lại tài sản | Tỉ đồng | Cơ sở | data_val WHERE row_desc=415, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1071 | 6. Chênh lệch tỷ giá hối đoái | Tỉ đồng | Cơ sở | data_val WHERE row_desc=416, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1072 | 7. Quỹ đầu tư phát triển | Tỉ đồng | Cơ sở | data_val WHERE row_desc=417, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1073 | 8. Quỹ dự phòng tài chính | Tỉ đồng | Cơ sở | data_val WHERE row_desc=418, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1074 | 9. Quỹ dự trữ bắt buộc | Tỉ đồng | Cơ sở | data_val WHERE row_desc=419, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1075 | 10. Quỹ khác thuộc vốn chủ sở hữu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=420, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1076 | 11. Lợi nhuận sau thuế chưa phân phối | Tỉ đồng | Cơ sở | data_val WHERE row_desc=421, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1077 | Tổng cộng nguồn vốn (440) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=440, report=BCDKT, col_desc=1 | fr_value | **READY** |
 
 **Star Schema:** dùng chung `Fact Public Company Financial Report Value` + `Financial Report Catalog Dimension` với Nhóm 7 (không có erDiagram riêng — aggregate 1 CTĐC/kỳ, không group-by, khớp Data Explorer tra cứu chi tiết).
 
@@ -2105,7 +2112,7 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    fct_pc_fr_val_g23["Fact Public Company Financial Report Value"] --> R23["K_GSDC_304-407: DN bảo hiểm — Bảng cân đối kế toán"]
+    fct_pc_fr_val_g23["Fact Public Company Financial Report Value"] --> R23["K_GSDC_974-1077: DN bảo hiểm — Bảng cân đối kế toán"]
     financial_rpt_catalog_dim_g23["Financial Report Catalog Dimension"] --> R23
 ```
 
@@ -2122,22 +2129,22 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_GSDC_408 | 1. Doanh thu thuần hoạt động kinh doanh bảo hiểm | Tỉ đồng | Cơ sở | data_val WHERE row_desc=10, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_409 | 2. Doanh thu kinh doanh bất động sản đầu tư | Tỉ đồng | Cơ sở | data_val WHERE row_desc=11, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_410 | 3. Doanh thu hoạt động tài chính | Tỉ đồng | Cơ sở | data_val WHERE row_desc=12, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_411 | 4. Thu nhập khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=13, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_412 | 5. Tổng chi phí hoạt động kinh doanh bảo hiểm | Tỉ đồng | Cơ sở | data_val WHERE row_desc=20, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_413 | 6. Giá vốn bất động sản đầu tư | Tỉ đồng | Cơ sở | data_val WHERE row_desc=21, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_414 | 7. Chi phí hoạt động tài chính | Tỉ đồng | Cơ sở | data_val WHERE row_desc=22, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_415 | 8. Chi phí quản lý doanh nghiệp | Tỉ đồng | Cơ sở | data_val WHERE row_desc=23, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_416 | 9. Chi phí khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=24, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_417 | 10. Tổng lợi nhuận kế toán trước thuế (50=10+11+12+13-20-21-22-23-24) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=50, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_418 | 11. Chi phí thuế TNDN hiện hành | Tỉ đồng | Cơ sở | data_val WHERE row_desc=51, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_419 | 12. Chi phí thuế TNDN hoãn lại | Tỉ đồng | Cơ sở | data_val WHERE row_desc=52, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_420 | 13. Lợi nhuận sau thuế thu nhập doanh nghiệp (60=50-51-52) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=60, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_421 | 14. Lợi ích của cổ đông không kiểm soát | Tỉ đồng | Cơ sở | data_val WHERE row_desc=61, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_422 | 15. Lợi nhuận sau thuế (62=60-61) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=62, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_423 | 16. Lãi cơ bản trên cổ phiếu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=70, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1078 | 1. Doanh thu thuần hoạt động kinh doanh bảo hiểm | Tỉ đồng | Cơ sở | data_val WHERE row_desc=10, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1079 | 2. Doanh thu kinh doanh bất động sản đầu tư | Tỉ đồng | Cơ sở | data_val WHERE row_desc=11, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1080 | 3. Doanh thu hoạt động tài chính | Tỉ đồng | Cơ sở | data_val WHERE row_desc=12, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1081 | 4. Thu nhập khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=13, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1082 | 5. Tổng chi phí hoạt động kinh doanh bảo hiểm | Tỉ đồng | Cơ sở | data_val WHERE row_desc=20, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1083 | 6. Giá vốn bất động sản đầu tư | Tỉ đồng | Cơ sở | data_val WHERE row_desc=21, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1084 | 7. Chi phí hoạt động tài chính | Tỉ đồng | Cơ sở | data_val WHERE row_desc=22, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1085 | 8. Chi phí quản lý doanh nghiệp | Tỉ đồng | Cơ sở | data_val WHERE row_desc=23, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1086 | 9. Chi phí khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=24, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1087 | 10. Tổng lợi nhuận kế toán trước thuế (50=10+11+12+13-20-21-22-23-24) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=50, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1088 | 11. Chi phí thuế TNDN hiện hành | Tỉ đồng | Cơ sở | data_val WHERE row_desc=51, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1089 | 12. Chi phí thuế TNDN hoãn lại | Tỉ đồng | Cơ sở | data_val WHERE row_desc=52, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1090 | 13. Lợi nhuận sau thuế thu nhập doanh nghiệp (60=50-51-52) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=60, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1091 | 14. Lợi ích của cổ đông không kiểm soát | Tỉ đồng | Cơ sở | data_val WHERE row_desc=61, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1092 | 15. Lợi nhuận sau thuế (62=60-61) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=62, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1093 | 16. Lãi cơ bản trên cổ phiếu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=70, report=BCKQKD, col_desc=1 | fr_value | **READY** |
 
 **Star Schema:** dùng chung `Fact Public Company Financial Report Value` + `Financial Report Catalog Dimension` với Nhóm 7 (không có erDiagram riêng — aggregate 1 CTĐC/kỳ, không group-by, khớp Data Explorer tra cứu chi tiết).
 
@@ -2145,7 +2152,7 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    fct_pc_fr_val_g24["Fact Public Company Financial Report Value"] --> R24["K_GSDC_408-423: DN bảo hiểm — Báo cáo KQKD"]
+    fct_pc_fr_val_g24["Fact Public Company Financial Report Value"] --> R24["K_GSDC_1078-1093: DN bảo hiểm — Báo cáo KQKD"]
     financial_rpt_catalog_dim_g24["Financial Report Catalog Dimension"] --> R24
 ```
 
@@ -2162,34 +2169,37 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_GSDC_424 | 1. Tiền từ thu phí và hoa hồng | Tỉ đồng | Cơ sở | data_val WHERE row_desc=01, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_425 | 2. Tiền thu từ các khoản nợ phí và hoa hồng | Tỉ đồng | Cơ sở | data_val WHERE row_desc=02, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_426 | 3. Tiền thu từ các khoản thu được giảm chi | Tỉ đồng | Cơ sở | data_val WHERE row_desc=03, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_427 | 4. Tiền thu từ các hoạt động kinh doanh khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=04, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_428 | 5. Trả tiền bồi thường bảo hiểm | Tỉ đồng | Cơ sở | data_val WHERE row_desc=05, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_429 | 6. Trả tiền hoa hồng và các khoản nợ khác của kinh doanh bảo hiểm | Tỉ đồng | Cơ sở | data_val WHERE row_desc=06, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_430 | 7. Trả tiền cho người bán, người cung cấp dịch vụ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=07, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_431 | 8. Trả tiền cho cán bộ công nhân viên | Tỉ đồng | Cơ sở | data_val WHERE row_desc=08, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_432 | 9. Trả tiền nộp thuế và các khoản nợ Nhà nước | Tỉ đồng | Cơ sở | data_val WHERE row_desc=09, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_433 | 10. Trả tiền cho các khoản nợ khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=10, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_434 | 11. Tiền tạm ứng cho cán bộ công nhân viên và ứng trước cho người bán | Tỉ đồng | Cơ sở | data_val WHERE row_desc=11, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_435 | Lưu chuyển tiền thuần từ hoạt động kinh doanh | Tỉ đồng | Cơ sở | data_val WHERE row_desc=20, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_436 | 1. Tiền thu từ các khoản đầu tư vào đơn vị khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=21, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_437 | 2. Tiền thu lãi đầu tư | Tỉ đồng | Cơ sở | data_val WHERE row_desc=22, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_438 | 3. Tiền thu do bán tài sản cố định | Tỉ đồng | Cơ sở | data_val WHERE row_desc=23, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_439 | 4. Tiền đầu tư vào các đơn vị khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=24, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_440 | 5. Tiền mua tài sản cố định | Tỉ đồng | Cơ sở | data_val WHERE row_desc=25, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_441 | Lưu chuyển tiền thuần từ hoạt động đầu tư | Tỉ đồng | Cơ sở | data_val WHERE row_desc=30, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_442 | 1. Tiền thu do đi vay | Tỉ đồng | Cơ sở | data_val WHERE row_desc=31, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_443 | 2. Tiền thu do các chủ sở hữu góp vốn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=32, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_444 | 3. Tiền thu từ lãi tiền gửi | Tỉ đồng | Cơ sở | data_val WHERE row_desc=33, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_445 | 4. Tiền đã trả nợ vay | Tỉ đồng | Cơ sở | data_val WHERE row_desc=34, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_446 | 5. Tiền đã hoàn vốn cho các chủ sở hữu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=35, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_447 | 6. Tiền lãi đã trả cho các nhà đầu tư vào doanh nghiệp | Tỉ đồng | Cơ sở | data_val WHERE row_desc=36, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_448 | Lưu chuyển tiền thuần từ hoạt động tài chính | Tỉ đồng | Cơ sở | data_val WHERE row_desc=40, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_449 | Lưu chuyển tiền thuần trong kỳ (50 = 20+30+40) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=50, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_450 | Tiền tồn đầu kỳ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=60, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_451 | Tiền tồn cuối kỳ (70 = 50+60) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=70, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1094 | I - Lưu chuyển tiền từ hoạt động kinh doanh | | N/A | — | Section label — không có logic tính toán | READY |
+| K_GSDC_1095 | 1. Tiền từ thu phí và hoa hồng | Tỉ đồng | Cơ sở | data_val WHERE row_desc=01, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1096 | 2. Tiền thu từ các khoản nợ phí và hoa hồng | Tỉ đồng | Cơ sở | data_val WHERE row_desc=02, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1097 | 3. Tiền thu từ các khoản thu được giảm chi | Tỉ đồng | Cơ sở | data_val WHERE row_desc=03, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1098 | 4. Tiền thu từ các hoạt động kinh doanh khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=04, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1099 | 5. Trả tiền bồi thường bảo hiểm | Tỉ đồng | Cơ sở | data_val WHERE row_desc=05, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1100 | 6. Trả tiền hoa hồng và các khoản nợ khác của kinh doanh bảo hiểm | Tỉ đồng | Cơ sở | data_val WHERE row_desc=06, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1101 | 7. Trả tiền cho người bán, người cung cấp dịch vụ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=07, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1102 | 8. Trả tiền cho cán bộ công nhân viên | Tỉ đồng | Cơ sở | data_val WHERE row_desc=08, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1103 | 9. Trả tiền nộp thuế và các khoản nợ Nhà nước | Tỉ đồng | Cơ sở | data_val WHERE row_desc=09, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1104 | 10. Trả tiền cho các khoản nợ khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=10, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1105 | 11. Tiền tạm ứng cho cán bộ công nhân viên và ứng trước cho người bán | Tỉ đồng | Cơ sở | data_val WHERE row_desc=11, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1106 | Lưu chuyển tiền thuần từ hoạt động kinh doanh | Tỉ đồng | Cơ sở | data_val WHERE row_desc=20, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1107 | II - Lưu chuyển tiền từ hoạt động đầu tư | | N/A | — | Section label — không có logic tính toán | READY |
+| K_GSDC_1108 | 1. Tiền thu từ các khoản đầu tư vào đơn vị khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=21, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1109 | 2. Tiền thu lãi đầu tư | Tỉ đồng | Cơ sở | data_val WHERE row_desc=22, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1110 | 3. Tiền thu do bán tài sản cố định | Tỉ đồng | Cơ sở | data_val WHERE row_desc=23, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1111 | 4. Tiền đầu tư vào các đơn vị khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=24, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1112 | 5. Tiền mua tài sản cố định | Tỉ đồng | Cơ sở | data_val WHERE row_desc=25, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1113 | Lưu chuyển tiền thuần từ hoạt động đầu tư | Tỉ đồng | Cơ sở | data_val WHERE row_desc=30, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1114 | III - Lưu chuyển tiền từ hoạt động tài chính | | N/A | — | Section label — không có logic tính toán | READY |
+| K_GSDC_1115 | 1. Tiền thu do đi vay | Tỉ đồng | Cơ sở | data_val WHERE row_desc=31, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1116 | 2. Tiền thu do các chủ sở hữu góp vốn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=32, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1117 | 3. Tiền thu từ lãi tiền gửi | Tỉ đồng | Cơ sở | data_val WHERE row_desc=33, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1118 | 4. Tiền đã trả nợ vay | Tỉ đồng | Cơ sở | data_val WHERE row_desc=34, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1119 | 5. Tiền đã hoàn vốn cho các chủ sở hữu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=35, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1120 | 6. Tiền lãi đã trả cho các nhà đầu tư vào doanh nghiệp | Tỉ đồng | Cơ sở | data_val WHERE row_desc=36, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1121 | Lưu chuyển tiền thuần từ hoạt động tài chính | Tỉ đồng | Cơ sở | data_val WHERE row_desc=40, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1122 | Lưu chuyển tiền thuần trong kỳ (50 = 20+30+40) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=50, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1123 | Tiền tồn đầu kỳ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=60, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1124 | Tiền tồn cuối kỳ (70 = 50+60) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=70, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
 
 **Star Schema:** dùng chung `Fact Public Company Financial Report Value` + `Financial Report Catalog Dimension` với Nhóm 7 (không có erDiagram riêng — aggregate 1 CTĐC/kỳ, không group-by, khớp Data Explorer tra cứu chi tiết).
 
@@ -2197,7 +2207,7 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    fct_pc_fr_val_g25["Fact Public Company Financial Report Value"] --> R25["K_GSDC_424-451: DN bảo hiểm — Báo cáo LCTT trực tiếp"]
+    fct_pc_fr_val_g25["Fact Public Company Financial Report Value"] --> R25["K_GSDC_1094-1124: DN bảo hiểm — Báo cáo LCTT trực tiếp"]
     financial_rpt_catalog_dim_g25["Financial Report Catalog Dimension"] --> R25
 ```
 
@@ -2214,43 +2224,47 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_GSDC_452 | 1. Lợi nhuận trước thuế | Tỉ đồng | Cơ sở | data_val WHERE row_desc=01, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_453 | · Khấu hao TSCĐ và BĐSĐT | Tỉ đồng | Cơ sở | data_val WHERE row_desc=02, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_454 | · Các khoản dự phòng | Tỉ đồng | Cơ sở | data_val WHERE row_desc=03, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_455 | · Lãi, lỗ chênh lệch tỷ giá hối đoái do đánh giá lại các khoản mục tiền tệ có gốc ngoại tệ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=04, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_456 | · Lãi, lỗ từ hoạt động đầu tư | Tỉ đồng | Cơ sở | data_val WHERE row_desc=05, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_457 | · Chi phí lãi vay | Tỉ đồng | Cơ sở | data_val WHERE row_desc=06, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_458 | · Các khoản điều chỉnh khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=07, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_459 | 3. Lợi nhuận từ hoạt động kinh doanh trước thay đổi vốn lưu động | Tỉ đồng | Cơ sở | data_val WHERE row_desc=08, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_460 | · Tăng, giảm các khoản phải thu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=09, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_461 | · Tăng, giảm hàng tồn kho | Tỉ đồng | Cơ sở | data_val WHERE row_desc=10, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_462 | · Tăng, giảm các khoản phải trả (Không kể lãi vay phải trả, thuế thu nhập doanh nghiệp phải nộp) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=11, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_463 | · Tăng, giảm chi phí trả trước | Tỉ đồng | Cơ sở | data_val WHERE row_desc=12, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_464 | · Tăng, giảm chứng khoán kinh doanh | Tỉ đồng | Cơ sở | data_val WHERE row_desc=13, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_465 | · Tiền lãi vay đã trả | Tỉ đồng | Cơ sở | data_val WHERE row_desc=14, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_466 | · Thuế thu nhập doanh nghiệp đã nộp | Tỉ đồng | Cơ sở | data_val WHERE row_desc=15, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_467 | · Tiền thu khác từ hoạt động kinh doanh | Tỉ đồng | Cơ sở | data_val WHERE row_desc=16, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_468 | · Tiền chi khác cho hoạt động kinh doanh | Tỉ đồng | Cơ sở | data_val WHERE row_desc=17, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_469 | Lưu chuyển tiền thuần từ hoạt động kinh doanh | Tỉ đồng | Cơ sở | data_val WHERE row_desc=20, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_470 | 1.Tiền chi để mua sắm, xây dựng TSCĐ và các tài sản dài hạn khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=21, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_471 | 2.Tiền thu từ thanh lý, nhượng bán TSCĐ và các tài sản dài hạn khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=22, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_472 | 3.Tiền chi cho vay, mua các công cụ nợ của đơn vị khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=23, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_473 | 4.Tiền thu hồi cho vay, bán lại các công cụ nợ của đơn vị khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=24, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_474 | 5.Tiền chi đầu tư góp vốn vào đơn vị khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=25, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_475 | 6.Tiền thu hồi đầu tư góp vốn vào đơn vị khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=26, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_476 | 7.Tiền thu lãi cho vay, cổ tức và lợi nhuận được chia | Tỉ đồng | Cơ sở | data_val WHERE row_desc=27, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_477 | Lưu chuyển tiền thuần từ hoạt động đầu tư | Tỉ đồng | Cơ sở | data_val WHERE row_desc=30, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_478 | 1. Tiền thu từ phát hành cổ phiếu, nhận vốn góp của chủ sở hữu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=31, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_479 | 2. Tiền trả lại vốn góp cho các chủ sở hữu, mua lại cổ phiếu của doanh nghiệp đã phát hành | Tỉ đồng | Cơ sở | data_val WHERE row_desc=32, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_480 | 3. Tiền thu từ đi vay | Tỉ đồng | Cơ sở | data_val WHERE row_desc=33, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_481 | 4. Tiền trả nợ gốc vay | Tỉ đồng | Cơ sở | data_val WHERE row_desc=34, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_482 | 5. Tiền trả nợ gốc thuê tài chính | Tỉ đồng | Cơ sở | data_val WHERE row_desc=35, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_483 | 6. Cổ tức, lợi nhuận đã trả cho chủ sở hữu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=36, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_484 | Lưu chuyển tiền thuần từ hoạt động tài chính | Tỉ đồng | Cơ sở | data_val WHERE row_desc=40, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_485 | Lưu chuyển tiền thuần trong kỳ (50 = 20+30+40) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=50, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_486 | Tiền và tương đương tiền đầu kỳ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=60, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_487 | Ảnh hưởng của thay đổi tỷ giá hối đoái quy đổi ngoại tệ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=61, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_488 | Tiền và tương đương tiền cuối kỳ (70 = 50+60+61) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=70, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1125 | I. Lưu chuyển tiền từ hoạt động kinh doanh | | N/A | — | Section label — không có logic tính toán | READY |
+| K_GSDC_1126 | 1. Lợi nhuận trước thuế | Tỉ đồng | Cơ sở | data_val WHERE row_desc=01, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1127 | 2. Điều chỉnh cho các khoản | | N/A | — | Section label — không có logic tính toán | READY |
+| K_GSDC_1128 | · Khấu hao TSCĐ và BĐSĐT | Tỉ đồng | Cơ sở | data_val WHERE row_desc=02, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1129 | · Các khoản dự phòng | Tỉ đồng | Cơ sở | data_val WHERE row_desc=03, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1130 | · Lãi, lỗ chênh lệch tỷ giá hối đoái do đánh giá lại các khoản mục tiền tệ có gốc ngoại tệ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=04, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1131 | · Lãi, lỗ từ hoạt động đầu tư | Tỉ đồng | Cơ sở | data_val WHERE row_desc=05, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1132 | · Chi phí lãi vay | Tỉ đồng | Cơ sở | data_val WHERE row_desc=06, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1133 | · Các khoản điều chỉnh khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=07, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1134 | 3. Lợi nhuận từ hoạt động kinh doanh trước thay đổi vốn lưu động | Tỉ đồng | Cơ sở | data_val WHERE row_desc=08, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1135 | · Tăng, giảm các khoản phải thu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=09, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1136 | · Tăng, giảm hàng tồn kho | Tỉ đồng | Cơ sở | data_val WHERE row_desc=10, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1137 | · Tăng, giảm các khoản phải trả (Không kể lãi vay phải trả, thuế thu nhập doanh nghiệp phải nộp) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=11, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1138 | · Tăng, giảm chi phí trả trước | Tỉ đồng | Cơ sở | data_val WHERE row_desc=12, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1139 | · Tăng, giảm chứng khoán kinh doanh | Tỉ đồng | Cơ sở | data_val WHERE row_desc=13, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1140 | · Tiền lãi vay đã trả | Tỉ đồng | Cơ sở | data_val WHERE row_desc=14, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1141 | · Thuế thu nhập doanh nghiệp đã nộp | Tỉ đồng | Cơ sở | data_val WHERE row_desc=15, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1142 | · Tiền thu khác từ hoạt động kinh doanh | Tỉ đồng | Cơ sở | data_val WHERE row_desc=16, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1143 | · Tiền chi khác cho hoạt động kinh doanh | Tỉ đồng | Cơ sở | data_val WHERE row_desc=17, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1144 | Lưu chuyển tiền thuần từ hoạt động kinh doanh | Tỉ đồng | Cơ sở | data_val WHERE row_desc=20, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1145 | II. Lưu chuyển tiền từ hoạt động đầu tư | | N/A | — | Section label — không có logic tính toán | READY |
+| K_GSDC_1146 | 1.Tiền chi để mua sắm, xây dựng TSCĐ và các tài sản dài hạn khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=21, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1147 | 2.Tiền thu từ thanh lý, nhượng bán TSCĐ và các tài sản dài hạn khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=22, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1148 | 3.Tiền chi cho vay, mua các công cụ nợ của đơn vị khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=23, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1149 | 4.Tiền thu hồi cho vay, bán lại các công cụ nợ của đơn vị khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=24, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1150 | 5.Tiền chi đầu tư góp vốn vào đơn vị khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=25, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1151 | 6.Tiền thu hồi đầu tư góp vốn vào đơn vị khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=26, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1152 | 7.Tiền thu lãi cho vay, cổ tức và lợi nhuận được chia | Tỉ đồng | Cơ sở | data_val WHERE row_desc=27, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1153 | Lưu chuyển tiền thuần từ hoạt động đầu tư | Tỉ đồng | Cơ sở | data_val WHERE row_desc=30, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1154 | III. Lưu chuyển tiền từ hoạt động tài chính | | N/A | — | Section label — không có logic tính toán | READY |
+| K_GSDC_1155 | 1. Tiền thu từ phát hành cổ phiếu, nhận vốn góp của chủ sở hữu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=31, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1156 | 2. Tiền trả lại vốn góp cho các chủ sở hữu, mua lại cổ phiếu của doanh nghiệp đã phát hành | Tỉ đồng | Cơ sở | data_val WHERE row_desc=32, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1157 | 3. Tiền thu từ đi vay | Tỉ đồng | Cơ sở | data_val WHERE row_desc=33, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1158 | 4. Tiền trả nợ gốc vay | Tỉ đồng | Cơ sở | data_val WHERE row_desc=34, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1159 | 5. Tiền trả nợ gốc thuê tài chính | Tỉ đồng | Cơ sở | data_val WHERE row_desc=35, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1160 | 6. Cổ tức, lợi nhuận đã trả cho chủ sở hữu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=36, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1161 | Lưu chuyển tiền thuần từ hoạt động tài chính | Tỉ đồng | Cơ sở | data_val WHERE row_desc=40, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1162 | Lưu chuyển tiền thuần trong kỳ (50 = 20+30+40) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=50, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1163 | Tiền và tương đương tiền đầu kỳ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=60, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1164 | Ảnh hưởng của thay đổi tỷ giá hối đoái quy đổi ngoại tệ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=61, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1165 | Tiền và tương đương tiền cuối kỳ (70 = 50+60+61) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=70, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
 
 **Star Schema:** dùng chung `Fact Public Company Financial Report Value` + `Financial Report Catalog Dimension` với Nhóm 7 (không có erDiagram riêng — aggregate 1 CTĐC/kỳ, không group-by, khớp Data Explorer tra cứu chi tiết).
 
@@ -2258,7 +2272,7 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    fct_pc_fr_val_g26["Fact Public Company Financial Report Value"] --> R26["K_GSDC_452-488: DN bảo hiểm — Báo cáo LCTT gián tiếp"]
+    fct_pc_fr_val_g26["Fact Public Company Financial Report Value"] --> R26["K_GSDC_1125-1165: DN bảo hiểm — Báo cáo LCTT gián tiếp"]
     financial_rpt_catalog_dim_g26["Financial Report Catalog Dimension"] --> R26
 ```
 
@@ -2275,89 +2289,91 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_GSDC_489 | I. Tiền mặt, vàng bạc, đá quý | Tỉ đồng | Cơ sở | data_val WHERE row_desc=110, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_490 | II. Tiền gửi tại NHNN | Tỉ đồng | Cơ sở | data_val WHERE row_desc=120, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_491 | III. Tiền, vàng gửi tại các TCTD khác và cho vay các TCTD khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=130, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_492 | 1. Tiền, vàng gửi tại các TCTD khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=131, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_493 | 2. Cho vay các TCTD khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=132, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_494 | 3. Dự phòng rủi ro cho vay các TCTD khác (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=139, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_495 | IV. Chứng khoán kinh doanh | Tỉ đồng | Cơ sở | data_val WHERE row_desc=140, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_496 | 1. Chứng khoán kinh doanh (1) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=141, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_497 | 2. Dự phòng giảm giá chứng khoán kinh doanh (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=149, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_498 | V. Các công cụ tài chính phái sinh và các tài sản tài chính khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=150, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_499 | VI. Cho vay khách hàng | Tỉ đồng | Cơ sở | data_val WHERE row_desc=160, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_500 | 1. Cho vay khách hàng | Tỉ đồng | Cơ sở | data_val WHERE row_desc=161, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_501 | 2. Dự phòng rủi ro cho vay khách hàng (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=169, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_502 | VII. Hoạt động mua nợ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=180, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_503 | 1. Mua nợ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=181, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_504 | 2. Dự phòng rủi ro hoạt động mua nợ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=189, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_505 | VIII. Chứng khoán đầu tư | Tỉ đồng | Cơ sở | data_val WHERE row_desc=170, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_506 | 1. Chứng khoán đầu tư sẵn sàng để bán (2) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=171, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_507 | 2. Chứng khoán đầu tư giữ đến ngày đáo hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=172, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_508 | 3. Dự phòng giảm giá chứng khoán đầu tư (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=179, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_509 | IX. Góp vốn, đầu tư dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=210, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_510 | 1. Đầu tư vào công ty con | Tỉ đồng | Cơ sở | data_val WHERE row_desc=211, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_511 | 2. Vốn góp liên doanh | Tỉ đồng | Cơ sở | data_val WHERE row_desc=212, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_512 | 3. Đầu tư vào công ty liên kết | Tỉ đồng | Cơ sở | data_val WHERE row_desc=213, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_513 | 4. Đầu tư dài hạn khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=214, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_514 | 5. Dự phòng giảm giá đầu tư dài hạn (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=219, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_515 | X. Tài sản cố định | Tỉ đồng | Cơ sở | data_val WHERE row_desc=220, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_516 | 1. Tài sản cố định hữu hình | Tỉ đồng | Cơ sở | data_val WHERE row_desc=221, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_517 | a. Nguyên giá TSCĐ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=222, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_518 | b. Hao mòn TSCĐ (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=223, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_519 | 2. Tài sản cố định thuê tài chính | Tỉ đồng | Cơ sở | data_val WHERE row_desc=224, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_520 | a. Nguyên giá TSCĐ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=225, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_521 | b. Hao mòn TSCĐ (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=226, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_522 | 3. Tài sản cố định vô hình | Tỉ đồng | Cơ sở | data_val WHERE row_desc=227, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_523 | a. Nguyên giá TSCĐ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=228, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_524 | b. Hao mòn TSCĐ (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=229, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_525 | XI. Bất động sản đầu tư | Tỉ đồng | Cơ sở | data_val WHERE row_desc=240, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_526 | a. Nguyên giá BĐSĐT | Tỉ đồng | Cơ sở | data_val WHERE row_desc=241, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_527 | b. Hao mòn BĐSĐT (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=242, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_528 | XII. Tài sản Có khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=250, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_529 | 1. Các khoản phải thu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=251, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_530 | 2. Các khoản lãi, phí phải thu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=252, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_531 | 3. Tài sản thuế TNDN hoãn lại | Tỉ đồng | Cơ sở | data_val WHERE row_desc=253, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_532 | 4. Tài sản Có khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=254, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_533 | · Trong đó: Lợi thế thương mại | Tỉ đồng | Cơ sở | data_val WHERE row_desc=255, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_534 | 5. Các khoản dự phòng rủi ro cho các tài sản Có nội bảng khác (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=259, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_535 | Tổng tài sản Có | Tỉ đồng | Cơ sở | data_val WHERE row_desc=300, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_536 | B. Nợ phải trả và vốn chủ sở hữu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=NV, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_537 | I. Các khoản nợ Chính phủ và NHNN | Tỉ đồng | Cơ sở | data_val WHERE row_desc=310, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_538 | II. Tiền gửi và vay các TCTD khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=320, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_539 | 1. Tiền gửi của các TCTD khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=321, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_540 | 2. Vay các TCTD khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=322, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_541 | III. Tiền gửi của khách hàng | Tỉ đồng | Cơ sở | data_val WHERE row_desc=330, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_542 | IV. Các công cụ tài chính phái sinh và các khoản nợ tài chính khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=340, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_543 | V. Vốn tài trợ, uỷ thác đầu tư, cho vay TCTD chịu rủi ro | Tỉ đồng | Cơ sở | data_val WHERE row_desc=350, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_544 | VI. Phát hành giấy tờ có giá | Tỉ đồng | Cơ sở | data_val WHERE row_desc=360, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_545 | VII. Các khoản nợ khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=370, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_546 | 1. Các khoản lãi, phí phải trả | Tỉ đồng | Cơ sở | data_val WHERE row_desc=371, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_547 | 2. Thuế TNDN hoãn lại phải trả | Tỉ đồng | Cơ sở | data_val WHERE row_desc=372, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_548 | 3. Các khoản phải trả và công nợ khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=373, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_549 | 4. Dự phòng rủi ro khác (Dự phòng cho công nợ tiềm ẩn và cam kết ngoại bảng) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=379, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_550 | Tổng nợ phải trả | Tỉ đồng | Cơ sở | data_val WHERE row_desc=400, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_551 | VIII. Vốn và các quỹ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=500, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_552 | 1. Vốn của TCTD | Tỉ đồng | Cơ sở | data_val WHERE row_desc=410, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_553 | a. Vốn điều lệ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=411, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_554 | b. Vốn đầu tư XDCB | Tỉ đồng | Cơ sở | data_val WHERE row_desc=412, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_555 | c. Thặng dư vốn cổ phần | Tỉ đồng | Cơ sở | data_val WHERE row_desc=413, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_556 | d. Cổ phiếu quỹ (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=414, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_557 | e. Cổ phiếu ưu đãi | Tỉ đồng | Cơ sở | data_val WHERE row_desc=415, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_558 | g. Vốn khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=416, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_559 | 2. Quỹ của TCTD | Tỉ đồng | Cơ sở | data_val WHERE row_desc=420, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_560 | 3. Chênh lệch tỷ giá hối đoái (3) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=430, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_561 | 4. Chênh lệch đánh giá lại tài sản | Tỉ đồng | Cơ sở | data_val WHERE row_desc=440, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_562 | 5. Lợi nhuận chưa phân phối/ Lỗ lũy kế (3) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=450, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_563 | IX. Lợi ích của cổ đông thiểu số | Tỉ đồng | Cơ sở | data_val WHERE row_desc=700, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_564 | Tổng nợ phải trả và vốn chủ sở hữu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=800, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_565 | I.Nghĩa vụ nợ tiềm ẩn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=910, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_566 | 1.Bảo lãnh vay vốn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=911, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_567 | 2.Cam kết trong nghiệp vụ L/C | Tỉ đồng | Cơ sở | data_val WHERE row_desc=912, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_568 | 3.Bảo lãnh khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=913, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_569 | II.Các cam kết đưa ra | Tỉ đồng | Cơ sở | data_val WHERE row_desc=920, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_570 | 1.Cam kết tài trợ cho khách hàng | Tỉ đồng | Cơ sở | data_val WHERE row_desc=921, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_571 | 2.Cam kết khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=922, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1166 | A. TÀI SẢN | | N/A | — | Section label — không có logic tính toán | READY |
+| K_GSDC_1167 | I. Tiền mặt, vàng bạc, đá quý | Tỉ đồng | Cơ sở | data_val WHERE row_desc=110, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1168 | II. Tiền gửi tại NHNN | Tỉ đồng | Cơ sở | data_val WHERE row_desc=120, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1169 | III. Tiền, vàng gửi tại các TCTD khác và cho vay các TCTD khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=130, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1170 | 1. Tiền, vàng gửi tại các TCTD khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=131, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1171 | 2. Cho vay các TCTD khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=132, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1172 | 3. Dự phòng rủi ro cho vay các TCTD khác (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=139, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1173 | IV. Chứng khoán kinh doanh | Tỉ đồng | Cơ sở | data_val WHERE row_desc=140, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1174 | 1. Chứng khoán kinh doanh (1) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=141, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1175 | 2. Dự phòng giảm giá chứng khoán kinh doanh (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=149, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1176 | V. Các công cụ tài chính phái sinh và các tài sản tài chính khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=150, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1177 | VI. Cho vay khách hàng | Tỉ đồng | Cơ sở | data_val WHERE row_desc=160, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1178 | 1. Cho vay khách hàng | Tỉ đồng | Cơ sở | data_val WHERE row_desc=161, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1179 | 2. Dự phòng rủi ro cho vay khách hàng (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=169, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1180 | VII. Hoạt động mua nợ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=180, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1181 | 1. Mua nợ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=181, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1182 | 2. Dự phòng rủi ro hoạt động mua nợ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=189, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1183 | VIII. Chứng khoán đầu tư | Tỉ đồng | Cơ sở | data_val WHERE row_desc=170, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1184 | 1. Chứng khoán đầu tư sẵn sàng để bán (2) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=171, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1185 | 2. Chứng khoán đầu tư giữ đến ngày đáo hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=172, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1186 | 3. Dự phòng giảm giá chứng khoán đầu tư (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=179, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1187 | IX. Góp vốn, đầu tư dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=210, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1188 | 1. Đầu tư vào công ty con | Tỉ đồng | Cơ sở | data_val WHERE row_desc=211, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1189 | 2. Vốn góp liên doanh | Tỉ đồng | Cơ sở | data_val WHERE row_desc=212, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1190 | 3. Đầu tư vào công ty liên kết | Tỉ đồng | Cơ sở | data_val WHERE row_desc=213, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1191 | 4. Đầu tư dài hạn khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=214, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1192 | 5. Dự phòng giảm giá đầu tư dài hạn (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=219, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1193 | X. Tài sản cố định | Tỉ đồng | Cơ sở | data_val WHERE row_desc=220, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1194 | 1. Tài sản cố định hữu hình | Tỉ đồng | Cơ sở | data_val WHERE row_desc=221, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1195 | a. Nguyên giá TSCĐ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=222, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1196 | b. Hao mòn TSCĐ (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=223, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1197 | 2. Tài sản cố định thuê tài chính | Tỉ đồng | Cơ sở | data_val WHERE row_desc=224, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1198 | a. Nguyên giá TSCĐ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=225, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1199 | b. Hao mòn TSCĐ (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=226, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1200 | 3. Tài sản cố định vô hình | Tỉ đồng | Cơ sở | data_val WHERE row_desc=227, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1201 | a. Nguyên giá TSCĐ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=228, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1202 | b. Hao mòn TSCĐ (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=229, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1203 | XI. Bất động sản đầu tư | Tỉ đồng | Cơ sở | data_val WHERE row_desc=240, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1204 | a. Nguyên giá BĐSĐT | Tỉ đồng | Cơ sở | data_val WHERE row_desc=241, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1205 | b. Hao mòn BĐSĐT (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=242, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1206 | XII. Tài sản Có khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=250, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1207 | 1. Các khoản phải thu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=251, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1208 | 2. Các khoản lãi, phí phải thu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=252, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1209 | 3. Tài sản thuế TNDN hoãn lại | Tỉ đồng | Cơ sở | data_val WHERE row_desc=253, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1210 | 4. Tài sản Có khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=254, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1211 | · Trong đó: Lợi thế thương mại | Tỉ đồng | Cơ sở | data_val WHERE row_desc=255, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1212 | 5. Các khoản dự phòng rủi ro cho các tài sản Có nội bảng khác (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=259, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1213 | Tổng tài sản Có | Tỉ đồng | Cơ sở | data_val WHERE row_desc=300, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1214 | B. Nợ phải trả và vốn chủ sở hữu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=NV, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1215 | I. Các khoản nợ Chính phủ và NHNN | Tỉ đồng | Cơ sở | data_val WHERE row_desc=310, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1216 | II. Tiền gửi và vay các TCTD khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=320, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1217 | 1. Tiền gửi của các TCTD khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=321, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1218 | 2. Vay các TCTD khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=322, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1219 | III. Tiền gửi của khách hàng | Tỉ đồng | Cơ sở | data_val WHERE row_desc=330, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1220 | IV. Các công cụ tài chính phái sinh và các khoản nợ tài chính khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=340, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1221 | V. Vốn tài trợ, uỷ thác đầu tư, cho vay TCTD chịu rủi ro | Tỉ đồng | Cơ sở | data_val WHERE row_desc=350, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1222 | VI. Phát hành giấy tờ có giá | Tỉ đồng | Cơ sở | data_val WHERE row_desc=360, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1223 | VII. Các khoản nợ khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=370, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1224 | 1. Các khoản lãi, phí phải trả | Tỉ đồng | Cơ sở | data_val WHERE row_desc=371, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1225 | 2. Thuế TNDN hoãn lại phải trả | Tỉ đồng | Cơ sở | data_val WHERE row_desc=372, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1226 | 3. Các khoản phải trả và công nợ khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=373, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1227 | 4. Dự phòng rủi ro khác (Dự phòng cho công nợ tiềm ẩn và cam kết ngoại bảng) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=379, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1228 | Tổng nợ phải trả | Tỉ đồng | Cơ sở | data_val WHERE row_desc=400, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1229 | VIII. Vốn và các quỹ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=500, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1230 | 1. Vốn của TCTD | Tỉ đồng | Cơ sở | data_val WHERE row_desc=410, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1231 | a. Vốn điều lệ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=411, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1232 | b. Vốn đầu tư XDCB | Tỉ đồng | Cơ sở | data_val WHERE row_desc=412, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1233 | c. Thặng dư vốn cổ phần | Tỉ đồng | Cơ sở | data_val WHERE row_desc=413, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1234 | d. Cổ phiếu quỹ (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=414, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1235 | e. Cổ phiếu ưu đãi | Tỉ đồng | Cơ sở | data_val WHERE row_desc=415, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1236 | g. Vốn khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=416, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1237 | 2. Quỹ của TCTD | Tỉ đồng | Cơ sở | data_val WHERE row_desc=420, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1238 | 3. Chênh lệch tỷ giá hối đoái (3) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=430, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1239 | 4. Chênh lệch đánh giá lại tài sản | Tỉ đồng | Cơ sở | data_val WHERE row_desc=440, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1240 | 5. Lợi nhuận chưa phân phối/ Lỗ lũy kế (3) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=450, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1241 | IX. Lợi ích của cổ đông thiểu số | Tỉ đồng | Cơ sở | data_val WHERE row_desc=700, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1242 | Tổng nợ phải trả và vốn chủ sở hữu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=800, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1243 | CÁC CHỈ TIÊU NGOÀI BẢNG | | N/A | — | Section label — không có logic tính toán | READY |
+| K_GSDC_1244 | I.Nghĩa vụ nợ tiềm ẩn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=910, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1245 | 1.Bảo lãnh vay vốn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=911, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1246 | 2.Cam kết trong nghiệp vụ L/C | Tỉ đồng | Cơ sở | data_val WHERE row_desc=912, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1247 | 3.Bảo lãnh khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=913, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1248 | II.Các cam kết đưa ra | Tỉ đồng | Cơ sở | data_val WHERE row_desc=920, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1249 | 1.Cam kết tài trợ cho khách hàng | Tỉ đồng | Cơ sở | data_val WHERE row_desc=921, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1250 | 2.Cam kết khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=922, report=BCDKT, col_desc=1 | fr_value | **READY** |
 
 **Star Schema:** dùng chung `Fact Public Company Financial Report Value` + `Financial Report Catalog Dimension` với Nhóm 7 (không có erDiagram riêng — aggregate 1 CTĐC/kỳ, không group-by, khớp Data Explorer tra cứu chi tiết).
 
@@ -2365,7 +2381,7 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    fct_pc_fr_val_g27["Fact Public Company Financial Report Value"] --> R27["K_GSDC_489-571: TCTD — Bảng cân đối kế toán"]
+    fct_pc_fr_val_g27["Fact Public Company Financial Report Value"] --> R27["K_GSDC_1166-1250: TCTD — Bảng cân đối kế toán"]
     financial_rpt_catalog_dim_g27["Financial Report Catalog Dimension"] --> R27
 ```
 
@@ -2382,29 +2398,29 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_GSDC_572 | 1. Thu nhập lãi và các khoản thu nhập tương tự | Tỉ đồng | Cơ sở | data_val WHERE row_desc=01, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_573 | 2. Chi phí lãi và các chi phí tương tự | Tỉ đồng | Cơ sở | data_val WHERE row_desc=02, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_574 | I. Thu nhập lãi thuần | Tỉ đồng | Cơ sở | data_val WHERE row_desc=03, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_575 | 3. Thu nhập từ hoạt động dịch vụ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=04, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_576 | 4. Chi phí hoạt động dịch vụ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=05, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_577 | II. Lãi/ lỗ thuần từ hoạt động dịch vụ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=06, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_578 | III. Lãi/ lỗ thuần từ hoạt động kinh doanh ngoại hối | Tỉ đồng | Cơ sở | data_val WHERE row_desc=07, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_579 | IV. Lãi/ lỗ thuần từ mua bán chứng khoán kinh doanh | Tỉ đồng | Cơ sở | data_val WHERE row_desc=08, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_580 | V. Lãi/ lỗ thuần từ mua bán chứng khoán đầu tư | Tỉ đồng | Cơ sở | data_val WHERE row_desc=09, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_581 | 5. Thu nhập từ hoạt động khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=10, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_582 | 6. Chi phí hoạt động khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=11, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_583 | Vl. Lãi/ lỗ thuần từ hoạt động khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=12, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_584 | VII. Thu nhập từ góp vốn, mua cổ phần | Tỉ đồng | Cơ sở | data_val WHERE row_desc=13, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_585 | VIII. Chi phí hoạt động | Tỉ đồng | Cơ sở | data_val WHERE row_desc=14, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_586 | IX. Lợi nhuận thuần từ hoạt động kinh doanh trước chi phí dự phòng | Tỉ đồng | Cơ sở | data_val WHERE row_desc=15, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_587 | X. Chi phí dự phòng rủi ro tín dụng | Tỉ đồng | Cơ sở | data_val WHERE row_desc=16, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_588 | XI. Tổng lợi nhuận trước thuế | Tỉ đồng | Cơ sở | data_val WHERE row_desc=17, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_589 | 7. Chi phí thuế TNDN hiện hành | Tỉ đồng | Cơ sở | data_val WHERE row_desc=18, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_590 | 8. Chi phí thuế TNDN hoãn lại | Tỉ đồng | Cơ sở | data_val WHERE row_desc=19, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_591 | XII. Chi phí thuế TNDN | Tỉ đồng | Cơ sở | data_val WHERE row_desc=20, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_592 | XIII. Lợi nhuận sau thuế | Tỉ đồng | Cơ sở | data_val WHERE row_desc=21, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_593 | XIV. Lợi ích của cổ đông thiểu số | Tỉ đồng | Cơ sở | data_val WHERE row_desc=22, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_594 | XV. Lãi cơ bản trên cổ phiếu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=23, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1251 | 1. Thu nhập lãi và các khoản thu nhập tương tự | Tỉ đồng | Cơ sở | data_val WHERE row_desc=01, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1252 | 2. Chi phí lãi và các chi phí tương tự | Tỉ đồng | Cơ sở | data_val WHERE row_desc=02, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1253 | I. Thu nhập lãi thuần | Tỉ đồng | Cơ sở | data_val WHERE row_desc=03, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1254 | 3. Thu nhập từ hoạt động dịch vụ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=04, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1255 | 4. Chi phí hoạt động dịch vụ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=05, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1256 | II. Lãi/ lỗ thuần từ hoạt động dịch vụ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=06, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1257 | III. Lãi/ lỗ thuần từ hoạt động kinh doanh ngoại hối | Tỉ đồng | Cơ sở | data_val WHERE row_desc=07, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1258 | IV. Lãi/ lỗ thuần từ mua bán chứng khoán kinh doanh | Tỉ đồng | Cơ sở | data_val WHERE row_desc=08, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1259 | V. Lãi/ lỗ thuần từ mua bán chứng khoán đầu tư | Tỉ đồng | Cơ sở | data_val WHERE row_desc=09, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1260 | 5. Thu nhập từ hoạt động khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=10, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1261 | 6. Chi phí hoạt động khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=11, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1262 | Vl. Lãi/ lỗ thuần từ hoạt động khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=12, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1263 | VII. Thu nhập từ góp vốn, mua cổ phần | Tỉ đồng | Cơ sở | data_val WHERE row_desc=13, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1264 | VIII. Chi phí hoạt động | Tỉ đồng | Cơ sở | data_val WHERE row_desc=14, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1265 | IX. Lợi nhuận thuần từ hoạt động kinh doanh trước chi phí dự phòng | Tỉ đồng | Cơ sở | data_val WHERE row_desc=15, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1266 | X. Chi phí dự phòng rủi ro tín dụng | Tỉ đồng | Cơ sở | data_val WHERE row_desc=16, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1267 | XI. Tổng lợi nhuận trước thuế | Tỉ đồng | Cơ sở | data_val WHERE row_desc=17, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1268 | 7. Chi phí thuế TNDN hiện hành | Tỉ đồng | Cơ sở | data_val WHERE row_desc=18, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1269 | 8. Chi phí thuế TNDN hoãn lại | Tỉ đồng | Cơ sở | data_val WHERE row_desc=19, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1270 | XII. Chi phí thuế TNDN | Tỉ đồng | Cơ sở | data_val WHERE row_desc=20, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1271 | XIII. Lợi nhuận sau thuế | Tỉ đồng | Cơ sở | data_val WHERE row_desc=21, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1272 | XIV. Lợi ích của cổ đông thiểu số | Tỉ đồng | Cơ sở | data_val WHERE row_desc=22, report=BCKQKD, col_desc=1 | fr_value | **READY** |
+| K_GSDC_1273 | XV. Lãi cơ bản trên cổ phiếu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=23, report=BCKQKD, col_desc=1 | fr_value | **READY** |
 
 **Star Schema:** dùng chung `Fact Public Company Financial Report Value` + `Financial Report Catalog Dimension` với Nhóm 7 (không có erDiagram riêng — aggregate 1 CTĐC/kỳ, không group-by, khớp Data Explorer tra cứu chi tiết).
 
@@ -2412,7 +2428,7 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    fct_pc_fr_val_g28["Fact Public Company Financial Report Value"] --> R28["K_GSDC_572-594: TCTD — Báo cáo KQKD"]
+    fct_pc_fr_val_g28["Fact Public Company Financial Report Value"] --> R28["K_GSDC_1251-1273: TCTD — Báo cáo KQKD"]
     financial_rpt_catalog_dim_g28["Financial Report Catalog Dimension"] --> R28
 ```
 
@@ -2429,51 +2445,56 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_GSDC_595 | 1. Thu nhập lãi và các khoản thu nhập tương tự nhận được | Tỉ đồng | Cơ sở | data_val WHERE row_desc=01, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_596 | 2. Chi phí lãi và các chi phí tương tự đã trả (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=02, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_597 | 3. Thu nhập từ hoạt động dịch vụ nhận được | Tỉ đồng | Cơ sở | data_val WHERE row_desc=03, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_598 | 4. Chênh lệch số tiền thực thu/thực chi từ hoạt động kinh doanh | Tỉ đồng | Cơ sở | data_val WHERE row_desc=04, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_599 | 5. Thu nhập khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=05, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_600 | 6. Tiền thu các khoản nợ đã được xử lý xoá, bù đắp bằng nguồn rủi ro | Tỉ đồng | Cơ sở | data_val WHERE row_desc=06, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_601 | 7. Tiền chi trả cho nhân viên và hoạt động quản lý, công vụ (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=07, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_602 | 8. Tiền thuế thu nhập thực nộp trong kỳ (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=08, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_603 | B. Lưu chuyển tiền thuần từ hoạt động kinh doanh trước những thay đổi | Tỉ đồng | Cơ sở | data_val WHERE row_desc=09, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_604 | 9. (Tăng)/ Giảm các khoản tiền, vàng gửi và cho vay các TCTD khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=10, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_605 | 10. (Tăng)/ Giảm các khoản về kinh doanh chứng khoán | Tỉ đồng | Cơ sở | data_val WHERE row_desc=11, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_606 | 11. (Tăng)/ Giảm các công cụ tài chính phái sinh và các tài sản tài chính | Tỉ đồng | Cơ sở | data_val WHERE row_desc=12, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_607 | 12. (Tăng)/ Giảm các khoản cho vay khách hàng | Tỉ đồng | Cơ sở | data_val WHERE row_desc=13, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_608 | 13. Giảm nguồn dự phòng để bù đắp tổn thất các khoản | Tỉ đồng | Cơ sở | data_val WHERE row_desc=14, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_609 | 14. (Tăng)/ Giảm khác về tài sản hoạt động | Tỉ đồng | Cơ sở | data_val WHERE row_desc=15, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_610 | 15. Tăng/ (Giảm) các khoản nợ chính phủ và NHNN | Tỉ đồng | Cơ sở | data_val WHERE row_desc=16, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_611 | 16. Tăng/ (Giảm) các khoản tiền gửi, tiền vay các tổ chức tín dụng | Tỉ đồng | Cơ sở | data_val WHERE row_desc=17, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_612 | 17. Tăng/ (Giảm) tiền gửi của khách hàng (bao gồm cả Kho bạc Nhà nước) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=18, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_613 | 18. Tăng/ (Giảm) phát hành giấy tờ có giá (ngoại trừ giấy tờ có giá dài hạn) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=19, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_614 | 19. Tăng/ (Giảm) vốn tài trợ, uỷ thác đầu tư, cho vay mà TCTD chịu rủi ro | Tỉ đồng | Cơ sở | data_val WHERE row_desc=20, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_615 | 20. Tăng/ (Giảm) các công cụ tài chính phái sinh và các khoản nợ tài chính | Tỉ đồng | Cơ sở | data_val WHERE row_desc=21, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_616 | 21. Tăng/ (Giảm) khác về công nợ hoạt động | Tỉ đồng | Cơ sở | data_val WHERE row_desc=22, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_617 | 22. Chi từ các quỹ của TCTD (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=23, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_618 | I. Lưu chuyển tiền thuần từ hoạt động kinh doanh | Tỉ đồng | Cơ sở | data_val WHERE row_desc=24, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_619 | 1. Mua sắm tài sản cố định (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=25, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_620 | 2. Tiền thu từ thanh lý, nhượng bán TSCĐ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=26, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_621 | 3. Tiền chi từ thanh lý, nhượng bán TSCĐ (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=27, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_622 | 4. Mua sắm bất động sản đầu tư (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=28, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_623 | 5. Tiền thu từ bán, thanh lý bất động sản đầu tư | Tỉ đồng | Cơ sở | data_val WHERE row_desc=29, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_624 | 6. Tiền chi ra do bán, thanh lý bất động sản đầu tư (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=30, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_625 | 7. Tiền chi đầu tư, góp vốn vào các đơn vị khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=31, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_626 | 8. Tiền thu đầu tư, góp vốn vào các đơn vị khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=32, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_627 | 9. Tiền thu cổ tức và lợi nhuận được chia từ các khoản đầu tư, góp vốn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=33, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_628 | II. Lưu chuyển tiền thuần từ hoạt động đầu tư | Tỉ đồng | Cơ sở | data_val WHERE row_desc=34, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_629 | 1. Tăng vốn cổ phần từ góp vốn và/hoặc phát hành cổ phiếu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=35, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_630 | 2. Tiền thu từ phát hành giấy tờ có giá dài hạn có đủ điều kiện tính vào vốn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=36, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_631 | 3. Tiền chi thanh toán giấy tờ có giá dài hạn có đủ điều kiện tính vào vốn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=37, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_632 | 4. Cổ tức trả cho cổ đông, lợi nhuận đã chia (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=38, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_633 | 5. Tiền chi ra mua cổ phiếu ngân quỹ (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=39, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_634 | 6. Tiền thu được do bán cổ phiếu ngân quỹ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=40, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_635 | III. Lưu chuyển tiền thuần từ hoạt động tài chính | Tỉ đồng | Cơ sở | data_val WHERE row_desc=41, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_636 | IV. Lưu chuyển tiền thuần trong kỳ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=42, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_637 | V. Tiền và các khoản tương đương tiền tại thời điểm đầu kỳ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=43, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_638 | VI. Điều chỉnh ảnh hưởng của thay đổi tỷ giá | Tỉ đồng | Cơ sở | data_val WHERE row_desc=44, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_639 | VII. Tiền và các khoản tương đương tiền tại thời điểm cuối kỳ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=45, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1274 | A. Lưu chuyển tiền từ hoạt động kinh doanh | | N/A | — | Section label — không có logic tính toán | READY |
+| K_GSDC_1275 | 1. Thu nhập lãi và các khoản thu nhập tương tự nhận được | Tỉ đồng | Cơ sở | data_val WHERE row_desc=01, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1276 | 2. Chi phí lãi và các chi phí tương tự đã trả (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=02, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1277 | 3. Thu nhập từ hoạt động dịch vụ nhận được | Tỉ đồng | Cơ sở | data_val WHERE row_desc=03, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1278 | 4. Chênh lệch số tiền thực thu/thực chi từ hoạt động kinh doanh | Tỉ đồng | Cơ sở | data_val WHERE row_desc=04, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1279 | 5. Thu nhập khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=05, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1280 | 6. Tiền thu các khoản nợ đã được xử lý xoá, bù đắp bằng nguồn rủi ro | Tỉ đồng | Cơ sở | data_val WHERE row_desc=06, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1281 | 7. Tiền chi trả cho nhân viên và hoạt động quản lý, công vụ (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=07, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1282 | 8. Tiền thuế thu nhập thực nộp trong kỳ (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=08, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1283 | B. Lưu chuyển tiền thuần từ hoạt động kinh doanh trước những thay đổi | Tỉ đồng | Cơ sở | data_val WHERE row_desc=09, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1284 | Những thay đổi về tài sản hoạt động | | N/A | — | Section label — không có logic tính toán | READY |
+| K_GSDC_1285 | 9. (Tăng)/ Giảm các khoản tiền, vàng gửi và cho vay các TCTD khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=10, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1286 | 10. (Tăng)/ Giảm các khoản về kinh doanh chứng khoán | Tỉ đồng | Cơ sở | data_val WHERE row_desc=11, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1287 | 11. (Tăng)/ Giảm các công cụ tài chính phái sinh và các tài sản tài chính | Tỉ đồng | Cơ sở | data_val WHERE row_desc=12, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1288 | 12. (Tăng)/ Giảm các khoản cho vay khách hàng | Tỉ đồng | Cơ sở | data_val WHERE row_desc=13, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1289 | 13. Giảm nguồn dự phòng để bù đắp tổn thất các khoản | Tỉ đồng | Cơ sở | data_val WHERE row_desc=14, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1290 | 14. (Tăng)/ Giảm khác về tài sản hoạt động | Tỉ đồng | Cơ sở | data_val WHERE row_desc=15, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1291 | Những thay đổi về công nợ hoạt động | | N/A | — | Section label — không có logic tính toán | READY |
+| K_GSDC_1292 | 15. Tăng/ (Giảm) các khoản nợ chính phủ và NHNN | Tỉ đồng | Cơ sở | data_val WHERE row_desc=16, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1293 | 16. Tăng/ (Giảm) các khoản tiền gửi, tiền vay các tổ chức tín dụng | Tỉ đồng | Cơ sở | data_val WHERE row_desc=17, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1294 | 17. Tăng/ (Giảm) tiền gửi của khách hàng (bao gồm cả Kho bạc Nhà nước) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=18, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1295 | 18. Tăng/ (Giảm) phát hành giấy tờ có giá (ngoại trừ giấy tờ có giá dài hạn) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=19, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1296 | 19. Tăng/ (Giảm) vốn tài trợ, uỷ thác đầu tư, cho vay mà TCTD chịu rủi ro | Tỉ đồng | Cơ sở | data_val WHERE row_desc=20, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1297 | 20. Tăng/ (Giảm) các công cụ tài chính phái sinh và các khoản nợ tài chính | Tỉ đồng | Cơ sở | data_val WHERE row_desc=21, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1298 | 21. Tăng/ (Giảm) khác về công nợ hoạt động | Tỉ đồng | Cơ sở | data_val WHERE row_desc=22, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1299 | 22. Chi từ các quỹ của TCTD (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=23, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1300 | I. Lưu chuyển tiền thuần từ hoạt động kinh doanh | Tỉ đồng | Cơ sở | data_val WHERE row_desc=24, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1301 | Lưu chuyển tiền từ hoạt động đầu tư | | N/A | — | Section label — không có logic tính toán | READY |
+| K_GSDC_1302 | 1. Mua sắm tài sản cố định (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=25, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1303 | 2. Tiền thu từ thanh lý, nhượng bán TSCĐ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=26, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1304 | 3. Tiền chi từ thanh lý, nhượng bán TSCĐ (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=27, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1305 | 4. Mua sắm bất động sản đầu tư (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=28, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1306 | 5. Tiền thu từ bán, thanh lý bất động sản đầu tư | Tỉ đồng | Cơ sở | data_val WHERE row_desc=29, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1307 | 6. Tiền chi ra do bán, thanh lý bất động sản đầu tư (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=30, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1308 | 7. Tiền chi đầu tư, góp vốn vào các đơn vị khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=31, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1309 | 8. Tiền thu đầu tư, góp vốn vào các đơn vị khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=32, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1310 | 9. Tiền thu cổ tức và lợi nhuận được chia từ các khoản đầu tư, góp vốn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=33, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1311 | II. Lưu chuyển tiền thuần từ hoạt động đầu tư | Tỉ đồng | Cơ sở | data_val WHERE row_desc=34, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1312 | Lưu chuyển tiền từ hoạt động tài chính | | N/A | — | Section label — không có logic tính toán | READY |
+| K_GSDC_1313 | 1. Tăng vốn cổ phần từ góp vốn và/hoặc phát hành cổ phiếu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=35, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1314 | 2. Tiền thu từ phát hành giấy tờ có giá dài hạn có đủ điều kiện tính vào vốn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=36, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1315 | 3. Tiền chi thanh toán giấy tờ có giá dài hạn có đủ điều kiện tính vào vốn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=37, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1316 | 4. Cổ tức trả cho cổ đông, lợi nhuận đã chia (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=38, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1317 | 5. Tiền chi ra mua cổ phiếu ngân quỹ (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=39, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1318 | 6. Tiền thu được do bán cổ phiếu ngân quỹ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=40, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1319 | III. Lưu chuyển tiền thuần từ hoạt động tài chính | Tỉ đồng | Cơ sở | data_val WHERE row_desc=41, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1320 | IV. Lưu chuyển tiền thuần trong kỳ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=42, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1321 | V. Tiền và các khoản tương đương tiền tại thời điểm đầu kỳ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=43, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1322 | VI. Điều chỉnh ảnh hưởng của thay đổi tỷ giá | Tỉ đồng | Cơ sở | data_val WHERE row_desc=44, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1323 | VII. Tiền và các khoản tương đương tiền tại thời điểm cuối kỳ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=45, report=BCLCTT (trực tiếp), col_desc=1 | fr_value | **READY** |
 
 **Star Schema:** dùng chung `Fact Public Company Financial Report Value` + `Financial Report Catalog Dimension` với Nhóm 7 (không có erDiagram riêng — aggregate 1 CTĐC/kỳ, không group-by, khớp Data Explorer tra cứu chi tiết).
 
@@ -2481,7 +2502,7 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    fct_pc_fr_val_g29["Fact Public Company Financial Report Value"] --> R29["K_GSDC_595-639: TCTD — Báo cáo LCTT trực tiếp"]
+    fct_pc_fr_val_g29["Fact Public Company Financial Report Value"] --> R29["K_GSDC_1274-1323: TCTD — Báo cáo LCTT trực tiếp"]
     financial_rpt_catalog_dim_g29["Financial Report Catalog Dimension"] --> R29
 ```
 
@@ -2498,56 +2519,63 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_GSDC_640 | Lợi nhuận trước thuế | Tỉ đồng | Cơ sở | data_val WHERE row_desc=01, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_641 | 2. Khấu hao TSCĐ, bất động sản đầu tư | Tỉ đồng | Cơ sở | data_val WHERE row_desc=02, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_642 | 3. Dự phòng rủi ro tín dụng, giảm giá, đầu tư tăng thêm/ (hoàn nhập) trong kỳ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=03, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_643 | 4. Lãi và phí phải thu trong kỳ (thực tế chưa thu) (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=04, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_644 | 5. Lãi và phí phải trả trong kỳ (thực tế chưa trả) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=05, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_645 | 6. (Lãi)/ lỗ do thanh lý TSCĐ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=06, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_646 | 7. (Lãi)/ lỗ do bán, thanh lý bất động sản đầu tư | Tỉ đồng | Cơ sở | data_val WHERE row_desc=07, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_647 | 8. (Lãi)/ lỗ do thanh lý những khoản đầu tư, góp vốn dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=08, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_648 | 9. Chênh lệch tỷ giá hối đoái chưa thực hiện | Tỉ đồng | Cơ sở | data_val WHERE row_desc=09, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_649 | 10. Các điều chỉnh khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=10, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_650 | 11. (Tăng)/ Giảm các khoản tiền, vàng gửi và cho vay các TCTD | Tỉ đồng | Cơ sở | data_val WHERE row_desc=11, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_651 | 12. (Tăng)/ Giảm các khoản về kinh doanh chứng khoán | Tỉ đồng | Cơ sở | data_val WHERE row_desc=12, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_652 | 13. (Tăng)/ Giảm các công cụ tài chính phái sinh và các tài sản tài chính | Tỉ đồng | Cơ sở | data_val WHERE row_desc=13, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_653 | 14. (Tăng)/ Giảm các khoản cho vay khách hàng | Tỉ đồng | Cơ sở | data_val WHERE row_desc=14, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_654 | 15. (Tăng)/ Giảm lãi, phí phải thu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=15, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_655 | 16. (Giảm)/ Tăng nguồn dự phòng để bù đắp tổn thất các khoản | Tỉ đồng | Cơ sở | data_val WHERE row_desc=16, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_656 | 17. (Tăng)/ Giảm khác về tài sản hoạt động | Tỉ đồng | Cơ sở | data_val WHERE row_desc=17, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_657 | 18. Tăng/ (Giảm) các khoản nợ chính phủ và NHNN | Tỉ đồng | Cơ sở | data_val WHERE row_desc=18, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_658 | 19. Tăng/ (Giảm) các khoản tiền gửi và vay các TCTD | Tỉ đồng | Cơ sở | data_val WHERE row_desc=19, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_659 | 20. Tăng/ (Giảm) tiền gửi của khách hàng (bao gồm cả Kho bạc Nhà nước) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=20, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_660 | 21. Tăng/ (Giảm) các công cụ TC phái sinh và các khoản nợ tài chính khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=21, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_661 | 22. Tăng/ (Giảm) vốn tài trợ, uỷ thác đầu tư, cho vay mà TCTD phải chịu rủi ro | Tỉ đồng | Cơ sở | data_val WHERE row_desc=22, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_662 | 23. Tăng/ (Giảm) phát hành giấy tờ có giá (ngoại trừ GTCG được tính vào vốn) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=23, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_663 | 24. Tăng/ (Giảm) lãi, phí phải trả | Tỉ đồng | Cơ sở | data_val WHERE row_desc=24, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_664 | 25. Tăng/(Giảm) khác về công nợ hoạt động | Tỉ đồng | Cơ sở | data_val WHERE row_desc=25, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_665 | Lưu chuyển tiền thuần từ hoạt động kinh doanh trước thuế thu nhập | Tỉ đồng | Cơ sở | data_val WHERE row_desc=26, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_666 | 26. Thuế TNDN đã nộp (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=27, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_667 | 27. Chi từ các quỹ của TCTD (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=28, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_668 | I. Lưu chuyển tiền thuần từ hoạt động kinh doanh | Tỉ đồng | Cơ sở | data_val WHERE row_desc=29, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_669 | 1. Mua sắm TSCĐ (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=30, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_670 | 2. Tiền thu từ thanh lý, nhượng bán TSCĐ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=31, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_671 | 3. Tiền chi từ thanh lý, nhượng bán TSCĐ (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=32, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_672 | 4. Mua sắm bất động sản đầu tư (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=33, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_673 | 5. Tiền thu từ bán, thanh lý bất động sản đầu tư | Tỉ đồng | Cơ sở | data_val WHERE row_desc=34, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_674 | 6. Tiền chi ra do bán, thanh lý bất động sản đầu tư (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=35, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_675 | 7. Tiền chi đầu tư, góp vốn vào các đơn vị khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=36, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_676 | 8. Tiền thu đầu tư, góp vốn vào các đơn vị khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=37, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_677 | 9. Tiền thu cổ tức và lợi nhuận được chia từ các khoản đầu tư, góp vốn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=38, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_678 | II. Lưu chuyển từ hoạt động đầu tư | Tỉ đồng | Cơ sở | data_val WHERE row_desc=39, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_679 | 1. Tăng vốn cổ phần từ góp vốn và/ hoặc phát hành cổ phiếu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=40, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_680 | 2. Tiền thu từ phát hành giấy tờ có giá dài hạn đủ điều kiện tính vào vốn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=41, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_681 | 3. Tiền chi thanh toán giấy tờ có giá dài hạn đủ điều kiện tính vào vốn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=42, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_682 | 4. Cổ tức trả cho cổ đông, lợi nhuận đã chia (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=43, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_683 | 5. Tiền chi ra mua cổ phiếu quỹ (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=44, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_684 | 6. Tiền thu được do bán cổ phiếu quỹ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=45, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_685 | III. Lưu chuyển tiền từ hoạt động tài chính | Tỉ đồng | Cơ sở | data_val WHERE row_desc=46, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_686 | IV. Lưu chuyển tiền thuần trong kỳ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=47, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_687 | V. Tiền và các khoản tương đương tiền tại thời điểm đầu kỳ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=48, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_688 | VI. Điều chỉnh ảnh hưởng của thay đổi tỷ giá | Tỉ đồng | Cơ sở | data_val WHERE row_desc=49, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
-| K_GSDC_689 | VII. Tiền và các khoản tương đương tiền tại thời điểm cuối kỳ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=50, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1324 | Lưu chuyển tiền từ hoạt động kinh doanh | | N/A | — | Section label — không có logic tính toán | READY |
+| K_GSDC_1325 | Lợi nhuận trước thuế | Tỉ đồng | Cơ sở | data_val WHERE row_desc=01, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1326 | Điều chỉnh cho các khoản: | | N/A | — | Section label — không có logic tính toán | READY |
+| K_GSDC_1327 | 2. Khấu hao TSCĐ, bất động sản đầu tư | Tỉ đồng | Cơ sở | data_val WHERE row_desc=02, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1328 | 3. Dự phòng rủi ro tín dụng, giảm giá, đầu tư tăng thêm/ (hoàn nhập) trong kỳ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=03, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1329 | 4. Lãi và phí phải thu trong kỳ (thực tế chưa thu) (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=04, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1330 | 5. Lãi và phí phải trả trong kỳ (thực tế chưa trả) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=05, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1331 | 6. (Lãi)/ lỗ do thanh lý TSCĐ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=06, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1332 | 7. (Lãi)/ lỗ do bán, thanh lý bất động sản đầu tư | Tỉ đồng | Cơ sở | data_val WHERE row_desc=07, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1333 | 8. (Lãi)/ lỗ do thanh lý những khoản đầu tư, góp vốn dài hạn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=08, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1334 | 9. Chênh lệch tỷ giá hối đoái chưa thực hiện | Tỉ đồng | Cơ sở | data_val WHERE row_desc=09, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1335 | 10. Các điều chỉnh khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=10, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1336 | Những thay đổi về tài sản và công nợ hoạt động | | N/A | — | Section label — không có logic tính toán | READY |
+| K_GSDC_1337 | Những thay đổi về tài sản hoạt động | | N/A | — | Section label — không có logic tính toán | READY |
+| K_GSDC_1338 | 11. (Tăng)/ Giảm các khoản tiền, vàng gửi và cho vay các TCTD | Tỉ đồng | Cơ sở | data_val WHERE row_desc=11, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1339 | 12. (Tăng)/ Giảm các khoản về kinh doanh chứng khoán | Tỉ đồng | Cơ sở | data_val WHERE row_desc=12, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1340 | 13. (Tăng)/ Giảm các công cụ tài chính phái sinh và các tài sản tài chính | Tỉ đồng | Cơ sở | data_val WHERE row_desc=13, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1341 | 14. (Tăng)/ Giảm các khoản cho vay khách hàng | Tỉ đồng | Cơ sở | data_val WHERE row_desc=14, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1342 | 15. (Tăng)/ Giảm lãi, phí phải thu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=15, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1343 | 16. (Giảm)/ Tăng nguồn dự phòng để bù đắp tổn thất các khoản | Tỉ đồng | Cơ sở | data_val WHERE row_desc=16, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1344 | 17. (Tăng)/ Giảm khác về tài sản hoạt động | Tỉ đồng | Cơ sở | data_val WHERE row_desc=17, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1345 | Những thay đổi về công nợ hoạt động | | N/A | — | Section label — không có logic tính toán | READY |
+| K_GSDC_1346 | 18. Tăng/ (Giảm) các khoản nợ chính phủ và NHNN | Tỉ đồng | Cơ sở | data_val WHERE row_desc=18, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1347 | 19. Tăng/ (Giảm) các khoản tiền gửi và vay các TCTD | Tỉ đồng | Cơ sở | data_val WHERE row_desc=19, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1348 | 20. Tăng/ (Giảm) tiền gửi của khách hàng (bao gồm cả Kho bạc Nhà nước) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=20, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1349 | 21. Tăng/ (Giảm) các công cụ TC phái sinh và các khoản nợ tài chính khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=21, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1350 | 22. Tăng/ (Giảm) vốn tài trợ, uỷ thác đầu tư, cho vay mà TCTD phải chịu rủi ro | Tỉ đồng | Cơ sở | data_val WHERE row_desc=22, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1351 | 23. Tăng/ (Giảm) phát hành giấy tờ có giá (ngoại trừ GTCG được tính vào vốn) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=23, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1352 | 24. Tăng/ (Giảm) lãi, phí phải trả | Tỉ đồng | Cơ sở | data_val WHERE row_desc=24, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1353 | 25. Tăng/(Giảm) khác về công nợ hoạt động | Tỉ đồng | Cơ sở | data_val WHERE row_desc=25, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1354 | Lưu chuyển tiền thuần từ hoạt động kinh doanh trước thuế thu nhập | Tỉ đồng | Cơ sở | data_val WHERE row_desc=26, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1355 | 26. Thuế TNDN đã nộp (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=27, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1356 | 27. Chi từ các quỹ của TCTD (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=28, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1357 | I. Lưu chuyển tiền thuần từ hoạt động kinh doanh | Tỉ đồng | Cơ sở | data_val WHERE row_desc=29, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1358 | Lưu chuyển tiền từ hoạt động đầu tư | | N/A | — | Section label — không có logic tính toán | READY |
+| K_GSDC_1359 | 1. Mua sắm TSCĐ (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=30, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1360 | 2. Tiền thu từ thanh lý, nhượng bán TSCĐ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=31, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1361 | 3. Tiền chi từ thanh lý, nhượng bán TSCĐ (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=32, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1362 | 4. Mua sắm bất động sản đầu tư (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=33, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1363 | 5. Tiền thu từ bán, thanh lý bất động sản đầu tư | Tỉ đồng | Cơ sở | data_val WHERE row_desc=34, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1364 | 6. Tiền chi ra do bán, thanh lý bất động sản đầu tư (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=35, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1365 | 7. Tiền chi đầu tư, góp vốn vào các đơn vị khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=36, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1366 | 8. Tiền thu đầu tư, góp vốn vào các đơn vị khác | Tỉ đồng | Cơ sở | data_val WHERE row_desc=37, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1367 | 9. Tiền thu cổ tức và lợi nhuận được chia từ các khoản đầu tư, góp vốn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=38, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1368 | II. Lưu chuyển từ hoạt động đầu tư | Tỉ đồng | Cơ sở | data_val WHERE row_desc=39, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1369 | Lưu chuyển tiền từ hoạt động tài chính | | N/A | — | Section label — không có logic tính toán | READY |
+| K_GSDC_1370 | 1. Tăng vốn cổ phần từ góp vốn và/ hoặc phát hành cổ phiếu | Tỉ đồng | Cơ sở | data_val WHERE row_desc=40, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1371 | 2. Tiền thu từ phát hành giấy tờ có giá dài hạn đủ điều kiện tính vào vốn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=41, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1372 | 3. Tiền chi thanh toán giấy tờ có giá dài hạn đủ điều kiện tính vào vốn | Tỉ đồng | Cơ sở | data_val WHERE row_desc=42, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1373 | 4. Cổ tức trả cho cổ đông, lợi nhuận đã chia (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=43, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1374 | 5. Tiền chi ra mua cổ phiếu quỹ (*) | Tỉ đồng | Cơ sở | data_val WHERE row_desc=44, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1375 | 6. Tiền thu được do bán cổ phiếu quỹ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=45, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1376 | III. Lưu chuyển tiền từ hoạt động tài chính | Tỉ đồng | Cơ sở | data_val WHERE row_desc=46, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1377 | IV. Lưu chuyển tiền thuần trong kỳ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=47, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1378 | V. Tiền và các khoản tương đương tiền tại thời điểm đầu kỳ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=48, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1379 | VI. Điều chỉnh ảnh hưởng của thay đổi tỷ giá | Tỉ đồng | Cơ sở | data_val WHERE row_desc=49, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
+| K_GSDC_1380 | VII. Tiền và các khoản tương đương tiền tại thời điểm cuối kỳ | Tỉ đồng | Cơ sở | data_val WHERE row_desc=50, report=BCLCTT (gián tiếp), col_desc=1 | fr_value | **READY** |
 
 **Star Schema:** dùng chung `Fact Public Company Financial Report Value` + `Financial Report Catalog Dimension` với Nhóm 7 (không có erDiagram riêng — aggregate 1 CTĐC/kỳ, không group-by, khớp Data Explorer tra cứu chi tiết).
 
@@ -2555,7 +2583,7 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    fct_pc_fr_val_g30["Fact Public Company Financial Report Value"] --> R30["K_GSDC_640-689: TCTD — Báo cáo LCTT gián tiếp"]
+    fct_pc_fr_val_g30["Fact Public Company Financial Report Value"] --> R30["K_GSDC_1324-1380: TCTD — Báo cáo LCTT gián tiếp"]
     financial_rpt_catalog_dim_g30["Financial Report Catalog Dimension"] --> R30
 ```
 
@@ -2565,31 +2593,31 @@ flowchart LR
 
 #### Nhóm 31 — STT 31: Dữ liệu về thông tin niêm yết
 
-> **Rà soát 2026-07-16:** BA ghi Nguồn = "MSS, IDS" (không thuần MSS) và `Loại dữ liệu` phân biệt rõ 2 nhóm: 8 KPI đầu = "Dữ liệu tĩnh - **Chưa có CSDL**" (nguồn là biểu mẫu báo cáo thủ công theo Thông tư 138/2025/TT-BTC hoặc biểu mẫu Ban phát triển thị trường — chưa số hoá thành bảng CSDL); 2 KPI cuối (K_GSDC_698, K_GSDC_699) = "Dữ liệu tĩnh" (không có "chưa có CSDL") — BA ghi rõ Bảng nguồn = `state_capital`, Trường nguồn = `owned_share_qty`/`ownership_ratio`, filter `NVL(update_dated, created_date) < cuối tháng` (note: "VSDC ko có, lấy từ IDS"). Khớp Atomic entity `Public Company State Capital` (`pc_state_capital`, từ `lld_IDS_STATE_CAPITAL.yaml`) cho phần business column (`owned_share_quantity`/`ownership_ratio_percentage`).
-> **Gap Atomic K_GSDC_698/699 (rà soát LLD 2026-07-16):** Entity `pc_state_capital` hiện **không có audit fields** (`created_date`/`update_dated`) — chỉ có business columns, không có timestamp nào để lọc theo tháng như BA yêu cầu (`NVL(update_dated, created_date) < cuối tháng`). Không thể thiết kế Fact snapshot đúng grain "1 row / CTDC / tháng" nếu thiếu cột này. **Giữ PENDING**, khác gap loại của 8 KPI kia (thiếu hẳn bảng nguồn) — 2 KPI này chỉ thiếu 2 audit field trên 1 entity đã tồn tại. Cần bổ sung `created_date`/`update_dated` vào `pc_state_capital` qua `atomic-lld-design` trước khi Datamart có thể thiết kế Attributes.
+> **Rà soát 2026-07-16:** BA ghi Nguồn = "MSS, IDS" (không thuần MSS) và `Loại dữ liệu` phân biệt rõ 2 nhóm: 8 KPI đầu = "Dữ liệu tĩnh - **Chưa có CSDL**" (nguồn là biểu mẫu báo cáo thủ công theo Thông tư 138/2025/TT-BTC hoặc biểu mẫu Ban phát triển thị trường — chưa số hoá thành bảng CSDL); 2 KPI cuối (K_GSDC_1389, K_GSDC_1390) = "Dữ liệu tĩnh" (không có "chưa có CSDL") — BA ghi rõ Bảng nguồn = `state_capital`, Trường nguồn = `owned_share_qty`/`ownership_ratio`, filter `NVL(update_dated, created_date) < cuối tháng` (note: "VSDC ko có, lấy từ IDS"). Khớp Atomic entity `Public Company State Capital` (`pc_state_capital`, từ `lld_IDS_STATE_CAPITAL.yaml`) cho phần business column (`owned_share_quantity`/`ownership_ratio_percentage`).
+> **Gap Atomic K_GSDC_1389/1390 (rà soát LLD 2026-07-16):** Entity `pc_state_capital` hiện **không có audit fields** (`created_date`/`update_dated`) — chỉ có business columns, không có timestamp nào để lọc theo tháng như BA yêu cầu (`NVL(update_dated, created_date) < cuối tháng`). Không thể thiết kế Fact snapshot đúng grain "1 row / CTDC / tháng" nếu thiếu cột này. **Giữ PENDING**, khác gap loại của 8 KPI kia (thiếu hẳn bảng nguồn) — 2 KPI này chỉ thiếu 2 audit field trên 1 entity đã tồn tại. Cần bổ sung `created_date`/`update_dated` vào `pc_state_capital` qua `atomic-lld-design` trước khi Datamart có thể thiết kế Attributes.
 
 **KPI liên quan:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_GSDC_690 | Khối lượng cổ phiếu đang lưu hành | | Base | (chưa xác định — xem Atomic cần bổ sung) |  | Pending - chưa có CSDL (biểu mẫu TT138/2025) |
-| K_GSDC_691 | Khối lượng cổ phiếu niêm yết | | Base | (chưa xác định — xem Atomic cần bổ sung) |  | Pending - chưa có CSDL (biểu mẫu TT138/2025) |
-| K_GSDC_692 | Khối lượng cổ phiếu quỹ | | Base | (chưa xác định — xem Atomic cần bổ sung) |  | Pending - chưa có CSDL (biểu mẫu TT138/2025) |
-| K_GSDC_693 | Khối lượng cổ phiếu tự do chuyển nhượng (Free Float) | | Base | (chưa xác định — xem Atomic cần bổ sung) |  | Pending - chưa có CSDL (biểu mẫu TT138/2025) |
-| K_GSDC_694 | Khối lượng cổ phiếu khối ngoại sở hữu | | Base | (chưa xác định — xem Atomic cần bổ sung) |  | Pending - chưa có CSDL (biểu mẫu Ban PTTT) |
-| K_GSDC_695 | Tỷ lệ sở hữu nước ngoài hiện tại | | Base | (chưa xác định — xem Atomic cần bổ sung) |  | Pending - chưa có CSDL (biểu mẫu Ban PTTT) |
-| K_GSDC_696 | Tỷ lệ sở hữu nước ngoài tối đa (Foreign Ownership Limit – FOL) | | Base | (chưa xác định — xem Atomic cần bổ sung) |  | Pending - chưa có CSDL (biểu mẫu Ban PTTT) |
-| K_GSDC_697 | Room ngoại còn lại | | Base | (chưa xác định — xem Atomic cần bổ sung) |  | Pending - chưa có CSDL (biểu mẫu Ban PTTT) |
-| K_GSDC_698 | Khối lượng cổ phiếu sở hữu nhà nước | | Base | owned_share_quantity (trực tiếp) | Public Company State Capital | **PENDING** — thiếu audit field `created_date`/`update_dated` để lọc theo tháng |
-| K_GSDC_699 | Tỷ lệ sở hữu nhà nước | | Base | ownership_ratio_percentage (trực tiếp) | Public Company State Capital | **PENDING** — thiếu audit field `created_date`/`update_dated` để lọc theo tháng |
+| K_GSDC_1381 | Khối lượng cổ phiếu đang lưu hành | | Base | (chưa xác định — xem Atomic cần bổ sung) |  | Pending - chưa có CSDL (biểu mẫu TT138/2025) |
+| K_GSDC_1382 | Khối lượng cổ phiếu niêm yết | | Base | (chưa xác định — xem Atomic cần bổ sung) |  | Pending - chưa có CSDL (biểu mẫu TT138/2025) |
+| K_GSDC_1383 | Khối lượng cổ phiếu quỹ | | Base | (chưa xác định — xem Atomic cần bổ sung) |  | Pending - chưa có CSDL (biểu mẫu TT138/2025) |
+| K_GSDC_1384 | Khối lượng cổ phiếu tự do chuyển nhượng (Free Float) | | Base | (chưa xác định — xem Atomic cần bổ sung) |  | Pending - chưa có CSDL (biểu mẫu TT138/2025) |
+| K_GSDC_1385 | Khối lượng cổ phiếu khối ngoại sở hữu | | Base | (chưa xác định — xem Atomic cần bổ sung) |  | Pending - chưa có CSDL (biểu mẫu Ban PTTT) |
+| K_GSDC_1386 | Tỷ lệ sở hữu nước ngoài hiện tại | | Base | (chưa xác định — xem Atomic cần bổ sung) |  | Pending - chưa có CSDL (biểu mẫu Ban PTTT) |
+| K_GSDC_1387 | Tỷ lệ sở hữu nước ngoài tối đa (Foreign Ownership Limit – FOL) | | Base | (chưa xác định — xem Atomic cần bổ sung) |  | Pending - chưa có CSDL (biểu mẫu Ban PTTT) |
+| K_GSDC_1388 | Room ngoại còn lại | | Base | (chưa xác định — xem Atomic cần bổ sung) |  | Pending - chưa có CSDL (biểu mẫu Ban PTTT) |
+| K_GSDC_1389 | Khối lượng cổ phiếu sở hữu nhà nước | | Base | owned_share_quantity (trực tiếp) | Public Company State Capital | **PENDING** — thiếu audit field `created_date`/`update_dated` để lọc theo tháng |
+| K_GSDC_1390 | Tỷ lệ sở hữu nhà nước | | Base | ownership_ratio_percentage (trực tiếp) | Public Company State Capital | **PENDING** — thiếu audit field `created_date`/`update_dated` để lọc theo tháng |
 
 **Lý do PENDING (8 KPI đầu):** Nguồn là biểu mẫu báo cáo thủ công (Thông tư 138/2025/TT-BTC, biểu mẫu Ban phát triển thị trường) — chưa số hoá thành bảng CSDL, cần thiết kế Atomic mới.
 
-**Lý do PENDING (K_GSDC_698/699):** Atomic entity `pc_state_capital` đã có business columns cần thiết nhưng thiếu audit fields (`created_date`/`update_dated`) để dựng snapshot theo tháng — cần bổ sung 2 field này vào Atomic LLD trước.
+**Lý do PENDING (K_GSDC_1389/1390):** Atomic entity `pc_state_capital` đã có business columns cần thiết nhưng thiếu audit fields (`created_date`/`update_dated`) để dựng snapshot theo tháng — cần bổ sung 2 field này vào Atomic LLD trước.
 
 **Atomic cần bổ sung:**
 - 8 KPI đầu: Entity lưu thông tin khối lượng chứng khoán lưu hành/niêm yết (từ MSS) và thông tin sở hữu nước ngoài (từ Ban phát triển thị trường).
-- K_GSDC_698/699: bổ sung `created_date`/`update_dated` vào `pc_state_capital` (`lld_IDS_STATE_CAPITAL.yaml`).
+- K_GSDC_1389/1390: bổ sung `created_date`/`update_dated` vào `pc_state_capital` (`lld_IDS_STATE_CAPITAL.yaml`).
 
 **Mart dự kiến:** `Fact Public Company Listing Info Snapshot` (grain: 1 row / CTDC / tháng) — toàn bộ 10 KPI PENDING, chờ Atomic bổ sung tương ứng.
 
@@ -2598,20 +2626,20 @@ flowchart LR
 #### Nhóm 32 — STT 32: Dữ liệu tổng hợp chấm điểm phân loại CTDC (Data Explorer)
 
 > Phân loại: **Phân tích**
-> 8/8 dòng `Trạng thái mapping = Done`, `Loại dữ liệu = Dữ liệu tĩnh`. Khớp đúng cấu trúc Nhóm 1 (K_GSDC_7, K_GSDC_8, K_GSDC_1–6). Cùng điều kiện go-live: Atomic Evaluation entity `design_status: draft`, chưa approved — xem O_GSDC_1.
+> 8/8 dòng `Trạng thái mapping = Done`, `Loại dữ liệu = Dữ liệu tĩnh`. Khớp đúng cấu trúc Nhóm 1 (K_GSDC_1397, K_GSDC_1398, K_GSDC_1391–1396). Cùng điều kiện go-live: Atomic Evaluation entity `design_status: draft`, chưa approved — xem O_GSDC_1.
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_GSDC_1 | Tuân thủ | Điểm | Base | evaluation_score (trực tiếp) | Reuse từ Nhóm 1 | READY |
-| K_GSDC_2 | Phát hành | Điểm | Base | evaluation_score (trực tiếp) | Reuse từ Nhóm 1 | READY |
-| K_GSDC_3 | Tài chính | Điểm | Base | evaluation_score (trực tiếp) | Reuse từ Nhóm 1 | READY |
-| K_GSDC_4 | Phi tài chính & M-Score | Điểm | Base | evaluation_score (trực tiếp) | Reuse từ Nhóm 1 | READY |
-| K_GSDC_5 | Xếp hạng tín nhiệm DN | Điểm | Base | evaluation_score (trực tiếp) | Reuse từ Nhóm 1 | READY |
-| K_GSDC_6 | Điểm tổng hợp | Điểm | Base | total_score_percentage (trực tiếp) | Reuse từ Nhóm 1 | READY |
-| K_GSDC_7 | Mã CK doanh nghiệp | Text | Chiều | equity_ticker_symbol (trực tiếp) | Reuse từ Nhóm 1 | READY |
-| K_GSDC_8 | Tên doanh nghiệp | Text | Chiều | pc_nm (trực tiếp) | Reuse từ Nhóm 1 | READY |
+| K_GSDC_1391 | Tuân thủ | Điểm | Base | evaluation_score (trực tiếp) | —| READY |
+| K_GSDC_1392 | Phát hành | Điểm | Base | evaluation_score (trực tiếp) | —| READY |
+| K_GSDC_1393 | Tài chính | Điểm | Base | evaluation_score (trực tiếp) | —| READY |
+| K_GSDC_1394 | Phi tài chính & M-Score | Điểm | Base | evaluation_score (trực tiếp) | —| READY |
+| K_GSDC_1395 | Xếp hạng tín nhiệm DN | Điểm | Base | evaluation_score (trực tiếp) | —| READY |
+| K_GSDC_1396 | Điểm tổng hợp | Điểm | Base | total_score_percentage (trực tiếp) | —| READY |
+| K_GSDC_1397 | Mã CK doanh nghiệp | Text | Chiều | equity_ticker_symbol (trực tiếp) | —| READY |
+| K_GSDC_1398 | Tên doanh nghiệp | Text | Chiều | pc_nm (trực tiếp) | —| READY |
 
 **Star Schema, Lineage, Bảng grain:** giống Nhóm 1.
 
@@ -2622,29 +2650,29 @@ flowchart LR
 #### Nhóm 33 — STT 33: Phân loại CTDC theo chỉ tiêu tuân thủ (Data Explorer)
 
 > Phân loại: **Phân tích**
-> 17/17 dòng `Trạng thái mapping = Done`, `Loại dữ liệu = Dữ liệu tĩnh` — 15 chỉ tiêu Base (gồm "Vi phạm" tách K_GSDC_13+14) + Tổng điểm = 16, +2 Mã/Tên DN = 17 hàng.
+> 17/17 dòng `Trạng thái mapping = Done`, `Loại dữ liệu = Dữ liệu tĩnh` — 15 chỉ tiêu Base (gồm "Vi phạm" tách K_GSDC_1405+14) + Tổng điểm = 16, +2 Mã/Tên DN = 17 hàng.
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_GSDC_7 | Mã CK doanh nghiệp | Text | Chiều | equity_ticker_symbol (trực tiếp) | Reuse từ Nhóm 1 | READY |
-| K_GSDC_8 | Tên doanh nghiệp | Text | Chiều | pc_nm (trực tiếp) | Reuse từ Nhóm 1 | READY |
-| K_GSDC_9 | Công bố BCTC | Điểm | Base | evaluation_score (trực tiếp) | Reuse từ Nhóm 2 | READY |
-| K_GSDC_10 | Công bố BCTN | Điểm | Base | evaluation_score (trực tiếp) | Reuse từ Nhóm 2 | READY |
-| K_GSDC_11 | Công bố báo cáo tình hình quản trị | Điểm | Base | evaluation_score (trực tiếp) | Reuse từ Nhóm 2 | READY |
-| K_GSDC_12 | Công bố thông tin Thay đổi TGĐ/CTHĐQT | Điểm | Base | evaluation_score (trực tiếp) | Reuse từ Nhóm 2 | READY |
-| K_GSDC_13 | Vi phạm từ UBCKNN | Điểm | Base | evaluation_score (trực tiếp) | Reuse từ Nhóm 2 | READY |
-| K_GSDC_14 | Vi phạm từ các đơn vị khác | Điểm | Base | evaluation_score (trực tiếp) | Reuse từ Nhóm 2 | READY |
-| K_GSDC_15 | Điều lệ Công ty và Các Quy chế hoạt động | Điểm | Base | evaluation_score (trực tiếp) | Reuse từ Nhóm 2 | READY |
-| K_GSDC_16 | Số lượng ĐHĐCĐ thường niên trong 6 tháng đầu năm | Điểm | Base | evaluation_score (trực tiếp) | Reuse từ Nhóm 2 | READY |
-| K_GSDC_17 | Số lượng thành viên HĐQT độc lập | Điểm | Base | evaluation_score (trực tiếp) | Reuse từ Nhóm 2 | READY |
-| K_GSDC_18 | Số lượng thành viên HĐQT không điều hành | Điểm | Base | evaluation_score (trực tiếp) | Reuse từ Nhóm 2 | READY |
-| K_GSDC_19 | Tư cách thành viên HĐQT/BKS/Kế toán trưởng | Điểm | Base | evaluation_score (trực tiếp) | Reuse từ Nhóm 2 | READY |
-| K_GSDC_20 | Số lượng thành viên BKS hoặc Ủy ban kiểm toán | Điểm | Base | evaluation_score (trực tiếp) | Reuse từ Nhóm 2 | READY |
-| K_GSDC_21 | Báo cáo tiến độ sử dụng vốn | Điểm | Base | evaluation_score (trực tiếp) | Reuse từ Nhóm 2 | READY |
-| K_GSDC_22 | Thay đổi phương án sử dụng vốn | Điểm | Base | evaluation_score (trực tiếp) | Reuse từ Nhóm 2 | READY |
-| K_GSDC_23 | Tổng điểm Tuân thủ | Điểm | Phái sinh | evaluation_score (trực tiếp) | Reuse từ Nhóm 2 — SUM(evaluation_score) | READY |
+| K_GSDC_1399 | Mã CK doanh nghiệp | Text | Chiều | equity_ticker_symbol (trực tiếp) | —| READY |
+| K_GSDC_1400 | Tên doanh nghiệp | Text | Chiều | pc_nm (trực tiếp) | —| READY |
+| K_GSDC_1401 | Công bố BCTC | Điểm | Base | evaluation_score (trực tiếp) | —| READY |
+| K_GSDC_1402 | Công bố BCTN | Điểm | Base | evaluation_score (trực tiếp) | —| READY |
+| K_GSDC_1403 | Công bố báo cáo tình hình quản trị | Điểm | Base | evaluation_score (trực tiếp) | —| READY |
+| K_GSDC_1404 | Công bố thông tin Thay đổi TGĐ/CTHĐQT | Điểm | Base | evaluation_score (trực tiếp) | —| READY |
+| K_GSDC_1405 | Vi phạm từ UBCKNN | Điểm | Base | evaluation_score (trực tiếp) | —| READY |
+| K_GSDC_1406 | Vi phạm từ các đơn vị khác | Điểm | Base | evaluation_score (trực tiếp) | —| READY |
+| K_GSDC_1407 | Điều lệ Công ty và Các Quy chế hoạt động | Điểm | Base | evaluation_score (trực tiếp) | —| READY |
+| K_GSDC_1408 | Số lượng ĐHĐCĐ thường niên trong 6 tháng đầu năm | Điểm | Base | evaluation_score (trực tiếp) | —| READY |
+| K_GSDC_1409 | Số lượng thành viên HĐQT độc lập | Điểm | Base | evaluation_score (trực tiếp) | —| READY |
+| K_GSDC_1410 | Số lượng thành viên HĐQT không điều hành | Điểm | Base | evaluation_score (trực tiếp) | —| READY |
+| K_GSDC_1411 | Tư cách thành viên HĐQT/BKS/Kế toán trưởng | Điểm | Base | evaluation_score (trực tiếp) | —| READY |
+| K_GSDC_1412 | Số lượng thành viên BKS hoặc Ủy ban kiểm toán | Điểm | Base | evaluation_score (trực tiếp) | —| READY |
+| K_GSDC_1413 | Báo cáo tiến độ sử dụng vốn | Điểm | Base | evaluation_score (trực tiếp) | —| READY |
+| K_GSDC_1414 | Thay đổi phương án sử dụng vốn | Điểm | Base | evaluation_score (trực tiếp) | —| READY |
+| K_GSDC_1415 | Tổng điểm Tuân thủ | Điểm | Phái sinh | evaluation_score (trực tiếp) | SUM(evaluation_score)| READY |
 
 **Star Schema, Lineage, Bảng grain:** tương tự Nhóm 1 (cùng pattern `Fact_..._Score_Snapshot`), Fact riêng `Fact Public Company Compliance Score Snapshot` — grain: 1 row / CTDC / ngày snapshot ETL (full-scan daily, carry-forward).
 
@@ -2655,25 +2683,25 @@ flowchart LR
 #### Nhóm 34 — STT 34: Phân loại CTDC theo chỉ tiêu tài chính (Data Explorer)
 
 > Phân loại: **Phân tích**
-> 13/13 dòng `Trạng thái mapping = Done`, `Loại dữ liệu = Dữ liệu tĩnh` — 10 chỉ tiêu Base (bao gồm K_GSDC_38 "VCSH") + Tổng điểm = 11, +2 Mã/Tên DN = 13 hàng.
+> 13/13 dòng `Trạng thái mapping = Done`, `Loại dữ liệu = Dữ liệu tĩnh` — 10 chỉ tiêu Base (bao gồm K_GSDC_1424 "VCSH") + Tổng điểm = 11, +2 Mã/Tên DN = 13 hàng.
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_GSDC_7 | Mã CK doanh nghiệp | Text | Chiều | equity_ticker_symbol (trực tiếp) | Reuse từ Nhóm 1 | READY |
-| K_GSDC_8 | Tên doanh nghiệp | Text | Chiều | pc_nm (trực tiếp) | Reuse từ Nhóm 1 | READY |
-| K_GSDC_32 | Kiểm toán — Ý kiến kiểm toán | Điểm | Base | evaluation_score (trực tiếp) | Reuse từ Nhóm 4 | READY |
-| K_GSDC_33 | ROA | Điểm | Base | evaluation_score (trực tiếp) | Reuse từ Nhóm 4 | READY |
-| K_GSDC_34 | Dòng tiền từ hoạt động kinh doanh | Điểm | Base | evaluation_score (trực tiếp) | Reuse từ Nhóm 4 | READY |
-| K_GSDC_35 | Khả năng thanh toán hiện thời | Điểm | Base | evaluation_score (trực tiếp) | Reuse từ Nhóm 4 | READY |
-| K_GSDC_36 | EBIT / Lãi vay | Điểm | Base | evaluation_score (trực tiếp) | Reuse từ Nhóm 4 | READY |
-| K_GSDC_37 | Nợ / VCSH | Điểm | Base | evaluation_score (trực tiếp) | Reuse từ Nhóm 4 | READY |
-| K_GSDC_38 | VCSH | Điểm | Base | evaluation_score (trực tiếp) | Reuse từ Nhóm 4 | READY |
-| K_GSDC_39 | ROE | Điểm | Base | evaluation_score (trực tiếp) | Reuse từ Nhóm 4 | READY |
-| K_GSDC_40 | Doanh thu từ HĐ tài chính / Lợi nhuận sau thuế | Điểm | Base | evaluation_score (trực tiếp) | Reuse từ Nhóm 4 | READY |
-| K_GSDC_41 | Doanh thu từ hoạt động khác / Lợi nhuận sau thuế | Điểm | Base | evaluation_score (trực tiếp) | Reuse từ Nhóm 4 | READY |
-| K_GSDC_42 | Tổng điểm Tài chính | Điểm | Phái sinh | evaluation_score (trực tiếp) | Reuse từ Nhóm 4 — SUM(evaluation_score) | READY |
+| K_GSDC_1416 | Mã CK doanh nghiệp | Text | Chiều | equity_ticker_symbol (trực tiếp) | —| READY |
+| K_GSDC_1417 | Tên doanh nghiệp | Text | Chiều | pc_nm (trực tiếp) | —| READY |
+| K_GSDC_1418 | Kiểm toán — Ý kiến kiểm toán | Điểm | Base | evaluation_score (trực tiếp) | —| READY |
+| K_GSDC_1419 | ROA | Điểm | Base | evaluation_score (trực tiếp) | —| READY |
+| K_GSDC_1420 | Dòng tiền từ hoạt động kinh doanh | Điểm | Base | evaluation_score (trực tiếp) | —| READY |
+| K_GSDC_1421 | Khả năng thanh toán hiện thời | Điểm | Base | evaluation_score (trực tiếp) | —| READY |
+| K_GSDC_1422 | EBIT / Lãi vay | Điểm | Base | evaluation_score (trực tiếp) | —| READY |
+| K_GSDC_1423 | Nợ / VCSH | Điểm | Base | evaluation_score (trực tiếp) | —| READY |
+| K_GSDC_1424 | VCSH | Điểm | Base | evaluation_score (trực tiếp) | —| READY |
+| K_GSDC_1425 | ROE | Điểm | Base | evaluation_score (trực tiếp) | —| READY |
+| K_GSDC_1426 | Doanh thu từ HĐ tài chính / Lợi nhuận sau thuế | Điểm | Base | evaluation_score (trực tiếp) | —| READY |
+| K_GSDC_1427 | Doanh thu từ hoạt động khác / Lợi nhuận sau thuế | Điểm | Base | evaluation_score (trực tiếp) | —| READY |
+| K_GSDC_1428 | Tổng điểm Tài chính | Điểm | Phái sinh | evaluation_score (trực tiếp) | SUM(evaluation_score)| READY |
 
 **Star Schema, Lineage, Bảng grain:** tương tự Nhóm 1 (cùng pattern `Fact_..._Score_Snapshot`), Fact riêng `Fact Public Company Financial Score Snapshot` — grain: 1 row / CTDC / ngày snapshot ETL (full-scan daily, carry-forward).
 
@@ -2690,16 +2718,16 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_GSDC_7 | Mã doanh nghiệp | Text | Chiều | equity_ticker_symbol (trực tiếp) | Reuse từ Nhóm 1 | READY |
-| K_GSDC_8 | Tên doanh nghiệp | Text | Chiều | pc_nm (trực tiếp) | Reuse từ Nhóm 1 | READY |
-| K_GSDC_24 | Phát hành tăng vốn nhanh | Điểm | Base | evaluation_score (trực tiếp) | Reuse từ Nhóm 3 | READY |
-| K_GSDC_25 | Số lần chào bán cổ phiếu riêng lẻ | Điểm | Base | evaluation_score (trực tiếp) | Reuse từ Nhóm 3 | READY |
-| K_GSDC_26 | Số lần chào bán ra công chúng | Điểm | Base | evaluation_score (trực tiếp) | Reuse từ Nhóm 3 | READY |
-| K_GSDC_27 | Số lần phát hành ESOP | Điểm | Base | evaluation_score (trực tiếp) | Reuse từ Nhóm 3 | READY |
-| K_GSDC_28 | Tỷ lệ phát hành trái phiếu không có TSBĐ | Điểm | Base | evaluation_score (trực tiếp) | Reuse từ Nhóm 3 | READY |
-| K_GSDC_29 | Xếp hạng tín nhiệm | Điểm | Base | evaluation_score (trực tiếp) | Reuse từ Nhóm 3 | READY |
-| K_GSDC_30 | Dư nợ trái phiếu / Tổng VCSH | Điểm | Base | evaluation_score (trực tiếp) | Reuse từ Nhóm 3 | READY |
-| K_GSDC_31 | Tổng điểm Phát hành | Điểm | Phái sinh | evaluation_score (trực tiếp) | Reuse từ Nhóm 3 — SUM(evaluation_score) | READY |
+| K_GSDC_1429 | Mã doanh nghiệp | Text | Chiều | equity_ticker_symbol (trực tiếp) | —| READY |
+| K_GSDC_1430 | Tên doanh nghiệp | Text | Chiều | pc_nm (trực tiếp) | —| READY |
+| K_GSDC_1431 | Phát hành tăng vốn nhanh | Điểm | Base | evaluation_score (trực tiếp) | —| READY |
+| K_GSDC_1432 | Số lần chào bán cổ phiếu riêng lẻ | Điểm | Base | evaluation_score (trực tiếp) | —| READY |
+| K_GSDC_1433 | Số lần chào bán ra công chúng | Điểm | Base | evaluation_score (trực tiếp) | —| READY |
+| K_GSDC_1434 | Số lần phát hành ESOP | Điểm | Base | evaluation_score (trực tiếp) | —| READY |
+| K_GSDC_1435 | Tỷ lệ phát hành trái phiếu không có TSBĐ | Điểm | Base | evaluation_score (trực tiếp) | —| READY |
+| K_GSDC_1436 | Xếp hạng tín nhiệm | Điểm | Base | evaluation_score (trực tiếp) | —| READY |
+| K_GSDC_1437 | Dư nợ trái phiếu / Tổng VCSH | Điểm | Base | evaluation_score (trực tiếp) | —| READY |
+| K_GSDC_1438 | Tổng điểm Phát hành | Điểm | Phái sinh | evaluation_score (trực tiếp) | SUM(evaluation_score)| READY |
 
 **Star Schema, Lineage, Bảng grain:** tương tự Nhóm 1 (cùng pattern `Fact_..._Score_Snapshot`), Fact riêng `Fact Public Company Issuance Score Snapshot` — grain: 1 row / CTDC / ngày snapshot ETL (full-scan daily, carry-forward).
 
@@ -2716,11 +2744,11 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_GSDC_7 | Mã doanh nghiệp | Text | Chiều | equity_ticker_symbol (trực tiếp) | Reuse từ Nhóm 1 | READY |
-| K_GSDC_8 | Tên doanh nghiệp | Text | Chiều | pc_nm (trực tiếp) | Reuse từ Nhóm 1 | READY |
-| K_GSDC_43 | Tình trạng DN từ Cục Đăng ký kinh doanh | Điểm | Base | evaluation_score (trực tiếp) | Reuse từ Nhóm 5 | READY |
-| K_GSDC_44 | M-Score | Điểm | Base | evaluation_score (trực tiếp) | Reuse từ Nhóm 5 | READY |
-| K_GSDC_45 | Tổng điểm Phi tài chính & M-Score | Điểm | Phái sinh | evaluation_score (trực tiếp) | Reuse từ Nhóm 5 — SUM(evaluation_score) | READY |
+| K_GSDC_1439 | Mã doanh nghiệp | Text | Chiều | equity_ticker_symbol (trực tiếp) | —| READY |
+| K_GSDC_1440 | Tên doanh nghiệp | Text | Chiều | pc_nm (trực tiếp) | —| READY |
+| K_GSDC_1441 | Tình trạng DN từ Cục Đăng ký kinh doanh | Điểm | Base | evaluation_score (trực tiếp) | —| READY |
+| K_GSDC_1442 | M-Score | Điểm | Base | evaluation_score (trực tiếp) | —| READY |
+| K_GSDC_1443 | Tổng điểm Phi tài chính & M-Score | Điểm | Phái sinh | evaluation_score (trực tiếp) | SUM(evaluation_score)| READY |
 
 **Star Schema, Lineage, Bảng grain:** tương tự Nhóm 1 (cùng pattern `Fact_..._Score_Snapshot`), Fact riêng `Fact Public Company Non-Financial Score Snapshot` — grain: 1 row / CTDC / ngày snapshot ETL (full-scan daily, carry-forward).
 
@@ -2731,27 +2759,27 @@ flowchart LR
 #### Nhóm 37 — STT 37: Hệ số tài chính cơ bản
 
 > Phân loại: **Phân tích**
-> Toàn bộ KPI ID (K_GSDC_50–62) là **reuse từ Nhóm 7** — trạng thái reuse đi theo gốc (**READY**, xem chi tiết Fact/Dimension/quy tắc khai thác ở Nhóm 7), không filter/breakdown bổ sung nào khác Nhóm 7.
+> Toàn bộ KPI ID K_GSDC_1444–1456 dùng chung `Fact Public Company Financial Report Value` + `Financial Report Catalog Dimension` (xem Fact/Dimension gốc ở Nhóm 7), không filter/breakdown bổ sung nào khác — **READY**.
 
 **KPI liên quan:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_GSDC_50 | Tổng tài sản (reuse từ Nhóm 7) | | Cơ sở | (reuse từ Nhóm 7 — xem công thức gốc) | Reuse từ Nhóm 7 | **READY** |
-| K_GSDC_51 | Nợ phải trả (reuse từ Nhóm 7) | | Cơ sở | (reuse từ Nhóm 7 — xem công thức gốc) | Reuse từ Nhóm 7 | **READY** |
-| K_GSDC_52 | Vốn CSH (reuse từ Nhóm 7) | | Cơ sở | (reuse từ Nhóm 7 — xem công thức gốc) | Reuse từ Nhóm 7 | **READY** |
-| K_GSDC_53 | Vốn điều lệ (reuse từ Nhóm 7) | | Cơ sở | (reuse từ Nhóm 7 — xem công thức gốc) | Reuse từ Nhóm 7 | **READY** |
-| K_GSDC_54 | Lợi nhuận sau thuế (reuse từ Nhóm 7) | | Cơ sở | (reuse từ Nhóm 7 — xem công thức gốc) | Reuse từ Nhóm 7 | **READY** |
-| K_GSDC_55 | ROA (reuse từ Nhóm 7) | | Phái sinh | (reuse từ Nhóm 7 — xem công thức gốc) | Reuse từ Nhóm 7 | **READY** |
-| K_GSDC_56 | ROE (reuse từ Nhóm 7) | | Phái sinh | (reuse từ Nhóm 7 — xem công thức gốc) | Reuse từ Nhóm 7 | **READY** |
-| K_GSDC_57 | Hàng tồn kho (reuse từ Nhóm 7) | | Cơ sở | (reuse từ Nhóm 7 — xem công thức gốc) | Reuse từ Nhóm 7 | **READY** |
-| K_GSDC_58 | Doanh thu thuần (reuse từ Nhóm 7) | | Cơ sở | (reuse từ Nhóm 7 — xem công thức gốc) | Reuse từ Nhóm 7 | **READY** |
-| K_GSDC_59 | Lợi nhuận dồn tích YTD (reuse từ Nhóm 7) | | Cơ sở | (reuse từ Nhóm 7 — xem công thức gốc) | Reuse từ Nhóm 7 | **READY** |
-| K_GSDC_60 | Phải thu (reuse từ Nhóm 7) | | Cơ sở | (reuse từ Nhóm 7 — xem công thức gốc) | Reuse từ Nhóm 7 | **READY** |
-| K_GSDC_61 | Tiền và tương đương tiền (reuse từ Nhóm 7) | | Cơ sở | (reuse từ Nhóm 7 — xem công thức gốc) | Reuse từ Nhóm 7 | **READY** |
-| K_GSDC_62 | Nợ / Vốn CSH (reuse từ Nhóm 7) | | Phái sinh | (reuse từ Nhóm 7 — xem công thức gốc) | Reuse từ Nhóm 7 | **READY** |
+| K_GSDC_1444 | Tổng tài sản | | Cơ sở | SUM(data_val) WHERE row_desc='270', col_desc='1' (Tổng tài sản) | —| **READY** |
+| K_GSDC_1445 | Nợ phải trả | | Cơ sở | SUM(data_val) WHERE row_desc='300', col_desc='1' (Nợ phải trả) | —| **READY** |
+| K_GSDC_1446 | Vốn CSH | | Cơ sở | SUM(data_val) WHERE row_desc='400', col_desc='1' (Vốn CSH) | —| **READY** |
+| K_GSDC_1447 | Vốn điều lệ | | Cơ sở | SUM(data_val) WHERE row_desc='411', col_desc='1' (Vốn điều lệ) | —| **READY** |
+| K_GSDC_1448 | Lợi nhuận sau thuế | | Cơ sở | SUM(data_val) WHERE row_desc='60', col_desc='1' (LNST) | —| **READY** |
+| K_GSDC_1454 | ROA | | Phái sinh | SUM(data_val, row 60 LNST) / NULLIF(AVG(data_val, row 270 TSBQ đầu+cuối kỳ), 0) * 100 | —| **READY** |
+| K_GSDC_1455 | ROE | | Phái sinh | SUM(data_val, row 60 LNST) / NULLIF(AVG(data_val, row 400 VCSHBQ đầu+cuối kỳ), 0) * 100 | —| **READY** |
+| K_GSDC_1449 | Hàng tồn kho | | Cơ sở | SUM(data_val) WHERE row_desc='140', col_desc='1' (Hàng tồn kho) | —| **READY** |
+| K_GSDC_1450 | Doanh thu thuần | | Cơ sở | SUM(data_val) WHERE row_desc='10', col_desc='1' (Doanh thu thuần) | —| **READY** |
+| K_GSDC_1451 | Lợi nhuận dồn tích YTD | | Cơ sở | SUM(data_val) WHERE row_desc='421', col_desc='1' (LN dồn tích YTD) | —| **READY** |
+| K_GSDC_1452 | Phải thu | | Cơ sở | SUM(data_val) WHERE row_desc='130+210', col_desc='1' (Phải thu) | —| **READY** |
+| K_GSDC_1453 | Tiền và tương đương tiền | | Cơ sở | SUM(data_val) WHERE row_desc='110', col_desc='1' (Tiền và tương đương tiền) | —| **READY** |
+| K_GSDC_1456 | Nợ / Vốn CSH | | Phái sinh | SUM(data_val, row 300 Nợ) / NULLIF(SUM(data_val, row 400 VCSH), 0) | —| **READY** |
 
-**Star Schema, Lineage, Bảng grain:** như Nhóm 7 (reuse hoàn toàn Fact/Dimension, không filter bổ sung).
+**Star Schema, Lineage, Bảng grain:** dùng chung `Fact Public Company Financial Report Value` + `Financial Report Catalog Dimension` như Nhóm 7, không filter bổ sung.
 
 ---
 
