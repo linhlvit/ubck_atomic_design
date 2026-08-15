@@ -22,34 +22,6 @@ ldm:
     brd: BRD-SRC-FMS-AGEN_FUNDS
 
 attributes:
-  - name: Investment Fund X Fund Distribution Agent Relationship Id
-    physical_name: investment_fund_x_fund_distribution_agent_rltnp_id
-    business_meaning: Khóa đại diện (surrogate key).
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: false
-    is_primary_key: true
-    source_system: FMS
-    source_table: AGEN_FUNDS
-    source_column: null
-    comment: "PK surrogate. BCV: \"[Arrangement] Investment Fund\" (tạm dùng). Quan hệ đại lý phân phối CCQ được ủy quyền cho quỹ đầu tư."
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Investment Fund X Fund Distribution Agent Relationship Code
-    physical_name: investment_fund_x_fund_distribution_agent_rltnp_code
-    business_meaning: Mã quan hệ — composite AGENCY_ID+FUND_ID (bảng nguồn không có PK/mã nghiệp vụ riêng).
-    data_domain: Text
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: FMS
-    source_table: AGEN_FUNDS
-    source_column: null
-    comment: "BK composite: AGENCY_ID || '|' || FUND_ID. Không có PK/code kỹ thuật riêng trên bảng nguồn."
-    classification_context: null
-    etl_derived_value: null
-
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning: Mã hệ thống nguồn dữ liệu.
@@ -70,11 +42,11 @@ attributes:
     data_domain: Surrogate Key
     data_type: string
     nullable: false
-    is_primary_key: false
+    is_primary_key: true
     source_system: FMS
     source_table: AGEN_FUNDS
     source_column: FMS.AGEN_FUNDS.FUND_ID
-    comment: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS.FUNDS', FUND_ID)."
+    comment: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS.FUNDS', FUND_ID). Composite PK cùng Fund Distribution Agent Id."
     classification_context: null
     etl_derived_value: null
 
@@ -98,11 +70,11 @@ attributes:
     data_domain: Surrogate Key
     data_type: string
     nullable: false
-    is_primary_key: false
+    is_primary_key: true
     source_system: FMS
     source_table: AGEN_FUNDS
     source_column: FMS.AGEN_FUNDS.AGENCY_ID
-    comment: "FK target: fund_distribution_agent.fund_distribution_agent_id. Hash: hash_id('FMS.AGENCIES', AGENCY_ID)."
+    comment: "FK target: fund_distribution_agent.fund_distribution_agent_id. Hash: hash_id('FMS.AGENCIES', AGENCY_ID). Composite PK cùng Investment Fund Id."
     classification_context: null
     etl_derived_value: null
 

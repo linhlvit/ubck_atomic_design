@@ -22,38 +22,12 @@ metadata:
     \ — theo quyết định Data Modeler, chuyển thành entity Relative riêng. Bảng nguồn\
     \ chỉ có 2 FK (AGENCY_ID, FUND_ID) + DATA_MIGRATION (cờ migration kỹ thuật, không\
     \ map — document pending_design.yaml). Không có PK/ID kỹ thuật riêng, không có\
-    \ audit fields. BK = composite AGENCY_ID+FUND_ID. FUD_AG_AGT (mở rộng 4-FK) cần\
-    \ rà soát gộp/tách — xem Overview 7e#19. BCV Concept tạm dùng — xem Overview 7e#20."
+    \ audit fields. FUD_AG_AGT (mở rộng 4-FK) cần rà soát gộp/tách — xem Overview\
+    \ 7e#19. BCV Concept tạm dùng — xem Overview 7e#20. Hạ về draft (2026-08-13)\
+    \ để bỏ cặp Id/Code riêng của entity — theo quyết định Data Modeler, bảng \"_x_\"\
+    \ (link/relationship thuần) không cần surrogate Id + BK Code riêng; PK là composite\
+    \ 2 FK (Investment Fund Id + Fund Distribution Agent Id)."
 attributes:
-- attribute_name: "Investment Fund X Fund Distribution Agent Relationship Id"
-  physical_name: "investment_fund_x_fund_distribution_agent_rltnp_id"
-  description: "Khóa đại diện (surrogate key)."
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: true
-  status: "draft"
-  source_columns: []
-  comment: "PK surrogate. BCV: \"[Arrangement] Investment Fund\" (tạm dùng). Quan\
-    \ hệ đại lý phân phối CCQ được ủy quyền cho quỹ đầu tư."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Investment Fund X Fund Distribution Agent Relationship Code"
-  physical_name: "investment_fund_x_fund_distribution_agent_rltnp_code"
-  description: "Mã quan hệ — composite AGENCY_ID+FUND_ID (bảng nguồn không có PK/mã\
-    \ nghiệp vụ riêng)."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.AGEN_FUNDS.AGENCY_ID"
-  - "FMS.AGEN_FUNDS.FUND_ID"
-  comment: "BK composite: AGENCY_ID || '|' || FUND_ID. Không có PK/code kỹ thuật riêng\
-    \ trên bảng nguồn."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Source System Code"
   physical_name: "src_stm_code"
   description: "Mã hệ thống nguồn dữ liệu."
@@ -71,12 +45,12 @@ attributes:
   description: "FK -> FUNDS: Quỹ đầu tư liên quan."
   data_domain: "Surrogate Key"
   nullable: false
-  is_primary_key: false
+  is_primary_key: true
   status: "draft"
   source_columns:
   - "FMS.AGEN_FUNDS.FUND_ID"
   comment: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS.FUNDS',\
-    \ FUND_ID)."
+    \ FUND_ID). Composite PK cùng Fund Distribution Agent Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -99,12 +73,12 @@ attributes:
   description: "FK -> AGENCIES: Đại lý phân phối liên quan."
   data_domain: "Surrogate Key"
   nullable: false
-  is_primary_key: false
+  is_primary_key: true
   status: "draft"
   source_columns:
   - "FMS.AGEN_FUNDS.AGENCY_ID"
   comment: "FK target: fund_distribution_agent.fund_distribution_agent_id. Hash: hash_id('FMS.AGENCIES',\
-    \ AGENCY_ID)."
+    \ AGENCY_ID). Composite PK cùng Investment Fund Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

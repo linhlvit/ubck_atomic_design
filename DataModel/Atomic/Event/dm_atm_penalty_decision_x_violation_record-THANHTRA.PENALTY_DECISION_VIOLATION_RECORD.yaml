@@ -1,0 +1,93 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-penalty_decision_x_violation_record-THANHTRA.PENALTY_DECISION_VIOLATION_RECORD
+  logical_name: Penalty Decision X Violation Record
+  physical_name: penalty_decision_x_violation_record
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Event
+  bcv_concept: "[Event] Event"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: THANHTRA
+  description: |
+    Liên kết giữa quyết định xử phạt VPHC và biên bản vi phạm hành chính liên quan. Entity link/relationship thuần bắc cầu 2 domain (Penalty Decision + Violation Record) nên Domain Prefix rỗng. Giữ làm entity Relative riêng thay vì denormalize ARRAY vì bảng có VERSION/DELETED phản ánh vòng đời gắn/gỡ liên kết độc lập. Không có cặp Id/Code riêng — PK composite trên 2 FK Id.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-THANHTRA-PENALTY_DECISION_VIOLATION_RECORD
+
+attributes:
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: PENALTY_DECISION_VIOLATION_RECORD
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_VIOLATION_RECORD'"
+    etl_derived_value: THANHTRA_PENALTY_DECISION_VIOLATION_RECORD
+
+  - name: Penalty Decision Id
+    physical_name: pd_id
+    business_meaning: "FK -> penalty_decision. FK đến quyết định xử phạt liên kết với biên bản vi phạm này."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: THANHTRA
+    source_table: PENALTY_DECISION_VIOLATION_RECORD
+    source_column: THANHTRA.PENALTY_DECISION_VIOLATION_RECORD.PENALTY_DECISION_ID
+    comment: "FK target: penalty_decision.penalty_decision_id. Hash: hash_id('THANHTRA.PENALTY_DECISION', PENALTY_DECISION_ID). Composite PK cùng Violation Record Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Penalty Decision Code
+    physical_name: pd_code
+    business_meaning: Mã quyết định xử phạt liên kết (denormalized lookup).
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: PENALTY_DECISION_VIOLATION_RECORD
+    source_column: THANHTRA.PENALTY_DECISION.ID
+    comment: "Lookup pair: penalty_decision.penalty_decision_code. Pair with Penalty Decision Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Violation Record Id
+    physical_name: violation_record_id
+    business_meaning: "FK -> violation_record: biên bản VPHC liên kết với quyết định xử phạt."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: THANHTRA
+    source_table: PENALTY_DECISION_VIOLATION_RECORD
+    source_column: THANHTRA.PENALTY_DECISION_VIOLATION_RECORD.VIOLATION_RECORD_ID
+    comment: "FK target: violation_record.violation_record_id. Hash: hash_id('THANHTRA.VIOLATION_RECORD', VIOLATION_RECORD_ID). Composite PK cùng Penalty Decision Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Violation Record Code
+    physical_name: violation_record_code
+    business_meaning: Mã biên bản VPHC liên kết (denormalized lookup).
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: PENALTY_DECISION_VIOLATION_RECORD
+    source_column: THANHTRA.VIOLATION_RECORD.ID
+    comment: "Lookup pair: violation_record.violation_record_code. Pair with Violation Record Id."
+    classification_context: null
+    etl_derived_value: null

@@ -20,40 +20,12 @@ metadata:
   notes: "[MỚI 2026-07-19] Bảng nguồn chỉ có 2 cột FK (FUND_ID, TLPR_ID), không có\
     \ PK/ID kỹ thuật riêng, không có audit fields. Trước đây ở Overview 7f nhóm Junction\
     \ — theo quyết định Data Modeler, chuyển vào scope thành entity Relative riêng.\
-    \ BK = composite FUND_ID+TLPR_ID (không có natural code riêng). BCV Concept tạm\
-    \ dùng (tái sử dụng concept MB_FUND) — xem FMS_HLD_Overview.md 7e#20."
+    \ BCV Concept tạm dùng (tái sử dụng concept MB_FUND) — xem FMS_HLD_Overview.md\
+    \ 7e#20. Hạ về draft (2026-08-13) để bỏ cặp Id/Code riêng của entity — theo quyết\
+    \ định Data Modeler, bảng \"_x_\" (link/relationship thuần) không cần surrogate\
+    \ Id + BK Code riêng; PK là composite 2 FK (Investment Fund Id + Fund Management\
+    \ Company Employee Id)."
 attributes:
-- attribute_name: "Investment Fund X Fund Management Company Employee Relationship\
-    \ Id"
-  physical_name: "investment_fund_x_fmc_employee_rltnp_id"
-  description: "Khóa đại diện (surrogate key)."
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: true
-  status: "draft"
-  source_columns: []
-  comment: "PK surrogate. BCV: \"[Arrangement] Investment Fund\" (tạm dùng). Quan\
-    \ hệ gán người hành nghề (nhân sự chủ chốt CTQLQ) liên quan đến quỹ đầu tư."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Investment Fund X Fund Management Company Employee Relationship\
-    \ Code"
-  physical_name: "investment_fund_x_fmc_employee_rltnp_code"
-  description: "Mã quan hệ — composite FUND_ID+TLPR_ID (bảng nguồn không có PK/mã\
-    \ nghiệp vụ riêng)."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.FUND_TL_PRO.FUND_ID"
-  - "FMS.FUND_TL_PRO.TLPR_ID"
-  comment: "BK composite: FUND_ID || '|' || TLPR_ID. Không có PK/code kỹ thuật riêng\
-    \ trên bảng nguồn."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Source System Code"
   physical_name: "src_stm_code"
   description: "Mã hệ thống nguồn dữ liệu."
@@ -71,12 +43,12 @@ attributes:
   description: "FK -> FUNDS: Quỹ đầu tư liên quan."
   data_domain: "Surrogate Key"
   nullable: false
-  is_primary_key: false
+  is_primary_key: true
   status: "draft"
   source_columns:
   - "FMS.FUND_TL_PRO.FUND_ID"
   comment: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS.FUNDS',\
-    \ FUND_ID)."
+    \ FUND_ID). Composite PK cùng Fund Management Company Employee Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -99,12 +71,12 @@ attributes:
   description: "FK -> TL_PROFILES: Người hành nghề liên quan đến quỹ."
   data_domain: "Surrogate Key"
   nullable: false
-  is_primary_key: false
+  is_primary_key: true
   status: "draft"
   source_columns:
   - "FMS.FUND_TL_PRO.TLPR_ID"
   comment: "FK target: fmc_employee.fmc_employee_id. Hash: hash_id('FMS.TL_PROFILES',\
-    \ TLPR_ID)."
+    \ TLPR_ID). Composite PK cùng Investment Fund Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

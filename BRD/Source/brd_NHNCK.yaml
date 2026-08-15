@@ -781,8 +781,11 @@ brd_entries:
   content:
     table_meaning: Yêu cầu phê duyệt lãnh đạo cho hồ sơ
     functional_group: UID03 Quản lý hồ sơ
-    scope_status: out_of_scope
-    scope_reason: null
+    scope_status: in_scope
+    scope_reason: Quyết định Data Modeler (2026-08-13) — đảo lại quyết định out_of_scope
+      trước đó (Source Process Log); có cấu trúc trường tường minh (Status Id/Prev Status
+      Id + 4 trường lý do theo cấp xét duyệt), không phải audit log generic FieldName/OldValue/NewValue
+      → đủ điều kiện Business Activity Status Review.
     table: VERIFY_APPLICATION_STATUSES
     related_tables:
     - table: APPLICATIONS
@@ -966,8 +969,11 @@ brd_entries:
   content:
     table_meaning: Nhóm chứng chỉ hành nghề
     functional_group: UID05 Quản lý chứng chỉ hành nghề
-    scope_status: out_of_scope
-    scope_reason: null
+    scope_status: in_scope
+    scope_reason: Quyết định Data Modeler (2026-08-13) — đảo lại quyết định out_of_scope
+      trước đó (Batch Processing); GROUP_NAME/GROUP_CREATED_DATE/GROUP_COMPLETED_DATE/CERTIFICATE_RECORD_COUNT
+      là attribute nghiệp vụ riêng của nhóm, không suy ra được từ DECISIONS/CERTIFICATE_RECORDS
+      → đủ điều kiện entity [Group] Group.
     table: CERTIFICATE_RECORD_GROUPS
     related_tables:
     - table: DECISIONS
@@ -989,8 +995,11 @@ brd_entries:
   content:
     table_meaning: Thành viên trong nhóm chứng chỉ hành nghề
     functional_group: UID05 Quản lý chứng chỉ hành nghề
-    scope_status: out_of_scope
-    scope_reason: null
+    scope_status: in_scope
+    scope_reason: Quyết định Data Modeler (2026-08-13) — đảo lại quyết định out_of_scope
+      trước đó (Batch Processing); REVOCATION_REASON/IS_REISSUE/ADDED_DATE/ADDED_BY là
+      attribute nghiệp vụ riêng của quan hệ thành viên, không thuộc về CERTIFICATE_RECORDS
+      → đủ điều kiện entity [Group] Group Member.
     table: CERTIFICATE_RECORD_GROUP_MEMBERS
     related_tables:
     - table: CERTIFICATE_RECORD_GROUPS
@@ -1862,8 +1871,11 @@ brd_entries:
   content:
     table_meaning: Tài liệu đính kèm của quyết định
     functional_group: UID02 Quản lý danh mục dùng riêng
-    scope_status: out_of_scope
-    scope_reason: null
+    scope_status: in_scope
+    scope_reason: Quyết định Data Modeler (2026-08-13) — đảo lại quyết định out_of_scope
+      trước đó (Sub-process); có DECISION_NUMBER/POSITION/SIGNED_BY/SIGNED_DATE — không
+      chỉ là con trỏ file thuần (khác điều kiện loại trừ "File Attachment") → đủ điều kiện
+      entity Documentation.
     table: DECISION_DOCUMENTS
     related_tables:
     - table: DECISIONS
@@ -1952,8 +1964,10 @@ brd_entries:
   content:
     table_meaning: Kinh nghiệm làm việc khai báo trong hồ sơ xin cấp CCHN
     functional_group: UID03 Quản lý hồ sơ
-    scope_status: in_scope
-    scope_reason: null
+    scope_status: out_of_scope
+    scope_reason: Quyết định Data Modeler (2026-08-13) — loại khỏi thiết kế Atomic
+      3NF do không còn nhu cầu model hóa riêng entity này ở tầng Atomic; vẫn còn
+      nhu cầu khai thác nghiệp vụ nên sẽ đánh giá lại hướng thiết kế khác sau.
     table: APPLICATION_EXPERIENCES
     related_tables:
     - table: APPLICATIONS
@@ -1977,8 +1991,11 @@ brd_entries:
   content:
     table_meaning: Nhóm hồ sơ CCHN xử lý tập thể (batch)
     functional_group: UID03 Quản lý hồ sơ
-    scope_status: out_of_scope
-    scope_reason: null
+    scope_status: in_scope
+    scope_reason: Quyết định Data Modeler (2026-08-13) — đảo lại quyết định out_of_scope
+      trước đó (Batch Processing); GROUP_NAME/GROUP_CREATED_DATE/GROUP_COMPLETED_DATE/APPLICATION_COUNT/APPLICATION_TYPE/SUBMITED_DATE
+      là attribute nghiệp vụ riêng của nhóm, không suy ra được từ DECISIONS/APPLICATIONS
+      → đủ điều kiện entity [Group] Group.
     table: APPLICATION_GROUPS
     related_tables:
     - table: DECISIONS
@@ -2002,8 +2019,10 @@ brd_entries:
   content:
     table_meaning: Thành viên (hồ sơ) trong nhóm xử lý tập thể
     functional_group: UID03 Quản lý hồ sơ
-    scope_status: out_of_scope
-    scope_reason: null
+    scope_status: in_scope
+    scope_reason: Quyết định Data Modeler (2026-08-13) — đảo lại quyết định out_of_scope
+      trước đó (Batch Processing); STATUS/NOTES/ORDER_INDEX là attribute nghiệp vụ riêng
+      của quan hệ thành viên → đủ điều kiện entity [Group] Group Member.
     table: APPLICATION_GROUP_MEMBERS
     related_tables:
     - table: APPLICATION_GROUPS
@@ -2073,8 +2092,10 @@ brd_entries:
   content:
     table_meaning: Snapshot thông tin cá nhân người đăng ký tại thời điểm nộp hồ sơ
     functional_group: UID03 Quản lý hồ sơ
-    scope_status: in_scope
-    scope_reason: null
+    scope_status: out_of_scope
+    scope_reason: Quyết định Data Modeler (2026-08-13) — loại khỏi thiết kế Atomic
+      3NF do không còn nhu cầu model hóa riêng entity này ở tầng Atomic; vẫn còn
+      nhu cầu khai thác nghiệp vụ nên sẽ đánh giá lại hướng thiết kế khác sau.
     table: APPLICATION_PROFESSIONALS
     related_tables:
     - table: APPLICATIONS
@@ -2212,8 +2233,10 @@ brd_entries:
   content:
     table_meaning: Lịch sử đào tạo, bồi dưỡng của người hành nghề
     functional_group: UID06 Quản lý người hành nghề chứng khoán
-    scope_status: in_scope
-    scope_reason: null
+    scope_status: out_of_scope
+    scope_reason: Quyết định Data Modeler (2026-08-13) — loại khỏi thiết kế Atomic
+      3NF do không còn nhu cầu model hóa riêng entity này ở tầng Atomic; vẫn còn
+      nhu cầu khai thác nghiệp vụ nên sẽ đánh giá lại hướng thiết kế khác sau.
     table: PROFESSIONAL_TRAININGS
     related_tables:
     - table: PROFESSIONALS
@@ -2233,8 +2256,12 @@ brd_entries:
   content:
     table_meaning: Nhật ký đồng bộ dữ liệu báo cáo từ tổ chức
     functional_group: UID06 Quản lý người hành nghề chứng khoán
-    scope_status: out_of_scope
-    scope_reason: Operational log
+    scope_status: in_scope
+    scope_reason: Quyết định Data Modeler (2026-08-13) — đảo lại quyết định out_of_scope
+      trước đó (Operational log); tên bảng gợi ý "log" nhưng cấu trúc trường là instance
+      data tường minh (FULL_NAME/POSITION/DEPARTMENT/CERTIFICATE_NUMBER + 4 cờ IS_VALID_*),
+      không phải audit log generic FieldName/OldValue/NewValue → đủ điều kiện entity
+      Documentation (chi tiết theo dòng của Employer Registration).
     table: ORGANIZATION_REPORT_LOG_SYNCS
     related_tables:
     - table: ORGANIZATION_REPORT_YEARLYS
@@ -2256,8 +2283,11 @@ brd_entries:
   content:
     table_meaning: Báo cáo hàng năm của tổ chức về người hành nghề
     functional_group: UID06 Quản lý người hành nghề chứng khoán
-    scope_status: out_of_scope
-    scope_reason: null
+    scope_status: in_scope
+    scope_reason: Quyết định Data Modeler (2026-08-13) — đảo lại quyết định out_of_scope
+      trước đó ("cần khảo sát thêm"); cấu trúc cột đủ để xác định là entity container báo
+      cáo năm độc lập (NAME/SUBMISSION_DATE/YEAR/TYPE/FILE_PATH/STATUS) → đủ điều kiện
+      entity Documentation ([Documentation] Employer Registration).
     table: ORGANIZATION_REPORT_YEARLYS
     related_tables:
     - table: ORGANIZATIONS
@@ -2362,12 +2392,21 @@ brd_entries:
   steward_email: username@ubck.com.vn
   content:
     table_meaning: Kết quả thẩm định/xác minh yêu cầu chuyển đổi trạng thái chứng chỉ (lý do thẩm định theo từng cấp xét duyệt)
-    functional_group: TBD - cần xác định nhóm chức năng
-    scope_status: pending
-    scope_reason: null
+    functional_group: UID05 Quản lý chứng chỉ hành nghề
+    scope_status: in_scope
+    scope_reason: Quyết định Data Modeler (2026-08-13) — cấu trúc cột đối xứng hoàn toàn
+      với VERIFY_APPLICATION_STATUSES (TARGET_STATUS/PREV_STATUS + 4 trường lý do theo
+      cấp xét duyệt + VERIFIED_BY), áp dụng cho CERTIFICATE_CONVERSION_REQUESTS thay vì
+      APPLICATIONS → đủ điều kiện Business Activity Status Review. TARGET_STATUS/PREV_STATUS
+      dùng chung scheme đã có `LICENSE_CERTIFICATE_CONVERSION_STATUS`.
     table: VERIFY_CERTIFICATE_CONVERSION_STATUSES
-    related_tables: null
-    notes: Bảng mới phát hiện qua đối chiếu DDL UAT ngày 2026-07-15, chưa có trong khảo sát ban đầu. Cần xác nhận ý nghĩa nghiệp vụ và nhóm chức năng trước khi đưa vào scope Atomic.
+    related_tables:
+    - table: CERTIFICATE_CONVERSION_REQUESTS
+      relation: FK cha — Yêu cầu chuyển đổi CCHN bản giấy sang bản điện tử (hiện out_of_scope,
+        xem 7e)
+    notes: Bảng phát hiện qua đối chiếu DDL UAT ngày 2026-07-15. Ý nghĩa nghiệp vụ đã
+      xác nhận (2026-08-13) qua đối chiếu cấu trúc cột với VERIFY_APPLICATION_STATUSES.
+      CERTIFICATE_CONVERSION_REQUESTS (bảng cha) vẫn out_of_scope — xem Điểm cần xác nhận.
     data_volume_hint: null
     refresh_frequency: null
     ingestion:

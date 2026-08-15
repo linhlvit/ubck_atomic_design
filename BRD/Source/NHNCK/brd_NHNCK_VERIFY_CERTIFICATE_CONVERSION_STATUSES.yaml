@@ -6,76 +6,76 @@ brd_ref: BRD-SRC-NHNCK-VERIFY_CERTIFICATE_CONVERSION_STATUSES
 columns:
 - name: ID
   data_type: NUMBER(10,0)
-  description: TBD - cần bổ sung mô tả
+  description: Khóa chính của bản ghi (số tự tăng)
   key: PK
   fk_note: null
 - name: CONVERSION_REQUEST_ID
   data_type: NUMBER(10,0)
-  description: TBD - cần bổ sung mô tả
-  key: null
-  fk_note: null
+  description: 'FK -> CERTIFICATE_CONVERSION_REQUESTS: Yêu cầu chuyển đổi CCHN bản giấy sang bản điện tử liên quan'
+  key: FK
+  fk_note: FK → CERTIFICATE_CONVERSION_REQUESTS.ID
 - name: TARGET_STATUS
   data_type: NUMBER(10,0)
-  description: TBD - cần bổ sung mô tả
+  description: 'Trạng thái chuyển đổi mong muốn sau khi xét duyệt (scheme LICENSE_CERTIFICATE_CONVERSION_STATUS: 1=Chứng chỉ giấy, 2=Chờ chuyển đổi điện tử, 3=Chứng chỉ số)'
   key: null
   fk_note: null
 - name: PREV_STATUS
   data_type: NUMBER(10,0)
-  description: TBD - cần bổ sung mô tả
+  description: 'Trạng thái chuyển đổi trước khi xét duyệt (cùng scheme LICENSE_CERTIFICATE_CONVERSION_STATUS)'
   key: null
   fk_note: null
 - name: STATUS
   data_type: NUMBER(10,0)
-  description: TBD - cần bổ sung mô tả
+  description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
   key: null
   fk_note: null
 - name: REASON
   data_type: NCLOB
-  description: TBD - cần bổ sung mô tả
+  description: Lý do thực hiện thao tác hoặc thay đổi
   key: null
   fk_note: null
 - name: SPEC_REASON
   data_type: NCLOB
-  description: TBD - cần bổ sung mô tả
+  description: Lý do từ chối theo khía cạnh chuyên ngành (NCLOB)
   key: null
   fk_note: null
 - name: ORG_REASON
   data_type: NCLOB
-  description: TBD - cần bổ sung mô tả
+  description: Lý do từ chối theo khía cạnh tổ chức (NCLOB)
   key: null
   fk_note: null
 - name: OVERVIEW_REASON
   data_type: NCLOB
-  description: TBD - cần bổ sung mô tả
+  description: Lý do từ chối tổng quan của yêu cầu chuyển đổi (NCLOB)
   key: null
   fk_note: null
 - name: OVERVIEW_FILE_PATH
   data_type: NVARCHAR2(400)
-  description: TBD - cần bổ sung mô tả
+  description: Đường dẫn file tài liệu tổng quan thẩm định yêu cầu chuyển đổi
   key: null
   fk_note: null
 - name: VERIFIED_BY
   data_type: NUMBER(10,0)
-  description: TBD - cần bổ sung mô tả
-  key: null
-  fk_note: null
+  description: 'FK -> USERS: Người xác minh/thẩm định cuối cùng'
+  key: FK
+  fk_note: FK → USERS.ID
 - name: CREATED_BY
   data_type: NUMBER(10,0)
-  description: TBD - cần bổ sung mô tả
+  description: ID tài khoản người tạo bản ghi
   key: null
   fk_note: null
 - name: CREATED_AT
   data_type: DATE
-  description: TBD - cần bổ sung mô tả
+  description: Thời điểm tạo bản ghi
   key: null
   fk_note: null
 - name: UPDATED_BY
   data_type: NUMBER(10,0)
-  description: TBD - cần bổ sung mô tả
+  description: ID tài khoản người cập nhật bản ghi lần cuối
   key: null
   fk_note: null
 - name: UPDATED_AT
   data_type: DATE
-  description: TBD - cần bổ sung mô tả
+  description: Thời điểm cập nhật bản ghi lần cuối
   key: null
   fk_note: null

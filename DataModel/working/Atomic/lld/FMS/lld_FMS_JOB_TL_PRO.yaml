@@ -21,40 +21,12 @@ metadata:
     \ PK/ID kỹ thuật riêng, không có audit fields (CREATED_BY/DATE_CREATED/DATE_MODIFIED/MODIFY_BY).\
     \ Trước đây ở Overview 7f nhóm Junction (\"pure junction, không business attribute\"\
     ) — theo quyết định Data Modeler, chuyển vào scope thành entity Relative riêng\
-    \ (không denormalize ARRAY). BK = composite JOB_ID+TLPRO_ID (không có natural\
-    \ code riêng). BCV Concept tạm dùng — xem FMS_HLD_Overview.md 7e#20."
+    \ (không denormalize ARRAY). BCV Concept tạm dùng — xem FMS_HLD_Overview.md 7e#20.\
+    \ Hạ về draft (2026-08-13) để bỏ cặp Id/Code riêng của entity — theo quyết định\
+    \ Data Modeler, bảng \"_x_\" (link/relationship thuần) không cần surrogate Id\
+    \ + BK Code riêng; PK là composite 2 FK (Fund Management Company Employee Id +\
+    \ Classification FMS Position Id)."
 attributes:
-- attribute_name: "Fund Management Company Employee X Classification FMS Position\
-    \ Relationship Id"
-  physical_name: "fmc_employee_x_cl_fms_position_rltnp_id"
-  description: "Khóa đại diện (surrogate key)."
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: true
-  status: "draft"
-  source_columns: []
-  comment: "PK surrogate. BCV: \"[Involved Party] Individual Employment Status\" (tạm\
-    \ dùng). Quan hệ gán chức danh/vị trí công việc cho nhân sự chủ chốt công ty QLQ."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Fund Management Company Employee X Classification FMS Position\
-    \ Relationship Code"
-  physical_name: "fmc_employee_x_cl_fms_position_rltnp_code"
-  description: "Mã quan hệ — composite JOB_ID+TLPRO_ID (bảng nguồn không có PK/mã\
-    \ nghiệp vụ riêng)."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.JOB_TL_PRO.JOB_ID"
-  - "FMS.JOB_TL_PRO.TLPRO_ID"
-  comment: "BK composite: JOB_ID || '|' || TLPRO_ID. Không có PK/code kỹ thuật riêng\
-    \ trên bảng nguồn."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Source System Code"
   physical_name: "src_stm_code"
   description: "Mã hệ thống nguồn dữ liệu."
@@ -72,12 +44,12 @@ attributes:
   description: "FK -> TL_PROFILES: Người hành nghề được gán chức danh."
   data_domain: "Surrogate Key"
   nullable: false
-  is_primary_key: false
+  is_primary_key: true
   status: "draft"
   source_columns:
   - "FMS.JOB_TL_PRO.TLPRO_ID"
   comment: "FK target: fmc_employee.fmc_employee_id. Hash: hash_id('FMS.TL_PROFILES',\
-    \ TLPRO_ID)."
+    \ TLPRO_ID). Composite PK cùng Classification FMS Position Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -100,12 +72,12 @@ attributes:
   description: "FK -> JOBS: Chức danh/vị trí công việc được gán."
   data_domain: "Surrogate Key"
   nullable: false
-  is_primary_key: false
+  is_primary_key: true
   status: "draft"
   source_columns:
   - "FMS.JOB_TL_PRO.JOB_ID"
   comment: "FK target: cl_fms_position.cl_fms_position_id. Hash: hash_id('FMS.JOBS',\
-    \ JOB_ID)."
+    \ JOB_ID). Composite PK cùng Fund Management Company Employee Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
