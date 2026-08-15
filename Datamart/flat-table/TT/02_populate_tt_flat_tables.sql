@@ -16,13 +16,22 @@
 -- 4 Operational: bỏ hẳn DELETE-scoped + WHERE etl_date ở bước populate flat
 -- table này — Operational lưu SCD4A, lọc ds_rcrd_isrt_dt = :etl_date khi đẩy
 -- lên ClickHouse do đội dev xử lý riêng, không thuộc phạm vi SQL này.
+-- Sửa 2026-08-15: 9 Fact bổ sung cột kỹ thuật data_dt (String, YYYYMMDD) —
+-- data_dt = TO_CHAR(TO_DATE(:etl_date, 'YYYY-MM-DD'), 'YYYYMMDD'), ghi vào
+-- mỗi dòng INSERT trên flat table (đích). Toàn bộ điều kiện lọc trước đây
+-- dùng CAST(ds_etl_pcs_tms AS Date) = :etl_date — cả DELETE-scoped trên flat
+-- table lẫn WHERE trong INSERT...SELECT quét bảng datamart.fct_* (nguồn) —
+-- đổi thành data_dt = TO_CHAR(...): flat table dùng cột data_dt vừa thêm,
+-- datamart.fct_* dùng cột data_dt đã có sẵn ở tầng đó. data_dt là cột chuẩn
+-- lọc/xoá duy nhất cho toàn bộ 9 Fact từ nay, không còn dùng ds_etl_pcs_tms.
+-- Không áp dụng cho 4 Operational (ngoài phạm vi, xem ghi chú trên).
 -- ============================================================
 
 -- ------------------------------------------------------------
 -- 1. Fact Inspection Team Activity
 -- ------------------------------------------------------------
 DELETE FROM datamart.tt_fct_inspection_team_activity_flat ON CLUSTER 'my_cluster'
-WHERE CAST(ds_etl_pcs_tms AS Date) = :etl_date;
+WHERE data_dt = TO_CHAR(TO_DATE(:etl_date, 'YYYY-MM-DD'), 'YYYYMMDD');
 INSERT INTO datamart.tt_fct_inspection_team_activity_flat
 SELECT
     cal.cdr_dt                          AS cdr_dt,
@@ -30,20 +39,21 @@ SELECT
     dim.start_dt,
     dim.end_dt,
     dim.content,
-    dim.src_stm_code                    AS inspection_team_src_stm_code
+    dim.src_stm_code                    AS inspection_team_src_stm_code,
+    TO_CHAR(TO_DATE(:etl_date, 'YYYY-MM-DD'), 'YYYYMMDD') AS data_dt
 FROM datamart.fct_inspection_team_activity f
 JOIN datamart.cdr_dt_dim cal
     ON cal.cdr_dt_dim_id = f.calendar_dt_dim_id
 JOIN datamart.inspection_team_dim dim
     ON dim.inspection_team_dim_id = f.inspection_team_dim_id
-WHERE CAST(f.ds_etl_pcs_tms AS Date) = :etl_date
+WHERE f.data_dt = TO_CHAR(TO_DATE(:etl_date, 'YYYY-MM-DD'), 'YYYYMMDD')
 ;
 
 -- ------------------------------------------------------------
 -- 2. Fact Examination Team Activity
 -- ------------------------------------------------------------
 DELETE FROM datamart.tt_fct_examination_team_activity_flat ON CLUSTER 'my_cluster'
-WHERE CAST(ds_etl_pcs_tms AS Date) = :etl_date;
+WHERE data_dt = TO_CHAR(TO_DATE(:etl_date, 'YYYY-MM-DD'), 'YYYYMMDD');
 INSERT INTO datamart.tt_fct_examination_team_activity_flat
 SELECT
     cal.cdr_dt                          AS cdr_dt,
@@ -51,20 +61,21 @@ SELECT
     dim.start_dt,
     dim.end_dt,
     dim.content,
-    dim.src_stm_code                    AS examination_team_src_stm_code
+    dim.src_stm_code                    AS examination_team_src_stm_code,
+    TO_CHAR(TO_DATE(:etl_date, 'YYYY-MM-DD'), 'YYYYMMDD') AS data_dt
 FROM datamart.fct_examination_team_activity f
 JOIN datamart.cdr_dt_dim cal
     ON cal.cdr_dt_dim_id = f.calendar_dt_dim_id
 JOIN datamart.examination_team_dim dim
     ON dim.examination_team_dim_id = f.examination_team_dim_id
-WHERE CAST(f.ds_etl_pcs_tms AS Date) = :etl_date
+WHERE f.data_dt = TO_CHAR(TO_DATE(:etl_date, 'YYYY-MM-DD'), 'YYYYMMDD')
 ;
 
 -- ------------------------------------------------------------
 -- 3. Fact Inspection Team Target Activity
 -- ------------------------------------------------------------
 DELETE FROM datamart.tt_fct_inspection_team_target_activity_flat ON CLUSTER 'my_cluster'
-WHERE CAST(ds_etl_pcs_tms AS Date) = :etl_date;
+WHERE data_dt = TO_CHAR(TO_DATE(:etl_date, 'YYYY-MM-DD'), 'YYYYMMDD');
 INSERT INTO datamart.tt_fct_inspection_team_target_activity_flat
 SELECT
     cal.cdr_dt                          AS cdr_dt,
@@ -75,7 +86,8 @@ SELECT
     team_dim.start_dt,
     team_dim.end_dt,
     team_dim.content,
-    team_dim.src_stm_code               AS inspection_team_src_stm_code
+    team_dim.src_stm_code               AS inspection_team_src_stm_code,
+    TO_CHAR(TO_DATE(:etl_date, 'YYYY-MM-DD'), 'YYYYMMDD') AS data_dt
 FROM datamart.fct_inspection_team_target_activity f
 JOIN datamart.cdr_dt_dim cal
     ON cal.cdr_dt_dim_id = f.calendar_dt_dim_id
@@ -83,14 +95,14 @@ JOIN datamart.inspection_team_target_dim target_dim
     ON target_dim.inspection_team_target_dim_id = f.inspection_team_target_dim_id
 JOIN datamart.inspection_team_dim team_dim
     ON team_dim.inspection_team_dim_id = f.inspection_team_dim_id
-WHERE CAST(f.ds_etl_pcs_tms AS Date) = :etl_date
+WHERE f.data_dt = TO_CHAR(TO_DATE(:etl_date, 'YYYY-MM-DD'), 'YYYYMMDD')
 ;
 
 -- ------------------------------------------------------------
 -- 4. Fact Examination Team Target Activity
 -- ------------------------------------------------------------
 DELETE FROM datamart.tt_fct_examination_team_target_activity_flat ON CLUSTER 'my_cluster'
-WHERE CAST(ds_etl_pcs_tms AS Date) = :etl_date;
+WHERE data_dt = TO_CHAR(TO_DATE(:etl_date, 'YYYY-MM-DD'), 'YYYYMMDD');
 INSERT INTO datamart.tt_fct_examination_team_target_activity_flat
 SELECT
     cal.cdr_dt                          AS cdr_dt,
@@ -101,7 +113,8 @@ SELECT
     team_dim.start_dt,
     team_dim.end_dt,
     team_dim.content,
-    team_dim.src_stm_code               AS examination_team_src_stm_code
+    team_dim.src_stm_code               AS examination_team_src_stm_code,
+    TO_CHAR(TO_DATE(:etl_date, 'YYYY-MM-DD'), 'YYYYMMDD') AS data_dt
 FROM datamart.fct_examination_team_target_activity f
 JOIN datamart.cdr_dt_dim cal
     ON cal.cdr_dt_dim_id = f.calendar_dt_dim_id
@@ -109,33 +122,34 @@ JOIN datamart.examination_team_target_dim target_dim
     ON target_dim.examination_team_target_dim_id = f.examination_team_target_dim_id
 JOIN datamart.examination_team_dim team_dim
     ON team_dim.examination_team_dim_id = f.examination_team_dim_id
-WHERE CAST(f.ds_etl_pcs_tms AS Date) = :etl_date
+WHERE f.data_dt = TO_CHAR(TO_DATE(:etl_date, 'YYYY-MM-DD'), 'YYYYMMDD')
 ;
 
 -- ------------------------------------------------------------
 -- 5. Fact Penalty Decision
 -- ------------------------------------------------------------
 DELETE FROM datamart.tt_fct_penalty_decision_flat ON CLUSTER 'my_cluster'
-WHERE CAST(ds_etl_pcs_tms AS Date) = :etl_date;
+WHERE data_dt = TO_CHAR(TO_DATE(:etl_date, 'YYYY-MM-DD'), 'YYYYMMDD');
 INSERT INTO datamart.tt_fct_penalty_decision_flat
 SELECT
     f.total_fine_amt,
     cal.cdr_dt                          AS cdr_dt,
     dim.penalty_decision_code,
-    dim.src_stm_code                    AS penalty_decision_src_stm_code
+    dim.src_stm_code                    AS penalty_decision_src_stm_code,
+    TO_CHAR(TO_DATE(:etl_date, 'YYYY-MM-DD'), 'YYYYMMDD') AS data_dt
 FROM datamart.fct_penalty_decision f
 JOIN datamart.cdr_dt_dim cal
     ON cal.cdr_dt_dim_id = f.calendar_dt_dim_id
 JOIN datamart.penalty_decision_dim dim
     ON dim.penalty_decision_dim_id = f.penalty_decision_dim_id
-WHERE CAST(f.ds_etl_pcs_tms AS Date) = :etl_date
+WHERE f.data_dt = TO_CHAR(TO_DATE(:etl_date, 'YYYY-MM-DD'), 'YYYYMMDD')
 ;
 
 -- ------------------------------------------------------------
 -- 6. Fact Penalty Decision Subject Behavior
 -- ------------------------------------------------------------
 DELETE FROM datamart.tt_fct_penalty_decision_subject_behavior_flat ON CLUSTER 'my_cluster'
-WHERE CAST(ds_etl_pcs_tms AS Date) = :etl_date;
+WHERE data_dt = TO_CHAR(TO_DATE(:etl_date, 'YYYY-MM-DD'), 'YYYYMMDD');
 INSERT INTO datamart.tt_fct_penalty_decision_subject_behavior_flat
 SELECT
     f.applied_fine_amt,
@@ -147,7 +161,8 @@ SELECT
     decision_dim.src_stm_code           AS penalty_decision_src_stm_code,
     subject_dim.penalty_decision_subject_code,
     subject_dim.subject_tp_code,
-    subject_dim.src_stm_code            AS penalty_decision_subject_src_stm_code
+    subject_dim.src_stm_code            AS penalty_decision_subject_src_stm_code,
+    TO_CHAR(TO_DATE(:etl_date, 'YYYY-MM-DD'), 'YYYYMMDD') AS data_dt
 FROM datamart.fct_penalty_decision_subject_behavior f
 JOIN datamart.cdr_dt_dim cal
     ON cal.cdr_dt_dim_id = f.calendar_dt_dim_id
@@ -157,14 +172,14 @@ JOIN datamart.penalty_decision_dim decision_dim
     ON decision_dim.penalty_decision_dim_id = f.penalty_decision_dim_id
 JOIN datamart.penalty_decision_subject_dim subject_dim
     ON subject_dim.penalty_decision_subject_dim_id = f.penalty_decision_subject_dim_id
-WHERE CAST(f.ds_etl_pcs_tms AS Date) = :etl_date
+WHERE f.data_dt = TO_CHAR(TO_DATE(:etl_date, 'YYYY-MM-DD'), 'YYYYMMDD')
 ;
 
 -- ------------------------------------------------------------
 -- 7. Fact Penalty Decision Subject
 -- ------------------------------------------------------------
 DELETE FROM datamart.tt_fct_penalty_decision_subject_flat ON CLUSTER 'my_cluster'
-WHERE CAST(ds_etl_pcs_tms AS Date) = :etl_date;
+WHERE data_dt = TO_CHAR(TO_DATE(:etl_date, 'YYYY-MM-DD'), 'YYYYMMDD');
 INSERT INTO datamart.tt_fct_penalty_decision_subject_flat
 SELECT
     cal.cdr_dt                          AS cdr_dt,
@@ -172,7 +187,8 @@ SELECT
     subject_dim.subject_tp_code,
     subject_dim.src_stm_code            AS penalty_decision_subject_src_stm_code,
     decision_dim.penalty_decision_code,
-    decision_dim.src_stm_code           AS penalty_decision_src_stm_code
+    decision_dim.src_stm_code           AS penalty_decision_src_stm_code,
+    TO_CHAR(TO_DATE(:etl_date, 'YYYY-MM-DD'), 'YYYYMMDD') AS data_dt
 FROM datamart.fct_penalty_decision_subject f
 JOIN datamart.cdr_dt_dim cal
     ON cal.cdr_dt_dim_id = f.calendar_dt_dim_id
@@ -180,7 +196,7 @@ JOIN datamart.penalty_decision_subject_dim subject_dim
     ON subject_dim.penalty_decision_subject_dim_id = f.penalty_decision_subject_dim_id
 JOIN datamart.penalty_decision_dim decision_dim
     ON decision_dim.penalty_decision_dim_id = f.penalty_decision_dim_id
-WHERE CAST(f.ds_etl_pcs_tms AS Date) = :etl_date
+WHERE f.data_dt = TO_CHAR(TO_DATE(:etl_date, 'YYYY-MM-DD'), 'YYYYMMDD')
 ;
 
 -- ------------------------------------------------------------
@@ -257,7 +273,7 @@ FROM datamart.opr_petition_list o
 -- 12. Fact Inspection Team Violation Behavior
 -- ------------------------------------------------------------
 DELETE FROM datamart.tt_fct_inspection_team_violation_behavior_flat ON CLUSTER 'my_cluster'
-WHERE CAST(ds_etl_pcs_tms AS Date) = :etl_date;
+WHERE data_dt = TO_CHAR(TO_DATE(:etl_date, 'YYYY-MM-DD'), 'YYYYMMDD');
 INSERT INTO datamart.tt_fct_inspection_team_violation_behavior_flat
 SELECT
     cal.cdr_dt                          AS cdr_dt,
@@ -268,7 +284,8 @@ SELECT
     team_dim.start_dt,
     team_dim.end_dt,
     team_dim.content,
-    team_dim.src_stm_code               AS inspection_team_src_stm_code
+    team_dim.src_stm_code               AS inspection_team_src_stm_code,
+    TO_CHAR(TO_DATE(:etl_date, 'YYYY-MM-DD'), 'YYYYMMDD') AS data_dt
 FROM datamart.fct_inspection_team_violation_behavior f
 JOIN datamart.cdr_dt_dim cal
     ON cal.cdr_dt_dim_id = f.calendar_dt_dim_id
@@ -276,14 +293,14 @@ JOIN datamart.inspection_team_violation_behavior_dim behavior_dim
     ON behavior_dim.inspection_team_violation_behavior_dim_id = f.inspection_team_violation_behavior_dim_id
 JOIN datamart.inspection_team_dim team_dim
     ON team_dim.inspection_team_dim_id = f.inspection_team_dim_id
-WHERE CAST(f.ds_etl_pcs_tms AS Date) = :etl_date
+WHERE f.data_dt = TO_CHAR(TO_DATE(:etl_date, 'YYYY-MM-DD'), 'YYYYMMDD')
 ;
 
 -- ------------------------------------------------------------
 -- 13. Fact Examination Team Violation Behavior
 -- ------------------------------------------------------------
 DELETE FROM datamart.tt_fct_examination_team_violation_behavior_flat ON CLUSTER 'my_cluster'
-WHERE CAST(ds_etl_pcs_tms AS Date) = :etl_date;
+WHERE data_dt = TO_CHAR(TO_DATE(:etl_date, 'YYYY-MM-DD'), 'YYYYMMDD');
 INSERT INTO datamart.tt_fct_examination_team_violation_behavior_flat
 SELECT
     cal.cdr_dt                          AS cdr_dt,
@@ -294,7 +311,8 @@ SELECT
     team_dim.start_dt,
     team_dim.end_dt,
     team_dim.content,
-    team_dim.src_stm_code               AS examination_team_src_stm_code
+    team_dim.src_stm_code               AS examination_team_src_stm_code,
+    TO_CHAR(TO_DATE(:etl_date, 'YYYY-MM-DD'), 'YYYYMMDD') AS data_dt
 FROM datamart.fct_examination_team_violation_behavior f
 JOIN datamart.cdr_dt_dim cal
     ON cal.cdr_dt_dim_id = f.calendar_dt_dim_id
@@ -302,5 +320,5 @@ JOIN datamart.examination_team_violation_behavior_dim behavior_dim
     ON behavior_dim.examination_team_violation_behavior_dim_id = f.examination_team_violation_behavior_dim_id
 JOIN datamart.examination_team_dim team_dim
     ON team_dim.examination_team_dim_id = f.examination_team_dim_id
-WHERE CAST(f.ds_etl_pcs_tms AS Date) = :etl_date
+WHERE f.data_dt = TO_CHAR(TO_DATE(:etl_date, 'YYYY-MM-DD'), 'YYYYMMDD')
 ;

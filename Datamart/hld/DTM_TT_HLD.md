@@ -2164,6 +2164,8 @@ graph TB
 
 **Bảng Phân tích (Star Schema):**
 
+> **Sửa 2026-08-15 — bổ sung `data_dt` (technical field, YYYYMMDD):** cả 9 Fact bên dưới đều thêm cột `data_dt = TO_CHAR(TO_DATE(:etl_date, 'YYYY-MM-DD'), 'YYYYMMDD')` trên flat table. DELETE-scoped + WHERE filter khi ETL Datamart → flat table đổi từ `CAST(ds_etl_pcs_tms AS Date) = :etl_date` sang `data_dt = TO_CHAR(...)` — `data_dt` là cột chuẩn dùng lọc/xoá ở bước này. Không áp dụng cho 4 Operational (out of scope, xem ghi chú ETL load riêng ở từng bảng Operational).
+
 | Bảng | Pattern | Grain | KPI | Trạng thái |
 |---|---|---|---|---|
 | Fact Inspection Team Activity | Event | 1 đoàn thanh tra (`INSPECTION_TEAM`) — 2 FK: Calendar Date Dimension, Inspection Team Dimension. Date key: Decision Date | K_TT_1–7 (Nhóm 1), K_TT_8–10 (Nhóm 2) | READY — xem Cụm 1 |

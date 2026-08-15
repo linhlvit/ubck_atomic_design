@@ -16,7 +16,10 @@ CREATE TABLE IF NOT EXISTS datamart.tt_fct_inspection_team_activity_flat ON CLUS
     start_dt                            Nullable(Date)       COMMENT 'Ngày bắt đầu đoàn thanh tra — từ Inspection Team Dimension',
     end_dt                               Nullable(Date)       COMMENT 'Ngày kết thúc đoàn thanh tra — từ Inspection Team Dimension',
     content                             Nullable(String)    COMMENT 'Nội dung tổng quát cuộc thanh tra — từ Inspection Team Dimension',
-    inspection_team_src_stm_code        Nullable(String)    COMMENT 'Mã hệ thống nguồn — từ Inspection Team Dimension'
+    inspection_team_src_stm_code        Nullable(String)    COMMENT 'Mã hệ thống nguồn — từ Inspection Team Dimension',
+
+    -- Technical field
+    data_dt                             String              COMMENT 'Ngày ETL nạp dữ liệu (YYYYMMDD) — dùng lọc/xoá khi ETL Datamart → flat table'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
@@ -37,7 +40,10 @@ CREATE TABLE IF NOT EXISTS datamart.tt_fct_examination_team_activity_flat ON CLU
     start_dt                            Nullable(Date)       COMMENT 'Ngày bắt đầu đoàn kiểm tra — từ Examination Team Dimension',
     end_dt                               Nullable(Date)       COMMENT 'Ngày kết thúc đoàn kiểm tra — từ Examination Team Dimension',
     content                             Nullable(String)    COMMENT 'Nội dung kiểm tra tổng quát — từ Examination Team Dimension',
-    examination_team_src_stm_code       Nullable(String)    COMMENT 'Mã hệ thống nguồn — từ Examination Team Dimension'
+    examination_team_src_stm_code       Nullable(String)    COMMENT 'Mã hệ thống nguồn — từ Examination Team Dimension',
+
+    -- Technical field
+    data_dt                             String              COMMENT 'Ngày ETL nạp dữ liệu (YYYYMMDD) — dùng lọc/xoá khi ETL Datamart → flat table'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
@@ -63,7 +69,10 @@ CREATE TABLE IF NOT EXISTS datamart.tt_fct_inspection_team_target_activity_flat 
     start_dt                                Nullable(Date)   COMMENT 'Ngày bắt đầu đoàn thanh tra — từ Inspection Team Dimension',
     end_dt                                    Nullable(Date)   COMMENT 'Ngày kết thúc đoàn thanh tra — từ Inspection Team Dimension',
     content                                 Nullable(String) COMMENT 'Nội dung tổng quát cuộc thanh tra — từ Inspection Team Dimension',
-    inspection_team_src_stm_code            Nullable(String) COMMENT 'Mã hệ thống nguồn — từ Inspection Team Dimension'
+    inspection_team_src_stm_code            Nullable(String) COMMENT 'Mã hệ thống nguồn — từ Inspection Team Dimension',
+
+    -- Technical field
+    data_dt                                 String           COMMENT 'Ngày ETL nạp dữ liệu (YYYYMMDD) — dùng lọc/xoá khi ETL Datamart → flat table'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
@@ -89,7 +98,10 @@ CREATE TABLE IF NOT EXISTS datamart.tt_fct_examination_team_target_activity_flat
     start_dt                                 Nullable(Date)   COMMENT 'Ngày bắt đầu đoàn kiểm tra — từ Examination Team Dimension',
     end_dt                                     Nullable(Date)   COMMENT 'Ngày kết thúc đoàn kiểm tra — từ Examination Team Dimension',
     content                                  Nullable(String) COMMENT 'Nội dung kiểm tra tổng quát — từ Examination Team Dimension',
-    examination_team_src_stm_code            Nullable(String) COMMENT 'Mã hệ thống nguồn — từ Examination Team Dimension'
+    examination_team_src_stm_code            Nullable(String) COMMENT 'Mã hệ thống nguồn — từ Examination Team Dimension',
+
+    -- Technical field
+    data_dt                                  String           COMMENT 'Ngày ETL nạp dữ liệu (YYYYMMDD) — dùng lọc/xoá khi ETL Datamart → flat table'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
@@ -110,7 +122,10 @@ CREATE TABLE IF NOT EXISTS datamart.tt_fct_penalty_decision_flat ON CLUSTER 'my_
 
     -- From: PENALTY DECISION DIMENSION
     penalty_decision_code               String                      COMMENT 'BK — mã quyết định xử phạt — từ Penalty Decision Dimension',
-    penalty_decision_src_stm_code       Nullable(String)            COMMENT 'Mã hệ thống nguồn — từ Penalty Decision Dimension'
+    penalty_decision_src_stm_code       Nullable(String)            COMMENT 'Mã hệ thống nguồn — từ Penalty Decision Dimension',
+
+    -- Technical field
+    data_dt                             String                      COMMENT 'Ngày ETL nạp dữ liệu (YYYYMMDD) — dùng lọc/xoá khi ETL Datamart → flat table'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
@@ -141,7 +156,10 @@ CREATE TABLE IF NOT EXISTS datamart.tt_fct_penalty_decision_subject_behavior_fla
     -- From: PENALTY DECISION SUBJECT DIMENSION
     penalty_decision_subject_code             String           COMMENT 'BK per-row unique — từ Penalty Decision Subject Dimension',
     subject_tp_code                           Nullable(String) COMMENT 'Loại đối tượng — từ Penalty Decision Subject Dimension',
-    penalty_decision_subject_src_stm_code     Nullable(String) COMMENT 'Mã hệ thống nguồn — từ Penalty Decision Subject Dimension'
+    penalty_decision_subject_src_stm_code     Nullable(String) COMMENT 'Mã hệ thống nguồn — từ Penalty Decision Subject Dimension',
+
+    -- Technical field
+    data_dt                                   String           COMMENT 'Ngày ETL nạp dữ liệu (YYYYMMDD) — dùng lọc/xoá khi ETL Datamart → flat table'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
@@ -164,7 +182,10 @@ CREATE TABLE IF NOT EXISTS datamart.tt_fct_penalty_decision_subject_flat ON CLUS
 
     -- From: PENALTY DECISION DIMENSION
     penalty_decision_code                String            COMMENT 'BK — mã quyết định xử phạt — từ Penalty Decision Dimension',
-    penalty_decision_src_stm_code        Nullable(String)  COMMENT 'Mã hệ thống nguồn — từ Penalty Decision Dimension'
+    penalty_decision_src_stm_code        Nullable(String)  COMMENT 'Mã hệ thống nguồn — từ Penalty Decision Dimension',
+
+    -- Technical field
+    data_dt                              String            COMMENT 'Ngày ETL nạp dữ liệu (YYYYMMDD) — dùng lọc/xoá khi ETL Datamart → flat table'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
@@ -277,7 +298,10 @@ CREATE TABLE IF NOT EXISTS datamart.tt_fct_inspection_team_violation_behavior_fl
     start_dt                                        Nullable(Date)   COMMENT 'Ngày bắt đầu đoàn thanh tra — từ Inspection Team Dimension',
     end_dt                                          Nullable(Date)   COMMENT 'Ngày kết thúc đoàn thanh tra — từ Inspection Team Dimension',
     content                                         Nullable(String) COMMENT 'Nội dung tổng quát cuộc thanh tra — từ Inspection Team Dimension',
-    inspection_team_src_stm_code                    Nullable(String) COMMENT 'Mã hệ thống nguồn — từ Inspection Team Dimension'
+    inspection_team_src_stm_code                    Nullable(String) COMMENT 'Mã hệ thống nguồn — từ Inspection Team Dimension',
+
+    -- Technical field
+    data_dt                                         String           COMMENT 'Ngày ETL nạp dữ liệu (YYYYMMDD) — dùng lọc/xoá khi ETL Datamart → flat table'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
@@ -303,7 +327,10 @@ CREATE TABLE IF NOT EXISTS datamart.tt_fct_examination_team_violation_behavior_f
     start_dt                                        Nullable(Date)   COMMENT 'Ngày bắt đầu đoàn kiểm tra — từ Examination Team Dimension',
     end_dt                                          Nullable(Date)   COMMENT 'Ngày kết thúc đoàn kiểm tra — từ Examination Team Dimension',
     content                                         Nullable(String) COMMENT 'Nội dung kiểm tra tổng quát — từ Examination Team Dimension',
-    examination_team_src_stm_code                   Nullable(String) COMMENT 'Mã hệ thống nguồn — từ Examination Team Dimension'
+    examination_team_src_stm_code                   Nullable(String) COMMENT 'Mã hệ thống nguồn — từ Examination Team Dimension',
+
+    -- Technical field
+    data_dt                                         String           COMMENT 'Ngày ETL nạp dữ liệu (YYYYMMDD) — dùng lọc/xoá khi ETL Datamart → flat table'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
