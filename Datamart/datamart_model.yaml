@@ -4364,6 +4364,15 @@ entities:
         description: "FK tới Calendar Date Dimension — ngày chạy ETL (snapshot date). Full-scan daily vì không biết trước công ty nào nộp BCTC vào ngày nào."
         source_atomic_table: "cdr_dt_dim"
         source_atomic_column: null
+      - logical_name: "Industry Dimension Id"
+        physical_name: "industry_dim_id"
+        data_domain: "Surrogate Dimension Key"
+        data_type: "string"
+        nullable: true
+        key: "FK"
+        description: "FK sang Industry Dimension (surrogate key) — ngành kinh tế của công ty đại chúng phát sinh dòng báo cáo này."
+        source_atomic_table: "public_company / industry_dim"
+        source_atomic_column: "public_company.business_line_level_1_code"
       - logical_name: "Report Year"
         physical_name: "rpt_year"
         data_domain: "Small Counter"
@@ -8942,13 +8951,14 @@ entities:
     logical_name: "Industry Dimension"
     datamart_table: "industry_dim"
     table_type: "dim"
-    module: "PTTT"
+    module: "GSDC"
     status: "draft"
     reuse_status: "new"
-    description: "Chiều ngành nghề kinh doanh mã CK — SCD4A — grain 1 row/ngành."
+    description: "Chiều ngành nghề kinh doanh cấp 1 (SCD4A) — grain 1 row/ngành đang active. Khai sinh tại GSDC (2026-08-17, chuyển quyền sở hữu từ PTTT — PTTT khai sinh trước nhưng GSDC là nơi thiết kế chuẩn hoá lại, dùng làm driving table cho breakdown báo cáo theo ngành đảm bảo đủ toàn bộ danh mục ngành kể cả ngành chưa có công ty/dữ liệu). PTTT reuse bảng này cho Fact Sector Risk Snapshot."
     source_atomic:
       - "cl_business_line"
     modules_using:
+      - "GSDC"
       - "PTTT"
     columns:
       - logical_name: "Industry Dimension Id"
@@ -8961,16 +8971,16 @@ entities:
         source_atomic_table: "Generated"
         source_atomic_column: "Generated"
       - logical_name: "Industry Code"
-        physical_name: "sector_code"
+        physical_name: "industry_code"
         data_domain: "Text"
         data_type: "string"
         nullable: false
         key: "BK"
-        description: "BK — mã ngành nghề cấp 1 (Classification Business Line Code)"
+        description: "BK — mã ngành nghề cấp 1 (Classification Business Line Code). Chỉ lấy ngành đang hiệu lực sử dụng (Active Indicator = 1)."
         source_atomic_table: "cl_business_line"
         source_atomic_column: "cl_business_line.cl_business_line_code"
       - logical_name: "Industry Name"
-        physical_name: "sector_nm"
+        physical_name: "industry_nm"
         data_domain: "Text"
         data_type: "string"
         nullable: false

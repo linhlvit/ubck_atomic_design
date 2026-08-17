@@ -362,6 +362,7 @@ CREATE TABLE IF NOT EXISTS datamart.gsdc_fct_public_company_financial_rpt_val_fl
     public_company_dim_id        String              COMMENT 'FK sang Public Company Dimension (surrogate key).',
     financial_rpt_catalog_dim_id  String              COMMENT 'FK tới Financial Report Catalog Dimension — khóa composite Catalog Code + Row Code + Column Code.',
     snpst_dt_dim_id                String              COMMENT 'FK tới Calendar Date Dimension — ngày chạy ETL (snapshot date).',
+    industry_dim_id                 Nullable(String)    COMMENT 'FK sang Industry Dimension — ngành kinh tế của công ty đại chúng phát sinh dòng báo cáo này.',
     rpt_year                       Int64               COMMENT 'Năm báo cáo tài chính — 1 phần grain key.',
     rpt_quarter                    Nullable(Int64)     COMMENT 'Quý báo cáo tài chính — 1 phần grain key.',
     row_code                       String              COMMENT 'Mã kỹ thuật dòng — 1 phần grain key.',
@@ -376,10 +377,8 @@ CREATE TABLE IF NOT EXISTS datamart.gsdc_fct_public_company_financial_rpt_val_fl
     equity_ticker_symbol               Nullable(String)    COMMENT 'Mã cổ phiếu — từ Public Company Dimension.',
     public_company_nm                  Nullable(String)    COMMENT 'Tên công ty (tiếng Việt) — từ Public Company Dimension.',
     equity_listing_exchange_code       Nullable(String)    COMMENT 'Sàn niêm yết — từ Public Company Dimension.',
-    business_line_level_1_code         Nullable(String)    COMMENT 'Mã ngành cấp 1 — từ Public Company Dimension.',
     ids_registration_dt                Nullable(Date)      COMMENT 'Ngày đăng ký IDS — từ Public Company Dimension.',
     public_company_status_code         Nullable(String)    COMMENT 'Trạng thái công ty — từ Public Company Dimension.',
-    classification_business_line_nm    Nullable(String)    COMMENT 'Tên ngành nghề kinh doanh cấp 1 — từ Public Company Dimension.',
     public_company_english_nm          Nullable(String)    COMMENT 'Tên công ty (tiếng Anh) — từ Public Company Dimension.',
     enterprise_tp_code                 Nullable(String)    COMMENT 'Loại hình doanh nghiệp — từ Public Company Dimension.',
     enterprise_tp_nm                   Nullable(String)    COMMENT 'Tên loại hình doanh nghiệp — LEFT JOIN cl_value (schema_code=''ENTERPRISE_TYPE''); hiện NULL 100% do gap Atomic (chưa có LOOKUP_VALUES cho COMPANY_PROFILES.ENTERPRISE_TYPE_CD) — từ Public Company Dimension.',
@@ -399,6 +398,10 @@ CREATE TABLE IF NOT EXISTS datamart.gsdc_fct_public_company_financial_rpt_val_fl
     has_subsidiary_indicator           Nullable(Int64)     COMMENT 'Có công ty con — từ Public Company Dimension.',
     has_joint_venture_indicator        Nullable(Int64)     COMMENT 'Có liên doanh — từ Public Company Dimension.',
     ipo_company_indicator              Nullable(Int64)     COMMENT '1-Công ty đang IPO, 0-Công ty đại chúng — từ Public Company Dimension.',
+
+    -- From: INDUSTRY DIMENSION
+    industry_code                      Nullable(String)    COMMENT 'Mã ngành cấp 1 — từ Industry Dimension.',
+    industry_nm                        Nullable(String)    COMMENT 'Tên ngành cấp 1 — từ Industry Dimension.',
 
     -- From: FINANCIAL REPORT CATALOG DIMENSION
     financial_rpt_catalog_code    Nullable(String)    COMMENT 'Mã báo cáo — từ Financial Report Catalog Dimension.',

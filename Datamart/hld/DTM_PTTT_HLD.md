@@ -2947,7 +2947,7 @@ graph TB
 | Datamart Entity | datamart_table | reuse_status | Ghi chú |
 |---|---|---|---|
 | Calendar Date Dimension | cdr_dt_dim | reuse | Conformed dimension dùng chung toàn hệ thống (SHARED trong `datamart_model.yaml`) — không tạo mới |
-| Industry Dimension | industry_dim | new | Chưa có trong `datamart_model.yaml`; PTTT là module đầu tiên khai sinh |
+| Industry Dimension | industry_dim | reuse | Chuyển quyền sở hữu sang GSDC (2026-08-17) — GSDC khai sinh chuẩn hoá lại (driving table cho breakdown báo cáo theo ngành, thêm filter Active Indicator = 1). PTTT reuse nguyên bảng, không đổi tên/cột — chỉ đổi module sở hữu trong `datamart_model.yaml` |
 | Investor Group Dimension | investor_group_dim | new | Chưa có trong `datamart_model.yaml` |
 | Corp Bond Industry Dimension | corp_bond_industry_dim | new | Chưa có trong `datamart_model.yaml`; cùng nguồn Atomic (`Public Company`/IDS.categories) với Industry Dimension nhưng tách riêng vì grain/mục đích khác (ngành TCPH trái phiếu vs ngành mã CK cổ phiếu) |
 | Securities Company Dimension | scr_co_dim | new | Chưa có trong `datamart_model.yaml` |

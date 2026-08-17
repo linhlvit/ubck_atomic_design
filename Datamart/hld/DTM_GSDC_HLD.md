@@ -1115,6 +1115,7 @@ erDiagram
         string Row_Code PK
         string Column_Code PK
         string Snapshot_Date_Dimension_Id PK
+        string Industry_Dimension_Id FK
         float Data_Value
     }
 
@@ -1159,12 +1160,22 @@ erDiagram
         string Source_System_Code
     }
 
+    Industry_Dimension {
+        string Industry_Dimension_Id PK
+        string Industry_Code
+        string Industry_Name
+        string Source_System_Code
+    }
+
     Fact_Public_Company_Financial_Report_Value }o--|| Public_Company_Dimension : "Public_Company_Dimension_Id"
     Fact_Public_Company_Financial_Report_Value }o--|| Financial_Report_Catalog_Dimension : "Financial_Report_Catalog_Dimension_Id"
     Fact_Public_Company_Financial_Report_Value }o--|| Calendar_Date_Dimension : "Snapshot_Date_Dimension_Id"
+    Fact_Public_Company_Financial_Report_Value }o--|| Industry_Dimension : "Industry_Dimension_Id"
 ```
 
 > **Ghi chú erDiagram:** `Row_Code`/`Column_Code` trên Fact là mã kỹ thuật (`fr_value.row_code`/`column_code`) dùng làm grain key — `Row_Description_Reference`/`Column_Description_Reference` (mã hiển thị biểu mẫu dùng để filter nghiệp vụ, VD `'270'`/`'1'`) nằm trên `Financial_Report_Catalog_Dimension` (denormalize từ `fr_row_template`/`fr_column_template`, join theo `row_code`/`column_code` + `fr_catalog_id`) — tách khỏi Fact vì đây là thuộc tính mô tả của template, không phải measure. `EXISTS pc_report_submission` là điều kiện filter ETL population, không xuất hiện trên Fact. `Snapshot_Date_Dimension_Id` — FK tới Calendar Date Dimension, ngày chạy ETL populate Fact (full-scan daily) — ETL chạy hàng ngày vì không biết trước công ty nào nộp báo cáo vào ngày nào, mỗi ngày snapshot lại toàn bộ dữ liệu BCTC hiện có của các công ty tại 1 kỳ (giống pattern `Snapshot_Date` đã dùng ở 5 Fact `*_Score_Snapshot` và `Fact Violation Report Snapshot`).
+>
+> **`Industry_Dimension_Id` (mới, 2026-08-17 — sửa gap thiếu ngành ở Nhóm 8/11/13/15/17):** FK denormalize sẵn khi ETL populate Fact, derive từ `Public_Company_Dimension.Business_Line_Level_1_Code` tại thời điểm insert (join `Industry_Dimension.Industry_Code = Business_Line_Level_1_Code`) — thuần mục đích tra cứu/GROUP BY ngành nhanh trên Fact, KHÔNG dùng để giải quyết vấn đề ngành rỗng (Fact chỉ có dòng khi có BCTC thật, ngành không có CTĐC nào sẽ không có dòng Fact nào mang `Industry_Dimension_Id` đó). Cơ chế đảm bảo đủ toàn bộ danh mục ngành (kể cả ngành rỗng, giá trị = 0) đặt ở tầng Detail Mapping của Nhóm 8/11/13/15/17: đảo chiều driving — bắt đầu từ `Industry_Dimension` (đủ mọi ngành `active_ind=1`), LEFT JOIN sang Fact qua `Industry_Dimension_Id`, COALESCE 0 khi không khớp dòng nào. `Industry_Dimension` nguồn `cl_business_line` (Atomic), khai sinh tại GSDC 2026-08-17 (xem Section 3/4) — PTTT reuse cho `Fact Sector Risk Snapshot`.
 
 **Lineage Mart → Báo cáo:**
 
@@ -1184,6 +1195,7 @@ flowchart LR
 | Public Company Dimension | 1 row / công ty đại chúng (SCD4A) |
 | Financial Report Catalog Dimension | 1 row / báo cáo (Catalog) × dòng (Row) × cột (Column) — reference per module (SCD4A) |
 | Calendar Date Dimension | 1 row / ngày (Conformed) |
+| Industry Dimension | 1 row / ngành cấp 1 đang active (SCD4A) — dùng làm driving table breakdown ngành ở Nhóm 8/11/13/15/17, xem Nhóm 8 |
 
 ---
 
@@ -1191,43 +1203,70 @@ flowchart LR
 
 > Phân loại: **Phân tích**
 > Nhóm 8 = 1 STT duy nhất (STT 8, 14 dòng liên tục: K_GSDC_63–76) — dashboard "Tổng hợp CTTC theo ngành toàn thị trường".
-> Reuse 100% `Fact Public Company Financial Report Value` + `Financial Report Catalog Dimension` đã thiết kế ở Nhóm 7, chỉ thêm breakdown theo ngành qua `Public Company Dimension.Business_Line_Level_1_Code` (đã có sẵn, không cần cột mới trên Fact).
+> Reuse 100% `Fact Public Company Financial Report Value` + `Financial Report Catalog Dimension` đã thiết kế ở Nhóm 7.
 > **Atomic — Ngành (READY từ trước):** `Public Company` (`public_company`), field `Business Line Level 1 Code` (`business_line_level_1_code`, nguồn `IDS.company_profiles.CATEGORY_L1_ID`, Classification Value scheme `IDS_INDUSTRY_CATEGORY`). SQL BA breakdown ngành dùng `JOIN IDS.company_profiles cdet ON cdet.id = d.company_profile_id` + `GROUP BY cdet.category_l1_id` — đây chính là field trên `public_company` (đã join sẵn qua `pc_id` trên Fact), không phải cột riêng.
 > Atomic: `Financial Report Value` (`fr_value`), `Financial Report Catalog` (`financial_report_catalog`), `Financial Report Row Template` (`fr_row_template`), `Financial Report Column Template` (`fr_column_template`), `Public Company Report Submission` (`pc_report_submission`) — xem chi tiết quy tắc khai thác ở Nhóm 7 (dùng chung, không lặp lại).
+>
+> **[SỬA 2026-08-17 — Kịch bản D, sửa gap thiếu ngành]** Thiết kế trước đó GROUP BY ngành trực tiếp trên `Fact Public Company Financial Report Value` — SAI vì đây là driving từ Fact (grain 1 CTĐC/kỳ/row/column), chỉ trả về ngành nào ĐÃ có ít nhất 1 CTĐC phát sinh dòng Fact khớp điều kiện lọc của từng chỉ tiêu — ngành không có CTĐC nào, hoặc có CTĐC nhưng chưa nộp BCTC kỳ đó, biến mất hoàn toàn khỏi kết quả thay vì lên dòng với giá trị 0. **Driving table mới: `Industry Dimension`** (nguồn `cl_business_line`, filter `Active_Indicator = 1` — xem Nhóm 7 Bảng grain) — LEFT JOIN `Public Company Dimension` (ON `Industry_Dimension.Industry_Code = Public_Company_Dimension.Business_Line_Level_1_Code`), LEFT JOIN tiếp `Fact Public Company Financial Report Value` (qua `Public_Company_Dimension_Id`, hoặc trực tiếp qua FK `Industry_Dimension_Id` đã denormalize sẵn trên Fact — xem Nhóm 7 erDiagram) để lấy `data_val`. Mọi chỉ tiêu số liệu (K_GSDC_64-76, trừ K_GSDC_63 là Chiều) dùng `COALESCE(SUM(...), 0)` — ngành không có CTĐC/dữ liệu khớp trả về 0 thay vì biến mất dòng. Riêng ROA/ROE (K_GSDC_69/70, tỷ lệ LNST/TSBQ hoặc VCSHBQ) dùng `COALESCE(tử_số, 0) / NULLIF(COALESCE(mẫu_số, 0), 0) × 100` rồi ép kết quả cuối về 0 nếu mẫu số NULL/0 (tránh chia 0/0 khi ngành rỗng, đồng bộ quy ước "ngành rỗng = 0" cho toàn bộ 14 KPI).
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_GSDC_63 | Ngành kinh tế | Text | Chiều (Group By) | business_line_level_1_code (xem KPI liên quan cùng công thức) | public_company | **READY** |
-| K_GSDC_64 | Tổng tài sản theo ngành | Tỉ đồng | Phái sinh | data_val WHERE row_desc=270/270/300, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_65 | Nợ phải trả theo ngành | Tỉ đồng | Phái sinh | data_val WHERE row_desc=300/300/400, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_66 | Vốn CSH theo ngành | Tỉ đồng | Phái sinh | data_val WHERE row_desc=400/400/500, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_67 | Vốn điều lệ theo ngành | Tỉ đồng | Phái sinh | data_val WHERE row_desc=411/411/411, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_68 | Lợi nhuận sau thuế theo ngành | Tỉ đồng | Phái sinh | data_val WHERE row_desc=60/60/21, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_69 | ROA theo ngành | % | Phái sinh | data_val WHERE row_desc=270/270/300 (TSBQ) + 60/60/21 (LNST), report=BCDKT+BCKQKD, col_desc=1+2 | fr_value | **READY** |
-| K_GSDC_70 | ROE theo ngành | % | Phái sinh | data_val WHERE row_desc=400/400/500 (VCSHBQ) + 60/60/21 (LNST), report=BCDKT+BCKQKD, col_desc=1+2 | fr_value | **READY** |
-| K_GSDC_71 | Hàng tồn kho theo ngành | Tỉ đồng | Phái sinh | data_val WHERE row_desc=140/140/—, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_72 | Doanh thu thuần theo ngành | Tỉ đồng | Phái sinh | data_val WHERE row_desc=10/10/03, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_73 | Lợi nhuận dồn tích YTD theo ngành | Tỉ đồng | Phái sinh | data_val WHERE row_desc=421/421/— (td không có trong BA SQL), report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_74 | Phải thu theo ngành | Tỉ đồng | Phái sinh | data_val WHERE row_desc=130+210/130+210/251, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_75 | Tiền và tương đương tiền theo ngành | Tỉ đồng | Phái sinh | data_val WHERE row_desc=110/110/110+120, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_76 | Nợ / Vốn CSH theo ngành | Lần (x) | Phái sinh | data_val WHERE row_desc=300/300/400 (Nợ) + 400/400/500 (VCSH), report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_63 | Ngành kinh tế | Text | Chiều (Group By) | industry_code (trực tiếp, Industry Dimension) | Industry Dimension — driving table, đủ toàn bộ danh mục ngành active kể cả ngành không có CTĐC nào (sửa 2026-08-17) | **READY** |
+| K_GSDC_64 | Tổng tài sản theo ngành | Tỉ đồng | Phái sinh | data_val WHERE row_desc=270/270/300, report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_65 | Nợ phải trả theo ngành | Tỉ đồng | Phái sinh | data_val WHERE row_desc=300/300/400, report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_66 | Vốn CSH theo ngành | Tỉ đồng | Phái sinh | data_val WHERE row_desc=400/400/500, report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_67 | Vốn điều lệ theo ngành | Tỉ đồng | Phái sinh | data_val WHERE row_desc=411/411/411, report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_68 | Lợi nhuận sau thuế theo ngành | Tỉ đồng | Phái sinh | data_val WHERE row_desc=60/60/21, report=BCKQKD, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_69 | ROA theo ngành | % | Phái sinh | data_val WHERE row_desc=270/270/300 (TSBQ) + 60/60/21 (LNST), report=BCDKT+BCKQKD, col_desc=1+2 | fr_value — NULLIF mẫu số + ép 0 nếu ngành rỗng (tránh chia 0/0) | **READY** |
+| K_GSDC_70 | ROE theo ngành | % | Phái sinh | data_val WHERE row_desc=400/400/500 (VCSHBQ) + 60/60/21 (LNST), report=BCDKT+BCKQKD, col_desc=1+2 | fr_value — NULLIF mẫu số + ép 0 nếu ngành rỗng (tránh chia 0/0) | **READY** |
+| K_GSDC_71 | Hàng tồn kho theo ngành | Tỉ đồng | Phái sinh | data_val WHERE row_desc=140/140/—, report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_72 | Doanh thu thuần theo ngành | Tỉ đồng | Phái sinh | data_val WHERE row_desc=10/10/03, report=BCKQKD, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_73 | Lợi nhuận dồn tích YTD theo ngành | Tỉ đồng | Phái sinh | data_val WHERE row_desc=421/421/— (td không có trong BA SQL), report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_74 | Phải thu theo ngành | Tỉ đồng | Phái sinh | data_val WHERE row_desc=130+210/130+210/251, report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_75 | Tiền và tương đương tiền theo ngành | Tỉ đồng | Phái sinh | data_val WHERE row_desc=110/110/110+120, report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_76 | Nợ / Vốn CSH theo ngành | Lần (x) | Phái sinh | data_val WHERE row_desc=300/300/400 (Nợ) + 400/400/500 (VCSH), report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
 
-**Star Schema:** dùng chung `Fact Public Company Financial Report Value` + `Public Company Dimension` + `Financial Report Catalog Dimension` với Nhóm 7 (không có erDiagram riêng — xem Nhóm 7). Breakdown ngành = GROUP BY thêm `Public Company Dimension.Business_Line_Level_1_Code` ở tầng Detail Mapping, không thay đổi Fact/Dimension schema.
+**Star Schema:** `Industry Dimension` (mới, driving) → `Public Company Dimension` → `Fact Public Company Financial Report Value` + `Financial Report Catalog Dimension` (dùng chung Nhóm 7, không đổi schema Fact ngoài FK `Industry_Dimension_Id` đã thêm — xem Nhóm 7 erDiagram/Bảng grain). Breakdown ngành = LEFT JOIN từ `Industry Dimension` (đủ mọi ngành `active_ind=1`) sang Fact, GROUP BY `Industry_Dimension.Industry_Code`, COALESCE 0 khi không có dòng khớp — xử lý ở tầng Detail Mapping.
 
-> **Ghi chú filter Active (K_GSDC_63):** BA gốc lọc danh sách ngành `IDS.categories WHERE active_flg = 1`. Map đúng: JOIN `Public_Company_Dimension.Business_Line_Level_1_Id → cl_business_line.cl_business_line_id`, filter `cl_business_line.active_indicator = 1`.
+```mermaid
+erDiagram
+    Industry_Dimension {
+        string Industry_Dimension_Id PK
+        string Industry_Code
+        string Industry_Name
+        string Source_System_Code
+    }
+
+    Fact_Public_Company_Financial_Report_Value {
+        string Public_Company_Dimension_Id PK
+        string Financial_Report_Catalog_Dimension_Id PK
+        int Report_Year PK
+        int Report_Quarter PK
+        string Row_Code PK
+        string Column_Code PK
+        string Snapshot_Date_Dimension_Id PK
+        string Industry_Dimension_Id FK
+        float Data_Value
+    }
+
+    Industry_Dimension ||--o{ Fact_Public_Company_Financial_Report_Value : "Industry_Dimension_Id"
+```
+
+> **Ghi chú filter Active (K_GSDC_63):** BA gốc lọc danh sách ngành `IDS.categories WHERE active_flg = 1`. Map đúng: `Industry Dimension` filter `cl_business_line.active_indicator = 1` ngay ở tầng driving table (xem Nhóm 7 Bảng grain + `DTM_GSDC_industry_dim.csv`) — không cần lọc lại ở Detail Mapping.
 
 **Lineage Mart → Báo cáo:**
 
 ```mermaid
 flowchart LR
-    fct_pc_fr_val_g8["Fact Public Company Financial Report Value"] --> R8["K_GSDC_63-76: Tổng hợp chỉ tiêu tài chính & thống kê ngành"]
+    industry_dim_g8["Industry Dimension"] --> R8["K_GSDC_63-76: Tổng hợp chỉ tiêu tài chính & thống kê ngành"]
+    fct_pc_fr_val_g8["Fact Public Company Financial Report Value"] --> R8
     public_company_dim_g8["Public Company Dimension"] --> R8
     financial_rpt_catalog_dim_g8["Financial Report Catalog Dimension"] --> R8
 ```
 
-**Bảng grain:** như Nhóm 7 (`Fact Public Company Financial Report Value` — 1 row / CTĐC / kỳ / Row Code / Column Code; `Public Company Dimension` — 1 row / công ty đại chúng SCD4A).
+**Bảng grain:** như Nhóm 7 (`Fact Public Company Financial Report Value` — 1 row / CTĐC / kỳ / Row Code / Column Code; `Public Company Dimension` — 1 row / công ty đại chúng SCD4A; `Industry Dimension` — 1 row / ngành cấp 1 đang active, dùng làm driving table breakdown ngành).
 
 ---
 
@@ -1336,24 +1375,24 @@ flowchart LR
 | K_GSDC_61_YOY | Tiền TĐT — YoY | % | Phái sinh | data_val WHERE row_desc=110/110/110+120, report=BCDKT, col_desc=1 | fr_value | **READY** |
 | K_GSDC_62 | Nợ / Vốn CSH (HNX) | Lần (x) | Phái sinh | data_val WHERE row_desc=300/300/400 + 400/400/500, report=BCDKT, col_desc=1 | fr_value | **READY** |
 | K_GSDC_62_YOY | Nợ/Vốn CSH — YoY | % | Phái sinh | data_val WHERE row_desc=(như K_GSDC_62), report=—, col_desc=— | fr_value | **READY** |
-| K_GSDC_79 | Ngành | Text | Chiều | business_line_level_1_code (xem KPI liên quan cùng công thức) | public_company | **READY** |
-| K_GSDC_80 | Tổng tài sản — theo ngành (HNX) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=270/270/300, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_81 | Nợ phải trả — theo ngành (HNX) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=300/300/400, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_82 | Vốn CSH — theo ngành (HNX) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=400/400/500, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_83 | Vốn điều lệ — theo ngành (HNX) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=411/411/411, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_84 | Lợi nhuận sau thuế — theo ngành (HNX) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=60/60/21, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_85 | ROA — theo ngành (HNX) | % | Phái sinh | data_val WHERE row_desc=270/270/300 + 60/60/21, report=BCDKT+BCKQKD, col_desc=1+2 | fr_value | **READY** |
-| K_GSDC_86 | ROE — theo ngành (HNX) | % | Phái sinh | data_val WHERE row_desc=400/400/500 + 60/60/21, report=BCDKT+BCKQKD, col_desc=1+2 | fr_value | **READY** |
-| K_GSDC_87 | Hàng tồn kho — theo ngành (HNX) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=140/140/—, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_88 | Doanh thu — theo ngành (HNX) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=10/10/03, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_89 | Lợi nhuận dồn tích YTD — theo ngành (HNX) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=421/421/— (td không có trong BA SQL), report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_90 | Phải thu — theo ngành (HNX) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=130+210/130+210/251, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_91 | Tiền và tương đương tiền — theo ngành (HNX) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=110/110/110+120, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_92 | Nợ/Vốn CSH — theo ngành (HNX) | Lần (x) | Phái sinh | data_val WHERE row_desc=300/300/400 + 400/400/500, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_79 | Ngành | Text | Chiều | industry_code (trực tiếp, Industry Dimension) | Industry Dimension — driving table, đủ toàn bộ danh mục ngành active kể cả ngành không có CTĐC nào (sửa 2026-08-17) | **READY** |
+| K_GSDC_80 | Tổng tài sản — theo ngành (HNX) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=270/270/300, report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_81 | Nợ phải trả — theo ngành (HNX) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=300/300/400, report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_82 | Vốn CSH — theo ngành (HNX) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=400/400/500, report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_83 | Vốn điều lệ — theo ngành (HNX) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=411/411/411, report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_84 | Lợi nhuận sau thuế — theo ngành (HNX) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=60/60/21, report=BCKQKD, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_85 | ROA — theo ngành (HNX) | % | Phái sinh | data_val WHERE row_desc=270/270/300 + 60/60/21, report=BCDKT+BCKQKD, col_desc=1+2 | fr_value — NULLIF mẫu số + ép 0 nếu ngành rỗng (tránh chia 0/0) | **READY** |
+| K_GSDC_86 | ROE — theo ngành (HNX) | % | Phái sinh | data_val WHERE row_desc=400/400/500 + 60/60/21, report=BCDKT+BCKQKD, col_desc=1+2 | fr_value — NULLIF mẫu số + ép 0 nếu ngành rỗng (tránh chia 0/0) | **READY** |
+| K_GSDC_87 | Hàng tồn kho — theo ngành (HNX) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=140/140/—, report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_88 | Doanh thu — theo ngành (HNX) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=10/10/03, report=BCKQKD, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_89 | Lợi nhuận dồn tích YTD — theo ngành (HNX) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=421/421/— (td không có trong BA SQL), report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_90 | Phải thu — theo ngành (HNX) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=130+210/130+210/251, report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_91 | Tiền và tương đương tiền — theo ngành (HNX) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=110/110/110+120, report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_92 | Nợ/Vốn CSH — theo ngành (HNX) | Lần (x) | Phái sinh | data_val WHERE row_desc=300/300/400 + 400/400/500, report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
 
-**Star Schema:** dùng chung `Fact Public Company Financial Report Value` + `Public Company Dimension` + `Financial Report Catalog Dimension` với Nhóm 7 (không có erDiagram riêng). Filter sàn = `Public Company Dimension.Equity_Listing_Exchange_Code = 'HNX'`, GROUP BY ngành = `Public Company Dimension.Business_Line_Level_1_Code` — cả 2 xử lý ở tầng Detail Mapping.
+**Star Schema:** K_GSDC_50-62(+YOY) dùng chung `Fact Public Company Financial Report Value` + `Public Company Dimension` + `Financial Report Catalog Dimension` với Nhóm 7, filter sàn `Public Company Dimension.Equity_Listing_Exchange_Code = 'HNX'` (không breakdown ngành). K_GSDC_79-92 (breakdown ngành) dùng `Industry Dimension` làm driving (giống Nhóm 8, xem erDiagram Nhóm 8) — LEFT JOIN `Public Company Dimension` (filter thêm `= 'HNX'`) rồi Fact, COALESCE 0.
 
-> **Ghi chú filter Active (K_GSDC_79):** giống K_GSDC_63 Nhóm 8 — filter `cl_business_line.active_indicator = 1` qua JOIN `Business_Line_Level_1_Id`.
+> **Ghi chú filter Active (K_GSDC_79):** giống K_GSDC_63 Nhóm 8 — `Industry Dimension` filter `cl_business_line.active_indicator = 1` ngay ở tầng driving table.
 
 **Lineage Mart → Báo cáo:**
 
@@ -1362,6 +1401,7 @@ flowchart LR
     fct_pc_fr_val_g11["Fact Public Company Financial Report Value"] --> R11["K_GSDC_50-62,79-92+YOY: Tổng hợp chỉ tiêu tài chính theo sàn HNX"]
     public_company_dim_g11["Public Company Dimension"] --> R11
     financial_rpt_catalog_dim_g11["Financial Report Catalog Dimension"] --> R11
+    industry_dim_g11["Industry Dimension"] --> R11
 ```
 
 **Bảng grain:** như Nhóm 7.
@@ -1424,24 +1464,24 @@ flowchart LR
 | K_GSDC_61_YOY | Tiền TĐT — YoY | % | Phái sinh | data_val WHERE row_desc=110/110/110+120, report=BCDKT, col_desc=1 | fr_value | **READY** |
 | K_GSDC_62 | Nợ / Vốn CSH (HOSE) | Lần (x) | Phái sinh | data_val WHERE row_desc=300/300/400 + 400/400/500, report=BCDKT, col_desc=1 | fr_value | **READY** |
 | K_GSDC_62_YOY | Nợ/Vốn CSH — YoY | % | Phái sinh | data_val WHERE row_desc=(như K_GSDC_62), report=—, col_desc=— | fr_value | **READY** |
-| K_GSDC_79 | Ngành | Text | Chiều | business_line_level_1_code (xem KPI liên quan cùng công thức) | public_company | **READY** |
-| K_GSDC_80 | Tổng tài sản — theo ngành (HOSE) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=270/270/300, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_81 | Nợ phải trả — theo ngành (HOSE) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=300/300/400, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_82 | Vốn CSH — theo ngành (HOSE) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=400/400/500, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_83 | Vốn điều lệ — theo ngành (HOSE) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=411/411/411, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_84 | Lợi nhuận sau thuế — theo ngành (HOSE) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=60/60/21, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_85 | ROA — theo ngành (HOSE) | % | Phái sinh | data_val WHERE row_desc=270/270/300 + 60/60/21, report=BCDKT+BCKQKD, col_desc=1+2 | fr_value | **READY** |
-| K_GSDC_86 | ROE — theo ngành (HOSE) | % | Phái sinh | data_val WHERE row_desc=400/400/500 + 60/60/21, report=BCDKT+BCKQKD, col_desc=1+2 | fr_value | **READY** |
-| K_GSDC_87 | Hàng tồn kho — theo ngành (HOSE) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=140/140/—, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_88 | Doanh thu — theo ngành (HOSE) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=10/10/03, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_89 | Lợi nhuận dồn tích YTD — theo ngành (HOSE) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=421/421/— (td không có trong BA SQL), report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_90 | Phải thu — theo ngành (HOSE) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=130+210/130+210/251, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_91 | Tiền và tương đương tiền — theo ngành (HOSE) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=110/110/110+120, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_92 | Nợ/Vốn CSH — theo ngành (HOSE) | Lần (x) | Phái sinh | data_val WHERE row_desc=300/300/400 + 400/400/500, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_79 | Ngành | Text | Chiều | industry_code (trực tiếp, Industry Dimension) | Industry Dimension — driving table, đủ toàn bộ danh mục ngành active kể cả ngành không có CTĐC nào (sửa 2026-08-17) | **READY** |
+| K_GSDC_80 | Tổng tài sản — theo ngành (HOSE) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=270/270/300, report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_81 | Nợ phải trả — theo ngành (HOSE) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=300/300/400, report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_82 | Vốn CSH — theo ngành (HOSE) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=400/400/500, report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_83 | Vốn điều lệ — theo ngành (HOSE) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=411/411/411, report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_84 | Lợi nhuận sau thuế — theo ngành (HOSE) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=60/60/21, report=BCKQKD, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_85 | ROA — theo ngành (HOSE) | % | Phái sinh | data_val WHERE row_desc=270/270/300 + 60/60/21, report=BCDKT+BCKQKD, col_desc=1+2 | fr_value — NULLIF mẫu số + ép 0 nếu ngành rỗng (tránh chia 0/0) | **READY** |
+| K_GSDC_86 | ROE — theo ngành (HOSE) | % | Phái sinh | data_val WHERE row_desc=400/400/500 + 60/60/21, report=BCDKT+BCKQKD, col_desc=1+2 | fr_value — NULLIF mẫu số + ép 0 nếu ngành rỗng (tránh chia 0/0) | **READY** |
+| K_GSDC_87 | Hàng tồn kho — theo ngành (HOSE) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=140/140/—, report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_88 | Doanh thu — theo ngành (HOSE) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=10/10/03, report=BCKQKD, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_89 | Lợi nhuận dồn tích YTD — theo ngành (HOSE) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=421/421/— (td không có trong BA SQL), report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_90 | Phải thu — theo ngành (HOSE) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=130+210/130+210/251, report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_91 | Tiền và tương đương tiền — theo ngành (HOSE) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=110/110/110+120, report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_92 | Nợ/Vốn CSH — theo ngành (HOSE) | Lần (x) | Phái sinh | data_val WHERE row_desc=300/300/400 + 400/400/500, report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
 
-**Star Schema:** dùng chung với Nhóm 7/11 (không có erDiagram riêng). Filter sàn = `Public Company Dimension.Equity_Listing_Exchange_Code = 'HOSE'`.
+**Star Schema:** K_GSDC_50-62(+YOY) dùng chung với Nhóm 7/11, filter sàn `Public Company Dimension.Equity_Listing_Exchange_Code = 'HOSE'` (không breakdown ngành). K_GSDC_79-92 (breakdown ngành) dùng `Industry Dimension` làm driving (giống Nhóm 8, xem erDiagram Nhóm 8) — LEFT JOIN `Public Company Dimension` (filter thêm `= 'HOSE'`) rồi Fact, COALESCE 0.
 
-> **Ghi chú filter Active (K_GSDC_79):** giống K_GSDC_63 Nhóm 8/K_GSDC_79 Nhóm 11 — filter `cl_business_line.active_indicator = 1`.
+> **Ghi chú filter Active (K_GSDC_79):** giống K_GSDC_63 Nhóm 8 — `Industry Dimension` filter `cl_business_line.active_indicator = 1` ngay ở tầng driving table.
 
 **Lineage Mart → Báo cáo:**
 
@@ -1450,6 +1490,7 @@ flowchart LR
     fct_pc_fr_val_g13["Fact Public Company Financial Report Value"] --> R13["K_GSDC_50-62,79-92+YOY: Tổng hợp chỉ tiêu tài chính theo sàn HOSE"]
     public_company_dim_g13["Public Company Dimension"] --> R13
     financial_rpt_catalog_dim_g13["Financial Report Catalog Dimension"] --> R13
+    industry_dim_g13["Industry Dimension"] --> R13
 ```
 
 **Bảng grain:** như Nhóm 7.
@@ -1512,24 +1553,24 @@ flowchart LR
 | K_GSDC_61_YOY | Tiền TĐT — YoY | % | Phái sinh | data_val WHERE row_desc=110/110/110+120, report=BCDKT, col_desc=1 | fr_value | **READY** |
 | K_GSDC_62 | Nợ / Vốn CSH (UPCOM) | Lần (x) | Phái sinh | data_val WHERE row_desc=300/300/400 + 400/400/500, report=BCDKT, col_desc=1 | fr_value | **READY** |
 | K_GSDC_62_YOY | Nợ/Vốn CSH — YoY | % | Phái sinh | data_val WHERE row_desc=(như K_GSDC_62), report=—, col_desc=— | fr_value | **READY** |
-| K_GSDC_79 | Ngành | Text | Chiều | business_line_level_1_code (xem KPI liên quan cùng công thức) | public_company | **READY** |
-| K_GSDC_80 | Tổng tài sản — theo ngành (UPCOM) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=270/270/300, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_81 | Nợ phải trả — theo ngành (UPCOM) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=300/300/400, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_82 | Vốn CSH — theo ngành (UPCOM) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=400/400/500, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_83 | Vốn điều lệ — theo ngành (UPCOM) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=411/411/411, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_84 | Lợi nhuận sau thuế — theo ngành (UPCOM) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=60/60/21, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_85 | ROA — theo ngành (UPCOM) | % | Phái sinh | data_val WHERE row_desc=270/270/300 + 60/60/21, report=BCDKT+BCKQKD, col_desc=1+2 | fr_value | **READY** |
-| K_GSDC_86 | ROE — theo ngành (UPCOM) | % | Phái sinh | data_val WHERE row_desc=400/400/500 + 60/60/21, report=BCDKT+BCKQKD, col_desc=1+2 | fr_value | **READY** |
-| K_GSDC_87 | Hàng tồn kho — theo ngành (UPCOM) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=140/140/—, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_88 | Doanh thu — theo ngành (UPCOM) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=10/10/03, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_89 | Lợi nhuận dồn tích YTD — theo ngành (UPCOM) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=421/421/— (td không có trong BA SQL), report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_90 | Phải thu — theo ngành (UPCOM) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=130+210/130+210/251, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_91 | Tiền và tương đương tiền — theo ngành (UPCOM) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=110/110/110+120, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_92 | Nợ/Vốn CSH — theo ngành (UPCOM) | Lần (x) | Phái sinh | data_val WHERE row_desc=300/300/400 + 400/400/500, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_79 | Ngành | Text | Chiều | industry_code (trực tiếp, Industry Dimension) | Industry Dimension — driving table, đủ toàn bộ danh mục ngành active kể cả ngành không có CTĐC nào (sửa 2026-08-17) | **READY** |
+| K_GSDC_80 | Tổng tài sản — theo ngành (UPCOM) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=270/270/300, report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_81 | Nợ phải trả — theo ngành (UPCOM) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=300/300/400, report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_82 | Vốn CSH — theo ngành (UPCOM) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=400/400/500, report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_83 | Vốn điều lệ — theo ngành (UPCOM) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=411/411/411, report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_84 | Lợi nhuận sau thuế — theo ngành (UPCOM) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=60/60/21, report=BCKQKD, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_85 | ROA — theo ngành (UPCOM) | % | Phái sinh | data_val WHERE row_desc=270/270/300 + 60/60/21, report=BCDKT+BCKQKD, col_desc=1+2 | fr_value — NULLIF mẫu số + ép 0 nếu ngành rỗng (tránh chia 0/0) | **READY** |
+| K_GSDC_86 | ROE — theo ngành (UPCOM) | % | Phái sinh | data_val WHERE row_desc=400/400/500 + 60/60/21, report=BCDKT+BCKQKD, col_desc=1+2 | fr_value — NULLIF mẫu số + ép 0 nếu ngành rỗng (tránh chia 0/0) | **READY** |
+| K_GSDC_87 | Hàng tồn kho — theo ngành (UPCOM) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=140/140/—, report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_88 | Doanh thu — theo ngành (UPCOM) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=10/10/03, report=BCKQKD, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_89 | Lợi nhuận dồn tích YTD — theo ngành (UPCOM) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=421/421/— (td không có trong BA SQL), report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_90 | Phải thu — theo ngành (UPCOM) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=130+210/130+210/251, report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_91 | Tiền và tương đương tiền — theo ngành (UPCOM) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=110/110/110+120, report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_92 | Nợ/Vốn CSH — theo ngành (UPCOM) | Lần (x) | Phái sinh | data_val WHERE row_desc=300/300/400 + 400/400/500, report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
 
-**Star Schema:** dùng chung với Nhóm 7/11 (không có erDiagram riêng). Filter sàn = `Public Company Dimension.Equity_Listing_Exchange_Code = 'UPCOM'`.
+**Star Schema:** K_GSDC_50-62(+YOY) dùng chung với Nhóm 7/11, filter sàn `Public Company Dimension.Equity_Listing_Exchange_Code = 'UPCOM'` (không breakdown ngành). K_GSDC_79-92 (breakdown ngành) dùng `Industry Dimension` làm driving (giống Nhóm 8, xem erDiagram Nhóm 8) — LEFT JOIN `Public Company Dimension` (filter thêm `= 'UPCOM'`) rồi Fact, COALESCE 0.
 
-> **Ghi chú filter Active (K_GSDC_79):** giống K_GSDC_63 Nhóm 8/K_GSDC_79 Nhóm 11 — filter `cl_business_line.active_indicator = 1`.
+> **Ghi chú filter Active (K_GSDC_79):** giống K_GSDC_63 Nhóm 8 — `Industry Dimension` filter `cl_business_line.active_indicator = 1` ngay ở tầng driving table.
 
 **Lineage Mart → Báo cáo:**
 
@@ -1538,6 +1579,7 @@ flowchart LR
     fct_pc_fr_val_g15["Fact Public Company Financial Report Value"] --> R15["K_GSDC_50-62,79-92+YOY: Tổng hợp chỉ tiêu tài chính theo sàn UPCOM"]
     public_company_dim_g15["Public Company Dimension"] --> R15
     financial_rpt_catalog_dim_g15["Financial Report Catalog Dimension"] --> R15
+    industry_dim_g15["Industry Dimension"] --> R15
 ```
 
 **Bảng grain:** như Nhóm 7.
@@ -1600,24 +1642,24 @@ flowchart LR
 | K_GSDC_61_YOY | Tiền TĐT — YoY | % | Phái sinh | data_val WHERE row_desc=110/110/110+120, report=BCDKT, col_desc=1 | fr_value | **READY** |
 | K_GSDC_62 | Nợ / Vốn CSH (OTC) | Lần (x) | Phái sinh | data_val WHERE row_desc=300/300/400 + 400/400/500, report=BCDKT, col_desc=1 | fr_value | **READY** |
 | K_GSDC_62_YOY | Nợ/Vốn CSH — YoY | % | Phái sinh | data_val WHERE row_desc=(như K_GSDC_62), report=—, col_desc=— | fr_value | **READY** |
-| K_GSDC_79 | Ngành | Text | Chiều | business_line_level_1_code (xem KPI liên quan cùng công thức) | public_company | **READY** |
-| K_GSDC_80 | Tổng tài sản — theo ngành (OTC) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=270/270/300, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_81 | Nợ phải trả — theo ngành (OTC) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=300/300/400, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_82 | Vốn CSH — theo ngành (OTC) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=400/400/500, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_83 | Vốn điều lệ — theo ngành (OTC) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=411/411/411, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_84 | Lợi nhuận sau thuế — theo ngành (OTC) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=60/60/21, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_85 | ROA — theo ngành (OTC) | % | Phái sinh | data_val WHERE row_desc=270/270/300 + 60/60/21, report=BCDKT+BCKQKD, col_desc=1+2 | fr_value | **READY** |
-| K_GSDC_86 | ROE — theo ngành (OTC) | % | Phái sinh | data_val WHERE row_desc=400/400/500 + 60/60/21, report=BCDKT+BCKQKD, col_desc=1+2 | fr_value | **READY** |
-| K_GSDC_87 | Hàng tồn kho — theo ngành (OTC) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=140/140/—, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_88 | Doanh thu — theo ngành (OTC) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=10/10/03, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_89 | Lợi nhuận dồn tích YTD — theo ngành (OTC) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=421/421/— (td không có trong BA SQL), report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_90 | Phải thu — theo ngành (OTC) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=130+210/130+210/251, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_91 | Tiền và tương đương tiền — theo ngành (OTC) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=110/110/110+120, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_92 | Nợ/Vốn CSH — theo ngành (OTC) | Lần (x) | Phái sinh | data_val WHERE row_desc=300/300/400 + 400/400/500, report=BCDKT, col_desc=1 | fr_value | **READY** |
+| K_GSDC_79 | Ngành | Text | Chiều | industry_code (trực tiếp, Industry Dimension) | Industry Dimension — driving table, đủ toàn bộ danh mục ngành active kể cả ngành không có CTĐC nào (sửa 2026-08-17) | **READY** |
+| K_GSDC_80 | Tổng tài sản — theo ngành (OTC) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=270/270/300, report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_81 | Nợ phải trả — theo ngành (OTC) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=300/300/400, report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_82 | Vốn CSH — theo ngành (OTC) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=400/400/500, report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_83 | Vốn điều lệ — theo ngành (OTC) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=411/411/411, report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_84 | Lợi nhuận sau thuế — theo ngành (OTC) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=60/60/21, report=BCKQKD, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_85 | ROA — theo ngành (OTC) | % | Phái sinh | data_val WHERE row_desc=270/270/300 + 60/60/21, report=BCDKT+BCKQKD, col_desc=1+2 | fr_value — NULLIF mẫu số + ép 0 nếu ngành rỗng (tránh chia 0/0) | **READY** |
+| K_GSDC_86 | ROE — theo ngành (OTC) | % | Phái sinh | data_val WHERE row_desc=400/400/500 + 60/60/21, report=BCDKT+BCKQKD, col_desc=1+2 | fr_value — NULLIF mẫu số + ép 0 nếu ngành rỗng (tránh chia 0/0) | **READY** |
+| K_GSDC_87 | Hàng tồn kho — theo ngành (OTC) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=140/140/—, report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_88 | Doanh thu — theo ngành (OTC) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=10/10/03, report=BCKQKD, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_89 | Lợi nhuận dồn tích YTD — theo ngành (OTC) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=421/421/— (td không có trong BA SQL), report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_90 | Phải thu — theo ngành (OTC) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=130+210/130+210/251, report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_91 | Tiền và tương đương tiền — theo ngành (OTC) | Tỉ đồng | Phái sinh | data_val WHERE row_desc=110/110/110+120, report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
+| K_GSDC_92 | Nợ/Vốn CSH — theo ngành (OTC) | Lần (x) | Phái sinh | data_val WHERE row_desc=300/300/400 + 400/400/500, report=BCDKT, col_desc=1 | fr_value — COALESCE 0 nếu ngành rỗng | **READY** |
 
-**Star Schema:** dùng chung với Nhóm 7/11 (không có erDiagram riêng). Filter sàn = `Public Company Dimension.Equity_Listing_Exchange_Code = 'OTC'`.
+**Star Schema:** K_GSDC_50-62(+YOY) dùng chung với Nhóm 7/11, filter sàn `Public Company Dimension.Equity_Listing_Exchange_Code = 'OTC'` (không breakdown ngành). K_GSDC_79-92 (breakdown ngành) dùng `Industry Dimension` làm driving (giống Nhóm 8, xem erDiagram Nhóm 8) — LEFT JOIN `Public Company Dimension` (filter thêm `= 'OTC'`) rồi Fact, COALESCE 0.
 
-> **Ghi chú filter Active (K_GSDC_79):** giống K_GSDC_63 Nhóm 8/K_GSDC_79 Nhóm 11 — filter `cl_business_line.active_indicator = 1`.
+> **Ghi chú filter Active (K_GSDC_79):** giống K_GSDC_63 Nhóm 8 — `Industry Dimension` filter `cl_business_line.active_indicator = 1` ngay ở tầng driving table.
 
 **Lineage Mart → Báo cáo:**
 
@@ -1626,6 +1668,7 @@ flowchart LR
     fct_pc_fr_val_g17["Fact Public Company Financial Report Value"] --> R17["K_GSDC_50-62,79-92+YOY: Tổng hợp chỉ tiêu tài chính theo sàn OTC"]
     public_company_dim_g17["Public Company Dimension"] --> R17
     financial_rpt_catalog_dim_g17["Financial Report Catalog Dimension"] --> R17
+    industry_dim_g17["Industry Dimension"] --> R17
 ```
 
 **Bảng grain:** như Nhóm 7.
@@ -3079,6 +3122,7 @@ graph TB
     DIM_CO["Public Company Dimension"]:::dim
     DIM_DATE["Calendar Date Dimension"]:::dim
     DIM_CTLG["Financial Report Catalog Dimension"]:::dim
+    DIM_IND["Industry Dimension"]:::dim
 
     FACT_RISK["Fact Public Company Risk Score Snapshot"]:::fact
     FACT_COMP["Fact Public Company Compliance Score Snapshot"]:::fact
@@ -3105,6 +3149,7 @@ graph TB
     DIM_DATE --> FACT_NONFIN
     DIM_CO --> FACT_RPTVAL
     DIM_CTLG --> FACT_RPTVAL
+    DIM_IND --> FACT_RPTVAL
     DIM_CO --> FACT_LIST
     DIM_DATE --> FACT_LIST
     DIM_CO --> FACT_VLTREPORT_SNPST
@@ -3114,6 +3159,8 @@ graph TB
 > `Fact Public Company Financial Summary Snapshot` không tồn tại trong mô hình. Các KPI liên quan (Nhóm 6/9/10/12/14/16/38/39/40/41) query trực tiếp `Public Company Dimension`/`Calendar Date Dimension`, không có node Fact riêng trong graph.
 >
 > `Fact Public Company Financial Report Value` (`FACT_RPTVAL`) không có FK `Calendar Date Dimension` — grain thời gian là `Report Year`/`Report Quarter` dạng thuộc tính DD trực tiếp trên Fact (kỳ báo cáo tài chính, không phải ngày lịch), khác với 5 Fact `*_Score_Snapshot` (dùng Calendar Date Dimension cho ngày snapshot ETL).
+>
+> `FACT_RPTVAL` có FK `Industry Dimension` (`DIM_IND`, mới 2026-08-17) — denormalize sẵn khi ETL populate, thuần mục đích tra cứu/GROUP BY ngành nhanh trên Fact. Sửa gap thiếu ngành ở Nhóm 8/11/13/15/17 (breakdown ngành báo cáo thiếu ngành không có CTĐC/dữ liệu) nằm ở tầng Detail Mapping của 5 Nhóm đó — đảo chiều driving (bắt đầu từ `Industry Dimension`, LEFT JOIN sang Fact, COALESCE 0) — không thể hiện trong graph TB này vì đây là hướng JOIN ở tầng query, không phải quan hệ schema cấp Fact/Dim. Xem chi tiết Nhóm 7 (erDiagram) và Nhóm 8 (Star Schema).
 >
 > `Fact Violation Report Snapshot` (`FACT_VLTREPORT_SNPST`) phục vụ K_GSDC_48 (Nhóm 6/10/12/14/16) — nguồn `violation_report`/IDS.VIOLATION_REPORT. Grain 1 row/công ty/kỳ (Report_Year + Report_Quarter), phát sinh theo kỳ (ETL append) — đúng ngữ nghĩa Fact, không phải Operational SCD4A (dữ liệu này KHÔNG phải current-state, mỗi kỳ có tập hồ sơ mới). Độc lập hoàn toàn với `Fact Public Company Financial Report Value` — không JOIN chéo giữa 2 Fact. K_GSDC_49 (Số DN báo lãi, cùng Nhóm 6/10/12/14/16) KHÔNG dùng Fact này — dùng trực tiếp `Fact Public Company Financial Report Value` (sửa 2026-08-15).
 >
@@ -3128,7 +3175,7 @@ graph TB
 | `Fact Public Company Issuance Score Snapshot` | Periodic Snapshot | 1 CTDC × 1 ngày snapshot ETL (full-scan daily, carry-forward) | K_GSDC_24–31 (Nhóm 3); reuse toàn bộ (Nhóm 35) | READY (Atomic draft — chưa approved) |
 | `Fact Public Company Financial Score Snapshot` | Periodic Snapshot | 1 CTDC × 1 ngày snapshot ETL (full-scan daily, carry-forward) | K_GSDC_32–42 (Nhóm 4); reuse toàn bộ (Nhóm 34) | READY (Atomic draft — chưa approved) |
 | `Fact Public Company Non-Financial Score Snapshot` | Periodic Snapshot | 1 CTDC × 1 ngày snapshot ETL (full-scan daily, carry-forward) | K_GSDC_43–45 (Nhóm 5); reuse toàn bộ (Nhóm 36) | READY (Atomic draft — chưa approved) |
-| `Fact Public Company Financial Report Value` | Event | 1 CTDC × 1 kỳ (Report_Year + Report_Quarter, nullable = kỳ năm) × Row_Code × Column_Code | K_GSDC_50–62+YOY (Nhóm 7); K_GSDC_63-76 (Nhóm 8); K_GSDC_50-62+79-92+YOY (Nhóm 11/13/15/17, reuse ID); K_GSDC_50-62 (Nhóm 37, reuse ID); K_GSDC_99-689 (Nhóm 19-30, MH3 Data Explorer — DN thông thường/bảo hiểm/TCTD × BCĐKT/BCKQKD/LCTT trực tiếp/gián tiếp); K_GSDC_49 (Nhóm 6/10/12/14/16, reuse — Số DN báo lãi) | READY cho toàn bộ Nhóm 7/8/11/13/15/17/19-30/37 (Atomic đủ 5 entity: `fr_value`/`financial_report_catalog`/`fr_row_template`/`fr_column_template`/`pc_report_submission`, xem chi tiết Nhóm 7). K_GSDC_49 (Nhóm 6/10/12/14/16) sửa 2026-08-15 sang dùng Fact này (trước đó dùng `Fact Violation Report Snapshot`, sai vì bắc cầu kỳ qua `violation_report` — xem Nhóm 6). Nhóm 38-41 dùng 4 bảng Fact-report riêng (xem 4 dòng bên dưới), không dùng Fact này. |
+| `Fact Public Company Financial Report Value` | Event | 1 CTDC × 1 kỳ (Report_Year + Report_Quarter, nullable = kỳ năm) × Row_Code × Column_Code | K_GSDC_50–62+YOY (Nhóm 7); K_GSDC_63-76 (Nhóm 8); K_GSDC_50-62+79-92+YOY (Nhóm 11/13/15/17, reuse ID); K_GSDC_50-62 (Nhóm 37, reuse ID); K_GSDC_99-689 (Nhóm 19-30, MH3 Data Explorer — DN thông thường/bảo hiểm/TCTD × BCĐKT/BCKQKD/LCTT trực tiếp/gián tiếp); K_GSDC_49 (Nhóm 6/10/12/14/16, reuse — Số DN báo lãi) | READY cho toàn bộ Nhóm 7/8/11/13/15/17/19-30/37 (Atomic đủ 5 entity: `fr_value`/`financial_report_catalog`/`fr_row_template`/`fr_column_template`/`pc_report_submission`, xem chi tiết Nhóm 7). K_GSDC_49 (Nhóm 6/10/12/14/16) sửa 2026-08-15 sang dùng Fact này (trước đó dùng `Fact Violation Report Snapshot`, sai vì bắc cầu kỳ qua `violation_report` — xem Nhóm 6). Nhóm 38-41 dùng 4 bảng Fact-report riêng (xem 4 dòng bên dưới), không dùng Fact này. Sửa 2026-08-17: thêm FK `Industry_Dimension_Id` — xem ghi chú graph TB trên. |
 | `Fact Violation Report Snapshot` | Event | 1 row / công ty đại chúng / kỳ (Report_Year + Report_Quarter) / ngày ETL snapshot (FK Calendar Date Dimension) | K_GSDC_48 (Nhóm 6/10/12/14/16) — Tỷ lệ nộp BCTC | READY (2026-08-07 — nguồn `violation_report`/draft, sửa lại từ Operational → Fact vì dữ liệu phát sinh theo kỳ, không phải current-state; bổ sung FK Calendar Date Dimension theo ngày ETL; xem Nhóm 6). Sửa 2026-08-15: bỏ cột `Profitable_Indicator`, chỉ còn phục vụ K_GSDC_48. |
 | `Fact Public Company Listing Info Snapshot` | Periodic Snapshot | 1 CTDC × 1 ngày | K_GSDC_690–699 (Nhóm 31) | PENDING |
 | `Public Company Regulatory Compliance Report` | Fact-report | 1 row / sàn NY-ĐKGD / kỳ (Report_Year + Report_Quarter) | K_GSDC_700-708 (Nhóm 38) — BC01.1 | READY (2026-08-07 — thiết kế lại từ query đa nguồn thành Fact-report denormalize, xem Nhóm 38) |
@@ -3149,6 +3196,7 @@ Không có bảng Tác nghiệp nào trong module này. `Operational Public Comp
 | `Public Company Dimension` | SCD4A | Mã CK, Tên DN, Sàn, Ngành — dùng chung toàn bộ màn hình | IDS_LISTING_TYPE, IDS_INDUSTRY_CATEGORY | READY (Atomic draft — chưa approved) |
 | `Calendar Date Dimension` | Conformed | Năm / Quý — shared toàn hệ thống Lakehouse, không chỉ riêng GSDC | — | READY |
 | `Financial Report Catalog Dimension` | Reference per module (SCD4A) | Template BCTC — báo cáo / dòng / cột; composite join key (Financial_Report_Catalog_Code + Row_Code + Column_Code); denormalize Row/Column Description Reference từ `fr_row_template`/`fr_column_template` | — | READY (2026-08-06 — nguồn `financial_report_catalog`/draft, `fr_row_template`/approved, `fr_column_template`/approved, dùng cho Fact Public Company Financial Report Value) |
+| `Industry Dimension` | SCD4A | Mã ngành cấp 1 + tên ngành — chỉ lấy ngành đang active (`Active_Indicator = 1`); dùng làm driving table cho breakdown báo cáo theo ngành ở Nhóm 8/11/13/15/17 (đảm bảo đủ toàn bộ danh mục ngành, kể cả ngành không có CTĐC/dữ liệu — trả về 0 thay vì biến mất dòng) | IDS_INDUSTRY_CATEGORY (qua `cl_business_line`) | READY (mới 2026-08-17 — khai sinh tại GSDC, chuyển quyền sở hữu từ PTTT; PTTT reuse cho `Fact Sector Risk Snapshot`, xem `Datamart/hld/DTM_PTTT_HLD.md` Section 4) |
 
 ---
 
@@ -3158,6 +3206,7 @@ Không có bảng Tác nghiệp nào trong module này. `Operational Public Comp
 |---|---|---|---|
 | Fact Public Company Financial Report Value | fct_public_company_financial_rpt_val | new | Fact cho Nhóm 7/8/11/13/15/17/19-30/37 (MH2+MH3, READY) — driving `fr_value`, JOIN `financial_report_catalog`/`fr_row_template`/`fr_column_template` + EXISTS `pc_report_submission`. Không phục vụ Nhóm 38-41 (4 bảng Fact-report riêng) |
 | Financial Report Catalog Dimension | financial_rpt_catalog_dim | new | Dimension phụ trợ cho Fact Public Company Financial Report Value (READY 2026-08-06) — nguồn `financial_report_catalog` + denormalize `fr_row_template`/`fr_column_template` |
+| Industry Dimension | industry_dim | new | Mới 2026-08-17 — khai sinh tại GSDC (chuyển quyền sở hữu từ PTTT, PTTT reuse). Nguồn `cl_business_line`, filter `Active_Indicator = 1`. Driving table cho breakdown ngành ở Nhóm 8/11/13/15/17 (sửa gap thiếu ngành không có CTĐC/dữ liệu — trước đó GROUP BY trực tiếp trên Fact khiến ngành rỗng biến mất khỏi kết quả thay vì lên dòng = 0). Cũng là FK denormalize trên `Fact Public Company Financial Report Value` (tra cứu, không thay thế cơ chế LEFT JOIN đủ ngành ở Detail Mapping) |
 | Fact Public Company Risk Score Snapshot | fct_public_company_risk_score_snpst | new | Fact mới cho Nhóm 1 (MH1 Tab Tổng hợp) — nguồn Atomic draft |
 | Fact Public Company Compliance Score Snapshot | fct_public_company_compliance_score_snpst | new | Fact mới cho Nhóm 2 (MH1 Tab Tuân thủ) — nguồn Atomic draft |
 | Fact Public Company Issuance Score Snapshot | fct_public_company_issuance_score_snpst | new | Fact mới cho Nhóm 3 (MH1 Tab Phát hành) — nguồn Atomic draft |
