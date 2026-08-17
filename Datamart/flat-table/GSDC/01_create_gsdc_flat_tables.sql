@@ -314,7 +314,6 @@ CREATE TABLE IF NOT EXISTS datamart.gsdc_fct_violation_rpt_snpst_flat ON CLUSTER
     rpt_quarter                  Nullable(String)    COMMENT 'Loại kỳ báo cáo: 1-4 = Quý 1-4; 5 = Năm; 6 = Bán niên.',
     rpt_due_count                Nullable(Int64)     COMMENT 'Số hồ sơ báo cáo định kỳ đã đến hạn nộp trong kỳ.',
     rpt_submitted_count          Nullable(Int64)     COMMENT 'Số hồ sơ báo cáo định kỳ đã nộp thực tế trong kỳ.',
-    profitable_indicator         Nullable(Int64)     COMMENT 'Công ty có LNST > 0 trong kỳ hay không (1/0).',
 
     -- From: CALENDAR DATE DIMENSION
     snpst_cdr_dt                 Nullable(Date)      COMMENT 'Ngày snapshot ETL — từ Calendar Date Dimension.',
@@ -508,23 +507,23 @@ CREATE TABLE IF NOT EXISTS datamart.gsdc_public_company_exchange_financial_summa
     rpt_year                             Int64               COMMENT 'Năm báo cáo — grain key theo kỳ.',
     rpt_quarter                          Nullable(Int64)     COMMENT 'Quý báo cáo — grain key theo kỳ.',
     total_asset_amt                      Nullable(Decimal(23,2)) COMMENT 'Tổng tài sản theo sàn.',
-    total_asset_yoy_percentage           Nullable(Decimal(9,4))  COMMENT 'Tổng tài sản — YoY theo sàn.',
+    total_asset_yoy           Nullable(Decimal(9,4))  COMMENT 'Tổng tài sản — YoY theo sàn.',
     inventory_amt                        Nullable(Decimal(23,2)) COMMENT 'Hàng tồn kho theo sàn.',
-    inventory_yoy_percentage             Nullable(Decimal(9,4))  COMMENT 'Hàng tồn kho — YoY theo sàn.',
+    inventory_yoy             Nullable(Decimal(9,4))  COMMENT 'Hàng tồn kho — YoY theo sàn.',
     total_liability_amt                  Nullable(Decimal(23,2)) COMMENT 'Nợ phải trả theo sàn.',
-    total_liability_yoy_percentage       Nullable(Decimal(9,4))  COMMENT 'Nợ phải trả — YoY theo sàn.',
+    total_liability_yoy       Nullable(Decimal(9,4))  COMMENT 'Nợ phải trả — YoY theo sàn.',
     equity_amt                           Nullable(Decimal(23,2)) COMMENT 'Vốn chủ sở hữu theo sàn.',
-    equity_yoy_percentage                Nullable(Decimal(9,4))  COMMENT 'Vốn chủ sở hữu — YoY theo sàn.',
+    equity_yoy                Nullable(Decimal(9,4))  COMMENT 'Vốn chủ sở hữu — YoY theo sàn.',
     contributed_capital_amt              Nullable(Decimal(23,2)) COMMENT 'Vốn góp của chủ sở hữu theo sàn.',
-    contributed_capital_yoy_percentage   Nullable(Decimal(9,4))  COMMENT 'Vốn góp của chủ sở hữu — YoY theo sàn.',
+    contributed_capital_yoy   Nullable(Decimal(9,4))  COMMENT 'Vốn góp của chủ sở hữu — YoY theo sàn.',
     undistributed_profit_amt             Nullable(Decimal(23,2)) COMMENT 'LNST chưa phân phối theo sàn.',
-    undistributed_profit_yoy_percentage  Nullable(Decimal(9,4))  COMMENT 'LNST chưa phân phối — YoY theo sàn.',
+    undistributed_profit_yoy  Nullable(Decimal(9,4))  COMMENT 'LNST chưa phân phối — YoY theo sàn.',
     net_revenue_amt                      Nullable(Decimal(23,2)) COMMENT 'Doanh thu thuần theo sàn.',
-    net_revenue_yoy_percentage           Nullable(Decimal(9,4))  COMMENT 'Doanh thu thuần — YoY theo sàn.',
+    net_revenue_yoy           Nullable(Decimal(9,4))  COMMENT 'Doanh thu thuần — YoY theo sàn.',
     pre_tax_profit_amt                   Nullable(Decimal(23,2)) COMMENT 'LNKT trước thuế theo sàn.',
-    pre_tax_profit_yoy_percentage        Nullable(Decimal(9,4))  COMMENT 'LNKT trước thuế — YoY theo sàn.',
+    pre_tax_profit_yoy        Nullable(Decimal(9,4))  COMMENT 'LNKT trước thuế — YoY theo sàn.',
     net_profit_amt                       Nullable(Decimal(23,2)) COMMENT 'LNST theo sàn.',
-    net_profit_yoy_percentage            Nullable(Decimal(9,4))  COMMENT 'LNST — YoY theo sàn.',
+    net_profit_yoy            Nullable(Decimal(9,4))  COMMENT 'LNST — YoY theo sàn.',
     roa_percentage                       Nullable(Decimal(9,4))  COMMENT 'ROA theo sàn.',
     roa_yoy_difference                   Nullable(Decimal(9,4))  COMMENT 'ROA — YoY theo sàn (hiệu số percentage point).',
     roe_percentage                       Nullable(Decimal(9,4))  COMMENT 'ROE theo sàn.',
@@ -535,4 +534,34 @@ ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(toDate(concat(toString(rpt_year), '-01-01')))
 ORDER BY (rpt_year, equity_listing_exchange_code)
 COMMENT 'Flat table — Public Company Exchange Financial Summary Report (Fact-report, no FK Dimension)'
+;
+
+-- ---------------------------------------------------------------------
+-- 12. Public Company Financial YoY Report (Fact-report, Nhóm 7/11/13/15/17 — không FK Dimension)
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS datamart.gsdc_public_company_financial_yoy_rpt_flat ON CLUSTER 'my_cluster'
+(
+    -- From: PUBLIC COMPANY FINANCIAL YOY REPORT
+    equity_listing_exchange_code        String              COMMENT 'Sàn niêm yết/đăng ký giao dịch — grain key của báo cáo. Giá trị ALL đại diện toàn thị trường.',
+    rpt_year                             Int64               COMMENT 'Năm báo cáo — grain key theo kỳ.',
+    rpt_quarter                          Nullable(Int64)     COMMENT 'Quý báo cáo — grain key theo kỳ.',
+    total_asset_yoy                      Nullable(Decimal(9,4)) COMMENT 'Tổng tài sản — YoY, % tăng/giảm so cùng kỳ năm trước.',
+    total_liability_yoy                  Nullable(Decimal(9,4)) COMMENT 'Nợ phải trả — YoY, % tăng/giảm so cùng kỳ năm trước.',
+    equity_yoy                           Nullable(Decimal(9,4)) COMMENT 'Vốn chủ sở hữu — YoY, % tăng/giảm so cùng kỳ năm trước.',
+    contributed_capital_yoy              Nullable(Decimal(9,4)) COMMENT 'Vốn điều lệ — YoY, % tăng/giảm so cùng kỳ năm trước.',
+    net_profit_yoy                       Nullable(Decimal(9,4)) COMMENT 'Lợi nhuận sau thuế — YoY, % tăng/giảm so cùng kỳ năm trước.',
+    inventory_yoy                        Nullable(Decimal(9,4)) COMMENT 'Hàng tồn kho — YoY, % tăng/giảm so cùng kỳ năm trước.',
+    net_revenue_yoy                      Nullable(Decimal(9,4)) COMMENT 'Doanh thu thuần — YoY, % tăng/giảm so cùng kỳ năm trước.',
+    undistributed_profit_yoy             Nullable(Decimal(9,4)) COMMENT 'Lợi nhuận dồn tích YTD — YoY, % tăng/giảm so cùng kỳ năm trước.',
+    receivable_yoy                       Nullable(Decimal(9,4)) COMMENT 'Phải thu — YoY, % tăng/giảm so cùng kỳ năm trước.',
+    cash_and_equivalent_yoy              Nullable(Decimal(9,4)) COMMENT 'Tiền và tương đương tiền — YoY, % tăng/giảm so cùng kỳ năm trước.',
+    roa_yoy                              Nullable(Decimal(9,4)) COMMENT 'ROA — YoY, % tăng/giảm so cùng kỳ năm trước (áp dụng trên giá trị ROA đã tính của từng kỳ).',
+    roe_yoy                              Nullable(Decimal(9,4)) COMMENT 'ROE — YoY, % tăng/giảm so cùng kỳ năm trước (áp dụng trên giá trị ROE đã tính của từng kỳ).',
+    debt_to_equity_yoy                   Nullable(Decimal(9,4)) COMMENT 'Nợ / Vốn CSH — YoY, % tăng/giảm so cùng kỳ năm trước (áp dụng trên tỷ số Nợ/Vốn CSH đã tính của từng kỳ).',
+    src_stm_code                         String              COMMENT 'Mã hệ thống nguồn dữ liệu tính toán báo cáo tổng hợp tài chính YoY.'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(toDate(concat(toString(rpt_year), '-01-01')))
+ORDER BY (rpt_year, equity_listing_exchange_code)
+COMMENT 'Flat table — Public Company Financial YoY Report (Fact-report, no FK Dimension, phục vụ Nhóm 7/11/13/15/17)'
 ;

@@ -211,7 +211,7 @@ flowchart LR
 
 ##### Cụm 7: Nghĩa vụ báo cáo & Nộp báo cáo (Fact Violation Report Snapshot) (Nhóm 6)
 
-Phục vụ K_GSDC_48/49 (tỷ lệ nộp BCTC + số DN báo lãi, Nhóm 6/10/12/14/16) qua `Fact Violation Report Snapshot` — 1 Fact duy nhất cho cả 2 KPI, driving `Public Company Dimension` full-scan, filter loại tin định kỳ qua `fr_template.news_tp_code = 'DINH_KY'` (denormalize `Profitable_Indicator` từ `fr_value`, xem chi tiết Nhóm 6).
+Phục vụ K_GSDC_48 (tỷ lệ nộp BCTC, Nhóm 6/10/12/14/16) qua `Fact Violation Report Snapshot` — driving `Public Company Dimension` full-scan, filter loại tin định kỳ qua `fr_template.news_tp_code = 'DINH_KY'`. K_GSDC_49 (số DN báo lãi, cùng Nhóm) KHÔNG dùng Fact này — dùng trực tiếp `Fact Public Company Financial Report Value` (Cụm 8/Nhóm 7), xem chi tiết Nhóm 6.
 
 ```mermaid
 flowchart LR
@@ -221,14 +221,12 @@ flowchart LR
         ECAT_ECAT_29_HolidayInfo["ECAT.ECAT_29_HolidayInfo"]
         IDS_VIOLATION_REPORT["IDS.VIOLATION_REPORT"]
         IDS_FORMS["IDS.FORMS"]
-        IDS_DATA_c3["IDS.DATA"]
     end
     subgraph SIL["Atomic"]
         Public_Company["Public Company"]
         Calendar_Date["Calendar Date"]
         Violation_Report["Violation Report"]
         Financial_Report_Template["Financial Report Template"]
-        Financial_Report_Value_c3["Financial Report Value"]
     end
     subgraph GOLD["Datamart"]
         public_company_dim["Public Company Dimension"]
@@ -240,17 +238,15 @@ flowchart LR
     ECAT_ECAT_29_HolidayInfo --> Calendar_Date
     IDS_VIOLATION_REPORT --> Violation_Report
     IDS_FORMS --> Financial_Report_Template
-    IDS_DATA_c3 --> Financial_Report_Value_c3
     Public_Company --> public_company_dim
     Calendar_Date --> cdr_dt_dim
     public_company_dim --> fct_violation_rpt_snpst
     cdr_dt_dim --> fct_violation_rpt_snpst
     Violation_Report --> fct_violation_rpt_snpst
     Financial_Report_Template --> fct_violation_rpt_snpst
-    Financial_Report_Value_c3 --> fct_violation_rpt_snpst
 ```
 
-> `Financial Report Value` vẽ lại ở đây theo đúng rule "Atomic source trùng giữa các Cụm vẫn vẽ lại đầy đủ" (dùng trực tiếp để denormalize `Profitable_Indicator` vào Fact). Lineage đầy đủ của `Financial Report Catalog`/`Row Template`/`Column Template` (không dùng ở Cụm này) xem Cụm 8.
+> `Fact Violation Report Snapshot` giờ chỉ phục vụ K_GSDC_48 (Report_Due_Count/Report_Submitted_Count) — không còn denormalize `Profitable_Indicator` từ `fr_value` (đã bỏ, xem Nhóm 6). Lineage đầy đủ của `Financial Report Value`/`Financial Report Catalog`/`Row Template`/`Column Template` (dùng cho K_GSDC_49) xem Cụm 8.
 
 ##### Cụm 8: Chi tiết BCTC từng CTDC & Danh mục template (Fact Public Company Financial Report Value) (Nhóm 7-30, 37)
 
@@ -967,15 +963,15 @@ Màn hình có bộ lọc **Năm / Quý** và 5 tab sàn. Mỗi tab hiển thị
 > Atomic: `Public Company` ← IDS.company_profiles — **draft** (chưa approved)
 > Atomic: `Violation Report` (`violation_report`) ← IDS.VIOLATION_REPORT — **draft**
 > Nhóm 6 tương ứng STT 6. Bảng mapping renumber STT đầy đủ xem Section 4.
-> K_GSDC_48 dùng entity `violation_report` (LLD draft `DataModel/working/Atomic/lld/IDS/lld_IDS_VIOLATION_REPORT.yaml`); K_GSDC_49 dùng 5 entity Financial Report Value (xem Nhóm 7) → cả 2 **READY**.
+> K_GSDC_48 dùng entity `violation_report` (LLD draft `DataModel/working/Atomic/lld/IDS/lld_IDS_VIOLATION_REPORT.yaml`); K_GSDC_49 dùng `Fact Public Company Financial Report Value` (5 entity Financial Report Value, xem Nhóm 7) → cả 2 **READY**.
 > `violation_report` mang ngữ nghĩa Fact Event (mỗi công ty × mỗi kỳ phát sinh 1 tập hồ sơ nghĩa vụ báo cáo mới, ETL append theo kỳ, không phải cập nhật current-state) — không phải Operational SCD4A. Grain phải xuống đủ chi tiết để `SUM` đúng ở mọi cấp độ (toàn TT/sàn — Nhóm 10/12/14/16 `GROUP BY` theo sàn cùng measure này), không pre-aggregate theo %. **`Fact Violation Report Snapshot`** — grain 1 row / công ty / kỳ (Report_Year + Report_Quarter) / ngày ETL snapshot, 2 measure đếm: `Report_Due_Count` (số hồ sơ có `deadline_dt <= ngày ETL` trong kỳ) và `Report_Submitted_Count` (số hồ sơ có `actual_submit_dt` không null trong kỳ) — JOIN `Public Company Dimension` để GROUP BY sàn khi cần. Tỷ lệ nộp BCTC = `SUM(Report_Submitted_Count) / SUM(Report_Due_Count)` ở tầng Detail Mapping, đúng tại bất kỳ cấp độ nào (toàn TT ở Nhóm 6, theo sàn ở Nhóm 10/12/14/16) mà không cần Fact riêng cho từng cấp.
-> K_GSDC_49 dùng chung `Fact Violation Report Snapshot` với K_GSDC_48 (không dùng `Fact Public Company Financial Report Value` của Nhóm 7) — cả 2 KPI cùng grain "1 row/công ty/kỳ". Cột `Profitable_Indicator` (0/1, LNST > 0) lấy từ `fr_value` JOIN theo `pc_id`+kỳ, denormalize vào `Fact Violation Report Snapshot`. K_GSDC_49 = `COUNT(DISTINCT Public_Company_Dimension_Id) WHERE Profitable_Indicator = 1`.
-> **Driving Table = `Public Company Dimension`** (full-scan toàn bộ công ty mỗi ngày ETL — không phải `violation_report`, để tránh thiếu công ty không có hồ sơ `violation_report` trong `Profitable_Indicator`). Mỗi ngày ETL quét **toàn bộ kỳ đang có nghĩa vụ** trong `violation_report` (không filter theo 1 kỳ cụ thể — tham số `:p_nam`/`:p_quy` trong BA SQL chỉ là điều kiện lọc khi truy vấn, không phải điều kiện giới hạn khi populate Fact) — LEFT JOIN `violation_report` để tính Due/Submitted theo từng kỳ, LEFT JOIN `fr_value` để tính `Profitable_Indicator` theo từng kỳ.
+> **K_GSDC_49 ĐỘC LẬP HOÀN TOÀN với K_GSDC_48** — không dùng `Fact Violation Report Snapshot`. Sửa lại 2026-08-15 (review phát hiện lỗi): thiết kế trước đó denormalize `Profitable_Indicator` vào `Fact Violation Report Snapshot` bằng cách JOIN `fr_value` theo kỳ lấy từ `violation_report.period_year`/`period_tp_code` — SAI vì `violation_report` (nguồn `IDS.VIOLATION_REPORT.PERIOD_YEAR`) và `company_data`/`pc_report_submission` (nguồn `IDS.COMPANY_DATA.REPORT_YEAR`) là 2 bảng nguồn độc lập, không đảm bảo luôn có bản ghi `violation_report` khớp đúng kỳ khi công ty có báo cáo tài chính — dẫn tới bỏ sót công ty có LNST>0 nhưng không có nghĩa vụ báo cáo khớp kỳ đó. Dùng trực tiếp `Fact Public Company Financial Report Value` (Nhóm 7, đã có sẵn đúng logic dedup `pc_report_submission` theo kỳ tài chính thật) — xem công thức K_GSDC_49 trong Bảng KPI bên dưới. Đúng theo màn hình thực tế: 3 thẻ (Số doanh nghiệp / Tỷ lệ nộp BCTC / Công ty báo lãi) là 3 con số độc lập, không cần chung 1 Fact.
+> **Driving Table K_GSDC_48 = `Public Company Dimension`** (full-scan toàn bộ công ty mỗi ngày ETL — không phải `violation_report`, để tránh thiếu công ty không có hồ sơ `violation_report`). Mỗi ngày ETL quét **toàn bộ kỳ đang có nghĩa vụ** trong `violation_report` (không filter theo 1 kỳ cụ thể — tham số `:p_nam`/`:p_quy` trong BA SQL chỉ là điều kiện lọc khi truy vấn, không phải điều kiện giới hạn khi populate Fact) — LEFT JOIN `violation_report` để tính Due/Submitted theo từng kỳ.
 > **K_GSDC_48** — BA SQL thực tế (`BA_analyst_GSDC_part1.csv` dòng 58): `FROM violation_report vr JOIN forms f ON f.id = vr.form_id AND f.news_type_cd = 'DINH_KY' WHERE vr.period_year = :p_nam AND (vr.period_quarter = :p_quy OR :p_quy IS NULL) AND vr.deadline_date <= TRUNC(SYSDATE)` → GROUP BY `pc_id`/`period_year`/`period_tp_code`: `Report_Due_Count = COUNT(vr.id) WHERE deadline_dt <= ngày ETL`, `Report_Submitted_Count = COUNT(vr.actual_submit_date)` (không null), JOIN `fr_template` (qua `fr_template_id`) filter `fr_template.news_tp_code = 'DINH_KY'` (← `IDS.FORMS.NEWS_TYPE_CD`, xem `lld_IDS_FORMS.yaml`) áp dụng ở tầng populate Fact (chỉ đếm hồ sơ loại "định kỳ").
-> **K_GSDC_49** — BA SQL thực tế (`BA_analyst_GSDC_part1.csv` dòng 59): `FROM IDS.data d JOIN IDS.report_catalog rc ... JOIN IDS.rrow rr ... JOIN IDS.rcol rc2 ... JOIN ids.company_data cd ... WHERE rc2.col_desc='1' AND rc.report_cd LIKE 'BCKQKD%' AND d.data_value>0 AND ((rc.enterprise_type_cd='dn' AND rr.row_desc='60') OR (rc.enterprise_type_cd='bh' AND rr.row_desc='60') OR (rc.enterprise_type_cd='td' AND rr.row_desc='21'))` → `Profitable_Indicator = 1` khi tồn tại dòng `fr_value` khớp điều kiện LNST > 0 (`row_description_reference`='60' dn/bh, '21' td; `column_description_reference='1'`; `fr_catalog_code LIKE 'BCKQKD%'`) cho đúng `pc_id`+kỳ, `0`/NULL nếu không có.
+> **K_GSDC_49** — BA SQL thực tế (`BA_analyst_GSDC_part1.csv` dòng 59, cùng logic dedup `Company_data_chuan` đã dùng cho `Fact Public Company Financial Report Value`, xem Nhóm 7): `FROM IDS.data d JOIN IDS.report_catalog rc ... JOIN IDS.rrow rr ... JOIN IDS.rcol rc2 ... JOIN ids.company_data cd ... WHERE rc2.col_desc='1' AND rc.report_cd LIKE 'BCKQKD%' AND d.data_value>0 AND ((rc.enterprise_type_cd='dn' AND rr.row_desc='60') OR (rc.enterprise_type_cd='bh' AND rr.row_desc='60') OR (rc.enterprise_type_cd='td' AND rr.row_desc='21'))` → đếm số công ty có ≥1 dòng `fr_value` khớp điều kiện LNST > 0 (`row_description_reference`='60' dn/bh, '21' td; `column_description_reference='1'`; `fr_catalog_code LIKE 'BCKQKD%'`) đúng kỳ `:p_year`/`:p_quarter`.
 > `Fact Public Company Financial Summary Snapshot` không tồn tại trong mô hình — K_GSDC_47 tự đủ bằng `COUNT(DISTINCT ...)` trực tiếp trên `Public Company Dimension` (không cần grain snapshot theo kỳ). K_GSDC_46/47 dùng thẳng `Calendar Date Dimension`/`Public Company Dimension`, không qua Fact trung gian.
 
-**Source:** `Public Company Dimension`, `Calendar Date Dimension` (K_GSDC_46/47 — không qua Fact); `Fact Violation Report Snapshot` (K_GSDC_48/49, mới — 1 Fact duy nhất phục vụ cả 2 KPI, driving `Public Company Dimension` full-scan, LEFT JOIN `violation_report` + `fr_value`)
+**Source:** `Public Company Dimension`, `Calendar Date Dimension` (K_GSDC_46/47 — không qua Fact); `Fact Violation Report Snapshot` (K_GSDC_48, driving `Public Company Dimension` full-scan, LEFT JOIN `violation_report`); `Fact Public Company Financial Report Value` + `Financial Report Catalog Dimension` (K_GSDC_49, reuse từ Nhóm 7)
 
 **Bảng KPI:**
 
@@ -984,7 +980,7 @@ Màn hình có bộ lọc **Năm / Quý** và 5 tab sàn. Mỗi tab hiển thị
 | K_GSDC_46 | Kỳ thống kê (Năm/Quý) | Text | Chiều (Slicer) | — (trực tiếp) | — | **READY** — Tham số `:year`/`:quarter` |
 | K_GSDC_47 | Số doanh nghiệp | DN | Phái sinh | ids_registration_dt (trực tiếp) | Public Company | **READY** — COUNT DISTINCT trực tiếp trên Public Company Dimension WHERE ids_registration_dt <= cuối kỳ — xem O_GSDC_2 |
 | K_GSDC_48 | Tỷ lệ nộp BCTC | % | Phái sinh | deadline_dt / actual_submit_dt / period_year / period_tp_code (trực tiếp) | Violation Report | **READY** — `SUM(Report_Submitted_Count) / NULLIF(SUM(Report_Due_Count), 0) * 100` trên `Fact Violation Report Snapshot` (toàn thị trường — không filter sàn ở Nhóm này), filter kỳ `Report_Year=:p_nam AND (Report_Quarter=:p_quy OR :p_quy IS NULL)` |
-| K_GSDC_49 | Số DN báo lãi | DN | Cơ sở | data_val (trực tiếp) | Financial Report Value | **READY** — `COUNT(DISTINCT Public_Company_Dimension_Id)` trên `Fact Violation Report Snapshot` (cùng bảng với K_GSDC_48) WHERE `Profitable_Indicator = 1` |
+| K_GSDC_49 | Số DN báo lãi | DN | Cơ sở | data_val (trực tiếp) | Financial Report Value | **READY** — `COUNT(DISTINCT Public_Company_Dimension_Id)` trên `Fact Public Company Financial Report Value` (Nhóm 7, JOIN `Financial Report Catalog Dimension`) WHERE `Row_Description_Reference` IN ('60','21') theo Enterprise_Type, `Column_Description_Reference='1'`, `Financial_Report_Catalog_Code LIKE 'BCKQKD%'`, `Data_Value > 0`, `Report_Year=:p_year AND Report_Quarter=:p_quarter` — sửa 2026-08-15, không còn dùng `Fact Violation Report Snapshot` |
 
 > **Ghi chú filter K_GSDC_48:** BA JOIN `forms f ON f.id = vr.form_id AND f.news_type_cd = 'DINH_KY'` để lọc loại báo cáo "định kỳ" — map đúng field `fr_template.news_tp_code` (← `IDS.FORMS.NEWS_TYPE_CD`, `DataModel/working/Atomic/lld/IDS/lld_IDS_FORMS.yaml`), JOIN qua `violation_report.fr_template_id = fr_template.fr_template_id`, filter `fr_template.news_tp_code = 'DINH_KY'` — áp dụng ở tầng ETL populate `Fact Violation Report Snapshot` (chỉ đếm hồ sơ "định kỳ" vào Report_Due_Count/Report_Submitted_Count). Không còn Open Issue.
 
@@ -1023,14 +1019,13 @@ erDiagram
         string Snapshot_Date_Dimension_Id PK
         int Report_Due_Count
         int Report_Submitted_Count
-        int Profitable_Indicator
     }
 
     Fact_Violation_Report_Snapshot }o--|| Public_Company_Dimension : "Public_Company_Dimension_Id"
     Fact_Violation_Report_Snapshot }o--|| Calendar_Date_Dimension : "Snapshot_Date_Dimension_Id"
 ```
 
-> **Ghi chú:** K_GSDC_46/47 truy vấn trực tiếp trên `Public Company Dimension`/`Calendar Date Dimension` — không có Fact trung gian. K_GSDC_48/49 cùng dùng chung `Fact Violation Report Snapshot` (driving `Public Company Dimension` full-scan, grain 1 row/công ty/kỳ báo cáo/ngày ETL, JOIN `Public Company Dimension` để GROUP BY sàn ở Nhóm 10/12/14/16) — filter "loại tin định kỳ" (`fr_template.news_tp_code = 'DINH_KY'`) áp dụng ở tầng ETL populate Fact cho `Report_Due_Count`/`Report_Submitted_Count` (K_GSDC_48); `Profitable_Indicator` (K_GSDC_49) denormalize từ `fr_value` theo cùng grain. FK `Snapshot_Date_Dimension_Id` sang `Calendar Date Dimension` lưu ngày ETL chạy job populate Fact (không phải ngày nghiệp vụ trong `violation_report`, `Report_Year`/`Report_Quarter` vẫn giữ nguyên là kỳ báo cáo), theo đúng pattern `Snapshot_Date` đã dùng ở 5 Fact `*_Score_Snapshot` — cho phép full-scan daily và trace đúng thời điểm tính toán tỷ lệ nộp BCTC (VD: tỷ lệ tại ngày 06/08 có thể khác ngày 20/08 cùng kỳ Quý 3 vì có thêm công ty nộp muộn). Không dùng `Fact Public Company Financial Report Value`/`Financial Report Catalog Dimension` cho Nhóm này — cả 2 KPI (K_GSDC_48/49) dùng chung 1 Fact duy nhất.
+> **Ghi chú:** K_GSDC_46/47 truy vấn trực tiếp trên `Public Company Dimension`/`Calendar Date Dimension` — không có Fact trung gian. K_GSDC_48 dùng `Fact Violation Report Snapshot` (driving `Public Company Dimension` full-scan, grain 1 row/công ty/kỳ báo cáo/ngày ETL, JOIN `Public Company Dimension` để GROUP BY sàn ở Nhóm 10/12/14/16) — filter "loại tin định kỳ" (`fr_template.news_tp_code = 'DINH_KY'`) áp dụng ở tầng ETL populate Fact cho `Report_Due_Count`/`Report_Submitted_Count`. FK `Snapshot_Date_Dimension_Id` sang `Calendar Date Dimension` lưu ngày ETL chạy job populate Fact (không phải ngày nghiệp vụ trong `violation_report`, `Report_Year`/`Report_Quarter` vẫn giữ nguyên là kỳ báo cáo), theo đúng pattern `Snapshot_Date` đã dùng ở 5 Fact `*_Score_Snapshot` — cho phép full-scan daily và trace đúng thời điểm tính toán tỷ lệ nộp BCTC (VD: tỷ lệ tại ngày 06/08 có thể khác ngày 20/08 cùng kỳ Quý 3 vì có thêm công ty nộp muộn). **K_GSDC_49 (Số DN báo lãi) KHÔNG còn dùng Fact này** (sửa 2026-08-15) — dùng trực tiếp `Fact Public Company Financial Report Value`/`Financial Report Catalog Dimension` đã vẽ ở Nhóm 7, không vẽ lại erDiagram ở đây.
 
 **Lineage Mart → Báo cáo:**
 
@@ -1041,7 +1036,8 @@ flowchart LR
     fct_violation_rpt_snpst_g6["Fact Violation Report Snapshot"] --> R1b["K_GSDC_48: Tỷ lệ nộp BCTC"]
     public_company_dim --> R1b
     cdr_dt_dim --> R1b
-    fct_violation_rpt_snpst_g6 --> R1c["K_GSDC_49: Số DN báo lãi"]
+    fct_public_company_financial_rpt_val_g6["Fact Public Company Financial Report Value"] --> R1c["K_GSDC_49: Số DN báo lãi"]
+    financial_rpt_catalog_dim_g6["Financial Report Catalog Dimension"] --> R1c
 ```
 
 **Bảng grain:**
@@ -1050,7 +1046,8 @@ flowchart LR
 |---|---|
 | Public Company Dimension | 1 row / công ty đại chúng (SCD4A) |
 | Calendar Date Dimension | 1 row / ngày (Conformed) |
-| Fact Violation Report Snapshot | 1 row / công ty đại chúng / kỳ (Report Year + Report Quarter) / ngày ETL snapshot |
+| Fact Violation Report Snapshot | 1 row / công ty đại chúng / kỳ (Report Year + Report Quarter) / ngày ETL snapshot — chỉ phục vụ K_GSDC_48 |
+| Fact Public Company Financial Report Value | như Nhóm 7 — phục vụ K_GSDC_49 (reuse) |
 
 ---
 
@@ -1296,9 +1293,9 @@ flowchart LR
 | K_GSDC_78 | Sàn | Text | Chiều | equity_listing_exchange_code (trực tiếp) | Public Company | **READY** — Filter cố định `= 'HNX'` — Classification Value scheme `IDS_LISTING_TYPE` |
 | K_GSDC_47 | Số doanh nghiệp theo từng sàn | DN | Cơ sở | ids_registration_dt (trực tiếp) | Public Company | **READY** — COUNT DISTINCT WHERE ids_registration_dt <= cuối kỳ AND equity_listing_exchange_code = 'HNX' — reuse công thức K_GSDC_47 Nhóm 6, filter thêm theo sàn |
 | K_GSDC_48 | Tỷ lệ nộp BCTC theo từng sàn (quý) | % | Phái sinh | deadline_dt / actual_submit_dt / period_year / period_tp_code (trực tiếp) | Violation Report | **READY** — Reuse công thức K_GSDC_48 Nhóm 6, JOIN `Public Company Dimension` filter `Equity_Listing_Exchange_Code='HNX'` |
-| K_GSDC_49 | Số DN báo lãi theo từng sàn | DN | Cơ sở | data_val (trực tiếp) | Financial Report Value | **READY** — Reuse công thức K_GSDC_49 Nhóm 6, JOIN `Public Company Dimension` filter `Equity_Listing_Exchange_Code='HNX'` |
+| K_GSDC_49 | Số DN báo lãi theo từng sàn | DN | Cơ sở | data_val (trực tiếp) | Financial Report Value | **READY** — Reuse công thức K_GSDC_49 Nhóm 6 (`Fact Public Company Financial Report Value`), JOIN `Public Company Dimension` filter `Equity_Listing_Exchange_Code='HNX'` |
 
-**Star Schema, Lineage, Bảng grain:** giống Nhóm 6 (`Public Company Dimension`, `Calendar Date Dimension`, `Fact Violation Report Snapshot` — 1 Fact duy nhất phục vụ cả K_GSDC_48/49) — chỉ khác filter sàn `= 'HNX'`.
+**Star Schema, Lineage, Bảng grain:** giống Nhóm 6 — K_GSDC_46/47/48 dùng `Public Company Dimension`, `Calendar Date Dimension`, `Fact Violation Report Snapshot`; K_GSDC_49 dùng `Fact Public Company Financial Report Value`/`Financial Report Catalog Dimension` (Nhóm 7) — chỉ khác filter sàn `= 'HNX'`.
 
 ---
 
@@ -1386,9 +1383,9 @@ flowchart LR
 | K_GSDC_78 | Sàn | Text | Chiều | equity_listing_exchange_code (trực tiếp) | Public Company | **READY** — Filter cố định `= 'HOSE'` — reuse KPI Sàn (K_GSDC_78), khác filter |
 | K_GSDC_47 | Số doanh nghiệp theo từng sàn | DN | Cơ sở | ids_registration_dt (trực tiếp) | Public Company | **READY** — COUNT DISTINCT WHERE ids_registration_dt <= cuối kỳ AND equity_listing_exchange_code = 'HOSE' |
 | K_GSDC_48 | Tỷ lệ nộp BCTC theo từng sàn (quý) | % | Phái sinh | deadline_dt / actual_submit_dt / period_year / period_tp_code (trực tiếp) | Violation Report | **READY** — Reuse công thức K_GSDC_48 Nhóm 6, filter `Equity_Listing_Exchange_Code='HOSE'` |
-| K_GSDC_49 | Số DN báo lãi theo từng sàn | DN | Cơ sở | data_val (trực tiếp) | Financial Report Value | **READY** — Reuse công thức K_GSDC_49 Nhóm 6, filter `Equity_Listing_Exchange_Code='HOSE'` |
+| K_GSDC_49 | Số DN báo lãi theo từng sàn | DN | Cơ sở | data_val (trực tiếp) | Financial Report Value | **READY** — Reuse công thức K_GSDC_49 Nhóm 6 (`Fact Public Company Financial Report Value`), filter `Equity_Listing_Exchange_Code='HOSE'` |
 
-**Star Schema, Lineage, Bảng grain:** giống Nhóm 6 — chỉ khác filter sàn `= 'HOSE'`.
+**Star Schema, Lineage, Bảng grain:** giống Nhóm 6 — K_GSDC_49 dùng `Fact Public Company Financial Report Value`/`Financial Report Catalog Dimension` (Nhóm 7), không dùng `Fact Violation Report Snapshot` — chỉ khác filter sàn `= 'HOSE'`.
 
 ---
 
@@ -1474,9 +1471,9 @@ flowchart LR
 | K_GSDC_78 | Sàn | Text | Chiều | equity_listing_exchange_code (trực tiếp) | Public Company | **READY** — Filter cố định `= 'UPCOM'` — reuse KPI Sàn (K_GSDC_78), khác filter |
 | K_GSDC_47 | Số doanh nghiệp theo từng sàn | DN | Cơ sở | ids_registration_dt (trực tiếp) | Public Company | **READY** — COUNT DISTINCT WHERE ids_registration_dt <= cuối kỳ AND equity_listing_exchange_code = 'UPCOM' |
 | K_GSDC_48 | Tỷ lệ nộp BCTC theo từng sàn (quý) | % | Phái sinh | deadline_dt / actual_submit_dt / period_year / period_tp_code (trực tiếp) | Violation Report | **READY** — Reuse công thức K_GSDC_48 Nhóm 6, filter `Equity_Listing_Exchange_Code='UPCOM'` |
-| K_GSDC_49 | Số DN báo lãi theo từng sàn | DN | Cơ sở | data_val (trực tiếp) | Financial Report Value | **READY** — Reuse công thức K_GSDC_49 Nhóm 6, filter `Equity_Listing_Exchange_Code='UPCOM'` |
+| K_GSDC_49 | Số DN báo lãi theo từng sàn | DN | Cơ sở | data_val (trực tiếp) | Financial Report Value | **READY** — Reuse công thức K_GSDC_49 Nhóm 6 (`Fact Public Company Financial Report Value`), filter `Equity_Listing_Exchange_Code='UPCOM'` |
 
-**Star Schema, Lineage, Bảng grain:** giống Nhóm 6 — chỉ khác filter sàn `= 'UPCOM'`.
+**Star Schema, Lineage, Bảng grain:** giống Nhóm 6 — K_GSDC_49 dùng `Fact Public Company Financial Report Value`/`Financial Report Catalog Dimension` (Nhóm 7), không dùng `Fact Violation Report Snapshot` — chỉ khác filter sàn `= 'UPCOM'`.
 
 ---
 
@@ -1562,9 +1559,9 @@ flowchart LR
 | K_GSDC_78 | Sàn | Text | Chiều | equity_listing_exchange_code (trực tiếp) | Public Company | **READY** — Filter cố định `= 'OTC'` — reuse KPI Sàn (K_GSDC_78), khác filter |
 | K_GSDC_47 | Số doanh nghiệp theo từng sàn | DN | Cơ sở | ids_registration_dt (trực tiếp) | Public Company | **READY** — COUNT DISTINCT WHERE ids_registration_dt <= cuối kỳ AND equity_listing_exchange_code = 'OTC' |
 | K_GSDC_48 | Tỷ lệ nộp BCTC theo từng sàn (quý) | % | Phái sinh | deadline_dt / actual_submit_dt / period_year / period_tp_code (trực tiếp) | Violation Report | **READY** — Reuse công thức K_GSDC_48 Nhóm 6, filter `Equity_Listing_Exchange_Code='OTC'` |
-| K_GSDC_49 | Số DN báo lãi theo từng sàn | DN | Cơ sở | data_val (trực tiếp) | Financial Report Value | **READY** — Reuse công thức K_GSDC_49 Nhóm 6, filter `Equity_Listing_Exchange_Code='OTC'` |
+| K_GSDC_49 | Số DN báo lãi theo từng sàn | DN | Cơ sở | data_val (trực tiếp) | Financial Report Value | **READY** — Reuse công thức K_GSDC_49 Nhóm 6 (`Fact Public Company Financial Report Value`), filter `Equity_Listing_Exchange_Code='OTC'` |
 
-**Star Schema, Lineage, Bảng grain:** giống Nhóm 6 — chỉ khác filter sàn `= 'OTC'`.
+**Star Schema, Lineage, Bảng grain:** giống Nhóm 6 — K_GSDC_49 dùng `Fact Public Company Financial Report Value`/`Financial Report Catalog Dimension` (Nhóm 7), không dùng `Fact Violation Report Snapshot` — chỉ khác filter sàn `= 'OTC'`.
 
 ---
 
@@ -3118,7 +3115,7 @@ graph TB
 >
 > `Fact Public Company Financial Report Value` (`FACT_RPTVAL`) không có FK `Calendar Date Dimension` — grain thời gian là `Report Year`/`Report Quarter` dạng thuộc tính DD trực tiếp trên Fact (kỳ báo cáo tài chính, không phải ngày lịch), khác với 5 Fact `*_Score_Snapshot` (dùng Calendar Date Dimension cho ngày snapshot ETL).
 >
-> `Fact Violation Report Snapshot` (`FACT_VLTREPORT_SNPST`) phục vụ K_GSDC_48 (Nhóm 6/10/12/14/16) — nguồn `violation_report`/IDS.VIOLATION_REPORT. Grain 1 row/công ty/kỳ (Report_Year + Report_Quarter), phát sinh theo kỳ (ETL append) — đúng ngữ nghĩa Fact, không phải Operational SCD4A (dữ liệu này KHÔNG phải current-state, mỗi kỳ có tập hồ sơ mới). Độc lập hoàn toàn với `Fact Public Company Financial Report Value` — không JOIN chéo giữa 2 Fact.
+> `Fact Violation Report Snapshot` (`FACT_VLTREPORT_SNPST`) phục vụ K_GSDC_48 (Nhóm 6/10/12/14/16) — nguồn `violation_report`/IDS.VIOLATION_REPORT. Grain 1 row/công ty/kỳ (Report_Year + Report_Quarter), phát sinh theo kỳ (ETL append) — đúng ngữ nghĩa Fact, không phải Operational SCD4A (dữ liệu này KHÔNG phải current-state, mỗi kỳ có tập hồ sơ mới). Độc lập hoàn toàn với `Fact Public Company Financial Report Value` — không JOIN chéo giữa 2 Fact. K_GSDC_49 (Số DN báo lãi, cùng Nhóm 6/10/12/14/16) KHÔNG dùng Fact này — dùng trực tiếp `Fact Public Company Financial Report Value` (sửa 2026-08-15).
 >
 > 4 bảng report (`RPT_REGCOMP`/`RPT_INDFIN`/`RPT_MULTIPERIOD`/`RPT_EXCHSUM`) KHÔNG có FK Dimension nào trong graph này — đúng đặc tính Fact-report (đóng gói cố định theo kỳ, denormalize hoàn toàn, ETL populate batch trực tiếp từ Atomic, không cần JOIN runtime tới `Public Company Dimension`/`Calendar Date Dimension`). `Fact Public Company Financial Report Value` không phục vụ Nhóm 38-41 — xem bảng KPI bên dưới.
 
@@ -3131,15 +3128,15 @@ graph TB
 | `Fact Public Company Issuance Score Snapshot` | Periodic Snapshot | 1 CTDC × 1 ngày snapshot ETL (full-scan daily, carry-forward) | K_GSDC_24–31 (Nhóm 3); reuse toàn bộ (Nhóm 35) | READY (Atomic draft — chưa approved) |
 | `Fact Public Company Financial Score Snapshot` | Periodic Snapshot | 1 CTDC × 1 ngày snapshot ETL (full-scan daily, carry-forward) | K_GSDC_32–42 (Nhóm 4); reuse toàn bộ (Nhóm 34) | READY (Atomic draft — chưa approved) |
 | `Fact Public Company Non-Financial Score Snapshot` | Periodic Snapshot | 1 CTDC × 1 ngày snapshot ETL (full-scan daily, carry-forward) | K_GSDC_43–45 (Nhóm 5); reuse toàn bộ (Nhóm 36) | READY (Atomic draft — chưa approved) |
-| `Fact Public Company Financial Report Value` | Event | 1 CTDC × 1 kỳ (Report_Year + Report_Quarter, nullable = kỳ năm) × Row_Code × Column_Code | K_GSDC_50–62+YOY (Nhóm 7); K_GSDC_63-76 (Nhóm 8); K_GSDC_50-62+79-92+YOY (Nhóm 11/13/15/17, reuse ID); K_GSDC_50-62 (Nhóm 37, reuse ID); K_GSDC_99-689 (Nhóm 19-30, MH3 Data Explorer — DN thông thường/bảo hiểm/TCTD × BCĐKT/BCKQKD/LCTT trực tiếp/gián tiếp) | READY cho toàn bộ Nhóm 7/8/11/13/15/17/19-30/37 (Atomic đủ 5 entity: `fr_value`/`financial_report_catalog`/`fr_row_template`/`fr_column_template`/`pc_report_submission`, xem chi tiết Nhóm 7). K_GSDC_49 (Nhóm 6/10/12/14/16) dùng `Fact Violation Report Snapshot` (xem Nhóm 6), không dùng Fact này. Nhóm 38-41 dùng 4 bảng Fact-report riêng (xem 4 dòng bên dưới), không dùng Fact này. |
-| `Fact Violation Report Snapshot` | Event | 1 row / công ty đại chúng / kỳ (Report_Year + Report_Quarter) / ngày ETL snapshot (FK Calendar Date Dimension) | K_GSDC_48 (Nhóm 6/10/12/14/16) — Tỷ lệ nộp BCTC | READY (2026-08-07 — nguồn `violation_report`/draft, sửa lại từ Operational → Fact vì dữ liệu phát sinh theo kỳ, không phải current-state; bổ sung FK Calendar Date Dimension theo ngày ETL; xem Nhóm 6) |
+| `Fact Public Company Financial Report Value` | Event | 1 CTDC × 1 kỳ (Report_Year + Report_Quarter, nullable = kỳ năm) × Row_Code × Column_Code | K_GSDC_50–62+YOY (Nhóm 7); K_GSDC_63-76 (Nhóm 8); K_GSDC_50-62+79-92+YOY (Nhóm 11/13/15/17, reuse ID); K_GSDC_50-62 (Nhóm 37, reuse ID); K_GSDC_99-689 (Nhóm 19-30, MH3 Data Explorer — DN thông thường/bảo hiểm/TCTD × BCĐKT/BCKQKD/LCTT trực tiếp/gián tiếp); K_GSDC_49 (Nhóm 6/10/12/14/16, reuse — Số DN báo lãi) | READY cho toàn bộ Nhóm 7/8/11/13/15/17/19-30/37 (Atomic đủ 5 entity: `fr_value`/`financial_report_catalog`/`fr_row_template`/`fr_column_template`/`pc_report_submission`, xem chi tiết Nhóm 7). K_GSDC_49 (Nhóm 6/10/12/14/16) sửa 2026-08-15 sang dùng Fact này (trước đó dùng `Fact Violation Report Snapshot`, sai vì bắc cầu kỳ qua `violation_report` — xem Nhóm 6). Nhóm 38-41 dùng 4 bảng Fact-report riêng (xem 4 dòng bên dưới), không dùng Fact này. |
+| `Fact Violation Report Snapshot` | Event | 1 row / công ty đại chúng / kỳ (Report_Year + Report_Quarter) / ngày ETL snapshot (FK Calendar Date Dimension) | K_GSDC_48 (Nhóm 6/10/12/14/16) — Tỷ lệ nộp BCTC | READY (2026-08-07 — nguồn `violation_report`/draft, sửa lại từ Operational → Fact vì dữ liệu phát sinh theo kỳ, không phải current-state; bổ sung FK Calendar Date Dimension theo ngày ETL; xem Nhóm 6). Sửa 2026-08-15: bỏ cột `Profitable_Indicator`, chỉ còn phục vụ K_GSDC_48. |
 | `Fact Public Company Listing Info Snapshot` | Periodic Snapshot | 1 CTDC × 1 ngày | K_GSDC_690–699 (Nhóm 31) | PENDING |
 | `Public Company Regulatory Compliance Report` | Fact-report | 1 row / sàn NY-ĐKGD / kỳ (Report_Year + Report_Quarter) | K_GSDC_700-708 (Nhóm 38) — BC01.1 | READY (2026-08-07 — thiết kế lại từ query đa nguồn thành Fact-report denormalize, xem Nhóm 38) |
 | `Public Company Industry Financial Report` | Fact-report | 1 row / ngành / năm báo cáo (kèm cột N-1) | K_GSDC_709-717 (Nhóm 39) — BC01.2 | READY (2026-08-07 — thiết kế lại thành Fact-report, xem Nhóm 39) |
 | `Public Company Multi-Period Financial Report` | Fact-report | 1 row DUY NHẤT / năm báo cáo (kèm cột N-1/N-2), toàn thị trường không group-by | K_GSDC_718-739 (Nhóm 40) — BC01.3 | READY (2026-08-07 — thiết kế lại thành Fact-report, xem Nhóm 40) |
 | `Public Company Exchange Financial Summary Report` | Fact-report | 1 row / sàn NY-ĐKGD / kỳ (Report_Year + Report_Quarter) | K_GSDC_740-751+YOY (Nhóm 41) — BC22 | READY (2026-08-07 — thiết kế lại thành Fact-report, xem Nhóm 41) |
 
-> `Fact Public Company Financial Summary Snapshot` không tồn tại trong mô hình. KPI liên quan (K_GSDC_46–49 Nhóm 6; reuse Nhóm 9/10/12/14/16; K_GSDC_700–708 Nhóm 38; K_GSDC_709–717 Nhóm 39; K_GSDC_718–739 Nhóm 40; K_GSDC_740–751+YOY Nhóm 41) dùng trực tiếp `Public Company Dimension`/`Calendar Date Dimension` (Nhóm 6/9/10/12/14/16), `Fact Violation Report Snapshot` (K_GSDC_48/49, Nhóm 6), hoặc 4 bảng Fact-report riêng (Nhóm 38-41, xem trên).
+> `Fact Public Company Financial Summary Snapshot` không tồn tại trong mô hình. KPI liên quan (K_GSDC_46–49 Nhóm 6; reuse Nhóm 9/10/12/14/16; K_GSDC_700–708 Nhóm 38; K_GSDC_709–717 Nhóm 39; K_GSDC_718–739 Nhóm 40; K_GSDC_740–751+YOY Nhóm 41) dùng trực tiếp `Public Company Dimension`/`Calendar Date Dimension` (Nhóm 6/9/10/12/14/16), `Fact Violation Report Snapshot` (K_GSDC_48, Nhóm 6), `Fact Public Company Financial Report Value` (K_GSDC_49, Nhóm 6, reuse từ Nhóm 7), hoặc 4 bảng Fact-report riêng (Nhóm 38-41, xem trên).
 
 **Bảng Tác nghiệp:**
 
@@ -3169,7 +3166,7 @@ Không có bảng Tác nghiệp nào trong module này. `Operational Public Comp
 | Fact Public Company Listing Info Snapshot | fct_public_company_listing_info_snpst | pending | PENDING — nguồn MSS chưa có Atomic (MH5 DB33) |
 | Public Company Dimension | public_company_dim | reuse | Dùng chung toàn bộ Nhóm 1–37 (MH1/MH2/MH3) — 1 Dimension duy nhất cho toàn module (không dùng cho Nhóm 38-41 nữa — xem 4 dòng Fact-report bên dưới) |
 | Calendar Date Dimension | cdr_dt_dim | reuse | Dimension Conformed dùng chung toàn hệ thống Lakehouse, không chỉ riêng GSDC |
-| Fact Violation Report Snapshot | fct_violation_rpt_snpst | new | Mới 2026-08-06, sửa table_type Operational → Fact + đổi tên thêm hậu tố Snapshot 2026-08-07 (grain 1 row/công ty/kỳ/ngày ETL snapshot, FK Calendar Date Dimension) — nguồn `violation_report`/IDS.VIOLATION_REPORT (draft), phục vụ K_GSDC_48 (Nhóm 6/10/12/14/16) |
+| Fact Violation Report Snapshot | fct_violation_rpt_snpst | new | Mới 2026-08-06, sửa table_type Operational → Fact + đổi tên thêm hậu tố Snapshot 2026-08-07 (grain 1 row/công ty/kỳ/ngày ETL snapshot, FK Calendar Date Dimension) — nguồn `violation_report`/IDS.VIOLATION_REPORT (draft), phục vụ K_GSDC_48 (Nhóm 6/10/12/14/16). Sửa 2026-08-15: bỏ cột `Profitable_Indicator` (K_GSDC_49 chuyển sang dùng `Fact Public Company Financial Report Value`, xem dòng trên) — lý do: kỳ join `fr_value` trước đó bắc cầu sai qua `violation_report.period_year`, 2 bảng nguồn độc lập không đảm bảo khớp kỳ. |
 | Public Company Regulatory Compliance Report | public_company_regulatory_compliance_rpt | new | Mới 2026-08-07, thay thế thiết kế đa nguồn (Public Company Dimension + Operational Public Company Report Submission + Fact Financial Report Value) — Fact-report denormalize cho Nhóm 38 (BC01.1), K_GSDC_700-708, grain 1 row/sàn/kỳ |
 | Public Company Industry Financial Report | public_company_industry_financial_rpt | new | Mới 2026-08-07, thay thế reuse Fact Financial Report Value — Fact-report denormalize cho Nhóm 39 (BC01.2), K_GSDC_709-717, grain 1 row/ngành/năm |
 | Public Company Multi-Period Financial Report | public_company_multi_period_financial_rpt | new | Mới 2026-08-07, thay thế reuse Fact Financial Report Value — Fact-report denormalize cho Nhóm 40 (BC01.3), K_GSDC_718-739, grain 1 row DUY NHẤT/năm (toàn thị trường) |
