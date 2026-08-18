@@ -398,10 +398,8 @@ CREATE TABLE IF NOT EXISTS datamart.gsdc_fct_public_company_financial_rpt_val_fl
     has_subsidiary_indicator           Nullable(Int64)     COMMENT 'Có công ty con — từ Public Company Dimension.',
     has_joint_venture_indicator        Nullable(Int64)     COMMENT 'Có liên doanh — từ Public Company Dimension.',
     ipo_company_indicator              Nullable(Int64)     COMMENT '1-Công ty đang IPO, 0-Công ty đại chúng — từ Public Company Dimension.',
-
-    -- From: INDUSTRY DIMENSION
-    industry_code                      Nullable(String)    COMMENT 'Mã ngành cấp 1 — từ Industry Dimension.',
-    industry_nm                        Nullable(String)    COMMENT 'Tên ngành cấp 1 — từ Industry Dimension.',
+    business_line_level_1_code         Nullable(String)    COMMENT 'Mã ngành cấp 1 — từ Industry Dimension.',
+    classification_business_line_nm    Nullable(String)    COMMENT 'Tên ngành cấp 1 — từ Industry Dimension.',
 
     -- From: FINANCIAL REPORT CATALOG DIMENSION
     financial_rpt_catalog_code    Nullable(String)    COMMENT 'Mã báo cáo — từ Financial Report Catalog Dimension.',

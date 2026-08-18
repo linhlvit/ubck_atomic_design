@@ -384,8 +384,8 @@ SELECT
     dim.has_subsidiary_indicator,
     dim.has_joint_venture_indicator,
     dim.ipo_company_indicator,
-    industry.industry_code,
-    industry.industry_nm,
+    dim.business_line_level_1_code,
+    dim.classification_business_line_nm,
     catalog_dim.financial_rpt_catalog_code,
     catalog_dim.financial_rpt_catalog_nm,
     catalog_dim.financial_rpt_catalog_tp_code,
@@ -397,8 +397,6 @@ JOIN datamart.cdr_dt_dim snpst_cal
     ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
 LEFT JOIN datamart.public_company_dim dim
     ON dim.public_company_dim_id = f.public_company_dim_id
-LEFT JOIN datamart.industry_dim industry
-    ON industry.industry_dim_id = f.industry_dim_id
 LEFT JOIN datamart.financial_rpt_catalog_dim catalog_dim
     ON catalog_dim.financial_rpt_catalog_dim_id = f.financial_rpt_catalog_dim_id
 WHERE snpst_cal.cdr_dt = :etl_date
