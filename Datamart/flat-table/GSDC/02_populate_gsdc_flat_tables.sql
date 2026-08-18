@@ -508,6 +508,7 @@ SELECT
 FROM datamart.public_company_exchange_financial_summary_rpt o
 ;
 
+TRUNCATE TABLE IF EXISTS datamart.gsdc_public_company_financial_yoy_rpt_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.gsdc_public_company_financial_yoy_rpt_flat
 SELECT
     o.equity_listing_exchange_code,
@@ -528,4 +529,66 @@ SELECT
     o.debt_to_equity_yoy,
     o.src_stm_code
 FROM datamart.public_company_financial_yoy_rpt o
+;
+
+-- ---------------------------------------------------------------------
+-- 13. Fact Public Company Financial Summary Snapshot (Nhóm 7 Khối A/8/11/13/15/17/37)
+-- ---------------------------------------------------------------------
+TRUNCATE TABLE IF EXISTS datamart.gsdc_fct_public_company_financial_smy_snpst_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.gsdc_fct_public_company_financial_smy_snpst_flat
+SELECT
+    f.public_company_dim_id,
+    f.snpst_dt_dim_id,
+    f.industry_dim_id,
+    f.rpt_year,
+    f.rpt_quarter,
+    f.total_asset,
+    f.total_liability,
+    f.equity,
+    f.contributed_capital,
+    f.net_profit,
+    f.total_asset_beginning,
+    f.equity_beginning,
+    f.inventory,
+    f.net_revenue,
+    f.undistributed_profit,
+    f.receivable,
+    f.cash_and_equivalent,
+    f.roa,
+    f.roe,
+    f.debt_to_equity,
+    snpst_cal.cdr_dt            AS snpst_cdr_dt,
+    dim.public_company_code,
+    dim.equity_ticker_symbol,
+    dim.public_company_nm,
+    dim.equity_listing_exchange_code,
+    dim.ids_registration_dt,
+    dim.public_company_status_code,
+    dim.public_company_english_nm,
+    dim.enterprise_tp_code,
+    dim.enterprise_tp_nm,
+    dim.public_company_tp_code,
+    dim.head_office_province_nm,
+    dim.operating_status_code,
+    dim.has_state_ownership_indicator,
+    dim.charter_capital_amt,
+    dim.first_registration_dt,
+    dim.latest_registration_dt,
+    dim.latest_registration_province_nm,
+    dim.ids_registration_indicator,
+    dim.public_company_form_code,
+    dim.former_state_owned_indicator,
+    dim.foreign_direct_investment_indicator,
+    dim.has_parent_company_indicator,
+    dim.has_subsidiary_indicator,
+    dim.has_joint_venture_indicator,
+    dim.ipo_company_indicator,
+    dim.business_line_level_1_code,
+    dim.classification_business_line_nm
+FROM datamart.fct_public_company_financial_smy_snpst f
+JOIN datamart.cdr_dt_dim snpst_cal
+    ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+LEFT JOIN datamart.public_company_dim dim
+    ON dim.public_company_dim_id = f.public_company_dim_id
+WHERE snpst_cal.cdr_dt = :etl_date
 ;

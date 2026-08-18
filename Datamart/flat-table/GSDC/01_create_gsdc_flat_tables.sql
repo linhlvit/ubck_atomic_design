@@ -566,3 +566,68 @@ PARTITION BY toYYYYMM(toDate(concat(toString(rpt_year), '-01-01')))
 ORDER BY (rpt_year, equity_listing_exchange_code)
 COMMENT 'Flat table — Public Company Financial YoY Report (Fact-report, no FK Dimension, phục vụ Nhóm 7/11/13/15/17)'
 ;
+
+-- ---------------------------------------------------------------------
+-- 13. Fact Public Company Financial Summary Snapshot (Nhóm 7 Khối A/8/11/13/15/17/37)
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS datamart.gsdc_fct_public_company_financial_smy_snpst_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FACT PUBLIC COMPANY FINANCIAL SUMMARY SNAPSHOT
+    public_company_dim_id        String              COMMENT 'FK sang Public Company Dimension (surrogate key) — công ty đại chúng phát sinh dòng báo cáo, grain key.',
+    snpst_dt_dim_id                String              COMMENT 'FK tới Calendar Date Dimension — ngày chạy ETL (snapshot date).',
+    industry_dim_id                 Nullable(String)    COMMENT 'FK sang Industry Dimension — ngành kinh tế cấp 1 của công ty đại chúng phát sinh dòng báo cáo này.',
+    rpt_year                       Int64               COMMENT 'Năm báo cáo — grain key theo kỳ.',
+    rpt_quarter                    Int64               COMMENT 'Quý báo cáo — grain key theo kỳ.',
+    total_asset                    Nullable(Decimal(23,2)) COMMENT 'Tổng tài sản — giá trị tại kỳ báo cáo.',
+    total_liability                Nullable(Decimal(23,2)) COMMENT 'Nợ phải trả — giá trị tại kỳ báo cáo.',
+    equity                          Nullable(Decimal(23,2)) COMMENT 'Vốn chủ sở hữu — giá trị tại kỳ báo cáo.',
+    contributed_capital             Nullable(Decimal(23,2)) COMMENT 'Vốn điều lệ — giá trị tại kỳ báo cáo.',
+    net_profit                      Nullable(Decimal(23,2)) COMMENT 'Lợi nhuận sau thuế — giá trị tại kỳ báo cáo.',
+    total_asset_beginning           Nullable(Decimal(23,2)) COMMENT 'Tổng tài sản đầu kỳ — input tính ROA (TSBQ).',
+    equity_beginning                 Nullable(Decimal(23,2)) COMMENT 'Vốn chủ sở hữu đầu kỳ — input tính ROE (VCSHBQ).',
+    inventory                        Nullable(Decimal(23,2)) COMMENT 'Hàng tồn kho — giá trị tại kỳ báo cáo (DN/BH — TD không có chỉ tiêu này, luôn NULL).',
+    net_revenue                      Nullable(Decimal(23,2)) COMMENT 'Doanh thu thuần — giá trị tại kỳ báo cáo.',
+    undistributed_profit             Nullable(Decimal(23,2)) COMMENT 'Lợi nhuận sau thuế chưa phân phối lũy kế — giá trị tại kỳ báo cáo (DN/BH — TD không có chỉ tiêu này, luôn NULL).',
+    receivable                       Nullable(Decimal(23,2)) COMMENT 'Phải thu — giá trị tại kỳ báo cáo.',
+    cash_and_equivalent              Nullable(Decimal(23,2)) COMMENT 'Tiền và tương đương tiền — giá trị tại kỳ báo cáo.',
+    roa                              Nullable(Decimal(9,4))  COMMENT 'ROA = LNST / bình quân (Tổng tài sản đầu kỳ, cuối kỳ) × 100.',
+    roe                              Nullable(Decimal(9,4))  COMMENT 'ROE = LNST / bình quân (Vốn chủ sở hữu đầu kỳ, cuối kỳ) × 100.',
+    debt_to_equity                   Nullable(Decimal(9,4))  COMMENT 'Tỷ lệ Nợ phải trả / Vốn chủ sở hữu.',
+
+    -- From: CALENDAR DATE DIMENSION
+    snpst_cdr_dt                   Nullable(Date)      COMMENT 'Ngày snapshot ETL — từ Calendar Date Dimension.',
+
+    -- From: PUBLIC COMPANY DIMENSION
+    public_company_code               String              COMMENT 'Khóa nghiệp vụ — Mã CTĐC — từ Public Company Dimension.',
+    equity_ticker_symbol               Nullable(String)    COMMENT 'Mã cổ phiếu — từ Public Company Dimension.',
+    public_company_nm                  Nullable(String)    COMMENT 'Tên công ty (tiếng Việt) — từ Public Company Dimension.',
+    equity_listing_exchange_code       Nullable(String)    COMMENT 'Sàn niêm yết — từ Public Company Dimension.',
+    ids_registration_dt                Nullable(Date)      COMMENT 'Ngày đăng ký IDS — từ Public Company Dimension.',
+    public_company_status_code         Nullable(String)    COMMENT 'Trạng thái công ty — từ Public Company Dimension.',
+    public_company_english_nm          Nullable(String)    COMMENT 'Tên công ty (tiếng Anh) — từ Public Company Dimension.',
+    enterprise_tp_code                 Nullable(String)    COMMENT 'Loại hình doanh nghiệp — từ Public Company Dimension.',
+    enterprise_tp_nm                   Nullable(String)    COMMENT 'Tên loại hình doanh nghiệp — từ Public Company Dimension.',
+    public_company_tp_code             Nullable(String)    COMMENT 'Loại công ty đại chúng — từ Public Company Dimension.',
+    head_office_province_nm            Nullable(String)    COMMENT 'Tỉnh/TP trụ sở chính — từ Public Company Dimension.',
+    operating_status_code              Nullable(String)    COMMENT 'Trạng thái hoạt động doanh nghiệp — từ Public Company Dimension.',
+    has_state_ownership_indicator      Nullable(Int64)     COMMENT 'Cờ có vốn nhà nước — từ Public Company Dimension.',
+    charter_capital_amt                Nullable(Decimal(23,2)) COMMENT 'Vốn điều lệ (Public Company Dimension) — từ Public Company Dimension.',
+    first_registration_dt              Nullable(Date)      COMMENT 'Ngày đăng ký lần đầu — từ Public Company Dimension.',
+    latest_registration_dt             Nullable(Date)      COMMENT 'Ngày đăng ký thay đổi gần nhất — từ Public Company Dimension.',
+    latest_registration_province_nm    Nullable(String)    COMMENT 'Tỉnh/TP đăng ký thay đổi gần nhất — từ Public Company Dimension.',
+    ids_registration_indicator         Nullable(Int64)     COMMENT 'Trạng thái đăng ký IDS — từ Public Company Dimension.',
+    public_company_form_code           Nullable(String)    COMMENT 'Hình thức trở thành công ty đại chúng — từ Public Company Dimension.',
+    former_state_owned_indicator       Nullable(Int64)     COMMENT 'Doanh nghiệp nhà nước (trước đây) — từ Public Company Dimension.',
+    foreign_direct_investment_indicator Nullable(Int64)    COMMENT 'Doanh nghiệp FDI — từ Public Company Dimension.',
+    has_parent_company_indicator       Nullable(Int64)     COMMENT 'Có công ty mẹ — từ Public Company Dimension.',
+    has_subsidiary_indicator           Nullable(Int64)     COMMENT 'Có công ty con — từ Public Company Dimension.',
+    has_joint_venture_indicator        Nullable(Int64)     COMMENT 'Có liên doanh — từ Public Company Dimension.',
+    ipo_company_indicator              Nullable(Int64)     COMMENT '1-Công ty đang IPO, 0-Công ty đại chúng — từ Public Company Dimension.',
+    business_line_level_1_code         Nullable(String)    COMMENT 'Mã ngành cấp 1 — từ Public Company Dimension (đồng bộ cách lấy ngành với Fact Public Company Financial Report Value, không JOIN riêng Industry Dimension).',
+    classification_business_line_nm    Nullable(String)    COMMENT 'Tên ngành cấp 1 — từ Public Company Dimension.'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
+ORDER BY (assumeNotNull(snpst_cdr_dt), public_company_dim_id)
+COMMENT 'Flat table — Fact Public Company Financial Summary Snapshot × Calendar Date × Public Company Dimension'
+;
