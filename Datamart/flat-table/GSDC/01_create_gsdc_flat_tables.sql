@@ -583,6 +583,7 @@ CREATE TABLE IF NOT EXISTS datamart.gsdc_fct_public_company_financial_smy_snpst_
     equity                          Nullable(Decimal(23,2)) COMMENT 'Vốn chủ sở hữu — giá trị tại kỳ báo cáo.',
     contributed_capital             Nullable(Decimal(23,2)) COMMENT 'Vốn điều lệ — giá trị tại kỳ báo cáo.',
     net_profit                      Nullable(Decimal(23,2)) COMMENT 'Lợi nhuận sau thuế — giá trị tại kỳ báo cáo.',
+    pre_tax_profit                  Nullable(Decimal(23,2)) COMMENT 'Lợi nhuận kế toán trước thuế — giá trị tại kỳ báo cáo.',
     total_asset_beginning           Nullable(Decimal(23,2)) COMMENT 'Tổng tài sản đầu kỳ — input tính ROA (TSBQ).',
     equity_beginning                 Nullable(Decimal(23,2)) COMMENT 'Vốn chủ sở hữu đầu kỳ — input tính ROE (VCSHBQ).',
     inventory                        Nullable(Decimal(23,2)) COMMENT 'Hàng tồn kho — giá trị tại kỳ báo cáo (DN/BH — TD không có chỉ tiêu này, luôn NULL).',

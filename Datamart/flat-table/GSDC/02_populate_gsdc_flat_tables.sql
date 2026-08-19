@@ -403,7 +403,8 @@ WHERE snpst_cal.cdr_dt = :etl_date
 ;
 
 -- ---------------------------------------------------------------------
--- 8. Public Company Regulatory Compliance Report (Fact-report, không JOIN, không WHERE lọc ngày)
+-- 8. Public Company Regulatory Compliance Report (Fact-report, Nhóm 38 — 1-1 từ bảng rpt
+--    đã trải phẳng sẵn theo logic báo cáo từ Fact/Dim)
 -- ---------------------------------------------------------------------
 TRUNCATE TABLE IF EXISTS datamart.gsdc_public_company_regulatory_compliance_rpt_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.gsdc_public_company_regulatory_compliance_rpt_flat
@@ -421,7 +422,8 @@ FROM datamart.public_company_regulatory_compliance_rpt o
 ;
 
 -- ---------------------------------------------------------------------
--- 9. Public Company Industry Financial Report (Fact-report, không JOIN, không WHERE lọc ngày)
+-- 9. Public Company Industry Financial Report (Fact-report, Nhóm 39 — 1-1 từ bảng rpt
+--    đã trải phẳng sẵn theo logic báo cáo từ Fact/Dim)
 -- ---------------------------------------------------------------------
 TRUNCATE TABLE IF EXISTS datamart.gsdc_public_company_industry_financial_rpt_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.gsdc_public_company_industry_financial_rpt_flat
@@ -442,7 +444,8 @@ FROM datamart.public_company_industry_financial_rpt o
 ;
 
 -- ---------------------------------------------------------------------
--- 10. Public Company Multi-Period Financial Report (Fact-report, không JOIN, không WHERE lọc ngày)
+-- 10. Public Company Multi-Period Financial Report (Fact-report, Nhóm 40 — 1-1 từ bảng rpt
+--     đã trải phẳng sẵn theo logic báo cáo từ Fact/Dim)
 -- ---------------------------------------------------------------------
 TRUNCATE TABLE IF EXISTS datamart.gsdc_public_company_multi_period_financial_rpt_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.gsdc_public_company_multi_period_financial_rpt_flat
@@ -474,7 +477,35 @@ FROM datamart.public_company_multi_period_financial_rpt o
 ;
 
 -- ---------------------------------------------------------------------
--- 11. Public Company Exchange Financial Summary Report (Fact-report, không JOIN, không WHERE lọc ngày)
+-- 11. Public Company Financial YoY Report (Fact-report, Nhóm 7/11/13/15/17/41 — 1-1 từ bảng rpt
+--     đã trải phẳng sẵn theo logic báo cáo từ Fact/Dim)
+-- ---------------------------------------------------------------------
+TRUNCATE TABLE IF EXISTS datamart.gsdc_public_company_financial_yoy_rpt_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.gsdc_public_company_financial_yoy_rpt_flat
+SELECT
+    o.equity_listing_exchange_code,
+    o.rpt_year,
+    o.rpt_quarter,
+    o.total_asset_yoy,
+    o.total_liability_yoy,
+    o.equity_yoy,
+    o.contributed_capital_yoy,
+    o.net_profit_yoy,
+    o.inventory_yoy,
+    o.net_revenue_yoy,
+    o.undistributed_profit_yoy,
+    o.receivable_yoy,
+    o.cash_and_equivalent_yoy,
+    o.roa_yoy,
+    o.roe_yoy,
+    o.debt_to_equity_yoy,
+    o.src_stm_code
+FROM datamart.public_company_financial_yoy_rpt o
+;
+
+-- ---------------------------------------------------------------------
+-- 12. Public Company Exchange Financial Summary Report (Fact-report, Nhóm 41 — 1-1 từ bảng rpt
+--     đã trải phẳng sẵn theo logic báo cáo từ Fact/Dim + Public Company Financial YoY Report)
 -- ---------------------------------------------------------------------
 TRUNCATE TABLE IF EXISTS datamart.gsdc_public_company_exchange_financial_summary_rpt_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.gsdc_public_company_exchange_financial_summary_rpt_flat
@@ -508,29 +539,6 @@ SELECT
 FROM datamart.public_company_exchange_financial_summary_rpt o
 ;
 
-TRUNCATE TABLE IF EXISTS datamart.gsdc_public_company_financial_yoy_rpt_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.gsdc_public_company_financial_yoy_rpt_flat
-SELECT
-    o.equity_listing_exchange_code,
-    o.rpt_year,
-    o.rpt_quarter,
-    o.total_asset_yoy,
-    o.total_liability_yoy,
-    o.equity_yoy,
-    o.contributed_capital_yoy,
-    o.net_profit_yoy,
-    o.inventory_yoy,
-    o.net_revenue_yoy,
-    o.undistributed_profit_yoy,
-    o.receivable_yoy,
-    o.cash_and_equivalent_yoy,
-    o.roa_yoy,
-    o.roe_yoy,
-    o.debt_to_equity_yoy,
-    o.src_stm_code
-FROM datamart.public_company_financial_yoy_rpt o
-;
-
 -- ---------------------------------------------------------------------
 -- 13. Fact Public Company Financial Summary Snapshot (Nhóm 7 Khối A/8/11/13/15/17/37)
 -- ---------------------------------------------------------------------
@@ -547,6 +555,7 @@ SELECT
     f.equity,
     f.contributed_capital,
     f.net_profit,
+    f.pre_tax_profit,
     f.total_asset_beginning,
     f.equity_beginning,
     f.inventory,

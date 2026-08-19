@@ -437,48 +437,26 @@ flowchart LR
 
 ##### Cụm 13: Tổng hợp YoY chỉ tiêu tài chính theo sàn (Public Company Financial YoY Report) (Nhóm 7 Khối B, 11, 13, 15, 17)
 
-> **[SỬA 2026-08-19]** Cụm mới bổ sung — phản ánh `public_company_financial_yoy_rpt` (giữ nguyên thiết kế cũ từ trước 2026-08-18) vốn chưa có Cụm riêng trong Section 1. **[SỬA 2026-08-19 lần 2]** Nhóm 41 (BC22) KHÔNG query trực tiếp bảng này ở tầng báo cáo — chỉ là nguồn ETL trung gian nạp phần YoY vào `Public Company Exchange Financial Summary Report` (xem Cụm 14).
+> **[SỬA 2026-08-19]** Cụm mới bổ sung — phản ánh `public_company_financial_yoy_rpt` (giữ nguyên thiết kế cũ từ trước 2026-08-18) vốn chưa có Cụm riêng trong Section 1. **[SỬA 2026-08-19 lần 2]** Nhóm 41 (BC22) KHÔNG query trực tiếp bảng này ở tầng báo cáo — chỉ là nguồn ETL trung gian nạp phần YoY vào `Public Company Exchange Financial Summary Report` (xem Cụm 14). **[SỬA 2026-08-19 lần 5 — redesign]** Đổi hẳn nguồn ETL nạp — từ EAV (`fr_value`/`pc_report_submission`/`fr_template`/`financial_report_catalog`/`fr_row_template`/`fr_column_template`/`public_company`, 2 tầng `ROW_NUMBER()` lồng nhau trong mỗi scalar subquery YoY) sang aggregate từ `fct_public_company_financial_smy_snpst` (đã dedup form-ưu-tiên sẵn — xem Cụm 12) JOIN `Public Company Dimension`, theo đúng nguyên tắc đã áp dụng Nhóm 38/39/40/41 — tránh lặp lại logic dedup phức tạp lần thứ 2 trong module.
 
-Phục vụ K_GSDC_50_YOY-62_YOY (Nhóm 7 Khối B/11/13/15/17) qua `Public Company Financial YoY Report` — scalar subquery độc lập trên `fr_value`/`pc_report_submission`/`fr_template`/`financial_report_catalog`/`fr_row_template`/`fr_column_template`/`public_company`, tính sẵn % YoY khi ETL populate (không phải Detail Mapping tính runtime). Bổ sung `Pre_Tax_Profit_Yoy` (xem Section 5) phục vụ ETL nạp Nhóm 41. Cụm 14 (Nhóm 41) dùng bảng này làm nguồn ETL tầng 2 (Gold-to-Gold).
+Phục vụ K_GSDC_50_YOY-62_YOY (Nhóm 7 Khối B/11/13/15/17) qua `Public Company Financial YoY Report` — SUM(measure) theo sàn+kỳ N và N-1 trên `fct_public_company_financial_smy_snpst` JOIN `Public Company Dimension`, self-join N với N-1 qua `rpt_year - 1`, tính `(N - N1) / NULLIF(N1, 0) * 100`; nhóm `'ALL'` (toàn thị trường) bỏ JOIN `Public Company Dimension`, không GROUP BY sàn. ROA/ROE/Debt-to-Equity tính lại theo grain-matching (SUM(net_profit)/SUM(TSBQ hoặc VCSHBQ), SUM(total_liability)/SUM(equity)) tại từng kỳ trước khi tính YoY — KHÔNG SUM/AVG cột `roa`/`roe`/`debt_to_equity` per-company có sẵn trên Fact. Tính sẵn % YoY khi ETL populate (không phải Detail Mapping tính runtime). Bao gồm `Pre_Tax_Profit_Yoy` (xem Section 5) phục vụ ETL nạp Nhóm 41. Cụm 14 (Nhóm 41) dùng bảng này làm nguồn ETL tầng 2 (Gold-to-Gold).
 
 ```mermaid
 flowchart LR
     subgraph SRC["Staging"]
-        IDS_data_c13["IDS.data"]
-        IDS_company_data_c13["IDS.company_data"]
-        IDS_forms_c13["IDS.forms"]
-        IDS_report_catalog_c13["IDS.report_catalog"]
-        IDS_rrow_c13["IDS.rrow"]
-        IDS_rcol_c13["IDS.rcol"]
-        IDS_company_profiles_c13["IDS.company_profiles"]
+        GOLD_fct_smy_c13["Datamart: fct_public_company_financial_smy_snpst (Cụm 12)"]
     end
     subgraph SIL["Atomic"]
-        Financial_Report_Value_c13["Financial Report Value"]
-        Public_Company_Report_Submission_c13["Public Company Report Submission"]
-        Financial_Report_Template_c13["Financial Report Template"]
-        Financial_Report_Catalog_c13["Financial Report Catalog"]
-        Financial_Report_Row_Template_c13["Financial Report Row Template"]
-        Financial_Report_Column_Template_c13["Financial Report Column Template"]
-        Public_Company_c13["Public Company"]
+        Public_Company_Dim_c13["Public Company Dimension"]
     end
     subgraph GOLD["Datamart"]
         public_company_financial_yoy_rpt_c13["Public Company Financial YoY Report"]
     end
-    IDS_data_c13 --> Financial_Report_Value_c13
-    IDS_company_data_c13 --> Public_Company_Report_Submission_c13
-    IDS_forms_c13 --> Financial_Report_Template_c13
-    IDS_report_catalog_c13 --> Financial_Report_Catalog_c13
-    IDS_rrow_c13 --> Financial_Report_Row_Template_c13
-    IDS_rcol_c13 --> Financial_Report_Column_Template_c13
-    IDS_company_profiles_c13 --> Public_Company_c13
-    Financial_Report_Value_c13 --> public_company_financial_yoy_rpt_c13
-    Public_Company_Report_Submission_c13 --> public_company_financial_yoy_rpt_c13
-    Financial_Report_Template_c13 --> public_company_financial_yoy_rpt_c13
-    Financial_Report_Catalog_c13 --> public_company_financial_yoy_rpt_c13
-    Financial_Report_Row_Template_c13 --> public_company_financial_yoy_rpt_c13
-    Financial_Report_Column_Template_c13 --> public_company_financial_yoy_rpt_c13
-    Public_Company_c13 --> public_company_financial_yoy_rpt_c13
+    GOLD_fct_smy_c13 --> public_company_financial_yoy_rpt_c13
+    Public_Company_Dim_c13 --> public_company_financial_yoy_rpt_c13
 ```
+
+> **Ghi chú kỹ thuật flowchart:** `fct_public_company_financial_smy_snpst` (Cụm 12) là bảng Datamart Gold đã populate xong, đóng vai trò input ETL tầng 2 (Gold-to-Gold) — đặt trong `SRC["Staging"]` chỉ để giữ đúng cú pháp 3-subgraph, không phải Staging thô. `Public Company Dimension` dùng để lấy `equity_listing_exchange_code` khi GROUP BY sàn (nhóm `'ALL'` bỏ JOIN này).
 
 ---
 
@@ -1237,19 +1215,19 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_GSDC_50_YOY | Tổng tài sản — YoY | % | Phái sinh | data_val WHERE row_desc=270/270/300, report=BCDKT, col_desc=1 (kỳ N vs N-4 quarter) | fr_value, qua `public_company_financial_yoy_rpt` | **READY** |
-| K_GSDC_51_YOY | Nợ phải trả — YoY | % | Phái sinh | data_val WHERE row_desc=300/300/400, report=BCDKT, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` | **READY** |
-| K_GSDC_52_YOY | Vốn CSH — YoY | % | Phái sinh | data_val WHERE row_desc=400/400/500, report=BCDKT, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` | **READY** |
-| K_GSDC_53_YOY | Vốn điều lệ — YoY | % | Phái sinh | data_val WHERE row_desc=411/411/411, report=BCDKT, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` | **READY** |
-| K_GSDC_54_YOY | LNST — YoY | % | Phái sinh | data_val WHERE row_desc=60/60/21, report=BCKQKD, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` | **READY** |
-| K_GSDC_55_YOY | ROA — YoY | % | Phái sinh | data_val WHERE row_desc=(như K_GSDC_55), report=—, col_desc=— | fr_value, qua `public_company_financial_yoy_rpt` | **READY** |
-| K_GSDC_56_YOY | ROE — YoY | % | Phái sinh | data_val WHERE row_desc=(như K_GSDC_56), report=—, col_desc=— | fr_value, qua `public_company_financial_yoy_rpt` | **READY** |
-| K_GSDC_57_YOY | Hàng tồn kho — YoY | % | Phái sinh | data_val WHERE row_desc=140/140/—, report=BCDKT, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` | **READY** |
-| K_GSDC_58_YOY | Doanh thu — YoY | % | Phái sinh | data_val WHERE row_desc=10/10/03, report=BCKQKD, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` | **READY** |
-| K_GSDC_59_YOY | LN YTD — YoY | % | Phái sinh | data_val WHERE row_desc=421/421/— (td không có trong BA SQL), report=BCDKT, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` | **READY** |
-| K_GSDC_60_YOY | Phải thu — YoY | % | Phái sinh | data_val WHERE row_desc=130+210/130+210/251, report=BCDKT, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` | **READY** |
-| K_GSDC_61_YOY | Tiền TĐT — YoY | % | Phái sinh | data_val WHERE row_desc=110/110/110+120, report=BCDKT, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` | **READY** |
-| K_GSDC_62_YOY | Nợ/Vốn CSH — YoY | % | Phái sinh | data_val WHERE row_desc=(như K_GSDC_62), report=—, col_desc=— | fr_value, qua `public_company_financial_yoy_rpt` | **READY** |
+| K_GSDC_50_YOY | Tổng tài sản — YoY | % | Phái sinh | data_val WHERE row_desc=270/270/300, report=BCDKT, col_desc=1 (kỳ N vs N-4 quarter) | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) | **READY** |
+| K_GSDC_51_YOY | Nợ phải trả — YoY | % | Phái sinh | data_val WHERE row_desc=300/300/400, report=BCDKT, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) | **READY** |
+| K_GSDC_52_YOY | Vốn CSH — YoY | % | Phái sinh | data_val WHERE row_desc=400/400/500, report=BCDKT, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) | **READY** |
+| K_GSDC_53_YOY | Vốn điều lệ — YoY | % | Phái sinh | data_val WHERE row_desc=411/411/411, report=BCDKT, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) | **READY** |
+| K_GSDC_54_YOY | LNST — YoY | % | Phái sinh | data_val WHERE row_desc=60/60/21, report=BCKQKD, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) | **READY** |
+| K_GSDC_55_YOY | ROA — YoY | % | Phái sinh | data_val WHERE row_desc=(như K_GSDC_55), report=—, col_desc=— | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) | **READY** |
+| K_GSDC_56_YOY | ROE — YoY | % | Phái sinh | data_val WHERE row_desc=(như K_GSDC_56), report=—, col_desc=— | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) | **READY** |
+| K_GSDC_57_YOY | Hàng tồn kho — YoY | % | Phái sinh | data_val WHERE row_desc=140/140/—, report=BCDKT, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) | **READY** |
+| K_GSDC_58_YOY | Doanh thu — YoY | % | Phái sinh | data_val WHERE row_desc=10/10/03, report=BCKQKD, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) | **READY** |
+| K_GSDC_59_YOY | LN YTD — YoY | % | Phái sinh | data_val WHERE row_desc=421/421/— (td không có trong BA SQL), report=BCDKT, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) | **READY** |
+| K_GSDC_60_YOY | Phải thu — YoY | % | Phái sinh | data_val WHERE row_desc=130+210/130+210/251, report=BCDKT, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) | **READY** |
+| K_GSDC_61_YOY | Tiền TĐT — YoY | % | Phái sinh | data_val WHERE row_desc=110/110/110+120, report=BCDKT, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) | **READY** |
+| K_GSDC_62_YOY | Nợ/Vốn CSH — YoY | % | Phái sinh | data_val WHERE row_desc=(như K_GSDC_62), report=—, col_desc=— | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) | **READY** |
 
 > **Ghi chú YoY:** BA gọi "so sánh cùng kỳ năm trước" — công thức `(giá_trị_kỳ_này - giá_trị_cùng_kỳ_năm_trước) / giá_trị_cùng_kỳ_năm_trước × 100`, lấy 2 dòng cùng Row/Column Code, khác `rpt_year` (năm nay vs năm trước, cùng `rpt_quarter`) — pre-tính sẵn trên `public_company_financial_yoy_rpt` khi ETL populate (không phải Detail Mapping tính runtime, khác Khối A).
 
@@ -1456,31 +1434,31 @@ flowchart LR
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
 | K_GSDC_50 | Tổng tài sản (HNX) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.total_asset)` | pivot sẵn trên Fact, JOIN Public Company Dimension filter HNX | **READY** |
-| K_GSDC_50_YOY | Tổng tài sản — YoY | % | Phái sinh | data_val WHERE row_desc=270/270/300, report=BCDKT, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` filter HNX | **READY** |
+| K_GSDC_50_YOY | Tổng tài sản — YoY | % | Phái sinh | data_val WHERE row_desc=270/270/300, report=BCDKT, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter HNX | **READY** |
 | K_GSDC_51 | Nợ phải trả (HNX) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.total_liability)` | pivot sẵn trên Fact, JOIN Public Company Dimension filter HNX | **READY** |
-| K_GSDC_51_YOY | Nợ phải trả — YoY | % | Phái sinh | data_val WHERE row_desc=300/300/400, report=BCDKT, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` filter HNX | **READY** |
+| K_GSDC_51_YOY | Nợ phải trả — YoY | % | Phái sinh | data_val WHERE row_desc=300/300/400, report=BCDKT, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter HNX | **READY** |
 | K_GSDC_52 | Vốn CSH (HNX) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.equity)` | pivot sẵn trên Fact, JOIN Public Company Dimension filter HNX | **READY** |
-| K_GSDC_52_YOY | Vốn CSH — YoY | % | Phái sinh | data_val WHERE row_desc=400/400/500, report=BCDKT, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` filter HNX | **READY** |
+| K_GSDC_52_YOY | Vốn CSH — YoY | % | Phái sinh | data_val WHERE row_desc=400/400/500, report=BCDKT, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter HNX | **READY** |
 | K_GSDC_53 | Vốn điều lệ (HNX) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.contributed_capital)` | pivot sẵn trên Fact, JOIN Public Company Dimension filter HNX | **READY** |
-| K_GSDC_53_YOY | Vốn điều lệ — YoY | % | Phái sinh | data_val WHERE row_desc=411/411/411, report=BCDKT, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` filter HNX | **READY** |
+| K_GSDC_53_YOY | Vốn điều lệ — YoY | % | Phái sinh | data_val WHERE row_desc=411/411/411, report=BCDKT, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter HNX | **READY** |
 | K_GSDC_54 | Lợi nhuận sau thuế (HNX) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.net_profit)` | pivot sẵn trên Fact, JOIN Public Company Dimension filter HNX | **READY** |
-| K_GSDC_54_YOY | LNST — YoY | % | Phái sinh | data_val WHERE row_desc=60/60/21, report=BCKQKD, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` filter HNX | **READY** |
+| K_GSDC_54_YOY | LNST — YoY | % | Phái sinh | data_val WHERE row_desc=60/60/21, report=BCKQKD, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter HNX | **READY** |
 | K_GSDC_55 | ROA (HNX) | % | Phái sinh | `SUM(net_profit) / NULLIF(SUM(COALESCE(total_asset_beginning, total_asset) + COALESCE(total_asset, total_asset_beginning)) / 2, 0) * 100` | computed sẵn trên Fact (`roa`), JOIN Public Company Dimension filter HNX | **READY** |
-| K_GSDC_55_YOY | ROA — YoY | % | Phái sinh | data_val WHERE row_desc=(như K_GSDC_55), report=—, col_desc=— | fr_value, qua `public_company_financial_yoy_rpt` filter HNX | **READY** |
+| K_GSDC_55_YOY | ROA — YoY | % | Phái sinh | data_val WHERE row_desc=(như K_GSDC_55), report=—, col_desc=— | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter HNX | **READY** |
 | K_GSDC_56 | ROE (HNX) | % | Phái sinh | `SUM(net_profit) / NULLIF(SUM(COALESCE(equity_beginning, equity) + COALESCE(equity, equity_beginning)) / 2, 0) * 100` | computed sẵn trên Fact (`roe`), JOIN Public Company Dimension filter HNX | **READY** |
-| K_GSDC_56_YOY | ROE — YoY | % | Phái sinh | data_val WHERE row_desc=(như K_GSDC_56), report=—, col_desc=— | fr_value, qua `public_company_financial_yoy_rpt` filter HNX | **READY** |
+| K_GSDC_56_YOY | ROE — YoY | % | Phái sinh | data_val WHERE row_desc=(như K_GSDC_56), report=—, col_desc=— | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter HNX | **READY** |
 | K_GSDC_57 | Hàng tồn kho (HNX) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.inventory)` | pivot sẵn trên Fact, JOIN Public Company Dimension filter HNX | **READY** |
-| K_GSDC_57_YOY | Hàng tồn kho — YoY | % | Phái sinh | data_val WHERE row_desc=140/140/—, report=BCDKT, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` filter HNX | **READY** |
+| K_GSDC_57_YOY | Hàng tồn kho — YoY | % | Phái sinh | data_val WHERE row_desc=140/140/—, report=BCDKT, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter HNX | **READY** |
 | K_GSDC_58 | Doanh thu thuần (HNX) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.net_revenue)` | pivot sẵn trên Fact, JOIN Public Company Dimension filter HNX | **READY** |
-| K_GSDC_58_YOY | Doanh thu — YoY | % | Phái sinh | data_val WHERE row_desc=10/10/03, report=BCKQKD, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` filter HNX | **READY** |
+| K_GSDC_58_YOY | Doanh thu — YoY | % | Phái sinh | data_val WHERE row_desc=10/10/03, report=BCKQKD, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter HNX | **READY** |
 | K_GSDC_59 | Lợi nhuận dồn tích YTD (HNX) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.undistributed_profit)` | pivot sẵn trên Fact, JOIN Public Company Dimension filter HNX | **READY** |
-| K_GSDC_59_YOY | LN YTD — YoY | % | Phái sinh | data_val WHERE row_desc=421/421/— (td không có trong BA SQL), report=BCDKT, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` filter HNX | **READY** |
+| K_GSDC_59_YOY | LN YTD — YoY | % | Phái sinh | data_val WHERE row_desc=421/421/— (td không có trong BA SQL), report=BCDKT, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter HNX | **READY** |
 | K_GSDC_60 | Phải thu (HNX) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.receivable)` | pivot sẵn trên Fact, JOIN Public Company Dimension filter HNX | **READY** |
-| K_GSDC_60_YOY | Phải thu — YoY | % | Phái sinh | data_val WHERE row_desc=130+210/130+210/251, report=BCDKT, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` filter HNX | **READY** |
+| K_GSDC_60_YOY | Phải thu — YoY | % | Phái sinh | data_val WHERE row_desc=130+210/130+210/251, report=BCDKT, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter HNX | **READY** |
 | K_GSDC_61 | Tiền và tương đương tiền (HNX) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.cash_and_equivalent)` | pivot sẵn trên Fact, JOIN Public Company Dimension filter HNX | **READY** |
-| K_GSDC_61_YOY | Tiền TĐT — YoY | % | Phái sinh | data_val WHERE row_desc=110/110/110+120, report=BCDKT, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` filter HNX | **READY** |
+| K_GSDC_61_YOY | Tiền TĐT — YoY | % | Phái sinh | data_val WHERE row_desc=110/110/110+120, report=BCDKT, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter HNX | **READY** |
 | K_GSDC_62 | Nợ / Vốn CSH (HNX) | Lần (x) | Phái sinh | `SUM(total_liability) / NULLIF(SUM(equity), 0)` | computed sẵn trên Fact (`debt_to_equity`), JOIN Public Company Dimension filter HNX | **READY** |
-| K_GSDC_62_YOY | Nợ/Vốn CSH — YoY | % | Phái sinh | data_val WHERE row_desc=(như K_GSDC_62), report=—, col_desc=— | fr_value, qua `public_company_financial_yoy_rpt` filter HNX | **READY** |
+| K_GSDC_62_YOY | Nợ/Vốn CSH — YoY | % | Phái sinh | data_val WHERE row_desc=(như K_GSDC_62), report=—, col_desc=— | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter HNX | **READY** |
 | K_GSDC_79 | Ngành | Text | Chiều | `fct_public_company_financial_smy_snpst.industry_dim_id` → `industry_dim.industry_code` | GROUP BY trực tiếp trên Fact filter HNX, không cần driving Industry Dimension | **READY** |
 | K_GSDC_80 | Tổng tài sản — theo ngành (HNX) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.total_asset)` | GROUP BY industry_dim_id, filter HNX | **READY** |
 | K_GSDC_81 | Nợ phải trả — theo ngành (HNX) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.total_liability)` | GROUP BY industry_dim_id, filter HNX | **READY** |
@@ -1623,31 +1601,31 @@ flowchart LR
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
 | K_GSDC_50 | Tổng tài sản (HOSE) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.total_asset)` | pivot sẵn trên Fact, JOIN Public Company Dimension filter HOSE | **READY** |
-| K_GSDC_50_YOY | Tổng tài sản — YoY | % | Phái sinh | data_val WHERE row_desc=270/270/300, report=BCDKT, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` filter HOSE | **READY** |
+| K_GSDC_50_YOY | Tổng tài sản — YoY | % | Phái sinh | data_val WHERE row_desc=270/270/300, report=BCDKT, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter HOSE | **READY** |
 | K_GSDC_51 | Nợ phải trả (HOSE) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.total_liability)` | pivot sẵn trên Fact, JOIN Public Company Dimension filter HOSE | **READY** |
-| K_GSDC_51_YOY | Nợ phải trả — YoY | % | Phái sinh | data_val WHERE row_desc=300/300/400, report=BCDKT, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` filter HOSE | **READY** |
+| K_GSDC_51_YOY | Nợ phải trả — YoY | % | Phái sinh | data_val WHERE row_desc=300/300/400, report=BCDKT, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter HOSE | **READY** |
 | K_GSDC_52 | Vốn CSH (HOSE) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.equity)` | pivot sẵn trên Fact, JOIN Public Company Dimension filter HOSE | **READY** |
-| K_GSDC_52_YOY | Vốn CSH — YoY | % | Phái sinh | data_val WHERE row_desc=400/400/500, report=BCDKT, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` filter HOSE | **READY** |
+| K_GSDC_52_YOY | Vốn CSH — YoY | % | Phái sinh | data_val WHERE row_desc=400/400/500, report=BCDKT, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter HOSE | **READY** |
 | K_GSDC_53 | Vốn điều lệ (HOSE) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.contributed_capital)` | pivot sẵn trên Fact, JOIN Public Company Dimension filter HOSE | **READY** |
-| K_GSDC_53_YOY | Vốn điều lệ — YoY | % | Phái sinh | data_val WHERE row_desc=411/411/411, report=BCDKT, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` filter HOSE | **READY** |
+| K_GSDC_53_YOY | Vốn điều lệ — YoY | % | Phái sinh | data_val WHERE row_desc=411/411/411, report=BCDKT, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter HOSE | **READY** |
 | K_GSDC_54 | Lợi nhuận sau thuế (HOSE) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.net_profit)` | pivot sẵn trên Fact, JOIN Public Company Dimension filter HOSE | **READY** |
-| K_GSDC_54_YOY | LNST — YoY | % | Phái sinh | data_val WHERE row_desc=60/60/21, report=BCKQKD, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` filter HOSE | **READY** |
+| K_GSDC_54_YOY | LNST — YoY | % | Phái sinh | data_val WHERE row_desc=60/60/21, report=BCKQKD, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter HOSE | **READY** |
 | K_GSDC_55 | ROA (HOSE) | % | Phái sinh | `SUM(net_profit) / NULLIF(SUM(COALESCE(total_asset_beginning, total_asset) + COALESCE(total_asset, total_asset_beginning)) / 2, 0) * 100` | computed sẵn trên Fact (`roa`), JOIN Public Company Dimension filter HOSE | **READY** |
-| K_GSDC_55_YOY | ROA — YoY | % | Phái sinh | data_val WHERE row_desc=(như K_GSDC_55), report=—, col_desc=— | fr_value, qua `public_company_financial_yoy_rpt` filter HOSE | **READY** |
+| K_GSDC_55_YOY | ROA — YoY | % | Phái sinh | data_val WHERE row_desc=(như K_GSDC_55), report=—, col_desc=— | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter HOSE | **READY** |
 | K_GSDC_56 | ROE (HOSE) | % | Phái sinh | `SUM(net_profit) / NULLIF(SUM(COALESCE(equity_beginning, equity) + COALESCE(equity, equity_beginning)) / 2, 0) * 100` | computed sẵn trên Fact (`roe`), JOIN Public Company Dimension filter HOSE | **READY** |
-| K_GSDC_56_YOY | ROE — YoY | % | Phái sinh | data_val WHERE row_desc=(như K_GSDC_56), report=—, col_desc=— | fr_value, qua `public_company_financial_yoy_rpt` filter HOSE | **READY** |
+| K_GSDC_56_YOY | ROE — YoY | % | Phái sinh | data_val WHERE row_desc=(như K_GSDC_56), report=—, col_desc=— | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter HOSE | **READY** |
 | K_GSDC_57 | Hàng tồn kho (HOSE) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.inventory)` | pivot sẵn trên Fact, JOIN Public Company Dimension filter HOSE | **READY** |
-| K_GSDC_57_YOY | Hàng tồn kho — YoY | % | Phái sinh | data_val WHERE row_desc=140/140/—, report=BCDKT, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` filter HOSE | **READY** |
+| K_GSDC_57_YOY | Hàng tồn kho — YoY | % | Phái sinh | data_val WHERE row_desc=140/140/—, report=BCDKT, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter HOSE | **READY** |
 | K_GSDC_58 | Doanh thu thuần (HOSE) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.net_revenue)` | pivot sẵn trên Fact, JOIN Public Company Dimension filter HOSE | **READY** |
-| K_GSDC_58_YOY | Doanh thu — YoY | % | Phái sinh | data_val WHERE row_desc=10/10/03, report=BCKQKD, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` filter HOSE | **READY** |
+| K_GSDC_58_YOY | Doanh thu — YoY | % | Phái sinh | data_val WHERE row_desc=10/10/03, report=BCKQKD, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter HOSE | **READY** |
 | K_GSDC_59 | Lợi nhuận dồn tích YTD (HOSE) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.undistributed_profit)` | pivot sẵn trên Fact, JOIN Public Company Dimension filter HOSE | **READY** |
-| K_GSDC_59_YOY | LN YTD — YoY | % | Phái sinh | data_val WHERE row_desc=421/421/— (td không có trong BA SQL), report=BCDKT, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` filter HOSE | **READY** |
+| K_GSDC_59_YOY | LN YTD — YoY | % | Phái sinh | data_val WHERE row_desc=421/421/— (td không có trong BA SQL), report=BCDKT, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter HOSE | **READY** |
 | K_GSDC_60 | Phải thu (HOSE) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.receivable)` | pivot sẵn trên Fact, JOIN Public Company Dimension filter HOSE | **READY** |
-| K_GSDC_60_YOY | Phải thu — YoY | % | Phái sinh | data_val WHERE row_desc=130+210/130+210/251, report=BCDKT, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` filter HOSE | **READY** |
+| K_GSDC_60_YOY | Phải thu — YoY | % | Phái sinh | data_val WHERE row_desc=130+210/130+210/251, report=BCDKT, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter HOSE | **READY** |
 | K_GSDC_61 | Tiền và tương đương tiền (HOSE) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.cash_and_equivalent)` | pivot sẵn trên Fact, JOIN Public Company Dimension filter HOSE | **READY** |
-| K_GSDC_61_YOY | Tiền TĐT — YoY | % | Phái sinh | data_val WHERE row_desc=110/110/110+120, report=BCDKT, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` filter HOSE | **READY** |
+| K_GSDC_61_YOY | Tiền TĐT — YoY | % | Phái sinh | data_val WHERE row_desc=110/110/110+120, report=BCDKT, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter HOSE | **READY** |
 | K_GSDC_62 | Nợ / Vốn CSH (HOSE) | Lần (x) | Phái sinh | `SUM(total_liability) / NULLIF(SUM(equity), 0)` | computed sẵn trên Fact (`debt_to_equity`), JOIN Public Company Dimension filter HOSE | **READY** |
-| K_GSDC_62_YOY | Nợ/Vốn CSH — YoY | % | Phái sinh | data_val WHERE row_desc=(như K_GSDC_62), report=—, col_desc=— | fr_value, qua `public_company_financial_yoy_rpt` filter HOSE | **READY** |
+| K_GSDC_62_YOY | Nợ/Vốn CSH — YoY | % | Phái sinh | data_val WHERE row_desc=(như K_GSDC_62), report=—, col_desc=— | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter HOSE | **READY** |
 | K_GSDC_79 | Ngành | Text | Chiều | `fct_public_company_financial_smy_snpst.industry_dim_id` → `industry_dim.industry_code` | GROUP BY trực tiếp trên Fact filter HOSE, không cần driving Industry Dimension | **READY** |
 | K_GSDC_80 | Tổng tài sản — theo ngành (HOSE) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.total_asset)` | GROUP BY industry_dim_id, filter HOSE | **READY** |
 | K_GSDC_81 | Nợ phải trả — theo ngành (HOSE) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.total_liability)` | GROUP BY industry_dim_id, filter HOSE | **READY** |
@@ -1789,31 +1767,31 @@ flowchart LR
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
 | K_GSDC_50 | Tổng tài sản (UPCOM) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.total_asset)` | pivot sẵn trên Fact, JOIN Public Company Dimension filter UPCOM | **READY** |
-| K_GSDC_50_YOY | Tổng tài sản — YoY | % | Phái sinh | data_val WHERE row_desc=270/270/300, report=BCDKT, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` filter UPCOM | **READY** |
+| K_GSDC_50_YOY | Tổng tài sản — YoY | % | Phái sinh | data_val WHERE row_desc=270/270/300, report=BCDKT, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter UPCOM | **READY** |
 | K_GSDC_51 | Nợ phải trả (UPCOM) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.total_liability)` | pivot sẵn trên Fact, JOIN Public Company Dimension filter UPCOM | **READY** |
-| K_GSDC_51_YOY | Nợ phải trả — YoY | % | Phái sinh | data_val WHERE row_desc=300/300/400, report=BCDKT, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` filter UPCOM | **READY** |
+| K_GSDC_51_YOY | Nợ phải trả — YoY | % | Phái sinh | data_val WHERE row_desc=300/300/400, report=BCDKT, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter UPCOM | **READY** |
 | K_GSDC_52 | Vốn CSH (UPCOM) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.equity)` | pivot sẵn trên Fact, JOIN Public Company Dimension filter UPCOM | **READY** |
-| K_GSDC_52_YOY | Vốn CSH — YoY | % | Phái sinh | data_val WHERE row_desc=400/400/500, report=BCDKT, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` filter UPCOM | **READY** |
+| K_GSDC_52_YOY | Vốn CSH — YoY | % | Phái sinh | data_val WHERE row_desc=400/400/500, report=BCDKT, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter UPCOM | **READY** |
 | K_GSDC_53 | Vốn điều lệ (UPCOM) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.contributed_capital)` | pivot sẵn trên Fact, JOIN Public Company Dimension filter UPCOM | **READY** |
-| K_GSDC_53_YOY | Vốn điều lệ — YoY | % | Phái sinh | data_val WHERE row_desc=411/411/411, report=BCDKT, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` filter UPCOM | **READY** |
+| K_GSDC_53_YOY | Vốn điều lệ — YoY | % | Phái sinh | data_val WHERE row_desc=411/411/411, report=BCDKT, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter UPCOM | **READY** |
 | K_GSDC_54 | Lợi nhuận sau thuế (UPCOM) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.net_profit)` | pivot sẵn trên Fact, JOIN Public Company Dimension filter UPCOM | **READY** |
-| K_GSDC_54_YOY | LNST — YoY | % | Phái sinh | data_val WHERE row_desc=60/60/21, report=BCKQKD, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` filter UPCOM | **READY** |
+| K_GSDC_54_YOY | LNST — YoY | % | Phái sinh | data_val WHERE row_desc=60/60/21, report=BCKQKD, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter UPCOM | **READY** |
 | K_GSDC_55 | ROA (UPCOM) | % | Phái sinh | `SUM(net_profit) / NULLIF(SUM(COALESCE(total_asset_beginning, total_asset) + COALESCE(total_asset, total_asset_beginning)) / 2, 0) * 100` | computed sẵn trên Fact (`roa`), JOIN Public Company Dimension filter UPCOM | **READY** |
-| K_GSDC_55_YOY | ROA — YoY | % | Phái sinh | data_val WHERE row_desc=(như K_GSDC_55), report=—, col_desc=— | fr_value, qua `public_company_financial_yoy_rpt` filter UPCOM | **READY** |
+| K_GSDC_55_YOY | ROA — YoY | % | Phái sinh | data_val WHERE row_desc=(như K_GSDC_55), report=—, col_desc=— | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter UPCOM | **READY** |
 | K_GSDC_56 | ROE (UPCOM) | % | Phái sinh | `SUM(net_profit) / NULLIF(SUM(COALESCE(equity_beginning, equity) + COALESCE(equity, equity_beginning)) / 2, 0) * 100` | computed sẵn trên Fact (`roe`), JOIN Public Company Dimension filter UPCOM | **READY** |
-| K_GSDC_56_YOY | ROE — YoY | % | Phái sinh | data_val WHERE row_desc=(như K_GSDC_56), report=—, col_desc=— | fr_value, qua `public_company_financial_yoy_rpt` filter UPCOM | **READY** |
+| K_GSDC_56_YOY | ROE — YoY | % | Phái sinh | data_val WHERE row_desc=(như K_GSDC_56), report=—, col_desc=— | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter UPCOM | **READY** |
 | K_GSDC_57 | Hàng tồn kho (UPCOM) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.inventory)` | pivot sẵn trên Fact, JOIN Public Company Dimension filter UPCOM | **READY** |
-| K_GSDC_57_YOY | Hàng tồn kho — YoY | % | Phái sinh | data_val WHERE row_desc=140/140/—, report=BCDKT, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` filter UPCOM | **READY** |
+| K_GSDC_57_YOY | Hàng tồn kho — YoY | % | Phái sinh | data_val WHERE row_desc=140/140/—, report=BCDKT, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter UPCOM | **READY** |
 | K_GSDC_58 | Doanh thu thuần (UPCOM) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.net_revenue)` | pivot sẵn trên Fact, JOIN Public Company Dimension filter UPCOM | **READY** |
-| K_GSDC_58_YOY | Doanh thu — YoY | % | Phái sinh | data_val WHERE row_desc=10/10/03, report=BCKQKD, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` filter UPCOM | **READY** |
+| K_GSDC_58_YOY | Doanh thu — YoY | % | Phái sinh | data_val WHERE row_desc=10/10/03, report=BCKQKD, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter UPCOM | **READY** |
 | K_GSDC_59 | Lợi nhuận dồn tích YTD (UPCOM) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.undistributed_profit)` | pivot sẵn trên Fact, JOIN Public Company Dimension filter UPCOM | **READY** |
-| K_GSDC_59_YOY | LN YTD — YoY | % | Phái sinh | data_val WHERE row_desc=421/421/— (td không có trong BA SQL), report=BCDKT, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` filter UPCOM | **READY** |
+| K_GSDC_59_YOY | LN YTD — YoY | % | Phái sinh | data_val WHERE row_desc=421/421/— (td không có trong BA SQL), report=BCDKT, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter UPCOM | **READY** |
 | K_GSDC_60 | Phải thu (UPCOM) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.receivable)` | pivot sẵn trên Fact, JOIN Public Company Dimension filter UPCOM | **READY** |
-| K_GSDC_60_YOY | Phải thu — YoY | % | Phái sinh | data_val WHERE row_desc=130+210/130+210/251, report=BCDKT, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` filter UPCOM | **READY** |
+| K_GSDC_60_YOY | Phải thu — YoY | % | Phái sinh | data_val WHERE row_desc=130+210/130+210/251, report=BCDKT, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter UPCOM | **READY** |
 | K_GSDC_61 | Tiền và tương đương tiền (UPCOM) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.cash_and_equivalent)` | pivot sẵn trên Fact, JOIN Public Company Dimension filter UPCOM | **READY** |
-| K_GSDC_61_YOY | Tiền TĐT — YoY | % | Phái sinh | data_val WHERE row_desc=110/110/110+120, report=BCDKT, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` filter UPCOM | **READY** |
+| K_GSDC_61_YOY | Tiền TĐT — YoY | % | Phái sinh | data_val WHERE row_desc=110/110/110+120, report=BCDKT, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter UPCOM | **READY** |
 | K_GSDC_62 | Nợ / Vốn CSH (UPCOM) | Lần (x) | Phái sinh | `SUM(total_liability) / NULLIF(SUM(equity), 0)` | computed sẵn trên Fact (`debt_to_equity`), JOIN Public Company Dimension filter UPCOM | **READY** |
-| K_GSDC_62_YOY | Nợ/Vốn CSH — YoY | % | Phái sinh | data_val WHERE row_desc=(như K_GSDC_62), report=—, col_desc=— | fr_value, qua `public_company_financial_yoy_rpt` filter UPCOM | **READY** |
+| K_GSDC_62_YOY | Nợ/Vốn CSH — YoY | % | Phái sinh | data_val WHERE row_desc=(như K_GSDC_62), report=—, col_desc=— | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter UPCOM | **READY** |
 | K_GSDC_79 | Ngành | Text | Chiều | `fct_public_company_financial_smy_snpst.industry_dim_id` → `industry_dim.industry_code` | GROUP BY trực tiếp trên Fact filter UPCOM, không cần driving Industry Dimension | **READY** |
 | K_GSDC_80 | Tổng tài sản — theo ngành (UPCOM) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.total_asset)` | GROUP BY industry_dim_id, filter UPCOM | **READY** |
 | K_GSDC_81 | Nợ phải trả — theo ngành (UPCOM) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.total_liability)` | GROUP BY industry_dim_id, filter UPCOM | **READY** |
@@ -1955,31 +1933,31 @@ flowchart LR
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
 | K_GSDC_50 | Tổng tài sản (OTC) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.total_asset)` | pivot sẵn trên Fact, JOIN Public Company Dimension filter OTC | **READY** |
-| K_GSDC_50_YOY | Tổng tài sản — YoY | % | Phái sinh | data_val WHERE row_desc=270/270/300, report=BCDKT, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` filter OTC | **READY** |
+| K_GSDC_50_YOY | Tổng tài sản — YoY | % | Phái sinh | data_val WHERE row_desc=270/270/300, report=BCDKT, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter OTC | **READY** |
 | K_GSDC_51 | Nợ phải trả (OTC) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.total_liability)` | pivot sẵn trên Fact, JOIN Public Company Dimension filter OTC | **READY** |
-| K_GSDC_51_YOY | Nợ phải trả — YoY | % | Phái sinh | data_val WHERE row_desc=300/300/400, report=BCDKT, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` filter OTC | **READY** |
+| K_GSDC_51_YOY | Nợ phải trả — YoY | % | Phái sinh | data_val WHERE row_desc=300/300/400, report=BCDKT, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter OTC | **READY** |
 | K_GSDC_52 | Vốn CSH (OTC) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.equity)` | pivot sẵn trên Fact, JOIN Public Company Dimension filter OTC | **READY** |
-| K_GSDC_52_YOY | Vốn CSH — YoY | % | Phái sinh | data_val WHERE row_desc=400/400/500, report=BCDKT, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` filter OTC | **READY** |
+| K_GSDC_52_YOY | Vốn CSH — YoY | % | Phái sinh | data_val WHERE row_desc=400/400/500, report=BCDKT, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter OTC | **READY** |
 | K_GSDC_53 | Vốn điều lệ (OTC) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.contributed_capital)` | pivot sẵn trên Fact, JOIN Public Company Dimension filter OTC | **READY** |
-| K_GSDC_53_YOY | Vốn điều lệ — YoY | % | Phái sinh | data_val WHERE row_desc=411/411/411, report=BCDKT, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` filter OTC | **READY** |
+| K_GSDC_53_YOY | Vốn điều lệ — YoY | % | Phái sinh | data_val WHERE row_desc=411/411/411, report=BCDKT, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter OTC | **READY** |
 | K_GSDC_54 | Lợi nhuận sau thuế (OTC) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.net_profit)` | pivot sẵn trên Fact, JOIN Public Company Dimension filter OTC | **READY** |
-| K_GSDC_54_YOY | LNST — YoY | % | Phái sinh | data_val WHERE row_desc=60/60/21, report=BCKQKD, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` filter OTC | **READY** |
+| K_GSDC_54_YOY | LNST — YoY | % | Phái sinh | data_val WHERE row_desc=60/60/21, report=BCKQKD, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter OTC | **READY** |
 | K_GSDC_55 | ROA (OTC) | % | Phái sinh | `SUM(net_profit) / NULLIF(SUM(COALESCE(total_asset_beginning, total_asset) + COALESCE(total_asset, total_asset_beginning)) / 2, 0) * 100` | computed sẵn trên Fact (`roa`), JOIN Public Company Dimension filter OTC | **READY** |
-| K_GSDC_55_YOY | ROA — YoY | % | Phái sinh | data_val WHERE row_desc=(như K_GSDC_55), report=—, col_desc=— | fr_value, qua `public_company_financial_yoy_rpt` filter OTC | **READY** |
+| K_GSDC_55_YOY | ROA — YoY | % | Phái sinh | data_val WHERE row_desc=(như K_GSDC_55), report=—, col_desc=— | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter OTC | **READY** |
 | K_GSDC_56 | ROE (OTC) | % | Phái sinh | `SUM(net_profit) / NULLIF(SUM(COALESCE(equity_beginning, equity) + COALESCE(equity, equity_beginning)) / 2, 0) * 100` | computed sẵn trên Fact (`roe`), JOIN Public Company Dimension filter OTC | **READY** |
-| K_GSDC_56_YOY | ROE — YoY | % | Phái sinh | data_val WHERE row_desc=(như K_GSDC_56), report=—, col_desc=— | fr_value, qua `public_company_financial_yoy_rpt` filter OTC | **READY** |
+| K_GSDC_56_YOY | ROE — YoY | % | Phái sinh | data_val WHERE row_desc=(như K_GSDC_56), report=—, col_desc=— | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter OTC | **READY** |
 | K_GSDC_57 | Hàng tồn kho (OTC) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.inventory)` | pivot sẵn trên Fact, JOIN Public Company Dimension filter OTC | **READY** |
-| K_GSDC_57_YOY | Hàng tồn kho — YoY | % | Phái sinh | data_val WHERE row_desc=140/140/—, report=BCDKT, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` filter OTC | **READY** |
+| K_GSDC_57_YOY | Hàng tồn kho — YoY | % | Phái sinh | data_val WHERE row_desc=140/140/—, report=BCDKT, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter OTC | **READY** |
 | K_GSDC_58 | Doanh thu thuần (OTC) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.net_revenue)` | pivot sẵn trên Fact, JOIN Public Company Dimension filter OTC | **READY** |
-| K_GSDC_58_YOY | Doanh thu — YoY | % | Phái sinh | data_val WHERE row_desc=10/10/03, report=BCKQKD, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` filter OTC | **READY** |
+| K_GSDC_58_YOY | Doanh thu — YoY | % | Phái sinh | data_val WHERE row_desc=10/10/03, report=BCKQKD, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter OTC | **READY** |
 | K_GSDC_59 | Lợi nhuận dồn tích YTD (OTC) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.undistributed_profit)` | pivot sẵn trên Fact, JOIN Public Company Dimension filter OTC | **READY** |
-| K_GSDC_59_YOY | LN YTD — YoY | % | Phái sinh | data_val WHERE row_desc=421/421/— (td không có trong BA SQL), report=BCDKT, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` filter OTC | **READY** |
+| K_GSDC_59_YOY | LN YTD — YoY | % | Phái sinh | data_val WHERE row_desc=421/421/— (td không có trong BA SQL), report=BCDKT, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter OTC | **READY** |
 | K_GSDC_60 | Phải thu (OTC) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.receivable)` | pivot sẵn trên Fact, JOIN Public Company Dimension filter OTC | **READY** |
-| K_GSDC_60_YOY | Phải thu — YoY | % | Phái sinh | data_val WHERE row_desc=130+210/130+210/251, report=BCDKT, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` filter OTC | **READY** |
+| K_GSDC_60_YOY | Phải thu — YoY | % | Phái sinh | data_val WHERE row_desc=130+210/130+210/251, report=BCDKT, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter OTC | **READY** |
 | K_GSDC_61 | Tiền và tương đương tiền (OTC) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.cash_and_equivalent)` | pivot sẵn trên Fact, JOIN Public Company Dimension filter OTC | **READY** |
-| K_GSDC_61_YOY | Tiền TĐT — YoY | % | Phái sinh | data_val WHERE row_desc=110/110/110+120, report=BCDKT, col_desc=1 | fr_value, qua `public_company_financial_yoy_rpt` filter OTC | **READY** |
+| K_GSDC_61_YOY | Tiền TĐT — YoY | % | Phái sinh | data_val WHERE row_desc=110/110/110+120, report=BCDKT, col_desc=1 | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter OTC | **READY** |
 | K_GSDC_62 | Nợ / Vốn CSH (OTC) | Lần (x) | Phái sinh | `SUM(total_liability) / NULLIF(SUM(equity), 0)` | computed sẵn trên Fact (`debt_to_equity`), JOIN Public Company Dimension filter OTC | **READY** |
-| K_GSDC_62_YOY | Nợ/Vốn CSH — YoY | % | Phái sinh | data_val WHERE row_desc=(như K_GSDC_62), report=—, col_desc=— | fr_value, qua `public_company_financial_yoy_rpt` filter OTC | **READY** |
+| K_GSDC_62_YOY | Nợ/Vốn CSH — YoY | % | Phái sinh | data_val WHERE row_desc=(như K_GSDC_62), report=—, col_desc=— | fct_public_company_financial_smy_snpst, qua `public_company_financial_yoy_rpt` (redesign 2026-08-19) filter OTC | **READY** |
 | K_GSDC_79 | Ngành | Text | Chiều | `fct_public_company_financial_smy_snpst.industry_dim_id` → `industry_dim.industry_code` | GROUP BY trực tiếp trên Fact filter OTC, không cần driving Industry Dimension | **READY** |
 | K_GSDC_80 | Tổng tài sản — theo ngành (OTC) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.total_asset)` | GROUP BY industry_dim_id, filter OTC | **READY** |
 | K_GSDC_81 | Nợ phải trả — theo ngành (OTC) | Tỉ đồng | Phái sinh | `SUM(fct_public_company_financial_smy_snpst.total_liability)` | GROUP BY industry_dim_id, filter OTC | **READY** |
