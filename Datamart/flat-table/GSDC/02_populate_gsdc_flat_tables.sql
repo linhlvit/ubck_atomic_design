@@ -501,9 +501,9 @@ SELECT
     o.net_profit_amt,
     o.net_profit_yoy,
     o.roa_percentage,
-    o.roa_yoy_difference,
+    o.roa_yoy_percentage,
     o.roe_percentage,
-    o.roe_yoy_difference,
+    o.roe_yoy_percentage,
     o.src_stm_code
 FROM datamart.public_company_exchange_financial_summary_rpt o
 ;

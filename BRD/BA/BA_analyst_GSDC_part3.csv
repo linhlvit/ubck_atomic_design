@@ -2631,52 +2631,52 @@ TO_DATE('01/' || :p_month || '/' || :p_year,
 FROM company_profiles cp
 WHERE cp.status_ids_cd = 'APPROVED_PUBLIC'";"SELECT 
 cp.ID, cp.COMPANY_NAME_VN , cp.EQUITY_TICKER , cp.bond_ticker, 
-cp.category_l1_id, c.INDUSTRY_CD||'-'||c.INDUSTRY_NAME AS NNKD,--thêm đk này trong dataexplorer 
-aa.* 
+cp.category_l1_id, c.INDUSTRY_CD||'-'||c.INDUSTRY_NAME AS NNKD,--thêm đk này trong dataexplorer
+aa.*
 FROM GMS_IDS_UAT.company_profiles cp 
 JOIN 
 ( SELECT * 
-FROM (--điểm cấp 2 
-SELECT ev.evaluation_date, 
-company_id, ep.YEAR||lpad(ep.MONTH,2,0) AS per 
-, eg.group_cd, sum(ed.score) AS diem 
-FROM GMS_IDS_UAT.evaluations ev 
-JOIN GMS_IDS_UAT.evaluation_periods ep ON ep.id = ev.period_id AND upper(ep.STATUS) ='APPROVED' 
-JOIN GMS_IDS_UAT.evaluation_details ed ON ed.evaluation_id = ev.id 
-JOIN GMS_IDS_UAT.evaluation_criteria ec ON ec.id = ed.criterion_id 
-JOIN GMS_IDS_UAT.evaluation_groups eg ON eg.id = ec.group_id 
-WHERE 1=1 
-AND eg.group_cd IN ('TUAN_THU', 'PHAT_HANH', 'TAI_CHINH', 'PHI_TAI_CHINH') 
-Group by company_id, eg.group_cd, ep.YEAR||lpad(ep.MONTH,2,0), ev.evaluation_date 
--- điểm tổng (cấp 1) 
-UNION ALL 
-SELECT ev.evaluation_date , 
-company_id, ep.YEAR||lpad(ep.MONTH,2,0) AS per 
-, 'TONG' group_cd, ev.total_score AS diem 
-FROM GMS_IDS_UAT.evaluations ev 
-JOIN GMS_IDS_UAT.evaluation_periods ep ON ep.id = ev.period_id AND upper(ep.STATUS) ='APPROVED' 
-WHERE 1=1 
---điểm cấp 3 
-UNION ALL 
-SELECT ev.evaluation_date, 
-company_id, ep.YEAR||lpad(ep.MONTH,2,0) AS per 
-, criterion_cd, ed.score AS diem_phat_hanh_nhanh 
-FROM GMS_IDS_UAT.evaluation_details ed 
-JOIN GMS_IDS_UAT.evaluation_criteria ec ON ec.id = ed.criterion_id 
-JOIN GMS_IDS_UAT.evaluation_groups eg ON eg.id = ec.group_id 
-JOIN GMS_IDS_UAT.evaluations ev ON ev.id = ed.evaluation_id 
-JOIN GMS_IDS_UAT.evaluation_periods ep ON ep.id = ev.period_id AND upper(ep.STATUS) ='APPROVED' 
-WHERE ec.criterion_cd = 'PHAT_HANH_TIN_NHIEM' 
-AND eg.group_cd = 'PHAT_HANH' 
-) 
-pivot (sum(diem) 
-FOR group_cd IN ('TONG' AS TONG, 'TUAN_THU' AS TUAN_THU, 'PHAT_HANH' AS PHAT_HANH, 'TAI_CHINH' AS TAI_CHINH, 'PHI_TAI_CHINH' AS PHI_TAI_CHINH 
-,'PHAT_HANH_TIN_NHIEM' AS PHAT_HANH_TIN_NHIEM 
-) 
+FROM (--điểm cấp 2
+SELECT ev.evaluation_date,
+company_id, ep.YEAR||lpad(ep.MONTH,2,0) AS per
+, eg.group_cd, sum(ed.score) AS diem
+FROM GMS_IDS_UAT.evaluations ev
+JOIN GMS_IDS_UAT.evaluation_periods ep ON ep.id = ev.period_id AND upper(ep.STATUS) ='APPROVED'
+JOIN GMS_IDS_UAT.evaluation_details ed ON ed.evaluation_id = ev.id
+JOIN GMS_IDS_UAT.evaluation_criteria ec ON ec.id = ed.criterion_id
+JOIN GMS_IDS_UAT.evaluation_groups eg ON eg.id = ec.group_id
+WHERE 1=1
+AND eg.group_cd IN ('TUAN_THU', 'PHAT_HANH', 'TAI_CHINH', 'PHI_TAI_CHINH')
+Group by company_id, eg.group_cd, ep.YEAR||lpad(ep.MONTH,2,0), ev.evaluation_date
+-- điểm tổng (cấp 1)
+UNION ALL
+SELECT ev.evaluation_date ,
+company_id, ep.YEAR||lpad(ep.MONTH,2,0) AS per
+, 'TONG' group_cd, ev.total_score AS diem
+FROM GMS_IDS_UAT.evaluations ev
+JOIN GMS_IDS_UAT.evaluation_periods ep ON ep.id = ev.period_id AND upper(ep.STATUS) ='APPROVED'
+WHERE 1=1
+--điểm cấp 3
+UNION ALL
+SELECT ev.evaluation_date,
+company_id, ep.YEAR||lpad(ep.MONTH,2,0) AS per
+, criterion_cd, ed.score AS diem_phat_hanh_nhanh
+FROM GMS_IDS_UAT.evaluation_details ed
+JOIN GMS_IDS_UAT.evaluation_criteria ec ON ec.id = ed.criterion_id
+JOIN GMS_IDS_UAT.evaluation_groups eg ON eg.id = ec.group_id
+JOIN GMS_IDS_UAT.evaluations ev ON ev.id = ed.evaluation_id
+JOIN GMS_IDS_UAT.evaluation_periods ep ON ep.id = ev.period_id AND upper(ep.STATUS) ='APPROVED'
+WHERE ec.criterion_cd = 'PHAT_HANH_TIN_NHIEM'
+AND eg.group_cd = 'PHAT_HANH'
+)
+pivot (sum(diem)
+FOR group_cd IN ('TONG' AS TONG, 'TUAN_THU' AS TUAN_THU, 'PHAT_HANH' AS PHAT_HANH, 'TAI_CHINH' AS TAI_CHINH, 'PHI_TAI_CHINH' AS PHI_TAI_CHINH
+,'PHAT_HANH_TIN_NHIEM' AS PHAT_HANH_TIN_NHIEM
+)
 ) 
 ) aa ON cp.id = aa.COMPANY_ID 
-LEFT JOIN GMS_IDS_UAT.CATEGORIES c ON c.ID = cp.category_l1_id--thêm trong dataexxplorer 
---AND cp.EQUITY_TICKER = 'DNL' 
+LEFT JOIN GMS_IDS_UAT.CATEGORIES c ON c.ID = cp.category_l1_id--thêm trong dataexxplorer
+--AND cp.EQUITY_TICKER = 'DNL'
 AND per = '202607'";;Done;Dữ liệu tĩnh;
 32;;Dữ liệu về tổng hợp chấm điểm phân loại CTDC;Tên doanh nghiệp;;Data Explorer;Chiều;Trùng;Tháng, sàn, Ngành, CTDC;IDS;;;;Done;select mã doanh nghiệp,.... from A join B ...where...;company_profiles;cp.company_name_vn AS ten_dn;cp.status_ids_cd = 'APPROVED_PUBLIC';"SELECT cp.company_name_vn AS ten_dn
 FROM company_profiles cp
@@ -3603,45 +3603,45 @@ Group by company_id";Phân hệ đang pending ev.status => DW sẽ bổ sung sau
 FROM company_profiles cp
 WHERE cp.status_ids_cd = 'APPROVED_PUBLIC'";"SELECT 
 cp.ID, cp.COMPANY_NAME_VN , cp.EQUITY_TICKER , cp.bond_ticker, 
-cp.category_l1_id, c.INDUSTRY_CD||'-'||c.INDUSTRY_NAME AS NNKD,--thêm đk này trong dataexplorer 
-aa.* 
+cp.category_l1_id, c.INDUSTRY_CD||'-'||c.INDUSTRY_NAME AS NNKD,--thêm đk này trong dataexplorer
+aa.*
 FROM GMS_IDS_UAT.company_profiles cp JOIN 
 ( SELECT * 
-FROM (--điểm cấp 3 
-SELECT ev.evaluation_date, 
-company_id, ep.YEAR||lpad(ep.MONTH,2,0) AS per 
-, criterion_cd, ed.score AS diem 
-FROM GMS_IDS_UAT.evaluation_details ed 
-JOIN GMS_IDS_UAT.evaluation_criteria ec ON ec.id = ed.criterion_id 
-JOIN GMS_IDS_UAT.evaluation_groups eg ON eg.id = ec.group_id 
-JOIN GMS_IDS_UAT.evaluations ev ON ev.id = ed.evaluation_id 
-JOIN GMS_IDS_UAT.evaluation_periods ep ON ep.id = ev.period_id AND upper(ep.STATUS) ='APPROVED' 
-WHERE 1=1 
-AND eg.group_cd = 'PHAT_HANH' 
-AND ec.criterion_cd in ('PHAT_HANH_TANG_VON_NHANH', 'PHAT_HANH_SLCBCPRL', 'PHAT_HANH_SLCBRCC', 'PHAT_HANH_SLPHES', 
-'PHAT_HANH_TLGTTP', 'PHAT_HANH_TIN_NHIEM', 'PHAT_HANH_DNTPTVCSH') 
---điểm cấp 2 
-UNION ALL 
-SELECT ev.evaluation_date, 
-company_id, ep.YEAR||lpad(ep.MONTH,2,0) AS per 
-, eg.group_cd, sum(ed.score) AS diem 
-FROM GMS_IDS_UAT.evaluations ev 
-JOIN GMS_IDS_UAT.evaluation_periods ep ON ep.id = ev.period_id AND upper(ep.STATUS) ='APPROVED' 
-JOIN GMS_IDS_UAT.evaluation_details ed ON ed.evaluation_id = ev.id 
-JOIN GMS_IDS_UAT.evaluation_criteria ec ON ec.id = ed.criterion_id 
-JOIN GMS_IDS_UAT.evaluation_groups eg ON eg.id = ec.group_id 
-WHERE 1=1 
-AND eg.group_cd = 'PHAT_HANH' 
-Group by company_id, eg.group_cd, ep.YEAR||lpad(ep.MONTH,2,0), ev.evaluation_date 
-) 
-pivot (sum(diem) 
-FOR criterion_cd IN ('PHAT_HANH' AS TONG, 'PHAT_HANH_TANG_VON_NHANH' AS TANG_VON_NHANH, 'PHAT_HANH_SLCBCPRL' AS SLCBCPRL, 'PHAT_HANH_SLCBRCC' AS SLCBRCC, 
-'PHAT_HANH_SLPHES' AS SLPHES, 'PHAT_HANH_TLGTTP' AS TLGTTP, 'PHAT_HANH_TIN_NHIEM' AS TIN_NHIEM, 'PHAT_HANH_DNTPTVCSH' AS DNTPTVCSH 
-) 
+FROM (--điểm cấp 3
+SELECT ev.evaluation_date,
+company_id, ep.YEAR||lpad(ep.MONTH,2,0) AS per
+, criterion_cd, ed.score AS diem
+FROM GMS_IDS_UAT.evaluation_details ed
+JOIN GMS_IDS_UAT.evaluation_criteria ec ON ec.id = ed.criterion_id
+JOIN GMS_IDS_UAT.evaluation_groups eg ON eg.id = ec.group_id
+JOIN GMS_IDS_UAT.evaluations ev ON ev.id = ed.evaluation_id
+JOIN GMS_IDS_UAT.evaluation_periods ep ON ep.id = ev.period_id AND upper(ep.STATUS) ='APPROVED'
+WHERE 1=1
+AND eg.group_cd = 'PHAT_HANH'
+AND ec.criterion_cd in ('PHAT_HANH_TANG_VON_NHANH', 'PHAT_HANH_SLCBCPRL', 'PHAT_HANH_SLCBRCC', 'PHAT_HANH_SLPHES',
+'PHAT_HANH_TLGTTP', 'PHAT_HANH_TIN_NHIEM', 'PHAT_HANH_DNTPTVCSH')
+--điểm cấp 2
+UNION ALL
+SELECT ev.evaluation_date,
+company_id, ep.YEAR||lpad(ep.MONTH,2,0) AS per
+, eg.group_cd, sum(ed.score) AS diem
+FROM GMS_IDS_UAT.evaluations ev
+JOIN GMS_IDS_UAT.evaluation_periods ep ON ep.id = ev.period_id AND upper(ep.STATUS) ='APPROVED'
+JOIN GMS_IDS_UAT.evaluation_details ed ON ed.evaluation_id = ev.id
+JOIN GMS_IDS_UAT.evaluation_criteria ec ON ec.id = ed.criterion_id
+JOIN GMS_IDS_UAT.evaluation_groups eg ON eg.id = ec.group_id
+WHERE 1=1
+AND eg.group_cd = 'PHAT_HANH'
+Group by company_id, eg.group_cd, ep.YEAR||lpad(ep.MONTH,2,0), ev.evaluation_date
+)
+pivot (sum(diem)
+FOR criterion_cd IN ('PHAT_HANH' AS TONG, 'PHAT_HANH_TANG_VON_NHANH' AS TANG_VON_NHANH, 'PHAT_HANH_SLCBCPRL' AS SLCBCPRL, 'PHAT_HANH_SLCBRCC' AS SLCBRCC,
+'PHAT_HANH_SLPHES' AS SLPHES, 'PHAT_HANH_TLGTTP' AS TLGTTP, 'PHAT_HANH_TIN_NHIEM' AS TIN_NHIEM, 'PHAT_HANH_DNTPTVCSH' AS DNTPTVCSH
+)
 ) 
 ) aa ON cp.id = aa.COMPANY_ID 
-LEFT JOIN GMS_IDS_UAT.CATEGORIES c ON c.ID = cp.category_l1_id--thêm trong dataexxplorer 
---AND cp.EQUITY_TICKER = 'DNL' 
+LEFT JOIN GMS_IDS_UAT.CATEGORIES c ON c.ID = cp.category_l1_id--thêm trong dataexxplorer
+--AND cp.EQUITY_TICKER = 'DNL'
 AND per = '202607'";;Done;Dữ liệu tĩnh;
 35;;Dữ liệu về phân loại công ty đại chúng theo chỉ tiêu phát hành;Tên doanh nghiệp;;Data Explorer;Chỉ tiêu cơ sở;Trùng;Tháng, sàn, Ngành, CTDC;IDS;;X;;Done;;company_profiles;cp.company_name_vn AS ten_dn;cp.status_ids_cd = 'APPROVED_PUBLIC';"SELECT cp.company_name_vn AS ten_dn
 FROM company_profiles cp
@@ -3810,10 +3810,7 @@ WHERE ec.criterion_cd = 'PHAT_HANH_TIN_NHIEM'
 AND eg.group_cd = 'PHAT_HANH'
 AND ev.company_id = :p_company_id
 AND ep.year = :p_year
-AND ep.month = :p_month";"Phân hệ không có chỉ tiêu này
-=> hỏi lại nghiệp vụ bỏ thông tin này
-(ngoài ra DB có thêm 2 loại ""Số lần vi phạm thanh toán lãi và gốc - PHAT_HANH_SLVPTT"", ""Vi phạm CBTT về Trái phiếu riêng lẻ - PHAT_HANH_VPCBTTRL"" nhưng đặc tả, phân tích thì ko có
-và phân hệ có loại Xếp hạng tín nhiệm PHAT_HANH_TIN_NHIEM mà DW ko có)";Done;Dữ liệu tĩnh;;
+AND ep.month = :p_month";Phân hệ đang pending ev.status => DW sẽ bổ sung sau khi phân hệ hoàn thành;Done;Dữ liệu tĩnh;;
 35;;Dữ liệu về phân loại công ty đại chúng theo chỉ tiêu phát hành;Dư nợ Trái phiếu /Tổng Vốn chủ sở hữu;"Điểm Dư nợ Trái phiếu /Tổng Vốn chủ sở hữu trên phân hệ:
 - Đánh giá tiêu chí dựa trên :
 1.Bình Thường: Các trường hợp còn lại.
@@ -4011,38 +4008,38 @@ GROUP BY cp.equity_listing_exch, cat.industry_cd, cat.industry_name,
 cp.enterprise_type_cd, cd.report_year, cd.report_quarter";"WITH Company_data_chuan AS (...),
 Chitiet_DN as (...)
 --Bước 1,2, giống mục 7
-/* ------------------------------------------- 
-BƯỚC 3.2: Nếu tính các chỉ tiêu theo sàn, ngành, loại DN 
-*/ 
+/* -------------------------------------------
+BƯỚC 3.2: Nếu tính các chỉ tiêu theo sàn, ngành, loại DN
+*/
 SELECT 
 equity_listing_exch, category_l1_id, 
-enterprise_type_cd,--thêm nếu là dataexxplorer 
-report_year, report_quarter, 
-c.INDUSTRY_CD||'-'||c.INDUSTRY_NAME AS NNKD, 
-count(1) AS SL, 
-SUM(TAI_SAN) AS TAI_SAN, 
-SUM(NO_PT) AS NO_PT, 
-SUM(VCSH) AS VCSH, 
-SUM(VDL) AS VDL, 
-SUM(LNST) AS LNST, 
---Nếu đầu kỳ null thì mẫu số =(cuối + cuối)/2 = cuối, tương tự nếu cuối kỳ null thì mẫu số = đầu, nếu cả 2 null thì ROA=null 
+enterprise_type_cd,--thêm nếu là dataexxplorer
+report_year, report_quarter,
+c.INDUSTRY_CD||'-'||c.INDUSTRY_NAME AS NNKD,
+count(1) AS SL,
+SUM(TAI_SAN) AS TAI_SAN,
+SUM(NO_PT) AS NO_PT,
+SUM(VCSH) AS VCSH,
+SUM(VDL) AS VDL,
+SUM(LNST) AS LNST,
+--Nếu đầu kỳ null thì mẫu số =(cuối + cuối)/2 = cuối, tương tự nếu cuối kỳ null thì mẫu số = đầu, nếu cả 2 null thì ROA=null
 SUM(LNST)/NULLIF(SUM((NVL(TAI_SAN_DK, TAI_SAN)+ NVL(TAI_SAN, TAI_SAN_DK))/2),0)*100 as ROA, 
-SUM(LNST)/NULLIF(SUM((NVL(VCSH_DK, VCSH)+ NVL(VCSH, VCSH_DK))/2),0)*100 as ROE, 
-SUM(TAI_SAN_DK) AS TAI_SAN_DK, 
-SUM(HTK) AS HTK, 
-SUM(DOANH_THU) AS DOANH_THU, 
-SUM(LN_YTD) AS LN_YTD, 
-SUM(PHAI_THU) AS PHAI_THU, 
-SUM(TIEN) AS TIEN, 
-SUM(NO_PT)/NULLIF(SUM(VCSH),0) AS D_E 
-FROM Chitiet_DN ct 
-LEFT JOIN GMS_IDS_UAT.CATEGORIES c ON c.ID = ct.category_l1_id 
+SUM(LNST)/NULLIF(SUM((NVL(VCSH_DK, VCSH)+ NVL(VCSH, VCSH_DK))/2),0)*100 as ROE,
+SUM(TAI_SAN_DK) AS TAI_SAN_DK,
+SUM(HTK) AS HTK,
+SUM(DOANH_THU) AS DOANH_THU,
+SUM(LN_YTD) AS LN_YTD,
+SUM(PHAI_THU) AS PHAI_THU,
+SUM(TIEN) AS TIEN,
+SUM(NO_PT)/NULLIF(SUM(VCSH),0) AS D_E
+FROM Chitiet_DN ct
+LEFT JOIN GMS_IDS_UAT.CATEGORIES c ON c.ID = ct.category_l1_id
 where 1=1 
-AND report_year = :p_year 
-AND report_quarter = :p_quarter 
+AND report_year = :p_year
+AND report_quarter = :p_quarter
 GROUP BY equity_listing_exch, category_l1_id, 
-enterprise_type_cd,--thêm nếu là dataexxplorer 
-report_year, report_quarter, c.INDUSTRY_CD||'-'||c.INDUSTRY_NAME 
+enterprise_type_cd,--thêm nếu là dataexxplorer
+report_year, report_quarter, c.INDUSTRY_CD||'-'||c.INDUSTRY_NAME
 ORDER BY equity_listing_exch, category_l1_id, report_year, report_quarter";;Done;Dữ liệu động;
 37;;Dữ liệu về hệ số tài chính cơ bản;Nợ Phải Trả;Chi tiết công thức tổng hợp tại sheet CSĐC_công thức CT;Data Explorer;Chỉ tiêu cơ sở;Trùng;Quý hoặc năm, sàn, ngành, loại hình CTĐC;IDS;;X;;Done;;"IDS.data (d), IDS.report_catalog (rc), IDS.rrow (rr),
 IDS.rcol (rc2), IDS.company_data (cd),
@@ -4336,7 +4333,7 @@ cp.enterprise_type_cd, cd.report_year, cd.report_quarter";;Done;Dữ liệu đ�
 38;;Báo cáo giám sát công ty đại chúng - Báo cáo vĩ mô (GSĐC-BC01.1);Sàn NY/ĐKGD;;Báo cáo;Chiều;Trùng;;IDS;;;;Done;;IDS.lookup_values (lv);lv.lookup_cd AS san_niem_yet;lv.lookup_group = 'IDS_LISTING_TYPE';"-- Danh sách sàn niêm yết: HNX, HOSE, UPCOM, OTC
 SELECT lv.lookup_cd AS san_niem_yet
 FROM IDS.lookup_values lv
-WHERE lv.lookup_group = 'IDS_LISTING_TYPE'";;Cân nhắc sửa IDS_LISTING_TYPE và EQUITY_LISTING_EXCH;Done;Dữ liệu tĩnh;
+WHERE lv.lookup_group = 'IDS_LISTING_TYPE'";;Cân nhắc sửa IDS_LISTING_TYPE và EQUITY_LISTING_EXCH;Done;Dữ liệu tĩnh;P
 38;;Báo cáo giám sát công ty đại chúng - Báo cáo vĩ mô (GSĐC-BC01.1);Số lượng;Số lượng CTĐC trên từng sàn;Báo cáo;Chỉ tiêu cơ sở;TB;Sàn, Kỳ báo cáo (Quý/Năm);IDS;x;X;;Done;;IDS.company_profiles (cd);cd.equity_listing_exch, COUNT(DISTINCT cd.id) AS so_luong_dn;"cd.ids_reg_date <= LAST_DAY(ADD_MONTHS(
 TO_DATE(:p_year || '-01-01', 'YYYY-MM-DD'),
 TO_NUMBER(SUBSTR(:p_quarter, 2, 1)) * 3 - 1))
@@ -4353,12 +4350,15 @@ equity_listing_exch,
 COUNT(DISTINCT cd.id) AS SL_DN
 FROM GMS_IDS_UAT.company_profiles cd
 WHERE 1=1
+AND cd.EQUITY_LISTING_EXCH IN ('HOSE','UPCOM','HNX','OTC')
 --ngày đăng ký <= ngày cuối cùng của kỳ 
 AND ((:p_loai_ky = 'Q' AND cd.ids_reg_date <= LAST_DAY(ADD_MONTHS(TO_DATE(:p_year || '-01-01', 'YYYY-MM-DD'), :p_quarter* 3 - 1)))
 OR (:p_loai_ky = 'Y' AND cd.ids_reg_date <= TO_DATE(:p_year || '-12-31', 'YYYY-MM-DD'))
 OR (:p_loai_ky = 'HY' AND cd.ids_reg_date <= TO_DATE(:p_year || '-06-30', 'YYYY-MM-DD')))
 GROUP BY equity_listing_exch
-";;Done;Dữ liệu tĩnh;
+";"Bổ sung thêm điều kiện:
+AND equity_listing_exch in ( 'HNX', 'HOSE', 'UPCOM','OTC')
+AND status_ids_cd = 'APPROVED_PUBLIC'";Done;Dữ liệu tĩnh;P
 38;;Báo cáo giám sát công ty đại chúng - Báo cáo vĩ mô (GSĐC-BC01.1);Số lượng BCTC đến hạn nộp;Số lượng BCTC thuộc kỳ báo cáo, đã đến hạn nộp so với ngày xuất dữ liệu;Báo cáo;Chỉ tiêu cơ sở;TB;Sàn, Kỳ báo cáo (Quý/Năm);IDS;x;X;;Done;;"IDS.violation_report vr
 IDS.company_profiles (cd)";cdet.equity_listing_exch, COUNT(*) AS phai_nop;"vr.period_year = :p_year
 AND vr.period_quarter = :p_quarter
@@ -4370,16 +4370,20 @@ JOIN IDS.company_profiles cdet ON cdet.id=a.company_profile_id
 WHERE a.report_year = :p_year
 AND a.report_quarter = TO_NUMBER(SUBSTR(:p_quarter, 2, 1))
 AND a.submission_deadline_date <= SYSDATE
-GROUP BY cdet.equity_listing_exch";"SELECT 
+GROUP BY cdet.equity_listing_exch";"""SELECT 
 cd.equity_listing_exch, COUNT(*) AS phai_nop
 FROM GMS_IDS_UAT.violation_report vr
 JOIN GMS_IDS_UAT.forms f ON f.id = vr.form_id AND f.news_type_cd = 'DINH_KY'
 JOIN GMS_IDS_UAT.company_profiles cd ON cd.id = vr.company_profile_id
-WHERE vr.period_year = :p_year
+WHERE 1=1
+AND vr.period_year = :p_year
+AND equity_listing_exch in ( 'HNX', 'HOSE', 'UPCOM','OTC')
+AND status_ids_cd = 'APPROVED_PUBLIC' 
 AND vr.period_quarter = :p_quarter
 AND vr.deadline_date <= SYSDATE
-GROUP BY cd.equity_listing_exch
-";;Done;Dữ liệu động;
+GROUP BY cd.equity_listing_exch";"Bổ sung thêm điều kiện: không quan tâm đã nộp hay chưa nộp chỉ quan tâm đến hạn nộp 
+AND equity_listing_exch in ( 'HNX', 'HOSE', 'UPCOM','OTC')
+AND status_ids_cd = 'APPROVED_PUBLIC'";Done;Dữ liệu động;P
 38;;Báo cáo giám sát công ty đại chúng - Báo cáo vĩ mô (GSĐC-BC01.1);Số báo cáo (BCTC) đã nộp;Số lượng BCTC đã nộp trong kỳ;Báo cáo;Chỉ tiêu cơ sở;TB;Sàn, Kỳ báo cáo (Quý/Năm);IDS;x;X;;Done;;"IDS.company_data (a),
 IDS.company_profiles (cdet)";"cdet.equity_listing_exch, COUNT(CASE WHEN a.submission_date IS NOT NULL
 AND a.submission_date <= a.submission_deadline_date
@@ -4396,17 +4400,21 @@ WHERE a.report_year = :p_year
 AND a.report_quarter = TO_NUMBER(SUBSTR(:p_quarter, 2, 1))
 AND a.submission_deadline_date <= SYSDATE
 GROUP BY cdet.equity_listing_exch";"SELECT 
-cdet.equity_listing_exch, 
-COUNT(1) AS da_nop 
-FROM GMS_IDS_UAT.company_data cd 
-JOIN GMS_IDS_UAT.forms f ON f.id = cd.form_id AND f.news_type_cd = 'DINH_KY' 
-JOIN GMS_IDS_UAT.company_profiles cp ON cp.id = cd.company_profile_id 
-WHERE cd.news_status_cd = 'APPROVED' 
-AND cd.report_year = :p_year 
-AND cd.report_quarter = :p_quarter 
-AND cd.submission_deadline_date <= SYSDATE 
-GROUP BY cp.equity_listing_exch";;Done;Dữ liệu động;
-38;;Báo cáo giám sát công ty đại chúng - Báo cáo vĩ mô (GSĐC-BC01.1);Tỷ lệ báo cáo (%);1,25;Báo cáo;Chỉ tiêu phái sinh;TB;Sàn, Kỳ báo cáo (Quý/Năm);IDS;;X;;Done;;Chỉ tiêu phái sinh;;;#NAME?;;;Done;Dữ liệu động;
+cdet.equity_listing_exch,
+COUNT(1) AS da_nop
+FROM GMS_IDS_UAT.company_data cd
+JOIN GMS_IDS_UAT.forms f ON f.id = cd.form_id AND f.news_type_cd = 'DINH_KY'
+JOIN GMS_IDS_UAT.company_profiles cp ON cp.id = cd.company_profile_id
+WHERE cd.news_status_cd = 'APPROVED'
+AND cd.report_year = :p_year
+AND cd.report_quarter = :p_quarter
+AND cd.submission_deadline_date <= SYSDATE
+GROUP BY cp.equity_listing_exch
+";"Bổ sung thêm điều kiện: 
+AND CD.LANGUAGE_CD = 'VI'
+AND EQUITY_LISTING_EXCH IN ( 'HNX', 'HOSE', 'UPCOM','OTC')
+AND status_ids_cd = 'APPROVED_PUBLIC'";Done;Dữ liệu động;PE
+38;;Báo cáo giám sát công ty đại chúng - Báo cáo vĩ mô (GSĐC-BC01.1);Tỷ lệ báo cáo (%);1,25;Báo cáo;Chỉ tiêu phái sinh;TB;Sàn, Kỳ báo cáo (Quý/Năm);IDS;;X;;Done;;Chỉ tiêu phái sinh;;;#NAME?;;;Done;Dữ liệu động;PE
 38;;Báo cáo giám sát công ty đại chúng - Báo cáo vĩ mô (GSĐC-BC01.1);Số CTĐC báo lãi - Năm N;"Số lượng CTĐC kê khai trên BCTC LNST>0
 TH có 2 loại BC bán niên và quý thì ưu tiên bán niên";Báo cáo;Chỉ tiêu cơ sở;TB;Sàn, Kỳ báo cáo (Quý/Năm);IDS;x;X;x;Done;;"IDS.data (d),
 IDS.report_catalog (rc),

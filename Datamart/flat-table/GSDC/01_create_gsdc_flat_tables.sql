@@ -526,9 +526,9 @@ CREATE TABLE IF NOT EXISTS datamart.gsdc_public_company_exchange_financial_summa
     net_profit_amt                       Nullable(Decimal(23,2)) COMMENT 'LNST theo sàn.',
     net_profit_yoy            Nullable(Decimal(9,4))  COMMENT 'LNST — YoY theo sàn.',
     roa_percentage                       Nullable(Decimal(9,4))  COMMENT 'ROA theo sàn.',
-    roa_yoy_difference                   Nullable(Decimal(9,4))  COMMENT 'ROA — YoY theo sàn (hiệu số percentage point).',
+    roa_yoy_percentage                   Nullable(Decimal(9,4))  COMMENT 'ROA — YoY theo sàn (% tăng/giảm tương đối).',
     roe_percentage                       Nullable(Decimal(9,4))  COMMENT 'ROE theo sàn.',
-    roe_yoy_difference                   Nullable(Decimal(9,4))  COMMENT 'ROE — YoY theo sàn (hiệu số percentage point).',
+    roe_yoy_percentage                   Nullable(Decimal(9,4))  COMMENT 'ROE — YoY theo sàn (% tăng/giảm tương đối).',
     src_stm_code                         String              COMMENT 'Mã hệ thống nguồn dữ liệu.'
 )
 ENGINE = ReplicatedReplacingMergeTree()

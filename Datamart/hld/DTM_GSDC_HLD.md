@@ -303,149 +303,212 @@ flowchart LR
 
 ##### Cụm 9: Báo cáo vĩ mô theo sàn (Public Company Regulatory Compliance Report) (Nhóm 38)
 
-Phục vụ K_GSDC_700-708 (BC01.1) qua `Public Company Regulatory Compliance Report` — Fact-report denormalize hoàn toàn, ETL populate theo batch mỗi kỳ (Report_Year + Report_Quarter), không FK Dimension runtime.
+> **[SỬA 2026-08-19 lần 2]** Toàn bộ Nhóm 38 đổi sang aggregate từ Datamart — 4 sub-select độc lập, không JOIN Fact-to-Fact ở tầng chi tiết: Số lượng DN (K_GSDC_701) từ `Public Company Dimension`; Số BCTC đến hạn/đã nộp (K_GSDC_702/703) từ `Fact Violation Report Snapshot` (`fct_violation_rpt_snpst`, Cụm 7); Số CTĐC báo lãi (K_GSDC_705/707) từ `Fact Public Company Financial Summary Snapshot` (`fct_public_company_financial_smy_snpst`, Cụm 12). **[SỬA 2026-08-19 lần 4 — tối ưu, DRIVING TABLE]** `Profitable Company Count Year N` (đã GROUP BY sẵn theo sàn+kỳ trên `fct_public_company_financial_smy_snpst`, `rpt_year`/`rpt_quarter` NOT NULL) làm **driving table** cung cấp danh sách sàn+kỳ chuẩn cho toàn bộ report (KHÔNG dùng tham số ETL ngoài, KHÔNG dùng `rpt_year`/`rpt_quarter` của `fct_violation_rpt_snpst` — nullable, tránh lặp lại lỗi đã ghi nhận ở K_GSDC_49/Nhóm 6). `Report Due Count`/`Report Submitted Count` JOIN vào driving qua sàn+kỳ (phụ thuộc kỳ thật). `Company Count` đã bỏ điều kiện theo kỳ (`ids_registration_dt <= cuối kỳ`) — JOIN vào driving CHỈ qua sàn.
+
+Phục vụ K_GSDC_700-708 (BC01.1) qua `Public Company Regulatory Compliance Report` — Fact-report denormalize hoàn toàn, ETL populate theo batch mỗi kỳ (Report_Year + Report_Quarter, lấy từ driving table `fct_public_company_financial_smy_snpst`), không FK Dimension runtime.
 
 ```mermaid
 flowchart LR
     subgraph SRC["Staging"]
-        IDS_company_profiles_c9["IDS.company_profiles"]
-        IDS_company_data_c9["IDS.company_data"]
-        IDS_data_c9["IDS.data"]
-        IDS_report_catalog_c9["IDS.report_catalog"]
-        IDS_rrow_c9["IDS.rrow"]
-        IDS_rcol_c9["IDS.rcol"]
+        GOLD_fct_violation_c9["Datamart: fct_violation_rpt_snpst (Cụm 7)"]
+        GOLD_fct_smy_c9["Datamart: fct_public_company_financial_smy_snpst (Cụm 12)"]
     end
     subgraph SIL["Atomic"]
-        Public_Company_c9["Public Company"]
-        Public_Company_Report_Submission_c9["Public Company Report Submission"]
-        Financial_Report_Value_c9["Financial Report Value"]
-        Financial_Report_Catalog_c9["Financial Report Catalog"]
-        Financial_Report_Row_Template_c9["Financial Report Row Template"]
-        Financial_Report_Column_Template_c9["Financial Report Column Template"]
+        Public_Company_Dim_c9["Public Company Dimension"]
     end
     subgraph GOLD["Datamart"]
         public_company_regulatory_compliance_rpt["Public Company Regulatory Compliance Report"]
     end
-    IDS_company_profiles_c9 --> Public_Company_c9
-    IDS_company_data_c9 --> Public_Company_Report_Submission_c9
-    IDS_data_c9 --> Financial_Report_Value_c9
-    IDS_report_catalog_c9 --> Financial_Report_Catalog_c9
-    IDS_rrow_c9 --> Financial_Report_Row_Template_c9
-    IDS_rcol_c9 --> Financial_Report_Column_Template_c9
-    Public_Company_c9 --> public_company_regulatory_compliance_rpt
-    Public_Company_Report_Submission_c9 --> public_company_regulatory_compliance_rpt
-    Financial_Report_Value_c9 --> public_company_regulatory_compliance_rpt
-    Financial_Report_Catalog_c9 --> public_company_regulatory_compliance_rpt
-    Financial_Report_Row_Template_c9 --> public_company_regulatory_compliance_rpt
-    Financial_Report_Column_Template_c9 --> public_company_regulatory_compliance_rpt
+    Public_Company_Dim_c9 --> public_company_regulatory_compliance_rpt
+    GOLD_fct_violation_c9 --> public_company_regulatory_compliance_rpt
+    GOLD_fct_smy_c9 --> public_company_regulatory_compliance_rpt
 ```
+
+> **Ghi chú kỹ thuật flowchart:** `fct_violation_rpt_snpst` (Cụm 7) và `fct_public_company_financial_smy_snpst` (Cụm 12) là 2 bảng Datamart Gold đã populate xong, đóng vai trò input ETL tầng 2 (Gold-to-Gold) — đặt trong `SRC["Staging"]` chỉ để giữ đúng cú pháp 3-subgraph, không phải Staging thô. `fct_public_company_financial_smy_snpst` (qua sub-select Profitable Company Count Year N) là **driving table** — nguồn sàn+kỳ chuẩn cho toàn bộ report. `Public Company Dimension` dùng làm nguồn trực tiếp cho Số lượng DN (không phụ thuộc kỳ, JOIN vào driving chỉ qua sàn), đồng thời JOIN filter status/sàn cho 2 Fact còn lại. 4 sub-select độc lập, không có edge nào nối trực tiếp 2 Fact với nhau ở tầng chi tiết.
 
 ---
 
 ##### Cụm 10: Báo cáo vĩ mô theo ngành (Public Company Industry Financial Report) (Nhóm 39)
+
+> **[SỬA 2026-08-19]** Đổi nguồn ETL nạp — từ JOIN trực tiếp `fr_value`/`public_company` (thiếu dedup form-ưu-tiên, cồng kềnh do 2 scalar subquery lồng nhau cho ROA/ROE mỗi năm) sang aggregate từ `fct_public_company_financial_smy_snpst` (đã dedup sẵn — xem Cụm 12) JOIN `Public Company Dimension` (lấy sẵn `business_line_level_1_code`/`classification_business_line_nm` đã denormalize, không cần LOOKUP `Industry`/`Classification Business Line` riêng). Chạy 2 lần (rpt_year = :year_n / :year_n - 1), GROUP BY ngành. Không dùng `Public Company Financial YoY Report` — measure Nhóm 39 là giá trị tuyệt đối N/N-1 (không phải %).
 
 Phục vụ K_GSDC_709-717 (BC01.2) qua `Public Company Industry Financial Report` — Fact-report denormalize hoàn toàn, ETL populate theo batch mỗi năm báo cáo, không FK Dimension runtime.
 
 ```mermaid
 flowchart LR
     subgraph SRC["Staging"]
-        IDS_company_profiles_c10["IDS.company_profiles"]
-        IDS_data_c10["IDS.data"]
-        IDS_report_catalog_c10["IDS.report_catalog"]
-        IDS_rrow_c10["IDS.rrow"]
-        IDS_rcol_c10["IDS.rcol"]
+        GOLD_fct_smy_c10["Datamart: fct_public_company_financial_smy_snpst (Cụm 12)"]
     end
     subgraph SIL["Atomic"]
-        Public_Company_c10["Public Company"]
-        Financial_Report_Value_c10["Financial Report Value"]
-        Financial_Report_Catalog_c10["Financial Report Catalog"]
-        Financial_Report_Row_Template_c10["Financial Report Row Template"]
-        Financial_Report_Column_Template_c10["Financial Report Column Template"]
+        Public_Company_Dim_c10["Public Company Dimension"]
     end
     subgraph GOLD["Datamart"]
         public_company_industry_financial_rpt["Public Company Industry Financial Report"]
     end
-    IDS_company_profiles_c10 --> Public_Company_c10
-    IDS_data_c10 --> Financial_Report_Value_c10
-    IDS_report_catalog_c10 --> Financial_Report_Catalog_c10
-    IDS_rrow_c10 --> Financial_Report_Row_Template_c10
-    IDS_rcol_c10 --> Financial_Report_Column_Template_c10
-    Public_Company_c10 --> public_company_industry_financial_rpt
-    Financial_Report_Value_c10 --> public_company_industry_financial_rpt
-    Financial_Report_Catalog_c10 --> public_company_industry_financial_rpt
-    Financial_Report_Row_Template_c10 --> public_company_industry_financial_rpt
-    Financial_Report_Column_Template_c10 --> public_company_industry_financial_rpt
+    GOLD_fct_smy_c10 --> public_company_industry_financial_rpt
+    Public_Company_Dim_c10 --> public_company_industry_financial_rpt
 ```
+
+> **Ghi chú kỹ thuật flowchart:** SRC ở đây là bảng Datamart Gold đã populate xong (Cụm 12), đóng vai trò input ETL tầng 2 (Gold-to-Gold) cho Cụm này — không phải Staging thô. `Public Company Dimension` dùng để lấy `business_line_level_1_code`/`classification_business_line_nm` qua `public_company_dim_id` có sẵn trên Fact (không đặt trong SIL đúng nghĩa nhưng giữ đúng cú pháp 3-subgraph).
 
 ---
 
 ##### Cụm 11: Báo cáo vĩ mô đa kỳ (Public Company Multi-Period Financial Report) (Nhóm 40)
+
+> **[SỬA 2026-08-19]** Đổi nguồn ETL nạp — từ JOIN trực tiếp `fr_value` sang aggregate từ `fct_public_company_financial_smy_snpst` (đã dedup sẵn — xem Cụm 12), SUM toàn thị trường (không GROUP BY), chạy 3 lần (rpt_year = :year_n / :year_n - 1 / :year_n - 2). Cột "Vốn điều lệ" (`charter_capital_amt_year_*`) đổi nguồn sang `fct.contributed_capital` (cùng khái niệm), giữ nguyên tên field báo cáo. Không dùng `Public Company Financial YoY Report` — measure Nhóm 40 là giá trị tuyệt đối từng kỳ (không phải %).
 
 Phục vụ K_GSDC_718-739 (BC01.3) qua `Public Company Multi-Period Financial Report` — Fact-report denormalize hoàn toàn, aggregate toàn thị trường (không group-by), ETL populate theo batch mỗi năm báo cáo.
 
 ```mermaid
 flowchart LR
     subgraph SRC["Staging"]
-        IDS_data_c11["IDS.data"]
-        IDS_report_catalog_c11["IDS.report_catalog"]
-        IDS_rrow_c11["IDS.rrow"]
-        IDS_rcol_c11["IDS.rcol"]
+        GOLD_fct_smy_c11["Datamart: fct_public_company_financial_smy_snpst (Cụm 12)"]
     end
     subgraph SIL["Atomic"]
-        Financial_Report_Value_c11["Financial Report Value"]
-        Financial_Report_Catalog_c11["Financial Report Catalog"]
-        Financial_Report_Row_Template_c11["Financial Report Row Template"]
-        Financial_Report_Column_Template_c11["Financial Report Column Template"]
+        Public_Company_c11["Public Company"]
     end
     subgraph GOLD["Datamart"]
         public_company_multi_period_financial_rpt["Public Company Multi-Period Financial Report"]
     end
-    IDS_data_c11 --> Financial_Report_Value_c11
-    IDS_report_catalog_c11 --> Financial_Report_Catalog_c11
-    IDS_rrow_c11 --> Financial_Report_Row_Template_c11
-    IDS_rcol_c11 --> Financial_Report_Column_Template_c11
-    Financial_Report_Value_c11 --> public_company_multi_period_financial_rpt
-    Financial_Report_Catalog_c11 --> public_company_multi_period_financial_rpt
-    Financial_Report_Row_Template_c11 --> public_company_multi_period_financial_rpt
-    Financial_Report_Column_Template_c11 --> public_company_multi_period_financial_rpt
+    GOLD_fct_smy_c11 --> public_company_multi_period_financial_rpt
 ```
+
+> **Ghi chú kỹ thuật flowchart:** SRC là bảng Datamart Gold đã populate xong (Cụm 12), đóng vai trò input ETL tầng 2 (Gold-to-Gold) — không phải Staging thô. Không GROUP BY theo Dimension nào (SUM toàn thị trường), nên không cần JOIN `Public Company Dimension` ở Cụm này (khác Cụm 10).
 
 ---
 
-##### Cụm 12: Tổng hợp tài chính theo sàn kèm YoY (Public Company Exchange Financial Summary Report) (Nhóm 41)
+##### Cụm 12: Snapshot chỉ tiêu tài chính theo CTĐC (Fact Public Company Financial Summary Snapshot) (Nhóm 7 Khối A, 8, 11, 13, 15, 17, 37)
 
-Phục vụ K_GSDC_740-751+YOY (BC22) qua `Public Company Exchange Financial Summary Report` — Fact-report denormalize hoàn toàn, ETL populate theo batch mỗi kỳ (Report_Year + Report_Quarter), tính sẵn YoY khi populate.
+> **[SỬA 2026-08-19]** Cụm mới bổ sung — phản ánh Fact `fct_public_company_financial_smy_snpst` (thiết kế 2026-08-18, thay EAV cho Nhóm 7 Khối A) vốn chưa có trong Section 1 Data Lineage dù đã dùng cho nhiều Nhóm. **[SỬA 2026-08-19 lần 2]** Nhóm 41 (BC22) KHÔNG query trực tiếp Fact này ở tầng báo cáo — Fact này chỉ là nguồn ETL trung gian nạp vào `Public Company Exchange Financial Summary Report` (bảng report riêng, pre-aggregate sẵn, xem Cụm 14), giữ đúng bản chất Fact-report denormalize hoàn toàn cho BC22.
+
+Phục vụ K_GSDC_50-92 (Nhóm 7 Khối A/8/11/13/15/17), K_GSDC_1444-1456 (Nhóm 37) qua `Fact Public Company Financial Summary Snapshot` — driving `fr_value`, dedup form ưu tiên HN>TH>ME>RI + bản ghi mới nhất mỗi ô, pivot 12 chỉ tiêu (+1 `Pre_Tax_Profit` bổ sung phục vụ ETL nạp Nhóm 41 — xem Section 5) thành cột trên Fact khi ETL populate. Quy tắc khai thác đầy đủ xem Nhóm 7. Cụm 14 (Nhóm 41) dùng Fact này làm nguồn ETL tầng 2 (Gold-to-Gold), không phải nguồn báo cáo trực tiếp.
 
 ```mermaid
 flowchart LR
     subgraph SRC["Staging"]
-        IDS_company_profiles_c12["IDS.company_profiles"]
         IDS_data_c12["IDS.data"]
+        IDS_company_data_c12["IDS.company_data"]
+        IDS_forms_c12["IDS.forms"]
         IDS_report_catalog_c12["IDS.report_catalog"]
         IDS_rrow_c12["IDS.rrow"]
         IDS_rcol_c12["IDS.rcol"]
+        IDS_company_profiles_c12["IDS.company_profiles"]
+        ECAT_ECAT_29_HolidayInfo_c12["ECAT.ECAT_29_HolidayInfo"]
     end
     subgraph SIL["Atomic"]
-        Public_Company_c12["Public Company"]
         Financial_Report_Value_c12["Financial Report Value"]
+        Public_Company_Report_Submission_c12["Public Company Report Submission"]
+        Financial_Report_Template_c12["Financial Report Template"]
         Financial_Report_Catalog_c12["Financial Report Catalog"]
         Financial_Report_Row_Template_c12["Financial Report Row Template"]
         Financial_Report_Column_Template_c12["Financial Report Column Template"]
+        Public_Company_c12["Public Company"]
+        Calendar_Date_c12["Calendar Date"]
+    end
+    subgraph GOLD["Datamart"]
+        fct_public_company_financial_smy_snpst_c12["Fact Public Company Financial Summary Snapshot"]
+        public_company_dim_c12["Public Company Dimension"]
+        industry_dim_c12["Industry Dimension"]
+        cdr_dt_dim_c12["Calendar Date Dimension"]
+    end
+    IDS_data_c12 --> Financial_Report_Value_c12
+    IDS_company_data_c12 --> Public_Company_Report_Submission_c12
+    IDS_forms_c12 --> Financial_Report_Template_c12
+    IDS_report_catalog_c12 --> Financial_Report_Catalog_c12
+    IDS_rrow_c12 --> Financial_Report_Row_Template_c12
+    IDS_rcol_c12 --> Financial_Report_Column_Template_c12
+    IDS_company_profiles_c12 --> Public_Company_c12
+    ECAT_ECAT_29_HolidayInfo_c12 --> Calendar_Date_c12
+    Financial_Report_Value_c12 --> fct_public_company_financial_smy_snpst_c12
+    Public_Company_Report_Submission_c12 --> fct_public_company_financial_smy_snpst_c12
+    Financial_Report_Template_c12 --> fct_public_company_financial_smy_snpst_c12
+    Financial_Report_Catalog_c12 --> fct_public_company_financial_smy_snpst_c12
+    Financial_Report_Row_Template_c12 --> fct_public_company_financial_smy_snpst_c12
+    Financial_Report_Column_Template_c12 --> fct_public_company_financial_smy_snpst_c12
+    Public_Company_c12 --> public_company_dim_c12
+    Public_Company_c12 --> industry_dim_c12
+    Calendar_Date_c12 --> cdr_dt_dim_c12
+    public_company_dim_c12 --> fct_public_company_financial_smy_snpst_c12
+    industry_dim_c12 --> fct_public_company_financial_smy_snpst_c12
+    cdr_dt_dim_c12 --> fct_public_company_financial_smy_snpst_c12
+```
+
+---
+
+##### Cụm 13: Tổng hợp YoY chỉ tiêu tài chính theo sàn (Public Company Financial YoY Report) (Nhóm 7 Khối B, 11, 13, 15, 17)
+
+> **[SỬA 2026-08-19]** Cụm mới bổ sung — phản ánh `public_company_financial_yoy_rpt` (giữ nguyên thiết kế cũ từ trước 2026-08-18) vốn chưa có Cụm riêng trong Section 1. **[SỬA 2026-08-19 lần 2]** Nhóm 41 (BC22) KHÔNG query trực tiếp bảng này ở tầng báo cáo — chỉ là nguồn ETL trung gian nạp phần YoY vào `Public Company Exchange Financial Summary Report` (xem Cụm 14).
+
+Phục vụ K_GSDC_50_YOY-62_YOY (Nhóm 7 Khối B/11/13/15/17) qua `Public Company Financial YoY Report` — scalar subquery độc lập trên `fr_value`/`pc_report_submission`/`fr_template`/`financial_report_catalog`/`fr_row_template`/`fr_column_template`/`public_company`, tính sẵn % YoY khi ETL populate (không phải Detail Mapping tính runtime). Bổ sung `Pre_Tax_Profit_Yoy` (xem Section 5) phục vụ ETL nạp Nhóm 41. Cụm 14 (Nhóm 41) dùng bảng này làm nguồn ETL tầng 2 (Gold-to-Gold).
+
+```mermaid
+flowchart LR
+    subgraph SRC["Staging"]
+        IDS_data_c13["IDS.data"]
+        IDS_company_data_c13["IDS.company_data"]
+        IDS_forms_c13["IDS.forms"]
+        IDS_report_catalog_c13["IDS.report_catalog"]
+        IDS_rrow_c13["IDS.rrow"]
+        IDS_rcol_c13["IDS.rcol"]
+        IDS_company_profiles_c13["IDS.company_profiles"]
+    end
+    subgraph SIL["Atomic"]
+        Financial_Report_Value_c13["Financial Report Value"]
+        Public_Company_Report_Submission_c13["Public Company Report Submission"]
+        Financial_Report_Template_c13["Financial Report Template"]
+        Financial_Report_Catalog_c13["Financial Report Catalog"]
+        Financial_Report_Row_Template_c13["Financial Report Row Template"]
+        Financial_Report_Column_Template_c13["Financial Report Column Template"]
+        Public_Company_c13["Public Company"]
+    end
+    subgraph GOLD["Datamart"]
+        public_company_financial_yoy_rpt_c13["Public Company Financial YoY Report"]
+    end
+    IDS_data_c13 --> Financial_Report_Value_c13
+    IDS_company_data_c13 --> Public_Company_Report_Submission_c13
+    IDS_forms_c13 --> Financial_Report_Template_c13
+    IDS_report_catalog_c13 --> Financial_Report_Catalog_c13
+    IDS_rrow_c13 --> Financial_Report_Row_Template_c13
+    IDS_rcol_c13 --> Financial_Report_Column_Template_c13
+    IDS_company_profiles_c13 --> Public_Company_c13
+    Financial_Report_Value_c13 --> public_company_financial_yoy_rpt_c13
+    Public_Company_Report_Submission_c13 --> public_company_financial_yoy_rpt_c13
+    Financial_Report_Template_c13 --> public_company_financial_yoy_rpt_c13
+    Financial_Report_Catalog_c13 --> public_company_financial_yoy_rpt_c13
+    Financial_Report_Row_Template_c13 --> public_company_financial_yoy_rpt_c13
+    Financial_Report_Column_Template_c13 --> public_company_financial_yoy_rpt_c13
+    Public_Company_c13 --> public_company_financial_yoy_rpt_c13
+```
+
+---
+
+##### Cụm 14: Tổng hợp tài chính theo sàn kèm YoY (Public Company Exchange Financial Summary Report) (Nhóm 41)
+
+> **[SỬA 2026-08-19 lần 2]** Khôi phục bảng report riêng cho BC22 (đã bị loại bỏ nhầm ở bản sửa lần 1 cùng ngày) — theo yêu cầu tường minh Data Modeler: BC22 cần 1 bảng **tính toán sẵn (pre-aggregate ở tầng ETL populate)**, không phải query trực tiếp Fact ở tầng báo cáo, giữ đúng bản chất Fact-report denormalize hoàn toàn (đóng gói cố định theo kỳ). Điểm khác biệt duy nhất so với thiết kế gốc (trước 2026-08-18): nguồn ETL nạp đổi từ JOIN trực tiếp `fr_value`/`company_data`/`company_profiles` (thiếu dedup form-ưu-tiên, lỗi thời) sang ETL 2 tầng (Gold-to-Gold) từ 2 bảng đã dedup sẵn ở Cụm 12/13 — tránh lặp lại logic dedup phức tạp lần thứ 3 trong cùng module.
+>
+> **Pattern ETL 2 tầng (khác thông thường Atomic→Datamart 1 tầng):** `fct_public_company_financial_smy_snpst` (GOLD của Cụm 12) + `public_company_financial_yoy_rpt` (GOLD của Cụm 13) đóng vai trò **nguồn ETL tầng 2** cho `public_company_exchange_financial_summary_rpt` — batch ETL populate BC22 chạy SAU khi 2 bảng nguồn đã được populate xong trong cùng chu kỳ, không phải JOIN runtime khi user xem báo cáo.
+> - Giá trị tuyệt đối (9 measure): `SELECT public_company_dim.equity_listing_exchange_code, SUM(measure)... FROM fct_public_company_financial_smy_snpst JOIN public_company_dim ... GROUP BY equity_listing_exchange_code, rpt_year, rpt_quarter` — nạp 1 lần mỗi kỳ.
+> - ROA/ROE tuyệt đối: tính lại ở mức sàn ngay trong bước ETL populate (không copy cột `roa`/`roe` per-company).
+> - YoY (11 measure): SELECT thẳng từ `public_company_financial_yoy_rpt` theo `equity_listing_exchange_code` khớp — copy giá trị đã tính sẵn, không tính lại.
+
+```mermaid
+flowchart LR
+    subgraph SRC["Staging"]
+        GOLD_fct_smy_c14["Datamart: fct_public_company_financial_smy_snpst (Cụm 12)"]
+        GOLD_yoy_rpt_c14["Datamart: public_company_financial_yoy_rpt (Cụm 13)"]
+    end
+    subgraph SIL["Atomic"]
+        Public_Company_c14["Public Company"]
     end
     subgraph GOLD["Datamart"]
         public_company_exchange_financial_summary_rpt["Public Company Exchange Financial Summary Report"]
     end
-    IDS_company_profiles_c12 --> Public_Company_c12
-    IDS_data_c12 --> Financial_Report_Value_c12
-    IDS_report_catalog_c12 --> Financial_Report_Catalog_c12
-    IDS_rrow_c12 --> Financial_Report_Row_Template_c12
-    IDS_rcol_c12 --> Financial_Report_Column_Template_c12
-    Public_Company_c12 --> public_company_exchange_financial_summary_rpt
-    Financial_Report_Value_c12 --> public_company_exchange_financial_summary_rpt
-    Financial_Report_Catalog_c12 --> public_company_exchange_financial_summary_rpt
-    Financial_Report_Row_Template_c12 --> public_company_exchange_financial_summary_rpt
-    Financial_Report_Column_Template_c12 --> public_company_exchange_financial_summary_rpt
+    GOLD_fct_smy_c14 --> public_company_exchange_financial_summary_rpt
+    GOLD_yoy_rpt_c14 --> public_company_exchange_financial_summary_rpt
+    Public_Company_c14 --> public_company_exchange_financial_summary_rpt
 ```
+
+> **Ghi chú kỹ thuật flowchart:** SRC ở đây KHÔNG phải bảng nguồn thô (Staging) như thông thường — là 2 bảng Datamart Gold đã populate xong (Cụm 12/13), đóng vai trò input ETL tầng 2 cho Cụm này. Đặt trong subgraph `SRC["Staging"]` chỉ để giữ đúng cú pháp 3-subgraph bắt buộc của skill, không phản ánh đúng nghĩa "Staging" thông thường — ghi rõ prefix "Datamart:" trong label để tránh nhầm lẫn khi đọc lại. `Public Company` (Atomic) dùng để JOIN lấy `equity_listing_exchange_code` khi GROUP BY sàn ở bước ETL tầng 2 (qua `Public Company Dimension`, không lặp lại trong diagram này vì đã có ở Cụm 12).
 
 ---
 
@@ -1111,6 +1174,7 @@ erDiagram
         decimal Inventory
         decimal Net_Revenue
         decimal Undistributed_Profit
+        decimal Pre_Tax_Profit
         decimal Receivable
         decimal Cash_And_Equivalent
         decimal Roa
@@ -1203,6 +1267,7 @@ erDiagram
         decimal Inventory_Yoy
         decimal Net_Revenue_Yoy
         decimal Undistributed_Profit_Yoy
+        decimal Pre_Tax_Profit_Yoy
         decimal Receivable_Yoy
         decimal Cash_And_Equivalent_Yoy
         decimal Roa_Yoy
@@ -1279,6 +1344,7 @@ erDiagram
         decimal Inventory
         decimal Net_Revenue
         decimal Undistributed_Profit
+        decimal Pre_Tax_Profit
         decimal Receivable
         decimal Cash_And_Equivalent
         decimal Roa
@@ -1452,6 +1518,7 @@ erDiagram
         decimal Inventory
         decimal Net_Revenue
         decimal Undistributed_Profit
+        decimal Pre_Tax_Profit
         decimal Receivable
         decimal Cash_And_Equivalent
         decimal Roa
@@ -1498,6 +1565,7 @@ erDiagram
         decimal Inventory_Yoy
         decimal Net_Revenue_Yoy
         decimal Undistributed_Profit_Yoy
+        decimal Pre_Tax_Profit_Yoy
         decimal Receivable_Yoy
         decimal Cash_And_Equivalent_Yoy
         decimal Roa_Yoy
@@ -1617,6 +1685,7 @@ erDiagram
         decimal Inventory
         decimal Net_Revenue
         decimal Undistributed_Profit
+        decimal Pre_Tax_Profit
         decimal Receivable
         decimal Cash_And_Equivalent
         decimal Roa
@@ -1663,6 +1732,7 @@ erDiagram
         decimal Inventory_Yoy
         decimal Net_Revenue_Yoy
         decimal Undistributed_Profit_Yoy
+        decimal Pre_Tax_Profit_Yoy
         decimal Receivable_Yoy
         decimal Cash_And_Equivalent_Yoy
         decimal Roa_Yoy
@@ -1781,6 +1851,7 @@ erDiagram
         decimal Inventory
         decimal Net_Revenue
         decimal Undistributed_Profit
+        decimal Pre_Tax_Profit
         decimal Receivable
         decimal Cash_And_Equivalent
         decimal Roa
@@ -1827,6 +1898,7 @@ erDiagram
         decimal Inventory_Yoy
         decimal Net_Revenue_Yoy
         decimal Undistributed_Profit_Yoy
+        decimal Pre_Tax_Profit_Yoy
         decimal Receivable_Yoy
         decimal Cash_And_Equivalent_Yoy
         decimal Roa_Yoy
@@ -1945,6 +2017,7 @@ erDiagram
         decimal Inventory
         decimal Net_Revenue
         decimal Undistributed_Profit
+        decimal Pre_Tax_Profit
         decimal Receivable
         decimal Cash_And_Equivalent
         decimal Roa
@@ -1991,6 +2064,7 @@ erDiagram
         decimal Inventory_Yoy
         decimal Net_Revenue_Yoy
         decimal Undistributed_Profit_Yoy
+        decimal Pre_Tax_Profit_Yoy
         decimal Receivable_Yoy
         decimal Cash_And_Equivalent_Yoy
         decimal Roa_Yoy
@@ -3170,21 +3244,24 @@ flowchart LR
 
 > Phân loại: **Phân tích**
 > Source: `Public Company Regulatory Compliance Report` (`public_company_regulatory_compliance_rpt`) — Fact-report denormalize hoàn toàn, không qua Dimension/Fact trung gian nào khi xem báo cáo.
-> Đây là báo cáo BC01.1 cố định theo kỳ (`:p_year`/`:p_quarter`), SQL BA aggregate trực tiếp ra 1 dòng kết quả/sàn (không cần giữ current-state theo công ty) — đúng tiêu chí Fact-report (`naming_conventions.md`: "báo cáo đóng gói cố định theo kỳ — ETL append-only theo Report Date, không SCD4A, thường denormalize hoàn toàn"). Denormalize toàn bộ 9 measure vào 1 bảng phẳng `Public Company Regulatory Compliance Report`, ETL populate theo batch mỗi kỳ (Report_Year + Report_Quarter), không có FK Dimension — `Equity_Listing_Exchange_Code` lưu trực tiếp dạng text (denormalize từ `IDS_LISTING_TYPE`).
-> Atomic nguồn (dùng ở tầng ETL populate report, không phải FK runtime): `Public Company` (`public_company`) cho Số DN đăng ký; `Public Company Report Submission` (`pc_report_submission`, approved) cho Số BCTC đến hạn/đã nộp; `Financial Report Value` (`fr_value`) cho Số CTĐC báo lãi.
+> Đây là báo cáo BC01.1 cố định theo kỳ (`:p_year`/`:p_quarter`), SQL BA aggregate trực tiếp ra 1 dòng kết quả/sàn (không cần giữ current-state theo công ty) — đúng tiêu chí Fact-report (`naming_conventions.md`: "báo cáo đóng gói cố định theo kỳ — ETL append-only theo Report Date, không SCD4A, thường denormalize hoàn toàn"). Denormalize toàn bộ 9 measure vào 1 bảng phẳng `Public Company Regulatory Compliance Report`, ETL populate theo batch mỗi kỳ (Report_Year + Report_Quarter), không có FK Dimension — `Equity_Listing_Exchange_Code` lưu trực tiếp dạng text.
+> **[SỬA 2026-08-19 lần 2 — toàn bộ Nhóm 38 chuyển sang lấy từ Datamart, 4 sub-select độc lập]** Theo đánh giá Data Modeler: Số lượng DN (K_GSDC_701) hoàn toàn có thể đếm từ `Public Company Dimension` (đã denormalize sẵn `equity_listing_exchange_code`/`public_company_status_code`); Số BCTC đến hạn/đã nộp (K_GSDC_702/703) lấy từ `Fact Violation Report Snapshot` (`fct_violation_rpt_snpst`, grain 1 row/công ty/ngày snapshot, đã có sẵn `rpt_due_count`/`rpt_submitted_count` per-company) — SUM lại theo sàn tại snapshot mới nhất.
+> **Đổi nguồn K_GSDC_703 (quan trọng):** thiết kế cũ dùng `Public Company Report Submission` (`pc_report_submission`, nguồn Atomic `IDS.COMPANY_DATA`) với điều kiện `submission_dt <= submission_deadline_dt`. Đối chiếu lại Câu lệnh update SIT mới nhất của BA: `COUNT(1) WHERE news_status_cd='APPROVED' AND submission_deadline_date <= SYSDATE` — không còn điều kiện so sánh ngày nộp với hạn nộp. Đổi hẳn nguồn sang `Fact Violation Report Snapshot` (nguồn Atomic `violation_report`, `IDS.VIOLATION_REPORT`) dùng chung với K_GSDC_702.
+> **[SỬA 2026-08-19]** Số CTĐC báo lãi (K_GSDC_705/707) đổi nguồn ETL nạp — sang `COUNT(DISTINCT public_company_dim_id) WHERE net_profit > 0` trên `fct_public_company_financial_smy_snpst` (đã dedup form-ưu-tiên sẵn — xem Cụm 12, Section 1) JOIN `Public Company Dimension` (filter `public_company_status_code = 'APPROVED_PUBLIC'` + `equity_listing_exchange_code IN ('HNX','HOSE','UPCOM','OTC')`, vì Fact này không tự filter status CTĐC).
+> **[SỬA 2026-08-19 lần 4 — tối ưu, DRIVING TABLE = Profitable Company Count Year N]** `Profitable Company Count Year N` (sub-select trên `fct_public_company_financial_smy_snpst`, đã GROUP BY sẵn theo sàn+kỳ) làm **driving table** của toàn bộ report — cung cấp danh sách sàn+kỳ chuẩn (`rpt_year`/`rpt_quarter` NOT NULL, grain key thật; KHÔNG dùng `Fact Violation Report Snapshot` làm nguồn kỳ vì cột này nullable, tránh lặp lại lỗi đã ghi nhận ở K_GSDC_49/Nhóm 6, sửa 2026-08-15). `Report Due Count`/`Report Submitted Count` JOIN vào driving qua `Equity Listing Exchange Code` + `Report Year` + `Report Quarter` (measure phụ thuộc kỳ thật). **`Company Count` (K_GSDC_701) đã bỏ điều kiện `ids_registration_dt <= cuối kỳ`** — trở thành 1 giá trị duy nhất/sàn (không phụ thuộc kỳ), JOIN vào driving CHỈ qua `Equity Listing Exchange Code`, không cần CROSS JOIN danh sách kỳ riêng. 4 sub-select vẫn không JOIN Fact-to-Fact ở tầng chi tiết.
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_GSDC_700 | Sàn NY/ĐKGD | Text | Chiều (Group By) | equity_listing_exchange_code (trực tiếp) | Denormalize trực tiếp vào cột report — không FK Dimension | READY |
-| K_GSDC_701 | Số lượng DN | DN | Phái sinh | ids_registration_dt (trực tiếp) | COUNT DISTINCT WHERE ids_registration_dt <= cuối kỳ GROUP BY sàn — xem O_GSDC_2 | READY |
-| K_GSDC_702 | Số lượng BCTC đến hạn nộp | DN | Cơ sở | submission_deadline_dt (trực tiếp) | COUNT(*) WHERE rpt_year/rpt_quarter=kỳ AND submission_deadline_dt <= SYSDATE GROUP BY sàn | READY |
-| K_GSDC_703 | Số báo cáo (BCTC) đã nộp | DN | Cơ sở | submission_dt (trực tiếp) | COUNT(CASE WHEN submission_dt IS NOT NULL AND submission_dt <= submission_deadline_dt) cùng điều kiện K_GSDC_702 | READY |
+| K_GSDC_700 | Sàn NY/ĐKGD | Text | Chiều (Group By) | `equity_listing_exchange_code` (trực tiếp) | ETL nạp: từ driving table Profitable Company Count Year N | READY |
+| K_GSDC_701 | Số lượng DN | DN | Phái sinh | `company_count` (trực tiếp) | ETL nạp: sub-select độc lập, không phụ thuộc kỳ — COUNT DISTINCT từ Public Company Dimension WHERE status=APPROVED_PUBLIC GROUP BY sàn; JOIN vào driving chỉ qua sàn | READY |
+| K_GSDC_702 | Số lượng BCTC đến hạn nộp | DN | Cơ sở | `rpt_due_count` (trực tiếp) | ETL nạp: sub-select độc lập — SUM(fct_violation_rpt_snpst.rpt_due_count) tại snapshot mới nhất GROUP BY sàn/kỳ; JOIN vào driving qua sàn+kỳ | READY |
+| K_GSDC_703 | Số báo cáo (BCTC) đã nộp | DN | Cơ sở | `rpt_submitted_count` (trực tiếp) | ETL nạp: sub-select độc lập — SUM(fct_violation_rpt_snpst.rpt_submitted_count) tại snapshot mới nhất GROUP BY sàn/kỳ — đổi hẳn nguồn sang Fact Violation Report Snapshot, khớp Câu lệnh update SIT BA mới nhất | READY |
 | K_GSDC_704 | Tỷ lệ nộp BCTC (%) | % | Phái sinh | — (trực tiếp) | Phái sinh = K_GSDC_703 / K_GSDC_702 × 100 | READY |
-| K_GSDC_705 | Số CTDC báo lãi Năm N | DN | Cơ sở | READY (trực tiếp) | GROUP BY sàn (join `company_profiles`) | READY |
+| K_GSDC_705 | Số CTDC báo lãi Năm N | DN | Cơ sở | `profitable_company_count_year_n` (trực tiếp) | ETL nạp: DRIVING TABLE — COUNT DISTINCT WHERE fct_public_company_financial_smy_snpst.net_profit > 0 GROUP BY sàn/rpt_year/rpt_quarter (JOIN Public Company Dimension) | READY |
 | K_GSDC_706 | Tỷ lệ DN báo lãi Năm N (%) | % | Phái sinh | — (trực tiếp) | Phái sinh = K_GSDC_705 / K_GSDC_701 × 100 | READY |
-| K_GSDC_707 | Số CTDC báo lãi Năm N-1 | DN | Cơ sở | READY (trực tiếp) | Cùng công thức K_GSDC_705, đổi `rpt_year = :year - 1` | READY |
+| K_GSDC_707 | Số CTDC báo lãi Năm N-1 | DN | Cơ sở | `profitable_company_count_year_n1` (trực tiếp) | ETL nạp: cùng công thức K_GSDC_705, JOIN danh sách kỳ N (từ chính Fact) lấy `rpt_year - 1` làm điều kiện lọc | READY |
 | K_GSDC_708 | Tỷ lệ DN báo lãi Năm N-1 (%) | % | Phái sinh | — (trực tiếp) | Phái sinh = K_GSDC_707 / K_GSDC_701 (kỳ N-1) × 100 | READY |
 
 **Star Schema:**
@@ -3226,22 +3303,23 @@ flowchart LR
 > Phân loại: **Phân tích**
 > Source: `Public Company Industry Financial Report` (`public_company_industry_financial_rpt`) — Fact-report denormalize hoàn toàn.
 > Field group-by-ngành: đúng tên `Business Line Level 1 Code` (`business_line_level_1_code`), không phải `Industry Category Level1 Code`/`idy_cgy_level1_code`.
-> Đây là 1 câu SQL duy nhất (CTE `kqkd`) aggregate trực tiếp `SUM(data_val)`/`AVG` ra kết quả DTT/LNST/ROA/ROE theo ngành, kỳ NĂM (`report_quarter IS NULL`), tính đồng thời Năm N và N-1 bằng `CASE WHEN` trong cùng query — đúng tiêu chí Fact-report (báo cáo cố định theo kỳ, không cần giữ current-state theo từng công ty). Denormalize 8 measure (DTT/LNST/ROA/ROE × N/N-1) vào 1 bảng phẳng `Public Company Industry Financial Report`, ETL populate theo batch mỗi năm báo cáo, không FK Dimension — `Business_Line_Level_1_Code` lưu trực tiếp dạng text.
-> Atomic nguồn (dùng ở tầng ETL populate report): `Financial Report Value` (`fr_value`) JOIN `Public Company` (lấy ngành) + `Financial Report Catalog`/`Row Template`/`Column Template` (xác định row/col code).
+> **[SỬA 2026-08-19]** Đổi nguồn ETL nạp — từ JOIN trực tiếp `fr_value`/`public_company` (thiếu dedup form-ưu-tiên, cồng kềnh do 2 scalar subquery lồng nhau tính TSBQ/VCSHBQ mỗi năm) sang aggregate từ `fct_public_company_financial_smy_snpst` (đã dedup sẵn — xem Cụm 12, Section 1) JOIN `Public Company Dimension` (lấy `business_line_level_1_code`/`classification_business_line_nm` đã denormalize sẵn, không LOOKUP `cl_business_line` riêng). Đây là ETL populate report — không còn là 1 câu SQL CTE `kqkd` gốc của BA (BA dùng để tham khảo logic nghiệp vụ, ETL populate thật đơn giản hơn nhờ Fact trung gian đã pivot/dedup sẵn), chạy 2 lần (rpt_year = :year_n / :year_n - 1). Denormalize 8 measure (DTT/LNST/ROA/ROE × N/N-1) vào 1 bảng phẳng `Public Company Industry Financial Report`, không FK Dimension — `Business_Line_Level_1_Code` lưu trực tiếp dạng text.
+> **ROA/ROE — tính lại ở mức ngành ngay trong bước ETL populate, KHÔNG copy cột `roa`/`roe` per-company có sẵn trên Fact** (giống nguyên tắc grain-matching đã áp dụng Nhóm 41): `SUM(net_profit) / NULLIF(SUM(COALESCE(total_asset_beginning,total_asset)+COALESCE(total_asset,total_asset_beginning))/2, 0) * 100` (ROA); tương tự ROE dùng `equity`/`equity_beginning`.
+> Atomic nguồn (chỉ dùng ở tầng ETL populate `fct_public_company_financial_smy_snpst`/`Public Company Dimension`, không phải nguồn trực tiếp của báo cáo): `Financial Report Value` (`fr_value`) qua Fact trung gian.
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_GSDC_709 | Ngành kinh tế | Text | Chiều (Group By) | business_line_level_1_code (xem KPI liên quan cùng công thức) | public_company | **READY** |
-| K_GSDC_710 | DTT Năm N | Tỉ đồng | Cơ sở | data_val WHERE row_desc=10/10/03, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_711 | LNST Năm N | Tỉ đồng | Cơ sở | data_val WHERE row_desc=60/60/21, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_712 | ROA Năm N | % | Phái sinh | data_val WHERE row_desc=270/270/300 (TSBQ) + 60/60/21 (LNST), report=BCDKT+BCKQKD, col_desc=1+2 | fr_value | **READY** |
-| K_GSDC_713 | ROE Năm N | % | Phái sinh | data_val WHERE row_desc=400/400/500 (VCSHBQ) + 60/60/21 (LNST), report=BCDKT+BCKQKD, col_desc=1+2 | fr_value | **READY** |
-| K_GSDC_714 | DTT Năm N-1 | Tỉ đồng | Cơ sở | data_val WHERE row_desc=10/10/03, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_715 | LNST Năm N-1 | Tỉ đồng | Cơ sở | data_val WHERE row_desc=60/60/21, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_716 | ROA Năm N-1 | % | Phái sinh | data_val WHERE row_desc=(như K_GSDC_712, `report_year = :year_n - 1`), report=—, col_desc=— | fr_value | **READY** |
-| K_GSDC_717 | ROE Năm N-1 | % | Phái sinh | data_val WHERE row_desc=(như K_GSDC_713, `report_year = :year_n - 1`), report=—, col_desc=— | fr_value | **READY** |
+| K_GSDC_709 | Ngành kinh tế | Text | Chiều (Group By) | `business_line_level_1_code` (trực tiếp) | ETL nạp: từ Public Company Dimension (JOIN qua public_company_dim_id trên Fact) | **READY** |
+| K_GSDC_710 | DTT Năm N | Tỉ đồng | Cơ sở | `net_revenue_amt_year_n` (trực tiếp) | ETL nạp: SUM(fct_public_company_financial_smy_snpst.net_revenue) GROUP BY ngành, rpt_year=:year_n | **READY** |
+| K_GSDC_711 | LNST Năm N | Tỉ đồng | Cơ sở | `net_profit_amt_year_n` (trực tiếp) | ETL nạp: SUM(fct_public_company_financial_smy_snpst.net_profit) GROUP BY ngành, rpt_year=:year_n | **READY** |
+| K_GSDC_712 | ROA Năm N | % | Phái sinh | `roa_percentage_year_n` (trực tiếp) | ETL nạp: tính lại ở mức ngành (xem công thức ROA/ROE trên) | **READY** |
+| K_GSDC_713 | ROE Năm N | % | Phái sinh | `roe_percentage_year_n` (trực tiếp) | ETL nạp: tính lại ở mức ngành (xem công thức ROA/ROE trên) | **READY** |
+| K_GSDC_714 | DTT Năm N-1 | Tỉ đồng | Cơ sở | `net_revenue_amt_year_n1` (trực tiếp) | ETL nạp: cùng công thức K_GSDC_710, rpt_year=:year_n - 1 | **READY** |
+| K_GSDC_715 | LNST Năm N-1 | Tỉ đồng | Cơ sở | `net_profit_amt_year_n1` (trực tiếp) | ETL nạp: cùng công thức K_GSDC_711, rpt_year=:year_n - 1 | **READY** |
+| K_GSDC_716 | ROA Năm N-1 | % | Phái sinh | `roa_percentage_year_n1` (trực tiếp) | ETL nạp: cùng công thức K_GSDC_712, rpt_year=:year_n - 1 | **READY** |
+| K_GSDC_717 | ROE Năm N-1 | % | Phái sinh | `roe_percentage_year_n1` (trực tiếp) | ETL nạp: cùng công thức K_GSDC_713, rpt_year=:year_n - 1 | **READY** |
 
 > **Ghi chú kỳ:** Toàn bộ measure Nhóm 39 filter `Report_Quarter IS NULL AND Report_Year IN (:year_n, :year_n - 1)` — báo cáo kỳ NĂM. Năm N/N-1 denormalize thành 2 cột riêng trên cùng 1 row report (không phải 2 row), khớp đúng pattern SQL BA (`CASE WHEN Report_Year = ...` trong 1 query).
 
@@ -3287,35 +3365,37 @@ flowchart LR
 > Phân loại: **Phân tích**
 > Source: `Public Company Multi-Period Financial Report` (`public_company_multi_period_financial_rpt`) — Fact-report denormalize hoàn toàn, K_GSDC_718 là tham số UI thuần (không map bảng nào).
 > K_GSDC_718 "Kỳ báo cáo" là tham số UI thuần, không map bảng nào.
-> SQL BA (`BA_analyst_GSDC_part3.csv` dòng 204-225) là 1 câu SQL duy nhất (CTE `bcdkt`/`kqkd`) aggregate toàn thị trường (không GROUP BY), trả đồng thời 3 kỳ N/N-1/N-2 — mỗi kỳ 1 dòng giá trị duy nhất, đóng gói cố định theo `:year_n`. Đúng tiêu chí Fact-report — không cần Dimension nào (không group-by công ty/ngành/sàn). Denormalize 21 measure (7 chỉ tiêu × 3 kỳ) vào 1 bảng phẳng `Public Company Multi-Period Financial Report`, grain 1 row DUY NHẤT/năm báo cáo (Năm N), 2 kỳ so sánh (N-1/N-2) lưu kèm cột trên cùng row.
-> Atomic nguồn (dùng ở tầng ETL populate report): `Financial Report Value` (`fr_value`) JOIN `Financial Report Catalog`/`Row Template`/`Column Template`.
+> **[SỬA 2026-08-19]** Đổi nguồn ETL nạp — từ JOIN trực tiếp `fr_value` sang aggregate từ `fct_public_company_financial_smy_snpst` (đã dedup form-ưu-tiên sẵn — xem Cụm 12, Section 1), SUM toàn thị trường (không GROUP BY), chạy 3 lần (rpt_year = :year_n / :year_n - 1 / :year_n - 2). SQL BA (`BA_analyst_GSDC_part3.csv` dòng 204-225, CTE `bcdkt`/`kqkd`) dùng để tham khảo logic nghiệp vụ gốc — ETL populate thật đơn giản hơn nhờ Fact trung gian đã pivot/dedup sẵn. Đúng tiêu chí Fact-report — không cần Dimension nào (không group-by công ty/ngành/sàn). Denormalize 21 measure (7 chỉ tiêu × 3 kỳ) vào 1 bảng phẳng `Public Company Multi-Period Financial Report`, grain 1 row DUY NHẤT/năm báo cáo (Năm N), 2 kỳ so sánh (N-1/N-2) lưu kèm cột trên cùng row.
+> **Cột "Vốn điều lệ"** (`charter_capital_amt_year_n/n1/n2`) đổi nguồn ETL sang `fct_public_company_financial_smy_snpst.contributed_capital` (cùng khái niệm nghiệp vụ) — giữ nguyên tên field báo cáo `charter_capital_amt_year_*`, không đổi tên.
+> **ROA/ROE — tính lại ở mức toàn thị trường ngay trong bước ETL populate, KHÔNG copy cột `roa`/`roe` per-company có sẵn trên Fact** (giống nguyên tắc grain-matching đã áp dụng Nhóm 39/41): `SUM(net_profit) / NULLIF(SUM(COALESCE(total_asset_beginning,total_asset)+COALESCE(total_asset,total_asset_beginning))/2, 0) * 100` (ROA); tương tự ROE dùng `equity`/`equity_beginning`.
+> Atomic nguồn (chỉ dùng ở tầng ETL populate `fct_public_company_financial_smy_snpst`, không phải nguồn trực tiếp của báo cáo): `Financial Report Value` (`fr_value`) qua Fact trung gian.
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
 | K_GSDC_718 | Kỳ báo cáo | Text | Chiều (Slicer) | — (xem KPI liên quan cùng công thức) |  | **READY** |
-| K_GSDC_719 | Tổng tài sản Năm N | Tỉ đồng | Cơ sở | data_val WHERE row_desc=270/270/300, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_720 | Nợ phải trả Năm N | Tỉ đồng | Cơ sở | data_val WHERE row_desc=300/300/400, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_721 | Vốn chủ sở hữu Năm N | Tỉ đồng | Cơ sở | data_val WHERE row_desc=400/400/500, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_722 | Vốn điều lệ Năm N | Tỉ đồng | Cơ sở | data_val WHERE row_desc=411/411/411, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_723 | LNST Năm N | Tỉ đồng | Cơ sở | data_val WHERE row_desc=60/60/21, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_724 | ROA Năm N | % | Phái sinh | data_val WHERE row_desc=270/270/300 + 60/60/21, report=BCDKT+BCKQKD, col_desc=1+2 | fr_value | **READY** |
-| K_GSDC_725 | ROE Năm N | % | Phái sinh | data_val WHERE row_desc=400/400/500 + 60/60/21, report=BCDKT+BCKQKD, col_desc=1+2 | fr_value | **READY** |
-| K_GSDC_726 | Tổng tài sản Năm N-1 | Tỉ đồng | Cơ sở | data_val WHERE row_desc=270/270/300, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_727 | Nợ phải trả Năm N-1 | Tỉ đồng | Cơ sở | data_val WHERE row_desc=300/300/400, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_728 | Vốn chủ sở hữu Năm N-1 | Tỉ đồng | Cơ sở | data_val WHERE row_desc=400/400/500, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_729 | Vốn điều lệ Năm N-1 | Tỉ đồng | Cơ sở | data_val WHERE row_desc=411/411/411, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_730 | LNST Năm N-1 | Tỉ đồng | Cơ sở | data_val WHERE row_desc=60/60/21, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_731 | ROA Năm N-1 | % | Phái sinh | data_val WHERE row_desc=(như K_GSDC_724, `report_year=:year_n-1`), report=—, col_desc=— | fr_value | **READY** |
-| K_GSDC_732 | ROE Năm N-1 | % | Phái sinh | data_val WHERE row_desc=(như K_GSDC_725, `report_year=:year_n-1`), report=—, col_desc=— | fr_value | **READY** |
-| K_GSDC_733 | Tổng tài sản Năm N-2 | Tỉ đồng | Cơ sở | data_val WHERE row_desc=270/270/300, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_734 | Nợ phải trả Năm N-2 | Tỉ đồng | Cơ sở | data_val WHERE row_desc=300/300/400, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_735 | Vốn chủ sở hữu Năm N-2 | Tỉ đồng | Cơ sở | data_val WHERE row_desc=400/400/500, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_736 | Vốn điều lệ Năm N-2 | Tỉ đồng | Cơ sở | data_val WHERE row_desc=411/411/411, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_737 | LNST Năm N-2 | Tỉ đồng | Cơ sở | data_val WHERE row_desc=60/60/21, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_738 | ROA Năm N-2 | % | Phái sinh | data_val WHERE row_desc=(như K_GSDC_724, `report_year=:year_n-2`), report=—, col_desc=— | fr_value | **READY** |
-| K_GSDC_739 | ROE Năm N-2 | % | Phái sinh | data_val WHERE row_desc=(như K_GSDC_725, `report_year=:year_n-2`), report=—, col_desc=— | fr_value | **READY** |
+| K_GSDC_719 | Tổng tài sản Năm N | Tỉ đồng | Cơ sở | `total_asset_amt_year_n` (trực tiếp) | ETL nạp: SUM(fct_public_company_financial_smy_snpst.total_asset), rpt_year=:year_n | **READY** |
+| K_GSDC_720 | Nợ phải trả Năm N | Tỉ đồng | Cơ sở | `total_liability_amt_year_n` (trực tiếp) | ETL nạp: SUM(fct.total_liability), rpt_year=:year_n | **READY** |
+| K_GSDC_721 | Vốn chủ sở hữu Năm N | Tỉ đồng | Cơ sở | `equity_amt_year_n` (trực tiếp) | ETL nạp: SUM(fct.equity), rpt_year=:year_n | **READY** |
+| K_GSDC_722 | Vốn điều lệ Năm N | Tỉ đồng | Cơ sở | `charter_capital_amt_year_n` (trực tiếp) | ETL nạp: SUM(fct.contributed_capital), rpt_year=:year_n | **READY** |
+| K_GSDC_723 | LNST Năm N | Tỉ đồng | Cơ sở | `net_profit_amt_year_n` (trực tiếp) | ETL nạp: SUM(fct.net_profit), rpt_year=:year_n | **READY** |
+| K_GSDC_724 | ROA Năm N | % | Phái sinh | `roa_percentage_year_n` (trực tiếp) | ETL nạp: tính lại toàn thị trường (xem công thức ROA/ROE trên) | **READY** |
+| K_GSDC_725 | ROE Năm N | % | Phái sinh | `roe_percentage_year_n` (trực tiếp) | ETL nạp: tính lại toàn thị trường (xem công thức ROA/ROE trên) | **READY** |
+| K_GSDC_726 | Tổng tài sản Năm N-1 | Tỉ đồng | Cơ sở | `total_asset_amt_year_n1` (trực tiếp) | ETL nạp: cùng công thức K_GSDC_719, rpt_year=:year_n - 1 | **READY** |
+| K_GSDC_727 | Nợ phải trả Năm N-1 | Tỉ đồng | Cơ sở | `total_liability_amt_year_n1` (trực tiếp) | ETL nạp: cùng công thức K_GSDC_720, rpt_year=:year_n - 1 | **READY** |
+| K_GSDC_728 | Vốn chủ sở hữu Năm N-1 | Tỉ đồng | Cơ sở | `equity_amt_year_n1` (trực tiếp) | ETL nạp: cùng công thức K_GSDC_721, rpt_year=:year_n - 1 | **READY** |
+| K_GSDC_729 | Vốn điều lệ Năm N-1 | Tỉ đồng | Cơ sở | `charter_capital_amt_year_n1` (trực tiếp) | ETL nạp: cùng công thức K_GSDC_722, rpt_year=:year_n - 1 | **READY** |
+| K_GSDC_730 | LNST Năm N-1 | Tỉ đồng | Cơ sở | `net_profit_amt_year_n1` (trực tiếp) | ETL nạp: cùng công thức K_GSDC_723, rpt_year=:year_n - 1 | **READY** |
+| K_GSDC_731 | ROA Năm N-1 | % | Phái sinh | `roa_percentage_year_n1` (trực tiếp) | ETL nạp: cùng công thức K_GSDC_724, rpt_year=:year_n - 1 | **READY** |
+| K_GSDC_732 | ROE Năm N-1 | % | Phái sinh | `roe_percentage_year_n1` (trực tiếp) | ETL nạp: cùng công thức K_GSDC_725, rpt_year=:year_n - 1 | **READY** |
+| K_GSDC_733 | Tổng tài sản Năm N-2 | Tỉ đồng | Cơ sở | `total_asset_amt_year_n2` (trực tiếp) | ETL nạp: cùng công thức K_GSDC_719, rpt_year=:year_n - 2 | **READY** |
+| K_GSDC_734 | Nợ phải trả Năm N-2 | Tỉ đồng | Cơ sở | `total_liability_amt_year_n2` (trực tiếp) | ETL nạp: cùng công thức K_GSDC_720, rpt_year=:year_n - 2 | **READY** |
+| K_GSDC_735 | Vốn chủ sở hữu Năm N-2 | Tỉ đồng | Cơ sở | `equity_amt_year_n2` (trực tiếp) | ETL nạp: cùng công thức K_GSDC_721, rpt_year=:year_n - 2 | **READY** |
+| K_GSDC_736 | Vốn điều lệ Năm N-2 | Tỉ đồng | Cơ sở | `charter_capital_amt_year_n2` (trực tiếp) | ETL nạp: cùng công thức K_GSDC_722, rpt_year=:year_n - 2 | **READY** |
+| K_GSDC_737 | LNST Năm N-2 | Tỉ đồng | Cơ sở | `net_profit_amt_year_n2` (trực tiếp) | ETL nạp: cùng công thức K_GSDC_723, rpt_year=:year_n - 2 | **READY** |
+| K_GSDC_738 | ROA Năm N-2 | % | Phái sinh | `roa_percentage_year_n2` (trực tiếp) | ETL nạp: cùng công thức K_GSDC_724, rpt_year=:year_n - 2 | **READY** |
+| K_GSDC_739 | ROE Năm N-2 | % | Phái sinh | `roe_percentage_year_n2` (trực tiếp) | ETL nạp: cùng công thức K_GSDC_725, rpt_year=:year_n - 2 | **READY** |
 
 > **Ghi chú kỳ:** Toàn bộ measure filter `Report_Quarter IS NULL AND Report_Year = :year_n` (hoặc `-1`/`-2`) — báo cáo kỳ NĂM, KHÔNG GROUP BY (tổng thị trường, mỗi kỳ 1 dòng giá trị duy nhất, khác Nhóm 39 group theo ngành). 3 kỳ N/N-1/N-2 denormalize thành 3 bộ cột trên cùng 1 row report duy nhất.
 
@@ -3370,37 +3450,42 @@ flowchart LR
 #### Nhóm 41 — STT 41: BC22 — Tổng hợp tình hình tài chính CTDC theo sàn
 
 > Phân loại: **Phân tích**
-> Source: `Public Company Exchange Financial Summary Report` (`public_company_exchange_financial_summary_rpt`) — Fact-report denormalize hoàn toàn.
-> SQL BA (`BA_analyst_GSDC_part3.csv` dòng 226-248) là 1 câu SQL duy nhất (CTE `bcdkt_ht`/`bcdkt_kt`...) GROUP BY sàn (`cp.equity_listing_exch`), trả đồng thời giá trị kỳ hiện tại VÀ % YoY so cùng kỳ năm trước trong cùng row — đóng gói cố định theo kỳ quý (`:year`/`:quarter`). Đúng tiêu chí Fact-report. Denormalize 22 measure (11 chỉ tiêu × giá trị + YoY%) vào 1 bảng phẳng `Public Company Exchange Financial Summary Report`, không FK Dimension — `Equity_Listing_Exchange_Code` lưu trực tiếp dạng text. "Vốn góp của chủ sở hữu" = row `411` (cùng khái niệm Vốn điều lệ, K_GSDC_53 Nhóm 7 — tên hiển thị khác). "LNKT trước thuế" = row `50` (dn/bh) / `17` (td).
-> Atomic nguồn (dùng ở tầng ETL populate report): `Financial Report Value` (`fr_value`) JOIN `Public Company` (lấy sàn) + `Financial Report Catalog`/`Row Template`/`Column Template`.
+> Source: `Public Company Exchange Financial Summary Report` (`public_company_exchange_financial_summary_rpt`) — Fact-report denormalize hoàn toàn, KHÔNG FK Dimension, `Equity_Listing_Exchange_Code` lưu trực tiếp dạng text.
+> **[SỬA 2026-08-19 lần 2 — khôi phục bảng report riêng, đổi nguồn ETL nạp]** Cột "Câu lệnh update SIT" mới nhất của BA (`BA_analyst_GSDC_part3.csv`, STT 41, dòng "Tổng tài sản") ghi rõ "Tham khảo câu lệnh mục 13, mục 7" — nghĩa là **quy tắc dedup/form-ưu-tiên** dùng chung với Nhóm 7/13, không phải đổi hẳn kiến trúc bảng. Theo xác nhận tường minh Data Modeler: BC22 vẫn là 1 bảng report tính toán sẵn (pre-aggregate ở tầng ETL populate), KHÔNG query trực tiếp Fact ở tầng báo cáo — chỉ đổi **nguồn ETL nạp** từ JOIN thẳng `fr_value`/`company_data`/`company_profiles` (thiếu dedup, lỗi thời) sang ETL 2 tầng (Gold-to-Gold) từ `fct_public_company_financial_smy_snpst` (giá trị, đã dedup sẵn — xem Cụm 12) + `public_company_financial_yoy_rpt` (YoY, đã tính sẵn — xem Cụm 13), tránh lặp lại logic dedup phức tạp lần thứ 3 trong module. Xem chi tiết pattern ETL 2 tầng ở Cụm 14 (Section 1).
+> **ETL populate giá trị tuyệt đối (9 measure):** `SELECT public_company_dim.equity_listing_exchange_code, SUM(measure)... FROM fct_public_company_financial_smy_snpst JOIN public_company_dim ... GROUP BY equity_listing_exchange_code, rpt_year, rpt_quarter` — batch mỗi kỳ, ghi kết quả vào `public_company_exchange_financial_summary_rpt`.
+> **ROA/ROE tuyệt đối — tính lại ở mức sàn ngay trong bước ETL populate, KHÔNG copy cột `roa`/`roe` per-company có sẵn trên Fact** (SUM/AVG lại sẽ sai tầng, giống nguyên tắc grain-matching đã áp dụng ROA/ROE toàn thị trường ở Nhóm 7/8): `SUM(net_profit) / NULLIF(SUM(COALESCE(total_asset_beginning,total_asset)+COALESCE(total_asset,total_asset_beginning))/2, 0) * 100` (ROA); tương tự ROE dùng `equity`/`equity_beginning`.
+> **ETL populate YoY (11 measure):** SELECT thẳng từ `public_company_financial_yoy_rpt` theo `equity_listing_exchange_code` khớp — copy giá trị đã tính sẵn vào `public_company_exchange_financial_summary_rpt`, không tính lại, không dedup thêm. **Lưu ý ngữ nghĩa YoY:** khác ghi chú thiết kế cũ (từng ghi "ROA/ROE YoY là hiệu số điểm %") — công thức thật trên `public_company_financial_yoy_rpt` là `(giá_trị_N - giá_trị_N-1)/giá_trị_N-1 × 100` (% tăng/giảm TƯƠNG ĐỐI, giống mọi measure YoY khác trên bảng này), không phải hiệu số điểm phần trăm — sửa lại đúng khi đổi nguồn ETL nạp.
+> **"CHƯA NIÊM YẾT"** (giá trị thứ 4 của K_GSDC_740 "Theo sàn") = lọc trực tiếp `Equity_Listing_Exchange_Code = 'OTC'` khi ETL populate — theo xác nhận tường minh Data Modeler, KHÁC với định nghĩa "chưa niêm yết" ở Nhóm 9 (Nhóm 9 dùng logic loại trừ NOT IN ('HOSE','HNX','UPCOM')). Ở Nhóm 41, 4 giá trị hiển thị (HOSE/HNX/UPCOM/CHƯA NIÊM YẾT) map 1-1 vào 4 giá trị thật của `Equity_Listing_Exchange_Code` (HOSE/HNX/UPCOM/OTC).
+> **Open Issue — 2 measure mới cần bổ sung ở LLD (xem Section 5):** (1) `Pre_Tax_Profit` (LNTT, row `50` dn/bh / `17` td, report BCKQKD, col_desc=1) trên `fct_public_company_financial_smy_snpst` (2) `Pre_Tax_Profit_Yoy` trên `public_company_financial_yoy_rpt` — cả 2 là input ETL cho `Pre_Tax_Profit_Amount`/`Pre_Tax_Profit_Yoy_Percentage` trên bảng report Nhóm 41.
+> Atomic nguồn (chỉ dùng ở tầng ETL populate `Public Company Dimension`, không phải nguồn trực tiếp của báo cáo): `Financial Report Value` (`fr_value`) qua 2 Fact trung gian.
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_GSDC_740 | Theo sàn | Text | Chiều (Group By) | equity_listing_exchange_code (xem KPI liên quan cùng công thức) | public_company | **READY** |
-| K_GSDC_741 | Tổng tài sản theo sàn | Tỉ đồng | Phái sinh | data_val WHERE row_desc=270/270/300, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_741_YOY | Tổng tài sản — YoY theo sàn | % | Phái sinh | data_val WHERE row_desc=270/270/300, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_742 | Hàng tồn kho theo sàn | Tỉ đồng | Phái sinh | data_val WHERE row_desc=140/140/—, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_742_YOY | Hàng tồn kho — YoY theo sàn | % | Phái sinh | data_val WHERE row_desc=140/140/—, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_743 | Nợ phải trả theo sàn | Tỉ đồng | Phái sinh | data_val WHERE row_desc=300/300/400, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_743_YOY | Nợ phải trả — YoY theo sàn | % | Phái sinh | data_val WHERE row_desc=300/300/400, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_744 | Vốn chủ sở hữu theo sàn | Tỉ đồng | Phái sinh | data_val WHERE row_desc=400/400/500, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_744_YOY | VCSH — YoY theo sàn | % | Phái sinh | data_val WHERE row_desc=400/400/500, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_745 | Vốn góp của chủ sở hữu theo sàn | Tỉ đồng | Phái sinh | data_val WHERE row_desc=411/411/411, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_745_YOY | VGC — YoY theo sàn | % | Phái sinh | data_val WHERE row_desc=411/411/411, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_746 | LNST chưa phân phối theo sàn | Tỉ đồng | Phái sinh | data_val WHERE row_desc=421/421/450, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_746_YOY | LNST chưa PP — YoY theo sàn | % | Phái sinh | data_val WHERE row_desc=421/421/450, report=BCDKT, col_desc=1 | fr_value | **READY** |
-| K_GSDC_747 | Doanh thu thuần theo sàn | Tỉ đồng | Phái sinh | data_val WHERE row_desc=10/10/03, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_747_YOY | DTT — YoY theo sàn | % | Phái sinh | data_val WHERE row_desc=10/10/03, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_748 | LNKT trước thuế theo sàn | Tỉ đồng | Phái sinh | data_val WHERE row_desc=50/50/17, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_748_YOY | LNKT trước thuế — YoY theo sàn | % | Phái sinh | data_val WHERE row_desc=50/50/17, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_749 | LNST theo sàn | Tỉ đồng | Phái sinh | data_val WHERE row_desc=60/60/21, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_749_YOY | LNST — YoY theo sàn | % | Phái sinh | data_val WHERE row_desc=60/60/21, report=BCKQKD, col_desc=1 | fr_value | **READY** |
-| K_GSDC_750 | ROA theo sàn | % | Phái sinh | data_val WHERE row_desc=270/270/300 + 60/60/21, report=BCDKT+BCKQKD, col_desc=1+2 | fr_value | **READY** |
-| K_GSDC_750_YOY | ROA — YoY theo sàn | % | Phái sinh | data_val WHERE row_desc=(như K_GSDC_750), report=—, col_desc=— | fr_value | **READY** |
-| K_GSDC_751 | ROE theo sàn | % | Phái sinh | data_val WHERE row_desc=400/400/500 + 60/60/21, report=BCDKT+BCKQKD, col_desc=1+2 | fr_value | **READY** |
-| K_GSDC_751_YOY | ROE — YoY theo sàn | % | Phái sinh | data_val WHERE row_desc=(như K_GSDC_751), report=—, col_desc=— | fr_value | **READY** |
+| K_GSDC_740 | Theo sàn | Text | Chiều (Group By) | `equity_listing_exchange_code` (trực tiếp) | Denormalize trực tiếp vào cột report — không FK Dimension; ETL nạp từ Public Company Dimension | **READY** |
+| K_GSDC_741 | Tổng tài sản theo sàn | Tỉ đồng | Phái sinh | `total_asset_amt` (trực tiếp) | ETL nạp: SUM(fct_public_company_financial_smy_snpst.total_asset) GROUP BY sàn | **READY** |
+| K_GSDC_741_YOY | Tổng tài sản — YoY theo sàn | % | Phái sinh | `total_asset_yoy` (trực tiếp) | ETL nạp: copy từ public_company_financial_yoy_rpt.total_asset_yoy | **READY** |
+| K_GSDC_742 | Hàng tồn kho theo sàn | Tỉ đồng | Phái sinh | `inventory_amt` (trực tiếp) | ETL nạp: SUM(fct_public_company_financial_smy_snpst.inventory) GROUP BY sàn (TD luôn NULL) | **READY** |
+| K_GSDC_742_YOY | Hàng tồn kho — YoY theo sàn | % | Phái sinh | `inventory_yoy` (trực tiếp) | ETL nạp: copy từ public_company_financial_yoy_rpt.inventory_yoy | **READY** |
+| K_GSDC_743 | Nợ phải trả theo sàn | Tỉ đồng | Phái sinh | `total_liability_amt` (trực tiếp) | ETL nạp: SUM(fct_public_company_financial_smy_snpst.total_liability) GROUP BY sàn | **READY** |
+| K_GSDC_743_YOY | Nợ phải trả — YoY theo sàn | % | Phái sinh | `total_liability_yoy` (trực tiếp) | ETL nạp: copy từ public_company_financial_yoy_rpt.total_liability_yoy | **READY** |
+| K_GSDC_744 | Vốn chủ sở hữu theo sàn | Tỉ đồng | Phái sinh | `equity_amt` (trực tiếp) | ETL nạp: SUM(fct_public_company_financial_smy_snpst.equity) GROUP BY sàn | **READY** |
+| K_GSDC_744_YOY | VCSH — YoY theo sàn | % | Phái sinh | `equity_yoy` (trực tiếp) | ETL nạp: copy từ public_company_financial_yoy_rpt.equity_yoy | **READY** |
+| K_GSDC_745 | Vốn góp của chủ sở hữu theo sàn | Tỉ đồng | Phái sinh | `contributed_capital_amt` (trực tiếp) | ETL nạp: SUM(fct_public_company_financial_smy_snpst.contributed_capital) GROUP BY sàn — cùng khái niệm Vốn điều lệ K_GSDC_53 | **READY** |
+| K_GSDC_745_YOY | VGC — YoY theo sàn | % | Phái sinh | `contributed_capital_yoy` (trực tiếp) | ETL nạp: copy từ public_company_financial_yoy_rpt.contributed_capital_yoy | **READY** |
+| K_GSDC_746 | LNST chưa phân phối theo sàn | Tỉ đồng | Phái sinh | `undistributed_profit_amt` (trực tiếp) | ETL nạp: SUM(fct_public_company_financial_smy_snpst.undistributed_profit) GROUP BY sàn (TD luôn NULL) | **READY** |
+| K_GSDC_746_YOY | LNST chưa PP — YoY theo sàn | % | Phái sinh | `undistributed_profit_yoy` (trực tiếp) | ETL nạp: copy từ public_company_financial_yoy_rpt.undistributed_profit_yoy | **READY** |
+| K_GSDC_747 | Doanh thu thuần theo sàn | Tỉ đồng | Phái sinh | `net_revenue_amt` (trực tiếp) | ETL nạp: SUM(fct_public_company_financial_smy_snpst.net_revenue) GROUP BY sàn | **READY** |
+| K_GSDC_747_YOY | DTT — YoY theo sàn | % | Phái sinh | `net_revenue_yoy` (trực tiếp) | ETL nạp: copy từ public_company_financial_yoy_rpt.net_revenue_yoy | **READY** |
+| K_GSDC_748 | LNKT trước thuế theo sàn | Tỉ đồng | Phái sinh | `pre_tax_profit_amt` (trực tiếp) | ETL nạp: SUM(fct_public_company_financial_smy_snpst.pre_tax_profit) GROUP BY sàn — **measure mới, xem Open Issue** | **READY** |
+| K_GSDC_748_YOY | LNKT trước thuế — YoY theo sàn | % | Phái sinh | `pre_tax_profit_yoy` (trực tiếp) | ETL nạp: copy từ public_company_financial_yoy_rpt.pre_tax_profit_yoy — **measure mới, xem Open Issue** | **READY** |
+| K_GSDC_749 | LNST theo sàn | Tỉ đồng | Phái sinh | `net_profit_amt` (trực tiếp) | ETL nạp: SUM(fct_public_company_financial_smy_snpst.net_profit) GROUP BY sàn | **READY** |
+| K_GSDC_749_YOY | LNST — YoY theo sàn | % | Phái sinh | `net_profit_yoy` (trực tiếp) | ETL nạp: copy từ public_company_financial_yoy_rpt.net_profit_yoy | **READY** |
+| K_GSDC_750 | ROA theo sàn | % | Phái sinh | `roa_percentage` (trực tiếp) | ETL nạp: tính lại ở mức sàn — `SUM(net_profit)/NULLIF(SUM(COALESCE(total_asset_beginning,total_asset)+COALESCE(total_asset,total_asset_beginning))/2,0)*100`, KHÔNG copy cột `roa` per-company | **READY** |
+| K_GSDC_750_YOY | ROA — YoY theo sàn | % | Phái sinh | `roa_yoy_percentage` (trực tiếp) | ETL nạp: copy từ public_company_financial_yoy_rpt.roa_yoy (% tương đối, không phải hiệu số điểm %) | **READY** |
+| K_GSDC_751 | ROE theo sàn | % | Phái sinh | `roe_percentage` (trực tiếp) | ETL nạp: tính lại ở mức sàn — `SUM(net_profit)/NULLIF(SUM(COALESCE(equity_beginning,equity)+COALESCE(equity,equity_beginning))/2,0)*100`, KHÔNG copy cột `roe` per-company | **READY** |
+| K_GSDC_751_YOY | ROE — YoY theo sàn | % | Phái sinh | `roe_yoy_percentage` (trực tiếp) | ETL nạp: copy từ public_company_financial_yoy_rpt.roe_yoy (% tương đối, không phải hiệu số điểm %) | **READY** |
 
 **Star Schema:**
 
@@ -3429,14 +3514,14 @@ erDiagram
         float Net_Profit_Amount
         float Net_Profit_Yoy_Percentage
         float Roa_Percentage
-        float Roa_Yoy_Difference
+        float Roa_Yoy_Percentage
         float Roe_Percentage
-        float Roe_Yoy_Difference
+        float Roe_Yoy_Percentage
         string Source_System_Code
     }
 ```
 
-> **Ghi chú thiết kế:** `Equity_Listing_Exchange_Code` denormalize trực tiếp dạng text — không FK Dimension. Mỗi chỉ tiêu có 2 cột (giá trị kỳ hiện tại + YoY) trên cùng row, khớp đúng pattern SQL BA (1 CTE trả cả giá trị và % so cùng kỳ năm trước). ROA/ROE YoY là hiệu số (percentage point), không phải % tăng/giảm tương đối — theo đúng SQL BA (`roa_yoy_diff`/`roe_yoy_diff`).
+> **Ghi chú thiết kế:** `Equity_Listing_Exchange_Code` denormalize trực tiếp dạng text — không FK Dimension. Mỗi chỉ tiêu có 2 cột (giá trị kỳ hiện tại + YoY) trên cùng row. **[SỬA 2026-08-19 lần 2]** ROA/ROE YoY đổi tên field từ `Roa_Yoy_Difference`/`Roe_Yoy_Difference` (bản gốc, ngỡ là hiệu số điểm %) sang `Roa_Yoy_Percentage`/`Roe_Yoy_Percentage` (đúng bản chất % tương đối, khớp nguồn `public_company_financial_yoy_rpt.roa_yoy`/`roe_yoy`). ETL populate bảng này KHÔNG còn JOIN trực tiếp `fr_value`/`company_data`/`company_profiles` như thiết kế gốc trước 2026-08-18 — thay bằng ETL 2 tầng từ `fct_public_company_financial_smy_snpst` + `public_company_financial_yoy_rpt` (xem Cụm 14, Section 1, và phần mô tả Nhóm 41 phía trên).
 
 **Lineage Mart → Báo cáo:**
 
@@ -3497,7 +3582,7 @@ graph TB
     DIM_DATE --> FACT_VLTREPORT_SNPST
 ```
 
-> `Fact Public Company Financial Summary Snapshot` không tồn tại trong mô hình. Các KPI liên quan (Nhóm 6/9/10/12/14/16/38/39/40/41) query trực tiếp `Public Company Dimension`/`Calendar Date Dimension`, không có node Fact riêng trong graph.
+> `Fact Public Company Financial Summary Snapshot` và `Public Company Financial YoY Report` không có node riêng trong graph TB này (graph chỉ vẽ Fact/Dim theo Score Snapshot pattern). Các KPI Nhóm 6/9/10/12/14/16/38/39/40 query trực tiếp `Public Company Dimension`/`Calendar Date Dimension`. **[SỬA 2026-08-19 lần 2]** Nhóm 41 KHÔNG query trực tiếp 2 bảng này — chỉ dùng làm nguồn ETL tầng 2 (Gold-to-Gold) nạp vào `RPT_EXCHSUM`, xem Nhóm 41 và Cụm 14 (Section 1).
 >
 > `Fact Public Company Financial Report Value` (`FACT_RPTVAL`) không có FK `Calendar Date Dimension` — grain thời gian là `Report Year`/`Report Quarter` dạng thuộc tính DD trực tiếp trên Fact (kỳ báo cáo tài chính, không phải ngày lịch), khác với 5 Fact `*_Score_Snapshot` (dùng Calendar Date Dimension cho ngày snapshot ETL).
 >
@@ -3505,7 +3590,7 @@ graph TB
 >
 > `Fact Violation Report Snapshot` (`FACT_VLTREPORT_SNPST`) phục vụ K_GSDC_48 (Nhóm 6/10/12/14/16) — nguồn `violation_report`/IDS.VIOLATION_REPORT. Grain 1 row/công ty/kỳ (Report_Year + Report_Quarter), phát sinh theo kỳ (ETL append) — đúng ngữ nghĩa Fact, không phải Operational SCD4A (dữ liệu này KHÔNG phải current-state, mỗi kỳ có tập hồ sơ mới). Độc lập hoàn toàn với `Fact Public Company Financial Report Value` — không JOIN chéo giữa 2 Fact. K_GSDC_49 (Số DN báo lãi, cùng Nhóm 6/10/12/14/16) KHÔNG dùng Fact này — dùng trực tiếp `Fact Public Company Financial Report Value` (sửa 2026-08-15).
 >
-> 4 bảng report (`RPT_REGCOMP`/`RPT_INDFIN`/`RPT_MULTIPERIOD`/`RPT_EXCHSUM`) KHÔNG có FK Dimension nào trong graph này — đúng đặc tính Fact-report (đóng gói cố định theo kỳ, denormalize hoàn toàn, ETL populate batch trực tiếp từ Atomic, không cần JOIN runtime tới `Public Company Dimension`/`Calendar Date Dimension`). `Fact Public Company Financial Report Value` không phục vụ Nhóm 38-41 — xem bảng KPI bên dưới.
+> 4 bảng report (`RPT_REGCOMP`/`RPT_INDFIN`/`RPT_MULTIPERIOD`/`RPT_EXCHSUM`) KHÔNG có FK Dimension nào trong graph này — đúng đặc tính Fact-report (đóng gói cố định theo kỳ, denormalize hoàn toàn). `RPT_EXCHSUM` khác 3 bảng còn lại ở nguồn ETL populate: **không** trực tiếp từ Atomic mà qua ETL 2 tầng (Gold-to-Gold) từ `Fact Public Company Financial Summary Snapshot` + `Public Company Financial YoY Report` — xem Nhóm 41 và Cụm 14 (Section 1). `Fact Public Company Financial Report Value` không phục vụ Nhóm 38-41 — xem bảng KPI bên dưới.
 
 **Bảng Phân tích (Star Schema):**
 
@@ -3516,17 +3601,17 @@ graph TB
 | `Fact Public Company Issuance Score Snapshot` | Periodic Snapshot | 1 CTDC × 1 ngày snapshot ETL (full-scan daily, carry-forward) | K_GSDC_24–31 (Nhóm 3); reuse toàn bộ (Nhóm 35) | READY (Atomic draft — chưa approved) |
 | `Fact Public Company Financial Score Snapshot` | Periodic Snapshot | 1 CTDC × 1 ngày snapshot ETL (full-scan daily, carry-forward) | K_GSDC_32–42 (Nhóm 4); reuse toàn bộ (Nhóm 34) | READY (Atomic draft — chưa approved) |
 | `Fact Public Company Non-Financial Score Snapshot` | Periodic Snapshot | 1 CTDC × 1 ngày snapshot ETL (full-scan daily, carry-forward) | K_GSDC_43–45 (Nhóm 5); reuse toàn bộ (Nhóm 36) | READY (Atomic draft — chưa approved) |
-| `Fact Public Company Financial Summary Snapshot` | Periodic Snapshot | 1 CTDC × 1 kỳ (Report_Year + Report_Quarter) — 12 chỉ tiêu pivot sẵn + 3 computed (ROA/ROE/D-E) | K_GSDC_50–62 (Nhóm 7 Khối A); K_GSDC_63-76 (Nhóm 8); K_GSDC_50-62+79-92 (Nhóm 11/13/15/17, reuse ID); K_GSDC_1444-1456 (Nhóm 37, reuse ID) | READY (mới 2026-08-18 — thay `Fact Public Company Financial Report Value` cho các Nhóm trên, xem Nhóm 7 Khối A. Driving `fr_value`, pivot 1 lần khi ETL populate — không cần subquery pivot lặp lại ở Detail Mapping). |
-| `Public Company Financial YoY Report` | Fact-report | 1 row / sàn (bao gồm 'ALL'=toàn thị trường) / kỳ | K_GSDC_50_YOY-62_YOY (Nhóm 7 Khối B, Nhóm 11/13/15/17 reuse ID filter sàn) | READY — giữ nguyên thiết kế cũ, không đổi theo yêu cầu Data Modeler (2026-08-18). Không FK Dimension, denormalize hoàn toàn. |
+| `Fact Public Company Financial Summary Snapshot` | Periodic Snapshot | 1 CTDC × 1 kỳ (Report_Year + Report_Quarter) — 12 chỉ tiêu pivot sẵn (+1 `Pre_Tax_Profit` bổ sung cho Nhóm 41, xem Section 5) + 3 computed (ROA/ROE/D-E) | K_GSDC_50–62 (Nhóm 7 Khối A); K_GSDC_63-76 (Nhóm 8); K_GSDC_50-62+79-92 (Nhóm 11/13/15/17, reuse ID); K_GSDC_1444-1456 (Nhóm 37, reuse ID); K_GSDC_705+707 (Nhóm 38, COUNT DISTINCT WHERE net_profit > 0 qua Public Company Dimension); K_GSDC_709-717 (Nhóm 39, GROUP BY ngành qua Public Company Dimension, ROA/ROE tính lại ở mức ngành); K_GSDC_718-739 (Nhóm 40, SUM toàn thị trường không GROUP BY, ROA/ROE tính lại toàn thị trường); K_GSDC_740-749+750+751 (Nhóm 41, GROUP BY toàn bộ sàn, ROA/ROE tính lại ở mức sàn — không dùng cột `roa`/`roe` per-company có sẵn) | READY (mới 2026-08-18 — thay `Fact Public Company Financial Report Value` cho các Nhóm trên, xem Nhóm 7 Khối A. Driving `fr_value`, pivot 1 lần khi ETL populate — không cần subquery pivot lặp lại ở Detail Mapping). **[SỬA 2026-08-19]** Bổ sung Nhóm 41. **[SỬA 2026-08-19 lần 2]** Bổ sung Nhóm 39/40 (đổi nguồn ETL nạp 2 bảng report này từ JOIN trực tiếp `fr_value` sang Fact này, tránh dedup lần thứ 3/4 trong module — xem Cụm 10/11, Section 1). **[SỬA 2026-08-19 lần 3]** Bổ sung Nhóm 38 (Số CTĐC báo lãi K_GSDC_705/707 đổi nguồn tương tự — xem Cụm 9, Section 1). |
+| `Public Company Financial YoY Report` | Fact-report | 1 row / sàn (bao gồm 'ALL'=toàn thị trường) / kỳ | K_GSDC_50_YOY-62_YOY (Nhóm 7 Khối B, Nhóm 11/13/15/17 reuse ID filter sàn); K_GSDC_741_YOY-751_YOY (Nhóm 41, JOIN theo Equity_Listing_Exchange_Code) | READY — giữ nguyên thiết kế cũ, không đổi theo yêu cầu Data Modeler (2026-08-18). Không FK Dimension, denormalize hoàn toàn. **[SỬA 2026-08-19]** Bổ sung Nhóm 41; cần thêm cột `Pre_Tax_Profit_Yoy` (xem Section 5). |
 | `Fact Public Company Financial Report Value` | Event | 1 CTDC × 1 kỳ (Report_Year + Report_Quarter, nullable = kỳ năm) × Row_Code × Column_Code | K_GSDC_99-689 (Nhóm 19-30, MH3 Data Explorer — DN thông thường/bảo hiểm/TCTD × BCĐKT/BCKQKD/LCTT trực tiếp/gián tiếp); K_GSDC_49 (Nhóm 6/10/12/14/16, reuse — Số DN báo lãi) | READY cho Nhóm 6/19-30 (Atomic đủ 5 entity: `fr_value`/`financial_report_catalog`/`fr_row_template`/`fr_column_template`/`pc_report_submission`). **[SỬA 2026-08-18]** Không còn phục vụ Nhóm 7/8/11/13/15/17/37 (đã chuyển sang `Fact Public Company Financial Summary Snapshot`) — chỉ giữ lại cho Nhóm 19-30 (per-cell Data Explorer) và Nhóm 6 (K_GSDC_49). Nhóm 38-41 dùng 4 bảng Fact-report riêng (xem 4 dòng bên dưới), không dùng Fact này. |
-| `Fact Violation Report Snapshot` | Event | 1 row / công ty đại chúng / kỳ (Report_Year + Report_Quarter) / ngày ETL snapshot (FK Calendar Date Dimension) | K_GSDC_48 (Nhóm 6/10/12/14/16) — Tỷ lệ nộp BCTC | READY (2026-08-07 — nguồn `violation_report`/draft, sửa lại từ Operational → Fact vì dữ liệu phát sinh theo kỳ, không phải current-state; bổ sung FK Calendar Date Dimension theo ngày ETL; xem Nhóm 6). Sửa 2026-08-15: bỏ cột `Profitable_Indicator`, chỉ còn phục vụ K_GSDC_48. |
+| `Fact Violation Report Snapshot` | Event | 1 row / công ty đại chúng / kỳ (Report_Year + Report_Quarter) / ngày ETL snapshot (FK Calendar Date Dimension) | K_GSDC_48 (Nhóm 6/10/12/14/16) — Tỷ lệ nộp BCTC; K_GSDC_702/703 (Nhóm 38, SUM theo sàn tại snapshot mới nhất, filter rpt_year/rpt_quarter bằng tham số ETL :p_year/:p_quarter — không dùng rpt_year/rpt_quarter của Fact làm nguồn kỳ vì nullable) | READY (2026-08-07 — nguồn `violation_report`/draft, sửa lại từ Operational → Fact vì dữ liệu phát sinh theo kỳ, không phải current-state; bổ sung FK Calendar Date Dimension theo ngày ETL; xem Nhóm 6). Sửa 2026-08-15: bỏ cột `Profitable_Indicator`, chỉ còn phục vụ K_GSDC_48. **[SỬA 2026-08-19 lần 2]** Bổ sung Nhóm 38 (K_GSDC_702/703) — xem Cụm 9, Section 1. |
 | `Fact Public Company Listing Info Snapshot` | Periodic Snapshot | 1 CTDC × 1 ngày | K_GSDC_690–699 (Nhóm 31) | PENDING |
-| `Public Company Regulatory Compliance Report` | Fact-report | 1 row / sàn NY-ĐKGD / kỳ (Report_Year + Report_Quarter) | K_GSDC_700-708 (Nhóm 38) — BC01.1 | READY (2026-08-07 — thiết kế lại từ query đa nguồn thành Fact-report denormalize, xem Nhóm 38) |
-| `Public Company Industry Financial Report` | Fact-report | 1 row / ngành / năm báo cáo (kèm cột N-1) | K_GSDC_709-717 (Nhóm 39) — BC01.2 | READY (2026-08-07 — thiết kế lại thành Fact-report, xem Nhóm 39) |
-| `Public Company Multi-Period Financial Report` | Fact-report | 1 row DUY NHẤT / năm báo cáo (kèm cột N-1/N-2), toàn thị trường không group-by | K_GSDC_718-739 (Nhóm 40) — BC01.3 | READY (2026-08-07 — thiết kế lại thành Fact-report, xem Nhóm 40) |
-| `Public Company Exchange Financial Summary Report` | Fact-report | 1 row / sàn NY-ĐKGD / kỳ (Report_Year + Report_Quarter) | K_GSDC_740-751+YOY (Nhóm 41) — BC22 | READY (2026-08-07 — thiết kế lại thành Fact-report, xem Nhóm 41) |
+| `Public Company Regulatory Compliance Report` | Fact-report | 1 row / sàn NY-ĐKGD / kỳ (Report_Year + Report_Quarter) | K_GSDC_700-708 (Nhóm 38) — BC01.1 | READY (2026-08-07 — thiết kế lại từ query đa nguồn thành Fact-report denormalize, xem Nhóm 38). **[SỬA 2026-08-19]** Số CTĐC báo lãi (K_GSDC_705/707) đổi nguồn ETL nạp từ JOIN trực tiếp `fr_value` sang aggregate từ `Fact Public Company Financial Summary Snapshot` (đã dedup sẵn) + `Public Company Dimension`. **[SỬA 2026-08-19 lần 2]** Toàn bộ 9 measure đổi sang aggregate từ Datamart — Số lượng DN từ `Public Company Dimension`, Số BCTC đến hạn/đã nộp từ `Fact Violation Report Snapshot` — theo pattern 4 sub-select độc lập, Report Year/Quarter là tham số ETL (không suy diễn từ Fact) — xem Cụm 9, Section 1. |
+| `Public Company Industry Financial Report` | Fact-report | 1 row / ngành / năm báo cáo (kèm cột N-1) | K_GSDC_709-717 (Nhóm 39) — BC01.2 | READY (2026-08-07 — thiết kế lại thành Fact-report, xem Nhóm 39). **[SỬA 2026-08-19]** ETL populate đổi nguồn từ JOIN trực tiếp `fr_value` sang aggregate từ `Fact Public Company Financial Summary Snapshot` (đã dedup sẵn) + `Public Company Dimension` (lấy ngành denormalize sẵn) — xem Cụm 10, Section 1. |
+| `Public Company Multi-Period Financial Report` | Fact-report | 1 row DUY NHẤT / năm báo cáo (kèm cột N-1/N-2), toàn thị trường không group-by | K_GSDC_718-739 (Nhóm 40) — BC01.3 | READY (2026-08-07 — thiết kế lại thành Fact-report, xem Nhóm 40). **[SỬA 2026-08-19]** ETL populate đổi nguồn từ JOIN trực tiếp `fr_value` sang SUM toàn thị trường từ `Fact Public Company Financial Summary Snapshot` (đã dedup sẵn) — xem Cụm 11, Section 1. |
+| `Public Company Exchange Financial Summary Report` | Fact-report | 1 row / sàn NY-ĐKGD / kỳ (Report_Year + Report_Quarter) | K_GSDC_740-751+YOY (Nhóm 41) — BC22 | READY. **[SỬA 2026-08-19 lần 2]** Khôi phục bảng report riêng (đã bị loại bỏ nhầm ở bản sửa lần 1 cùng ngày) — ETL populate đổi nguồn từ JOIN trực tiếp Atomic sang ETL 2 tầng (Gold-to-Gold) từ `Fact Public Company Financial Summary Snapshot` + `Public Company Financial YoY Report` (2 dòng phía trên), xem chi tiết Nhóm 41 và Cụm 14 (Section 1). |
 
-> `Fact Public Company Financial Summary Snapshot` không tồn tại trong mô hình. KPI liên quan (K_GSDC_46–49 Nhóm 6; reuse Nhóm 9/10/12/14/16; K_GSDC_700–708 Nhóm 38; K_GSDC_709–717 Nhóm 39; K_GSDC_718–739 Nhóm 40; K_GSDC_740–751+YOY Nhóm 41) dùng trực tiếp `Public Company Dimension`/`Calendar Date Dimension` (Nhóm 6/9/10/12/14/16), `Fact Violation Report Snapshot` (K_GSDC_48, Nhóm 6), `Fact Public Company Financial Report Value` (K_GSDC_49, Nhóm 6, reuse từ Nhóm 7), hoặc 4 bảng Fact-report riêng (Nhóm 38-41, xem trên).
+> KPI Nhóm 6/9/10/12/14/16 (K_GSDC_46–49) dùng trực tiếp `Public Company Dimension`/`Calendar Date Dimension`, `Fact Violation Report Snapshot` (K_GSDC_48, Nhóm 6), `Fact Public Company Financial Report Value` (K_GSDC_49, Nhóm 6, reuse từ Nhóm 7); K_GSDC_700–708 (Nhóm 38)/K_GSDC_709–717 (Nhóm 39)/K_GSDC_718–739 (Nhóm 40) dùng 3 bảng Fact-report riêng nguồn trực tiếp Atomic; K_GSDC_740-751+YOY (Nhóm 41) dùng Fact-report riêng nhưng nguồn ETL 2 tầng qua Gold (xem trên).
 
 **Bảng Tác nghiệp:**
 
@@ -3547,8 +3632,8 @@ Không có bảng Tác nghiệp nào trong module này. `Operational Public Comp
 
 | Datamart Entity | datamart_table | reuse_status | Ghi chú |
 |---|---|---|---|
-| Fact Public Company Financial Summary Snapshot | fct_public_company_financial_smy_snpst | new | Mới 2026-08-18 — Fact cho Nhóm 7 Khối A/8/11/13/15/17/37 (READY) — driving `fr_value`, pivot 12 chỉ tiêu + 3 computed (ROA/ROE/D-E) 1 lần khi ETL populate, grain 1 CTĐC/kỳ. Thay thế `Fact Public Company Financial Report Value` cho các Nhóm này |
-| Public Company Financial YoY Report | public_company_financial_yoy_rpt | new | Fact cho Nhóm 7 Khối B/11/13/15/17 (reuse ID, filter sàn) — giữ nguyên thiết kế cũ, không đổi (2026-08-18) |
+| Fact Public Company Financial Summary Snapshot | fct_public_company_financial_smy_snpst | new | Mới 2026-08-18 — Fact cho Nhóm 7 Khối A/8/11/13/15/17/37 (READY) — driving `fr_value`, pivot 12 chỉ tiêu + 3 computed (ROA/ROE/D-E) 1 lần khi ETL populate, grain 1 CTĐC/kỳ. Thay thế `Fact Public Company Financial Report Value` cho các Nhóm này. **[SỬA 2026-08-19]** `partial` — bổ sung Nhóm 41 (GROUP BY toàn bộ sàn, không filter cứng 1 sàn) + cột mới `Pre_Tax_Profit` (xem Section 5) |
+| Public Company Financial YoY Report | public_company_financial_yoy_rpt | new | Fact cho Nhóm 7 Khối B/11/13/15/17 (reuse ID, filter sàn) — giữ nguyên thiết kế cũ, không đổi (2026-08-18). **[SỬA 2026-08-19]** `partial` — bổ sung Nhóm 41 (JOIN theo Equity_Listing_Exchange_Code) + cột mới `Pre_Tax_Profit_Yoy` (xem Section 5) |
 | Fact Public Company Financial Report Value | fct_public_company_financial_rpt_val | new | Fact cho Nhóm 6 (K_GSDC_49)/19-30 (MH2+MH3, READY) — driving `fr_value`, JOIN `financial_report_catalog`/`fr_row_template`/`fr_column_template` + EXISTS `pc_report_submission`. **[SỬA 2026-08-18]** Không còn phục vụ Nhóm 7/8/11/13/15/17/37 (đã chuyển sang `Fact Public Company Financial Summary Snapshot`). Không phục vụ Nhóm 38-41 (4 bảng Fact-report riêng) |
 | Financial Report Catalog Dimension | financial_rpt_catalog_dim | new | Dimension phụ trợ cho Fact Public Company Financial Report Value (READY 2026-08-06) — nguồn `financial_report_catalog` + denormalize `fr_row_template`/`fr_column_template`. Chỉ còn phục vụ Nhóm 6/19-30 (2026-08-18) |
 | Industry Dimension | industry_dim | new | Khai sinh 2026-08-17 tại GSDC (chuyển quyền sở hữu từ PTTT, PTTT reuse). Nguồn `cl_business_line`, filter `Active_Indicator = 1`. **[SỬA 2026-08-18]** Không còn làm driving table cho breakdown ngành ở Nhóm 8/11/13/15/17 — GROUP BY trực tiếp trên `Fact Public Company Financial Summary Snapshot` qua `Industry_Dimension_Id` denormalize sẵn, LOOKUP `Industry Dimension` chỉ để lấy tên hiển thị, không đảm bảo ngành rỗng = 0 nữa |
@@ -3564,7 +3649,7 @@ Không có bảng Tác nghiệp nào trong module này. `Operational Public Comp
 | Public Company Regulatory Compliance Report | public_company_regulatory_compliance_rpt | new | Mới 2026-08-07, thay thế thiết kế đa nguồn (Public Company Dimension + Operational Public Company Report Submission + Fact Financial Report Value) — Fact-report denormalize cho Nhóm 38 (BC01.1), K_GSDC_700-708, grain 1 row/sàn/kỳ |
 | Public Company Industry Financial Report | public_company_industry_financial_rpt | new | Mới 2026-08-07, thay thế reuse Fact Financial Report Value — Fact-report denormalize cho Nhóm 39 (BC01.2), K_GSDC_709-717, grain 1 row/ngành/năm |
 | Public Company Multi-Period Financial Report | public_company_multi_period_financial_rpt | new | Mới 2026-08-07, thay thế reuse Fact Financial Report Value — Fact-report denormalize cho Nhóm 40 (BC01.3), K_GSDC_718-739, grain 1 row DUY NHẤT/năm (toàn thị trường) |
-| Public Company Exchange Financial Summary Report | public_company_exchange_financial_summary_rpt | new | Mới 2026-08-07, thay thế thiết kế đa nguồn (Public Company Dimension + Fact Financial Report Value) — Fact-report denormalize cho Nhóm 41 (BC22), K_GSDC_740-751+YOY, grain 1 row/sàn/kỳ |
+| Public Company Exchange Financial Summary Report | public_company_exchange_financial_summary_rpt | new | Mới 2026-08-07, Fact-report denormalize cho Nhóm 41 (BC22), K_GSDC_740-751+YOY, grain 1 row/sàn/kỳ. **[SỬA 2026-08-19 lần 2]** Khôi phục (đã bị xóa nhầm ở bản sửa lần 1 cùng ngày) — ETL populate đổi nguồn từ đa nguồn Atomic trực tiếp sang ETL 2 tầng (Gold-to-Gold) từ `fct_public_company_financial_smy_snpst` + `public_company_financial_yoy_rpt`, tránh lặp lại logic dedup form-ưu-tiên lần thứ 3 trong module |
 
 > **Ghi chú KPI reuse (không phải Datamart Entity reuse):** Reuse ở cấp KPI/cột (không phải reuse bảng Fact/Dim) được ghi trực tiếp trong bảng KPI của từng Nhóm (cột Công thức/Ghi chú) — không lặp lại ở đây. Các KPI reuse chính xuyên suốt module: K_GSDC_7/K_GSDC_8 (Mã CK/Tên DN, gốc Nhóm 1) dùng ở mọi Nhóm 2 trở đi; K_GSDC_46/K_GSDC_78 (Kỳ thống kê/Sàn, gốc Nhóm 6) dùng ở Nhóm 10/12/14/16; K_GSDC_50–62+YOY (gốc Nhóm 7) và K_GSDC_79–92 (Ngành, gốc Nhóm 11) dùng ở Nhóm 11/13/15/17; K_GSDC_63 (Ngành, gốc Nhóm 8) dùng ở Nhóm 18; K_GSDC_48/49 (gốc Nhóm 6) dùng ở Nhóm 10/12/14/16.
 >
@@ -3572,7 +3657,7 @@ Không có bảng Tác nghiệp nào trong module này. `Operational Public Comp
 >
 > **`Public Company Financial Report Value`:** nguồn `IDS.data` + `report_catalog` + `rrow` + `rcol`, dùng cho K_GSDC_49 và toàn bộ Nhóm 7/8/9/10/11/13/15/17/37 — Atomic LLD: `fr_value`/`financial_report_catalog`/`fr_row_template`/`fr_column_template`/`pc_report_submission`, `DataModel/working/Atomic/lld/IDS/`.
 >
-> **Nhóm 38-41 dùng Fact-report:** cả 4 Nhóm là báo cáo cố định theo kỳ (BC01.1/01.2/01.3/BC22), đúng tiêu chí Fact-report theo `naming_conventions.md` — 4 bảng phẳng riêng biệt, denormalize hoàn toàn, không FK Dimension — xem chi tiết Nhóm 38/39/40/41 và Cụm 9-12 (Section 1).
+> **Nhóm 38-41 dùng Fact-report:** cả 4 Nhóm là báo cáo cố định theo kỳ (BC01.1/01.2/01.3/BC22), đúng tiêu chí Fact-report theo `naming_conventions.md` — 4 bảng phẳng riêng biệt, denormalize hoàn toàn, không FK Dimension. **[SỬA 2026-08-19 lần 4]** Nhóm 38 giờ hoàn toàn không JOIN Atomic trực tiếp — 4 sub-select độc lập từ Datamart: Số lượng DN (K_GSDC_701) từ `Public Company Dimension`; Số BCTC đến hạn/đã nộp (K_GSDC_702/703) từ `Fact Violation Report Snapshot`; Số CTĐC báo lãi (K_GSDC_705/707) từ `Fact Public Company Financial Summary Snapshot` — Report Year/Quarter là tham số ETL `:p_year`/`:p_quarter`, không suy diễn từ Fact nào (tránh lặp lại lỗi grain đã ghi nhận ở K_GSDC_49/Nhóm 6) — xem Cụm 9, Section 1. Nhóm 39/40 ETL populate từ `fct_public_company_financial_smy_snpst` (đã dedup sẵn — xem Cụm 10/11, Section 1) — **[SỬA 2026-08-19 lần 2]** đổi nguồn từ JOIN trực tiếp `fr_value` (thiếu dedup, cồng kềnh subquery lồng nhau) sang Fact trung gian, tránh lặp lại logic dedup phức tạp lần thứ 3/4 trong module; không dùng `Public Company Financial YoY Report` (measure N-1/N-2 là giá trị tuyệt đối, không phải %). Nhóm 41 ETL populate 2 tầng (Gold-to-Gold) từ `fct_public_company_financial_smy_snpst` + `public_company_financial_yoy_rpt` (xem Cụm 12-14, Section 1).
 
 ---
 
@@ -3584,3 +3669,4 @@ Không có bảng Tác nghiệp nào trong module này. `Operational Public Comp
 | O_GSDC_2 | KPI Số doanh nghiệp (K_GSDC_7, K_GSDC_34) có nguồn từ `IDS.company_detail` với điều kiện `ids_reg_date <= cuối kỳ` — không join qua `company_data` hay `data`. Mọi KPI Số DN (K_GSDC_47/77/701...) tính trực tiếp `COUNT DISTINCT` trên `Public Company Dimension.IDS_Registration_Date`, không qua Fact nào. | Đã tính trực tiếp trên `Public Company Dimension` cho toàn bộ Nhóm 6/9/10/12/14/16 — không cần Fact riêng. | K_GSDC_7, K_GSDC_34 | Closed |
 | O_GSDC_3 | BA SQL DB25 xác nhận `rr.row_desc` và `rc2.col_desc` dùng làm mã hiển thị nghiệp vụ và filter điều kiện trong mọi dashboard DB21–32 — map 1-1 (`Row Description Reference`/`row_description_reference` ← `IDS.RROW.ROW_DESC`, `Column Description Reference`/`column_description_reference` ← `IDS.RCOL.COL_DESC`). `fr_value`/`financial_report_catalog`/`fr_row_template`/`fr_column_template`/`pc_report_submission` đã có LLD (row/column template `approved`), dùng làm nền `Fact Public Company Financial Report Value` + `Financial Report Catalog Dimension`, áp dụng cho Nhóm 7/8/11/13/15/17/18/19-30/37 (Nhóm 38-41 đã tách thành Fact-report riêng, xem Nhóm 38-41). | Đã thiết kế `Fact Public Company Financial Report Value` + `Financial Report Catalog Dimension` dựa trên entity Atomic — xem chi tiết Nhóm 7/18. | K_GSDC_33, K_GSDC_D8–D11 | Closed |
 | O_GSDC_4 | DB43 BC22 có KPI "Lợi nhuận kế toán trước thuế" (LNKT trước thuế) — cần map đúng row BCTC. | K_GSDC_58 (Nhóm 41: K_GSDC_748, LNKT trước thuế theo sàn) — map `fr_value` row `50`(dn/bh)/`17`(td), `rc.report_cd LIKE 'BCKQKD%'`. | K_GSDC_58 | Closed |
+| O_GSDC_5 | **[MỞ 2026-08-19]** Nhóm 41 (BC22) đổi nguồn sang `Fact Public Company Financial Summary Snapshot` + `Public Company Financial YoY Report` (theo update SIT BA "Tham khảo câu lệnh mục 13, mục 7") — cần bổ sung 2 measure mới ở LLD (Attributes) trước khi Detail Mapping có thể trỏ tới: (1) `Pre_Tax_Profit` (row `50` dn/bh, `17` td, report BCKQKD, col_desc=1) trên `fct_public_company_financial_smy_snpst`, dùng đúng chuỗi JOIN dedup form-ưu-tiên (`pc_report_submission`+`fr_template`+`fr_catalog`+`fr_row_template`+`fr_column_template`, dedup `ROW_NUMBER() ... ds_rcrd_udt_dt/ds_rcrd_isrt_dt`) như các measure khác cùng Fact; (2) `Pre_Tax_Profit_Yoy` trên `public_company_financial_yoy_rpt`, cùng pattern các cột `_yoy` khác. | Chưa bổ sung — Attributes 2 bảng hiện chưa có 2 cột này. HLD tạm ghi K_GSDC_748/748_YOY là READY vì nguồn/logic đã xác định rõ, nhưng cần xử lý LLD trước khi Detail Mapping hoàn chỉnh. | K_GSDC_748, K_GSDC_748_YOY (Nhóm 41) | Open |
