@@ -193,10 +193,6 @@ SELECT
     f.no_change_count,
     f.ceiling_count,
     f.floor_count,
-    f.odd_lot_total_vol,
-    f.odd_lot_total_val,
-    f.pt_total_vol,
-    f.pt_total_val,
 
     -- From: CALENDAR DATE DIMENSION
     cal.cdr_dt                      AS cdr_dt,

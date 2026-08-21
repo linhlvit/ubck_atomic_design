@@ -417,8 +417,10 @@ SELECT
     o.rpt_submitted_count,
     o.profitable_company_count_year_n,
     o.profitable_company_count_year_n1,
-    o.src_stm_code
+    o.src_stm_code,
+    o.rpt_dt
 FROM datamart.public_company_regulatory_compliance_rpt o
+WHERE o.rpt_dt = formatDateTime(:etl_date, '%Y%m%d')
 ;
 
 -- ---------------------------------------------------------------------
@@ -439,8 +441,10 @@ SELECT
     o.net_profit_amt_year_n1,
     o.roa_percentage_year_n1,
     o.roe_percentage_year_n1,
-    o.src_stm_code
+    o.src_stm_code,
+    o.rpt_dt
 FROM datamart.public_company_industry_financial_rpt o
+WHERE o.rpt_dt = formatDateTime(:etl_date, '%Y%m%d')
 ;
 
 -- ---------------------------------------------------------------------
@@ -472,8 +476,10 @@ SELECT
     o.net_profit_amt_year_n2,
     o.roa_percentage_year_n2,
     o.roe_percentage_year_n2,
-    o.src_stm_code
+    o.src_stm_code,
+    o.rpt_dt
 FROM datamart.public_company_multi_period_financial_rpt o
+WHERE o.rpt_dt = formatDateTime(:etl_date, '%Y%m%d')
 ;
 
 -- ---------------------------------------------------------------------
@@ -499,8 +505,10 @@ SELECT
     o.roa_yoy,
     o.roe_yoy,
     o.debt_to_equity_yoy,
-    o.src_stm_code
+    o.src_stm_code,
+    o.rpt_dt
 FROM datamart.public_company_financial_yoy_rpt o
+WHERE o.rpt_dt = formatDateTime(:etl_date, '%Y%m%d')
 ;
 
 -- ---------------------------------------------------------------------
@@ -535,8 +543,10 @@ SELECT
     o.roa_yoy_percentage,
     o.roe_percentage,
     o.roe_yoy_percentage,
-    o.src_stm_code
+    o.src_stm_code,
+    o.rpt_dt
 FROM datamart.public_company_exchange_financial_summary_rpt o
+WHERE o.rpt_dt = formatDateTime(:etl_date, '%Y%m%d')
 ;
 
 -- ---------------------------------------------------------------------

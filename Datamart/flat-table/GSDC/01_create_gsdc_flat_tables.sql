@@ -429,7 +429,8 @@ CREATE TABLE IF NOT EXISTS datamart.gsdc_public_company_regulatory_compliance_rp
     rpt_submitted_count             Nullable(Int64)     COMMENT 'Số báo cáo (BCTC) đã nộp trong kỳ theo sàn.',
     profitable_company_count_year_n  Nullable(Int64)     COMMENT 'Số CTĐC báo lãi Năm N theo sàn.',
     profitable_company_count_year_n1 Nullable(Int64)     COMMENT 'Số CTĐC báo lãi Năm N-1 theo sàn.',
-    src_stm_code                    String              COMMENT 'Mã hệ thống nguồn dữ liệu.'
+    src_stm_code                    String              COMMENT 'Mã hệ thống nguồn dữ liệu.',
+    rpt_dt                           String              COMMENT 'Ngày chạy ETL populate bảng (format yyyyMMdd) — audit column, không thuộc grain/PK.'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(toDate(concat(toString(rpt_year), '-01-01')))
@@ -454,7 +455,8 @@ CREATE TABLE IF NOT EXISTS datamart.gsdc_public_company_industry_financial_rpt_f
     net_profit_amt_year_n1           Nullable(Decimal(23,2)) COMMENT 'Lợi nhuận sau thuế Năm N-1 theo ngành.',
     roa_percentage_year_n1           Nullable(Decimal(9,4))  COMMENT 'ROA Năm N-1 theo ngành.',
     roe_percentage_year_n1           Nullable(Decimal(9,4))  COMMENT 'ROE Năm N-1 theo ngành.',
-    src_stm_code                     String              COMMENT 'Mã hệ thống nguồn dữ liệu.'
+    src_stm_code                     String              COMMENT 'Mã hệ thống nguồn dữ liệu.',
+    rpt_dt                           String              COMMENT 'Ngày chạy ETL populate bảng (format yyyyMMdd) — audit column, không thuộc grain/PK.'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(toDate(concat(toString(rpt_year), '-01-01')))
@@ -490,7 +492,8 @@ CREATE TABLE IF NOT EXISTS datamart.gsdc_public_company_multi_period_financial_r
     net_profit_amt_year_n2              Nullable(Decimal(23,2)) COMMENT 'LNST Năm N-2 toàn thị trường.',
     roa_percentage_year_n2              Nullable(Decimal(9,4))  COMMENT 'ROA Năm N-2 toàn thị trường.',
     roe_percentage_year_n2              Nullable(Decimal(9,4))  COMMENT 'ROE Năm N-2 toàn thị trường.',
-    src_stm_code                        String              COMMENT 'Mã hệ thống nguồn dữ liệu.'
+    src_stm_code                        String              COMMENT 'Mã hệ thống nguồn dữ liệu.',
+    rpt_dt                               String              COMMENT 'Ngày chạy ETL populate bảng (format yyyyMMdd) — audit column, không thuộc grain/PK.'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(toDate(concat(toString(rpt_year), '-01-01')))
@@ -529,7 +532,8 @@ CREATE TABLE IF NOT EXISTS datamart.gsdc_public_company_exchange_financial_summa
     roa_yoy_percentage                   Nullable(Decimal(9,4))  COMMENT 'ROA — YoY theo sàn (% tăng/giảm tương đối).',
     roe_percentage                       Nullable(Decimal(9,4))  COMMENT 'ROE theo sàn.',
     roe_yoy_percentage                   Nullable(Decimal(9,4))  COMMENT 'ROE — YoY theo sàn (% tăng/giảm tương đối).',
-    src_stm_code                         String              COMMENT 'Mã hệ thống nguồn dữ liệu.'
+    src_stm_code                         String              COMMENT 'Mã hệ thống nguồn dữ liệu.',
+    rpt_dt                               String              COMMENT 'Ngày chạy ETL populate bảng (format yyyyMMdd) — audit column, không thuộc grain/PK.'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(toDate(concat(toString(rpt_year), '-01-01')))
@@ -559,7 +563,8 @@ CREATE TABLE IF NOT EXISTS datamart.gsdc_public_company_financial_yoy_rpt_flat O
     roa_yoy                              Nullable(Decimal(9,4)) COMMENT 'ROA — YoY, % tăng/giảm so cùng kỳ năm trước (áp dụng trên giá trị ROA đã tính của từng kỳ).',
     roe_yoy                              Nullable(Decimal(9,4)) COMMENT 'ROE — YoY, % tăng/giảm so cùng kỳ năm trước (áp dụng trên giá trị ROE đã tính của từng kỳ).',
     debt_to_equity_yoy                   Nullable(Decimal(9,4)) COMMENT 'Nợ / Vốn CSH — YoY, % tăng/giảm so cùng kỳ năm trước (áp dụng trên tỷ số Nợ/Vốn CSH đã tính của từng kỳ).',
-    src_stm_code                         String              COMMENT 'Mã hệ thống nguồn dữ liệu tính toán báo cáo tổng hợp tài chính YoY.'
+    src_stm_code                         String              COMMENT 'Mã hệ thống nguồn dữ liệu tính toán báo cáo tổng hợp tài chính YoY.',
+    rpt_dt                               String              COMMENT 'Ngày chạy ETL populate bảng (format yyyyMMdd) — audit column, không thuộc grain/PK.'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(toDate(concat(toString(rpt_year), '-01-01')))
