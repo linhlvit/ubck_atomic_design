@@ -154,7 +154,9 @@ Section 5 — Vấn đề mở
 ```
 - Thiếu hẳn Section 4 Reuse Analysis, hoặc "Vấn đề mở" đang chiếm nhầm vị trí Section 4 → 🔴 Critical cấp toàn module (không chỉ riêng 1 nhóm) — ghi nhận 1 lần trong bảng vấn đề tổng hợp, action đề xuất: bổ sung Section 4 đúng chuẩn (đẩy "Vấn đề mở" xuống Section 5), liệt kê `reuse_status` cho mọi bảng Fact/Dim đã có trong Section 3.
 - Section 4 tồn tại nhưng thiếu dòng cho 1 bảng Fact/Dim nào đó trong Section 3 → 🟡 Warning, bổ sung dòng thiếu.
-- Cũng kiểm tra: heading `##### Cụm N` đúng cấp (không phải `###`/`####`), và bảng KPI khối READY đủ 6 cột (`... | Công thức | Ghi chú`) — không phải 5 cột thiếu "Ghi chú". Đây đều là lỗi cấu trúc cấp toàn module, gộp chung nhóm Critical/Warning với Section 4 ở trên, không tách issue riêng.
+- Cũng kiểm tra: heading `##### Cụm N` đúng cấp (không phải `###`/`####`), và **mỗi Nhóm chỉ có ĐÚNG 1 bảng KPI duy nhất, đủ 7 cột** theo chuẩn hiện hành: `KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái`. Đây đều là lỗi cấu trúc cấp toàn module, gộp chung nhóm Critical/Warning với Section 4 ở trên, không tách issue riêng.
+  - ⚠️ **Chuẩn 7 cột thay thế hoàn toàn format cũ "block READY 6 cột / block PENDING 4 cột" (đổi 2026-07-23).** Dòng READY và PENDING nằm CHUNG 1 bảng, phân biệt bằng cột `Trạng thái`. Nếu HLD còn tách `##### READY` / `##### PENDING` thành 2 block, hoặc bảng chỉ có 6 cột (thiếu `Trạng thái`) → 🟡 Warning cấu trúc, đề xuất gộp về 1 bảng 7 cột.
+  - ❌ **KHÔNG báo lỗi ngược lại** — bảng 7 cột có cột `Trạng thái` là ĐÚNG chuẩn, không phải "thừa cột". Đây là lỗi đã xảy ra khi review chạy theo bản checklist cũ.
 - Không tự suy ra `reuse_status` — nếu chưa rõ, hỏi user xác nhận (theo GATE RULE của `datamart-hld-design`), không tự gán "reuse" hay "new" khi chưa chắc chắn.
 
 > **⚠️ Không được để kết quả kiểm tra cấu trúc "chìm" khi có việc khác chen ngang (bắt buộc):** Nếu quá trình review 0b phát sinh một phát hiện lớn hơn giữa chừng (VD: Critical gap Atomic khiến phải tạm dừng lập kế hoạch để điều tra, hoặc phải gọi `datamart-hld-design`/`datamart-lld-design` để sửa ngay một phần trước khi tiếp tục) — kết quả kiểm tra cấu trúc tài liệu ở bước này (Section/heading/cột) VẪN PHẢI được nêu lại tường minh trong bảng 0b.4 và câu hỏi gate 0b.5, không được để trôi mất trong lúc xử lý việc phát sinh. Lý do: gate 0b.5 mặc định chỉ hỏi "thứ tự review nhóm nào", không tự nhắc lại phát hiện cấu trúc — nếu người thực hiện bị cuốn theo nhánh phát sinh (điều tra gap Atomic, chuyển sang skill khác để sửa 1 Nhóm cụ thể) mà không chủ động quay lại, phát hiện cấu trúc dễ bị bỏ sót hoàn toàn cho đến khi user tự phát hiện và hỏi lại (case thực tế: module TT — phát hiện Critical gap Atomic THANHTRA schema cũ/mới ngay sau 0b, chuyển hướng gọi `datamart-hld-design` sửa Nhóm 1, nhưng bỏ luôn việc báo cáo thiếu Section 4/heading Cụm sai cấp/bảng KPI thiếu cột Ghi chú — dù các lỗi này đã có sẵn từ bản gốc và không liên quan gì đến nhánh phát sinh đang xử lý).
@@ -675,31 +677,13 @@ Nếu phát hiện dòng lệch — sửa lại bằng cách bọc phần text c
 
 **Quy tắc:** Chỉ những từ trong file exceptions mới được viết tắt trong tên physical (`datamart_column`). Mọi từ khác phải dùng full word.
 
-Exceptions (cố định):
+> ⛔ **KHÔNG chép bảng exceptions vào file này.** Danh sách chỉ tồn tại ở đúng 1 nơi là CSV trên — mọi bản sao nhúng đều sẽ lệch theo thời gian (bản sao cũ trong skill từng thiếu entry `Calendar → cdr`, gây ra 2 tên song song `calendar_dt_dim_id` / `cdr_dt_dim_id` trong master).
 
-| Full word | Abbreviation |
-|---|---|
-| address | adr |
-| amount | amt |
-| classification | cl |
-| date | dt |
-| dimension | dim |
-| fact | fct |
-| history | hist |
-| id | id |
-| name | nm |
-| number | nbr |
-| operational | opr |
-| relationship | rltnp |
-| report | rpt |
-| scheme | scm |
-| snapshot | snpst |
-| source | src |
-| system | stm |
-| timestamp | tms |
-| type | tp |
-| value | val |
-| volume | vol |
+**Bắt buộc đọc CSV trước khi kết luận 1 tên là sai:**
+
+```bash
+cat system/rules/rule_physical_name_exceptions_datamart.csv
+```
 
 **Nguyên tắc derive tên physical từ logical (bắt buộc kiểm tra):**
 - Physical name phải derive trực tiếp từ **tên logical** — KHÔNG được thay token bằng từ đồng nghĩa hay dạng mở rộng khác

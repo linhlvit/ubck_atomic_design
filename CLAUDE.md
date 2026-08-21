@@ -19,7 +19,9 @@ Nếu user hỏi mentor Q&A đơn giản (không phải task thiết kế), tr�
 
 ## QUY TẮC CỨNG — SELF-CHECK BƯỚC 5B SAU MỌI CHỈNH SỬA HLD DATAMART
 
-**Áp dụng bất kể có gọi Skill tool `datamart-hld-design` hay không** — kể cả khi sửa `Datamart/hld/DTM_{MODULE}_HLD.md` trực tiếp qua Edit giữa hội thoại (không đi qua flow Phase 1 đầy đủ từ đầu), vẫn bắt buộc chạy lại checklist Bước 5B (10 mục, xem `.claude/skills/datamart-hld-design/SKILL.md`) **ngay sau Edit, trước khi báo kết quả cho user**.
+**Áp dụng bất kể có gọi Skill tool `datamart-hld-design` hay không** — kể cả khi sửa `Datamart/hld/DTM_{MODULE}_HLD.md` trực tiếp qua Edit giữa hội thoại (không đi qua flow Phase 1 đầy đủ từ đầu), vẫn bắt buộc chạy lại checklist Bước 5B (**13 mục, đánh số #0–#12**, xem `.claude/skills/datamart-hld-design/SKILL.md`) **ngay sau Edit, trước khi báo kết quả cho user**.
+
+> Khi bổ sung mục mới vào Bước 5B, cập nhật con số ở CẢ 2 nơi (SKILL.md + dòng này). Con số lệch nhau đã từng khiến self-check chạy thiếu mục mà vẫn báo "đã chạy đủ".
 
 **Lý do:** Đã xảy ra thực tế (module TT, 2026-07-21) — một chuỗi Edit liên tiếp trên HLD (tách Dimension, sửa FK, đổi cấu trúc measure) chỉ chạy self-check thủ công một phần theo yêu cầu tức thời của user tại từng thời điểm, không tự động kích hoạt Bước 5B đầy đủ — dẫn tới bỏ sót 2 lỗi thật (Fact-to-Fact reference sai lý thuyết Kimball, thiếu `Source_System_Code` trên Dimension mới) tồn tại qua nhiều lượt sửa cho tới khi user tự phát hiện.
 
