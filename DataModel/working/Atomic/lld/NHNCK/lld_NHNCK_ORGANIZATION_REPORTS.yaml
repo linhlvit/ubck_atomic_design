@@ -19,7 +19,11 @@ metadata:
   approved_at: null
   notes: "Hạ về draft (2026-07-27) để sửa lỗi hash-mismatch FK \"Securities Practitioner\
     \ License Certificate Type Id\" — trước đây hash trực tiếp theo CERTIFICATE_ID\
-    \ (ID kỹ thuật) thay vì Code của bảng đích (CERTIFICATE_CODE)."
+    \ (ID kỹ thuật) thay vì Code của bảng đích (CERTIFICATE_CODE). Hạ lại về draft\
+    \ (2026-08-15) để sửa lỗi hash-mismatch tương tự trên FK \"Securities Practitioner\
+    \ License Certificate Document Id\" — trước đây hash trực tiếp theo CERTIFICATE_RECORD_ID\
+    \ (ID kỹ thuật) thay vì Code của bảng đích (nay đổi từ ID sang CERTIFICATE_NUMBER,\
+    \ đồng bộ với đổi BK trên lld_NHNCK_CERTIFICATE_RECORDS.yaml)."
 attributes:
 - attribute_name: "Securities Practitioner Organization Employment Report Id"
   physical_name: "sp_organization_employment_rpt_id"
@@ -120,8 +124,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.ORGANIZATION_REPORTS.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
-    \ PROFESSIONAL_ID)."
+  comment: "FK target: securities_practitioner.sp_id. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -134,8 +137,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.ORGANIZATION_REPORTS.PROFESSIONAL_ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Securities Practitioner Id."
+  comment: "Lookup pair: securities_practitioner.sp_code. Pair with Securities Practitioner Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -148,9 +150,12 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.ORGANIZATION_REPORTS.CERTIFICATE_RECORD_ID"
-  comment: "FK target: Securities Practitioner License Certificate Document.Securities\
-    \ Practitioner License Certificate Document Id. Hash: hash_id('NHNCK.CERTIFICATE_RECORDS',\
-    \ CERTIFICATE_RECORD_ID)."
+  comment: "FK target: sp_license_certificate_document.sp_license_certificate_document_id.\
+    \ Cần ETL crosswalk sang NHNCK.CERTIFICATE_RECORDS: ORGANIZATION_REPORTS.CERTIFICATE_RECORD_ID\
+    \ = CERTIFICATE_RECORDS.ID để xác nhận CERTIFICATE_NUMBER sau đó hash_id('NHNCK.CERTIFICATE_RECORDS',\
+    \ CERTIFICATE_NUMBER) | Trước đây hash trực tiếp theo CERTIFICATE_RECORD_ID (ID\
+    \ kỹ thuật) gây sai lệch với Id của bảng main (hash từ CERTIFICATE_NUMBER) — đã\
+    \ sửa sang crosswalk 2026-08-15."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -162,10 +167,11 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "NHNCK.ORGANIZATION_REPORTS.CERTIFICATE_RECORD_ID"
-  comment: "Lookup pair: Securities Practitioner License Certificate Document.Securities\
-    \ Practitioner License Certificate Document Code. Pair with Securities Practitioner\
-    \ License Certificate Document Id."
+  - "NHNCK.CERTIFICATE_RECORDS.CERTIFICATE_NUMBER"
+  comment: "Lookup pair: sp_license_certificate_document.sp_license_certificate_document_code.\
+    \ Pair with Securities Practitioner License Certificate Document Id. Giá trị lấy\
+    \ từ NHNCK.CERTIFICATE_RECORDS.CERTIFICATE_NUMBER sau ETL crosswalk — chi tiết\
+    \ xem comment Securities Practitioner License Certificate Document Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -178,9 +184,9 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.ORGANIZATION_REPORTS.CERTIFICATE_ID"
-  comment: "FK target: sp_license_certificate_type.sp_license_certificate_tp_id.\
-    \ Cần ETL crosswalk sang NHNCK.CERTIFICATES: ORGANIZATION_REPORTS.CERTIFICATE_ID\
-    \ = CERTIFICATES.ID để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK.CERTIFICATES',\
+  comment: "FK target: sp_license_certificate_type.sp_license_certificate_tp_id. Cần\
+    \ ETL crosswalk sang NHNCK.CERTIFICATES: ORGANIZATION_REPORTS.CERTIFICATE_ID =\
+    \ CERTIFICATES.ID để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK.CERTIFICATES',\
     \ CERTIFICATE_CODE) | Trước đây hash trực tiếp theo CERTIFICATE_ID (ID kỹ thuật)\
     \ gây sai lệch với Id của bảng main (hash từ CERTIFICATE_CODE) — đã sửa sang crosswalk\
     \ 2026-07-27."
@@ -212,9 +218,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.ORGANIZATION_REPORTS.PARENT_REPORT_ID"
-  comment: "FK target: Securities Practitioner Organization Employment Report.Securities\
-    \ Practitioner Organization Employment Report Id. Self-referencing. Hash: hash_id('NHNCK.ORGANIZATION_REPORTS',\
-    \ PARENT_REPORT_ID)."
+  comment: "FK target: sp_organization_employment_report.sp_organization_employment_rpt_id. Self-referencing. Hash: hash_id('NHNCK.ORGANIZATION_REPORTS', PARENT_REPORT_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -227,9 +231,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.ORGANIZATION_REPORTS.PARENT_REPORT_ID"
-  comment: "Lookup pair: Securities Practitioner Organization Employment Report.Securities\
-    \ Practitioner Organization Employment Report Code. Pair with Parent Securities\
-    \ Practitioner Organization Employment Report Id."
+  comment: "Lookup pair: sp_organization_employment_report.sp_organization_employment_rpt_code. Pair with Parent Securities Practitioner Organization Employment Report Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -477,8 +479,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.ORGANIZATION_REPORTS.STATUS_ORGANIZATION"
-  comment: "Scheme: WORK_STATUS_ORGANIZATION. Nguồn lưu dạng NUMBER — ETL convert"
-  classification_context: null
+  comment: "Scheme: NHNCK.ORGANIZATION_REPORTS.STATUS."
+  classification_context: "NHNCK.ORGANIZATION_REPORTS.STATUS"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Sync Created Timestamp"
@@ -507,3 +509,32 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "timestamp"
+- attribute_name: "Status Code"
+  physical_name: "status_code"
+  description: "Trạng thái bản ghi"
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.ORGANIZATION_REPORTS.STATUS"
+  comment: "Scheme: NHNCK.ORGANIZATION_REPORTS.STATUS."
+  classification_context: "NHNCK.ORGANIZATION_REPORTS.STATUS"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Type Code"
+  physical_name: "rpt_tp_code"
+  description: "Loại/phân loại của bản ghi. Loại báo cáo thông tin nhân sự mà tổ chức\
+    \ gửi tới NHNCK."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.ORGANIZATION_REPORTS.TYPE"
+  comment: "Scheme: NHNCK.ORGANIZATION_REPORTS.TYPE. Nguồn lưu dạng NUMBER — ETL convert\
+    \ sang string. Giá trị scheme chưa xác định — cần profile dữ liệu thực tế để liệt\
+    \ kê đủ giá trị (tương tự Violation Type Code trên lld_NHNCK_VIOLATIONS.yaml)."
+  classification_context: "NHNCK.ORGANIZATION_REPORTS.TYPE"
+  etl_derived_value: null
+  data_type: "string"

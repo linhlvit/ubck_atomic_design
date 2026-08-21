@@ -1,0 +1,113 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "NHNCK"
+  source_table: "CERTIFICATE_RECORD_GROUP_MEMBERS"
+  atomic_entity: "Certificate Group X Securities Practitioner License Certificate\
+    \ Document Relationship"
+  entity_physical_name: "certificate_group_x_sp_license_certificate_document_relationship"
+  bcv_core_object: "Group"
+  bcv_concept: "[Group] Group"
+  table_type: "Relative"
+  group: "T4"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "STATUS (nguồn) không map — theo chính sách Data Modeler (2026-07-07): không\
+    \ thiết kế Atomic attribute cho RECORD_TYPE/RECORD_STATUS trên bất kỳ bảng NHNCK\
+    \ nào. Đổi tên từ \"Securities Practitioner License Certificate Group Member\"\
+    \ sang pattern link/relationship \"_x_\" + Table Type Fundamental → Relative theo\
+    \ quyết định Data Modeler (2026-08-14, lần 3). Theo quy tắc entity \"_x_\" (Bước\
+    \ 3e skill atomic-lld-design): KHÔNG còn cặp Id/Code riêng của entity — PK là\
+    \ composite 2 FK Id (License Certificate Document Id + License Certificate Group\
+    \ Id). ID (nguồn) không map — không cần thiết vì PK đã là composite của 2 FK.\
+    \ ADDED_DATE/ADDED_BY/IS_REISSUE/REVOCATION_REASON/ORDER_INDEX bỏ khỏi thiết kế\
+    \ theo yêu cầu tường minh Data Modeler (2026-08-14) — chỉ giữ 2 cặp FK Id/Code\
+    \ + Source System Code như các entity link khác (xem pending_design.yaml). Điểm\
+    \ cần xác nhận REVOCATION_REASON ở NHNCK_HLD_Tier4.md 6f #5 theo đó không còn\
+    \ áp dụng (field đã bỏ khỏi thiết kế). [SỬA 2026-08-15] Đổi lại BCV Concept từ\
+    \ \"[Documentation] Gov. Registration Document\" (2026-08-14, lần 3) sang \"[Group]\
+    \ Group\" — theo quyết định Data Modeler, tái dùng concept từ phía Certificate\
+    \ Group (đổi tên entity đặt Group lên trước)."
+attributes:
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=NHNCK.CERTIFICATE_RECORD_GROUP_MEMBERS"
+  etl_derived_value: "NHNCK_CERTIFICATE_RECORD_GROUP_MEMBERS"
+  data_type: "string"
+- attribute_name: "Securities Practitioner License Certificate Document Id"
+  physical_name: "sp_license_certificate_document_id"
+  description: "FK -> CERTIFICATE_RECORDS: Bản ghi CCHN trong sổ đăng bộ."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "NHNCK.CERTIFICATE_RECORD_GROUP_MEMBERS.CERTIFICATE_RECORD_ID"
+  comment: "FK target: sp_license_certificate_document.sp_license_certificate_document_id.\
+    \ Cần ETL crosswalk sang NHNCK.CERTIFICATE_RECORDS: CERTIFICATE_RECORD_GROUP_MEMBERS.CERTIFICATE_RECORD_ID\
+    \ = CERTIFICATE_RECORDS.ID để xác nhận CERTIFICATE_NUMBER sau đó hash_id('NHNCK.CERTIFICATE_RECORDS',\
+    \ CERTIFICATE_NUMBER) | Trước đây hash trực tiếp theo CERTIFICATE_RECORD_ID (ID\
+    \ kỹ thuật) gây sai lệch với Id của bảng main (hash từ CERTIFICATE_NUMBER) — đã\
+    \ sửa sang crosswalk 2026-08-15. Composite PK cùng Securities Practitioner License\
+    \ Certificate Group Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Practitioner License Certificate Document Code"
+  physical_name: "sp_license_certificate_document_code"
+  description: "Mã CCHN trong sổ đăng bộ (denormalized lookup)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.CERTIFICATE_RECORDS.CERTIFICATE_NUMBER"
+  comment: "Lookup pair: sp_license_certificate_document.sp_license_certificate_document_code.\
+    \ Pair with Securities Practitioner License Certificate Document Id. Giá trị lấy\
+    \ từ NHNCK.CERTIFICATE_RECORDS.CERTIFICATE_NUMBER sau ETL crosswalk — chi tiết\
+    \ xem comment Securities Practitioner License Certificate Document Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Practitioner License Certificate Group Id"
+  physical_name: "sp_license_certificate_group_id"
+  description: "FK -> CERTIFICATE_RECORD_GROUPS: Nhóm cấp/thu hồi CCHN."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "NHNCK.CERTIFICATE_RECORD_GROUP_MEMBERS.CERTIFICATE_RECORD_GROUP_ID"
+  comment: "FK target: sp_license_certificate_group.sp_license_certificate_group_id.\
+    \ Hash: hash_id('NHNCK.CERTIFICATE_RECORD_GROUPS', CERTIFICATE_RECORD_GROUP_ID).\
+    \ Composite PK cùng Securities Practitioner License Certificate Document Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Practitioner License Certificate Group Code"
+  physical_name: "sp_license_certificate_group_code"
+  description: "Mã nhóm cấp/thu hồi CCHN (denormalized lookup)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.CERTIFICATE_RECORD_GROUP_MEMBERS.CERTIFICATE_RECORD_GROUP_ID"
+  comment: "Lookup pair: sp_license_certificate_group.sp_license_certificate_group_code.\
+    \ Pair with Securities Practitioner License Certificate Group Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

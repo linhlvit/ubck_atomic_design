@@ -3,10 +3,10 @@ schema_version: "2.0"
 metadata:
   source_system: "FMS"
   source_table: "AGEN_FUNDS"
-  atomic_entity: "Investment Fund X Fund Distribution Agent Relationship"
-  entity_physical_name: "investment_fund_x_fund_distribution_agent_relationship"
-  bcv_core_object: "Arrangement"
-  bcv_concept: "[Arrangement] Investment Fund"
+  atomic_entity: "Fund Distribution Agent X Investment Fund Relationship"
+  entity_physical_name: "fund_distribution_agent_x_investment_fund_relationship"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Organization"
   table_type: "Relative"
   group: "T3"
   design_status: "approved"
@@ -23,10 +23,14 @@ metadata:
     \ chỉ có 2 FK (AGENCY_ID, FUND_ID) + DATA_MIGRATION (cờ migration kỹ thuật, không\
     \ map — document pending_design.yaml). Không có PK/ID kỹ thuật riêng, không có\
     \ audit fields. FUD_AG_AGT (mở rộng 4-FK) cần rà soát gộp/tách — xem Overview\
-    \ 7e#19. BCV Concept tạm dùng — xem Overview 7e#20. Hạ về draft (2026-08-13)\
-    \ để bỏ cặp Id/Code riêng của entity — theo quyết định Data Modeler, bảng \"_x_\"\
-    \ (link/relationship thuần) không cần surrogate Id + BK Code riêng; PK là composite\
-    \ 2 FK (Investment Fund Id + Fund Distribution Agent Id)."
+    \ 7e#19. Hạ về draft (2026-08-13) để bỏ cặp Id/Code riêng của entity — theo quyết\
+    \ định Data Modeler, bảng \"_x_\" (link/relationship thuần) không cần surrogate\
+    \ Id + BK Code riêng; PK là composite 2 FK (Investment Fund Id + Fund Distribution\
+    \ Agent Id). [SỬA 2026-08-15] BCV Concept tạm \"[Arrangement] Investment Fund\"\
+    \ (xem Overview 7e#20) không khớp với chính entity Investment Fund (đã là BCO\
+    \ Involved Party, concept [Involved Party] Funds). Đổi BCO sang Involved Party,\
+    \ tái dùng concept từ phía Fund Distribution Agent — [Involved Party] Organization\
+    \ — và đổi tên entity đặt phía Agent lên trước theo quyết định Data Modeler."
 attributes:
 - attribute_name: "Source System Code"
   physical_name: "src_stm_code"

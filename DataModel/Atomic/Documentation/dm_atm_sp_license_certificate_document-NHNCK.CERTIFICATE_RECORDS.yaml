@@ -32,21 +32,21 @@ attributes:
     source_system: NHNCK
     source_table: CERTIFICATE_RECORDS
     source_column: null
-    comment: null
+    comment: "PK surrogate. Hash: hash_id('NHNCK.CERTIFICATE_RECORDS', CERTIFICATE_NUMBER). Sửa 2026-08-15: trước đây hash từ ID kỹ thuật, sai lệch với chính Code (CERTIFICATE_NUMBER) của entity — gây mismatch cho FK downstream tham chiếu entity này."
     classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner License Certificate Document Code
     physical_name: sp_license_certificate_document_code
-    business_meaning: Business key từ CERTIFICATE_RECORDS.ID
+    business_meaning: Business key — số chứng chỉ hành nghề (CCHN) thật.
     data_domain: Text
     data_type: string
     nullable: false
     is_primary_key: false
     source_system: NHNCK
     source_table: CERTIFICATE_RECORDS
-    source_column: NHNCK.CERTIFICATE_RECORDS.ID
-    comment: null
+    source_column: NHNCK.CERTIFICATE_RECORDS.CERTIFICATE_NUMBER
+    comment: "BK chính. Mã định danh duy nhất của CCHN — thay cho CERTIFICATE_RECORDS.ID (khóa kỹ thuật) theo quyết định Data Modeler (2026-08-15)."
     classification_context: null
     etl_derived_value: null
 
@@ -63,20 +63,6 @@ attributes:
     comment: null
     classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
     etl_derived_value: NHNCK_CERTIFICATE_RECORDS
-
-  - name: Certificate Number
-    physical_name: certificate_nbr
-    business_meaning: Số chứng chỉ hành nghề
-    data_domain: Text
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: CERTIFICATE_RECORDS
-    source_column: NHNCK.CERTIFICATE_RECORDS.CERTIFICATE_NUMBER
-    comment: null
-    classification_context: null
-    etl_derived_value: null
 
   - name: Securities Practitioner License Certificate Type Id
     physical_name: sp_license_certificate_tp_id
@@ -144,7 +130,7 @@ attributes:
     source_system: NHNCK
     source_table: CERTIFICATE_RECORDS
     source_column: NHNCK.CERTIFICATE_RECORDS.ISSUE_DECISION_ID
-    comment: "FK target: sp_license_decision_document.sp_license_decision_document_id. Hash: hash_id('NHNCK.DECISIONS', ISSUE_DECISION_ID)."
+    comment: "FK target: sp_license_decision_document.sp_license_decision_document_id. Cần ETL crosswalk sang NHNCK.DECISIONS: CERTIFICATE_RECORDS.ISSUE_DECISION_ID = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK.DECISIONS', DECISION_NUMBER) | Trước đây hash trực tiếp theo ISSUE_DECISION_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ DECISION_NUMBER) — đã sửa sang crosswalk 2026-08-14."
     classification_context: null
     etl_derived_value: null
 
@@ -157,8 +143,8 @@ attributes:
     is_primary_key: false
     source_system: NHNCK
     source_table: CERTIFICATE_RECORDS
-    source_column: NHNCK.CERTIFICATE_RECORDS.ISSUE_DECISION_ID
-    comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code. Pair with Issue Securities Practitioner License Decision Document Id."
+    source_column: NHNCK.DECISIONS.DECISION_NUMBER
+    comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code. Pair with Issue Securities Practitioner License Decision Document Id. Giá trị lấy từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem comment Issue Securities Practitioner License Decision Document Id."
     classification_context: null
     etl_derived_value: null
 
@@ -172,7 +158,7 @@ attributes:
     source_system: NHNCK
     source_table: CERTIFICATE_RECORDS
     source_column: NHNCK.CERTIFICATE_RECORDS.REVOCATION_DECISION_ID
-    comment: "FK target: sp_license_decision_document.sp_license_decision_document_id. Hash: hash_id('NHNCK.DECISIONS', REVOCATION_DECISION_ID)."
+    comment: "FK target: sp_license_decision_document.sp_license_decision_document_id. Cần ETL crosswalk sang NHNCK.DECISIONS: CERTIFICATE_RECORDS.REVOCATION_DECISION_ID = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK.DECISIONS', DECISION_NUMBER) | Trước đây hash trực tiếp theo REVOCATION_DECISION_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ DECISION_NUMBER) — đã sửa sang crosswalk 2026-08-14."
     classification_context: null
     etl_derived_value: null
 
@@ -185,8 +171,8 @@ attributes:
     is_primary_key: false
     source_system: NHNCK
     source_table: CERTIFICATE_RECORDS
-    source_column: NHNCK.CERTIFICATE_RECORDS.REVOCATION_DECISION_ID
-    comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code. Pair with Revocation Securities Practitioner License Decision Document Id."
+    source_column: NHNCK.DECISIONS.DECISION_NUMBER
+    comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code. Pair with Revocation Securities Practitioner License Decision Document Id. Giá trị lấy từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem comment Revocation Securities Practitioner License Decision Document Id."
     classification_context: null
     etl_derived_value: null
 
@@ -200,7 +186,7 @@ attributes:
     source_system: NHNCK
     source_table: CERTIFICATE_RECORDS
     source_column: NHNCK.CERTIFICATE_RECORDS.CANCELLATION_DECISION_ID
-    comment: "FK target: sp_license_decision_document.sp_license_decision_document_id. Hash: hash_id('NHNCK.DECISIONS', CANCELLATION_DECISION_ID)."
+    comment: "FK target: sp_license_decision_document.sp_license_decision_document_id. Cần ETL crosswalk sang NHNCK.DECISIONS: CERTIFICATE_RECORDS.CANCELLATION_DECISION_ID = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK.DECISIONS', DECISION_NUMBER) | Trước đây hash trực tiếp theo CANCELLATION_DECISION_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ DECISION_NUMBER) — đã sửa sang crosswalk 2026-08-14."
     classification_context: null
     etl_derived_value: null
 
@@ -213,8 +199,8 @@ attributes:
     is_primary_key: false
     source_system: NHNCK
     source_table: CERTIFICATE_RECORDS
-    source_column: NHNCK.CERTIFICATE_RECORDS.CANCELLATION_DECISION_ID
-    comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code. Pair with Cancellation Securities Practitioner License Decision Document Id."
+    source_column: NHNCK.DECISIONS.DECISION_NUMBER
+    comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code. Pair with Cancellation Securities Practitioner License Decision Document Id. Giá trị lấy từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem comment Cancellation Securities Practitioner License Decision Document Id."
     classification_context: null
     etl_derived_value: null
 

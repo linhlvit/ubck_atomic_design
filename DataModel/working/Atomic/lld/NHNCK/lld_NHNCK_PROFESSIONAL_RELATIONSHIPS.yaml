@@ -65,8 +65,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.PROFESSIONAL_RELATIONSHIPS.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
-    \ PROFESSIONAL_ID)."
+  comment: "FK target: securities_practitioner.sp_id. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -79,8 +78,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.PROFESSIONAL_RELATIONSHIPS.PROFESSIONAL_ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Securities Practitioner Id."
+  comment: "Lookup pair: securities_practitioner.sp_code. Pair with Securities Practitioner Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -93,8 +91,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.PROFESSIONAL_RELATIONSHIPS.RELATIONSHIP_TYPE"
-  comment: "Scheme: RELATIONSHIP_TYPE."
-  classification_context: null
+  comment: "Scheme: NHNCK.PROFESSIONAL_RELATIONSHIPS.RELATIONSHIP_TYPE."
+  classification_context: "NHNCK.PROFESSIONAL_RELATIONSHIPS.RELATIONSHIP_TYPE"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Related Individual Full Name"
@@ -200,9 +198,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.COUNTRIES.COUNTRY_CODE"
-  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT). Pair with\
-    \ Country Id. Giá trị lấy từ NHNCK.COUNTRIES.COUNTRY_CODE sau ETL crosswalk —\
-    \ chi tiết xem comment Country Id."
+  comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Country Id. Giá trị lấy từ NHNCK.COUNTRIES.COUNTRY_CODE sau ETL crosswalk — chi tiết xem comment Country Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

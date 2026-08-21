@@ -1,0 +1,123 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+
+metadata:
+  source_system: "NHNCK"
+  source_table: "APPLICATION_SOURCES"
+  atomic_entity: "Classification Value"
+  entity_physical_name: "cl_value"
+  bcv_core_object: "Common"
+  bcv_concept: "[Classification] Common"
+  table_type: "Classification"
+  group: "T1"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Map trực tiếp vào Fundamental entity dùng chung Classification Value (cl_value)\
+    \ — không tạo Atomic entity riêng, theo quyết định Data Modeler (2026-08-20). Scheme:\
+    \ APPLICATION_SOURCE (đăng ký trong classification_schemes.yaml). File này là Level\
+    \ 1 LLD; cần chạy Level 2 consolidation (generate_entity_consolidation.py) gộp vào\
+    \ entity_cl_value.yaml cùng các source khác trước khi generate ra DataModel/Atomic.\
+    \ 4 cột ds_* (ds_rcrd_st/ds_rcrd_eff_dt/ds_rcrd_end_dt/ds_etl_pcs_tms) không thiết\
+    \ kế ở đây — ETL job tự quản lý (SCD, không map từ cột nguồn), theo yêu cầu tường\
+    \ minh Data Modeler."
+
+attributes:
+  - attribute_name: "Classification Code"
+    physical_name: "cl_code"
+    description: "Mã giá trị phân loại. Mã hình thức nộp hồ sơ."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns:
+      - "NHNCK.APPLICATION_SOURCES.CODE"
+    comment: "BK chính (kết hợp Schema Code tạo BK duy nhất)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Schema Code"
+    physical_name: "schema_code"
+    description: "Mã loại phân loại."
+    data_domain: "Text"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns: []
+    comment: "Hardcode."
+    classification_context: null
+    etl_derived_value: "NHNCK.APPLICATION_SOURCES"
+    data_type: "string"
+
+  - attribute_name: "Schema Name"
+    physical_name: "schema_nm"
+    description: "Tên loại phân loại."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: "Hardcode."
+    classification_context: null
+    etl_derived_value: "NHNCK - Hình thức nộp hồ sơ"
+    data_type: "string"
+
+  - attribute_name: "Source System Code"
+    physical_name: "src_stm_code"
+    description: "Mã nguồn dữ liệu."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "SOURCE_SYSTEM=NHNCK.APPLICATION_SOURCES"
+    etl_derived_value: "NHNCK_APPLICATION_SOURCES"
+    data_type: "string"
+
+  - attribute_name: "Classification Name"
+    physical_name: "cl_nm"
+    description: "Tên giá trị phân loại (tiếng Việt)."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "NHNCK.APPLICATION_SOURCES.NAME"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Classification Name English"
+    physical_name: "cl_nm_english"
+    description: "Tên giá trị phân loại (tiếng Anh)."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Classification Description"
+    physical_name: "cl_description"
+    description: "Diễn giải chi tiết ý nghĩa giá trị phân loại."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "NHNCK.APPLICATION_SOURCES.DESCRIPTION"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"

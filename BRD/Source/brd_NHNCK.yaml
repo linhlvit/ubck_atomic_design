@@ -359,8 +359,8 @@ brd_entries:
   content:
     table_meaning: Chuyên môn liên quan loại chứng chỉ
     functional_group: UID02 Quản lý danh mục dùng riêng
-    scope_status: out_of_scope
-    scope_reason: Application config
+    scope_status: in_scope
+    scope_reason: null
     table: CERTIFICATE_SPECIALIZATIONS
     related_tables:
     - table: CERTIFICATES
@@ -382,8 +382,8 @@ brd_entries:
   content:
     table_meaning: Liên kết phòng ban với loại chứng chỉ
     functional_group: UID02 Quản lý danh mục dùng riêng
-    scope_status: out_of_scope
-    scope_reason: Application config
+    scope_status: in_scope
+    scope_reason: null
     table: CERTIFICATE_DEPARTMENTS
     related_tables:
     - table: CERTIFICATES
@@ -427,7 +427,7 @@ brd_entries:
     table_meaning: Danh mục chuyên môn/chứng chỉ chuyên môn
     functional_group: UID02 Quản lý danh mục dùng riêng
     scope_status: in_scope
-    scope_reason: Đã thiết kế Atomic entity Classification Specialization (2026-07-09)
+    scope_reason: Map vào Classification Value (scheme SPECIALIZATION), revert từ Atomic entity thật 2026-08-20
     table: SPECIALIZATIONS
     related_tables:
     - table: APPLICATION_SPECIALIZATIONS
@@ -454,7 +454,7 @@ brd_entries:
     table_meaning: Danh mục tài liệu liên quan đến hồ sơ hoặc chứng chỉ
     functional_group: UID02 Quản lý danh mục dùng riêng
     scope_status: in_scope
-    scope_reason: Đã thiết kế Atomic entity Classification Document (2026-07-09)
+    scope_reason: Map vào Classification Value (scheme DOCUMENT_TYPE), revert từ Atomic entity thật 2026-08-20
     table: DOCUMENTS
     related_tables:
     - table: APPLICATION_DOCUMENTS
@@ -591,8 +591,8 @@ brd_entries:
   content:
     table_meaning: Hình thức nộp hồ sơ
     functional_group: UID02 Quản lý danh mục dùng riêng
-    scope_status: out_of_scope
-    scope_reason: null
+    scope_status: in_scope
+    scope_reason: Map vào Classification Value (scheme APPLICATION_SOURCE), 2026-08-20
     table: APPLICATION_SOURCES
     related_tables: null
     notes: null
@@ -611,7 +611,7 @@ brd_entries:
     table_meaning: Định nghĩa các trạng thái của hồ sơ
     functional_group: UID02 Quản lý danh mục dùng riêng
     scope_status: in_scope
-    scope_reason: Đã thiết kế Atomic entity Classification Application Status (2026-07-09)
+    scope_reason: Map vào Classification Value (scheme APPLICATION_STATUS), revert từ Atomic entity thật 2026-08-20
     table: APPLICATION_STATUSES
     related_tables:
     - table: APPLICATIONS
@@ -2256,12 +2256,9 @@ brd_entries:
   content:
     table_meaning: Nhật ký đồng bộ dữ liệu báo cáo từ tổ chức
     functional_group: UID06 Quản lý người hành nghề chứng khoán
-    scope_status: in_scope
-    scope_reason: Quyết định Data Modeler (2026-08-13) — đảo lại quyết định out_of_scope
-      trước đó (Operational log); tên bảng gợi ý "log" nhưng cấu trúc trường là instance
-      data tường minh (FULL_NAME/POSITION/DEPARTMENT/CERTIFICATE_NUMBER + 4 cờ IS_VALID_*),
-      không phải audit log generic FieldName/OldValue/NewValue → đủ điều kiện entity
-      Documentation (chi tiết theo dòng của Employer Registration).
+    scope_status: out_of_scope
+    scope_reason: Quyết định Data Modeler (2026-08-14) — hủy thiết kế (đảo lại quyết
+      định in_scope 2026-08-13). Trở về out_of_scope ban đầu (Operational log).
     table: ORGANIZATION_REPORT_LOG_SYNCS
     related_tables:
     - table: ORGANIZATION_REPORT_YEARLYS
@@ -2393,20 +2390,19 @@ brd_entries:
   content:
     table_meaning: Kết quả thẩm định/xác minh yêu cầu chuyển đổi trạng thái chứng chỉ (lý do thẩm định theo từng cấp xét duyệt)
     functional_group: UID05 Quản lý chứng chỉ hành nghề
-    scope_status: in_scope
-    scope_reason: Quyết định Data Modeler (2026-08-13) — cấu trúc cột đối xứng hoàn toàn
-      với VERIFY_APPLICATION_STATUSES (TARGET_STATUS/PREV_STATUS + 4 trường lý do theo
-      cấp xét duyệt + VERIFIED_BY), áp dụng cho CERTIFICATE_CONVERSION_REQUESTS thay vì
-      APPLICATIONS → đủ điều kiện Business Activity Status Review. TARGET_STATUS/PREV_STATUS
-      dùng chung scheme đã có `LICENSE_CERTIFICATE_CONVERSION_STATUS`.
+    scope_status: pending
+    scope_reason: null
     table: VERIFY_CERTIFICATE_CONVERSION_STATUSES
     related_tables:
     - table: CERTIFICATE_CONVERSION_REQUESTS
       relation: FK cha — Yêu cầu chuyển đổi CCHN bản giấy sang bản điện tử (hiện out_of_scope,
         xem 7e)
     notes: Bảng phát hiện qua đối chiếu DDL UAT ngày 2026-07-15. Ý nghĩa nghiệp vụ đã
-      xác nhận (2026-08-13) qua đối chiếu cấu trúc cột với VERIFY_APPLICATION_STATUSES.
-      CERTIFICATE_CONVERSION_REQUESTS (bảng cha) vẫn out_of_scope — xem Điểm cần xác nhận.
+      xác nhận (2026-08-13) qua đối chiếu cấu trúc cột với VERIFY_APPLICATION_STATUSES
+      — cấu trúc đối xứng hoàn toàn (TARGET_STATUS/PREV_STATUS + 4 trường lý do theo cấp
+      xét duyệt + VERIFIED_BY). Người thiết kế quyết định (2026-08-14) bỏ thiết kế Atomic
+      entity ở đợt này — chờ CERTIFICATE_CONVERSION_REQUESTS (bảng cha) được đưa vào scope
+      trước.
     data_volume_hint: null
     refresh_frequency: null
     ingestion:

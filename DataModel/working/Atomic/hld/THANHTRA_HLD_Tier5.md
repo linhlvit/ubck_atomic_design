@@ -1,7 +1,7 @@
 # THANHTRA HLD — Tier 5
 
 **Source system:** THANHTRA (Hệ thống Thanh tra, Kiểm tra và Xử phạt vi phạm hành chính — UBCKNN)
-**Tier 5:** Entity có FK đến Tier 4. Bao gồm: đối tượng bị xử phạt trong quyết định (→T4 Penalty Decision), activity log quyết định (→T4 Penalty Decision, ETL Pattern), công văn xử lý VPHC (→T4 Penalty Decision + T3 Violation Case/Record, tất cả nullable).
+**Tier 5:** Entity có FK đến Tier 4. Bao gồm: đối tượng bị xử phạt trong quyết định (→T4 Penalty Decision), activity log quyết định (→T4 Penalty Decision, ETL Pattern), công văn xử lý VPHC (→T4 Penalty Decision + T3 Violation Case/Record, tất cả nullable), liên kết quyết định↔biên bản vi phạm (→T4 Penalty Decision + T3 Violation Record).
 
 ---
 
@@ -11,6 +11,7 @@
 |---|---|---|---|---|---|---|---|---|
 | Event | [Event] Event | Penalty Subject | PENALTY_DECISION_SUBJECT | Update | Đối tượng bị xử phạt trong quyết định: SUBJECT_TYPE, embedded identity (SUBJECT_NAME, SUBJECT_ID_NUMBER), TOTAL_FINE_AMOUNT, PAID_AMOUNT, COERCED_AMOUNT, COMPLIANCE_STATUS(4 trạng thái), PAYMENT_PROOF_URL | Penalty Decision Subject | Fundamental | (1) Involved Party — BCV: "an Entity that is involved in one or more ways in the Financial Institution's business". (2) Bảng có FK→PENALTY_DECISION, SUBJECT_TYPE, SUBJECT_NAME, SUBJECT_ID_NUMBER, TOTAL_FINE_AMOUNT, PAID_AMOUNT, COERCED_AMOUNT, COMPLIANCE_STATUS(PENDING/PARTIAL/COMPLETED/COERCED), PAYMENT_PROOF_URL — đối tượng cụ thể bị áp dụng quyết định xử phạt, kèm thông tin thanh toán. (3) Involved Party phù hợp — 1 quyết định có thể xử phạt nhiều đối tượng; mỗi đối tượng là Involved Party trong bối cảnh xử phạt. Relative của TT Penalty Decision → tên chứa "TT Penalty Decision" ✓. |
 | Documentation | [Documentation] Form Document | Official Letter Administrative Violation Process | VPHC_PROCESS_OFFICIAL_LETTER | Update | Công văn trong quy trình xử lý VPHC: OFFICIAL_LETTER_SUBTYPE(8 loại), FK→VIOLATION_CASE(nullable), FK→VIOLATION_RECORD(nullable), FK→PENALTY_DECISION(nullable), DOCUMENT_TEMPLATE_ID, FIELD_HTML_JSON/FIELD_SOURCE_JSON/MANUAL_MERGE_DATA_JSON(3 CLOB) | Official Letter Administrative Violation Process | Fundamental | (1) Form Document — BCV: "a Documentation Item in a standard template layout which requires additional information to be supplied". (2) Bảng có OFFICIAL_LETTER_SUBTYPE(8 values), FK→VIOLATION_CASE(nullable), FK→VIOLATION_RECORD(nullable), FK→PENALTY_DECISION(nullable), template form data — các công văn chính thức phát sinh tại từng bước quy trình VPHC, mỗi công văn dùng biểu mẫu cụ thể. (3) Form Document khớp — đây là các văn bản theo mẫu chuẩn. FK→PENALTY_DECISION (T4) nullable → Tier 5. Vì cả 3 FK đều nullable, entity này về mặt kỹ thuật có thể tồn tại độc lập → đặt là Fundamental (không phải Relative). Ghi nhận T5-02. |
+| Event | [Event] Event | Penalty Decision Violation Link | PENALTY_DECISION_VIOLATION_RECORD | Update | Liên kết quyết định xử phạt với biên bản vi phạm liên quan: FK→PENALTY_DECISION, FK→VIOLATION_RECORD, không có business attribute nào khác ngoài audit fields chuẩn (CREATED_AT/BY, LAST_MODIFIED_AT/BY, VERSION, DELETED) | Penalty Decision X Violation Record Relationship | Relative | (1) Event — BCV Concept kế thừa từ Penalty Decision (entity neo của quan hệ), nhưng entity này KHÔNG dùng domain prefix "Penalty Decision" của nhóm — Domain Prefix = rỗng vì đây là entity link/relationship thuần bắc cầu 2 domain khác nhau (Penalty Decision T4 + Violation Record T3), không thuộc riêng nhóm nào. (2) Bảng: chỉ 2 FK nghiệp vụ (PENALTY_DECISION_ID, VIOLATION_RECORD_ID) + audit fields chuẩn — cấu trúc pure junction về business attribute, nhưng có VERSION + DELETED (soft-delete) cho thấy bản thân liên kết có vòng đời riêng (gắn/gỡ biên bản khỏi quyết định qua thời gian, cần audit trail độc lập, không chỉ là quan hệ tĩnh suy ra được). (3) Quyết định Data Modeler: giữ làm entity Relative riêng thay vì denormalize ARRAY như các junction thuần khác trong nguồn này (VD: PENALTY_TYPE_VIOLATION_BEHAVIOR), đặt tên theo pattern junction-entity đã dùng trong dự án (`{A} X {B} Relationship`, xem `Fund Distribution Agent X Investment Fund Relationship`). Theo cơ chế bảng link đã chuẩn hóa trong dự án (SKILL.md `atomic-lld-design` mục 3e): entity KHÔNG có cặp Id/Code riêng — PK là composite trên 2 FK Id (Penalty Decision Id + Violation Record Id). Table Type = Relative vì FK đến 2 Fundamental (Penalty Decision T4, Violation Record T3). Quan hệ chi tiết hơn (biên bản nào gắn với hành vi/đối tượng cụ thể nào) đã có sẵn qua FK `PENALTY_DECISION_SUBJECT_BEHAVIOR.VIOLATION_RECORD_ID` (T6) — entity này chỉ phản ánh liên kết tổng quát ở mức header quyết định↔biên bản. |
 
 ---
 
@@ -45,11 +46,18 @@ erDiagram
         varchar PENALTY_DECISION_ID FK
         varchar DOCUMENT_TEMPLATE_ID FK
     }
+    PENALTY_DECISION_VIOLATION_RECORD {
+        varchar ID PK
+        varchar PENALTY_DECISION_ID FK
+        varchar VIOLATION_RECORD_ID FK
+    }
 
     PENALTY_DECISION ||--o{ PENALTY_DECISION_SUBJECT : "FK"
     PENALTY_DECISION ||--o{ VPHC_PROCESS_OFFICIAL_LETTER : "nullable FK"
     VIOLATION_CASE ||--o{ VPHC_PROCESS_OFFICIAL_LETTER : "nullable FK"
     VIOLATION_RECORD ||--o{ VPHC_PROCESS_OFFICIAL_LETTER : "nullable FK"
+    PENALTY_DECISION ||--o{ PENALTY_DECISION_VIOLATION_RECORD : "FK"
+    VIOLATION_RECORD ||--o{ PENALTY_DECISION_VIOLATION_RECORD : "FK"
 ```
 
 ---
@@ -88,11 +96,20 @@ erDiagram
         bigint ds_violation_record_id FK
         varchar violation_record_number
     }
+    Penalty_Decision_X_Violation_Record {
+        bigint ds_penalty_decision_x_violation_record_id PK
+        bigint ds_penalty_decision_id FK
+        varchar penalty_decision_number
+        bigint ds_violation_record_id FK
+        varchar violation_record_number
+    }
 
     Penalty_Decision ||--o{ Penalty_Decision_Subject : ""
     Penalty_Decision ||--o{ VPHC_Official_Letter : "nullable"
     Violation_Case ||--o{ VPHC_Official_Letter : "nullable"
     Violation_Record ||--o{ VPHC_Official_Letter : "nullable"
+    Penalty_Decision ||--o{ Penalty_Decision_X_Violation_Record : ""
+    Violation_Record ||--o{ Penalty_Decision_X_Violation_Record : ""
 ```
 
 ---

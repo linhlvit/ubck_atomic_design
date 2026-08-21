@@ -49,12 +49,12 @@ attributes:
 - attribute_name: "Source System Code"
   physical_name: "src_stm_code"
   description: "Mã hệ thống nguồn"
-  data_domain: "Text"
+  data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns: []
-  comment: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
   classification_context: "SOURCE_SYSTEM=NHNCK.APPLICATION_FEES"
   etl_derived_value: "NHNCK_APPLICATION_FEES"
   data_type: "string"
@@ -67,9 +67,9 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_FEES.APPLICATION_ID"
-  comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL\
-    \ crosswalk sang NHNCK.APPLICATIONS: APPLICATION_FEES.APPLICATION_ID = APPLICATIONS.ID\
-    \ để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK.APPLICATIONS', APPLICATION_CODE)\
+  comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL crosswalk\
+    \ sang NHNCK.APPLICATIONS: APPLICATION_FEES.APPLICATION_ID = APPLICATIONS.ID để\
+    \ xác nhận APPLICATION_CODE sau đó hash_id('NHNCK.APPLICATIONS', APPLICATION_CODE)\
     \ | Trước đây hash trực tiếp theo APPLICATION_ID (ID kỹ thuật) gây sai lệch với\
     \ Id của bảng main (hash từ APPLICATION_CODE) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
@@ -84,10 +84,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATIONS.APPLICATION_CODE"
-  comment: "Lookup pair: Securities Practitioner License Application.Securities Practitioner\
-    \ License Application Code. Pair with Securities Practitioner License Application\
-    \ Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE sau ETL crosswalk — chi\
-    \ tiết xem comment Securities Practitioner License Application Id."
+  comment: "Lookup pair: sp_license_application.sp_license_application_code. Pair with Securities Practitioner License Application Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Application Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -100,8 +97,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_FEES.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
-    \ PROFESSIONAL_ID)."
+  comment: "FK target: securities_practitioner.sp_id. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -114,8 +110,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_FEES.PROFESSIONAL_ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Securities Practitioner Id."
+  comment: "Lookup pair: securities_practitioner.sp_code. Pair with Securities Practitioner Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -128,8 +123,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_FEES.FEE_TYPE"
-  comment: "Scheme: FEE_TYPE."
-  classification_context: "FEE_TYPE"
+  comment: "Scheme: NHNCK.APPLICATION_FEES.FEE_TYPE."
+  classification_context: "NHNCK.APPLICATION_FEES.FEE_TYPE"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Fee Content"
@@ -221,5 +216,18 @@ attributes:
   - "NHNCK.APPLICATION_FEES.NOTE"
   comment: null
   classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Status Code"
+  physical_name: "status_code"
+  description: "Trạng thái bản ghi"
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.APPLICATION_FEES.STATUS"
+  comment: "Scheme: NHNCK.APPLICATION_FEES.STATUS."
+  classification_context: "NHNCK.APPLICATION_FEES.STATUS"
   etl_derived_value: null
   data_type: "string"

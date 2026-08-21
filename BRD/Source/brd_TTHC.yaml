@@ -16,6 +16,8 @@ brd_entries:
       scope_reason: null
       table: ContentItemIndex
       related_tables:
+        - table: Document
+          relation: "N-1 — nội dung JSON gốc của content item (qua DocumentId)"
         - table: TextFieldIndex
           relation: "1-N — field dạng text của hồ sơ Eform (qua ContentItemId)"
         - table: HtmlFieldIndex
@@ -40,13 +42,13 @@ brd_entries:
           relation: "1-N — field dạng user picker của hồ sơ Eform"
         - table: WorkflowIndex
           relation: "1-N — workflow instance xét duyệt gắn với hồ sơ (qua CorrelationId)"
-      notes: "Map vào Securities Offering Application (Documentation/Regulatory Report). ETL filter: Published=1 AND Latest=1. content_type_code (TTHC_CONTENT_TYPE) phân biệt 11 loại hồ sơ chào bán và các loại kết quả (GCN / từ chối). Pending T1-01: ContentType GCN và từ chối chưa xác nhận trên DB thực tế."
+      notes: "2026-08-21: Atomic entity chính thức = 'Administrative Procedure Content Item Index' (Documentation/Fact Append, Tier 2 TTHC HLD, toàn bộ ContentType — không lọc riêng hồ sơ chào bán). Định hướng cũ trong ghi chú này (map trực tiếp vào 'Securities Offering Application', lọc content_type_code 11 loại hồ sơ chào bán, filter Published=1 AND Latest=1) đã bị THAY THẾ (superseded) — không còn áp dụng. Scheme CONTENTTYPE đăng ký generic là `TTHC_CONTENT_TYPE`."
       data_volume_hint: null
       refresh_frequency: daily
       ingestion:
-        data_change_mode: Append
-        filter_logic: "CreatedUtc >= {etl_date}"
-        filter_note: "Hồ sơ chào bán/kết quả xét duyệt — append theo ngày tạo mới (filter Published=1 AND Latest=1 trong ETL)"
+        data_change_mode: Update
+        filter_logic: "ModifiedUtc >= {etl_date}"
+        filter_note: "Cập nhật theo thời điểm sửa đổi cuối (MODIFIEDUTC) — bắt cả bản ghi mới tạo và bản ghi bị cập nhật (đổi LATEST/PUBLISHED khi có phiên bản mới). 2026-08-21: đổi từ Append sang Update — khớp Table Type Fundamental (xem TTHC_HLD_Tier2.md D-06)."
 
   # ─── UID-01 Giá trị field Eform ───────────────────────────────────────────
 
@@ -328,13 +330,19 @@ brd_entries:
     content:
       table_meaning: "Raw JSON gốc của toàn bộ ContentItem — cột Content chứa JSON serialize toàn bộ nội dung chi tiết"
       functional_group: "UID-01 Hồ sơ chào bán chứng khoán"
-      scope_status: out_of_scope
-      scope_reason: "ETL không đọc Document.Content — dùng *FieldIndex thay thế. Raw JSON là Operational/system data."
+      scope_status: in_scope
+      scope_reason: null
       table: Document
-      related_tables: []
-      notes: null
+      related_tables:
+        - table: ContentItemIndex
+          relation: "1-N — Document được ContentItemIndex trỏ tới qua DocumentId"
+      notes: "Đưa vào scope 2026-08-21 theo yêu cầu thiết kế Atomic entity 'Administrative Procedure Document' (Documentation/Fundamental, Tier 1 TTHC HLD). Quyết định trước đó (out_of_scope, lý do 'ETL không đọc Document.Content') đã thay đổi — cần BA/steward xác nhận lại use case đọc CONTENT JSON thô (xem T1-03, TTHC_HLD_Tier1.md)."
       data_volume_hint: null
-      refresh_frequency: null
+      refresh_frequency: daily
+      ingestion:
+        data_change_mode: Update
+        filter_logic: "UpdatedAt >= {etl_date}"
+        filter_note: "Cập nhật theo UPDATEDAT — VERSION là optimistic lock, bản ghi bị sửa tại chỗ trước khi publish. 2026-08-21: đổi từ Append sang Update — khớp Table Type Fundamental, đã giải quyết T1-01 (xem TTHC_HLD_Tier1.md D-06)."
 
   - brd_id: BRD-SRC-TTHC-AliasPartIndex
     brd_name: "Design Atomic từ nguồn TTHC bảng AliasPartIndex"

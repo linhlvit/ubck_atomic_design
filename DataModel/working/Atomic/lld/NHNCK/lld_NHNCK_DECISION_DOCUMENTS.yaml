@@ -1,0 +1,201 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "NHNCK"
+  source_table: "DECISION_DOCUMENTS"
+  atomic_entity: "Securities Practitioner License Decision Document Attachment"
+  entity_physical_name: "sp_license_decision_document_attachment"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Gov. Registration Document"
+  table_type: "Fundamental"
+  group: "T2"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "STATUS (nguồn) nay đã map thành \"Status Code\" (2026-08-17) — chính sách\
+    \ cũ (2026-07-07) không map RECORD_TYPE/RECORD_STATUS chỉ áp dụng cho cột mang\
+    \ tính kỹ thuật thuần túy; cột STATUS này mang ý nghĩa nghiệp vụ rõ ràng nên map\
+    \ Classification Value. ID không map — PK kỹ thuật, BK dùng Code (map từ ID).\
+    \ DECISION_NUMBER — đã xác nhận trùng lặp thuần với DECISIONS.DECISION_NUMBER\
+    \ (resolve NHNCK_HLD_Tier2.md 6f #6, 2026-08-14), loại khỏi Atomic attribute,\
+    \ xem pending_design.yaml. FK Decision Id/Code đã sửa sang crosswalk hash theo\
+    \ DECISION_NUMBER (đồng bộ với đổi BK trên lld_NHNCK_DECISIONS.yaml). SIGNED_BY\
+    \ khai báo NVARCHAR2(255) trong CSDL nguồn dù BRD ghi 'FK -> USERS' — khác kiểu\
+    \ dữ liệu NUMBER thường thấy ở các FK Officer khác (VD APPLICATIONS.ASSIGNEE_ID)\
+    \ — giả định cột lưu trực tiếp USERNAME thay vì ID kỹ thuật, cần Data Modeler\
+    \ xác nhận trước go-live."
+attributes:
+- attribute_name: "Securities Practitioner License Decision Document Attachment Id"
+  physical_name: "sp_license_decision_document_attachment_id"
+  description: "Id tự sinh (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"Gov. Registration Document\" (Documentation). Hash:\
+    \ hash_id('NHNCK.DECISION_DOCUMENTS', ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Practitioner License Decision Document Attachment Code"
+  physical_name: "sp_license_decision_document_attachment_code"
+  description: "Mã định danh kỹ thuật (BK). Map từ PK bảng nguồn."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.DECISION_DOCUMENTS.ID"
+  comment: "BK chính. PK nguồn (NUMBER — ETL cần convert sang string)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=NHNCK.DECISION_DOCUMENTS"
+  etl_derived_value: "NHNCK_DECISION_DOCUMENTS"
+  data_type: "string"
+- attribute_name: "Securities Practitioner License Decision Document Id"
+  physical_name: "sp_license_decision_document_id"
+  description: "FK -> DECISIONS: Quyết định hành chính liên quan đến nhóm."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.DECISION_DOCUMENTS.DECISION_ID"
+  comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
+    \ Cần ETL crosswalk sang NHNCK.DECISIONS: DECISION_DOCUMENTS.DECISION_ID = DECISIONS.ID\
+    \ để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK.DECISIONS', DECISION_NUMBER)\
+    \ | Trước đây hash trực tiếp theo DECISION_ID (ID kỹ thuật) gây sai lệch với Id\
+    \ của bảng main (hash từ DECISION_NUMBER) — đã sửa sang crosswalk 2026-08-14."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Practitioner License Decision Document Code"
+  physical_name: "sp_license_decision_document_code"
+  description: "Mã quyết định liên quan (denormalized lookup)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.DECISIONS.DECISION_NUMBER"
+  comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
+    \ Pair with Securities Practitioner License Decision Document Id. Giá trị lấy\
+    \ từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem comment\
+    \ Securities Practitioner License Decision Document Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Attachment Type Code"
+  physical_name: "attachment_tp_code"
+  description: "Loại/phân loại của bản ghi tài liệu."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "NHNCK.DECISION_DOCUMENTS.TYPE"
+  comment: "Scheme: NHNCK.DECISION_DOCUMENTS.TYPE. Chưa xác nhận giá trị cụ thể —\
+    \ cần profile dữ liệu nguồn."
+  classification_context: "NHNCK.DECISION_DOCUMENTS.TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Signatory Position"
+  physical_name: "signatory_position"
+  description: "Chức vụ/vị trí đảm nhiệm."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.DECISION_DOCUMENTS.POSITION"
+  comment: "BCV Term: nhất quán với Signatory Position trên sp_license_decision_document."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Attachment File Path"
+  physical_name: "attachment_file_path"
+  description: "Đường dẫn file lưu trữ (chứng từ thanh toán, văn bản...)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.DECISION_DOCUMENTS.FILE_PATH"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Signed By Officer Id"
+  physical_name: "signed_by_officer_id"
+  description: "FK -> USERS: Người thực hiện ký số."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "NHNCK.DECISION_DOCUMENTS.SIGNED_BY"
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
+    \ Nguồn lưu NVARCHAR2(255) — giả định đã là USERNAME (không cần crosswalk qua\
+    \ USERS.ID như các FK Officer khác); hash_id('IAM.USERS', SIGNED_BY) | Chưa xác\
+    \ nhận value set khớp danh mục IAM.USERS, và chưa xác nhận SIGNED_BY có đúng là\
+    \ USERNAME hay tên hiển thị tự do — cần profile dữ liệu trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Signed By Officer Code"
+  physical_name: "signed_by_officer_code"
+  description: "Mã cán bộ thực hiện ký số."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "NHNCK.DECISION_DOCUMENTS.SIGNED_BY"
+  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
+    \ Pair with Signed By Officer Id. Giá trị lấy trực tiếp từ NHNCK.DECISION_DOCUMENTS.SIGNED_BY\
+    \ (giả định đã là USERNAME) — chi tiết xem comment Signed By Officer Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Signed Date"
+  physical_name: "signed_dt"
+  description: "Ngày ký ban hành quyết định."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.DECISION_DOCUMENTS.SIGNED_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Status Code"
+  physical_name: "status_code"
+  description: "Trạng thái bản ghi"
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.DECISION_DOCUMENTS.STATUS"
+  comment: "Scheme: NHNCK.DECISION_DOCUMENTS.STATUS."
+  classification_context: "NHNCK.DECISION_DOCUMENTS.STATUS"
+  etl_derived_value: null
+  data_type: "string"

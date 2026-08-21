@@ -18,12 +18,20 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "design_status quay lại draft (2026-07-09) — đổi Specialization Type Code\
-    \ thành Classification Specialization Code + thêm FK Classification Specialization\
-    \ Id. Cần review/approve lại. Hạ về draft (2026-07-27) để sửa lỗi hash-mismatch\
+  notes: "Hạ về draft (2026-08-17, xác nhận tường minh bởi Data Modeler) để bổ sung\
+    \ trường \"Appraisal Status Code\" (cột nguồn STATUS — trước đây bị loại trừ theo\
+    \ chính sách 2026-07-07, nay map Classification Value vì mang ý nghĩa nghiệp vụ\
+    \ 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động; dùng lại scheme APPRAISAL_STATUS\
+    \ đã đăng ký sẵn cho đúng cột này, đổi tên thành NHNCK.APPLICATION_SPECIALIZATIONS.STATUS).\
+    \ Cần review/approve lại. Lịch sử trước: design_status quay lại draft (2026-07-09)\
+    \ — đổi Specialization Type Code thành Classification Specialization Code + thêm\
+    \ FK Classification Specialization Id. Hạ về draft (2026-07-27) để sửa lỗi hash-mismatch\
     \ FK \"Securities Practitioner License Application Id\" và \"Classification Specialization\
     \ Id\" — trước đây hash trực tiếp theo ID kỹ thuật (APPLICATION_ID/SPECIALIZATION_ID)\
-    \ thay vì Code của bảng đích (APPLICATION_CODE/SPECIALIZATION_CODE)."
+    \ thay vì Code của bảng đích (APPLICATION_CODE/SPECIALIZATION_CODE). Hạ về draft\
+    \ lại (2026-08-20): Classification Specialization Id + Code đổi thành 1 trường\
+    \ Classification Value \"Specialization Code\" (scheme SPECIALIZATION) — do NHNCK.SPECIALIZATIONS\
+    \ revert về Classification Value, không còn là Atomic entity riêng."
 attributes:
 - attribute_name: "Securities Practitioner License Application Education Certificate\
     \ Document Id"
@@ -61,7 +69,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns: []
-  comment: "Scheme: SOURCE_SYSTEM. ETL-derived = NHNCK.APPLICATION_SPECIALIZATIONS."
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
   classification_context: "SOURCE_SYSTEM=NHNCK.APPLICATION_SPECIALIZATIONS"
   etl_derived_value: "NHNCK_APPLICATION_SPECIALIZATIONS"
   data_type: "string"
@@ -74,12 +82,11 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_SPECIALIZATIONS.APPLICATION_ID"
-  comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL\
-    \ crosswalk sang NHNCK.APPLICATIONS: APPLICATION_SPECIALIZATIONS.APPLICATION_ID\
-    \ = APPLICATIONS.ID để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK.APPLICATIONS',\
-    \ APPLICATION_CODE) | Trước đây hash trực tiếp theo APPLICATION_ID (ID kỹ thuật)\
-    \ gây sai lệch với Id của bảng main (hash từ APPLICATION_CODE) — đã sửa sang\
-    \ crosswalk 2026-07-27."
+  comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL crosswalk\
+    \ sang NHNCK.APPLICATIONS: APPLICATION_SPECIALIZATIONS.APPLICATION_ID = APPLICATIONS.ID\
+    \ để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK.APPLICATIONS', APPLICATION_CODE)\
+    \ | Trước đây hash trực tiếp theo APPLICATION_ID (ID kỹ thuật) gây sai lệch với\
+    \ Id của bảng main (hash từ APPLICATION_CODE) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -92,45 +99,22 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATIONS.APPLICATION_CODE"
-  comment: "Lookup pair: Securities Practitioner License Application.Securities Practitioner\
-    \ License Application Code. Pair with Securities Practitioner License Application\
-    \ Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE sau ETL crosswalk — chi\
-    \ tiết xem comment Securities Practitioner License Application Id."
+  comment: "Lookup pair: sp_license_application.sp_license_application_code. Pair with Securities Practitioner License Application Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Application Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Classification Specialization Id"
-  physical_name: "cl_specialization_id"
-  description: "FK đến chuyên ngành CCHN đăng ký"
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.APPLICATION_SPECIALIZATIONS.SPECIALIZATION_ID"
-  comment: "FK target: cl_specialization.cl_specialization_id. Cần ETL crosswalk\
-    \ sang NHNCK.SPECIALIZATIONS: APPLICATION_SPECIALIZATIONS.SPECIALIZATION_ID =\
-    \ SPECIALIZATIONS.ID để xác nhận SPECIALIZATION_CODE sau đó hash_id('NHNCK.SPECIALIZATIONS',\
-    \ SPECIALIZATION_CODE) | Trước đây hash trực tiếp theo SPECIALIZATION_ID (ID\
-    \ kỹ thuật) gây sai lệch với Id của bảng main (hash từ SPECIALIZATION_CODE) —\
-    \ đã sửa sang crosswalk 2026-07-27. Đổi tên 2026-07-09 từ Specialization Type\
-    \ Code khi SPECIALIZATIONS lên entity thật (scheme SPECIALIZATION đã deprecate)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Classification Specialization Code"
-  physical_name: "cl_specialization_code"
-  description: "Mã chuyên ngành CCHN đăng ký (denormalized lookup)"
-  data_domain: "Text"
+- attribute_name: "Specialization Code"
+  physical_name: "specialization_code"
+  description: "Mã chuyên ngành CCHN đăng ký"
+  data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "NHNCK.SPECIALIZATIONS.SPECIALIZATION_CODE"
-  comment: "Lookup pair: Classification Specialization.Classification Specialization\
-    \ Code. Pair with Classification Specialization Id. Giá trị lấy từ NHNCK.SPECIALIZATIONS.SPECIALIZATION_CODE\
-    \ sau ETL crosswalk — chi tiết xem comment Classification Specialization Id."
-  classification_context: null
+  comment: "Scheme: SCHEMA_CODE. Cần ETL crosswalk sang NHNCK.SPECIALIZATIONS:\
+    \ APPLICATION_SPECIALIZATIONS.SPECIALIZATION_ID = SPECIALIZATIONS.ID để lấy SPECIALIZATION_CODE."
+  classification_context: "SCHEMA_CODE=NHNCK.SPECIALIZATIONS"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Certificate Issue Date"
@@ -227,5 +211,18 @@ attributes:
   - "NHNCK.APPLICATION_SPECIALIZATIONS.NOTE"
   comment: null
   classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Status Code"
+  physical_name: "status_code"
+  description: "Trạng thái bản ghi"
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.APPLICATION_SPECIALIZATIONS.STATUS"
+  comment: "Scheme: NHNCK.APPLICATION_SPECIALIZATIONS.STATUS."
+  classification_context: "NHNCK.APPLICATION_SPECIALIZATIONS.STATUS"
   etl_derived_value: null
   data_type: "string"

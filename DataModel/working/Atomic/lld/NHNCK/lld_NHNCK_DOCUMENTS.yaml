@@ -1,13 +1,14 @@
 schema_type: "lld_source_table"
 schema_version: "2.0"
+
 metadata:
   source_system: "NHNCK"
   source_table: "DOCUMENTS"
-  atomic_entity: "Classification Document"
-  entity_physical_name: "cl_document"
+  atomic_entity: "Classification Value"
+  entity_physical_name: "cl_value"
   bcv_core_object: "Common"
-  bcv_concept: "[Common] Document"
-  table_type: "Relative"
+  bcv_concept: "[Classification] Common"
+  table_type: "Classification"
   group: "T1"
   design_status: "approved"
   version: "1.0"
@@ -17,136 +18,108 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "BCV Core Object gán Common theo quy tắc mặc định. Đây là danh mục các tài\
-    \ liệu (catalog liệt kê từng loại hồ sơ/tài liệu cần nộp), không phải \"loại tài\
-    \ liệu\" phân loại — đặt tên Classification Document, không phải Document Type.\
-    \ Nâng cấp từ Classification Value (scheme DOCUMENT_TYPE) lên entity thật — xem\
-    \ NHNCK_HLD_Overview.md 7e #9. RECORD_STATUS (nguồn) loại khỏi thiết kế — trùng\
-    \ ý nghĩa với IS_ACTIVE (cả hai đều 1=hoạt động/0=không hoạt động), giữ IS_ACTIVE\
-    \ làm chuẩn (đổi tên từ ACTIVE theo DDL UAT 2026-07-15). CREATED_AT/UPDATED_AT/CREATED_BY/UPDATED_BY\
-    \ loại khỏi thiết kế — theo đúng quy ước NHNCK (xem lld_NHNCK_CERTIFICATES.yaml,\
-    \ lld_NHNCK_PROFESSIONALS.yaml), không giữ dạng pending. Hạ về draft (2026-07-27)\
-    \ để sửa lỗi hash sai: PK entity từng hash trực tiếp từ ID kỹ thuật thay vì DOCUMENT_CODE\
-    \ (Code thật của entity) — xem comment attribute Id."
+  notes: "Revert 2026-08-20: từng nâng cấp thành Atomic entity thật 'Classification Document'\
+    \ (cl_document, 2026-07-09) — theo quyết định Data Modeler, quay lại map trực tiếp\
+    \ vào Fundamental entity dùng chung Classification Value (cl_value), không giữ entity\
+    \ riêng. Scheme: DOCUMENT_TYPE (đăng ký trong classification_schemes.yaml). File\
+    \ này là Level 1 LLD; cần chạy Level 2 consolidation (generate_entity_consolidation.py)\
+    \ gộp vào entity_cl_value.yaml cùng các source khác trước khi generate ra DataModel/Atomic.\
+    \ 4 cột ds_* (ds_rcrd_st/ds_rcrd_eff_dt/ds_rcrd_end_dt/ds_etl_pcs_tms) không thiết\
+    \ kế ở đây — ETL job tự quản lý (SCD, không map từ cột nguồn), theo yêu cầu tường\
+    \ minh Data Modeler."
+
 attributes:
-- attribute_name: "Classification Document Id"
-  physical_name: "cl_document_id"
-  description: "Id tự sinh (surrogate key)."
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: true
-  status: "draft"
-  source_columns:
-  - "NHNCK.DOCUMENTS.ID"
-  comment: "PK surrogate. BCV: [Common] Document. Hash: hash_id('NHNCK.DOCUMENTS',\
-    \ DOCUMENT_CODE). Sửa 2026-07-27: trước đây hash từ ID kỹ thuật, sai lệch với\
-    \ chính Code (DOCUMENT_CODE) của entity — gây mismatch cho FK downstream tham\
-    \ chiếu entity này."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Classification Document Code"
-  physical_name: "cl_document_code"
-  description: "Mã tài liệu — BK của entity."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.DOCUMENTS.DOCUMENT_CODE"
-  comment: "BK chính. Mã định danh duy nhất trong danh mục tài liệu."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Source System Code"
-  physical_name: "src_stm_code"
-  description: "Mã hệ thống nguồn."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns: []
-  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=NHNCK.DOCUMENTS"
-  etl_derived_value: "NHNCK_DOCUMENTS"
-  data_type: "string"
-- attribute_name: "Classification Document Name"
-  physical_name: "cl_document_nm"
-  description: "Tên tài liệu."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.DOCUMENTS.DOCUMENT_NAME"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Legal Reference"
-  physical_name: "legal_reference"
-  description: "Trích dẫn căn cứ pháp lý liên quan đến tài liệu."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.DOCUMENTS.REFERENCE"
-  comment: "Nguồn lưu NCLOB — ETL convert sang string. Mô tả BRD ghi \"của quyết định\"\
-    \ — có thể là mô tả mẫu dùng chung, không riêng cho DOCUMENTS; cần Data Modeler\
-    \ xác nhận ý nghĩa thực tế."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Sort Order"
-  physical_name: "sort_order"
-  description: "Thứ tự sắp xếp hiển thị (số nhỏ hơn hiển thị trước)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.DOCUMENTS.SORT_ORDER"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-- attribute_name: "Active Indicator"
-  physical_name: "active_ind"
-  description: "Cờ đang kích hoạt/hiệu lực."
-  data_domain: "Indicator"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.DOCUMENTS.IS_ACTIVE"
-  comment: "Nguồn lưu NUMBER(1): 1=Đang dùng, 0=Vô hiệu."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Original Data Indicator"
-  physical_name: "original_data_ind"
-  description: "Cờ dữ liệu gốc của hệ thống (không được xóa)."
-  data_domain: "Indicator"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.DOCUMENTS.IS_ORIGINAL_DATA"
-  comment: "Nguồn lưu NUMBER(1): 1=Dữ liệu gốc, 0=Người dùng tạo."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Public Service Portal Code"
-  physical_name: "public_service_portal_code"
-  description: "Mã đồng bộ chuyên ngành trên hệ thống Cổng Dịch vụ công quốc gia (MCĐT)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.DOCUMENTS.MCDT_CODE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
+  - attribute_name: "Classification Code"
+    physical_name: "cl_code"
+    description: "Mã giá trị phân loại. Mã tài liệu."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns:
+      - "NHNCK.DOCUMENTS.DOCUMENT_CODE"
+    comment: "BK chính (kết hợp Schema Code tạo BK duy nhất)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Schema Code"
+    physical_name: "schema_code"
+    description: "Mã loại phân loại."
+    data_domain: "Text"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns: []
+    comment: "Hardcode."
+    classification_context: null
+    etl_derived_value: "NHNCK.DOCUMENTS"
+    data_type: "string"
+
+  - attribute_name: "Schema Name"
+    physical_name: "schema_nm"
+    description: "Tên loại phân loại."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: "Hardcode."
+    classification_context: null
+    etl_derived_value: "NHNCK - Danh mục các tài liệu/hồ sơ cần nộp theo thủ tục CCHN"
+    data_type: "string"
+
+  - attribute_name: "Source System Code"
+    physical_name: "src_stm_code"
+    description: "Mã nguồn dữ liệu."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "SOURCE_SYSTEM=NHNCK.DOCUMENTS"
+    etl_derived_value: "NHNCK_DOCUMENTS"
+    data_type: "string"
+
+  - attribute_name: "Classification Name"
+    physical_name: "cl_nm"
+    description: "Tên giá trị phân loại (tiếng Việt)."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "NHNCK.DOCUMENTS.DOCUMENT_NAME"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Classification Name English"
+    physical_name: "cl_nm_english"
+    description: "Tên giá trị phân loại (tiếng Anh)."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Classification Description"
+    physical_name: "cl_description"
+    description: "Diễn giải chi tiết ý nghĩa giá trị phân loại."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "NHNCK.DOCUMENTS.REFERENCE"
+    comment: "Trích dẫn căn cứ pháp lý liên quan đến tài liệu. Nguồn lưu NCLOB — ETL\
+      \ convert sang string."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"

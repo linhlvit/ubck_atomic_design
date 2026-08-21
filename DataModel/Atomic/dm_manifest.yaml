@@ -28,32 +28,6 @@ entries:
   attribute_count: 10
   brd_ref: BRD-SRC-FIMS-SECURITIESACCOUNT
 - subfolder: Arrangement
-  file_name: dm_atm_investment_fund_x_fmc_employee_relationship-FMS.FUND_TL_PRO.yaml
-  id: ATM-investment_fund_x_fmc_employee_relationship-FMS.FUND_TL_PRO
-  physical_name: investment_fund_x_fmc_employee_relationship
-  logical_name: Investment Fund X Fund Management Company Employee Relationship
-  bcv_core_object: Arrangement
-  bcv_concept: "[Arrangement] Investment Fund"
-  table_type: Relative
-  etl_pattern: SCD2
-  source: FMS
-  status: draft
-  attribute_count: 7
-  brd_ref: BRD-SRC-FMS-FUND_TL_PRO
-- subfolder: Arrangement
-  file_name: dm_atm_investment_fund_x_fund_distribution_agent_relationship-FMS.AGEN_FUNDS.yaml
-  id: ATM-investment_fund_x_fund_distribution_agent_relationship-FMS.AGEN_FUNDS
-  physical_name: investment_fund_x_fund_distribution_agent_relationship
-  logical_name: Investment Fund X Fund Distribution Agent Relationship
-  bcv_core_object: Arrangement
-  bcv_concept: "[Arrangement] Investment Fund"
-  table_type: Relative
-  etl_pattern: SCD2
-  source: FMS
-  status: draft
-  attribute_count: 7
-  brd_ref: BRD-SRC-FMS-AGEN_FUNDS
-- subfolder: Arrangement
   file_name: dm_atm_pc_shareholding-IDS.COMPANY_SHAREHOLDING.yaml
   id: ATM-pc_shareholding-IDS.COMPANY_SHAREHOLDING
   physical_name: pc_shareholding
@@ -379,19 +353,6 @@ entries:
   attribute_count: 10
   brd_ref: BRD-SRC-THANHTRA-SECURITY_MEASURE_EXECUTION
 - subfolder: Business_Activity
-  file_name: dm_atm_sp_conduct_violation-NHNCK.VIOLATIONS.yaml
-  id: ATM-sp_conduct_violation-NHNCK.VIOLATIONS
-  physical_name: sp_conduct_violation
-  logical_name: Securities Practitioner Conduct Violation
-  bcv_core_object: Business Activity
-  bcv_concept: "[Business Activity] Conduct Violation"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: NHNCK
-  status: approved
-  attribute_count: 14
-  brd_ref: BRD-SRC-NHNCK-VIOLATIONS
-- subfolder: Business_Activity
   file_name: dm_atm_sp_post_certification_training_course-NHNCK.POST_CERT_TRAINING_COURSES.yaml
   id: ATM-sp_post_certification_training_course-NHNCK.POST_CERT_TRAINING_COURSES
   physical_name: sp_post_certification_training_course
@@ -427,7 +388,7 @@ entries:
   table_type: Fundamental
   etl_pattern: SCD4A
   source: NHNCK
-  status: approved
+  status: draft
   attribute_count: 11
   brd_ref: BRD-SRC-NHNCK-SPECIALIZATION_COURSES
 - subfolder: Business_Activity
@@ -440,9 +401,22 @@ entries:
   table_type: Fundamental
   etl_pattern: SCD4A
   source: NHNCK
-  status: approved
+  status: draft
   attribute_count: 28
   brd_ref: BRD-SRC-NHNCK-SPECIALIZATION_COURSE_DETAILS
+- subfolder: Business_Activity
+  file_name: dm_atm_sp_violation-NHNCK.VIOLATIONS.yaml
+  id: ATM-sp_violation-NHNCK.VIOLATIONS
+  physical_name: sp_violation
+  logical_name: Securities Practitioner Violation
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Conduct Violation"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: NHNCK
+  status: draft
+  attribute_count: 13
+  brd_ref: BRD-SRC-NHNCK-VIOLATIONS
 - subfolder: Business_Activity
   file_name: dm_atm_violation_behavior-THANHTRA.VIOLATION_BEHAVIOR.yaml
   id: ATM-violation_behavior-THANHTRA.VIOLATION_BEHAVIOR
@@ -535,19 +509,6 @@ entries:
   attribute_count: 9
   brd_ref: BRD-SRC-THANHTRA-PENALTY_TYPE
 - subfolder: Common
-  file_name: dm_atm_cl_application_status-NHNCK.APPLICATION_STATUSES.yaml
-  id: ATM-cl_application_status-NHNCK.APPLICATION_STATUSES
-  physical_name: cl_application_status
-  logical_name: Classification Application Status
-  bcv_core_object: Common
-  bcv_concept: "[Common] Application Status"
-  table_type: Relative
-  etl_pattern: SCD2
-  source: NHNCK
-  status: draft
-  attribute_count: 9
-  brd_ref: BRD-SRC-NHNCK-APPLICATION_STATUSES
-- subfolder: Common
   file_name: dm_atm_cl_business_line-ECAT.BUSINESS_LINE_LEVEL_1.yaml
   id: ATM-cl_business_line-ECAT.BUSINESS_LINE_LEVEL_1
   physical_name: cl_business_line
@@ -586,19 +547,6 @@ entries:
   status: draft
   attribute_count: 8
   brd_ref: BRD-SRC-SCMS-CAT_BUSINESS_LINE
-- subfolder: Common
-  file_name: dm_atm_cl_document-NHNCK.DOCUMENTS.yaml
-  id: ATM-cl_document-NHNCK.DOCUMENTS
-  physical_name: cl_document
-  logical_name: Classification Document
-  bcv_core_object: Common
-  bcv_concept: "[Common] Document"
-  table_type: Relative
-  etl_pattern: SCD2
-  source: NHNCK
-  status: draft
-  attribute_count: 9
-  brd_ref: BRD-SRC-NHNCK-DOCUMENTS
 - subfolder: Common
   file_name: dm_atm_cl_firm_status-SCMS.CAT_SC_FIRM_STATUS.yaml
   id: ATM-cl_firm_status-SCMS.CAT_SC_FIRM_STATUS
@@ -651,19 +599,6 @@ entries:
   status: draft
   attribute_count: 7
   brd_ref: BRD-SRC-SCMS-CAT_SERVICE
-- subfolder: Common
-  file_name: dm_atm_cl_specialization-NHNCK.SPECIALIZATIONS.yaml
-  id: ATM-cl_specialization-NHNCK.SPECIALIZATIONS
-  physical_name: cl_specialization
-  logical_name: Classification Specialization
-  bcv_core_object: Common
-  bcv_concept: "[Common] Specialization"
-  table_type: Relative
-  etl_pattern: SCD2
-  source: NHNCK
-  status: draft
-  attribute_count: 8
-  brd_ref: BRD-SRC-NHNCK-SPECIALIZATIONS
 - subfolder: Communication
   file_name: dm_atm_et_information_request-KNT.INFO_REQUEST_DETAIL.yaml
   id: ATM-et_information_request-KNT.INFO_REQUEST_DETAIL
@@ -742,45 +677,6 @@ entries:
   status: approved
   attribute_count: 19
   brd_ref: BRD-SRC-NHNCK-EXAM_DETAILS
-- subfolder: Condition
-  file_name: dm_atm_fr_column_template-IDS.RCOL.yaml
-  id: ATM-fr_column_template-IDS.RCOL
-  physical_name: fr_column_template
-  logical_name: Financial Report Column Template
-  bcv_core_object: Condition
-  bcv_concept: "[Condition] Form Definition"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: IDS
-  status: draft
-  attribute_count: 17
-  brd_ref: BRD-SRC-IDS-RCOL
-- subfolder: Condition
-  file_name: dm_atm_fr_row_template-IDS.RROW.yaml
-  id: ATM-fr_row_template-IDS.RROW
-  physical_name: fr_row_template
-  logical_name: Financial Report Row Template
-  bcv_core_object: Condition
-  bcv_concept: "[Condition] Form Definition"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: IDS
-  status: draft
-  attribute_count: 17
-  brd_ref: BRD-SRC-IDS-RROW
-- subfolder: Condition
-  file_name: dm_atm_fr_template-IDS.FORMS.yaml
-  id: ATM-fr_template-IDS.FORMS
-  physical_name: fr_template
-  logical_name: Financial Report Template
-  bcv_core_object: Condition
-  bcv_concept: "[Condition] Form Definition"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: IDS
-  status: draft
-  attribute_count: 24
-  brd_ref: BRD-SRC-IDS-FORMS
 - subfolder: Condition
   file_name: dm_atm_pc_evaluation_criterion-IDS.EVALUATION_CRITERIA.yaml
   id: ATM-pc_evaluation_criterion-IDS.EVALUATION_CRITERIA
@@ -912,6 +808,45 @@ entries:
   attribute_count: 7
   brd_ref: BRD-SRC-THANHTRA-EXAMINATION_RESULT_NOTICE_REMEDIAL
 - subfolder: Documentation
+  file_name: dm_atm_fr_column_template-IDS.RCOL.yaml
+  id: ATM-fr_column_template-IDS.RCOL
+  physical_name: fr_column_template
+  logical_name: Financial Report Column Template
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Form Document"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  status: draft
+  attribute_count: 17
+  brd_ref: BRD-SRC-IDS-RCOL
+- subfolder: Documentation
+  file_name: dm_atm_fr_row_template-IDS.RROW.yaml
+  id: ATM-fr_row_template-IDS.RROW
+  physical_name: fr_row_template
+  logical_name: Financial Report Row Template
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Form Document"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  status: draft
+  attribute_count: 17
+  brd_ref: BRD-SRC-IDS-RROW
+- subfolder: Documentation
+  file_name: dm_atm_fr_template-IDS.FORMS.yaml
+  id: ATM-fr_template-IDS.FORMS
+  physical_name: fr_template
+  logical_name: Financial Report Template
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Form Document"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  status: draft
+  attribute_count: 24
+  brd_ref: BRD-SRC-IDS-FORMS
+- subfolder: Documentation
   file_name: dm_atm_fr_value-IDS.DATA.yaml
   id: ATM-fr_value-IDS.DATA
   physical_name: fr_value
@@ -986,7 +921,7 @@ entries:
   table_type: Fundamental
   etl_pattern: SCD4A
   source: NHNCK
-  status: approved
+  status: draft
   attribute_count: 42
   brd_ref: BRD-SRC-NHNCK-APPLICATIONS
 - subfolder: Documentation
@@ -1000,7 +935,7 @@ entries:
   table_type: Fundamental
   etl_pattern: SCD4A
   source: NHNCK
-  status: approved
+  status: draft
   attribute_count: 14
   brd_ref: BRD-SRC-NHNCK-APPLICATION_SPECIALIZATIONS
 - subfolder: Documentation
@@ -1027,7 +962,7 @@ entries:
   etl_pattern: SCD4A
   source: NHNCK
   status: approved
-  attribute_count: 23
+  attribute_count: 22
   brd_ref: BRD-SRC-NHNCK-CERTIFICATE_RECORDS
 - subfolder: Documentation
   file_name: dm_atm_sp_license_certificate_status_change_history-NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.yaml
@@ -1094,6 +1029,19 @@ entries:
   status: draft
   attribute_count: 12
   brd_ref: BRD-SRC-THANHTRA-VIOLATION_CASE_OUTPUT_DOCUMENT
+- subfolder: Documentation
+  file_name: dm_atm_violation_case_received_document-THANHTRA.VIOLATION_CASE_RECEIVED_DOCUMENT.yaml
+  id: ATM-violation_case_received_document-THANHTRA.VIOLATION_CASE_RECEIVED_DOCUMENT
+  physical_name: violation_case_received_document
+  logical_name: Violation Case Received Document
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Documentation Item"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: THANHTRA
+  status: approved
+  attribute_count: 12
+  brd_ref: BRD-SRC-THANHTRA-VIOLATION_CASE_RECEIVED_DOCUMENT
 - subfolder: Event
   file_name: dm_atm_pc_evaluation_period-IDS.EVALUATION_PERIODS.yaml
   id: ATM-pc_evaluation_period-IDS.EVALUATION_PERIODS
@@ -1146,6 +1094,19 @@ entries:
   status: draft
   attribute_count: 18
   brd_ref: BRD-SRC-THANHTRA-PENALTY_DECISION_SUBJECT_BEHAVIOR
+- subfolder: Event
+  file_name: dm_atm_penalty_decision_x_violation_record_relationship-THANHTRA.PENALTY_DECISION_VIOLATION_RECORD.yaml
+  id: ATM-penalty_decision_x_violation_record_relationship-THANHTRA.PENALTY_DECISION_VIOLATION_RECORD
+  physical_name: penalty_decision_x_violation_record_relationship
+  logical_name: Penalty Decision X Violation Record Relationship
+  bcv_core_object: Event
+  bcv_concept: "[Event] Event"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: THANHTRA
+  status: draft
+  attribute_count: 5
+  brd_ref: BRD-SRC-THANHTRA-PENALTY_DECISION_VIOLATION_RECORD
 - subfolder: Event
   file_name: dm_atm_proactive_notice_recipient-THANHTRA.PROACTIVE_NOTICE_RECIPIENT.yaml
   id: ATM-proactive_notice_recipient-THANHTRA.PROACTIVE_NOTICE_RECIPIENT
@@ -1300,8 +1261,21 @@ entries:
   etl_pattern: SCD2
   source: FMS
   status: draft
-  attribute_count: 7
+  attribute_count: 5
   brd_ref: BRD-SRC-FMS-JOB_TL_PRO
+- subfolder: Involved_Party
+  file_name: dm_atm_fmc_employee_x_investment_fund_relationship-FMS.FUND_TL_PRO.yaml
+  id: ATM-fmc_employee_x_investment_fund_relationship-FMS.FUND_TL_PRO
+  physical_name: fmc_employee_x_investment_fund_relationship
+  logical_name: Fund Management Company Employee X Investment Fund Relationship
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Individual Employment Status"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: FMS
+  status: draft
+  attribute_count: 5
+  brd_ref: BRD-SRC-FMS-FUND_TL_PRO
 - subfolder: Involved_Party
   file_name: dm_atm_fmc_insider-FMS.INSIDER.yaml
   id: ATM-fmc_insider-FMS.INSIDER
@@ -1380,6 +1354,19 @@ entries:
   status: draft
   attribute_count: 15
   brd_ref: BRD-SRC-FMS-AGENCIES
+- subfolder: Involved_Party
+  file_name: dm_atm_fund_distribution_agent_x_investment_fund_relationship-FMS.AGEN_FUNDS.yaml
+  id: ATM-fund_distribution_agent_x_investment_fund_relationship-FMS.AGEN_FUNDS
+  physical_name: fund_distribution_agent_x_investment_fund_relationship
+  logical_name: Fund Distribution Agent X Investment Fund Relationship
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Organization"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: FMS
+  status: draft
+  attribute_count: 5
+  brd_ref: BRD-SRC-FMS-AGEN_FUNDS
 - subfolder: Involved_Party
   file_name: dm_atm_fund_management_company-FMS.SECURITIES.yaml
   id: ATM-fund_management_company-FMS.SECURITIES
@@ -2602,45 +2589,6 @@ entries:
   status: approved
   attribute_count: 15
   brd_ref: BRD-SRC-NHNCK-PROFESSIONAL_WORK_HISTORIES
-- subfolder: Involved_Party
-  file_name: dm_atm_sp_license_application_employment_experience-NHNCK.APPLICATION_EXPERIENCES.yaml
-  id: ATM-sp_license_application_employment_experience-NHNCK.APPLICATION_EXPERIENCES
-  physical_name: sp_license_application_employment_experience
-  logical_name: Securities Practitioner License Application Employment Experience
-  bcv_core_object: Involved Party
-  bcv_concept: "[Involved Party] Individual Employment Status"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: NHNCK
-  status: approved
-  attribute_count: 20
-  brd_ref: BRD-SRC-NHNCK-APPLICATION_EXPERIENCES
-- subfolder: Involved_Party
-  file_name: dm_atm_sp_license_application_snapshot-NHNCK.APPLICATION_PROFESSIONALS.yaml
-  id: ATM-sp_license_application_snapshot-NHNCK.APPLICATION_PROFESSIONALS
-  physical_name: sp_license_application_snapshot
-  logical_name: Securities Practitioner License Application Snapshot
-  bcv_core_object: Involved Party
-  bcv_concept: "[Involved Party] Individual"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: NHNCK
-  status: approved
-  attribute_count: 45
-  brd_ref: BRD-SRC-NHNCK-APPLICATION_PROFESSIONALS
-- subfolder: Involved_Party
-  file_name: dm_atm_sp_professional_training_history-NHNCK.PROFESSIONAL_TRAININGS.yaml
-  id: ATM-sp_professional_training_history-NHNCK.PROFESSIONAL_TRAININGS
-  physical_name: sp_professional_training_history
-  logical_name: Securities Practitioner Professional Training History
-  bcv_core_object: Involved Party
-  bcv_concept: "[Involved Party] Individual Employment Status"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: NHNCK
-  status: approved
-  attribute_count: 11
-  brd_ref: BRD-SRC-NHNCK-PROFESSIONAL_TRAININGS
 - subfolder: Involved_Party
   file_name: dm_atm_sp_reason_change_history-NHNCK.PROFESSIONAL_HISTORIES.yaml
   id: ATM-sp_reason_change_history-NHNCK.PROFESSIONAL_HISTORIES

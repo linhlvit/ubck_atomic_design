@@ -17,14 +17,15 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "STATUS (nguồn) không map — cùng field với RECORD_STATUS đã loại trừ theo\
-    \ chính sách Data Modeler (2026-07-07), chỉ đổi tên qua DDL UAT remap 2026-07-15/20.\
-    \ Khác với Sync Status Code (SYNC_STATUS, đồng bộ dữ liệu — vẫn giữ thiết kế).\
-    \ Xem pending_design.yaml (cập nhật lại source_column 2026-07-24). Khảo sát nghiệp\
-    \ vụ 2026-08-11: BK (Securities Organization Reference Code) đổi map từ ID (PK\
-    \ kỹ thuật) sang ORGANIZATION_CODE (mã nghiệp vụ) — Id hash lại theo ORGANIZATION_CODE;\
-    \ Organization Code (denormalized, nay trùng lặp) đã loại bỏ, xem pending_design.yaml;\
-    \ Parent self-reference chuyển sang crosswalk PARENT_ID → ID → ORGANIZATION_CODE."
+  notes: "STATUS (nguồn) nay đã map thành \"Status Code\" (2026-08-18) — chính sách\
+    \ cũ (2026-07-07) không map RECORD_TYPE/RECORD_STATUS chỉ áp dụng cho cột mang\
+    \ tính kỹ thuật thuần túy; cột STATUS này mang ý nghĩa nghiệp vụ rõ ràng nên map\
+    \ Classification Value. Khác với Sync Status Code (SYNC_STATUS, đồng bộ dữ liệu\
+    \ — thiết kế riêng, không gộp chung). Khảo sát nghiệp vụ 2026-08-11: BK (Securities\
+    \ Organization Reference Code) đổi map từ ID (PK kỹ thuật) sang ORGANIZATION_CODE\
+    \ (mã nghiệp vụ) — Id hash lại theo ORGANIZATION_CODE; Organization Code (denormalized,\
+    \ nay trùng lặp) đã loại bỏ, xem pending_design.yaml; Parent self-reference chuyển\
+    \ sang crosswalk PARENT_ID → ID → ORGANIZATION_CODE."
 attributes:
 - attribute_name: "Securities Organization Reference Id"
   physical_name: "securities_organization_reference_id"
@@ -274,19 +275,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Sort Order"
-  physical_name: "sort_order"
-  description: "Thứ tự sắp xếp hiển thị."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.ORGANIZATIONS.SORT_ORDER"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
 - attribute_name: "Last Sync Date"
   physical_name: "last_sync_dt"
   description: "Ngày đồng bộ dữ liệu gần nhất."
@@ -309,8 +297,21 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.ORGANIZATIONS.SYNC_STATUS"
-  comment: "Scheme: SYNC_STATUS. Nguồn lưu dạng số (NUMBER) — ETL cần convert sang\
+  comment: "Scheme: NHNCK.ORGANIZATIONS.SYNC_STATUS. Nguồn lưu dạng số (NUMBER) — ETL cần convert sang\
     \ string."
-  classification_context: null
+  classification_context: "NHNCK.ORGANIZATIONS.SYNC_STATUS"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Status Code"
+  physical_name: "status_code"
+  description: "Trạng thái bản ghi"
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.ORGANIZATIONS.STATUS"
+  comment: "Scheme: NHNCK.ORGANIZATIONS.STATUS."
+  classification_context: "NHNCK.ORGANIZATIONS.STATUS"
   etl_derived_value: null
   data_type: "string"

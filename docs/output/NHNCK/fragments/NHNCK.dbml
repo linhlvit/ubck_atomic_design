@@ -5,279 +5,178 @@ Project NHNCK {
   Note: "Atomic Lakehouse — NHNCK"
 }
 
-Table "scr_prac_conduct_vln" [note: "Vi phạm pháp luật hoặc hành chính của người hành nghề chứng khoán được ghi nhận kèm quyết định xử lý. Mỗi dòng = 1 sự kiện vi phạm insert-only. FK đến Practitioner và Decision."] {
-  "scr_prac_conduct_vln_id" varchar [pk]
-  "scr_prac_id" varchar
-  "license_dcsn_doc_id" varchar
+Table "sp_conduct_violation" [note: "Vi phạm pháp luật hoặc hành chính của người hành nghề chứng khoán được ghi nhận kèm quyết định xử lý. Mỗi dòng = 1 sự kiện vi phạm insert-only. FK đến Practitioner và Decision."] {
+  "sp_conduct_violation_id" varchar [pk]
+  "sp_id" varchar
+  "sp_license_decision_document_id" varchar
 }
 
-Table "scr_prac_prof_trn_clss_enrollment" [note: "Đăng ký tham gia và kết quả học tập của người hành nghề tại một khóa đào tạo chuyên môn. Ghi nhận điểm thi, kết quả đạt/không đạt và trạng thái ghi danh."] {
-  "scr_prac_prof_trn_clss_enrollment_id" varchar [pk]
-  "scr_prac_prof_trn_clss_id" varchar
-  "scr_prac_id" varchar
-  "perm_rsdnc_cty_id" varchar
-  "perm_rsdnc_prov_id" varchar
-  "perm_rsdnc_dstc_id" varchar
-  "assignee_ofcr_id" varchar
-  "crt_by_ofcr_id" varchar
-  "udt_by_ofcr_id" varchar
+Table "sp_professional_training_class" [note: "Khóa học chuyên môn bổ sung kiến thức cho người hành nghề chứng khoán. Master entity của khóa học — ghi nhận mã, tên, loại chuyên môn, thời gian và địa điểm thi."] {
+  "sp_professional_training_class_id" varchar [pk]
 }
 
-Table "scr_prac_qualf_exam_ases" [note: "Đợt thi sát hạch cấp CCHN do UBCKNN tổ chức. Ghi nhận thời gian đăng ký và thi, địa điểm, hình thức nộp hồ sơ, quyết định công nhận kết quả và phí thi."] {
-  "scr_prac_qualf_exam_ases_id" varchar [pk]
-  "exam_ssn_nbr" varchar [pk]
-  "license_dcsn_id" varchar
-  "crt_by_ofcr_id" varchar
-  "udt_by_ofcr_id" varchar
+Table "sp_professional_training_class_enrollment" [note: "Đăng ký tham gia và kết quả học tập của người hành nghề tại một khóa đào tạo chuyên môn. Ghi nhận điểm thi, kết quả đạt/không đạt và trạng thái ghi danh."] {
+  "sp_professional_training_class_enrollment_id" varchar [pk]
+  "sp_id" varchar
 }
 
-Table "scr_prac_qualf_exam_ases_rslt" [note: "Kết quả thi sát hạch của từng thí sinh trong một đợt thi. Ghi nhận điểm thi luật, điểm chuyên môn, kết quả từng phần và kết quả tổng thể. FK đến Exam Assessment và Practitioner."] {
-  "scr_prac_qualf_exam_ases_rslt_id" varchar [pk]
-  "scr_prac_qualf_exam_ases_id" varchar
-  "scr_prac_id" varchar
-  "license_ap_id" varchar
+Table "sp_qualification_examination_assessment" [note: "Đợt thi sát hạch cấp CCHN do UBCKNN tổ chức. Ghi nhận thời gian đăng ký và thi, địa điểm, hình thức nộp hồ sơ, quyết định công nhận kết quả và phí thi."] {
+  "sp_qualification_examination_assessment_id" varchar [pk]
+  "sp_license_decision_document_id" varchar
 }
 
-Table "scr_prac_qualf_exam_ases_fee" [note: "Biểu phí thi sát hạch quy định cho từng loại CCHN trong từng đợt thi (Condition). Phân biệt với License Application Fee là phí thực tế thu từng hồ sơ (Transaction)."] {
-  "scr_prac_qualf_exam_ases_fee_id" varchar [pk]
-  "exam_ases_id" varchar
-  "crt_by_ofcr_id" varchar
-  "udt_by_ofcr_id" varchar
+Table "sp_qualification_examination_assessment_result" [note: "Kết quả thi sát hạch của từng thí sinh trong một đợt thi. Ghi nhận điểm thi luật, điểm chuyên môn, kết quả từng phần và kết quả tổng thể. FK đến Exam Assessment và Practitioner."] {
+  "sp_qualification_examination_assessment_result_id" varchar [pk]
+  "sp_id" varchar
 }
 
-Table "scr_prac_license_ap" [note: "Hồ sơ đăng ký chứng chỉ hành nghề chứng khoán. Ghi nhận loại đăng ký, loại hồ sơ, trạng thái, ngày nộp, CCHN liên quan và kết quả thi. FK đến Practitioner và Officer phụ trách."] {
-  "scr_prac_license_ap_id" varchar [pk]
-  "scr_prac_id" varchar
-  "license_ctf_doc_id" varchar
-  "prev_license_ctf_doc_id" varchar
-  "exam_ases_id" varchar
-  "assignee_ofcr_id" varchar
-  "info_verify_ofcr_id" varchar
+Table "sp_qualification_examination_assessment_fee" [note: "Biểu phí thi sát hạch quy định cho từng loại CCHN trong từng đợt thi (Condition). Phân biệt với License Application Fee là phí thực tế thu từng hồ sơ (Transaction)."] {
+  "sp_qualification_examination_assessment_fee_id" varchar [pk]
+  "sp_qualification_examination_assessment_id" varchar
 }
 
-Table "scr_prac_license_ap_ed_ctf_doc" [note: "Chứng chỉ hoặc bằng chuyên môn đào tạo đính kèm trong hồ sơ đăng ký CCHN. Ghi nhận loại chuyên môn, file đính kèm, trạng thái thẩm định và cán bộ thẩm định."] {
-  "scr_prac_license_ap_ed_ctf_doc_id" varchar [pk]
-  "license_ap_id" varchar
-  "appraised_by_ofcr_id" varchar
+Table "sp_license_application" [note: "Hồ sơ đăng ký chứng chỉ hành nghề chứng khoán. Ghi nhận loại đăng ký, loại hồ sơ, trạng thái, ngày nộp, CCHN liên quan và kết quả thi. FK đến Practitioner và Officer phụ trách."] {
+  "sp_license_application_id" varchar [pk]
+  "sp_id" varchar
+  "sp_license_certificate_document_id" varchar
+  "previous_sp_license_certificate_document_id" varchar
+  "sp_qualification_examination_assessment_id" varchar
 }
 
-Table "scr_prac_license_ap_re-exam_rqs" [note: "Liên kết theo dõi chu trình thi lại — hồ sơ gốc, kết quả thi trượt và hồ sơ đăng ký thi lại mới (nullable nếu chưa nộp). FK đến License Application (×2) và Exam Assessment Result."] {
-  "scr_prac_license_ap_re-exam_rqs_id" varchar [pk]
-  "license_ap_id" varchar
-  "exam_ases_rslt_id" varchar
-  "re-exam_license_ap_id" varchar
-  "crt_by_ofcr_id" varchar
-  "udt_by_ofcr_id" varchar
+Table "sp_license_application_education_certificate_document" [note: "Chứng chỉ hoặc bằng chuyên môn đào tạo đính kèm trong hồ sơ đăng ký CCHN. Ghi nhận loại chuyên môn, file đính kèm, trạng thái thẩm định và cán bộ thẩm định."] {
+  "sp_license_application_education_certificate_document_id" varchar [pk]
 }
 
-Table "scr_prac_license_ctf_doc" [note: "Chứng chỉ hành nghề chứng khoán được cấp cho người hành nghề. Ghi nhận số CCHN, loại, ngày cấp, trạng thái và 3 quyết định liên quan (cấp/thu hồi/hủy). FK đến Practitioner."] {
-  "scr_prac_license_ctf_doc_id" varchar [pk]
-  "scr_prac_id" varchar
-  "issu_license_dcsn_id" varchar
-  "revocation_license_dcsn_id" varchar
-  "cncl_license_dcsn_id" varchar
+Table "sp_license_application_re_exam_request" [note: "Liên kết theo dõi chu trình thi lại — hồ sơ gốc, kết quả thi trượt và hồ sơ đăng ký thi lại mới (nullable nếu chưa nộp). FK đến License Application (×2) và Exam Assessment Result."] {
+  "sp_license_application_re_exam_request_id" varchar [pk]
+  "sp_qualification_examination_assessment_result_id" varchar
 }
 
-Table "scr_prac_license_dcsn_doc" [note: "Quyết định hành chính do UBCKNN ban hành liên quan đến CCHN — cấp, thu hồi, hủy CCHN hoặc công nhận kết quả thi. Ghi nhận số quyết định, loại, ngày ký và người ký."] {
-  "scr_prac_license_dcsn_doc_id" varchar [pk]
+Table "sp_license_certificate_document" [note: "Chứng chỉ hành nghề chứng khoán được cấp cho người hành nghề. Ghi nhận số CCHN, loại, ngày cấp, trạng thái và 3 quyết định liên quan (cấp/thu hồi/hủy). FK đến Practitioner."] {
+  "sp_license_certificate_document_id" varchar [pk]
+  "sp_id" varchar
+  "issue_sp_license_decision_document_id" varchar
+  "revocation_sp_license_decision_document_id" varchar
+  "cancellation_sp_license_decision_document_id" varchar
 }
 
-Table "scr_prac_org_emp_rpt" [note: "Báo cáo của tổ chức về tình trạng làm việc của người hành nghề. Mỗi dòng = 1 lần nộp báo cáo insert-only. Ghi nhận loại báo cáo, trạng thái làm việc, chức vụ và ngày báo cáo."] {
-  "scr_prac_org_emp_rpt_id" varchar [pk]
-  "scr_org_refr_id" varchar
-  "scr_prac_id" varchar
-  "license_ctf_doc_id" varchar
-  "prn_rpt_id" varchar
-  "crt_by_ofcr_id" varchar
-  "udt_by_ofcr_id" varchar
+Table "sp_license_certificate_type" [note: "Danh mục loại chứng chỉ hành nghề chứng khoán — tên CCHN, mô tả, số ngày xử lý, thứ tự hiển thị. FK target cho Certificate Type Id ở các entity License Application/Certificate Document/Organization Em"] {
+  "sp_license_certificate_tp_id" varchar [pk]
 }
 
-Table "scr_prac_prof_trn_clss" [note: "Khóa học chuyên môn bổ sung kiến thức cho người hành nghề chứng khoán. Master entity của khóa học — ghi nhận mã, tên, loại chuyên môn, thời gian và địa điểm thi."] {
-  "scr_prac_prof_trn_clss_id" varchar [pk]
-  "prov_id" varchar
+Table "sp_license_decision_document" [note: "Quyết định hành chính do UBCKNN ban hành liên quan đến CCHN — cấp, thu hồi, hủy CCHN hoặc công nhận kết quả thi. Ghi nhận số quyết định, loại, ngày ký và người ký."] {
+  "sp_license_decision_document_id" varchar [pk]
 }
 
-Table "reg_ahr_ofcr" [note: "Cán bộ, chuyên viên UBCKNN có tài khoản trong hệ thống NHNCK. Ghi nhận thông tin nhân sự, đơn vị/phòng ban phụ trách và trạng thái tài khoản. Không lưu thông tin xác thực (PASSWORD)."] {
-  "reg_ahr_ofcr_id" varchar [pk]
-  "ou_id" varchar
-  "dept_id" varchar
-  "scr_prac_id" varchar
+Table "sp_organization_employment_report" [note: "Báo cáo của tổ chức về tình trạng làm việc của người hành nghề. Mỗi dòng = 1 lần nộp báo cáo insert-only. Ghi nhận loại báo cáo, trạng thái làm việc, chức vụ và ngày báo cáo."] {
+  "sp_organization_employment_rpt_id" varchar [pk]
+  "sp_id" varchar
+  "sp_license_certificate_document_id" varchar
+  "parent_sp_organization_employment_rpt_id" varchar
 }
 
-Table "reg_ahr_ou" [note: "Đơn vị và phòng ban thuộc UBCKNN — cấu trúc cây self-referencing DEPARTMENT → UNIT. Phân biệt bằng Organization Unit Type Code (ETL-derived). Dùng chung làm FK tổ chức nội bộ."] {
-  "reg_ahr_ou_id" varchar [pk]
-  "prn_reg_ahr_ou_id" varchar
+Table "ra_organization_unit" [note: "Đơn vị và phòng ban thuộc UBCKNN — cấu trúc cây self-referencing DEPARTMENT → UNIT. Phân biệt bằng Organization Unit Type Code (ETL-derived). Dùng chung làm FK tổ chức nội bộ."] {
+  "ra_ou_id" varchar [pk]
 }
 
-Table "scr_org_refr" [note: "Tổ chức tham gia thị trường chứng khoán được UBCKNN quản lý (CTCK, QLQ, Ngân hàng, v.v.). Ghi nhận mã tổ chức, tên, loại hình, vốn điều lệ và trạng thái hoạt động."] {
-  "scr_org_refr_id" varchar [pk]
-  "prn_scr_org_refr_id" varchar
-  "crt_by_ofcr_id" varchar
-  "udt_by_ofcr_id" varchar
+Table "securities_organization_reference" [note: "Tổ chức tham gia thị trường chứng khoán được UBCKNN quản lý (CTCK, QLQ, Ngân hàng, v.v.). Ghi nhận mã tổ chức, tên, loại hình, vốn điều lệ và trạng thái hoạt động."] {
+  "securities_organization_reference_id" varchar [pk]
 }
 
-Table "scr_prac" [note: "Người hành nghề chứng khoán được UBCKNN quản lý. Ghi nhận thông tin nhân thân và trạng thái hành nghề."] {
-  "prac_id" varchar [pk]
-  "scr_prac_id" varchar [pk]
-  "scr_co_id" varchar
-  "org_id" varchar
-  "nat_id" varchar
+Table "securities_practitioner" [note: "Người hành nghề chứng khoán được UBCKNN quản lý. Ghi nhận thông tin nhân thân và trạng thái hành nghề."] {
+  "sp_id" varchar [pk]
 }
 
-Table "scr_prac_emp_st" [note: "Giai đoạn làm việc của người hành nghề tại một tổ chức chứng khoán. Ghi nhận tổ chức, chức vụ, phòng ban, ngày bắt đầu và ngày kết thúc (NULL = đang làm việc)."] {
-  "scr_prac_emp_st_id" varchar [pk]
-  "scr_prac_id" varchar
-  "scr_org_refr_id" varchar
+Table "sp_employment_status" [note: "Giai đoạn làm việc của người hành nghề tại một tổ chức chứng khoán. Ghi nhận tổ chức, chức vụ, phòng ban, ngày bắt đầu và ngày kết thúc (NULL = đang làm việc)."] {
+  "sp_employment_status_id" varchar [pk]
+  "sp_id" varchar
 }
 
-Table "scr_prac_license_ap_emp_exrnc" [note: "Kinh nghiệm làm việc khai báo trong hồ sơ đăng ký CCHN. Ghi nhận tổ chức, thời gian làm việc, chức vụ, phòng ban, số BHXH và thông tin hợp đồng lao động."] {
-  "scr_prac_license_ap_emp_exrnc_id" varchar [pk]
-  "license_ap_id" varchar
-  "scr_org_refr_id" varchar
+Table "sp_reason_change_history" [note: "Ghi nhận 1 lần thay đổi thông tin cá nhân của người hành nghề — ai bị thay đổi, khi nào, lý do gì. Giữ concept Involved Party (cùng nhóm với Securities Practitioner) theo quyết định Data Modeler."] {
+  "sp_reason_change_history_id" varchar [pk]
+  "sp_id" varchar
 }
 
-Table "scr_prac_license_ap_snpst" [note: "Snapshot thông tin nhân thân của người đăng ký tại thời điểm nộp hồ sơ. Denormalize toàn bộ trường định danh, địa chỉ và liên lạc từ Practitioner. Loại bỏ USERNAME/PASSWORD."] {
-  "scr_prac_license_ap_snpst_id" varchar [pk]
-  "license_ap_id" varchar
-  "scr_prac_id" varchar
-  "org_id" varchar
-  "nat_id" varchar
-  "snpst_perm_cty_id" varchar
-  "snpst_perm_prov_id" varchar
-  "snpst_perm_dstc_id" varchar
-  "snpst_crn_cty_id" varchar
-  "snpst_crn_prov_id" varchar
-  "snpst_crn_dstc_id" varchar
+Table "sp_related_party" [note: "Quan hệ thân nhân của người hành nghề chứng khoán. Ghi nhận loại quan hệ, họ tên, năm sinh, địa chỉ, nghề nghiệp và số giấy tờ định danh của người thân."] {
+  "sp_related_party_id" varchar [pk]
+  "sp_id" varchar
 }
 
-Table "scr_prac_prof_trn_hist" [note: "Lịch sử đào tạo và bồi dưỡng của người hành nghề chứng khoán. Ghi nhận thời gian, địa điểm đào tạo, chuyên ngành, khen thưởng và kỷ luật. FK đến Practitioner."] {
-  "scr_prac_prof_trn_hist_id" varchar [pk]
-  "scr_prac_id" varchar
+Table "sp_license_application_fee" [note: "Phí thực tế phát sinh cho hồ sơ đăng ký CCHN — phí nộp hồ sơ, phí cấp CCHN (Transaction). Có lifecycle riêng qua trạng thái thanh toán. Phân biệt với Examination Assessment Fee (Condition)."] {
+  "sp_license_application_fee_id" varchar [pk]
+  "sp_id" varchar
 }
 
-Table "scr_prac_rel_p" [note: "Quan hệ thân nhân của người hành nghề chứng khoán. Ghi nhận loại quan hệ, họ tên, năm sinh, địa chỉ, nghề nghiệp và số giấy tờ định danh của người thân."] {
-  "scr_prac_rel_p_id" varchar [pk]
-  "scr_prac_id" varchar
-  "cty_id" varchar
-  "crt_by_ofcr_id" varchar
-  "udt_by_ofcr_id" varchar
+Table "cl_application_status" [note: ""] {
+  "cl_application_status_id" varchar [pk]
 }
 
-Table "geo" [note: "Đơn vị địa lý dùng làm FK tham chiếu: quốc gia/quốc tịch (COUNTRY), vùng/miền (REGION), tỉnh/thành phố mới/cũ (PROVINCE/PROVINCE_OLD), quận/huyện cũ (DISTRICT_OLD), phường/xã mới/cũ (WARD/WARD_OLD). P"] {
-  "geo_id" varchar [pk]
-  "prn_geo_id" varchar
+Table "cl_document" [note: ""] {
+  "cl_document_id" varchar [pk]
 }
 
-Table "scr_prac_license_ap_fee" [note: "Phí thực tế phát sinh cho hồ sơ đăng ký CCHN — phí nộp hồ sơ, phí cấp CCHN (Transaction). Có lifecycle riêng qua trạng thái thanh toán. Phân biệt với Examination Assessment Fee (Condition)."] {
-  "scr_prac_license_ap_fee_id" varchar [pk]
-  "license_ap_id" varchar
-  "scr_prac_id" varchar
-  "crt_by_usr_id" varchar
-  "udt_by_usr_id" varchar
+Table "cl_specialization" [note: ""] {
+  "cl_specialization_id" varchar [pk]
 }
 
-Table "ip_alt_identn" [note: "Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ 1 nguồn."] {
+Table "individual" [note: ""] {
+  "individual_id" varchar [pk]
+}
+
+Table "sp_license_certificate_status_change_history" [note: ""] {
+  "sp_license_certificate_status_change_history_id" varchar [pk]
+  "sp_license_certificate_document_id" varchar
+  "sp_license_decision_document_id" varchar
+}
+
+Table "sp_post_certification_training_course" [note: ""] {
+  "sp_post_certification_training_course_id" varchar [pk]
+}
+
+Table "sp_post_certification_training_result" [note: ""] {
+  "sp_post_certification_training_result_id" varchar [pk]
+  "sp_id" varchar
+}
+
+Table "ip_alternative_identification" [note: "Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ 1 nguồn."] {
   "ip_id" varchar
 }
 
-Table "ip_elc_adr" [note: "Lưu trữ các địa chỉ liên lạc điện tử của Involved Party (điện thoại/fax/email). Mỗi dòng = 1 kênh liên lạc từ 1 nguồn."] {
-  "ip_id" varchar
+Table "ip_electronic_address" [note: "Lưu trữ các địa chỉ liên lạc điện tử của Involved Party (điện thoại/fax/email). Mỗi dòng = 1 kênh liên lạc từ 1 nguồn."] {
+  "_id" bigint
 }
 
-Table "ip_pst_adr" [note: "Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn."] {
-  "ip_id" varchar
-  "prov_id" varchar
-  "geo_id" varchar
-  "cty_id" varchar
-  "dstc_id" varchar
+Table "ip_postal_address" [note: "Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn."] {
+  "_id" bigint
 }
 
-Ref: "scr_prac_conduct_vln"."scr_prac_id" > "scr_prac"."scr_prac_id"
-// Ref: "scr_prac_conduct_vln"."license_dcsn_doc_id" > ""."" // out-of-source
-Ref: "scr_prac_prof_trn_clss_enrollment"."scr_prac_prof_trn_clss_id" > "scr_prac_prof_trn_clss"."scr_prac_prof_trn_clss_id"
-Ref: "scr_prac_prof_trn_clss_enrollment"."scr_prac_id" > "scr_prac"."scr_prac_id"
-Ref: "scr_prac_prof_trn_clss_enrollment"."perm_rsdnc_cty_id" > "geo"."geo_id"
-Ref: "scr_prac_prof_trn_clss_enrollment"."perm_rsdnc_prov_id" > "geo"."geo_id"
-Ref: "scr_prac_prof_trn_clss_enrollment"."perm_rsdnc_dstc_id" > "geo"."geo_id"
-Ref: "scr_prac_prof_trn_clss_enrollment"."assignee_ofcr_id" > "reg_ahr_ofcr"."reg_ahr_ofcr_id"
-Ref: "scr_prac_prof_trn_clss_enrollment"."crt_by_ofcr_id" > "reg_ahr_ofcr"."reg_ahr_ofcr_id"
-Ref: "scr_prac_prof_trn_clss_enrollment"."udt_by_ofcr_id" > "reg_ahr_ofcr"."reg_ahr_ofcr_id"
-Ref: "scr_prac_qualf_exam_ases"."license_dcsn_id" > "scr_prac_license_dcsn_doc"."scr_prac_license_dcsn_doc_id"
-Ref: "scr_prac_qualf_exam_ases"."crt_by_ofcr_id" > "reg_ahr_ofcr"."reg_ahr_ofcr_id"
-Ref: "scr_prac_qualf_exam_ases"."udt_by_ofcr_id" > "reg_ahr_ofcr"."reg_ahr_ofcr_id"
-Ref: "scr_prac_qualf_exam_ases_rslt"."scr_prac_qualf_exam_ases_id" > "scr_prac_qualf_exam_ases"."scr_prac_qualf_exam_ases_id"
-Ref: "scr_prac_qualf_exam_ases_rslt"."scr_prac_id" > "scr_prac"."scr_prac_id"
-Ref: "scr_prac_qualf_exam_ases_rslt"."license_ap_id" > "scr_prac_license_ap".""
-Ref: "scr_prac_qualf_exam_ases_fee"."exam_ases_id" > "scr_prac_qualf_exam_ases".""
-Ref: "scr_prac_qualf_exam_ases_fee"."crt_by_ofcr_id" > "reg_ahr_ofcr".""
-Ref: "scr_prac_qualf_exam_ases_fee"."udt_by_ofcr_id" > "reg_ahr_ofcr".""
-Ref: "scr_prac_license_ap"."scr_prac_id" > "scr_prac"."scr_prac_id"
-Ref: "scr_prac_license_ap"."license_ctf_doc_id" > "scr_prac_license_ctf_doc"."scr_prac_license_ctf_doc_id"
-Ref: "scr_prac_license_ap"."prev_license_ctf_doc_id" > "scr_prac_license_ctf_doc"."scr_prac_license_ctf_doc_id"
-Ref: "scr_prac_license_ap"."exam_ases_id" > "scr_prac_qualf_exam_ases"."scr_prac_qualf_exam_ases_id"
-Ref: "scr_prac_license_ap"."assignee_ofcr_id" > "reg_ahr_ofcr"."reg_ahr_ofcr_id"
-Ref: "scr_prac_license_ap"."info_verify_ofcr_id" > "reg_ahr_ofcr"."reg_ahr_ofcr_id"
-// Ref: "scr_prac_license_ap_ed_ctf_doc"."license_ap_id" > ""."" // out-of-source
-Ref: "scr_prac_license_ap_ed_ctf_doc"."appraised_by_ofcr_id" > "reg_ahr_ofcr"."reg_ahr_ofcr_id"
-Ref: "scr_prac_license_ap_re-exam_rqs"."license_ap_id" > "scr_prac_license_ap".""
-Ref: "scr_prac_license_ap_re-exam_rqs"."exam_ases_rslt_id" > "scr_prac_qualf_exam_ases_rslt".""
-Ref: "scr_prac_license_ap_re-exam_rqs"."re-exam_license_ap_id" > "scr_prac_license_ap".""
-Ref: "scr_prac_license_ap_re-exam_rqs"."crt_by_ofcr_id" > "reg_ahr_ofcr".""
-Ref: "scr_prac_license_ap_re-exam_rqs"."udt_by_ofcr_id" > "reg_ahr_ofcr".""
-Ref: "scr_prac_license_ctf_doc"."scr_prac_id" > "scr_prac"."scr_prac_id"
-// Ref: "scr_prac_license_ctf_doc"."issu_license_dcsn_id" > ""."" // out-of-source
-// Ref: "scr_prac_license_ctf_doc"."revocation_license_dcsn_id" > ""."" // out-of-source
-// Ref: "scr_prac_license_ctf_doc"."cncl_license_dcsn_id" > ""."" // out-of-source
-Ref: "scr_prac_org_emp_rpt"."scr_org_refr_id" > "scr_org_refr"."scr_org_refr_id"
-Ref: "scr_prac_org_emp_rpt"."scr_prac_id" > "scr_prac"."scr_prac_id"
-// Ref: "scr_prac_org_emp_rpt"."license_ctf_doc_id" > ""."" // out-of-source
-Ref: "scr_prac_org_emp_rpt"."prn_rpt_id" > "scr_prac_org_emp_rpt"."scr_prac_org_emp_rpt_id"
-Ref: "scr_prac_org_emp_rpt"."crt_by_ofcr_id" > "reg_ahr_ofcr".""
-Ref: "scr_prac_org_emp_rpt"."udt_by_ofcr_id" > "reg_ahr_ofcr".""
-Ref: "scr_prac_prof_trn_clss"."prov_id" > "geo"."geo_id"
-Ref: "reg_ahr_ofcr"."ou_id" > "reg_ahr_ou"."reg_ahr_ou_id"
-Ref: "reg_ahr_ofcr"."dept_id" > "reg_ahr_ou"."reg_ahr_ou_id"
-Ref: "reg_ahr_ofcr"."scr_prac_id" > "scr_prac"."prac_id"
-Ref: "reg_ahr_ou"."prn_reg_ahr_ou_id" > "reg_ahr_ou"."reg_ahr_ou_id"
-Ref: "scr_org_refr"."prn_scr_org_refr_id" > "scr_org_refr"."scr_org_refr_id"
-Ref: "scr_org_refr"."crt_by_ofcr_id" > "reg_ahr_ofcr".""
-Ref: "scr_org_refr"."udt_by_ofcr_id" > "reg_ahr_ofcr".""
-// Ref: "scr_prac"."scr_co_id" > ""."" // out-of-source
-Ref: "scr_prac"."org_id" > "scr_org_refr"."scr_org_refr_id"
-Ref: "scr_prac"."nat_id" > "geo"."geo_id"
-Ref: "scr_prac_emp_st"."scr_prac_id" > "scr_prac"."scr_prac_id"
-Ref: "scr_prac_emp_st"."scr_org_refr_id" > "scr_org_refr"."scr_org_refr_id"
-Ref: "scr_prac_license_ap_emp_exrnc"."license_ap_id" > "scr_prac_license_ap".""
-Ref: "scr_prac_license_ap_emp_exrnc"."scr_org_refr_id" > "scr_org_refr"."scr_org_refr_id"
-Ref: "scr_prac_license_ap_snpst"."license_ap_id" > "scr_prac_license_ap"."scr_prac_license_ap_id"
-Ref: "scr_prac_license_ap_snpst"."scr_prac_id" > "scr_prac"."scr_prac_id"
-Ref: "scr_prac_license_ap_snpst"."org_id" > "scr_org_refr"."scr_org_refr_id"
-Ref: "scr_prac_license_ap_snpst"."nat_id" > "geo"."geo_id"
-Ref: "scr_prac_license_ap_snpst"."snpst_perm_cty_id" > "geo"."geo_id"
-Ref: "scr_prac_license_ap_snpst"."snpst_perm_prov_id" > "geo"."geo_id"
-Ref: "scr_prac_license_ap_snpst"."snpst_perm_dstc_id" > "geo"."geo_id"
-Ref: "scr_prac_license_ap_snpst"."snpst_crn_cty_id" > "geo"."geo_id"
-Ref: "scr_prac_license_ap_snpst"."snpst_crn_prov_id" > "geo"."geo_id"
-Ref: "scr_prac_license_ap_snpst"."snpst_crn_dstc_id" > "geo"."geo_id"
-Ref: "scr_prac_prof_trn_hist"."scr_prac_id" > "scr_prac"."scr_prac_id"
-Ref: "scr_prac_rel_p"."scr_prac_id" > "scr_prac"."prac_id"
-Ref: "scr_prac_rel_p"."cty_id" > "geo"."geo_id"
-Ref: "scr_prac_rel_p"."crt_by_ofcr_id" > "reg_ahr_ofcr".""
-Ref: "scr_prac_rel_p"."udt_by_ofcr_id" > "reg_ahr_ofcr".""
-Ref: "geo"."prn_geo_id" > "geo"."geo_id"
-// Ref: "scr_prac_license_ap_fee"."license_ap_id" > ""."" // out-of-source
-Ref: "scr_prac_license_ap_fee"."scr_prac_id" > "scr_prac"."scr_prac_id"
-// Ref: "scr_prac_license_ap_fee"."crt_by_usr_id" > ""."" // out-of-source
-// Ref: "scr_prac_license_ap_fee"."udt_by_usr_id" > ""."" // out-of-source
-Ref: "ip_alt_identn"."ip_id" > "scr_prac"."scr_prac_id"
-Ref: "ip_elc_adr"."ip_id" > "reg_ahr_ou"."reg_ahr_ou_id"
-Ref: "ip_elc_adr"."ip_id" > "scr_org_refr"."scr_org_refr_id"
-Ref: "ip_elc_adr"."ip_id" > "reg_ahr_ofcr"."reg_ahr_ofcr_id"
-Ref: "ip_elc_adr"."ip_id" > "scr_prac"."scr_prac_id"
-Ref: "ip_pst_adr"."ip_id" > "reg_ahr_ou"."reg_ahr_ou_id"
-Ref: "ip_pst_adr"."prov_id" > "geo"."geo_id"
-Ref: "ip_pst_adr"."geo_id" > "geo"."geo_id"
-Ref: "ip_pst_adr"."cty_id" > "geo"."geo_id"
-Ref: "ip_pst_adr"."dstc_id" > "geo"."geo_id"
-Ref: "ip_pst_adr"."ip_id" > "scr_org_refr"."scr_org_refr_id"
-Ref: "ip_pst_adr"."ip_id" > "scr_prac"."scr_prac_id"
+Ref: "sp_conduct_violation"."sp_id" > "securities_practitioner"."sp_id"
+Ref: "sp_conduct_violation"."sp_license_decision_document_id" > "sp_license_decision_document"."sp_license_decision_document_id"
+Ref: "sp_professional_training_class_enrollment"."sp_id" > "securities_practitioner"."sp_id"
+Ref: "sp_qualification_examination_assessment"."sp_license_decision_document_id" > "sp_license_decision_document"."sp_license_decision_document_id"
+Ref: "sp_qualification_examination_assessment_result"."sp_id" > "securities_practitioner"."sp_id"
+Ref: "sp_qualification_examination_assessment_fee"."sp_qualification_examination_assessment_id" > "sp_qualification_examination_assessment"."sp_qualification_examination_assessment_id"
+Ref: "sp_license_application"."sp_id" > "securities_practitioner"."sp_id"
+Ref: "sp_license_application"."sp_license_certificate_document_id" > "sp_license_certificate_document"."sp_license_certificate_document_id"
+Ref: "sp_license_application"."previous_sp_license_certificate_document_id" > "sp_license_certificate_document"."sp_license_certificate_document_id"
+Ref: "sp_license_application"."sp_qualification_examination_assessment_id" > "sp_qualification_examination_assessment"."sp_qualification_examination_assessment_id"
+Ref: "sp_license_application_re_exam_request"."sp_qualification_examination_assessment_result_id" > "sp_qualification_examination_assessment_result"."sp_qualification_examination_assessment_result_id"
+Ref: "sp_license_certificate_document"."sp_id" > "securities_practitioner"."sp_id"
+Ref: "sp_license_certificate_document"."issue_sp_license_decision_document_id" > "sp_license_decision_document"."sp_license_decision_document_id"
+Ref: "sp_license_certificate_document"."revocation_sp_license_decision_document_id" > "sp_license_decision_document"."sp_license_decision_document_id"
+Ref: "sp_license_certificate_document"."cancellation_sp_license_decision_document_id" > "sp_license_decision_document"."sp_license_decision_document_id"
+Ref: "sp_organization_employment_report"."sp_id" > "securities_practitioner"."sp_id"
+Ref: "sp_organization_employment_report"."sp_license_certificate_document_id" > "sp_license_certificate_document"."sp_license_certificate_document_id"
+Ref: "sp_organization_employment_report"."parent_sp_organization_employment_rpt_id" > "sp_organization_employment_report"."sp_organization_employment_rpt_id"
+Ref: "sp_employment_status"."sp_id" > "securities_practitioner"."sp_id"
+Ref: "sp_reason_change_history"."sp_id" > "securities_practitioner"."sp_id"
+Ref: "sp_related_party"."sp_id" > "securities_practitioner"."sp_id"
+Ref: "sp_license_application_fee"."sp_id" > "securities_practitioner"."sp_id"
+Ref: "sp_license_certificate_status_change_history"."sp_license_certificate_document_id" > "sp_license_certificate_document"."sp_license_certificate_document_id"
+Ref: "sp_license_certificate_status_change_history"."sp_license_decision_document_id" > "sp_license_decision_document"."sp_license_decision_document_id"
+Ref: "sp_post_certification_training_result"."sp_id" > "securities_practitioner"."sp_id"
+Ref: "ip_alternative_identification"."ip_id" > "securities_practitioner"."sp_id"
+Ref: "ip_alternative_identification"."ip_id" > "individual"."individual_id"
+Ref: "ip_electronic_address"."ip_id" > "securities_practitioner"."sp_id"
+Ref: "ip_postal_address"."ip_id" > "securities_practitioner"."sp_id"
+Ref: "ip_postal_address"."ip_id" > "individual"."individual_id"

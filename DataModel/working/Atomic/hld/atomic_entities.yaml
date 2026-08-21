@@ -27,27 +27,6 @@ entities:
   source_table: "FIMS.SECURITIESACCOUNT"
   status: "draft"
 - bcv_core_object: "Arrangement"
-  bcv_concept: "[Arrangement] Investment Fund"
-  atomic_entity: "Investment Fund X Fund Distribution Agent Relationship"
-  table_type: "Relative"
-  domain_prefix: ""
-  entity_physical_name: "investment_fund_x_fund_distribution_agent_relationship"
-  description: "Quan hệ đại lý phân phối CCQ được ủy quyền cho quỹ đầu tư. Đảo ngược\
-    \ quyết định denormalize ARRAY cũ trên Investment Fund. FK đến Investment Fund\
-    \ + Fund Distribution Agent."
-  source_table: "FMS.AGEN_FUNDS"
-  status: "draft"
-- bcv_core_object: "Arrangement"
-  bcv_concept: "[Arrangement] Investment Fund"
-  atomic_entity: "Investment Fund X Fund Management Company Employee Relationship"
-  table_type: "Relative"
-  domain_prefix: ""
-  entity_physical_name: "investment_fund_x_fmc_employee_relationship"
-  description: "Quan hệ gán người hành nghề (nhân sự chủ chốt CTQLQ) liên quan đến\
-    \ quỹ đầu tư. FK đến Investment Fund + Fund Management Company Employee."
-  source_table: "FMS.FUND_TL_PRO"
-  status: "draft"
-- bcv_core_object: "Arrangement"
   bcv_concept: "[Arrangement] Ownership"
   atomic_entity: "Public Company Shareholding"
   table_type: "Fundamental"
@@ -270,16 +249,16 @@ entities:
   source_table: "SCMS.SC_FIRM_PERIODIC_REPORT"
   status: "draft"
 - bcv_core_object: "Business Activity"
-  bcv_concept: "[Business Activity] Conduct Violation"
-  atomic_entity: "Securities Practitioner Conduct Violation"
+  bcv_concept: "[Business Activity] Status Review"
+  atomic_entity: "Securities Practitioner License Application Status Review"
   table_type: "Fundamental"
   domain_prefix: "Securities Practitioner"
-  entity_physical_name: "sp_conduct_violation"
-  description: "Vi phạm pháp luật hoặc hành chính của người hành nghề chứng khoán\
-    \ được ghi nhận kèm quyết định xử lý. Mỗi dòng = 1 sự kiện vi phạm insert-only.\
-    \ FK đến Practitioner và Decision."
-  source_table: "NHNCK.VIOLATIONS"
-  status: "approved"
+  entity_physical_name: "sp_license_application_status_review"
+  description: "Kết quả thẩm định/phê duyệt hồ sơ CCHN tại từng cấp xét duyệt — trạng\
+    \ thái trước/sau, lý do theo cấp, người xác minh. Đối xứng với License Certificate\
+    \ Conversion Status Review."
+  source_table: "NHNCK.VERIFY_APPLICATION_STATUSES"
+  status: "draft"
 - bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Business Activity"
   atomic_entity: "Securities Practitioner Professional Training Class"
@@ -302,6 +281,17 @@ entities:
     \ danh."
   source_table: "NHNCK.SPECIALIZATION_COURSE_DETAILS"
   status: "approved"
+- bcv_core_object: "Business Activity"
+  bcv_concept: "[Business Activity] Conduct Violation"
+  atomic_entity: "Securities Practitioner Violation"
+  table_type: "Fundamental"
+  domain_prefix: "Securities Practitioner"
+  entity_physical_name: "sp_violation"
+  description: "Vi phạm pháp luật hoặc hành chính của người hành nghề chứng khoán\
+    \ được ghi nhận kèm quyết định xử lý. Mỗi dòng = 1 sự kiện vi phạm insert-only.\
+    \ FK đến Practitioner và Decision."
+  source_table: "NHNCK.VIOLATIONS"
+  status: "draft"
 - bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Conduct Violation"
   atomic_entity: "Security Measure Decision"
@@ -428,42 +418,6 @@ entities:
   source_table: "NHNCK.EXAM_DETAILS"
   status: "approved"
 - bcv_core_object: "Condition"
-  bcv_concept: "[Condition] Form Definition"
-  atomic_entity: "Financial Report Column Template"
-  table_type: "Fundamental"
-  domain_prefix: "Financial Report"
-  entity_physical_name: "fr_column_template"
-  description: "Định nghĩa từng cột trong template báo cáo tài chính: mã cột, tên,\
-    \ kỳ tham chiếu (hiện tại/kỳ trước). Khôi phục scope 2026-08-05 (xem IDS_HLD_Overview.md\
-    \ 7e #15) — tên bỏ chữ \"Form\" so với thiết kế trước đây."
-  source_table: "IDS.RCOL"
-  status: "draft"
-- bcv_core_object: "Condition"
-  bcv_concept: "[Condition] Form Definition"
-  atomic_entity: "Financial Report Row Template"
-  table_type: "Fundamental"
-  domain_prefix: "Financial Report"
-  entity_physical_name: "fr_row_template"
-  description: "Định nghĩa từng hàng trong template báo cáo tài chính: mã hàng, tên,\
-    \ cấp phân cấp, công thức tổng hợp. Khôi phục scope 2026-08-05 (xem IDS_HLD_Overview.md\
-    \ 7e #15) — tên bỏ chữ \"Form\" so với thiết kế trước đây."
-  source_table: "IDS.RROW"
-  status: "draft"
-- bcv_core_object: "Condition"
-  bcv_concept: "[Condition] Form Definition"
-  atomic_entity: "Financial Report Template"
-  table_type: "Fundamental"
-  domain_prefix: "Financial Report"
-  entity_physical_name: "fr_template"
-  description: "Template/form dùng để công bố thông tin (CBTT): xác định cấu trúc,\
-    \ phiên bản, và hệ thống phân cấp form qua self-reference. Đổi tên từ \"Disclosure\
-    \ Form Definition\" (2026-08-05, theo yêu cầu tường minh Data Modeler). LƯU Ý:\
-    \ \"Disclosure Form Definition Notification Recipient\" và \"Disclosure Form Definition\
-    \ Violation Template\" chưa đổi tên theo — vi phạm rule#8 (entity con chứa tên\
-    \ entity cha) cho tới khi Data Modeler xác nhận đổi tên 2 entity này."
-  source_table: "IDS.FORMS"
-  status: "draft"
-- bcv_core_object: "Condition"
   bcv_concept: "[Condition] Evaluation Criteria"
   atomic_entity: "Public Company Evaluation Criterion"
   table_type: "Fundamental"
@@ -484,6 +438,29 @@ entities:
     \ sơ (Transaction)."
   source_table: "NHNCK.EXAM_SESSION_FEES"
   status: "approved"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Documentation Item"
+  atomic_entity: "Administrative Procedure Content Item Index"
+  table_type: "Fundamental"
+  domain_prefix: "Administrative Procedure"
+  entity_physical_name: "ap_content_item_index"
+  description: "Documentation Item — bản ghi index/metadata quản lý phiên bản và trạng\
+    \ thái xuất bản của mỗi content item trong hệ thống TTHC (loại nội dung, mới nhất/đã\
+    \ publish, người tạo/sửa, tiêu đề hiển thị), FK đến Administrative Procedure Document\
+    \ để lấy nội dung JSON gốc."
+  source_table: "TTHC.CONTENTITEMINDEX"
+  status: "draft"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Documentation"
+  atomic_entity: "Administrative Procedure Document"
+  table_type: "Fundamental"
+  domain_prefix: "Administrative Procedure"
+  entity_physical_name: "ap_document"
+  description: "Documentation — nội dung JSON gốc của content item hiện hành trong\
+    \ hệ thống TTHC (Orchard Core), lưu toàn bộ dữ liệu chi tiết đã serialize của\
+    \ hồ sơ/trang/tin/báo cáo hành chính."
+  source_table: "TTHC.DOCUMENT"
+  status: "draft"
 - bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Form Document"
   atomic_entity: "Examination Result Notice"
@@ -574,6 +551,94 @@ entities:
     \ (từ Business Activity) để nhất quán với các entity quyết định cưỡng chế cùng\
     \ nguồn."
   source_table: "KNT.TAX_VIOLATION_HANDLING"
+  status: "draft"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Form Document"
+  atomic_entity: "Financial Report Column Template"
+  table_type: "Fundamental"
+  domain_prefix: "Financial Report"
+  entity_physical_name: "fr_column_template"
+  description: "Định nghĩa từng cột trong template báo cáo tài chính: mã cột, tên,\
+    \ kỳ tham chiếu (hiện tại/kỳ trước). Khôi phục scope 2026-08-05 (xem IDS_HLD_Overview.md\
+    \ 7e #15) — tên bỏ chữ \"Form\" so với thiết kế trước đây. Đổi BCV Concept từ\
+    \ \"[Condition] Form Definition\" (term không tồn tại trong knowledge/terms.csv)\
+    \ sang \"[Documentation] Form Document\" (2026-08-13, theo yêu cầu tường minh\
+    \ Data Modeler) — xem IDS_HLD_Overview.md 7e #21."
+  source_table: "IDS.RCOL"
+  status: "draft"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Form Document"
+  atomic_entity: "Financial Report Row Template"
+  table_type: "Fundamental"
+  domain_prefix: "Financial Report"
+  entity_physical_name: "fr_row_template"
+  description: "Định nghĩa từng hàng trong template báo cáo tài chính: mã hàng, tên,\
+    \ cấp phân cấp, công thức tổng hợp. Khôi phục scope 2026-08-05 (xem IDS_HLD_Overview.md\
+    \ 7e #15) — tên bỏ chữ \"Form\" so với thiết kế trước đây. Đổi BCV Concept từ\
+    \ \"[Condition] Form Definition\" (term không tồn tại trong knowledge/terms.csv)\
+    \ sang \"[Documentation] Form Document\" (2026-08-13, theo yêu cầu tường minh\
+    \ Data Modeler) — xem IDS_HLD_Overview.md 7e #21."
+  source_table: "IDS.RROW"
+  status: "draft"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Form Document"
+  atomic_entity: "Financial Report Sub Column Template"
+  table_type: "Fundamental"
+  domain_prefix: "Financial Report"
+  entity_physical_name: "fr_sub_column_template"
+  description: "Định nghĩa từng cột trong template báo cáo định kỳ. Đổi tên từ \"\
+    Periodic Report Form Column Template\" (2026-08-05, theo yêu cầu tường minh Data\
+    \ Modeler) — xem 7e #15. Bổ sung table_type/entity_physical_name (trước đây để\
+    \ trống) và đổi BCV Concept từ \"[Condition] Form Definition\" (term không tồn\
+    \ tại trong knowledge/terms.csv) sang \"[Documentation] Form Document\" (2026-08-13,\
+    \ theo yêu cầu tường minh Data Modeler) — xem IDS_HLD_Overview.md 7e #21."
+  source_table: "IDS.REP_COLUMN"
+  status: "draft"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Form Document"
+  atomic_entity: "Financial Report Sub Row Template"
+  table_type: "Fundamental"
+  domain_prefix: "Financial Report"
+  entity_physical_name: "fr_sub_row_template"
+  description: "Định nghĩa từng hàng trong template báo cáo định kỳ. Đổi tên từ \"\
+    Periodic Report Form Row Template\" (2026-08-05, theo yêu cầu tường minh Data\
+    \ Modeler) — xem 7e #15. Bổ sung table_type/entity_physical_name (trước đây để\
+    \ trống) và đổi BCV Concept từ \"[Condition] Form Definition\" (term không tồn\
+    \ tại trong knowledge/terms.csv) sang \"[Documentation] Form Document\" (2026-08-13,\
+    \ theo yêu cầu tường minh Data Modeler) — xem IDS_HLD_Overview.md 7e #21."
+  source_table: "IDS.REP_ROW"
+  status: "draft"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Form Document"
+  atomic_entity: "Financial Report Sub Template"
+  table_type: "Fundamental"
+  domain_prefix: "Financial Report"
+  entity_physical_name: "fr_sub_template"
+  description: "Template báo cáo định kỳ (tháng/quý/năm/bán niên) của CTĐC: xác định\
+    \ cấu trúc form cho từng loại kỳ báo cáo. Đổi tên từ \"Periodic Report Form\"\
+    \ (2026-08-05, theo yêu cầu tường minh Data Modeler) — xem 7e. Bổ sung table_type/entity_physical_name\
+    \ (trước đây để trống) và đổi BCV Concept từ \"[Condition] Form Definition\" (term\
+    \ không tồn tại trong knowledge/terms.csv) sang \"[Documentation] Form Document\"\
+    \ (2026-08-13, theo yêu cầu tường minh Data Modeler) — xem IDS_HLD_Overview.md\
+    \ 7e #21."
+  source_table: "IDS.REP_FORMS"
+  status: "draft"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Form Document"
+  atomic_entity: "Financial Report Template"
+  table_type: "Fundamental"
+  domain_prefix: "Financial Report"
+  entity_physical_name: "fr_template"
+  description: "Template/form dùng để công bố thông tin (CBTT): xác định cấu trúc,\
+    \ phiên bản, và hệ thống phân cấp form qua self-reference. Đổi tên từ \"Disclosure\
+    \ Form Definition\" (2026-08-05, theo yêu cầu tường minh Data Modeler). LƯU Ý:\
+    \ \"Disclosure Form Definition Notification Recipient\" và \"Disclosure Form Definition\
+    \ Violation Template\" chưa đổi tên theo — vi phạm rule#8 (entity con chứa tên\
+    \ entity cha) cho tới khi Data Modeler xác nhận đổi tên 2 entity này. Đổi BCV\
+    \ Concept từ \"[Condition] Form Definition\" (term không tồn tại trong knowledge/terms.csv)\
+    \ sang \"[Documentation] Form Document\" (2026-08-13, theo yêu cầu tường minh\
+    \ Data Modeler) — xem IDS_HLD_Overview.md 7e #21."
+  source_table: "IDS.FORMS"
   status: "draft"
 - bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Regulatory Report"
@@ -692,6 +757,19 @@ entities:
   status: "approved"
 - bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Gov. Registration Document"
+  atomic_entity: "Securities Practitioner License Certificate Type X Classification\
+    \ Specialization Relationship"
+  table_type: "Relative"
+  domain_prefix: ""
+  entity_physical_name: "sp_license_certificate_type_x_cl_specialization_relationship"
+  description: "Quan hệ xác định chuyên môn bắt buộc cho từng loại chứng chỉ hành\
+    \ nghề — kèm thứ tự hiển thị, loại tài liệu yêu cầu (Classification Value tạm),\
+    \ cờ bắt buộc. Tái dùng BCV concept của entity cha Securities Practitioner License\
+    \ Certificate Type. Đảo lại quyết định out_of_scope trước đó (Application Config)."
+  source_table: "NHNCK.CERTIFICATE_SPECIALIZATIONS"
+  status: "draft"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Gov. Registration Document"
   atomic_entity: "Securities Practitioner License Decision Document"
   table_type: "Fundamental"
   domain_prefix: "Securities Practitioner"
@@ -701,6 +779,28 @@ entities:
     \ ngày ký và người ký."
   source_table: "NHNCK.DECISIONS"
   status: "approved"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Gov. Registration Document"
+  atomic_entity: "Securities Practitioner License Decision Document Attachment"
+  table_type: "Fundamental"
+  domain_prefix: "Securities Practitioner"
+  entity_physical_name: "sp_license_decision_document_attachment"
+  description: "Văn bản/tài liệu ký số gắn với 1 quyết định hành chính — số quyết\
+    \ định, chức vụ/tên người ký, ngày ký, đường dẫn file. Tái dùng BCV concept của\
+    \ entity cha License Decision Document."
+  source_table: "NHNCK.DECISION_DOCUMENTS"
+  status: "draft"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Employer Registration"
+  atomic_entity: "Securities Practitioner Organization Annual Report"
+  table_type: "Fundamental"
+  domain_prefix: "Securities Practitioner"
+  entity_physical_name: "sp_organization_annual_report"
+  description: "Báo cáo năm mà tổ chức nộp về tình hình nhân sự hành nghề chứng khoán\
+    \ — container báo cáo (tên, ngày nộp, năm, loại, file, trạng thái). Khác grain\
+    \ với Organization Employment Report (per-practitioner)."
+  source_table: "NHNCK.ORGANIZATION_REPORT_YEARLYS"
+  status: "draft"
 - bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Employer Registration"
   atomic_entity: "Securities Practitioner Organization Employment Report"
@@ -722,6 +822,16 @@ entities:
     \ (9 loại), từ thông báo vi phạm đến quyết định xử phạt."
   source_table: "THANHTRA.VIOLATION_CASE_OUTPUT_DOCUMENT"
   status: "draft"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Documentation Item"
+  atomic_entity: "Violation Case Received Document"
+  table_type: "Fundamental"
+  domain_prefix: ""
+  entity_physical_name: "violation_case_received_document"
+  description: "Văn bản do đối tượng vi phạm hoặc cơ quan nộp vào hồ sơ VPHC: số văn\
+    \ bản, ngày tiếp nhận, nội dung tóm tắt."
+  source_table: "THANHTRA.VIOLATION_CASE_RECEIVED_DOCUMENT"
+  status: "approved"
 - bcv_core_object: "Event"
   bcv_concept: "[Event] Event"
   atomic_entity: "Penalty Decision Circumstance"
@@ -753,6 +863,19 @@ entities:
     \ phạt: liên kết hành vi vi phạm, hình thức xử phạt được áp dụng, mức phạt thực\
     \ tế."
   source_table: "THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR"
+  status: "draft"
+- bcv_core_object: "Event"
+  bcv_concept: "[Event] Event"
+  atomic_entity: "Penalty Decision X Violation Record Relationship"
+  table_type: "Relative"
+  domain_prefix: ""
+  entity_physical_name: "penalty_decision_x_violation_record_relationship"
+  description: "Liên kết giữa quyết định xử phạt VPHC và biên bản vi phạm hành chính\
+    \ liên quan. Entity link/relationship thuần bắc cầu 2 domain (Penalty Decision\
+    \ + Violation Record) nên Domain Prefix rỗng. Giữ làm entity Relative riêng thay\
+    \ vì denormalize ARRAY vì bảng có VERSION/DELETED phản ánh vòng đời gắn/gỡ liên\
+    \ kết độc lập. Không có cặp Id/Code riêng — PK composite trên 2 FK Id."
+  source_table: "THANHTRA.PENALTY_DECISION_VIOLATION_RECORD"
   status: "draft"
 - bcv_core_object: "Event"
   bcv_concept: "[Event] Event"
@@ -894,6 +1017,17 @@ entities:
   source_table: "FMS.AGENCIES"
   status: "draft"
 - bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Organization"
+  atomic_entity: "Fund Distribution Agent X Investment Fund Relationship"
+  table_type: "Relative"
+  domain_prefix: ""
+  entity_physical_name: "fund_distribution_agent_x_investment_fund_relationship"
+  description: "Quan hệ đại lý phân phối CCQ được ủy quyền cho quỹ đầu tư. Đảo ngược\
+    \ quyết định denormalize ARRAY cũ trên Investment Fund. FK đến Fund Distribution\
+    \ Agent + Investment Fund."
+  source_table: "FMS.AGEN_FUNDS"
+  status: "draft"
+- bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Portfolio Fund Management Company"
   atomic_entity: "Fund Management Company"
   table_type: "Fundamental"
@@ -914,6 +1048,16 @@ entities:
     \ QLQ (1 nhân sự có thể giữ nhiều chức danh). FK đến Fund Management Company Employee\
     \ + Classification FMS Position."
   source_table: "FMS.JOB_TL_PRO"
+  status: "draft"
+- bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Individual Employment Status"
+  atomic_entity: "Fund Management Company Employee X Investment Fund Relationship"
+  table_type: "Relative"
+  domain_prefix: ""
+  entity_physical_name: "fmc_employee_x_investment_fund_relationship"
+  description: "Quan hệ gán người hành nghề (nhân sự chủ chốt CTQLQ) liên quan đến\
+    \ quỹ đầu tư. FK đến Fund Management Company Employee + Investment Fund."
+  source_table: "FMS.FUND_TL_PRO"
   status: "draft"
 - bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Individual"
@@ -1066,6 +1210,19 @@ entities:
   source_table: "NHNCK.UNITS, NHNCK.DEPARTMENTS"
   status: "approved"
 - bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Organization"
+  atomic_entity: "Regulatory Authority Organization Unit X Securities Practitioner\
+    \ License Certificate Type Relationship"
+  table_type: "Relative"
+  domain_prefix: ""
+  entity_physical_name: "ra_organization_unit_x_sp_license_certificate_type_relationship"
+  description: "Quan hệ phân công phòng ban phụ trách xử lý với loại chứng chỉ hành\
+    \ nghề — pure junction 2 FK, không có attribute nghiệp vụ riêng. Tái dùng BCV\
+    \ concept của entity cha Regulatory Authority Organization Unit. Đảo lại quyết\
+    \ định out_of_scope trước đó (Application Config)."
+  source_table: "NHNCK.CERTIFICATE_DEPARTMENTS"
+  status: "draft"
+- bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Broker Dealer"
   atomic_entity: "Securities Company"
   table_type: "Fundamental"
@@ -1193,39 +1350,6 @@ entities:
   source_table: "NHNCK.PROFESSIONAL_WORK_HISTORIES"
   status: "approved"
 - bcv_core_object: "Involved Party"
-  bcv_concept: "[Involved Party] Individual Employment Status"
-  atomic_entity: "Securities Practitioner License Application Employment Experience"
-  table_type: "Fundamental"
-  domain_prefix: "Securities Practitioner"
-  entity_physical_name: "sp_license_application_employment_experience"
-  description: "Kinh nghiệm làm việc khai báo trong hồ sơ đăng ký CCHN. Ghi nhận tổ\
-    \ chức, thời gian làm việc, chức vụ, phòng ban, số BHXH và thông tin hợp đồng\
-    \ lao động."
-  source_table: "NHNCK.APPLICATION_EXPERIENCES"
-  status: "approved"
-- bcv_core_object: "Involved Party"
-  bcv_concept: "[Involved Party] Individual"
-  atomic_entity: "Securities Practitioner License Application Snapshot"
-  table_type: "Fundamental"
-  domain_prefix: "Securities Practitioner"
-  entity_physical_name: "sp_license_application_snapshot"
-  description: "Snapshot thông tin nhân thân của người đăng ký tại thời điểm nộp hồ\
-    \ sơ. Denormalize toàn bộ trường định danh, địa chỉ và liên lạc từ Practitioner.\
-    \ Loại bỏ USERNAME/PASSWORD."
-  source_table: "NHNCK.APPLICATION_PROFESSIONALS"
-  status: "approved"
-- bcv_core_object: "Involved Party"
-  bcv_concept: "[Involved Party] Individual Employment Status"
-  atomic_entity: "Securities Practitioner Professional Training History"
-  table_type: "Fundamental"
-  domain_prefix: "Securities Practitioner"
-  entity_physical_name: "sp_professional_training_history"
-  description: "Lịch sử đào tạo và bồi dưỡng của người hành nghề chứng khoán. Ghi\
-    \ nhận thời gian, địa điểm đào tạo, chuyên ngành, khen thưởng và kỷ luật. FK đến\
-    \ Practitioner."
-  source_table: "NHNCK.PROFESSIONAL_TRAININGS"
-  status: "approved"
-- bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Individual"
   atomic_entity: "Securities Practitioner Reason Change History"
   table_type: "Fundamental"
@@ -1315,6 +1439,23 @@ entities:
     \ ngày giao dịch, bao gồm giá khớp, khối lượng khớp, chiều giao dịch chủ động,\
     \ và lũy kế khối lượng/giá trị từ đầu ngày."
   source_table: "MDDS.JAD_TRANSLOG"
+  status: "draft"
+- bcv_core_object: "Group"
+  bcv_concept: "[Group] Group"
+  atomic_entity: "Application Group X Securities Practitioner License Application\
+    \ Relationship"
+  table_type: "Relative"
+  domain_prefix: "Securities Practitioner"
+  entity_physical_name: "application_group_x_sp_license_application_relationship"
+  description: "Quan hệ thành viên giữa 1 nhóm xử lý tập thể (Application Group) và\
+    \ 1 hồ sơ CCHN (License Application) — trạng thái thành viên, ghi chú, thứ tự\
+    \ trong nhóm. Đổi tên từ \"...Group Member\" sang pattern link/relationship \"\
+    X\" + Table Type Fundamental → Relative theo quyết định Data Modeler (2026-08-14,\
+    \ lần 2 — đảo lại quyết định Fundamental cùng ngày). BCV Concept \"[Group] Group\"\
+    \ → \"[Documentation] Gov. Registration Document\" (2026-08-14) → trở lại \"[Group]\
+    \ Group\" (2026-08-15) — tái dùng concept từ phía Application Group, tên đặt Group\
+    \ lên trước."
+  source_table: "NHNCK.APPLICATION_GROUP_MEMBERS"
   status: "draft"
 - bcv_core_object: ""
   bcv_concept: ""
@@ -1427,14 +1568,22 @@ entities:
     \ toán viên (TARGET_TYPE_CD phân biệt đối tượng)."
   source_table: "IDS.AF_WARNING"
   status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Classification Application Status"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: ""
-  source_table: "NHNCK.APPLICATION_STATUSES"
+- bcv_core_object: "Group"
+  bcv_concept: "[Group] Group"
+  atomic_entity: "Certificate Group X Securities Practitioner License Certificate\
+    \ Document Relationship"
+  table_type: "Relative"
+  domain_prefix: "Securities Practitioner"
+  entity_physical_name: "certificate_group_x_sp_license_certificate_document_relationship"
+  description: "Quan hệ giữa 1 nhóm cấp/thu hồi tập thể (Certificate Group) và 1 CCHN\
+    \ (License Certificate Document). Đổi tên từ \"...Group Member\" sang pattern\
+    \ link/relationship \"X\" + Table Type Fundamental → Relative theo quyết định\
+    \ Data Modeler (2026-08-14, lần 3). BCV Concept \"[Group] Group\" → \"[Documentation]\
+    \ Gov. Registration Document\" (2026-08-14) → trở lại \"[Group] Group\" (2026-08-15)\
+    \ — tái dùng concept từ phía Certificate Group, tên đặt Group lên trước. Attribute\
+    \ ADDED_DATE/ADDED_BY/IS_REISSUE/REVOCATION_REASON/ORDER_INDEX bỏ khỏi thiết kế\
+    \ theo yêu cầu Data Modeler — chỉ giữ 2 cặp FK Id/Code như các entity link khác."
+  source_table: "NHNCK.CERTIFICATE_RECORD_GROUP_MEMBERS"
   status: "draft"
 - bcv_core_object: "Common"
   bcv_concept: "[Common] Industry Classification"
@@ -1469,15 +1618,6 @@ entities:
     Business Transaction\" khớp hơn trong knowledge/terms.csv. Xem SCMS_HLD_Overview.md\
     \ #55 / 7e #16."
   source_table: "SCMS.CAT_BUSINESS_LINE"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Classification Document"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: ""
-  source_table: "NHNCK.DOCUMENTS"
   status: "draft"
 - bcv_core_object: ""
   bcv_concept: ""
@@ -1552,12 +1692,13 @@ entities:
   status: "draft"
 - bcv_core_object: ""
   bcv_concept: ""
-  atomic_entity: "Classification Specialization"
+  atomic_entity: "Classification Value"
   table_type: ""
   domain_prefix: ""
   entity_physical_name: ""
   description: ""
-  source_table: "NHNCK.SPECIALIZATIONS"
+  source_table: "NHNCK.APPLICATION_SOURCES, NHNCK.APPLICATION_STATUSES, NHNCK.DOCUMENTS,\
+    \ NHNCK.SPECIALIZATIONS"
   status: "draft"
 - bcv_core_object: "Product"
   bcv_concept: "[Product] Financial Market Instrument"
@@ -1653,39 +1794,6 @@ entities:
   description: "Danh mục báo cáo tài chính: định nghĩa loại BCTC và tập hàng/cột dùng\
     \ cho template số liệu."
   source_table: "IDS.REPORT_CATALOG"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Financial Report Sub Column Template"
-  table_type: ""
-  domain_prefix: "Financial Report"
-  entity_physical_name: ""
-  description: "Định nghĩa từng cột trong template báo cáo định kỳ. Đổi tên từ \"\
-    Periodic Report Form Column Template\" (2026-08-05, theo yêu cầu tường minh Data\
-    \ Modeler) — xem 7e #15."
-  source_table: "IDS.REP_COLUMN"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Financial Report Sub Row Template"
-  table_type: ""
-  domain_prefix: "Financial Report"
-  entity_physical_name: ""
-  description: "Định nghĩa từng hàng trong template báo cáo định kỳ. Đổi tên từ \"\
-    Periodic Report Form Row Template\" (2026-08-05, theo yêu cầu tường minh Data\
-    \ Modeler) — xem 7e #15."
-  source_table: "IDS.REP_ROW"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Financial Report Sub Template"
-  table_type: ""
-  domain_prefix: "Financial Report"
-  entity_physical_name: ""
-  description: "Template báo cáo định kỳ (tháng/quý/năm/bán niên) của CTĐC: xác định\
-    \ cấu trúc form cho từng loại kỳ báo cáo. Đổi tên từ \"Periodic Report Form\"\
-    \ (2026-08-05, theo yêu cầu tường minh Data Modeler) — xem 7e."
-  source_table: "IDS.REP_FORMS"
   status: "draft"
 - bcv_core_object: ""
   bcv_concept: ""
@@ -2646,6 +2754,26 @@ entities:
     \ DISTRIBUTOR_LOCATION không còn là Atomic entity riêng."
   source_table: "FMS.DISTRIBUTOR_PERSONNEL"
   status: "draft"
+- bcv_core_object: "Group"
+  bcv_concept: "[Group] Group"
+  atomic_entity: "Securities Practitioner License Application Group"
+  table_type: "Fundamental"
+  domain_prefix: "Securities Practitioner"
+  entity_physical_name: "sp_license_application_group"
+  description: "Nhóm hồ sơ CCHN được cán bộ tạo để xử lý tập thể (batch) — tên nhóm,\
+    \ ngày tạo/hoàn thành, số lượng hồ sơ, loại hồ sơ batch, workflow gửi cấp trên."
+  source_table: "NHNCK.APPLICATION_GROUPS"
+  status: "draft"
+- bcv_core_object: "Group"
+  bcv_concept: "[Group] Group"
+  atomic_entity: "Securities Practitioner License Certificate Group"
+  table_type: "Fundamental"
+  domain_prefix: "Securities Practitioner"
+  entity_physical_name: "sp_license_certificate_group"
+  description: "Nhóm chứng chỉ hành nghề được cán bộ tạo để xử lý cấp/thu hồi/hủy\
+    \ tập thể (batch) — tương tự License Application Group."
+  source_table: "NHNCK.CERTIFICATE_RECORD_GROUPS"
+  status: "draft"
 - bcv_core_object: ""
   bcv_concept: ""
   atomic_entity: "Securities Practitioner License Certificate Status Change History"
@@ -2734,16 +2862,6 @@ entities:
     \ kết đoàn thanh tra/kiểm tra, cán bộ phụ trách, vòng đời hồ sơ (5 trạng thái),\
     \ theo dõi tiền bảo đảm."
   source_table: "THANHTRA.VIOLATION_CASE"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Violation Case Received Document"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: "Văn bản do đối tượng vi phạm hoặc cơ quan nộp vào hồ sơ VPHC: số văn\
-    \ bản, ngày tiếp nhận, nội dung tóm tắt."
-  source_table: "THANHTRA.VIOLATION_CASE_RECEIVED_DOCUMENT"
   status: "draft"
 - bcv_core_object: ""
   bcv_concept: ""

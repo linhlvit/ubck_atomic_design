@@ -2,12 +2,12 @@ schema_type: data_model
 schema_version: "1.0"
 
 ldm:
-  id: ATM-sp_conduct_violation-NHNCK.VIOLATIONS
-  logical_name: Securities Practitioner Conduct Violation
-  physical_name: sp_conduct_violation
+  id: ATM-sp_violation-NHNCK.VIOLATIONS
+  logical_name: Securities Practitioner Violation
+  physical_name: sp_violation
   layer: Atomic
   version: "1.0"
-  status: approved
+  status: draft
   bcv_core_object: Business Activity
   bcv_concept: "[Business Activity] Conduct Violation"
   table_type: Fundamental
@@ -22,8 +22,8 @@ ldm:
     brd: BRD-SRC-NHNCK-VIOLATIONS
 
 attributes:
-  - name: Securities Practitioner Conduct Violation Id
-    physical_name: sp_conduct_violation_id
+  - name: Securities Practitioner Violation Id
+    physical_name: sp_violation_id
     business_meaning: Khóa đại diện cho bản ghi vi phạm đạo đức hành nghề (surrogate key).
     data_domain: Surrogate Key
     data_type: string
@@ -36,8 +36,8 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Securities Practitioner Conduct Violation Code
-    physical_name: sp_conduct_violation_code
+  - name: Securities Practitioner Violation Code
+    physical_name: sp_violation_code
     business_meaning: Mã định danh kỹ thuật tự tăng. BK của entity. Map từ PK bảng nguồn.
     data_domain: Text
     data_type: string
@@ -102,7 +102,7 @@ attributes:
     source_system: NHNCK
     source_table: VIOLATIONS
     source_column: NHNCK.VIOLATIONS.DECISION_ID
-    comment: "FK target: sp_license_decision_document.sp_license_decision_document_id. Hash: hash_id('NHNCK.DECISIONS', DECISION_ID)."
+    comment: "FK target: sp_license_decision_document.sp_license_decision_document_id. Cần ETL crosswalk sang NHNCK.DECISIONS: VIOLATIONS.DECISION_ID = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK.DECISIONS', DECISION_NUMBER) | Trước đây hash trực tiếp theo DECISION_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ DECISION_NUMBER) — đã sửa sang crosswalk 2026-08-14."
     classification_context: null
     etl_derived_value: null
 
@@ -115,13 +115,13 @@ attributes:
     is_primary_key: false
     source_system: NHNCK
     source_table: VIOLATIONS
-    source_column: NHNCK.VIOLATIONS.DECISION_ID
-    comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code. Pair with Securities Practitioner License Decision Document Id."
+    source_column: NHNCK.DECISIONS.DECISION_NUMBER
+    comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code. Pair with Securities Practitioner License Decision Document Id. Giá trị lấy từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Decision Document Id."
     classification_context: null
     etl_derived_value: null
 
-  - name: Practitioner Name At Violation
-    physical_name: practitioner_nm_at_violation
+  - name: Full Name
+    physical_name: full_nm
     business_meaning: Họ tên người hành nghề tại thời điểm vi phạm (snapshot).
     data_domain: Text
     data_type: string
@@ -134,8 +134,8 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Practitioner Birth Date At Violation
-    physical_name: practitioner_birth_dt_at_violation
+  - name: Date of Birth
+    physical_name: dt_of_birth
     business_meaning: Ngày sinh người hành nghề tại thời điểm vi phạm (snapshot).
     data_domain: Date
     data_type: date
@@ -148,8 +148,8 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Practitioner Identity Number At Violation
-    physical_name: practitioner_identity_nbr_at_violation
+  - name: Identification Number
+    physical_name: identification_nbr
     business_meaning: Số CMND/CCCD người hành nghề tại thời điểm vi phạm (snapshot).
     data_domain: Text
     data_type: string
@@ -159,20 +159,6 @@ attributes:
     source_table: VIOLATIONS
     source_column: NHNCK.VIOLATIONS.IDENTITY_NUMBER
     comment: Snapshot — lưu giá trị tại thời điểm ghi nhận vi phạm. Grain ≠ Involved Party nên không tách IP Alt Identification.
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Violation Record Date
-    physical_name: violation_record_dt
-    business_meaning: Ngày ghi nhận vi phạm (business event date).
-    data_domain: Timestamp
-    data_type: timestamp
-    nullable: false
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: VIOLATIONS
-    source_column: NHNCK.VIOLATIONS.CREATED_AT
-    comment: Ngày ghi nhận vi phạm vào hệ thống.
     classification_context: null
     etl_derived_value: null
 
@@ -200,8 +186,8 @@ attributes:
     source_system: NHNCK
     source_table: VIOLATIONS
     source_column: NHNCK.VIOLATIONS.STATUS
-    comment: "Scheme: VIOLATION_STATUS. Nguồn lưu dạng NUMBER — ETL convert sang string."
-    classification_context: null
+    comment: "Scheme: NHNCK.VIOLATIONS.STATUS. Nguồn lưu dạng NUMBER — ETL convert sang string."
+    classification_context: NHNCK.VIOLATIONS.STATUS
     etl_derived_value: null
 
   - name: Violation Type Code
@@ -214,6 +200,6 @@ attributes:
     source_system: NHNCK
     source_table: VIOLATIONS
     source_column: NHNCK.VIOLATIONS.TYPE
-    comment: "Scheme: VIOLATION_TYPE. Nguồn lưu dạng NUMBER — ETL convert sang string. Giá trị scheme chưa xác định — cần profile dữ liệu thực tế để liệt kê đủ giá trị."
-    classification_context: null
+    comment: "Scheme: NHNCK.VIOLATIONS.TYPE. Nguồn lưu dạng NUMBER — ETL convert sang string. Giá trị scheme chưa xác định — cần profile dữ liệu thực tế để liệt kê đủ giá trị."
+    classification_context: NHNCK.VIOLATIONS.TYPE
     etl_derived_value: null

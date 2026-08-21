@@ -1,0 +1,248 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "NHNCK"
+  source_table: "APPLICATION_GROUPS"
+  atomic_entity: "Securities Practitioner License Application Group"
+  entity_physical_name: "sp_license_application_group"
+  bcv_core_object: "Group"
+  bcv_concept: "[Group] Group"
+  table_type: "Fundamental"
+  group: "T2"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "STATUS (nguồn) nay đã map thành \"Group Status Code\" (2026-08-17) — chính\
+    \ sách cũ (2026-07-07) không map RECORD_TYPE/RECORD_STATUS chỉ áp dụng cho cột\
+    \ mang tính kỹ thuật thuần túy; cột STATUS này mang ý nghĩa nghiệp vụ rõ ràng\
+    \ (1=Đang hoạt động/Hiệu lực, 0=Không hoạt động) nên map Classification Value\
+    \ theo CLAUDE.md mục Boolean vs Classification Value. ID không map — PK kỹ thuật,\
+    \ BK dùng Code (map từ ID). APPLICATION_TYPE dùng chung scheme APPLICATION_TYPE\
+    \ đã có (cùng value set với NHNCK.APPLICATIONS.APPLICATION_TYPE)."
+attributes:
+- attribute_name: "Securities Practitioner License Application Group Id"
+  physical_name: "sp_license_application_group_id"
+  description: "Id tự sinh (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Group] Group\". Hash: hash_id('NHNCK.APPLICATION_GROUPS',\
+    \ ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Practitioner License Application Group Code"
+  physical_name: "sp_license_application_group_code"
+  description: "Mã định danh kỹ thuật (BK). Map từ PK bảng nguồn."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.APPLICATION_GROUPS.ID"
+  comment: "BK chính. PK nguồn (NUMBER — ETL cần convert sang string)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=NHNCK.APPLICATION_GROUPS"
+  etl_derived_value: "NHNCK_APPLICATION_GROUPS"
+  data_type: "string"
+- attribute_name: "Group Name"
+  physical_name: "group_nm"
+  description: "Tên nhóm hồ sơ/CCHN (do cán bộ đặt khi tạo nhóm xử lý)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.APPLICATION_GROUPS.GROUP_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Description"
+  physical_name: "description"
+  description: "Mô tả chi tiết."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.APPLICATION_GROUPS.DESCRIPTION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Practitioner License Decision Document Id"
+  physical_name: "sp_license_decision_document_id"
+  description: "FK -> DECISIONS: Quyết định hành chính liên quan đến nhóm."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.APPLICATION_GROUPS.DECISION_ID"
+  comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
+    \ Cần ETL crosswalk sang NHNCK.DECISIONS: APPLICATION_GROUPS.DECISION_ID = DECISIONS.ID\
+    \ để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK.DECISIONS', DECISION_NUMBER)\
+    \ | Trước đây hash trực tiếp theo DECISION_ID (ID kỹ thuật) gây sai lệch với Id\
+    \ của bảng main (hash từ DECISION_NUMBER) — đã sửa sang crosswalk 2026-08-14."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Practitioner License Decision Document Code"
+  physical_name: "sp_license_decision_document_code"
+  description: "Mã quyết định liên quan đến nhóm (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.DECISIONS.DECISION_NUMBER"
+  comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
+    \ Pair with Securities Practitioner License Decision Document Id. Giá trị lấy\
+    \ từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem comment\
+    \ Securities Practitioner License Decision Document Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Group Created Date"
+  physical_name: "group_created_dt"
+  description: "Ngày tạo nhóm hồ sơ/CCHN."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.APPLICATION_GROUPS.GROUP_CREATED_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Group Completed Date"
+  physical_name: "group_completed_dt"
+  description: "Ngày hoàn thành xử lý nhóm hồ sơ/CCHN."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.APPLICATION_GROUPS.GROUP_COMPLETED_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Notes"
+  physical_name: "notes"
+  description: "Ghi chú bổ sung."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.APPLICATION_GROUPS.NOTES"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Application Count"
+  physical_name: "application_count"
+  description: "Số lượng hồ sơ trong nhóm."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.APPLICATION_GROUPS.APPLICATION_COUNT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Application Type Code"
+  physical_name: "application_tp_code"
+  description: "Loại hồ sơ: 0=Cấp mới, 1=Cấp lại do thu hồi, 2=Cấp lại thay đổi thông\
+    \ tin, 3=Cấp lại mất CCHN."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.APPLICATION_GROUPS.APPLICATION_TYPE"
+  comment: "Scheme: NHNCK.APPLICATIONS.APPLICATION_TYPE. Dùng chung value set với\
+    \ NHNCK.APPLICATIONS.APPLICATION_TYPE."
+  classification_context: "NHNCK.APPLICATIONS.APPLICATION_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Submitted Date"
+  physical_name: "submitted_dt"
+  description: "Ngày nhóm hồ sơ được gửi lên cấp trên xử lý."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.APPLICATION_GROUPS.SUBMITED_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Submitted By Officer Id"
+  physical_name: "submitted_by_officer_id"
+  description: "FK -> USERS: Người gửi nhóm hồ sơ lên cấp trên."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.APPLICATION_GROUPS.SUBMITED_BY"
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
+    \ Cần ETL crosswalk sang NHNCK.USERS: APPLICATION_GROUPS.SUBMITED_BY = USERS.ID\
+    \ để xác nhận USERNAME sau đó hash_id('IAM.USERS', USERNAME) | Chưa xác nhận value\
+    \ set khớp danh mục IAM.USERS — cần profile dữ liệu trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Submitted By Officer Code"
+  physical_name: "submitted_by_officer_code"
+  description: "Mã cán bộ gửi nhóm hồ sơ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.USERS.USERNAME"
+  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
+    \ Pair with Submitted By Officer Id. Giá trị lấy từ NHNCK.USERS.USERNAME sau ETL\
+    \ crosswalk — chi tiết xem comment Submitted By Officer Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Status Code"
+  physical_name: "status_code"
+  description: "Trạng thái bản ghi"
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.APPLICATION_GROUPS.STATUS"
+  comment: "Scheme: NHNCK.APPLICATION_GROUPS.STATUS."
+  classification_context: "NHNCK.APPLICATION_GROUPS.STATUS"
+  etl_derived_value: null
+  data_type: "string"

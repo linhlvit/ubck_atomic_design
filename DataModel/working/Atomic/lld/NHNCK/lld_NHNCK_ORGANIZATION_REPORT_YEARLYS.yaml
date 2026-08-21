@@ -1,0 +1,171 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "NHNCK"
+  source_table: "ORGANIZATION_REPORT_YEARLYS"
+  atomic_entity: "Securities Practitioner Organization Annual Report"
+  entity_physical_name: "sp_organization_annual_report"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Employer Registration"
+  table_type: "Fundamental"
+  group: "T2"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "STATUS (nguồn) nay đã map thành \"Status Code\" (2026-08-18) — chính sách\
+    \ cũ (2026-07-07) không map RECORD_TYPE/RECORD_STATUS chỉ áp dụng cho cột mang\
+    \ tính kỹ thuật thuần túy; cột STATUS này mang ý nghĩa nghiệp vụ rõ ràng nên map\
+    \ Classification Value. ID không map — PK kỹ thuật, BK dùng Code (map từ ID)."
+attributes:
+- attribute_name: "Securities Practitioner Organization Annual Report Id"
+  physical_name: "sp_organization_annual_rpt_id"
+  description: "Id tự sinh (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"Employer Registration\" (Documentation). Hash: hash_id('NHNCK.ORGANIZATION_REPORT_YEARLYS',\
+    \ ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Practitioner Organization Annual Report Code"
+  physical_name: "sp_organization_annual_rpt_code"
+  description: "Mã định danh kỹ thuật (BK). Map từ PK bảng nguồn."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.ORGANIZATION_REPORT_YEARLYS.ID"
+  comment: "BK chính. PK nguồn (NUMBER — ETL cần convert sang string)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=NHNCK.ORGANIZATION_REPORT_YEARLYS"
+  etl_derived_value: "NHNCK_ORGANIZATION_REPORT_YEARLYS"
+  data_type: "string"
+- attribute_name: "Securities Organization Reference Id"
+  physical_name: "securities_organization_reference_id"
+  description: "FK -> ORGANIZATIONS: Tổ chức kinh doanh CK sử dụng NHNCK."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.ORGANIZATION_REPORT_YEARLYS.ORGANIZATION_ID"
+  comment: "FK target: securities_organization_reference.securities_organization_reference_id.\
+    \ Cần ETL crosswalk sang NHNCK.ORGANIZATIONS: ORGANIZATION_REPORT_YEARLYS.ORGANIZATION_ID\
+    \ = ORGANIZATIONS.ID để xác nhận ORGANIZATION_CODE sau đó hash_id('NHNCK.ORGANIZATIONS',\
+    \ ORGANIZATION_CODE)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Organization Reference Code"
+  physical_name: "securities_organization_reference_code"
+  description: "Mã tổ chức (denormalized)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.ORGANIZATIONS.ORGANIZATION_CODE"
+  comment: "Lookup pair: securities_organization_reference.securities_organization_reference_code.\
+    \ Pair with Securities Organization Reference Id. Giá trị lấy từ NHNCK.ORGANIZATIONS.ORGANIZATION_CODE\
+    \ sau ETL crosswalk — chi tiết xem comment Securities Organization Reference Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Name"
+  physical_name: "rpt_nm"
+  description: "Tên hiển thị chính."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.ORGANIZATION_REPORT_YEARLYS.NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Year"
+  physical_name: "rpt_year"
+  description: "Năm báo cáo (định dạng YYYY)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.ORGANIZATION_REPORT_YEARLYS.YEAR"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Type Code"
+  physical_name: "rpt_tp_code"
+  description: "Loại/phân loại của bản ghi báo cáo năm."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.ORGANIZATION_REPORT_YEARLYS.TYPE"
+  comment: "Scheme: NHNCK.ORGANIZATION_REPORT_YEARLYS.TYPE."
+  classification_context: "NHNCK.ORGANIZATION_REPORT_YEARLYS.TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Submission Date"
+  physical_name: "submission_dt"
+  description: "Ngày nộp hồ sơ chính thức."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.ORGANIZATION_REPORT_YEARLYS.SUBMISSION_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Report File Path"
+  physical_name: "rpt_file_path"
+  description: "Đường dẫn file lưu trữ (chứng từ thanh toán, văn bản...)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.ORGANIZATION_REPORT_YEARLYS.FILE_PATH"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Status Code"
+  physical_name: "status_code"
+  description: "Trạng thái bản ghi"
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.ORGANIZATION_REPORT_YEARLYS.STATUS"
+  comment: "Scheme: NHNCK.ORGANIZATION_REPORT_YEARLYS.STATUS."
+  classification_context: "NHNCK.ORGANIZATION_REPORT_YEARLYS.STATUS"
+  etl_derived_value: null
+  data_type: "string"

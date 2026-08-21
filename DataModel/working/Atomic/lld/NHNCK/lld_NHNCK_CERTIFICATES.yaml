@@ -50,7 +50,8 @@ attributes:
   data_type: "string"
 - attribute_name: "Securities Practitioner License Certificate Type Code"
   physical_name: "sp_license_certificate_tp_code"
-  description: "Mã định danh nghiệp vụ duy nhất của loại chứng chỉ (VD: MGCK, PTTC, QLQ). BK duy nhất — Id hash từ trường này."
+  description: "Mã định danh nghiệp vụ duy nhất của loại chứng chỉ (VD: MGCK, PTTC,\
+    \ QLQ). BK duy nhất — Id hash từ trường này."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
@@ -116,32 +117,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "int"
-- attribute_name: "Sort Order"
-  physical_name: "sort_order"
-  description: "Thứ tự sắp xếp hiển thị (số nhỏ hơn hiển thị trước)"
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.CERTIFICATES.SORT_ORDER"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-- attribute_name: "Displayed Indicator"
-  physical_name: "displayed_ind"
-  description: "Cờ hiển thị trên giao diện người dùng: 1=Hiển thị, 0=Ẩn"
-  data_domain: "Indicator"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.CERTIFICATES.IS_DISPLAYED"
-  comment: "BCV: không có term riêng — dùng Indicator vì chỉ là flag 1/0. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Original Data Indicator"
   physical_name: "original_data_ind"
   description: "Cờ dữ liệu gốc của hệ thống (không được xóa): 1=Dữ liệu gốc, 0=Người\

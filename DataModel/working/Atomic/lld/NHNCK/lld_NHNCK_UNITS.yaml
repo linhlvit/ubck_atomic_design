@@ -57,7 +57,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns: []
-  comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
   classification_context: "SOURCE_SYSTEM=NHNCK.UNITS"
   etl_derived_value: "NHNCK_UNITS"
   data_type: "string"
@@ -110,8 +110,8 @@ attributes:
   - "NHNCK.UNITS.PARENT_ID"
   comment: "FK target: ra_organization_unit.ra_ou_id. Cần ETL crosswalk sang NHNCK.UNITS:\
     \ UNITS.PARENT_ID = UNITS.ID để xác nhận UNIT_CODE sau đó hash_id('NHNCK.UNITS',\
-    \ UNIT_CODE) | Trước đây hash trực tiếp theo PARENT_ID (ID kỹ thuật) gây sai\
-    \ lệch với Id của bảng main (hash từ UNIT_CODE) — đã sửa sang crosswalk 2026-07-27."
+    \ UNIT_CODE) | Trước đây hash trực tiếp theo PARENT_ID (ID kỹ thuật) gây sai lệch\
+    \ với Id của bảng main (hash từ UNIT_CODE) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -124,10 +124,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.UNITS.UNIT_CODE"
-  comment: "Lookup pair: Regulatory Authority Organization Unit.Regulatory Authority\
-    \ Organization Unit Code. Pair with Parent Regulatory Authority Organization Unit\
-    \ Id. Giá trị lấy từ NHNCK.UNITS.UNIT_CODE sau ETL crosswalk — chi tiết xem comment\
-    \ Parent Regulatory Authority Organization Unit Id."
+  comment: "Lookup pair: ra_organization_unit.ra_ou_code. Pair with Parent Regulatory Authority Organization Unit Id. Giá trị lấy từ NHNCK.UNITS.UNIT_CODE sau ETL crosswalk — chi tiết xem comment Parent Regulatory Authority Organization Unit Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

@@ -17,13 +17,27 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "STATUS (nguồn) không map — cùng field với RECORD_STATUS đã loại trừ theo\
-    \ chính sách Data Modeler (2026-07-07: không thiết kế RECORD_TYPE/RECORD_STATUS\
-    \ trên bất kỳ bảng NHNCK nào), chỉ đổi tên qua DDL UAT remap 2026-07-15/20. Xem\
-    \ pending_design.yaml (cập nhật lại source_column 2026-07-24). Hạ về draft (2026-07-27)\
-    \ để sửa lỗi hash-mismatch FK \"Securities Practitioner License Certificate Type\
-    \ Id\" — trước đây hash trực tiếp theo CERTIFICATE_ID (ID kỹ thuật) thay vì Code\
-    \ của bảng đích (CERTIFICATE_CODE)."
+  notes: "Hạ về draft (2026-08-17, xác nhận tường minh bởi Data Modeler) để bổ sung\
+    \ trường \"Status Code\" (cột nguồn STATUS — trước đây bị loại trừ theo chính\
+    \ sách 2026-07-07, nay map Classification Value vì mang ý nghĩa nghiệp vụ rõ ràng).\
+    \ Cần review/approve lại. Lịch sử trước: STATUS (nguồn) không map — cùng field\
+    \ với RECORD_STATUS đã loại trừ theo chính sách Data Modeler (2026-07-07: không\
+    \ thiết kế RECORD_TYPE/RECORD_STATUS trên bất kỳ bảng NHNCK nào), chỉ đổi tên\
+    \ qua DDL UAT remap 2026-07-15/20. Xem pending_design.yaml (cập nhật lại source_column\
+    \ 2026-07-24). Hạ về draft (2026-07-27) để sửa lỗi hash-mismatch FK \"Securities\
+    \ Practitioner License Certificate Type Id\" — trước đây hash trực tiếp theo CERTIFICATE_ID\
+    \ (ID kỹ thuật) thay vì Code của bảng đích (CERTIFICATE_CODE). Hạ lại về draft\
+    \ (2026-08-14) để sửa lỗi hash-mismatch tương tự trên 3 FK Issue/Revocation/Cancellation\
+    \ Securities Practitioner License Decision Document Id — trước đây hash trực tiếp\
+    \ theo *_DECISION_ID (ID kỹ thuật) thay vì Code của bảng đích (DECISION_NUMBER),\
+    \ đồng bộ với đổi BK trên lld_NHNCK_DECISIONS.yaml. [SỬA 2026-08-15] Đổi Business\
+    \ Key của chính entity này từ CERTIFICATE_RECORDS.ID (khóa kỹ thuật) sang CERTIFICATE_RECORDS.CERTIFICATE_NUMBER\
+    \ (mã CCHN thật) theo yêu cầu Data Modeler — attribute \"Certificate Number\"\
+    \ riêng lẻ trước đây (cùng map CERTIFICATE_NUMBER) bị gộp vào Code, không giữ\
+    \ trùng lặp. Đã crosswalk 5 file FK downstream đang hash theo CERTIFICATE_RECORD_ID/PREVIOUS_CERTIFICATE_RECORD_ID\
+    \ (ID kỹ thuật) sang CERTIFICATE_NUMBER — xem lld_NHNCK_ORGANIZATION_REPORTS.yaml,\
+    \ lld_NHNCK_APPLICATIONS.yaml, entity_sp_license_application.yaml, lld_NHNCK_CERTIFICATE_RECORD_GROUP_MEMBERS.yaml,\
+    \ lld_NHNCK_CERTIFICATE_RECORD_STATUS_HISTORIES.yaml."
 attributes:
 - attribute_name: "Securities Practitioner License Certificate Document Id"
   physical_name: "sp_license_certificate_document_id"
@@ -33,20 +47,23 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: null
+  comment: "PK surrogate. Hash: hash_id('NHNCK.CERTIFICATE_RECORDS', CERTIFICATE_NUMBER).\
+    \ Sửa 2026-08-15: trước đây hash từ ID kỹ thuật, sai lệch với chính Code (CERTIFICATE_NUMBER)\
+    \ của entity — gây mismatch cho FK downstream tham chiếu entity này."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner License Certificate Document Code"
   physical_name: "sp_license_certificate_document_code"
-  description: "Business key từ CERTIFICATE_RECORDS.ID"
+  description: "Business key — số chứng chỉ hành nghề (CCHN) thật."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "NHNCK.CERTIFICATE_RECORDS.ID"
-  comment: null
+  - "NHNCK.CERTIFICATE_RECORDS.CERTIFICATE_NUMBER"
+  comment: "BK chính. Mã định danh duy nhất của CCHN — thay cho CERTIFICATE_RECORDS.ID\
+    \ (khóa kỹ thuật) theo quyết định Data Modeler (2026-08-15)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -58,22 +75,9 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns: []
-  comment: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
   classification_context: "SOURCE_SYSTEM=NHNCK.CERTIFICATE_RECORDS"
   etl_derived_value: "NHNCK_CERTIFICATE_RECORDS"
-  data_type: "string"
-- attribute_name: "Certificate Number"
-  physical_name: "certificate_nbr"
-  description: "Số chứng chỉ hành nghề"
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.CERTIFICATE_RECORDS.CERTIFICATE_NUMBER"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner License Certificate Type Id"
   physical_name: "sp_license_certificate_tp_id"
@@ -84,12 +88,12 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.CERTIFICATE_RECORDS.CERTIFICATE_ID"
-  comment: "FK target: sp_license_certificate_type.sp_license_certificate_tp_id.\
-    \ Cần ETL crosswalk sang NHNCK.CERTIFICATES: CERTIFICATE_RECORDS.CERTIFICATE_ID\
-    \ = CERTIFICATES.ID để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK.CERTIFICATES',\
+  comment: "FK target: sp_license_certificate_type.sp_license_certificate_tp_id. Cần\
+    \ ETL crosswalk sang NHNCK.CERTIFICATES: CERTIFICATE_RECORDS.CERTIFICATE_ID =\
+    \ CERTIFICATES.ID để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK.CERTIFICATES',\
     \ CERTIFICATE_CODE) | Trước đây hash trực tiếp theo CERTIFICATE_ID (ID kỹ thuật)\
-    \ gây sai lệch với Id của bảng main (hash từ CERTIFICATE_CODE) — đã sửa sang\
-    \ crosswalk 2026-07-27."
+    \ gây sai lệch với Id của bảng main (hash từ CERTIFICATE_CODE) — đã sửa sang crosswalk\
+    \ 2026-07-27."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -118,8 +122,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.CERTIFICATE_RECORDS.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
-    \ PROFESSIONAL_ID)."
+  comment: "FK target: securities_practitioner.sp_id. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -132,8 +135,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.CERTIFICATE_RECORDS.PROFESSIONAL_ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Securities Practitioner Id."
+  comment: "Lookup pair: securities_practitioner.sp_code. Pair with Securities Practitioner Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -146,9 +148,12 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.CERTIFICATE_RECORDS.ISSUE_DECISION_ID"
-  comment: "FK target: Securities Practitioner License Decision Document.Securities\
-    \ Practitioner License Decision Document Id. Hash: hash_id('NHNCK.DECISIONS',\
-    \ ISSUE_DECISION_ID)."
+  comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
+    \ Cần ETL crosswalk sang NHNCK.DECISIONS: CERTIFICATE_RECORDS.ISSUE_DECISION_ID\
+    \ = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK.DECISIONS',\
+    \ DECISION_NUMBER) | Trước đây hash trực tiếp theo ISSUE_DECISION_ID (ID kỹ thuật)\
+    \ gây sai lệch với Id của bảng main (hash từ DECISION_NUMBER) — đã sửa sang crosswalk\
+    \ 2026-08-14."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -160,10 +165,11 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "NHNCK.CERTIFICATE_RECORDS.ISSUE_DECISION_ID"
-  comment: "Lookup pair: Securities Practitioner License Decision Document.Securities\
-    \ Practitioner License Decision Document Code. Pair with Issue Securities Practitioner\
-    \ License Decision Document Id."
+  - "NHNCK.DECISIONS.DECISION_NUMBER"
+  comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
+    \ Pair with Issue Securities Practitioner License Decision Document Id. Giá trị\
+    \ lấy từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem comment\
+    \ Issue Securities Practitioner License Decision Document Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -176,9 +182,12 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.CERTIFICATE_RECORDS.REVOCATION_DECISION_ID"
-  comment: "FK target: Securities Practitioner License Decision Document.Securities\
-    \ Practitioner License Decision Document Id. Hash: hash_id('NHNCK.DECISIONS',\
-    \ REVOCATION_DECISION_ID)."
+  comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
+    \ Cần ETL crosswalk sang NHNCK.DECISIONS: CERTIFICATE_RECORDS.REVOCATION_DECISION_ID\
+    \ = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK.DECISIONS',\
+    \ DECISION_NUMBER) | Trước đây hash trực tiếp theo REVOCATION_DECISION_ID (ID\
+    \ kỹ thuật) gây sai lệch với Id của bảng main (hash từ DECISION_NUMBER) — đã sửa\
+    \ sang crosswalk 2026-08-14."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -190,10 +199,11 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "NHNCK.CERTIFICATE_RECORDS.REVOCATION_DECISION_ID"
-  comment: "Lookup pair: Securities Practitioner License Decision Document.Securities\
-    \ Practitioner License Decision Document Code. Pair with Revocation Securities\
-    \ Practitioner License Decision Document Id."
+  - "NHNCK.DECISIONS.DECISION_NUMBER"
+  comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
+    \ Pair with Revocation Securities Practitioner License Decision Document Id. Giá\
+    \ trị lấy từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem\
+    \ comment Revocation Securities Practitioner License Decision Document Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -207,9 +217,12 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.CERTIFICATE_RECORDS.CANCELLATION_DECISION_ID"
-  comment: "FK target: Securities Practitioner License Decision Document.Securities\
-    \ Practitioner License Decision Document Id. Hash: hash_id('NHNCK.DECISIONS',\
-    \ CANCELLATION_DECISION_ID)."
+  comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
+    \ Cần ETL crosswalk sang NHNCK.DECISIONS: CERTIFICATE_RECORDS.CANCELLATION_DECISION_ID\
+    \ = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK.DECISIONS',\
+    \ DECISION_NUMBER) | Trước đây hash trực tiếp theo CANCELLATION_DECISION_ID (ID\
+    \ kỹ thuật) gây sai lệch với Id của bảng main (hash từ DECISION_NUMBER) — đã sửa\
+    \ sang crosswalk 2026-08-14."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -222,10 +235,11 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "NHNCK.CERTIFICATE_RECORDS.CANCELLATION_DECISION_ID"
-  comment: "Lookup pair: Securities Practitioner License Decision Document.Securities\
-    \ Practitioner License Decision Document Code. Pair with Cancellation Securities\
-    \ Practitioner License Decision Document Id."
+  - "NHNCK.DECISIONS.DECISION_NUMBER"
+  comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
+    \ Pair with Cancellation Securities Practitioner License Decision Document Id.\
+    \ Giá trị lấy từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết\
+    \ xem comment Cancellation Securities Practitioner License Decision Document Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -304,8 +318,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.CERTIFICATE_RECORDS.PROCESS_STATUS"
-  comment: "Scheme: LICENSE_CERTIFICATE_PROCESS_STATUS."
-  classification_context: "LICENSE_CERTIFICATE_PROCESS_STATUS"
+  comment: "Scheme: NHNCK.CERTIFICATE_RECORDS.PROCESS_STATUS."
+  classification_context: "NHNCK.CERTIFICATE_RECORDS.PROCESS_STATUS"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Certificate File Path"
@@ -331,8 +345,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.CERTIFICATE_RECORDS.CONVERSION_STATUS"
-  comment: "Scheme: LICENSE_CERTIFICATE_CONVERSION_STATUS."
-  classification_context: "LICENSE_CERTIFICATE_CONVERSION_STATUS"
+  comment: "Scheme: NHNCK.CERTIFICATE_RECORDS.CONVERSION_STATUS."
+  classification_context: "NHNCK.CERTIFICATE_RECORDS.CONVERSION_STATUS"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Description"
@@ -346,5 +360,18 @@ attributes:
   - "NHNCK.CERTIFICATE_RECORDS.DESCRIPTION"
   comment: null
   classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Status Code"
+  physical_name: "status_code"
+  description: "Trạng thái bản ghi"
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.CERTIFICATE_RECORDS.STATUS"
+  comment: "Scheme: NHNCK.CERTIFICATE_RECORDS.STATUS."
+  classification_context: "NHNCK.CERTIFICATE_RECORDS.STATUS"
   etl_derived_value: null
   data_type: "string"

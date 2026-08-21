@@ -3,10 +3,10 @@ schema_version: "2.0"
 metadata:
   source_system: "FMS"
   source_table: "FUND_TL_PRO"
-  atomic_entity: "Investment Fund X Fund Management Company Employee Relationship"
-  entity_physical_name: "investment_fund_x_fmc_employee_relationship"
-  bcv_core_object: "Arrangement"
-  bcv_concept: "[Arrangement] Investment Fund"
+  atomic_entity: "Fund Management Company Employee X Investment Fund Relationship"
+  entity_physical_name: "fmc_employee_x_investment_fund_relationship"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Individual Employment Status"
   table_type: "Relative"
   group: "T3"
   design_status: "approved"
@@ -20,11 +20,15 @@ metadata:
   notes: "[MỚI 2026-07-19] Bảng nguồn chỉ có 2 cột FK (FUND_ID, TLPR_ID), không có\
     \ PK/ID kỹ thuật riêng, không có audit fields. Trước đây ở Overview 7f nhóm Junction\
     \ — theo quyết định Data Modeler, chuyển vào scope thành entity Relative riêng.\
-    \ BCV Concept tạm dùng (tái sử dụng concept MB_FUND) — xem FMS_HLD_Overview.md\
-    \ 7e#20. Hạ về draft (2026-08-13) để bỏ cặp Id/Code riêng của entity — theo quyết\
-    \ định Data Modeler, bảng \"_x_\" (link/relationship thuần) không cần surrogate\
-    \ Id + BK Code riêng; PK là composite 2 FK (Investment Fund Id + Fund Management\
-    \ Company Employee Id)."
+    \ Hạ về draft (2026-08-13) để bỏ cặp Id/Code riêng của entity — theo quyết định\
+    \ Data Modeler, bảng \"_x_\" (link/relationship thuần) không cần surrogate Id\
+    \ + BK Code riêng; PK là composite 2 FK (Investment Fund Id + Fund Management\
+    \ Company Employee Id). [SỬA 2026-08-15] BCV Concept tạm \"[Arrangement] Investment\
+    \ Fund\" (tái sử dụng concept MB_FUND, xem FMS_HLD_Overview.md 7e#20) không khớp\
+    \ với chính entity Investment Fund (đã là BCO Involved Party, concept [Involved\
+    \ Party] Funds). Đổi BCO sang Involved Party, tái dùng concept từ phía Fund Management\
+    \ Company Employee — [Involved Party] Individual Employment Status — và đổi tên\
+    \ entity đặt phía Employee lên trước theo quyết định Data Modeler."
 attributes:
 - attribute_name: "Source System Code"
   physical_name: "src_stm_code"

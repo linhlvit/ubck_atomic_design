@@ -22,9 +22,6 @@
 | Documentation | [Documentation] Gov. Registration Document | Government Registration Document | DECISIONS | Update | Danh mục các quyết định hành chính do UBCKNN ban hành | Securities Practitioner License Decision Document | Fundamental | Government Registration Document — *"Identifies a Documentation Item that is issued by a principality or sovereignty."* Cấu trúc trường: số QĐ, tiêu đề, loại quyết định, ngày ký, người ký, trạng thái, file đính kèm. Được FK từ Certificate Document (×2), Certificate Group Document, Conduct Violation, Examination Assessment. |
 | ~~Involved Party~~ | ~~[Involved Party] Individual~~ | ~~Individual~~ | USERS | Update | Thông tin cán bộ/chuyên viên UBCKNN có tài khoản trong hệ thống NHNCK | **LOẠI KHỎI SCOPE (2026-07-07)** — Regulatory Authority Officer đã xóa | — | Quyết định Data Modeler: không thiết kế Atomic entity riêng. Định hướng dùng chung Identity and Access Management User (IAM.USERS) — xem NHNCK_HLD_Overview.md 7e #6. |
 | Documentation | [Documentation] Gov. Registration Document | Government Registration Document | CERTIFICATES | Update | Danh mục các loại chứng chỉ hành nghề chứng khoán | Securities Practitioner License Certificate Type | Fundamental | Government Registration Document — danh mục CCHN với processing_days/sort_order/description (entity thật, không phải Classification Value). Mới thiết kế 2026-07-07 — xem NHNCK_HLD_Overview.md 7e #8. |
-| Common | [Common] Application Status | — | APPLICATION_STATUSES | Update | Danh mục trạng thái hồ sơ đăng ký CCHN | Classification Application Status | Classification | BCV Core Object gán Common theo quy tắc mặc định (table_type Classification). Không có term Common chuyên biệt khớp "Application Status" trong knowledge/terms.csv — ghi nhận, xem 6f. Nâng cấp từ Classification Value (scheme APPLICATION_STATUS/NHNCK_APPLICATION_STATUS) lên entity thật vì có đầy đủ audit fields + SORT_ORDER + LABEL, vượt cấu trúc Code+Name thuần. |
-| Common | [Common] Document | — | DOCUMENTS | Update | Danh mục các tài liệu/hồ sơ cần nộp theo thủ tục CCHN | Classification Document | Classification | BCV Core Object gán Common theo quy tắc mặc định. Đây là danh mục các tài liệu (catalog liệt kê từng loại hồ sơ/tài liệu cần nộp), không phải "loại tài liệu" phân loại — đặt tên Classification Document, không phải "...Document Type". Nâng cấp từ Classification Value (scheme DOCUMENT_TYPE) lên entity thật. |
-| Common | [Common] Specialization | — | SPECIALIZATIONS | Update | Danh mục chuyên môn/lĩnh vực hành nghề chứng khoán | Classification Specialization | Classification | BCV Core Object gán Common theo quy tắc mặc định. Term BCV gần nhất tìm được là [Involved Party] Employment Position Qualification nhưng khớp yếu (mô tả trình độ học vấn, không phải lĩnh vực hành nghề) — không dùng, giữ Common. Nâng cấp từ Classification Value (scheme SPECIALIZATION) lên entity thật. |
 
 ---
 
@@ -67,9 +64,6 @@ graph TD
     DECISION["**Securities Practitioner License Decision Document**\n[Documentation] Gov. Registration Document\nDECISIONS"]:::atomic
     OFFICER["**Identity and Access Management User** (pending)\nnguồn IAM.USERS — thay Regulatory\nAuthority Officer đã loại khỏi scope"]:::atomic
     CERTTYPE["**Securities Practitioner License Certificate Type**\n[Documentation] Gov. Registration Document\nCERTIFICATES"]:::atomic
-    APPSTATUS["**Classification Application Status**\n[Common] Application Status\nAPPLICATION_STATUSES"]:::atomic
-    CLSDOC["**Classification Document**\n[Common] Document\nDOCUMENTS"]:::atomic
-    CLSSPEC["**Classification Specialization**\n[Common] Specialization\nSPECIALIZATIONS"]:::atomic
     INDIVIDUAL["**Individual**\n[Involved Party] Individual\nIDENTITY_INFO_C06S"]:::atomic
     ADDR["IP Postal Address"]:::shared
     EADDR["IP Electronic Address"]:::shared
@@ -97,6 +91,9 @@ graph TD
 | EDUCATION_LEVELS | Danh mục trình độ học vấn | EDUCATION_LEVEL | Classification Value. |
 | CERTIFICATES | Danh mục loại chứng chỉ hành nghề | CERTIFICATE_TYPE | Classification Value — chỉ có CERTIFICATE_CODE + CERTIFICATE_NAME + metadata vận hành. |
 | APPLICATION_SOURCES | Hình thức nộp hồ sơ | APPLICATION_SOURCE | Classification Value. |
+| APPLICATION_STATUSES | Danh mục trạng thái hồ sơ đăng ký CCHN | APPLICATION_STATUS | Classification Value. Từng nâng cấp thành entity thật Classification Application Status (2026-07-09) — revert lại 2026-08-20. Xem Overview.md 5c/7c. |
+| DOCUMENTS | Danh mục các tài liệu/hồ sơ cần nộp theo thủ tục CCHN | DOCUMENT_TYPE | Classification Value. Từng nâng cấp thành entity thật Classification Document (2026-07-09) — revert lại 2026-08-20. Xem Overview.md 5d/7c. |
+| SPECIALIZATIONS | Danh mục chuyên môn/lĩnh vực hành nghề chứng khoán | SPECIALIZATION | Classification Value. Từng nâng cấp thành entity thật Classification Specialization (2026-07-09) — revert lại 2026-08-20. Xem Overview.md 5e/7c. |
 
 ---
 
@@ -115,3 +112,4 @@ Không có bảng nào trong Tier 1 chưa đủ thông tin cột.
 | 3 | `ORGANIZATIONS.ORGANIZATION_TYPE_ID` tự tham chiếu — là loại hình tổ chức (Classification Value) hay FK entity khác? | **Xác nhận: Classification Value.** Xử lý thành ORGANIZATION_TYPE_CODE trên Atomic, không tạo FK entity riêng. |
 | 4 | `APPLICATION_STATUSES`, `DOCUMENTS`, `SPECIALIZATIONS` — nâng cấp từ Classification Value (scheme) lên Atomic entity thật (`table_type: Relative`). BCV Concept gán `Common` theo quy tắc mặc định của skill, không map term cụ thể trong `knowledge/terms.csv`. | **Data Modeler review lại nếu tìm được term BCV chuyên biệt hơn.** Không chặn thiết kế — Common là fallback hợp lệ cho `table_type: Relative`. |
 | 5 | `IDENTITY_INFO_C06S` — trước đây "Isolated" ngoài scope do thiếu file per-table. Nay có đủ cấu trúc cột: không có FK đến PROFESSIONALS (giả định cũ sai), chỉ có audit FK đến USERS. Mô tả nguồn "Lịch sử kiểm tra xác thực với C06" gợi ý ETL log, nhưng không có cột phân biệt nhiều lần check cho cùng 1 người (không version/sequence). | **Xác nhận: Fundamental, theo quyết định Data Modeler (2026-07-23).** Entity `Individual` — master thể nhân độc lập, KHÔNG FK đến Securities Practitioner. Grain = 1 dòng/1 thể nhân đã qua xác thực C06. Nếu phát sinh nhu cầu lưu vết nhiều lần check cùng 1 người → thiết kế bổ sung entity Fact Append riêng sau, không đổi entity này. |
+| 6 | `VERIFY_CERTIFICATE_CONVERSION_STATUSES` — từng thiết kế thử `Securities Practitioner License Certificate Conversion Status Review` (2026-08-13) nhưng FK cha `CONVERSION_REQUEST_ID` trỏ đến `CERTIFICATE_CONVERSION_REQUESTS` vẫn `out_of_scope`, không có Atomic FK cha nào resolve được. | **Đã xử lý (2026-08-14) — Data Modeler quyết định bỏ thiết kế Atomic entity đợt này.** `scope_status` trả về `pending` trong `brd_NHNCK.yaml`. Sẽ thiết kế lại khi `CERTIFICATE_CONVERSION_REQUESTS` được đưa vào scope. |

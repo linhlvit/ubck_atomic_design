@@ -22,7 +22,19 @@ metadata:
     \ (ID kỹ thuật), trong khi bảng main SPECIALIZATION_COURSES lại hash surrogate\
     \ Id của chính nó từ COURSE_CODE — 2 giá trị hash không khớp nhau. Đã sửa comment\
     \ sang crosswalk join SPECIALIZATION_COURSE_ID → SPECIALIZATION_COURSES.ID để\
-    \ lấy COURSE_CODE trước khi hash, xem comment tại attribute đó."
+    \ lấy COURSE_CODE trước khi hash, xem comment tại attribute đó. Sửa tiếp (2026-08-18):\
+    \ SPECIALIZATION_ID trước đây map thành \"Specialization Type Code\" (Classification\
+    \ Value, scheme SPECIALIZATION) — scheme này đã deprecate từ 2026-07-09 khi SPECIALIZATIONS\
+    \ nâng cấp thành Atomic entity thật 'Classification Specialization' (cl_specialization).\
+    \ Các bảng khác tiêu thụ SPECIALIZATIONS (APPLICATION_SPECIALIZATIONS, CERTIFICATE_SPECIALIZATIONS)\
+    \ đã đổi sang FK Id+Code chuẩn nhưng SPECIALIZATION_COURSE_DETAILS bị bỏ sót —\
+    \ nay sửa sang cặp Classification Specialization Id + Code, kèm crosswalk join\
+    \ SPECIALIZATION_ID → SPECIALIZATIONS.ID để lấy SPECIALIZATION_CODE trước khi\
+    \ hash (đồng bộ với lld_NHNCK_SPECIALIZATION_COURSES.yaml sửa cùng lượt). Hạ về\
+    \ draft lại (2026-08-20): Classification Specialization Id + Code đổi thành 1\
+    \ trường Classification Value \"Specialization Code\" (scheme SPECIALIZATION)\
+    \ — do NHNCK.SPECIALIZATIONS revert về Classification Value, không còn là Atomic\
+    \ entity riêng."
 attributes:
 - attribute_name: "Securities Practitioner Professional Training Class Enrollment\
     \ Id"
@@ -91,11 +103,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.SPECIALIZATION_COURSES.COURSE_CODE"
-  comment: "Lookup pair: Securities Practitioner Professional Training Class.Securities\
-    \ Practitioner Professional Training Class Code. Pair with Securities Practitioner\
-    \ Professional Training Class Id. Giá trị lấy từ NHNCK.SPECIALIZATION_COURSES.COURSE_CODE\
-    \ sau ETL crosswalk — chi tiết xem comment Securities Practitioner Professional\
-    \ Training Class Id."
+  comment: "Lookup pair: sp_professional_training_class.sp_professional_training_class_code. Pair with Securities Practitioner Professional Training Class Id. Giá trị lấy từ NHNCK.SPECIALIZATION_COURSES.COURSE_CODE sau ETL crosswalk — chi tiết xem comment Securities Practitioner Professional Training Class Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -108,8 +116,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.SPECIALIZATION_COURSE_DETAILS.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
-    \ PROFESSIONAL_ID)."
+  comment: "FK target: securities_practitioner.sp_id. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -122,22 +129,23 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.SPECIALIZATION_COURSE_DETAILS.PROFESSIONAL_ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Securities Practitioner Id."
+  comment: "Lookup pair: securities_practitioner.sp_code. Pair with Securities Practitioner Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Specialization Type Code"
-  physical_name: "specialization_tp_code"
-  description: "Loại chuyên ngành đào tạo"
+- attribute_name: "Specialization Code"
+  physical_name: "specialization_code"
+  description: "Mã chuyên ngành đào tạo"
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "NHNCK.SPECIALIZATION_COURSE_DETAILS.SPECIALIZATION_ID"
-  comment: "Scheme: SPECIALIZATION. Lookup từ SPECIALIZATIONS."
-  classification_context: "SPECIALIZATION"
+  - "NHNCK.SPECIALIZATIONS.SPECIALIZATION_CODE"
+  comment: "Scheme: SCHEMA_CODE. Cần ETL crosswalk sang NHNCK.SPECIALIZATIONS:\
+    \ SPECIALIZATION_COURSE_DETAILS.SPECIALIZATION_ID = SPECIALIZATIONS.ID để lấy\
+    \ SPECIALIZATION_CODE."
+  classification_context: "SCHEMA_CODE=NHNCK.SPECIALIZATIONS"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Exam Number"
@@ -153,8 +161,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Practitioner Name At Enrollment"
-  physical_name: "practitioner_nm_at_enrollment"
+- attribute_name: "Full Name"
+  physical_name: "full_nm"
   description: "Họ tên học viên tại thời điểm đăng ký (snapshot)"
   data_domain: "Text"
   nullable: true
@@ -166,8 +174,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Practitioner Birth Date At Enrollment"
-  physical_name: "practitioner_birth_dt_at_enrollment"
+- attribute_name: "Date of Birth"
+  physical_name: "dt_of_birth"
   description: "Ngày sinh tại thời điểm đăng ký (snapshot)"
   data_domain: "Date"
   nullable: true
@@ -218,9 +226,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.COUNTRIES.COUNTRY_CODE"
-  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT). Pair with\
-    \ Permanent Residence Country Id. Giá trị lấy từ NHNCK.COUNTRIES.COUNTRY_CODE\
-    \ sau ETL crosswalk — chi tiết xem comment Permanent Residence Country Id."
+  comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Permanent Residence Country Id. Giá trị lấy từ NHNCK.COUNTRIES.COUNTRY_CODE sau ETL crosswalk — chi tiết xem comment Permanent Residence Country Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -251,9 +257,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.PROVINCES.PROVINCE_CODE"
-  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT). Pair with\
-    \ Permanent Residence Province Id. Giá trị lấy từ NHNCK.PROVINCES.PROVINCE_CODE\
-    \ sau ETL crosswalk — chi tiết xem comment Permanent Residence Province Id."
+  comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Permanent Residence Province Id. Giá trị lấy từ NHNCK.PROVINCES.PROVINCE_CODE sau ETL crosswalk — chi tiết xem comment Permanent Residence Province Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -286,15 +290,12 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.DISTRICTS.DISTRICT_CODE"
-  comment: "Lookup pair: Geographic Area Old.Geographic Area Old Code (nguồn ECAT\
-    \ — ĐỔI TARGET, xem Permanent Residence District Id). Pair with Permanent Residence\
-    \ District Id. Giá trị lấy từ NHNCK.DISTRICTS.DISTRICT_CODE sau ETL crosswalk\
-    \ — chi tiết xem comment Permanent Residence District Id."
+  comment: "Lookup pair: geographic_area_old.geographic_area_old_code (nguồn ECAT — ĐỔI TARGET, xem Permanent Residence District Id). Pair with Permanent Residence District Id. Giá trị lấy từ NHNCK.DISTRICTS.DISTRICT_CODE sau ETL crosswalk — chi tiết xem comment Permanent Residence District Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Practitioner Identity Type Code At Enrollment"
-  physical_name: "practitioner_identity_tp_code_at_enrollment"
+- attribute_name: "Identification Type Code"
+  physical_name: "identification_tp_code"
   description: "Loại giấy tờ định danh tại thời điểm đăng ký (snapshot)"
   data_domain: "Classification Value"
   nullable: true
@@ -307,8 +308,8 @@ attributes:
   classification_context: "IDENTIFICATION_DOCUMENT_TYPE"
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Practitioner Identity Number At Enrollment"
-  physical_name: "practitioner_identity_nbr_at_enrollment"
+- attribute_name: "Identification Number"
+  physical_name: "identification_nbr"
   description: "Số định danh tại thời điểm đăng ký (snapshot)"
   data_domain: "Text"
   nullable: true
@@ -320,8 +321,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Practitioner Identity Issue Date At Enrollment"
-  physical_name: "practitioner_identity_issue_dt_at_enrollment"
+- attribute_name: "Identification Issue Date"
+  physical_name: "identification_issue_dt"
   description: "Ngày cấp giấy tờ định danh (snapshot)"
   data_domain: "Date"
   nullable: true
@@ -333,8 +334,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "date"
-- attribute_name: "Practitioner Identity Issue Place At Enrollment"
-  physical_name: "practitioner_identity_issue_place_at_enrollment"
+- attribute_name: "Identification Issue Place"
+  physical_name: "identification_issue_place"
   description: "Nơi cấp giấy tờ định danh (snapshot)"
   data_domain: "Text"
   nullable: true
@@ -349,7 +350,7 @@ attributes:
 - attribute_name: "Exam Score"
   physical_name: "exam_score"
   description: "Điểm thi"
-  data_domain: "Percentage"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -359,7 +360,7 @@ attributes:
     \ hoặc text thay thế (VD: vắng). Cần validate ETL."
   classification_context: null
   etl_derived_value: null
-  data_type: "decimal(5,2)"
+  data_type: "int"
 - attribute_name: "Training Result Code"
   physical_name: "training_result_code"
   description: "Kết quả đào tạo (-1=Không thi, 0=Không đạt, 1=Đạt)"
@@ -369,8 +370,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.SPECIALIZATION_COURSE_DETAILS.RESULT"
-  comment: "Scheme: EXAM_RESULT (gộp từ TRAINING_RESULT, 2026-07-09)."
-  classification_context: "EXAM_RESULT"
+  comment: "Scheme: NHNCK.EXAM_DETAILS.RESULT (gộp từ TRAINING_RESULT, 2026-07-09)."
+  classification_context: "NHNCK.EXAM_DETAILS.RESULT"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Description"

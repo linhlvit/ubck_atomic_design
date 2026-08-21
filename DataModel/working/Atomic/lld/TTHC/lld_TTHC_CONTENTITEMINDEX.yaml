@@ -1,0 +1,146 @@
+schema_type: lld_source_table
+schema_version: "2.0"
+
+metadata:
+  source_system: TTHC
+  source_table: CONTENTITEMINDEX
+  atomic_entity: Administrative Procedure Content Item Index
+  entity_physical_name: ap_content_item_index
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Documentation Item"
+  table_type: Fundamental
+  group: T2
+  design_status: approved
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Chỉ thiết kế theo 6 cột người thiết kế yêu cầu (2026-08-21): ID, DOCUMENTID, CONTENTITEMID, CONTENTITEMVERSIONID, LATEST, CONTENTTYPE. Key của bảng = ID (xác nhận người thiết kế 2026-08-21) — Id/Code Atomic hash từ ID; CONTENTITEMID giữ lại làm attribute nghiệp vụ mô tả (Content Item Code), không dùng làm BK. PUBLISHED/MODIFIEDUTC/PUBLISHEDUTC/CREATEDUTC/OWNER/AUTHOR/DISPLAYTEXT/SITECONTENTITEMID chưa thiết kế trong lượt này."
+
+attributes:
+  - attribute_name: "Administrative Procedure Content Item Index Id"
+    physical_name: "ap_content_item_index_id"
+    description: "Khóa đại diện (surrogate key)."
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: true
+    status: draft
+    source_columns: []
+    comment: "PK surrogate. BCV: \"[Documentation] Documentation Item\". Index/metadata quản lý phiên bản + trạng thái xuất bản của content item hiện hành. Hash: hash_id('TTHC.CONTENTITEMINDEX', ID)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Administrative Procedure Content Item Index Code"
+    physical_name: "ap_content_item_index_code"
+    description: "Khóa chính (tự tăng) của bảng nguồn. BK — theo xác nhận người thiết kế (2026-08-21), key của bảng CONTENTITEMINDEX là ID."
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "TTHC.CONTENTITEMINDEX.ID"
+    comment: "BK chính. PK nguồn."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: Source System Code
+    physical_name: src_stm_code
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "SOURCE_SYSTEM=TTHC.CONTENTITEMINDEX"
+    etl_derived_value: "TTHC_CONTENTITEMINDEX"
+    data_type: "string"
+
+  - attribute_name: "Administrative Procedure Document Id"
+    physical_name: "ap_document_id"
+    description: "Khóa ngoại tới Document.Id của Orchard (kho lưu document JSON)."
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "TTHC.CONTENTITEMINDEX.DOCUMENTID"
+    comment: "FK target: ap_document.ap_document_id. Hash: hash_id('TTHC.DOCUMENT', DOCUMENTID)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Administrative Procedure Document Code"
+    physical_name: "ap_document_code"
+    description: "Mã Administrative Procedure Document tương ứng."
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "TTHC.CONTENTITEMINDEX.DOCUMENTID"
+    comment: "Lookup pair: ap_document.ap_document_code. Pair with Administrative Procedure Document Id."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Content Item Code"
+    physical_name: "content_item_code"
+    description: "ID content item Orchard (chuỗi duy nhất toàn hệ thống, định dạng: chữ số alphanumeric)."
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "TTHC.CONTENTITEMINDEX.CONTENTITEMID"
+    comment: "Attribute nghiệp vụ mô tả — không phải BK của entity (BK/Code = Administrative Procedure Content Item Index Code, hash từ ID kỹ thuật theo xác nhận người thiết kế 2026-08-21)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Content Item Version Code"
+    physical_name: "content_item_version_code"
+    description: "Contentitemversionid — định danh phiên bản của content item hiện hành."
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "TTHC.CONTENTITEMINDEX.CONTENTITEMVERSIONID"
+    comment: "Không phải BK của entity — chỉ ghi nhận version identifier của bản ghi hiện hành theo Table Type Fundamental (dedup LATEST=1, xem TTHC_HLD_Tier2.md D-06)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Latest Indicator"
+    physical_name: "latest_ind"
+    description: "Phiên bản mới nhất hay không (1=có, 0=không)."
+    data_domain: Indicator
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "TTHC.CONTENTITEMINDEX.LATEST"
+    comment: "Indicator: nguồn NUMBER(38,0) 1=mới nhất/0=không. Theo Table Type Fundamental (dedup ETL theo LATEST=1 — xem D-06), mọi dòng trên Atomic dự kiến luôn = 1; giữ lại trường này theo yêu cầu người thiết kế để trace/audit, dù có thể trở thành hằng số trên Atomic."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Content Type Code"
+    physical_name: "content_tp_code"
+    description: "Tên loại nội dung (ví dụ: LandingPage, Fragment, TTHC, BaoCao, TinTuc)."
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "TTHC.CONTENTITEMINDEX.CONTENTTYPE"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"

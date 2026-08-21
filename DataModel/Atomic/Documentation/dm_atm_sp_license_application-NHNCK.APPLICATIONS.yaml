@@ -7,7 +7,7 @@ ldm:
   physical_name: sp_license_application
   layer: Atomic
   version: "1.0"
-  status: approved
+  status: draft
   bcv_core_object: Documentation
   bcv_concept: "[Documentation] Gov. Registration Document"
   table_type: Fundamental
@@ -102,7 +102,7 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATIONS
     source_column: NHNCK.APPLICATION_STATUSES.STATUS_CODE
-    comment: "Lookup pair: Classification Application Status.Classification Application Status Code. Pair with Classification Application Status Id. Giá trị lấy từ NHNCK.APPLICATION_STATUSES.STATUS_CODE sau ETL crosswalk — chi tiết xem comment Classification Application Status Id."
+    comment: "Lookup pair: cl_application_status.cl_application_status_code. Pair with Classification Application Status Id. Giá trị lấy từ NHNCK.APPLICATION_STATUSES.STATUS_CODE sau ETL crosswalk — chi tiết xem comment Classification Application Status Id."
     classification_context: null
     etl_derived_value: null
 
@@ -466,7 +466,7 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATIONS
     source_column: NHNCK.APPLICATIONS.CERTIFICATE_RECORD_ID
-    comment: "FK target: sp_license_certificate_document.sp_license_certificate_document_id. Hash: hash_id('NHNCK.CERTIFICATE_RECORDS', CERTIFICATE_RECORD_ID)."
+    comment: "FK target: sp_license_certificate_document.sp_license_certificate_document_id. Cần ETL crosswalk sang NHNCK.CERTIFICATE_RECORDS: APPLICATIONS.CERTIFICATE_RECORD_ID = CERTIFICATE_RECORDS.ID để xác nhận CERTIFICATE_NUMBER sau đó hash_id('NHNCK.CERTIFICATE_RECORDS', CERTIFICATE_NUMBER) | Trước đây hash trực tiếp theo CERTIFICATE_RECORD_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CERTIFICATE_NUMBER) — đã sửa sang crosswalk 2026-08-15."
     classification_context: null
     etl_derived_value: null
 
@@ -479,8 +479,8 @@ attributes:
     is_primary_key: false
     source_system: NHNCK
     source_table: APPLICATIONS
-    source_column: NHNCK.APPLICATIONS.CERTIFICATE_RECORD_ID
-    comment: "Lookup pair: sp_license_certificate_document.sp_license_certificate_document_code. Pair with Securities Practitioner License Certificate Document Id."
+    source_column: NHNCK.CERTIFICATE_RECORDS.CERTIFICATE_NUMBER
+    comment: "Lookup pair: sp_license_certificate_document.sp_license_certificate_document_code. Pair with Securities Practitioner License Certificate Document Id. Giá trị lấy từ NHNCK.CERTIFICATE_RECORDS.CERTIFICATE_NUMBER sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Certificate Document Id."
     classification_context: null
     etl_derived_value: null
 
@@ -494,7 +494,7 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATIONS
     source_column: NHNCK.APPLICATIONS.PREVIOUS_CERTIFICATE_RECORD_ID
-    comment: "FK target: sp_license_certificate_document.sp_license_certificate_document_id. Hash: hash_id('NHNCK.CERTIFICATE_RECORDS', PREVIOUS_CERTIFICATE_RECORD_ID)."
+    comment: "FK target: sp_license_certificate_document.sp_license_certificate_document_id. Cần ETL crosswalk sang NHNCK.CERTIFICATE_RECORDS: APPLICATIONS.PREVIOUS_CERTIFICATE_RECORD_ID = CERTIFICATE_RECORDS.ID để xác nhận CERTIFICATE_NUMBER sau đó hash_id('NHNCK.CERTIFICATE_RECORDS', CERTIFICATE_NUMBER) | Trước đây hash trực tiếp theo PREVIOUS_CERTIFICATE_RECORD_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CERTIFICATE_NUMBER) — đã sửa sang crosswalk 2026-08-15."
     classification_context: null
     etl_derived_value: null
 
@@ -507,8 +507,8 @@ attributes:
     is_primary_key: false
     source_system: NHNCK
     source_table: APPLICATIONS
-    source_column: NHNCK.APPLICATIONS.PREVIOUS_CERTIFICATE_RECORD_ID
-    comment: "Lookup pair: sp_license_certificate_document.sp_license_certificate_document_code. Pair with Previous Securities Practitioner License Certificate Document Id."
+    source_column: NHNCK.CERTIFICATE_RECORDS.CERTIFICATE_NUMBER
+    comment: "Lookup pair: sp_license_certificate_document.sp_license_certificate_document_code. Pair with Previous Securities Practitioner License Certificate Document Id. Giá trị lấy từ NHNCK.CERTIFICATE_RECORDS.CERTIFICATE_NUMBER sau ETL crosswalk — chi tiết xem comment Previous Securities Practitioner License Certificate Document Id."
     classification_context: null
     etl_derived_value: null
 

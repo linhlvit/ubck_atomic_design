@@ -70,8 +70,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.POST_CERT_TRAINING_RESULTS.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
-    \ PROFESSIONAL_ID)."
+  comment: "FK target: securities_practitioner.sp_id. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -84,8 +83,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.POST_CERT_TRAINING_RESULTS.PROFESSIONAL_ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Securities Practitioner Id."
+  comment: "Lookup pair: securities_practitioner.sp_code. Pair with Securities Practitioner Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -116,11 +114,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.POST_CERT_TRAINING_COURSES.COURSE_CODE"
-  comment: "Lookup pair: Securities Practitioner Post Certification Training Course.Securities\
-    \ Practitioner Post Certification Training Course Code. Pair with Securities Practitioner\
-    \ Post Certification Training Course Id. Giá trị lấy từ NHNCK.POST_CERT_TRAINING_COURSES.COURSE_CODE\
-    \ sau ETL crosswalk — chi tiết xem comment Securities Practitioner Post Certification\
-    \ Training Course Id."
+  comment: "Lookup pair: sp_post_certification_training_course.sp_post_certification_training_course_code. Pair with Securities Practitioner Post Certification Training Course Id. Giá trị lấy từ NHNCK.POST_CERT_TRAINING_COURSES.COURSE_CODE sau ETL crosswalk — chi tiết xem comment Securities Practitioner Post Certification Training Course Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -172,23 +166,21 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.POST_CERT_TRAINING_RESULTS.RESULT_STATUS"
-  comment: "Scheme: NHNCK_POST_CERT_TRAINING_RESULT_STATUS. Mô tả cột nguồn còn TBD\
-    \ — cần BA xác nhận giá trị cụ thể trước khi hoàn thiện ETL mapping."
-  classification_context: "NHNCK_POST_CERT_TRAINING_RESULT_STATUS"
+  comment: "Scheme: NHNCK.POST_CERT_TRAINING_RESULTS.RESULT_STATUS."
+  classification_context: "NHNCK.POST_CERT_TRAINING_RESULTS.RESULT_STATUS"
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Training Classification Result Code"
-  physical_name: "training_cl_result_code"
+- attribute_name: "Training Classification Result"
+  physical_name: "training_cl_result"
   description: "Phân loại kết quả khóa bồi dưỡng (VD: Giỏi/Khá/Trung bình — suy đoán)"
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "NHNCK.POST_CERT_TRAINING_RESULTS.CLASSIFICATION_RESULT"
-  comment: "Scheme: NHNCK_POST_CERT_TRAINING_CLASSIFICATION. Nguồn lưu NVARCHAR2(510)\
-    \ — mô tả cột còn TBD, cần BA xác nhận giá trị cụ thể."
-  classification_context: "NHNCK_POST_CERT_TRAINING_CLASSIFICATION"
+  comment: null
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Note"

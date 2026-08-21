@@ -16,8 +16,8 @@
 | Arrangement | [Arrangement] Investment Fund | Investment Fund | MB_FUND | Update | Danh sách nhà đầu tư nắm giữ chứng chỉ quỹ | Investment Fund Investor Membership | Fundamental | (1) Term candidate: `Investment Fund` — quan hệ thành viên/NĐT trong quỹ (bên nhiều của Arrangement). (2) Cấu trúc trường: MB_FUND có FK đến FUNDS (quỹ), thông tin NĐT (tên, CCCD, loại NĐT STOCKHOLDER_TYPE FK), số lượng CCQ nắm giữ → quan hệ NĐT–quỹ với trạng thái. (3) Chọn `Investment Fund`. Table Type điều chỉnh theo review: `Fundamental` (thay cho `Relative`) — grain NĐT-per-quỹ có lifecycle riêng (SCD4A), tương tự cách BRANCHS/TL_PROFILES vẫn Fundamental dù có FK đến entity Tier trước. |
 | Arrangement | [Arrangement] Investment Account | Investment Account | INVES_ACC | Update | Danh sách tài khoản của nhà đầu tư ủy thác | Discretionary Investment Account | Relative | (1) Term candidate: `Investment Account` — tài khoản được mở cho NĐT ủy thác. (2) Cấu trúc trường: INVES_ACC có FK đến INVES (NĐT ủy thác), mã tài khoản, ngày mở, trạng thái → entity tài khoản phụ thuộc NĐT ủy thác (Tier 2). (3) Chọn `Investment Account`. |
 | Involved Party | [Involved Party] Individual Employment Status | Employment Status | JOB_TL_PRO | Update | Chức danh công việc của người hành nghề (junction) | Fund Management Company Employee X Classification FMS Position Relationship | Relative | **[MỚI 2026-07-19]** Junction thuần (JOB_ID + TLPRO_ID) — trước đây ở Overview 7f. Theo quyết định Data Modeler, chuyển vào scope thành entity Relative riêng (không denormalize ARRAY). FK đến Fund Management Company Employee (Tier 2) + Classification FMS Position (Tier 1). BCV Concept tạm dùng — cần tra lại (Overview 7e#20). |
-| Arrangement | [Arrangement] Investment Fund | Investment Fund | FUND_TL_PRO | Update | Người hành nghề liên quan đến quỹ đầu tư (junction) | Investment Fund X Fund Management Company Employee Relationship | Relative | **[MỚI 2026-07-19]** Junction thuần (FUND_ID + TLPR_ID) — trước đây ở Overview 7f. FK đến Investment Fund (Tier 2) + Fund Management Company Employee (Tier 2). BCV Concept tạm dùng (tái sử dụng concept MB_FUND) — cần tra lại (Overview 7e#20). |
-| Arrangement | [Arrangement] Investment Fund | Investment Fund | AGEN_FUNDS | Update | Bảng trung gian đại lý và quỹ đầu tư (junction) | Investment Fund X Fund Distribution Agent Relationship | Relative | **[MỚI 2026-07-19]** Junction (AGENCY_ID + FUND_ID + DATA_MIGRATION) — **đảo ngược quyết định denormalize ARRAY cũ** (Overview 7d cũ: `distribution_agent_ids` trên Investment Fund). FK đến Investment Fund (Tier 2) + Fund Distribution Agent (Tier 1). `DATA_MIGRATION` (cờ migration kỹ thuật) không map. FUD_AG_AGT (mở rộng 4-FK) cần rà soát gộp/tách — xem Overview 7e#19. BCV Concept tạm dùng — cần tra lại (Overview 7e#20). |
+| Involved Party | [Involved Party] Individual Employment Status | Investment Fund | FUND_TL_PRO | Update | Người hành nghề liên quan đến quỹ đầu tư (junction) | Fund Management Company Employee X Investment Fund Relationship | Relative | **[MỚI 2026-07-19]** Junction thuần (FUND_ID + TLPR_ID) — trước đây ở Overview 7f. FK đến Fund Management Company Employee (Tier 2) + Investment Fund (Tier 2). **[SỬA 2026-08-15]** BCO đổi Arrangement→Involved Party, tái dùng concept từ phía Employee — khớp với chính Investment Fund (đã BCO Involved Party). Đã tra BCV chính thức — xem Overview 7e#20. |
+| Involved Party | [Involved Party] Organization | Investment Fund | AGEN_FUNDS | Update | Bảng trung gian đại lý và quỹ đầu tư (junction) | Fund Distribution Agent X Investment Fund Relationship | Relative | **[MỚI 2026-07-19]** Junction (AGENCY_ID + FUND_ID + DATA_MIGRATION) — **đảo ngược quyết định denormalize ARRAY cũ** (Overview 7d cũ: `distribution_agent_ids` trên Investment Fund). FK đến Fund Distribution Agent (Tier 1) + Investment Fund (Tier 2). `DATA_MIGRATION` (cờ migration kỹ thuật) không map. FUD_AG_AGT (mở rộng 4-FK) cần rà soát gộp/tách — xem Overview 7e#19. **[SỬA 2026-08-15]** BCO đổi Arrangement→Involved Party, tái dùng concept từ phía Agent — khớp với chính Investment Fund (đã BCO Involved Party). Đã tra BCV chính thức — xem Overview 7e#20. |
 
 ---
 
@@ -51,8 +51,8 @@ graph LR
     INVES_ACC -->|"INVES_ID"| INVES
     JOB_TL_PRO -->|"JOB_ID"| JOBS
     JOB_TL_PRO -->|"TLPRO_ID"| TL_PROFILES
-    FUND_TL_PRO -->|"FUND_ID"| FUNDS
     FUND_TL_PRO -->|"TLPR_ID"| TL_PROFILES
+    FUND_TL_PRO -->|"FUND_ID"| FUNDS
     AGEN_FUNDS -->|"AGENCY_ID"| AGENCIES
     AGEN_FUNDS -->|"FUND_ID"| FUNDS
 ```
@@ -72,8 +72,8 @@ graph TD
     IFIM["**Investment Fund Investor Membership**\n[Arrangement] Investment Fund\nMBFUND"]:::atomic
     DIA["**Discretionary Investment Account**\n[Arrangement] Investment Account\nINVESACC"]:::atomic
     JOBREL["**FMC Employee X Position Relationship**\n[Involved Party] Individual Employment Status\nJOB_TL_PRO"]:::atomic
-    FUNDPREL["**Investment Fund X FMC Employee Relationship**\n[Arrangement] Investment Fund\nFUND_TL_PRO"]:::atomic
-    AGENREL["**Investment Fund X Fund Distribution Agent Relationship**\n[Arrangement] Investment Fund\nAGEN_FUNDS"]:::atomic
+    FUNDPREL["**FMC Employee X Investment Fund Relationship**\n[Involved Party] Individual Employment Status\nFUND_TL_PRO"]:::atomic
+    AGENREL["**Fund Distribution Agent X Investment Fund Relationship**\n[Involved Party] Organization\nAGEN_FUNDS"]:::atomic
 
     FFMOU["**Foreign Fund Management Organization Unit** (Tier 2)"]:::outscope
     KP["**Fund Management Company Employee** (Tier 2)"]:::outscope
@@ -120,4 +120,4 @@ Không có bảng nào trong Tier 3 chưa đủ thông tin cột.
 | T3-01 | STF_FG_BRCH.TL_ID (FK đến TL_PROFILES) nullable — nhân sự VPĐD NN có thể không phải nhân sự QLQ trong nước. Xác nhận: TL_ID là nullable OK? | **Chờ xác nhận.** Thiết kế hiện tại TL_ID nullable. |
 | T3-02 | MB_FUND — 1 NĐT có thể nắm giữ CCQ của nhiều quỹ → grain là (FUND_ID, INVESTOR_ID) hay chỉ FUND_ID? Table Type đã chốt `Fundamental` theo review. | **Chờ xác nhận grain.** Tạm thiết kế grain = 1 dòng NĐT per quỹ (FUND_ID + investor_id_number). |
 | T3-04 | REPRESENT — 1 nhân sự có thể là thành viên BĐD của nhiều quỹ cùng lúc. Grain = (FUND_ID, TL_ID, FR_DATE) → xác nhận. | **Chờ xác nhận.** |
-| T3-05 | **[MỚI 2026-07-19]** 3 entity Relationship mới (JOB_TL_PRO, FUND_TL_PRO, AGEN_FUNDS) đang dùng BCV Concept tạm — xem Overview 7e#19 (FUD_AG_AGT gộp/tách) và 7e#20 (tra cứu BCV chính thức). | Cần xử lý trước khi thiết kế LLD Tier 3 cho 3 entity này. |
+| T3-05 | **[MỚI 2026-07-19, MỘT PHẦN GIẢI QUYẾT 2026-08-15]** 3 entity Relationship mới (JOB_TL_PRO, FUND_TL_PRO, AGEN_FUNDS) đang dùng BCV Concept tạm. **Đã giải quyết:** FUND_TL_PRO và AGEN_FUNDS — BCO đổi sang Involved Party, tái dùng concept từ phía Employee/Agent tương ứng (xem Overview 7e#20). **Còn tồn:** JOB_TL_PRO vẫn tạm dùng, và FUD_AG_AGT gộp/tách vẫn chưa quyết — xem Overview 7e#19. | Cần xử lý JOB_TL_PRO + FUD_AG_AGT trước khi thiết kế LLD Tier 3 đầy đủ cho nhóm này. |

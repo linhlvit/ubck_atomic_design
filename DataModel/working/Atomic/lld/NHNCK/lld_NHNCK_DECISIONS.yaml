@@ -20,7 +20,14 @@ metadata:
   notes: "STATUS (nguồn) không map — trùng ý nghĩa với IS_ACTIVE (cả hai đều 1=hoạt\
     \ động/0=không hoạt động, chỉ khác cách diễn đạt), giữ Active Flag (IS_ACTIVE)\
     \ làm chuẩn, mirror quyết định đã áp dụng cho lld_NHNCK_DOCUMENTS.yaml. Xem pending_design.yaml\
-    \ (2026-07-24, post_check_source_coverage phát hiện)."
+    \ (2026-07-24, post_check_source_coverage phát hiện). Hạ về draft (2026-08-14)\
+    \ để sửa lỗi rule 3e: Securities Practitioner License Decision Document Code trước\
+    \ đây map từ ID kỹ thuật, nay đổi sang DECISION_NUMBER (mã nghiệp vụ thật) — cùng\
+    \ pattern vừa áp dụng cho lld_IDS_SECURITIES_OFFERING.yaml (APPLICATION_CD). Xoá\
+    \ attribute 'Decision Number' trùng lặp — xem pending_design.yaml. 9 cặp FK con\
+    \ (APPLICATION_GROUPS, CERTIFICATE_RECORD_GROUPS, DECISION_DOCUMENTS, EXAM_SESSIONS,\
+    \ VIOLATIONS, CERTIFICATE_RECORD_STATUS_HISTORIES, CERTIFICATE_RECORDS x3) đã\
+    \ sửa sang crosswalk hash theo DECISION_NUMBER."
 attributes:
 - attribute_name: "Securities Practitioner License Decision Document Id"
   physical_name: "sp_license_decision_document_id"
@@ -30,20 +37,22 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: null
+  comment: "PK surrogate. Hash: hash_id('NHNCK.DECISIONS', DECISION_NUMBER)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner License Decision Document Code"
   physical_name: "sp_license_decision_document_code"
-  description: "Business key từ PK nguồn DECISIONS.ID"
+  description: "Khóa chính. BK của entity — số quyết định hành chính (VD: 123/QĐ-UBCK)."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "NHNCK.DECISIONS.ID"
-  comment: null
+  - "NHNCK.DECISIONS.DECISION_NUMBER"
+  comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID) — đổi sang DECISION_NUMBER\
+    \ theo quyết định 2026-08-14. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique\
+    \ trước go-live (DECISION_NUMBER hiện không khai báo NOT NULL trong nguồn)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -58,19 +67,6 @@ attributes:
   comment: "ETL-derived: NHNCK.DECISIONS."
   classification_context: "SOURCE_SYSTEM=NHNCK.DECISIONS"
   etl_derived_value: "NHNCK_DECISIONS"
-  data_type: "string"
-- attribute_name: "Decision Number"
-  physical_name: "decision_nbr"
-  description: "Số hiệu quyết định hành chính (VD: 123/QĐ-UBCK)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.DECISIONS.DECISION_NUMBER"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
   data_type: "string"
 - attribute_name: "Decision Title"
   physical_name: "decision_title"
@@ -198,9 +194,9 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.DECISIONS.DECISION_TYPE_ID"
-  comment: "Scheme: LICENSE_CERTIFICATE_DECISION_TYPE. Values: 1=Cấp mới; 2=Thu hồi;\
+  comment: "Scheme: NHNCK.DECISIONS.DECISION_TYPE_ID. Values: 1=Cấp mới; 2=Thu hồi;\
     \ 3=Cấp lại; 4=Công nhận KQ thi; 5=Xử lý vi phạm; 6=Hủy CCHN; 7=Khác."
-  classification_context: "LICENSE_CERTIFICATE_DECISION_TYPE"
+  classification_context: "NHNCK.DECISIONS.DECISION_TYPE_ID"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Notification Content"
@@ -216,16 +212,3 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Active Flag"
-  physical_name: "active_flag"
-  description: "Cờ đánh dấu quyết định đang được sử dụng (1=Đang dùng; 0=Vô hiệu)"
-  data_domain: "Small Counter"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.DECISIONS.IS_ACTIVE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"

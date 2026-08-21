@@ -17,9 +17,13 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Hạ về draft (2026-07-27) để sửa lỗi hash-mismatch FK \"Securities Practitioner\
-    \ License Application Id\" và \"Re-Exam Securities Practitioner License Application\
-    \ Id\" — trước đây hash trực tiếp theo ID kỹ thuật (APPLICATION_ID/RE_APPLICATION_ID)\
+  notes: "Hạ về draft (2026-08-17, xác nhận tường minh bởi Data Modeler) để bổ sung\
+    \ trường \"Re-Exam Request Status Code\" (cột nguồn STATUS — trước đây bị loại\
+    \ trừ theo chính sách 2026-07-07, nay map Classification Value vì mang ý nghĩa\
+    \ nghiệp vụ 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động). Cần review/approve\
+    \ lại. Lịch sử trước: hạ về draft (2026-07-27) để sửa lỗi hash-mismatch FK \"\
+    Securities Practitioner License Application Id\" và \"Re-Exam Securities Practitioner\
+    \ License Application Id\" — trước đây hash trực tiếp theo ID kỹ thuật (APPLICATION_ID/RE_APPLICATION_ID)\
     \ thay vì Code của bảng đích (APPLICATION_CODE)."
 attributes:
 - attribute_name: "Securities Practitioner License Application Re-Exam Request Id"
@@ -56,7 +60,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns: []
-  comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
   classification_context: "SOURCE_SYSTEM=NHNCK.APPLICATION_RE_EXAMS"
   etl_derived_value: "NHNCK_APPLICATION_RE_EXAMS"
   data_type: "string"
@@ -69,8 +73,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_RE_EXAMS.APPLICATION_ID"
-  comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL\
-    \ crosswalk sang NHNCK.APPLICATIONS: APPLICATION_RE_EXAMS.APPLICATION_ID = APPLICATIONS.ID\
+  comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL crosswalk\
+    \ sang NHNCK.APPLICATIONS: APPLICATION_RE_EXAMS.APPLICATION_ID = APPLICATIONS.ID\
     \ để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK.APPLICATIONS', APPLICATION_CODE)\
     \ | Trước đây hash trực tiếp theo APPLICATION_ID (ID kỹ thuật) gây sai lệch với\
     \ Id của bảng main (hash từ APPLICATION_CODE) — đã sửa sang crosswalk 2026-07-27."
@@ -86,10 +90,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATIONS.APPLICATION_CODE"
-  comment: "Lookup pair: Securities Practitioner License Application.Securities Practitioner\
-    \ License Application Code. Pair with Securities Practitioner License Application\
-    \ Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE sau ETL crosswalk — chi\
-    \ tiết xem comment Securities Practitioner License Application Id."
+  comment: "Lookup pair: sp_license_application.sp_license_application_code. Pair with Securities Practitioner License Application Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Application Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -103,9 +104,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_RE_EXAMS.EXAM_DETAIL_ID"
-  comment: "FK target: Securities Practitioner Qualification Examination Assessment\
-    \ Result.Securities Practitioner Qualification Examination Assessment Result Id.\
-    \ Hash: hash_id('NHNCK.EXAM_DETAILS', EXAM_DETAIL_ID)."
+  comment: "FK target: sp_qualification_examination_assessment_result.sp_qualification_examination_assessment_result_id. Hash: hash_id('NHNCK.EXAM_DETAILS', EXAM_DETAIL_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -119,10 +118,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_RE_EXAMS.EXAM_DETAIL_ID"
-  comment: "Lookup pair: Securities Practitioner Qualification Examination Assessment\
-    \ Result.Securities Practitioner Qualification Examination Assessment Result Code.\
-    \ Pair with Securities Practitioner Qualification Examination Assessment Result\
-    \ Id."
+  comment: "Lookup pair: sp_qualification_examination_assessment_result.sp_qualification_examination_assessment_result_code. Pair with Securities Practitioner Qualification Examination Assessment Result Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -135,12 +131,11 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_RE_EXAMS.RE_APPLICATION_ID"
-  comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL\
-    \ crosswalk sang NHNCK.APPLICATIONS: APPLICATION_RE_EXAMS.RE_APPLICATION_ID =\
-    \ APPLICATIONS.ID để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK.APPLICATIONS',\
-    \ APPLICATION_CODE) | Trước đây hash trực tiếp theo RE_APPLICATION_ID (ID kỹ\
-    \ thuật) gây sai lệch với Id của bảng main (hash từ APPLICATION_CODE) — đã sửa\
-    \ sang crosswalk 2026-07-27."
+  comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL crosswalk\
+    \ sang NHNCK.APPLICATIONS: APPLICATION_RE_EXAMS.RE_APPLICATION_ID = APPLICATIONS.ID\
+    \ để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK.APPLICATIONS', APPLICATION_CODE)\
+    \ | Trước đây hash trực tiếp theo RE_APPLICATION_ID (ID kỹ thuật) gây sai lệch\
+    \ với Id của bảng main (hash từ APPLICATION_CODE) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -153,10 +148,20 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATIONS.APPLICATION_CODE"
-  comment: "Lookup pair: Securities Practitioner License Application.Securities Practitioner\
-    \ License Application Code. Pair with Re-Exam Securities Practitioner License\
-    \ Application Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE sau ETL crosswalk\
-    \ — chi tiết xem comment Re-Exam Securities Practitioner License Application Id."
+  comment: "Lookup pair: sp_license_application.sp_license_application_code. Pair with Re-Exam Securities Practitioner License Application Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE sau ETL crosswalk — chi tiết xem comment Re-Exam Securities Practitioner License Application Id."
   classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Status Code"
+  physical_name: "status_code"
+  description: "Trạng thái bản ghi"
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.APPLICATION_RE_EXAMS.STATUS"
+  comment: "Scheme: NHNCK.APPLICATION_RE_EXAMS.STATUS."
+  classification_context: "NHNCK.APPLICATION_RE_EXAMS.STATUS"
   etl_derived_value: null
   data_type: "string"

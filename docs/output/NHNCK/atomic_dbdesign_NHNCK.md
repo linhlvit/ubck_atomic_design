@@ -11,56 +11,60 @@
 
 | STT | Tên bảng | Mô tả |
 |---|---|---|
-| 1 | scr_prac_conduct_vln | Vi phạm pháp luật hoặc hành chính của người hành nghề chứng khoán được ghi nhận kèm quyết định xử lý. Mỗi dòng = 1 sự kiện vi phạm insert-only. FK đến Practitioner và Decision. |
-| 2 | scr_prac_prof_trn_clss_enrollment | Đăng ký tham gia và kết quả học tập của người hành nghề tại một khóa đào tạo chuyên môn. Ghi nhận điểm thi, kết quả đạt/không đạt và trạng thái ghi danh. |
-| 3 | scr_prac_qualf_exam_ases | Đợt thi sát hạch cấp CCHN do UBCKNN tổ chức. Ghi nhận thời gian đăng ký và thi, địa điểm, hình thức nộp hồ sơ, quyết định công nhận kết quả và phí thi. |
-| 4 | scr_prac_qualf_exam_ases_rslt | Kết quả thi sát hạch của từng thí sinh trong một đợt thi. Ghi nhận điểm thi luật, điểm chuyên môn, kết quả từng phần và kết quả tổng thể. FK đến Exam Assessment và Practitioner. |
-| 5 | scr_prac_qualf_exam_ases_fee | Biểu phí thi sát hạch quy định cho từng loại CCHN trong từng đợt thi (Condition). Phân biệt với License Application Fee là phí thực tế thu từng hồ sơ (Transaction). |
-| 6 | scr_prac_license_ap | Hồ sơ đăng ký chứng chỉ hành nghề chứng khoán. Ghi nhận loại đăng ký, loại hồ sơ, trạng thái, ngày nộp, CCHN liên quan và kết quả thi. FK đến Practitioner và Officer phụ trách. |
-| 7 | scr_prac_license_ap_ed_ctf_doc | Chứng chỉ hoặc bằng chuyên môn đào tạo đính kèm trong hồ sơ đăng ký CCHN. Ghi nhận loại chuyên môn, file đính kèm, trạng thái thẩm định và cán bộ thẩm định. |
-| 8 | scr_prac_license_ap_re-exam_rqs | Liên kết theo dõi chu trình thi lại — hồ sơ gốc, kết quả thi trượt và hồ sơ đăng ký thi lại mới (nullable nếu chưa nộp). FK đến License Application (×2) và Exam Assessment Result. |
-| 9 | scr_prac_license_ctf_doc | Chứng chỉ hành nghề chứng khoán được cấp cho người hành nghề. Ghi nhận số CCHN, loại, ngày cấp, trạng thái và 3 quyết định liên quan (cấp/thu hồi/hủy). FK đến Practitioner. |
-| 10 | scr_prac_license_dcsn_doc | Quyết định hành chính do UBCKNN ban hành liên quan đến CCHN — cấp, thu hồi, hủy CCHN hoặc công nhận kết quả thi. Ghi nhận số quyết định, loại, ngày ký và người ký. |
-| 11 | scr_prac_org_emp_rpt | Báo cáo của tổ chức về tình trạng làm việc của người hành nghề. Mỗi dòng = 1 lần nộp báo cáo insert-only. Ghi nhận loại báo cáo, trạng thái làm việc, chức vụ và ngày báo cáo. |
-| 12 | scr_prac_prof_trn_clss | Khóa học chuyên môn bổ sung kiến thức cho người hành nghề chứng khoán. Master entity của khóa học — ghi nhận mã, tên, loại chuyên môn, thời gian và địa điểm thi. |
-| 13 | reg_ahr_ofcr | Cán bộ, chuyên viên UBCKNN có tài khoản trong hệ thống NHNCK. Ghi nhận thông tin nhân sự, đơn vị/phòng ban phụ trách và trạng thái tài khoản. Không lưu thông tin xác thực (PASSWORD). |
-| 14 | reg_ahr_ou | Đơn vị và phòng ban thuộc UBCKNN — cấu trúc cây self-referencing DEPARTMENT → UNIT. Phân biệt bằng Organization Unit Type Code (ETL-derived). Dùng chung làm FK tổ chức nội bộ. |
-| 15 | scr_org_refr | Tổ chức tham gia thị trường chứng khoán được UBCKNN quản lý (CTCK, QLQ, Ngân hàng, v.v.). Ghi nhận mã tổ chức, tên, loại hình, vốn điều lệ và trạng thái hoạt động. |
-| 16 | scr_prac | Người hành nghề chứng khoán được UBCKNN quản lý. Ghi nhận thông tin nhân thân và trạng thái hành nghề. |
-| 17 | scr_prac_emp_st | Giai đoạn làm việc của người hành nghề tại một tổ chức chứng khoán. Ghi nhận tổ chức, chức vụ, phòng ban, ngày bắt đầu và ngày kết thúc (NULL = đang làm việc). |
-| 18 | scr_prac_license_ap_emp_exrnc | Kinh nghiệm làm việc khai báo trong hồ sơ đăng ký CCHN. Ghi nhận tổ chức, thời gian làm việc, chức vụ, phòng ban, số BHXH và thông tin hợp đồng lao động. |
-| 19 | scr_prac_license_ap_snpst | Snapshot thông tin nhân thân của người đăng ký tại thời điểm nộp hồ sơ. Denormalize toàn bộ trường định danh, địa chỉ và liên lạc từ Practitioner. Loại bỏ USERNAME/PASSWORD. |
-| 20 | scr_prac_prof_trn_hist | Lịch sử đào tạo và bồi dưỡng của người hành nghề chứng khoán. Ghi nhận thời gian, địa điểm đào tạo, chuyên ngành, khen thưởng và kỷ luật. FK đến Practitioner. |
-| 21 | scr_prac_rel_p | Quan hệ thân nhân của người hành nghề chứng khoán. Ghi nhận loại quan hệ, họ tên, năm sinh, địa chỉ, nghề nghiệp và số giấy tờ định danh của người thân. |
-| 22 | geo | Đơn vị địa lý dùng làm FK tham chiếu: quốc gia/quốc tịch (COUNTRY), vùng/miền (REGION), tỉnh/thành phố mới/cũ (PROVINCE/PROVINCE_OLD), quận/huyện cũ (DISTRICT_OLD), phường/xã mới/cũ (WARD/WARD_OLD). Phân biệt bằng geographic_area_type_code. Hỗ trợ song song bộ danh mục pre- và post-sáp nhập hành chính 2025. |
-| 23 | scr_prac_license_ap_fee | Phí thực tế phát sinh cho hồ sơ đăng ký CCHN — phí nộp hồ sơ, phí cấp CCHN (Transaction). Có lifecycle riêng qua trạng thái thanh toán. Phân biệt với Examination Assessment Fee (Condition). |
-| 24 | ip_alt_identn | Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ 1 nguồn. |
-| 25 | ip_elc_adr | Lưu trữ các địa chỉ liên lạc điện tử của Involved Party (điện thoại/fax/email). Mỗi dòng = 1 kênh liên lạc từ 1 nguồn. |
-| 26 | ip_pst_adr | Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn. |
+| 1 | sp_conduct_violation | Vi phạm pháp luật hoặc hành chính của người hành nghề chứng khoán được ghi nhận kèm quyết định xử lý. Mỗi dòng = 1 sự kiện vi phạm insert-only. FK đến Practitioner và Decision. |
+| 2 | sp_professional_training_class | Khóa học chuyên môn bổ sung kiến thức cho người hành nghề chứng khoán. Master entity của khóa học — ghi nhận mã, tên, loại chuyên môn, thời gian và địa điểm thi. |
+| 3 | sp_professional_training_class_enrollment | Đăng ký tham gia và kết quả học tập của người hành nghề tại một khóa đào tạo chuyên môn. Ghi nhận điểm thi, kết quả đạt/không đạt và trạng thái ghi danh. |
+| 4 | sp_qualification_examination_assessment | Đợt thi sát hạch cấp CCHN do UBCKNN tổ chức. Ghi nhận thời gian đăng ký và thi, địa điểm, hình thức nộp hồ sơ, quyết định công nhận kết quả và phí thi. |
+| 5 | sp_qualification_examination_assessment_result | Kết quả thi sát hạch của từng thí sinh trong một đợt thi. Ghi nhận điểm thi luật, điểm chuyên môn, kết quả từng phần và kết quả tổng thể. FK đến Exam Assessment và Practitioner. |
+| 6 | sp_qualification_examination_assessment_fee | Biểu phí thi sát hạch quy định cho từng loại CCHN trong từng đợt thi (Condition). Phân biệt với License Application Fee là phí thực tế thu từng hồ sơ (Transaction). |
+| 7 | sp_license_application | Hồ sơ đăng ký chứng chỉ hành nghề chứng khoán. Ghi nhận loại đăng ký, loại hồ sơ, trạng thái, ngày nộp, CCHN liên quan và kết quả thi. FK đến Practitioner và Officer phụ trách. |
+| 8 | sp_license_application_education_certificate_document | Chứng chỉ hoặc bằng chuyên môn đào tạo đính kèm trong hồ sơ đăng ký CCHN. Ghi nhận loại chuyên môn, file đính kèm, trạng thái thẩm định và cán bộ thẩm định. |
+| 9 | sp_license_application_re_exam_request | Liên kết theo dõi chu trình thi lại — hồ sơ gốc, kết quả thi trượt và hồ sơ đăng ký thi lại mới (nullable nếu chưa nộp). FK đến License Application (×2) và Exam Assessment Result. |
+| 10 | sp_license_certificate_document | Chứng chỉ hành nghề chứng khoán được cấp cho người hành nghề. Ghi nhận số CCHN, loại, ngày cấp, trạng thái và 3 quyết định liên quan (cấp/thu hồi/hủy). FK đến Practitioner. |
+| 11 | sp_license_certificate_type | Danh mục loại chứng chỉ hành nghề chứng khoán — tên CCHN, mô tả, số ngày xử lý, thứ tự hiển thị. FK target cho Certificate Type Id ở các entity License Application/Certificate Document/Organization Employment Report và cross-source từ IAM User (Practice Certificate Type Id). |
+| 12 | sp_license_decision_document | Quyết định hành chính do UBCKNN ban hành liên quan đến CCHN — cấp, thu hồi, hủy CCHN hoặc công nhận kết quả thi. Ghi nhận số quyết định, loại, ngày ký và người ký. |
+| 13 | sp_organization_employment_report | Báo cáo của tổ chức về tình trạng làm việc của người hành nghề. Mỗi dòng = 1 lần nộp báo cáo insert-only. Ghi nhận loại báo cáo, trạng thái làm việc, chức vụ và ngày báo cáo. |
+| 14 | ra_organization_unit | Đơn vị và phòng ban thuộc UBCKNN — cấu trúc cây self-referencing DEPARTMENT → UNIT. Phân biệt bằng Organization Unit Type Code (ETL-derived). Dùng chung làm FK tổ chức nội bộ. |
+| 15 | securities_organization_reference | Tổ chức tham gia thị trường chứng khoán được UBCKNN quản lý (CTCK, QLQ, Ngân hàng, v.v.). Ghi nhận mã tổ chức, tên, loại hình, vốn điều lệ và trạng thái hoạt động. |
+| 16 | securities_practitioner | Người hành nghề chứng khoán được UBCKNN quản lý. Ghi nhận thông tin nhân thân và trạng thái hành nghề. |
+| 17 | sp_employment_status | Giai đoạn làm việc của người hành nghề tại một tổ chức chứng khoán. Ghi nhận tổ chức, chức vụ, phòng ban, ngày bắt đầu và ngày kết thúc (NULL = đang làm việc). |
+| 18 | sp_reason_change_history | Ghi nhận 1 lần thay đổi thông tin cá nhân của người hành nghề — ai bị thay đổi, khi nào, lý do gì. Giữ concept Involved Party (cùng nhóm với Securities Practitioner) theo quyết định Data Modeler. |
+| 19 | sp_related_party | Quan hệ thân nhân của người hành nghề chứng khoán. Ghi nhận loại quan hệ, họ tên, năm sinh, địa chỉ, nghề nghiệp và số giấy tờ định danh của người thân. |
+| 20 | sp_license_application_fee | Phí thực tế phát sinh cho hồ sơ đăng ký CCHN — phí nộp hồ sơ, phí cấp CCHN (Transaction). Có lifecycle riêng qua trạng thái thanh toán. Phân biệt với Examination Assessment Fee (Condition). |
+| 21 | cl_application_status |  |
+| 22 | cl_document |  |
+| 23 | cl_specialization |  |
+| 24 | individual |  |
+| 25 | sp_license_certificate_status_change_history |  |
+| 26 | sp_post_certification_training_course |  |
+| 27 | sp_post_certification_training_result |  |
+| 28 | ip_alternative_identification | Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ 1 nguồn. |
+| 29 | ip_electronic_address | Lưu trữ các địa chỉ liên lạc điện tử của Involved Party (điện thoại/fax/email). Mỗi dòng = 1 kênh liên lạc từ 1 nguồn. |
+| 30 | ip_postal_address | Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn. |
 
 
 
 
-### Bảng scr_prac_conduct_vln
+### Bảng sp_conduct_violation
 
 
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | scr_prac_conduct_vln_id | STRING |  | X | P |  | Khóa đại diện cho bản ghi vi phạm đạo đức hành nghề (surrogate key). |
-| 2 | scr_prac_conduct_vln_code | STRING |  |  |  |  | Mã định danh kỹ thuật tự tăng. BK của entity. Map từ PK bảng nguồn. |
+| 1 | sp_conduct_violation_id | STRING |  | X | P |  | Khóa đại diện cho bản ghi vi phạm đạo đức hành nghề (surrogate key). |
+| 2 | sp_conduct_violation_code | STRING |  |  |  |  | Mã định danh kỹ thuật tự tăng. BK của entity. Map từ PK bảng nguồn. |
 | 3 | src_stm_code | STRING |  |  |  | 'NHNCK.VIOLATIONS' | Mã hệ thống nguồn. |
-| 4 | scr_prac_id | STRING |  |  | F |  | FK đến người hành nghề chứng khoán bị vi phạm. |
-| 5 | scr_prac_code | STRING |  |  |  |  | Mã người hành nghề chứng khoán bị vi phạm. |
-| 6 | license_dcsn_doc_id | STRING | X |  | F |  | FK đến quyết định xử lý vi phạm. |
-| 7 | license_dcsn_doc_code | STRING | X |  |  |  | Mã quyết định xử lý vi phạm. |
-| 8 | prac_nm_at_vln | STRING | X |  |  |  | Họ tên người hành nghề tại thời điểm vi phạm (snapshot). |
-| 9 | prac_brth_dt_at_vln | DATE | X |  |  |  | Ngày sinh người hành nghề tại thời điểm vi phạm (snapshot). |
-| 10 | prac_id_nbr_at_vln | STRING | X |  |  |  | Số CMND/CCCD người hành nghề tại thời điểm vi phạm (snapshot). |
-| 11 | vln_rcrd_dt | TIMESTAMP |  |  |  |  | Ngày ghi nhận vi phạm (business event date). |
+| 4 | sp_id | STRING |  |  | F |  | FK đến người hành nghề chứng khoán bị vi phạm. |
+| 5 | sp_code | STRING |  |  |  |  | Mã người hành nghề chứng khoán bị vi phạm. |
+| 6 | sp_license_decision_document_id | STRING | X |  | F |  | FK đến quyết định xử lý vi phạm. |
+| 7 | sp_license_decision_document_code | STRING | X |  |  |  | Mã quyết định xử lý vi phạm. |
+| 8 | practitioner_nm_at_violation | STRING | X |  |  |  | Họ tên người hành nghề tại thời điểm vi phạm (snapshot). |
+| 9 | practitioner_birth_dt_at_violation | DATE | X |  |  |  | Ngày sinh người hành nghề tại thời điểm vi phạm (snapshot). |
+| 10 | practitioner_identity_nbr_at_violation | STRING | X |  |  |  | Số CMND/CCCD người hành nghề tại thời điểm vi phạm (snapshot). |
+| 11 | violation_record_dt | TIMESTAMP |  |  |  |  | Ngày ghi nhận vi phạm (business event date). |
 | 12 | note | STRING | X |  |  |  | Ghi chú vi phạm. |
-| 13 | rcrd_tp_code | STRING | X |  |  |  | Phân loại bản ghi. |
-| 14 | rcrd_st_code | STRING |  |  |  |  | Trạng thái bản ghi vi phạm (1=Hoạt động). |
+| 13 | violation_status_code | STRING |  |  |  |  | Trạng thái bản ghi vi phạm: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động. |
+| 14 | violation_tp_code | STRING | X |  |  |  | Loại/phân loại của bản ghi vi phạm. |
 
 
 #### Constraint
@@ -69,7 +73,7 @@
 
 | Tên trường |
 |---|
-| scr_prac_conduct_vln_id |
+| sp_conduct_violation_id |
 
 
 
@@ -77,8 +81,8 @@
 
 | Tên trường | Bảng tham chiếu | Cột tham chiếu |
 |---|---|---|
-| scr_prac_id | scr_prac | scr_prac_id |
-| license_dcsn_doc_id |  |  |
+| sp_id | securities_practitioner | sp_id |
+| sp_license_decision_document_id | sp_license_decision_document | sp_license_decision_document_id |
 
 
 
@@ -93,45 +97,23 @@ N/A
 
 
 
-### Bảng scr_prac_prof_trn_clss_enrollment
+### Bảng sp_professional_training_class
 
 
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | scr_prac_prof_trn_clss_enrollment_id | STRING |  | X | P |  | Id tự sinh (surrogate key) |
-| 2 | scr_prac_prof_trn_clss_enrollment_code | STRING |  |  |  |  | Mã định danh (BK từ PK nguồn) |
-| 3 | src_stm_code | STRING |  |  |  | 'NHNCK.SPECIALIZATION_COURSE_DETAILS' | Mã nguồn dữ liệu |
-| 4 | scr_prac_prof_trn_clss_id | STRING |  |  | F |  | FK đến lớp đào tạo nghiệp vụ chứng khoán |
-| 5 | scr_prac_prof_trn_clss_code | STRING |  |  |  |  | Mã lớp đào tạo |
-| 6 | scr_prac_id | STRING |  |  | F |  | FK đến người hành nghề chứng khoán |
-| 7 | scr_prac_code | STRING |  |  |  |  | Mã người hành nghề |
-| 8 | specialization_tp_code | STRING |  |  |  |  | Loại chuyên ngành đào tạo |
-| 9 | exam_nbr | STRING | X |  |  |  | Số báo danh dự thi |
-| 10 | prac_nm_at_enrollment | STRING | X |  |  |  | Họ tên học viên tại thời điểm đăng ký (snapshot) |
-| 11 | prac_brth_dt_at_enrollment | DATE | X |  |  |  | Ngày sinh tại thời điểm đăng ký (snapshot) |
-| 12 | plc_of_brth | STRING | X |  |  |  | Nơi sinh (snapshot) |
-| 13 | perm_rsdnc_cty_id | STRING | X |  | F |  | FK đến quốc gia thường trú (snapshot) |
-| 14 | perm_rsdnc_cty_code | STRING | X |  |  |  | Mã quốc gia thường trú |
-| 15 | perm_rsdnc_prov_id | STRING | X |  | F |  | FK đến tỉnh/thành thường trú (snapshot) |
-| 16 | perm_rsdnc_prov_code | STRING | X |  |  |  | Mã tỉnh/thành thường trú |
-| 17 | perm_rsdnc_dstc_id | STRING | X |  | F |  | FK đến quận/huyện thường trú (snapshot) |
-| 18 | perm_rsdnc_dstc_code | STRING | X |  |  |  | Mã quận/huyện thường trú |
-| 19 | prac_id_tp_code_at_enrollment | STRING | X |  |  |  | Loại giấy tờ định danh tại thời điểm đăng ký (snapshot) |
-| 20 | prac_id_nbr_at_enrollment | STRING | X |  |  |  | Số định danh tại thời điểm đăng ký (snapshot) |
-| 21 | prac_id_issu_dt_at_enrollment | DATE | X |  |  |  | Ngày cấp giấy tờ định danh (snapshot) |
-| 22 | prac_id_issu_plc_at_enrollment | STRING | X |  |  |  | Nơi cấp giấy tờ định danh (snapshot) |
-| 23 | exam_scor | DECIMAL(5,2) | X |  |  |  | Điểm thi |
-| 24 | trn_rslt_code | STRING | X |  |  |  | Kết quả đào tạo (-1=Không thi, 0=Không đạt, 1=Đạt) |
-| 25 | rcrd_st_code | STRING | X |  |  |  | Trạng thái bản ghi |
-| 26 | dsc | STRING | X |  |  |  | Mô tả |
-| 27 | note | STRING | X |  |  |  | Ghi chú |
-| 28 | assignee_ofcr_id | STRING | X |  | F |  | FK đến cán bộ phụ trách (nullable) |
-| 29 | assignee_ofcr_code | STRING | X |  |  |  | Mã cán bộ phụ trách |
-| 30 | crt_tms | TIMESTAMP | X |  |  |  | Thời điểm tạo bản ghi |
-| 31 | udt_tms | TIMESTAMP | X |  |  |  | Thời điểm cập nhật bản ghi |
-| 32 | crt_by_ofcr_id | STRING | X |  | F |  | FK đến Officer tạo bản ghi |
-| 33 | udt_by_ofcr_id | STRING | X |  | F |  | FK đến Officer cập nhật bản ghi |
+| 1 | sp_professional_training_class_id | STRING |  | X | P |  | Surrogate key cho khóa học chuyên môn |
+| 2 | sp_professional_training_class_code | STRING |  |  |  |  | Mã khóa học (business key) |
+| 3 | src_stm_code | STRING |  |  |  | 'NHNCK.SPECIALIZATION_COURSES' | Mã hệ thống nguồn |
+| 4 | training_class_nm | STRING | X |  |  |  | Tên khóa học |
+| 5 | academic_year | INT | X |  |  |  | Năm học |
+| 6 | specialization_tp_code | STRING | X |  | F |  | Loại chuyên môn của khóa học |
+| 7 | exam_start_dt | DATE | X |  |  |  | Ngày bắt đầu thi |
+| 8 | exam_end_dt | DATE | X |  |  |  | Ngày kết thúc thi |
+| 9 | exam_location_adr | STRING | X |  |  |  | Địa điểm tổ chức thi |
+| 10 | province_id | STRING | X |  | F |  | FK đến tỉnh/thành nơi tổ chức thi |
+| 11 | province_code | STRING | X |  |  |  | Mã tỉnh/thành nơi tổ chức thi (lookup pair) |
 
 
 #### Constraint
@@ -140,509 +122,7 @@ N/A
 
 | Tên trường |
 |---|
-| scr_prac_prof_trn_clss_enrollment_id |
-
-
-
-**Khóa phụ (Foreign Key):**
-
-| Tên trường | Bảng tham chiếu | Cột tham chiếu |
-|---|---|---|
-| scr_prac_prof_trn_clss_id | scr_prac_prof_trn_clss | scr_prac_prof_trn_clss_id |
-| scr_prac_id | scr_prac | scr_prac_id |
-| perm_rsdnc_cty_id | geo | geo_id |
-| perm_rsdnc_prov_id | geo | geo_id |
-| perm_rsdnc_dstc_id | geo | geo_id |
-| assignee_ofcr_id | reg_ahr_ofcr | reg_ahr_ofcr_id |
-| crt_by_ofcr_id | reg_ahr_ofcr | reg_ahr_ofcr_id |
-| udt_by_ofcr_id | reg_ahr_ofcr | reg_ahr_ofcr_id |
-
-
-
-#### Index
-
-N/A
-
-#### Trigger
-
-N/A
-
-
-
-
-### Bảng scr_prac_qualf_exam_ases
-
-
-
-| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
-|---|---|---|---|---|---|---|---|
-| 1 | scr_prac_qualf_exam_ases_id | STRING |  | X | P |  | Id tự sinh (surrogate key) |
-| 2 | scr_prac_qualf_exam_ases_code | STRING |  |  |  |  | Mã định danh nghiệp vụ đợt thi. BK |
-| 3 | ases_nm | STRING | X |  |  |  | Tên hiển thị đợt thi |
-| 4 | rpt_yr | INT | X |  |  |  | Năm báo cáo (YYYY) |
-| 5 | exam_ssn_nbr | 2…) |  | X | P |  | Kỳ thi trong năm (1 |
-| 6 | organizing_unit_nm | STRING | X |  |  |  | Tên đơn vị tổ chức thi |
-| 7 | ap_rgst_strt_dt | STRING | X |  |  |  | Ngày bắt đầu nhận đăng ký |
-| 8 | ap_rgst_end_dt | STRING | X |  |  |  | Ngày kết thúc nhận đăng ký |
-| 9 | exam_strt_dt | STRING | X |  |  |  | Ngày bắt đầu thi |
-| 10 | exam_end_dt | STRING | X |  |  |  | Ngày kết thúc thi |
-| 11 | rslt_notf_dt | STRING | X |  |  |  | Ngày thông báo kết quả thi |
-| 12 | exam_locations | STRING | X |  |  |  | Địa điểm tổ chức thi |
-| 13 | subm_methods | STRING | X |  |  |  | Phương thức nộp hồ sơ |
-| 14 | notf_file_path | STRING | X |  |  |  | Đường dẫn file thông báo kết quả |
-| 15 | license_dcsn_id | STRING | X |  | F |  | FK đến quyết định cấp chứng chỉ liên quan đợt thi |
-| 16 | license_dcsn_code | STRING | X |  |  |  | Mã quyết định cấp chứng chỉ |
-| 17 | bnk_code | STRING | X |  |  |  | Mã ngân hàng thu phí |
-| 18 | bnk_ac_nbr | STRING | X |  |  |  | Số tài khoản ngân hàng thu phí |
-| 19 | bnk_ac_nm | STRING | X |  |  |  | Tên chủ tài khoản ngân hàng thu phí |
-| 20 | rcrd_st_code | STRING | X |  |  |  | Trạng thái đợt thi (1=Hoạt động) |
-| 21 | src_stm_code | STRING |  |  |  | 'NHNCK.EXAM_SESSIONS' | Mã hệ thống nguồn |
-| 22 | crt_tms | TIMESTAMP | X |  |  |  | Thời điểm tạo bản ghi |
-| 23 | udt_tms | TIMESTAMP | X |  |  |  | Thời điểm cập nhật bản ghi |
-| 24 | crt_by_ofcr_id | STRING | X |  | F |  | FK đến người tạo |
-| 25 | crt_by_ofcr_code | STRING | X |  |  |  | Mã người tạo |
-| 26 | udt_by_ofcr_id | STRING | X |  | F |  | FK đến người cập nhật |
-| 27 | udt_by_ofcr_code | STRING | X |  |  |  | Mã người cập nhật |
-
-
-#### Constraint
-
-**Khóa chính (Primary Key):**
-
-| Tên trường |
-|---|
-| scr_prac_qualf_exam_ases_id |
-| exam_ssn_nbr |
-
-
-
-**Khóa phụ (Foreign Key):**
-
-| Tên trường | Bảng tham chiếu | Cột tham chiếu |
-|---|---|---|
-| license_dcsn_id | scr_prac_license_dcsn_doc | scr_prac_license_dcsn_doc_id |
-| crt_by_ofcr_id | reg_ahr_ofcr | reg_ahr_ofcr_id |
-| udt_by_ofcr_id | reg_ahr_ofcr | reg_ahr_ofcr_id |
-
-
-
-#### Index
-
-N/A
-
-#### Trigger
-
-N/A
-
-
-
-
-### Bảng scr_prac_qualf_exam_ases_rslt
-
-
-
-| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
-|---|---|---|---|---|---|---|---|
-| 1 | scr_prac_qualf_exam_ases_rslt_id | STRING |  | X | P |  | Id tự sinh (surrogate key) |
-| 2 | scr_prac_qualf_exam_ases_rslt_code | STRING |  |  |  |  | Mã định danh nghiệp vụ. BK |
-| 3 | src_stm_code | STRING |  |  |  | 'NHNCK.EXAM_DETAILS' | Mã nguồn dữ liệu |
-| 4 | scr_prac_qualf_exam_ases_id | STRING |  |  | F |  | FK đến đợt thi sát hạch |
-| 5 | scr_prac_qualf_exam_ases_code | STRING |  |  |  |  | Mã đợt thi sát hạch |
-| 6 | scr_prac_id | STRING |  |  | F |  | FK đến người hành nghề |
-| 7 | scr_prac_code | STRING |  |  |  |  | Mã người hành nghề |
-| 8 | ctf_tp_code | STRING |  |  |  |  | Mã loại chứng chỉ dự thi |
-| 9 | license_ap_id | STRING | X |  | F |  | FK đến hồ sơ đăng ký |
-| 10 | license_ap_code | STRING | X |  |  |  | Mã hồ sơ đăng ký |
-| 11 | seq_nbr | INT | X |  |  |  | Số thứ tự dự thi trong đợt thi |
-| 12 | exam_nbr | STRING | X |  |  |  | Số báo danh |
-| 13 | law_scor | INT | X |  |  |  | Điểm thi pháp luật |
-| 14 | law_rslt_code | STRING | X |  |  |  | Kết quả thi pháp luật (-1: Không thi, 0: Không đạt, 1: Đạt) |
-| 15 | specialization_scor | INT | X |  |  |  | Điểm thi chuyên ngành |
-| 16 | specialization_rslt_code | STRING | X |  |  |  | Kết quả thi chuyên ngành (-1: Không thi, 0: Không đạt, 1: Đạt) |
-| 17 | ovrl_rslt_code | STRING | X |  |  |  | Kết quả thi tổng thể (-1: Không thi, 0: Không đạt, 1: Đạt) |
-| 18 | exam_note | STRING | X |  |  |  | Ghi chú |
-| 19 | crt_at | TIMESTAMP | X |  |  |  | Thời điểm tạo bản ghi |
-| 20 | udt_at | TIMESTAMP | X |  |  |  | Thời điểm cập nhật bản ghi |
-| 21 | crt_by | STRING | X |  |  |  | Người tạo bản ghi |
-| 22 | udt_by | STRING | X |  |  |  | Người cập nhật bản ghi |
-| 23 | --- |  |  |  |  |  |  |
-| 24 | **giải_thích_các_quyết_định_thiết_kế:** |  |  |  |  |  |  |
-| 25 | 1._**law_scor_x_specialization_scor_→_sml_counter**_(không_phải_text):_theo_yêu_cầu_trong_prompt;_khác_với_file_examdetails_cũ_dùng_tx_—_file_cũ_có_cmnt_giải_thích_có_thể_dạng_tx |  |  |  |  |  |  nhưng bảng EXAM_DETAILS nguồn khai báo kiểu NUMBER nên Small Counter phù hợp hơn. |
-| 26 | 2._**law_rslt_x_specialization_rslt_→_cv_(exam_score_result)**_thay_vì_boolean:_vì_giá_trị_có_3_trạng_thái_(-1/0/1) |  |  |  |  |  |  Boolean chỉ đủ cho 2 trạng thái. Scheme EXAM_SCORE_RESULT là scheme mới đã liệt kê trong danh sách "SCHEMES MỚI CẦN THÊM". |
-| 27 | 3._**overall_rslt_→_examination_result**_(scheme_đã_có)_thay_vì_exam_score_result:_theo_yêu_cầu_trong_prmpt |  |  |  |  |  |  giữ nhất quán với các entity khác dùng EXAMINATION_RESULT cho kết quả tổng thể. |
-| 28 | 4._**created_at/updated_at/created_by/updated_by_→_status:_pending**:_theo_yêu_cầu;_chưa_xác_định_fk_mapping_cho_created_by/updated_by_nên_để_pndg_toàn_bộ_nhóm_audt |  |  |  |  |  |  với data_domain tạm là Text (chưa resolve FK). |
-| 29 | 5._**grain_không_phải_i_party**_→_không_tách_shared_entity. |  |  |  |  |  |  |
-
-
-#### Constraint
-
-**Khóa chính (Primary Key):**
-
-| Tên trường |
-|---|
-| scr_prac_qualf_exam_ases_rslt_id |
-
-
-
-**Khóa phụ (Foreign Key):**
-
-| Tên trường | Bảng tham chiếu | Cột tham chiếu |
-|---|---|---|
-| scr_prac_qualf_exam_ases_id | scr_prac_qualf_exam_ases | scr_prac_qualf_exam_ases_id |
-| scr_prac_id | scr_prac | scr_prac_id |
-| license_ap_id | scr_prac_license_ap |  |
-
-
-
-#### Index
-
-N/A
-
-#### Trigger
-
-N/A
-
-
-
-
-### Bảng scr_prac_qualf_exam_ases_fee
-
-
-
-| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
-|---|---|---|---|---|---|---|---|
-| 1 | scr_prac_qualf_exam_ases_fee_id | STRING |  | X | P |  | Id tự sinh (surrogate key) |
-| 2 | scr_prac_qualf_exam_ases_fee_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK |
-| 3 | src_stm_code | STRING |  |  |  | 'NHNCK.EXAM_SESSION_FEES' | Mã nguồn dữ liệu |
-| 4 | exam_ases_id | STRING |  |  | F |  | FK đến đợt thi (Exam Assessment) |
-| 5 | exam_ases_code | STRING |  |  |  |  | Mã đợt thi |
-| 6 | ctf_tp_code | STRING |  |  |  |  | Mã loại chứng chỉ |
-| 7 | exam_fee_amt | DECIMAL(23,2) | X |  |  |  | Mức phí dự thi (VNĐ) |
-| 8 | appeal_fee_amt | DECIMAL(23,2) | X |  |  |  | Mức phí phúc khảo (VNĐ) |
-| 9 | rcrd_st_code | STRING | X |  |  |  | Trạng thái bản ghi |
-| 10 | crt_tms | TIMESTAMP | X |  |  |  | Thời điểm tạo |
-| 11 | udt_tms | TIMESTAMP | X |  |  |  | Thời điểm cập nhật |
-| 12 | crt_by_ofcr_id | STRING | X |  | F |  | FK đến Officer (người tạo) |
-| 13 | crt_by_ofcr_code | STRING | X |  |  |  | Mã người tạo |
-| 14 | udt_by_ofcr_id | STRING | X |  | F |  | FK đến Officer (người cập nhật) |
-| 15 | udt_by_ofcr_code | STRING | X |  |  |  | Mã người cập nhật |
-
-
-#### Constraint
-
-**Khóa chính (Primary Key):**
-
-| Tên trường |
-|---|
-| scr_prac_qualf_exam_ases_fee_id |
-
-
-
-**Khóa phụ (Foreign Key):**
-
-| Tên trường | Bảng tham chiếu | Cột tham chiếu |
-|---|---|---|
-| exam_ases_id | scr_prac_qualf_exam_ases |  |
-| crt_by_ofcr_id | reg_ahr_ofcr |  |
-| udt_by_ofcr_id | reg_ahr_ofcr |  |
-
-
-
-#### Index
-
-N/A
-
-#### Trigger
-
-N/A
-
-
-
-
-### Bảng scr_prac_license_ap
-
-
-
-| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
-|---|---|---|---|---|---|---|---|
-| 1 | scr_prac_license_ap_id | STRING |  | X | P |  | Id tự sinh (surrogate key). |
-| 2 | scr_prac_license_ap_code | STRING |  |  |  |  | Mã hồ sơ đăng ký do hệ thống sinh — BK của entity. |
-| 3 | src_stm_code | STRING |  |  |  | 'NHNCK.APPLICATIONS' | Mã hệ thống nguồn. |
-| 4 | ap_tp_code | STRING |  |  |  |  | Loại hồ sơ. |
-| 5 | ap_st_code | STRING |  |  | F |  | Trạng thái hồ sơ hiện tại. |
-| 6 | rgst_tp_code | STRING |  |  |  |  | Nguồn tiếp nhận hồ sơ. |
-| 7 | ctf_tp_code | STRING |  |  | F |  | Loại chứng chỉ hành nghề đăng ký. |
-| 8 | ttl | STRING | X |  |  |  | Tiêu đề hoặc tên nhóm hồ sơ. |
-| 9 | subm_dt | DATE | X |  |  |  | Ngày nộp hồ sơ chính thức. |
-| 10 | supplement_dt | DATE | X |  |  |  | Ngày nộp bổ sung hồ sơ. |
-| 11 | supplement_ltr_dt | DATE | X |  |  |  | Ngày ban hành công văn yêu cầu bổ sung hồ sơ. |
-| 12 | ctf_nbr | STRING | X |  |  |  | Số CCHN cấp cho người hành nghề. |
-| 13 | issu_dt | DATE | X |  |  |  | Ngày cấp CCHN. |
-| 14 | prev_ctf_nbr | STRING | X |  |  |  | Số CCHN cũ trước khi cấp lại. |
-| 15 | prev_issu_dt | DATE | X |  |  |  | Ngày cấp CCHN cũ. |
-| 16 | prev_ctf_tp_code | STRING | X |  | F |  | Loại CCHN cũ khi cấp lại. |
-| 17 | reissue_rsn | STRING | X |  |  |  | Lý do xin cấp lại CCHN. |
-| 18 | rejection_rsn | STRING | X |  |  |  | Lý do trả lại hoặc từ chối hồ sơ. |
-| 19 | ctf_recpt_mth_code | STRING | X |  |  |  | Phương thức nhận CCHN. |
-| 20 | ctf_recpt_adr | STRING | X |  |  |  | Địa chỉ nhận CCHN qua bưu điện. |
-| 21 | ctf_recpt_ph | STRING | X |  |  |  | Số điện thoại liên lạc khi nhận CCHN. |
-| 22 | recpt_st_code | STRING | X |  |  |  | Trạng thái nhận CCHN. |
-| 23 | violated_ind | BOOLEAN | X |  |  |  | Cờ người hành nghề vi phạm quy định. |
-| 24 | data_exploitable_ind | BOOLEAN | X |  |  |  | Cờ dữ liệu có thể khai thác. |
-| 25 | reissue_hsm | STRING | X |  |  |  | Thông tin HSM khi cấp CCHN điện tử. |
-| 26 | note | STRING | X |  |  |  | Ghi chú bổ sung. |
-| 27 | scr_prac_id | STRING |  |  | F |  | FK đến Securities Practitioner. |
-| 28 | scr_prac_code | STRING |  |  |  |  | Mã người hành nghề. |
-| 29 | license_ctf_doc_id | STRING | X |  | F |  | FK đến License Certificate Document (CCHN trong sổ đăng bộ). |
-| 30 | license_ctf_doc_code | STRING | X |  |  |  | Mã CCHN trong sổ đăng bộ. |
-| 31 | prev_license_ctf_doc_id | STRING | X |  | F |  | FK đến CCHN cũ (khi cấp lại). |
-| 32 | prev_license_ctf_doc_code | STRING | X |  |  |  | Mã CCHN cũ. |
-| 33 | exam_ases_id | STRING | X |  | F |  | FK đến Exam Session (đợt thi sát hạch liên quan — nullable). |
-| 34 | exam_ases_code | STRING | X |  |  |  | Mã đợt thi sát hạch. |
-| 35 | assignee_ofcr_id | STRING | X |  | F |  | FK đến Regulatory Authority Officer — cán bộ được phân công xử lý hồ sơ. |
-| 36 | assignee_ofcr_code | STRING | X |  |  |  | Mã cán bộ được phân công. |
-| 37 | info_verify_ofcr_id | STRING | X |  | F |  | FK đến Regulatory Authority Officer — cán bộ xác minh thông tin. |
-| 38 | info_verify_ofcr_code | STRING | X |  |  |  | Mã cán bộ xác minh thông tin. |
-
-
-#### Constraint
-
-**Khóa chính (Primary Key):**
-
-| Tên trường |
-|---|
-| scr_prac_license_ap_id |
-
-
-
-**Khóa phụ (Foreign Key):**
-
-| Tên trường | Bảng tham chiếu | Cột tham chiếu |
-|---|---|---|
-| scr_prac_id | scr_prac | scr_prac_id |
-| license_ctf_doc_id | scr_prac_license_ctf_doc | scr_prac_license_ctf_doc_id |
-| prev_license_ctf_doc_id | scr_prac_license_ctf_doc | scr_prac_license_ctf_doc_id |
-| exam_ases_id | scr_prac_qualf_exam_ases | scr_prac_qualf_exam_ases_id |
-| assignee_ofcr_id | reg_ahr_ofcr | reg_ahr_ofcr_id |
-| info_verify_ofcr_id | reg_ahr_ofcr | reg_ahr_ofcr_id |
-
-
-
-#### Index
-
-N/A
-
-#### Trigger
-
-N/A
-
-
-
-
-### Bảng scr_prac_license_ap_ed_ctf_doc
-
-
-
-| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
-|---|---|---|---|---|---|---|---|
-| 1 | scr_prac_license_ap_ed_ctf_doc_id | STRING |  | X | P |  | Id tự sinh (surrogate key) |
-| 2 | scr_prac_license_ap_ed_ctf_doc_code | STRING |  |  |  |  | Mã định danh bản ghi chuyên môn. BK |
-| 3 | license_ap_id | STRING |  |  | F |  | FK đến License Application (hồ sơ đăng ký) |
-| 4 | license_ap_code | STRING |  |  |  |  | Mã hồ sơ đăng ký. Lookup pair |
-| 5 | specialization_tp_code | STRING |  |  |  |  | Mã loại chuyên môn (Classification Value) |
-| 6 | ctf_issu_dt | DATE | X |  |  |  | Ngày cấp chứng chỉ chuyên môn |
-| 7 | ctf_issu_plc | STRING | X |  |  |  | Nơi cấp chứng chỉ chuyên môn |
-| 8 | aprs_st_code | STRING |  |  |  |  | Trạng thái thẩm định chứng chỉ (Classification Value) |
-| 9 | aprs_completed_dt | TIMESTAMP | X |  |  |  | Thời điểm thẩm định hoàn tất |
-| 10 | appraised_by_ofcr_id | STRING | X |  | F |  | FK đến cán bộ thẩm định (Regulatory Authority Officer) |
-| 11 | appraised_by_ofcr_code | STRING | X |  |  |  | Mã cán bộ thẩm định. Lookup pair |
-| 12 | attch_files | STRING | X |  |  |  | Danh sách file đính kèm (JSON CLOB) |
-| 13 | note | STRING | X |  |  |  | Ghi chú bổ sung |
-| 14 | src_stm_code | STRING |  |  |  | 'NHNCK.APPLICATION_SPECIALIZATIONS' | Mã hệ thống nguồn (ETL-derived) |
-
-
-#### Constraint
-
-**Khóa chính (Primary Key):**
-
-| Tên trường |
-|---|
-| scr_prac_license_ap_ed_ctf_doc_id |
-
-
-
-**Khóa phụ (Foreign Key):**
-
-| Tên trường | Bảng tham chiếu | Cột tham chiếu |
-|---|---|---|
-| license_ap_id |  |  |
-| appraised_by_ofcr_id | reg_ahr_ofcr | reg_ahr_ofcr_id |
-
-
-
-#### Index
-
-N/A
-
-#### Trigger
-
-N/A
-
-
-
-
-### Bảng scr_prac_license_ap_re-exam_rqs
-
-
-
-| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
-|---|---|---|---|---|---|---|---|
-| 1 | scr_prac_license_ap_re-exam_rqs_id | STRING |  | X | P |  | Id tự sinh (surrogate key) |
-| 2 | scr_prac_license_ap_re-exam_rqs_code | STRING |  |  |  |  | Mã định danh. BK |
-| 3 | src_stm_code | STRING |  |  |  | 'NHNCK.APPLICATION_RE_EXAMS' | Mã nguồn dữ liệu |
-| 4 | license_ap_id | STRING |  |  | F |  | FK đến hồ sơ gốc đã thi trượt |
-| 5 | license_ap_code | STRING |  |  |  |  | Mã hồ sơ gốc |
-| 6 | exam_ases_rslt_id | STRING |  |  | F |  | FK đến kết quả thi trượt |
-| 7 | exam_ases_rslt_code | STRING |  |  |  |  | Mã kết quả thi trượt |
-| 8 | re-exam_license_ap_id | STRING | X |  | F |  | FK đến hồ sơ thi lại mới (nullable — chưa nộp) |
-| 9 | re-exam_license_ap_code | STRING | X |  |  |  | Mã hồ sơ thi lại mới |
-| 10 | rcrd_st_code | STRING |  |  |  |  | Trạng thái bản ghi (1=Hoạt động) |
-| 11 | crt_by_ofcr_id | STRING | X |  | F |  | FK đến Officer tạo bản ghi |
-| 12 | crt_by_ofcr_code | STRING | X |  |  |  | Mã người tạo |
-| 13 | udt_by_ofcr_id | STRING | X |  | F |  | FK đến Officer cập nhật bản ghi |
-| 14 | udt_by_ofcr_code | STRING | X |  |  |  | Mã người cập nhật |
-| 15 | crt_tms | TIMESTAMP | X |  |  |  | Thời điểm tạo |
-| 16 | udt_tms | TIMESTAMP | X |  |  |  | Thời điểm cập nhật |
-
-
-#### Constraint
-
-**Khóa chính (Primary Key):**
-
-| Tên trường |
-|---|
-| scr_prac_license_ap_re-exam_rqs_id |
-
-
-
-**Khóa phụ (Foreign Key):**
-
-| Tên trường | Bảng tham chiếu | Cột tham chiếu |
-|---|---|---|
-| license_ap_id | scr_prac_license_ap |  |
-| exam_ases_rslt_id | scr_prac_qualf_exam_ases_rslt |  |
-| re-exam_license_ap_id | scr_prac_license_ap |  |
-| crt_by_ofcr_id | reg_ahr_ofcr |  |
-| udt_by_ofcr_id | reg_ahr_ofcr |  |
-
-
-
-#### Index
-
-N/A
-
-#### Trigger
-
-N/A
-
-
-
-
-### Bảng scr_prac_license_ctf_doc
-
-
-
-| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
-|---|---|---|---|---|---|---|---|
-| 1 | scr_prac_license_ctf_doc_id | STRING |  | X | P |  | Surrogate key cho chứng chỉ hành nghề chứng khoán |
-| 2 | scr_prac_license_ctf_doc_code | STRING |  |  |  |  | Business key từ CERTIFICATE_RECORDS.ID |
-| 3 | ctf_nbr | STRING |  |  |  |  | Số chứng chỉ hành nghề |
-| 4 | ctf_tp_code | STRING |  |  |  |  | Phân loại loại chứng chỉ (CCHN) |
-| 5 | scr_prac_id | STRING |  |  | F |  | FK đến Securities Practitioner |
-| 6 | scr_prac_code | STRING |  |  |  |  | Mã nghiệp vụ của người hành nghề |
-| 7 | issu_license_dcsn_id | STRING |  |  | F |  | FK đến quyết định cấp chứng chỉ |
-| 8 | issu_license_dcsn_code | STRING |  |  |  |  | Mã nghiệp vụ của quyết định cấp |
-| 9 | revocation_license_dcsn_id | STRING | X |  | F |  | FK đến quyết định thu hồi chứng chỉ |
-| 10 | revocation_license_dcsn_code | STRING | X |  |  |  | Mã nghiệp vụ của quyết định thu hồi |
-| 11 | cncl_license_dcsn_id | STRING | X |  | F |  | FK đến quyết định hủy chứng chỉ |
-| 12 | cncl_license_dcsn_code | STRING | X |  |  |  | Mã nghiệp vụ của quyết định hủy |
-| 13 | issu_dt | DATE |  |  |  |  | Ngày cấp chứng chỉ hành nghề |
-| 14 | revocation_dt | DATE | X |  |  |  | Ngày thu hồi chứng chỉ hành nghề |
-| 15 | revocation_rsn | STRING | X |  |  |  | Lý do thu hồi chứng chỉ hành nghề |
-| 16 | prac_nm_at_issn | STRING | X |  |  |  | Tên người hành nghề tại thời điểm cấp chứng chỉ (snapshot) |
-| 17 | reissuance_allowed_cnt | INT |  |  |  |  | Số lần được phép cấp lại chứng chỉ (0 = không được cấp lại) |
-| 18 | pcs_st_code | STRING |  |  |  |  | Trạng thái xử lý chứng chỉ (1=Đã cấp 2=Đã ký nháy 3=Đã ký 4=Đã trả) |
-| 19 | ctf_file_path | STRING | X |  |  |  | Đường dẫn file chứng chỉ số |
-| 20 | cnvr_st_code | STRING |  |  |  |  | Trạng thái chuyển đổi chứng chỉ (1=Giấy 2=Chờ điện tử 3=Chứng chỉ số) |
-| 21 | rcrd_st_code | STRING |  |  |  |  | Trạng thái hiệu lực của bản ghi chứng chỉ (1=Hoạt động) |
-| 22 | dsc | STRING | X |  |  |  | Mô tả bổ sung cho chứng chỉ hành nghề |
-| 23 | src_stm_code | STRING |  |  |  | 'NHNCK.CERTIFICATE_RECORDS' | Mã hệ thống nguồn ETL-derived |
-
-
-#### Constraint
-
-**Khóa chính (Primary Key):**
-
-| Tên trường |
-|---|
-| scr_prac_license_ctf_doc_id |
-
-
-
-**Khóa phụ (Foreign Key):**
-
-| Tên trường | Bảng tham chiếu | Cột tham chiếu |
-|---|---|---|
-| scr_prac_id | scr_prac | scr_prac_id |
-| issu_license_dcsn_id |  |  |
-| revocation_license_dcsn_id |  |  |
-| cncl_license_dcsn_id |  |  |
-
-
-
-#### Index
-
-N/A
-
-#### Trigger
-
-N/A
-
-
-
-
-### Bảng scr_prac_license_dcsn_doc
-
-
-
-| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
-|---|---|---|---|---|---|---|---|
-| 1 | scr_prac_license_dcsn_doc_id | STRING |  | X | P |  | Surrogate key cho quyết định hành chính |
-| 2 | scr_prac_license_dcsn_doc_code | STRING |  |  |  |  | Business key từ PK nguồn DECISIONS.ID |
-| 3 | dcsn_nbr | STRING | X |  |  |  | Số hiệu quyết định hành chính (VD: 123/QĐ-UBCK) |
-| 4 | dcsn_ttl | STRING | X |  |  |  | Tiêu đề/tên quyết định hành chính |
-| 5 | lgl_refr | STRING | X |  |  |  | Căn cứ pháp lý của quyết định |
-| 6 | dcsn_cntnt | STRING | X |  |  |  | Nội dung đầy đủ của quyết định |
-| 7 | dcsn_signed_dt | DATE | X |  |  |  | Ngày ký ban hành quyết định |
-| 8 | signatory_nm | STRING | X |  |  |  | Họ tên người ký quyết định |
-| 9 | signatory_pos | STRING | X |  |  |  | Chức vụ của người ký quyết định |
-| 10 | issu_org_nm | STRING | X |  |  |  | Tên đơn vị ban hành quyết định (VD: Ủy ban Chứng khoán Nhà nước) |
-| 11 | attch_file_nm | STRING | X |  |  |  | Tên file văn bản đính kèm |
-| 12 | attch_file_path | STRING | X |  |  |  | Đường dẫn lưu trữ file đính kèm |
-| 13 | dcsn_tp_code | STRING |  |  |  |  | Loại quyết định hành chính (Cấp mới / Thu hồi / Cấp lại / ...) |
-| 14 | rcrd_st_code | STRING |  |  |  |  | Trạng thái hiệu lực của bản ghi quyết định |
-| 15 | notf_cntnt | STRING | X |  |  |  | Nội dung thông báo hoặc yêu cầu bổ sung hồ sơ kèm theo |
-| 16 | actv_f | BOOLEAN |  |  |  |  | Cờ đánh dấu quyết định đang được sử dụng (1=Đang dùng; 0=Vô hiệu) |
-| 17 | src_stm_code | STRING |  |  |  | 'NHNCK.DECISIONS' | Mã hệ thống nguồn của bản ghi |
-
-
-#### Constraint
-
-**Khóa chính (Primary Key):**
-
-| Tên trường |
-|---|
-| scr_prac_license_dcsn_doc_id |
+| sp_professional_training_class_id |
 
 
 
@@ -662,53 +142,603 @@ N/A
 
 
 
-### Bảng scr_prac_org_emp_rpt
+### Bảng sp_professional_training_class_enrollment
 
 
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | scr_prac_org_emp_rpt_id | STRING |  | X | P |  | Khóa đại diện cho báo cáo danh sách NHNCK tại tổ chức (surrogate key). |
-| 2 | scr_prac_org_emp_rpt_code | STRING |  |  |  |  | Mã định danh kỹ thuật (BK). Map từ PK bảng nguồn. |
+| 1 | sp_professional_training_class_enrollment_id | STRING |  | X | P |  | Id tự sinh (surrogate key) |
+| 2 | sp_professional_training_class_enrollment_code | STRING |  |  |  |  | Mã định danh (BK từ PK nguồn) |
+| 3 | src_stm_code | STRING |  |  |  | 'NHNCK.SPECIALIZATION_COURSE_DETAILS' | Mã nguồn dữ liệu |
+| 4 | sp_professional_training_class_id | STRING |  |  | F |  | FK đến lớp đào tạo nghiệp vụ chứng khoán |
+| 5 | sp_professional_training_class_code | STRING |  |  |  |  | Mã lớp đào tạo |
+| 6 | sp_id | STRING |  |  | F |  | FK đến người hành nghề chứng khoán |
+| 7 | sp_code | STRING |  |  |  |  | Mã người hành nghề |
+| 8 | specialization_tp_code | STRING |  |  |  |  | Loại chuyên ngành đào tạo |
+| 9 | exam_nbr | STRING | X |  |  |  | Số báo danh dự thi |
+| 10 | practitioner_nm_at_enrollment | STRING | X |  |  |  | Họ tên học viên tại thời điểm đăng ký (snapshot) |
+| 11 | practitioner_birth_dt_at_enrollment | DATE | X |  |  |  | Ngày sinh tại thời điểm đăng ký (snapshot) |
+| 12 | place_of_birth | STRING | X |  |  |  | Nơi sinh (snapshot) |
+| 13 | permanent_residence_country_id | STRING | X |  | F |  | FK đến quốc gia thường trú (snapshot) |
+| 14 | permanent_residence_country_code | STRING | X |  |  |  | Mã quốc gia thường trú |
+| 15 | permanent_residence_province_id | STRING | X |  | F |  | FK đến tỉnh/thành thường trú (snapshot) |
+| 16 | permanent_residence_province_code | STRING | X |  |  |  | Mã tỉnh/thành thường trú |
+| 17 | permanent_residence_district_id | STRING | X |  | F |  | FK đến quận/huyện thường trú (snapshot) |
+| 18 | permanent_residence_district_code | STRING | X |  |  |  | Mã quận/huyện thường trú |
+| 19 | practitioner_identity_tp_code_at_enrollment | STRING | X |  |  |  | Loại giấy tờ định danh tại thời điểm đăng ký (snapshot) |
+| 20 | practitioner_identity_nbr_at_enrollment | STRING | X |  |  |  | Số định danh tại thời điểm đăng ký (snapshot) |
+| 21 | practitioner_identity_issue_dt_at_enrollment | DATE | X |  |  |  | Ngày cấp giấy tờ định danh (snapshot) |
+| 22 | practitioner_identity_issue_place_at_enrollment | STRING | X |  |  |  | Nơi cấp giấy tờ định danh (snapshot) |
+| 23 | exam_score | DECIMAL(5,2) | X |  |  |  | Điểm thi |
+| 24 | training_result_code | STRING | X |  |  |  | Kết quả đào tạo (-1=Không thi, 0=Không đạt, 1=Đạt) |
+| 25 | description | STRING | X |  |  |  | Mô tả |
+| 26 | note | STRING | X |  |  |  | Ghi chú |
+| 27 | assignee_officer_id | STRING | X |  | F |  | FK đến cán bộ phụ trách (nullable) |
+| 28 | assignee_officer_code | STRING | X |  |  |  | Mã cán bộ phụ trách |
+
+
+#### Constraint
+
+**Khóa chính (Primary Key):**
+
+| Tên trường |
+|---|
+| sp_professional_training_class_enrollment_id |
+
+
+
+**Khóa phụ (Foreign Key):**
+
+| Tên trường | Bảng tham chiếu | Cột tham chiếu |
+|---|---|---|
+| sp_id | securities_practitioner | sp_id |
+
+
+
+#### Index
+
+N/A
+
+#### Trigger
+
+N/A
+
+
+
+
+### Bảng sp_qualification_examination_assessment
+
+
+
+| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
+|---|---|---|---|---|---|---|---|
+| 1 | sp_qualification_examination_assessment_id | STRING |  | X | P |  | Id tự sinh (surrogate key) |
+| 2 | sp_qualification_examination_assessment_code | STRING |  |  |  |  | Mã định danh nghiệp vụ đợt thi. BK |
+| 3 | src_stm_code | STRING |  |  |  | 'NHNCK.EXAM_SESSIONS' | Mã hệ thống nguồn |
+| 4 | assessment_nm | STRING | X |  |  |  | Tên hiển thị đợt thi |
+| 5 | rpt_year | INT | X |  |  |  | Năm báo cáo (YYYY) |
+| 6 | examination_session_nbr | INT | X |  |  |  | Kỳ thi trong năm (1, 2…) |
+| 7 | organizing_unit_nm | STRING | X |  |  |  | Tên đơn vị tổ chức thi |
+| 8 | application_registration_start_dt | STRING | X |  |  |  | Ngày bắt đầu nhận đăng ký |
+| 9 | application_registration_end_dt | STRING | X |  |  |  | Ngày kết thúc nhận đăng ký |
+| 10 | examination_start_dt | STRING | X |  |  |  | Ngày bắt đầu thi |
+| 11 | examination_end_dt | STRING | X |  |  |  | Ngày kết thúc thi |
+| 12 | result_notification_dt | STRING | X |  |  |  | Ngày thông báo kết quả thi |
+| 13 | examination_locations | STRING | X |  |  |  | Địa điểm tổ chức thi |
+| 14 | submission_methods | STRING | X |  |  |  | Phương thức nộp hồ sơ |
+| 15 | notification_file_path | STRING | X |  |  |  | Đường dẫn file thông báo kết quả |
+| 16 | sp_license_decision_document_id | STRING | X |  | F |  | FK đến quyết định cấp chứng chỉ liên quan đợt thi |
+| 17 | sp_license_decision_document_code | STRING | X |  |  |  | Mã quyết định cấp chứng chỉ |
+| 18 | bank_code | STRING | X |  |  |  | Mã ngân hàng thu phí |
+| 19 | bank_account_nbr | STRING | X |  |  |  | Số tài khoản ngân hàng thu phí |
+| 20 | bank_account_nm | STRING | X |  |  |  | Tên chủ tài khoản ngân hàng thu phí |
+
+
+#### Constraint
+
+**Khóa chính (Primary Key):**
+
+| Tên trường |
+|---|
+| sp_qualification_examination_assessment_id |
+
+
+
+**Khóa phụ (Foreign Key):**
+
+| Tên trường | Bảng tham chiếu | Cột tham chiếu |
+|---|---|---|
+| sp_license_decision_document_id | sp_license_decision_document | sp_license_decision_document_id |
+
+
+
+#### Index
+
+N/A
+
+#### Trigger
+
+N/A
+
+
+
+
+### Bảng sp_qualification_examination_assessment_result
+
+
+
+| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
+|---|---|---|---|---|---|---|---|
+| 1 | sp_qualification_examination_assessment_result_id | STRING |  | X | P |  | Id tự sinh (surrogate key) |
+| 2 | sp_qualification_examination_assessment_result_code | STRING |  |  |  |  | Mã định danh nghiệp vụ. BK |
+| 3 | src_stm_code | STRING |  |  |  | 'NHNCK.EXAM_DETAILS' | Mã nguồn dữ liệu |
+| 4 | sp_qualification_examination_assessment_id | STRING |  |  | F |  | FK đến đợt thi sát hạch |
+| 5 | sp_qualification_examination_assessment_code | STRING |  |  |  |  | Mã đợt thi sát hạch |
+| 6 | sp_id | STRING |  |  | F |  | FK đến người hành nghề |
+| 7 | sp_code | STRING |  |  |  |  | Mã người hành nghề |
+| 8 | sp_license_certificate_tp_id | STRING |  |  | F |  | FK đến loại chứng chỉ dự thi |
+| 9 | sp_license_certificate_tp_code | STRING |  |  |  |  | Mã loại chứng chỉ dự thi (denormalized lookup) |
+| 10 | sp_license_application_id | STRING | X |  | F |  | FK đến hồ sơ đăng ký |
+| 11 | sp_license_application_code | STRING | X |  |  |  | Mã hồ sơ đăng ký |
+| 12 | sequence_nbr | INT | X |  |  |  | Số thứ tự dự thi trong đợt thi |
+| 13 | exam_nbr | STRING | X |  |  |  | Số báo danh |
+| 14 | law_score | INT | X |  |  |  | Điểm thi pháp luật |
+| 15 | law_result_code | STRING | X |  |  |  | Kết quả thi pháp luật (-1: Không thi, 0: Không đạt, 1: Đạt) |
+| 16 | specialization_score | INT | X |  |  |  | Điểm thi chuyên ngành |
+| 17 | specialization_result_code | STRING | X |  |  |  | Kết quả thi chuyên ngành (-1: Không thi, 0: Không đạt, 1: Đạt) |
+| 18 | overall_result_code | STRING | X |  |  |  | Kết quả thi tổng thể (-1: Không thi, 0: Không đạt, 1: Đạt) |
+| 19 | examination_note | STRING | X |  |  |  | Ghi chú |
+
+
+#### Constraint
+
+**Khóa chính (Primary Key):**
+
+| Tên trường |
+|---|
+| sp_qualification_examination_assessment_result_id |
+
+
+
+**Khóa phụ (Foreign Key):**
+
+| Tên trường | Bảng tham chiếu | Cột tham chiếu |
+|---|---|---|
+| sp_id | securities_practitioner | sp_id |
+
+
+
+#### Index
+
+N/A
+
+#### Trigger
+
+N/A
+
+
+
+
+### Bảng sp_qualification_examination_assessment_fee
+
+
+
+| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
+|---|---|---|---|---|---|---|---|
+| 1 | sp_qualification_examination_assessment_fee_id | STRING |  | X | P |  | Id tự sinh (surrogate key) |
+| 2 | sp_qualification_examination_assessment_fee_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK |
+| 3 | src_stm_code | STRING |  |  |  | 'NHNCK.EXAM_SESSION_FEES' | Mã nguồn dữ liệu |
+| 4 | sp_qualification_examination_assessment_id | STRING |  |  | F |  | FK đến đợt thi (Exam Assessment) |
+| 5 | sp_qualification_examination_assessment_code | STRING |  |  |  |  | Mã đợt thi |
+| 6 | sp_license_certificate_tp_id | STRING |  |  | F |  | FK đến loại chứng chỉ |
+| 7 | sp_license_certificate_tp_code | STRING |  |  |  |  | Mã loại chứng chỉ (denormalized lookup) |
+| 8 | examination_fee_amt | DECIMAL(23,2) | X |  |  |  | Mức phí dự thi (VNĐ) |
+| 9 | appeal_fee_amt | DECIMAL(23,2) | X |  |  |  | Mức phí phúc khảo (VNĐ) |
+
+
+#### Constraint
+
+**Khóa chính (Primary Key):**
+
+| Tên trường |
+|---|
+| sp_qualification_examination_assessment_fee_id |
+
+
+
+**Khóa phụ (Foreign Key):**
+
+| Tên trường | Bảng tham chiếu | Cột tham chiếu |
+|---|---|---|
+| sp_qualification_examination_assessment_id | sp_qualification_examination_assessment | sp_qualification_examination_assessment_id |
+
+
+
+#### Index
+
+N/A
+
+#### Trigger
+
+N/A
+
+
+
+
+### Bảng sp_license_application
+
+
+
+| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
+|---|---|---|---|---|---|---|---|
+| 1 | sp_license_application_id | STRING |  | X | P |  | Id tự sinh (surrogate key). |
+| 2 | sp_license_application_code | STRING |  |  |  |  | Mã hồ sơ đăng ký do hệ thống sinh — BK của entity. |
+| 3 | src_stm_code | STRING |  |  |  | 'NHNCK.APPLICATIONS' | Mã hệ thống nguồn. |
+| 4 | application_tp_code | STRING |  |  |  |  | Loại hồ sơ. |
+| 5 | cl_application_status_id | STRING |  |  | F |  | FK đến trạng thái hồ sơ hiện tại. |
+| 6 | cl_application_status_code | STRING |  |  |  |  | Mã trạng thái hồ sơ hiện tại (denormalized lookup). |
+| 7 | registration_tp_code | STRING |  |  |  |  | Nguồn tiếp nhận hồ sơ. |
+| 8 | sp_license_certificate_tp_id | STRING |  |  | F |  | FK đến loại chứng chỉ hành nghề đăng ký. |
+| 9 | sp_license_certificate_tp_code | STRING |  |  |  |  | Mã loại chứng chỉ hành nghề đăng ký (denormalized lookup) |
+| 10 | title | STRING | X |  |  |  | Tiêu đề hoặc tên nhóm hồ sơ. |
+| 11 | submission_dt | DATE | X |  |  |  | Ngày nộp hồ sơ chính thức. |
+| 12 | supplement_dt | DATE | X |  |  |  | Ngày nộp bổ sung hồ sơ. |
+| 13 | supplement_letter_dt | DATE | X |  |  |  | Ngày ban hành công văn yêu cầu bổ sung hồ sơ. |
+| 14 | certificate_nbr | STRING | X |  |  |  | Số CCHN cấp cho người hành nghề. |
+| 15 | issue_dt | DATE | X |  |  |  | Ngày cấp CCHN. |
+| 16 | previous_certificate_nbr | STRING | X |  |  |  | Số CCHN cũ trước khi cấp lại. |
+| 17 | previous_issue_dt | DATE | X |  |  |  | Ngày cấp CCHN cũ. |
+| 18 | previous_sp_license_certificate_tp_id | STRING | X |  | F |  | FK đến loại CCHN cũ khi cấp lại. |
+| 19 | previous_sp_license_certificate_tp_code | STRING | X |  |  |  | Mã loại CCHN cũ khi cấp lại (denormalized lookup) |
+| 20 | reissue_reason | STRING | X |  |  |  | Lý do xin cấp lại CCHN. |
+| 21 | rejection_reason | STRING | X |  |  |  | Lý do trả lại hoặc từ chối hồ sơ. |
+| 22 | certificate_receipt_method_code | STRING | X |  |  |  | Phương thức nhận CCHN. |
+| 23 | certificate_receipt_adr | STRING | X |  |  |  | Địa chỉ nhận CCHN qua bưu điện. |
+| 24 | certificate_receipt_phone | STRING | X |  |  |  | Số điện thoại liên lạc khi nhận CCHN. |
+| 25 | receipt_status_code | STRING | X |  |  |  | Trạng thái nhận CCHN. |
+| 26 | violated_ind | INT | X |  |  |  | Cờ người hành nghề vi phạm quy định. |
+| 27 | data_exploitable_ind | INT | X |  |  |  | Cờ dữ liệu có thể khai thác. |
+| 28 | reissue_hsm | STRING | X |  |  |  | Thông tin HSM khi cấp CCHN điện tử. |
+| 29 | note | STRING | X |  |  |  | Ghi chú bổ sung. |
+| 30 | sp_id | STRING |  |  | F |  | FK đến Securities Practitioner. |
+| 31 | sp_code | STRING |  |  |  |  | Mã người hành nghề. |
+| 32 | sp_license_certificate_document_id | STRING | X |  | F |  | FK đến License Certificate Document (CCHN trong sổ đăng bộ). |
+| 33 | sp_license_certificate_document_code | STRING | X |  |  |  | Mã CCHN trong sổ đăng bộ. |
+| 34 | previous_sp_license_certificate_document_id | STRING | X |  | F |  | FK đến CCHN cũ (khi cấp lại). |
+| 35 | previous_sp_license_certificate_document_code | STRING | X |  |  |  | Mã CCHN cũ. |
+| 36 | sp_qualification_examination_assessment_id | STRING | X |  | F |  | FK đến Exam Session (đợt thi sát hạch liên quan — nullable). |
+| 37 | sp_qualification_examination_assessment_code | STRING | X |  |  |  | Mã đợt thi sát hạch. |
+| 38 | assignee_officer_id | STRING | X |  | F |  | FK đến Regulatory Authority Officer — cán bộ được phân công xử lý hồ sơ. |
+| 39 | assignee_officer_code | STRING | X |  |  |  | Mã cán bộ được phân công. |
+| 40 | info_verify_officer_id | STRING | X |  | F |  | FK đến Regulatory Authority Officer — cán bộ xác minh thông tin. |
+| 41 | info_verify_officer_code | STRING | X |  |  |  | Mã cán bộ xác minh thông tin. |
+| 42 | public_service_portal_content_item_code | STRING | X |  |  |  | ContentItemId hồ sơ TTHC trên DVC (MCĐT). |
+
+
+#### Constraint
+
+**Khóa chính (Primary Key):**
+
+| Tên trường |
+|---|
+| sp_license_application_id |
+
+
+
+**Khóa phụ (Foreign Key):**
+
+| Tên trường | Bảng tham chiếu | Cột tham chiếu |
+|---|---|---|
+| sp_id | securities_practitioner | sp_id |
+| sp_license_certificate_document_id | sp_license_certificate_document | sp_license_certificate_document_id |
+| previous_sp_license_certificate_document_id | sp_license_certificate_document | sp_license_certificate_document_id |
+| sp_qualification_examination_assessment_id | sp_qualification_examination_assessment | sp_qualification_examination_assessment_id |
+
+
+
+#### Index
+
+N/A
+
+#### Trigger
+
+N/A
+
+
+
+
+### Bảng sp_license_application_education_certificate_document
+
+
+
+| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
+|---|---|---|---|---|---|---|---|
+| 1 | sp_license_application_education_certificate_document_id | STRING |  | X | P |  | Id tự sinh (surrogate key) |
+| 2 | sp_license_application_education_certificate_document_code | STRING |  |  |  |  | Mã định danh bản ghi chuyên môn. BK |
+| 3 | src_stm_code | STRING |  |  |  | 'NHNCK.APPLICATION_SPECIALIZATIONS' | Mã hệ thống nguồn (ETL-derived) |
+| 4 | sp_license_application_id | STRING |  |  | F |  | FK đến License Application (hồ sơ đăng ký) |
+| 5 | sp_license_application_code | STRING |  |  |  |  | Mã hồ sơ đăng ký. Lookup pair |
+| 6 | cl_specialization_id | STRING |  |  | F |  | FK đến chuyên ngành CCHN đăng ký |
+| 7 | cl_specialization_code | STRING |  |  |  |  | Mã chuyên ngành CCHN đăng ký (denormalized lookup) |
+| 8 | certificate_issue_dt | DATE | X |  |  |  | Ngày cấp chứng chỉ chuyên môn |
+| 9 | certificate_issue_place | STRING | X |  |  |  | Nơi cấp chứng chỉ chuyên môn |
+| 10 | appraisal_completed_dt | TIMESTAMP | X |  |  |  | Thời điểm thẩm định hoàn tất |
+| 11 | appraised_by_officer_id | STRING | X |  | F |  | FK đến cán bộ thẩm định (Regulatory Authority Officer) |
+| 12 | appraised_by_officer_code | STRING | X |  |  |  | Mã cán bộ thẩm định. Lookup pair |
+| 13 | attachment_files | STRING | X |  |  |  | Danh sách file đính kèm (JSON CLOB) |
+| 14 | note | STRING | X |  |  |  | Ghi chú bổ sung |
+
+
+#### Constraint
+
+**Khóa chính (Primary Key):**
+
+| Tên trường |
+|---|
+| sp_license_application_education_certificate_document_id |
+
+
+
+**Khóa phụ (Foreign Key):**
+
+*Không có Foreign Key.*
+
+
+#### Index
+
+N/A
+
+#### Trigger
+
+N/A
+
+
+
+
+### Bảng sp_license_application_re_exam_request
+
+
+
+| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
+|---|---|---|---|---|---|---|---|
+| 1 | sp_license_application_re_exam_request_id | STRING |  | X | P |  | Id tự sinh (surrogate key) |
+| 2 | sp_license_application_re_exam_request_code | STRING |  |  |  |  | Mã định danh. BK |
+| 3 | src_stm_code | STRING |  |  |  | 'NHNCK.APPLICATION_RE_EXAMS' | Mã nguồn dữ liệu |
+| 4 | sp_license_application_id | STRING |  |  | F |  | FK đến hồ sơ gốc đã thi trượt |
+| 5 | sp_license_application_code | STRING |  |  |  |  | Mã hồ sơ gốc |
+| 6 | sp_qualification_examination_assessment_result_id | STRING |  |  | F |  | FK đến kết quả thi trượt |
+| 7 | sp_qualification_examination_assessment_result_code | STRING |  |  |  |  | Mã kết quả thi trượt |
+| 8 | re_exam_sp_license_application_id | STRING | X |  | F |  | FK đến hồ sơ thi lại mới (nullable — chưa nộp) |
+| 9 | re_exam_sp_license_application_code | STRING | X |  |  |  | Mã hồ sơ thi lại mới |
+
+
+#### Constraint
+
+**Khóa chính (Primary Key):**
+
+| Tên trường |
+|---|
+| sp_license_application_re_exam_request_id |
+
+
+
+**Khóa phụ (Foreign Key):**
+
+| Tên trường | Bảng tham chiếu | Cột tham chiếu |
+|---|---|---|
+| sp_qualification_examination_assessment_result_id | sp_qualification_examination_assessment_result | sp_qualification_examination_assessment_result_id |
+
+
+
+#### Index
+
+N/A
+
+#### Trigger
+
+N/A
+
+
+
+
+### Bảng sp_license_certificate_document
+
+
+
+| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
+|---|---|---|---|---|---|---|---|
+| 1 | sp_license_certificate_document_id | STRING |  | X | P |  | Surrogate key cho chứng chỉ hành nghề chứng khoán |
+| 2 | sp_license_certificate_document_code | STRING |  |  |  |  | Business key từ CERTIFICATE_RECORDS.ID |
+| 3 | src_stm_code | STRING |  |  |  | 'NHNCK.CERTIFICATE_RECORDS' | Mã hệ thống nguồn ETL-derived |
+| 4 | certificate_nbr | STRING |  |  |  |  | Số chứng chỉ hành nghề |
+| 5 | sp_license_certificate_tp_id | STRING |  |  | F |  | FK đến loại chứng chỉ hành nghề (CCHN) |
+| 6 | sp_license_certificate_tp_code | STRING |  |  |  |  | Mã loại chứng chỉ (denormalized lookup) |
+| 7 | sp_id | STRING |  |  | F |  | FK đến Securities Practitioner |
+| 8 | sp_code | STRING |  |  |  |  | Mã nghiệp vụ của người hành nghề |
+| 9 | issue_sp_license_decision_document_id | STRING |  |  | F |  | FK đến quyết định cấp chứng chỉ |
+| 10 | issue_sp_license_decision_document_code | STRING |  |  |  |  | Mã nghiệp vụ của quyết định cấp |
+| 11 | revocation_sp_license_decision_document_id | STRING | X |  | F |  | FK đến quyết định thu hồi chứng chỉ |
+| 12 | revocation_sp_license_decision_document_code | STRING | X |  |  |  | Mã nghiệp vụ của quyết định thu hồi |
+| 13 | cancellation_sp_license_decision_document_id | STRING | X |  | F |  | FK đến quyết định hủy chứng chỉ |
+| 14 | cancellation_sp_license_decision_document_code | STRING | X |  |  |  | Mã nghiệp vụ của quyết định hủy |
+| 15 | issue_dt | DATE |  |  |  |  | Ngày cấp chứng chỉ hành nghề |
+| 16 | revocation_dt | DATE | X |  |  |  | Ngày thu hồi chứng chỉ hành nghề |
+| 17 | revocation_reason | STRING | X |  |  |  | Lý do thu hồi chứng chỉ hành nghề |
+| 18 | practitioner_nm_at_issuance | STRING | X |  |  |  | Tên người hành nghề tại thời điểm cấp chứng chỉ (snapshot) |
+| 19 | reissuance_allowed_count | INT |  |  |  |  | Số lần được phép cấp lại chứng chỉ (0 = không được cấp lại) |
+| 20 | process_status_code | STRING |  |  |  |  | Trạng thái xử lý chứng chỉ (1=Đã cấp 2=Đã ký nháy 3=Đã ký 4=Đã trả) |
+| 21 | certificate_file_path | STRING | X |  |  |  | Đường dẫn file chứng chỉ số |
+| 22 | conversion_status_code | STRING |  |  |  |  | Trạng thái chuyển đổi chứng chỉ (1=Giấy 2=Chờ điện tử 3=Chứng chỉ số) |
+| 23 | description | STRING | X |  |  |  | Mô tả bổ sung cho chứng chỉ hành nghề |
+
+
+#### Constraint
+
+**Khóa chính (Primary Key):**
+
+| Tên trường |
+|---|
+| sp_license_certificate_document_id |
+
+
+
+**Khóa phụ (Foreign Key):**
+
+| Tên trường | Bảng tham chiếu | Cột tham chiếu |
+|---|---|---|
+| sp_id | securities_practitioner | sp_id |
+| issue_sp_license_decision_document_id | sp_license_decision_document | sp_license_decision_document_id |
+| revocation_sp_license_decision_document_id | sp_license_decision_document | sp_license_decision_document_id |
+| cancellation_sp_license_decision_document_id | sp_license_decision_document | sp_license_decision_document_id |
+
+
+
+#### Index
+
+N/A
+
+#### Trigger
+
+N/A
+
+
+
+
+### Bảng sp_license_certificate_type
+
+
+
+| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
+|---|---|---|---|---|---|---|---|
+| 1 | sp_license_certificate_tp_id | STRING |  | X | P |  | Id tự sinh (surrogate key) |
+| 2 | sp_license_certificate_tp_code | STRING |  |  |  |  | Mã định danh nghiệp vụ duy nhất của loại chứng chỉ (VD: MGCK, PTTC, QLQ). BK duy nhất — Id hash từ trường này. |
+| 3 | src_stm_code | STRING |  |  |  | 'NHNCK.CERTIFICATES' | Mã nguồn dữ liệu |
+| 4 | certificate_tp_nm | STRING | X |  |  |  | Tên loại chứng chỉ hành nghề (VD: Quản lý quỹ, Phân tích đầu tư, Môi giới CK) |
+| 5 | description | STRING | X |  |  |  | Mô tả chi tiết |
+| 6 | processing_days | INT | X |  |  |  | Số ngày làm việc xử lý hồ sơ theo quy định |
+| 7 | sort_order | INT | X |  |  |  | Thứ tự sắp xếp hiển thị (số nhỏ hơn hiển thị trước) |
+| 8 | displayed_ind | STRING | X |  |  |  | Cờ hiển thị trên giao diện người dùng: 1=Hiển thị, 0=Ẩn |
+| 9 | original_data_ind | STRING | X |  |  |  | Cờ dữ liệu gốc của hệ thống (không được xóa): 1=Dữ liệu gốc, 0=Người dùng tạo |
+
+
+#### Constraint
+
+**Khóa chính (Primary Key):**
+
+| Tên trường |
+|---|
+| sp_license_certificate_tp_id |
+
+
+
+**Khóa phụ (Foreign Key):**
+
+*Không có Foreign Key.*
+
+
+#### Index
+
+N/A
+
+#### Trigger
+
+N/A
+
+
+
+
+### Bảng sp_license_decision_document
+
+
+
+| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
+|---|---|---|---|---|---|---|---|
+| 1 | sp_license_decision_document_id | STRING |  | X | P |  | Surrogate key cho quyết định hành chính |
+| 2 | sp_license_decision_document_code | STRING |  |  |  |  | Business key từ PK nguồn DECISIONS.ID |
+| 3 | src_stm_code | STRING |  |  |  | 'NHNCK.DECISIONS' | Mã hệ thống nguồn của bản ghi |
+| 4 | decision_nbr | STRING | X |  |  |  | Số hiệu quyết định hành chính (VD: 123/QĐ-UBCK) |
+| 5 | decision_title | STRING | X |  |  |  | Tiêu đề/tên quyết định hành chính |
+| 6 | legal_reference | STRING | X |  |  |  | Căn cứ pháp lý của quyết định |
+| 7 | decision_content | STRING | X |  |  |  | Nội dung đầy đủ của quyết định |
+| 8 | decision_signed_dt | DATE | X |  |  |  | Ngày ký ban hành quyết định |
+| 9 | signatory_nm | STRING | X |  |  |  | Họ tên người ký quyết định |
+| 10 | signatory_position | STRING | X |  |  |  | Chức vụ của người ký quyết định |
+| 11 | issuing_organization_nm | STRING | X |  |  |  | Tên đơn vị ban hành quyết định (VD: Ủy ban Chứng khoán Nhà nước) |
+| 12 | attachment_file_nm | STRING | X |  |  |  | Tên file văn bản đính kèm |
+| 13 | attachment_file_path | STRING | X |  |  |  | Đường dẫn lưu trữ file đính kèm |
+| 14 | decision_tp_code | STRING |  |  |  |  | Loại quyết định hành chính (Cấp mới / Thu hồi / Cấp lại / ...) |
+| 15 | notification_content | STRING | X |  |  |  | Nội dung thông báo hoặc yêu cầu bổ sung hồ sơ kèm theo |
+| 16 | active_flag | INT |  |  |  |  | Cờ đánh dấu quyết định đang được sử dụng (1=Đang dùng; 0=Vô hiệu) |
+
+
+#### Constraint
+
+**Khóa chính (Primary Key):**
+
+| Tên trường |
+|---|
+| sp_license_decision_document_id |
+
+
+
+**Khóa phụ (Foreign Key):**
+
+*Không có Foreign Key.*
+
+
+#### Index
+
+N/A
+
+#### Trigger
+
+N/A
+
+
+
+
+### Bảng sp_organization_employment_report
+
+
+
+| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
+|---|---|---|---|---|---|---|---|
+| 1 | sp_organization_employment_rpt_id | STRING |  | X | P |  | Khóa đại diện cho báo cáo danh sách NHNCK tại tổ chức (surrogate key). |
+| 2 | sp_organization_employment_rpt_code | STRING |  |  |  |  | Mã định danh kỹ thuật (BK). Map từ PK bảng nguồn. |
 | 3 | src_stm_code | STRING |  |  |  | 'NHNCK.ORGANIZATION_REPORTS' | Mã hệ thống nguồn. |
-| 4 | scr_org_refr_id | STRING |  |  | F |  | FK đến tổ chức kinh doanh chứng khoán. |
-| 5 | scr_org_refr_code | STRING |  |  |  |  | Mã tổ chức (denormalized). |
-| 6 | scr_prac_id | STRING |  |  | F |  | FK đến người hành nghề chứng khoán. |
-| 7 | scr_prac_code | STRING |  |  |  |  | Mã người hành nghề (denormalized). |
-| 8 | license_ctf_doc_id | STRING | X |  | F |  | FK đến hồ sơ chứng chỉ hành nghề (nullable). |
-| 9 | license_ctf_doc_code | STRING | X |  |  |  | Mã hồ sơ chứng chỉ hành nghề (denormalized). |
-| 10 | ctf_tp_code | STRING | X |  | F |  | Loại chứng chỉ hành nghề tại thời điểm báo cáo. |
-| 11 | prn_rpt_id | STRING | X |  | F |  | FK self-ref — báo cáo gốc được điều chỉnh (nullable). |
-| 12 | prn_rpt_code | STRING | X |  |  |  | Mã báo cáo gốc (denormalized). |
-| 13 | prac_nm_at_rpt | STRING | X |  |  |  | Họ và tên người hành nghề tại thời điểm lập báo cáo (snapshot). |
-| 14 | prac_brth_dt_at_rpt | DATE | X |  |  |  | Ngày sinh người hành nghề tại thời điểm lập báo cáo (snapshot). |
-| 15 | prac_id_nbr_at_rpt | STRING | X |  |  |  | Số định danh cá nhân tại thời điểm lập báo cáo (snapshot). |
-| 16 | prac_pos_at_rpt | STRING | X |  |  |  | Chức vụ của người hành nghề tại tổ chức (snapshot). |
-| 17 | prac_dept_at_rpt | STRING | X |  |  |  | Phòng ban của người hành nghề tại tổ chức (snapshot). |
-| 18 | prac_workplace_at_rpt | STRING | X |  |  |  | Nơi làm việc của người hành nghề tại thời điểm báo cáo (snapshot). |
-| 19 | ctf_nbr_at_rpt | STRING | X |  |  |  | Số chứng chỉ hành nghề tại thời điểm lập báo cáo (snapshot). |
-| 20 | ctf_issu_dt_at_rpt | DATE | X |  |  |  | Ngày cấp chứng chỉ hành nghề tại thời điểm lập báo cáo (snapshot). |
-| 21 | hire_dt | DATE | X |  |  |  | Ngày tuyển dụng vào tổ chức. |
-| 22 | tmt_dt | DATE | X |  |  |  | Ngày chấm dứt hợp đồng lao động (NULL = đang làm việc). |
-| 23 | rpt_dt | DATE | X |  |  |  | Ngày lập báo cáo. |
-| 24 | disciplines | STRING | X |  |  |  | Kỷ luật của người hành nghề tại tổ chức. |
-| 25 | dsc | STRING | X |  |  |  | Mô tả bổ sung cho báo cáo. |
-| 26 | notes | STRING | X |  |  |  | Ghi chú nội bộ. |
-| 27 | bsn_dept_nm | STRING | X |  | F |  | Tên phòng nghiệp vụ UBCKNN phụ trách (denormalized text). |
-| 28 | rpt_file_path | STRING | X |  |  |  | Đường dẫn file báo cáo đính kèm. |
-| 29 | tmt_file_path | STRING | X |  |  |  | Đường dẫn file chấm dứt hợp đồng đính kèm. |
-| 30 | ext_sync_id | STRING | X |  |  |  | Mã đồng bộ từ hệ thống ngoài (FMS/SCMS). |
-| 31 | rcrd_tp_code | STRING | X |  |  |  | Phân loại loại bản ghi báo cáo. |
-| 32 | org_st_code_at_rpt | STRING | X |  |  |  | Trạng thái tổ chức tại thời điểm lập báo cáo. |
-| 33 | rcrd_st_code | STRING |  |  |  |  | Trạng thái bản ghi báo cáo (1=Hoạt động). |
-| 34 | sync_crt_tms | TIMESTAMP | X |  |  |  | Thời điểm tạo bản ghi tại hệ thống đồng bộ nguồn. |
-| 35 | sync_udt_tms | TIMESTAMP | X |  |  |  | Thời điểm cập nhật bản ghi tại hệ thống đồng bộ nguồn. |
-| 36 | crt_tms | TIMESTAMP | X |  |  |  | Thời điểm tạo bản ghi trong NHNCK. |
-| 37 | crt_by_ofcr_id | STRING | X |  | F |  | FK đến nhân viên UBCKNN tạo bản ghi. |
-| 38 | crt_by_ofcr_code | STRING | X |  |  |  | Mã nhân viên tạo bản ghi (denormalized). |
-| 39 | udt_tms | TIMESTAMP | X |  |  |  | Thời điểm cập nhật bản ghi gần nhất. |
-| 40 | udt_by_ofcr_id | STRING | X |  | F |  | FK đến nhân viên UBCKNN cập nhật bản ghi. |
-| 41 | udt_by_ofcr_code | STRING | X |  |  |  | Mã nhân viên cập nhật bản ghi (denormalized). |
+| 4 | data_dt | DATE |  |  |  |  | Thời điểm tạo bản ghi (nguồn: CREATED_AT). Dùng làm căn cứ partition Delta Lake / incremental filter — bảng nguồn có data_change_mode=Append, filter_logic theo created_at (xem BRD/Source/brd_NHNCK.yaml). |
+| 5 | securities_organization_reference_id | STRING |  |  | F |  | FK đến tổ chức kinh doanh chứng khoán. |
+| 6 | securities_organization_reference_code | STRING |  |  |  |  | Mã tổ chức (denormalized). |
+| 7 | sp_id | STRING |  |  | F |  | FK đến người hành nghề chứng khoán. |
+| 8 | sp_code | STRING |  |  |  |  | Mã người hành nghề (denormalized). |
+| 9 | sp_license_certificate_document_id | STRING | X |  | F |  | FK đến hồ sơ chứng chỉ hành nghề (nullable). |
+| 10 | sp_license_certificate_document_code | STRING | X |  |  |  | Mã hồ sơ chứng chỉ hành nghề (denormalized). |
+| 11 | sp_license_certificate_tp_id | STRING | X |  | F |  | FK đến loại chứng chỉ hành nghề tại thời điểm báo cáo. |
+| 12 | sp_license_certificate_tp_code | STRING | X |  |  |  | Mã loại chứng chỉ hành nghề tại thời điểm báo cáo (denormalized lookup) |
+| 13 | parent_sp_organization_employment_rpt_id | STRING | X |  | F |  | FK self-ref — báo cáo gốc được điều chỉnh (nullable). |
+| 14 | parent_sp_organization_employment_rpt_code | STRING | X |  |  |  | Mã báo cáo gốc (denormalized). |
+| 15 | practitioner_nm_at_rpt | STRING | X |  |  |  | Họ và tên người hành nghề tại thời điểm lập báo cáo (snapshot). |
+| 16 | practitioner_birth_dt_at_rpt | DATE | X |  |  |  | Ngày sinh người hành nghề tại thời điểm lập báo cáo (snapshot). |
+| 17 | practitioner_identity_nbr_at_rpt | STRING | X |  |  |  | Số định danh cá nhân tại thời điểm lập báo cáo (snapshot). |
+| 18 | practitioner_position_at_rpt | STRING | X |  |  |  | Chức vụ của người hành nghề tại tổ chức (snapshot). |
+| 19 | practitioner_department_at_rpt | STRING | X |  |  |  | Phòng ban của người hành nghề tại tổ chức (snapshot). |
+| 20 | practitioner_workplace_at_rpt | STRING | X |  |  |  | Nơi làm việc của người hành nghề tại thời điểm báo cáo (snapshot). |
+| 21 | certificate_nbr_at_rpt | STRING | X |  |  |  | Số chứng chỉ hành nghề tại thời điểm lập báo cáo (snapshot). |
+| 22 | certificate_issue_dt_at_rpt | DATE | X |  |  |  | Ngày cấp chứng chỉ hành nghề tại thời điểm lập báo cáo (snapshot). |
+| 23 | hire_dt | DATE | X |  |  |  | Ngày tuyển dụng vào tổ chức. |
+| 24 | termination_dt | DATE | X |  |  |  | Ngày chấm dứt hợp đồng lao động (NULL = đang làm việc). |
+| 25 | rpt_dt | DATE | X |  |  |  | Ngày lập báo cáo. |
+| 26 | disciplines | STRING | X |  |  |  | Kỷ luật của người hành nghề tại tổ chức. |
+| 27 | description | STRING | X |  |  |  | Mô tả bổ sung cho báo cáo. |
+| 28 | notes | STRING | X |  |  |  | Ghi chú nội bộ. |
+| 29 | business_department_nm | STRING | X |  | F |  | Tên phòng nghiệp vụ UBCKNN phụ trách (denormalized text). |
+| 30 | rpt_file_path | STRING | X |  |  |  | Đường dẫn file báo cáo đính kèm. |
+| 31 | termination_file_path | STRING | X |  |  |  | Đường dẫn file chấm dứt hợp đồng đính kèm. |
+| 32 | external_sync_id | STRING | X |  |  |  | Mã đồng bộ từ hệ thống ngoài (FMS/SCMS). |
+| 33 | organization_status_code_at_rpt | STRING | X |  |  |  | Trạng thái tổ chức tại thời điểm lập báo cáo. |
+| 34 | sync_created_tms | TIMESTAMP | X |  |  |  | Thời điểm tạo bản ghi tại hệ thống đồng bộ nguồn. |
+| 35 | sync_updated_tms | TIMESTAMP | X |  |  |  | Thời điểm cập nhật bản ghi tại hệ thống đồng bộ nguồn. |
 
 
 #### Constraint
@@ -717,7 +747,7 @@ N/A
 
 | Tên trường |
 |---|
-| scr_prac_org_emp_rpt_id |
+| sp_organization_employment_rpt_id |
 
 
 
@@ -725,12 +755,9 @@ N/A
 
 | Tên trường | Bảng tham chiếu | Cột tham chiếu |
 |---|---|---|
-| scr_org_refr_id | scr_org_refr | scr_org_refr_id |
-| scr_prac_id | scr_prac | scr_prac_id |
-| license_ctf_doc_id |  |  |
-| prn_rpt_id | scr_prac_org_emp_rpt | scr_prac_org_emp_rpt_id |
-| crt_by_ofcr_id | reg_ahr_ofcr |  |
-| udt_by_ofcr_id | reg_ahr_ofcr |  |
+| sp_id | securities_practitioner | sp_id |
+| sp_license_certificate_document_id | sp_license_certificate_document | sp_license_certificate_document_id |
+| parent_sp_organization_employment_rpt_id | sp_organization_employment_report | sp_organization_employment_rpt_id |
 
 
 
@@ -745,117 +772,7 @@ N/A
 
 
 
-### Bảng scr_prac_prof_trn_clss
-
-
-
-| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
-|---|---|---|---|---|---|---|---|
-| 1 | scr_prac_prof_trn_clss_id | STRING |  | X | P |  | Surrogate key cho khóa học chuyên môn |
-| 2 | scr_prac_prof_trn_clss_code | STRING |  |  |  |  | Mã khóa học (business key) |
-| 3 | trn_clss_nm | STRING | X |  |  |  | Tên khóa học |
-| 4 | academic_yr | INT | X |  |  |  | Năm học |
-| 5 | specialization_tp_code | STRING | X |  | F |  | Loại chuyên môn của khóa học |
-| 6 | exam_strt_dt | DATE | X |  |  |  | Ngày bắt đầu thi |
-| 7 | exam_end_dt | STRING | X |  |  |  | Ngày kết thúc thi |
-| 8 | exam_lo_adr | STRING | X |  |  |  | Địa điểm tổ chức thi |
-| 9 | prov_id | STRING | X |  | F |  | FK đến tỉnh/thành nơi tổ chức thi |
-| 10 | prov_code | STRING | X |  |  |  | Mã tỉnh/thành nơi tổ chức thi (lookup pair) |
-| 11 | rcrd_st_code | STRING |  |  |  |  | Trạng thái bản ghi khóa học |
-| 12 | src_stm_code | STRING |  |  |  | 'NHNCK.SPECIALIZATION_COURSES' | Mã hệ thống nguồn |
-| 13 | crt_at | TIMESTAMP | X |  |  |  | Thời điểm tạo bản ghi (pending) |
-| 14 | crt_by | STRING | X |  | F |  | Người tạo bản ghi — FK đến USERS (pending) |
-| 15 | udt_at | TIMESTAMP | X |  |  |  | Thời điểm cập nhật bản ghi (pending) |
-| 16 | udt_by | STRING | X |  | F |  | Người cập nhật bản ghi — FK đến USERS (pending) |
-
-
-#### Constraint
-
-**Khóa chính (Primary Key):**
-
-| Tên trường |
-|---|
-| scr_prac_prof_trn_clss_id |
-
-
-
-**Khóa phụ (Foreign Key):**
-
-| Tên trường | Bảng tham chiếu | Cột tham chiếu |
-|---|---|---|
-| prov_id | geo | geo_id |
-
-
-
-#### Index
-
-N/A
-
-#### Trigger
-
-N/A
-
-
-
-
-### Bảng reg_ahr_ofcr
-
-
-
-| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
-|---|---|---|---|---|---|---|---|
-| 1 | reg_ahr_ofcr_id | STRING |  | X | P |  | Id tự sinh (surrogate key) |
-| 2 | reg_ahr_ofcr_code | STRING |  |  |  |  | Mã cán bộ/chuyên viên UBCK. BK |
-| 3 | src_stm_code | STRING |  |  |  | 'NHNCK.USERS' | Mã nguồn dữ liệu |
-| 4 | full_nm | STRING | X |  |  |  | Họ và tên đầy đủ |
-| 5 | idv_gnd_code | STRING | X |  |  |  | Giới tính |
-| 6 | ou_id | STRING | X |  | F |  | FK đến Regulatory Authority Organization Unit (đơn vị) |
-| 7 | ou_code | STRING | X |  |  |  | Mã đơn vị |
-| 8 | dept_id | STRING | X |  | F |  | FK đến Regulatory Authority Organization Unit (phòng ban) |
-| 9 | dept_code | STRING | X |  |  |  | Mã phòng ban |
-| 10 | pos_code | STRING | X |  |  |  | Mã vị trí/chức danh |
-| 11 | scr_prac_id | STRING | X |  | F |  | FK đến Securities Practitioner (nếu cán bộ cũng là NHNCK) |
-| 12 | scr_prac_code | STRING | X |  |  |  | Mã người hành nghề liên kết |
-| 13 | rcrd_st_code | STRING | X |  |  |  | Trạng thái hoạt động của cán bộ |
-| 14 | rcrd_tp_code | STRING | X |  |  |  | Loại bản ghi cán bộ |
-| 15 | crt_tms | TIMESTAMP | X |  |  |  | Thời điểm tạo bản ghi |
-| 16 | udt_tms | TIMESTAMP | X |  |  |  | Thời điểm cập nhật bản ghi lần cuối |
-| 17 | crt_by_ofcr_code | STRING | X |  | F |  | Mã cán bộ tạo bản ghi |
-| 18 | udt_by_ofcr_code | STRING | X |  | F |  | Mã cán bộ cập nhật bản ghi lần cuối |
-
-
-#### Constraint
-
-**Khóa chính (Primary Key):**
-
-| Tên trường |
-|---|
-| reg_ahr_ofcr_id |
-
-
-
-**Khóa phụ (Foreign Key):**
-
-| Tên trường | Bảng tham chiếu | Cột tham chiếu |
-|---|---|---|
-| ou_id | reg_ahr_ou | reg_ahr_ou_id |
-| dept_id | reg_ahr_ou | reg_ahr_ou_id |
-| scr_prac_id | scr_prac | prac_id |
-
-
-
-#### Index
-
-N/A
-
-#### Trigger
-
-N/A
-
-
-
-
-### Bảng reg_ahr_ou
+### Bảng ra_organization_unit
 
 
 
@@ -863,33 +780,28 @@ N/A
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | reg_ahr_ou_id | STRING |  | X | P |  | Id tự sinh (surrogate key) |
-| 2 | reg_ahr_ou_code | STRING |  |  |  |  | Mã đơn vị nội bộ UBCKNN. BK |
+| 1 | ra_ou_id | STRING |  | X | P |  | Id tự sinh (surrogate key) |
+| 2 | ra_ou_code | STRING |  |  |  |  | Mã đơn vị nội bộ UBCKNN. BK |
 | 3 | src_stm_code | STRING |  |  |  | 'NHNCK.UNITS' | Mã hệ thống nguồn. BK |
 | 4 | ou_tp_code | STRING |  |  |  | 'UNIT' | Phân loại — Đơn vị (Unit) |
-| 5 | reg_ahr_ou_nm | STRING | X |  |  |  | Tên đơn vị nội bộ UBCKNN |
-| 6 | hier_lvl_code | STRING | X |  |  |  | Cấp độ trong cây phân cấp tổ chức |
-| 7 | prn_reg_ahr_ou_id | STRING | X |  | F |  | FK đến đơn vị cha (self-ref) |
-| 8 | prn_reg_ahr_ou_code | STRING | X |  |  |  | Mã đơn vị cha |
-| 9 | dsc | STRING | X |  |  |  | Mô tả chi tiết đơn vị |
-| 10 | rcrd_st_code | STRING |  |  |  |  | Trạng thái hoạt động của đơn vị |
-| 11 | sort_ordr | INT | X |  |  |  | Thứ tự sắp xếp phòng ban trong đơn vị |
+| 5 | ra_ou_nm | STRING | X |  |  |  | Tên đơn vị nội bộ UBCKNN |
+| 6 | hierarchy_level_code | STRING | X |  |  |  | Cấp độ trong cây phân cấp tổ chức |
+| 7 | parent_ra_ou_id | STRING | X |  | F |  | FK đến đơn vị cha (self-ref) |
+| 8 | parent_ra_ou_code | STRING | X |  |  |  | Mã đơn vị cha |
+| 9 | description | STRING | X |  |  |  | Mô tả chi tiết đơn vị |
 
 
 **Khóa chính (Primary Key):**
 
 | Tên trường |
 |---|
-| reg_ahr_ou_id |
+| ra_ou_id |
 
 
 
 **Khóa phụ (Foreign Key):**
 
-| Tên trường | Bảng tham chiếu | Cột tham chiếu |
-|---|---|---|
-| prn_reg_ahr_ou_id | reg_ahr_ou | reg_ahr_ou_id |
-
+*Không có Foreign Key.*
 
 
 **Index:** N/A
@@ -901,33 +813,30 @@ N/A
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | reg_ahr_ou_id | STRING |  | X | P |  | Id tự sinh (surrogate key) |
-| 2 | reg_ahr_ou_code | STRING |  |  |  |  | Mã phòng ban. BK |
+| 1 | ra_ou_id | STRING |  | X | P |  | Id tự sinh (surrogate key) |
+| 2 | ra_ou_code | STRING |  |  |  |  | Mã phòng ban. BK |
 | 3 | src_stm_code | STRING |  |  |  | 'NHNCK.DEPARTMENTS' | Mã hệ thống nguồn. BK |
 | 4 | ou_tp_code | STRING |  |  |  | 'DEPARTMENT' | Phân loại — Phòng ban (Department) |
-| 5 | reg_ahr_ou_nm | STRING | X |  |  |  | Tên phòng ban |
-| 6 | hier_lvl_code | STRING | X |  |  |  | Cấp độ trong cây phân cấp — null cho phòng ban |
-| 7 | prn_reg_ahr_ou_id | STRING | X |  | F |  | FK đến đơn vị cha (UNITS) |
-| 8 | prn_reg_ahr_ou_code | STRING | X |  |  |  | Mã đơn vị cha (UNITS) |
-| 9 | dsc | STRING | X |  |  |  | Mô tả chi tiết phòng ban |
-| 10 | rcrd_st_code | STRING |  |  |  |  | Trạng thái hoạt động của phòng ban |
-| 11 | sort_ordr | INT | X |  |  |  | Thứ tự sắp xếp phòng ban trong đơn vị |
+| 5 | ra_ou_nm | STRING | X |  |  |  | Tên phòng ban |
+| 6 | hierarchy_level_code | STRING | X |  |  |  | Cấp độ trong cây phân cấp — null cho phòng ban |
+| 7 | parent_ra_ou_id | STRING | X |  | F |  | FK đến đơn vị cha (UNITS) |
+| 8 | parent_ra_ou_code | STRING | X |  |  |  | Mã đơn vị cha (UNITS) |
+| 9 | description | STRING | X |  |  |  | Mô tả chi tiết phòng ban |
+| 10 | sort_order | INT | X |  |  |  | Thứ tự sắp xếp phòng ban trong đơn vị |
+| 11 | external_catalog_reference_code | STRING | X |  |  |  | TBD - cần bổ sung mô tả |
 
 
 **Khóa chính (Primary Key):**
 
 | Tên trường |
 |---|
-| reg_ahr_ou_id |
+| ra_ou_id |
 
 
 
 **Khóa phụ (Foreign Key):**
 
-| Tên trường | Bảng tham chiếu | Cột tham chiếu |
-|---|---|---|
-| prn_reg_ahr_ou_id | reg_ahr_ou | reg_ahr_ou_id |
-
+*Không có Foreign Key.*
 
 
 **Index:** N/A
@@ -938,41 +847,33 @@ N/A
 
 
 
-### Bảng scr_org_refr
+### Bảng securities_organization_reference
 
 
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | scr_org_refr_id | STRING |  | X | P |  | Khóa đại diện cho tổ chức kinh doanh chứng khoán (surrogate key). |
-| 2 | scr_org_refr_code | STRING |  |  |  |  | Mã định danh kỹ thuật tự tăng. BK của entity. Map từ PK bảng nguồn. |
+| 1 | securities_organization_reference_id | STRING |  | X | P |  | Khóa đại diện cho tổ chức kinh doanh chứng khoán (surrogate key). |
+| 2 | securities_organization_reference_code | STRING |  |  |  |  | Mã tổ chức kinh doanh chứng khoán do hệ thống cấp. BK của entity. Map từ ORGANIZATION_CODE. |
 | 3 | src_stm_code | STRING |  |  |  | 'NHNCK.ORGANIZATIONS' | Mã hệ thống nguồn. |
-| 4 | org_code | STRING | X |  |  |  | Mã tổ chức (mã nghiệp vụ do hệ thống gán). |
-| 5 | scr_org_refr_nm | STRING | X |  |  |  | Tên đầy đủ tổ chức. |
-| 6 | scr_org_refr_en_nm | STRING | X |  |  |  | Tên tiếng Anh của tổ chức. |
-| 7 | scr_org_refr_shrt_nm | STRING | X |  |  |  | Tên viết tắt của tổ chức. |
-| 8 | org_tp_code | STRING | X |  |  |  | Loại tổ chức: 0=Khác, 1=CTCK, 2=QLQ, 3=Ngân hàng. |
-| 9 | org_lvl_code | STRING | X |  |  |  | Cấp độ phân cấp tổ chức. |
-| 10 | prn_scr_org_refr_id | STRING | X |  | F |  | FK tự tham chiếu — tổ chức cha trong cấu trúc phân cấp. |
-| 11 | prn_scr_org_refr_code | STRING | X |  |  |  | Mã tổ chức cha. |
-| 12 | ext_stm_linked_id | STRING | X |  |  |  | ID liên kết sang hệ thống FMS/SCMS. |
-| 13 | ext_stm_sync_id | STRING | X |  |  |  | Mã đồng bộ từ FMS/SCMS. |
-| 14 | lgl_rprs_nm | STRING | X |  |  |  | Tên người đại diện pháp luật của tổ chức. |
-| 15 | license_nbr | STRING | X |  |  |  | Số giấy phép hoạt động chứng khoán. |
-| 16 | license_issur_nm | STRING | X |  |  |  | Tên cơ quan cấp giấy phép hoạt động. |
-| 17 | license_dt | DATE | X |  |  |  | Ngày cấp giấy phép hoạt động. |
-| 18 | charter_cptl_amt | DECIMAL(23,2) | X |  |  |  | Vốn điều lệ của tổ chức. |
-| 19 | dsc | STRING | X |  |  |  | Mô tả chi tiết về tổ chức. |
-| 20 | rcrd_st_code | STRING | X |  |  |  | Trạng thái bản ghi: 1=Hoạt động. |
-| 21 | sort_ordr | INT | X |  |  |  | Thứ tự sắp xếp hiển thị. |
-| 22 | last_sync_dt | DATE | X |  |  |  | Ngày đồng bộ dữ liệu gần nhất. |
-| 23 | sync_st_code | STRING | X |  |  |  | Trạng thái đồng bộ: 0=Chưa đồng bộ, 1=Đã đồng bộ, 2=Lỗi. |
-| 24 | crt_by_ofcr_id | STRING | X |  | F |  | FK đến cán bộ tạo bản ghi. |
-| 25 | crt_by_ofcr_code | STRING | X |  |  |  | Mã cán bộ tạo bản ghi. |
-| 26 | crt_dt | DATE | X |  |  |  | Ngày tạo bản ghi. |
-| 27 | udt_by_ofcr_id | STRING | X |  | F |  | FK đến cán bộ cập nhật bản ghi gần nhất. |
-| 28 | udt_by_ofcr_code | STRING | X |  |  |  | Mã cán bộ cập nhật bản ghi gần nhất. |
-| 29 | udt_dt | DATE | X |  |  |  | Ngày cập nhật bản ghi gần nhất. |
+| 4 | securities_organization_reference_nm | STRING | X |  |  |  | Tên đầy đủ tổ chức. |
+| 5 | securities_organization_reference_english_nm | STRING | X |  |  |  | Tên tiếng Anh của tổ chức. |
+| 6 | securities_organization_reference_short_nm | STRING | X |  |  |  | Tên viết tắt của tổ chức. |
+| 7 | organization_tp_code | STRING | X |  |  |  | Loại tổ chức: 0=Khác, 1=CTCK, 2=QLQ, 3=Ngân hàng. |
+| 8 | organization_level_code | STRING | X |  |  |  | Cấp độ phân cấp tổ chức. |
+| 9 | parent_securities_organization_reference_id | STRING | X |  | F |  | FK tự tham chiếu — tổ chức cha trong cấu trúc phân cấp. |
+| 10 | parent_securities_organization_reference_code | STRING | X |  |  |  | Mã tổ chức cha. |
+| 11 | external_stm_linked_id | STRING | X |  |  |  | ID liên kết sang hệ thống FMS/SCMS. |
+| 12 | external_stm_sync_id | STRING | X |  |  |  | Mã đồng bộ từ FMS/SCMS. |
+| 13 | legal_representative_nm | STRING | X |  |  |  | Tên người đại diện pháp luật của tổ chức. |
+| 14 | license_nbr | STRING | X |  |  |  | Số giấy phép hoạt động chứng khoán. |
+| 15 | license_issuer_nm | STRING | X |  |  |  | Tên cơ quan cấp giấy phép hoạt động. |
+| 16 | license_dt | DATE | X |  |  |  | Ngày cấp giấy phép hoạt động. |
+| 17 | charter_capital_amt | DECIMAL(23,2) | X |  |  |  | Vốn điều lệ của tổ chức. |
+| 18 | description | STRING | X |  |  |  | Mô tả chi tiết về tổ chức. |
+| 19 | sort_order | INT | X |  |  |  | Thứ tự sắp xếp hiển thị. |
+| 20 | last_sync_dt | DATE | X |  |  |  | Ngày đồng bộ dữ liệu gần nhất. |
+| 21 | sync_status_code | STRING | X |  |  |  | Trạng thái đồng bộ: 0=Chưa đồng bộ, 1=Đã đồng bộ, 2=Lỗi. |
 
 
 #### Constraint
@@ -981,18 +882,13 @@ N/A
 
 | Tên trường |
 |---|
-| scr_org_refr_id |
+| securities_organization_reference_id |
 
 
 
 **Khóa phụ (Foreign Key):**
 
-| Tên trường | Bảng tham chiếu | Cột tham chiếu |
-|---|---|---|
-| prn_scr_org_refr_id | scr_org_refr | scr_org_refr_id |
-| crt_by_ofcr_id | reg_ahr_ofcr |  |
-| udt_by_ofcr_id | reg_ahr_ofcr |  |
-
+*Không có Foreign Key.*
 
 
 #### Index
@@ -1006,164 +902,93 @@ N/A
 
 
 
-### Bảng scr_prac
+### Bảng securities_practitioner
 
 
-
-#### Từ NHNCK.PROFESSIONALS
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | prac_id | STRING |  | X | P |  | Khóa đại diện cho người hành nghề chứng khoán. |
-| 2 | prac_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK. |
+| 1 | sp_id | STRING |  | X | P |  | Id tự sinh (surrogate key) |
+| 2 | sp_code | STRING |  |  |  |  | Mã người hành nghề. BK từ PK nguồn |
 | 3 | src_stm_code | STRING |  |  |  | 'NHNCK.PROFESSIONALS' | Mã nguồn dữ liệu |
-| 4 | scr_co_id | STRING |  |  | F |  | FK đến công ty chứng khoán nơi hành nghề. |
-| 5 | scr_co_code | STRING |  |  |  |  | Mã công ty chứng khoán. |
-| 6 | empe_code | STRING | X |  |  |  | Mã nhân viên nội bộ CTCK. |
-| 7 | full_nm | STRING | X |  |  |  | Họ và tên đầy đủ của người hành nghề |
-| 8 | dob | DATE | X |  |  |  | Ngày sinh. |
-| 9 | license_nbr | STRING | X |  |  |  | Số chứng chỉ hành nghề chứng khoán. |
-| 10 | emp_strt_dt | DATE | X |  |  |  | Ngày bắt đầu làm việc tại CTCK. |
-| 11 | emp_end_dt | DATE | X |  |  |  | Ngày nghỉ việc. |
-| 12 | note | STRING | X |  |  |  | Ghi chú. |
-| 13 | prac_st_code | STRING | X |  |  |  | Trạng thái người hành nghề tại CTCK. |
-| 14 | crt_tms | TIMESTAMP | X |  |  |  | Ngày tạo. |
-| 15 | scr_prac_id | STRING |  | X | P |  | Id tự sinh (surrogate key) |
-| 16 | scr_prac_code | STRING |  |  |  |  | Mã người hành nghề. BK từ PK nguồn |
-| 17 | gvn_nm | STRING | X |  |  |  | Tên đệm và tên riêng |
-| 18 | brth_dt | DATE | X |  |  |  | Ngày sinh |
-| 19 | brth_yr | STRING | X |  |  |  | Năm sinh (lưu dạng chuỗi khi không có ngày tháng đủ) |
-| 20 | gnd_code | STRING | X |  |  |  | Giới tính: 0=Nam / 1=Nữ |
-| 21 | ed_lvl_code | STRING | X |  | F |  | Trình độ học vấn |
-| 22 | prac_rgst_tp_code | STRING | X |  |  |  | Hình thức đăng ký hồ sơ: 0=MCĐT/cổng DVC / 1=Nhập tay |
-| 23 | practice_st_code | STRING | X |  |  |  | Trạng thái hành nghề chứng khoán |
-| 24 | ac_st_code | STRING | X |  |  |  | Trạng thái tài khoản người dùng trên cổng NHNCK |
-| 25 | org_id | STRING | X |  | F |  | FK đến tổ chức chứng khoán hiện tại (nullable) |
-| 26 | org_code | STRING | X |  |  |  | Mã tổ chức (denormalized lookup) |
-| 27 | nat_id | STRING | X |  | F |  | FK đến Geographic Area (quốc tịch) |
-| 28 | nat_code | STRING | X |  |  |  | Mã quốc gia/quốc tịch (denormalized) |
-| 29 | workplace_nm | STRING | X |  |  |  | Nơi làm việc hiện tại (tên tổ chức — denormalized text tự do) |
-| 30 | pos_nm | STRING | X |  | F |  | Chức vụ hiện tại (denormalized text tự do) |
-| 31 | dept_nm | STRING | X |  |  |  | Phòng ban hiện tại (denormalized text tự do) |
-| 32 | prev_id_nbr | STRING | X |  |  |  | Số CMND cũ trước khi chuyển sang CCCD |
-| 33 | hometown | STRING | X |  |  |  | Quê quán (dữ liệu tích hợp C06) |
-| 34 | ethnicity_nm | STRING | X |  |  |  | Dân tộc (dữ liệu tích hợp C06) |
-| 35 | rlg_nm | STRING | X |  |  |  | Tôn giáo (dữ liệu tích hợp C06) |
-| 36 | plc_of_brth_dsc | STRING | X |  |  |  | Nơi sinh (text tự do) |
+| 4 | full_nm | STRING | X |  |  |  | Họ và tên đầy đủ của người hành nghề |
+| 5 | given_nm | STRING | X |  |  |  | Tên đệm và tên riêng |
+| 6 | birth_dt | DATE | X |  |  |  | Ngày sinh |
+| 7 | birth_year | STRING | X |  |  |  | Năm sinh (lưu dạng chuỗi khi không có ngày tháng đủ) |
+| 8 | gender_code | STRING | X |  |  |  | Giới tính: 0=Nam / 1=Nữ |
+| 9 | education_level_code | STRING | X |  | F |  | Trình độ học vấn |
+| 10 | practitioner_registration_tp_code | STRING | X |  |  |  | Hình thức đăng ký hồ sơ: 0=MCĐT/cổng DVC / 1=Nhập tay |
+| 11 | practice_status_code | STRING | X |  |  |  | Trạng thái hành nghề chứng khoán |
+| 12 | account_status_code | STRING | X |  |  |  | Trạng thái tài khoản người dùng trên cổng NHNCK |
+| 13 | securities_organization_reference_id | STRING | X |  | F |  | FK đến tổ chức chứng khoán hiện tại (nullable) |
+| 14 | securities_organization_reference_code | STRING | X |  |  |  | Mã tổ chức (denormalized lookup) |
+| 15 | nationality_id | STRING | X |  | F |  | FK đến Geographic Area (quốc tịch) |
+| 16 | nationality_code | STRING | X |  |  |  | Mã quốc gia/quốc tịch (denormalized) |
+| 17 | workplace_nm | STRING | X |  |  |  | Nơi làm việc hiện tại (tên tổ chức — denormalized text tự do) |
+| 18 | position_nm | STRING | X |  | F |  | Chức vụ hiện tại (denormalized text tự do) |
+| 19 | department_nm | STRING | X |  |  |  | Phòng ban hiện tại (denormalized text tự do) |
+| 20 | previous_identity_nbr | STRING | X |  |  |  | Số CMND cũ trước khi chuyển sang CCCD |
+| 21 | hometown | STRING | X |  |  |  | Quê quán (dữ liệu tích hợp C06) |
+| 22 | ethnicity_nm | STRING | X |  |  |  | Dân tộc (dữ liệu tích hợp C06) |
+| 23 | religion_nm | STRING | X |  |  |  | Tôn giáo (dữ liệu tích hợp C06) |
+| 24 | place_of_birth_description | STRING | X |  |  |  | Nơi sinh (text tự do) |
+| 25 | avatar_file_path | STRING | X |  |  |  | Đường dẫn/URL ảnh đại diện của người hành nghề |
+| 26 | place_of_birth_country_id | STRING | X |  | F |  | FK đến Geographic Area — quốc gia nơi sinh |
+| 27 | place_of_birth_country_code | STRING | X |  |  |  | Mã quốc gia nơi sinh (denormalized) |
+| 28 | place_of_birth_province_id | STRING | X |  | F |  | FK đến Geographic Area — tỉnh/thành phố nơi sinh |
+| 29 | place_of_birth_province_code | STRING | X |  |  |  | Mã tỉnh/thành phố nơi sinh (denormalized) |
+| 30 | place_of_birth_district_id | STRING | X |  | F |  | FK đến Geographic Area — quận/huyện nơi sinh |
+| 31 | place_of_birth_district_code | STRING | X |  |  |  | Mã quận/huyện nơi sinh (denormalized) |
+| 32 | sso_sync_status_code | STRING | X |  |  |  | 0=chưa chuyển SSO, 1=đã chuyển SSO |
+| 33 | identity_and_access_management_user_id | STRING | X |  | F |  | UUID user trên IAM (provisioning SSO) |
+| 34 | identity_and_access_management_user_code | STRING | X |  |  |  | Mã user IAM (denormalized lookup) |
 
 
-**Khóa chính (Primary Key):**
-
-| Tên trường |
-|---|
-| prac_id |
-| scr_prac_id |
-
-
-
-**Khóa phụ (Foreign Key):**
-
-| Tên trường | Bảng tham chiếu | Cột tham chiếu |
-|---|---|---|
-| scr_co_id | scr_co | scr_co_id |
-| org_id | scr_org_refr | scr_org_refr_id |
-| nat_id | geo | geo_id |
-
-
-
-**Index:** N/A
-
-**Trigger:** N/A
-
-
-#### Từ NHNCK.PROFESSIONAL_HISTORIES
-
-| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
-|---|---|---|---|---|---|---|---|
-| 1 | prac_id | STRING |  | X | P |  | Khóa đại diện cho người hành nghề chứng khoán. |
-| 2 | prac_code | STRING |  |  |  |  | Mã định danh (tự động tăng). BK. |
-| 3 | src_stm_code | STRING |  |  |  | 'NHNCK.PROFESSIONAL_HISTORIES' | Mã nguồn dữ liệu |
-| 4 | scr_co_id | STRING |  |  | F |  | FK đến công ty chứng khoán nơi hành nghề. |
-| 5 | scr_co_code | STRING |  |  |  |  | Mã công ty chứng khoán. |
-| 6 | empe_code | STRING | X |  |  |  | Mã nhân viên nội bộ CTCK. |
-| 7 | full_nm | STRING | X |  |  |  | Họ và tên đầy đủ của người hành nghề |
-| 8 | dob | DATE | X |  |  |  | Ngày sinh. |
-| 9 | license_nbr | STRING | X |  |  |  | Số chứng chỉ hành nghề chứng khoán. |
-| 10 | emp_strt_dt | DATE | X |  |  |  | Ngày bắt đầu làm việc tại CTCK. |
-| 11 | emp_end_dt | DATE | X |  |  |  | Ngày nghỉ việc. |
-| 12 | note | STRING | X |  |  |  | Ghi chú. |
-| 13 | prac_st_code | STRING | X |  |  |  | Trạng thái người hành nghề tại CTCK. |
-| 14 | crt_tms | TIMESTAMP | X |  |  |  | Ngày tạo. |
-| 15 | scr_prac_id | STRING |  | X | P |  | Id tự sinh (surrogate key) |
-| 16 | scr_prac_code | STRING |  |  |  |  | Mã người hành nghề. BK từ PK nguồn |
-| 17 | gvn_nm | STRING | X |  |  |  | Tên đệm và tên riêng |
-| 18 | brth_dt | DATE | X |  |  |  | Ngày sinh |
-| 19 | brth_yr | STRING | X |  |  |  | Năm sinh (lưu dạng chuỗi khi không có ngày tháng đủ) |
-| 20 | gnd_code | STRING | X |  |  |  | Giới tính: 0=Nam / 1=Nữ |
-| 21 | ed_lvl_code | STRING | X |  | F |  | Trình độ học vấn |
-| 22 | prac_rgst_tp_code | STRING | X |  |  |  | Hình thức đăng ký hồ sơ: 0=MCĐT/cổng DVC / 1=Nhập tay |
-| 23 | practice_st_code | STRING | X |  |  |  | Trạng thái hành nghề chứng khoán |
-| 24 | ac_st_code | STRING | X |  |  |  | Trạng thái tài khoản người dùng trên cổng NHNCK |
-| 25 | org_id | STRING | X |  | F |  | FK đến tổ chức chứng khoán hiện tại (nullable) |
-| 26 | org_code | STRING | X |  |  |  | Mã tổ chức (denormalized lookup) |
-| 27 | nat_id | STRING | X |  | F |  | FK đến Geographic Area (quốc tịch) |
-| 28 | nat_code | STRING | X |  |  |  | Mã quốc gia/quốc tịch (denormalized) |
-| 29 | workplace_nm | STRING | X |  |  |  | Nơi làm việc hiện tại (tên tổ chức — denormalized text tự do) |
-| 30 | pos_nm | STRING | X |  | F |  | Chức vụ hiện tại (denormalized text tự do) |
-| 31 | dept_nm | STRING | X |  |  |  | Phòng ban hiện tại (denormalized text tự do) |
-| 32 | prev_id_nbr | STRING | X |  |  |  | Số CMND cũ trước khi chuyển sang CCCD |
-| 33 | hometown | STRING | X |  |  |  | Quê quán (dữ liệu tích hợp C06) |
-| 34 | ethnicity_nm | STRING | X |  |  |  | Dân tộc (dữ liệu tích hợp C06) |
-| 35 | rlg_nm | STRING | X |  |  |  | Tôn giáo (dữ liệu tích hợp C06) |
-| 36 | plc_of_brth_dsc | STRING | X |  |  |  | Nơi sinh (text tự do) |
-
+#### Constraint
 
 **Khóa chính (Primary Key):**
 
 | Tên trường |
 |---|
-| prac_id |
-| scr_prac_id |
+| sp_id |
 
 
 
 **Khóa phụ (Foreign Key):**
 
-| Tên trường | Bảng tham chiếu | Cột tham chiếu |
-|---|---|---|
-| scr_co_id | scr_co | scr_co_id |
-| org_id | scr_org_refr | scr_org_refr_id |
-| nat_id | geo | geo_id |
+*Không có Foreign Key.*
 
 
+#### Index
 
-**Index:** N/A
+N/A
 
-**Trigger:** N/A
+#### Trigger
 
+N/A
 
 
 
 
-### Bảng scr_prac_emp_st
+### Bảng sp_employment_status
 
 
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | scr_prac_emp_st_id | STRING |  | X | P |  | Khóa đại diện cho bản ghi lịch sử công tác / trạng thái việc làm của người hành nghề chứng khoán (surrogate key). |
-| 2 | scr_prac_emp_st_code | STRING |  |  |  |  | Mã định danh kỹ thuật. BK của entity. Map từ PK bảng nguồn. |
+| 1 | sp_employment_status_id | STRING |  | X | P |  | Khóa đại diện cho bản ghi lịch sử công tác / trạng thái việc làm của người hành nghề chứng khoán (surrogate key). |
+| 2 | sp_employment_status_code | STRING |  |  |  |  | Mã định danh kỹ thuật. BK của entity. Map từ PK bảng nguồn. |
 | 3 | src_stm_code | STRING |  |  |  | 'NHNCK.PROFESSIONAL_WORK_HISTORIES' | Mã hệ thống nguồn. |
-| 4 | scr_prac_id | STRING |  |  | F |  | Surrogate key FK đến người hành nghề chứng khoán. |
-| 5 | scr_prac_code | STRING |  |  |  |  | Mã kỹ thuật của người hành nghề (dư thừa). |
-| 6 | scr_org_refr_id | STRING | X |  | F |  | Surrogate key FK đến tổ chức kinh doanh chứng khoán nơi người hành nghề làm việc. |
-| 7 | scr_org_refr_code | STRING | X |  |  |  | Mã kỹ thuật của tổ chức (dư thừa). |
-| 8 | dept_nm | STRING | X |  |  |  | Tên đơn vị / phòng ban trong tổ chức tại thời điểm làm việc (snapshot text). |
+| 4 | sp_id | STRING |  |  | F |  | Surrogate key FK đến người hành nghề chứng khoán. |
+| 5 | sp_code | STRING |  |  |  |  | Mã kỹ thuật của người hành nghề (dư thừa). |
+| 6 | securities_organization_reference_id | STRING | X |  | F |  | Surrogate key FK đến tổ chức kinh doanh chứng khoán nơi người hành nghề làm việc. |
+| 7 | securities_organization_reference_code | STRING | X |  |  |  | Mã kỹ thuật của tổ chức (dư thừa). |
+| 8 | department_nm | STRING | X |  |  |  | Tên đơn vị / phòng ban trong tổ chức tại thời điểm làm việc (snapshot text). |
 | 9 | workplace_nm | STRING | X |  |  |  | Tên tổ chức / nơi làm việc dạng text (có thể khác ORGANIZATION_NAME khi tổ chức đổi tên hoặc chưa có trong ORGANIZATIONS). |
-| 10 | emp_strt_dt | DATE |  |  |  |  | Ngày bắt đầu làm việc tại tổ chức. |
-| 11 | emp_end_dt | DATE | X |  |  |  | Ngày kết thúc làm việc. Null = đang làm việc. |
-| 12 | pos_code | STRING | X |  | F |  | Mã chức vụ của người hành nghề tại tổ chức. |
-| 13 | pos_nm | STRING | X |  |  |  | Tên chức vụ snapshot tại thời điểm ghi nhận. |
+| 10 | employment_start_dt | DATE |  |  |  |  | Ngày bắt đầu làm việc tại tổ chức. |
+| 11 | employment_end_dt | DATE | X |  |  |  | Ngày kết thúc làm việc. Null = đang làm việc. |
+| 12 | position_code | STRING | X |  | F |  | Mã chức vụ của người hành nghề tại tổ chức. |
+| 13 | position_nm | STRING | X |  |  |  | Tên chức vụ snapshot tại thời điểm ghi nhận. |
 | 14 | awards | STRING | X |  |  |  | Thông tin khen thưởng trong thời gian làm việc tại tổ chức. |
 | 15 | disciplines | STRING | X |  |  |  | Thông tin kỷ luật trong thời gian làm việc tại tổ chức. |
 
@@ -1174,7 +999,7 @@ N/A
 
 | Tên trường |
 |---|
-| scr_prac_emp_st_id |
+| sp_employment_status_id |
 
 
 
@@ -1182,8 +1007,7 @@ N/A
 
 | Tên trường | Bảng tham chiếu | Cột tham chiếu |
 |---|---|---|
-| scr_prac_id | scr_prac | scr_prac_id |
-| scr_org_refr_id | scr_org_refr | scr_org_refr_id |
+| sp_id | securities_practitioner | sp_id |
 
 
 
@@ -1198,31 +1022,19 @@ N/A
 
 
 
-### Bảng scr_prac_license_ap_emp_exrnc
+### Bảng sp_reason_change_history
 
 
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | scr_prac_license_ap_emp_exrnc_id | STRING |  | X | P |  | Id tự sinh (surrogate key) |
-| 2 | scr_prac_license_ap_emp_exrnc_code | STRING |  |  |  |  | Mã định danh kinh nghiệm làm việc. BK |
-| 3 | src_stm_code | STRING |  |  |  | 'NHNCK.APPLICATION_EXPERIENCES' | Mã nguồn dữ liệu |
-| 4 | license_ap_id | STRING |  |  | F |  | FK đến hồ sơ đăng ký CCHN |
-| 5 | license_ap_code | STRING |  |  |  |  | Mã hồ sơ đăng ký CCHN |
-| 6 | doc_tp_code | STRING | X |  | F |  | Mã loại tài liệu yêu cầu (Classification Value từ Documents) |
-| 7 | scr_org_refr_id | STRING | X |  | F |  | FK đến tổ chức kinh doanh chứng khoán trong hệ thống (nullable — nếu nơi làm việc là CTCK/QLQ đã đăng ký) |
-| 8 | scr_org_refr_code | STRING | X |  |  |  | Mã tổ chức kinh doanh chứng khoán (dư thừa) |
-| 9 | org_nm | STRING |  |  |  |  | Tên tổ chức nơi làm việc (snapshot text — giữ kể cả khi ORGANIZATION_ID có giá trị) |
-| 10 | dept_nm | STRING | X |  |  |  | Tên phòng ban nơi làm việc |
-| 11 | pos | STRING | X |  |  |  | Chức vụ tại tổ chức |
-| 12 | emp_strt_dt | DATE |  |  |  |  | Ngày bắt đầu làm việc tại tổ chức |
-| 13 | emp_end_dt | DATE | X |  |  |  | Ngày kết thúc làm việc tại tổ chức (null nếu đang làm việc) |
-| 14 | wrk_drtn_mo | INT |  |  |  |  | Thời gian làm việc tại tổ chức (số tháng) |
-| 15 | tot_exrnc_drtn_mo | INT |  |  |  |  | Tổng thời gian kinh nghiệm tích lũy (số tháng) |
-| 16 | ins_nbr | STRING | X |  |  |  | Số bảo hiểm xã hội |
-| 17 | labor_ctr_info | STRING | X |  |  |  | Thông tin hợp đồng lao động |
-| 18 | director_cfrm | STRING | X |  |  |  | Thông tin xác nhận của giám đốc tổ chức |
-| 19 | note | STRING | X |  |  |  | Ghi chú bổ sung |
+| 1 | sp_reason_change_history_id | STRING |  | X | P |  | Id tự sinh (surrogate key) |
+| 2 | sp_reason_change_history_code | STRING |  |  |  |  | Mã bản ghi thay đổi. BK từ PK nguồn |
+| 3 | src_stm_code | STRING |  |  |  | 'NHNCK.PROFESSIONAL_HISTORIES' | Mã nguồn dữ liệu |
+| 4 | sp_id | STRING |  |  | F |  | FK đến người hành nghề bị thay đổi thông tin |
+| 5 | sp_code | STRING |  |  |  |  | Mã người hành nghề (denormalized lookup) |
+| 6 | change_dt | DATE | X |  |  |  | Ngày ghi nhận thay đổi thông tin |
+| 7 | change_reason | STRING | X |  |  |  | Lý do cập nhật thông tin người hành nghề |
 
 
 #### Constraint
@@ -1231,7 +1043,7 @@ N/A
 
 | Tên trường |
 |---|
-| scr_prac_license_ap_emp_exrnc_id |
+| sp_reason_change_history_id |
 
 
 
@@ -1239,8 +1051,7 @@ N/A
 
 | Tên trường | Bảng tham chiếu | Cột tham chiếu |
 |---|---|---|
-| license_ap_id | scr_prac_license_ap |  |
-| scr_org_refr_id | scr_org_refr | scr_org_refr_id |
+| sp_id | securities_practitioner | sp_id |
 
 
 
@@ -1255,172 +1066,27 @@ N/A
 
 
 
-### Bảng scr_prac_license_ap_snpst
+### Bảng sp_related_party
 
 
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | scr_prac_license_ap_snpst_id | STRING |  | X | P |  | Id tự sinh (surrogate key) |
-| 2 | scr_prac_license_ap_snpst_code | STRING |  |  |  |  | Mã snapshot. BK từ PK nguồn |
-| 3 | src_stm_code | STRING |  |  |  | 'NHNCK.APPLICATION_PROFESSIONALS' | Mã nguồn dữ liệu |
-| 4 | license_ap_id | STRING |  |  | F |  | FK đến hồ sơ đăng ký |
-| 5 | license_ap_code | STRING |  |  |  |  | Mã hồ sơ đăng ký (denormalized) |
-| 6 | scr_prac_id | STRING |  |  | F |  | FK đến người hành nghề |
-| 7 | scr_prac_code | STRING |  |  |  |  | Mã người hành nghề (denormalized) |
-| 8 | org_id | STRING | X |  | F |  | FK đến tổ chức chứng khoán (nullable) |
-| 9 | org_code | STRING | X |  |  |  | Mã tổ chức (denormalized) |
-| 10 | nat_id | STRING | X |  | F |  | FK đến Geographic Area (quốc tịch snapshot) |
-| 11 | nat_code | STRING | X |  |  |  | Mã quốc gia/quốc tịch (denormalized) |
-| 12 | snpst_full_nm | STRING | X |  |  |  | Họ và tên đầy đủ tại thời điểm nộp hồ sơ |
-| 13 | snpst_gvn_nm | STRING | X |  |  |  | Tên đệm và tên riêng tại thời điểm nộp hồ sơ |
-| 14 | snpst_brth_dt | DATE | X |  |  |  | Ngày sinh tại thời điểm nộp hồ sơ |
-| 15 | snpst_brth_yr | STRING | X |  |  |  | Năm sinh (chuỗi) tại thời điểm nộp hồ sơ |
-| 16 | snpst_gnd_code | STRING | X |  |  |  | Giới tính tại thời điểm nộp hồ sơ |
-| 17 | snpst_ed_lvl_code | STRING | X |  |  |  | Trình độ học vấn tại thời điểm nộp hồ sơ |
-| 18 | snpst_prac_rgst_tp_code | STRING | X |  |  |  | Hình thức đăng ký tại thời điểm nộp hồ sơ |
-| 19 | snpst_id_tp_code | STRING | X |  |  |  | Loại giấy tờ định danh tại thời điểm nộp hồ sơ |
-| 20 | snpst_id_nbr | STRING | X |  |  |  | Số giấy tờ định danh tại thời điểm nộp hồ sơ |
-| 21 | snpst_id_issu_dt | DATE | X |  |  |  | Ngày cấp giấy tờ định danh tại thời điểm nộp hồ sơ |
-| 22 | snpst_id_issu_plc | STRING | X |  |  |  | Nơi cấp giấy tờ định danh tại thời điểm nộp hồ sơ |
-| 23 | snpst_prev_id_nbr | STRING | X |  |  |  | Số CMND cũ tại thời điểm nộp hồ sơ |
-| 24 | snpst_ph_nbr | STRING | X |  |  |  | Số điện thoại cố định tại thời điểm nộp hồ sơ |
-| 25 | snpst_mbl_nbr | STRING | X |  |  |  | Số điện thoại di động tại thời điểm nộp hồ sơ |
-| 26 | snpst_email | STRING | X |  |  |  | Email tại thời điểm nộp hồ sơ |
-| 27 | snpst_workplace_nm | STRING | X |  |  |  | Nơi làm việc tại thời điểm nộp hồ sơ |
-| 28 | snpst_pos_nm | STRING | X |  |  |  | Chức vụ tại thời điểm nộp hồ sơ |
-| 29 | snpst_dept_nm | STRING | X |  |  |  | Phòng ban tại thời điểm nộp hồ sơ |
-| 30 | snpst_plc_of_brth | STRING | X |  |  |  | Nơi sinh tại thời điểm nộp hồ sơ |
-| 31 | snpst_adr | STRING | X |  |  |  | Địa chỉ chung (legacy) tại thời điểm nộp hồ sơ |
-| 32 | snpst_perm_adr | STRING | X |  |  |  | Địa chỉ thường trú chi tiết tại thời điểm nộp hồ sơ |
-| 33 | snpst_perm_cty_id | STRING | X |  | F |  | FK đến Geographic Area — quốc gia thường trú (snapshot) |
-| 34 | snpst_perm_cty_code | STRING | X |  |  |  | Mã quốc gia thường trú (denormalized snapshot) |
-| 35 | snpst_perm_prov_id | STRING | X |  | F |  | FK đến Geographic Area — tỉnh thường trú (snapshot) |
-| 36 | snpst_perm_prov_code | STRING | X |  |  |  | Mã tỉnh thường trú (denormalized snapshot) |
-| 37 | snpst_perm_dstc_id | STRING | X |  | F |  | FK đến Geographic Area — huyện thường trú (snapshot) |
-| 38 | snpst_perm_dstc_code | STRING | X |  |  |  | Mã huyện thường trú (denormalized snapshot) |
-| 39 | snpst_crn_cty_id | STRING | X |  | F |  | FK đến Geographic Area — quốc gia tạm trú (snapshot) |
-| 40 | snpst_crn_cty_code | STRING | X |  |  |  | Mã quốc gia tạm trú (denormalized snapshot) |
-| 41 | snpst_crn_prov_id | STRING | X |  | F |  | FK đến Geographic Area — tỉnh tạm trú (snapshot) |
-| 42 | snpst_crn_prov_code | STRING | X |  |  |  | Mã tỉnh tạm trú (denormalized snapshot) |
-| 43 | snpst_crn_dstc_id | STRING | X |  | F |  | FK đến Geographic Area — huyện tạm trú (snapshot) |
-| 44 | snpst_crn_dstc_code | STRING | X |  |  |  | Mã huyện tạm trú (denormalized snapshot) |
-| 45 | rcrd_st_code | STRING | X |  |  |  | Trạng thái bản ghi snapshot |
-
-
-#### Constraint
-
-**Khóa chính (Primary Key):**
-
-| Tên trường |
-|---|
-| scr_prac_license_ap_snpst_id |
-
-
-
-**Khóa phụ (Foreign Key):**
-
-| Tên trường | Bảng tham chiếu | Cột tham chiếu |
-|---|---|---|
-| license_ap_id | scr_prac_license_ap | scr_prac_license_ap_id |
-| scr_prac_id | scr_prac | scr_prac_id |
-| org_id | scr_org_refr | scr_org_refr_id |
-| nat_id | geo | geo_id |
-| snpst_perm_cty_id | geo | geo_id |
-| snpst_perm_prov_id | geo | geo_id |
-| snpst_perm_dstc_id | geo | geo_id |
-| snpst_crn_cty_id | geo | geo_id |
-| snpst_crn_prov_id | geo | geo_id |
-| snpst_crn_dstc_id | geo | geo_id |
-
-
-
-#### Index
-
-N/A
-
-#### Trigger
-
-N/A
-
-
-
-
-### Bảng scr_prac_prof_trn_hist
-
-
-
-| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
-|---|---|---|---|---|---|---|---|
-| 1 | scr_prac_prof_trn_hist_id | STRING |  | X | P |  | Khóa đại diện cho bản ghi lịch sử đào tạo / bồi dưỡng chuyên môn của người hành nghề chứng khoán (surrogate key). |
-| 2 | scr_prac_prof_trn_hist_code | STRING |  |  |  |  | Mã định danh kỹ thuật. BK của entity. Map từ PK bảng nguồn. |
-| 3 | src_stm_code | STRING |  |  |  | 'NHNCK.PROFESSIONAL_TRAININGS' | Mã hệ thống nguồn. |
-| 4 | scr_prac_id | STRING |  |  | F |  | Surrogate key FK đến người hành nghề chứng khoán. |
-| 5 | scr_prac_code | STRING |  |  |  |  | Mã kỹ thuật của người hành nghề (dư thừa). |
-| 6 | trn_strt_dt | STRING |  |  |  |  | Ngày bắt đầu khóa đào tạo / bồi dưỡng chuyên môn. |
-| 7 | trn_end_dt | STRING | X |  |  |  | Ngày kết thúc khóa đào tạo / bồi dưỡng chuyên môn. |
-| 8 | trn_plc | STRING | X |  |  |  | Nơi tổ chức đào tạo / bồi dưỡng. |
-| 9 | specialization_dsc | STRING | X |  |  |  | Chuyên ngành được đào tạo (text tự do từ nguồn). |
-| 10 | awards | STRING | X |  |  |  | Thông tin khen thưởng nhận được trong quá trình đào tạo. |
-| 11 | disciplines | STRING | X |  |  |  | Thông tin kỷ luật trong quá trình đào tạo. |
-
-
-#### Constraint
-
-**Khóa chính (Primary Key):**
-
-| Tên trường |
-|---|
-| scr_prac_prof_trn_hist_id |
-
-
-
-**Khóa phụ (Foreign Key):**
-
-| Tên trường | Bảng tham chiếu | Cột tham chiếu |
-|---|---|---|
-| scr_prac_id | scr_prac | scr_prac_id |
-
-
-
-#### Index
-
-N/A
-
-#### Trigger
-
-N/A
-
-
-
-
-### Bảng scr_prac_rel_p
-
-
-
-| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
-|---|---|---|---|---|---|---|---|
-| 1 | scr_prac_rel_p_id | STRING |  | X | P |  | Id tự sinh (surrogate key) |
-| 2 | scr_prac_rel_p_code | STRING |  |  |  |  | Mã định danh quan hệ (PK nguồn). BK |
+| 1 | sp_related_party_id | STRING |  | X | P |  | Id tự sinh (surrogate key) |
+| 2 | sp_related_party_code | STRING |  |  |  |  | Mã định danh quan hệ (PK nguồn). BK |
 | 3 | src_stm_code | STRING |  |  |  | 'NHNCK.PROFESSIONAL_RELATIONSHIPS' | Mã hệ thống nguồn. |
-| 4 | scr_prac_id | STRING |  |  | F |  | FK đến Securities Practitioner |
-| 5 | scr_prac_code | STRING |  |  |  |  | Mã người hành nghề chứng khoán |
+| 4 | sp_id | STRING |  |  | F |  | FK đến Securities Practitioner |
+| 5 | sp_code | STRING |  |  |  |  | Mã người hành nghề chứng khoán |
 | 6 | rltnp_tp_code | STRING |  |  |  |  | Loại quan hệ (1: Vợ/Chồng, 2: Con, 3: Bố, 4: Mẹ, 5: Ông, 6: Bà) |
-| 7 | rel_idv_full_nm | STRING | X |  |  |  | Họ và tên người thân |
-| 8 | rel_idv_brth_yr | INT | X |  |  |  | Năm sinh người thân |
-| 9 | rel_idv_adr | STRING | X |  |  |  | Địa chỉ người thân |
-| 10 | rel_idv_ocp | STRING | X |  |  |  | Nghề nghiệp người thân |
-| 11 | rel_idv_workplace | STRING | X |  |  |  | Nơi làm việc người thân |
-| 12 | rel_idv_id_nbr | STRING | X |  |  |  | Số CMND/CCCD người thân |
-| 13 | cty_id | STRING | X |  | F |  | FK đến Geographic Area — quốc gia |
-| 14 | cty_code | STRING | X |  |  |  | Mã quốc gia |
+| 7 | related_individual_full_nm | STRING | X |  |  |  | Họ và tên người thân |
+| 8 | related_individual_birth_year | INT | X |  |  |  | Năm sinh người thân |
+| 9 | related_individual_adr | STRING | X |  |  |  | Địa chỉ người thân |
+| 10 | related_individual_occupation | STRING | X |  |  |  | Nghề nghiệp người thân |
+| 11 | related_individual_workplace | STRING | X |  |  |  | Nơi làm việc người thân |
+| 12 | related_individual_identity_nbr | STRING | X |  |  |  | Số CMND/CCCD người thân |
+| 13 | country_id | STRING | X |  | F |  | FK đến Geographic Area — quốc gia |
+| 14 | country_code | STRING | X |  |  |  | Mã quốc gia |
 | 15 | note | STRING | X |  |  |  | Ghi chú |
-| 16 | crt_tms | TIMESTAMP | X |  |  |  | Thời điểm tạo bản ghi |
-| 17 | udt_tms | TIMESTAMP | X |  |  |  | Thời điểm cập nhật bản ghi |
-| 18 | crt_by_ofcr_id | STRING | X |  | F |  | FK đến Regulatory Authority Officer — người tạo |
-| 19 | crt_by_ofcr_code | STRING | X |  |  |  | Mã người tạo |
-| 20 | udt_by_ofcr_id | STRING | X |  | F |  | FK đến Regulatory Authority Officer — người cập nhật |
-| 21 | udt_by_ofcr_code | STRING | X |  |  |  | Mã người cập nhật |
 
 
 #### Constraint
@@ -1429,7 +1095,7 @@ N/A
 
 | Tên trường |
 |---|
-| scr_prac_rel_p_id |
+| sp_related_party_id |
 
 
 
@@ -1437,10 +1103,7 @@ N/A
 
 | Tên trường | Bảng tham chiếu | Cột tham chiếu |
 |---|---|---|
-| scr_prac_id | scr_prac | prac_id |
-| cty_id | geo | geo_id |
-| crt_by_ofcr_id | reg_ahr_ofcr |  |
-| udt_by_ofcr_id | reg_ahr_ofcr |  |
+| sp_id | securities_practitioner | sp_id |
 
 
 
@@ -1455,176 +1118,27 @@ N/A
 
 
 
-### Bảng geo
-
-
-
-#### Từ NHNCK.COUNTRIES
-
-| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
-|---|---|---|---|---|---|---|---|
-| 1 | geo_id | STRING |  | X | P |  | Id tự sinh (surrogate key) |
-| 2 | geo_code | STRING |  |  |  |  | Mã quốc gia nguồn. BK |
-| 3 | src_stm_code | STRING |  |  |  | 'NHNCK.COUNTRIES' | Mã nguồn dữ liệu |
-| 4 | geo_shrt_code | STRING | X |  |  |  | Mã viết tắt quốc tịch/quốc gia. |
-| 5 | geo_nm | STRING |  |  |  |  | Tên quốc gia/vùng lãnh thổ |
-| 6 | lcs_code | STRING | X |  |  |  | Trạng thái: 0: Không sử dụng 1: Sử dụng. |
-| 7 | dsc | STRING | X |  |  |  | Mô tả. |
-| 8 | crt_by | STRING | X |  |  |  | Người tạo bản ghi. |
-| 9 | crt_tms | TIMESTAMP | X |  |  |  | Ngày tạo bản ghi. |
-| 10 | udt_tms | TIMESTAMP | X |  |  |  | Ngày cập nhật bản ghi. |
-| 11 | geo_tp_code | STRING |  |  |  |  | Phân loại vùng địa lý — Quốc gia |
-| 12 | geo_bsn_code | STRING | X |  |  |  | Mã quốc tịch/quốc gia (mã nghiệp vụ). |
-| 13 | note | STRING | X |  |  |  | Ghi chú. |
-| 14 | prn_geo_id | STRING | X |  | F |  | FK đến vùng địa lý cha (self-ref). NULL cho quốc gia |
-| 15 | prn_geo_code | STRING | X |  |  |  | Mã vùng địa lý cha |
-| 16 | iso_cty_code | STRING | X |  |  |  | Mã quốc gia ISO 3166-1 alpha-2 |
-| 17 | dflt_f | BOOLEAN |  |  |  |  | Cờ mặc định: true=Mặc định; false=Không |
-| 18 | geo_st_code | STRING | X |  |  |  | Trạng thái bản ghi: 1=Hoạt động; 0=Không hoạt động |
-
-
-**Khóa chính (Primary Key):**
-
-| Tên trường |
-|---|
-| geo_id |
-
-
-
-**Khóa phụ (Foreign Key):**
-
-| Tên trường | Bảng tham chiếu | Cột tham chiếu |
-|---|---|---|
-| prn_geo_id | geo | geo_id |
-
-
-
-**Index:** N/A
-
-**Trigger:** N/A
-
-
-#### Từ NHNCK.PROVINCES
-
-| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
-|---|---|---|---|---|---|---|---|
-| 1 | geo_id | STRING |  | X | P |  | Id tự sinh (surrogate key) |
-| 2 | geo_code | STRING |  |  |  |  | Mã tỉnh/thành phố nguồn. BK |
-| 3 | src_stm_code | STRING |  |  |  | 'NHNCK.PROVINCES' | Mã nguồn dữ liệu |
-| 4 | geo_shrt_code | STRING | X |  |  |  | Mã viết tắt quốc tịch/quốc gia. |
-| 5 | geo_nm | STRING |  |  |  |  | Tên tỉnh/thành phố |
-| 6 | lcs_code | STRING | X |  |  |  | Trạng thái: 0: Không sử dụng 1: Sử dụng. |
-| 7 | dsc | STRING | X |  |  |  | Mô tả. |
-| 8 | crt_by | STRING | X |  |  |  | Người tạo bản ghi. |
-| 9 | crt_tms | TIMESTAMP | X |  |  |  | Ngày tạo bản ghi. |
-| 10 | udt_tms | TIMESTAMP | X |  |  |  | Ngày cập nhật bản ghi. |
-| 11 | geo_tp_code | STRING |  |  |  |  | Phân loại vùng địa lý — Tỉnh/Thành phố |
-| 12 | geo_bsn_code | STRING | X |  |  |  | Mã quốc tịch/quốc gia (mã nghiệp vụ). |
-| 13 | note | STRING | X |  |  |  | Ghi chú. |
-| 14 | prn_geo_id | STRING | X |  | F |  | FK đến quốc gia cha |
-| 15 | prn_geo_code | STRING | X |  |  |  | Mã quốc gia cha |
-| 16 | iso_cty_code | STRING | X |  |  |  | Mã tỉnh/thành theo chuẩn |
-| 17 | dflt_f | BOOLEAN |  |  |  |  | Cờ mặc định |
-| 18 | geo_st_code | STRING | X |  |  |  | Trạng thái bản ghi |
-
-
-**Khóa chính (Primary Key):**
-
-| Tên trường |
-|---|
-| geo_id |
-
-
-
-**Khóa phụ (Foreign Key):**
-
-| Tên trường | Bảng tham chiếu | Cột tham chiếu |
-|---|---|---|
-| prn_geo_id | geo | geo_id |
-
-
-
-**Index:** N/A
-
-**Trigger:** N/A
-
-
-#### Từ NHNCK.DISTRICTS
-
-| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
-|---|---|---|---|---|---|---|---|
-| 1 | geo_id | STRING |  | X | P |  | Id tự sinh (surrogate key) |
-| 2 | geo_code | STRING |  |  |  |  | Mã quận/huyện nguồn. BK |
-| 3 | src_stm_code | STRING |  |  |  | 'NHNCK.DISTRICTS' | Mã nguồn dữ liệu |
-| 4 | geo_shrt_code | STRING | X |  |  |  | Mã viết tắt quốc tịch/quốc gia. |
-| 5 | geo_nm | STRING |  |  |  |  | Tên quận/huyện |
-| 6 | lcs_code | STRING | X |  |  |  | Trạng thái: 0: Không sử dụng 1: Sử dụng. |
-| 7 | dsc | STRING | X |  |  |  | Mô tả. |
-| 8 | crt_by | STRING | X |  |  |  | Người tạo bản ghi. |
-| 9 | crt_tms | TIMESTAMP | X |  |  |  | Ngày tạo bản ghi. |
-| 10 | udt_tms | TIMESTAMP | X |  |  |  | Ngày cập nhật bản ghi. |
-| 11 | geo_tp_code | STRING |  |  |  |  | Phân loại vùng địa lý — Quận/Huyện |
-| 12 | geo_bsn_code | STRING | X |  |  |  | Mã quốc tịch/quốc gia (mã nghiệp vụ). |
-| 13 | note | STRING | X |  |  |  | Ghi chú. |
-| 14 | prn_geo_id | STRING | X |  | F |  | FK đến tỉnh/thành cha |
-| 15 | prn_geo_code | STRING | X |  |  |  | Mã tỉnh/thành cha |
-| 16 | iso_cty_code | STRING | X |  |  |  | Mã quận/huyện theo chuẩn |
-| 17 | dflt_f | BOOLEAN |  |  |  |  | Cờ mặc định |
-| 18 | geo_st_code | STRING | X |  |  |  | Trạng thái bản ghi |
-
-
-**Khóa chính (Primary Key):**
-
-| Tên trường |
-|---|
-| geo_id |
-
-
-
-**Khóa phụ (Foreign Key):**
-
-| Tên trường | Bảng tham chiếu | Cột tham chiếu |
-|---|---|---|
-| prn_geo_id | geo | geo_id |
-
-
-
-**Index:** N/A
-
-**Trigger:** N/A
-
-
-
-
-
-### Bảng scr_prac_license_ap_fee
+### Bảng sp_license_application_fee
 
 
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | scr_prac_license_ap_fee_id | STRING |  | X | P |  | Surrogate primary key |
-| 2 | scr_prac_license_ap_fee_code | STRING |  |  |  |  | Business key từ APPLICATION_FEES.ID |
-| 3 | license_ap_id | STRING |  |  | F |  | FK đến License Application |
-| 4 | license_ap_code | STRING |  |  |  |  | Mã hồ sơ đăng ký (lookup pair) |
-| 5 | scr_prac_id | STRING | X |  | F |  | FK đến Securities Practitioner (redundant — derive được từ Application) |
-| 6 | scr_prac_code | STRING | X |  |  |  | Mã chuyên viên (lookup pair) |
-| 7 | fee_tp_code | STRING |  |  |  |  | Loại phí: 1=Phí thi 2=Phí phúc khảo 3=Phí cấp chứng chỉ |
-| 8 | fee_cntnt | STRING | X |  |  |  | Nội dung khoản phí |
-| 9 | fee_amt | DECIMAL(23,2) |  |  |  |  | Số tiền phí (VNĐ) |
-| 10 | pymt_rqs_dt | DATE |  |  |  |  | Ngày yêu cầu nộp phí |
-| 11 | pymt_dt | DATE | X |  |  |  | Ngày thanh toán thực tế |
-| 12 | pymt_expiry_dt | DATE | X |  |  |  | Ngày hết hạn thanh toán |
-| 13 | pymt_st_code | STRING |  |  |  |  | Trạng thái thanh toán (proxy từ RECORD_STATUS: 1=Hoạt động) |
-| 14 | pymt_evidence_file_path | STRING | X |  |  |  | Đường dẫn chứng từ thanh toán |
+| 1 | sp_license_application_fee_id | STRING |  | X | P |  | Surrogate primary key |
+| 2 | sp_license_application_fee_code | STRING |  |  |  |  | Business key từ APPLICATION_FEES.ID |
+| 3 | src_stm_code | STRING |  |  |  | 'NHNCK.APPLICATION_FEES' | Mã hệ thống nguồn |
+| 4 | sp_license_application_id | STRING |  |  | F |  | FK đến License Application |
+| 5 | sp_license_application_code | STRING |  |  |  |  | Mã hồ sơ đăng ký (lookup pair) |
+| 6 | sp_id | STRING | X |  | F |  | FK đến Securities Practitioner (redundant — derive được từ Application) |
+| 7 | sp_code | STRING | X |  |  |  | Mã chuyên viên (lookup pair) |
+| 8 | fee_tp_code | STRING |  |  |  |  | Loại phí: 1=Phí thi 2=Phí phúc khảo 3=Phí cấp chứng chỉ |
+| 9 | fee_content | STRING | X |  |  |  | Nội dung khoản phí |
+| 10 | fee_amt | DECIMAL(23,2) |  |  |  |  | Số tiền phí (VNĐ) |
+| 11 | payment_request_dt | DATE |  |  |  |  | Ngày yêu cầu nộp phí |
+| 12 | payment_dt | DATE | X |  |  |  | Ngày thanh toán thực tế |
+| 13 | payment_expiry_dt | DATE | X |  |  |  | Ngày hết hạn thanh toán |
+| 14 | payment_evidence_file_path | STRING | X |  |  |  | Đường dẫn chứng từ thanh toán |
 | 15 | note | STRING | X |  |  |  | Ghi chú |
-| 16 | src_stm_code | STRING |  |  |  | 'NHNCK.APPLICATION_FEES' | Mã hệ thống nguồn |
-| 17 | crt_by_usr_id | STRING | X |  | F |  | FK đến User (người tạo) — pending |
-| 18 | crt_by_usr_code | STRING | X |  |  |  | Mã user (lookup pair — pending) |
-| 19 | crt_at | TIMESTAMP | X |  |  |  | Thời điểm tạo bản ghi — pending |
-| 20 | udt_by_usr_id | STRING | X |  | F |  | FK đến User (người cập nhật) — pending |
-| 21 | udt_by_usr_code | STRING | X |  |  |  | Mã user (lookup pair — pending) |
-| 22 | udt_at | TIMESTAMP | X |  |  |  | Thời điểm cập nhật bản ghi — pending |
 
 
 #### Constraint
@@ -1633,7 +1147,7 @@ N/A
 
 | Tên trường |
 |---|
-| scr_prac_license_ap_fee_id |
+| sp_license_application_fee_id |
 
 
 
@@ -1641,10 +1155,7 @@ N/A
 
 | Tên trường | Bảng tham chiếu | Cột tham chiếu |
 |---|---|---|
-| license_ap_id |  |  |
-| scr_prac_id | scr_prac | scr_prac_id |
-| crt_by_usr_id |  |  |
-| udt_by_usr_id |  |  |
+| sp_id | securities_practitioner | sp_id |
 
 
 
@@ -1659,21 +1170,353 @@ N/A
 
 
 
-### Bảng ip_alt_identn
+### Bảng cl_application_status
 
 
+
+| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
+|---|---|---|---|---|---|---|---|
+| 1 | cl_application_status_id | STRING |  | X | P |  | Id tự sinh (surrogate key). |
+| 2 | cl_application_status_code | STRING |  |  |  |  | Mã trạng thái hồ sơ — BK của entity. |
+| 3 | src_stm_code | STRING |  |  |  | 'NHNCK.APPLICATION_STATUSES' | Mã hệ thống nguồn. |
+| 4 | cl_application_status_nm | STRING |  |  |  |  | Tên trạng thái hồ sơ hiển thị trên giao diện. |
+| 5 | label | STRING | X |  |  |  | Nhãn hiển thị ngắn gọn trên badge/tag. |
+| 6 | description | STRING | X |  |  |  | Mô tả chi tiết trạng thái. |
+| 7 | sort_order | INT | X |  |  |  | Thứ tự sắp xếp hiển thị (số nhỏ hơn hiển thị trước). |
+| 8 | active_ind | STRING | X |  |  |  | Cờ đang kích hoạt/hiệu lực. |
+| 9 | original_data_ind | STRING | X |  |  |  | Cờ dữ liệu gốc của hệ thống (không được xóa). |
+
+
+#### Constraint
+
+**Khóa chính (Primary Key):**
+
+| Tên trường |
+|---|
+| cl_application_status_id |
+
+
+
+**Khóa phụ (Foreign Key):**
+
+*Không có Foreign Key.*
+
+
+#### Index
+
+N/A
+
+#### Trigger
+
+N/A
+
+
+
+
+### Bảng cl_document
+
+
+
+| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
+|---|---|---|---|---|---|---|---|
+| 1 | cl_document_id | STRING |  | X | P |  | Id tự sinh (surrogate key). |
+| 2 | cl_document_code | STRING |  |  |  |  | Mã tài liệu — BK của entity. |
+| 3 | src_stm_code | STRING |  |  |  | 'NHNCK.DOCUMENTS' | Mã hệ thống nguồn. |
+| 4 | cl_document_nm | STRING |  |  |  |  | Tên tài liệu. |
+| 5 | legal_reference | STRING | X |  |  |  | Trích dẫn căn cứ pháp lý liên quan đến tài liệu. |
+| 6 | sort_order | INT | X |  |  |  | Thứ tự sắp xếp hiển thị (số nhỏ hơn hiển thị trước). |
+| 7 | active_ind | STRING | X |  |  |  | Cờ đang kích hoạt/hiệu lực. |
+| 8 | original_data_ind | STRING | X |  |  |  | Cờ dữ liệu gốc của hệ thống (không được xóa). |
+| 9 | public_service_portal_code | STRING | X |  |  |  | Mã đồng bộ chuyên ngành trên hệ thống Cổng Dịch vụ công quốc gia (MCĐT). |
+
+
+#### Constraint
+
+**Khóa chính (Primary Key):**
+
+| Tên trường |
+|---|
+| cl_document_id |
+
+
+
+**Khóa phụ (Foreign Key):**
+
+*Không có Foreign Key.*
+
+
+#### Index
+
+N/A
+
+#### Trigger
+
+N/A
+
+
+
+
+### Bảng cl_specialization
+
+
+
+| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
+|---|---|---|---|---|---|---|---|
+| 1 | cl_specialization_id | STRING |  | X | P |  | Id tự sinh (surrogate key). |
+| 2 | cl_specialization_code | STRING |  |  |  |  | Mã chuyên ngành CCHN — BK của entity. |
+| 3 | src_stm_code | STRING |  |  |  | 'NHNCK.SPECIALIZATIONS' | Mã hệ thống nguồn. |
+| 4 | cl_specialization_nm | STRING |  |  |  |  | Tên chuyên ngành CCHN (VD: Phân tích đầu tư, Quản lý quỹ...). |
+| 5 | legal_reference | STRING | X |  |  |  | Trích dẫn căn cứ pháp lý liên quan đến chuyên ngành. |
+| 6 | active_ind | STRING | X |  |  |  | Cờ đang kích hoạt/hiệu lực. |
+| 7 | original_data_ind | STRING | X |  |  |  | Cờ dữ liệu gốc của hệ thống (không được xóa). |
+| 8 | public_service_portal_code | STRING | X |  |  |  | Mã đồng bộ chuyên ngành trên hệ thống Cổng Dịch vụ công quốc gia (MCĐT). |
+
+
+#### Constraint
+
+**Khóa chính (Primary Key):**
+
+| Tên trường |
+|---|
+| cl_specialization_id |
+
+
+
+**Khóa phụ (Foreign Key):**
+
+*Không có Foreign Key.*
+
+
+#### Index
+
+N/A
+
+#### Trigger
+
+N/A
+
+
+
+
+### Bảng individual
+
+
+
+| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
+|---|---|---|---|---|---|---|---|
+| 1 | individual_id | STRING |  | X | P |  | Id tự sinh (surrogate key) |
+| 2 | individual_code | STRING |  |  |  |  | Số CMND/CCCD/Hộ chiếu của người hành nghề. BK duy nhất của entity |
+| 3 | src_stm_code | STRING |  |  |  | 'NHNCK.IDENTITY_INFO_C06S' | Mã nguồn dữ liệu |
+| 4 | full_nm | STRING | X |  |  |  | Họ và tên đầy đủ của người hành nghề |
+| 5 | given_nm | STRING | X |  |  |  | Tên đệm và tên riêng (tên gọi) của người hành nghề |
+| 6 | birth_dt | DATE | X |  |  |  | Ngày sinh (trong bản ghi vi phạm, snapshot tại thời điểm ghi) |
+| 7 | birth_year | STRING | X |  |  |  | Năm sinh (lưu dạng chuỗi, dùng khi chỉ biết năm không có ngày tháng) |
+| 8 | gender_code | STRING | X |  |  |  | Giới tính: 0=Nam, 1=Nữ |
+| 9 | ethnicity_nm | STRING | X |  |  |  | Dân tộc (theo dữ liệu C06 CSDL quốc gia về dân cư) |
+| 10 | religion_nm | STRING | X |  |  |  | Tôn giáo (theo dữ liệu C06 CSDL quốc gia về dân cư) |
+| 11 | country_code | STRING | X |  | F |  | Mã quốc gia theo chuẩn ISO 3166-1 alpha-2 |
+| 12 | place_of_birth_description | STRING | X |  |  |  | Nơi sinh của người hành nghề |
+| 13 | place_of_birth_country_code | STRING | X |  |  |  | Mã quốc gia nơi sinh (theo C06) |
+| 14 | place_of_birth_province_code | STRING | X |  |  |  | Mã tỉnh/thành phố nơi sinh (theo C06) |
+| 15 | place_of_birth_district_code | STRING | X |  |  |  | Mã quận/huyện nơi sinh (theo C06) |
+| 16 | hometown | STRING | X |  |  |  | Quê quán theo C06 CSDL quốc gia về dân cư |
+| 17 | father_full_nm | STRING | X |  |  |  | Họ tên đầy đủ của bố (theo C06) |
+| 18 | father_country_code | STRING | X |  |  |  | Mã quốc tịch của bố (theo C06) |
+| 19 | father_identity_nbr | STRING | X |  |  |  | Số CMND/CCCD của bố (theo C06) |
+| 20 | father_previous_identity_nbr | STRING | X |  |  |  | Số CMND cũ của bố (trước khi đổi CCCD, theo C06) |
+| 21 | mother_full_nm | STRING | X |  |  |  | Họ tên đầy đủ của mẹ (theo C06) |
+| 22 | mother_country_code | STRING | X |  |  |  | Mã quốc tịch của mẹ (theo C06) |
+| 23 | mother_identity_nbr | STRING | X |  |  |  | Số CMND/CCCD của mẹ (theo C06) |
+| 24 | mother_previous_identity_nbr | STRING | X |  |  |  | Số CMND cũ của mẹ (theo C06) |
+| 25 | spouse_full_nm | STRING | X |  |  |  | Họ tên đầy đủ của vợ/chồng (theo C06) |
+| 26 | spouse_country_code | STRING | X |  |  |  | Mã quốc tịch của vợ/chồng (theo C06) |
+| 27 | spouse_identity_nbr | STRING | X |  |  |  | Số CMND/CCCD của vợ/chồng (theo C06) |
+| 28 | spouse_previous_identity_nbr | STRING | X |  |  |  | Số CMND cũ của vợ/chồng (theo C06) |
+| 29 | updated_by_officer_id | STRING | X |  | F |  | FK -> USERS: Người cập nhật thông tin C06 lần cuối |
+| 30 | updated_by_officer_code | STRING | X |  |  |  | Mã cán bộ cập nhật (denormalized lookup) |
+
+
+#### Constraint
+
+**Khóa chính (Primary Key):**
+
+| Tên trường |
+|---|
+| individual_id |
+
+
+
+**Khóa phụ (Foreign Key):**
+
+*Không có Foreign Key.*
+
+
+#### Index
+
+N/A
+
+#### Trigger
+
+N/A
+
+
+
+
+### Bảng sp_license_certificate_status_change_history
+
+
+
+| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
+|---|---|---|---|---|---|---|---|
+| 1 | sp_license_certificate_status_change_history_id | STRING |  | X | P |  | Id tự sinh (surrogate key) |
+| 2 | sp_license_certificate_status_change_history_code | STRING |  |  |  |  | Mã định danh (BK từ PK nguồn — nguồn không có cột mã nghiệp vụ riêng) |
+| 3 | src_stm_code | STRING |  |  |  | 'NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES' | Mã nguồn dữ liệu |
+| 4 | data_dt | DATE |  |  |  |  | Thời điểm ghi nhận thay đổi trạng thái CCHN (nguồn: CREATED_AT). Dùng làm căn cứ partition Delta Lake / incremental filter — bảng nguồn là Fact Append (insert-only, xem BRD/Source/brd_NHNCK.yaml). |
+| 5 | sp_license_certificate_document_id | STRING |  |  | F |  | FK đến chứng chỉ hành nghề bị thay đổi trạng thái |
+| 6 | sp_license_certificate_document_code | STRING |  |  |  |  | Mã chứng chỉ hành nghề (denormalized lookup) |
+| 7 | update_tp | STRING | X |  |  |  | Loại cập nhật trạng thái CCHN (chuỗi mô tả hành động thay đổi) |
+| 8 | old_certificate_status_code | STRING | X |  |  |  | Trạng thái CCHN trước khi thay đổi |
+| 9 | new_certificate_status_code | STRING | X |  |  |  | Trạng thái CCHN sau khi thay đổi |
+| 10 | sp_license_decision_document_id | STRING | X |  | F |  | FK đến quyết định hành chính liên quan đến lần thay đổi trạng thái |
+| 11 | sp_license_decision_document_code | STRING | X |  |  |  | Mã quyết định (denormalized lookup) |
+| 12 | change_reason | STRING | X |  |  |  | Lý do thực hiện thao tác hoặc thay đổi |
+
+
+#### Constraint
+
+**Khóa chính (Primary Key):**
+
+| Tên trường |
+|---|
+| sp_license_certificate_status_change_history_id |
+
+
+
+**Khóa phụ (Foreign Key):**
+
+| Tên trường | Bảng tham chiếu | Cột tham chiếu |
+|---|---|---|
+| sp_license_certificate_document_id | sp_license_certificate_document | sp_license_certificate_document_id |
+| sp_license_decision_document_id | sp_license_decision_document | sp_license_decision_document_id |
+
+
+
+#### Index
+
+N/A
+
+#### Trigger
+
+N/A
+
+
+
+
+### Bảng sp_post_certification_training_course
+
+
+
+| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
+|---|---|---|---|---|---|---|---|
+| 1 | sp_post_certification_training_course_id | STRING |  | X | P |  | Id tự sinh (surrogate key) |
+| 2 | sp_post_certification_training_course_code | STRING |  |  |  |  | Mã khóa học/lớp học. BK duy nhất của entity |
+| 3 | src_stm_code | STRING |  |  |  | 'NHNCK.POST_CERT_TRAINING_COURSES' | Mã nguồn dữ liệu |
+| 4 | training_course_nm | STRING | X |  |  |  | Tên khóa học/lớp học |
+| 5 | training_class_code | STRING | X |  |  |  | Mã lớp học (định danh lớp cụ thể trong khóa) |
+
+
+#### Constraint
+
+**Khóa chính (Primary Key):**
+
+| Tên trường |
+|---|
+| sp_post_certification_training_course_id |
+
+
+
+**Khóa phụ (Foreign Key):**
+
+*Không có Foreign Key.*
+
+
+#### Index
+
+N/A
+
+#### Trigger
+
+N/A
+
+
+
+
+### Bảng sp_post_certification_training_result
+
+
+
+| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
+|---|---|---|---|---|---|---|---|
+| 1 | sp_post_certification_training_result_id | STRING |  | X | P |  | Id tự sinh (surrogate key) |
+| 2 | sp_post_certification_training_result_code | STRING |  |  |  |  | Mã định danh (BK từ PK nguồn — nguồn không có cột mã nghiệp vụ riêng) |
+| 3 | src_stm_code | STRING |  |  |  | 'NHNCK.POST_CERT_TRAINING_RESULTS' | Mã nguồn dữ liệu |
+| 4 | sp_id | STRING |  |  | F |  | FK đến người hành nghề tham gia đào tạo |
+| 5 | sp_code | STRING |  |  |  |  | Mã người hành nghề (denormalized lookup) |
+| 6 | sp_post_certification_training_course_id | STRING |  |  | F |  | FK đến khóa bồi dưỡng sau cấp CCHN |
+| 7 | sp_post_certification_training_course_code | STRING |  |  |  |  | Mã khóa bồi dưỡng (denormalized lookup) |
+| 8 | training_start_dt | DATE | X |  |  |  | Ngày bắt đầu tham gia khóa bồi dưỡng |
+| 9 | training_end_dt | DATE | X |  |  |  | Ngày kết thúc tham gia khóa bồi dưỡng |
+| 10 | training_hours | INT | X |  |  |  | Số giờ đào tạo |
+| 11 | training_result_status_code | STRING | X |  |  |  | Trạng thái kết quả khóa bồi dưỡng (Đạt/Không đạt — suy đoán từ NUMBER(1,0)) |
+| 12 | training_cl_result_code | STRING | X |  |  |  | Phân loại kết quả khóa bồi dưỡng (VD: Giỏi/Khá/Trung bình — suy đoán) |
+| 13 | note | STRING | X |  |  |  | Ghi chú |
+
+
+#### Constraint
+
+**Khóa chính (Primary Key):**
+
+| Tên trường |
+|---|
+| sp_post_certification_training_result_id |
+
+
+
+**Khóa phụ (Foreign Key):**
+
+| Tên trường | Bảng tham chiếu | Cột tham chiếu |
+|---|---|---|
+| sp_id | securities_practitioner | sp_id |
+
+
+
+#### Index
+
+N/A
+
+#### Trigger
+
+N/A
+
+
+
+
+### Bảng ip_alternative_identification
+
+
+
+#### Từ NHNCK.PROFESSIONALS
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 | 1 | ip_id | STRING |  |  | F |  | FK đến Securities Practitioner. |
 | 2 | ip_code | STRING |  |  |  |  | Mã người hành nghề. |
 | 3 | src_stm_code | STRING |  |  |  | 'NHNCK.PROFESSIONALS' | Mã hệ thống nguồn. |
-| 4 | identn_issu_dt | DATE | X |  |  |  | Ngày cấp giấy tờ định danh. |
-| 5 | identn_issu_plc | STRING | X |  |  |  | Nơi cấp giấy tờ định danh. |
-| 6 | prev_identn_nbr | STRING | X |  |  |  | Số CMND cũ (trước khi đổi sang CCCD). |
+| 4 | identification_tp_code | STRING | X |  |  |  | Loại giấy tờ định danh. |
+| 5 | identification_nbr | STRING |  |  |  |  | Số giấy tờ định danh (CMND/CCCD/Hộ chiếu). |
+| 6 | identification_issue_dt | DATE | X |  |  |  | Ngày cấp giấy tờ định danh. |
+| 7 | identification_issue_place | STRING | X |  |  |  | Nơi cấp giấy tờ định danh. |
 
-
-#### Constraint
 
 **Khóa chính (Primary Key):**
 
@@ -1684,22 +1527,48 @@ N/A
 
 | Tên trường | Bảng tham chiếu | Cột tham chiếu |
 |---|---|---|
-| ip_id | scr_prac | scr_prac_id |
+| ip_id | securities_practitioner | sp_id |
 
 
 
-#### Index
+**Index:** N/A
 
-N/A
-
-#### Trigger
-
-N/A
+**Trigger:** N/A
 
 
+#### Từ NHNCK.IDENTITY_INFO_C06S
+
+| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
+|---|---|---|---|---|---|---|---|
+| 1 | ip_id | STRING |  |  | F |  | FK đến Individual. |
+| 2 | ip_code | STRING |  |  |  |  | Số CMND/CCCD/Hộ chiếu của người hành nghề. |
+| 3 | src_stm_code | STRING |  |  |  | 'NHNCK.IDENTITY_INFO_C06S' | Mã hệ thống nguồn. |
+| 4 | identification_tp_code | STRING |  |  |  | 'NATIONAL_ID' | Loại giấy tờ định danh. |
+| 5 | identification_nbr | STRING |  |  |  |  | Số CMND/CCCD/Hộ chiếu của người hành nghề. |
 
 
-### Bảng ip_elc_adr
+**Khóa chính (Primary Key):**
+
+*Không có Primary Key.*
+
+
+**Khóa phụ (Foreign Key):**
+
+| Tên trường | Bảng tham chiếu | Cột tham chiếu |
+|---|---|---|
+| ip_id | individual | individual_id |
+
+
+
+**Index:** N/A
+
+**Trigger:** N/A
+
+
+
+
+
+### Bảng ip_electronic_address
 
 
 
@@ -1710,99 +1579,12 @@ N/A
 | 1 | ip_id | STRING |  |  | F |  | FK đến Regulatory Authority Organization Unit |
 | 2 | ip_code | STRING |  |  |  |  | Mã đơn vị |
 | 3 | src_stm_code | STRING |  |  |  | 'NHNCK.UNITS' | Mã hệ thống nguồn |
-| 4 | elc_adr_tp_code | STRING |  |  |  |  | Loại kênh liên lạc — email |
-| 5 | elc_adr_val | STRING | X |  |  |  | Số điện thoại đơn vị |
-| 6 | --- |  |  |  |  |  |  |
-| 7 | **tóm_tắt_các_thay_đổi_so_với_file_cũ:** |  |  |  |  |  |  |
-| 8 | **attr_nhnck_organizations.csv_—_12_điểm_sửa:** |  |  |  |  |  |  |
-| 9 | |_thay_đổi_|_chi_tiết_| |  |  |  |  |  |  |
-| 10 | |---|---| |  |  |  |  |  |  |
-| 11 | |_src_columns_fmt_|_đổi_toàn_bộ_sang_fully_qualified_`nhnck.qlnhn.organizations.column`_| |  |  |  |  |  |  |
-| 12 | |_tên_attr_|_`organization_name`_→_`securities_org_refr_name`_| |  |  |  |  |  |  |
-| 13 | |_tên_attr_|_`english_name`_→_`securities_org_refr_en_name`_| |  |  |  |  |  |  |
-| 14 | |_tên_attr_|_`abbreviation`_→_`securities_org_refr_shrt_name`_| |  |  |  |  |  |  |
-| 15 | |_tên_attr_|_`representative_name`_→_`legal_rprs_name`_| |  |  |  |  |  |  |
-| 16 | |_tên_attr_|_`license_issuer`_→_`license_issur_name`_| |  |  |  |  |  |  |
-| 17 | |_tên_attr_|_`parent_org_id/code`_→_`parent_scr_org_refr_id/code`_| |  |  |  |  |  |  |
-| 18 | |_tên_attr_|_`organization_st_code`_→_`record_st_code`_+_src_map_đúng_`record_status`_| |  |  |  |  |  |  |
-| 19 | |_tên_attr_|_`linked_id`_→_`external_stm_linked_id`_| |  |  |  |  |  |  |
-| 20 | |_tên_attr_|_`sync_id`_→_`external_stm_sync_id`_| |  |  |  |  |  |  |
-| 21 | |_tên_attr_|_`organization_description`_→_`description`_| |  |  |  |  |  |  |
-| 22 | |_thêm_mới_|_`updated_by_ofcr_id`_+_`updated_by_ofcr_code`_(từ_`updated_by`)_| |  |  |  |  |  |  |
-| 23 | |_cnvr_rsk_|_`charter_cptl_amount`_—_ghi_chú_nvarchar2_→_dcm_| |  |  |  |  |  |  |
-| 24 | |_dmn_dt_|_`created_date`_x_`updated_date`_dùng_`date`_(nguồn_là_oracle_`date` |  |  |  |  |  |  không phải TIMESTAMP) | |
-| 25 | |_`etl_derived_value`_|_`source_stm_code`_→_thêm_`nhnck.organizations`_| |  |  |  |  |  |  |
-| 26 | **attr_nhnck_organizations_ip_postal_address.csv:**_src_columns_đổi_sang_fully_qualified. |  |  |  |  |  |  |
-| 27 | **attr_nhnck_organizations_ip_electronic_address.csv:**_thêm_blc_webst_(`ip_elec_addr_type=website`)_+_src_columns_đổi_sang_fully_qualified. |  |  |  |  |  |  |
-| 28 | **lưu_ý_pndg_cần_doc_thêm:** |  |  |  |  |  |  |
-| 29 | __`created_by`_x_`updated_by`_nguồn_là_`number(10 |  |  |  |  |  | 0)` FK → `USERS.ID` — ETL cần resolve sang Officer surrogate key qua bảng USERS. |
-| 30 | __`website`_đã_chuyển_sang_ip_elc_adr_(không_còn_trong_ent_chính)_—_nếu_file_cũ_có_trường_`website`_ở_ent_chính_cần_xóa_(đã_xóa_trong_file_mới_này). |  |  |  |  |  |  |
-| 31 | __`sort_order`_src_`number`_→_`small_counter`:_không_cần_ghi_chú_cnvr_rsk_vì_nbr_→_intg_là_tự_nhiên. |  |  |  |  |  |  |
-| 32 | elc_adr | STRING |  |  |  |  | Giá trị địa chỉ điện tử (email hoặc số điện thoại) |
-| 33 | ip_id | STRING |  |  | F |  | FK đến Regulatory Authority Organization Unit |
-| 34 | ip_code | STRING |  |  |  |  | Mã đơn vị |
-| 35 | src_stm_code | STRING |  |  |  | 'NHNCK.UNITS' | Mã hệ thống nguồn |
-| 36 | elc_adr_tp_code | STRING |  |  |  |  | Loại kênh liên lạc — fax |
-| 37 | elc_adr_val | STRING | X |  |  |  | Số điện thoại đơn vị |
-| 38 | --- |  |  |  |  |  |  |
-| 39 | **tóm_tắt_các_thay_đổi_so_với_file_cũ:** |  |  |  |  |  |  |
-| 40 | **attr_nhnck_organizations.csv_—_12_điểm_sửa:** |  |  |  |  |  |  |
-| 41 | |_thay_đổi_|_chi_tiết_| |  |  |  |  |  |  |
-| 42 | |---|---| |  |  |  |  |  |  |
-| 43 | |_src_columns_fmt_|_đổi_toàn_bộ_sang_fully_qualified_`nhnck.qlnhn.organizations.column`_| |  |  |  |  |  |  |
-| 44 | |_tên_attr_|_`organization_name`_→_`securities_org_refr_name`_| |  |  |  |  |  |  |
-| 45 | |_tên_attr_|_`english_name`_→_`securities_org_refr_en_name`_| |  |  |  |  |  |  |
-| 46 | |_tên_attr_|_`abbreviation`_→_`securities_org_refr_shrt_name`_| |  |  |  |  |  |  |
-| 47 | |_tên_attr_|_`representative_name`_→_`legal_rprs_name`_| |  |  |  |  |  |  |
-| 48 | |_tên_attr_|_`license_issuer`_→_`license_issur_name`_| |  |  |  |  |  |  |
-| 49 | |_tên_attr_|_`parent_org_id/code`_→_`parent_scr_org_refr_id/code`_| |  |  |  |  |  |  |
-| 50 | |_tên_attr_|_`organization_st_code`_→_`record_st_code`_+_src_map_đúng_`record_status`_| |  |  |  |  |  |  |
-| 51 | |_tên_attr_|_`linked_id`_→_`external_stm_linked_id`_| |  |  |  |  |  |  |
-| 52 | |_tên_attr_|_`sync_id`_→_`external_stm_sync_id`_| |  |  |  |  |  |  |
-| 53 | |_tên_attr_|_`organization_description`_→_`description`_| |  |  |  |  |  |  |
-| 54 | |_thêm_mới_|_`updated_by_ofcr_id`_+_`updated_by_ofcr_code`_(từ_`updated_by`)_| |  |  |  |  |  |  |
-| 55 | |_cnvr_rsk_|_`charter_cptl_amount`_—_ghi_chú_nvarchar2_→_dcm_| |  |  |  |  |  |  |
-| 56 | |_dmn_dt_|_`created_date`_x_`updated_date`_dùng_`date`_(nguồn_là_oracle_`date` |  |  |  |  |  |  không phải TIMESTAMP) | |
-| 57 | |_`etl_derived_value`_|_`source_stm_code`_→_thêm_`nhnck.organizations`_| |  |  |  |  |  |  |
-| 58 | **attr_nhnck_organizations_ip_postal_address.csv:**_src_columns_đổi_sang_fully_qualified. |  |  |  |  |  |  |
-| 59 | **attr_nhnck_organizations_ip_electronic_address.csv:**_thêm_blc_webst_(`ip_elec_addr_type=website`)_+_src_columns_đổi_sang_fully_qualified. |  |  |  |  |  |  |
-| 60 | **lưu_ý_pndg_cần_doc_thêm:** |  |  |  |  |  |  |
-| 61 | __`created_by`_x_`updated_by`_nguồn_là_`number(10 |  |  |  |  |  | 0)` FK → `USERS.ID` — ETL cần resolve sang Officer surrogate key qua bảng USERS. |
-| 62 | __`website`_đã_chuyển_sang_ip_elc_adr_(không_còn_trong_ent_chính)_—_nếu_file_cũ_có_trường_`website`_ở_ent_chính_cần_xóa_(đã_xóa_trong_file_mới_này). |  |  |  |  |  |  |
-| 63 | __`sort_order`_src_`number`_→_`small_counter`:_không_cần_ghi_chú_cnvr_rsk_vì_nbr_→_intg_là_tự_nhiên. |  |  |  |  |  |  |
-| 64 | elc_adr | STRING |  |  |  |  | Giá trị địa chỉ điện tử (email hoặc số điện thoại) |
-| 65 | ip_id | STRING |  |  | F |  | FK đến Regulatory Authority Organization Unit |
-| 66 | ip_code | STRING |  |  |  |  | Mã đơn vị |
-| 67 | src_stm_code | STRING |  |  |  | 'NHNCK.UNITS' | Mã hệ thống nguồn |
-| 68 | elc_adr_tp_code | STRING |  |  |  |  | Loại kênh liên lạc — điện thoại |
-| 69 | elc_adr_val | STRING | X |  |  |  | Số điện thoại đơn vị |
-| 70 | --- |  |  |  |  |  |  |
-| 71 | **tóm_tắt_các_thay_đổi_so_với_file_cũ:** |  |  |  |  |  |  |
-| 72 | **attr_nhnck_organizations.csv_—_12_điểm_sửa:** |  |  |  |  |  |  |
-| 73 | |_thay_đổi_|_chi_tiết_| |  |  |  |  |  |  |
-| 74 | |---|---| |  |  |  |  |  |  |
-| 75 | |_src_columns_fmt_|_đổi_toàn_bộ_sang_fully_qualified_`nhnck.qlnhn.organizations.column`_| |  |  |  |  |  |  |
-| 76 | |_tên_attr_|_`organization_name`_→_`securities_org_refr_name`_| |  |  |  |  |  |  |
-| 77 | |_tên_attr_|_`english_name`_→_`securities_org_refr_en_name`_| |  |  |  |  |  |  |
-| 78 | |_tên_attr_|_`abbreviation`_→_`securities_org_refr_shrt_name`_| |  |  |  |  |  |  |
-| 79 | |_tên_attr_|_`representative_name`_→_`legal_rprs_name`_| |  |  |  |  |  |  |
-| 80 | |_tên_attr_|_`license_issuer`_→_`license_issur_name`_| |  |  |  |  |  |  |
-| 81 | |_tên_attr_|_`parent_org_id/code`_→_`parent_scr_org_refr_id/code`_| |  |  |  |  |  |  |
-| 82 | |_tên_attr_|_`organization_st_code`_→_`record_st_code`_+_src_map_đúng_`record_status`_| |  |  |  |  |  |  |
-| 83 | |_tên_attr_|_`linked_id`_→_`external_stm_linked_id`_| |  |  |  |  |  |  |
-| 84 | |_tên_attr_|_`sync_id`_→_`external_stm_sync_id`_| |  |  |  |  |  |  |
-| 85 | |_tên_attr_|_`organization_description`_→_`description`_| |  |  |  |  |  |  |
-| 86 | |_thêm_mới_|_`updated_by_ofcr_id`_+_`updated_by_ofcr_code`_(từ_`updated_by`)_| |  |  |  |  |  |  |
-| 87 | |_cnvr_rsk_|_`charter_cptl_amount`_—_ghi_chú_nvarchar2_→_dcm_| |  |  |  |  |  |  |
-| 88 | |_dmn_dt_|_`created_date`_x_`updated_date`_dùng_`date`_(nguồn_là_oracle_`date` |  |  |  |  |  |  không phải TIMESTAMP) | |
-| 89 | |_`etl_derived_value`_|_`source_stm_code`_→_thêm_`nhnck.organizations`_| |  |  |  |  |  |  |
-| 90 | **attr_nhnck_organizations_ip_postal_address.csv:**_src_columns_đổi_sang_fully_qualified. |  |  |  |  |  |  |
-| 91 | **attr_nhnck_organizations_ip_electronic_address.csv:**_thêm_blc_webst_(`ip_elec_addr_type=website`)_+_src_columns_đổi_sang_fully_qualified. |  |  |  |  |  |  |
-| 92 | **lưu_ý_pndg_cần_doc_thêm:** |  |  |  |  |  |  |
-| 93 | __`created_by`_x_`updated_by`_nguồn_là_`number(10 |  |  |  |  |  | 0)` FK → `USERS.ID` — ETL cần resolve sang Officer surrogate key qua bảng USERS. |
-| 94 | __`website`_đã_chuyển_sang_ip_elc_adr_(không_còn_trong_ent_chính)_—_nếu_file_cũ_có_trường_`website`_ở_ent_chính_cần_xóa_(đã_xóa_trong_file_mới_này). |  |  |  |  |  |  |
-| 95 | __`sort_order`_src_`number`_→_`small_counter`:_không_cần_ghi_chú_cnvr_rsk_vì_nbr_→_intg_là_tự_nhiên. |  |  |  |  |  |  |
-| 96 | elc_adr | STRING |  |  |  |  | Giá trị địa chỉ điện tử (email hoặc số điện thoại) |
+| 4 | electronic_adr_tp_code | STRING |  |  |  | 'EMAIL' | Loại kênh liên lạc — email |
+| 5 | electronic_adr_val | STRING | X |  |  |  | Email đơn vị |
+| 6 | electronic_adr_tp_code | STRING |  |  |  | 'FAX' | Loại kênh liên lạc — fax |
+| 7 | electronic_adr_val | STRING | X |  |  |  | Số fax đơn vị |
+| 8 | electronic_adr_tp_code | STRING |  |  |  | 'PHONE' | Loại kênh liên lạc — điện thoại |
+| 9 | electronic_adr_val | STRING | X |  |  |  | Số điện thoại đơn vị |
 
 
 **Khóa chính (Primary Key):**
@@ -1812,10 +1594,7 @@ N/A
 
 **Khóa phụ (Foreign Key):**
 
-| Tên trường | Bảng tham chiếu | Cột tham chiếu |
-|---|---|---|
-| ip_id | reg_ahr_ou | reg_ahr_ou_id |
-
+*Không có Foreign Key.*
 
 
 **Index:** N/A
@@ -1830,163 +1609,16 @@ N/A
 | 1 | ip_id | STRING |  |  | F |  | FK đến Securities Organization Reference. |
 | 2 | ip_code | STRING |  |  |  |  | Mã tổ chức. |
 | 3 | src_stm_code | STRING |  |  |  | 'NHNCK.ORGANIZATIONS' | Mã hệ thống nguồn. |
-| 4 | elc_adr_tp_code | STRING |  |  |  |  | Loại kênh liên lạc — email. |
-| 5 | elc_adr_val | STRING | X |  |  |  | Địa chỉ email của tổ chức. |
-| 6 | --- |  |  |  |  |  |  |
-| 7 | **tóm_tắt_các_thay_đổi_so_với_file_cũ:** |  |  |  |  |  |  |
-| 8 | **attr_nhnck_organizations.csv_—_12_điểm_sửa:** |  |  |  |  |  |  |
-| 9 | |_thay_đổi_|_chi_tiết_| |  |  |  |  |  |  |
-| 10 | |---|---| |  |  |  |  |  |  |
-| 11 | |_src_columns_fmt_|_đổi_toàn_bộ_sang_fully_qualified_`nhnck.qlnhn.organizations.column`_| |  |  |  |  |  |  |
-| 12 | |_tên_attr_|_`organization_name`_→_`securities_org_refr_name`_| |  |  |  |  |  |  |
-| 13 | |_tên_attr_|_`english_name`_→_`securities_org_refr_en_name`_| |  |  |  |  |  |  |
-| 14 | |_tên_attr_|_`abbreviation`_→_`securities_org_refr_shrt_name`_| |  |  |  |  |  |  |
-| 15 | |_tên_attr_|_`representative_name`_→_`legal_rprs_name`_| |  |  |  |  |  |  |
-| 16 | |_tên_attr_|_`license_issuer`_→_`license_issur_name`_| |  |  |  |  |  |  |
-| 17 | |_tên_attr_|_`parent_org_id/code`_→_`parent_scr_org_refr_id/code`_| |  |  |  |  |  |  |
-| 18 | |_tên_attr_|_`organization_st_code`_→_`record_st_code`_+_src_map_đúng_`record_status`_| |  |  |  |  |  |  |
-| 19 | |_tên_attr_|_`linked_id`_→_`external_stm_linked_id`_| |  |  |  |  |  |  |
-| 20 | |_tên_attr_|_`sync_id`_→_`external_stm_sync_id`_| |  |  |  |  |  |  |
-| 21 | |_tên_attr_|_`organization_description`_→_`description`_| |  |  |  |  |  |  |
-| 22 | |_thêm_mới_|_`updated_by_ofcr_id`_+_`updated_by_ofcr_code`_(từ_`updated_by`)_| |  |  |  |  |  |  |
-| 23 | |_cnvr_rsk_|_`charter_cptl_amount`_—_ghi_chú_nvarchar2_→_dcm_| |  |  |  |  |  |  |
-| 24 | |_dmn_dt_|_`created_date`_x_`updated_date`_dùng_`date`_(nguồn_là_oracle_`date` |  |  |  |  |  |  không phải TIMESTAMP) | |
-| 25 | |_`etl_derived_value`_|_`source_stm_code`_→_thêm_`nhnck.organizations`_| |  |  |  |  |  |  |
-| 26 | **attr_nhnck_organizations_ip_postal_address.csv:**_src_columns_đổi_sang_fully_qualified. |  |  |  |  |  |  |
-| 27 | **attr_nhnck_organizations_ip_electronic_address.csv:**_thêm_blc_webst_(`ip_elec_addr_type=website`)_+_src_columns_đổi_sang_fully_qualified. |  |  |  |  |  |  |
-| 28 | **lưu_ý_pndg_cần_doc_thêm:** |  |  |  |  |  |  |
-| 29 | __`created_by`_x_`updated_by`_nguồn_là_`number(10 |  |  |  |  |  | 0)` FK → `USERS.ID` — ETL cần resolve sang Officer surrogate key qua bảng USERS. |
-| 30 | __`website`_đã_chuyển_sang_ip_elc_adr_(không_còn_trong_ent_chính)_—_nếu_file_cũ_có_trường_`website`_ở_ent_chính_cần_xóa_(đã_xóa_trong_file_mới_này). |  |  |  |  |  |  |
-| 31 | __`sort_order`_src_`number`_→_`small_counter`:_không_cần_ghi_chú_cnvr_rsk_vì_nbr_→_intg_là_tự_nhiên. |  |  |  |  |  |  |
-| 32 | elc_adr | STRING |  |  |  |  | Giá trị địa chỉ điện tử (email hoặc số điện thoại) |
-| 33 | ip_id | STRING |  |  | F |  | FK đến Securities Organization Reference. |
-| 34 | ip_code | STRING |  |  |  |  | Mã tổ chức. |
-| 35 | src_stm_code | STRING |  |  |  | 'NHNCK.ORGANIZATIONS' | Mã hệ thống nguồn. |
-| 36 | elc_adr_tp_code | STRING |  |  |  |  | Loại kênh liên lạc — fax. |
-| 37 | elc_adr_val | STRING | X |  |  |  | Số fax của tổ chức. |
-| 38 | --- |  |  |  |  |  |  |
-| 39 | **tóm_tắt_các_thay_đổi_so_với_file_cũ:** |  |  |  |  |  |  |
-| 40 | **attr_nhnck_organizations.csv_—_12_điểm_sửa:** |  |  |  |  |  |  |
-| 41 | |_thay_đổi_|_chi_tiết_| |  |  |  |  |  |  |
-| 42 | |---|---| |  |  |  |  |  |  |
-| 43 | |_src_columns_fmt_|_đổi_toàn_bộ_sang_fully_qualified_`nhnck.qlnhn.organizations.column`_| |  |  |  |  |  |  |
-| 44 | |_tên_attr_|_`organization_name`_→_`securities_org_refr_name`_| |  |  |  |  |  |  |
-| 45 | |_tên_attr_|_`english_name`_→_`securities_org_refr_en_name`_| |  |  |  |  |  |  |
-| 46 | |_tên_attr_|_`abbreviation`_→_`securities_org_refr_shrt_name`_| |  |  |  |  |  |  |
-| 47 | |_tên_attr_|_`representative_name`_→_`legal_rprs_name`_| |  |  |  |  |  |  |
-| 48 | |_tên_attr_|_`license_issuer`_→_`license_issur_name`_| |  |  |  |  |  |  |
-| 49 | |_tên_attr_|_`parent_org_id/code`_→_`parent_scr_org_refr_id/code`_| |  |  |  |  |  |  |
-| 50 | |_tên_attr_|_`organization_st_code`_→_`record_st_code`_+_src_map_đúng_`record_status`_| |  |  |  |  |  |  |
-| 51 | |_tên_attr_|_`linked_id`_→_`external_stm_linked_id`_| |  |  |  |  |  |  |
-| 52 | |_tên_attr_|_`sync_id`_→_`external_stm_sync_id`_| |  |  |  |  |  |  |
-| 53 | |_tên_attr_|_`organization_description`_→_`description`_| |  |  |  |  |  |  |
-| 54 | |_thêm_mới_|_`updated_by_ofcr_id`_+_`updated_by_ofcr_code`_(từ_`updated_by`)_| |  |  |  |  |  |  |
-| 55 | |_cnvr_rsk_|_`charter_cptl_amount`_—_ghi_chú_nvarchar2_→_dcm_| |  |  |  |  |  |  |
-| 56 | |_dmn_dt_|_`created_date`_x_`updated_date`_dùng_`date`_(nguồn_là_oracle_`date` |  |  |  |  |  |  không phải TIMESTAMP) | |
-| 57 | |_`etl_derived_value`_|_`source_stm_code`_→_thêm_`nhnck.organizations`_| |  |  |  |  |  |  |
-| 58 | **attr_nhnck_organizations_ip_postal_address.csv:**_src_columns_đổi_sang_fully_qualified. |  |  |  |  |  |  |
-| 59 | **attr_nhnck_organizations_ip_electronic_address.csv:**_thêm_blc_webst_(`ip_elec_addr_type=website`)_+_src_columns_đổi_sang_fully_qualified. |  |  |  |  |  |  |
-| 60 | **lưu_ý_pndg_cần_doc_thêm:** |  |  |  |  |  |  |
-| 61 | __`created_by`_x_`updated_by`_nguồn_là_`number(10 |  |  |  |  |  | 0)` FK → `USERS.ID` — ETL cần resolve sang Officer surrogate key qua bảng USERS. |
-| 62 | __`website`_đã_chuyển_sang_ip_elc_adr_(không_còn_trong_ent_chính)_—_nếu_file_cũ_có_trường_`website`_ở_ent_chính_cần_xóa_(đã_xóa_trong_file_mới_này). |  |  |  |  |  |  |
-| 63 | __`sort_order`_src_`number`_→_`small_counter`:_không_cần_ghi_chú_cnvr_rsk_vì_nbr_→_intg_là_tự_nhiên. |  |  |  |  |  |  |
-| 64 | elc_adr | STRING |  |  |  |  | Giá trị địa chỉ điện tử (email hoặc số điện thoại) |
-| 65 | ip_id | STRING |  |  | F |  | FK đến Securities Organization Reference. |
-| 66 | ip_code | STRING |  |  |  |  | Mã tổ chức. |
-| 67 | src_stm_code | STRING |  |  |  | 'NHNCK.ORGANIZATIONS' | Mã hệ thống nguồn. |
-| 68 | elc_adr_tp_code | STRING |  |  |  |  | Loại kênh liên lạc — số di động. |
-| 69 | elc_adr_val | STRING | X |  |  |  | Số di động của tổ chức. |
-| 70 | --- |  |  |  |  |  |  |
-| 71 | **tóm_tắt_các_thay_đổi_so_với_file_cũ:** |  |  |  |  |  |  |
-| 72 | **attr_nhnck_organizations.csv_—_12_điểm_sửa:** |  |  |  |  |  |  |
-| 73 | |_thay_đổi_|_chi_tiết_| |  |  |  |  |  |  |
-| 74 | |---|---| |  |  |  |  |  |  |
-| 75 | |_src_columns_fmt_|_đổi_toàn_bộ_sang_fully_qualified_`nhnck.qlnhn.organizations.column`_| |  |  |  |  |  |  |
-| 76 | |_tên_attr_|_`organization_name`_→_`securities_org_refr_name`_| |  |  |  |  |  |  |
-| 77 | |_tên_attr_|_`english_name`_→_`securities_org_refr_en_name`_| |  |  |  |  |  |  |
-| 78 | |_tên_attr_|_`abbreviation`_→_`securities_org_refr_shrt_name`_| |  |  |  |  |  |  |
-| 79 | |_tên_attr_|_`representative_name`_→_`legal_rprs_name`_| |  |  |  |  |  |  |
-| 80 | |_tên_attr_|_`license_issuer`_→_`license_issur_name`_| |  |  |  |  |  |  |
-| 81 | |_tên_attr_|_`parent_org_id/code`_→_`parent_scr_org_refr_id/code`_| |  |  |  |  |  |  |
-| 82 | |_tên_attr_|_`organization_st_code`_→_`record_st_code`_+_src_map_đúng_`record_status`_| |  |  |  |  |  |  |
-| 83 | |_tên_attr_|_`linked_id`_→_`external_stm_linked_id`_| |  |  |  |  |  |  |
-| 84 | |_tên_attr_|_`sync_id`_→_`external_stm_sync_id`_| |  |  |  |  |  |  |
-| 85 | |_tên_attr_|_`organization_description`_→_`description`_| |  |  |  |  |  |  |
-| 86 | |_thêm_mới_|_`updated_by_ofcr_id`_+_`updated_by_ofcr_code`_(từ_`updated_by`)_| |  |  |  |  |  |  |
-| 87 | |_cnvr_rsk_|_`charter_cptl_amount`_—_ghi_chú_nvarchar2_→_dcm_| |  |  |  |  |  |  |
-| 88 | |_dmn_dt_|_`created_date`_x_`updated_date`_dùng_`date`_(nguồn_là_oracle_`date` |  |  |  |  |  |  không phải TIMESTAMP) | |
-| 89 | |_`etl_derived_value`_|_`source_stm_code`_→_thêm_`nhnck.organizations`_| |  |  |  |  |  |  |
-| 90 | **attr_nhnck_organizations_ip_postal_address.csv:**_src_columns_đổi_sang_fully_qualified. |  |  |  |  |  |  |
-| 91 | **attr_nhnck_organizations_ip_electronic_address.csv:**_thêm_blc_webst_(`ip_elec_addr_type=website`)_+_src_columns_đổi_sang_fully_qualified. |  |  |  |  |  |  |
-| 92 | **lưu_ý_pndg_cần_doc_thêm:** |  |  |  |  |  |  |
-| 93 | __`created_by`_x_`updated_by`_nguồn_là_`number(10 |  |  |  |  |  | 0)` FK → `USERS.ID` — ETL cần resolve sang Officer surrogate key qua bảng USERS. |
-| 94 | __`website`_đã_chuyển_sang_ip_elc_adr_(không_còn_trong_ent_chính)_—_nếu_file_cũ_có_trường_`website`_ở_ent_chính_cần_xóa_(đã_xóa_trong_file_mới_này). |  |  |  |  |  |  |
-| 95 | __`sort_order`_src_`number`_→_`small_counter`:_không_cần_ghi_chú_cnvr_rsk_vì_nbr_→_intg_là_tự_nhiên. |  |  |  |  |  |  |
-| 96 | elc_adr | STRING |  |  |  |  | Giá trị địa chỉ điện tử (email hoặc số điện thoại) |
-| 97 | ip_id | STRING |  |  | F |  | FK đến Securities Organization Reference. |
-| 98 | ip_code | STRING |  |  |  |  | Mã tổ chức. |
-| 99 | src_stm_code | STRING |  |  |  | 'NHNCK.ORGANIZATIONS' | Mã hệ thống nguồn. |
-| 100 | elc_adr_tp_code | STRING |  |  |  |  | Loại kênh liên lạc — điện thoại. |
-| 101 | elc_adr_val | STRING | X |  |  |  | Số điện thoại cố định của tổ chức. |
-| 102 | --- |  |  |  |  |  |  |
-| 103 | **tóm_tắt_các_thay_đổi_so_với_file_cũ:** |  |  |  |  |  |  |
-| 104 | **attr_nhnck_organizations.csv_—_12_điểm_sửa:** |  |  |  |  |  |  |
-| 105 | |_thay_đổi_|_chi_tiết_| |  |  |  |  |  |  |
-| 106 | |---|---| |  |  |  |  |  |  |
-| 107 | |_src_columns_fmt_|_đổi_toàn_bộ_sang_fully_qualified_`nhnck.qlnhn.organizations.column`_| |  |  |  |  |  |  |
-| 108 | |_tên_attr_|_`organization_name`_→_`securities_org_refr_name`_| |  |  |  |  |  |  |
-| 109 | |_tên_attr_|_`english_name`_→_`securities_org_refr_en_name`_| |  |  |  |  |  |  |
-| 110 | |_tên_attr_|_`abbreviation`_→_`securities_org_refr_shrt_name`_| |  |  |  |  |  |  |
-| 111 | |_tên_attr_|_`representative_name`_→_`legal_rprs_name`_| |  |  |  |  |  |  |
-| 112 | |_tên_attr_|_`license_issuer`_→_`license_issur_name`_| |  |  |  |  |  |  |
-| 113 | |_tên_attr_|_`parent_org_id/code`_→_`parent_scr_org_refr_id/code`_| |  |  |  |  |  |  |
-| 114 | |_tên_attr_|_`organization_st_code`_→_`record_st_code`_+_src_map_đúng_`record_status`_| |  |  |  |  |  |  |
-| 115 | |_tên_attr_|_`linked_id`_→_`external_stm_linked_id`_| |  |  |  |  |  |  |
-| 116 | |_tên_attr_|_`sync_id`_→_`external_stm_sync_id`_| |  |  |  |  |  |  |
-| 117 | |_tên_attr_|_`organization_description`_→_`description`_| |  |  |  |  |  |  |
-| 118 | |_thêm_mới_|_`updated_by_ofcr_id`_+_`updated_by_ofcr_code`_(từ_`updated_by`)_| |  |  |  |  |  |  |
-| 119 | |_cnvr_rsk_|_`charter_cptl_amount`_—_ghi_chú_nvarchar2_→_dcm_| |  |  |  |  |  |  |
-| 120 | |_dmn_dt_|_`created_date`_x_`updated_date`_dùng_`date`_(nguồn_là_oracle_`date` |  |  |  |  |  |  không phải TIMESTAMP) | |
-| 121 | |_`etl_derived_value`_|_`source_stm_code`_→_thêm_`nhnck.organizations`_| |  |  |  |  |  |  |
-| 122 | **attr_nhnck_organizations_ip_postal_address.csv:**_src_columns_đổi_sang_fully_qualified. |  |  |  |  |  |  |
-| 123 | **attr_nhnck_organizations_ip_electronic_address.csv:**_thêm_blc_webst_(`ip_elec_addr_type=website`)_+_src_columns_đổi_sang_fully_qualified. |  |  |  |  |  |  |
-| 124 | **lưu_ý_pndg_cần_doc_thêm:** |  |  |  |  |  |  |
-| 125 | __`created_by`_x_`updated_by`_nguồn_là_`number(10 |  |  |  |  |  | 0)` FK → `USERS.ID` — ETL cần resolve sang Officer surrogate key qua bảng USERS. |
-| 126 | __`website`_đã_chuyển_sang_ip_elc_adr_(không_còn_trong_ent_chính)_—_nếu_file_cũ_có_trường_`website`_ở_ent_chính_cần_xóa_(đã_xóa_trong_file_mới_này). |  |  |  |  |  |  |
-| 127 | __`sort_order`_src_`number`_→_`small_counter`:_không_cần_ghi_chú_cnvr_rsk_vì_nbr_→_intg_là_tự_nhiên. |  |  |  |  |  |  |
-| 128 | elc_adr | STRING |  |  |  |  | Giá trị địa chỉ điện tử (email hoặc số điện thoại) |
-| 129 | ip_id | STRING |  |  | F |  | FK đến Securities Organization Reference. |
-| 130 | ip_code | STRING |  |  |  |  | Mã tổ chức. |
-| 131 | src_stm_code | STRING |  |  |  | 'NHNCK.ORGANIZATIONS' | Mã hệ thống nguồn. |
-| 132 | elc_adr_tp_code | STRING |  |  |  |  | Loại kênh liên lạc — website. |
-| 133 | elc_adr_val | STRING | X |  |  |  | Địa chỉ website của tổ chức. |
-| 134 | --- |  |  |  |  |  |  |
-| 135 | **tóm_tắt_các_thay_đổi_so_với_file_cũ:** |  |  |  |  |  |  |
-| 136 | **attr_nhnck_organizations.csv_—_12_điểm_sửa:** |  |  |  |  |  |  |
-| 137 | |_thay_đổi_|_chi_tiết_| |  |  |  |  |  |  |
-| 138 | |---|---| |  |  |  |  |  |  |
-| 139 | |_src_columns_fmt_|_đổi_toàn_bộ_sang_fully_qualified_`nhnck.qlnhn.organizations.column`_| |  |  |  |  |  |  |
-| 140 | |_tên_attr_|_`organization_name`_→_`securities_org_refr_name`_| |  |  |  |  |  |  |
-| 141 | |_tên_attr_|_`english_name`_→_`securities_org_refr_en_name`_| |  |  |  |  |  |  |
-| 142 | |_tên_attr_|_`abbreviation`_→_`securities_org_refr_shrt_name`_| |  |  |  |  |  |  |
-| 143 | |_tên_attr_|_`representative_name`_→_`legal_rprs_name`_| |  |  |  |  |  |  |
-| 144 | |_tên_attr_|_`license_issuer`_→_`license_issur_name`_| |  |  |  |  |  |  |
-| 145 | |_tên_attr_|_`parent_org_id/code`_→_`parent_scr_org_refr_id/code`_| |  |  |  |  |  |  |
-| 146 | |_tên_attr_|_`organization_st_code`_→_`record_st_code`_+_src_map_đúng_`record_status`_| |  |  |  |  |  |  |
-| 147 | |_tên_attr_|_`linked_id`_→_`external_stm_linked_id`_| |  |  |  |  |  |  |
-| 148 | |_tên_attr_|_`sync_id`_→_`external_stm_sync_id`_| |  |  |  |  |  |  |
-| 149 | |_tên_attr_|_`organization_description`_→_`description`_| |  |  |  |  |  |  |
-| 150 | |_thêm_mới_|_`updated_by_ofcr_id`_+_`updated_by_ofcr_code`_(từ_`updated_by`)_| |  |  |  |  |  |  |
-| 151 | |_cnvr_rsk_|_`charter_cptl_amount`_—_ghi_chú_nvarchar2_→_dcm_| |  |  |  |  |  |  |
-| 152 | |_dmn_dt_|_`created_date`_x_`updated_date`_dùng_`date`_(nguồn_là_oracle_`date` |  |  |  |  |  |  không phải TIMESTAMP) | |
-| 153 | |_`etl_derived_value`_|_`source_stm_code`_→_thêm_`nhnck.organizations`_| |  |  |  |  |  |  |
-| 154 | **attr_nhnck_organizations_ip_postal_address.csv:**_src_columns_đổi_sang_fully_qualified. |  |  |  |  |  |  |
-| 155 | **attr_nhnck_organizations_ip_electronic_address.csv:**_thêm_blc_webst_(`ip_elec_addr_type=website`)_+_src_columns_đổi_sang_fully_qualified. |  |  |  |  |  |  |
-| 156 | **lưu_ý_pndg_cần_doc_thêm:** |  |  |  |  |  |  |
-| 157 | __`created_by`_x_`updated_by`_nguồn_là_`number(10 |  |  |  |  |  | 0)` FK → `USERS.ID` — ETL cần resolve sang Officer surrogate key qua bảng USERS. |
-| 158 | __`website`_đã_chuyển_sang_ip_elc_adr_(không_còn_trong_ent_chính)_—_nếu_file_cũ_có_trường_`website`_ở_ent_chính_cần_xóa_(đã_xóa_trong_file_mới_này). |  |  |  |  |  |  |
-| 159 | __`sort_order`_src_`number`_→_`small_counter`:_không_cần_ghi_chú_cnvr_rsk_vì_nbr_→_intg_là_tự_nhiên. |  |  |  |  |  |  |
-| 160 | elc_adr | STRING |  |  |  |  | Giá trị địa chỉ điện tử (email hoặc số điện thoại) |
+| 4 | electronic_adr_tp_code | STRING |  |  |  | 'EMAIL' | Loại kênh liên lạc — email. |
+| 5 | electronic_adr_val | STRING | X |  |  |  | Địa chỉ email của tổ chức. |
+| 6 | electronic_adr_tp_code | STRING |  |  |  | 'FAX' | Loại kênh liên lạc — fax. |
+| 7 | electronic_adr_val | STRING | X |  |  |  | Số fax của tổ chức. |
+| 8 | electronic_adr_tp_code | STRING |  |  |  | 'MOBILE' | Loại kênh liên lạc — số di động. |
+| 9 | electronic_adr_val | STRING | X |  |  |  | Số di động của tổ chức. |
+| 10 | electronic_adr_tp_code | STRING |  |  |  | 'PHONE' | Loại kênh liên lạc — điện thoại. |
+| 11 | electronic_adr_val | STRING | X |  |  |  | Số điện thoại cố định của tổ chức. |
+| 12 | electronic_adr_tp_code | STRING |  |  |  | 'WEBSITE' | Loại kênh liên lạc — website. |
+| 13 | electronic_adr_val | STRING | X |  |  |  | Địa chỉ website của tổ chức. |
 
 
 **Khóa chính (Primary Key):**
@@ -1996,64 +1628,7 @@ N/A
 
 **Khóa phụ (Foreign Key):**
 
-| Tên trường | Bảng tham chiếu | Cột tham chiếu |
-|---|---|---|
-| ip_id | scr_org_refr | scr_org_refr_id |
-
-
-
-**Index:** N/A
-
-**Trigger:** N/A
-
-
-#### Từ NHNCK.USERS
-
-| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
-|---|---|---|---|---|---|---|---|
-| 1 | ip_id | STRING |  |  | F |  | FK đến Regulatory Authority Officer |
-| 2 | ip_code | STRING |  |  |  |  | Mã cán bộ UBCK |
-| 3 | src_stm_code | STRING |  |  |  | 'NHNCK.USERS' | Mã nguồn dữ liệu |
-| 4 | --- |  |  |  |  |  |  |
-| 5 | **tóm_tắt_các_thay_đổi_so_với_file_cũ:** |  |  |  |  |  |  |
-| 6 | **attr_nhnck_organizations.csv_—_12_điểm_sửa:** |  |  |  |  |  |  |
-| 7 | |_thay_đổi_|_chi_tiết_| |  |  |  |  |  |  |
-| 8 | |---|---| |  |  |  |  |  |  |
-| 9 | |_src_columns_fmt_|_đổi_toàn_bộ_sang_fully_qualified_`nhnck.qlnhn.organizations.column`_| |  |  |  |  |  |  |
-| 10 | |_tên_attr_|_`organization_name`_→_`securities_org_refr_name`_| |  |  |  |  |  |  |
-| 11 | |_tên_attr_|_`english_name`_→_`securities_org_refr_en_name`_| |  |  |  |  |  |  |
-| 12 | |_tên_attr_|_`abbreviation`_→_`securities_org_refr_shrt_name`_| |  |  |  |  |  |  |
-| 13 | |_tên_attr_|_`representative_name`_→_`legal_rprs_name`_| |  |  |  |  |  |  |
-| 14 | |_tên_attr_|_`license_issuer`_→_`license_issur_name`_| |  |  |  |  |  |  |
-| 15 | |_tên_attr_|_`parent_org_id/code`_→_`parent_scr_org_refr_id/code`_| |  |  |  |  |  |  |
-| 16 | |_tên_attr_|_`organization_st_code`_→_`record_st_code`_+_src_map_đúng_`record_status`_| |  |  |  |  |  |  |
-| 17 | |_tên_attr_|_`linked_id`_→_`external_stm_linked_id`_| |  |  |  |  |  |  |
-| 18 | |_tên_attr_|_`sync_id`_→_`external_stm_sync_id`_| |  |  |  |  |  |  |
-| 19 | |_tên_attr_|_`organization_description`_→_`description`_| |  |  |  |  |  |  |
-| 20 | |_thêm_mới_|_`updated_by_ofcr_id`_+_`updated_by_ofcr_code`_(từ_`updated_by`)_| |  |  |  |  |  |  |
-| 21 | |_cnvr_rsk_|_`charter_cptl_amount`_—_ghi_chú_nvarchar2_→_dcm_| |  |  |  |  |  |  |
-| 22 | |_dmn_dt_|_`created_date`_x_`updated_date`_dùng_`date`_(nguồn_là_oracle_`date` |  |  |  |  |  |  không phải TIMESTAMP) | |
-| 23 | |_`etl_derived_value`_|_`source_stm_code`_→_thêm_`nhnck.organizations`_| |  |  |  |  |  |  |
-| 24 | **attr_nhnck_organizations_ip_postal_address.csv:**_src_columns_đổi_sang_fully_qualified. |  |  |  |  |  |  |
-| 25 | **attr_nhnck_organizations_ip_electronic_address.csv:**_thêm_blc_webst_(`ip_elec_addr_type=website`)_+_src_columns_đổi_sang_fully_qualified. |  |  |  |  |  |  |
-| 26 | **lưu_ý_pndg_cần_doc_thêm:** |  |  |  |  |  |  |
-| 27 | __`created_by`_x_`updated_by`_nguồn_là_`number(10 |  |  |  |  |  | 0)` FK → `USERS.ID` — ETL cần resolve sang Officer surrogate key qua bảng USERS. |
-| 28 | __`website`_đã_chuyển_sang_ip_elc_adr_(không_còn_trong_ent_chính)_—_nếu_file_cũ_có_trường_`website`_ở_ent_chính_cần_xóa_(đã_xóa_trong_file_mới_này). |  |  |  |  |  |  |
-| 29 | __`sort_order`_src_`number`_→_`small_counter`:_không_cần_ghi_chú_cnvr_rsk_vì_nbr_→_intg_là_tự_nhiên. |  |  |  |  |  |  |
-| 30 | elc_adr | STRING |  |  |  |  | Giá trị địa chỉ điện tử (email hoặc số điện thoại) |
-
-
-**Khóa chính (Primary Key):**
-
-*Không có Primary Key.*
-
-
-**Khóa phụ (Foreign Key):**
-
-| Tên trường | Bảng tham chiếu | Cột tham chiếu |
-|---|---|---|
-| ip_id | reg_ahr_ofcr | reg_ahr_ofcr_id |
-
+*Không có Foreign Key.*
 
 
 **Index:** N/A
@@ -2068,33 +1643,12 @@ N/A
 | 1 | ip_id | STRING |  |  | F |  | FK đến Securities Practitioner. |
 | 2 | ip_code | STRING |  |  |  |  | Mã người hành nghề. |
 | 3 | src_stm_code | STRING |  |  |  | 'NHNCK.PROFESSIONALS' | Mã hệ thống nguồn. |
-| 4 | --- |  |  |  |  |  |  |
-| 5 | **tóm_tắt_các_thay_đổi_so_với_file_cũ:** |  |  |  |  |  |  |
-| 6 | **attr_nhnck_organizations.csv_—_12_điểm_sửa:** |  |  |  |  |  |  |
-| 7 | |_thay_đổi_|_chi_tiết_| |  |  |  |  |  |  |
-| 8 | |---|---| |  |  |  |  |  |  |
-| 9 | |_src_columns_fmt_|_đổi_toàn_bộ_sang_fully_qualified_`nhnck.qlnhn.organizations.column`_| |  |  |  |  |  |  |
-| 10 | |_tên_attr_|_`organization_name`_→_`securities_org_refr_name`_| |  |  |  |  |  |  |
-| 11 | |_tên_attr_|_`english_name`_→_`securities_org_refr_en_name`_| |  |  |  |  |  |  |
-| 12 | |_tên_attr_|_`abbreviation`_→_`securities_org_refr_shrt_name`_| |  |  |  |  |  |  |
-| 13 | |_tên_attr_|_`representative_name`_→_`legal_rprs_name`_| |  |  |  |  |  |  |
-| 14 | |_tên_attr_|_`license_issuer`_→_`license_issur_name`_| |  |  |  |  |  |  |
-| 15 | |_tên_attr_|_`parent_org_id/code`_→_`parent_scr_org_refr_id/code`_| |  |  |  |  |  |  |
-| 16 | |_tên_attr_|_`organization_st_code`_→_`record_st_code`_+_src_map_đúng_`record_status`_| |  |  |  |  |  |  |
-| 17 | |_tên_attr_|_`linked_id`_→_`external_stm_linked_id`_| |  |  |  |  |  |  |
-| 18 | |_tên_attr_|_`sync_id`_→_`external_stm_sync_id`_| |  |  |  |  |  |  |
-| 19 | |_tên_attr_|_`organization_description`_→_`description`_| |  |  |  |  |  |  |
-| 20 | |_thêm_mới_|_`updated_by_ofcr_id`_+_`updated_by_ofcr_code`_(từ_`updated_by`)_| |  |  |  |  |  |  |
-| 21 | |_cnvr_rsk_|_`charter_cptl_amount`_—_ghi_chú_nvarchar2_→_dcm_| |  |  |  |  |  |  |
-| 22 | |_dmn_dt_|_`created_date`_x_`updated_date`_dùng_`date`_(nguồn_là_oracle_`date` |  |  |  |  |  |  không phải TIMESTAMP) | |
-| 23 | |_`etl_derived_value`_|_`source_stm_code`_→_thêm_`nhnck.organizations`_| |  |  |  |  |  |  |
-| 24 | **attr_nhnck_organizations_ip_postal_address.csv:**_src_columns_đổi_sang_fully_qualified. |  |  |  |  |  |  |
-| 25 | **attr_nhnck_organizations_ip_electronic_address.csv:**_thêm_blc_webst_(`ip_elec_addr_type=website`)_+_src_columns_đổi_sang_fully_qualified. |  |  |  |  |  |  |
-| 26 | **lưu_ý_pndg_cần_doc_thêm:** |  |  |  |  |  |  |
-| 27 | __`created_by`_x_`updated_by`_nguồn_là_`number(10 |  |  |  |  |  | 0)` FK → `USERS.ID` — ETL cần resolve sang Officer surrogate key qua bảng USERS. |
-| 28 | __`website`_đã_chuyển_sang_ip_elc_adr_(không_còn_trong_ent_chính)_—_nếu_file_cũ_có_trường_`website`_ở_ent_chính_cần_xóa_(đã_xóa_trong_file_mới_này). |  |  |  |  |  |  |
-| 29 | __`sort_order`_src_`number`_→_`small_counter`:_không_cần_ghi_chú_cnvr_rsk_vì_nbr_→_intg_là_tự_nhiên. |  |  |  |  |  |  |
-| 30 | elc_adr | STRING |  |  |  |  | Giá trị địa chỉ điện tử (email hoặc số điện thoại) |
+| 4 | electronic_adr_tp_code | STRING |  |  |  | 'EMAIL' | Loại kênh liên lạc — email. |
+| 5 | electronic_adr_val | STRING | X |  |  |  | Địa chỉ email. |
+| 6 | electronic_adr_tp_code | STRING |  |  |  | 'MOBILE' | Loại kênh liên lạc — điện thoại di động. |
+| 7 | electronic_adr_val | STRING | X |  |  |  | Số điện thoại di động. |
+| 8 | electronic_adr_tp_code | STRING |  |  |  | 'PHONE' | Loại kênh liên lạc — điện thoại cố định. |
+| 9 | electronic_adr_val | STRING | X |  |  |  | Số điện thoại cố định. |
 
 
 **Khóa chính (Primary Key):**
@@ -2106,7 +1660,7 @@ N/A
 
 | Tên trường | Bảng tham chiếu | Cột tham chiếu |
 |---|---|---|
-| ip_id | scr_prac | scr_prac_id |
+| ip_id | securities_practitioner | sp_id |
 
 
 
@@ -2118,7 +1672,7 @@ N/A
 
 
 
-### Bảng ip_pst_adr
+### Bảng ip_postal_address
 
 
 
@@ -2129,18 +1683,8 @@ N/A
 | 1 | ip_id | STRING |  |  | F |  | FK đến Regulatory Authority Organization Unit |
 | 2 | ip_code | STRING |  |  |  |  | Mã đơn vị |
 | 3 | src_stm_code | STRING |  |  |  | 'NHNCK.UNITS' | Mã hệ thống nguồn |
-| 4 | adr_tp_code | STRING |  |  |  |  | Loại địa chỉ — trụ sở chính |
+| 4 | adr_tp_code | STRING |  |  |  | 'HEAD_OFFICE' | Loại địa chỉ — trụ sở chính |
 | 5 | adr_val | STRING | X |  |  |  | Địa chỉ trụ sở đơn vị |
-| 6 | prov_id | STRING | X |  | F |  | FK đến tỉnh/thành phố trụ sở. |
-| 7 | prov_code | STRING | X |  |  |  | Mã tỉnh/thành (provinces). |
-| 8 | dstc_nm | STRING | X |  |  |  | Quận/huyện trụ sở. |
-| 9 | ward_nm | STRING | X |  |  |  | Phường/xã trụ sở. |
-| 10 | geo_id | STRING | X |  | F |  | FK đến tỉnh/thành phố đặt trụ sở chi nhánh. |
-| 11 | geo_code | STRING | X |  |  |  | Mã tỉnh/thành phố đặt trụ sở chi nhánh. |
-| 12 | adr_dtl | STRING | X |  |  |  | Địa chỉ văn phòng đại diện. |
-| 13 | cty_id | STRING | X |  | F |  | FK đến Geographic Area — quốc gia. |
-| 14 | cty_code | STRING | X |  |  |  | Mã quốc gia. |
-| 15 | dstc_id | STRING | X |  | F |  | FK đến Geographic Area — quận/huyện. |
 
 
 **Khóa chính (Primary Key):**
@@ -2150,14 +1694,7 @@ N/A
 
 **Khóa phụ (Foreign Key):**
 
-| Tên trường | Bảng tham chiếu | Cột tham chiếu |
-|---|---|---|
-| ip_id | reg_ahr_ou | reg_ahr_ou_id |
-| prov_id | geo | geo_id |
-| geo_id | geo | geo_id |
-| cty_id | geo | geo_id |
-| dstc_id | geo | geo_id |
-
+*Không có Foreign Key.*
 
 
 **Index:** N/A
@@ -2172,18 +1709,8 @@ N/A
 | 1 | ip_id | STRING |  |  | F |  | FK đến Securities Organization Reference. |
 | 2 | ip_code | STRING |  |  |  |  | Mã tổ chức. |
 | 3 | src_stm_code | STRING |  |  |  | 'NHNCK.ORGANIZATIONS' | Mã hệ thống nguồn. |
-| 4 | adr_tp_code | STRING |  |  |  |  | Loại địa chỉ — trụ sở chính. |
+| 4 | adr_tp_code | STRING |  |  |  | 'HEAD_OFFICE' | Loại địa chỉ — trụ sở chính. |
 | 5 | adr_val | STRING | X |  |  |  | Địa chỉ trụ sở chính của tổ chức. |
-| 6 | prov_id | STRING | X |  | F |  | FK đến tỉnh/thành phố trụ sở. |
-| 7 | prov_code | STRING | X |  |  |  | Mã tỉnh/thành (provinces). |
-| 8 | dstc_nm | STRING | X |  |  |  | Quận/huyện trụ sở. |
-| 9 | ward_nm | STRING | X |  |  |  | Phường/xã trụ sở. |
-| 10 | geo_id | STRING | X |  | F |  | FK đến tỉnh/thành phố đặt trụ sở chi nhánh. |
-| 11 | geo_code | STRING | X |  |  |  | Mã tỉnh/thành phố đặt trụ sở chi nhánh. |
-| 12 | adr_dtl | STRING | X |  |  |  | Địa chỉ văn phòng đại diện. |
-| 13 | cty_id | STRING | X |  | F |  | FK đến Geographic Area — quốc gia. |
-| 14 | cty_code | STRING | X |  |  |  | Mã quốc gia. |
-| 15 | dstc_id | STRING | X |  | F |  | FK đến Geographic Area — quận/huyện. |
 
 
 **Khóa chính (Primary Key):**
@@ -2193,14 +1720,7 @@ N/A
 
 **Khóa phụ (Foreign Key):**
 
-| Tên trường | Bảng tham chiếu | Cột tham chiếu |
-|---|---|---|
-| ip_id | scr_org_refr | scr_org_refr_id |
-| prov_id | geo | geo_id |
-| geo_id | geo | geo_id |
-| cty_id | geo | geo_id |
-| dstc_id | geo | geo_id |
-
+*Không có Foreign Key.*
 
 
 **Index:** N/A
@@ -2215,10 +1735,21 @@ N/A
 | 1 | ip_id | STRING |  |  | F |  | FK đến Securities Practitioner. |
 | 2 | ip_code | STRING |  |  |  |  | Mã người hành nghề. |
 | 3 | src_stm_code | STRING |  |  |  | 'NHNCK.PROFESSIONALS' | Mã hệ thống nguồn. |
-| 4 | adr_dtl | STRING | X |  |  |  | Địa chỉ văn phòng đại diện. |
-| 5 | cty_id | STRING | X |  | F |  | FK đến Geographic Area — quốc gia. |
-| 6 | cty_code | STRING | X |  |  |  | Mã quốc gia. |
-| 7 | dstc_id | STRING | X |  | F |  | FK đến Geographic Area — quận/huyện. |
+| 4 | adr_tp_code | STRING |  |  |  | 'CURRENT' | Loại địa chỉ — tạm trú. |
+| 5 | country_id | STRING | X |  | F |  | FK đến Geographic Area — quốc gia địa chỉ tạm trú hiện tại. |
+| 6 | country_code | STRING | X |  |  |  | Mã quốc gia địa chỉ tạm trú. |
+| 7 | province_id | STRING | X |  | F |  | FK đến Geographic Area — tỉnh/thành địa chỉ tạm trú. |
+| 8 | province_code | STRING | X |  |  |  | Mã tỉnh/thành địa chỉ tạm trú. |
+| 9 | district_id | STRING | X |  | F |  | FK đến Geographic Area — quận/huyện địa chỉ tạm trú. |
+| 10 | district_code | STRING | X |  |  |  | Mã quận/huyện địa chỉ tạm trú. |
+| 11 | adr_tp_code | STRING |  |  |  | 'PERMANENT' | Loại địa chỉ. |
+| 12 | adr_val | STRING | X |  |  |  | Giá trị địa chỉ. |
+| 13 | country_id | STRING | X |  | F |  | FK đến Geographic Area — quốc gia. |
+| 14 | country_code | STRING | X |  |  |  | Mã quốc gia. |
+| 15 | province_id | STRING | X |  | F |  | FK đến Geographic Area — tỉnh/thành. |
+| 16 | province_code | STRING | X |  |  |  | Mã tỉnh/thành. |
+| 17 | district_id | STRING | X |  | F |  | FK đến Geographic Area — quận/huyện. |
+| 18 | district_code | STRING | X |  |  |  | Mã quận/huyện. |
 
 
 **Khóa chính (Primary Key):**
@@ -2230,9 +1761,44 @@ N/A
 
 | Tên trường | Bảng tham chiếu | Cột tham chiếu |
 |---|---|---|
-| ip_id | scr_prac | scr_prac_id |
-| cty_id | geo | geo_id |
-| dstc_id | geo | geo_id |
+| ip_id | securities_practitioner | sp_id |
+
+
+
+**Index:** N/A
+
+**Trigger:** N/A
+
+
+#### Từ NHNCK.IDENTITY_INFO_C06S
+
+| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
+|---|---|---|---|---|---|---|---|
+| 1 | ip_id | STRING |  |  | F |  | FK đến Individual. |
+| 2 | ip_code | STRING |  |  |  |  | Số CMND/CCCD/Hộ chiếu của người hành nghề. |
+| 3 | src_stm_code | STRING |  |  |  | 'NHNCK.IDENTITY_INFO_C06S' | Mã hệ thống nguồn. |
+| 4 | adr_tp_code | STRING |  |  |  | 'CURRENT' | Loại địa chỉ — tạm trú. |
+| 5 | adr_val | STRING | X |  |  |  | Địa chỉ chi tiết tạm trú (theo C06). |
+| 6 | country_code | STRING | X |  |  |  | Mã quốc gia địa chỉ tạm trú (theo C06). |
+| 7 | province_code | STRING | X |  |  |  | Mã tỉnh/thành phố địa chỉ tạm trú (theo C06). |
+| 8 | district_code | STRING | X |  |  |  | Mã quận/huyện địa chỉ tạm trú (theo C06). |
+| 9 | adr_tp_code | STRING |  |  |  | 'PERMANENT' | Loại địa chỉ — thường trú. |
+| 10 | adr_val | STRING | X |  |  |  | Địa chỉ chi tiết thường trú (số nhà, đường, phường/xã theo C06). |
+| 11 | country_code | STRING | X |  | F |  | Mã quốc gia địa chỉ thường trú (theo C06). |
+| 12 | province_code | STRING | X |  |  |  | Mã tỉnh/thành phố địa chỉ thường trú (theo C06). |
+| 13 | district_code | STRING | X |  |  |  | Mã quận/huyện địa chỉ thường trú (theo C06). |
+
+
+**Khóa chính (Primary Key):**
+
+*Không có Primary Key.*
+
+
+**Khóa phụ (Foreign Key):**
+
+| Tên trường | Bảng tham chiếu | Cột tham chiếu |
+|---|---|---|
+| ip_id | individual | individual_id |
 
 
 

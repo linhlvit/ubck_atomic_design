@@ -18,7 +18,19 @@ metadata:
   approved_by: null
   approved_at: null
   notes: "BCO doi Event -> Business Activity theo yeu cau Data Modeler (2026-07-24)\
-    \ - dung catch-all term chung voi entity con Training Class Enrollment (SPECIALIZATION_COURSE_DETAILS)."
+    \ - dung catch-all term chung voi entity con Training Class Enrollment (SPECIALIZATION_COURSE_DETAILS).\
+    \ Hạ về draft (2026-08-18) để sửa lỗi thiết kế: SPECIALIZATION_ID trước đây map\
+    \ thành \"Specialization Type Code\" (Classification Value, scheme SPECIALIZATION)\
+    \ — scheme này đã deprecate từ 2026-07-09 khi SPECIALIZATIONS nâng cấp thành Atomic\
+    \ entity thật 'Classification Specialization' (cl_specialization). Các bảng khác\
+    \ tiêu thụ SPECIALIZATIONS (APPLICATION_SPECIALIZATIONS, CERTIFICATE_SPECIALIZATIONS)\
+    \ đã đổi sang FK Id+Code chuẩn nhưng SPECIALIZATION_COURSES bị bỏ sót — nay sửa\
+    \ sang cặp Classification Specialization Id + Code, kèm crosswalk join SPECIALIZATION_ID\
+    \ → SPECIALIZATIONS.ID để lấy SPECIALIZATION_CODE trước khi hash (đồng bộ với\
+    \ lld_NHNCK_SPECIALIZATION_COURSE_DETAILS.yaml sửa cùng lượt). Hạ về draft lại\
+    \ (2026-08-20): Classification Specialization Id + Code đổi thành 1 trường Classification\
+    \ Value \"Specialization Code\" (scheme SPECIALIZATION) — do NHNCK.SPECIALIZATIONS\
+    \ revert về Classification Value, không còn là Atomic entity riêng."
 attributes:
 - attribute_name: "Securities Practitioner Professional Training Class Id"
   physical_name: "sp_professional_training_class_id"
@@ -53,7 +65,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns: []
-  comment: "ETL-derived: luôn = 'NHNCK.SPECIALIZATION_COURSES'"
+  comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
   classification_context: "SOURCE_SYSTEM=NHNCK.SPECIALIZATION_COURSES"
   etl_derived_value: "NHNCK_SPECIALIZATION_COURSES"
   data_type: "string"
@@ -83,17 +95,18 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "int"
-- attribute_name: "Specialization Type Code"
-  physical_name: "specialization_tp_code"
-  description: "Loại chuyên môn của khóa học"
+- attribute_name: "Specialization Code"
+  physical_name: "specialization_code"
+  description: "Mã chuyên ngành CCHN của khóa học"
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "NHNCK.SPECIALIZATION_COURSES.SPECIALIZATION_ID"
-  comment: "Scheme: SPECIALIZATION. FK nguồn đến SPECIALIZATIONS."
-  classification_context: "SPECIALIZATION"
+  - "NHNCK.SPECIALIZATIONS.SPECIALIZATION_CODE"
+  comment: "Scheme: SCHEMA_CODE. Cần ETL crosswalk sang NHNCK.SPECIALIZATIONS:\
+    \ SPECIALIZATION_COURSES.SPECIALIZATION_ID = SPECIALIZATIONS.ID để lấy SPECIALIZATION_CODE."
+  classification_context: "SCHEMA_CODE=NHNCK.SPECIALIZATIONS"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Exam Start Date"
@@ -162,9 +175,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.PROVINCES.PROVINCE_CODE"
-  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT). Pair with\
-    \ Province Id. Giá trị lấy từ NHNCK.PROVINCES.PROVINCE_CODE sau ETL crosswalk\
-    \ — chi tiết xem comment Province Id."
+  comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Province Id. Giá trị lấy từ NHNCK.PROVINCES.PROVINCE_CODE sau ETL crosswalk — chi tiết xem comment Province Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

@@ -3,8 +3,8 @@ schema_version: "2.0"
 metadata:
   source_system: "THANHTRA"
   source_table: "PENALTY_DECISION_VIOLATION_RECORD"
-  atomic_entity: "Penalty Decision X Violation Record"
-  entity_physical_name: "penalty_decision_x_violation_record"
+  atomic_entity: "Penalty Decision X Violation Record Relationship"
+  entity_physical_name: "penalty_decision_x_violation_record_relationship"
   bcv_core_object: "Event"
   bcv_concept: "[Event] Event"
   table_type: "Relative"
@@ -32,7 +32,10 @@ metadata:
     \ bản. Audit block (CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY) và\
     \ VERSION/DELETED loại trừ khỏi Atomic — mirror quyết định đã áp dụng cho toàn\
     \ bộ phân hệ THANHTRA (xem pending_design.yaml, cùng lý do đã áp dụng cho PENALTY_DECISION/PENALTY_DECISION_CIRCUMSTANCE:\
-    \ Created/Updated By là FK cross-source đến NHNCK.USERS chưa ổn định)."
+    \ Created/Updated By là FK cross-source đến NHNCK.USERS chưa ổn định). [SỬA 2026-08-15]\
+    \ Đổi tên entity thêm suffix \"Relationship\" cho nhất quán với các entity link\
+    \ \"_x_\" khác trong dự án (VD Fund Management Company Employee X Investment Fund\
+    \ Relationship) — theo yêu cầu Data Modeler. Hạ về draft do đổi tên/physical_name."
 attributes:
 - attribute_name: "Source System Code"
   physical_name: "src_stm_code"

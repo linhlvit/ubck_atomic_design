@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Business Activity] Business Activity"
   table_type: "Fundamental"
   group: "T3"
-  design_status: "approved"
+  design_status: "draft"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -17,11 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "FK loại trừ nhau (per HLD Tier3 T3-04, xác nhận): Public Company Id (tổ\
-    \ chức) hoặc Legal Entity Id (cá nhân) — dùng APPLICANT_TYPE_FLG để xác định.\
-    \ Giữ cả 2 FK nullable trên Atomic entity. Bổ sung Submission Date, Project Investment\
-    \ Indicator, Capital Purpose sau review coverage 2026-08-06 (gap so với IDS_Columns.csv)\
-    \ — downgrade approved→draft, cần review/approve lại."
+  notes: "FK loại trừ nhau (per HLD Tier3 T3-04, xác nhận): Public Company Id (tổ chức) hoặc Legal Entity Id (cá nhân) — dùng APPLICANT_TYPE_FLG để xác định. Giữ cả 2 FK nullable trên Atomic entity. Bổ sung Submission Date, Project Investment Indicator, Capital Purpose sau review coverage 2026-08-06 (gap so với IDS_Columns.csv). BK đổi sang APPLICATION_CD (2026-08-14): Public Company Securities Offering Code nay map từ APPLICATION_CD thay vì ID kỹ thuật (đúng rule 3e); loại bỏ attribute Application Code trùng lặp — xem pending_design.yaml. 3 FK con (COMPANY_DATA, SECURITIES_OFFERING_PLAN, SECURITIES_OFFERING_RESULT) đã sửa sang crosswalk hash theo APPLICATION_CD. design_status: draft, cần review/approve lại."
 attributes:
 - attribute_name: "Public Company Securities Offering Id"
   physical_name: "pc_securities_offering_id"
@@ -31,20 +27,20 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. BCV: \"[Business Activity] Business Activity\"."
+  comment: "PK surrogate. Hash: hash_id('IDS.SECURITIES_OFFERING', APPLICATION_CD). BCV: \"[Business Activity] Business Activity\"."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Public Company Securities Offering Code"
   physical_name: "pc_securities_offering_code"
-  description: "Khóa chính. BK của entity — map từ PK bảng nguồn."
+  description: "Khóa chính. BK của entity — mã hồ sơ đăng ký chào bán/phát hành."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
-  status: "draft"
+  status: "pending"
   source_columns:
-  - "IDS.SECURITIES_OFFERING.ID"
-  comment: "BK chính. PK nguồn NUMBER(10,0) tự tăng."
+  - "IDS.SECURITIES_OFFERING.APPLICATION_CD"
+  comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID) — đổi sang APPLICATION_CD theo quyết định 2026-08-14. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique trước go-live (APPLICATION_CD hiện không khai báo NOT NULL trong nguồn)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -125,19 +121,6 @@ attributes:
   source_columns:
   - "IDS.SECURITIES_OFFERING.LEGAL_ENTITY_ID"
   comment: "Lookup pair: legal_entity.legal_entity_code. Pair with Legal Entity Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Application Code"
-  physical_name: "application_code"
-  description: "Mã hồ sơ."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.SECURITIES_OFFERING.APPLICATION_CD"
-  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"

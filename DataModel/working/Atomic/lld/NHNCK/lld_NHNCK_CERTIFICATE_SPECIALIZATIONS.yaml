@@ -1,0 +1,122 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "NHNCK"
+  source_table: "CERTIFICATE_SPECIALIZATIONS"
+  atomic_entity: "Securities Practitioner License Certificate Type X Classification\
+    \ Specialization Relationship"
+  entity_physical_name: "sp_license_certificate_type_x_cl_specialization_relationship"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Gov. Registration Document"
+  table_type: "Relative"
+  group: "T2"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "[MỚI 2026-08-15] Trước đây đánh out_of_scope (Application Config) — đảo\
+    \ lại theo quyết định Data Modeler: quan hệ này xác định chuyên môn nào bắt buộc\
+    \ cho từng loại CCHN, kèm attribute nghiệp vụ riêng (SORT_ORDER/DOCUMENT_TYPE/IS_REQUIRED)\
+    \ ngoài 2 FK — không phải pure junction rỗng, giữ làm entity Relative riêng (không\
+    \ denormalize ARRAY). Theo pattern entity link \"_x_\" đã chuẩn hóa trong dự án:\
+    \ KHÔNG có cặp Id/Code riêng của entity — PK là composite 2 FK Id (Securities\
+    \ Practitioner License Certificate Type Id + Classification Specialization Id).\
+    \ ID (nguồn) không map. Domain Prefix rỗng vì entity bắc cầu 2 domain khác nhau\
+    \ (Securities Practitioner + Classification), không thuộc riêng nhóm nào. DOCUMENT_TYPE\
+    \ không có FK note trong BRD — đăng ký Classification Value tạm NHNCK_CERT_SPEC_DOCUMENT_TYPE\
+    \ (modeler_defined, values: [] — xem NHNCK_HLD_Tier2.md 6d/6f#7, cần profile dữ\
+    \ liệu trước go-live). Sửa 2026-08-20: Classification Specialization Id + Code\
+    \ đổi thành 1 trường Classification Value \"Specialization Code\" (scheme SPECIALIZATION)\
+    \ — do NHNCK.SPECIALIZATIONS revert về Classification Value, không còn là Atomic\
+    \ entity riêng. Composite PK đổi thành (Securities Practitioner License Certificate\
+    \ Type Id, Specialization Code) — vế Specialization không còn surrogate Id để\
+    \ dùng."
+attributes:
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=NHNCK.CERTIFICATE_SPECIALIZATIONS"
+  etl_derived_value: "NHNCK_CERTIFICATE_SPECIALIZATIONS"
+  data_type: "string"
+- attribute_name: "Securities Practitioner License Certificate Type Id"
+  physical_name: "sp_license_certificate_tp_id"
+  description: "FK -> CERTIFICATES: Loại CCHN yêu cầu chuyên môn này."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "NHNCK.CERTIFICATE_SPECIALIZATIONS.CERTIFICATE_ID"
+  comment: "FK target: sp_license_certificate_type.sp_license_certificate_tp_id. Cần\
+    \ ETL crosswalk sang NHNCK.CERTIFICATES: CERTIFICATE_SPECIALIZATIONS.CERTIFICATE_ID\
+    \ = CERTIFICATES.ID để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK.CERTIFICATES',\
+    \ CERTIFICATE_CODE). Composite PK cùng Specialization Code."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Practitioner License Certificate Type Code"
+  physical_name: "sp_license_certificate_tp_code"
+  description: "Mã loại CCHN (denormalized lookup)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.CERTIFICATES.CERTIFICATE_CODE"
+  comment: "Lookup pair: sp_license_certificate_type.sp_license_certificate_tp_code.\
+    \ Pair with Securities Practitioner License Certificate Type Id. Giá trị lấy từ\
+    \ NHNCK.CERTIFICATES.CERTIFICATE_CODE sau ETL crosswalk — chi tiết xem comment\
+    \ Securities Practitioner License Certificate Type Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Specialization Code"
+  physical_name: "specialization_code"
+  description: "Chuyên môn được yêu cầu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "NHNCK.SPECIALIZATIONS.SPECIALIZATION_CODE"
+  comment: "Scheme: SCHEMA_CODE. Cần ETL crosswalk sang NHNCK.SPECIALIZATIONS:\
+    \ CERTIFICATE_SPECIALIZATIONS.SPECIALIZATION_ID = SPECIALIZATIONS.ID để lấy SPECIALIZATION_CODE."
+  classification_context: "SCHEMA_CODE=NHNCK.SPECIALIZATIONS"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Document Type Code"
+  physical_name: "document_tp_code"
+  description: "Loại tài liệu yêu cầu cho chuyên môn này."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.CERTIFICATE_SPECIALIZATIONS.DOCUMENT_TYPE"
+  comment: "Scheme: NHNCK.CERTIFICATE_SPECIALIZATIONS.DOCUMENT_TYPE."
+  classification_context: "NHNCK.CERTIFICATE_SPECIALIZATIONS.DOCUMENT_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Required Indicator"
+  physical_name: "required_ind"
+  description: "Cờ bắt buộc: 1=Bắt buộc, 0=Tùy chọn."
+  data_domain: "Indicator"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.CERTIFICATE_SPECIALIZATIONS.IS_REQUIRED"
+  comment: "BCV: không có term riêng — dùng Indicator vì chỉ là flag 1/0. Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

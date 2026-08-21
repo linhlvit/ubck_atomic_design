@@ -1,0 +1,233 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "NHNCK"
+  source_table: "VERIFY_APPLICATION_STATUSES"
+  atomic_entity: "Securities Practitioner License Application Status Review"
+  entity_physical_name: "sp_license_application_status_review"
+  bcv_core_object: "Business Activity"
+  bcv_concept: "[Business Activity] Status Review"
+  table_type: "Fundamental"
+  group: "T4"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Hạ về draft (2026-08-18, xác nhận tường minh bởi Data Modeler) để bổ sung\
+    \ trường \"Status Code\" (cột nguồn STATUS — trước đây bị loại trừ theo chính\
+    \ sách 2026-07-07, nay map Classification Value vì mang ý nghĩa nghiệp vụ rõ ràng;\
+    \ khác với STATUS_ID/PREV_STATUS_ID — 2 trường này là FK thật đến Classification\
+    \ Application Status, đã map từ trước, không liên quan). Cần review/approve lại.\
+    \ ID không map — PK kỹ thuật, BK dùng Code (map từ ID)."
+attributes:
+- attribute_name: "Securities Practitioner License Application Status Review Id"
+  physical_name: "sp_license_application_status_review_id"
+  description: "Id tự sinh (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Business Activity] Status Review\". Hash: hash_id('NHNCK.VERIFY_APPLICATION_STATUSES',\
+    \ ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Practitioner License Application Status Review Code"
+  physical_name: "sp_license_application_status_review_code"
+  description: "Mã định danh kỹ thuật (BK). Map từ PK bảng nguồn."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.VERIFY_APPLICATION_STATUSES.ID"
+  comment: "BK chính. PK nguồn (NUMBER — ETL cần convert sang string)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=NHNCK.VERIFY_APPLICATION_STATUSES"
+  etl_derived_value: "NHNCK_VERIFY_APPLICATION_STATUSES"
+  data_type: "string"
+- attribute_name: "Securities Practitioner License Application Id"
+  physical_name: "sp_license_application_id"
+  description: "FK -> APPLICATIONS: Hồ sơ CCHN liên quan."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.VERIFY_APPLICATION_STATUSES.APPLICATION_ID"
+  comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL crosswalk\
+    \ sang NHNCK.APPLICATIONS: VERIFY_APPLICATION_STATUSES.APPLICATION_ID = APPLICATIONS.ID\
+    \ để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK.APPLICATIONS', APPLICATION_CODE)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Practitioner License Application Code"
+  physical_name: "sp_license_application_code"
+  description: "Mã hồ sơ CCHN liên quan (denormalized lookup)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.APPLICATIONS.APPLICATION_CODE"
+  comment: "Lookup pair: sp_license_application.sp_license_application_code. Pair\
+    \ with Securities Practitioner License Application Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE\
+    \ sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Application\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Application Status Code"
+  physical_name: "application_status_code"
+  description: "Mã trạng thái hồ sơ hiện tại."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.APPLICATION_STATUSES.STATUS_CODE"
+  comment: "Scheme: SCHEMA_CODE. Cần ETL crosswalk sang NHNCK.APPLICATION_STATUSES:\
+    \ VERIFY_APPLICATION_STATUSES.STATUS_ID = APPLICATION_STATUSES.ID để lấy STATUS_CODE."
+  classification_context: "SCHEMA_CODE=NHNCK.APPLICATION_STATUSES"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Previous Application Status Code"
+  physical_name: "previous_application_status_code"
+  description: "Mã trạng thái hồ sơ trước khi xác minh."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.APPLICATION_STATUSES.STATUS_CODE"
+  comment: "Scheme: SCHEMA_CODE. Cần ETL crosswalk sang NHNCK.APPLICATION_STATUSES:\
+    \ VERIFY_APPLICATION_STATUSES.PREV_STATUS_ID = APPLICATION_STATUSES.ID để lấy\
+    \ STATUS_CODE."
+  classification_context: "SCHEMA_CODE=NHNCK.APPLICATION_STATUSES"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Review Reason"
+  physical_name: "review_reason"
+  description: "Lý do thực hiện thao tác hoặc thay đổi."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.VERIFY_APPLICATION_STATUSES.REASON"
+  comment: "Nguồn lưu NCLOB — ETL convert sang string."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Specialized Review Reason"
+  physical_name: "specialized_review_reason"
+  description: "Lý do từ chối theo khía cạnh chuyên ngành."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.VERIFY_APPLICATION_STATUSES.SPEC_REASON"
+  comment: "Nguồn lưu NCLOB — ETL convert sang string."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Organization Review Reason"
+  physical_name: "organization_review_reason"
+  description: "Lý do từ chối theo khía cạnh tổ chức."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.VERIFY_APPLICATION_STATUSES.ORG_REASON"
+  comment: "Nguồn lưu NCLOB — ETL convert sang string."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Overview Review Reason"
+  physical_name: "overview_review_reason"
+  description: "Lý do từ chối tổng quan của hồ sơ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.VERIFY_APPLICATION_STATUSES.OVERVIEW_REASON"
+  comment: "Nguồn lưu NCLOB — ETL convert sang string."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Overview Attachment File Path"
+  physical_name: "overview_attachment_file_path"
+  description: "Đường dẫn file tài liệu tổng quan thẩm định hồ sơ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.VERIFY_APPLICATION_STATUSES.OVERVIEW_FILE_PATH"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Verified By Officer Id"
+  physical_name: "verified_by_officer_id"
+  description: "FK -> USERS: Người xác minh/thẩm định cuối cùng."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.VERIFY_APPLICATION_STATUSES.VERIFIED_BY"
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
+    \ Cần ETL crosswalk sang NHNCK.USERS: VERIFY_APPLICATION_STATUSES.VERIFIED_BY\
+    \ = USERS.ID để xác nhận USERNAME sau đó hash_id('IAM.USERS', USERNAME) | Chưa\
+    \ xác nhận value set khớp danh mục IAM.USERS — cần profile dữ liệu trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Verified By Officer Code"
+  physical_name: "verified_by_officer_code"
+  description: "Mã cán bộ xác minh/thẩm định cuối cùng."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.USERS.USERNAME"
+  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
+    \ Pair with Verified By Officer Id. Giá trị lấy từ NHNCK.USERS.USERNAME sau ETL\
+    \ crosswalk — chi tiết xem comment Verified By Officer Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Status Code"
+  physical_name: "status_code"
+  description: "Trạng thái bản ghi"
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.VERIFY_APPLICATION_STATUSES.STATUS"
+  comment: "Scheme: NHNCK.VERIFY_APPLICATION_STATUSES.STATUS."
+  classification_context: "NHNCK.VERIFY_APPLICATION_STATUSES.STATUS"
+  etl_derived_value: null
+  data_type: "string"

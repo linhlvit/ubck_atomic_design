@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Communication] Assessment"
   table_type: "Fundamental"
   group: "T2"
-  design_status: "approved"
+  design_status: "draft"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -17,8 +17,13 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "STATUS/ID không map — xem pending_design.yaml (STATUS = RECORD_STATUS đổi\
-    \ tên, chính sách Data Modeler 2026-07-07; ID = PK kỹ thuật, BK dùng CODE)."
+  notes: "STATUS (nguồn) nay đã map thành \"Status Code\" (2026-08-18) — chính sách\
+    \ cũ (2026-07-07) không map RECORD_TYPE/RECORD_STATUS chỉ áp dụng cho cột mang\
+    \ tính kỹ thuật thuần túy; cột STATUS này mang ý nghĩa nghiệp vụ rõ ràng nên map\
+    \ Classification Value. ID không map — PK kỹ thuật, BK dùng CODE. Hạ về draft\
+    \ (2026-08-14) để sửa lỗi hash-mismatch FK \"Securities Practitioner License Decision\
+    \ Document Id\" — trước đây hash trực tiếp theo DECISION_ID (ID kỹ thuật) thay\
+    \ vì Code của bảng đích (DECISION_NUMBER), đồng bộ với đổi BK trên lld_NHNCK_DECISIONS.yaml."
 attributes:
 - attribute_name: "Securities Practitioner Qualification Examination Assessment Id"
   physical_name: "sp_qualification_examination_assessment_id"
@@ -54,7 +59,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns: []
-  comment: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
   classification_context: "SOURCE_SYSTEM=NHNCK.EXAM_SESSIONS"
   etl_derived_value: "NHNCK_EXAM_SESSIONS"
   data_type: "string"
@@ -114,7 +119,7 @@ attributes:
 - attribute_name: "Application Registration Start Date"
   physical_name: "application_registration_start_dt"
   description: "Ngày bắt đầu nhận đăng ký"
-  data_domain: "Text"
+  data_domain: "Date"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -123,11 +128,11 @@ attributes:
   comment: "VARCHAR2 nguồn — conversion risk. Lưu dạng Text tránh lỗi parse."
   classification_context: null
   etl_derived_value: null
-  data_type: "string"
+  data_type: "date"
 - attribute_name: "Application Registration End Date"
   physical_name: "application_registration_end_dt"
   description: "Ngày kết thúc nhận đăng ký"
-  data_domain: "Text"
+  data_domain: "Date"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -136,11 +141,11 @@ attributes:
   comment: "VARCHAR2 nguồn — conversion risk. Lưu dạng Text tránh lỗi parse."
   classification_context: null
   etl_derived_value: null
-  data_type: "string"
+  data_type: "date"
 - attribute_name: "Examination Start Date"
   physical_name: "examination_start_dt"
   description: "Ngày bắt đầu thi"
-  data_domain: "Text"
+  data_domain: "Date"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -149,11 +154,11 @@ attributes:
   comment: "VARCHAR2 nguồn — conversion risk. Lưu dạng Text tránh lỗi parse."
   classification_context: null
   etl_derived_value: null
-  data_type: "string"
+  data_type: "date"
 - attribute_name: "Examination End Date"
   physical_name: "examination_end_dt"
   description: "Ngày kết thúc thi"
-  data_domain: "Text"
+  data_domain: "Date"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -162,11 +167,11 @@ attributes:
   comment: "VARCHAR2 nguồn — conversion risk. Lưu dạng Text tránh lỗi parse."
   classification_context: null
   etl_derived_value: null
-  data_type: "string"
+  data_type: "date"
 - attribute_name: "Result Notification Date"
   physical_name: "result_notification_dt"
   description: "Ngày thông báo kết quả thi"
-  data_domain: "Text"
+  data_domain: "Date"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -175,7 +180,7 @@ attributes:
   comment: "VARCHAR2 nguồn — conversion risk. Lưu dạng Text tránh lỗi parse."
   classification_context: null
   etl_derived_value: null
-  data_type: "string"
+  data_type: "date"
 - attribute_name: "Examination Locations"
   physical_name: "examination_locations"
   description: "Địa điểm tổ chức thi"
@@ -224,9 +229,11 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.EXAM_SESSIONS.DECISION_ID"
-  comment: "FK target: Securities Practitioner License Decision Document.Securities\
-    \ Practitioner License Decision Document Id. Hash: hash_id('NHNCK.DECISIONS',\
-    \ DECISION_ID)."
+  comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
+    \ Cần ETL crosswalk sang NHNCK.DECISIONS: EXAM_SESSIONS.DECISION_ID = DECISIONS.ID\
+    \ để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK.DECISIONS', DECISION_NUMBER)\
+    \ | Trước đây hash trực tiếp theo DECISION_ID (ID kỹ thuật) gây sai lệch với Id\
+    \ của bảng main (hash từ DECISION_NUMBER) — đã sửa sang crosswalk 2026-08-14."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -238,10 +245,11 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "NHNCK.EXAM_SESSIONS.DECISION_ID"
-  comment: "Lookup pair: Securities Practitioner License Decision Document.Securities\
-    \ Practitioner License Decision Document Code. Pair with Securities Practitioner\
-    \ License Decision Document Id."
+  - "NHNCK.DECISIONS.DECISION_NUMBER"
+  comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
+    \ Pair with Securities Practitioner License Decision Document Id. Giá trị lấy\
+    \ từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem comment\
+    \ Securities Practitioner License Decision Document Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -282,5 +290,18 @@ attributes:
   - "NHNCK.EXAM_SESSIONS.BANK_ACCOUNT_NAME"
   comment: null
   classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Status Code"
+  physical_name: "status_code"
+  description: "Trạng thái bản ghi"
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.EXAM_SESSIONS.STATUS"
+  comment: "Scheme: NHNCK.EXAM_SESSIONS.STATUS."
+  classification_context: "NHNCK.EXAM_SESSIONS.STATUS"
   etl_derived_value: null
   data_type: "string"

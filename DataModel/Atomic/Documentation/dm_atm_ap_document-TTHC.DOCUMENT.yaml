@@ -1,0 +1,149 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-ap_document-TTHC.DOCUMENT
+  logical_name: Administrative Procedure Document
+  physical_name: ap_document
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Documentation"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: TTHC
+  description: |
+    Documentation — nội dung JSON gốc của content item hiện hành trong hệ thống TTHC (Orchard Core), lưu toàn bộ dữ liệu chi tiết đã serialize của hồ sơ/trang/tin/báo cáo hành chính.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-TTHC-DOCUMENT
+
+attributes:
+  - name: Administrative Procedure Document Id
+    physical_name: ap_document_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: TTHC
+    source_table: DOCUMENT
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Documentation] Documentation\". Nội dung JSON gốc của 1 content item hiện hành. Hash: hash_id('TTHC.DOCUMENT', ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Administrative Procedure Document Code
+    physical_name: ap_document_code
+    business_meaning: "Khóa chính (tự tăng) của bảng nguồn. BK — nguồn không có mã nghiệp vụ độc lập nào khác (TYPE là discriminator kỹ thuật, CONTENT là blob JSON, VERSION là optimistic-lock counter thay đổi theo update) — dùng PK kỹ thuật làm BK duy nhất, theo đúng pattern đã dùng cho KNT.INVOICE_DETAIL."
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: TTHC
+    source_table: DOCUMENT
+    source_column: TTHC.DOCUMENT.ID
+    comment: BK chính. PK nguồn.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: TTHC
+    source_table: DOCUMENT
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'TTHC_DOCUMENT'"
+    etl_derived_value: TTHC_DOCUMENT
+
+  - name: Record Type Code
+    physical_name: record_tp_code
+    business_meaning: "Bộ phân biệt loại bản ghi. Discriminator kiểu serialize .NET của Orchard Document store (VD: ContentItemRecord) — trường kỹ thuật hệ thống, không phải phân loại nghiệp vụ (xem TTHC_HLD_Tier1.md T1-02/6d)."
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: TTHC
+    source_table: DOCUMENT
+    source_column: TTHC.DOCUMENT.TYPE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Document Status Code
+    physical_name: document_status_code
+    business_meaning: "Trạng thái hồ sơ — parse từ trường CONTENT (JSON) tại tầng ODS. Chỉ áp dụng cho content item thuộc nghiệp vụ hồ sơ chào bán/thủ tục hành chính có theo dõi trạng thái xử lý; NULL cho các ContentType không liên quan (LandingPage, TinTuc, BaoCao, Fragment...)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: DOCUMENT
+    source_column: TTHC.DOCUMENT.CONTENT
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Processing Authority Code
+    physical_name: processing_authority_code
+    business_meaning: Cơ quan/đơn vị xử lý hồ sơ — parse từ trường CONTENT (JSON) tại tầng ODS. NULL cho các ContentType không liên quan.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: DOCUMENT
+    source_column: TTHC.DOCUMENT.CONTENT
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Offering Method Code
+    physical_name: offering_method_code
+    business_meaning: Phương thức chào bán/phát hành — parse từ trường CONTENT (JSON) tại tầng ODS. NULL cho các ContentType không liên quan.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: DOCUMENT
+    source_column: TTHC.DOCUMENT.CONTENT
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Submission Date
+    physical_name: submission_dt
+    business_meaning: Ngày nộp hồ sơ — parse từ trường CONTENT (JSON) tại tầng ODS. NULL cho các ContentType không liên quan.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: DOCUMENT
+    source_column: TTHC.DOCUMENT.CONTENT
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Version Number
+    physical_name: version_nbr
+    business_meaning: Số phiên bản để khóa lạc quan (tăng mỗi lần cập nhật).
+    data_domain: Small Counter
+    data_type: int
+    nullable: false
+    is_primary_key: false
+    source_system: TTHC
+    source_table: DOCUMENT
+    source_column: TTHC.DOCUMENT.VERSION
+    comment: "Optimistic lock counter — dùng để đối chiếu cập nhật tại chỗ theo Table Type Fundamental/Update (xem TTHC_HLD_Tier1.md T1-01/D-06)."
+    classification_context: null
+    etl_derived_value: null

@@ -24,7 +24,15 @@ metadata:
     \ Reason Change History (PROFESSIONAL_HISTORIES). Bổ sung 2026-08-06 (giữ nguyên\
     \ approved, không hạ status): thêm attribute \"Data Date\" từ CREATED_AT — bảng\
     \ là Fact Append (insert-only), CREATED_AT trước đó bị loại trừ nhầm như audit\
-    \ block thuần túy; mirror amendment đã áp dụng cho lld_NHNCK_ORGANIZATION_REPORTS.yaml."
+    \ block thuần túy; mirror amendment đã áp dụng cho lld_NHNCK_ORGANIZATION_REPORTS.yaml.\
+    \ Hạ về draft (2026-08-14) để sửa lỗi hash-mismatch FK \"Securities Practitioner\
+    \ License Decision Document Id\" — trước đây hash trực tiếp theo DECISION_ID (ID\
+    \ kỹ thuật) thay vì Code của bảng đích (DECISION_NUMBER), đồng bộ với đổi BK trên\
+    \ lld_NHNCK_DECISIONS.yaml. Hạ lại về draft (2026-08-15) để sửa lỗi hash-mismatch\
+    \ tương tự trên FK \"Securities Practitioner License Certificate Document Id\"\
+    \ — trước đây hash trực tiếp theo CERTIFICATE_RECORD_ID (ID kỹ thuật) thay vì\
+    \ Code của bảng đích (nay đổi từ ID sang CERTIFICATE_NUMBER, đồng bộ với đổi BK\
+    \ trên lld_NHNCK_CERTIFICATE_RECORDS.yaml)."
 attributes:
 - attribute_name: "Securities Practitioner License Certificate Status Change History\
     \ Id"
@@ -67,20 +75,21 @@ attributes:
   data_type: "string"
 - attribute_name: "Data Date"
   physical_name: "data_dt"
-  description: "Thời điểm ghi nhận thay đổi trạng thái CCHN (nguồn: CREATED_AT). Dùng làm căn\
-    \ cứ partition Delta Lake / incremental filter — bảng nguồn là Fact Append (insert-only,\
-    \ xem BRD/Source/brd_NHNCK.yaml)."
+  description: "Thời điểm ghi nhận thay đổi trạng thái CCHN (nguồn: CREATED_AT). Dùng\
+    \ làm căn cứ partition Delta Lake / incremental filter — bảng nguồn là Fact Append\
+    \ (insert-only, xem BRD/Source/brd_NHNCK.yaml)."
   data_domain: "Date"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.CREATED_AT"
-  comment: "BCV: không có term riêng. CREATED_AT bị loại theo quyết định audit-block Data\
-    \ Modeler (2026-07-07) nhưng bảng là Fact Append (mỗi dòng = 1 lần đổi trạng thái, insert-only,\
-    \ xác nhận 2026-07-24) — cần giữ lại làm Data Date, mirror pattern lld_NHNCK_ORGANIZATION_REPORTS.yaml.\
-    \ Đổi tên từ 'created_at' sang 'Data Date' để phản ánh vai trò ngày dữ liệu/phân vùng, tách\
-    \ biệt khỏi audit block (CREATED_BY/UPDATED_AT/UPDATED_BY vẫn loại trừ)."
+  comment: "BCV: không có term riêng. CREATED_AT bị loại theo quyết định audit-block\
+    \ Data Modeler (2026-07-07) nhưng bảng là Fact Append (mỗi dòng = 1 lần đổi trạng\
+    \ thái, insert-only, xác nhận 2026-07-24) — cần giữ lại làm Data Date, mirror\
+    \ pattern lld_NHNCK_ORGANIZATION_REPORTS.yaml. Đổi tên từ 'created_at' sang 'Data\
+    \ Date' để phản ánh vai trò ngày dữ liệu/phân vùng, tách biệt khỏi audit block\
+    \ (CREATED_BY/UPDATED_AT/UPDATED_BY vẫn loại trừ)."
   classification_context: null
   etl_derived_value: null
   data_type: "date"
@@ -93,9 +102,12 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.CERTIFICATE_RECORD_ID"
-  comment: "FK target: Securities Practitioner License Certificate Document.Securities\
-    \ Practitioner License Certificate Document Id. Hash: hash_id('NHNCK.CERTIFICATE_RECORDS',\
-    \ CERTIFICATE_RECORD_ID)."
+  comment: "FK target: sp_license_certificate_document.sp_license_certificate_document_id.\
+    \ Cần ETL crosswalk sang NHNCK.CERTIFICATE_RECORDS: CERTIFICATE_RECORD_STATUS_HISTORIES.CERTIFICATE_RECORD_ID\
+    \ = CERTIFICATE_RECORDS.ID để xác nhận CERTIFICATE_NUMBER sau đó hash_id('NHNCK.CERTIFICATE_RECORDS',\
+    \ CERTIFICATE_NUMBER) | Trước đây hash trực tiếp theo CERTIFICATE_RECORD_ID (ID\
+    \ kỹ thuật) gây sai lệch với Id của bảng main (hash từ CERTIFICATE_NUMBER) — đã\
+    \ sửa sang crosswalk 2026-08-15."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -107,10 +119,11 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.CERTIFICATE_RECORD_ID"
-  comment: "Lookup pair: Securities Practitioner License Certificate Document.Securities\
-    \ Practitioner License Certificate Document Code. Pair with Securities Practitioner\
-    \ License Certificate Document Id."
+  - "NHNCK.CERTIFICATE_RECORDS.CERTIFICATE_NUMBER"
+  comment: "Lookup pair: sp_license_certificate_document.sp_license_certificate_document_code.\
+    \ Pair with Securities Practitioner License Certificate Document Id. Giá trị lấy\
+    \ từ NHNCK.CERTIFICATE_RECORDS.CERTIFICATE_NUMBER sau ETL crosswalk — chi tiết\
+    \ xem comment Securities Practitioner License Certificate Document Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -168,10 +181,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.DECISION_ID"
-  comment: "FK target: Securities Practitioner License Decision Document.Securities\
-    \ Practitioner License Decision Document Id. Hash: hash_id('NHNCK.DECISIONS',\
-    \ DECISION_ID). Nullable — cần xác nhận có luôn gắn quyết định hay không (VD:\
-    \ hết hiệu lực tự động có thể không có quyết định)."
+  comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
+    \ Cần ETL crosswalk sang NHNCK.DECISIONS: CERTIFICATE_RECORD_STATUS_HISTORIES.DECISION_ID\
+    \ = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK.DECISIONS',\
+    \ DECISION_NUMBER) | Trước đây hash trực tiếp theo DECISION_ID (ID kỹ thuật) gây\
+    \ sai lệch với Id của bảng main (hash từ DECISION_NUMBER) — đã sửa sang crosswalk\
+    \ 2026-08-14. Nullable — cần xác nhận có luôn gắn quyết định hay không (VD: hết\
+    \ hiệu lực tự động có thể không có quyết định)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -183,10 +199,11 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.DECISION_ID"
-  comment: "Lookup pair: Securities Practitioner License Decision Document.Securities\
-    \ Practitioner License Decision Document Code. Pair with Securities Practitioner\
-    \ License Decision Document Id."
+  - "NHNCK.DECISIONS.DECISION_NUMBER"
+  comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
+    \ Pair with Securities Practitioner License Decision Document Id. Giá trị lấy\
+    \ từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem comment\
+    \ Securities Practitioner License Decision Document Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

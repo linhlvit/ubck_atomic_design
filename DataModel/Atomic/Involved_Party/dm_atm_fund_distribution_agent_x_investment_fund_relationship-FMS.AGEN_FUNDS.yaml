@@ -2,19 +2,19 @@ schema_type: data_model
 schema_version: "1.0"
 
 ldm:
-  id: ATM-investment_fund_x_fund_distribution_agent_relationship-FMS.AGEN_FUNDS
-  logical_name: Investment Fund X Fund Distribution Agent Relationship
-  physical_name: investment_fund_x_fund_distribution_agent_relationship
+  id: ATM-fund_distribution_agent_x_investment_fund_relationship-FMS.AGEN_FUNDS
+  logical_name: Fund Distribution Agent X Investment Fund Relationship
+  physical_name: fund_distribution_agent_x_investment_fund_relationship
   layer: Atomic
   version: "1.0"
   status: draft
-  bcv_core_object: Arrangement
-  bcv_concept: "[Arrangement] Investment Fund"
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Organization"
   table_type: Relative
   etl_pattern: SCD2
   source: FMS
   description: |
-    Quan hệ đại lý phân phối CCQ được ủy quyền cho quỹ đầu tư. Đảo ngược quyết định denormalize ARRAY cũ trên Investment Fund. FK đến Investment Fund + Fund Distribution Agent.
+    Quan hệ đại lý phân phối CCQ được ủy quyền cho quỹ đầu tư. Đảo ngược quyết định denormalize ARRAY cũ trên Investment Fund. FK đến Fund Distribution Agent + Investment Fund.
   owner:
     steward: username@ubck.com.vn
     data_modeler: username@fssc.com.vn

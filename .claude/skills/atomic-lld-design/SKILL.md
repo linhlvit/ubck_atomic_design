@@ -247,6 +247,12 @@ Mục đích của Bước 2 là **không thay đổi domain đã chọn** mà l
 - FK trỏ đến entity khác trong 15 core objects cũng phải hash theo Code của entity đích: nếu cột FK nguồn lưu ID kỹ thuật của bảng cha, phải `join FK_COL → TARGET_TABLE.ID` để lấy `CODE` rồi mới `hash_id('TARGET_TABLE', code)` — không hash trực tiếp theo FK ID.
 - Nếu mã nghiệp vụ nguồn hiện đang nullable, cần ghi chú yêu cầu profile dữ liệu xác nhận NOT NULL/unique trước go-live (Code nay đóng vai trò BK).
 
+**Entity dạng link/relationship thuần (tên có `_x_`, VD: `Investment Fund X Fund Distribution Agent Relationship`, `Penalty Decision X Violation Record`) — KHÔNG thiết kế cặp `{Entity} Id` + `{Entity} Code` riêng cho entity** (quyết định Data Modeler 2026-08-13, thay thế cách làm cũ dùng surrogate Id + BK composite text như `lld_FMS_AGEN_FUNDS.yaml`/`lld_FMS_FUND_TL_PRO.yaml`/`lld_FMS_JOB_TL_PRO.yaml` trước đó). Thay vào đó:
+- PK = **composite 2 FK Id** của 2 entity được liên kết — đánh `is_primary_key: true` trên cả 2 attribute `{Parent A} Id` và `{Parent B} Id`.
+- Vẫn giữ đủ 2 cặp FK Id + Code (theo Bước 3c) và `Source System Code`.
+- Ghi chú `"Composite PK cùng {Parent khác} Id."` vào comment của mỗi FK Id.
+- Áp dụng cho entity thực sự là pure link (bảng nguồn chỉ có 2 FK, không có PK/ID kỹ thuật riêng, không có business attribute nào khác ngoài 2 FK) — không áp dụng cho entity `_x_` có thêm business attribute riêng (trường hợp đó vẫn cần Id/Code riêng vì entity có identity độc lập ngoài cặp FK).
+
 #### 3f. Source System Code
 
 Format bắt buộc — **cả 2 trường phải nhất quán:**

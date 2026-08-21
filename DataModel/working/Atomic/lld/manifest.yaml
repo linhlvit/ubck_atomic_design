@@ -1,6 +1,18 @@
 schema_type: lld_manifest
 schema_version: '1.0'
 entries:
+- source_system: TTHC
+  source_table: DOCUMENT
+  atomic_entity: Administrative Procedure Document
+  group: T1
+  lld_file: TTHC/lld_TTHC_DOCUMENT.yaml
+  design_status: approved
+- source_system: TTHC
+  source_table: CONTENTITEMINDEX
+  atomic_entity: Administrative Procedure Content Item Index
+  group: T2
+  lld_file: TTHC/lld_TTHC_CONTENTITEMINDEX.yaml
+  design_status: approved
 - source_system: NHNCK
   source_table: UNITS
   atomic_entity: Regulatory Authority Organization Unit
@@ -48,7 +60,7 @@ entries:
   atomic_entity: Securities Practitioner License Decision Document
   group: T1
   lld_file: NHNCK/lld_NHNCK_DECISIONS.yaml
-  design_status: approved
+  design_status: draft
 - source_system: NHNCK
   source_table: CERTIFICATES
   atomic_entity: Securities Practitioner License Certificate Type
@@ -56,20 +68,26 @@ entries:
   lld_file: NHNCK/lld_NHNCK_CERTIFICATES.yaml
   design_status: approved
 - source_system: NHNCK
+  source_table: APPLICATION_SOURCES
+  atomic_entity: Classification Value
+  group: T1
+  lld_file: NHNCK/lld_NHNCK_APPLICATION_SOURCES.yaml
+  design_status: draft
+- source_system: NHNCK
   source_table: APPLICATION_STATUSES
-  atomic_entity: Classification Application Status
+  atomic_entity: Classification Value
   group: T1
   lld_file: NHNCK/lld_NHNCK_APPLICATION_STATUSES.yaml
   design_status: draft
 - source_system: NHNCK
   source_table: DOCUMENTS
-  atomic_entity: Classification Document
+  atomic_entity: Classification Value
   group: T1
   lld_file: NHNCK/lld_NHNCK_DOCUMENTS.yaml
   design_status: draft
 - source_system: NHNCK
   source_table: SPECIALIZATIONS
-  atomic_entity: Classification Specialization
+  atomic_entity: Classification Value
   group: T1
   lld_file: NHNCK/lld_NHNCK_SPECIALIZATIONS.yaml
   design_status: draft
@@ -108,19 +126,19 @@ entries:
   atomic_entity: Securities Practitioner Professional Training Class
   group: T2
   lld_file: NHNCK/lld_NHNCK_SPECIALIZATION_COURSES.yaml
-  design_status: approved
+  design_status: draft
 - source_system: NHNCK
   source_table: EXAM_SESSIONS
   atomic_entity: Securities Practitioner Qualification Examination Assessment
   group: T2
   lld_file: NHNCK/lld_NHNCK_EXAM_SESSIONS.yaml
-  design_status: approved
+  design_status: draft
 - source_system: NHNCK
   source_table: CERTIFICATE_RECORDS
   atomic_entity: Securities Practitioner License Certificate Document
   group: T3
   lld_file: NHNCK/lld_NHNCK_CERTIFICATE_RECORDS.yaml
-  design_status: approved
+  design_status: draft
 - source_system: NHNCK
   source_table: APPLICATIONS
   atomic_entity: Securities Practitioner License Application
@@ -141,10 +159,10 @@ entries:
   design_status: approved
 - source_system: NHNCK
   source_table: VIOLATIONS
-  atomic_entity: Securities Practitioner Conduct Violation
+  atomic_entity: Securities Practitioner Violation
   group: T3
   lld_file: NHNCK/lld_NHNCK_VIOLATIONS.yaml
-  design_status: approved
+  design_status: draft
 - source_system: NHNCK
   source_table: ORGANIZATION_REPORTS
   atomic_entity: Securities Practitioner Organization Employment Report
@@ -156,7 +174,7 @@ entries:
   atomic_entity: Securities Practitioner Professional Training Class Enrollment
   group: T3
   lld_file: NHNCK/lld_NHNCK_SPECIALIZATION_COURSE_DETAILS.yaml
-  design_status: approved
+  design_status: draft
 - source_system: NHNCK
   source_table: EXAM_DETAILS
   atomic_entity: Securities Practitioner Qualification Examination Assessment Result
@@ -175,7 +193,7 @@ entries:
     Document
   group: T4
   lld_file: NHNCK/lld_NHNCK_APPLICATION_SPECIALIZATIONS.yaml
-  design_status: approved
+  design_status: draft
 - source_system: NHNCK
   source_table: APPLICATION_FEES
   atomic_entity: Securities Practitioner License Application Fee
@@ -183,29 +201,11 @@ entries:
   lld_file: NHNCK/lld_NHNCK_APPLICATION_FEES.yaml
   design_status: approved
 - source_system: NHNCK
-  source_table: APPLICATION_EXPERIENCES
-  atomic_entity: Securities Practitioner License Application Employment Experience
-  group: T4
-  lld_file: NHNCK/lld_NHNCK_APPLICATION_EXPERIENCES.yaml
-  design_status: approved
-- source_system: NHNCK
-  source_table: APPLICATION_PROFESSIONALS
-  atomic_entity: Securities Practitioner License Application Snapshot
-  group: T4
-  lld_file: NHNCK/lld_NHNCK_APPLICATION_PROFESSIONALS.yaml
-  design_status: approved
-- source_system: NHNCK
   source_table: APPLICATION_RE_EXAMS
   atomic_entity: Securities Practitioner License Application Re-Exam Request
   group: T4
   lld_file: NHNCK/lld_NHNCK_APPLICATION_RE_EXAMS.yaml
-  design_status: approved
-- source_system: NHNCK
-  source_table: PROFESSIONAL_TRAININGS
-  atomic_entity: Securities Practitioner Professional Training History
-  group: T4
-  lld_file: NHNCK/lld_NHNCK_PROFESSIONAL_TRAININGS.yaml
-  design_status: approved
+  design_status: draft
 - source_system: IAM
   source_table: USERS
   atomic_entity: Identity and Access Management User
@@ -329,6 +329,11 @@ entries:
   source_table: PENALTY_DECISION
   atomic_entity: Penalty Decision
   design_status: draft
+- lld_file: THANHTRA/lld_THANHTRA_PENALTY_DECISION_VIOLATION_RECORD.yaml
+  source_system: THANHTRA
+  source_table: PENALTY_DECISION_VIOLATION_RECORD
+  atomic_entity: Penalty Decision X Violation Record Relationship
+  design_status: draft
 - lld_file: THANHTRA/lld_THANHTRA_VIOLATION_CASE_OUTPUT_DOCUMENT.yaml
   source_system: THANHTRA
   source_table: VIOLATION_CASE_OUTPUT_DOCUMENT
@@ -338,7 +343,7 @@ entries:
   source_system: THANHTRA
   source_table: VIOLATION_CASE_RECEIVED_DOCUMENT
   atomic_entity: Violation Case Received Document
-  design_status: draft
+  design_status: approved
 - lld_file: THANHTRA/lld_THANHTRA_VIOLATION_RECORD_BEHAVIOR.yaml
   source_system: THANHTRA
   source_table: VIOLATION_RECORD_BEHAVIOR
@@ -1731,16 +1736,16 @@ entries:
   design_status: approved
 - source_system: FMS
   source_table: FUND_TL_PRO
-  atomic_entity: Investment Fund X Fund Management Company Employee Relationship
+  atomic_entity: Fund Management Company Employee X Investment Fund Relationship
   group: T3
   lld_file: FMS/lld_FMS_FUND_TL_PRO.yaml
-  design_status: approved
+  design_status: draft
 - source_system: FMS
   source_table: AGEN_FUNDS
-  atomic_entity: Investment Fund X Fund Distribution Agent Relationship
+  atomic_entity: Fund Distribution Agent X Investment Fund Relationship
   group: T3
   lld_file: FMS/lld_FMS_AGEN_FUNDS.yaml
-  design_status: approved
+  design_status: draft
 - source_system: ECAT
   source_table: COUNTRY
   atomic_entity: Geographic Area
@@ -2226,7 +2231,7 @@ entries:
   atomic_entity: Public Company Securities Offering
   group: T3
   lld_file: IDS/lld_IDS_SECURITIES_OFFERING.yaml
-  design_status: approved
+  design_status: draft
 - source_system: IDS
   source_table: COMPANY_SHAREHOLDING
   atomic_entity: Public Company Shareholding
@@ -2256,13 +2261,13 @@ entries:
   atomic_entity: Public Company Securities Offering Plan
   group: T4
   lld_file: IDS/lld_IDS_SECURITIES_OFFERING_PLAN.yaml
-  design_status: approved
+  design_status: draft
 - source_system: IDS
   source_table: SECURITIES_OFFERING_RESULT
   atomic_entity: Public Company Securities Offering Result
   group: T4
   lld_file: IDS/lld_IDS_SECURITIES_OFFERING_RESULT.yaml
-  design_status: approved
+  design_status: draft
 - source_system: FIMS
   source_table: INVESTOR
   atomic_entity: Foreign Investor
@@ -2448,4 +2453,58 @@ entries:
   atomic_entity: Securities Practitioner Post Certification Training Result
   group: T3
   lld_file: NHNCK/lld_NHNCK_POST_CERT_TRAINING_RESULTS.yaml
+  design_status: draft
+- source_system: NHNCK
+  source_table: ORGANIZATION_REPORT_YEARLYS
+  atomic_entity: Securities Practitioner Organization Annual Report
+  group: T2
+  lld_file: NHNCK/lld_NHNCK_ORGANIZATION_REPORT_YEARLYS.yaml
+  design_status: draft
+- source_system: NHNCK
+  source_table: APPLICATION_GROUPS
+  atomic_entity: Securities Practitioner License Application Group
+  group: T2
+  lld_file: NHNCK/lld_NHNCK_APPLICATION_GROUPS.yaml
+  design_status: draft
+- source_system: NHNCK
+  source_table: CERTIFICATE_RECORD_GROUPS
+  atomic_entity: Securities Practitioner License Certificate Group
+  group: T2
+  lld_file: NHNCK/lld_NHNCK_CERTIFICATE_RECORD_GROUPS.yaml
+  design_status: draft
+- source_system: NHNCK
+  source_table: DECISION_DOCUMENTS
+  atomic_entity: Securities Practitioner License Decision Document Attachment
+  group: T2
+  lld_file: NHNCK/lld_NHNCK_DECISION_DOCUMENTS.yaml
+  design_status: draft
+- source_system: NHNCK
+  source_table: APPLICATION_GROUP_MEMBERS
+  atomic_entity: Application Group X Securities Practitioner License Application Relationship
+  group: T4
+  lld_file: NHNCK/lld_NHNCK_APPLICATION_GROUP_MEMBERS.yaml
+  design_status: draft
+- source_system: NHNCK
+  source_table: CERTIFICATE_RECORD_GROUP_MEMBERS
+  atomic_entity: Certificate Group X Securities Practitioner License Certificate Document Relationship
+  group: T4
+  lld_file: NHNCK/lld_NHNCK_CERTIFICATE_RECORD_GROUP_MEMBERS.yaml
+  design_status: draft
+- source_system: NHNCK
+  source_table: VERIFY_APPLICATION_STATUSES
+  atomic_entity: Securities Practitioner License Application Status Review
+  group: T4
+  lld_file: NHNCK/lld_NHNCK_VERIFY_APPLICATION_STATUSES.yaml
+  design_status: draft
+- source_system: NHNCK
+  source_table: CERTIFICATE_DEPARTMENTS
+  atomic_entity: Regulatory Authority Organization Unit X Securities Practitioner License Certificate Type Relationship
+  group: T2
+  lld_file: NHNCK/lld_NHNCK_CERTIFICATE_DEPARTMENTS.yaml
+  design_status: draft
+- source_system: NHNCK
+  source_table: CERTIFICATE_SPECIALIZATIONS
+  atomic_entity: Securities Practitioner License Certificate Type X Classification Specialization Relationship
+  group: T2
+  lld_file: NHNCK/lld_NHNCK_CERTIFICATE_SPECIALIZATIONS.yaml
   design_status: draft

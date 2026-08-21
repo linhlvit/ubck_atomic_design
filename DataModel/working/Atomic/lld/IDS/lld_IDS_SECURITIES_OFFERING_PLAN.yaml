@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Business Activity] Business Activity"
   table_type: "Fundamental"
   group: "T4"
-  design_status: "approved"
+  design_status: "draft"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -70,7 +70,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.SECURITIES_OFFERING_PLAN.SECURITIES_OFFERING_ID"
-  comment: "FK target: pc_securities_offering.pc_securities_offering_id. Hash: hash_id('IDS.SECURITIES_OFFERING', SECURITIES_OFFERING_ID)."
+  comment: "FK target: pc_securities_offering.pc_securities_offering_id. Cần ETL crosswalk sang IDS.SECURITIES_OFFERING: SECURITIES_OFFERING_PLAN.SECURITIES_OFFERING_ID = SECURITIES_OFFERING.ID để xác nhận APPLICATION_CD sau đó hash_id('IDS.SECURITIES_OFFERING', APPLICATION_CD) | Trước đây hash trực tiếp theo SECURITIES_OFFERING_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ APPLICATION_CD) — đã sửa sang crosswalk 2026-08-14."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -82,8 +82,8 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IDS.SECURITIES_OFFERING_PLAN.SECURITIES_OFFERING_ID"
-  comment: "Lookup pair: pc_securities_offering.pc_securities_offering_code. Pair with Public Company Securities Offering Id."
+  - "IDS.SECURITIES_OFFERING.APPLICATION_CD"
+  comment: "Lookup pair: pc_securities_offering.pc_securities_offering_code. Pair with Public Company Securities Offering Id. Giá trị lấy từ IDS.SECURITIES_OFFERING.APPLICATION_CD sau ETL crosswalk — chi tiết xem comment Public Company Securities Offering Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

@@ -576,31 +576,23 @@ entries:
   group: Junction
   reason: Pure junction 2 FK (EVENT_TYPE, AGENCY_TYPE) — không có business attribute.
 - source_system: FMS
-  source_table: FUD_AG_AGT
-  description: Bảng trung gian quỹ, loại đại lý và đại lý phân phối (kèm cấp trên)
-  group: Junction
-  reason: Không có attribute nghiệp vụ ngoài 4 FK — mở rộng STRUCT `distribution_agents`
-    trên Investment Fund đã có từ AGEN_FUNDS (xem 7d).
-- source_system: FMS
   source_table: FUD_TAGT
   description: Liên kết quỹ với loại đại lý chuyển nhượng
   group: Junction
   reason: Pure junction 2 FK (FUNDS, AGENCY_TYPE) — không có business attribute.
 - source_system: FMS
-  source_table: FUND_TL_PRO
-  description: Người hành nghề liên quan đến quỹ đầu tư
-  group: Junction
-  reason: Pure junction 2 FK (FUNDS, TL_PROFILES) — không có business attribute.
-- source_system: FMS
-  source_table: JOB_TL_PRO
-  description: Chức danh công việc của người hành nghề
-  group: Junction
-  reason: Pure junction 2 FK (JOBS, TL_PROFILES) — không có business attribute.
-- source_system: FMS
   source_table: SEC_FUND_MANAGER
   description: Gán người hành nghề làm người quản lý quỹ được chỉ định
   group: Junction
   reason: Pure junction 2 FK (SECURITIES, TL_PROFILES) — không có business attribute.
+- source_system: FMS
+  source_table: FUD_AG_AGT
+  description: Bảng trung gian quỹ, loại đại lý và đại lý phân phối (kèm cấp trên)
+  group: Junction (đang rà soát)
+  reason: '**[CẦN RÀ SOÁT 2026-07-19]** Không có attribute nghiệp vụ ngoài 4 FK. Trước
+    đây "mở rộng STRUCT distribution_agents" — nay AGEN_FUNDS đã có entity Relative
+    riêng (`Fund Distribution Agent X Investment Fund Relationship`, Tier 3, xem 7a/7d)
+    nên STRUCT đó không còn. Chưa quyết định gộp hay tách riêng — xem 7e#19.'
 - source_system: FMS
   source_table: CONFIG
   description: Cấu hình mapping cột nguồn-đích cho ETL/đồng bộ dữ liệu
@@ -1116,11 +1108,6 @@ entries:
     denormalize vào IP Postal Address, EMAIL/PHONE/FAX/WEBSITE denormalize vào IP
     Electronic Address, gắn với Tax Registration (cha).
 - source_system: NHNCK
-  source_table: CERTIFICATE_DEPARTMENTS
-  description: Liên kết phòng ban với loại chứng chỉ
-  group: Application Config
-  reason: Application config.
-- source_system: NHNCK
   source_table: CERTIFICATE_DOCUMENTS
   description: Liên kết loại tài liệu với loại chứng chỉ
   group: Application Config
@@ -1130,11 +1117,6 @@ entries:
   description: Template sinh số chứng chỉ
   group: Application Config
   reason: Config/template data.
-- source_system: NHNCK
-  source_table: CERTIFICATE_SPECIALIZATIONS
-  description: Liên kết chuyên môn với loại chứng chỉ
-  group: Application Config
-  reason: Application config.
 - source_system: NHNCK
   source_table: FORMS
   description: Biểu mẫu liên quan đến quy trình cấp CCHN
@@ -1171,31 +1153,6 @@ entries:
   group: Archive / Physical
   reason: Physical archive metadata.
 - source_system: NHNCK
-  source_table: APPLICATION_GROUPS
-  description: Nhóm hồ sơ CCHN xử lý tập thể (container batch)
-  group: Batch Processing
-  reason: Batch processing metadata — container tổ chức xử lý tập thể tại nguồn; thông
-    tin quyết định đã có trên DECISIONS (Tier 1), danh sách hồ sơ đã có trên APPLICATIONS.
-- source_system: NHNCK
-  source_table: APPLICATION_GROUP_MEMBERS
-  description: Thành viên (hồ sơ) trong nhóm xử lý tập thể
-  group: Batch Processing
-  reason: Batch processing metadata — danh sách hồ sơ trong nhóm; không có attribute
-    nghiệp vụ độc lập ngoài FK và ORDER_INDEX vận hành.
-- source_system: NHNCK
-  source_table: CERTIFICATE_RECORD_GROUPS
-  description: Nhóm quyết định cấp/thu hồi/hủy chứng chỉ (container batch)
-  group: Batch Processing
-  reason: Batch processing metadata — container tổ chức xử lý tập thể tại nguồn; thông
-    tin quyết định đã có trên DECISIONS (Tier 1), danh sách CCHN đã có trên CERTIFICATE_RECORDS.
-- source_system: NHNCK
-  source_table: CERTIFICATE_RECORD_GROUP_MEMBERS
-  description: Thành viên CCHN trong nhóm quyết định batch
-  group: Batch Processing
-  reason: Batch processing metadata — danh sách CCHN trong nhóm; dữ liệu nghiệp vụ
-    (REVOCATION_REASON, REISSUE) thuộc về CERTIFICATE_RECORDS, không phải thuộc quan
-    hệ thành viên.
-- source_system: NHNCK
   source_table: DIGITAL_CERTIFICATES
   description: Chứng thư số PKI
   group: Digital Cert
@@ -1205,6 +1162,24 @@ entries:
   description: Người dùng được sử dụng chứng thư số
   group: Digital Cert
   reason: Operational/PKI data.
+- source_system: NHNCK
+  source_table: APPLICATION_EXPERIENCES
+  description: Kinh nghiệm làm việc khai báo trong hồ sơ xin cấp CCHN
+  group: Involved Party
+  reason: Quyết định Data Modeler (2026-08-13) — loại khỏi thiết kế Atomic 3NF; vẫn
+    còn nhu cầu khai thác nghiệp vụ nên sẽ đánh giá lại hướng thiết kế khác sau.
+- source_system: NHNCK
+  source_table: APPLICATION_PROFESSIONALS
+  description: Snapshot thông tin cá nhân người đăng ký tại thời điểm nộp hồ sơ
+  group: Involved Party
+  reason: Quyết định Data Modeler (2026-08-13) — loại khỏi thiết kế Atomic 3NF; vẫn
+    còn nhu cầu khai thác nghiệp vụ nên sẽ đánh giá lại hướng thiết kế khác sau.
+- source_system: NHNCK
+  source_table: PROFESSIONAL_TRAININGS
+  description: Lịch sử đào tạo, bồi dưỡng của người hành nghề
+  group: Involved Party
+  reason: Quyết định Data Modeler (2026-08-13) — loại khỏi thiết kế Atomic 3NF; vẫn
+    còn nhu cầu khai thác nghiệp vụ nên sẽ đánh giá lại hướng thiết kế khác sau.
 - source_system: NHNCK
   source_table: USERS
   description: Thông tin cán bộ/chuyên viên UBCKNN có tài khoản trong hệ thống NHNCK
@@ -1237,16 +1212,6 @@ entries:
   reason: Operational/migration data — nghiệp vụ 1 lần, không có giá trị phân tích
     liên tục.
 - source_system: NHNCK
-  source_table: ORGANIZATION_REPORT_LOG_SYNCS
-  description: Nhật ký đồng bộ dữ liệu báo cáo từ tổ chức
-  group: Operational
-  reason: Operational sync log.
-- source_system: NHNCK
-  source_table: ORGANIZATION_REPORT_YEARLYS
-  description: Báo cáo hàng năm của tổ chức về người hành nghề
-  group: Operational
-  reason: Cần khảo sát thêm cấu trúc cột để xác định có phải entity độc lập không.
-- source_system: NHNCK
   source_table: APPLICATION_LOGS
   description: Nhật ký thay đổi trạng thái/nội dung hồ sơ
   group: Source Process Log
@@ -1257,12 +1222,6 @@ entries:
   description: Nhật ký hoạt động trên chứng chỉ hành nghề
   group: Source Process Log
   reason: Audit log nguồn — không phải sự kiện nghiệp vụ tường minh.
-- source_system: NHNCK
-  source_table: VERIFY_APPLICATION_STATUSES
-  description: Bước xác minh hồ sơ tại từng cấp phê duyệt
-  group: Source Process Log
-  reason: Bước xác minh trung gian trong quy trình nguồn — không có giá trị phân tích
-    độc lập.
 - source_system: NHNCK
   source_table: APPLICATION_DOCUMENTS
   description: Tài liệu vật lý (file attachment) đính kèm hồ sơ đăng ký
@@ -1282,12 +1241,6 @@ entries:
   group: Sub-process
   reason: Sub-process bổ sung hồ sơ theo yêu cầu — cấu trúc internal tác nghiệp tại
     nguồn.
-- source_system: NHNCK
-  source_table: DECISION_DOCUMENTS
-  description: Tài liệu đính kèm của quyết định
-  group: Sub-process
-  reason: Sub-process lưu file đính kèm — không có giá trị phân tích nghiệp vụ độc
-    lập.
 - source_system: NHNCK
   source_table: DEPARTMENT_ACCESS
   description: Quản lý quyền khai thác giữa các phòng ban
@@ -1930,11 +1883,6 @@ entries:
   description: Phiên bản template biểu mẫu
   group: Form Metadata
   reason: Form Metadata — version control
-- source_system: THANHTRA
-  source_table: PENALTY_DECISION_VIOLATION_RECORD
-  description: Bảng nối nhiều-nhiều giữa quyết định xử phạt và biên bản vi phạm
-  group: Junction
-  reason: Pure junction không có business attribute — quan hệ đã suy luận qua VIOLATION_CASE
 - source_system: THANHTRA
   source_table: PENALTY_TYPE_VIOLATION_BEHAVIOR
   description: Bảng nối nhiều-nhiều giữa loại xử phạt và hành vi vi phạm

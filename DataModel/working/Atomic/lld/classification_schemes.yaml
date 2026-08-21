@@ -35,23 +35,211 @@ schemes:
       - "Identity and Access Management User"
     values: []
 
-  - scheme_code: "APPLICATION_STATUS"
+  - scheme_code: "NHNCK.APPLICATION_STATUSES"
     name: "Trạng thái hồ sơ — values from ApplicationStatuses"
     source_type: "source_table"
     source_table: "NHNCK.ApplicationStatuses"
     used_in_entities:
-      - "License Application"
-      - "App Processing Activity Log"
+      - "Securities Practitioner License Application"
+      - "Securities Practitioner License Application Status Review"
     values: []
+    reactivated_note: "used_in_entities đồng bộ lại 2026-08-20 theo tên entity hiện\
+      \ tại (License Application/App Processing Activity Log là tên cũ đã đổi từ\
+      \ trước khi NHNCK.APPLICATION_STATUSES nâng cấp thành entity thật 2026-07-09).\
+      \ Entity thật Classification Application Status đã revert về Classification\
+      \ Value — scheme này nay dùng lại làm nguồn Code chuẩn cho các entity trên."
 
-  - scheme_code: "APPRAISAL_STATUS"
-    name: "Trạng thái thẩm định tài liệu — cần xác nhận từ data"
-    source_type: "modeler_defined"
-    source_table: "NHNCK.ApplicationSpecializations.Status"
-    used_in_entities:
-      - "App Education Certificate Document"
-      - "App Document Attachment"
+  - scheme_code: "APPLICATION_SOURCE"
+    name: "Nguồn nộp hồ sơ — values from ApplicationSources"
+    source_type: "source_table"
+    source_table: "NHNCK.ApplicationSources"
+    used_in_entities: []
     values: []
+    reactivated_note: "Đăng ký mới 2026-08-20 — NHNCK.APPLICATION_SOURCES map vào Classification\
+      \ Value (không nâng cấp thành Atomic entity). Chưa có entity nào thiết kế tiêu\
+      \ thụ scheme này (APPLICATION_SOURCES trước đó ở trạng thái out_of_scope)."
+
+  - scheme_code: "NHNCK.APPLICATION_SPECIALIZATIONS.STATUS"
+    name: "Trạng thái bản ghi Securities Practitioner License Application Education Certificate Document: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động"
+    source_type: "etl_derived"
+    source_table: "NHNCK.APPLICATION_SPECIALIZATIONS"
+    used_in_entities:
+      - "Securities Practitioner License Application Education Certificate Document"
+    values:
+      - code: "ACTIVE"
+        name: "Đang hoạt động/Hiệu lực"
+        source_value: "1"
+      - code: "INACTIVE"
+        name: "Không hoạt động"
+        source_value: "0"
+
+  - scheme_code: "NHNCK.APPLICATION_FEES.STATUS"
+    name: "Trạng thái bản ghi Securities Practitioner License Application Fee: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động"
+    source_type: "etl_derived"
+    source_table: "NHNCK.APPLICATION_FEES"
+    used_in_entities:
+      - "Securities Practitioner License Application Fee"
+    values:
+      - code: "ACTIVE"
+        name: "Đang hoạt động/Hiệu lực"
+        source_value: "1"
+      - code: "INACTIVE"
+        name: "Không hoạt động"
+        source_value: "0"
+
+  - scheme_code: "NHNCK.APPLICATION_GROUPS.STATUS"
+    name: "Trạng thái bản ghi Securities Practitioner License Application Group: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động"
+    source_type: "etl_derived"
+    source_table: "NHNCK.APPLICATION_GROUPS"
+    used_in_entities:
+      - "Securities Practitioner License Application Group"
+    values:
+      - code: "ACTIVE"
+        name: "Đang hoạt động/Hiệu lực"
+        source_value: "1"
+      - code: "INACTIVE"
+        name: "Không hoạt động"
+        source_value: "0"
+
+  - scheme_code: "NHNCK.APPLICATION_RE_EXAMS.STATUS"
+    name: "Trạng thái bản ghi Securities Practitioner License Application Re-Exam Request: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động"
+    source_type: "etl_derived"
+    source_table: "NHNCK.APPLICATION_RE_EXAMS"
+    used_in_entities:
+      - "Securities Practitioner License Application Re-Exam Request"
+    values:
+      - code: "ACTIVE"
+        name: "Đang hoạt động/Hiệu lực"
+        source_value: "1"
+      - code: "INACTIVE"
+        name: "Không hoạt động"
+        source_value: "0"
+
+  - scheme_code: "NHNCK.CERTIFICATE_RECORD_GROUPS.STATUS"
+    name: "Trạng thái bản ghi Securities Practitioner License Certificate Group: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động"
+    source_type: "etl_derived"
+    source_table: "NHNCK.CERTIFICATE_RECORD_GROUPS"
+    used_in_entities:
+      - "Securities Practitioner License Certificate Group"
+    values:
+      - code: "ACTIVE"
+        name: "Đang hoạt động/Hiệu lực"
+        source_value: "1"
+      - code: "INACTIVE"
+        name: "Không hoạt động"
+        source_value: "0"
+
+  - scheme_code: "NHNCK.CERTIFICATE_RECORDS.STATUS"
+    name: "Trạng thái bản ghi Securities Practitioner License Certificate Document: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động"
+    source_type: "etl_derived"
+    source_table: "NHNCK.CERTIFICATE_RECORDS"
+    used_in_entities:
+      - "Securities Practitioner License Certificate Document"
+    values:
+      - code: "ACTIVE"
+        name: "Đang hoạt động/Hiệu lực"
+        source_value: "1"
+      - code: "INACTIVE"
+        name: "Không hoạt động"
+        source_value: "0"
+
+  - scheme_code: "NHNCK.DECISION_DOCUMENTS.STATUS"
+    name: "Trạng thái bản ghi Securities Practitioner License Decision Document Attachment: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động"
+    source_type: "etl_derived"
+    source_table: "NHNCK.DECISION_DOCUMENTS"
+    used_in_entities:
+      - "Securities Practitioner License Decision Document Attachment"
+    values:
+      - code: "ACTIVE"
+        name: "Đang hoạt động/Hiệu lực"
+        source_value: "1"
+      - code: "INACTIVE"
+        name: "Không hoạt động"
+        source_value: "0"
+
+  - scheme_code: "NHNCK.ORGANIZATION_REPORT_YEARLYS.STATUS"
+    name: "Trạng thái bản ghi Securities Practitioner Organization Annual Report: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động"
+    source_type: "etl_derived"
+    source_table: "NHNCK.ORGANIZATION_REPORT_YEARLYS"
+    used_in_entities:
+      - "Securities Practitioner Organization Annual Report"
+    values:
+      - code: "ACTIVE"
+        name: "Đang hoạt động/Hiệu lực"
+        source_value: "1"
+      - code: "INACTIVE"
+        name: "Không hoạt động"
+        source_value: "0"
+
+  - scheme_code: "NHNCK.ORGANIZATION_REPORTS.STATUS"
+    name: "Trạng thái bản ghi Securities Practitioner Organization Employment Report: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động"
+    source_type: "etl_derived"
+    source_table: "NHNCK.ORGANIZATION_REPORTS"
+    used_in_entities:
+      - "Securities Practitioner Organization Employment Report"
+    values:
+      - code: "ACTIVE"
+        name: "Đang hoạt động/Hiệu lực"
+        source_value: "1"
+      - code: "INACTIVE"
+        name: "Không hoạt động"
+        source_value: "0"
+
+  - scheme_code: "NHNCK.ORGANIZATIONS.STATUS"
+    name: "Trạng thái bản ghi Securities Organization Reference: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động"
+    source_type: "etl_derived"
+    source_table: "NHNCK.ORGANIZATIONS"
+    used_in_entities:
+      - "Securities Organization Reference"
+    values:
+      - code: "ACTIVE"
+        name: "Đang hoạt động/Hiệu lực"
+        source_value: "1"
+      - code: "INACTIVE"
+        name: "Không hoạt động"
+        source_value: "0"
+
+  - scheme_code: "NHNCK.EXAM_SESSIONS.STATUS"
+    name: "Trạng thái bản ghi Securities Practitioner Qualification Examination Assessment: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động"
+    source_type: "etl_derived"
+    source_table: "NHNCK.EXAM_SESSIONS"
+    used_in_entities:
+      - "Securities Practitioner Qualification Examination Assessment"
+    values:
+      - code: "ACTIVE"
+        name: "Đang hoạt động/Hiệu lực"
+        source_value: "1"
+      - code: "INACTIVE"
+        name: "Không hoạt động"
+        source_value: "0"
+
+  - scheme_code: "NHNCK.PROFESSIONALS.STATUS"
+    name: "Trạng thái bản ghi Securities Practitioner: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động"
+    source_type: "etl_derived"
+    source_table: "NHNCK.PROFESSIONALS"
+    used_in_entities:
+      - "Securities Practitioner"
+    values:
+      - code: "ACTIVE"
+        name: "Đang hoạt động/Hiệu lực"
+        source_value: "1"
+      - code: "INACTIVE"
+        name: "Không hoạt động"
+        source_value: "0"
+
+  - scheme_code: "NHNCK.VERIFY_APPLICATION_STATUSES.STATUS"
+    name: "Trạng thái bản ghi Securities Practitioner License Application Status Review: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động"
+    source_type: "etl_derived"
+    source_table: "NHNCK.VERIFY_APPLICATION_STATUSES"
+    used_in_entities:
+      - "Securities Practitioner License Application Status Review"
+    values:
+      - code: "ACTIVE"
+        name: "Đang hoạt động/Hiệu lực"
+        source_value: "1"
+      - code: "INACTIVE"
+        name: "Không hoạt động"
+        source_value: "0"
 
   - scheme_code: "BANK"
     name: null
@@ -142,11 +330,13 @@ schemes:
     name: "Loại tài liệu — values from Documents"
     source_type: "source_table"
     source_table: "NHNCK.Documents"
-    used_in_entities:
-      - "App Document Attachment"
+    used_in_entities: []
     values: []
-    deprecated: true
-    deprecated_reason: "NHNCK.DOCUMENTS đã nâng cấp thành Atomic entity thật 'Classification Document' (table_type Classification, 2026-07-09; đổi tên bỏ tiền tố nguồn theo CLAUDE.md #7 rev. 2026-07-14) — không còn dùng scheme này. Entity tiêu thụ (Securities Practitioner License Application Employment Experience) đã đổi sang cặp FK Classification Document Id + Classification Document Code."
+    reactivated_note: "Reactivated 2026-08-20 — NHNCK.DOCUMENTS revert về Classification\
+      \ Value, Classification Document (entity thật, promote 2026-07-09) đã xoá.\
+      \ Chưa có consumer active trong pipeline hiện hành (entity cũ tiêu thụ scheme\
+      \ này trước đây, Securities Practitioner License Application Employment Experience,\
+      \ hiện nằm ở nguồn APPLICATION_EXPERIENCES không còn trong manifest hiện hành)."
 
   - scheme_code: "EDUCATIONAL_LEVEL"
     name: "Trình độ học vấn — values from EducationLevels"
@@ -432,6 +622,7 @@ schemes:
     source_table: "NHNCK.APPLICATIONS.APPLICATION_TYPE"
     used_in_entities:
       - "Securities Practitioner License Application"
+      - "Securities Practitioner License Application Group"
     values:
       - code: "0"
         name: "Cấp mới"
@@ -1400,15 +1591,20 @@ schemes:
     used_in_entities: []
     values: []
 
-  - scheme_code: "SPECIALIZATION"
+  - scheme_code: "NHNCK.SPECIALIZATIONS"
     name: "Chuyên môn — values from Specializations"
     source_type: "source_table"
     source_table: "NHNCK.Specializations"
     used_in_entities:
-      - "App Education Certificate Document"
+      - "Securities Practitioner License Application Education Certificate Document"
+      - "Securities Practitioner License Certificate Type X Classification Specialization Relationship"
+      - "Securities Practitioner Professional Training Class"
+      - "Securities Practitioner Professional Training Class Enrollment"
     values: []
-    deprecated: true
-    deprecated_reason: "NHNCK.SPECIALIZATIONS đã nâng cấp thành Atomic entity thật 'Classification Specialization' (table_type Classification, 2026-07-09; đổi tên bỏ tiền tố nguồn theo CLAUDE.md #7 rev. 2026-07-14) — không còn dùng scheme này. Entity tiêu thụ (Securities Practitioner License Application Education Certificate Document) đã đổi sang cặp FK Classification Specialization Id + Classification Specialization Code."
+    reactivated_note: "Reactivated 2026-08-20 — NHNCK.SPECIALIZATIONS revert về Classification\
+      \ Value, Classification Specialization (entity thật, promote 2026-07-09) đã\
+      \ xoá. 4 entity tiêu thụ đổi từ cặp FK Id+Code sang 1 trường Classification\
+      \ Value \"Specialization Code\"."
 
   - scheme_code: "SYNC_STATUS"
     name: "Trạng thái đồng bộ"
@@ -1442,7 +1638,7 @@ schemes:
     source_type: "source_table"
     source_table: "NHNCK.VIOLATIONS.STATUS"
     used_in_entities:
-      - "Securities Practitioner Conduct Violation"
+      - "Securities Practitioner Violation"
     values:
       - code: "ACTIVE"
         name: "Đang hoạt động/Hiệu lực"
@@ -1460,7 +1656,7 @@ schemes:
     source_type: "source_table"
     source_table: "NHNCK.VIOLATIONS.TYPE"
     used_in_entities:
-      - "Securities Practitioner Conduct Violation"
+      - "Securities Practitioner Violation"
     values:
       - code: "ADMINISTRATIVE"
         name: "Hành chính"
@@ -5762,3 +5958,35 @@ schemes:
       - code: "NOT_SYNCED"
         name: "Chưa chuyển SSO"
         source_value: "0"
+
+  - scheme_code: "ORGANIZATION_ANNUAL_REPORT_TYPE"
+    name: "Loại/phân loại báo cáo năm của tổ chức — cần profile values"
+    source_type: "modeler_defined"
+    source_table: "NHNCK.ORGANIZATION_REPORT_YEARLYS.TYPE"
+    used_in_entities:
+      - "Securities Practitioner Organization Annual Report"
+    values: []
+
+  - scheme_code: "LICENSE_CERTIFICATE_GROUP_TYPE"
+    name: "Loại/phân loại nhóm cấp/thu hồi CCHN — cần profile values"
+    source_type: "modeler_defined"
+    source_table: "NHNCK.CERTIFICATE_RECORD_GROUPS.TYPE"
+    used_in_entities:
+      - "Securities Practitioner License Certificate Group"
+    values: []
+
+  - scheme_code: "DECISION_DOCUMENT_TYPE"
+    name: "Loại/phân loại tài liệu đính kèm quyết định — cần profile values"
+    source_type: "modeler_defined"
+    source_table: "NHNCK.DECISION_DOCUMENTS.TYPE"
+    used_in_entities:
+      - "Securities Practitioner License Decision Document Attachment"
+    values: []
+
+  - scheme_code: "NHNCK_CERT_SPEC_DOCUMENT_TYPE"
+    name: "Loại tài liệu yêu cầu cho chuyên môn trên loại CCHN — chưa có bảng danh mục nguồn, cần profile values"
+    source_type: "modeler_defined"
+    source_table: "NHNCK.CERTIFICATE_SPECIALIZATIONS.DOCUMENT_TYPE"
+    used_in_entities:
+      - "Securities Practitioner License Certificate Type X Classification Specialization Relationship"
+    values: []
