@@ -166,10 +166,6 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_market_index_snpst_flat ON CLUSTER 
     no_change_count                 Nullable(Int64)         COMMENT '[GSTT delta] Số lượng mã không tăng/giảm',
     ceiling_count                   Nullable(Int64)         COMMENT '[GSTT delta] Số lượng mã đang trần',
     floor_count                     Nullable(Int64)         COMMENT '[GSTT delta] Số lượng mã đang sàn',
-    odd_lot_total_vol                Nullable(Int64)         COMMENT '[GSTT delta] Khối lượng khớp lô lẻ',
-    odd_lot_total_val                Nullable(Decimal(23,2)) COMMENT '[GSTT delta] Giá trị khớp lô lẻ',
-    pt_total_vol                    Nullable(Int64)         COMMENT '[GSTT delta] Tổng khối lượng giao dịch thỏa thuận',
-    pt_total_val                    Nullable(Decimal(23,2)) COMMENT '[GSTT delta] Tổng giá trị giao dịch thỏa thuận',
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                          Nullable(Date)          COMMENT 'Ngày cuối tháng (LAST_DAY) — từ Calendar Date Dimension',

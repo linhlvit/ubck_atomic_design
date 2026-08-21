@@ -19,8 +19,11 @@ Checklist chi tiết dùng trong Bước 2 của skill `datamart-review`.
 □ KPI coverage BA → HLD: mọi KPI Done/Doing trong BA có KPI_ID trong bảng KPI HLD?
   → Sót KPI → Warning hoặc Critical tuỳ mức độ
 
-□ KPI Pending: tất cả KPI Pending trong BA có được ghi nhận trong block PENDING?
+□ KPI Pending: tất cả KPI Pending trong BA có dòng trong bảng KPI với
+  cột Trạng thái = PENDING?
   → Thiếu → Warning
+  → LƯU Ý: KHÔNG tìm "block PENDING" riêng — chuẩn hiện hành gộp READY và PENDING
+    vào CÙNG 1 bảng KPI, phân biệt bằng cột Trạng thái (đổi 2026-07-23)
 
 □ Chiều (Slicer/Filter): mọi dòng BA Phân loại = "Chiều" có KPI_ID?
   → Thiếu → Warning
@@ -37,10 +40,11 @@ Checklist chi tiết dùng trong Bước 2 của skill `datamart-review`.
 □ Bảng Fact/Dim đủ để phản ánh tất cả dimension trong BA?
   → Thiếu Dim → Critical nếu ảnh hưởng aggregate, Warning nếu chỉ là filter
 
-□ Block READY reuse toàn bộ từ Nhóm khác (VD nhóm Data Explorer reuse Fact/KPI
-  gốc) vẫn phải có **Bảng KPI** markdown đầy đủ 6 cột (KPI ID | Tên KPI | Đơn vị |
-  Tính chất | Atomic Entity/Table/Attribute/Column | Ghi chú "Reuse từ Nhóm X"),
-  không được thay bằng 1 dòng văn xuôi liệt kê ID.
+□ Nhóm reuse toàn bộ Fact/KPI từ Nhóm khác (VD nhóm Data Explorer) vẫn phải có
+  **Bảng KPI** markdown đầy đủ 7 cột:
+    KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái
+  (cột Ghi chú ghi "Reuse từ Nhóm X"), không được thay bằng 1 dòng văn xuôi
+  liệt kê ID.
   → Chỉ Star Schema / Lineage / Bảng grain được phép rút gọn thành "giống Nhóm X"
     khi Fact/Dim thực sự dùng chung 100% với Nhóm gốc — Bảng KPI thì KHÔNG được
     rút gọn vì đây là căn cứ duy nhất để trace KPI Done trong BA → KPI_ID trong HLD.

@@ -34,6 +34,7 @@ erDiagram
     Calendar_Date_Dimension ||--o{ Fact_Violation_Report_Snapshot : " "
     Public_Company_Dimension ||--o{ Fact_Public_Company_Financial_Report_Value : " "
     Financial_Report_Catalog_Dimension ||--o{ Fact_Public_Company_Financial_Report_Value : " "
+    Industry_Dimension ||--o{ Fact_Public_Company_Financial_Report_Value : " "
 ```
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
@@ -43,6 +44,7 @@ erDiagram
 | Financial Report Catalog Dimension | Dimension | new | Template BCTC — báo cáo/dòng/cột | 1 row/báo cáo × dòng × cột | — |
 | Public Company Dimension | Dimension | reuse | Mã CK, Tên DN, Sàn, Ngành | 1 row/công ty đại chúng (current state) | — |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày — Conformed toàn hệ thống | 1 row/ngày | — |
+| Industry Dimension | Dimension | new | Mã ngành cấp 1 + tên ngành, chỉ ngành active — driving table breakdown ngành Nhóm 8/11/13/15/17 (khai sinh GSDC 2026-08-17, chuyển từ PTTT — PTTT reuse) | 1 row/ngành cấp 1 đang active (SCD4A) | K_GSDC_63 (Nhóm 8), K_GSDC_79 (Nhóm 11, reuse ở 13/15/17) — Chiều Ngành |
 
 ---
 

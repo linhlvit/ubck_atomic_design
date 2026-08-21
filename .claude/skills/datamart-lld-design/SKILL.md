@@ -37,7 +37,7 @@ description: |
 - [ ] `Datamart/hld/DTM_{MODULE}_Entities.csv` tồn tại và đã được user duyệt (có cột `reuse_status`)
 - [ ] `DataModel/Atomic/dm_manifest.yaml` tồn tại — **entry point tra cứu Atomic entities, Nguồn 1 (ưu tiên cao nhất)**
 - [ ] `DataModel/working/Atomic/lld/manifest.yaml` tồn tại — **entry point tra cứu Atomic entities draft, Nguồn 2 (chỉ tra khi Nguồn 1 không có entry)**
-- [ ] `DataModel/datamart_model.yaml` tồn tại — registry schema cross-module (có thể rỗng nếu module đầu tiên)
+- [ ] `Datamart/datamart_model.yaml` tồn tại — registry schema cross-module (có thể rỗng nếu module đầu tiên)
 - [ ] `Datamart/lld/datamart_attributes.csv` tồn tại (có thể rỗng nếu module đầu tiên)
 - [ ] `BRD/BA/BA_analyst_{MODULE}.csv` tồn tại (cần cho Phase 2)
 - [ ] `DataModel/working/Atomic/lld/classification_schemes.yaml` tồn tại (cần khi map từ danh mục CV)
@@ -85,7 +85,7 @@ Loop mỗi nhóm N — Phase 1 (HOÀN THÀNH TOÀN BỘ NHÓM TRƯỚC KHI CHUY�
                → đủ cột → bỏ qua (reuse) | thiếu cột → báo delta, DỪNG chờ approve delta
              → bảng new/partial: đọc datamart_model.yaml lấy baseline (nếu partial)
              → xác định driving table + src_stm_code → sinh từng file
-             → SELF-REVIEW 8 TC (TC6/TC7 quét lại TOÀN BỘ master + các nguồn khác, không chỉ file vừa sinh) → sửa nếu FAIL → trình bày SELF-REVIEW + file
+             → SELF-REVIEW 10 TC (TC6/TC7/TC8 quét lại TOÀN BỘ master + các nguồn khác, không chỉ file vừa sinh) → sửa nếu FAIL → trình bày SELF-REVIEW + file
              → DỪNG chờ human duyệt từng file
              → hỏi merge master → DỪNG chờ human xác nhận merge
              → ghi datamart_model.yaml (upsert new / append delta)
@@ -247,13 +247,13 @@ Tổng: [N] nhóm | [M] bảng new | [P] bảng partial | [Q] bảng reuse
 **Bước 0 — Đọc reuse_status từ Entities.csv:**
 - `reuse` → bỏ qua hoàn toàn, không sinh file, ghi note: "Bảng [datamart_table] reuse từ master — không thiết kế mới"
 - `new` → thiết kế đầy đủ, sinh file
-- `partial` → đọc `DataModel/datamart_model.yaml` (entry có `id = DTM-{datamart_table}`), lấy `columns` hiện có làm baseline + xác định `module` sở hữu gốc → so sánh delta → **báo cáo human, DỪNG chờ approve** trước khi sinh file
+- `partial` → đọc `Datamart/datamart_model.yaml` (entry có `id = DTM-{datamart_table}`), lấy `columns` hiện có làm baseline + xác định `module` sở hữu gốc → so sánh delta → **báo cáo human, DỪNG chờ approve** trước khi sinh file
   > ❌ **KHÔNG được sinh file partial** khi chưa có xác nhận của human về delta.
   > ❌ **KHÔNG tạo file `_delta.csv` hay bất kỳ file Attributes nào trong thư mục module đang thiết kế** (`Datamart/lld/{MODULE}/`) khi bảng thuộc sở hữu module khác — cột mới phải sửa TRỰC TIẾP vào file gốc `Datamart/lld/{MODULE_SỞ_HỮU}/DTM_{MODULE_SỞ_HỮU}_{datamart_table}_....csv`. Xem chi tiết [`reference/phase1_attributes.md`](reference/phase1_attributes.md) mục "Quy trình partial".
 
 **Bước 0b — Trình bày danh sách file sẽ sinh cho nhóm N (GATE — chờ human xác nhận trước khi sinh):**
 
-Trước khi trình bày: với bảng `partial` → đọc `DataModel/datamart_model.yaml` lấy `datamart_table` physical name đã ghi (không đặt lại tên). Sau khi xác định driving table và `src_stm_code` cho từng bảng `new`/`partial` của nhóm N, trình bày bảng tóm tắt:
+Trước khi trình bày: với bảng `partial` → đọc `Datamart/datamart_model.yaml` lấy `datamart_table` physical name đã ghi (không đặt lại tên). Sau khi xác định driving table và `src_stm_code` cho từng bảng `new`/`partial` của nhóm N, trình bày bảng tóm tắt:
 
 ```
 Nhóm [N] — [Tên nhóm]: danh sách file sẽ sinh
@@ -359,7 +359,7 @@ atomic_table=<driving_table> | source_attribute=Source System Code | atomic_colu
 ### Bước 2 — Tra entity YAML files
 
 Với mỗi attribute cần map:
-1. **Bảng `partial`:** đọc `DataModel/datamart_model.yaml` → lấy `columns` hiện có làm baseline — chỉ tra entity YAML Atomic cho delta columns mới
+1. **Bảng `partial`:** đọc `Datamart/datamart_model.yaml` → lấy `columns` hiện có làm baseline — chỉ tra entity YAML Atomic cho delta columns mới
 2. **Bảng `new` và delta columns:** Tra `dm_manifest.yaml` → tìm entry theo `physical_name` → đọc file YAML tương ứng trong `DataModel/Atomic/{subfolder}/`
 3. Lấy `attribute.physical_name` xác nhận tên `atomic_column`
 4. Xác định `etl_logic_type` theo rule trong [`reference/phase1_attributes.md`](reference/phase1_attributes.md)
@@ -387,31 +387,15 @@ Mọi giá trị trong `etl_logic` và `description` phải được bao double-
 
 > **Chỉ những từ có trong `rule_physical_name_exceptions_datamart.csv` mới được viết tắt. Mọi từ khác phải dùng full word.**
 
-Exceptions hiện tại (cố định, không được tự bổ sung):
+> ⛔ **KHÔNG chép bảng exceptions vào file này hay bất kỳ skill/tài liệu nào khác.** Danh sách chỉ tồn tại ở đúng 1 nơi là CSV trên. Mọi bản sao nhúng đều sẽ lệch khỏi CSV theo thời gian — đây là lỗi đã xảy ra thật: bản sao cũ trong skill thiếu entry `Calendar → cdr`, kèm ví dụ mẫu dạy `Calendar Date → calendar_dt`, dẫn tới master hiện có 2 tên song song cho cùng 1 logical (`calendar_dt_dim_id` 9 dòng vs `cdr_dt_dim_id` 3 dòng).
 
-| Full word | Abbreviation |
-|---|---|
-| address | adr |
-| amount | amt |
-| classification | cl |
-| date | dt |
-| dimension | dim |
-| fact | fct |
-| history | hist |
-| id | id |
-| name | nm |
-| number | nbr |
-| operational | opr |
-| relationship | rltnp |
-| report | rpt |
-| scheme | scm |
-| snapshot | snpst |
-| source | src |
-| system | stm |
-| timestamp | tms |
-| type | tp |
-| value | val |
-| volume | vol |
+**Bắt buộc đọc CSV trước mỗi lần đặt tên** (không nhớ theo trí nhớ, không đọc lại từ ví dụ bên dưới):
+
+```bash
+cat system/rules/rule_physical_name_exceptions_datamart.csv
+```
+
+Nội dung CSV là **cố định, không được tự bổ sung** — thêm exception mới phải qua human duyệt và sửa trực tiếp CSV, không sửa trong skill.
 
 ### Cách áp dụng
 
@@ -433,9 +417,10 @@ Issue Decision Number          →  issue_decision_nbr              (number → 
 Organization Name              →  organization_nm                 (name → nm; organization → full)
 Source System Code             →  src_stm_code                    (source → src; system → stm; code → full)
 Snapshot Date                  →  snpst_dt                        (snapshot → snpst; date → dt)
-Calendar Date                  →  calendar_dt                     (date → dt; calendar → full)
+Calendar Date                  →  cdr_dt                          (calendar → cdr; date → dt — CẢ HAI đều có trong CSV)
+Calendar Date Dimension Id     →  cdr_dt_dim_id                   (calendar → cdr; date → dt; dimension → dim; id → id)
 Practitioner Dimension ID      →  practitioner_dim_id             (dimension → dim; id → id; practitioner → full)
-Fact Practitioner Daily Snpst  →  fct_practitioner_dly_snpst      (fact → fct; snapshot → snpst; practitioner → full)
+Fact Practitioner Daily Snapshot → fct_practitioner_daily_snpst   (fact → fct; snapshot → snpst; practitioner, daily → full — "daily" KHÔNG có trong CSV)
 Operational History            →  opr_hist                        (operational → opr; history → hist)
 Classification Code            →  cl_code                         (classification → cl; code → full)
 Scheme Code                    →  scm_code                        (scheme → scm; code → full)
@@ -450,7 +435,11 @@ prac_code       ❌  (prac không phải exception)         →   practitioner_c
 trn_rslt_nm     ❌  (trn, rslt không phải exception)    →   training_result_nm   ✅
 org_tp_nm       ❌  (org không phải exception)          →   organization_tp_nm   ✅
 examination_score  ❌  (logical là "Exam Score" — "exam" bị mở rộng thành "examination")  →   exam_score  ✅
+calendar_dt_dim_id ❌  ("calendar" CÓ trong CSV → phải rút gọn thành cdr)  →   cdr_dt_dim_id  ✅
+dly / smy / list   ❌  (viết tắt của daily/summary/listed — không có trong CSV)  →   daily / summary / listed  ✅
 ```
+
+> **Bài học từ 3 ví dụ SAI cuối:** cả 3 đều sinh ra vì đặt tên theo trí nhớ hoặc theo ví dụ trong tài liệu thay vì mở CSV. Luôn `cat` CSV trước khi đặt tên — bản thân danh sách ví dụ này cũng chỉ là minh hoạ, KHÔNG phải nguồn sự thật.
 
 > **Lỗi tái diễn — 2 biến thể viết tắt song song cho CÙNG một tên bảng/entity (phát hiện ở GSDC 2026-07-16):**
 > Khi module có nhiều bảng Fact/Dim cùng gắn với 1 khái niệm nghiệp vụ (VD: "Public Company"), rất dễ đặt tên bảng đầu tiên theo 1 kiểu viết tắt tự nghĩ ra (`pblc_co_dim`) rồi bảng sau lại đặt theo kiểu khác (`fct_pc_risk_score_snpst`) — cả 2 đều KHÔNG có trong exceptions và KHÔNG nhất quán với nhau.
@@ -471,13 +460,13 @@ Nếu phát hiện `datamart_column` hoặc `datamart_table` dùng từ viết t
 2. Đây là **Kịch bản C — Lỗi thiết kế** → sửa trực tiếp file Attributes detail + `datamart_attributes.csv` + `Detail_Mapping.csv` (cột `logic`) + `HLD.md` (tên bảng trong text/mermaid) + `datamart_model.yaml` (chỉ field `id`/`datamart_table`/`physical_name` — KHÔNG dùng `yaml.dump` để ghi lại toàn file vì sẽ phá format/comment gốc, chỉ sửa bằng text-replace theo dòng cụ thể) + tên file Attributes detail (nếu tên file chứa physical_name cũ) + 2 file SQL Phase 3 (nếu đã sinh)
 3. Dùng `grep -rn "tên_cũ" Datamart/` để tìm tất cả vị trí trước khi sửa
 4. **Tuyệt đối không sửa cột `source_entity`/`atomic_table`/`source_attribute`/`atomic_column`** trong Attributes, hay `source_atomic_table`/`source_atomic_column` trong `datamart_model.yaml` — đây là tên Atomic gốc (read-only), kể cả khi trùng chuỗi ký tự với tên Datamart bị đổi (VD: đổi `pc_code` Datamart-side nhưng KHÔNG đổi `pc_code` xuất hiện trong `source_atomic_column: "public_company.pc_code"`)
-5. Sau khi sửa: chạy lại SELF-REVIEW đầy đủ (Phase 1 5 TC + Phase 2 TC5/TC6 module-level) để xác nhận số dòng/cấu trúc không đổi trước và sau khi đổi tên
+5. Sau khi sửa: chạy lại SELF-REVIEW đầy đủ (Phase 1 — đủ 10 TC + Phase 2 TC5/TC6 module-level) để xác nhận số dòng/cấu trúc không đổi trước và sau khi đổi tên
 
 ---
 
 ### Bước 4 — SELF-REVIEW trước khi trình bày kết quả
 
-**Bắt buộc thực hiện sau khi sinh xong mỗi file, trước khi trình bày cho human duyệt.** Chạy 8 testcase sau (TC1, TC2, TC2b, TC3 gồm cả sub-check TC3b, TC4, TC5, TC6, TC7) và báo kết quả:
+**Bắt buộc thực hiện sau khi sinh xong mỗi file, trước khi trình bày cho human duyệt.** Chạy **đủ 10 testcase**: TC1, TC2, TC2b, TC3 (gồm sub-check TC3b), TC4 (gồm sub-check A/B/C/D), TC5, TC6, TC7, TC8, TC9 — báo kết quả đủ 10 dòng PASS/FAIL, không gộp, không bỏ mục:
 
 **TC1 — Số cột khớp HLD:**
 - Đếm số attribute trong file CSV vừa sinh (theo `datamart_attribute` unique, không đếm multi-source row).
@@ -828,7 +817,7 @@ OUTPUT CHECK:
 □ Xuất từng file → DỪNG chờ human duyệt từng file riêng lẻ trước khi xuất file tiếp theo
 □ Sau khi human approve từng file: hỏi merge → DỪNG chờ human xác nhận merge từng file
 □ Khi merge: check trùng (datamart_table, datamart_column) — chỉ append dòng mới
-□ Sau khi human xác nhận merge: ghi DataModel/datamart_model.yaml
+□ Sau khi human xác nhận merge: ghi Datamart/datamart_model.yaml
     - Entity new: thêm entry đầy đủ (id, logical_name, datamart_table, table_type, module, status=draft,
       reuse_status=new, description, source_atomic, modules_using, columns đầy đủ)
     - Entity partial: append delta columns vào `columns` list của entry đã có
@@ -950,7 +939,7 @@ TC3 — Logic dùng tên physical (snake_case), đủ prefix table_name.column_n
 
 TC4 — Trường/bảng trong Detail Mapping tồn tại trong datamart_model.yaml:
 □ Lấy toàn bộ (mart_table, mart_column) unique từ Detail Mapping (bỏ qua row DERIVED có mart_table/mart_column trống)
-□ Kiểm tra mỗi cặp: tra DataModel/datamart_model.yaml → tìm entity có datamart_table khớp → kiểm tra columns list có physical_name = mart_column không
+□ Kiểm tra mỗi cặp: tra Datamart/datamart_model.yaml → tìm entity có datamart_table khớp → kiểm tra columns list có physical_name = mart_column không
 □ Báo: ✅ TC4 PASS hoặc ❌ TC4 FAIL: [danh sách (mart_table, mart_column) chưa có trong datamart_model.yaml]
 □ Nếu FAIL → kiểm tra xem model thiếu cột (Phase 1 chưa ghi đủ) hay Detail Mapping dùng sai tên → sửa tương ứng
 
@@ -1003,7 +992,7 @@ TC6 — Thứ tự nhóm trong file tăng dần theo số nhóm:
 
 **Input Phase 3:**
 - `Datamart/hld/DTM_{MODULE}_Entities.csv` — danh sách entity + FKs + reuse_status
-- `DataModel/datamart_model.yaml` — data_type, nullable, key, physical_name của từng cột (nguồn sự thật, kể cả bảng reuse)
+- `Datamart/datamart_model.yaml` — data_type, nullable, key, physical_name của từng cột (nguồn sự thật, kể cả bảng reuse)
 - Các file `Datamart/lld/{MODULE}/DTM_{MODULE}_*.csv` — chỉ đọc khi cần ETL logic; không cần đọc để lấy schema
 
 **Output:**
@@ -1018,7 +1007,7 @@ Datamart/flat-table/{MODULE}/02_populate_{module}_flat_tables.sql
 PRE-CHECK (trước khi sinh):
 □ Đọc Entities.csv — đếm số fact + operational → báo cáo cho user → DỪNG chờ human xác nhận trước khi sinh
 □ ❌ KHÔNG bắt đầu sinh SQL khi chưa có xác nhận số bảng flat
-□ Đọc DataModel/datamart_model.yaml — lấy columns (physical_name, data_type, nullable, key) cho từng entity fact/operational/dim liên quan
+□ Đọc Datamart/datamart_model.yaml — lấy columns (physical_name, data_type, nullable, key) cho từng entity fact/operational/dim liên quan
 □ Xác nhận tên thư mục output: Datamart/flat-table/{MODULE}/
 □ Xác nhận tên file: 01_create_{module}_flat_tables.sql, 02_populate_{module}_flat_tables.sql
 

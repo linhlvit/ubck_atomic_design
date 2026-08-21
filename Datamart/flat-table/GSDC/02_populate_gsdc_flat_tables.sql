@@ -307,7 +307,6 @@ SELECT
     f.rpt_quarter,
     f.rpt_due_count,
     f.rpt_submitted_count,
-    f.profitable_indicator,
     snpst_cal.cdr_dt            AS snpst_cdr_dt,
     dim.public_company_code,
     dim.equity_ticker_symbol,
@@ -353,6 +352,7 @@ SELECT
     f.public_company_dim_id,
     f.financial_rpt_catalog_dim_id,
     f.snpst_dt_dim_id,
+    f.industry_dim_id,
     f.rpt_year,
     f.rpt_quarter,
     f.row_code,
@@ -363,10 +363,8 @@ SELECT
     dim.equity_ticker_symbol,
     dim.public_company_nm,
     dim.equity_listing_exchange_code,
-    dim.business_line_level_1_code,
     dim.ids_registration_dt,
     dim.public_company_status_code,
-    dim.classification_business_line_nm,
     dim.public_company_english_nm,
     dim.enterprise_tp_code,
     dim.enterprise_tp_nm,
@@ -386,6 +384,8 @@ SELECT
     dim.has_subsidiary_indicator,
     dim.has_joint_venture_indicator,
     dim.ipo_company_indicator,
+    dim.business_line_level_1_code,
+    dim.classification_business_line_nm,
     catalog_dim.financial_rpt_catalog_code,
     catalog_dim.financial_rpt_catalog_nm,
     catalog_dim.financial_rpt_catalog_tp_code,
@@ -403,7 +403,8 @@ WHERE snpst_cal.cdr_dt = :etl_date
 ;
 
 -- ---------------------------------------------------------------------
--- 8. Public Company Regulatory Compliance Report (Fact-report, không JOIN, không WHERE lọc ngày)
+-- 8. Public Company Regulatory Compliance Report (Fact-report, Nhóm 38 — 1-1 từ bảng rpt
+--    đã trải phẳng sẵn theo logic báo cáo từ Fact/Dim)
 -- ---------------------------------------------------------------------
 TRUNCATE TABLE IF EXISTS datamart.gsdc_public_company_regulatory_compliance_rpt_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.gsdc_public_company_regulatory_compliance_rpt_flat
@@ -416,12 +417,15 @@ SELECT
     o.rpt_submitted_count,
     o.profitable_company_count_year_n,
     o.profitable_company_count_year_n1,
-    o.src_stm_code
+    o.src_stm_code,
+    o.rpt_dt
 FROM datamart.public_company_regulatory_compliance_rpt o
+WHERE o.rpt_dt = formatDateTime(:etl_date, '%Y%m%d')
 ;
 
 -- ---------------------------------------------------------------------
--- 9. Public Company Industry Financial Report (Fact-report, không JOIN, không WHERE lọc ngày)
+-- 9. Public Company Industry Financial Report (Fact-report, Nhóm 39 — 1-1 từ bảng rpt
+--    đã trải phẳng sẵn theo logic báo cáo từ Fact/Dim)
 -- ---------------------------------------------------------------------
 TRUNCATE TABLE IF EXISTS datamart.gsdc_public_company_industry_financial_rpt_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.gsdc_public_company_industry_financial_rpt_flat
@@ -437,12 +441,15 @@ SELECT
     o.net_profit_amt_year_n1,
     o.roa_percentage_year_n1,
     o.roe_percentage_year_n1,
-    o.src_stm_code
+    o.src_stm_code,
+    o.rpt_dt
 FROM datamart.public_company_industry_financial_rpt o
+WHERE o.rpt_dt = formatDateTime(:etl_date, '%Y%m%d')
 ;
 
 -- ---------------------------------------------------------------------
--- 10. Public Company Multi-Period Financial Report (Fact-report, không JOIN, không WHERE lọc ngày)
+-- 10. Public Company Multi-Period Financial Report (Fact-report, Nhóm 40 — 1-1 từ bảng rpt
+--     đã trải phẳng sẵn theo logic báo cáo từ Fact/Dim)
 -- ---------------------------------------------------------------------
 TRUNCATE TABLE IF EXISTS datamart.gsdc_public_company_multi_period_financial_rpt_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.gsdc_public_company_multi_period_financial_rpt_flat
@@ -469,12 +476,44 @@ SELECT
     o.net_profit_amt_year_n2,
     o.roa_percentage_year_n2,
     o.roe_percentage_year_n2,
-    o.src_stm_code
+    o.src_stm_code,
+    o.rpt_dt
 FROM datamart.public_company_multi_period_financial_rpt o
+WHERE o.rpt_dt = formatDateTime(:etl_date, '%Y%m%d')
 ;
 
 -- ---------------------------------------------------------------------
--- 11. Public Company Exchange Financial Summary Report (Fact-report, không JOIN, không WHERE lọc ngày)
+-- 11. Public Company Financial YoY Report (Fact-report, Nhóm 7/11/13/15/17/41 — 1-1 từ bảng rpt
+--     đã trải phẳng sẵn theo logic báo cáo từ Fact/Dim)
+-- ---------------------------------------------------------------------
+TRUNCATE TABLE IF EXISTS datamart.gsdc_public_company_financial_yoy_rpt_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.gsdc_public_company_financial_yoy_rpt_flat
+SELECT
+    o.equity_listing_exchange_code,
+    o.rpt_year,
+    o.rpt_quarter,
+    o.total_asset_yoy,
+    o.total_liability_yoy,
+    o.equity_yoy,
+    o.contributed_capital_yoy,
+    o.net_profit_yoy,
+    o.inventory_yoy,
+    o.net_revenue_yoy,
+    o.undistributed_profit_yoy,
+    o.receivable_yoy,
+    o.cash_and_equivalent_yoy,
+    o.roa_yoy,
+    o.roe_yoy,
+    o.debt_to_equity_yoy,
+    o.src_stm_code,
+    o.rpt_dt
+FROM datamart.public_company_financial_yoy_rpt o
+WHERE o.rpt_dt = formatDateTime(:etl_date, '%Y%m%d')
+;
+
+-- ---------------------------------------------------------------------
+-- 12. Public Company Exchange Financial Summary Report (Fact-report, Nhóm 41 — 1-1 từ bảng rpt
+--     đã trải phẳng sẵn theo logic báo cáo từ Fact/Dim + Public Company Financial YoY Report)
 -- ---------------------------------------------------------------------
 TRUNCATE TABLE IF EXISTS datamart.gsdc_public_company_exchange_financial_summary_rpt_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.gsdc_public_company_exchange_financial_summary_rpt_flat
@@ -483,27 +522,92 @@ SELECT
     o.rpt_year,
     o.rpt_quarter,
     o.total_asset_amt,
-    o.total_asset_yoy_percentage,
+    o.total_asset_yoy,
     o.inventory_amt,
-    o.inventory_yoy_percentage,
+    o.inventory_yoy,
     o.total_liability_amt,
-    o.total_liability_yoy_percentage,
+    o.total_liability_yoy,
     o.equity_amt,
-    o.equity_yoy_percentage,
+    o.equity_yoy,
     o.contributed_capital_amt,
-    o.contributed_capital_yoy_percentage,
+    o.contributed_capital_yoy,
     o.undistributed_profit_amt,
-    o.undistributed_profit_yoy_percentage,
+    o.undistributed_profit_yoy,
     o.net_revenue_amt,
-    o.net_revenue_yoy_percentage,
+    o.net_revenue_yoy,
     o.pre_tax_profit_amt,
-    o.pre_tax_profit_yoy_percentage,
+    o.pre_tax_profit_yoy,
     o.net_profit_amt,
-    o.net_profit_yoy_percentage,
+    o.net_profit_yoy,
     o.roa_percentage,
-    o.roa_yoy_difference,
+    o.roa_yoy_percentage,
     o.roe_percentage,
-    o.roe_yoy_difference,
-    o.src_stm_code
+    o.roe_yoy_percentage,
+    o.src_stm_code,
+    o.rpt_dt
 FROM datamart.public_company_exchange_financial_summary_rpt o
+WHERE o.rpt_dt = formatDateTime(:etl_date, '%Y%m%d')
+;
+
+-- ---------------------------------------------------------------------
+-- 13. Fact Public Company Financial Summary Snapshot (Nhóm 7 Khối A/8/11/13/15/17/37)
+-- ---------------------------------------------------------------------
+TRUNCATE TABLE IF EXISTS datamart.gsdc_fct_public_company_financial_smy_snpst_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.gsdc_fct_public_company_financial_smy_snpst_flat
+SELECT
+    f.public_company_dim_id,
+    f.snpst_dt_dim_id,
+    f.industry_dim_id,
+    f.rpt_year,
+    f.rpt_quarter,
+    f.total_asset,
+    f.total_liability,
+    f.equity,
+    f.contributed_capital,
+    f.net_profit,
+    f.pre_tax_profit,
+    f.total_asset_beginning,
+    f.equity_beginning,
+    f.inventory,
+    f.net_revenue,
+    f.undistributed_profit,
+    f.receivable,
+    f.cash_and_equivalent,
+    f.roa,
+    f.roe,
+    f.debt_to_equity,
+    snpst_cal.cdr_dt            AS snpst_cdr_dt,
+    dim.public_company_code,
+    dim.equity_ticker_symbol,
+    dim.public_company_nm,
+    dim.equity_listing_exchange_code,
+    dim.ids_registration_dt,
+    dim.public_company_status_code,
+    dim.public_company_english_nm,
+    dim.enterprise_tp_code,
+    dim.enterprise_tp_nm,
+    dim.public_company_tp_code,
+    dim.head_office_province_nm,
+    dim.operating_status_code,
+    dim.has_state_ownership_indicator,
+    dim.charter_capital_amt,
+    dim.first_registration_dt,
+    dim.latest_registration_dt,
+    dim.latest_registration_province_nm,
+    dim.ids_registration_indicator,
+    dim.public_company_form_code,
+    dim.former_state_owned_indicator,
+    dim.foreign_direct_investment_indicator,
+    dim.has_parent_company_indicator,
+    dim.has_subsidiary_indicator,
+    dim.has_joint_venture_indicator,
+    dim.ipo_company_indicator,
+    dim.business_line_level_1_code,
+    dim.classification_business_line_nm
+FROM datamart.fct_public_company_financial_smy_snpst f
+JOIN datamart.cdr_dt_dim snpst_cal
+    ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+LEFT JOIN datamart.public_company_dim dim
+    ON dim.public_company_dim_id = f.public_company_dim_id
+WHERE snpst_cal.cdr_dt = :etl_date
 ;

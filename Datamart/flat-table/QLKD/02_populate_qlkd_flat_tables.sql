@@ -175,7 +175,7 @@ WHERE toYYYYMM(cal.cdr_dt) = toYYYYMM(:etl_date)
 --    :etl_month (không TRUNCATE) rồi INSERT, giữ nguyên lịch sử các tháng khác.
 -- ============================================================
 DELETE FROM datamart.qlkd_fct_market_index_snpst_flat ON CLUSTER 'my_cluster'
-WHERE cdr_dt = LAST_DAY(:etl_month);
+WHERE cdr_dt = TO_DATE(:etl_date,'yyyy-MM-dd');
 INSERT INTO datamart.qlkd_fct_market_index_snpst_flat
 SELECT
     -- From: FACT Market Index Snapshot
@@ -193,10 +193,6 @@ SELECT
     f.no_change_count,
     f.ceiling_count,
     f.floor_count,
-    f.odd_lot_total_vol,
-    f.odd_lot_total_val,
-    f.pt_total_vol,
-    f.pt_total_val,
 
     -- From: CALENDAR DATE DIMENSION
     cal.cdr_dt                      AS cdr_dt,
@@ -214,7 +210,7 @@ JOIN datamart.cdr_dt_dim cal
     ON cal.cdr_dt_dim_id = f.snpst_dt_dim_id
 LEFT JOIN datamart.market_index_dim idx_dim
     ON idx_dim.market_index_dim_id = f.market_index_dim_id
-WHERE cal.cdr_dt = LAST_DAY(:etl_month)
+WHERE cal.cdr_dt = TO_DATE(:etl_date,'yyyy-MM-dd')
 ;
 
 

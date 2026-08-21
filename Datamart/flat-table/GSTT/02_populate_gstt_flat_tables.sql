@@ -66,6 +66,7 @@ SELECT
     sec_dim.security_full_nm                       AS security_full_nm,
     sec_dim.floor_code                             AS floor_code,
     sec_dim.stock_tp_code                          AS stock_tp_code,
+    sec_dim.stock_tp_nm                            AS stock_tp_nm,
     sec_dim.underlying_symbol                      AS underlying_symbol,
     sec_dim.isin_code                              AS isin_code,
     sec_dim.issuer_nm                              AS issuer_nm,

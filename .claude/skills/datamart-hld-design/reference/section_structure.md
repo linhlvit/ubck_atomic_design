@@ -2,16 +2,7 @@
 
 ## Section cố định (bắt buộc, đúng thứ tự)
 
-Mặc định 4 Section:
-
-```
-#### Section 1 — Data Lineage
-#### Section 2 — Tổng quan báo cáo
-#### Section 3 — Mô hình tổng thể
-#### Section 4 — Vấn đề mở
-```
-
-**Biến thể 5 Section** — dùng khi module có nhiều KPI reuse xuyên suốt nhiều Nhóm/Fact (reuse ở cấp KPI/cột, gate rule theo "Loại dữ liệu", gap Atomic dùng chung nhiều Nhóm) đủ phức tạp để cần một Section tổng hợp riêng thay vì rải rác trong từng Nhóm ở Section 2:
+**Chuẩn duy nhất — 5 Section, không có biến thể:**
 
 ```
 #### Section 1 — Data Lineage
@@ -21,7 +12,15 @@ Mặc định 4 Section:
 #### Section 5 — Vấn đề mở
 ```
 
-Ví dụ áp dụng: `DTM_NHNCK_HLD.md` (file chuẩn tham chiếu), `DTM_GSDC_HLD.md`, `DTM_QLKD_HLD.md`. Khi dùng biến thể 5-section, "Vấn đề mở" luôn là Section cuối cùng (Section 5), không phải Section 4.
+> **Chốt 5 Section (quyết định 2026-08-21) — thay thế hoàn toàn cấu trúc "mặc định 4 Section + biến thể 5 Section" trước đây.**
+>
+> Lý do: Bước 3 của `datamart-hld-design` đã bắt buộc **mọi** module chạy phân tích reuse 4 lớp và ghi kết quả (đã được human xác nhận tại GATE) vào Section 4 — nên Section 4 Reuse Analysis không bao giờ là tuỳ chọn. Giữ "4 Section" làm mặc định khiến chuẩn tự mâu thuẫn với chính quy trình của mình, và khiến `datamart-review` (vốn coi 5 Section là chuẩn) báo Critical giả/thật lẫn lộn.
+>
+> Thực tế 10/11 HLD hiện có đã dùng 5 Section. File chuẩn tham chiếu: `DTM_NHNCK_HLD.md`.
+>
+> - "Vấn đề mở" **luôn** là Section cuối cùng (Section 5). HLD nào đang để "Vấn đề mở" ở vị trí Section 4 → thiếu Section 4 Reuse Analysis, phải bổ sung và đẩy "Vấn đề mở" xuống Section 5.
+> - Module chưa có bảng nào cần reuse (module đầu tiên, `datamart_model.yaml` rỗng) **vẫn phải có Section 4** — liệt kê đủ mọi bảng với `reuse_status = new`, không được bỏ Section.
+> - Ngoại lệ đang tồn đọng: `DTM_VP_HLD.md` còn 4 Section, thiếu Section 4 — cần bổ sung khi chạm tới module VP.
 
 ---
 
@@ -219,7 +218,25 @@ Cùng quy tắc cột KPI/Trạng thái như 3.2. Áp dụng khi module có nhi�
 
 ---
 
-## Section 4 — Vấn đề mở
+## Section 4 — Reuse Analysis
+
+Kết quả phân tích reuse 4 lớp ở Bước 3 (`datamart-hld-design`), **sau khi đã được human xác nhận tại GATE**. Bắt buộc có ở mọi module.
+
+| Datamart Entity | datamart_table | reuse_status | Ghi chú |
+|---|---|---|---|
+| Calendar Date Dimension | cdr_dt_dim | reuse | Conformed Dim toàn hệ thống |
+| Branch Dimension | branch_dim | partial | Đã có nguồn FLEX; module này thêm nguồn NHNCK |
+| Fact ATM Transaction | fct_atm_transaction | new | Chưa có trong `datamart_model.yaml` |
+
+- Mỗi bảng Fact/Dim/Operational xuất hiện ở Section 3 phải có **đúng 1 dòng** ở đây.
+- `reuse_status ∈ {reuse, partial, new}` — không tự gán, lấy đúng giá trị human đã xác nhận.
+- Đây là **nguồn sự thật cho Phase 2** — cột `reuse_status` trong `Entities.csv` đọc trực tiếp từ Section này.
+
+---
+
+## Section 5 — Vấn đề mở
+
+Luôn là Section cuối cùng.
 
 | ID | Vấn đề | Giả định hiện tại | KPI liên quan | Trạng thái |
 |---|---|---|---|---|
