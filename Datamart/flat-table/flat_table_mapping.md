@@ -421,6 +421,11 @@ _Không có dim join (operational / self-contained table)._
 | Security Trading Snapshot Dimension | `datamart.gstt_security_trading_snapshot_dimension` | `security_trading_snapshot_dimension_id` | `security_trading_snapshot_dimension_id` | ✗ |
 | Public Company Dimension | `datamart.gstt_public_company_dimension` | `security_trading_snapshot_dimension_id` | `public_company_dimension_id` | ✗ |
 
+**Quy tắc phân loại chứng khoán theo sàn (`stock_tp_nm`):**
+- **HNX** (`floor_code = '02'`): `stock_tp_code` 1 = Trái phiếu, 2 = Cổ phiếu, 3 = CCQ, 5,6 = Chứng quyền
+- **HOSE** (`floor_code = '10'`): `stock_tp_code` 1 = Trái phiếu, 2 = Cổ phiếu, 3 = CCQ, 4 = Chứng quyền
+- **Khác**: `Không xác định`
+
 **Nhóm KPI**
 
 | Nhóm | Số KPI unique |

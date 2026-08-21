@@ -63,6 +63,7 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_fct_stock_portfolio_snpst_flat ON CLUST
     security_full_nm                    Nullable(String)        COMMENT 'Tên chứng khoán — từ Security Trading Snapshot Dimension',
     floor_code                          Nullable(String)        COMMENT 'Mã sàn — từ Security Trading Snapshot Dimension',
     stock_tp_code                       Nullable(String)        COMMENT 'Loại chứng khoán — từ Security Trading Snapshot Dimension',
+    stock_tp_nm                         Nullable(String)        COMMENT 'Tên loại chứng khoán (dẫn xuất theo sàn) — từ Security Trading Snapshot Dimension',
     underlying_symbol                   Nullable(String)        COMMENT 'Chứng khoán cơ sở (CW/phái sinh) — từ Security Trading Snapshot Dimension',
     isin_code                           Nullable(String)        COMMENT 'Mã ISIN — từ Security Trading Snapshot Dimension',
     issuer_nm                           Nullable(String)        COMMENT 'Tổ chức phát hành — từ Security Trading Snapshot Dimension',
