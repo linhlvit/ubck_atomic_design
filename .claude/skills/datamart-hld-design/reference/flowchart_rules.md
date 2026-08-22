@@ -86,13 +86,20 @@ FMS_RPTVALUES --> rpt_impr_val
 ## Subgraph Datamart
 
 **Node ID syntax — bắt buộc dùng `ID["label"]`:**
-- Node ID: tên physical (snake_case)
-- Label: tên logical đầy đủ (lấy từ Entities.csv cột `datamart_entity`)
+- Node ID: **tên logical, dùng `_` thay dấu cách** — cùng quy ước với subgraph Atomic, KHÔNG dùng physical name (snake_case)
+- Label: tên logical đầy đủ có dấu cách (lấy từ Entities.csv cột `datamart_entity`)
 
 ```
-✅ Đúng:  fct_fms_snpst["Fact Fund Management Company Snapshot"]
-❌ Sai:   fct_fms_snpst   (tên physical không có nghĩa với người đọc)
+✅ Đúng:  Fact_Fund_Management_Company_Snapshot["Fact Fund Management Company Snapshot"]
+✅ Đúng:  Calendar_Date_Dimension["Calendar Date Dimension"]
+❌ Sai:   fct_fms_snpst["Fact Fund Management Company Snapshot"]   (node ID là physical name — HLD chỉ dùng tên logical)
+❌ Sai:   Fact_Fund_Management_Company_Snapshot                     (thiếu label — mermaid render ra dấu _)
 ```
+
+> **Chốt 2026-08-22:** trước đây rule này yêu cầu node ID là physical name, mâu thuẫn trực tiếp với
+> `naming_conventions.md` ("không dùng physical name ở bất kỳ vị trí nào trong HLD"). Đã chốt dùng tên logical
+> cho cả 3 subgraph. Nợ kỹ thuật: 147/220 node ID trong các HLD hiện có còn dùng snake_case
+> (GSDC 32, VP 42, PTTT 23, QLCB 15, NHNCK 14, QLQ 14, GSTT 7); TT (38) và TKNB (21) đã đúng chuẩn mới.
 
 **Vị trí Dimension:** trong subgraph Datamart. Link vẽ `Dim --> Fact` (không phải `Fact --> Dim`).
 

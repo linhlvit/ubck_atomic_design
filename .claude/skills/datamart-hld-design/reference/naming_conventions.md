@@ -42,7 +42,7 @@
 
 **Khi rút scope:**
 - Không re-number KPI ID — giữ gap (VD: K_FMS_1, K_FMS_3, K_FMS_5 — không đánh lại)
-- Ghi nhận gap trong Section 4 (Vấn đề mở) nếu cần giải thích
+- Ghi nhận gap trong Section 5 (Vấn đề mở) nếu cần giải thích
 
 **Khi PENDING → READY:**
 - Giữ nguyên KPI ID đã khai sinh — chỉ đổi cột Trạng thái từ PENDING sang READY trong cùng bảng KPI, không cấp ID mới, không tạo dòng/bảng mới
@@ -59,11 +59,18 @@ Ví dụ: `O_FMS_1`, `O_FMS_2`, `O_NDTNN_3`
 
 ## Fact Pattern
 
+**Giá trị hợp lệ của cột `Pattern` (Section 3.2) — chốt đúng 2, theo `section_structure.md`:**
+
 | Pattern | Khi nào | Grain |
 |---|---|---|
-| `Fact Event` | Sự kiện bất biến 1 lần | 1 row / sự kiện |
-| `Fact Snapshot` | Stock metric so sánh cùng kỳ | 1 row / đối tượng / kỳ |
-| `Fact Accumulating Snapshot` | Vòng đời nhiều milestone | 1 row / đối tượng (update in-place) |
+| `Event` | Sự kiện bất biến 1 lần | 1 row / sự kiện |
+| `Periodic Snapshot` | Stock metric so sánh theo kỳ | 1 row / đối tượng / kỳ |
+
+> **Chốt 2026-08-22:** bảng này trước đây có 3 giá trị (`Fact Event` / `Fact Snapshot` / `Fact Accumulating Snapshot`)
+> với cách viết khác `section_structure.md` §3.2 (`Event` / `Periodic Snapshot`). Đã thống nhất theo
+> `section_structure.md` — đó là nguồn sự thật cho format Section 3.
+> `Accumulating Snapshot` (vòng đời nhiều milestone, update in-place) bị loại khỏi danh sách hợp lệ: chưa module nào
+> dùng, và nếu phát sinh nhu cầu thì phải bổ sung vào `section_structure.md` trước, không tự thêm ở đây.
 
 Mọi Fact bắt buộc có ít nhất 1 FK date đến Calendar Date Dimension.
 ❌ Không thiết kế Surrogate key cho Fact table.
@@ -95,4 +102,10 @@ FK trên Fact: `FK → Classification Dimension (scheme: <SCHEME>)`
 | Tên bảng, tên cột, tên entity, mã nguồn | Tiếng Anh |
 | Keyword kỹ thuật (Fact, Dimension, Snapshot...) | Tiếng Anh |
 
-❌ Tuyệt đối không dùng physical name (snake_case) ở bất kỳ vị trí nào trong HLD.
+❌ Không dùng physical name (snake_case) trong HLD — kể cả node ID của mermaid (flowchart Section 1 dùng
+tên logical nối bằng `_`, xem `flowchart_rules.md`).
+
+**Ngoại lệ duy nhất — cột `datamart_table` của Section 4 (Reuse Analysis):** cột này theo định nghĩa mang
+physical name, vì nó là nguồn để Phase 2 sinh `Entities.csv` và để đối chiếu với `datamart_model.yaml`.
+Mọi vị trí khác trong HLD (tên bảng trong văn bản, erDiagram, graph TB, node ID/label flowchart, bảng KPI,
+bảng grain, Section 3, Section 5) đều dùng tên logical.

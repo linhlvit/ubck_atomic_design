@@ -58,7 +58,7 @@ graph TB có: DIM_DATE --> FACT_MKT  và  DIM_CO --> FACT_MKT
 
 Ví dụ: `Fact Public Company Financial Summary Snapshot` có K_GSDC_46/47 READY dù K_GSDC_48/49 PENDING → **giữ trong CSV**. `Fact Public Company Financial Report Value` 100% PENDING (toàn bộ Nhóm dùng bảng này đều Gap Atomic) → **loại khỏi CSV**.
 
-**Cách thể hiện trong Entities.md:** thêm mục "Bảng PENDING (không thiết kế trong Phase 2)" ở cuối file — bảng 3 cột `Datamart Entity | Lý do PENDING | Issue` (tham chiếu ID Open Issue ở Section 4/5 HLD). Không thêm bảng PENDING vào CSV, kể cả với `source_table = TBD`.
+**Cách thể hiện trong Entities.md:** thêm mục "Bảng PENDING (không thiết kế trong Phase 2)" ở cuối file — bảng 3 cột `Datamart Entity | Lý do PENDING | Issue` (tham chiếu ID Open Issue ở Section 5 — Vấn đề mở của HLD). Không thêm bảng PENDING vào CSV, kể cả với `source_table = TBD`.
 
 ---
 

@@ -31,7 +31,7 @@ erDiagram
 
 **Đặc điểm đúng:**
 - Mở bằng ` ```mermaid ` — có từ `mermaid`
-- Types hợp lệ: `string`, `date`, `int`, `float`, `boolean`
+- Types hợp lệ: `string`, `varchar`, `date`, `datetime`, `int`, `float`, `decimal`, `boolean` — danh sách đầy đủ ở `reference/erdiagram_rules.md`. `decimal` viết trần (KHÔNG `decimal(23,2)`)
 - `PK` chỉ trên Dimension; `FK` chỉ trên Fact và có `||--o{` tương ứng
 - Không có `BK` trong erDiagram (BK chỉ ghi trong Attributes CSV)
 - Tên entity dùng underscore: `Fund_Management_Company_Dimension`

@@ -195,7 +195,7 @@ Calendar_Date_Dimension {
 
 - `Is_Trading_Day` **không** tồn tại trong Atomic `cdr_dt` — không thêm vào erDiagram.
 - `Is_Weekend`, `Holiday_Name` chỉ dùng nếu module thực sự cần và Atomic có field tương ứng.
-- `Source_System_Code` bắt buộc — Calendar Date là static dimension, không có SCD.
+- `Source_System_Code` **bắt buộc** — Calendar Date là static dimension, không có SCD. Đây KHÔNG phải ngoại lệ của rule "mọi Dimension/Operational phải có `Source_System_Code`" bên dưới — Calendar Date Dimension chịu cùng ràng buộc và được Bước 5B mục #3 kiểm như mọi Dimension khác.
 
 ---
 
