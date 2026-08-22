@@ -60,14 +60,18 @@ Không so sánh BA trực tiếp với Datamart mà bỏ qua lớp Atomic.
 |---|---|---|
 | **A — HLD thiếu / PENDING, BA đã Done** | HLD status = PENDING hoặc nhóm chưa có trong HLD, BA = Done với nguồn đầy đủ | Gọi `datamart-hld-design` để thiết kế/cập nhật |
 | **B — Logic BA thay đổi** | BA cập nhật công thức/nguồn/filter mới, Attributes hoặc Detail Mapping chưa phản ánh | Gọi `datamart-lld-design` để sửa LLD |
-| **C — Lỗi kỹ thuật thuần cấu trúc** | Lỗi không đụng logic nghiệp vụ/nguồn dữ liệu — thiếu Section, heading sai cấp, bảng KPI thiếu cột, CSV lệch cột do sed/replace_all... (Attributes/Detail Mapping HOẶC HLD) | Sửa trực tiếp file tương ứng — không cần gọi lại skill con |
+| **C — Lỗi kỹ thuật** | Lỗi không do BA đổi logic — thiếu Section, heading sai cấp, bảng KPI thiếu cột, CSV lệch cột do sed/replace_all, sai `data_domain`/`data_type`/`nullable`, thiếu `src_stm_code`, physical name sai chuẩn, `etl_logic` tham chiếu cột mart... (Attributes/Detail Mapping/registry HOẶC HLD) | **Trình bày action đề xuất → chờ user xác nhận → gọi skill con để sửa.** KHÔNG tự Edit trực tiếp |
 | **D — HLD sai do thiết kế/nguồn Atomic lỗi thời** | HLD đã tồn tại, đánh READY, nhưng trỏ nhầm nguồn Atomic đã deprecated/tái cấu trúc, sai grain, sai entity, hoặc logic nghiệp vụ không còn khớp Atomic hiện hành — khác Kịch bản A (không phải PENDING) và khác Kịch bản C (đây là lỗi nội dung/logic, không phải lỗi kỹ thuật thuần cấu trúc) | Gọi `datamart-hld-design` để thiết kế lại — KHÔNG tự sửa tay nội dung HLD (Fact, grain, nguồn Atomic, bảng KPI) dù đã xác định rõ hướng sửa |
 
 > **Nguyên tắc tổng quát — bắt buộc, áp dụng cho MỌI thay đổi nội dung (không chỉ 4 kịch bản trên):**
 > - Bất kỳ thay đổi nào chạm vào **nội dung nghiệp vụ/thiết kế của HLD** (thêm/sửa Nhóm, đổi nguồn Atomic, đổi Fact/Dimension/grain, đổi công thức KPI, thêm Cụm Data Lineage...) → luôn qua `datamart-hld-design`, dù đã tự xác định rõ cách sửa qua quá trình review. Không tự Edit trực tiếp các phần này.
 > - Bất kỳ thay đổi nào chạm vào **Attributes / Detail Mapping / `datamart_model.yaml` (registry)** — nội dung mapping, `etl_logic`, `column_role`, cột registry... → luôn qua `datamart-lld-design`.
-> - Chỉ Kịch bản C (lỗi kỹ thuật thuần cấu trúc — không đổi ý nghĩa nghiệp vụ) mới được sửa tay trực tiếp, cho cả 2 phía HLD và LLD. Ranh giới: nếu việc sửa làm thay đổi *ý nghĩa* của KPI/Fact/mapping (nguồn nào, công thức nào, filter nào) → không còn là Kịch bản C, phải qua skill con tương ứng.
-> - Khi không chắc 1 vấn đề thuộc Kịch bản C hay D/A/B — mặc định coi là D/A/B (qua skill con), không tự nhận là C để tiện sửa nhanh.
+> - **Kịch bản C cũng đi qua skill con** (chốt 2026-08-22) — trước đây C được phép "sửa tay trực tiếp", nay KHÔNG còn. Quy trình bắt buộc cho C:
+>   1. **Trình bày action đề xuất cụ thể**: file nào, dòng/cột nào, giá trị cũ → giá trị mới, lý do.
+>   2. **Chờ user xác nhận.**
+>   3. **Gọi skill con thực hiện** — HLD → `datamart-hld-design`; Attributes/Detail Mapping/`datamart_model.yaml` → `datamart-lld-design`.
+>   Lý do bỏ "sửa tay": trước đây C được định nghĩa 4 kiểu khác nhau ở 4 chỗ trong skill này (thuần cấu trúc / lỗi thiết kế / physical naming / sai data_domain), dẫn tới cùng 1 lỗi mà lúc thì tự Edit, lúc thì gọi skill con. Thống nhất 1 đường đi duy nhất để không còn phải phân định ranh giới "có đổi ý nghĩa hay không".
+> - **KHÔNG có ngoại lệ nào được Edit trực tiếp** vào HLD/Attributes/Detail Mapping/registry trong skill này. `datamart-review` chỉ phát hiện, phân loại, đề xuất — việc sửa thuộc skill con.
 
 ---
 
@@ -474,7 +478,7 @@ Sau khi trình bày bảng tổng hợp:
    - Kịch bản A → `/datamart-hld-design` với context nhóm cụ thể (HLD thiếu/PENDING)
    - Kịch bản B → `/datamart-lld-design` với context thay đổi cụ thể (BA đổi logic)
    - Kịch bản D → `/datamart-hld-design` với context nhóm cụ thể (HLD sai do thiết kế/nguồn Atomic lỗi thời) — cung cấp đầy đủ bằng chứng đã điều tra (entity Atomic cũ vs mới, nguồn deprecated...) để skill con không phải lặp lại việc tra cứu
-4. **Sửa file trực tiếp** chỉ với Kịch bản C sau khi user xác nhận — áp dụng cho cả HLD lẫn Attributes/Detail Mapping/registry, miễn là lỗi thuần kỹ thuật cấu trúc không đổi ý nghĩa nghiệp vụ
+4. **Kịch bản C** → trình bày action đề xuất (file / dòng / giá trị cũ → mới) → chờ user xác nhận → **gọi skill con để sửa** (HLD → `datamart-hld-design`; Attributes/Detail Mapping/registry → `datamart-lld-design`). ❌ Không tự Edit trực tiếp
 5. **Không tự ý hạ cấp D/A/B xuống C để sửa nhanh** — nếu việc sửa chạm vào nội dung nghiệp vụ (nguồn Atomic, Fact/grain, công thức KPI, etl_logic, mapping) dù đã biết rõ hướng sửa, vẫn phải gọi đúng skill con tương ứng, không tự Edit trực tiếp
 
 ---
@@ -631,7 +635,7 @@ missing = atomic_tables - join_atomic_tables
 - Có JOIN sang bảng Atomic khác driving (dù kết hợp với driving) → `join_atomic`
 - `computed` chỉ dùng khi toàn bộ `etl_logic` chỉ tham chiếu driving table hoặc literal/function thuần
 
-**Action khi phát hiện lỗi này:** Đây là **Kịch bản C — Lỗi thiết kế**. Gọi `datamart-lld-design` để sửa lại `etl_logic_type` và `etl_logic` cho các cột vi phạm — không sửa tay trực tiếp vì cần đảm bảo format chuẩn `join_atomic` (INNER/LEFT JOIN ... → ...).
+**Action khi phát hiện lỗi này:** **Kịch bản C** — trình bày action đề xuất (danh sách cột vi phạm, `etl_logic_type` cũ → mới) → chờ user xác nhận → gọi `datamart-lld-design` để sửa. Không sửa tay trực tiếp vì cần đảm bảo format chuẩn `join_atomic` (INNER/LEFT JOIN ... → ...).
 
 ### Khi Detail Mapping trống (nhóm chưa thiết kế)
 
@@ -701,4 +705,4 @@ cat system/rules/rule_physical_name_exceptions_datamart.csv
 grep -E "\b(ctf|prac|trn|rcrd|org|nat|cty|dcsn|rslt|ases|issu|pcs|ovrl|scor|vln|actv|clss|dept|pos|emp|doc|ind)\b" Datamart/lld/datamart_attributes.csv
 ```
 
-**Action khi phát hiện:** Sửa trực tiếp tất cả 4 file output theo quy trình field-rename-sync (grep toàn `Datamart/` → sửa → verify sạch).
+**Action khi phát hiện:** **Kịch bản C** — trình bày action đề xuất (bảng: tên cũ → tên mới, danh sách file/dòng bị ảnh hưởng từ `grep -rn` toàn `Datamart/`) → chờ user xác nhận → gọi `datamart-lld-design` thực hiện field-rename-sync trên toàn bộ file output rồi verify sạch. ❌ Không tự Edit trực tiếp.

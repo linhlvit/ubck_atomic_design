@@ -49,12 +49,14 @@ Truyền context cụ thể:
 - Tên cột không nhất quán (physical/logical lẫn lộn)
 - Thiếu `src_stm_code` cho Dim/Operational
 
-**Hành động:** Sửa trực tiếp file LLD sau khi user xác nhận
+**Hành động:** Trình bày action đề xuất → chờ user xác nhận → **gọi skill con để sửa**
 
-Cách xử lý:
-1. Liệt kê cụ thể: file, dòng, cột cần sửa, giá trị cũ → mới
+Cách xử lý (chốt 2026-08-22 — trước đây cho phép tự `Edit`, nay KHÔNG):
+1. Liệt kê cụ thể: file, dòng, cột cần sửa, giá trị cũ → mới, lý do
 2. Hỏi user xác nhận
-3. Dùng `Edit` tool để sửa trực tiếp
+3. **Gọi skill con thực hiện** — HLD → `datamart-hld-design`; Attributes / Detail Mapping / `datamart_model.yaml` → `datamart-lld-design`
+
+❌ **Không dùng `Edit` tool sửa trực tiếp** — `datamart-review` chỉ phát hiện, phân loại, đề xuất.
 
 ---
 
@@ -67,9 +69,9 @@ KPI trong BA = Done
 
     + HLD = READY
         + Attributes thiếu / logic sai do BA đổi
-            → Kịch bản B → datamart-lld-design (Phase 2)
+            → Kịch bản B → datamart-lld-design (Phase 1 — Attributes)
         + Detail Mapping thiếu / formula sai do BA đổi  
-            → Kịch bản B → datamart-lld-design (Phase 3)
+            → Kịch bản B → datamart-lld-design (Phase 2 — Detail Mapping)
         + Lỗi kỹ thuật thuần (không phải BA đổi)
             → Kịch bản C → sửa trực tiếp
 
@@ -84,7 +86,7 @@ KPI trong BA = Pending
 
 ## Trường hợp đặc biệt
 
-### Atomic entity chưa có (không tìm được trong atomic_attributes.csv)
+### Atomic entity chưa có (không tìm được ở cả 2 nguồn Atomic chuẩn)
 
 - **Không phải** Kịch bản A, B, hoặc C
 - Đây là gap ở lớp Atomic — nằm ngoài scope review Datamart
@@ -94,11 +96,23 @@ KPI trong BA = Pending
 ### HLD READY nhưng Attributes/Detail Mapping hoàn toàn trống
 
 - Critical — LLD chưa được thiết kế dù HLD đã duyệt
-- Hành động: gọi `datamart-lld-design` Phase 2 + Phase 3
+- Hành động: gọi `datamart-lld-design` Phase 1 (Attributes) + Phase 2 (Detail Mapping)
 
 ### BA mô tả nguồn bằng tên bảng source (IDS.data, T24.FUNDS.TRANSFER...)
 
 - Cần trace qua Atomic trước khi kết luận
-- Tra `DataModel/working/Atomic/aggregate/atomic_attributes.yaml` để tìm entity/column tương ứng
-- Nếu không tìm thấy → Gap Atomic (xem trên)
+- Tra theo **đúng 2 nguồn chuẩn, theo thứ tự ưu tiên** (giống `SKILL.md` — không dùng nguồn nào khác):
+
+| Ưu tiên | Nguồn |
+|---|---|
+| 1 — luôn tra trước | `DataModel/Atomic/**/*.yaml` |
+| 2 — chỉ khi Nguồn 1 không có | `DataModel/working/Atomic/lld/**/*.yaml` |
+
+```bash
+grep -rl "IDS.data" DataModel/Atomic/
+grep -rl "IDS.data" DataModel/working/Atomic/lld/   # chỉ khi Nguồn 1 không có
+```
+
+- ❌ KHÔNG tra `DataModel/working/Atomic_LinhLV/` (track cũ đã revert) và KHÔNG tra `DataModel/working/Atomic/aggregate/atomic_attributes.yaml` (nằm ngoài 2 nguồn chuẩn)
+- Nếu không tìm thấy ở cả 2 nguồn → Gap Atomic (xem trên)
 - Không map trực tiếp source table → Datamart

@@ -67,10 +67,16 @@ Checklist chi tiết dùng trong Bước 2 của skill `datamart-review`.
   → Trống với etl_logic_type ≠ pending → Warning
 
 □ Trace BA → Atomic → Attributes (bắt buộc mọi KPI Done):
-  → Lấy tên bảng nguồn BA ghi (VD: IDS.data) → tra atomic_attributes.csv
+  → Lấy tên bảng nguồn BA ghi (VD: IDS.data) → tra theo ĐÚNG 2 nguồn chuẩn,
+    theo thứ tự ưu tiên (giống SKILL.md — không dùng nguồn nào khác):
+      Nguồn 1 (luôn tra trước) : DataModel/Atomic/**/*.yaml
+      Nguồn 2 (chỉ khi N1 trống): DataModel/working/Atomic/lld/**/*.yaml
+      ❌ KHÔNG tra DataModel/working/Atomic_LinhLV/ (track cũ đã revert)
+      ❌ KHÔNG tra DataModel/working/Atomic/aggregate/atomic_attributes.yaml
+         (nằm ngoài 2 nguồn chuẩn)
   → atomic_table + atomic_column trong Attributes có khớp kết quả tra không?
   → Không khớp → Critical (map sai Atomic entity/column)
-  → Không tìm thấy trong atomic_attributes.csv → Gap Atomic (ghi nhận riêng)
+  → Không tìm thấy ở cả 2 nguồn → Gap Atomic (ghi nhận riêng)
 
 □ etl_logic nội dung đúng với BA:
   → JOIN đúng bảng?
@@ -79,11 +85,18 @@ Checklist chi tiết dùng trong Bước 2 của skill `datamart-review`.
   → Sai/thiếu → Critical/Warning tuỳ ảnh hưởng
 
 □ Data domain / data_type khớp tính chất KPI:
-  → Số tiền → Currency Amount / float
-  → Tỷ lệ → Percentage / float
-  → Đếm → Small Counter / int
+  → Số tiền → Currency Amount / decimal  (chốt 2026-08-22 — KHÔNG dùng float
+     cho tiền tệ: float là dấu phẩy động nhị phân, gây sai số làm tròn khi cộng dồn.
+     Hiện master còn 28 dòng dùng float — nợ kỹ thuật, xem ghi chú cuối mục)
+  → Tỷ lệ → Percentage / decimal
+  → Đếm → Small Counter / int  (KHÔNG dùng decimal cho số đếm)
   → Text → Text / string
   → Sai → Warning
+
+  ⚠️ Độ chính xác decimal(p,s) CHƯA có chuẩn chốt — master đang dùng lẫn
+     decimal(23,2) (109 dòng) / decimal(20,2) (13) cho Currency Amount, và
+     decimal(5,2) (43) / decimal(9,4) (40) cho Percentage. Khi review chỉ kiểm
+     "có phải decimal không", KHÔNG bắt lỗi độ chính xác cho tới khi chuẩn được chốt.
 
 □ Key constraints:
   → FK nullable = false?
@@ -138,8 +151,11 @@ Checklist chi tiết dùng trong Bước 2 của skill `datamart-review`.
   → DERIVED: công thức tính từ MEASURE khác, mart_table/mart_column trống
   → Sai → Warning
 
-□ mart_table dùng tên logical (không phải physical)?
-  → Physical name trong logic → Warning
+□ mart_table / mart_column dùng tên LOGICAL?
+  → Physical name (snake_case) trong mart_table hoặc mart_column → Warning
+  → LƯU Ý: cột `logic` thì NGƯỢC LẠI — bắt buộc dùng physical
+    (physical_table.physical_column). Physical name trong `logic` là ĐÚNG chuẩn,
+    không phải lỗi. Tên logical trong `logic` → Warning
 
 □ Chiều lặp lại giữa các nhóm: mỗi nhóm có explicit SLICER/FILTER riêng?
   → Dùng shorthand "xem nhóm X" → Warning
