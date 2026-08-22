@@ -2,7 +2,7 @@
 
 ## Mục đích
 
-BA file thường ghi tên nguồn theo tên nghiệp vụ hoặc tên hệ thống cũ. Atomic LLD dùng tên hệ thống kỹ thuật. Bảng này giúp tự map khi BA ghi tên không khớp với thư mục/prefix trong `Atomic/lld/`.
+BA file thường ghi tên nguồn theo tên nghiệp vụ hoặc tên hệ thống cũ. Atomic dùng tên hệ thống kỹ thuật. Bảng này giúp tự map khi BA ghi tên không khớp với thư mục/prefix trong Nguồn 1 (`DataModel/Atomic/dm_manifest.yaml`) hoặc Nguồn 2 (`DataModel/working/Atomic/lld/`).
 
 **Tra bảng này TRƯỚC KHI kết luận PENDING vì không tìm được Atomic entity.**
 
@@ -25,10 +25,11 @@ BA file thường ghi tên nguồn theo tên nghiệp vụ hoặc tên hệ th�
 
 ```
 BA ghi nguồn X
-    → Tìm trong Atomic/lld/ với prefix X  →  Tìm thấy → dùng trực tiếp
+    → Tra Nguồn 1 (DataModel/Atomic/dm_manifest.yaml) hoặc Nguồn 2 (DataModel/working/Atomic/lld/) với prefix X
+        → Tìm thấy → dùng trực tiếp (ưu tiên Nguồn 1)
     → Không tìm thấy
         → Tra bảng alias trên
-            → Có alias Y → tìm lại với prefix Y → tiếp tục thiết kế bình thường
+            → Có alias Y → tìm lại Nguồn 1/Nguồn 2 với prefix Y → tiếp tục thiết kế bình thường
             → Không có alias → ghi PENDING, nêu lý do "chưa xác định Atomic source cho X"
 ```
 

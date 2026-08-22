@@ -23,13 +23,17 @@ Thiếu `mermaid` → render thành plain text trên mọi renderer.
 
 | Dùng | Không dùng |
 |---|---|
-| `int` | `decimal`, `decimal(23,2)` |
+| `int` | `decimal(23,2)` (có ngoặc gây lỗi cú pháp Mermaid) |
 | `float` | `timestamp` |
-| `string` | `nvarchar` |
-| `varchar` | `bigint`, `smallint` |
+| `decimal` | `nvarchar` |
+| `string` | `bigint`, `smallint` |
+| `varchar` | |
 | `boolean` | |
 | `date` | |
 | `datetime` | |
+
+> **Lưu ý kiểu số tài chính:** Dùng `decimal` (viết trần không kèm độ chính xác `(p,s)`) cho các trường tiền tệ, giá trị và tỷ lệ tài chính cần độ chính xác cao để bảo toàn ngữ nghĩa khi chuyển giao sang LLD/ClickHouse.
+
 
 ---
 

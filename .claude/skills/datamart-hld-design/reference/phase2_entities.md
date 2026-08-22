@@ -13,7 +13,7 @@ Phase 2 sinh Entities **từ Section 3 và Section 4 của `DTM_{MODULE}_HLD.md`
 | `reuse_status` | Đọc từ **Section 4** — `new` / `reuse` / `partial` |
 | `status` | Luôn `draft` |
 | `description` | Ghép: cột Mô tả (hoặc Pattern) + " — grain " + cột Grain |
-| `source_table` | Cột "Nguồn Atomic chính" → tra `atomic_attributes.yaml` lấy `atomic_table` vật lý; nhiều nguồn nối ` / ` |
+| `source_table` | Cột "Nguồn Atomic chính" → tra `DataModel/Atomic/dm_manifest.yaml` lấy `atomic_table` vật lý; nhiều nguồn nối ` / ` |
 | `FKs` | Đọc graph TB Section 3: mũi tên `DIM_X --> FACT_Y` → Dim nào join Fact nào |
 
 ### Rule trích xuất `FKs` từ graph TB

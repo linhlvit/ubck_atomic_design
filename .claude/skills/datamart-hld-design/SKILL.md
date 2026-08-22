@@ -19,7 +19,7 @@ description: |
 ## Tài nguyên đi kèm
 
 - **Reference:**
-  - [`reference/section_structure.md`](reference/section_structure.md) — 4 section cố định, format bảng KPI gộp READY+PENDING (Phase 1)
+  - [`reference/section_structure.md`](reference/section_structure.md) — 5 Section cố định, format bảng KPI gộp READY+PENDING (Phase 1)
   - [`reference/flowchart_rules.md`](reference/flowchart_rules.md) — subgraph syntax, Calendar Date, node ID (Phase 1)
   - [`reference/erdiagram_rules.md`](reference/erdiagram_rules.md) — types hợp lệ, PK/FK only, naming (Phase 1)
   - [`reference/naming_conventions.md`](reference/naming_conventions.md) — tên bảng Fact/Dim/Operational, KPI ID (Phase 1)
@@ -331,11 +331,11 @@ Thêm section này vào cuối file HLD, sau Section 3:
      - Nếu vẫn còn lệch grain sau khi đổi nguồn (VD: measure per-đối tượng nhưng Fact per-đối tượng×hành vi) → **không SUM trực tiếp trên Fact**; công thức KPI phải pre-aggregate (GROUP BY/DISTINCT theo key ở đúng cấp grain của measure) trước khi SUM ở tầng ngoài. Ghi rõ công thức pre-aggregate này trong Ghi chú Nhóm, không chỉ ghi "SUM(measure)" trơn.
      - Nếu không tìm được nguồn nào khớp — tách 1 Fact riêng đúng grain của measure đó (như đã làm cho key ở Bước tách Dimension), không gộp chung với Fact đang thiết kế.
 3. Trường hợp measure ở cấp grain thô hơn không thể chia tách chính xác về cấp mịn hơn khi 1 bản ghi cha có nhiều bản ghi con thuộc **các nhóm phân loại khác nhau** (VD: 1 đối tượng có 2 hành vi thuộc 2 nhóm "Loại hình xử lý" khác nhau, nhưng chỉ có 1 số tiền phạt chung cho cả đối tượng) — đây là giới hạn dữ liệu nguồn, không phải lỗi thiết kế. Ghi nhận rõ trong Ghi chú Nhóm (không phải Open Issue) để BA/nghiệp vụ biết và chấp nhận.
-4. **Không tự tin measure "chắc an toàn" chỉ vì đang COUNT, không SUM`** — quy tắc này áp dụng cho MỌI measure định lượng cộng dồn, độc lập với việc Fact đó có đang bị lỗi fanout key (COUNT/DISTINCT) hay không. 2 vấn đề (key fanout khi COUNT, measure fanout khi SUM) độc lập nhau và phải kiểm tra riêng.
+4. **Không tự tin measure "chắc an toàn" chỉ vì đang COUNT, không SUM** — quy tắc này áp dụng cho MỌI measure định lượng cộng dồn, độc lập với việc Fact đó có đang bị lỗi fanout key (COUNT/DISTINCT) hay không. 2 vấn đề (key fanout khi COUNT, measure fanout khi SUM) độc lập nhau và phải kiểm tra riêng.
 
 ## BƯỚC 5 — THIẾT KẾ VÀ XUẤT FILE
 
-Đọc [`reference/section_structure.md`](reference/section_structure.md) để biết format 4 section.
+Đọc [`reference/section_structure.md`](reference/section_structure.md) để biết format 5 section cố định.
 Đọc [`reference/flowchart_rules.md`](reference/flowchart_rules.md) trước khi vẽ Lineage.
 Đọc [`reference/erdiagram_rules.md`](reference/erdiagram_rules.md) trước khi vẽ Star Schema.
 Đọc [`reference/naming_conventions.md`](reference/naming_conventions.md) trước khi đặt tên bảng/KPI.
