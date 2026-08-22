@@ -25,6 +25,7 @@ description: |
 - **Reference:**
   - [`reference/review_checklist.md`](reference/review_checklist.md) — checklist chi tiết 3 lớp HLD/Attributes/Detail Mapping
   - [`reference/issue_classification.md`](reference/issue_classification.md) — phân loại vấn đề và hành động tương ứng
+  - [`reference/ba_source_profile.md`](reference/ba_source_profile.md) — **cấu trúc THẬT của `BRD/BA/*.csv`**: header nằm dòng nào, vị trí cột theo từng module, giá trị thật của `Phân loại`/`Trạng thái mapping`/`Loại dữ liệu`, 6 bẫy parse. **Đọc TRƯỚC khi viết bất kỳ script đọc BA nào**
 - **Skills liên quan (gọi khi cần):**
   - `datamart-hld-design` — gọi khi nhóm HLD = PENDING nhưng BA = Done (cần thiết kế mới), HOẶC khi HLD đã tồn tại nhưng sai do thiết kế/nguồn Atomic lỗi thời (Kịch bản D) — mọi thay đổi nội dung nghiệp vụ của HLD đều qua skill này, không tự Edit trực tiếp
   - `datamart-lld-design` — gọi khi logic BA thay đổi (cần cập nhật Attributes hoặc Detail Mapping), HOẶC bất kỳ thay đổi nội dung nào vào Attributes/Detail Mapping/`datamart_model.yaml` (registry) — không tự Edit trực tiếp
@@ -81,8 +82,12 @@ Không so sánh BA trực tiếp với Datamart mà bỏ qua lớp Atomic.
 Bước 0:  Xác định scope (module + nhóm cụ thể nếu có) + kiểm tra file tồn tại
 Bước 0b: Lập kế hoạch — đọc nhanh toàn BA + HLD → bảng kế hoạch tổng thể
          ⛔ DỪNG — chờ user xác nhận thứ tự review trước khi đi vào chi tiết
+Bước 0c: [1 lần/module, sau khi user duyệt kế hoạch] Chạy Lớp 1b (13 mục Bước 5B của
+         datamart-hld-design) + Lớp 2b (10 TC Phase 1 của datamart-lld-design)
+         → gộp kết quả vào bảng vấn đề cấp toàn module
+
 Bước 1:  [Lặp lại cho từng nhóm theo kế hoạch]
-         Đọc BA chi tiết nhóm N → review 3 lớp (HLD → Attributes → Detail Mapping)
+         Đọc BA chi tiết nhóm N → review 4 lớp (HLD → Attributes → Detail Mapping → registry)
          → Trình bày kết quả nhóm N + danh sách vấn đề + đề xuất action
          ⛔ DỪNG — chờ user quyết định:
             (a) Sửa ngay → thực hiện action → sau đó hỏi tiếp tục nhóm N+1
@@ -176,7 +181,8 @@ Section 5 — Vấn đề mở
 
 Với mỗi nhóm, tính:
 ```
-Số dòng BA = COUNT(dòng BA trong nhóm, Phân loại ∈ {Chiều, Cơ sở}, Trạng thái mapping ∈ {Done, Doing})
+Số dòng BA = COUNT(dòng BA trong nhóm, Phân loại ∈ {Chiều, Chỉ tiêu cơ sở, Chỉ tiêu phái sinh}, Trạng thái mapping ∈ {Done, Doing})
+          (tên giá trị chính xác — xem reference/ba_source_profile.md §4; KHÔNG dùng 'Cơ sở'/'Phái sinh')
 Số dòng KPI HLD = COUNT(KPI_ID trong bảng KPI của nhóm, loại trừ _YOY/derived thuần trong cùng bảng)
 ```
 
@@ -244,13 +250,34 @@ with open('Datamart/lld/datamart_attributes.csv', encoding='utf-8-sig') as f:
 # Datamart/lld/{MODULE}/DTM_{MODULE}_{table}_{source}.csv
 ```
 
-Với mỗi part file, extract:
-- **Col 0 (STT):** Số nhóm
-- **Col 2 (Tên dashboard/báo cáo):** Tên nhóm
-- **Col 3 (Tên KPI):** Tên chỉ tiêu
-- **Col 4 (Công thức/mô tả):** Mô tả logic/nguồn
-- **Col 13 (Trạng thái mapping):** Done / Doing / Pending / (trống)
-- **Col 15 (Bảng nguồn):** Tên bảng nguồn BA tham chiếu
+> 🔴 **KHÔNG hard-code chỉ số cột.** Khảo sát 2026-08-22 cho thấy 13 file BA có **8 biến thể số cột khác nhau**
+> (23→31 cột), header nằm ở **dòng 0 với GSDC nhưng dòng 1 với 10 file còn lại**, và `Loại dữ liệu` nằm ở
+> 6 vị trí khác nhau tuỳ module. Bảng chỉ số cứng ở bản trước của mục này sai với phần lớn module.
+>
+> **Bắt buộc:** đọc [`reference/ba_source_profile.md`](reference/ba_source_profile.md) và dùng hàm `read_ba()`
+> trong đó — resolve cột theo **tên header**, không theo vị trí.
+
+Các cột cần lấy (resolve theo tên):
+
+| Tên cột trong header | Dùng để |
+|---|---|
+| `STT` | Số nhóm — mỗi STT = 1 Nhóm duy nhất |
+| `Dashboard/báo cáo` | Tên Tab / tên nhóm (format `{Tab}/ {Nhóm}`) |
+| `Thông tin` | Tên chỉ tiêu |
+| `Mô tả` | Mô tả logic |
+| `Phân loại` | `Chiều` / `Chỉ tiêu cơ sở` / `Chỉ tiêu phái sinh` |
+| `Trạng thái mapping` | `Done` / `Pending` (`Doing`/`failed` có trong chú giải nhưng chưa dùng lần nào) |
+| `Đánh giá` | `Dễ`/`TB`/`Khó`/**`Trùng`** — `Trùng` (1.609 dòng) là căn cứ reuse KPI_ID |
+| `Bảng nguồn` / `Khai thác nguồn` | Bảng nguồn BA tham chiếu (tên cột khác nhau giữa GSDC và các module còn lại) |
+| `Trường nguồn` | Cột nguồn |
+| `Điều kiện dữ liệu` + `Câu lệnh SQL` + `Note` | Điều kiện lọc — **phải đọc cả 3**, xem Lớp 3 |
+| `Loại dữ liệu` | Gating tĩnh/động — vị trí cột khác nhau mọi module |
+
+> ⚠️ **Giá trị `Phân loại` thật là `Chỉ tiêu cơ sở` / `Chỉ tiêu phái sinh`, KHÔNG phải `Cơ sở` / `Phái sinh`.**
+> Filter `== 'Cơ sở'` khớp 0 dòng. Dùng `'chỉ tiêu' in v.lower()` và `v.lower().startswith('chiều')`.
+>
+> ⚠️ **10/13 file có 1 dòng header lặp lại ngay ở dòng data đầu tiên** — loại bỏ dòng có `Phân loại == 'Phân loại'`
+> trước khi đếm, nếu không mọi phép đếm đều lệch +1.
 
 Tổng hợp per-nhóm:
 ```
@@ -288,6 +315,64 @@ Output lớp 1:
 ```
 HLD | [OK / GAP] | Mô tả vấn đề nếu có
 ```
+
+### Lớp 1b: Chạy lại 13 mục Bước 5B của `datamart-hld-design` (bắt buộc, 1 lần/module)
+
+> **Vì sao cần:** Lớp 1 chỉ kiểm KPI coverage + cấu trúc Section — tức chỉ chạm Section 2. Toàn bộ
+> **Section 1 (Data Lineage)** và **Section 3 (Mô hình tổng thể)** không được review ở bất kỳ lớp nào,
+> trong khi `CLAUDE.md` đã ghi nhận tình huống HLD bị sửa tay giữa hội thoại không qua skill. Khi đó
+> `datamart-review` là chốt chặn cuối — nhưng trước 2026-08-22 nó không kiểm những gì Bước 5B kiểm.
+
+**Không viết lại rule ở đây.** Đọc `.claude/skills/datamart-hld-design/SKILL.md` mục **BƯỚC 5B** và chạy
+đủ 13 mục (#0–#12) trên `Datamart/hld/DTM_{MODULE}_HLD.md`:
+
+| # | Nội dung | Mức khi FAIL |
+|---|---|---|
+| 0 | Cấu trúc 5 Section đúng chuẩn `section_structure.md` | 🔴 Critical |
+| 1 | erDiagram — entity trong quan hệ phải có block định nghĩa cùng khối | 🔴 Critical |
+| 2 | erDiagram — không có Fact-to-Fact reference | 🔴 Critical |
+| 3 | Mọi Dimension/Operational có `Source_System_Code` (kể cả `Calendar_Date_Dimension`) | 🟡 Warning |
+| 4 | Flowchart Section 1 — đủ 3 subgraph `SRC`/`SIL`/`GOLD` | 🟡 Warning |
+| 5 | Mỗi Cụm đúng 1 bảng Datamart | 🟡 Warning |
+| 6 | Node ID Staging không chứa dấu chấm | 🔴 Critical (lỗi parse mermaid) |
+| 7 | Code fence cân bằng | 🔴 Critical (hỏng render) |
+| 8 | KPI_ID liên tục, không trùng lặp | 🔴 Critical |
+| 9 | Mọi node Atomic tồn tại thật ở `DataModel/Atomic/` hoặc `working/Atomic/` | 🔴 Critical |
+| 10 | Số dòng con BA khớp số dòng KPI từng Nhóm | 🔴 Critical |
+| 11 | erDiagram cùng 1 Fact/Dim giống hệt nhau ở mọi Nhóm | 🟡 Warning |
+| 12 | Mọi KPI READY có measure riêng đều có mặt trong erDiagram | 🟡 Warning |
+
+- Chạy **1 lần cho toàn module**, không lặp mỗi Nhóm — kết quả gộp vào bảng vấn đề cấp toàn module.
+- Mục #10 trùng mục đích với 0b.3 — chạy 0b.3 là đủ, không tính 2 lần.
+- FAIL → **Kịch bản C**: trình action đề xuất → chờ user xác nhận → gọi `datamart-hld-design` sửa.
+
+---
+
+### Lớp 2b: Chạy lại 10 TC Phase 1 của `datamart-lld-design` (bắt buộc, 1 lần/module)
+
+**Không viết lại rule ở đây.** Đọc `.claude/skills/datamart-lld-design/SKILL.md` mục **Bước 4 — SELF-REVIEW**
+và chạy đủ 10 testcase trên các file Attributes của module:
+
+| TC | Nội dung | Phạm vi quét |
+|---|---|---|
+| TC1 | Số cột khớp HLD Section 3 | file đang review |
+| TC2 | `etl_logic_type` hợp lệ (+ sub-check driving table) | file |
+| TC2b | `key` hợp lệ theo loại bảng (Fact không có PK; Dim có ≥1 PK + ≥1 BK) | file |
+| TC3 | Đủ prefix `table.column`, JOIN trước dấu `→` (+ TC3b cú pháp `LOOKUP ... ON`) | file |
+| TC4 | Lọc `src_stm_code` đầy đủ (sub-check A/B/C/D) | file |
+| TC5 | Cấu trúc CSV hợp lệ (đúng 15 cột) | file |
+| TC6 | Physical name khớp tất định logical name | **toàn bộ master** |
+| TC7 | Tên bảng/cột đồng nhất xuyên 5 nguồn output | **toàn bộ master** |
+| TC8 | Tiền tố/hậu tố `datamart_table` khớp `table_type` | **toàn bộ `datamart_model.yaml`** |
+| TC9 | `description` không lẫn KPI_ID / từ khoá ETL | file |
+
+> ⚠️ **TC6 và TC8 hiện đang FAIL sẵn trên master** (25 mismatch / 21 lỗi tiền tố, chủ yếu là 21 bảng `_rpt`
+> của TKNB dùng quy ước mã-báo-cáo-đứng-trước chưa được ghi vào rule nào). Khi review, **tách riêng
+> lỗi tồn đọng này khỏi lỗi của module đang review** — không báo lại toàn bộ 25 dòng mỗi lần.
+
+- FAIL → **Kịch bản C**: trình action đề xuất → chờ user xác nhận → gọi `datamart-lld-design` sửa.
+
+---
 
 ### Lớp 2: Review Attributes (Atomic → Datamart)
 

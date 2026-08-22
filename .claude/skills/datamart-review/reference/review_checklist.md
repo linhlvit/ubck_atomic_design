@@ -27,6 +27,11 @@ Checklist chi tiết dùng trong Bước 2 của skill `datamart-review`.
 
 □ Chiều (Slicer/Filter): mọi dòng BA Phân loại = "Chiều" có KPI_ID?
   → Thiếu → Warning
+  → Giá trị thật của cột Phân loại: "Chiều" / "Chỉ tiêu cơ sở" / "Chỉ tiêu phái sinh"
+    (KHÔNG phải "Cơ sở"/"Phái sinh" — filter sai sẽ khớp 0 dòng)
+    Có cả biến thể hoa-thường ("CHIỀU", "cHIỀU") và ô multi-value
+    ("Chiều/Chỉ tiêu cơ sở/Chỉ tiêu phái sinh") → so bằng .strip().lower() + in/startswith
+    Chi tiết: reference/ba_source_profile.md §4
 
 □ KPI coverage HLD → BA (chiều ngược — bắt buộc): mọi KPI_ID trong HLD phải
   có thể truy về ít nhất 1 dòng trong BA analyst (theo tên KPI hoặc mô tả).
