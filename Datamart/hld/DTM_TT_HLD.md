@@ -719,7 +719,7 @@ pie title Cơ cấu vi phạm theo loại hành vi
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
 |---|---|---|---|---|---|
-| K_TT_11 | Số vi phạm theo loại hành vi | Vụ | Base | COUNT(Fact_Inspection_Team_Violation_Behavior) WHERE Year(Decision_Date)=selected_year GROUP BY Violation_Behavior_Name | GROUP BY động — số dòng kết quả tùy `Violation_Behavior_Name` thực tế phát sinh. NULL → gộp 'Khác' (không loại bỏ). Tỷ lệ % tính ở tầng Báo cáo: COUNT(nhóm)/SUM(COUNT toàn bộ nhóm cùng năm) × 100%, không phải KPI Derived |
+| K_TT_11 | Số vi phạm theo loại hành vi | Cuộc | Base | COUNT(DISTINCT Inspection_Team_Dimension.Inspection_Team_Code) trên Fact_Inspection_Team_Violation_Behavior WHERE Year(Decision_Date)=selected_year GROUP BY Violation_Behavior_Name | **Sửa 2026-08-22 (dev yêu cầu):** trước đây COUNT(Fact) / COUNT(DISTINCT Violation_Record_Behavior_Code) — cả hai đều sai so với BA. BA STT 3 cột "Khai thác nguồn" chỉ định đếm `INSPECTION_TEAM.ID`; `VIOLATION_BEHAVIOR` chỉ là chiều. Đơn vị đổi Vụ → Cuộc cho khớp thực thể được đếm. Cùng khuôn với K_TT_46 (Nhóm 13). GROUP BY động — số lát tùy `Violation_Behavior_Name` thực tế phát sinh; NULL → gộp 'Khác' (không loại bỏ). ⚠️ 1 đoàn thanh tra có nhiều hành vi được đếm ở nhiều lát → tổng các lát > tổng số cuộc thanh tra; tỷ lệ % tính ở tầng Báo cáo COUNT(nhóm)/SUM(COUNT toàn bộ nhóm cùng năm) × 100%, KHÔNG lấy mẫu số từ KPI tổng số cuộc thanh tra |
 | K_TT_12 | Phân loại vi phạm | — | Chiều | `COALESCE(Violation_Behavior_Name, 'Khác')` — lấy trực tiếp giá trị thực tế, GROUP BY động | Chiều lọc/nhóm dùng chung cho K_TT_11 |
 
 **Star Schema:**
@@ -1149,7 +1149,7 @@ pie title Cơ cấu kiểm tra theo loại hành vi
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
 |---|---|---|---|---|---|
-| K_TT_30 | Số vi phạm theo loại hành vi (KT) | Cuộc | Base | COUNT(Fact_Examination_Team_Violation_Behavior) WHERE Year(Decision_Date)=selected_year GROUP BY Violation_Behavior_Name | GROUP BY động — số dòng kết quả tùy `Violation_Behavior_Name` thực tế phát sinh. NULL → gộp 'Khác'. Tỷ lệ % tính ở tầng Báo cáo: COUNT(nhóm)/SUM(COUNT toàn bộ nhóm cùng năm) × 100%, không phải KPI Derived |
+| K_TT_30 | Số vi phạm theo loại hành vi (KT) | Cuộc | Base | COUNT(DISTINCT Examination_Team_Dimension.Examination_Team_Code) trên Fact_Examination_Team_Violation_Behavior WHERE Year(Decision_Date)=selected_year GROUP BY Violation_Behavior_Name | **Sửa 2026-08-22 (dev yêu cầu):** trước đây COUNT(Fact) / COUNT(DISTINCT Violation_Record_Behavior_Code) — cả hai đều sai so với BA. BA STT 8 cột "Khai thác nguồn" chỉ định đếm `EXAMINATION_TEAM.ID`; `VIOLATION_BEHAVIOR` chỉ là chiều. Cùng khuôn với K_TT_46 (Nhóm 13). GROUP BY động — NULL → gộp 'Khác'. ⚠️ 1 cuộc kiểm tra có nhiều hành vi được đếm ở nhiều lát → tổng các lát > tổng số cuộc kiểm tra; tỷ lệ % tính ở tầng Báo cáo COUNT(nhóm)/SUM(COUNT toàn bộ nhóm cùng năm) × 100% |
 | K_TT_31 | Phân loại hành vi | — | Chiều | `COALESCE(Violation_Behavior_Name, 'Khác')` — lấy trực tiếp giá trị thực tế, GROUP BY động | Chiều lọc/nhóm dùng chung cho K_TT_30 |
 
 **Star Schema:**
