@@ -18,7 +18,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Chỉ thiết kế theo 6 cột người thiết kế yêu cầu (2026-08-21): ID, DOCUMENTID, CONTENTITEMID, CONTENTITEMVERSIONID, LATEST, CONTENTTYPE. Key của bảng = ID (xác nhận người thiết kế 2026-08-21) — Id/Code Atomic hash từ ID; CONTENTITEMID giữ lại làm attribute nghiệp vụ mô tả (Content Item Code), không dùng làm BK. PUBLISHED/MODIFIEDUTC/PUBLISHEDUTC/CREATEDUTC/OWNER/AUTHOR/DISPLAYTEXT/SITECONTENTITEMID chưa thiết kế trong lượt này."
+  notes: "Chỉ thiết kế theo 6 cột người thiết kế yêu cầu (2026-08-21): ID, DOCUMENTID, CONTENTITEMID, CONTENTITEMVERSIONID, LATEST, CONTENTTYPE. Key của bảng = ID (xác nhận người thiết kế 2026-08-21) — Id/Code Atomic hash từ ID; CONTENTITEMID giữ lại làm attribute nghiệp vụ mô tả (Content Item Code), không dùng làm BK. Bổ sung DISPLAYTEXT (2026-08-24) theo yêu cầu người thiết kế. PUBLISHED/MODIFIEDUTC/PUBLISHEDUTC/CREATEDUTC/OWNER/AUTHOR/SITECONTENTITEMID chưa thiết kế trong lượt này."
 
 attributes:
   - attribute_name: "Administrative Procedure Content Item Index Id"
@@ -140,6 +140,20 @@ attributes:
     status: draft
     source_columns:
       - "TTHC.CONTENTITEMINDEX.CONTENTTYPE"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Display Text"
+    physical_name: "display_text"
+    description: "Tiêu đề/tên content item để hiển thị trong danh sách."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "TTHC.CONTENTITEMINDEX.DISPLAYTEXT"
     comment: null
     classification_context: null
     etl_derived_value: null
