@@ -6788,6 +6788,12 @@ entities:
     description: "Thuộc tính định danh quyết định xử phạt — tách khỏi Fact Penalty Decision theo star schema. Total_Fine_Amount vẫn ở Fact (measure). Grain: 1 row per PENALTY_DECISION (SCD4A)."
     source_atomic:
       - "penalty_decision"
+      - "penalty_decision_subject"
+      - "pd_subject_behavior"
+      - "violation_behavior"
+      - "penalty_decision_x_violation_record"
+      - "violation_record"
+      - "violation_record_behavior"
     modules_using:
       - "TT"
     columns:
@@ -6818,6 +6824,15 @@ entities:
         description: "Mã hệ thống nguồn — filter WHERE = 'THANHTRA_PENALTY_DECISION'"
         source_atomic_table: "penalty_decision"
         source_atomic_column: "penalty_decision.src_stm_code"
+      - logical_name: "Violation Behavior Name"
+        physical_name: "violation_behavior_nm"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: false
+        key: ""
+        description: "Tên hành vi vi phạm của QĐ — ưu tiên nhánh chính (qua đối tượng bị xử phạt) trước nhánh phụ (qua biên bản vi phạm liên kết) trước khi gộp 'Khác'"
+        source_atomic_table: "violation_behavior"
+        source_atomic_column: "violation_behavior.violation_behavior_nm"
 
   - id: "DTM-fct_penalty_decision"
     logical_name: "Fact Penalty Decision"
