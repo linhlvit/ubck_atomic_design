@@ -1016,51 +1016,17 @@ _Không có dim join — nhưng (Sửa 2026-07-22) LEFT JOIN thêm Practitioner 
 
 ## QLCB
 
-**3 bảng flat** · **66 KPI unique**
+**5 bảng flat** · **64 KPI unique**
 
 ---
 
-### `datamart.qlcb_fact_securities_offering_flat`
+### `datamart.qlcb_fct_securities_offering_snpst_flat`
 
 | Thuộc tính | Giá trị |
 |------------|---------|
 | **Loại** | `fact` |
-| **Entity nguồn** | Fact Securities Offering |
-| **Bảng fact/operational** | `datamart.qlcb_fact_securities_offering` |
-| **PK** | `—` |
-| **Số dim join** | 3 |
-
-**Joins (FK → PK)**
-
-| Dimension Entity | Bảng Dim | FK (Fact) | PK (Dim) | SCD2 |
-|-----------------|----------|-----------|----------|:----:|
-| Calendar Date Dimension | `datamart.qlcb_calendar_date_dimension` | `ssc_official_document_date_dimension_id` | `date_dimension_id` | ✗ |
-| Public Company Dimension | `datamart.qlcb_public_company_dimension` | `public_company_dimension_id` | `public_company_dimension_id` | ✗ |
-| Industry Category Dimension | `datamart.qlcb_industry_category_dimension` | `industry_category_dimension_id` | `industry_category_dimension_id` | ✗ |
-
-**Nhóm KPI**
-
-| Nhóm | Số KPI unique |
-|------|:-------------:|
-| Nhóm 1 — Tình hình chào bán | 6 |
-| Nhóm 2 — Cấp phép theo loại hình | 7 |
-| Nhóm 3 — Huy động theo loại hình | 6 |
-| Nhóm 4 — Bảng chi tiết | 1 |
-| Nhóm 10 — Cấp phép chào bán | 1 |
-| Nhóm 11 — Kết quả chào bán | 1 |
-| Nhóm 5 — KPI Cards | 5 |
-| Nhóm 6 — Biểu đồ donut | 2 |
-| Nhóm 7 — Bảng chi tiết hồ sơ | 7 |
-
----
-
-### `datamart.qlcb_fact_securities_offering_application_flat`
-
-| Thuộc tính | Giá trị |
-|------------|---------|
-| **Loại** | `fact` |
-| **Entity nguồn** | Fact Securities Offering Application |
-| **Bảng fact/operational** | `datamart.qlcb_fact_securities_offering_application` |
+| **Entity nguồn** | Fact Securities Offering Snapshot |
+| **Bảng fact/operational** | `datamart.fct_securities_offering_snpst` |
 | **PK** | `—` |
 | **Số dim join** | 2 |
 
@@ -1068,21 +1034,104 @@ _Không có dim join — nhưng (Sửa 2026-07-22) LEFT JOIN thêm Practitioner 
 
 | Dimension Entity | Bảng Dim | FK (Fact) | PK (Dim) | SCD2 |
 |-----------------|----------|-----------|----------|:----:|
-| Calendar Date Dimension | `datamart.qlcb_calendar_date_dimension` | `submission_date_dimension_id` | `date_dimension_id` | ✗ |
-| Offering Type Dimension | `datamart.qlcb_offering_type_dimension` | `offering_type_dimension_id` | `offering_type_dimension_id` | ✗ |
+| Calendar Date Dimension | `datamart.cdr_dt_dim` | `snpst_dt_dim_id`, `certificate_dt_dim_id` | `cdr_dt_dim_id` | ✗ |
+| Public Company Dimension | `datamart.public_company_dim` | `public_company_dim_id` | `public_company_dim_id` | ✗ |
 
-_Chưa có KPI mapping vào bảng flat này._
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| Nhóm 1 — Tình hình thực hiện chào bán phát hành theo ngành | 5 |
 
 ---
 
-### `datamart.qlcb_securities_offering_360_profile_flat`
+### `datamart.qlcb_fct_securities_offering_plan_snpst_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `fact` |
+| **Entity nguồn** | Fact Securities Offering Plan Snapshot |
+| **Bảng fact/operational** | `datamart.fct_securities_offering_plan_snpst` |
+| **PK** | `—` |
+| **Số dim join** | 3 |
+
+**Joins (FK → PK)**
+
+| Dimension Entity | Bảng Dim | FK (Fact) | PK (Dim) | SCD2 |
+|-----------------|----------|-----------|----------|:----:|
+| Calendar Date Dimension | `datamart.cdr_dt_dim` | `snpst_dt_dim_id`, `certificate_dt_dim_id` | `cdr_dt_dim_id` | ✗ |
+| Public Company Dimension | `datamart.public_company_dim` | `public_company_dim_id` | `public_company_dim_id` | ✗ |
+| Offering Method Dimension | `datamart.offering_method_dim` | `offering_method_dim_id` | `offering_method_dim_id` | ✗ |
+
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| Nhóm 2 — Giá trị cấp phép chào bán phát hành theo ngành | 7 |
+
+---
+
+### `datamart.qlcb_fct_securities_offering_result_snpst_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `fact` |
+| **Entity nguồn** | Fact Securities Offering Result Snapshot |
+| **Bảng fact/operational** | `datamart.fct_securities_offering_result_snpst` |
+| **PK** | `—` |
+| **Số dim join** | 3 |
+
+**Joins (FK → PK)**
+
+| Dimension Entity | Bảng Dim | FK (Fact) | PK (Dim) | SCD2 |
+|-----------------|----------|-----------|----------|:----:|
+| Calendar Date Dimension | `datamart.cdr_dt_dim` | `snpst_dt_dim_id`, `certificate_dt_dim_id` | `cdr_dt_dim_id` | ✗ |
+| Public Company Dimension | `datamart.public_company_dim` | `public_company_dim_id` | `public_company_dim_id` | ✗ |
+| Offering Method Dimension | `datamart.offering_method_dim` | `offering_method_dim_id` | `offering_method_dim_id` | ✗ |
+
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| Nhóm 3 — Giá trị phát hành theo hình thức phát hành và nhóm ngành | 7 |
+
+---
+
+### `datamart.qlcb_fct_securities_offering_application_snpst_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `fact` |
+| **Entity nguồn** | Fact Securities Offering Application Snapshot |
+| **Bảng fact/operational** | `datamart.fct_securities_offering_application_snpst` |
+| **PK** | `—` |
+| **Số dim join** | 3 |
+
+**Joins (FK → PK)**
+
+| Dimension Entity | Bảng Dim | FK (Fact) | PK (Dim) | SCD2 |
+|-----------------|----------|-----------|----------|:----:|
+| Calendar Date Dimension | `datamart.cdr_dt_dim` | `snpst_dt_dim_id`, `submission_dt_dim_id` | `cdr_dt_dim_id` | ✗ |
+| Administrative Procedure Application Status Dimension | `datamart.ap_application_status_dim` | `ap_application_status_dim_id` | `ap_application_status_dim_id` | ✗ |
+| Administrative Procedure Application Type Dimension | `datamart.ap_application_tp_dim` | `ap_application_tp_dim_id` | `ap_application_tp_dim_id` | ✗ |
+
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| Nhóm 5 — Tỷ lệ xử lý hồ sơ | 4 |
+| Nhóm 6 — Bảng Chi tiết hồ sơ chào bán & phát hành | 7 |
+
+---
+
+### `datamart.qlcb_opr_securities_offering_360_profile_flat`
 
 | Thuộc tính | Giá trị |
 |------------|---------|
 | **Loại** | `operational` |
-| **Entity nguồn** | Securities Offering 360 Profile |
-| **Bảng fact/operational** | `datamart.qlcb_securities_offering_360_profile` |
-| **PK** | `securities_offering_id` |
+| **Entity nguồn** | Operational Securities Offering 360 Profile |
+| **Bảng fact/operational** | `datamart.opr_securities_offering_360_profile` |
+| **PK** | `securities_offering_code, offering_method_code` |
 | **Số dim join** | 0 |
 
 _Không có dim join (operational / self-contained table)._
@@ -1091,11 +1140,11 @@ _Không có dim join (operational / self-contained table)._
 
 | Nhóm | Số KPI unique |
 |------|:-------------:|
-| Nhóm 4 — Bảng chi tiết | 10 |
-| Nhóm 8 — Thông tin cơ sở | 6 |
-| Nhóm 9 — Công văn cấp phép | 5 |
-| Nhóm 10 — Cấp phép chào bán | 5 |
-| Nhóm 11 — Kết quả chào bán | 4 |
+| Nhóm 4 — Bảng Chi tiết số lượng chứng khoán Chào bán & Phát hành | 12 |
+| Nhóm 7 — Thông tin cơ sở | 6 |
+| Nhóm 8 — Công văn cấp phép | 5 |
+| Nhóm 9 — Cấp phép chào bán | 6 |
+| Nhóm 10 — Kết quả chào bán | 5 |
 
 ---
 
