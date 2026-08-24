@@ -200,48 +200,74 @@ flowchart LR
 
 ---
 
-##### Cụm 3: Hồ sơ đăng ký chào bán (IDS)
+##### Cụm 3: Hồ sơ đăng ký chào bán (TTHC)
 
 Phục vụ Tab HỒ SƠ ĐĂNG KÝ CHÀO BÁN — Nhóm 5 (Tỷ lệ xử lý hồ sơ — KPI Card + donut), Nhóm 6 (bảng chi tiết hồ sơ theo hình thức × năm).
 
-> Toàn bộ chỉ tiêu hồ sơ đăng ký lấy trực tiếp từ `IDS.SECURITIES_OFFERING.APPROVAL_STATUS_CD` trên entity `Public Company Securities Offering` (cùng entity dùng ở Cụm 1a/1b/1c/2). `Application Status Code` là **direct map** từ `approval_status_code` (4 giá trị: `PENDING_REVIEW`/`PENDING_APPROVE`/`APPROVED`/`REJECTED`).
+> **ĐỔI NGUỒN 2026-08-24 (task Dũng — BA sheet cập nhật 2026-08-24): IDS → TTHC.** Toàn bộ chỉ tiêu Nhóm 5/6 chuyển từ `IDS.SECURITIES_OFFERING.APPROVAL_STATUS_CD` (entity `Public Company Securities Offering`) sang hệ thống TTHC (Orchard Core CMS): `TTHC.DOCUMENT` (nội dung JSON của hồ sơ) + `TTHC.CONTENTITEMINDEX` (index/metadata content item). Hồ sơ = content item `CONTENTTYPE = 'HoSoTTHC'`, lọc `LATEST = 1 AND PUBLISHED = 1`, giới hạn phạm vi nghiệp vụ bằng `CoQuanXuLy → DISPLAYTEXT = 'Ban Quản lý chào bán chứng khoán'`.
 >
-> **FIX 2026-08-14 — đổi grain đếm theo BA cập nhật:** BA cập nhật lại câu lệnh tham khảo Nhóm 5/6 — `plan_agg` không còn `GROUP BY securities_offering_id` (trước đó gom 1 dòng/hồ sơ bằng `MIN(offering_method_cd)`), và công thức đếm đổi từ `COUNT(DISTINCT application_cd)` sang `COUNT(CASE WHEN approval_status_cd = 'X' THEN 1 END)` không DISTINCT. Nghĩa là 1 hồ sơ có N loại hình chào bán (N dòng `Public Company Securities Offering Plan`) được tính N lần — đếm theo **hồ sơ × loại hình**, không còn đếm theo hồ sơ duy nhất. Xác nhận với user: đây là business rule thật (bám sát câu lệnh BA), không phải lỗi soạn SQL — **revert lại fix trước đó (2026-08-12, COUNT DISTINCT application_cd)**. Nhóm 5 từ nay dùng chung grain với Nhóm 6 (1 row = 1 hồ sơ × 1 loại hình) — không còn khác biệt về grain giữa 2 Nhóm.
+> 4 trường nghiệp vụ được parse từ `DOCUMENT.CONTENT` (JSON) **tại tầng ODS** — đã có sẵn trên Atomic `Administrative Procedure Document`:
+>
+> | JSON path (SQL BA STT 5/6) | Atomic attribute | Vai trò |
+> |---|---|---|
+> | `$.HoSoTTHC.TrangThaiHoSo.ContentItemIds[0]` | `Document Status Code` | ref → trạng thái hồ sơ (Nhóm 5 + 6) |
+> | `$.HoSoTTHC.LoaiHoSo.ContentItemIds[0]` | `Offering Method Code` | ref → hình thức chào bán (Nhóm 6) |
+> | `$.HoSoTTHC.CoQuanXuLy.ContentItemIds[0]` | `Processing Authority Code` | ref → cơ quan xử lý (filter phạm vi) |
+> | `$.HoSoTTHC.NgayGuiHoSo.Value` | `Submission Date` | chiều thời gian |
+>
+> Cả 3 ref trên đều mang giá trị `CONTENTITEMID` (GUID) — muốn ra tên hiển thị phải self-join `CONTENTITEMINDEX` lấy `DISPLAYTEXT`. Đây là gốc của điểm chặn Atomic ở dưới.
+>
+> **ĐÃ GIẢI QUYẾT 2026-08-24 — Atomic đã bổ sung `display_text`.** `Administrative Procedure Content Item Index` (`ap_content_item_index`) nay có attribute `Display Text` / `display_text` ← `TTHC.CONTENTITEMINDEX.DISPLAYTEXT` (Text, nullable) — entity approved tăng từ 9 lên 10 attribute. Đây là trường dùng để resolve 3 `CONTENTITEMID` (`TrangThaiHoSo`, `LoaiHoSo`, `CoQuanXuLy`) thành tên hiển thị, nền tảng cho toàn bộ phân loại 4 nhóm trạng thái, nhãn hình thức chào bán và filter cơ quan xử lý. Toàn bộ K_QLCB_32–42 chuyển từ PENDING sang **READY (Atomic draft)**. Xem O_QLCB_10 (Closed).
+>
+> **Không cần cột `PUBLISHED` ở tầng Datamart** (chốt với người thiết kế 2026-08-24): thiết kế Atomic đã lọc theo cột này ngay khi nạp `ap_content_item_index`, nên mọi dòng Atomic đã là content item **hiện hành + đã xuất bản** — Datamart không lặp lại điều kiện `PUBLISHED = 1` của SQL BA. Tương tự `LATEST = 1` đã được dedup tại Atomic (grain "1 dòng = 1 content item hiện hành", xem `TTHC_HLD_Tier2.md` D-06).
+>
+> **ĐỔI GRAIN 2026-08-24:** grain mới = **1 row / 1 hồ sơ TTHC** (`CONTENTITEMID` của content item `HoSoTTHC`). Rule cũ *"1 hồ sơ × N loại hình đếm N lần"* (FIX 2026-08-14, dựa trên `IDS.SECURITIES_OFFERING_PLAN`) **mất hiệu lực** — TTHC mỗi hồ sơ chỉ có đúng 1 `LoaiHoSo`, không có bảng Plan tách riêng. SQL BA mới đếm `COUNT(*)` trên grain 1 hồ sơ. Nhóm 5 và Nhóm 6 tiếp tục dùng chung 1 Fact.
+>
+> **ĐỔI TRỤC THỜI GIAN 2026-08-24:** từ `certificate_date` (ngày cấp giấy chứng nhận, IDS) sang `NgayGuiHoSo` (ngày gửi hồ sơ, TTHC). Fact lưu grain **ngày** (`Submission Date` đã TRUNC về DATE), KPI Nhóm 6 GROUP BY **năm** — chốt với người thiết kế 2026-08-24: khớp cột `Thông tin = Năm` của BA và giữ nguyên hình thức bảng chi tiết hiện tại, trong khi vẫn drill-down được xuống ngày. Lưu ý số liệu theo năm **sẽ khác hẳn** bản IDS cũ vì đổi cả ý nghĩa trục thời gian lẫn grain.
+>
+> **Công thức `ngay_gui_ho_so` — đã thống nhất (xác nhận người thiết kế 2026-08-24):** BA dùng **một công thức duy nhất** cho cả STT 5 và STT 6 — bản có xử lý múi giờ: `TO_TIMESTAMP(SUBSTR(json,1,19) DEFAULT NULL ON CONVERSION ERROR, 'YYYY-MM-DD"T"HH24:MI:SS')` → `FROM_TZ(..., CASE WHEN json LIKE '%Z' THEN 'UTC' ELSE 'Asia/Ho_Chi_Minh' END)` → `AT TIME ZONE 'Asia/Ho_Chi_Minh'` → `CAST(... AS TIMESTAMP)`. Khớp đúng phương án thiết kế đã chọn trước đó, nên **không phải sửa gì** ở Fact/Dimension/Detail Mapping/flat table. `DEFAULT NULL ON CONVERSION ERROR` cho biết chuỗi ngày sai định dạng sẽ ra NULL — đúng cơ sở cho filter `ap_document.submission_dt IS NOT NULL` của Fact. Datamart tiêu thụ `ap_document.submission_dt` (Atomic khai `data_domain: Date`), tức ODS chịu trách nhiệm `TRUNC` kết quả TIMESTAMP trên về DATE. Xem O_QLCB_11.
 
 ```mermaid
 flowchart LR
     subgraph SRC["Staging"]
-        IDS_SECURITIES_OFFERING["IDS.SECURITIES_OFFERING"]
-        IDS_SECURITIES_OFFERING_PLAN["IDS.SECURITIES_OFFERING_PLAN"]
+        TTHC_DOCUMENT["TTHC.DOCUMENT"]
+        TTHC_CONTENTITEMINDEX["TTHC.CONTENTITEMINDEX"]
         ECAT_ECAT_29_HolidayInfo["ECAT.ECAT_29_HolidayInfo"]
     end
 
     subgraph SIL["Atomic"]
-        Public_Company_Securities_Offering["Public Company Securities Offering"]
-        Public_Company_Securities_Offering_Plan["Public Company Securities Offering Plan"]
+        Administrative_Procedure_Document["Administrative Procedure Document"]
+        Administrative_Procedure_Content_Item_Index["Administrative Procedure Content Item Index"]
         Calendar_Date["Calendar Date"]
     end
 
     subgraph GOLD["Datamart"]
         fct_securities_offering_application_snpst["Fact Securities Offering Application Snapshot"]
         cdr_dt_dim["Calendar Date Dimension"]
-        offering_method_dim["Offering Method Dimension"]
+        ap_application_status_dim["Administrative Procedure Application Status Dimension"]
+        ap_application_tp_dim["Administrative Procedure Application Type Dimension"]
     end
 
-    IDS_SECURITIES_OFFERING --> Public_Company_Securities_Offering
-    IDS_SECURITIES_OFFERING_PLAN --> Public_Company_Securities_Offering_Plan
+    TTHC_DOCUMENT --> Administrative_Procedure_Document
+    TTHC_CONTENTITEMINDEX --> Administrative_Procedure_Content_Item_Index
     ECAT_ECAT_29_HolidayInfo --> Calendar_Date
 
-    Public_Company_Securities_Offering --> fct_securities_offering_application_snpst
-    Public_Company_Securities_Offering_Plan --> fct_securities_offering_application_snpst
-    Public_Company_Securities_Offering_Plan --> offering_method_dim
+    Administrative_Procedure_Document --> fct_securities_offering_application_snpst
+    Administrative_Procedure_Content_Item_Index --> fct_securities_offering_application_snpst
+    Administrative_Procedure_Content_Item_Index --> ap_application_status_dim
+    Administrative_Procedure_Content_Item_Index --> ap_application_tp_dim
     Calendar_Date --> cdr_dt_dim
 
     cdr_dt_dim --> fct_securities_offering_application_snpst
-    offering_method_dim --> fct_securities_offering_application_snpst
+    ap_application_status_dim --> fct_securities_offering_application_snpst
+    ap_application_tp_dim --> fct_securities_offering_application_snpst
 ```
 
-> **Ghi chú lineage (FIX 2026-08-14):** `Fact Securities Offering Application Snapshot` grain = 1 row/hồ sơ (`Public Company Securities Offering`) × 1 loại hình chào bán (`Public Company Securities Offering Plan`) × 1 ngày snapshot (ETL full-scan hàng ngày để `Application_Status_Code` luôn phản ánh đúng trạng thái xử lý mới nhất), `Application_Status_Code` direct map từ `approval_status_code`. Trước đây (2026-08-12) grain chỉ 1 row/hồ sơ (đếm COUNT DISTINCT); nay theo BA cập nhật, `Public Company Securities Offering Plan` là driving JOIN thứ 2 của Fact (LEFT JOIN không GROUP BY) — 1 hồ sơ có N Plan sinh N dòng Fact, giữ NULL nếu hồ sơ chưa có Plan. `Offering Method Dimension` (dùng ở Nhóm 6, reuse từ Cụm 1b/1c) nguồn từ `Public Company Securities Offering Plan.offering_method_code`.
+> **Ghi chú lineage (ĐỔI NGUỒN 2026-08-24):** `Fact Securities Offering Application Snapshot` được **repoint** sang TTHC (giữ nguyên tên bảng và toàn bộ KPI_ID K_QLCB_32–42 — chốt với người thiết kế 2026-08-24, `reuse_status = partial`). Driving entity = `Administrative Procedure Content Item Index` lọc `Content Type Code = 'HoSoTTHC'` + `Latest Indicator = 1` + `Published Indicator = 1`, join `Administrative Procedure Document` theo `Administrative Procedure Document Id` để lấy 4 trường parse từ JSON. Grain = 1 row / 1 hồ sơ (`Content Item Code`), vẫn giữ tính chất Snapshot: ETL full-scan hàng ngày vì `Document Status Code` phản ánh trạng thái xử lý **hiện hành** của hồ sơ (`LATEST = 1`), không phải lịch sử chuyển trạng thái.
+>
+> `Administrative Procedure Application Status Dimension` và `Administrative Procedure Application Type Dimension` đều lấy từ `Administrative Procedure Content Item Index` (self-reference: content item được trỏ tới bởi `TrangThaiHoSo`/`LoaiHoSo`), dùng `display_text` làm tên hiển thị.
+>
+> **KHÔNG reuse `Offering Method Dimension`** cho Nhóm 6 nữa: dimension đó đang phục vụ K_QLCB_6–19 (Nhóm 2/3) với nguồn `IDS.SECURITIES_OFFERING_PLAN.offering_method_code` — repoint sang TTHC sẽ phá 14 KPI của 2 Nhóm khác. Hệ quả: sau thay đổi, dashboard QLCB có **2 danh mục "hình thức chào bán" song song** (Nhóm 2/3 theo `IDS_SO_OFFERING_METHOD`, Nhóm 6 theo `display_text` của `TTHC.LoaiHoSo`) — xem O_QLCB_13.
 
 ---
 
@@ -291,11 +317,13 @@ flowchart LR
 ```mermaid
 erDiagram
     Calendar_Date_Dimension {
-        string Date_Dimension_Id PK
-        date Full_Date
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
         int Year
         int Quarter
         int Month
+        boolean Holiday_Flag
+        string Source_System_Code
     }
     Public_Company_Dimension {
         string Public_Company_Dimension_Id PK
@@ -400,11 +428,13 @@ flowchart LR
 ```mermaid
 erDiagram
     Calendar_Date_Dimension {
-        string Date_Dimension_Id PK
-        date Full_Date
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
         int Year
         int Quarter
         int Month
+        boolean Holiday_Flag
+        string Source_System_Code
     }
     Offering_Method_Dimension {
         string Offering_Method_Dimension_Id PK
@@ -433,7 +463,7 @@ erDiagram
 
     Calendar_Date_Dimension ||--o{ Fact_Securities_Offering_Plan_Snapshot : " "
     Offering_Method_Dimension ||--o{ Fact_Securities_Offering_Plan_Snapshot : " "
-    Fact_Securities_Offering_Plan_Snapshot }o--|| Public_Company_Dimension : " "
+    Public_Company_Dimension ||--o{ Fact_Securities_Offering_Plan_Snapshot : " "
 ```
 
 > **Ghi chú Phase 2:**
@@ -509,11 +539,13 @@ flowchart LR
 ```mermaid
 erDiagram
     Calendar_Date_Dimension {
-        string Date_Dimension_Id PK
-        date Full_Date
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
         int Year
         int Quarter
         int Month
+        boolean Holiday_Flag
+        string Source_System_Code
     }
     Offering_Method_Dimension {
         string Offering_Method_Dimension_Id PK
@@ -542,7 +574,7 @@ erDiagram
 
     Calendar_Date_Dimension ||--o{ Fact_Securities_Offering_Result_Snapshot : " "
     Offering_Method_Dimension ||--o{ Fact_Securities_Offering_Result_Snapshot : " "
-    Fact_Securities_Offering_Result_Snapshot }o--|| Public_Company_Dimension : " "
+    Public_Company_Dimension ||--o{ Fact_Securities_Offering_Result_Snapshot : " "
 ```
 
 > **Ghi chú Phase 2:** Cùng `Calendar_Date_Dimension`, `Offering_Method_Dimension`, `Public_Company_Dimension` (reuse `public_company_dim`, schema đầy đủ xem Nhóm 1/2) với Nhóm 2 — không thiết kế lại logic, chỉ lặp lại block để Star Schema Nhóm 3 tự đứng độc lập, không có node rỗng.
@@ -708,7 +740,9 @@ flowchart LR
 #### Nhóm 5 — Tỷ lệ xử lý hồ sơ (STT 5)
 
 > Phân loại: **Phân tích**
-> Atomic: `Public Company Securities Offering` ← IDS.SECURITIES_OFFERING — **READY** (Atomic draft — chưa approved chính thức)
+> Atomic: `Administrative Procedure Content Item Index` ← TTHC.CONTENTITEMINDEX — **READY** (Atomic draft) — *`display_text` đã được Atomic bổ sung 2026-08-24, O_QLCB_10 Closed*
+> Atomic: `Administrative Procedure Document` ← TTHC.DOCUMENT — **READY** (Atomic draft)
+> Ghi chú: ĐỔI NGUỒN 2026-08-24 (task Dũng) — trước đây `Public Company Securities Offering` ← IDS.SECURITIES_OFFERING. Xem Cụm 3.
 
 **Mockup (a) — 4 KPI Card:**
 
@@ -716,16 +750,19 @@ flowchart LR
 |---|---|---|---|
 | 19% | 31% | 42% | 11% |
 
-**Mockup (b) — Donut GROUP BY trạng thái:**
+**Mockup (b) — Donut GROUP BY nhóm trạng thái:**
 
-| Trạng thái | Số lượng | Tỷ lệ % |
+| Nhóm trạng thái | Số lượng | Tỷ lệ % |
 |---|---|---|
-| Chờ xử lý | 24 | 19% |
-| Đang xử lý | 38 | 31% |
-| Đã cấp phép | 72 | 42% |
-| Bị từ chối | 14 | 11% |
+| Hồ sơ đăng ký | 24 | 16% |
+| Hồ sơ đang xử lý | 38 | 26% |
+| Hồ sơ đã được chấp thuận | 72 | 49% |
+| Hồ sơ bị từ chối | 14 | 9% |
+| Chưa xác định | 0 | 0% |
 
 > **Lưu ý:** Cả 2 mockup cùng dùng 4 KPI Tỷ lệ % bên dưới — (a) hiển thị dạng 4 card riêng biệt (chỉ %), (b) hiển thị dạng GROUP BY pivot trên cùng 1 Fact (cả số lượng lẫn %). Tên dashboard gốc BA là "Tỷ lệ xử lý hồ sơ" — xác nhận toàn bộ 4 KPI của Nhóm này là tỷ lệ %, không phải số lượng thuần.
+>
+> **Lát thứ 5 "Chưa xác định" (chốt 2026-08-24):** SQL BA STT 5 phân loại trạng thái bằng `CASE WHEN ts.DISPLAYTEXT IN (…)` với nhánh `ELSE 'Chưa xác định - kiểm tra lại danh mục'`, và lấy `SUM(COUNT(*)) OVER ()` — tức **mẫu số gồm cả nhóm này**. Thiết kế giữ đúng BA: mẫu số = tổng toàn bộ hồ sơ trong phạm vi, và donut hiển thị **cả 5 lát** để 5 lát cộng đủ 100% đồng thời phơi ra những trạng thái chưa được phân loại (dùng làm tín hiệu bổ sung danh mục). Lát thứ 5 **không có KPI_ID riêng** vì BA STT 5 chỉ định nghĩa 4 chỉ tiêu — nếu nghiệp vụ muốn theo dõi chính thức thì BA phải bổ sung dòng, xem O_QLCB_12.
 
 **Source:** `Fact Securities Offering Application Snapshot`
 
@@ -733,18 +770,30 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_QLCB_32 | Tỷ lệ hồ sơ đăng ký | % | Phái sinh | `COUNT(Application Code WHERE Application Status Code = 'PENDING_REVIEW') / COUNT(Application Code WHERE Application Status Code IN ('PENDING_REVIEW','PENDING_APPROVE','APPROVED','REJECTED')) * 100` | FIX 2026-08-14 (v2): sửa lại đúng theo BA — BA STT=5 mô tả 4 dòng là "Tỷ lệ hồ sơ X = Số lượng hồ sơ X / Tổng số lượng hồ sơ" (Phân loại = Chỉ tiêu phái sinh), không phải COUNT thuần. Tính chất đổi từ Cơ sở → Phái sinh. Theo nguyên tắc tổ chức: phép chia tỷ lệ phải thể hiện ở Detail Mapping, không tính ở dashboard | READY |
-| K_QLCB_33 | Tỷ lệ hồ sơ đang xử lý | % | Phái sinh | `COUNT(Application Code WHERE Application Status Code = 'PENDING_APPROVE') / COUNT(Application Code WHERE Application Status Code IN ('PENDING_REVIEW','PENDING_APPROVE','APPROVED','REJECTED')) * 100` | FIX 2026-08-14 (v2): cùng lý do K_QLCB_32 | READY |
-| K_QLCB_34 | Tỷ lệ hồ sơ đã chấp thuận | % | Phái sinh | `COUNT(Application Code WHERE Application Status Code = 'APPROVED') / COUNT(Application Code WHERE Application Status Code IN ('PENDING_REVIEW','PENDING_APPROVE','APPROVED','REJECTED')) * 100` | FIX 2026-08-14 (v2): cùng lý do K_QLCB_32 | READY |
-| K_QLCB_35 | Tỷ lệ hồ sơ bị từ chối | % | Phái sinh | `COUNT(Application Code WHERE Application Status Code = 'REJECTED') / COUNT(Application Code WHERE Application Status Code IN ('PENDING_REVIEW','PENDING_APPROVE','APPROVED','REJECTED')) * 100` | FIX 2026-08-14 (v2): cùng lý do K_QLCB_32 | READY |
+| K_QLCB_32 | Tỷ lệ hồ sơ đăng ký | % | Phái sinh | `COUNT(Application Item Code WHERE Application Status Group Code = 'REGISTERED') / COUNT(Application Item Code) * 100` | **ĐỔI NGUỒN 2026-08-24:** mẫu số theo SQL BA mới = `SUM(COUNT(*)) OVER ()` — tổng **toàn bộ** hồ sơ trong phạm vi, gồm cả nhóm `UNDEFINED` (khác bản IDS cũ liệt kê cứng 4 trạng thái). Tử số đổi từ `approval_status_cd = 'PENDING_REVIEW'` sang nhóm trạng thái TTHC `REGISTERED`. Giữ Tính chất Phái sinh + phép chia tại Detail Mapping (quyết định FIX 2026-08-14 v2 vẫn hiệu lực) | READY (Atomic draft) |
+| K_QLCB_33 | Tỷ lệ hồ sơ đang xử lý | % | Phái sinh | `COUNT(Application Item Code WHERE Application Status Group Code = 'IN_PROGRESS') / COUNT(Application Item Code) * 100` | ĐỔI NGUỒN 2026-08-24: cùng lý do K_QLCB_32. Nhóm `IN_PROGRESS` gom **30 giá trị** `display_text` theo SQL BA | READY (Atomic draft) |
+| K_QLCB_34 | Tỷ lệ hồ sơ đã chấp thuận | % | Phái sinh | `COUNT(Application Item Code WHERE Application Status Group Code = 'APPROVED') / COUNT(Application Item Code) * 100` | ĐỔI NGUỒN 2026-08-24: cùng lý do K_QLCB_32. Nhóm `APPROVED` gom 4 giá trị | READY (Atomic draft) |
+| K_QLCB_35 | Tỷ lệ hồ sơ bị từ chối | % | Phái sinh | `COUNT(Application Item Code WHERE Application Status Group Code = 'REJECTED') / COUNT(Application Item Code) * 100` | ĐỔI NGUỒN 2026-08-24: cùng lý do K_QLCB_32. Nhóm `REJECTED` gom 9 giá trị | READY (Atomic draft) |
 
-> **Ghi chú `Application Code`:** Direct map từ `Public Company Securities Offering.application_cd` (IDS.SECURITIES_OFFERING.APPLICATION_CD) — mã hồ sơ đăng ký, khác `Securities_Offering_Code` (mã đợt chào bán). **FIX 2026-08-14:** grain đếm KPI Nhóm 5/6 theo BA cập nhật dùng `COUNT(Application Code)` không DISTINCT — Fact grain = 1 row/hồ sơ × 1 loại hình (Plan), nên 1 hồ sơ có N Plan được đếm N lần. Đây là revert của fix 2026-08-12 (khi đó BA yêu cầu COUNT DISTINCT, đếm theo hồ sơ duy nhất) — xác nhận với user 2026-08-14: bám sát đúng câu lệnh SQL BA mới cung cấp.
+> **Ghi chú `Application Item Code`:** Degenerate Dimension trên Fact — BK hồ sơ TTHC, direct map từ `Administrative Procedure Content Item Index.Content Item Code` (`TTHC.CONTENTITEMINDEX.CONTENTITEMID`). **ĐỔI NGUỒN 2026-08-24:** thay thế `Application Code` (IDS `application_cd`) và `Securities Offering Code` của thiết kế cũ. Vì grain Fact mới = 1 row/1 hồ sơ, `COUNT(Application Item Code)` = `COUNT(*)` của SQL BA — không cần DISTINCT. Rule cũ "1 hồ sơ có N Plan đếm N lần" (FIX 2026-08-14) không còn áp dụng.
 
-> **Ghi chú `Application Status Code`:** Direct map từ `Public Company Securities Offering.approval_status_code` (IDS.SECURITIES_OFFERING.APPROVAL_STATUS_CD). 4 giá trị nguồn: `PENDING_REVIEW` (đăng ký), `PENDING_APPROVE` (đang xử lý), `APPROVED` (đã cấp phép), `REJECTED` (bị từ chối).
-
-> **FIX 2026-08-14 (v2) — Tỷ lệ % tính DERIVED tại Detail Mapping, không tính ở dashboard:** Thay thế quyết định thiết kế cũ ("lưu số lượng, không lưu tỷ lệ — % tính ở lớp dashboard"). Theo nguyên tắc tổ chức: bước Datamart → Chỉ tiêu (Detail Mapping) phải thể hiện đầy đủ logic tính toán; presentation layer chỉ được lấy dữ liệu 1-1, không tự tính toán thêm. Do đó K_QLCB_32-35 là DERIVED tỷ lệ % có `logic` phép chia tường minh ngay tại Detail Mapping, có KPI_ID riêng — dashboard chỉ hiển thị (a) 4 card % hoặc (b) donut pivot, không tự thực hiện phép chia nào.
+> **Ghi chú `Application Status Group Code` — danh mục 4+1 nhóm:** Không phải direct map. SQL BA phân loại bằng `CASE WHEN ts.DISPLAYTEXT IN (...)` trên **47 giá trị trạng thái** của workflow TTHC, gom thành 4 nhóm + `ELSE`:
 >
-> **FIX 2026-08-14 — Nhóm 5 dùng chung grain với Nhóm 6:** Trước đây Nhóm 5 và Nhóm 6 khác grain (Nhóm 5 = 1 row/hồ sơ, Nhóm 6 = 1 row/hồ sơ × loại hình). Theo SQL BA cập nhật, cả 2 Nhóm nay dùng chung 1 Fact với grain 1 row/hồ sơ × 1 loại hình — KPI Nhóm 5 (K_QLCB_32-35) chỉ là tỷ lệ % không GROUP BY theo loại hình (không hiển thị `Offering_Method_Dimension_Id` trên UI), còn Nhóm 6 (K_QLCB_38-42) thêm GROUP BY `Offering_Method_Dimension_Id` + năm, giữ nguyên số lượng thuần (không phải %).
+> | `Application Status Group Code` | Nhãn BA | Số giá trị `display_text` | Ví dụ giá trị |
+> |---|---|---|---|
+> | `REGISTERED` | Hồ sơ đăng ký | 4 | `Mới tạo`, `Chờ VP tiếp nhận`, `Hồ sơ hợp lệ`, `Hồ Sơ Chưa Đầy Đủ` |
+> | `IN_PROGRESS` | Hồ sơ đang xử lý | 30 | `Chờ NV xử lý`, `Chờ LĐCM Phân Công`, `Yêu cầu bổ sung`, … |
+> | `APPROVED` | Hồ sơ đã được chấp thuận | 4 | `Đã phê duyệt - Chuyển trả VP`, `LĐCM Đã Ký Kết Quả Chấp Thuận`, `Đã Cấp Phép`, … |
+> | `REJECTED` | Hồ sơ bị từ chối | 9 | `Hủy Hồ Sơ`, `Trả lại`, `Hồ Sơ Bị Từ Chối Giải Quyết`, `Hồ sơ quá hạn bổ sung`, … |
+> | `UNDEFINED` | Chưa xác định | nhánh `ELSE` | trạng thái mới phát sinh, chưa được phân loại |
+>
+> Logic gom nhóm đặt tại **Dimension** (`Administrative Procedure Application Status Dimension`), không đặt ở Detail Mapping — để 47 giá trị gốc chỉ khai báo 1 lần và vẫn drill-down được xuống trạng thái chi tiết. Danh sách 47 giá trị hiện **hard-code trong SQL BA**, chưa có danh mục chuẩn hoá ở nguồn — xem O_QLCB_12.
+>
+> **Lệch nhãn giữa 2 SQL BA:** nhánh `ELSE` ghi `'Chưa xác định - kiểm tra lại danh mục'` ở SQL STT 5 nhưng `'Chưa xác định'` ở SQL STT 6. Thiết kế thống nhất 1 code `UNDEFINED` với nhãn hiển thị `Chưa xác định` cho cả 2 Nhóm.
+
+> **FIX 2026-08-14 (v2) — Tỷ lệ % tính DERIVED tại Detail Mapping, không tính ở dashboard:** Thay thế quyết định thiết kế cũ ("lưu số lượng, không lưu tỷ lệ — % tính ở lớp dashboard"). Theo nguyên tắc tổ chức: bước Datamart → Chỉ tiêu (Detail Mapping) phải thể hiện đầy đủ logic tính toán; presentation layer chỉ được lấy dữ liệu 1-1, không tự tính toán thêm. Do đó K_QLCB_32-35 là DERIVED tỷ lệ % có `logic` phép chia tường minh ngay tại Detail Mapping, có KPI_ID riêng — dashboard chỉ hiển thị (a) 4 card % hoặc (b) donut pivot, không tự thực hiện phép chia nào. **Quyết định này giữ nguyên sau khi đổi nguồn 2026-08-24.**
+>
+> **ĐỔI NGUỒN 2026-08-24 — Nhóm 5 và Nhóm 6 vẫn dùng chung 1 Fact, grain mới:** grain = 1 row / 1 hồ sơ TTHC (`Application Item Code`) × 1 ngày snapshot. Nhóm 5 không GROUP BY theo hình thức/năm trên UI (chỉ 4 card % + donut theo nhóm trạng thái); Nhóm 6 GROUP BY `Application Type Dimension` + năm của `Submission Date`, giữ số lượng thuần. Khác thiết kế cũ: không còn thành phần `× 1 loại hình (Plan)` trong grain vì TTHC mỗi hồ sơ chỉ có 1 `LoaiHoSo`.
 
 **Star Schema:**
 
@@ -753,32 +802,44 @@ erDiagram
     Calendar_Date_Dimension ||--o{ Fact_Securities_Offering_Application_Snapshot : " "
 
     Calendar_Date_Dimension {
-        string Date_Dimension_Id PK
-        date Full_Date
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
         int Year
         int Quarter
         int Month
+        boolean Holiday_Flag
+        string Source_System_Code
+    }
+    Administrative_Procedure_Application_Status_Dimension ||--o{ Fact_Securities_Offering_Application_Snapshot : " "
+
+    Administrative_Procedure_Application_Status_Dimension {
+        string Administrative_Procedure_Application_Status_Dimension_Id PK
+        string Application_Status_Item_Code
+        string Application_Status_Name
+        string Application_Status_Group_Code
+        string Source_System_Code
     }
     Fact_Securities_Offering_Application_Snapshot {
-        string Securities_Offering_Code
-        string Application_Code
+        string Application_Item_Code
         string Snapshot_Date_Dimension_Id FK
-        string Certificate_Date_Dimension_Id FK
-        string Offering_Method_Dimension_Id FK
-        string Application_Status_Code
+        string Submission_Date_Dimension_Id FK
+        string Administrative_Procedure_Application_Status_Dimension_Id FK
+        string Administrative_Procedure_Application_Type_Dimension_Id FK
     }
 ```
 
-> **Ghi chú Phase 2 — Key labels:**
+> **Ghi chú Phase 2 — Key labels (cập nhật 2026-08-24 theo nguồn TTHC):**
 >
 > **`Fact_Securities_Offering_Application_Snapshot`:**
-> - `Securities_Offering_Code` → `key = DD` (Degenerate Dimension) — Business key đợt chào bán (`Public Company Securities Offering.pc_securities_offering_code`), lưu trực tiếp trên Fact để tra cứu, không tạo Dimension riêng. Fact Event không có Surrogate PK.
-> - `Application_Code` → `key = DD` — Business key hồ sơ đăng ký (`Public Company Securities Offering.application_cd`), khác `Securities_Offering_Code` (mã đợt chào bán). **FIX 2026-08-14:** không còn là grain đếm đơn nhất — grain đếm thật của Fact là `Application_Code` × `Offering_Method_Dimension_Id` (xem dòng dưới); mọi `COUNT(Application_Code)` dùng ở K_QLCB_32–35/38–42 đều KHÔNG DISTINCT (revert fix 2026-08-12). **FIX 2026-08-14 (v2):** K_QLCB_32-35 (Nhóm 5) là tỷ lệ % — tử số/mẫu số đều là `COUNT(Application_Code)` không DISTINCT theo status tương ứng; K_QLCB_38-42 (Nhóm 6) vẫn là số lượng thuần (không phải %)
-> - `Certificate_Date_Dimension_Id` → `key = FK → Calendar Date Dimension` — cùng FK date dùng ở Nhóm 1 (`certificate_dt`)
-> - `Offering_Method_Dimension_Id` → `key = FK → Offering Method Dimension`, nullable (NULL nếu hồ sơ chưa có Plan). **FIX 2026-08-14:** đây là driving JOIN thứ 2 tạo grain N dòng/hồ sơ (LEFT JOIN `Public Company Securities Offering Plan` không GROUP BY) — 1 hồ sơ có N loại hình sinh N dòng Fact, **ảnh hưởng trực tiếp đến COUNT** ở cả Nhóm 5 và Nhóm 6 (khác ghi chú cũ "không ảnh hưởng COUNT")
-> - `Application_Status_Code` → `key` trống — Classification Value, `etl_logic_type = direct` từ `approval_status_code`
+> - `Application_Item_Code` → `key = DD` (Degenerate Dimension) — Business key hồ sơ TTHC (`Administrative Procedure Content Item Index.Content Item Code` ← `TTHC.CONTENTITEMINDEX.CONTENTITEMID`), lưu trực tiếp trên Fact để tra cứu, không tạo Dimension riêng. Fact không có Surrogate PK. Đây là grain đếm đơn nhất của Fact — `COUNT(Application_Item_Code)` = `COUNT(*)` của SQL BA.
+> - `Snapshot_Date_Dimension_Id` → `key = FK → Calendar Date Dimension` — ngày ETL snapshot (daily full-scan, giữ nguyên vai trò như thiết kế cũ vì `Application_Status_Group_Code` phản ánh trạng thái hiện hành theo `LATEST = 1`).
+> - `Submission_Date_Dimension_Id` → `key = FK → Calendar Date Dimension` — **thay thế** `Certificate_Date_Dimension_Id`. Nguồn `Administrative Procedure Document.Submission Date` (`$.HoSoTTHC.NgayGuiHoSo.Value`, TRUNC về DATE sau khi convert timezone). Đóng vai trò Chiều/slicer cho K_QLCB_37 (năm).
+> - `Administrative_Procedure_Application_Status_Dimension_Id` → `key = FK → Administrative Procedure Application Status Dimension`, non-nullable — lookup theo `Administrative Procedure Document.Document Status Code` (`$.HoSoTTHC.TrangThaiHoSo.ContentItemIds[0]`). **Thay thế** cột `Application_Status_Code` (Classification Value direct map) của thiết kế cũ: trạng thái TTHC là 47 giá trị có tên hiển thị + cần gom nhóm, không còn là enum 4 giá trị.
+> - `Administrative_Procedure_Application_Type_Dimension_Id` → `key = FK → Administrative Procedure Application Type Dimension`, non-nullable — lookup theo `Administrative Procedure Document.Offering Method Code` (`$.HoSoTTHC.LoaiHoSo.ContentItemIds[0]`). **Thay thế** `Offering_Method_Dimension_Id`; không còn nullable vì mỗi hồ sơ TTHC luôn có đúng 1 `LoaiHoSo` (khác IDS: hồ sơ có thể chưa có Plan).
+> - **Đã bỏ:** `Securities_Offering_Code` (mã đợt chào bán, IDS) — TTHC không có khái niệm đợt chào bán ở tầng hồ sơ; `Application_Code`; `Offering_Method_Dimension_Id`; `Certificate_Date_Dimension_Id`; `Application_Status_Code`.
+> - **Filter phạm vi (ETL, không thành cột):** chỉ nạp hồ sơ có `Content Type Code = 'HoSoTTHC'` và `Administrative Procedure Document.Processing Authority Code` resolve ra `display_text = 'Ban Quản lý chào bán chứng khoán'`. Cơ quan xử lý **không** tạo Dimension vì trong phạm vi báo cáo QLCB chỉ có 1 giá trị duy nhất. **Không lặp lại `PUBLISHED = 1` của SQL BA** — Atomic đã lọc sẵn khi nạp `ap_content_item_index` (chốt 2026-08-24); `Latest Indicator = 1` giữ lại như filter phòng vệ vì cột vẫn tồn tại trên Atomic để trace/audit dù dedup `LATEST=1` đã thực hiện ở đó.
 >
-> Nhóm 5 không GROUP BY hiển thị theo `Offering_Method_Dimension_Id`/năm trên UI (chỉ 4 KPI Card/donut theo status), nhưng vẫn dùng chung 1 Fact grain với Nhóm 6 — không tạo Fact/grain riêng cho Nhóm 5.
+> Nhóm 5 không GROUP BY hiển thị theo hình thức/năm trên UI (chỉ 4 KPI Card + donut theo nhóm trạng thái), nhưng vẫn dùng chung 1 Fact grain với Nhóm 6 — không tạo Fact/grain riêng cho Nhóm 5.
 
 **Lineage Mart → Báo cáo:**
 
@@ -787,78 +848,99 @@ flowchart LR
     subgraph Datamart["Datamart"]
         G1["Fact Securities Offering Application Snapshot"]
         G2["Calendar Date Dimension"]
+        G3["Administrative Procedure Application Status Dimension"]
     end
     subgraph RPT["Báo cáo"]
         R5["Tab HO SO DANG KY CHAO BAN - Nhom 5 - K_QLCB_32-35"]
     end
     G1 --> R5
     G2 --> R5
+    G3 --> R5
 ```
 
 **Bảng grain:**
 
 | Tên bảng | Grain |
 |---|---|
-| `Fact Securities Offering Application Snapshot` | 1 row = 1 hồ sơ đăng ký chào bán × 1 loại hình chào bán (Plan) × 1 ngày snapshot (FIX 2026-08-14 — trước đó 1 row/hồ sơ; ETL full-scan hàng ngày để Application Status Code luôn phản ánh đúng trạng thái xử lý mới nhất; Certificate Date giữ nguyên vai trò Chiều/slicer) |
-| `Calendar Date Dimension` | 1 row = 1 ngày (`certificate_dt`) |
+| `Fact Securities Offering Application Snapshot` | 1 row = 1 hồ sơ TTHC (`Application Item Code`) × 1 ngày snapshot (ĐỔI NGUỒN 2026-08-24 — trước đó 1 hồ sơ × 1 loại hình Plan × 1 ngày snapshot; ETL full-scan hàng ngày để nhóm trạng thái luôn phản ánh trạng thái xử lý hiện hành; `Submission Date` giữ vai trò Chiều/slicer) |
+| `Administrative Procedure Application Status Dimension` | 1 row = 1 trạng thái hồ sơ TTHC (content item `TrangThaiHoSo`) |
+| `Calendar Date Dimension` | 1 row = 1 ngày (`Submission Date` — ngày gửi hồ sơ) |
 
 ---
 
 #### Nhóm 6 — Bảng Chi tiết hồ sơ chào bán & phát hành
 
 > Phân loại: **Phân tích**
-> Atomic: `Public Company Securities Offering` ← IDS.SECURITIES_OFFERING — **READY** (Atomic draft)
-> Atomic: `Public Company Securities Offering Plan` ← IDS.SECURITIES_OFFERING_PLAN — **READY** (Atomic draft)
-> Ghi chú: Cùng Fact với Nhóm 5 — bổ sung `Offering Method Dimension` (reuse từ Nhóm 2/3) × năm.
+> Atomic: `Administrative Procedure Content Item Index` ← TTHC.CONTENTITEMINDEX — **READY** (Atomic draft) — *`display_text` đã được Atomic bổ sung 2026-08-24, O_QLCB_10 Closed*
+> Atomic: `Administrative Procedure Document` ← TTHC.DOCUMENT — **READY** (Atomic draft)
+> Ghi chú: ĐỔI NGUỒN 2026-08-24 (task Dũng) — trước đây `Public Company Securities Offering` + `Public Company Securities Offering Plan` ← IDS. Cùng Fact với Nhóm 5 — bổ sung `Administrative Procedure Application Type Dimension` (**mới**, KHÔNG reuse `Offering Method Dimension`) × năm của `Submission Date`. Xem Cụm 3.
 
 **Mockup:**
 
-| Hình thức chào bán | Năm | Chờ xử lý | Đang xử lý | Đã cấp phép | Bị từ chối | Tổng |
+| Hình thức chào bán | Năm | Hồ sơ đăng ký | Đang xử lý | Đã cấp phép | Bị từ chối | Tổng |
 |---|---|---|---|---|---|---|
-| Chào bán CP lần đầu | 2025 | 2 | 5 | 18 | 3 | 28 |
-| Chào bán trái phiếu | 2025 | 1 | 3 | 12 | 1 | 17 |
-| Phát hành CP ESOP | 2024 | 0 | 2 | 24 | 4 | 30 |
+| Chào bán cổ phiếu lần đầu ra công chúng (IPO) | 2025 | 2 | 5 | 18 | 3 | 28 |
+| Chào bán trái phiếu ra công chúng | 2025 | 1 | 3 | 12 | 1 | 17 |
+| Phát hành cổ phiếu theo chương trình ESOP | 2024 | 0 | 2 | 24 | 4 | 30 |
 
-**Source:** `Fact Securities Offering Application Snapshot` → `Offering Method Dimension`, `Calendar Date Dimension`
+> **Ghi chú mockup:** Nhãn hình thức chào bán nay lấy nguyên `display_text` của content item `LoaiHoSo` trên TTHC (tương ứng bộ Eform: `ChaobanCophieuIPO`, `ChaobanTraiphieu`, `PhathanhCophieuESOP`, `ChaobanCophieuRiengle`, `ChaobanCCQ`, `ChaobanChungquyen`, … — xem `Source/TTHC_JSON_Schemas.csv`), **không** còn là nhãn của scheme `IDS_SO_OFFERING_METHOD`. Danh mục hình thức của Nhóm 6 vì vậy khác Nhóm 2/3 — xem O_QLCB_13.
+
+**Source:** `Fact Securities Offering Application Snapshot` → `Administrative Procedure Application Type Dimension`, `Administrative Procedure Application Status Dimension`, `Calendar Date Dimension`
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_QLCB_36 | Hình thức chào bán | — | Chiều | `GROUP BY Offering Method Dimension.Offering Method Code` — reuse Dimension từ Nhóm 2/3 (scheme `IDS_SO_OFFERING_METHOD`) | — | READY |
-| K_QLCB_37 | Năm | — | Chiều | `GROUP BY Year` của `Certificate Date Dimension` (reuse `Calendar Date Dimension`, không cần Degenerate Dimension riêng) | BA cập nhật 2026-08-11: đổi từ Official Letter Date sang Certificate Date | READY |
-| K_QLCB_38 | Số lượng hồ sơ chờ xử lý | Hồ sơ | Cơ sở | `COUNT(Application Code) WHERE Application Status Code = 'PENDING_REVIEW'` | FIX 2026-08-14: revert COUNT không DISTINCT theo BA cập nhật (khác fix 2026-08-12). Số lượng thuần — KHÔNG phải % (khác K_QLCB_32, xem ghi chú v2 Nhóm 5) | READY |
-| K_QLCB_39 | Số lượng hồ sơ đang xử lý | Hồ sơ | Cơ sở | `COUNT(Application Code) WHERE Application Status Code = 'PENDING_APPROVE'` | FIX 2026-08-14: cùng lý do K_QLCB_38 | READY |
-| K_QLCB_40 | Số lượng hồ sơ đã cấp phép | Hồ sơ | Cơ sở | `COUNT(Application Code) WHERE Application Status Code = 'APPROVED'` | FIX 2026-08-14: cùng lý do K_QLCB_38 | READY |
-| K_QLCB_41 | Số lượng hồ sơ bị từ chối | Hồ sơ | Cơ sở | `COUNT(Application Code) WHERE Application Status Code = 'REJECTED'` | FIX 2026-08-14: cùng lý do K_QLCB_38 | READY |
-| K_QLCB_42 | Tổng hồ sơ | Hồ sơ | Derived | `K_QLCB_38 + K_QLCB_39 + K_QLCB_40 + K_QLCB_41` — tính tại presentation layer | — | READY |
+| K_QLCB_36 | Hình thức chào bán | — | Chiều | `GROUP BY Administrative Procedure Application Type Dimension.Application Type Name` | **ĐỔI NGUỒN 2026-08-24:** Dimension **mới** từ `display_text` của content item `LoaiHoSo` (nguồn thô `TTHC.CONTENTITEMINDEX.DISPLAYTEXT`), KHÔNG reuse `Offering Method Dimension` (dimension đó đang phục vụ K_QLCB_6–19 từ IDS — repoint sẽ phá 14 KPI). Danh mục khác Nhóm 2/3, xem O_QLCB_13 | READY (Atomic draft) |
+| K_QLCB_37 | Năm | — | Chiều | `GROUP BY Year` của `Submission Date Dimension` (reuse `Calendar Date Dimension`, không cần Degenerate Dimension riêng) | **ĐỔI NGUỒN 2026-08-24:** đổi từ `Certificate Date` (IDS, ngày cấp giấy chứng nhận) sang `Submission Date` (TTHC, ngày gửi hồ sơ). Fact lưu grain **ngày**, KPI GROUP BY **năm** — chốt 2026-08-24: SQL BA STT 6 `GROUP BY ngay_gui_ho_so` ở dạng TIMESTAMP có giờ nên mỗi hồ sơ thành 1 dòng riêng, không gom nhóm được, trong khi cột `Thông tin` của BA ghi là "Năm". Xem O_QLCB_11 | READY (Atomic draft) |
+| K_QLCB_38 | Số lượng hồ sơ đăng ký | Hồ sơ | Cơ sở | `COUNT(Application Item Code) WHERE Application Status Group Code = 'REGISTERED'` | ĐỔI NGUỒN 2026-08-24: đếm theo nhóm trạng thái TTHC thay cho `approval_status_cd`. Grain 1 row/hồ sơ nên `COUNT` không cần DISTINCT (rule "N Plan đếm N lần" của FIX 2026-08-14 không còn áp dụng). Số lượng thuần — KHÔNG phải % (khác K_QLCB_32) | READY (Atomic draft) |
+| K_QLCB_39 | Số lượng hồ sơ đang xử lý | Hồ sơ | Cơ sở | `COUNT(Application Item Code) WHERE Application Status Group Code = 'IN_PROGRESS'` | ĐỔI NGUỒN 2026-08-24: cùng lý do K_QLCB_38 | READY (Atomic draft) |
+| K_QLCB_40 | Số lượng hồ sơ đã cấp phép | Hồ sơ | Cơ sở | `COUNT(Application Item Code) WHERE Application Status Group Code = 'APPROVED'` | ĐỔI NGUỒN 2026-08-24: cùng lý do K_QLCB_38 | READY (Atomic draft) |
+| K_QLCB_41 | Số lượng hồ sơ bị từ chối | Hồ sơ | Cơ sở | `COUNT(Application Item Code) WHERE Application Status Group Code = 'REJECTED'` | ĐỔI NGUỒN 2026-08-24: cùng lý do K_QLCB_38 | READY (Atomic draft) |
+| K_QLCB_42 | Tổng hồ sơ | Hồ sơ | Derived | `COUNT(Application Item Code)` — tổng toàn bộ hồ sơ trong ô (hình thức × năm), **không** phải tổng 4 KPI con | **ĐỔI CÔNG THỨC 2026-08-24:** SQL BA STT 6 dùng `COUNT(*) AS tong_ho_so` chứ không phải tổng 4 cột `COUNT(CASE WHEN …)`. Hai cách chỉ bằng nhau khi không có hồ sơ nào rơi vào nhóm `UNDEFINED`; công thức cũ (`K_QLCB_38+39+40+41`) sẽ **thiếu** hồ sơ chưa phân loại được trạng thái. Đổi sang đếm trực tiếp để khớp BA và để tổng cột trùng mẫu số của Nhóm 5 | READY (Atomic draft) |
 
-> **Ghi chú `Offering Method Dimension`:** Reuse Dimension đã thiết kế ở Cụm 1b/1c — không tạo mới. `Fact Securities Offering Application Snapshot` bổ sung FK `Offering_Method_Dimension_Id`, ETL join qua `Public Company Securities Offering Plan.offering_method_code` (theo `pc_securities_offering_id`), **không GROUP BY** (FIX 2026-08-14). Vì 1 hồ sơ có thể có nhiều dòng Plan (nhiều loại hình), Fact Application có grain: 1 row = 1 hồ sơ × 1 loại hình — **cùng grain với Nhóm 5** (trước đây 2 Nhóm khác grain, nay hợp nhất theo BA cập nhật).
+> **Ghi chú `Administrative Procedure Application Type Dimension` (mới):** Grain 1 row = 1 content item `LoaiHoSo` trên TTHC. Cột: `Application Type Item Code` (BK = `CONTENTITEMID`), `Application Type Name` (= `display_text`), `Source System Code`. `Fact Securities Offering Application Snapshot` mang FK `Administrative_Procedure_Application_Type_Dimension_Id`, lookup từ `Administrative Procedure Document.Offering Method Code`. Vì mỗi hồ sơ TTHC chỉ có đúng 1 `LoaiHoSo`, FK này **non-nullable** và **không** làm phồng grain — khác hoàn toàn `Offering_Method_Dimension_Id` cũ (LEFT JOIN Plan, nullable, sinh N dòng/hồ sơ). Nhóm 5 và Nhóm 6 vẫn dùng chung 1 Fact.
 
-**Star Schema:** Kế thừa Fact từ Nhóm 5, bổ sung FK `Offering_Method_Dimension_Id`:
+**Star Schema:** Kế thừa Fact từ Nhóm 5, bổ sung FK `Administrative_Procedure_Application_Type_Dimension_Id`:
 
 ```mermaid
 erDiagram
-    Offering_Method_Dimension {
-        string Offering_Method_Dimension_Id PK
-        string Offering_Method_Code
-        string Offering_Method_Name
-        string Offering_Method_Group_Name
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
+        int Year
+        int Quarter
+        int Month
+        boolean Holiday_Flag
+        string Source_System_Code
+    }
+    Administrative_Procedure_Application_Status_Dimension {
+        string Administrative_Procedure_Application_Status_Dimension_Id PK
+        string Application_Status_Item_Code
+        string Application_Status_Name
+        string Application_Status_Group_Code
+        string Source_System_Code
+    }
+    Administrative_Procedure_Application_Type_Dimension {
+        string Administrative_Procedure_Application_Type_Dimension_Id PK
+        string Application_Type_Item_Code
+        string Application_Type_Name
         string Source_System_Code
     }
     Fact_Securities_Offering_Application_Snapshot {
-        string Securities_Offering_Code
-        string Application_Code
+        string Application_Item_Code
         string Snapshot_Date_Dimension_Id FK
-        string Certificate_Date_Dimension_Id FK
-        string Offering_Method_Dimension_Id FK
-        string Application_Status_Code
+        string Submission_Date_Dimension_Id FK
+        string Administrative_Procedure_Application_Status_Dimension_Id FK
+        string Administrative_Procedure_Application_Type_Dimension_Id FK
     }
 
-    Offering_Method_Dimension ||--o{ Fact_Securities_Offering_Application_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Offering_Application_Snapshot : " "
+    Administrative_Procedure_Application_Status_Dimension ||--o{ Fact_Securities_Offering_Application_Snapshot : " "
+    Administrative_Procedure_Application_Type_Dimension ||--o{ Fact_Securities_Offering_Application_Snapshot : " "
 ```
 
-> **Ghi chú grain (FIX 2026-08-14):** Nhóm 5 và Nhóm 6 nay dùng chung 1 Fact grain: 1 row = 1 hồ sơ × 1 loại hình. ETL populate `Offering_Method_Dimension_Id` bằng LEFT JOIN `Public Company Securities Offering Plan` theo `pc_securities_offering_id`, KHÔNG GROUP BY — nếu 1 hồ sơ có N Plan thì sinh N dòng Fact (giữ NULL nếu hồ sơ chưa có Plan). Field này ảnh hưởng trực tiếp đến COUNT ở cả 2 Nhóm — Nhóm 5 chỉ khác Nhóm 6 ở việc không GROUP BY hiển thị theo `Offering_Method_Dimension_Id`/năm trên UI.
+> **Ghi chú grain (ĐỔI NGUỒN 2026-08-24):** Nhóm 5 và Nhóm 6 dùng chung 1 Fact grain: **1 row = 1 hồ sơ TTHC × 1 ngày snapshot**. ETL populate `Administrative_Procedure_Application_Type_Dimension_Id` bằng lookup 1:1 từ `Administrative Procedure Document.Offering Method Code` — **không** LEFT JOIN bảng con, **không** làm phồng số dòng. Đây là khác biệt lớn nhất so với thiết kế IDS cũ: trước đây `Offering_Method_Dimension_Id` là driving JOIN thứ 2 (LEFT JOIN Plan không GROUP BY) khiến 1 hồ sơ có N loại hình sinh N dòng Fact và làm sai lệch mọi `COUNT`; nay mỗi hồ sơ đúng 1 dòng. Nhóm 5 chỉ khác Nhóm 6 ở việc không GROUP BY hiển thị theo hình thức/năm trên UI.
 
 **Lineage Mart → Báo cáo:**
 
@@ -867,7 +949,8 @@ flowchart LR
     subgraph Datamart["Datamart"]
         G1["Fact Securities Offering Application Snapshot"]
         G2["Calendar Date Dimension"]
-        G3["Offering Method Dimension"]
+        G3["Administrative Procedure Application Type Dimension"]
+        G4["Administrative Procedure Application Status Dimension"]
     end
     subgraph RPT["Báo cáo"]
         R6["Tab HO SO DANG KY CHAO BAN - Nhom 6 - K_QLCB_36-42"]
@@ -875,15 +958,17 @@ flowchart LR
     G1 --> R6
     G2 --> R6
     G3 --> R6
+    G4 --> R6
 ```
 
 **Bảng grain:**
 
 | Tên bảng | Grain |
 |---|---|
-| `Fact Securities Offering Application Snapshot` | 1 row = 1 hồ sơ × 1 loại hình chào bán (Plan) × 1 ngày snapshot (FIX 2026-08-14 — cùng grain với Nhóm 5), nullable FK `Offering_Method_Dimension_Id` nếu hồ sơ chưa có Plan |
-| `Offering Method Dimension` | 1 row = 1 mã hình thức chào bán (reuse từ Nhóm 2/3) |
-| `Calendar Date Dimension` | 1 row = 1 ngày |
+| `Fact Securities Offering Application Snapshot` | 1 row = 1 hồ sơ TTHC × 1 ngày snapshot (ĐỔI NGUỒN 2026-08-24 — cùng grain với Nhóm 5; bỏ thành phần `× 1 loại hình (Plan)` vì mỗi hồ sơ TTHC chỉ có 1 `LoaiHoSo`, FK hình thức non-nullable) |
+| `Administrative Procedure Application Type Dimension` | 1 row = 1 hình thức chào bán TTHC (content item `LoaiHoSo`) — **mới**, không reuse `Offering Method Dimension` |
+| `Administrative Procedure Application Status Dimension` | 1 row = 1 trạng thái hồ sơ TTHC (content item `TrangThaiHoSo`) |
+| `Calendar Date Dimension` | 1 row = 1 ngày (`Submission Date` — ngày gửi hồ sơ) |
 
 ---
 
@@ -1087,7 +1172,9 @@ flowchart LR
 
 ---
 
-## Section 3 — Mô hình tổng thể (READY only)
+## Section 3 — Mô hình tổng thể
+
+> **Cập nhật 2026-08-24:** bổ sung cột `Trạng thái` vào 3 bảng dưới đây theo chuẩn `section_structure.md` (chốt 2026-08-21) — trước đây Section này chỉ liệt kê bảng READY nên không có chỗ thể hiện bảng PENDING. Giữ lại cột này sau khi O_QLCB_10 đã Closed (Atomic bổ sung `display_text` cùng ngày, toàn bộ bảng của Nhóm 5/6 chuyển sang READY) — cột `Trạng thái` là phần bắt buộc của chuẩn, không phải giải pháp tạm cho 1 đợt PENDING.
 
 ```mermaid
 graph TB
@@ -1098,6 +1185,8 @@ graph TB
     DIM_DATE["Calendar Date Dimension"]:::dim
     DIM_COMPANY["Public Company Dimension"]:::dim
     DIM_OFFRMETHOD["Offering Method Dimension"]:::dim
+    DIM_APSTATUS["Administrative Procedure Application Status Dimension"]:::dim
+    DIM_APTYPE["Administrative Procedure Application Type Dimension"]:::dim
 
     FACT_OFF["Fact Securities Offering Snapshot"]:::fact
     FACT_PLAN["Fact Securities Offering Plan Snapshot"]:::fact
@@ -1118,33 +1207,36 @@ graph TB
     DIM_OFFRMETHOD --> FACT_RESULT
 
     DIM_DATE --> FACT_APP
-    DIM_OFFRMETHOD --> FACT_APP
+    DIM_APSTATUS --> FACT_APP
+    DIM_APTYPE --> FACT_APP
 ```
 
 ### Bảng Phân tích (Star Schema)
 
-| Tên bảng Datamart | Mô tả | Fact Pattern | Grain | Nguồn Atomic chính |
-|---|---|---|---|---|
-| Fact Securities Offering Snapshot | Hồ sơ chào bán/phát hành CK — tổng giá trị cấp phép/huy động theo ngành, kỳ (Nhóm 1) | Fact Event | 1 hồ sơ chào bán | Public Company Securities Offering / Public Company Securities Offering Result |
-| Fact Securities Offering Plan Snapshot | Giá trị cấp phép theo loại hình chào bán (Nhóm 2) | Fact Event | 1 đợt × 1 loại hình kế hoạch | Public Company Securities Offering Plan |
-| Fact Securities Offering Result Snapshot | Giá trị huy động theo loại hình chào bán (Nhóm 3) | Fact Event | 1 đợt × 1 loại hình kết quả | Public Company Securities Offering Result |
-| Fact Securities Offering Application Snapshot | Hồ sơ đăng ký chào bán nộp lên UBCKNN — đếm và phân tích theo trạng thái xử lý, hình thức, năm (Nhóm 5-6) | Fact Event | 1 hồ sơ đăng ký chào bán | Public Company Securities Offering / Public Company Securities Offering Plan |
+| Tên bảng Datamart | Mô tả | Fact Pattern | Grain | Nguồn Atomic chính | Trạng thái |
+|---|---|---|---|---|---|
+| Fact Securities Offering Snapshot | Hồ sơ chào bán/phát hành CK — tổng giá trị cấp phép/huy động theo ngành, kỳ (Nhóm 1) | Fact Event | 1 hồ sơ chào bán | Public Company Securities Offering / Public Company Securities Offering Result | READY (Atomic draft) |
+| Fact Securities Offering Plan Snapshot | Giá trị cấp phép theo loại hình chào bán (Nhóm 2) | Fact Event | 1 đợt × 1 loại hình kế hoạch | Public Company Securities Offering Plan | READY (Atomic draft) |
+| Fact Securities Offering Result Snapshot | Giá trị huy động theo loại hình chào bán (Nhóm 3) | Fact Event | 1 đợt × 1 loại hình kết quả | Public Company Securities Offering Result | READY (Atomic draft) |
+| Fact Securities Offering Application Snapshot | Hồ sơ đăng ký chào bán nộp lên TTHC — đếm và phân tích theo nhóm trạng thái xử lý, hình thức, năm (Nhóm 5-6). **Repoint IDS → TTHC 2026-08-24** | Periodic Snapshot | 1 hồ sơ TTHC × 1 ngày snapshot | Administrative Procedure Content Item Index / Administrative Procedure Document | READY (Atomic draft) |
 
 ### Bảng Tác nghiệp (Denormalized)
 
-| Tên bảng Datamart | Mô tả | Grain | Nguồn Atomic chính |
-|---|---|---|---|
-| Operational Securities Offering 360 Profile | Hồ sơ 360° tra cứu chi tiết từng đợt chào bán — pivot theo loại hình, gồm thông tin tổ chức liên quan (Nhóm 4, 7-10) | 1 đợt chào bán × 1 loại hình | Public Company Securities Offering / Public Company Securities Offering Plan / Public Company Securities Offering Result / Public Company |
+| Tên bảng Datamart | Mô tả | Grain | Nguồn Atomic chính | Trạng thái |
+|---|---|---|---|---|
+| Operational Securities Offering 360 Profile | Hồ sơ 360° tra cứu chi tiết từng đợt chào bán — pivot theo loại hình, gồm thông tin tổ chức liên quan (Nhóm 4, 7-10) | 1 đợt chào bán × 1 loại hình | Public Company Securities Offering / Public Company Securities Offering Plan / Public Company Securities Offering Result / Public Company | READY (Atomic draft) |
 
 ### Bảng Dimension
 
 *Tất cả Dimension áp dụng SCD Type 4A (trừ `Public Company Dimension` — reuse `public_company_dim`, giữ quy ước SCD gốc của module GSDC).*
 
-| Tên bảng Datamart | Mô tả | Grain | Nguồn Atomic chính | Conformed |
-|---|---|---|---|---|
-| Calendar Date Dimension | Lịch ngày — ETL tự sinh | 1 ngày | Generated | Có |
-| Public Company Dimension | Công ty đại chúng — mã CK, tên, ngành, sàn (reuse `public_company_dim`, module GSDC) | 1 công ty đại chúng | Public Company | Có |
-| Offering Method Dimension | Hình thức chào bán/phát hành — ETL-derived (DISTINCT) từ cột `offering_method_code`, scheme mô tả `IDS_SO_OFFERING_METHOD` | 1 mã hình thức | Public Company Securities Offering Plan | Không |
+| Tên bảng Datamart | Mô tả | Grain | Nguồn Atomic chính | Conformed | Trạng thái |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Lịch ngày — ETL tự sinh | 1 ngày | Generated | Có | READY |
+| Public Company Dimension | Công ty đại chúng — mã CK, tên, ngành, sàn (reuse `public_company_dim`, module GSDC) | 1 công ty đại chúng | Public Company | Có | READY (Atomic draft) |
+| Offering Method Dimension | Hình thức chào bán/phát hành — ETL-derived (DISTINCT) từ cột `offering_method_code`, scheme mô tả `IDS_SO_OFFERING_METHOD`. Phục vụ Nhóm 2/3 (K_QLCB_6–19); **không** còn dùng ở Nhóm 6 sau khi đổi nguồn 2026-08-24 | 1 mã hình thức | Public Company Securities Offering Plan | Không | READY (Atomic draft) |
+| Administrative Procedure Application Status Dimension | Trạng thái hồ sơ TTHC + nhóm trạng thái gom 4+1 (`REGISTERED`/`IN_PROGRESS`/`APPROVED`/`REJECTED`/`UNDEFINED`) từ 47 giá trị `display_text`. **Mới 2026-08-24** | 1 trạng thái hồ sơ (content item `TrangThaiHoSo`) | Administrative Procedure Content Item Index | Không | READY (Atomic draft) |
+| Administrative Procedure Application Type Dimension | Hình thức chào bán theo TTHC — `display_text` của content item `LoaiHoSo` (bộ Eform chào bán/phát hành). **Mới 2026-08-24** | 1 hình thức chào bán | Administrative Procedure Content Item Index | Không | READY (Atomic draft) |
 
 ---
 
@@ -1154,11 +1246,13 @@ graph TB
 |---|---|---|---|
 | Calendar Date Dimension | cdr_dt_dim | reuse | Conformed Dim toàn hệ thống (Lớp 1 — Whitelist) |
 | Public Company Dimension | public_company_dim | reuse | Module GSDC đã có, cùng nguồn Atomic `Public Company`, đủ cột mã CK/tên/sàn/`Business Line Level 1 Code` cho GROUP BY ngành (Lớp 3 — Source Match). Bổ sung `QLCB` vào `modules_using` |
-| Offering Method Dimension | offering_method_dim | new | Chưa có entity nào trong registry cùng nguồn `Public Company Securities Offering Plan`/`Result` — `offering_form_dim` (module QLKD) tuy cùng `table_type: dim` nhưng khác nguồn Atomic hoàn toàn (SCMS `sc_disclosure_securities_offering` khác IDS `pc_securities_offering_plan`) nên không reuse được |
+| Offering Method Dimension | offering_method_dim | new | Chưa có entity nào trong registry cùng nguồn `Public Company Securities Offering Plan`/`Result` — `offering_form_dim` (module QLKD) tuy cùng `table_type: dim` nhưng khác nguồn Atomic hoàn toàn (SCMS `sc_disclosure_securities_offering` khác IDS `pc_securities_offering_plan`) nên không reuse được. **2026-08-24:** giữ nguyên phạm vi phục vụ Nhóm 2/3 (K_QLCB_6–19), KHÔNG repoint sang TTHC cho Nhóm 6 |
+| Administrative Procedure Application Status Dimension | ap_application_status_dim (đề xuất) | new | **Thêm 2026-08-24.** Lớp 2 — nguồn Atomic là `ap_content_item_index` (`ldm.physical_name ≠ cv`) nên KHÔNG reuse `cl_dim`; Lớp 3 — registry chưa có entity nào cùng nguồn `ap_content_item_index` |
+| Administrative Procedure Application Type Dimension | ap_application_tp_dim (đề xuất) | new | **Thêm 2026-08-24.** Cùng lý do Lớp 2/Lớp 3 như trên. KHÔNG reuse `offering_method_dim` vì dimension đó khác nguồn Atomic hoàn toàn (IDS `pc_securities_offering_plan`) và đang phục vụ 14 KPI của Nhóm 2/3 — repoint sẽ phá các Nhóm đó |
 | Fact Securities Offering Snapshot | fct_securities_offering_snpst (đề xuất) | new | Chưa có Fact nào cùng nguồn `pc_securities_offering` trong registry |
 | Fact Securities Offering Plan Snapshot | fct_securities_offering_plan_snpst (đề xuất) | new | Chưa có Fact nào cùng grain/nguồn `pc_securities_offering_plan` |
 | Fact Securities Offering Result Snapshot | fct_securities_offering_result_snpst (đề xuất) | new | Chưa có Fact nào cùng grain/nguồn `pc_securities_offering_result` |
-| Fact Securities Offering Application Snapshot | fct_securities_offering_application_snpst (đề xuất) | new | Chưa có Fact nào cùng grain hồ sơ đăng ký IDS |
+| Fact Securities Offering Application Snapshot | fct_securities_offering_application_snpst | partial | **Đổi 2026-08-24 (`new` → `partial`).** Repoint nguồn IDS → TTHC theo quyết định người thiết kế 2026-08-24: giữ nguyên tên bảng và toàn bộ KPI_ID K_QLCB_32–42, thay `source_atomic` (`pc_securities_offering`/`pc_securities_offering_plan` → `ap_content_item_index`/`ap_document`), thay 5 cột (bỏ `securities_offering_code`, `application_cd`, `certificate_dt_dim_id`, `application_status_code`, `offering_method_dim_id`; thêm `application_item_code`, `submission_dt_dim_id`, `ap_application_status_dim_id`, `ap_application_tp_dim_id`) và đổi grain. Fact này chỉ phục vụ K_QLCB_32–42 nên không ảnh hưởng Nhóm nào khác |
 | Operational Securities Offering 360 Profile | opr_securities_offering_360_profile (đề xuất) | new | Bảng tác nghiệp, chưa có tương đương trong registry |
 
 ---
@@ -1168,3 +1262,10 @@ graph TB
 | ID | Vấn đề | Giả định hiện tại | KPI liên quan | Trạng thái |
 |---|---|---|---|---|
 | O_QLCB_9 | **[Phạm vi Atomic — không phải Datamart] 2 track Atomic trùng logical_name "Public Company Securities Offering":** Track cũ `DataModel/working/Atomic_LinhLV/Business_Activity/dm_atm_pblc_co_scr_ofrg-IDS.company_securities_issuance.yaml` (physical_name `pblc_co_scr_ofrg`, nguồn ghi `IDS.company_securities_issuance`) **không có BRD source thật** trong `BRD/Source/IDS/` — có khả năng là track nháp/lỗi thời. Track mới `DataModel/working/Atomic/lld/IDS/lld_IDS_SECURITIES_OFFERING.yaml` (physical_name `pc_securities_offering`, nguồn `IDS.SECURITIES_OFFERING`) có BRD source đầy đủ nhưng attribute-level `status: draft`, chưa aggregate vào `DataModel/Atomic/` + `dm_manifest.yaml`. Đây là vấn đề quy trình thiết kế/quản lý Atomic (track nào là chuẩn, đã aggregate hay chưa) — không phải lỗi trace nguồn hay thiết kế của Datamart HLD; Datamart đã xác định đúng entity có BRD source thật để dùng. | Datamart HLD dùng track mới theo xác nhận người thiết kế (coi LLD draft là READY) — quyết định này thuộc phạm vi Datamart và đã chốt. Phần còn lại (reconcile track cũ, chạy `aggregate_atomic.py`, đưa vào `dm_manifest.yaml`) là việc của quy trình `atomic-lld-design`/`atomic-review`, không block hay thuộc trách nhiệm giải quyết của Datamart. | Toàn bộ KPI Nhóm 1–10 | **Open — chuyển giao đội Atomic** |
+| O_QLCB_10 | **[Đã giải quyết] Atomic thiếu `display_text` trên `Administrative Procedure Content Item Index`.** SQL BA STT 5/6 (sheet 2026-08-24) dùng `CONTENTITEMINDEX.DISPLAYTEXT` để resolve 3 ContentItemId (`TrangThaiHoSo`, `LoaiHoSo`, `CoQuanXuLy`) thành tên hiển thị — toàn bộ `CASE WHEN ts.DISPLAYTEXT IN (…)` phân loại 4 nhóm trạng thái, nhãn hình thức chào bán của Nhóm 6, và filter cơ quan xử lý đều dựa trên trường này. Khi thiết kế lần đầu (2026-08-24 sáng) cột nằm trong `DataModel/working/Atomic/lld/pending_design.yaml` nên toàn bộ K_QLCB_32–42 phải đánh PENDING. `PUBLISHED` không nằm trong yêu cầu bổ sung — thiết kế Atomic đã lọc theo cột này khi nạp `ap_content_item_index`. | **Closed 2026-08-24** — Atomic đã bổ sung attribute `Display Text` / `display_text` ← `TTHC.CONTENTITEMINDEX.DISPLAYTEXT` (Text, nullable) trên cả `DataModel/Atomic/Documentation/dm_atm_ap_content_item_index-TTHC.CONTENTITEMINDEX.yaml` (9 → 10 attribute) và `DataModel/working/Atomic/lld/TTHC/lld_TTHC_CONTENTITEMINDEX.yaml`. Toàn bộ K_QLCB_32–42 chuyển sang **READY (Atomic draft)**; 3 bảng của Nhóm 5/6 đã được đưa trở lại `DTM_QLCB_Entities.csv`. **Còn tồn đọng bên Atomic (không block Datamart):** entry `DISPLAYTEXT` vẫn nằm trong `pending_design.yaml` với `action: "Pending — thiết kế ở lượt sau nếu cần"` — cần gỡ để danh sách pending không báo sai. | K_QLCB_32–42 | **Closed** |
+| O_QLCB_11 | **Kết quả `TIMESTAMP` so với filter `BETWEEN TO_DATE(...)` → ngày đến bị loại; định dạng `:tu_ngay` ghi 2 kiểu; và `DEFAULT NULL ON CONVERSION ERROR` chỉ có ở STT 5.** (a) Công thức trả `CAST(... AS TIMESTAMP)` (có giờ, không `TRUNC`), nhưng filter là `BETWEEN TO_DATE(:tu_ngay,'YYYYMMDD') AND TO_DATE(:den_ngay,'YYYYMMDD')` — `TO_DATE(:den_ngay)` là 00:00:00 của ngày đến, nên hồ sơ gửi 09:15 ngày đến bị **loại khỏi kết quả**; chọn 01/08→31/08 sẽ mất gần như toàn bộ ngày 31/8, không báo lỗi, chỉ ra số thấp hơn. Nay áp dụng đều cho cả 2 Nhóm (không còn lệch nhau) nhưng vẫn cần chốt biên. (b) **CHỐT 2026-08-24: định dạng tham số `:tu_ngay`/`:den_ngay` là `'YYYYMMDD'`** (VD `20260824`) — khớp thân SQL đang chạy được, không phụ thuộc locale, và không có ca nào parse nhầm im lặng (không có dấu phân cách để hoán vị ngày/tháng), đồng thời trùng convention `data_dt` của flat table. Cột `Điều kiện` (cột R) của **cả STT 5 và STT 6** hiện còn ghi `'DD/MM/YYYY'` (`24/08/2026`) — BA cần sửa lại cho khớp. Lưu ý nếu để `'DD/MM/YYYY'`: date-picker locale US gửi `MM/DD/YYYY` thì ngày ≤ 12 sẽ parse được nhưng **sai im lặng** (VD `03/08/2026` hiểu thành 3 tháng 8 thay vì 8 tháng 3), ngày > 12 mới báo `ORA-01843`. (c) `DEFAULT NULL ON CONVERSION ERROR` có trong `TO_TIMESTAMP` của STT 5 nhưng **thiếu ở STT 6** → gặp chuỗi ngày sai định dạng, STT 5 trả NULL còn STT 6 **lỗi cả câu truy vấn**. **Đã đóng phần (d):** trước 2026-08-24 hai STT dùng 2 công thức derive khác nhau (`SUBSTR(...,1,10)` + `TO_DATE` vs `SUBSTR(...,1,19)` + `FROM_TZ`) làm cùng 1 hồ sơ ra 2 ngày khác nhau — sheet bản 16:04 ngày 2026-08-24 đã thống nhất về **một** công thức có xử lý múi giờ; đã diff xác nhận. | Fact lưu grain **ngày** (`ap_document.submission_dt` — ODS `TRUNC` kết quả TIMESTAMP của BA về DATE) nên trong Datamart cả 2 Nhóm dùng chung một ngày. (a) và (b) thuộc tầng truy vấn/hợp đồng API, (c) thuộc chất lượng SQL BA — cả 3 không chặn thiết kế Datamart. Đề nghị BA: thêm `DEFAULT NULL ON CONVERSION ERROR` vào STT 6, chốt 1 định dạng tham số, và chốt ngày đến có được tính vào khoảng lọc hay không (nếu có → dùng `< :den_ngay + 1` thay cho `BETWEEN`). | K_QLCB_32–42 | **Open — (b) đã chốt `YYYYMMDD` 2026-08-24; còn chờ BA (a) biên ngày đến và (c) bổ sung DEFAULT NULL ở STT 6** |
+| O_QLCB_12 | **47 giá trị trạng thái hồ sơ hard-code trong SQL BA, chưa có danh mục chuẩn hoá.** Việc phân loại 4 nhóm trạng thái dựa trên so khớp chuỗi tiếng Việt của `DISPLAYTEXT` (VD `'LĐCM Đã Ký Kết Quả Chấp Thuận'`, `'CBNV Chờ Trả Yêu Cầu Bổ Sung Hồ Sơ Về BPMC'`) — rất dễ vỡ khi TTHC đổi nhãn hoặc thêm trạng thái mới; nhánh `ELSE` sẽ âm thầm hút mọi trạng thái chưa khai báo. Nhãn nhánh `ELSE` còn khác nhau giữa 2 SQL (`'Chưa xác định - kiểm tra lại danh mục'` ở STT 5 vs `'Chưa xác định'` ở STT 6). TTHC thực tế có sẵn cụm bảng workflow (`TVRP_WORKFLOW_STATUS`, `TVRP_WORKFLOW_STATUS_CATEGORY`, `TVRP_CONTENT_WORKFLOW_STATE_INDEX`) nhưng **chưa có entity Atomic nào** cho các bảng này. | Đặt logic gom nhóm tại `Administrative Procedure Application Status Dimension` (1 chỗ duy nhất, có drill-down xuống trạng thái gốc), thống nhất 1 code `UNDEFINED` với nhãn `Chưa xác định`, và hiển thị lát `UNDEFINED` trên donut Nhóm 5 làm tín hiệu phát hiện trạng thái mới chưa phân loại (quyết định người thiết kế 2026-08-24). Đề xuất giai đoạn sau: thiết kế Atomic cho `TVRP_WORKFLOW_STATUS`/`TVRP_WORKFLOW_STATUS_CATEGORY` để lấy nhóm trạng thái từ danh mục nguồn thay vì so khớp chuỗi. | K_QLCB_32–42 | **Open — chờ BA/đội Atomic** |
+| O_QLCB_13 | **Dashboard QLCB sẽ có 2 danh mục "hình thức chào bán" song song.** Nhóm 2/3 (K_QLCB_6–19) lấy hình thức từ `IDS.SECURITIES_OFFERING_PLAN.offering_method_cd` + `LOOKUP_VALUES` (scheme `IDS_SO_OFFERING_METHOD`, các giá trị Công chúng/Riêng lẻ/ESOP/Trả cổ tức/…); Nhóm 6 sau khi đổi nguồn lấy từ `TTHC.LoaiHoSo.DISPLAYTEXT` (theo bộ Eform: IPO, chào bán thêm cổ phiếu, trái phiếu ra công chúng, chào bán riêng lẻ, ESOP, chứng quyền có bảo đảm, chứng chỉ quỹ, …). Hai danh mục không trùng nhau về độ mịn lẫn cách gọi → người dùng thấy cùng một khái niệm nhưng 2 bộ giá trị khác nhau trên cùng dashboard. | Giữ 2 Dimension độc lập (không repoint `offering_method_dim` vì sẽ phá 14 KPI Nhóm 2/3). Cần BA/nghiệp vụ quyết định: (a) chấp nhận 2 danh mục vì 2 Nhóm phản ánh 2 nghiệp vụ khác nhau (hồ sơ nộp vs đợt chào bán đã cấp phép), hay (b) xây bảng mapping TTHC `LoaiHoSo` → scheme `IDS_SO_OFFERING_METHOD` để hợp nhất nhãn hiển thị. | K_QLCB_36, K_QLCB_6–19 | **Open — chờ BA quyết định** |
+| O_QLCB_14 | **Cột `Nguồn` của BA vẫn ghi `IDS` cho toàn bộ 11 dòng STT 5/6** dù `Bảng nguồn` đã đổi thành `DOCUMENT`/`CONTENTITEMINDEX` và `Câu lệnh tham khảo` truy vấn `TTHC_UAT`. Nếu để nguyên, RTM sẽ trace BR/FR về `Nguồn = IDS` trong khi thiết kế và ETL đều trỏ TTHC. | Thiết kế lấy `Bảng nguồn` + `Câu lệnh tham khảo` làm chuẩn (nguồn = TTHC). Cần BA sửa cột `Nguồn` của 11 dòng STT 5/6 thành `TTHC`. | K_QLCB_32–42 | **Open — chờ BA sửa sheet** |
+| O_QLCB_15 | **`DataModel/Atomic/dm_manifest.yaml` không có entry nào cho TTHC** dù 2 file entity đã tồn tại trong `DataModel/Atomic/Documentation/` (`dm_atm_ap_document-TTHC.DOCUMENT.yaml`, `dm_atm_ap_content_item_index-TTHC.CONTENTITEMINDEX.yaml`). Theo Bước 1 mục 3 của `datamart-hld-design`, tra Nguồn 1 sẽ không thấy → buộc fallback sang Nguồn 2 (`working/Atomic/lld/manifest.yaml`, cả 2 entry `design_status: approved`). Manifest lệch so với thư mục thực tế. | Datamart HLD dùng 2 entity này (đã grep xác nhận file tồn tại + có entry ở manifest Nguồn 2). Việc đăng ký bổ sung vào `dm_manifest.yaml` thuộc quy trình `atomic-lld-design`/`atomic-review`, không block thiết kế Datamart. | K_QLCB_32–42 | **Open — chuyển giao đội Atomic** |
+| O_QLCB_16 | **Phạm vi 2 Dimension mới lọc bằng tham chiếu ngược, không lọc theo `CONTENTTYPE`.** `TTHC.CONTENTITEMINDEX` gộp mọi content item của CMS (hồ sơ, trạng thái, loại hồ sơ, cơ quan xử lý, tin tức, trang…) trong 1 bảng. Để lấy ra 47 dòng trạng thái cho `ap_application_status_dim` (và tương tự cho `ap_application_tp_dim`), cách gọn nhất là `WHERE content_tp_code = 'TrangThaiHoSo'` — nhưng giá trị thật của `CONTENTTYPE` **chưa được profile**: SQL BA join trạng thái thuần theo `CONTENTITEMID` không hề dùng `CONTENTTYPE`, và `DataModel/working/Atomic/hld/TTHC_HLD_Tier2.md` mục 7e câu #4 ghi rõ *"cần profile toàn bộ distinct values thực tế"*. Đoán sai tên → Dimension ra rỗng. | **Chốt 2026-08-24 (Cách B):** ETL lọc bằng `EXISTS` ngược về `ap_document` — chỉ nạp content item đang được hồ sơ tham chiếu ở vai trò trạng thái (`document_status_code`) hoặc hình thức chào bán (`offering_method_code`). Khớp đúng SQL BA, không phụ thuộc giá trị `CONTENTTYPE` chưa xác nhận, cùng khuôn "ETL-derived (DISTINCT)" mà `offering_method_dim` (Nhóm 2/3) đang dùng. Đánh đổi: ETL nặng hơn, và trạng thái chưa hồ sơ nào dùng thì chưa xuất hiện trong Dimension (không ảnh hưởng số liệu vì cũng không có hồ sơ nào rơi vào trạng thái đó). **Khi TTHC profile xong `CONTENTTYPE`** → đổi sang filter trực tiếp cho gọn và nhẹ ETL, không cần sửa thiết kế Datamart ngoài `etl_logic` của cột `src_stm_code` trên 2 Dimension. | K_QLCB_32–42 | **Open — chờ TTHC profile CONTENTTYPE** |
