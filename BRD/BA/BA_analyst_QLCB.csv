@@ -4,9 +4,16 @@ STT,Mã dashboard/BC,Dashboard/báo cáo,Thông tin,Mô tả,Nhóm yêu cầu,Ph
 TB: có tính toán tổng hợp
 Khó: Có logic phức tạp và lấy nhiều mốc thời gian
 Trùng: Trong phạm vi ban của mình làm đã có tính thông tin này rồi",,,,,,,,,,,,,,,
-1,,Chào bán phát hành/Tình hình thực hiện chào bán phát hành theo ngành ,Ngày ,Ngày,Dashboard,Chiều,Dễ,ngày/theo ngành,IDS,x,x,,Done,,SECURITIES_OFFERING,SECURITIES_OFFERING.certificate_date,"certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd')","WITH result_agg AS (
+1,,Chào bán phát hành/Tình hình thực hiện chào bán phát hành theo ngành ,Ngày ,Ngày,Dashboard,Chiều,Dễ,ngày/theo ngành,IDS,x,x,,Done,,SECURITIES_OFFERING,SECURITIES_OFFERING.certificate_date,"certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd')","WITH valid_offering AS (
+    -- Chỉ lấy các đợt chào bán có phương án phát hành thoả OFFERING_METHOD_CD NOT IN (6,7,8,9)
+    SELECT DISTINCT securities_offering_id
+    FROM securities_offering_plan
+    WHERE NVL(delete_flg, 0) = 0
+      AND offering_method_cd NOT IN (6,7,8,9)
+),
+result_agg AS (
     -- Gom nhóm kết quả phát hành theo từng đợt chào bán trước khi JOIN
-    SELECT 
+    SELECT
         securities_offering_id,
         SUM(total_collected_am) AS total_collected_am
     FROM securities_offering_result
@@ -21,6 +28,7 @@ SELECT
 FROM securities_offering so
 JOIN company_profiles cp           ON cp.id = so.company_profile_id
 JOIN categories c             ON c.id = cp.category_l1_id
+JOIN valid_offering vo              ON vo.securities_offering_id = so.id
 LEFT JOIN result_agg sor           ON sor.securities_offering_id = so.id
 WHERE NVL(so.delete_flg, 0) = 0
   AND so.certificate_date BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd')
@@ -193,9 +201,9 @@ SELECT
     t.credit_rating_org                                                 AS don_vi_xep_hang_tin_nhiem,
     t.total_registered_qty                                              AS sl_ck_cap_phep,
     NVL(r.total_successful_qty, 0)                                      AS sl_ck_thanh_cong,
-    t.total_expected_am                                                 AS gia_tri_cap_phep,
+    NVL(p.total_expected_am, 0)                                         AS gia_tri_cap_phep,
     NVL(r.total_collected_am, 0)                                        AS gia_tri_thanh_cong,
-    ROUND(NVL(r.total_collected_am, 0)/t.total_expected_am,2)*100 AS ty_le_thanh_cong
+    ROUND(NVL(r.total_successful_qty, 0)/NULLIF(t.total_registered_qty,0),2)*100 AS ty_le_thanh_cong
 FROM SECURITIES_OFFERING t
 JOIN COMPANY_PROFILES cp               ON cp.ID = t.company_profile_id
   LEFT JOIN plan_agg p                   ON p.securities_offering_id = t.ID
