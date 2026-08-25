@@ -737,6 +737,231 @@ attributes:
   atomic_column: "current_ownership_rate"
   data_type: "decimal(5,2)"
 - bcv_core_object: "Arrangement"
+  atomic_entity: "Public Company Share Statistics"
+  atomic_attribute: "Public Company Share Statistics Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "IDS"
+  source_table: "COMPANY_SHARE_STATISTICS"
+  source_column: null
+  comment: "PK surrogate. BCV: \"[Arrangement] Ownership\"."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "pc_share_statistics"
+  atomic_column: "pc_share_statistics_id"
+  data_type: "string"
+- bcv_core_object: "Arrangement"
+  atomic_entity: "Public Company Share Statistics"
+  atomic_attribute: "Public Company Share Statistics Code"
+  description: "Khóa chính. BK của entity — map từ PK bảng nguồn."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "COMPANY_SHARE_STATISTICS"
+  source_column: "IDS.COMPANY_SHARE_STATISTICS.ID"
+  comment: "BK chính. PK nguồn NUMBER(10) tự tăng."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "pc_share_statistics"
+  atomic_column: "pc_share_statistics_code"
+  data_type: "string"
+- bcv_core_object: "Arrangement"
+  atomic_entity: "Public Company Share Statistics"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "COMPANY_SHARE_STATISTICS"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'IDS_COMPANY_SHARE_STATISTICS'"
+  etl_derived_value: "IDS_COMPANY_SHARE_STATISTICS"
+  atomic_table: "pc_share_statistics"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Arrangement"
+  atomic_entity: "Public Company Share Statistics"
+  atomic_attribute: "Public Company Id"
+  description: "Khóa link đến bảng COMPANY_PROFILES."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "COMPANY_SHARE_STATISTICS"
+  source_column: "IDS.COMPANY_SHARE_STATISTICS.COMPANY_PROFILE_ID"
+  comment: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES',\
+    \ COMPANY_PROFILE_ID)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "pc_share_statistics"
+  atomic_column: "pc_id"
+  data_type: "string"
+- bcv_core_object: "Arrangement"
+  atomic_entity: "Public Company Share Statistics"
+  atomic_attribute: "Public Company Code"
+  description: "Mã công ty đại chúng."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "COMPANY_SHARE_STATISTICS"
+  source_column: "IDS.COMPANY_SHARE_STATISTICS.COMPANY_PROFILE_ID"
+  comment: "Lookup pair: public_company.pc_code. Pair with Public Company Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "pc_share_statistics"
+  atomic_column: "pc_code"
+  data_type: "string"
+- bcv_core_object: "Arrangement"
+  atomic_entity: "Public Company Share Statistics"
+  atomic_attribute: "Total Issued Share Quantity"
+  description: "Tổng số cổ phiếu đã phát hành."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "COMPANY_SHARE_STATISTICS"
+  source_column: "IDS.COMPANY_SHARE_STATISTICS.TOTAL_ISSUED_SHARE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "pc_share_statistics"
+  atomic_column: "total_issued_share_quantity"
+  data_type: "int"
+- bcv_core_object: "Arrangement"
+  atomic_entity: "Public Company Share Statistics"
+  atomic_attribute: "Total Outstanding Share Quantity"
+  description: "Tổng số cổ phiếu đang lưu hành."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "COMPANY_SHARE_STATISTICS"
+  source_column: "IDS.COMPANY_SHARE_STATISTICS.TOTAL_OUTSTANDING_SHARE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "pc_share_statistics"
+  atomic_column: "total_outstanding_share_quantity"
+  data_type: "int"
+- bcv_core_object: "Arrangement"
+  atomic_entity: "Public Company Share Statistics"
+  atomic_attribute: "Total Outstanding Share Value Amount"
+  description: "Tổng giá trị cổ phiếu đang lưu hành (đồng)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "COMPANY_SHARE_STATISTICS"
+  source_column: "IDS.COMPANY_SHARE_STATISTICS.TOTAL_OUTSTANDING_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "pc_share_statistics"
+  atomic_column: "total_outstanding_share_val_amt"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Arrangement"
+  atomic_entity: "Public Company Share Statistics"
+  atomic_attribute: "Total Treasury Share Quantity"
+  description: "Tổng số cổ phiếu quỹ."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "COMPANY_SHARE_STATISTICS"
+  source_column: "IDS.COMPANY_SHARE_STATISTICS.TOTAL_TREASURY_SHARE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "pc_share_statistics"
+  atomic_column: "total_treasury_share_quantity"
+  data_type: "int"
+- bcv_core_object: "Arrangement"
+  atomic_entity: "Public Company Share Statistics"
+  atomic_attribute: "Latest Treasury Purchase Quantity"
+  description: "Đợt mua lại cổ phiếu quỹ gần nhất: số lượng cổ phiếu mua lại."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "COMPANY_SHARE_STATISTICS"
+  source_column: "IDS.COMPANY_SHARE_STATISTICS.LASTEST_TREASURY_PURCHASE_QTY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "pc_share_statistics"
+  atomic_column: "latest_treasury_purchase_quantity"
+  data_type: "int"
+- bcv_core_object: "Arrangement"
+  atomic_entity: "Public Company Share Statistics"
+  atomic_attribute: "Latest Treasury Purchase End Date"
+  description: "Đợt mua lại cổ phiếu quỹ gần nhất: ngày kết thúc việc mua lại cổ phiếu."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "COMPANY_SHARE_STATISTICS"
+  source_column: "IDS.COMPANY_SHARE_STATISTICS.LASTEST_TREASURY_PURCHASE_END_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "pc_share_statistics"
+  atomic_column: "latest_treasury_purchase_end_dt"
+  data_type: "date"
+- bcv_core_object: "Arrangement"
+  atomic_entity: "Public Company Share Statistics"
+  atomic_attribute: "Preferred Share Type Name"
+  description: "Loại cổ phiếu ưu đãi."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "COMPANY_SHARE_STATISTICS"
+  source_column: "IDS.COMPANY_SHARE_STATISTICS.PREFERRED_SHARE_TYPE"
+  comment: "BCV: không có term riêng — chưa xác nhận LOOKUP_GROUP, giữ Text tự do."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "pc_share_statistics"
+  atomic_column: "preferred_share_tp_nm"
+  data_type: "string"
+- bcv_core_object: "Arrangement"
+  atomic_entity: "Public Company Share Statistics"
+  atomic_attribute: "Total Preferred Share Quantity"
+  description: "Tổng số cổ phiếu ưu đãi."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "COMPANY_SHARE_STATISTICS"
+  source_column: "IDS.COMPANY_SHARE_STATISTICS.TOTAL_PREFERRED_SHARE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "pc_share_statistics"
+  atomic_column: "total_preferred_share_quantity"
+  data_type: "int"
+- bcv_core_object: "Arrangement"
+  atomic_entity: "Public Company Share Statistics"
+  atomic_attribute: "Total Preferred Share Value Amount"
+  description: "Tổng giá trị cổ phiếu ưu đãi (đồng)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "COMPANY_SHARE_STATISTICS"
+  source_column: "IDS.COMPANY_SHARE_STATISTICS.TOTAL_PREFERRED_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "pc_share_statistics"
+  atomic_column: "total_preferred_share_val_amt"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Arrangement"
   atomic_entity: "Public Company Shareholding"
   atomic_attribute: "Public Company Shareholding Id"
   description: "Khóa đại diện (surrogate key)."
@@ -4471,7 +4696,7 @@ attributes:
   classification_context: "IDS_SO_ADMINISTRATIVE_PROC"
   etl_derived_value: null
   atomic_table: "pc_securities_offering"
-  atomic_column: "ap_code"
+  atomic_column: "administrative_procedure_code"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Securities Offering"
@@ -7732,7 +7957,7 @@ attributes:
   classification_context: "IDS_TS_ADMINISTRATIVE_PROC"
   etl_derived_value: null
   atomic_table: "pc_treasury_share_transaction"
-  atomic_column: "ap_code"
+  atomic_column: "administrative_procedure_code"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Treasury Share Transaction"
@@ -10011,7 +10236,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "SPECIALIZATION_COURSES"
   source_column: "NHNCK.PROVINCES.PROVINCE_CODE"
-  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT). Pair with\
+  comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with\
     \ Province Id. Giá trị lấy từ NHNCK.PROVINCES.PROVINCE_CODE sau ETL crosswalk\
     \ — chi tiết xem comment Province Id."
   classification_context: null
@@ -10101,11 +10326,10 @@ attributes:
   source_system: "NHNCK"
   source_table: "SPECIALIZATION_COURSE_DETAILS"
   source_column: "NHNCK.SPECIALIZATION_COURSES.COURSE_CODE"
-  comment: "Lookup pair: Securities Practitioner Professional Training Class.Securities\
-    \ Practitioner Professional Training Class Code. Pair with Securities Practitioner\
-    \ Professional Training Class Id. Giá trị lấy từ NHNCK.SPECIALIZATION_COURSES.COURSE_CODE\
-    \ sau ETL crosswalk — chi tiết xem comment Securities Practitioner Professional\
-    \ Training Class Id."
+  comment: "Lookup pair: sp_professional_training_class.sp_professional_training_class_code.\
+    \ Pair with Securities Practitioner Professional Training Class Id. Giá trị lấy\
+    \ từ NHNCK.SPECIALIZATION_COURSES.COURSE_CODE sau ETL crosswalk — chi tiết xem\
+    \ comment Securities Practitioner Professional Training Class Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_professional_training_class_enrollment"
@@ -10121,7 +10345,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "SPECIALIZATION_COURSE_DETAILS"
   source_column: "NHNCK.SPECIALIZATION_COURSE_DETAILS.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+  comment: "FK target: securities_practitioner.sp_id. Hash: hash_id('NHNCK.PROFESSIONALS',\
     \ PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
@@ -10138,8 +10362,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "SPECIALIZATION_COURSE_DETAILS"
   source_column: "NHNCK.SPECIALIZATION_COURSE_DETAILS.PROFESSIONAL_ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Securities Practitioner Id."
+  comment: "Lookup pair: securities_practitioner.sp_code. Pair with Securities Practitioner\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_professional_training_class_enrollment"
@@ -10256,7 +10480,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "SPECIALIZATION_COURSE_DETAILS"
   source_column: "NHNCK.COUNTRIES.COUNTRY_CODE"
-  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT). Pair with\
+  comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with\
     \ Permanent Residence Country Id. Giá trị lấy từ NHNCK.COUNTRIES.COUNTRY_CODE\
     \ sau ETL crosswalk — chi tiết xem comment Permanent Residence Country Id."
   classification_context: null
@@ -10295,7 +10519,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "SPECIALIZATION_COURSE_DETAILS"
   source_column: "NHNCK.PROVINCES.PROVINCE_CODE"
-  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT). Pair with\
+  comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with\
     \ Permanent Residence Province Id. Giá trị lấy từ NHNCK.PROVINCES.PROVINCE_CODE\
     \ sau ETL crosswalk — chi tiết xem comment Permanent Residence Province Id."
   classification_context: null
@@ -10336,7 +10560,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "SPECIALIZATION_COURSE_DETAILS"
   source_column: "NHNCK.DISTRICTS.DISTRICT_CODE"
-  comment: "Lookup pair: Geographic Area Old.Geographic Area Old Code (nguồn ECAT\
+  comment: "Lookup pair: geographic_area_old.geographic_area_old_code (nguồn ECAT\
     \ — ĐỔI TARGET, xem Permanent Residence District Id). Pair with Permanent Residence\
     \ District Id. Giá trị lấy từ NHNCK.DISTRICTS.DISTRICT_CODE sau ETL crosswalk\
     \ — chi tiết xem comment Permanent Residence District Id."
@@ -10571,7 +10795,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "VIOLATIONS"
   source_column: "NHNCK.VIOLATIONS.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+  comment: "FK target: securities_practitioner.sp_id. Hash: hash_id('NHNCK.PROFESSIONALS',\
     \ PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
@@ -10588,8 +10812,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "VIOLATIONS"
   source_column: "NHNCK.VIOLATIONS.PROFESSIONAL_ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Securities Practitioner Id."
+  comment: "Lookup pair: securities_practitioner.sp_code. Pair with Securities Practitioner\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_violation"
@@ -14756,7 +14980,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "EXAM_DETAILS"
   source_column: "NHNCK.EXAM_DETAILS.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+  comment: "FK target: securities_practitioner.sp_id. Hash: hash_id('NHNCK.PROFESSIONALS',\
     \ PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
@@ -14773,8 +14997,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "EXAM_DETAILS"
   source_column: "NHNCK.EXAM_DETAILS.PROFESSIONAL_ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Securities Practitioner Id."
+  comment: "Lookup pair: securities_practitioner.sp_code. Pair with Securities Practitioner\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_qualification_examination_assessment_result"
@@ -14849,10 +15073,10 @@ attributes:
   source_system: "NHNCK"
   source_table: "EXAM_DETAILS"
   source_column: "NHNCK.APPLICATIONS.APPLICATION_CODE"
-  comment: "Lookup pair: Securities Practitioner License Application.Securities Practitioner\
-    \ License Application Code. Pair with Securities Practitioner License Application\
-    \ Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE sau ETL crosswalk — chi\
-    \ tiết xem comment Securities Practitioner License Application Id."
+  comment: "Lookup pair: sp_license_application.sp_license_application_code. Pair\
+    \ with Securities Practitioner License Application Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE\
+    \ sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Application\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_qualification_examination_assessment_result"
@@ -14986,6 +15210,254 @@ attributes:
   atomic_table: "sp_qualification_examination_assessment_result"
   atomic_column: "examination_note"
   data_type: "string"
+- bcv_core_object: "Condition"
+  atomic_entity: "Financial Report Catalog"
+  atomic_attribute: "Financial Report Catalog Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "IDS"
+  source_table: "REPORT_CATALOG"
+  source_column: null
+  comment: "PK surrogate. Hash: hash_id('IDS.REPORT_CATALOG', REPORT_CD). BCV: \"\
+    [Condition] Form Definition\"."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fr_catalog"
+  atomic_column: "fr_catalog_id"
+  data_type: "string"
+- bcv_core_object: "Condition"
+  atomic_entity: "Financial Report Catalog"
+  atomic_attribute: "Financial Report Catalog Code"
+  description: "Mã báo cáo. BK duy nhất — Id hash từ trường này."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "REPORT_CATALOG"
+  source_column: "IDS.REPORT_CATALOG.REPORT_CD"
+  comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID) + Unique Key cũ —\
+    \ gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique\
+    \ trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fr_catalog"
+  atomic_column: "fr_catalog_code"
+  data_type: "string"
+- bcv_core_object: "Condition"
+  atomic_entity: "Financial Report Catalog"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "REPORT_CATALOG"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'IDS_REPORT_CATALOG'"
+  etl_derived_value: "IDS_REPORT_CATALOG"
+  atomic_table: "fr_catalog"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Condition"
+  atomic_entity: "Financial Report Catalog"
+  atomic_attribute: "Financial Report Catalog Name"
+  description: "Tên báo cáo (tiếng Việt)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "REPORT_CATALOG"
+  source_column: "IDS.REPORT_CATALOG.REPORT_NAME_VI"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fr_catalog"
+  atomic_column: "fr_catalog_nm"
+  data_type: "string"
+- bcv_core_object: "Condition"
+  atomic_entity: "Financial Report Catalog"
+  atomic_attribute: "Financial Report Catalog English Name"
+  description: "Tên báo cáo (tiếng Anh)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "REPORT_CATALOG"
+  source_column: "IDS.REPORT_CATALOG.REPORT_NAME_EN"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fr_catalog"
+  atomic_column: "fr_catalog_english_nm"
+  data_type: "string"
+- bcv_core_object: "Condition"
+  atomic_entity: "Financial Report Catalog"
+  atomic_attribute: "Financial Report Catalog Type Code"
+  description: "Loại báo cáo (I - Báo cáo đầu vào, O - Báo cáo xuất ra)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "REPORT_CATALOG"
+  source_column: "IDS.REPORT_CATALOG.RC_TYPE_CD"
+  comment: "SCHEMA_CODE=IDS.REPORT_CATALOG.RC_TYPE_CD."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fr_catalog"
+  atomic_column: "fr_catalog_tp_code"
+  data_type: "string"
+- bcv_core_object: "Condition"
+  atomic_entity: "Financial Report Catalog"
+  atomic_attribute: "Financial Report Year"
+  description: "Lưu năm của báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "REPORT_CATALOG"
+  source_column: "IDS.REPORT_CATALOG.REPORT_YEAR"
+  comment: "Nguồn VARCHAR2(4) — chỉ lưu năm (không có tháng/ngày), giữ Text thay vì\
+    \ Date."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fr_catalog"
+  atomic_column: "fr_year"
+  data_type: "string"
+- bcv_core_object: "Condition"
+  atomic_entity: "Financial Report Catalog"
+  atomic_attribute: "Financial Report Scope Code"
+  description: "Loại hình báo cáo (Hợp nhất, Mẹ)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "REPORT_CATALOG"
+  source_column: "IDS.REPORT_CATALOG.REPORT_SCOPE_CD"
+  comment: "Scheme: IDS_REPORT_SCOPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_SCOPE')."
+  classification_context: "IDS_REPORT_SCOPE"
+  etl_derived_value: null
+  atomic_table: "fr_catalog"
+  atomic_column: "fr_scope_code"
+  data_type: "string"
+- bcv_core_object: "Condition"
+  atomic_entity: "Financial Report Catalog"
+  atomic_attribute: "Enterprise Type Code"
+  description: "Loại hình doanh nghiệp (DN, BH, TD, CK)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "REPORT_CATALOG"
+  source_column: "IDS.REPORT_CATALOG.ENTERPRISE_TYPE_CD"
+  comment: "Scheme: IDS_ENTERPRISE_TYPE. Dùng chung scheme với Public Company.Enterprise\
+    \ Type Code (LOOKUP_GROUP='ENTERPRISE_TYPE')."
+  classification_context: "IDS_ENTERPRISE_TYPE"
+  etl_derived_value: null
+  atomic_table: "fr_catalog"
+  atomic_column: "enterprise_tp_code"
+  data_type: "string"
+- bcv_core_object: "Condition"
+  atomic_entity: "Financial Report Catalog"
+  atomic_attribute: "Consolidated Indicator"
+  description: "Có phải là báo cáo hợp nhất không."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "REPORT_CATALOG"
+  source_column: "IDS.REPORT_CATALOG.CONSOLIDATED_FLG"
+  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fr_catalog"
+  atomic_column: "consolidated_ind"
+  data_type: "int"
+- bcv_core_object: "Condition"
+  atomic_entity: "Financial Report Catalog"
+  atomic_attribute: "Active Indicator"
+  description: "Trạng thái sử dụng."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "REPORT_CATALOG"
+  source_column: "IDS.REPORT_CATALOG.ACTIVE_FLG"
+  comment: "Giá trị 1 → true (đang sử dụng); 0 → false. Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fr_catalog"
+  atomic_column: "active_ind"
+  data_type: "int"
+- bcv_core_object: "Condition"
+  atomic_entity: "Financial Report Catalog"
+  atomic_attribute: "Financial Statement Reference Code"
+  description: "Tham chiếu báo cáo tài chính (không có mô tả tại nguồn)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "REPORT_CATALOG"
+  source_column: "IDS.REPORT_CATALOG.FINANCIAL_STATEMENT_CD"
+  comment: "Nguồn VARCHAR2(500), description null — giữ Text denormalized. Cần Data\
+    \ Modeler xác nhận ý nghĩa nghiệp vụ trước khi dùng (có thể là danh sách composite)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fr_catalog"
+  atomic_column: "financial_statement_reference_code"
+  data_type: "string"
+- bcv_core_object: "Condition"
+  atomic_entity: "Financial Report Catalog"
+  atomic_attribute: "Reporting Period Reference Code"
+  description: "Tham chiếu kỳ báo cáo (không có mô tả tại nguồn)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "REPORT_CATALOG"
+  source_column: "IDS.REPORT_CATALOG.REPORTING_PERIOD_CD"
+  comment: "Nguồn VARCHAR2(500), description null — giữ Text denormalized. Cần Data\
+    \ Modeler xác nhận ý nghĩa nghiệp vụ trước khi dùng."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fr_catalog"
+  atomic_column: "reporting_period_reference_code"
+  data_type: "string"
+- bcv_core_object: "Condition"
+  atomic_entity: "Financial Report Catalog"
+  atomic_attribute: "Reference Code"
+  description: "Mã tham chiếu (không có mô tả tại nguồn)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "REPORT_CATALOG"
+  source_column: "IDS.REPORT_CATALOG.REF_CD"
+  comment: "Nguồn VARCHAR2(500), description null — giữ Text denormalized. Cần Data\
+    \ Modeler xác nhận ý nghĩa nghiệp vụ trước khi dùng."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fr_catalog"
+  atomic_column: "reference_code"
+  data_type: "string"
+- bcv_core_object: "Condition"
+  atomic_entity: "Financial Report Catalog"
+  atomic_attribute: "Deleted Indicator"
+  description: "Trạng thái xóa."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "REPORT_CATALOG"
+  source_column: "IDS.REPORT_CATALOG.IS_DELETED"
+  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fr_catalog"
+  atomic_column: "deleted_ind"
+  data_type: "int"
 - bcv_core_object: "Condition"
   atomic_entity: "Public Company Evaluation Criterion"
   atomic_attribute: "Public Company Evaluation Criterion Id"
@@ -15247,10 +15719,9 @@ attributes:
   source_system: "NHNCK"
   source_table: "EXAM_SESSION_FEES"
   source_column: "NHNCK.EXAM_SESSION_FEES.EXAM_SESSION_ID"
-  comment: "FK target: Securities Practitioner Qualification Examination Assessment.Securities\
-    \ Practitioner Qualification Examination Assessment Id. Nguồn lưu ID kỹ thuật\
-    \ của EXAM_SESSIONS — ETL join EXAM_SESSION_ID → NHNCK.EXAM_SESSIONS.ID để lấy\
-    \ CODE, rồi hash_id('NHNCK.EXAM_SESSIONS', CODE)."
+  comment: "FK target: sp_qualification_examination_assessment.sp_qualification_examination_assessment_id.\
+    \ Nguồn lưu ID kỹ thuật của EXAM_SESSIONS — ETL join EXAM_SESSION_ID → NHNCK.EXAM_SESSIONS.ID\
+    \ để lấy CODE, rồi hash_id('NHNCK.EXAM_SESSIONS', CODE)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_qualification_examination_assessment_fee"
@@ -15267,9 +15738,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "EXAM_SESSION_FEES"
   source_column: "NHNCK.EXAM_SESSION_FEES.EXAM_SESSION_ID"
-  comment: "Lookup pair: Securities Practitioner Qualification Examination Assessment.Securities\
-    \ Practitioner Qualification Examination Assessment Code. Pair with Securities\
-    \ Practitioner Qualification Examination Assessment Id."
+  comment: "Lookup pair: sp_qualification_examination_assessment.sp_qualification_examination_assessment_code.\
+    \ Pair with Securities Practitioner Qualification Examination Assessment Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_qualification_examination_assessment_fee"
@@ -15362,7 +15832,7 @@ attributes:
   classification_context: null
   etl_derived_value: null
   atomic_table: "ap_content_item_index"
-  atomic_column: "ap_content_item_index_id"
+  atomic_column: "administrative_procedure_content_item_index_id"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Administrative Procedure Content Item Index"
@@ -15379,7 +15849,7 @@ attributes:
   classification_context: null
   etl_derived_value: null
   atomic_table: "ap_content_item_index"
-  atomic_column: "ap_content_item_index_code"
+  atomic_column: "administrative_procedure_content_item_index_code"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Administrative Procedure Content Item Index"
@@ -15412,7 +15882,7 @@ attributes:
   classification_context: null
   etl_derived_value: null
   atomic_table: "ap_content_item_index"
-  atomic_column: "ap_document_id"
+  atomic_column: "administrative_procedure_document_id"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Administrative Procedure Content Item Index"
@@ -15429,7 +15899,7 @@ attributes:
   classification_context: null
   etl_derived_value: null
   atomic_table: "ap_content_item_index"
-  atomic_column: "ap_document_code"
+  atomic_column: "administrative_procedure_document_code"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Administrative Procedure Content Item Index"
@@ -15504,6 +15974,22 @@ attributes:
   atomic_column: "content_tp_code"
   data_type: "string"
 - bcv_core_object: "Documentation"
+  atomic_entity: "Administrative Procedure Content Item Index"
+  atomic_attribute: "Display Text"
+  description: "Tiêu đề/tên content item để hiển thị trong danh sách."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "TTHC"
+  source_table: "CONTENTITEMINDEX"
+  source_column: "TTHC.CONTENTITEMINDEX.DISPLAYTEXT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "ap_content_item_index"
+  atomic_column: "display_text"
+  data_type: "string"
+- bcv_core_object: "Documentation"
   atomic_entity: "Administrative Procedure Document"
   atomic_attribute: "Administrative Procedure Document Id"
   description: "Khóa đại diện (surrogate key)."
@@ -15518,7 +16004,7 @@ attributes:
   classification_context: null
   etl_derived_value: null
   atomic_table: "ap_document"
-  atomic_column: "ap_document_id"
+  atomic_column: "administrative_procedure_document_id"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Administrative Procedure Document"
@@ -15537,7 +16023,7 @@ attributes:
   classification_context: null
   etl_derived_value: null
   atomic_table: "ap_document"
-  atomic_column: "ap_document_code"
+  atomic_column: "administrative_procedure_document_code"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Administrative Procedure Document"
@@ -22766,7 +23252,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATIONS"
   source_column: "NHNCK.APPLICATIONS.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+  comment: "FK target: securities_practitioner.sp_id. Hash: hash_id('NHNCK.PROFESSIONALS',\
     \ PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
@@ -22783,8 +23269,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATIONS"
   source_column: "NHNCK.APPLICATIONS.PROFESSIONAL_ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Securities Practitioner Id."
+  comment: "Lookup pair: securities_practitioner.sp_code. Pair with Securities Practitioner\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application"
@@ -22884,10 +23370,9 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATIONS"
   source_column: "NHNCK.APPLICATIONS.EXAM_SESSION_ID"
-  comment: "FK target: Securities Practitioner Qualification Examination Assessment.Securities\
-    \ Practitioner Qualification Examination Assessment Id. Nguồn lưu ID kỹ thuật\
-    \ của EXAM_SESSIONS — ETL join EXAM_SESSION_ID → NHNCK.EXAM_SESSIONS.ID để lấy\
-    \ CODE, rồi hash_id('NHNCK.EXAM_SESSIONS', CODE)."
+  comment: "FK target: sp_qualification_examination_assessment.sp_qualification_examination_assessment_id.\
+    \ Nguồn lưu ID kỹ thuật của EXAM_SESSIONS — ETL join EXAM_SESSION_ID → NHNCK.EXAM_SESSIONS.ID\
+    \ để lấy CODE, rồi hash_id('NHNCK.EXAM_SESSIONS', CODE)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application"
@@ -22904,9 +23389,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATIONS"
   source_column: "NHNCK.APPLICATIONS.EXAM_SESSION_ID"
-  comment: "Lookup pair: Securities Practitioner Qualification Examination Assessment.Securities\
-    \ Practitioner Qualification Examination Assessment Code. Pair with Securities\
-    \ Practitioner Qualification Examination Assessment Id."
+  comment: "Lookup pair: sp_qualification_examination_assessment.sp_qualification_examination_assessment_code.\
+    \ Pair with Securities Practitioner Qualification Examination Assessment Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application"
@@ -23091,10 +23575,10 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_SPECIALIZATIONS"
   source_column: "NHNCK.APPLICATIONS.APPLICATION_CODE"
-  comment: "Lookup pair: Securities Practitioner License Application.Securities Practitioner\
-    \ License Application Code. Pair with Securities Practitioner License Application\
-    \ Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE sau ETL crosswalk — chi\
-    \ tiết xem comment Securities Practitioner License Application Id."
+  comment: "Lookup pair: sp_license_application.sp_license_application_code. Pair\
+    \ with Securities Practitioner License Application Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE\
+    \ sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Application\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application_education_certificate_document"
@@ -23338,10 +23822,10 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_RE_EXAMS"
   source_column: "NHNCK.APPLICATIONS.APPLICATION_CODE"
-  comment: "Lookup pair: Securities Practitioner License Application.Securities Practitioner\
-    \ License Application Code. Pair with Securities Practitioner License Application\
-    \ Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE sau ETL crosswalk — chi\
-    \ tiết xem comment Securities Practitioner License Application Id."
+  comment: "Lookup pair: sp_license_application.sp_license_application_code. Pair\
+    \ with Securities Practitioner License Application Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE\
+    \ sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Application\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application_re_exam_request"
@@ -23358,8 +23842,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_RE_EXAMS"
   source_column: "NHNCK.APPLICATION_RE_EXAMS.EXAM_DETAIL_ID"
-  comment: "FK target: Securities Practitioner Qualification Examination Assessment\
-    \ Result.Securities Practitioner Qualification Examination Assessment Result Id.\
+  comment: "FK target: sp_qualification_examination_assessment_result.sp_qualification_examination_assessment_result_id.\
     \ Hash: hash_id('NHNCK.EXAM_DETAILS', EXAM_DETAIL_ID)."
   classification_context: null
   etl_derived_value: null
@@ -23377,8 +23860,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_RE_EXAMS"
   source_column: "NHNCK.APPLICATION_RE_EXAMS.EXAM_DETAIL_ID"
-  comment: "Lookup pair: Securities Practitioner Qualification Examination Assessment\
-    \ Result.Securities Practitioner Qualification Examination Assessment Result Code.\
+  comment: "Lookup pair: sp_qualification_examination_assessment_result.sp_qualification_examination_assessment_result_code.\
     \ Pair with Securities Practitioner Qualification Examination Assessment Result\
     \ Id."
   classification_context: null
@@ -23416,10 +23898,10 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_RE_EXAMS"
   source_column: "NHNCK.APPLICATIONS.APPLICATION_CODE"
-  comment: "Lookup pair: Securities Practitioner License Application.Securities Practitioner\
-    \ License Application Code. Pair with Re-Exam Securities Practitioner License\
-    \ Application Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE sau ETL crosswalk\
-    \ — chi tiết xem comment Re-Exam Securities Practitioner License Application Id."
+  comment: "Lookup pair: sp_license_application.sp_license_application_code. Pair\
+    \ with Re-Exam Securities Practitioner License Application Id. Giá trị lấy từ\
+    \ NHNCK.APPLICATIONS.APPLICATION_CODE sau ETL crosswalk — chi tiết xem comment\
+    \ Re-Exam Securities Practitioner License Application Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application_re_exam_request"
@@ -23542,7 +24024,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "CERTIFICATE_RECORDS"
   source_column: "NHNCK.CERTIFICATE_RECORDS.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+  comment: "FK target: securities_practitioner.sp_id. Hash: hash_id('NHNCK.PROFESSIONALS',\
     \ PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
@@ -23559,8 +24041,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "CERTIFICATE_RECORDS"
   source_column: "NHNCK.CERTIFICATE_RECORDS.PROFESSIONAL_ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Securities Practitioner Id."
+  comment: "Lookup pair: securities_practitioner.sp_code. Pair with Securities Practitioner\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_certificate_document"
@@ -24818,7 +25300,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "ORGANIZATION_REPORTS"
   source_column: "NHNCK.ORGANIZATION_REPORTS.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+  comment: "FK target: securities_practitioner.sp_id. Hash: hash_id('NHNCK.PROFESSIONALS',\
     \ PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
@@ -24835,8 +25317,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "ORGANIZATION_REPORTS"
   source_column: "NHNCK.ORGANIZATION_REPORTS.PROFESSIONAL_ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Securities Practitioner Id."
+  comment: "Lookup pair: securities_practitioner.sp_code. Pair with Securities Practitioner\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_organization_employment_report"
@@ -24933,9 +25415,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "ORGANIZATION_REPORTS"
   source_column: "NHNCK.ORGANIZATION_REPORTS.PARENT_REPORT_ID"
-  comment: "FK target: Securities Practitioner Organization Employment Report.Securities\
-    \ Practitioner Organization Employment Report Id. Self-referencing. Hash: hash_id('NHNCK.ORGANIZATION_REPORTS',\
-    \ PARENT_REPORT_ID)."
+  comment: "FK target: sp_organization_employment_report.sp_organization_employment_rpt_id.\
+    \ Self-referencing. Hash: hash_id('NHNCK.ORGANIZATION_REPORTS', PARENT_REPORT_ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_organization_employment_report"
@@ -24952,9 +25433,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "ORGANIZATION_REPORTS"
   source_column: "NHNCK.ORGANIZATION_REPORTS.PARENT_REPORT_ID"
-  comment: "Lookup pair: Securities Practitioner Organization Employment Report.Securities\
-    \ Practitioner Organization Employment Report Code. Pair with Parent Securities\
-    \ Practitioner Organization Employment Report Id."
+  comment: "Lookup pair: sp_organization_employment_report.sp_organization_employment_rpt_code.\
+    \ Pair with Parent Securities Practitioner Organization Employment Report Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_organization_employment_report"
@@ -36610,10 +37090,10 @@ attributes:
   source_system: "NHNCK"
   source_table: "UNITS"
   source_column: "NHNCK.UNITS.UNIT_CODE"
-  comment: "Lookup pair: Regulatory Authority Organization Unit.Regulatory Authority\
-    \ Organization Unit Code. Pair with Parent Regulatory Authority Organization Unit\
-    \ Id. Giá trị lấy từ NHNCK.UNITS.UNIT_CODE sau ETL crosswalk — chi tiết xem comment\
-    \ Parent Regulatory Authority Organization Unit Id."
+  comment: "Lookup pair: ra_organization_unit.ra_ou_code. Pair with Parent Regulatory\
+    \ Authority Organization Unit Id. Giá trị lấy từ NHNCK.UNITS.UNIT_CODE sau ETL\
+    \ crosswalk — chi tiết xem comment Parent Regulatory Authority Organization Unit\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "ra_organization_unit"
@@ -36762,10 +37242,10 @@ attributes:
   source_system: "NHNCK"
   source_table: "DEPARTMENTS"
   source_column: "NHNCK.UNITS.UNIT_CODE"
-  comment: "Lookup pair: Regulatory Authority Organization Unit.Regulatory Authority\
-    \ Organization Unit Code. Pair with Parent Regulatory Authority Organization Unit\
-    \ Id. Giá trị lấy từ NHNCK.UNITS.UNIT_CODE sau ETL crosswalk — chi tiết xem comment\
-    \ Parent Regulatory Authority Organization Unit Id."
+  comment: "Lookup pair: ra_organization_unit.ra_ou_code. Pair with Parent Regulatory\
+    \ Authority Organization Unit Id. Giá trị lấy từ NHNCK.UNITS.UNIT_CODE sau ETL\
+    \ crosswalk — chi tiết xem comment Parent Regulatory Authority Organization Unit\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "ra_organization_unit"
@@ -44333,7 +44813,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONALS"
   source_column: "NHNCK.COUNTRIES.COUNTRY_CODE"
-  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT). Pair with\
+  comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with\
     \ Nationality Id. Giá trị lấy từ NHNCK.COUNTRIES.COUNTRY_CODE sau ETL crosswalk\
     \ — chi tiết xem comment Nationality Id."
   classification_context: null
@@ -44731,7 +45211,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONAL_WORK_HISTORIES"
   source_column: "NHNCK.PROFESSIONAL_WORK_HISTORIES.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+  comment: "FK target: securities_practitioner.sp_id. Hash: hash_id('NHNCK.PROFESSIONALS',\
     \ PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
@@ -44748,8 +45228,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONAL_WORK_HISTORIES"
   source_column: "NHNCK.PROFESSIONAL_WORK_HISTORIES.PROFESSIONAL_ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Securities Practitioner Id."
+  comment: "Lookup pair: securities_practitioner.sp_code. Pair with Securities Practitioner\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_employment_status"
@@ -44985,7 +45465,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONAL_HISTORIES"
   source_column: "NHNCK.PROFESSIONAL_HISTORIES.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+  comment: "FK target: securities_practitioner.sp_id. Hash: hash_id('NHNCK.PROFESSIONALS',\
     \ PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
@@ -45002,8 +45482,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONAL_HISTORIES"
   source_column: "NHNCK.PROFESSIONAL_HISTORIES.PROFESSIONAL_ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Securities Practitioner Id."
+  comment: "Lookup pair: securities_practitioner.sp_code. Pair with Securities Practitioner\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_reason_change_history"
@@ -45101,7 +45581,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONAL_RELATIONSHIPS"
   source_column: "NHNCK.PROFESSIONAL_RELATIONSHIPS.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+  comment: "FK target: securities_practitioner.sp_id. Hash: hash_id('NHNCK.PROFESSIONALS',\
     \ PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
@@ -45118,8 +45598,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONAL_RELATIONSHIPS"
   source_column: "NHNCK.PROFESSIONAL_RELATIONSHIPS.PROFESSIONAL_ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Securities Practitioner Id."
+  comment: "Lookup pair: securities_practitioner.sp_code. Pair with Securities Practitioner\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_related_party"
@@ -45266,7 +45746,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONAL_RELATIONSHIPS"
   source_column: "NHNCK.COUNTRIES.COUNTRY_CODE"
-  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT). Pair with\
+  comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with\
     \ Country Id. Giá trị lấy từ NHNCK.COUNTRIES.COUNTRY_CODE sau ETL crosswalk —\
     \ chi tiết xem comment Country Id."
   classification_context: null
@@ -48528,10 +49008,10 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_FEES"
   source_column: "NHNCK.APPLICATIONS.APPLICATION_CODE"
-  comment: "Lookup pair: Securities Practitioner License Application.Securities Practitioner\
-    \ License Application Code. Pair with Securities Practitioner License Application\
-    \ Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE sau ETL crosswalk — chi\
-    \ tiết xem comment Securities Practitioner License Application Id."
+  comment: "Lookup pair: sp_license_application.sp_license_application_code. Pair\
+    \ with Securities Practitioner License Application Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE\
+    \ sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Application\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application_fee"
@@ -48547,7 +49027,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_FEES"
   source_column: "NHNCK.APPLICATION_FEES.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+  comment: "FK target: securities_practitioner.sp_id. Hash: hash_id('NHNCK.PROFESSIONALS',\
     \ PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
@@ -48564,8 +49044,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_FEES"
   source_column: "NHNCK.APPLICATION_FEES.PROFESSIONAL_ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Securities Practitioner Id."
+  comment: "Lookup pair: securities_practitioner.sp_code. Pair with Securities Practitioner\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application_fee"
@@ -58497,271 +58977,6 @@ attributes:
   atomic_table: "examination_team_member"
   atomic_column: "role_in_team_code"
   data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Financial Report Catalog"
-  atomic_attribute: "Financial Report Catalog Id"
-  description: "Khóa đại diện (surrogate key)."
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: true
-  source_system: "IDS"
-  source_table: "REPORT_CATALOG"
-  source_column: null
-  comment: "PK surrogate. Hash: hash_id('IDS.REPORT_CATALOG', REPORT_CD). BCV: \"\
-    [Condition] Form Definition\"."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "financial_report_catalog"
-  atomic_column: "fr_catalog_id"
-  data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Financial Report Catalog"
-  atomic_attribute: "Financial Report Catalog Code"
-  description: "Mã báo cáo. BK duy nhất — Id hash từ trường này."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "REPORT_CATALOG"
-  source_column: "IDS.REPORT_CATALOG.REPORT_CD"
-  comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID) + Unique Key cũ —\
-    \ gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique\
-    \ trước go-live."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "financial_report_catalog"
-  atomic_column: "fr_catalog_code"
-  data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Financial Report Catalog"
-  atomic_attribute: "Source System Code"
-  description: "Mã hệ thống nguồn dữ liệu."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "REPORT_CATALOG"
-  source_column: null
-  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "Source System Code = 'IDS_REPORT_CATALOG'"
-  etl_derived_value: "IDS_REPORT_CATALOG"
-  atomic_table: "financial_report_catalog"
-  atomic_column: "src_stm_code"
-  data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Financial Report Catalog"
-  atomic_attribute: "Financial Report Catalog Name"
-  description: "Tên báo cáo (tiếng Việt)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "REPORT_CATALOG"
-  source_column: "IDS.REPORT_CATALOG.REPORT_NAME_VI"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "financial_report_catalog"
-  atomic_column: "fr_catalog_nm"
-  data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Financial Report Catalog"
-  atomic_attribute: "Financial Report Catalog English Name"
-  description: "Tên báo cáo (tiếng Anh)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "REPORT_CATALOG"
-  source_column: "IDS.REPORT_CATALOG.REPORT_NAME_EN"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "financial_report_catalog"
-  atomic_column: "fr_catalog_english_nm"
-  data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Financial Report Catalog"
-  atomic_attribute: "Financial Report Catalog Type Code"
-  description: "Loại báo cáo (I - Báo cáo đầu vào, O - Báo cáo xuất ra)."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "REPORT_CATALOG"
-  source_column: "IDS.REPORT_CATALOG.RC_TYPE_CD"
-  comment: "Scheme: IDS_REPORT_CATALOG_TYPE. Values lấy trực tiếp từ cột nguồn (LOOKUP_GROUP='RC_TYPE')."
-  classification_context: "IDS_REPORT_CATALOG_TYPE"
-  etl_derived_value: null
-  atomic_table: "financial_report_catalog"
-  atomic_column: "fr_catalog_tp_code"
-  data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Financial Report Catalog"
-  atomic_attribute: "Financial Report Year"
-  description: "Lưu năm của báo cáo."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "REPORT_CATALOG"
-  source_column: "IDS.REPORT_CATALOG.REPORT_YEAR"
-  comment: "Nguồn VARCHAR2(4) — chỉ lưu năm (không có tháng/ngày), giữ Text thay vì\
-    \ Date."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "financial_report_catalog"
-  atomic_column: "fr_year"
-  data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Financial Report Catalog"
-  atomic_attribute: "Financial Report Scope Code"
-  description: "Loại hình báo cáo (Hợp nhất, Mẹ)."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "REPORT_CATALOG"
-  source_column: "IDS.REPORT_CATALOG.REPORT_SCOPE_CD"
-  comment: "Scheme: IDS_REPORT_SCOPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_SCOPE')."
-  classification_context: "IDS_REPORT_SCOPE"
-  etl_derived_value: null
-  atomic_table: "financial_report_catalog"
-  atomic_column: "fr_scope_code"
-  data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Financial Report Catalog"
-  atomic_attribute: "Enterprise Type Code"
-  description: "Loại hình doanh nghiệp (DN, BH, TD, CK)."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "REPORT_CATALOG"
-  source_column: "IDS.REPORT_CATALOG.ENTERPRISE_TYPE_CD"
-  comment: "Scheme: IDS_ENTERPRISE_TYPE. Dùng chung scheme với Public Company.Enterprise\
-    \ Type Code (LOOKUP_GROUP='ENTERPRISE_TYPE')."
-  classification_context: "IDS_ENTERPRISE_TYPE"
-  etl_derived_value: null
-  atomic_table: "financial_report_catalog"
-  atomic_column: "enterprise_tp_code"
-  data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Financial Report Catalog"
-  atomic_attribute: "Consolidated Indicator"
-  description: "Có phải là báo cáo hợp nhất không."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "REPORT_CATALOG"
-  source_column: "IDS.REPORT_CATALOG.CONSOLIDATED_FLG"
-  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "financial_report_catalog"
-  atomic_column: "consolidated_ind"
-  data_type: "int"
-- bcv_core_object: null
-  atomic_entity: "Financial Report Catalog"
-  atomic_attribute: "Active Indicator"
-  description: "Trạng thái sử dụng."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "REPORT_CATALOG"
-  source_column: "IDS.REPORT_CATALOG.ACTIVE_FLG"
-  comment: "Giá trị 1 → true (đang sử dụng); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "financial_report_catalog"
-  atomic_column: "active_ind"
-  data_type: "int"
-- bcv_core_object: null
-  atomic_entity: "Financial Report Catalog"
-  atomic_attribute: "System Code"
-  description: "Hệ thống con trong IDS."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "REPORT_CATALOG"
-  source_column: "IDS.REPORT_CATALOG.SYSTEM_CD"
-  comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong\
-    \ tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "financial_report_catalog"
-  atomic_column: "stm_code"
-  data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Financial Report Catalog"
-  atomic_attribute: "Financial Statement Reference"
-  description: "Tham chiếu báo cáo tài chính (không có mô tả tại nguồn)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "REPORT_CATALOG"
-  source_column: "IDS.REPORT_CATALOG.FINANCIAL_STATEMENT_CD"
-  comment: "Nguồn VARCHAR2(500), description null — giữ Text denormalized. Cần Data\
-    \ Modeler xác nhận ý nghĩa nghiệp vụ trước khi dùng (có thể là danh sách composite)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "financial_report_catalog"
-  atomic_column: "financial_statement_reference"
-  data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Financial Report Catalog"
-  atomic_attribute: "Reporting Period Reference"
-  description: "Tham chiếu kỳ báo cáo (không có mô tả tại nguồn)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "REPORT_CATALOG"
-  source_column: "IDS.REPORT_CATALOG.REPORTING_PERIOD_CD"
-  comment: "Nguồn VARCHAR2(500), description null — giữ Text denormalized. Cần Data\
-    \ Modeler xác nhận ý nghĩa nghiệp vụ trước khi dùng."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "financial_report_catalog"
-  atomic_column: "reporting_period_reference"
-  data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Financial Report Catalog"
-  atomic_attribute: "Reference Code"
-  description: "Mã tham chiếu (không có mô tả tại nguồn)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "REPORT_CATALOG"
-  source_column: "IDS.REPORT_CATALOG.REF_CD"
-  comment: "Nguồn VARCHAR2(500), description null — giữ Text denormalized. Cần Data\
-    \ Modeler xác nhận ý nghĩa nghiệp vụ trước khi dùng."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "financial_report_catalog"
-  atomic_column: "reference_code"
-  data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Financial Report Catalog"
-  atomic_attribute: "Deleted Indicator"
-  description: "Trạng thái xóa."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "REPORT_CATALOG"
-  source_column: "IDS.REPORT_CATALOG.IS_DELETED"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "financial_report_catalog"
-  atomic_column: "deleted_ind"
-  data_type: "int"
 - bcv_core_object: null
   atomic_entity: "Fund Distribution Agent Organization Unit"
   atomic_attribute: "Fund Distribution Agent Organization Unit Id"
@@ -75065,231 +75280,6 @@ attributes:
   atomic_column: "rpt_quarter_nbr"
   data_type: "int"
 - bcv_core_object: null
-  atomic_entity: "Public Company Share Statistics"
-  atomic_attribute: "Public Company Share Statistics Id"
-  description: "Khóa đại diện (surrogate key)."
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: true
-  source_system: "IDS"
-  source_table: "COMPANY_SHARE_STATISTICS"
-  source_column: null
-  comment: "PK surrogate. BCV: \"[Arrangement] Ownership\"."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_share_statistics"
-  atomic_column: "pc_share_statistics_id"
-  data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Public Company Share Statistics"
-  atomic_attribute: "Public Company Share Statistics Code"
-  description: "Khóa chính. BK của entity — map từ PK bảng nguồn."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_SHARE_STATISTICS"
-  source_column: "IDS.COMPANY_SHARE_STATISTICS.ID"
-  comment: "BK chính. PK nguồn NUMBER(10) tự tăng."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_share_statistics"
-  atomic_column: "pc_share_statistics_code"
-  data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Public Company Share Statistics"
-  atomic_attribute: "Source System Code"
-  description: "Mã hệ thống nguồn dữ liệu."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_SHARE_STATISTICS"
-  source_column: null
-  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "Source System Code = 'IDS_COMPANY_SHARE_STATISTICS'"
-  etl_derived_value: "IDS_COMPANY_SHARE_STATISTICS"
-  atomic_table: "pc_share_statistics"
-  atomic_column: "src_stm_code"
-  data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Public Company Share Statistics"
-  atomic_attribute: "Public Company Id"
-  description: "Khóa link đến bảng COMPANY_PROFILES."
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_SHARE_STATISTICS"
-  source_column: "IDS.COMPANY_SHARE_STATISTICS.COMPANY_PROFILE_ID"
-  comment: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES',\
-    \ COMPANY_PROFILE_ID)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_share_statistics"
-  atomic_column: "pc_id"
-  data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Public Company Share Statistics"
-  atomic_attribute: "Public Company Code"
-  description: "Mã công ty đại chúng."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_SHARE_STATISTICS"
-  source_column: "IDS.COMPANY_SHARE_STATISTICS.COMPANY_PROFILE_ID"
-  comment: "Lookup pair: public_company.pc_code. Pair with Public Company Id."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_share_statistics"
-  atomic_column: "pc_code"
-  data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Public Company Share Statistics"
-  atomic_attribute: "Total Issued Share Quantity"
-  description: "Tổng số cổ phiếu đã phát hành."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_SHARE_STATISTICS"
-  source_column: "IDS.COMPANY_SHARE_STATISTICS.TOTAL_ISSUED_SHARE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_share_statistics"
-  atomic_column: "total_issued_share_quantity"
-  data_type: "int"
-- bcv_core_object: null
-  atomic_entity: "Public Company Share Statistics"
-  atomic_attribute: "Total Outstanding Share Quantity"
-  description: "Tổng số cổ phiếu đang lưu hành."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_SHARE_STATISTICS"
-  source_column: "IDS.COMPANY_SHARE_STATISTICS.TOTAL_OUTSTANDING_SHARE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_share_statistics"
-  atomic_column: "total_outstanding_share_quantity"
-  data_type: "int"
-- bcv_core_object: null
-  atomic_entity: "Public Company Share Statistics"
-  atomic_attribute: "Total Outstanding Share Value Amount"
-  description: "Tổng giá trị cổ phiếu đang lưu hành (đồng)."
-  data_domain: "Currency Amount"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_SHARE_STATISTICS"
-  source_column: "IDS.COMPANY_SHARE_STATISTICS.TOTAL_OUTSTANDING_VALUE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_share_statistics"
-  atomic_column: "total_outstanding_share_val_amt"
-  data_type: "decimal(23,2)"
-- bcv_core_object: null
-  atomic_entity: "Public Company Share Statistics"
-  atomic_attribute: "Total Treasury Share Quantity"
-  description: "Tổng số cổ phiếu quỹ."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_SHARE_STATISTICS"
-  source_column: "IDS.COMPANY_SHARE_STATISTICS.TOTAL_TREASURY_SHARE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_share_statistics"
-  atomic_column: "total_treasury_share_quantity"
-  data_type: "int"
-- bcv_core_object: null
-  atomic_entity: "Public Company Share Statistics"
-  atomic_attribute: "Latest Treasury Purchase Quantity"
-  description: "Đợt mua lại cổ phiếu quỹ gần nhất: số lượng cổ phiếu mua lại."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_SHARE_STATISTICS"
-  source_column: "IDS.COMPANY_SHARE_STATISTICS.LASTEST_TREASURY_PURCHASE_QTY"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_share_statistics"
-  atomic_column: "latest_treasury_purchase_quantity"
-  data_type: "int"
-- bcv_core_object: null
-  atomic_entity: "Public Company Share Statistics"
-  atomic_attribute: "Latest Treasury Purchase End Date"
-  description: "Đợt mua lại cổ phiếu quỹ gần nhất: ngày kết thúc việc mua lại cổ phiếu."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_SHARE_STATISTICS"
-  source_column: "IDS.COMPANY_SHARE_STATISTICS.LASTEST_TREASURY_PURCHASE_END_DATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_share_statistics"
-  atomic_column: "latest_treasury_purchase_end_dt"
-  data_type: "date"
-- bcv_core_object: null
-  atomic_entity: "Public Company Share Statistics"
-  atomic_attribute: "Preferred Share Type Name"
-  description: "Loại cổ phiếu ưu đãi."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_SHARE_STATISTICS"
-  source_column: "IDS.COMPANY_SHARE_STATISTICS.PREFERRED_SHARE_TYPE"
-  comment: "BCV: không có term riêng — chưa xác nhận LOOKUP_GROUP, giữ Text tự do."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_share_statistics"
-  atomic_column: "preferred_share_tp_nm"
-  data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Public Company Share Statistics"
-  atomic_attribute: "Total Preferred Share Quantity"
-  description: "Tổng số cổ phiếu ưu đãi."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_SHARE_STATISTICS"
-  source_column: "IDS.COMPANY_SHARE_STATISTICS.TOTAL_PREFERRED_SHARE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_share_statistics"
-  atomic_column: "total_preferred_share_quantity"
-  data_type: "int"
-- bcv_core_object: null
-  atomic_entity: "Public Company Share Statistics"
-  atomic_attribute: "Total Preferred Share Value Amount"
-  description: "Tổng giá trị cổ phiếu ưu đãi (đồng)."
-  data_domain: "Currency Amount"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_SHARE_STATISTICS"
-  source_column: "IDS.COMPANY_SHARE_STATISTICS.TOTAL_PREFERRED_VALUE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_share_statistics"
-  atomic_column: "total_preferred_share_val_amt"
-  data_type: "decimal(23,2)"
-- bcv_core_object: null
   atomic_entity: "Public Company Stock Listing History"
   atomic_attribute: "Public Company Stock Listing History Id"
   description: "Khóa đại diện (surrogate key)."
@@ -76032,7 +76022,7 @@ attributes:
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_tender_offer"
-  atomic_column: "ap_code"
+  atomic_column: "administrative_procedure_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Public Company Tender Offer"
@@ -87325,7 +87315,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "POST_CERT_TRAINING_RESULTS"
   source_column: "NHNCK.POST_CERT_TRAINING_RESULTS.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+  comment: "FK target: securities_practitioner.sp_id. Hash: hash_id('NHNCK.PROFESSIONALS',\
     \ PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
@@ -87342,8 +87332,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "POST_CERT_TRAINING_RESULTS"
   source_column: "NHNCK.POST_CERT_TRAINING_RESULTS.PROFESSIONAL_ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Securities Practitioner Id."
+  comment: "Lookup pair: securities_practitioner.sp_code. Pair with Securities Practitioner\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_post_certification_training_result"
@@ -87380,11 +87370,11 @@ attributes:
   source_system: "NHNCK"
   source_table: "POST_CERT_TRAINING_RESULTS"
   source_column: "NHNCK.POST_CERT_TRAINING_COURSES.COURSE_CODE"
-  comment: "Lookup pair: Securities Practitioner Post Certification Training Course.Securities\
-    \ Practitioner Post Certification Training Course Code. Pair with Securities Practitioner\
-    \ Post Certification Training Course Id. Giá trị lấy từ NHNCK.POST_CERT_TRAINING_COURSES.COURSE_CODE\
-    \ sau ETL crosswalk — chi tiết xem comment Securities Practitioner Post Certification\
-    \ Training Course Id."
+  comment: "Lookup pair: sp_post_certification_training_course.sp_post_certification_training_course_code.\
+    \ Pair with Securities Practitioner Post Certification Training Course Id. Giá\
+    \ trị lấy từ NHNCK.POST_CERT_TRAINING_COURSES.COURSE_CODE sau ETL crosswalk —\
+    \ chi tiết xem comment Securities Practitioner Post Certification Training Course\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_post_certification_training_result"
@@ -91391,8 +91381,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONALS"
   source_column: "NHNCK.PROFESSIONALS.ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Shared\
-    \ entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.PROFESSIONALS', ID)."
+  comment: "FK target: securities_practitioner.sp_id. Shared entity — không có PK\
+    \ surrogate riêng. Hash: hash_id('NHNCK.PROFESSIONALS', ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "ip_alternative_identification"
@@ -91408,8 +91398,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONALS"
   source_column: "NHNCK.PROFESSIONALS.ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Involved Party Id."
+  comment: "Lookup pair: securities_practitioner.sp_code. Pair with Involved Party\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "ip_alternative_identification"
@@ -97662,7 +97652,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "IDENTITY_INFO_C06S"
   source_column: "NHNCK.IDENTITY_INFO_C06S.IDENTITY_NUMBER"
-  comment: "FK target: Individual.Individual Id. Shared entity — không có PK surrogate\
+  comment: "FK target: individual.individual_id. Shared entity — không có PK surrogate\
     \ riêng. Hash: hash_id('NHNCK.IDENTITY_INFO_C06S', IDENTITY_NUMBER)."
   classification_context: null
   etl_derived_value: null
@@ -97679,7 +97669,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "IDENTITY_INFO_C06S"
   source_column: "NHNCK.IDENTITY_INFO_C06S.IDENTITY_NUMBER"
-  comment: "Lookup pair: Individual.Individual Code. Pair with Involved Party Id."
+  comment: "Lookup pair: individual.individual_code. Pair with Involved Party Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "ip_alternative_identification"
@@ -97769,8 +97759,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "UNITS"
   source_column: "NHNCK.UNITS.UNIT_CODE"
-  comment: "Lookup pair: Regulatory Authority Organization Unit.Regulatory Authority\
-    \ Organization Unit Code. Pair with Involved Party Id."
+  comment: "Lookup pair: ra_organization_unit.ra_ou_code. Pair with Involved Party\
+    \ Id."
   classification_context: "Source System Code = 'NHNCK_UNITS' | Electronic Address\
     \ Type Code = 'EMAIL'"
   etl_derived_value: null
@@ -98130,8 +98120,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONALS"
   source_column: "NHNCK.PROFESSIONALS.ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Shared\
-    \ entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.PROFESSIONALS', ID)."
+  comment: "FK target: securities_practitioner.sp_id. Shared entity — không có PK\
+    \ surrogate riêng. Hash: hash_id('NHNCK.PROFESSIONALS', ID)."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Electronic\
     \ Address Type Code = 'EMAIL'"
   etl_derived_value: null
@@ -98148,8 +98138,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONALS"
   source_column: "NHNCK.PROFESSIONALS.ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Involved Party Id."
+  comment: "Lookup pair: securities_practitioner.sp_code. Pair with Involved Party\
+    \ Id."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Electronic\
     \ Address Type Code = 'EMAIL'"
   etl_derived_value: null
@@ -104507,8 +104497,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "UNITS"
   source_column: "NHNCK.UNITS.UNIT_CODE"
-  comment: "Lookup pair: Regulatory Authority Organization Unit.Regulatory Authority\
-    \ Organization Unit Code. Pair with Involved Party Id."
+  comment: "Lookup pair: ra_organization_unit.ra_ou_code. Pair with Involved Party\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "ip_postal_address"
@@ -104661,8 +104651,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONALS"
   source_column: "NHNCK.PROFESSIONALS.ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Shared\
-    \ entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.PROFESSIONALS', ID)."
+  comment: "FK target: securities_practitioner.sp_id. Shared entity — không có PK\
+    \ surrogate riêng. Hash: hash_id('NHNCK.PROFESSIONALS', ID)."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type\
     \ Code = 'CURRENT'"
   etl_derived_value: null
@@ -104679,8 +104669,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONALS"
   source_column: "NHNCK.PROFESSIONALS.ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Involved Party Id."
+  comment: "Lookup pair: securities_practitioner.sp_code. Pair with Involved Party\
+    \ Id."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type\
     \ Code = 'CURRENT'"
   etl_derived_value: null
@@ -104752,7 +104742,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONALS"
   source_column: "NHNCK.COUNTRIES.COUNTRY_CODE"
-  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT). Pair with\
+  comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with\
     \ Country Id. Giá trị lấy từ NHNCK.COUNTRIES.COUNTRY_CODE sau ETL crosswalk —\
     \ chi tiết xem comment Country Id."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type\
@@ -104793,7 +104783,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONALS"
   source_column: "NHNCK.PROVINCES.PROVINCE_CODE"
-  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT). Pair with\
+  comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with\
     \ Province Id. Giá trị lấy từ NHNCK.PROVINCES.PROVINCE_CODE sau ETL crosswalk\
     \ — chi tiết xem comment Province Id."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type\
@@ -109937,7 +109927,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "IDENTITY_INFO_C06S"
   source_column: "NHNCK.IDENTITY_INFO_C06S.IDENTITY_NUMBER"
-  comment: "FK target: Individual.Individual Id. Shared entity — không có PK surrogate\
+  comment: "FK target: individual.individual_id. Shared entity — không có PK surrogate\
     \ riêng. Hash: hash_id('NHNCK.IDENTITY_INFO_C06S', IDENTITY_NUMBER)."
   classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Address\
     \ Type Code = 'CURRENT'"
@@ -109955,7 +109945,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "IDENTITY_INFO_C06S"
   source_column: "NHNCK.IDENTITY_INFO_C06S.IDENTITY_NUMBER"
-  comment: "Lookup pair: Individual.Individual Code. Pair with Involved Party Id."
+  comment: "Lookup pair: individual.individual_code. Pair with Involved Party Id."
   classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Address\
     \ Type Code = 'CURRENT'"
   etl_derived_value: null

@@ -1,0 +1,219 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-pc_share_statistics-IDS.COMPANY_SHARE_STATISTICS
+  logical_name: Public Company Share Statistics
+  physical_name: pc_share_statistics
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Arrangement
+  bcv_concept: "[Arrangement] Ownership"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  description: |
+    Thống kê cấu trúc vốn/cổ phần của CTĐC tại từng thời điểm: tổng số cổ phần, cổ phần lưu hành, cổ phần nước ngoài.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-IDS-COMPANY_SHARE_STATISTICS
+
+attributes:
+  - name: Public Company Share Statistics Id
+    physical_name: pc_share_statistics_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: IDS
+    source_table: COMPANY_SHARE_STATISTICS
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Arrangement] Ownership\"."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Public Company Share Statistics Code
+    physical_name: pc_share_statistics_code
+    business_meaning: Khóa chính. BK của entity — map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHARE_STATISTICS
+    source_column: IDS.COMPANY_SHARE_STATISTICS.ID
+    comment: BK chính. PK nguồn NUMBER(10) tự tăng.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHARE_STATISTICS
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'IDS_COMPANY_SHARE_STATISTICS'"
+    etl_derived_value: IDS_COMPANY_SHARE_STATISTICS
+
+  - name: Public Company Id
+    physical_name: pc_id
+    business_meaning: Khóa link đến bảng COMPANY_PROFILES.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHARE_STATISTICS
+    source_column: IDS.COMPANY_SHARE_STATISTICS.COMPANY_PROFILE_ID
+    comment: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES', COMPANY_PROFILE_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Public Company Code
+    physical_name: pc_code
+    business_meaning: Mã công ty đại chúng.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHARE_STATISTICS
+    source_column: IDS.COMPANY_SHARE_STATISTICS.COMPANY_PROFILE_ID
+    comment: "Lookup pair: public_company.pc_code. Pair with Public Company Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Total Issued Share Quantity
+    physical_name: total_issued_share_quantity
+    business_meaning: Tổng số cổ phiếu đã phát hành.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHARE_STATISTICS
+    source_column: IDS.COMPANY_SHARE_STATISTICS.TOTAL_ISSUED_SHARE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Total Outstanding Share Quantity
+    physical_name: total_outstanding_share_quantity
+    business_meaning: Tổng số cổ phiếu đang lưu hành.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHARE_STATISTICS
+    source_column: IDS.COMPANY_SHARE_STATISTICS.TOTAL_OUTSTANDING_SHARE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Total Outstanding Share Value Amount
+    physical_name: total_outstanding_share_val_amt
+    business_meaning: Tổng giá trị cổ phiếu đang lưu hành (đồng).
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHARE_STATISTICS
+    source_column: IDS.COMPANY_SHARE_STATISTICS.TOTAL_OUTSTANDING_VALUE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Total Treasury Share Quantity
+    physical_name: total_treasury_share_quantity
+    business_meaning: Tổng số cổ phiếu quỹ.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHARE_STATISTICS
+    source_column: IDS.COMPANY_SHARE_STATISTICS.TOTAL_TREASURY_SHARE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Latest Treasury Purchase Quantity
+    physical_name: latest_treasury_purchase_quantity
+    business_meaning: "Đợt mua lại cổ phiếu quỹ gần nhất: số lượng cổ phiếu mua lại."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHARE_STATISTICS
+    source_column: IDS.COMPANY_SHARE_STATISTICS.LASTEST_TREASURY_PURCHASE_QTY
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Latest Treasury Purchase End Date
+    physical_name: latest_treasury_purchase_end_dt
+    business_meaning: "Đợt mua lại cổ phiếu quỹ gần nhất: ngày kết thúc việc mua lại cổ phiếu."
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHARE_STATISTICS
+    source_column: IDS.COMPANY_SHARE_STATISTICS.LASTEST_TREASURY_PURCHASE_END_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Preferred Share Type Name
+    physical_name: preferred_share_tp_nm
+    business_meaning: Loại cổ phiếu ưu đãi.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHARE_STATISTICS
+    source_column: IDS.COMPANY_SHARE_STATISTICS.PREFERRED_SHARE_TYPE
+    comment: "BCV: không có term riêng — chưa xác nhận LOOKUP_GROUP, giữ Text tự do."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Total Preferred Share Quantity
+    physical_name: total_preferred_share_quantity
+    business_meaning: Tổng số cổ phiếu ưu đãi.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHARE_STATISTICS
+    source_column: IDS.COMPANY_SHARE_STATISTICS.TOTAL_PREFERRED_SHARE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Total Preferred Share Value Amount
+    physical_name: total_preferred_share_val_amt
+    business_meaning: Tổng giá trị cổ phiếu ưu đãi (đồng).
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHARE_STATISTICS
+    source_column: IDS.COMPANY_SHARE_STATISTICS.TOTAL_PREFERRED_VALUE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
