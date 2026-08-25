@@ -53,8 +53,9 @@ K_GSTT_9,Phân tích,Nhóm 3 - Biểu đồ kỹ thuật cổ phiếu,Giá tham 
 K_GSTT_11,Phân tích,Nhóm 3 - Biểu đồ kỹ thuật cổ phiếu,Thay đổi (+/-),Base,GSTT,Security Trading Snapshot Dimension,Price Change,SLICER,security_trading_snpst_dim.price_change,Reuse từ Nhóm 1
 K_GSTT_13,Phân tích,Nhóm 3 - Biểu đồ kỹ thuật cổ phiếu,Khối lượng giao dịch,Base,GSTT,Fact Stock Portfolio Snapshot,Total Volume,MEASURE,SUM(fct_stock_portfolio_snpst.total_vol),Reuse từ Nhóm 1 - cùng cảnh báo double-count Index Constituent
 K_GSTT_30,Phân tích,Nhóm 3 - Biểu đồ kỹ thuật cổ phiếu,Kỳ báo cáo,Pending,GSTT,,,PENDING,,Dữ liệu động - chờ Atomic chuẩn hóa EAV IDS report
-K_GSTT_31,Phân tích,Nhóm 3 - Biểu đồ kỹ thuật cổ phiếu,Doanh thu,Pending,GSTT,,,PENDING,,Dữ liệu động - chờ Atomic chuẩn hóa EAV IDS report
-K_GSTT_32,Phân tích,Nhóm 3 - Biểu đồ kỹ thuật cổ phiếu,Lợi nhuận sau thuế,Pending,GSTT,,,PENDING,,Dữ liệu động - chờ Atomic chuẩn hóa EAV IDS report
+K_GSTT_31,Phân tích,Nhóm 3 - Biểu đồ kỹ thuật cổ phiếu,Doanh thu,Base,GSTT,Fact Stock Portfolio Snapshot,Revenue,MEASURE,SUM(fct_stock_portfolio_snpst.revenue),"BA cập nhật 2026-08-25: đã có nguồn Atomic (fr_value/fr_catalog Nguồn 2 - draft) — cùng cảnh báo double-count Index Constituent như K_GSTT_13 nếu không lọc theo 1 Chỉ số cụ thể. Point-in-time theo Ky_bao_cao tại ngày giao dịch (không TTM)"
+K_GSTT_32,Phân tích,Nhóm 3 - Biểu đồ kỹ thuật cổ phiếu,Lợi nhuận sau thuế,Base,GSTT,Fact Stock Portfolio Snapshot,Net Profit After Tax,MEASURE,SUM(fct_stock_portfolio_snpst.net_profit_after_tax),"BA cập nhật 2026-08-25: đã có nguồn Atomic — cùng cảnh báo double-count như K_GSTT_13. Khác K_GSTT_56 (Nhóm 6) — đó tính TTM 4 quý, đây tính từng kỳ theo Ky_bao_cao"
+K_GSTT_57,Phân tích,Nhóm 3 - Biểu đồ kỹ thuật cổ phiếu,VCSH,Base,GSTT,Fact Stock Portfolio Snapshot,Owner Equity,MEASURE,SUM(fct_stock_portfolio_snpst.owner_equity),"BA xác nhận 2026-08-25: VCSH áp dụng cả cho biểu đồ kỹ thuật, dùng chung định nghĩa với Nhóm 6 (K_GSTT_57)"
 K_GSTT_20,Phân tích,Nhóm 4 - Biểu đồ kỹ thuật trái phiếu,Mã trái phiếu,Base,GSTT,Security Trading Snapshot Dimension,Symbol,SLICER,security_trading_snpst_dim.symbol,Reuse từ Nhóm 2
 K_GSTT_20,Phân tích,Nhóm 4 - Biểu đồ kỹ thuật trái phiếu,Mã trái phiếu,Base,GSTT,Security Trading Snapshot Dimension,Stock Type Code,FILTER,"security_trading_snpst_dim.stock_tp_code = '1' AND security_trading_snpst_dim.floor_code IN ('04','10','03','02')",Reuse từ Nhóm 2
 K_GSTT_7,Phân tích,Nhóm 4 - Biểu đồ kỹ thuật trái phiếu,Ngày,Base,GSTT,Calendar Date Dimension,Calendar Date,SLICER,cdr_dt_dim.cdr_dt,Reuse từ Nhóm 1
@@ -96,8 +97,8 @@ K_GSTT_33,Phân tích,Nhóm 6 - Định giá thị trường,Ngày,Base,GSTT,Cal
 K_GSTT_10,Phân tích,Nhóm 6 - Định giá thị trường,Giá trị chỉ số,Phái sinh,GSTT,Security Trading Snapshot Dimension,Close Price,SLICER,security_trading_snpst_dim.close_price,"Sửa nguồn giá - dùng Giá đóng cửa thật thay vì marketIndex; trùng K_GSTT_10, không khai KPI mới"
 K_GSTT_10,Phân tích,Nhóm 6 - Định giá thị trường,Giá đóng cửa,Base,GSTT,Security Trading Snapshot Dimension,Close Price,SLICER,security_trading_snpst_dim.close_price,Reuse từ Nhóm 1 - cùng công thức với Giá trị chỉ số ở trên
 K_GSTT_55,Phân tích,Nhóm 6 - Định giá thị trường,Số cổ phiếu đang lưu hành,Pending,GSTT,,,PENDING,,Nguồn VSDC BM1 - Atomic Public Company Share Statistics grain mismatch + Loại dữ liệu để trống
-K_GSTT_56,Phân tích,Nhóm 6 - Định giá thị trường,LNST,Pending,GSTT,,,PENDING,,Nguồn EAV báo cáo tài chính IDS - PENDING chờ Atomic chuẩn hóa
-K_GSTT_57,Phân tích,Nhóm 6 - Định giá thị trường,VCSH,Pending,GSTT,,,PENDING,,Nguồn EAV báo cáo tài chính IDS - PENDING chờ Atomic chuẩn hóa
+K_GSTT_56,Phân tích,Nhóm 6 - Định giá thị trường,LNST,Base,GSTT,Fact Stock Portfolio Snapshot,Net Profit After Tax TTM,MEASURE,SUM(fct_stock_portfolio_snpst.net_profit_after_tax_ttm),"BA cập nhật 2026-08-25: đã có nguồn Atomic — TTM đúng 4 quý gần nhất, NULL nếu thiếu 1 kỳ (theo sheet Note nghiệp vụ UB_Phạm vi phân tích)"
+K_GSTT_57,Phân tích,Nhóm 6 - Định giá thị trường,VCSH,Base,GSTT,Fact Stock Portfolio Snapshot,Owner Equity,MEASURE,SUM(fct_stock_portfolio_snpst.owner_equity),"BA cập nhật 2026-08-25: đã có nguồn Atomic — dùng chung cho Nhóm 3/44 (Biểu đồ kỹ thuật) theo xác nhận BA"
 K_GSTT_58,Phân tích,Nhóm 6 - Định giá thị trường,P/E thị trường,Pending,GSTT,,,PENDING,,Phụ thuộc K_GSTT_55 + K_GSTT_56 - cả 2 PENDING
 K_GSTT_59,Phân tích,Nhóm 6 - Định giá thị trường,P/B thị trường,Pending,GSTT,,,PENDING,,Phụ thuộc K_GSTT_55 + K_GSTT_57 - cả 2 PENDING
 K_GSTT_60,Phân tích,Nhóm 6 - Định giá thị trường,EPS thị trường,Pending,GSTT,,,PENDING,,Phụ thuộc K_GSTT_55 + K_GSTT_56 - cả 2 PENDING
@@ -110,9 +111,9 @@ K_GSTT_10,Phân tích,Nhóm 7 - Top khối lượng theo toàn thị trường (
 K_GSTT_12,Phân tích,Nhóm 7 - Top khối lượng theo toàn thị trường (bảng số liệu),% thay đổi,Phái sinh,GSTT,,,DERIVED,security_trading_snpst_dim.price_change / security_trading_snpst_dim.reference_price * 100,Reuse
 K_GSTT_55,Phân tích,Nhóm 7 - Top khối lượng theo toàn thị trường (bảng số liệu),Số cổ phiếu đang lưu hành,Pending,GSTT,,,PENDING,,Reuse
 K_GSTT_61,Phân tích,Nhóm 7 - Top khối lượng theo toàn thị trường (bảng số liệu),Vốn hóa thị trường,Pending,GSTT,,,PENDING,,Reuse
-K_GSTT_56,Phân tích,Nhóm 7 - Top khối lượng theo toàn thị trường (bảng số liệu),LNST,Pending,GSTT,,,PENDING,,Reuse
+K_GSTT_56,Phân tích,Nhóm 7 - Top khối lượng theo toàn thị trường (bảng số liệu),LNST,Base,GSTT,Fact Stock Portfolio Snapshot,Net Profit After Tax TTM,MEASURE,SUM(fct_stock_portfolio_snpst.net_profit_after_tax_ttm),Reuse
 K_GSTT_58,Phân tích,Nhóm 7 - Top khối lượng theo toàn thị trường (bảng số liệu),P/E thị trường,Pending,GSTT,,,PENDING,,Reuse
-K_GSTT_57,Phân tích,Nhóm 7 - Top khối lượng theo toàn thị trường (bảng số liệu),VCSH,Pending,GSTT,,,PENDING,,Reuse
+K_GSTT_57,Phân tích,Nhóm 7 - Top khối lượng theo toàn thị trường (bảng số liệu),VCSH,Base,GSTT,Fact Stock Portfolio Snapshot,Owner Equity,MEASURE,SUM(fct_stock_portfolio_snpst.owner_equity),Reuse
 K_GSTT_59,Phân tích,Nhóm 7 - Top khối lượng theo toàn thị trường (bảng số liệu),P/B thị trường,Pending,GSTT,,,PENDING,,Reuse
 K_GSTT_1,Phân tích,Nhóm 8 - Top khối lượng theo toàn thị trường (biểu đồ kỹ thuật),Mã CK,Base,GSTT,Security Trading Snapshot Dimension,Symbol,SLICER,security_trading_snpst_dim.symbol,Reuse
 K_GSTT_7,Phân tích,Nhóm 8 - Top khối lượng theo toàn thị trường (biểu đồ kỹ thuật),Ngày,Base,GSTT,Calendar Date Dimension,Calendar Date,SLICER,cdr_dt_dim.cdr_dt,Reuse
@@ -122,8 +123,9 @@ K_GSTT_29,Phân tích,Nhóm 8 - Top khối lượng theo toàn thị trường (
 K_GSTT_10,Phân tích,Nhóm 8 - Top khối lượng theo toàn thị trường (biểu đồ kỹ thuật),Giá đóng cửa,Base,GSTT,Security Trading Snapshot Dimension,Close Price,SLICER,security_trading_snpst_dim.close_price,Reuse
 K_GSTT_12,Phân tích,Nhóm 8 - Top khối lượng theo toàn thị trường (biểu đồ kỹ thuật),Thay đổi (%),Phái sinh,GSTT,,,DERIVED,security_trading_snpst_dim.price_change / security_trading_snpst_dim.reference_price * 100,Reuse
 K_GSTT_13,Phân tích,Nhóm 8 - Top khối lượng theo toàn thị trường (biểu đồ kỹ thuật),Khối lượng giao dịch,Phái sinh,GSTT,Fact Stock Portfolio Snapshot,Total Volume,MEASURE,SUM(fct_stock_portfolio_snpst.total_vol),Reuse
-K_GSTT_31,Phân tích,Nhóm 8 - Top khối lượng theo toàn thị trường (biểu đồ kỹ thuật),Doanh thu,Pending,GSTT,,,PENDING,,Reuse
-K_GSTT_32,Phân tích,Nhóm 8 - Top khối lượng theo toàn thị trường (biểu đồ kỹ thuật),Lợi nhuận sau thuế,Pending,GSTT,,,PENDING,,Reuse
+K_GSTT_31,Phân tích,Nhóm 8 - Top khối lượng theo toàn thị trường (biểu đồ kỹ thuật),Doanh thu,Base,GSTT,Fact Stock Portfolio Snapshot,Revenue,MEASURE,SUM(fct_stock_portfolio_snpst.revenue),Reuse
+K_GSTT_32,Phân tích,Nhóm 8 - Top khối lượng theo toàn thị trường (biểu đồ kỹ thuật),Lợi nhuận sau thuế,Base,GSTT,Fact Stock Portfolio Snapshot,Net Profit After Tax,MEASURE,SUM(fct_stock_portfolio_snpst.net_profit_after_tax),Reuse
+K_GSTT_57,Phân tích,Nhóm 8 - Top khối lượng theo toàn thị trường (biểu đồ kỹ thuật),VCSH,Base,GSTT,Fact Stock Portfolio Snapshot,Owner Equity,MEASURE,SUM(fct_stock_portfolio_snpst.owner_equity),Reuse
 K_GSTT_1,Phân tích,"Nhóm 9 - Top khối lượng theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (bảng số liệu)",Mã CK,Base,GSTT,Security Trading Snapshot Dimension,Symbol,SLICER,security_trading_snpst_dim.symbol,Reuse
 K_GSTT_3,Phân tích,"Nhóm 9 - Top khối lượng theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (bảng số liệu)",Sàn,Base,GSTT,Security Trading Snapshot Dimension,Floor Code,SLICER,security_trading_snpst_dim.floor_code,Reuse
 K_GSTT_62,Phân tích,"Nhóm 9 - Top khối lượng theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (bảng số liệu)",Bộ chỉ số thị trường,Base,GSTT,Index Constituent Dimension,Index Code,FILTER,"index_constituent_dim.index_code IN ('HOSE','UPCOM','HNX')",Reuse
@@ -135,9 +137,9 @@ K_GSTT_10,Phân tích,"Nhóm 9 - Top khối lượng theo sàn, Bộ chỉ số 
 K_GSTT_12,Phân tích,"Nhóm 9 - Top khối lượng theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (bảng số liệu)",% thay đổi,Phái sinh,GSTT,,,DERIVED,security_trading_snpst_dim.price_change / security_trading_snpst_dim.reference_price * 100,Reuse
 K_GSTT_55,Phân tích,"Nhóm 9 - Top khối lượng theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (bảng số liệu)",Số cổ phiếu đang lưu hành,Pending,GSTT,,,PENDING,,Reuse
 K_GSTT_61,Phân tích,"Nhóm 9 - Top khối lượng theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (bảng số liệu)",Vốn hóa,Pending,GSTT,,,PENDING,,Reuse
-K_GSTT_56,Phân tích,"Nhóm 9 - Top khối lượng theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (bảng số liệu)",LNST,Pending,GSTT,,,PENDING,,Reuse
+K_GSTT_56,Phân tích,"Nhóm 9 - Top khối lượng theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (bảng số liệu)",LNST,Base,GSTT,Fact Stock Portfolio Snapshot,Net Profit After Tax TTM,MEASURE,SUM(fct_stock_portfolio_snpst.net_profit_after_tax_ttm),Reuse
 K_GSTT_58,Phân tích,"Nhóm 9 - Top khối lượng theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (bảng số liệu)",P/E thị trường,Pending,GSTT,,,PENDING,,Reuse
-K_GSTT_57,Phân tích,"Nhóm 9 - Top khối lượng theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (bảng số liệu)",VCSH,Pending,GSTT,,,PENDING,,Reuse
+K_GSTT_57,Phân tích,"Nhóm 9 - Top khối lượng theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (bảng số liệu)",VCSH,Base,GSTT,Fact Stock Portfolio Snapshot,Owner Equity,MEASURE,SUM(fct_stock_portfolio_snpst.owner_equity),Reuse
 K_GSTT_59,Phân tích,"Nhóm 9 - Top khối lượng theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (bảng số liệu)",P/B thị trường,Pending,GSTT,,,PENDING,,Reuse
 K_GSTT_1,Phân tích,"Nhóm 10 - Top khối lượng theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (biểu đồ kỹ thuật)",Mã CK,Base,GSTT,Security Trading Snapshot Dimension,Symbol,SLICER,security_trading_snpst_dim.symbol,Reuse
 K_GSTT_2,Phân tích,"Nhóm 10 - Top khối lượng theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (biểu đồ kỹ thuật)",Ngành,Base,GSTT,Public Company Dimension,Business Line Level 1 Code / Classification Business Line Name,SLICER,"public_company_dim.business_line_level_1_code, public_company_dim.classification_business_line_nm",Reuse
@@ -150,8 +152,9 @@ K_GSTT_29,Phân tích,"Nhóm 10 - Top khối lượng theo sàn, Bộ chỉ số
 K_GSTT_27,Phân tích,"Nhóm 10 - Top khối lượng theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (biểu đồ kỹ thuật)",Giá mở cửa,Base,GSTT,Security Trading Snapshot Dimension,Open Price,SLICER,security_trading_snpst_dim.open_price,Reuse
 K_GSTT_10,Phân tích,"Nhóm 10 - Top khối lượng theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (biểu đồ kỹ thuật)",Giá đóng cửa,Base,GSTT,Security Trading Snapshot Dimension,Close Price,SLICER,security_trading_snpst_dim.close_price,Reuse
 K_GSTT_13,Phân tích,"Nhóm 10 - Top khối lượng theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (biểu đồ kỹ thuật)",Khối lượng giao dịch,Phái sinh,GSTT,Fact Stock Portfolio Snapshot,Total Volume,MEASURE,SUM(fct_stock_portfolio_snpst.total_vol),Reuse
-K_GSTT_31,Phân tích,"Nhóm 10 - Top khối lượng theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (biểu đồ kỹ thuật)",Doanh thu,Pending,GSTT,,,PENDING,,Reuse
-K_GSTT_32,Phân tích,"Nhóm 10 - Top khối lượng theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (biểu đồ kỹ thuật)",Lợi nhuận sau thuế,Pending,GSTT,,,PENDING,,Reuse
+K_GSTT_31,Phân tích,"Nhóm 10 - Top khối lượng theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (biểu đồ kỹ thuật)",Doanh thu,Base,GSTT,Fact Stock Portfolio Snapshot,Revenue,MEASURE,SUM(fct_stock_portfolio_snpst.revenue),Reuse
+K_GSTT_32,Phân tích,"Nhóm 10 - Top khối lượng theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (biểu đồ kỹ thuật)",Lợi nhuận sau thuế,Base,GSTT,Fact Stock Portfolio Snapshot,Net Profit After Tax,MEASURE,SUM(fct_stock_portfolio_snpst.net_profit_after_tax),Reuse
+K_GSTT_57,Phân tích,"Nhóm 10 - Top khối lượng theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (biểu đồ kỹ thuật)",VCSH,Base,GSTT,Fact Stock Portfolio Snapshot,Owner Equity,MEASURE,SUM(fct_stock_portfolio_snpst.owner_equity),Reuse
 K_GSTT_1,Phân tích,Nhóm 11 - Top đột phá theo toàn thị trường (bảng số liệu),Mã CK,Base,GSTT,Security Trading Snapshot Dimension,Symbol,SLICER,security_trading_snpst_dim.symbol,Reuse
 K_GSTT_7,Phân tích,Nhóm 11 - Top đột phá theo toàn thị trường (bảng số liệu),Ngày,Base,GSTT,Calendar Date Dimension,Calendar Date,SLICER,cdr_dt_dim.cdr_dt,Reuse
 K_GSTT_64,Phân tích,Nhóm 11 - Top đột phá theo toàn thị trường (bảng số liệu),KLGDTB trong 5 ngày,Phái sinh,GSTT,,,DERIVED,AVG(fct_stock_portfolio_snpst.total_vol) OVER (PARTITION BY security_trading_snpst_dim.symbol ORDER BY cdr_dt_dim.cdr_dt ROWS BETWEEN 5 PRECEDING AND 1 PRECEDING),Reuse
@@ -166,9 +169,9 @@ K_GSTT_11,Phân tích,Nhóm 11 - Top đột phá theo toàn thị trường (b�
 K_GSTT_12,Phân tích,Nhóm 11 - Top đột phá theo toàn thị trường (bảng số liệu),% thay đổi,Phái sinh,GSTT,,,DERIVED,security_trading_snpst_dim.price_change / security_trading_snpst_dim.reference_price * 100,Reuse
 K_GSTT_55,Phân tích,Nhóm 11 - Top đột phá theo toàn thị trường (bảng số liệu),Số cổ phiếu đang lưu hành,Pending,GSTT,,,PENDING,,Reuse
 K_GSTT_61,Phân tích,Nhóm 11 - Top đột phá theo toàn thị trường (bảng số liệu),Vốn hóa,Pending,GSTT,,,PENDING,,Reuse
-K_GSTT_56,Phân tích,Nhóm 11 - Top đột phá theo toàn thị trường (bảng số liệu),LNST,Pending,GSTT,,,PENDING,,Reuse
+K_GSTT_56,Phân tích,Nhóm 11 - Top đột phá theo toàn thị trường (bảng số liệu),LNST,Base,GSTT,Fact Stock Portfolio Snapshot,Net Profit After Tax TTM,MEASURE,SUM(fct_stock_portfolio_snpst.net_profit_after_tax_ttm),Reuse
 K_GSTT_58,Phân tích,Nhóm 11 - Top đột phá theo toàn thị trường (bảng số liệu),P/E thị trường,Pending,GSTT,,,PENDING,,Reuse
-K_GSTT_57,Phân tích,Nhóm 11 - Top đột phá theo toàn thị trường (bảng số liệu),VCSH,Pending,GSTT,,,PENDING,,Reuse
+K_GSTT_57,Phân tích,Nhóm 11 - Top đột phá theo toàn thị trường (bảng số liệu),VCSH,Base,GSTT,Fact Stock Portfolio Snapshot,Owner Equity,MEASURE,SUM(fct_stock_portfolio_snpst.owner_equity),Reuse
 K_GSTT_59,Phân tích,Nhóm 11 - Top đột phá theo toàn thị trường (bảng số liệu),P/B thị trường,Pending,GSTT,,,PENDING,,Reuse
 K_GSTT_1,Phân tích,Nhóm 12 - Top đột phá theo toàn thị trường (biểu đồ kỹ thuật),Mã CK,Base,GSTT,Security Trading Snapshot Dimension,Symbol,SLICER,security_trading_snpst_dim.symbol,Reuse
 K_GSTT_7,Phân tích,Nhóm 12 - Top đột phá theo toàn thị trường (biểu đồ kỹ thuật),Ngày,Base,GSTT,Calendar Date Dimension,Calendar Date,SLICER,cdr_dt_dim.cdr_dt,Reuse
@@ -183,8 +186,9 @@ K_GSTT_28,Phân tích,Nhóm 12 - Top đột phá theo toàn thị trường (bi�
 K_GSTT_29,Phân tích,Nhóm 12 - Top đột phá theo toàn thị trường (biểu đồ kỹ thuật),Giá thấp nhất,Base,GSTT,Security Trading Snapshot Dimension,Low Price,SLICER,security_trading_snpst_dim.low_price,Reuse
 K_GSTT_10,Phân tích,Nhóm 12 - Top đột phá theo toàn thị trường (biểu đồ kỹ thuật),Giá đóng cửa,Base,GSTT,Security Trading Snapshot Dimension,Close Price,SLICER,security_trading_snpst_dim.close_price,Reuse
 K_GSTT_13,Phân tích,Nhóm 12 - Top đột phá theo toàn thị trường (biểu đồ kỹ thuật),Khối lượng giao dịch,Phái sinh,GSTT,Fact Stock Portfolio Snapshot,Total Volume,MEASURE,SUM(fct_stock_portfolio_snpst.total_vol),Reuse
-K_GSTT_31,Phân tích,Nhóm 12 - Top đột phá theo toàn thị trường (biểu đồ kỹ thuật),Doanh thu,Pending,GSTT,,,PENDING,,Reuse
-K_GSTT_32,Phân tích,Nhóm 12 - Top đột phá theo toàn thị trường (biểu đồ kỹ thuật),Lợi nhuận sau thuế,Pending,GSTT,,,PENDING,,Reuse
+K_GSTT_31,Phân tích,Nhóm 12 - Top đột phá theo toàn thị trường (biểu đồ kỹ thuật),Doanh thu,Base,GSTT,Fact Stock Portfolio Snapshot,Revenue,MEASURE,SUM(fct_stock_portfolio_snpst.revenue),Reuse
+K_GSTT_32,Phân tích,Nhóm 12 - Top đột phá theo toàn thị trường (biểu đồ kỹ thuật),Lợi nhuận sau thuế,Base,GSTT,Fact Stock Portfolio Snapshot,Net Profit After Tax,MEASURE,SUM(fct_stock_portfolio_snpst.net_profit_after_tax),Reuse
+K_GSTT_57,Phân tích,Nhóm 12 - Top đột phá theo toàn thị trường (biểu đồ kỹ thuật),VCSH,Base,GSTT,Fact Stock Portfolio Snapshot,Owner Equity,MEASURE,SUM(fct_stock_portfolio_snpst.owner_equity),Reuse
 K_GSTT_1,Phân tích,"Nhóm 13 - Top đột phá theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (bảng số liệu)",Mã CK,Base,GSTT,Security Trading Snapshot Dimension,Symbol,SLICER,security_trading_snpst_dim.symbol,Reuse
 K_GSTT_3,Phân tích,"Nhóm 13 - Top đột phá theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (bảng số liệu)",Sàn,Base,GSTT,Security Trading Snapshot Dimension,Floor Code,SLICER,security_trading_snpst_dim.floor_code,Reuse
 K_GSTT_62,Phân tích,"Nhóm 13 - Top đột phá theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (bảng số liệu)",Bộ chỉ số thị trường,Base,GSTT,Index Constituent Dimension,Index Code,FILTER,"index_constituent_dim.index_code IN ('HOSE','UPCOM','HNX')",Reuse
@@ -202,9 +206,9 @@ K_GSTT_11,Phân tích,"Nhóm 13 - Top đột phá theo sàn, Bộ chỉ số tà
 K_GSTT_12,Phân tích,"Nhóm 13 - Top đột phá theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (bảng số liệu)",% thay đổi,Phái sinh,GSTT,,,DERIVED,security_trading_snpst_dim.price_change / security_trading_snpst_dim.reference_price * 100,Reuse
 K_GSTT_55,Phân tích,"Nhóm 13 - Top đột phá theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (bảng số liệu)",Số cổ phiếu đang lưu hành,Pending,GSTT,,,PENDING,,Reuse
 K_GSTT_61,Phân tích,"Nhóm 13 - Top đột phá theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (bảng số liệu)",Vốn hóa,Pending,GSTT,,,PENDING,,Reuse
-K_GSTT_56,Phân tích,"Nhóm 13 - Top đột phá theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (bảng số liệu)",LNST,Pending,GSTT,,,PENDING,,Reuse
+K_GSTT_56,Phân tích,"Nhóm 13 - Top đột phá theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (bảng số liệu)",LNST,Base,GSTT,Fact Stock Portfolio Snapshot,Net Profit After Tax TTM,MEASURE,SUM(fct_stock_portfolio_snpst.net_profit_after_tax_ttm),Reuse
 K_GSTT_58,Phân tích,"Nhóm 13 - Top đột phá theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (bảng số liệu)",P/E thị trường,Pending,GSTT,,,PENDING,,Reuse
-K_GSTT_57,Phân tích,"Nhóm 13 - Top đột phá theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (bảng số liệu)",VCSH,Pending,GSTT,,,PENDING,,Reuse
+K_GSTT_57,Phân tích,"Nhóm 13 - Top đột phá theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (bảng số liệu)",VCSH,Base,GSTT,Fact Stock Portfolio Snapshot,Owner Equity,MEASURE,SUM(fct_stock_portfolio_snpst.owner_equity),Reuse
 K_GSTT_59,Phân tích,"Nhóm 13 - Top đột phá theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (bảng số liệu)",P/B thị trường,Pending,GSTT,,,PENDING,,Reuse
 K_GSTT_1,Phân tích,"Nhóm 14 - Top đột phá theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (biểu đồ kỹ thuật)",Mã CK,Base,GSTT,Security Trading Snapshot Dimension,Symbol,SLICER,security_trading_snpst_dim.symbol,Reuse
 K_GSTT_3,Phân tích,"Nhóm 14 - Top đột phá theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (biểu đồ kỹ thuật)",Sàn,Base,GSTT,Security Trading Snapshot Dimension,Floor Code,SLICER,security_trading_snpst_dim.floor_code,Reuse
@@ -223,8 +227,9 @@ K_GSTT_29,Phân tích,"Nhóm 14 - Top đột phá theo sàn, Bộ chỉ số tà
 K_GSTT_10,Phân tích,"Nhóm 14 - Top đột phá theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (biểu đồ kỹ thuật)",Giá đóng cửa,Base,GSTT,Security Trading Snapshot Dimension,Close Price,SLICER,security_trading_snpst_dim.close_price,Reuse
 K_GSTT_11,Phân tích,"Nhóm 14 - Top đột phá theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (biểu đồ kỹ thuật)",Thay đổi (+/-),Base,GSTT,Security Trading Snapshot Dimension,Price Change,SLICER,security_trading_snpst_dim.price_change,Reuse
 K_GSTT_13,Phân tích,"Nhóm 14 - Top đột phá theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (biểu đồ kỹ thuật)",Khối lượng giao dịch,Phái sinh,GSTT,Fact Stock Portfolio Snapshot,Total Volume,MEASURE,SUM(fct_stock_portfolio_snpst.total_vol),Reuse
-K_GSTT_31,Phân tích,"Nhóm 14 - Top đột phá theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (biểu đồ kỹ thuật)",Doanh thu,Pending,GSTT,,,PENDING,,Reuse
-K_GSTT_32,Phân tích,"Nhóm 14 - Top đột phá theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (biểu đồ kỹ thuật)",Lợi nhuận sau thuế,Pending,GSTT,,,PENDING,,Reuse
+K_GSTT_31,Phân tích,"Nhóm 14 - Top đột phá theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (biểu đồ kỹ thuật)",Doanh thu,Base,GSTT,Fact Stock Portfolio Snapshot,Revenue,MEASURE,SUM(fct_stock_portfolio_snpst.revenue),Reuse
+K_GSTT_32,Phân tích,"Nhóm 14 - Top đột phá theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (biểu đồ kỹ thuật)",Lợi nhuận sau thuế,Base,GSTT,Fact Stock Portfolio Snapshot,Net Profit After Tax,MEASURE,SUM(fct_stock_portfolio_snpst.net_profit_after_tax),Reuse
+K_GSTT_57,Phân tích,"Nhóm 14 - Top đột phá theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (biểu đồ kỹ thuật)",VCSH,Base,GSTT,Fact Stock Portfolio Snapshot,Owner Equity,MEASURE,SUM(fct_stock_portfolio_snpst.owner_equity),Reuse
 K_GSTT_1,Phân tích,Nhóm 15 - Top giá trị (bảng số liệu),Mã CK,Base,GSTT,Security Trading Snapshot Dimension,Symbol,SLICER,security_trading_snpst_dim.symbol,Reuse
 K_GSTT_3,Phân tích,Nhóm 15 - Top giá trị (bảng số liệu),Sàn,Base,GSTT,Security Trading Snapshot Dimension,Floor Code,SLICER,security_trading_snpst_dim.floor_code,Reuse
 K_GSTT_62,Phân tích,Nhóm 15 - Top giá trị (bảng số liệu),Bộ chỉ số thị trường,Base,GSTT,Index Constituent Dimension,Index Code,FILTER,"index_constituent_dim.index_code IN ('HOSE','UPCOM','HNX')",Reuse
@@ -236,9 +241,9 @@ K_GSTT_10,Phân tích,Nhóm 15 - Top giá trị (bảng số liệu),Giá,Base,G
 K_GSTT_12,Phân tích,Nhóm 15 - Top giá trị (bảng số liệu),% thay đổi,Phái sinh,GSTT,,,DERIVED,security_trading_snpst_dim.price_change / security_trading_snpst_dim.reference_price * 100,Reuse
 K_GSTT_55,Phân tích,Nhóm 15 - Top giá trị (bảng số liệu),Số cổ phiếu đang lưu hành,Pending,GSTT,,,PENDING,,Reuse
 K_GSTT_61,Phân tích,Nhóm 15 - Top giá trị (bảng số liệu),Vốn hóa,Pending,GSTT,,,PENDING,,Reuse
-K_GSTT_56,Phân tích,Nhóm 15 - Top giá trị (bảng số liệu),LNST,Pending,GSTT,,,PENDING,,Reuse
+K_GSTT_56,Phân tích,Nhóm 15 - Top giá trị (bảng số liệu),LNST,Base,GSTT,Fact Stock Portfolio Snapshot,Net Profit After Tax TTM,MEASURE,SUM(fct_stock_portfolio_snpst.net_profit_after_tax_ttm),Reuse
 K_GSTT_58,Phân tích,Nhóm 15 - Top giá trị (bảng số liệu),P/E thị trường,Pending,GSTT,,,PENDING,,Reuse
-K_GSTT_57,Phân tích,Nhóm 15 - Top giá trị (bảng số liệu),VCSH,Pending,GSTT,,,PENDING,,Reuse
+K_GSTT_57,Phân tích,Nhóm 15 - Top giá trị (bảng số liệu),VCSH,Base,GSTT,Fact Stock Portfolio Snapshot,Owner Equity,MEASURE,SUM(fct_stock_portfolio_snpst.owner_equity),Reuse
 K_GSTT_59,Phân tích,Nhóm 15 - Top giá trị (bảng số liệu),P/B thị trường,Pending,GSTT,,,PENDING,,Reuse
 K_GSTT_1,Phân tích,Nhóm 16 - Top giá trị (biểu đồ kỹ thuật),Mã CK,Base,GSTT,Security Trading Snapshot Dimension,Symbol,SLICER,security_trading_snpst_dim.symbol,Reuse
 K_GSTT_4,Phân tích,Nhóm 16 - Top giá trị (biểu đồ kỹ thuật),Chỉ số,Base,GSTT,Index Constituent Dimension,Index Code,SLICER,index_constituent_dim.index_code,Reuse
@@ -253,8 +258,9 @@ K_GSTT_29,Phân tích,Nhóm 16 - Top giá trị (biểu đồ kỹ thuật),Giá
 K_GSTT_10,Phân tích,Nhóm 16 - Top giá trị (biểu đồ kỹ thuật),Giá đóng cửa,Base,GSTT,Security Trading Snapshot Dimension,Close Price,SLICER,security_trading_snpst_dim.close_price,Reuse
 K_GSTT_11,Phân tích,Nhóm 16 - Top giá trị (biểu đồ kỹ thuật),Thay đổi (+/-),Base,GSTT,Security Trading Snapshot Dimension,Price Change,SLICER,security_trading_snpst_dim.price_change,Reuse
 K_GSTT_13,Phân tích,Nhóm 16 - Top giá trị (biểu đồ kỹ thuật),Khối lượng giao dịch,Phái sinh,GSTT,Fact Stock Portfolio Snapshot,Total Volume,MEASURE,SUM(fct_stock_portfolio_snpst.total_vol),Reuse
-K_GSTT_31,Phân tích,Nhóm 16 - Top giá trị (biểu đồ kỹ thuật),Doanh thu,Pending,GSTT,,,PENDING,,Reuse
-K_GSTT_32,Phân tích,Nhóm 16 - Top giá trị (biểu đồ kỹ thuật),Lợi nhuận sau thuế,Pending,GSTT,,,PENDING,,Reuse
+K_GSTT_31,Phân tích,Nhóm 16 - Top giá trị (biểu đồ kỹ thuật),Doanh thu,Base,GSTT,Fact Stock Portfolio Snapshot,Revenue,MEASURE,SUM(fct_stock_portfolio_snpst.revenue),Reuse
+K_GSTT_32,Phân tích,Nhóm 16 - Top giá trị (biểu đồ kỹ thuật),Lợi nhuận sau thuế,Base,GSTT,Fact Stock Portfolio Snapshot,Net Profit After Tax,MEASURE,SUM(fct_stock_portfolio_snpst.net_profit_after_tax),Reuse
+K_GSTT_57,Phân tích,Nhóm 16 - Top giá trị (biểu đồ kỹ thuật),VCSH,Base,GSTT,Fact Stock Portfolio Snapshot,Owner Equity,MEASURE,SUM(fct_stock_portfolio_snpst.owner_equity),Reuse
 K_GSTT_1,Phân tích,Nhóm 17 - Top giảm giá theo toàn thị trường (bảng số liệu),Mã ck,Base,GSTT,Security Trading Snapshot Dimension,Symbol,SLICER,security_trading_snpst_dim.symbol,Reuse
 K_GSTT_2,Phân tích,Nhóm 17 - Top giảm giá theo toàn thị trường (bảng số liệu),Ngành,Base,GSTT,Public Company Dimension,Business Line Level 1 Code / Classification Business Line Name,SLICER,"public_company_dim.business_line_level_1_code, public_company_dim.classification_business_line_nm",Reuse
 K_GSTT_7,Phân tích,Nhóm 17 - Top giảm giá theo toàn thị trường (bảng số liệu),Ngày,Base,GSTT,Calendar Date Dimension,Calendar Date,SLICER,cdr_dt_dim.cdr_dt,Reuse
@@ -263,9 +269,9 @@ K_GSTT_13,Phân tích,Nhóm 17 - Top giảm giá theo toàn thị trường (b�
 K_GSTT_10,Phân tích,Nhóm 17 - Top giảm giá theo toàn thị trường (bảng số liệu),Giá,Base,GSTT,Security Trading Snapshot Dimension,Close Price,SLICER,security_trading_snpst_dim.close_price,Reuse
 K_GSTT_55,Phân tích,Nhóm 17 - Top giảm giá theo toàn thị trường (bảng số liệu),Số cổ phiếu đang lưu hành,Pending,GSTT,,,PENDING,,Reuse
 K_GSTT_61,Phân tích,Nhóm 17 - Top giảm giá theo toàn thị trường (bảng số liệu),Vốn hóa,Pending,GSTT,,,PENDING,,Reuse
-K_GSTT_56,Phân tích,Nhóm 17 - Top giảm giá theo toàn thị trường (bảng số liệu),LNST,Pending,GSTT,,,PENDING,,Reuse
+K_GSTT_56,Phân tích,Nhóm 17 - Top giảm giá theo toàn thị trường (bảng số liệu),LNST,Base,GSTT,Fact Stock Portfolio Snapshot,Net Profit After Tax TTM,MEASURE,SUM(fct_stock_portfolio_snpst.net_profit_after_tax_ttm),Reuse
 K_GSTT_58,Phân tích,Nhóm 17 - Top giảm giá theo toàn thị trường (bảng số liệu),P/E thị trường,Pending,GSTT,,,PENDING,,Reuse
-K_GSTT_57,Phân tích,Nhóm 17 - Top giảm giá theo toàn thị trường (bảng số liệu),VCSH,Pending,GSTT,,,PENDING,,Reuse
+K_GSTT_57,Phân tích,Nhóm 17 - Top giảm giá theo toàn thị trường (bảng số liệu),VCSH,Base,GSTT,Fact Stock Portfolio Snapshot,Owner Equity,MEASURE,SUM(fct_stock_portfolio_snpst.owner_equity),Reuse
 K_GSTT_59,Phân tích,Nhóm 17 - Top giảm giá theo toàn thị trường (bảng số liệu),P/B thị trường,Pending,GSTT,,,PENDING,,Reuse
 K_GSTT_1,Phân tích,Nhóm 18 - Top giảm giá theo toàn thị trường (biểu đồ kỹ thuật),Mã,Base,GSTT,Security Trading Snapshot Dimension,Symbol,SLICER,security_trading_snpst_dim.symbol,Reuse
 K_GSTT_4,Phân tích,Nhóm 18 - Top giảm giá theo toàn thị trường (biểu đồ kỹ thuật),Chỉ số,Base,GSTT,Index Constituent Dimension,Index Code,SLICER,index_constituent_dim.index_code,Reuse
@@ -277,8 +283,9 @@ K_GSTT_29,Phân tích,Nhóm 18 - Top giảm giá theo toàn thị trường (bi�
 K_GSTT_10,Phân tích,Nhóm 18 - Top giảm giá theo toàn thị trường (biểu đồ kỹ thuật),Giá đóng cửa,Base,GSTT,Security Trading Snapshot Dimension,Close Price,SLICER,security_trading_snpst_dim.close_price,Reuse
 K_GSTT_12,Phân tích,Nhóm 18 - Top giảm giá theo toàn thị trường (biểu đồ kỹ thuật),% thay đổi,Phái sinh,GSTT,,,DERIVED,security_trading_snpst_dim.price_change / security_trading_snpst_dim.reference_price * 100,Reuse
 K_GSTT_13,Phân tích,Nhóm 18 - Top giảm giá theo toàn thị trường (biểu đồ kỹ thuật),Khối lượng giao dịch,Phái sinh,GSTT,Fact Stock Portfolio Snapshot,Total Volume,MEASURE,SUM(fct_stock_portfolio_snpst.total_vol),Reuse
-K_GSTT_31,Phân tích,Nhóm 18 - Top giảm giá theo toàn thị trường (biểu đồ kỹ thuật),Doanh thu,Pending,GSTT,,,PENDING,,Reuse
-K_GSTT_32,Phân tích,Nhóm 18 - Top giảm giá theo toàn thị trường (biểu đồ kỹ thuật),Lợi nhuận sau thuế,Pending,GSTT,,,PENDING,,Reuse
+K_GSTT_31,Phân tích,Nhóm 18 - Top giảm giá theo toàn thị trường (biểu đồ kỹ thuật),Doanh thu,Base,GSTT,Fact Stock Portfolio Snapshot,Revenue,MEASURE,SUM(fct_stock_portfolio_snpst.revenue),Reuse
+K_GSTT_32,Phân tích,Nhóm 18 - Top giảm giá theo toàn thị trường (biểu đồ kỹ thuật),Lợi nhuận sau thuế,Base,GSTT,Fact Stock Portfolio Snapshot,Net Profit After Tax,MEASURE,SUM(fct_stock_portfolio_snpst.net_profit_after_tax),Reuse
+K_GSTT_57,Phân tích,Nhóm 18 - Top giảm giá theo toàn thị trường (biểu đồ kỹ thuật),VCSH,Base,GSTT,Fact Stock Portfolio Snapshot,Owner Equity,MEASURE,SUM(fct_stock_portfolio_snpst.owner_equity),Reuse
 K_GSTT_1,Phân tích,Nhóm 19 - Top giảm giá theo sàn (bảng số liệu),Mã,Base,GSTT,Security Trading Snapshot Dimension,Symbol,SLICER,security_trading_snpst_dim.symbol,Reuse
 K_GSTT_3,Phân tích,Nhóm 19 - Top giảm giá theo sàn (bảng số liệu),Sàn,Base,GSTT,Security Trading Snapshot Dimension,Floor Code,SLICER,security_trading_snpst_dim.floor_code,Reuse
 K_GSTT_2,Phân tích,Nhóm 19 - Top giảm giá theo sàn (bảng số liệu),Ngành,Base,GSTT,Public Company Dimension,Business Line Level 1 Code / Classification Business Line Name,SLICER,"public_company_dim.business_line_level_1_code, public_company_dim.classification_business_line_nm",Reuse
@@ -288,9 +295,9 @@ K_GSTT_13,Phân tích,Nhóm 19 - Top giảm giá theo sàn (bảng số liệu),
 K_GSTT_10,Phân tích,Nhóm 19 - Top giảm giá theo sàn (bảng số liệu),Giá,Base,GSTT,Security Trading Snapshot Dimension,Close Price,SLICER,security_trading_snpst_dim.close_price,Reuse
 K_GSTT_55,Phân tích,Nhóm 19 - Top giảm giá theo sàn (bảng số liệu),Số cổ phiếu đang lưu hành,Pending,GSTT,,,PENDING,,Reuse
 K_GSTT_61,Phân tích,Nhóm 19 - Top giảm giá theo sàn (bảng số liệu),Vốn hóa,Pending,GSTT,,,PENDING,,Reuse
-K_GSTT_56,Phân tích,Nhóm 19 - Top giảm giá theo sàn (bảng số liệu),LNST,Pending,GSTT,,,PENDING,,Reuse
+K_GSTT_56,Phân tích,Nhóm 19 - Top giảm giá theo sàn (bảng số liệu),LNST,Base,GSTT,Fact Stock Portfolio Snapshot,Net Profit After Tax TTM,MEASURE,SUM(fct_stock_portfolio_snpst.net_profit_after_tax_ttm),Reuse
 K_GSTT_58,Phân tích,Nhóm 19 - Top giảm giá theo sàn (bảng số liệu),P/E thị trường,Pending,GSTT,,,PENDING,,Reuse
-K_GSTT_57,Phân tích,Nhóm 19 - Top giảm giá theo sàn (bảng số liệu),VCSH,Pending,GSTT,,,PENDING,,Reuse
+K_GSTT_57,Phân tích,Nhóm 19 - Top giảm giá theo sàn (bảng số liệu),VCSH,Base,GSTT,Fact Stock Portfolio Snapshot,Owner Equity,MEASURE,SUM(fct_stock_portfolio_snpst.owner_equity),Reuse
 K_GSTT_59,Phân tích,Nhóm 19 - Top giảm giá theo sàn (bảng số liệu),P/B thị trường,Pending,GSTT,,,PENDING,,Reuse
 K_GSTT_1,Phân tích,Nhóm 20 - Top giảm giá theo sàn (biểu đồ kỹ thuật),Mã,Base,GSTT,Security Trading Snapshot Dimension,Symbol,SLICER,security_trading_snpst_dim.symbol,Reuse
 K_GSTT_4,Phân tích,Nhóm 20 - Top giảm giá theo sàn (biểu đồ kỹ thuật),Chỉ số,Base,GSTT,Index Constituent Dimension,Index Code,SLICER,index_constituent_dim.index_code,Reuse
@@ -302,8 +309,9 @@ K_GSTT_28,Phân tích,Nhóm 20 - Top giảm giá theo sàn (biểu đồ kỹ th
 K_GSTT_29,Phân tích,Nhóm 20 - Top giảm giá theo sàn (biểu đồ kỹ thuật),Giá thấp nhất,Base,GSTT,Security Trading Snapshot Dimension,Low Price,SLICER,security_trading_snpst_dim.low_price,Reuse
 K_GSTT_10,Phân tích,Nhóm 20 - Top giảm giá theo sàn (biểu đồ kỹ thuật),Giá đóng cửa,Base,GSTT,Security Trading Snapshot Dimension,Close Price,SLICER,security_trading_snpst_dim.close_price,Reuse
 K_GSTT_13,Phân tích,Nhóm 20 - Top giảm giá theo sàn (biểu đồ kỹ thuật),Khối lượng giao dịch,Phái sinh,GSTT,Fact Stock Portfolio Snapshot,Total Volume,MEASURE,SUM(fct_stock_portfolio_snpst.total_vol),Reuse
-K_GSTT_31,Phân tích,Nhóm 20 - Top giảm giá theo sàn (biểu đồ kỹ thuật),Doanh thu,Pending,GSTT,,,PENDING,,Reuse
-K_GSTT_32,Phân tích,Nhóm 20 - Top giảm giá theo sàn (biểu đồ kỹ thuật),Lợi nhuận sau thuế,Pending,GSTT,,,PENDING,,Reuse
+K_GSTT_31,Phân tích,Nhóm 20 - Top giảm giá theo sàn (biểu đồ kỹ thuật),Doanh thu,Base,GSTT,Fact Stock Portfolio Snapshot,Revenue,MEASURE,SUM(fct_stock_portfolio_snpst.revenue),Reuse
+K_GSTT_32,Phân tích,Nhóm 20 - Top giảm giá theo sàn (biểu đồ kỹ thuật),Lợi nhuận sau thuế,Base,GSTT,Fact Stock Portfolio Snapshot,Net Profit After Tax,MEASURE,SUM(fct_stock_portfolio_snpst.net_profit_after_tax),Reuse
+K_GSTT_57,Phân tích,Nhóm 20 - Top giảm giá theo sàn (biểu đồ kỹ thuật),VCSH,Base,GSTT,Fact Stock Portfolio Snapshot,Owner Equity,MEASURE,SUM(fct_stock_portfolio_snpst.owner_equity),Reuse
 K_GSTT_1,Phân tích,Nhóm 21 - Top vượt đỉnh theo toàn thị trường (bảng số liệu),Mã,Base,GSTT,Security Trading Snapshot Dimension,Symbol,SLICER,security_trading_snpst_dim.symbol,Reuse
 K_GSTT_2,Phân tích,Nhóm 21 - Top vượt đỉnh theo toàn thị trường (bảng số liệu),Ngành,Base,GSTT,Public Company Dimension,Business Line Level 1 Code / Classification Business Line Name,SLICER,"public_company_dim.business_line_level_1_code, public_company_dim.classification_business_line_nm",Reuse
 K_GSTT_7,Phân tích,Nhóm 21 - Top vượt đỉnh theo toàn thị trường (bảng số liệu),Ngày,Base,GSTT,Calendar Date Dimension,Calendar Date,SLICER,cdr_dt_dim.cdr_dt,Reuse
@@ -312,8 +320,8 @@ K_GSTT_10,Phân tích,Nhóm 21 - Top vượt đỉnh theo toàn thị trường 
 K_GSTT_12,Phân tích,Nhóm 21 - Top vượt đỉnh theo toàn thị trường (bảng số liệu),% thay đổi,Phái sinh,GSTT,,,DERIVED,security_trading_snpst_dim.price_change / security_trading_snpst_dim.reference_price * 100,Reuse
 K_GSTT_28,Phân tích,Nhóm 21 - Top vượt đỉnh theo toàn thị trường (bảng số liệu),Đỉnh cũ,Base,GSTT,Security Trading Snapshot Dimension,High Price,SLICER,security_trading_snpst_dim.high_price,Reuse
 K_GSTT_55,Phân tích,Nhóm 21 - Top vượt đỉnh theo toàn thị trường (bảng số liệu),Số cổ phiếu đang lưu hành,Pending,GSTT,,,PENDING,,Reuse
-K_GSTT_56,Phân tích,Nhóm 21 - Top vượt đỉnh theo toàn thị trường (bảng số liệu),LNST,Pending,GSTT,,,PENDING,,Reuse
-K_GSTT_57,Phân tích,Nhóm 21 - Top vượt đỉnh theo toàn thị trường (bảng số liệu),VCSH,Pending,GSTT,,,PENDING,,Reuse
+K_GSTT_56,Phân tích,Nhóm 21 - Top vượt đỉnh theo toàn thị trường (bảng số liệu),LNST,Base,GSTT,Fact Stock Portfolio Snapshot,Net Profit After Tax TTM,MEASURE,SUM(fct_stock_portfolio_snpst.net_profit_after_tax_ttm),Reuse
+K_GSTT_57,Phân tích,Nhóm 21 - Top vượt đỉnh theo toàn thị trường (bảng số liệu),VCSH,Base,GSTT,Fact Stock Portfolio Snapshot,Owner Equity,MEASURE,SUM(fct_stock_portfolio_snpst.owner_equity),Reuse
 K_GSTT_58,Phân tích,Nhóm 21 - Top vượt đỉnh theo toàn thị trường (bảng số liệu),P/E thị trường,Pending,GSTT,,,PENDING,,Reuse
 K_GSTT_59,Phân tích,Nhóm 21 - Top vượt đỉnh theo toàn thị trường (bảng số liệu),P/B thị trường,Pending,GSTT,,,PENDING,,Reuse
 K_GSTT_1,Phân tích,Nhóm 22 - Top vượt đỉnh theo toàn thị trường (biểu đồ kỹ thuật),Mã CK,Base,GSTT,Security Trading Snapshot Dimension,Symbol,SLICER,security_trading_snpst_dim.symbol,Reuse
@@ -324,8 +332,9 @@ K_GSTT_28,Phân tích,Nhóm 22 - Top vượt đỉnh theo toàn thị trường 
 K_GSTT_29,Phân tích,Nhóm 22 - Top vượt đỉnh theo toàn thị trường (biểu đồ kỹ thuật),Giá thấp nhất,Base,GSTT,Security Trading Snapshot Dimension,Low Price,SLICER,security_trading_snpst_dim.low_price,Reuse
 K_GSTT_10,Phân tích,Nhóm 22 - Top vượt đỉnh theo toàn thị trường (biểu đồ kỹ thuật),Giá đóng cửa,Base,GSTT,Security Trading Snapshot Dimension,Close Price,SLICER,security_trading_snpst_dim.close_price,Reuse
 K_GSTT_13,Phân tích,Nhóm 22 - Top vượt đỉnh theo toàn thị trường (biểu đồ kỹ thuật),Khối lượng giao dịch,Phái sinh,GSTT,Fact Stock Portfolio Snapshot,Total Volume,MEASURE,SUM(fct_stock_portfolio_snpst.total_vol),Reuse
-K_GSTT_31,Phân tích,Nhóm 22 - Top vượt đỉnh theo toàn thị trường (biểu đồ kỹ thuật),Doanh thu,Pending,GSTT,,,PENDING,,Reuse
-K_GSTT_32,Phân tích,Nhóm 22 - Top vượt đỉnh theo toàn thị trường (biểu đồ kỹ thuật),Lợi nhuận sau thuế,Pending,GSTT,,,PENDING,,Reuse
+K_GSTT_31,Phân tích,Nhóm 22 - Top vượt đỉnh theo toàn thị trường (biểu đồ kỹ thuật),Doanh thu,Base,GSTT,Fact Stock Portfolio Snapshot,Revenue,MEASURE,SUM(fct_stock_portfolio_snpst.revenue),Reuse
+K_GSTT_32,Phân tích,Nhóm 22 - Top vượt đỉnh theo toàn thị trường (biểu đồ kỹ thuật),Lợi nhuận sau thuế,Base,GSTT,Fact Stock Portfolio Snapshot,Net Profit After Tax,MEASURE,SUM(fct_stock_portfolio_snpst.net_profit_after_tax),Reuse
+K_GSTT_57,Phân tích,Nhóm 22 - Top vượt đỉnh theo toàn thị trường (biểu đồ kỹ thuật),VCSH,Base,GSTT,Fact Stock Portfolio Snapshot,Owner Equity,MEASURE,SUM(fct_stock_portfolio_snpst.owner_equity),Reuse
 K_GSTT_1,Phân tích,Nhóm 23 - Top vượt đỉnh theo sàn (bảng số liệu),Mã,Base,GSTT,Security Trading Snapshot Dimension,Symbol,SLICER,security_trading_snpst_dim.symbol,Reuse
 K_GSTT_3,Phân tích,Nhóm 23 - Top vượt đỉnh theo sàn (bảng số liệu),Sàn,Base,GSTT,Security Trading Snapshot Dimension,Floor Code,SLICER,security_trading_snpst_dim.floor_code,Reuse
 K_GSTT_2,Phân tích,Nhóm 23 - Top vượt đỉnh theo sàn (bảng số liệu),Ngành,Base,GSTT,Public Company Dimension,Business Line Level 1 Code / Classification Business Line Name,SLICER,"public_company_dim.business_line_level_1_code, public_company_dim.classification_business_line_nm",Reuse
@@ -336,8 +345,8 @@ K_GSTT_13,Phân tích,Nhóm 23 - Top vượt đỉnh theo sàn (bảng số li�
 K_GSTT_10,Phân tích,Nhóm 23 - Top vượt đỉnh theo sàn (bảng số liệu),Giá,Base,GSTT,Security Trading Snapshot Dimension,Close Price,SLICER,security_trading_snpst_dim.close_price,Reuse
 K_GSTT_12,Phân tích,Nhóm 23 - Top vượt đỉnh theo sàn (bảng số liệu),% thay đổi,Phái sinh,GSTT,,,DERIVED,security_trading_snpst_dim.price_change / security_trading_snpst_dim.reference_price * 100,Reuse
 K_GSTT_28,Phân tích,Nhóm 23 - Top vượt đỉnh theo sàn (bảng số liệu),Đỉnh cũ,Base,GSTT,Security Trading Snapshot Dimension,High Price,SLICER,security_trading_snpst_dim.high_price,Reuse
-K_GSTT_56,Phân tích,Nhóm 23 - Top vượt đỉnh theo sàn (bảng số liệu),LNST,Pending,GSTT,,,PENDING,,Reuse
-K_GSTT_57,Phân tích,Nhóm 23 - Top vượt đỉnh theo sàn (bảng số liệu),VCSH,Pending,GSTT,,,PENDING,,Reuse
+K_GSTT_56,Phân tích,Nhóm 23 - Top vượt đỉnh theo sàn (bảng số liệu),LNST,Base,GSTT,Fact Stock Portfolio Snapshot,Net Profit After Tax TTM,MEASURE,SUM(fct_stock_portfolio_snpst.net_profit_after_tax_ttm),Reuse
+K_GSTT_57,Phân tích,Nhóm 23 - Top vượt đỉnh theo sàn (bảng số liệu),VCSH,Base,GSTT,Fact Stock Portfolio Snapshot,Owner Equity,MEASURE,SUM(fct_stock_portfolio_snpst.owner_equity),Reuse
 K_GSTT_55,Phân tích,Nhóm 23 - Top vượt đỉnh theo sàn (bảng số liệu),Số cổ phiếu đang lưu hành,Pending,GSTT,,,PENDING,,Reuse
 K_GSTT_58,Phân tích,Nhóm 23 - Top vượt đỉnh theo sàn (bảng số liệu),P/E thị trường,Pending,GSTT,,,PENDING,,Reuse
 K_GSTT_59,Phân tích,Nhóm 23 - Top vượt đỉnh theo sàn (bảng số liệu),P/B thị trường,Pending,GSTT,,,PENDING,,Reuse
@@ -352,8 +361,9 @@ K_GSTT_28,Phân tích,Nhóm 24 - Top vượt đỉnh theo sàn (biểu đồ k�
 K_GSTT_29,Phân tích,Nhóm 24 - Top vượt đỉnh theo sàn (biểu đồ kỹ thuật),Giá thấp nhất,Base,GSTT,Security Trading Snapshot Dimension,Low Price,SLICER,security_trading_snpst_dim.low_price,Reuse
 K_GSTT_10,Phân tích,Nhóm 24 - Top vượt đỉnh theo sàn (biểu đồ kỹ thuật),Giá đóng cửa,Base,GSTT,Security Trading Snapshot Dimension,Close Price,SLICER,security_trading_snpst_dim.close_price,Reuse
 K_GSTT_13,Phân tích,Nhóm 24 - Top vượt đỉnh theo sàn (biểu đồ kỹ thuật),Khối lượng giao dịch,Phái sinh,GSTT,Fact Stock Portfolio Snapshot,Total Volume,MEASURE,SUM(fct_stock_portfolio_snpst.total_vol),Reuse
-K_GSTT_31,Phân tích,Nhóm 24 - Top vượt đỉnh theo sàn (biểu đồ kỹ thuật),Doanh thu,Pending,GSTT,,,PENDING,,Reuse
-K_GSTT_32,Phân tích,Nhóm 24 - Top vượt đỉnh theo sàn (biểu đồ kỹ thuật),Lợi nhuận sau thuế,Pending,GSTT,,,PENDING,,Reuse
+K_GSTT_31,Phân tích,Nhóm 24 - Top vượt đỉnh theo sàn (biểu đồ kỹ thuật),Doanh thu,Base,GSTT,Fact Stock Portfolio Snapshot,Revenue,MEASURE,SUM(fct_stock_portfolio_snpst.revenue),Reuse
+K_GSTT_32,Phân tích,Nhóm 24 - Top vượt đỉnh theo sàn (biểu đồ kỹ thuật),Lợi nhuận sau thuế,Base,GSTT,Fact Stock Portfolio Snapshot,Net Profit After Tax,MEASURE,SUM(fct_stock_portfolio_snpst.net_profit_after_tax),Reuse
+K_GSTT_57,Phân tích,Nhóm 24 - Top vượt đỉnh theo sàn (biểu đồ kỹ thuật),VCSH,Base,GSTT,Fact Stock Portfolio Snapshot,Owner Equity,MEASURE,SUM(fct_stock_portfolio_snpst.owner_equity),Reuse
 K_GSTT_1,Phân tích,Nhóm 25 - Top thủng đáy theo toàn thị trường (bảng số liệu),Mã,Base,GSTT,Security Trading Snapshot Dimension,Symbol,SLICER,security_trading_snpst_dim.symbol,Reuse
 K_GSTT_2,Phân tích,Nhóm 25 - Top thủng đáy theo toàn thị trường (bảng số liệu),Ngành,Base,GSTT,Public Company Dimension,Business Line Level 1 Code / Classification Business Line Name,SLICER,"public_company_dim.business_line_level_1_code, public_company_dim.classification_business_line_nm",Reuse
 K_GSTT_7,Phân tích,Nhóm 25 - Top thủng đáy theo toàn thị trường (bảng số liệu),Ngày,Base,GSTT,Calendar Date Dimension,Calendar Date,SLICER,cdr_dt_dim.cdr_dt,Reuse
@@ -361,8 +371,8 @@ K_GSTT_13,Phân tích,Nhóm 25 - Top thủng đáy theo toàn thị trường (b
 K_GSTT_10,Phân tích,Nhóm 25 - Top thủng đáy theo toàn thị trường (bảng số liệu),Giá đóng cửa,Base,GSTT,Security Trading Snapshot Dimension,Close Price,SLICER,security_trading_snpst_dim.close_price,Reuse
 K_GSTT_12,Phân tích,Nhóm 25 - Top thủng đáy theo toàn thị trường (bảng số liệu),% thay đổi,Phái sinh,GSTT,,,DERIVED,security_trading_snpst_dim.price_change / security_trading_snpst_dim.reference_price * 100,Reuse
 K_GSTT_29,Phân tích,Nhóm 25 - Top thủng đáy theo toàn thị trường (bảng số liệu),Đáy cũ,Base,GSTT,Security Trading Snapshot Dimension,Low Price,SLICER,security_trading_snpst_dim.low_price,Reuse
-K_GSTT_56,Phân tích,Nhóm 25 - Top thủng đáy theo toàn thị trường (bảng số liệu),LNST,Pending,GSTT,,,PENDING,,Reuse
-K_GSTT_57,Phân tích,Nhóm 25 - Top thủng đáy theo toàn thị trường (bảng số liệu),VCSH,Pending,GSTT,,,PENDING,,Reuse
+K_GSTT_56,Phân tích,Nhóm 25 - Top thủng đáy theo toàn thị trường (bảng số liệu),LNST,Base,GSTT,Fact Stock Portfolio Snapshot,Net Profit After Tax TTM,MEASURE,SUM(fct_stock_portfolio_snpst.net_profit_after_tax_ttm),Reuse
+K_GSTT_57,Phân tích,Nhóm 25 - Top thủng đáy theo toàn thị trường (bảng số liệu),VCSH,Base,GSTT,Fact Stock Portfolio Snapshot,Owner Equity,MEASURE,SUM(fct_stock_portfolio_snpst.owner_equity),Reuse
 K_GSTT_55,Phân tích,Nhóm 25 - Top thủng đáy theo toàn thị trường (bảng số liệu),Số cổ phiếu đang lưu hành,Pending,GSTT,,,PENDING,,Reuse
 K_GSTT_58,Phân tích,Nhóm 25 - Top thủng đáy theo toàn thị trường (bảng số liệu),P/E thị trường,Pending,GSTT,,,PENDING,,Reuse
 K_GSTT_59,Phân tích,Nhóm 25 - Top thủng đáy theo toàn thị trường (bảng số liệu),P/B thị trường,Pending,GSTT,,,PENDING,,Reuse
@@ -374,8 +384,9 @@ K_GSTT_28,Phân tích,Nhóm 26 - Top thủng đáy theo toàn thị trường (b
 K_GSTT_29,Phân tích,Nhóm 26 - Top thủng đáy theo toàn thị trường (biểu đồ kỹ thuật),Giá thấp nhất,Base,GSTT,Security Trading Snapshot Dimension,Low Price,SLICER,security_trading_snpst_dim.low_price,Reuse
 K_GSTT_10,Phân tích,Nhóm 26 - Top thủng đáy theo toàn thị trường (biểu đồ kỹ thuật),Giá đóng cửa,Base,GSTT,Security Trading Snapshot Dimension,Close Price,SLICER,security_trading_snpst_dim.close_price,Reuse
 K_GSTT_13,Phân tích,Nhóm 26 - Top thủng đáy theo toàn thị trường (biểu đồ kỹ thuật),Khối lượng giao dịch,Phái sinh,GSTT,Fact Stock Portfolio Snapshot,Total Volume,MEASURE,SUM(fct_stock_portfolio_snpst.total_vol),Reuse
-K_GSTT_31,Phân tích,Nhóm 26 - Top thủng đáy theo toàn thị trường (biểu đồ kỹ thuật),Doanh thu,Pending,GSTT,,,PENDING,,Reuse
-K_GSTT_32,Phân tích,Nhóm 26 - Top thủng đáy theo toàn thị trường (biểu đồ kỹ thuật),Lợi nhuận sau thuế,Pending,GSTT,,,PENDING,,Reuse
+K_GSTT_31,Phân tích,Nhóm 26 - Top thủng đáy theo toàn thị trường (biểu đồ kỹ thuật),Doanh thu,Base,GSTT,Fact Stock Portfolio Snapshot,Revenue,MEASURE,SUM(fct_stock_portfolio_snpst.revenue),Reuse
+K_GSTT_32,Phân tích,Nhóm 26 - Top thủng đáy theo toàn thị trường (biểu đồ kỹ thuật),Lợi nhuận sau thuế,Base,GSTT,Fact Stock Portfolio Snapshot,Net Profit After Tax,MEASURE,SUM(fct_stock_portfolio_snpst.net_profit_after_tax),Reuse
+K_GSTT_57,Phân tích,Nhóm 26 - Top thủng đáy theo toàn thị trường (biểu đồ kỹ thuật),VCSH,Base,GSTT,Fact Stock Portfolio Snapshot,Owner Equity,MEASURE,SUM(fct_stock_portfolio_snpst.owner_equity),Reuse
 K_GSTT_1,Phân tích,Nhóm 27 - Top thủng đáy theo sàn (bảng số liệu),Mã ck,Base,GSTT,Security Trading Snapshot Dimension,Symbol,SLICER,security_trading_snpst_dim.symbol,Reuse
 K_GSTT_3,Phân tích,Nhóm 27 - Top thủng đáy theo sàn (bảng số liệu),Sàn,Base,GSTT,Security Trading Snapshot Dimension,Floor Code,SLICER,security_trading_snpst_dim.floor_code,Reuse
 K_GSTT_2,Phân tích,Nhóm 27 - Top thủng đáy theo sàn (bảng số liệu),Ngành,Base,GSTT,Public Company Dimension,Business Line Level 1 Code / Classification Business Line Name,SLICER,"public_company_dim.business_line_level_1_code, public_company_dim.classification_business_line_nm",Reuse
@@ -386,8 +397,8 @@ K_GSTT_13,Phân tích,Nhóm 27 - Top thủng đáy theo sàn (bảng số liệu
 K_GSTT_10,Phân tích,Nhóm 27 - Top thủng đáy theo sàn (bảng số liệu),Giá,Base,GSTT,Security Trading Snapshot Dimension,Close Price,SLICER,security_trading_snpst_dim.close_price,Reuse
 K_GSTT_12,Phân tích,Nhóm 27 - Top thủng đáy theo sàn (bảng số liệu),% thay đổi,Phái sinh,GSTT,,,DERIVED,security_trading_snpst_dim.price_change / security_trading_snpst_dim.reference_price * 100,Reuse
 K_GSTT_29,Phân tích,Nhóm 27 - Top thủng đáy theo sàn (bảng số liệu),Đáy cũ,Base,GSTT,Security Trading Snapshot Dimension,Low Price,SLICER,security_trading_snpst_dim.low_price,Reuse
-K_GSTT_56,Phân tích,Nhóm 27 - Top thủng đáy theo sàn (bảng số liệu),LNST,Pending,GSTT,,,PENDING,,Reuse
-K_GSTT_57,Phân tích,Nhóm 27 - Top thủng đáy theo sàn (bảng số liệu),VCSH,Pending,GSTT,,,PENDING,,Reuse
+K_GSTT_56,Phân tích,Nhóm 27 - Top thủng đáy theo sàn (bảng số liệu),LNST,Base,GSTT,Fact Stock Portfolio Snapshot,Net Profit After Tax TTM,MEASURE,SUM(fct_stock_portfolio_snpst.net_profit_after_tax_ttm),Reuse
+K_GSTT_57,Phân tích,Nhóm 27 - Top thủng đáy theo sàn (bảng số liệu),VCSH,Base,GSTT,Fact Stock Portfolio Snapshot,Owner Equity,MEASURE,SUM(fct_stock_portfolio_snpst.owner_equity),Reuse
 K_GSTT_55,Phân tích,Nhóm 27 - Top thủng đáy theo sàn (bảng số liệu),Số cổ phiếu đang lưu hành,Pending,GSTT,,,PENDING,,Reuse
 K_GSTT_58,Phân tích,Nhóm 27 - Top thủng đáy theo sàn (bảng số liệu),P/E thị trường,Pending,GSTT,,,PENDING,,Reuse
 K_GSTT_59,Phân tích,Nhóm 27 - Top thủng đáy theo sàn (bảng số liệu),P/B thị trường,Pending,GSTT,,,PENDING,,Reuse
@@ -403,16 +414,17 @@ K_GSTT_29,Phân tích,Nhóm 28 - Top thủng đáy theo sàn (biểu đồ kỹ 
 K_GSTT_10,Phân tích,Nhóm 28 - Top thủng đáy theo sàn (biểu đồ kỹ thuật),Giá đóng cửa,Base,GSTT,Security Trading Snapshot Dimension,Close Price,SLICER,security_trading_snpst_dim.close_price,Reuse
 K_GSTT_12,Phân tích,Nhóm 28 - Top thủng đáy theo sàn (biểu đồ kỹ thuật),% thay đổi,Phái sinh,GSTT,,,DERIVED,security_trading_snpst_dim.price_change / security_trading_snpst_dim.reference_price * 100,Reuse
 K_GSTT_13,Phân tích,Nhóm 28 - Top thủng đáy theo sàn (biểu đồ kỹ thuật),Khối lượng giao dịch,Phái sinh,GSTT,Fact Stock Portfolio Snapshot,Total Volume,MEASURE,SUM(fct_stock_portfolio_snpst.total_vol),Reuse
-K_GSTT_31,Phân tích,Nhóm 28 - Top thủng đáy theo sàn (biểu đồ kỹ thuật),Doanh thu,Pending,GSTT,,,PENDING,,Reuse
-K_GSTT_32,Phân tích,Nhóm 28 - Top thủng đáy theo sàn (biểu đồ kỹ thuật),Lợi nhuận sau thuế,Pending,GSTT,,,PENDING,,Reuse
+K_GSTT_31,Phân tích,Nhóm 28 - Top thủng đáy theo sàn (biểu đồ kỹ thuật),Doanh thu,Base,GSTT,Fact Stock Portfolio Snapshot,Revenue,MEASURE,SUM(fct_stock_portfolio_snpst.revenue),Reuse
+K_GSTT_32,Phân tích,Nhóm 28 - Top thủng đáy theo sàn (biểu đồ kỹ thuật),Lợi nhuận sau thuế,Base,GSTT,Fact Stock Portfolio Snapshot,Net Profit After Tax,MEASURE,SUM(fct_stock_portfolio_snpst.net_profit_after_tax),Reuse
+K_GSTT_57,Phân tích,Nhóm 28 - Top thủng đáy theo sàn (biểu đồ kỹ thuật),VCSH,Base,GSTT,Fact Stock Portfolio Snapshot,Owner Equity,MEASURE,SUM(fct_stock_portfolio_snpst.owner_equity),Reuse
 K_GSTT_1,Phân tích,Nhóm 29 - Top tăng giá theo toàn thị trường (bảng số liệu),Mã ck,Base,GSTT,Security Trading Snapshot Dimension,Symbol,SLICER,security_trading_snpst_dim.symbol,Reuse
 K_GSTT_2,Phân tích,Nhóm 29 - Top tăng giá theo toàn thị trường (bảng số liệu),Ngành,Base,GSTT,Public Company Dimension,Business Line Level 1 Code / Classification Business Line Name,SLICER,"public_company_dim.business_line_level_1_code, public_company_dim.classification_business_line_nm",Reuse
 K_GSTT_7,Phân tích,Nhóm 29 - Top tăng giá theo toàn thị trường (bảng số liệu),Ngày,Base,GSTT,Calendar Date Dimension,Calendar Date,SLICER,cdr_dt_dim.cdr_dt,Reuse
 K_GSTT_12,Phân tích,Nhóm 29 - Top tăng giá theo toàn thị trường (bảng số liệu),% thay đổi,Phái sinh,GSTT,,,DERIVED,security_trading_snpst_dim.price_change / security_trading_snpst_dim.reference_price * 100,Reuse
 K_GSTT_13,Phân tích,Nhóm 29 - Top tăng giá theo toàn thị trường (bảng số liệu),KLGD,Phái sinh,GSTT,Fact Stock Portfolio Snapshot,Total Volume,MEASURE,SUM(fct_stock_portfolio_snpst.total_vol),Reuse
 K_GSTT_10,Phân tích,Nhóm 29 - Top tăng giá theo toàn thị trường (bảng số liệu),Giá,Base,GSTT,Security Trading Snapshot Dimension,Close Price,SLICER,security_trading_snpst_dim.close_price,Reuse
-K_GSTT_56,Phân tích,Nhóm 29 - Top tăng giá theo toàn thị trường (bảng số liệu),LNST,Pending,GSTT,,,PENDING,,Reuse
-K_GSTT_57,Phân tích,Nhóm 29 - Top tăng giá theo toàn thị trường (bảng số liệu),VCSH,Pending,GSTT,,,PENDING,,Reuse
+K_GSTT_56,Phân tích,Nhóm 29 - Top tăng giá theo toàn thị trường (bảng số liệu),LNST,Base,GSTT,Fact Stock Portfolio Snapshot,Net Profit After Tax TTM,MEASURE,SUM(fct_stock_portfolio_snpst.net_profit_after_tax_ttm),Reuse
+K_GSTT_57,Phân tích,Nhóm 29 - Top tăng giá theo toàn thị trường (bảng số liệu),VCSH,Base,GSTT,Fact Stock Portfolio Snapshot,Owner Equity,MEASURE,SUM(fct_stock_portfolio_snpst.owner_equity),Reuse
 K_GSTT_55,Phân tích,Nhóm 29 - Top tăng giá theo toàn thị trường (bảng số liệu),Số cổ phiếu đang lưu hành,Pending,GSTT,,,PENDING,,Reuse
 K_GSTT_61,Phân tích,Nhóm 29 - Top tăng giá theo toàn thị trường (bảng số liệu),Vốn hóa,Pending,GSTT,,,PENDING,,Reuse
 K_GSTT_58,Phân tích,Nhóm 29 - Top tăng giá theo toàn thị trường (bảng số liệu),P/E thị trường,Pending,GSTT,,,PENDING,,Reuse
@@ -426,8 +438,9 @@ K_GSTT_28,Phân tích,Nhóm 30 - Top tăng giá theo toàn thị trường (bi�
 K_GSTT_29,Phân tích,Nhóm 30 - Top tăng giá theo toàn thị trường (biểu đồ kỹ thuật),Giá thấp nhất,Base,GSTT,Security Trading Snapshot Dimension,Low Price,SLICER,security_trading_snpst_dim.low_price,Reuse
 K_GSTT_10,Phân tích,Nhóm 30 - Top tăng giá theo toàn thị trường (biểu đồ kỹ thuật),Giá đóng cửa,Base,GSTT,Security Trading Snapshot Dimension,Close Price,SLICER,security_trading_snpst_dim.close_price,Reuse
 K_GSTT_13,Phân tích,Nhóm 30 - Top tăng giá theo toàn thị trường (biểu đồ kỹ thuật),Khối lượng giao dịch,Phái sinh,GSTT,Fact Stock Portfolio Snapshot,Total Volume,MEASURE,SUM(fct_stock_portfolio_snpst.total_vol),Reuse
-K_GSTT_31,Phân tích,Nhóm 30 - Top tăng giá theo toàn thị trường (biểu đồ kỹ thuật),Doanh thu,Pending,GSTT,,,PENDING,,Reuse
-K_GSTT_32,Phân tích,Nhóm 30 - Top tăng giá theo toàn thị trường (biểu đồ kỹ thuật),Lợi nhuận sau thuế,Pending,GSTT,,,PENDING,,Reuse
+K_GSTT_31,Phân tích,Nhóm 30 - Top tăng giá theo toàn thị trường (biểu đồ kỹ thuật),Doanh thu,Base,GSTT,Fact Stock Portfolio Snapshot,Revenue,MEASURE,SUM(fct_stock_portfolio_snpst.revenue),Reuse
+K_GSTT_32,Phân tích,Nhóm 30 - Top tăng giá theo toàn thị trường (biểu đồ kỹ thuật),Lợi nhuận sau thuế,Base,GSTT,Fact Stock Portfolio Snapshot,Net Profit After Tax,MEASURE,SUM(fct_stock_portfolio_snpst.net_profit_after_tax),Reuse
+K_GSTT_57,Phân tích,Nhóm 30 - Top tăng giá theo toàn thị trường (biểu đồ kỹ thuật),VCSH,Base,GSTT,Fact Stock Portfolio Snapshot,Owner Equity,MEASURE,SUM(fct_stock_portfolio_snpst.owner_equity),Reuse
 K_GSTT_1,Phân tích,Nhóm 31 - Top tăng giá theo sàn (bảng số liệu),Mã,Base,GSTT,Security Trading Snapshot Dimension,Symbol,SLICER,security_trading_snpst_dim.symbol,Reuse
 K_GSTT_3,Phân tích,Nhóm 31 - Top tăng giá theo sàn (bảng số liệu),Sàn,Base,GSTT,Security Trading Snapshot Dimension,Floor Code,SLICER,security_trading_snpst_dim.floor_code,Reuse
 K_GSTT_2,Phân tích,Nhóm 31 - Top tăng giá theo sàn (bảng số liệu),Ngành,Base,GSTT,Public Company Dimension,Business Line Level 1 Code / Classification Business Line Name,SLICER,"public_company_dim.business_line_level_1_code, public_company_dim.classification_business_line_nm",Reuse
@@ -437,8 +450,8 @@ K_GSTT_7,Phân tích,Nhóm 31 - Top tăng giá theo sàn (bảng số liệu),Ng
 K_GSTT_12,Phân tích,Nhóm 31 - Top tăng giá theo sàn (bảng số liệu),% thay đổi,Phái sinh,GSTT,,,DERIVED,security_trading_snpst_dim.price_change / security_trading_snpst_dim.reference_price * 100,Reuse
 K_GSTT_13,Phân tích,Nhóm 31 - Top tăng giá theo sàn (bảng số liệu),KLGD,Phái sinh,GSTT,Fact Stock Portfolio Snapshot,Total Volume,MEASURE,SUM(fct_stock_portfolio_snpst.total_vol),Reuse
 K_GSTT_10,Phân tích,Nhóm 31 - Top tăng giá theo sàn (bảng số liệu),Giá,Base,GSTT,Security Trading Snapshot Dimension,Close Price,SLICER,security_trading_snpst_dim.close_price,Reuse
-K_GSTT_56,Phân tích,Nhóm 31 - Top tăng giá theo sàn (bảng số liệu),LNST,Pending,GSTT,,,PENDING,,Reuse
-K_GSTT_57,Phân tích,Nhóm 31 - Top tăng giá theo sàn (bảng số liệu),VCSH,Pending,GSTT,,,PENDING,,Reuse
+K_GSTT_56,Phân tích,Nhóm 31 - Top tăng giá theo sàn (bảng số liệu),LNST,Base,GSTT,Fact Stock Portfolio Snapshot,Net Profit After Tax TTM,MEASURE,SUM(fct_stock_portfolio_snpst.net_profit_after_tax_ttm),Reuse
+K_GSTT_57,Phân tích,Nhóm 31 - Top tăng giá theo sàn (bảng số liệu),VCSH,Base,GSTT,Fact Stock Portfolio Snapshot,Owner Equity,MEASURE,SUM(fct_stock_portfolio_snpst.owner_equity),Reuse
 K_GSTT_55,Phân tích,Nhóm 31 - Top tăng giá theo sàn (bảng số liệu),Số cổ phiếu đang lưu hành,Pending,GSTT,,,PENDING,,Reuse
 K_GSTT_61,Phân tích,Nhóm 31 - Top tăng giá theo sàn (bảng số liệu),Vốn hóa,Pending,GSTT,,,PENDING,,Reuse
 K_GSTT_58,Phân tích,Nhóm 31 - Top tăng giá theo sàn (bảng số liệu),P/E thị trường,Pending,GSTT,,,PENDING,,Reuse
@@ -455,8 +468,9 @@ K_GSTT_28,Phân tích,Nhóm 32 - Top tăng giá theo sàn (biểu đồ kỹ thu
 K_GSTT_29,Phân tích,Nhóm 32 - Top tăng giá theo sàn (biểu đồ kỹ thuật),Giá thấp nhất,Base,GSTT,Security Trading Snapshot Dimension,Low Price,SLICER,security_trading_snpst_dim.low_price,Reuse
 K_GSTT_10,Phân tích,Nhóm 32 - Top tăng giá theo sàn (biểu đồ kỹ thuật),Giá đóng cửa,Base,GSTT,Security Trading Snapshot Dimension,Close Price,SLICER,security_trading_snpst_dim.close_price,Reuse
 K_GSTT_13,Phân tích,Nhóm 32 - Top tăng giá theo sàn (biểu đồ kỹ thuật),Khối lượng giao dịch,Phái sinh,GSTT,Fact Stock Portfolio Snapshot,Total Volume,MEASURE,SUM(fct_stock_portfolio_snpst.total_vol),Reuse
-K_GSTT_31,Phân tích,Nhóm 32 - Top tăng giá theo sàn (biểu đồ kỹ thuật),Doanh thu,Pending,GSTT,,,PENDING,,Reuse
-K_GSTT_32,Phân tích,Nhóm 32 - Top tăng giá theo sàn (biểu đồ kỹ thuật),Lợi nhuận sau thuế,Pending,GSTT,,,PENDING,,Reuse
+K_GSTT_31,Phân tích,Nhóm 32 - Top tăng giá theo sàn (biểu đồ kỹ thuật),Doanh thu,Base,GSTT,Fact Stock Portfolio Snapshot,Revenue,MEASURE,SUM(fct_stock_portfolio_snpst.revenue),Reuse
+K_GSTT_32,Phân tích,Nhóm 32 - Top tăng giá theo sàn (biểu đồ kỹ thuật),Lợi nhuận sau thuế,Base,GSTT,Fact Stock Portfolio Snapshot,Net Profit After Tax,MEASURE,SUM(fct_stock_portfolio_snpst.net_profit_after_tax),Reuse
+K_GSTT_57,Phân tích,Nhóm 32 - Top tăng giá theo sàn (biểu đồ kỹ thuật),VCSH,Base,GSTT,Fact Stock Portfolio Snapshot,Owner Equity,MEASURE,SUM(fct_stock_portfolio_snpst.owner_equity),Reuse
 K_GSTT_1,Phân tích,Nhóm 33 - Top nhà đầu tư nước ngoài theo toàn thị trường (bảng số liệu),Mã,Base,GSTT,Security Trading Snapshot Dimension,Symbol,SLICER,security_trading_snpst_dim.symbol,Reuse
 K_GSTT_2,Phân tích,Nhóm 33 - Top nhà đầu tư nước ngoài theo toàn thị trường (bảng số liệu),Ngành,Base,GSTT,Public Company Dimension,Business Line Level 1 Code / Classification Business Line Name,SLICER,"public_company_dim.business_line_level_1_code, public_company_dim.classification_business_line_nm",Reuse
 K_GSTT_7,Phân tích,Nhóm 33 - Top nhà đầu tư nước ngoài theo toàn thị trường (bảng số liệu),Ngày,Base,GSTT,Calendar Date Dimension,Calendar Date,SLICER,cdr_dt_dim.cdr_dt,Reuse
@@ -467,8 +481,8 @@ K_GSTT_70,Phân tích,Nhóm 33 - Top nhà đầu tư nước ngoài theo toàn t
 K_GSTT_71,Phân tích,Nhóm 33 - Top nhà đầu tư nước ngoài theo toàn thị trường (bảng số liệu),KL bán ròng (NĐTNN),Phái sinh,GSTT,Fact Stock Portfolio Snapshot,Foreign Sell Volume,MEASURE,SUM(fct_stock_portfolio_snpst.foreign_sell_vol),Mới - cột có sẵn trên Fact (join_atomic từ Securities Trade.Sell Foreign Investor Type Code)
 K_GSTT_72,Phân tích,Nhóm 33 - Top nhà đầu tư nước ngoài theo toàn thị trường (bảng số liệu),GT mua ròng (NĐTNN),Phái sinh,GSTT,Fact Stock Portfolio Snapshot,Foreign Buy Value,MEASURE,SUM(fct_stock_portfolio_snpst.foreign_buy_val),Mới - cột có sẵn trên Fact
 K_GSTT_73,Phân tích,Nhóm 33 - Top nhà đầu tư nước ngoài theo toàn thị trường (bảng số liệu),GT bán ròng (NĐTNN),Phái sinh,GSTT,Fact Stock Portfolio Snapshot,Foreign Sell Value,MEASURE,SUM(fct_stock_portfolio_snpst.foreign_sell_val),Mới - cột có sẵn trên Fact
-K_GSTT_56,Phân tích,Nhóm 33 - Top nhà đầu tư nước ngoài theo toàn thị trường (bảng số liệu),LNST,Pending,GSTT,,,PENDING,,Reuse
-K_GSTT_57,Phân tích,Nhóm 33 - Top nhà đầu tư nước ngoài theo toàn thị trường (bảng số liệu),VCSH,Pending,GSTT,,,PENDING,,Reuse
+K_GSTT_56,Phân tích,Nhóm 33 - Top nhà đầu tư nước ngoài theo toàn thị trường (bảng số liệu),LNST,Base,GSTT,Fact Stock Portfolio Snapshot,Net Profit After Tax TTM,MEASURE,SUM(fct_stock_portfolio_snpst.net_profit_after_tax_ttm),Reuse
+K_GSTT_57,Phân tích,Nhóm 33 - Top nhà đầu tư nước ngoài theo toàn thị trường (bảng số liệu),VCSH,Base,GSTT,Fact Stock Portfolio Snapshot,Owner Equity,MEASURE,SUM(fct_stock_portfolio_snpst.owner_equity),Reuse
 K_GSTT_55,Phân tích,Nhóm 33 - Top nhà đầu tư nước ngoài theo toàn thị trường (bảng số liệu),Số cổ phiếu đang lưu hành,Pending,GSTT,,,PENDING,,Reuse
 K_GSTT_61,Phân tích,Nhóm 33 - Top nhà đầu tư nước ngoài theo toàn thị trường (bảng số liệu),Vốn hóa,Pending,GSTT,,,PENDING,,Reuse
 K_GSTT_58,Phân tích,Nhóm 33 - Top nhà đầu tư nước ngoài theo toàn thị trường (bảng số liệu),P/E thị trường,Pending,GSTT,,,PENDING,,Reuse
@@ -480,8 +494,9 @@ K_GSTT_28,Phân tích,Nhóm 34 - Top nhà đầu tư nước ngoài theo biểu 
 K_GSTT_29,Phân tích,Nhóm 34 - Top nhà đầu tư nước ngoài theo biểu đồ kỹ thuật,Giá thấp nhất,Base,GSTT,Security Trading Snapshot Dimension,Low Price,SLICER,security_trading_snpst_dim.low_price,Reuse
 K_GSTT_10,Phân tích,Nhóm 34 - Top nhà đầu tư nước ngoài theo biểu đồ kỹ thuật,Giá đóng cửa,Base,GSTT,Security Trading Snapshot Dimension,Close Price,SLICER,security_trading_snpst_dim.close_price,Reuse
 K_GSTT_13,Phân tích,Nhóm 34 - Top nhà đầu tư nước ngoài theo biểu đồ kỹ thuật,Khối lượng giao dịch,Phái sinh,GSTT,Fact Stock Portfolio Snapshot,Total Volume,MEASURE,SUM(fct_stock_portfolio_snpst.total_vol),Reuse
-K_GSTT_31,Phân tích,Nhóm 34 - Top nhà đầu tư nước ngoài theo biểu đồ kỹ thuật,Doanh thu,Pending,GSTT,,,PENDING,,Reuse
-K_GSTT_32,Phân tích,Nhóm 34 - Top nhà đầu tư nước ngoài theo biểu đồ kỹ thuật,Lợi nhuận sau thuế,Pending,GSTT,,,PENDING,,Reuse
+K_GSTT_31,Phân tích,Nhóm 34 - Top nhà đầu tư nước ngoài theo biểu đồ kỹ thuật,Doanh thu,Base,GSTT,Fact Stock Portfolio Snapshot,Revenue,MEASURE,SUM(fct_stock_portfolio_snpst.revenue),Reuse
+K_GSTT_32,Phân tích,Nhóm 34 - Top nhà đầu tư nước ngoài theo biểu đồ kỹ thuật,Lợi nhuận sau thuế,Base,GSTT,Fact Stock Portfolio Snapshot,Net Profit After Tax,MEASURE,SUM(fct_stock_portfolio_snpst.net_profit_after_tax),Reuse
+K_GSTT_57,Phân tích,Nhóm 34 - Top nhà đầu tư nước ngoài theo biểu đồ kỹ thuật,VCSH,Base,GSTT,Fact Stock Portfolio Snapshot,Owner Equity,MEASURE,SUM(fct_stock_portfolio_snpst.owner_equity),Reuse
 K_GSTT_1,Phân tích,Nhóm 35 - Top nhà đầu tư nước ngoài theo sàn (bảng số liệu),Mã,Base,GSTT,Security Trading Snapshot Dimension,Symbol,SLICER,security_trading_snpst_dim.symbol,Reuse
 K_GSTT_2,Phân tích,Nhóm 35 - Top nhà đầu tư nước ngoài theo sàn (bảng số liệu),Ngành,Base,GSTT,Public Company Dimension,Business Line Level 1 Code / Classification Business Line Name,SLICER,"public_company_dim.business_line_level_1_code, public_company_dim.classification_business_line_nm",Reuse
 K_GSTT_3,Phân tích,Nhóm 35 - Top nhà đầu tư nước ngoài theo sàn (bảng số liệu),Sàn,Base,GSTT,Security Trading Snapshot Dimension,Floor Code,SLICER,security_trading_snpst_dim.floor_code,Reuse
@@ -495,8 +510,8 @@ K_GSTT_70,Phân tích,Nhóm 35 - Top nhà đầu tư nước ngoài theo sàn (b
 K_GSTT_71,Phân tích,Nhóm 35 - Top nhà đầu tư nước ngoài theo sàn (bảng số liệu),KL bán ròng,Phái sinh,GSTT,Fact Stock Portfolio Snapshot,Foreign Sell Volume,MEASURE,SUM(fct_stock_portfolio_snpst.foreign_sell_vol),Reuse
 K_GSTT_72,Phân tích,Nhóm 35 - Top nhà đầu tư nước ngoài theo sàn (bảng số liệu),GT mua ròng,Phái sinh,GSTT,Fact Stock Portfolio Snapshot,Foreign Buy Value,MEASURE,SUM(fct_stock_portfolio_snpst.foreign_buy_val),Reuse
 K_GSTT_73,Phân tích,Nhóm 35 - Top nhà đầu tư nước ngoài theo sàn (bảng số liệu),GT bán ròng,Phái sinh,GSTT,Fact Stock Portfolio Snapshot,Foreign Sell Value,MEASURE,SUM(fct_stock_portfolio_snpst.foreign_sell_val),Reuse
-K_GSTT_56,Phân tích,Nhóm 35 - Top nhà đầu tư nước ngoài theo sàn (bảng số liệu),LNST,Pending,GSTT,,,PENDING,,Reuse
-K_GSTT_57,Phân tích,Nhóm 35 - Top nhà đầu tư nước ngoài theo sàn (bảng số liệu),VCSH,Pending,GSTT,,,PENDING,,Reuse
+K_GSTT_56,Phân tích,Nhóm 35 - Top nhà đầu tư nước ngoài theo sàn (bảng số liệu),LNST,Base,GSTT,Fact Stock Portfolio Snapshot,Net Profit After Tax TTM,MEASURE,SUM(fct_stock_portfolio_snpst.net_profit_after_tax_ttm),Reuse
+K_GSTT_57,Phân tích,Nhóm 35 - Top nhà đầu tư nước ngoài theo sàn (bảng số liệu),VCSH,Base,GSTT,Fact Stock Portfolio Snapshot,Owner Equity,MEASURE,SUM(fct_stock_portfolio_snpst.owner_equity),Reuse
 K_GSTT_55,Phân tích,Nhóm 35 - Top nhà đầu tư nước ngoài theo sàn (bảng số liệu),Số cổ phiếu đang lưu hành,Pending,GSTT,,,PENDING,,Reuse
 K_GSTT_61,Phân tích,Nhóm 35 - Top nhà đầu tư nước ngoài theo sàn (bảng số liệu),Vốn hóa,Pending,GSTT,,,PENDING,,Reuse
 K_GSTT_58,Phân tích,Nhóm 35 - Top nhà đầu tư nước ngoài theo sàn (bảng số liệu),P/E thị trường,Pending,GSTT,,,PENDING,,Reuse
@@ -512,8 +527,9 @@ K_GSTT_28,Phân tích,Nhóm 36 - Top nhà đầu tư nước ngoài theo sàn (b
 K_GSTT_29,Phân tích,Nhóm 36 - Top nhà đầu tư nước ngoài theo sàn (biểu đồ kỹ thuật),Giá thấp nhất,Base,GSTT,Security Trading Snapshot Dimension,Low Price,SLICER,security_trading_snpst_dim.low_price,Reuse
 K_GSTT_10,Phân tích,Nhóm 36 - Top nhà đầu tư nước ngoài theo sàn (biểu đồ kỹ thuật),Giá đóng cửa,Base,GSTT,Security Trading Snapshot Dimension,Close Price,SLICER,security_trading_snpst_dim.close_price,Reuse
 K_GSTT_13,Phân tích,Nhóm 36 - Top nhà đầu tư nước ngoài theo sàn (biểu đồ kỹ thuật),Khối lượng giao dịch,Phái sinh,GSTT,Fact Stock Portfolio Snapshot,Total Volume,MEASURE,SUM(fct_stock_portfolio_snpst.total_vol),Reuse
-K_GSTT_31,Phân tích,Nhóm 36 - Top nhà đầu tư nước ngoài theo sàn (biểu đồ kỹ thuật),Doanh thu,Pending,GSTT,,,PENDING,,Reuse
-K_GSTT_32,Phân tích,Nhóm 36 - Top nhà đầu tư nước ngoài theo sàn (biểu đồ kỹ thuật),Lợi nhuận sau thuế,Pending,GSTT,,,PENDING,,Reuse
+K_GSTT_31,Phân tích,Nhóm 36 - Top nhà đầu tư nước ngoài theo sàn (biểu đồ kỹ thuật),Doanh thu,Base,GSTT,Fact Stock Portfolio Snapshot,Revenue,MEASURE,SUM(fct_stock_portfolio_snpst.revenue),Reuse
+K_GSTT_32,Phân tích,Nhóm 36 - Top nhà đầu tư nước ngoài theo sàn (biểu đồ kỹ thuật),Lợi nhuận sau thuế,Base,GSTT,Fact Stock Portfolio Snapshot,Net Profit After Tax,MEASURE,SUM(fct_stock_portfolio_snpst.net_profit_after_tax),Reuse
+K_GSTT_57,Phân tích,Nhóm 36 - Top nhà đầu tư nước ngoài theo sàn (biểu đồ kỹ thuật),VCSH,Base,GSTT,Fact Stock Portfolio Snapshot,Owner Equity,MEASURE,SUM(fct_stock_portfolio_snpst.owner_equity),Reuse
 K_GSTT_1,Phân tích,Nhóm 37 - Bản đồ nhiệt cổ phiếu/ngành theo vốn hóa/KLGD/GTGD/KLNN/GTNN,Mã,Base,GSTT,Security Trading Snapshot Dimension,Symbol,SLICER,security_trading_snpst_dim.symbol,Reuse
 K_GSTT_2,Phân tích,Nhóm 37 - Bản đồ nhiệt cổ phiếu/ngành theo vốn hóa/KLGD/GTGD/KLNN/GTNN,Ngành,Base,GSTT,Public Company Dimension,Business Line Level 1 Code / Classification Business Line Name,SLICER,"public_company_dim.business_line_level_1_code, public_company_dim.classification_business_line_nm",Reuse
 K_GSTT_7,Phân tích,Nhóm 37 - Bản đồ nhiệt cổ phiếu/ngành theo vốn hóa/KLGD/GTGD/KLNN/GTNN,Ngày,Base,GSTT,Calendar Date Dimension,Calendar Date,SLICER,cdr_dt_dim.cdr_dt,Reuse
@@ -597,8 +613,9 @@ K_GSTT_28,Phân tích,Nhóm 44 - Biểu đồ phân tích kỹ thuật,Giá cao 
 K_GSTT_29,Phân tích,Nhóm 44 - Biểu đồ phân tích kỹ thuật,Giá thấp nhất,Base,GSTT,Security Trading Snapshot Dimension,Low Price,SLICER,security_trading_snpst_dim.low_price,Reuse từ Nhóm 3
 K_GSTT_10,Phân tích,Nhóm 44 - Biểu đồ phân tích kỹ thuật,Giá đóng cửa,Base,GSTT,Security Trading Snapshot Dimension,Close Price,SLICER,security_trading_snpst_dim.close_price,Reuse từ Nhóm 1
 K_GSTT_13,Phân tích,Nhóm 44 - Biểu đồ phân tích kỹ thuật,Khối lượng giao dịch,Phái sinh,GSTT,Fact Stock Portfolio Snapshot,Total Volume,MEASURE,SUM(fct_stock_portfolio_snpst.total_vol),Reuse từ Nhóm 1
-K_GSTT_31,Phân tích,Nhóm 44 - Biểu đồ phân tích kỹ thuật,Doanh thu,Pending,GSTT,,,PENDING,,Reuse từ Nhóm 3 - vẫn PENDING
-K_GSTT_32,Phân tích,Nhóm 44 - Biểu đồ phân tích kỹ thuật,Lợi nhuận sau thuế,Pending,GSTT,,,PENDING,,Reuse từ Nhóm 3 - vẫn PENDING
+K_GSTT_31,Phân tích,Nhóm 44 - Biểu đồ phân tích kỹ thuật,Doanh thu,Base,GSTT,Fact Stock Portfolio Snapshot,Revenue,MEASURE,SUM(fct_stock_portfolio_snpst.revenue),Reuse từ Nhóm 3 - vẫn PENDING
+K_GSTT_32,Phân tích,Nhóm 44 - Biểu đồ phân tích kỹ thuật,Lợi nhuận sau thuế,Base,GSTT,Fact Stock Portfolio Snapshot,Net Profit After Tax,MEASURE,SUM(fct_stock_portfolio_snpst.net_profit_after_tax),Reuse
+K_GSTT_57,Phân tích,Nhóm 44 - Biểu đồ phân tích kỹ thuật,VCSH,Base,GSTT,Fact Stock Portfolio Snapshot,Owner Equity,MEASURE,SUM(fct_stock_portfolio_snpst.owner_equity),Reuse từ Nhóm 3 - vẫn PENDING
 K_GSTT_100,Phân tích,Nhóm 45 - Sở hữu và giao dịch nội bộ,Mã cổ phiếu,Base,GSTT,Public Company Dimension,,SLICER,public_company_dim.public_company_code,"Reuse cơ chế Public Company Dimension từ Nhóm 1, khác entity chính (Fact Shareholding)"
 K_GSTT_101,Phân tích,Nhóm 45 - Sở hữu và giao dịch nội bộ,Tên cổ đông,Pending,GSTT,,,PENDING,,"PENDING - Chưa có CSDL - Map biểu mẫu (BM8 Danh sách cổ đông lớn). Fact Public Company Shareholding và Legal Entity Dimension đã loại khỏi Star Schema (HLD 2026-08-03) - đồng bộ theo HLD"
 K_GSTT_102,Phân tích,Nhóm 45 - Sở hữu và giao dịch nội bộ,Số cổ phiếu sở hữu,Pending,GSTT,,,PENDING,,"PENDING - Chưa có CSDL - Map biểu mẫu (BM8). Fact Public Company Shareholding đã loại khỏi Star Schema (HLD 2026-08-03) - đồng bộ theo HLD"
@@ -614,10 +631,10 @@ K_GSTT_107,Phân tích,Nhóm 46 - Báo cáo Thống kê định giá TTCK Việt
 K_GSTT_108,Phân tích,Nhóm 46 - Báo cáo Thống kê định giá TTCK Việt Nam (BM021_MSS),Khối lượng niêm yết hiện tại,Base,GSTT,Security Trading Snapshot Dimension,Listed Share Count,SLICER,security_trading_snpst_dim.listed_share_count,"Mới - đã có sẵn theo coverage rule Nhóm 1, chưa khai KPI trước đó"
 K_GSTT_55,Phân tích,Nhóm 46 - Báo cáo Thống kê định giá TTCK Việt Nam (BM021_MSS),Khối lượng cổ phiếu đang lưu hành,Pending,GSTT,,,PENDING,,Reuse từ Nhóm 6 - vẫn PENDING
 K_GSTT_109,Phân tích,Nhóm 46 - Báo cáo Thống kê định giá TTCK Việt Nam (BM021_MSS),Khối lượng cổ phiếu đang lưu hành bình quân,Pending,GSTT,,,PENDING,,"Mới - PENDING, phụ thuộc K_GSTT_55 + chưa có cơ chế bình quân"
-K_GSTT_56,Phân tích,Nhóm 46 - Báo cáo Thống kê định giá TTCK Việt Nam (BM021_MSS),LNST,Pending,GSTT,,,PENDING,,Reuse từ Nhóm 6 - vẫn PENDING
+K_GSTT_56,Phân tích,Nhóm 46 - Báo cáo Thống kê định giá TTCK Việt Nam (BM021_MSS),LNST,Base,GSTT,Fact Stock Portfolio Snapshot,Net Profit After Tax TTM,MEASURE,SUM(fct_stock_portfolio_snpst.net_profit_after_tax_ttm),Reuse từ Nhóm 6
 K_GSTT_110,Phân tích,Nhóm 46 - Báo cáo Thống kê định giá TTCK Việt Nam (BM021_MSS),EPS quý gần nhất,Pending,GSTT,,,PENDING,,"Mới - PENDING hoàn toàn, không có nguồn EPS nào"
 K_GSTT_111,Phân tích,Nhóm 46 - Báo cáo Thống kê định giá TTCK Việt Nam (BM021_MSS),EPS bình quân 4 quý gần nhất,Pending,GSTT,,,PENDING,,"Mới - PENDING, cùng ghi chú K_GSTT_110"
-K_GSTT_57,Phân tích,Nhóm 46 - Báo cáo Thống kê định giá TTCK Việt Nam (BM021_MSS),VCSH,Pending,GSTT,,,PENDING,,Reuse từ Nhóm 6 - vẫn PENDING
+K_GSTT_57,Phân tích,Nhóm 46 - Báo cáo Thống kê định giá TTCK Việt Nam (BM021_MSS),VCSH,Base,GSTT,Fact Stock Portfolio Snapshot,Owner Equity,MEASURE,SUM(fct_stock_portfolio_snpst.owner_equity),Reuse từ Nhóm 6 - vẫn PENDING
 K_GSTT_112,Phân tích,Nhóm 46 - Báo cáo Thống kê định giá TTCK Việt Nam (BM021_MSS),Giá trị sổ sách quý gần nhất,Pending,GSTT,,,PENDING,,"Mới - PENDING hoàn toàn, không có nguồn Book Value nào"
 K_GSTT_113,Phân tích,Nhóm 46 - Báo cáo Thống kê định giá TTCK Việt Nam (BM021_MSS),Giá trị sổ sách bình quân 4 quý gần nhất,Pending,GSTT,,,PENDING,,"Mới - PENDING, cùng ghi chú K_GSTT_112"
 K_GSTT_58,Phân tích,Nhóm 46 - Báo cáo Thống kê định giá TTCK Việt Nam (BM021_MSS),P/E,Pending,GSTT,,,PENDING,,Reuse cơ chế K_GSTT_58 theo chu kỳ quý - vẫn PENDING
