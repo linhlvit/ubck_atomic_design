@@ -302,11 +302,13 @@ flowchart LR
 |---|---|---|---|---|---|---|
 | K_QLCB_1 | Ngày | — | Chiều | `GROUP BY Certificate Date` — FK date trên Fact, dùng làm slicer/period cho toàn Nhóm — `Public Company Securities Offering.certificate_dt` | BA cập nhật 2026-08-11: đổi field lọc kỳ báo cáo từ Official Letter Date (ngày công văn) sang Certificate Date (ngày cấp GCN) | READY |
 | K_QLCB_2 | Ngành | — | Chiều | `GROUP BY Business Line Level 1 Code` — FK Public Company Dimension (reuse `public_company_dim`), dùng làm slicer ngành cho toàn Nhóm | — | READY |
-| K_QLCB_3 | Giá trị Cấp phép | Tỷ VNĐ | Cơ sở | `SUM(Total Expected Amount)` per ngành × kỳ — `Public Company Securities Offering.total_expected_amt` | — | READY |
-| K_QLCB_4 | Giá trị Huy động thành công | Tỷ VNĐ | Cơ sở | `SUM(Total Collected Amount)` per ngành × kỳ — aggregate từ `Public Company Securities Offering Result.total_collected_amt` GROUP BY `pc_securities_offering_id` trước khi cộng vào Fact | — | READY |
+| K_QLCB_3 | Giá trị Cấp phép | Tỷ VNĐ | Cơ sở | `SUM(Total Expected Amount)` per ngành × kỳ — `Public Company Securities Offering.total_expected_amt` | BA cập nhật 2026-08-25 (Dũng): chỉ lấy bản ghi có phương án phát hành `offering_method_cd NOT IN (6,7,8,9)` — lọc qua bảng tạm (join `Public Company Securities Offering Plan`, không đổi nguồn giá trị) | READY |
+| K_QLCB_4 | Giá trị Huy động thành công | Tỷ VNĐ | Cơ sở | `SUM(Total Collected Amount)` per ngành × kỳ — aggregate từ `Public Company Securities Offering Result.total_collected_amt` GROUP BY `pc_securities_offering_id` trước khi cộng vào Fact | BA cập nhật 2026-08-25 (Dũng): cùng filter với K_QLCB_3, không đổi nguồn giá trị | READY |
 | K_QLCB_5 | Chưa thành công | Tỷ VNĐ | Derived | `K_QLCB_3 − K_QLCB_4` — tính ở presentation layer | — | READY |
 
 > **Lưu ý:** K_QLCB_1/2 là Chiều — cùng dùng chung FK date/ngành đã có sẵn trên `Fact Securities Offering Snapshot` (không tạo cột mới), khai sinh KPI_ID theo rule "mọi dòng BA Phân loại = Chiều phải có KPI_ID". K_QLCB_3 lấy trực tiếp `total_expected_amt` trên bảng cha `Public Company Securities Offering` (1 giá trị/hồ sơ, không cần JOIN). K_QLCB_4 cần SUM `total_collected_amt` từ `Public Company Securities Offering Result` GROUP BY `pc_securities_offering_id` — quan hệ 1-N vì 1 hồ sơ có thể có nhiều dòng Result theo từng đợt báo cáo kết quả (`Offering Phase Name`). K_QLCB_5 là Derived — tính ở presentation layer, không lưu mart.
+>
+> **BA cập nhật 2026-08-25 (Dũng):** K_QLCB_3/4 chỉ tính trên các đợt chào bán có tồn tại phương án phát hành thoả `offering_method_cd NOT IN (6,7,8,9)` — lọc qua bảng tạm (CTE `valid_offering`/join `Public Company Securities Offering Plan`), giữ nguyên nguồn giá trị `total_expected_amt`/`total_collected_amt` (không đổi sang tổng theo Plan). Đã lan sang `DTM_QLCB_Detail_Mapping.csv` — thêm 2 dòng `FILTER` cho K_QLCB_3/K_QLCB_4.
 >
 > **Loại bỏ 2 KPI YOY dư (cross-check phát hiện, đã xóa khỏi bảng trước khi renumber):** BA STT 1 không có dòng nào yêu cầu YoY% — 2 KPI này đã bị thêm không có căn cứ BA, xóa khỏi bảng KPI.
 
@@ -637,9 +639,9 @@ flowchart LR
 | K_QLCB_26 | Đơn vị xếp hạng tín nhiệm | Text | Attribute | `Public Company Securities Offering.credit_rating_organization_nm` — IDS.SECURITIES_OFFERING.CREDIT_RATING_ORG — direct map | — | READY |
 | K_QLCB_27 | Số lượng CK được cấp phép | CK | Attribute | `Public Company Securities Offering.total_registered_quantity` — BA SQL dùng alias `t` = `SECURITIES_OFFERING` (bảng cha), không GROUP BY loại hình — tổng số CK toàn hồ sơ, join lên Offering cha (không phải snapshot Plan) | — | READY |
 | K_QLCB_28 | Số lượng CK chào bán thành công | CK | Attribute | `Public Company Securities Offering Result.total_successful_quantity` — join theo `offering_method_code` khớp với Plan | — | READY |
-| K_QLCB_29 | Giá trị cấp phép | Tỷ VNĐ | Attribute | `Public Company Securities Offering.total_expected_amt` — bảng cha, BA ghi rõ nguồn SECURITIES_OFFERING.total_expected_am (không phải Plan snapshot) | — | READY |
+| K_QLCB_29 | Giá trị cấp phép | Tỷ VNĐ | Attribute | `Public Company Securities Offering Plan.total_expected_amt_snpst` — join theo `(pc_securities_offering_id, offering_method_code)` | **BA cập nhật 2026-08-25 (Dũng):** đổi nguồn từ bảng cha `Public Company Securities Offering` (`total_expected_amt`) sang `Public Company Securities Offering Plan` — khớp grain (Securities Offering Code, Offering Method Code) của Operational này. Atomic ghi cột này là "denormalized snapshot từ Offering cha" — cần Data Modeler xác nhận lại ý nghĩa trước go-live | READY |
 | K_QLCB_30 | Giá trị chào bán thành công | Tỷ VNĐ | Attribute | `Public Company Securities Offering Result.total_collected_amt` | — | READY |
-| K_QLCB_31 | Tỷ lệ chào bán thành công | % | Attribute | `Public Company Securities Offering Result.successful_ratio_percentage` — IDS.SECURITIES_OFFERING_RESULT.SUCCESSFUL_RATIO — có sẵn trực tiếp trên Result, không cần tính Derived | — | READY |
+| K_QLCB_31 | Tỷ lệ chào bán thành công | % | Attribute | `ROUND(SUM(Total Successful Quantity) / NULLIF(Total Registered Quantity, 0) * 100, 2)` — tính theo 2 trường số lượng (K_QLCB_27/28), không theo giá trị tiền | **BA cập nhật 2026-08-25 (Dũng):** đổi công thức từ `total_collected_amt / total_expected_amt` (giá trị tiền) sang tính theo 2 trường số lượng cấp phép/thành công | READY |
 
 > **Ghi chú K_QLCB_23–26:** 4 cột tổ chức có sẵn trực tiếp trên bảng cha `Public Company Securities Offering`, `etl_logic_type = direct`.
 
