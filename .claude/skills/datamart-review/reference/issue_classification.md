@@ -1,6 +1,6 @@
 # Phân loại vấn đề và hành động tương ứng
 
-## 3 Kịch bản chính
+## 5 Kịch bản chính
 
 ### Kịch bản A — HLD thiếu / PENDING, BA đã Done
 
@@ -57,6 +57,31 @@ Cách xử lý (chốt 2026-08-22 — trước đây cho phép tự `Edit`, nay 
 3. **Gọi skill con thực hiện** — HLD → `datamart-hld-design`; Attributes / Detail Mapping / `datamart_model.yaml` → `datamart-lld-design`
 
 ❌ **Không dùng `Edit` tool sửa trực tiếp** — `datamart-review` chỉ phát hiện, phân loại, đề xuất.
+
+---
+
+### Kịch bản D — HLD sai do thiết kế/nguồn Atomic lỗi thời
+
+**Dấu hiệu:**
+- HLD đã tồn tại, đánh READY, nhưng trỏ nhầm nguồn Atomic đã deprecated/tái cấu trúc, sai grain, sai entity, hoặc logic nghiệp vụ không còn khớp Atomic hiện hành
+- Khác Kịch bản A (không phải PENDING) và khác Kịch bản C (đây là lỗi nội dung/logic, không phải lỗi kỹ thuật thuần cấu trúc)
+
+**Hành động:** Gọi `datamart-hld-design` để thiết kế lại — KHÔNG tự sửa tay nội dung HLD (Fact, grain, nguồn Atomic, bảng KPI) dù đã xác định rõ hướng sửa.
+
+---
+
+### Kịch bản E — Review theo issue/bug report
+
+**Dấu hiệu:**
+- User hoặc BA báo một vấn đề/lỗi cụ thể trên hệ thống (VD: "thiếu TRADINGTIME", "P/E tính sai", "thiếu chỉ tiêu intraday") thay vì yêu cầu review tuần tự cả module.
+
+**Hành động:** Chạy **BƯỚC 0-ALT** (Review theo Issue/Bug Report):
+1. Xác định field/KPI/bảng nguồn liên quan
+2. Trace đủ 5 tầng: Source → Atomic → HLD → LLD (Attributes & Detail Mapping) → Flat Table
+3. Xuất bảng ma trận trạng thái per-tầng (✅/⚠️/❌)
+4. Xác định root cause, blocker cụ thể và Open Issue liên quan
+5. Đọc sâu SQL BA (đặc biệt các logic TTM, filter, dedup) để xác minh tính chính xác
+6. Xuất báo cáo kết luận + Action Items và chờ phê duyệt
 
 ---
 
