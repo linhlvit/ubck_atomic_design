@@ -65,6 +65,24 @@ erDiagram
 
 ---
 
+## Fact Security Trading Intraday (phục vụ Nhóm 44)
+
+Biểu đồ phân tích kỹ thuật theo thời gian trong ngày — grain khác `Security Trading Snapshot Dimension` (theo Trading Timestamp thay vì 1 row/mã CK cuối ngày). `Trading Timestamp` (`trading_tms`) là cột mới bổ sung 2026-08-26 trên Atomic `Security Trading Snapshot` (nối chuỗi `trading_dt` + `' '` + `trading_time` tại tầng ODS) — `Trading Date`/`Trading Time` gốc giữ nguyên không đổi.
+
+```mermaid
+erDiagram
+    Security_Trading_Snapshot_Dimension ||--o{ Fact_Security_Trading_Intraday : " "
+    Calendar_Date_Dimension ||--o{ Fact_Security_Trading_Intraday : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Security Trading Intraday | Fact Snapshot | new | Giá mở/cao/thấp/đóng cửa + khối lượng lũy kế theo từng thời điểm trong ngày | 1 row / mã CK (Symbol) / Trading Timestamp (`trading_tms`) — FK Calendar Date Dimension qua Trading Date | K_GSTT_95–99 |
+| Security Trading Snapshot Dimension | Dimension | reuse | Hồ sơ mô tả chứng khoán — đã thiết kế ở Nhóm 1 | 1 row / mã CK (SCD4A) | — |
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày — conformed toàn hệ thống | 1 row / ngày | — |
+
+---
+
 ## Fact Public Company Shareholding (phục vụ Nhóm 45, 48)
 
 Sở hữu cổ đông và chức vụ người nội bộ — entity mới hoàn toàn, chưa từng xuất hiện ở các Nhóm trước.
@@ -87,4 +105,4 @@ erDiagram
 
 ## Bảng PENDING (không thiết kế trong Phase 2)
 
-Không có bảng nào PENDING toàn bộ trong module GSTT. Tất cả 4 Fact đều có ít nhất 1 KPI/Nhóm READY (xem Bảng grain Section 3.2 HLD để biết measure/KPI cụ thể còn PENDING trong từng Fact — VD `Fact Stock Portfolio Snapshot` có nhiều cột PENDING như LNST/VCSH/P-E/P-B chờ Atomic EAV báo cáo tài chính, xem O_GSTT_1/O_GSTT_2).
+Không có bảng nào PENDING toàn bộ trong module GSTT. Tất cả 5 Fact đều có ít nhất 1 KPI/Nhóm READY (xem Bảng grain Section 3.2 HLD để biết measure/KPI cụ thể còn PENDING trong từng Fact — VD `Fact Stock Portfolio Snapshot` có nhiều cột PENDING như LNST/VCSH/P-E/P-B chờ Atomic EAV báo cáo tài chính, xem O_GSTT_1/O_GSTT_2).

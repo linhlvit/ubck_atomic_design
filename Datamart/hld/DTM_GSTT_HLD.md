@@ -246,7 +246,9 @@ erDiagram
         decimal Total_Negotiated_Value
         int Foreign_Net_Volume
         int Outstanding_Share_Quantity
+        decimal Revenue
         decimal Net_Profit_After_Tax
+        decimal Net_Profit_After_Tax_TTM
         decimal Owner_Equity
         int Foreign_Buy_Volume
         int Foreign_Sell_Volume
@@ -355,13 +357,13 @@ flowchart LR
 > **Atomic:** `Security Trading Snapshot` ← MDDS.JAD_STOCKINFOR — **READY** (Nguồn 2, `design_status: approved` tại file LLD, 2026-07-03) / `Securities Trade` ← ORDERTRADE.TRADE_BOOK_HOSE, TRADE_BOOK_HNX — **READY** (Nguồn 2, approved) / `Public Company` ← IDS.COMPANY_PROFILES — **READY** (Nguồn 1, approved) / `Classification Business Line` ← ECAT.BUSINESS_LINE_LEVEL_1, BUSINESS_LINE_LEVEL_2 — **READY** (Nguồn 1, approved) / `Index Constituent Snapshot` ← MDDS.JAD_CSIDXINFOR — **READY** (Nguồn 2, approved)
 >
 > **Ghi chú tái sử dụng:** BA liệt kê 17 dòng con cho STT 3, nhưng 14/17 chỉ tiêu (Ngành, Sàn, Mã CK, Chỉ số, Loại phái sinh, Phương thức khớp lệnh, Ngày, Giá đóng cửa, Giá tham chiếu, Thay đổi %, KLGD) đã có KPI ID sẵn từ Nhóm 1/Nhóm 2 — reuse thẳng, không khai sinh KPI mới. Chỉ có 3 chỉ tiêu mới thật (Giá mở cửa, Giá cao nhất, Giá thấp nhất) — bổ sung 3 cột lên `Security Trading Snapshot Dimension` theo coverage rule. 2 chỉ tiêu còn lại (Doanh thu, Lợi nhuận sau thuế) cùng "Kỳ báo cáo" — xem ghi chú Dữ liệu động dưới đây.
-> **Ghi chú Dữ liệu động (Doanh thu, LNST, Kỳ báo cáo):** Nguồn BA tham khảo `IDS.data`/`report_catalog`/`rrow`/`rcol` (cấu trúc EAV báo cáo tài chính) — theo quyết định trước đó (ghi nhớ dự án), cấu trúc EAV này **không dùng làm nền Fact** cho tới khi có entity Atomic chuẩn hóa dùng chung nhiều module. Doanh thu/LNST là measure sẽ **bổ sung sau lên `Fact Stock Portfolio Snapshot` hiện có** (không tạo Fact riêng) — join qua FK `Public Company Dimension` đã có sẵn trên Fact (BA xác nhận: "Join qua từ company_profiles với Id và company_profile_id" — tức join theo mã công ty đại chúng, đúng theo Public Company đã dùng ở Nhóm 1). "Kỳ báo cáo" (năm/quý) là chiều thời gian riêng của 2 measure này, khác `Calendar Date Dimension` (theo ngày giao dịch) — đánh PENDING cùng nhóm, chưa thiết kế chiều thời gian kỳ báo cáo cho tới khi Atomic sẵn sàng.
+> **Ghi chú Doanh thu/LNST/Kỳ báo cáo — Resolved 2026-08-26 (rule GSĐC):** Nguồn `IDS.data`/`report_catalog`/`rrow`/`rcol` (EAV báo cáo tài chính) nay truy vấn qua Atomic Nguồn 2: `public_company → pc_report_submission → fr_value → fr_catalog → fr_row_template → fr_column_template` (ưu tiên form HN>TH>ME>RI, `submission_dt`/`violation_report.base_dt` ≤ ngày giao dịch). Doanh thu (`Revenue`, report_cd BCKQKD row_desc 10 DN/BH·03 TD)/LNST (`Net Profit After Tax`, row_desc 60 DN/BH·21 TD) là measure **bổ sung lên `Fact Stock Portfolio Snapshot` hiện có** (không tạo Fact riêng) — join qua FK `Public Company Dimension` đã có sẵn trên Fact. Kỳ báo cáo áp dụng xác định theo `Ky_bao_cao`: quý hiện tại của ngày giao dịch lùi 1 kỳ (lùi thêm năm nếu quý hiện tại là Q1) — computed tại BI tier từ `Calendar Date`, không lưu cột riêng trên Fact (K_GSTT_30).
 
 **Mockup:**
 
 | Mã CK | Ngành | Sàn | Chỉ số | Ngày | Giá mở | Giá cao | Giá thấp | Giá đóng | Giá TC | Thay đổi | % TĐ | KLGD | Doanh thu | LNST |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| VCB | Ngân hàng | HOSE | VN30 | 27/07/2026 | 82.00 | 83.00 | 81.50 | 82.50 | 82.00 | +0.50 | +0.61% | 548 Tr | — | — |
+| GEX | Công nghiệp | HOSE | — | 11/05/2026 | 82.00 | 83.00 | 81.50 | 82.50 | 82.00 | +0.50 | +0.61% | 548 Tr | 3,276,672,448 | -15,609,651,666 |
 
 **Source:** `Fact Stock Portfolio Snapshot` → `Security Trading Snapshot Dimension`, `Public Company Dimension`, `Calendar Date Dimension`, `Index Constituent Dimension`
 
@@ -383,11 +385,11 @@ flowchart LR
 | K_GSTT_9 | Giá tham chiếu | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Reference Price` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_11 | Thay đổi (+/-) | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Price Change` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_13 | Khối lượng giao dịch | Cổ phiếu | Phái sinh | `SUM(Securities Trade.Execution Volume) GROUP BY Symbol, Trade Date` | Reuse từ Nhóm 1 (K_GSTT_13 = Tổng KL, đã bao gồm filter Market Id Code IN ('UPX','STX','STO') tại tầng Fact total_vol) — cùng cảnh báo double-count Index Constituent như Nhóm 1 | READY |
-| K_GSTT_30 | Kỳ báo cáo | — | Chiều | *(chưa xác định — chiều thời gian riêng cho BCTC, khác Calendar Date Dimension theo ngày giao dịch)* | Dữ liệu động — chờ Atomic chuẩn hóa EAV IDS report | PENDING |
-| K_GSTT_31 | Doanh thu | VNĐ | Cơ sở | *(chưa xác định — SUM(IDS.data.data_value) theo report_cd BCKQKD, row tùy enterprise_type)* | Dữ liệu động — bổ sung sau lên Fact Stock Portfolio Snapshot, join qua Public Company Dimension. Chờ Atomic chuẩn hóa EAV IDS report | PENDING |
-| K_GSTT_32 | Lợi nhuận sau thuế | VNĐ | Cơ sở | *(chưa xác định — SUM(IDS.data.data_value) theo report_cd BCKQKD, row tùy enterprise_type)* | Dữ liệu động — bổ sung sau lên Fact Stock Portfolio Snapshot, join qua Public Company Dimension. Chờ Atomic chuẩn hóa EAV IDS report | PENDING |
+| K_GSTT_30 | Kỳ báo cáo | — | Chiều | `CASE WHEN CEIL(MONTH(Calendar Date)/3.0)=1 THEN CONCAT(YEAR(Calendar Date)-1,'-Q4') ELSE CONCAT(YEAR(Calendar Date),'-Q',CEIL(MONTH(Calendar Date)/3.0)-1) END` | **Resolved 2026-08-26 — rule GSĐC.** Computed tại BI tier từ `Calendar Date` (`Ky_bao_cao`: quý hiện tại lùi 1 kỳ, lùi năm nếu Q1) — không lưu cột riêng trên Fact, dùng chung logic xác định kỳ với Doanh thu/LNST (K_GSTT_31/32) | READY |
+| K_GSTT_31 | Doanh thu | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Revenue` | **Resolved 2026-08-26 — rule GSĐC.** Point-in-time theo kỳ báo cáo gần nhất đã công bố trước ngày giao dịch (K_GSTT_30) — join `public_company → pc_report_submission → fr_value → fr_catalog (BCKQKD, row_desc 10 DN/BH · 03 TD, col_desc 1) → fr_row_template → fr_column_template`, ưu tiên form HN>TH>ME>RI. Cột trên `Fact Stock Portfolio Snapshot`, join qua `Public Company Dimension` | READY |
+| K_GSTT_32 | Lợi nhuận sau thuế | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Net Profit After Tax` | **Resolved 2026-08-26 — rule GSĐC.** Cùng cơ chế K_GSTT_31 (BCKQKD, row_desc 60 DN/BH · 21 TD, col_desc 1) | READY |
 
-**Star Schema:** *(dùng chung `Fact Stock Portfolio Snapshot` + `Security Trading Snapshot Dimension` (đã bổ sung `Open_Price`, `High_Price`, `Low_Price`) + `Public Company Dimension` + `Calendar Date Dimension` + `Index Constituent Dimension` đã vẽ ở Nhóm 1 — xem Nhóm 1. K_GSTT_31/32 (Doanh thu, LNST) PENDING, chưa vẽ thêm bảng nào cho tới khi Atomic EAV sẵn sàng.)*
+**Star Schema:** *(dùng chung `Fact Stock Portfolio Snapshot` + `Security Trading Snapshot Dimension` (đã bổ sung `Open_Price`, `High_Price`, `Low_Price`) + `Public Company Dimension` + `Calendar Date Dimension` + `Index Constituent Dimension` đã vẽ ở Nhóm 1 — xem Nhóm 1. K_GSTT_31/32 (Doanh thu, LNST) Resolved 2026-08-26 — `Revenue`/`Net Profit After Tax` đã có trên `Fact Stock Portfolio Snapshot`, không có bảng mới.)*
 
 **Lineage Mart → Báo cáo:**
 
@@ -425,7 +427,7 @@ flowchart LR
 |---|---|---|---|---|---|---|
 | K_GSTT_20 | Mã trái phiếu | — | Chiều | `Security Trading Snapshot Dimension.Symbol` | Reuse từ Nhóm 2. BA lọc thêm `Market Id Code IN ('BDO','HCX')` — filter con của K_GSTT_20, không khai KPI mới | READY |
 | K_GSTT_7 | Ngày | — | Chiều | `Calendar Date Dimension.Calendar Date` | Reuse từ Nhóm 1 | READY |
-| K_GSTT_30 | Kỳ báo cáo | — | Chiều | *(chưa xác định)* | Reuse từ Nhóm 3 — vẫn PENDING, chờ Atomic chuẩn hóa EAV IDS report | PENDING |
+| K_GSTT_30 | Kỳ báo cáo | — | Chiều | `CASE WHEN CEIL(MONTH(Calendar Date)/3.0)=1 THEN CONCAT(YEAR(Calendar Date)-1,'-Q4') ELSE CONCAT(YEAR(Calendar Date),'-Q',CEIL(MONTH(Calendar Date)/3.0)-1) END` | Reuse từ Nhóm 3 — Resolved 2026-08-26 (rule GSĐC) | READY |
 | K_GSTT_27 | Giá mở cửa | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Open Price` | Reuse từ Nhóm 3 | READY |
 | K_GSTT_28 | Giá cao nhất | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.High Price` | Reuse từ Nhóm 3 | READY |
 | K_GSTT_29 | Giá thấp nhất | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Low Price` | Reuse từ Nhóm 3 | READY |
@@ -454,15 +456,15 @@ flowchart LR
 > **Phân loại:** Phân tích
 > **Atomic:** `Market Index Snapshot` ← MDDS.JAD_MARKETINFOR — **READY** (Nguồn 1, approved 2026-07-03) / `Index Constituent Snapshot` ← MDDS.JAD_CSIDXINFOR — **READY** (Nguồn 2, approved) / `Securities Trade` ← ORDERTRADE.TRADE_BOOK_HOSE, TRADE_BOOK_HNX — **READY** (Nguồn 2, approved)
 >
-> **Ghi chú tái sử dụng:** BA liệt kê 23 dòng con — 22 KPI khai sinh (K_GSTT_4, K_GSTT_33, K_GSTT_34–54), 1 dòng trùng ("Giá" = điểm chỉ số gần nhất trong ngày, trùng hoàn toàn K_GSTT_35, không khai KPI mới). `Market Index Dimension`/`Fact Market Index Snapshot` reuse + mở rộng từ QLKD (xem ghi chú Cụm 2a). "Số cổ phiếu lưu hành" và "Vốn hóa thị trường" (sub-row 22, 23) tham chiếu nguồn VSDC (báo cáo "BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành") — **chưa có entity Atomic nào** (đã tra cứu xác nhận, kể cả `IDS.COMPANY_SHARE_STATISTICS` không map trực tiếp) — PENDING chờ nguồn CSDL thực tế.
+> **Ghi chú tái sử dụng:** BA liệt kê 23 dòng con — 22 KPI khai sinh (K_GSTT_4, K_GSTT_33, K_GSTT_34–54), 1 dòng trùng ("Giá" = điểm chỉ số gần nhất trong ngày, trùng hoàn toàn K_GSTT_35, không khai KPI mới). `Market Index Dimension`/`Fact Market Index Snapshot` reuse + mở rộng từ QLKD (xem ghi chú Cụm 2a). "Số cổ phiếu lưu hành" và "Vốn hóa thị trường" (sub-row 22, 23) tham chiếu nguồn VSDC (báo cáo "BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành") — **Resolved 2026-08-26**: `IDS.COMPANY_SHARE_STATISTICS` (`pc_share_statistics`) chỉ SCD4A current-state, nhưng có bảng lịch sử theo ngày `pc_share_statistics_hstr` (`ds_snpst_dt`) — xem O_GSTT_2.
 
 **Mockup:**
 
 | Chỉ số | Ngày | Giá ĐC | Giá cao | Giá thấp | Thay đổi | % TĐ | Mã tăng | Mã giảm | Mã đứng giá | Mã trần | Mã sàn | KLGD | GTGD | KLGD TT | GTGD TT | KLNN ròng | GTNN ròng | Vốn hóa TT |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| VN-Index | 27/07/2026 | 1,245.32 | 1,250.10 | 1,238.50 | +5.20 | +0.42% | 245 | 180 | 32 | 12 | 5 | 850 Tr | 18.5 Tỷ | 45 Tr | 1.2 Tỷ | +80 Tỷ | +120 Tỷ | — |
+| VN-Index | 27/07/2026 | 1,245.32 | 1,250.10 | 1,238.50 | +5.20 | +0.42% | 245 | 180 | 32 | 12 | 5 | 850 Tr | 18.5 Tỷ | 45 Tr | 1.2 Tỷ | +80 Tỷ | +120 Tỷ | 5,842,000,000,000,000 |
 
-**Source:** `Fact Market Index Snapshot` → `Market Index Dimension`, `Calendar Date Dimension`; `Fact Market Index Intraday` → `Market Index Dimension`, `Calendar Date Dimension`
+**Source:** `Fact Market Index Snapshot` → `Market Index Dimension`, `Calendar Date Dimension`; `Fact Market Index Intraday` → `Market Index Dimension`, `Calendar Date Dimension`; `Fact Stock Portfolio Snapshot` → `Security Trading Snapshot Dimension`, `Index Constituent Dimension` (K_GSTT_53/54 — Số cổ phiếu lưu hành/Vốn hóa thị trường, SUM cộng dồn theo Index Code)
 
 **Bảng KPI:**
 
@@ -489,8 +491,8 @@ flowchart LR
 | K_GSTT_50 | GTNN ròng (theo chỉ số) | VNĐ | Phái sinh | `SUM(Buy Foreign Investor Type Code IN ('10','20') → Execution Value) − SUM(Sell Foreign Investor Type Code IN ('10','20') → Execution Value) WHERE Symbol IN (mã thuộc Index Code) GROUP BY Index Code, Trade Date` | Cùng ghi chú K_GSTT_49 | READY |
 | K_GSTT_51 | KLGD thỏa thuận (chỉ số) | Cổ phiếu | Phái sinh | `SUM(Fact Stock Portfolio Snapshot.Total Negotiated Volume WHERE Symbol IN (Index Constituent Dimension.Symbol WHERE Index Code = mapping(Market Code))) GROUP BY Index Code, Trade Date` | **Sửa nguồn (2026-08-20, BA cập nhật):** BA đổi từ cột snapshot có sẵn (`Market Index Snapshot.PT Total Volume`) sang tự tính từ sổ lệnh (`TRADE_BOOK_HOSE/HNX`), lọc `Board Type Code IN ('T1'..'T6')` (đối chiếu SQL BA: nhánh `tong_kl_tt`, KHÔNG dùng `tong_kl` — cột đó là của K_GSTT_47, không lọc Board Type). `Total Negotiated Volume` đã pre-tách sẵn điều kiện Board Type này từ ETL populate Fact (cùng nguồn K_GSTT_17 "Tổng KL thỏa thuận", Nhóm 1) — chỉ cần SUM cộng dồn qua `Index Constituent Dimension` để lấy theo Index Code (khác K_GSTT_17 group theo Symbol). Đặt trên `Fact Stock Portfolio Snapshot` (Nhóm 1) để nhất quán với K_GSTT_47/48, KHÔNG còn dùng `Fact Market Index Snapshot.PT Total Volume` — cột này trên Market Index Snapshot nay không còn KPI nào tham chiếu (xem ghi chú Fact Market Index Snapshot) | READY |
 | K_GSTT_52 | GTGD thỏa thuận (chỉ số) | VNĐ | Phái sinh | `SUM(Fact Stock Portfolio Snapshot.Total Negotiated Value WHERE Symbol IN (Index Constituent Dimension.Symbol WHERE Index Code = mapping(Market Code))) GROUP BY Index Code, Trade Date` | Cùng ghi chú K_GSTT_51 (sửa nguồn 2026-08-20) — dùng `Total Negotiated Value`, cùng nguồn K_GSTT_18 | READY |
-| K_GSTT_53 | Số cổ phiếu lưu hành | Cổ phiếu | Cơ sở | *(chưa xác định)* | Trùng K_GSTT_55 (Nhóm 6) — cùng 1 chỉ tiêu, cùng nguồn VSDC "BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành". Atomic `Public Company Share Statistics` có attribute tương ứng nhưng grain mismatch + cột Loại dữ liệu BA để trống → PENDING (xem O_GSTT_2). Cột đặt trên `Fact Stock Portfolio Snapshot` (Nhóm 1, join qua Public Company Dimension), KHÔNG phải Fact Market Index Snapshot — measure này theo mã CK, không theo market_code | PENDING |
-| K_GSTT_54 | Vốn hóa thị trường | VNĐ | Phái sinh | `SUM(Giá đóng cửa × Số cổ phiếu lưu hành) theo từng mã CK, GROUP BY Index Code` (qua `Index Constituent Dimension`) | Phụ thuộc K_GSTT_53 (chưa có nguồn) — PENDING. Trùng K_GSTT_61 (Nhóm 6) — cùng 1 chỉ tiêu. Công thức đặt trên `Fact Stock Portfolio Snapshot` (Nhóm 1), không phải Fact Market Index Snapshot — đã sửa lại ghi chú Fact đích cho nhất quán với Nhóm 6 (2026-07-27) | PENDING |
+| K_GSTT_53 | Số cổ phiếu lưu hành | Cổ phiếu | Cơ sở | `Fact Stock Portfolio Snapshot.Outstanding Share Quantity` | **Resolved 2026-08-26.** Trùng K_GSTT_55 (Nhóm 6) — cùng 1 chỉ tiêu. Nguồn `pc_share_statistics_hstr` (bảng lịch sử theo ngày của `pc_share_statistics`, `ds_snpst_dt` khớp đúng `Trading Date`, không lookback) — xem O_GSTT_2. Cột đặt trên `Fact Stock Portfolio Snapshot` (Nhóm 1, join qua Public Company Dimension), KHÔNG phải Fact Market Index Snapshot — measure này theo mã CK, không theo market_code | READY |
+| K_GSTT_54 | Vốn hóa thị trường | VNĐ | Phái sinh | `SUM(Giá đóng cửa × Số cổ phiếu lưu hành) theo từng mã CK, GROUP BY Index Code` (qua `Index Constituent Dimension`) | **Resolved 2026-08-26** — K_GSTT_53 đã có nguồn. Trùng K_GSTT_61 (Nhóm 6) — cùng 1 chỉ tiêu. Công thức đặt trên `Fact Stock Portfolio Snapshot` (Nhóm 1), không phải Fact Market Index Snapshot — đã sửa lại ghi chú Fact đích cho nhất quán với Nhóm 6 (2026-07-27) | READY |
 
 **Star Schema:**
 
@@ -570,7 +572,7 @@ flowchart LR
 #### Nhóm 6 - Định giá thị trường
 
 > **Phân loại:** Dashboard
-> **Atomic:** `Security Trading Snapshot` ← MDDS.JAD_STOCKINFOR — **READY** (Nguồn 2, approved, reuse Nhóm 1) / `Public Company` ← IDS.COMPANY_PROFILES — **READY** (Nguồn 1, approved, reuse Nhóm 1) / `Classification Business Line` ← ECAT.BUSINESS_LINE_LEVEL_1, BUSINESS_LINE_LEVEL_2 — **READY** (Nguồn 1, approved, reuse Nhóm 1) / `Index Constituent Snapshot` ← MDDS.JAD_CSIDXINFOR — **READY** (Nguồn 2, approved, reuse Nhóm 1) / `Public Company Share Statistics` ← IDS.COMPANY_SHARE_STATISTICS — **READY** (Nguồn 2, draft) nhưng **grain mismatch** (current-state, không có ngày lịch sử) + cột "Loại dữ liệu" BA để trống — PENDING (xem O_GSTT_2) / EAV báo cáo tài chính (`IDS.data`/`report_catalog`/`rrow`/`rcol` cho LNST/VCSH) — PENDING (xem O_GSTT_1)
+> **Atomic:** `Security Trading Snapshot` ← MDDS.JAD_STOCKINFOR — **READY** (Nguồn 2, approved, reuse Nhóm 1) / `Public Company` ← IDS.COMPANY_PROFILES — **READY** (Nguồn 1, approved, reuse Nhóm 1) / `Classification Business Line` ← ECAT.BUSINESS_LINE_LEVEL_1, BUSINESS_LINE_LEVEL_2 — **READY** (Nguồn 1, approved, reuse Nhóm 1) / `Index Constituent Snapshot` ← MDDS.JAD_CSIDXINFOR — **READY** (Nguồn 2, approved, reuse Nhóm 1) / `Public Company Share Statistics` ← IDS.COMPANY_SHARE_STATISTICS — **Resolved 2026-08-26**: bảng gốc `pc_share_statistics` (SCD4A current-state) không đủ, nhưng có bảng lịch sử theo ngày `pc_share_statistics_hstr` (`ds_snpst_dt`) — xem O_GSTT_2 / EAV báo cáo tài chính (`IDS.data`/`report_catalog`/`rrow`/`rcol` cho LNST/VCSH) — **Resolved 2026-08-26** theo rule GSĐC (join qua `public_company`/`pc_report_submission`/`fr_value`/`fr_catalog`/`fr_row_template`/`fr_column_template`, xem O_GSTT_1)
 >
 > **Ghi chú kiến trúc:** Toàn bộ 13 dòng con của STT 6 dùng chung **1 Fact duy nhất** — mở rộng `Fact Stock Portfolio Snapshot` (Nhóm 1, grain 1 row/mã CK/rổ chỉ số/ngày, đã có sẵn FK `Public Company Dimension`, `Index Constituent Dimension`, `Calendar Date Dimension`), không dùng `Fact Market Index Snapshot`/`Market Index Dimension` (QLKD). LNST/VCSH/Số cổ phiếu lưu hành đều link về Fact này qua `Public Company Dimension` (mã công ty); P/E/P/B/EPS tính theo từng mã CK, "Vốn hóa thị trường" SUM cộng dồn theo `Index Code` (qua `Index Constituent Dimension`).
 > **Sửa nguồn giá (khác SQL tham khảo BA):** SQL tham khảo của BA cho P/E/P/B/Vốn hóa dùng `marketIndex` (điểm chỉ số) làm giá theo mã CK — nhầm lẫn khái niệm (điểm chỉ số không phải giá cổ phiếu). Đã sửa dùng **Giá đóng cửa thật của từng mã CK** (K_GSTT_10) làm nguồn giá cho toàn bộ công thức P/E/P/B/Vốn hóa. Cần xác nhận lại với BA/nghiệp vụ trước khi lên LLD (xem O_GSTT_4).
@@ -580,7 +582,7 @@ flowchart LR
 
 | Mã CK | Ngành | sàn | Chỉ số | Ngày | Giá đóng cửa | Số CP lưu hành | LNST | VCSH | P/E | P/B | EPS | Vốn hóa TT (theo Chỉ số) |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| VCB | Ngân hàng | HOSE | VN30 | 27/07/2026 | 82.50 | *(pending)* | *(pending)* | *(pending)* | *(pending)* | *(pending)* | *(pending)* | *(pending)* |
+| VCB | Ngân hàng | HOSE | VN30 | 27/07/2026 | 82.50 | 5,589,067,000 | 12,450,000,000 | 87,240,000,000 | 3.71 | 0.53 | 22.27 | 461,161,157,750,000 |
 
 **Source:** `Fact Stock Portfolio Snapshot` (mở rộng, Nhóm 1) → `Security Trading Snapshot Dimension`, `Public Company Dimension`, `Calendar Date Dimension`, `Index Constituent Dimension` — 1 Fact duy nhất, không tạo Fact/Dimension mới.
 
@@ -594,15 +596,15 @@ flowchart LR
 | K_GSTT_33 | Ngày | — | Chiều | `Calendar Date Dimension.Calendar Date` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_10 | Giá trị chỉ số | Điểm | Chỉ tiêu phái sinh | `Security Trading Snapshot Dimension.Close Price` | BA tham chiếu `JAD_MARKETINFOR.marketIndex` (điểm chỉ số) — đã sửa dùng Giá đóng cửa thật theo mã CK (xem ghi chú sửa nguồn giá ở trên), trùng hoàn toàn K_GSTT_10, không khai KPI mới | READY |
 | K_GSTT_10 | Giá đóng cửa | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Close Price` | Reuse từ Nhóm 1 — dòng con này của BA cùng công thức với "Giá trị chỉ số" ở trên (cả 2 cùng tham chiếu `marketIndex` gốc), không khai KPI mới | READY |
-| K_GSTT_55 | Số cổ phiếu đang lưu hành | Cổ phiếu | Cơ sở | *(chưa xác định)* | Nguồn VSDC "BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành". Atomic `Public Company Share Statistics` có attribute tương ứng nhưng grain mismatch (current-state, không theo ngày) + cột Loại dữ liệu BA để trống → PENDING (xem O_GSTT_2). Cột mới trên `Fact Stock Portfolio Snapshot`, join qua `Public Company Dimension` | PENDING |
-| K_GSTT_56 | LNST | VNĐ | Cơ sở | *(chưa xác định)* | Nguồn EAV báo cáo tài chính IDS — PENDING chờ Atomic chuẩn hóa (xem O_GSTT_1). Cột mới trên `Fact Stock Portfolio Snapshot`, join qua `Public Company Dimension` | PENDING |
-| K_GSTT_57 | VCSH | VNĐ | Cơ sở | *(chưa xác định)* | Nguồn EAV báo cáo tài chính IDS — PENDING chờ Atomic chuẩn hóa (xem O_GSTT_1). Cột mới trên `Fact Stock Portfolio Snapshot`, join qua `Public Company Dimension` | PENDING |
-| K_GSTT_58 | P/E thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 (Giá đóng cửa) / (K_GSTT_56 (LNST) / K_GSTT_55 (Số CP lưu hành))` theo từng mã CK, SUM/weighted theo Index Code khi hiển thị mức Chỉ số | Phụ thuộc K_GSTT_55 + K_GSTT_56 — cả 2 đều PENDING | PENDING |
-| K_GSTT_59 | P/B thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 (Giá đóng cửa) / (K_GSTT_57 (VCSH) / K_GSTT_55 (Số CP lưu hành))` theo từng mã CK, SUM/weighted theo Index Code khi hiển thị mức Chỉ số | Phụ thuộc K_GSTT_55 + K_GSTT_57 — cả 2 đều PENDING | PENDING |
-| K_GSTT_60 | EPS thị trường | VNĐ | Chỉ tiêu phái sinh | `K_GSTT_56 (LNST) / K_GSTT_55 (Số CP lưu hành)` theo từng mã CK | Phụ thuộc K_GSTT_55 + K_GSTT_56 — cả 2 đều PENDING | PENDING |
-| K_GSTT_61 | Vốn hóa thị trường | VNĐ | Chỉ tiêu phái sinh | `SUM(K_GSTT_10 (Giá đóng cửa) × K_GSTT_55 (Số CP lưu hành)) GROUP BY Index Code` (qua `Index Constituent Dimension`) | Phụ thuộc K_GSTT_55 — PENDING. Trùng công thức K_GSTT_54 (Nhóm 5) — cùng 1 chỉ tiêu "Vốn hóa thị trường"; cả 2 đều đặt đúng trên `Fact Stock Portfolio Snapshot` (đã sửa lại Nhóm 5 để nhất quán, không phải Fact Market Index Snapshot) | PENDING |
+| K_GSTT_55 | Số cổ phiếu đang lưu hành | Cổ phiếu | Cơ sở | `Fact Stock Portfolio Snapshot.Outstanding Share Quantity` | **Resolved 2026-08-26.** Nguồn VSDC "BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành", qua `pc_share_statistics_hstr` (bảng lịch sử theo ngày của `pc_share_statistics`, `ds_snpst_dt` khớp đúng `Trading Date`, không lookback — xem O_GSTT_2). Cột trên `Fact Stock Portfolio Snapshot`, join qua `Public Company Dimension` | READY |
+| K_GSTT_56 | LNST | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Net Profit After Tax` | **Resolved 2026-08-26 — rule GSĐC.** Point-in-time theo kỳ báo cáo gần nhất đã công bố trước ngày giao dịch (`Ky_bao_cao`: quý hiện tại lùi 1 kỳ, lùi năm nếu Q1) — join `public_company → pc_report_submission → fr_value → fr_catalog (BCKQKD, row_desc 60 DN/BH · 21 TD, col_desc 1) → fr_row_template → fr_column_template`, ưu tiên form HN>TH>ME>RI, ràng buộc `submission_dt`/`violation_report.base_dt` ≤ ngày giao dịch. Cột trên `Fact Stock Portfolio Snapshot`, join qua `Public Company Dimension`. Khác `Net Profit After Tax TTM` (dùng riêng cho P/E/EPS, xem K_GSTT_58/60) | READY |
+| K_GSTT_57 | VCSH | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Owner Equity` | **Resolved 2026-08-26 — rule GSĐC.** Lấy quý gần nhất đã công bố tính đến ngày giao dịch (BCDKT, row_desc 400 DN/BH · 500 TD, col_desc 1) — lookback theo `submission_dt`/`base_dt` thực tế (KHÔNG ép theo lịch `Ky_bao_cao` cố định như Doanh thu/LNST, vì VCSH là chỉ tiêu tại một thời điểm, không theo chu kỳ báo cáo cố định). Cột trên `Fact Stock Portfolio Snapshot`, join qua `Public Company Dimension` | READY |
+| K_GSTT_58 | P/E thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 (Giá đóng cửa) / (Fact Stock Portfolio Snapshot.Net Profit After Tax TTM / K_GSTT_55 (Số CP lưu hành))` theo từng mã CK, SUM/weighted theo Index Code khi hiển thị mức Chỉ số | **Resolved 2026-08-26** — K_GSTT_55 đã có nguồn (`pc_share_statistics_hstr`). LNST dùng cho P/E là TTM (`Net Profit After Tax TTM` — NULL nếu không đủ chính xác 4 kỳ liên tiếp), khác K_GSTT_56 (point-in-time 1 kỳ) | READY |
+| K_GSTT_59 | P/B thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 (Giá đóng cửa) / (K_GSTT_57 (VCSH) / K_GSTT_55 (Số CP lưu hành))` theo từng mã CK, SUM/weighted theo Index Code khi hiển thị mức Chỉ số | **Resolved 2026-08-26** — K_GSTT_55 và K_GSTT_57 đều đã có nguồn | READY |
+| K_GSTT_60 | EPS thị trường | VNĐ | Chỉ tiêu phái sinh | `Fact Stock Portfolio Snapshot.Net Profit After Tax TTM / K_GSTT_55 (Số CP lưu hành)` theo từng mã CK | **Resolved 2026-08-26** — cùng LNST TTM với K_GSTT_58 (P/E), nhất quán vì P/E = Giá / EPS | READY |
+| K_GSTT_61 | Vốn hóa thị trường | VNĐ | Chỉ tiêu phái sinh | `SUM(K_GSTT_10 (Giá đóng cửa) × K_GSTT_55 (Số CP lưu hành)) GROUP BY Index Code` (qua `Index Constituent Dimension`) | **Resolved 2026-08-26** — K_GSTT_55 đã có nguồn. Trùng công thức K_GSTT_54 (Nhóm 5) — cùng 1 chỉ tiêu "Vốn hóa thị trường"; cả 2 đều đặt đúng trên `Fact Stock Portfolio Snapshot` (đã sửa lại Nhóm 5 để nhất quán, không phải Fact Market Index Snapshot) | READY |
 
-**Star Schema:** Không có bảng mới — 100% reuse `Fact Stock Portfolio Snapshot` (đã có FK `Public Company Dimension`, `Index Constituent Dimension`, `Calendar Date Dimension`, `Security Trading Snapshot Dimension` từ Nhóm 1), bổ sung 3 cột mới (`Outstanding Share Quantity`, `Net Profit After Tax`, `Owner Equity` — cả 3 PENDING). Xem erDiagram tại Nhóm 1.
+**Star Schema:** Không có bảng mới — 100% reuse `Fact Stock Portfolio Snapshot` (đã có FK `Public Company Dimension`, `Index Constituent Dimension`, `Calendar Date Dimension`, `Security Trading Snapshot Dimension` từ Nhóm 1). **Sửa 2026-08-26:** `Revenue`, `Net Profit After Tax`, `Net Profit After Tax TTM`, `Owner Equity` (rule GSĐC — O_GSTT_1) và `Outstanding Share Quantity` (`pc_share_statistics_hstr` — O_GSTT_2) đều đã Resolved. Toàn bộ 13/13 KPI Nhóm 6 nay READY. Xem erDiagram tại Nhóm 1.
 
 **Lineage Mart → Báo cáo:**
 
@@ -615,16 +617,16 @@ flowchart LR
     D4["Index Constituent Dimension"] --> RPT6
 ```
 
-**Bảng grain:** Không có bảng mới — cùng grain `Fact Stock Portfolio Snapshot` (1 row/mã CK/rổ chỉ số/ngày) đã có ở Nhóm 1. 3 cột PENDING (Số CP lưu hành, LNST, VCSH) khi sẵn sàng sẽ bổ sung vào đúng Fact này, cùng grain, không tạo bảng mới.
+**Bảng grain:** Không có bảng mới — cùng grain `Fact Stock Portfolio Snapshot` (1 row/mã CK/rổ chỉ số/ngày) đã có ở Nhóm 1. **Sửa 2026-08-26:** `Revenue`, `Net Profit After Tax`, `Net Profit After Tax TTM`, `Owner Equity` (rule GSĐC), `Outstanding Share Quantity` (`pc_share_statistics_hstr`) đều đã Resolved, bổ sung lên đúng Fact này cùng grain — không còn cột PENDING nào trong Nhóm 6.
 
-> **Coverage rule:** Không áp dụng thêm cho Dimension nào (toàn bộ reuse nguyên trạng từ Nhóm 1). 3 cột PENDING sẽ bổ sung lên `Fact Stock Portfolio Snapshot` khi Atomic sẵn sàng — theo đúng nguyên tắc measure đặt tại true grain (mã CK/ngày), không tạo Fact riêng.
+> **Coverage rule:** Không áp dụng thêm cho Dimension nào (toàn bộ reuse nguyên trạng từ Nhóm 1). 5 measure mới (Revenue, Net Profit After Tax, Net Profit After Tax TTM, Owner Equity, Outstanding Share Quantity) đã bổ sung đủ lên `Fact Stock Portfolio Snapshot` — theo đúng nguyên tắc measure đặt tại true grain (mã CK/ngày), không tạo Fact riêng.
 
 ---
 
 #### Nhóm 7 - Top khối lượng theo toàn thị trường (bảng số liệu)
 
 > **Phân loại:** Dashboard
-> **Atomic:** 100% reuse Nhóm 1 (`Security Trading Snapshot`, `Securities Trade`, `Public Company`, `Classification Business Line`) + Nhóm 6 (`Public Company Share Statistics` PENDING, EAV IDS PENDING) — không có nguồn mới.
+> **Atomic:** 100% reuse Nhóm 1 (`Security Trading Snapshot`, `Securities Trade`, `Public Company`, `Classification Business Line`) + Nhóm 6 (`Public Company Share Statistics` Resolved 2026-08-26 (`pc_share_statistics_hstr`, xem O_GSTT_2), EAV IDS Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1)) — không có nguồn mới.
 >
 > **Ghi chú tái sử dụng:** BA liệt kê 12 dòng con — toàn bộ đã có KPI ID sẵn từ Nhóm 1 (Mã CK, Ngành, Ngày, KLGD, Giá, % thay đổi) và Nhóm 6 (Số CP lưu hành, LNST, VCSH, P/E, P/B, Vốn hóa thị trường) — reuse thẳng, không khai sinh KPI mới, không tạo/sửa Fact hay Dimension nào. Bản chất STT 7 là **Top-N sắp xếp theo KLGD** (`ORDER BY K_GSTT_13 DESC LIMIT N`) trên cùng `Fact Stock Portfolio Snapshot` — logic Top-N là truy vấn tại tầng BI (ORDER BY + LIMIT), không phải cấu trúc Datamart riêng.
 
@@ -646,12 +648,12 @@ flowchart LR
 | K_GSTT_13 | KLGD | Cổ phiếu | Phái sinh | `SUM(Securities Trade.Execution Volume) GROUP BY Symbol, Trade Date` | Reuse từ Nhóm 1 (K_GSTT_13 = Tổng KL, đã bao gồm filter Market Id Code IN ('UPX','STX','STO') tại tầng Fact total_vol) — dùng làm tiêu chí sắp xếp Top-N (`ORDER BY ... DESC`). Cùng cảnh báo double-count Index Constituent như Nhóm 1 | READY |
 | K_GSTT_10 | Giá | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Close Price` | Reuse từ Nhóm 1 (K_GSTT_10 = Giá đóng cửa) | READY |
 | K_GSTT_12 | % thay đổi | % | Phái sinh | `Price Change / Reference Price × 100` | Reuse từ Nhóm 1 | READY |
-| K_GSTT_55 | Số cổ phiếu đang lưu hành | Cổ phiếu | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_2) | PENDING |
-| K_GSTT_61 | Vốn hóa thị trường | VNĐ | Chỉ tiêu phái sinh | `SUM(K_GSTT_10 × K_GSTT_55) GROUP BY Index Code` | Reuse từ Nhóm 6 — vẫn PENDING (phụ thuộc K_GSTT_55) | PENDING |
-| K_GSTT_56 | LNST | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_58 | P/E thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_56 / K_GSTT_55)` | Reuse từ Nhóm 6 — vẫn PENDING | PENDING |
-| K_GSTT_57 | VCSH | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_59 | P/B thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_57 / K_GSTT_55)` | Reuse từ Nhóm 6 — vẫn PENDING | PENDING |
+| K_GSTT_55 | Số cổ phiếu đang lưu hành | Cổ phiếu | Cơ sở | `Fact Stock Portfolio Snapshot.Outstanding Share Quantity` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (`pc_share_statistics_hstr`, xem O_GSTT_2) | READY |
+| K_GSTT_61 | Vốn hóa thị trường | VNĐ | Chỉ tiêu phái sinh | `SUM(K_GSTT_10 × K_GSTT_55) GROUP BY Index Code` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (K_GSTT_55 đã có nguồn) | READY |
+| K_GSTT_56 | LNST | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Net Profit After Tax` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_58 | P/E thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (Fact Stock Portfolio Snapshot.Net Profit After Tax TTM / K_GSTT_55)` | Reuse từ Nhóm 6 — Resolved 2026-08-26. LNST dùng TTM 4 quý (rule GSĐC); K_GSTT_55 đã có nguồn (`pc_share_statistics_hstr`) | READY |
+| K_GSTT_57 | VCSH | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Owner Equity` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_59 | P/B thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_57 / K_GSTT_55)` | Reuse từ Nhóm 6 — Resolved 2026-08-26. K_GSTT_57 (VCSH) và K_GSTT_55 (Số CP lưu hành) đều đã có nguồn | READY |
 
 **Star Schema:** Không có bảng mới — 100% reuse `Fact Stock Portfolio Snapshot`, `Security Trading Snapshot Dimension`, `Public Company Dimension`, `Calendar Date Dimension` đã vẽ ở Nhóm 1.
 
@@ -698,8 +700,8 @@ flowchart LR
 | K_GSTT_10 | Giá đóng cửa | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Close Price` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_12 | Thay đổi (%) | % | Phái sinh | `Price Change / Reference Price × 100` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_13 | Khối lượng giao dịch | Cổ phiếu | Phái sinh | `SUM(Securities Trade.Execution Volume) GROUP BY Symbol, Trade Date` | Reuse từ Nhóm 1 (K_GSTT_13 = Tổng KL, đã bao gồm filter Market Id Code IN ('UPX','STX','STO') tại tầng Fact total_vol) — dùng làm tiêu chí sắp xếp Top-N | READY |
-| K_GSTT_31 | Doanh thu | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 3 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_32 | Lợi nhuận sau thuế | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 3 — vẫn PENDING (xem O_GSTT_1) | PENDING |
+| K_GSTT_31 | Doanh thu | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Revenue` | Reuse từ Nhóm 3 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_32 | Lợi nhuận sau thuế | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Net Profit After Tax` | Reuse từ Nhóm 3 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
 
 **Star Schema:** Không có bảng mới — 100% reuse `Fact Stock Portfolio Snapshot`, `Security Trading Snapshot Dimension`, `Calendar Date Dimension` đã vẽ ở Nhóm 1/3.
 
@@ -721,7 +723,7 @@ flowchart LR
 #### Nhóm 9 - Top khối lượng theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (bảng số liệu)
 
 > **Phân loại:** Dashboard
-> **Atomic:** 100% reuse Nhóm 1 (`Security Trading Snapshot`, `Securities Trade`, `Public Company`, `Classification Business Line`) + Nhóm 6 (`Public Company Share Statistics` PENDING, EAV IDS PENDING) — không có nguồn mới.
+> **Atomic:** 100% reuse Nhóm 1 (`Security Trading Snapshot`, `Securities Trade`, `Public Company`, `Classification Business Line`) + Nhóm 6 (`Public Company Share Statistics` Resolved 2026-08-26 (`pc_share_statistics_hstr`, xem O_GSTT_2), EAV IDS Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1)) — không có nguồn mới.
 >
 > **Ghi chú tái sử dụng:** BA liệt kê 15 dòng con — 13 dòng đã có KPI ID sẵn từ Nhóm 1 (Mã CK, Sàn, Ngành, Ngày, KLGD, Giá, % thay đổi) và Nhóm 6 (Số CP lưu hành, Vốn hóa, LNST, P/E, VCSH, P/B) — reuse thẳng, không khai sinh KPI mới. Còn 2 dòng ("Bộ chỉ số thị trường", "Bộ chỉ số theo ngành") là 2 chỉ tiêu độc lập, khai sinh mới — xem ghi chú dưới đây.
 > **Ghi chú "Bộ chỉ số thị trường"/"Bộ chỉ số theo ngành" (K_GSTT_62–63):** BA xác nhận cột nguồn thật là `Index Constituent Dimension.Index Code` (cùng cột vật lý với K_GSTT_4 — Chỉ số, Nhóm 1), nguồn `MDDS.JAD_CSIDXINFOR.INDEXCODE` — **không phải `Floor Code`** như bản thiết kế trước. Tuy dùng chung 1 cột vật lý, đây là 2 chỉ tiêu nghiệp vụ khác K_GSTT_4 (Chỉ số — chọn 1 rổ chỉ số cụ thể để lọc) và khác nhau: "Bộ chỉ số thị trường" (K_GSTT_62) = `Index Code IN ('HOSE','UPCOM','HNX')`; "Bộ chỉ số theo ngành" (K_GSTT_63) = `Index Code NOT IN ('HOSE','UPCOM','HNX')` (VD: VN30, HNX30...) — 2 slicer phân loại khác nhau trên dashboard, không phải cùng 1 khái niệm. Khai 2 KPI_ID mới, không thêm Fact/FK/Dimension (cùng dùng `Index Constituent Dimension` đã có). Đã cân nhắc phương án thêm FK mới `Fact Stock Portfolio Snapshot → Market Index Dimension` nhưng xác nhận không có join key Symbol↔Market Code trong Atomic hiện có (`Market Index Snapshot` không có attribute Symbol) — dùng thẳng `Index Constituent Dimension` sẵn có là đúng, không cần FK mới.
@@ -748,12 +750,12 @@ flowchart LR
 | K_GSTT_13 | KLGD | Cổ phiếu | Phái sinh | `SUM(Securities Trade.Execution Volume) GROUP BY Symbol, Trade Date` | Reuse từ Nhóm 1 (K_GSTT_13 = Tổng KL, đã bao gồm filter Market Id Code IN ('UPX','STX','STO') tại tầng Fact total_vol) — dùng làm tiêu chí sắp xếp Top-N | READY |
 | K_GSTT_10 | Giá | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Close Price` | Reuse từ Nhóm 1 (K_GSTT_10 = Giá đóng cửa) | READY |
 | K_GSTT_12 | % thay đổi | % | Phái sinh | `Price Change / Reference Price × 100` | Reuse từ Nhóm 1 | READY |
-| K_GSTT_55 | Số cổ phiếu đang lưu hành | Cổ phiếu | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_2) | PENDING |
-| K_GSTT_61 | Vốn hóa | VNĐ | Chỉ tiêu phái sinh | `SUM(K_GSTT_10 × K_GSTT_55) GROUP BY Index Code` | Reuse từ Nhóm 6 — vẫn PENDING (phụ thuộc K_GSTT_55) | PENDING |
-| K_GSTT_56 | LNST | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_58 | P/E thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_56 / K_GSTT_55)` | Reuse từ Nhóm 6 — vẫn PENDING | PENDING |
-| K_GSTT_57 | VCSH | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_59 | P/B thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_57 / K_GSTT_55)` | Reuse từ Nhóm 6 — vẫn PENDING | PENDING |
+| K_GSTT_55 | Số cổ phiếu đang lưu hành | Cổ phiếu | Cơ sở | `Fact Stock Portfolio Snapshot.Outstanding Share Quantity` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (`pc_share_statistics_hstr`, xem O_GSTT_2) | READY |
+| K_GSTT_61 | Vốn hóa | VNĐ | Chỉ tiêu phái sinh | `SUM(K_GSTT_10 × K_GSTT_55) GROUP BY Index Code` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (K_GSTT_55 đã có nguồn) | READY |
+| K_GSTT_56 | LNST | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Net Profit After Tax` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_58 | P/E thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (Fact Stock Portfolio Snapshot.Net Profit After Tax TTM / K_GSTT_55)` | Reuse từ Nhóm 6 — Resolved 2026-08-26. LNST dùng TTM 4 quý (rule GSĐC); K_GSTT_55 đã có nguồn (`pc_share_statistics_hstr`) | READY |
+| K_GSTT_57 | VCSH | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Owner Equity` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_59 | P/B thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_57 / K_GSTT_55)` | Reuse từ Nhóm 6 — Resolved 2026-08-26. K_GSTT_57 (VCSH) và K_GSTT_55 (Số CP lưu hành) đều đã có nguồn | READY |
 
 **Star Schema:** Không có bảng mới — 100% reuse `Fact Stock Portfolio Snapshot`, `Security Trading Snapshot Dimension`, `Public Company Dimension`, `Calendar Date Dimension`, `Index Constituent Dimension` đã vẽ ở Nhóm 1.
 
@@ -805,8 +807,8 @@ flowchart LR
 | K_GSTT_27 | Giá mở cửa | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Open Price` | Reuse từ Nhóm 3 | READY |
 | K_GSTT_10 | Giá đóng cửa | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Close Price` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_13 | Khối lượng giao dịch | Cổ phiếu | Phái sinh | `SUM(Securities Trade.Execution Volume) GROUP BY Symbol, Trade Date` | Reuse từ Nhóm 1 (K_GSTT_13 = Tổng KL, đã bao gồm filter Market Id Code IN ('UPX','STX','STO') tại tầng Fact total_vol) — dùng làm tiêu chí sắp xếp Top-N | READY |
-| K_GSTT_31 | Doanh thu | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 3 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_32 | Lợi nhuận sau thuế | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 3 — vẫn PENDING (xem O_GSTT_1) | PENDING |
+| K_GSTT_31 | Doanh thu | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Revenue` | Reuse từ Nhóm 3 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_32 | Lợi nhuận sau thuế | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Net Profit After Tax` | Reuse từ Nhóm 3 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
 
 **Star Schema:** Không có bảng mới — 100% reuse `Fact Stock Portfolio Snapshot`, `Security Trading Snapshot Dimension`, `Public Company Dimension`, `Calendar Date Dimension`, `Index Constituent Dimension` đã vẽ ở Nhóm 1/3.
 
@@ -830,7 +832,7 @@ flowchart LR
 #### Nhóm 11 - Top đột phá theo toàn thị trường (bảng số liệu)
 
 > **Phân loại:** Dashboard
-> **Atomic:** 100% reuse Nhóm 1 (`Security Trading Snapshot`, `Securities Trade`) + Nhóm 6 (`Public Company Share Statistics` PENDING, EAV IDS PENDING) — không có nguồn mới.
+> **Atomic:** 100% reuse Nhóm 1 (`Security Trading Snapshot`, `Securities Trade`) + Nhóm 6 (`Public Company Share Statistics` Resolved 2026-08-26 (`pc_share_statistics_hstr`, xem O_GSTT_2), EAV IDS Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1)) — không có nguồn mới.
 >
 > **Ghi chú tái sử dụng:** BA liệt kê 18 dòng con — 12 dòng đã có KPI ID sẵn từ Nhóm 1 (Mã CK, Ngày, Khối lượng, Giá đóng cửa, Thay đổi, % thay đổi) và Nhóm 6 (Số CP lưu hành, Vốn hóa, LNST, P/E, VCSH, P/B) — reuse thẳng, không khai sinh KPI mới. 6 dòng còn lại là chỉ tiêu "đột phá khối lượng" thật sự mới — xem ghi chú rolling window dưới đây.
 > **Ghi chú measure rolling window (KLGDTB N ngày, Tỷ lệ đột phá N ngày):** BA yêu cầu `KLGDTB trong N ngày` (N=5/10/20, `AVG(Execution Volume) WHERE Trade Date BETWEEN :ngay_gd-N AND :ngay_gd-1`, tức N phiên **trước** ngày hiện tại, không gồm ngày hiện tại) và `Tỷ lệ giữa KLGD/KLGDTB N ngày` (`K_GSTT_13 (KLGD ngày hiện tại) / KLGDTB N ngày`). Cả 2 đều là window function (rolling average) trên cùng nguồn đã pre-aggregate ở K_GSTT_13 (`Securities Trade`, GROUP BY Symbol/Trade Date) — tính tại tầng BI/query layer bằng `AVG(...) OVER (PARTITION BY Symbol ORDER BY Trade Date ROWS BETWEEN N PRECEDING AND 1 PRECEDING)`, không cần cột/Fact mới trên Datamart vì `Fact Stock Portfolio Snapshot` đã có đủ chuỗi KLGD theo ngày để window function truy vấn ngược lại N phiên.
@@ -859,12 +861,12 @@ flowchart LR
 | K_GSTT_10 | Giá đóng cửa | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Close Price` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_11 | Thay đổi (+/-) | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Price Change` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_12 | % thay đổi | % | Phái sinh | `Price Change / Reference Price × 100` | Reuse từ Nhóm 1 | READY |
-| K_GSTT_55 | Số cổ phiếu đang lưu hành | Cổ phiếu | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_2) | PENDING |
-| K_GSTT_61 | Vốn hóa | VNĐ | Chỉ tiêu phái sinh | `SUM(K_GSTT_10 × K_GSTT_55) GROUP BY Index Code` | Reuse từ Nhóm 6 — vẫn PENDING (phụ thuộc K_GSTT_55) | PENDING |
-| K_GSTT_56 | LNST | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_58 | P/E thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_56 / K_GSTT_55)` | Reuse từ Nhóm 6 — vẫn PENDING | PENDING |
-| K_GSTT_57 | VCSH | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_59 | P/B thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_57 / K_GSTT_55)` | Reuse từ Nhóm 6 — vẫn PENDING | PENDING |
+| K_GSTT_55 | Số cổ phiếu đang lưu hành | Cổ phiếu | Cơ sở | `Fact Stock Portfolio Snapshot.Outstanding Share Quantity` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (`pc_share_statistics_hstr`, xem O_GSTT_2) | READY |
+| K_GSTT_61 | Vốn hóa | VNĐ | Chỉ tiêu phái sinh | `SUM(K_GSTT_10 × K_GSTT_55) GROUP BY Index Code` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (K_GSTT_55 đã có nguồn) | READY |
+| K_GSTT_56 | LNST | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Net Profit After Tax` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_58 | P/E thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (Fact Stock Portfolio Snapshot.Net Profit After Tax TTM / K_GSTT_55)` | Reuse từ Nhóm 6 — Resolved 2026-08-26. LNST dùng TTM 4 quý (rule GSĐC); K_GSTT_55 đã có nguồn (`pc_share_statistics_hstr`) | READY |
+| K_GSTT_57 | VCSH | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Owner Equity` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_59 | P/B thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_57 / K_GSTT_55)` | Reuse từ Nhóm 6 — Resolved 2026-08-26. K_GSTT_57 (VCSH) và K_GSTT_55 (Số CP lưu hành) đều đã có nguồn | READY |
 
 **Star Schema:** Không có bảng mới — 100% reuse `Fact Stock Portfolio Snapshot`, `Security Trading Snapshot Dimension`, `Calendar Date Dimension` đã vẽ ở Nhóm 1. K_GSTT_64–68 (rolling window) không cần cột mới — tính từ chuỗi K_GSTT_13 theo Symbol/Trade Date đã có sẵn.
 
@@ -915,8 +917,8 @@ flowchart LR
 | K_GSTT_29 | Giá thấp nhất | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Low Price` | Reuse từ Nhóm 3 | READY |
 | K_GSTT_10 | Giá đóng cửa | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Close Price` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_13 | Khối lượng giao dịch | Cổ phiếu | Phái sinh | `SUM(Securities Trade.Execution Volume) GROUP BY Symbol, Trade Date` | Reuse từ Nhóm 1 (K_GSTT_13 = Tổng KL, đã bao gồm filter Market Id Code IN ('UPX','STX','STO') tại tầng Fact total_vol) | READY |
-| K_GSTT_31 | Doanh thu | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 3 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_32 | Lợi nhuận sau thuế | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 3 — vẫn PENDING (xem O_GSTT_1) | PENDING |
+| K_GSTT_31 | Doanh thu | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Revenue` | Reuse từ Nhóm 3 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_32 | Lợi nhuận sau thuế | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Net Profit After Tax` | Reuse từ Nhóm 3 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
 
 **Star Schema:** Không có bảng mới — 100% reuse `Fact Stock Portfolio Snapshot`, `Security Trading Snapshot Dimension`, `Calendar Date Dimension` đã vẽ ở Nhóm 1. K_GSTT_64–68 (rolling window) không cần cột mới — tính từ chuỗi K_GSTT_13 theo Symbol/Trade Date đã có sẵn.
 
@@ -938,7 +940,7 @@ flowchart LR
 #### Nhóm 13 - Top đột phá theo sàn, Bộ chỉ số tài chính, Bộ chỉ số ngành (bảng số liệu)
 
 > **Phân loại:** Dashboard
-> **Atomic:** 100% reuse Nhóm 1 (`Security Trading Snapshot`, `Securities Trade`) + Nhóm 6 (`Public Company Share Statistics` PENDING, EAV IDS PENDING) + Nhóm 9 (Bộ chỉ số thị trường/ngành) + Nhóm 11 (rolling window) — không có nguồn mới.
+> **Atomic:** 100% reuse Nhóm 1 (`Security Trading Snapshot`, `Securities Trade`) + Nhóm 6 (`Public Company Share Statistics` Resolved 2026-08-26 (`pc_share_statistics_hstr`, xem O_GSTT_2), EAV IDS Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1)) + Nhóm 9 (Bộ chỉ số thị trường/ngành) + Nhóm 11 (rolling window) — không có nguồn mới.
 >
 > **Ghi chú tái sử dụng:** BA liệt kê 20 dòng con — toàn bộ đã có KPI ID sẵn từ Nhóm 1 (Mã CK, Sàn, Ngày, Khối lượng, Giá, Thay đổi, % thay đổi), Nhóm 6 (Số CP lưu hành, Vốn hóa, LNST, P/E, VCSH, P/B) và Nhóm 11 (KLGDTB 5/10/20 ngày, Tỷ lệ KLGD/KLGDTB 5/10/20 ngày) — reuse thẳng, không khai sinh KPI mới, không tạo/sửa Fact hay Dimension nào. Bản chất là biến thể "theo sàn/bộ chỉ số" của Nhóm 11 (cùng bộ chỉ tiêu Top-N đột phá, khác điều kiện lọc/nhóm theo Sàn hoặc Bộ chỉ số thay vì toàn thị trường) — đúng quan hệ Nhóm 9 với Nhóm 7.
 > **Ghi chú "Bộ chỉ số ngành/bộ chỉ số thị trường" (BA gộp 1 dòng con thành 2 KPI — bảng KPI có 21 dòng dù BA chỉ 20 dòng con; cập nhật 2026-07-28):** Dòng con thứ 3 của BA gộp chung tên "Bộ chỉ số ngành/ bộ chỉ số thị trường" trong 1 dòng CSV duy nhất, nhưng đây là 2 khái niệm khác nhau đã tách riêng và xác nhận tại Nhóm 9 — cả 2 là filter con của K_GSTT_4 (`Index Constituent Dimension.Index Code`): "Bộ chỉ số thị trường" = `Index Code IN ('HOSE','UPCOM','HNX')`, "Bộ chỉ số theo ngành" = `Index Code NOT IN ('HOSE','UPCOM','HNX')`. Bảng KPI dưới đây tách đúng 2 dòng cho 1 dòng BA gộp này — không phải lỗi thừa KPI, cũng không phải trường hợp "trùng KPI" thông thường (nơi nhiều dòng BA cùng trỏ 1 KPI); ở đây là chiều ngược lại (1 dòng BA chứa 2 khái niệm chưa tách bạch).
@@ -970,12 +972,12 @@ flowchart LR
 | K_GSTT_10 | Giá | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Close Price` | Reuse từ Nhóm 1 (K_GSTT_10 = Giá đóng cửa) | READY |
 | K_GSTT_11 | Thay đổi (+/-) | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Price Change` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_12 | % thay đổi | % | Phái sinh | `Price Change / Reference Price × 100` | Reuse từ Nhóm 1 | READY |
-| K_GSTT_55 | Số cổ phiếu đang lưu hành | Cổ phiếu | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_2) | PENDING |
-| K_GSTT_61 | Vốn hóa | VNĐ | Chỉ tiêu phái sinh | `SUM(K_GSTT_10 × K_GSTT_55) GROUP BY Index Code` | Reuse từ Nhóm 6 — vẫn PENDING (phụ thuộc K_GSTT_55) | PENDING |
-| K_GSTT_56 | LNST | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_58 | P/E thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_56 / K_GSTT_55)` | Reuse từ Nhóm 6 — vẫn PENDING | PENDING |
-| K_GSTT_57 | VCSH | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_59 | P/B thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_57 / K_GSTT_55)` | Reuse từ Nhóm 6 — vẫn PENDING | PENDING |
+| K_GSTT_55 | Số cổ phiếu đang lưu hành | Cổ phiếu | Cơ sở | `Fact Stock Portfolio Snapshot.Outstanding Share Quantity` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (`pc_share_statistics_hstr`, xem O_GSTT_2) | READY |
+| K_GSTT_61 | Vốn hóa | VNĐ | Chỉ tiêu phái sinh | `SUM(K_GSTT_10 × K_GSTT_55) GROUP BY Index Code` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (K_GSTT_55 đã có nguồn) | READY |
+| K_GSTT_56 | LNST | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Net Profit After Tax` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_58 | P/E thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (Fact Stock Portfolio Snapshot.Net Profit After Tax TTM / K_GSTT_55)` | Reuse từ Nhóm 6 — Resolved 2026-08-26. LNST dùng TTM 4 quý (rule GSĐC); K_GSTT_55 đã có nguồn (`pc_share_statistics_hstr`) | READY |
+| K_GSTT_57 | VCSH | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Owner Equity` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_59 | P/B thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_57 / K_GSTT_55)` | Reuse từ Nhóm 6 — Resolved 2026-08-26. K_GSTT_57 (VCSH) và K_GSTT_55 (Số CP lưu hành) đều đã có nguồn | READY |
 
 **Star Schema:** Không có bảng mới — 100% reuse `Fact Stock Portfolio Snapshot`, `Security Trading Snapshot Dimension`, `Public Company Dimension`, `Calendar Date Dimension`, `Index Constituent Dimension` đã vẽ ở Nhóm 1. K_GSTT_64–68 (rolling window) không cần cột mới.
 
@@ -1033,8 +1035,8 @@ flowchart LR
 | K_GSTT_10 | Giá đóng cửa | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Close Price` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_11 | Thay đổi (+/-) | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Price Change` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_13 | Khối lượng giao dịch | Cổ phiếu | Phái sinh | `SUM(Securities Trade.Execution Volume) GROUP BY Symbol, Trade Date` | Reuse từ Nhóm 1 (K_GSTT_13 = Tổng KL, đã bao gồm filter Market Id Code IN ('UPX','STX','STO') tại tầng Fact total_vol) | READY |
-| K_GSTT_31 | Doanh thu | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 3 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_32 | Lợi nhuận sau thuế | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 3 — vẫn PENDING (xem O_GSTT_1) | PENDING |
+| K_GSTT_31 | Doanh thu | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Revenue` | Reuse từ Nhóm 3 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_32 | Lợi nhuận sau thuế | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Net Profit After Tax` | Reuse từ Nhóm 3 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
 
 **Star Schema:** Không có bảng mới — 100% reuse `Fact Stock Portfolio Snapshot`, `Security Trading Snapshot Dimension`, `Calendar Date Dimension`, `Index Constituent Dimension` đã vẽ ở Nhóm 1. K_GSTT_64–68 (rolling window) không cần cột mới.
 
@@ -1057,7 +1059,7 @@ flowchart LR
 #### Nhóm 15 - Top giá trị (bảng số liệu)
 
 > **Phân loại:** Dashboard
-> **Atomic:** 100% reuse Nhóm 1 (`Security Trading Snapshot`, `Securities Trade`, `Public Company`, `Classification Business Line`) + Nhóm 6 (`Public Company Share Statistics` PENDING, EAV IDS PENDING) + Nhóm 9 (Bộ chỉ số thị trường/ngành) — không có nguồn mới.
+> **Atomic:** 100% reuse Nhóm 1 (`Security Trading Snapshot`, `Securities Trade`, `Public Company`, `Classification Business Line`) + Nhóm 6 (`Public Company Share Statistics` Resolved 2026-08-26 (`pc_share_statistics_hstr`, xem O_GSTT_2), EAV IDS Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1)) + Nhóm 9 (Bộ chỉ số thị trường/ngành) — không có nguồn mới.
 >
 > **Ghi chú tái sử dụng:** BA liệt kê 14 dòng con — toàn bộ đã có KPI ID sẵn từ Nhóm 1 (Mã CK, Sàn, Ngành, Ngày, GTGD = Tổng GT, Giá, % thay đổi), Nhóm 6 (Số CP lưu hành, Vốn hóa, LNST, P/E, VCSH, P/B) và Nhóm 9 (Bộ chỉ số thị trường/ngành) — reuse thẳng, không khai sinh KPI mới, không tạo/sửa Fact hay Dimension nào. Bản chất là Top-N sắp xếp theo GTGD (K_GSTT_14, `ORDER BY ... DESC LIMIT N`), cùng cấu trúc chỉ tiêu với Nhóm 9 nhưng đổi tiêu chí xếp hạng từ Khối lượng (K_GSTT_13) sang Giá trị giao dịch (K_GSTT_14).
 > **Ghi chú "Bộ chỉ số ngành/bộ chỉ số thị trường" (BA gộp 1 dòng con thành 2 KPI, giống Nhóm 13/14; cập nhật 2026-07-28):** Cùng bản chất đã xác nhận ở Nhóm 9 — cả 2 là filter con của K_GSTT_4 (`Index Constituent Dimension.Index Code`): "Bộ chỉ số thị trường" = `Index Code IN ('HOSE','UPCOM','HNX')`, "Bộ chỉ số theo ngành" = `Index Code NOT IN ('HOSE','UPCOM','HNX')`. Bảng KPI dưới đây có 15 dòng cho 14 dòng BA (cùng lý do +1 như Nhóm 13/14).
@@ -1083,12 +1085,12 @@ flowchart LR
 | K_GSTT_14 | GTGD | VNĐ | Phái sinh | `SUM(Securities Trade.Execution Value) GROUP BY Symbol, Trade Date` | Reuse từ Nhóm 1 (K_GSTT_14 = Tổng GT, đã bao gồm filter Market Id Code IN ('UPX','STX','STO') tại tầng Fact total_val) — dùng làm tiêu chí sắp xếp Top-N. Cùng cảnh báo double-count Index Constituent như Nhóm 1 | READY |
 | K_GSTT_10 | Giá | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Close Price` | Reuse từ Nhóm 1 (K_GSTT_10 = Giá đóng cửa) | READY |
 | K_GSTT_12 | % thay đổi | % | Phái sinh | `Price Change / Reference Price × 100` | Reuse từ Nhóm 1 | READY |
-| K_GSTT_55 | Số cổ phiếu đang lưu hành | Cổ phiếu | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_2) | PENDING |
-| K_GSTT_61 | Vốn hóa | VNĐ | Chỉ tiêu phái sinh | `SUM(K_GSTT_10 × K_GSTT_55) GROUP BY Index Code` | Reuse từ Nhóm 6 — vẫn PENDING (phụ thuộc K_GSTT_55) | PENDING |
-| K_GSTT_56 | LNST | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_58 | P/E thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_56 / K_GSTT_55)` | Reuse từ Nhóm 6 — vẫn PENDING | PENDING |
-| K_GSTT_57 | VCSH | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_59 | P/B thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_57 / K_GSTT_55)` | Reuse từ Nhóm 6 — vẫn PENDING | PENDING |
+| K_GSTT_55 | Số cổ phiếu đang lưu hành | Cổ phiếu | Cơ sở | `Fact Stock Portfolio Snapshot.Outstanding Share Quantity` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (`pc_share_statistics_hstr`, xem O_GSTT_2) | READY |
+| K_GSTT_61 | Vốn hóa | VNĐ | Chỉ tiêu phái sinh | `SUM(K_GSTT_10 × K_GSTT_55) GROUP BY Index Code` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (K_GSTT_55 đã có nguồn) | READY |
+| K_GSTT_56 | LNST | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Net Profit After Tax` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_58 | P/E thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (Fact Stock Portfolio Snapshot.Net Profit After Tax TTM / K_GSTT_55)` | Reuse từ Nhóm 6 — Resolved 2026-08-26. LNST dùng TTM 4 quý (rule GSĐC); K_GSTT_55 đã có nguồn (`pc_share_statistics_hstr`) | READY |
+| K_GSTT_57 | VCSH | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Owner Equity` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_59 | P/B thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_57 / K_GSTT_55)` | Reuse từ Nhóm 6 — Resolved 2026-08-26. K_GSTT_57 (VCSH) và K_GSTT_55 (Số CP lưu hành) đều đã có nguồn | READY |
 
 **Star Schema:** Không có bảng mới — 100% reuse `Fact Stock Portfolio Snapshot`, `Security Trading Snapshot Dimension`, `Public Company Dimension`, `Calendar Date Dimension`, `Index Constituent Dimension` đã vẽ ở Nhóm 1.
 
@@ -1142,8 +1144,8 @@ flowchart LR
 | K_GSTT_10 | Giá đóng cửa | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Close Price` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_11 | Thay đổi (+/-) | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Price Change` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_13 | Khối lượng giao dịch | Cổ phiếu | Phái sinh | `SUM(Securities Trade.Execution Volume) GROUP BY Symbol, Trade Date` | Reuse từ Nhóm 1 (K_GSTT_13 = Tổng KL, đã bao gồm filter Market Id Code IN ('UPX','STX','STO') tại tầng Fact total_vol) — hiển thị trên biểu đồ, tiêu chí Top-N vẫn kế thừa GTGD (K_GSTT_14) từ Nhóm 15 | READY |
-| K_GSTT_31 | Doanh thu | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 3 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_32 | Lợi nhuận sau thuế | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 3 — vẫn PENDING (xem O_GSTT_1) | PENDING |
+| K_GSTT_31 | Doanh thu | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Revenue` | Reuse từ Nhóm 3 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_32 | Lợi nhuận sau thuế | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Net Profit After Tax` | Reuse từ Nhóm 3 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
 
 **Star Schema:** Không có bảng mới — 100% reuse `Fact Stock Portfolio Snapshot`, `Security Trading Snapshot Dimension`, `Public Company Dimension`, `Calendar Date Dimension`, `Index Constituent Dimension` đã vẽ ở Nhóm 1.
 
@@ -1167,7 +1169,7 @@ flowchart LR
 #### Nhóm 17 - Top giảm giá theo toàn thị trường (bảng số liệu)
 
 > **Phân loại:** Dashboard
-> **Atomic:** 100% reuse Nhóm 1 (`Security Trading Snapshot`, `Securities Trade`, `Public Company`, `Classification Business Line`) + Nhóm 6 (`Public Company Share Statistics` PENDING, EAV IDS PENDING) — không có nguồn mới.
+> **Atomic:** 100% reuse Nhóm 1 (`Security Trading Snapshot`, `Securities Trade`, `Public Company`, `Classification Business Line`) + Nhóm 6 (`Public Company Share Statistics` Resolved 2026-08-26 (`pc_share_statistics_hstr`, xem O_GSTT_2), EAV IDS Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1)) — không có nguồn mới.
 >
 > **Ghi chú tái sử dụng:** BA liệt kê 12 dòng con — toàn bộ đã có KPI ID sẵn từ Nhóm 1 (Mã CK, Ngành, Ngày, % thay đổi, KLGD, Giá) và Nhóm 6 (Số CP lưu hành, Vốn hóa, LNST, P/E, VCSH, P/B) — reuse thẳng, không khai sinh KPI mới, không tạo/sửa Fact hay Dimension nào. Bản chất là Top-N sắp xếp theo % thay đổi tăng dần (`ORDER BY K_GSTT_12 ASC LIMIT N`, giá trị âm lớn nhất/giảm mạnh nhất lên đầu) trên cùng `Fact Stock Portfolio Snapshot` — cùng cấu trúc chỉ tiêu với Nhóm 7 (Top khối lượng toàn thị trường), chỉ khác tiêu chí xếp hạng.
 
@@ -1189,12 +1191,12 @@ flowchart LR
 | K_GSTT_12 | % thay đổi | % | Phái sinh | `Price Change / Reference Price × 100` | Reuse từ Nhóm 1 — dùng làm tiêu chí sắp xếp Top-N (`ORDER BY ... ASC`, giá trị âm/giảm mạnh nhất lên đầu) | READY |
 | K_GSTT_13 | KLGD | Cổ phiếu | Phái sinh | `SUM(Securities Trade.Execution Volume) GROUP BY Symbol, Trade Date` | Reuse từ Nhóm 1 (K_GSTT_13 = Tổng KL, đã bao gồm filter Market Id Code IN ('UPX','STX','STO') tại tầng Fact total_vol). Cùng cảnh báo double-count Index Constituent như Nhóm 1 | READY |
 | K_GSTT_10 | Giá | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Close Price` | Reuse từ Nhóm 1 (K_GSTT_10 = Giá đóng cửa) | READY |
-| K_GSTT_55 | Số cổ phiếu đang lưu hành | Cổ phiếu | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_2) | PENDING |
-| K_GSTT_61 | Vốn hóa | VNĐ | Chỉ tiêu phái sinh | `SUM(K_GSTT_10 × K_GSTT_55) GROUP BY Index Code` | Reuse từ Nhóm 6 — vẫn PENDING (phụ thuộc K_GSTT_55) | PENDING |
-| K_GSTT_56 | LNST | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_58 | P/E thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_56 / K_GSTT_55)` | Reuse từ Nhóm 6 — vẫn PENDING | PENDING |
-| K_GSTT_57 | VCSH | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_59 | P/B thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_57 / K_GSTT_55)` | Reuse từ Nhóm 6 — vẫn PENDING | PENDING |
+| K_GSTT_55 | Số cổ phiếu đang lưu hành | Cổ phiếu | Cơ sở | `Fact Stock Portfolio Snapshot.Outstanding Share Quantity` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (`pc_share_statistics_hstr`, xem O_GSTT_2) | READY |
+| K_GSTT_61 | Vốn hóa | VNĐ | Chỉ tiêu phái sinh | `SUM(K_GSTT_10 × K_GSTT_55) GROUP BY Index Code` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (K_GSTT_55 đã có nguồn) | READY |
+| K_GSTT_56 | LNST | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Net Profit After Tax` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_58 | P/E thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (Fact Stock Portfolio Snapshot.Net Profit After Tax TTM / K_GSTT_55)` | Reuse từ Nhóm 6 — Resolved 2026-08-26. LNST dùng TTM 4 quý (rule GSĐC); K_GSTT_55 đã có nguồn (`pc_share_statistics_hstr`) | READY |
+| K_GSTT_57 | VCSH | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Owner Equity` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_59 | P/B thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_57 / K_GSTT_55)` | Reuse từ Nhóm 6 — Resolved 2026-08-26. K_GSTT_57 (VCSH) và K_GSTT_55 (Số CP lưu hành) đều đã có nguồn | READY |
 
 **Star Schema:** Không có bảng mới — 100% reuse `Fact Stock Portfolio Snapshot`, `Security Trading Snapshot Dimension`, `Public Company Dimension`, `Calendar Date Dimension` đã vẽ ở Nhóm 1.
 
@@ -1243,8 +1245,8 @@ flowchart LR
 | K_GSTT_10 | Giá đóng cửa | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Close Price` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_12 | % thay đổi | % | Phái sinh | `Price Change / Reference Price × 100` | Reuse từ Nhóm 1 — dùng làm tiêu chí sắp xếp Top-N (`ORDER BY ... ASC`, giá trị âm/giảm mạnh nhất lên đầu) | READY |
 | K_GSTT_13 | Khối lượng giao dịch | Cổ phiếu | Phái sinh | `SUM(Securities Trade.Execution Volume) GROUP BY Symbol, Trade Date` | Reuse từ Nhóm 1 (K_GSTT_13 = Tổng KL, đã bao gồm filter Market Id Code IN ('UPX','STX','STO') tại tầng Fact total_vol) | READY |
-| K_GSTT_31 | Doanh thu | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 3 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_32 | Lợi nhuận sau thuế | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 3 — vẫn PENDING (xem O_GSTT_1) | PENDING |
+| K_GSTT_31 | Doanh thu | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Revenue` | Reuse từ Nhóm 3 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_32 | Lợi nhuận sau thuế | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Net Profit After Tax` | Reuse từ Nhóm 3 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
 
 **Star Schema:** Không có bảng mới — 100% reuse `Fact Stock Portfolio Snapshot`, `Security Trading Snapshot Dimension`, `Public Company Dimension`, `Calendar Date Dimension`, `Index Constituent Dimension` đã vẽ ở Nhóm 1.
 
@@ -1268,7 +1270,7 @@ flowchart LR
 #### Nhóm 19 - Top giảm giá theo sàn (bảng số liệu)
 
 > **Phân loại:** Dashboard
-> **Atomic:** 100% reuse Nhóm 1 (`Security Trading Snapshot`, `Securities Trade`, `Public Company`, `Classification Business Line`) + Nhóm 6 (`Public Company Share Statistics` PENDING, EAV IDS PENDING) — không có nguồn mới.
+> **Atomic:** 100% reuse Nhóm 1 (`Security Trading Snapshot`, `Securities Trade`, `Public Company`, `Classification Business Line`) + Nhóm 6 (`Public Company Share Statistics` Resolved 2026-08-26 (`pc_share_statistics_hstr`, xem O_GSTT_2), EAV IDS Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1)) — không có nguồn mới.
 >
 > **Ghi chú tái sử dụng:** BA liệt kê 13 dòng con — toàn bộ đã có KPI ID sẵn từ Nhóm 1 (Mã, Sàn, Ngành, Ngày, % thay đổi, KLGD, Giá) và Nhóm 6 (Số CP lưu hành, Vốn hóa, LNST, P/E, VCSH, P/B) — reuse thẳng, không khai sinh KPI mới, không tạo/sửa Fact hay Dimension nào. Bản chất là biến thể "theo sàn" của Nhóm 17 (cùng tiêu chí Top-N theo % thay đổi tăng dần/giảm mạnh nhất, thêm điều kiện lọc theo Sàn) — không có dòng "Bộ chỉ số ngành/bộ chỉ số thị trường" gộp như Nhóm 9/13/14/15/16, chỉ có "Sàn" đơn thuần (K_GSTT_3).
 
@@ -1291,12 +1293,12 @@ flowchart LR
 | K_GSTT_12 | % thay đổi | % | Phái sinh | `Price Change / Reference Price × 100` | Reuse từ Nhóm 1 — dùng làm tiêu chí sắp xếp Top-N (`ORDER BY ... ASC`, giá trị âm/giảm mạnh nhất lên đầu) | READY |
 | K_GSTT_13 | KLGD | Cổ phiếu | Phái sinh | `SUM(Securities Trade.Execution Volume) GROUP BY Symbol, Trade Date` | Reuse từ Nhóm 1 (K_GSTT_13 = Tổng KL, đã bao gồm filter Market Id Code IN ('UPX','STX','STO') tại tầng Fact total_vol). Cùng cảnh báo double-count Index Constituent như Nhóm 1 | READY |
 | K_GSTT_10 | Giá | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Close Price` | Reuse từ Nhóm 1 (K_GSTT_10 = Giá đóng cửa) | READY |
-| K_GSTT_55 | Số cổ phiếu đang lưu hành | Cổ phiếu | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_2) | PENDING |
-| K_GSTT_61 | Vốn hóa | VNĐ | Chỉ tiêu phái sinh | `SUM(K_GSTT_10 × K_GSTT_55) GROUP BY Index Code` | Reuse từ Nhóm 6 — vẫn PENDING (phụ thuộc K_GSTT_55) | PENDING |
-| K_GSTT_56 | LNST | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_58 | P/E thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_56 / K_GSTT_55)` | Reuse từ Nhóm 6 — vẫn PENDING | PENDING |
-| K_GSTT_57 | VCSH | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_59 | P/B thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_57 / K_GSTT_55)` | Reuse từ Nhóm 6 — vẫn PENDING | PENDING |
+| K_GSTT_55 | Số cổ phiếu đang lưu hành | Cổ phiếu | Cơ sở | `Fact Stock Portfolio Snapshot.Outstanding Share Quantity` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (`pc_share_statistics_hstr`, xem O_GSTT_2) | READY |
+| K_GSTT_61 | Vốn hóa | VNĐ | Chỉ tiêu phái sinh | `SUM(K_GSTT_10 × K_GSTT_55) GROUP BY Index Code` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (K_GSTT_55 đã có nguồn) | READY |
+| K_GSTT_56 | LNST | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Net Profit After Tax` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_58 | P/E thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (Fact Stock Portfolio Snapshot.Net Profit After Tax TTM / K_GSTT_55)` | Reuse từ Nhóm 6 — Resolved 2026-08-26. LNST dùng TTM 4 quý (rule GSĐC); K_GSTT_55 đã có nguồn (`pc_share_statistics_hstr`) | READY |
+| K_GSTT_57 | VCSH | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Owner Equity` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_59 | P/B thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_57 / K_GSTT_55)` | Reuse từ Nhóm 6 — Resolved 2026-08-26. K_GSTT_57 (VCSH) và K_GSTT_55 (Số CP lưu hành) đều đã có nguồn | READY |
 
 **Star Schema:** Không có bảng mới — 100% reuse `Fact Stock Portfolio Snapshot`, `Security Trading Snapshot Dimension`, `Public Company Dimension`, `Calendar Date Dimension` đã vẽ ở Nhóm 1.
 
@@ -1345,8 +1347,8 @@ flowchart LR
 | K_GSTT_29 | Giá thấp nhất | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Low Price` | Reuse từ Nhóm 3 | READY |
 | K_GSTT_10 | Giá đóng cửa | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Close Price` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_13 | Khối lượng giao dịch | Cổ phiếu | Phái sinh | `SUM(Securities Trade.Execution Volume) GROUP BY Symbol, Trade Date` | Reuse từ Nhóm 1 (K_GSTT_13 = Tổng KL, đã bao gồm filter Market Id Code IN ('UPX','STX','STO') tại tầng Fact total_vol) | READY |
-| K_GSTT_31 | Doanh thu | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 3 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_32 | Lợi nhuận sau thuế | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 3 — vẫn PENDING (xem O_GSTT_1) | PENDING |
+| K_GSTT_31 | Doanh thu | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Revenue` | Reuse từ Nhóm 3 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_32 | Lợi nhuận sau thuế | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Net Profit After Tax` | Reuse từ Nhóm 3 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
 
 **Star Schema:** Không có bảng mới — 100% reuse `Fact Stock Portfolio Snapshot`, `Security Trading Snapshot Dimension`, `Public Company Dimension`, `Calendar Date Dimension`, `Index Constituent Dimension` đã vẽ ở Nhóm 1.
 
@@ -1370,7 +1372,7 @@ flowchart LR
 #### Nhóm 21 - Top vượt đỉnh theo toàn thị trường (bảng số liệu)
 
 > **Phân loại:** Dashboard
-> **Atomic:** 100% reuse Nhóm 1 (`Security Trading Snapshot`, `Securities Trade`, `Public Company`, `Classification Business Line`) + Nhóm 3 (`High Price`) + Nhóm 6 (`Public Company Share Statistics` PENDING, EAV IDS PENDING) — không có nguồn mới.
+> **Atomic:** 100% reuse Nhóm 1 (`Security Trading Snapshot`, `Securities Trade`, `Public Company`, `Classification Business Line`) + Nhóm 3 (`High Price`) + Nhóm 6 (`Public Company Share Statistics` Resolved 2026-08-26 (`pc_share_statistics_hstr`, xem O_GSTT_2), EAV IDS Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1)) — không có nguồn mới.
 >
 > **Ghi chú tái sử dụng:** BA liệt kê 12 dòng con — toàn bộ đã có KPI ID sẵn từ Nhóm 1 (Mã, Ngành, Ngày, Khối lượng, Giá, % thay đổi), Nhóm 3 (Giá cao nhất) và Nhóm 6 (Số CP lưu hành, LNST, P/E, VCSH, P/B) — reuse thẳng, không khai sinh KPI mới, không tạo/sửa Fact hay Dimension nào. Bản chất là Top-N sắp xếp theo % thay đổi giảm dần (`ORDER BY K_GSTT_12 DESC LIMIT N`, tăng mạnh nhất lên đầu) trên cùng `Fact Stock Portfolio Snapshot` — cùng cấu trúc chỉ tiêu với Nhóm 17 (Top giảm giá), chỉ khác chiều sắp xếp.
 > **Ghi chú "Đỉnh cũ" (khác K_GSTT_28 — không tạo KPI mới):** BA gán "Đánh giá" mức TB (có tính toán tổng hợp) cho dòng này, gợi ý một logic rolling/lookback lịch sử ("giá cao nhất trong giai đoạn tham chiếu"), nhưng cột Bảng nguồn/Trường nguồn/Điều kiện chung/Câu lệnh tham khảo trong BA chỉ ghi `MDDS.JAD_STOCKINFOR.high` — không có điều kiện lọc khoảng thời gian hay window function nào cụ thể. Không tự suy diễn thêm logic rolling ngoài phạm vi BA cung cấp — "Đỉnh cũ" trùng hoàn toàn K_GSTT_28 (Giá cao nhất, Nhóm 3, cùng nguồn `high`), không khai KPI mới. Nếu nghiệp vụ thực sự cần "đỉnh" theo 1 khung thời gian lịch sử (VD: đỉnh 52 tuần) khác giá cao nhất trong ngày hiện tại, cần BA xác nhận lại điều kiện lọc/window cụ thể trước khi lên LLD.
@@ -1394,11 +1396,11 @@ flowchart LR
 | K_GSTT_10 | Giá | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Close Price` | Reuse từ Nhóm 1 (K_GSTT_10 = Giá đóng cửa) | READY |
 | K_GSTT_12 | % thay đổi | % | Phái sinh | `Price Change / Reference Price × 100` | Reuse từ Nhóm 1 — dùng làm tiêu chí sắp xếp Top-N (`ORDER BY ... DESC`, tăng mạnh nhất lên đầu) | READY |
 | K_GSTT_28 | Đỉnh cũ | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.High Price` | Trùng hoàn toàn K_GSTT_28 (Giá cao nhất, Nhóm 3) — BA không có điều kiện lọc/window riêng, không khai KPI mới | READY |
-| K_GSTT_55 | Số cổ phiếu đang lưu hành | Cổ phiếu | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_2) | PENDING |
-| K_GSTT_56 | LNST | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_57 | VCSH | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_58 | P/E thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_56 / K_GSTT_55)` | Reuse từ Nhóm 6 — vẫn PENDING | PENDING |
-| K_GSTT_59 | P/B thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_57 / K_GSTT_55)` | Reuse từ Nhóm 6 — vẫn PENDING | PENDING |
+| K_GSTT_55 | Số cổ phiếu đang lưu hành | Cổ phiếu | Cơ sở | `Fact Stock Portfolio Snapshot.Outstanding Share Quantity` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (`pc_share_statistics_hstr`, xem O_GSTT_2) | READY |
+| K_GSTT_56 | LNST | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Net Profit After Tax` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_57 | VCSH | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Owner Equity` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_58 | P/E thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (Fact Stock Portfolio Snapshot.Net Profit After Tax TTM / K_GSTT_55)` | Reuse từ Nhóm 6 — Resolved 2026-08-26. LNST dùng TTM 4 quý (rule GSĐC); K_GSTT_55 đã có nguồn (`pc_share_statistics_hstr`) | READY |
+| K_GSTT_59 | P/B thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_57 / K_GSTT_55)` | Reuse từ Nhóm 6 — Resolved 2026-08-26. K_GSTT_57 (VCSH) và K_GSTT_55 (Số CP lưu hành) đều đã có nguồn | READY |
 
 **Star Schema:** Không có bảng mới — 100% reuse `Fact Stock Portfolio Snapshot`, `Security Trading Snapshot Dimension`, `Public Company Dimension`, `Calendar Date Dimension` đã vẽ ở Nhóm 1.
 
@@ -1445,8 +1447,8 @@ flowchart LR
 | K_GSTT_29 | Giá thấp nhất | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Low Price` | Reuse từ Nhóm 3 | READY |
 | K_GSTT_10 | Giá đóng cửa | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Close Price` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_13 | Khối lượng giao dịch | Cổ phiếu | Phái sinh | `SUM(Securities Trade.Execution Volume) GROUP BY Symbol, Trade Date` | Reuse từ Nhóm 1 (K_GSTT_13 = Tổng KL, đã bao gồm filter Market Id Code IN ('UPX','STX','STO') tại tầng Fact total_vol) — % thay đổi (K_GSTT_12) vẫn dùng làm tiêu chí Top-N dù không hiển thị trên Mockup | READY |
-| K_GSTT_31 | Doanh thu | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 3 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_32 | Lợi nhuận sau thuế | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 3 — vẫn PENDING (xem O_GSTT_1) | PENDING |
+| K_GSTT_31 | Doanh thu | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Revenue` | Reuse từ Nhóm 3 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_32 | Lợi nhuận sau thuế | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Net Profit After Tax` | Reuse từ Nhóm 3 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
 
 **Star Schema:** Không có bảng mới — 100% reuse `Fact Stock Portfolio Snapshot`, `Security Trading Snapshot Dimension`, `Public Company Dimension`, `Calendar Date Dimension` đã vẽ ở Nhóm 1.
 
@@ -1469,7 +1471,7 @@ flowchart LR
 #### Nhóm 23 - Top vượt đỉnh theo sàn (bảng số liệu)
 
 > **Phân loại:** Dashboard
-> **Atomic:** 100% reuse Nhóm 1 (`Security Trading Snapshot`, `Securities Trade`, `Public Company`, `Classification Business Line`) + Nhóm 3 (`High Price`) + Nhóm 6 (`Public Company Share Statistics` PENDING, EAV IDS PENDING) + Nhóm 9 (Bộ chỉ số thị trường/ngành) — không có nguồn mới.
+> **Atomic:** 100% reuse Nhóm 1 (`Security Trading Snapshot`, `Securities Trade`, `Public Company`, `Classification Business Line`) + Nhóm 3 (`High Price`) + Nhóm 6 (`Public Company Share Statistics` Resolved 2026-08-26 (`pc_share_statistics_hstr`, xem O_GSTT_2), EAV IDS Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1)) + Nhóm 9 (Bộ chỉ số thị trường/ngành) — không có nguồn mới.
 >
 > **Ghi chú tái sử dụng:** BA liệt kê 14 dòng con — toàn bộ đã có KPI ID sẵn từ Nhóm 1 (Mã, Sàn, Ngành, Ngày, Khối lượng, Giá, % thay đổi), Nhóm 3 (Giá cao nhất → Đỉnh cũ, xem ghi chú Nhóm 21), Nhóm 6 (LNST, VCSH, Số CP lưu hành, P/E, P/B) và Nhóm 9 (Bộ chỉ số thị trường/ngành) — reuse thẳng, không khai sinh KPI mới, không tạo/sửa Fact hay Dimension nào. Bản chất là biến thể "theo sàn" của Nhóm 21 (cùng tiêu chí Top-N theo % thay đổi giảm dần/tăng mạnh nhất, thêm điều kiện lọc theo Sàn/Bộ chỉ số) — không có Vốn hóa (khác Nhóm 21 cũng không có, khớp nhau).
 > **Ghi chú "Bộ chỉ số thị trường/bộ chỉ số ngành" (BA gộp 1 dòng con thành 2 KPI, giống Nhóm 13/14/15/16; cập nhật 2026-07-28):** Cùng bản chất đã xác nhận ở Nhóm 9 — cả 2 là filter con của K_GSTT_4 (`Index Constituent Dimension.Index Code`): "Bộ chỉ số thị trường" = `Index Code IN ('HOSE','UPCOM','HNX')`, "Bộ chỉ số theo ngành" = `Index Code NOT IN ('HOSE','UPCOM','HNX')`. Bảng KPI dưới đây có 15 dòng cho 14 dòng BA (cùng lý do +1 như Nhóm 13/14/15/16).
@@ -1497,11 +1499,11 @@ flowchart LR
 | K_GSTT_10 | Giá | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Close Price` | Reuse từ Nhóm 1 (K_GSTT_10 = Giá đóng cửa) | READY |
 | K_GSTT_12 | % thay đổi | % | Phái sinh | `Price Change / Reference Price × 100` | Reuse từ Nhóm 1 — dùng làm tiêu chí sắp xếp Top-N (`ORDER BY ... DESC`, tăng mạnh nhất lên đầu) | READY |
 | K_GSTT_28 | Đỉnh cũ | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.High Price` | Trùng hoàn toàn K_GSTT_28 (Giá cao nhất, Nhóm 3) — cùng ghi chú Nhóm 21 (xem O_GSTT_6) | READY |
-| K_GSTT_56 | LNST | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_57 | VCSH | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_55 | Số cổ phiếu đang lưu hành | Cổ phiếu | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_2) | PENDING |
-| K_GSTT_58 | P/E thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_56 / K_GSTT_55)` | Reuse từ Nhóm 6 — vẫn PENDING | PENDING |
-| K_GSTT_59 | P/B thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_57 / K_GSTT_55)` | Reuse từ Nhóm 6 — vẫn PENDING | PENDING |
+| K_GSTT_56 | LNST | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Net Profit After Tax` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_57 | VCSH | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Owner Equity` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_55 | Số cổ phiếu đang lưu hành | Cổ phiếu | Cơ sở | `Fact Stock Portfolio Snapshot.Outstanding Share Quantity` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (`pc_share_statistics_hstr`, xem O_GSTT_2) | READY |
+| K_GSTT_58 | P/E thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (Fact Stock Portfolio Snapshot.Net Profit After Tax TTM / K_GSTT_55)` | Reuse từ Nhóm 6 — Resolved 2026-08-26. LNST dùng TTM 4 quý (rule GSĐC); K_GSTT_55 đã có nguồn (`pc_share_statistics_hstr`) | READY |
+| K_GSTT_59 | P/B thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_57 / K_GSTT_55)` | Reuse từ Nhóm 6 — Resolved 2026-08-26. K_GSTT_57 (VCSH) và K_GSTT_55 (Số CP lưu hành) đều đã có nguồn | READY |
 
 **Star Schema:** Không có bảng mới — 100% reuse `Fact Stock Portfolio Snapshot`, `Security Trading Snapshot Dimension`, `Public Company Dimension`, `Calendar Date Dimension`, `Index Constituent Dimension` đã vẽ ở Nhóm 1.
 
@@ -1553,8 +1555,8 @@ flowchart LR
 | K_GSTT_29 | Giá thấp nhất | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Low Price` | Reuse từ Nhóm 3 | READY |
 | K_GSTT_10 | Giá đóng cửa | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Close Price` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_13 | Khối lượng giao dịch | Cổ phiếu | Phái sinh | `SUM(Securities Trade.Execution Volume) GROUP BY Symbol, Trade Date` | Reuse từ Nhóm 1 (K_GSTT_13 = Tổng KL, đã bao gồm filter Market Id Code IN ('UPX','STX','STO') tại tầng Fact total_vol) — % thay đổi (K_GSTT_12) vẫn dùng làm tiêu chí Top-N dù không hiển thị trên Mockup | READY |
-| K_GSTT_31 | Doanh thu | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 3 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_32 | Lợi nhuận sau thuế | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 3 — vẫn PENDING (xem O_GSTT_1) | PENDING |
+| K_GSTT_31 | Doanh thu | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Revenue` | Reuse từ Nhóm 3 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_32 | Lợi nhuận sau thuế | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Net Profit After Tax` | Reuse từ Nhóm 3 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
 
 **Star Schema:** Không có bảng mới — 100% reuse `Fact Stock Portfolio Snapshot`, `Security Trading Snapshot Dimension`, `Public Company Dimension`, `Calendar Date Dimension`, `Index Constituent Dimension` đã vẽ ở Nhóm 1.
 
@@ -1578,7 +1580,7 @@ flowchart LR
 #### Nhóm 25 - Top thủng đáy theo toàn thị trường (bảng số liệu)
 
 > **Phân loại:** Dashboard
-> **Atomic:** 100% reuse Nhóm 1 (`Security Trading Snapshot`, `Securities Trade`, `Public Company`, `Classification Business Line`) + Nhóm 3 (`Low Price`) + Nhóm 6 (`Public Company Share Statistics` PENDING, EAV IDS PENDING) — không có nguồn mới.
+> **Atomic:** 100% reuse Nhóm 1 (`Security Trading Snapshot`, `Securities Trade`, `Public Company`, `Classification Business Line`) + Nhóm 3 (`Low Price`) + Nhóm 6 (`Public Company Share Statistics` Resolved 2026-08-26 (`pc_share_statistics_hstr`, xem O_GSTT_2), EAV IDS Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1)) — không có nguồn mới.
 >
 > **Ghi chú tái sử dụng:** BA liệt kê 12 dòng con — toàn bộ đã có KPI ID sẵn từ Nhóm 1 (Mã, Ngành, Ngày, Khối lượng, Giá đóng cửa, % thay đổi), Nhóm 3 (Giá thấp nhất) và Nhóm 6 (LNST, VCSH, Số CP lưu hành, P/E, P/B) — reuse thẳng, không khai sinh KPI mới, không tạo/sửa Fact hay Dimension nào. Bản chất đối xứng với Nhóm 21 (Top vượt đỉnh) — Top-N sắp xếp theo % thay đổi tăng dần (`ORDER BY K_GSTT_12 ASC LIMIT N`, giảm mạnh nhất lên đầu), cùng cấu trúc chỉ tiêu (không có Vốn hóa, giống Nhóm 21).
 > **Ghi chú "Đáy cũ" (khác K_GSTT_29 — không tạo KPI mới, cùng bản chất "Đỉnh cũ" Nhóm 21):** BA gán "Đánh giá" mức TB cho dòng này, gợi ý logic rolling/lookback lịch sử ("giá thấp nhất trong giai đoạn tham chiếu"), nhưng nguồn BA chỉ ghi `MDDS.JAD_STOCKINFOR.low` (Giá thấp nhất trong ngày hiện tại) — không có điều kiện lọc khoảng thời gian hay window function nào. Cùng tình huống đã xác nhận với "Đỉnh cũ" (Nhóm 21, xem O_GSTT_6) — không tự suy diễn thêm logic rolling ngoài phạm vi BA cung cấp. "Đáy cũ" trùng hoàn toàn K_GSTT_29 (Giá thấp nhất, Nhóm 3), không khai KPI mới. Bổ sung vào O_GSTT_6 (mở rộng phạm vi Open Issue sang cả "Đáy cũ").
@@ -1602,11 +1604,11 @@ flowchart LR
 | K_GSTT_10 | Giá đóng cửa | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Close Price` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_12 | % thay đổi | % | Phái sinh | `Price Change / Reference Price × 100` | Reuse từ Nhóm 1 — dùng làm tiêu chí sắp xếp Top-N (`ORDER BY ... ASC`, giảm mạnh nhất lên đầu) | READY |
 | K_GSTT_29 | Đáy cũ | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Low Price` | Trùng hoàn toàn K_GSTT_29 (Giá thấp nhất, Nhóm 3) — BA không có điều kiện lọc/window riêng, cùng bản chất "Đỉnh cũ" (xem O_GSTT_6), không khai KPI mới | READY |
-| K_GSTT_56 | LNST | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_57 | VCSH | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_55 | Số cổ phiếu đang lưu hành | Cổ phiếu | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_2) | PENDING |
-| K_GSTT_58 | P/E thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_56 / K_GSTT_55)` | Reuse từ Nhóm 6 — vẫn PENDING | PENDING |
-| K_GSTT_59 | P/B thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_57 / K_GSTT_55)` | Reuse từ Nhóm 6 — vẫn PENDING | PENDING |
+| K_GSTT_56 | LNST | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Net Profit After Tax` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_57 | VCSH | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Owner Equity` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_55 | Số cổ phiếu đang lưu hành | Cổ phiếu | Cơ sở | `Fact Stock Portfolio Snapshot.Outstanding Share Quantity` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (`pc_share_statistics_hstr`, xem O_GSTT_2) | READY |
+| K_GSTT_58 | P/E thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (Fact Stock Portfolio Snapshot.Net Profit After Tax TTM / K_GSTT_55)` | Reuse từ Nhóm 6 — Resolved 2026-08-26. LNST dùng TTM 4 quý (rule GSĐC); K_GSTT_55 đã có nguồn (`pc_share_statistics_hstr`) | READY |
+| K_GSTT_59 | P/B thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_57 / K_GSTT_55)` | Reuse từ Nhóm 6 — Resolved 2026-08-26. K_GSTT_57 (VCSH) và K_GSTT_55 (Số CP lưu hành) đều đã có nguồn | READY |
 
 **Star Schema:** Không có bảng mới — 100% reuse `Fact Stock Portfolio Snapshot`, `Security Trading Snapshot Dimension`, `Public Company Dimension`, `Calendar Date Dimension` đã vẽ ở Nhóm 1.
 
@@ -1653,8 +1655,8 @@ flowchart LR
 | K_GSTT_29 | Giá thấp nhất | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Low Price` | Reuse từ Nhóm 3 | READY |
 | K_GSTT_10 | Giá đóng cửa | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Close Price` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_13 | Khối lượng giao dịch | Cổ phiếu | Phái sinh | `SUM(Securities Trade.Execution Volume) GROUP BY Symbol, Trade Date` | Reuse từ Nhóm 1 (K_GSTT_13 = Tổng KL, đã bao gồm filter Market Id Code IN ('UPX','STX','STO') tại tầng Fact total_vol) — % thay đổi (K_GSTT_12) vẫn dùng làm tiêu chí Top-N dù không hiển thị trên Mockup | READY |
-| K_GSTT_31 | Doanh thu | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 3 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_32 | Lợi nhuận sau thuế | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 3 — vẫn PENDING (xem O_GSTT_1) | PENDING |
+| K_GSTT_31 | Doanh thu | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Revenue` | Reuse từ Nhóm 3 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_32 | Lợi nhuận sau thuế | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Net Profit After Tax` | Reuse từ Nhóm 3 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
 
 **Star Schema:** Không có bảng mới — 100% reuse `Fact Stock Portfolio Snapshot`, `Security Trading Snapshot Dimension`, `Public Company Dimension`, `Calendar Date Dimension` đã vẽ ở Nhóm 1.
 
@@ -1677,7 +1679,7 @@ flowchart LR
 #### Nhóm 27 - Top thủng đáy theo sàn (bảng số liệu)
 
 > **Phân loại:** Dashboard
-> **Atomic:** 100% reuse Nhóm 1 (`Security Trading Snapshot`, `Securities Trade`, `Public Company`, `Classification Business Line`) + Nhóm 3 (`Low Price`) + Nhóm 6 (`Public Company Share Statistics` PENDING, EAV IDS PENDING) + Nhóm 9 (Bộ chỉ số thị trường/ngành) — không có nguồn mới.
+> **Atomic:** 100% reuse Nhóm 1 (`Security Trading Snapshot`, `Securities Trade`, `Public Company`, `Classification Business Line`) + Nhóm 3 (`Low Price`) + Nhóm 6 (`Public Company Share Statistics` Resolved 2026-08-26 (`pc_share_statistics_hstr`, xem O_GSTT_2), EAV IDS Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1)) + Nhóm 9 (Bộ chỉ số thị trường/ngành) — không có nguồn mới.
 >
 > **Ghi chú tái sử dụng:** BA liệt kê 14 dòng con — toàn bộ đã có KPI ID sẵn từ Nhóm 1 (Mã CK, Sàn, Ngành, Ngày, Khối lượng, Giá, % thay đổi), Nhóm 3 (Giá thấp nhất → Đáy cũ, xem ghi chú Nhóm 25), Nhóm 6 (LNST, VCSH, Số CP lưu hành, P/E, P/B) và Nhóm 9 (Bộ chỉ số thị trường/ngành) — reuse thẳng, không khai sinh KPI mới, không tạo/sửa Fact hay Dimension nào. Bản chất là biến thể "theo sàn" của Nhóm 25 (cùng tiêu chí Top-N theo % thay đổi tăng dần/giảm mạnh nhất, thêm điều kiện lọc theo Sàn/Bộ chỉ số) — cùng cấu trúc chỉ tiêu với Nhóm 23 (Top vượt đỉnh theo sàn), chỉ khác chiều Top-N và "Đáy cũ" thay "Đỉnh cũ".
 > **Ghi chú "Bộ chỉ số thị trường/bộ chỉ số ngành" (BA gộp 1 dòng con thành 2 KPI, giống Nhóm 13/14/15/16/23/24; cập nhật 2026-07-28):** Cùng bản chất đã xác nhận ở Nhóm 9 — cả 2 là filter con của K_GSTT_4 (`Index Constituent Dimension.Index Code`): "Bộ chỉ số thị trường" = `Index Code IN ('HOSE','UPCOM','HNX')`, "Bộ chỉ số theo ngành" = `Index Code NOT IN ('HOSE','UPCOM','HNX')`. Bảng KPI dưới đây có 15 dòng cho 14 dòng BA (cùng lý do +1 như các Nhóm trên).
@@ -1705,11 +1707,11 @@ flowchart LR
 | K_GSTT_10 | Giá | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Close Price` | Reuse từ Nhóm 1 (K_GSTT_10 = Giá đóng cửa) | READY |
 | K_GSTT_12 | % thay đổi | % | Phái sinh | `Price Change / Reference Price × 100` | Reuse từ Nhóm 1 — dùng làm tiêu chí sắp xếp Top-N (`ORDER BY ... ASC`, giảm mạnh nhất lên đầu) | READY |
 | K_GSTT_29 | Đáy cũ | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Low Price` | Trùng hoàn toàn K_GSTT_29 (Giá thấp nhất, Nhóm 3) — cùng ghi chú Nhóm 25 (xem O_GSTT_6) | READY |
-| K_GSTT_56 | LNST | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_57 | VCSH | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_55 | Số cổ phiếu đang lưu hành | Cổ phiếu | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_2) | PENDING |
-| K_GSTT_58 | P/E thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_56 / K_GSTT_55)` | Reuse từ Nhóm 6 — vẫn PENDING | PENDING |
-| K_GSTT_59 | P/B thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_57 / K_GSTT_55)` | Reuse từ Nhóm 6 — vẫn PENDING | PENDING |
+| K_GSTT_56 | LNST | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Net Profit After Tax` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_57 | VCSH | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Owner Equity` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_55 | Số cổ phiếu đang lưu hành | Cổ phiếu | Cơ sở | `Fact Stock Portfolio Snapshot.Outstanding Share Quantity` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (`pc_share_statistics_hstr`, xem O_GSTT_2) | READY |
+| K_GSTT_58 | P/E thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (Fact Stock Portfolio Snapshot.Net Profit After Tax TTM / K_GSTT_55)` | Reuse từ Nhóm 6 — Resolved 2026-08-26. LNST dùng TTM 4 quý (rule GSĐC); K_GSTT_55 đã có nguồn (`pc_share_statistics_hstr`) | READY |
+| K_GSTT_59 | P/B thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_57 / K_GSTT_55)` | Reuse từ Nhóm 6 — Resolved 2026-08-26. K_GSTT_57 (VCSH) và K_GSTT_55 (Số CP lưu hành) đều đã có nguồn | READY |
 
 **Star Schema:** Không có bảng mới — 100% reuse `Fact Stock Portfolio Snapshot`, `Security Trading Snapshot Dimension`, `Public Company Dimension`, `Calendar Date Dimension`, `Index Constituent Dimension` đã vẽ ở Nhóm 1.
 
@@ -1762,8 +1764,8 @@ flowchart LR
 | K_GSTT_10 | Giá đóng cửa | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Close Price` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_12 | % thay đổi | % | Phái sinh | `Price Change / Reference Price × 100` | Reuse từ Nhóm 1 — dùng làm tiêu chí sắp xếp Top-N (`ORDER BY ... ASC`, giảm mạnh nhất lên đầu) | READY |
 | K_GSTT_13 | Khối lượng giao dịch | Cổ phiếu | Phái sinh | `SUM(Securities Trade.Execution Volume) GROUP BY Symbol, Trade Date` | Reuse từ Nhóm 1 (K_GSTT_13 = Tổng KL, đã bao gồm filter Market Id Code IN ('UPX','STX','STO') tại tầng Fact total_vol) | READY |
-| K_GSTT_31 | Doanh thu | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 3 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_32 | Lợi nhuận sau thuế | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 3 — vẫn PENDING (xem O_GSTT_1) | PENDING |
+| K_GSTT_31 | Doanh thu | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Revenue` | Reuse từ Nhóm 3 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_32 | Lợi nhuận sau thuế | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Net Profit After Tax` | Reuse từ Nhóm 3 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
 
 **Star Schema:** Không có bảng mới — 100% reuse `Fact Stock Portfolio Snapshot`, `Security Trading Snapshot Dimension`, `Public Company Dimension`, `Calendar Date Dimension`, `Index Constituent Dimension` đã vẽ ở Nhóm 1.
 
@@ -1787,7 +1789,7 @@ flowchart LR
 #### Nhóm 29 - Top tăng giá theo toàn thị trường (bảng số liệu)
 
 > **Phân loại:** Dashboard
-> **Atomic:** 100% reuse Nhóm 1 (`Security Trading Snapshot`, `Securities Trade`, `Public Company`, `Classification Business Line`) + Nhóm 6 (`Public Company Share Statistics` PENDING, EAV IDS PENDING) — không có nguồn mới.
+> **Atomic:** 100% reuse Nhóm 1 (`Security Trading Snapshot`, `Securities Trade`, `Public Company`, `Classification Business Line`) + Nhóm 6 (`Public Company Share Statistics` Resolved 2026-08-26 (`pc_share_statistics_hstr`, xem O_GSTT_2), EAV IDS Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1)) — không có nguồn mới.
 >
 > **Ghi chú tái sử dụng:** BA liệt kê 12 dòng con — toàn bộ đã có KPI ID sẵn từ Nhóm 1 (Mã CK, Ngành, Ngày, % thay đổi, KLGD, Giá) và Nhóm 6 (LNST, VCSH, Số CP lưu hành, Vốn hóa, P/E, P/B) — reuse thẳng, không khai sinh KPI mới, không tạo/sửa Fact hay Dimension nào. Đối xứng hoàn toàn với Nhóm 17 (Top giảm giá toàn thị trường) — cùng bộ chỉ tiêu, chỉ đảo chiều Top-N: sắp xếp theo % thay đổi giảm dần (`ORDER BY K_GSTT_12 DESC LIMIT N`, tăng mạnh nhất lên đầu). Khác Nhóm 21 (Top vượt đỉnh, cũng Top-N tăng mạnh nhất), BA ở đây KHÔNG liệt kê "Đỉnh cũ" — cùng cấu trúc chỉ tiêu với Nhóm 17.
 
@@ -1809,12 +1811,12 @@ flowchart LR
 | K_GSTT_12 | % thay đổi | % | Phái sinh | `Price Change / Reference Price × 100` | Reuse từ Nhóm 1 — dùng làm tiêu chí sắp xếp Top-N (`ORDER BY ... DESC`, tăng mạnh nhất lên đầu) | READY |
 | K_GSTT_13 | KLGD | Cổ phiếu | Phái sinh | `SUM(Securities Trade.Execution Volume) GROUP BY Symbol, Trade Date` | Reuse từ Nhóm 1 (K_GSTT_13 = Tổng KL, đã bao gồm filter Market Id Code IN ('UPX','STX','STO') tại tầng Fact total_vol). Cùng cảnh báo double-count Index Constituent như Nhóm 1 | READY |
 | K_GSTT_10 | Giá | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Close Price` | Reuse từ Nhóm 1 (K_GSTT_10 = Giá đóng cửa) | READY |
-| K_GSTT_56 | LNST | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_57 | VCSH | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_55 | Số cổ phiếu đang lưu hành | Cổ phiếu | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_2) | PENDING |
-| K_GSTT_61 | Vốn hóa | VNĐ | Chỉ tiêu phái sinh | `SUM(K_GSTT_10 × K_GSTT_55) GROUP BY Index Code` | Reuse từ Nhóm 6 — vẫn PENDING (phụ thuộc K_GSTT_55) | PENDING |
-| K_GSTT_58 | P/E thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_56 / K_GSTT_55)` | Reuse từ Nhóm 6 — vẫn PENDING | PENDING |
-| K_GSTT_59 | P/B thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_57 / K_GSTT_55)` | Reuse từ Nhóm 6 — vẫn PENDING | PENDING |
+| K_GSTT_56 | LNST | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Net Profit After Tax` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_57 | VCSH | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Owner Equity` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_55 | Số cổ phiếu đang lưu hành | Cổ phiếu | Cơ sở | `Fact Stock Portfolio Snapshot.Outstanding Share Quantity` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (`pc_share_statistics_hstr`, xem O_GSTT_2) | READY |
+| K_GSTT_61 | Vốn hóa | VNĐ | Chỉ tiêu phái sinh | `SUM(K_GSTT_10 × K_GSTT_55) GROUP BY Index Code` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (K_GSTT_55 đã có nguồn) | READY |
+| K_GSTT_58 | P/E thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (Fact Stock Portfolio Snapshot.Net Profit After Tax TTM / K_GSTT_55)` | Reuse từ Nhóm 6 — Resolved 2026-08-26. LNST dùng TTM 4 quý (rule GSĐC); K_GSTT_55 đã có nguồn (`pc_share_statistics_hstr`) | READY |
+| K_GSTT_59 | P/B thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_57 / K_GSTT_55)` | Reuse từ Nhóm 6 — Resolved 2026-08-26. K_GSTT_57 (VCSH) và K_GSTT_55 (Số CP lưu hành) đều đã có nguồn | READY |
 
 **Star Schema:** Không có bảng mới — 100% reuse `Fact Stock Portfolio Snapshot`, `Security Trading Snapshot Dimension`, `Public Company Dimension`, `Calendar Date Dimension` đã vẽ ở Nhóm 1.
 
@@ -1862,8 +1864,8 @@ flowchart LR
 | K_GSTT_29 | Giá thấp nhất | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Low Price` | Reuse từ Nhóm 3 | READY |
 | K_GSTT_10 | Giá đóng cửa | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Close Price` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_13 | Khối lượng giao dịch | Cổ phiếu | Phái sinh | `SUM(Securities Trade.Execution Volume) GROUP BY Symbol, Trade Date` | Reuse từ Nhóm 1 (K_GSTT_13 = Tổng KL, đã bao gồm filter Market Id Code IN ('UPX','STX','STO') tại tầng Fact total_vol) — % thay đổi (K_GSTT_12) vẫn dùng làm tiêu chí Top-N dù không hiển thị trên Mockup | READY |
-| K_GSTT_31 | Doanh thu | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 3 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_32 | Lợi nhuận sau thuế | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 3 — vẫn PENDING (xem O_GSTT_1) | PENDING |
+| K_GSTT_31 | Doanh thu | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Revenue` | Reuse từ Nhóm 3 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_32 | Lợi nhuận sau thuế | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Net Profit After Tax` | Reuse từ Nhóm 3 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
 
 **Star Schema:** Không có bảng mới — 100% reuse `Fact Stock Portfolio Snapshot`, `Security Trading Snapshot Dimension`, `Public Company Dimension`, `Calendar Date Dimension`, `Index Constituent Dimension` đã vẽ ở Nhóm 1.
 
@@ -1887,7 +1889,7 @@ flowchart LR
 #### Nhóm 31 - Top tăng giá theo sàn (bảng số liệu)
 
 > **Phân loại:** Dashboard
-> **Atomic:** 100% reuse Nhóm 1 (`Security Trading Snapshot`, `Securities Trade`, `Public Company`, `Classification Business Line`) + Nhóm 6 (`Public Company Share Statistics` PENDING, EAV IDS PENDING) + Nhóm 9 (Bộ chỉ số thị trường/ngành) — không có nguồn mới.
+> **Atomic:** 100% reuse Nhóm 1 (`Security Trading Snapshot`, `Securities Trade`, `Public Company`, `Classification Business Line`) + Nhóm 6 (`Public Company Share Statistics` Resolved 2026-08-26 (`pc_share_statistics_hstr`, xem O_GSTT_2), EAV IDS Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1)) + Nhóm 9 (Bộ chỉ số thị trường/ngành) — không có nguồn mới.
 >
 > **Ghi chú tái sử dụng:** BA liệt kê 14 dòng con — toàn bộ đã có KPI ID sẵn từ Nhóm 1 (Mã, Sàn, Ngành, Ngày, % thay đổi, KLGD, Giá), Nhóm 6 (LNST, VCSH, Số CP lưu hành, Vốn hóa, P/E, P/B) và Nhóm 9 (Bộ chỉ số thị trường/ngành) — reuse thẳng, không khai sinh KPI mới, không tạo/sửa Fact hay Dimension nào. Biến thể "theo sàn" của Nhóm 29 — cùng cấu trúc chỉ tiêu với Nhóm 19 (Top giảm giá theo sàn) và Nhóm 23 (Top vượt đỉnh theo sàn, không có "Đỉnh cũ").
 > **Ghi chú "Bộ chỉ số thị trường/bộ chỉ số ngành" (BA gộp 1 dòng con thành 2 KPI, giống Nhóm 13/14/15/16/23/24/27/28; cập nhật 2026-07-28):** Cùng bản chất đã xác nhận ở Nhóm 9 — cả 2 là filter con của K_GSTT_4 (`Index Constituent Dimension.Index Code`): "Bộ chỉ số thị trường" = `Index Code IN ('HOSE','UPCOM','HNX')`, "Bộ chỉ số theo ngành" = `Index Code NOT IN ('HOSE','UPCOM','HNX')`. Bảng KPI dưới đây có 15 dòng cho 14 dòng BA (cùng lý do +1 như các Nhóm trên).
@@ -1913,12 +1915,12 @@ flowchart LR
 | K_GSTT_12 | % thay đổi | % | Phái sinh | `Price Change / Reference Price × 100` | Reuse từ Nhóm 1 — dùng làm tiêu chí sắp xếp Top-N (`ORDER BY ... DESC`, tăng mạnh nhất lên đầu) | READY |
 | K_GSTT_13 | KLGD | Cổ phiếu | Phái sinh | `SUM(Securities Trade.Execution Volume) GROUP BY Symbol, Trade Date` | Reuse từ Nhóm 1 (K_GSTT_13 = Tổng KL, đã bao gồm filter Market Id Code IN ('UPX','STX','STO') tại tầng Fact total_vol). Cùng cảnh báo double-count Index Constituent như Nhóm 1 | READY |
 | K_GSTT_10 | Giá | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Close Price` | Reuse từ Nhóm 1 (K_GSTT_10 = Giá đóng cửa) | READY |
-| K_GSTT_56 | LNST | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_57 | VCSH | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_55 | Số cổ phiếu đang lưu hành | Cổ phiếu | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_2) | PENDING |
-| K_GSTT_61 | Vốn hóa | VNĐ | Chỉ tiêu phái sinh | `SUM(K_GSTT_10 × K_GSTT_55) GROUP BY Index Code` | Reuse từ Nhóm 6 — vẫn PENDING (phụ thuộc K_GSTT_55) | PENDING |
-| K_GSTT_58 | P/E thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_56 / K_GSTT_55)` | Reuse từ Nhóm 6 — vẫn PENDING | PENDING |
-| K_GSTT_59 | P/B thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_57 / K_GSTT_55)` | Reuse từ Nhóm 6 — vẫn PENDING | PENDING |
+| K_GSTT_56 | LNST | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Net Profit After Tax` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_57 | VCSH | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Owner Equity` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_55 | Số cổ phiếu đang lưu hành | Cổ phiếu | Cơ sở | `Fact Stock Portfolio Snapshot.Outstanding Share Quantity` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (`pc_share_statistics_hstr`, xem O_GSTT_2) | READY |
+| K_GSTT_61 | Vốn hóa | VNĐ | Chỉ tiêu phái sinh | `SUM(K_GSTT_10 × K_GSTT_55) GROUP BY Index Code` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (K_GSTT_55 đã có nguồn) | READY |
+| K_GSTT_58 | P/E thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (Fact Stock Portfolio Snapshot.Net Profit After Tax TTM / K_GSTT_55)` | Reuse từ Nhóm 6 — Resolved 2026-08-26. LNST dùng TTM 4 quý (rule GSĐC); K_GSTT_55 đã có nguồn (`pc_share_statistics_hstr`) | READY |
+| K_GSTT_59 | P/B thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_57 / K_GSTT_55)` | Reuse từ Nhóm 6 — Resolved 2026-08-26. K_GSTT_57 (VCSH) và K_GSTT_55 (Số CP lưu hành) đều đã có nguồn | READY |
 
 **Star Schema:** Không có bảng mới — 100% reuse `Fact Stock Portfolio Snapshot`, `Security Trading Snapshot Dimension`, `Public Company Dimension`, `Calendar Date Dimension`, `Index Constituent Dimension` đã vẽ ở Nhóm 1.
 
@@ -1971,8 +1973,8 @@ flowchart LR
 | K_GSTT_29 | Giá thấp nhất | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Low Price` | Reuse từ Nhóm 3 | READY |
 | K_GSTT_10 | Giá đóng cửa | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Close Price` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_13 | Khối lượng giao dịch | Cổ phiếu | Phái sinh | `SUM(Securities Trade.Execution Volume) GROUP BY Symbol, Trade Date` | Reuse từ Nhóm 1 (K_GSTT_13 = Tổng KL, đã bao gồm filter Market Id Code IN ('UPX','STX','STO') tại tầng Fact total_vol) | READY |
-| K_GSTT_31 | Doanh thu | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 3 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_32 | Lợi nhuận sau thuế | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 3 — vẫn PENDING (xem O_GSTT_1) | PENDING |
+| K_GSTT_31 | Doanh thu | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Revenue` | Reuse từ Nhóm 3 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_32 | Lợi nhuận sau thuế | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Net Profit After Tax` | Reuse từ Nhóm 3 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
 
 **Star Schema:** Không có bảng mới — 100% reuse `Fact Stock Portfolio Snapshot`, `Security Trading Snapshot Dimension`, `Public Company Dimension`, `Calendar Date Dimension`, `Index Constituent Dimension` đã vẽ ở Nhóm 1.
 
@@ -1996,7 +1998,7 @@ flowchart LR
 #### Nhóm 33 - Top nhà đầu tư nước ngoài theo toàn thị trường (bảng số liệu)
 
 > **Phân loại:** Dashboard
-> **Atomic:** 100% reuse Nhóm 1 (`Security Trading Snapshot`, `Securities Trade`, `Public Company`, `Classification Business Line`) + Nhóm 6 (`Public Company Share Statistics` PENDING, EAV IDS PENDING) — bổ sung 4 measure mới từ `Securities Trade` (Buy/Sell Foreign Investor Type Code, đã có sẵn ở Atomic Nguồn 1, chỉ chưa khai KPI riêng chiều mua/bán tách biệt).
+> **Atomic:** 100% reuse Nhóm 1 (`Security Trading Snapshot`, `Securities Trade`, `Public Company`, `Classification Business Line`) + Nhóm 6 (`Public Company Share Statistics` Resolved 2026-08-26 (`pc_share_statistics_hstr`, xem O_GSTT_2), EAV IDS Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1)) — bổ sung 4 measure mới từ `Securities Trade` (Buy/Sell Foreign Investor Type Code, đã có sẵn ở Atomic Nguồn 1, chỉ chưa khai KPI riêng chiều mua/bán tách biệt).
 >
 > **Ghi chú tái sử dụng:** BA liệt kê 16 dòng con — 12 dòng đã có KPI ID sẵn từ Nhóm 1 (Mã, Ngành, Ngày, KLGD, Giá, % thay đổi) và Nhóm 6 (LNST, VCSH, Số CP lưu hành, Vốn hóa, P/E, P/B) — reuse thẳng. 4 dòng còn lại ("KL mua ròng", "KL bán ròng", "GT mua ròng", "GT bán ròng") là chỉ tiêu mới thật — xem ghi chú dưới đây.
 > **Ghi chú 4 measure NĐT nước ngoài mới (K_GSTT_70–72):** Khác K_GSTT_19 (KLNN ròng, Nhóm 1 — đã là hiệu số mua-bán gộp), BA ở đây yêu cầu tách riêng từng chiều mua và bán (không phải chỉ hiệu số ròng). Atomic `Securities Trade` (Nguồn 1, entity approved) có sẵn 2 cặp attribute riêng biệt cho từng chiều: `Buy Foreign Investor Type Code`/`Sell Foreign Investor Type Code` (scheme `ORDERTRADE_FOREIGN_INVESTOR_TYPE`: `10`=Foreigner Residence, `20`=Foreigner Non-residence, `00`=Not Foreigner) — mỗi dòng lệnh khớp chỉ có 1 `Execution Volume`/`Execution Value` duy nhất, dùng làm measure filter theo đúng chiều mua/bán. Công thức: `SUM(Execution Volume/Value) WHERE buy_foreign_investor_tp_code IN ('10','20')` cho chiều mua; tương tự `sell_foreign_investor_tp_code` cho chiều bán. Đặt cột mới lên `Fact Stock Portfolio Snapshot` (cùng grain mã CK/ngày, không đổi cấu trúc Fact).
@@ -2023,12 +2025,12 @@ flowchart LR
 | K_GSTT_71 | KL bán ròng (NĐTNN) | Cổ phiếu | Phái sinh | `SUM(Securities Trade.Execution Volume WHERE Sell Foreign Investor Type Code IN ('10','20')) GROUP BY Symbol, Trade Date` | Mới — cùng nguồn K_GSTT_70, chiều bán | READY |
 | K_GSTT_72 | GT mua ròng (NĐTNN) | VNĐ | Phái sinh | `SUM(Securities Trade.Execution Value WHERE Buy Foreign Investor Type Code IN ('10','20')) GROUP BY Symbol, Trade Date` | Mới — cùng nguồn K_GSTT_70, đo theo giá trị | READY |
 | K_GSTT_73 | GT bán ròng (NĐTNN) | VNĐ | Phái sinh | `SUM(Securities Trade.Execution Value WHERE Sell Foreign Investor Type Code IN ('10','20')) GROUP BY Symbol, Trade Date` | Mới — cùng nguồn K_GSTT_70, chiều bán theo giá trị | READY |
-| K_GSTT_56 | LNST | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_57 | VCSH | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_55 | Số cổ phiếu đang lưu hành | Cổ phiếu | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_2) | PENDING |
-| K_GSTT_61 | Vốn hóa | VNĐ | Chỉ tiêu phái sinh | `SUM(K_GSTT_10 × K_GSTT_55) GROUP BY Index Code` | Reuse từ Nhóm 6 — vẫn PENDING (phụ thuộc K_GSTT_55) | PENDING |
-| K_GSTT_58 | P/E thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_56 / K_GSTT_55)` | Reuse từ Nhóm 6 — vẫn PENDING | PENDING |
-| K_GSTT_59 | P/B thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_57 / K_GSTT_55)` | Reuse từ Nhóm 6 — vẫn PENDING | PENDING |
+| K_GSTT_56 | LNST | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Net Profit After Tax` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_57 | VCSH | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Owner Equity` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_55 | Số cổ phiếu đang lưu hành | Cổ phiếu | Cơ sở | `Fact Stock Portfolio Snapshot.Outstanding Share Quantity` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (`pc_share_statistics_hstr`, xem O_GSTT_2) | READY |
+| K_GSTT_61 | Vốn hóa | VNĐ | Chỉ tiêu phái sinh | `SUM(K_GSTT_10 × K_GSTT_55) GROUP BY Index Code` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (K_GSTT_55 đã có nguồn) | READY |
+| K_GSTT_58 | P/E thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (Fact Stock Portfolio Snapshot.Net Profit After Tax TTM / K_GSTT_55)` | Reuse từ Nhóm 6 — Resolved 2026-08-26. LNST dùng TTM 4 quý (rule GSĐC); K_GSTT_55 đã có nguồn (`pc_share_statistics_hstr`) | READY |
+| K_GSTT_59 | P/B thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_57 / K_GSTT_55)` | Reuse từ Nhóm 6 — Resolved 2026-08-26. K_GSTT_57 (VCSH) và K_GSTT_55 (Số CP lưu hành) đều đã có nguồn | READY |
 
 **Star Schema:** Không có bảng mới — reuse `Fact Stock Portfolio Snapshot` đã vẽ ở Nhóm 1, bổ sung 4 cột `Foreign_Buy_Volume`, `Foreign_Sell_Volume`, `Foreign_Buy_Value`, `Foreign_Sell_Value` (READY, có nguồn Atomic sẵn).
 
@@ -2074,8 +2076,8 @@ flowchart LR
 | K_GSTT_29 | Giá thấp nhất | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Low Price` | Reuse từ Nhóm 3 | READY |
 | K_GSTT_10 | Giá đóng cửa | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Close Price` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_13 | Khối lượng giao dịch | Cổ phiếu | Phái sinh | `SUM(Securities Trade.Execution Volume) GROUP BY Symbol, Trade Date` | Reuse từ Nhóm 1 (K_GSTT_13 = Tổng KL, đã bao gồm filter Market Id Code IN ('UPX','STX','STO') tại tầng Fact total_vol) | READY |
-| K_GSTT_31 | Doanh thu | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 3 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_32 | Lợi nhuận sau thuế | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 3 — vẫn PENDING (xem O_GSTT_1) | PENDING |
+| K_GSTT_31 | Doanh thu | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Revenue` | Reuse từ Nhóm 3 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_32 | Lợi nhuận sau thuế | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Net Profit After Tax` | Reuse từ Nhóm 3 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
 
 **Star Schema:** Không có bảng mới — 100% reuse `Fact Stock Portfolio Snapshot`, `Security Trading Snapshot Dimension`, `Calendar Date Dimension` đã vẽ ở Nhóm 1.
 
@@ -2097,7 +2099,7 @@ flowchart LR
 #### Nhóm 35 - Top nhà đầu tư nước ngoài theo sàn (bảng số liệu)
 
 > **Phân loại:** Dashboard
-> **Atomic:** 100% reuse Nhóm 1 (`Security Trading Snapshot`, `Securities Trade`, `Public Company`, `Classification Business Line`) + Nhóm 6 (`Public Company Share Statistics` PENDING, EAV IDS PENDING) + Nhóm 9 (Bộ chỉ số thị trường/ngành) + Nhóm 33 (4 measure NĐTNN mới) — không có nguồn mới.
+> **Atomic:** 100% reuse Nhóm 1 (`Security Trading Snapshot`, `Securities Trade`, `Public Company`, `Classification Business Line`) + Nhóm 6 (`Public Company Share Statistics` Resolved 2026-08-26 (`pc_share_statistics_hstr`, xem O_GSTT_2), EAV IDS Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1)) + Nhóm 9 (Bộ chỉ số thị trường/ngành) + Nhóm 33 (4 measure NĐTNN mới) — không có nguồn mới.
 >
 > **Ghi chú tái sử dụng:** BA liệt kê 18 dòng con — toàn bộ đã có KPI ID sẵn từ Nhóm 1 (Mã, Ngành, Sàn, Ngày, KLGD, Giá, % thay đổi), Nhóm 6 (LNST, VCSH, Số CP lưu hành, Vốn hóa, P/E, P/B), Nhóm 9 (Bộ chỉ số thị trường/ngành) và Nhóm 33 (KL/GT mua-bán ròng NĐTNN) — reuse thẳng, không khai sinh KPI mới, không tạo/sửa Fact hay Dimension nào. Biến thể "theo sàn" của Nhóm 33.
 > **Ghi chú "Bộ chỉ số thị trường/bộ chỉ số ngành" (BA gộp 1 dòng con thành 2 KPI, giống Nhóm 13/14/15/16/23/24/27/28/31/32; cập nhật 2026-07-28):** Cùng bản chất đã xác nhận ở Nhóm 9 — cả 2 là filter con của K_GSTT_4 (`Index Constituent Dimension.Index Code`): "Bộ chỉ số thị trường" = `Index Code IN ('HOSE','UPCOM','HNX')`, "Bộ chỉ số theo ngành" = `Index Code NOT IN ('HOSE','UPCOM','HNX')`. Bảng KPI dưới đây có 19 dòng cho 18 dòng BA (cùng lý do +1 như các Nhóm trên).
@@ -2127,12 +2129,12 @@ flowchart LR
 | K_GSTT_71 | KL bán ròng (NĐTNN) | Cổ phiếu | Phái sinh | `SUM(Securities Trade.Execution Volume WHERE Sell Foreign Investor Type Code IN ('10','20')) GROUP BY Symbol, Trade Date` | Reuse từ Nhóm 33 | READY |
 | K_GSTT_72 | GT mua ròng (NĐTNN) | VNĐ | Phái sinh | `SUM(Securities Trade.Execution Value WHERE Buy Foreign Investor Type Code IN ('10','20')) GROUP BY Symbol, Trade Date` | Reuse từ Nhóm 33 | READY |
 | K_GSTT_73 | GT bán ròng (NĐTNN) | VNĐ | Phái sinh | `SUM(Securities Trade.Execution Value WHERE Sell Foreign Investor Type Code IN ('10','20')) GROUP BY Symbol, Trade Date` | Reuse từ Nhóm 33 | READY |
-| K_GSTT_56 | LNST | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_57 | VCSH | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_55 | Số cổ phiếu đang lưu hành | Cổ phiếu | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_2) | PENDING |
-| K_GSTT_61 | Vốn hóa | VNĐ | Chỉ tiêu phái sinh | `SUM(K_GSTT_10 × K_GSTT_55) GROUP BY Index Code` | Reuse từ Nhóm 6 — vẫn PENDING (phụ thuộc K_GSTT_55) | PENDING |
-| K_GSTT_58 | P/E thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_56 / K_GSTT_55)` | Reuse từ Nhóm 6 — vẫn PENDING | PENDING |
-| K_GSTT_59 | P/B thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_57 / K_GSTT_55)` | Reuse từ Nhóm 6 — vẫn PENDING | PENDING |
+| K_GSTT_56 | LNST | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Net Profit After Tax` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_57 | VCSH | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Owner Equity` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_55 | Số cổ phiếu đang lưu hành | Cổ phiếu | Cơ sở | `Fact Stock Portfolio Snapshot.Outstanding Share Quantity` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (`pc_share_statistics_hstr`, xem O_GSTT_2) | READY |
+| K_GSTT_61 | Vốn hóa | VNĐ | Chỉ tiêu phái sinh | `SUM(K_GSTT_10 × K_GSTT_55) GROUP BY Index Code` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (K_GSTT_55 đã có nguồn) | READY |
+| K_GSTT_58 | P/E thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (Fact Stock Portfolio Snapshot.Net Profit After Tax TTM / K_GSTT_55)` | Reuse từ Nhóm 6 — Resolved 2026-08-26. LNST dùng TTM 4 quý (rule GSĐC); K_GSTT_55 đã có nguồn (`pc_share_statistics_hstr`) | READY |
+| K_GSTT_59 | P/B thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_57 / K_GSTT_55)` | Reuse từ Nhóm 6 — Resolved 2026-08-26. K_GSTT_57 (VCSH) và K_GSTT_55 (Số CP lưu hành) đều đã có nguồn | READY |
 
 **Star Schema:** Không có bảng mới — 100% reuse `Fact Stock Portfolio Snapshot` (đã mở rộng 4 cột NĐTNN ở Nhóm 33), `Security Trading Snapshot Dimension`, `Public Company Dimension`, `Calendar Date Dimension`, `Index Constituent Dimension` đã vẽ ở Nhóm 1.
 
@@ -2184,8 +2186,8 @@ flowchart LR
 | K_GSTT_29 | Giá thấp nhất | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Low Price` | Reuse từ Nhóm 3 | READY |
 | K_GSTT_10 | Giá đóng cửa | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Close Price` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_13 | Khối lượng giao dịch | Cổ phiếu | Phái sinh | `SUM(Securities Trade.Execution Volume) GROUP BY Symbol, Trade Date` | Reuse từ Nhóm 1 (K_GSTT_13 = Tổng KL, đã bao gồm filter Market Id Code IN ('UPX','STX','STO') tại tầng Fact total_vol) | READY |
-| K_GSTT_31 | Doanh thu | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 3 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_32 | Lợi nhuận sau thuế | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 3 — vẫn PENDING (xem O_GSTT_1) | PENDING |
+| K_GSTT_31 | Doanh thu | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Revenue` | Reuse từ Nhóm 3 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_32 | Lợi nhuận sau thuế | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Net Profit After Tax` | Reuse từ Nhóm 3 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
 
 **Star Schema:** Không có bảng mới — 100% reuse `Fact Stock Portfolio Snapshot`, `Security Trading Snapshot Dimension`, `Public Company Dimension`, `Calendar Date Dimension`, `Index Constituent Dimension` đã vẽ ở Nhóm 1.
 
@@ -2209,7 +2211,7 @@ flowchart LR
 #### Nhóm 37 - Bản đồ nhiệt cổ phiếu/ngành theo vốn hóa/KLGD/GTGD/KLNN/GTNN
 
 > **Phân loại:** Dashboard
-> **Atomic:** 100% reuse Nhóm 1 (`Security Trading Snapshot`, `Public Company`, `Classification Business Line`) + Nhóm 6 (`Public Company Share Statistics` PENDING) + Nhóm 33 (KL/GT mua-bán ròng NĐTNN) — không có nguồn mới.
+> **Atomic:** 100% reuse Nhóm 1 (`Security Trading Snapshot`, `Public Company`, `Classification Business Line`) + Nhóm 6 (`Public Company Share Statistics` Resolved 2026-08-26) + Nhóm 33 (KL/GT mua-bán ròng NĐTNN) — không có nguồn mới.
 >
 > **Ghi chú tái sử dụng:** BA liệt kê 13 dòng con — toàn bộ đã có KPI ID sẵn từ Nhóm 1 (Mã, Ngành, Ngày, Giá, % thay đổi, KLGD, GTGD), Nhóm 6 (Số CP lưu hành, Vốn hóa) và Nhóm 33 (KLNN mua/bán, GTNN mua/bán) — reuse thẳng, không khai sinh KPI mới, không tạo/sửa Fact hay Dimension nào. "KLNN mua"/"KLNN bán"/"GTNN mua"/"GTNN bán" ở đây cùng bản chất và cùng nguồn với K_GSTT_70–72 (Nhóm 33, KL/GT mua-bán ròng NĐTNN) — chỉ khác cách hiển thị (bản đồ nhiệt màu theo cường độ, thay vì bảng), không phải chỉ tiêu mới. Bản chất báo cáo là "bản đồ nhiệt" (treemap) — không có cấu trúc Datamart riêng, chỉ là biến thể trực quan hóa tại tầng BI trên cùng `Fact Stock Portfolio Snapshot`.
 
@@ -2230,8 +2232,8 @@ flowchart LR
 | K_GSTT_7 | Ngày | — | Chiều | `Calendar Date Dimension.Calendar Date` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_10 | Giá | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Close Price` | Reuse từ Nhóm 1 (K_GSTT_10 = Giá đóng cửa) | READY |
 | K_GSTT_12 | % thay đổi | % | Phái sinh | `Price Change / Reference Price × 100` | Reuse từ Nhóm 1 — dùng làm màu sắc ô treemap | READY |
-| K_GSTT_55 | Số cổ phiếu đang lưu hành | Cổ phiếu | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_2) | PENDING |
-| K_GSTT_61 | Vốn hóa | VNĐ | Chỉ tiêu phái sinh | `SUM(K_GSTT_10 × K_GSTT_55) GROUP BY Index Code` | Reuse từ Nhóm 6 — vẫn PENDING (phụ thuộc K_GSTT_55) — dùng làm kích thước ô treemap | PENDING |
+| K_GSTT_55 | Số cổ phiếu đang lưu hành | Cổ phiếu | Cơ sở | `Fact Stock Portfolio Snapshot.Outstanding Share Quantity` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (`pc_share_statistics_hstr`, xem O_GSTT_2) | READY |
+| K_GSTT_61 | Vốn hóa | VNĐ | Chỉ tiêu phái sinh | `SUM(K_GSTT_10 × K_GSTT_55) GROUP BY Index Code` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (K_GSTT_55 đã có nguồn) — dùng làm kích thước ô treemap | READY |
 | K_GSTT_13 | KLGD | Cổ phiếu | Phái sinh | `SUM(Securities Trade.Execution Volume) GROUP BY Symbol, Trade Date` | Reuse từ Nhóm 1 (K_GSTT_13 = Tổng KL, đã bao gồm filter Market Id Code IN ('UPX','STX','STO') tại tầng Fact total_vol) | READY |
 | K_GSTT_14 | GTGD | VNĐ | Phái sinh | `SUM(Securities Trade.Execution Value) GROUP BY Symbol, Trade Date` | Reuse từ Nhóm 1 (K_GSTT_14 = Tổng GT, đã bao gồm filter Market Id Code IN ('UPX','STX','STO') tại tầng Fact total_val) | READY |
 | K_GSTT_70 | KLNN mua | Cổ phiếu | Phái sinh | `SUM(Securities Trade.Execution Volume WHERE Buy Foreign Investor Type Code IN ('10','20')) GROUP BY Symbol, Trade Date` | Reuse từ Nhóm 33 (K_GSTT_70 = KL mua ròng NĐTNN) | READY |
@@ -2260,10 +2262,10 @@ flowchart LR
 #### Nhóm 38 - Xu hướng dòng tiền — Tỷ trọng dòng tiền
 
 > **Phân loại:** Dashboard
-> **Atomic:** 100% reuse Nhóm 1 (`Security Trading Snapshot`, `Securities Trade`, `Index Constituent Snapshot`) + Nhóm 5 (`Market Index Snapshot`) + Nhóm 6 (`Public Company Share Statistics` PENDING) — không có nguồn mới.
+> **Atomic:** 100% reuse Nhóm 1 (`Security Trading Snapshot`, `Securities Trade`, `Index Constituent Snapshot`) + Nhóm 5 (`Market Index Snapshot`) + Nhóm 6 (`Public Company Share Statistics` Resolved 2026-08-26) — không có nguồn mới.
 >
 > **Ghi chú tái sử dụng:** BA liệt kê 10 dòng con — 7 dòng đã có KPI ID sẵn từ Nhóm 1 (Mã CK, Sàn, Chỉ số, Khối lượng giao dịch, Giá trị giao dịch, Giá đóng cửa, % Biến động giá) — reuse thẳng. 3 dòng còn lại ("Tỷ trọng trong chỉ số", "Điểm đóng góp theo vốn hóa lưu hành", "Điểm đóng góp theo vốn hóa tự do chuyển nhượng") là chỉ tiêu Free Float mới — xem ghi chú dưới đây.
-> **Ghi chú "Tỷ trọng trong chỉ số"/"Điểm đóng góp theo vốn hóa" — PENDING, chưa có nguồn Atomic:** BA yêu cầu công thức `Contribution = w × Return × Index(t-1)`, trong đó `w` (trọng số) tính từ Giá đóng cửa × Khối lượng cổ phiếu lưu hành (hoặc khối lượng cổ phiếu tự do chuyển nhượng — free float). Đã tra cứu toàn bộ `DataModel/Atomic/` và `DataModel/working/Atomic/lld/` (bao gồm `Index Constituent Snapshot`, `Market Index Snapshot`) — không có attribute nào tên Free Float/Weight/Tỷ trọng/Market Cap Contribution. "Khối lượng cổ phiếu tự do chuyển nhượng" (free float shares, khác "Số cổ phiếu lưu hành" K_GSTT_55 đã PENDING) hoàn toàn chưa có nguồn nào được xác nhận. PENDING toàn bộ 3 chỉ tiêu — cần BA/nghiệp vụ bổ sung nguồn dữ liệu free float trước khi thiết kế (xem O_GSTT_7).
+> **Ghi chú "Tỷ trọng trong chỉ số"/"Điểm đóng góp theo vốn hóa" — PENDING, chưa có nguồn Atomic:** BA yêu cầu công thức `Contribution = w × Return × Index(t-1)`, trong đó `w` (trọng số) tính từ Giá đóng cửa × Khối lượng cổ phiếu lưu hành (hoặc khối lượng cổ phiếu tự do chuyển nhượng — free float). Đã tra cứu toàn bộ `DataModel/Atomic/` và `DataModel/working/Atomic/lld/` (bao gồm `Index Constituent Snapshot`, `Market Index Snapshot`) — không có attribute nào tên Free Float/Weight/Tỷ trọng/Market Cap Contribution. "Khối lượng cổ phiếu tự do chuyển nhượng" (free float shares, khác "Số cổ phiếu lưu hành" K_GSTT_55 — đã Resolved 2026-08-26, không phải free float) hoàn toàn chưa có nguồn nào được xác nhận. PENDING toàn bộ 3 chỉ tiêu — cần BA/nghiệp vụ bổ sung nguồn dữ liệu free float trước khi thiết kế (xem O_GSTT_7).
 
 **Mockup:**
 
@@ -2281,7 +2283,7 @@ flowchart LR
 | K_GSTT_3 | Sàn | — | Chiều | `Security Trading Snapshot Dimension.Floor Code` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_4 | Chỉ số | — | Chiều | `Index Constituent Dimension.Index Code` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_74 | Tỷ trọng trong chỉ số (%) | % | Phái sinh | *(chưa xác định — cần nguồn Free Float)* | Mới — PENDING, chưa có Atomic nguồn (xem O_GSTT_7) | PENDING |
-| K_GSTT_75 | Điểm đóng góp theo vốn hóa lưu hành | Điểm | Phái sinh | *(chưa xác định — `w × Return × Index(t-1)`, w từ K_GSTT_55)* | Mới — PENDING, phụ thuộc K_GSTT_55 (đã PENDING) + Free Float (chưa có nguồn) | PENDING |
+| K_GSTT_75 | Điểm đóng góp theo vốn hóa lưu hành | Điểm | Phái sinh | *(chưa xác định — `w × Return × Index(t-1)`, w từ K_GSTT_55)* | Mới — PENDING, K_GSTT_55 đã Resolved nhưng vẫn thiếu Free Float (chưa có nguồn) | PENDING |
 | K_GSTT_76 | Điểm đóng góp theo vốn hóa tự do chuyển nhượng | Điểm | Phái sinh | *(chưa xác định — cần nguồn Free Float Share Quantity)* | Mới — PENDING, chưa có Atomic nguồn nào cho "khối lượng cổ phiếu tự do chuyển nhượng" (xem O_GSTT_7) | PENDING |
 | K_GSTT_13 | Khối lượng giao dịch | Cổ phiếu | Phái sinh | `SUM(Securities Trade.Execution Volume) GROUP BY Symbol, Trade Date` | Reuse từ Nhóm 1 (K_GSTT_13 = Tổng KL, đã bao gồm filter Market Id Code IN ('UPX','STX','STO') tại tầng Fact total_vol) | READY |
 | K_GSTT_14 | Giá trị giao dịch | VNĐ | Phái sinh | `SUM(Securities Trade.Execution Value) GROUP BY Symbol, Trade Date` | Reuse từ Nhóm 1 (K_GSTT_14 = Tổng GT, đã bao gồm filter Market Id Code IN ('UPX','STX','STO') tại tầng Fact total_val) | READY |
@@ -2549,18 +2551,18 @@ flowchart LR
 #### Nhóm 44 - Biểu đồ phân tích kỹ thuật
 
 > **Phân loại:** Dashboard
-> **Atomic:** 100% reuse Nhóm 1 (`Security Trading Snapshot`, `Securities Trade`, `Index Constituent Snapshot`) + Nhóm 3 (`Open/High/Low Price`, EAV IDS PENDING) — không có nguồn mới ngoài Fact Intraday.
+> **Atomic:** 100% reuse Nhóm 1 (`Security Trading Snapshot`, `Securities Trade`, `Index Constituent Snapshot`) + Nhóm 3 (`Open/High/Low Price`, EAV IDS PENDING) + cột mới `Trading Timestamp` (`trading_tms`) trên `Security Trading Snapshot` — không có nguồn mới ngoài Fact Intraday.
 >
 > **Ghi chú tái sử dụng:** BA liệt kê 14 dòng con — 2 dòng đã có KPI ID sẵn từ Nhóm 1 (Mã, Chỉ số) — reuse thẳng. Khác các Nhóm khác, BA Nhóm 44 **không có "Ngày"/"Ngành"/"Sàn"/"Bộ chỉ số"** — thay vào đó có 2 bộ giá/KLGD riêng biệt: 5 dòng "... theo từng time trong 1 ngày" (grain intraday, mới) và 5 dòng thường không ghi "theo time" (đã reuse K_GSTT_27-29/10/13 — SQL tham khảo ghi rõ "Lấy giá trị cuối ngày", trùng hoàn toàn logic `rn=1` đã dùng cho `Security Trading Snapshot Dimension`), cùng Doanh thu/LNST (reuse Nhóm 3, PENDING). Bảng KPI có đúng 14 dòng cho 14 dòng BA — không có gộp Bộ chỉ số (khác Nhóm 31/32/35/36, BA nhóm này không có dòng đó).
-> **Ghi chú 5 KPI Intraday mới (K_GSTT_95–98) — thiết kế bổ sung 2026-07-28 (đã bỏ sót ở bản trước):** BA yêu cầu Giá mở/cao/thấp/đóng cửa + Khối lượng giao dịch **"theo từng time trong 1 ngày"** — khác hẳn 5 chỉ tiêu cùng tên không kèm "theo time" (đã reuse, lấy giá trị cuối ngày qua `rn=1`). Đối chiếu Atomic xác nhận `Security Trading Snapshot` (MDDS.JAD_STOCKINFOR) có grain gốc **theo từng thời điểm snapshot trong ngày** (BK = `HISTORYID`, unique per lần chụp — không phải theo ngày), với field `Trading Time` (`trading_time`, kiểu Text, "Nguồn lưu dạng string — giữ Text vì format chưa chuẩn hóa. Cần profile trước khi convert sang Timestamp" — theo comment gốc trong YAML Atomic). `Security Trading Snapshot Dimension` (Nhóm 1) chỉ là 1 lát cắt `rn=1` (bản ghi cuối ngày) của cùng nguồn này — không đủ để phục vụ hiển thị biến động trong ngày. Thiết kế **`Fact Security Trading Intraday`** mới (tương tự `Fact Market Index Intraday` ở Cụm 2b nhưng theo Symbol thay vì Market Code), grain = 1 row/Symbol/Trading Time, FK `Security Trading Snapshot Dimension` (mã CK, reuse Nhóm 1) + `Calendar Date Dimension` (reuse, xác định qua Trading Date). "Khối lượng giao dịch theo từng time" — BA tự ghi chú nguồn `totaltrading` là **lũy kế từ đầu ngày, không phải khối lượng phát sinh riêng tại thời điểm đó** — giữ nguyên bản chất lũy kế khi thiết kế, không tự suy diễn thành khối lượng tức thời. **PENDING profile `Trading Time`** trước khi lên LLD — Atomic đã cảnh báo cần profile định dạng chuỗi trước khi convert Timestamp; note BA cũng có giá trị lạ (`0,042361111`, khả năng lỗi convert serial-time Excel khi export) — cần DBA/BA xác nhận định dạng thật trước khi chốt ETL.
+> **Ghi chú 5 KPI Intraday (K_GSTT_95–99) — RESOLVED 2026-08-26 (trước đó PENDING chờ profile `Trading Time`, xem O_GSTT_11):** BA yêu cầu Giá mở/cao/thấp/đóng cửa + Khối lượng giao dịch **"theo từng time trong 1 ngày"** — khác hẳn 5 chỉ tiêu cùng tên không kèm "theo time" (đã reuse, lấy giá trị cuối ngày qua `rn=1`). Data Modeler đã bổ sung cột mới **`Trading Timestamp`** (`trading_tms`, data_domain `Timestamp`) trên Atomic `Security Trading Snapshot` — nối chuỗi `Trading Date` (`trading_dt`) + `' '` + `Trading Time` (`trading_time`) ngay tại tầng ODS trước khi vào Atomic (cột nguồn `MDDS.JAD_STOCKINFOR.TRADINGTIMESTAMP`, ETL-derived = `TRADINGDATE || ' ' || TRADINGTIME`). `Trading Date`/`Trading Time` **giữ nguyên không đổi**, cả ở ODS lẫn Atomic — `trading_tms` là cột bổ sung dùng làm field xác định thời điểm cho grain intraday, không cần chờ profile định dạng chuỗi gốc của `Trading Time` nữa vì `trading_tms` đã là kiểu Timestamp chuẩn hóa sẵn từ ODS. Thiết kế chính thức **`Fact Security Trading Intraday`** (tương tự `Fact Market Index Intraday` ở Cụm 2b nhưng theo Symbol thay vì Market Code), grain = **1 row/Symbol/Trading Timestamp**, FK `Security Trading Snapshot Dimension` (mã CK, reuse Nhóm 1) + `Calendar Date Dimension` (reuse, xác định qua `Trading Date`). "Khối lượng giao dịch theo từng time" (K_GSTT_99) — BA tự ghi chú nguồn `totaltrading` là **lũy kế từ đầu ngày, không phải khối lượng phát sinh riêng tại thời điểm đó** — giữ nguyên bản chất lũy kế khi thiết kế (`Cumulative Volume At Time`), không tự suy diễn thành khối lượng tức thời. `Trading Timestamp` chỉ dùng làm field xác định grain/order trên Fact, không khai KPI Chiều riêng (khác `Index Time` ở Cụm 2b có KPI K_GSTT_34) — BA Nhóm 44 không có dòng con "theo giờ" tách riêng, "theo time" đã gắn liền tên 5 KPI đo lường sẵn có (số dòng KPI Nhóm 44 giữ nguyên 14, khớp 14 dòng con BA — xem Bước 5B #10).
 
 **Mockup:**
 
 | Mã | Chỉ số | Giá mở (time) | Giá cao (time) | Giá thấp (time) | Giá đóng (time) | KLGD (time) | Giá mở | Giá cao | Giá thấp | Giá đóng | Khối lượng | Doanh thu | Lợi nhuận sau thuế |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| VCB | VN30 | *(pending)* | *(pending)* | *(pending)* | *(pending)* | *(pending)* | 82.00 | 83.00 | 81.50 | 82.50 | 548 Tr | — | — |
+| VCB | VN30 | 82.00 (09:15) | 83.20 (10:30) | 81.50 (09:16) | 82.50 (14:45) | 320 Tr (10:30) | 82.00 | 83.00 | 81.50 | 82.50 | 548 Tr | — | — |
 
-**Source:** `Fact Stock Portfolio Snapshot` → `Security Trading Snapshot Dimension`, `Index Constituent Dimension` (5 chỉ tiêu cuối ngày, reuse); `Fact Security Trading Intraday` (mới) → `Security Trading Snapshot Dimension`, `Calendar Date Dimension` (5 chỉ tiêu theo time, PENDING chờ profile Trading Time).
+**Source:** `Fact Stock Portfolio Snapshot` → `Security Trading Snapshot Dimension`, `Index Constituent Dimension` (5 chỉ tiêu cuối ngày, reuse); `Fact Security Trading Intraday` (mới) → `Security Trading Snapshot Dimension`, `Calendar Date Dimension` (5 chỉ tiêu theo time).
 
 **Bảng KPI:**
 
@@ -2568,33 +2570,96 @@ flowchart LR
 |---|---|---|---|---|---|---|
 | K_GSTT_1 | Mã | — | Chiều | `Security Trading Snapshot Dimension.Symbol` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_4 | Chỉ số | — | Chiều | `Index Constituent Dimension.Index Code` | Reuse từ Nhóm 1 | READY |
-| K_GSTT_95 | Giá mở cửa theo từng time trong ngày | VNĐ | Cơ sở | `Fact Security Trading Intraday.Open Price At Time` | Mới — grain intraday, PENDING chờ profile `Trading Time` (xem O_GSTT_11) | PENDING |
-| K_GSTT_96 | Giá cao nhất theo từng time trong ngày | VNĐ | Cơ sở | `Fact Security Trading Intraday.High Price At Time` | Mới — cùng ghi chú K_GSTT_95 | PENDING |
-| K_GSTT_97 | Giá thấp nhất theo từng time trong ngày | VNĐ | Cơ sở | `Fact Security Trading Intraday.Low Price At Time` | Mới — cùng ghi chú K_GSTT_95 | PENDING |
-| K_GSTT_98 | Giá đóng cửa theo từng time trong ngày | VNĐ | Cơ sở | `Fact Security Trading Intraday.Close Price At Time` | Mới — cùng ghi chú K_GSTT_95 | PENDING |
-| K_GSTT_99 | Khối lượng giao dịch theo từng time trong ngày | Cổ phiếu | Cơ sở | `Fact Security Trading Intraday.Cumulative Volume At Time` | Mới — nguồn `totaltrading` là lũy kế từ đầu ngày (BA tự ghi chú), không phải khối lượng phát sinh riêng tại thời điểm — giữ nguyên bản chất lũy kế. Cùng ghi chú PENDING K_GSTT_95 | PENDING |
+| K_GSTT_95 | Giá mở cửa theo từng time trong ngày | VNĐ | Cơ sở | `Fact Security Trading Intraday.Open Price At Time` | Grain intraday — 1 row/Symbol/Trading Timestamp (`trading_tms`, mới bổ sung Atomic, xem O_GSTT_11) | READY |
+| K_GSTT_96 | Giá cao nhất theo từng time trong ngày | VNĐ | Cơ sở | `Fact Security Trading Intraday.High Price At Time` | Cùng ghi chú K_GSTT_95 | READY |
+| K_GSTT_97 | Giá thấp nhất theo từng time trong ngày | VNĐ | Cơ sở | `Fact Security Trading Intraday.Low Price At Time` | Cùng ghi chú K_GSTT_95 | READY |
+| K_GSTT_98 | Giá đóng cửa theo từng time trong ngày | VNĐ | Cơ sở | `Fact Security Trading Intraday.Close Price At Time` | Cùng ghi chú K_GSTT_95 | READY |
+| K_GSTT_99 | Khối lượng giao dịch theo từng time trong ngày | Cổ phiếu | Cơ sở | `Fact Security Trading Intraday.Cumulative Volume At Time` | Nguồn `totaltrading` là lũy kế từ đầu ngày (BA tự ghi chú), không phải khối lượng phát sinh riêng tại thời điểm — giữ nguyên bản chất lũy kế. Cùng nguồn `trading_tms` với K_GSTT_95 | READY |
 | K_GSTT_27 | Giá mở cửa | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Open Price` | Reuse từ Nhóm 3 — BA ghi "Lấy giá trị cuối ngày" (rn=1), trùng hoàn toàn | READY |
 | K_GSTT_28 | Giá cao nhất | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.High Price` | Reuse từ Nhóm 3 — cùng ghi chú K_GSTT_27 | READY |
 | K_GSTT_29 | Giá thấp nhất | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Low Price` | Reuse từ Nhóm 3 — cùng ghi chú K_GSTT_27 | READY |
 | K_GSTT_10 | Giá đóng cửa | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Close Price` | Reuse từ Nhóm 1 — cùng ghi chú K_GSTT_27 | READY |
 | K_GSTT_13 | Khối lượng giao dịch | Cổ phiếu | Phái sinh | `SUM(Securities Trade.Execution Volume) GROUP BY Symbol, Trade Date` | Reuse từ Nhóm 1 (K_GSTT_13 = Tổng KL, đã bao gồm filter Market Id Code IN ('UPX','STX','STO') tại tầng Fact total_vol) | READY |
-| K_GSTT_31 | Doanh thu | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 3 — vẫn PENDING (xem O_GSTT_1) | PENDING |
-| K_GSTT_32 | Lợi nhuận sau thuế | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 3 — vẫn PENDING (xem O_GSTT_1) | PENDING |
+| K_GSTT_31 | Doanh thu | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Revenue` | Reuse từ Nhóm 3 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
+| K_GSTT_32 | Lợi nhuận sau thuế | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Net Profit After Tax` | Reuse từ Nhóm 3 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
 
-**Star Schema:** *(dùng chung `Fact Stock Portfolio Snapshot` + `Security Trading Snapshot Dimension` + `Index Constituent Dimension` đã vẽ ở Nhóm 1 cho 8 chỉ tiêu READY/PENDING không đổi grain. 5 KPI Intraday (K_GSTT_95–98) PENDING, chưa vẽ `Fact Security Trading Intraday` cho tới khi profile xong `Trading Time` — dự kiến grain 1 row/Symbol/Trading Time, FK `Security Trading Snapshot Dimension` + `Calendar Date Dimension`.)*
+**Star Schema:** *(8 chỉ tiêu READY/PENDING không đổi grain — dùng chung `Fact Stock Portfolio Snapshot` + `Security Trading Snapshot Dimension` + `Index Constituent Dimension` đã vẽ ở Nhóm 1, không vẽ lại. 5 KPI Intraday (K_GSTT_95–99) — `Fact Security Trading Intraday` vẽ mới bên dưới.)*
+
+```mermaid
+erDiagram
+    Security_Trading_Snapshot_Dimension {
+        string Security_Trading_Snapshot_Dimension_Id PK
+        string Symbol
+        string Security_Full_Name
+        string Floor_Code
+        string Stock_Type_Code
+        string Stock_Type_Name
+        string Underlying_Symbol
+        string ISIN_Code
+        string Issuer_Name
+        int Listed_Share_Count
+        date First_Trading_Date
+        date Last_Trading_Date
+        date Issue_Date
+        date Maturity_Date
+        string Fund_Type_Code
+        string Covered_Warrant_Type_Code
+        decimal Exercise_Price
+        string Exercise_Ratio
+        string Exercise_Style_Code
+        string Put_Or_Call_Code
+        string Contract_Multiplier
+        string Maturity_Month_Year
+        decimal Coupon_Rate
+        decimal Yield
+        decimal Open_Price
+        decimal High_Price
+        decimal Low_Price
+        decimal Reference_Price
+        decimal Close_Price
+        decimal Price_Change
+        string Source_System_Code
+    }
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
+        string Source_System_Code
+    }
+    Fact_Security_Trading_Intraday {
+        string Security_Trading_Snapshot_Dimension_Id FK
+        string Calendar_Date_Dimension_Id FK
+        datetime Trading_Timestamp
+        decimal Open_Price_At_Time
+        decimal High_Price_At_Time
+        decimal Low_Price_At_Time
+        decimal Close_Price_At_Time
+        int Cumulative_Volume_At_Time
+    }
+    Security_Trading_Snapshot_Dimension ||--o{ Fact_Security_Trading_Intraday : " "
+    Calendar_Date_Dimension ||--o{ Fact_Security_Trading_Intraday : " "
+```
+
+> **Fact Security Trading Intraday có FK tới Calendar Date Dimension** — xác định qua `Security Trading Snapshot.Trading Date` (`trading_dt`, nguồn `MDDS.JAD_STOCKINFOR`, data_domain Date, tách biệt với `Trading Timestamp` dạng Timestamp) — cho phép filter/slicer theo ngày giao dịch trước khi phân tích chi tiết theo `Trading Timestamp` trong ngày đó. Pattern giống hệt `Fact Market Index Intraday` (Cụm 2b, Section 1).
 
 **Lineage Mart → Báo cáo:**
 
 ```mermaid
 flowchart LR
     F1["Fact Stock Portfolio Snapshot"] --> RPT44["Biểu đồ phân tích kỹ thuật"]
+    F2["Fact Security Trading Intraday"] --> RPT44
     D1["Security Trading Snapshot Dimension"] --> RPT44
+    D2["Calendar Date Dimension"] --> RPT44
     D4["Index Constituent Dimension"] --> RPT44
 ```
 
-**Bảng grain:** *(phần READY giống Nhóm 1 — cùng grain `Fact Stock Portfolio Snapshot`. Phần PENDING — `Fact Security Trading Intraday` dự kiến 1 row/Symbol/Trading Time, chưa thiết kế chính thức cho tới khi profile xong format `Trading Time`.)*
+**Bảng grain:**
 
-> **Coverage rule:** Không áp dụng cho phần READY (100% reuse). `Fact Security Trading Intraday` sẽ áp dụng coverage rule khi thiết kế chính thức (sau khi profile Trading Time) — kéo đủ measure snapshot theo thời điểm có thật trong `Security Trading Snapshot`.
+| Tên bảng | Grain |
+|---|---|
+| Fact Stock Portfolio Snapshot | 1 row / mã CK / ngày (bản ghi cuối phiên, `rn=1`) — dùng chung Nhóm 1, không đổi |
+| Fact Security Trading Intraday | 1 row / Symbol / Trading Timestamp (`trading_tms`) — có FK `Calendar Date Dimension` xác định qua `Trading Date` |
+
+> **Coverage rule:** Không áp dụng cho phần reuse `Fact Stock Portfolio Snapshot` (100% reuse, không đổi grain). `Fact Security Trading Intraday`: đã kéo đủ 4 measure giá (Open/High/Low/Close At Time) + 1 measure khối lượng lũy kế (Cumulative Volume At Time) — đúng tập measure BA yêu cầu cho biểu đồ phân tích kỹ thuật, không có measure snapshot nào khác trong `Security Trading Snapshot` (Bid/Offer/Foreign...) thuộc phạm vi "theo từng time" cần kéo thêm.
 
 ---
 
@@ -2673,13 +2738,13 @@ flowchart LR
 #### Nhóm 46 - Báo cáo Thống kê định giá TTCK Việt Nam (BM021_MSS)
 
 > **Phân loại:** Dashboard
-> **Atomic:** 100% reuse Nhóm 1/3 (`Security Trading Snapshot`) cho 3/16 chỉ tiêu + `Public Company Share Statistics` (PENDING, Nguồn 2 only) cho 2/16 + EAV IDS (PENDING) cho 2/16 — **10/16 chỉ tiêu hoàn toàn không có nguồn Atomic nào** (52-tuần rolling, EPS, Book Value, P/E, P/B) — xem ghi chú dưới đây.
+> **Atomic:** 100% reuse Nhóm 1/3 (`Security Trading Snapshot`) cho 4/16 chỉ tiêu + `Public Company Share Statistics` (K_GSTT_55 **Resolved 2026-08-26** qua `pc_share_statistics_hstr`; K_GSTT_109 "bình quân" vẫn PENDING, xem O_GSTT_2) cho 2/16 + EAV IDS (**Resolved 2026-08-26, rule GSĐC** — LNST/VCSH, xem O_GSTT_1) cho 2/16 — **9/16 chỉ tiêu hoàn toàn không có nguồn Atomic nào** (52-tuần rolling, EPS, Book Value, P/E, P/B theo quý — K_GSTT_109 bình quân tính riêng) — xem ghi chú dưới đây.
 >
 > **Ghi chú tái sử dụng (3 chỉ tiêu READY):** "Mã ck" (K_GSTT_1), "Giá đóng cửa" (K_GSTT_10) reuse từ Nhóm 1. "Ngày giao dịch đầu tiên" là attribute có sẵn theo coverage rule (Bước 1a) trên `Security Trading Snapshot Dimension` (`First Trading Date`, đã kéo dư thừa từ Nhóm 1 dù chưa dùng tới) — khai KPI mới K_GSTT_105.
 > **Ghi chú "Khối lượng niêm yết hiện tại" (K_GSTT_108, mới):** Atomic `Security Trading Snapshot.Listed Share Count` (nguồn `MDDS.JAD_STOCKINFOR.LISTEDSHARE`) đã có sẵn theo coverage rule Nhóm 1 nhưng chưa khai KPI — đúng ý nghĩa "khối lượng niêm yết" (khác "khối lượng lưu hành" — 2 khái niệm khác nhau theo đúng BA phân biệt "niêm yết hiện tại" vs "đang lưu hành").
-> **Ghi chú "Khối lượng lưu hành"/"lưu hành bình quân" — PENDING:** `Public Company Share Statistics.Total Outstanding Share Quantity` chỉ có ở Nguồn 2 (`design_status: draft`), là snapshot 1 thời điểm (current-state), không có cơ chế "bình quân" theo kỳ — cùng bản chất grain mismatch đã ghi ở O_GSTT_2 (Số cổ phiếu lưu hành K_GSTT_55). Reuse thẳng K_GSTT_55, vẫn PENDING.
+> **Ghi chú "Khối lượng lưu hành" — Resolved 2026-08-26 / "lưu hành bình quân" — vẫn PENDING:** K_GSTT_55 (point-in-time, qua `pc_share_statistics_hstr` — xem O_GSTT_2) đã Resolved, reuse thẳng cho "Khối lượng cổ phiếu đang lưu hành". Riêng "bình quân theo kỳ" (K_GSTT_109) vẫn PENDING — `pc_share_statistics_hstr` chỉ có snapshot theo từng ngày, chưa có cơ chế tính bình quân (AVG theo kỳ báo cáo) được xác nhận.
 > **Ghi chú "Giá cao/thấp nhất 4/52 tuần gần nhất" — PENDING:** Dù BA ghi nguồn `MDDS.HIGH`/`.LOW` (trùng tên field với K_GSTT_28/29, Giá cao/thấp trong ngày), bản chất chỉ tiêu này là rolling window 52 tuần (~1 năm) — không phải giá cao/thấp trong 1 phiên. Không có Atomic entity nào lưu sẵn giá trị rolling 52 tuần; đây sẽ là window function tại tầng BI tương tự pattern KLGDTB N ngày (K_GSTT_64-68, Nhóm 11: `MAX/MIN(K_GSTT_28/29) OVER (PARTITION BY Symbol ORDER BY Trade Date ROWS BETWEEN 52*5 PRECEDING AND CURRENT ROW)`) — nhưng khác Nhóm 11 (đã READY vì chỉ cần SUM/AVG đơn giản), ở đây BA ghi rõ "4/52 tuần" mà không có SQL tham khảo cụ thể xác nhận cách tính (theo tuần hay theo phiên giao dịch, có loại trừ ngày nghỉ lễ không) — cần xác nhận công thức chính xác với BA trước khi chốt là READY hay PENDING (xem O_GSTT_10).
-> **Ghi chú "LNST"/"VCSH" — PENDING:** Trùng hoàn toàn K_GSTT_56/57 (Nhóm 6, EAV IDS PENDING — xem O_GSTT_1).
+> **Ghi chú "LNST"/"VCSH" — Resolved 2026-08-26:** Trùng hoàn toàn K_GSTT_56/57 (Nhóm 6, rule GSĐC — xem O_GSTT_1). Riêng biến thể "theo quý"/"bình quân 4 quý" (K_GSTT_110–113, 58–59 quý) vẫn PENDING — xem ghi chú EPS/Book Value bên dưới.
 > **Ghi chú "EPS quý/bình quân 4 quý", "Giá trị sổ sách quý/bình quân 4 quý", "P/E", "P/B" — PENDING hoàn toàn, không có Atomic nào:** Đã tra cứu toàn bộ `DataModel/Atomic/` và `DataModel/working/Atomic/lld/` (kể cả EAV IDS report) — không tìm thấy attribute nào tên EPS/earning-per-share hay Book Value/giá trị sổ sách cho cổ phiếu niêm yết (chỉ có NAV của **quỹ đầu tư** trong `FMS.FUNDS`, không liên quan). Khác K_GSTT_58-60 (Nhóm 6, cũng P/E/P/B nhưng tính theo ngày từ LNST/VCSH/Giá đóng cửa/Số CP lưu hành — công thức tương tự nhưng ở đây BA yêu cầu thêm biến thể "theo quý"/"bình quân 4 quý" — khác chu kỳ thời gian, cần chiều "Kỳ báo cáo" đã PENDING ở O_GSTT_1). PENDING hoàn toàn cho tới khi Atomic có nguồn EAV báo cáo tài chính chuẩn hóa.
 
 **Mockup:**
@@ -2688,7 +2753,7 @@ flowchart LR
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | VCB | 31/07/2019 | 82.50 | *(pending)* | *(pending)* | *(pending)* | *(pending)* | *(pending)* | *(pending)* | *(pending)* | *(pending)* | *(pending)* | *(pending)* | *(pending)* | *(pending)* | *(pending)* | *(pending)* |
 
-**Source:** `Fact Stock Portfolio Snapshot` → `Security Trading Snapshot Dimension` — 3/16 chỉ tiêu READY; 13/16 PENDING.
+**Source:** `Fact Stock Portfolio Snapshot` → `Security Trading Snapshot Dimension` — 6/16 chỉ tiêu READY (LNST/VCSH mới Resolved 2026-08-26); phần còn lại PENDING.
 
 **Bảng KPI:**
 
@@ -2697,16 +2762,16 @@ flowchart LR
 | K_GSTT_1 | Mã ck | — | Chiều | `Security Trading Snapshot Dimension.Symbol` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_105 | Ngày giao dịch đầu tiên | Ngày | Cơ sở | `Security Trading Snapshot Dimension.First Trading Date` | Mới — đã có sẵn theo coverage rule Nhóm 1, chưa khai KPI trước đó | READY |
 | K_GSTT_10 | Giá đóng cửa | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Close Price` | Reuse từ Nhóm 1 | READY |
-| K_GSTT_61 | Vốn hóa | VNĐ | Chỉ tiêu phái sinh | `SUM(K_GSTT_10 × K_GSTT_55) GROUP BY Index Code` | Reuse từ Nhóm 6 — vẫn PENDING (phụ thuộc K_GSTT_55) | PENDING |
+| K_GSTT_61 | Vốn hóa | VNĐ | Chỉ tiêu phái sinh | `SUM(K_GSTT_10 × K_GSTT_55) GROUP BY Index Code` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (K_GSTT_55 đã có nguồn) | READY |
 | K_GSTT_106 | Giá cao nhất 52 tuần gần nhất | VNĐ | Phái sinh | *(chưa xác định — rolling window, chưa rõ công thức chính xác)* | Mới — PENDING, chờ xác nhận công thức với BA (xem O_GSTT_10) | PENDING |
 | K_GSTT_107 | Giá thấp nhất 52 tuần gần nhất | VNĐ | Phái sinh | *(chưa xác định)* | Mới — PENDING, cùng ghi chú K_GSTT_106 | PENDING |
 | K_GSTT_108 | Khối lượng niêm yết hiện tại | Cổ phiếu | Cơ sở | `Security Trading Snapshot Dimension.Listed Share Count` | Mới — đã có sẵn theo coverage rule Nhóm 1, chưa khai KPI trước đó | READY |
-| K_GSTT_55 | Khối lượng cổ phiếu đang lưu hành | Cổ phiếu | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_2) | PENDING |
-| K_GSTT_109 | Khối lượng cổ phiếu đang lưu hành bình quân | Cổ phiếu | Phái sinh | *(chưa xác định — cần cơ chế bình quân theo kỳ)* | Mới — PENDING, phụ thuộc K_GSTT_55 (PENDING) + chưa có cơ chế bình quân | PENDING |
-| K_GSTT_56 | LNST | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_1) | PENDING |
+| K_GSTT_55 | Khối lượng cổ phiếu đang lưu hành | Cổ phiếu | Cơ sở | `Fact Stock Portfolio Snapshot.Outstanding Share Quantity` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (`pc_share_statistics_hstr`, xem O_GSTT_2) | READY |
+| K_GSTT_109 | Khối lượng cổ phiếu đang lưu hành bình quân | Cổ phiếu | Phái sinh | *(chưa xác định — cần cơ chế bình quân theo kỳ)* | Mới — PENDING. K_GSTT_55 đã Resolved (point-in-time) nhưng chưa có cơ chế bình quân (AVG) theo kỳ báo cáo | PENDING |
+| K_GSTT_56 | LNST | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Net Profit After Tax` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
 | K_GSTT_110 | EPS quý gần nhất | VNĐ | Phái sinh | *(chưa xác định — không có Atomic)* | Mới — PENDING hoàn toàn, không có nguồn EPS nào (xem O_GSTT_1 mở rộng) | PENDING |
 | K_GSTT_111 | EPS bình quân 4 quý gần nhất | VNĐ | Phái sinh | *(chưa xác định)* | Mới — PENDING, cùng ghi chú K_GSTT_110 | PENDING |
-| K_GSTT_57 | VCSH | VNĐ | Cơ sở | *(chưa xác định)* | Reuse từ Nhóm 6 — vẫn PENDING (xem O_GSTT_1) | PENDING |
+| K_GSTT_57 | VCSH | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Owner Equity` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (rule GSĐC, xem O_GSTT_1) | READY |
 | K_GSTT_112 | Giá trị sổ sách quý gần nhất | VNĐ | Phái sinh | *(chưa xác định — không có Atomic)* | Mới — PENDING hoàn toàn, không có nguồn Book Value nào | PENDING |
 | K_GSTT_113 | Giá trị sổ sách bình quân 4 quý gần nhất | VNĐ | Phái sinh | *(chưa xác định)* | Mới — PENDING, cùng ghi chú K_GSTT_112 | PENDING |
 | K_GSTT_58 | P/E | Lần | Chỉ tiêu phái sinh | *(chưa xác định — biến thể theo quý của K_GSTT_58, Nhóm 6)* | Reuse cơ chế K_GSTT_58 nhưng theo chu kỳ quý — vẫn PENDING (phụ thuộc EPS quý PENDING) | PENDING |
@@ -2733,7 +2798,7 @@ flowchart LR
 > **Phân loại:** Data Explorer
 > **Atomic:** 100% reuse Nhóm 1/3/6/9/33/41/42/43 — bổ sung 3 measure mới ("KL mua/bán/ròng tự doanh" — Volume, khác GT tự doanh đã có ở Nhóm 41) — không có nguồn mới ngoài phạm vi đã xác nhận.
 >
-> **Ghi chú tái sử dụng:** BA liệt kê 37 dòng con — đây là Data Explorer tổng hợp lại gần như toàn bộ chỉ tiêu đã thiết kế qua các Nhóm 1-43. 33 dòng đã có KPI ID sẵn: Mã CK/Sàn/Ngành/Ngày/Chỉ số (Nhóm 1), Giá tham chiếu/đóng/mở/cao/thấp, Thay đổi, % thay đổi (Nhóm 1/3), P/E/P/B/EPS/Vốn hóa thị trường (Nhóm 6, PENDING), Tổng KL/GT (Nhóm 1), KLNN/GTNN mua/bán/ròng (Nhóm 33/39/40), KL thỏa thuận (Nhóm 1, K_GSTT_17), GT mua/bán/ròng tự doanh (Nhóm 41), GT mua/bán/ròng theo phân loại NĐT (Nhóm 43) — reuse thẳng, không khai sinh KPI mới cho 33 dòng này. 3 dòng còn lại ("KL mua tự doanh", "KL bán tự doanh", "KL tự doanh ròng") là chỉ tiêu mới thật — xem ghi chú dưới đây. "KL mua"/"KL bán"/"KL ròng" theo phân loại NĐT (3 dòng cuối, không tính trùng vào 33 dòng trên) tổng quát hóa tương tự K_GSTT_90-91 (Nhóm 43) nhưng đo Volume thay Value — xem ghi chú.
+> **Ghi chú tái sử dụng:** BA liệt kê 37 dòng con — đây là Data Explorer tổng hợp lại gần như toàn bộ chỉ tiêu đã thiết kế qua các Nhóm 1-43. 33 dòng đã có KPI ID sẵn: Mã CK/Sàn/Ngành/Ngày/Chỉ số (Nhóm 1), Giá tham chiếu/đóng/mở/cao/thấp, Thay đổi, % thay đổi (Nhóm 1/3), P/E/P/B/EPS/Vốn hóa thị trường (Nhóm 6, Resolved 2026-08-26), Tổng KL/GT (Nhóm 1), KLNN/GTNN mua/bán/ròng (Nhóm 33/39/40), KL thỏa thuận (Nhóm 1, K_GSTT_17), GT mua/bán/ròng tự doanh (Nhóm 41), GT mua/bán/ròng theo phân loại NĐT (Nhóm 43) — reuse thẳng, không khai sinh KPI mới cho 33 dòng này. 3 dòng còn lại ("KL mua tự doanh", "KL bán tự doanh", "KL tự doanh ròng") là chỉ tiêu mới thật — xem ghi chú dưới đây. "KL mua"/"KL bán"/"KL ròng" theo phân loại NĐT (3 dòng cuối, không tính trùng vào 33 dòng trên) tổng quát hóa tương tự K_GSTT_90-91 (Nhóm 43) nhưng đo Volume thay Value — xem ghi chú.
 > **Ghi chú "KL mua/bán/ròng tự doanh" (K_GSTT_114–116, mới):** Cùng nguồn `Securities Trade.Buy/Sell Client House Classification Code = '30'` đã dùng cho GT tự doanh (K_GSTT_82/84/83, Nhóm 41), nhưng đo `Execution Volume` thay vì `Execution Value`. Đặt 2 cột measure mới (Proprietary Buy Volume, Proprietary Sell Volume) lên `Fact Stock Portfolio Snapshot` — cùng grain mã CK/ngày.
 > **Ghi chú "KL mua/bán/ròng" theo phân loại NĐT (K_GSTT_117–119, mới):** Tổng quát hóa của K_GSTT_90/91 (Nhóm 43, đo Value) nhưng đo Volume — cùng công thức filter động theo Phân loại NĐT (K_GSTT_85, Nhóm 42), không cần cột Fact mới (đã có sẵn 8 cột nguồn Volume: Foreign Buy/Sell Volume, Proprietary Buy/Sell Volume — mới thêm ở Nhóm này).
 
@@ -2741,7 +2806,7 @@ flowchart LR
 
 | Mã CK | Sàn | Ngành | Ngày | Chỉ số | Giá TC | Giá ĐC | Giá mở | Giá cao | Giá thấp | Thay đổi | % TĐ | P/E | P/B | EPS | Tổng KL | Tổng GT | KLNN mua | KLNN bán | KLNN ròng | GTNN mua | GTNN bán | GTNN ròng | KL thỏa thuận | GT mua TD | GT bán TD | GT TD ròng | KL mua TD | KL bán TD | KL TD ròng | GT mua | GT bán | GT ròng | KL mua | KL bán | KL ròng | Vốn hóa TT |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| VCB | HOSE | Ngân hàng | 27/07/2026 | VN30 | 82.00 | 82.50 | 82.00 | 83.00 | 81.50 | +0.50 | +0.61% | *(pending)* | *(pending)* | *(pending)* | 548 Tr | 22.1 Tỷ | 12 Tr | 8 Tr | +4 Tr | 1.0 Tỷ | 0.6 Tỷ | +0.4 Tỷ | 12 Tr | 3.2 Tỷ | 2.1 Tỷ | +1.1 Tỷ | 5 Tr | 3 Tr | +2 Tr | *(theo NĐT chọn)* | *(theo NĐT chọn)* | *(theo NĐT chọn)* | *(theo NĐT chọn)* | *(theo NĐT chọn)* | *(theo NĐT chọn)* | *(pending)* |
+| VCB | HOSE | Ngân hàng | 27/07/2026 | VN30 | 82.00 | 82.50 | 82.00 | 83.00 | 81.50 | +0.50 | +0.61% | 3.71 | 0.53 | 22.27 | 548 Tr | 22.1 Tỷ | 12 Tr | 8 Tr | +4 Tr | 1.0 Tỷ | 0.6 Tỷ | +0.4 Tỷ | 12 Tr | 3.2 Tỷ | 2.1 Tỷ | +1.1 Tỷ | 5 Tr | 3 Tr | +2 Tr | *(theo NĐT chọn)* | *(theo NĐT chọn)* | *(theo NĐT chọn)* | *(theo NĐT chọn)* | *(theo NĐT chọn)* | *(theo NĐT chọn)* | 461,161,157,750,000 |
 
 **Source:** `Fact Stock Portfolio Snapshot` → `Security Trading Snapshot Dimension`, `Public Company Dimension`, `Calendar Date Dimension`, `Index Constituent Dimension` — mở rộng 2 cột mới (KL mua/bán tự doanh), phần lớn reuse.
 
@@ -2761,9 +2826,9 @@ flowchart LR
 | K_GSTT_29 | Giá thấp nhất | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Low Price` | Reuse từ Nhóm 3 | READY |
 | K_GSTT_11 | Thay đổi (+/-) | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Price Change` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_12 | % thay đổi | % | Phái sinh | `Price Change / Reference Price × 100` | Reuse từ Nhóm 1 | READY |
-| K_GSTT_58 | P/E thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_56 / K_GSTT_55)` | Reuse từ Nhóm 6 — vẫn PENDING | PENDING |
-| K_GSTT_59 | P/B thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_57 / K_GSTT_55)` | Reuse từ Nhóm 6 — vẫn PENDING | PENDING |
-| K_GSTT_60 | EPS thị trường | VNĐ | Chỉ tiêu phái sinh | `K_GSTT_56 / K_GSTT_55` | Reuse từ Nhóm 6 — vẫn PENDING | PENDING |
+| K_GSTT_58 | P/E thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (Fact Stock Portfolio Snapshot.Net Profit After Tax TTM / K_GSTT_55)` | Reuse từ Nhóm 6 — Resolved 2026-08-26. LNST dùng TTM 4 quý (rule GSĐC); K_GSTT_55 đã có nguồn (`pc_share_statistics_hstr`) | READY |
+| K_GSTT_59 | P/B thị trường | Lần | Chỉ tiêu phái sinh | `K_GSTT_10 / (K_GSTT_57 / K_GSTT_55)` | Reuse từ Nhóm 6 — Resolved 2026-08-26. K_GSTT_57 (VCSH) và K_GSTT_55 (Số CP lưu hành) đều đã có nguồn | READY |
+| K_GSTT_60 | EPS thị trường | VNĐ | Chỉ tiêu phái sinh | `Fact Stock Portfolio Snapshot.Net Profit After Tax TTM / K_GSTT_55` | Reuse từ Nhóm 6 — Resolved 2026-08-26. LNST dùng TTM 4 quý (rule GSĐC); K_GSTT_55 đã có nguồn (`pc_share_statistics_hstr`) | READY |
 | K_GSTT_13 | Tổng KL | Cổ phiếu | Phái sinh | `SUM(Securities Trade.Execution Volume) GROUP BY Symbol, Trade Date` | Reuse từ Nhóm 1 (K_GSTT_13 = Tổng KL, đã bao gồm filter Market Id Code IN ('UPX','STX','STO') tại tầng Fact total_vol) | READY |
 | K_GSTT_14 | Tổng GT | VNĐ | Phái sinh | `SUM(Securities Trade.Execution Value) GROUP BY Symbol, Trade Date` | Reuse từ Nhóm 1 (K_GSTT_14 = Tổng GT, đã bao gồm filter Market Id Code IN ('UPX','STX','STO') tại tầng Fact total_val) | READY |
 | K_GSTT_70 | KLNN mua | Cổ phiếu | Phái sinh | `SUM(Execution Volume WHERE Buy Foreign Investor Type Code IN ('10','20'))` | Reuse từ Nhóm 33 | READY |
@@ -2785,7 +2850,7 @@ flowchart LR
 | K_GSTT_117 | KL mua | Cổ phiếu | Phái sinh | `SUM(Execution Volume) filter động theo Phân loại NĐT (K_GSTT_85)` | Mới — tổng quát hóa K_GSTT_90, đo Volume thay Value, dùng lại 8 cột Volume đã có (Foreign/Proprietary Buy/Sell Volume) | READY |
 | K_GSTT_118 | KL bán | Cổ phiếu | Phái sinh | `SUM(Execution Volume) filter động theo Phân loại NĐT (K_GSTT_85)` | Mới — cùng cơ chế K_GSTT_117, chiều bán | READY |
 | K_GSTT_119 | KL ròng | Cổ phiếu | Phái sinh | `K_GSTT_117 − K_GSTT_118` | Mới — derive tại tầng BI | READY |
-| K_GSTT_61 | Vốn hóa thị trường | VNĐ | Chỉ tiêu phái sinh | `SUM(K_GSTT_10 × K_GSTT_55) GROUP BY Index Code` | Reuse từ Nhóm 6 — vẫn PENDING | PENDING |
+| K_GSTT_61 | Vốn hóa thị trường | VNĐ | Chỉ tiêu phái sinh | `SUM(K_GSTT_10 × K_GSTT_55) GROUP BY Index Code` | Reuse từ Nhóm 6 — Resolved 2026-08-26 (K_GSTT_55 đã có nguồn) | READY |
 
 **Star Schema:** Không có bảng mới — reuse `Fact Stock Portfolio Snapshot` đã vẽ ở Nhóm 1/33/41/42, bổ sung 2 cột `Proprietary_Buy_Volume`, `Proprietary_Sell_Volume` (READY, cùng nguồn Client House Classification Code đã dùng cho GT tự doanh).
 
@@ -2920,6 +2985,7 @@ graph TB
     FctStockPortfolioSnpst["Fact Stock Portfolio Snapshot"]:::fact
     FctMarketIndexSnpst["Fact Market Index Snapshot"]:::fact
     FctMarketIndexIntraday["Fact Market Index Intraday"]:::fact
+    FctScrTdgIntraday["Fact Security Trading Intraday"]:::fact
 
     ScrTdgSnpstDim --> FctStockPortfolioSnpst
     PblcCoDim --> FctStockPortfolioSnpst
@@ -2928,15 +2994,18 @@ graph TB
     MarketIndexDim --> FctMarketIndexSnpst
     MarketIndexDim --> FctMarketIndexIntraday
     CdrDtDim --> FctMarketIndexIntraday
+    ScrTdgSnpstDim --> FctScrTdgIntraday
+    CdrDtDim --> FctScrTdgIntraday
 ```
 
 ### 3.2 Bảng Phân tích (chỉ liệt kê Fact)
 
 | Bảng | Pattern | Grain | KPI | Trạng thái |
 |---|---|---|---|---|
-| Fact Stock Portfolio Snapshot | Periodic Snapshot | 1 row / mã CK / rổ chỉ số (FK nullable) / ngày giao dịch | K_GSTT_1–19 (Nhóm 1), K_GSTT_20–26 (Nhóm 2, reuse Nhóm 1), K_GSTT_27–29 (Nhóm 3, mới), K_GSTT_30–32 (Nhóm 3, PENDING), Nhóm 4 (100% reuse Nhóm 2/3), K_GSTT_55–61 (Nhóm 6, mở rộng 3 cột PENDING: Số CP lưu hành/LNST/VCSH), Nhóm 7 (100% reuse Nhóm 1/6, Top-N theo KLGD), Nhóm 8 (100% reuse Nhóm 1/3, Top-N theo KLGD dạng biểu đồ), K_GSTT_62–63 (Nhóm 9, mới: Bộ chỉ số thị trường/theo ngành — cùng cột vật lý K_GSTT_4 nhưng 2 chỉ tiêu nghiệp vụ độc lập, reuse ở 13 Nhóm khác), Nhóm 10 (100% reuse Nhóm 1/3/9, Top-N theo KLGD dạng biểu đồ), K_GSTT_64–69 (Nhóm 11, rolling window KLGDTB/tỷ lệ đột phá 5/10/20 ngày, không cần cột mới), Nhóm 12 (100% reuse Nhóm 1/3/11, Top-N theo tỷ lệ đột phá dạng biểu đồ), Nhóm 13 (100% reuse Nhóm 1/6/9/11, Top-N theo tỷ lệ đột phá theo sàn/bộ chỉ số), Nhóm 14 (100% reuse Nhóm 1/3/9/11, Top-N theo tỷ lệ đột phá theo sàn/bộ chỉ số dạng biểu đồ), Nhóm 15 (100% reuse Nhóm 1/6/9, Top-N theo GTGD), Nhóm 16 (100% reuse Nhóm 1/3/9, Top-N theo GTGD dạng biểu đồ), Nhóm 17 (100% reuse Nhóm 1/6, Top-N theo % thay đổi giảm mạnh nhất), Nhóm 18 (100% reuse Nhóm 1/3, Top-N theo % thay đổi giảm mạnh nhất dạng biểu đồ), Nhóm 19 (100% reuse Nhóm 1/6, Top-N theo % thay đổi giảm mạnh nhất theo sàn), Nhóm 20 (100% reuse Nhóm 1/3, Top-N theo % thay đổi giảm mạnh nhất theo sàn dạng biểu đồ), Nhóm 21 (100% reuse Nhóm 1/3/6, Top-N theo % thay đổi tăng mạnh nhất "vượt đỉnh"), Nhóm 22 (100% reuse Nhóm 1/3, Top-N theo % thay đổi tăng mạnh nhất "vượt đỉnh" dạng biểu đồ), Nhóm 23 (100% reuse Nhóm 1/3/6/9, Top-N theo % thay đổi tăng mạnh nhất "vượt đỉnh" theo sàn/bộ chỉ số), Nhóm 24 (100% reuse Nhóm 1/3/9, Top-N theo % thay đổi tăng mạnh nhất "vượt đỉnh" theo sàn/bộ chỉ số dạng biểu đồ), Nhóm 25 (100% reuse Nhóm 1/3/6, Top-N theo % thay đổi giảm mạnh nhất "thủng đáy"), Nhóm 26 (100% reuse Nhóm 1/3, Top-N theo % thay đổi giảm mạnh nhất "thủng đáy" dạng biểu đồ), Nhóm 27 (100% reuse Nhóm 1/3/6/9, Top-N theo % thay đổi giảm mạnh nhất "thủng đáy" theo sàn/bộ chỉ số), Nhóm 28 (100% reuse Nhóm 1/3/9, Top-N theo % thay đổi giảm mạnh nhất "thủng đáy" theo sàn/bộ chỉ số dạng biểu đồ), Nhóm 29 (100% reuse Nhóm 1/6, Top-N theo % thay đổi tăng mạnh nhất "tăng giá"), Nhóm 30 (100% reuse Nhóm 1/3, Top-N theo % thay đổi tăng mạnh nhất "tăng giá" dạng biểu đồ), Nhóm 31 (100% reuse Nhóm 1/6/9, Top-N theo % thay đổi tăng mạnh nhất "tăng giá" theo sàn/bộ chỉ số), Nhóm 32 (100% reuse Nhóm 1/3/9, Top-N theo % thay đổi tăng mạnh nhất "tăng giá" theo sàn/bộ chỉ số dạng biểu đồ), K_GSTT_70–73 (Nhóm 33, mới: KL/GT mua-bán ròng NĐTNN, mở rộng Fact — reuse Nhóm 35), Nhóm 34/36 (100% reuse, biến thể biểu đồ không lặp measure NĐTNN), Nhóm 37 (100% reuse Nhóm 1/6/33, bản đồ nhiệt), K_GSTT_75–76 (Nhóm 38, PENDING: Free Float/Tỷ trọng/Điểm đóng góp — chưa có nguồn Atomic), K_GSTT_77 (Nhóm 39, GTNN ròng — derive từ K_GSTT_72/73), K_GSTT_78–80 (Nhóm 39, PENDING: theo từng time trong ngày), Nhóm 40 (100% reuse Nhóm 1/33, bản đồ nhiệt KLNN), K_GSTT_81–84 (Nhóm 41, mới: Phân loại + GT tự doanh mua/bán/ròng, mở rộng Fact), K_GSTT_85–87 (Nhóm 42, mới: Phân loại NĐT + GT cá nhân/tổ chức trong nước ròng, mở rộng Fact), K_GSTT_88–94 (Nhóm 43, mới: GT khớp lệnh/thỏa thuận/mua/bán/ròng/mua ròng/bán ròng theo phân loại NĐT, filter động tại BI), K_GSTT_95–99 (Nhóm 44, PENDING: Giá mở/cao/thấp/đóng cửa + Khối lượng giao dịch theo từng time trong ngày, chờ profile `Trading Time`), K_GSTT_105 (Nhóm 46, mới: Ngày GD đầu tiên/Khối lượng niêm yết — đã có sẵn theo coverage rule Nhóm 1, mới khai KPI), K_GSTT_106–107, K_GSTT_109–113 (Nhóm 46, PENDING: 52 tuần/EPS/Book Value, không có Atomic), K_GSTT_114–119 (Nhóm 47, mới: KL mua/bán/ròng tự doanh + theo phân loại NĐT, mở rộng Fact + filter động) | READY |
+| Fact Stock Portfolio Snapshot | Periodic Snapshot | 1 row / mã CK / rổ chỉ số (FK nullable) / ngày giao dịch | K_GSTT_1–19 (Nhóm 1), K_GSTT_20–26 (Nhóm 2, reuse Nhóm 1), K_GSTT_27–29 (Nhóm 3, mới), K_GSTT_30 (Nhóm 3, Kỳ báo cáo — computed BI-tier), K_GSTT_31–32 (Nhóm 3, Resolved 2026-08-26 rule GSĐC: Doanh thu/LNST), Nhóm 4 (100% reuse Nhóm 2/3), K_GSTT_55–61 (Nhóm 6, toàn bộ Resolved 2026-08-26 — Số CP lưu hành qua `pc_share_statistics_hstr` (O_GSTT_2), LNST/VCSH qua rule GSĐC (O_GSTT_1), P/E/P/B/EPS/Vốn hóa theo đó cũng READY), Nhóm 7 (100% reuse Nhóm 1/6, Top-N theo KLGD), Nhóm 8 (100% reuse Nhóm 1/3, Top-N theo KLGD dạng biểu đồ), K_GSTT_62–63 (Nhóm 9, mới: Bộ chỉ số thị trường/theo ngành — cùng cột vật lý K_GSTT_4 nhưng 2 chỉ tiêu nghiệp vụ độc lập, reuse ở 13 Nhóm khác), Nhóm 10 (100% reuse Nhóm 1/3/9, Top-N theo KLGD dạng biểu đồ), K_GSTT_64–69 (Nhóm 11, rolling window KLGDTB/tỷ lệ đột phá 5/10/20 ngày, không cần cột mới), Nhóm 12 (100% reuse Nhóm 1/3/11, Top-N theo tỷ lệ đột phá dạng biểu đồ), Nhóm 13 (100% reuse Nhóm 1/6/9/11, Top-N theo tỷ lệ đột phá theo sàn/bộ chỉ số), Nhóm 14 (100% reuse Nhóm 1/3/9/11, Top-N theo tỷ lệ đột phá theo sàn/bộ chỉ số dạng biểu đồ), Nhóm 15 (100% reuse Nhóm 1/6/9, Top-N theo GTGD), Nhóm 16 (100% reuse Nhóm 1/3/9, Top-N theo GTGD dạng biểu đồ), Nhóm 17 (100% reuse Nhóm 1/6, Top-N theo % thay đổi giảm mạnh nhất), Nhóm 18 (100% reuse Nhóm 1/3, Top-N theo % thay đổi giảm mạnh nhất dạng biểu đồ), Nhóm 19 (100% reuse Nhóm 1/6, Top-N theo % thay đổi giảm mạnh nhất theo sàn), Nhóm 20 (100% reuse Nhóm 1/3, Top-N theo % thay đổi giảm mạnh nhất theo sàn dạng biểu đồ), Nhóm 21 (100% reuse Nhóm 1/3/6, Top-N theo % thay đổi tăng mạnh nhất "vượt đỉnh"), Nhóm 22 (100% reuse Nhóm 1/3, Top-N theo % thay đổi tăng mạnh nhất "vượt đỉnh" dạng biểu đồ), Nhóm 23 (100% reuse Nhóm 1/3/6/9, Top-N theo % thay đổi tăng mạnh nhất "vượt đỉnh" theo sàn/bộ chỉ số), Nhóm 24 (100% reuse Nhóm 1/3/9, Top-N theo % thay đổi tăng mạnh nhất "vượt đỉnh" theo sàn/bộ chỉ số dạng biểu đồ), Nhóm 25 (100% reuse Nhóm 1/3/6, Top-N theo % thay đổi giảm mạnh nhất "thủng đáy"), Nhóm 26 (100% reuse Nhóm 1/3, Top-N theo % thay đổi giảm mạnh nhất "thủng đáy" dạng biểu đồ), Nhóm 27 (100% reuse Nhóm 1/3/6/9, Top-N theo % thay đổi giảm mạnh nhất "thủng đáy" theo sàn/bộ chỉ số), Nhóm 28 (100% reuse Nhóm 1/3/9, Top-N theo % thay đổi giảm mạnh nhất "thủng đáy" theo sàn/bộ chỉ số dạng biểu đồ), Nhóm 29 (100% reuse Nhóm 1/6, Top-N theo % thay đổi tăng mạnh nhất "tăng giá"), Nhóm 30 (100% reuse Nhóm 1/3, Top-N theo % thay đổi tăng mạnh nhất "tăng giá" dạng biểu đồ), Nhóm 31 (100% reuse Nhóm 1/6/9, Top-N theo % thay đổi tăng mạnh nhất "tăng giá" theo sàn/bộ chỉ số), Nhóm 32 (100% reuse Nhóm 1/3/9, Top-N theo % thay đổi tăng mạnh nhất "tăng giá" theo sàn/bộ chỉ số dạng biểu đồ), K_GSTT_70–73 (Nhóm 33, mới: KL/GT mua-bán ròng NĐTNN, mở rộng Fact — reuse Nhóm 35), Nhóm 34/36 (100% reuse, biến thể biểu đồ không lặp measure NĐTNN), Nhóm 37 (100% reuse Nhóm 1/6/33, bản đồ nhiệt), K_GSTT_75–76 (Nhóm 38, PENDING: Free Float/Tỷ trọng/Điểm đóng góp — chưa có nguồn Atomic), K_GSTT_77 (Nhóm 39, GTNN ròng — derive từ K_GSTT_72/73), K_GSTT_78–80 (Nhóm 39, PENDING: theo từng time trong ngày), Nhóm 40 (100% reuse Nhóm 1/33, bản đồ nhiệt KLNN), K_GSTT_81–84 (Nhóm 41, mới: Phân loại + GT tự doanh mua/bán/ròng, mở rộng Fact), K_GSTT_85–87 (Nhóm 42, mới: Phân loại NĐT + GT cá nhân/tổ chức trong nước ròng, mở rộng Fact), K_GSTT_88–94 (Nhóm 43, mới: GT khớp lệnh/thỏa thuận/mua/bán/ròng/mua ròng/bán ròng theo phân loại NĐT, filter động tại BI), K_GSTT_105 (Nhóm 46, mới: Ngày GD đầu tiên/Khối lượng niêm yết — đã có sẵn theo coverage rule Nhóm 1, mới khai KPI), K_GSTT_106–107, K_GSTT_109–113 (Nhóm 46, PENDING: 52 tuần/EPS/Book Value, không có Atomic), K_GSTT_114–119 (Nhóm 47, mới: KL mua/bán/ròng tự doanh + theo phân loại NĐT, mở rộng Fact + filter động) | READY |
 | Fact Market Index Snapshot | Periodic Snapshot | 1 row / chỉ số thị trường (market_code) / ngày (bản ghi cuối phiên) | K_GSTT_35–43, K_GSTT_47–51 (Nhóm 5, reuse + mở rộng Fact QLKD), Nhóm 49 (100% reuse Nhóm 5, Data Explorer) | READY |
 | Fact Market Index Intraday | Transaction/Tick Snapshot | 1 row / chỉ số thị trường (market_code) / Index Time — FK `Calendar Date Dimension` qua `Trading Date` | K_GSTT_34, K_GSTT_45–46 (Nhóm 5, mới) | READY |
+| Fact Security Trading Intraday | Transaction/Tick Snapshot | 1 row / mã CK (Symbol) / Trading Timestamp (`trading_tms`) — FK `Calendar Date Dimension` qua `Trading Date` | K_GSTT_95–99 (Nhóm 44, mới) | READY |
 
 ### 3.3 Bảng Tác nghiệp
 
@@ -2964,11 +3033,12 @@ Không có.
 
 | Datamart Entity | datamart_table | reuse_status | Ghi chú |
 |---|---|---|---|
-| Fact Stock Portfolio Snapshot | fct_stock_portfolio_snpst | new | Chưa có trong master — Nhóm đầu tiên của module GSTT. Grain = mã CK/rổ chỉ số/ngày, FK Index Constituent nullable — xem ghi chú Index Constituent ở Section 1. Nhóm 6 mở rộng thêm 3 cột PENDING (Outstanding Share Quantity, Net Profit After Tax, Owner Equity) — không đổi grain, join qua FK Public Company Dimension đã có sẵn. Nhóm 33 mở rộng thêm 4 cột READY (Foreign Buy/Sell Volume, Foreign Buy/Sell Value — nguồn `Securities Trade.Buy/Sell Foreign Investor Type Code`, Atomic Nguồn 1 approved) — không đổi grain. Nhóm 41 mở rộng thêm 2 cột READY (Proprietary Buy/Sell Value — nguồn `Securities Trade.Buy/Sell Client House Classification Code`). Nhóm 42 mở rộng thêm 2 cột READY (Individual/Domestic Institution Net Value — nguồn kết hợp `Investor Type Code` + `Foreign Investor Type Code` + `Client House Classification Code`); **cập nhật 2026-08-05:** bổ sung thêm 8 cột READY (Individual Buy/Sell Value, Individual Buy/Sell Volume, Domestic Institution Buy/Sell Value, Domestic Institution Buy/Sell Volume — cùng nguồn Account Number breakdown, tách riêng Buy/Sell thay vì chỉ Net, đối xứng với Foreign/Proprietary — phục vụ Nhóm 42/43/47 breakdown theo Phân loại NĐT qua K_GSTT_85) — không đổi grain. Nhóm 47 mở rộng thêm 2 cột READY (Proprietary Buy/Sell Volume — cùng nguồn Client House Classification Code, đo Volume thay Value) — tất cả không đổi grain mã CK/ngày |
+| Fact Stock Portfolio Snapshot | fct_stock_portfolio_snpst | new | Chưa có trong master — Nhóm đầu tiên của module GSTT. Grain = mã CK/rổ chỉ số/ngày, FK Index Constituent nullable — xem ghi chú Index Constituent ở Section 1. Nhóm 6 mở rộng thêm 5 cột (Outstanding Share Quantity, Revenue, Net Profit After Tax, Net Profit After Tax TTM, Owner Equity) — không đổi grain, join qua FK Public Company Dimension đã có sẵn. **Cập nhật 2026-08-26:** Revenue/Net Profit After Tax/Net Profit After Tax TTM/Owner Equity Resolved theo rule GSĐC — join `public_company → pc_report_submission → fr_value → fr_catalog → fr_row_template → fr_column_template` (Atomic Nguồn 2, draft), point-in-time theo `Ky_bao_cao` (Revenue/LNST) hoặc lookback `submission_dt`/`base_dt` gần nhất (VCSH), TTM riêng cho LNST dùng P/E/EPS (rn≤4, NULL nếu không đủ 4 kỳ). **Cập nhật 2026-08-26 (O_GSTT_2):** Outstanding Share Quantity cũng Resolved — nguồn `pc_share_statistics_hstr` (bảng lịch sử theo ngày của `pc_share_statistics`, `ds_snpst_dt` khớp đúng `Trading Date`), không lookback. Toàn bộ 5 cột mở rộng Nhóm 6 nay đều READY. Nhóm 33 mở rộng thêm 4 cột READY (Foreign Buy/Sell Volume, Foreign Buy/Sell Value — nguồn `Securities Trade.Buy/Sell Foreign Investor Type Code`, Atomic Nguồn 1 approved) — không đổi grain. Nhóm 41 mở rộng thêm 2 cột READY (Proprietary Buy/Sell Value — nguồn `Securities Trade.Buy/Sell Client House Classification Code`). Nhóm 42 mở rộng thêm 2 cột READY (Individual/Domestic Institution Net Value — nguồn kết hợp `Investor Type Code` + `Foreign Investor Type Code` + `Client House Classification Code`); **cập nhật 2026-08-05:** bổ sung thêm 8 cột READY (Individual Buy/Sell Value, Individual Buy/Sell Volume, Domestic Institution Buy/Sell Value, Domestic Institution Buy/Sell Volume — cùng nguồn Account Number breakdown, tách riêng Buy/Sell thay vì chỉ Net, đối xứng với Foreign/Proprietary — phục vụ Nhóm 42/43/47 breakdown theo Phân loại NĐT qua K_GSTT_85) — không đổi grain. Nhóm 47 mở rộng thêm 2 cột READY (Proprietary Buy/Sell Volume — cùng nguồn Client House Classification Code, đo Volume thay Value) — tất cả không đổi grain mã CK/ngày |
 | Security Trading Snapshot Dimension | security_trading_snpst_dim | new | Chưa có trong master. Schema đã áp dụng coverage rule (Bước 1a) ngay từ Nhóm 1 — bao gồm sẵn cột phục vụ Nhóm 2 (Coupon Rate, Yield) và các Nhóm biểu đồ/phái sinh sau này (ISIN, Issuer, CW/OP/HĐTL...). Nhóm 3 bổ sung `Open Price`, `High Price`, `Low Price` (nguồn Atomic Nguồn 2, `design_status: approved` 2026-07-03) |
 | Index Constituent Dimension | index_constituent_dim | new | Chưa có trong master. Driving entity `Index Constituent Snapshot` ← MDDS.JAD_CSIDXINFOR — tách riêng khỏi `Security Trading Snapshot Dimension` vì khác driving Atomic entity/nguồn (xem lịch sử 3 lần sửa ở Section 1). Grain = 1 row/(Index Code, Symbol) có thật trong nguồn, kéo đủ 5 attribute mô tả theo coverage rule (Index Code, Index Id, Symbol, Floor Code, Add Date). FK trực tiếp vào Fact (nullable), không qua bridge Fact, đổi grain Fact để tránh Fact-to-Fact join fanout ở tầng báo cáo |
 | Fact Market Index Snapshot | fct_market_index_snpst | partial | Đã có trong master, sở hữu **QLKD** (reuse NDTNN K_NDTNN_34). GSTT (Nhóm 5) **mở rộng thêm 11 measure** (Open/High/Low/Prior Index, Change, %Change, Advances/Declines/No Change/Ceiling/Floor Count) — không đổi grain, không sửa 3 cột hiện có. **Sửa 2026-08-20:** đã bỏ `PT Total Volume/Value` (2 cột, K_GSTT_51/52 đổi nguồn sang `Fact Stock Portfolio Snapshot`) và `Odd Lot Total Volume/Value` (2 cột, O_GSTT_13 — measure dư thừa không có KPI/BA nào tham chiếu) — trước ghi 15 measure, nay còn 11. Đã cập nhật `modules_using` (+GSTT) và ghi chú tại `DTM_QLKD_HLD.md` Cụm 6b |
 | Fact Market Index Intraday | fct_market_index_intraday | new | Chưa có trong master. GSTT tạo mới — grain 1 row/market_code/index_time (theo phút, đúng nguồn `Market Index Snapshot`) — khác grain với `fct_market_index_snpst` (1 row/market_code/ngày), phục vụ biểu đồ đường/cột theo thời gian trong ngày, không gộp chung để tránh trộn 2 grain trên 1 Fact. Có FK `Calendar Date Dimension` (reuse `cdr_dt_dim`, Lớp 1 Whitelist) xác định qua `Market Index Snapshot.Trading Date` — bổ sung 2026-07-28 để filter theo ngày trước khi khai thác chi tiết theo `Index Time` |
+| Fact Security Trading Intraday | fct_security_trading_intraday | new | Chưa có trong master. GSTT tạo mới (Nhóm 44) — grain 1 row/Symbol/Trading Timestamp (`trading_tms`, cột mới bổ sung 2026-08-26 trên Atomic `Security Trading Snapshot` = nối chuỗi `trading_dt` + `' '` + `trading_time` tại tầng ODS) — khác grain với `security_trading_snpst_dim` (1 row/mã CK). Phục vụ biểu đồ phân tích kỹ thuật theo thời gian trong ngày, cùng pattern `Fact Market Index Intraday`. Có FK `Calendar Date Dimension` xác định qua `Security Trading Snapshot.Trading Date` (`trading_dt`, giữ nguyên không đổi) |
 | Market Index Dimension | market_index_dim | reuse | Đã có trong master, sở hữu QLKD (reuse NDTNN). GSTT reuse nguyên trạng, không cần thêm cột — đã cập nhật `modules_using` (+GSTT) |
 | Public Company Dimension | public_company_dim | reuse | Đã có trong master (module gốc GSDC, dùng chung QLCB/NDTNN) — đủ cột (Code + Name ngành đệm sẵn) cho nhu cầu GSTT, không cần thêm cột. Đã sửa logic JOIN nội bộ của cột `Classification Business Line Name` sang so khớp qua Id (2026-07-27) — không đổi cấu trúc schema |
 | Calendar Date Dimension | cdr_dt_dim | reuse | Conformed Dimension — luôn reuse toàn hệ thống |
@@ -2980,8 +3050,8 @@ Không có.
 
 | Open Issue ID | Nhóm | Mô tả | Trạng thái |
 |---|---|---|---|
-| O_GSTT_1 | Nhóm 3, Nhóm 6, Nhóm 8, Nhóm 10, Nhóm 11, Nhóm 12, Nhóm 13, Nhóm 14, Nhóm 15, Nhóm 16, Nhóm 17, Nhóm 18, Nhóm 19, Nhóm 20, Nhóm 21, Nhóm 22, Nhóm 23, Nhóm 24, Nhóm 25, Nhóm 26, Nhóm 27, Nhóm 28, Nhóm 29, Nhóm 30, Nhóm 31, Nhóm 32, Nhóm 33, Nhóm 34, Nhóm 35, Nhóm 36, Nhóm 44 | K_GSTT_30 (Kỳ báo cáo), K_GSTT_31 (Doanh thu), K_GSTT_32 (Lợi nhuận sau thuế — Nhóm 3, reuse Nhóm 8/10/12/14/16/18/20/22/24/26/28/30/32/34/36/44), K_GSTT_56 (LNST), K_GSTT_57 (VCSH — Nhóm 6, reuse Nhóm 11/13/15/17/19/21/23/25/27/29/31/33/35/47) — nguồn BA tham khảo `IDS.data`/`report_catalog`/`rrow`/`rcol` (cấu trúc EAV báo cáo tài chính), theo quyết định trước đó KHÔNG dùng làm nền Fact cho tới khi có entity Atomic chuẩn hóa dùng chung nhiều module. PENDING chờ Atomic chuẩn hóa; khi sẵn sàng sẽ bổ sung measure lên `Fact Stock Portfolio Snapshot` hiện có (join qua `Public Company Dimension`), không tạo Fact riêng. Cũng cần thiết kế thêm chiều "Kỳ báo cáo" (năm/quý) — khác `Calendar Date Dimension` theo ngày giao dịch. Nhóm 6 còn phụ thuộc thêm K_GSTT_58-61 (P/E/P/B/EPS/Vốn hóa thị trường — chỉ tiêu phái sinh từ LNST/VCSH) | Open |
-| O_GSTT_2 | Nhóm 5, Nhóm 6, Nhóm 11, Nhóm 13, Nhóm 15, Nhóm 17, Nhóm 19, Nhóm 21, Nhóm 23, Nhóm 25, Nhóm 27, Nhóm 29, Nhóm 31, Nhóm 33, Nhóm 35, Nhóm 37, Nhóm 47 | K_GSTT_53/54 (Số cổ phiếu lưu hành, Vốn hóa thị trường — Nhóm 5), K_GSTT_55–61 (Số cổ phiếu lưu hành, P/E, P/B, EPS, Vốn hóa thị trường — Nhóm 6, reuse Nhóm 11/13/15/17/19/21/23/25/27/29/31/33/35/37/47) — nguồn BA tham khảo "BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành" (VSDC, TT138/2025/TT-BTC Mẫu số 01). Tra cứu lại (2026-07-27) tìm thấy entity Atomic `Public Company Share Statistics` (`pc_share_statistics`, Nguồn 2 working/Atomic, draft) có attribute `Total Outstanding Share Quantity` theo từng `Public Company` — nhưng đây là bảng **SCD4A current-state, không có trường ngày lịch sử**, trong khi BA cần giá trị theo từng ngày giao dịch quá khứ (JOIN `JAD_MARKETINFOR` theo `tradingdate`) → **grain mismatch**, không dùng trực tiếp làm nguồn Fact theo ngày được. Đồng thời cột "Loại dữ liệu" của các dòng con này trong BA đang **để trống** (chưa phân loại tĩnh/động) — theo rule gating, cột trống không tự suy diễn, phải PENDING chờ xác nhận. PENDING vì cả 2 lý do: (1) chờ nghiệp vụ xác nhận Loại dữ liệu, (2) chờ quyết định xử lý grain mismatch (dùng current-state xấp xỉ, hay chờ Atomic bổ sung lịch sử theo ngày) | Open |
+| O_GSTT_1 | Nhóm 3, Nhóm 6, Nhóm 8, Nhóm 10, Nhóm 11, Nhóm 12, Nhóm 13, Nhóm 14, Nhóm 15, Nhóm 16, Nhóm 17, Nhóm 18, Nhóm 19, Nhóm 20, Nhóm 21, Nhóm 22, Nhóm 23, Nhóm 24, Nhóm 25, Nhóm 26, Nhóm 27, Nhóm 28, Nhóm 29, Nhóm 30, Nhóm 31, Nhóm 32, Nhóm 33, Nhóm 34, Nhóm 35, Nhóm 36, Nhóm 44, Nhóm 46, Nhóm 49 | K_GSTT_30 (Kỳ báo cáo), K_GSTT_31 (Doanh thu), K_GSTT_32 (Lợi nhuận sau thuế — Nhóm 3, reuse Nhóm 8/10/12/14/16/18/20/22/24/26/28/30/32/34/36/44), K_GSTT_56 (LNST), K_GSTT_57 (VCSH — Nhóm 6, reuse Nhóm 11/13/15/17/19/21/23/25/27/29/31/33/35/47) — **Resolved 2026-08-26, rule GSĐC.** Nguồn BA tham khảo `IDS.data`/`report_catalog`/`rrow`/`rcol` (EAV báo cáo tài chính) nay truy vấn qua Atomic Nguồn 2 theo đúng rule đã dùng ở GSDC (`Fact Public Company Financial Summary Snapshot`, `Datamart/lld/GSDC/DTM_GSDC_fct_public_company_financial_smy_snpst.csv`): join `public_company → pc_report_submission → fr_value → fr_catalog → fr_row_template → fr_column_template`, ưu tiên form HN>TH>ME>RI, ràng buộc `submission_dt`/`violation_report.base_dt` ≤ ngày giao dịch. Đã bổ sung 4 cột lên `Fact Stock Portfolio Snapshot` hiện có (join qua `Public Company Dimension`), không tạo Fact riêng: `Revenue` (Doanh thu, row_desc 10 DN/BH·03 TD), `Net Profit After Tax` (LNST point-in-time, row_desc 60 DN/BH·21 TD — dùng cho K_GSTT_31/32/56), `Net Profit After Tax TTM` (LNST TTM 4 quý, NULL nếu không đủ 4 kỳ — dùng riêng cho P/E/EPS K_GSTT_58/60), `Owner Equity` (VCSH, row_desc 400 DN/BH·500 TD — lookback `submission_dt`/`base_dt` gần nhất, KHÔNG ép lịch cố định như Revenue/LNST vì VCSH là chỉ tiêu tại 1 thời điểm). "Kỳ báo cáo" (K_GSTT_30) xác định qua `Ky_bao_cao` (quý hiện tại lùi 1 kỳ, lùi năm nếu Q1) — computed tại BI tier từ `Calendar Date`, không lưu cột riêng. K_GSTT_58-61 (P/E/P/B/EPS/Vốn hóa thị trường) từng PENDING do thiếu K_GSTT_55 (Số cổ phiếu lưu hành, nguồn VSDC BM1 khác hẳn rule GSĐC) — nay cũng đã Resolved cùng ngày qua O_GSTT_2 (`pc_share_statistics_hstr`) | Resolved |
+| O_GSTT_2 | Nhóm 5, Nhóm 6, Nhóm 11, Nhóm 13, Nhóm 15, Nhóm 17, Nhóm 19, Nhóm 21, Nhóm 23, Nhóm 25, Nhóm 27, Nhóm 29, Nhóm 31, Nhóm 33, Nhóm 35, Nhóm 37, Nhóm 46, Nhóm 47 | K_GSTT_53/54 (Số cổ phiếu lưu hành, Vốn hóa thị trường — Nhóm 5), K_GSTT_55–61 (Số cổ phiếu lưu hành, P/E, P/B, EPS, Vốn hóa thị trường — Nhóm 6, reuse Nhóm 11/13/15/17/19/21/23/25/27/29/31/33/35/37/46/47) — nguồn BA tham khảo "BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành" (VSDC, TT138/2025/TT-BTC Mẫu số 01). Tra cứu lại (2026-07-27) tìm thấy entity Atomic `Public Company Share Statistics` (`pc_share_statistics`, Nguồn 2 working/Atomic, draft) có attribute `Total Outstanding Share Quantity` theo từng `Public Company` — nhưng đây là bảng **SCD4A current-state, không có trường ngày lịch sử**, trong khi BA cần giá trị theo từng ngày giao dịch quá khứ → **grain mismatch**, không dùng trực tiếp làm nguồn Fact theo ngày được. **Resolved 2026-08-26** — Data Modeler xác nhận có bảng lịch sử theo ngày `pc_share_statistics_hstr` (companion table của `pc_share_statistics`, cùng pattern `_hstr` đã dùng ở NHNCK — VD `atm_scr_prac_org_emp_rpt_hstr`), grain 1 row/công ty/`ds_snpst_dt` (Date). Đã bổ sung `Outstanding Share Quantity` lên `Fact Stock Portfolio Snapshot`: `INNER JOIN public_company ... → INNER JOIN pc_share_statistics_hstr ON pc_share_statistics_hstr.pc_id = public_company.pc_id AND pc_share_statistics_hstr.ds_snpst_dt = security_trading_snapshot.trading_dt AND pc_share_statistics_hstr.ds_rcrd_st = 'ACTIVE'` — khớp đúng ngày giao dịch, không lookback (NULL nếu VSDC không publish đúng ngày). Kéo theo K_GSTT_58–61 (P/E/P/B/EPS/Vốn hóa thị trường, Nhóm 6) và K_GSTT_53/54 (Nhóm 5) cũng Resolved. Bảng `pc_share_statistics_hstr` chưa có file thiết kế LLD Atomic riêng trong repo (cùng tình trạng `atm_scr_prac_org_emp_rpt_hstr`) — chỉ tham chiếu tên bảng/cột trong ETL logic Datamart, theo quyết định Data Modeler 2026-08-26 | Resolved |
 | O_GSTT_3 | Nhóm 5 | K_GSTT_47–49 (KLGD/GTGD/KLNN ròng/GTNN ròng theo chỉ số) cần bảng mapping `Market Code ↔ Index Code` (VD: market_code='30' ↔ index_code='VN30') vì `Market Index Dimension` (định danh Market Code/Index Type Code) và `Index Constituent Dimension` (định danh Index Code) dùng 2 hệ định danh khác nhau, không có join key 1-1 sẵn có trong Atomic. Cần xác nhận với nghiệp vụ bảng mapping đầy đủ trước khi lên LLD | Open |
 | O_GSTT_4 | Nhóm 6 | K_GSTT_58–61 (P/E/P/B/EPS/Vốn hóa thị trường) — SQL tham khảo của BA (CTE `GĐC`) lấy `marketIndex` (điểm chỉ số, từ `JAD_MARKETINFOR`) JOIN `JAD_CSIDXINFOR` rồi gán nhãn kết quả là giá theo `MCK` (mã CK) — đây là nhầm lẫn khái niệm tài chính (điểm chỉ số ≠ giá cổ phiếu; P/E/P/B/Vốn hóa thị trường chuẩn phải tính từ giá cổ phiếu thật). HLD đã tự sửa dùng Giá đóng cửa thật theo mã CK (K_GSTT_10, `Security Trading Snapshot Dimension.Close Price`) thay vì bám theo SQL BA. Cần xác nhận lại với BA/nghiệp vụ về nhầm lẫn này trước khi chốt Detail Mapping/LLD — nếu BA thực sự muốn dùng điểm chỉ số (không phải giá CP), công thức toàn bộ Nhóm 6 cần thiết kế lại | Open |
 | O_GSTT_5 | Nhóm 9, Nhóm 10, Nhóm 13, Nhóm 14, Nhóm 15, Nhóm 16, Nhóm 23, Nhóm 24, Nhóm 27, Nhóm 28, Nhóm 31, Nhóm 32, Nhóm 35, Nhóm 36 | K_GSTT_62–63 ("Bộ chỉ số thị trường"/"Bộ chỉ số theo ngành") — **Resolved 2026-07-28.** Ban đầu BA liệt kê tách biệt nhưng không có filter/nguồn cụ thể, tự ghi chú "chưa có dữ liệu để xác thực" → PENDING. BA cung cấp lại logic qua hội thoại (chưa cập nhật vào BA CSV): cả 2 dùng cùng cột vật lý `Index Constituent Dimension.Index Code` (Nhóm 1) nhưng là 2 chỉ tiêu nghiệp vụ độc lập khác K_GSTT_4 (Chỉ số) — "Bộ chỉ số thị trường" (K_GSTT_62) = `Index Code IN ('HOSE','UPCOM','HNX')`, "Bộ chỉ số theo ngành" (K_GSTT_63) = `Index Code NOT IN ('HOSE','UPCOM','HNX')` (VD: VN30, HNX30...). Quá trình xử lý trải qua 3 lần sửa: lần 1 gán tạm ID chỉ trong ghi chú prose (không có trong bảng KPI thật) — phát hiện mâu thuẫn; lần 2 dùng chung K_GSTT_4 cho cả 2 filter — sau đó nhận ra đây là 2 khái niệm nghiệp vụ khác biệt, không nên gộp chung ID với nhau lẫn với K_GSTT_4; lần 3 khai 2 KPI_ID mới tạm thời K_GSTT_119/120 (ngoại lệ ngoài thứ tự, vì dải ID lúc đó đã dùng hết tới 118). Đã cân nhắc phương án thêm FK mới `Fact Stock Portfolio Snapshot → Market Index Dimension` nhưng xác nhận không có join key Symbol↔Market Code trong Atomic (`Market Index Snapshot` không có attribute Symbol) — dùng `Index Constituent Dimension` sẵn có, không cần FK/Fact/Dimension mới. Toàn bộ module sau đó được renumber liên tục từ K_GSTT_1 (2026-07-28) — 2 chỉ tiêu này nay có ID chính thức K_GSTT_62/63, đúng vị trí tự nhiên sau Nhóm 6, không còn là ngoại lệ. Cả 2 filter chuyển từ PENDING sang READY tại toàn bộ 14 Nhóm liên quan | Resolved |
@@ -2990,7 +3060,7 @@ Không có.
 | O_GSTT_8 | Nhóm 39 | K_GSTT_78–79 (GTNN mua/bán/ròng theo từng time trong ngày) — BA yêu cầu độ chi tiết theo thời điểm trong ngày (tương tự `Fact Market Index Intraday`, Cụm 2b), nhưng nguồn `Securities Trade` (Buy/Sell Foreign Investor Type Code) là Fact Append theo từng lệnh khớp, không có snapshot chuẩn hóa theo phút. Cần xác nhận với nghiệp vụ độ chi tiết thời gian thực tế cần thiết (theo phút/theo phiên/theo khung giờ) trước khi thiết kế Fact Intraday riêng cho giao dịch NĐTNN — PENDING chờ xác nhận, tránh tạo Fact sai grain | Open |
 | O_GSTT_9 | Nhóm 45 | K_GSTT_101–102 ("Tên cổ đông", "Số cổ phiếu sở hữu", "Tỷ lệ sở hữu") — BA tự đánh giá "Chưa có CSDL - Map biểu mẫu" cho cả 3 chỉ tiêu này, nhưng tra cứu lại Atomic (2026-07-28) xác nhận CÓ nguồn thật: `Public Company Shareholding.Ownership Quantity`/`.Ownership Ratio Percentage` (Nguồn 1, entity draft) và `Legal Entity.Legal Entity Name` (Nguồn 2, chưa promote Nguồn 1). HLD đã đánh giá lại thành READY thay vì PENDING theo BA. Cũng cần xác nhận với BA: tên Nhóm là "Sở hữu **và giao dịch** nội bộ" nhưng cả 6 dòng con chỉ mô tả sở hữu (holding snapshot), không có chỉ tiêu nào về giao dịch phát sinh (khối lượng đăng ký mua/bán) — đã khảo sát toàn bộ nguồn IDS/MDDS/ORDERTRADE, không tìm thấy entity "Insider Transaction" riêng biệt. Cần BA xác nhận: (1) có đồng ý đánh giá lại READY cho 3 chỉ tiêu trên không, (2) có yêu cầu thêm chỉ tiêu giao dịch phát sinh nào chưa liệt kê hay tên Nhóm chỉ mang tính mô tả chung | Open |
 | O_GSTT_10 | Nhóm 46 | K_GSTT_106–112 (Giá cao/thấp 52 tuần, Khối lượng lưu hành bình quân, EPS quý/bình quân 4 quý, Giá trị sổ sách quý/bình quân 4 quý, P/E, P/B — theo chu kỳ quý) — 7/16 chỉ tiêu của STT 46 hoàn toàn không có nguồn Atomic (đã tra cứu toàn bộ `DataModel/Atomic/` + `DataModel/working/Atomic/lld/`, kể cả EAV IDS report — không tìm thấy EPS/Book Value cho cổ phiếu niêm yết, chỉ có NAV của quỹ đầu tư trong `FMS.FUNDS`, không liên quan). Riêng "Giá cao/thấp 52 tuần": BA ghi nguồn `MDDS.HIGH`/`.LOW` (trùng tên field giá cao/thấp trong ngày) nhưng bản chất là rolling window ~1 năm — cần BA xác nhận công thức chính xác (theo tuần hay theo phiên, có loại trừ ngày nghỉ lễ không) trước khi xác định READY (dùng pattern rolling window giống Nhóm 11) hay tiếp tục PENDING. PENDING toàn bộ 7 chỉ tiêu chờ Atomic bổ sung nguồn EAV báo cáo tài chính chuẩn hóa + xác nhận công thức 52 tuần | Open |
-| O_GSTT_11 | Nhóm 44 | K_GSTT_95–98 (Giá mở/cao/thấp/đóng cửa, Khối lượng giao dịch — "theo từng time trong 1 ngày") — phát hiện bổ sung 2026-07-28 (bản trước đã bỏ sót hoàn toàn 5 KPI này, nhầm lẫn với 5 chỉ tiêu cùng tên không kèm "theo time"/snapshot cuối ngày). Atomic `Security Trading Snapshot` (MDDS.JAD_STOCKINFOR) có grain gốc theo từng thời điểm (BK = `HISTORYID`), field `Trading Time` (`trading_time`) nhưng **kiểu Text chưa chuẩn hóa** — chính comment gốc trong YAML Atomic đã ghi "Nguồn lưu dạng string... Cần profile trước khi convert sang Timestamp". BA cũng có giá trị lạ trong cột Note (`0,042361111` cho cả 4 dòng giá) — nghi ngờ lỗi convert serial-time Excel khi export CSV, cần xác nhận lại dữ liệu gốc không bị hỏng. Đã thiết kế khung `Fact Security Trading Intraday` (grain dự kiến 1 row/Symbol/Trading Time) nhưng để PENDING cho tới khi: (1) DBA/BA xác nhận định dạng thật của `Trading Time` (giờ:phút:giây theo string pattern nào), (2) xác nhận giá trị Note trong BA có phải lỗi export hay không, (3) profile xong mới chốt ETL convert Timestamp. "Khối lượng giao dịch theo từng time" cũng cần lưu ý: BA tự ghi chú nguồn `totaltrading` là lũy kế từ đầu ngày, không phải KLGD phát sinh riêng tại thời điểm — giữ đúng bản chất lũy kế khi thiết kế LLD, không tự suy ra KLGD tức thời bằng phép trừ liên tiếp nếu chưa xác nhận với BA | Open |
+| O_GSTT_11 | Nhóm 44 | K_GSTT_95–99 (Giá mở/cao/thấp/đóng cửa, Khối lượng giao dịch — "theo từng time trong 1 ngày") — phát hiện bổ sung 2026-07-28 (bản trước đã bỏ sót hoàn toàn 5 KPI này, nhầm lẫn với 5 chỉ tiêu cùng tên không kèm "theo time"/snapshot cuối ngày). Atomic `Security Trading Snapshot` (MDDS.JAD_STOCKINFOR) có grain gốc theo từng thời điểm (BK = `HISTORYID`), field `Trading Time` (`trading_time`) kiểu Text chưa chuẩn hóa — chặn thiết kế chính thức `Fact Security Trading Intraday` cho tới khi profile xong định dạng. **Resolved 2026-08-26.** Data Modeler quyết định bổ sung cột mới `Trading Timestamp` (`trading_tms`, data_domain `Timestamp`) trên Atomic `Security Trading Snapshot` — nối chuỗi `Trading Date` (`trading_dt`) + `' '` + `Trading Time` (`trading_time`) ngay tại tầng ODS (cột nguồn `MDDS.JAD_STOCKINFOR.TRADINGTIMESTAMP`, ETL-derived), không cần chờ profile định dạng chuỗi gốc của `Trading Time` nữa (cột này giữ nguyên không đổi, chỉ bổ sung thêm `trading_tms` làm field xác định grain). Đã thiết kế chính thức `Fact Security Trading Intraday` (grain 1 row/Symbol/Trading Timestamp, FK `Security Trading Snapshot Dimension` + `Calendar Date Dimension`) — xem Nhóm 44, Section 3, Section 4. "Khối lượng giao dịch theo từng time" (K_GSTT_99) giữ nguyên bản chất lũy kế đúng như đã lưu ý trước đó — không suy ra KLGD tức thời bằng phép trừ liên tiếp. **Còn lại ngoài phạm vi resolve này:** giá trị lạ trong cột Note BA (`0,042361111`) chưa xác nhận lại với BA/DBA — không ảnh hưởng thiết kế Datamart (không dùng `trading_time` string gốc làm nguồn nữa) nên không chặn READY, nhưng nên rà soát riêng nếu `Trading Time` gốc còn dùng ở nơi khác | Resolved |
 | O_GSTT_12 | Nhóm 5 | K_GSTT_51/52 (KLGD/GTGD thỏa thuận) — **Resolved 2026-08-20.** BA cập nhật đổi nguồn từ cột snapshot có sẵn (`Market Index Snapshot.PT Total Volume/Value`) sang tự tính từ sổ lệnh `TRADE_BOOK_HOSE/HNX`. Phát hiện mâu thuẫn khi đọc SQL tham khảo: cột "Điều kiện chung" ghi `Market ID IN ('STO','STX','UPX')` nhưng SQL đầy đủ BA cung cấp lại filter `MARKET_ID IN ('STX','UPX')`/`='STK'` (không có `'STO'`) — đây thực chất là điều kiện của K_GSTT_47/48 (KLGD/GTGD của chỉ số, khớp lệnh thông thường), và SQL của K_GSTT_51 + K_GSTT_52 trong BA hoàn toàn giống hệt nhau (copy chung 1 khối). Đã xác nhận trực tiếp với BA (2026-08-20): mấu chốt phân biệt "thỏa thuận" nằm ở nhánh tính sẵn `tong_kl_tt`/`tong_gt_tt` trong cùng SQL (filter thêm `Board Type Code/BOARD_ID IN ('T1','T2','T3','T4','T6')`), không phải `tong_kl`/`tong_gt`. Đã sửa công thức dùng `Fact Stock Portfolio Snapshot.Total Negotiated Volume/Value` (cùng nguồn Atomic đã pre-tách Board Type cho K_GSTT_17/18, Nhóm 1), SUM cộng dồn qua `Index Constituent Dimension` theo Index Code. Đồng bộ tại Nhóm 49 (Data Explorer, 100% reuse). Cột `PT_Total_Volume/Value` trên `Fact Market Index Snapshot` nay không còn KPI nào tham chiếu, đã loại khỏi erDiagram — measure mở rộng của GSTT trên Fact này giảm từ 15 xuống 13 | Resolved |
 | O_GSTT_13 | Nhóm 5 | `Odd_Lot_Total_Volume`/`Odd_Lot_Total_Value` trong erDiagram `Fact Market Index Snapshot` — **Resolved 2026-08-20.** Xác nhận qua `grep` toàn bộ `Datamart/lld/DTM_*_Detail_Mapping.csv` (mọi module): không có Detail Mapping nào tham chiếu 2 cột này (`fct_market_index_snpst.odd_lot_total_vol/val`). Module TKNB có 2 KPI cùng tên "lô lẻ" (K_TKNB_1021/1022, K_TKNB_1208/1209) nhưng dùng nguồn hoàn toàn khác (`securities_trade`, Board Type `G4`/`T4`/`T6`) — trùng tên nghiệp vụ ngẫu nhiên, không liên quan. Xác nhận đây là measure dư thừa, không có căn cứ BA lẫn không nơi nào dùng — đã xóa khỏi thiết kế (xem cập nhật erDiagram + Attributes + registry + SQL Phase 3 QLKD) | Resolved |
 | O_GSTT_12 | Nhóm 33, Nhóm 35, Nhóm 37, Nhóm 47 | K_GSTT_70–73 (KL/GT mua-bán ròng NĐTNN — Nhóm 33, reuse Nhóm 35/37/47) — phát hiện bổ sung 2026-07-29 qua review: BA không cung cấp SQL tham khảo cho 4 dòng con này ở STT 33 (cột Câu lệnh tham khảo để trống), và cột Note của cả 4 dòng ghi rõ **"Cần check lại có bỏ loại giao dịch G7,G8"** (Board Type G7=Buy-in, G8=Sell-out — giao dịch xử lý vi phạm thanh toán, theo `classification_schemes.yaml`) — tức BA tự nhận chưa chắc chắn có cần loại trừ 2 loại giao dịch này khỏi công thức KL/GT mua-bán ròng NĐTNN hay không. HLD bản trước thiết kế cả 4 KPI là READY dứt khoát (dùng nguyên `Buy/Sell Foreign Investor Type Code IN ('10','20')`, không loại trừ G7/G8) mà chưa ghi nhận nghi vấn này. Cần xác nhận với BA/nghiệp vụ: (1) có cần bổ sung điều kiện loại trừ `Board Type Code NOT IN ('G7','G8')` vào công thức hay không, (2) nếu có, áp dụng đồng bộ cho cả 4 KPI gốc (Nhóm 33) và mọi Nhóm reuse (35/37/47) trước khi chốt Detail Mapping | Open |
