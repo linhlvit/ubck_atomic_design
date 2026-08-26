@@ -2,10 +2,12 @@
 -- GSTT Flat Tables — CREATE
 -- Module: Giám sát Thị trường (GSTT)
 -- Generated: Phase 3 LLD Datamart
--- 2 bảng: 2 fact
+-- 3 bảng: 3 fact
 -- (Fact Market Index Snapshot dùng chung QLKD — flat table đã có ở QLKD, không CREATE lại)
--- Sửa 2026-08-03: bảng #3 cũ (Fact Public Company Shareholding) đã bị loại bỏ —
+-- Sửa 2026-08-03: bảng cũ (Fact Public Company Shareholding) đã bị loại bỏ —
 -- xem ghi chú chi tiết cuối file
+-- Sửa 2026-08-26: bổ sung bảng #3 (Fact Security Trading Intraday, Nhóm 44 —
+-- Biểu đồ phân tích kỹ thuật, K_GSTT_95-99 chuyển PENDING → READY)
 -- ============================================================
 
 
@@ -31,9 +33,11 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_fct_stock_portfolio_snpst_flat ON CLUST
     total_negotiated_vol                Nullable(Int64)         COMMENT 'Tổng khối lượng giao dịch thỏa thuận',
     total_negotiated_val                Nullable(Decimal(23,2)) COMMENT 'Tổng giá trị giao dịch thỏa thuận',
     foreign_net_vol                     Nullable(Int64)         COMMENT 'Khối lượng mua ròng của nhà đầu tư nước ngoài',
-    outstanding_share_quantity          Nullable(Int64)         COMMENT 'Số cổ phiếu đang lưu hành — PENDING, chưa có nguồn Atomic',
-    net_profit_after_tax                Nullable(Decimal(23,2)) COMMENT 'Lợi nhuận sau thuế — PENDING, chưa có nguồn Atomic',
-    owner_equity                        Nullable(Decimal(23,2)) COMMENT 'Vốn chủ sở hữu — PENDING, chưa có nguồn Atomic',
+    outstanding_share_quantity          Nullable(Int64)         COMMENT 'Số cổ phiếu đang lưu hành — pc_share_statistics_hstr, khớp đúng ngày GD, không lookback (Resolved 2026-08-26, O_GSTT_2)',
+    revenue                             Nullable(Decimal(23,2)) COMMENT 'Doanh thu — point-in-time theo Ky_bao_cao (rule GSĐC, Resolved 2026-08-26)',
+    net_profit_after_tax                Nullable(Decimal(23,2)) COMMENT 'Lợi nhuận sau thuế — point-in-time theo Ky_bao_cao (rule GSĐC, Resolved 2026-08-26)',
+    net_profit_after_tax_ttm            Nullable(Decimal(23,2)) COMMENT 'LNST TTM 4 quý gần nhất, NULL nếu không đủ 4 kỳ — dùng cho P/E, EPS (rule GSĐC, Resolved 2026-08-26)',
+    owner_equity                        Nullable(Decimal(23,2)) COMMENT 'Vốn chủ sở hữu — quý gần nhất đã công bố (rule GSĐC, Resolved 2026-08-26)',
     foreign_buy_vol                     Nullable(Int64)         COMMENT 'Khối lượng mua của nhà đầu tư nước ngoài',
     foreign_sell_vol                    Nullable(Int64)         COMMENT 'Khối lượng bán của nhà đầu tư nước ngoài',
     foreign_buy_val                     Nullable(Decimal(23,2)) COMMENT 'Giá trị mua của nhà đầu tư nước ngoài',
@@ -165,6 +169,46 @@ ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
 ORDER BY (assumeNotNull(cdr_dt), market_index_dim_id, index_time)
 COMMENT 'Flat table — Fact Market Index Intraday × Calendar Date Dimension × Market Index Dimension'
+;
+
+
+-- ============================================================
+-- 3. FACT: gstt_fct_security_trading_intraday_flat
+--    Biểu đồ phân tích kỹ thuật — 1 row / mã CK (Symbol) / Trading Timestamp —
+--    KHÔNG lọc rn=1 (khác Fact EOD security_trading_snpst_dim). trading_tms =
+--    cột mới bổ sung Atomic 2026-08-26 (nối chuỗi trading_dt + ' ' + trading_time
+--    tại tầng ODS), thay `Trading Time` (Text) làm field xác định grain.
+--    Grain: Transaction/Tick log — nhiều dòng/ngày theo Trading Timestamp, có
+--    thể append thêm tick mới trong cùng ngày khi ETL chạy nhiều lần/ngày
+--    Joins: Calendar Date (cdr_dt_dim_id JOIN) × Security Trading Snapshot Dimension
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.gstt_fct_security_trading_intraday_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FACT Security Trading Intraday
+    security_trading_snpst_dim_id       String                  COMMENT 'FK → Security Trading Snapshot Dimension',
+    cdr_dt_dim_id                       String                  COMMENT 'FK → Calendar Date Dimension',
+    trading_tms                         Nullable(DateTime)      COMMENT 'Thời điểm ghi nhận snapshot trong ngày (DD — grain component, nối trading_dt + trading_time tại ODS)',
+    open_price_at_time                  Nullable(Decimal(23,2)) COMMENT 'Giá mở cửa tại thời điểm ghi nhận',
+    high_price_at_time                  Nullable(Decimal(23,2)) COMMENT 'Giá cao nhất tại thời điểm ghi nhận',
+    low_price_at_time                   Nullable(Decimal(23,2)) COMMENT 'Giá thấp nhất tại thời điểm ghi nhận',
+    close_price_at_time                 Nullable(Decimal(23,2)) COMMENT 'Giá đóng cửa (khớp gần nhất) tại thời điểm ghi nhận',
+    cumulative_vol_at_time              Nullable(Int64)         COMMENT 'Khối lượng khớp lũy kế từ đầu ngày tại thời điểm ghi nhận — không phải KL phát sinh riêng tại thời điểm đó',
+
+    -- From: CALENDAR DATE DIMENSION
+    cdr_dt                              Nullable(Date)          COMMENT 'Ngày giao dịch — từ Calendar Date Dimension',
+
+    -- From: SECURITY TRADING SNAPSHOT DIMENSION
+    symbol                               Nullable(String)        COMMENT 'Mã chứng khoán — từ Security Trading Snapshot Dimension',
+    security_full_nm                    Nullable(String)        COMMENT 'Tên chứng khoán — từ Security Trading Snapshot Dimension',
+    floor_code                          Nullable(String)        COMMENT 'Mã sàn — từ Security Trading Snapshot Dimension',
+    stock_tp_code                       Nullable(String)        COMMENT 'Loại chứng khoán — từ Security Trading Snapshot Dimension',
+    stock_tp_nm                         Nullable(String)        COMMENT 'Tên loại chứng khoán — từ Security Trading Snapshot Dimension',
+    security_trading_src_stm_code       Nullable(String)        COMMENT 'Mã hệ thống nguồn — từ Security Trading Snapshot Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
+ORDER BY (assumeNotNull(cdr_dt), security_trading_snpst_dim_id, trading_tms)
+COMMENT 'Flat table — Fact Security Trading Intraday × Calendar Date Dimension × Security Trading Snapshot Dimension'
 ;
 
 

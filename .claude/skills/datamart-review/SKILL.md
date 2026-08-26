@@ -55,7 +55,7 @@ Không so sánh BA trực tiếp với Datamart mà bỏ qua lớp Atomic.
 
 **Quy tắc bổ sung — không tin theo Attributes ghi gì, phải verify Atomic YAML thật:** Attributes ghi `atomic_table.atomic_column` không có nghĩa là field đó thực sự tồn tại trong Atomic approved. Một KPI có thể bị đánh dấu READY suốt nhiều tuần dù field tham chiếu chưa từng có trong YAML — vì không ai đối chiếu ngược lại approved YAML mà chỉ tin theo những gì Attributes/Detail Mapping đã ghi. Khi review Lớp 2, **luôn mở YAML approved và đếm số attribute thật** trước khi chấp nhận 1 cột Done/READY là đúng — không suy luận từ tên cột "nghe hợp lý" (VD: `record_tp_code`, `record_status_code` nghe rất hợp lý cho 1 entity Violation nhưng có thể chưa từng được thiết kế).
 
-### Phân biệt 4 kịch bản phát hiện vấn đề
+### Phân biệt 5 kịch bản phát hiện vấn đề
 
 | Kịch bản | Dấu hiệu | Hành động |
 |---|---|---|
@@ -63,6 +63,7 @@ Không so sánh BA trực tiếp với Datamart mà bỏ qua lớp Atomic.
 | **B — Logic BA thay đổi** | BA cập nhật công thức/nguồn/filter mới, Attributes hoặc Detail Mapping chưa phản ánh | Gọi `datamart-lld-design` để sửa LLD |
 | **C — Lỗi kỹ thuật** | Lỗi không do BA đổi logic — thiếu Section, heading sai cấp, bảng KPI thiếu cột, CSV lệch cột do sed/replace_all, sai `data_domain`/`data_type`/`nullable`, thiếu `src_stm_code`, physical name sai chuẩn, `etl_logic` tham chiếu cột mart... (Attributes/Detail Mapping/registry HOẶC HLD) | **Trình bày action đề xuất → chờ user xác nhận → gọi skill con để sửa.** KHÔNG tự Edit trực tiếp |
 | **D — HLD sai do thiết kế/nguồn Atomic lỗi thời** | HLD đã tồn tại, đánh READY, nhưng trỏ nhầm nguồn Atomic đã deprecated/tái cấu trúc, sai grain, sai entity, hoặc logic nghiệp vụ không còn khớp Atomic hiện hành — khác Kịch bản A (không phải PENDING) và khác Kịch bản C (đây là lỗi nội dung/logic, không phải lỗi kỹ thuật thuần cấu trúc) | Gọi `datamart-hld-design` để thiết kế lại — KHÔNG tự sửa tay nội dung HLD (Fact, grain, nguồn Atomic, bảng KPI) dù đã xác định rõ hướng sửa |
+| **E — Review theo issue/bug report** | User báo 1 vấn đề cụ thể (VD: "thiếu TRADINGTIME", "P/E tính sai", "biểu đồ KT thiếu dữ liệu intraday") — cần trace nhanh thay vì review tuần tự toàn module | Dùng **BƯỚC 0-ALT** (xem bên dưới) thay cho Bước 0/0b/1 thông thường. Trace toàn bộ chuỗi Source → Atomic → HLD → LLD → Flat cho field/chỉ tiêu liên quan. Xuất bảng trạng thái per-tầng (✅/⚠️/❌). Xác định blocker cụ thể + Open Issue liên quan |
 
 > **Nguyên tắc tổng quát — bắt buộc, áp dụng cho MỌI thay đổi nội dung (không chỉ 4 kịch bản trên):**
 > - Bất kỳ thay đổi nào chạm vào **nội dung nghiệp vụ/thiết kế của HLD** (thêm/sửa Nhóm, đổi nguồn Atomic, đổi Fact/Dimension/grain, đổi công thức KPI, thêm Cụm Data Lineage...) → luôn qua `datamart-hld-design`, dù đã tự xác định rõ cách sửa qua quá trình review. Không tự Edit trực tiếp các phần này.
@@ -167,6 +168,11 @@ Section 5 — Vấn đề mở
   - ⚠️ **Chuẩn 7 cột thay thế hoàn toàn format cũ "block READY 6 cột / block PENDING 4 cột" (đổi 2026-07-23).** Dòng READY và PENDING nằm CHUNG 1 bảng, phân biệt bằng cột `Trạng thái`. Nếu HLD còn tách `##### READY` / `##### PENDING` thành 2 block, hoặc bảng chỉ có 6 cột (thiếu `Trạng thái`) → 🟡 Warning cấu trúc, đề xuất gộp về 1 bảng 7 cột.
   - ❌ **KHÔNG báo lỗi ngược lại** — bảng 7 cột có cột `Trạng thái` là ĐÚNG chuẩn, không phải "thừa cột". Đây là lỗi đã xảy ra khi review chạy theo bản checklist cũ.
 - Không tự suy ra `reuse_status` — nếu chưa rõ, hỏi user xác nhận (theo GATE RULE của `datamart-hld-design`), không tự gán "reuse" hay "new" khi chưa chắc chắn.
+- **Đối chiếu tên entity và `reuse_status` giữa `Entities.csv` ↔ Section 3 & 4 của `HLD.md` (1 lần/module):**
+  - File `DTM_{MODULE}_Entities.csv` (và `.md`) là output Phase 2, **không tự động đồng bộ** khi `HLD.md` bị chỉnh sửa/tinh chỉnh sau đó (ví dụ: đổi tên entity từ Sector Dimension sang Industry Dimension, đổi trạng thái từ new sang reuse...).
+  - Khi review, bắt buộc đối chiếu 1-1 danh sách entity, tên entity và `reuse_status` giữa `Entities.csv` với bảng Mô hình tổng thể (Section 3) và Reuse Analysis (Section 4) trong `HLD.md` hiện hành.
+  - **Nguyên tắc then chốt:** Khi kiểm tra LLD (Lớp 2/Lớp 3) mà thấy một entity trong `Entities.csv` "thiếu detail mapping CSV" hoặc "chưa có file Attributes CSV", **trước tiên phải xác minh tên entity trong `Entities.csv` có còn khớp với `HLD.md` hay không**, chứ không kết luận vội là thiếu file hay bug LLD.
+  - *Ví dụ thực tế (Case PTTT):* `Entities.csv` ghi `Sector Dimension` (`dim/new`), nhưng `HLD.md` Section 3 & 4 đã đổi thành `Industry Dimension` (`dim/reuse` từ GSDC). Khi review, reviewer tưởng thiếu file Attributes của `Sector Dimension`, nhưng thực tế entity đã được đổi tên và reuse từ module khác trong `HLD.md` — giải pháp đúng là đồng bộ `Entities.csv` / `Entities.md` theo `HLD.md` hiện hành.
 
 > **⚠️ Không được để kết quả kiểm tra cấu trúc "chìm" khi có việc khác chen ngang (bắt buộc):** Nếu quá trình review 0b phát sinh một phát hiện lớn hơn giữa chừng (VD: Critical gap Atomic khiến phải tạm dừng lập kế hoạch để điều tra, hoặc phải gọi `datamart-hld-design`/`datamart-lld-design` để sửa ngay một phần trước khi tiếp tục) — kết quả kiểm tra cấu trúc tài liệu ở bước này (Section/heading/cột) VẪN PHẢI được nêu lại tường minh trong bảng 0b.4 và câu hỏi gate 0b.5, không được để trôi mất trong lúc xử lý việc phát sinh. Lý do: gate 0b.5 mặc định chỉ hỏi "thứ tự review nhóm nào", không tự nhắc lại phát hiện cấu trúc — nếu người thực hiện bị cuốn theo nhánh phát sinh (điều tra gap Atomic, chuyển sang skill khác để sửa 1 Nhóm cụ thể) mà không chủ động quay lại, phát hiện cấu trúc dễ bị bỏ sót hoàn toàn cho đến khi user tự phát hiện và hỏi lại (case thực tế: module TT — phát hiện Critical gap Atomic THANHTRA schema cũ/mới ngay sau 0b, chuyển hướng gọi `datamart-hld-design` sửa Nhóm 1, nhưng bỏ luôn việc báo cáo thiếu Section 4/heading Cụm sai cấp/bảng KPI thiếu cột Ghi chú — dù các lỗi này đã có sẵn từ bản gốc và không liên quan gì đến nhánh phát sinh đang xử lý).
 
@@ -220,6 +226,80 @@ Sau khi trình bày bảng danh sách, hỏi:
 > - Bỏ qua nhóm nào (VD: nhóm ALL_PENDING)?"
 
 **Không bắt đầu review chi tiết bất kỳ nhóm nào cho đến khi user trả lời.**
+
+---
+
+## BƯỚC 0-ALT — REVIEW THEO ISSUE/BUG REPORT (Kịch bản E)
+
+> **Khi nào dùng:** User báo 1 vấn đề cụ thể thay vì yêu cầu review toàn module tuần tự.
+> VD: "thiếu TRADINGTIME trong datamart", "P/E tính sai", "biểu đồ KT thiếu dữ liệu intraday".
+> Bước này **thay thế** Bước 0/0b/1 thông thường — không cần lập kế hoạch toàn module.
+
+### 0-ALT.1 — Parse issue description
+
+Từ mô tả issue, xác định:
+- **Field/chỉ tiêu liên quan** (VD: `TRADINGTIME`, `LNST`, `P/E`)
+- **Nhóm/Dashboard liên quan** (VD: "Biểu đồ phân tích kỹ thuật" → Nhóm 44)
+- **Bảng nguồn** (VD: `MDDS.JAD_STOCKINFOR`)
+- **Người báo + ngày** (để cross-check Open Issue trong HLD)
+
+### 0-ALT.2 — Trace toàn bộ chuỗi thiết kế (bắt buộc đi ĐẦY ĐỦ 5 tầng)
+
+Với mỗi field/chỉ tiêu liên quan, trace tuần tự:
+
+```
+Tầng 1: Source (BRD)     → grep field trong BRD/Source/*.yaml, BRD/BA/*.csv
+Tầng 2: Atomic           → grep field trong DataModel/Atomic/**/*.yaml + Mapping/atomic/**/*.yaml
+Tầng 3: Datamart HLD     → tìm KPI liên quan trong DTM_{MODULE}_HLD.md, đọc bảng KPI + Open Issue
+Tầng 4: Datamart LLD     → tìm cột trong Attributes CSV + Detail Mapping CSV
+Tầng 5: Flat Table / SQL → tìm cột trong Datamart/flat-table/{MODULE}/*.sql
+```
+
+### 0-ALT.3 — Xuất bảng trạng thái per-tầng
+
+| Tầng | Trạng thái | File thiết kế | Ghi chú |
+|---|---|---|---|
+| Source (BRD) | ✅ / ⚠️ / ❌ | file path | |
+| Atomic | ✅ / ⚠️ / ❌ | file path | |
+| HLD | ✅ / ⚠️ (PENDING) / ❌ | file path + line range | Open Issue nếu có |
+| LLD (Attributes) | ✅ / ❌ | file path | |
+| LLD (Detail Mapping) | ✅ / ❌ | file path | |
+| Flat Table | ✅ / ❌ | file path | |
+
+**Trạng thái:**
+- ✅ = Đã có đầy đủ, hoạt động đúng
+- ⚠️ = Đã có nhưng PENDING/chưa hoàn thiện (ghi rõ blocker)
+- ❌ = Chưa có thiết kế
+
+### 0-ALT.4 — Xác định root cause và blocker
+
+Từ bảng trạng thái, xác định:
+- **Root cause**: tầng nào là nguyên nhân gốc (VD: "Atomic có, HLD có khung nhưng PENDING, LLD chưa có → root cause = blocker ở tầng HLD")
+- **Blocker cụ thể**: liệt kê từng blocker cần giải quyết trước khi hoàn thiện thiết kế
+- **Open Issue liên quan**: cross-check Section 5 "Vấn đề mở" trong HLD — issue này đã được ghi nhận chưa?
+
+### 0-ALT.5 — Đọc sâu SQL BA (nếu KPI liên quan có SQL tham khảo)
+
+> **Bắt buộc khi KPI ở trạng thái PENDING nhưng BA có SQL tham khảo.**
+> SQL tham khảo thường chứa logic ẩn không thể hiện trong mô tả ngắn gọn của bảng KPI.
+
+Đọc SQL tham khảo trong BA CSV (cột "Câu lệnh tham khảo") để trích xuất:
+- Aggregation window: TTM (4 quý), rolling N phiên, cuối ngày (rn=1)
+- Ưu tiên loại dữ liệu: HN > TH > ME > RI (cho BCTC), indexTime DESC (cho market data)
+- Temporal join: `base_date < ngay_gd AND submission_date <= ngay_gd`
+- Dedup strategy: ROW_NUMBER PARTITION BY + ORDER BY
+- Điều kiện gate: `CASE WHEN COUNT(*) = 4 THEN SUM(x) END` (phải đủ N kỳ mới tính)
+
+### 0-ALT.6 — Xuất báo cáo review issue
+
+Báo cáo gồm:
+1. **Xác nhận/bác bỏ issue** — issue đúng hay không, mức độ nghiêm trọng
+2. **Root cause analysis** — tầng nào thiếu, tại sao
+3. **Impact assessment** — dashboard/báo cáo nào bị ảnh hưởng
+4. **Action items** — theo thứ tự ưu tiên, với owner và blocker rõ ràng
+5. **Đề xuất** — Kịch bản nào (A/B/C/D) phù hợp để sửa, hoặc chỉ cần resolve blocker
+
+> ⛔ **DỪNG — chờ user xác nhận** trước khi thực hiện bất kỳ action nào.
 
 ---
 
@@ -310,6 +390,8 @@ Thực hiện tuần tự cho từng nhóm trong scope. Với mỗi nhóm:
 | **Bảng Fact/Dim** | Fact/Dim đủ để phản ánh dimension filter/slicer trong BA |
 | **Chiều (Slicer/Filter)** | Mọi dòng BA `Phân loại = Chiều` phải có KPI_ID trong HLD |
 | **Cột Fact thừa (không trace được về KPI)** | Với mỗi cột trong Fact block (erDiagram), kiểm tra có xuất hiện trong công thức của ít nhất 1 KPI trong bảng KPI của nhóm đó không. Không trace được và không phải FK trục thời gian/dimension chính → cột thừa, có thể do copy nguyên attribute entity nguồn vào Fact. Ngoại lệ: cột đã ghi chú rõ là "ETL filter khi populate Fact" (SCD4A current-state) — không cần xuất hiện trong công thức KPI |
+| **KPI PENDING — đọc sâu SQL tham khảo BA (bắt buộc khi có)** | Khi KPI ở trạng thái PENDING nhưng BA có SQL tham khảo (cột "Câu lệnh tham khảo" không trống), **bắt buộc đọc SQL** để trích xuất logic ẩn. Đặc biệt chú ý: **(1) Aggregation window** — SQL dùng TTM (Σ 4 quý), rolling N phiên, hay giá trị cuối ngày (rn=1)? **(2) Ưu tiên loại dữ liệu** — có ROW_NUMBER ưu tiên loại BCTC (HN>TH>ME>RI), loại snapshot (indexTime DESC)? **(3) Điều kiện gate** — có `CASE WHEN COUNT(*) = N THEN ...` (phải đủ N kỳ mới tính, NULL nếu thiếu)? **(4) Temporal join** — có điều kiện `base_date < ngay_gd AND submission_date <= ngay_gd`? Nếu HLD chỉ ghi chung chung (VD: `LNST — chưa xác định`) mà SQL tiết lộ logic phức tạp hơn → **🟡 Warning: HLD thiếu đặc tả logic temporal** — ghi chú thiết kế phải mô tả rõ bản chất aggregation dù KPI còn PENDING. Case thực tế: K_GSTT_56 (LNST) ghi "chưa xác định" nhưng BA SQL cho thấy LNST dùng cho P/E và EPS là TTM 4 quý, không phải 1 quý |
+| **KPI phái sinh — nhất quán KPI cơ sở (bắt buộc)** | Với mỗi KPI `Tính chất = Chỉ tiêu phái sinh`, liệt kê tất cả KPI cơ sở mà nó phụ thuộc (VD: K_GSTT_58 P/E phụ thuộc K_GSTT_56 LNST + K_GSTT_55 Số CP). Kiểm tra: KPI cơ sở có **đặc tả đủ rõ** (bản chất temporal, nguồn, logic) để phục vụ TẤT CẢ KPI phái sinh phụ thuộc? Nếu KPI cơ sở PENDING/chung chung mà ≥2 KPI phái sinh phụ thuộc → **🟡 Warning: cần xác nhận logic KPI cơ sở phù hợp với mọi KPI phái sinh**. Case thực tế: K_GSTT_56 (LNST) dùng cho cả K_GSTT_58 (P/E) lẫn K_GSTT_60 (EPS) — cả 2 đều cần LNST TTM 4 quý, nhưng HLD không ghi rõ nên dễ nhầm LNST 1 quý |
 
 Output lớp 1:
 ```
@@ -757,6 +839,22 @@ bad = [i for i,r in enumerate(rows) if len(r) != header_len]
 print('so dong loi:', len(bad), bad)  # phải rỗng
 ```
 Nếu phát hiện dòng lệch — sửa lại bằng cách bọc phần text có dấu phẩy trong `"..."`, không chỉ sửa nội dung mà bỏ qua việc escape.
+
+### Phân biệt Flow Metric vs Stock Metric khi review chỉ tiêu tài chính
+
+Khi HLD/LLD thiết kế cột lấy từ Báo cáo tài chính (BCTC IDS EAV: `BCKQKD`, `BCDKT`...), bắt buộc xác định rõ bản chất thời gian:
+
+| Bản chất | Ý nghĩa | Ví dụ | Logic thời gian chuẩn |
+|---|---|---|---|
+| **Flow metric** (Dòng tiền / Lũy kế thời kỳ) | Giá trị phát sinh trong 1 khoảng thời gian | LNST, Doanh thu, Chi phí, Khấu hao | **TTM** (Trailing Twelve Months = $\sum$ 4 quý gần nhất) cho P/E, EPS; hoặc lũy kế kỳ/năm |
+| **Stock metric** (Số dư thời điểm) | Giá trị tại một mốc thời gian cụ thể | VCSH, Tổng tài sản, Nợ phải trả, Tiền mặt | **Quý gần nhất** (`ROW_NUMBER() OVER (ORDER BY report_year DESC, report_quarter DESC) = 1`) |
+
+**Quy tắc kiểm tra:**
+- **Không ghi chung chung "chưa xác định":** Khi một chỉ tiêu BCTC đang PENDING, HLD vẫn phải ghi rõ bản chất là **Flow (TTM)** hay **Stock (Latest Quarter)** trong cột Công thức/Ghi chú để định hướng thiết kế Datamart.
+- **Tách rõ measure trên Fact:** Fact table không nên dùng chung 1 cột `net_profit_after_tax` mà không rõ bản chất. Cần tách rõ:
+  - `net_profit_after_tax_ttm` (cho P/E, EPS)
+  - `owner_equity_latest` (cho P/B)
+- Nếu HLD/Attributes gom chung hoặc không ghi rõ logic temporal → 🟡 **Warning: Thiếu đặc tả logic temporal tài chính**.
 
 ---
 

@@ -155,7 +155,7 @@ SELECT
     f.applied_fine_amt,
     cal.cdr_dt                          AS cdr_dt,
     behavior_dim.penalty_decision_subject_behavior_code,
-    behavior_dim.violation_behavior_nm,
+    decision_dim.violation_behavior_nm,   -- Sửa 2026-08-22 (task Tuân): đổi nguồn từ behavior_dim sang decision_dim
     behavior_dim.src_stm_code           AS penalty_decision_subject_behavior_src_stm_code,
     decision_dim.penalty_decision_code,
     decision_dim.src_stm_code           AS penalty_decision_src_stm_code,

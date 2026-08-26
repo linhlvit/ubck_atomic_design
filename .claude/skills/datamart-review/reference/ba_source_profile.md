@@ -1,6 +1,6 @@
 # BA Source Profile — cấu trúc thật của `BRD/BA/BA_analyst_*.csv`
 
-Hồ sơ này khảo sát trực tiếp toàn bộ 13 file BA (2026-08-22). Dùng để đọc BA **đúng cột, đúng giá trị**
+Hồ sơ này khảo sát trực tiếp toàn bộ 13 file BA (2026-08-22), **cập nhật 2026-08-24** cho `BA_analyst_QLCB.csv` bản mới (đổi delimiter `;` → `,`). Dùng để đọc BA **đúng cột, đúng giá trị**
 thay vì giả định chỉ số cột cố định — vì các file BA export từ Excel ở nhiều thời điểm khác nhau và
 **không có 2 file nào giống nhau về số cột**.
 
@@ -23,7 +23,11 @@ phần còn lại rỗng. Lấy dòng 0 làm header sẽ hỏng toàn bộ mappi
 
 ```python
 import csv, io
-rows = list(csv.reader(io.StringIO(open(path, encoding='utf-8-sig').read()), delimiter=';'))
+raw = open(path, encoding='utf-8-sig').read()
+# Dò delimiter — KHÔNG hard-code ';' (xem mục 5, bẫy "Delimiter không cố định")
+best = max((max(len(r) for r in list(csv.reader(io.StringIO(raw), delimiter=d))[:5]), d)
+           for d in (';', ','))
+rows = list(csv.reader(io.StringIO(raw), delimiter=best[1]))
 hdr_idx = 0 if sum(1 for h in rows[0] if h.strip()) >= sum(1 for h in rows[1] if h.strip()) else 1
 header, data = rows[hdr_idx], rows[hdr_idx + 1:]
 col = {h.strip(): i for i, h in enumerate(header) if h.strip()}
@@ -35,7 +39,7 @@ col = {h.strip(): i for i, h in enumerate(header) if h.strip()}
 
 | Số cột | File |
 |---|---|
-| 23 | QLCB |
+| 23 | QLCB (delimiter `,` từ bản 2026-08-24 — xem mục 5) |
 | 24 | GSDC (3 part) |
 | 26 | GSTT, PTTT, TT |
 | 27 | QLKD, VP |
@@ -133,7 +137,8 @@ col = {h.strip(): i for i, h in enumerate(header) if h.strip()}
 
 | Bẫy | Chi tiết | Cách xử lý |
 |---|---|---|
-| **Delimiter** | BA dùng `;`, Attributes/Detail Mapping dùng `,` | `csv.reader(..., delimiter=';')` cho BA |
+| **Delimiter không cố định** | Khảo sát 2026-08-22 ghi "BA dùng `;`" — **không còn đúng cho mọi file**. `BA_analyst_QLCB.csv` bản 2026-08-24 export lại bằng `,` (vẫn 23 cột, 67 dòng logic). Đọc bằng `delimiter=';'` cho ra 1 cột/dòng và **im lặng** trả về kết quả sai: `col` chỉ có 1 key, mọi `g('Nguồn')`/`g('Bảng nguồn')` trả về `''`, dễ bị kết luận nhầm là "BA chưa map nguồn" | **Dò delimiter, không hard-code** — thử cả `;` và `,`, chọn cái cho số cột lớn nhất ở 5 dòng đầu (xem snippet mục 1 và mục 6). Attributes/Detail Mapping vẫn luôn `,` |
+| **Closure trong `g = lambda`** | Nếu lưu `g` lại để dùng **sau** vòng lặp (VD: `out.append({'g': g})` rồi lặp `out` ở ngoài), `r` bị bắt theo tham chiếu → **mọi row trả về giá trị của dòng cuối cùng**. Rất khó phát hiện vì script chạy không lỗi, chỉ ra dữ liệu giống nhau ở mọi dòng | Bind theo tham số mặc định: `g = lambda name, r=r: ...`. Snippet mục 6 đã sửa. Chỉ an toàn khi gọi `g()` ngay trong vòng lặp |
 | **Ô multi-line** | SQL/mô tả dài chứa xuống dòng → đọc raw line cho số dòng sai (VD GSTT: 452 chỉ tiêu nhưng 7.358 dòng vật lý) | Bắt buộc `csv.reader`, cấm `awk`/`split` |
 | **Header lẫn trong data** | 10/13 file có **1 dòng header lặp lại ngay tại dòng data đầu tiên** (giá trị cột `Phân loại` = literal `"Phân loại"`) | Loại mọi dòng có `Phân loại == 'Phân loại'` trước khi đếm |
 | **BOM** | Có ở đầu file | `encoding='utf-8-sig'` |
@@ -147,20 +152,31 @@ col = {h.strip(): i for i, h in enumerate(header) if h.strip()}
 ```python
 import csv, io, glob
 
+def _rows(raw):
+    """Dò delimiter thay vì hard-code ';' — QLCB 2026-08-24 đã đổi sang ','."""
+    best = None
+    for d in (';', ','):
+        rows = list(csv.reader(io.StringIO(raw), delimiter=d))
+        width = max(len(r) for r in rows[:5])
+        if best is None or width > best[0]:
+            best = (width, rows)
+    return best[1]
+
 def read_ba(module):
     out = []
     for p in sorted(glob.glob(f'BRD/BA/BA_analyst_{module}*.csv')):
-        rows = list(csv.reader(io.StringIO(open(p, encoding='utf-8-sig').read()), delimiter=';'))
+        rows = _rows(open(p, encoding='utf-8-sig').read())
         h = 0 if sum(1 for x in rows[0] if x.strip()) >= sum(1 for x in rows[1] if x.strip()) else 1
         header = [x.strip() for x in rows[h]]
         col = {name: i for i, name in enumerate(header) if name}
         for r in rows[h + 1:]:
-            g = lambda name: r[col[name]].strip() if name in col and len(r) > col[name] else ''
+            # r=r bắt buộc: nếu bind theo tham chiếu, mọi row sẽ trả về giá trị dòng cuối
+            g = lambda name, r=r: r[col[name]].strip() if name in col and len(r) > col[name] else ''
             if g('Phân loại') == 'Phân loại':      # dòng header lặp trong data
                 continue
             if not any(x.strip() for x in r):       # dòng rỗng
                 continue
-            out.append({'file': p, 'stt': r[0].strip(), 'raw': r,
+            out.append({'file': p, 'stt': r[0].strip(), 'raw': r, 'g': g,
                         'phan_loai': g('Phân loại'), 'trang_thai': g('Trạng thái mapping'),
                         'loai_du_lieu': g('Loại dữ liệu'), 'danh_gia': g('Đánh giá')})
     return out

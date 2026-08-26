@@ -200,38 +200,44 @@ COMMENT 'Flat table — Fact Securities Offering Result Snapshot × Calendar Dat
 
 -- ============================================================
 -- 4. FACT: qlcb_fct_securities_offering_application_snpst_flat
---    Hồ sơ đăng ký chào bán nộp lên UBCKNN — đếm/phân tích theo trạng thái xử lý, hình thức, năm
---    Grain: 1 hồ sơ đăng ký chào bán × 1 ngày snapshot (ETL full-scan hàng ngày để
---    Application Status Code luôn phản ánh đúng trạng thái xử lý mới nhất;
---    Certificate Date giữ nguyên vai trò Chiều/slicer)
---    Joins: Calendar Date (snpst_dt_dim_id JOIN, certificate_dt_dim_id JOIN) × Offering Method Dimension
+--    Hồ sơ đăng ký chào bán nộp qua TTHC — đếm/phân tích theo nhóm trạng thái xử lý, hình thức, năm
+--    ĐỔI NGUỒN 2026-08-24 (task Dũng): IDS → TTHC. Xem Cụm 3 của DTM_QLCB_HLD.md
+--    Grain: 1 hồ sơ TTHC × 1 ngày snapshot (ETL full-scan hàng ngày vì Application Status Group Code
+--    phản ánh trạng thái xử lý hiện hành của hồ sơ; Submission Date giữ vai trò Chiều/slicer)
+--    Joins: Calendar Date (snpst_dt_dim_id, submission_dt_dim_id)
+--           × AP Application Status Dimension × AP Application Type Dimension
+--    Mọi FK non-nullable (grain 1 hồ sơ, lookup 1:1) → dùng INNER JOIN toàn bộ, không LEFT JOIN
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.qlcb_fct_securities_offering_application_snpst_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT Securities Offering Application Snapshot
-    securities_offering_code            String                  COMMENT 'BK hồ sơ (degenerate dimension)',
-    application_cd                       String                  COMMENT 'Degenerate Dimension — mã hồ sơ đăng ký (khác Securities Offering Code là mã đợt chào bán)',
+    application_item_code                String                  COMMENT 'Degenerate Dimension — BK hồ sơ TTHC (ContentItemId của content item HoSoTTHC); grain đếm đơn nhất, COUNT không cần DISTINCT',
     snpst_dt_dim_id                      String                  COMMENT 'FK → Calendar Date Dimension (ngày snapshot)',
-    certificate_dt_dim_id                String                  COMMENT 'FK → Calendar Date Dimension (ngày cấp giấy chứng nhận — Chiều/slicer)',
-    application_status_code             Nullable(String)        COMMENT 'Trạng thái xử lý hồ sơ — tính lại mỗi lần snapshot',
-    offering_method_dim_id              Nullable(String)        COMMENT 'FK → Offering Method Dimension (nullable — join qua Plan)',
+    submission_dt_dim_id                 String                  COMMENT 'FK → Calendar Date Dimension (ngày gửi hồ sơ — Chiều/slicer). Thay certificate_dt_dim_id của thiết kế IDS cũ',
+    ap_application_status_dim_id          String                  COMMENT 'FK → AP Application Status Dimension. Thay cột application_status_code của thiết kế IDS cũ',
+    ap_application_tp_dim_id             String                  COMMENT 'FK → AP Application Type Dimension. Thay offering_method_dim_id — non-nullable vì mỗi hồ sơ TTHC có đúng 1 LoaiHoSo',
 
     -- From: CALENDAR DATE DIMENSION (Snapshot Date)
     snpst_cdr_dt                         Nullable(Date)          COMMENT 'Ngày snapshot — từ Calendar Date Dimension',
 
-    -- From: CALENDAR DATE DIMENSION (Certificate Date)
-    cdr_dt                               Nullable(Date)          COMMENT 'Ngày cấp giấy chứng nhận — từ Calendar Date Dimension (Chiều/slicer)',
+    -- From: CALENDAR DATE DIMENSION (Submission Date)
+    cdr_dt                               Nullable(Date)          COMMENT 'Ngày gửi hồ sơ — từ Calendar Date Dimension (Chiều/slicer; K_QLCB_37 GROUP BY năm của cột này)',
 
-    -- From: OFFERING METHOD DIMENSION
-    offering_method_code                 Nullable(String)        COMMENT 'Mã hình thức chào bán — từ Offering Method Dimension',
-    offering_method_nm                   Nullable(String)        COMMENT 'Tên gốc hình thức chào bán (từ danh mục Classification Value) — từ Offering Method Dimension',
-    offering_method_group_nm             Nullable(String)        COMMENT 'Tên nhóm hiển thị hình thức chào bán (Công chúng/Riêng lẻ/ESOP/Trả cổ tức/Tăng vốn từ VCSH/Khác) — từ Offering Method Dimension',
-    offering_method_src_stm_code         Nullable(String)        COMMENT 'Mã hệ thống nguồn — từ Offering Method Dimension'
+    -- From: AP APPLICATION STATUS DIMENSION
+    application_status_item_code         String                  COMMENT 'BK — ContentItemId của trạng thái hồ sơ — từ AP Application Status Dimension',
+    application_status_nm                Nullable(String)        COMMENT 'Tên trạng thái hồ sơ hiển thị trên TTHC (display_text) — từ AP Application Status Dimension; dùng drill-down xuống trạng thái chi tiết',
+    application_status_group_code        String                  COMMENT 'Nhóm trạng thái gom từ 47 giá trị display_text — REGISTERED/IN_PROGRESS/APPROVED/REJECTED/UNDEFINED. Cột đếm của K_QLCB_32-35 và K_QLCB_38-41',
+    application_status_src_stm_code      String                  COMMENT 'Mã hệ thống nguồn — từ AP Application Status Dimension',
+
+    -- From: AP APPLICATION TYPE DIMENSION
+    application_tp_item_code             String                  COMMENT 'BK — ContentItemId của hình thức chào bán — từ AP Application Type Dimension',
+    application_tp_nm                    Nullable(String)        COMMENT 'Tên hình thức chào bán/phát hành (display_text của LoaiHoSo) — từ AP Application Type Dimension; chiều hiển thị của K_QLCB_36',
+    application_tp_src_stm_code          String                  COMMENT 'Mã hệ thống nguồn — từ AP Application Type Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
-ORDER BY (assumeNotNull(snpst_cdr_dt), securities_offering_code)
-COMMENT 'Flat table — Fact Securities Offering Application Snapshot × Calendar Date Dimension × Offering Method Dimension'
+ORDER BY (assumeNotNull(snpst_cdr_dt), application_item_code)
+COMMENT 'Flat table — Fact Securities Offering Application Snapshot × Calendar Date Dimension × AP Application Status Dimension × AP Application Type Dimension'
 ;
 
 

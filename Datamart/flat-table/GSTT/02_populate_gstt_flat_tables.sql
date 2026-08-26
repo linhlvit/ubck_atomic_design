@@ -2,14 +2,17 @@
 -- GSTT Flat Tables — POPULATE
 -- Module: Giám sát Thị trường (GSTT)
 -- Generated: Phase 3 LLD Datamart
--- 2 bảng: 2 fact + 0 operational
+-- 3 bảng: 3 fact + 0 operational
 -- ETL daily:
 --   Fact 1 (Stock Portfolio Snapshot): transaction log theo ngày —
 --     DELETE đúng ngày :etl_date (không TRUNCATE) rồi INSERT
 --   Fact 2 (Market Index Intraday): transaction/tick log, nhiều dòng/ngày theo
 --     Index Time — DELETE đúng ngày :etl_date (không TRUNCATE) rồi INSERT, cho
 --     phép append thêm tick mới khi ETL chạy nhiều lần/ngày mà không mất tick cũ
---   Bảng #3 cũ (Fact Public Company Shareholding) đã bị loại bỏ — xem ghi chú
+--   Fact 3 (Security Trading Intraday, bổ sung 2026-08-26): transaction/tick log,
+--     nhiều dòng/ngày theo Trading Timestamp (trading_tms) — cùng pattern DELETE
+--     + INSERT theo :etl_date như Fact 2
+--   Bảng cũ (Fact Public Company Shareholding) đã bị loại bỏ — xem ghi chú
 --   chi tiết cuối file
 -- ============================================================
 
@@ -35,7 +38,9 @@ SELECT
     f.total_negotiated_val,
     f.foreign_net_vol,
     f.outstanding_share_quantity,
+    f.revenue,
     f.net_profit_after_tax,
+    f.net_profit_after_tax_ttm,
     f.owner_equity,
     f.foreign_buy_vol,
     f.foreign_sell_vol,
@@ -173,6 +178,44 @@ JOIN datamart.cdr_dt_dim cal
     ON cal.cdr_dt_dim_id = f.cdr_dt_dim_id
 LEFT JOIN datamart.market_index_dim idx_dim
     ON idx_dim.market_index_dim_id = f.market_index_dim_id
+WHERE cal.cdr_dt = :etl_date
+;
+
+
+-- ============================================================
+-- 3. FACT: gstt_fct_security_trading_intraday_flat
+--    cal: JOIN + DELETE-scoped theo cdr_dt = :etl_date (nhiều dòng/ngày theo Trading Timestamp)
+-- ============================================================
+DELETE FROM datamart.gstt_fct_security_trading_intraday_flat ON CLUSTER 'my_cluster'
+WHERE cdr_dt = :etl_date;
+INSERT INTO datamart.gstt_fct_security_trading_intraday_flat
+SELECT
+    -- From: FACT Security Trading Intraday
+    f.security_trading_snpst_dim_id,
+    f.cdr_dt_dim_id,
+    f.trading_tms,
+    f.open_price_at_time,
+    f.high_price_at_time,
+    f.low_price_at_time,
+    f.close_price_at_time,
+    f.cumulative_vol_at_time,
+
+    -- From: CALENDAR DATE DIMENSION
+    cal.cdr_dt                          AS cdr_dt,
+
+    -- From: SECURITY TRADING SNAPSHOT DIMENSION
+    scr_dim.symbol                      AS symbol,
+    scr_dim.security_full_nm            AS security_full_nm,
+    scr_dim.floor_code                  AS floor_code,
+    scr_dim.stock_tp_code               AS stock_tp_code,
+    scr_dim.stock_tp_nm                 AS stock_tp_nm,
+    scr_dim.src_stm_code                AS security_trading_src_stm_code
+
+FROM datamart.fct_security_trading_intraday f
+JOIN datamart.cdr_dt_dim cal
+    ON cal.cdr_dt_dim_id = f.cdr_dt_dim_id
+LEFT JOIN datamart.security_trading_snpst_dim scr_dim
+    ON scr_dim.security_trading_snpst_dim_id = f.security_trading_snpst_dim_id
 WHERE cal.cdr_dt = :etl_date
 ;
 

@@ -201,33 +201,41 @@ WHERE snpst_cal.cdr_dt = :etl_date
 -- ============================================================
 -- 4. FACT: qlcb_fct_securities_offering_application_snpst_flat
 --    Grain APPEND — DELETE đúng ngày :etl_date (không TRUNCATE) rồi INSERT
+--    ĐỔI NGUỒN 2026-08-24 (task Dũng): IDS → TTHC. Toàn bộ JOIN là INNER vì 4 FK trên Fact
+--    đều non-nullable (grain 1 hồ sơ TTHC, lookup 1:1) — không dùng LEFT JOIN như bản IDS cũ
+--    (bản cũ LEFT JOIN offering_method_dim vì FK đó nullable khi hồ sơ chưa có Plan)
 -- ============================================================
 DELETE FROM datamart.qlcb_fct_securities_offering_application_snpst_flat ON CLUSTER 'my_cluster'
 WHERE snpst_cdr_dt = :etl_date;
 INSERT INTO datamart.qlcb_fct_securities_offering_application_snpst_flat
 SELECT
-    f.securities_offering_code,
-    f.application_cd,
+    f.application_item_code,
     f.snpst_dt_dim_id,
-    f.certificate_dt_dim_id,
-    f.application_status_code,
-    f.offering_method_dim_id,
+    f.submission_dt_dim_id,
+    f.ap_application_status_dim_id,
+    f.ap_application_tp_dim_id,
 
     snpst_cal.cdr_dt                    AS snpst_cdr_dt,
 
     cal.cdr_dt                          AS cdr_dt,
 
-    om.offering_method_code,
-    om.offering_method_nm,
-    om.offering_method_group_nm,
-    om.src_stm_code                        AS offering_method_src_stm_code
+    st.application_status_item_code,
+    st.application_status_nm,
+    st.application_status_group_code,
+    st.src_stm_code                     AS application_status_src_stm_code,
+
+    tp.application_tp_item_code,
+    tp.application_tp_nm,
+    tp.src_stm_code                     AS application_tp_src_stm_code
 FROM datamart.fct_securities_offering_application_snpst f
 JOIN datamart.cdr_dt_dim snpst_cal
     ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
 JOIN datamart.cdr_dt_dim cal
-    ON cal.cdr_dt_dim_id = f.certificate_dt_dim_id
-LEFT JOIN datamart.offering_method_dim om
-    ON om.offering_method_dim_id = f.offering_method_dim_id
+    ON cal.cdr_dt_dim_id = f.submission_dt_dim_id
+JOIN datamart.ap_application_status_dim st
+    ON st.ap_application_status_dim_id = f.ap_application_status_dim_id
+JOIN datamart.ap_application_tp_dim tp
+    ON tp.ap_application_tp_dim_id = f.ap_application_tp_dim_id
 WHERE snpst_cal.cdr_dt = :etl_date
 ;
 
