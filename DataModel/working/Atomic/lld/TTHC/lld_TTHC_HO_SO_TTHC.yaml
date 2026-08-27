@@ -117,15 +117,15 @@ attributes:
 - attribute_name: "Securities Code"
   physical_name: "securities_code"
   description: "Mã chứng khoán liên quan — chỉ có giá trị ở một số loại hồ sơ (vd. báo cáo vốn)."
-  data_domain: "Text"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "TTHC.AP_DOCUMENT.securities_code"
-  comment: "Nguồn thực: Document.Content->'HoSoTTHC'->'MaChungKhoan'->'Text'.\
-    \ NULL hợp lệ với phần lớn loại hồ sơ."
-  classification_context: null
+  comment: "Scheme: MA_CHUNG_KHOAN.Nguồn thực: Document.Content->'HoSoTTHC'->'MaChungKhoan'->'Text'.\
+    \ NULL hợp lệ với phần lớn loại hồ sơ. "
+  classification_context: "MA_CHUNG_KHOAN"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Document Status Code"
@@ -137,8 +137,7 @@ attributes:
   status: "draft"
   source_columns:
   - "TTHC.AP_DOCUMENT.document_status_code"
-  comment: "Nguồn thực: Document.Content->'HoSoTTHC'->'TrangThaiHoSo'->ContentItemIds[0].\
-    \ Scheme: TRANG_THAI_HO_SO. FK soft đến cl_value.cl_code."
+  comment: "Scheme: TRANG_THAI_HO_SO. Nguồn thực: Document.Content->'HoSoTTHC'->'TrangThaiHoSo'->ContentItemIds[0]."
   classification_context: "TRANG_THAI_HO_SO"
   etl_derived_value: null
   data_type: "string"
@@ -151,8 +150,7 @@ attributes:
   status: "draft"
   source_columns:
   - "TTHC.AP_DOCUMENT.processing_authority_code"
-  comment: "Nguồn thực: Document.Content->'HoSoTTHC'->'CoQuanXuLy'->ContentItemIds[0].\
-    \ Scheme: CO_QUAN_XU_LY. FK soft đến cl_value.cl_code."
+  comment: "Scheme: CO_QUAN_XU_LY. Nguồn thực: Document.Content->'HoSoTTHC'->'CoQuanXuLy'->ContentItemIds[0]."
   classification_context: "CO_QUAN_XU_LY"
   etl_derived_value: null
   data_type: "string"
@@ -165,8 +163,7 @@ attributes:
   status: "draft"
   source_columns:
   - "TTHC.AP_DOCUMENT.document_type_code"
-  comment: "Nguồn thực: Document.Content->'HoSoTTHC'->'LoaiHoSo'->ContentItemIds[0].\
-    \ Scheme: LOAI_HO_SO. FK soft đến cl_value.cl_code."
+  comment: "Scheme: LOAI_HO_SO.Nguồn thực: Document.Content->'HoSoTTHC'->'LoaiHoSo'->ContentItemIds[0]."
   classification_context: "LOAI_HO_SO"
   etl_derived_value: null
   data_type: "string"
@@ -179,8 +176,7 @@ attributes:
   status: "draft"
   source_columns:
   - "TTHC.AP_DOCUMENT.domain_area_code"
-  comment: "Nguồn thực: Document.Content->'HoSoTTHC'->'LinhVucTTHC'->ContentItemIds[0].\
-    \ Scheme: LINH_VUC_TTHC. FK soft đến cl_value.cl_code."
+  comment: "Scheme: LINH_VUC_TTHC.Nguồn thực: Document.Content->'HoSoTTHC'->'LinhVucTTHC'->ContentItemIds[0]."
   classification_context: "LINH_VUC_TTHC"
   etl_derived_value: null
   data_type: "string"
@@ -193,8 +189,7 @@ attributes:
   status: "draft"
   source_columns:
   - "TTHC.AP_DOCUMENT.priority_level_code"
-  comment: "Nguồn thực: Document.Content->'HoSoTTHC'->'MucDoTTHC'->ContentItemIds[0].\
-    \ Scheme: MUC_DO_TTHC. FK soft đến cl_value.cl_code."
+  comment: "Scheme: MUC_DO_TTHC. Nguồn thực: Document.Content->'HoSoTTHC'->'MucDoTTHC'->ContentItemIds[0]."
   classification_context: "MUC_DO_TTHC"
   etl_derived_value: null
   data_type: "string"
@@ -207,24 +202,23 @@ attributes:
   status: "draft"
   source_columns:
   - "TTHC.AP_DOCUMENT.reception_channel_code"
-  comment: "Nguồn thực: Document.Content->'HoSoTTHC'->'KenhTiepNhan'->ContentItemIds[0].\
-    \ Scheme: KENH_TIEP_NHAN. FK soft đến cl_value.cl_code."
+  comment: "Scheme: KENH_TIEP_NHAN.Nguồn thực: Document.Content->'HoSoTTHC'->'KenhTiepNhan'->ContentItemIds[0]."
   classification_context: "KENH_TIEP_NHAN"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Return Method Code"
   physical_name: "return_method_code"
   description: "Hình thức trả hồ sơ (0 = tại chỗ, 1 = trực tiếp, 2 = bưu chính)."
-  data_domain: "Small Counter"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "TTHC.AP_DOCUMENT.return_method_code"
-  comment: "Nguồn thực: Document.Content->'HoSoTTHC'->'ThongTinHinhThucTraHoSo'->'Value'.\
+  comment: "Scheme: HINH_THUC_TRA_HO_SO.Nguồn thực: Document.Content->'HoSoTTHC'->'ThongTinHinhThucTraHoSo'->'Value'.\
     \ Giá trị 2 → luôn có bản ghi ap_document_postal_receipt liên kết. Giá trị\
     \ 0/1 → key ThongTinNhanHoSoTuBuuChinh thường vắng mặt hoàn toàn trong JSON."
-  classification_context: null
+  classification_context: "HINH_THUC_TRA_HO_SO"
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Processing Officer Code"
