@@ -7,7 +7,7 @@ ldm:
   physical_name: pc_report_submission
   layer: Atomic
   version: "1.0"
-  status: draft
+  status: approved
   bcv_core_object: Documentation
   bcv_concept: "[Documentation] Regulatory Report"
   table_type: Fundamental
@@ -536,7 +536,7 @@ attributes:
     source_system: IDS
     source_table: COMPANY_DATA
     source_column: IDS.COMPANY_DATA.SECURITIES_OFFERING_ID
-    comment: "FK target: pc_securities_offering.pc_securities_offering_id. Hash: hash_id('IDS.SECURITIES_OFFERING', SECURITIES_OFFERING_ID)."
+    comment: "FK target: pc_securities_offering.pc_securities_offering_id. Cần ETL crosswalk sang IDS.SECURITIES_OFFERING: COMPANY_DATA.SECURITIES_OFFERING_ID = SECURITIES_OFFERING.ID để xác nhận APPLICATION_CD sau đó hash_id('IDS.SECURITIES_OFFERING', APPLICATION_CD) | Trước đây hash trực tiếp theo SECURITIES_OFFERING_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ APPLICATION_CD) — đã sửa sang crosswalk 2026-08-14."
     classification_context: null
     etl_derived_value: null
 
@@ -549,8 +549,8 @@ attributes:
     is_primary_key: false
     source_system: IDS
     source_table: COMPANY_DATA
-    source_column: IDS.COMPANY_DATA.SECURITIES_OFFERING_ID
-    comment: "Lookup pair: pc_securities_offering.pc_securities_offering_code. Pair with Public Company Securities Offering Id."
+    source_column: IDS.SECURITIES_OFFERING.APPLICATION_CD
+    comment: "Lookup pair: pc_securities_offering.pc_securities_offering_code. Pair with Public Company Securities Offering Id. Giá trị lấy từ IDS.SECURITIES_OFFERING.APPLICATION_CD sau ETL crosswalk — chi tiết xem comment Public Company Securities Offering Id."
     classification_context: null
     etl_derived_value: null
 

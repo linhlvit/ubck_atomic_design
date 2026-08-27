@@ -11,7 +11,7 @@ Trạng thái: draft — chờ reviewer duyệt từng bảng
 erDiagram
     Calendar_Date_Dimension ||--o{ Fact_Market_Risk_Snapshot : " "
     Calendar_Date_Dimension ||--o{ Fact_Sector_Risk_Snapshot : " "
-    Sector_Dimension ||--o{ Fact_Sector_Risk_Snapshot : " "
+    Industry_Dimension ||--o{ Fact_Sector_Risk_Snapshot : " "
     Calendar_Date_Dimension ||--o{ Fact_Order_Size_Snapshot : " "
     Calendar_Date_Dimension ||--o{ Fact_Investor_Flow_Snapshot : " "
     Investor_Group_Dimension ||--o{ Fact_Investor_Flow_Snapshot : " "
@@ -56,13 +56,13 @@ erDiagram
 erDiagram
     Calendar_Date_Dimension ||--o{ Fact_Market_Risk_Snapshot : " "
     Calendar_Date_Dimension ||--o{ Fact_Sector_Risk_Snapshot : " "
-    Sector_Dimension ||--o{ Fact_Sector_Risk_Snapshot : " "
+    Industry_Dimension ||--o{ Fact_Sector_Risk_Snapshot : " "
 ```
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
 | Calendar Date Dimension | Dimension | reuse | Chiều thời gian | 1 row / ngày | — |
-| Sector Dimension | Dimension | new | Chiều ngành nghề kinh doanh mã CK | 1 row / ngành | — |
+| Industry Dimension | Dimension | reuse | Chiều ngành nghề kinh doanh mã CK (reuse từ GSDC 2026-08-17) | 1 row / ngành | — |
 | Fact Market Risk Snapshot | Fact Snapshot | new | Điểm chứng khoán, Sentiment, Margin Tension, Systemic Vol (reuse từ Nhóm 1, dùng thêm cho Nhóm 4-6) | 1 row / ngày | K_PTTT_30~42 (PENDING, Nhóm 3), K_PTTT_43~80 |
 | Fact Sector Risk Snapshot | Fact Snapshot | new | StressScore, D/E, GTGD theo ngành | 1 row / ngành / ngày | K_PTTT_43,62,81~106 |
 

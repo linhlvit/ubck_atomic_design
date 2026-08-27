@@ -1,0 +1,184 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "TTHC"
+  source_table: "DOI_TUONG_NOP_HO_SO"
+  atomic_entity: "Administrative Procedure Document Applicant"
+  entity_physical_name: "ap_document_applicant"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Involved Party"
+  table_type: "Fundamental"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Source thực tế: parse Document.Content->>'DoiTuongNopHoSo' tại tầng ODS\
+    \ → bảng ODS DOI_TUONG_NOP_HO_SO. PK ghép (ho_so_id, doi_tuong_nop_ho_so_id)\
+    \ — cùng doi_tuong_nop_ho_so_id (ContentItemId đối tượng) có thể xuất hiện\
+    \ trong nhiều hồ sơ khác nhau, nên không hash từ doi_tuong_nop_ho_so_id đơn\
+    \ lẻ. Hai phiên bản schema (ranh giới 07/02/2025–30/05/2025): schema cũ —\
+    \ đối tượng nộp lưu đầy đủ trong bag nhúng tại root JSON, ten_hien_thi/dia_chi/\
+    \ so_dien_thoai/email lấy trực tiếp từ bag; schema mới — HoSoTTHC chỉ còn\
+    \ field tham chiếu ContentItemIds, không còn bag nhúng đầy đủ, email lấy từ\
+    \ HoSoTTHC.DoiTuongNopHoSoEmail, SoDienThoai lấy từ HoSoTTHC.SoDienThoai.\
+    \ Cảnh báo mục 3.2 bàn giao: ID tham chiếu (ContentItemIds trong HoSoTTHC)\
+    \ và bag nhúng tại root là 2 nguồn ĐỘC LẬP, có thể lệch nhau — ETL phải so\
+    \ khớp ID để gán vai_tro chính xác, không giả định 2 nguồn luôn khớp."
+attributes:
+- attribute_name: "Administrative Procedure Document Applicant Id"
+  physical_name: "ap_document_applicant_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Involved Party] Involved Party\". Hash: hash_id('TTHC.ap_document_applicant',\
+    \ doi_tuong_nop_ho_so_id). Nguồn thực: ContentItemIndex.ContentItemId (ContentType\
+    \ = 'doituongnophoso')."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Administrative Procedure Document Applicant Code"
+  physical_name: "ap_document_applicant_code"
+  description: "ContentItemId của đối tượng nộp hồ sơ trong Orchard Core — BK duy nhất."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TTHC.DOI_TUONG_NOP_HO_SO.doi_tuong_nop_ho_so_id"
+  comment: "BK chính. Nguồn thực: ContentItemIndex.ContentItemId (ContentType = 'doituongnophoso')."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=TTHC.ap_document_applicant"
+  etl_derived_value: "TTHC_DOI_TUONG_NOP_HO_SO"
+  data_type: "string"
+- attribute_name: "Display Name"
+  physical_name: "display_nm"
+  description: "Tên hiển thị của đối tượng nộp hồ sơ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TTHC.DOI_TUONG_NOP_HO_SO.ten_hien_thi"
+  comment: "Nguồn thực: Document.Content->'DoiTuongNopHoSo'->items[].TenHienThi\
+    \ (schema cũ — bag nhúng). Schema mới: NULL cho tới khi tra cứu bổ sung từ\
+    \ content item đối tượng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Address"
+  physical_name: "address"
+  description: "Địa chỉ của đối tượng nộp hồ sơ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TTHC.DOI_TUONG_NOP_HO_SO.dia_chi"
+  comment: "Nguồn thực: Document.Content->'DoiTuongNopHoSo'->items[].DiaChi."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Phone Number"
+  physical_name: "phone_nbr"
+  description: "Số điện thoại liên lạc của đối tượng nộp hồ sơ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TTHC.DOI_TUONG_NOP_HO_SO.so_dien_thoai"
+  comment: "Nguồn thực: schema cũ = Document.Content->'DoiTuongNopHoSo'->items[].SoDienThoai\
+    \ (bag nhúng); schema mới = Document.Content->'HoSoTTHC'->'SoDienThoai'->'Text'.\
+    \ ODS đã gộp 2 nguồn."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Email Address"
+  physical_name: "email_address"
+  description: "Địa chỉ email của đối tượng nộp hồ sơ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TTHC.DOI_TUONG_NOP_HO_SO.email"
+  comment: "Nguồn thực: schema cũ = Document.Content->'DoiTuongNopHoSo'->items[].Email\
+    \ (bag nhúng); schema mới = Document.Content->'HoSoTTHC'->'DoiTuongNopHoSoEmail'->'Text'.\
+    \ ODS đã gộp 2 nguồn."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Date of Birth"
+  physical_name: "birth_dt"
+  description: "Ngày sinh (chỉ áp dụng cho cá nhân)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TTHC.DOI_TUONG_NOP_HO_SO.ngay_sinh"
+  comment: "Nguồn thực: Document.Content->'DoiTuongNopHoSo'->items[].NgaySinh.\
+    \ NULL hợp lệ với đối tượng là tổ chức."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Applicant Type Code"
+  physical_name: "applicant_tp_code"
+  description: "Loại đối tượng nộp hồ sơ (tổ chức/cá nhân và phân loại cụ thể hơn)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TTHC.DOI_TUONG_NOP_HO_SO.ma_loai_doi_tuong"
+  comment: "Nguồn thực: Document.Content->'DoiTuongNopHoSo'->items[].MaLoaiDoiTuong.\
+    \ Scheme: LOAI_DOI_TUONG_NOP. FK soft đến cl_value.cl_code."
+  classification_context: "LOAI_DOI_TUONG_NOP"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Applicant Role Code"
+  physical_name: "applicant_role_code"
+  description: "Vai trò của bản ghi đối tượng này — phân biệt nguồn dữ liệu gốc."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "ETL-derived discriminator. THAM_CHIEU_CHINH = ID khớp với\
+    \ HoSoTTHC.DoiTuongNopHoSo.ContentItemIds (nguồn sự thật); NHAP_TRUC_TIEP_TREN_FORM\
+    \ = ID từ bag nhúng, không khớp field tham chiếu (xem mục 3.2 bàn giao)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Latest Indicator"
+  physical_name: "latest_ind"
+  description: "Phiên bản bản ghi hiện hành (1 = mới nhất, 0 = không)."
+  data_domain: "Indicator"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TTHC.DOI_TUONG_NOP_HO_SO.latest"
+  comment: "Nguồn thực: ContentItemIndex.Latest (ContentType = 'doituongnophoso')."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

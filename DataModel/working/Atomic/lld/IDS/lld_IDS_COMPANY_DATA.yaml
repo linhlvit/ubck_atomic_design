@@ -9,14 +9,14 @@ metadata:
   bcv_concept: "[Documentation] Regulatory Report"
   table_type: "Fundamental"
   group: "T3"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
   reviewed_by: null
   reviewed_at: null
-  approved_by: null
-  approved_at: null
+  approved_by: "hoang.truong"
+  approved_at: "2026-08-26"
   notes: "ID kỹ thuật là BK duy nhất (không có cột mã nghiệp vụ riêng — mirror pattern\
     \ Public Company/lld_IDS_COMPANY_PROFILES.yaml) → Public Company Report Submission\
     \ Code, Id hash từ Code. Audit block (CREATED_BY/CREATED_DATE/UPDATED_BY/UPDATED_DATE)\
@@ -48,7 +48,7 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: true
-  status: "draft"
+  status: "approved"
   source_columns: []
   comment: "PK surrogate. Hash: hash_id('IDS.COMPANY_DATA', ID). BCV: \"[Documentation]\
     \ Regulatory Report\"."
@@ -62,7 +62,7 @@ attributes:
   data_domain: "Text"
   nullable: false
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.ID"
   comment: "BK chính. PK nguồn NUMBER(19) tự tăng — mirror pattern public_company.Public\
@@ -76,7 +76,7 @@ attributes:
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
   classification_context: "SOURCE_SYSTEM=IDS.COMPANY_DATA"
@@ -88,7 +88,7 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.COMPANY_PROFILE_ID"
   comment: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES',\
@@ -102,7 +102,7 @@ attributes:
   data_domain: "Text"
   nullable: false
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.COMPANY_PROFILE_ID"
   comment: "Lookup pair: public_company.pc_code. Pair with Public Company Id."
@@ -115,7 +115,7 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.FORM_ID"
   comment: "FK target: fr_template.fr_template_id. Cần ETL crosswalk sang IDS.FORMS:\
@@ -130,7 +130,7 @@ attributes:
   data_domain: "Text"
   nullable: false
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.FORMS.FORM_CD"
   comment: "Lookup pair: fr_template.fr_template_code. Pair with Financial Report\
@@ -145,7 +145,7 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.PARENT_ID"
   comment: "FK target: pc_report_submission.pc_rpt_submission_id. Hash: hash_id('IDS.COMPANY_DATA',\
@@ -159,7 +159,7 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.PARENT_ID"
   comment: "Lookup pair: pc_report_submission.pc_rpt_submission_code. Pair with Parent\
@@ -174,7 +174,7 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.REF_ID"
   comment: "FK target: pc_report_submission.pc_rpt_submission_id. Hash: hash_id('IDS.COMPANY_DATA',\
@@ -188,7 +188,7 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.REF_ID"
   comment: "Lookup pair: pc_report_submission.pc_rpt_submission_code. Pair with Original\
@@ -202,7 +202,7 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.DOC_TITLE"
   comment: null
@@ -215,7 +215,7 @@ attributes:
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.NEWS_STATUS_CD"
   comment: "Scheme: IDS_SUBMISSION_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_APPROVAL_STATUS')."
@@ -228,7 +228,7 @@ attributes:
   data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.REPORT_YEAR"
   comment: "Nguồn NUMBER(4,0)."
@@ -241,7 +241,7 @@ attributes:
   data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.REPORT_QUARTER"
   comment: null
@@ -254,7 +254,7 @@ attributes:
   data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.REPORT_MONTH"
   comment: null
@@ -267,7 +267,7 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.DOC_NO"
   comment: null
@@ -280,7 +280,7 @@ attributes:
   data_domain: "Date"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.DOC_DATE"
   comment: null
@@ -293,7 +293,7 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.DOC_SUMMARY"
   comment: null
@@ -306,7 +306,7 @@ attributes:
   data_domain: "Date"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.DOC_SIGN_DATE"
   comment: null
@@ -319,7 +319,7 @@ attributes:
   data_domain: "Date"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.SUBMISSION_DATE"
   comment: null
@@ -332,7 +332,7 @@ attributes:
   data_domain: "Date"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.APPROVAL_DATE"
   comment: null
@@ -345,7 +345,7 @@ attributes:
   data_domain: "Date"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.REJECTION_DATE"
   comment: null
@@ -359,7 +359,7 @@ attributes:
   data_domain: "Date"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.SUBMISSION_DEADLINE_DATE"
   comment: null
@@ -373,7 +373,7 @@ attributes:
   data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.OVERDUE_DAYS"
   comment: "Nguồn NUMBER(38,0)."
@@ -386,7 +386,7 @@ attributes:
   data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.DIGITAL_SIGNATURE_FLG"
   comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(2) — đồng nhất pattern với fr_catalog.Active\
@@ -401,7 +401,7 @@ attributes:
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.NEWS_TYPE_CD"
   comment: "Scheme: IDS_NEWS_TYPE. Dùng chung scheme với Disclosure Notification.\
@@ -416,7 +416,7 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.REJECT_REASON"
   comment: null
@@ -429,7 +429,7 @@ attributes:
   data_domain: "Timestamp"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.REVIEW_DATE"
   comment: null
@@ -443,7 +443,7 @@ attributes:
   data_domain: "Timestamp"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.SEND_BACK_DATE"
   comment: null
@@ -456,10 +456,11 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.LINK_ID"
-  comment: "FK target: pc_report_submission.pc_rpt_submission_id. Hash: hash_id('IDS.COMPANY_DATA', LINK_ID)."
+  comment: "FK target: pc_report_submission.pc_rpt_submission_id. Hash: hash_id('IDS.COMPANY_DATA',\
+    \ LINK_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -469,7 +470,7 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.LINK_ID"
   comment: "Lookup pair: pc_report_submission.pc_rpt_submission_code. Pair with Linked\
@@ -483,7 +484,7 @@ attributes:
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.LANGUAGE_CD"
   comment: "Scheme: IDS_LANGUAGE. Values lấy trực tiếp từ cột nguồn (VARCHAR2(20),\
@@ -497,7 +498,7 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.ALERT_AUDIT"
   comment: null
@@ -510,7 +511,7 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.SYSTEM_CD"
   comment: null
@@ -523,7 +524,7 @@ attributes:
   data_domain: "Timestamp"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.CLOSE_DATE"
   comment: "Cột nguồn không có mô tả (blank trong cả IDS_Columns.csv và DDL UAT).\
@@ -540,10 +541,14 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.SECURITIES_OFFERING_ID"
-  comment: "FK target: pc_securities_offering.pc_securities_offering_id. Cần ETL crosswalk sang IDS.SECURITIES_OFFERING: COMPANY_DATA.SECURITIES_OFFERING_ID = SECURITIES_OFFERING.ID để xác nhận APPLICATION_CD sau đó hash_id('IDS.SECURITIES_OFFERING', APPLICATION_CD) | Trước đây hash trực tiếp theo SECURITIES_OFFERING_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ APPLICATION_CD) — đã sửa sang crosswalk 2026-08-14."
+  comment: "FK target: pc_securities_offering.pc_securities_offering_id. Cần ETL crosswalk\
+    \ sang IDS.SECURITIES_OFFERING: COMPANY_DATA.SECURITIES_OFFERING_ID = SECURITIES_OFFERING.ID\
+    \ để xác nhận APPLICATION_CD sau đó hash_id('IDS.SECURITIES_OFFERING', APPLICATION_CD)\
+    \ | Trước đây hash trực tiếp theo SECURITIES_OFFERING_ID (ID kỹ thuật) gây sai\
+    \ lệch với Id của bảng main (hash từ APPLICATION_CD) — đã sửa sang crosswalk 2026-08-14."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -553,10 +558,13 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.SECURITIES_OFFERING.APPLICATION_CD"
-  comment: "Lookup pair: pc_securities_offering.pc_securities_offering_code. Pair with Public Company Securities Offering Id. Giá trị lấy từ IDS.SECURITIES_OFFERING.APPLICATION_CD sau ETL crosswalk — chi tiết xem comment Public Company Securities Offering Id."
+  comment: "Lookup pair: pc_securities_offering.pc_securities_offering_code. Pair\
+    \ with Public Company Securities Offering Id. Giá trị lấy từ IDS.SECURITIES_OFFERING.APPLICATION_CD\
+    \ sau ETL crosswalk — chi tiết xem comment Public Company Securities Offering\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -567,7 +575,7 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.DISCLOSURE_TYPE"
   comment: null
@@ -580,7 +588,7 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.LEGAL_ENTITY_ID"
   comment: "FK target: legal_entity.legal_entity_id. Hash: hash_id('IDS.LEGAL_ENTITIES',\
@@ -594,7 +602,7 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.LEGAL_ENTITY_ID"
   comment: "Lookup pair: legal_entity.legal_entity_code. Pair with Legal Entity Id."
@@ -608,10 +616,11 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.COMPANY_TENDER_OFFER_ID"
-  comment: "FK target: pc_tender_offer.pc_tender_offer_id. Hash: hash_id('IDS.COMPANY_TENDER_OFFER', COMPANY_TENDER_OFFER_ID)."
+  comment: "FK target: pc_tender_offer.pc_tender_offer_id. Hash: hash_id('IDS.COMPANY_TENDER_OFFER',\
+    \ COMPANY_TENDER_OFFER_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -621,7 +630,7 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.COMPANY_TENDER_OFFER_ID"
   comment: "Lookup pair: pc_tender_offer.pc_tender_offer_code. Pair with Public Company\
@@ -635,7 +644,7 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.COMPANY_TREASURY_SHARE_ID"
   comment: "FK target: pc_treasury_share_transaction.pc_treasury_share_transaction_id.\
@@ -649,7 +658,7 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.COMPANY_TREASURY_SHARE_ID"
   comment: "Lookup pair: pc_treasury_share_transaction.pc_treasury_share_transaction_code.\
@@ -693,7 +702,7 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.APPROVER_USER_NAME"
   comment: "Denormalized snapshot — nguồn lưu tên tự do song song với APPROVER_USER_ID,\
@@ -708,7 +717,7 @@ attributes:
   data_domain: "Small Counter"
   nullable: false
   is_primary_key: false
-  status: "draft"
+  status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.FLATTENED_FLG"
   comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1) — đồng nhất pattern với Has\

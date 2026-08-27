@@ -1,0 +1,206 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "TTHC"
+  source_table: "THONG_TIN_NHAN_BUU_CHINH"
+  atomic_entity: "Administrative Procedure Document Postal Receipt"
+  entity_physical_name: "ap_document_postal_receipt"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Documentation"
+  table_type: "Fundamental"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Source thực tế: parse Document.Content->>'ThongTinNhanHoSoTuBuuChinh'\
+    \ tại tầng ODS → bảng ODS THONG_TIN_NHAN_BUU_CHINH. Chỉ tồn tại bản ghi khi\
+    \ ap_document.return_method_code = 2 — nếu = 0 hoặc 1, key ThongTinNhanHoSoTuBuuChinh\
+    \ thường vắng mặt hoàn toàn trong JSON nguồn (không phải rỗng {}, confirmed\
+    \ trên mẫu dữ liệu thực). thong_tin_nhan_buu_chinh_id = ContentItemId của\
+    \ content item bưu chính (KHÁC với ho_so_id). Schema thiết kế cho phép 1-N\
+    \ (FK ap_document_id không unique) để mở đường lưu lịch sử đổi địa chỉ về sau;\
+    \ dữ liệu quan sát thực tế là 1-1. Một số trường chỉ thấy ở schema cũ:\
+    \ postal_code, district_code, note — schema mới có thể NULL hoặc không\
+    \ có field trong JSON."
+attributes:
+- attribute_name: "Administrative Procedure Document Postal Receipt Id"
+  physical_name: "ap_document_postal_receipt_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Documentation] Documentation\". Hash: hash_id('TTHC.ap_document_postal_receipt',\
+    \ thong_tin_nhan_buu_chinh_id). Nguồn thực: ContentItemIndex.ContentItemId\
+    \ (ContentType = 'thongtinnhanbuurchinh')."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Administrative Procedure Document Postal Receipt Code"
+  physical_name: "ap_document_postal_receipt_code"
+  description: "ContentItemId của bản ghi bưu chính — BK duy nhất."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TTHC.THONG_TIN_NHAN_BUU_CHINH.thong_tin_nhan_buu_chinh_id"
+  comment: "BK chính. Nguồn thực: ContentItemIndex.ContentItemId (ContentType = 'thongtinnhanbuurchinh')."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=TTHC.ap_document_postal_receipt"
+  etl_derived_value: "TTHC_THONG_TIN_NHAN_BUU_CHINH"
+  data_type: "string"
+- attribute_name: "Administrative Procedure Document Id"
+  physical_name: "ap_document_id"
+  description: "Khóa ngoại tới hồ sơ cha."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "FK target: ap_document.ap_document_id. Hash: hash_id('TTHC.ap_document',\
+    \ ho_so_id). Nguồn thực: ContentItemIndex.ContentItemId (ContentType = 'hosotthc').\
+    \ FK không unique — cho phép 1-N về sau."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Administrative Procedure Document Code"
+  physical_name: "ap_document_code"
+  description: "Mã hồ sơ cha (ContentItemId) — lưu dư thừa."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TTHC.THONG_TIN_NHAN_BUU_CHINH.ho_so_id"
+  comment: "Lookup pair: ap_document.ap_document_code."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Postal Code"
+  physical_name: "postal_code"
+  description: "Mã bưu chính của địa chỉ nhận hồ sơ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TTHC.THONG_TIN_NHAN_BUU_CHINH.ma_buu_chinh"
+  comment: "Nguồn thực: Document.Content->'ThongTinNhanHoSoTuBuuChinh'->'MaBuuChinh'->'Text'.\
+    \ Chỉ thấy ở schema cũ (trước 07/02/2025). Schema mới thường NULL."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Delivery Service Code"
+  physical_name: "delivery_service_code"
+  description: "Mã đơn vị/dịch vụ chuyển phát."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TTHC.THONG_TIN_NHAN_BUU_CHINH.ma_dich_vu_chuyen_phat"
+  comment: "Nguồn thực: Document.Content->'ThongTinNhanHoSoTuBuuChinh'->'MaDichVuChuyenPhat'->'Text'.\
+    \ Scheme: DICH_VU_CHUYEN_PHAT. FK soft đến cl_value.cl_code."
+  classification_context: "DICH_VU_CHUYEN_PHAT"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Filing Receipt Address"
+  physical_name: "filing_receipt_address"
+  description: "Địa chỉ nhận kết quả hồ sơ qua bưu chính — text tự do."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TTHC.THONG_TIN_NHAN_BUU_CHINH.dia_chi_nhan_ho_so"
+  comment: "Nguồn thực: Document.Content->'ThongTinNhanHoSoTuBuuChinh'->'DiaChiNhanHoSo'->'Text'.\
+    \ Text tự do — không luôn đi kèm province_code/district_code."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Province Code"
+  physical_name: "province_code"
+  description: "Mã tỉnh/thành phố nhận hồ sơ."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TTHC.THONG_TIN_NHAN_BUU_CHINH.ma_tinh_thanh"
+  comment: "Nguồn thực: Document.Content->'ThongTinNhanHoSoTuBuuChinh'->'MaTinhThanh'->'Text'.\
+    \ Scheme: TINH_THANH. FK soft đến cl_value.cl_code."
+  classification_context: "TINH_THANH"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "District Code"
+  physical_name: "district_code"
+  description: "Mã quận/huyện nhận hồ sơ."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TTHC.THONG_TIN_NHAN_BUU_CHINH.ma_quan_huyen"
+  comment: "Nguồn thực: Document.Content->'ThongTinNhanHoSoTuBuuChinh'->'MaQuanHuyen'->'Text'.\
+    \ Scheme: QUAN_HUYEN. FK soft đến cl_value.cl_code. Chỉ thấy ở schema cũ."
+  classification_context: "QUAN_HUYEN"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Sender Phone Number"
+  physical_name: "sender_phone_nbr"
+  description: "Số điện thoại người gửi (người nhận phía bưu chính liên hệ khi cần)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TTHC.THONG_TIN_NHAN_BUU_CHINH.so_dien_thoai_nguoi_gui"
+  comment: "Nguồn thực: Document.Content->'ThongTinNhanHoSoTuBuuChinh'->'SoDienThoaiNguoiGui'->'Text'."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Note"
+  physical_name: "note"
+  description: "Ghi chú bổ sung về địa chỉ/yêu cầu nhận hồ sơ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TTHC.THONG_TIN_NHAN_BUU_CHINH.ghi_chu"
+  comment: "Nguồn thực: Document.Content->'ThongTinNhanHoSoTuBuuChinh'->'GhiChu'->'Text'.\
+    \ Chỉ thấy ở schema cũ. Schema mới thường NULL."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Latest Indicator"
+  physical_name: "latest_ind"
+  description: "Phiên bản bản ghi hiện hành (1 = mới nhất, 0 = không)."
+  data_domain: "Indicator"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TTHC.THONG_TIN_NHAN_BUU_CHINH.latest"
+  comment: "Nguồn thực: ContentItemIndex.Latest (ContentType = 'thongtinnhanbuurchinh')."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
