@@ -459,29 +459,6 @@ entities:
   source_table: "NHNCK.EXAM_SESSION_FEES"
   status: "approved"
 - bcv_core_object: "Documentation"
-  bcv_concept: "[Documentation] Documentation Item"
-  atomic_entity: "Administrative Procedure Content Item Index"
-  table_type: "Fundamental"
-  domain_prefix: "Administrative Procedure"
-  entity_physical_name: "ap_content_item_index"
-  description: "Documentation Item — bản ghi index/metadata quản lý phiên bản và trạng\
-    \ thái xuất bản của mỗi content item trong hệ thống TTHC (loại nội dung, mới nhất/đã\
-    \ publish, người tạo/sửa, tiêu đề hiển thị), FK đến Administrative Procedure Document\
-    \ để lấy nội dung JSON gốc."
-  source_table: "TTHC.CONTENTITEMINDEX"
-  status: "draft"
-- bcv_core_object: "Documentation"
-  bcv_concept: "[Documentation] Documentation"
-  atomic_entity: "Administrative Procedure Document"
-  table_type: "Fundamental"
-  domain_prefix: "Administrative Procedure"
-  entity_physical_name: "ap_document"
-  description: "Documentation — nội dung JSON gốc của content item hiện hành trong\
-    \ hệ thống TTHC (Orchard Core), lưu toàn bộ dữ liệu chi tiết đã serialize của\
-    \ hồ sơ/trang/tin/báo cáo hành chính."
-  source_table: "TTHC.DOCUMENT"
-  status: "draft"
-- bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Form Document"
   atomic_entity: "Examination Result Notice"
   table_type: "Fundamental"
@@ -695,7 +672,7 @@ entities:
     \ Company Treasury Stock). Khôi phục scope 2026-08-05 — xem IDS_HLD_Overview.md\
     \ 7e #15."
   source_table: "IDS.COMPANY_DATA"
-  status: "draft"
+  status: "approved"
 - bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Legal Decision"
   atomic_entity: "Securities Company Administrative Penalty Decision"
@@ -1460,6 +1437,41 @@ entities:
     \ và lũy kế khối lượng/giá trị từ đầu ngày."
   source_table: "MDDS.JAD_TRANSLOG"
   status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Administrative Procedure Document"
+  table_type: ""
+  domain_prefix: "Administrative Procedure"
+  entity_physical_name: ""
+  description: "Business Activity Case — hồ sơ thủ tục hành chính UBCKNN, entity trung\
+    \ tâm chứa metadata phân loại, thời gian xử lý, lệ phí, snapshot thành phần hồ\
+    \ sơ và eform. Nguồn ODS từ JOIN TTHC.DOCUMENT + TTHC.CONTENTITEMINDEX, lọc ContentType\
+    \ = 'HoSoTTHC'."
+  source_table: "TTHC.HO_SO_TTHC"
+  status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Administrative Procedure Document Applicant"
+  table_type: ""
+  domain_prefix: "Administrative Procedure"
+  entity_physical_name: ""
+  description: "Involved Party — đối tượng nộp hồ sơ (cá nhân hoặc tổ chức), quan\
+    \ hệ 1-N với hồ sơ. PK ghép (ho_so_id, doi_tuong_nop_ho_so_id); surrogate key\
+    \ hash từ composite. Trường applicant_role_code phân biệt nguồn dữ liệu (ID tham\
+    \ chiếu vs. bag nhúng)."
+  source_table: "TTHC.DOI_TUONG_NOP_HO_SO"
+  status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Administrative Procedure Document Postal Receipt"
+  table_type: ""
+  domain_prefix: "Administrative Procedure"
+  entity_physical_name: ""
+  description: "Documentation — thông tin nhận kết quả hồ sơ qua bưu chính. Chỉ tồn\
+    \ tại khi return_method_code = 2 trên hồ sơ cha. FK ho_so_id không unique (cho\
+    \ phép 1-N về sau dù thực tế 1-1)."
+  source_table: "TTHC.THONG_TIN_NHAN_BUU_CHINH"
+  status: "draft"
 - bcv_core_object: "Group"
   bcv_concept: "[Group] Group"
   atomic_entity: "Application Group X Securities Practitioner License Application\
@@ -1714,11 +1726,14 @@ entities:
   bcv_concept: ""
   atomic_entity: "Classification Value"
   table_type: ""
-  domain_prefix: ""
+  domain_prefix: "N/A (shared entity `cl_value`)"
   entity_physical_name: ""
-  description: ""
-  source_table: "NHNCK.APPLICATION_SOURCES, NHNCK.APPLICATION_STATUSES, NHNCK.DOCUMENTS,\
-    \ NHNCK.SPECIALIZATIONS"
+  description: "Classification Common — danh mục dùng chung TTHC, tổng hợp toàn bộ\
+    \ giá trị phân loại từ Orchard Core ContentItem. ContentType = schema_code (nhóm\
+    \ scheme); ContentItemId = cl_code (BK). 10 scheme: TRANG_THAI_HO_SO, LOAI_HO_SO,\
+    \ LINH_VUC_TTHC, MUC_DO_TTHC, KENH_TIEP_NHAN, CO_QUAN_XU"
+  source_table: "TTHC.DANH_MUC_DUNG_CHUNG_TTHC, NHNCK.APPLICATION_SOURCES, NHNCK.APPLICATION_STATUSES,\
+    \ NHNCK.DOCUMENTS, NHNCK.SPECIALIZATIONS"
   status: "draft"
 - bcv_core_object: "Product"
   bcv_concept: "[Product] Financial Market Instrument"
