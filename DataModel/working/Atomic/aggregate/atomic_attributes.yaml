@@ -9591,7 +9591,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "VERIFY_APPLICATION_STATUSES"
   source_column: null
-  comment: "PK surrogate. BCV: \"[Business Activity] Status Review\". Hash: hash_id('NHNCK.VERIFY_APPLICATION_STATUSES',\
+  comment: "PK surrogate. BCV: \"[Business Activity] Status Review\". Hash: hash_id('NHNCK_VERIFY_APPLICATION_STATUSES',\
     \ ID)."
   classification_context: null
   etl_derived_value: null
@@ -9642,7 +9642,7 @@ attributes:
   source_column: "NHNCK.VERIFY_APPLICATION_STATUSES.APPLICATION_ID"
   comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL crosswalk\
     \ sang NHNCK.APPLICATIONS: VERIFY_APPLICATION_STATUSES.APPLICATION_ID = APPLICATIONS.ID\
-    \ để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK.APPLICATIONS', APPLICATION_CODE)."
+    \ để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS', APPLICATION_CODE)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application_status_review"
@@ -9677,9 +9677,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "VERIFY_APPLICATION_STATUSES"
   source_column: "NHNCK.APPLICATION_STATUSES.STATUS_CODE"
-  comment: "Scheme: SCHEMA_CODE. Cần ETL crosswalk sang NHNCK.APPLICATION_STATUSES:\
-    \ VERIFY_APPLICATION_STATUSES.STATUS_ID = APPLICATION_STATUSES.ID để lấy STATUS_CODE."
-  classification_context: "SCHEMA_CODE=NHNCK.APPLICATION_STATUSES"
+  comment: "SCHEMA_CODE=NHNCK.APPLICATION_STATUSES"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application_status_review"
   atomic_column: "application_status_code"
@@ -9694,10 +9693,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "VERIFY_APPLICATION_STATUSES"
   source_column: "NHNCK.APPLICATION_STATUSES.STATUS_CODE"
-  comment: "Scheme: SCHEMA_CODE. Cần ETL crosswalk sang NHNCK.APPLICATION_STATUSES:\
-    \ VERIFY_APPLICATION_STATUSES.PREV_STATUS_ID = APPLICATION_STATUSES.ID để lấy\
-    \ STATUS_CODE."
-  classification_context: "SCHEMA_CODE=NHNCK.APPLICATION_STATUSES"
+  comment: "SCHEMA_CODE=NHNCK.APPLICATION_STATUSES"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application_status_review"
   atomic_column: "previous_application_status_code"
@@ -9794,7 +9791,7 @@ attributes:
   source_column: "NHNCK.VERIFY_APPLICATION_STATUSES.VERIFIED_BY"
   comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
     \ Cần ETL crosswalk sang NHNCK.USERS: VERIFY_APPLICATION_STATUSES.VERIFIED_BY\
-    \ = USERS.ID để xác nhận USERNAME sau đó hash_id('IAM.USERS', USERNAME) | Chưa\
+    \ = USERS.ID để xác nhận USERNAME sau đó hash_id('IAM_USERS', USERNAME) | Chưa\
     \ xác nhận value set khớp danh mục IAM.USERS — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
@@ -9829,8 +9826,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "VERIFY_APPLICATION_STATUSES"
   source_column: "NHNCK.VERIFY_APPLICATION_STATUSES.STATUS"
-  comment: "Scheme: NHNCK.VERIFY_APPLICATION_STATUSES.STATUS."
-  classification_context: "NHNCK.VERIFY_APPLICATION_STATUSES.STATUS"
+  comment: "SCHEMA_CODE=NHNCK.VERIFY_APPLICATION_STATUSES.STATUS"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application_status_review"
   atomic_column: "status_code"
@@ -9925,9 +9922,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "SPECIALIZATION_COURSES"
   source_column: "NHNCK.SPECIALIZATIONS.SPECIALIZATION_CODE"
-  comment: "Scheme: SCHEMA_CODE. Cần ETL crosswalk sang NHNCK.SPECIALIZATIONS: SPECIALIZATION_COURSES.SPECIALIZATION_ID\
-    \ = SPECIALIZATIONS.ID để lấy SPECIALIZATION_CODE."
-  classification_context: "SCHEMA_CODE=NHNCK.SPECIALIZATIONS"
+  comment: "SCHEMA_CODE=NHNCK.SPECIALIZATIONS"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_professional_training_class"
   atomic_column: "specialization_code"
@@ -9992,7 +9988,7 @@ attributes:
   source_column: "NHNCK.SPECIALIZATION_COURSES.PROVINCE_ID"
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'PROVINCE'). Cần ETL crosswalk sang NHNCK.PROVINCES: SPECIALIZATION_COURSES.PROVINCE_ID\
-    \ = PROVINCES.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT.PROVINCE_NEW',\
+    \ = PROVINCES.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT_PROVINCE_NEW',\
     \ PROVINCE_CODE) | NHNCK.PROVINCES ngừng thiết kế Atomic entity riêng — chỉ dùng\
     \ để crosswalk. Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu\
     \ trước go-live."
@@ -10011,7 +10007,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "SPECIALIZATION_COURSES"
   source_column: "NHNCK.PROVINCES.PROVINCE_CODE"
-  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT). Pair with\
+  comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with\
     \ Province Id. Giá trị lấy từ NHNCK.PROVINCES.PROVINCE_CODE sau ETL crosswalk\
     \ — chi tiết xem comment Province Id."
   classification_context: null
@@ -10082,7 +10078,7 @@ attributes:
   source_column: "NHNCK.SPECIALIZATION_COURSE_DETAILS.SPECIALIZATION_COURSE_ID"
   comment: "FK target: sp_professional_training_class.sp_professional_training_class_id.\
     \ Cần ETL crosswalk sang NHNCK.SPECIALIZATION_COURSES: SPECIALIZATION_COURSE_DETAILS.SPECIALIZATION_COURSE_ID\
-    \ = SPECIALIZATION_COURSES.ID để xác nhận COURSE_CODE sau đó hash_id('NHNCK.SPECIALIZATION_COURSES',\
+    \ = SPECIALIZATION_COURSES.ID để xác nhận COURSE_CODE sau đó hash_id('NHNCK_SPECIALIZATION_COURSES',\
     \ COURSE_CODE) | Trước đây hash trực tiếp theo SPECIALIZATION_COURSE_ID (ID kỹ\
     \ thuật) gây sai lệch với Id của bảng main (hash từ COURSE_CODE) — đã sửa sang\
     \ crosswalk 2026-07-27."
@@ -10101,11 +10097,10 @@ attributes:
   source_system: "NHNCK"
   source_table: "SPECIALIZATION_COURSE_DETAILS"
   source_column: "NHNCK.SPECIALIZATION_COURSES.COURSE_CODE"
-  comment: "Lookup pair: Securities Practitioner Professional Training Class.Securities\
-    \ Practitioner Professional Training Class Code. Pair with Securities Practitioner\
-    \ Professional Training Class Id. Giá trị lấy từ NHNCK.SPECIALIZATION_COURSES.COURSE_CODE\
-    \ sau ETL crosswalk — chi tiết xem comment Securities Practitioner Professional\
-    \ Training Class Id."
+  comment: "Lookup pair: sp_professional_training_class.sp_professional_training_class_code.\
+    \ Pair with Securities Practitioner Professional Training Class Id. Giá trị lấy\
+    \ từ NHNCK.SPECIALIZATION_COURSES.COURSE_CODE sau ETL crosswalk — chi tiết xem\
+    \ comment Securities Practitioner Professional Training Class Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_professional_training_class_enrollment"
@@ -10121,7 +10116,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "SPECIALIZATION_COURSE_DETAILS"
   source_column: "NHNCK.SPECIALIZATION_COURSE_DETAILS.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+  comment: "FK target: securities_practitioner.sp_id. Hash: hash_id('NHNCK_PROFESSIONALS',\
     \ PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
@@ -10138,8 +10133,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "SPECIALIZATION_COURSE_DETAILS"
   source_column: "NHNCK.SPECIALIZATION_COURSE_DETAILS.PROFESSIONAL_ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Securities Practitioner Id."
+  comment: "Lookup pair: securities_practitioner.sp_code. Pair with Securities Practitioner\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_professional_training_class_enrollment"
@@ -10155,9 +10150,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "SPECIALIZATION_COURSE_DETAILS"
   source_column: "NHNCK.SPECIALIZATIONS.SPECIALIZATION_CODE"
-  comment: "Scheme: SCHEMA_CODE. Cần ETL crosswalk sang NHNCK.SPECIALIZATIONS: SPECIALIZATION_COURSE_DETAILS.SPECIALIZATION_ID\
-    \ = SPECIALIZATIONS.ID để lấy SPECIALIZATION_CODE."
-  classification_context: "SCHEMA_CODE=NHNCK.SPECIALIZATIONS"
+  comment: "SCHEMA_CODE=NHNCK.SPECIALIZATIONS"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_professional_training_class_enrollment"
   atomic_column: "specialization_code"
@@ -10238,7 +10232,7 @@ attributes:
   source_column: "NHNCK.SPECIALIZATION_COURSE_DETAILS.PERMANENT_COUNTRY_ID"
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'COUNTRY'). Cần ETL crosswalk sang NHNCK.COUNTRIES: SPECIALIZATION_COURSE_DETAILS.PERMANENT_COUNTRY_ID\
-    \ = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT.COUNTRY', COUNTRY_CODE)\
+    \ = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT_COUNTRY', COUNTRY_CODE)\
     \ | Snapshot tại thời điểm đăng ký. Chưa xác nhận value set khớp danh mục ECAT\
     \ — cần profile dữ liệu trước go-live."
   classification_context: null
@@ -10256,7 +10250,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "SPECIALIZATION_COURSE_DETAILS"
   source_column: "NHNCK.COUNTRIES.COUNTRY_CODE"
-  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT). Pair with\
+  comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with\
     \ Permanent Residence Country Id. Giá trị lấy từ NHNCK.COUNTRIES.COUNTRY_CODE\
     \ sau ETL crosswalk — chi tiết xem comment Permanent Residence Country Id."
   classification_context: null
@@ -10276,7 +10270,7 @@ attributes:
   source_column: "NHNCK.SPECIALIZATION_COURSE_DETAILS.PERMANENT_PROVINCE_ID"
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'PROVINCE'). Cần ETL crosswalk sang NHNCK.PROVINCES: SPECIALIZATION_COURSE_DETAILS.PERMANENT_PROVINCE_ID\
-    \ = PROVINCES.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT.PROVINCE_NEW',\
+    \ = PROVINCES.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT_PROVINCE_NEW',\
     \ PROVINCE_CODE) | Snapshot tại thời điểm đăng ký. NHNCK.PROVINCES ngừng thiết\
     \ kế Atomic entity riêng — chỉ dùng để crosswalk. Chưa xác nhận value set khớp\
     \ danh mục ECAT — cần profile dữ liệu trước go-live."
@@ -10295,7 +10289,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "SPECIALIZATION_COURSE_DETAILS"
   source_column: "NHNCK.PROVINCES.PROVINCE_CODE"
-  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT). Pair with\
+  comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with\
     \ Permanent Residence Province Id. Giá trị lấy từ NHNCK.PROVINCES.PROVINCE_CODE\
     \ sau ETL crosswalk — chi tiết xem comment Permanent Residence Province Id."
   classification_context: null
@@ -10315,7 +10309,7 @@ attributes:
   source_column: "NHNCK.SPECIALIZATION_COURSE_DETAILS.PERMANENT_DISTRICT_ID"
   comment: "FK target: geographic_area_old.geographic_area_old_id (geographic_area_old_tp_code\
     \ = 'DISTRICT_OLD'). Cần ETL crosswalk sang NHNCK.DISTRICTS: SPECIALIZATION_COURSE_DETAILS.PERMANENT_DISTRICT_ID\
-    \ = DISTRICTS.ID để xác nhận DISTRICT_CODE sau đó hash_id('ECAT.DISTRICT_OLD',\
+    \ = DISTRICTS.ID để xác nhận DISTRICT_CODE sau đó hash_id('ECAT_DISTRICT_OLD',\
     \ DISTRICT_CODE) | ĐỔI TARGET — không còn Geographic Area: cấp quận/huyện đã bị\
     \ loại bỏ trong cấu trúc địa giới hiện hành (post-sáp nhập 2025); ECAT chỉ còn\
     \ lưu ở Geographic Area Old. Snapshot tại thời điểm đăng ký. NHNCK.DISTRICTS ngừng\
@@ -10336,7 +10330,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "SPECIALIZATION_COURSE_DETAILS"
   source_column: "NHNCK.DISTRICTS.DISTRICT_CODE"
-  comment: "Lookup pair: Geographic Area Old.Geographic Area Old Code (nguồn ECAT\
+  comment: "Lookup pair: geographic_area_old.geographic_area_old_code (nguồn ECAT\
     \ — ĐỔI TARGET, xem Permanent Residence District Id). Pair with Permanent Residence\
     \ District Id. Giá trị lấy từ NHNCK.DISTRICTS.DISTRICT_CODE sau ETL crosswalk\
     \ — chi tiết xem comment Permanent Residence District Id."
@@ -10355,9 +10349,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "SPECIALIZATION_COURSE_DETAILS"
   source_column: "NHNCK.SPECIALIZATION_COURSE_DETAILS.IDENTITY_TYPE"
-  comment: "Scheme: IDENTIFICATION_DOCUMENT_TYPE. Nguồn: 1=CMND, 2=CCCD, 3=Hộ chiếu.\
-    \ Snapshot — entity grain là enrollment, không phải Involved Party."
-  classification_context: "IDENTIFICATION_DOCUMENT_TYPE"
+  comment: "SCHEMA_CODE=IDENTIFICATION_DOCUMENT_TYPE"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_professional_training_class_enrollment"
   atomic_column: "identification_tp_code"
@@ -10437,8 +10430,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "SPECIALIZATION_COURSE_DETAILS"
   source_column: "NHNCK.SPECIALIZATION_COURSE_DETAILS.RESULT"
-  comment: "Scheme: NHNCK.EXAM_DETAILS.RESULT (gộp từ TRAINING_RESULT, 2026-07-09)."
-  classification_context: "NHNCK.EXAM_DETAILS.RESULT"
+  comment: "SCHEMA_CODE=NHNCK.EXAM_DETAILS.RESULT"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_professional_training_class_enrollment"
   atomic_column: "training_result_code"
@@ -10487,7 +10480,7 @@ attributes:
   source_column: "NHNCK.SPECIALIZATION_COURSE_DETAILS.ASSIGNEE_ID"
   comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
     \ Cần ETL crosswalk sang NHNCK.USERS: SPECIALIZATION_COURSE_DETAILS.ASSIGNEE_ID\
-    \ = USERS.ID để xác nhận USERNAME sau đó hash_id('IAM.USERS', USERNAME) | Chưa\
+    \ = USERS.ID để xác nhận USERNAME sau đó hash_id('IAM_USERS', USERNAME) | Chưa\
     \ xác nhận value set khớp danh mục IAM.USERS — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
@@ -10571,7 +10564,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "VIOLATIONS"
   source_column: "NHNCK.VIOLATIONS.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+  comment: "FK target: securities_practitioner.sp_id. Hash: hash_id('NHNCK_PROFESSIONALS',\
     \ PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
@@ -10588,8 +10581,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "VIOLATIONS"
   source_column: "NHNCK.VIOLATIONS.PROFESSIONAL_ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Securities Practitioner Id."
+  comment: "Lookup pair: securities_practitioner.sp_code. Pair with Securities Practitioner\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_violation"
@@ -10607,7 +10600,7 @@ attributes:
   source_column: "NHNCK.VIOLATIONS.DECISION_ID"
   comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
     \ Cần ETL crosswalk sang NHNCK.DECISIONS: VIOLATIONS.DECISION_ID = DECISIONS.ID\
-    \ để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK.DECISIONS', DECISION_NUMBER)\
+    \ để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS', DECISION_NUMBER)\
     \ | Trước đây hash trực tiếp theo DECISION_ID (ID kỹ thuật) gây sai lệch với Id\
     \ của bảng main (hash từ DECISION_NUMBER) — đã sửa sang crosswalk 2026-08-14."
   classification_context: null
@@ -10712,9 +10705,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "VIOLATIONS"
   source_column: "NHNCK.VIOLATIONS.STATUS"
-  comment: "Scheme: NHNCK.VIOLATIONS.STATUS. Nguồn lưu dạng NUMBER — ETL convert sang\
-    \ string."
-  classification_context: "NHNCK.VIOLATIONS.STATUS"
+  comment: "SCHEMA_CODE=NHNCK.VIOLATIONS.STATUS"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_violation"
   atomic_column: "violation_status_code"
@@ -10729,10 +10721,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "VIOLATIONS"
   source_column: "NHNCK.VIOLATIONS.TYPE"
-  comment: "Scheme: NHNCK.VIOLATIONS.TYPE. Nguồn lưu dạng NUMBER — ETL convert sang\
-    \ string. Giá trị scheme chưa xác định — cần profile dữ liệu thực tế để liệt kê\
-    \ đủ giá trị."
-  classification_context: "NHNCK.VIOLATIONS.TYPE"
+  comment: "SCHEMA_CODE=NHNCK.VIOLATIONS.TYPE"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_violation"
   atomic_column: "violation_tp_code"
@@ -14565,7 +14555,7 @@ attributes:
   source_column: "NHNCK.EXAM_SESSIONS.DECISION_ID"
   comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
     \ Cần ETL crosswalk sang NHNCK.DECISIONS: EXAM_SESSIONS.DECISION_ID = DECISIONS.ID\
-    \ để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK.DECISIONS', DECISION_NUMBER)\
+    \ để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS', DECISION_NUMBER)\
     \ | Trước đây hash trực tiếp theo DECISION_ID (ID kỹ thuật) gây sai lệch với Id\
     \ của bảng main (hash từ DECISION_NUMBER) — đã sửa sang crosswalk 2026-08-14."
   classification_context: null
@@ -14602,8 +14592,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "EXAM_SESSIONS"
   source_column: "NHNCK.EXAM_SESSIONS.BANK_ID"
-  comment: "Scheme: BANK. Classification Value lookup từ bảng BANKS."
-  classification_context: "BANK"
+  comment: "SCHEMA_CODE=BANK"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_qualification_examination_assessment"
   atomic_column: "bank_code"
@@ -14650,8 +14640,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "EXAM_SESSIONS"
   source_column: "NHNCK.EXAM_SESSIONS.STATUS"
-  comment: "Scheme: NHNCK.EXAM_SESSIONS.STATUS."
-  classification_context: "NHNCK.EXAM_SESSIONS.STATUS"
+  comment: "SCHEMA_CODE=NHNCK.EXAM_SESSIONS.STATUS"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_qualification_examination_assessment"
   atomic_column: "status_code"
@@ -14720,7 +14710,7 @@ attributes:
   source_column: "NHNCK.EXAM_DETAILS.EXAM_SESSION_ID"
   comment: "FK target: sp_qualification_examination_assessment.sp_qualification_examination_assessment_id.\
     \ Cần ETL crosswalk sang NHNCK.EXAM_SESSIONS: EXAM_DETAILS.EXAM_SESSION_ID = EXAM_SESSIONS.ID\
-    \ để xác nhận CODE sau đó hash_id('NHNCK.EXAM_SESSIONS', CODE)"
+    \ để xác nhận CODE sau đó hash_id('NHNCK_EXAM_SESSIONS', CODE)"
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_qualification_examination_assessment_result"
@@ -14756,7 +14746,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "EXAM_DETAILS"
   source_column: "NHNCK.EXAM_DETAILS.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+  comment: "FK target: securities_practitioner.sp_id. Hash: hash_id('NHNCK_PROFESSIONALS',\
     \ PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
@@ -14773,8 +14763,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "EXAM_DETAILS"
   source_column: "NHNCK.EXAM_DETAILS.PROFESSIONAL_ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Securities Practitioner Id."
+  comment: "Lookup pair: securities_practitioner.sp_code. Pair with Securities Practitioner\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_qualification_examination_assessment_result"
@@ -14792,7 +14782,7 @@ attributes:
   source_column: "NHNCK.EXAM_DETAILS.CERTIFICATE_ID"
   comment: "FK target: sp_license_certificate_type.sp_license_certificate_tp_id. Cần\
     \ ETL crosswalk sang NHNCK.CERTIFICATES: EXAM_DETAILS.CERTIFICATE_ID = CERTIFICATES.ID\
-    \ để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK.CERTIFICATES', CERTIFICATE_CODE)\
+    \ để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK_CERTIFICATES', CERTIFICATE_CODE)\
     \ | Trước đây hash trực tiếp theo CERTIFICATE_ID (ID kỹ thuật) gây sai lệch với\
     \ Id của bảng main (hash từ CERTIFICATE_CODE) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
@@ -14831,7 +14821,7 @@ attributes:
   source_column: "NHNCK.EXAM_DETAILS.APPLICATION_ID"
   comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL crosswalk\
     \ sang NHNCK.APPLICATIONS: EXAM_DETAILS.APPLICATION_ID = APPLICATIONS.ID để xác\
-    \ nhận APPLICATION_CODE sau đó hash_id('NHNCK.APPLICATIONS', APPLICATION_CODE)\
+    \ nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS', APPLICATION_CODE)\
     \ | Trước đây hash trực tiếp theo APPLICATION_ID (ID kỹ thuật) gây sai lệch với\
     \ Id của bảng main (hash từ APPLICATION_CODE) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
@@ -14849,10 +14839,10 @@ attributes:
   source_system: "NHNCK"
   source_table: "EXAM_DETAILS"
   source_column: "NHNCK.APPLICATIONS.APPLICATION_CODE"
-  comment: "Lookup pair: Securities Practitioner License Application.Securities Practitioner\
-    \ License Application Code. Pair with Securities Practitioner License Application\
-    \ Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE sau ETL crosswalk — chi\
-    \ tiết xem comment Securities Practitioner License Application Id."
+  comment: "Lookup pair: sp_license_application.sp_license_application_code. Pair\
+    \ with Securities Practitioner License Application Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE\
+    \ sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Application\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_qualification_examination_assessment_result"
@@ -14916,8 +14906,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "EXAM_DETAILS"
   source_column: "NHNCK.EXAM_DETAILS.LAW_RESULT"
-  comment: "Scheme: EXAM_RESULT (gộp từ EXAM_SCORE_RESULT, 2026-07-09)."
-  classification_context: "EXAM_RESULT"
+  comment: "SCHEMA_CODE=EXAM_RESULT"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_qualification_examination_assessment_result"
   atomic_column: "law_result_code"
@@ -14948,8 +14938,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "EXAM_DETAILS"
   source_column: "NHNCK.EXAM_DETAILS.SPECIALIZATION_RESULT"
-  comment: "Scheme: NHNCK.EXAM_DETAILS.RESULT (gộp từ EXAM_SCORE_RESULT, 2026-07-09)."
-  classification_context: "NHNCK.EXAM_DETAILS.RESULT"
+  comment: "SCHEMA_CODE=NHNCK.EXAM_DETAILS.RESULT"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_qualification_examination_assessment_result"
   atomic_column: "specialization_result_code"
@@ -14964,8 +14954,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "EXAM_DETAILS"
   source_column: "NHNCK.EXAM_DETAILS.RESULT"
-  comment: "Scheme: NHNCK.EXAM_DETAILS.RESULT (gộp từ EXAMINATION_RESULT, 2026-07-09)."
-  classification_context: "NHNCK.EXAM_DETAILS.RESULT"
+  comment: "SCHEMA_CODE=NHNCK.EXAM_DETAILS.RESULT"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_qualification_examination_assessment_result"
   atomic_column: "overall_result_code"
@@ -15247,10 +15237,9 @@ attributes:
   source_system: "NHNCK"
   source_table: "EXAM_SESSION_FEES"
   source_column: "NHNCK.EXAM_SESSION_FEES.EXAM_SESSION_ID"
-  comment: "FK target: Securities Practitioner Qualification Examination Assessment.Securities\
-    \ Practitioner Qualification Examination Assessment Id. Nguồn lưu ID kỹ thuật\
-    \ của EXAM_SESSIONS — ETL join EXAM_SESSION_ID → NHNCK.EXAM_SESSIONS.ID để lấy\
-    \ CODE, rồi hash_id('NHNCK.EXAM_SESSIONS', CODE)."
+  comment: "FK target: sp_qualification_examination_assessment.sp_qualification_examination_assessment_id.\
+    \ Nguồn lưu ID kỹ thuật của EXAM_SESSIONS — ETL join EXAM_SESSION_ID → NHNCK.EXAM_SESSIONS.ID\
+    \ để lấy CODE, rồi hash_id('NHNCK_EXAM_SESSIONS', CODE)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_qualification_examination_assessment_fee"
@@ -15267,9 +15256,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "EXAM_SESSION_FEES"
   source_column: "NHNCK.EXAM_SESSION_FEES.EXAM_SESSION_ID"
-  comment: "Lookup pair: Securities Practitioner Qualification Examination Assessment.Securities\
-    \ Practitioner Qualification Examination Assessment Code. Pair with Securities\
-    \ Practitioner Qualification Examination Assessment Id."
+  comment: "Lookup pair: sp_qualification_examination_assessment.sp_qualification_examination_assessment_code.\
+    \ Pair with Securities Practitioner Qualification Examination Assessment Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_qualification_examination_assessment_fee"
@@ -15287,7 +15275,7 @@ attributes:
   source_column: "NHNCK.EXAM_SESSION_FEES.CERTIFICATE_ID"
   comment: "FK target: sp_license_certificate_type.sp_license_certificate_tp_id. Cần\
     \ ETL crosswalk sang NHNCK.CERTIFICATES: EXAM_SESSION_FEES.CERTIFICATE_ID = CERTIFICATES.ID\
-    \ để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK.CERTIFICATES', CERTIFICATE_CODE)\
+    \ để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK_CERTIFICATES', CERTIFICATE_CODE)\
     \ | Trước đây hash trực tiếp theo CERTIFICATE_ID (ID kỹ thuật) gây sai lệch với\
     \ Id của bảng main (hash từ CERTIFICATE_CODE) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
@@ -15502,6 +15490,22 @@ attributes:
   etl_derived_value: null
   atomic_table: "ap_content_item_index"
   atomic_column: "content_tp_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Administrative Procedure Content Item Index"
+  atomic_attribute: "Display Text"
+  description: "Tiêu đề/tên content item để hiển thị trong danh sách."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "TTHC"
+  source_table: "CONTENTITEMINDEX"
+  source_column: "TTHC.CONTENTITEMINDEX.DISPLAYTEXT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "ap_content_item_index"
+  atomic_column: "display_text"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Administrative Procedure Document"
@@ -22347,9 +22351,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATIONS"
   source_column: "NHNCK.APPLICATIONS.APPLICATION_TYPE"
-  comment: "Scheme: NHNCK.APPLICATIONS.APPLICATION_TYPE. Map từ NUMBER: 0=Cấp mới,\
-    \ 1=Cấp lại do thu hồi, 2=Cấp lại thay đổi thông tin, 3=Cấp lại mất CCHN."
-  classification_context: "NHNCK.APPLICATIONS.APPLICATION_TYPE"
+  comment: "SCHEMA_CODE=NHNCK.APPLICATIONS.APPLICATION_TYPE"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application"
   atomic_column: "application_tp_code"
@@ -22364,9 +22367,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATIONS"
   source_column: "NHNCK.APPLICATION_STATUSES.STATUS_CODE"
-  comment: "Scheme: SCHEMA_CODE. Cần ETL crosswalk sang NHNCK.APPLICATION_STATUSES:\
-    \ APPLICATIONS.STATUS_ID = APPLICATION_STATUSES.ID để lấy STATUS_CODE."
-  classification_context: "SCHEMA_CODE=NHNCK.APPLICATION_STATUSES"
+  comment: "SCHEMA_CODE=NHNCK.APPLICATION_STATUSES"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application"
   atomic_column: "application_status_code"
@@ -22381,9 +22383,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATIONS"
   source_column: "NHNCK.APPLICATIONS.REGISTRATION_TYPE"
-  comment: "Scheme: NHNCK.APPLICATIONS.REGISTRATION_TYPE. Map từ NUMBER: 0=MCĐT/cổng\
-    \ DVC, 1=Nhập tay."
-  classification_context: "NHNCK.APPLICATIONS.REGISTRATION_TYPE"
+  comment: "SCHEMA_CODE=NHNCK.APPLICATIONS.REGISTRATION_TYPE"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application"
   atomic_column: "registration_tp_code"
@@ -22400,7 +22401,7 @@ attributes:
   source_column: "NHNCK.APPLICATIONS.CERTIFICATE_ID"
   comment: "FK target: sp_license_certificate_type.sp_license_certificate_tp_id. Cần\
     \ ETL crosswalk sang NHNCK.CERTIFICATES: APPLICATIONS.CERTIFICATE_ID = CERTIFICATES.ID\
-    \ để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK.CERTIFICATES', CERTIFICATE_CODE)\
+    \ để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK_CERTIFICATES', CERTIFICATE_CODE)\
     \ | Trước đây hash trực tiếp theo CERTIFICATE_ID (ID kỹ thuật) gây sai lệch với\
     \ Id của bảng main (hash từ CERTIFICATE_CODE) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
@@ -22567,7 +22568,7 @@ attributes:
   source_column: "NHNCK.APPLICATIONS.PREVIOUS_CERTIFICATE_ID"
   comment: "FK target: sp_license_certificate_type.sp_license_certificate_tp_id. Cần\
     \ ETL crosswalk sang NHNCK.CERTIFICATES: APPLICATIONS.PREVIOUS_CERTIFICATE_ID\
-    \ = CERTIFICATES.ID để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK.CERTIFICATES',\
+    \ = CERTIFICATES.ID để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK_CERTIFICATES',\
     \ CERTIFICATE_CODE) | Trước đây hash trực tiếp theo PREVIOUS_CERTIFICATE_ID (ID\
     \ kỹ thuật) gây sai lệch với Id của bảng main (hash từ CERTIFICATE_CODE) — đã\
     \ sửa sang crosswalk 2026-07-27."
@@ -22637,9 +22638,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATIONS"
   source_column: "NHNCK.APPLICATIONS.CERTIFICATE_RECEIPT_METHOD"
-  comment: "Scheme: NHNCK.APPLICATIONS.CERTIFICATE_RECEIPT_METHOD. Map từ NUMBER:\
-    \ 1=Nhận tại UBCKNN, 2=Gửi bưu điện, 3=Điện tử."
-  classification_context: "NHNCK.APPLICATIONS.CERTIFICATE_RECEIPT_METHOD"
+  comment: "SCHEMA_CODE=NHNCK.APPLICATIONS.CERTIFICATE_RECEIPT_METHOD"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application"
   atomic_column: "certificate_receipt_method_code"
@@ -22766,7 +22766,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATIONS"
   source_column: "NHNCK.APPLICATIONS.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+  comment: "FK target: securities_practitioner.sp_id. Hash: hash_id('NHNCK_PROFESSIONALS',\
     \ PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
@@ -22783,8 +22783,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATIONS"
   source_column: "NHNCK.APPLICATIONS.PROFESSIONAL_ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Securities Practitioner Id."
+  comment: "Lookup pair: securities_practitioner.sp_code. Pair with Securities Practitioner\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application"
@@ -22802,7 +22802,7 @@ attributes:
   source_column: "NHNCK.APPLICATIONS.CERTIFICATE_RECORD_ID"
   comment: "FK target: sp_license_certificate_document.sp_license_certificate_document_id.\
     \ Cần ETL crosswalk sang NHNCK.CERTIFICATE_RECORDS: APPLICATIONS.CERTIFICATE_RECORD_ID\
-    \ = CERTIFICATE_RECORDS.ID để xác nhận CERTIFICATE_NUMBER sau đó hash_id('NHNCK.CERTIFICATE_RECORDS',\
+    \ = CERTIFICATE_RECORDS.ID để xác nhận CERTIFICATE_NUMBER sau đó hash_id('NHNCK_CERTIFICATE_RECORDS',\
     \ CERTIFICATE_NUMBER) | Trước đây hash trực tiếp theo CERTIFICATE_RECORD_ID (ID\
     \ kỹ thuật) gây sai lệch với Id của bảng main (hash từ CERTIFICATE_NUMBER) — đã\
     \ sửa sang crosswalk 2026-08-15."
@@ -22843,7 +22843,7 @@ attributes:
   source_column: "NHNCK.APPLICATIONS.PREVIOUS_CERTIFICATE_RECORD_ID"
   comment: "FK target: sp_license_certificate_document.sp_license_certificate_document_id.\
     \ Cần ETL crosswalk sang NHNCK.CERTIFICATE_RECORDS: APPLICATIONS.PREVIOUS_CERTIFICATE_RECORD_ID\
-    \ = CERTIFICATE_RECORDS.ID để xác nhận CERTIFICATE_NUMBER sau đó hash_id('NHNCK.CERTIFICATE_RECORDS',\
+    \ = CERTIFICATE_RECORDS.ID để xác nhận CERTIFICATE_NUMBER sau đó hash_id('NHNCK_CERTIFICATE_RECORDS',\
     \ CERTIFICATE_NUMBER) | Trước đây hash trực tiếp theo PREVIOUS_CERTIFICATE_RECORD_ID\
     \ (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CERTIFICATE_NUMBER)\
     \ — đã sửa sang crosswalk 2026-08-15."
@@ -22884,10 +22884,9 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATIONS"
   source_column: "NHNCK.APPLICATIONS.EXAM_SESSION_ID"
-  comment: "FK target: Securities Practitioner Qualification Examination Assessment.Securities\
-    \ Practitioner Qualification Examination Assessment Id. Nguồn lưu ID kỹ thuật\
-    \ của EXAM_SESSIONS — ETL join EXAM_SESSION_ID → NHNCK.EXAM_SESSIONS.ID để lấy\
-    \ CODE, rồi hash_id('NHNCK.EXAM_SESSIONS', CODE)."
+  comment: "FK target: sp_qualification_examination_assessment.sp_qualification_examination_assessment_id.\
+    \ Nguồn lưu ID kỹ thuật của EXAM_SESSIONS — ETL join EXAM_SESSION_ID → NHNCK.EXAM_SESSIONS.ID\
+    \ để lấy CODE, rồi hash_id('NHNCK_EXAM_SESSIONS', CODE)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application"
@@ -22904,9 +22903,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATIONS"
   source_column: "NHNCK.APPLICATIONS.EXAM_SESSION_ID"
-  comment: "Lookup pair: Securities Practitioner Qualification Examination Assessment.Securities\
-    \ Practitioner Qualification Examination Assessment Code. Pair with Securities\
-    \ Practitioner Qualification Examination Assessment Id."
+  comment: "Lookup pair: sp_qualification_examination_assessment.sp_qualification_examination_assessment_code.\
+    \ Pair with Securities Practitioner Qualification Examination Assessment Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application"
@@ -22925,7 +22923,7 @@ attributes:
   source_column: "NHNCK.APPLICATIONS.ASSIGNEE_ID"
   comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
     \ Cần ETL crosswalk sang NHNCK.USERS: APPLICATIONS.ASSIGNEE_ID = USERS.ID để xác\
-    \ nhận USERNAME sau đó hash_id('IAM.USERS', USERNAME) | Chưa xác nhận value set\
+    \ nhận USERNAME sau đó hash_id('IAM_USERS', USERNAME) | Chưa xác nhận value set\
     \ khớp danh mục IAM.USERS — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
@@ -22962,7 +22960,7 @@ attributes:
   source_column: "NHNCK.APPLICATIONS.INFO_VERIFY_ID"
   comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
     \ Cần ETL crosswalk sang NHNCK.USERS: APPLICATIONS.INFO_VERIFY_ID = USERS.ID để\
-    \ xác nhận USERNAME sau đó hash_id('IAM.USERS', USERNAME) | Chưa xác nhận value\
+    \ xác nhận USERNAME sau đó hash_id('IAM_USERS', USERNAME) | Chưa xác nhận value\
     \ set khớp danh mục IAM.USERS — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
@@ -23072,7 +23070,7 @@ attributes:
   source_column: "NHNCK.APPLICATION_SPECIALIZATIONS.APPLICATION_ID"
   comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL crosswalk\
     \ sang NHNCK.APPLICATIONS: APPLICATION_SPECIALIZATIONS.APPLICATION_ID = APPLICATIONS.ID\
-    \ để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK.APPLICATIONS', APPLICATION_CODE)\
+    \ để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS', APPLICATION_CODE)\
     \ | Trước đây hash trực tiếp theo APPLICATION_ID (ID kỹ thuật) gây sai lệch với\
     \ Id của bảng main (hash từ APPLICATION_CODE) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
@@ -23091,10 +23089,10 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_SPECIALIZATIONS"
   source_column: "NHNCK.APPLICATIONS.APPLICATION_CODE"
-  comment: "Lookup pair: Securities Practitioner License Application.Securities Practitioner\
-    \ License Application Code. Pair with Securities Practitioner License Application\
-    \ Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE sau ETL crosswalk — chi\
-    \ tiết xem comment Securities Practitioner License Application Id."
+  comment: "Lookup pair: sp_license_application.sp_license_application_code. Pair\
+    \ with Securities Practitioner License Application Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE\
+    \ sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Application\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application_education_certificate_document"
@@ -23111,9 +23109,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_SPECIALIZATIONS"
   source_column: "NHNCK.SPECIALIZATIONS.SPECIALIZATION_CODE"
-  comment: "Scheme: SCHEMA_CODE. Cần ETL crosswalk sang NHNCK.SPECIALIZATIONS: APPLICATION_SPECIALIZATIONS.SPECIALIZATION_ID\
-    \ = SPECIALIZATIONS.ID để lấy SPECIALIZATION_CODE."
-  classification_context: "SCHEMA_CODE=NHNCK.SPECIALIZATIONS"
+  comment: "SCHEMA_CODE=NHNCK.SPECIALIZATIONS"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application_education_certificate_document"
   atomic_column: "specialization_code"
@@ -23182,7 +23179,7 @@ attributes:
   source_column: "NHNCK.APPLICATION_SPECIALIZATIONS.ASSIGNEE_ID"
   comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
     \ Cần ETL crosswalk sang NHNCK.USERS: APPLICATION_SPECIALIZATIONS.ASSIGNEE_ID\
-    \ = USERS.ID để xác nhận USERNAME sau đó hash_id('IAM.USERS', USERNAME) | Chưa\
+    \ = USERS.ID để xác nhận USERNAME sau đó hash_id('IAM_USERS', USERNAME) | Chưa\
     \ xác nhận value set khớp danh mục IAM.USERS — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
@@ -23253,8 +23250,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_SPECIALIZATIONS"
   source_column: "NHNCK.APPLICATION_SPECIALIZATIONS.STATUS"
-  comment: "Scheme: NHNCK.APPLICATION_SPECIALIZATIONS.STATUS."
-  classification_context: "NHNCK.APPLICATION_SPECIALIZATIONS.STATUS"
+  comment: "SCHEMA_CODE=NHNCK.APPLICATION_SPECIALIZATIONS.STATUS"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application_education_certificate_document"
   atomic_column: "status_code"
@@ -23320,7 +23317,7 @@ attributes:
   source_column: "NHNCK.APPLICATION_RE_EXAMS.APPLICATION_ID"
   comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL crosswalk\
     \ sang NHNCK.APPLICATIONS: APPLICATION_RE_EXAMS.APPLICATION_ID = APPLICATIONS.ID\
-    \ để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK.APPLICATIONS', APPLICATION_CODE)\
+    \ để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS', APPLICATION_CODE)\
     \ | Trước đây hash trực tiếp theo APPLICATION_ID (ID kỹ thuật) gây sai lệch với\
     \ Id của bảng main (hash từ APPLICATION_CODE) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
@@ -23338,10 +23335,10 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_RE_EXAMS"
   source_column: "NHNCK.APPLICATIONS.APPLICATION_CODE"
-  comment: "Lookup pair: Securities Practitioner License Application.Securities Practitioner\
-    \ License Application Code. Pair with Securities Practitioner License Application\
-    \ Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE sau ETL crosswalk — chi\
-    \ tiết xem comment Securities Practitioner License Application Id."
+  comment: "Lookup pair: sp_license_application.sp_license_application_code. Pair\
+    \ with Securities Practitioner License Application Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE\
+    \ sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Application\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application_re_exam_request"
@@ -23358,9 +23355,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_RE_EXAMS"
   source_column: "NHNCK.APPLICATION_RE_EXAMS.EXAM_DETAIL_ID"
-  comment: "FK target: Securities Practitioner Qualification Examination Assessment\
-    \ Result.Securities Practitioner Qualification Examination Assessment Result Id.\
-    \ Hash: hash_id('NHNCK.EXAM_DETAILS', EXAM_DETAIL_ID)."
+  comment: "FK target: sp_qualification_examination_assessment_result.sp_qualification_examination_assessment_result_id.\
+    \ Hash: hash_id('NHNCK_EXAM_DETAILS', EXAM_DETAIL_ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application_re_exam_request"
@@ -23377,8 +23373,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_RE_EXAMS"
   source_column: "NHNCK.APPLICATION_RE_EXAMS.EXAM_DETAIL_ID"
-  comment: "Lookup pair: Securities Practitioner Qualification Examination Assessment\
-    \ Result.Securities Practitioner Qualification Examination Assessment Result Code.\
+  comment: "Lookup pair: sp_qualification_examination_assessment_result.sp_qualification_examination_assessment_result_code.\
     \ Pair with Securities Practitioner Qualification Examination Assessment Result\
     \ Id."
   classification_context: null
@@ -23398,7 +23393,7 @@ attributes:
   source_column: "NHNCK.APPLICATION_RE_EXAMS.RE_APPLICATION_ID"
   comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL crosswalk\
     \ sang NHNCK.APPLICATIONS: APPLICATION_RE_EXAMS.RE_APPLICATION_ID = APPLICATIONS.ID\
-    \ để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK.APPLICATIONS', APPLICATION_CODE)\
+    \ để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS', APPLICATION_CODE)\
     \ | Trước đây hash trực tiếp theo RE_APPLICATION_ID (ID kỹ thuật) gây sai lệch\
     \ với Id của bảng main (hash từ APPLICATION_CODE) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
@@ -23416,10 +23411,10 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_RE_EXAMS"
   source_column: "NHNCK.APPLICATIONS.APPLICATION_CODE"
-  comment: "Lookup pair: Securities Practitioner License Application.Securities Practitioner\
-    \ License Application Code. Pair with Re-Exam Securities Practitioner License\
-    \ Application Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE sau ETL crosswalk\
-    \ — chi tiết xem comment Re-Exam Securities Practitioner License Application Id."
+  comment: "Lookup pair: sp_license_application.sp_license_application_code. Pair\
+    \ with Re-Exam Securities Practitioner License Application Id. Giá trị lấy từ\
+    \ NHNCK.APPLICATIONS.APPLICATION_CODE sau ETL crosswalk — chi tiết xem comment\
+    \ Re-Exam Securities Practitioner License Application Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application_re_exam_request"
@@ -23435,8 +23430,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_RE_EXAMS"
   source_column: "NHNCK.APPLICATION_RE_EXAMS.STATUS"
-  comment: "Scheme: NHNCK.APPLICATION_RE_EXAMS.STATUS."
-  classification_context: "NHNCK.APPLICATION_RE_EXAMS.STATUS"
+  comment: "SCHEMA_CODE=NHNCK.APPLICATION_RE_EXAMS.STATUS"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application_re_exam_request"
   atomic_column: "status_code"
@@ -23451,7 +23446,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "CERTIFICATE_RECORDS"
   source_column: null
-  comment: "PK surrogate. Hash: hash_id('NHNCK.CERTIFICATE_RECORDS', CERTIFICATE_NUMBER).\
+  comment: "PK surrogate. Hash: hash_id('NHNCK_CERTIFICATE_RECORDS', CERTIFICATE_NUMBER).\
     \ Sửa 2026-08-15: trước đây hash từ ID kỹ thuật, sai lệch với chính Code (CERTIFICATE_NUMBER)\
     \ của entity — gây mismatch cho FK downstream tham chiếu entity này."
   classification_context: null
@@ -23504,7 +23499,7 @@ attributes:
   source_column: "NHNCK.CERTIFICATE_RECORDS.CERTIFICATE_ID"
   comment: "FK target: sp_license_certificate_type.sp_license_certificate_tp_id. Cần\
     \ ETL crosswalk sang NHNCK.CERTIFICATES: CERTIFICATE_RECORDS.CERTIFICATE_ID =\
-    \ CERTIFICATES.ID để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK.CERTIFICATES',\
+    \ CERTIFICATES.ID để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK_CERTIFICATES',\
     \ CERTIFICATE_CODE) | Trước đây hash trực tiếp theo CERTIFICATE_ID (ID kỹ thuật)\
     \ gây sai lệch với Id của bảng main (hash từ CERTIFICATE_CODE) — đã sửa sang crosswalk\
     \ 2026-07-27."
@@ -23542,7 +23537,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "CERTIFICATE_RECORDS"
   source_column: "NHNCK.CERTIFICATE_RECORDS.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+  comment: "FK target: securities_practitioner.sp_id. Hash: hash_id('NHNCK_PROFESSIONALS',\
     \ PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
@@ -23559,8 +23554,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "CERTIFICATE_RECORDS"
   source_column: "NHNCK.CERTIFICATE_RECORDS.PROFESSIONAL_ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Securities Practitioner Id."
+  comment: "Lookup pair: securities_practitioner.sp_code. Pair with Securities Practitioner\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_certificate_document"
@@ -23578,7 +23573,7 @@ attributes:
   source_column: "NHNCK.CERTIFICATE_RECORDS.ISSUE_DECISION_ID"
   comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
     \ Cần ETL crosswalk sang NHNCK.DECISIONS: CERTIFICATE_RECORDS.ISSUE_DECISION_ID\
-    \ = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK.DECISIONS',\
+    \ = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS',\
     \ DECISION_NUMBER) | Trước đây hash trực tiếp theo ISSUE_DECISION_ID (ID kỹ thuật)\
     \ gây sai lệch với Id của bảng main (hash từ DECISION_NUMBER) — đã sửa sang crosswalk\
     \ 2026-08-14."
@@ -23619,7 +23614,7 @@ attributes:
   source_column: "NHNCK.CERTIFICATE_RECORDS.REVOCATION_DECISION_ID"
   comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
     \ Cần ETL crosswalk sang NHNCK.DECISIONS: CERTIFICATE_RECORDS.REVOCATION_DECISION_ID\
-    \ = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK.DECISIONS',\
+    \ = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS',\
     \ DECISION_NUMBER) | Trước đây hash trực tiếp theo REVOCATION_DECISION_ID (ID\
     \ kỹ thuật) gây sai lệch với Id của bảng main (hash từ DECISION_NUMBER) — đã sửa\
     \ sang crosswalk 2026-08-14."
@@ -23661,7 +23656,7 @@ attributes:
   source_column: "NHNCK.CERTIFICATE_RECORDS.CANCELLATION_DECISION_ID"
   comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
     \ Cần ETL crosswalk sang NHNCK.DECISIONS: CERTIFICATE_RECORDS.CANCELLATION_DECISION_ID\
-    \ = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK.DECISIONS',\
+    \ = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS',\
     \ DECISION_NUMBER) | Trước đây hash trực tiếp theo CANCELLATION_DECISION_ID (ID\
     \ kỹ thuật) gây sai lệch với Id của bảng main (hash từ DECISION_NUMBER) — đã sửa\
     \ sang crosswalk 2026-08-14."
@@ -23781,8 +23776,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "CERTIFICATE_RECORDS"
   source_column: "NHNCK.CERTIFICATE_RECORDS.PROCESS_STATUS"
-  comment: "Scheme: NHNCK.CERTIFICATE_RECORDS.PROCESS_STATUS."
-  classification_context: "NHNCK.CERTIFICATE_RECORDS.PROCESS_STATUS"
+  comment: "SCHEMA_CODE=NHNCK.CERTIFICATE_RECORDS.PROCESS_STATUS"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_certificate_document"
   atomic_column: "process_status_code"
@@ -23814,8 +23809,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "CERTIFICATE_RECORDS"
   source_column: "NHNCK.CERTIFICATE_RECORDS.CONVERSION_STATUS"
-  comment: "Scheme: NHNCK.CERTIFICATE_RECORDS.CONVERSION_STATUS."
-  classification_context: "NHNCK.CERTIFICATE_RECORDS.CONVERSION_STATUS"
+  comment: "SCHEMA_CODE=NHNCK.CERTIFICATE_RECORDS.CONVERSION_STATUS"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_certificate_document"
   atomic_column: "conversion_status_code"
@@ -23846,8 +23841,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "CERTIFICATE_RECORDS"
   source_column: "NHNCK.CERTIFICATE_RECORDS.STATUS"
-  comment: "Scheme: NHNCK.CERTIFICATE_RECORDS.STATUS."
-  classification_context: "NHNCK.CERTIFICATE_RECORDS.STATUS"
+  comment: "SCHEMA_CODE=NHNCK.CERTIFICATE_RECORDS.STATUS"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_certificate_document"
   atomic_column: "status_code"
@@ -23862,7 +23857,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "CERTIFICATES"
   source_column: null
-  comment: "PK surrogate. Hash: hash_id('NHNCK.CERTIFICATES', CERTIFICATE_CODE). BCV:\
+  comment: "PK surrogate. Hash: hash_id('NHNCK_CERTIFICATES', CERTIFICATE_CODE). BCV:\
     \ [Documentation] Gov. Registration Document."
   classification_context: null
   etl_derived_value: null
@@ -24001,7 +23996,7 @@ attributes:
   source_column: "NHNCK.CERTIFICATE_SPECIALIZATIONS.CERTIFICATE_ID"
   comment: "FK target: sp_license_certificate_type.sp_license_certificate_tp_id. Cần\
     \ ETL crosswalk sang NHNCK.CERTIFICATES: CERTIFICATE_SPECIALIZATIONS.CERTIFICATE_ID\
-    \ = CERTIFICATES.ID để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK.CERTIFICATES',\
+    \ = CERTIFICATES.ID để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK_CERTIFICATES',\
     \ CERTIFICATE_CODE). Composite PK cùng Specialization Code."
   classification_context: null
   etl_derived_value: null
@@ -24039,9 +24034,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "CERTIFICATE_SPECIALIZATIONS"
   source_column: "NHNCK.SPECIALIZATIONS.SPECIALIZATION_CODE"
-  comment: "Scheme: SCHEMA_CODE. Cần ETL crosswalk sang NHNCK.SPECIALIZATIONS: CERTIFICATE_SPECIALIZATIONS.SPECIALIZATION_ID\
-    \ = SPECIALIZATIONS.ID để lấy SPECIALIZATION_CODE."
-  classification_context: "SCHEMA_CODE=NHNCK.SPECIALIZATIONS"
+  comment: "SCHEMA_CODE=NHNCK.SPECIALIZATIONS"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_certificate_type_x_cl_specialization_relationship"
   atomic_column: "specialization_code"
@@ -24057,8 +24051,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "CERTIFICATE_SPECIALIZATIONS"
   source_column: "NHNCK.CERTIFICATE_SPECIALIZATIONS.DOCUMENT_TYPE"
-  comment: "Scheme: NHNCK.CERTIFICATE_SPECIALIZATIONS.DOCUMENT_TYPE."
-  classification_context: "NHNCK.CERTIFICATE_SPECIALIZATIONS.DOCUMENT_TYPE"
+  comment: "SCHEMA_CODE=NHNCK.CERTIFICATE_SPECIALIZATIONS.DOCUMENT_TYPE"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_certificate_type_x_cl_specialization_relationship"
   atomic_column: "document_tp_code"
@@ -24090,7 +24084,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "DECISIONS"
   source_column: null
-  comment: "PK surrogate. Hash: hash_id('NHNCK.DECISIONS', DECISION_NUMBER)."
+  comment: "PK surrogate. Hash: hash_id('NHNCK_DECISIONS', DECISION_NUMBER)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_decision_document"
@@ -24284,9 +24278,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "DECISIONS"
   source_column: "NHNCK.DECISIONS.DECISION_TYPE_ID"
-  comment: "Scheme: NHNCK.DECISIONS.DECISION_TYPE_ID. Values: 1=Cấp mới; 2=Thu hồi;\
-    \ 3=Cấp lại; 4=Công nhận KQ thi; 5=Xử lý vi phạm; 6=Hủy CCHN; 7=Khác."
-  classification_context: "NHNCK.DECISIONS.DECISION_TYPE_ID"
+  comment: "SCHEMA_CODE=NHNCK.DECISIONS.DECISION_TYPE_ID"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_decision_document"
   atomic_column: "decision_tp_code"
@@ -24319,7 +24312,7 @@ attributes:
   source_table: "DECISION_DOCUMENTS"
   source_column: null
   comment: "PK surrogate. BCV: \"Gov. Registration Document\" (Documentation). Hash:\
-    \ hash_id('NHNCK.DECISION_DOCUMENTS', ID)."
+    \ hash_id('NHNCK_DECISION_DOCUMENTS', ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_decision_document_attachment"
@@ -24370,7 +24363,7 @@ attributes:
   source_column: "NHNCK.DECISION_DOCUMENTS.DECISION_ID"
   comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
     \ Cần ETL crosswalk sang NHNCK.DECISIONS: DECISION_DOCUMENTS.DECISION_ID = DECISIONS.ID\
-    \ để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK.DECISIONS', DECISION_NUMBER)\
+    \ để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS', DECISION_NUMBER)\
     \ | Trước đây hash trực tiếp theo DECISION_ID (ID kỹ thuật) gây sai lệch với Id\
     \ của bảng main (hash từ DECISION_NUMBER) — đã sửa sang crosswalk 2026-08-14."
   classification_context: null
@@ -24407,9 +24400,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "DECISION_DOCUMENTS"
   source_column: "NHNCK.DECISION_DOCUMENTS.TYPE"
-  comment: "Scheme: NHNCK.DECISION_DOCUMENTS.TYPE. Chưa xác nhận giá trị cụ thể —\
-    \ cần profile dữ liệu nguồn."
-  classification_context: "NHNCK.DECISION_DOCUMENTS.TYPE"
+  comment: "SCHEMA_CODE=NHNCK.DECISION_DOCUMENTS.TYPE"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_decision_document_attachment"
   atomic_column: "attachment_tp_code"
@@ -24458,7 +24450,7 @@ attributes:
   source_column: "NHNCK.DECISION_DOCUMENTS.SIGNED_BY"
   comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
     \ Nguồn lưu NVARCHAR2(255) — giả định đã là USERNAME (không cần crosswalk qua\
-    \ USERS.ID như các FK Officer khác); hash_id('IAM.USERS', SIGNED_BY) | Chưa xác\
+    \ USERS.ID như các FK Officer khác); hash_id('IAM_USERS', SIGNED_BY) | Chưa xác\
     \ nhận value set khớp danh mục IAM.USERS, và chưa xác nhận SIGNED_BY có đúng là\
     \ USERNAME hay tên hiển thị tự do — cần profile dữ liệu trước go-live."
   classification_context: null
@@ -24510,8 +24502,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "DECISION_DOCUMENTS"
   source_column: "NHNCK.DECISION_DOCUMENTS.STATUS"
-  comment: "Scheme: NHNCK.DECISION_DOCUMENTS.STATUS."
-  classification_context: "NHNCK.DECISION_DOCUMENTS.STATUS"
+  comment: "SCHEMA_CODE=NHNCK.DECISION_DOCUMENTS.STATUS"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_decision_document_attachment"
   atomic_column: "status_code"
@@ -24526,7 +24518,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "ORGANIZATION_REPORT_YEARLYS"
   source_column: null
-  comment: "PK surrogate. BCV: \"Employer Registration\" (Documentation). Hash: hash_id('NHNCK.ORGANIZATION_REPORT_YEARLYS',\
+  comment: "PK surrogate. BCV: \"Employer Registration\" (Documentation). Hash: hash_id('NHNCK_ORGANIZATION_REPORT_YEARLYS',\
     \ ID)."
   classification_context: null
   etl_derived_value: null
@@ -24577,7 +24569,7 @@ attributes:
   source_column: "NHNCK.ORGANIZATION_REPORT_YEARLYS.ORGANIZATION_ID"
   comment: "FK target: securities_organization_reference.securities_organization_reference_id.\
     \ Cần ETL crosswalk sang NHNCK.ORGANIZATIONS: ORGANIZATION_REPORT_YEARLYS.ORGANIZATION_ID\
-    \ = ORGANIZATIONS.ID để xác nhận ORGANIZATION_CODE sau đó hash_id('NHNCK.ORGANIZATIONS',\
+    \ = ORGANIZATIONS.ID để xác nhận ORGANIZATION_CODE sau đó hash_id('NHNCK_ORGANIZATIONS',\
     \ ORGANIZATION_CODE)."
   classification_context: null
   etl_derived_value: null
@@ -24644,8 +24636,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "ORGANIZATION_REPORT_YEARLYS"
   source_column: "NHNCK.ORGANIZATION_REPORT_YEARLYS.TYPE"
-  comment: "Scheme: NHNCK.ORGANIZATION_REPORT_YEARLYS.TYPE."
-  classification_context: "NHNCK.ORGANIZATION_REPORT_YEARLYS.TYPE"
+  comment: "SCHEMA_CODE=NHNCK.ORGANIZATION_REPORT_YEARLYS.TYPE"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_organization_annual_report"
   atomic_column: "rpt_tp_code"
@@ -24692,8 +24684,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "ORGANIZATION_REPORT_YEARLYS"
   source_column: "NHNCK.ORGANIZATION_REPORT_YEARLYS.STATUS"
-  comment: "Scheme: NHNCK.ORGANIZATION_REPORT_YEARLYS.STATUS."
-  classification_context: "NHNCK.ORGANIZATION_REPORT_YEARLYS.STATUS"
+  comment: "SCHEMA_CODE=NHNCK.ORGANIZATION_REPORT_YEARLYS.STATUS"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_organization_annual_report"
   atomic_column: "status_code"
@@ -24781,7 +24773,7 @@ attributes:
   source_column: "NHNCK.ORGANIZATION_REPORTS.ORGANIZATION_ID"
   comment: "FK target: securities_organization_reference.securities_organization_reference_id.\
     \ Cần ETL crosswalk sang NHNCK.ORGANIZATIONS: ORGANIZATION_REPORTS.ORGANIZATION_ID\
-    \ = ORGANIZATIONS.ID để xác nhận ORGANIZATION_CODE sau đó hash_id('NHNCK.ORGANIZATIONS',\
+    \ = ORGANIZATIONS.ID để xác nhận ORGANIZATION_CODE sau đó hash_id('NHNCK_ORGANIZATIONS',\
     \ ORGANIZATION_CODE) | Trước đây hash trực tiếp theo ORGANIZATION_ID (ID kỹ thuật)\
     \ gây sai lệch với Id của bảng main (hash từ ORGANIZATION_CODE) — đã sửa sang\
     \ crosswalk 2026-08-11."
@@ -24818,7 +24810,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "ORGANIZATION_REPORTS"
   source_column: "NHNCK.ORGANIZATION_REPORTS.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+  comment: "FK target: securities_practitioner.sp_id. Hash: hash_id('NHNCK_PROFESSIONALS',\
     \ PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
@@ -24835,8 +24827,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "ORGANIZATION_REPORTS"
   source_column: "NHNCK.ORGANIZATION_REPORTS.PROFESSIONAL_ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Securities Practitioner Id."
+  comment: "Lookup pair: securities_practitioner.sp_code. Pair with Securities Practitioner\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_organization_employment_report"
@@ -24854,7 +24846,7 @@ attributes:
   source_column: "NHNCK.ORGANIZATION_REPORTS.CERTIFICATE_RECORD_ID"
   comment: "FK target: sp_license_certificate_document.sp_license_certificate_document_id.\
     \ Cần ETL crosswalk sang NHNCK.CERTIFICATE_RECORDS: ORGANIZATION_REPORTS.CERTIFICATE_RECORD_ID\
-    \ = CERTIFICATE_RECORDS.ID để xác nhận CERTIFICATE_NUMBER sau đó hash_id('NHNCK.CERTIFICATE_RECORDS',\
+    \ = CERTIFICATE_RECORDS.ID để xác nhận CERTIFICATE_NUMBER sau đó hash_id('NHNCK_CERTIFICATE_RECORDS',\
     \ CERTIFICATE_NUMBER) | Trước đây hash trực tiếp theo CERTIFICATE_RECORD_ID (ID\
     \ kỹ thuật) gây sai lệch với Id của bảng main (hash từ CERTIFICATE_NUMBER) — đã\
     \ sửa sang crosswalk 2026-08-15."
@@ -24894,7 +24886,7 @@ attributes:
   source_column: "NHNCK.ORGANIZATION_REPORTS.CERTIFICATE_ID"
   comment: "FK target: sp_license_certificate_type.sp_license_certificate_tp_id. Cần\
     \ ETL crosswalk sang NHNCK.CERTIFICATES: ORGANIZATION_REPORTS.CERTIFICATE_ID =\
-    \ CERTIFICATES.ID để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK.CERTIFICATES',\
+    \ CERTIFICATES.ID để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK_CERTIFICATES',\
     \ CERTIFICATE_CODE) | Trước đây hash trực tiếp theo CERTIFICATE_ID (ID kỹ thuật)\
     \ gây sai lệch với Id của bảng main (hash từ CERTIFICATE_CODE) — đã sửa sang crosswalk\
     \ 2026-07-27."
@@ -24933,9 +24925,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "ORGANIZATION_REPORTS"
   source_column: "NHNCK.ORGANIZATION_REPORTS.PARENT_REPORT_ID"
-  comment: "FK target: Securities Practitioner Organization Employment Report.Securities\
-    \ Practitioner Organization Employment Report Id. Self-referencing. Hash: hash_id('NHNCK.ORGANIZATION_REPORTS',\
-    \ PARENT_REPORT_ID)."
+  comment: "FK target: sp_organization_employment_report.sp_organization_employment_rpt_id.\
+    \ Self-referencing. Hash: hash_id('NHNCK_ORGANIZATION_REPORTS', PARENT_REPORT_ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_organization_employment_report"
@@ -24952,9 +24943,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "ORGANIZATION_REPORTS"
   source_column: "NHNCK.ORGANIZATION_REPORTS.PARENT_REPORT_ID"
-  comment: "Lookup pair: Securities Practitioner Organization Employment Report.Securities\
-    \ Practitioner Organization Employment Report Code. Pair with Parent Securities\
-    \ Practitioner Organization Employment Report Id."
+  comment: "Lookup pair: sp_organization_employment_report.sp_organization_employment_rpt_code.\
+    \ Pair with Parent Securities Practitioner Organization Employment Report Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_organization_employment_report"
@@ -25259,8 +25249,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "ORGANIZATION_REPORTS"
   source_column: "NHNCK.ORGANIZATION_REPORTS.STATUS_ORGANIZATION"
-  comment: "Scheme: NHNCK.ORGANIZATION_REPORTS.STATUS."
-  classification_context: "NHNCK.ORGANIZATION_REPORTS.STATUS"
+  comment: "SCHEMA_CODE=NHNCK.ORGANIZATION_REPORTS.STATUS"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_organization_employment_report"
   atomic_column: "organization_status_code_at_rpt"
@@ -25307,8 +25297,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "ORGANIZATION_REPORTS"
   source_column: "NHNCK.ORGANIZATION_REPORTS.STATUS"
-  comment: "Scheme: NHNCK.ORGANIZATION_REPORTS.STATUS."
-  classification_context: "NHNCK.ORGANIZATION_REPORTS.STATUS"
+  comment: "SCHEMA_CODE=NHNCK.ORGANIZATION_REPORTS.STATUS"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_organization_employment_report"
   atomic_column: "status_code"
@@ -25324,10 +25314,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "ORGANIZATION_REPORTS"
   source_column: "NHNCK.ORGANIZATION_REPORTS.TYPE"
-  comment: "Scheme: NHNCK.ORGANIZATION_REPORTS.TYPE. Nguồn lưu dạng NUMBER — ETL convert\
-    \ sang string. Giá trị scheme chưa xác định — cần profile dữ liệu thực tế để liệt\
-    \ kê đủ giá trị (tương tự Violation Type Code trên lld_NHNCK_VIOLATIONS.yaml)."
-  classification_context: "NHNCK.ORGANIZATION_REPORTS.TYPE"
+  comment: "SCHEMA_CODE=NHNCK.ORGANIZATION_REPORTS.TYPE"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_organization_employment_report"
   atomic_column: "rpt_tp_code"
@@ -36543,7 +36531,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "UNITS"
   source_column: null
-  comment: "Scheme: ORGANIZATION_UNIT_TYPE. ETL-derived."
+  comment: "Scheme: ORGANIZATION_UNIT_TYPE. Hardcode."
   classification_context: "ORGANIZATION_UNIT_TYPE=UNIT"
   etl_derived_value: "UNIT"
   atomic_table: "ra_organization_unit"
@@ -36592,7 +36580,7 @@ attributes:
   source_table: "UNITS"
   source_column: "NHNCK.UNITS.PARENT_ID"
   comment: "FK target: ra_organization_unit.ra_ou_id. Cần ETL crosswalk sang NHNCK.UNITS:\
-    \ UNITS.PARENT_ID = UNITS.ID để xác nhận UNIT_CODE sau đó hash_id('NHNCK.UNITS',\
+    \ UNITS.PARENT_ID = UNITS.ID để xác nhận UNIT_CODE sau đó hash_id('NHNCK_UNITS',\
     \ UNIT_CODE) | Trước đây hash trực tiếp theo PARENT_ID (ID kỹ thuật) gây sai lệch\
     \ với Id của bảng main (hash từ UNIT_CODE) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
@@ -36610,10 +36598,10 @@ attributes:
   source_system: "NHNCK"
   source_table: "UNITS"
   source_column: "NHNCK.UNITS.UNIT_CODE"
-  comment: "Lookup pair: Regulatory Authority Organization Unit.Regulatory Authority\
-    \ Organization Unit Code. Pair with Parent Regulatory Authority Organization Unit\
-    \ Id. Giá trị lấy từ NHNCK.UNITS.UNIT_CODE sau ETL crosswalk — chi tiết xem comment\
-    \ Parent Regulatory Authority Organization Unit Id."
+  comment: "Lookup pair: ra_organization_unit.ra_ou_code. Pair with Parent Regulatory\
+    \ Authority Organization Unit Id. Giá trị lấy từ NHNCK.UNITS.UNIT_CODE sau ETL\
+    \ crosswalk — chi tiết xem comment Parent Regulatory Authority Organization Unit\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "ra_organization_unit"
@@ -36694,7 +36682,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "DEPARTMENTS"
   source_column: null
-  comment: "Scheme: ORGANIZATION_UNIT_TYPE. ETL-derived."
+  comment: "Scheme: ORGANIZATION_UNIT_TYPE. Hardcode."
   classification_context: "ORGANIZATION_UNIT_TYPE=DEPARTMENT"
   etl_derived_value: "DEPARTMENT"
   atomic_table: "ra_organization_unit"
@@ -36743,7 +36731,7 @@ attributes:
   source_table: "DEPARTMENTS"
   source_column: "NHNCK.DEPARTMENTS.UNIT_ID"
   comment: "FK target: ra_organization_unit.ra_ou_id. Cần ETL crosswalk sang NHNCK.UNITS:\
-    \ DEPARTMENTS.UNIT_ID = UNITS.ID để xác nhận UNIT_CODE sau đó hash_id('NHNCK.UNITS',\
+    \ DEPARTMENTS.UNIT_ID = UNITS.ID để xác nhận UNIT_CODE sau đó hash_id('NHNCK_UNITS',\
     \ UNIT_CODE) | Trước đây hash trực tiếp theo UNIT_ID (ID kỹ thuật) gây sai lệch\
     \ với Id của bảng main (hash từ UNIT_CODE) — đã sửa sang crosswalk 2026-07-27.\
     \ Parent là Unit không phải Department."
@@ -36762,10 +36750,10 @@ attributes:
   source_system: "NHNCK"
   source_table: "DEPARTMENTS"
   source_column: "NHNCK.UNITS.UNIT_CODE"
-  comment: "Lookup pair: Regulatory Authority Organization Unit.Regulatory Authority\
-    \ Organization Unit Code. Pair with Parent Regulatory Authority Organization Unit\
-    \ Id. Giá trị lấy từ NHNCK.UNITS.UNIT_CODE sau ETL crosswalk — chi tiết xem comment\
-    \ Parent Regulatory Authority Organization Unit Id."
+  comment: "Lookup pair: ra_organization_unit.ra_ou_code. Pair with Parent Regulatory\
+    \ Authority Organization Unit Id. Giá trị lấy từ NHNCK.UNITS.UNIT_CODE sau ETL\
+    \ crosswalk — chi tiết xem comment Parent Regulatory Authority Organization Unit\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "ra_organization_unit"
@@ -36836,7 +36824,7 @@ attributes:
   source_column: "NHNCK.CERTIFICATE_DEPARTMENTS.DEPARTMENT_ID"
   comment: "FK target: ra_organization_unit.ra_ou_id. Cần ETL crosswalk sang NHNCK.DEPARTMENTS:\
     \ CERTIFICATE_DEPARTMENTS.DEPARTMENT_ID = DEPARTMENTS.ID để xác nhận DEPARTMENT_CODE\
-    \ sau đó hash_id('NHNCK.DEPARTMENTS', DEPARTMENT_CODE). Composite PK cùng Securities\
+    \ sau đó hash_id('NHNCK_DEPARTMENTS', DEPARTMENT_CODE). Composite PK cùng Securities\
     \ Practitioner License Certificate Type Id."
   classification_context: null
   etl_derived_value: null
@@ -36875,7 +36863,7 @@ attributes:
   source_column: "NHNCK.CERTIFICATE_DEPARTMENTS.CERTIFICATE_ID"
   comment: "FK target: sp_license_certificate_type.sp_license_certificate_tp_id. Cần\
     \ ETL crosswalk sang NHNCK.CERTIFICATES: CERTIFICATE_DEPARTMENTS.CERTIFICATE_ID\
-    \ = CERTIFICATES.ID để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK.CERTIFICATES',\
+    \ = CERTIFICATES.ID để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK_CERTIFICATES',\
     \ CERTIFICATE_CODE). Composite PK cùng Regulatory Authority Organization Unit\
     \ Id."
   classification_context: null
@@ -43728,7 +43716,7 @@ attributes:
   source_table: "ORGANIZATIONS"
   source_column: null
   comment: "PK surrogate. BCV: \"Organization\" (Involved Party). Tổ chức tham gia\
-    \ TTCK (CTCK, QLQ, NH, Khác). Hash: hash_id('NHNCK.ORGANIZATIONS', ORGANIZATION_CODE)\
+    \ TTCK (CTCK, QLQ, NH, Khác). Hash: hash_id('NHNCK_ORGANIZATIONS', ORGANIZATION_CODE)\
     \ — đổi từ hash theo ID kỹ thuật (qua Securities Organization Reference Code cũ)\
     \ sang ORGANIZATION_CODE, 2026-08-11."
   classification_context: null
@@ -43862,7 +43850,7 @@ attributes:
   source_column: "NHNCK.ORGANIZATIONS.PARENT_ID"
   comment: "FK target: securities_organization_reference.securities_organization_reference_id.\
     \ Self-referencing. Cần ETL crosswalk sang NHNCK.ORGANIZATIONS: ORGANIZATIONS.PARENT_ID\
-    \ = ORGANIZATIONS.ID để xác nhận ORGANIZATION_CODE sau đó hash_id('NHNCK.ORGANIZATIONS',\
+    \ = ORGANIZATIONS.ID để xác nhận ORGANIZATION_CODE sau đó hash_id('NHNCK_ORGANIZATIONS',\
     \ ORGANIZATION_CODE) | Trước đây hash trực tiếp theo PARENT_ID (ID kỹ thuật) gây\
     \ sai lệch với Id của bảng main (hash từ ORGANIZATION_CODE) — đã sửa sang crosswalk\
     \ 2026-08-11."
@@ -44047,9 +44035,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "ORGANIZATIONS"
   source_column: "NHNCK.ORGANIZATIONS.SYNC_STATUS"
-  comment: "Scheme: NHNCK.ORGANIZATIONS.SYNC_STATUS. Nguồn lưu dạng số (NUMBER) —\
-    \ ETL cần convert sang string."
-  classification_context: "NHNCK.ORGANIZATIONS.SYNC_STATUS"
+  comment: "SCHEMA_CODE=NHNCK.ORGANIZATIONS.SYNC_STATUS"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "securities_organization_reference"
   atomic_column: "sync_status_code"
@@ -44064,8 +44051,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "ORGANIZATIONS"
   source_column: "NHNCK.ORGANIZATIONS.STATUS"
-  comment: "Scheme: NHNCK.ORGANIZATIONS.STATUS."
-  classification_context: "NHNCK.ORGANIZATIONS.STATUS"
+  comment: "SCHEMA_CODE=NHNCK.ORGANIZATIONS.STATUS"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "securities_organization_reference"
   atomic_column: "status_code"
@@ -44192,8 +44179,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONALS"
   source_column: "NHNCK.PROFESSIONALS.GENDER"
-  comment: "Scheme: GENDER. Nguồn lưu NUMBER — ETL convert sang code."
-  classification_context: "GENDER"
+  comment: "SCHEMA_CODE=GENDER"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "securities_practitioner"
   atomic_column: "gender_code"
@@ -44208,8 +44195,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONALS"
   source_column: "NHNCK.PROFESSIONALS.EDUCATION_LEVEL_ID"
-  comment: "Scheme: EDUCATIONAL_LEVEL. Nguồn lưu FK số — ETL lookup convert sang code."
-  classification_context: "EDUCATIONAL_LEVEL"
+  comment: "SCHEMA_CODE=EDUCATIONAL_LEVEL"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "securities_practitioner"
   atomic_column: "education_level_code"
@@ -44224,9 +44211,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONALS"
   source_column: "NHNCK.PROFESSIONALS.REGISTRATION_TYPE"
-  comment: "Scheme: NHNCK.APPLICATIONS.REGISTRATION_TYPE. Nguồn lưu NUMBER — ETL convert\
-    \ sang code."
-  classification_context: "NHNCK.APPLICATIONS.REGISTRATION_TYPE"
+  comment: "SCHEMA_CODE=NHNCK.APPLICATIONS.REGISTRATION_TYPE"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "securities_practitioner"
   atomic_column: "practitioner_registration_tp_code"
@@ -44241,9 +44227,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONALS"
   source_column: "NHNCK.PROFESSIONALS.STATUS_WORK"
-  comment: "Scheme: NHNCK.PROFESSIONALS.STATUS_WORK. Nguồn: 0=Chưa HN / 1=Đang HN\
-    \ / 2=Thu hồi có cấp lại / 3=Thu hồi không cấp lại / 4=Cấp có thời hạn."
-  classification_context: "NHNCK.PROFESSIONALS.STATUS_WORK"
+  comment: "SCHEMA_CODE=NHNCK.PROFESSIONALS.STATUS_WORK"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "securities_practitioner"
   atomic_column: "practice_status_code"
@@ -44258,9 +44243,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONALS"
   source_column: "NHNCK.PROFESSIONALS.STATUS_ACCOUNT"
-  comment: "Scheme: NHNCK.PROFESSIONALS.STATUS_ACCOUNT. Reuse — 0=Chưa kích hoạt /\
-    \ 1=Hoạt động / 2=Khóa."
-  classification_context: "NHNCK.PROFESSIONALS.STATUS_ACCOUNT"
+  comment: "SCHEMA_CODE=NHNCK.PROFESSIONALS.STATUS_ACCOUNT"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "securities_practitioner"
   atomic_column: "account_status_code"
@@ -44277,7 +44261,7 @@ attributes:
   source_column: "NHNCK.PROFESSIONALS.ORGANIZATION_ID"
   comment: "FK target: securities_organization_reference.securities_organization_reference_id.\
     \ Cần ETL crosswalk sang NHNCK.ORGANIZATIONS: PROFESSIONALS.ORGANIZATION_ID =\
-    \ ORGANIZATIONS.ID để xác nhận ORGANIZATION_CODE sau đó hash_id('NHNCK.ORGANIZATIONS',\
+    \ ORGANIZATIONS.ID để xác nhận ORGANIZATION_CODE sau đó hash_id('NHNCK_ORGANIZATIONS',\
     \ ORGANIZATION_CODE) | Nullable — người hành nghề có thể chưa công tác. Trước\
     \ đây hash trực tiếp theo ORGANIZATION_ID (ID kỹ thuật) gây sai lệch với Id của\
     \ bảng main (hash từ ORGANIZATION_CODE) — đã sửa sang crosswalk 2026-08-11."
@@ -44316,7 +44300,7 @@ attributes:
   source_column: "NHNCK.PROFESSIONALS.NATIONALITY_ID"
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'COUNTRY'). Cần ETL crosswalk sang NHNCK.COUNTRIES: PROFESSIONALS.NATIONALITY_ID\
-    \ = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT.COUNTRY', COUNTRY_CODE)\
+    \ = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT_COUNTRY', COUNTRY_CODE)\
     \ | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
@@ -44333,7 +44317,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONALS"
   source_column: "NHNCK.COUNTRIES.COUNTRY_CODE"
-  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT). Pair with\
+  comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with\
     \ Nationality Id. Giá trị lấy từ NHNCK.COUNTRIES.COUNTRY_CODE sau ETL crosswalk\
     \ — chi tiết xem comment Nationality Id."
   classification_context: null
@@ -44498,7 +44482,7 @@ attributes:
   source_column: "NHNCK.PROFESSIONALS.PLACE_OF_BIRTH_COUNTRY_ID"
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'COUNTRY'). Cần ETL crosswalk sang NHNCK.COUNTRIES: PROFESSIONALS.PLACE_OF_BIRTH_COUNTRY_ID\
-    \ = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT.COUNTRY', COUNTRY_CODE)\
+    \ = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT_COUNTRY', COUNTRY_CODE)\
     \ | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
@@ -44535,7 +44519,7 @@ attributes:
   source_column: "NHNCK.PROFESSIONALS.PLACE_OF_BIRTH_PROVINCE_ID"
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'PROVINCE'). Cần ETL crosswalk sang NHNCK.PROVINCES: PROFESSIONALS.PLACE_OF_BIRTH_PROVINCE_ID\
-    \ = PROVINCES.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT.PROVINCE_NEW',\
+    \ = PROVINCES.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT_PROVINCE_NEW',\
     \ PROVINCE_CODE) | NHNCK.PROVINCES ngừng thiết kế Atomic entity riêng — chỉ dùng\
     \ để crosswalk. Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu\
     \ trước go-live."
@@ -44574,7 +44558,7 @@ attributes:
   source_column: "NHNCK.PROFESSIONALS.PLACE_OF_BIRTH_DISTRICT_ID"
   comment: "FK target: geographic_area_old.geographic_area_old_id (geographic_area_old_tp_code\
     \ = 'DISTRICT_OLD'). Cần ETL crosswalk sang NHNCK.DISTRICTS: PROFESSIONALS.PLACE_OF_BIRTH_DISTRICT_ID\
-    \ = DISTRICTS.ID để xác nhận DISTRICT_CODE sau đó hash_id('ECAT.DISTRICT_OLD',\
+    \ = DISTRICTS.ID để xác nhận DISTRICT_CODE sau đó hash_id('ECAT_DISTRICT_OLD',\
     \ DISTRICT_CODE) | ĐỔI TARGET — cấp quận/huyện đã bị loại bỏ trong cấu trúc địa\
     \ giới hiện hành post-sáp nhập 2025; ECAT chỉ còn lưu ở Geographic Area Old. NHNCK.DISTRICTS\
     \ ngừng thiết kế Atomic entity riêng — chỉ dùng để crosswalk. Chưa xác nhận value\
@@ -44612,8 +44596,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONALS"
   source_column: "NHNCK.PROFESSIONALS.SSO_SYNCED"
-  comment: "Scheme: NHNCK.PROFESSIONALS.SSO_SYNCED."
-  classification_context: "NHNCK.PROFESSIONALS.SSO_SYNCED"
+  comment: "SCHEMA_CODE=NHNCK.PROFESSIONALS.SSO_SYNCED"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "securities_practitioner"
   atomic_column: "sso_sync_status_code"
@@ -44630,7 +44614,7 @@ attributes:
   source_column: "NHNCK.PROFESSIONALS.SSO_USER_ID"
   comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
     \ Cần ETL crosswalk sang NHNCK.USERS: PROFESSIONALS.SSO_USER_ID = USERS.ID để\
-    \ xác nhận USERNAME sau đó hash_id('IAM.USERS', USERNAME) | Chưa xác nhận value\
+    \ xác nhận USERNAME sau đó hash_id('IAM_USERS', USERNAME) | Chưa xác nhận value\
     \ set khớp danh mục IAM.USERS — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
@@ -44666,8 +44650,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONALS"
   source_column: "NHNCK.PROFESSIONALS.STATUS"
-  comment: "Scheme: NHNCK.PROFESSIONALS.STATUS."
-  classification_context: "NHNCK.PROFESSIONALS.STATUS"
+  comment: "SCHEMA_CODE=NHNCK.PROFESSIONALS.STATUS"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "securities_practitioner"
   atomic_column: "status_code"
@@ -44731,7 +44715,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONAL_WORK_HISTORIES"
   source_column: "NHNCK.PROFESSIONAL_WORK_HISTORIES.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+  comment: "FK target: securities_practitioner.sp_id. Hash: hash_id('NHNCK_PROFESSIONALS',\
     \ PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
@@ -44748,8 +44732,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONAL_WORK_HISTORIES"
   source_column: "NHNCK.PROFESSIONAL_WORK_HISTORIES.PROFESSIONAL_ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Securities Practitioner Id."
+  comment: "Lookup pair: securities_practitioner.sp_code. Pair with Securities Practitioner\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_employment_status"
@@ -44768,7 +44752,7 @@ attributes:
   source_column: "NHNCK.PROFESSIONAL_WORK_HISTORIES.ORGANIZATION_ID"
   comment: "FK target: securities_organization_reference.securities_organization_reference_id.\
     \ Cần ETL crosswalk sang NHNCK.ORGANIZATIONS: PROFESSIONAL_WORK_HISTORIES.ORGANIZATION_ID\
-    \ = ORGANIZATIONS.ID để xác nhận ORGANIZATION_CODE sau đó hash_id('NHNCK.ORGANIZATIONS',\
+    \ = ORGANIZATIONS.ID để xác nhận ORGANIZATION_CODE sau đó hash_id('NHNCK_ORGANIZATIONS',\
     \ ORGANIZATION_CODE) | Trước đây hash trực tiếp theo ORGANIZATION_ID (ID kỹ thuật)\
     \ gây sai lệch với Id của bảng main (hash từ ORGANIZATION_CODE) — đã sửa sang\
     \ crosswalk 2026-08-11."
@@ -44872,9 +44856,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONAL_WORK_HISTORIES"
   source_column: "NHNCK.PROFESSIONAL_WORK_HISTORIES.POSITION_ID"
-  comment: "Scheme: POSITION. Nguồn lưu FK NUMBER đến bảng POSITIONS — ETL cần lookup\
-    \ và convert sang string code."
-  classification_context: "POSITION"
+  comment: "SCHEMA_CODE=POSITION"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_employment_status"
   atomic_column: "position_code"
@@ -44985,7 +44968,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONAL_HISTORIES"
   source_column: "NHNCK.PROFESSIONAL_HISTORIES.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+  comment: "FK target: securities_practitioner.sp_id. Hash: hash_id('NHNCK_PROFESSIONALS',\
     \ PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
@@ -45002,8 +44985,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONAL_HISTORIES"
   source_column: "NHNCK.PROFESSIONAL_HISTORIES.PROFESSIONAL_ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Securities Practitioner Id."
+  comment: "Lookup pair: securities_practitioner.sp_code. Pair with Securities Practitioner\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_reason_change_history"
@@ -45101,7 +45084,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONAL_RELATIONSHIPS"
   source_column: "NHNCK.PROFESSIONAL_RELATIONSHIPS.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+  comment: "FK target: securities_practitioner.sp_id. Hash: hash_id('NHNCK_PROFESSIONALS',\
     \ PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
@@ -45118,8 +45101,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONAL_RELATIONSHIPS"
   source_column: "NHNCK.PROFESSIONAL_RELATIONSHIPS.PROFESSIONAL_ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Securities Practitioner Id."
+  comment: "Lookup pair: securities_practitioner.sp_code. Pair with Securities Practitioner\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_related_party"
@@ -45135,8 +45118,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONAL_RELATIONSHIPS"
   source_column: "NHNCK.PROFESSIONAL_RELATIONSHIPS.RELATIONSHIP_TYPE"
-  comment: "Scheme: NHNCK.PROFESSIONAL_RELATIONSHIPS.RELATIONSHIP_TYPE."
-  classification_context: "NHNCK.PROFESSIONAL_RELATIONSHIPS.RELATIONSHIP_TYPE"
+  comment: "SCHEMA_CODE=NHNCK.PROFESSIONAL_RELATIONSHIPS.RELATIONSHIP_TYPE"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_related_party"
   atomic_column: "rltnp_tp_code"
@@ -45249,7 +45232,7 @@ attributes:
   source_column: "NHNCK.PROFESSIONAL_RELATIONSHIPS.COUNTRY_ID"
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'COUNTRY'). Cần ETL crosswalk sang NHNCK.COUNTRIES: PROFESSIONAL_RELATIONSHIPS.COUNTRY_ID\
-    \ = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT.COUNTRY', COUNTRY_CODE)\
+    \ = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT_COUNTRY', COUNTRY_CODE)\
     \ | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
@@ -45266,7 +45249,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONAL_RELATIONSHIPS"
   source_column: "NHNCK.COUNTRIES.COUNTRY_CODE"
-  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT). Pair with\
+  comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with\
     \ Country Id. Giá trị lấy từ NHNCK.COUNTRIES.COUNTRY_CODE sau ETL crosswalk —\
     \ chi tiết xem comment Country Id."
   classification_context: null
@@ -48510,7 +48493,7 @@ attributes:
   source_column: "NHNCK.APPLICATION_FEES.APPLICATION_ID"
   comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL crosswalk\
     \ sang NHNCK.APPLICATIONS: APPLICATION_FEES.APPLICATION_ID = APPLICATIONS.ID để\
-    \ xác nhận APPLICATION_CODE sau đó hash_id('NHNCK.APPLICATIONS', APPLICATION_CODE)\
+    \ xác nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS', APPLICATION_CODE)\
     \ | Trước đây hash trực tiếp theo APPLICATION_ID (ID kỹ thuật) gây sai lệch với\
     \ Id của bảng main (hash từ APPLICATION_CODE) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
@@ -48528,10 +48511,10 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_FEES"
   source_column: "NHNCK.APPLICATIONS.APPLICATION_CODE"
-  comment: "Lookup pair: Securities Practitioner License Application.Securities Practitioner\
-    \ License Application Code. Pair with Securities Practitioner License Application\
-    \ Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE sau ETL crosswalk — chi\
-    \ tiết xem comment Securities Practitioner License Application Id."
+  comment: "Lookup pair: sp_license_application.sp_license_application_code. Pair\
+    \ with Securities Practitioner License Application Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE\
+    \ sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Application\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application_fee"
@@ -48547,7 +48530,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_FEES"
   source_column: "NHNCK.APPLICATION_FEES.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+  comment: "FK target: securities_practitioner.sp_id. Hash: hash_id('NHNCK_PROFESSIONALS',\
     \ PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
@@ -48564,8 +48547,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_FEES"
   source_column: "NHNCK.APPLICATION_FEES.PROFESSIONAL_ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Securities Practitioner Id."
+  comment: "Lookup pair: securities_practitioner.sp_code. Pair with Securities Practitioner\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application_fee"
@@ -48581,8 +48564,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_FEES"
   source_column: "NHNCK.APPLICATION_FEES.FEE_TYPE"
-  comment: "Scheme: NHNCK.APPLICATION_FEES.FEE_TYPE."
-  classification_context: "NHNCK.APPLICATION_FEES.FEE_TYPE"
+  comment: "SCHEMA_CODE=NHNCK.APPLICATION_FEES.FEE_TYPE"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application_fee"
   atomic_column: "fee_tp_code"
@@ -48709,8 +48692,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_FEES"
   source_column: "NHNCK.APPLICATION_FEES.STATUS"
-  comment: "Scheme: NHNCK.APPLICATION_FEES.STATUS."
-  classification_context: "NHNCK.APPLICATION_FEES.STATUS"
+  comment: "SCHEMA_CODE=NHNCK.APPLICATION_FEES.STATUS"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application_fee"
   atomic_column: "status_code"
@@ -50519,7 +50502,7 @@ attributes:
   source_table: "APPLICATION_GROUP_MEMBERS"
   source_column: "NHNCK.APPLICATION_GROUP_MEMBERS.APPLICATION_GROUP_ID"
   comment: "FK target: sp_license_application_group.sp_license_application_group_id.\
-    \ Hash: hash_id('NHNCK.APPLICATION_GROUPS', APPLICATION_GROUP_ID). Composite PK\
+    \ Hash: hash_id('NHNCK_APPLICATION_GROUPS', APPLICATION_GROUP_ID). Composite PK\
     \ cùng Securities Practitioner License Application Id."
   classification_context: null
   etl_derived_value: null
@@ -50557,7 +50540,7 @@ attributes:
   source_column: "NHNCK.APPLICATION_GROUP_MEMBERS.APPLICATION_ID"
   comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL crosswalk\
     \ sang NHNCK.APPLICATIONS: APPLICATION_GROUP_MEMBERS.APPLICATION_ID = APPLICATIONS.ID\
-    \ để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK.APPLICATIONS', APPLICATION_CODE)\
+    \ để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS', APPLICATION_CODE)\
     \ | Composite PK cùng Securities Practitioner License Application Group Id."
   classification_context: null
   etl_derived_value: null
@@ -53629,7 +53612,7 @@ attributes:
   source_column: "NHNCK.CERTIFICATE_RECORD_GROUP_MEMBERS.CERTIFICATE_RECORD_ID"
   comment: "FK target: sp_license_certificate_document.sp_license_certificate_document_id.\
     \ Cần ETL crosswalk sang NHNCK.CERTIFICATE_RECORDS: CERTIFICATE_RECORD_GROUP_MEMBERS.CERTIFICATE_RECORD_ID\
-    \ = CERTIFICATE_RECORDS.ID để xác nhận CERTIFICATE_NUMBER sau đó hash_id('NHNCK.CERTIFICATE_RECORDS',\
+    \ = CERTIFICATE_RECORDS.ID để xác nhận CERTIFICATE_NUMBER sau đó hash_id('NHNCK_CERTIFICATE_RECORDS',\
     \ CERTIFICATE_NUMBER) | Trước đây hash trực tiếp theo CERTIFICATE_RECORD_ID (ID\
     \ kỹ thuật) gây sai lệch với Id của bảng main (hash từ CERTIFICATE_NUMBER) — đã\
     \ sửa sang crosswalk 2026-08-15. Composite PK cùng Securities Practitioner License\
@@ -53671,7 +53654,7 @@ attributes:
   source_table: "CERTIFICATE_RECORD_GROUP_MEMBERS"
   source_column: "NHNCK.CERTIFICATE_RECORD_GROUP_MEMBERS.CERTIFICATE_RECORD_GROUP_ID"
   comment: "FK target: sp_license_certificate_group.sp_license_certificate_group_id.\
-    \ Hash: hash_id('NHNCK.CERTIFICATE_RECORD_GROUPS', CERTIFICATE_RECORD_GROUP_ID).\
+    \ Hash: hash_id('NHNCK_CERTIFICATE_RECORD_GROUPS', CERTIFICATE_RECORD_GROUP_ID).\
     \ Composite PK cùng Securities Practitioner License Certificate Document Id."
   classification_context: null
   etl_derived_value: null
@@ -55551,13 +55534,13 @@ attributes:
   atomic_entity: "Classification Value"
   atomic_attribute: "Schema Code"
   description: "Mã loại phân loại."
-  data_domain: "Text"
+  data_domain: "Classification Value"
   nullable: false
   is_primary_key: true
   source_system: "NHNCK"
   source_table: "APPLICATION_SOURCES"
   source_column: null
-  comment: "Hardcode."
+  comment: "Scheme: NHNCK.APPLICATION_SOURCES. Hardcode."
   classification_context: null
   etl_derived_value: "NHNCK.APPLICATION_SOURCES"
   atomic_table: "cl_value"
@@ -55663,13 +55646,13 @@ attributes:
   atomic_entity: "Classification Value"
   atomic_attribute: "Schema Code"
   description: "Mã loại phân loại."
-  data_domain: "Text"
+  data_domain: "Classification Value"
   nullable: false
   is_primary_key: true
   source_system: "NHNCK"
   source_table: "APPLICATION_STATUSES"
   source_column: null
-  comment: "Hardcode."
+  comment: "Scheme: NHNCK.APPLICATION_STATUSES. Hardcode."
   classification_context: null
   etl_derived_value: "NHNCK.APPLICATION_STATUSES"
   atomic_table: "cl_value"
@@ -62910,9 +62893,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "IDENTITY_INFO_C06S"
   source_column: "NHNCK.IDENTITY_INFO_C06S.GENDER"
-  comment: "Scheme: GENDER (reuse — cùng scheme với Securities Practitioner.Gender\
-    \ Code)."
-  classification_context: "GENDER"
+  comment: "SCHEMA_CODE=GENDER"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "individual"
   atomic_column: "gender_code"
@@ -62959,9 +62941,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "IDENTITY_INFO_C06S"
   source_column: "NHNCK.IDENTITY_INFO_C06S.COUNTRY_CODE"
-  comment: "Scheme: NHNCK_C06_COUNTRY. Dữ liệu tích hợp C06 (API ngoài) — no_lookup,\
-    \ không tạo FK Geographic Area."
-  classification_context: "NHNCK_C06_COUNTRY"
+  comment: "SCHEMA_CODE=NHNCK_C06_COUNTRY"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "individual"
   atomic_column: "country_code"
@@ -62992,8 +62973,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "IDENTITY_INFO_C06S"
   source_column: "NHNCK.IDENTITY_INFO_C06S.PLACE_OF_BIRTH_COUNTRY_CODE"
-  comment: "Scheme: NHNCK_C06_COUNTRY. Dữ liệu tích hợp C06 — no_lookup."
-  classification_context: "NHNCK_C06_COUNTRY"
+  comment: "SCHEMA_CODE=NHNCK_C06_COUNTRY"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "individual"
   atomic_column: "place_of_birth_country_code"
@@ -63008,8 +62989,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "IDENTITY_INFO_C06S"
   source_column: "NHNCK.IDENTITY_INFO_C06S.PLACE_OF_BIRTH_PROVINCE_CODE"
-  comment: "Scheme: NHNCK_C06_PROVINCE. Dữ liệu tích hợp C06 — no_lookup."
-  classification_context: "NHNCK_C06_PROVINCE"
+  comment: "SCHEMA_CODE=NHNCK_C06_PROVINCE"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "individual"
   atomic_column: "place_of_birth_province_code"
@@ -63024,8 +63005,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "IDENTITY_INFO_C06S"
   source_column: "NHNCK.IDENTITY_INFO_C06S.PLACE_OF_BIRTH_DISTRICT_CODE"
-  comment: "Scheme: NHNCK_C06_DISTRICT. Dữ liệu tích hợp C06 — no_lookup."
-  classification_context: "NHNCK_C06_DISTRICT"
+  comment: "SCHEMA_CODE=NHNCK_C06_DISTRICT"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "individual"
   atomic_column: "place_of_birth_district_code"
@@ -63072,8 +63053,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "IDENTITY_INFO_C06S"
   source_column: "NHNCK.IDENTITY_INFO_C06S.FATHER_COUNTRY_CODE"
-  comment: "Scheme: NHNCK_C06_COUNTRY. Dữ liệu tích hợp C06 — no_lookup."
-  classification_context: "NHNCK_C06_COUNTRY"
+  comment: "SCHEMA_CODE=NHNCK_C06_COUNTRY"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "individual"
   atomic_column: "father_country_code"
@@ -63136,8 +63117,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "IDENTITY_INFO_C06S"
   source_column: "NHNCK.IDENTITY_INFO_C06S.MOTHER_COUNTRY_CODE"
-  comment: "Scheme: NHNCK_C06_COUNTRY. Dữ liệu tích hợp C06 — no_lookup."
-  classification_context: "NHNCK_C06_COUNTRY"
+  comment: "SCHEMA_CODE=NHNCK_C06_COUNTRY"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "individual"
   atomic_column: "mother_country_code"
@@ -63201,8 +63182,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "IDENTITY_INFO_C06S"
   source_column: "NHNCK.IDENTITY_INFO_C06S.COUPLE_COUNTRY_CODE"
-  comment: "Scheme: NHNCK_C06_COUNTRY. Dữ liệu tích hợp C06 — no_lookup."
-  classification_context: "NHNCK_C06_COUNTRY"
+  comment: "SCHEMA_CODE=NHNCK_C06_COUNTRY"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "individual"
   atomic_column: "spouse_country_code"
@@ -63251,7 +63232,7 @@ attributes:
   source_column: "NHNCK.IDENTITY_INFO_C06S.USER_UPDATED_ID"
   comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
     \ Cần ETL crosswalk sang NHNCK.USERS: IDENTITY_INFO_C06S.USER_UPDATED_ID = USERS.ID\
-    \ để xác nhận USERNAME sau đó hash_id('IAM.USERS', USERNAME) | Đây là FK xác nhận\
+    \ để xác nhận USERNAME sau đó hash_id('IAM_USERS', USERNAME) | Đây là FK xác nhận\
     \ thực (không phải suy luận) — khác với CREATED_BY/UPDATED_BY audit chung đã loại\
     \ khỏi thiết kế (xem pending_design.yaml). Chưa xác nhận value set khớp danh mục\
     \ IAM.USERS — cần profile dữ liệu trước go-live."
@@ -86483,7 +86464,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_GROUPS"
   source_column: null
-  comment: "PK surrogate. BCV: \"[Group] Group\". Hash: hash_id('NHNCK.APPLICATION_GROUPS',\
+  comment: "PK surrogate. BCV: \"[Group] Group\". Hash: hash_id('NHNCK_APPLICATION_GROUPS',\
     \ ID)."
   classification_context: null
   etl_derived_value: null
@@ -86566,7 +86547,7 @@ attributes:
   source_column: "NHNCK.APPLICATION_GROUPS.DECISION_ID"
   comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
     \ Cần ETL crosswalk sang NHNCK.DECISIONS: APPLICATION_GROUPS.DECISION_ID = DECISIONS.ID\
-    \ để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK.DECISIONS', DECISION_NUMBER)\
+    \ để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS', DECISION_NUMBER)\
     \ | Trước đây hash trực tiếp theo DECISION_ID (ID kỹ thuật) gây sai lệch với Id\
     \ của bảng main (hash từ DECISION_NUMBER) — đã sửa sang crosswalk 2026-08-14."
   classification_context: null
@@ -86668,9 +86649,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_GROUPS"
   source_column: "NHNCK.APPLICATION_GROUPS.APPLICATION_TYPE"
-  comment: "Scheme: NHNCK.APPLICATIONS.APPLICATION_TYPE. Dùng chung value set với\
-    \ NHNCK.APPLICATIONS.APPLICATION_TYPE."
-  classification_context: "NHNCK.APPLICATIONS.APPLICATION_TYPE"
+  comment: "SCHEMA_CODE=NHNCK.APPLICATIONS.APPLICATION_TYPE"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application_group"
   atomic_column: "application_tp_code"
@@ -86703,7 +86683,7 @@ attributes:
   source_column: "NHNCK.APPLICATION_GROUPS.SUBMITED_BY"
   comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
     \ Cần ETL crosswalk sang NHNCK.USERS: APPLICATION_GROUPS.SUBMITED_BY = USERS.ID\
-    \ để xác nhận USERNAME sau đó hash_id('IAM.USERS', USERNAME) | Chưa xác nhận value\
+    \ để xác nhận USERNAME sau đó hash_id('IAM_USERS', USERNAME) | Chưa xác nhận value\
     \ set khớp danh mục IAM.USERS — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
@@ -86738,8 +86718,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_GROUPS"
   source_column: "NHNCK.APPLICATION_GROUPS.STATUS"
-  comment: "Scheme: NHNCK.APPLICATION_GROUPS.STATUS."
-  classification_context: "NHNCK.APPLICATION_GROUPS.STATUS"
+  comment: "SCHEMA_CODE=NHNCK.APPLICATION_GROUPS.STATUS"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application_group"
   atomic_column: "status_code"
@@ -86754,7 +86734,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "CERTIFICATE_RECORD_GROUPS"
   source_column: null
-  comment: "PK surrogate. BCV: \"[Group] Group\". Hash: hash_id('NHNCK.CERTIFICATE_RECORD_GROUPS',\
+  comment: "PK surrogate. BCV: \"[Group] Group\". Hash: hash_id('NHNCK_CERTIFICATE_RECORD_GROUPS',\
     \ ID)."
   classification_context: null
   etl_derived_value: null
@@ -86835,9 +86815,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "CERTIFICATE_RECORD_GROUPS"
   source_column: "NHNCK.CERTIFICATE_RECORD_GROUPS.TYPE"
-  comment: "Scheme: NHNCK.CERTIFICATE_RECORD_GROUPS.TYPE. Chưa xác nhận giá trị cụ\
-    \ thể — cần profile dữ liệu nguồn."
-  classification_context: "NHNCK.CERTIFICATE_RECORD_GROUPS.TYPE"
+  comment: "SCHEMA_CODE=NHNCK.CERTIFICATE_RECORD_GROUPS.TYPE"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_certificate_group"
   atomic_column: "group_tp_code"
@@ -86854,7 +86833,7 @@ attributes:
   source_column: "NHNCK.CERTIFICATE_RECORD_GROUPS.DECISION_ID"
   comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
     \ Cần ETL crosswalk sang NHNCK.DECISIONS: CERTIFICATE_RECORD_GROUPS.DECISION_ID\
-    \ = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK.DECISIONS',\
+    \ = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS',\
     \ DECISION_NUMBER) | Trước đây hash trực tiếp theo DECISION_ID (ID kỹ thuật) gây\
     \ sai lệch với Id của bảng main (hash từ DECISION_NUMBER) — đã sửa sang crosswalk\
     \ 2026-08-14."
@@ -86956,8 +86935,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "CERTIFICATE_RECORD_GROUPS"
   source_column: "NHNCK.CERTIFICATE_RECORD_GROUPS.STATUS"
-  comment: "Scheme: NHNCK.CERTIFICATE_RECORD_GROUPS.STATUS."
-  classification_context: "NHNCK.CERTIFICATE_RECORD_GROUPS.STATUS"
+  comment: "SCHEMA_CODE=NHNCK.CERTIFICATE_RECORD_GROUPS.STATUS"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_certificate_group"
   atomic_column: "status_code"
@@ -87047,7 +87026,7 @@ attributes:
   source_column: "NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.CERTIFICATE_RECORD_ID"
   comment: "FK target: sp_license_certificate_document.sp_license_certificate_document_id.\
     \ Cần ETL crosswalk sang NHNCK.CERTIFICATE_RECORDS: CERTIFICATE_RECORD_STATUS_HISTORIES.CERTIFICATE_RECORD_ID\
-    \ = CERTIFICATE_RECORDS.ID để xác nhận CERTIFICATE_NUMBER sau đó hash_id('NHNCK.CERTIFICATE_RECORDS',\
+    \ = CERTIFICATE_RECORDS.ID để xác nhận CERTIFICATE_NUMBER sau đó hash_id('NHNCK_CERTIFICATE_RECORDS',\
     \ CERTIFICATE_NUMBER) | Trước đây hash trực tiếp theo CERTIFICATE_RECORD_ID (ID\
     \ kỹ thuật) gây sai lệch với Id của bảng main (hash từ CERTIFICATE_NUMBER) — đã\
     \ sửa sang crosswalk 2026-08-15."
@@ -87102,12 +87081,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "CERTIFICATE_RECORD_STATUS_HISTORIES"
   source_column: "NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.OLD_STATUS"
-  comment: "Scheme: CERTIFICATE_STATUS. Nguồn: 0=Chưa sử dụng, 1=Đang sử dụng, 2=Thu\
-    \ hồi có cấp lại, 3=Thu hồi không cấp lại, 4=Đã hủy, 5=Hết hiệu lực. Khác với\
-    \ STATUS (RECORD_STATUS đổi tên) trên CERTIFICATE_RECORDS — cột đó bị loại trừ\
-    \ theo chính sách Data Modeler (2026-07-07, xem pending_design.yaml), không liên\
-    \ quan đến scheme 6 giá trị này."
-  classification_context: "CERTIFICATE_STATUS"
+  comment: "SCHEMA_CODE=NHNCK.CERTIFICATE_RECORDS.STATUS"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_certificate_status_change_history"
   atomic_column: "old_certificate_status_code"
@@ -87122,9 +87097,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "CERTIFICATE_RECORD_STATUS_HISTORIES"
   source_column: "NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.NEW_STATUS"
-  comment: "Scheme: CERTIFICATE_STATUS. Cùng bảng giá trị với Old Certificate Status\
-    \ Code."
-  classification_context: "CERTIFICATE_STATUS"
+  comment: "SCHEMA_CODE=NHNCK.CERTIFICATE_RECORDS.STATUS"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_certificate_status_change_history"
   atomic_column: "new_certificate_status_code"
@@ -87141,7 +87115,7 @@ attributes:
   source_column: "NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.DECISION_ID"
   comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
     \ Cần ETL crosswalk sang NHNCK.DECISIONS: CERTIFICATE_RECORD_STATUS_HISTORIES.DECISION_ID\
-    \ = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK.DECISIONS',\
+    \ = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS',\
     \ DECISION_NUMBER) | Trước đây hash trực tiếp theo DECISION_ID (ID kỹ thuật) gây\
     \ sai lệch với Id của bảng main (hash từ DECISION_NUMBER) — đã sửa sang crosswalk\
     \ 2026-08-14. Nullable — cần xác nhận có luôn gắn quyết định hay không (VD: hết\
@@ -87325,7 +87299,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "POST_CERT_TRAINING_RESULTS"
   source_column: "NHNCK.POST_CERT_TRAINING_RESULTS.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+  comment: "FK target: securities_practitioner.sp_id. Hash: hash_id('NHNCK_PROFESSIONALS',\
     \ PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
@@ -87342,8 +87316,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "POST_CERT_TRAINING_RESULTS"
   source_column: "NHNCK.POST_CERT_TRAINING_RESULTS.PROFESSIONAL_ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Securities Practitioner Id."
+  comment: "Lookup pair: securities_practitioner.sp_code. Pair with Securities Practitioner\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_post_certification_training_result"
@@ -87361,7 +87335,7 @@ attributes:
   source_column: "NHNCK.POST_CERT_TRAINING_RESULTS.TRAINING_COURSE_ID"
   comment: "FK target: sp_post_certification_training_course.sp_post_certification_training_course_id.\
     \ Cần ETL crosswalk sang NHNCK.POST_CERT_TRAINING_COURSES: POST_CERT_TRAINING_RESULTS.TRAINING_COURSE_ID\
-    \ = POST_CERT_TRAINING_COURSES.ID để xác nhận COURSE_CODE sau đó hash_id('NHNCK.POST_CERT_TRAINING_COURSES',\
+    \ = POST_CERT_TRAINING_COURSES.ID để xác nhận COURSE_CODE sau đó hash_id('NHNCK_POST_CERT_TRAINING_COURSES',\
     \ COURSE_CODE) | Trước đây hash trực tiếp theo TRAINING_COURSE_ID (ID kỹ thuật)\
     \ gây sai lệch với Id của bảng main (hash từ COURSE_CODE) — đã sửa sang crosswalk\
     \ 2026-07-27."
@@ -87380,11 +87354,11 @@ attributes:
   source_system: "NHNCK"
   source_table: "POST_CERT_TRAINING_RESULTS"
   source_column: "NHNCK.POST_CERT_TRAINING_COURSES.COURSE_CODE"
-  comment: "Lookup pair: Securities Practitioner Post Certification Training Course.Securities\
-    \ Practitioner Post Certification Training Course Code. Pair with Securities Practitioner\
-    \ Post Certification Training Course Id. Giá trị lấy từ NHNCK.POST_CERT_TRAINING_COURSES.COURSE_CODE\
-    \ sau ETL crosswalk — chi tiết xem comment Securities Practitioner Post Certification\
-    \ Training Course Id."
+  comment: "Lookup pair: sp_post_certification_training_course.sp_post_certification_training_course_code.\
+    \ Pair with Securities Practitioner Post Certification Training Course Id. Giá\
+    \ trị lấy từ NHNCK.POST_CERT_TRAINING_COURSES.COURSE_CODE sau ETL crosswalk —\
+    \ chi tiết xem comment Securities Practitioner Post Certification Training Course\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_post_certification_training_result"
@@ -87448,8 +87422,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "POST_CERT_TRAINING_RESULTS"
   source_column: "NHNCK.POST_CERT_TRAINING_RESULTS.RESULT_STATUS"
-  comment: "Scheme: NHNCK.POST_CERT_TRAINING_RESULTS.RESULT_STATUS."
-  classification_context: "NHNCK.POST_CERT_TRAINING_RESULTS.RESULT_STATUS"
+  comment: "SCHEMA_CODE=NHNCK.POST_CERT_TRAINING_RESULTS.RESULT_STATUS"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "sp_post_certification_training_result"
   atomic_column: "training_result_status_code"
@@ -91391,8 +91365,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONALS"
   source_column: "NHNCK.PROFESSIONALS.ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Shared\
-    \ entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.PROFESSIONALS', ID)."
+  comment: "FK target: securities_practitioner.sp_id. Shared entity — không có PK\
+    \ surrogate riêng. Hash: hash_id('NHNCK_PROFESSIONALS', ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "ip_alternative_identification"
@@ -91408,8 +91382,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONALS"
   source_column: "NHNCK.PROFESSIONALS.ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Involved Party Id."
+  comment: "Lookup pair: securities_practitioner.sp_code. Pair with Involved Party\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "ip_alternative_identification"
@@ -97662,8 +97636,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "IDENTITY_INFO_C06S"
   source_column: "NHNCK.IDENTITY_INFO_C06S.IDENTITY_NUMBER"
-  comment: "FK target: Individual.Individual Id. Shared entity — không có PK surrogate\
-    \ riêng. Hash: hash_id('NHNCK.IDENTITY_INFO_C06S', IDENTITY_NUMBER)."
+  comment: "FK target: individual.individual_id. Shared entity — không có PK surrogate\
+    \ riêng. Hash: hash_id('NHNCK_IDENTITY_INFO_C06S', IDENTITY_NUMBER)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "ip_alternative_identification"
@@ -97679,7 +97653,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "IDENTITY_INFO_C06S"
   source_column: "NHNCK.IDENTITY_INFO_C06S.IDENTITY_NUMBER"
-  comment: "Lookup pair: Individual.Individual Code. Pair with Involved Party Id."
+  comment: "Lookup pair: individual.individual_code. Pair with Involved Party Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "ip_alternative_identification"
@@ -97697,7 +97671,7 @@ attributes:
   source_column: null
   comment: null
   classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Identification\
-    \ Type Code = 'NATIONAL_ID'"
+    \ Type Code = 'CITIZEN_ID'"
   etl_derived_value: "NHNCK_IDENTITY_INFO_C06S"
   atomic_table: "ip_alternative_identification"
   atomic_column: "src_stm_code"
@@ -97712,11 +97686,10 @@ attributes:
   source_system: "NHNCK"
   source_table: "IDENTITY_INFO_C06S"
   source_column: null
-  comment: "Scheme: IP_ALT_ID_TYPE. Nguồn không có cột type — default NATIONAL_ID\
-    \ theo quy tắc 'Trường hợp đặc biệt'. Xem pending_design.yaml."
+  comment: "Scheme: IP_ALT_ID_TYPE."
   classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Identification\
-    \ Type Code = 'NATIONAL_ID'"
-  etl_derived_value: "NATIONAL_ID"
+    \ Type Code = 'CITIZEN_ID'"
+  etl_derived_value: "CITIZEN_ID"
   atomic_table: "ip_alternative_identification"
   atomic_column: "identification_tp_code"
   data_type: "string"
@@ -97750,7 +97723,7 @@ attributes:
   comment: "FK target: ra_organization_unit.ra_ou_id. Shared entity — không có PK\
     \ surrogate riêng. Nguồn IP Electronic Address chính là NHNCK.UNITS (cùng dòng\
     \ dữ liệu với Regulatory Authority Organization Unit, không cần crosswalk qua\
-    \ bảng khác) nên chỉ cần đổi cơ sở hash: hash_id('NHNCK.UNITS', UNIT_CODE) | Trước\
+    \ bảng khác) nên chỉ cần đổi cơ sở hash: hash_id('NHNCK_UNITS', UNIT_CODE) | Trước\
     \ đây hash trực tiếp theo ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash\
     \ từ UNIT_CODE) — đã sửa 2026-07-27."
   classification_context: "Source System Code = 'NHNCK_UNITS' | Electronic Address\
@@ -97769,8 +97742,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "UNITS"
   source_column: "NHNCK.UNITS.UNIT_CODE"
-  comment: "Lookup pair: Regulatory Authority Organization Unit.Regulatory Authority\
-    \ Organization Unit Code. Pair with Involved Party Id."
+  comment: "Lookup pair: ra_organization_unit.ra_ou_code. Pair with Involved Party\
+    \ Id."
   classification_context: "Source System Code = 'NHNCK_UNITS' | Electronic Address\
     \ Type Code = 'EMAIL'"
   etl_derived_value: null
@@ -97907,7 +97880,7 @@ attributes:
   source_table: "ORGANIZATIONS"
   source_column: "NHNCK.ORGANIZATIONS.ORGANIZATION_CODE"
   comment: "FK target: securities_organization_reference.securities_organization_reference_id.\
-    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.ORGANIZATIONS',\
+    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK_ORGANIZATIONS',\
     \ ORGANIZATION_CODE)."
   classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS' | Electronic\
     \ Address Type Code = 'EMAIL'"
@@ -98130,8 +98103,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONALS"
   source_column: "NHNCK.PROFESSIONALS.ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Shared\
-    \ entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.PROFESSIONALS', ID)."
+  comment: "FK target: securities_practitioner.sp_id. Shared entity — không có PK\
+    \ surrogate riêng. Hash: hash_id('NHNCK_PROFESSIONALS', ID)."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Electronic\
     \ Address Type Code = 'EMAIL'"
   etl_derived_value: null
@@ -98148,8 +98121,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONALS"
   source_column: "NHNCK.PROFESSIONALS.ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Involved Party Id."
+  comment: "Lookup pair: securities_practitioner.sp_code. Pair with Involved Party\
+    \ Id."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Electronic\
     \ Address Type Code = 'EMAIL'"
   etl_derived_value: null
@@ -104489,7 +104462,7 @@ attributes:
   comment: "FK target: ra_organization_unit.ra_ou_id. Shared entity — không có PK\
     \ surrogate riêng. Nguồn IP Postal Address chính là NHNCK.UNITS (cùng dòng dữ\
     \ liệu với Regulatory Authority Organization Unit, không cần crosswalk qua bảng\
-    \ khác) nên chỉ cần đổi cơ sở hash: hash_id('NHNCK.UNITS', UNIT_CODE) | Trước\
+    \ khác) nên chỉ cần đổi cơ sở hash: hash_id('NHNCK_UNITS', UNIT_CODE) | Trước\
     \ đây hash trực tiếp theo ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash\
     \ từ UNIT_CODE) — đã sửa 2026-07-27."
   classification_context: null
@@ -104507,8 +104480,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "UNITS"
   source_column: "NHNCK.UNITS.UNIT_CODE"
-  comment: "Lookup pair: Regulatory Authority Organization Unit.Regulatory Authority\
-    \ Organization Unit Code. Pair with Involved Party Id."
+  comment: "Lookup pair: ra_organization_unit.ra_ou_code. Pair with Involved Party\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "ip_postal_address"
@@ -104576,7 +104549,7 @@ attributes:
   source_table: "ORGANIZATIONS"
   source_column: "NHNCK.ORGANIZATIONS.ORGANIZATION_CODE"
   comment: "FK target: securities_organization_reference.securities_organization_reference_id.\
-    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.ORGANIZATIONS',\
+    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK_ORGANIZATIONS',\
     \ ORGANIZATION_CODE)."
   classification_context: null
   etl_derived_value: null
@@ -104661,8 +104634,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONALS"
   source_column: "NHNCK.PROFESSIONALS.ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Shared\
-    \ entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.PROFESSIONALS', ID)."
+  comment: "FK target: securities_practitioner.sp_id. Shared entity — không có PK\
+    \ surrogate riêng. Hash: hash_id('NHNCK_PROFESSIONALS', ID)."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type\
     \ Code = 'CURRENT'"
   etl_derived_value: null
@@ -104679,8 +104652,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONALS"
   source_column: "NHNCK.PROFESSIONALS.ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Involved Party Id."
+  comment: "Lookup pair: securities_practitioner.sp_code. Pair with Involved Party\
+    \ Id."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type\
     \ Code = 'CURRENT'"
   etl_derived_value: null
@@ -104734,7 +104707,7 @@ attributes:
   source_column: "NHNCK.PROFESSIONALS.CURRENT_COUNTRY_ID"
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'COUNTRY'). Cần ETL crosswalk sang NHNCK.COUNTRIES: PROFESSIONALS.CURRENT_COUNTRY_ID\
-    \ = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT.COUNTRY', COUNTRY_CODE)\
+    \ = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT_COUNTRY', COUNTRY_CODE)\
     \ | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type\
     \ Code = 'CURRENT'"
@@ -104752,7 +104725,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONALS"
   source_column: "NHNCK.COUNTRIES.COUNTRY_CODE"
-  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT). Pair with\
+  comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with\
     \ Country Id. Giá trị lấy từ NHNCK.COUNTRIES.COUNTRY_CODE sau ETL crosswalk —\
     \ chi tiết xem comment Country Id."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type\
@@ -104773,7 +104746,7 @@ attributes:
   source_column: "NHNCK.PROFESSIONALS.CURRENT_PROVINCE_ID"
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'PROVINCE'). Cần ETL crosswalk sang NHNCK.PROVINCES: PROFESSIONALS.CURRENT_PROVINCE_ID\
-    \ = PROVINCES.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT.PROVINCE_NEW',\
+    \ = PROVINCES.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT_PROVINCE_NEW',\
     \ PROVINCE_CODE) | NHNCK.PROVINCES ngừng thiết kế Atomic entity riêng — chỉ dùng\
     \ để crosswalk. Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu\
     \ trước go-live."
@@ -104793,7 +104766,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONALS"
   source_column: "NHNCK.PROVINCES.PROVINCE_CODE"
-  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT). Pair with\
+  comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with\
     \ Province Id. Giá trị lấy từ NHNCK.PROVINCES.PROVINCE_CODE sau ETL crosswalk\
     \ — chi tiết xem comment Province Id."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type\
@@ -104815,7 +104788,7 @@ attributes:
   comment: "FK target: geographic_area_old.geographic_area_old_id (geographic_area_old_tp_code\
     \ = 'DISTRICT_OLD', ĐỔI TARGET — xem District Id khối PERMANENT ở trên). Cần ETL\
     \ crosswalk sang NHNCK.DISTRICTS: PROFESSIONALS.CURRENT_DISTRICT_ID = DISTRICTS.ID\
-    \ để xác nhận DISTRICT_CODE sau đó hash_id('ECAT.DISTRICT_OLD', DISTRICT_CODE)\
+    \ để xác nhận DISTRICT_CODE sau đó hash_id('ECAT_DISTRICT_OLD', DISTRICT_CODE)\
     \ | NHNCK.DISTRICTS ngừng thiết kế Atomic entity riêng — chỉ dùng để crosswalk.\
     \ Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type\
@@ -104892,7 +104865,7 @@ attributes:
   source_column: "NHNCK.PROFESSIONALS.PERMANENT_COUNTRY_ID"
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'COUNTRY'). Cần ETL crosswalk sang NHNCK.COUNTRIES: PROFESSIONALS.PERMANENT_COUNTRY_ID\
-    \ = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT.COUNTRY', COUNTRY_CODE)\
+    \ = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT_COUNTRY', COUNTRY_CODE)\
     \ | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type\
     \ Code = 'PERMANENT'"
@@ -104931,7 +104904,7 @@ attributes:
   source_column: "NHNCK.PROFESSIONALS.PERMANENT_PROVINCE_ID"
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'PROVINCE'). Cần ETL crosswalk sang NHNCK.PROVINCES: PROFESSIONALS.PERMANENT_PROVINCE_ID\
-    \ = PROVINCES.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT.PROVINCE_NEW',\
+    \ = PROVINCES.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT_PROVINCE_NEW',\
     \ PROVINCE_CODE) | NHNCK.PROVINCES ngừng thiết kế Atomic entity riêng — chỉ dùng\
     \ để crosswalk. Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu\
     \ trước go-live."
@@ -104972,7 +104945,7 @@ attributes:
   source_column: "NHNCK.PROFESSIONALS.PERMANENT_DISTRICT_ID"
   comment: "FK target: geographic_area_old.geographic_area_old_id (geographic_area_old_tp_code\
     \ = 'DISTRICT_OLD'). Cần ETL crosswalk sang NHNCK.DISTRICTS: PROFESSIONALS.PERMANENT_DISTRICT_ID\
-    \ = DISTRICTS.ID để xác nhận DISTRICT_CODE sau đó hash_id('ECAT.DISTRICT_OLD',\
+    \ = DISTRICTS.ID để xác nhận DISTRICT_CODE sau đó hash_id('ECAT_DISTRICT_OLD',\
     \ DISTRICT_CODE) | ĐỔI TARGET — không còn Geographic Area: cấp quận/huyện đã bị\
     \ loại bỏ trong cấu trúc địa giới hiện hành (post-sáp nhập 2025); ECAT chỉ còn\
     \ lưu ở Geographic Area Old. NHNCK.DISTRICTS ngừng thiết kế Atomic entity riêng\
@@ -109937,8 +109910,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "IDENTITY_INFO_C06S"
   source_column: "NHNCK.IDENTITY_INFO_C06S.IDENTITY_NUMBER"
-  comment: "FK target: Individual.Individual Id. Shared entity — không có PK surrogate\
-    \ riêng. Hash: hash_id('NHNCK.IDENTITY_INFO_C06S', IDENTITY_NUMBER)."
+  comment: "FK target: individual.individual_id. Shared entity — không có PK surrogate\
+    \ riêng. Hash: hash_id('NHNCK_IDENTITY_INFO_C06S', IDENTITY_NUMBER)."
   classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Address\
     \ Type Code = 'CURRENT'"
   etl_derived_value: null
@@ -109955,7 +109928,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "IDENTITY_INFO_C06S"
   source_column: "NHNCK.IDENTITY_INFO_C06S.IDENTITY_NUMBER"
-  comment: "Lookup pair: Individual.Individual Code. Pair with Involved Party Id."
+  comment: "Lookup pair: individual.individual_code. Pair with Involved Party Id."
   classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Address\
     \ Type Code = 'CURRENT'"
   etl_derived_value: null
