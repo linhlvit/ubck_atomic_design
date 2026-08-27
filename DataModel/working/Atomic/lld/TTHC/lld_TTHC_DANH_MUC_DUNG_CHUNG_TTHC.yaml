@@ -2,7 +2,7 @@ schema_type: "lld_source_table"
 schema_version: "2.0"
 metadata:
   source_system: "TTHC"
-  source_table: "DANH_MUC_DUNG_CHUNG_TTHC"
+  source_table: "CL_VALUE_TTHC"
   atomic_entity: "Classification Value"
   entity_physical_name: "cl_value"
   bcv_core_object: "Common"
@@ -17,17 +17,20 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Nguồn: Orchard Core ContentItem — mỗi giá trị danh mục dùng chung là\
-    \ một ContentItem riêng. ODS DANH_MUC_DUNG_CHUNG_TTHC tổng hợp toàn bộ các\
-    \ ContentType phân loại vào một bảng. ContentType = schema_code (phân loại\
-    \ nhóm danh mục); ContentItemId = cl_code (mã giá trị, dùng làm BK trong\
-    \ các entity TTHC khác). Nguồn thực: JOIN TTHC.DOCUMENT + TTHC.CONTENTITEMINDEX\
-    \ (lọc ContentType thuộc danh sách scheme TTHC). 4 cột ds_* (ds_rcrd_st/\
-    \ ds_rcrd_eff_dt/ds_rcrd_end_dt/ds_etl_pcs_tms) không thiết kế ở đây —\
-    \ ETL job tự quản lý (SCD). Schemes sử dụng trong phân hệ TTHC:\
-    \ TRANG_THAI_HO_SO, LOAI_HO_SO, LINH_VUC_TTHC, MUC_DO_TTHC, KENH_TIEP_NHAN,\
-    \ CO_QUAN_XU_LY, LOAI_DOI_TUONG_NOP, DICH_VU_CHUYEN_PHAT, TINH_THANH,\
-    \ QUAN_HUYEN — mỗi scheme là một ContentType riêng trên Orchard Core."
+  notes: "Atomic đọc từ ODS table CL_VALUE_TTHC. ODS table được tổng hợp tại tầng\
+    \ ODS qua JOIN TTHC.DOCUMENT + TTHC.CONTENTITEMINDEX (Document.Id =\
+    \ ContentItemIndex.DocumentId), lọc ContentType thuộc danh sách 10 scheme TTHC\
+    \ — mỗi bản ghi ContentItemIndex phù hợp điều kiện lọc tương ứng một giá trị\
+    \ danh mục. Lineage cột: ContentItemIndex.ContentItemId → cl_code (BK chính,\
+    \ dùng làm FK trong các entity TTHC khác); ContentItemIndex.ContentType →\
+    \ schema_code (mã nhóm phân loại); ContentItemIndex.DisplayText → cl_nm (tên\
+    \ hiển thị tiếng Việt); Document.Content->{ContentType}->'MoTa'->'Text' →\
+    \ description (mô tả chi tiết). 4 cột ds_* (ds_rcrd_st/ds_rcrd_eff_dt/\
+    \ ds_rcrd_end_dt/ds_etl_pcs_tms) không thiết kế ở đây — ETL job tự quản lý\
+    \ (SCD). Schemes sử dụng trong phân hệ TTHC: TRANG_THAI_HO_SO, LOAI_HO_SO,\
+    \ LINH_VUC_TTHC, MUC_DO_TTHC, KENH_TIEP_NHAN, CO_QUAN_XU_LY,\
+    \ LOAI_DOI_TUONG_NOP, DICH_VU_CHUYEN_PHAT, TINH_THANH, QUAN_HUYEN — mỗi\
+    \ scheme là một ContentType riêng trên Orchard Core."
 attributes:
 - attribute_name: "Classification Code"
   physical_name: "cl_code"
@@ -37,7 +40,7 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns:
-  - "TTHC.DANH_MUC_DUNG_CHUNG_TTHC.content_item_id"
+  - "TTHC.CL_VALUE_TTHC.cl_code"
   comment: "BK chính (kết hợp Schema Code tạo BK duy nhất). Nguồn thực: ContentItemIndex.ContentItemId."
   classification_context: null
   etl_derived_value: null
@@ -50,7 +53,7 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns:
-  - "TTHC.DANH_MUC_DUNG_CHUNG_TTHC.content_type"
+  - "TTHC.CL_VALUE_TTHC.schema_code"
   comment: "BK phụ — kết hợp Schema Code + Classification Code tạo BK duy nhất.\
     \ Nguồn thực: ContentItemIndex.ContentType. Ví dụ: 'TrangThaiHoSo',\
     \ 'LoaiHoSo', 'LinhVucTTHC', 'MucDoTTHC', 'KenhTiepNhan', 'CoQuanXuLy',\
@@ -91,7 +94,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "TTHC.DANH_MUC_DUNG_CHUNG_TTHC.display_text"
+  - "TTHC.CL_VALUE_TTHC.cl_nm"
   comment: "Nguồn thực: ContentItemIndex.DisplayText."
   classification_context: null
   etl_derived_value: null
@@ -103,7 +106,8 @@ attributes:
   nullable: true
   is_primary_key: false
   status: "draft"
-  source_columns: []
+  source_columns:
+  - "TTHC.CL_VALUE_TTHC.cl_nm_english"
   comment: "Không có trong source TTHC — NULL."
   classification_context: null
   etl_derived_value: null
@@ -116,7 +120,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "TTHC.DANH_MUC_DUNG_CHUNG_TTHC.mo_ta"
+  - "TTHC.CL_VALUE_TTHC.cl_description"
   comment: "Nguồn thực: Document.Content->{ContentType}->'MoTa'->'Text'. NULL\
     \ nếu content item không có field mô tả."
   classification_context: null
