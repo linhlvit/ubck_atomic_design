@@ -236,6 +236,12 @@ Script sẽ:
 2. Render mermaid block → PNG (dùng mmdc)
 3. Build DOCX với python-docx (landscape A4, Times New Roman, bảng theo spec A.2)
 
+**Template (`--reference-doc`) áp dụng cho PTTK — thứ tự ưu tiên:**
+1. `.claude/skills/datamart-gen-docs/UBCKNN_Q5_Tai lieu phan tich thiet ke_v1.0_20260429.docx` — **bản mẫu Q5 hiện hành**, dùng cho cả `build_docx.py` (module riêng lẻ) và `build_q5_master.py` (quyển tổng)
+2. `docs/templates/sample/UBCKNN_Q5_Tai lieu phan tich thiet ke_Template.docx` — fallback nếu (1) chưa có mặt
+
+Khi thay bản mẫu Q5 mới (version mới hơn `v1.0_20260429`), copy file vào gốc thư mục skill và cập nhật tên trong `_find_reference_doc()` (`build_docx.py`) + `_TEMPLATE_CANDIDATES` (`build_q5_master.py`) — luôn chỉ giữ 1 bản hiện hành, xoá bản cũ để tránh dùng nhầm.
+
 **Nếu mmdc chưa cài:**
 ```bash
 npm install -g @mermaid-js/mermaid-cli

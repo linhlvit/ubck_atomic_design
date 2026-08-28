@@ -27,12 +27,24 @@ Yêu cầu:
 from __future__ import annotations
 
 import argparse
+import os
 import re
 import shutil
 import subprocess
 import sys
 import tempfile
+import zipfile
 from pathlib import Path
+
+# Ensure Pandoc in PATH if present in local appdata or common install locations
+pandoc_appdata = Path(os.environ.get("LOCALAPPDATA", "C:/Users/ADMIN/AppData/Local")) / "Pandoc"
+if pandoc_appdata.exists() and str(pandoc_appdata) not in os.environ.get("PATH", ""):
+    os.environ["PATH"] = str(pandoc_appdata) + os.pathsep + os.environ.get("PATH", "")
+
+# Ensure npm global binaries (mmdc) in PATH
+npm_appdata = Path(os.environ.get("APPDATA", "C:/Users/ADMIN/AppData/Roaming")) / "npm"
+if npm_appdata.exists() and str(npm_appdata) not in os.environ.get("PATH", ""):
+    os.environ["PATH"] = str(npm_appdata) + os.pathsep + os.environ.get("PATH", "")
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
@@ -152,11 +164,13 @@ def _find_reference_doc(doc_type: str, custom_ref: Path | None = None) -> Path |
         return custom_ref
 
     candidates = [
-        # 1. Thư mục reference trong skill
+        # 1. Bản mẫu Q5 hiện hành (đặt tại gốc thư mục skill) — ưu tiên cao nhất cho PTTK
+        REPO_ROOT / ".claude" / "skills" / "datamart-gen-docs" / "UBCKNN_Q5_Tai lieu phan tich thiet ke_v1.0_20260429.docx",
+        # 2. Thư mục reference trong skill
         REPO_ROOT / ".claude" / "skills" / "datamart-gen-docs" / "reference" / "UBCKNN_Q5_Tai lieu phan tich thiet ke_v1.0_20260429.docx",
         REPO_ROOT / ".claude" / "skills" / "datamart-gen-docs" / "reference" / "UBCKNN_Q5_Tai lieu phan tich thiet ke_Template.docx",
         REPO_ROOT / ".claude" / "skills" / "datamart-gen-docs" / "reference" / "UBCKNN_Thiet ke co so du lieu_Template.docx",
-        # 2. Thư mục template sample của dự án
+        # 3. Thư mục template sample của dự án (fallback)
         REPO_ROOT / "docs" / "templates" / "sample" / "UBCKNN_Q5_Tai lieu phan tich thiet ke_Template.docx",
     ]
     if doc_type.lower() == "tkcsld":
@@ -365,6 +379,24 @@ def post_process_docx(docx_path: Path, doc_type: str = "pttk") -> None:
     )
 
 
+def _sanitize_docx_package(docx_path: Path) -> None:
+    """Ensure [Content_Types].xml has required extensions (e.g. ttf, odttf) to prevent KeyError in python-docx."""
+    with zipfile.ZipFile(docx_path, "r") as zin:
+        entries = {item.filename: zin.read(item.filename) for item in zin.infolist()}
+
+    if "[Content_Types].xml" in entries:
+        ct = entries["[Content_Types].xml"].decode("utf-8")
+        dirty = False
+        if 'Extension="ttf"' not in ct and "Extension='ttf'" not in ct:
+            ct = ct.replace("</Types>", '<Default Extension="ttf" ContentType="application/x-font-ttf"/></Types>')
+            dirty = True
+        if dirty:
+            entries["[Content_Types].xml"] = ct.encode("utf-8")
+            with zipfile.ZipFile(docx_path, "w", zipfile.ZIP_DEFLATED) as zout:
+                for name, data in entries.items():
+                    zout.writestr(name, data)
+
+
 # ─── Main build ──────────────────────────────────────────────────────────────
 
 def build(module: str, doc_type: str, reference_doc: Path | None = None) -> Path:
@@ -420,6 +452,9 @@ def build(module: str, doc_type: str, reference_doc: Path | None = None) -> Path
         raise SystemExit(f"ERROR Pandoc:\n{result.stderr}")
     if result.stderr:
         print(result.stderr, file=sys.stderr)
+
+    # Bước 4.5: sanitize [Content_Types].xml nếu có embedded fonts từ template
+    _sanitize_docx_package(tmp_docx)
 
     # Bước 5: post-process
     post_process_docx(tmp_docx, doc_type=doc_type)
