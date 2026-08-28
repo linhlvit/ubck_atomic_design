@@ -1,6 +1,6 @@
 """Script cập nhật trực tiếp 10 phân hệ Datamart vào tài liệu chuẩn UBCKNN Q5
 (UBCKNN_Q5_Tai lieu phan tich thiet ke_v1.0_20260429.docx) bảo toàn 100% template,
-bìa, chữ ký, kiến trúc hệ thống, API, Web App mockup và styling.
+bìa, chữ ký, kiến trúc hệ thống, API, Web App mockup và styling chuẩn mực.
 """
 
 from __future__ import annotations
@@ -12,11 +12,12 @@ import subprocess
 import sys
 import tempfile
 from pathlib import Path
-from concurrent.futures import ThreadPoolExecutor
 
 import docx
 from docx.enum.text import WD_ALIGN_PARAGRAPH
-from docx.shared import Inches, Pt
+from docx.oxml import OxmlElement
+from docx.oxml.ns import qn
+from docx.shared import Inches, Pt, RGBColor
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
@@ -26,7 +27,7 @@ if hasattr(sys.stderr, "reconfigure"):
 REPO_ROOT = Path(__file__).resolve().parents[4]
 SKILL_DIR = REPO_ROOT / ".claude" / "skills" / "datamart-gen-docs"
 OUTPUT_DIR = REPO_ROOT / "docs" / "output" / "datamart"
-MASTER_DOCX_PATH = SKILL_DIR / "UBCKNN_Q5_Tai lieu phan tich thiet ke_v1.0_20260429.docx"
+MASTER_DOCX_PATH = OUTPUT_DIR / "UBCKNN_Q5_Tai_lieu_phan_tich_thiet_ke_v1.0_20260429.docx"
 
 # Ensure mmdc in PATH
 npm_appdata = Path(os.environ.get("APPDATA", "C:/Users/ADMIN/AppData/Roaming")) / "npm"
@@ -48,7 +49,7 @@ MODULES = [
 
 
 def render_mermaid(mmd_code: str, out_png: Path) -> bool:
-    """Render 1 Mermaid code block sang PNG dùng mmdc."""
+    """Render 1 Mermaid code block sang PNG dùng mmdc với độ nét cao."""
     out_png = out_png.resolve()
     out_png.parent.mkdir(parents=True, exist_ok=True)
     if out_png.exists() and out_png.stat().st_size > 0:
@@ -84,8 +85,30 @@ def render_mermaid(mmd_code: str, out_png: Path) -> bool:
         tmp_mmd.unlink(missing_ok=True)
 
 
+def parse_bullet_item(raw_text: str) -> tuple[str, str]:
+    """Phân tách chính xác tên Entity (in đậm) và phần giải thích (thường) từ 1 dòng bullet."""
+    raw_text = raw_text.strip()
+    
+    # Case 1: **Entity Name:** Description OR **Entity Name**: Description
+    m = re.match(r"^\*{2}(.*?)\*{2}:?\s*(.*)$", raw_text)
+    if m:
+        ent = m.group(1).strip().rstrip(":")
+        desc = m.group(2).strip().lstrip(":")
+        desc = re.sub(r"^\*{1,2}\s*", "", desc)
+        return ent, desc
+    
+    # Case 2: Entity Name: Description
+    m2 = re.match(r"^(.*?):\s*(.*)$", raw_text)
+    if m2:
+        ent = m2.group(1).replace("*", "").strip()
+        desc = m2.group(2).replace("**", "").strip()
+        return ent, desc
+    
+    return "", raw_text.replace("**", "").strip()
+
+
 def parse_module_pttk(md_path: Path, temp_img_dir: Path, mod_code: str, mod_idx: str, mod_name: str) -> list[dict]:
-    """Phân tích cú pháp 1 file Markdown PTTK thành danh sách các phần tử dữ liệu."""
+    """Phân tích cú pháp 1 file Markdown PTTK thành danh sách các phần tử dữ liệu chuẩn hóa."""
     text = md_path.read_text(encoding="utf-8")
     lines = text.splitlines()
 
@@ -131,11 +154,12 @@ def parse_module_pttk(md_path: Path, temp_img_dir: Path, mod_code: str, mod_idx:
 
         if in_info:
             if stripped.startswith("- ") or stripped.startswith("* "):
-                bullet_text = re.sub(r"^[-*]\s+", "", stripped).strip()
-                bullet_text = re.sub(r"[*_`]", "", bullet_text)
+                raw_bullet = re.sub(r"^[-*]\s+", "", stripped).strip()
+                ent_name, desc_body = parse_bullet_item(raw_bullet)
                 elements.append({
-                    "type": "list_item",
-                    "text": bullet_text
+                    "type": "info_item",
+                    "label": f"{ent_name}: " if ent_name else "",
+                    "value": desc_body
                 })
             idx += 1
             continue
@@ -172,6 +196,7 @@ def parse_module_pttk(md_path: Path, temp_img_dir: Path, mod_code: str, mod_idx:
 
             if "**Mục đích:**" in stripped or "Mục đích:" in stripped:
                 purpose_text = re.sub(r"^\*{0,2}Mục đích:\*{0,2}\s*", "", stripped).strip()
+                purpose_text = purpose_text.replace("**", "").strip()
                 if current_subgroup:
                     current_subgroup["purpose"] = purpose_text
                 idx += 1
@@ -262,6 +287,59 @@ def parse_module_pttk(md_path: Path, temp_img_dir: Path, mod_code: str, mod_idx:
     return elements
 
 
+def format_paragraph(p, style_name="Normal", space_before=Pt(0), space_after=Pt(3), line_spacing=1.15, left_indent=Pt(0), first_line_indent=Pt(0), align=None, keep_with_next=False):
+    """Thiết lập chính xác các thông số lề và khoảng cách cho đoạn văn bản."""
+    p.style = style_name
+    pf = p.paragraph_format
+    pf.space_before = space_before
+    pf.space_after = space_after
+    pf.line_spacing = line_spacing
+    pf.left_indent = left_indent
+    pf.first_line_indent = first_line_indent
+    pf.keep_with_next = keep_with_next
+    if align is not None:
+        p.alignment = align
+    
+    # Xóa hanging indent mặc định của style Heading để tránh lệch lề số thứ tự
+    pPr = p._p.get_or_add_pPr()
+    ind = pPr.find(qn("w:ind"))
+    if ind is not None:
+        if left_indent == Pt(0) and first_line_indent == Pt(0):
+            pPr.remove(ind)
+        else:
+            if left_indent is not None:
+                ind.set(qn("w:left"), str(int(left_indent.pt * 20)))
+            if first_line_indent is not None:
+                if first_line_indent.pt < 0:
+                    ind.set(qn("w:hanging"), str(int(-first_line_indent.pt * 20)))
+                    ind.attrib.pop(qn("w:firstLine"), None)
+                else:
+                    ind.set(qn("w:firstLine"), str(int(first_line_indent.pt * 20)))
+                    ind.attrib.pop(qn("w:hanging"), None)
+
+
+def add_text_run(p, text, font_name="Times New Roman", font_size=Pt(12), bold=False, italic=False, color=None):
+    """Thêm một Run với font Times New Roman và định dạng đồng nhất."""
+    run = p.add_run(text)
+    run.font.name = font_name
+    run.font.size = font_size
+    run.bold = bold
+    run.italic = italic
+    if color:
+        run.font.color.rgb = color
+    
+    rPr = run._r.get_or_add_rPr()
+    rFonts = rPr.find(qn("w:rFonts"))
+    if rFonts is None:
+        rFonts = OxmlElement("w:rFonts")
+        rPr.append(rFonts)
+    rFonts.set(qn("w:ascii"), font_name)
+    rFonts.set(qn("w:hAnsi"), font_name)
+    rFonts.set(qn("w:cs"), font_name)
+    rFonts.set(qn("w:eastAsia"), font_name)
+    return run
+
+
 def update_master_q5_document():
     print(f"=== BẮT ĐẦU CẬP NHẬT TÀI LIỆU CHUẨN UBCKNN Q5 ===")
     print(f"Template gốc: {MASTER_DOCX_PATH} ({MASTER_DOCX_PATH.stat().st_size:,} bytes)")
@@ -307,89 +385,91 @@ def update_master_q5_document():
 
     target_anchor = doc.paragraphs[p_api_idx]
 
-    # 4. Chèn toàn bộ nội dung mới của 10 phân hệ trước target_anchor
+    # 4. Chèn toàn bộ nội dung mới của 10 phân hệ trước target_anchor với styling chuẩn mực
     print("Đang chèn 10 phân hệ Datamart chuẩn hóa vào Section 3.1...")
     
     for mod_code, elems in all_module_elements:
         for el in elems:
             el_type = el["type"]
             
+            # --- Heading 3: Module ---
             if el_type == "heading3":
-                p = target_anchor.insert_paragraph_before(el["text"], style="Heading 3")
+                p = target_anchor.insert_paragraph_before("", style="Heading 3")
+                format_paragraph(p, style_name="Heading 3", space_before=Pt(14), space_after=Pt(6), line_spacing=1.15, left_indent=Pt(0), first_line_indent=Pt(0), keep_with_next=True)
+                add_text_run(p, el["text"], font_size=Pt(13), bold=True, italic=False)
             
+            # --- Heading 4: Section (Thông tin chung / Luồng nghiệp vụ) ---
             elif el_type == "heading4":
-                p = target_anchor.insert_paragraph_before(el["text"], style="Heading 4")
+                p = target_anchor.insert_paragraph_before("", style="Heading 4")
+                format_paragraph(p, style_name="Heading 4", space_before=Pt(10), space_after=Pt(4), line_spacing=1.15, left_indent=Pt(0), first_line_indent=Pt(0), keep_with_next=True)
+                add_text_run(p, el["text"], font_size=Pt(12), bold=True, italic=False)
             
+            # --- Info items under 3.1.x.1 ---
+            elif el_type == "info_item":
+                p = target_anchor.insert_paragraph_before("", style="Normal")
+                format_paragraph(p, style_name="Normal", space_before=Pt(1), space_after=Pt(2.5), line_spacing=1.15, left_indent=Pt(18), first_line_indent=Pt(-14))
+                add_text_run(p, "•  ", font_size=Pt(12), bold=False)
+                if el["label"]:
+                    add_text_run(p, el["label"], font_size=Pt(12), bold=True)
+                if el["value"]:
+                    add_text_run(p, el["value"], font_size=Pt(12), bold=False)
+
+            # --- Heading 5: Subgroup ---
             elif el_type == "heading5":
-                p = target_anchor.insert_paragraph_before(el["text"], style="Heading 5")
+                p = target_anchor.insert_paragraph_before("", style="Heading 5")
+                format_paragraph(p, style_name="Heading 5", space_before=Pt(10), space_after=Pt(4), line_spacing=1.15, left_indent=Pt(0), first_line_indent=Pt(0), keep_with_next=True)
+                add_text_run(p, el["text"], font_size=Pt(12), bold=True, italic=True)
             
-            elif el_type == "list_item":
-                p = target_anchor.insert_paragraph_before(el["text"], style="List Paragraph")
-            
+            # --- Diagram image ---
             elif el_type == "image":
                 p = target_anchor.insert_paragraph_before("", style="Normal")
-                p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+                format_paragraph(p, style_name="Normal", space_before=Pt(6), space_after=Pt(6), left_indent=Pt(0), first_line_indent=Pt(0), align=WD_ALIGN_PARAGRAPH.CENTER)
                 run = p.add_run()
                 try:
-                    run.add_picture(el["path"], width=Inches(6.0))
+                    run.add_picture(el["path"], width=Inches(6.2))
                 except Exception as e:
                     print(f"[WARN] Không thể chèn ảnh {el['path']}: {e}", file=sys.stderr)
             
+            # --- Purpose ---
             elif el_type == "purpose":
                 p = target_anchor.insert_paragraph_before("", style="Normal")
-                r_label = p.add_run(el["label"])
-                r_label.bold = True
-                r_text = p.add_run(el["text"])
+                format_paragraph(p, style_name="Normal", space_before=Pt(4), space_after=Pt(4), line_spacing=1.15, left_indent=Pt(0), first_line_indent=Pt(0))
+                add_text_run(p, el["label"], font_size=Pt(12), bold=True)
+                add_text_run(p, el["text"], font_size=Pt(12), bold=False)
             
+            # --- Flow description header ---
             elif el_type == "flow_desc_header":
                 p = target_anchor.insert_paragraph_before("", style="Normal")
-                r = p.add_run(el["text"])
-                r.bold = True
+                format_paragraph(p, style_name="Normal", space_before=Pt(6), space_after=Pt(2), line_spacing=1.15, left_indent=Pt(0), first_line_indent=Pt(0), keep_with_next=True)
+                add_text_run(p, el["text"], font_size=Pt(12), bold=True)
             
+            # --- Sub header (Staging -> Atomic / Atomic -> Datamart) ---
             elif el_type == "sub_header":
                 p = target_anchor.insert_paragraph_before("", style="Normal")
-                r = p.add_run(el["text"])
-                r.italic = True
+                format_paragraph(p, style_name="Normal", space_before=Pt(4), space_after=Pt(2), line_spacing=1.15, left_indent=Pt(10), first_line_indent=Pt(0), keep_with_next=True)
+                add_text_run(p, el["text"], font_size=Pt(12), bold=True, italic=True)
             
+            # --- Desc item (Table mapping bullet) ---
             elif el_type == "desc_item":
-                p = target_anchor.insert_paragraph_before("", style="List Paragraph")
-                raw = el["text"]
-                # Parse bold entity name: **Entity Name:** Description
-                m_bold = re.match(r"^\*{0,2}(.*?)\*{0,2}:\s*(.*)$", raw)
-                if m_bold:
-                    ent_name = m_bold.group(1).replace("*", "").strip()
-                    desc_body = m_bold.group(2).strip()
-                    r1 = p.add_run(f"{ent_name}: ")
-                    r1.bold = True
-                    r2 = p.add_run(desc_body)
-                else:
-                    p.add_run(raw)
+                p = target_anchor.insert_paragraph_before("", style="Normal")
+                format_paragraph(p, style_name="Normal", space_before=Pt(1), space_after=Pt(2.5), line_spacing=1.15, left_indent=Pt(24), first_line_indent=Pt(-14))
+                add_text_run(p, "•  ", font_size=Pt(12), bold=False)
+                ent_name, desc_body = parse_bullet_item(el["text"])
+                if ent_name:
+                    add_text_run(p, f"{ent_name}: ", font_size=Pt(12), bold=True)
+                if desc_body:
+                    add_text_run(p, desc_body, font_size=Pt(12), bold=False)
 
     # 5. Xóa các paragraph cũ từ p_etl_idx + 1 đến p_api_idx - 1
-    print("Đang xóa các đoạn văn bản cũ của 3.1.1 - 3.1.10 cũ...")
+    print("Đang xóa các đoạn văn bản cũ của 3.1 cũ...")
     paragraphs_to_remove = doc.paragraphs[p_etl_idx + 1 : p_api_idx]
     for p in paragraphs_to_remove:
         p._p.getparent().remove(p._p)
 
     # 6. Lưu file kết quả
     out_docx_1 = OUTPUT_DIR / "UBCKNN_Q5_Tai_lieu_phan_tich_thiet_ke_v1.0_20260429.docx"
-    out_docx_2 = OUTPUT_DIR / "UBCKNN_Q5_Tai_lieu_phan_tich_thiet_ke_Datamart_v1.0.docx"
-    out_docx_skill = SKILL_DIR / "UBCKNN_Q5_Tai lieu phan tich thiet ke_v1.0_20260429.docx"
-
     doc.save(str(out_docx_1))
     print(f"\nSaved: {out_docx_1} ({out_docx_1.stat().st_size:,} bytes)")
-
-    try:
-        shutil.copy2(out_docx_1, out_docx_2)
-        print(f"Saved copy: {out_docx_2}")
-    except Exception as e:
-        print(f"[INFO] Copy to {out_docx_2.name} skipped (file may be open in Word): {e}")
-
-    try:
-        shutil.copy2(out_docx_1, out_docx_skill)
-        print(f"Saved template copy: {out_docx_skill}")
-    except Exception as e:
-        print(f"[INFO] Copy to {out_docx_skill.name} skipped: {e}")
 
     print(f"\n=== HOÀN TẤT CẬP NHẬT TÀI LIỆU CHUẨN Q5 ===")
     print(f"1. File xuất bản chính thức: {out_docx_1} ({out_docx_1.stat().st_size:,} bytes)")
