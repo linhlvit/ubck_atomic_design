@@ -2,14 +2,14 @@ schema_type: "lld_source_table"
 schema_version: "2.0"
 metadata:
   source_system: "TTHC"
-  source_table: "CL_VALUE_TTHC"
+  source_table: "CLASSIFICATION_VALUE"
   atomic_entity: "Classification Value"
   entity_physical_name: "cl_value"
   bcv_core_object: "Common"
   bcv_concept: "[Classification] Common"
   table_type: "Classification"
   group: "T1"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -17,7 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Atomic đọc từ ODS table CL_VALUE_TTHC. ODS table được tổng hợp tại tầng\
+  notes: "Atomic đọc từ ODS table CLASSIFICATION_VALUE. ODS table được tổng hợp tại tầng\
     \ ODS qua JOIN TTHC.DOCUMENT + TTHC.CONTENTITEMINDEX (Document.Id =\
     \ ContentItemIndex.DocumentId), lọc ContentType thuộc danh sách 10 scheme TTHC\
     \ — mỗi bản ghi ContentItemIndex phù hợp điều kiện lọc tương ứng một giá trị\
@@ -40,7 +40,7 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns:
-  - "TTHC.CL_VALUE_TTHC.cl_code"
+  - "TTHC.CLASSIFICATION_VALUE.CLASSIFICATION_CODE"
   comment: "BK chính (kết hợp Schema Code tạo BK duy nhất). Nguồn thực: ContentItemIndex.ContentItemId."
   classification_context: null
   etl_derived_value: null
@@ -53,7 +53,7 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns:
-  - "TTHC.CL_VALUE_TTHC.schema_code"
+  - "TTHC.CLASSIFICATION_VALUE.SCHEMA_CODE"
   comment: "BK phụ — kết hợp Schema Code + Classification Code tạo BK duy nhất.\
     \ Nguồn thực: ContentItemIndex.ContentType. Ví dụ: 'TrangThaiHoSo',\
     \ 'LoaiHoSo', 'LinhVucTTHC', 'MucDoTTHC', 'KenhTiepNhan', 'CoQuanXuLy',\
@@ -69,8 +69,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns: []
-  comment: "ETL-derived: lấy từ scheme registry (classification_schemes.yaml)\
-    \ theo schema_code tương ứng."
+  comment: "Xử lý CASE WHEN theo giá trị SCHEMA_CODE."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -83,8 +82,8 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=TTHC.DANH_MUC_DUNG_CHUNG_TTHC"
-  etl_derived_value: "TTHC_DANH_MUC_DUNG_CHUNG_TTHC"
+  classification_context: "SOURCE_SYSTEM=TTHC_CLASSIFICATION_VALUE"
+  etl_derived_value: "TTHC_CLASSIFICATION_VALUE"
   data_type: "string"
 - attribute_name: "Classification Name"
   physical_name: "cl_nm"
@@ -94,7 +93,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "TTHC.CL_VALUE_TTHC.cl_nm"
+  - "TTHC.CLASSIFICATION_VALUE.CLASSIFICATION_NAME"
   comment: "Nguồn thực: ContentItemIndex.DisplayText."
   classification_context: null
   etl_derived_value: null
@@ -107,7 +106,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "TTHC.CL_VALUE_TTHC.cl_nm_english"
+  - "TTHC.CLASSIFICATION_VALUE.CLASSIFICATION_NAME_ENGLISH"
   comment: "Không có trong source TTHC — NULL."
   classification_context: null
   etl_derived_value: null
@@ -120,7 +119,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "TTHC.CL_VALUE_TTHC.cl_description"
+  - "TTHC.CLASSIFICATION_VALUE.CLASSIFICATION_DESCRIPTION"
   comment: "Nguồn thực: Document.Content->{ContentType}->'MoTa'->'Text'. NULL\
     \ nếu content item không có field mô tả."
   classification_context: null

@@ -1,0 +1,121 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-cl_value-TTHC.CLASSIFICATION_VALUE
+  logical_name: Classification Value
+  physical_name: cl_value
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Common
+  bcv_concept: "[Classification] Common"
+  table_type: Classification
+  etl_pattern: Upsert
+  source: TTHC
+  description: |
+    Classification Common — danh mục dùng chung TTHC, tổng hợp toàn bộ giá trị phân loại từ Orchard Core ContentItem. ContentType = schema_code (nhóm scheme); ContentItemId = cl_code (BK). 10 scheme: TRANG_THAI_HO_SO, LOAI_HO_SO, LINH_VUC_TTHC, MUC_DO_TTHC, KENH_TIEP_NHAN, CO_QUAN_XU
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-TTHC-CLASSIFICATION_VALUE
+
+attributes:
+  - name: Classification Code
+    physical_name: cl_code
+    business_meaning: Mã giá trị phân loại — ContentItemId của content item danh mục. BK chính.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: TTHC
+    source_table: CLASSIFICATION_VALUE
+    source_column: TTHC.CLASSIFICATION_VALUE.CLASSIFICATION_CODE
+    comment: "BK chính (kết hợp Schema Code tạo BK duy nhất). Nguồn thực: ContentItemIndex.ContentItemId."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Schema Code
+    physical_name: schema_code
+    business_meaning: Mã nhóm phân loại (scheme) — ContentType của content item danh mục. BK phụ.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: TTHC
+    source_table: CLASSIFICATION_VALUE
+    source_column: TTHC.CLASSIFICATION_VALUE.SCHEMA_CODE
+    comment: "BK phụ — kết hợp Schema Code + Classification Code tạo BK duy nhất. Nguồn thực: ContentItemIndex.ContentType. Ví dụ: 'TrangThaiHoSo', 'LoaiHoSo', 'LinhVucTTHC', 'MucDoTTHC', 'KenhTiepNhan', 'CoQuanXuLy', 'LoaiDoiTuongNop', 'DichVuChuyenPhat', 'TinhThanh', 'QuanHuyen'."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Schema Name
+    physical_name: schema_nm
+    business_meaning: Tên mô tả nhóm phân loại (tiếng Việt).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: CLASSIFICATION_VALUE
+    source_column: null
+    comment: Xử lý CASE WHEN theo giá trị SCHEMA_CODE.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: TTHC
+    source_table: CLASSIFICATION_VALUE
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'TTHC_CLASSIFICATION_VALUE'"
+    etl_derived_value: TTHC_CLASSIFICATION_VALUE
+
+  - name: Classification Name
+    physical_name: cl_nm
+    business_meaning: Tên giá trị phân loại (tiếng Việt).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: CLASSIFICATION_VALUE
+    source_column: TTHC.CLASSIFICATION_VALUE.CLASSIFICATION_NAME
+    comment: "Nguồn thực: ContentItemIndex.DisplayText."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Classification Name English
+    physical_name: cl_nm_english
+    business_meaning: Tên giá trị phân loại (tiếng Anh).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: CLASSIFICATION_VALUE
+    source_column: TTHC.CLASSIFICATION_VALUE.CLASSIFICATION_NAME_ENGLISH
+    comment: Không có trong source TTHC — NULL.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Classification Description
+    physical_name: cl_description
+    business_meaning: Diễn giải chi tiết ý nghĩa giá trị phân loại.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: CLASSIFICATION_VALUE
+    source_column: TTHC.CLASSIFICATION_VALUE.CLASSIFICATION_DESCRIPTION
+    comment: "Nguồn thực: Document.Content->{ContentType}->'MoTa'->'Text'. NULL nếu content item không có field mô tả."
+    classification_context: null
+    etl_derived_value: null

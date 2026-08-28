@@ -1,0 +1,191 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-ap_document_postal_receipt-TTHC.AP_DOCUMENT_POSTAL_RECEIPT
+  logical_name: Administrative Procedure Document Postal Receipt
+  physical_name: ap_document_postal_receipt
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Documentation"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: TTHC
+  description: |
+    Documentation — thông tin nhận kết quả hồ sơ qua bưu chính. Chỉ tồn tại khi return_method_code = 2 trên hồ sơ cha. FK ho_so_id không unique (cho phép 1-N về sau dù thực tế 1-1).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-TTHC-AP_DOCUMENT_POSTAL_RECEIPT
+
+attributes:
+  - name: Administrative Procedure Document Postal Receipt Id
+    physical_name: ap_document_postal_receipt_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: TTHC
+    source_table: AP_DOCUMENT_POSTAL_RECEIPT
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Documentation] Documentation\". Hash: hash_id('TTHC_AP_DOCUMENT_POSTAL_RECEIPT', AP_DOCUMENT_POSTAL_RECEIPT_ID). Nguồn thực: ContentItemIndex.ContentItemId (ContentType = 'thongtinnhanbuurchinh')."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Administrative Procedure Document Postal Receipt Code
+    physical_name: ap_document_postal_receipt_code
+    business_meaning: ContentItemId của bản ghi bưu chính — BK duy nhất.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: TTHC
+    source_table: AP_DOCUMENT_POSTAL_RECEIPT
+    source_column: TTHC.AP_DOCUMENT_POSTAL_RECEIPT.AP_DOCUMENT_POSTAL_RECEIPT_ID
+    comment: "BK chính. Nguồn thực: ContentItemIndex.ContentItemId (ContentType = 'ThongTinNhanHoSoTuBuuChinh')."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: TTHC
+    source_table: AP_DOCUMENT_POSTAL_RECEIPT
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'TTHC_AP_DOCUMENT_POSTAL_RECEIPT'"
+    etl_derived_value: TTHC_AP_DOCUMENT_POSTAL_RECEIPT
+
+  - name: Administrative Procedure Document Id
+    physical_name: ap_document_id
+    business_meaning: Khóa ngoại tới hồ sơ cha.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: TTHC
+    source_table: AP_DOCUMENT_POSTAL_RECEIPT
+    source_column: null
+    comment: "FK target: ap_document.ap_document_id. Hash: hash_id('TTHC_AP_DOCUMENT', AP_DOCUMENT_ID). Nguồn thực: ContentItemIndex.ContentItemId (ContentType = 'HoSoTTHC'). FK không unique — cho phép 1-N về sau."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Administrative Procedure Document Code
+    physical_name: ap_document_code
+    business_meaning: Mã hồ sơ cha (ContentItemId) — lưu dư thừa.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: TTHC
+    source_table: AP_DOCUMENT_POSTAL_RECEIPT
+    source_column: TTHC.AP_DOCUMENT_POSTAL_RECEIPT.AP_DOCUMENT_ID
+    comment: "Lookup pair: ap_document.ap_document_code."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Postal Code
+    physical_name: postal_code
+    business_meaning: Mã bưu chính của địa chỉ nhận hồ sơ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: AP_DOCUMENT_POSTAL_RECEIPT
+    source_column: TTHC.AP_DOCUMENT_POSTAL_RECEIPT.POSTAL_CODE
+    comment: "Nguồn thực: Document.Content->'ThongTinNhanHoSoTuBuuChinh'->'MaBuuChinh'->'Text'. Chỉ thấy ở schema cũ (trước 07/02/2025). Schema mới thường NULL."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Delivery Service Code
+    physical_name: delivery_service_code
+    business_meaning: Mã đơn vị/dịch vụ chuyển phát.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: AP_DOCUMENT_POSTAL_RECEIPT
+    source_column: TTHC.AP_DOCUMENT_POSTAL_RECEIPT.DELIVERY_SERVICE_CODE
+    comment: "SCHEMA_CODE=TTHC.DELIVERY_SERVICE. Nguồn thực: Document.Content->'ThongTinNhanHoSoTuBuuChinh'->'MaDichVuChuyenPhat'->'Text'."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Receipt Address
+    physical_name: receipt_adr
+    business_meaning: Địa chỉ nhận kết quả hồ sơ qua bưu chính — text tự do.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: AP_DOCUMENT_POSTAL_RECEIPT
+    source_column: TTHC.AP_DOCUMENT_POSTAL_RECEIPT.RECEIPT_ADDRESS
+    comment: "Nguồn thực: Document.Content->'ThongTinNhanHoSoTuBuuChinh'->'DiaChiNhanHoSo'->'Text'. Text tự do — không luôn đi kèm province_code/district_code."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Province Code
+    physical_name: province_code
+    business_meaning: Mã tỉnh/thành phố nhận hồ sơ.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: AP_DOCUMENT_POSTAL_RECEIPT
+    source_column: TTHC.AP_DOCUMENT_POSTAL_RECEIPT.PROVINCE_CODE
+    comment: "SCHEMA_CODE=TTHC.PROVINCE. Nguồn thực: Document.Content->'ThongTinNhanHoSoTuBuuChinh'->'MaTinhThanh'->'Text'."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: District Code
+    physical_name: district_code
+    business_meaning: Mã quận/huyện nhận hồ sơ.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: AP_DOCUMENT_POSTAL_RECEIPT
+    source_column: TTHC.AP_DOCUMENT_POSTAL_RECEIPT.DISTRICT_CODE
+    comment: "SCHEMA_CODE=TTHC.DISTRICT. Nguồn thực: Document.Content->'ThongTinNhanHoSoTuBuuChinh'->'MaQuanHuyen'->'Text'."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Sender Phone Number
+    physical_name: sender_phone_nbr
+    business_meaning: Số điện thoại người gửi (người nhận phía bưu chính liên hệ khi cần).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: AP_DOCUMENT_POSTAL_RECEIPT
+    source_column: TTHC.AP_DOCUMENT_POSTAL_RECEIPT.SENDER_PHONE_NUMBER
+    comment: "Nguồn thực: Document.Content->'ThongTinNhanHoSoTuBuuChinh'->'SoDienThoaiNguoiGui'->'Text'."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: Ghi chú bổ sung về địa chỉ/yêu cầu nhận hồ sơ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: AP_DOCUMENT_POSTAL_RECEIPT
+    source_column: TTHC.AP_DOCUMENT_POSTAL_RECEIPT.NOTE
+    comment: "Nguồn thực: Document.Content->'ThongTinNhanHoSoTuBuuChinh'->'GhiChu'->'Text'. Chỉ thấy ở schema cũ. Schema mới thường NULL."
+    classification_context: null
+    etl_derived_value: null

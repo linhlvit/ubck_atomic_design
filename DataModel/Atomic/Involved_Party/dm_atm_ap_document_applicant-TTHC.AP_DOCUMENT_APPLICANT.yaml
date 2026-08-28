@@ -1,0 +1,107 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-ap_document_applicant-TTHC.AP_DOCUMENT_APPLICANT
+  logical_name: Administrative Procedure Document Applicant
+  physical_name: ap_document_applicant
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Involved Party"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: TTHC
+  description: |
+    Involved Party — đối tượng nộp hồ sơ (cá nhân hoặc tổ chức), quan hệ 1-N với hồ sơ. PK ghép (ho_so_id, doi_tuong_nop_ho_so_id); surrogate key hash từ composite. Trường applicant_role_code phân biệt nguồn dữ liệu (ID tham chiếu vs. bag nhúng).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-TTHC-AP_DOCUMENT_APPLICANT
+
+attributes:
+  - name: Administrative Procedure Document Applicant Id
+    physical_name: ap_document_applicant_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: TTHC
+    source_table: AP_DOCUMENT_APPLICANT
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Involved Party] Involved Party\". Hash: hash_id('TTHC_AP_DOCUMENT_APPLICANT', AP_DOCUMENT_APPLICANT_ID). Nguồn thực: ContentItemIndex.ContentItemId (ContentType = 'DoiTuongNopHoSo')."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Administrative Procedure Document Applicant Code
+    physical_name: ap_document_applicant_code
+    business_meaning: ContentItemId của đối tượng nộp hồ sơ trong Orchard Core — BK duy nhất.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: TTHC
+    source_table: AP_DOCUMENT_APPLICANT
+    source_column: TTHC.AP_DOCUMENT_APPLICANT.AP_DOCUMENT_APPLICANT_ID
+    comment: "BK chính. Nguồn thực: ContentItemIndex.ContentItemId (ContentType = 'DoiTuongNopHoSo')."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: TTHC
+    source_table: AP_DOCUMENT_APPLICANT
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'TTHC_AP_DOCUMENT_APPLICANT'"
+    etl_derived_value: TTHC_AP_DOCUMENT_APPLICANT
+
+  - name: Display Name
+    physical_name: display_nm
+    business_meaning: Tên hiển thị của đối tượng nộp hồ sơ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: AP_DOCUMENT_APPLICANT
+    source_column: TTHC.AP_DOCUMENT_APPLICANT.DISPLAY_NAME
+    comment: "Nguồn thực: Document.Content->'DoiTuongNopHoSo'->items[].TenHienThi (schema cũ — bag nhúng). Schema mới: NULL cho tới khi tra cứu bổ sung từ content item đối tượng."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Phone Number
+    physical_name: phone_nbr
+    business_meaning: Số điện thoại liên lạc của đối tượng nộp hồ sơ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: AP_DOCUMENT_APPLICANT
+    source_column: TTHC.AP_DOCUMENT_APPLICANT.PHONE_NUMBER
+    comment: "Nguồn thực: schema cũ = Document.Content->'DoiTuongNopHoSo'->items[].SoDienThoai (bag nhúng); schema mới = Document.Content->'HoSoTTHC'->'SoDienThoai'->'Text'. ODS đã gộp 2 nguồn."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Email
+    physical_name: email
+    business_meaning: Địa chỉ email của đối tượng nộp hồ sơ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: AP_DOCUMENT_APPLICANT
+    source_column: TTHC.AP_DOCUMENT_APPLICANT.EMAIL
+    comment: "Nguồn thực: schema cũ = Document.Content->'DoiTuongNopHoSo'->items[].Email (bag nhúng); schema mới = Document.Content->'HoSoTTHC'->'DoiTuongNopHoSoEmail'->'Text'. ODS đã gộp 2 nguồn."
+    classification_context: null
+    etl_derived_value: null

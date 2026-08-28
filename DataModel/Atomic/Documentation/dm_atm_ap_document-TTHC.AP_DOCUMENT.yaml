@@ -1,0 +1,345 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-ap_document-TTHC.AP_DOCUMENT
+  logical_name: Administrative Procedure Document
+  physical_name: ap_document
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Documentation"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: TTHC
+  description: |
+    Business Activity Case — hồ sơ thủ tục hành chính UBCKNN, entity trung tâm chứa metadata phân loại, thời gian xử lý, lệ phí, snapshot thành phần hồ sơ và eform. Nguồn ODS từ JOIN TTHC.DOCUMENT + TTHC.CONTENTITEMINDEX, lọc ContentType = 'HoSoTTHC'.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-TTHC-AP_DOCUMENT
+
+attributes:
+  - name: Administrative Procedure Document Id
+    physical_name: ap_document_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: TTHC
+    source_table: AP_DOCUMENT
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Business Activity] Case\". Hash: hash_id('TTHC_AP_DOCUMENT', AP_DOCUMENT_ID). Nguồn thực: ContentItemIndex.ContentItemId (ContentType = 'HoSoTTHC')."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Administrative Procedure Document Code
+    physical_name: ap_document_code
+    business_meaning: ContentItemId của hồ sơ trong Orchard Core — BK duy nhất.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: TTHC
+    source_table: AP_DOCUMENT
+    source_column: TTHC.AP_DOCUMENT.AP_DOCUMENT_ID
+    comment: "BK chính. Nguồn thực: ContentItemIndex.ContentItemId (alphanumeric, duy nhất toàn hệ thống Orchard), ContentType = 'HoSoTTHC'."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: TTHC
+    source_table: AP_DOCUMENT
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'TTHC_AP_DOCUMENT'"
+    etl_derived_value: TTHC_AP_DOCUMENT
+
+  - name: Administrative Procedure Document Applicant Id
+    physical_name: ap_document_applicant_id
+    business_meaning: Khóa ngoại tới đối tượng nộp hồ sơ chính.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: AP_DOCUMENT
+    source_column: null
+    comment: "FK target: ap_document_applicant.ap_document_applicant_id. Hash: hash_id('TTHC_AP_DOCUMENT_APPLICANT', AP_DOCUMENT_APPLICANT_ID). Nguồn thực: Document.Content->'HoSoTTHC'->'DoiTuongNopHoSo'->ContentItemIds[0]. NULL nếu hồ sơ chưa gán đối tượng."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Administrative Procedure Document Applicant Code
+    physical_name: ap_document_applicant_code
+    business_meaning: ContentItemId của đối tượng nộp hồ sơ chính — lưu dư thừa.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: AP_DOCUMENT
+    source_column: TTHC.AP_DOCUMENT.AP_DOCUMENT_APPLICANT_ID
+    comment: "Lookup pair: ap_document_applicant.ap_document_applicant_code. Nguồn thực: Document.Content->'HoSoTTHC'->'DoiTuongNopHoSo'->ContentItemIds[0]."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Document Title
+    physical_name: document_title
+    business_meaning: Tiêu đề hồ sơ.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: TTHC
+    source_table: AP_DOCUMENT
+    source_column: TTHC.AP_DOCUMENT.DOCUMENT_TITLE
+    comment: "Nguồn thực: ContentItemIndex.DisplayText."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Securities Code
+    physical_name: securities_code
+    business_meaning: Mã chứng khoán liên quan — chỉ có giá trị ở một số loại hồ sơ (vd. báo cáo vốn).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: AP_DOCUMENT
+    source_column: TTHC.AP_DOCUMENT.SECURITIES_CODE
+    comment: "Nguồn thực: Document.Content->'HoSoTTHC'->'MaChungKhoan'->'Text'. NULL hợp lệ với phần lớn loại hồ sơ."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Processing Status Code
+    physical_name: processing_status_code
+    business_meaning: Trạng thái xử lý hồ sơ.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: AP_DOCUMENT
+    source_column: TTHC.AP_DOCUMENT.PROCESSING_STATUS_CODE
+    comment: "SCHEMA_CODE=TTHC.PROCESSING_STATUS. Nguồn thực: Document.Content->'HoSoTTHC'->'TrangThaiHoSo'->ContentItemIds[0]."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Processing Authority Code
+    physical_name: processing_authority_code
+    business_meaning: Mã cơ quan/đơn vị xử lý hồ sơ.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: AP_DOCUMENT
+    source_column: TTHC.AP_DOCUMENT.PROCESSING_AUTHORITY_CODE
+    comment: "SCHEMA_CODE=TTHC.PROCESSING_AUTHORITY. Nguồn thực: Document.Content->'HoSoTTHC'->'CoQuanXuLy'->ContentItemIds[0]."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Document Type Code
+    physical_name: document_tp_code
+    business_meaning: Loại hồ sơ thủ tục hành chính.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: AP_DOCUMENT
+    source_column: TTHC.AP_DOCUMENT.DOCUMENT_TYPE_CODE
+    comment: "SCHEMA_CODE=TTHC.DOCUMENT_TYPE. Nguồn thực: Document.Content->'HoSoTTHC'->'LoaiHoSo'->ContentItemIds[0]."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Domain Code
+    physical_name: domain_code
+    business_meaning: Lĩnh vực thủ tục hành chính.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: AP_DOCUMENT
+    source_column: TTHC.AP_DOCUMENT.DOMAIN_CODE
+    comment: "SCHEMA_CODE=TTHC.DOMAIN. Nguồn thực: Document.Content->'HoSoTTHC'->'LinhVucTTHC'->ContentItemIds[0]."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Priority Level Code
+    physical_name: priority_level_code
+    business_meaning: Mức độ ưu tiên của thủ tục hành chính.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: AP_DOCUMENT
+    source_column: TTHC.AP_DOCUMENT.PRIORITY_LEVEL_CODE
+    comment: "SCHEMA_CODE=TTHC.PRIORITY_LEVEL. Nguồn thực: Document.Content->'HoSoTTHC'->'MucDoTTHC'->ContentItemIds[0]."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Reception Channel Code
+    physical_name: reception_channel_code
+    business_meaning: Kênh tiếp nhận hồ sơ.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: AP_DOCUMENT
+    source_column: TTHC.AP_DOCUMENT.RECEPTION_CHANNEL_CODE
+    comment: "SCHEMA_CODE=TTHC.RECEPTION_CHANNEL. Nguồn thực: Document.Content->'HoSoTTHC'->'KenhTiepNhan'->ContentItemIds[0]."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Return Method Code
+    physical_name: return_method_code
+    business_meaning: Hình thức trả hồ sơ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: AP_DOCUMENT
+    source_column: TTHC.AP_DOCUMENT.RETURN_METHOD_CODE
+    comment: "Nguồn thực: Document.Content->'HoSoTTHC'->'ThongTinHinhThucTraHoSo'->'Value'."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Processing Officer Code
+    physical_name: processing_officer_code
+    business_meaning: ID cán bộ xử lý hồ sơ — tham chiếu tới hệ thống người dùng bên ngoài Atomic.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: AP_DOCUMENT
+    source_column: TTHC.AP_DOCUMENT.PROCESSING_OFFICER_CODE
+    comment: "Nguồn thực: Document.Content->'HoSoTTHC'->'CanBoXuLy'->'Value'. Nguồn BIGINT — lưu dạng string. Không có FK Atomic vì hệ thống người dùng ngoài phạm vi thiết kế hiện tại."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Submission Timestamp
+    physical_name: submission_tms
+    business_meaning: Thời điểm người nộp gửi hồ sơ.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: AP_DOCUMENT
+    source_column: TTHC.AP_DOCUMENT.SUBMISSION_TIMESTAMP
+    comment: "Nguồn thực: Document.Content->'HoSoTTHC'->'NgayGuiHoSo'->'Value'."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Reception Timestamp
+    physical_name: reception_tms
+    business_meaning: Thời điểm cơ quan tiếp nhận hồ sơ hợp lệ.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: AP_DOCUMENT
+    source_column: TTHC.AP_DOCUMENT.RECEPTION_TIMESTAMP
+    comment: "Nguồn thực: Document.Content->'HoSoTTHC'->'NgayTiepNhan'->'Value'. Schema cũ: key 'Ngaytiepnhan' (chữ thường). Schema mới: 'NgayTiepNhan' (PascalCase). ODS đã chuẩn hoá."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Processing Deadline Timestamp
+    physical_name: processing_deadline_tms
+    business_meaning: Hạn xử lý hồ sơ theo quy định.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: AP_DOCUMENT
+    source_column: TTHC.AP_DOCUMENT.PROCESSING_DEADLINE_TIMESTAMP
+    comment: "Nguồn thực: Document.Content->'HoSoTTHC'->'ThoiHanXuLy'->'Value'."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Result Return Timestamp
+    physical_name: result_return_tms
+    business_meaning: Thời điểm trả kết quả hồ sơ cho người nộp.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: AP_DOCUMENT
+    source_column: TTHC.AP_DOCUMENT.RESULT_RETURN_TIMESTAMP
+    comment: "Nguồn thực: Document.Content->'HoSoTTHC'->'NgayTraKetQua'->'Value'."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Fee Paid Indicator
+    physical_name: fee_paid_ind
+    business_meaning: Người nộp đã thanh toán lệ phí hay chưa.
+    data_domain: Indicator
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: TTHC
+    source_table: AP_DOCUMENT
+    source_column: TTHC.AP_DOCUMENT.FEE_PAID_INDICATOR
+    comment: "Nguồn thực: Document.Content->'HoSoTTHC'->'DaNopLePhi'->'Value'."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Fee Amount
+    physical_name: fee_amt
+    business_meaning: Lệ phí hồ sơ (VND).
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: TTHC
+    source_table: AP_DOCUMENT
+    source_column: TTHC.AP_DOCUMENT.FEE_AMOUNT
+    comment: "Nguồn thực: Document.Content->'HoSoTTHC'->'LePhi'->'Value'."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Document Component
+    physical_name: document_component
+    business_meaning: "Snapshot mảng ThanhPhanHoSo.ContentItems tại thời điểm ETL — danh sách thành phần hồ sơ (tên, trạng thái nộp, file đính kèm)."
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: TTHC
+    source_table: AP_DOCUMENT
+    source_column: TTHC.AP_DOCUMENT.DOC_COMPONENT
+    comment: "Nguồn thực: Document.Content->'ThanhPhanHoSo'->'ContentItems'. Lưu nguyên JSONB. Schema cũ dùng key CoKhong/FileDinhKem/Yeucaubosung; schema mới dùng DaNop/Ma/ThuTuHienThi/DanhMucThanhPhanHoSo."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Eform Data
+    physical_name: eform_data
+    business_meaning: "Snapshot Eform.ContentItems[0] — dữ liệu tờ khai điện tử, cấu trúc thay đổi hoàn toàn theo loại Eform."
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: TTHC
+    source_table: AP_DOCUMENT
+    source_column: TTHC.AP_DOCUMENT.EFORM_DATA
+    comment: "Nguồn thực: Document.Content->'Eform'->'ContentItems'[0]. Lưu nguyên JSONB — không ép cột cứng vì >= 6 ContentType Eform khác nhau (Eform1, Eform17, Eform75, Eform76A, Eform85...). Hồ sơ nháp/seed có Eform rỗng dạng {\"ContentType\":\"Eform\"}. Field kiểu Text/Value khi không nhập trả về {} (object rỗng) — ETL dùng .get() an toàn."
+    classification_context: null
+    etl_derived_value: null
