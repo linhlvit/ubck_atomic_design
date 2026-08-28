@@ -5,6 +5,7 @@ bìa, chữ ký, kiến trúc hệ thống, API, Web App mockup và styling chu�
 
 from __future__ import annotations
 
+import io
 import os
 import re
 import shutil
@@ -288,7 +289,7 @@ def parse_module_pttk(md_path: Path, temp_img_dir: Path, mod_code: str, mod_idx:
 
 
 def format_paragraph(p, style_name="Normal", space_before=Pt(0), space_after=Pt(3), line_spacing=1.15, left_indent=Pt(0), first_line_indent=Pt(0), align=None, keep_with_next=False):
-    """Thiết lập chính xác các thông số lề và khoảng cách cho đoạn văn bản."""
+    """Thiết lập chính xác các thông số lề và khoảng cách cho đoạn văn bản, triệt tiêu hoàn toàn hanging indent từ style gốc."""
     p.style = style_name
     pf = p.paragraph_format
     pf.space_before = space_before
@@ -300,22 +301,23 @@ def format_paragraph(p, style_name="Normal", space_before=Pt(0), space_after=Pt(
     if align is not None:
         p.alignment = align
     
-    # Xóa hanging indent mặc định của style Heading để tránh lệch lề số thứ tự
+    # Ghi đè trực tiếp thẻ w:ind trong XML của đoạn để chặn hoàn toàn thuộc tính hanging âm từ style gốc
     pPr = p._p.get_or_add_pPr()
     ind = pPr.find(qn("w:ind"))
-    if ind is not None:
-        if left_indent == Pt(0) and first_line_indent == Pt(0):
-            pPr.remove(ind)
-        else:
-            if left_indent is not None:
-                ind.set(qn("w:left"), str(int(left_indent.pt * 20)))
-            if first_line_indent is not None:
-                if first_line_indent.pt < 0:
-                    ind.set(qn("w:hanging"), str(int(-first_line_indent.pt * 20)))
-                    ind.attrib.pop(qn("w:firstLine"), None)
-                else:
-                    ind.set(qn("w:firstLine"), str(int(first_line_indent.pt * 20)))
-                    ind.attrib.pop(qn("w:hanging"), None)
+    if ind is None:
+        ind = OxmlElement("w:ind")
+        pPr.append(ind)
+    
+    left_dxa = int(left_indent.pt * 20) if left_indent is not None else 0
+    first_dxa = int(first_line_indent.pt * 20) if first_line_indent is not None else 0
+    
+    ind.set(qn("w:left"), str(left_dxa))
+    if first_dxa < 0:
+        ind.set(qn("w:hanging"), str(-first_dxa))
+        ind.attrib.pop(qn("w:firstLine"), None)
+    else:
+        ind.set(qn("w:firstLine"), str(first_dxa))
+        ind.attrib.pop(qn("w:hanging"), None)
 
 
 def add_text_run(p, text, font_name="Times New Roman", font_size=Pt(12), bold=False, italic=False, color=None):
@@ -364,8 +366,10 @@ def update_master_q5_document():
 
     print(f"\nTổng số lưu đồ đã sinh và sẵn sàng chèn: {total_diagrams}/90 diagrams.")
 
-    # 2. Mở file DOCX gốc
-    doc = docx.Document(str(MASTER_DOCX_PATH))
+    # 2. Đọc file DOCX gốc vào memory để tránh bị lock khi đọc
+    with open(MASTER_DOCX_PATH, "rb") as f:
+        doc_stream = io.BytesIO(f.read())
+    doc = docx.Document(doc_stream)
 
     # 3. Định vị vị trí 3.1 trong tài liệu gốc
     p_etl_idx = None
@@ -383,6 +387,13 @@ def update_master_q5_document():
 
     print(f"Vị trí Section 3.1: từ paragraph {p_etl_idx+1} đến {p_api_idx-1} (tổng {p_api_idx - p_etl_idx - 1} paragraphs cũ)")
 
+    # Chuẩn hóa paragraph tiêu đề 'Phân hệ ETL' để thẳng hàng tuyệt đối với lề trái
+    p_etl = doc.paragraphs[p_etl_idx]
+    p_etl_pPr = p_etl._p.get_or_add_pPr()
+    p_etl_ind = p_etl_pPr.find(qn("w:ind"))
+    if p_etl_ind is not None:
+        p_etl_pPr.remove(p_etl_ind)
+
     target_anchor = doc.paragraphs[p_api_idx]
 
     # 4. Chèn toàn bộ nội dung mới của 10 phân hệ trước target_anchor với styling chuẩn mực
@@ -392,13 +403,13 @@ def update_master_q5_document():
         for el in elems:
             el_type = el["type"]
             
-            # --- Heading 3: Module ---
+            # --- Heading 3: Module (3.1.x LUỒNG ĐỒNG BỘ DỮ LIỆU CHO NHÓM BÁO CÁO...) ---
             if el_type == "heading3":
                 p = target_anchor.insert_paragraph_before("", style="Heading 3")
                 format_paragraph(p, style_name="Heading 3", space_before=Pt(14), space_after=Pt(6), line_spacing=1.15, left_indent=Pt(0), first_line_indent=Pt(0), keep_with_next=True)
                 add_text_run(p, el["text"], font_size=Pt(13), bold=True, italic=False)
             
-            # --- Heading 4: Section (Thông tin chung / Luồng nghiệp vụ) ---
+            # --- Heading 4: Section (3.1.x.1 Thông tin chung / 3.1.x.2 Luồng nghiệp vụ) ---
             elif el_type == "heading4":
                 p = target_anchor.insert_paragraph_before("", style="Heading 4")
                 format_paragraph(p, style_name="Heading 4", space_before=Pt(10), space_after=Pt(4), line_spacing=1.15, left_indent=Pt(0), first_line_indent=Pt(0), keep_with_next=True)
@@ -414,7 +425,7 @@ def update_master_q5_document():
                 if el["value"]:
                     add_text_run(p, el["value"], font_size=Pt(12), bold=False)
 
-            # --- Heading 5: Subgroup ---
+            # --- Heading 5: Subgroup (3.1.x.2.y Nhóm thông tin...) ---
             elif el_type == "heading5":
                 p = target_anchor.insert_paragraph_before("", style="Heading 5")
                 format_paragraph(p, style_name="Heading 5", space_before=Pt(10), space_after=Pt(4), line_spacing=1.15, left_indent=Pt(0), first_line_indent=Pt(0), keep_with_next=True)
@@ -446,13 +457,13 @@ def update_master_q5_document():
             # --- Sub header (Staging -> Atomic / Atomic -> Datamart) ---
             elif el_type == "sub_header":
                 p = target_anchor.insert_paragraph_before("", style="Normal")
-                format_paragraph(p, style_name="Normal", space_before=Pt(4), space_after=Pt(2), line_spacing=1.15, left_indent=Pt(10), first_line_indent=Pt(0), keep_with_next=True)
+                format_paragraph(p, style_name="Normal", space_before=Pt(4), space_after=Pt(2), line_spacing=1.15, left_indent=Pt(0), first_line_indent=Pt(0), keep_with_next=True)
                 add_text_run(p, el["text"], font_size=Pt(12), bold=True, italic=True)
             
             # --- Desc item (Table mapping bullet) ---
             elif el_type == "desc_item":
                 p = target_anchor.insert_paragraph_before("", style="Normal")
-                format_paragraph(p, style_name="Normal", space_before=Pt(1), space_after=Pt(2.5), line_spacing=1.15, left_indent=Pt(24), first_line_indent=Pt(-14))
+                format_paragraph(p, style_name="Normal", space_before=Pt(1), space_after=Pt(2.5), line_spacing=1.15, left_indent=Pt(18), first_line_indent=Pt(-14))
                 add_text_run(p, "•  ", font_size=Pt(12), bold=False)
                 ent_name, desc_body = parse_bullet_item(el["text"])
                 if ent_name:
@@ -468,11 +479,19 @@ def update_master_q5_document():
 
     # 6. Lưu file kết quả
     out_docx_1 = OUTPUT_DIR / "UBCKNN_Q5_Tai_lieu_phan_tich_thiet_ke_v1.0_20260429.docx"
-    doc.save(str(out_docx_1))
-    print(f"\nSaved: {out_docx_1} ({out_docx_1.stat().st_size:,} bytes)")
+    out_docx_fallback = OUTPUT_DIR / "UBCKNN_Q5_Tai_lieu_phan_tich_thiet_ke_v1.1_20260429.docx"
+    
+    saved_target = out_docx_1
+    try:
+        doc.save(str(out_docx_1))
+        print(f"\nSaved: {out_docx_1} ({out_docx_1.stat().st_size:,} bytes)")
+    except PermissionError:
+        doc.save(str(out_docx_fallback))
+        saved_target = out_docx_fallback
+        print(f"\n[INFO] File {out_docx_1.name} đang mở trong Word. Đã lưu sang bản cập nhật: {out_docx_fallback.name} ({out_docx_fallback.stat().st_size:,} bytes)")
 
     print(f"\n=== HOÀN TẤT CẬP NHẬT TÀI LIỆU CHUẨN Q5 ===")
-    print(f"1. File xuất bản chính thức: {out_docx_1} ({out_docx_1.stat().st_size:,} bytes)")
+    print(f"File xuất bản: {saved_target} ({saved_target.stat().st_size:,} bytes)")
 
 
 if __name__ == "__main__":
