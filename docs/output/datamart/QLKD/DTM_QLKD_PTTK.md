@@ -1,18 +1,18 @@
-## 3.2.7 Luồng đồng bộ dữ liệu cho nhóm báo cáo Quản lý kinh doanh
+## 3.1.8 LUỒNG ĐỒNG BỘ DỮ LIỆU CHO NHÓM BÁO CÁO Hoạt động Công ty Chứng khoán
 
-### 3.2.7.1 Thông tin chung luồng đồng bộ
+### 3.1.8.1 Thông tin chung luồng đồng bộ
 
 - Tên job:
-- Nguồn dữ liệu (hệ thống nguồn): SCMS, FIMS, NHNCK, THANHTRA, IDS
+- Nguồn dữ liệu (Hệ thống nguồn): SCMS, FIMS, NHNCK, THANHTRA, IDS
 - Cách thức truy xuất đồng bộ dữ liệu:
 - Tần suất đồng bộ dữ liệu:
 - Dung lượng dữ liệu sẽ thực hiện đồng bộ:
 - Thời gian lưu trữ dữ liệu:
 - Thư mục lưu trữ dữ liệu trên kho dữ liệu:
 
-### 3.2.7.2 Luồng nghiệp vụ
+### 3.1.8.2 Luồng nghiệp vụ
 
-#### 3.2.7.2.1 Nhóm thông tin Thống kê tổng hợp CTCK
+#### 3.1.8.2.1 Nhóm thông tin Thống kê tổng hợp CTCK
 
 ```mermaid
 flowchart LR
@@ -63,7 +63,7 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.7.2.2 Nhóm thông tin Số lượng CTCK theo nghiệp vụ và dịch vụ
+#### 3.1.8.2.2 Nhóm thông tin Số lượng CTCK theo nghiệp vụ và dịch vụ
 
 ```mermaid
 flowchart LR
@@ -110,7 +110,7 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.7.2.3 Nhóm thông tin Đăng ký dịch vụ CTCK
+#### 3.1.8.2.3 Nhóm thông tin Đăng ký dịch vụ CTCK
 
 ```mermaid
 flowchart LR
@@ -159,7 +159,7 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.7.2.4 Nhóm thông tin Cơ cấu tài chính và Hoạt động tài chính CTCK
+#### 3.1.8.2.4 Nhóm thông tin Cơ cấu tài chính và Hoạt động tài chính CTCK
 
 ```mermaid
 flowchart LR
@@ -215,7 +215,7 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.7.2.5 Nhóm thông tin Tuân thủ nộp báo cáo
+#### 3.1.8.2.5 Nhóm thông tin Tuân thủ nộp báo cáo
 
 ```mermaid
 flowchart LR
@@ -265,7 +265,7 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.7.2.6 Nhóm thông tin Nhân sự cao cấp CTCK
+#### 3.1.8.2.6 Nhóm thông tin Nhân sự cao cấp CTCK
 
 ```mermaid
 flowchart LR
@@ -297,7 +297,7 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.7.2.7 Nhóm thông tin Cổ đông CTCK
+#### 3.1.8.2.7 Nhóm thông tin Cổ đông CTCK
 
 ```mermaid
 flowchart LR
@@ -329,7 +329,7 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.7.2.8 Nhóm thông tin CN, PGD, VPĐD CTCK
+#### 3.1.8.2.8 Nhóm thông tin CN, PGD, VPĐD CTCK
 
 ```mermaid
 flowchart LR
@@ -366,7 +366,7 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.7.2.9 Nhóm thông tin Người hành nghề chứng khoán CTCK
+#### 3.1.8.2.9 Nhóm thông tin Người hành nghề chứng khoán CTCK
 
 ```mermaid
 flowchart LR
@@ -401,7 +401,7 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.7.2.10 Nhóm thông tin Lịch sử báo cáo tài chính CTCK
+#### 3.1.8.2.10 Nhóm thông tin Lịch sử báo cáo tài chính CTCK
 
 ```mermaid
 flowchart LR
@@ -439,7 +439,7 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.7.2.11 Nhóm thông tin Tuân thủ và Vi phạm CTCK — Hồ sơ 360
+#### 3.1.8.2.11 Nhóm thông tin Tuân thủ và Vi phạm CTCK — Hồ sơ 360
 
 ```mermaid
 flowchart LR
@@ -482,7 +482,7 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.7.2.12 Nhóm thông tin Hồ sơ cá nhân tổng hợp
+#### 3.1.8.2.12 Nhóm thông tin Hồ sơ cá nhân tổng hợp
 
 ```mermaid
 flowchart LR
@@ -529,7 +529,7 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.7.2.13 Nhóm thông tin Mạng lưới người liên quan
+#### 3.1.8.2.13 Nhóm thông tin Mạng lưới người liên quan
 
 ```mermaid
 flowchart LR
@@ -572,7 +572,7 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.7.2.14 Nhóm thông tin Vai trò cá nhân tại DN niêm yết
+#### 3.1.8.2.14 Nhóm thông tin Vai trò cá nhân tại DN niêm yết
 
 ```mermaid
 flowchart LR
@@ -604,7 +604,7 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.7.2.15 Nhóm thông tin Tài khoản giao dịch chứng khoán cá nhân
+#### 3.1.8.2.15 Nhóm thông tin Tài khoản giao dịch chứng khoán cá nhân
 
 ```mermaid
 flowchart LR
@@ -636,7 +636,7 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.7.2.16 Nhóm thông tin Quá trình hành nghề cá nhân
+#### 3.1.8.2.16 Nhóm thông tin Quá trình hành nghề cá nhân
 
 ```mermaid
 flowchart LR
@@ -668,7 +668,7 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.7.2.17 Nhóm thông tin Lịch sử vi phạm cá nhân
+#### 3.1.8.2.17 Nhóm thông tin Lịch sử vi phạm cá nhân
 
 ```mermaid
 flowchart LR
@@ -706,7 +706,7 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.7.2.18 Nhóm thông tin Data Explorer — Báo cáo biểu mẫu định kỳ CTCK
+#### 3.1.8.2.18 Nhóm thông tin Data Explorer — Báo cáo biểu mẫu định kỳ CTCK
 
 ```mermaid
 flowchart LR

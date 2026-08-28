@@ -1,59 +1,59 @@
-## 3.2.3 Luồng đồng bộ dữ liệu cho nhóm báo cáo Giám sát thị trường
+## 3.1.6 LUỒNG ĐỒNG BỘ DỮ LIỆU CHO NHÓM BÁO CÁO Giám sát Thị trường
 
-### 3.2.3.1 Thông tin chung luồng đồng bộ
+### 3.1.6.1 Thông tin chung luồng đồng bộ
 
 - Tên job:
-- Nguồn dữ liệu (hệ thống nguồn): MDDS, OrderTrade, IDS, ECAT
+- Nguồn dữ liệu (Hệ thống nguồn): MDDS, OrderTrade, IDS, ECAT
 - Cách thức truy xuất đồng bộ dữ liệu:
 - Tần suất đồng bộ dữ liệu:
 - Dung lượng dữ liệu sẽ thực hiện đồng bộ:
 - Thời gian lưu trữ dữ liệu:
 - Thư mục lưu trữ dữ liệu trên kho dữ liệu:
 
-### 3.2.3.2 Luồng nghiệp vụ
+### 3.1.6.2 Luồng nghiệp vụ
 
-#### 3.2.3.2.1 Nhóm thông tin Security Daily Market
-
-**Mục đích:** Cung cấp dữ liệu thị trường chứng khoán cuối ngày (EOD) theo mã CK và ngày giao dịch, phục vụ bảng `Fact Security Daily Market Summary` dùng cho toàn bộ các nhóm báo cáo cổ phiếu (Nhóm 1, 3, 6–27 và STT 49).
+#### 3.1.6.2.1 Nhóm thông tin Security Daily Market
 
 ```mermaid
 flowchart LR
     subgraph Staging
-        MDDS_StockInfor["MDDS StockInfor"]
-        OrderTrade_Trade_HOSE["OrderTrade Trade HOSE"]
-        OrderTrade_Trade_HNX["OrderTrade Trade HNX"]
-        IDS_data_BCTC["IDS data BCTC"]
-        ECAT_Security["ECAT Security"]
-        IDS_company_profiles["IDS company profiles"]
+        MDDS_StockInfor["MDDS.StockInfor"]
+        OrderTrade_Trade_HOSE["OrderTrade.Trade_HOSE"]
+        OrderTrade_Trade_HNX["OrderTrade.Trade_HNX"]
+        IDS_data_BCTC["IDS.data_BCTC"]
+        ECAT_Security["ECAT.Security"]
+        IDS_company_profiles["IDS.company_profiles"]
     end
     subgraph Atomic
-        A1A["Security Trading Snapshot"]
-        A1B["Securities Trade"]
-        A1C["Public Company Financial Report Value"]
-        A1D["Security"]
-        A1E["Public Company"]
+        Security_Trading_Snapshot["Security Trading Snapshot"]
+        Securities_Trade["Securities Trade"]
+        Public_Company_Financial_Report_Value["Public Company Financial Report Value"]
+        Security["Security"]
+        Public_Company["Public Company"]
     end
     subgraph Datamart
-        D1["Security Trading Snapshot Dimension"]
-        D2["Public Company Dimension"]
-        D5["Calendar Date Dimension"]
-        F1["Fact Security Daily Market Summary"]
-        D1 --> F1
-        D2 --> F1
-        D5 --> F1
+        fct_sec_dly_mkt_smy["Fact Security Daily Market Summary"]
+        sec_tdg_snpst_dim["Security Trading Snapshot Dimension"]
+        pblc_co_dim["Public Company Dimension"]
+        cdr_dt_dim["Calendar Date Dimension"]
     end
-    MDDS_StockInfor --> A1A
-    OrderTrade_Trade_HOSE --> A1B
-    OrderTrade_Trade_HNX --> A1B
-    IDS_data_BCTC --> A1C
-    ECAT_Security --> A1D
-    IDS_company_profiles --> A1E
-    A1A --> F1
-    A1B --> F1
-    A1C --> F1
-    A1D --> D1
-    A1E --> D2
+    MDDS_StockInfor --> Security_Trading_Snapshot
+    OrderTrade_Trade_HOSE --> Securities_Trade
+    OrderTrade_Trade_HNX --> Securities_Trade
+    IDS_data_BCTC --> Public_Company_Financial_Report_Value
+    ECAT_Security --> Security
+    IDS_company_profiles --> Public_Company
+    Security_Trading_Snapshot --> fct_sec_dly_mkt_smy
+    Securities_Trade --> fct_sec_dly_mkt_smy
+    Public_Company_Financial_Report_Value --> fct_sec_dly_mkt_smy
+    Security --> sec_tdg_snpst_dim
+    Public_Company --> pblc_co_dim
+    sec_tdg_snpst_dim --> fct_sec_dly_mkt_smy
+    pblc_co_dim --> fct_sec_dly_mkt_smy
+    cdr_dt_dim --> fct_sec_dly_mkt_smy
 ```
+
+**Mục đích:** Cung cấp dữ liệu thị trường chứng khoán cuối ngày (EOD) theo mã CK và ngày giao dịch, phục vụ bảng `Fact Security Daily Market Summary` dùng cho toàn bộ các nhóm báo cáo cổ phiếu (Nhóm 1, 3, 6–27 và STT 49).
 
 **Mô tả luồng:**
 
@@ -72,39 +72,39 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.3.2.2 Nhóm thông tin Corporate Bond Daily Market
-
-**Mục đích:** Cung cấp dữ liệu thị trường trái phiếu doanh nghiệp niêm yết cuối ngày theo mã TP và ngày giao dịch, phục vụ bảng `Fact Corporate Bond Daily Market Summary` dùng cho Nhóm 2 (Bảng số liệu Trái phiếu DN).
+#### 3.1.6.2.2 Nhóm thông tin Corporate Bond Daily Market
 
 ```mermaid
 flowchart LR
     subgraph Staging
-        MDDS_CorpBondInfor["MDDS CorpBondInfor"]
-        OrderTrade_Trade_HOSE_BDO["OrderTrade Trade HOSE BDO"]
-        IDS_company_profiles["IDS company profiles"]
+        MDDS_CorpBondInfor["MDDS.CorpBondInfor"]
+        OrderTrade_Trade_HOSE_BDO["OrderTrade.Trade_HOSE_BDO"]
+        IDS_company_profiles["IDS.company_profiles"]
     end
     subgraph Atomic
-        A2A["Corporate Bond Trading Snapshot"]
-        A2B["Securities Trade"]
-        A2C["Public Company"]
+        Corporate_Bond_Trading_Snapshot["Corporate Bond Trading Snapshot"]
+        Securities_Trade["Securities Trade"]
+        Public_Company["Public Company"]
     end
     subgraph Datamart
-        D3["Corporate Bond Trading Snapshot Dimension"]
-        D4["Corporate Bond Trading Snapshot Industry Dimension"]
-        D5["Calendar Date Dimension"]
-        F2["Fact Corporate Bond Daily Market Summary"]
-        D3 --> F2
-        D4 --> F2
-        D5 --> F2
+        fct_cb_dly_mkt_smy["Fact Corporate Bond Daily Market Summary"]
+        cb_tdg_snpst_dim["Corporate Bond Trading Snapshot Dimension"]
+        cb_tdg_snpst_idy_dim["Corporate Bond Trading Snapshot Industry Dimension"]
+        cdr_dt_dim["Calendar Date Dimension"]
     end
-    MDDS_CorpBondInfor --> A2A
-    OrderTrade_Trade_HOSE_BDO --> A2B
-    IDS_company_profiles --> A2C
-    A2A --> F2
-    A2B --> F2
-    A2C --> D3
-    A2C --> D4
+    MDDS_CorpBondInfor --> Corporate_Bond_Trading_Snapshot
+    OrderTrade_Trade_HOSE_BDO --> Securities_Trade
+    IDS_company_profiles --> Public_Company
+    Corporate_Bond_Trading_Snapshot --> fct_cb_dly_mkt_smy
+    Securities_Trade --> fct_cb_dly_mkt_smy
+    Public_Company --> cb_tdg_snpst_dim
+    Public_Company --> cb_tdg_snpst_idy_dim
+    cb_tdg_snpst_dim --> fct_cb_dly_mkt_smy
+    cb_tdg_snpst_idy_dim --> fct_cb_dly_mkt_smy
+    cdr_dt_dim --> fct_cb_dly_mkt_smy
 ```
+
+**Mục đích:** Cung cấp dữ liệu thị trường trái phiếu doanh nghiệp niêm yết cuối ngày theo mã TP và ngày giao dịch, phục vụ bảng `Fact Corporate Bond Daily Market Summary` dùng cho Nhóm 2 (Bảng số liệu Trái phiếu DN).
 
 **Mô tả luồng:**
 
@@ -121,28 +121,28 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.3.2.3 Nhóm thông tin Stock Holder Ownership
-
-**Mục đích:** Cung cấp thông tin sở hữu cổ đông và người nội bộ theo từng công ty đại chúng, phục vụ bảng `Stock Holder Ownership Profile` dùng cho STT 47 (Sở hữu và giao dịch nội bộ).
+#### 3.1.6.2.3 Nhóm thông tin Stock Holder Ownership
 
 ```mermaid
 flowchart LR
     subgraph Staging
-        IDS_stock_holders["IDS stock_holders"]
-        IDS_stock_controls["IDS stock_controls"]
+        IDS_stock_holders["IDS.stock_holders"]
+        IDS_stock_controls["IDS.stock_controls"]
     end
     subgraph Atomic
-        A4A["Stock Holder"]
-        A4B["Stock Control"]
+        Stock_Holder["Stock Holder"]
+        Stock_Control["Stock Control"]
     end
     subgraph Datamart
-        O1["Stock Holder Ownership Profile"]
+        stk_hld_own_prfl["Stock Holder Ownership Profile"]
     end
-    IDS_stock_holders --> A4A
-    IDS_stock_controls --> A4B
-    A4A --> O1
-    A4B --> O1
+    IDS_stock_holders --> Stock_Holder
+    IDS_stock_controls --> Stock_Control
+    Stock_Holder --> stk_hld_own_prfl
+    Stock_Control --> stk_hld_own_prfl
 ```
+
+**Mục đích:** Cung cấp thông tin sở hữu cổ đông và người nội bộ theo từng công ty đại chúng, phục vụ bảng `Stock Holder Ownership Profile` dùng cho STT 47 (Sở hữu và giao dịch nội bộ).
 
 **Mô tả luồng:**
 

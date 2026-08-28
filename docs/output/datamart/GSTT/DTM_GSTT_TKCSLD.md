@@ -1,4 +1,4 @@
-# 3. KHO DỮ LIỆU (OLAP) — Giám sát thị trường
+# 3. KHO DỮ LIỆU (OLAP) — Giám sát Thị trường
 
 ## 3.1 Mô hình dữ liệu mức High Level / Conceptual
 
@@ -139,7 +139,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | Security Trading Snapshot Dimension Id | string | | X | P | | Surrogate key định danh mã chứng khoán |
+| 1 | Security Trading Snapshot Dimension Id | string |  | X | P |  | Khóa chính mã chứng khoán |
 | 2 | Symbol | string | | | | | Mã chứng khoán — slicer Mã CK |
 | 3 | Security Name | string | X | | | | Tên đầy đủ chứng khoán |
 | 4 | Floor Code | string | | | | | Mã sàn (HOSE/HNX/UPCOM/FDS) |
@@ -150,8 +150,8 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | Public Company Dimension Id | string | | X | P | | Surrogate key định danh công ty đại chúng |
-| 2 | Equity Ticker | string | | | | | Mã cổ phiếu niêm yết — join anchor ETL |
+| 1 | Public Company Dimension Id | string |  | X | P |  | Khóa chính công ty đại chúng |
+| 2 | Equity Ticker | string |  |  |  |  | Mã cổ phiếu niêm yết |
 | 3 | Industry Level1 Code | string | X | | | | Mã ngành kinh tế cấp 1 (10 ngành IDS) |
 | 4 | Industry Level1 Name | string | X | | | | Tên ngành kinh tế cấp 1 |
 
@@ -159,16 +159,16 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | Corporate Bond Trading Snapshot Dimension Id | string | | X | P | | Surrogate key định danh mã trái phiếu DN |
-| 2 | Bond Ticker | string | | | | | Mã trái phiếu — join anchor ETL |
+| 1 | Corporate Bond Trading Snapshot Dimension Id | string |  | X | P |  | Khóa chính mã trái phiếu doanh nghiệp |
+| 2 | Bond Ticker | string |  |  |  |  | Mã trái phiếu |
 | 3 | Issuer Name | string | X | | | | Tên tổ chức phát hành trái phiếu |
 
 #### 3.2.2.4 Bảng Corporate Bond Trading Snapshot Industry Dimension
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | Bond Issuer Public Company Dimension Id | string | | X | P | | Surrogate key định danh ngành TPDN |
-| 2 | Bond Ticker | string | | | | | Mã trái phiếu — join anchor ETL |
+| 1 | Bond Issuer Public Company Dimension Id | string |  | X | P |  | Khóa chính ngành trái phiếu doanh nghiệp |
+| 2 | Bond Ticker | string |  |  |  |  | Mã trái phiếu |
 | 3 | Industry Level1 Code | string | X | | | | Mã ngành TPDN cấp 1 |
 | 4 | Industry Level1 Name | string | X | | | | Tên ngành TPDN cấp 1 |
 
@@ -223,7 +223,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | Stock Holder Id | string | | X | P | | Surrogate key cổ đông |
+| 1 | Stock Holder Id | string |  | X | P |  | Khóa chính cổ đông |
 | 2 | Stock Holder Code | string | | | | | Mã cổ đông |
 | 3 | Public Company Id | string | | | | | Mã nội bộ công ty đại chúng |
 | 4 | Public Company Code | string | | | | | Mã công ty đại chúng — slicer Mã CK |
@@ -357,7 +357,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Giá trị mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | scr_tdg_snpst_dim_id | string | | X | P | | Surrogate key định danh mã chứng khoán | | | | ETL sinh tự động |
+| 1 | scr_tdg_snpst_dim_id | string |  | X | P |  | Khóa chính mã chứng khoán |  |  |  | ETL sinh tự động |
 | 2 | symb | string | | | | | Mã chứng khoán | MDDS | ATM.scr_tdg_snpst | symb | scr_tdg_snpst.symb |
 | 3 | scr_nm | string | X | | | | Tên đầy đủ chứng khoán | MDDS | ATM.scr_tdg_snpst | full_nm | scr_tdg_snpst.full_nm |
 | 4 | flr_code | string | | | | | Mã sàn (HOSE/HNX/UPCOM/FDS) | MDDS | ATM.scr_tdg_snpst | flr_code | scr_tdg_snpst.flr_code |
@@ -374,7 +374,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Giá trị mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | indy_dim_id | string | | X | P | | Surrogate key định danh công ty đại chúng | | | | ETL sinh tự động |
+| 1 | indy_dim_id | string |  | X | P |  | Khóa chính công ty đại chúng |  |  |  | ETL sinh tự động |
 | 2 | eqty_ticker | string | | | | | Mã cổ phiếu niêm yết | IDS | ATM.pblc_co | eqty_ticker | pblc_co.eqty_ticker |
 | 3 | idy_cgy_level1_code | string | X | | | | Mã ngành kinh tế cấp 1 (10 ngành IDS) | IDS | ATM.pblc_co | idy_cgy_level1_code | pblc_co.idy_cgy_level1_code |
 | 4 | idy_cgy_level1_nm | string | X | | | | Tên ngành kinh tế cấp 1 | IDS | ATM.cv | cl_nm | JOIN cv ON cv.cl_code = pblc_co.idy_cgy_level1_code AND cv.scm_code = 'IDS_INDUSTRY_CATEGORY' → cv.cl_nm |
@@ -389,7 +389,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Giá trị mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | corp_bond_issr_dim_id | string | | X | P | | Surrogate key định danh mã trái phiếu DN | | | | ETL sinh tự động |
+| 1 | corp_bond_issr_dim_id | string |  | X | P |  | Khóa chính mã trái phiếu doanh nghiệp |  |  |  | ETL sinh tự động |
 | 2 | bond_ticker | string | | | | | Mã trái phiếu | MDDS | ATM.corp_bond_tdg_snpst | symb | corp_bond_tdg_snpst.symb |
 | 3 | issr_nm | string | X | | | | Tên tổ chức phát hành trái phiếu | MDDS | ATM.corp_bond_tdg_snpst | full_nm | corp_bond_tdg_snpst.full_nm |
 
@@ -403,7 +403,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Giá trị mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | corp_bond_issr_indy_dim_id | string | | X | P | | Surrogate key định danh ngành TPDN | | | | ETL sinh tự động |
+| 1 | corp_bond_issr_indy_dim_id | string |  | X | P |  | Khóa chính ngành trái phiếu doanh nghiệp |  |  |  | ETL sinh tự động |
 | 2 | bond_ticker | string | | | | | Mã trái phiếu | MDDS | ATM.corp_bond_tdg_snpst | symb | corp_bond_tdg_snpst.symb |
 | 3 | idy_cgy_level1_code | string | X | | | | Mã ngành TPDN cấp 1 | IDS | ATM.pblc_co | idy_cgy_level1_code | JOIN pblc_co ON pblc_co.bond_ticker = corp_bond_tdg_snpst.symb → pblc_co.idy_cgy_level1_code |
 | 4 | idy_cgy_level1_nm | string | X | | | | Tên ngành TPDN cấp 1 | IDS | ATM.cv | cl_nm | JOIN pblc_co ON pblc_co.bond_ticker = corp_bond_tdg_snpst.symb → JOIN cv ON cv.cl_code = pblc_co.idy_cgy_level1_code AND cv.scm_code = 'IDS_INDUSTRY_CATEGORY' → cv.cl_nm |
@@ -481,7 +481,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Giá trị mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | stk_hldr_id | string | | X | P | | Surrogate key cổ đông | IDS | ATM.stk_hldr | stk_hldr_id | stk_hldr.stk_hldr_id |
+| 1 | stk_hldr_id | string |  | X | P |  | Khóa chính cổ đông | IDS | ATM.stk_hldr | stk_hldr_id | stk_hldr.stk_hldr_id |
 | 2 | stk_hldr_code | string | | | | | Mã cổ đông | IDS | ATM.stk_hldr | stk_hldr_code | stk_hldr.stk_hldr_code |
 | 3 | pblc_co_id | string | | | | | Mã nội bộ công ty đại chúng | IDS | ATM.stk_hldr | pblc_co_id | stk_hldr.pblc_co_id |
 | 4 | pblc_co_code | string | | | | | Mã công ty đại chúng | IDS | ATM.stk_hldr | pblc_co_code | stk_hldr.pblc_co_code |

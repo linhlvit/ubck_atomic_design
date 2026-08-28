@@ -1,18 +1,18 @@
-## 3.2.1 Luồng đồng bộ dữ liệu cho nhóm báo cáo Thanh Tra
+## 3.1.1 LUỒNG ĐỒNG BỘ DỮ LIỆU CHO NHÓM BÁO CÁO Hoạt động Thanh tra
 
-### 3.2.1.1 Thông tin chung luồng đồng bộ
+### 3.1.1.1 Thông tin chung luồng đồng bộ
 
-- tên job:
-- nguồn dữ liệu (hệ thống nguồn): THANHTRA
-- cách thức truy xuất đồng bộ dữ liệu:
-- tần suất đồng bộ dữ liệu:
-- dung lượng dữ liệu sẽ thực hiện đồng bộ:
-- thời gian lưu trữ dữ liệu:
-- thư mục lưu trữ dữ liệu trên kho dữ liệu:
+- Tên job:
+- Nguồn dữ liệu (Hệ thống nguồn): THANHTRA
+- Cách thức truy xuất đồng bộ dữ liệu:
+- Tần suất đồng bộ dữ liệu:
+- Dung lượng dữ liệu sẽ thực hiện đồng bộ:
+- Thời gian lưu trữ dữ liệu:
+- Thư mục lưu trữ dữ liệu trên kho dữ liệu:
 
-### 3.2.1.2 Luồng nghiệp vụ
+### 3.1.1.2 Luồng nghiệp vụ
 
-#### 3.2.1.2.1 Nhóm thông tin Thống kê & Cơ cấu vụ việc Thanh tra/Kiểm tra
+#### 3.1.1.2.1 Nhóm thông tin Thống kê & Cơ cấu vụ việc Thanh tra/Kiểm tra
 
 ```mermaid
 flowchart LR
@@ -68,7 +68,7 @@ Atomic → Datamart:
 - **Calendar Date Dimension:** Bảng lưu thông tin thời gian phục vụ phân tích theo năm, quý, tháng
 - **Classification Dimension:** Bảng lưu danh mục thông tin phân loại (ví dụ: loại hành vi vi phạm TT_VIOLATION_TYPE, loại đối tượng TT_SUBJECT_CATEGORY)
 
-#### 3.2.1.2.2 Nhóm thông tin Danh sách vụ việc Tác nghiệp
+#### 3.1.1.2.2 Nhóm thông tin Danh sách vụ việc Tác nghiệp
 
 ```mermaid
 flowchart LR
@@ -100,7 +100,7 @@ Staging → Atomic:
 Atomic → Datamart:
 - **Inspection Case List:** Bảng tác nghiệp lưu danh sách hồ sơ thanh tra/kiểm tra ở trạng thái mới nhất, phục vụ tra cứu và lọc theo loại hình (Định kỳ/Đột xuất), trạng thái hồ sơ
 
-#### 3.2.1.2.3 Nhóm thông tin Xử phạt vi phạm — Fact
+#### 3.1.1.2.3 Nhóm thông tin Xử phạt vi phạm — Fact
 
 ```mermaid
 flowchart LR
@@ -138,7 +138,7 @@ Atomic → Datamart:
 - **Calendar Date Dimension:** Bảng lưu thông tin thời gian phục vụ phân tích theo năm, quý, tháng
 - **Classification Dimension:** Bảng lưu danh mục thông tin phân loại (ví dụ: loại hành vi vi phạm TT_VIOLATION_TYPE, loại đối tượng xử phạt TT_PENALTY_SUBJECT_CATEGORY)
 
-#### 3.2.1.2.4 Nhóm thông tin Xử phạt vi phạm — Tác nghiệp
+#### 3.1.1.2.4 Nhóm thông tin Xử phạt vi phạm — Tác nghiệp
 
 ```mermaid
 flowchart LR
@@ -170,7 +170,7 @@ Staging → Atomic:
 Atomic → Datamart:
 - **Penalty Decision List:** Bảng tác nghiệp lưu danh sách quyết định xử phạt ở trạng thái mới nhất, phục vụ tra cứu theo đối tượng, loại hành vi, trạng thái quyết định
 
-#### 3.2.1.2.5 Nhóm thông tin Đơn thư khiếu nại tố cáo
+#### 3.1.1.2.5 Nhóm thông tin Đơn thư khiếu nại tố cáo
 
 ```mermaid
 flowchart LR

@@ -1,4 +1,4 @@
-# 3. KHO DỮ LIỆU (OLAP) — Người hành nghề chứng khoán
+# 3. KHO DỮ LIỆU (OLAP) — Người hành nghề
 
 ## 3.1 Mô hình dữ liệu mức High Level / Conceptual
 
@@ -186,7 +186,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | Date Dimension Id | string | | X | P | | Surrogate key ETL generated |
+| 1 | Date Dimension Id | string |  | X | P |  | Khóa đại diện tự sinh |
 | 2 | Full Date | date | | | | | Ngày đầy đủ — YYYYMMDD |
 | 3 | Year | int | X | | | | Năm |
 | 4 | Quarter | int | X | | | | Quý (1–4) |
@@ -202,14 +202,14 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | Practitioner Dimension Id | string | | X | P | | Surrogate key SCD2 |
+| 1 | Practitioner Dimension Id | string |  | X | P |  | Khóa đại diện SCD2 |
 | 2 | Practitioner Code | string | | | | | Mã định danh NHN — NK dùng để join ETL |
 | 3 | Full Name | string | X | | | | Họ và tên NHN |
 | 4 | Date Of Birth | date | X | | | | Ngày sinh đầy đủ |
-| 5 | Education Level Code | string | X | | | | Trình độ học vấn — Scheme: EDUCATION_LEVEL |
-| 6 | Nationality Code | string | X | | | | Quốc tịch — Scheme: NATIONALITY |
+| 5 | Education Level Code | string | X |  |  |  | Trình độ học vấn |
+| 6 | Nationality Code | string | X |  |  |  | Quốc tịch |
 | 7 | Identity Reference Code | string | X | | | | Mã định danh giấy tờ tùy thân |
-| 8 | Practice Status Code | string | X | | | | Trạng thái hành nghề — Scheme: PRACTICE_STATUS |
+| 8 | Practice Status Code | string | X |  |  |  | Trạng thái hành nghề |
 
 #### 3.2.2.3 Bảng Fact Practitioner License Certificate Snapshot
 
@@ -219,8 +219,8 @@ erDiagram
 | 2 | Issue Date Dimension Id | string | | | F | | FK lịch ngày cấp CCHN |
 | 3 | Snapshot Date Dimension Id | string | | | F | | FK lịch ngày snapshot |
 | 4 | License Certificate Document Code | string | X | | | | DD — BK CCHN |
-| 5 | Certificate Type Code | string | X | | | | Loại CCHN — Scheme: CERTIFICATE_TYPE |
-| 6 | Certificate Status Code | string | X | | | | Trạng thái CCHN — Scheme: CERTIFICATE_STATUS |
+| 5 | Certificate Type Code | string | X |  |  |  | Loại chứng chỉ hành nghề |
+| 6 | Certificate Status Code | string | X |  |  |  | Trạng thái chứng chỉ |
 | 7 | Allow Reissue Indicator | boolean | X | | | | Cho phép cấp lại |
 | 8 | Is Reissue Indicator | string | X | | | | Cờ cấp lại (Y/N) |
 | 9 | Certificate Issue Date | date | X | | | | Ngày cấp CCHN |
@@ -240,18 +240,18 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | Practitioner Id | string | | X | P | | Surrogate PK |
+| 1 | Practitioner Id | string | | X | P | | Khóa chính người hành nghề |
 | 2 | Practitioner Code | string | | | | | BK NHN |
 | 3 | Full Name | string | X | | | | Họ và tên |
 | 4 | Date Of Birth | date | X | | | | Ngày sinh |
 | 5 | Age | int | X | | | | Tuổi tại thời điểm populate |
 | 6 | Nationality Name | string | X | | | | Tên quốc tịch |
 | 7 | Identity Reference Code | string | X | | | | Số CMND/CCCD/Hộ chiếu |
-| 8 | Practice Status Code | string | X | | | | Mã trạng thái hành nghề — Scheme: PRACTICE_STATUS |
+| 8 | Practice Status Code | string | X |  |  |  | Trạng thái hành nghề |
 | 9 | Practice Status Name | string | X | | | | Tên trạng thái hành nghề |
 | 10 | Current Organization Name | string | X | | | | Tên tổ chức hiện tại |
 | 11 | Active Certificate Number | string | X | | | | Số CCHN đang hiệu lực |
-| 12 | Active Certificate Type Code | string | X | | | | Mã loại CCHN hiện tại — Scheme: CERTIFICATE_TYPE |
+| 12 | Active Certificate Type Code | string | X |  |  |  | Loại chứng chỉ hành nghề |
 | 13 | Active Certificate Type Name | string | X | | | | Tên loại CCHN hiện tại |
 | 14 | Related Party Count | int | X | | | | Số người liên quan |
 
@@ -259,7 +259,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | Practitioner Id | string | | X | P | | Surrogate PK |
+| 1 | Practitioner Id | string | | X | P | | Khóa chính người hành nghề |
 | 2 | Practitioner Code | string | | | | | BK NHN |
 | 3 | License Certificate Document Code | string | | | | | BK CCHN |
 | 4 | Certificate Number | string | X | | | | Số chứng chỉ |
@@ -273,7 +273,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | Practitioner Id | string | | X | P | | Surrogate PK |
+| 1 | Practitioner Id | string | | X | P | | Khóa chính người hành nghề |
 | 2 | Practitioner Code | string | | | | | BK NHN |
 | 3 | Organization Employment Report Code | string | | | | | BK báo cáo công tác |
 | 4 | Securities Organization Name | string | X | | | | Tên tổ chức |
@@ -285,7 +285,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | Practitioner Id | string | | X | P | | Surrogate PK |
+| 1 | Practitioner Id | string | | X | P | | Khóa chính người hành nghề |
 | 2 | Practitioner Code | string | | | | | BK NHN |
 | 3 | Conduct Violation Code | string | | | | | BK vi phạm |
 | 4 | Conduct Violation Type Name | string | X | | | | Tên loại vi phạm |
@@ -298,14 +298,14 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | Practitioner Id | string | | X | P | | Surrogate PK |
+| 1 | Practitioner Id | string | | X | P | | Khóa chính người hành nghề |
 | 2 | Practitioner Code | string | | | | | BK NHN |
 | 3 | Examination Assessment Result Code | string | | | | | BK kết quả thi |
 | 4 | Session Name | string | X | | | | Tên đợt thi |
 | 5 | Examination Start Date | date | X | | | | Ngày thi |
 | 6 | Law Score | string | X | | | | Điểm pháp luật |
 | 7 | Specialization Score | string | X | | | | Điểm chuyên môn |
-| 8 | Examination Result Code | string | X | | | | Kết quả tổng — Scheme: EXAMINATION_RESULT |
+| 8 | Examination Result Code | string | X |  |  |  | Kết quả sát hạch tổng thể |
 | 9 | Decision Number | string | X | | | | Số quyết định công bố kết quả |
 | 10 | Decision Issue Date | date | X | | | | Ngày ban hành quyết định công bố |
 
@@ -313,7 +313,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | Practitioner Id | string | | X | P | | Surrogate PK |
+| 1 | Practitioner Id | string | | X | P | | Khóa chính người hành nghề |
 | 2 | Practitioner Code | string | | | | | BK NHN |
 | 3 | Enrollment Code | string | | | | | BK đăng ký khóa học |
 | 4 | Training Year | string | X | | | | Năm học |
@@ -323,7 +323,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | Practitioner Id | string | | X | P | | Surrogate PK |
+| 1 | Practitioner Id | string | | X | P | | Khóa chính người hành nghề |
 | 2 | Practitioner Code | string | | | | | BK NHN |
 | 3 | Securities Practitioner Related Party Code | string | | | | | BK người liên quan |
 | 4 | Related Party Full Name | string | X | | | | Họ tên người liên quan |
@@ -335,14 +335,14 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | Practitioner Id | string | | X | P | | Surrogate PK |
+| 1 | Practitioner Id | string | | X | P | | Khóa chính người hành nghề |
 | 2 | Practitioner Code | string | | | | | BK NHN |
 | 3 | License Certificate Document Code | string | X | | | | BK CCHN |
 | 4 | Full Name | string | X | | | | Họ và tên NHN |
 | 5 | Certificate Number | string | X | | | | Số CCHN |
-| 6 | Certificate Type Code | string | X | | | | Mã loại CCHN — Scheme: CERTIFICATE_TYPE |
+| 6 | Certificate Type Code | string | X |  |  |  | Loại chứng chỉ hành nghề |
 | 7 | Certificate Type Name | string | X | | | | Tên loại CCHN |
-| 8 | Certificate Status Code | string | X | | | | Mã trạng thái CCHN — Scheme: CERTIFICATE_STATUS |
+| 8 | Certificate Status Code | string | X |  |  |  | Trạng thái chứng chỉ |
 | 9 | Certificate Status Name | string | X | | | | Tên trạng thái CCHN |
 | 10 | Certificate Issue Date | date | X | | | | Ngày cấp CCHN |
 | 11 | Current Organization Name | string | X | | | | Tên tổ chức hiện tại |
@@ -502,7 +502,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Giá trị mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | dt_dim_id | string | | X | P | | Surrogate key ETL generated | | | | ETL sinh tự động |
+| 1 | dt_dim_id | string |  | X | P |  | Khóa đại diện tự sinh |  |  |  | ETL sinh tự động |
 | 2 | full_dt | date | | | | | Ngày đầy đủ — YYYYMMDD | | | | ETL sinh tự động |
 | 3 | yr | int | X | | | | Năm | | | | ETL sinh tự động |
 | 4 | qtr | int | X | | | | Quý (1–4) | | | | ETL sinh tự động |
@@ -524,7 +524,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Giá trị mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | practitioner_dim_id | string | | X | P | | Surrogate key SCD2 | | | | ETL sinh tự động |
+| 1 | practitioner_dim_id | string |  | X | P |  | Khóa đại diện SCD2 |  |  |  | ETL sinh tự động |
 | 2 | practitioner_code | string | | | | | Mã định danh NHN | NHNCK | ATM.scr_prac | prac_code | scr_prac.prac_code |
 | 3 | full_nm | string | X | | | | Họ và tên NHN | NHNCK | ATM.scr_prac | full_nm | scr_prac.full_nm |
 | 4 | dob | date | X | | | | Ngày sinh đầy đủ | NHNCK | ATM.scr_prac | dob | scr_prac.dob |
@@ -588,7 +588,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Giá trị mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | practitioner_id | string | | X | P | | Surrogate PK | NHNCK | ATM.scr_prac | prac_id | scr_prac.prac_id |
+| 1 | practitioner_id | string | | X | P | | Khóa chính người hành nghề | NHNCK | ATM.scr_prac | prac_id | scr_prac.prac_id |
 | 2 | practitioner_code | string | | | | | BK NHN | NHNCK | ATM.scr_prac | prac_code | scr_prac.prac_code |
 | 3 | full_nm | string | X | | | | Họ và tên | NHNCK | ATM.scr_prac | full_nm | scr_prac.full_nm |
 | 4 | dob | date | X | | | | Ngày sinh | NHNCK | ATM.scr_prac | dob | scr_prac.dob |
@@ -613,7 +613,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Giá trị mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | practitioner_id | string | | X | P | | Surrogate PK | NHNCK | ATM.scr_prac_license_ctf_doc | prac_id | scr_prac_license_ctf_doc.prac_id |
+| 1 | practitioner_id | string | | X | P | | Khóa chính người hành nghề | NHNCK | ATM.scr_prac_license_ctf_doc | prac_id | scr_prac_license_ctf_doc.prac_id |
 | 2 | practitioner_code | string | | | | | BK NHN | NHNCK | ATM.scr_prac_license_ctf_doc | prac_code | scr_prac_license_ctf_doc.prac_code |
 | 3 | license_ctf_doc_code | string | | | | | BK CCHN | NHNCK | ATM.scr_prac_license_ctf_doc | license_ctf_doc_code | scr_prac_license_ctf_doc.license_ctf_doc_code |
 | 4 | ctf_nbr | string | X | | | | Số chứng chỉ | NHNCK | ATM.scr_prac_license_ctf_doc | ctf_nbr | scr_prac_license_ctf_doc.ctf_nbr |
@@ -633,7 +633,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Giá trị mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | practitioner_id | string | | X | P | | Surrogate PK | NHNCK | ATM.scr_prac_org_emp_rpt | prac_id | scr_prac_org_emp_rpt.prac_id |
+| 1 | practitioner_id | string | | X | P | | Khóa chính người hành nghề | NHNCK | ATM.scr_prac_org_emp_rpt | prac_id | scr_prac_org_emp_rpt.prac_id |
 | 2 | practitioner_code | string | | | | | BK NHN | NHNCK | ATM.scr_prac_org_emp_rpt | prac_code | scr_prac_org_emp_rpt.prac_code |
 | 3 | org_emp_rpt_code | string | | | | | BK báo cáo công tác | NHNCK | ATM.scr_prac_org_emp_rpt | org_emp_rpt_code | scr_prac_org_emp_rpt.org_emp_rpt_code |
 | 4 | scr_org_nm | string | X | | | | Tên tổ chức | NHNCK | ATM.scr_org_refr | org_nm | JOIN scr_org_refr ON scr_org_refr.scr_org_refr_id = scr_prac_org_emp_rpt.scr_org_id → scr_org_refr.org_nm |
@@ -651,7 +651,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Giá trị mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | practitioner_id | string | | X | P | | Surrogate PK | NHNCK | ATM.scr_prac_conduct_vln | prac_id | scr_prac_conduct_vln.prac_id |
+| 1 | practitioner_id | string | | X | P | | Khóa chính người hành nghề | NHNCK | ATM.scr_prac_conduct_vln | prac_id | scr_prac_conduct_vln.prac_id |
 | 2 | practitioner_code | string | | | | | BK NHN | NHNCK | ATM.scr_prac_conduct_vln | prac_code | scr_prac_conduct_vln.prac_code |
 | 3 | conduct_vln_code | string | | | | | BK vi phạm | NHNCK | ATM.scr_prac_conduct_vln | conduct_vln_code | scr_prac_conduct_vln.conduct_vln_code |
 | 4 | conduct_vln_tp_nm | string | X | | | | Tên loại vi phạm | NHNCK | ATM.cv | cl_nm | JOIN cv ON cv.cl_code = scr_prac_conduct_vln.conduct_vln_tp_code AND cv.scm_code = 'CONDUCT_VIOLATION_TYPE' → cv.cl_nm |
@@ -670,14 +670,14 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Giá trị mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | practitioner_id | string | | X | P | | Surrogate PK | NHNCK | ATM.scr_prac_qualf_exam_ases_rslt | prac_id | scr_prac_qualf_exam_ases_rslt.prac_id |
+| 1 | practitioner_id | string | | X | P | | Khóa chính người hành nghề | NHNCK | ATM.scr_prac_qualf_exam_ases_rslt | prac_id | scr_prac_qualf_exam_ases_rslt.prac_id |
 | 2 | practitioner_code | string | | | | | BK NHN | NHNCK | ATM.scr_prac_qualf_exam_ases_rslt | prac_code | scr_prac_qualf_exam_ases_rslt.prac_code |
 | 3 | exam_ases_rslt_code | string | | | | | BK kết quả thi | NHNCK | ATM.scr_prac_qualf_exam_ases_rslt | exam_ases_rslt_code | scr_prac_qualf_exam_ases_rslt.exam_ases_rslt_code |
 | 4 | ssn_nm | string | X | | | | Tên đợt thi | NHNCK | ATM.scr_prac_qualf_exam_ases | ssn_nm | JOIN scr_prac_qualf_exam_ases ON scr_prac_qualf_exam_ases.exam_ases_id = scr_prac_qualf_exam_ases_rslt.exam_ases_id → scr_prac_qualf_exam_ases.ssn_nm |
 | 5 | exam_strt_dt | date | X | | | | Ngày thi | NHNCK | ATM.scr_prac_qualf_exam_ases | exam_strt_dt | JOIN scr_prac_qualf_exam_ases ON scr_prac_qualf_exam_ases.exam_ases_id = scr_prac_qualf_exam_ases_rslt.exam_ases_id → scr_prac_qualf_exam_ases.exam_strt_dt |
 | 6 | law_scor | string | X | | | | Điểm pháp luật | NHNCK | ATM.scr_prac_qualf_exam_ases_rslt | law_scor | scr_prac_qualf_exam_ases_rslt.law_scor |
 | 7 | specialization_scor | string | X | | | | Điểm chuyên môn | NHNCK | ATM.scr_prac_qualf_exam_ases_rslt | specialization_scor | scr_prac_qualf_exam_ases_rslt.specialization_scor |
-| 8 | exam_rslt_code | string | X | | | | Kết quả tổng — Scheme: EXAMINATION_RESULT | NHNCK | ATM.scr_prac_qualf_exam_ases_rslt | exam_rslt_code | scr_prac_qualf_exam_ases_rslt.exam_rslt_code |
+| 8 | exam_rslt_code | string | X |  |  |  | Kết quả sát hạch tổng thể | NHNCK | ATM.scr_prac_qualf_exam_ases_rslt | exam_rslt_code | scr_prac_qualf_exam_ases_rslt.exam_rslt_code |
 | 9 | dcsn_nbr | string | X | | | | Số quyết định công bố kết quả | NHNCK | ATM.scr_prac_license_dcsn_doc | dcsn_nbr | JOIN scr_prac_license_dcsn_doc ON scr_prac_license_dcsn_doc.license_dcsn_doc_id = scr_prac_qualf_exam_ases.license_dcsn_doc_id → scr_prac_license_dcsn_doc.dcsn_nbr |
 | 10 | dcsn_issu_dt | date | X | | | | Ngày ban hành quyết định công bố | NHNCK | ATM.scr_prac_license_dcsn_doc | signing_dt | JOIN scr_prac_license_dcsn_doc ON scr_prac_license_dcsn_doc.license_dcsn_doc_id = scr_prac_qualf_exam_ases.license_dcsn_doc_id → scr_prac_license_dcsn_doc.signing_dt |
 
@@ -691,7 +691,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Giá trị mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | practitioner_id | string | | X | P | | Surrogate PK | NHNCK | ATM.scr_prac_prof_trn_clss_enrollment | prac_id | scr_prac_prof_trn_clss_enrollment.prac_id |
+| 1 | practitioner_id | string | | X | P | | Khóa chính người hành nghề | NHNCK | ATM.scr_prac_prof_trn_clss_enrollment | prac_id | scr_prac_prof_trn_clss_enrollment.prac_id |
 | 2 | practitioner_code | string | | | | | BK NHN | NHNCK | ATM.scr_prac_prof_trn_clss_enrollment | prac_code | scr_prac_prof_trn_clss_enrollment.prac_code |
 | 3 | enrollment_code | string | | | | | BK đăng ký khóa học | NHNCK | ATM.scr_prac_prof_trn_clss_enrollment | prof_trn_clss_enrollment_code | scr_prac_prof_trn_clss_enrollment.prof_trn_clss_enrollment_code |
 | 4 | trn_yr | string | X | | | | Năm học | NHNCK | ATM.scr_prac_prof_trn_clss | academic_yr | JOIN scr_prac_prof_trn_clss ON scr_prac_prof_trn_clss.prof_trn_clss_id = scr_prac_prof_trn_clss_enrollment.prof_trn_clss_id → scr_prac_prof_trn_clss.academic_yr |
@@ -707,7 +707,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Giá trị mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | practitioner_id | string | | X | P | | Surrogate PK | NHNCK | ATM.scr_prac_rel_p | prac_id | scr_prac_rel_p.prac_id |
+| 1 | practitioner_id | string | | X | P | | Khóa chính người hành nghề | NHNCK | ATM.scr_prac_rel_p | prac_id | scr_prac_rel_p.prac_id |
 | 2 | practitioner_code | string | | | | | BK NHN | NHNCK | ATM.scr_prac_rel_p | prac_code | scr_prac_rel_p.prac_code |
 | 3 | scr_practitioner_rel_p_code | string | | | | | BK người liên quan | NHNCK | ATM.scr_prac_rel_p | scr_prac_rel_p_code | scr_prac_rel_p.scr_prac_rel_p_code |
 | 4 | rel_p_full_nm | string | X | | | | Họ tên người liên quan | NHNCK | ATM.scr_prac_rel_p | rel_p_full_nm | scr_prac_rel_p.rel_p_full_nm |
@@ -725,7 +725,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Giá trị mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | practitioner_id | string | | X | P | | Surrogate PK | NHNCK | ATM.scr_prac | prac_id | scr_prac.prac_id |
+| 1 | practitioner_id | string | | X | P | | Khóa chính người hành nghề | NHNCK | ATM.scr_prac | prac_id | scr_prac.prac_id |
 | 2 | practitioner_code | string | | | | | BK NHN | NHNCK | ATM.scr_prac | prac_code | scr_prac.prac_code |
 | 3 | license_ctf_doc_code | string | X | | | | BK CCHN | NHNCK | ATM.scr_prac_license_ctf_doc | license_ctf_doc_code | LEFT JOIN scr_prac_license_ctf_doc ON scr_prac_license_ctf_doc.prac_id = scr_prac.prac_id → scr_prac_license_ctf_doc.license_ctf_doc_code |
 | 4 | full_nm | string | X | | | | Họ và tên NHN | NHNCK | ATM.scr_prac | full_nm | scr_prac.full_nm |

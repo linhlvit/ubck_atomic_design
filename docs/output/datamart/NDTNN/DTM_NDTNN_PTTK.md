@@ -1,9 +1,9 @@
-## 3.2.4 Luồng đồng bộ dữ liệu cho nhóm báo cáo Nhà đầu tư nước ngoài
+## 3.1.3 LUỒNG ĐỒNG BỘ DỮ LIỆU CHO NHÓM BÁO CÁO Quản lý NĐTNN
 
-### 3.2.4.1 Thông tin chung luồng đồng bộ
+### 3.1.3.1 Thông tin chung luồng đồng bộ
 
 - Tên job:
-- Nguồn dữ liệu (hệ thống nguồn): FIMS, IDS, THANHTRA
+- Nguồn dữ liệu (Hệ thống nguồn): FIMS, IDS, THANHTRA
 - Cách thức truy xuất đồng bộ dữ liệu:
 - Tần suất đồng bộ dữ liệu:
 - Dung lượng dữ liệu sẽ thực hiện đồng bộ:
@@ -12,9 +12,9 @@
 
 ---
 
-### 3.2.4.2 Luồng nghiệp vụ
+### 3.1.3.2 Luồng nghiệp vụ
 
-#### 3.2.4.2.1 Nhóm thông tin Đăng ký NĐT nước ngoài
+#### 3.1.3.2.1 Nhóm thông tin Đăng ký NĐT nước ngoài
 
 ```mermaid
 flowchart LR
@@ -59,7 +59,7 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.4.2.2 Nhóm thông tin Hồ sơ 360° NĐT nước ngoài
+#### 3.1.3.2.2 Nhóm thông tin Hồ sơ 360° NĐT nước ngoài
 
 ```mermaid
 flowchart LR
@@ -95,7 +95,7 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.4.2.3 Nhóm thông tin Danh mục chứng khoán NĐTNN
+#### 3.1.3.2.3 Nhóm thông tin Danh mục chứng khoán NĐTNN
 
 ```mermaid
 flowchart LR
@@ -161,7 +161,7 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.4.2.4 Nhóm thông tin Lịch sử tuân thủ NĐTNN
+#### 3.1.3.2.4 Nhóm thông tin Lịch sử tuân thủ NĐTNN
 
 ```mermaid
 flowchart LR
@@ -202,7 +202,7 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.4.2.5 Nhóm thông tin Dòng vốn đầu tư gián tiếp
+#### 3.1.3.2.5 Nhóm thông tin Dòng vốn đầu tư gián tiếp
 
 ```mermaid
 flowchart LR
@@ -254,7 +254,7 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.4.2.6 Nhóm thông tin Giới hạn sở hữu nước ngoài — ROOM
+#### 3.1.3.2.6 Nhóm thông tin Giới hạn sở hữu nước ngoài — ROOM
 
 ```mermaid
 flowchart LR
@@ -295,7 +295,7 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.4.2.7 Nhóm thông tin Báo cáo TT51 — Generic Store
+#### 3.1.3.2.7 Nhóm thông tin Báo cáo TT51 — Generic Store
 
 ```mermaid
 flowchart LR

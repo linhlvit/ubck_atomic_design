@@ -1,4 +1,4 @@
-# 3. KHO DỮ LIỆU (OLAP) — Quản lý kinh doanh
+# 3. KHO DỮ LIỆU (OLAP) — Hoạt động Công ty Chứng khoán
 
 ## 3.1 Mô hình dữ liệu mức High Level / Conceptual
 
@@ -470,7 +470,7 @@ erDiagram
 |---|---|---|---|---|---|---|---|
 | 1 | Trading Account Id | string | | X | P | | Khóa đại diện |
 | 2 | Individual Profile Id | string | | | | | FK đến Individual Profile |
-| 3 | Securities Company Shareholder Id | string | | | | | Mã surrogate cổ đông phía Atomic |
+| 3 | Securities Company Shareholder Id | string | | | | | Mã định danh cổ đông công ty chứng khoán |
 | 4 | Securities Company Code | string | | | | | Mã CTCK nơi mở TK |
 | 5 | Trading Account Number | string | | | | | Số tài khoản giao dịch CK |
 | 6 | Shareholder Name | string | X | | | | Tên chủ tài khoản |
@@ -482,7 +482,7 @@ erDiagram
 |---|---|---|---|---|---|---|---|
 | 1 | Work History Id | string | | X | P | | Khóa đại diện |
 | 2 | Individual Profile Id | string | | | | | FK đến Individual Profile |
-| 3 | Securities Company Senior Personnel Id | string | | | | | Mã surrogate nhân sự phía Atomic |
+| 3 | Securities Company Senior Personnel Id | string | | | | | Mã định danh nhân sự cao cấp công ty chứng khoán |
 | 4 | Securities Company Code | string | | | | | Mã CTCK công tác |
 | 5 | Position Type Code | string | | | | | Chức vụ |
 | 6 | Employment Start Date | date | X | | | | Ngày bắt đầu công tác |
@@ -1079,7 +1079,7 @@ erDiagram
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | 1 | tdg_ac_id | string | | X | P | | Khóa đại diện | | | | ETL sinh tự động |
 | 2 | idv_prfl_id | string | | | | | FK đến Individual Profile | | | | ETL sinh tự động |
-| 3 | scr_co_shrhlr_id | string | | | | | Mã surrogate cổ đông phía Atomic | SCMS | ATM.scr_co_shrhlr | scr_co_shrhlr_id | Mã surrogate cổ đông phía Atomic |
+| 3 | scr_co_shrhlr_id | string | | | | | Mã định danh cổ đông công ty chứng khoán | SCMS | ATM.scr_co_shrhlr | scr_co_shrhlr_id | Mã định danh cổ đông công ty chứng khoán |
 | 4 | scr_co_code | string | | | | | Mã CTCK nơi mở TK | SCMS | ATM.scr_co_shrhlr | scr_co_code | Mã CTCK nơi mở TK |
 | 5 | tdg_ac_nbr | string | | | | | Số tài khoản giao dịch CK | SCMS | ATM.scr_co_shrhlr | tdg_ac_nbr | Số tài khoản giao dịch CK |
 | 6 | shrhlr_nm | string | X | | | | Tên chủ tài khoản | SCMS | ATM.scr_co_shrhlr | shrhlr_nm | Tên chủ tài khoản |
@@ -1097,7 +1097,7 @@ erDiagram
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | 1 | wrk_hist_id | string | | X | P | | Khóa đại diện | | | | ETL sinh tự động |
 | 2 | idv_prfl_id | string | | | | | FK đến Individual Profile | | | | ETL sinh tự động |
-| 3 | scr_co_snr_psn_id | string | | | | | Mã surrogate nhân sự phía Atomic | SCMS | ATM.scr_co_snr_psn | scr_co_snr_psn_id | Mã surrogate nhân sự phía Atomic |
+| 3 | scr_co_snr_psn_id | string | | | | | Mã định danh nhân sự cao cấp công ty chứng khoán | SCMS | ATM.scr_co_snr_psn | scr_co_snr_psn_id | Mã định danh nhân sự cao cấp công ty chứng khoán |
 | 4 | scr_co_code | string | | | | | Mã CTCK công tác | SCMS | ATM.scr_co_snr_psn | scr_co_code | Mã CTCK công tác |
 | 5 | pos_tp_code | string | | | | | Chức vụ | SCMS | ATM.scr_co_snr_psn | pos_tp_code | Chức vụ |
 | 6 | emp_strt_dt | date | X | | | | Ngày bắt đầu công tác | SCMS | ATM.scr_co_snr_psn | crt_tms | Ngày bắt đầu công tác (tạm dùng Created Timestamp) |

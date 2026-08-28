@@ -20,7 +20,7 @@ Output:
     docs/output/datamart/DTM_{OUTPUT_NAME}_TKCSLD.md
 
 Heading numbering:
-    PTTK  — tự động renumber 3.2.X bắt đầu từ X=1
+    PTTK  — tự động renumber 3.1.X bắt đầu từ X=1
     TKCSLD — giữ nguyên cấu trúc từng module, chèn page break giữa các module
 """
 
@@ -30,6 +30,11 @@ import argparse
 import re
 import sys
 from pathlib import Path
+
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8")
 
 REPO_ROOT = Path(__file__).resolve().parents[4]
 OUTPUT_DIR = REPO_ROOT / "docs" / "output" / "datamart"
@@ -48,23 +53,22 @@ def _out_path(name: str, doc_type: str) -> Path:
 
 # ─── PTTK renumber ───────────────────────────────────────────────────────────
 
-# Match heading dạng: ## 3.2.X ... hoặc ### 3.2.X.1 ... hoặc #### 3.2.X.2.1 ...
-_PTTK_TOP = re.compile(r"^(#{1,2}\s+)3\.2\.(\d+)([\s\S]?)(.*)$", re.MULTILINE)
-_PTTK_SUB = re.compile(r"^(#{3,6}\s+)3\.2\.(\d+)\.(\S+)(.*)$", re.MULTILINE)
+# Match heading dạng: ## 3.1.X ... hoặc ## 3.2.X ...
+_PTTK_TOP = re.compile(r"^(#{1,2}\s+)3\.[12]\.(\d+)([\s\S]?)(.*)$", re.MULTILINE)
 
 
 def _renumber_pttk(text: str, new_x: int) -> str:
-    """Thay 3.2.X → 3.2.{new_x} trong toàn bộ text của 1 module."""
+    """Thay 3.1.X / 3.2.X → 3.1.{new_x} trong toàn bộ text của 1 module theo chuẩn Mục 3.1 Q5."""
     # Tìm X hiện tại (lấy số đầu tiên xuất hiện)
     m = _PTTK_TOP.search(text)
     if not m:
         return text
     old_x = m.group(2)
 
-    # Thay tất cả 3.2.{old_x}. và 3.2.{old_x} (word boundary)
+    # Luôn chuẩn hóa sang 3.1.{new_x}
     text = re.sub(
-        r"3\.2\." + re.escape(old_x) + r"(?=[\.\s\n]|$)",
-        f"3.2.{new_x}",
+        r"3\.[12]\." + re.escape(old_x) + r"(?=[\.\s\n]|$)",
+        f"3.1.{new_x}",
         text,
         flags=re.MULTILINE,
     )

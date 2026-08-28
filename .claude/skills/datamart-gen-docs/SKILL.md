@@ -5,7 +5,7 @@ description: |
   cho Gold/Datamart layer theo template chuẩn UBCK.
   Pipeline 3-Phase: gen Markdown → review/phê duyệt → gen DOCX.
 
-  Sử dụng khi: cần xuất tài liệu PTTK (Phần 3.2 Phân hệ ETL) hoặc TKCSLD
+  Sử dụng khi: cần xuất tài liệu PTTK (Phần 3.1 Phân hệ ETL) hoặc TKCSLD
   (Phần 3 Kho Dữ liệu OLAP) cho một module Datamart (TT/NHNCK/NDTNN/QLCB/...).
 
   Yêu cầu: HLD + Entities.csv + Attributes.csv của module đã được duyệt.
@@ -88,21 +88,21 @@ Sau khi đọc:
 Tuân thủ **PHẦN B** của instruction bên dưới. Thứ tự output:
 
 ```
-## 3.2.X Luồng đồng bộ dữ liệu cho nhóm báo cáo [Tên module tiếng Việt]
+## 3.1.X LUỒNG ĐỒNG BỘ DỮ LIỆU CHO NHÓM BÁO CÁO [Tên module tiếng Việt]
 
-### 3.2.X.1 Thông tin chung luồng đồng bộ
+### 3.1.X.1 Thông tin chung luồng đồng bộ
 (danh sách gạch đầu dòng, không in đậm, chữ thường, viết hoa chữ cái đầu)
 
-### 3.2.X.2 Luồng nghiệp vụ
+### 3.1.X.2 Luồng nghiệp vụ
 
-#### 3.2.X.2.1 Nhóm thông tin [Tên nhóm 1]
+#### 3.1.X.2.1 Nhóm thông tin [Tên nhóm 1]
 (diagram mermaid + mục đích + mô tả luồng)
 
-#### 3.2.X.2.2 Nhóm thông tin [Tên nhóm 2]
+#### 3.1.X.2.2 Nhóm thông tin [Tên nhóm 2]
 ...
 ```
 
-**Tra số thứ tự X:** Hỏi người dùng module này là số mấy trong tài liệu PTTK tổng (3.2.1, 3.2.2, ...) nếu chưa có thông tin. Default X=1.
+**Tra số thứ tự X:** Hỏi người dùng module này là số mấy trong tài liệu PTTK tổng (3.1.1, 3.1.2, ...) nếu chưa có thông tin. Default X=1.
 
 ### Bước 3: Gen `DTM_{MODULE}_TKCSLD.md`
 
@@ -198,7 +198,7 @@ python merge_md.py --modules TT FMS --type both --output-name Datamart_v1
 ```
 
 Script tự động:
-- **PTTK**: renumber `3.2.X` liên tục (module 1 → 3.2.1, module 2 → 3.2.2, ...)
+- **PTTK**: renumber `3.1.X` liên tục (module 1 → 3.1.1, module 2 → 3.1.2, ...)
 - **TKCSLD**: giữ nguyên cấu trúc từng module, chèn `\newpage` giữa các module
 
 ---
@@ -267,46 +267,47 @@ npm install -g @mermaid-js/mermaid-cli
 
 *(Áp dụng bởi `build_docx.py` — Claude không cần xử lý phần này khi gen Markdown)*
 
-| Thuộc tính | Giá trị |
-|---|---|
-| Khổ giấy | A4 ngang (Landscape) — w=16834, h=11909 DXA |
-| Font | Times New Roman |
-| Cỡ chữ thân | 24 half-pt (12pt) |
-| Heading 1/2 | 26 half-pt (13pt), đậm |
-| Heading 3/4/5 | 24 half-pt (12pt), đậm |
-| Cỡ chữ bảng | 20 half-pt (10pt) |
-| Border | SINGLE, size=1, color=#999999 |
-| Header row | Shading #BDD7EE, đậm, căn giữa |
-| Hàng chẵn | Shading #EEF4FB |
-| Cell margin | top=60, bottom=60, left=100, right=100 DXA |
+| Thuộc tính | Giá trị PTTK (Quyển 1) | Giá trị TKCSLD (Quyển 6) |
+|---|---|---|
+| Khổ giấy | **A4 đứng (Portrait)** — w=11909, h=16834 DXA | **A4 ngang (Landscape)** — w=16834, h=11909 DXA |
+| Font | Times New Roman | Times New Roman |
+| Cỡ chữ thân | 24 half-pt (12pt) | 24 half-pt (12pt) |
+| Heading 1/2 | 26 half-pt (13pt), đậm | 26 half-pt (13pt), đậm |
+| Heading 3/4/5 | 24 half-pt (12pt), đậm | 24 half-pt (12pt), đậm |
+| Cỡ chữ bảng | 20 half-pt (10pt) | 20 half-pt (10pt) |
+| Border | SINGLE, size=1, color=#999999 | SINGLE, size=1, color=#999999 |
+| Header row | Shading #BDD7EE, đậm, căn giữa | Shading #BDD7EE, đậm, căn giữa |
+| Hàng chẵn | Shading #EEF4FB | Shading #EEF4FB |
+| Cell margin | top=60, bottom=60, left=100, right=100 DXA | top=60, bottom=60, left=100, right=100 DXA |
 
-**Độ rộng cột (DXA, tổng = 13999):**
+**Độ rộng cột Landscape (DXA, tổng = 13999):**
 
 | Loại bảng | Phân bổ |
 |---|---|
 | 4 cột (danh sách thực thể) | 400 / 3500 / 2700 / 7399 |
 | 8 cột (thuộc tính Logic) | 360 / 2000 / 1500 / 560 / 560 / 560 / 680 / 7779 |
-| 12 cột (thuộc tính Physical) | 360 / 1300 / 1100 / 480 / 480 / 480 / 680 / 2200 / 900 / 1400 / 1200 / 3419 |
+| 11 cột (thuộc tính Physical rút gọn) | 360 / 1500 / 1200 / 480 / 480 / 480 / 680 / 2519 / 1700 / 1700 / 2900 |
+| 12 cột (thuộc tính Physical đầy đủ) | 360 / 1300 / 1100 / 480 / 480 / 480 / 480 / 2200 / 900 / 1400 / 1200 / 3619 |
 
 ---
 
-### PHẦN B — TÀI LIỆU PTTK: Mục 3.2 Phân hệ ETL
+### PHẦN B — TÀI LIỆU PTTK: Mục 3.1 Phân hệ ETL
 
 #### B.1 Cấu trúc output
 
 ```
-3.2 Phân hệ ETL
-  └─ 3.2.X Luồng đồng bộ dữ liệu cho nhóm báo cáo [Tên module tiếng Việt]
-       └─ 3.2.X.1 Thông tin chung luồng đồng bộ
-       └─ 3.2.X.2 Luồng nghiệp vụ
-            └─ 3.2.X.2.1 Nhóm thông tin [Tên nhóm]
-            └─ 3.2.X.2.2 Nhóm thông tin [Tên nhóm]
+3.1 Phân hệ ETL
+  └─ 3.1.X LUỒNG ĐỒNG BỘ DỮ LIỆU CHO NHÓM BÁO CÁO [Tên module tiếng Việt]
+       └─ 3.1.X.1 Thông tin chung luồng đồng bộ
+       └─ 3.1.X.2 Luồng nghiệp vụ
+            └─ 3.1.X.2.1 Nhóm thông tin [Tên nhóm]
+            └─ 3.1.X.2.2 Nhóm thông tin [Tên nhóm]
             └─ ...
 ```
 
-**Quy tắc đánh số:** Mỗi module đánh số tăng dần (3.2.1, 3.2.2, ...). Nhóm thông tin đánh số tiếp theo.
+**Quy tắc đánh số:** Khớp chuẩn Mục 3.1 Phân hệ ETL trong tài liệu mẫu Q5 (`UBCKNN_Q5_Tai lieu phan tich thiet ke_v1.0_20260429.docx`). Mỗi module đánh số tăng dần (3.1.1, 3.1.2, ...).
 
-#### B.2 Mục 3.2.X.1 — Thông tin chung luồng đồng bộ
+#### B.2 Mục 3.1.X.1 — Thông tin chung luồng đồng bộ
 
 Dùng **danh sách gạch đầu dòng**, KHÔNG dùng bảng. Toàn bộ text **chữ thường, KHÔNG in đậm**:
 
@@ -323,7 +324,7 @@ Dùng **danh sách gạch đầu dòng**, KHÔNG dùng bảng. Toàn bộ text *
 - **Nguồn dữ liệu:** Liệt kê tên hệ thống nguồn (chỉ tên hệ thống, không tới mức bảng), lấy từ prefix tên bảng Bronze trong toàn bộ diagram của module. VD: `THANHTRA`, `IDS`, `FIMS`
 - **Tất cả mục còn lại:** Để trống hoàn toàn (chỉ ghi tên label, không có giá trị)
 
-#### B.3 Mục 3.2.X.2 — Luồng nghiệp vụ
+#### B.3 Mục 3.1.X.2 — Luồng nghiệp vụ
 
 **B.3.1 Xác định Nhóm thông tin**
 
@@ -333,7 +334,7 @@ Dùng **danh sách gạch đầu dòng**, KHÔNG dùng bảng. Toàn bộ text *
 
 Ví dụ:
 - HLD: `Cụm 1: Thống kê & Cơ cấu vụ việc Thanh tra/Kiểm tra (Fact Inspection Case Activity)`
-- Tài liệu: `3.2.1.2.1 Nhóm thông tin Thống kê & Cơ cấu vụ việc Thanh tra/Kiểm tra`
+- Tài liệu: `3.1.1.2.1 Nhóm thông tin Thống kê & Cơ cấu vụ việc Thanh tra/Kiểm tra`
 
 **B.3.2 Diagram (flowchart)**
 
@@ -466,7 +467,7 @@ Xem `reference/column_rules.md` để biết chi tiết. Tóm tắt:
 | Nullable | PK hoặc FK → rỗng; còn lại theo `nullable` (true=X, false=rỗng) |
 | Unique | PK→X; còn lại→rỗng |
 | Giá trị mặc định | Luôn để trống |
-| Hệ thống nguồn | Lookup `(atomic_table, atomic_column)` → `source_system` từ `atomic_attributes.csv`; 3 trường kỹ thuật hoặc `source_entity=Generated`/rỗng → trống |
+| Hệ thống nguồn | Lookup `(atomic_table, atomic_column)` → `source_system` từ `DataModel/working/Atomic/aggregate/atomic_attributes.yaml`; 3 trường kỹ thuật hoặc `source_entity=Generated`/rỗng → trống |
 | Schema.Table | `ATM.{atomic_table}` (schema cố định `ATM` = Atomic); 3 trường kỹ thuật hoặc `atomic_table` trống → trống |
 | Source Field Name | `atomic_column` từ `DTM_{MODULE}_Attributes.csv`; 3 trường kỹ thuật hoặc `atomic_column` trống → trống |
 | ETL Rules | `etl_logic` từ `DTM_{MODULE}_Attributes.csv`; 3 trường kỹ thuật hoặc `source_entity=Generated`/rỗng → `ETL sinh tự động` |
@@ -576,8 +577,8 @@ Theo sau heading là metadata bảng:
 #### D.1 PTTK — Checklist
 
 - [ ] Tên module dùng tiếng Việt đầy đủ
-- [ ] Mục 3.2.X.1: danh sách gạch đầu dòng, chữ thường, không in đậm, để trống các mục chưa có dữ liệu
-- [ ] Nguồn dữ liệu trong 3.2.X.1 chỉ ghi tên hệ thống
+- [ ] Mục 3.1.X.1: danh sách gạch đầu dòng, chữ thường, không in đậm, để trống các mục chưa có dữ liệu
+- [ ] Nguồn dữ liệu trong 3.1.X.1 chỉ ghi tên hệ thống
 - [ ] Diagram flowchart: subgraph `Staging`/`Atomic`/`Datamart`; tên bảng Staging dùng `ID["label"]` syntax (node ID không dấu chấm, VD: `FMS_SECURITIES["FMS.SECURITIES"]`)
 - [ ] Diagram flowchart: node Atomic dùng `ID["label"]` syntax (ID dùng `_`, label bỏ `_`, VD: `Fund_Management_Company["Fund Management Company"]`)
 - [ ] Diagram flowchart: node Datamart dùng `ID["label"]` syntax (ID = tên physical, label = tên logical từ Entities.csv, VD: `fct_fnd_mgt_co_snpst["Fact Fund Management Company Snapshot"]`)

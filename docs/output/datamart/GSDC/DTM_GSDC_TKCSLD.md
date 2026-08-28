@@ -1,4 +1,4 @@
-# 3. KHO DỮ LIỆU (OLAP) — Giám sát doanh nghiệp chứng khoán
+# 3. KHO DỮ LIỆU (OLAP) — Giám sát Công ty Đại chúng
 
 ## 3.1 Mô hình dữ liệu mức High Level / Conceptual
 
@@ -18,9 +18,9 @@ erDiagram
 | STT | Thực thể | Tên bảng | Mô tả |
 |---|---|---|---|
 | 1 | Public Company Dimension | pblc_co_dim | Chiều công ty đại chúng — SCD2. Dùng chung toàn bộ màn hình GSDC. |
-| 2 | Financial Report Catalog Dimension | fnc_rpt_ctlg_dim | Chiều danh mục BCTC cross-tab: 1 row per (báo cáo × dòng × cột). Composite NK gồm Financial Report Catalog Business Code + Row Code + Column Code. |
-| 3 | Fact Public Company Financial Summary Snapshot | fct_pblc_co_fnc_sumry_snpst | Fact Periodic Snapshot tài chính tổng hợp: 1 row per CTDC per kỳ báo cáo (năm × quý). Pivot 13 chỉ tiêu tài chính chính từ Atomic tall format. Phục vụ Màn hình 2 và Màn hình 4. |
-| 4 | Fact Public Company Financial Report Value | fct_pblc_co_fnc_rpt_val | Fact Event chi tiết BCTC: 1 row per CTDC per kỳ per Row Code per Column Code. Lưu nguyên tall format từ Atomic. Phục vụ Màn hình 3 Data Explorer và STT 39. |
+| 2 | Financial Report Catalog Dimension | fnc_rpt_ctlg_dim | Chiều danh mục báo cáo tài chính dạng ma trận (báo cáo, dòng, cột) |
+| 3 | Fact Public Company Financial Summary Snapshot | fct_pblc_co_fnc_sumry_snpst | Ảnh chụp tài chính tổng hợp định kỳ của công ty đại chúng theo từng kỳ báo cáo (năm, quý) |
+| 4 | Fact Public Company Financial Report Value | fct_pblc_co_fnc_rpt_val | Dữ liệu chi tiết báo cáo tài chính của công ty đại chúng theo từng kỳ báo cáo và chỉ tiêu |
 
 ---
 
@@ -104,7 +104,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | Public Company Dimension Id | string | | X | P | | Surrogate key ETL tự sinh |
+| 1 | Public Company Dimension Id | string |  | X | P |  | Khóa đại diện tự sinh |
 | 2 | Public Company Code | string | | | | | Mã công ty đại chúng — khóa nghiệp vụ kết nối với Fact |
 | 3 | Equity Ticker Code | string | X | | | | Mã chứng khoán cổ phiếu |
 | 4 | Public Company Name | string | | | | | Tên công ty đại chúng |
@@ -122,7 +122,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | Financial Report Catalog Dimension Id | string | | X | P | | Surrogate key ETL tự sinh. Composite NK: Mã biểu mẫu + Mã dòng + Mã cột |
+| 1 | Financial Report Catalog Dimension Id | string |  | X | P |  | Khóa đại diện tự sinh. Composite NK: Mã biểu mẫu + Mã dòng + Mã cột |
 | 2 | Financial Report Catalog Business Code | string | | | | | Mã nghiệp vụ báo cáo — phần 1 của composite NK |
 | 3 | Row Code | string | | | | | Mã dòng BCTC — phần 2 của composite NK |
 | 4 | Column Code | string | | | | | Mã cột BCTC — phần 3 của composite NK |
@@ -263,7 +263,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Giá trị mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | pblc_co_dim_id | string | | X | P | | Surrogate key ETL tự sinh | | | | ETL sinh tự động |
+| 1 | pblc_co_dim_id | string |  | X | P |  | Khóa đại diện tự sinh |  |  |  | ETL sinh tự động |
 | 2 | pblc_co_code | string | | | | | Mã công ty đại chúng — khóa nghiệp vụ kết nối với Fact | IDS | ATM.pblc_co | pblc_co_code | pblc_co.pblc_co_code |
 | 3 | eqty_ticker_code | string | X | | | | Mã chứng khoán cổ phiếu | IDS | ATM.pblc_co | eqty_ticker | pblc_co.eqty_ticker |
 | 4 | pblc_co_nm | string | | | | | Tên công ty đại chúng | IDS | ATM.pblc_co | pblc_co_nm | pblc_co.pblc_co_nm |
@@ -279,7 +279,7 @@ erDiagram
 
 #### 3.3.2.2 Bảng Financial Report Catalog Dimension (fnc_rpt_ctlg_dim)
 
-*Mô tả bảng:* Chiều danh mục BCTC cross-tab: 1 row per (báo cáo × dòng × cột). Composite NK gồm Financial Report Catalog Business Code + Row Code + Column Code.
+*Mô tả bảng:* Chiều danh mục báo cáo tài chính dạng ma trận (báo cáo, dòng, cột)
 *Đường dẫn trên kho dữ liệu:*
 *Các trường Partition:*
 *Thời gian lưu trữ:*
@@ -287,7 +287,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Giá trị mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | fnc_rpt_ctlg_dim_id | string | | X | P | | Surrogate key ETL tự sinh. Composite NK: Mã biểu mẫu + Mã dòng + Mã cột | | | | ETL sinh tự động |
+| 1 | fnc_rpt_ctlg_dim_id | string |  | X | P |  | Khóa đại diện tự sinh. Composite NK: Mã biểu mẫu + Mã dòng + Mã cột |  |  |  | ETL sinh tự động |
 | 2 | fnc_rpt_ctlg_bsn_code | string | | | | | Mã nghiệp vụ báo cáo — phần 1 của composite NK | IDS | ATM.fnc_rpt_ctlg | fnc_rpt_ctlg_bsn_code | fnc_rpt_ctlg.fnc_rpt_ctlg_bsn_code |
 | 3 | row_code | string | | | | | Mã dòng BCTC — phần 2 của composite NK | IDS | ATM.fnc_rpt_row_tpl | row_code | INNER JOIN fnc_rpt_row_tpl ON fnc_rpt_row_tpl.fnc_rpt_ctlg_id = fnc_rpt_ctlg.fnc_rpt_ctlg_id → fnc_rpt_row_tpl.row_code |
 | 4 | clmn_code | string | | | | | Mã cột BCTC — phần 3 của composite NK | IDS | ATM.fnc_rpt_clmn_tpl | clmn_code | INNER JOIN fnc_rpt_clmn_tpl ON fnc_rpt_clmn_tpl.fnc_rpt_ctlg_id = fnc_rpt_ctlg.fnc_rpt_ctlg_id → fnc_rpt_clmn_tpl.clmn_code |
@@ -305,7 +305,7 @@ erDiagram
 
 #### 3.3.3.1 Bảng Fact Public Company Financial Summary Snapshot (fct_pblc_co_fnc_sumry_snpst)
 
-*Mô tả bảng:* Fact Periodic Snapshot tài chính tổng hợp: 1 row per CTDC per kỳ báo cáo (năm × quý). Pivot 13 chỉ tiêu tài chính chính từ Atomic tall format. Phục vụ Màn hình 2 và Màn hình 4.
+*Mô tả bảng:* Ảnh chụp tài chính tổng hợp định kỳ của công ty đại chúng theo từng kỳ báo cáo (năm, quý)
 *Đường dẫn trên kho dữ liệu:*
 *Các trường Partition:*
 *Thời gian lưu trữ:*
@@ -338,7 +338,7 @@ erDiagram
 
 #### 3.3.3.2 Bảng Fact Public Company Financial Report Value (fct_pblc_co_fnc_rpt_val)
 
-*Mô tả bảng:* Fact Event chi tiết BCTC: 1 row per CTDC per kỳ per Row Code per Column Code. Lưu nguyên tall format từ Atomic. Phục vụ Màn hình 3 Data Explorer và STT 39.
+*Mô tả bảng:* Dữ liệu chi tiết báo cáo tài chính của công ty đại chúng theo từng kỳ báo cáo và chỉ tiêu
 *Đường dẫn trên kho dữ liệu:*
 *Các trường Partition:*
 *Thời gian lưu trữ:*

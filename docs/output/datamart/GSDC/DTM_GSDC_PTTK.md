@@ -1,49 +1,49 @@
-## 3.2.2 Luồng đồng bộ dữ liệu cho nhóm báo cáo Giám sát doanh nghiệp chứng khoán
+## 3.1.5 LUỒNG ĐỒNG BỘ DỮ LIỆU CHO NHÓM BÁO CÁO Giám sát Công ty Đại chúng
 
-### 3.2.2.1 Thông tin chung luồng đồng bộ
+### 3.1.5.1 Thông tin chung luồng đồng bộ
 
 - Tên job:
-- Nguồn dữ liệu (hệ thống nguồn): IDS
+- Nguồn dữ liệu (Hệ thống nguồn): IDS
 - Cách thức truy xuất đồng bộ dữ liệu:
 - Tần suất đồng bộ dữ liệu:
 - Dung lượng dữ liệu sẽ thực hiện đồng bộ:
 - Thời gian lưu trữ dữ liệu:
 - Thư mục lưu trữ dữ liệu trên kho dữ liệu:
 
-### 3.2.2.2 Luồng nghiệp vụ
+### 3.1.5.2 Luồng nghiệp vụ
 
-#### 3.2.2.2.1 Nhóm thông tin Báo cáo tài chính & Nộp báo cáo
+#### 3.1.5.2.1 Nhóm thông tin Báo cáo tài chính & Nộp báo cáo
 
 ```mermaid
 flowchart LR
     subgraph Staging
-        S3[IDS.company_data]
-        S4[IDS.data]
-        S5[IDS.report_catalog]
-        S6[IDS.rrow]
-        S7[IDS.rcol]
+        IDS_company_data["IDS.company_data"]
+        IDS_data["IDS.data"]
+        IDS_report_catalog["IDS.report_catalog"]
+        IDS_rrow["IDS.rrow"]
+        IDS_rcol["IDS.rcol"]
     end
     subgraph Atomic
-        A2["Public Company Report Submission"]
-        A3["Public Company Financial Report Value"]
-        A4["Financial Report Catalog"]
-        A5["Financial Report Row Template"]
-        A6["Financial Report Column Template"]
+        Public_Company_Report_Submission["Public Company Report Submission"]
+        Public_Company_Financial_Report_Value["Public Company Financial Report Value"]
+        Financial_Report_Catalog["Financial Report Catalog"]
+        Financial_Report_Row_Template["Financial Report Row Template"]
+        Financial_Report_Column_Template["Financial Report Column Template"]
     end
     subgraph Datamart
-        D2["Fact Public Company Financial Summary Snapshot"]
-        D1["Public Company Dimension"]
-        D8["Calendar Date Dimension"]
+        fct_pblc_co_fnc_sumry_snpst["Fact Public Company Financial Summary Snapshot"]
+        pblc_co_dim["Public Company Dimension"]
+        cdr_dt_dim["Calendar Date Dimension"]
     end
-    S3 --> A2
-    S4 --> A3
-    S5 --> A4
-    S6 --> A5
-    S7 --> A6
-    A2 --> D2
-    A3 --> D2
-    D1 --> D2
-    D8 --> D2
+    IDS_company_data --> Public_Company_Report_Submission
+    IDS_data --> Public_Company_Financial_Report_Value
+    IDS_report_catalog --> Financial_Report_Catalog
+    IDS_rrow --> Financial_Report_Row_Template
+    IDS_rcol --> Financial_Report_Column_Template
+    Public_Company_Report_Submission --> fct_pblc_co_fnc_sumry_snpst
+    Public_Company_Financial_Report_Value --> fct_pblc_co_fnc_sumry_snpst
+    pblc_co_dim --> fct_pblc_co_fnc_sumry_snpst
+    cdr_dt_dim --> fct_pblc_co_fnc_sumry_snpst
 ```
 
 **Mục đích:** Cung cấp bảng sự kiện tổng hợp tài chính theo kỳ báo cáo cho Màn hình 2 (Giám sát Tổng hợp) và Màn hình 4 (Báo cáo giám sát CTDC). Mỗi dòng tổng hợp 13 chỉ tiêu tài chính chính của một doanh nghiệp trong một kỳ (năm × quý).
@@ -64,43 +64,43 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.2.2.2 Nhóm thông tin Chi tiết BCTC từng CTDC & Danh mục template
+#### 3.1.5.2.2 Nhóm thông tin Chi tiết BCTC từng CTDC & Danh mục template
 
 ```mermaid
 flowchart LR
     subgraph Staging
-        S3b[IDS.company_data]
-        S4b[IDS.data]
-        S5b[IDS.report_catalog]
-        S6b[IDS.rrow]
-        S7b[IDS.rcol]
+        IDS_company_data["IDS.company_data"]
+        IDS_data["IDS.data"]
+        IDS_report_catalog["IDS.report_catalog"]
+        IDS_rrow["IDS.rrow"]
+        IDS_rcol["IDS.rcol"]
     end
     subgraph Atomic
-        A2b["Public Company Report Submission"]
-        A3b["Public Company Financial Report Value"]
-        A4b["Financial Report Catalog"]
-        A5b["Financial Report Row Template"]
-        A6b["Financial Report Column Template"]
+        Public_Company_Report_Submission["Public Company Report Submission"]
+        Public_Company_Financial_Report_Value["Public Company Financial Report Value"]
+        Financial_Report_Catalog["Financial Report Catalog"]
+        Financial_Report_Row_Template["Financial Report Row Template"]
+        Financial_Report_Column_Template["Financial Report Column Template"]
     end
     subgraph Datamart
-        D10["Fact Public Company Financial Report Value"]
-        D9["Financial Report Catalog Dimension"]
-        D1b["Public Company Dimension"]
-        D8b["Calendar Date Dimension"]
+        fct_pblc_co_fnc_rpt_val["Fact Public Company Financial Report Value"]
+        fnc_rpt_ctlg_dim["Financial Report Catalog Dimension"]
+        pblc_co_dim["Public Company Dimension"]
+        cdr_dt_dim["Calendar Date Dimension"]
     end
-    S3b --> A2b
-    S4b --> A3b
-    S5b --> A4b
-    S6b --> A5b
-    S7b --> A6b
-    A3b --> D10
-    A2b --> D10
-    A4b --> D9
-    A5b --> D9
-    A6b --> D9
-    D1b --> D10
-    D8b --> D10
-    D9 --> D10
+    IDS_company_data --> Public_Company_Report_Submission
+    IDS_data --> Public_Company_Financial_Report_Value
+    IDS_report_catalog --> Financial_Report_Catalog
+    IDS_rrow --> Financial_Report_Row_Template
+    IDS_rcol --> Financial_Report_Column_Template
+    Public_Company_Financial_Report_Value --> fct_pblc_co_fnc_rpt_val
+    Public_Company_Report_Submission --> fct_pblc_co_fnc_rpt_val
+    Financial_Report_Catalog --> fnc_rpt_ctlg_dim
+    Financial_Report_Row_Template --> fnc_rpt_ctlg_dim
+    Financial_Report_Column_Template --> fnc_rpt_ctlg_dim
+    pblc_co_dim --> fct_pblc_co_fnc_rpt_val
+    cdr_dt_dim --> fct_pblc_co_fnc_rpt_val
+    fnc_rpt_ctlg_dim --> fct_pblc_co_fnc_rpt_val
 ```
 
 **Mục đích:** Cung cấp bảng sự kiện chi tiết BCTC theo từng chỉ tiêu (1 dòng / CTDC / kỳ / dòng chỉ tiêu / cột) và bảng chiều danh mục BCTC phục vụ Data Explorer tra cứu giá trị từng ô BCTC của từng doanh nghiệp (Màn hình 3, STT 21–32 + STT 39).

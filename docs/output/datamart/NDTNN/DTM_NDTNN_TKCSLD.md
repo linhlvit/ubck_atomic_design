@@ -1,4 +1,4 @@
-# 3. KHO DỮ LIỆU (OLAP) — Nhà đầu tư nước ngoài
+# 3. KHO DỮ LIỆU (OLAP) — Quản lý NĐTNN
 
 ## 3.1 Mô hình dữ liệu mức High Level / Conceptual
 
@@ -35,14 +35,14 @@ erDiagram
 | 2 | Foreign Investor Dimension | frgn_ivsr_dim | NĐTNN — Mã GD / Tên / ObjectType / Loại hình / Quốc tịch (SCD2) |
 | 3 | Geographic Area Dimension | geo_dim | Quốc gia / quốc tịch — FIMS.NATIONAL (SCD2) |
 | 4 | Asset Category Dimension | ast_cgy_dim | Loại hình tài sản 5 giá trị: Cổ phiếu CCQ niêm yết / Trái phiếu / UPCoM / Vốn góp CK khác / Tiền (SCD2) |
-| 5 | Industry Category Dimension | idy_cgy_dim | Nhóm ngành — ETL-derived Conformed Dim từ Public Company.Industry Category Level1 Code (IDS). Tái sử dụng cross-module (SCD2) |
+| 5 | Industry Category Dimension | idy_cgy_dim | Nhóm ngành — Chiều danh mục dùng chung từ phân hệ Công ty đại chúng (mã cấp 1 IDS), quản lý lịch sử SCD2 |
 | 6 | Public Company Dimension | pblc_co_dim | Công ty đại chúng — IDS.company_profiles + company_detail. Chứa Stock Code + Industry Category Level1 Code (SCD2) |
-| 7 | Fact Foreign Investor Registration | fct_frgn_ivsr_rgst | Event đăng ký MSGD — 1 row per NĐT NN đăng ký mã giao dịch |
-| 8 | Fact Foreign Investor Capital Flow | fct_frgn_ivsr_cptl_flow | Event vào/ra vốn — 1 row per sự kiện IN/OUT × 1 NĐT × 1 ngày báo cáo (FIMS.RPTMEMBER) |
-| 9 | Fact Foreign Investor Portfolio Snapshot | fct_frgn_ivsr_prtfl_snpst | Periodic snapshot danh mục — 1 row per NĐT × 1 mã tài sản × 1 tháng |
-| 10 | Fact Foreign Ownership Snapshot | fct_frgn_own_snpst | Periodic snapshot ROOM — 1 row per mã CK × 1 ngày. ETL pre-aggregate SUM(Ownership Rate) từ FIMS.CATEGORIESSTOCK trước khi join IDS.foreign_owner_limit |
+| 7 | Fact Foreign Investor Registration | fct_frgn_ivsr_rgst | Event đăng ký MSGD — mỗi dòng tương ứng một nhà đầu tư nước ngoài đăng ký mã số giao dịch |
+| 8 | Fact Foreign Investor Capital Flow | fct_frgn_ivsr_cptl_flow | Event dòng vốn — mỗi dòng tương ứng một sự kiện vào/ra vốn của nhà đầu tư theo ngày báo cáo |
+| 9 | Fact Foreign Investor Portfolio Snapshot | fct_frgn_ivsr_prtfl_snpst | Ảnh chụp danh mục định kỳ — mỗi dòng tương ứng danh mục của một nhà đầu tư theo mã tài sản theo tháng |
+| 10 | Fact Foreign Ownership Snapshot | fct_frgn_own_snpst | Ảnh chụp tỷ lệ sở hữu nước ngoài — mỗi dòng tương ứng một mã chứng khoán theo ngày báo cáo |
 | 11 | Foreign Investor 360 Profile | frgn_ivsr_360_prfl | Hồ sơ 360° NĐT — latest state / lookup 1 NĐT |
-| 12 | Investor Compliance History | ivsr_cmpln_hist | Lịch sử tuân thủ NĐT — 1 row per quyết định xử lý. Driving: surveil_nfrc_dcsn. Join ngược sang surveil_nfrc_case để lấy thông tin hồ sơ cha |
+| 12 | Investor Compliance History | ivsr_cmpln_hist | Lịch sử tuân thủ NĐT — mỗi dòng tương ứng một quyết định xử lý vi phạm kèm thông tin hồ sơ liên quan |
 | 13 | NDTNN Regulatory Report Store | ndtnn_reg_rpt_store | Generic store 26 mẫu biểu TT51/2021 — pass-through nội dung báo cáo nộp vào FIMS. 1 bảng thay vì 23 bảng riêng |
 
 ---
@@ -198,7 +198,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | Date Dimension Id | string | | X | P | | Surrogate key = YYYYMMDD |
+| 1 | Date Dimension Id | string |  | X | P |  | Khóa chính ngày lịch |
 | 2 | Full Date | date | | | | | Ngày đầy đủ |
 | 3 | Year | int | X | | | | Năm — derive từ Full Date |
 | 4 | Month | int | X | | | | Tháng — derive từ Full Date |
@@ -210,7 +210,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | Investor Dimension Id | string | | X | P | | Surrogate key |
+| 1 | Investor Dimension Id | string |  | X | P |  | Khóa đại diện |
 | 2 | Investor Code | string | | | | | Mã số giao dịch MSGD (Transaction Code) |
 | 3 | Investor Name | string | X | | | | Tên NĐT (cá nhân: họ tên / tổ chức: tên pháp lý) |
 | 4 | English Name | string | X | | | | Tên tiếng Anh |
@@ -226,7 +226,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | Geographic Area Dimension Id | string | | X | P | | Surrogate key |
+| 1 | Geographic Area Dimension Id | string |  | X | P |  | Khóa đại diện |
 | 2 | Geographic Area Code | string | | | | | Mã quốc gia |
 | 3 | Geographic Area Short Code | string | X | | | | Mã viết tắt |
 | 4 | Geographic Area Name | string | X | | | | Tên quốc gia |
@@ -236,7 +236,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | Asset Category Dimension Id | string | | X | P | | Surrogate key |
+| 1 | Asset Category Dimension Id | string |  | X | P |  | Khóa đại diện |
 | 2 | Asset Category Code | string | | | | | Mã loại tài sản |
 | 3 | Asset Category Name | string | X | | | | Tên loại tài sản (Cổ phiếu CCQ niêm yết / Trái phiếu / UPCoM / Vốn góp CK khác / Tiền tương đương) |
 
@@ -244,8 +244,8 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | Industry Category Dimension Id | string | | X | P | | Surrogate key — ETL generated |
-| 2 | Industry Category Code | string | | | | | Mã nhóm ngành — ETL extract từ Public Company |
+| 1 | Industry Category Dimension Id | string |  | X | P |  | Khóa đại diện |
+| 2 | Industry Category Code | string |  |  |  |  | Mã phân ngành kinh tế |
 | 3 | Industry Category Name | string | X | | | | Tên ngành cấp 1 |
 | 4 | Parent Category Code | string | X | | | | Mã danh mục cha (Level 1 parent) |
 
@@ -253,8 +253,8 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | Public Company Dimension Id | string | | X | P | | Surrogate key |
-| 2 | Public Company Id | string | | | | | Silver surrogate Id của công ty đại chúng |
+| 1 | Public Company Dimension Id | string |  | X | P |  | Khóa đại diện |
+| 2 | Public Company Id | string | | | | | Mã định danh công ty đại chúng |
 | 3 | Stock Code | string | X | | | | Mã chứng khoán (ISIN) |
 | 4 | Public Company Code | string | X | | | | Mã công ty đại chúng |
 | 5 | Public Company Name | string | X | | | | Tên công ty tiếng Việt |
@@ -307,7 +307,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | Foreign Investor Profile Id | string | | X | P | | Surrogate key ETL generated |
+| 1 | Foreign Investor Profile Id | string |  | X | P |  | Khóa đại diện tự sinh |
 | 2 | Investor Code | string | | | | | Mã số giao dịch MSGD — business key NĐT nước ngoài |
 | 3 | Investor Name | string | X | | | | Tên NĐT |
 | 4 | English Name | string | X | | | | Tên tiếng Anh |
@@ -323,7 +323,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | Enforcement Decision Id | string | | X | P | | Surrogate key ETL generated |
+| 1 | Enforcement Decision Id | string |  | X | P |  | Khóa đại diện tự sinh |
 | 2 | Investor Code | string | X | | | | Mã NĐT NN |
 | 3 | Decision Code | string | | | | | Mã quyết định xử lý |
 | 4 | Enforcement Case Code | string | X | | | | Mã hồ sơ giám sát cha |
@@ -341,7 +341,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | Report Value Id | string | | X | P | | Surrogate key ETL generated |
+| 1 | Report Value Id | string |  | X | P |  | Khóa đại diện tự sinh |
 | 2 | Member Regulatory Report Code | string | | | | | Mã lần nộp báo cáo |
 | 3 | Report Type Code | string | X | | | | Loại báo cáo — phân biệt 23 loại biểu mẫu TT51/2021 |
 | 4 | Report Template Code | string | X | | | | Mã biểu mẫu báo cáo |
@@ -516,7 +516,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Giá trị mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | dt_dim_id | string | | X | P | | Surrogate key = YYYYMMDD | | | | ETL sinh tự động |
+| 1 | dt_dim_id | string |  | X | P |  | Khóa chính ngày lịch |  |  |  | ETL sinh tự động |
 | 2 | full_dt | date | | | | | Ngày đầy đủ | | | | ETL sinh tự động |
 | 3 | yr | int | X | | | | Năm | | | | EXTRACT(YEAR FROM cdr_dt_dim.full_dt) |
 | 4 | mo | int | X | | | | Tháng | | | | EXTRACT(MONTH FROM cdr_dt_dim.full_dt) |
@@ -534,7 +534,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Giá trị mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | ivsr_dim_id | string | | X | P | | Surrogate key | | | | ETL sinh tự động |
+| 1 | ivsr_dim_id | string |  | X | P |  | Khóa đại diện |  |  |  | ETL sinh tự động |
 | 2 | ivsr_code | string | | | | | Mã số giao dịch MSGD | FIMS | ATM.frgn_ivsr | txn_code | frgn_ivsr.txn_code |
 | 3 | ivsr_nm | string | X | | | | Tên NĐT | FIMS | ATM.frgn_ivsr | full_nm | frgn_ivsr.full_nm |
 | 4 | english_nm | string | X | | | | Tên tiếng Anh | FIMS | ATM.frgn_ivsr | en_nm | frgn_ivsr.en_nm |
@@ -556,7 +556,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Giá trị mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | geo_dim_id | string | | X | P | | Surrogate key | | | | ETL sinh tự động |
+| 1 | geo_dim_id | string |  | X | P |  | Khóa đại diện |  |  |  | ETL sinh tự động |
 | 2 | geo_code | string | | | | | Mã quốc gia | FIMS | ATM.geo | geo_code | geo.geo_code |
 | 3 | geo_shrt_code | string | X | | | | Mã viết tắt | FIMS | ATM.geo | geo_shrt_code | geo.geo_shrt_code |
 | 4 | geo_nm | string | X | | | | Tên quốc gia | FIMS | ATM.geo | geo_nm | geo.geo_nm |
@@ -572,13 +572,13 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Giá trị mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | ast_cgy_dim_id | string | | X | P | | Surrogate key | | | | ETL sinh tự động |
+| 1 | ast_cgy_dim_id | string |  | X | P |  | Khóa đại diện |  |  |  | ETL sinh tự động |
 | 2 | ast_cgy_code | string | | | | | Mã loại tài sản | | | | ETL sinh tự động |
 | 3 | ast_cgy_nm | string | X | | | | Tên loại tài sản | | | | ETL sinh tự động |
 
 #### 3.3.2.5 Bảng Industry Category Dimension (idy_cgy_dim)
 
-*Mô tả bảng:* Nhóm ngành — ETL-derived Conformed Dim từ Public Company.Industry Category Level1 Code (IDS). Tái sử dụng cross-module (SCD2)
+*Mô tả bảng:* Nhóm ngành — Chiều danh mục dùng chung từ phân hệ Công ty đại chúng (mã cấp 1 IDS), quản lý lịch sử SCD2
 *Đường dẫn trên kho dữ liệu:*
 *Các trường Partition:*
 *Thời gian lưu trữ:*
@@ -586,7 +586,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Giá trị mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | idy_cgy_dim_id | string | | X | P | | Surrogate key — ETL generated | | | | ETL sinh tự động |
+| 1 | idy_cgy_dim_id | string |  | X | P |  | Khóa đại diện |  |  |  | ETL sinh tự động |
 | 2 | idy_cgy_code | string | | | | | Mã nhóm ngành | IDS | ATM.pblc_co | idy_cgy_level1_code | pblc_co.idy_cgy_level1_code |
 | 3 | idy_cgy_nm | string | X | | | | Tên ngành cấp 1 | FIMS | ATM.cv | cl_nm | INNER JOIN cv ON cv.cl_code = pblc_co.idy_cgy_level1_code AND cv.scm_code = 'IDS_INDUSTRY_CATEGORY' → cv.cl_nm |
 | 4 | prn_cgy_code | string | X | | | | Mã danh mục cha | | | | ETL sinh tự động |
@@ -601,8 +601,8 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Giá trị mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | pblc_co_dim_id | string | | X | P | | Surrogate key | | | | ETL sinh tự động |
-| 2 | pblc_co_id | string | | | | | Silver surrogate Id của công ty đại chúng | IDS | ATM.pblc_co | pblc_co_id | pblc_co.pblc_co_id |
+| 1 | pblc_co_dim_id | string |  | X | P |  | Khóa đại diện |  |  |  | ETL sinh tự động |
+| 2 | pblc_co_id | string | | | | | Mã định danh công ty đại chúng | IDS | ATM.pblc_co | pblc_co_id | pblc_co.pblc_co_id |
 | 3 | stk_code | string | X | | | | Mã chứng khoán (ISIN) | IDS | ATM.pblc_co | isin_code | pblc_co.isin_code |
 | 4 | pblc_co_code | string | X | | | | Mã công ty đại chúng | IDS | ATM.pblc_co | pblc_co_code | pblc_co.pblc_co_code |
 | 5 | pblc_co_nm | string | X | | | | Tên công ty tiếng Việt | IDS | ATM.pblc_co | pblc_co_nm | pblc_co.pblc_co_nm |
@@ -617,7 +617,7 @@ erDiagram
 
 #### 3.3.3.1 Bảng Fact Foreign Investor Registration (fct_frgn_ivsr_rgst)
 
-*Mô tả bảng:* Event đăng ký MSGD — 1 row per NĐT NN đăng ký mã giao dịch
+*Mô tả bảng:* Event đăng ký MSGD — mỗi dòng tương ứng một nhà đầu tư nước ngoài đăng ký mã số giao dịch
 *Đường dẫn trên kho dữ liệu:*
 *Các trường Partition:*
 *Thời gian lưu trữ:*
@@ -630,7 +630,7 @@ erDiagram
 
 #### 3.3.3.2 Bảng Fact Foreign Investor Capital Flow (fct_frgn_ivsr_cptl_flow)
 
-*Mô tả bảng:* Event vào/ra vốn — 1 row per sự kiện IN/OUT × 1 NĐT × 1 ngày báo cáo (FIMS.RPTMEMBER)
+*Mô tả bảng:* Event dòng vốn — mỗi dòng tương ứng một sự kiện vào/ra vốn của nhà đầu tư theo ngày báo cáo
 *Đường dẫn trên kho dữ liệu:*
 *Các trường Partition:*
 *Thời gian lưu trữ:*
@@ -646,7 +646,7 @@ erDiagram
 
 #### 3.3.3.3 Bảng Fact Foreign Investor Portfolio Snapshot (fct_frgn_ivsr_prtfl_snpst)
 
-*Mô tả bảng:* Periodic snapshot danh mục — 1 row per NĐT × 1 mã tài sản × 1 tháng
+*Mô tả bảng:* Ảnh chụp danh mục định kỳ — mỗi dòng tương ứng danh mục của một nhà đầu tư theo mã tài sản theo tháng
 *Đường dẫn trên kho dữ liệu:*
 *Các trường Partition:*
 *Thời gian lưu trữ:*
@@ -666,7 +666,7 @@ erDiagram
 
 #### 3.3.3.4 Bảng Fact Foreign Ownership Snapshot (fct_frgn_own_snpst)
 
-*Mô tả bảng:* Periodic snapshot ROOM — 1 row per mã CK × 1 ngày. ETL pre-aggregate SUM(Ownership Rate) từ FIMS.CATEGORIESSTOCK trước khi join IDS.foreign_owner_limit
+*Mô tả bảng:* Ảnh chụp tỷ lệ sở hữu nước ngoài — mỗi dòng tương ứng một mã chứng khoán theo ngày báo cáo
 *Đường dẫn trên kho dữ liệu:*
 *Các trường Partition:*
 *Thời gian lưu trữ:*
@@ -693,7 +693,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Giá trị mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | frgn_ivsr_prfl_id | string | | X | P | | Surrogate key ETL generated | | | | ETL sinh tự động |
+| 1 | frgn_ivsr_prfl_id | string |  | X | P |  | Khóa đại diện tự sinh |  |  |  | ETL sinh tự động |
 | 2 | ivsr_code | string | | | | | Mã số giao dịch MSGD | FIMS | ATM.frgn_ivsr | txn_code | frgn_ivsr.txn_code |
 | 3 | ivsr_nm | string | X | | | | Tên NĐT | FIMS | ATM.frgn_ivsr | full_nm | frgn_ivsr.full_nm |
 | 4 | english_nm | string | X | | | | Tên tiếng Anh | FIMS | ATM.frgn_ivsr | en_nm | frgn_ivsr.en_nm |
@@ -707,7 +707,7 @@ erDiagram
 
 #### 3.3.4.2 Bảng Investor Compliance History (ivsr_cmpln_hist)
 
-*Mô tả bảng:* Lịch sử tuân thủ NĐT — 1 row per quyết định xử lý. Driving: surveil_nfrc_dcsn. Join ngược sang surveil_nfrc_case để lấy thông tin hồ sơ cha
+*Mô tả bảng:* Lịch sử tuân thủ NĐT — mỗi dòng tương ứng một quyết định xử lý vi phạm kèm thông tin hồ sơ liên quan
 *Đường dẫn trên kho dữ liệu:*
 *Các trường Partition:*
 *Thời gian lưu trữ:*
@@ -715,7 +715,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Giá trị mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | surveil_nfrc_dcsn_id | string | | X | P | | Surrogate key ETL generated | | | | ETL sinh tự động |
+| 1 | surveil_nfrc_dcsn_id | string |  | X | P |  | Khóa đại diện tự sinh |  |  |  | ETL sinh tự động |
 | 2 | ivsr_code | string | X | | | | Mã NĐT NN | | | | ETL sinh tự động |
 | 3 | dcsn_code | string | | | | | Mã quyết định xử lý | THANHTRA | ATM.surveil_nfrc_dcsn | surveil_nfrc_dcsn_code | surveil_nfrc_dcsn.surveil_nfrc_dcsn_code |
 | 4 | surveil_nfrc_case_code | string | X | | | | Mã hồ sơ giám sát cha | THANHTRA | ATM.surveil_nfrc_dcsn | surveil_nfrc_case_code | surveil_nfrc_dcsn.surveil_nfrc_case_code |
@@ -739,7 +739,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Giá trị mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | rpt_val_id | string | | X | P | | Surrogate key ETL generated | | | | ETL sinh tự động |
+| 1 | rpt_val_id | string |  | X | P |  | Khóa đại diện tự sinh |  |  |  | ETL sinh tự động |
 | 2 | mbr_reg_rpt_code | string | | | | | Mã lần nộp báo cáo | FIMS | ATM.mbr_reg_rpt | mbr_reg_rpt_code | INNER JOIN mbr_reg_rpt ON mbr_reg_rpt.mbr_reg_rpt_id = mbr_rpt_val.mbr_reg_rpt_id → mbr_reg_rpt.mbr_reg_rpt_code |
 | 3 | rpt_tp_code | string | X | | | | Loại báo cáo — phân biệt 23 loại biểu mẫu TT51/2021 | FIMS | ATM.mbr_reg_rpt | rpt_tp_code | INNER JOIN mbr_reg_rpt ON mbr_reg_rpt.mbr_reg_rpt_id = mbr_rpt_val.mbr_reg_rpt_id → mbr_reg_rpt.rpt_tp_code |
 | 4 | rpt_tpl_code | string | X | | | | Mã biểu mẫu báo cáo | FIMS | ATM.mbr_reg_rpt | rpt_tpl_code | INNER JOIN mbr_reg_rpt ON mbr_reg_rpt.mbr_reg_rpt_id = mbr_rpt_val.mbr_reg_rpt_id → mbr_reg_rpt.rpt_tpl_code |

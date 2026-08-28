@@ -1,4 +1,4 @@
-# 3. KHO DỮ LIỆU (OLAP) — Thanh Tra
+# 3. KHO DỮ LIỆU (OLAP) — Hoạt động Thanh tra
 
 ## 3.1 Mô hình dữ liệu mức High Level / Conceptual
 
@@ -21,8 +21,8 @@ erDiagram
 |---|---|---|---|
 | 1 | Calendar Date Dimension | cdr_dt_dim | Lịch ngày — năm/quý/tháng phục vụ slicer và phân tích theo thời gian |
 | 2 | Classification Dimension | cl_dim | Danh mục phân loại — phục vụ 3 scheme trên 2 Fact: TT_SUBJECT_CATEGORY / TT_PENALTY_SUBJECT_CATEGORY / TT_VIOLATION_TYPE |
-| 3 | Fact Inspection Case Activity | fct_inspection_case_avy | Event vụ việc TT/KT — 1 row per hồ sơ × đối tượng |
-| 4 | Fact Penalty Decision | fct_pny_dcsn | Event quyết định xử phạt — 1 row per quyết định xử phạt |
+| 3 | Fact Inspection Case Activity | fct_inspection_case_avy | Event vụ việc TT/KT — mỗi dòng tương ứng một hồ sơ thanh tra đối với một đối tượng |
+| 4 | Fact Penalty Decision | fct_pny_dcsn | Event quyết định xử phạt — mỗi dòng tương ứng một quyết định xử phạt vi phạm |
 | 5 | Inspection Case List | inspection_case_list | Hồ sơ TT/KT — latest state per hồ sơ |
 | 6 | Penalty Decision List | pny_dcsn_list | Quyết định xử phạt — latest state per quyết định |
 | 7 | Complaint Petition List | cpln_petition_list | Đơn thư khiếu nại tố cáo — latest state per đơn |
@@ -112,7 +112,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | Date Dimension Id | string | | X | P | | Surrogate key lịch ngày |
+| 1 | Date Dimension Id | string |  | X | P |  | Khóa chính ngày lịch |
 | 2 | Full Date | date | X | | | | Ngày đầy đủ |
 | 3 | Year | int | X | | | | Năm |
 | 4 | Month | int | X | | | | Tháng (1–12) |
@@ -122,7 +122,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | Classification Dimension Id | string | | X | P | | Surrogate key danh mục — unique per (Scheme + Code) |
+| 1 | Classification Dimension Id | string |  | X | P |  | Khóa đại diện danh mục — unique per (Scheme + Code) |
 | 2 | Scheme | string | X | | | | Mã scheme phân loại |
 | 3 | Code | string | X | | | | Mã giá trị trong scheme |
 | 4 | Name | string | X | | | | Tên hiển thị tiếng Việt của giá trị |
@@ -285,7 +285,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Giá trị mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | dt_dim_id | string | | X | P | | Surrogate key lịch ngày | | | | ETL sinh tự động |
+| 1 | dt_dim_id | string |  | X | P |  | Khóa chính ngày lịch |  |  |  | ETL sinh tự động |
 | 2 | full_dt | date | X | | | | Ngày đầy đủ | | | | ETL sinh tự động |
 | 3 | yr | int | X | | | | Năm | | | | ETL sinh tự động |
 | 4 | mo | int | X | | | | Tháng (1–12) | | | | ETL sinh tự động |
@@ -301,7 +301,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Giá trị mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | cl_dim_id | string | | X | P | | Surrogate key danh mục | | | | ETL sinh tự động |
+| 1 | cl_dim_id | string |  | X | P |  | Khóa chính danh mục |  |  |  | ETL sinh tự động |
 | 2 | scm | string | X | | | | Mã scheme phân loại | | | | ETL sinh tự động |
 | 3 | code | string | X | | | | Mã giá trị trong scheme | | | | ETL sinh tự động |
 | 4 | nm | string | X | | | | Tên hiển thị tiếng Việt của giá trị | | | | ETL sinh tự động |
@@ -310,7 +310,7 @@ erDiagram
 
 #### 3.3.3.1 Bảng Fact Inspection Case Activity (fct_inspection_case_avy)
 
-*Mô tả bảng:* Event vụ việc TT/KT — 1 row per hồ sơ × đối tượng
+*Mô tả bảng:* Event vụ việc TT/KT — mỗi dòng tương ứng một hồ sơ thanh tra đối với một đối tượng
 *Đường dẫn trên kho dữ liệu:*
 *Các trường Partition:*
 *Thời gian lưu trữ:*
@@ -329,7 +329,7 @@ erDiagram
 
 #### 3.3.3.2 Bảng Fact Penalty Decision (fct_pny_dcsn)
 
-*Mô tả bảng:* Event quyết định xử phạt — 1 row per quyết định xử phạt
+*Mô tả bảng:* Event quyết định xử phạt — mỗi dòng tương ứng một quyết định xử phạt vi phạm
 *Đường dẫn trên kho dữ liệu:*
 *Các trường Partition:*
 *Thời gian lưu trữ:*
