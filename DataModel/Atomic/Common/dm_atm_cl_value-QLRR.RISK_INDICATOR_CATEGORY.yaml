@@ -1,0 +1,121 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-cl_value-QLRR.RISK_INDICATOR_CATEGORY
+  logical_name: Classification Value
+  physical_name: cl_value
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Common
+  bcv_concept: "[Classification] Common"
+  table_type: Classification
+  etl_pattern: Upsert
+  source: QLRR
+  description: |
+    Classification Common — danh mục dùng chung TTHC, tổng hợp toàn bộ giá trị phân loại từ Orchard Core ContentItem. ContentType = schema_code (nhóm scheme); ContentItemId = cl_code (BK). 10 scheme: TRANG_THAI_HO_SO, LOAI_HO_SO, LINH_VUC_TTHC, MUC_DO_TTHC, KENH_TIEP_NHAN, CO_QUAN_XU
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-QLRR-RISK_INDICATOR_CATEGORY
+
+attributes:
+  - name: Classification Code
+    physical_name: cl_code
+    business_meaning: Mã giá trị phân loại. Mã nhóm chỉ tiêu tài chính rủi ro.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: QLRR
+    source_table: RISK_INDICATOR_CATEGORY
+    source_column: QLRR.RISK_INDICATOR_CATEGORY.CATEGORY_CODE
+    comment: BK chính (kết hợp Schema Code tạo BK duy nhất).
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Schema Code
+    physical_name: schema_code
+    business_meaning: Mã loại phân loại.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: QLRR
+    source_table: RISK_INDICATOR_CATEGORY
+    source_column: null
+    comment: "Scheme: QLRR.RISK_INDICATOR_CATEGORY. Hardcode."
+    classification_context: null
+    etl_derived_value: QLRR.RISK_INDICATOR_CATEGORY
+
+  - name: Schema Name
+    physical_name: schema_nm
+    business_meaning: Tên loại phân loại.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: RISK_INDICATOR_CATEGORY
+    source_column: null
+    comment: Hardcode.
+    classification_context: null
+    etl_derived_value: "QLRR - Nhóm chỉ tiêu tài chính rủi ro"
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: QLRR
+    source_table: RISK_INDICATOR_CATEGORY
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'QLRR_RISK_INDICATOR_CATEGORY'"
+    etl_derived_value: QLRR_RISK_INDICATOR_CATEGORY
+
+  - name: Classification Name
+    physical_name: cl_nm
+    business_meaning: Tên giá trị phân loại (tiếng Việt).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: RISK_INDICATOR_CATEGORY
+    source_column: QLRR.RISK_INDICATOR_CATEGORY.CATEGORY_NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Classification Name English
+    physical_name: cl_nm_english
+    business_meaning: Tên giá trị phân loại (tiếng Anh).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: RISK_INDICATOR_CATEGORY
+    source_column: null
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Classification Description
+    physical_name: cl_description
+    business_meaning: Diễn giải chi tiết ý nghĩa giá trị phân loại.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: QLRR
+    source_table: RISK_INDICATOR_CATEGORY
+    source_column: null
+    comment: Nguồn không có cột mô tả riêng cho nhóm chỉ tiêu.
+    classification_context: null
+    etl_derived_value: null
