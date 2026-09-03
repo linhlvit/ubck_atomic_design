@@ -1,18 +1,18 @@
-## 3.2.6 Luồng đồng bộ dữ liệu cho nhóm báo cáo Quản lý chào bán
+## 3.1.4 LUỒNG ĐỒNG BỘ DỮ LIỆU CHO NHÓM BÁO CÁO Quản lý chào bán
 
-### 3.2.6.1 Thông tin chung luồng đồng bộ
+### 3.1.4.1 Thông tin chung luồng đồng bộ
 
 - Tên job:
-- Nguồn dữ liệu (hệ thống nguồn): IDS, TTHC
+- Nguồn dữ liệu (Hệ thống nguồn): IDS, TTHC
 - Cách thức truy xuất đồng bộ dữ liệu:
 - Tần suất đồng bộ dữ liệu:
 - Dung lượng dữ liệu sẽ thực hiện đồng bộ:
 - Thời gian lưu trữ dữ liệu:
 - Thư mục lưu trữ dữ liệu trên kho dữ liệu:
 
-### 3.2.6.2 Luồng nghiệp vụ
+### 3.1.4.2 Luồng nghiệp vụ
 
-#### 3.2.6.2.1 Nhóm thông tin Chào bán phát hành
+#### 3.1.4.2.1 Nhóm thông tin Chào bán phát hành
 
 ```mermaid
 flowchart LR
@@ -60,7 +60,7 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.6.2.2 Nhóm thông tin Chi tiết đợt chào bán
+#### 3.1.4.2.2 Nhóm thông tin Chi tiết đợt chào bán
 
 ```mermaid
 flowchart LR
@@ -103,7 +103,7 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.6.2.3 Nhóm thông tin Hồ sơ đăng ký chào bán
+#### 3.1.4.2.3 Nhóm thông tin Hồ sơ đăng ký chào bán
 
 ```mermaid
 flowchart LR

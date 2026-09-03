@@ -20,10 +20,10 @@ erDiagram
 |---|---|---|---|
 | 1 | Calendar Date Dimension | cdr_dt_dim | Lịch ngày — năm/quý/tháng phục vụ slicer và phân tích theo thời gian |
 | 2 | Public Company Dimension | pblc_co_dim | Công ty đại chúng — mã CK / tên / ngành / sàn niêm yết (SCD2) |
-| 3 | Industry Category Dimension | idy_cgy_dim | Nhóm ngành — ETL-derived Conformed Dim từ Public Company. Tái sử dụng cross-module. |
+| 3 | Industry Category Dimension | idy_cgy_dim | Nhóm ngành — Chiều danh mục dùng chung từ phân hệ Công ty đại chúng, tái sử dụng liên phân hệ |
 | 4 | Offering Type Dimension | ofrg_tp_dim | Loại hình chào bán — map từ ContentType TTHC qua CV TTHC_CONTENT_TYPE. 11 giá trị ContentType → 11 nhãn loại hình. |
-| 5 | Fact Securities Offering | fct_scr_ofrg | Event chào bán/phát hành CK — 1 row per đợt chào bán của 1 công ty đại chúng. Lưu 6 cột per-type Amount/Quantity phục vụ breakdown loại hình. |
-| 6 | Fact Securities Offering Application | fct_scr_ofrg_ap | Event hồ sơ đăng ký chào bán nộp lên UBCKNN — 1 row per hồ sơ. Application Status Code ETL-derived tại Atomic. Phục vụ KPI Cards / donut / bảng chi tiết Tab Hồ sơ đăng ký chào bán. |
+| 5 | Fact Securities Offering | fct_scr_ofrg | Event chào bán/phát hành CK — mỗi dòng tương ứng một đợt chào bán của công ty đại chúng, chi tiết theo loại hình phát hành |
+| 6 | Fact Securities Offering Application | fct_scr_ofrg_ap | Event hồ sơ đăng ký chào bán nộp lên UBCKNN — mỗi dòng tương ứng một bộ hồ sơ đăng ký chào bán chứng khoán |
 | 7 | Securities Offering 360 Profile | scr_ofrg_360_prfl | Hồ sơ 360° đợt chào bán — pivot theo loại hình chào bán (6 giá trị). Bổ sung 4 cột tổ chức từ TTHC. Grain: 1 row = 1 đợt × 1 loại hình có qty > 0. |
 
 ---
@@ -148,7 +148,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | Date Dimension Id | string | | X | P | | Surrogate key ETL sinh tự động |
+| 1 | Date Dimension Id | string |  | X | P |  | Khóa đại diện tự sinh |
 | 2 | Full Date | date | | | | | Ngày dương lịch đầy đủ |
 | 3 | Year | int | X | | | | Năm (YYYY) |
 | 4 | Quarter | int | X | | | | Quý (1–4) |
@@ -161,7 +161,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | Public Company Dimension Id | string | | X | P | | Surrogate key ETL sinh tự động |
+| 1 | Public Company Dimension Id | string |  | X | P |  | Khóa đại diện tự sinh |
 | 2 | Public Company Code | string | | | | | Mã định danh công ty đại chúng |
 | 3 | Public Company Name | string | X | | | | Tên công ty đại chúng (tiếng Việt) |
 | 4 | Public Company English Name | string | X | | | | Tên công ty đại chúng (tiếng Anh) |
@@ -174,7 +174,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | Industry Category Dimension Id | string | | X | P | | Surrogate key ETL sinh tự động |
+| 1 | Industry Category Dimension Id | string |  | X | P |  | Khóa đại diện tự sinh |
 | 2 | Industry Category Level1 Code | string | | | | | Mã ngành cấp 1 |
 | 3 | Industry Category Level1 Name | string | X | | | | Tên ngành cấp 1 |
 | 4 | Industry Category Level2 Code | string | | | | | Mã ngành cấp 2 |
@@ -184,7 +184,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | Offering Type Dimension Id | string | | X | P | | Surrogate key ETL sinh tự động |
+| 1 | Offering Type Dimension Id | string |  | X | P |  | Khóa đại diện tự sinh |
 | 2 | Content Type Code | string | | | | | Natural Key — mã ContentType TTHC |
 | 3 | Offering Type Name | string | X | | | | Tên loại hình chào bán (tiếng Việt) |
 | 4 | Security Type Code | string | X | | | | Loại CK tương ứng với loại hình chào bán |
@@ -226,14 +226,14 @@ erDiagram
 | 1 | Application Code | string | | | | | Degenerate Dimension — Business key hồ sơ (TTHC ContentItemId) |
 | 2 | Submission Date Dimension Id | string | | | F | | FK lịch theo ngày nộp hồ sơ |
 | 3 | Offering Type Dimension Id | string | | | F | | FK loại hình chào bán |
-| 4 | Application Status Code | string | | | | | Trạng thái hồ sơ ETL-derived tại tầng Atomic |
+| 4 | Application Status Code | string |  |  |  |  | Trạng thái xử lý hồ sơ chào bán |
 | 5 | Application Year | int | | | | | Năm nộp hồ sơ — Degenerate Dimension dạng int |
 
 #### 3.2.2.7 Bảng Securities Offering 360 Profile
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | Securities Offering Id | string | | X | P | | Surrogate PK Atomic |
+| 1 | Securities Offering Id | string | | X | P | | Khóa chính đợt chào bán |
 | 2 | Securities Offering Code | string | | | | | Mã đợt chào bán |
 | 3 | Public Company Code | string | X | | | | Mã định danh công ty đại chúng |
 | 4 | Public Company Name | string | X | | | | Tên công ty đại chúng (tiếng Việt) |
@@ -393,7 +393,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Giá trị mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | dt_dim_id | string | | X | P | | Surrogate key ETL sinh tự động | | | | ETL sinh tự động |
+| 1 | dt_dim_id | string |  | X | P |  | Khóa đại diện tự sinh |  |  |  | ETL sinh tự động |
 | 2 | full_dt | date | | | | | Ngày dương lịch đầy đủ | | | | ETL sinh tự động |
 | 3 | yr | int | X | | | | Năm (YYYY) | | | | ETL sinh tự động |
 | 4 | qtr | int | X | | | | Quý (1–4) | | | | ETL sinh tự động |
@@ -412,7 +412,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Giá trị mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | pblc_co_dim_id | string | | X | P | | Surrogate key ETL sinh tự động | | | | ETL sinh tự động |
+| 1 | pblc_co_dim_id | string |  | X | P |  | Khóa đại diện tự sinh |  |  |  | ETL sinh tự động |
 | 2 | pblc_co_code | string | | | | | Mã định danh công ty đại chúng | IDS | ATM.pblc_co | pblc_co_code | pblc_co.pblc_co_code |
 | 3 | pblc_co_nm | string | X | | | | Tên công ty đại chúng (tiếng Việt) | IDS | ATM.pblc_co | pblc_co_nm | pblc_co.pblc_co_nm |
 | 4 | pblc_co_en_nm | string | X | | | | Tên công ty đại chúng (tiếng Anh) | IDS | ATM.pblc_co | pblc_co_en_nm | pblc_co.pblc_co_en_nm |
@@ -423,7 +423,7 @@ erDiagram
 
 #### 3.3.2.3 Bảng Industry Category Dimension (idy_cgy_dim)
 
-*Mô tả bảng:* Nhóm ngành — ETL-derived Conformed Dim từ Public Company. Tái sử dụng cross-module.
+*Mô tả bảng:* Nhóm ngành — Chiều danh mục dùng chung từ phân hệ Công ty đại chúng, tái sử dụng liên phân hệ
 *Đường dẫn trên kho dữ liệu:*
 *Các trường Partition:*
 *Thời gian lưu trữ:*
@@ -431,7 +431,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Giá trị mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | idy_cgy_dim_id | string | | X | P | | Surrogate key ETL sinh tự động | | | | ETL sinh tự động |
+| 1 | idy_cgy_dim_id | string |  | X | P |  | Khóa đại diện tự sinh |  |  |  | ETL sinh tự động |
 | 2 | idy_cgy_level1_code | string | | | | | Mã ngành cấp 1 | IDS | ATM.pblc_co | idy_cgy_level1_code | pblc_co.idy_cgy_level1_code |
 | 3 | idy_cgy_level1_nm | string | X | | | | Tên ngành cấp 1 | IDS | ATM.cv | cl_nm | JOIN cv ON cv.cl_code = pblc_co.idy_cgy_level1_code AND cv.scm_code = 'ECAT_INDUSTRY_LV1' → cv.cl_nm |
 | 4 | idy_cgy_level2_code | string | | | | | Mã ngành cấp 2 | IDS | ATM.pblc_co | idy_cgy_level2_code | pblc_co.idy_cgy_level2_code |
@@ -447,7 +447,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Giá trị mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | ofrg_tp_dim_id | string | | X | P | | Surrogate key ETL sinh tự động | | | | ETL sinh tự động |
+| 1 | ofrg_tp_dim_id | string |  | X | P |  | Khóa đại diện tự sinh |  |  |  | ETL sinh tự động |
 | 2 | cntnt_tp_code | string | | | | | Natural Key — mã ContentType TTHC | TTHC | ATM.scr_ofrg_ap | cntnt_tp_code | scr_ofrg_ap.cntnt_tp_code |
 | 3 | ofrg_tp_nm | string | X | | | | Tên loại hình chào bán (tiếng Việt) | TTHC | ATM.cv | cl_nm | JOIN cv ON cv.cl_code = scr_ofrg_ap.cntnt_tp_code AND cv.scm_code = 'TTHC_CONTENT_TYPE' → cv.cl_nm |
 | 4 | scr_tp_code | string | X | | | | Loại CK tương ứng với loại hình chào bán | | | | ETL sinh tự động |
@@ -457,7 +457,7 @@ erDiagram
 
 #### 3.3.3.1 Bảng Fact Securities Offering (fct_scr_ofrg)
 
-*Mô tả bảng:* Event chào bán/phát hành CK — 1 row per đợt chào bán của 1 công ty đại chúng. Lưu 6 cột per-type Amount/Quantity phục vụ breakdown loại hình.
+*Mô tả bảng:* Event chào bán/phát hành CK — mỗi dòng tương ứng một đợt chào bán của công ty đại chúng, chi tiết theo loại hình phát hành
 *Đường dẫn trên kho dữ liệu:*
 *Các trường Partition:*
 *Thời gian lưu trữ:*
@@ -492,7 +492,7 @@ erDiagram
 
 #### 3.3.3.2 Bảng Fact Securities Offering Application (fct_scr_ofrg_ap)
 
-*Mô tả bảng:* Event hồ sơ đăng ký chào bán nộp lên UBCKNN — 1 row per hồ sơ. Application Status Code ETL-derived tại Atomic. Phục vụ KPI Cards / donut / bảng chi tiết Tab Hồ sơ đăng ký chào bán.
+*Mô tả bảng:* Event hồ sơ đăng ký chào bán nộp lên UBCKNN — mỗi dòng tương ứng một bộ hồ sơ đăng ký chào bán chứng khoán
 *Đường dẫn trên kho dữ liệu:*
 *Các trường Partition:*
 *Thời gian lưu trữ:*
@@ -503,7 +503,7 @@ erDiagram
 | 1 | ap_code | string | | | | | Degenerate Dimension — Business key hồ sơ (TTHC ContentItemId) | TTHC | ATM.scr_ofrg_ap | scr_ofrg_ap_code | scr_ofrg_ap.scr_ofrg_ap_code |
 | 2 | subm_dt_dim_id | string | | | F | | FK lịch theo ngày nộp hồ sơ | TTHC | ATM.scr_ofrg_ap | crt_tms | LOOKUP cdr_dt_dim ON cdr_dt_dim.dt = CAST(scr_ofrg_ap.crt_tms AS date) |
 | 3 | ofrg_tp_dim_id | string | | | F | | FK loại hình chào bán | TTHC | ATM.scr_ofrg_ap | cntnt_tp_code | LOOKUP ofrg_tp_dim ON ofrg_tp_dim.cntnt_tp_code = scr_ofrg_ap.cntnt_tp_code AND CAST(scr_ofrg_ap.crt_tms AS date) BETWEEN ofrg_tp_dim.eff_dt AND ofrg_tp_dim.expiry_dt |
-| 4 | ap_st_code | string | | | | | Trạng thái hồ sơ ETL-derived tại tầng Atomic | TTHC | ATM.scr_ofrg_ap | ap_st_code | scr_ofrg_ap.ap_st_code |
+| 4 | ap_st_code | string |  |  |  |  | Trạng thái xử lý hồ sơ chào bán | TTHC | ATM.scr_ofrg_ap | ap_st_code | scr_ofrg_ap.ap_st_code |
 | 5 | ap_yr | int | | | | | Năm nộp hồ sơ — Degenerate Dimension dạng int | TTHC | ATM.scr_ofrg_ap | crt_tms | EXTRACT(YEAR FROM scr_ofrg_ap.crt_tms) |
 
 ### 3.3.4 Danh sách bảng tác nghiệp (Operational)
@@ -518,7 +518,7 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Giá trị mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | scr_ofrg_id | string | | X | P | | Surrogate PK Atomic | IDS | ATM.pblc_co_scr_ofrg | pblc_co_scr_ofrg_id | pblc_co_scr_ofrg.pblc_co_scr_ofrg_id |
+| 1 | scr_ofrg_id | string | | X | P | | Khóa chính đợt chào bán | IDS | ATM.pblc_co_scr_ofrg | pblc_co_scr_ofrg_id | pblc_co_scr_ofrg.pblc_co_scr_ofrg_id |
 | 2 | scr_ofrg_code | string | | | | | Mã đợt chào bán | IDS | ATM.pblc_co_scr_ofrg | pblc_co_scr_ofrg_code | pblc_co_scr_ofrg.pblc_co_scr_ofrg_code |
 | 3 | pblc_co_code | string | X | | | | Mã định danh công ty đại chúng | IDS | ATM.pblc_co | pblc_co_code | pblc_co.pblc_co_code |
 | 4 | pblc_co_nm | string | X | | | | Tên công ty đại chúng (tiếng Việt) | IDS | ATM.pblc_co | pblc_co_nm | pblc_co.pblc_co_nm |

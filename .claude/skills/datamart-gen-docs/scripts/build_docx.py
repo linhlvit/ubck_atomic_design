@@ -27,12 +27,29 @@ Yêu cầu:
 from __future__ import annotations
 
 import argparse
+import os
 import re
 import shutil
 import subprocess
 import sys
 import tempfile
+import zipfile
 from pathlib import Path
+
+# Ensure Pandoc in PATH if present in local appdata or common install locations
+pandoc_appdata = Path(os.environ.get("LOCALAPPDATA", "C:/Users/ADMIN/AppData/Local")) / "Pandoc"
+if pandoc_appdata.exists() and str(pandoc_appdata) not in os.environ.get("PATH", ""):
+    os.environ["PATH"] = str(pandoc_appdata) + os.pathsep + os.environ.get("PATH", "")
+
+# Ensure npm global binaries (mmdc) in PATH
+npm_appdata = Path(os.environ.get("APPDATA", "C:/Users/ADMIN/AppData/Roaming")) / "npm"
+if npm_appdata.exists() and str(npm_appdata) not in os.environ.get("PATH", ""):
+    os.environ["PATH"] = str(npm_appdata) + os.pathsep + os.environ.get("PATH", "")
+
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8")
 
 REPO_ROOT = Path(__file__).resolve().parents[4]
 OUTPUT_DIR = REPO_ROOT / "docs" / "output" / "datamart"
@@ -96,9 +113,15 @@ def render_mermaid_blocks(md_text: str, out_dir: Path) -> tuple[str, list[Path]]
 # ─── DOCX post-process ───────────────────────────────────────────────────────
 
 # Độ rộng cột (DXA) — landscape A4, content width = 13999
-_COL_WIDTHS_4  = [400, 3500, 2700, 7399]
-_COL_WIDTHS_8  = [360, 2000, 1500, 560, 560, 560, 680, 7779]
-_COL_WIDTHS_11 = [360, 1500, 1200, 480, 480, 480, 680, 2519, 1700, 1700, 2900]
+_COL_WIDTHS_4_LANDSCAPE  = [400, 3500, 2700, 7399]
+_COL_WIDTHS_8_LANDSCAPE  = [360, 2000, 1500, 560, 560, 560, 680, 7779]
+_COL_WIDTHS_11_LANDSCAPE = [360, 1500, 1200, 480, 480, 480, 680, 2519, 1700, 1700, 2900]
+_COL_WIDTHS_12_LANDSCAPE = [360, 1300, 1100, 480, 480, 480, 480, 2200, 900, 1400, 1200, 3619]
+
+# Độ rộng cột (DXA) — portrait A4, content width = 9074
+_COL_WIDTHS_4_PORTRAIT  = [360, 2500, 2000, 4214]
+_COL_WIDTHS_7_PORTRAIT  = [360, 1500, 1200, 600, 1000, 1000, 3414]
+_COL_WIDTHS_8_PORTRAIT  = [360, 1500, 1200, 450, 450, 450, 550, 4114]
 
 _HEADER_SHADING   = "BDD7EE"
 _EVEN_ROW_SHADING = "EEF4FB"
@@ -135,33 +158,73 @@ def _set_shading(cell, color: str, qn_fn, OxmlElement) -> None:
     shd.set(qn_fn("w:fill"), color)
 
 
-def post_process_docx(docx_path: Path) -> None:
-    """Post-process: landscape A4, Times New Roman, bảng theo spec A.2."""
+def _find_reference_doc(doc_type: str, custom_ref: Path | None = None) -> Path | None:
+    """Tìm kiếm file template mẫu --reference-doc theo thứ tự ưu tiên."""
+    if custom_ref and custom_ref.exists():
+        return custom_ref
+
+    candidates = [
+        # 1. Bản mẫu Q5 hiện hành (đặt tại gốc thư mục skill) — ưu tiên cao nhất cho PTTK
+        REPO_ROOT / ".claude" / "skills" / "datamart-gen-docs" / "UBCKNN_Q5_Tai lieu phan tich thiet ke_v1.0_20260429.docx",
+        # 2. Thư mục reference trong skill
+        REPO_ROOT / ".claude" / "skills" / "datamart-gen-docs" / "reference" / "UBCKNN_Q5_Tai lieu phan tich thiet ke_v1.0_20260429.docx",
+        REPO_ROOT / ".claude" / "skills" / "datamart-gen-docs" / "reference" / "UBCKNN_Q5_Tai lieu phan tich thiet ke_Template.docx",
+        REPO_ROOT / ".claude" / "skills" / "datamart-gen-docs" / "reference" / "UBCKNN_Thiet ke co so du lieu_Template.docx",
+        # 3. Thư mục template sample của dự án (fallback)
+        REPO_ROOT / "docs" / "templates" / "sample" / "UBCKNN_Q5_Tai lieu phan tich thiet ke_Template.docx",
+    ]
+    if doc_type.lower() == "tkcsld":
+        candidates.insert(
+            0,
+            REPO_ROOT / ".claude" / "skills" / "datamart-gen-docs" / "reference" / "UBCKNN_Thiet ke co so du lieu_Template.docx"
+        )
+        candidates.insert(
+            1,
+            REPO_ROOT / "docs" / "templates" / "sample" / "UBCKNN_Thiet ke co so du lieu_Template.docx"
+        )
+
+    for p in candidates:
+        if p.exists():
+            return p
+    return None
+
+
+def post_process_docx(docx_path: Path, doc_type: str = "pttk") -> None:
+    """Post-process: Portrait (PTTK) / Landscape (TKCSLD), Times New Roman, bảng theo spec."""
     from docx import Document
     from docx.oxml.ns import qn
     from docx.oxml import OxmlElement
     from docx.enum.text import WD_ALIGN_PARAGRAPH
-    from docx.shared import Pt
+    from docx.enum.section import WD_ORIENT
+    from docx.shared import Pt, Emu
 
     doc = Document(str(docx_path))
+    is_portrait = (doc_type.lower() == "pttk")
 
-    # ── Landscape A4 ──
+    # ── Page Setup ──
+    # Portrait: W=11909, H=16834 DXA; content_w = 9074 DXA
+    # Landscape: W=16834, H=11909 DXA; content_w = 13999 DXA
+    page_w_dxa = 11909 if is_portrait else 16834
+    page_h_dxa = 16834 if is_portrait else 11909
+    table_w_dxa = 9074 if is_portrait else 13999
+
     for section in doc.sections:
+        section.orientation = WD_ORIENT.PORTRAIT if is_portrait else WD_ORIENT.LANDSCAPE
         pgSz = section._sectPr.find(qn("w:pgSz"))
         if pgSz is None:
             pgSz = OxmlElement("w:pgSz")
             section._sectPr.append(pgSz)
-        pgSz.set(qn("w:w"), "16834")
-        pgSz.set(qn("w:h"), "11909")
-        pgSz.set(qn("w:orient"), "landscape")
-        # docx.shared.Emu — 1 DXA = 914400/1440 EMU = 635 EMU
-        from docx.shared import Emu
-        section.page_width    = Emu(16834 * 635)
-        section.page_height   = Emu(11909 * 635)
-        section.left_margin   = Emu(1701 * 635)
-        section.right_margin  = Emu(1134 * 635)
-        section.top_margin    = Emu(1418 * 635)
-        section.bottom_margin = Emu(1418 * 635)
+        pgSz.set(qn("w:w"), str(page_w_dxa))
+        pgSz.set(qn("w:h"), str(page_h_dxa))
+        pgSz.set(qn("w:orient"), "portrait" if is_portrait else "landscape")
+        
+        # 1 DXA = 914400/1440 EMU = 635 EMU
+        section.page_width      = Emu(page_w_dxa * 635)
+        section.page_height     = Emu(page_h_dxa * 635)
+        section.left_margin     = Emu(1701 * 635)
+        section.right_margin    = Emu(1134 * 635)
+        section.top_margin      = Emu(1418 * 635)
+        section.bottom_margin   = Emu(1418 * 635)
         section.header_distance = Emu(720 * 635)
         section.footer_distance = Emu(720 * 635)
 
@@ -174,20 +237,28 @@ def post_process_docx(docx_path: Path) -> None:
 
     # ── Fix bảng ──
     for table in doc.tables:
+        table.autofit = False
         tblPr = table._tbl.find(qn("w:tblPr"))
         if tblPr is None:
             tblPr = OxmlElement("w:tblPr")
             table._tbl.insert(0, tblPr)
 
-        # Table width = full page content
+        # 1. Fixed layout
+        for old in tblPr.findall(qn("w:tblLayout")):
+            tblPr.remove(old)
+        tblLayout = OxmlElement("w:tblLayout")
+        tblLayout.set(qn("w:type"), "fixed")
+        tblPr.append(tblLayout)
+
+        # 2. Table width = full page content
         tblW = tblPr.find(qn("w:tblW"))
         if tblW is None:
             tblW = OxmlElement("w:tblW")
             tblPr.append(tblW)
-        tblW.set(qn("w:w"), "13999")
+        tblW.set(qn("w:w"), str(table_w_dxa))
         tblW.set(qn("w:type"), "dxa")
 
-        # Borders — SINGLE, size=1 (8 eighth-pt = 1pt), color=#999999
+        # 3. Borders — SINGLE, size=1 (8 eighth-pt = 1pt), color=#999999
         for old in tblPr.findall(qn("w:tblBorders")):
             tblPr.remove(old)
         tblBorders = OxmlElement("w:tblBorders")
@@ -200,7 +271,7 @@ def post_process_docx(docx_path: Path) -> None:
             tblBorders.append(el)
         tblPr.append(tblBorders)
 
-        # Cell margin — top/bottom=60, left/right=100 DXA
+        # 4. Cell margin — top/bottom=60, left/right=100 DXA
         for old in tblPr.findall(qn("w:tblCellMar")):
             tblPr.remove(old)
         tblCellMar = OxmlElement("w:tblCellMar")
@@ -211,21 +282,48 @@ def post_process_docx(docx_path: Path) -> None:
             tblCellMar.append(el)
         tblPr.append(tblCellMar)
 
-        # Apply column widths theo số cột và nhận dạng loại bảng
+        # 5. Apply column widths theo số cột và nhận dạng loại bảng
         ncols = len(table.columns)
-        header_texts = [c.text.strip() for c in table.rows[0].cells] if table.rows else []
+        col_widths = None
 
-        if ncols == 4 and any(h in header_texts for h in ("Thực thể", "Tên bảng")):
-            _apply_col_widths(table, _COL_WIDTHS_4, qn, OxmlElement)
-        elif ncols == 8 and "STT" in header_texts:
-            _apply_col_widths(table, _COL_WIDTHS_8, qn, OxmlElement)
+        if ncols == 4:
+            col_widths = _COL_WIDTHS_4_PORTRAIT if is_portrait else _COL_WIDTHS_4_LANDSCAPE
+        elif ncols == 7:
+            col_widths = _COL_WIDTHS_7_PORTRAIT
+        elif ncols == 8:
+            col_widths = _COL_WIDTHS_8_PORTRAIT if is_portrait else _COL_WIDTHS_8_LANDSCAPE
         elif ncols == 11:
-            _apply_col_widths(table, _COL_WIDTHS_11, qn, OxmlElement)
+            col_widths = _COL_WIDTHS_11_LANDSCAPE
+        elif ncols == 12:
+            col_widths = _COL_WIDTHS_12_LANDSCAPE
 
-        # Shading + font từng cell
+        if col_widths and len(col_widths) == ncols:
+            _apply_col_widths(table, col_widths, qn, OxmlElement)
+
+            # Update tblGrid
+            old_grid = table._tbl.find(qn("w:tblGrid"))
+            if old_grid is not None:
+                table._tbl.remove(old_grid)
+            tblGrid = OxmlElement("w:tblGrid")
+            for w in col_widths:
+                gridCol = OxmlElement("w:gridCol")
+                gridCol.set(qn("w:w"), str(w))
+                tblGrid.append(gridCol)
+            tblPr_idx = table._tbl.index(tblPr)
+            table._tbl.insert(tblPr_idx + 1, tblGrid)
+
+        # 6. Shading + Header repeat + cantSplit
         for row_idx, row in enumerate(table.rows):
-            is_header = row_idx == 0
+            is_header = (row_idx == 0)
             is_even   = not is_header and (row_idx % 2 == 0)
+
+            trPr = row._tr.get_or_add_trPr()
+            # CantSplit
+            if trPr.find(qn("w:cantSplit")) is None:
+                trPr.append(OxmlElement("w:cantSplit"))
+            if is_header:
+                if trPr.find(qn("w:tblHeader")) is None:
+                    trPr.append(OxmlElement("w:tblHeader"))
 
             for ci, cell in enumerate(row.cells):
                 if is_header:
@@ -274,15 +372,34 @@ def post_process_docx(docx_path: Path) -> None:
                             run.font.bold = True
 
     doc.save(str(docx_path))
+    orient_str = "portrait A4" if is_portrait else "landscape A4"
     print(
-        f"Post-process done — landscape A4, Times New Roman, shading, col widths: {docx_path}",
+        f"Post-process done — {orient_str}, Times New Roman, shading, col widths: {docx_path}",
         file=sys.stderr,
     )
 
 
+def _sanitize_docx_package(docx_path: Path) -> None:
+    """Ensure [Content_Types].xml has required extensions (e.g. ttf, odttf) to prevent KeyError in python-docx."""
+    with zipfile.ZipFile(docx_path, "r") as zin:
+        entries = {item.filename: zin.read(item.filename) for item in zin.infolist()}
+
+    if "[Content_Types].xml" in entries:
+        ct = entries["[Content_Types].xml"].decode("utf-8")
+        dirty = False
+        if 'Extension="ttf"' not in ct and "Extension='ttf'" not in ct:
+            ct = ct.replace("</Types>", '<Default Extension="ttf" ContentType="application/x-font-ttf"/></Types>')
+            dirty = True
+        if dirty:
+            entries["[Content_Types].xml"] = ct.encode("utf-8")
+            with zipfile.ZipFile(docx_path, "w", zipfile.ZIP_DEFLATED) as zout:
+                for name, data in entries.items():
+                    zout.writestr(name, data)
+
+
 # ─── Main build ──────────────────────────────────────────────────────────────
 
-def build(module: str, doc_type: str) -> Path:
+def build(module: str, doc_type: str, reference_doc: Path | None = None) -> Path:
     md_file = _md_path(module, doc_type)
     if not md_file.exists():
         raise SystemExit(
@@ -313,6 +430,7 @@ def build(module: str, doc_type: str) -> Path:
 
     # Bước 4: pandoc MD → DOCX
     tmp_docx = Path(tempfile.mktemp(suffix=".docx"))
+    ref_docx = _find_reference_doc(doc_type, reference_doc)
     cmd = [
         pandoc,
         str(tmp_md),
@@ -321,6 +439,9 @@ def build(module: str, doc_type: str) -> Path:
         "--output", str(tmp_docx),
         "--resource-path", str(out_dir),
     ]
+    if ref_docx:
+        cmd.extend(["--reference-doc", str(ref_docx)])
+
     try:
         result = subprocess.run(cmd, capture_output=True, text=True)
     finally:
@@ -332,8 +453,11 @@ def build(module: str, doc_type: str) -> Path:
     if result.stderr:
         print(result.stderr, file=sys.stderr)
 
+    # Bước 4.5: sanitize [Content_Types].xml nếu có embedded fonts từ template
+    _sanitize_docx_package(tmp_docx)
+
     # Bước 5: post-process
-    post_process_docx(tmp_docx)
+    post_process_docx(tmp_docx, doc_type=doc_type)
 
     # Bước 6: copy sang đích
     out_docx = _docx_path(module, doc_type)
@@ -358,11 +482,15 @@ def main() -> None:
         "--type", required=True, choices=["pttk", "tkcsld", "both"],
         help="Loại tài liệu: pttk | tkcsld | both",
     )
+    parser.add_argument(
+        "--reference-doc", type=Path, default=None,
+        help="Đường dẫn tùy chỉnh tới file template DOCX reference",
+    )
     args = parser.parse_args()
 
     types = ["pttk", "tkcsld"] if args.type == "both" else [args.type]
     for t in types:
-        build(args.module.upper(), t)
+        build(args.module.upper(), t, reference_doc=args.reference_doc)
 
 
 if __name__ == "__main__":

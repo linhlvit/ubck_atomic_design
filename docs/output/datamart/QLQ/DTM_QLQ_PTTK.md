@@ -1,61 +1,61 @@
-## 3.2.1 Luồng đồng bộ dữ liệu cho nhóm báo cáo Quản lý quỹ
+## 3.1.7 LUỒNG ĐỒNG BỘ DỮ LIỆU CHO NHÓM BÁO CÁO Công ty Quản lý Quỹ (AMC)
 
-### 3.2.1.1 Thông tin chung luồng đồng bộ
+### 3.1.7.1 Thông tin chung luồng đồng bộ
 
-- tên job:
-- nguồn dữ liệu (hệ thống nguồn): FMS, ECAT, QLRR, GSGD
-- cách thức truy xuất đồng bộ dữ liệu:
-- tần suất đồng bộ dữ liệu:
-- dung lượng dữ liệu sẽ thực hiện đồng bộ:
-- thời gian lưu trữ dữ liệu:
-- thư mục lưu trữ dữ liệu trên kho dữ liệu:
+- Tên job:
+- Nguồn dữ liệu (Hệ thống nguồn): FMS, ECAT, QLRR, GSGD
+- Cách thức truy xuất đồng bộ dữ liệu:
+- Tần suất đồng bộ dữ liệu:
+- Dung lượng dữ liệu sẽ thực hiện đồng bộ:
+- Thời gian lưu trữ dữ liệu:
+- Thư mục lưu trữ dữ liệu trên kho dữ liệu:
 
 ---
 
-### 3.2.1.2 Luồng nghiệp vụ
+### 3.1.7.2 Luồng nghiệp vụ
 
-#### 3.2.1.2.1 Nhóm thông tin Thống kê thị trường toàn phần
+#### 3.1.7.2.1 Nhóm thông tin Thống kê thị trường toàn phần
 
 ```mermaid
 flowchart LR
     subgraph Staging
-        S1["FMS.SECURITIES"]
-        S2["FMS.FUNDS"]
-        S3["FMS.FORBRCH"]
-        S4["FMS.AGENCIES"]
-        S6["FMS.RPTVALUES"]
-        SE1["ECAT.ECAT_29_HolidayInfo"]
+        FMS_SECURITIES["FMS.SECURITIES"]
+        FMS_FUNDS["FMS.FUNDS"]
+        FMS_FORBRCH["FMS.FORBRCH"]
+        FMS_AGENCIES["FMS.AGENCIES"]
+        FMS_RPTVALUES["FMS.RPTVALUES"]
+        ECAT_HolidayInfo["ECAT.ECAT_29_HolidayInfo"]
     end
 
     subgraph Atomic
-        SV1["Fund Management Company"]
-        SV2["Investment Fund"]
-        SV3["Foreign Fund Management Organization Unit"]
-        SV4["Fund Distribution Agent"]
-        SV6["Report Import Value"]
-        SV7["Calendar Date"]
+        Fund_Management_Company["Fund Management Company"]
+        Investment_Fund["Investment Fund"]
+        Foreign_Fund_Management_Organization_Unit["Foreign Fund Management Organization Unit"]
+        Fund_Distribution_Agent["Fund Distribution Agent"]
+        Report_Import_Value["Report Import Value"]
+        Calendar_Date["Calendar Date"]
     end
 
     subgraph Datamart
-        G1["Fact Fund Management Company Snapshot"]
-        G2["Calendar Date Dimension"]
+        fct_fnd_mgt_co_snpst["Fact Fund Management Company Snapshot"]
+        cdr_dt_dim["Calendar Date Dimension"]
     end
 
-    S1 --> SV1
-    S2 --> SV2
-    S3 --> SV3
-    S4 --> SV4
-    S6 --> SV6
-    SE1 --> SV7
+    FMS_SECURITIES --> Fund_Management_Company
+    FMS_FUNDS --> Investment_Fund
+    FMS_FORBRCH --> Foreign_Fund_Management_Organization_Unit
+    FMS_AGENCIES --> Fund_Distribution_Agent
+    FMS_RPTVALUES --> Report_Import_Value
+    ECAT_HolidayInfo --> Calendar_Date
 
-    SV1 --> G1
-    SV2 --> G1
-    SV3 --> G1
-    SV4 --> G1
-    SV6 --> G1
-    SV7 --> G2
+    Fund_Management_Company --> fct_fnd_mgt_co_snpst
+    Investment_Fund --> fct_fnd_mgt_co_snpst
+    Foreign_Fund_Management_Organization_Unit --> fct_fnd_mgt_co_snpst
+    Fund_Distribution_Agent --> fct_fnd_mgt_co_snpst
+    Report_Import_Value --> fct_fnd_mgt_co_snpst
+    Calendar_Date --> cdr_dt_dim
 
-    G2 --> G1
+    cdr_dt_dim --> fct_fnd_mgt_co_snpst
 ```
 
 **Mục đích:** Cung cấp bảng `Fact Fund Management Company Snapshot` phục vụ Tab TỔNG QUAN CTQLQ — Nhóm 1, tổng hợp các chỉ tiêu thống kê toàn thị trường quản lý quỹ theo tháng gồm số lượng CTQLQ, quỹ đầu tư, VPĐD, chi nhánh, đại lý phân phối, quỹ hưu trí và tổng AUM toàn thị trường.
@@ -76,42 +76,42 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.1.2.2 Nhóm thông tin Số liệu hợp đồng ủy thác danh mục per CTQLQ
+#### 3.1.7.2.2 Nhóm thông tin Số liệu hợp đồng ủy thác danh mục per CTQLQ
 
 ```mermaid
 flowchart LR
     subgraph Staging
-        S1["FMS.RPTMEMBER"]
-        S2["FMS.RPTVALUES"]
-        S3["FMS.SECURITIES"]
-        SE1["ECAT.ECAT_29_HolidayInfo"]
+        FMS_RPTMEMBER["FMS.RPTMEMBER"]
+        FMS_RPTVALUES["FMS.RPTVALUES"]
+        FMS_SECURITIES["FMS.SECURITIES"]
+        ECAT_HolidayInfo["ECAT.ECAT_29_HolidayInfo"]
     end
 
     subgraph Atomic
-        SV1["Member Periodic Report"]
-        SV2["Report Import Value"]
-        SV3["Fund Management Company"]
-        SV4["Calendar Date"]
+        Member_Periodic_Report["Member Periodic Report"]
+        Report_Import_Value["Report Import Value"]
+        Fund_Management_Company["Fund Management Company"]
+        Calendar_Date["Calendar Date"]
     end
 
     subgraph Datamart
-        G1["Fact Discretionary Investment Contract Snapshot"]
-        G2["Fund Management Company Dimension"]
-        G3["Calendar Date Dimension"]
+        fct_dscr_ivsm_ctr_snpst["Fact Discretionary Investment Contract Snapshot"]
+        fnd_mgt_co_dim["Fund Management Company Dimension"]
+        cdr_dt_dim["Calendar Date Dimension"]
     end
 
-    S1 --> SV1
-    S2 --> SV2
-    S3 --> SV3
-    SE1 --> SV4
+    FMS_RPTMEMBER --> Member_Periodic_Report
+    FMS_RPTVALUES --> Report_Import_Value
+    FMS_SECURITIES --> Fund_Management_Company
+    ECAT_HolidayInfo --> Calendar_Date
 
-    SV1 --> G1
-    SV2 --> G1
-    SV3 --> G2
-    SV4 --> G3
+    Member_Periodic_Report --> fct_dscr_ivsm_ctr_snpst
+    Report_Import_Value --> fct_dscr_ivsm_ctr_snpst
+    Fund_Management_Company --> fnd_mgt_co_dim
+    Calendar_Date --> cdr_dt_dim
 
-    G2 --> G1
-    G3 --> G1
+    fnd_mgt_co_dim --> fct_dscr_ivsm_ctr_snpst
+    cdr_dt_dim --> fct_dscr_ivsm_ctr_snpst
 ```
 
 **Mục đích:** Cung cấp bảng `Fact Discretionary Investment Contract Snapshot` phục vụ Tab TỔNG QUAN CTQLQ — Nhóm 2, tổng hợp số lượng và giá trị thị trường hợp đồng ủy thác danh mục đầu tư per CTQLQ theo tháng, phân theo cá nhân và tổ chức.
@@ -131,37 +131,37 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.1.2.3 Nhóm thông tin Hồ sơ CTQLQ — Fund Management Company Profile
+#### 3.1.7.2.3 Nhóm thông tin Hồ sơ CTQLQ — Fund Management Company Profile
 
 ```mermaid
 flowchart LR
     subgraph Staging
-        S1["FMS.SECURITIES"]
-        S4["FMS.RPTVALUES"]
-        S5["FMS.RANK"]
-        S6["FMS.RATINGPD"]
+        FMS_SECURITIES["FMS.SECURITIES"]
+        FMS_RPTVALUES["FMS.RPTVALUES"]
+        FMS_RANK["FMS.RANK"]
+        FMS_RATINGPD["FMS.RATINGPD"]
     end
 
     subgraph Atomic
-        SV1["Fund Management Company"]
-        SV4["Report Import Value"]
-        SV5["Member Rating"]
-        SV6["Member Rating Period"]
+        Fund_Management_Company["Fund Management Company"]
+        Report_Import_Value["Report Import Value"]
+        Member_Rating["Member Rating"]
+        Member_Rating_Period["Member Rating Period"]
     end
 
     subgraph Datamart
-        G1["Fund Management Company Profile"]
+        fnd_mgt_co_prfl["Fund Management Company Profile"]
     end
 
-    S1 --> SV1
-    S4 --> SV4
-    S5 --> SV5
-    S6 --> SV6
+    FMS_SECURITIES --> Fund_Management_Company
+    FMS_RPTVALUES --> Report_Import_Value
+    FMS_RANK --> Member_Rating
+    FMS_RATINGPD --> Member_Rating_Period
 
-    SV1 --> G1
-    SV4 --> G1
-    SV5 --> G1
-    SV6 --> G1
+    Fund_Management_Company --> fnd_mgt_co_prfl
+    Report_Import_Value --> fnd_mgt_co_prfl
+    Member_Rating --> fnd_mgt_co_prfl
+    Member_Rating_Period --> fnd_mgt_co_prfl
 ```
 
 **Mục đích:** Cung cấp bảng `Fund Management Company Profile` phục vụ Tab TỔNG QUAN CTQLQ — Nhóm 3, hiển thị bảng flat chính với đầy đủ chỉ tiêu per CTQLQ (AUM, số quỹ, số HĐUTDM, CAR, lợi nhuận, vốn điều lệ, vốn CSH, xếp loại CAMEL).
@@ -179,33 +179,33 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.1.2.4 Nhóm thông tin Hồ sơ CTQLQ — Fund Management Company Fund List
+#### 3.1.7.2.4 Nhóm thông tin Hồ sơ CTQLQ — Fund Management Company Fund List
 
 ```mermaid
 flowchart LR
     subgraph Staging
-        S1["FMS.SECURITIES"]
-        S2["FMS.FUNDS"]
-        S4["FMS.RPTVALUES"]
+        FMS_SECURITIES["FMS.SECURITIES"]
+        FMS_FUNDS["FMS.FUNDS"]
+        FMS_RPTVALUES["FMS.RPTVALUES"]
     end
 
     subgraph Atomic
-        SV1["Fund Management Company"]
-        SV2["Investment Fund"]
-        SV4["Report Import Value"]
+        Fund_Management_Company["Fund Management Company"]
+        Investment_Fund["Investment Fund"]
+        Report_Import_Value["Report Import Value"]
     end
 
     subgraph Datamart
-        G2["Fund Management Company Fund List"]
+        fnd_mgt_co_fnd_lst["Fund Management Company Fund List"]
     end
 
-    S1 --> SV1
-    S2 --> SV2
-    S4 --> SV4
+    FMS_SECURITIES --> Fund_Management_Company
+    FMS_FUNDS --> Investment_Fund
+    FMS_RPTVALUES --> Report_Import_Value
 
-    SV1 --> G2
-    SV2 --> G2
-    SV4 --> G2
+    Fund_Management_Company --> fnd_mgt_co_fnd_lst
+    Investment_Fund --> fnd_mgt_co_fnd_lst
+    Report_Import_Value --> fnd_mgt_co_fnd_lst
 ```
 
 **Mục đích:** Cung cấp bảng `Fund Management Company Fund List` phục vụ popup drill-down danh sách quỹ theo CTQLQ tại Tab TỔNG QUAN CTQLQ — Nhóm 3.
@@ -222,33 +222,33 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.1.2.5 Nhóm thông tin Hồ sơ CTQLQ — Fund Management Company Contract List
+#### 3.1.7.2.5 Nhóm thông tin Hồ sơ CTQLQ — Fund Management Company Contract List
 
 ```mermaid
 flowchart LR
     subgraph Staging
-        S1["FMS.SECURITIES"]
-        S7["FMS.INVESACC"]
-        S8["FMS.INVES"]
+        FMS_SECURITIES["FMS.SECURITIES"]
+        FMS_INVESACC["FMS.INVESACC"]
+        FMS_INVES["FMS.INVES"]
     end
 
     subgraph Atomic
-        SV1["Fund Management Company"]
-        SV7["Discretionary Investment Account"]
-        SV8["Discretionary Investment Investor"]
+        Fund_Management_Company["Fund Management Company"]
+        Discretionary_Investment_Account["Discretionary Investment Account"]
+        Discretionary_Investment_Investor["Discretionary Investment Investor"]
     end
 
     subgraph Datamart
-        G3["Fund Management Company Contract List"]
+        fnd_mgt_co_ctr_lst["Fund Management Company Contract List"]
     end
 
-    S1 --> SV1
-    S7 --> SV7
-    S8 --> SV8
+    FMS_SECURITIES --> Fund_Management_Company
+    FMS_INVESACC --> Discretionary_Investment_Account
+    FMS_INVES --> Discretionary_Investment_Investor
 
-    SV1 --> G3
-    SV7 --> G3
-    SV8 --> G3
+    Fund_Management_Company --> fnd_mgt_co_ctr_lst
+    Discretionary_Investment_Account --> fnd_mgt_co_ctr_lst
+    Discretionary_Investment_Investor --> fnd_mgt_co_ctr_lst
 ```
 
 **Mục đích:** Cung cấp bảng `Fund Management Company Contract List` phục vụ popup drill-down danh sách hợp đồng UTDM theo CTQLQ tại Tab TỔNG QUAN CTQLQ — Nhóm 3.
@@ -265,56 +265,56 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.1.2.6 Nhóm thông tin NAV quỹ theo kỳ và cross-module QLRR
+#### 3.1.7.2.6 Nhóm thông tin NAV quỹ theo kỳ và cross-module QLRR
 
 ```mermaid
 flowchart LR
     subgraph Staging
-        S1["FMS.RPTMEMBER"]
-        S2["FMS.RPTVALUES"]
-        S3["FMS.FUNDS"]
-        S4["FMS.SECURITIES"]
-        S5["QLRR.risk_indicator"]
-        S6["QLRR.risk_indicator_value"]
-        SE1["ECAT.ECAT_29_HolidayInfo"]
+        FMS_RPTMEMBER["FMS.RPTMEMBER"]
+        FMS_RPTVALUES["FMS.RPTVALUES"]
+        FMS_FUNDS["FMS.FUNDS"]
+        FMS_SECURITIES["FMS.SECURITIES"]
+        QLRR_risk_indicator["QLRR.risk_indicator"]
+        QLRR_risk_indicator_value["QLRR.risk_indicator_value"]
+        ECAT_HolidayInfo["ECAT.ECAT_29_HolidayInfo"]
     end
 
     subgraph Atomic
-        SV1["Member Periodic Report"]
-        SV2["Report Import Value"]
-        SV3["Investment Fund"]
-        SV4["Fund Management Company"]
-        SV5["Risk Indicator"]
-        SV6["Risk Indicator Value"]
-        SV7["Calendar Date"]
+        Member_Periodic_Report["Member Periodic Report"]
+        Report_Import_Value["Report Import Value"]
+        Investment_Fund["Investment Fund"]
+        Fund_Management_Company["Fund Management Company"]
+        Risk_Indicator["Risk Indicator"]
+        Risk_Indicator_Value["Risk Indicator Value"]
+        Calendar_Date["Calendar Date"]
     end
 
     subgraph Datamart
-        G1["Fact Investment Fund NAV Snapshot"]
-        G2["Investment Fund Dimension"]
-        G3["Fund Management Company Dimension"]
-        G4["Calendar Date Dimension"]
+        fct_ivsm_fnd_nav_snpst["Fact Investment Fund NAV Snapshot"]
+        ivsm_fnd_dim["Investment Fund Dimension"]
+        fnd_mgt_co_dim["Fund Management Company Dimension"]
+        cdr_dt_dim["Calendar Date Dimension"]
     end
 
-    S1 --> SV1
-    S2 --> SV2
-    S3 --> SV3
-    S4 --> SV4
-    S5 --> SV5
-    S6 --> SV6
-    SE1 --> SV7
+    FMS_RPTMEMBER --> Member_Periodic_Report
+    FMS_RPTVALUES --> Report_Import_Value
+    FMS_FUNDS --> Investment_Fund
+    FMS_SECURITIES --> Fund_Management_Company
+    QLRR_risk_indicator --> Risk_Indicator
+    QLRR_risk_indicator_value --> Risk_Indicator_Value
+    ECAT_HolidayInfo --> Calendar_Date
 
-    SV1 --> G1
-    SV2 --> G1
-    SV5 --> G1
-    SV6 --> G1
-    SV3 --> G2
-    SV4 --> G3
-    SV7 --> G4
+    Member_Periodic_Report --> fct_ivsm_fnd_nav_snpst
+    Report_Import_Value --> fct_ivsm_fnd_nav_snpst
+    Risk_Indicator --> fct_ivsm_fnd_nav_snpst
+    Risk_Indicator_Value --> fct_ivsm_fnd_nav_snpst
+    Investment_Fund --> ivsm_fnd_dim
+    Fund_Management_Company --> fnd_mgt_co_dim
+    Calendar_Date --> cdr_dt_dim
 
-    G2 --> G1
-    G3 --> G1
-    G4 --> G1
+    ivsm_fnd_dim --> fct_ivsm_fnd_nav_snpst
+    fnd_mgt_co_dim --> fct_ivsm_fnd_nav_snpst
+    cdr_dt_dim --> fct_ivsm_fnd_nav_snpst
 ```
 
 **Mục đích:** Cung cấp bảng `Fact Investment Fund NAV Snapshot` phục vụ Tab QUỸ ĐẦU TƯ — Nhóm 4, 5, 6, 9, gồm biểu đồ tổng NAV và tỷ lệ NAV/GDP, phân bổ tài sản, biến động NAV theo tháng và so sánh NAV/CCQ với VN-Index và lãi suất liên ngân hàng qua đêm.
@@ -338,32 +338,32 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.1.2.7 Nhóm thông tin Số lượng quỹ theo loại hình
+#### 3.1.7.2.7 Nhóm thông tin Số lượng quỹ theo loại hình
 
 ```mermaid
 flowchart LR
     subgraph Staging
-        S1["FMS.FUNDS"]
-        SE1["ECAT.ECAT_29_HolidayInfo"]
+        FMS_FUNDS["FMS.FUNDS"]
+        ECAT_HolidayInfo["ECAT.ECAT_29_HolidayInfo"]
     end
 
     subgraph Atomic
-        SV1["Investment Fund"]
-        SV2["Calendar Date"]
+        Investment_Fund["Investment Fund"]
+        Calendar_Date["Calendar Date"]
     end
 
     subgraph Datamart
-        G1["Fact Investment Fund Count Snapshot"]
-        G2["Calendar Date Dimension"]
+        fct_ivsm_fnd_cnt_snpst["Fact Investment Fund Count Snapshot"]
+        cdr_dt_dim["Calendar Date Dimension"]
     end
 
-    S1 --> SV1
-    SE1 --> SV2
+    FMS_FUNDS --> Investment_Fund
+    ECAT_HolidayInfo --> Calendar_Date
 
-    SV1 --> G1
-    SV2 --> G2
+    Investment_Fund --> fct_ivsm_fnd_cnt_snpst
+    Calendar_Date --> cdr_dt_dim
 
-    G2 --> G1
+    cdr_dt_dim --> fct_ivsm_fnd_cnt_snpst
 ```
 
 **Mục đích:** Cung cấp bảng `Fact Investment Fund Count Snapshot` phục vụ Tab QUỸ ĐẦU TƯ — Nhóm 7, thống kê số lượng quỹ đầu tư theo từng loại hình (quỹ mở, ETF, đóng, BĐS, thành viên, TTTTT, TP hạ tầng, hưu trí) theo năm.
@@ -380,39 +380,39 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.1.2.8 Nhóm thông tin Số lượng chứng chỉ quỹ lưu hành per quỹ
+#### 3.1.7.2.8 Nhóm thông tin Số lượng chứng chỉ quỹ lưu hành per quỹ
 
 ```mermaid
 flowchart LR
     subgraph Staging
-        S1["FMS.FUNDS"]
-        S2["FMS.TRANSFERMBF"]
-        SE1["ECAT.ECAT_29_HolidayInfo"]
+        FMS_FUNDS["FMS.FUNDS"]
+        FMS_TRANSFERMBF["FMS.TRANSFERMBF"]
+        ECAT_HolidayInfo["ECAT.ECAT_29_HolidayInfo"]
     end
 
     subgraph Atomic
-        SV1["Investment Fund"]
-        SV2["Investment Fund Certificate Transfer"]
-        SV3["Calendar Date"]
+        Investment_Fund["Investment Fund"]
+        Investment_Fund_Certificate_Transfer["Investment Fund Certificate Transfer"]
+        Calendar_Date["Calendar Date"]
     end
 
     subgraph Datamart
-        G1["Fact Investment Fund CCQ Snapshot"]
-        G2["Investment Fund Dimension"]
-        G3["Calendar Date Dimension"]
+        fct_ivsm_fnd_ccq_snpst["Fact Investment Fund CCQ Snapshot"]
+        ivsm_fnd_dim["Investment Fund Dimension"]
+        cdr_dt_dim["Calendar Date Dimension"]
     end
 
-    S1 --> SV1
-    S2 --> SV2
-    SE1 --> SV3
+    FMS_FUNDS --> Investment_Fund
+    FMS_TRANSFERMBF --> Investment_Fund_Certificate_Transfer
+    ECAT_HolidayInfo --> Calendar_Date
 
-    SV1 --> G1
-    SV2 --> G1
-    SV1 --> G2
-    SV3 --> G3
+    Investment_Fund --> fct_ivsm_fnd_ccq_snpst
+    Investment_Fund_Certificate_Transfer --> fct_ivsm_fnd_ccq_snpst
+    Investment_Fund --> ivsm_fnd_dim
+    Calendar_Date --> cdr_dt_dim
 
-    G2 --> G1
-    G3 --> G1
+    ivsm_fnd_dim --> fct_ivsm_fnd_ccq_snpst
+    cdr_dt_dim --> fct_ivsm_fnd_ccq_snpst
 ```
 
 **Mục đích:** Cung cấp bảng `Fact Investment Fund CCQ Snapshot` phục vụ Tab QUỸ ĐẦU TƯ — Nhóm 8, thống kê số lượng chứng chỉ quỹ lưu hành per quỹ theo tháng, tính từ tích lũy giao dịch chuyển nhượng.
@@ -431,37 +431,37 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.1.2.9 Nhóm thông tin Danh sách quỹ đầu tư
+#### 3.1.7.2.9 Nhóm thông tin Danh sách quỹ đầu tư
 
 ```mermaid
 flowchart LR
     subgraph Staging
-        S1["FMS.FUNDS"]
-        S2["FMS.SECURITIES"]
-        S3["FMS.RPTMEMBER"]
-        S4["FMS.RPTVALUES"]
+        FMS_FUNDS["FMS.FUNDS"]
+        FMS_SECURITIES["FMS.SECURITIES"]
+        FMS_RPTMEMBER["FMS.RPTMEMBER"]
+        FMS_RPTVALUES["FMS.RPTVALUES"]
     end
 
     subgraph Atomic
-        SV1["Investment Fund"]
-        SV2["Fund Management Company"]
-        SV3["Member Periodic Report"]
-        SV4["Report Import Value"]
+        Investment_Fund["Investment Fund"]
+        Fund_Management_Company["Fund Management Company"]
+        Member_Periodic_Report["Member Periodic Report"]
+        Report_Import_Value["Report Import Value"]
     end
 
     subgraph Datamart
-        G1["Investment Fund Profile"]
+        ivsm_fnd_prfl["Investment Fund Profile"]
     end
 
-    S1 --> SV1
-    S2 --> SV2
-    S3 --> SV3
-    S4 --> SV4
+    FMS_FUNDS --> Investment_Fund
+    FMS_SECURITIES --> Fund_Management_Company
+    FMS_RPTMEMBER --> Member_Periodic_Report
+    FMS_RPTVALUES --> Report_Import_Value
 
-    SV1 --> G1
-    SV2 --> G1
-    SV3 --> G1
-    SV4 --> G1
+    Investment_Fund --> ivsm_fnd_prfl
+    Fund_Management_Company --> ivsm_fnd_prfl
+    Member_Periodic_Report --> ivsm_fnd_prfl
+    Report_Import_Value --> ivsm_fnd_prfl
 ```
 
 **Mục đích:** Cung cấp bảng `Investment Fund Profile` phục vụ Tab QUỸ ĐẦU TƯ — Nhóm 10, hiển thị danh sách quỹ đầu tư với các chỉ tiêu NAV, lợi nhuận YTD và số lượng CCQ lưu hành tại tháng slicer.
@@ -479,37 +479,37 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.1.2.10 Nhóm thông tin Pass-through báo cáo
+#### 3.1.7.2.10 Nhóm thông tin Pass-through báo cáo
 
 ```mermaid
 flowchart LR
     subgraph Staging
-        S1["FMS.RPTVALUES"]
-        S2["FMS.RPTMEMBER"]
-        S3["FMS.SECURITIES"]
-        S4["FMS.FUNDS"]
+        FMS_RPTVALUES["FMS.RPTVALUES"]
+        FMS_RPTMEMBER["FMS.RPTMEMBER"]
+        FMS_SECURITIES["FMS.SECURITIES"]
+        FMS_FUNDS["FMS.FUNDS"]
     end
 
     subgraph Atomic
-        SV1["Report Import Value"]
-        SV2["Member Periodic Report"]
-        SV3["Fund Management Company"]
-        SV4["Investment Fund"]
+        Report_Import_Value["Report Import Value"]
+        Member_Periodic_Report["Member Periodic Report"]
+        Fund_Management_Company["Fund Management Company"]
+        Investment_Fund["Investment Fund"]
     end
 
     subgraph Datamart
-        G1["Report Pass-through View"]
+        rpt_pass_thru_view["Report Pass-through View"]
     end
 
-    S1 --> SV1
-    S2 --> SV2
-    S3 --> SV3
-    S4 --> SV4
+    FMS_RPTVALUES --> Report_Import_Value
+    FMS_RPTMEMBER --> Member_Periodic_Report
+    FMS_SECURITIES --> Fund_Management_Company
+    FMS_FUNDS --> Investment_Fund
 
-    SV1 --> G1
-    SV2 --> G1
-    SV3 --> G1
-    SV4 --> G1
+    Report_Import_Value --> rpt_pass_thru_view
+    Member_Periodic_Report --> rpt_pass_thru_view
+    Fund_Management_Company --> rpt_pass_thru_view
+    Investment_Fund --> rpt_pass_thru_view
 ```
 
 **Mục đích:** Cung cấp bảng `Report Pass-through View` phục vụ Tab DATA EXPLORER — Nhóm 12–16, cho phép tra cứu toàn bộ giá trị từng dòng chỉ tiêu báo cáo định kỳ của CTQLQ và quỹ đầu tư theo biểu mẫu và kỳ.
@@ -527,36 +527,36 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.1.2.11 Nhóm thông tin Báo cáo giao dịch nhân viên CTQLQ
+#### 3.1.7.2.11 Nhóm thông tin Báo cáo giao dịch nhân viên CTQLQ
 
 ```mermaid
 flowchart LR
     subgraph Staging
-        S1["FMS.TLProfiles"]
-        S2["FMS.SECURITIES"]
-        S3["GSGD.investor_account"]
+        FMS_TLProfiles["FMS.TLProfiles"]
+        FMS_SECURITIES["FMS.SECURITIES"]
+        GSGD_investor_account["GSGD.investor_account"]
     end
 
     subgraph Atomic
-        SV1["Fund Management Company Key Person"]
-        SV2["Involved Party Alternative Identification"]
-        SV3["Fund Management Company"]
-        SV4["Investor Trading Account"]
+        Fund_Management_Company_Key_Person["Fund Management Company Key Person"]
+        Involved_Party_Alternative_Identification["Involved Party Alternative Identification"]
+        Fund_Management_Company["Fund Management Company"]
+        Investor_Trading_Account["Investor Trading Account"]
     end
 
     subgraph Datamart
-        G1["Fund Management Company Staff Trade Report"]
+        fnd_mgt_co_stf_trd_rpt["Fund Management Company Staff Trade Report"]
     end
 
-    S1 --> SV1
-    S1 --> SV2
-    S2 --> SV3
-    S3 --> SV4
+    FMS_TLProfiles --> Fund_Management_Company_Key_Person
+    FMS_TLProfiles --> Involved_Party_Alternative_Identification
+    FMS_SECURITIES --> Fund_Management_Company
+    GSGD_investor_account --> Investor_Trading_Account
 
-    SV1 --> G1
-    SV2 --> G1
-    SV3 --> G1
-    SV4 --> G1
+    Fund_Management_Company_Key_Person --> fnd_mgt_co_stf_trd_rpt
+    Involved_Party_Alternative_Identification --> fnd_mgt_co_stf_trd_rpt
+    Fund_Management_Company --> fnd_mgt_co_stf_trd_rpt
+    Investor_Trading_Account --> fnd_mgt_co_stf_trd_rpt
 ```
 
 **Mục đích:** Cung cấp bảng `Fund Management Company Staff Trade Report` phục vụ Tab BÁO CÁO / CÔNG TY QLQ — Nhóm 11, hiển thị danh sách nhân viên CTQLQ và tài khoản giao dịch chứng khoán tương ứng (cross-module FMS × GSGD).

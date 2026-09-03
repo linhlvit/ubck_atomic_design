@@ -1,9 +1,9 @@
-## 3.2.5 Luồng đồng bộ dữ liệu cho nhóm báo cáo Người hành nghề chứng khoán
+## 3.1.2 LUỒNG ĐỒNG BỘ DỮ LIỆU CHO NHÓM BÁO CÁO Người hành nghề
 
-### 3.2.5.1 Thông tin chung luồng đồng bộ
+### 3.1.2.1 Thông tin chung luồng đồng bộ
 
 - Tên job:
-- Nguồn dữ liệu (hệ thống nguồn): NHNCK
+- Nguồn dữ liệu (Hệ thống nguồn): NHNCK
 - Cách thức truy xuất đồng bộ dữ liệu:
 - Tần suất đồng bộ dữ liệu:
 - Dung lượng dữ liệu sẽ thực hiện đồng bộ:
@@ -12,9 +12,9 @@
 
 ---
 
-### 3.2.5.2 Luồng nghiệp vụ
+### 3.1.2.2 Luồng nghiệp vụ
 
-#### 3.2.5.2.1 Nhóm thông tin Chứng chỉ hành nghề — Thống kê tổng hợp
+#### 3.1.2.2.1 Nhóm thông tin Chứng chỉ hành nghề — Thống kê tổng hợp
 
 ```mermaid
 flowchart LR
@@ -67,7 +67,7 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.5.2.2 Nhóm thông tin Người hành nghề — Trình độ & Phân bổ độ tuổi
+#### 3.1.2.2.2 Nhóm thông tin Người hành nghề — Trình độ & Phân bổ độ tuổi
 
 ```mermaid
 flowchart LR
@@ -115,7 +115,7 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.5.2.3 Nhóm thông tin Tra cứu NHN 360° — Danh sách & Header
+#### 3.1.2.2.3 Nhóm thông tin Tra cứu NHN 360° — Danh sách & Header
 
 ```mermaid
 flowchart LR
@@ -165,7 +165,7 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.5.2.4 Nhóm thông tin Lịch sử CCHN, Quá trình hành nghề, Vi phạm, Thi sát hạch, Cập nhật kiến thức — Practitioner Certificate History
+#### 3.1.2.2.4 Nhóm thông tin Lịch sử CCHN, Quá trình hành nghề, Vi phạm, Thi sát hạch, Cập nhật kiến thức — Practitioner Certificate History
 
 ```mermaid
 flowchart LR
@@ -203,7 +203,7 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.5.2.5 Nhóm thông tin Lịch sử CCHN, Quá trình hành nghề, Vi phạm, Thi sát hạch, Cập nhật kiến thức — Practitioner Employment History
+#### 3.1.2.2.5 Nhóm thông tin Lịch sử CCHN, Quá trình hành nghề, Vi phạm, Thi sát hạch, Cập nhật kiến thức — Practitioner Employment History
 
 ```mermaid
 flowchart LR
@@ -236,7 +236,7 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.5.2.6 Nhóm thông tin Lịch sử CCHN, Quá trình hành nghề, Vi phạm, Thi sát hạch, Cập nhật kiến thức — Practitioner Violation History
+#### 3.1.2.2.6 Nhóm thông tin Lịch sử CCHN, Quá trình hành nghề, Vi phạm, Thi sát hạch, Cập nhật kiến thức — Practitioner Violation History
 
 ```mermaid
 flowchart LR
@@ -274,7 +274,7 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.5.2.7 Nhóm thông tin Lịch sử CCHN, Quá trình hành nghề, Vi phạm, Thi sát hạch, Cập nhật kiến thức — Practitioner Exam History
+#### 3.1.2.2.7 Nhóm thông tin Lịch sử CCHN, Quá trình hành nghề, Vi phạm, Thi sát hạch, Cập nhật kiến thức — Practitioner Exam History
 
 ```mermaid
 flowchart LR
@@ -316,7 +316,7 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.5.2.8 Nhóm thông tin Lịch sử CCHN, Quá trình hành nghề, Vi phạm, Thi sát hạch, Cập nhật kiến thức — Practitioner Training History
+#### 3.1.2.2.8 Nhóm thông tin Lịch sử CCHN, Quá trình hành nghề, Vi phạm, Thi sát hạch, Cập nhật kiến thức — Practitioner Training History
 
 ```mermaid
 flowchart LR
@@ -353,7 +353,7 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.5.2.9 Nhóm thông tin Lịch sử CCHN, Quá trình hành nghề, Vi phạm, Thi sát hạch, Cập nhật kiến thức — Practitioner Related Party Profile
+#### 3.1.2.2.9 Nhóm thông tin Lịch sử CCHN, Quá trình hành nghề, Vi phạm, Thi sát hạch, Cập nhật kiến thức — Practitioner Related Party Profile
 
 ```mermaid
 flowchart LR
@@ -386,7 +386,7 @@ Atomic → Datamart:
 
 ---
 
-#### 3.2.5.2.10 Nhóm thông tin Data Explorer — Tra cứu danh sách CCHN
+#### 3.1.2.2.10 Nhóm thông tin Data Explorer — Tra cứu danh sách CCHN
 
 ```mermaid
 flowchart LR

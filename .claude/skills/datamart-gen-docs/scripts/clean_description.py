@@ -15,66 +15,105 @@ import re
 import sys
 from pathlib import Path
 
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8")
 
-# ─── Patterns cần bỏ ─────────────────────────────────────────────────────────
+
+# ─── Patterns cần loại bỏ tuần tự ─────────────────────────────────────────
 
 _PATTERNS = [
-    # Tham chiếu nguồn: "— IDS.table.col", "THANHTRA.TABLE.COL" (prefix UPPERCASE.TABLE.col)
-    re.compile(r"\s*[—-]\s*[A-Z][A-Za-z]+\.[A-Z_]+\.[A-Za-z_.]+"),
-    re.compile(r"\s*\bTHANHTRA\.[A-Z_]+\.[A-Z_a-z_.]+"),
-    re.compile(r"\s*\b[A-Z]{2,10}\.[A-Z_]{3,}\.[A-Za-z_]+"),   # SOURCE.TABLE.col
-    # Open issue: "Xem O_XX_N", "(Closed)", "xem O_TT_4"
-    re.compile(r"\s*[—-]?\s*[Xx]em\s+O_[A-Z]+_\d+"),
+    # 1. Bỏ các tiền tố / hậu tố phiên bản, ngày sửa: "(Sửa 2026-07-17)", "(Bổ sung 2026-08)", v.v.
+    re.compile(r"\(\s*(?:Sửa|Bổ sung|Thêm|Cập nhật|Update)\s+[^)]*\)", re.IGNORECASE),
+
+    # 2. Tiền tố kỹ thuật đầu dòng: "PK — Driving: ...", "NK — ...", "BK: (...)"
+    re.compile(r"^(?:PK|NK|BK|FK|DD)\s*[—\-:]\s*(?:Driving:[^;\n]*|ngày lịch dùng để join[^;\n]*)?", re.IGNORECASE),
+    re.compile(r"^(?:PK|NK|BK|FK|DD)$", re.IGNORECASE),
+    re.compile(r";\s*BK:\s*\([^)]*\)", re.IGNORECASE),
+    re.compile(r"\s*\bDriving:\s*[^;\n.]*(?:\.|$)?", re.IGNORECASE),
+
+    # 3. Khối metadata kỹ thuật Atomic/ETL
+    re.compile(r"\s*\bBCV:\s*(?:\"[^\"]*\"|'[^']*'|[^\.\n]+)(?:\.|$)?", re.IGNORECASE),
+    re.compile(r"\s*\bHash:\s*[^\.\n]+(?:\.|$)?", re.IGNORECASE),
+    re.compile(r"\s*\bNguồn\s+thực:\s*(?:\"[^\"]*\"|'[^']*'|[\w.]+|\S+)*?(?=(?:\.\s+[A-Z\u00C0-\u1EF9]|\s*(?:FK\s+target|Classification|Pair\s+with|Shared\s+entity|BCV|Hash|ETL|Dedup|Filter|Load\s+strategy|Grain)|[;]|$|\n))(?:\.|\s+|$)", re.IGNORECASE),
+    re.compile(r"\s*\bFK\s+target:\s*[^\.\n]+(?:\.|$)?", re.IGNORECASE),
+    re.compile(r"\s*\bClassification:\s*[^\.\n]+(?:\.|$)?", re.IGNORECASE),
+    re.compile(r"\s*\bPair\s+with\s+[^\.\n]+(?:\.|$)?", re.IGNORECASE),
+    re.compile(r"\s*\bShared\s+entity\s*[—\-]?\s*[^.\n]*(?:\.|$)?", re.IGNORECASE),
+
+    # 4. Open issues / PENDING / Scheme reference
+    re.compile(r"\s*(?:[—-]\s*)?[Xx]em\s+O_[A-Za-z0-9_]+", re.IGNORECASE),
     re.compile(r"\s*\(Closed\)", re.IGNORECASE),
-    # Ghi chú kỹ thuật: "(PK Silver)", "(BK nguồn)", "(PK bảng tác nghiệp)"
-    re.compile(r"\s*\(\s*(?:PK|BK|FK)\s+[^)]{0,40}\)"),
-    # PENDING ghi chú
-    re.compile(r"\s*PENDING\s*\([^)]*\)", re.IGNORECASE),
-    # Scheme reference
-    re.compile(r"\s*Scheme:\s*[A-Z_]+", re.IGNORECASE),
-    # ETL notes (đặt sau — hoặc . hoặc đầu câu)
-    re.compile(r"\s*[—\-.]?\s*ETL[-\s](?:lookup|extract|pick|derived|join|sinh)[^.]*", re.IGNORECASE),
-    re.compile(r"\s*[—\-.]?\s*ETL\s+[^.]{0,60}", re.IGNORECASE),
-    # FK label prefix: "FK lịch — ", "FK phân loại — " — chỉ bỏ phần sau dấu —
-    re.compile(r"(FK\s+[^—\n]{0,40})\s*—\s*ETL[^.]*"),
-    # Trailing dots và khoảng trắng
-    re.compile(r"\s*\.\s*$"),
+    re.compile(r"\s*\bPENDING\b(?:\s*\([^)]*\))?\s*[:—\-]?", re.IGNORECASE),
+    re.compile(r"\s*\bScheme:\s*[A-Za-z0-9_]+(?:\.|\s+|$)", re.IGNORECASE),
+
+    # 5. Dedup, Filter, Technical field, Load strategy, Grain, join_atomic, COUNT notes
+    re.compile(r"\s*\(\s*(?:COUNT|SUM|AVG|MAX|MIN)\b(?:[^()]+|\((?:[^()]+|\([^()]*\))*\))*\)", re.IGNORECASE),
+    re.compile(r"\s*\b(?:COUNT|SUM|AVG|MAX|MIN)\([^)]*\)[^.\n]*(?:\.|$)?", re.IGNORECASE),
+    re.compile(r"\s*\bDedup\b.*?(?=(?:\.\s+[A-Z\u00C0-\u1EF9]|$|\n))(?:\.|\s+|$)", re.IGNORECASE),
+    re.compile(r"\s*\bFilter\b.*?(?=(?:\.\s+[A-Z\u00C0-\u1EF9]|$|\n))(?:\.|\s+|$)", re.IGNORECASE),
+    re.compile(r"\s*\bTechnical\s+field\b.*?(?=(?:\.\s+[A-Z\u00C0-\u1EF9]|$|\n))(?:\.|\s+|$)", re.IGNORECASE),
+    re.compile(r"\s*\bLoad\s+strategy:\s*[^\.\n]+(?:\.|$)?", re.IGNORECASE),
+    re.compile(r"\s*(?:[—\-]\s*)?1\s+row\s+per\b.*?(?=(?:\.\s+[A-Z\u00C0-\u1EF9]|$|\n))(?:\.|\s+|$)", re.IGNORECASE),
+    re.compile(r"\s*\bGrain\b.*?(?=(?:\.\s+[A-Z\u00C0-\u1EF9]|$|\n))(?:\.|\s+|$)", re.IGNORECASE),
+    re.compile(r"\s*(?:ETL\s+)?(?:join_atomic|join|Join\s+ngược)\b.*?(?=(?:\.\s+[A-Z\u00C0-\u1EF9]|$|\n))(?:\.|\s+|$)", re.IGNORECASE),
+
+    # 6. Ghi chú kỹ thuật trong ngoặc hoặc độc lập
+    re.compile(r"\s*\(\s*(?:PK|BK|FK|NK|DD|Surrogate(?:\s+Key)?|Foreign\s+Key|Business\s+Key|Natural\s+Key|Primary\s+Key|Current-state|SCD\w*|Silver|nội bộ|tác nghiệp)\s*[^)]*\)", re.IGNORECASE),
+    re.compile(r"\s*\bPK\s+surrogate\b\.?", re.IGNORECASE),
+    re.compile(r"\s*\bBK\s+chính\b\.?", re.IGNORECASE),
+    re.compile(r"\s*\bBK\s+phụ\b\.?", re.IGNORECASE),
+    re.compile(r"\s*\b\(?SCD4A\)?\b", re.IGNORECASE),
+
+    # 7. ETL notes & đuôi ghi chú ETL
+    re.compile(r";\s*ETL\s+.*?(?=(?:\.\s+[A-Z\u00C0-\u1EF9]|$|\n))(?:\.|\s+|$)", re.IGNORECASE),
+    re.compile(r"\.\s*ETL\s+.*?(?=(?:\.\s+[A-Z\u00C0-\u1EF9]|$|\n))(?:\.|\s+|$)", re.IGNORECASE),
+    re.compile(r"\s*(?:[—\-]\s*)?ETL[-\s](?:lookup|extract|pick|derived|join|crosswalk|load|tạm)\b(?:\s+(?:từ|theo|qua|tại|vào|bởi|cho|bằng)\b)?(?:\s+[A-Za-z0-9_ ]+?(?=\.|\s*[A-Z]{2,}\.|$))?", re.IGNORECASE),
+    re.compile(r"\s*\bETL\s+load\s+timestamp\b", re.IGNORECASE),
+    re.compile(r"\s*\bETL\s+sinh\s+tự\s+động\b", re.IGNORECASE),
+    re.compile(r"\s*(?:[,;—\-]\s*)?chờ\s+Atomic\s+bổ\s+sung.*?(?=(?:\.\s+[A-Z\u00C0-\u1EF9]|$|\n))(?:\.|\s+|$)", re.IGNORECASE),
+
+    # 8. Tham chiếu bảng nguồn inline còn sót lại
+    re.compile(r"(?:\s*|\b)(?:THANHTRA|IDS|FIMS|FMS|GSGD|NHNCK|SCMS|QLRR|DCST|TTHC|ECAT|MDDS|[A-Z]{2,10})\.[A-Z0-9_]+(?:\.[A-Za-z0-9_]+)*\.?", re.IGNORECASE),
 ]
 
-# Bỏ phần sau dấu " — " nếu phần sau bắt đầu bằng ETL hoặc tham chiếu nguồn
-_TRAILING_DASH = re.compile(r"\s*[—]\s*(?:ETL|[A-Z][A-Za-z]+\.[A-Z_]+).*$")
-
-# Bỏ phần sau dấu ". " nếu phần sau bắt đầu bằng tên hệ thống nguồn
-_TRAILING_DOT_SOURCE = re.compile(
-    r"\.\s+(?:THANHTRA|IDS|FIMS|FMS|GSGD|NHNCK|SCMS|QLRR|THANHTRA|DCST|[A-Z]{2,10})\.[A-Z_].*$"
+_TRAILING_DASH = re.compile(
+    r"\s*[—-]\s*(?:ETL|Driving:|lookup|1\s+row\s+per|IDS\.|FIMS\.|FMS\.|GSGD\.|NHNCK\.|SCMS\.|QLRR\.|DCST\.|TTHC\.|ECAT\.|MDDS\.|THANHTRA\.|[A-Z]{2,10}\.[A-Z0-9_]|[A-Za-z0-9_]+\.[A-Za-z0-9_]+\.[A-Za-z0-9_]|xem\s+O_|Xem\s+O_|PK|BK|FK|DD|Surrogate|Foreign\s+Key|Business\s+Key|Natural\s+Key|Primary\s+Key|SCD|Shared\s+entity|không\s+có\s+PK).*$",
+    re.IGNORECASE
 )
 
-# Số đếm/COUNT note
-_COUNT_NOTE = re.compile(r"\s*COUNT\([^)]*\)[^.]*", re.IGNORECASE)
-
-# Khoảng trắng thừa và trailing dash/dot
-_TRAILING_PUNCT = re.compile(r"[\s.—\-]+$")
+_TRAILING_DOT_SOURCE = re.compile(
+    r"\.\s+(?:THANHTRA|IDS|FIMS|FMS|GSGD|NHNCK|SCMS|QLRR|DCST|TTHC|ECAT|MDDS|[A-Z]{2,10})\.[A-Z0-9_].*$",
+    re.IGNORECASE
+)
 
 
 def clean(desc: str) -> str:
-    """Strip tất cả nội dung kỹ thuật từ chuỗi mô tả."""
+    """Strip tất cả nội dung kỹ thuật từ chuỗi mô tả, chuẩn hóa văn phong tiếng Việt."""
     if not desc:
         return ""
     s = desc.strip()
 
-    # Bỏ phần sau — nếu phần sau là ETL / tham chiếu nguồn
+    # Bước 1: Bỏ phần sau dấu gạch ngang nếu là nội dung kỹ thuật / tham chiếu nguồn
     s = _TRAILING_DASH.sub("", s)
-    # Bỏ phần sau ". SYSTEM.TABLE..." (dấu chấm sau câu mô tả)
-    s = _TRAILING_DOT_SOURCE.sub("", s)
-    # COUNT note
-    s = _COUNT_NOTE.sub("", s)
 
-    # Apply từng pattern
+    # Bước 2: Bỏ phần sau dấu chấm nếu là tham chiếu bảng nguồn
+    s = _TRAILING_DOT_SOURCE.sub("", s)
+
+    # Bước 3: Áp dụng danh sách regex patterns
     for pat in _PATTERNS:
         s = pat.sub("", s)
 
-    # Làm sạch lần cuối
-    s = _TRAILING_PUNCT.sub("", s).strip()
+    # Bước 4: Làm sạch dấu câu ở đầu và cuối chuỗi
+    s = re.sub(r"^[\s.—\-:,;]+", "", s)
+    s = re.sub(r"[\s.—\-:,;]+$", "", s)
+    s = re.sub(r"\s{2,}", " ", s).strip()
+
+    # Bước 5: Viết hoa chữ cái đầu tiên nếu chuỗi hợp lệ
+    if s and s[0].islower():
+        s = s[0].upper() + s[1:]
+
     return s
 
 
