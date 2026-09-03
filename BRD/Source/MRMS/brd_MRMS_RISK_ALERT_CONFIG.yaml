@@ -1,0 +1,132 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: MRMS
+table: RISK_ALERT_CONFIG
+brd_ref: BRD-SRC-MRMS-RISK_ALERT_CONFIG
+columns:
+- name: ID
+  data_type: VARCHAR2(36)
+  description: Primary key
+  key: PK
+  fk_note: null
+- name: INDICATOR_TYPE
+  data_type: NUMBER(1,0)
+  description: 1=Chỉ tiêu hệ thống 2=Chỉ tiêu tự tạo
+  key: null
+  fk_note: null
+- name: INDICATOR_ID
+  data_type: VARCHAR2(36)
+  description: Id chỉ tiêu hệ thống
+  key: FK
+  fk_note: FK → RISK_INDICATOR.ID
+- name: CUSTOM_INDICATOR_ID
+  data_type: VARCHAR2(36)
+  description: Id chỉ tiêu tự tạo
+  key: FK
+  fk_note: FK → RISK_INDICATOR_CUSTOM.ID
+- name: THRESHOLD_DIRECTION
+  data_type: NUMBER(1,0)
+  description: 1=Tăng, 2=Giảm, 3=Tăng/Giảm
+  key: null
+  fk_note: null
+- name: THRESHOLD_UNIT_CODE
+  data_type: NUMBER(2,0)
+  description: Đơn vị 1=% 2=Điểm 3=Tỷ VND 4=Triệu USD 5=Hợp đồng 6=Cổ phiếu 7=Công ty 8=VND 9=Số tài khoản
+    10=Đơn vị tính
+  key: null
+  fk_note: null
+- name: COMPARE_PERIOD_TIME
+  data_type: NUMBER
+  description: Số kỳ cần so sánh
+  key: null
+  fk_note: null
+- name: ALERT_MESSAGE_TEMPLATE
+  data_type: VARCHAR2(4000)
+  description: Nội dung cảnh báo
+  key: null
+  fk_note: null
+- name: HANDLER_USER_ID
+  data_type: VARCHAR2(36)
+  description: Người xử lý chính (user id)
+  key: FK
+  fk_note: FK → system_user.id
+- name: HANDLER_USER_NAME
+  data_type: VARCHAR2(800)
+  description: Tên người xử lý chính
+  key: null
+  fk_note: null
+- name: NOTIFY_BELL_FLAG
+  data_type: NUMBER(1,0)
+  description: 'Hiển thị thông báo chuông: 0=Không, 1=Có'
+  key: null
+  fk_note: null
+- name: NOTIFY_EMAIL_FLAG
+  data_type: NUMBER(1,0)
+  description: 'Gửi email cảnh báo: 0=Không, 1=Có'
+  key: null
+  fk_note: null
+- name: NOTIFY_TOAST_FLAG
+  data_type: NUMBER(1,0)
+  description: 'Thông báo toast: 0=Không, 1=Có'
+  key: null
+  fk_note: null
+- name: IS_ACTIVE
+  data_type: NUMBER(1,0)
+  description: 0=Không hoạt động, 1=Đang hoạt động
+  key: null
+  fk_note: null
+- name: DISPLAY_ORDER
+  data_type: NUMBER(4,0)
+  description: Thứ tự hiển thị của cảnh báo
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: Ngày tạo
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: TIMESTAMP(6)
+  description: Ngày sửa cuối
+  key: null
+  fk_note: null
+- name: CREATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: User_id người tạo
+  key: null
+  fk_note: null
+- name: UPDATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: User_id người cập nhật
+  key: null
+  fk_note: null
+- name: CREATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: Tên người tạo
+  key: null
+  fk_note: null
+- name: UPDATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: Tên người cập nhật
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(1,0)
+  description: Soft delete
+  key: null
+  fk_note: null
+- name: CUSTOM_OLD_VALUE
+  data_type: NUMBER(19,4)
+  description: Giá trị kỳ trước (cho chỉ tiêu tự tạo)
+  key: null
+  fk_note: null
+- name: CUSTOM_NEW_VALUE
+  data_type: NUMBER(19,4)
+  description: Giá trị kỳ này (cho chỉ tiêu tự tạo)
+  key: null
+  fk_note: null
+- name: THRESHOLD_VALUE
+  data_type: NUMBER(19,4)
+  description: Giá trị ngưỡng
+  key: null
+  fk_note: null

@@ -1,0 +1,101 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: MRMS
+table: RISK_INDICATOR_SCHEDULE
+brd_ref: BRD-SRC-MRMS-RISK_INDICATOR_SCHEDULE
+columns:
+- name: ID
+  data_type: VARCHAR2(36)
+  description: Primary key
+  key: PK
+  fk_note: null
+- name: INDICATOR_ID
+  data_type: VARCHAR2(36)
+  description: Chỉ tiêu (1-1)
+  key: FK
+  fk_note: FK → RISK_INDICATOR.ID
+- name: FREQUENCY_TYPE
+  data_type: NUMBER(1,0)
+  description: 1=Giờ, 2=Ngày, 3=Tháng, 4=Quý, 5=Năm
+  key: null
+  fk_note: null
+- name: FREQUENCY_VALUE
+  data_type: NUMBER
+  description: 'Mỗi bao nhiêu đơn vị (VD: mỗi 2 ngày)'
+  key: null
+  fk_note: null
+- name: START_TIME
+  data_type: TIMESTAMP(6)
+  description: Ngày giờ bắt đầu chạy
+  key: null
+  fk_note: null
+- name: NEXT_RUN_TIME
+  data_type: TIMESTAMP(6)
+  description: Lịch chạy tiếp theo (auto-calculated)
+  key: null
+  fk_note: null
+- name: LAST_RUN_TIME
+  data_type: TIMESTAMP(6)
+  description: Lần chạy gần nhất
+  key: null
+  fk_note: null
+- name: CRON_EXPRESSION
+  data_type: VARCHAR2(100)
+  description: Quartz cron
+  key: null
+  fk_note: null
+- name: IS_ENABLED
+  data_type: NUMBER(1,0)
+  description: 0=Không hoạt động 1=Hoạt động
+  key: null
+  fk_note: null
+- name: TOTAL_RUNS
+  data_type: NUMBER
+  description: Số lần đã chạy (thống kê)
+  key: null
+  fk_note: null
+- name: LAST_STATUS
+  data_type: VARCHAR2(50)
+  description: SUCCESS/FAILED
+  key: null
+  fk_note: null
+- name: LAST_ERROR
+  data_type: VARCHAR2(2000)
+  description: Lỗi lần chạy gần nhất (nếu có)
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: Ngày tạo
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: TIMESTAMP(6)
+  description: Ngày cập nhật
+  key: null
+  fk_note: null
+- name: CREATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: User ID người tạo
+  key: null
+  fk_note: null
+- name: UPDATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: User ID người cập nhật
+  key: null
+  fk_note: null
+- name: CREATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: Tên người tạo
+  key: null
+  fk_note: null
+- name: UPDATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: Tên người cập nhật
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(1,0)
+  description: Soft delete
+  key: null
+  fk_note: null

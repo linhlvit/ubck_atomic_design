@@ -48,7 +48,7 @@ entities:
   - name: Account Investor Code
     physical_name: account_investor_code
     business_meaning_1st: Số tài khoản (từ VSDC). BK duy nhất của entity.
-    comment_1st: "BK chính. Hash: hash_id('GSGD.INVESTOR_ACCOUNT', ACCOUNT_CODE) dùng\
+    comment_1st: "BK chính. Hash: hash_id('GSGD_INVESTOR_ACCOUNT', ACCOUNT_CODE) dùng\
       \ cho Account Investor Id."
     data_domain_most: Text
     data_type_most: string
@@ -62,7 +62,7 @@ entities:
       - source_table: INVESTOR_ACCOUNT
         source_column: GSGD.INVESTOR_ACCOUNT.ACCOUNT_CODE
         business_meaning: Số tài khoản (từ VSDC). BK duy nhất của entity.
-        comment: "BK chính. Hash: hash_id('GSGD.INVESTOR_ACCOUNT', ACCOUNT_CODE) dùng\
+        comment: "BK chính. Hash: hash_id('GSGD_INVESTOR_ACCOUNT', ACCOUNT_CODE) dùng\
           \ cho Account Investor Id."
   - name: Source System Code
     physical_name: src_stm_code
@@ -85,7 +85,7 @@ entities:
     physical_name: individual_id
     business_meaning_1st: Số CCCD/Số đăng ký sở hữu của nhà đầu tư — dùng làm FK sang
       Individual.
-    comment_1st: "FK target: individual.individual_id. Hash: hash_id('NHNCK.IDENTITY_INFO_C06S',\
+    comment_1st: "FK target: individual.individual_id. Hash: hash_id('NHNCK_IDENTITY_INFO_C06S',\
       \ IDENTITY_NUMBER). Cross-source FK (GSGD → NHNCK) — Individual mới có quyết\
       \ định HLD (NHNCK, 2026-07-23), chưa có LLD/manifest entry (forward reference\
       \ — xem GSGD_HLD_Tier1.md 6f T1-07). Khi NHNCK thiết kế LLD Individual, bắt\
@@ -104,7 +104,7 @@ entities:
         source_column: GSGD.INVESTOR_ACCOUNT.IDENTITY_NUMBER
         business_meaning: Số CCCD/Số đăng ký sở hữu của nhà đầu tư — dùng làm FK sang
           Individual.
-        comment: "FK target: individual.individual_id. Hash: hash_id('NHNCK.IDENTITY_INFO_C06S',\
+        comment: "FK target: individual.individual_id. Hash: hash_id('NHNCK_IDENTITY_INFO_C06S',\
           \ IDENTITY_NUMBER). Cross-source FK (GSGD → NHNCK) — Individual mới có quyết\
           \ định HLD (NHNCK, 2026-07-23), chưa có LLD/manifest entry (forward reference\
           \ — xem GSGD_HLD_Tier1.md 6f T1-07). Khi NHNCK thiết kế LLD Individual,\
@@ -165,7 +165,7 @@ entities:
     physical_name: nationality_id
     business_meaning_1st: Quốc tịch — FK đến Geographic Area (ECAT).
     comment_1st: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
-      \ = 'COUNTRY'). Hash: hash_id('ECAT.COUNTRY', NATIONALITY) | Chưa xác nhận giá\
+      \ = 'COUNTRY'). Hash: hash_id('ECAT_COUNTRY', NATIONALITY) | Chưa xác nhận giá\
       \ trị trường NATIONALITY khớp danh mục ECAT — cần profile dữ liệu trước go-live."
     data_domain_most: Surrogate Key
     data_type_most: string
@@ -180,7 +180,7 @@ entities:
         source_column: GSGD.INVESTOR_ACCOUNT.NATIONALITY
         business_meaning: Quốc tịch — FK đến Geographic Area (ECAT).
         comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
-          \ = 'COUNTRY'). Hash: hash_id('ECAT.COUNTRY', NATIONALITY) | Chưa xác nhận\
+          \ = 'COUNTRY'). Hash: hash_id('ECAT_COUNTRY', NATIONALITY) | Chưa xác nhận\
           \ giá trị trường NATIONALITY khớp danh mục ECAT — cần profile dữ liệu trước\
           \ go-live."
   - name: Nationality Code
@@ -16684,6 +16684,513 @@ entities:
         business_meaning: Ghi chú bổ sung, không bắt buộc.
         comment: null
 - ldm:
+    id: ATM-cl_risk_indicator
+    logical_name_1st: Classification Risk Indicator
+    physical_name_1st: cl_risk_indicator
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: draft
+    description_1st: Danh mục chỉ tiêu tài chính rủi ro (vĩ mô, tiền tệ, thị trường
+      cổ phiếu...) dùng cho Dashboard giám sát rủi ro của MRMS — gồm mã, tên, nhóm,
+      đơn vị, nguồn dữ liệu mặc định và tần suất cập nhật. BCV Concept = [Common]
+      Classification theo chỉ đạo Data Modeler.
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Common
+    bcv_concept_most: "[Common] Classification"
+    table_type_most: Classification
+    etl_pattern_most: Upsert
+    conflict_review: null
+    sources:
+    - MRMS
+    references:
+      brd:
+      - BRD-SRC-MRMS-RISK_INDICATOR
+  attributes:
+  - name: Classification Risk Indicator Id
+    physical_name: cl_risk_ind_id
+    business_meaning_1st: Khóa đại diện (surrogate key).
+    comment_1st: "PK surrogate. Hash: hash_id('MRMS_RISK_INDICATOR', INDICATOR_CODE).\
+      \ BCV: [Common] Classification."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MRMS
+      source_tables:
+      - source_table: RISK_INDICATOR
+        source_column: null
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. Hash: hash_id('MRMS_RISK_INDICATOR', INDICATOR_CODE).\
+          \ BCV: [Common] Classification."
+  - name: Classification Risk Indicator Code
+    physical_name: cl_risk_ind_code
+    business_meaning_1st: "Mã chỉ tiêu (VD: GDP_VN, CPI_VN, VNINDEX, CPI_US, DXY).\
+      \ BK duy nhất — Id hash từ trường này."
+    comment_1st: BK chính (mã nghiệp vụ).
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MRMS
+      source_tables:
+      - source_table: RISK_INDICATOR
+        source_column: MRMS.RISK_INDICATOR.INDICATOR_CODE
+        business_meaning: "Mã chỉ tiêu (VD: GDP_VN, CPI_VN, VNINDEX, CPI_US, DXY).\
+          \ BK duy nhất — Id hash từ trường này."
+        comment: BK chính (mã nghiệp vụ).
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
+    comment_1st: "Scheme: SOURCE_SYSTEM. Hardcode."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: MRMS_RISK_INDICATOR
+    conflict_review: null
+    source_mappings:
+    - source_system: MRMS
+      source_tables:
+      - source_table: RISK_INDICATOR
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  - name: Indicator Name
+    physical_name: ind_nm
+    business_meaning_1st: "Tên chỉ tiêu (VD: GDP, CPI, Chỉ số VNIndex, Lạm phát Mỹ)."
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MRMS
+      source_tables:
+      - source_table: RISK_INDICATOR
+        source_column: MRMS.RISK_INDICATOR.INDICATOR_NAME
+        business_meaning: "Tên chỉ tiêu (VD: GDP, CPI, Chỉ số VNIndex, Lạm phát Mỹ)."
+        comment: null
+  - name: Risk Indicator Category Code
+    physical_name: risk_ind_category_code
+    business_meaning_1st: "Mã nhóm chỉ tiêu (VD: Yếu tố vĩ mô, Yếu tố tiền tệ, Thị\
+      \ trường cổ phiếu)."
+    comment_1st: SCHEMA_CODE=MRMS.RISK_INDICATOR_CATEGORY
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MRMS
+      source_tables:
+      - source_table: RISK_INDICATOR
+        source_column: MRMS.RISK_INDICATOR_CATEGORY.CATEGORY_CODE
+        business_meaning: "Mã nhóm chỉ tiêu (VD: Yếu tố vĩ mô, Yếu tố tiền tệ, Thị\
+          \ trường cổ phiếu)."
+        comment: SCHEMA_CODE=MRMS.RISK_INDICATOR_CATEGORY
+  - name: Set Type Code
+    physical_name: set_tp_code
+    business_meaning_1st: "Bộ chỉ tiêu: 1=Trong nước, 2=Quốc tế."
+    comment_1st: SCHEMA_CODE=MRMS.SET_TYPE
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MRMS
+      source_tables:
+      - source_table: RISK_INDICATOR
+        source_column: MRMS.RISK_INDICATOR.SET_CODE
+        business_meaning: "Bộ chỉ tiêu: 1=Trong nước, 2=Quốc tế."
+        comment: SCHEMA_CODE=MRMS.SET_TYPE
+  - name: Period Type Code
+    physical_name: period_tp_code
+    business_meaning_1st: "Tần suất: 1=Ngày, 2=Tháng, 3=Quý, 4=Năm."
+    comment_1st: SCHEMA_CODE=MRMS.PERIOD_TYPE
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MRMS
+      source_tables:
+      - source_table: RISK_INDICATOR
+        source_column: MRMS.RISK_INDICATOR.PERIOD_TYPE
+        business_meaning: "Tần suất: 1=Ngày, 2=Tháng, 3=Quý, 4=Năm."
+        comment: SCHEMA_CODE=MRMS.PERIOD_TYPE
+  - name: Unit Type Code
+    physical_name: unit_tp_code
+    business_meaning_1st: "Đơn vị mặc định: 1=%, 2=Điểm, 3=Tỷ VND, 4=Triệu USD, 5=Hợp\
+      \ đồng, 6=Cổ phiếu, 7=Công ty, 8=VND, 9=Số tài khoản, 10=Đơn vị tính."
+    comment_1st: SCHEMA_CODE=MRMS.UNIT_TYPE
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MRMS
+      source_tables:
+      - source_table: RISK_INDICATOR
+        source_column: MRMS.RISK_INDICATOR.UNIT_CODE
+        business_meaning: "Đơn vị mặc định: 1=%, 2=Điểm, 3=Tỷ VND, 4=Triệu USD, 5=Hợp\
+          \ đồng, 6=Cổ phiếu, 7=Công ty, 8=VND, 9=Số tài khoản, 10=Đơn vị tính."
+        comment: SCHEMA_CODE=MRMS.UNIT_TYPE
+  - name: Data Source Type Code
+    physical_name: data_src_tp_code
+    business_meaning_1st: "Nguồn mặc định: 1=Investing, 2=Tổng cục Thống kê, 3=Ngân\
+      \ hàng Nhà nước, 4=Nội bộ, 5=HNX, 6=VSDC (Investing chỉ dùng cho chỉ tiêu quốc\
+      \ tế)."
+    comment_1st: SCHEMA_CODE=MRMS.SOURCE_SYSTEM_TYPE
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MRMS
+      source_tables:
+      - source_table: RISK_INDICATOR
+        source_column: MRMS.RISK_INDICATOR.SOURCE_CODE
+        business_meaning: "Nguồn mặc định: 1=Investing, 2=Tổng cục Thống kê, 3=Ngân\
+          \ hàng Nhà nước, 4=Nội bộ, 5=HNX, 6=VSDC (Investing chỉ dùng cho chỉ tiêu\
+          \ quốc tế)."
+        comment: SCHEMA_CODE=MRMS.SOURCE_SYSTEM_TYPE
+  - name: Last Sync Timestamp
+    physical_name: last_sync_tms
+    business_meaning_1st: Lần sync gần nhất.
+    comment_1st: null
+    data_domain_most: Timestamp
+    data_type_most: timestamp
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MRMS
+      source_tables:
+      - source_table: RISK_INDICATOR
+        source_column: MRMS.RISK_INDICATOR.LAST_SYNC_TIME
+        business_meaning: Lần sync gần nhất.
+        comment: null
+- ldm:
+    id: ATM-cl_risk_indicator_value
+    logical_name_1st: Classification Risk Indicator Value
+    physical_name_1st: cl_risk_indicator_value
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: draft
+    description_1st: 'Giá trị thực tế của từng chỉ tiêu tài chính rủi ro theo kỳ (ngày/tháng/quý/năm),
+      FK đến Classification Risk Indicator. BCV Concept = [Common] Classification
+      theo chỉ đạo Data Modeler — khác thiết kế tham khảo trước đây (Transaction/Fact
+      Append); xem điểm cần xác nhận 7e #1.'
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Common
+    bcv_concept_most: "[Common] Classification"
+    table_type_most: Classification
+    etl_pattern_most: Upsert
+    conflict_review: null
+    sources:
+    - MRMS
+    references:
+      brd:
+      - BRD-SRC-MRMS-RISK_INDICATOR_VALUE
+  attributes:
+  - name: Classification Risk Indicator Value Id
+    physical_name: cl_risk_ind_val_id
+    business_meaning_1st: Khóa đại diện (surrogate key).
+    comment_1st: "PK surrogate. Hash: hash_id('MRMS_RISK_INDICATOR_VALUE', ID). BCV:\
+      \ [Common] Classification."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MRMS
+      source_tables:
+      - source_table: RISK_INDICATOR_VALUE
+        source_column: null
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. Hash: hash_id('MRMS_RISK_INDICATOR_VALUE', ID). BCV:\
+          \ [Common] Classification."
+  - name: Classification Risk Indicator Value Code
+    physical_name: cl_risk_ind_val_code
+    business_meaning_1st: Khóa chính của bản ghi. BK — nguồn không có mã nghiệp vụ
+      riêng biệt (không có cột CODE), dùng PK kỹ thuật làm BK duy nhất.
+    comment_1st: BK chính. PK nguồn.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MRMS
+      source_tables:
+      - source_table: RISK_INDICATOR_VALUE
+        source_column: MRMS.RISK_INDICATOR_VALUE.ID
+        business_meaning: Khóa chính của bản ghi. BK — nguồn không có mã nghiệp vụ
+          riêng biệt (không có cột CODE), dùng PK kỹ thuật làm BK duy nhất.
+        comment: BK chính. PK nguồn.
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
+    comment_1st: "Scheme: SOURCE_SYSTEM. Hardcode."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: MRMS_RISK_INDICATOR_VALUE
+    conflict_review: null
+    source_mappings:
+    - source_system: MRMS
+      source_tables:
+      - source_table: RISK_INDICATOR_VALUE
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  - name: Classification Risk Indicator Id
+    physical_name: cl_risk_ind_id
+    business_meaning_1st: FK đến chỉ tiêu rủi ro.
+    comment_1st: "FK target: cl_risk_indicator.cl_risk_ind_id. Cần ETL crosswalk sang\
+      \ MRMS.RISK_INDICATOR: RISK_INDICATOR_VALUE.INDICATOR_ID = RISK_INDICATOR.ID\
+      \ để xác nhận INDICATOR_CODE sau đó hash_id('MRMS_RISK_INDICATOR', INDICATOR_CODE)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MRMS
+      source_tables:
+      - source_table: RISK_INDICATOR_VALUE
+        source_column: MRMS.RISK_INDICATOR_VALUE.INDICATOR_ID
+        business_meaning: FK đến chỉ tiêu rủi ro.
+        comment: "FK target: cl_risk_indicator.cl_risk_ind_id. Cần ETL crosswalk sang\
+          \ MRMS.RISK_INDICATOR: RISK_INDICATOR_VALUE.INDICATOR_ID = RISK_INDICATOR.ID\
+          \ để xác nhận INDICATOR_CODE sau đó hash_id('MRMS_RISK_INDICATOR', INDICATOR_CODE)."
+  - name: Classification Risk Indicator Code
+    physical_name: cl_risk_ind_code
+    business_meaning_1st: Mã chỉ tiêu rủi ro.
+    comment_1st: "Lookup pair: cl_risk_indicator.cl_risk_ind_code. Pair with Classification\
+      \ Risk Indicator Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MRMS
+      source_tables:
+      - source_table: RISK_INDICATOR_VALUE
+        source_column: MRMS.RISK_INDICATOR.INDICATOR_CODE
+        business_meaning: Mã chỉ tiêu rủi ro.
+        comment: "Lookup pair: cl_risk_indicator.cl_risk_ind_code. Pair with Classification\
+          \ Risk Indicator Id."
+  - name: Period Type Code
+    physical_name: period_tp_code
+    business_meaning_1st: "Kỳ dữ liệu: 1=Ngày, 2=Tháng, 3=Quý, 4=Năm."
+    comment_1st: SCHEMA_CODE=MRMS.PERIOD_TYPE
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MRMS
+      source_tables:
+      - source_table: RISK_INDICATOR_VALUE
+        source_column: MRMS.RISK_INDICATOR_VALUE.PERIOD_TYPE
+        business_meaning: "Kỳ dữ liệu: 1=Ngày, 2=Tháng, 3=Quý, 4=Năm."
+        comment: SCHEMA_CODE=MRMS.PERIOD_TYPE
+  - name: Period Value
+    physical_name: period_val
+    business_meaning_1st: "Lưu giá trị dành cho trường hợp Period Type Code = Tháng,\
+      \ Quý. Dựa vào dữ liệu của Period Date. VD: period_type=Tháng, period_date=12/03/2026\
+      \ → period_value=3; period_type=Quý, period_date=12/03/2026 → period_value=1\
+      \ (Quý 1: Tháng 1-3, Quý 2: Tháng 4-6, Quý 3: Tháng 7-9, Quý 4: Tháng 10-12)."
+    comment_1st: Nullable khi Period Type Code = Ngày (không có số thứ tự kỳ).
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MRMS
+      source_tables:
+      - source_table: RISK_INDICATOR_VALUE
+        source_column: MRMS.RISK_INDICATOR_VALUE.PERIOD_VALUE
+        business_meaning: "Lưu giá trị dành cho trường hợp Period Type Code = Tháng,\
+          \ Quý. Dựa vào dữ liệu của Period Date. VD: period_type=Tháng, period_date=12/03/2026\
+          \ → period_value=3; period_type=Quý, period_date=12/03/2026 → period_value=1\
+          \ (Quý 1: Tháng 1-3, Quý 2: Tháng 4-6, Quý 3: Tháng 7-9, Quý 4: Tháng 10-12)."
+        comment: Nullable khi Period Type Code = Ngày (không có số thứ tự kỳ).
+  - name: Period Year
+    physical_name: period_year
+    business_meaning_1st: Năm lấy theo Period Date.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MRMS
+      source_tables:
+      - source_table: RISK_INDICATOR_VALUE
+        source_column: MRMS.RISK_INDICATOR_VALUE.PERIOD_YEAR
+        business_meaning: Năm lấy theo Period Date.
+        comment: null
+  - name: Period Date
+    physical_name: period_dt
+    business_meaning_1st: Ngày đại diện cho kỳ.
+    comment_1st: Nguồn ở dạng timestamp cần chú ý case date khi code.
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MRMS
+      source_tables:
+      - source_table: RISK_INDICATOR_VALUE
+        source_column: MRMS.RISK_INDICATOR_VALUE.PERIOD_DATE
+        business_meaning: Ngày đại diện cho kỳ.
+        comment: Nguồn ở dạng timestamp cần chú ý case date khi code.
+  - name: Period Label
+    physical_name: period_label
+    business_meaning_1st: "Chuỗi hiển thị kỳ (VD: 2024-01, 2024-Q1, 2024)."
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MRMS
+      source_tables:
+      - source_table: RISK_INDICATOR_VALUE
+        source_column: MRMS.RISK_INDICATOR_VALUE.PERIOD_LABEL
+        business_meaning: "Chuỗi hiển thị kỳ (VD: 2024-01, 2024-Q1, 2024)."
+        comment: null
+  - name: Value
+    physical_name: val
+    business_meaning_1st: Giá trị chỉ tiêu tại kỳ này.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MRMS
+      source_tables:
+      - source_table: RISK_INDICATOR_VALUE
+        source_column: MRMS.RISK_INDICATOR_VALUE.VALUE
+        business_meaning: Giá trị chỉ tiêu tại kỳ này.
+        comment: null
+  - name: Cumulative Value
+    physical_name: cumulative_val
+    business_meaning_1st: Giá trị luỹ kế.
+    comment_1st: Data type nguồn không rõ — cần profile trước khi ETL.
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MRMS
+      source_tables:
+      - source_table: RISK_INDICATOR_VALUE
+        source_column: MRMS.RISK_INDICATOR_VALUE.CUMULATIVE_VALUE
+        business_meaning: Giá trị luỹ kế.
+        comment: Data type nguồn không rõ — cần profile trước khi ETL.
+  - name: Unit Type Code
+    physical_name: unit_tp_code
+    business_meaning_1st: "Đơn vị: 1=%, 2=Điểm, 3=Tỷ VND, 4=Triệu USD, 5=Hợp đồng,\
+      \ 6=Cổ phiếu, 7=Công ty, 8=VND, 9=Số tài khoản, 10=Đơn vị tính."
+    comment_1st: SCHEMA_CODE=MRMS.UNIT_TYPE
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MRMS
+      source_tables:
+      - source_table: RISK_INDICATOR_VALUE
+        source_column: MRMS.RISK_INDICATOR_VALUE.UNIT_CODE
+        business_meaning: "Đơn vị: 1=%, 2=Điểm, 3=Tỷ VND, 4=Triệu USD, 5=Hợp đồng,\
+          \ 6=Cổ phiếu, 7=Công ty, 8=VND, 9=Số tài khoản, 10=Đơn vị tính."
+        comment: SCHEMA_CODE=MRMS.UNIT_TYPE
+  - name: Data Source Type Code
+    physical_name: data_src_tp_code
+    business_meaning_1st: "Nguồn: 1=Investing, 2=Tổng cục Thống kê, 3=Ngân hàng Nhà\
+      \ nước, 4=Nội bộ, 5=HNX, 6=VSDC (Investing chỉ dùng cho chỉ tiêu quốc tế)."
+    comment_1st: SCHEMA_CODE=MRMS.SOURCE_SYSTEM_TYPE
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MRMS
+      source_tables:
+      - source_table: RISK_INDICATOR_VALUE
+        source_column: MRMS.RISK_INDICATOR_VALUE.SOURCE_CODE
+        business_meaning: "Nguồn: 1=Investing, 2=Tổng cục Thống kê, 3=Ngân hàng Nhà\
+          \ nước, 4=Nội bộ, 5=HNX, 6=VSDC (Investing chỉ dùng cho chỉ tiêu quốc tế)."
+        comment: SCHEMA_CODE=MRMS.SOURCE_SYSTEM_TYPE
+  - name: Data Origin Type Code
+    physical_name: data_origin_tp_code
+    business_meaning_1st: "Nguồn gốc giá trị: 1=API CSDL tập trung, 2=User chỉnh sửa."
+    comment_1st: SCHEMA_CODE=MRMS.DATA_ORIGIN_TYPE
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MRMS
+      source_tables:
+      - source_table: RISK_INDICATOR_VALUE
+        source_column: MRMS.RISK_INDICATOR_VALUE.DATA_ORIGIN
+        business_meaning: "Nguồn gốc giá trị: 1=API CSDL tập trung, 2=User chỉnh sửa."
+        comment: SCHEMA_CODE=MRMS.DATA_ORIGIN_TYPE
+- ldm:
     id: ATM-cl_service
     logical_name_1st: Classification Service
     physical_name_1st: cl_service
@@ -16851,6 +17358,202 @@ entities:
         source_column: SCMS.CAT_SERVICE.NOTE
         business_meaning: Ghi chú bổ sung, không bắt buộc.
         comment: null
+- ldm:
+    id: ATM-cl_value
+    logical_name_1st: Classification Value
+    physical_name_1st: cl_value
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: draft
+    description_1st: "Classification Common — danh mục dùng chung TTHC, tổng hợp toàn\
+      \ bộ giá trị phân loại từ Orchard Core ContentItem. ContentType = schema_code\
+      \ (nhóm scheme); ContentItemId = cl_code (BK). 10 scheme: TRANG_THAI_HO_SO,\
+      \ LOAI_HO_SO, LINH_VUC_TTHC, MUC_DO_TTHC, KENH_TIEP_NHAN, CO_QUAN_XU"
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Common
+    bcv_concept_most: "[Classification] Common"
+    table_type_most: Classification
+    etl_pattern_most: Upsert
+    conflict_review: null
+    sources:
+    - MRMS
+    - TTHC
+    references:
+      brd:
+      - BRD-SRC-MRMS-RISK_INDICATOR_CATEGORY
+      - BRD-SRC-TTHC-CLASSIFICATION_VALUE
+  attributes:
+  - name: Classification Code
+    physical_name: cl_code
+    business_meaning_1st: Mã giá trị phân loại. Mã nhóm chỉ tiêu tài chính rủi ro.
+    comment_1st: BK chính (kết hợp Schema Code tạo BK duy nhất).
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MRMS
+      source_tables:
+      - source_table: RISK_INDICATOR_CATEGORY
+        source_column: MRMS.RISK_INDICATOR_CATEGORY.CATEGORY_CODE
+        business_meaning: Mã giá trị phân loại. Mã nhóm chỉ tiêu tài chính rủi ro.
+        comment: BK chính (kết hợp Schema Code tạo BK duy nhất).
+    - source_system: TTHC
+      source_tables:
+      - source_table: CLASSIFICATION_VALUE
+        source_column: TTHC.CLASSIFICATION_VALUE.CLASSIFICATION_CODE
+        business_meaning: Mã giá trị phân loại — ContentItemId của content item danh
+          mục. BK chính.
+        comment: "BK chính (kết hợp Schema Code tạo BK duy nhất). Nguồn thực: ContentItemIndex.ContentItemId."
+  - name: Schema Code
+    physical_name: schema_code
+    business_meaning_1st: Mã loại phân loại.
+    comment_1st: "Scheme: MRMS.RISK_INDICATOR_CATEGORY. Hardcode."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: MRMS.RISK_INDICATOR_CATEGORY
+    conflict_review: null
+    source_mappings:
+    - source_system: MRMS
+      source_tables:
+      - source_table: RISK_INDICATOR_CATEGORY
+        source_column: null
+        business_meaning: Mã loại phân loại.
+        comment: "Scheme: MRMS.RISK_INDICATOR_CATEGORY. Hardcode."
+    - source_system: TTHC
+      source_tables:
+      - source_table: CLASSIFICATION_VALUE
+        source_column: TTHC.CLASSIFICATION_VALUE.SCHEMA_CODE
+        business_meaning: Mã nhóm phân loại (scheme) — ContentType của content item
+          danh mục. BK phụ.
+        comment: "BK phụ — kết hợp Schema Code + Classification Code tạo BK duy nhất.\
+          \ Nguồn thực: ContentItemIndex.ContentType. Ví dụ: 'TrangThaiHoSo', 'LoaiHoSo',\
+          \ 'LinhVucTTHC', 'MucDoTTHC', 'KenhTiepNhan', 'CoQuanXuLy', 'LoaiDoiTuongNop',\
+          \ 'DichVuChuyenPhat', 'TinhThanh', 'QuanHuyen'."
+  - name: Schema Name
+    physical_name: schema_nm
+    business_meaning_1st: Tên loại phân loại.
+    comment_1st: Hardcode.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: MRMS - Nhóm chỉ tiêu tài chính rủi ro
+    conflict_review: null
+    source_mappings:
+    - source_system: MRMS
+      source_tables:
+      - source_table: RISK_INDICATOR_CATEGORY
+        source_column: null
+        business_meaning: Tên loại phân loại.
+        comment: Hardcode.
+    - source_system: TTHC
+      source_tables:
+      - source_table: CLASSIFICATION_VALUE
+        source_column: null
+        business_meaning: Tên mô tả nhóm phân loại (tiếng Việt).
+        comment: Xử lý CASE WHEN theo giá trị SCHEMA_CODE.
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã nguồn dữ liệu.
+    comment_1st: "Scheme: SOURCE_SYSTEM. Hardcode."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value:
+    - MRMS_RISK_INDICATOR_CATEGORY
+    - TTHC_CLASSIFICATION_VALUE
+    conflict_review: null
+    source_mappings:
+    - source_system: MRMS
+      source_tables:
+      - source_table: RISK_INDICATOR_CATEGORY
+        source_column: null
+        business_meaning: Mã nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    - source_system: TTHC
+      source_tables:
+      - source_table: CLASSIFICATION_VALUE
+        source_column: null
+        business_meaning: Mã nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  - name: Classification Name
+    physical_name: cl_nm
+    business_meaning_1st: Tên giá trị phân loại (tiếng Việt).
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MRMS
+      source_tables:
+      - source_table: RISK_INDICATOR_CATEGORY
+        source_column: MRMS.RISK_INDICATOR_CATEGORY.CATEGORY_NAME
+        business_meaning: Tên giá trị phân loại (tiếng Việt).
+        comment: null
+    - source_system: TTHC
+      source_tables:
+      - source_table: CLASSIFICATION_VALUE
+        source_column: TTHC.CLASSIFICATION_VALUE.CLASSIFICATION_NAME
+        business_meaning: Tên giá trị phân loại (tiếng Việt).
+        comment: "Nguồn thực: ContentItemIndex.DisplayText."
+  - name: Classification Name English
+    physical_name: cl_nm_english
+    business_meaning_1st: Tên giá trị phân loại (tiếng Anh).
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MRMS
+      source_tables:
+      - source_table: RISK_INDICATOR_CATEGORY
+        source_column: null
+        business_meaning: Tên giá trị phân loại (tiếng Anh).
+        comment: null
+    - source_system: TTHC
+      source_tables:
+      - source_table: CLASSIFICATION_VALUE
+        source_column: TTHC.CLASSIFICATION_VALUE.CLASSIFICATION_NAME_ENGLISH
+        business_meaning: Tên giá trị phân loại (tiếng Anh).
+        comment: Không có trong source TTHC — NULL.
+  - name: Classification Description
+    physical_name: cl_description
+    business_meaning_1st: Diễn giải chi tiết ý nghĩa giá trị phân loại.
+    comment_1st: Nguồn không có cột mô tả riêng cho nhóm chỉ tiêu.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MRMS
+      source_tables:
+      - source_table: RISK_INDICATOR_CATEGORY
+        source_column: null
+        business_meaning: Diễn giải chi tiết ý nghĩa giá trị phân loại.
+        comment: Nguồn không có cột mô tả riêng cho nhóm chỉ tiêu.
+    - source_system: TTHC
+      source_tables:
+      - source_table: CLASSIFICATION_VALUE
+        source_column: TTHC.CLASSIFICATION_VALUE.CLASSIFICATION_DESCRIPTION
+        business_meaning: Diễn giải chi tiết ý nghĩa giá trị phân loại.
+        comment: "Nguồn thực: Document.Content->{ContentType}->'MoTa'->'Text'. NULL\
+          \ nếu content item không có field mô tả."
 - ldm:
     id: ATM-et_information_request
     logical_name_1st: External Tax Information Request
@@ -20347,9 +21050,10 @@ entities:
     layer_1st: Atomic
     version_1st: "1.0"
     status_1st: draft
-    description_1st: Documentation — nội dung JSON gốc của content item hiện hành
-      trong hệ thống TTHC (Orchard Core), lưu toàn bộ dữ liệu chi tiết đã serialize
-      của hồ sơ/trang/tin/báo cáo hành chính.
+    description_1st: Business Activity Case — hồ sơ thủ tục hành chính UBCKNN, entity
+      trung tâm chứa metadata phân loại, thời gian xử lý, lệ phí, snapshot thành phần
+      hồ sơ và eform. Nguồn ODS từ JOIN TTHC.DOCUMENT + TTHC.CONTENTITEMINDEX, lọc
+      ContentType = 'HoSoTTHC'.
     owner_1st:
       steward: username@ubck.com.vn
       data_modeler: username@fssc.com.vn
@@ -20362,13 +21066,15 @@ entities:
     - TTHC
     references:
       brd:
+      - BRD-SRC-TTHC-AP_DOCUMENT
       - BRD-SRC-TTHC-DOCUMENT
   attributes:
   - name: Administrative Procedure Document Id
     physical_name: ap_document_id
     business_meaning_1st: Khóa đại diện (surrogate key).
-    comment_1st: "PK surrogate. BCV: \"[Documentation] Documentation\". Nội dung JSON\
-      \ gốc của 1 content item hiện hành. Hash: hash_id('TTHC.DOCUMENT', ID)."
+    comment_1st: "PK surrogate. BCV: \"[Business Activity] Case\". Hash: hash_id('TTHC_AP_DOCUMENT',\
+      \ AP_DOCUMENT_ID). Nguồn thực: ContentItemIndex.ContentItemId (ContentType =\
+      \ 'HoSoTTHC')."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -20378,6 +21084,12 @@ entities:
     source_mappings:
     - source_system: TTHC
       source_tables:
+      - source_table: AP_DOCUMENT
+        source_column: null
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. BCV: \"[Business Activity] Case\". Hash: hash_id('TTHC_AP_DOCUMENT',\
+          \ AP_DOCUMENT_ID). Nguồn thực: ContentItemIndex.ContentItemId (ContentType\
+          \ = 'HoSoTTHC')."
       - source_table: DOCUMENT
         source_column: null
         business_meaning: Khóa đại diện (surrogate key).
@@ -20385,11 +21097,9 @@ entities:
           \ gốc của 1 content item hiện hành. Hash: hash_id('TTHC.DOCUMENT', ID)."
   - name: Administrative Procedure Document Code
     physical_name: ap_document_code
-    business_meaning_1st: Khóa chính (tự tăng) của bảng nguồn. BK — nguồn không có
-      mã nghiệp vụ độc lập nào khác (TYPE là discriminator kỹ thuật, CONTENT là blob
-      JSON, VERSION là optimistic-lock counter thay đổi theo update) — dùng PK kỹ
-      thuật làm BK duy nhất, theo đúng pattern đã dùng cho KNT.INVOICE_DETAIL.
-    comment_1st: BK chính. PK nguồn.
+    business_meaning_1st: ContentItemId của hồ sơ trong Orchard Core — BK duy nhất.
+    comment_1st: "BK chính. Nguồn thực: ContentItemIndex.ContentItemId (alphanumeric,\
+      \ duy nhất toàn hệ thống Orchard), ContentType = 'HoSoTTHC'."
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -20399,6 +21109,11 @@ entities:
     source_mappings:
     - source_system: TTHC
       source_tables:
+      - source_table: AP_DOCUMENT
+        source_column: TTHC.AP_DOCUMENT.AP_DOCUMENT_ID
+        business_meaning: ContentItemId của hồ sơ trong Orchard Core — BK duy nhất.
+        comment: "BK chính. Nguồn thực: ContentItemIndex.ContentItemId (alphanumeric,\
+          \ duy nhất toàn hệ thống Orchard), ContentType = 'HoSoTTHC'."
       - source_table: DOCUMENT
         source_column: TTHC.DOCUMENT.ID
         business_meaning: Khóa chính (tự tăng) của bảng nguồn. BK — nguồn không có
@@ -20409,20 +21124,409 @@ entities:
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning_1st: Mã hệ thống nguồn dữ liệu.
-    comment_1st: "Scheme: SOURCE_SYSTEM."
+    comment_1st: "Scheme: SOURCE_SYSTEM. Hardcode."
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: false
     is_primary_key_most: false
-    etl_derived_value: TTHC_DOCUMENT
+    etl_derived_value:
+    - TTHC_AP_DOCUMENT
+    - TTHC_DOCUMENT
     conflict_review: null
     source_mappings:
     - source_system: TTHC
       source_tables:
+      - source_table: AP_DOCUMENT
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
       - source_table: DOCUMENT
         source_column: null
         business_meaning: Mã hệ thống nguồn dữ liệu.
         comment: "Scheme: SOURCE_SYSTEM."
+  - name: Administrative Procedure Document Applicant Id
+    physical_name: ap_document_applicant_id
+    business_meaning_1st: Khóa ngoại tới đối tượng nộp hồ sơ chính.
+    comment_1st: "FK target: ap_document_applicant.ap_document_applicant_id. Hash:\
+      \ hash_id('TTHC_AP_DOCUMENT_APPLICANT', AP_DOCUMENT_APPLICANT_ID). Nguồn thực:\
+      \ Document.Content->'HoSoTTHC'->'DoiTuongNopHoSo'->ContentItemIds[0]. NULL nếu\
+      \ hồ sơ chưa gán đối tượng."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: TTHC
+      source_tables:
+      - source_table: AP_DOCUMENT
+        source_column: null
+        business_meaning: Khóa ngoại tới đối tượng nộp hồ sơ chính.
+        comment: "FK target: ap_document_applicant.ap_document_applicant_id. Hash:\
+          \ hash_id('TTHC_AP_DOCUMENT_APPLICANT', AP_DOCUMENT_APPLICANT_ID). Nguồn\
+          \ thực: Document.Content->'HoSoTTHC'->'DoiTuongNopHoSo'->ContentItemIds[0].\
+          \ NULL nếu hồ sơ chưa gán đối tượng."
+  - name: Administrative Procedure Document Applicant Code
+    physical_name: ap_document_applicant_code
+    business_meaning_1st: ContentItemId của đối tượng nộp hồ sơ chính — lưu dư thừa.
+    comment_1st: "Lookup pair: ap_document_applicant.ap_document_applicant_code. Nguồn\
+      \ thực: Document.Content->'HoSoTTHC'->'DoiTuongNopHoSo'->ContentItemIds[0]."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: TTHC
+      source_tables:
+      - source_table: AP_DOCUMENT
+        source_column: TTHC.AP_DOCUMENT.AP_DOCUMENT_APPLICANT_ID
+        business_meaning: ContentItemId của đối tượng nộp hồ sơ chính — lưu dư thừa.
+        comment: "Lookup pair: ap_document_applicant.ap_document_applicant_code. Nguồn\
+          \ thực: Document.Content->'HoSoTTHC'->'DoiTuongNopHoSo'->ContentItemIds[0]."
+  - name: Document Title
+    physical_name: document_title
+    business_meaning_1st: Tiêu đề hồ sơ.
+    comment_1st: "Nguồn thực: ContentItemIndex.DisplayText."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: TTHC
+      source_tables:
+      - source_table: AP_DOCUMENT
+        source_column: TTHC.AP_DOCUMENT.DOCUMENT_TITLE
+        business_meaning: Tiêu đề hồ sơ.
+        comment: "Nguồn thực: ContentItemIndex.DisplayText."
+  - name: Securities Code
+    physical_name: securities_code
+    business_meaning_1st: Mã chứng khoán liên quan — chỉ có giá trị ở một số loại
+      hồ sơ (vd. báo cáo vốn).
+    comment_1st: "Nguồn thực: Document.Content->'HoSoTTHC'->'MaChungKhoan'->'Text'.\
+      \ NULL hợp lệ với phần lớn loại hồ sơ."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: TTHC
+      source_tables:
+      - source_table: AP_DOCUMENT
+        source_column: TTHC.AP_DOCUMENT.SECURITIES_CODE
+        business_meaning: Mã chứng khoán liên quan — chỉ có giá trị ở một số loại
+          hồ sơ (vd. báo cáo vốn).
+        comment: "Nguồn thực: Document.Content->'HoSoTTHC'->'MaChungKhoan'->'Text'.\
+          \ NULL hợp lệ với phần lớn loại hồ sơ."
+  - name: Processing Status Code
+    physical_name: processing_status_code
+    business_meaning_1st: Trạng thái xử lý hồ sơ.
+    comment_1st: "SCHEMA_CODE=TTHC.PROCESSING_STATUS. Nguồn thực: Document.Content->'HoSoTTHC'->'TrangThaiHoSo'->ContentItemIds[0]."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: TTHC
+      source_tables:
+      - source_table: AP_DOCUMENT
+        source_column: TTHC.AP_DOCUMENT.PROCESSING_STATUS_CODE
+        business_meaning: Trạng thái xử lý hồ sơ.
+        comment: "SCHEMA_CODE=TTHC.PROCESSING_STATUS. Nguồn thực: Document.Content->'HoSoTTHC'->'TrangThaiHoSo'->ContentItemIds[0]."
+  - name: Processing Authority Code
+    physical_name: processing_authority_code
+    business_meaning_1st: Mã cơ quan/đơn vị xử lý hồ sơ.
+    comment_1st: "SCHEMA_CODE=TTHC.PROCESSING_AUTHORITY. Nguồn thực: Document.Content->'HoSoTTHC'->'CoQuanXuLy'->ContentItemIds[0]."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: "data_domain: ['Classification Value', 'Text']"
+    source_mappings:
+    - source_system: TTHC
+      source_tables:
+      - source_table: AP_DOCUMENT
+        source_column: TTHC.AP_DOCUMENT.PROCESSING_AUTHORITY_CODE
+        business_meaning: Mã cơ quan/đơn vị xử lý hồ sơ.
+        comment: "SCHEMA_CODE=TTHC.PROCESSING_AUTHORITY. Nguồn thực: Document.Content->'HoSoTTHC'->'CoQuanXuLy'->ContentItemIds[0]."
+      - source_table: DOCUMENT
+        source_column: TTHC.DOCUMENT.CONTENT
+        business_meaning: Cơ quan/đơn vị xử lý hồ sơ — parse từ trường CONTENT (JSON)
+          tại tầng ODS. NULL cho các ContentType không liên quan.
+        comment: null
+  - name: Document Type Code
+    physical_name: document_tp_code
+    business_meaning_1st: Loại hồ sơ thủ tục hành chính.
+    comment_1st: "SCHEMA_CODE=TTHC.DOCUMENT_TYPE. Nguồn thực: Document.Content->'HoSoTTHC'->'LoaiHoSo'->ContentItemIds[0]."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: TTHC
+      source_tables:
+      - source_table: AP_DOCUMENT
+        source_column: TTHC.AP_DOCUMENT.DOCUMENT_TYPE_CODE
+        business_meaning: Loại hồ sơ thủ tục hành chính.
+        comment: "SCHEMA_CODE=TTHC.DOCUMENT_TYPE. Nguồn thực: Document.Content->'HoSoTTHC'->'LoaiHoSo'->ContentItemIds[0]."
+  - name: Domain Code
+    physical_name: domain_code
+    business_meaning_1st: Lĩnh vực thủ tục hành chính.
+    comment_1st: "SCHEMA_CODE=TTHC.DOMAIN. Nguồn thực: Document.Content->'HoSoTTHC'->'LinhVucTTHC'->ContentItemIds[0]."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: TTHC
+      source_tables:
+      - source_table: AP_DOCUMENT
+        source_column: TTHC.AP_DOCUMENT.DOMAIN_CODE
+        business_meaning: Lĩnh vực thủ tục hành chính.
+        comment: "SCHEMA_CODE=TTHC.DOMAIN. Nguồn thực: Document.Content->'HoSoTTHC'->'LinhVucTTHC'->ContentItemIds[0]."
+  - name: Priority Level Code
+    physical_name: priority_level_code
+    business_meaning_1st: Mức độ ưu tiên của thủ tục hành chính.
+    comment_1st: "SCHEMA_CODE=TTHC.PRIORITY_LEVEL. Nguồn thực: Document.Content->'HoSoTTHC'->'MucDoTTHC'->ContentItemIds[0]."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: TTHC
+      source_tables:
+      - source_table: AP_DOCUMENT
+        source_column: TTHC.AP_DOCUMENT.PRIORITY_LEVEL_CODE
+        business_meaning: Mức độ ưu tiên của thủ tục hành chính.
+        comment: "SCHEMA_CODE=TTHC.PRIORITY_LEVEL. Nguồn thực: Document.Content->'HoSoTTHC'->'MucDoTTHC'->ContentItemIds[0]."
+  - name: Reception Channel Code
+    physical_name: reception_channel_code
+    business_meaning_1st: Kênh tiếp nhận hồ sơ.
+    comment_1st: "SCHEMA_CODE=TTHC.RECEPTION_CHANNEL. Nguồn thực: Document.Content->'HoSoTTHC'->'KenhTiepNhan'->ContentItemIds[0]."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: TTHC
+      source_tables:
+      - source_table: AP_DOCUMENT
+        source_column: TTHC.AP_DOCUMENT.RECEPTION_CHANNEL_CODE
+        business_meaning: Kênh tiếp nhận hồ sơ.
+        comment: "SCHEMA_CODE=TTHC.RECEPTION_CHANNEL. Nguồn thực: Document.Content->'HoSoTTHC'->'KenhTiepNhan'->ContentItemIds[0]."
+  - name: Return Method Code
+    physical_name: return_method_code
+    business_meaning_1st: Hình thức trả hồ sơ.
+    comment_1st: "Nguồn thực: Document.Content->'HoSoTTHC'->'ThongTinHinhThucTraHoSo'->'Value'."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: TTHC
+      source_tables:
+      - source_table: AP_DOCUMENT
+        source_column: TTHC.AP_DOCUMENT.RETURN_METHOD_CODE
+        business_meaning: Hình thức trả hồ sơ.
+        comment: "Nguồn thực: Document.Content->'HoSoTTHC'->'ThongTinHinhThucTraHoSo'->'Value'."
+  - name: Processing Officer Code
+    physical_name: processing_officer_code
+    business_meaning_1st: ID cán bộ xử lý hồ sơ — tham chiếu tới hệ thống người dùng
+      bên ngoài Atomic.
+    comment_1st: "Nguồn thực: Document.Content->'HoSoTTHC'->'CanBoXuLy'->'Value'.\
+      \ Nguồn BIGINT — lưu dạng string. Không có FK Atomic vì hệ thống người dùng\
+      \ ngoài phạm vi thiết kế hiện tại."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: TTHC
+      source_tables:
+      - source_table: AP_DOCUMENT
+        source_column: TTHC.AP_DOCUMENT.PROCESSING_OFFICER_CODE
+        business_meaning: ID cán bộ xử lý hồ sơ — tham chiếu tới hệ thống người dùng
+          bên ngoài Atomic.
+        comment: "Nguồn thực: Document.Content->'HoSoTTHC'->'CanBoXuLy'->'Value'.\
+          \ Nguồn BIGINT — lưu dạng string. Không có FK Atomic vì hệ thống người dùng\
+          \ ngoài phạm vi thiết kế hiện tại."
+  - name: Submission Timestamp
+    physical_name: submission_tms
+    business_meaning_1st: Thời điểm người nộp gửi hồ sơ.
+    comment_1st: "Nguồn thực: Document.Content->'HoSoTTHC'->'NgayGuiHoSo'->'Value'."
+    data_domain_most: Timestamp
+    data_type_most: timestamp
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: TTHC
+      source_tables:
+      - source_table: AP_DOCUMENT
+        source_column: TTHC.AP_DOCUMENT.SUBMISSION_TIMESTAMP
+        business_meaning: Thời điểm người nộp gửi hồ sơ.
+        comment: "Nguồn thực: Document.Content->'HoSoTTHC'->'NgayGuiHoSo'->'Value'."
+  - name: Reception Timestamp
+    physical_name: reception_tms
+    business_meaning_1st: Thời điểm cơ quan tiếp nhận hồ sơ hợp lệ.
+    comment_1st: "Nguồn thực: Document.Content->'HoSoTTHC'->'NgayTiepNhan'->'Value'.\
+      \ Schema cũ: key 'Ngaytiepnhan' (chữ thường). Schema mới: 'NgayTiepNhan' (PascalCase).\
+      \ ODS đã chuẩn hoá."
+    data_domain_most: Timestamp
+    data_type_most: timestamp
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: TTHC
+      source_tables:
+      - source_table: AP_DOCUMENT
+        source_column: TTHC.AP_DOCUMENT.RECEPTION_TIMESTAMP
+        business_meaning: Thời điểm cơ quan tiếp nhận hồ sơ hợp lệ.
+        comment: "Nguồn thực: Document.Content->'HoSoTTHC'->'NgayTiepNhan'->'Value'.\
+          \ Schema cũ: key 'Ngaytiepnhan' (chữ thường). Schema mới: 'NgayTiepNhan'\
+          \ (PascalCase). ODS đã chuẩn hoá."
+  - name: Processing Deadline Timestamp
+    physical_name: processing_deadline_tms
+    business_meaning_1st: Hạn xử lý hồ sơ theo quy định.
+    comment_1st: "Nguồn thực: Document.Content->'HoSoTTHC'->'ThoiHanXuLy'->'Value'."
+    data_domain_most: Timestamp
+    data_type_most: timestamp
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: TTHC
+      source_tables:
+      - source_table: AP_DOCUMENT
+        source_column: TTHC.AP_DOCUMENT.PROCESSING_DEADLINE_TIMESTAMP
+        business_meaning: Hạn xử lý hồ sơ theo quy định.
+        comment: "Nguồn thực: Document.Content->'HoSoTTHC'->'ThoiHanXuLy'->'Value'."
+  - name: Result Return Timestamp
+    physical_name: result_return_tms
+    business_meaning_1st: Thời điểm trả kết quả hồ sơ cho người nộp.
+    comment_1st: "Nguồn thực: Document.Content->'HoSoTTHC'->'NgayTraKetQua'->'Value'."
+    data_domain_most: Timestamp
+    data_type_most: timestamp
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: TTHC
+      source_tables:
+      - source_table: AP_DOCUMENT
+        source_column: TTHC.AP_DOCUMENT.RESULT_RETURN_TIMESTAMP
+        business_meaning: Thời điểm trả kết quả hồ sơ cho người nộp.
+        comment: "Nguồn thực: Document.Content->'HoSoTTHC'->'NgayTraKetQua'->'Value'."
+  - name: Fee Paid Indicator
+    physical_name: fee_paid_ind
+    business_meaning_1st: Người nộp đã thanh toán lệ phí hay chưa.
+    comment_1st: "Nguồn thực: Document.Content->'HoSoTTHC'->'DaNopLePhi'->'Value'."
+    data_domain_most: Indicator
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: TTHC
+      source_tables:
+      - source_table: AP_DOCUMENT
+        source_column: TTHC.AP_DOCUMENT.FEE_PAID_INDICATOR
+        business_meaning: Người nộp đã thanh toán lệ phí hay chưa.
+        comment: "Nguồn thực: Document.Content->'HoSoTTHC'->'DaNopLePhi'->'Value'."
+  - name: Fee Amount
+    physical_name: fee_amt
+    business_meaning_1st: Lệ phí hồ sơ (VND).
+    comment_1st: "Nguồn thực: Document.Content->'HoSoTTHC'->'LePhi'->'Value'."
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: TTHC
+      source_tables:
+      - source_table: AP_DOCUMENT
+        source_column: TTHC.AP_DOCUMENT.FEE_AMOUNT
+        business_meaning: Lệ phí hồ sơ (VND).
+        comment: "Nguồn thực: Document.Content->'HoSoTTHC'->'LePhi'->'Value'."
+  - name: Document Component
+    physical_name: document_component
+    business_meaning_1st: Snapshot mảng ThanhPhanHoSo.ContentItems tại thời điểm ETL
+      — danh sách thành phần hồ sơ (tên, trạng thái nộp, file đính kèm).
+    comment_1st: "Nguồn thực: Document.Content->'ThanhPhanHoSo'->'ContentItems'. Lưu\
+      \ nguyên JSONB. Schema cũ dùng key CoKhong/FileDinhKem/Yeucaubosung; schema\
+      \ mới dùng DaNop/Ma/ThuTuHienThi/DanhMucThanhPhanHoSo."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: TTHC
+      source_tables:
+      - source_table: AP_DOCUMENT
+        source_column: TTHC.AP_DOCUMENT.DOC_COMPONENT
+        business_meaning: Snapshot mảng ThanhPhanHoSo.ContentItems tại thời điểm ETL
+          — danh sách thành phần hồ sơ (tên, trạng thái nộp, file đính kèm).
+        comment: "Nguồn thực: Document.Content->'ThanhPhanHoSo'->'ContentItems'. Lưu\
+          \ nguyên JSONB. Schema cũ dùng key CoKhong/FileDinhKem/Yeucaubosung; schema\
+          \ mới dùng DaNop/Ma/ThuTuHienThi/DanhMucThanhPhanHoSo."
+  - name: Eform Data
+    physical_name: eform_data
+    business_meaning_1st: Snapshot Eform.ContentItems[0] — dữ liệu tờ khai điện tử,
+      cấu trúc thay đổi hoàn toàn theo loại Eform.
+    comment_1st: "Nguồn thực: Document.Content->'Eform'->'ContentItems'[0]. Lưu nguyên\
+      \ JSONB — không ép cột cứng vì >= 6 ContentType Eform khác nhau (Eform1, Eform17,\
+      \ Eform75, Eform76A, Eform85...). Hồ sơ nháp/seed có Eform rỗng dạng {\"ContentType\"\
+      :\"Eform\"}. Field kiểu Text/Value khi không nhập trả về {} (object rỗng) —\
+      \ ETL dùng .get() an toàn."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: TTHC
+      source_tables:
+      - source_table: AP_DOCUMENT
+        source_column: TTHC.AP_DOCUMENT.EFORM_DATA
+        business_meaning: Snapshot Eform.ContentItems[0] — dữ liệu tờ khai điện tử,
+          cấu trúc thay đổi hoàn toàn theo loại Eform.
+        comment: "Nguồn thực: Document.Content->'Eform'->'ContentItems'[0]. Lưu nguyên\
+          \ JSONB — không ép cột cứng vì >= 6 ContentType Eform khác nhau (Eform1,\
+          \ Eform17, Eform75, Eform76A, Eform85...). Hồ sơ nháp/seed có Eform rỗng\
+          \ dạng {\"ContentType\":\"Eform\"}. Field kiểu Text/Value khi không nhập\
+          \ trả về {} (object rỗng) — ETL dùng .get() an toàn."
   - name: Record Type Code
     physical_name: record_tp_code
     business_meaning_1st: "Bộ phân biệt loại bản ghi. Discriminator kiểu serialize\
@@ -20466,25 +21570,6 @@ entities:
           ODS. Chỉ áp dụng cho content item thuộc nghiệp vụ hồ sơ chào bán/thủ tục
           hành chính có theo dõi trạng thái xử lý; NULL cho các ContentType không
           liên quan (LandingPage, TinTuc, BaoCao, Fragment...).
-        comment: null
-  - name: Processing Authority Code
-    physical_name: processing_authority_code
-    business_meaning_1st: Cơ quan/đơn vị xử lý hồ sơ — parse từ trường CONTENT (JSON)
-      tại tầng ODS. NULL cho các ContentType không liên quan.
-    comment_1st: null
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: TTHC
-      source_tables:
-      - source_table: DOCUMENT
-        source_column: TTHC.DOCUMENT.CONTENT
-        business_meaning: Cơ quan/đơn vị xử lý hồ sơ — parse từ trường CONTENT (JSON)
-          tại tầng ODS. NULL cho các ContentType không liên quan.
         comment: null
   - name: Offering Method Code
     physical_name: offering_method_code
@@ -20543,6 +21628,252 @@ entities:
         business_meaning: Số phiên bản để khóa lạc quan (tăng mỗi lần cập nhật).
         comment: Optimistic lock counter — dùng để đối chiếu cập nhật tại chỗ theo
           Table Type Fundamental/Update (xem TTHC_HLD_Tier1.md T1-01/D-06).
+- ldm:
+    id: ATM-ap_document_postal_receipt
+    logical_name_1st: Administrative Procedure Document Postal Receipt
+    physical_name_1st: ap_document_postal_receipt
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: draft
+    description_1st: Documentation — thông tin nhận kết quả hồ sơ qua bưu chính. Chỉ
+      tồn tại khi return_method_code = 2 trên hồ sơ cha. FK ho_so_id không unique
+      (cho phép 1-N về sau dù thực tế 1-1).
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Documentation
+    bcv_concept_most: "[Documentation] Documentation"
+    table_type_most: Fundamental
+    etl_pattern_most: SCD4A
+    conflict_review: null
+    sources:
+    - TTHC
+    references:
+      brd:
+      - BRD-SRC-TTHC-AP_DOCUMENT_POSTAL_RECEIPT
+  attributes:
+  - name: Administrative Procedure Document Postal Receipt Id
+    physical_name: ap_document_postal_receipt_id
+    business_meaning_1st: Khóa đại diện (surrogate key).
+    comment_1st: "PK surrogate. BCV: \"[Documentation] Documentation\". Hash: hash_id('TTHC_AP_DOCUMENT_POSTAL_RECEIPT',\
+      \ AP_DOCUMENT_POSTAL_RECEIPT_ID). Nguồn thực: ContentItemIndex.ContentItemId\
+      \ (ContentType = 'thongtinnhanbuurchinh')."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: TTHC
+      source_tables:
+      - source_table: AP_DOCUMENT_POSTAL_RECEIPT
+        source_column: null
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. BCV: \"[Documentation] Documentation\". Hash: hash_id('TTHC_AP_DOCUMENT_POSTAL_RECEIPT',\
+          \ AP_DOCUMENT_POSTAL_RECEIPT_ID). Nguồn thực: ContentItemIndex.ContentItemId\
+          \ (ContentType = 'thongtinnhanbuurchinh')."
+  - name: Administrative Procedure Document Postal Receipt Code
+    physical_name: ap_document_postal_receipt_code
+    business_meaning_1st: ContentItemId của bản ghi bưu chính — BK duy nhất.
+    comment_1st: "BK chính. Nguồn thực: ContentItemIndex.ContentItemId (ContentType\
+      \ = 'ThongTinNhanHoSoTuBuuChinh')."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: TTHC
+      source_tables:
+      - source_table: AP_DOCUMENT_POSTAL_RECEIPT
+        source_column: TTHC.AP_DOCUMENT_POSTAL_RECEIPT.AP_DOCUMENT_POSTAL_RECEIPT_ID
+        business_meaning: ContentItemId của bản ghi bưu chính — BK duy nhất.
+        comment: "BK chính. Nguồn thực: ContentItemIndex.ContentItemId (ContentType\
+          \ = 'ThongTinNhanHoSoTuBuuChinh')."
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
+    comment_1st: "Scheme: SOURCE_SYSTEM. Hardcode."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: TTHC_AP_DOCUMENT_POSTAL_RECEIPT
+    conflict_review: null
+    source_mappings:
+    - source_system: TTHC
+      source_tables:
+      - source_table: AP_DOCUMENT_POSTAL_RECEIPT
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  - name: Administrative Procedure Document Id
+    physical_name: ap_document_id
+    business_meaning_1st: Khóa ngoại tới hồ sơ cha.
+    comment_1st: "FK target: ap_document.ap_document_id. Hash: hash_id('TTHC_AP_DOCUMENT',\
+      \ AP_DOCUMENT_ID). Nguồn thực: ContentItemIndex.ContentItemId (ContentType =\
+      \ 'HoSoTTHC'). FK không unique — cho phép 1-N về sau."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: TTHC
+      source_tables:
+      - source_table: AP_DOCUMENT_POSTAL_RECEIPT
+        source_column: null
+        business_meaning: Khóa ngoại tới hồ sơ cha.
+        comment: "FK target: ap_document.ap_document_id. Hash: hash_id('TTHC_AP_DOCUMENT',\
+          \ AP_DOCUMENT_ID). Nguồn thực: ContentItemIndex.ContentItemId (ContentType\
+          \ = 'HoSoTTHC'). FK không unique — cho phép 1-N về sau."
+  - name: Administrative Procedure Document Code
+    physical_name: ap_document_code
+    business_meaning_1st: Mã hồ sơ cha (ContentItemId) — lưu dư thừa.
+    comment_1st: "Lookup pair: ap_document.ap_document_code."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: TTHC
+      source_tables:
+      - source_table: AP_DOCUMENT_POSTAL_RECEIPT
+        source_column: TTHC.AP_DOCUMENT_POSTAL_RECEIPT.AP_DOCUMENT_ID
+        business_meaning: Mã hồ sơ cha (ContentItemId) — lưu dư thừa.
+        comment: "Lookup pair: ap_document.ap_document_code."
+  - name: Postal Code
+    physical_name: postal_code
+    business_meaning_1st: Mã bưu chính của địa chỉ nhận hồ sơ.
+    comment_1st: "Nguồn thực: Document.Content->'ThongTinNhanHoSoTuBuuChinh'->'MaBuuChinh'->'Text'.\
+      \ Chỉ thấy ở schema cũ (trước 07/02/2025). Schema mới thường NULL."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: TTHC
+      source_tables:
+      - source_table: AP_DOCUMENT_POSTAL_RECEIPT
+        source_column: TTHC.AP_DOCUMENT_POSTAL_RECEIPT.POSTAL_CODE
+        business_meaning: Mã bưu chính của địa chỉ nhận hồ sơ.
+        comment: "Nguồn thực: Document.Content->'ThongTinNhanHoSoTuBuuChinh'->'MaBuuChinh'->'Text'.\
+          \ Chỉ thấy ở schema cũ (trước 07/02/2025). Schema mới thường NULL."
+  - name: Delivery Service Code
+    physical_name: delivery_service_code
+    business_meaning_1st: Mã đơn vị/dịch vụ chuyển phát.
+    comment_1st: "SCHEMA_CODE=TTHC.DELIVERY_SERVICE. Nguồn thực: Document.Content->'ThongTinNhanHoSoTuBuuChinh'->'MaDichVuChuyenPhat'->'Text'."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: TTHC
+      source_tables:
+      - source_table: AP_DOCUMENT_POSTAL_RECEIPT
+        source_column: TTHC.AP_DOCUMENT_POSTAL_RECEIPT.DELIVERY_SERVICE_CODE
+        business_meaning: Mã đơn vị/dịch vụ chuyển phát.
+        comment: "SCHEMA_CODE=TTHC.DELIVERY_SERVICE. Nguồn thực: Document.Content->'ThongTinNhanHoSoTuBuuChinh'->'MaDichVuChuyenPhat'->'Text'."
+  - name: Receipt Address
+    physical_name: receipt_adr
+    business_meaning_1st: Địa chỉ nhận kết quả hồ sơ qua bưu chính — text tự do.
+    comment_1st: "Nguồn thực: Document.Content->'ThongTinNhanHoSoTuBuuChinh'->'DiaChiNhanHoSo'->'Text'.\
+      \ Text tự do — không luôn đi kèm province_code/district_code."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: TTHC
+      source_tables:
+      - source_table: AP_DOCUMENT_POSTAL_RECEIPT
+        source_column: TTHC.AP_DOCUMENT_POSTAL_RECEIPT.RECEIPT_ADDRESS
+        business_meaning: Địa chỉ nhận kết quả hồ sơ qua bưu chính — text tự do.
+        comment: "Nguồn thực: Document.Content->'ThongTinNhanHoSoTuBuuChinh'->'DiaChiNhanHoSo'->'Text'.\
+          \ Text tự do — không luôn đi kèm province_code/district_code."
+  - name: Province Code
+    physical_name: province_code
+    business_meaning_1st: Mã tỉnh/thành phố nhận hồ sơ.
+    comment_1st: "SCHEMA_CODE=TTHC.PROVINCE. Nguồn thực: Document.Content->'ThongTinNhanHoSoTuBuuChinh'->'MaTinhThanh'->'Text'."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: TTHC
+      source_tables:
+      - source_table: AP_DOCUMENT_POSTAL_RECEIPT
+        source_column: TTHC.AP_DOCUMENT_POSTAL_RECEIPT.PROVINCE_CODE
+        business_meaning: Mã tỉnh/thành phố nhận hồ sơ.
+        comment: "SCHEMA_CODE=TTHC.PROVINCE. Nguồn thực: Document.Content->'ThongTinNhanHoSoTuBuuChinh'->'MaTinhThanh'->'Text'."
+  - name: District Code
+    physical_name: district_code
+    business_meaning_1st: Mã quận/huyện nhận hồ sơ.
+    comment_1st: "SCHEMA_CODE=TTHC.DISTRICT. Nguồn thực: Document.Content->'ThongTinNhanHoSoTuBuuChinh'->'MaQuanHuyen'->'Text'."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: TTHC
+      source_tables:
+      - source_table: AP_DOCUMENT_POSTAL_RECEIPT
+        source_column: TTHC.AP_DOCUMENT_POSTAL_RECEIPT.DISTRICT_CODE
+        business_meaning: Mã quận/huyện nhận hồ sơ.
+        comment: "SCHEMA_CODE=TTHC.DISTRICT. Nguồn thực: Document.Content->'ThongTinNhanHoSoTuBuuChinh'->'MaQuanHuyen'->'Text'."
+  - name: Sender Phone Number
+    physical_name: sender_phone_nbr
+    business_meaning_1st: Số điện thoại người gửi (người nhận phía bưu chính liên
+      hệ khi cần).
+    comment_1st: "Nguồn thực: Document.Content->'ThongTinNhanHoSoTuBuuChinh'->'SoDienThoaiNguoiGui'->'Text'."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: TTHC
+      source_tables:
+      - source_table: AP_DOCUMENT_POSTAL_RECEIPT
+        source_column: TTHC.AP_DOCUMENT_POSTAL_RECEIPT.SENDER_PHONE_NUMBER
+        business_meaning: Số điện thoại người gửi (người nhận phía bưu chính liên
+          hệ khi cần).
+        comment: "Nguồn thực: Document.Content->'ThongTinNhanHoSoTuBuuChinh'->'SoDienThoaiNguoiGui'->'Text'."
+  - name: Note
+    physical_name: note
+    business_meaning_1st: Ghi chú bổ sung về địa chỉ/yêu cầu nhận hồ sơ.
+    comment_1st: "Nguồn thực: Document.Content->'ThongTinNhanHoSoTuBuuChinh'->'GhiChu'->'Text'.\
+      \ Chỉ thấy ở schema cũ. Schema mới thường NULL."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: TTHC
+      source_tables:
+      - source_table: AP_DOCUMENT_POSTAL_RECEIPT
+        source_column: TTHC.AP_DOCUMENT_POSTAL_RECEIPT.NOTE
+        business_meaning: Ghi chú bổ sung về địa chỉ/yêu cầu nhận hồ sơ.
+        comment: "Nguồn thực: Document.Content->'ThongTinNhanHoSoTuBuuChinh'->'GhiChu'->'Text'.\
+          \ Chỉ thấy ở schema cũ. Schema mới thường NULL."
 - ldm:
     id: ATM-et_declaration_report
     logical_name_1st: External Tax Declaration Report
@@ -25905,7 +27236,7 @@ entities:
     physical_name_1st: pc_report_submission
     layer_1st: Atomic
     version_1st: "1.0"
-    status_1st: draft
+    status_1st: approved
     description_1st: "Lần nộp báo cáo/tin công bố thông tin (CBTT) của CTĐC: form,\
       \ trạng thái duyệt, ngày nộp/duyệt/từ chối, tin đính chính. BRD hiện tại thiếu\
       \ 4 FK có trên DDL thực tế (Legal Entity, Securities Offering, Company Tender\
@@ -26595,8 +27926,12 @@ entities:
     physical_name: pc_securities_offering_id
     business_meaning_1st: Id phương án đăng ký chào bán/phát hành gắn với tin công
       bố — chỉ có khi tin liên quan chào bán/phát hành.
-    comment_1st: "FK target: pc_securities_offering.pc_securities_offering_id. Hash:\
-      \ hash_id('IDS.SECURITIES_OFFERING', SECURITIES_OFFERING_ID)."
+    comment_1st: "FK target: pc_securities_offering.pc_securities_offering_id. Cần\
+      \ ETL crosswalk sang IDS.SECURITIES_OFFERING: COMPANY_DATA.SECURITIES_OFFERING_ID\
+      \ = SECURITIES_OFFERING.ID để xác nhận APPLICATION_CD sau đó hash_id('IDS.SECURITIES_OFFERING',\
+      \ APPLICATION_CD) | Trước đây hash trực tiếp theo SECURITIES_OFFERING_ID (ID\
+      \ kỹ thuật) gây sai lệch với Id của bảng main (hash từ APPLICATION_CD) — đã\
+      \ sửa sang crosswalk 2026-08-14."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -26610,13 +27945,19 @@ entities:
         source_column: IDS.COMPANY_DATA.SECURITIES_OFFERING_ID
         business_meaning: Id phương án đăng ký chào bán/phát hành gắn với tin công
           bố — chỉ có khi tin liên quan chào bán/phát hành.
-        comment: "FK target: pc_securities_offering.pc_securities_offering_id. Hash:\
-          \ hash_id('IDS.SECURITIES_OFFERING', SECURITIES_OFFERING_ID)."
+        comment: "FK target: pc_securities_offering.pc_securities_offering_id. Cần\
+          \ ETL crosswalk sang IDS.SECURITIES_OFFERING: COMPANY_DATA.SECURITIES_OFFERING_ID\
+          \ = SECURITIES_OFFERING.ID để xác nhận APPLICATION_CD sau đó hash_id('IDS.SECURITIES_OFFERING',\
+          \ APPLICATION_CD) | Trước đây hash trực tiếp theo SECURITIES_OFFERING_ID\
+          \ (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ APPLICATION_CD)\
+          \ — đã sửa sang crosswalk 2026-08-14."
   - name: Public Company Securities Offering Code
     physical_name: pc_securities_offering_code
     business_meaning_1st: Mã phương án chào bán/phát hành (denormalized lookup).
     comment_1st: "Lookup pair: pc_securities_offering.pc_securities_offering_code.\
-      \ Pair with Public Company Securities Offering Id."
+      \ Pair with Public Company Securities Offering Id. Giá trị lấy từ IDS.SECURITIES_OFFERING.APPLICATION_CD\
+      \ sau ETL crosswalk — chi tiết xem comment Public Company Securities Offering\
+      \ Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -26627,10 +27968,12 @@ entities:
     - source_system: IDS
       source_tables:
       - source_table: COMPANY_DATA
-        source_column: IDS.COMPANY_DATA.SECURITIES_OFFERING_ID
+        source_column: IDS.SECURITIES_OFFERING.APPLICATION_CD
         business_meaning: Mã phương án chào bán/phát hành (denormalized lookup).
         comment: "Lookup pair: pc_securities_offering.pc_securities_offering_code.\
-          \ Pair with Public Company Securities Offering Id."
+          \ Pair with Public Company Securities Offering Id. Giá trị lấy từ IDS.SECURITIES_OFFERING.APPLICATION_CD\
+          \ sau ETL crosswalk — chi tiết xem comment Public Company Securities Offering\
+          \ Id."
   - name: Offering Disclosure Type Code
     physical_name: offering_disclosure_tp_code
     business_meaning_1st: "Loại công bố chào bán phát hành: NOTICE (Thông báo) / RESULT\
@@ -37267,6 +38610,153 @@ entities:
         source_column: IDS.EVALUATION_GROUPS.DISPLAY_ORDER
         business_meaning: Số thứ tự hiển thị.
         comment: null
+- ldm:
+    id: ATM-ap_document_applicant
+    logical_name_1st: Administrative Procedure Document Applicant
+    physical_name_1st: ap_document_applicant
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: draft
+    description_1st: Involved Party — đối tượng nộp hồ sơ (cá nhân hoặc tổ chức),
+      quan hệ 1-N với hồ sơ. PK ghép (ho_so_id, doi_tuong_nop_ho_so_id); surrogate
+      key hash từ composite. Trường applicant_role_code phân biệt nguồn dữ liệu (ID
+      tham chiếu vs. bag nhúng).
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Involved Party
+    bcv_concept_most: "[Involved Party] Involved Party"
+    table_type_most: Fundamental
+    etl_pattern_most: SCD4A
+    conflict_review: null
+    sources:
+    - TTHC
+    references:
+      brd:
+      - BRD-SRC-TTHC-AP_DOCUMENT_APPLICANT
+  attributes:
+  - name: Administrative Procedure Document Applicant Id
+    physical_name: ap_document_applicant_id
+    business_meaning_1st: Khóa đại diện (surrogate key).
+    comment_1st: "PK surrogate. BCV: \"[Involved Party] Involved Party\". Hash: hash_id('TTHC_AP_DOCUMENT_APPLICANT',\
+      \ AP_DOCUMENT_APPLICANT_ID). Nguồn thực: ContentItemIndex.ContentItemId (ContentType\
+      \ = 'DoiTuongNopHoSo')."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: TTHC
+      source_tables:
+      - source_table: AP_DOCUMENT_APPLICANT
+        source_column: null
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. BCV: \"[Involved Party] Involved Party\". Hash: hash_id('TTHC_AP_DOCUMENT_APPLICANT',\
+          \ AP_DOCUMENT_APPLICANT_ID). Nguồn thực: ContentItemIndex.ContentItemId\
+          \ (ContentType = 'DoiTuongNopHoSo')."
+  - name: Administrative Procedure Document Applicant Code
+    physical_name: ap_document_applicant_code
+    business_meaning_1st: ContentItemId của đối tượng nộp hồ sơ trong Orchard Core
+      — BK duy nhất.
+    comment_1st: "BK chính. Nguồn thực: ContentItemIndex.ContentItemId (ContentType\
+      \ = 'DoiTuongNopHoSo')."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: TTHC
+      source_tables:
+      - source_table: AP_DOCUMENT_APPLICANT
+        source_column: TTHC.AP_DOCUMENT_APPLICANT.AP_DOCUMENT_APPLICANT_ID
+        business_meaning: ContentItemId của đối tượng nộp hồ sơ trong Orchard Core
+          — BK duy nhất.
+        comment: "BK chính. Nguồn thực: ContentItemIndex.ContentItemId (ContentType\
+          \ = 'DoiTuongNopHoSo')."
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
+    comment_1st: "Scheme: SOURCE_SYSTEM. Hardcode."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: TTHC_AP_DOCUMENT_APPLICANT
+    conflict_review: null
+    source_mappings:
+    - source_system: TTHC
+      source_tables:
+      - source_table: AP_DOCUMENT_APPLICANT
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  - name: Display Name
+    physical_name: display_nm
+    business_meaning_1st: Tên hiển thị của đối tượng nộp hồ sơ.
+    comment_1st: "Nguồn thực: Document.Content->'DoiTuongNopHoSo'->items[].TenHienThi\
+      \ (schema cũ — bag nhúng). Schema mới: NULL cho tới khi tra cứu bổ sung từ content\
+      \ item đối tượng."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: TTHC
+      source_tables:
+      - source_table: AP_DOCUMENT_APPLICANT
+        source_column: TTHC.AP_DOCUMENT_APPLICANT.DISPLAY_NAME
+        business_meaning: Tên hiển thị của đối tượng nộp hồ sơ.
+        comment: "Nguồn thực: Document.Content->'DoiTuongNopHoSo'->items[].TenHienThi\
+          \ (schema cũ — bag nhúng). Schema mới: NULL cho tới khi tra cứu bổ sung\
+          \ từ content item đối tượng."
+  - name: Phone Number
+    physical_name: phone_nbr
+    business_meaning_1st: Số điện thoại liên lạc của đối tượng nộp hồ sơ.
+    comment_1st: "Nguồn thực: schema cũ = Document.Content->'DoiTuongNopHoSo'->items[].SoDienThoai\
+      \ (bag nhúng); schema mới = Document.Content->'HoSoTTHC'->'SoDienThoai'->'Text'.\
+      \ ODS đã gộp 2 nguồn."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: TTHC
+      source_tables:
+      - source_table: AP_DOCUMENT_APPLICANT
+        source_column: TTHC.AP_DOCUMENT_APPLICANT.PHONE_NUMBER
+        business_meaning: Số điện thoại liên lạc của đối tượng nộp hồ sơ.
+        comment: "Nguồn thực: schema cũ = Document.Content->'DoiTuongNopHoSo'->items[].SoDienThoai\
+          \ (bag nhúng); schema mới = Document.Content->'HoSoTTHC'->'SoDienThoai'->'Text'.\
+          \ ODS đã gộp 2 nguồn."
+  - name: Email
+    physical_name: email
+    business_meaning_1st: Địa chỉ email của đối tượng nộp hồ sơ.
+    comment_1st: "Nguồn thực: schema cũ = Document.Content->'DoiTuongNopHoSo'->items[].Email\
+      \ (bag nhúng); schema mới = Document.Content->'HoSoTTHC'->'DoiTuongNopHoSoEmail'->'Text'.\
+      \ ODS đã gộp 2 nguồn."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: TTHC
+      source_tables:
+      - source_table: AP_DOCUMENT_APPLICANT
+        source_column: TTHC.AP_DOCUMENT_APPLICANT.EMAIL
+        business_meaning: Địa chỉ email của đối tượng nộp hồ sơ.
+        comment: "Nguồn thực: schema cũ = Document.Content->'DoiTuongNopHoSo'->items[].Email\
+          \ (bag nhúng); schema mới = Document.Content->'HoSoTTHC'->'DoiTuongNopHoSoEmail'->'Text'.\
+          \ ODS đã gộp 2 nguồn."
 - ldm:
     id: ATM-discretionary_investment_investor
     logical_name_1st: Discretionary Investment Investor

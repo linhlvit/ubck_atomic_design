@@ -1,0 +1,76 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: MRMS
+table: RISK_REPORT_TYPE
+brd_ref: BRD-SRC-MRMS-RISK_REPORT_TYPE
+columns:
+- name: ID
+  data_type: VARCHAR2(36)
+  description: Primary key
+  key: PK
+  fk_note: null
+- name: CODE
+  data_type: VARCHAR2(200)
+  description: 'Mã loại báo cáo (VD: MARKET_STATUS_PERIOD)'
+  key: null
+  fk_note: null
+- name: NAME
+  data_type: VARCHAR2(2000)
+  description: 'Tên loại báo cáo (VD: Báo cáo nhanh hàng tháng)'
+  key: null
+  fk_note: null
+- name: DESCRIPTION
+  data_type: VARCHAR2(4000)
+  description: Mô tả chi tiết
+  key: null
+  fk_note: null
+- name: TEMPLATE_CONTENT
+  data_type: CLOB
+  description: Nội dung template báo cáo (Word/HTML) chứa các placeholder theo cú pháp {{PLACEHOLDER_CODE}}
+  key: null
+  fk_note: null
+- name: DISPLAY_ORDER
+  data_type: NUMBER(4,0)
+  description: Thứ tự hiển thị của báo cáo
+  key: null
+  fk_note: null
+- name: IS_ACTIVE
+  data_type: NUMBER(1,0)
+  description: 0=Không hoạt động 1=Hoạt động
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: Ngày tạo
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: TIMESTAMP(6)
+  description: Ngày sửa cuối
+  key: null
+  fk_note: null
+- name: CREATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: User_id người tạo
+  key: null
+  fk_note: null
+- name: UPDATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: User_id người cập nhật
+  key: null
+  fk_note: null
+- name: CREATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: Tên người tạo
+  key: null
+  fk_note: null
+- name: UPDATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: Tên người cập nhật
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(1,0)
+  description: Soft delete
+  key: null
+  fk_note: null

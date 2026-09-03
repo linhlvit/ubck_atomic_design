@@ -55,7 +55,7 @@ erDiagram
 
 | Datamart entity | Description | Grain | KPI |
 |---|---|---|---|
-| Fact Investment Fund NAV Snapshot | NAV + phân bổ TS + QLRR cross-module | 1 quỹ × 1 BC Template × 1 Report Date | K_QLQ_32–37, 38–44, 47–49, 56, 61 |
+| Fact Investment Fund NAV Snapshot | NAV + phân bổ TS + MRMS cross-module | 1 quỹ × 1 BC Template × 1 Report Date | K_QLQ_32–37, 38–44, 47–49, 56, 61 |
 | Investment Fund Dimension | Quỹ (SCD4A) | 1 quỹ | — |
 | Fund Management Company Dimension | CTQLQ (SCD4A) | 1 CTQLQ | — |
 | Calendar Date Dimension | Lịch ngày | 1 ngày | — |

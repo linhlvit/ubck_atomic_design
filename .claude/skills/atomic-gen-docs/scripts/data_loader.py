@@ -54,7 +54,7 @@ from typing import Any
 #   "## UID1 — label"             → UIDn        (g3,g4)  GSGD
 #   "## UID01 — label"            → UIDnn       (g3,g4)  NHNCK
 #   "## DCST-01. label"           → WORD-nn.    (g5,g6)  DCST
-#   "## QLRR001 — label"          → WORDnnn     (g7,g8)  QLRR
+#   "## MRMS001 — label"          → WORDnnn     (g7,g8)  MRMS
 #   "## FMS.1 — label"            → WORD.n      (g9,g10) FMS
 #   "## 1. SCMS_UID01 — label"    → N. WORD_UIDnn (optional numeric prefix via (?:\d+\.\s+)?)
 _UID_HEADING_RE = re.compile(
@@ -62,7 +62,7 @@ _UID_HEADING_RE = re.compile(
     r"(?:\w+_UID|UID-)(\w+)\s+[—-]\s+(.+)"   # FIMS_UID03 / UID-01 / SCMS (after numeric prefix)
     r"|UID(\d+)\s+[—-]\s+(.+)"                # UID1 / UID01 (no dash)
     r"|[A-Z]+-(\w+)\.\s+(.+)"                 # DCST-01. / DCST-SYS.
-    r"|[A-Z]+(\d+)\s+[—-]\s+(.+)"             # QLRR001 / SOURCE_PREFIX+digits
+    r"|[A-Z]+(\d+)\s+[—-]\s+(.+)"             # MRMS001 / SOURCE_PREFIX+digits
     r"|[A-Z]+\.(\d+)\s+[—-]\s+(.+)"           # FMS.1 — label
     r")",
     re.MULTILINE
@@ -104,7 +104,7 @@ def parse_uid_groups(repo_root: Path, source: str) -> list[dict]:
         # group(1,2) = FIMS_UID / UID-NN
         # group(3,4) = UID1 / UID01 (no dash)
         # group(5,6) = DCST-01. / SOURCE-XX.
-        # group(7,8) = QLRR001 / SOURCE_PREFIX+digits
+        # group(7,8) = MRMS001 / SOURCE_PREFIX+digits
         # group(9,10) = FMS.1 — label
         uid_code = (m.group(1) or m.group(3) or m.group(5) or m.group(7) or m.group(9) or "").strip()
         label = (m.group(2) or m.group(4) or m.group(6) or m.group(8) or m.group(10) or "").strip()

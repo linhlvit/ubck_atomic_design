@@ -156,36 +156,16 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "int"
-- attribute_name: "Business Line Level 1 Id"
-  physical_name: "business_line_level_1_id"
-  description: "Ngành cấp 1 (FK)."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.COMPANY_PROFILES.CATEGORY_L1_ID"
-  comment: "FK target: cl_business_line.cl_business_line_id. Cần ETL crosswalk\
-    \ sang IDS.CATEGORIES: COMPANY_PROFILES.CATEGORY_L1_ID = CATEGORIES.ID để xác\
-    \ nhận INDUSTRY_CD sau đó hash_id('ECAT_BUSINESS_LINE_LEVEL_1', INDUSTRY_CD)\
-    \ | IDS.CATEGORIES chỉ dùng làm bảng join, không tự sinh entity — quyết định\
-    \ 2026-07-23. Chưa xác nhận value set khớp danh mục ECAT.BUSINESS_LINE_LEVEL_1\
-    \ — cần profile dữ liệu trước go-live. Xem IDS_HLD_Tier1.md T1-13."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Business Line Level 1 Code"
-  physical_name: "business_line_level_1_code"
+- attribute_name: "Category Level 1 Type Code"
+  physical_name: "category_level_1_tp_code"
   description: "Mã ngành cấp 1."
-  data_domain: "Text"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.CATEGORIES.INDUSTRY_CD"
-  comment: "Lookup pair: cl_business_line.cl_business_line_code. Pair with Business\
-    \ Line Level 1 Id. Giá trị lấy từ IDS.CATEGORIES.INDUSTRY_CD sau ETL crosswalk\
-    \ — chi tiết xem comment Business Line Level 1 Id."
+  comment: "SCHEMA_CODE=IDS.CATEGORY_L1_TYPE. Values load từ CATEGORIES. Cần ETL crosswalk sang IDS.CATEGORIES: COMPANY_PROFILES.CATEGORY_L1_ID = CATEGORIES.ID để xác nhận INDUSTRY_CD."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -226,56 +206,52 @@ attributes:
 - attribute_name: "Enterprise Type Code"
   physical_name: "enterprise_tp_code"
   description: "Loại hình doanh nghiệp."
-  data_domain: "Text"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.COMPANY_PROFILES.ENTERPRISE_TYPE_CD"
-  comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong\
-    \ tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
+  comment: "SCHEMA_CODE=IDS.ENTERPRISE_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='ENTERPRISE_TYPE')."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Financial Statement Type Code"
   physical_name: "financial_statement_tp_code"
   description: "Loại báo cáo tài chính."
-  data_domain: "Text"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.COMPANY_PROFILES.FINANCIAL_STMT_TYPE_CD"
-  comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong\
-    \ tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
+  comment: "SCHEMA_CODE=IDS.FINANCIAL_STATEMENT_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='FINANCIAL_STATEMENT_TYPE'). Dữ liệu dạng list (HN, ME)"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Type Code"
   physical_name: "securities_tp_code"
   description: "Loại chứng khoán."
-  data_domain: "Text"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.COMPANY_PROFILES.SECURITIES_TYPE_CD"
-  comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong\
-    \ tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
+  comment: "SCHEMA_CODE=IDS.SECURITIES_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SECURITIES_TYPE')."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Equity Listing Exchange Code"
   physical_name: "equity_listing_exchange_code"
   description: "Sàn niêm yết."
-  data_domain: "Text"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.COMPANY_PROFILES.EQUITY_LISTING_EXCH"
-  comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong\
-    \ tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
+  comment: "SCHEMA_CODE=IDS.EQUITY_LISTING_EXCH. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='EQUITY_LISTING_EXCH')."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -321,14 +297,13 @@ attributes:
 - attribute_name: "Bond Listing Exchange Code"
   physical_name: "bond_listing_exchange_code"
   description: "Sàn trái phiếu."
-  data_domain: "Text"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.COMPANY_PROFILES.BOND_LISTING_EXCH"
-  comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong\
-    \ tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
+  comment: "SCHEMA_CODE=IDS.EQUITY_LISTING_EXCH. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='EQUITY_LISTING_EXCH')."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -400,14 +375,13 @@ attributes:
 - attribute_name: "Public Company Status Code"
   physical_name: "pc_status_code"
   description: "Trạng thái."
-  data_domain: "Text"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.COMPANY_PROFILES.STATUS_IDS_CD"
-  comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong\
-    \ tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
+  comment: "SCHEMA_CODE=IDS.PUBLIC_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='STATUS_IDS')."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -517,31 +491,29 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "date"
-- attribute_name: "Public Company Form Code"
-  physical_name: "pc_form_code"
+- attribute_name: "Public Company Form Type Code"
+  physical_name: "pc_form_tp_code"
   description: "Hình thức trở thành công ty đại chúng."
-  data_domain: "Text"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.COMPANY_PROFILES.PUBLIC_COMPANY_FORM_CD"
-  comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong\
-    \ tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
+  comment: "SCHEMA_CODE=IDS.PUBLIC_COMPANY_FORM_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='PUBLIC_COMPANY_FORM')."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Public Company Type Code"
   physical_name: "pc_tp_code"
   description: "Loại công ty đại chúng."
-  data_domain: "Text"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.COMPANY_PROFILES.PUBLIC_COM_TYPE_CD"
-  comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong\
-    \ tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
+  comment: "SCHEMA_CODE=IDS.PUBLIC_COMPANY_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='PUBLIC_COM_TYPE')."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -700,8 +672,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.COMPANY_PROFILES.APPROVAL_STATUS_CD"
-  comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong\
-    \ tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
+  comment: "SCHEMA_CODE=IDS.SO_APPROVAL_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_APPROVAL_STATUS')."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

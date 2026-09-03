@@ -1,0 +1,81 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: MRMS
+table: RISK_REPORT_FILE
+brd_ref: BRD-SRC-MRMS-RISK_REPORT_FILE
+columns:
+- name: ID
+  data_type: VARCHAR2(36)
+  description: Primary key
+  key: PK
+  fk_note: null
+- name: BATCH_ID
+  data_type: VARCHAR2(36)
+  description: Id nhóm upload
+  key: FK
+  fk_note: FK suy luận → risk_report_upload_batch.id
+- name: FILE_NAME
+  data_type: VARCHAR2(2000)
+  description: 'Tên file hiển thị (VD: Báo cáo TTCK Q4-2025.docx)'
+  key: null
+  fk_note: null
+- name: FILE_PATH
+  data_type: VARCHAR2(4000)
+  description: Đường dẫn lưu file trên hệ thống (filesystem/object storage)
+  key: null
+  fk_note: null
+- name: FILE_SIZE
+  data_type: NUMBER(19,0)
+  description: Dung lượng file (bytes)
+  key: null
+  fk_note: null
+- name: FILE_TYPE
+  data_type: VARCHAR2(200)
+  description: 'Loại file: DOCX, XLSX, PDF,…'
+  key: null
+  fk_note: null
+- name: UPLOADED_AT
+  data_type: TIMESTAMP(6)
+  description: Thời gian upload file
+  key: null
+  fk_note: null
+- name: UPLOADED_BY_ID
+  data_type: VARCHAR2(36)
+  description: Người nộp file (user id)
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: Ngày tạo
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: TIMESTAMP(6)
+  description: Ngày sửa cuối
+  key: null
+  fk_note: null
+- name: CREATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: User_id người tạo
+  key: null
+  fk_note: null
+- name: UPDATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: User_id người cập nhật
+  key: null
+  fk_note: null
+- name: CREATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: Tên người tạo
+  key: null
+  fk_note: null
+- name: UPDATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: Tên người cập nhật
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(1,0)
+  description: Soft delete
+  key: null
+  fk_note: null

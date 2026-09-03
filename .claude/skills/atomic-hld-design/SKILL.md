@@ -2,7 +2,7 @@
 name: atomic-hld-design
 description: |
   Thiết kế High-Level Design (HLD) cho Atomic source system trong kiến trúc Medallion.
-  Sử dụng khi: thiết kế HLD cho 1 source mới (DCST/FIMS/FMS/GSGD/IDS/NHNCK/SCMS/QLRR/THANHTRA...),
+  Sử dụng khi: thiết kế HLD cho 1 source mới (DCST/FIMS/FMS/GSGD/IDS/NHNCK/SCMS/MRMS/THANHTRA...),
   phân tầng Tier dependency, tra BCV, rà soát shared entity, xuất file
   {SOURCE}_HLD_Tier{N}.md hoặc {SOURCE}_HLD_Overview.md trong DataModel/working/Atomic/hld/.
   Cũng dùng khi cập nhật mục 7f (bảng ngoài scope), điều chỉnh source_table cho

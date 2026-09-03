@@ -83,23 +83,20 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.LEGAL_ENTITIES.ENTITY_TYPE_CD"
-  comment: "Scheme: IDS_ENTITY_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP =\
-    \ 'ENTITY_TYPE')."
-  classification_context: "IDS_ENTITY_TYPE"
+  comment: "SCHEMA_CODE=IDS.LEGAL_ENTITY_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='ENTITY_TYPE')."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Identification Type List"
-  physical_name: "identification_tp_list"
+- attribute_name: "Identification Type Code"
+  physical_name: "identification_tp_code"
   description: "Loại giấy tờ (cách nhau dấu phẩy)."
-  data_domain: "Text"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.LEGAL_ENTITIES.IDENTITY_TYPE_CD"
-  comment: "Denormalized — cột tổng hợp nhiều loại giấy tờ (comma-separated), không\
-    \ phải Classification Value đơn. Chi tiết từng giấy tờ (số, ngày cấp, nơi cấp)\
-    \ thiết kế ở Tier 2 qua bảng IDENTITY → Involved Party Alternative Identification."
+  comment: "SCHEMA_CODE=IDS.IDENTITY_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='IDENTITY_TYPE')."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -117,8 +114,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Individual Gender Code"
-  physical_name: "individual_gender_code"
+- attribute_name: "Gender Code"
+  physical_name: "gender_code"
   description: "Giới tính."
   data_domain: "Classification Value"
   nullable: true
@@ -126,8 +123,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.LEGAL_ENTITIES.GENDER_CD"
-  comment: "Scheme: IDS_GENDER. Values load từ LOOKUP_VALUES (LOOKUP_GROUP = 'GENDER').\
-    \ Chỉ áp dụng khi Legal Entity Type Code = cá nhân."
+  comment: "SCHEMA_CODE=GENDER"
   classification_context: "IDS_GENDER"
   etl_derived_value: null
   data_type: "string"
@@ -214,16 +210,3 @@ attributes:
   classification_context: "IDS_GSO_BUSINESS_SECTOR"
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Deleted Indicator"
-  physical_name: "deleted_ind"
-  description: "Đánh dấu xóa mềm - 1:Xóa, 0:Không xóa."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.LEGAL_ENTITIES.DELETE_FLG"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"

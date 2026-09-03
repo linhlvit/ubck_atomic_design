@@ -271,8 +271,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.COMPANY_TENDER_OFFER.TARGET_LISTING_EXCH"
-  comment: "Scheme: IDS_EQUITY_LISTING_EXCH. Dùng chung scheme với Public Company.Equity\
-    \ Listing Exchange Code."
+  comment: "SCHEMA_CODE=IDS.EQUITY_LISTING_EXCH. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='EQUITY_LISTING_EXCH')."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -449,14 +448,13 @@ attributes:
 - attribute_name: "Approval Status Code"
   physical_name: "approval_status_code"
   description: "Trạng thái phê duyệt phương án."
-  data_domain: "Text"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.COMPANY_TENDER_OFFER.APPROVAL_STATUS_CD"
-  comment: "Scheme: IDS_SO_APPROVAL_STATUS. Dùng chung scheme với Public Company Securities\
-    \ Offering.Approval Status Code (cùng LOOKUP_GROUP = SO_APPROVAL_STATUS)."
+  comment: "SCHEMA_CODE=IDS.SO_APPROVAL_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_APPROVAL_STATUS')."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -560,8 +558,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.COMPANY_TENDER_OFFER.ADMINISTRATIVE_STATUS_CD"
-  comment: "Scheme: IDS_SO_ADMINISTRATIVE_STATUS. Dùng chung scheme với Public Company\
-    \ Securities Offering.Administrative Status Code."
-  classification_context: "IDS_SO_ADMINISTRATIVE_STATUS"
+  comment: "SCHEMA_CODE=IDS.SO_ADMINISTRATIVE_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_ADMINISTRATIVE_STATUS')."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"

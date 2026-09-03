@@ -1,0 +1,72 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: MRMS
+table: RISK_INDICATOR_CUSTOM
+brd_ref: BRD-SRC-MRMS-RISK_INDICATOR_CUSTOM
+columns:
+- name: ID
+  data_type: VARCHAR2(36)
+  description: Primary key
+  key: PK
+  fk_note: null
+- name: INDICATOR_NAME
+  data_type: VARCHAR2(2000)
+  description: 'Tên chỉ tiêu (VD: GDP, CPI, Chỉ số VNIndex, Lạm phát Mỹ)'
+  key: null
+  fk_note: null
+- name: UNIT_CODE
+  data_type: NUMBER(2,0)
+  description: Đơn vị mặc định 1=% 2=Điểm 3=Tỷ VND 4=Triệu USD 5=Hợp đồng 6=Cổ phiếu 7=Công ty 8=VND 9=Số
+    tài khoản 10=Đơn vị tính
+  key: null
+  fk_note: null
+- name: SOURCE_CODE
+  data_type: VARCHAR2(1020)
+  description: Nguồn cảnh báo
+  key: null
+  fk_note: null
+- name: PERIOD_TYPE
+  data_type: NUMBER(1,0)
+  description: 'Tần suất: 1=Ngày, 2=Tháng, 3=Quý, 4=Năm'
+  key: null
+  fk_note: null
+- name: STATUS
+  data_type: NUMBER(1,0)
+  description: 0=Không hoạt động 1=Hoạt động
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: Ngày tạo
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: TIMESTAMP(6)
+  description: Ngày sửa cuối
+  key: null
+  fk_note: null
+- name: CREATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: User_id người tạo
+  key: null
+  fk_note: null
+- name: UPDATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: User_id người cập nhật
+  key: null
+  fk_note: null
+- name: CREATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: Tên người tạo
+  key: null
+  fk_note: null
+- name: UPDATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: Tên người cập nhật
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(1,0)
+  description: Soft delete
+  key: null
+  fk_note: null

@@ -52,8 +52,8 @@ def map_source_module(nguon: str) -> str:
     if any(x in n for x in ("MDDS", "Thông tin thị trường", "IDXInfor",
                              "MarketInfor", "StockInfor", "GSGD")):
         return "MDDS"
-    if any(x in n for x in ("RISK_INDICATOR", "QLRR")):
-        return "QLRR"
+    if any(x in n for x in ("RISK_INDICATOR", "MRMS")):
+        return "MRMS"
     if any(x in n for x in ("SCMS", "BC_BAO_CAO_GT", "báo cáo SCMS")):
         return "SCMS"
     if any(x in n for x in ("Kho dữ liệu", "KhoDL", "WeightConfig")):

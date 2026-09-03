@@ -25,7 +25,7 @@ o Huy động vốn cổ phần (Equity Capital Raising - C)
 ▪ Các giá trị β, ε do cán bộ/chuyên viên nhập.
 ▪ Công thức chuẩn hóa Z-Score:
 1. Công thức tổng quát:
-Z-score = (x − μ) / σ";Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;SCMS, MDDS, QLRR, FMS, CSDLTT;x;x;;Done;;;"risk_index_value, z_*, beta*
+Z-score = (x − μ) / σ";Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;SCMS, MDDS, MRMS, FMS, CSDLTT;x;x;;Done;;;"risk_index_value, z_*, beta*
 ";;;;;;;;;Dữ liệu tĩnh, Dữ liệu động, Chưa có CSDL - Map biểu mẫu
 1;;Dashboard Giám sát rủi ro/ Chỉ số rủi ro hệ thống;"Z-score Biến động giá 
 Z-score = (x − μ) / σ
@@ -724,7 +724,7 @@ AND FloorCode IN ('02','04','10');
 ";;;;;;;Dữ liệu tĩnh
 1;;Dashboard Giám sát rủi ro/ Chỉ số rủi ro hệ thống;KL CK lưu hành tại ngày;KL CK lưu hành;Dashboard;Chỉ tiêu cơ sở;Khó;Ngày;CSDLTT;x;x;;Done;Khối lượng CK đang lưu hành: VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày);Lấy từ VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày);BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành;Khối lượng chứng khoán đang lưu hành;Mã chứng khoán = 'Cổ phiếu';;;;;;;Chưa có CSDL - Map biểu mẫu
 1;;Dashboard Giám sát rủi ro/ Chỉ số rủi ro hệ thống;"Z-score Lãi suất 
-Z-score = (x − μ) / σ";Z-score Lãi suất;Dashboard;Chỉ tiêu phái sinh;Khó;;QLRR;x;x;;Done;RISK_INDICATOR;"RISK_INDICATOR i 
+Z-score = (x − μ) / σ";Z-score Lãi suất;Dashboard;Chỉ tiêu phái sinh;Khó;;MRMS;x;x;;Done;RISK_INDICATOR;"RISK_INDICATOR i 
 RISK_INDICATOR_VALUE v";"i.indicator_code;
 v.trading_date";"i.indicator_code = 'INTERBANK_IR';
 v.trading_date <= :input_date";"WITH avg_rate AS (
@@ -753,7 +753,7 @@ s.sigma_ir,
 (ir_t.ir_current - s.mu_ir)
 / NULLIF(s.sigma_ir, 0) AS z_score_interest_rate
 FROM ir_t, stats s;";;;;;;;Dữ liệu tĩnh
-1;;Dashboard Giám sát rủi ro/ Chỉ số rủi ro hệ thống;Lãi suất tại ngày t;Lãi suất liên ngân hàng (IRₜ) phản ánh chi phí vốn ngắn hạn của hệ thống tài chính.;Dashboard;Chỉ tiêu cơ sở;Khó;Ngày;QLRR;x;x;;Done;RISK_INDICATOR;"RISK_INDICATOR i 
+1;;Dashboard Giám sát rủi ro/ Chỉ số rủi ro hệ thống;Lãi suất tại ngày t;Lãi suất liên ngân hàng (IRₜ) phản ánh chi phí vốn ngắn hạn của hệ thống tài chính.;Dashboard;Chỉ tiêu cơ sở;Khó;Ngày;MRMS;x;x;;Done;RISK_INDICATOR;"RISK_INDICATOR i 
 RISK_INDICATOR_VALUE v";"i.indicator_code;
 v.trading_date";"i.indicator_code = 'INTERBANK_IR';
 v.trading_date = :input_date";"SELECT v.VALUE AS lai_suat_lnh_qua_dem
@@ -764,7 +764,7 @@ AND v.PERIOD_TYPE = 1
 AND TRUNC(CAST(v.PERIOD_DATE AS DATE)) <= TO_DATE(:ngay_gd, 'YYYY-MM-DD')
 AND i.DELETED = 0
 AND v.DELETED = 0";;;;;;;Dữ liệu tĩnh
-1;;Dashboard Giám sát rủi ro/ Chỉ số rủi ro hệ thống;Lãi suất trung bình N phiên;Lãi suất trung bình N phiên;Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;QLRR;x;x;;Done;RISK_INDICATOR;"RISK_INDICATOR i 
+1;;Dashboard Giám sát rủi ro/ Chỉ số rủi ro hệ thống;Lãi suất trung bình N phiên;Lãi suất trung bình N phiên;Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;MRMS;x;x;;Done;RISK_INDICATOR;"RISK_INDICATOR i 
 RISK_INDICATOR_VALUE v";"i.indicator_code;
 v.trading_date";"i.indicator_code = 'INTERBANK_IR';
 v.trading_date <= :input_date";"-- Lãi suất trung bình N phiên (tính đến ngày :ngay_gd)
@@ -785,7 +785,7 @@ FETCH FIRST :n_sessions ROWS ONLY -- N phiên gần nhất (VD: 20)
 SELECT
 AVG(lai_suat_lnh_qua_dem) AS lai_suat_tb_n_phien
 FROM n_phien_gan_nhat;";;;;;;;Dữ liệu tĩnh
-1;;Dashboard Giám sát rủi ro/ Chỉ số rủi ro hệ thống;Độ lệch chuẩn;σ_volatility = √[ (1/(N−1)) × Σ(Rt − R̄)² ];Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;QLRR;x;x;;Done;RISK_INDICATOR;"RISK_INDICATOR 
+1;;Dashboard Giám sát rủi ro/ Chỉ số rủi ro hệ thống;Độ lệch chuẩn;σ_volatility = √[ (1/(N−1)) × Σ(Rt − R̄)² ];Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;MRMS;x;x;;Done;RISK_INDICATOR;"RISK_INDICATOR 
 RISK_INDICATOR_VALUE";"i.indicator_code;
 v.trading_date";"i.indicator_code = 'INTERBANK_IR';
 v.trading_date <= :input_date";"WITH avg_rate AS (
@@ -1625,7 +1625,7 @@ m.tong_von_hoa AS mcapt,
 ROUND(d.tong_du_no_margin / NULLIF(m.tong_von_hoa,0) * 100, 4) AS margin_ratio_pct
 FROM du_no_margin d
 INNER JOIN mcap m ON 1=1;";KLCK lưu hành lấy từ VSDC - Báo cáo TT138.2025.TT.BTC Mẫu số 01;;;;;;Dữ liệu tĩnh, Dữ liệu động, Chưa có CSDL - Map biểu mẫu
-2;;Dashboard Giám sát rủi ro/ Phân tích đóng góp rủi ro;Lãi suất tại ngày t;Lãi suất liên ngân hàng (IRₜ) phản ánh chi phí vốn ngắn hạn của hệ thống tài chính.;Dashboard;Chỉ tiêu cơ sở;Trùng;Ngày;QLRR;x;x;;Done;RISK_INDICATOR;"RISK_INDICATOR i 
+2;;Dashboard Giám sát rủi ro/ Phân tích đóng góp rủi ro;Lãi suất tại ngày t;Lãi suất liên ngân hàng (IRₜ) phản ánh chi phí vốn ngắn hạn của hệ thống tài chính.;Dashboard;Chỉ tiêu cơ sở;Trùng;Ngày;MRMS;x;x;;Done;RISK_INDICATOR;"RISK_INDICATOR i 
 RISK_INDICATOR_VALUE v";"i.indicator_code;
 v.trading_date";"i.indicator_code = 'INTERBANK_IR';
 v.trading_date = :input_date";"SELECT v.trading_date,
@@ -2454,7 +2454,7 @@ AND """"Board ID"""" IN ('G1','G2','G3') AND trade_date = :input_date
 ) t GROUP BY trade_date;
 ";Trùng dòng 19;;;;;;Dữ liệu tĩnh
 2;;Dashboard Giám sát rủi ro/ Phân tích đóng góp rủi ro;"Z-score Lãi suất 
-Z-score = (x − μ) / σ";Z-score Lãi suất;Dashboard;Chỉ tiêu phái sinh;Trùng;;QLRR;x;x;;Done;;"RISK_INDICATOR i 
+Z-score = (x − μ) / σ";Z-score Lãi suất;Dashboard;Chỉ tiêu phái sinh;Trùng;;MRMS;x;x;;Done;;"RISK_INDICATOR i 
 RISK_INDICATOR_VALUE v";"i.indicator_code;
 v.trading_date";"i.indicator_code = 'INTERBANK_IR';
 v.trading_date <= :input_date";"WITH avg_rate AS (
@@ -2483,7 +2483,7 @@ s.sigma_ir,
 (ir_t.ir_current - s.mu_ir)
 / NULLIF(s.sigma_ir, 0) AS z_score_interest_rate
 FROM ir_t, stats s;";;;;;;;Dữ liệu tĩnh
-2;;Dashboard Giám sát rủi ro/ Phân tích đóng góp rủi ro;Lãi suất tại ngày t;Lãi suất liên ngân hàng (IRₜ) phản ánh chi phí vốn ngắn hạn của hệ thống tài chính.;Dashboard;Chỉ tiêu cơ sở;Trùng;Ngày;QLRR;x;x;;Done;;"RISK_INDICATOR i 
+2;;Dashboard Giám sát rủi ro/ Phân tích đóng góp rủi ro;Lãi suất tại ngày t;Lãi suất liên ngân hàng (IRₜ) phản ánh chi phí vốn ngắn hạn của hệ thống tài chính.;Dashboard;Chỉ tiêu cơ sở;Trùng;Ngày;MRMS;x;x;;Done;;"RISK_INDICATOR i 
 RISK_INDICATOR_VALUE v";"i.indicator_code;
 v.trading_date";"i.indicator_code = 'INTERBANK_IR';
 v.trading_date = :input_date";"SELECT v.VALUE AS lai_suat_lnh_qua_dem
@@ -2494,7 +2494,7 @@ AND v.PERIOD_TYPE = 1
 AND TRUNC(CAST(v.PERIOD_DATE AS DATE)) <= TO_DATE(:ngay_gd, 'YYYY-MM-DD')
 AND i.DELETED = 0
 AND v.DELETED = 0";;;;;;;Dữ liệu tĩnh
-2;;Dashboard Giám sát rủi ro/ Phân tích đóng góp rủi ro;Lãi suất trung bình N phiên;Lãi suất trung bình N phiên;Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày;QLRR;x;x;;Done;;"RISK_INDICATOR i 
+2;;Dashboard Giám sát rủi ro/ Phân tích đóng góp rủi ro;Lãi suất trung bình N phiên;Lãi suất trung bình N phiên;Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày;MRMS;x;x;;Done;;"RISK_INDICATOR i 
 RISK_INDICATOR_VALUE v";"i.indicator_code;
 v.trading_date";"i.indicator_code = 'INTERBANK_IR';
 v.trading_date <= :input_date";"WITH avg_rate AS (
@@ -2509,7 +2509,7 @@ SELECT AVG(indicator_value) AS mu_ir,
 COUNT(*) AS n_actual
 FROM avg_rate
 WHERE rn <= :n_periods;";;;;;;;Dữ liệu tĩnh
-2;;Dashboard Giám sát rủi ro/ Phân tích đóng góp rủi ro;Độ lệch chuẩn;σ_volatility = √[ (1/(N−1)) × Σ(Rt − R̄)² ];Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày;QLRR;x;x;;Done;;"RISK_INDICATOR 
+2;;Dashboard Giám sát rủi ro/ Phân tích đóng góp rủi ro;Độ lệch chuẩn;σ_volatility = √[ (1/(N−1)) × Σ(Rt − R̄)² ];Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày;MRMS;x;x;;Done;;"RISK_INDICATOR 
 RISK_INDICATOR_VALUE";"i.indicator_code;
 v.trading_date";"i.indicator_code = 'INTERBANK_IR';
 v.trading_date <= :input_date";"WITH avg_rate AS (
@@ -2991,9 +2991,9 @@ SQRT(
 SUM(POWER(RT - R_TB, 2)) / (MAX(N) - 1)
 ) AS SIGMA_VOLATILITY
 FROM n_phien_gan_nhat;";;;;;;;Dữ liệu tĩnh
-3;;Dashboard Sức khỏe thị trường và vĩ mô/ Chỉ số vĩ mô – tiền tệ;Thời gian;Ngày thống kê;Dashboard;Chiều;Dễ;;QLRR;x;;;Done;RISK_INDICATOR;;;;;;;;;;;Dữ liệu tĩnh
+3;;Dashboard Sức khỏe thị trường và vĩ mô/ Chỉ số vĩ mô – tiền tệ;Thời gian;Ngày thống kê;Dashboard;Chiều;Dễ;;MRMS;x;;;Done;RISK_INDICATOR;;;;;;;;;;;Dữ liệu tĩnh
 3;;Dashboard Sức khỏe thị trường và vĩ mô/ Chỉ số vĩ mô – tiền tệ;"Lãi suất liên ngân hàng (ON) tại ngày 
-";IRₜ = lãi suất liên ngân hàng qua đêm (ON) tại ngày t;Dashboard;Chỉ tiêu cơ sở;TB;Ngày;QLRR;x;x;;Done;"RISK_INDICATOR
+";IRₜ = lãi suất liên ngân hàng qua đêm (ON) tại ngày t;Dashboard;Chỉ tiêu cơ sở;TB;Ngày;MRMS;x;x;;Done;"RISK_INDICATOR
 RISK_INDICATOR_VALUE";"RISK_INDICATOR i
 RISK_INDICATOR_VALUE v";"v.trading_date,
 v.indicator_value,
@@ -3005,7 +3005,7 @@ JOIN risk_indicator i
 ON i.id = v.risk_indicator_id
 WHERE i.indicator_code = 'INTERBANK_IR'
 AND v.trading_date = :input_date";;;;;;;Dữ liệu tĩnh
-3;;Dashboard Sức khỏe thị trường và vĩ mô/ Chỉ số vĩ mô – tiền tệ;Lãi suất liên ngân hàng (ON) tại ngày trước;IRt-1;Dashboard;Chỉ tiêu cơ sở;TB;Ngày;QLRR;x;x;;Done;"RISK_INDICATOR
+3;;Dashboard Sức khỏe thị trường và vĩ mô/ Chỉ số vĩ mô – tiền tệ;Lãi suất liên ngân hàng (ON) tại ngày trước;IRt-1;Dashboard;Chỉ tiêu cơ sở;TB;Ngày;MRMS;x;x;;Done;"RISK_INDICATOR
 RISK_INDICATOR_VALUE";"RISK_INDICATOR
 RISK_INDICATOR_VALUE";"v.trading_date,
 v.indicator_value,
@@ -3024,7 +3024,7 @@ ON i2.id = v2.risk_indicator_id
 WHERE i2.indicator_code = 'INTERBANK_IR'
 AND v2.trading_date < :input_date 
 );";;;;;;;Dữ liệu tĩnh
-3;;Dashboard Sức khỏe thị trường và vĩ mô/ Chỉ số vĩ mô – tiền tệ;% thay đổi lãi suất liên ngân hàng;% thay đổi = (IRₜ - IRt-1) / IRt-1;Dashboard;Chỉ tiêu phái sinh;TB;Ngày;QLRR;x;x;;Done;"RISK_INDICATOR
+3;;Dashboard Sức khỏe thị trường và vĩ mô/ Chỉ số vĩ mô – tiền tệ;% thay đổi lãi suất liên ngân hàng;% thay đổi = (IRₜ - IRt-1) / IRt-1;Dashboard;Chỉ tiêu phái sinh;TB;Ngày;MRMS;x;x;;Done;"RISK_INDICATOR
 RISK_INDICATOR_VALUE";"RISK_INDICATOR
 RISK_INDICATOR_VALUE";"trading_date,
 indicator_value,
@@ -3049,7 +3049,7 @@ FROM risk_indicator_value v
 WHERE v.risk_indicator_id = v.risk_indicator_id
 AND v.trading_date < :input_date
 );";;;;;;;Dữ liệu tĩnh
-3;;Dashboard Sức khỏe thị trường và vĩ mô/ Chỉ số vĩ mô – tiền tệ;Tỷ giá USD/VND tại ngày;FXₜ;Dashboard;Chỉ tiêu cơ sở;TB;Ngày;QLRR;x;x;;Done;"RISK_INDICATOR
+3;;Dashboard Sức khỏe thị trường và vĩ mô/ Chỉ số vĩ mô – tiền tệ;Tỷ giá USD/VND tại ngày;FXₜ;Dashboard;Chỉ tiêu cơ sở;TB;Ngày;MRMS;x;x;;Done;"RISK_INDICATOR
 RISK_INDICATOR_VALUE";"RISK_INDICATOR
 RISK_INDICATOR_VALUE";"trading_date,
 indicator_value,
@@ -3062,7 +3062,7 @@ ON i.id = v.risk_indicator_id
 WHERE i.indicator_code = 'EX_RATE_VND_USD'
 AND v.trading_date = :input_date;";"EX_RATE_VND_USD
 ";;;;;;Dữ liệu tĩnh
-3;;Dashboard Sức khỏe thị trường và vĩ mô/ Chỉ số vĩ mô – tiền tệ;Tỷ giá USD/VND ngày trước;FX t-1;Dashboard;Chỉ tiêu cơ sở;TB;Ngày;QLRR;x;x;;Done;"RISK_INDICATOR
+3;;Dashboard Sức khỏe thị trường và vĩ mô/ Chỉ số vĩ mô – tiền tệ;Tỷ giá USD/VND ngày trước;FX t-1;Dashboard;Chỉ tiêu cơ sở;TB;Ngày;MRMS;x;x;;Done;"RISK_INDICATOR
 RISK_INDICATOR_VALUE";"RISK_INDICATOR
 RISK_INDICATOR_VALUE";"trading_date,
 indicator_value,
@@ -3082,7 +3082,7 @@ WHERE i2.indicator_code = 'EX_RATE_VND_USD'
 AND v2.trading_date < :input_date
 );";"EX_RATE_VND_USD
 ";;;;;;Dữ liệu tĩnh
-3;;Dashboard Sức khỏe thị trường và vĩ mô/ Chỉ số vĩ mô – tiền tệ;% thay đổi tỷ giá;(FXₜ - FX t-1) / FXt-1 * 100;Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;QLRR;x;x;;Done;"RISK_INDICATOR
+3;;Dashboard Sức khỏe thị trường và vĩ mô/ Chỉ số vĩ mô – tiền tệ;% thay đổi tỷ giá;(FXₜ - FX t-1) / FXt-1 * 100;Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;MRMS;x;x;;Done;"RISK_INDICATOR
 RISK_INDICATOR_VALUE";"RISK_INDICATOR
 RISK_INDICATOR_VALUE";"trading_date,
 indicator_value,
@@ -3108,7 +3108,7 @@ WHERE v.risk_indicator_id = v.risk_indicator_id
 AND v.trading_date < :input_date
 );";;;;;;;Dữ liệu tĩnh
 3;;Dashboard Sức khỏe thị trường và vĩ mô/ Chỉ số vĩ mô – tiền tệ;"Chỉ số CPI (YoY) tại kỳ t 
-Mức thay đổi giá cả hàng hóa & dịch vụ tiêu dùng";Chỉ số CPI kỳ t;Dashboard;Chỉ tiêu cơ sở;Dễ;Ngày;QLRR;x;x;;Done;"RISK_INDICATOR
+Mức thay đổi giá cả hàng hóa & dịch vụ tiêu dùng";Chỉ số CPI kỳ t;Dashboard;Chỉ tiêu cơ sở;Dễ;Ngày;MRMS;x;x;;Done;"RISK_INDICATOR
 RISK_INDICATOR_VALUE";"RISK_INDICATOR
 RISK_INDICATOR_VALUE";"trading_date,
 indicator_value,
@@ -3121,7 +3121,7 @@ ON i.id = v.risk_indicator_id
 WHERE i.indicator_code = 'CPI_VN'
 AND v.trading_date <= :input_date";"CPI_VN
 ";;;;;;Dữ liệu tĩnh
-3;;Dashboard Sức khỏe thị trường và vĩ mô/ Chỉ số vĩ mô – tiền tệ;CPI cùng kỳ năm trước;CPI cùng kỳ năm trước;Dashboard;Chỉ tiêu cơ sở;Dễ;Ngày;QLRR;x;x;;Done;"RISK_INDICATOR
+3;;Dashboard Sức khỏe thị trường và vĩ mô/ Chỉ số vĩ mô – tiền tệ;CPI cùng kỳ năm trước;CPI cùng kỳ năm trước;Dashboard;Chỉ tiêu cơ sở;Dễ;Ngày;MRMS;x;x;;Done;"RISK_INDICATOR
 RISK_INDICATOR_VALUE";"RISK_INDICATOR
 RISK_INDICATOR_VALUE";"trading_date,
 indicator_value,
@@ -3140,7 +3140,7 @@ ON i2.id = v2.risk_indicator_id
 WHERE i2.indicator_code = 'CPI_VN'
 AND v2.trading_date < :input_date
 );";;;;;;;Dữ liệu tĩnh
-3;;Dashboard Sức khỏe thị trường và vĩ mô/ Chỉ số vĩ mô – tiền tệ;% thay đổi tỷ giá;% thay đổi CPI_YoYₜ = (CPI kỳ t - CPI cùng kỳ năm trước / CPI cùng kỳ năm trước;Dashboard;Chỉ tiêu phái sinh;TB;Ngày;QLRR;x;x;;Done;"RISK_INDICATOR
+3;;Dashboard Sức khỏe thị trường và vĩ mô/ Chỉ số vĩ mô – tiền tệ;% thay đổi tỷ giá;% thay đổi CPI_YoYₜ = (CPI kỳ t - CPI cùng kỳ năm trước / CPI cùng kỳ năm trước;Dashboard;Chỉ tiêu phái sinh;TB;Ngày;MRMS;x;x;;Done;"RISK_INDICATOR
 RISK_INDICATOR_VALUE";"RISK_INDICATOR
 RISK_INDICATOR_VALUE";"trading_date,
 indicator_value,
@@ -3165,7 +3165,7 @@ FROM risk_indicator_value v
 WHERE v.risk_indicator_id = v.risk_indicator_id
 AND v.trading_date < :input_date
 );";;;;;;;Dữ liệu tĩnh
-3;;Dashboard Sức khỏe thị trường và vĩ mô/ Chỉ số vĩ mô – tiền tệ;Tăng trưởng GDP;(GDP kỳ − GDP kỳ trước) / GDP kỳ trước;Dashboard;Chỉ tiêu phái sinh;TB;Ngày;QLRR;x;x;;Done;"RISK_INDICATOR
+3;;Dashboard Sức khỏe thị trường và vĩ mô/ Chỉ số vĩ mô – tiền tệ;Tăng trưởng GDP;(GDP kỳ − GDP kỳ trước) / GDP kỳ trước;Dashboard;Chỉ tiêu phái sinh;TB;Ngày;MRMS;x;x;;Done;"RISK_INDICATOR
 RISK_INDICATOR_VALUE";"RISK_INDICATOR
 RISK_INDICATOR_VALUE";"trading_date,
 indicator_value,
@@ -3190,7 +3190,7 @@ FROM risk_indicator_value v
 WHERE v.risk_indicator_id = v.risk_indicator_id 
 AND v.trading_date < :input_date 
 );";;;;;;;Dữ liệu tĩnh
-3;;Dashboard Sức khỏe thị trường và vĩ mô/ Chỉ số vĩ mô – tiền tệ;GDP kỳ;GDP kỳ hiện tại;Dashboard;Chỉ tiêu cơ sở;Dễ;Ngày;QLRR;x;x;;Done;"RISK_INDICATOR
+3;;Dashboard Sức khỏe thị trường và vĩ mô/ Chỉ số vĩ mô – tiền tệ;GDP kỳ;GDP kỳ hiện tại;Dashboard;Chỉ tiêu cơ sở;Dễ;Ngày;MRMS;x;x;;Done;"RISK_INDICATOR
 RISK_INDICATOR_VALUE";"RISK_INDICATOR
 RISK_INDICATOR_VALUE";"trading_date,
 indicator_value,
@@ -3202,7 +3202,7 @@ JOIN risk_indicator i
 ON i.id = v.risk_indicator_id
 WHERE i.indicator_code = 'GDP_VN'
 AND v.trading_date <= :input_date";;;;;;;Dữ liệu tĩnh
-3;;Dashboard Sức khỏe thị trường và vĩ mô/ Chỉ số vĩ mô – tiền tệ;GDP kỳ trước;GDP kỳ trước;Dashboard;Chỉ tiêu cơ sở;Dễ;Ngày;QLRR;x;x;;Done;"RISK_INDICATOR
+3;;Dashboard Sức khỏe thị trường và vĩ mô/ Chỉ số vĩ mô – tiền tệ;GDP kỳ trước;GDP kỳ trước;Dashboard;Chỉ tiêu cơ sở;Dễ;Ngày;MRMS;x;x;;Done;"RISK_INDICATOR
 RISK_INDICATOR_VALUE";"RISK_INDICATOR
 RISK_INDICATOR_VALUE";"trading_date,
 indicator_value,
@@ -4257,13 +4257,13 @@ WHERE IndexCode = 'VNINDEX'
 AND TradingDate < :input_date
 )
 );";Trùng dòng 10;;;;;;Dữ liệu tĩnh
-5;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ Macro correlation map;Thời gian;Ngày thống kê;Dashboard;Chiều;Dễ;;QLRR, MDDS;x;x;;Done;;Tham số lọc;:input_date (DATE);"Tham số đầu vào; người dùng chọn ngày";"-- Chiều thời gian: tham số đầu vào
+5;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ Macro correlation map;Thời gian;Ngày thống kê;Dashboard;Chiều;Dễ;;MRMS, MDDS;x;x;;Done;;Tham số lọc;:input_date (DATE);"Tham số đầu vào; người dùng chọn ngày";"-- Chiều thời gian: tham số đầu vào
 ";;;;;;;Dữ liệu tĩnh
 5;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ Macro correlation map;Index;Chỉ số VN-Index;Dashboard;Chỉ tiêu cơ sở;TB;Ngày;MDDS;x;x;;Done;Thông tin thị trường;JAD_CSIDXINFOR;indexCode;Join bảng JAD_CSIDXINFOR với JAD_STOCKINFOR qua symbol;"SELECT s.symbol, idx.indexCode
 FROM JAD_STOCKINFOR s
 JOIN JAD_CSIDXINFOR idx ON s.symbol = idx.symbol
 AND s.tradingdate = idx.tradingdate;";;;;;;;Dữ liệu tĩnh
-5;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ Macro correlation map;Interest rate;Lãi suất liên ngân hàng;Dashboard;Chỉ tiêu cơ sở;TB;Ngày;QLRR;x;x;;Done;"RISK_INDICATOR
+5;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ Macro correlation map;Interest rate;Lãi suất liên ngân hàng;Dashboard;Chỉ tiêu cơ sở;TB;Ngày;MRMS;x;x;;Done;"RISK_INDICATOR
 RISK_INDICATOR_VALUE";"RISK_INDICATOR i
 RISK_INDICATOR_VALUE v";"v.trading_date,
 v.indicator_value,
@@ -4275,7 +4275,7 @@ JOIN risk_indicator i
 ON i.id = v.risk_indicator_id
 WHERE i.indicator_code = 'INTERBANK_IR'
 AND v.trading_date = :input_date";;;;;;;Dữ liệu tĩnh
-5;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ Macro correlation map;DXY Index;Chỉ số DXY Index;Dashboard;Chỉ tiêu cơ sở;TB;Ngày;QLRR;x;x;;Done;"RISK_INDICATOR i
+5;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ Macro correlation map;DXY Index;Chỉ số DXY Index;Dashboard;Chỉ tiêu cơ sở;TB;Ngày;MRMS;x;x;;Done;"RISK_INDICATOR i
 RISK_INDICATOR_VALUE v";"RISK_INDICATOR i
 RISK_INDICATOR_VALUE v";"v.trading_date,
 v.indicator_value,
@@ -4287,14 +4287,14 @@ JOIN risk_indicator i
 ON i.id = v.risk_indicator_id
 WHERE i.indicator_code = 'DXY'
 AND v.trading_date = :input_date";DXY;;;;;;Dữ liệu tĩnh
-5;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ Macro correlation map;Tương quan chỉ số VN-index và Lãi suất liên ngân hàng;Correlation(X,Y) = Σ[(Xt - Xtb)(Yt - Ytb)] / √[Σ(Xt - Xtb)^2 * Σ(Yt - Ytb)^2];Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;MDDS, QLRR;x;x;;Done;"Thông tin thị trường
+5;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ Macro correlation map;Tương quan chỉ số VN-index và Lãi suất liên ngân hàng;Correlation(X,Y) = Σ[(Xt - Xtb)(Yt - Ytb)] / √[Σ(Xt - Xtb)^2 * Σ(Yt - Ytb)^2];Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;MDDS, MRMS;x;x;;Done;"Thông tin thị trường
 RISK_INDICATOR i
 RISK_INDICATOR_VALUE v";"JAD_MARKETINFOR 
 RISK_INDICATOR i
 RISK_INDICATOR_VALUE v";;;"Chỉ số phái sinh theo CT 
 Correlation(X,Y) = Σ[(Xt - Xtb)(Yt - Ytb)] / √[Σ(Xt - Xtb)^2 * Σ(Yt - Ytb)^2]";;;;;;;Dữ liệu tĩnh
 5;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ Macro correlation map;"
-Hệ số tương quan giữa Index và DXY Index";Correlation(X,Y) = Σ[(Xt - Xtb)(Yt - Ytb)] / √[Σ(Xt - Xtb)^2 * Σ(Yt - Ytb)^2];Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;QLRR;x;x;;Done;"Thông tin thị trường
+Hệ số tương quan giữa Index và DXY Index";Correlation(X,Y) = Σ[(Xt - Xtb)(Yt - Ytb)] / √[Σ(Xt - Xtb)^2 * Σ(Yt - Ytb)^2];Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;MRMS;x;x;;Done;"Thông tin thị trường
 RISK_INDICATOR i
 RISK_INDICATOR_VALUE v";"JAD_MARKETINFOR 
 RISK_INDICATOR i
@@ -4447,7 +4447,7 @@ WHERE IndexCode = 'VNINDEX'
 AND TradingDate < :input_date
 )
 );";Trùng dòng 10;;;;;;Dữ liệu tĩnh
-5;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ Macro correlation map;Δ Lãi suất liên ngân hàng tại ngày t;ΔIRₜ = IRₜ − IRt-1;Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;QLRR;x;x;;Done;"RISK_INDICATOR
+5;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ Macro correlation map;Δ Lãi suất liên ngân hàng tại ngày t;ΔIRₜ = IRₜ − IRt-1;Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;MRMS;x;x;;Done;"RISK_INDICATOR
 RISK_INDICATOR_VALUE";"RISK_INDICATOR i
 RISK_INDICATOR_VALUE v";"v.trading_date,
 v.indicator_value,
@@ -4469,7 +4469,7 @@ AND p.trading_date < v.trading_date
 )
 WHERE i.indicator_code = 'INTERBANK_IR'
 AND v.trading_date = :input_date;";;;;;;;Dữ liệu tĩnh
-5;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ Macro correlation map;Δ Lãi suất liên ngân hàng trung bình N phiên;Σ (IRₜ − IRt-1/ N;Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;QLRR;x;x;;Done;"RISK_INDICATOR
+5;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ Macro correlation map;Δ Lãi suất liên ngân hàng trung bình N phiên;Σ (IRₜ − IRt-1/ N;Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;MRMS;x;x;;Done;"RISK_INDICATOR
 RISK_INDICATOR_VALUE";"RISK_INDICATOR i
 RISK_INDICATOR_VALUE v";"v.trading_date,
 v.indicator_value,
@@ -4502,7 +4502,7 @@ AND v2.trading_date <= :input_date
 )
 WHERE rn <= 30
 );";;;;;;;Dữ liệu tĩnh
-5;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ Macro correlation map;Lãi suất liên ngân hàng tại ngày t;IRₜ;Dashboard;Chỉ tiêu cơ sở;Dễ;Ngày;QLRR;x;x;;Done;"RISK_INDICATOR
+5;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ Macro correlation map;Lãi suất liên ngân hàng tại ngày t;IRₜ;Dashboard;Chỉ tiêu cơ sở;Dễ;Ngày;MRMS;x;x;;Done;"RISK_INDICATOR
 RISK_INDICATOR_VALUE";"RISK_INDICATOR i
 RISK_INDICATOR_VALUE v";"v.trading_date,
 v.indicator_value,
@@ -4514,7 +4514,7 @@ JOIN risk_indicator i
 ON i.id = v.risk_indicator_id
 WHERE i.indicator_code = 'INTERBANK_IR'
 AND v.trading_date = :input_date";;;;;;;Dữ liệu tĩnh
-5;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ Macro correlation map;Lãi suất liên ngân hàng tại ngày t - 1;IRt-1;Dashboard;Chỉ tiêu cơ sở;Dễ;Ngày;QLRR;x;x;;Done;"RISK_INDICATOR
+5;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ Macro correlation map;Lãi suất liên ngân hàng tại ngày t - 1;IRt-1;Dashboard;Chỉ tiêu cơ sở;Dễ;Ngày;MRMS;x;x;;Done;"RISK_INDICATOR
 RISK_INDICATOR_VALUE";"RISK_INDICATOR
 RISK_INDICATOR_VALUE";"v.trading_date,
 v.indicator_value,
@@ -4534,7 +4534,7 @@ WHERE i2.indicator_code = 'INTERBANK_IR'
 AND v2.trading_date < :input_date 
 );";;;;;;;Dữ liệu tĩnh
 5;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ Macro correlation map;"Return_DXYt 
-";Return_DXYt = ln(DXYt / DXYt-1);Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;QLRR;x;x;;Done;"RISK_INDICATOR i
+";Return_DXYt = ln(DXYt / DXYt-1);Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;MRMS;x;x;;Done;"RISK_INDICATOR i
 RISK_INDICATOR_VALUE v";"RISK_INDICATOR i
 RISK_INDICATOR_VALUE v";"v.trading_date,
 v.indicator_value,
@@ -4557,7 +4557,7 @@ AND p.trading_date < v.trading_date
 WHERE i.indicator_code = 'DXY'
 AND v.trading_date = :input_date;";;;;;;;Dữ liệu tĩnh
 5;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ Macro correlation map;"Return_DXYt trung bình N phiên 
-";Σ ln(DXYt / DXYt-1) / N;Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;QLRR;x;x;;Done;"RISK_INDICATOR i
+";Σ ln(DXYt / DXYt-1) / N;Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;MRMS;x;x;;Done;"RISK_INDICATOR i
 RISK_INDICATOR_VALUE v";"RISK_INDICATOR i
 RISK_INDICATOR_VALUE v";"v.trading_date,
 v.indicator_value,
@@ -4592,7 +4592,7 @@ WHERE rn <= 30
 );";;;;;;;Dữ liệu tĩnh
 5;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ Macro correlation map;"DXYt tại ngày t 
 ";"DXYt tại ngày t 
-";Dashboard;Chỉ tiêu cơ sở;Dễ;Ngày;QLRR;x;x;;Done;"RISK_INDICATOR i
+";Dashboard;Chỉ tiêu cơ sở;Dễ;Ngày;MRMS;x;x;;Done;"RISK_INDICATOR i
 RISK_INDICATOR_VALUE v";"RISK_INDICATOR i
 RISK_INDICATOR_VALUE v";"v.trading_date,
 v.indicator_value,
@@ -4606,21 +4606,21 @@ WHERE i.indicator_code = 'DXY'
 AND v.trading_date = :input_date";DXY;;;;;;Dữ liệu tĩnh
 5;;Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ Macro correlation map;"DXYt-1 tại ngày t -1
 ";"DXYt-1 tại ngày t -1
-";Dashboard;Chỉ tiêu cơ sở;Dễ;Ngày;QLRR;x;x;;Done;"RISK_INDICATOR i
+";Dashboard;Chỉ tiêu cơ sở;Dễ;Ngày;MRMS;x;x;;Done;"RISK_INDICATOR i
 RISK_INDICATOR_VALUE v""";"RISK_INDICATOR i
 RISK_INDICATOR_VALUE v";"v.trading_date,
 v.indicator_value,
 i.indicator_code";;"SELECT indicator_date,
 indicator_value AS DXY_t1
-FROM QLRR.RISK_INDICATOR_CATEGORY
+FROM MRMS.RISK_INDICATOR_CATEGORY
 WHERE indicator_cd = 'DXY_INDEX'
 AND indicator_date = (
 SELECT MAX(indicator_date)
-FROM QLRR.RISK_INDICATOR_CATEGORY
+FROM MRMS.RISK_INDICATOR_CATEGORY
 WHERE indicator_cd = 'DXY_INDEX'
 AND indicator_date < :input_date
 );";;;;;;;Dữ liệu tĩnh
-6;;Dashboard Sức khỏe thị trường và vĩ mô/. Tương quan chỉ số và lãi suất thực tế;Thời gian;Ngày thống kê;Dashboard;Chiều;Dễ;;QLRR, MDDS;x;x;;Done;;Tham số lọc;:input_date (DATE);"Tham số đầu vào; người dùng chọn ngày";"-- Chiều thời gian: tham số đầu vào
+6;;Dashboard Sức khỏe thị trường và vĩ mô/. Tương quan chỉ số và lãi suất thực tế;Thời gian;Ngày thống kê;Dashboard;Chiều;Dễ;;MRMS, MDDS;x;x;;Done;;Tham số lọc;:input_date (DATE);"Tham số đầu vào; người dùng chọn ngày";"-- Chiều thời gian: tham số đầu vào
 ";;;;;;;Dữ liệu tĩnh
 6;;Dashboard Sức khỏe thị trường và vĩ mô/. Tương quan chỉ số và lãi suất thực tế;Chỉ số Index bình quân;Chỉ số VN-Index trung bình tháng;Dashboard;Chỉ tiêu phái sinh;Khó;Ngày;MDDS;x;x;;Done;Thông tin thị trường;JAD_MARKETINFOR;"IndexCode,
 CloseIndex (hoặc IndexValue),
@@ -4678,7 +4678,7 @@ WHERE marketCode = 'HOSE'
 AND tradingDate = :input_date
 )
 WHERE rn = 1;";;;;;;;Dữ liệu tĩnh
-6;;Dashboard Sức khỏe thị trường và vĩ mô/. Tương quan chỉ số và lãi suất thực tế;Lãi suất tại ngày t;Lãi suất liên ngân hàng tại ngày;Dashboard;Chỉ tiêu cơ sở;Dễ;Ngày;QLRR;x;x;;Done;"RISK_INDICATOR
+6;;Dashboard Sức khỏe thị trường và vĩ mô/. Tương quan chỉ số và lãi suất thực tế;Lãi suất tại ngày t;Lãi suất liên ngân hàng tại ngày;Dashboard;Chỉ tiêu cơ sở;Dễ;Ngày;MRMS;x;x;;Done;"RISK_INDICATOR
 RISK_INDICATOR_VALUE";"RISK_INDICATOR i
 RISK_INDICATOR_VALUE v";"v.trading_date,
 v.indicator_value,
@@ -11871,7 +11871,7 @@ FROM Trade_HNX t
 WHERE t.[Trade date] = :ngay_gd
 and Market ID in ('UPX','STX','STO')
 GROUP BY symbol";;;;;;;Dữ liệu tĩnh
-34;;Vốn hóa thị trường;GDP;GDP;Dashboard;Chỉ tiêu cơ sở;Trùng;Thời gian;QLRR;;;;Done;;"SIT_MRMS.RISK_INDICATOR_VALUE
+34;;Vốn hóa thị trường;GDP;GDP;Dashboard;Chỉ tiêu cơ sở;Trùng;Thời gian;MRMS;;;;Done;;"SIT_MRMS.RISK_INDICATOR_VALUE
 SIT_MRMS.RISK_INDICATOR";;;"SELECT
 v.PERIOD_YEAR AS nam,
 v.PERIOD_VALUE AS quy,
@@ -11886,7 +11886,7 @@ WHERE i.INDICATOR_CODE = 'GDP_VN'
 AND v.PERIOD_TYPE = 3
 AND i.DELETED = 0
 AND v.DELETED = 0";;;;;;;Dữ liệu tĩnh
-34;;Vốn hóa thị trường;GTGD/GDP (%);;Data Explorer;Chỉ tiêu phái sinh;TB;Thời gian, ngành,chỉ số, sàn;QLRR, MSS;x;x;;Done;;;;;"WITH gtgd AS (
+34;;Vốn hóa thị trường;GTGD/GDP (%);;Data Explorer;Chỉ tiêu phái sinh;TB;Thời gian, ngành,chỉ số, sàn;MRMS, MSS;x;x;;Done;;;;;"WITH gtgd AS (
 SELECT SUM(t.[Execution - Value]) AS tong_gtgd
 FROM TRADE_BOOK_HOSE t
 WHERE t.[Trade Date] = :ngay_gd

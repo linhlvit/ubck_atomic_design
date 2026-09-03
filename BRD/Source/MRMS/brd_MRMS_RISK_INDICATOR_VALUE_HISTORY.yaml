@@ -1,0 +1,98 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: MRMS
+table: RISK_INDICATOR_VALUE_HISTORY
+brd_ref: BRD-SRC-MRMS-RISK_INDICATOR_VALUE_HISTORY
+columns:
+- name: ID
+  data_type: VARCHAR2(36)
+  description: Primary key
+  key: PK
+  fk_note: null
+- name: INDICATOR_ID
+  data_type: VARCHAR2(36)
+  description: Chỉ tiêu
+  key: FK
+  fk_note: FK → RISK_INDICATOR.ID
+- name: UNIT_CODE
+  data_type: NUMBER(2,0)
+  description: Đơn vị 1=% 2=Điểm 3=Tỷ VND 4=Triệu USD 5=Hợp đồng 6=Cổ phiếu 7=Công ty 8=VND 9=Số tài khoản
+    10=Đơn vị tính
+  key: null
+  fk_note: null
+- name: SOURCE_CODE
+  data_type: NUMBER(2,0)
+  description: Nguồn 1=Investing 2=Tổng cục Thống kê 3=Ngân hàng Nhà nước 4=Nội bộ 5=HNX 6=VSDC (Investing
+    chỉ dùng cho chỉ tiêu quốc tế)
+  key: null
+  fk_note: null
+- name: DATA_ORIGIN
+  data_type: NUMBER(1,0)
+  description: 'Nguồn gốc dữ liệu sau thay đổi: 1=API CSDL tập trung 2=User chỉnh sửa'
+  key: null
+  fk_note: null
+- name: CHANGE_TYPE
+  data_type: VARCHAR2(80)
+  description: 'Loại thay đổi: SYNC UPDATE'
+  key: null
+  fk_note: null
+- name: CHANGE_BY_ID
+  data_type: VARCHAR2(36)
+  description: Người thực hiện (user id)
+  key: null
+  fk_note: null
+- name: CHANGE_BY_NAME
+  data_type: VARCHAR2(800)
+  description: Tên người thực hiện
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: Ngày tạo
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: TIMESTAMP(6)
+  description: Ngày sửa cuối
+  key: null
+  fk_note: null
+- name: CREATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: User_id người tạo
+  key: null
+  fk_note: null
+- name: UPDATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: User_id người cập nhật
+  key: null
+  fk_note: null
+- name: CREATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: Tên người tạo
+  key: null
+  fk_note: null
+- name: UPDATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: Tên người cập nhật
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(1,0)
+  description: Soft delete
+  key: null
+  fk_note: null
+- name: PERIOD_DATE
+  data_type: TIMESTAMP(6)
+  description: null
+  key: null
+  fk_note: null
+- name: OLD_VALUE
+  data_type: NUMBER(19,4)
+  description: Giá trị cũ (null nếu là tạo mới)
+  key: null
+  fk_note: null
+- name: NEW_VALUE
+  data_type: NUMBER(19,4)
+  description: Giá trị mới (null nếu là xóa)
+  key: null
+  fk_note: null

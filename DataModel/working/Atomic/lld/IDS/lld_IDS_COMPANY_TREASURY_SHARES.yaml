@@ -354,18 +354,16 @@ attributes:
 - attribute_name: "Funding Source Description"
   physical_name: "funding_src_description"
   description: "Nguồn vốn thực hiện."
-  data_domain: "Text"
+  data_domain: "Currency Amount"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.COMPANY_TREASURY_SHARES.FUNDING_SOURCE"
-  comment: "Nguồn lưu dạng số (NUMBER(24,0)) nhưng nội dung mô tả có vẻ là text —\
-    \ ETL cần convert sang string. Cần profile dữ liệu thật xác nhận trước khi thiết\
-    \ kế cast logic."
+  comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "string"
+  data_type: "decimal(23,2)"
 - attribute_name: "Planned Transaction Start Date"
   physical_name: "planned_transaction_start_dt"
   description: "Ngày dự kiến bắt đầu giao dịch."

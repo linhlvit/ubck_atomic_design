@@ -13,8 +13,9 @@ BA file thường ghi tên nguồn theo tên nghiệp vụ hoặc tên hệ th�
 | Tên trong BA | Tên Atomic (thực tế) | Ghi chú |
 |---|---|---|
 | `MSS` | `GSGD` | Market Surveillance System — hệ thống giám sát giao dịch; Source Analysis: `GSGD_Source_Analysis.md` |
-| `GSRR` | `QLRR` | Tên gọi cũ của hệ thống quản lý rủi ro; Source Analysis: `QLRR_Source_Analysis.md` |
-| `QLRR` | `QLRR` | Tên hiện tại — khớp trực tiếp |
+| `GSRR` | `MRMS` | Tên gọi cũ của hệ thống quản lý rủi ro (qua QLRR); Source Analysis: `MRMS_Source_Analysis.md` |
+| `QLRR` | `MRMS` | Tên nội bộ dùng trước khi xác nhận tên schema Oracle thật là MRMS (2026-09-03); Source Analysis: `MRMS_Source_Analysis.md` |
+| `MRMS` | `MRMS` | Tên hiện tại (tên schema Oracle thật) — khớp trực tiếp |
 | `NDTNN` | `FIMS` | Tên nghiệp vụ (Nhà đầu tư nước ngoài) → hệ thống FIMS; Source Analysis: `FIMS_Source_Analysis.md` |
 | `FIMS` | `FIMS` | Tên kỹ thuật — khớp trực tiếp |
 | `ORDERTRADE` | `MDDS` | Nhóm bảng lệnh/khớp lệnh trong BA → hệ thống MDDS; Source Analysis: `MDDS_Source_Analysis.md` |

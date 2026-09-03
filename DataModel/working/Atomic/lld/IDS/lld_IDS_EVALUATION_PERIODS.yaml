@@ -100,13 +100,13 @@ attributes:
 - attribute_name: "Evaluation Period Status Code"
   physical_name: "evaluation_period_status_code"
   description: "Trạng thái (approved or draft)."
-  data_domain: "Text"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.EVALUATION_PERIODS.STATUS"
-  comment: null
+  comment: "SCHEMA_CODE=IDS.NEWS_APPROVAL_STAUTS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_APPROVAL_STAUTS')."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

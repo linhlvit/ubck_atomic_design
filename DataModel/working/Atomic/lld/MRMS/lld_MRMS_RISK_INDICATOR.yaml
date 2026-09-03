@@ -1,0 +1,169 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "MRMS"
+  source_table: "RISK_INDICATOR"
+  atomic_entity: "Classification Risk Indicator"
+  entity_physical_name: "cl_risk_indicator"
+  bcv_core_object: "Common"
+  bcv_concept: "[Common] Classification"
+  table_type: "Classification"
+  group: "T1"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Danh mục chỉ tiêu tài chính rủi ro (trong nước & quốc tế) dùng cho Dashboard\
+    \ giám sát rủi ro MRMS. BCV Core Object/Concept = Common/[Common] Classification\
+    \ theo chỉ đạo Data Modeler — xem MRMS_HLD_Tier1.md 6a. CATEGORY_ID xử lý như\
+    \ Classification Value (scheme MRMS_RISK_INDICATOR_CATEGORY), không tạo entity\
+    \ riêng — xem HLD 6f T1-01. Bảng nguồn có 8/9 cột technical bundle (thiếu VERSION)\
+    \ — map bình thường theo Bước 2c, xem HLD 6f T1-03. STATUS/IS_DISPLAY map thành\
+    \ Classification Value (không dùng Boolean) vì là NUMBER có nhãn nghiệp vụ cụ\
+    \ thể theo Bước 3b."
+attributes:
+- attribute_name: "Classification Risk Indicator Id"
+  physical_name: "cl_risk_ind_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. Hash: hash_id('MRMS_RISK_INDICATOR', INDICATOR_CODE). BCV:\
+    \ [Common] Classification."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+
+- attribute_name: "Classification Risk Indicator Code"
+  physical_name: "cl_risk_ind_code"
+  description: "Mã chỉ tiêu (VD: GDP_VN, CPI_VN, VNINDEX, CPI_US, DXY). BK duy nhất\
+    \ — Id hash từ trường này."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "MRMS.RISK_INDICATOR.INDICATOR_CODE"
+  comment: "BK chính (mã nghiệp vụ)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=MRMS_RISK_INDICATOR"
+  etl_derived_value: "MRMS_RISK_INDICATOR"
+  data_type: "string"
+
+- attribute_name: "Indicator Name"
+  physical_name: "ind_nm"
+  description: "Tên chỉ tiêu (VD: GDP, CPI, Chỉ số VNIndex, Lạm phát Mỹ)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "MRMS.RISK_INDICATOR.INDICATOR_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+
+- attribute_name: "Risk Indicator Category Code"
+  physical_name: "risk_ind_category_code"
+  description: "Mã nhóm chỉ tiêu (VD: Yếu tố vĩ mô, Yếu tố tiền tệ, Thị trường cổ phiếu)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "MRMS.RISK_INDICATOR_CATEGORY.CATEGORY_CODE"
+  comment: "SCHEMA_CODE=MRMS.RISK_INDICATOR_CATEGORY"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+
+- attribute_name: "Set Type Code"
+  physical_name: "set_tp_code"
+  description: "Bộ chỉ tiêu: 1=Trong nước, 2=Quốc tế."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "MRMS.RISK_INDICATOR.SET_CODE"
+  comment: "SCHEMA_CODE=MRMS.SET_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+
+- attribute_name: "Period Type Code"
+  physical_name: "period_tp_code"
+  description: "Tần suất: 1=Ngày, 2=Tháng, 3=Quý, 4=Năm."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "MRMS.RISK_INDICATOR.PERIOD_TYPE"
+  comment: "SCHEMA_CODE=MRMS.PERIOD_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+
+- attribute_name: "Unit Type Code"
+  physical_name: "unit_tp_code"
+  description: "Đơn vị mặc định: 1=%, 2=Điểm, 3=Tỷ VND, 4=Triệu USD, 5=Hợp đồng,\
+    \ 6=Cổ phiếu, 7=Công ty, 8=VND, 9=Số tài khoản, 10=Đơn vị tính."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "MRMS.RISK_INDICATOR.UNIT_CODE"
+  comment: "SCHEMA_CODE=MRMS.UNIT_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+
+- attribute_name: "Data Source Type Code"
+  physical_name: "data_src_tp_code"
+  description: "Nguồn mặc định: 1=Investing, 2=Tổng cục Thống kê, 3=Ngân hàng Nhà\
+    \ nước, 4=Nội bộ, 5=HNX, 6=VSDC (Investing chỉ dùng cho chỉ tiêu quốc tế)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "MRMS.RISK_INDICATOR.SOURCE_CODE"
+  comment: "SCHEMA_CODE=MRMS.SOURCE_SYSTEM_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+
+- attribute_name: "Last Sync Timestamp"
+  physical_name: "last_sync_tms"
+  description: "Lần sync gần nhất."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "MRMS.RISK_INDICATOR.LAST_SYNC_TIME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"

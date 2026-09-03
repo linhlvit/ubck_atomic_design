@@ -1,0 +1,108 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: MRMS
+table: RISK_INDICATOR
+brd_ref: BRD-SRC-MRMS-RISK_INDICATOR
+columns:
+- name: ID
+  data_type: VARCHAR2(36)
+  description: Primary key
+  key: PK
+  fk_note: null
+- name: INDICATOR_CODE
+  data_type: VARCHAR2(200)
+  description: 'Mã chỉ tiêu (VD: GDP_VN, CPI_VN, VNINDEX, CPI_US, DXY)'
+  key: null
+  fk_note: null
+- name: INDICATOR_NAME
+  data_type: VARCHAR2(2000)
+  description: 'Tên chỉ tiêu (VD: GDP, CPI, Chỉ số VNIndex, Lạm phát Mỹ)'
+  key: null
+  fk_note: null
+- name: SET_CODE
+  data_type: NUMBER(1,0)
+  description: Bộ chỉ tiêu 1=Trong nước 2=Quốc tế
+  key: null
+  fk_note: null
+- name: CATEGORY_ID
+  data_type: VARCHAR2(36)
+  description: 'Nhóm chỉ tiêu (VD: Yếu tố vĩ mô)'
+  key: FK
+  fk_note: FK → RISK_INDICATOR_CATEGORY.ID
+- name: UNIT_CODE
+  data_type: NUMBER(2,0)
+  description: Đơn vị mặc định 1=% 2=Điểm 3=Tỷ VND 4=Triệu USD 5=Hợp đồng 6=Cổ phiếu 7=Công ty 8=VND 9=Số
+    tài khoản 10=Đơn vị tính
+  key: null
+  fk_note: null
+- name: SOURCE_CODE
+  data_type: NUMBER(2,0)
+  description: Nguồn mặc định 1=Investing 2=Tổng cục Thống kê 3=Ngân hàng Nhà nước 4=Nội bộ 5=HNX 6=VSDC
+    (Investing chỉ dùng cho chỉ tiêu quốc tế)
+  key: null
+  fk_note: null
+- name: PERIOD_TYPE
+  data_type: NUMBER(1,0)
+  description: 'Tần suất: 1=Ngày, 2=Tháng, 3=Quý, 4=Năm'
+  key: null
+  fk_note: null
+- name: STATUS
+  data_type: NUMBER(1,0)
+  description: 0=Không hoạt động 1=Hoạt động
+  key: null
+  fk_note: null
+- name: LAST_SYNC_TIME
+  data_type: TIMESTAMP(6)
+  description: Lần sync gần nhất
+  key: null
+  fk_note: null
+- name: DISPLAY_ORDER
+  data_type: NUMBER(4,0)
+  description: Thứ tự hiển thị của chỉ tiêu
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: Ngày tạo
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: TIMESTAMP(6)
+  description: Ngày sửa cuối
+  key: null
+  fk_note: null
+- name: CREATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: User_id người tạo
+  key: null
+  fk_note: null
+- name: UPDATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: User_id người cập nhật
+  key: null
+  fk_note: null
+- name: CREATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: Tên người tạo
+  key: null
+  fk_note: null
+- name: UPDATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: Tên người cập nhật
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(1,0)
+  description: Soft delete
+  key: null
+  fk_note: null
+- name: IS_DISPLAY
+  data_type: NUMBER(1,0)
+  description: Có hiển thị trên màn hình không 0=Không 1=Có
+  key: null
+  fk_note: null
+- name: SHOW_SYNC_INDICATOR
+  data_type: NUMBER(1,0)
+  description: null
+  key: null
+  fk_note: null

@@ -14,8 +14,8 @@ flowchart LR
         MDDS_IDXInfor["MDDS.IDXInfor"]
         MSS_Trade_HOSE["MSS.Trade_HOSE"]
         MSS_Trade_HNX["MSS.Trade_HNX"]
-        QLRR_RISK_INDICATOR["QLRR.RISK_INDICATOR"]
-        QLRR_RISK_INDICATOR_VALUE["QLRR.RISK_INDICATOR_VALUE"]
+        MRMS_RISK_INDICATOR["MRMS.RISK_INDICATOR"]
+        MRMS_RISK_INDICATOR_VALUE["MRMS.RISK_INDICATOR_VALUE"]
         IDS_SECURITIES_OFFERING["IDS.SECURITIES_OFFERING"]
         IDS_SECURITIES_OFFERING_PLAN["IDS.SECURITIES_OFFERING_PLAN"]
         IDS_SECURITIES_OFFERING_RESULT["IDS.SECURITIES_OFFERING_RESULT"]
@@ -45,8 +45,8 @@ flowchart LR
     MDDS_StockInfor --> Security_Trading_Snapshot
     MSS_Trade_HOSE --> Security_Match_Log
     MSS_Trade_HNX --> Security_Match_Log
-    QLRR_RISK_INDICATOR --> Risk_Indicator
-    QLRR_RISK_INDICATOR_VALUE --> Risk_Indicator_Value
+    MRMS_RISK_INDICATOR --> Risk_Indicator
+    MRMS_RISK_INDICATOR_VALUE --> Risk_Indicator_Value
     IDS_SECURITIES_OFFERING --> Public_Company_Securities_Offering
     IDS_SECURITIES_OFFERING_PLAN --> Public_Company_Securities_Offering_Plan
     IDS_SECURITIES_OFFERING_RESULT --> Public_Company_Securities_Offering_Result
@@ -2902,8 +2902,8 @@ graph TB
 
 | Tên bảng Datamart | Mô tả | Fact Pattern | Grain | Nguồn Atomic chính |
 |---|---|---|---|---|
-| Fact Market Risk Snapshot | Chỉ số rủi ro hệ thống tổng hợp theo ngày — Risk Index, Volatility, 6 Z-score, 6 Mức độ tác động, 6 Tỷ trọng (denormalized as measures) | Fact Snapshot | 1 row / ngày | Market Index Snapshot (MDDS), Security Match Log (MDDS/GSGD), Risk Indicator Value (QLRR), Member Report Indicator Value (SCMS), Security Trading Snapshot (MDDS), Risk Weight Configuration (Kho dữ liệu) |
-| Fact Macro Indicator Snapshot | Chỉ tiêu vĩ mô (lãi suất, tỷ giá, CPI, GDP) theo kỳ báo cáo — 1 dòng per chỉ tiêu per kỳ | Fact Snapshot | 1 row / indicator_code / kỳ báo cáo (prd_dt) | Risk Indicator (QLRR), Risk Indicator Value (QLRR) |
+| Fact Market Risk Snapshot | Chỉ số rủi ro hệ thống tổng hợp theo ngày — Risk Index, Volatility, 6 Z-score, 6 Mức độ tác động, 6 Tỷ trọng (denormalized as measures) | Fact Snapshot | 1 row / ngày | Market Index Snapshot (MDDS), Security Match Log (MDDS/GSGD), Risk Indicator Value (MRMS), Member Report Indicator Value (SCMS), Security Trading Snapshot (MDDS), Risk Weight Configuration (Kho dữ liệu) |
+| Fact Macro Indicator Snapshot | Chỉ tiêu vĩ mô (lãi suất, tỷ giá, CPI, GDP) theo kỳ báo cáo — 1 dòng per chỉ tiêu per kỳ | Fact Snapshot | 1 row / indicator_code / kỳ báo cáo (prd_dt) | Risk Indicator (MRMS), Risk Indicator Value (MRMS) |
 | Fact Sector Risk Snapshot | Chỉ số áp lực, thanh khoản và sức khỏe tài chính theo ngành — StressScore, D/E, GTGD ngành | Fact Snapshot | 1 row / ngành / ngày | Security Trading Snapshot (MDDS.JAD_STOCKINFOR), Security Match Log (MDDS.JAD_TRANSLOG), Securities Trade (ORDERTRADE), Public Company (IDS); Public Company Financial Report Value (IDS) PENDING — gap EAV báo cáo tài chính, xem O_PTTT_12 |
 | Fact Order Size Snapshot | GTGD và phân loại quy mô lệnh per mã CK theo ngày — phân band ≥ 1 tỷ / < 1 tỷ | Fact Snapshot | 1 row / mã CK / order_size_band / ngày | Security Match Log (MSS.Trade_HOSE/Trade_HNX) |
 | Fact Investor Flow Snapshot | GTGD mua, GTGD bán và dòng tiền ròng theo nhóm nhà đầu tư (NĐTNN / Tự doanh / Tổ chức / Cá nhân) per ngày | Fact Snapshot | 1 row / nhóm NĐT / ngày | Security Match Log (MSS.Trade_HOSE/Trade_HNX) |

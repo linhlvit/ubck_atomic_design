@@ -75,16 +75,16 @@ _PATTERNS = [
     re.compile(r"\s*(?:[,;—\-]\s*)?chờ\s+Atomic\s+bổ\s+sung.*?(?=(?:\.\s+[A-Z\u00C0-\u1EF9]|$|\n))(?:\.|\s+|$)", re.IGNORECASE),
 
     # 8. Tham chiếu bảng nguồn inline còn sót lại
-    re.compile(r"(?:\s*|\b)(?:THANHTRA|IDS|FIMS|FMS|GSGD|NHNCK|SCMS|QLRR|DCST|TTHC|ECAT|MDDS|[A-Z]{2,10})\.[A-Z0-9_]+(?:\.[A-Za-z0-9_]+)*\.?", re.IGNORECASE),
+    re.compile(r"(?:\s*|\b)(?:THANHTRA|IDS|FIMS|FMS|GSGD|NHNCK|SCMS|MRMS|DCST|TTHC|ECAT|MDDS|[A-Z]{2,10})\.[A-Z0-9_]+(?:\.[A-Za-z0-9_]+)*\.?", re.IGNORECASE),
 ]
 
 _TRAILING_DASH = re.compile(
-    r"\s*[—-]\s*(?:ETL|Driving:|lookup|1\s+row\s+per|IDS\.|FIMS\.|FMS\.|GSGD\.|NHNCK\.|SCMS\.|QLRR\.|DCST\.|TTHC\.|ECAT\.|MDDS\.|THANHTRA\.|[A-Z]{2,10}\.[A-Z0-9_]|[A-Za-z0-9_]+\.[A-Za-z0-9_]+\.[A-Za-z0-9_]|xem\s+O_|Xem\s+O_|PK|BK|FK|DD|Surrogate|Foreign\s+Key|Business\s+Key|Natural\s+Key|Primary\s+Key|SCD|Shared\s+entity|không\s+có\s+PK).*$",
+    r"\s*[—-]\s*(?:ETL|Driving:|lookup|1\s+row\s+per|IDS\.|FIMS\.|FMS\.|GSGD\.|NHNCK\.|SCMS\.|MRMS\.|DCST\.|TTHC\.|ECAT\.|MDDS\.|THANHTRA\.|[A-Z]{2,10}\.[A-Z0-9_]|[A-Za-z0-9_]+\.[A-Za-z0-9_]+\.[A-Za-z0-9_]|xem\s+O_|Xem\s+O_|PK|BK|FK|DD|Surrogate|Foreign\s+Key|Business\s+Key|Natural\s+Key|Primary\s+Key|SCD|Shared\s+entity|không\s+có\s+PK).*$",
     re.IGNORECASE
 )
 
 _TRAILING_DOT_SOURCE = re.compile(
-    r"\.\s+(?:THANHTRA|IDS|FIMS|FMS|GSGD|NHNCK|SCMS|QLRR|DCST|TTHC|ECAT|MDDS|[A-Z]{2,10})\.[A-Z0-9_].*$",
+    r"\.\s+(?:THANHTRA|IDS|FIMS|FMS|GSGD|NHNCK|SCMS|MRMS|DCST|TTHC|ECAT|MDDS|[A-Z]{2,10})\.[A-Z0-9_].*$",
     re.IGNORECASE
 )
 

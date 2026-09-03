@@ -1244,9 +1244,9 @@ flowchart LR
 
 **Lý do PENDING:**
 - `VSDC BM1` (Khối lượng CK đang lưu hành) → Không có Atomic entity tương ứng trong manifest — cần để tính Vốn hóa = Giá đóng cửa × KL lưu hành
-- `QLRR.RISK_INDICATOR / RISK_INDICATOR_VALUE` (dữ liệu GDP cho K_VP_89) → Không có trong manifest (namespace QLRR chưa được tích hợp)
+- `MRMS.RISK_INDICATOR / RISK_INDICATOR_VALUE` (dữ liệu GDP cho K_VP_89) → Không có trong manifest (namespace MRMS chưa được tích hợp)
 
-*Ghi chú: `MDDS.JAD_STOCKINFOR` → `Security Trading Snapshot` đã **approved** — có Giá đóng cửa. Unblock hoàn toàn khi có VSDC BM1 (KL lưu hành) và QLRR (GDP).*
+*Ghi chú: `MDDS.JAD_STOCKINFOR` → `Security Trading Snapshot` đã **approved** — có Giá đóng cửa. Unblock hoàn toàn khi có VSDC BM1 (KL lưu hành) và MRMS (GDP).*
 
 **Atomic cần bổ sung:**
 
@@ -1254,7 +1254,7 @@ flowchart LR
 |---|---|---|
 | MDDS.JAD_STOCKINFOR | Security Trading Snapshot | `scr_tdg_snpst` (**approved**) |
 | VSDC - BM 1 (KL CK đang lưu hành) | Securities Outstanding Volume Snapshot | TBD |
-| QLRR.RISK_INDICATOR + RISK_INDICATOR_VALUE | Macro Risk Indicator Value | TBD |
+| MRMS.RISK_INDICATOR + RISK_INDICATOR_VALUE | Macro Risk Indicator Value | TBD |
 
 **Mart dự kiến:** Fact Market Capitalization Snapshot — grain: 1 dòng / sàn (HOSE / HNX / UPCOM / Toàn thị trường) / ngày cuối kỳ; tổng hợp Vốn hóa = Σ(Giá đóng cửa × KL lưu hành) cho cổ phiếu.
 
@@ -1281,10 +1281,10 @@ flowchart LR
 **Lý do PENDING:**
 - `HNX BM29` (TPDN riêng lẻ — Quy mô đăng ký giao dịch và KL đang lưu hành) → Dữ liệu tĩnh, chưa có CSDL tích hợp
 - `HNX BM23` (TPCP niêm yết — Danh sách TPCP niêm yết) → Dữ liệu tĩnh, chưa có CSDL tích hợp
-- `QLRR.RISK_INDICATOR / RISK_INDICATOR_VALUE` (dữ liệu GDP cho K_VP_93) → Không có trong manifest (namespace QLRR chưa được tích hợp vào pipeline)
+- `MRMS.RISK_INDICATOR / RISK_INDICATOR_VALUE` (dữ liệu GDP cho K_VP_93) → Không có trong manifest (namespace MRMS chưa được tích hợp vào pipeline)
 - Tổng GT niêm yết TP = TPDN niêm yết (MDDS ✅) + TPDN riêng lẻ (HNX BM29 ❌) + TPCP (HNX BM23 ❌) → thiếu 2/3 nguồn cấu thành, không thể tính KPI tổng hợp
 
-*Ghi chú: `MDDS.JAD_STOCKINFOR` → `Security Trading Snapshot` đã **approved** — phần TPDN niêm yết có thể khai thác. Unblock hoàn toàn khi có HNX BM23/BM29 và QLRR.*
+*Ghi chú: `MDDS.JAD_STOCKINFOR` → `Security Trading Snapshot` đã **approved** — phần TPDN niêm yết có thể khai thác. Unblock hoàn toàn khi có HNX BM23/BM29 và MRMS.*
 
 **Atomic cần bổ sung:**
 
@@ -1293,7 +1293,7 @@ flowchart LR
 | MDDS.JAD_STOCKINFOR | Security Trading Snapshot | `scr_tdg_snpst` (**approved**) |
 | HNX - BM 29 (KL TP đang lưu hành / đăng ký GD) | Bond Listing Registry | TBD |
 | HNX - BM 23 (Danh sách TPCP niêm yết) | Government Bond Listing Registry | TBD |
-| QLRR.RISK_INDICATOR + RISK_INDICATOR_VALUE | Macro Risk Indicator Value | TBD |
+| MRMS.RISK_INDICATOR + RISK_INDICATOR_VALUE | Macro Risk Indicator Value | TBD |
 
 **Mart dự kiến:** Fact Bond Market Capitalization Snapshot — grain: 1 dòng / loại trái phiếu (TPCP / TPDN niêm yết / TPDN riêng lẻ / Tổng) / ngày cuối kỳ; tổng hợp Giá trị niêm yết TP = Σ(Mệnh giá × KL TP niêm yết/ĐKGD).
 
@@ -1318,10 +1318,10 @@ flowchart LR
 
 **Lý do PENDING:**
 - `VSDC BM1` (Khối lượng CK đang lưu hành) → Không có Atomic entity tương ứng trong manifest — cần để tính Vốn hóa = Giá đóng cửa × KL lưu hành
-- `QLRR.RISK_INDICATOR / RISK_INDICATOR_VALUE` (dữ liệu GDP) → Không có trong manifest
+- `MRMS.RISK_INDICATOR / RISK_INDICATOR_VALUE` (dữ liệu GDP) → Không có trong manifest
 - Tổng vốn hóa = Σ(Giá đóng cửa × KL lưu hành) — thiếu KL lưu hành từ VSDC BM1
 
-*Ghi chú: `MDDS.JAD_STOCKINFOR` → `scr_tdg_snpst` (**approved**) — có Giá đóng cửa. Unblock khi có VSDC BM1 (KL lưu hành) và QLRR (GDP).*
+*Ghi chú: `MDDS.JAD_STOCKINFOR` → `scr_tdg_snpst` (**approved**) — có Giá đóng cửa. Unblock khi có VSDC BM1 (KL lưu hành) và MRMS (GDP).*
 
 **Bảng mapping nguồn:**
 
@@ -1329,7 +1329,7 @@ flowchart LR
 |---|---|---|
 | MDDS.JAD_STOCKINFOR | Security Trading Snapshot | `scr_tdg_snpst` (**approved**) |
 | VSDC - BM 1 (Khối lượng CK đang lưu hành) | Securities Volume Snapshot | TBD |
-| QLRR.RISK_INDICATOR + RISK_INDICATOR_VALUE | Macro Risk Indicator Value | TBD |
+| MRMS.RISK_INDICATOR + RISK_INDICATOR_VALUE | Macro Risk Indicator Value | TBD |
 
 **Mart dự kiến:** Fact Market Capitalization Snapshot — grain: 1 dòng / sàn (HOSE / HNX / UPCOM / Toàn thị trường) / ngày; tổng hợp Vốn hóa = Σ(Giá đóng cửa × KL lưu hành cổ phiếu). *(Cùng mart với Nhóm 18)*
 

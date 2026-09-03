@@ -197,19 +197,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "int"
-- attribute_name: "Activated Indicator"
-  physical_name: "activated_ind"
-  description: "Kích hoạt."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.FORMS.ACTIVATED_FLG"
-  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
 - attribute_name: "Ca Signed Indicator"
   physical_name: "ca_signed_ind"
   description: "Ký CA (chứng thư số)."
@@ -232,19 +219,6 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.FORMS.LEADER_APPROVAL_FLG"
-  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-- attribute_name: "Published Indicator"
-  physical_name: "published_ind"
-  description: "Form được công bố."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.FORMS.PUBLISHED_FLG"
   comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1)."
   classification_context: null
   etl_derived_value: null
@@ -284,46 +258,33 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.FORMS.REPORT_TYPE"
-  comment: comment: "SCHEMA_CODE=IDS.REPORT_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_TYPE')."
+  comment: "SCHEMA_CODE=IDS.REPORT_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_TYPE')."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Control Unit Code"
   physical_name: "control_unit_code"
   description: "Đơn vị kiểm soát."
-  data_domain: "Text"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.FORMS.CONTROL_UNIT_CD"
-  comment: "Không có giá trị trong LOOKUP_VALUES"
-  classification_context: "IDS_CONTROL_UNIT"
+  comment: "SCHEMA_CODE=ECAT.DEPARTMENT"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Operating Unit Code"
   physical_name: "operating_unit_code"
   description: "Đơn vị sử dụng."
-  data_domain: "Text"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.FORMS.OPERATING_UNIT_CD"
-  comment: "Không có giá trị trong LOOKUP_VALUES"
-  classification_context: "IDS_OPERATING_UNIT"
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Deleted Indicator"
-  physical_name: "deleted_ind"
-  description: "Trạng thái xóa."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.FORMS.DELETE_FLG"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
+  comment: "SCHEMA_CODE=ECAT.DEPARTMENT"
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "string"

@@ -1,0 +1,86 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: MRMS
+table: RISK_ALERT_HISTORY
+brd_ref: BRD-SRC-MRMS-RISK_ALERT_HISTORY
+columns:
+- name: ID
+  data_type: VARCHAR2(36)
+  description: Primary key
+  key: PK
+  fk_note: null
+- name: ALERT_ID
+  data_type: VARCHAR2(36)
+  description: Cảnh báo liên quan
+  key: FK
+  fk_note: FK → RISK_ALERT.ID
+- name: RESOLUTION_ID
+  data_type: VARCHAR2(36)
+  description: Xử lý cảnh báo
+  key: FK
+  fk_note: FK → RISK_ALERT_RESOLUTION.ID
+- name: EVENT_TYPE
+  data_type: NUMBER(1,0)
+  description: 'Loại sự kiện: 1=Xảy ra cảnh báo 2=Xử lý không giải trình 3=Xử lý có giải trình'
+  key: null
+  fk_note: null
+- name: EVENT_TIME
+  data_type: TIMESTAMP(6)
+  description: Thời gian xảy ra sự kiện
+  key: null
+  fk_note: null
+- name: EVENT_TITLE
+  data_type: VARCHAR2(250)
+  description: Tiêu đề sự kiện
+  key: null
+  fk_note: null
+- name: EVENT_DESCRIPTION
+  data_type: VARCHAR2(500)
+  description: Mô tả sự kiện
+  key: null
+  fk_note: null
+- name: EVENT_USER_ID
+  data_type: VARCHAR2(36)
+  description: User thực hiện
+  key: null
+  fk_note: null
+- name: EVENT_USER_NAME
+  data_type: VARCHAR2(800)
+  description: Tên user thực hiện
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: Ngày tạo
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: TIMESTAMP(6)
+  description: Ngày sửa cuối
+  key: null
+  fk_note: null
+- name: CREATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: User_id người tạo
+  key: null
+  fk_note: null
+- name: UPDATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: User_id người cập nhật
+  key: null
+  fk_note: null
+- name: CREATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: Tên người tạo
+  key: null
+  fk_note: null
+- name: UPDATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: Tên người cập nhật
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(1,0)
+  description: Soft delete
+  key: null
+  fk_note: null

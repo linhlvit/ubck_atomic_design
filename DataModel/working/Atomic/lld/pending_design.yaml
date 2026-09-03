@@ -5300,33 +5300,33 @@ entries:
     reason: "Classification Value (cl_value) không có audit fields nghiệp vụ — chỉ có ds_etl_pcs_tms (technical, ETL job tự quản lý)."
     action: "Không map."
 
-  - source_system: "QLRR"
+  - source_system: "MRMS"
     source_table: "RISK_INDICATOR"
     source_column: "ID"
     description: "Khóa chính của bản ghi (auto-increment)."
-    reason: "PK kỹ thuật — không map thành attribute BK riêng (BK dùng INDICATOR_CODE), nhưng được dùng làm nguồn crosswalk để xác nhận INDICATOR_CODE cho các bảng con (xem lld_QLRR_RISK_INDICATOR_VALUE.yaml, attribute Classification Risk Indicator Id)."
+    reason: "PK kỹ thuật — không map thành attribute BK riêng (BK dùng INDICATOR_CODE), nhưng được dùng làm nguồn crosswalk để xác nhận INDICATOR_CODE cho các bảng con (xem lld_MRMS_RISK_INDICATOR_VALUE.yaml, attribute Classification Risk Indicator Id)."
     action: "Referenced — dùng làm join key crosswalk sang INDICATOR_CODE, không tạo attribute BK riêng."
 
-  - source_system: "QLRR"
+  - source_system: "MRMS"
     source_table: "RISK_INDICATOR_CATEGORY"
     source_column: "ID"
     description: "Khóa chính của bản ghi (auto-increment)."
-    reason: "PK kỹ thuật — không map thành attribute BK riêng (BK dùng CATEGORY_CODE), nhưng được dùng làm nguồn crosswalk để xác nhận CATEGORY_CODE cho Risk Indicator Category Code trên Classification Risk Indicator (xem lld_QLRR_RISK_INDICATOR.yaml)."
-    action: "Referenced — dùng làm join key crosswalk sang CATEGORY_CODE, không tạo attribute BK riêng. RISK_INDICATOR_CATEGORY map vào Fundamental entity dùng chung Classification Value (cl_value) — xem lld_QLRR_RISK_INDICATOR_CATEGORY.yaml, QLRR_HLD_Tier1.md 6f T1-01."
+    reason: "PK kỹ thuật — không map thành attribute BK riêng (BK dùng CATEGORY_CODE), nhưng được dùng làm nguồn crosswalk để xác nhận CATEGORY_CODE cho Risk Indicator Category Code trên Classification Risk Indicator (xem lld_MRMS_RISK_INDICATOR.yaml)."
+    action: "Referenced — dùng làm join key crosswalk sang CATEGORY_CODE, không tạo attribute BK riêng. RISK_INDICATOR_CATEGORY map vào Fundamental entity dùng chung Classification Value (cl_value) — xem lld_MRMS_RISK_INDICATOR_CATEGORY.yaml, MRMS_HLD_Tier1.md 6f T1-01."
 
-  - source_system: "QLRR"
+  - source_system: "MRMS"
     source_table: "RISK_INDICATOR_CATEGORY"
     source_column: "SET_CODE"
     description: "Bộ chỉ tiêu: 1=Trong nước, 2=Quốc tế."
     reason: "Schema chuẩn Classification Value (cl_value) chỉ có Code/Name/Description, không có chỗ cho business attribute riêng như Set Code — theo pattern NHNCK (lld_NHNCK_APPLICATION_SOURCES.yaml và tương tự)."
-    action: "Không map. Nếu cần khai thác Set Code của nhóm chỉ tiêu → cân nhắc promote RISK_INDICATOR_CATEGORY thành Atomic entity riêng (xem QLRR_HLD_Tier1.md 6f T1-01)."
+    action: "Không map. Nếu cần khai thác Set Code của nhóm chỉ tiêu → cân nhắc promote RISK_INDICATOR_CATEGORY thành Atomic entity riêng (xem MRMS_HLD_Tier1.md 6f T1-01)."
 
-  - source_system: "QLRR"
+  - source_system: "MRMS"
     source_table: "RISK_INDICATOR_CATEGORY"
     source_column: "STATUS"
     description: "Trạng thái hoạt động: 0=Không hoạt động, 1=Hoạt động."
     reason: "Schema chuẩn Classification Value (cl_value) chỉ có Code/Name/Description, không có chỗ cho business attribute riêng như Status — theo pattern NHNCK (lld_NHNCK_APPLICATION_SOURCES.yaml và tương tự)."
-    action: "Không map. Nếu cần khai thác Status của nhóm chỉ tiêu → cân nhắc promote RISK_INDICATOR_CATEGORY thành Atomic entity riêng (xem QLRR_HLD_Tier1.md 6f T1-01)."
+    action: "Không map. Nếu cần khai thác Status của nhóm chỉ tiêu → cân nhắc promote RISK_INDICATOR_CATEGORY thành Atomic entity riêng (xem MRMS_HLD_Tier1.md 6f T1-01)."
 
 
 

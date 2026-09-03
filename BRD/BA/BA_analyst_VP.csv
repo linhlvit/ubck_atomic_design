@@ -3493,14 +3493,14 @@ VSDC - BM 1 >> Cột ""Khối lượng chứng khoán đang lưu hành""";"ĐK l
 ĐK Sàn: MDDS.JAD_STOCKINFOR.FLOORCODE IN ('02', '04', '10') --> 02=HNX, 04=UPCOM, 10=HOSE
 Giá đóng cửa MDDS.JAD_STOCKINFOR.CLOSEPRICE: Lấy bản ghi cuối ngày của từng mã CK
 Thời gian: Giá đóng cửa, Khối lượng chứng khoán lưu hành: Lấy số liệu tại ngày cuối kỳ báo cáo";;;;;;;;Dữ liệu tĩnh, Dữ liệu tĩnh - Chưa có CSDL;
-19;;Dashboard Vốn hóa thị trường >> Chỉ tiêu tổng hợp - Vốn hóa cổ phiếu;Tỷ lệ Vốn hóa/GDP;Tổng vốn hóa / GDP * 100;Dashboard;Chỉ tiêu phái sinh;TB;Sàn, Ngày;MDDS, CSDLTT, QLRR;X;X;;Done;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+19;;Dashboard Vốn hóa thị trường >> Chỉ tiêu tổng hợp - Vốn hóa cổ phiếu;Tỷ lệ Vốn hóa/GDP;Tổng vốn hóa / GDP * 100;Dashboard;Chỉ tiêu phái sinh;TB;Sàn, Ngày;MDDS, CSDLTT, MRMS;X;X;;Done;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
 - Thông tin thị trường
 - Dữ liệu chỉ tiêu tài chính vĩ mô trong nước";"MDDS.JAD_STOCKINFOR
 VSDC - ""BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành""
-QLRR.RISK_INDICATOR
-QLRR.RISK_INDICATOR_VALUE";"MDDS.JAD_STOCKINFOR.CLOSEPRICE
+MRMS.RISK_INDICATOR
+MRMS.RISK_INDICATOR_VALUE";"MDDS.JAD_STOCKINFOR.CLOSEPRICE
 VSDC - BM 1 >> Cột ""Khối lượng chứng khoán đang lưu hành""
-QLRR.RISK_INDICATOR_VALUE.VALUE";"- Vốn hóa:
+MRMS.RISK_INDICATOR_VALUE.VALUE";"- Vốn hóa:
 ĐK loại chứng khoán = Cổ phiếu: MDDS.JAD_STOCKINFOR.STOCKTYPE = '2'
 ĐK Sàn: MDDS.JAD_STOCKINFOR.FLOORCODE IN ('02', '04', '10') --> 02=HNX, 04=UPCOM, 10=HOSE
 Giá đóng cửa MDDS.JAD_STOCKINFOR.CLOSEPRICE: Lấy bản ghi cuối ngày của từng mã CK
@@ -3637,15 +3637,15 @@ Lấy dữ liệu tại tháng gần nhất <= Ngày cuối kỳ báo cáo
 Giá trị: N/A (Không có thông tin Mệnh giá) 
 Lấy dữ liệu tại tháng gần nhất <= Ngày cuối kỳ báo cáo";;"TPCP: Không có thông tin Mệnh giá
 TPDN niêm yết: Mệnh giá = 100000";;;;;;Dữ liệu tĩnh, Dữ liệu tĩnh - Chưa có CSDL;
-20;;Dashboard Vốn hóa thị trường >> Chỉ tiêu tổng hợp - Giá trị niêm yết trái phiếu;Quy mô thị trường TP/GDP;Giá trị niêm yết TP / GDP danh nghĩa năm gần nhất * 100;Dashboard;Chỉ tiêu cơ sở;TB;Loại chứng khoán, Ngày;MDDS, CSDLTT, QLRR;;X;;Done;"- Dữ liệu TPCP, TPDN riêng lẻ
+20;;Dashboard Vốn hóa thị trường >> Chỉ tiêu tổng hợp - Giá trị niêm yết trái phiếu;Quy mô thị trường TP/GDP;Giá trị niêm yết TP / GDP danh nghĩa năm gần nhất * 100;Dashboard;Chỉ tiêu cơ sở;TB;Loại chứng khoán, Ngày;MDDS, CSDLTT, MRMS;;X;;Done;"- Dữ liệu TPCP, TPDN riêng lẻ
 - Thông tin thị trường";"MDDS.JAD_STOCKINFOR
 HNX - ""BM 29_Quy mô đăng ký giao dịch và khối lượng đang lưu hành""
 HNX - ""BM 23_Dữ liệu về danh sách TPCP niêm yết""
-QLRR.RISK_INDICATOR
-QLRR.RISK_INDICATOR_VALUE";"MDDS.JAD_STOCKINFOR.LISTEDSHARE
+MRMS.RISK_INDICATOR
+MRMS.RISK_INDICATOR_VALUE";"MDDS.JAD_STOCKINFOR.LISTEDSHARE
 BM 29 >> Cột ""KL đăng ký giao dịch"", ""Mệnh giá""
 BM 23 >> Cột ""Khối lượng niêm yết""
-QLRR.RISK_INDICATOR_VALUE.VALUE";"- TPDN niêm yết: 
+MRMS.RISK_INDICATOR_VALUE.VALUE";"- TPDN niêm yết: 
 Bảng MDDS.JAD_STOCKINFOR lấy bản ghi cuối ngày theo từng mã CK
 Giá trị: SUM(LISTEDSHARE) * 100000
 ĐK Loại chứng khoán: STOCKTYPE = '1'
@@ -3728,13 +3728,13 @@ VSDC - BM 1 >> Cột ""Khối lượng chứng khoán đang lưu hành""";"ĐK l
 ĐK Sàn: MDDS.JAD_STOCKINFOR.FLOORCODE IN ('02', '04', '10') --> 02=HNX, 04=UPCOM, 10=HOSE
 Giá đóng cửa MDDS.JAD_STOCKINFOR.CLOSEPRICE: Lấy bản ghi cuối ngày của từng mã CK
 Thời gian: Giá đóng cửa, Khối lượng chứng khoán lưu hành: Lấy số liệu tại ngày cuối kỳ báo cáo";;;;;;;;Dữ liệu tĩnh, Dữ liệu tĩnh - Chưa có CSDL;
-21;;Dashboard Vốn hóa thị trường >> Biểu đồ Giá trị vốn hóa thị trường cổ phiếu;Tỷ lệ vốn hóa/GDP;Vốn hóa / GDP * 100;Dashboard;Chỉ tiêu cơ sở;Trùng;Sàn, Ngày;MDDS, CSDLTT, QLRR;;X;X;Done;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
+21;;Dashboard Vốn hóa thị trường >> Biểu đồ Giá trị vốn hóa thị trường cổ phiếu;Tỷ lệ vốn hóa/GDP;Vốn hóa / GDP * 100;Dashboard;Chỉ tiêu cơ sở;Trùng;Sàn, Ngày;MDDS, CSDLTT, MRMS;;X;X;Done;"- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán đang lưu hành
 - Thông tin thị trường";"MDDS.JAD_STOCKINFOR
 VSDC - ""BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành""
-QLRR.RISK_INDICATOR
-QLRR.RISK_INDICATOR_VALUEUE";"MDDS.JAD_STOCKINFOR.CLOSEPRICE
+MRMS.RISK_INDICATOR
+MRMS.RISK_INDICATOR_VALUEUE";"MDDS.JAD_STOCKINFOR.CLOSEPRICE
 VSDC - BM 1 >> Cột ""Khối lượng chứng khoán đang lưu hành""
-QLRR.RISK_INDICATOR_VALUE.VALUE";"ĐK loại chứng khoán = Cổ phiếu: MDDS.JAD_STOCKINFOR.STOCKTYPE = '2'
+MRMS.RISK_INDICATOR_VALUE.VALUE";"ĐK loại chứng khoán = Cổ phiếu: MDDS.JAD_STOCKINFOR.STOCKTYPE = '2'
 ĐK Sàn: MDDS.JAD_STOCKINFOR.FLOORCODE IN ('02', '04', '10') --> 02=HNX, 04=UPCOM, 10=HOSE
 Giá đóng cửa MDDS.JAD_STOCKINFOR.CLOSEPRICE: Lấy bản ghi cuối ngày của từng mã CK
 Thời gian: Giá đóng cửa, Khối lượng chứng khoán lưu hành: Lấy số liệu tại ngày cuối kỳ báo cáo
@@ -6890,7 +6890,7 @@ ORDER BY NAM;";;;;;;;Dữ liệu tĩnh - Chưa có CSDL;
 50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;Khối lượng mở (OI);Σ khối lượng mở;Data Explorer;Chỉ tiêu cơ sở;Trùng;Sàn, Loại CK (Phái sinh), Sản phẩm phái sinh, Ngày;MSS;;X;X;;;;;;;;;;;;;;
 50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;Kỳ hạn còn lại bình quân;Tính cho trái phiếu, bình quân gia quyền theo khối lượng TP lưu hành;Data Explorer;Chỉ tiêu phái sinh;TB;Sàn, Chỉ số Index, Ngành;MSS, MDDS;X;X;X;;;;;;;;;;;;;;
 50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;Vốn hóa;Σ (Giá đóng cửa * KL CP lưu hành);Data Explorer;Chỉ tiêu cơ sở;Trùng;Sàn, Loại CK (Cổ phiếu), Ngày/Tháng/Quý/Năm;MSS, MDDS;;X;X;;;;;;;;;;;;;;
-50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;Vốn hóa/GDP;Vốn hóa / GDP;Data Explorer;Chỉ tiêu phái sinh;Trùng;Sàn, Loại CK (Cổ phiếu), Ngày/Tháng/Quý/Năm;MSS, MDDS, QLRR;;X;X;;;;;;;;;;;;;;
+50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;Vốn hóa/GDP;Vốn hóa / GDP;Data Explorer;Chỉ tiêu phái sinh;Trùng;Sàn, Loại CK (Cổ phiếu), Ngày/Tháng/Quý/Năm;MSS, MDDS, MRMS;;X;X;;;;;;;;;;;;;;
 50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;KL niêm yết;Σ KL CK lưu hành / niêm yết;Data Explorer;Chỉ tiêu cơ sở;Trùng;Sàn, Loại chứng khoán, Ngày;MSS, TKNB;;X;X;;;;;;;;;;;;;;
 50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;GT niêm yết;Σ (Mệnh giá * KL CK lưu hành/niêm yết);Data Explorer;Chỉ tiêu cơ sở;Trùng;Sàn, Loại chứng khoán, Ngày;TKNB, MDDS, SCMS, MSS;;X;X;;;;;;;;;;;;;;
 50;;Data Explorer - Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết;Số mã niêm yết;Count số mã niêm yết/ĐKGD còn lưu hành;Data Explorer;Chỉ tiêu cơ sở;Trùng;Sàn, Loại chứng khoán, Ngày;TKNB, MDDS, SCMS, MSS;;X;X;;;;;;;;;;;;;;
@@ -6957,7 +6957,7 @@ TPDN: Lãi suất phát hành";Data Explorer;Chỉ tiêu cơ sở;TB;Đối tư�
 53;;Báo cáo VP_TK02 – TTCK bất thường;Chỉ số - HNX-Index;Giá trị chỉ số HNX-Index cuối ngày báo cáo;Báo cáo;Chỉ tiêu cơ sở;Trùng;Chỉ số, Ngày;MDDS;;X;;;;;;;;;;;;;;;
 53;;Báo cáo VP_TK02 – TTCK bất thường;Mức vốn hóa thị trường cổ phiếu 3 sàn HOSE, HNX và UPCOM (nghìn tỷ đồng);Σ (Giá * KL cổ phiếu lưu hành);Báo cáo;Chỉ tiêu cơ sở;Trùng;Loại CK / Thị trường, Ngày;MSS, MDDS;;X;;;;;;;;;;;;;;;
 53;;Báo cáo VP_TK02 – TTCK bất thường;% thay đổi vốn hóa so với cuối năm trước;(Vốn hóa_t − Vốn hóa 31/12 năm trước) / Vốn hóa 31/12 năm trước;Báo cáo;Chỉ tiêu phái sinh;Trùng;Loại CK / Thị trường, Ngày;MSS, MDDS;;X;X;;;;;;;;;;;;;;
-53;;Báo cáo VP_TK02 – TTCK bất thường;Tỷ lệ vốn hóa/GDP (%);Vốn hóa cổ phiếu / GDP;Báo cáo;Chỉ tiêu phái sinh;Trùng;Loại CK / Thị trường, Ngày;MSS, MDDS, QLRR;;X;;;;;;;;;;;;;;;
+53;;Báo cáo VP_TK02 – TTCK bất thường;Tỷ lệ vốn hóa/GDP (%);Vốn hóa cổ phiếu / GDP;Báo cáo;Chỉ tiêu phái sinh;Trùng;Loại CK / Thị trường, Ngày;MSS, MDDS, MRMS;;X;;;;;;;;;;;;;;;
 53;;Báo cáo VP_TK02 – TTCK bất thường;Giá trị giao dịch bình quân trong tháng (tỷ đồng) của cổ phiếu;Σ GTGD MTD / số phiên;Báo cáo;Chỉ tiêu phái sinh;Trùng;Loại CK / Thị trường, Tháng;MSS;;X;X;;;;;;;;;;;;;;
 53;;Báo cáo VP_TK02 – TTCK bất thường;% thay đổi so với GTGD bình quân tháng trước;(GTGD TB tháng báo cáo − GTGD TB tháng trước) / GTGD TB tháng trước;Báo cáo;Chỉ tiêu phái sinh;Trùng;Loại CK / Thị trường, Ngày;MSS;;X;X;;;;;;;;;;;;;;
 53;;Báo cáo VP_TK02 – TTCK bất thường;Giá trị bình quân (tỷ đồng) tính từ đầu năm đến ngày báo cáo của cổ phiếu;Σ GTGD MTD / số phiên;Báo cáo;Chỉ tiêu phái sinh;Trùng;Loại CK / Thị trường, Ngày;MSS;;X;X;;;;;;;;;;;;;;
@@ -6967,7 +6967,7 @@ TPDN: Lãi suất phát hành";Data Explorer;Chỉ tiêu cơ sở;TB;Đối tư�
 53;;Báo cáo VP_TK02 – TTCK bất thường;Tổng giá trị niêm yết, ĐKGD (nghìn tỷ đồng);GT niêm yết/ĐKGD cổ phiếu = Mệnh giá * KL cổ phiếu niêm yết;Báo cáo;Chỉ tiêu cơ sở;TB;Loại CK / Thị trường, Sàn, Ngày;MDDS, MSS;X;X;;;"- Thông tin thị trường
 - VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Tổng Khối lượng chứng khoán phát hành";;;;;;;;;;;;
 53;;Báo cáo VP_TK02 – TTCK bất thường;% thay đổi giá trị niêm yết, ĐKGD so với cuối năm trước;(GT niêm yết/ĐKGD cổ phiếu tại ngày báo cáo - GT niêm yết/ĐKGD cổ phiếu tại 31/12 năm trước) / GT niêm yết/ĐKGD cổ phiếu tại 31/12 năm trước;Báo cáo;Chỉ tiêu phái sinh;Trùng;Loại CK / Thị trường, Sàn, Ngày;MDDS, MSS;;X;X;;;;;;;;;;;;;;
-53;;Báo cáo VP_TK02 – TTCK bất thường;Tỷ lệ giá trị niêm yết/GDP năm;GT niêm yết/ĐKGD cổ phiếu / GDP * 100;Báo cáo;Chỉ tiêu phái sinh;TB;Loại CK / Thị trường, Sàn, Ngày;MDDS, MSS, QLRR;;X;;;;;;;;;;;;;;;
+53;;Báo cáo VP_TK02 – TTCK bất thường;Tỷ lệ giá trị niêm yết/GDP năm;GT niêm yết/ĐKGD cổ phiếu / GDP * 100;Báo cáo;Chỉ tiêu phái sinh;TB;Loại CK / Thị trường, Sàn, Ngày;MDDS, MSS, MRMS;;X;;;;;;;;;;;;;;;
 53;;Báo cáo VP_TK02 – TTCK bất thường;Loại chứng khoán / Thị trường;TPDN niêm yết;Báo cáo;Chiều;Trùng;Loại CK / Thị trường;MSS;;X;;;;Tham số nghiệp vụ -> Không mapping;;;;;;;;;;;
 53;;Báo cáo VP_TK02 – TTCK bất thường;Giá trị giao dịch bình quân (tỷ đồng) trong tháng;Σ GTGD TPDN niêm yết / số phiên trong tháng báo cáo;Báo cáo;Chỉ tiêu phái sinh;Trùng;Tháng;MSS;;X;;Done;"- Sổ lệnh giao dịch (trade_book)
 - Thông tin thị trường";TRADE_HOSE;"""Execution - Value""
@@ -7068,9 +7068,9 @@ Cùng kỳ năm trước: ""Trade Date"" BETWEEN ADD_MONTHS(TRUNC(TO_DATE(:todat
 - VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán lưu hành";;;;;;;;;;;;
 53;;Báo cáo VP_TK02 – TTCK bất thường;% thay đổi giá trị niêm yết so với cuối năm trước;(GT niêm yết tại ngày báo cáo - GT niêm yết tại ngày 31/12 năm trước) / GT niêm yết tại ngày 31/12 năm trước * 100;Báo cáo;Chỉ tiêu phái sinh;Trùng;Loại CK / Thị trường, Ngày;MDDS, MSS;;X;X;Pending;"- Thông tin thị trường
 - VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán lưu hành";;;;;;;;;;;;
-53;;Báo cáo VP_TK02 – TTCK bất thường;Tỷ lệ giá trị niêm yết/GDP năm;GT niêm yết tại ngày báo cáo / GDP năm báo cáo * 100;Báo cáo;Chỉ tiêu phái sinh;Trùng;Loại CK / Thị trường, Ngày;MDDS, MSS, QLRR;;X;;Pending;"- Thông tin thị trường
+53;;Báo cáo VP_TK02 – TTCK bất thường;Tỷ lệ giá trị niêm yết/GDP năm;GT niêm yết tại ngày báo cáo / GDP năm báo cáo * 100;Báo cáo;Chỉ tiêu phái sinh;Trùng;Loại CK / Thị trường, Ngày;MDDS, MSS, MRMS;;X;;Pending;"- Thông tin thị trường
 - VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Khối lượng chứng khoán lưu hành
-- Thông tin chỉ tiêu tài chính trong nước (QLRR)";;;;;;;;;;;;
+- Thông tin chỉ tiêu tài chính trong nước (MRMS)";;;;;;;;;;;;
 53;;Báo cáo VP_TK02 – TTCK bất thường;Loại CK / Thị trường;Phái sinh;Báo cáo;Chiều;Trùng;Loại CK / Thị trường;MSS;;X;;;- Sổ lệnh (trade_book);Tham số nghiệp vụ -> Không mapping;;;;;;;;;;;
 53;;Báo cáo VP_TK02 – TTCK bất thường;Sản phẩm phái sinh;HTĐL VN30;Báo cáo;Chiều;Trùng;Sản phẩm phái sinh;MSS;;X;;;- Sổ lệnh (trade_book);Tham số nghiệp vụ -> Không mapping;;;;;;;;;;;
 53;;Báo cáo VP_TK02 – TTCK bất thường;Khối lượng giao dịch bình quân trong tháng (hợp đồng/phiên);Σ KLGD / số phiên trong tháng;Báo cáo;Chỉ tiêu cơ sở;TB;Loại chứng khoán / Thị trường, Sản phẩm phái sinh, Tháng;MSS;;X;X;;- Sổ lệnh (trade_book);"CSDLTT.TRADE_HNX

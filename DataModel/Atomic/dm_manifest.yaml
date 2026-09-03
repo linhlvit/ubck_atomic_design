@@ -600,6 +600,32 @@ entries:
   attribute_count: 7
   brd_ref: BRD-SRC-SCMS-CAT_NATIONALITY
 - subfolder: Common
+  file_name: dm_atm_cl_risk_indicator-MRMS.RISK_INDICATOR.yaml
+  id: ATM-cl_risk_indicator-MRMS.RISK_INDICATOR
+  physical_name: cl_risk_indicator
+  logical_name: Classification Risk Indicator
+  bcv_core_object: Common
+  bcv_concept: "[Common] Classification"
+  table_type: Classification
+  etl_pattern: Upsert
+  source: MRMS
+  status: draft
+  attribute_count: 10
+  brd_ref: BRD-SRC-MRMS-RISK_INDICATOR
+- subfolder: Common
+  file_name: dm_atm_cl_risk_indicator_value-MRMS.RISK_INDICATOR_VALUE.yaml
+  id: ATM-cl_risk_indicator_value-MRMS.RISK_INDICATOR_VALUE
+  physical_name: cl_risk_indicator_value
+  logical_name: Classification Risk Indicator Value
+  bcv_core_object: Common
+  bcv_concept: "[Common] Classification"
+  table_type: Classification
+  etl_pattern: Upsert
+  source: MRMS
+  status: draft
+  attribute_count: 15
+  brd_ref: BRD-SRC-MRMS-RISK_INDICATOR_VALUE
+- subfolder: Common
   file_name: dm_atm_cl_service-SCMS.CAT_SERVICE.yaml
   id: ATM-cl_service-SCMS.CAT_SERVICE
   physical_name: cl_service
@@ -612,6 +638,32 @@ entries:
   status: draft
   attribute_count: 7
   brd_ref: BRD-SRC-SCMS-CAT_SERVICE
+- subfolder: Common
+  file_name: dm_atm_cl_value-MRMS.RISK_INDICATOR_CATEGORY.yaml
+  id: ATM-cl_value-MRMS.RISK_INDICATOR_CATEGORY
+  physical_name: cl_value
+  logical_name: Classification Value
+  bcv_core_object: Common
+  bcv_concept: "[Classification] Common"
+  table_type: Classification
+  etl_pattern: Upsert
+  source: MRMS
+  status: draft
+  attribute_count: 7
+  brd_ref: BRD-SRC-MRMS-RISK_INDICATOR_CATEGORY
+- subfolder: Common
+  file_name: dm_atm_cl_value-TTHC.CLASSIFICATION_VALUE.yaml
+  id: ATM-cl_value-TTHC.CLASSIFICATION_VALUE
+  physical_name: cl_value
+  logical_name: Classification Value
+  bcv_core_object: Common
+  bcv_concept: "[Classification] Common"
+  table_type: Classification
+  etl_pattern: Upsert
+  source: TTHC
+  status: draft
+  attribute_count: 7
+  brd_ref: BRD-SRC-TTHC-CLASSIFICATION_VALUE
 - subfolder: Communication
   file_name: dm_atm_et_information_request-KNT.INFO_REQUEST_DETAIL.yaml
   id: ATM-et_information_request-KNT.INFO_REQUEST_DETAIL
@@ -743,6 +795,19 @@ entries:
   attribute_count: 10
   brd_ref: BRD-SRC-TTHC-CONTENTITEMINDEX
 - subfolder: Documentation
+  file_name: dm_atm_ap_document-TTHC.AP_DOCUMENT.yaml
+  id: ATM-ap_document-TTHC.AP_DOCUMENT
+  physical_name: ap_document
+  logical_name: Administrative Procedure Document
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Documentation"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: TTHC
+  status: draft
+  attribute_count: 23
+  brd_ref: BRD-SRC-TTHC-AP_DOCUMENT
+- subfolder: Documentation
   file_name: dm_atm_ap_document-TTHC.DOCUMENT.yaml
   id: ATM-ap_document-TTHC.DOCUMENT
   physical_name: ap_document
@@ -755,6 +820,19 @@ entries:
   status: draft
   attribute_count: 9
   brd_ref: BRD-SRC-TTHC-DOCUMENT
+- subfolder: Documentation
+  file_name: dm_atm_ap_document_postal_receipt-TTHC.AP_DOCUMENT_POSTAL_RECEIPT.yaml
+  id: ATM-ap_document_postal_receipt-TTHC.AP_DOCUMENT_POSTAL_RECEIPT
+  physical_name: ap_document_postal_receipt
+  logical_name: Administrative Procedure Document Postal Receipt
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Documentation"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: TTHC
+  status: draft
+  attribute_count: 12
+  brd_ref: BRD-SRC-TTHC-AP_DOCUMENT_POSTAL_RECEIPT
 - subfolder: Documentation
   file_name: dm_atm_et_declaration_report-KNT.TAX_REPORT.yaml
   id: ATM-et_declaration_report-KNT.TAX_REPORT
@@ -934,7 +1012,7 @@ entries:
   table_type: Fundamental
   etl_pattern: SCD4A
   source: IDS
-  status: draft
+  status: approved
   attribute_count: 49
   brd_ref: BRD-SRC-IDS-COMPANY_DATA
 - subfolder: Documentation
@@ -1263,6 +1341,19 @@ entries:
   status: draft
   attribute_count: 7
   brd_ref: BRD-SRC-IDS-EVALUATION_GROUPS
+- subfolder: Involved_Party
+  file_name: dm_atm_ap_document_applicant-TTHC.AP_DOCUMENT_APPLICANT.yaml
+  id: ATM-ap_document_applicant-TTHC.AP_DOCUMENT_APPLICANT
+  physical_name: ap_document_applicant
+  logical_name: Administrative Procedure Document Applicant
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Involved Party"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: TTHC
+  status: draft
+  attribute_count: 6
+  brd_ref: BRD-SRC-TTHC-AP_DOCUMENT_APPLICANT
 - subfolder: Involved_Party
   file_name: dm_atm_discretionary_investment_investor-FMS.INVES.yaml
   id: ATM-discretionary_investment_investor-FMS.INVES

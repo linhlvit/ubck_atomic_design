@@ -1,0 +1,61 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: MRMS
+table: RISK_REPORT_UPLOAD_BATCH
+brd_ref: BRD-SRC-MRMS-RISK_REPORT_UPLOAD_BATCH
+columns:
+- name: ID
+  data_type: VARCHAR2(36)
+  description: Primary key
+  key: PK
+  fk_note: null
+- name: REPORT_TYPE_ID
+  data_type: VARCHAR2(36)
+  description: Loại báo cáo
+  key: FK
+  fk_note: FK suy luận → risk_report_type.id
+- name: REPORT_DATE
+  data_type: DATE
+  description: Thời gian báo cáo (do người dùng chọn khi upload)
+  key: null
+  fk_note: null
+- name: FILE_COUNT
+  data_type: NUMBER
+  description: Số lượng file trong batch
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: Ngày tạo
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: TIMESTAMP(6)
+  description: Ngày sửa cuối
+  key: null
+  fk_note: null
+- name: CREATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: User_id người tạo
+  key: null
+  fk_note: null
+- name: UPDATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: User_id người cập nhật
+  key: null
+  fk_note: null
+- name: CREATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: Tên người tạo
+  key: null
+  fk_note: null
+- name: UPDATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: Tên người cập nhật
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(1,0)
+  description: Soft delete
+  key: null
+  fk_note: null

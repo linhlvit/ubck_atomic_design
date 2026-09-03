@@ -1,0 +1,961 @@
+source: MRMS
+description: 'Quản lý rủi ro về thị trường chứng khoán (schema Oracle thật: UAT_MRMS)'
+brd_entries:
+- brd_id: BRD-SRC-MRMS-RISK_INDICATOR_CATEGORY
+  brd_name: Design Atomic từ nguồn MRMS bảng RISK_INDICATOR_CATEGORY
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Nhóm chỉ tiêu trong 1 bộ (Yếu tố vĩ mô, Yếu tố tiền tệ, Thị trường cổ phiếu, …)
+    functional_group: MRMS001/003/004 Khai thác Dashboard và Chỉ tiêu tài chính
+    scope_status: in_scope
+    scope_reason: null
+    table: RISK_INDICATOR_CATEGORY
+    related_tables:
+    - table: RISK_INDICATOR
+      relation: 1-N — master chỉ tiêu thuộc nhóm
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-MRMS-RISK_INDICATOR
+  brd_name: Design Atomic từ nguồn MRMS bảng RISK_INDICATOR
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Danh mục chỉ tiêu tài chính (trong nước & quốc tế)
+    functional_group: MRMS001/003/004 Khai thác Dashboard và Chỉ tiêu tài chính
+    scope_status: in_scope
+    scope_reason: null
+    table: RISK_INDICATOR
+    related_tables:
+    - table: RISK_INDICATOR_CATEGORY
+      relation: FK cha — nhóm chỉ tiêu
+    - table: RISK_INDICATOR_VALUE
+      relation: 1-N — số liệu hiện tại theo kỳ
+    - table: RISK_INDICATOR_VALUE_HISTORY
+      relation: 1-N — lịch sử thay đổi số liệu
+    - table: RISK_INDICATOR_SCHEDULE
+      relation: 1-1 — cấu hình job đồng bộ
+    - table: RISK_ALERT_CONFIG
+      relation: 1-N — cấu hình cảnh báo
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-MRMS-RISK_INDICATOR_CUSTOM
+  brd_name: Design Atomic từ nguồn MRMS bảng RISK_INDICATOR_CUSTOM
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Chỉ tiêu tự tạo
+    functional_group: MRMS003/004 Khai thác Chỉ tiêu tài chính
+    scope_status: in_scope
+    scope_reason: null
+    table: RISK_INDICATOR_CUSTOM
+    related_tables:
+    - table: RISK_INDICATOR
+      relation: Gộp chung entity với risk_indicator — phân biệt qua CV RISK_INDICATOR_TYPE=2
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-MRMS-RISK_INDICATOR_VALUE
+  brd_name: Design Atomic từ nguồn MRMS bảng RISK_INDICATOR_VALUE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Số liệu hiện tại của chỉ tiêu theo từng kỳ (ngày/tháng/quý/năm)
+    functional_group: MRMS001/003/004 Khai thác Dashboard và Chỉ tiêu tài chính
+    scope_status: in_scope
+    scope_reason: null
+    table: RISK_INDICATOR_VALUE
+    related_tables:
+    - table: RISK_INDICATOR
+      relation: FK cha — master chỉ tiêu
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: period_date = {etl_date}
+      filter_note: Số liệu chỉ tiêu theo kỳ — cập nhật tại chỗ (update-in-place) khi có giá trị mới hoặc
+        chỉnh sửa thủ công cho cùng kỳ
+- brd_id: BRD-SRC-MRMS-RISK_INDICATOR_VALUE_HISTORY
+  brd_name: Design Atomic từ nguồn MRMS bảng RISK_INDICATOR_VALUE_HISTORY
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Lịch sử thay đổi số liệu chỉ tiêu (tự động và thủ công)
+    functional_group: MRMS001/003/004 Khai thác Dashboard và Chỉ tiêu tài chính
+    scope_status: in_scope
+    scope_reason: null
+    table: RISK_INDICATOR_VALUE_HISTORY
+    related_tables:
+    - table: RISK_INDICATOR
+      relation: FK cha — master chỉ tiêu
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Append
+      filter_logic: changed_at >= {etl_date}
+      filter_note: Lịch sử thay đổi số liệu — append mỗi lần cập nhật
+- brd_id: BRD-SRC-MRMS-RISK_INDICATOR_SCHEDULE
+  brd_name: Design Atomic từ nguồn MRMS bảng RISK_INDICATOR_SCHEDULE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Cấu hình job đồng bộ chỉ tiêu
+    functional_group: MRMS007 Quản lý tích hợp
+    scope_status: in_scope
+    scope_reason: null
+    table: RISK_INDICATOR_SCHEDULE
+    related_tables:
+    - table: RISK_INDICATOR
+      relation: 1-1 FK cha — chỉ tiêu cần đồng bộ
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-MRMS-RISK_REPORT_TYPE
+  brd_name: Design Atomic từ nguồn MRMS bảng RISK_REPORT_TYPE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Danh mục loại báo cáo
+    functional_group: MRMS002 Khai thác Báo cáo
+    scope_status: in_scope
+    scope_reason: null
+    table: RISK_REPORT_TYPE
+    related_tables:
+    - table: RISK_REPORT_UPLOAD_BATCH
+      relation: 1-N — lượt tổng hợp/upload
+    notes: Bảng risk_report_placeholder_config (con cũ) không còn tồn tại trong khảo sát DB UAT mới nhất
+      — cần xác nhận đã bị loại bỏ hay đổi tên/gộp chức năng.
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-MRMS-RISK_REPORT_UPLOAD_BATCH
+  brd_name: Design Atomic từ nguồn MRMS bảng RISK_REPORT_UPLOAD_BATCH
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Lượt upload file
+    functional_group: MRMS002 Khai thác Báo cáo
+    scope_status: in_scope
+    scope_reason: null
+    table: RISK_REPORT_UPLOAD_BATCH
+    related_tables:
+    - table: RISK_REPORT_TYPE
+      relation: FK cha — loại báo cáo
+    - table: RISK_REPORT_FILE
+      relation: 1-N — file kết quả
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Append
+      filter_logic: uploaded_at >= {etl_date}
+      filter_note: Lượt upload file báo cáo — append theo ngày upload
+- brd_id: BRD-SRC-MRMS-RISK_REPORT_FILE
+  brd_name: Design Atomic từ nguồn MRMS bảng RISK_REPORT_FILE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: File đính kèm báo cáo
+    functional_group: MRMS002 Khai thác Báo cáo
+    scope_status: in_scope
+    scope_reason: null
+    table: RISK_REPORT_FILE
+    related_tables:
+    - table: RISK_REPORT_UPLOAD_BATCH
+      relation: FK cha — lượt upload
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Append
+      filter_logic: created_at >= {etl_date}
+      filter_note: File đính kèm báo cáo — append theo lượt upload cha
+- brd_id: BRD-SRC-MRMS-RISK_ALERT_CONFIG
+  brd_name: Design Atomic từ nguồn MRMS bảng RISK_ALERT_CONFIG
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Cấu hình ngưỡng cảnh báo và người xử lý theo từng chỉ tiêu
+    functional_group: MRMS005 Quản lý Cảnh báo
+    scope_status: in_scope
+    scope_reason: null
+    table: RISK_ALERT_CONFIG
+    related_tables:
+    - table: RISK_INDICATOR
+      relation: FK — chỉ tiêu hệ thống được giám sát
+    - table: RISK_ALERT
+      relation: 1-N — cảnh báo thực tế được kích hoạt
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-MRMS-RISK_ALERT
+  brd_name: Design Atomic từ nguồn MRMS bảng RISK_ALERT
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Bản ghi cảnh báo thực tế được kích hoạt khi chỉ tiêu vượt ngưỡng
+    functional_group: MRMS005 Quản lý Cảnh báo
+    scope_status: in_scope
+    scope_reason: null
+    table: RISK_ALERT
+    related_tables:
+    - table: RISK_ALERT_CONFIG
+      relation: FK cha — cấu hình cảnh báo gốc
+    - table: RISK_INDICATOR_SCHEDULE
+      relation: FK (nullable) — job trigger
+    - table: RISK_ALERT_RESOLUTION
+      relation: 1-N — bản ghi xử lý
+    - table: RISK_ALERT_HISTORY
+      relation: 1-N — log sự kiện dòng thời gian
+    - table: RISK_NOTIFICATION
+      relation: 1-N — thông báo gửi đi
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Append
+      filter_logic: triggered_at >= {etl_date}
+      filter_note: Cảnh báo thực tế — append khi chỉ tiêu vượt ngưỡng
+- brd_id: BRD-SRC-MRMS-RISK_ALERT_RESOLUTION
+  brd_name: Design Atomic từ nguồn MRMS bảng RISK_ALERT_RESOLUTION
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Bản ghi xử lý chi tiết cho cảnh báo
+    functional_group: MRMS005 Quản lý Cảnh báo
+    scope_status: in_scope
+    scope_reason: null
+    table: RISK_ALERT_RESOLUTION
+    related_tables:
+    - table: RISK_ALERT
+      relation: FK cha — cảnh báo được xử lý
+    - table: RISK_ALERT_RESOLUTION_FILE
+      relation: 1-N — file giải trình đính kèm
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Append
+      filter_logic: created_at >= {etl_date}
+      filter_note: Bản ghi xử lý cảnh báo — append theo cảnh báo cha
+- brd_id: BRD-SRC-MRMS-RISK_ALERT_RESOLUTION_FILE
+  brd_name: Design Atomic từ nguồn MRMS bảng RISK_ALERT_RESOLUTION_FILE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: File đính kèm theo giải trình cảnh báo
+    functional_group: MRMS005 Quản lý Cảnh báo
+    scope_status: in_scope
+    scope_reason: null
+    table: RISK_ALERT_RESOLUTION_FILE
+    related_tables:
+    - table: RISK_ALERT_RESOLUTION
+      relation: FK cha — bản ghi xử lý cảnh báo
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Append
+      filter_logic: created_at >= {etl_date}
+      filter_note: File giải trình — append theo bản ghi xử lý cha
+- brd_id: BRD-SRC-MRMS-RISK_ALERT_HISTORY
+  brd_name: Design Atomic từ nguồn MRMS bảng RISK_ALERT_HISTORY
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Lịch sử xử lý cảnh báo theo dòng thời gian
+    functional_group: MRMS005 Quản lý Cảnh báo
+    scope_status: in_scope
+    scope_reason: null
+    table: RISK_ALERT_HISTORY
+    related_tables:
+    - table: RISK_ALERT
+      relation: FK cha — cảnh báo
+    - table: RISK_ALERT_RESOLUTION
+      relation: FK (nullable) — bản ghi xử lý liên kết
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Append
+      filter_logic: created_at >= {etl_date}
+      filter_note: Lịch sử xử lý cảnh báo — append mỗi sự kiện trên dòng thời gian
+- brd_id: BRD-SRC-MRMS-RISK_NOTIFICATION
+  brd_name: Design Atomic từ nguồn MRMS bảng RISK_NOTIFICATION
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Lưu trữ thông báo
+    functional_group: MRMS005 Quản lý Cảnh báo
+    scope_status: in_scope
+    scope_reason: null
+    table: RISK_NOTIFICATION
+    related_tables:
+    - table: RISK_ALERT
+      relation: FK cha — cảnh báo nguồn phát thông báo
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Append
+      filter_logic: sent_at >= {etl_date}
+      filter_note: Thông báo cảnh báo — append theo ngày gửi
+- brd_id: BRD-SRC-MRMS-PERMISSION_GROUP
+  brd_name: Design Atomic từ nguồn MRMS bảng PERMISSION_GROUP
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Nhóm quyền
+    functional_group: MRMS006 Khai thác Phân quyền dữ liệu
+    scope_status: out_of_scope
+    scope_reason: Operational/system data — phân quyền tầng ứng dụng
+    table: PERMISSION_GROUP
+    related_tables:
+    - table: PERMISSION_GROUP_USER
+      relation: 1-N — gán user vào nhóm
+    - table: PERMISSION_GROUP_INDICATOR
+      relation: 1-N — gán chỉ tiêu được phép xem
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-MRMS-PERMISSION_GROUP_USER
+  brd_name: Design Atomic từ nguồn MRMS bảng PERMISSION_GROUP_USER
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Phân quyền người dùng theo nhóm quyền
+    functional_group: MRMS006 Khai thác Phân quyền dữ liệu
+    scope_status: out_of_scope
+    scope_reason: Operational/system data — phân quyền tầng ứng dụng
+    table: PERMISSION_GROUP_USER
+    related_tables:
+    - table: PERMISSION_GROUP
+      relation: FK cha — nhóm quyền
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-MRMS-PERMISSION_GROUP_INDICATOR
+  brd_name: Design Atomic từ nguồn MRMS bảng PERMISSION_GROUP_INDICATOR
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Phân quyền chỉ tiêu theo nhóm quyền
+    functional_group: MRMS006 Khai thác Phân quyền dữ liệu
+    scope_status: out_of_scope
+    scope_reason: Operational/system data — phân quyền tầng ứng dụng
+    table: PERMISSION_GROUP_INDICATOR
+    related_tables:
+    - table: PERMISSION_GROUP
+      relation: FK cha — nhóm quyền
+    - table: RISK_INDICATOR
+      relation: FK — chỉ tiêu được phân quyền
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-MRMS-RISK_INDICATOR_DATA_PERMISSION
+  brd_name: Design Atomic từ nguồn MRMS bảng RISK_INDICATOR_DATA_PERMISSION
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Phân quyền xem/sửa dữ liệu chỉ tiêu theo user (bảng mới so với khảo sát trước)
+    functional_group: MRMS006 Khai thác Phân quyền dữ liệu
+    scope_status: pending
+    scope_reason: null
+    table: RISK_INDICATOR_DATA_PERMISSION
+    related_tables:
+    - table: RISK_INDICATOR
+      relation: FK — chỉ tiêu được phân quyền
+    notes: Bảng mới xuất hiện trong khảo sát DB UAT (không có trong khảo sát QLRR trước đây) — chưa xác
+      nhận scope, functional_group đề xuất cần review.
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-MRMS-RISK_MARKET_REPORT
+  brd_name: Design Atomic từ nguồn MRMS bảng RISK_MARKET_REPORT
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Báo cáo thị trường theo kỳ (bảng mới so với khảo sát trước)
+    functional_group: MRMS008 Quản lý Báo cáo thị trường
+    scope_status: pending
+    scope_reason: null
+    table: RISK_MARKET_REPORT
+    related_tables:
+    - table: RISK_MARKET_REPORT_TYPE
+      relation: FK cha — loại báo cáo thị trường
+    - table: RISK_MARKET_REPORT_FILE
+      relation: 1-N — file đính kèm
+    notes: Bảng mới xuất hiện trong khảo sát DB UAT (không có trong khảo sát QLRR trước đây) — chưa xác
+      nhận scope, functional_group đề xuất cần review.
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-MRMS-RISK_MARKET_REPORT_FILE
+  brd_name: Design Atomic từ nguồn MRMS bảng RISK_MARKET_REPORT_FILE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: File đính kèm báo cáo thị trường (bảng mới so với khảo sát trước)
+    functional_group: MRMS008 Quản lý Báo cáo thị trường
+    scope_status: pending
+    scope_reason: null
+    table: RISK_MARKET_REPORT_FILE
+    related_tables:
+    - table: RISK_MARKET_REPORT
+      relation: FK cha — báo cáo thị trường
+    notes: Bảng mới xuất hiện trong khảo sát DB UAT (không có trong khảo sát QLRR trước đây) — chưa xác
+      nhận scope, functional_group đề xuất cần review.
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-MRMS-RISK_MARKET_REPORT_TYPE
+  brd_name: Design Atomic từ nguồn MRMS bảng RISK_MARKET_REPORT_TYPE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Danh mục loại báo cáo thị trường (bảng mới so với khảo sát trước)
+    functional_group: MRMS008 Quản lý Báo cáo thị trường
+    scope_status: pending
+    scope_reason: null
+    table: RISK_MARKET_REPORT_TYPE
+    related_tables:
+    - table: RISK_MARKET_REPORT
+      relation: 1-N — báo cáo thuộc loại
+    notes: Bảng mới xuất hiện trong khảo sát DB UAT (không có trong khảo sát QLRR trước đây) — chưa xác
+      nhận scope, functional_group đề xuất cần review.
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-MRMS-USER_TABLE_CONFIG
+  brd_name: Design Atomic từ nguồn MRMS bảng USER_TABLE_CONFIG
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Cấu hình hiển thị bảng/tab theo từng user (bảng mới so với khảo sát trước)
+    functional_group: MRMS009 Cấu hình giao diện người dùng
+    scope_status: pending
+    scope_reason: null
+    table: USER_TABLE_CONFIG
+    related_tables: null
+    notes: Bảng mới xuất hiện trong khảo sát DB UAT (không có trong khảo sát QLRR trước đây) — chưa xác
+      nhận scope, functional_group đề xuất cần review.
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-MRMS-BATCH_JOB_EXECUTION
+  brd_name: Design Atomic từ nguồn MRMS bảng BATCH_JOB_EXECUTION
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Spring Batch — bảng kỹ thuật hệ thống (out_of_scope)
+    functional_group: MRMS010 Bảng kỹ thuật hệ thống
+    scope_status: pending
+    scope_reason: null
+    table: BATCH_JOB_EXECUTION
+    related_tables:
+    - table: BATCH_JOB_INSTANCE
+      relation: FK cha — BATCH_JOB_INSTANCE
+    - table: BATCH_JOB_EXECUTION_CONTEXT
+      relation: 1-N — BATCH_JOB_EXECUTION_CONTEXT
+    - table: BATCH_JOB_EXECUTION_PARAMS
+      relation: 1-N — BATCH_JOB_EXECUTION_PARAMS
+    - table: BATCH_STEP_EXECUTION
+      relation: 1-N — BATCH_STEP_EXECUTION
+    notes: Bảng kỹ thuật hệ thống (scheduler/migration/batch) — cần xác nhận in/out of scope khi thiết
+      kế LLD.
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-MRMS-BATCH_JOB_EXECUTION_CONTEXT
+  brd_name: Design Atomic từ nguồn MRMS bảng BATCH_JOB_EXECUTION_CONTEXT
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Spring Batch — bảng kỹ thuật hệ thống (out_of_scope)
+    functional_group: MRMS010 Bảng kỹ thuật hệ thống
+    scope_status: pending
+    scope_reason: null
+    table: BATCH_JOB_EXECUTION_CONTEXT
+    related_tables:
+    - table: BATCH_JOB_EXECUTION
+      relation: FK cha — BATCH_JOB_EXECUTION
+    notes: Bảng kỹ thuật hệ thống (scheduler/migration/batch) — cần xác nhận in/out of scope khi thiết
+      kế LLD.
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-MRMS-BATCH_JOB_EXECUTION_PARAMS
+  brd_name: Design Atomic từ nguồn MRMS bảng BATCH_JOB_EXECUTION_PARAMS
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Spring Batch — bảng kỹ thuật hệ thống (out_of_scope)
+    functional_group: MRMS010 Bảng kỹ thuật hệ thống
+    scope_status: pending
+    scope_reason: null
+    table: BATCH_JOB_EXECUTION_PARAMS
+    related_tables:
+    - table: BATCH_JOB_EXECUTION
+      relation: FK cha — BATCH_JOB_EXECUTION
+    notes: Bảng kỹ thuật hệ thống (scheduler/migration/batch) — cần xác nhận in/out of scope khi thiết
+      kế LLD.
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-MRMS-BATCH_JOB_INSTANCE
+  brd_name: Design Atomic từ nguồn MRMS bảng BATCH_JOB_INSTANCE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Spring Batch — bảng kỹ thuật hệ thống (out_of_scope)
+    functional_group: MRMS010 Bảng kỹ thuật hệ thống
+    scope_status: pending
+    scope_reason: null
+    table: BATCH_JOB_INSTANCE
+    related_tables:
+    - table: BATCH_JOB_EXECUTION
+      relation: 1-N — BATCH_JOB_EXECUTION
+    notes: Bảng kỹ thuật hệ thống (scheduler/migration/batch) — cần xác nhận in/out of scope khi thiết
+      kế LLD.
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-MRMS-BATCH_STEP_EXECUTION
+  brd_name: Design Atomic từ nguồn MRMS bảng BATCH_STEP_EXECUTION
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Spring Batch — bảng kỹ thuật hệ thống (out_of_scope)
+    functional_group: MRMS010 Bảng kỹ thuật hệ thống
+    scope_status: pending
+    scope_reason: null
+    table: BATCH_STEP_EXECUTION
+    related_tables:
+    - table: BATCH_JOB_EXECUTION
+      relation: FK cha — BATCH_JOB_EXECUTION
+    - table: BATCH_STEP_EXECUTION_CONTEXT
+      relation: 1-N — BATCH_STEP_EXECUTION_CONTEXT
+    notes: Bảng kỹ thuật hệ thống (scheduler/migration/batch) — cần xác nhận in/out of scope khi thiết
+      kế LLD.
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-MRMS-BATCH_STEP_EXECUTION_CONTEXT
+  brd_name: Design Atomic từ nguồn MRMS bảng BATCH_STEP_EXECUTION_CONTEXT
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Spring Batch — bảng kỹ thuật hệ thống (out_of_scope)
+    functional_group: MRMS010 Bảng kỹ thuật hệ thống
+    scope_status: pending
+    scope_reason: null
+    table: BATCH_STEP_EXECUTION_CONTEXT
+    related_tables:
+    - table: BATCH_STEP_EXECUTION
+      relation: FK cha — BATCH_STEP_EXECUTION
+    notes: Bảng kỹ thuật hệ thống (scheduler/migration/batch) — cần xác nhận in/out of scope khi thiết
+      kế LLD.
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-MRMS-DATABASECHANGELOG
+  brd_name: Design Atomic từ nguồn MRMS bảng DATABASECHANGELOG
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Liquibase — bảng kỹ thuật hệ thống (out_of_scope)
+    functional_group: MRMS010 Bảng kỹ thuật hệ thống
+    scope_status: pending
+    scope_reason: null
+    table: DATABASECHANGELOG
+    related_tables: null
+    notes: Bảng kỹ thuật hệ thống (scheduler/migration/batch) — cần xác nhận in/out of scope khi thiết
+      kế LLD.
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Append
+      filter_logic: dateexecuted >= {etl_date} AND dateexecuted < {etl_date} + 1
+      filter_note: Liquibase migration log — append-only theo lần chạy migration
+- brd_id: BRD-SRC-MRMS-DATABASECHANGELOGLOCK
+  brd_name: Design Atomic từ nguồn MRMS bảng DATABASECHANGELOGLOCK
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Liquibase — bảng kỹ thuật hệ thống (out_of_scope)
+    functional_group: MRMS010 Bảng kỹ thuật hệ thống
+    scope_status: pending
+    scope_reason: null
+    table: DATABASECHANGELOGLOCK
+    related_tables: null
+    notes: Bảng kỹ thuật hệ thống (scheduler/migration/batch) — cần xác nhận in/out of scope khi thiết
+      kế LLD.
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-MRMS-EXPORT_FILE
+  brd_name: Design Atomic từ nguồn MRMS bảng EXPORT_FILE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Xuất file — bảng kỹ thuật hệ thống (out_of_scope)
+    functional_group: MRMS010 Bảng kỹ thuật hệ thống
+    scope_status: pending
+    scope_reason: null
+    table: EXPORT_FILE
+    related_tables: null
+    notes: Bảng kỹ thuật hệ thống (scheduler/migration/batch) — cần xác nhận in/out of scope khi thiết
+      kế LLD.
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-MRMS-QRTZ_BLOB_TRIGGERS
+  brd_name: Design Atomic từ nguồn MRMS bảng QRTZ_BLOB_TRIGGERS
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Quartz — bảng kỹ thuật hệ thống (out_of_scope)
+    functional_group: MRMS010 Bảng kỹ thuật hệ thống
+    scope_status: pending
+    scope_reason: null
+    table: QRTZ_BLOB_TRIGGERS
+    related_tables:
+    - table: QRTZ_TRIGGERS
+      relation: FK cha — QRTZ_TRIGGERS
+    notes: Bảng kỹ thuật hệ thống (scheduler/migration/batch) — cần xác nhận in/out of scope khi thiết
+      kế LLD.
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-MRMS-QRTZ_CALENDARS
+  brd_name: Design Atomic từ nguồn MRMS bảng QRTZ_CALENDARS
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Quartz — bảng kỹ thuật hệ thống (out_of_scope)
+    functional_group: MRMS010 Bảng kỹ thuật hệ thống
+    scope_status: pending
+    scope_reason: null
+    table: QRTZ_CALENDARS
+    related_tables: null
+    notes: Bảng kỹ thuật hệ thống (scheduler/migration/batch) — cần xác nhận in/out of scope khi thiết
+      kế LLD.
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-MRMS-QRTZ_CRON_TRIGGERS
+  brd_name: Design Atomic từ nguồn MRMS bảng QRTZ_CRON_TRIGGERS
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Quartz — bảng kỹ thuật hệ thống (out_of_scope)
+    functional_group: MRMS010 Bảng kỹ thuật hệ thống
+    scope_status: pending
+    scope_reason: null
+    table: QRTZ_CRON_TRIGGERS
+    related_tables:
+    - table: QRTZ_TRIGGERS
+      relation: FK cha — QRTZ_TRIGGERS
+    notes: Bảng kỹ thuật hệ thống (scheduler/migration/batch) — cần xác nhận in/out of scope khi thiết
+      kế LLD.
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-MRMS-QRTZ_FIRED_TRIGGERS
+  brd_name: Design Atomic từ nguồn MRMS bảng QRTZ_FIRED_TRIGGERS
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Quartz — bảng kỹ thuật hệ thống (out_of_scope)
+    functional_group: MRMS010 Bảng kỹ thuật hệ thống
+    scope_status: pending
+    scope_reason: null
+    table: QRTZ_FIRED_TRIGGERS
+    related_tables: null
+    notes: Bảng kỹ thuật hệ thống (scheduler/migration/batch) — cần xác nhận in/out of scope khi thiết
+      kế LLD.
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-MRMS-QRTZ_JOB_DETAILS
+  brd_name: Design Atomic từ nguồn MRMS bảng QRTZ_JOB_DETAILS
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Quartz — bảng kỹ thuật hệ thống (out_of_scope)
+    functional_group: MRMS010 Bảng kỹ thuật hệ thống
+    scope_status: pending
+    scope_reason: null
+    table: QRTZ_JOB_DETAILS
+    related_tables:
+    - table: QRTZ_TRIGGERS
+      relation: 1-N — QRTZ_TRIGGERS
+    notes: Bảng kỹ thuật hệ thống (scheduler/migration/batch) — cần xác nhận in/out of scope khi thiết
+      kế LLD.
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-MRMS-QRTZ_LOCKS
+  brd_name: Design Atomic từ nguồn MRMS bảng QRTZ_LOCKS
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Quartz — bảng kỹ thuật hệ thống (out_of_scope)
+    functional_group: MRMS010 Bảng kỹ thuật hệ thống
+    scope_status: pending
+    scope_reason: null
+    table: QRTZ_LOCKS
+    related_tables: null
+    notes: Bảng kỹ thuật hệ thống (scheduler/migration/batch) — cần xác nhận in/out of scope khi thiết
+      kế LLD.
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-MRMS-QRTZ_PAUSED_TRIGGER_GRPS
+  brd_name: Design Atomic từ nguồn MRMS bảng QRTZ_PAUSED_TRIGGER_GRPS
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Quartz — bảng kỹ thuật hệ thống (out_of_scope)
+    functional_group: MRMS010 Bảng kỹ thuật hệ thống
+    scope_status: pending
+    scope_reason: null
+    table: QRTZ_PAUSED_TRIGGER_GRPS
+    related_tables: null
+    notes: Bảng kỹ thuật hệ thống (scheduler/migration/batch) — cần xác nhận in/out of scope khi thiết
+      kế LLD.
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-MRMS-QRTZ_SCHEDULER_STATE
+  brd_name: Design Atomic từ nguồn MRMS bảng QRTZ_SCHEDULER_STATE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Quartz — bảng kỹ thuật hệ thống (out_of_scope)
+    functional_group: MRMS010 Bảng kỹ thuật hệ thống
+    scope_status: pending
+    scope_reason: null
+    table: QRTZ_SCHEDULER_STATE
+    related_tables: null
+    notes: Bảng kỹ thuật hệ thống (scheduler/migration/batch) — cần xác nhận in/out of scope khi thiết
+      kế LLD.
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-MRMS-QRTZ_SIMPLE_TRIGGERS
+  brd_name: Design Atomic từ nguồn MRMS bảng QRTZ_SIMPLE_TRIGGERS
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Quartz — bảng kỹ thuật hệ thống (out_of_scope)
+    functional_group: MRMS010 Bảng kỹ thuật hệ thống
+    scope_status: pending
+    scope_reason: null
+    table: QRTZ_SIMPLE_TRIGGERS
+    related_tables:
+    - table: QRTZ_TRIGGERS
+      relation: FK cha — QRTZ_TRIGGERS
+    notes: Bảng kỹ thuật hệ thống (scheduler/migration/batch) — cần xác nhận in/out of scope khi thiết
+      kế LLD.
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-MRMS-QRTZ_SIMPROP_TRIGGERS
+  brd_name: Design Atomic từ nguồn MRMS bảng QRTZ_SIMPROP_TRIGGERS
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Quartz — bảng kỹ thuật hệ thống (out_of_scope)
+    functional_group: MRMS010 Bảng kỹ thuật hệ thống
+    scope_status: pending
+    scope_reason: null
+    table: QRTZ_SIMPROP_TRIGGERS
+    related_tables:
+    - table: QRTZ_TRIGGERS
+      relation: FK cha — QRTZ_TRIGGERS
+    notes: Bảng kỹ thuật hệ thống (scheduler/migration/batch) — cần xác nhận in/out of scope khi thiết
+      kế LLD.
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-MRMS-QRTZ_TRIGGERS
+  brd_name: Design Atomic từ nguồn MRMS bảng QRTZ_TRIGGERS
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Quartz — bảng kỹ thuật hệ thống (out_of_scope)
+    functional_group: MRMS010 Bảng kỹ thuật hệ thống
+    scope_status: pending
+    scope_reason: null
+    table: QRTZ_TRIGGERS
+    related_tables:
+    - table: QRTZ_JOB_DETAILS
+      relation: FK cha — QRTZ_JOB_DETAILS
+    - table: QRTZ_BLOB_TRIGGERS
+      relation: 1-N — QRTZ_BLOB_TRIGGERS
+    - table: QRTZ_CRON_TRIGGERS
+      relation: 1-N — QRTZ_CRON_TRIGGERS
+    - table: QRTZ_SIMPLE_TRIGGERS
+      relation: 1-N — QRTZ_SIMPLE_TRIGGERS
+    - table: QRTZ_SIMPROP_TRIGGERS
+      relation: 1-N — QRTZ_SIMPROP_TRIGGERS
+    notes: Bảng kỹ thuật hệ thống (scheduler/migration/batch) — cần xác nhận in/out of scope khi thiết
+      kế LLD.
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null

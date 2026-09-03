@@ -1,0 +1,81 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: MRMS
+table: RISK_ALERT_RESOLUTION_FILE
+brd_ref: BRD-SRC-MRMS-RISK_ALERT_RESOLUTION_FILE
+columns:
+- name: ID
+  data_type: VARCHAR2(36)
+  description: Primary key
+  key: PK
+  fk_note: null
+- name: RESOLUTION_ID
+  data_type: VARCHAR2(36)
+  description: Giải trình liên quan
+  key: FK
+  fk_note: FK → RISK_ALERT_RESOLUTION.ID
+- name: FILE_NAME
+  data_type: VARCHAR2(2000)
+  description: Tên file
+  key: null
+  fk_note: null
+- name: FILE_PATH
+  data_type: VARCHAR2(4000)
+  description: Đường dẫn file trên hệ thống
+  key: null
+  fk_note: null
+- name: FILE_SIZE
+  data_type: NUMBER(19,0)
+  description: Dung lượng file (bytes)
+  key: null
+  fk_note: null
+- name: FILE_TYPE
+  data_type: VARCHAR2(200)
+  description: 'Loại file: PDF, DOCX, XLSX, PNG, JPG,…'
+  key: null
+  fk_note: null
+- name: UPLOADED_AT
+  data_type: TIMESTAMP(6)
+  description: Thời gian upload
+  key: null
+  fk_note: null
+- name: UPLOADED_BY_ID
+  data_type: VARCHAR2(36)
+  description: Người upload (user id)
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: Ngày tạo
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: TIMESTAMP(6)
+  description: Ngày sửa cuối
+  key: null
+  fk_note: null
+- name: CREATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: User_id người tạo
+  key: null
+  fk_note: null
+- name: UPDATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: User_id người cập nhật
+  key: null
+  fk_note: null
+- name: CREATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: Tên người tạo
+  key: null
+  fk_note: null
+- name: UPDATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: Tên người cập nhật
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(1,0)
+  description: Soft delete
+  key: null
+  fk_note: null

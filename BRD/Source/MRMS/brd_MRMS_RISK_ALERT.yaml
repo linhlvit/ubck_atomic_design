@@ -1,0 +1,152 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: MRMS
+table: RISK_ALERT
+brd_ref: BRD-SRC-MRMS-RISK_ALERT
+columns:
+- name: ID
+  data_type: VARCHAR2(36)
+  description: Primary key
+  key: PK
+  fk_note: null
+- name: ALERT_CONFIG_ID
+  data_type: VARCHAR2(36)
+  description: Cấu hình cảnh báo
+  key: FK
+  fk_note: FK → RISK_ALERT_CONFIG.ID
+- name: INDICATOR_TYPE
+  data_type: NUMBER(1,0)
+  description: 1=Chỉ tiêu hệ thống 2=Chỉ tiêu tự tạo
+  key: null
+  fk_note: null
+- name: INDICATOR_ID
+  data_type: VARCHAR2(36)
+  description: Id chỉ tiêu hệ thống
+  key: FK
+  fk_note: FK → RISK_INDICATOR.ID
+- name: CUSTOM_INDICATOR_ID
+  data_type: VARCHAR2(36)
+  description: Id chỉ tiêu tự tạo
+  key: FK
+  fk_note: FK → RISK_INDICATOR_CUSTOM.ID
+- name: PERIOD_DATE
+  data_type: TIMESTAMP(6)
+  description: Kỳ dữ liệu bị cảnh báo
+  key: null
+  fk_note: null
+- name: CURRENT_VALUE
+  data_type: NUMBER(19,4)
+  description: Giá trị hiện tại
+  key: null
+  fk_note: null
+- name: PREVIOUS_VALUE
+  data_type: NUMBER(19,4)
+  description: Giá trị kỳ trước (dùng để hiển thị, có thể null nếu không xác định)
+  key: null
+  fk_note: null
+- name: CHANGE_AMOUNT
+  data_type: NUMBER(19,4)
+  description: Giá trị chênh lệch
+  key: null
+  fk_note: null
+- name: CHANGE_PERCENT
+  data_type: NUMBER(10,4)
+  description: Chênh lệch %
+  key: null
+  fk_note: null
+- name: THRESHOLD_DIRECTION
+  data_type: NUMBER(1,0)
+  description: 1=Tăng, 2=Giảm, 3=Tăng/Giảm
+  key: null
+  fk_note: null
+- name: THRESHOLD_UNIT_CODE
+  data_type: NUMBER(2,0)
+  description: Đơn vị 1=% 2=Điểm 3=Tỷ VND 4=Triệu USD 5=Hợp đồng 6=Cổ phiếu 7=Công ty 8=VND 9=Số tài khoản
+    10=Đơn vị tính
+  key: null
+  fk_note: null
+- name: ALERT_MESSAGE
+  data_type: VARCHAR2(1000)
+  description: Nội dung cảnh báo (từ template)
+  key: null
+  fk_note: null
+- name: TRIGGERED_AT
+  data_type: TIMESTAMP(6)
+  description: Thời điểm phát sinh cảnh báo
+  key: null
+  fk_note: null
+- name: TRIGGERED_BY_JOB_ID
+  data_type: VARCHAR2(36)
+  description: Job ID đồng bộ chỉ tiêu
+  key: FK
+  fk_note: FK → RISK_INDICATOR_SCHEDULE.ID
+- name: HANDLER_USER_ID
+  data_type: VARCHAR2(36)
+  description: Người được giao xử lý (user id)
+  key: null
+  fk_note: null
+- name: HANDLER_USER_NAME
+  data_type: VARCHAR2(800)
+  description: Tên người xử lý
+  key: null
+  fk_note: null
+- name: STATUS
+  data_type: NUMBER(1,0)
+  description: 'Trạng thái: 0=Chưa xử lý, 1=Đang xử lý, 2=Đã xử lý, 3=Đã huỷ/Đã bỏ qua'
+  key: null
+  fk_note: null
+- name: ASSIGNED_AT
+  data_type: TIMESTAMP(6)
+  description: Thời điểm phân công
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: Ngày tạo
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: TIMESTAMP(6)
+  description: Ngày sửa cuối
+  key: null
+  fk_note: null
+- name: CREATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: User_id người tạo
+  key: null
+  fk_note: null
+- name: UPDATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: User_id người cập nhật
+  key: null
+  fk_note: null
+- name: CREATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: Tên người tạo
+  key: null
+  fk_note: null
+- name: UPDATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: Tên người cập nhật
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(1,0)
+  description: Soft delete
+  key: null
+  fk_note: null
+- name: COMPARE_PERIOD_TIME
+  data_type: NUMBER
+  description: Số kỳ cần so sánh
+  key: null
+  fk_note: null
+- name: THRESHOLD_VALUE
+  data_type: NUMBER(19,4)
+  description: Giá trị ngưỡng
+  key: null
+  fk_note: null
+- name: IS_EXPIRED
+  data_type: NUMBER(1,0)
+  description: null
+  key: null
+  fk_note: null

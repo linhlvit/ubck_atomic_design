@@ -50,7 +50,7 @@ flowchart LR
 Prefix table name thể hiện hệ thống nguồn:
 ```
 FMS.RPTVALUES
-QLRR.risk_indicator_value
+MRMS.risk_indicator_value
 ECAT.ECAT_29_HolidayInfo
 ```
 

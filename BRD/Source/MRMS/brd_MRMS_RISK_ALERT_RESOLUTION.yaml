@@ -1,0 +1,76 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: MRMS
+table: RISK_ALERT_RESOLUTION
+brd_ref: BRD-SRC-MRMS-RISK_ALERT_RESOLUTION
+columns:
+- name: ID
+  data_type: VARCHAR2(36)
+  description: Primary key
+  key: PK
+  fk_note: null
+- name: ALERT_ID
+  data_type: VARCHAR2(36)
+  description: Cảnh báo liên quan
+  key: FK
+  fk_note: FK → RISK_ALERT.ID
+- name: RESOLUTION_TYPE
+  data_type: NUMBER(1,0)
+  description: 1=Quick (không giải trình), 2=Detailed (có giải trình)
+  key: null
+  fk_note: null
+- name: EXPLANATION_CONTENT
+  data_type: CLOB
+  description: Nội dung giải trình chi tiết
+  key: null
+  fk_note: null
+- name: RESOLVED_AT
+  data_type: TIMESTAMP(6)
+  description: Thời điểm xử lý
+  key: null
+  fk_note: null
+- name: RESOLVED_BY_ID
+  data_type: VARCHAR2(36)
+  description: User ID người xử lý
+  key: null
+  fk_note: null
+- name: RESOLVED_BY_NAME
+  data_type: VARCHAR2(800)
+  description: Tên người xử lý
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: Ngày tạo
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: TIMESTAMP(6)
+  description: Ngày sửa cuối
+  key: null
+  fk_note: null
+- name: CREATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: User_id người tạo
+  key: null
+  fk_note: null
+- name: UPDATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: User_id người cập nhật
+  key: null
+  fk_note: null
+- name: CREATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: Tên người tạo
+  key: null
+  fk_note: null
+- name: UPDATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: Tên người cập nhật
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(1,0)
+  description: Soft delete
+  key: null
+  fk_note: null

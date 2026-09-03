@@ -1,0 +1,823 @@
+DATA DICTIONARY - SCHEMA: UAT_MRMS
+Tong so bang: 43 | Materialized View: 0
+==============================================================================================================
+
+BANG: BATCH_JOB_EXECUTION
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+JOB_EXECUTION_ID              NUMBER(19,0)        NO      PK                               
+VERSION                       NUMBER(19,0)        YES                                      
+JOB_INSTANCE_ID               NUMBER(19,0)        NO      FK     BATCH_JOB_INSTANCE.JOB_INSTANCE_ID
+CREATE_TIME                   TIMESTAMP(6)        NO                                       
+START_TIME                    TIMESTAMP(6)        YES                                      
+END_TIME                      TIMESTAMP(6)        YES                                      
+STATUS                        VARCHAR2(10)        YES                                      
+LAST_UPDATED                  TIMESTAMP(6)        YES                                      
+EXIT_CODE                     CLOB                YES                                      
+EXIT_MESSAGE                  CLOB                YES                                      
+
+
+BANG: BATCH_JOB_EXECUTION_CONTEXT
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+JOB_EXECUTION_ID              NUMBER(19,0)        NO      PK     BATCH_JOB_EXECUTION.JOB_EXECUTION_ID
+SERIALIZED_CONTEXT            CLOB                YES                                      
+SHORT_CONTEXT                 CLOB                YES                                      
+
+
+BANG: BATCH_JOB_EXECUTION_PARAMS
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+JOB_EXECUTION_ID              NUMBER(19,0)        NO      FK     BATCH_JOB_EXECUTION.JOB_EXECUTION_ID
+PARAMETER_NAME                VARCHAR2(100)       NO                                       
+PARAMETER_TYPE                VARCHAR2(100)       NO                                       
+IDENTIFYING                   CHAR(1)             NO                                       
+PARAMETER_VALUE               CLOB                YES                                      
+
+
+BANG: BATCH_JOB_INSTANCE
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+JOB_INSTANCE_ID               NUMBER(19,0)        NO      PK                               
+VERSION                       NUMBER(19,0)        YES                                      
+JOB_NAME                      VARCHAR2(100)       NO                                       
+JOB_KEY                       VARCHAR2(32)        NO                                       
+
+
+BANG: BATCH_STEP_EXECUTION
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+STEP_EXECUTION_ID             NUMBER(19,0)        NO      PK                               
+VERSION                       NUMBER(19,0)        NO                                       
+STEP_NAME                     VARCHAR2(100)       NO                                       
+JOB_EXECUTION_ID              NUMBER(19,0)        NO      FK     BATCH_JOB_EXECUTION.JOB_EXECUTION_ID
+CREATE_TIME                   TIMESTAMP(6)        NO                                       
+START_TIME                    TIMESTAMP(6)        YES                                      
+END_TIME                      TIMESTAMP(6)        YES                                      
+STATUS                        VARCHAR2(10)        YES                                      
+COMMIT_COUNT                  NUMBER(19,0)        YES                                      
+READ_COUNT                    NUMBER(19,0)        YES                                      
+FILTER_COUNT                  NUMBER(19,0)        YES                                      
+WRITE_COUNT                   NUMBER(19,0)        YES                                      
+READ_SKIP_COUNT               NUMBER(19,0)        YES                                      
+WRITE_SKIP_COUNT              NUMBER(19,0)        YES                                      
+PROCESS_SKIP_COUNT            NUMBER(19,0)        YES                                      
+ROLLBACK_COUNT                NUMBER(19,0)        YES                                      
+LAST_UPDATED                  TIMESTAMP(6)        YES                                      
+EXIT_CODE                     CLOB                YES                                      
+EXIT_MESSAGE                  CLOB                YES                                      
+
+
+BANG: BATCH_STEP_EXECUTION_CONTEXT
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+STEP_EXECUTION_ID             NUMBER(19,0)        NO      PK     BATCH_STEP_EXECUTION.STEP_EXECUTION_ID
+SERIALIZED_CONTEXT            CLOB                YES                                      
+SHORT_CONTEXT                 CLOB                YES                                      
+
+
+BANG: DATABASECHANGELOG
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(255)       NO                                       
+AUTHOR                        VARCHAR2(255)       NO                                       
+FILENAME                      VARCHAR2(255)       NO                                       
+DATEEXECUTED                  TIMESTAMP(6)        NO                                       
+ORDEREXECUTED                 NUMBER              NO                                       
+EXECTYPE                      VARCHAR2(10)        NO                                       
+MD5SUM                        VARCHAR2(35)        YES                                      
+DESCRIPTION                   VARCHAR2(255)       YES                                      
+COMMENTS                      VARCHAR2(255)       YES                                      
+TAG                           VARCHAR2(255)       YES                                      
+LIQUIBASE                     VARCHAR2(20)        YES                                      
+CONTEXTS                      VARCHAR2(255)       YES                                      
+LABELS                        VARCHAR2(255)       YES                                      
+DEPLOYMENT_ID                 VARCHAR2(10)        YES                                      
+
+
+BANG: DATABASECHANGELOGLOCK
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               
+LOCKED                        NUMBER(1,0)         NO                                       
+LOCKGRANTED                   TIMESTAMP(6)        YES                                      
+LOCKEDBY                      VARCHAR2(255)       YES                                      
+
+
+BANG: EXPORT_FILE
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+FILE_NAME                     VARCHAR2(255)       NO                                       
+FILE_PATH                     VARCHAR2(500)       YES                                      
+FILE_LENGTH                   NUMBER(19,0)        YES                                      
+ERROR_MESSAGE                 CLOB                YES                                      
+EXECUTION_DETAILS             CLOB                YES                                      
+STATUS                        NUMBER(19,0)        NO                                       
+CREATED_AT                    TIMESTAMP(6)        NO                                       
+UPDATED_AT                    TIMESTAMP(6)        YES                                      
+CREATED_BY_ID                 VARCHAR2(255)       YES                                      
+UPDATED_BY_ID                 VARCHAR2(255)       YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+DELETED                       NUMBER(1,0)         NO                                       
+
+
+BANG: PERMISSION_GROUP
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+GROUP_NAME                    VARCHAR2(2000)      NO                                       
+GROUP_DESCRIPTION             VARCHAR2(4000)      YES                                      
+CREATED_AT                    TIMESTAMP(6)        NO                                       
+UPDATED_AT                    TIMESTAMP(6)        YES                                      
+CREATED_BY_ID                 VARCHAR2(255)       YES                                      
+UPDATED_BY_ID                 VARCHAR2(255)       YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+DELETED                       NUMBER(1,0)         NO                                       
+
+
+BANG: PERMISSION_GROUP_INDICATOR
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+GROUP_ID                      VARCHAR2(36)        NO      FK     PERMISSION_GROUP.ID       
+INDICATOR_ID                  VARCHAR2(36)        NO                                       
+DELETED                       NUMBER(1,0)         NO                                       
+CREATED_AT                    TIMESTAMP(6)        NO                                       
+UPDATED_AT                    TIMESTAMP(6)        YES                                      
+CREATED_BY_ID                 VARCHAR2(255)       YES                                      
+UPDATED_BY_ID                 VARCHAR2(255)       YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+
+
+BANG: PERMISSION_GROUP_USER
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+GROUP_ID                      VARCHAR2(36)        NO      FK     PERMISSION_GROUP.ID       
+USER_ID                       VARCHAR2(36)        NO                                       
+CREATED_AT                    TIMESTAMP(6)        NO                                       
+UPDATED_AT                    TIMESTAMP(6)        YES                                      
+CREATED_BY_ID                 VARCHAR2(255)       YES                                      
+UPDATED_BY_ID                 VARCHAR2(255)       YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+DELETED                       NUMBER(1,0)         NO                                       
+DISPLAY_ORDER                 NUMBER              YES                                      
+
+
+BANG: QRTZ_BLOB_TRIGGERS
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+SCHED_NAME                    VARCHAR2(120)       NO      PK     QRTZ_TRIGGERS.SCHED_NAME  
+TRIGGER_NAME                  VARCHAR2(190)       NO      PK     QRTZ_TRIGGERS.TRIGGER_NAME
+TRIGGER_GROUP                 VARCHAR2(190)       NO      PK     QRTZ_TRIGGERS.TRIGGER_GROUP
+BLOB_DATA                     BLOB                YES                                      
+
+
+BANG: QRTZ_CALENDARS
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+SCHED_NAME                    VARCHAR2(120)       NO      PK                               
+CALENDAR_NAME                 VARCHAR2(190)       NO      PK                               
+CALENDAR                      BLOB                NO                                       
+
+
+BANG: QRTZ_CRON_TRIGGERS
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+SCHED_NAME                    VARCHAR2(120)       NO      PK     QRTZ_TRIGGERS.SCHED_NAME  
+TRIGGER_NAME                  VARCHAR2(190)       NO      PK     QRTZ_TRIGGERS.TRIGGER_NAME
+TRIGGER_GROUP                 VARCHAR2(190)       NO      PK     QRTZ_TRIGGERS.TRIGGER_GROUP
+CRON_EXPRESSION               VARCHAR2(120)       NO                                       
+TIME_ZONE_ID                  VARCHAR2(80)        YES                                      
+
+
+BANG: QRTZ_FIRED_TRIGGERS
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+SCHED_NAME                    VARCHAR2(120)       NO      PK                               
+ENTRY_ID                      VARCHAR2(95)        NO      PK                               
+TRIGGER_NAME                  VARCHAR2(190)       NO                                       
+TRIGGER_GROUP                 VARCHAR2(190)       NO                                       
+INSTANCE_NAME                 VARCHAR2(190)       NO                                       
+FIRED_TIME                    NUMBER(13,0)        NO                                       
+SCHED_TIME                    NUMBER(13,0)        NO                                       
+PRIORITY                      NUMBER(10,0)        NO                                       
+STATE                         VARCHAR2(16)        NO                                       
+JOB_NAME                      VARCHAR2(190)       YES                                      
+JOB_GROUP                     VARCHAR2(190)       YES                                      
+IS_NONCONCURRENT              VARCHAR2(1)         YES                                      
+REQUESTS_RECOVERY             VARCHAR2(1)         YES                                      
+
+
+BANG: QRTZ_JOB_DETAILS
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+SCHED_NAME                    VARCHAR2(120)       NO      PK                               
+JOB_NAME                      VARCHAR2(190)       NO      PK                               
+JOB_GROUP                     VARCHAR2(190)       NO      PK                               
+DESCRIPTION                   VARCHAR2(250)       YES                                      
+JOB_CLASS_NAME                VARCHAR2(250)       NO                                       
+IS_DURABLE                    VARCHAR2(1)         NO                                       
+IS_NONCONCURRENT              VARCHAR2(1)         NO                                       
+IS_UPDATE_DATA                VARCHAR2(1)         NO                                       
+REQUESTS_RECOVERY             VARCHAR2(1)         NO                                       
+JOB_DATA                      BLOB                YES                                      
+
+
+BANG: QRTZ_LOCKS
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+SCHED_NAME                    VARCHAR2(120)       NO      PK                               
+LOCK_NAME                     VARCHAR2(40)        NO      PK                               
+
+
+BANG: QRTZ_PAUSED_TRIGGER_GRPS
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+SCHED_NAME                    VARCHAR2(120)       NO      PK                               
+TRIGGER_GROUP                 VARCHAR2(190)       NO      PK                               
+
+
+BANG: QRTZ_SCHEDULER_STATE
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+SCHED_NAME                    VARCHAR2(120)       NO      PK                               
+INSTANCE_NAME                 VARCHAR2(190)       NO      PK                               
+LAST_CHECKIN_TIME             NUMBER(13,0)        NO                                       
+CHECKIN_INTERVAL              NUMBER(13,0)        NO                                       
+
+
+BANG: QRTZ_SIMPLE_TRIGGERS
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+SCHED_NAME                    VARCHAR2(120)       NO      PK     QRTZ_TRIGGERS.SCHED_NAME  
+TRIGGER_NAME                  VARCHAR2(190)       NO      PK     QRTZ_TRIGGERS.TRIGGER_NAME
+TRIGGER_GROUP                 VARCHAR2(190)       NO      PK     QRTZ_TRIGGERS.TRIGGER_GROUP
+REPEAT_COUNT                  NUMBER(7,0)         NO                                       
+REPEAT_INTERVAL               NUMBER(12,0)        NO                                       
+TIMES_TRIGGERED               NUMBER(10,0)        NO                                       
+
+
+BANG: QRTZ_SIMPROP_TRIGGERS
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+SCHED_NAME                    VARCHAR2(120)       NO      PK     QRTZ_TRIGGERS.SCHED_NAME  
+TRIGGER_NAME                  VARCHAR2(190)       NO      PK     QRTZ_TRIGGERS.TRIGGER_NAME
+TRIGGER_GROUP                 VARCHAR2(190)       NO      PK     QRTZ_TRIGGERS.TRIGGER_GROUP
+STR_PROP_1                    VARCHAR2(512)       YES                                      
+STR_PROP_2                    VARCHAR2(512)       YES                                      
+STR_PROP_3                    VARCHAR2(512)       YES                                      
+INT_PROP_1                    NUMBER(10,0)        YES                                      
+INT_PROP_2                    NUMBER(10,0)        YES                                      
+LONG_PROP_1                   NUMBER(19,0)        YES                                      
+LONG_PROP_2                   NUMBER(19,0)        YES                                      
+DEC_PROP_1                    NUMBER(13,4)        YES                                      
+DEC_PROP_2                    NUMBER(13,4)        YES                                      
+BOOL_PROP_1                   VARCHAR2(1)         YES                                      
+BOOL_PROP_2                   VARCHAR2(1)         YES                                      
+
+
+BANG: QRTZ_TRIGGERS
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+SCHED_NAME                    VARCHAR2(120)       NO      PK     QRTZ_JOB_DETAILS.SCHED_NAME
+TRIGGER_NAME                  VARCHAR2(190)       NO      PK                               
+TRIGGER_GROUP                 VARCHAR2(190)       NO      PK                               
+JOB_NAME                      VARCHAR2(190)       NO      FK     QRTZ_JOB_DETAILS.JOB_NAME 
+JOB_GROUP                     VARCHAR2(190)       NO      FK     QRTZ_JOB_DETAILS.JOB_GROUP
+DESCRIPTION                   VARCHAR2(250)       YES                                      
+NEXT_FIRE_TIME                NUMBER(13,0)        YES                                      
+PREV_FIRE_TIME                NUMBER(13,0)        YES                                      
+PRIORITY                      NUMBER(10,0)        YES                                      
+TRIGGER_STATE                 VARCHAR2(16)        NO                                       
+TRIGGER_TYPE                  VARCHAR2(8)         NO                                       
+START_TIME                    NUMBER(13,0)        NO                                       
+END_TIME                      NUMBER(13,0)        YES                                      
+CALENDAR_NAME                 VARCHAR2(190)       YES                                      
+MISFIRE_INSTR                 NUMBER(2,0)         YES                                      
+JOB_DATA                      BLOB                YES                                      
+
+
+BANG: RISK_ALERT
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+ALERT_CONFIG_ID               VARCHAR2(36)        YES     FK     RISK_ALERT_CONFIG.ID      
+INDICATOR_TYPE                NUMBER(1,0)         NO                                       
+INDICATOR_ID                  VARCHAR2(36)        YES     FK     RISK_INDICATOR.ID         
+CUSTOM_INDICATOR_ID           VARCHAR2(36)        YES     FK     RISK_INDICATOR_CUSTOM.ID  
+PERIOD_DATE                   TIMESTAMP(6)        NO                                       
+CURRENT_VALUE                 NUMBER(19,4)        NO                                       
+PREVIOUS_VALUE                NUMBER(19,4)        YES                                      
+CHANGE_AMOUNT                 NUMBER(19,4)        YES                                      
+CHANGE_PERCENT                NUMBER(10,4)        YES                                      
+THRESHOLD_DIRECTION           NUMBER(1,0)         NO                                       
+THRESHOLD_UNIT_CODE           NUMBER(2,0)         NO                                       
+ALERT_MESSAGE                 VARCHAR2(1000)      YES                                      
+TRIGGERED_AT                  TIMESTAMP(6)        NO                                       
+TRIGGERED_BY_JOB_ID           VARCHAR2(36)        YES     FK     RISK_INDICATOR_SCHEDULE.ID
+HANDLER_USER_ID               VARCHAR2(36)        NO                                       
+HANDLER_USER_NAME             VARCHAR2(800)       YES                                      
+STATUS                        NUMBER(1,0)         NO                                       
+ASSIGNED_AT                   TIMESTAMP(6)        YES                                      
+CREATED_AT                    TIMESTAMP(6)        NO                                       
+UPDATED_AT                    TIMESTAMP(6)        YES                                      
+CREATED_BY_ID                 VARCHAR2(255)       YES                                      
+UPDATED_BY_ID                 VARCHAR2(255)       YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+DELETED                       NUMBER(1,0)         NO                                       
+COMPARE_PERIOD_TIME           NUMBER              YES                                      
+THRESHOLD_VALUE               NUMBER(19,4)        NO                                       
+IS_EXPIRED                    NUMBER(1,0)         NO                                       
+
+
+BANG: RISK_ALERT_CONFIG
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+INDICATOR_TYPE                NUMBER(1,0)         NO                                       
+INDICATOR_ID                  VARCHAR2(36)        YES     FK     RISK_INDICATOR.ID         
+CUSTOM_INDICATOR_ID           VARCHAR2(36)        YES     FK     RISK_INDICATOR_CUSTOM.ID  
+THRESHOLD_DIRECTION           NUMBER(1,0)         NO                                       
+THRESHOLD_UNIT_CODE           NUMBER(2,0)         NO                                       
+COMPARE_PERIOD_TIME           NUMBER              YES                                      
+ALERT_MESSAGE_TEMPLATE        VARCHAR2(4000)      YES                                      
+HANDLER_USER_ID               VARCHAR2(36)        NO                                       
+HANDLER_USER_NAME             VARCHAR2(800)       YES                                      
+NOTIFY_BELL_FLAG              NUMBER(1,0)         NO                                       
+NOTIFY_EMAIL_FLAG             NUMBER(1,0)         NO                                       
+NOTIFY_TOAST_FLAG             NUMBER(1,0)         NO                                       
+IS_ACTIVE                     NUMBER(1,0)         NO                                       
+DISPLAY_ORDER                 NUMBER(4,0)         YES                                      
+CREATED_AT                    TIMESTAMP(6)        NO                                       
+UPDATED_AT                    TIMESTAMP(6)        YES                                      
+CREATED_BY_ID                 VARCHAR2(255)       YES                                      
+UPDATED_BY_ID                 VARCHAR2(255)       YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+DELETED                       NUMBER(1,0)         NO                                       
+CUSTOM_OLD_VALUE              NUMBER(19,4)        YES                                      
+CUSTOM_NEW_VALUE              NUMBER(19,4)        YES                                      
+THRESHOLD_VALUE               NUMBER(19,4)        NO                                       
+
+
+BANG: RISK_ALERT_HISTORY
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+ALERT_ID                      VARCHAR2(36)        NO      FK     RISK_ALERT.ID             
+RESOLUTION_ID                 VARCHAR2(36)        YES     FK     RISK_ALERT_RESOLUTION.ID  
+EVENT_TYPE                    NUMBER(1,0)         NO                                       
+EVENT_TIME                    TIMESTAMP(6)        NO                                       
+EVENT_TITLE                   VARCHAR2(250)       YES                                      
+EVENT_DESCRIPTION             VARCHAR2(500)       YES                                      
+EVENT_USER_ID                 VARCHAR2(36)        YES                                      
+EVENT_USER_NAME               VARCHAR2(800)       YES                                      
+CREATED_AT                    TIMESTAMP(6)        NO                                       
+UPDATED_AT                    TIMESTAMP(6)        YES                                      
+CREATED_BY_ID                 VARCHAR2(255)       YES                                      
+UPDATED_BY_ID                 VARCHAR2(255)       YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+DELETED                       NUMBER(1,0)         NO                                       
+
+
+BANG: RISK_ALERT_RESOLUTION
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+ALERT_ID                      VARCHAR2(36)        NO      FK     RISK_ALERT.ID             
+RESOLUTION_TYPE               NUMBER(1,0)         NO                                       
+EXPLANATION_CONTENT           CLOB                YES                                      
+RESOLVED_AT                   TIMESTAMP(6)        NO                                       
+RESOLVED_BY_ID                VARCHAR2(36)        NO                                       
+RESOLVED_BY_NAME              VARCHAR2(800)       YES                                      
+CREATED_AT                    TIMESTAMP(6)        NO                                       
+UPDATED_AT                    TIMESTAMP(6)        YES                                      
+CREATED_BY_ID                 VARCHAR2(255)       YES                                      
+UPDATED_BY_ID                 VARCHAR2(255)       YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+DELETED                       NUMBER(1,0)         NO                                       
+
+
+BANG: RISK_ALERT_RESOLUTION_FILE
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+RESOLUTION_ID                 VARCHAR2(36)        NO      FK     RISK_ALERT_RESOLUTION.ID  
+FILE_NAME                     VARCHAR2(2000)      NO                                       
+FILE_PATH                     VARCHAR2(4000)      NO                                       
+FILE_SIZE                     NUMBER(19,0)        YES                                      
+FILE_TYPE                     VARCHAR2(200)       YES                                      
+UPLOADED_AT                   TIMESTAMP(6)        NO                                       
+UPLOADED_BY_ID                VARCHAR2(36)        YES                                      
+CREATED_AT                    TIMESTAMP(6)        NO                                       
+UPDATED_AT                    TIMESTAMP(6)        YES                                      
+CREATED_BY_ID                 VARCHAR2(255)       YES                                      
+UPDATED_BY_ID                 VARCHAR2(255)       YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+DELETED                       NUMBER(1,0)         NO                                       
+
+
+BANG: RISK_INDICATOR
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+INDICATOR_CODE                VARCHAR2(200)       NO                                       
+INDICATOR_NAME                VARCHAR2(2000)      NO                                       
+SET_CODE                      NUMBER(1,0)         NO                                       
+CATEGORY_ID                   VARCHAR2(36)        NO      FK     RISK_INDICATOR_CATEGORY.ID
+UNIT_CODE                     NUMBER(2,0)         NO                                       
+SOURCE_CODE                   NUMBER(2,0)         NO                                       
+PERIOD_TYPE                   NUMBER(1,0)         NO                                       
+STATUS                        NUMBER(1,0)         NO                                       
+LAST_SYNC_TIME                TIMESTAMP(6)        YES                                      
+DISPLAY_ORDER                 NUMBER(4,0)         YES                                      
+CREATED_AT                    TIMESTAMP(6)        NO                                       
+UPDATED_AT                    TIMESTAMP(6)        YES                                      
+CREATED_BY_ID                 VARCHAR2(255)       YES                                      
+UPDATED_BY_ID                 VARCHAR2(255)       YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+DELETED                       NUMBER(1,0)         NO                                       
+IS_DISPLAY                    NUMBER(1,0)         NO                                       
+SHOW_SYNC_INDICATOR           NUMBER(1,0)         NO                                       
+
+
+BANG: RISK_INDICATOR_CATEGORY
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+SET_CODE                      NUMBER(1,0)         NO                                       
+CATEGORY_CODE                 VARCHAR2(200)       NO                                       
+CATEGORY_NAME                 VARCHAR2(800)       NO                                       
+STATUS                        NUMBER(1,0)         NO                                       
+CREATED_AT                    TIMESTAMP(6)        NO                                       
+UPDATED_AT                    TIMESTAMP(6)        YES                                      
+CREATED_BY_ID                 VARCHAR2(255)       YES                                      
+UPDATED_BY_ID                 VARCHAR2(255)       YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+DELETED                       NUMBER(1,0)         NO                                       
+
+
+BANG: RISK_INDICATOR_CUSTOM
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+INDICATOR_NAME                VARCHAR2(2000)      NO                                       
+UNIT_CODE                     NUMBER(2,0)         NO                                       
+SOURCE_CODE                   VARCHAR2(1020)      YES                                      
+PERIOD_TYPE                   NUMBER(1,0)         NO                                       
+STATUS                        NUMBER(1,0)         NO                                       
+CREATED_AT                    TIMESTAMP(6)        NO                                       
+UPDATED_AT                    TIMESTAMP(6)        YES                                      
+CREATED_BY_ID                 VARCHAR2(255)       YES                                      
+UPDATED_BY_ID                 VARCHAR2(255)       YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+DELETED                       NUMBER(1,0)         NO                                       
+
+
+BANG: RISK_INDICATOR_DATA_PERMISSION
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+SCOPE_TYPE                    NUMBER(1,0)         NO                                       
+SET_CODE                      NUMBER(1,0)         YES                                      
+INDICATOR_ID                  VARCHAR2(36)        YES     FK     RISK_INDICATOR.ID         
+USER_ID                       VARCHAR2(36)        NO                                       
+CAN_VIEW_FLAG                 NUMBER(1,0)         NO                                       
+CAN_EDIT_FLAG                 NUMBER(1,0)         NO                                       
+CREATED_AT                    TIMESTAMP(6)        NO                                       
+UPDATED_AT                    TIMESTAMP(6)        YES                                      
+CREATED_BY_ID                 VARCHAR2(255)       YES                                      
+UPDATED_BY_ID                 VARCHAR2(255)       YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+DELETED                       NUMBER(1,0)         NO                                       
+
+
+BANG: RISK_INDICATOR_SCHEDULE
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+INDICATOR_ID                  VARCHAR2(36)        NO      FK     RISK_INDICATOR.ID         
+FREQUENCY_TYPE                NUMBER(1,0)         NO                                       
+FREQUENCY_VALUE               NUMBER              NO                                       
+START_TIME                    TIMESTAMP(6)        NO                                       
+NEXT_RUN_TIME                 TIMESTAMP(6)        NO                                       
+LAST_RUN_TIME                 TIMESTAMP(6)        YES                                      
+CRON_EXPRESSION               VARCHAR2(100)       YES                                      
+IS_ENABLED                    NUMBER(1,0)         NO                                       
+TOTAL_RUNS                    NUMBER              YES                                      
+LAST_STATUS                   VARCHAR2(50)        YES                                      
+LAST_ERROR                    VARCHAR2(2000)      YES                                      
+CREATED_AT                    TIMESTAMP(6)        NO                                       
+UPDATED_AT                    TIMESTAMP(6)        YES                                      
+CREATED_BY_ID                 VARCHAR2(255)       YES                                      
+UPDATED_BY_ID                 VARCHAR2(255)       YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+DELETED                       NUMBER(1,0)         NO                                       
+
+
+BANG: RISK_INDICATOR_VALUE
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+INDICATOR_ID                  VARCHAR2(36)        NO      FK     RISK_INDICATOR.ID         
+PERIOD_TYPE                   NUMBER(1,0)         NO                                       
+PERIOD_VALUE                  NUMBER(4,0)         YES                                      
+PERIOD_YEAR                   NUMBER(4,0)         YES                                      
+PERIOD_DATE                   TIMESTAMP(6)        NO                                       
+PERIOD_LABEL                  VARCHAR2(80)        YES                                      
+UNIT_CODE                     NUMBER(2,0)         YES                                      
+SOURCE_CODE                   NUMBER(2,0)         YES                                      
+DATA_ORIGIN                   NUMBER(1,0)         NO                                       
+CREATED_AT                    TIMESTAMP(6)        NO                                       
+UPDATED_AT                    TIMESTAMP(6)        YES                                      
+CREATED_BY_ID                 VARCHAR2(255)       YES                                      
+UPDATED_BY_ID                 VARCHAR2(255)       YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+DELETED                       NUMBER(1,0)         NO                                       
+CUMULATIVE_VALUE              NUMBER(19,4)        YES                                      
+VALUE                         NUMBER(19,4)        NO                                       
+
+
+BANG: RISK_INDICATOR_VALUE_HISTORY
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+INDICATOR_ID                  VARCHAR2(36)        NO      FK     RISK_INDICATOR.ID         
+UNIT_CODE                     NUMBER(2,0)         YES                                      
+SOURCE_CODE                   NUMBER(2,0)         YES                                      
+DATA_ORIGIN                   NUMBER(1,0)         NO                                       
+CHANGE_TYPE                   VARCHAR2(80)        NO                                       
+CHANGE_BY_ID                  VARCHAR2(36)        YES                                      
+CHANGE_BY_NAME                VARCHAR2(800)       YES                                      
+CREATED_AT                    TIMESTAMP(6)        NO                                       
+UPDATED_AT                    TIMESTAMP(6)        YES                                      
+CREATED_BY_ID                 VARCHAR2(255)       YES                                      
+UPDATED_BY_ID                 VARCHAR2(255)       YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+DELETED                       NUMBER(1,0)         NO                                       
+PERIOD_DATE                   TIMESTAMP(6)        YES                                      
+OLD_VALUE                     NUMBER(19,4)        YES                                      
+NEW_VALUE                     NUMBER(19,4)        YES                                      
+
+
+BANG: RISK_MARKET_REPORT
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+REPORT_TYPE_ID                VARCHAR2(36)        NO      FK     RISK_MARKET_REPORT_TYPE.ID
+PERIOD_TYPE                   NUMBER(1,0)         NO                                       
+PERIOD_DATE                   TIMESTAMP(6)        NO                                       
+PERIOD_LABEL                  VARCHAR2(200)       YES                                      
+TITLE                         VARCHAR2(2000)      YES                                      
+DESCRIPTION                   VARCHAR2(4000)      YES                                      
+STATUS                        NUMBER(1,0)         NO                                       
+CREATED_AT                    TIMESTAMP(6)        NO                                       
+UPDATED_AT                    TIMESTAMP(6)        YES                                      
+CREATED_BY_ID                 VARCHAR2(255)       YES                                      
+UPDATED_BY_ID                 VARCHAR2(255)       YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+DELETED                       NUMBER(1,0)         NO                                       
+
+
+BANG: RISK_MARKET_REPORT_FILE
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+REPORT_ID                     VARCHAR2(36)        NO      FK     RISK_MARKET_REPORT.ID     
+FILE_NAME                     VARCHAR2(2000)      NO                                       
+FILE_PATH                     VARCHAR2(4000)      NO                                       
+FILE_SIZE                     NUMBER(19,0)        YES                                      
+FILE_TYPE                     VARCHAR2(200)       YES                                      
+IS_MAIN_FILE                  NUMBER(1,0)         NO                                       
+UPLOADED_AT                   TIMESTAMP(6)        NO                                       
+UPLOADED_BY_ID                VARCHAR2(36)        YES                                      
+DESCRIPTION                   VARCHAR2(4000)      YES                                      
+CREATED_AT                    TIMESTAMP(6)        NO                                       
+UPDATED_AT                    TIMESTAMP(6)        YES                                      
+CREATED_BY_ID                 VARCHAR2(255)       YES                                      
+UPDATED_BY_ID                 VARCHAR2(255)       YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+DELETED                       NUMBER(1,0)         NO                                       
+
+
+BANG: RISK_MARKET_REPORT_TYPE
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+TYPE_CODE                     VARCHAR2(200)       NO                                       
+TYPE_NAME                     VARCHAR2(2000)      NO                                       
+DESCRIPTION                   VARCHAR2(4000)      YES                                      
+PERIOD_TYPE                   NUMBER(1,0)         YES                                      
+STATUS                        NUMBER(1,0)         NO                                       
+CREATED_AT                    TIMESTAMP(6)        NO                                       
+UPDATED_AT                    TIMESTAMP(6)        YES                                      
+CREATED_BY_ID                 VARCHAR2(255)       YES                                      
+UPDATED_BY_ID                 VARCHAR2(255)       YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+DELETED                       NUMBER(1,0)         NO                                       
+
+
+BANG: RISK_NOTIFICATION
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+ALERT_ID                      VARCHAR2(36)        NO      FK     RISK_ALERT.ID             
+NOTIFICATION_TYPE             NUMBER(1,0)         NO                                       
+RECIPIENT_USER_ID             VARCHAR2(36)        YES                                      
+RECIPIENT_EMAIL               VARCHAR2(255)       YES                                      
+SENT_AT                       TIMESTAMP(6)        NO                                       
+SEND_STATUS                   NUMBER(1,0)         NO                                       
+SEND_ERROR                    VARCHAR2(1000)      YES                                      
+CREATED_AT                    TIMESTAMP(6)        NO                                       
+UPDATED_AT                    TIMESTAMP(6)        YES                                      
+CREATED_BY_ID                 VARCHAR2(255)       YES                                      
+UPDATED_BY_ID                 VARCHAR2(255)       YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+DELETED                       NUMBER(1,0)         NO                                       
+READ_STATUS                   NUMBER(1,0)         NO                                       
+TITLE                         VARCHAR2(255)       YES                                      
+CONTENT                       VARCHAR2(1000)      YES                                      
+
+
+BANG: RISK_REPORT_FILE
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+BATCH_ID                      VARCHAR2(36)        NO                                       
+FILE_NAME                     VARCHAR2(2000)      NO                                       
+FILE_PATH                     VARCHAR2(4000)      NO                                       
+FILE_SIZE                     NUMBER(19,0)        YES                                      
+FILE_TYPE                     VARCHAR2(200)       YES                                      
+UPLOADED_AT                   TIMESTAMP(6)        NO                                       
+UPLOADED_BY_ID                VARCHAR2(36)        YES                                      
+CREATED_AT                    TIMESTAMP(6)        NO                                       
+UPDATED_AT                    TIMESTAMP(6)        YES                                      
+CREATED_BY_ID                 VARCHAR2(255)       YES                                      
+UPDATED_BY_ID                 VARCHAR2(255)       YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+DELETED                       NUMBER(1,0)         NO                                       
+
+
+BANG: RISK_REPORT_TYPE
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+CODE                          VARCHAR2(200)       NO                                       
+NAME                          VARCHAR2(2000)      NO                                       
+DESCRIPTION                   VARCHAR2(4000)      YES                                      
+TEMPLATE_CONTENT              CLOB                YES                                      
+DISPLAY_ORDER                 NUMBER(4,0)         YES                                      
+IS_ACTIVE                     NUMBER(1,0)         NO                                       
+CREATED_AT                    TIMESTAMP(6)        NO                                       
+UPDATED_AT                    TIMESTAMP(6)        YES                                      
+CREATED_BY_ID                 VARCHAR2(255)       YES                                      
+UPDATED_BY_ID                 VARCHAR2(255)       YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+DELETED                       NUMBER(1,0)         NO                                       
+
+
+BANG: RISK_REPORT_UPLOAD_BATCH
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+REPORT_TYPE_ID                VARCHAR2(36)        NO                                       
+REPORT_DATE                   DATE                NO                                       
+FILE_COUNT                    NUMBER              YES                                      
+CREATED_AT                    TIMESTAMP(6)        NO                                       
+UPDATED_AT                    TIMESTAMP(6)        YES                                      
+CREATED_BY_ID                 VARCHAR2(255)       YES                                      
+UPDATED_BY_ID                 VARCHAR2(255)       YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+DELETED                       NUMBER(1,0)         NO                                       
+
+
+BANG: USER_TABLE_CONFIG
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+USER_ID                       VARCHAR2(100)       NO                                       
+TABLE_NAME                    VARCHAR2(100)       YES                                      
+TABLE_CODE                    VARCHAR2(50)        NO                                       
+TAB_NAME                      VARCHAR2(100)       YES                                      
+TAB_CODE                      VARCHAR2(50)        YES                                      
+CONFIG_DATA                   CLOB                YES                                      
+NOTES                         CLOB                YES                                      
+CREATED_AT                    TIMESTAMP(6)        NO                                       
+UPDATED_AT                    TIMESTAMP(6)        YES                                      
+CREATED_BY_ID                 VARCHAR2(255)       YES                                      
+UPDATED_BY_ID                 VARCHAR2(255)       YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+DELETED                       NUMBER(1,0)         NO                                       
+
+

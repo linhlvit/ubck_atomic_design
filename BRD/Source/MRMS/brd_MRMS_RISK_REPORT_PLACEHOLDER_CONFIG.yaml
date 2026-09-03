@@ -1,0 +1,104 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: MRMS
+table: risk_report_placeholder_config
+brd_ref: BRD-SRC-MRMS-risk_report_placeholder_config
+# GHI CHÚ: bảng này KHÔNG còn tồn tại trong khảo sát DB UAT mới nhất (Source/DDL UAT 1/UAT_MRMS_schema.txt, 2026-09-03).
+# Giữ lại làm hồ sơ tham khảo — không đưa vào Source/MRMS_Tables.csv / brd_MRMS.yaml (43 bảng hiện hành).
+# Cần xác nhận: bảng đã bị loại bỏ thật, hay đổi tên/gộp vào RISK_MARKET_REPORT*.
+columns:
+- name: created_at
+  data_type: null
+  description: "Ngày tạo"
+  key: null
+  fk_note: null
+- name: created_by_id
+  data_type: null
+  description: "User_id người tạo"
+  key: null
+  fk_note: "FK suy luận → system_user.id"
+- name: created_by_name
+  data_type: null
+  description: "Tên người tạo"
+  key: null
+  fk_note: null
+- name: data_format
+  data_type: null
+  description: "Định dạng hiển thị (VD: #,##0.00, #,##0.00%, DD/MM/YYYY)"
+  key: null
+  fk_note: null
+- name: data_source_column
+  data_type: null
+  description: "Tên cột chứa giá trị"
+  key: null
+  fk_note: null
+- name: data_source_filter
+  data_type: null
+  description: "Điều kiện lọc dữ liệu (VD: indicator_code = 'VN_INDEX')"
+  key: null
+  fk_note: null
+- name: data_source_table
+  data_type: null
+  description: "Tên bảng/view chứa dữ liệu nguồn (khi value_type = 1)"
+  key: null
+  fk_note: null
+- name: deleted
+  data_type: null
+  description: "Soft delete"
+  key: null
+  fk_note: null
+- name: formula_expression
+  data_type: null
+  description: "Biểu thức công thức (khi VALUE_TYPE = FORMULA). Cho phép tham chiếu placeholder khác: {{VN_INDEX_CURRENT}} - {{VN_INDEX_PREV}}"
+  key: null
+  fk_note: null
+- name: id
+  data_type: null
+  description: "Primary key"
+  key: PK
+  fk_note: null
+- name: is_active
+  data_type: null
+  description: "Trạng thái: 0=Không
+1=Có"
+  key: null
+  fk_note: null
+- name: placeholder_code
+  data_type: null
+  description: "Mã placeholder trong template (VD: VN_INDEX_VALUE, MARKET_CAP_GROWTH)"
+  key: null
+  fk_note: null
+- name: report_type_id
+  data_type: null
+  description: "Loại báo cáo"
+  key: FK
+  fk_note: "FK suy luận → risk_report_type.id"
+- name: updated_at
+  data_type: null
+  description: "Ngày sửa cuối"
+  key: null
+  fk_note: null
+- name: updated_by_id
+  data_type: null
+  description: "User_id người cập nhật"
+  key: null
+  fk_note: "FK suy luận → system_user.id"
+- name: updated_by_name
+  data_type: null
+  description: "Tên người cập nhật"
+  key: null
+  fk_note: null
+- name: use_previous_period
+  data_type: null
+  description: "Cho phép sử dụng dữ liệu kỳ trước khi kỳ hiện tại chưa có
+0=Không
+1=Có"
+  key: null
+  fk_note: null
+- name: value_type
+  data_type: null
+  description: "Kiểu dữ liệu
+1=Lấy từ DB
+2=Công thức"
+  key: null
+  fk_note: null
