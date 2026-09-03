@@ -1723,6 +1723,30 @@ entities:
   source_table: "SCMS.CAT_NATIONALITY"
   status: "draft"
 - bcv_core_object: "Common"
+  bcv_concept: "[Common] Classification"
+  atomic_entity: "Classification Risk Indicator"
+  table_type: "Classification"
+  domain_prefix: "Classification"
+  entity_physical_name: "cl_risk_indicator"
+  description: "Danh mục chỉ tiêu tài chính rủi ro (vĩ mô, tiền tệ, thị trường cổ\
+    \ phiếu...) dùng cho Dashboard giám sát rủi ro của QLRR — gồm mã, tên, nhóm, đơn\
+    \ vị, nguồn dữ liệu mặc định và tần suất cập nhật. BCV Concept = [Common] Classification\
+    \ theo chỉ đạo Data Modeler."
+  source_table: "QLRR.RISK_INDICATOR"
+  status: "draft"
+- bcv_core_object: "Common"
+  bcv_concept: "[Common] Classification"
+  atomic_entity: "Classification Risk Indicator Value"
+  table_type: "Classification"
+  domain_prefix: "Classification"
+  entity_physical_name: "cl_risk_indicator_value"
+  description: "Giá trị thực tế của từng chỉ tiêu tài chính rủi ro theo kỳ (ngày/tháng/quý/năm),\
+    \ FK đến Classification Risk Indicator. BCV Concept = [Common] Classification\
+    \ theo chỉ đạo Data Modeler — khác thiết kế tham khảo trước đây (Transaction/Fact\
+    \ Append); xem điểm cần xác nhận 7e #1."
+  source_table: "QLRR.RISK_INDICATOR_VALUE"
+  status: "draft"
+- bcv_core_object: "Common"
   bcv_concept: "[Common] Service"
   atomic_entity: "Classification Service"
   table_type: "Classification"
@@ -1744,8 +1768,8 @@ entities:
     \ giá trị phân loại từ Orchard Core ContentItem. ContentType = schema_code (nhóm\
     \ scheme); ContentItemId = cl_code (BK). 10 scheme: TRANG_THAI_HO_SO, LOAI_HO_SO,\
     \ LINH_VUC_TTHC, MUC_DO_TTHC, KENH_TIEP_NHAN, CO_QUAN_XU"
-  source_table: "TTHC.CLASSIFICATION_VALUE, NHNCK.APPLICATION_SOURCES, NHNCK.APPLICATION_STATUSES,\
-    \ NHNCK.DOCUMENTS, NHNCK.SPECIALIZATIONS"
+  source_table: "QLRR.RISK_INDICATOR_CATEGORY, TTHC.CLASSIFICATION_VALUE, NHNCK.APPLICATION_SOURCES,\
+    \ NHNCK.APPLICATION_STATUSES, NHNCK.DOCUMENTS, NHNCK.SPECIALIZATIONS"
   status: "draft"
 - bcv_core_object: "Product"
   bcv_concept: "[Product] Financial Market Instrument"

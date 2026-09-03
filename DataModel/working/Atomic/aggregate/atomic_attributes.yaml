@@ -28,7 +28,7 @@ attributes:
   source_system: "GSGD"
   source_table: "INVESTOR_ACCOUNT"
   source_column: "GSGD.INVESTOR_ACCOUNT.ACCOUNT_CODE"
-  comment: "BK chính. Hash: hash_id('GSGD.INVESTOR_ACCOUNT', ACCOUNT_CODE) dùng cho\
+  comment: "BK chính. Hash: hash_id('GSGD_INVESTOR_ACCOUNT', ACCOUNT_CODE) dùng cho\
     \ Account Investor Id."
   classification_context: null
   etl_derived_value: null
@@ -61,7 +61,7 @@ attributes:
   source_system: "GSGD"
   source_table: "INVESTOR_ACCOUNT"
   source_column: "GSGD.INVESTOR_ACCOUNT.IDENTITY_NUMBER"
-  comment: "FK target: Individual.Individual Id. Hash: hash_id('NHNCK.IDENTITY_INFO_C06S',\
+  comment: "FK target: Individual.Individual Id. Hash: hash_id('NHNCK_IDENTITY_INFO_C06S',\
     \ IDENTITY_NUMBER). Cross-source FK (GSGD → NHNCK) — Individual mới có quyết định\
     \ HLD (NHNCK, 2026-07-23), chưa có LLD/manifest entry (forward reference — xem\
     \ GSGD_HLD_Tier1.md 6f T1-07). Khi NHNCK thiết kế LLD Individual, bắt buộc dùng\
@@ -131,7 +131,7 @@ attributes:
   source_table: "INVESTOR_ACCOUNT"
   source_column: "GSGD.INVESTOR_ACCOUNT.NATIONALITY"
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
-    \ = 'COUNTRY'). Hash: hash_id('ECAT.COUNTRY', NATIONALITY) | Chưa xác nhận giá\
+    \ = 'COUNTRY'). Hash: hash_id('ECAT_COUNTRY', NATIONALITY) | Chưa xác nhận giá\
     \ trị trường NATIONALITY khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
@@ -1417,20 +1417,18 @@ attributes:
   atomic_entity: "Public Company Shareholding"
   atomic_attribute: "Shareholder Type Code"
   description: "Loại cổ đông (có thể thuộc nhiều loại cùng lúc)."
-  data_domain: "Array<Text>"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
   source_table: "COMPANY_SHAREHOLDING"
   source_column: "IDS.COMPANY_SHAREHOLDING.SHAREHOLDER_TYPE"
-  comment: "Scheme: IDS_SHAREHOLDER_TYPE (source_table, LOOKUP_GROUP = 'SHAREHOLDER_TYPE').\
-    \ Nguồn lưu dạng chuỗi các mã cách nhau dấu phẩy — parse thành Array<Text> khi\
-    \ lên Atomic. Chưa có trong HLD 6d, bổ sung scheme mới."
-  classification_context: "IDS_SHAREHOLDER_TYPE"
+  comment: "Scheme: IDS_SHAREHOLDER_TYPE (source_table, LOOKUP_GROUP = 'SHAREHOLDER_TYPE')."
+  classification_context: null
   etl_derived_value: null
   atomic_table: "pc_shareholding"
   atomic_column: "shareholder_tp_code"
-  data_type: "array<string>"
+  data_type: "string"
 - bcv_core_object: "Arrangement"
   atomic_entity: "Public Company Shareholding"
   atomic_attribute: "Ownership Quantity"
@@ -1544,22 +1542,6 @@ attributes:
   atomic_table: "pc_shareholding"
   atomic_column: "data_updated_dt"
   data_type: "date"
-- bcv_core_object: "Arrangement"
-  atomic_entity: "Public Company Shareholding"
-  atomic_attribute: "Deleted Indicator"
-  description: "Đánh dấu xóa mềm."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_SHAREHOLDING"
-  source_column: "IDS.COMPANY_SHAREHOLDING.DELETE_FLG"
-  comment: "Encoding nguồn: 1 = Xóa, 0 = Không xóa."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_shareholding"
-  atomic_column: "deleted_ind"
-  data_type: "int"
 - bcv_core_object: "Arrangement"
   atomic_entity: "Public Company State Capital"
   atomic_attribute: "Public Company State Capital Id"
@@ -1738,22 +1720,6 @@ attributes:
   atomic_table: "pc_state_capital"
   atomic_column: "ownership_ratio_percentage"
   data_type: "decimal(5,2)"
-- bcv_core_object: "Arrangement"
-  atomic_entity: "Public Company State Capital"
-  atomic_attribute: "Deleted Indicator"
-  description: "Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "STATE_CAPITAL"
-  source_column: "IDS.STATE_CAPITAL.DELETE_FLG"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_state_capital"
-  atomic_column: "deleted_ind"
-  data_type: "int"
 - bcv_core_object: "Arrangement"
   atomic_entity: "Trading Authorization"
   atomic_attribute: "Trading Authorization Id"
@@ -2649,7 +2615,7 @@ attributes:
   source_column: null
   comment: "PK surrogate. BCV: \"[Business Activity] Involved Party Rating Activity\"\
     . Cục Thuế xếp hạng/đánh giá 1 DN thuộc diện rủi ro cao theo từng năm đánh giá.\
-    \ Hash: hash_id('KNT.HIGH_RISK_ENTERPRISE', ENTERPRISE_CODE)."
+    \ Hash: hash_id('KNT_HIGH_RISK_ENTERPRISE', ENTERPRISE_CODE)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "et_high_risk_enterprise"
@@ -4010,7 +3976,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Bond Evaluation"
-  atomic_attribute: "Business Registration Number Snapshot"
+  atomic_attribute: "Business Registration Number"
   description: "Mã số doanh nghiệp (snapshot tại thời điểm đánh giá)."
   data_domain: "Text"
   nullable: true
@@ -4024,12 +3990,12 @@ attributes:
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_bond_evaluation"
-  atomic_column: "business_registration_nbr_snpst"
+  atomic_column: "business_registration_nbr"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Bond Evaluation"
-  atomic_attribute: "Equity Ticker Symbol Snapshot"
-  description: "Mã cổ phiếu (mã chứng khoán, snapshot tại thời điểm đánh giá)."
+  atomic_attribute: "Equity Ticker Symbol"
+  description: "Mã cổ phiếu (mã chứng khoán)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
@@ -4040,12 +4006,12 @@ attributes:
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_bond_evaluation"
-  atomic_column: "equity_ticker_symbol_snpst"
+  atomic_column: "equity_ticker_symbol"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Bond Evaluation"
-  atomic_attribute: "Public Company Name Snapshot"
-  description: "Tên công ty (snapshot tại thời điểm đánh giá)."
+  atomic_attribute: "Public Company Name"
+  description: "Tên công ty."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
@@ -4056,7 +4022,7 @@ attributes:
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_bond_evaluation"
-  atomic_column: "pc_nm_snpst"
+  atomic_column: "pc_nm"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Bond Evaluation"
@@ -4234,8 +4200,7 @@ attributes:
   source_table: "EVALUATIONS"
   source_column: "IDS.EVALUATIONS.PERIOD_ID"
   comment: "FK target: pc_evaluation_period.pc_evaluation_period_id. Hash: hash_id('IDS_EVALUATION_PERIODS',\
-    \ PERIOD_ID). Nguồn không có fk_note tường minh nhưng ngữ cảnh và HLD Tier3 xác\
-    \ nhận đây là FK đến EVALUATION_PERIODS."
+    \ PERIOD_ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_evaluation"
@@ -5029,7 +4994,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Securities Offering"
-  atomic_attribute: "Approver User Name Snapshot"
+  atomic_attribute: "Approver User Name"
   description: "Tên lãnh đạo phê duyệt (snapshot text tại thời điểm chọn, độc lập\
     \ với Approver User Code)."
   data_domain: "Text"
@@ -5043,7 +5008,7 @@ attributes:
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_securities_offering"
-  atomic_column: "approver_user_nm_snpst"
+  atomic_column: "approver_user_nm"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Securities Offering"
@@ -5082,7 +5047,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Securities Offering"
-  atomic_attribute: "Processor User Name Snapshot"
+  atomic_attribute: "Processor User Name"
   description: "Tên chuyên viên xử lý (đồng bộ từ TTHC hoặc chọn thủ công tại IDS)."
   data_domain: "Text"
   nullable: true
@@ -5094,7 +5059,7 @@ attributes:
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_securities_offering"
-  atomic_column: "processor_user_nm_snpst"
+  atomic_column: "processor_user_nm"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Securities Offering"
@@ -5127,38 +5092,6 @@ attributes:
   etl_derived_value: null
   atomic_table: "pc_securities_offering"
   atomic_column: "multi_turn_ind"
-  data_type: "int"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Securities Offering"
-  atomic_attribute: "Synced From External System Indicator"
-  description: "Đánh dấu hồ sơ được đồng bộ từ hệ thống TTHC hay tạo mới tại IDS."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "SECURITIES_OFFERING"
-  source_column: "IDS.SECURITIES_OFFERING.IS_SYNC"
-  comment: "Encoding nguồn: 1 = Đồng bộ từ TTHC, 0 = Tạo mới tại IDS."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_securities_offering"
-  atomic_column: "synced_from_external_stm_ind"
-  data_type: "int"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Securities Offering"
-  atomic_attribute: "Deleted Indicator"
-  description: "Đánh dấu trạng thái xóa mềm."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "SECURITIES_OFFERING"
-  source_column: "IDS.SECURITIES_OFFERING.DELETE_FLG"
-  comment: "Encoding nguồn: 1 = Đã xóa, 0 = Chưa xóa."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_securities_offering"
-  atomic_column: "deleted_ind"
   data_type: "int"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Securities Offering"
@@ -5402,7 +5335,7 @@ attributes:
   data_type: "decimal(23,2)"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Securities Offering Plan"
-  atomic_attribute: "Total Registered Quantity Snapshot"
+  atomic_attribute: "Total Registered Quantity"
   description: "Tổng số chứng khoán chào bán/phát hành."
   data_domain: "Small Counter"
   nullable: true
@@ -5415,7 +5348,7 @@ attributes:
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_securities_offering_plan"
-  atomic_column: "total_registered_quantity_snpst"
+  atomic_column: "total_registered_quantity"
   data_type: "int"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Securities Offering Plan"
@@ -5435,7 +5368,7 @@ attributes:
   data_type: "decimal(23,2)"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Securities Offering Plan"
-  atomic_attribute: "Total Expected Amount Snapshot"
+  atomic_attribute: "Total Expected Amount"
   description: "Tổng số tiền dự kiến thu được, VNĐ."
   data_domain: "Currency Amount"
   nullable: true
@@ -5448,7 +5381,7 @@ attributes:
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_securities_offering_plan"
-  atomic_column: "total_expected_amt_snpst"
+  atomic_column: "total_expected_amt"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Securities Offering Plan"
@@ -6149,22 +6082,6 @@ attributes:
   data_type: "decimal(5,2)"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Securities Offering Plan"
-  atomic_attribute: "Deleted Indicator"
-  description: "Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "SECURITIES_OFFERING_PLAN"
-  source_column: "IDS.SECURITIES_OFFERING_PLAN.DELETE_FLG"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_securities_offering_plan"
-  atomic_column: "deleted_ind"
-  data_type: "int"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Securities Offering Plan"
   atomic_attribute: "Single Offering Object"
   description: "Đối tượng chào bán phát hành riêng lẻ."
   data_domain: "Text"
@@ -6317,7 +6234,7 @@ attributes:
   data_type: "date"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Securities Offering Result"
-  atomic_attribute: "Offering Method Code Snapshot"
+  atomic_attribute: "Offering Method Code"
   description: "Hình thức chào bán phát hành (snapshot lấy từ Phương án chào bán)."
   data_domain: "Classification Value"
   nullable: true
@@ -6331,7 +6248,7 @@ attributes:
   classification_context: "IDS_SO_OFFERING_METHOD"
   etl_derived_value: null
   atomic_table: "pc_securities_offering_result"
-  atomic_column: "offering_method_code_snpst"
+  atomic_column: "offering_method_code"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Securities Offering Result"
@@ -7086,7 +7003,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Securities Offering Result"
-  atomic_attribute: "Processor User Name Snapshot"
+  atomic_attribute: "Processor User Name"
   description: "Tên chuyên viên xử lý (đồng bộ từ TTHC hoặc chọn thủ công tại IDS)."
   data_domain: "Text"
   nullable: true
@@ -7098,7 +7015,7 @@ attributes:
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_securities_offering_result"
-  atomic_column: "processor_user_nm_snpst"
+  atomic_column: "processor_user_nm"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Securities Offering Result"
@@ -7212,38 +7129,6 @@ attributes:
   atomic_table: "pc_securities_offering_result"
   atomic_column: "net_offering_proceeds"
   data_type: "decimal(23,2)"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Securities Offering Result"
-  atomic_attribute: "Synced From External System Indicator"
-  description: "Đánh dấu đồng bộ dữ liệu từ hệ thống CBTT hay tạo mới tại IDS."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "SECURITIES_OFFERING_RESULT"
-  source_column: "IDS.SECURITIES_OFFERING_RESULT.IS_SYNC"
-  comment: "Encoding nguồn: 1 = Đồng bộ từ CBTT, 0 = Tạo mới tại IDS."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_securities_offering_result"
-  atomic_column: "synced_from_external_stm_ind"
-  data_type: "int"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Securities Offering Result"
-  atomic_attribute: "Deleted Indicator"
-  description: "Đánh dấu trạng thái xóa mềm."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "SECURITIES_OFFERING_RESULT"
-  source_column: "IDS.SECURITIES_OFFERING_RESULT.DELETE_FLG"
-  comment: "Encoding nguồn: 1 = Xóa, 0 = Chưa xóa."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_securities_offering_result"
-  atomic_column: "deleted_ind"
-  data_type: "int"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Securities Offering Result"
   atomic_attribute: "Approver Comment"
@@ -7977,22 +7862,6 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Treasury Share Transaction"
-  atomic_attribute: "Deleted Indicator"
-  description: "Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_TREASURY_SHARES"
-  source_column: "IDS.COMPANY_TREASURY_SHARES.DELETE_FLG"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1,0)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_treasury_share_transaction"
-  atomic_column: "deleted_ind"
-  data_type: "int"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Treasury Share Transaction"
   atomic_attribute: "Approver Comment"
   description: "Nội dung đề xuất phê duyệt / Lý do từ chối."
   data_domain: "Text"
@@ -8481,22 +8350,6 @@ attributes:
   atomic_table: "pc_treasury_share_transaction_result"
   atomic_column: "revision_reason"
   data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Treasury Share Transaction Result"
-  atomic_attribute: "Deleted Indicator"
-  description: "Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "TREASURY_SHARE_TRANS_RESULT"
-  source_column: "IDS.TREASURY_SHARE_TRANS_RESULT.DELETE_FLG"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1,0)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_treasury_share_transaction_result"
-  atomic_column: "deleted_ind"
-  data_type: "int"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Treasury Share Transaction Result"
   atomic_attribute: "Approver Comment"
@@ -12297,7 +12150,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Violation Report"
-  atomic_attribute: "Period Type Code"
+  atomic_attribute: "Period Quarter Type Code"
   description: "Loại kỳ tính: Quý 1-4, Năm, hoặc Bán niên."
   data_domain: "Classification Value"
   nullable: true
@@ -12305,14 +12158,11 @@ attributes:
   source_system: "IDS"
   source_table: "VIOLATION_REPORT"
   source_column: "IDS.VIOLATION_REPORT.PERIOD_QUARTER"
-  comment: "Scheme: IDS_VIOLATION_REPORT_PERIOD_TYPE (modeler_defined, no_lookup)\
-    \ — chưa có trong HLD 6d, bổ sung scheme mới. Nguồn NUMBER encode: 1-4 = Quý 1-4,\
-    \ 5 = Năm, 6 = Bán niên (không phải counter thuần túy nên map Classification Value\
-    \ thay vì Small Counter)."
-  classification_context: "IDS_VIOLATION_REPORT_PERIOD_TYPE"
+  comment: "SCHEMA_CODE=IDS.PERIOD_QUARTER_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='QUARTER_CODE')."
+  classification_context: null
   etl_derived_value: null
   atomic_table: "violation_report"
-  atomic_column: "period_tp_code"
+  atomic_column: "period_quarter_tp_code"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Violation Report"
@@ -12404,9 +12254,9 @@ attributes:
   source_system: "IDS"
   source_table: "VIOLATION_REPORT"
   source_column: "IDS.VIOLATION_REPORT.STATUS"
-  comment: "Scheme: IDS_VIOLATION_REPORT_STATUS (no_lookup) — chưa có trong HLD 6d,\
-    \ bổ sung scheme mới."
-  classification_context: "IDS_VIOLATION_REPORT_STATUS"
+  comment: "SCHEMA_CODE=IDS.VIOLATION_SUBMISSION_STATUS. Values load từ LOOKUP_VALUES\
+    \ (LOOKUP_GROUP='VIOLATION_STATUS')."
+  classification_context: null
   etl_derived_value: null
   atomic_table: "violation_report"
   atomic_column: "submission_status_code"
@@ -12736,7 +12586,7 @@ attributes:
   source_table: "INFO_REQUEST_DETAIL"
   source_column: null
   comment: "PK surrogate. BCV: \"[Communication] Information Request\". 1 lần trao\
-    \ đổi yêu cầu thông tin từ Cục Thuế gửi UBCKNN. Hash: hash_id('KNT.INFO_REQUEST_DETAIL',\
+    \ đổi yêu cầu thông tin từ Cục Thuế gửi UBCKNN. Hash: hash_id('KNT_INFO_REQUEST_DETAIL',\
     \ ID)."
   classification_context: null
   etl_derived_value: null
@@ -12788,7 +12638,7 @@ attributes:
   source_table: "INFO_REQUEST_DETAIL"
   source_column: "KNT.INFO_REQUEST_DETAIL.TAX_CODE"
   comment: "FK target: External Tax Registration.External Tax Registration Id. Hash:\
-    \ hash_id('KNT.TAX_REGISTRATION_INFO', TAX_CODE)."
+    \ hash_id('KNT_TAX_REGISTRATION_INFO', TAX_CODE)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "et_information_request"
@@ -15228,13 +15078,27 @@ attributes:
   source_system: "IDS"
   source_table: "REPORT_CATALOG"
   source_column: "IDS.REPORT_CATALOG.ID"
-  comment: "BK chính — chuyển từ mã nghiệp vụ (REPORT_CD) sang ID kỹ thuật nguồn do\
-    \ REPORT_CD không đảm bảo unique (xác nhận qua profile dữ liệu — quyết định Data\
-    \ Modeler 2026-08-27). Nguồn NUMBER(10,0) — ETL cast sang string."
+  comment: "BK chính — Nguồn NUMBER(10,0) — ETL cast sang string."
   classification_context: null
   etl_derived_value: null
   atomic_table: "fr_catalog"
   atomic_column: "fr_catalog_code"
+  data_type: "string"
+- bcv_core_object: "Condition"
+  atomic_entity: "Financial Report Catalog"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "REPORT_CATALOG"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'IDS_REPORT_CATALOG'"
+  etl_derived_value: "IDS_REPORT_CATALOG"
+  atomic_table: "fr_catalog"
+  atomic_column: "src_stm_code"
   data_type: "string"
 - bcv_core_object: "Condition"
   atomic_entity: "Financial Report Catalog"
@@ -15252,22 +15116,6 @@ attributes:
   etl_derived_value: null
   atomic_table: "fr_catalog"
   atomic_column: "rpt_code"
-  data_type: "string"
-- bcv_core_object: "Condition"
-  atomic_entity: "Financial Report Catalog"
-  atomic_attribute: "Source System Code"
-  description: "Mã hệ thống nguồn dữ liệu."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "REPORT_CATALOG"
-  source_column: null
-  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "Source System Code = 'IDS_REPORT_CATALOG'"
-  etl_derived_value: "IDS_REPORT_CATALOG"
-  atomic_table: "fr_catalog"
-  atomic_column: "src_stm_code"
   data_type: "string"
 - bcv_core_object: "Condition"
   atomic_entity: "Financial Report Catalog"
@@ -15303,19 +15151,19 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Condition"
   atomic_entity: "Financial Report Catalog"
-  atomic_attribute: "Financial Report Catalog Type Code"
-  description: "Loại báo cáo (I - Báo cáo đầu vào, O - Báo cáo xuất ra)."
+  atomic_attribute: "Report Catalog Type Code"
+  description: "Loại báo cáo, lấy từ bảng REPORT_CATALOG."
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
   source_table: "REPORT_CATALOG"
   source_column: "IDS.REPORT_CATALOG.RC_TYPE_CD"
-  comment: "Scheme: IDS_REPORT_CATALOG_TYPE. Values lấy trực tiếp từ cột nguồn (LOOKUP_GROUP='RC_TYPE')."
-  classification_context: "IDS_REPORT_CATALOG_TYPE"
+  comment: "SCHEMA_CODE=IDS.REPORT_CATALOG_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='RC_TYPE')."
+  classification_context: null
   etl_derived_value: null
   atomic_table: "fr_catalog"
-  atomic_column: "fr_catalog_tp_code"
+  atomic_column: "rpt_catalog_tp_code"
   data_type: "string"
 - bcv_core_object: "Condition"
   atomic_entity: "Financial Report Catalog"
@@ -15336,7 +15184,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Condition"
   atomic_entity: "Financial Report Catalog"
-  atomic_attribute: "Financial Report Scope Code"
+  atomic_attribute: "Financial Report Scope Type Code"
   description: "Loại hình báo cáo (Hợp nhất, Mẹ)."
   data_domain: "Classification Value"
   nullable: true
@@ -15344,11 +15192,11 @@ attributes:
   source_system: "IDS"
   source_table: "REPORT_CATALOG"
   source_column: "IDS.REPORT_CATALOG.REPORT_SCOPE_CD"
-  comment: "Scheme: IDS_REPORT_SCOPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_SCOPE')."
-  classification_context: "IDS_REPORT_SCOPE"
+  comment: "SCHEMA_CODE=IDS.REPORT_SCOPE_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_SCOPE')."
+  classification_context: null
   etl_derived_value: null
   atomic_table: "fr_catalog"
-  atomic_column: "fr_scope_code"
+  atomic_column: "fr_scope_tp_code"
   data_type: "string"
 - bcv_core_object: "Condition"
   atomic_entity: "Financial Report Catalog"
@@ -15360,9 +15208,8 @@ attributes:
   source_system: "IDS"
   source_table: "REPORT_CATALOG"
   source_column: "IDS.REPORT_CATALOG.ENTERPRISE_TYPE_CD"
-  comment: "Scheme: IDS_ENTERPRISE_TYPE. Dùng chung scheme với Public Company.Enterprise\
-    \ Type Code (LOOKUP_GROUP='ENTERPRISE_TYPE')."
-  classification_context: "IDS_ENTERPRISE_TYPE"
+  comment: "SCHEMA_CODE=IDS.ENTERPRISE_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='ENTERPRISE_TYPE')."
+  classification_context: null
   etl_derived_value: null
   atomic_table: "fr_catalog"
   atomic_column: "enterprise_tp_code"
@@ -15385,104 +15232,54 @@ attributes:
   data_type: "int"
 - bcv_core_object: "Condition"
   atomic_entity: "Financial Report Catalog"
-  atomic_attribute: "Active Indicator"
-  description: "Trạng thái sử dụng."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "REPORT_CATALOG"
-  source_column: "IDS.REPORT_CATALOG.ACTIVE_FLG"
-  comment: "Giá trị 1 → true (đang sử dụng); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fr_catalog"
-  atomic_column: "active_ind"
-  data_type: "int"
-- bcv_core_object: "Condition"
-  atomic_entity: "Financial Report Catalog"
-  atomic_attribute: "System Code"
-  description: "Hệ thống con trong IDS."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "REPORT_CATALOG"
-  source_column: "IDS.REPORT_CATALOG.SYSTEM_CD"
-  comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong\
-    \ tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fr_catalog"
-  atomic_column: "stm_code"
-  data_type: "string"
-- bcv_core_object: "Condition"
-  atomic_entity: "Financial Report Catalog"
-  atomic_attribute: "Financial Statement Reference"
+  atomic_attribute: "Financial Statement Type Code"
   description: "Tham chiếu báo cáo tài chính (không có mô tả tại nguồn)."
-  data_domain: "Text"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
   source_table: "REPORT_CATALOG"
   source_column: "IDS.REPORT_CATALOG.FINANCIAL_STATEMENT_CD"
-  comment: "Nguồn VARCHAR2(500), description null — giữ Text denormalized. Cần Data\
-    \ Modeler xác nhận ý nghĩa nghiệp vụ trước khi dùng (có thể là danh sách composite)."
+  comment: "SCHEMA_CODE=IDS.FINANCIAL_STATEMENT_TYPE. Values load từ LOOKUP_VALUES\
+    \ (LOOKUP_GROUP='FINANCIAL_STATEMENT_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "fr_catalog"
-  atomic_column: "financial_statement_reference"
+  atomic_column: "financial_statement_tp_code"
   data_type: "string"
 - bcv_core_object: "Condition"
   atomic_entity: "Financial Report Catalog"
-  atomic_attribute: "Reporting Period Reference"
-  description: "Tham chiếu kỳ báo cáo (không có mô tả tại nguồn)."
-  data_domain: "Text"
+  atomic_attribute: "Reporting Period Type Code"
+  description: "Loại kỳ báo cáo."
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
   source_table: "REPORT_CATALOG"
   source_column: "IDS.REPORT_CATALOG.REPORTING_PERIOD_CD"
-  comment: "Nguồn VARCHAR2(500), description null — giữ Text denormalized. Cần Data\
-    \ Modeler xác nhận ý nghĩa nghiệp vụ trước khi dùng."
+  comment: "SCHEMA_CODE=IDS.REPORT_PERIOD_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_PERIOD_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "fr_catalog"
-  atomic_column: "reporting_period_reference"
+  atomic_column: "reporting_period_tp_code"
   data_type: "string"
 - bcv_core_object: "Condition"
   atomic_entity: "Financial Report Catalog"
-  atomic_attribute: "Reference Code"
-  description: "Mã tham chiếu (không có mô tả tại nguồn)."
+  atomic_attribute: "Financial Statement Component Type Code"
+  description: "Loại thành phần của báo cáo tài chính."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
   source_table: "REPORT_CATALOG"
   source_column: "IDS.REPORT_CATALOG.REF_CD"
-  comment: "Nguồn VARCHAR2(500), description null — giữ Text denormalized. Cần Data\
-    \ Modeler xác nhận ý nghĩa nghiệp vụ trước khi dùng."
+  comment: "SCHEMA_CODE=IDS.FINANCIAL_STATEMENT_COMPONENT_TYPE. Values load từ LOOKUP_VALUES\
+    \ (LOOKUP_GROUP='FINANCIAL_STATEMENT_COMPONENT')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "fr_catalog"
-  atomic_column: "reference_code"
+  atomic_column: "financial_statement_component_tp_code"
   data_type: "string"
-- bcv_core_object: "Condition"
-  atomic_entity: "Financial Report Catalog"
-  atomic_attribute: "Deleted Indicator"
-  description: "Trạng thái xóa."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "REPORT_CATALOG"
-  source_column: "IDS.REPORT_CATALOG.IS_DELETED"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fr_catalog"
-  atomic_column: "deleted_ind"
-  data_type: "int"
 - bcv_core_object: "Condition"
   atomic_entity: "Public Company Evaluation Criterion"
   atomic_attribute: "Public Company Evaluation Criterion Id"
@@ -15633,54 +15430,6 @@ attributes:
   etl_derived_value: null
   atomic_table: "pc_evaluation_criterion"
   atomic_column: "basic_criterion_ind"
-  data_type: "int"
-- bcv_core_object: "Condition"
-  atomic_entity: "Public Company Evaluation Criterion"
-  atomic_attribute: "Display Order Group"
-  description: "Số thứ tự hiển thị nhóm."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "EVALUATION_CRITERIA"
-  source_column: "IDS.EVALUATION_CRITERIA.DISPLAY_ORDER_GROUP"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_evaluation_criterion"
-  atomic_column: "display_order_group"
-  data_type: "int"
-- bcv_core_object: "Condition"
-  atomic_entity: "Public Company Evaluation Criterion"
-  atomic_attribute: "Display Order Subgroup"
-  description: "Số thứ tự hiển thị nhóm con."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "EVALUATION_CRITERIA"
-  source_column: "IDS.EVALUATION_CRITERIA.DISPLAY_ORDER_SUBGROUP"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_evaluation_criterion"
-  atomic_column: "display_order_subgroup"
-  data_type: "int"
-- bcv_core_object: "Condition"
-  atomic_entity: "Public Company Evaluation Criterion"
-  atomic_attribute: "Display Order"
-  description: "Sắp xếp chỉ tiêu."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "EVALUATION_CRITERIA"
-  source_column: "IDS.EVALUATION_CRITERIA.DISPLAY_ORDER"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_evaluation_criterion"
-  atomic_column: "display_order"
   data_type: "int"
 - bcv_core_object: "Condition"
   atomic_entity: "Securities Practitioner Qualification Examination Assessment Fee"
@@ -16800,7 +16549,7 @@ attributes:
   source_table: "TAX_REPORT"
   source_column: null
   comment: "PK surrogate. BCV: \"[Documentation] Declaration Document\". Tờ khai/báo\
-    \ cáo tài chính do Cục Thuế cung cấp theo từng kỳ kê khai. Hash: hash_id('KNT.TAX_REPORT',\
+    \ cáo tài chính do Cục Thuế cung cấp theo từng kỳ kê khai. Hash: hash_id('KNT_TAX_REPORT',\
     \ DECLARATION_CODE)."
   classification_context: null
   etl_derived_value: null
@@ -16852,7 +16601,7 @@ attributes:
   source_table: "TAX_REPORT"
   source_column: "KNT.TAX_REPORT.TAX_CODE"
   comment: "FK target: External Tax Registration.External Tax Registration Id. Hash:\
-    \ hash_id('KNT.TAX_REGISTRATION_INFO', TAX_CODE)."
+    \ hash_id('KNT_TAX_REGISTRATION_INFO', TAX_CODE)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "et_declaration_report"
@@ -17762,7 +17511,7 @@ attributes:
   source_table: "TAX_REPORT_DETAIL"
   source_column: null
   comment: "PK surrogate. BCV: \"[Documentation] Reported Information\". Dòng chỉ\
-    \ tiêu chi tiết trong 1 External Tax Declaration Report. Hash: hash_id('KNT.TAX_REPORT_DETAIL',\
+    \ tiêu chi tiết trong 1 External Tax Declaration Report. Hash: hash_id('KNT_TAX_REPORT_DETAIL',\
     \ ID)."
   classification_context: null
   etl_derived_value: null
@@ -17814,7 +17563,7 @@ attributes:
   source_column: "KNT.TAX_REPORT_DETAIL.TAX_REPORT_ID"
   comment: "FK target: et_declaration_report.et_declaration_rpt_id. Cần ETL crosswalk\
     \ sang KNT.TAX_REPORT: TAX_REPORT_DETAIL.TAX_REPORT_ID = TAX_REPORT.ID để xác\
-    \ nhận DECLARATION_CODE sau đó hash_id('KNT.TAX_REPORT', DECLARATION_CODE) |"
+    \ nhận DECLARATION_CODE sau đó hash_id('KNT_TAX_REPORT', DECLARATION_CODE) |"
   classification_context: null
   etl_derived_value: null
   atomic_table: "et_declaration_report_detail"
@@ -18269,7 +18018,7 @@ attributes:
   source_table: "TAX_ENFORCEMENT_DEBT"
   source_column: null
   comment: "PK surrogate. BCV: \"[Documentation] Gov. Registration Document\". Quyết\
-    \ định cưỡng chế nợ thuế do Cục Thuế ban hành. Hash: hash_id('KNT.TAX_ENFORCEMENT_DEBT',\
+    \ định cưỡng chế nợ thuế do Cục Thuế ban hành. Hash: hash_id('KNT_TAX_ENFORCEMENT_DEBT',\
     \ DECISION_NUMBER)."
   classification_context: null
   etl_derived_value: null
@@ -18319,7 +18068,7 @@ attributes:
   source_table: "TAX_ENFORCEMENT_DEBT"
   source_column: "KNT.TAX_ENFORCEMENT_DEBT.TAXPAYER_TAX_CODE"
   comment: "FK target: External Tax Registration.External Tax Registration Id. Hash:\
-    \ hash_id('KNT.TAX_REGISTRATION_INFO', TAX_CODE)."
+    \ hash_id('KNT_TAX_REGISTRATION_INFO', TAX_CODE)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "et_enforcement_debt_decision"
@@ -18763,7 +18512,7 @@ attributes:
   source_table: "TAX_ENFORCEMENT_INVOICE"
   source_column: null
   comment: "PK surrogate. BCV: \"[Documentation] Gov. Registration Document\". Quyết\
-    \ định cưỡng chế ngừng sử dụng hóa đơn do Cục Thuế ban hành. Hash: hash_id('KNT.TAX_ENFORCEMENT_INVOICE',\
+    \ định cưỡng chế ngừng sử dụng hóa đơn do Cục Thuế ban hành. Hash: hash_id('KNT_TAX_ENFORCEMENT_INVOICE',\
     \ DECISION_NUMBER)."
   classification_context: null
   etl_derived_value: null
@@ -18813,7 +18562,7 @@ attributes:
   source_table: "TAX_ENFORCEMENT_INVOICE"
   source_column: "KNT.TAX_ENFORCEMENT_INVOICE.TAXPAYER_TAX_CODE"
   comment: "FK target: External Tax Registration.External Tax Registration Id. Hash:\
-    \ hash_id('KNT.TAX_REGISTRATION_INFO', TAX_CODE)."
+    \ hash_id('KNT_TAX_REGISTRATION_INFO', TAX_CODE)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "et_enforcement_invoice_decision"
@@ -19194,7 +18943,7 @@ attributes:
   source_table: "INVOICE_DETAIL"
   source_column: null
   comment: "PK surrogate. BCV: \"[Documentation] Invoice\". 1 hóa đơn cụ thể bị áp\
-    \ dụng biện pháp cưỡng chế ngừng sử dụng. Hash: hash_id('KNT.INVOICE_DETAIL',\
+    \ dụng biện pháp cưỡng chế ngừng sử dụng. Hash: hash_id('KNT_INVOICE_DETAIL',\
     \ ID)."
   classification_context: null
   etl_derived_value: null
@@ -19248,7 +18997,7 @@ attributes:
   comment: "FK target: External Tax Enforcement Invoice Decision.External Tax Enforcement\
     \ Invoice Decision Id. Nguồn lưu ID kỹ thuật của TAX_ENFORCEMENT_INVOICE — ETL\
     \ join TAX_ENFORCEMENT_INVOICE_ID → KNT.TAX_ENFORCEMENT_INVOICE.ID để lấy DECISION_NUMBER\
-    \ rồi hash_id('KNT.TAX_ENFORCEMENT_INVOICE', DECISION_NUMBER)."
+    \ rồi hash_id('KNT_TAX_ENFORCEMENT_INVOICE', DECISION_NUMBER)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "et_invoice_detail"
@@ -19363,7 +19112,7 @@ attributes:
   source_table: "TAX_VIOLATION_HANDLING"
   source_column: null
   comment: "PK surrogate. BCV: \"[Documentation] Gov. Registration Document\". Quyết\
-    \ định xử lý vi phạm pháp luật về thuế do Cục Thuế cung cấp. Hash: hash_id('KNT.TAX_VIOLATION_HANDLING',\
+    \ định xử lý vi phạm pháp luật về thuế do Cục Thuế cung cấp. Hash: hash_id('KNT_TAX_VIOLATION_HANDLING',\
     \ HANDLING_DECISION_NUMBER)."
   classification_context: null
   etl_derived_value: null
@@ -19413,7 +19162,7 @@ attributes:
   source_table: "TAX_VIOLATION_HANDLING"
   source_column: "KNT.TAX_VIOLATION_HANDLING.TAX_CODE"
   comment: "FK target: External Tax Registration.External Tax Registration Id. Hash:\
-    \ hash_id('KNT.TAX_REGISTRATION_INFO', TAX_CODE)."
+    \ hash_id('KNT_TAX_REGISTRATION_INFO', TAX_CODE)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "et_violation_handling"
@@ -19821,16 +19570,14 @@ attributes:
 - bcv_core_object: "Documentation"
   atomic_entity: "Financial Report Column Template"
   atomic_attribute: "Column Type Code"
-  description: "Giá trị (không có mô tả rõ ràng tại nguồn)."
-  data_domain: "Text"
+  description: "Kiểu giá trị của cột V/F/D - Value/Formula/Description."
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
   source_table: "RCOL"
   source_column: "IDS.RCOL.COL_TYPE_CD"
-  comment: "Nguồn không tài liệu hóa rõ scheme (mô tả cột chỉ ghi \"Giá trị\", không\
-    \ có LOOKUP_GROUP tường minh như ROW_TYPE_CD) — giữ Text denormalized. Cần Data\
-    \ Modeler xác nhận ý nghĩa nghiệp vụ trước khi promote thành Classification Value."
+  comment: "SCHEMA_CODE=IDS.REPORT_ROW/COL_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_ROW_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "fr_column_template"
@@ -19879,9 +19626,8 @@ attributes:
   source_system: "IDS"
   source_table: "RCOL"
   source_column: "IDS.RCOL.RC_TYPE_CD"
-  comment: "Scheme: IDS_REPORT_CATALOG_TYPE. Trường lưu dư thừa — đã có Financial\
-    \ Report Catalog Id."
-  classification_context: "IDS_REPORT_CATALOG_TYPE"
+  comment: "SCHEMA_CODE=IDS.REPORT_CATALOG_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='RC_TYPE')."
+  classification_context: null
   etl_derived_value: null
   atomic_table: "fr_column_template"
   atomic_column: "rpt_catalog_tp_code"
@@ -19901,23 +19647,6 @@ attributes:
   etl_derived_value: null
   atomic_table: "fr_column_template"
   atomic_column: "description"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Financial Report Column Template"
-  atomic_attribute: "System Code"
-  description: "Hệ thống con trong IDS (không có mô tả tại nguồn)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "RCOL"
-  source_column: "IDS.RCOL.SYSTEM_CD"
-  comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong\
-    \ tài liệu thiết kế."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fr_column_template"
-  atomic_column: "stm_code"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Financial Report Column Template"
@@ -20063,9 +19792,8 @@ attributes:
   source_system: "IDS"
   source_table: "RROW"
   source_column: "IDS.RROW.ROW_TYPE_CD"
-  comment: "Scheme: IDS_REPORT_ROW_TYPE. Values lấy trực tiếp từ cột nguồn (LOOKUP_VALUES,\
-    \ LOOKUP_GROUP='REPORT_ROW_TYPE')."
-  classification_context: "IDS_REPORT_ROW_TYPE"
+  comment: "SCHEMA_CODE=IDS.REPORT_ROW/COL_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_ROW_TYPE')."
+  classification_context: null
   etl_derived_value: null
   atomic_table: "fr_row_template"
   atomic_column: "row_tp_code"
@@ -20163,32 +19891,12 @@ attributes:
   source_system: "IDS"
   source_table: "RROW"
   source_column: "IDS.RROW.RC_TYPE_CD"
-  comment: "Scheme: IDS_REPORT_CATALOG_TYPE. Trường lưu dư thừa — đã có Financial\
-    \ Report Catalog Id. Dùng chung scheme với Financial Report Catalog.Report Catalog\
-    \ Type Code."
-  classification_context: "IDS_REPORT_CATALOG_TYPE"
+  comment: "SCHEMA_CODE=IDS.REPORT_CATALOG_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='RC_TYPE')."
+  classification_context: null
   etl_derived_value: null
   atomic_table: "fr_row_template"
   atomic_column: "rpt_catalog_tp_code"
   data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Financial Report Row Template"
-  atomic_attribute: "Active Indicator"
-  description: "Trạng thái (0 không sử dụng, 1 - đang sử dụng)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "RROW"
-  source_column: "IDS.RROW.DELETE_FLG"
-  comment: "Giá trị 1 → true (đang sử dụng); 0 → false. Nguồn NUMBER(1), tên cột DELETE_FLG\
-    \ nhưng ngữ nghĩa là active/inactive theo mô tả BRD — đồng nhất pattern với fr_catalog.Active\
-    \ Indicator (lld_IDS_REPORT_CATALOG.yaml)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fr_row_template"
-  atomic_column: "active_ind"
-  data_type: "int"
 - bcv_core_object: "Documentation"
   atomic_entity: "Financial Report Row Template"
   atomic_attribute: "Description"
@@ -20204,23 +19912,6 @@ attributes:
   etl_derived_value: null
   atomic_table: "fr_row_template"
   atomic_column: "description"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Financial Report Row Template"
-  atomic_attribute: "System Code"
-  description: "Hệ thống con trong IDS (không có mô tả tại nguồn)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "RROW"
-  source_column: "IDS.RROW.SYSTEM_CD"
-  comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong\
-    \ tài liệu thiết kế. Đồng nhất pattern với fr_catalog.System Code."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fr_row_template"
-  atomic_column: "stm_code"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Financial Report Row Template"
@@ -20393,15 +20084,14 @@ attributes:
 - bcv_core_object: "Documentation"
   atomic_entity: "Financial Report Template"
   atomic_attribute: "News Type Code"
-  description: "Loại tin gốc."
-  data_domain: "Text"
+  description: "Mã phân loại."
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
   source_table: "FORMS"
   source_column: "IDS.FORMS.NEWS_TYPE_CD"
-  comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong\
-    \ tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
+  comment: "SCHEMA_CODE=IDS.NEWS_TYPE_CD. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "fr_template"
@@ -20410,15 +20100,14 @@ attributes:
 - bcv_core_object: "Documentation"
   atomic_entity: "Financial Report Template"
   atomic_attribute: "News Sub Type Code"
-  description: "Loại tin con."
-  data_domain: "Text"
+  description: "Mã phân loại con."
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
   source_table: "FORMS"
   source_column: "IDS.FORMS.SUB_NEWS_TYPE_CD"
-  comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong\
-    \ tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
+  comment: "SCHEMA_CODE=IDS.SUB_NEWS_TYPE_CD. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SUB_NEWS_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "fr_template"
@@ -20426,20 +20115,19 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Financial Report Template"
-  atomic_attribute: "News Group Type Code"
-  description: "Nhóm loại tin."
-  data_domain: "Text"
+  atomic_attribute: "Form Group Type Code"
+  description: "Nhóm biểu mẫu báo cáo."
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
   source_table: "FORMS"
   source_column: "IDS.FORMS.NEWS_TYPE_GROUP_CD"
-  comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong\
-    \ tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
+  comment: "SCHEMA_CODE=IDS.FORM_GROUP_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='FORM_GROUP')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "fr_template"
-  atomic_column: "news_group_tp_code"
+  atomic_column: "form_group_tp_code"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Financial Report Template"
@@ -20573,15 +20261,13 @@ attributes:
   atomic_entity: "Financial Report Template"
   atomic_attribute: "Report Type Code"
   description: "Loại báo cáo."
-  data_domain: "Text"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
   source_table: "FORMS"
   source_column: "IDS.FORMS.REPORT_TYPE"
-  comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong\
-    \ tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn. Nguồn\
-    \ lưu dạng số (NUMBER(1)) — ETL cần convert sang string."
+  comment: "SCHEMA_CODE=IDS.REPORT_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "fr_template"
@@ -20591,15 +20277,13 @@ attributes:
   atomic_entity: "Financial Report Template"
   atomic_attribute: "Control Unit Code"
   description: "Đơn vị kiểm soát."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
   source_table: "FORMS"
   source_column: "IDS.FORMS.CONTROL_UNIT_CD"
-  comment: "Scheme: IDS_CONTROL_UNIT (no_lookup) — chưa xác nhận cross-source FK đến\
-    \ Regulatory Authority Organization Unit; giữ Classification Value cho đến khi\
-    \ Data Modeler xác nhận."
+  comment: "Không có giá trị trong LOOKUP_VALUES"
   classification_context: "IDS_CONTROL_UNIT"
   etl_derived_value: null
   atomic_table: "fr_template"
@@ -20609,36 +20293,17 @@ attributes:
   atomic_entity: "Financial Report Template"
   atomic_attribute: "Operating Unit Code"
   description: "Đơn vị sử dụng."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "FORMS"
-  source_column: "IDS.FORMS.OPERATING_UNIT_CD"
-  comment: "Scheme: IDS_OPERATING_UNIT (no_lookup) — chưa xác nhận cross-source FK\
-    \ đến Regulatory Authority Organization Unit; giữ Classification Value cho đến\
-    \ khi Data Modeler xác nhận."
-  classification_context: "IDS_OPERATING_UNIT"
-  etl_derived_value: null
-  atomic_table: "fr_template"
-  atomic_column: "operating_unit_code"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Financial Report Template"
-  atomic_attribute: "System Code"
-  description: "Hệ thống con trong IDS."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
   source_table: "FORMS"
-  source_column: "IDS.FORMS.SYSTEM_CD"
-  comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong\
-    \ tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
-  classification_context: null
+  source_column: "IDS.FORMS.OPERATING_UNIT_CD"
+  comment: "Không có giá trị trong LOOKUP_VALUES"
+  classification_context: "IDS_OPERATING_UNIT"
   etl_derived_value: null
   atomic_table: "fr_template"
-  atomic_column: "stm_code"
+  atomic_column: "operating_unit_code"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Financial Report Template"
@@ -20879,20 +20544,19 @@ attributes:
   data_type: "int"
 - bcv_core_object: "Documentation"
   atomic_entity: "Financial Report Value"
-  atomic_attribute: "Cell Type Code"
-  description: "Kiểu dữ liệu: I/O - Input/Output."
+  atomic_attribute: "Report Catalog Type Code"
+  description: "Loại báo cáo, lấy từ bảng REPORT_CATALOG."
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
   source_table: "DATA"
   source_column: "IDS.DATA.RC_TYPE"
-  comment: "Scheme: IDS_REPORT_CELL_TYPE. Values lấy trực tiếp từ cột nguồn (CHAR(1),\
-    \ I/O)."
-  classification_context: "IDS_REPORT_CELL_TYPE"
+  comment: "SCHEMA_CODE=IDS.REPORT_CATALOG_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='RC_TYPE')."
+  classification_context: null
   etl_derived_value: null
   atomic_table: "fr_value"
-  atomic_column: "cell_tp_code"
+  atomic_column: "rpt_catalog_tp_code"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Inspection Conclusion Remedial"
@@ -21444,16 +21108,14 @@ attributes:
 - bcv_core_object: "Documentation"
   atomic_entity: "Public Company Report Submission"
   atomic_attribute: "News Type Code"
-  description: "Loại báo cáo (Báo cáo tài chính; Báo cáo định kỳ khác; Báo cáo bất\
-    \ thường 24h...)."
+  description: "Mã phân loại."
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
   source_system: "IDS"
   source_table: "COMPANY_DATA"
   source_column: "IDS.COMPANY_DATA.NEWS_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.COMPANY_DATA.NEWS_TYPE_CD. Dùng chung scheme với Disclosure\
-    \ Notification. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_TYPE')."
+  comment: "SCHEMA_CODE=IDS.NEWS_TYPE_CD. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_report_submission"
@@ -25500,6 +25162,22 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Unstructured Financial Report Column Template"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "REP_COLUMN"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'IDS_REP_COLUMN'"
+  etl_derived_value: "IDS_REP_COLUMN"
+  atomic_table: "ufr_column_template"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Unstructured Financial Report Column Template"
   atomic_attribute: "Column Code"
   description: "Mã tự sinh của chỉ tiêu cột. Trước đây là BK nhưng không đảm bảo unique\
     \ — giữ lại làm business reference field."
@@ -25514,22 +25192,6 @@ attributes:
   etl_derived_value: null
   atomic_table: "ufr_column_template"
   atomic_column: "column_code"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Unstructured Financial Report Column Template"
-  atomic_attribute: "Source System Code"
-  description: "Mã hệ thống nguồn dữ liệu."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "REP_COLUMN"
-  source_column: null
-  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "Source System Code = 'IDS_REP_COLUMN'"
-  etl_derived_value: "IDS_REP_COLUMN"
-  atomic_table: "ufr_column_template"
-  atomic_column: "src_stm_code"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Unstructured Financial Report Column Template"
@@ -25679,39 +25341,6 @@ attributes:
   atomic_column: "column_description"
   data_type: "string"
 - bcv_core_object: "Documentation"
-  atomic_entity: "Unstructured Financial Report Column Template"
-  atomic_attribute: "Deleted Indicator"
-  description: "Xóa mềm."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "REP_COLUMN"
-  source_column: "IDS.REP_COLUMN.DELETE_FLG"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "ufr_column_template"
-  atomic_column: "deleted_ind"
-  data_type: "int"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Unstructured Financial Report Column Template"
-  atomic_attribute: "System Code"
-  description: "Hệ thống con trong IDS."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "REP_COLUMN"
-  source_column: "IDS.REP_COLUMN.SYSTEM_CD"
-  comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong\
-    \ tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "ufr_column_template"
-  atomic_column: "stm_code"
-  data_type: "string"
-- bcv_core_object: "Documentation"
   atomic_entity: "Unstructured Financial Report Row Template"
   atomic_attribute: "Unstructured Financial Report Row Template Id"
   description: "Khóa đại diện (surrogate key)."
@@ -25748,6 +25377,22 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Unstructured Financial Report Row Template"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "REP_ROW"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'IDS_REP_ROW'"
+  etl_derived_value: "IDS_REP_ROW"
+  atomic_table: "ufr_row_template"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Unstructured Financial Report Row Template"
   atomic_attribute: "Row Code"
   description: "Mã tự sinh của chỉ tiêu hàng. Trước đây là BK nhưng không đảm bảo\
     \ unique — giữ lại làm business reference field."
@@ -25762,22 +25407,6 @@ attributes:
   etl_derived_value: null
   atomic_table: "ufr_row_template"
   atomic_column: "row_code"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Unstructured Financial Report Row Template"
-  atomic_attribute: "Source System Code"
-  description: "Mã hệ thống nguồn dữ liệu."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "REP_ROW"
-  source_column: null
-  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "Source System Code = 'IDS_REP_ROW'"
-  etl_derived_value: "IDS_REP_ROW"
-  atomic_table: "ufr_row_template"
-  atomic_column: "src_stm_code"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Unstructured Financial Report Row Template"
@@ -25928,39 +25557,6 @@ attributes:
   atomic_column: "row_description"
   data_type: "string"
 - bcv_core_object: "Documentation"
-  atomic_entity: "Unstructured Financial Report Row Template"
-  atomic_attribute: "Deleted Indicator"
-  description: "Xóa mềm."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "REP_ROW"
-  source_column: "IDS.REP_ROW.DELETE_FLG"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "ufr_row_template"
-  atomic_column: "deleted_ind"
-  data_type: "int"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Unstructured Financial Report Row Template"
-  atomic_attribute: "System Code"
-  description: "Hệ thống con trong IDS."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "REP_ROW"
-  source_column: "IDS.REP_ROW.SYSTEM_CD"
-  comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong\
-    \ tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "ufr_row_template"
-  atomic_column: "stm_code"
-  data_type: "string"
-- bcv_core_object: "Documentation"
   atomic_entity: "Unstructured Financial Report Template"
   atomic_attribute: "Unstructured Financial Report Template Id"
   description: "Khóa đại diện (surrogate key)."
@@ -25997,6 +25593,22 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Unstructured Financial Report Template"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "REP_FORMS"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'IDS_REP_FORMS'"
+  etl_derived_value: "IDS_REP_FORMS"
+  atomic_table: "ufr_template"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Unstructured Financial Report Template"
   atomic_attribute: "Report Code"
   description: "Mã form. Trước đây là BK nhưng không đảm bảo unique — giữ lại làm\
     \ business reference field."
@@ -26011,22 +25623,6 @@ attributes:
   etl_derived_value: null
   atomic_table: "ufr_template"
   atomic_column: "rpt_code"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Unstructured Financial Report Template"
-  atomic_attribute: "Source System Code"
-  description: "Mã hệ thống nguồn dữ liệu."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "REP_FORMS"
-  source_column: null
-  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "Source System Code = 'IDS_REP_FORMS'"
-  etl_derived_value: "IDS_REP_FORMS"
-  atomic_table: "ufr_template"
-  atomic_column: "src_stm_code"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Unstructured Financial Report Template"
@@ -26108,23 +25704,6 @@ attributes:
   etl_derived_value: null
   atomic_table: "ufr_template"
   atomic_column: "ufr_link"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Unstructured Financial Report Template"
-  atomic_attribute: "System Code"
-  description: "Hệ thống con trong IDS."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "REP_FORMS"
-  source_column: "IDS.REP_FORMS.SYSTEM_CD"
-  comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong\
-    \ tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "ufr_template"
-  atomic_column: "stm_code"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Unstructured Financial Report Template"
@@ -27926,8 +27505,7 @@ attributes:
   source_system: "IDS"
   source_table: "EVALUATION_PERIODS"
   source_column: "IDS.EVALUATION_PERIODS.STATUS"
-  comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong\
-    \ tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
+  comment: null
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_evaluation_period"
@@ -30869,7 +30447,7 @@ attributes:
   source_system: "FMS"
   source_table: "INVES"
   source_column: "FMS.INVES.SEC_ID"
-  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS.SECURITIES',\
+  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
     \ SEC_ID)."
   classification_context: null
   etl_derived_value: null
@@ -30905,7 +30483,7 @@ attributes:
   source_column: "FMS.INVES.NAT_ID"
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'COUNTRY'). Cần ETL crosswalk sang FMS.NATIONAL: INVES.NAT_ID = NATIONAL.ID\
-    \ để xác nhận SNAME sau đó hash_id('ECAT.COUNTRY', SNAME) | Chưa xác nhận value\
+    \ để xác nhận SNAME sau đó hash_id('ECAT_COUNTRY', SNAME) | Chưa xác nhận value\
     \ set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
@@ -31055,7 +30633,7 @@ attributes:
   source_table: "TAX_REGISTRATION_INFO"
   source_column: null
   comment: "PK surrogate. BCV: \"[Involved Party] Organization\". Hồ sơ đăng ký thuế\
-    \ của 1 doanh nghiệp/hộ kinh doanh trên TTCK. Hash: hash_id('KNT.TAX_REGISTRATION_INFO',\
+    \ của 1 doanh nghiệp/hộ kinh doanh trên TTCK. Hash: hash_id('KNT_TAX_REGISTRATION_INFO',\
     \ TAX_CODE)."
   classification_context: null
   etl_derived_value: null
@@ -31746,7 +31324,7 @@ attributes:
   source_column: null
   comment: "PK surrogate. BCV: \"[Involved Party] Designated Representative\". Người\
     \ đại diện pháp luật/chủ hộ kinh doanh của 1 hồ sơ External Tax Registration.\
-    \ Hash: hash_id('KNT.TAX_REG_REPRESENTATIVE', ID)."
+    \ Hash: hash_id('KNT_TAX_REG_REPRESENTATIVE', ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "et_registration_representative"
@@ -31797,7 +31375,7 @@ attributes:
   source_column: "KNT.TAX_REG_REPRESENTATIVE.TAX_REGISTRATION_ID"
   comment: "FK target: External Tax Registration.External Tax Registration Id. Nguồn\
     \ lưu ID kỹ thuật của TAX_REGISTRATION_INFO — ETL join TAX_REGISTRATION_ID → KNT.TAX_REGISTRATION_INFO.ID\
-    \ để lấy TAX_CODE rồi hash_id('KNT.TAX_REGISTRATION_INFO', TAX_CODE)."
+    \ để lấy TAX_CODE rồi hash_id('KNT_TAX_REGISTRATION_INFO', TAX_CODE)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "et_registration_representative"
@@ -31932,7 +31510,7 @@ attributes:
   source_column: "FMS.FOR_BRCH.NAT_ID"
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'COUNTRY'). Cần ETL crosswalk sang FMS.NATIONAL: FOR_BRCH.NAT_ID = NATIONAL.ID\
-    \ để xác nhận SNAME sau đó hash_id('ECAT.COUNTRY', SNAME) | Chưa xác nhận value\
+    \ để xác nhận SNAME sau đó hash_id('ECAT_COUNTRY', SNAME) | Chưa xác nhận value\
     \ set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
@@ -32179,7 +31757,7 @@ attributes:
   source_column: "FMS.FOR_BRCH.EVENT_TYPE_ID"
   comment: "FK target: cl_fms_event_type.cl_fms_event_tp_id. Cần ETL crosswalk sang\
     \ FMS.EVENT_TYPE: FOR_BRCH.EVENT_TYPE_ID = EVENT_TYPE.ID để xác nhận ITEM_NAME\
-    \ sau đó hash_id('FMS.EVENT_TYPE', ITEM_NAME) |"
+    \ sau đó hash_id('FMS_EVENT_TYPE', ITEM_NAME) |"
   classification_context: null
   etl_derived_value: null
   atomic_table: "foreign_fm_ou"
@@ -32262,7 +31840,7 @@ attributes:
   source_system: "FMS"
   source_table: "STF_FG_BRCH"
   source_column: "FMS.STF_FG_BRCH.FOR_BRCH_ID"
-  comment: "FK target: foreign_fm_ou.foreign_fm_ou_id. Hash: hash_id('FMS.FOR_BRCH',\
+  comment: "FK target: foreign_fm_ou.foreign_fm_ou_id. Hash: hash_id('FMS_FOR_BRCH',\
     \ FOR_BRCH_ID)."
   classification_context: null
   etl_derived_value: null
@@ -32316,7 +31894,7 @@ attributes:
   source_column: "FMS.STF_FG_BRCH.NAT_ID"
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'COUNTRY'). Cần ETL crosswalk sang FMS.NATIONAL: STF_FG_BRCH.NAT_ID = NATIONAL.ID\
-    \ để xác nhận SNAME sau đó hash_id('ECAT.COUNTRY', SNAME) | Chưa xác nhận value\
+    \ để xác nhận SNAME sau đó hash_id('ECAT_COUNTRY', SNAME) | Chưa xác nhận value\
     \ set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
@@ -33121,24 +32699,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Distribution Agent"
-  atomic_attribute: "Active Status Flag"
-  description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu\
-    \ lực."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "AGENCIES"
-  source_column: "FMS.AGENCIES.RECORD_STATUS"
-  comment: "Giá trị 1 → true; 0 → false."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fund_distribution_agent"
-  atomic_column: "active_status_flag"
-  data_type: "int"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Fund Distribution Agent"
-  atomic_attribute: "Description Content"
+  atomic_attribute: "Note"
   description: "Nội dung/ghi chú chi tiết về đại lý phân phối."
   data_domain: "Text"
   nullable: true
@@ -33150,7 +32711,7 @@ attributes:
   classification_context: null
   etl_derived_value: null
   atomic_table: "fund_distribution_agent"
-  atomic_column: "description_content"
+  atomic_column: "note"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Distribution Agent"
@@ -33186,7 +32747,7 @@ attributes:
   data_type: "date"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Distribution Agent"
-  atomic_attribute: "Distribution Staff List Text"
+  atomic_attribute: "Distribution Staff List"
   description: "Danh sách nhân sự phân phối CCQ của đại lý (JSON hoặc danh sách ID\
     \ người hành nghề)."
   data_domain: "Text"
@@ -33200,7 +32761,7 @@ attributes:
   classification_context: null
   etl_derived_value: null
   atomic_table: "fund_distribution_agent"
-  atomic_column: "distribution_staff_list_text"
+  atomic_column: "distribution_staff_list"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Distribution Agent"
@@ -33245,7 +32806,7 @@ attributes:
   source_system: "FMS"
   source_table: "AGEN_FUNDS"
   source_column: "FMS.AGEN_FUNDS.FUND_ID"
-  comment: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS.FUNDS',\
+  comment: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS_FUNDS',\
     \ FUND_ID). Composite PK cùng Fund Distribution Agent Id."
   classification_context: null
   etl_derived_value: null
@@ -33279,7 +32840,7 @@ attributes:
   source_system: "FMS"
   source_table: "AGEN_FUNDS"
   source_column: "FMS.AGEN_FUNDS.AGENCY_ID"
-  comment: "FK target: fund_distribution_agent.fund_distribution_agent_id. Hash: hash_id('FMS.AGENCIES',\
+  comment: "FK target: fund_distribution_agent.fund_distribution_agent_id. Hash: hash_id('FMS_AGENCIES',\
     \ AGENCY_ID). Composite PK cùng Investment Fund Id."
   classification_context: null
   etl_derived_value: null
@@ -33525,7 +33086,7 @@ attributes:
   source_system: "FMS"
   source_table: "SECURITIES"
   source_column: "FMS.SECURITIES.INSIDER_ID"
-  comment: "FK target: fmc_insider.fmc_insider_id. Hash: hash_id('FMS.INSIDER', INSIDER_ID).\
+  comment: "FK target: fmc_insider.fmc_insider_id. Hash: hash_id('FMS_INSIDER', INSIDER_ID).\
     \ Pending — entity thiết kế ở Tier 5."
   classification_context: null
   etl_derived_value: null
@@ -33625,7 +33186,7 @@ attributes:
   source_system: "FMS"
   source_table: "SECURITIES"
   source_column: "FMS.SECURITIES.BANK_ID"
-  comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS.BANK_MONI',\
+  comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS_BANK_MONI',\
     \ BANK_ID)."
   classification_context: null
   etl_derived_value: null
@@ -34016,7 +33577,7 @@ attributes:
   source_system: "FMS"
   source_table: "SECURITIES"
   source_column: "FMS.SECURITIES.PAR_ID"
-  comment: "Self-reference. FK target: fund_management_company.fmc_id. Hash: hash_id('FMS.SECURITIES',\
+  comment: "Self-reference. FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
     \ PAR_ID)."
   classification_context: null
   etl_derived_value: null
@@ -34087,7 +33648,7 @@ attributes:
   source_column: "FMS.SECURITIES.EVENT_TYPE_ID"
   comment: "FK target: cl_fms_event_type.cl_fms_event_tp_id. Cần ETL crosswalk sang\
     \ FMS.EVENT_TYPE: SECURITIES.EVENT_TYPE_ID = EVENT_TYPE.ID để xác nhận ITEM_NAME\
-    \ sau đó hash_id('FMS.EVENT_TYPE', ITEM_NAME) |"
+    \ sau đó hash_id('FMS_EVENT_TYPE', ITEM_NAME) |"
   classification_context: null
   etl_derived_value: null
   atomic_table: "fund_management_company"
@@ -34137,7 +33698,7 @@ attributes:
   source_system: "FMS"
   source_table: "JOB_TL_PRO"
   source_column: "FMS.JOB_TL_PRO.TLPRO_ID"
-  comment: "FK target: fmc_employee.fmc_employee_id. Hash: hash_id('FMS.TL_PROFILES',\
+  comment: "FK target: fmc_employee.fmc_employee_id. Hash: hash_id('FMS_TL_PROFILES',\
     \ TLPRO_ID). Composite PK cùng Classification FMS Position Id."
   classification_context: null
   etl_derived_value: null
@@ -34171,7 +33732,7 @@ attributes:
   source_system: "FMS"
   source_table: "JOB_TL_PRO"
   source_column: "FMS.JOB_TL_PRO.JOB_ID"
-  comment: "FK target: cl_fms_position.cl_fms_position_id. Hash: hash_id('FMS.JOBS',\
+  comment: "FK target: cl_fms_position.cl_fms_position_id. Hash: hash_id('FMS_JOBS',\
     \ JOB_ID). Composite PK cùng Fund Management Company Employee Id."
   classification_context: null
   etl_derived_value: null
@@ -34221,7 +33782,7 @@ attributes:
   source_system: "FMS"
   source_table: "FUND_TL_PRO"
   source_column: "FMS.FUND_TL_PRO.FUND_ID"
-  comment: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS.FUNDS',\
+  comment: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS_FUNDS',\
     \ FUND_ID). Composite PK cùng Fund Management Company Employee Id."
   classification_context: null
   etl_derived_value: null
@@ -34255,7 +33816,7 @@ attributes:
   source_system: "FMS"
   source_table: "FUND_TL_PRO"
   source_column: "FMS.FUND_TL_PRO.TLPR_ID"
-  comment: "FK target: fmc_employee.fmc_employee_id. Hash: hash_id('FMS.TL_PROFILES',\
+  comment: "FK target: fmc_employee.fmc_employee_id. Hash: hash_id('FMS_TL_PROFILES',\
     \ TLPR_ID). Composite PK cùng Investment Fund Id."
   classification_context: null
   etl_derived_value: null
@@ -34338,7 +33899,7 @@ attributes:
   source_system: "FMS"
   source_table: "INSIDER"
   source_column: "FMS.INSIDER.SC_ID"
-  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS.SECURITIES',\
+  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
     \ SC_ID)."
   classification_context: null
   etl_derived_value: null
@@ -34372,7 +33933,7 @@ attributes:
   source_system: "FMS"
   source_table: "INSIDER"
   source_column: "FMS.INSIDER.S_ID"
-  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS.SECURITIES',\
+  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
     \ S_ID). Xem T5-04 — cần xác nhận quan hệ với Fund Management Company Id (SC_ID)."
   classification_context: null
   etl_derived_value: null
@@ -34408,7 +33969,7 @@ attributes:
   source_column: "FMS.INSIDER.NAT_ID"
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'COUNTRY'). Cần ETL crosswalk sang FMS.NATIONAL: INSIDER.NAT_ID = NATIONAL.ID\
-    \ để xác nhận SNAME sau đó hash_id('ECAT.COUNTRY', SNAME) | Chưa xác nhận value\
+    \ để xác nhận SNAME sau đó hash_id('ECAT_COUNTRY', SNAME) | Chưa xác nhận value\
     \ set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
@@ -34443,7 +34004,7 @@ attributes:
   source_system: "FMS"
   source_table: "INSIDER"
   source_column: "FMS.INSIDER.TLPRO_ID"
-  comment: "FK target: fmc_employee.fmc_employee_id. Hash: hash_id('FMS.TL_PROFILES',\
+  comment: "FK target: fmc_employee.fmc_employee_id. Hash: hash_id('FMS_TL_PROFILES',\
     \ TLPRO_ID)."
   classification_context: null
   etl_derived_value: null
@@ -34790,7 +34351,7 @@ attributes:
   source_system: "FMS"
   source_table: "BRANCHS"
   source_column: "FMS.BRANCHS.SEC_ID"
-  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS.SECURITIES',\
+  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
     \ SEC_ID)."
   classification_context: null
   etl_derived_value: null
@@ -34873,7 +34434,7 @@ attributes:
   source_system: "FMS"
   source_table: "BRANCHS"
   source_column: "FMS.BRANCHS.TL_ID"
-  comment: "FK target: fmc_employee.fmc_employee_id. Hash: hash_id('FMS.TL_PROFILES',\
+  comment: "FK target: fmc_employee.fmc_employee_id. Hash: hash_id('FMS_TL_PROFILES',\
     \ TL_ID)."
   classification_context: null
   etl_derived_value: null
@@ -35623,7 +35184,7 @@ attributes:
   source_system: "FMS"
   source_table: "FUNDS"
   source_column: "FMS.FUNDS.SEC_ID"
-  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS.SECURITIES',\
+  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
     \ SEC_ID)."
   classification_context: null
   etl_derived_value: null
@@ -35657,7 +35218,7 @@ attributes:
   source_system: "FMS"
   source_table: "FUNDS"
   source_column: "FMS.FUNDS.BANK_ID"
-  comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS.BANK_MONI',\
+  comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS_BANK_MONI',\
     \ BANK_ID)."
   classification_context: null
   etl_derived_value: null
@@ -36116,7 +35677,7 @@ attributes:
   source_system: "FMS"
   source_table: "REPRESENT"
   source_column: "FMS.REPRESENT.FUND_ID"
-  comment: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS.FUNDS',\
+  comment: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS_FUNDS',\
     \ FUND_ID)."
   classification_context: null
   etl_derived_value: null
@@ -36169,7 +35730,7 @@ attributes:
   source_column: "FMS.REPRESENT.NAT_ID"
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'COUNTRY'). Cần ETL crosswalk sang FMS.NATIONAL: REPRESENT.NAT_ID = NATIONAL.ID\
-    \ để xác nhận SNAME sau đó hash_id('ECAT.COUNTRY', SNAME) | Chưa xác nhận value\
+    \ để xác nhận SNAME sau đó hash_id('ECAT_COUNTRY', SNAME) | Chưa xác nhận value\
     \ set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
@@ -36718,42 +36279,21 @@ attributes:
   data_type: "int"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Public Company"
-  atomic_attribute: "Business Line Level 1 Id"
-  description: "Ngành cấp 1 (FK)."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_PROFILES"
-  source_column: "IDS.COMPANY_PROFILES.CATEGORY_L1_ID"
-  comment: "FK target: cl_business_line.cl_business_line_id. Cần ETL crosswalk sang\
-    \ IDS.CATEGORIES: COMPANY_PROFILES.CATEGORY_L1_ID = CATEGORIES.ID để xác nhận\
-    \ INDUSTRY_CD sau đó hash_id('ECAT_BUSINESS_LINE_LEVEL_1', INDUSTRY_CD) | IDS.CATEGORIES\
-    \ chỉ dùng làm bảng join, không tự sinh entity — quyết định 2026-07-23. Chưa xác\
-    \ nhận value set khớp danh mục ECAT.BUSINESS_LINE_LEVEL_1 — cần profile dữ liệu\
-    \ trước go-live. Xem IDS_HLD_Tier1.md T1-13."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "public_company"
-  atomic_column: "business_line_level_1_id"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Public Company"
-  atomic_attribute: "Business Line Level 1 Code"
+  atomic_attribute: "Category Level 1 Type Code"
   description: "Mã ngành cấp 1."
-  data_domain: "Text"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
   source_table: "COMPANY_PROFILES"
   source_column: "IDS.CATEGORIES.INDUSTRY_CD"
-  comment: "Lookup pair: cl_business_line.cl_business_line_code. Pair with Business\
-    \ Line Level 1 Id. Giá trị lấy từ IDS.CATEGORIES.INDUSTRY_CD sau ETL crosswalk\
-    \ — chi tiết xem comment Business Line Level 1 Id."
+  comment: "SCHEMA_CODE=IDS.CATEGORY_L1_TYPE. Values load từ CATEGORIES. Cần ETL crosswalk\
+    \ sang IDS.CATEGORIES: COMPANY_PROFILES.CATEGORY_L1_ID = CATEGORIES.ID để xác\
+    \ nhận INDUSTRY_CD."
   classification_context: null
   etl_derived_value: null
   atomic_table: "public_company"
-  atomic_column: "business_line_level_1_code"
+  atomic_column: "category_level_1_tp_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Public Company"
@@ -36798,14 +36338,13 @@ attributes:
   atomic_entity: "Public Company"
   atomic_attribute: "Enterprise Type Code"
   description: "Loại hình doanh nghiệp."
-  data_domain: "Text"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
   source_table: "COMPANY_PROFILES"
   source_column: "IDS.COMPANY_PROFILES.ENTERPRISE_TYPE_CD"
-  comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong\
-    \ tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
+  comment: "SCHEMA_CODE=IDS.ENTERPRISE_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='ENTERPRISE_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "public_company"
@@ -36815,14 +36354,13 @@ attributes:
   atomic_entity: "Public Company"
   atomic_attribute: "Financial Statement Type Code"
   description: "Loại báo cáo tài chính."
-  data_domain: "Text"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
   source_table: "COMPANY_PROFILES"
   source_column: "IDS.COMPANY_PROFILES.FINANCIAL_STMT_TYPE_CD"
-  comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong\
-    \ tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
+  comment: "SCHEMA_CODE=IDS.PENALIZED_SUBJECT_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='PENALIZED_SUBJECT_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "public_company"
@@ -37384,22 +36922,6 @@ attributes:
   atomic_table: "public_company"
   atomic_column: "approval_status_code"
   data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Public Company"
-  atomic_attribute: "Deleted Indicator"
-  description: "Trạng thái xoá."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_PROFILES"
-  source_column: "IDS.COMPANY_PROFILES.DELETE_FLG"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "public_company"
-  atomic_column: "deleted_ind"
-  data_type: "int"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Regulatory Authority Organization Unit"
   atomic_attribute: "Regulatory Authority Organization Unit Id"
@@ -56319,6 +55841,421 @@ attributes:
   atomic_column: "note"
   data_type: "string"
 - bcv_core_object: "Common"
+  atomic_entity: "Classification Risk Indicator"
+  atomic_attribute: "Classification Risk Indicator Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "QLRR"
+  source_table: "RISK_INDICATOR"
+  source_column: null
+  comment: "PK surrogate. Hash: hash_id('QLRR_RISK_INDICATOR', INDICATOR_CODE). BCV:\
+    \ [Common] Classification."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_risk_indicator"
+  atomic_column: "cl_risk_ind_id"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Risk Indicator"
+  atomic_attribute: "Classification Risk Indicator Code"
+  description: "Mã chỉ tiêu (VD: GDP_VN, CPI_VN, VNINDEX, CPI_US, DXY). BK duy nhất\
+    \ — Id hash từ trường này."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "QLRR"
+  source_table: "RISK_INDICATOR"
+  source_column: "QLRR.RISK_INDICATOR.INDICATOR_CODE"
+  comment: "BK chính (mã nghiệp vụ)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_risk_indicator"
+  atomic_column: "cl_risk_ind_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Risk Indicator"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "QLRR"
+  source_table: "RISK_INDICATOR"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'QLRR_RISK_INDICATOR'"
+  etl_derived_value: "QLRR_RISK_INDICATOR"
+  atomic_table: "cl_risk_indicator"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Risk Indicator"
+  atomic_attribute: "Indicator Name"
+  description: "Tên chỉ tiêu (VD: GDP, CPI, Chỉ số VNIndex, Lạm phát Mỹ)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "QLRR"
+  source_table: "RISK_INDICATOR"
+  source_column: "QLRR.RISK_INDICATOR.INDICATOR_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_risk_indicator"
+  atomic_column: "ind_nm"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Risk Indicator"
+  atomic_attribute: "Risk Indicator Category Code"
+  description: "Mã nhóm chỉ tiêu (VD: Yếu tố vĩ mô, Yếu tố tiền tệ, Thị trường cổ\
+    \ phiếu)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "QLRR"
+  source_table: "RISK_INDICATOR"
+  source_column: "QLRR.RISK_INDICATOR_CATEGORY.CATEGORY_CODE"
+  comment: "SCHEMA_CODE=QLRR.RISK_INDICATOR_CATEGORY"
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_risk_indicator"
+  atomic_column: "risk_ind_category_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Risk Indicator"
+  atomic_attribute: "Set Type Code"
+  description: "Bộ chỉ tiêu: 1=Trong nước, 2=Quốc tế."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "QLRR"
+  source_table: "RISK_INDICATOR"
+  source_column: "QLRR.RISK_INDICATOR.SET_CODE"
+  comment: "SCHEMA_CODE=QLRR.SET_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_risk_indicator"
+  atomic_column: "set_tp_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Risk Indicator"
+  atomic_attribute: "Period Type Code"
+  description: "Tần suất: 1=Ngày, 2=Tháng, 3=Quý, 4=Năm."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "QLRR"
+  source_table: "RISK_INDICATOR"
+  source_column: "QLRR.RISK_INDICATOR.PERIOD_TYPE"
+  comment: "SCHEMA_CODE=QLRR.PERIOD_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_risk_indicator"
+  atomic_column: "period_tp_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Risk Indicator"
+  atomic_attribute: "Unit Type Code"
+  description: "Đơn vị mặc định: 1=%, 2=Điểm, 3=Tỷ VND, 4=Triệu USD, 5=Hợp đồng, 6=Cổ\
+    \ phiếu, 7=Công ty, 8=VND, 9=Số tài khoản, 10=Đơn vị tính."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "QLRR"
+  source_table: "RISK_INDICATOR"
+  source_column: "QLRR.RISK_INDICATOR.UNIT_CODE"
+  comment: "SCHEMA_CODE=QLRR.UNIT_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_risk_indicator"
+  atomic_column: "unit_tp_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Risk Indicator"
+  atomic_attribute: "Data Source Type Code"
+  description: "Nguồn mặc định: 1=Investing, 2=Tổng cục Thống kê, 3=Ngân hàng Nhà\
+    \ nước, 4=Nội bộ, 5=HNX, 6=VSDC (Investing chỉ dùng cho chỉ tiêu quốc tế)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "QLRR"
+  source_table: "RISK_INDICATOR"
+  source_column: "QLRR.RISK_INDICATOR.SOURCE_CODE"
+  comment: "SCHEMA_CODE=QLRR.SOURCE_SYSTEM_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_risk_indicator"
+  atomic_column: "data_src_tp_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Risk Indicator"
+  atomic_attribute: "Last Sync Timestamp"
+  description: "Lần sync gần nhất."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  source_system: "QLRR"
+  source_table: "RISK_INDICATOR"
+  source_column: "QLRR.RISK_INDICATOR.LAST_SYNC_TIME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_risk_indicator"
+  atomic_column: "last_sync_tms"
+  data_type: "timestamp"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Risk Indicator Value"
+  atomic_attribute: "Classification Risk Indicator Value Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "QLRR"
+  source_table: "RISK_INDICATOR_VALUE"
+  source_column: null
+  comment: "PK surrogate. Hash: hash_id('QLRR_RISK_INDICATOR_VALUE', ID). BCV: [Common]\
+    \ Classification."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_risk_indicator_value"
+  atomic_column: "cl_risk_ind_val_id"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Risk Indicator Value"
+  atomic_attribute: "Classification Risk Indicator Value Code"
+  description: "Khóa chính của bản ghi. BK — nguồn không có mã nghiệp vụ riêng biệt\
+    \ (không có cột CODE), dùng PK kỹ thuật làm BK duy nhất."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "QLRR"
+  source_table: "RISK_INDICATOR_VALUE"
+  source_column: "QLRR.RISK_INDICATOR_VALUE.ID"
+  comment: "BK chính. PK nguồn."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_risk_indicator_value"
+  atomic_column: "cl_risk_ind_val_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Risk Indicator Value"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "QLRR"
+  source_table: "RISK_INDICATOR_VALUE"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'QLRR_RISK_INDICATOR_VALUE'"
+  etl_derived_value: "QLRR_RISK_INDICATOR_VALUE"
+  atomic_table: "cl_risk_indicator_value"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Risk Indicator Value"
+  atomic_attribute: "Classification Risk Indicator Id"
+  description: "FK đến chỉ tiêu rủi ro."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  source_system: "QLRR"
+  source_table: "RISK_INDICATOR_VALUE"
+  source_column: "QLRR.RISK_INDICATOR_VALUE.INDICATOR_ID"
+  comment: "FK target: cl_risk_indicator.cl_risk_ind_id. Cần ETL crosswalk sang QLRR.RISK_INDICATOR:\
+    \ RISK_INDICATOR_VALUE.INDICATOR_ID = RISK_INDICATOR.ID để xác nhận INDICATOR_CODE\
+    \ sau đó hash_id('QLRR_RISK_INDICATOR', INDICATOR_CODE)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_risk_indicator_value"
+  atomic_column: "cl_risk_ind_id"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Risk Indicator Value"
+  atomic_attribute: "Classification Risk Indicator Code"
+  description: "Mã chỉ tiêu rủi ro."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "QLRR"
+  source_table: "RISK_INDICATOR_VALUE"
+  source_column: "QLRR.RISK_INDICATOR.INDICATOR_CODE"
+  comment: "Lookup pair: cl_risk_indicator.cl_risk_ind_code. Pair with Classification\
+    \ Risk Indicator Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_risk_indicator_value"
+  atomic_column: "cl_risk_ind_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Risk Indicator Value"
+  atomic_attribute: "Period Type Code"
+  description: "Kỳ dữ liệu: 1=Ngày, 2=Tháng, 3=Quý, 4=Năm."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "QLRR"
+  source_table: "RISK_INDICATOR_VALUE"
+  source_column: "QLRR.RISK_INDICATOR_VALUE.PERIOD_TYPE"
+  comment: "SCHEMA_CODE=QLRR.PERIOD_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_risk_indicator_value"
+  atomic_column: "period_tp_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Risk Indicator Value"
+  atomic_attribute: "Period Value"
+  description: "Lưu giá trị dành cho trường hợp Period Type Code = Tháng, Quý. Dựa\
+    \ vào dữ liệu của Period Date. VD: period_type=Tháng, period_date=12/03/2026 →\
+    \ period_value=3; period_type=Quý, period_date=12/03/2026 → period_value=1 (Quý\
+    \ 1: Tháng 1-3, Quý 2: Tháng 4-6, Quý 3: Tháng 7-9, Quý 4: Tháng 10-12)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "QLRR"
+  source_table: "RISK_INDICATOR_VALUE"
+  source_column: "QLRR.RISK_INDICATOR_VALUE.PERIOD_VALUE"
+  comment: "Nullable khi Period Type Code = Ngày (không có số thứ tự kỳ)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_risk_indicator_value"
+  atomic_column: "period_val"
+  data_type: "int"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Risk Indicator Value"
+  atomic_attribute: "Period Year"
+  description: "Năm lấy theo Period Date."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  source_system: "QLRR"
+  source_table: "RISK_INDICATOR_VALUE"
+  source_column: "QLRR.RISK_INDICATOR_VALUE.PERIOD_YEAR"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_risk_indicator_value"
+  atomic_column: "period_year"
+  data_type: "int"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Risk Indicator Value"
+  atomic_attribute: "Period Date"
+  description: "Ngày đại diện cho kỳ."
+  data_domain: "Date"
+  nullable: false
+  is_primary_key: false
+  source_system: "QLRR"
+  source_table: "RISK_INDICATOR_VALUE"
+  source_column: "QLRR.RISK_INDICATOR_VALUE.PERIOD_DATE"
+  comment: "Nguồn ở dạng timestamp cần chú ý case date khi code."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_risk_indicator_value"
+  atomic_column: "period_dt"
+  data_type: "date"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Risk Indicator Value"
+  atomic_attribute: "Period Label"
+  description: "Chuỗi hiển thị kỳ (VD: 2024-01, 2024-Q1, 2024)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "QLRR"
+  source_table: "RISK_INDICATOR_VALUE"
+  source_column: "QLRR.RISK_INDICATOR_VALUE.PERIOD_LABEL"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_risk_indicator_value"
+  atomic_column: "period_label"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Risk Indicator Value"
+  atomic_attribute: "Value"
+  description: "Giá trị chỉ tiêu tại kỳ này."
+  data_domain: "Currency Amount"
+  nullable: false
+  is_primary_key: false
+  source_system: "QLRR"
+  source_table: "RISK_INDICATOR_VALUE"
+  source_column: "QLRR.RISK_INDICATOR_VALUE.VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_risk_indicator_value"
+  atomic_column: "val"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Risk Indicator Value"
+  atomic_attribute: "Cumulative Value"
+  description: "Giá trị luỹ kế."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "QLRR"
+  source_table: "RISK_INDICATOR_VALUE"
+  source_column: "QLRR.RISK_INDICATOR_VALUE.CUMULATIVE_VALUE"
+  comment: "Data type nguồn không rõ — cần profile trước khi ETL."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_risk_indicator_value"
+  atomic_column: "cumulative_val"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Risk Indicator Value"
+  atomic_attribute: "Unit Type Code"
+  description: "Đơn vị: 1=%, 2=Điểm, 3=Tỷ VND, 4=Triệu USD, 5=Hợp đồng, 6=Cổ phiếu,\
+    \ 7=Công ty, 8=VND, 9=Số tài khoản, 10=Đơn vị tính."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "QLRR"
+  source_table: "RISK_INDICATOR_VALUE"
+  source_column: "QLRR.RISK_INDICATOR_VALUE.UNIT_CODE"
+  comment: "SCHEMA_CODE=QLRR.UNIT_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_risk_indicator_value"
+  atomic_column: "unit_tp_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Risk Indicator Value"
+  atomic_attribute: "Data Source Type Code"
+  description: "Nguồn: 1=Investing, 2=Tổng cục Thống kê, 3=Ngân hàng Nhà nước, 4=Nội\
+    \ bộ, 5=HNX, 6=VSDC (Investing chỉ dùng cho chỉ tiêu quốc tế)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "QLRR"
+  source_table: "RISK_INDICATOR_VALUE"
+  source_column: "QLRR.RISK_INDICATOR_VALUE.SOURCE_CODE"
+  comment: "SCHEMA_CODE=QLRR.SOURCE_SYSTEM_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_risk_indicator_value"
+  atomic_column: "data_src_tp_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Risk Indicator Value"
+  atomic_attribute: "Data Origin Type Code"
+  description: "Nguồn gốc giá trị: 1=API CSDL tập trung, 2=User chỉnh sửa."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "QLRR"
+  source_table: "RISK_INDICATOR_VALUE"
+  source_column: "QLRR.RISK_INDICATOR_VALUE.DATA_ORIGIN"
+  comment: "SCHEMA_CODE=QLRR.DATA_ORIGIN_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_risk_indicator_value"
+  atomic_column: "data_origin_tp_code"
+  data_type: "string"
+- bcv_core_object: "Common"
   atomic_entity: "Classification Service"
   atomic_attribute: "Classification Service Id"
   description: "Khóa đại diện (surrogate key)."
@@ -56440,6 +56377,118 @@ attributes:
   etl_derived_value: null
   atomic_table: "cl_service"
   atomic_column: "note"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Value"
+  atomic_attribute: "Classification Code"
+  description: "Mã giá trị phân loại. Mã nhóm chỉ tiêu tài chính rủi ro."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: true
+  source_system: "QLRR"
+  source_table: "RISK_INDICATOR_CATEGORY"
+  source_column: "QLRR.RISK_INDICATOR_CATEGORY.CATEGORY_CODE"
+  comment: "BK chính (kết hợp Schema Code tạo BK duy nhất)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_value"
+  atomic_column: "cl_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Value"
+  atomic_attribute: "Schema Code"
+  description: "Mã loại phân loại."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: true
+  source_system: "QLRR"
+  source_table: "RISK_INDICATOR_CATEGORY"
+  source_column: null
+  comment: "Scheme: QLRR.RISK_INDICATOR_CATEGORY. Hardcode."
+  classification_context: null
+  etl_derived_value: "QLRR.RISK_INDICATOR_CATEGORY"
+  atomic_table: "cl_value"
+  atomic_column: "schema_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Value"
+  atomic_attribute: "Schema Name"
+  description: "Tên loại phân loại."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "QLRR"
+  source_table: "RISK_INDICATOR_CATEGORY"
+  source_column: null
+  comment: "Hardcode."
+  classification_context: null
+  etl_derived_value: "QLRR - Nhóm chỉ tiêu tài chính rủi ro"
+  atomic_table: "cl_value"
+  atomic_column: "schema_nm"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Value"
+  atomic_attribute: "Source System Code"
+  description: "Mã nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "QLRR"
+  source_table: "RISK_INDICATOR_CATEGORY"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'QLRR_RISK_INDICATOR_CATEGORY'"
+  etl_derived_value: "QLRR_RISK_INDICATOR_CATEGORY"
+  atomic_table: "cl_value"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Value"
+  atomic_attribute: "Classification Name"
+  description: "Tên giá trị phân loại (tiếng Việt)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "QLRR"
+  source_table: "RISK_INDICATOR_CATEGORY"
+  source_column: "QLRR.RISK_INDICATOR_CATEGORY.CATEGORY_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_value"
+  atomic_column: "cl_nm"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Value"
+  atomic_attribute: "Classification Name English"
+  description: "Tên giá trị phân loại (tiếng Anh)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "QLRR"
+  source_table: "RISK_INDICATOR_CATEGORY"
+  source_column: null
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_value"
+  atomic_column: "cl_nm_english"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Value"
+  atomic_attribute: "Classification Description"
+  description: "Diễn giải chi tiết ý nghĩa giá trị phân loại."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "QLRR"
+  source_table: "RISK_INDICATOR_CATEGORY"
+  source_column: null
+  comment: "Nguồn không có cột mô tả riêng cho nhóm chỉ tiêu."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_value"
+  atomic_column: "cl_description"
   data_type: "string"
 - bcv_core_object: "Common"
   atomic_entity: "Classification Value"
@@ -58185,7 +58234,7 @@ attributes:
   source_system: "FMS"
   source_table: "BANK_EMPLOY"
   source_column: "FMS.BANK_EMPLOY.BANK_ID"
-  comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS.BANK_MONI',\
+  comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS_BANK_MONI',\
     \ BANK_ID)."
   classification_context: null
   etl_derived_value: null
@@ -58291,23 +58340,6 @@ attributes:
   data_type: "date"
 - bcv_core_object: null
   atomic_entity: "Custodian Bank Employee"
-  atomic_attribute: "Active Status Flag"
-  description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu\
-    \ lực."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "BANK_EMPLOY"
-  source_column: "FMS.BANK_EMPLOY.RECORD_STATUS"
-  comment: "Giá trị 1 → true; 0 → false."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "custodian_bank_employee"
-  atomic_column: "active_status_flag"
-  data_type: "int"
-- bcv_core_object: null
-  atomic_entity: "Custodian Bank Employee"
   atomic_attribute: "Current Position Title"
   description: "Chức vụ/vị trí công tác hiện tại."
   data_domain: "Text"
@@ -58382,7 +58414,7 @@ attributes:
   source_table: "INVES_ACC"
   source_column: "FMS.INVES_ACC.INVES_ID"
   comment: "FK target: discretionary_investment_investor.discretionary_investment_investor_id.\
-    \ Hash: hash_id('FMS.INVES', INVES_ID)."
+    \ Hash: hash_id('FMS_INVES', INVES_ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "discretionary_investment_account"
@@ -59584,7 +59616,7 @@ attributes:
   source_system: "FMS"
   source_table: "AGENCIES_BRA"
   source_column: "FMS.AGENCIES_BRA.AGEN_ID"
-  comment: "FK target: fund_distribution_agent.fund_distribution_agent_id. Hash: hash_id('FMS.AGENCIES',\
+  comment: "FK target: fund_distribution_agent.fund_distribution_agent_id. Hash: hash_id('FMS_AGENCIES',\
     \ AGEN_ID)."
   classification_context: null
   etl_derived_value: null
@@ -59624,23 +59656,6 @@ attributes:
   atomic_table: "fund_distribution_agent_ou"
   atomic_column: "fund_distribution_agent_ou_full_nm"
   data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Fund Distribution Agent Organization Unit"
-  atomic_attribute: "Active Status Flag"
-  description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu\
-    \ lực."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "AGENCIES_BRA"
-  source_column: "FMS.AGENCIES_BRA.RECORD_STATUS"
-  comment: "Giá trị 1 → true; 0 → false."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fund_distribution_agent_ou"
-  atomic_column: "active_status_flag"
-  data_type: "int"
 - bcv_core_object: null
   atomic_entity: "Fund Management Company Employee"
   atomic_attribute: "Fund Management Company Employee Id"
@@ -59700,7 +59715,7 @@ attributes:
   source_system: "FMS"
   source_table: "TL_PROFILES"
   source_column: "FMS.TL_PROFILES.SEC_ID"
-  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS.SECURITIES',\
+  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
     \ SEC_ID)."
   classification_context: null
   etl_derived_value: null
@@ -59734,7 +59749,7 @@ attributes:
   source_system: "FMS"
   source_table: "TL_PROFILES"
   source_column: "FMS.TL_PROFILES.BRANCH_ID"
-  comment: "FK target: fmc_organization_unit.fmc_ou_id. Hash: hash_id('FMS.BRANCHS',\
+  comment: "FK target: fmc_organization_unit.fmc_ou_id. Hash: hash_id('FMS_BRANCHS',\
     \ BRANCH_ID)."
   classification_context: null
   etl_derived_value: null
@@ -60302,7 +60317,7 @@ attributes:
   source_system: "FMS"
   source_table: "TL_PROFILES"
   source_column: "FMS.TL_PROFILES.INSDER_ID"
-  comment: "FK target: fmc_insider.fmc_insider_id. Hash: hash_id('FMS.INSIDER', INSDER_ID).\
+  comment: "FK target: fmc_insider.fmc_insider_id. Hash: hash_id('FMS_INSIDER', INSDER_ID).\
     \ Pending — entity thiết kế ở Tier 5."
   classification_context: null
   etl_derived_value: null
@@ -60485,7 +60500,7 @@ attributes:
   source_system: "FMS"
   source_table: "TL_PRO_RELA"
   source_column: "FMS.TL_PRO_RELA.TLPRO_ID"
-  comment: "FK target: fmc_employee.fmc_employee_id. Hash: hash_id('FMS.TL_PROFILES',\
+  comment: "FK target: fmc_employee.fmc_employee_id. Hash: hash_id('FMS_TL_PROFILES',\
     \ TLPRO_ID)."
   classification_context: null
   etl_derived_value: null
@@ -60617,7 +60632,7 @@ attributes:
   source_system: "FMS"
   source_table: "INSDER_RELA"
   source_column: "FMS.INSDER_RELA.INSDER_ID"
-  comment: "FK target: fmc_insider.fmc_insider_id. Hash: hash_id('FMS.INSIDER', INSDER_ID)."
+  comment: "FK target: fmc_insider.fmc_insider_id. Hash: hash_id('FMS_INSIDER', INSDER_ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "fmc_insider_related_person"
@@ -60779,7 +60794,7 @@ attributes:
   source_system: "FMS"
   source_table: "INSDER_RPRST"
   source_column: "FMS.INSDER_RPRST.INSDR_ID"
-  comment: "FK target: fmc_insider.fmc_insider_id. Hash: hash_id('FMS.INSIDER', INSDR_ID)."
+  comment: "FK target: fmc_insider.fmc_insider_id. Hash: hash_id('FMS_INSIDER', INSDR_ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "fmc_insider_representative"
@@ -60958,7 +60973,7 @@ attributes:
   source_system: "FMS"
   source_table: "INSID_CHANGE"
   source_column: "FMS.INSID_CHANGE.INSDR_ID"
-  comment: "FK target: fmc_insider.fmc_insider_id. Hash: hash_id('FMS.INSIDER', INSDR_ID)."
+  comment: "FK target: fmc_insider.fmc_insider_id. Hash: hash_id('FMS_INSIDER', INSDR_ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "fmc_insider_shareholding_change_log"
@@ -61236,7 +61251,7 @@ attributes:
   source_system: "FMS"
   source_table: "OFFERING"
   source_column: "FMS.OFFERING.SEC_ID"
-  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS.SECURITIES',\
+  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
     \ SEC_ID)."
   classification_context: null
   etl_derived_value: null
@@ -62002,7 +62017,7 @@ attributes:
   source_system: "FMS"
   source_table: "OFFERING_PLAN"
   source_column: "FMS.OFFERING_PLAN.OFFERING_ID"
-  comment: "FK target: fmc_securities_offering.fmc_securities_offering_id. Hash: hash_id('FMS.OFFERING',\
+  comment: "FK target: fmc_securities_offering.fmc_securities_offering_id. Hash: hash_id('FMS_OFFERING',\
     \ OFFERING_ID)."
   classification_context: null
   etl_derived_value: null
@@ -62359,7 +62374,7 @@ attributes:
   source_system: "FMS"
   source_table: "TRS_FER_INDER"
   source_column: "FMS.TRS_FER_INDER.SC_ID"
-  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS.SECURITIES',\
+  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
     \ SC_ID)."
   classification_context: null
   etl_derived_value: null
@@ -62393,7 +62408,7 @@ attributes:
   source_system: "FMS"
   source_table: "TRS_FER_INDER"
   source_column: "FMS.TRS_FER_INDER.IN_FRM_ID"
-  comment: "FK target: fmc_insider.fmc_insider_id. Hash: hash_id('FMS.INSIDER', IN_FRM_ID).\
+  comment: "FK target: fmc_insider.fmc_insider_id. Hash: hash_id('FMS_INSIDER', IN_FRM_ID).\
     \ Pending — entity thiết kế ở Tier 5. Giải quyết GAP T4-01 (BRD thực tế có cột\
     \ này)."
   classification_context: null
@@ -62428,7 +62443,7 @@ attributes:
   source_system: "FMS"
   source_table: "TRS_FER_INDER"
   source_column: "FMS.TRS_FER_INDER.IN_TO_ID"
-  comment: "FK target: fmc_insider.fmc_insider_id. Hash: hash_id('FMS.INSIDER', IN_TO_ID).\
+  comment: "FK target: fmc_insider.fmc_insider_id. Hash: hash_id('FMS_INSIDER', IN_TO_ID).\
     \ Pending — entity thiết kế ở Tier 5. Giải quyết GAP T4-01 (BRD thực tế có cột\
     \ này)."
   classification_context: null
@@ -62824,7 +62839,7 @@ attributes:
   source_system: "FMS"
   source_table: "VIOLT"
   source_column: "FMS.VIOLT.SEC_ID"
-  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS.SECURITIES',\
+  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
     \ SEC_ID). Nullable — chỉ có giá trị khi System Object Type Code = QLQ."
   classification_context: null
   etl_derived_value: null
@@ -62859,7 +62874,7 @@ attributes:
   source_table: "VIOLT"
   source_column: "FMS.VIOLT.PR_WID"
   comment: "FK target: member_warning_parameter.member_warning_parameter_id. Hash:\
-    \ hash_id('FMS.PARA_WARN', PR_WID)."
+    \ hash_id('FMS_PARA_WARN', PR_WID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "fm_conduct_violation"
@@ -62893,7 +62908,7 @@ attributes:
   source_table: "VIOLT"
   source_column: "FMS.VIOLT.CDT_WID"
   comment: "FK target: member_warning_condition.member_warning_condition_id. Hash:\
-    \ hash_id('FMS.CDT_WARN', CDT_WID). Pending — entity thiết kế ở Tier 2."
+    \ hash_id('FMS_CDT_WARN', CDT_WID). Pending — entity thiết kế ở Tier 2."
   classification_context: null
   etl_derived_value: null
   atomic_table: "fm_conduct_violation"
@@ -62926,7 +62941,7 @@ attributes:
   source_system: "FMS"
   source_table: "VIOLT"
   source_column: "FMS.VIOLT.FUD_ID"
-  comment: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS.FUNDS',\
+  comment: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS_FUNDS',\
     \ FUD_ID). Pending — entity thiết kế ở Tier 2. Nullable — chỉ có giá trị khi System\
     \ Object Type Code = QĐT."
   classification_context: null
@@ -62961,7 +62976,7 @@ attributes:
   source_system: "FMS"
   source_table: "VIOLT"
   source_column: "FMS.VIOLT.BKM_ID"
-  comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS.BANK_MONI',\
+  comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS_BANK_MONI',\
     \ BKM_ID). Nullable — chỉ có giá trị khi System Object Type Code = BKGS."
   classification_context: null
   etl_derived_value: null
@@ -62995,7 +63010,7 @@ attributes:
   source_system: "FMS"
   source_table: "VIOLT"
   source_column: "FMS.VIOLT.FR_BR_ID"
-  comment: "FK target: foreign_fm_ou.foreign_fm_ou_id. Hash: hash_id('FMS.FOR_BRCH',\
+  comment: "FK target: foreign_fm_ou.foreign_fm_ou_id. Hash: hash_id('FMS_FOR_BRCH',\
     \ FR_BR_ID). Pending — entity thiết kế ở Tier 2. Nullable — chỉ có giá trị khi\
     \ đối tượng là VPĐD/CN QLQ nước ngoài."
   classification_context: null
@@ -63031,7 +63046,7 @@ attributes:
   source_table: "VIOLT"
   source_column: "FMS.VIOLT.DISTRIBUTOR_ID"
   comment: "FK target: securities_distribution_agent.securities_distribution_agent_id.\
-    \ Hash: hash_id('FMS.DISTRIBUTOR_AGENT', DISTRIBUTOR_ID). Pending — entity thiết\
+    \ Hash: hash_id('FMS_DISTRIBUTOR_AGENT', DISTRIBUTOR_ID). Pending — entity thiết\
     \ kế ở Tier 5."
   classification_context: null
   etl_derived_value: null
@@ -63066,7 +63081,7 @@ attributes:
   source_system: "FMS"
   source_table: "VIOLT"
   source_column: "FMS.VIOLT.TRANSFER_AGENT_ID"
-  comment: "FK target: transfer_agent.transfer_agent_id. Hash: hash_id('FMS.TRANSFER_AGENT',\
+  comment: "FK target: transfer_agent.transfer_agent_id. Hash: hash_id('FMS_TRANSFER_AGENT',\
     \ TRANSFER_AGENT_ID). Pending — entity thiết kế ở Tier 5."
   classification_context: null
   etl_derived_value: null
@@ -63101,7 +63116,7 @@ attributes:
   source_table: "VIOLT"
   source_column: "FMS.VIOLT.PENSION_AGENT_ID"
   comment: "FK target: pension_service_organization.pension_service_organization_id.\
-    \ Hash: hash_id('FMS.PENSION_AGENT', PENSION_AGENT_ID). Pending — entity thiết\
+    \ Hash: hash_id('FMS_PENSION_AGENT', PENSION_AGENT_ID). Pending — entity thiết\
     \ kế ở Tier 5 (gộp PENSION_AGENT + PENSION_PROVIDER, phân biệt bằng pension_role_type_code).\
     \ Prefix Pension Distribution để phân biệt với Pension Service Provider Id (PENSION_PROVIDER_ID)\
     \ cùng target entity."
@@ -63138,7 +63153,7 @@ attributes:
   source_table: "VIOLT"
   source_column: "FMS.VIOLT.PENSION_PROVIDER_ID"
   comment: "FK target: pension_service_organization.pension_service_organization_id.\
-    \ Hash: hash_id('FMS.PENSION_PROVIDER', PENSION_PROVIDER_ID). Pending — entity\
+    \ Hash: hash_id('FMS_PENSION_PROVIDER', PENSION_PROVIDER_ID). Pending — entity\
     \ thiết kế ở Tier 5. Cùng target entity với Pension Distribution Agent Id nhưng\
     \ khác role nguồn (PENSION_PROVIDER khác PENSION_AGENT)."
   classification_context: null
@@ -63173,7 +63188,7 @@ attributes:
   source_system: "FMS"
   source_table: "VIOLT"
   source_column: "FMS.VIOLT.OTHER_AGENT_ID"
-  comment: "FK target: other_intermediary_ou.other_intermediary_ou_id. Hash: hash_id('FMS.OTHER_AGENT',\
+  comment: "FK target: other_intermediary_ou.other_intermediary_ou_id. Hash: hash_id('FMS_OTHER_AGENT',\
     \ OTHER_AGENT_ID). Pending — entity thiết kế ở Tier 5."
   classification_context: null
   etl_derived_value: null
@@ -63207,7 +63222,7 @@ attributes:
   source_system: "FMS"
   source_table: "VIOLT"
   source_column: "FMS.VIOLT.PENSION_FUND_ID"
-  comment: "FK target: pension_fund.pension_fund_id. Hash: hash_id('FMS.PENSION_FUND',\
+  comment: "FK target: pension_fund.pension_fund_id. Hash: hash_id('FMS_PENSION_FUND',\
     \ PENSION_FUND_ID). Pending — entity thiết kế ở Tier 5."
   classification_context: null
   etl_derived_value: null
@@ -64733,7 +64748,7 @@ attributes:
   source_system: "FMS"
   source_table: "TRANSFER_MBF"
   source_column: "FMS.TRANSFER_MBF.FUND_ID"
-  comment: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS.FUNDS',\
+  comment: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS_FUNDS',\
     \ FUND_ID)."
   classification_context: null
   etl_derived_value: null
@@ -64768,7 +64783,7 @@ attributes:
   source_table: "TRANSFER_MBF"
   source_column: "FMS.TRANSFER_MBF.MB_FTO_ID"
   comment: "FK target: investment_fund_investor_membership.investment_fund_investor_membership_id.\
-    \ Hash: hash_id('FMS.MB_FUND', MB_FTO_ID)."
+    \ Hash: hash_id('FMS_MB_FUND', MB_FTO_ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "investment_fund_certificate_transfer"
@@ -64802,7 +64817,7 @@ attributes:
   source_table: "TRANSFER_MBF"
   source_column: "FMS.TRANSFER_MBF.MB_FFRM_ID"
   comment: "FK target: investment_fund_investor_membership.investment_fund_investor_membership_id.\
-    \ Hash: hash_id('FMS.MB_FUND', MB_FFRM_ID)."
+    \ Hash: hash_id('FMS_MB_FUND', MB_FFRM_ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "investment_fund_certificate_transfer"
@@ -65146,7 +65161,7 @@ attributes:
   source_table: "MB_CHANGE"
   source_column: "FMS.MB_CHANGE.MBF_ID"
   comment: "FK target: investment_fund_investor_membership.investment_fund_investor_membership_id.\
-    \ Hash: hash_id('FMS.MB_FUND', MBF_ID)."
+    \ Hash: hash_id('FMS_MB_FUND', MBF_ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "investment_fund_investor_capital_change_log"
@@ -65411,7 +65426,7 @@ attributes:
   source_system: "FMS"
   source_table: "MB_FUND"
   source_column: "FMS.MB_FUND.FUND_ID"
-  comment: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS.FUNDS',\
+  comment: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS_FUNDS',\
     \ FUND_ID)."
   classification_context: null
   etl_derived_value: null
@@ -65447,7 +65462,7 @@ attributes:
   source_column: "FMS.MB_FUND.NAT_ID"
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'COUNTRY'). Cần ETL crosswalk sang FMS.NATIONAL: MB_FUND.NAT_ID = NATIONAL.ID\
-    \ để xác nhận SNAME sau đó hash_id('ECAT.COUNTRY', SNAME) | Chưa xác nhận value\
+    \ để xác nhận SNAME sau đó hash_id('ECAT_COUNTRY', SNAME) | Chưa xác nhận value\
     \ set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
@@ -66740,7 +66755,7 @@ attributes:
   source_system: "FMS"
   source_table: "ANNOUNCE"
   source_column: "FMS.ANNOUNCE.SEC_ID"
-  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS.SECURITIES',\
+  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
     \ SEC_ID). Nullable — xem T6-05."
   classification_context: null
   etl_derived_value: null
@@ -66774,7 +66789,7 @@ attributes:
   source_system: "FMS"
   source_table: "ANNOUNCE"
   source_column: "FMS.ANNOUNCE.FUND_ID"
-  comment: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS.FUNDS',\
+  comment: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS_FUNDS',\
     \ FUND_ID). Nullable — xem T6-05."
   classification_context: null
   etl_derived_value: null
@@ -66808,7 +66823,7 @@ attributes:
   source_system: "FMS"
   source_table: "ANNOUNCE"
   source_column: "FMS.ANNOUNCE.TL_PRO_ID"
-  comment: "FK target: fmc_employee.fmc_employee_id. Hash: hash_id('FMS.TL_PROFILES',\
+  comment: "FK target: fmc_employee.fmc_employee_id. Hash: hash_id('FMS_TL_PROFILES',\
     \ TL_PRO_ID). Nullable — xem T6-05."
   classification_context: null
   etl_derived_value: null
@@ -66842,7 +66857,7 @@ attributes:
   source_system: "FMS"
   source_table: "ANNOUNCE"
   source_column: "FMS.ANNOUNCE.FR_BR_ID"
-  comment: "FK target: foreign_fm_ou.foreign_fm_ou_id. Hash: hash_id('FMS.FOR_BRCH',\
+  comment: "FK target: foreign_fm_ou.foreign_fm_ou_id. Hash: hash_id('FMS_FOR_BRCH',\
     \ FR_BR_ID). Nullable — xem T6-05."
   classification_context: null
   etl_derived_value: null
@@ -66876,7 +66891,7 @@ attributes:
   source_system: "FMS"
   source_table: "ANNOUNCE"
   source_column: "FMS.ANNOUNCE.STF_FB_ID"
-  comment: "FK target: foreign_fm_ou_staff.foreign_fm_ou_staff_id. Hash: hash_id('FMS.STF_FG_BRCH',\
+  comment: "FK target: foreign_fm_ou_staff.foreign_fm_ou_staff_id. Hash: hash_id('FMS_STF_FG_BRCH',\
     \ STF_FB_ID). Nullable — xem T6-05."
   classification_context: null
   etl_derived_value: null
@@ -66910,7 +66925,7 @@ attributes:
   source_system: "FMS"
   source_table: "ANNOUNCE"
   source_column: "FMS.ANNOUNCE.PENSION_FUND_ID"
-  comment: "FK target: pension_fund.pension_fund_id. Hash: hash_id('FMS.PENSION_FUND',\
+  comment: "FK target: pension_fund.pension_fund_id. Hash: hash_id('FMS_PENSION_FUND',\
     \ PENSION_FUND_ID). Nullable — xem T6-05."
   classification_context: null
   etl_derived_value: null
@@ -66945,7 +66960,7 @@ attributes:
   source_column: "FMS.ANNOUNCE.EVENT_TYPE_ID"
   comment: "FK target: cl_fms_event_type.cl_fms_event_tp_id. [ĐỔI 2026-07-19] Đổi\
     \ từ Classification Value đơn sang cặp FK Id/Code theo yêu cầu Data Modeler —\
-    \ EVENT_TYPE nay là entity riêng (giải quyết Tier6 T6-06). Hash: hash_id('FMS.EVENT_TYPE',\
+    \ EVENT_TYPE nay là entity riêng (giải quyết Tier6 T6-06). Hash: hash_id('FMS_EVENT_TYPE',\
     \ EVENT_CODE resolve từ ID)."
   classification_context: null
   etl_derived_value: null
@@ -66980,8 +66995,8 @@ attributes:
   source_system: "FMS"
   source_table: "ANNOUNCE"
   source_column: "FMS.ANNOUNCE.ANNOUNCE_TYPE"
-  comment: "Scheme: FMS_ANNOUNCE_TYPE (đã đăng ký)."
-  classification_context: "FMS_ANNOUNCE_TYPE"
+  comment: "SCHEMA_CODE=FMS_ANNOUNCE_TYPE"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "member_disclosure_announcement"
   atomic_column: "announcement_tp_code"
@@ -66997,8 +67012,8 @@ attributes:
   source_system: "FMS"
   source_table: "ANNOUNCE"
   source_column: "FMS.ANNOUNCE.REPORT_TYPE"
-  comment: "Scheme: FMS_ANNOUNCE_REPORT_TYPE (đã đăng ký)."
-  classification_context: "FMS_ANNOUNCE_REPORT_TYPE"
+  comment: "SCHEMA_CODE=FMS_ANNOUNCE_REPORT_TYPE"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "member_disclosure_announcement"
   atomic_column: "rpt_tp_code"
@@ -67030,8 +67045,8 @@ attributes:
   source_system: "FMS"
   source_table: "ANNOUNCE"
   source_column: "FMS.ANNOUNCE.PERIOD_TYPE"
-  comment: "Scheme: FMS_PERIOD_TYPE (tái sử dụng — đã đăng ký Tier 1). ETL map: 1=DAY;2=WEEK;3=MONTH;4=QUARTER;5=SEMI_ANNUAL;6=YEAR;7=HALF_MONTH."
-  classification_context: "FMS_PERIOD_TYPE"
+  comment: "CHEMA_CODE=FMS_PERIOD_TYPE"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "member_disclosure_announcement"
   atomic_column: "period_tp_code"
@@ -67116,23 +67131,6 @@ attributes:
   atomic_table: "member_disclosure_announcement"
   atomic_column: "announcement_dt"
   data_type: "date"
-- bcv_core_object: null
-  atomic_entity: "Member Disclosure Announcement"
-  atomic_attribute: "Active Status Flag"
-  description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu\
-    \ lực."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "ANNOUNCE"
-  source_column: "FMS.ANNOUNCE.RECORD_STATUS"
-  comment: "Giá trị 1 → true; 0 → false."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "member_disclosure_announcement"
-  atomic_column: "active_status_flag"
-  data_type: "int"
 - bcv_core_object: null
   atomic_entity: "Member Disclosure Announcement"
   atomic_attribute: "Send Date"
@@ -67276,7 +67274,7 @@ attributes:
   source_system: "FMS"
   source_table: "INSPECTION_PENALTY_DECISION"
   source_column: "FMS.INSPECTION_PENALTY_DECISION.INSPECTION_ROUND_ID"
-  comment: "FK target: member_inspection_round.member_inspection_round_id. Hash: hash_id('FMS.INSPECTION_ROUND',\
+  comment: "FK target: member_inspection_round.member_inspection_round_id. Hash: hash_id('FMS_INSPECTION_ROUND',\
     \ INSPECTION_ROUND_ID)."
   classification_context: null
   etl_derived_value: null
@@ -67311,7 +67309,7 @@ attributes:
   source_table: "INSPECTION_PENALTY_DECISION"
   source_column: "FMS.INSPECTION_PENALTY_DECISION.TARGET_ID"
   comment: "FK target: member_inspection_target.member_inspection_target_id. Hash:\
-    \ hash_id('FMS.INSPECTION_TARGET', TARGET_ID)."
+    \ hash_id('FMS_INSPECTION_TARGET', TARGET_ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "member_inspection_pd"
@@ -67749,7 +67747,7 @@ attributes:
   source_system: "FMS"
   source_table: "INSPECTION_TARGET"
   source_column: "FMS.INSPECTION_TARGET.INSPECTION_ROUND_ID"
-  comment: "FK target: member_inspection_round.member_inspection_round_id. Hash: hash_id('FMS.INSPECTION_ROUND',\
+  comment: "FK target: member_inspection_round.member_inspection_round_id. Hash: hash_id('FMS_INSPECTION_ROUND',\
     \ INSPECTION_ROUND_ID)."
   classification_context: null
   etl_derived_value: null
@@ -67884,7 +67882,7 @@ attributes:
   source_system: "FMS"
   source_table: "RANK"
   source_column: "FMS.RANK.SEC_ID"
-  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS.SECURITIES',\
+  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
     \ SEC_ID)."
   classification_context: null
   etl_derived_value: null
@@ -67918,7 +67916,7 @@ attributes:
   source_system: "FMS"
   source_table: "RANK"
   source_column: "FMS.RANK.RT_PD_ID"
-  comment: "FK target: member_rating_period.member_rating_period_id. Hash: hash_id('FMS.RATING_PD',\
+  comment: "FK target: member_rating_period.member_rating_period_id. Hash: hash_id('FMS_RATING_PD',\
     \ RT_PD_ID)."
   classification_context: null
   etl_derived_value: null
@@ -68073,7 +68071,7 @@ attributes:
   source_table: "FACTOR"
   source_column: "FMS.FACTOR.GRP_FTOR_ID"
   comment: "FK target: member_rating_criterion_group.member_rating_criterion_group_id.\
-    \ Hash: hash_id('FMS.GRP_FACTOR', GRP_FTOR_ID)."
+    \ Hash: hash_id('FMS_GRP_FACTOR', GRP_FTOR_ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "member_rating_criterion"
@@ -68107,7 +68105,7 @@ attributes:
   source_table: "FACTOR"
   source_column: "FMS.FACTOR.PARENT_ID"
   comment: "Self-reference. FK target: member_rating_criterion.member_rating_criterion_id.\
-    \ Hash: hash_id('FMS.FACTOR', PARENT_ID)."
+    \ Hash: hash_id('FMS_FACTOR', PARENT_ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "member_rating_criterion"
@@ -68500,7 +68498,7 @@ attributes:
   source_system: "FMS"
   source_table: "FTOR_SCALE"
   source_column: "FMS.FTOR_SCALE.FTOR_ID"
-  comment: "FK target: member_rating_criterion.member_rating_criterion_id. Hash: hash_id('FMS.FACTOR',\
+  comment: "FK target: member_rating_criterion.member_rating_criterion_id. Hash: hash_id('FMS_FACTOR',\
     \ FTOR_ID)."
   classification_context: null
   etl_derived_value: null
@@ -68752,7 +68750,7 @@ attributes:
   source_system: "FMS"
   source_table: "RNK_FACTOR"
   source_column: "FMS.RNK_FACTOR.RK_ID"
-  comment: "FK target: member_rating.member_rating_id. Hash: hash_id('FMS.RANK', RK_ID)."
+  comment: "FK target: member_rating.member_rating_id. Hash: hash_id('FMS_RANK', RK_ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "member_rating_ranking_criterion"
@@ -68785,7 +68783,7 @@ attributes:
   source_system: "FMS"
   source_table: "RNK_FACTOR"
   source_column: "FMS.RNK_FACTOR.FCTR_ID"
-  comment: "FK target: member_rating_criterion.member_rating_criterion_id. Hash: hash_id('FMS.FACTOR',\
+  comment: "FK target: member_rating_criterion.member_rating_criterion_id. Hash: hash_id('FMS_FACTOR',\
     \ FCTR_ID)."
   classification_context: null
   etl_derived_value: null
@@ -69054,7 +69052,7 @@ attributes:
   source_system: "FMS"
   source_table: "RNK_GR_FTOR"
   source_column: "FMS.RNK_GR_FTOR.RK_ID"
-  comment: "FK target: member_rating.member_rating_id. Hash: hash_id('FMS.RANK', RK_ID)."
+  comment: "FK target: member_rating.member_rating_id. Hash: hash_id('FMS_RANK', RK_ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "member_rating_ranking_criterion_group"
@@ -69088,7 +69086,7 @@ attributes:
   source_table: "RNK_GR_FTOR"
   source_column: "FMS.RNK_GR_FTOR.GR_FT_ID"
   comment: "FK target: member_rating_criterion_group.member_rating_criterion_group_id.\
-    \ Hash: hash_id('FMS.GRP_FACTOR', GR_FT_ID)."
+    \ Hash: hash_id('FMS_GRP_FACTOR', GR_FT_ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "member_rating_ranking_criterion_group"
@@ -69236,7 +69234,7 @@ attributes:
   source_table: "CDT_WARN"
   source_column: "FMS.CDT_WARN.PR_WID"
   comment: "FK target: member_warning_parameter.member_warning_parameter_id. Hash:\
-    \ hash_id('FMS.PARA_WARN', PR_WID)."
+    \ hash_id('FMS_PARA_WARN', PR_WID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "member_warning_condition"
@@ -69270,7 +69268,7 @@ attributes:
   source_table: "CDT_WARN"
   source_column: "FMS.CDT_WARN.OTHER_WID"
   comment: "FK target: member_warning_parameter.member_warning_parameter_id. Hash:\
-    \ hash_id('FMS.PARA_WARN', OTHER_WID). Nullable — chỉ có khi điều kiện so sánh\
+    \ hash_id('FMS_PARA_WARN', OTHER_WID). Nullable — chỉ có khi điều kiện so sánh\
     \ kép."
   classification_context: null
   etl_derived_value: null
@@ -71680,7 +71678,7 @@ attributes:
   source_system: "FMS"
   source_table: "PENSION_FUND"
   source_column: "FMS.PENSION_FUND.SEC_ID"
-  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS.SECURITIES',\
+  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
     \ SEC_ID)."
   classification_context: null
   etl_derived_value: null
@@ -71778,7 +71776,7 @@ attributes:
   source_system: "FMS"
   source_table: "PENSION_FUND"
   source_column: "FMS.PENSION_FUND.CUSTODIAN_BANK_ID"
-  comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS.BANK_MONI',\
+  comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS_BANK_MONI',\
     \ CUSTODIAN_BANK_ID)."
   classification_context: null
   etl_derived_value: null
@@ -71812,7 +71810,7 @@ attributes:
   source_system: "FMS"
   source_table: "PENSION_FUND"
   source_column: "FMS.PENSION_FUND.SUPERVISOR_BANK_ID"
-  comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS.BANK_MONI',\
+  comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS_BANK_MONI',\
     \ SUPERVISOR_BANK_ID)."
   classification_context: null
   etl_derived_value: null
@@ -73172,38 +73170,6 @@ attributes:
   atomic_column: "issuance_category_code"
   data_type: "string"
 - bcv_core_object: null
-  atomic_entity: "Public Company Bond Listing History"
-  atomic_attribute: "Deleted Indicator"
-  description: "Trạng thái xóa (0 - chưa xóa, 1 - đã xóa)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "BOND_LISTING_HISTORY"
-  source_column: "IDS.BOND_LISTING_HISTORY.IS_DELETED"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_bond_listing_history"
-  atomic_column: "deleted_ind"
-  data_type: "int"
-- bcv_core_object: null
-  atomic_entity: "Public Company Bond Listing History"
-  atomic_attribute: "Sync Indicator"
-  description: "Trạng thái đồng bộ dữ liệu."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "BOND_LISTING_HISTORY"
-  source_column: "IDS.BOND_LISTING_HISTORY.IS_SYNC"
-  comment: "Giá trị 1 → true (đồng bộ); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_bond_listing_history"
-  atomic_column: "sync_ind"
-  data_type: "int"
-- bcv_core_object: null
   atomic_entity: "Public Company Cancellation"
   atomic_attribute: "Public Company Cancellation Id"
   description: "Khóa đại diện (surrogate key)."
@@ -73431,22 +73397,6 @@ attributes:
   atomic_column: "official_letter_dt"
   data_type: "date"
 - bcv_core_object: null
-  atomic_entity: "Public Company Cancellation"
-  atomic_attribute: "Deleted Indicator"
-  description: "Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "PUB_COMPANY_CANCELLATION"
-  source_column: "IDS.PUB_COMPANY_CANCELLATION.DELETE_FLG"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_cancellation"
-  atomic_column: "deleted_ind"
-  data_type: "int"
-- bcv_core_object: null
   atomic_entity: "Public Company Capital Increase"
   atomic_attribute: "Public Company Capital Increase Id"
   description: "Khóa đại diện (surrogate key)."
@@ -73673,38 +73623,6 @@ attributes:
   atomic_column: "licensing_authority_english_nm"
   data_type: "string"
 - bcv_core_object: null
-  atomic_entity: "Public Company Capital Increase"
-  atomic_attribute: "Deleted Indicator"
-  description: "Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_ADD_CAPITAL"
-  source_column: "IDS.COMPANY_ADD_CAPITAL.DELETE_FLG"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_capital_increase"
-  atomic_column: "deleted_ind"
-  data_type: "int"
-- bcv_core_object: null
-  atomic_entity: "Public Company Capital Increase"
-  atomic_attribute: "Sync Indicator"
-  description: "Trạng thái đồng bộ (1 - Đã đồng bộ, 0 - Chưa đồng bộ)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_ADD_CAPITAL"
-  source_column: "IDS.COMPANY_ADD_CAPITAL.IS_SYNC"
-  comment: "Giá trị 1 → true (đồng bộ); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_capital_increase"
-  atomic_column: "sync_ind"
-  data_type: "int"
-- bcv_core_object: null
   atomic_entity: "Public Company Capital Mobilization"
   atomic_attribute: "Public Company Capital Mobilization Id"
   description: "Khóa đại diện (surrogate key)."
@@ -73843,7 +73761,7 @@ attributes:
   source_system: "IDS"
   source_table: "CAPITAL_MOBILIZATION"
   source_column: "IDS.CAPITAL_MOBILIZATION.CAPITAL_INCREASE_METHOD"
-  comment: "BCV: không có term riêng — chưa xác nhận LOOKUP_GROUP, giữ Text tự do."
+  comment: "Text tự do."
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_capital_mobilization"
@@ -73882,22 +73800,6 @@ attributes:
   atomic_table: "pc_capital_mobilization"
   atomic_column: "af_english_nm"
   data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Public Company Capital Mobilization"
-  atomic_attribute: "Deleted Indicator"
-  description: "Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "CAPITAL_MOBILIZATION"
-  source_column: "IDS.CAPITAL_MOBILIZATION.DELETE_FLG"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_capital_mobilization"
-  atomic_column: "deleted_ind"
-  data_type: "int"
 - bcv_core_object: null
   atomic_entity: "Public Company Entity Role"
   atomic_attribute: "Public Company Entity Role Id"
@@ -74022,29 +73924,12 @@ attributes:
   source_system: "IDS"
   source_table: "COMPANY_ENTITY_ROLE"
   source_column: "IDS.COMPANY_ENTITY_ROLE.ROLE_TYPE_CD"
-  comment: "Scheme: IDS_ENTITY_ROLE_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP\
-    \ = ENTITY_ROLE_TYPE)."
-  classification_context: "IDS_ENTITY_ROLE_TYPE"
+  comment: "SCHEMA_CODE=IDS.ENTITY_ROLE_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='ENTITY_ROLE_TYPE')."
+  classification_context: null
   etl_derived_value: null
   atomic_table: "pc_entity_role"
   atomic_column: "role_tp_code"
   data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Public Company Entity Role"
-  atomic_attribute: "Active Indicator"
-  description: "Trạng thái (1-Hoạt động, 0-Không hoạt động)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_ENTITY_ROLE"
-  source_column: "IDS.COMPANY_ENTITY_ROLE.ACTIVE_FLG"
-  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_entity_role"
-  atomic_column: "active_ind"
-  data_type: "int"
 - bcv_core_object: null
   atomic_entity: "Public Company Entity Role"
   atomic_attribute: "Effective From Date"
@@ -74077,22 +73962,6 @@ attributes:
   atomic_table: "pc_entity_role"
   atomic_column: "effective_to_dt"
   data_type: "date"
-- bcv_core_object: null
-  atomic_entity: "Public Company Entity Role"
-  atomic_attribute: "Deleted Indicator"
-  description: "Đánh dấu xóa mềm (0 - Chưa xóa; 1 - Đã xóa)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_ENTITY_ROLE"
-  source_column: "IDS.COMPANY_ENTITY_ROLE.DELETE_FLG"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_entity_role"
-  atomic_column: "deleted_ind"
-  data_type: "int"
 - bcv_core_object: "Group"
   atomic_entity: "Public Company Evaluation Group"
   atomic_attribute: "Public Company Evaluation Group Id"
@@ -74193,22 +74062,6 @@ attributes:
   atomic_table: "pc_evaluation_group"
   atomic_column: "weight_percentage"
   data_type: "decimal(5,2)"
-- bcv_core_object: "Group"
-  atomic_entity: "Public Company Evaluation Group"
-  atomic_attribute: "Display Order"
-  description: "Số thứ tự hiển thị."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "EVALUATION_GROUPS"
-  source_column: "IDS.EVALUATION_GROUPS.DISPLAY_ORDER"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_evaluation_group"
-  atomic_column: "display_order"
-  data_type: "int"
 - bcv_core_object: null
   atomic_entity: "Public Company Foreign Ownership Limit"
   atomic_attribute: "Public Company Foreign Ownership Limit Id"
@@ -74339,38 +74192,6 @@ attributes:
   atomic_column: "effective_to_dt"
   data_type: "date"
 - bcv_core_object: null
-  atomic_entity: "Public Company Foreign Ownership Limit"
-  atomic_attribute: "Deleted Indicator"
-  description: "Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "FOREIGN_OWNER_LIMIT"
-  source_column: "IDS.FOREIGN_OWNER_LIMIT.DELETE_FLG"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_foreign_ownership_limit"
-  atomic_column: "deleted_ind"
-  data_type: "int"
-- bcv_core_object: null
-  atomic_entity: "Public Company Foreign Ownership Limit"
-  atomic_attribute: "Sync Indicator"
-  description: "Đánh dấu đồng bộ (1 - Đồng bộ, 0 - Thêm trên giao diện)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "FOREIGN_OWNER_LIMIT"
-  source_column: "IDS.FOREIGN_OWNER_LIMIT.SYNC_FLG"
-  comment: "Giá trị 1 → true (đồng bộ); 0 → false (thêm trên giao diện). Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_foreign_ownership_limit"
-  atomic_column: "sync_ind"
-  data_type: "int"
-- bcv_core_object: null
   atomic_entity: "Public Company Inspection"
   atomic_attribute: "Public Company Inspection Id"
   description: "Khóa đại diện (surrogate key)."
@@ -74461,8 +74282,8 @@ attributes:
   source_system: "IDS"
   source_table: "COMPANY_INSPECTION"
   source_column: "IDS.COMPANY_INSPECTION.INSPECTION_TYPE_CD"
-  comment: "Scheme: IDS_INSPECTION_TYPE. Values load từ LOOKUP_VALUES (GROUP = INSPECTION_TYPE)."
-  classification_context: "IDS_INSPECTION_TYPE"
+  comment: "SCHEMA_CODE=IDS.INSPECTION_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='INSPECTION_TYPE')."
+  classification_context: null
   etl_derived_value: null
   atomic_table: "pc_inspection"
   atomic_column: "inspection_tp_code"
@@ -74541,8 +74362,8 @@ attributes:
   source_system: "IDS"
   source_table: "COMPANY_INSPECTION"
   source_column: "IDS.COMPANY_INSPECTION.INSPECTION_MODE_CD"
-  comment: "Scheme: IDS_INSPECTION_MODE. Values load từ LOOKUP_VALUES (GROUP = INSPECTION_MODE)."
-  classification_context: "IDS_INSPECTION_MODE"
+  comment: "SCHEMA_CODE=IDS.INSPECTION_MODE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='INSPECTION_MODE')."
+  classification_context: null
   etl_derived_value: null
   atomic_table: "pc_inspection"
   atomic_column: "inspection_mode_code"
@@ -74644,23 +74465,6 @@ attributes:
   atomic_table: "pc_inspection"
   atomic_column: "sanction_decision_nbr"
   data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Public Company Inspection"
-  atomic_attribute: "Deleted Indicator"
-  description: "Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_INSPECTION"
-  source_column: "IDS.COMPANY_INSPECTION.DELETE_FLG"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(38) — dùng như flag\
-    \ mặc dù kiểu khai báo rộng."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_inspection"
-  atomic_column: "deleted_ind"
-  data_type: "int"
 - bcv_core_object: null
   atomic_entity: "Public Company Legal Representative"
   atomic_attribute: "Public Company Legal Representative Id"
@@ -74793,36 +74597,19 @@ attributes:
   data_type: "date"
 - bcv_core_object: null
   atomic_entity: "Public Company Legal Representative"
-  atomic_attribute: "Representative Role Code"
+  atomic_attribute: "Representative Role Indicator"
   description: "0 - người đại diện pháp luật, 1 - người thực hiện CBTT."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "LEGAL_REPRESENTATIVE"
-  source_column: "IDS.LEGAL_REPRESENTATIVE.REPRESENTATIVE_ROLE"
-  comment: "Scheme: IDS_REPRESENTATIVE_ROLE. Giá trị số 0/1 → ETL map sang text code.\
-    \ Nguồn lưu dạng số — ETL cần convert sang string code."
-  classification_context: "IDS_REPRESENTATIVE_ROLE"
-  etl_derived_value: null
-  atomic_table: "pc_legal_representative"
-  atomic_column: "representative_role_code"
-  data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Public Company Legal Representative"
-  atomic_attribute: "Deleted Indicator"
-  description: "Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa)."
   data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
   source_table: "LEGAL_REPRESENTATIVE"
-  source_column: "IDS.LEGAL_REPRESENTATIVE.DELETE_FLG"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
+  source_column: "IDS.LEGAL_REPRESENTATIVE.REPRESENTATIVE_ROLE"
+  comment: null
+  classification_context: "IDS_REPRESENTATIVE_ROLE"
   etl_derived_value: null
   atomic_table: "pc_legal_representative"
-  atomic_column: "deleted_ind"
+  atomic_column: "representative_role_ind"
   data_type: "int"
 - bcv_core_object: null
   atomic_entity: "Public Company Penalty"
@@ -74915,8 +74702,8 @@ attributes:
   source_system: "IDS"
   source_table: "COMPANY_PENALTIES"
   source_column: "IDS.COMPANY_PENALTIES.PENALIZED_SUBJECT_TYPE_CD"
-  comment: "Scheme: IDS_PENALIZED_SUBJECT_TYPE. Values load từ LOOKUP_VALUES."
-  classification_context: "IDS_PENALIZED_SUBJECT_TYPE"
+  comment: "SCHEMA_CODE=IDS.PENALIZED_SUBJECT_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='PENALIZED_SUBJECT_TYPE')."
+  classification_context: null
   etl_derived_value: null
   atomic_table: "pc_penalty"
   atomic_column: "penalized_subject_tp_code"
@@ -74997,8 +74784,8 @@ attributes:
   source_system: "IDS"
   source_table: "COMPANY_PENALTIES"
   source_column: "IDS.COMPANY_PENALTIES.POSITION_CD"
-  comment: "Scheme: IDS_POSITION. Values load từ LOOKUP_VALUES (GROUP = POSITION)."
-  classification_context: "IDS_POSITION"
+  comment: "SCHEMA_CODE=IDS.POSITION. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='POSITION')."
+  classification_context: null
   etl_derived_value: null
   atomic_table: "pc_penalty"
   atomic_column: "investor_position_code"
@@ -75115,23 +74902,6 @@ attributes:
   atomic_table: "pc_penalty"
   atomic_column: "remedial_minutes_description"
   data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Public Company Penalty"
-  atomic_attribute: "Deleted Indicator"
-  description: "Trạng thái xóa."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_PENALTIES"
-  source_column: "IDS.COMPANY_PENALTIES.DELETE_FLG"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(38) — dùng như flag\
-    \ mặc dù kiểu khai báo rộng."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_penalty"
-  atomic_column: "deleted_ind"
-  data_type: "int"
 - bcv_core_object: null
   atomic_entity: "Public Company Registration"
   atomic_attribute: "Public Company Registration Id"
@@ -75342,22 +75112,6 @@ attributes:
   atomic_column: "official_letter_dt"
   data_type: "date"
 - bcv_core_object: null
-  atomic_entity: "Public Company Registration"
-  atomic_attribute: "Deleted Indicator"
-  description: "Trạng thái xóa."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "PUB_COMPANY_REGISTRATION"
-  source_column: "IDS.PUB_COMPANY_REGISTRATION.DELETE_FLG"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_registration"
-  atomic_column: "deleted_ind"
-  data_type: "int"
-- bcv_core_object: null
   atomic_entity: "Public Company Related Entity"
   atomic_attribute: "Public Company Related Entity Id"
   description: "Khóa đại diện (surrogate key)."
@@ -75449,7 +75203,7 @@ attributes:
   source_table: "COMPANY_RELATIONSHIP"
   source_column: "IDS.COMPANY_RELATIONSHIP.RELATIONSHIP_TYPE_CD"
   comment: "Scheme: IDS_COMPANY_RELATIONSHIP_TYPE. Values load từ LOOKUP_VALUES."
-  classification_context: "IDS_COMPANY_RELATIONSHIP_TYPE"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "pc_related_entity"
   atomic_column: "rltnp_tp_code"
@@ -75600,38 +75354,6 @@ attributes:
   atomic_column: "effective_to_dt"
   data_type: "date"
 - bcv_core_object: null
-  atomic_entity: "Public Company Related Entity"
-  atomic_attribute: "Deleted Indicator"
-  description: "Đánh dấu xóa mềm (0 - Chưa xóa; 1 - Đã xóa)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_RELATIONSHIP"
-  source_column: "IDS.COMPANY_RELATIONSHIP.DELETE_FLG"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_related_entity"
-  atomic_column: "deleted_ind"
-  data_type: "int"
-- bcv_core_object: null
-  atomic_entity: "Public Company Related Entity"
-  atomic_attribute: "Sync Indicator"
-  description: "Đánh dấu đồng bộ (1- Đồng bộ; 0 - Thêm tay)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_RELATIONSHIP"
-  source_column: "IDS.COMPANY_RELATIONSHIP.IS_SYNC"
-  comment: "Giá trị 1 → true (đồng bộ); 0 → false (thêm tay). Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_related_entity"
-  atomic_column: "sync_ind"
-  data_type: "int"
-- bcv_core_object: null
   atomic_entity: "Public Company Report Extension"
   atomic_attribute: "Public Company Report Extension Id"
   description: "Khóa đại diện (surrogate key)."
@@ -75714,20 +75436,36 @@ attributes:
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Public Company Report Extension"
-  atomic_attribute: "Disclosure Form Code"
-  description: "Mã form công bố thông tin (CBTT)."
+  atomic_attribute: "Financial Report Template Id"
+  description: "Id mẫu form CBTT áp dụng."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "REPORT_EXTENSIONS"
+  source_column: "IDS.REPORT_EXTENSIONS.FORM_CD"
+  comment: "FK target: fr_template.fr_template_id. Hash: hash_id('IDS_FORMS', FORM_CD)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "pc_report_extension"
+  atomic_column: "fr_template_id"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Public Company Report Extension"
+  atomic_attribute: "Financial Report Template Code"
+  description: "Mã mẫu báo cáo."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
   source_table: "REPORT_EXTENSIONS"
   source_column: "IDS.REPORT_EXTENSIONS.FORM_CD"
-  comment: "Denormalized — mã form CBTT dạng text, không có cột FORM_ID để FK vật\
-    \ lý đến fr_template trong bảng này."
+  comment: "Lookup pair: fr_template.fr_template_code. Pair with Financial Report\
+    \ Template Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_report_extension"
-  atomic_column: "disclosure_form_code"
+  atomic_column: "fr_template_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Public Company Report Extension"
@@ -75811,7 +75549,7 @@ attributes:
   data_type: "int"
 - bcv_core_object: null
   atomic_entity: "Public Company Report Extension"
-  atomic_attribute: "Report Quarter Number"
+  atomic_attribute: "Report Quarter"
   description: "Quý báo cáo."
   data_domain: "Small Counter"
   nullable: true
@@ -75823,7 +75561,7 @@ attributes:
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_report_extension"
-  atomic_column: "rpt_quarter_nbr"
+  atomic_column: "rpt_quarter"
   data_type: "int"
 - bcv_core_object: null
   atomic_entity: "Public Company Stock Listing History"
@@ -75944,15 +75682,14 @@ attributes:
   atomic_entity: "Public Company Stock Listing History"
   atomic_attribute: "Exchange Code"
   description: "Sàn niêm yết."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
   source_table: "STOCK_LISTING_HISTORY"
   source_column: "IDS.STOCK_LISTING_HISTORY.EXCHANGE_CD"
-  comment: "Scheme: IDS_EQUITY_LISTING_EXCH. Dùng chung scheme với Public Company.Equity\
-    \ Listing Exchange Code."
-  classification_context: "IDS_EQUITY_LISTING_EXCH"
+  comment: "Dùng chung scheme với Public Company.Equity Listing Exchange Code."
+  classification_context: null
   etl_derived_value: null
   atomic_table: "pc_stock_listing_history"
   atomic_column: "exchange_code"
@@ -76084,22 +75821,6 @@ attributes:
   etl_derived_value: null
   atomic_table: "pc_stock_listing_history"
   atomic_column: "total_share_quantity_after_change"
-  data_type: "int"
-- bcv_core_object: null
-  atomic_entity: "Public Company Stock Listing History"
-  atomic_attribute: "Deleted Indicator"
-  description: "Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "STOCK_LISTING_HISTORY"
-  source_column: "IDS.STOCK_LISTING_HISTORY.DELETE_FLG"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_stock_listing_history"
-  atomic_column: "deleted_ind"
   data_type: "int"
 - bcv_core_object: null
   atomic_entity: "Public Company Tender Offer"
@@ -76378,22 +76099,6 @@ attributes:
   data_type: "decimal(23,2)"
 - bcv_core_object: null
   atomic_entity: "Public Company Tender Offer"
-  atomic_attribute: "Deleted Indicator"
-  description: "Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_TENDER_OFFER"
-  source_column: "IDS.COMPANY_TENDER_OFFER.DELETE_FLG"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_tender_offer"
-  atomic_column: "deleted_ind"
-  data_type: "int"
-- bcv_core_object: null
-  atomic_entity: "Public Company Tender Offer"
   atomic_attribute: "Target Equity Ticker"
   description: "Mã chứng khoán (Cổ phiếu) của công ty mục tiêu."
   data_domain: "Text"
@@ -76420,7 +76125,7 @@ attributes:
   source_column: "IDS.COMPANY_TENDER_OFFER.TARGET_LISTING_EXCH"
   comment: "Scheme: IDS_EQUITY_LISTING_EXCH. Dùng chung scheme với Public Company.Equity\
     \ Listing Exchange Code."
-  classification_context: "IDS_EQUITY_LISTING_EXCH"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "pc_tender_offer"
   atomic_column: "target_listing_exchange_code"
@@ -76646,7 +76351,7 @@ attributes:
   source_column: "IDS.COMPANY_TENDER_OFFER.APPROVAL_STATUS_CD"
   comment: "Scheme: IDS_SO_APPROVAL_STATUS. Dùng chung scheme với Public Company Securities\
     \ Offering.Approval Status Code (cùng LOOKUP_GROUP = SO_APPROVAL_STATUS)."
-  classification_context: "IDS_SO_APPROVAL_STATUS"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "pc_tender_offer"
   atomic_column: "approval_status_code"
@@ -76944,38 +76649,6 @@ attributes:
   etl_derived_value: null
   atomic_table: "pc_treasury_stock_activity"
   atomic_column: "treasury_sell_round_count"
-  data_type: "int"
-- bcv_core_object: null
-  atomic_entity: "Public Company Treasury Stock Activity"
-  atomic_attribute: "Deleted Indicator"
-  description: "Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_TREASURY_STOCKS"
-  source_column: "IDS.COMPANY_TREASURY_STOCKS.DELETE_FLG"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_treasury_stock_activity"
-  atomic_column: "deleted_ind"
-  data_type: "int"
-- bcv_core_object: null
-  atomic_entity: "Public Company Treasury Stock Activity"
-  atomic_attribute: "Sync Indicator"
-  description: "Đánh dấu đồng bộ (1 - Đồng bộ, 0 - Thêm tay)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_TREASURY_STOCKS"
-  source_column: "IDS.COMPANY_TREASURY_STOCKS.IS_SYNC"
-  comment: "Giá trị 1 → true (đồng bộ); 0 → false (thêm tay). Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_treasury_stock_activity"
-  atomic_column: "sync_ind"
   data_type: "int"
 - bcv_core_object: null
   atomic_entity: "Securities Company Alert Financial Indicator"
@@ -86938,7 +86611,7 @@ attributes:
   comment: "FK target: securities_distribution_agent.securities_distribution_agent_id.\
     \ LƯU Ý 2-HOP: DISTRIBUTOR_LOCATION không phải Atomic entity riêng — ETL JOIN\
     \ DISTRIBUTOR_LOCATION_ID → FMS.DISTRIBUTOR_LOCATION.ID để lấy DISTRIBUTOR_AGENT_ID,\
-    \ sau đó Hash: hash_id('FMS.DISTRIBUTOR_AGENT', DISTRIBUTOR_AGENT_ID)."
+    \ sau đó Hash: hash_id('FMS_DISTRIBUTOR_AGENT', DISTRIBUTOR_AGENT_ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "securities_distribution_agent_personnel"
@@ -89366,24 +89039,6 @@ attributes:
   data_type: "date"
 - bcv_core_object: null
   atomic_entity: "Stock Control"
-  atomic_attribute: "Exposure Status Code"
-  description: "Dùng cho giám sát (1-insert, 2-update)."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "STOCK_CONTROLS"
-  source_column: "IDS.STOCK_CONTROLS.EXP_STATUS_FLG"
-  comment: "Scheme: IDS_STOCK_CONTROL_EXP_STATUS (no_lookup). Nguồn NUMBER(1) dùng\
-    \ 1=insert, 2=update (không phải boolean true/false chuẩn) — ETL convert sang\
-    \ string code, không map thành Boolean."
-  classification_context: "IDS_STOCK_CONTROL_EXP_STATUS"
-  etl_derived_value: null
-  atomic_table: "stock_control"
-  atomic_column: "exposure_status_code"
-  data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Stock Control"
   atomic_attribute: "Restriction Type Code"
   description: "Loại hạn chế - LOOKUP_VALUES LOOKUP_GROUP = RESTRICTION_TYPE."
   data_domain: "Classification Value"
@@ -89399,22 +89054,6 @@ attributes:
   atomic_table: "stock_control"
   atomic_column: "restriction_tp_code"
   data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Stock Control"
-  atomic_attribute: "Deleted Indicator"
-  description: "Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "STOCK_CONTROLS"
-  source_column: "IDS.STOCK_CONTROLS.DELETE_FLG"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "stock_control"
-  atomic_column: "deleted_ind"
-  data_type: "int"
 - bcv_core_object: null
   atomic_entity: "Stock Holder Relationship"
   atomic_attribute: "Stock Holder Relationship Id"
@@ -89542,7 +89181,7 @@ attributes:
   source_column: "IDS.HOLDER_RELATIONSHIP.RELATIONSHIP_TYPE_CD"
   comment: "Scheme: IDS_HOLDER_RELATIONSHIP_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP\
     \ = RELATIONSHIP_TYPE) — scheme đã đăng ký sẵn."
-  classification_context: "IDS_HOLDER_RELATIONSHIP_TYPE"
+  classification_context: null
   etl_derived_value: null
   atomic_table: "stock_holder_relationship"
   atomic_column: "rltnp_tp_code"
@@ -89579,22 +89218,6 @@ attributes:
   atomic_table: "stock_holder_relationship"
   atomic_column: "effective_to_dt"
   data_type: "date"
-- bcv_core_object: null
-  atomic_entity: "Stock Holder Relationship"
-  atomic_attribute: "Active Indicator"
-  description: "Trạng thái (0-Inactive, 1-Active)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "HOLDER_RELATIONSHIP"
-  source_column: "IDS.HOLDER_RELATIONSHIP.ACTIVE_FLG"
-  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "stock_holder_relationship"
-  atomic_column: "active_ind"
-  data_type: "int"
 - bcv_core_object: null
   atomic_entity: "Stock Holder Relationship"
   atomic_attribute: "Relationship Reason"
@@ -89659,22 +89282,6 @@ attributes:
   atomic_table: "stock_holder_relationship"
   atomic_column: "remarks"
   data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Stock Holder Relationship"
-  atomic_attribute: "Deleted Indicator"
-  description: "Đánh dấu xóa mềm - 1:Xóa, 0:Không xóa."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "HOLDER_RELATIONSHIP"
-  source_column: "IDS.HOLDER_RELATIONSHIP.DELETE_FLG"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "stock_holder_relationship"
-  atomic_column: "deleted_ind"
-  data_type: "int"
 - bcv_core_object: null
   atomic_entity: "Stock Holder Trading Account"
   atomic_attribute: "Stock Holder Trading Account Id"
@@ -89807,22 +89414,6 @@ attributes:
   data_type: "date"
 - bcv_core_object: null
   atomic_entity: "Stock Holder Trading Account"
-  atomic_attribute: "Active Indicator"
-  description: "Đánh dấu tài khoản hoạt động (0-inactive, 1-active)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "ACCOUNT_NUMBERS"
-  source_column: "IDS.ACCOUNT_NUMBERS.ACTIVE_FLG"
-  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "stock_holder_trading_account"
-  atomic_column: "active_ind"
-  data_type: "int"
-- bcv_core_object: null
-  atomic_entity: "Stock Holder Trading Account"
   atomic_attribute: "Primary Account Indicator"
   description: "Đánh dấu tài khoản chính (1-key, 0-không key)."
   data_domain: "Small Counter"
@@ -89836,22 +89427,6 @@ attributes:
   etl_derived_value: null
   atomic_table: "stock_holder_trading_account"
   atomic_column: "primary_account_ind"
-  data_type: "int"
-- bcv_core_object: null
-  atomic_entity: "Stock Holder Trading Account"
-  atomic_attribute: "Deleted Indicator"
-  description: "Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "ACCOUNT_NUMBERS"
-  source_column: "IDS.ACCOUNT_NUMBERS.DELETE_FLG"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "stock_holder_trading_account"
-  atomic_column: "deleted_ind"
   data_type: "int"
 - bcv_core_object: null
   atomic_entity: "Transfer Agent"
@@ -91673,8 +91248,8 @@ attributes:
   source_system: "IDS"
   source_table: "VIOLATION_TEMPLATES"
   source_column: "IDS.VIOLATION_TEMPLATES.VIOLATION_TYPE_CD"
-  comment: "Scheme: IDS_VIOLATION_TYPE. Values load từ LOOKUP_VALUES."
-  classification_context: "IDS_VIOLATION_TYPE"
+  comment: "SCHEMA_CODE=IDS.VIOLATION_REPORT_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='VIOLATION_TYPE')."
+  classification_context: null
   etl_derived_value: null
   atomic_table: "vr_template"
   atomic_column: "vr_tp_code"
@@ -91689,33 +91264,32 @@ attributes:
   source_system: "IDS"
   source_table: "VIOLATION_TEMPLATES"
   source_column: "IDS.VIOLATION_TEMPLATES.VIOLATION_SUBTYPE_CD"
-  comment: "Scheme: IDS_VIOLATION_SUBTYPE (no_lookup) — chưa liệt kê trong HLD Tier2\
-    \ 6d, bổ sung scheme mới."
-  classification_context: "IDS_VIOLATION_SUBTYPE"
+  comment: "SCHEMA_CODE=IDS.VIOLATION_REPORT_SUBTYPE. Values load từ LOOKUP_VALUES\
+    \ (LOOKUP_GROUP='VIOLATION_SUBTYPE')."
+  classification_context: null
   etl_derived_value: null
   atomic_table: "vr_template"
   atomic_column: "vr_sub_tp_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Violation Report Template"
-  atomic_attribute: "Report Type Code"
-  description: "Mã loại báo cáo REPORT_TYPE."
+  atomic_attribute: "News Type Code"
+  description: "Mã phân loại."
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
   source_table: "VIOLATION_TEMPLATES"
   source_column: "IDS.VIOLATION_TEMPLATES.REPORT_TYPE_CD"
-  comment: "Scheme: IDS_VIOLATION_REPORT_TYPE (no_lookup) — bổ sung scheme mới, khác\
-    \ với IDS_REPORT_CATALOG_TYPE (I/O)."
-  classification_context: "IDS_VIOLATION_REPORT_TYPE"
+  comment: "SCHEMA_CODE=IDS.NEWS_TYPE_CD. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_TYPE')."
+  classification_context: null
   etl_derived_value: null
   atomic_table: "vr_template"
-  atomic_column: "rpt_tp_code"
+  atomic_column: "news_tp_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Violation Report Template"
-  atomic_attribute: "Report Scope Code"
+  atomic_attribute: "Financial Report Scope Type Code"
   description: "Mã phạm vi báo cáo REPORT_SCOPE."
   data_domain: "Classification Value"
   nullable: true
@@ -91723,29 +91297,27 @@ attributes:
   source_system: "IDS"
   source_table: "VIOLATION_TEMPLATES"
   source_column: "IDS.VIOLATION_TEMPLATES.REPORT_SCOPE_CD"
-  comment: "Scheme: IDS_REPORT_SCOPE. Dùng chung scheme với Financial Report Catalog.Report\
-    \ Scope Code."
-  classification_context: "IDS_REPORT_SCOPE"
+  comment: "SCHEMA_CODE=IDS.REPORT_SCOPE_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_SCOPE')."
+  classification_context: null
   etl_derived_value: null
   atomic_table: "vr_template"
-  atomic_column: "rpt_scope_code"
+  atomic_column: "fr_scope_tp_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Violation Report Template"
-  atomic_attribute: "Period Type Code"
-  description: "Mã loại kỳ báo cáo (Năm, Bán niên, Quý...) REPORT_PERIOD_TYPE."
+  atomic_attribute: "Report Period Type Code"
+  description: "Mã loại kỳ báo cáo (Năm, Bán niên, Quý...)."
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
   source_table: "VIOLATION_TEMPLATES"
   source_column: "IDS.VIOLATION_TEMPLATES.PERIOD_TYPE_CD"
-  comment: "Scheme: IDS_REPORT_PERIOD_TYPE (no_lookup) — chưa liệt kê trong HLD Tier2\
-    \ 6d, bổ sung scheme mới."
-  classification_context: "IDS_REPORT_PERIOD_TYPE"
+  comment: "SCHEMA_CODE=IDS.REPORT_PERIOD_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_PERIOD_TYPE')."
+  classification_context: null
   etl_derived_value: null
   atomic_table: "vr_template"
-  atomic_column: "period_tp_code"
+  atomic_column: "rpt_period_tp_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Violation Report Template"
@@ -91757,9 +91329,9 @@ attributes:
   source_system: "IDS"
   source_table: "VIOLATION_TEMPLATES"
   source_column: "IDS.VIOLATION_TEMPLATES.VIOLATION_TRIGGER_POINT_CD"
-  comment: "Scheme: IDS_VIOLATION_TRIGGER_POINT (no_lookup) — chưa liệt kê trong HLD\
-    \ Tier2 6d, bổ sung scheme mới."
-  classification_context: "IDS_VIOLATION_TRIGGER_POINT"
+  comment: "SCHEMA_CODE=IDS.VIOLATION_TRIGGER_POINT. Values load từ LOOKUP_VALUES\
+    \ (LOOKUP_GROUP='VIOLATION_TRIGGER_POINT')."
+  classification_context: null
   etl_derived_value: null
   atomic_table: "vr_template"
   atomic_column: "violation_trigger_point_code"
@@ -91790,9 +91362,9 @@ attributes:
   source_system: "IDS"
   source_table: "VIOLATION_TEMPLATES"
   source_column: "IDS.VIOLATION_TEMPLATES.VIOLATION_TRIGGER_POINT_CD_EX"
-  comment: "Scheme: IDS_VIOLATION_TRIGGER_POINT. Dùng chung scheme với Violation Trigger\
-    \ Point Code."
-  classification_context: "IDS_VIOLATION_TRIGGER_POINT"
+  comment: "SCHEMA_CODE=IDS.VIOLATION_TRIGGER_POINT. Values load từ LOOKUP_VALUES\
+    \ (LOOKUP_GROUP='VIOLATION_TRIGGER_POINT')."
+  classification_context: null
   etl_derived_value: null
   atomic_table: "vr_template"
   atomic_column: "violation_trigger_point_extended_code"
@@ -91816,16 +91388,15 @@ attributes:
 - bcv_core_object: null
   atomic_entity: "Violation Report Template"
   atomic_attribute: "Day Type Code"
-  description: "Mã loại ngày (Ngày làm việc, Ngày thường...) DAY_TYPE."
+  description: "Mã loại ngày (Ngày làm việc, Ngày thường...)."
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
   source_table: "VIOLATION_TEMPLATES"
   source_column: "IDS.VIOLATION_TEMPLATES.DAY_TYPE_CD"
-  comment: "Scheme: IDS_DAY_TYPE (no_lookup) — chưa liệt kê trong HLD Tier2 6d, bổ\
-    \ sung scheme mới."
-  classification_context: "IDS_DAY_TYPE"
+  comment: "SCHEMA_CODE=IDS.DAY_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='DAY_TYPE')."
+  classification_context: null
   etl_derived_value: null
   atomic_table: "vr_template"
   atomic_column: "day_tp_code"
@@ -91864,22 +91435,6 @@ attributes:
   data_type: "date"
 - bcv_core_object: null
   atomic_entity: "Violation Report Template"
-  atomic_attribute: "Active Indicator"
-  description: "Cờ trạng thái hoạt động (1: Hoạt động, 0: Vô hiệu)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "VIOLATION_TEMPLATES"
-  source_column: "IDS.VIOLATION_TEMPLATES.ACTIVE_FLG"
-  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "vr_template"
-  atomic_column: "active_ind"
-  data_type: "int"
-- bcv_core_object: null
-  atomic_entity: "Violation Report Template"
   atomic_attribute: "Offset Day Count Condition"
   description: "Số ngày cộng thêm khi có điều kiện."
   data_domain: "Small Counter"
@@ -91893,22 +91448,6 @@ attributes:
   etl_derived_value: null
   atomic_table: "vr_template"
   atomic_column: "offset_day_count_condition"
-  data_type: "int"
-- bcv_core_object: null
-  atomic_entity: "Violation Report Template"
-  atomic_attribute: "Deleted Indicator"
-  description: "Cờ xóa logic (1: Đã xóa, 0: Chưa xóa)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "VIOLATION_TEMPLATES"
-  source_column: "IDS.VIOLATION_TEMPLATES.DELETE_FLG"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "vr_template"
-  atomic_column: "deleted_ind"
   data_type: "int"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Involved Party Alternative Identification"
@@ -94977,7 +94516,7 @@ attributes:
   source_table: "SECURITIES"
   source_column: "FMS.SECURITIES.ID"
   comment: "FK target: fund_management_company.fmc_id. Shared entity — không có PK\
-    \ surrogate riêng. Hash: hash_id('FMS.SECURITIES', ID)."
+    \ surrogate riêng. Hash: hash_id('FMS_SECURITIES', ID)."
   classification_context: "Source System Code = 'FMS_SECURITIES' | Identification\
     \ Type Code = 'BUSINESS_LICENSE'"
   etl_derived_value: null
@@ -95134,7 +94673,7 @@ attributes:
   source_table: "FOR_BRCH"
   source_column: "FMS.FOR_BRCH.ID"
   comment: "FK target: foreign_fm_ou.foreign_fm_ou_id. Shared entity — không có PK\
-    \ surrogate riêng. Hash: hash_id('FMS.FOR_BRCH', ID)."
+    \ surrogate riêng. Hash: hash_id('FMS_FOR_BRCH', ID)."
   classification_context: "Source System Code = 'FMS_FOR_BRCH' | Identification Type\
     \ Code = 'BUSINESS_LICENSE'"
   etl_derived_value: null
@@ -95306,7 +94845,7 @@ attributes:
   source_table: "TL_PROFILES"
   source_column: "FMS.TL_PROFILES.ID"
   comment: "FK target: fmc_employee.fmc_employee_id. Shared entity — không có PK surrogate\
-    \ riêng. Hash: hash_id('FMS.TL_PROFILES', ID)."
+    \ riêng. Hash: hash_id('FMS_TL_PROFILES', ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "ip_alternative_identification"
@@ -95426,7 +94965,7 @@ attributes:
   source_table: "FUNDS"
   source_column: "FMS.FUNDS.ID"
   comment: "FK target: investment_fund.investment_fund_id. Shared entity — không có\
-    \ PK surrogate riêng. Hash: hash_id('FMS.FUNDS', ID)."
+    \ PK surrogate riêng. Hash: hash_id('FMS_FUNDS', ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "ip_alternative_identification"
@@ -95529,7 +95068,7 @@ attributes:
   source_table: "INVES"
   source_column: "FMS.INVES.ID"
   comment: "FK target: discretionary_investment_investor.discretionary_investment_investor_id.\
-    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.INVES', ID)."
+    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS_INVES', ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "ip_alternative_identification"
@@ -95648,7 +95187,7 @@ attributes:
   source_table: "STF_FG_BRCH"
   source_column: "FMS.STF_FG_BRCH.ID"
   comment: "FK target: foreign_fm_ou_staff.foreign_fm_ou_staff_id. Shared entity —\
-    \ không có PK surrogate riêng. Hash: hash_id('FMS.STF_FG_BRCH', ID)."
+    \ không có PK surrogate riêng. Hash: hash_id('FMS_STF_FG_BRCH', ID)."
   classification_context: "Source System Code = 'FMS_STF_FG_BRCH' | Identification\
     \ Type Code = 'NATIONAL_ID'"
   etl_derived_value: null
@@ -95823,7 +95362,7 @@ attributes:
   source_table: "REPRESENT"
   source_column: "FMS.REPRESENT.ID"
   comment: "FK target: investment_fund_representative_board_member.investment_fund_representative_board_member_id.\
-    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.REPRESENT',\
+    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS_REPRESENT',\
     \ ID)."
   classification_context: null
   etl_derived_value: null
@@ -95927,7 +95466,7 @@ attributes:
   source_table: "MB_FUND"
   source_column: "FMS.MB_FUND.ID"
   comment: "FK target: investment_fund_investor_membership.investment_fund_investor_membership_id.\
-    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.MB_FUND', ID)."
+    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS_MB_FUND', ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "ip_alternative_identification"
@@ -96030,7 +95569,7 @@ attributes:
   source_table: "INSIDER"
   source_column: "FMS.INSIDER.ID"
   comment: "FK target: fmc_insider.fmc_insider_id. Shared entity — không có PK surrogate\
-    \ riêng. Hash: hash_id('FMS.INSIDER', ID)."
+    \ riêng. Hash: hash_id('FMS_INSIDER', ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "ip_alternative_identification"
@@ -96149,7 +95688,7 @@ attributes:
   source_table: "PENSION_AGENT"
   source_column: "FMS.PENSION_AGENT.ID"
   comment: "FK target: pension_service_organization.pension_service_organization_id.\
-    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.PENSION_AGENT',\
+    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS_PENSION_AGENT',\
     \ ID)."
   classification_context: "Source System Code = 'FMS_PENSION_AGENT' | Identification\
     \ Type Code = 'BUSINESS_LICENSE'"
@@ -96305,7 +95844,7 @@ attributes:
   source_table: "PENSION_PROVIDER"
   source_column: "FMS.PENSION_PROVIDER.ID"
   comment: "FK target: pension_service_organization.pension_service_organization_id.\
-    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.PENSION_PROVIDER',\
+    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS_PENSION_PROVIDER',\
     \ ID)."
   classification_context: "Source System Code = 'FMS_PENSION_PROVIDER' | Identification\
     \ Type Code = 'BUSINESS_LICENSE'"
@@ -96461,7 +96000,7 @@ attributes:
   source_table: "DISTRIBUTOR_AGENT"
   source_column: "FMS.DISTRIBUTOR_AGENT.ID"
   comment: "FK target: securities_distribution_agent.securities_distribution_agent_id.\
-    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.DISTRIBUTOR_AGENT',\
+    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS_DISTRIBUTOR_AGENT',\
     \ ID)."
   classification_context: "Source System Code = 'FMS_DISTRIBUTOR_AGENT' | Identification\
     \ Type Code = 'BUSINESS_LICENSE'"
@@ -96686,7 +96225,7 @@ attributes:
   source_table: "BANK_EMPLOY"
   source_column: "FMS.BANK_EMPLOY.ID"
   comment: "FK target: custodian_bank_employee.custodian_bank_employee_id. Shared\
-    \ entity — không có PK surrogate riêng. Hash: hash_id('FMS.BANK_EMPLOY', ID)."
+    \ entity — không có PK surrogate riêng. Hash: hash_id('FMS_BANK_EMPLOY', ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "ip_alternative_identification"
@@ -96789,7 +96328,7 @@ attributes:
   source_table: "TL_PRO_RELA"
   source_column: "FMS.TL_PRO_RELA.ID"
   comment: "FK target: fmc_employee_related_person.fmc_employee_related_person_id.\
-    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.TL_PRO_RELA',\
+    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS_TL_PRO_RELA',\
     \ ID)."
   classification_context: null
   etl_derived_value: null
@@ -96910,7 +96449,7 @@ attributes:
   source_table: "OTHER_AGENT"
   source_column: "FMS.OTHER_AGENT.ID"
   comment: "FK target: other_intermediary_ou.other_intermediary_ou_id. Shared entity\
-    \ — không có PK surrogate riêng. Hash: hash_id('FMS.OTHER_AGENT', ID)."
+    \ — không có PK surrogate riêng. Hash: hash_id('FMS_OTHER_AGENT', ID)."
   classification_context: "Source System Code = 'FMS_OTHER_AGENT' | Identification\
     \ Type Code = 'BUSINESS_LICENSE'"
   etl_derived_value: null
@@ -97065,7 +96604,7 @@ attributes:
   source_table: "TRANSFER_AGENT"
   source_column: "FMS.TRANSFER_AGENT.ID"
   comment: "FK target: transfer_agent.transfer_agent_id. Shared entity — không có\
-    \ PK surrogate riêng. Hash: hash_id('FMS.TRANSFER_AGENT', ID)."
+    \ PK surrogate riêng. Hash: hash_id('FMS_TRANSFER_AGENT', ID)."
   classification_context: "Source System Code = 'FMS_TRANSFER_AGENT' | Identification\
     \ Type Code = 'BUSINESS_LICENSE'"
   etl_derived_value: null
@@ -97220,7 +96759,7 @@ attributes:
   source_table: "INSDER_RELA"
   source_column: "FMS.INSDER_RELA.ID"
   comment: "FK target: fmc_insider_related_person.fmc_insider_related_person_id. Shared\
-    \ entity — không có PK surrogate riêng. Hash: hash_id('FMS.INSDER_RELA', ID)."
+    \ entity — không có PK surrogate riêng. Hash: hash_id('FMS_INSDER_RELA', ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "ip_alternative_identification"
@@ -97340,7 +96879,7 @@ attributes:
   source_table: "INSDER_RPRST"
   source_column: "FMS.INSDER_RPRST.ID"
   comment: "FK target: fmc_insider_representative.fmc_insider_representative_id. Shared\
-    \ entity — không có PK surrogate riêng. Hash: hash_id('FMS.INSDER_RPRST', ID)."
+    \ entity — không có PK surrogate riêng. Hash: hash_id('FMS_INSDER_RPRST', ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "ip_alternative_identification"
@@ -98087,7 +97626,7 @@ attributes:
   source_table: "TAX_REG_REPRESENTATIVE"
   source_column: "KNT.TAX_REG_REPRESENTATIVE.ID"
   comment: "FK target: External Tax Registration Representative.External Tax Registration\
-    \ Representative Id. Hash: hash_id('KNT.TAX_REG_REPRESENTATIVE', ID)."
+    \ Representative Id. Hash: hash_id('KNT_TAX_REG_REPRESENTATIVE', ID)."
   classification_context: "Source System Code = 'KNT_TAX_REG_REPRESENTATIVE' | Identification\
     \ Type Code = '(source)'"
   etl_derived_value: null
@@ -101409,7 +100948,7 @@ attributes:
   source_table: "SECURITIES"
   source_column: "FMS.SECURITIES.ID"
   comment: "FK target: fund_management_company.fmc_id. Shared entity — không có PK\
-    \ surrogate riêng. Hash: hash_id('FMS.SECURITIES', ID)."
+    \ surrogate riêng. Hash: hash_id('FMS_SECURITIES', ID)."
   classification_context: "Source System Code = 'FMS_SECURITIES' | Electronic Address\
     \ Type Code = 'EMAIL'"
   etl_derived_value: null
@@ -101598,7 +101137,7 @@ attributes:
   source_table: "BANK_MONI"
   source_column: "FMS.BANK_MONI.ID"
   comment: "FK target: custodian_bank.custodian_bank_id. Shared entity — không có\
-    \ PK surrogate riêng. Hash: hash_id('FMS.BANK_MONI', ID)."
+    \ PK surrogate riêng. Hash: hash_id('FMS_BANK_MONI', ID)."
   classification_context: "Source System Code = 'FMS_BANK_MONI' | Electronic Address\
     \ Type Code = 'EMAIL'"
   etl_derived_value: null
@@ -101787,7 +101326,7 @@ attributes:
   source_table: "AGENCIES"
   source_column: "FMS.AGENCIES.ID"
   comment: "FK target: fund_distribution_agent.fund_distribution_agent_id. Shared\
-    \ entity — không có PK surrogate riêng. Hash: hash_id('FMS.AGENCIES', ID)."
+    \ entity — không có PK surrogate riêng. Hash: hash_id('FMS_AGENCIES', ID)."
   classification_context: "Source System Code = 'FMS_AGENCIES' | Electronic Address\
     \ Type Code = 'FAX'"
   etl_derived_value: null
@@ -101908,7 +101447,7 @@ attributes:
   source_table: "BRANCHS"
   source_column: "FMS.BRANCHS.ID"
   comment: "FK target: fmc_organization_unit.fmc_ou_id. Shared entity — không có PK\
-    \ surrogate riêng. Hash: hash_id('FMS.BRANCHS', ID)."
+    \ surrogate riêng. Hash: hash_id('FMS_BRANCHS', ID)."
   classification_context: "Source System Code = 'FMS_BRANCHS' | Electronic Address\
     \ Type Code = 'FAX'"
   etl_derived_value: null
@@ -102029,7 +101568,7 @@ attributes:
   source_table: "FOR_BRCH"
   source_column: "FMS.FOR_BRCH.ID"
   comment: "FK target: foreign_fm_ou.foreign_fm_ou_id. Shared entity — không có PK\
-    \ surrogate riêng. Hash: hash_id('FMS.FOR_BRCH', ID)."
+    \ surrogate riêng. Hash: hash_id('FMS_FOR_BRCH', ID)."
   classification_context: "Source System Code = 'FMS_FOR_BRCH' | Electronic Address\
     \ Type Code = 'EMAIL'"
   etl_derived_value: null
@@ -102218,7 +101757,7 @@ attributes:
   source_table: "TL_PROFILES"
   source_column: "FMS.TL_PROFILES.ID"
   comment: "FK target: fmc_employee.fmc_employee_id. Shared entity — không có PK surrogate\
-    \ riêng. Hash: hash_id('FMS.TL_PROFILES', ID)."
+    \ riêng. Hash: hash_id('FMS_TL_PROFILES', ID)."
   classification_context: "Source System Code = 'FMS_TL_PROFILES' | Electronic Address\
     \ Type Code = 'EMAIL'"
   etl_derived_value: null
@@ -102442,7 +101981,7 @@ attributes:
   source_table: "AGENCIES_BRA"
   source_column: "FMS.AGENCIES_BRA.ID"
   comment: "FK target: fund_distribution_agent_ou.fund_distribution_agent_ou_id. Shared\
-    \ entity — không có PK surrogate riêng. Hash: hash_id('FMS.AGENCIES_BRA', ID)."
+    \ entity — không có PK surrogate riêng. Hash: hash_id('FMS_AGENCIES_BRA', ID)."
   classification_context: "Source System Code = 'FMS_AGENCIES_BRA' | Electronic Address\
     \ Type Code = 'FAX'"
   etl_derived_value: null
@@ -102563,7 +102102,7 @@ attributes:
   source_table: "STF_FG_BRCH"
   source_column: "FMS.STF_FG_BRCH.ID"
   comment: "FK target: foreign_fm_ou_staff.foreign_fm_ou_staff_id. Shared entity —\
-    \ không có PK surrogate riêng. Hash: hash_id('FMS.STF_FG_BRCH', ID)."
+    \ không có PK surrogate riêng. Hash: hash_id('FMS_STF_FG_BRCH', ID)."
   classification_context: "Source System Code = 'FMS_STF_FG_BRCH' | Electronic Address\
     \ Type Code = 'EMAIL'"
   etl_derived_value: null
@@ -102684,7 +102223,7 @@ attributes:
   source_table: "REPRESENT"
   source_column: "FMS.REPRESENT.ID"
   comment: "FK target: investment_fund_representative_board_member.investment_fund_representative_board_member_id.\
-    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.REPRESENT',\
+    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS_REPRESENT',\
     \ ID)."
   classification_context: "Source System Code = 'FMS_REPRESENT' | Electronic Address\
     \ Type Code = 'EMAIL'"
@@ -102840,7 +102379,7 @@ attributes:
   source_table: "INSIDER"
   source_column: "FMS.INSIDER.ID"
   comment: "FK target: fmc_insider.fmc_insider_id. Shared entity — không có PK surrogate\
-    \ riêng. Hash: hash_id('FMS.INSIDER', ID)."
+    \ riêng. Hash: hash_id('FMS_INSIDER', ID)."
   classification_context: "Source System Code = 'FMS_INSIDER' | Electronic Address\
     \ Type Code = 'EMAIL'"
   etl_derived_value: null
@@ -102994,7 +102533,7 @@ attributes:
   source_table: "PENSION_AGENT"
   source_column: "FMS.PENSION_AGENT.ID"
   comment: "FK target: pension_service_organization.pension_service_organization_id.\
-    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.PENSION_AGENT',\
+    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS_PENSION_AGENT',\
     \ ID)."
   classification_context: "Source System Code = 'FMS_PENSION_AGENT' | Electronic Address\
     \ Type Code = 'FAX'"
@@ -103116,7 +102655,7 @@ attributes:
   source_table: "PENSION_PROVIDER"
   source_column: "FMS.PENSION_PROVIDER.ID"
   comment: "FK target: pension_service_organization.pension_service_organization_id.\
-    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.PENSION_PROVIDER',\
+    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS_PENSION_PROVIDER',\
     \ ID)."
   classification_context: "Source System Code = 'FMS_PENSION_PROVIDER' | Electronic\
     \ Address Type Code = 'FAX'"
@@ -103238,7 +102777,7 @@ attributes:
   source_table: "DISTRIBUTOR_AGENT"
   source_column: "FMS.DISTRIBUTOR_AGENT.ID"
   comment: "FK target: securities_distribution_agent.securities_distribution_agent_id.\
-    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.DISTRIBUTOR_AGENT',\
+    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS_DISTRIBUTOR_AGENT',\
     \ ID)."
   classification_context: "Source System Code = 'FMS_DISTRIBUTOR_AGENT' | Electronic\
     \ Address Type Code = 'FAX'"
@@ -103360,7 +102899,7 @@ attributes:
   source_table: "OTHER_AGENT"
   source_column: "FMS.OTHER_AGENT.ID"
   comment: "FK target: other_intermediary_ou.other_intermediary_ou_id. Shared entity\
-    \ — không có PK surrogate riêng. Hash: hash_id('FMS.OTHER_AGENT', ID)."
+    \ — không có PK surrogate riêng. Hash: hash_id('FMS_OTHER_AGENT', ID)."
   classification_context: "Source System Code = 'FMS_OTHER_AGENT' | Electronic Address\
     \ Type Code = 'FAX'"
   etl_derived_value: null
@@ -103481,7 +103020,7 @@ attributes:
   source_table: "TRANSFER_AGENT"
   source_column: "FMS.TRANSFER_AGENT.ID"
   comment: "FK target: transfer_agent.transfer_agent_id. Shared entity — không có\
-    \ PK surrogate riêng. Hash: hash_id('FMS.TRANSFER_AGENT', ID)."
+    \ PK surrogate riêng. Hash: hash_id('FMS_TRANSFER_AGENT', ID)."
   classification_context: "Source System Code = 'FMS_TRANSFER_AGENT' | Electronic\
     \ Address Type Code = 'FAX'"
   etl_derived_value: null
@@ -103602,7 +103141,7 @@ attributes:
   source_table: "DISTRIBUTOR_LOCATION"
   source_column: "FMS.DISTRIBUTOR_LOCATION.DISTRIBUTOR_AGENT_ID"
   comment: "FK target: securities_distribution_agent.securities_distribution_agent_id.\
-    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.DISTRIBUTOR_AGENT',\
+    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS_DISTRIBUTOR_AGENT',\
     \ DISTRIBUTOR_AGENT_ID). LƯU Ý: dùng FK cha (DISTRIBUTOR_AGENT_ID), không dùng\
     \ DISTRIBUTOR_LOCATION.ID."
   classification_context: null
@@ -103689,7 +103228,7 @@ attributes:
   source_table: "DISTRIBUTOR_PERSONNEL"
   source_column: "FMS.DISTRIBUTOR_PERSONNEL.ID"
   comment: "FK target: securities_distribution_agent_personnel.securities_distribution_agent_personnel_id.\
-    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.DISTRIBUTOR_PERSONNEL',\
+    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS_DISTRIBUTOR_PERSONNEL',\
     \ ID)."
   classification_context: null
   etl_derived_value: null
@@ -104637,7 +104176,7 @@ attributes:
   source_table: "TAX_REGISTRATION_INFO"
   source_column: "KNT.TAX_REGISTRATION_INFO.TAX_CODE"
   comment: "FK target: External Tax Registration.External Tax Registration Id. Hash:\
-    \ hash_id('KNT.TAX_REGISTRATION_INFO', TAX_CODE)."
+    \ hash_id('KNT_TAX_REGISTRATION_INFO', TAX_CODE)."
   classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO' | Electronic\
     \ Address Type Code = 'EMAIL_BUSINESS'"
   etl_derived_value: null
@@ -104860,7 +104399,7 @@ attributes:
   source_table: "TAX_REG_REPRESENTATIVE"
   source_column: "KNT.TAX_REG_REPRESENTATIVE.ID"
   comment: "FK target: External Tax Registration Representative.External Tax Registration\
-    \ Representative Id. Hash: hash_id('KNT.TAX_REG_REPRESENTATIVE', ID)."
+    \ Representative Id. Hash: hash_id('KNT_TAX_REG_REPRESENTATIVE', ID)."
   classification_context: "Source System Code = 'KNT_TAX_REG_REPRESENTATIVE' | Electronic\
     \ Address Type Code = 'EMAIL'"
   etl_derived_value: null
@@ -108005,7 +107544,7 @@ attributes:
   source_table: "SECURITIES"
   source_column: "FMS.SECURITIES.ID"
   comment: "FK target: fund_management_company.fmc_id. Shared entity — không có PK\
-    \ surrogate riêng. Hash: hash_id('FMS.SECURITIES', ID)."
+    \ surrogate riêng. Hash: hash_id('FMS_SECURITIES', ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "ip_postal_address"
@@ -108090,7 +107629,7 @@ attributes:
   source_table: "BANK_MONI"
   source_column: "FMS.BANK_MONI.ID"
   comment: "FK target: custodian_bank.custodian_bank_id. Shared entity — không có\
-    \ PK surrogate riêng. Hash: hash_id('FMS.BANK_MONI', ID)."
+    \ PK surrogate riêng. Hash: hash_id('FMS_BANK_MONI', ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "ip_postal_address"
@@ -108175,7 +107714,7 @@ attributes:
   source_table: "AGENCIES"
   source_column: "FMS.AGENCIES.ID"
   comment: "FK target: fund_distribution_agent.fund_distribution_agent_id. Shared\
-    \ entity — không có PK surrogate riêng. Hash: hash_id('FMS.AGENCIES', ID)."
+    \ entity — không có PK surrogate riêng. Hash: hash_id('FMS_AGENCIES', ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "ip_postal_address"
@@ -108260,7 +107799,7 @@ attributes:
   source_table: "BRANCHS"
   source_column: "FMS.BRANCHS.ID"
   comment: "FK target: fmc_organization_unit.fmc_ou_id. Shared entity — không có PK\
-    \ surrogate riêng. Hash: hash_id('FMS.BRANCHS', ID)."
+    \ surrogate riêng. Hash: hash_id('FMS_BRANCHS', ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "ip_postal_address"
@@ -108345,7 +107884,7 @@ attributes:
   source_table: "FOR_BRCH"
   source_column: "FMS.FOR_BRCH.ID"
   comment: "FK target: foreign_fm_ou.foreign_fm_ou_id. Shared entity — không có PK\
-    \ surrogate riêng. Hash: hash_id('FMS.FOR_BRCH', ID)."
+    \ surrogate riêng. Hash: hash_id('FMS_FOR_BRCH', ID)."
   classification_context: "Source System Code = 'FMS_FOR_BRCH' | Address Type Code\
     \ = 'FOREIGN_BRANCH'"
   etl_derived_value: null
@@ -108466,7 +108005,7 @@ attributes:
   source_table: "TL_PROFILES"
   source_column: "FMS.TL_PROFILES.ID"
   comment: "FK target: fmc_employee.fmc_employee_id. Shared entity — không có PK surrogate\
-    \ riêng. Hash: hash_id('FMS.TL_PROFILES', ID)."
+    \ riêng. Hash: hash_id('FMS_TL_PROFILES', ID)."
   classification_context: "Source System Code = 'FMS_TL_PROFILES' | Address Type Code\
     \ = 'ADDRESS'"
   etl_derived_value: null
@@ -108621,7 +108160,7 @@ attributes:
   source_table: "INVES"
   source_column: "FMS.INVES.ID"
   comment: "FK target: discretionary_investment_investor.discretionary_investment_investor_id.\
-    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.INVES', ID)."
+    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS_INVES', ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "ip_postal_address"
@@ -108706,7 +108245,7 @@ attributes:
   source_table: "AGENCIES_BRA"
   source_column: "FMS.AGENCIES_BRA.ID"
   comment: "FK target: fund_distribution_agent_ou.fund_distribution_agent_ou_id. Shared\
-    \ entity — không có PK surrogate riêng. Hash: hash_id('FMS.AGENCIES_BRA', ID)."
+    \ entity — không có PK surrogate riêng. Hash: hash_id('FMS_AGENCIES_BRA', ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "ip_postal_address"
@@ -108791,7 +108330,7 @@ attributes:
   source_table: "STF_FG_BRCH"
   source_column: "FMS.STF_FG_BRCH.ID"
   comment: "FK target: foreign_fm_ou_staff.foreign_fm_ou_staff_id. Shared entity —\
-    \ không có PK surrogate riêng. Hash: hash_id('FMS.STF_FG_BRCH', ID)."
+    \ không có PK surrogate riêng. Hash: hash_id('FMS_STF_FG_BRCH', ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "ip_postal_address"
@@ -108876,7 +108415,7 @@ attributes:
   source_table: "REPRESENT"
   source_column: "FMS.REPRESENT.ID"
   comment: "FK target: investment_fund_representative_board_member.investment_fund_representative_board_member_id.\
-    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.REPRESENT',\
+    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS_REPRESENT',\
     \ ID)."
   classification_context: null
   etl_derived_value: null
@@ -108962,7 +108501,7 @@ attributes:
   source_table: "MB_FUND"
   source_column: "FMS.MB_FUND.ID"
   comment: "FK target: investment_fund_investor_membership.investment_fund_investor_membership_id.\
-    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.MB_FUND', ID)."
+    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS_MB_FUND', ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "ip_postal_address"
@@ -109047,7 +108586,7 @@ attributes:
   source_table: "INSIDER"
   source_column: "FMS.INSIDER.ID"
   comment: "FK target: fmc_insider.fmc_insider_id. Shared entity — không có PK surrogate\
-    \ riêng. Hash: hash_id('FMS.INSIDER', ID)."
+    \ riêng. Hash: hash_id('FMS_INSIDER', ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "ip_postal_address"
@@ -109131,7 +108670,7 @@ attributes:
   source_table: "PENSION_AGENT"
   source_column: "FMS.PENSION_AGENT.ID"
   comment: "FK target: pension_service_organization.pension_service_organization_id.\
-    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.PENSION_AGENT',\
+    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS_PENSION_AGENT',\
     \ ID)."
   classification_context: null
   etl_derived_value: null
@@ -109217,7 +108756,7 @@ attributes:
   source_table: "PENSION_PROVIDER"
   source_column: "FMS.PENSION_PROVIDER.ID"
   comment: "FK target: pension_service_organization.pension_service_organization_id.\
-    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.PENSION_PROVIDER',\
+    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS_PENSION_PROVIDER',\
     \ ID)."
   classification_context: null
   etl_derived_value: null
@@ -109303,7 +108842,7 @@ attributes:
   source_table: "DISTRIBUTOR_AGENT"
   source_column: "FMS.DISTRIBUTOR_AGENT.ID"
   comment: "FK target: securities_distribution_agent.securities_distribution_agent_id.\
-    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.DISTRIBUTOR_AGENT',\
+    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS_DISTRIBUTOR_AGENT',\
     \ ID)."
   classification_context: null
   etl_derived_value: null
@@ -109389,7 +108928,7 @@ attributes:
   source_table: "TL_PRO_RELA"
   source_column: "FMS.TL_PRO_RELA.ID"
   comment: "FK target: fmc_employee_related_person.fmc_employee_related_person_id.\
-    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.TL_PRO_RELA',\
+    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS_TL_PRO_RELA',\
     \ ID)."
   classification_context: null
   etl_derived_value: null
@@ -109475,7 +109014,7 @@ attributes:
   source_table: "OTHER_AGENT"
   source_column: "FMS.OTHER_AGENT.ID"
   comment: "FK target: other_intermediary_ou.other_intermediary_ou_id. Shared entity\
-    \ — không có PK surrogate riêng. Hash: hash_id('FMS.OTHER_AGENT', ID)."
+    \ — không có PK surrogate riêng. Hash: hash_id('FMS_OTHER_AGENT', ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "ip_postal_address"
@@ -109560,7 +109099,7 @@ attributes:
   source_table: "TRANSFER_AGENT"
   source_column: "FMS.TRANSFER_AGENT.ID"
   comment: "FK target: transfer_agent.transfer_agent_id. Shared entity — không có\
-    \ PK surrogate riêng. Hash: hash_id('FMS.TRANSFER_AGENT', ID)."
+    \ PK surrogate riêng. Hash: hash_id('FMS_TRANSFER_AGENT', ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "ip_postal_address"
@@ -109645,7 +109184,7 @@ attributes:
   source_table: "INSDER_RELA"
   source_column: "FMS.INSDER_RELA.ID"
   comment: "FK target: fmc_insider_related_person.fmc_insider_related_person_id. Shared\
-    \ entity — không có PK surrogate riêng. Hash: hash_id('FMS.INSDER_RELA', ID)."
+    \ entity — không có PK surrogate riêng. Hash: hash_id('FMS_INSDER_RELA', ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "ip_postal_address"
@@ -109730,7 +109269,7 @@ attributes:
   source_table: "DISTRIBUTOR_LOCATION"
   source_column: "FMS.DISTRIBUTOR_LOCATION.DISTRIBUTOR_AGENT_ID"
   comment: "FK target: securities_distribution_agent.securities_distribution_agent_id.\
-    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.DISTRIBUTOR_AGENT',\
+    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS_DISTRIBUTOR_AGENT',\
     \ DISTRIBUTOR_AGENT_ID). LƯU Ý: dùng FK cha (DISTRIBUTOR_AGENT_ID), không dùng\
     \ DISTRIBUTOR_LOCATION.ID vì không tạo entity riêng cho location."
   classification_context: null
@@ -110242,7 +109781,7 @@ attributes:
   source_table: "TAX_REGISTRATION_INFO"
   source_column: "KNT.TAX_REGISTRATION_INFO.TAX_CODE"
   comment: "FK target: External Tax Registration.External Tax Registration Id. Hash:\
-    \ hash_id('KNT.TAX_REGISTRATION_INFO', TAX_CODE)."
+    \ hash_id('KNT_TAX_REGISTRATION_INFO', TAX_CODE)."
   classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO' | Address\
     \ Type Code = 'BUSINESS'"
   etl_derived_value: null
