@@ -32,7 +32,7 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. Hash: hash_id('IDS.EVALUATION_GROUPS', GROUP_CD). BCV: \"\
+  comment: "PK surrogate. Hash: hash_id('IDS_EVALUATION_GROUPS', GROUP_CD). BCV: \"\
     [Group] Group\"."
   classification_context: null
   etl_derived_value: null
@@ -61,7 +61,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=IDS.EVALUATION_GROUPS"
+  classification_context: "SOURCE_SYSTEM=IDS_EVALUATION_GROUPS"
   etl_derived_value: "IDS_EVALUATION_GROUPS"
   data_type: "string"
 - attribute_name: "Public Company Evaluation Group Name"
@@ -104,16 +104,3 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "decimal(5,2)"
-- attribute_name: "Display Order"
-  physical_name: "display_order"
-  description: "Số thứ tự hiển thị."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.EVALUATION_GROUPS.DISPLAY_ORDER"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"

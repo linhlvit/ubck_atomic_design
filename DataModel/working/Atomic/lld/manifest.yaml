@@ -1,30 +1,48 @@
 schema_type: lld_manifest
 schema_version: '1.0'
 entries:
-- source_system: TTHC
-  source_table: HO_SO_TTHC
-  atomic_entity: Administrative Procedure Document
-  group: T1
-  lld_file: TTHC/lld_TTHC_HO_SO_TTHC.yaml
-  design_status: draft
-- source_system: TTHC
-  source_table: DOI_TUONG_NOP_HO_SO
-  atomic_entity: Administrative Procedure Document Applicant
-  group: T2
-  lld_file: TTHC/lld_TTHC_DOI_TUONG_NOP_HO_SO.yaml
-  design_status: draft
-- source_system: TTHC
-  source_table: THONG_TIN_NHAN_BUU_CHINH
-  atomic_entity: Administrative Procedure Document Postal Receipt
-  group: T2
-  lld_file: TTHC/lld_TTHC_THONG_TIN_NHAN_BUU_CHINH.yaml
-  design_status: draft
-- source_system: TTHC
-  source_table: DANH_MUC_DUNG_CHUNG_TTHC
+- source_system: QLRR
+  source_table: RISK_INDICATOR_CATEGORY
   atomic_entity: Classification Value
   group: T1
-  lld_file: TTHC/lld_TTHC_DANH_MUC_DUNG_CHUNG_TTHC.yaml
+  lld_file: QLRR/lld_QLRR_RISK_INDICATOR_CATEGORY.yaml
   design_status: draft
+- source_system: QLRR
+  source_table: RISK_INDICATOR
+  atomic_entity: Classification Risk Indicator
+  group: T1
+  lld_file: QLRR/lld_QLRR_RISK_INDICATOR.yaml
+  design_status: draft
+- source_system: QLRR
+  source_table: RISK_INDICATOR_VALUE
+  atomic_entity: Classification Risk Indicator Value
+  group: T2
+  lld_file: QLRR/lld_QLRR_RISK_INDICATOR_VALUE.yaml
+  design_status: draft
+- source_system: TTHC
+  source_table: AP_DOCUMENT
+  atomic_entity: Administrative Procedure Document
+  group: T1
+  lld_file: TTHC/lld_TTHC_AP_DOCUMENT.yaml
+  design_status: approved
+- source_system: TTHC
+  source_table: AP_DOCUMENT_APPLICANT
+  atomic_entity: Administrative Procedure Document Applicant
+  group: T2
+  lld_file: TTHC/lld_TTHC_AP_DOCUMENT_APPLICANT.yaml
+  design_status: approved
+- source_system: TTHC
+  source_table: AP_DOCUMENT_POSTAL_RECEIPT
+  atomic_entity: Administrative Procedure Document Postal Receipt
+  group: T2
+  lld_file: TTHC/lld_TTHC_AP_DOCUMENT_POSTAL_RECEIPT.yaml
+  design_status: approved
+- source_system: TTHC
+  source_table: CLASSIFICATION_VALUE
+  atomic_entity: Classification Value
+  group: T1
+  lld_file: TTHC/lld_TTHC_CLASSIFICATION_VALUE.yaml
+  design_status: approved
 - source_system: NHNCK
   source_table: UNITS
   atomic_entity: Regulatory Authority Organization Unit
@@ -1916,7 +1934,7 @@ entries:
   design_status: draft
 - source_system: IDS
   source_table: REP_FORMS
-  atomic_entity: Financial Report Sub Template
+  atomic_entity: Unstructured Financial Report Template
   group: T1
   lld_file: IDS/lld_IDS_REP_FORMS.yaml
   design_status: draft
@@ -1994,13 +2012,13 @@ entries:
   design_status: draft
 - source_system: IDS
   source_table: REP_COLUMN
-  atomic_entity: Financial Report Sub Column Template
+  atomic_entity: Unstructured Financial Report Column Template
   group: T2
   lld_file: IDS/lld_IDS_REP_COLUMN.yaml
   design_status: draft
 - source_system: IDS
   source_table: REP_ROW
-  atomic_entity: Financial Report Sub Row Template
+  atomic_entity: Unstructured Financial Report Row Template
   group: T2
   lld_file: IDS/lld_IDS_REP_ROW.yaml
   design_status: draft

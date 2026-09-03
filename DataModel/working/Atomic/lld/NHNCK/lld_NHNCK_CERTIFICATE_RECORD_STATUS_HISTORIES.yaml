@@ -70,7 +70,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES"
+  classification_context: "SOURCE_SYSTEM=NHNCK_CERTIFICATE_RECORD_STATUS_HISTORIES"
   etl_derived_value: "NHNCK_CERTIFICATE_RECORD_STATUS_HISTORIES"
   data_type: "string"
 - attribute_name: "Data Date"
@@ -104,7 +104,7 @@ attributes:
   - "NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.CERTIFICATE_RECORD_ID"
   comment: "FK target: sp_license_certificate_document.sp_license_certificate_document_id.\
     \ Cần ETL crosswalk sang NHNCK.CERTIFICATE_RECORDS: CERTIFICATE_RECORD_STATUS_HISTORIES.CERTIFICATE_RECORD_ID\
-    \ = CERTIFICATE_RECORDS.ID để xác nhận CERTIFICATE_NUMBER sau đó hash_id('NHNCK.CERTIFICATE_RECORDS',\
+    \ = CERTIFICATE_RECORDS.ID để xác nhận CERTIFICATE_NUMBER sau đó hash_id('NHNCK_CERTIFICATE_RECORDS',\
     \ CERTIFICATE_NUMBER) | Trước đây hash trực tiếp theo CERTIFICATE_RECORD_ID (ID\
     \ kỹ thuật) gây sai lệch với Id của bảng main (hash từ CERTIFICATE_NUMBER) — đã\
     \ sửa sang crosswalk 2026-08-15."
@@ -150,12 +150,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.OLD_STATUS"
-  comment: "Scheme: CERTIFICATE_STATUS. Nguồn: 0=Chưa sử dụng, 1=Đang sử dụng, 2=Thu\
-    \ hồi có cấp lại, 3=Thu hồi không cấp lại, 4=Đã hủy, 5=Hết hiệu lực. Khác với\
-    \ STATUS (RECORD_STATUS đổi tên) trên CERTIFICATE_RECORDS — cột đó bị loại trừ\
-    \ theo chính sách Data Modeler (2026-07-07, xem pending_design.yaml), không liên\
-    \ quan đến scheme 6 giá trị này."
-  classification_context: "CERTIFICATE_STATUS"
+  comment: "SCHEMA_CODE=NHNCK.CERTIFICATE_RECORDS.STATUS"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "New Certificate Status Code"
@@ -167,9 +163,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.NEW_STATUS"
-  comment: "Scheme: CERTIFICATE_STATUS. Cùng bảng giá trị với Old Certificate Status\
-    \ Code."
-  classification_context: "CERTIFICATE_STATUS"
+  comment: "SCHEMA_CODE=NHNCK.CERTIFICATE_RECORDS.STATUS"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner License Decision Document Id"
@@ -183,7 +178,7 @@ attributes:
   - "NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.DECISION_ID"
   comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
     \ Cần ETL crosswalk sang NHNCK.DECISIONS: CERTIFICATE_RECORD_STATUS_HISTORIES.DECISION_ID\
-    \ = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK.DECISIONS',\
+    \ = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS',\
     \ DECISION_NUMBER) | Trước đây hash trực tiếp theo DECISION_ID (ID kỹ thuật) gây\
     \ sai lệch với Id của bảng main (hash từ DECISION_NUMBER) — đã sửa sang crosswalk\
     \ 2026-08-14. Nullable — cần xác nhận có luôn gắn quyết định hay không (VD: hết\

@@ -41,7 +41,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM."
-  classification_context: "SOURCE_SYSTEM=FMS.AGEN_FUNDS"
+  classification_context: "SOURCE_SYSTEM=FMS_AGEN_FUNDS"
   etl_derived_value: "FMS_AGEN_FUNDS"
   data_type: "string"
 - attribute_name: "Investment Fund Id"
@@ -53,7 +53,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.AGEN_FUNDS.FUND_ID"
-  comment: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS.FUNDS',\
+  comment: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS_FUNDS',\
     \ FUND_ID). Composite PK cùng Fund Distribution Agent Id."
   classification_context: null
   etl_derived_value: null
@@ -81,7 +81,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.AGEN_FUNDS.AGENCY_ID"
-  comment: "FK target: fund_distribution_agent.fund_distribution_agent_id. Hash: hash_id('FMS.AGENCIES',\
+  comment: "FK target: fund_distribution_agent.fund_distribution_agent_id. Hash: hash_id('FMS_AGENCIES',\
     \ AGENCY_ID). Composite PK cùng Investment Fund Id."
   classification_context: null
   etl_derived_value: null

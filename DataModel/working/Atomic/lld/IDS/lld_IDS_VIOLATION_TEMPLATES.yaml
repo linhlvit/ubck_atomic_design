@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Condition] Compliance Rule"
   table_type: "Fundamental"
   group: "T2"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -29,7 +29,7 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. Hash: hash_id('IDS.VIOLATION_TEMPLATES', VIOLATION_CD).\
+  comment: "PK surrogate. Hash: hash_id('IDS_VIOLATION_TEMPLATES', VIOLATION_CD).\
     \ BCV: \"[Condition] Compliance Rule\"."
   classification_context: null
   etl_derived_value: null
@@ -58,7 +58,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=IDS.VIOLATION_TEMPLATES"
+  classification_context: "SOURCE_SYSTEM=IDS_VIOLATION_TEMPLATES"
   etl_derived_value: "IDS_VIOLATION_TEMPLATES"
   data_type: "string"
 - attribute_name: "Financial Report Template Id"
@@ -71,7 +71,7 @@ attributes:
   source_columns:
   - "IDS.VIOLATION_TEMPLATES.FORM_ID"
   comment: "FK target: fr_template.fr_template_id. Cần ETL crosswalk sang IDS.FORMS:\
-    \ VIOLATION_TEMPLATES.FORM_ID = FORMS.ID để xác nhận FORM_CD sau đó hash_id('IDS.FORMS',\
+    \ VIOLATION_TEMPLATES.FORM_ID = FORMS.ID để xác nhận FORM_CD sau đó hash_id('IDS_FORMS',\
     \ FORM_CD)."
   classification_context: null
   etl_derived_value: null
@@ -126,8 +126,8 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.VIOLATION_TEMPLATES.VIOLATION_TYPE_CD"
-  comment: "Scheme: IDS_VIOLATION_TYPE. Values load từ LOOKUP_VALUES."
-  classification_context: "IDS_VIOLATION_TYPE"
+  comment: "SCHEMA_CODE=IDS.VIOLATION_REPORT_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='VIOLATION_TYPE')."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Violation Report Sub Type Code"
@@ -139,27 +139,25 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.VIOLATION_TEMPLATES.VIOLATION_SUBTYPE_CD"
-  comment: "Scheme: IDS_VIOLATION_SUBTYPE (no_lookup) — chưa liệt kê trong HLD Tier2\
-    \ 6d, bổ sung scheme mới."
-  classification_context: "IDS_VIOLATION_SUBTYPE"
+  comment: "SCHEMA_CODE=IDS.VIOLATION_REPORT_SUBTYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='VIOLATION_SUBTYPE')."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Report Type Code"
-  physical_name: "rpt_tp_code"
-  description: "Mã loại báo cáo REPORT_TYPE."
+- attribute_name: "News Type Code"
+  physical_name: "news_tp_code"
+  description: "Mã phân loại."
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.VIOLATION_TEMPLATES.REPORT_TYPE_CD"
-  comment: "Scheme: IDS_VIOLATION_REPORT_TYPE (no_lookup) — bổ sung scheme mới, khác\
-    \ với IDS_REPORT_CATALOG_TYPE (I/O)."
-  classification_context: "IDS_VIOLATION_REPORT_TYPE"
+  comment: "SCHEMA_CODE=IDS.NEWS_TYPE_CD. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_TYPE')."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Report Scope Code"
-  physical_name: "rpt_scope_code"
+- attribute_name: "Financial Report Scope Type Code"
+  physical_name: "fr_scope_tp_code"
   description: "Mã phạm vi báo cáo REPORT_SCOPE."
   data_domain: "Classification Value"
   nullable: true
@@ -167,23 +165,21 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.VIOLATION_TEMPLATES.REPORT_SCOPE_CD"
-  comment: "Scheme: IDS_REPORT_SCOPE. Dùng chung scheme với Financial Report Catalog.Report\
-    \ Scope Code."
-  classification_context: "IDS_REPORT_SCOPE"
+  comment: "SCHEMA_CODE=IDS.REPORT_SCOPE_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_SCOPE')."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Period Type Code"
-  physical_name: "period_tp_code"
-  description: "Mã loại kỳ báo cáo (Năm, Bán niên, Quý...) REPORT_PERIOD_TYPE."
+- attribute_name: "Report Period Type Code"
+  physical_name: "rpt_period_tp_code"
+  description: "Mã loại kỳ báo cáo (Năm, Bán niên, Quý...)."
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.VIOLATION_TEMPLATES.PERIOD_TYPE_CD"
-  comment: "Scheme: IDS_REPORT_PERIOD_TYPE (no_lookup) — chưa liệt kê trong HLD Tier2\
-    \ 6d, bổ sung scheme mới."
-  classification_context: "IDS_REPORT_PERIOD_TYPE"
+  comment: "SCHEMA_CODE=IDS.REPORT_PERIOD_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_PERIOD_TYPE')."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Violation Trigger Point Code"
@@ -195,9 +191,8 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.VIOLATION_TEMPLATES.VIOLATION_TRIGGER_POINT_CD"
-  comment: "Scheme: IDS_VIOLATION_TRIGGER_POINT (no_lookup) — chưa liệt kê trong HLD\
-    \ Tier2 6d, bổ sung scheme mới."
-  classification_context: "IDS_VIOLATION_TRIGGER_POINT"
+  comment: "SCHEMA_CODE=IDS.VIOLATION_TRIGGER_POINT. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='VIOLATION_TRIGGER_POINT')."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Offset Day Count"
@@ -222,9 +217,8 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.VIOLATION_TEMPLATES.VIOLATION_TRIGGER_POINT_CD_EX"
-  comment: "Scheme: IDS_VIOLATION_TRIGGER_POINT. Dùng chung scheme với Violation Trigger\
-    \ Point Code."
-  classification_context: "IDS_VIOLATION_TRIGGER_POINT"
+  comment: "SCHEMA_CODE=IDS.VIOLATION_TRIGGER_POINT. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='VIOLATION_TRIGGER_POINT')."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Offset Day Count Extended"
@@ -242,16 +236,15 @@ attributes:
   data_type: "int"
 - attribute_name: "Day Type Code"
   physical_name: "day_tp_code"
-  description: "Mã loại ngày (Ngày làm việc, Ngày thường...) DAY_TYPE."
+  description: "Mã loại ngày (Ngày làm việc, Ngày thường...)."
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.VIOLATION_TEMPLATES.DAY_TYPE_CD"
-  comment: "Scheme: IDS_DAY_TYPE (no_lookup) — chưa liệt kê trong HLD Tier2 6d, bổ\
-    \ sung scheme mới."
-  classification_context: "IDS_DAY_TYPE"
+  comment: "SCHEMA_CODE=IDS.DAY_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='DAY_TYPE')."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Effective Start Date"
@@ -280,19 +273,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "date"
-- attribute_name: "Active Indicator"
-  physical_name: "active_ind"
-  description: "Cờ trạng thái hoạt động (1: Hoạt động, 0: Vô hiệu)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.VIOLATION_TEMPLATES.ACTIVE_FLG"
-  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
 - attribute_name: "Offset Day Count Condition"
   physical_name: "offset_day_count_condition"
   description: "Số ngày cộng thêm khi có điều kiện."
@@ -303,19 +283,6 @@ attributes:
   source_columns:
   - "IDS.VIOLATION_TEMPLATES.OFFSET_DAYS_CONDITION"
   comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-- attribute_name: "Deleted Indicator"
-  physical_name: "deleted_ind"
-  description: "Cờ xóa logic (1: Đã xóa, 0: Chưa xóa)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.VIOLATION_TEMPLATES.DELETE_FLG"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
   classification_context: null
   etl_derived_value: null
   data_type: "int"

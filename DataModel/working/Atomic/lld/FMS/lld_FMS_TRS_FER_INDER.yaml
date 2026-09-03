@@ -60,7 +60,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM."
-  classification_context: "SOURCE_SYSTEM=FMS.TRS_FER_INDER"
+  classification_context: "SOURCE_SYSTEM=FMS_TRS_FER_INDER"
   etl_derived_value: "FMS_TRS_FER_INDER"
   data_type: "string"
 - attribute_name: "Fund Management Company Id"
@@ -72,7 +72,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.TRS_FER_INDER.SC_ID"
-  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS.SECURITIES',\
+  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
     \ SC_ID)."
   classification_context: null
   etl_derived_value: null
@@ -100,7 +100,7 @@ attributes:
   status: "pending"
   source_columns:
   - "FMS.TRS_FER_INDER.IN_FRM_ID"
-  comment: "FK target: fmc_insider.fmc_insider_id. Hash: hash_id('FMS.INSIDER', IN_FRM_ID).\
+  comment: "FK target: fmc_insider.fmc_insider_id. Hash: hash_id('FMS_INSIDER', IN_FRM_ID).\
     \ Pending — entity thiết kế ở Tier 5. Giải quyết GAP T4-01 (BRD thực tế có cột\
     \ này)."
   classification_context: null
@@ -129,7 +129,7 @@ attributes:
   status: "pending"
   source_columns:
   - "FMS.TRS_FER_INDER.IN_TO_ID"
-  comment: "FK target: fmc_insider.fmc_insider_id. Hash: hash_id('FMS.INSIDER', IN_TO_ID).\
+  comment: "FK target: fmc_insider.fmc_insider_id. Hash: hash_id('FMS_INSIDER', IN_TO_ID).\
     \ Pending — entity thiết kế ở Tier 5. Giải quyết GAP T4-01 (BRD thực tế có cột\
     \ này)."
   classification_context: null

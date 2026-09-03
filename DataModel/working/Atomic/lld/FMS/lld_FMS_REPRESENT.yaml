@@ -60,7 +60,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM."
-  classification_context: "SOURCE_SYSTEM=FMS.REPRESENT"
+  classification_context: "SOURCE_SYSTEM=FMS_REPRESENT"
   etl_derived_value: "FMS_REPRESENT"
   data_type: "string"
 - attribute_name: "Investment Fund Id"
@@ -72,7 +72,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.REPRESENT.FUND_ID"
-  comment: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS.FUNDS',\
+  comment: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS_FUNDS',\
     \ FUND_ID)."
   classification_context: null
   etl_derived_value: null
@@ -116,7 +116,7 @@ attributes:
   - "FMS.REPRESENT.NAT_ID"
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'COUNTRY'). Cần ETL crosswalk sang FMS.NATIONAL: REPRESENT.NAT_ID = NATIONAL.ID\
-    \ để xác nhận SNAME sau đó hash_id('ECAT.COUNTRY', SNAME) | Chưa xác nhận value\
+    \ để xác nhận SNAME sau đó hash_id('ECAT_COUNTRY', SNAME) | Chưa xác nhận value\
     \ set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null

@@ -1,0 +1,206 @@
+DATA DICTIONARY - SCHEMA: ONLINEGATE_UAT
+Tong so bang: 12 | Materialized View: 0
+==============================================================================================================
+
+BANG: EMAILSENTSYSTEM
+Mo ta: Email đã gửi từ hệ thống Portal: người gửi, người nhận, tiêu đề, nội dung, file đính kèm, trạng thái gửi
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(18,2)        NO      PK                               Khóa chính của bản ghi (số tự tăng)
+DELETED                       NUMBER(1,0)         NO                                       Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động
+DATE_CREATED                  DATE                YES                                      Thời điểm tạo bản ghi
+CREATED_BY                    NVARCHAR2(200)      YES                                      Tài khoản người tạo bản ghi
+DATE_MODIFIED                 DATE                YES                                      Thời điểm cập nhật bản ghi lần cuối
+MODIFY_BY                     NVARCHAR2(200)      YES                                      Tài khoản người cập nhật bản ghi lần cuối
+UFrom                         NVARCHAR2(4000)     NO                                       
+UTo                           NVARCHAR2(4000)     NO                                       
+TITLE                         NVARCHAR2(4000)     NO                                       Tiêu đề email/thông báo
+BODY                          NCLOB               NO                                       Nội dung email/thông báo (NCLOB HTML hoặc plain text)
+FILE_DATA                     NCLOB               YES                                      Dữ liệu file đính kèm (NCLOB, base64 hoặc JSON danh sách file)
+RECORD_STATUS                 NVARCHAR2(4000)     YES                                      Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động
+SEND_DATE                     DATE                YES                                      Thời điểm email được gửi đi
+DETAIL_EXCERPT                NVARCHAR2(4000)     YES                                      Nội dung trích yếu/tóm tắt chi tiết
+
+
+BANG: ERRORLOG
+Mo ta: Nhật ký lỗi hệ thống Portal: module phát sinh lỗi, hành động, nội dung lỗi, exception trace, người dùng thực hiện
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(18,2)        NO      PK                               Khóa chính của bản ghi (số tự tăng)
+USERNAME                      NUMBER(18,2)        NO                                       ID người dùng thực hiện hành động gây lỗi
+MODULE_NAME                   NVARCHAR2(4000)     YES                                      Tên module phát sinh lỗi
+ACTION                        NVARCHAR2(4000)     YES                                      Tên hành động đang thực hiện khi xảy ra lỗi
+ERROR_FLAG                    NUMBER(1,0)         NO                                       Cờ bản ghi là lỗi: 1=Lỗi, 0=Cảnh báo/Thông tin
+CONTENT                       NVARCHAR2(4000)     YES                                      Nội dung/mô tả ngắn của lỗi
+EXCEPTION                     NCLOB               YES                                      Chi tiết stack trace exception đầy đủ (NCLOB)
+CREATED_AD                    DATE                NO                                       Thời điểm tạo bản ghi lỗi (có thể là typo của CREATED_AT)
+
+
+BANG: GROUPS
+Mo ta: Nhóm người dùng Portal: tên nhóm, đơn vị tổ chức, trạng thái, dữ liệu migration từ hệ thống cũ
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(18,2)        NO      PK                               Khóa chính của bản ghi (số tự tăng)
+ORG_ID                        NUMBER(4,0)         YES                                      ID tổ chức/đơn vị sở hữu nhóm người dùng
+GROUP_NAME                    NVARCHAR2(100)      YES                                      Tên nhóm người dùng
+RECORD_STATUS                 NUMBER(1,0)         NO                                       Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động
+DESCRIPTION                   NVARCHAR2(400)      YES                                      Mô tả chi tiết
+CREATED_AT                    DATE                YES                                      Thời điểm tạo bản ghi
+CREATED_BY                    NVARCHAR2(200)      YES                                      Tài khoản người tạo bản ghi
+UPDATED_AT                    DATE                YES                                      Thời điểm cập nhật bản ghi lần cuối
+UPDATED_BY                    NVARCHAR2(200)      YES                                      Tài khoản người cập nhật bản ghi lần cuối
+DATA_MIGRATION                NUMBER(1,0)         YES                                      Cờ dữ liệu từ hệ thống cũ (legacy migration): 1=Dữ liệu cũ, 0=Dữ liệu mới
+DELETED                       NUMBER(1,0)         NO                                       Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động
+
+
+BANG: GROUP_ROLES
+Mo ta: Phân quyền nhóm theo role: nhóm nào được gán role nào trong Portal
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ROLES_ID                      NUMBER(18,2)        NO      PK     ROLES.ID                  FK -> ROLES: Vai trò được gán cho nhóm
+GROUPS_ID                     NUMBER(18,2)        NO      PK     GROUPS.ID                 FK -> GROUPS: Nhóm người dùng
+
+
+BANG: GROUP_USERS
+Mo ta: Thành viên của nhóm người dùng Portal: người dùng nào thuộc nhóm nào (liên kết với SSO)
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+GROUP_ID                      NUMBER(18,2)        NO      PK     GROUPS.ID                 FK -> GROUPS: Nhóm người dùng
+USER_SSO                      NUMBER(18,2)        NO      PK                               ID tài khoản người dùng trong hệ thống SSO (Single Sign-On) tập trung
+
+
+BANG: MENUS
+Mo ta: Danh sách menu/module của Portal: tiêu đề, icon, URL, phân cấp cha-con, loại menu, phân quyền, cấu hình Module Federation (Micro Frontend) cho từng phân hệ
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(18,2)        NO      PK                               Khóa chính của bản ghi (số tự tăng)
+DELETED                       NUMBER(1,0)         NO                                       Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động
+CREATED_AT                    DATE                YES                                      Thời điểm tạo bản ghi
+CREATED_BY                    NVARCHAR2(200)      YES                                      Tài khoản người tạo bản ghi
+UPDATED_AT                    DATE                YES                                      Thời điểm cập nhật bản ghi lần cuối
+UPDATED_BY                    NVARCHAR2(200)      YES                                      Tài khoản người cập nhật bản ghi lần cuối
+TITLE                         NVARCHAR2(1000)     YES                                      Tiêu đề hiển thị của menu/module trên giao diện
+ICON                          NVARCHAR2(200)      YES                                      Icon hiển thị trên menu (CSS class hoặc URL icon)
+URL                           NVARCHAR2(1000)     YES                                      Đường dẫn URL của menu/module
+PARENT_ID                     NUMBER(18,2)        YES     FK     MENUS.ID                  FK -> MENUS: Menu cha trong cây phân cấp menu (null=menu gốc)
+MENU_TYPE                     NUMBER(1,0)         NO                                       Loại menu: 1=Module chính, 2=Sub-menu, 3=Chức năng
+SORT_ORDER                    NUMBER(10,0)        NO                                       Thứ tự sắp xếp hiển thị (số nhỏ hơn hiển thị trước)
+MENU_ACCESS                   NCLOB               YES                                      Danh sách quyền truy cập menu (JSON NCLOB: [{roleId, groupId}...])
+ACTIVE                        NUMBER(1,0)         NO                                       Cờ menu đang kích hoạt: 1=Hiển thị trên menu, 0=Ẩn/Vô hiệu
+REMOTE_FLAG                   NUMBER              YES                                      Cờ menu là Module Federation (Micro Frontend) từ xa: 1=Remote module, 0=Module nội bộ Portal
+REMOTE_NAME                   VARCHAR2(100)       YES                                      Tên Module Federation remote (tên app đã đăng ký)
+REMOTE_ENTRY                  VARCHAR2(1000)      YES                                      URL entry point của Module Federation remote
+EXPOSED_MODULE                VARCHAR2(100)       YES                                      Tên module được expose từ remote app
+EXPORTED_ROUTESNAME           VARCHAR2(200)       YES                                      Tên routes export từ module remote
+SHOW_PORTAL_HOME              NUMBER              YES                                      Cờ hiển thị module trên trang chủ Portal: 1=Hiển thị, 0=Ẩn
+SHOW_PORTAL_FUNCTION          NUMBER              YES                                      Cờ hiển thị module trong danh sách chức năng Portal: 1=Hiển thị, 0=Ẩn
+
+
+BANG: NOTIFICATION
+Mo ta: Thông báo nội bộ Portal: loại thông báo, đối tượng gửi/nhận, nội dung, liên kết, trạng thái đã xem, file đính kèm
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(18,2)        NO      PK                               Khóa chính của bản ghi (số tự tăng)
+DELETED                       NUMBER(1,0)         NO                                       Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động
+DATE_CREATED                  DATE                YES                                      Thời điểm tạo bản ghi
+CREATED_BY                    NVARCHAR2(200)      YES                                      Tài khoản người tạo bản ghi
+DATE_MODIFIED                 DATE                YES                                      Thời điểm cập nhật bản ghi lần cuối
+MODIFY_BY                     NVARCHAR2(200)      YES                                      Tài khoản người cập nhật bản ghi lần cuối
+RECORD_TYPE                   NUMBER(10,0)        NO                                       Loại/phân loại của bản ghi
+TYPE_ENUM                     NUMBER(10,0)        NO                                       Enum loại thông báo chi tiết (phân biệt nghiệp vụ cụ thể trong cùng loại)
+UTO_ID                        NUMBER(18,2)        YES                                      FK -> USERS/SSO: ID người nhận thông báo
+UFROM_ID                      NUMBER(18,2)        YES                                      FK -> USERS/SSO: ID người gửi thông báo
+SYSTEM_OBJECT                 NUMBER(18,2)        YES                                      Đối tượng hệ thống kích hoạt thông báo: 1=QLQ, 2=QĐT, 3=SCMS...
+TITLE                         NVARCHAR2(4000)     NO                                       Tiêu đề email/thông báo
+LINK_TO_DETAIL                NVARCHAR2(4000)     YES                                      URL điều hướng đến trang chi tiết khi nhấp vào thông báo
+LIST_MEMBER_ID                NVARCHAR2(4000)     YES                                      Danh sách ID người nhận thông báo (JSON string danh sách userId)
+RECORD_STATUS                 NUMBER(18,2)        NO                                       Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động
+SENT_MAIL                     NUMBER(18,2)        NO                                       Cờ đã gửi email thông báo kèm: 1=Đã gửi email, 0=Không gửi
+CONTENT                       NVARCHAR2(4000)     NO                                       Nội dung thông báo/email (NVARCHAR2)
+DATE_SEND                     DATE                YES                                      Thời điểm thông báo được gửi đi
+FILE_NAME                     NVARCHAR2(4000)     YES                                      Tên file đính kèm trong thông báo
+FILE_DATA                     NCLOB               YES                                      Dữ liệu file đính kèm (NCLOB, base64 hoặc JSON danh sách file)
+VIEWED                        NUMBER(1,0)         NO                                       Cờ người nhận đã xem thông báo: 1=Đã xem, 0=Chưa xem
+
+
+BANG: ROLES
+Mo ta: Vai trò (role) trong hệ thống Portal: tên role, mô tả, trạng thái
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(18,2)        NO      PK                               Khóa chính của bản ghi (số tự tăng)
+DELETED                       NUMBER(1,0)         NO                                       Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động
+CREATED_AT                    DATE                YES                                      Thời điểm tạo bản ghi
+CREATED_BY                    NVARCHAR2(200)      YES                                      Tài khoản người tạo bản ghi
+UPDATED_AT                    DATE                YES                                      Thời điểm cập nhật bản ghi lần cuối
+UPDATED_BY                    NVARCHAR2(200)      YES                                      Tài khoản người cập nhật bản ghi lần cuối
+ROLE_NAME                     NVARCHAR2(1000)     YES                                      Tên vai trò (role name) trong hệ thống Portal
+DESCRIPTION                   NVARCHAR2(2000)     YES                                      Mô tả chi tiết
+RECORD_STATUS                 NUMBER(1,0)         NO                                       Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động
+
+
+BANG: ROLES_MENUS
+Mo ta: Phân quyền menu theo vai trò: role nào được truy cập menu/module nào trên Portal
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ROLES_ID                      NUMBER(18,2)        NO      PK     ROLES.ID                  FK -> ROLES: Vai trò được gán cho nhóm
+MENUS_ID                      NUMBER(18,2)        NO      PK     MENUS.ID                  FK -> MENUS: Menu được phân quyền
+
+
+BANG: SYSEMAIL
+Mo ta: Email nội bộ hệ thống Portal (hộp thư): người gửi/nhận, tiêu đề, nội dung, file đính kèm, trạng thái gửi
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(18,2)        NO      PK                               Khóa chính của bản ghi (số tự tăng)
+DELETED                       NUMBER(1,0)         NO                                       Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động
+DATE_CREATED                  DATE                YES                                      Thời điểm tạo bản ghi
+CREATED_BY                    NVARCHAR2(200)      YES                                      Tài khoản người tạo bản ghi
+DATE_MODIFIED                 DATE                YES                                      Thời điểm cập nhật bản ghi lần cuối
+MODIFY_BY                     NVARCHAR2(200)      YES                                      Tài khoản người cập nhật bản ghi lần cuối
+UFROM_ID                      NUMBER(18,2)        YES                                      FK -> USERS/SSO: ID người gửi thông báo
+UTO_ID                        NUMBER(18,2)        YES                                      FK -> USERS/SSO: ID người nhận thông báo
+PARENT_ID                     NUMBER(18,2)        YES     FK     SYSEMAIL.ID               FK -> SYSEMAIL: Email gốc (dùng cho chuỗi reply/forward)
+TITLE                         NVARCHAR2(4000)     NO                                       Tiêu đề email/thông báo
+BODY                          NCLOB               NO                                       Nội dung email/thông báo (NCLOB HTML hoặc plain text)
+FILE_DATA                     NCLOB               YES                                      Dữ liệu file đính kèm (NCLOB, base64 hoặc JSON danh sách file)
+RECORD_STATUS                 NUMBER(1,0)         NO                                       Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động
+SEND_EMAIL                    NUMBER(1,0)         NO                                       Cờ thực hiện gửi email: 1=Đã gửi, 0=Chưa gửi
+SEND_DATE                     DATE                YES                                      Thời điểm email được gửi đi
+
+
+BANG: SYSVAR
+Mo ta: Tham số cấu hình hệ thống Portal: nhóm tham số, tên biến, giá trị, mô tả, loại control hiển thị trên giao diện quản trị
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(18,2)        NO      PK                               Khóa chính của bản ghi (số tự tăng)
+DELETED                       NUMBER(1,0)         NO                                       Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động
+DATE_CREATED                  DATE                YES                                      Thời điểm tạo bản ghi
+CREATED_BY                    NVARCHAR2(200)      YES                                      Tài khoản người tạo bản ghi
+DATE_MODIFIED                 DATE                YES                                      Thời điểm cập nhật bản ghi lần cuối
+MODIFY_BY                     NVARCHAR2(200)      YES                                      Tài khoản người cập nhật bản ghi lần cuối
+GR_NAME                       NVARCHAR2(200)      YES                                      Tên nhóm tham số hệ thống (phân nhóm các biến cấu hình liên quan)
+VAR_NAME                      NVARCHAR2(400)      YES                                      Tên biến cấu hình hệ thống (key tra cứu)
+VAR_VALUE                     NVARCHAR2(4000)     YES                                      Giá trị biến cấu hình hệ thống
+VAR_DESC                      NVARCHAR2(2000)     YES                                      Mô tả ý nghĩa và cách dùng biến cấu hình
+TYPE_CONTROL                  NVARCHAR2(4000)     YES                                      Loại control hiển thị tham số trên giao diện quản trị: TEXT, NUMBER, SELECT, CHECKBOX...
+
+
+BANG: __EFMigrationsHistory
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+MigrationId                   NVARCHAR2(300)      NO      PK                               
+ProductVersion                NVARCHAR2(64)       NO                                       
+
+

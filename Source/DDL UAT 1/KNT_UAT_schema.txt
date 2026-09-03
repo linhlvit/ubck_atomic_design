@@ -1,0 +1,1842 @@
+DATA DICTIONARY - SCHEMA: KNT_UAT
+Tong so bang: 70 | Materialized View: 0
+==============================================================================================================
+
+BANG: AUDITOR
+Mo ta: Danh sách kiểm toán viên được UBCKNN chấp thuận: thuộc công ty kiểm toán nào, số GCN hành nghề, ngày chấp thuận/hủy
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
+AUDIT_FIRM_ID                 NUMBER              YES     FK     AUDIT_FIRM.ID             FK -> audit_firm: Công ty kiểm toán của kiểm toán viên
+AUDITOR_NAME                  VARCHAR2(800)       YES                                      Họ tên kiểm toán viên
+PRACTICE_CERT_NUMBER          VARCHAR2(200)       YES                                      Số chứng chỉ hành nghề kiểm toán
+APPROVAL_DATE                 DATE                YES                                      Ngày UBCKNN chấp thuận kiểm toán viên
+APPROVAL_REVOCATION_DATE      DATE                YES                                      Ngày UBCKNN hủy chấp thuận kiểm toán viên
+
+
+BANG: AUDIT_FIRM
+Mo ta: Hồ sơ tổ chức kiểm toán được UBCKNN chấp thuận kiểm toán cho đơn vị có lợi ích công chúng: số QĐ, ngày QĐ, MST, số lượng KTV
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
+DECISION_NUMBER               VARCHAR2(800)       YES                                      Số quyết định thành lập/xử phạt
+DECISION_DATE                 DATE                YES                                      Ngày ban hành quyết định
+NAME                          VARCHAR2(1200)      YES                                      Tên đầy đủ
+ADDRESS                       VARCHAR2(2000)      YES                                      Địa chỉ
+PHONE                         VARCHAR2(400)       YES                                      Số điện thoại liên hệ
+FAX                           VARCHAR2(400)       YES                                      Số fax
+APPROVAL_YEAR                 VARCHAR2(400)       YES                                      Năm chấp thuận tổ chức kiểm toán được kiểm toán cho ĐVLICK
+APPROVED_AUDITOR_COUNT        VARCHAR2(80)        YES                                      Số lượng kiểm toán viên được chấp thuận trong công ty
+TAX_CODE                      VARCHAR2(400)       YES                                      Mã số thuế doanh nghiệp
+MSG_PACKET_ID                 NUMBER              YES     FK     MSG_PACKET.ID             FK -> msg_packet: Gói tin trao đổi liên quan
+BUSINESS_REG_CERT             VARCHAR2(100)       YES                                      Số giấy phép đăng ký kinh doanh của công ty kiểm toán
+GUID                          VARCHAR2(50)        YES                                      Định danh duy nhất toàn cục (GUID/UUID) của bản ghi
+
+
+BANG: CATALOG
+Mo ta: Danh mục điện tử dùng chung trong phân hệ KNT: mã, tên, nhóm danh mục
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
+CODE                          VARCHAR2(400)       YES                                      Mã định danh (mã viết tắt nghiệp vụ)
+NAME                          VARCHAR2(800)       YES                                      Tên đầy đủ
+CATALOG_GROUP_ID              NUMBER              YES     FK     CATALOG_GROUP.ID          FK -> catalog_group: Nhóm danh mục chứa mục này
+COMPANY_TYPE                  NUMBER              YES                                      Loại hình công ty (LoaiHinhCongTyEnum): 1=Công ty thông thường, 2=Tổ chức tín dụng, 3=Công ty bảo hiểm, 4=Công ty chứng khoán, 5=Công ty quản lý quỹ
+
+
+BANG: CATALOG_GROUP
+Mo ta: Nhóm danh mục điện tử: phân nhóm các danh mục dùng chung trong hệ thống KNT
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
+CODE                          VARCHAR2(400)       YES                                      Mã định danh (mã viết tắt nghiệp vụ)
+NAME                          VARCHAR2(800)       YES                                      Tên đầy đủ
+STATUS                        NUMBER              YES                                      Trạng thái nhóm danh mục (TrangThaiChucNangEnum): 1=Đang sử dụng, 0=Ngừng sử dụng
+TYPE                          NUMBER              YES                                      Loại nhóm danh mục (LoaiDanhMucEnum): 0=Nhóm danh mục cấu hình TCT, 1=Nhóm danh mục cấu hình UBCKNN, 2=Nhóm danh mục hệ thống
+
+
+BANG: CAT_ORG_UNIT
+Mo ta: Danh mục đơn vị tổ chức: UBCKNN, Cục Thuế, Bộ Tài chính và các đơn vị báo cáo trong hệ thống
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
+ORG_UNIT_CODE                 VARCHAR2(200)       NO                                       Mã đơn vị gửi báo cáo (CTCK/QLQ/CN QLQ NN...)
+ORG_UNIT_NAME                 VARCHAR2(2000)      NO                                       Tên đơn vị tổ chức
+HIERARCHY_CODE                VARCHAR2(200)       YES                                      Mã phân cấp chức năng (dạng chuỗi phân cấp)
+PARENT_HIERARCHY_CODE         VARCHAR2(200)       YES                                      Mã phân cấp cha
+TAX_CODE                      VARCHAR2(1000)      YES                                      Mã số thuế doanh nghiệp
+ADDRESS                       VARCHAR2(4000)      YES                                      Địa chỉ
+PHONE                         VARCHAR2(80)        YES                                      Số điện thoại liên hệ
+EMAIL                         VARCHAR2(400)       YES                                      Địa chỉ email liên hệ
+FAX                           VARCHAR2(80)        YES                                      Số fax
+WEBSITE                       VARCHAR2(400)       YES                                      Địa chỉ website
+ORG_UNIT_TYPE                 NUMBER              YES                                      Loại đơn vị: 1=Người dùng hệ thống (UBCKNN), 2=Đơn vị báo cáo (bên ngoài)
+DESCRIPTION                   VARCHAR2(4000)      YES                                      Mô tả chi tiết
+LAST_MODIFIED_AT              DATE                YES                                      Thời điểm cập nhật lần cuối
+CAT_LEVEL                     NUMBER              YES                                      
+
+
+BANG: CAT_POSITION
+Mo ta: Danh mục chức vụ: dùng cho phân loại nhân sự trong hệ thống KNT
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
+POSITION_CODE                 VARCHAR2(200)       YES                                      Mã chức vụ
+POSITION_NAME                 VARCHAR2(1020)      YES                                      Tên chức vụ
+ORIGINAL_DATA                 NUMBER              YES                                      Cờ dữ liệu gốc từ danh mục điện tử dùng chung: 1=Dữ liệu gốc, 0=Dữ liệu thêm mới
+CREATED_AT                    DATE                YES                                      Thời điểm tạo bản ghi
+CREATED_BY                    VARCHAR2(200)       YES                                      Tài khoản/tên người tạo bản ghi
+LAST_MODIFIED_AT              DATE                YES                                      Thời điểm cập nhật lần cuối
+LAST_MODIFIED_BY              VARCHAR2(200)       YES                                      Tài khoản/tên người cập nhật lần cuối
+DATA_TYPE                     NUMBER              YES                                      Kiểu dữ liệu: TEXT=1, PASS=2, NUMBER=3, CHECKBOX=4, DROP=5, EMAIL=6
+DELETED                       NUMBER              YES                                      Cờ xóa mềm: 1=Đã xóa, 0=Chưa xóa
+SYNC_ENABLED                  NUMBER              YES                                      Cờ đồng bộ dữ liệu: 1=Cho phép đồng bộ, 0=Không đồng bộ
+SYNC_ID                       VARCHAR2(200)       YES                                      ID đồng bộ từ hệ thống nguồn
+SYNC_ID_SC_FIRM               VARCHAR2(200)       YES                                      ID đồng bộ từ phân hệ quản lý CTCK
+
+
+BANG: CAT_VIOLATION_ACT
+Mo ta: Danh mục hành vi vi phạm pháp luật chứng khoán: mã, tên, văn bản pháp lý áp dụng và xử lý
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(200)       YES                                      Khóa chính của bản ghi (ID số tự tăng)
+VIOLATION_ACT_CODE            VARCHAR2(200)       YES                                      Mã hành vi vi phạm pháp luật chứng khoán
+VIOLATION_ACT_NAME            VARCHAR2(4000)      YES                                      Tên hành vi vi phạm pháp luật chứng khoán
+LAST_MODIFIED_AT              DATE                YES                                      Thời điểm cập nhật lần cuối
+CREATED_BY_ID                 VARCHAR2(200)       YES                                      ID người dùng tạo bản ghi
+DESCRIPTION                   VARCHAR2(4000)      YES                                      Mô tả chi tiết
+LEGAL_BASIS_DOC               VARCHAR2(4000)      YES                                      Văn bản pháp luật áp dụng làm căn cứ xử lý
+VIOLATION_HANDLING_DOC        VARCHAR2(4000)      YES                                      Văn bản xử lý vi phạm tương ứng
+STATUS                        NUMBER              YES                                      Trạng thái bản ghi: 1=Đang sử dụng, 0=Không sử dụng
+
+
+BANG: COMPANY_COMPARISON
+Mo ta: Kết quả đối chiếu thông tin công ty giữa UBCKNN và Cục Thuế theo MST
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
+COMPANY_INFO_ID               NUMBER              YES                                      FK -> company_info: Thông tin công ty phía UBCKNN
+TAX_REGISTRATION_ID           NUMBER              YES                                      FK -> tax_registration_info: Thông tin đăng ký thuế phía TCT
+TAX_CODE                      VARCHAR2(100)       YES                                      Mã số thuế doanh nghiệp đối chiếu
+SSC_NAME                      VARCHAR2(1000)      YES                                      Tên công ty theo dữ liệu UBCKNN
+SSC_ADDRESS                   VARCHAR2(2000)      YES                                      Địa chỉ theo dữ liệu UBCKNN
+SSC_PHONE                     VARCHAR2(50)        YES                                      Số điện thoại theo dữ liệu UBCKNN
+SSC_FAX                       VARCHAR2(50)        YES                                      Fax theo dữ liệu UBCKNN
+SSC_WEBSITE                   VARCHAR2(250)       YES                                      Website theo dữ liệu UBCKNN
+SSC_BUSINESS_LINE             VARCHAR2(2000)      YES                                      Ngành nghề kinh doanh theo UBCKNN
+SSC_LEGAL_REPRESENTATIVE_NAME VARCHAR2(500)       YES                                      Người đại diện theo UBCKNN
+SSC_CHARTER_CAPITAL           NUMBER              YES                                      Vốn điều lệ theo UBCKNN
+SSC_DECISION_NUMBER           VARCHAR2(250)       YES                                      Số quyết định/GPKD theo UBCKNN
+SSC_BUSINESS_LICENSE          VARCHAR2(250)       YES                                      Giấy phép kinh doanh theo UBCKNN
+TAX_NAME                      VARCHAR2(1000)      YES                                      Tên công ty theo dữ liệu Cục Thuế
+TAX_ADDRESS                   VARCHAR2(2000)      YES                                      Địa chỉ theo dữ liệu Cục Thuế
+TAX_PHONE                     VARCHAR2(50)        YES                                      Số điện thoại theo dữ liệu Cục Thuế
+TAX_FAX                       VARCHAR2(50)        YES                                      Fax theo dữ liệu Cục Thuế
+TAX_WEBSITE                   VARCHAR2(250)       YES                                      Website theo dữ liệu Cục Thuế
+TAX_BUSINESS_LINE             VARCHAR2(2000)      YES                                      Ngành nghề theo dữ liệu Cục Thuế
+TAX_LEGAL_REPRESENTATIVE_NAME VARCHAR2(500)       YES                                      Người đại diện theo dữ liệu Cục Thuế
+TAX_CHARTER_CAPITAL           NUMBER              YES                                      Vốn điều lệ theo dữ liệu Cục Thuế
+TAX_DECISION_NUMBER           VARCHAR2(250)       YES                                      Số quyết định theo dữ liệu Cục Thuế
+TAX_BUSINESS_LICENSE          VARCHAR2(250)       YES                                      GPKD theo dữ liệu Cục Thuế
+DIFF_FLAG                     NUMBER              YES                                      Cờ chênh lệch: Y=Có khác biệt giữa UBCKNN và TCT, N/NULL=Khớp
+COMPARISON_DATE               DATE                YES                                      Ngày thực hiện đối chiếu
+
+
+BANG: COMPANY_COMPARISON_QUEUE
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               
+SOURCE_SYSTEM                 CHAR(1)             NO                                       
+ACTION_TYPE                   CHAR(1)             NO                                       
+MSG_PACKET_ID                 NUMBER              YES                                      
+DETAIL_ID                     NUMBER              YES                                      
+STATUS                        CHAR(1)             NO                                       
+RETRY_COUNT                   NUMBER              NO                                       
+WORKER_ID                     VARCHAR2(64)        YES                                      
+AVAILABLE_AT                  TIMESTAMP(6)        NO                                       
+STARTED_AT                    TIMESTAMP(6)        YES                                      
+FINISHED_AT                   TIMESTAMP(6)        YES                                      
+ERROR_MESSAGE                 VARCHAR2(2000)      YES                                      
+CREATED_AT                    TIMESTAMP(6)        NO                                       
+
+
+BANG: COMPANY_INFO
+Mo ta: Thông tin công ty tham gia thị trường chứng khoán gửi sang Cục Thuế: tên, MST, loại công ty, vốn, người đại diện, thông tin niêm yết
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
+NAME                          VARCHAR2(4000)      YES                                      Tên đầy đủ
+COMPANY_TYPE                  NUMBER              YES                                      Loại hình công ty (LoaiHinhCongTyEnum): 1=Công ty thông thường, 2=Tổ chức tín dụng, 3=Công ty bảo hiểm, 4=Công ty chứng khoán, 5=Công ty quản lý quỹ
+CHANGED_AT                    DATE                YES                                      Ngày thay đổi thông tin công ty
+TAX_CODE                      VARCHAR2(400)       YES                                      Mã số thuế doanh nghiệp
+ADDRESS                       VARCHAR2(2000)      YES                                      Địa chỉ
+PHONE                         VARCHAR2(400)       YES                                      Số điện thoại liên hệ
+FAX                           VARCHAR2(800)       YES                                      Số fax
+WEBSITE                       VARCHAR2(800)       YES                                      Địa chỉ website
+BUSINESS_LINE                 VARCHAR2(800)       YES                                      Ngành nghề kinh doanh chính
+LEGAL_REPRESENTATIVE_NAME     VARCHAR2(4000)      YES                                      Họ tên người đại diện theo pháp luật
+CHARTER_CAPITAL               VARCHAR2(400)       YES                                      Vốn điều lệ/vốn đầu tư của chủ sở hữu (đơn vị: đồng)
+PUBLIC_COMPANY_REG_DATE       DATE                YES                                      Ngày đăng ký là công ty đại chúng
+DECISION_NUMBER               VARCHAR2(800)       YES                                      Số quyết định thành lập/xử phạt
+TICKER_SYMBOL                 VARCHAR2(200)       YES                                      Ký hiệu mã cổ phiếu niêm yết
+LISTING_DATE                  DATE                YES                                      Ngày niêm yết/đăng ký giao dịch cổ phiếu
+LISTING_EXCHANGE              VARCHAR2(1200)      YES                                      Nơi niêm yết/giao dịch (HOSE, HNX, UPCOM)
+FIRST_LISTING_DATE            DATE                YES                                      Ngày niêm yết/giao dịch cổ phiếu lần đầu tiên trên sàn
+SHAREHOLDER_COUNT             NUMBER              YES                                      Số lượng cổ đông
+DELISTING_DATE                DATE                YES                                      Ngày hủy niêm yết
+PUBLIC_COMPANY_END_DATE       DATE                YES                                      Ngày hủy đăng ký công ty đại chúng
+MSG_PACKET_ID                 NUMBER              YES     FK     MSG_PACKET.ID             FK -> msg_packet: Gói tin trao đổi liên quan
+GUID                          VARCHAR2(200)       YES                                      Định danh duy nhất toàn cục (GUID/UUID) của bản ghi
+BUSINESS_LICENSE              VARCHAR2(800)       YES                                      Số giấy phép đăng ký kinh doanh (GPKD)
+RECORD_COUNT                  NUMBER              YES                                      Số bản ghi công ty có cùng gói tin và loại công ty
+
+
+BANG: CONFIG_PARAM
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+PARAM_CODE                    VARCHAR2(100)       YES                                      Mã tham số hệ thống (key tra cứu)
+PARAM_NAME                    VARCHAR2(400)       YES                                      Tên tham số hệ thống
+VALUE                         VARCHAR2(800)       YES                                      Giá trị tham số/chỉ tiêu/cấu hình
+DESCRIPTION                   VARCHAR2(800)       YES                                      Mô tả chi tiết
+STATUS                        NUMBER              YES                                      Trạng thái bản ghi: 1=Đang sử dụng, 0=Không sử dụng
+CREATED_AT                    DATE                YES                                      Thời điểm tạo bản ghi
+SYSTEM_CODE                   NUMBER              YES                                      Mã hệ thống nguồn (HeThongEnum): 1=IDS, 2=IDM, 3=Thanh tra, 4=SCMS, 5=FMS, 6=THUE (TCT)
+PARAM_ID                      NUMBER              NO      PK                               ID tham số (khóa chính bổ sung)
+PARENT_ID                     NUMBER              YES                                      FK -> cùng bảng: ID gói tin/tham số cha
+TYPE                          NUMBER(2,0)         YES                                      Loại/nhóm tham số cấu hình (phân loại theo nghiệp vụ hệ thống; không phải kiểu dữ liệu TEXT/NUMBER)
+TITLE                         VARCHAR2(400)       YES                                      Tiêu đề hiển thị
+
+
+BANG: DATA_GEN_ERROR_LOG
+Mo ta: Nhật ký lỗi sinh dữ liệu hoặc gửi push Trục: giai đoạn, HTTP status, mã lỗi, người/job xử lý
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(18,0)        NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
+CREATE_DATE                   TIMESTAMP(6)        NO                                       
+STATUS                        NUMBER(1,0)         NO                                       Trạng thái xử lý log: 0=Chưa xử lý, 1=Đã xử lý (theo nghiệp vụ SinhDlLoiLog)
+PROCESSED_AT                  TIMESTAMP(6)        YES                                      Thời điểm đánh dấu đã xử lý
+PROCESSED_BY                  VARCHAR2(100)       YES                                      Người đánh dấu đã xử lý log lỗi
+EXECUTION_SOURCE              VARCHAR2(20)        NO                                       Nguồn thực thi: JOB, UI, SEND_HUB, ...
+API_PACKET_CODE               VARCHAR2(80)        YES                                      Mã gói API/nghiệp vụ liên quan (MA_GOI_API)
+SCHEDULE_CONFIG_ID            NUMBER(18,0)        YES                                      FK -> schedule_config: Lịch job gây ra lỗi (nếu chạy tự động)
+EXECUTED_BY                   VARCHAR2(100)       YES                                      Tài khoản/tiến trình thực hiện khi phát sinh lỗi
+SYSTEM_CODE                   NUMBER(3,0)         YES                                      Mã hệ thống nguồn (HeThongEnum): 1=IDS, 2=IDM, 3=Thanh tra, 4=SCMS, 5=FMS, 6=THUE (TCT)
+FORM_TYPE                     NUMBER(3,0)         YES                                      Loại form/nghiệp vụ (FRM): map CreateData / SendXml
+SUBJECT_TYPE                  VARCHAR2(50)        YES                                      Mã loại đối tượng dữ liệu (CTĐC, CTCK, QLQ...)
+SUBJECT_TYPE_NAME             VARCHAR2(200)       YES                                      Tên loại đối tượng dữ liệu
+REPORT_PERIOD                 VARCHAR2(50)        YES                                      Kỳ báo cáo liên quan đến lỗi sinh dữ liệu
+MSG_PACKET_ID                 NUMBER(18,0)        YES                                      FK -> msg_packet: Gói tin liên quan (nếu có)
+PACKET_CODE                   VARCHAR2(100)       YES                                      Mã gói tin (MA_GOI_TIN) tại thời điểm lỗi
+TAX_CODE                      VARCHAR2(20)        YES                                      Mã số thuế doanh nghiệp liên quan
+API_LINK                      VARCHAR2(2000)      YES                                      URL API outbound gây lỗi (push Trục hoặc gọi nguồn dữ liệu)
+PHASE                         VARCHAR2(30)        NO                                       Giai đoạn lỗi: SINH_DL, PUSH_CT, PUSH_BTC, VALIDATE...
+ERROR_CODE                    VARCHAR2(50)        YES                                      Mã lỗi nghiệp vụ hoặc HTTP/API
+ERROR_MESSAGE                 VARCHAR2(4000)      NO                                       Mô tả chi tiết lỗi
+HTTP_STATUS                   NUMBER(5,0)         YES                                      Mã HTTP response khi lỗi gọi API (nếu có)
+MSG_REF_ID                    VARCHAR2(100)       YES                                      
+
+
+BANG: DATA_RECONCILIATION
+Mo ta: Data reconciliation result by date — SSC (UB) or Tax (CT)
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               
+RECONCILIATION_DATE           DATE                NO                                       Reconciliation data date
+SOURCE                        VARCHAR2(10)        NO                                       UB = SSC/UBCKNN, CT = Tax authority / DATAHUB
+RECORD_COUNT                  NUMBER              YES                                      SL_DU_LIEU (CT) or total records/MST (UB)
+TOTAL_PACKETS                 NUMBER              YES                                      
+MSG_ID                        VARCHAR2(100)       YES                                      
+MSG_REF_ID                    VARCHAR2(100)       YES                                      MSG_REFID from CT response header
+TRAN_CODE                     VARCHAR2(30)        YES                                      
+SENDER_CODE                   VARCHAR2(50)        YES                                      
+RECEIVER_CODE                 VARCHAR2(50)        YES                                      
+STATUS                        NUMBER              YES                                      
+ERROR_MESSAGE                 VARCHAR2(2000)      YES                                      
+RAW_JSON                      CLOB                YES                                      
+CREATED_AT                    TIMESTAMP(6)        YES                                      
+LAST_MODIFIED_AT              TIMESTAMP(6)        YES                                      Last modified timestamp
+
+
+BANG: DATA_RECONCILIATION_OUTBOUND
+Mo ta: Outbound reconciliation packet log from SSC (msg_id, packet_code)
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               
+RECONCILIATION_DATE           DATE                NO                                       
+MSG_PACKET_ID                 NUMBER              YES                                      FK logical to msg_packet.id
+PACKET_CODE                   VARCHAR2(100)       YES                                      msg_packet.packet_code (DS...)
+MSG_ID                        VARCHAR2(100)       YES                                      MSG_ID header of outbound payload
+TRAN_CODE                     VARCHAR2(30)        YES                                      
+TOTAL_PACKETS                 NUMBER              YES                                      
+TOTAL_RECORDS                 NUMBER              YES                                      
+STATUS                        NUMBER              YES                                      
+PUSH_FORMAT                   VARCHAR2(10)        YES                                      
+CREATED_AT                    TIMESTAMP(6)        YES                                      
+LAST_MODIFIED_AT              TIMESTAMP(6)        YES                                      Last modified timestamp
+
+
+BANG: DB_LOG
+Mo ta: Nhật ký kỹ thuật ghi nhận sự kiện database: mã, giá trị và thời gian tạo
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              YES                                      Khóa chính của bản ghi (ID số tự tăng)
+CODE                          NVARCHAR2(400)      YES                                      Mã định danh (mã viết tắt nghiệp vụ)
+VALUE                         NVARCHAR2(2000)     YES                                      Giá trị tham số/chỉ tiêu/cấu hình
+CREATE_DATE                   DATE                YES                                      Thời điểm tạo bản ghi log
+
+
+BANG: HIGH_RISK_ENTERPRISE
+Mo ta: Danh sách doanh nghiệp rủi ro cao về thuế do Cục Thuế cung cấp: MST, tên, địa chỉ, cơ quan thuế quản lý, năm đánh giá
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
+ENTERPRISE_CODE               VARCHAR2(80)        YES                                      Mã số doanh nghiệp đăng ký kinh doanh
+ENTERPRISE_NAME               VARCHAR2(800)       YES                                      Tên doanh nghiệp rủi ro cao
+HQ_ADDRESS                    VARCHAR2(800)       YES                                      Địa chỉ trụ sở chính của doanh nghiệp
+MANAGING_TAX_AUTHORITY        VARCHAR2(800)       YES                                      Cơ quan thuế quản lý doanh nghiệp rủi ro cao
+RISK_ASSESSMENT_YEAR          VARCHAR2(80)        YES                                      Năm Cục Thuế đánh giá doanh nghiệp là rủi ro cao
+MSG_PACKET_ID                 NUMBER              YES     FK     MSG_PACKET.ID             FK -> msg_packet: Gói tin trao đổi liên quan
+
+
+BANG: HUB_NOTIFICATION
+Mo ta: Thông báo hiển thị trên panel chuông (hub): nội dung + metadata điều hướng / thử lại
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            CHAR(36)            NO      PK                               UUID; map sang field id trên Angular
+LEVEL_CODE                    VARCHAR2(20)        NO                                       ERROR|WARNING|SUCCESS|INFO; map lower-case cho CSS panel chuông
+TITLE                         VARCHAR2(500)       NO                                       Tiêu đề ngắn thông báo hub
+DESCRIPTION                   CLOB                YES                                      Mô tả đầy đủ (CLOB nếu nội dung dài)
+NOTIFICATION_TYPE             VARCHAR2(50)        NO                                       Phân loại nghiệp vụ: INTEGRATION, DEADLINE, RISK_ALERT, SYNC_SUCCESS...
+SHOW_RETRY                    NUMBER(1,0)         NO                                       1 = hiện nút Thử lại; 0 = ẩn
+ACTIVE                        NUMBER(1,0)         NO                                       0 = ẩn khỏi feed mà không xóa lịch sử
+CREATED_AT                    TIMESTAMP(6)        NO                                       Thời điểm tạo; API sinh timeLabel kiểu "2 phút trước"
+EXPIRES_AT                    TIMESTAMP(6)        YES                                      Sau thời điểm này không đẩy ra client (tùy chọn)
+PUBLISHED_AT                  TIMESTAMP(6)        YES                                      Lên lịch hiển thị; NULL = hiển thị ngay khi created
+SOURCE_SYSTEM                 VARCHAR2(100)       YES                                      LGSP, DMDC, TCT, nội bộ KNT...
+REF_TYPE                      VARCHAR2(80)        YES                                      Khóa nghiệp vụ tham chiếu: MSG_PACKET, DOI_CHIEU_JOB...
+REF_ID                        VARCHAR2(100)       YES                                      ID đối tượng nghiệp vụ (UUID hoặc mã)
+DETAIL_ROUTE                  VARCHAR2(500)       YES                                      Đường dẫn Angular — nút Xem chi tiết
+DETAIL_QUERY_JSON             CLOB                YES                                      Query params JSON cho router.navigate
+RETRY_ACTION_KEY              VARCHAR2(100)       YES                                      Khóa cấu hình job/API thử lại
+PAYLOAD_JSON                  CLOB                YES                                      Dữ liệu bổ sung cho modal chi tiết
+PRIORITY                      NUMBER(5,0)         NO                                       Sắp xếp trong list: lớn hơn = quan trọng hơn
+AUDIENCE_SCOPE                VARCHAR2(30)        NO                                       ALL|ROLE|USER|MODULE — phạm vi người nhận
+TARGET_ROLE_CODES             VARCHAR2(1000)      YES                                      Khi audience_scope=ROLE: danh sách mã role
+TARGET_USER_LOGIN             VARCHAR2(100)       YES                                      Khi audience_scope=USER: ten_dang_nhap đích danh
+CREATED_BY                    VARCHAR2(100)       YES                                      Người/tiến trình tạo thông báo
+MSG_PACKET_STATUS             NUMBER(3,0)         YES                                      Snapshot msg_packet.status tại thời điểm tạo thông báo (không cập nhật khi gói tin đổi sau đó)
+
+
+BANG: HUB_NOTIFICATION_USER
+Mo ta: Trạng thái thông báo theo user: persist khi user bấm Bỏ qua / đánh dấu đã đọc
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            CHAR(36)            NO      PK                               UUID bản ghi trạng thái theo user
+NOTIFICATION_ID               CHAR(36)            NO      FK     HUB_NOTIFICATION.ID       FK -> hub_notification.id
+USER_LOGIN                    VARCHAR2(100)       NO                                       Khớp ten_dang_nhap từ JWT / UC
+DISMISSED_AT                  TIMESTAMP(6)        YES                                      Khác NULL = user đã bỏ qua, không hiện lại trên panel
+READ_AT                       TIMESTAMP(6)        YES                                      Tùy chọn: đánh dấu đã đọc cho badge số lượng
+
+
+BANG: INDICATOR_MAPPING
+Mo ta: Ánh xạ mã chỉ tiêu giữa tờ khai UBCKNN và Cục Thuế theo từng sheet biểu mẫu
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
+DECLARATION_CODE              VARCHAR2(200)       YES                                      Mã tờ khai thuế trong hệ thống Cục Thuế
+SHEET_NAME                    VARCHAR2(200)       YES                                      Mã sheet biểu mẫu (LoaiBaoCaoChiTietEnum): 1=BCDKT, 2=KQKD, 3=KQKDHD, 4=LCTT-TT, 5=LCTT-GT, 6=CTTKC, 9=THBDVCSH
+SSC_INDICATOR_CODE            VARCHAR2(200)       YES                                      Mã chỉ tiêu trong biểu mẫu UBCKNN
+TAX_INDICATOR_CODE            VARCHAR2(200)       YES                                      Mã chỉ tiêu tương ứng trong tờ khai Cục Thuế
+INDICATOR_NAME                VARCHAR2(800)       YES                                      Tên chỉ tiêu trong biểu mẫu báo cáo
+DESCRIPTION                   VARCHAR2(400)       YES                                      Mô tả chi tiết
+
+
+BANG: INFO_REQUEST_DETAIL
+Mo ta: Chi tiết yêu cầu thông tin từ Cục Thuế gửi UBCKNN: tên yêu cầu, MST, trạng thái xử lý
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
+MSG_PACKET_ID                 NUMBER              YES     FK     MSG_PACKET.ID             FK -> msg_packet: Gói tin trao đổi liên quan
+REQUEST_NAME                  VARCHAR2(4000)      YES                                      Tên loại yêu cầu thông tin từ Cục Thuế
+STATUS_DESCRIPTION            VARCHAR2(800)       YES                                      Mô tả trạng thái xử lý yêu cầu thông tin
+STATUS                        NUMBER              YES                                      Trạng thái phản hồi WebService (TrangThaiResponseWsEnum): 1=Thành công, 2=Không thành công, 3=Lỗi webservice
+TAX_CODE                      VARCHAR2(400)       YES                                      Mã số thuế doanh nghiệp
+
+
+BANG: INVOICE_DETAIL
+Mo ta: Chi tiết hóa đơn trong thông tin cưỡng chế ngừng sử dụng hóa đơn do Cục Thuế cung cấp
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
+INVOICE_TEMPLATE_SYMBOL       VARCHAR2(400)       YES                                      Ký hiệu mẫu hóa đơn
+INVOICE_SYMBOL                VARCHAR2(400)       YES                                      Ký hiệu hóa đơn
+INVOICE_NUMBER                VARCHAR2(400)       YES                                      Số hóa đơn
+TAX_ENFORCEMENT_INVOICE_ID    NUMBER              YES     FK     TAX_ENFORCEMENT_INVOICE.IDFK -> tax_enforcement_invoice: Quyết định cưỡng chế ngừng hóa đơn
+INVOICE_TYPE                  VARCHAR2(400)       YES                                      Loại hóa đơn bị cưỡng chế ngừng sử dụng
+OBJ_ID                        VARCHAR2(200)       YES                                      ID đối tượng trong hệ thống Cục Thuế
+
+
+BANG: LNK_GROUP_FUNCTION
+Mo ta: Phân quyền chức năng cho nhóm người dùng: nhóm nào được truy cập chức năng nào
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(200)       NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
+USER_GROUP_ID                 NUMBER              YES                                      FK -> sys_user_group: Nhóm người dùng liên quan
+FUNCTION_ID                   NUMBER              YES                                      FK -> sys_function: Chức năng liên quan
+CREATED_AT                    DATE                YES                                      Thời điểm tạo bản ghi
+CREATED_BY                    VARCHAR2(400)       YES                                      Tài khoản/tên người tạo bản ghi
+CREATED_BY_ID                 NUMBER              YES                                      ID người dùng tạo bản ghi
+LAST_MODIFIED_AT              DATE                YES                                      Thời điểm cập nhật lần cuối
+LAST_MODIFIED_BY              VARCHAR2(400)       YES                                      Tài khoản/tên người cập nhật lần cuối
+LAST_MODIFIED_BY_ID           NUMBER              YES                                      ID người dùng cập nhật lần cuối
+PERMISSION                    NUMBER              YES                                      Quyền truy cập bitmask (QuyenEnum, OR kết hợp): 1=Thêm, 2=Sửa, 4=Xóa, 8=Duyệt, 16=Theo đơn vị, 32=Xem
+
+
+BANG: LNK_USER_GROUP
+Mo ta: Liên kết người dùng với nhóm người dùng trong hệ thống KNT
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(200)       NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
+USER_ID                       NUMBER              YES                                      FK -> sys_user: Người dùng liên quan
+USER_GROUP_ID                 NUMBER              YES                                      FK -> sys_user_group: Nhóm người dùng liên quan
+
+
+BANG: LOG_CREATE_DATA_SSC
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               
+MSG_PACKET_ID                 NUMBER              YES                                      
+SYSTEM_CODE                   NUMBER              NO                                       
+FORM_TYPE                     NUMBER              YES                                      
+TYPE                          VARCHAR2(50)        YES                                      
+REPORT_PERIOD                 VARCHAR2(50)        YES                                      
+STATUS                        VARCHAR2(20)        NO                                       
+ERROR_CODE                    NUMBER              YES                                      
+ERROR_MESSAGE                 VARCHAR2(4000)      YES                                      
+XML_DATA                      CLOB                YES                                      
+START_AT                      TIMESTAMP(6)        NO                                       
+END_AT                        TIMESTAMP(6)        YES                                      
+CREATED_BY                    VARCHAR2(128)       YES                                      
+
+
+BANG: LOG_MQ
+Mo ta: Nhật ký giao tiếp qua Message Queue (MQ): ghi nhận lỗi, nội dung message, mã giao dịch giữa UBCKNN và Cục Thuế
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(50)        NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
+MSG_ERROR                     VARCHAR2(1000)      YES                                      Thông báo lỗi khi xử lý message MQ
+MSG_MQ                        CLOB                YES                                      Nội dung message MQ đầy đủ (CLOB)
+CREATED_AT                    DATE                YES                                      Thời điểm tạo bản ghi
+SENDER_CODE                   VARCHAR2(100)       YES                                      Mã hệ thống gửi message
+SENDER_NAME                   VARCHAR2(500)       YES                                      Tên hệ thống gửi message
+TRAN_CODE                     VARCHAR2(50)        YES                                      Mã giao dịch (transaction code) theo chuẩn trao đổi dữ liệu
+SENT_AT                       DATE                YES                                      Thời điểm gửi gói tin
+
+
+BANG: LOG_REQUEST_SSC
+Mo ta: Nhật ký yêu cầu UBCKNN gửi sang Cục Thuế: mã gói tin, MST, trạng thái, ngày yêu cầu
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+PACKET_CODE                   VARCHAR2(50)        YES                                      Mã gói tin trao đổi dữ liệu (do hệ thống sinh tự động)
+TAX_CODE                      VARCHAR2(50)        YES                                      Mã số thuế doanh nghiệp
+STATUS                        NUMBER              YES                                      Trạng thái xử lý yêu cầu: 1=Thành công, 2=Thất bại, 3=Đang xử lý
+REQUEST_DATE                  DATE                YES                                      Ngày gửi yêu cầu từ UBCKNN sang Cục Thuế
+
+
+BANG: LOG_SEND_MOF
+Mo ta: Nhật ký gửi dữ liệu sang Bộ Tài chính (BTC): mã gói tin, trạng thái, ngày gửi, msg_id
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+PACKET_CODE                   VARCHAR2(100)       YES                                      Mã gói tin trao đổi dữ liệu (do hệ thống sinh tự động)
+STATUS                        NUMBER              YES                                      Trạng thái gửi hub (MSG_STATUS): 0=Thành công/tiếp nhận, khác 0=Lỗi/từ chối
+SENT_AT                       DATE                YES                                      Thời điểm gửi gói tin
+MSG_ID                        VARCHAR2(100)       YES                                      Mã định danh message trong hệ thống trao đổi dữ liệu
+MSG_PACKET_ID                 NUMBER              YES                                      FK -> msg_packet: Gói tin trao đổi liên quan
+TYPE                          NUMBER              YES                                      Kênh gửi (PUSH_SYSTEM): 0=Trục CT (Cục Thuế), 1=Trục BTC (Bộ Tài chính)
+
+
+BANG: MSG_PACKET
+Mo ta: Gói tin trao đổi dữ liệu giữa UBCKNN và Cục Thuế/Bộ Tài chính: nội dung XML, trạng thái gửi/nhận, mã giao dịch
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
+PACKET_CODE                   VARCHAR2(200)       YES                                      Mã gói tin trao đổi dữ liệu (do hệ thống sinh tự động)
+TYPE                          NUMBER              YES                                      Loại gói tin/doanh nghiệp (GOI_TIN.LOAI): 1=Công ty đại chúng (IDS), 4=Công ty chứng khoán (SCMS), 5=Công ty quản lý quỹ (FMS); giá trị khác theo nghiệp vụ import XML
+SENDER_UNIT                   NUMBER              YES                                      Đơn vị gửi (DonViTruyenNhanEnum): 1=TCT (Cục Thuế), 2=UBCKNN, 3=BTC (Bộ Tài chính)
+RECEIVER_UNIT                 NUMBER              YES                                      Đơn vị nhận (DonViTruyenNhanEnum): 1=TCT (Cục Thuế), 2=UBCKNN, 3=BTC (Bộ Tài chính)
+SENT_BY                       VARCHAR2(400)       YES                                      Tài khoản người thực hiện gửi gói tin
+STATUS                        NUMBER              YES                                      Trang thai truyen nhan nhanh CT/TCT (Cuc thue)
+CONTENT                       CLOB                YES                                      Nội dung gói tin dạng XML (CLOB)
+DESCRIPTION                   VARCHAR2(4000)      YES                                      Mô tả chi tiết
+SENT_AT                       DATE                YES                                      Thời điểm gửi gói tin
+VERSION                       VARCHAR2(80)        YES                                      Phiên bản giao thức trao đổi dữ liệu
+SENDER_CODE                   VARCHAR2(200)       YES                                      Mã hệ thống gửi message
+SENDER_NAME                   VARCHAR2(400)       YES                                      Tên hệ thống gửi message
+RECEIVER_CODE                 VARCHAR2(200)       YES                                      Mã hệ thống nhận message
+RECEIVER_NAME                 VARCHAR2(400)       YES                                      Tên hệ thống nhận message
+TRAN_CODE                     VARCHAR2(80)        YES                                      Mã giao dịch (transaction code) theo chuẩn trao đổi dữ liệu
+MSG_ID                        VARCHAR2(200)       YES                                      Mã định danh message trong hệ thống trao đổi dữ liệu
+MSG_REF_ID                    VARCHAR2(200)       YES                                      Mã tham chiếu message gốc (khi là message phản hồi)
+LINK_ID                       VARCHAR2(2000)      YES                                      ID liên kết với message gốc trong chuỗi trao đổi
+ORIGINAL_CODE                 VARCHAR2(200)       YES                                      Mã hệ thống gốc gửi dữ liệu
+ORIGINAL_NAME                 VARCHAR2(400)       YES                                      Tên hệ thống gốc gửi dữ liệu
+ORIGINAL_DATE                 VARCHAR2(200)       YES                                      Ngày tạo dữ liệu tại hệ thống gốc
+ERROR_CODE                    VARCHAR2(200)       YES                                      Mã lỗi khi xử lý gói tin (nếu có)
+ERROR_DESC                    VARCHAR2(200)       YES                                      Mô tả lỗi khi xử lý gói tin
+SPARE1                        VARCHAR2(200)       YES                                      Trường dự phòng 1 (mở rộng theo yêu cầu)
+SPARE2                        VARCHAR2(200)       YES                                      Trường dự phòng 2: loại dữ liệu CTY=công ty, BC=báo cáo
+SPARE3                        VARCHAR2(200)       YES                                      Trường dự phòng 3: mô tả gói tin
+PARENT_ID                     NUMBER              YES                                      FK -> cùng bảng: ID gói tin/tham số cha
+TAX_CODE                      VARCHAR2(200)       YES                                      Mã số thuế doanh nghiệp
+REPRESENTATIVE_NAME           VARCHAR2(800)       YES                                      Họ tên người đại diện/chủ hộ kinh doanh
+CREATED_BY                    VARCHAR2(800)       YES                                      Tài khoản/tên người tạo bản ghi
+TIME_START                    DATE                YES                                      Thời điểm bắt đầu tạo/xử lý gói tin khi import XML
+TIME_END                      DATE                YES                                      Thời điểm kết thúc xử lý import XML thành công
+IS_SENT_TCT                   NUMBER(1,0)         NO                                       Đã gửi XML sang Cục Thuế (CT): 0=chưa gửi, 1=đã gửi ít nhất một lần thành công
+IS_SENT_MOF                   NUMBER(1,0)         NO                                       Đã gửi XML sang Bộ Tài chính (BTC): 0=chưa gửi, 1=đã gửi
+SEND_TCT_COUNT                NUMBER(10,0)        NO                                       Số lần đã gửi XML sang Cục Thuế (CT)
+SEND_MOF_COUNT                NUMBER(10,0)        NO                                       Số lần đã gửi XML sang Bộ Tài chính (BTC)
+MSG_ERROR                     CLOB                YES                                      Loi phan hoi ve tu API
+RECEIVED_AT                   DATE                YES                                      
+STATUS_MOF                    NUMBER(10,0)        YES                                      Trang thai truyen nhan nhanh BTC/MOF (Bo Tai chinh)
+
+
+BANG: MSG_PACKET_CODE_SLOT
+Mo ta: Bộ đếm slot sinh mã gói tin theo khóa (tránh trùng MA_GOI_TIN khi tạo hàng loạt)
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+SLOT_KEY                      VARCHAR2(24)        NO      PK                               Khóa slot sinh mã (VD: prefix + ngày + loại gói tin)
+SLOT_COUNT                    NUMBER(10,0)        NO                                       Bộ đếm tuần tự trong slot — tăng mỗi lần cấp mã mới
+
+
+BANG: MSG_PACKET_CONFIG
+Mo ta: Cấu hình gói tin trao đổi: định nghĩa chức năng, đơn vị, hệ thống, phương thức truyền nhận dữ liệu
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
+FUNCTION_NAME                 VARCHAR2(800)       YES                                      Tên chức năng/menu hiển thị trên giao diện
+ORG_UNIT_CODE                 VARCHAR2(800)       YES                                      Mã đơn vị gửi báo cáo (CTCK/QLQ/CN QLQ NN...)
+SYSTEM_CODE                   VARCHAR2(80)        YES                                      Mã hệ thống nguồn (HeThongEnum): 1=IDS, 2=IDM, 3=Thanh tra, 4=SCMS, 5=FMS, 6=THUE (TCT)
+DATA_DIRECTION                NUMBER              YES                                      Chiều dữ liệu gói tin (LoaiDuLieuEnum): 1=Gói tin đi (UBCKNN→CT), 2=Gói tin đến (CT→UBCKNN)
+TRANSFER_METHOD               NUMBER              YES                                      Phương thức truyền nhận (PhuongThucTruyenNhanEnum): 1=WebService, 2=MQ, 3=Cả hai
+LAST_MODIFIED_AT              DATE                YES                                      Thời điểm cập nhật lần cuối
+LAST_MODIFIED_BY              VARCHAR2(400)       YES                                      Tài khoản/tên người cập nhật lần cuối
+
+
+BANG: MSG_PACKET_CONTENT
+Mo ta: Payload CLOB tách khỏi msg_packet: XML đầu vào, XML gửi/ký, JSON logic và phản hồi Trục CT/BTC
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+MSG_PACKET_ID                 NUMBER(19,0)        NO      PK     MSG_PACKET.ID             PK/FK -> msg_packet.id (quan hệ 1-1)
+XML_INPUT                     CLOB                YES                                      XML import đầu vào (cu GOI_TIN.XML_INPUT hoặc payload gốc)
+XML_OUT                       CLOB                YES                                      XML nội dung gửi/ký (cu GOI_TIN.NOI_DUNG)
+JSON_OUT                      CLOB                YES                                      JSON cùng cây logic với payload XML (cu GOI_TIN.JSON_CONTENT)
+RESPONSE_TCT_XML              CLOB                YES                                      XML phản hồi Cục Thuế (TCT) — khối DATA trong callback getPhanHoiCT
+RESPONSE_MOF_XML              CLOB                YES                                      XML phản hồi Bộ Tài chính — khối DATA trong callback getPhanHoiBTC
+MSG_ERROR                     CLOB                YES                                      Thông báo lỗi xử lý/phản hồi Trục (nếu có)
+
+
+BANG: MSG_PACKET_YC_TT_RESPONSE_LOG
+Mo ta: Log JSON response YC TT từ CT — mỗi response 1 dòng; msg_packet_id chung cho lần YC
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               PK
+MSG_PACKET_ID                 NUMBER              NO                                       FK logic → msg_packet.id (gói tin YC)
+TYPE                          VARCHAR2(20)        NO                                       DS = danh sách | DETAIL = chi tiết theo MST
+MST                           VARCHAR2(20)        YES                                      Mã số thuế (null với type=DS)
+RESPONSE_BODY                 CLOB                NO                                       Body JSON response từ Trục/CT
+CREATED_AT                    TIMESTAMP(6)        NO                                       Thời điểm ghi log
+
+
+BANG: PENALTY_DECISION
+Mo ta: Quyết định xử phạt vi phạm hành chính trong lĩnh vực chứng khoán: số QĐ, đối tượng, hành vi vi phạm, tổng tiền phạt
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(200)       YES                                      Khóa chính của bản ghi (ID số tự tăng)
+INSPECTION_DOSSIER_ID         VARCHAR2(200)       YES                                      FK -> hồ sơ thanh tra gốc (nếu từ thanh tra)
+COMPLAINT_DOSSIER_ID          VARCHAR2(200)       YES                                      FK -> hồ sơ đơn thư gốc (nếu từ đơn thư)
+PENALTY_DECISION_NUMBER       VARCHAR2(200)       YES                                      Số quyết định xử phạt vi phạm hành chính
+VIOLATION_RECORD_NUMBER       VARCHAR2(200)       YES                                      Số biên bản vi phạm hành chính
+VIOLATION_RECORD_DATE         DATE                YES                                      Ngày lập biên bản vi phạm hành chính
+MAIN_PENALTY_TYPE             NUMBER              YES                                      Hình thức phạt chính: 1=Nhắc nhở, 2=Cảnh cáo, 3=Phạt tiền
+SUPPLEMENTARY_PENALTY         VARCHAR2(200)       YES                                      Hình thức phạt bổ sung (nếu có)
+AGGRAVATING_MITIGATING        VARCHAR2(1020)      YES                                      Tình tiết tăng nặng/giảm nhẹ áp dụng
+TOTAL_FINE_AMOUNT             NUMBER              YES                                      Tổng số tiền phạt theo quyết định (đơn vị: đồng)
+NOTE                          VARCHAR2(1020)      YES                                      Ghi chú bổ sung
+STATUS                        NUMBER              YES                                      Trạng thái quyết định xử phạt: 1=Hiệu lực, 0=Không hiệu lực/đã hủy
+CREATED_BY                    VARCHAR2(200)       YES                                      Tài khoản/tên người tạo bản ghi
+CREATED_AT                    DATE                YES                                      Thời điểm tạo bản ghi
+AML_VIOLATION                 NUMBER              YES                                      Cờ có vi phạm về phòng chống rửa tiền: 1=Có, 0=Không
+PAID_FINE_AMOUNT              NUMBER              YES                                      Số tiền phạt đã nộp (nhưng chưa đủ tổng)
+COMPLAINT_ID                  VARCHAR2(200)       YES                                      FK -> đơn thư khiếu nại liên quan
+SUBJECT_TYPE                  NUMBER              YES                                      Loại đối tượng: 1=CTĐC, 2=CTCK, 3=QLQ, 4=Cá nhân, 5=Ngoài danh mục
+SUBJECT_ID                    VARCHAR2(200)       YES                                      FK -> đối tượng bị xử phạt
+SUBJECT_NAME                  VARCHAR2(4000)      YES                                      Tên tổ chức/cá nhân đối tượng
+INSPECTED_SUBJECT_ID          VARCHAR2(200)       YES                                      FK -> đối tượng thanh tra trong hồ sơ thanh tra
+CLASSIFICATION                NUMBER              YES                                      Phân loại QĐ: 1=QĐ xử phạt từ thanh tra, 2=QĐ xử phạt từ giám sát
+FULL_SEARCH                   VARCHAR2(4000)      YES                                      Chuỗi tìm kiếm toàn văn (full-text search) tổng hợp các trường
+END_DATE                      DATE                YES                                      Ngày kết thúc hiệu lực quyết định xử phạt
+VIOLATION_AMOUNT              NUMBER              YES                                      Số tiền vi phạm (giá trị giao dịch vi phạm, đơn vị: đồng)
+DECISION_REVISION_COUNT       NUMBER              YES                                      Số lần ban hành QĐ giải quyết (lần 1, 2, 3...)
+ENFORCEMENT_FROM_DATE         DATE                YES                                      Ngày bắt đầu thi hành quyết định
+ENFORCEMENT_TO_DATE           DATE                YES                                      Ngày kết thúc thi hành quyết định
+DECISION_SIGNED_DATE          DATE                YES                                      Ngày ký ban hành quyết định xử phạt
+CONTENT                       CLOB                YES                                      Nội dung gói tin dạng XML (CLOB)
+REVOKE_LICENSE_FLAG           NUMBER              YES                                      Cờ tước quyền sử dụng GPHN/CCHN: 1=Có, 0=Không
+SUSPEND_OPERATION_FLAG        NUMBER              YES                                      Cờ đình chỉ hoạt động: 1=Có, 0=Không
+SUSPENSION_DURATION           VARCHAR2(4000)      YES                                      Thời hạn đình chỉ hoạt động (VD: 3 tháng, 1 năm)
+DECISION_NAME                 VARCHAR2(4000)      YES                                      Tên đầy đủ của quyết định xử phạt
+
+
+BANG: REPORT_COMPARISON
+Mo ta: Kết quả đối chiếu dữ liệu báo cáo tài chính giữa UBCKNN và Cục Thuế: so sánh từng chỉ tiêu theo gói tin
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
+TAX_REPORT_ID                 NUMBER              YES                                      FK -> tax_report: Báo cáo tài chính TCT liên quan
+TAX_REPORT_DETAIL_ID          NUMBER              YES                                      FK -> tax_report_detail: Chi tiết báo cáo TCT đối chiếu
+INDICATOR_CODE                VARCHAR2(400)       YES                                      Mã chỉ tiêu trong biểu mẫu báo cáo
+INDICATOR_NAME                VARCHAR2(800)       YES                                      Tên chỉ tiêu trong biểu mẫu báo cáo
+TAX_EXPLANATION_NOTE          VARCHAR2(400)       YES                                      Thuyết minh chỉ tiêu từ báo cáo Cục Thuế
+TAX_YEAR_END_VALUE            VARCHAR2(400)       YES                                      Giá trị cuối năm trong báo cáo Cục Thuế
+TAX_YEAR_BEGIN_VALUE          VARCHAR2(400)       YES                                      Giá trị đầu năm trong báo cáo Cục Thuế
+TAX_CURRENT_YEAR_VALUE        VARCHAR2(400)       YES                                      Giá trị năm nay trong báo cáo Cục Thuế
+TAX_PRIOR_YEAR_VALUE          VARCHAR2(400)       YES                                      Giá trị năm trước trong báo cáo Cục Thuế
+TAX_SHEET_NAME                VARCHAR2(1)         YES                                      Tên sheet trong báo cáo Cục Thuế
+TAX_INCREASE_PRIOR_YEAR       VARCHAR2(400)       YES                                      Số tăng năm trước (Cục Thuế)
+TAX_CURRENT_YEAR_AMOUNT       VARCHAR2(400)       YES                                      Số tiền năm nay (Cục Thuế)
+TAX_PREVIOUS_YEAR_AMOUNT      VARCHAR2(400)       YES                                      Số tiền năm ngoái (Cục Thuế)
+TAX_BEGIN_BALANCE_CURRENT_YEARVARCHAR2(400)       YES                                      Số dư đầu năm nay (Cục Thuế)
+TAX_END_BALANCE_CURRENT_YEAR  VARCHAR2(400)       YES                                      Số dư cuối năm nay (Cục Thuế)
+TAX_END_BALANCE_PRIOR_YEAR    VARCHAR2(400)       YES                                      Số dư cuối năm trước (Cục Thuế)
+TAX_BEGIN_BALANCE_PRIOR_YEAR  VARCHAR2(400)       YES                                      Số dư đầu năm trước (Cục Thuế)
+TAX_INCREASE_CURRENT_YEAR     VARCHAR2(400)       YES                                      Số tăng năm nay (Cục Thuế)
+TAX_DECREASE_CURRENT_YEAR     VARCHAR2(400)       YES                                      Số giảm năm nay (Cục Thuế)
+TAX_DECREASE_PRIOR_YEAR       VARCHAR2(400)       YES                                      Số giảm năm trước (Cục Thuế)
+TAX_DECLARATION_PERIOD        VARCHAR2(5)         YES                                      Kỳ kê khai trong báo cáo Cục Thuế
+TAX_DECLARATION_CODE          VARCHAR2(10)        YES                                      Mã tờ khai trong báo cáo Cục Thuế
+TAX_CODE                      VARCHAR2(20)        YES                                      Mã số thuế doanh nghiệp
+SSC_REPORT_ID                 NUMBER              YES                                      FK -> ssc_report: Báo cáo tài chính UBCKNN liên quan
+SSC_REPORT_DETAIL_ID          NUMBER              YES                                      FK -> ssc_report_detail: Chi tiết báo cáo UBCKNN đối chiếu
+SSC_EXPLANATION_NOTE          VARCHAR2(400)       YES                                      Thuyết minh chỉ tiêu từ báo cáo UBCKNN
+SSC_YEAR_END_VALUE            VARCHAR2(400)       YES                                      Giá trị cuối năm trong báo cáo UBCKNN
+SSC_YEAR_BEGIN_VALUE          VARCHAR2(400)       YES                                      Giá trị đầu năm trong báo cáo UBCKNN
+SSC_CURRENT_YEAR_VALUE        VARCHAR2(400)       YES                                      Giá trị năm nay trong báo cáo UBCKNN
+SSC_PRIOR_YEAR_VALUE          VARCHAR2(400)       YES                                      Giá trị năm trước trong báo cáo UBCKNN
+SSC_INCREASE_PRIOR_YEAR       VARCHAR2(400)       YES                                      Số tăng năm trước (UBCKNN)
+SSC_CURRENT_YEAR_AMOUNT       VARCHAR2(400)       YES                                      Số tiền năm nay (UBCKNN)
+SSC_PREVIOUS_YEAR_AMOUNT      VARCHAR2(400)       YES                                      Số tiền năm ngoái (UBCKNN)
+SSC_BEGIN_BALANCE_CURRENT_YEARVARCHAR2(400)       YES                                      Số dư đầu năm nay (UBCKNN)
+SSC_END_BALANCE_CURRENT_YEAR  VARCHAR2(400)       YES                                      Số dư cuối năm nay (UBCKNN)
+SSC_END_BALANCE_PRIOR_YEAR    VARCHAR2(400)       YES                                      Số dư cuối năm trước (UBCKNN)
+SSC_BEGIN_BALANCE_PRIOR_YEAR  VARCHAR2(400)       YES                                      Số dư đầu năm trước (UBCKNN)
+SSC_INCREASE_CURRENT_YEAR     VARCHAR2(400)       YES                                      Số tăng năm nay (UBCKNN)
+SSC_DECREASE_CURRENT_YEAR     VARCHAR2(400)       YES                                      Số giảm năm nay (UBCKNN)
+SSC_DECREASE_PRIOR_YEAR       VARCHAR2(400)       YES                                      Số giảm năm trước (UBCKNN)
+SSC_REPORT_TYPE               VARCHAR2(5)         YES                                      Loại báo cáo trong hệ thống UBCKNN
+DIFF_FLAG                     VARCHAR2(1)         YES                                      Cờ chênh lệch so với UBCKNN: Y=Có chênh lệch (highlight vàng), N/NULL=Khớp
+STATUS                        NUMBER(1,0)         YES                                      Trạng thái dòng đối chiếu: 1=Hiệu lực, 0=Không hiệu lực (không phải trạng thái gói tin)
+TOTAL_RECORDS                 NUMBER              YES                                      Tổng số bản ghi trong kết quả đối chiếu
+AUDIT_STATUS                  VARCHAR2(80)        YES                                      Trạng thái kiểm toán: 0=Trước kiểm toán, 1=Sau kiểm toán
+
+
+BANG: REPORT_COMPARISON_QUEUE
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               
+ACTION_TYPE                   CHAR(1)             NO                                       
+SSC_REPORT_DETAIL_ID          NUMBER              YES                                      
+SSC_REPORT_ID                 NUMBER              YES                                      
+STATUS                        CHAR(1)             NO                                       
+RETRY_COUNT                   NUMBER              NO                                       
+WORKER_ID                     VARCHAR2(64)        YES                                      
+AVAILABLE_AT                  TIMESTAMP(6)        NO                                       
+STARTED_AT                    TIMESTAMP(6)        YES                                      
+FINISHED_AT                   TIMESTAMP(6)        YES                                      
+ERROR_MESSAGE                 VARCHAR2(2000)      YES                                      
+CREATED_AT                    TIMESTAMP(6)        NO                                       
+SOURCE_SYSTEM                 CHAR(1)             NO                                       
+DETAIL_ID                     NUMBER              YES                                      
+HEADER_ID                     NUMBER              YES                                      
+LEGACY_CREATED_AT             DATE                NO                                       
+
+
+BANG: REPORT_CYCLE
+Mo ta: Danh mục chu kỳ báo cáo: mã, giá trị, tháng và năm tương ứng
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+CYCLE_CODE                    VARCHAR2(7)         YES                                      Mã chu kỳ báo cáo (VD: Q1/2024, T03/2024...)
+VALUE                         VARCHAR2(7)         YES                                      Giá trị tham số/chỉ tiêu/cấu hình
+MONTH_NUM                     NUMBER              YES                                      Số tháng trong chu kỳ (1-12)
+YEAR_NUM                      NUMBER              YES                                      Năm của chu kỳ (YYYY)
+
+
+BANG: REPORT_FORM
+Mo ta: Danh mục biểu mẫu báo cáo tài chính định nghĩa trong hệ thống KNT
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
+FORM_CODE                     VARCHAR2(400)       YES                                      Mã biểu mẫu báo cáo
+FORM_NAME                     VARCHAR2(800)       YES                                      Tên biểu mẫu báo cáo
+SYSTEM_CODE                   NUMBER              YES                                      Mã hệ thống nguồn (HeThongEnum): 1=IDS, 2=IDM, 3=Thanh tra, 4=SCMS, 5=FMS, 6=THUE (TCT)
+
+
+BANG: REPORT_FORM_INDICATOR
+Mo ta: Liên kết chỉ tiêu với biểu mẫu báo cáo: thứ tự và tên sheet tương ứng
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
+REPORT_FORM_ID                NUMBER              YES     FK     REPORT_FORM.ID            FK -> report_form: Biểu mẫu báo cáo liên quan
+FORM_INDICATOR_ID             NUMBER              YES     FK     REPORT_INDICATOR.ID       FK -> report_indicator: Chỉ tiêu biểu mẫu liên quan
+SORT_ORDER                    NUMBER              YES                                      Số thứ tự hiển thị/sắp xếp
+SHEET_NAME                    VARCHAR2(400)       YES                                      Mã sheet trong biểu mẫu (LoaiBaoCaoChiTietEnum): 1=BCDKT, 2=KQKD, 3=KQKDHD, 4=LCTT-TT, 5=LCTT-GT, 6=CTTKC, 9=THBDVCSH
+
+
+BANG: REPORT_FORM_TEMPLATE
+Mo ta: Ánh xạ chỉ tiêu giữa biểu mẫu báo cáo UBCKNN và tờ khai thuế của Cục Thuế (dùng để đối chiếu dữ liệu)
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+REPORT_TYPE                   NUMBER              YES                                      Loại báo cáo: theo danh sách enum trong hệ thống (BCTC, BCLCTT...)
+REPORT_NAME                   VARCHAR2(200)       YES                                      Tên báo cáo tài chính
+REPORT_CODE                   VARCHAR2(20)        YES                                      Mã báo cáo tài chính
+SYSTEM_CODE                   NUMBER              YES                                      Mã hệ thống nguồn (HeThongEnum): 1=IDS, 2=IDM, 3=Thanh tra, 4=SCMS, 5=FMS, 6=THUE (TCT)
+SHEET_INDEX                   NUMBER              YES                                      Số thứ tự sheet (tab) trong biểu mẫu Excel
+INDICATOR_CODE                VARCHAR2(100)       YES                                      Mã chỉ tiêu trong biểu mẫu báo cáo
+INDICATOR_NAME                VARCHAR2(500)       YES                                      Tên chỉ tiêu trong biểu mẫu báo cáo
+STATUS                        NUMBER              YES                                      Trạng thái bản ghi: 1=Đang sử dụng, 0=Không sử dụng
+REPORT_PERIOD                 VARCHAR2(10)        YES                                      Kỳ báo cáo (định dạng yyyy hoặc yyyyQn)
+
+
+BANG: REPORT_INDICATOR
+Mo ta: Danh mục chỉ tiêu báo cáo: mã và tên chỉ tiêu dùng trong các biểu mẫu báo cáo
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
+INDICATOR_CODE                VARCHAR2(100)       YES                                      Mã chỉ tiêu trong biểu mẫu báo cáo
+INDICATOR_NAME                VARCHAR2(500)       YES                                      Tên chỉ tiêu trong biểu mẫu báo cáo
+
+
+BANG: SCHEDULE_CONFIG
+Mo ta: Lịch thiết lập truyền/nhận dữ liệu tự động với Cục Thuế và Bộ Tài chính: tần suất, giờ chạy, biểu thức CRON
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
+TYPE                          NUMBER              YES                                      Loại lịch/nghiệp vụ (SysThietLapLichEnum): 0=CT đại chúng, 1-5=BCTC IDS (TT200/202/49/232/Bảo hiểm), 6=CTCK, 7=BCTC SCMS TT334, 8=CT QLQ, 9=XLVP, 10=KTV, 11=BCTC FMS TT125, 12-21=dữ liệu TCT, 22=Đối soát
+FUNCTION_ID                   NUMBER              YES                                      FK -> sys_function: Chức năng liên quan
+FREQUENCY                     VARCHAR2(80)        YES                                      Tần suất: 0=Hàng ngày, 1=Hàng tháng, 2=Hàng năm, 3=Khi có yêu cầu, 4=Quý, 5=Nửa năm
+START_DATE                    DATE                YES                                      Ngày bắt đầu tiến hành truyền/nhận (định dạng dd)
+START_HOUR                    VARCHAR2(80)        YES                                      Giờ bắt đầu tiến hành truyền/nhận
+START_MINUTE                  VARCHAR2(80)        YES                                      Phút bắt đầu tiến hành truyền/nhận
+STATUS                        VARCHAR2(80)        YES                                      Trạng thái lịch (TrangThaiSuDungEnum): 1=Sử dụng, 2=Ngừng sử dụng
+ORG_UNIT_ID                   NUMBER              YES     FK     CAT_ORG_UNIT.ID           FK -> cat_org_unit: Đơn vị tổ chức của người dùng
+CRON_EXPRESSION               VARCHAR2(400)       YES                                      Biểu thức CRON tính thời gian chạy job tự động
+API_PACKET_CODE               VARCHAR2(200)       YES                                      Mã gói API/nghiệp vụ gắn với lịch (MA_GOI_API): map job Quartz sinh dữ liệu hoặc push
+
+
+BANG: SSC_PENALTY
+Mo ta: Thông tin xử phạt vi phạm hành chính trong lĩnh vực chứng khoán của UBCKNN gửi Cục Thuế: số QĐ, đối tượng, hành vi, tiền phạt
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
+DECISION_NUMBER               VARCHAR2(80)        YES                                      Số quyết định thành lập/xử phạt
+DECISION_DATE                 DATE                YES                                      Ngày ban hành quyết định
+NAME                          VARCHAR2(1200)      YES                                      Tên đầy đủ
+ADDRESS                       VARCHAR2(1200)      YES                                      Địa chỉ
+ACTIVITY_SECTOR               VARCHAR2(400)       YES                                      Lĩnh vực hoạt động của đối tượng bị xử phạt
+TAX_CODE                      VARCHAR2(2000)      YES                                      Mã số thuế doanh nghiệp
+LEGAL_REPRESENTATIVE_NAME     VARCHAR2(1200)      YES                                      Họ tên người đại diện theo pháp luật
+VIOLATION_ACT_DESC            VARCHAR2(4000)      YES                                      Mô tả hành vi vi phạm trong quyết định xử phạt
+FINE_AMOUNT                   NUMBER              YES                                      Số tiền phạt đối với hành vi vi phạm (đơn vị: đồng)
+SUPPLEMENTARY_PENALTY_FORM    VARCHAR2(1200)      YES                                      Hình thức xử phạt bổ sung (tịch thu, đình chỉ...)
+REMEDIAL_MEASURE              VARCHAR2(1200)      YES                                      Biện pháp khắc phục hậu quả áp dụng
+MSG_PACKET_ID                 NUMBER              YES     FK     MSG_PACKET.ID             FK -> msg_packet: Gói tin trao đổi liên quan
+ISSUE_DATE                    DATE                YES                                      Ngày cấp giấy phép thành lập
+ISSUE_PLACE                   VARCHAR2(2000)      YES                                      Nơi cấp mã số doanh nghiệp
+
+
+BANG: SSC_REPORT
+Mo ta: Báo cáo tài chính của đơn vị do UBCKNN tổng hợp từ phân hệ IDS/SCMS/FMS để gửi Cục Thuế và Bộ Tài chính
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
+SYSTEM_CODE                   NUMBER              YES                                      Mã hệ thống nguồn (HeThongEnum): 1=IDS, 2=IDM, 3=Thanh tra, 4=SCMS, 5=FMS, 6=THUE (TCT)
+REPORT_CODE                   VARCHAR2(200)       YES                                      Mã báo cáo tài chính
+REPORT_NAME                   VARCHAR2(800)       YES                                      Tên báo cáo tài chính
+ORG_UNIT_CODE                 VARCHAR2(800)       YES                                      Mã đơn vị gửi báo cáo (CTCK/QLQ/CN QLQ NN...)
+REPORT_TYPE                   NUMBER              YES                                      Loại báo cáo: theo danh sách enum trong hệ thống (BCTC, BCLCTT...)
+PERIOD_TYPE                   VARCHAR2(80)        YES                                      Kiểu kỳ báo cáo: Y=Năm, H=Bán niên, Q=Quý, M=Tháng
+REPORT_PERIOD                 VARCHAR2(80)        YES                                      Kỳ báo cáo (định dạng yyyy hoặc yyyyQn)
+PERIOD_FROM_DATE              VARCHAR2(80)        YES                                      Kỳ báo cáo từ ngày (định dạng DD/MM/YYYY)
+PERIOD_TO_DATE                VARCHAR2(80)        YES                                      Kỳ báo cáo đến ngày (định dạng DD/MM/YYYY)
+PERIOD_FROM_MONTH             VARCHAR2(80)        YES                                      Kỳ báo cáo từ tháng (định dạng MM/YYYY)
+PERIOD_TO_MONTH               VARCHAR2(80)        YES                                      Kỳ báo cáo đến tháng (định dạng MM/YYYY)
+SENT_AT                       DATE                YES                                      Thời điểm gửi gói tin
+AUDIT_STATUS                  NUMBER              YES                                      Trạng thái kiểm toán: 0=Trước kiểm toán, 1=Sau kiểm toán
+AUDIT_FIRM_NAME               VARCHAR2(800)       YES                                      Tên tổ chức kiểm toán thực hiện kiểm toán báo cáo
+AUDIT_FIRM_TAX_CODE           VARCHAR2(200)       YES                                      Mã số thuế của tổ chức kiểm toán
+BUSINESS_REG_CERT             VARCHAR2(200)       YES                                      Số giấy phép đăng ký kinh doanh của công ty kiểm toán
+AUDIT_OPINION_CODE            VARCHAR2(80)        YES                                      Mã ý kiến kiểm toán (theo chuẩn mực kiểm toán)
+AUDIT_OPINION                 VARCHAR2(2000)      YES                                      Nội dung ý kiến kiểm toán
+AUDIT_DATE                    DATE                YES                                      Ngày ký báo cáo kiểm toán
+AUDITOR_NAME                  VARCHAR2(2000)      YES                                      Họ tên kiểm toán viên
+EXTENSION_REASON_CODE         VARCHAR2(80)        YES                                      Mã lý do gia hạn nộp báo cáo
+EXTENSION_REASON              VARCHAR2(2000)      YES                                      Nội dung lý do gia hạn nộp báo cáo
+SIGNATORY                     VARCHAR2(200)       YES                                      Người ký báo cáo (Giám đốc/TGĐ)
+SIGNED_AT                     DATE                YES                                      Ngày ký báo cáo
+CREATED_AT                    DATE                YES                                      Thời điểm tạo bản ghi
+MSG_PACKET_ID                 NUMBER              YES     FK     MSG_PACKET.ID             FK -> msg_packet: Gói tin trao đổi liên quan
+ENTERPRISE_CODE               VARCHAR2(80)        YES                                      Mã số doanh nghiệp đăng ký kinh doanh
+GUID                          VARCHAR2(200)       YES                                      Định danh duy nhất toàn cục (GUID/UUID) của bản ghi
+TAX_CODE                      VARCHAR2(80)        YES                                      Mã số thuế doanh nghiệp
+REPORT_SOURCE_URL             VARCHAR2(600)       YES                                      Đường dẫn báo cáo trực tuyến (link online)
+PRACTICE_CERT_NUMBER          VARCHAR2(320)       YES                                      Số chứng chỉ hành nghề kiểm toán
+GOING_CONCERN_YES             VARCHAR2(200)       YES                                      Cờ hoạt động liên tục: true/false
+GOING_CONCERN_NO              VARCHAR2(200)       YES                                      Cờ không hoạt động liên tục: true/false
+
+
+BANG: SSC_REPORT_DETAIL
+Mo ta: Chi tiết chỉ tiêu trong báo cáo tài chính UBCKNN: giá trị đầu năm, cuối năm, năm nay, năm trước, thông tin kiểm toán
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
+SSC_REPORT_ID                 NUMBER              YES     FK     SSC_REPORT.ID             FK -> ssc_report: Báo cáo tài chính UBCKNN liên quan
+INDICATOR_CODE                VARCHAR2(200)       YES                                      Mã chỉ tiêu trong biểu mẫu báo cáo
+INDICATOR_NAME                VARCHAR2(800)       YES                                      Tên chỉ tiêu trong biểu mẫu báo cáo
+EXPLANATION_NOTE              VARCHAR2(400)       YES                                      Thuyết minh/ghi chú cho chỉ tiêu báo cáo
+YEAR_END_VALUE                VARCHAR2(400)       YES                                      Giá trị cuối năm báo cáo (đầu kỳ của năm sau)
+YEAR_BEGIN_VALUE              VARCHAR2(400)       YES                                      Giá trị đầu năm báo cáo (số dư đầu kỳ)
+CURRENT_YEAR_VALUE            VARCHAR2(400)       YES                                      Giá trị năm nay (kỳ hiện tại)
+PRIOR_YEAR_VALUE              VARCHAR2(400)       YES                                      Giá trị năm trước (kỳ so sánh)
+SHEET_NAME                    VARCHAR2(400)       YES                                      Mã sheet báo cáo (LoaiBaoCaoChiTietEnum/TEN_SHEET): 1=BCDKT, 2=KQKD, 3=KQKDHD, 4=LCTT-TT, 5=LCTT-GT, 6=CTTKC, 9=THBDVCSH
+PREPARER_NAME                 VARCHAR2(400)       YES                                      Họ tên người lập biểu
+CHIEF_ACCOUNTANT              VARCHAR2(400)       YES                                      Họ tên kế toán trưởng
+PREPARATION_DATE              VARCHAR2(400)       YES                                      Ngày lập biểu
+DIRECTOR_NAME                 VARCHAR2(400)       YES                                      Họ tên Giám đốc/Tổng giám đốc ký báo cáo
+PRACTICE_CERT_NUMBER          VARCHAR2(400)       YES                                      Số chứng chỉ hành nghề kiểm toán
+AUDIT_SERVICE_UNIT            VARCHAR2(400)       YES                                      Đơn vị cung cấp dịch vụ kiểm toán
+BEGIN_BALANCE_CURRENT_YEAR    VARCHAR2(100)       YES                                      Số dư đầu năm nay
+BEGIN_BALANCE_PRIOR_YEAR      VARCHAR2(100)       YES                                      Số dư đầu năm trước
+INCREASE_PRIOR_YEAR           VARCHAR2(100)       YES                                      Số tăng năm trước
+DECREASE_PRIOR_YEAR           VARCHAR2(100)       YES                                      Số giảm năm trước
+INCREASE_CURRENT_YEAR         VARCHAR2(100)       YES                                      Số tăng năm nay
+DECREASE_CURRENT_YEAR         VARCHAR2(100)       YES                                      Số giảm năm nay
+END_BALANCE_PRIOR_YEAR        VARCHAR2(100)       YES                                      Số dư cuối năm trước
+END_BALANCE_CURRENT_YEAR      VARCHAR2(100)       YES                                      Số dư cuối năm nay
+TOTAL_CURRENT_YEAR            VARCHAR2(400)       YES                                      Tổng hợp năm nay
+TOTAL_PRIOR_YEAR              VARCHAR2(400)       YES                                      Tổng hợp năm trước
+CURRENT_YEAR_AMOUNT           VARCHAR2(400)       YES                                      Số tiền/giá trị năm nay
+PREVIOUS_YEAR_AMOUNT          VARCHAR2(400)       YES                                      Số tiền/giá trị năm ngoái
+THUTU                         NUMBER              NO                                       Thu tu chi tieu hien thi
+
+
+BANG: SUBJECT_PROFILE
+Mo ta: Hồ sơ đối tượng bị thanh tra/kiểm tra: tổ chức hoặc cá nhân tham gia thị trường chứng khoán
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(200)       YES                                      Khóa chính của bản ghi (ID số tự tăng)
+PROFILE_ID                    VARCHAR2(200)       YES                                      ID hồ sơ thanh tra/giám sát gốc
+SUBJECT_TYPE                  NUMBER              YES                                      Loại đối tượng: 1=CTĐC, 2=CTCK, 3=QLQ, 4=Cá nhân, 5=Ngoài danh mục
+SUBJECT_NAME                  VARCHAR2(1020)      YES                                      Tên tổ chức/cá nhân đối tượng
+SHORT_NAME                    VARCHAR2(200)       YES                                      Tên viết tắt của đối tượng
+OFFICIAL_LETTER_ID            VARCHAR2(200)       YES                                      ID công văn liên quan đến hồ sơ
+BUSINESS_LICENSE_NUMBER       VARCHAR2(1020)      YES                                      Số giấy phép kinh doanh của đối tượng
+COUNTRY_ID                    VARCHAR2(4000)      YES                                      FK -> danh mục quốc gia của đối tượng
+WEBSITE                       VARCHAR2(1020)      YES                                      Địa chỉ website
+EMAIL                         VARCHAR2(1020)      YES                                      Địa chỉ email liên hệ
+PHONE                         VARCHAR2(1020)      YES                                      Số điện thoại liên hệ
+FAX                           VARCHAR2(1020)      YES                                      Số fax
+ADDRESS                       VARCHAR2(1020)      YES                                      Địa chỉ
+NOTE                          VARCHAR2(1020)      YES                                      Ghi chú bổ sung
+SORT_ORDER                    NUMBER              YES                                      Số thứ tự hiển thị/sắp xếp
+DATE_OF_BIRTH                 DATE                YES                                      Ngày sinh
+GENDER                        NUMBER              YES                                      Giới tính: 1=Nam, 0=Nữ
+ID_CARD_NUMBER                VARCHAR2(200)       YES                                      Số CMND/hộ chiếu người đại diện theo pháp luật
+CREATED_BY                    VARCHAR2(200)       YES                                      Tài khoản/tên người tạo bản ghi
+CREATED_AT                    DATE                YES                                      Thời điểm tạo bản ghi
+SUBJECT_TYPE_CATALOG_ID       VARCHAR2(200)       YES                                      FK -> danh mục loại đối tượng
+SECURITIES_CODE               VARCHAR2(200)       YES                                      Mã chứng khoán liên quan đến hành vi vi phạm giao dịch
+ORG_REPRESENTATIVE_NAME       VARCHAR2(200)       YES                                      Họ tên người đại diện tổ chức
+FULL_SEARCH                   VARCHAR2(4000)      YES                                      Chuỗi tìm kiếm toàn văn (full-text search) tổng hợp các trường
+ACCOUNT_NUMBER                VARCHAR2(200)       YES                                      Số tài khoản chứng khoán liên quan
+ACCOUNT_OPENING_PLACE         VARCHAR2(200)       YES                                      Nơi mở tài khoản chứng khoán
+DECISION_ID                   VARCHAR2(50)        YES                                      FK -> quyết định liên quan đến hồ sơ
+MARKET                        NUMBER              YES                                      Thị trường: 1=HOSE, 2=HNX, 3=UPCOM
+
+
+BANG: SYS_AUDIT_LOG
+Mo ta: Nhật ký thao tác hệ thống KNT: ghi nhận hành động của người dùng (đăng nhập, xem, sửa dữ liệu...)
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
+USERNAME                      VARCHAR2(400)       YES                                      Tên đăng nhập
+DESCRIPTION                   VARCHAR2(4000)      YES                                      Mô tả chi tiết
+ACTION                        NUMBER              YES                                      Hành động nhật ký (HanhDongEnum): 0=Xem, 1=Thêm mới, 2=Cập nhật, 3=Xóa, 4=Thay đổi trạng thái, 5=Xóa chọn, 6=Cập nhật quyền, 7=Đăng nhập, 8=Đăng xuất, 9=Cập nhật TT người dùng, 10=Send Xml, 11=Sinh dữ liệu, 12=Xử lý DL, 13=Gửi msg, 14=Send Xml BTC, 15=Sinh DL tiếp, 16=Send thủ công TCT, 17=Send tiếp TCT, 18=Send tiếp BTC, 19=Tạo XML gói tin
+CREATED_AT                    DATE                YES                                      Thời điểm tạo bản ghi
+CLIENT_IP                     VARCHAR2(50)        YES                                      Địa chỉ IP của máy khách thực hiện thao tác
+FUNCTION_NAME                 VARCHAR2(800)       YES                                      Tên chức năng/menu hiển thị trên giao diện
+
+
+BANG: SYS_EXCHANGE_API
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(19,0)        NO      PK                               
+API_CODE                      VARCHAR2(64)        NO                                       
+API_NAME                      VARCHAR2(255)       YES                                      
+PATH                          VARCHAR2(255)       NO                                       
+DESCRIPTION                   VARCHAR2(1000)      YES                                      
+STATUS                        NUMBER(1,0)         NO                                       
+CREATED_AT                    TIMESTAMP(6)        NO                                       
+
+
+BANG: SYS_EXCHANGE_REGISTRATION
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(19,0)        NO      PK                               
+API_CODE                      VARCHAR2(64)        NO                                       
+SYSTEM_CODE                   VARCHAR2(64)        NO                                       
+SYSTEM_NAME                   VARCHAR2(255)       YES                                      
+SENDER_CODE                   VARCHAR2(64)        YES                                      
+API_KEY                       VARCHAR2(128)       NO                                       
+VERIFY_CERT                   VARCHAR2(500)       YES                                      
+ALLOWED_TRAN_CODE             VARCHAR2(500)       YES                                      
+STATUS                        NUMBER(1,0)         NO                                       
+NOTE                          VARCHAR2(1000)      YES                                      
+CREATED_AT                    TIMESTAMP(6)        NO                                       
+CREATED_BY                    VARCHAR2(100)       YES                                      
+
+
+BANG: SYS_EXPORT_SCHEMA_01
+Mo ta: Bảng kỹ thuật Oracle Data Pump Export schema 01 (không dùng cho nghiệp vụ)
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+PROCESS_ORDER                 NUMBER              YES                                      Thứ tự xử lý đối tượng trong Data Pump (nội bộ Oracle)
+DUPLICATE                     NUMBER              YES                                      Cờ đối tượng bị trùng lặp (nội bộ Oracle)
+DUMP_FILEID                   NUMBER              YES                                      ID file dump chứa dữ liệu (nội bộ Oracle Data Pump)
+DUMP_POSITION                 NUMBER              YES                                      Vị trí bắt đầu trong file dump (nội bộ Oracle)
+DUMP_LENGTH                   NUMBER              YES                                      Độ dài dữ liệu trong file dump (nội bộ Oracle)
+DUMP_ORIG_LENGTH              NUMBER              YES                                      Độ dài dữ liệu gốc trước nén (nội bộ Oracle)
+DUMP_ALLOCATION               NUMBER              YES                                      Dung lượng phân bổ trong file dump (nội bộ Oracle)
+COMPLETED_ROWS                NUMBER              YES                                      Số hàng đã xử lý xong (nội bộ Oracle Data Pump)
+ERROR_COUNT                   NUMBER              YES                                      Số lỗi phát sinh trong quá trình xuất/nhập (nội bộ Oracle)
+ELAPSED_TIME                  NUMBER              YES                                      Thời gian thực thi (nội bộ Oracle Data Pump)
+OBJECT_TYPE_PATH              VARCHAR2(200)       YES                                      Đường dẫn loại đối tượng trong Data Pump (nội bộ Oracle)
+OBJECT_PATH_SEQNO             NUMBER              YES                                      Số thứ tự đường dẫn đối tượng (nội bộ Oracle)
+OBJECT_TYPE                   VARCHAR2(30)        YES                                      Loại đối tượng Oracle: TABLE, INDEX, PROCEDURE... (nội bộ Oracle)
+IN_PROGRESS                   CHAR(1)             YES                                      Cờ đang xử lý: Y=Đang chạy (nội bộ Oracle Data Pump)
+OBJECT_NAME                   VARCHAR2(500)       YES                                      Tên đối tượng Oracle cần xuất/nhập (nội bộ Oracle)
+OBJECT_LONG_NAME              VARCHAR2(4000)      YES                                      Tên đầy đủ đối tượng Oracle (nội bộ Oracle)
+OBJECT_SCHEMA                 VARCHAR2(30)        YES                                      Schema chứa đối tượng Oracle (nội bộ Oracle)
+ORIGINAL_OBJECT_SCHEMA        VARCHAR2(30)        YES                                      Schema gốc của đối tượng trước khi xuất (nội bộ Oracle)
+ORIGINAL_OBJECT_NAME          VARCHAR2(4000)      YES                                      Tên gốc của đối tượng trước khi xuất (nội bộ Oracle)
+PARTITION_NAME                VARCHAR2(30)        YES                                      Tên partition của bảng (nội bộ Oracle)
+SUBPARTITION_NAME             VARCHAR2(30)        YES                                      Tên sub-partition của bảng (nội bộ Oracle)
+DATAOBJ_NUM                   NUMBER              YES                                      Số đối tượng dữ liệu Oracle (nội bộ Oracle)
+FLAGS                         NUMBER              YES                                      Cờ trạng thái nội bộ Oracle Data Pump
+PROPERTY                      NUMBER              YES                                      Thuộc tính đối tượng Oracle (nội bộ Oracle)
+TRIGFLAG                      NUMBER              YES                                      Cờ trigger Oracle (nội bộ Oracle)
+CREATION_LEVEL                NUMBER              YES                                      Cấp độ tạo đối tượng trong Data Pump (nội bộ Oracle)
+COMPLETION_TIME               DATE                YES                                      Thời điểm hoàn thành xử lý đối tượng (nội bộ Oracle)
+OBJECT_TABLESPACE             VARCHAR2(30)        YES                                      Tablespace chứa đối tượng (nội bộ Oracle)
+SIZE_ESTIMATE                 NUMBER              YES                                      Ước tính dung lượng đối tượng (byte, nội bộ Oracle)
+OBJECT_ROW                    NUMBER              YES                                      Số hàng trong đối tượng (nội bộ Oracle)
+PROCESSING_STATE              CHAR(1)             YES                                      Trạng thái xử lý đối tượng (nội bộ Oracle Data Pump)
+PROCESSING_STATUS             CHAR(1)             YES                                      Kết quả xử lý đối tượng (nội bộ Oracle Data Pump)
+BASE_PROCESS_ORDER            NUMBER              YES                                      Thứ tự xử lý đối tượng cơ sở (nội bộ Oracle)
+BASE_OBJECT_TYPE              VARCHAR2(30)        YES                                      Loại đối tượng cơ sở (nội bộ Oracle)
+BASE_OBJECT_NAME              VARCHAR2(30)        YES                                      Tên đối tượng cơ sở (nội bộ Oracle)
+BASE_OBJECT_SCHEMA            VARCHAR2(30)        YES                                      Schema đối tượng cơ sở (nội bộ Oracle)
+ANCESTOR_PROCESS_ORDER        NUMBER              YES                                      Thứ tự xử lý tổ tiên (nội bộ Oracle)
+DOMAIN_PROCESS_ORDER          NUMBER              YES                                      Thứ tự xử lý domain (nội bộ Oracle)
+PARALLELIZATION               NUMBER              YES                                      Số luồng song song xử lý (nội bộ Oracle Data Pump)
+UNLOAD_METHOD                 NUMBER              YES                                      Phương thức unload dữ liệu (nội bộ Oracle)
+LOAD_METHOD                   NUMBER              YES                                      Phương thức load dữ liệu (nội bộ Oracle)
+GRANULES                      NUMBER              YES                                      Số granule xử lý (nội bộ Oracle)
+SCN                           NUMBER              YES                                      System Change Number tại thời điểm xuất (nội bộ Oracle)
+GRANTOR                       VARCHAR2(30)        YES                                      Người cấp quyền (nội bộ Oracle)
+XML_CLOB                      CLOB                YES                                      Metadata XML của đối tượng (CLOB, nội bộ Oracle)
+PARENT_PROCESS_ORDER          NUMBER              YES                                      Thứ tự xử lý đối tượng cha (nội bộ Oracle)
+NAME                          VARCHAR2(30)        YES                                      Tên đầy đủ
+VALUE_T                       VARCHAR2(4000)      YES                                      Giá trị kiểu text của tham số job (nội bộ Oracle)
+VALUE_N                       NUMBER              YES                                      Giá trị kiểu số của tham số job (nội bộ Oracle)
+IS_DEFAULT                    NUMBER              YES                                      Cờ giá trị mặc định (nội bộ Oracle)
+FILE_TYPE                     NUMBER              YES                                      Loại file dump (nội bộ Oracle Data Pump)
+USER_DIRECTORY                VARCHAR2(4000)      YES                                      Thư mục Oracle Directory object (nội bộ Oracle)
+USER_FILE_NAME                VARCHAR2(4000)      YES                                      Tên file do người dùng đặt (nội bộ Oracle)
+FILE_NAME                     VARCHAR2(4000)      YES                                      Tên file dump thực tế trên đĩa (nội bộ Oracle)
+EXTEND_SIZE                   NUMBER              YES                                      Kích thước mở rộng file (nội bộ Oracle)
+FILE_MAX_SIZE                 NUMBER              YES                                      Kích thước tối đa file dump (nội bộ Oracle)
+PROCESS_NAME                  VARCHAR2(30)        YES                                      Tên tiến trình Data Pump (nội bộ Oracle)
+LAST_MODIFIED_AT              DATE                YES                                      Thời điểm cập nhật lần cuối
+WORK_ITEM                     VARCHAR2(30)        YES                                      Mục công việc đang xử lý (nội bộ Oracle)
+OBJECT_NUMBER                 NUMBER              YES                                      Số thứ tự đối tượng trong schema (nội bộ Oracle)
+COMPLETED_BYTES               NUMBER              YES                                      Số byte đã xử lý (nội bộ Oracle)
+TOTAL_BYTES                   NUMBER              YES                                      Tổng số byte cần xử lý (nội bộ Oracle)
+METADATA_IO                   NUMBER              YES                                      I/O metadata (nội bộ Oracle)
+DATA_IO                       NUMBER              YES                                      I/O dữ liệu (nội bộ Oracle)
+CUMULATIVE_TIME               NUMBER              YES                                      Thời gian tích lũy (nội bộ Oracle)
+PACKET_NUMBER                 NUMBER              YES                                      Số packet (nội bộ Oracle)
+INSTANCE_ID                   NUMBER              YES                                      ID instance Oracle (nội bộ Oracle)
+OLD_VALUE                     VARCHAR2(4000)      YES                                      Giá trị cũ (nội bộ Oracle)
+SEED                          NUMBER              YES                                      Seed cho random (nội bộ Oracle)
+LAST_FILE                     NUMBER              YES                                      File cuối cùng (nội bộ Oracle)
+USER_NAME                     VARCHAR2(30)        YES                                      Tên người dùng thực hiện job (nội bộ Oracle)
+OPERATION                     VARCHAR2(30)        YES                                      Loại thao tác: EXPORT/IMPORT (nội bộ Oracle Data Pump)
+JOB_MODE                      VARCHAR2(30)        YES                                      Chế độ job: FULL/SCHEMA/TABLE (nội bộ Oracle Data Pump)
+QUEUE_TABNUM                  NUMBER              YES                                      Số bảng queue (nội bộ Oracle)
+CONTROL_QUEUE                 VARCHAR2(30)        YES                                      Tên queue điều khiển (nội bộ Oracle)
+STATUS_QUEUE                  VARCHAR2(30)        YES                                      Tên queue trạng thái (nội bộ Oracle)
+REMOTE_LINK                   VARCHAR2(4000)      YES                                      Database link từ xa (nội bộ Oracle)
+VERSION                       NUMBER              YES                                      Phiên bản giao thức trao đổi dữ liệu
+JOB_VERSION                   VARCHAR2(30)        YES                                      Phiên bản Oracle của job (nội bộ Oracle Data Pump)
+DB_VERSION                    VARCHAR2(30)        YES                                      Phiên bản Oracle Database (nội bộ Oracle)
+TIMEZONE                      VARCHAR2(64)        YES                                      Múi giờ của job (nội bộ Oracle)
+STATE                         VARCHAR2(30)        YES                                      Trạng thái job Data Pump (nội bộ Oracle)
+PHASE                         NUMBER              YES                                      Pha thực thi job (nội bộ Oracle)
+GUID                          RAW(16)             YES                                      Định danh duy nhất toàn cục (GUID/UUID) của bản ghi
+START_TIME                    DATE                YES                                      Thời điểm bắt đầu job (nội bộ Oracle)
+BLOCK_SIZE                    NUMBER              YES                                      Kích thước block (nội bộ Oracle)
+METADATA_BUFFER_SIZE          NUMBER              YES                                      Kích thước buffer metadata (nội bộ Oracle)
+DATA_BUFFER_SIZE              NUMBER              YES                                      Kích thước buffer dữ liệu (nội bộ Oracle)
+DEGREE                        NUMBER              YES                                      Số degree song song (nội bộ Oracle)
+PLATFORM                      VARCHAR2(101)       YES                                      Nền tảng OS (nội bộ Oracle)
+ABORT_STEP                    NUMBER              YES                                      Bước dừng khi abort (nội bộ Oracle)
+INSTANCE                      VARCHAR2(60)        YES                                      Tên instance Oracle (nội bộ Oracle)
+CLUSTER_OK                    NUMBER              YES                                      Cờ cluster hợp lệ (nội bộ Oracle RAC)
+SERVICE_NAME                  VARCHAR2(100)       YES                                      Tên dịch vụ trao đổi dữ liệu
+OBJECT_INT_OID                VARCHAR2(32)        YES                                      Object internal OID (nội bộ Oracle)
+
+
+BANG: SYS_EXPORT_SCHEMA_02
+Mo ta: Bảng kỹ thuật Oracle Data Pump Export schema 02 (không dùng cho nghiệp vụ)
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+PROCESS_ORDER                 NUMBER              YES                                      Thứ tự xử lý đối tượng trong Data Pump (nội bộ Oracle)
+DUPLICATE                     NUMBER              YES                                      Cờ đối tượng bị trùng lặp (nội bộ Oracle)
+DUMP_FILEID                   NUMBER              YES                                      ID file dump chứa dữ liệu (nội bộ Oracle Data Pump)
+DUMP_POSITION                 NUMBER              YES                                      Vị trí bắt đầu trong file dump (nội bộ Oracle)
+DUMP_LENGTH                   NUMBER              YES                                      Độ dài dữ liệu trong file dump (nội bộ Oracle)
+DUMP_ORIG_LENGTH              NUMBER              YES                                      Độ dài dữ liệu gốc trước nén (nội bộ Oracle)
+DUMP_ALLOCATION               NUMBER              YES                                      Dung lượng phân bổ trong file dump (nội bộ Oracle)
+COMPLETED_ROWS                NUMBER              YES                                      Số hàng đã xử lý xong (nội bộ Oracle Data Pump)
+ERROR_COUNT                   NUMBER              YES                                      Số lỗi phát sinh trong quá trình xuất/nhập (nội bộ Oracle)
+ELAPSED_TIME                  NUMBER              YES                                      Thời gian thực thi (nội bộ Oracle Data Pump)
+OBJECT_TYPE_PATH              VARCHAR2(200)       YES                                      Đường dẫn loại đối tượng trong Data Pump (nội bộ Oracle)
+OBJECT_PATH_SEQNO             NUMBER              YES                                      Số thứ tự đường dẫn đối tượng (nội bộ Oracle)
+OBJECT_TYPE                   VARCHAR2(30)        YES                                      Loại đối tượng Oracle: TABLE, INDEX, PROCEDURE... (nội bộ Oracle)
+IN_PROGRESS                   CHAR(1)             YES                                      Cờ đang xử lý: Y=Đang chạy (nội bộ Oracle Data Pump)
+OBJECT_NAME                   VARCHAR2(500)       YES                                      Tên đối tượng Oracle cần xuất/nhập (nội bộ Oracle)
+OBJECT_LONG_NAME              VARCHAR2(4000)      YES                                      Tên đầy đủ đối tượng Oracle (nội bộ Oracle)
+OBJECT_SCHEMA                 VARCHAR2(30)        YES                                      Schema chứa đối tượng Oracle (nội bộ Oracle)
+ORIGINAL_OBJECT_SCHEMA        VARCHAR2(30)        YES                                      Schema gốc của đối tượng trước khi xuất (nội bộ Oracle)
+ORIGINAL_OBJECT_NAME          VARCHAR2(4000)      YES                                      Tên gốc của đối tượng trước khi xuất (nội bộ Oracle)
+PARTITION_NAME                VARCHAR2(30)        YES                                      Tên partition của bảng (nội bộ Oracle)
+SUBPARTITION_NAME             VARCHAR2(30)        YES                                      Tên sub-partition của bảng (nội bộ Oracle)
+DATAOBJ_NUM                   NUMBER              YES                                      Số đối tượng dữ liệu Oracle (nội bộ Oracle)
+FLAGS                         NUMBER              YES                                      Cờ trạng thái nội bộ Oracle Data Pump
+PROPERTY                      NUMBER              YES                                      Thuộc tính đối tượng Oracle (nội bộ Oracle)
+TRIGFLAG                      NUMBER              YES                                      Cờ trigger Oracle (nội bộ Oracle)
+CREATION_LEVEL                NUMBER              YES                                      Cấp độ tạo đối tượng trong Data Pump (nội bộ Oracle)
+COMPLETION_TIME               DATE                YES                                      Thời điểm hoàn thành xử lý đối tượng (nội bộ Oracle)
+OBJECT_TABLESPACE             VARCHAR2(30)        YES                                      Tablespace chứa đối tượng (nội bộ Oracle)
+SIZE_ESTIMATE                 NUMBER              YES                                      Ước tính dung lượng đối tượng (byte, nội bộ Oracle)
+OBJECT_ROW                    NUMBER              YES                                      Số hàng trong đối tượng (nội bộ Oracle)
+PROCESSING_STATE              CHAR(1)             YES                                      Trạng thái xử lý đối tượng (nội bộ Oracle Data Pump)
+PROCESSING_STATUS             CHAR(1)             YES                                      Kết quả xử lý đối tượng (nội bộ Oracle Data Pump)
+BASE_PROCESS_ORDER            NUMBER              YES                                      Thứ tự xử lý đối tượng cơ sở (nội bộ Oracle)
+BASE_OBJECT_TYPE              VARCHAR2(30)        YES                                      Loại đối tượng cơ sở (nội bộ Oracle)
+BASE_OBJECT_NAME              VARCHAR2(30)        YES                                      Tên đối tượng cơ sở (nội bộ Oracle)
+BASE_OBJECT_SCHEMA            VARCHAR2(30)        YES                                      Schema đối tượng cơ sở (nội bộ Oracle)
+ANCESTOR_PROCESS_ORDER        NUMBER              YES                                      Thứ tự xử lý tổ tiên (nội bộ Oracle)
+DOMAIN_PROCESS_ORDER          NUMBER              YES                                      Thứ tự xử lý domain (nội bộ Oracle)
+PARALLELIZATION               NUMBER              YES                                      Số luồng song song xử lý (nội bộ Oracle Data Pump)
+UNLOAD_METHOD                 NUMBER              YES                                      Phương thức unload dữ liệu (nội bộ Oracle)
+LOAD_METHOD                   NUMBER              YES                                      Phương thức load dữ liệu (nội bộ Oracle)
+GRANULES                      NUMBER              YES                                      Số granule xử lý (nội bộ Oracle)
+SCN                           NUMBER              YES                                      System Change Number tại thời điểm xuất (nội bộ Oracle)
+GRANTOR                       VARCHAR2(30)        YES                                      Người cấp quyền (nội bộ Oracle)
+XML_CLOB                      CLOB                YES                                      Metadata XML của đối tượng (CLOB, nội bộ Oracle)
+PARENT_PROCESS_ORDER          NUMBER              YES                                      Thứ tự xử lý đối tượng cha (nội bộ Oracle)
+NAME                          VARCHAR2(30)        YES                                      Tên đầy đủ
+VALUE_T                       VARCHAR2(4000)      YES                                      Giá trị kiểu text của tham số job (nội bộ Oracle)
+VALUE_N                       NUMBER              YES                                      Giá trị kiểu số của tham số job (nội bộ Oracle)
+IS_DEFAULT                    NUMBER              YES                                      Cờ giá trị mặc định (nội bộ Oracle)
+FILE_TYPE                     NUMBER              YES                                      Loại file dump (nội bộ Oracle Data Pump)
+USER_DIRECTORY                VARCHAR2(4000)      YES                                      Thư mục Oracle Directory object (nội bộ Oracle)
+USER_FILE_NAME                VARCHAR2(4000)      YES                                      Tên file do người dùng đặt (nội bộ Oracle)
+FILE_NAME                     VARCHAR2(4000)      YES                                      Tên file dump thực tế trên đĩa (nội bộ Oracle)
+EXTEND_SIZE                   NUMBER              YES                                      Kích thước mở rộng file (nội bộ Oracle)
+FILE_MAX_SIZE                 NUMBER              YES                                      Kích thước tối đa file dump (nội bộ Oracle)
+PROCESS_NAME                  VARCHAR2(30)        YES                                      Tên tiến trình Data Pump (nội bộ Oracle)
+LAST_MODIFIED_AT              DATE                YES                                      Thời điểm cập nhật lần cuối
+WORK_ITEM                     VARCHAR2(30)        YES                                      Mục công việc đang xử lý (nội bộ Oracle)
+OBJECT_NUMBER                 NUMBER              YES                                      Số thứ tự đối tượng trong schema (nội bộ Oracle)
+COMPLETED_BYTES               NUMBER              YES                                      Số byte đã xử lý (nội bộ Oracle)
+TOTAL_BYTES                   NUMBER              YES                                      Tổng số byte cần xử lý (nội bộ Oracle)
+METADATA_IO                   NUMBER              YES                                      I/O metadata (nội bộ Oracle)
+DATA_IO                       NUMBER              YES                                      I/O dữ liệu (nội bộ Oracle)
+CUMULATIVE_TIME               NUMBER              YES                                      Thời gian tích lũy (nội bộ Oracle)
+PACKET_NUMBER                 NUMBER              YES                                      Số packet (nội bộ Oracle)
+INSTANCE_ID                   NUMBER              YES                                      ID instance Oracle (nội bộ Oracle)
+OLD_VALUE                     VARCHAR2(4000)      YES                                      Giá trị cũ (nội bộ Oracle)
+SEED                          NUMBER              YES                                      Seed cho random (nội bộ Oracle)
+LAST_FILE                     NUMBER              YES                                      File cuối cùng (nội bộ Oracle)
+USER_NAME                     VARCHAR2(30)        YES                                      Tên người dùng thực hiện job (nội bộ Oracle)
+OPERATION                     VARCHAR2(30)        YES                                      Loại thao tác: EXPORT/IMPORT (nội bộ Oracle Data Pump)
+JOB_MODE                      VARCHAR2(30)        YES                                      Chế độ job: FULL/SCHEMA/TABLE (nội bộ Oracle Data Pump)
+QUEUE_TABNUM                  NUMBER              YES                                      Số bảng queue (nội bộ Oracle)
+CONTROL_QUEUE                 VARCHAR2(30)        YES                                      Tên queue điều khiển (nội bộ Oracle)
+STATUS_QUEUE                  VARCHAR2(30)        YES                                      Tên queue trạng thái (nội bộ Oracle)
+REMOTE_LINK                   VARCHAR2(4000)      YES                                      Database link từ xa (nội bộ Oracle)
+VERSION                       NUMBER              YES                                      Phiên bản giao thức trao đổi dữ liệu
+JOB_VERSION                   VARCHAR2(30)        YES                                      Phiên bản Oracle của job (nội bộ Oracle Data Pump)
+DB_VERSION                    VARCHAR2(30)        YES                                      Phiên bản Oracle Database (nội bộ Oracle)
+TIMEZONE                      VARCHAR2(64)        YES                                      Múi giờ của job (nội bộ Oracle)
+STATE                         VARCHAR2(30)        YES                                      Trạng thái job Data Pump (nội bộ Oracle)
+PHASE                         NUMBER              YES                                      Pha thực thi job (nội bộ Oracle)
+GUID                          RAW(16)             YES                                      Định danh duy nhất toàn cục (GUID/UUID) của bản ghi
+START_TIME                    DATE                YES                                      Thời điểm bắt đầu job (nội bộ Oracle)
+BLOCK_SIZE                    NUMBER              YES                                      Kích thước block (nội bộ Oracle)
+METADATA_BUFFER_SIZE          NUMBER              YES                                      Kích thước buffer metadata (nội bộ Oracle)
+DATA_BUFFER_SIZE              NUMBER              YES                                      Kích thước buffer dữ liệu (nội bộ Oracle)
+DEGREE                        NUMBER              YES                                      Số degree song song (nội bộ Oracle)
+PLATFORM                      VARCHAR2(101)       YES                                      Nền tảng OS (nội bộ Oracle)
+ABORT_STEP                    NUMBER              YES                                      Bước dừng khi abort (nội bộ Oracle)
+INSTANCE                      VARCHAR2(60)        YES                                      Tên instance Oracle (nội bộ Oracle)
+CLUSTER_OK                    NUMBER              YES                                      Cờ cluster hợp lệ (nội bộ Oracle RAC)
+SERVICE_NAME                  VARCHAR2(100)       YES                                      Tên dịch vụ trao đổi dữ liệu
+OBJECT_INT_OID                VARCHAR2(32)        YES                                      Object internal OID (nội bộ Oracle)
+
+
+BANG: SYS_EXPORT_SCHEMA_03
+Mo ta: Bảng kỹ thuật Oracle Data Pump Export schema 03 (không dùng cho nghiệp vụ)
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+PROCESS_ORDER                 NUMBER              YES                                      Thứ tự xử lý đối tượng trong Data Pump (nội bộ Oracle)
+DUPLICATE                     NUMBER              YES                                      Cờ đối tượng bị trùng lặp (nội bộ Oracle)
+DUMP_FILEID                   NUMBER              YES                                      ID file dump chứa dữ liệu (nội bộ Oracle Data Pump)
+DUMP_POSITION                 NUMBER              YES                                      Vị trí bắt đầu trong file dump (nội bộ Oracle)
+DUMP_LENGTH                   NUMBER              YES                                      Độ dài dữ liệu trong file dump (nội bộ Oracle)
+DUMP_ORIG_LENGTH              NUMBER              YES                                      Độ dài dữ liệu gốc trước nén (nội bộ Oracle)
+DUMP_ALLOCATION               NUMBER              YES                                      Dung lượng phân bổ trong file dump (nội bộ Oracle)
+COMPLETED_ROWS                NUMBER              YES                                      Số hàng đã xử lý xong (nội bộ Oracle Data Pump)
+ERROR_COUNT                   NUMBER              YES                                      Số lỗi phát sinh trong quá trình xuất/nhập (nội bộ Oracle)
+ELAPSED_TIME                  NUMBER              YES                                      Thời gian thực thi (nội bộ Oracle Data Pump)
+OBJECT_TYPE_PATH              VARCHAR2(200)       YES                                      Đường dẫn loại đối tượng trong Data Pump (nội bộ Oracle)
+OBJECT_PATH_SEQNO             NUMBER              YES                                      Số thứ tự đường dẫn đối tượng (nội bộ Oracle)
+OBJECT_TYPE                   VARCHAR2(30)        YES                                      Loại đối tượng Oracle: TABLE, INDEX, PROCEDURE... (nội bộ Oracle)
+IN_PROGRESS                   CHAR(1)             YES                                      Cờ đang xử lý: Y=Đang chạy (nội bộ Oracle Data Pump)
+OBJECT_NAME                   VARCHAR2(500)       YES                                      Tên đối tượng Oracle cần xuất/nhập (nội bộ Oracle)
+OBJECT_LONG_NAME              VARCHAR2(4000)      YES                                      Tên đầy đủ đối tượng Oracle (nội bộ Oracle)
+OBJECT_SCHEMA                 VARCHAR2(30)        YES                                      Schema chứa đối tượng Oracle (nội bộ Oracle)
+ORIGINAL_OBJECT_SCHEMA        VARCHAR2(30)        YES                                      Schema gốc của đối tượng trước khi xuất (nội bộ Oracle)
+ORIGINAL_OBJECT_NAME          VARCHAR2(4000)      YES                                      Tên gốc của đối tượng trước khi xuất (nội bộ Oracle)
+PARTITION_NAME                VARCHAR2(30)        YES                                      Tên partition của bảng (nội bộ Oracle)
+SUBPARTITION_NAME             VARCHAR2(30)        YES                                      Tên sub-partition của bảng (nội bộ Oracle)
+DATAOBJ_NUM                   NUMBER              YES                                      Số đối tượng dữ liệu Oracle (nội bộ Oracle)
+FLAGS                         NUMBER              YES                                      Cờ trạng thái nội bộ Oracle Data Pump
+PROPERTY                      NUMBER              YES                                      Thuộc tính đối tượng Oracle (nội bộ Oracle)
+TRIGFLAG                      NUMBER              YES                                      Cờ trigger Oracle (nội bộ Oracle)
+CREATION_LEVEL                NUMBER              YES                                      Cấp độ tạo đối tượng trong Data Pump (nội bộ Oracle)
+COMPLETION_TIME               DATE                YES                                      Thời điểm hoàn thành xử lý đối tượng (nội bộ Oracle)
+OBJECT_TABLESPACE             VARCHAR2(30)        YES                                      Tablespace chứa đối tượng (nội bộ Oracle)
+SIZE_ESTIMATE                 NUMBER              YES                                      Ước tính dung lượng đối tượng (byte, nội bộ Oracle)
+OBJECT_ROW                    NUMBER              YES                                      Số hàng trong đối tượng (nội bộ Oracle)
+PROCESSING_STATE              CHAR(1)             YES                                      Trạng thái xử lý đối tượng (nội bộ Oracle Data Pump)
+PROCESSING_STATUS             CHAR(1)             YES                                      Kết quả xử lý đối tượng (nội bộ Oracle Data Pump)
+BASE_PROCESS_ORDER            NUMBER              YES                                      Thứ tự xử lý đối tượng cơ sở (nội bộ Oracle)
+BASE_OBJECT_TYPE              VARCHAR2(30)        YES                                      Loại đối tượng cơ sở (nội bộ Oracle)
+BASE_OBJECT_NAME              VARCHAR2(30)        YES                                      Tên đối tượng cơ sở (nội bộ Oracle)
+BASE_OBJECT_SCHEMA            VARCHAR2(30)        YES                                      Schema đối tượng cơ sở (nội bộ Oracle)
+ANCESTOR_PROCESS_ORDER        NUMBER              YES                                      Thứ tự xử lý tổ tiên (nội bộ Oracle)
+DOMAIN_PROCESS_ORDER          NUMBER              YES                                      Thứ tự xử lý domain (nội bộ Oracle)
+PARALLELIZATION               NUMBER              YES                                      Số luồng song song xử lý (nội bộ Oracle Data Pump)
+UNLOAD_METHOD                 NUMBER              YES                                      Phương thức unload dữ liệu (nội bộ Oracle)
+LOAD_METHOD                   NUMBER              YES                                      Phương thức load dữ liệu (nội bộ Oracle)
+GRANULES                      NUMBER              YES                                      Số granule xử lý (nội bộ Oracle)
+SCN                           NUMBER              YES                                      System Change Number tại thời điểm xuất (nội bộ Oracle)
+GRANTOR                       VARCHAR2(30)        YES                                      Người cấp quyền (nội bộ Oracle)
+XML_CLOB                      CLOB                YES                                      Metadata XML của đối tượng (CLOB, nội bộ Oracle)
+PARENT_PROCESS_ORDER          NUMBER              YES                                      Thứ tự xử lý đối tượng cha (nội bộ Oracle)
+NAME                          VARCHAR2(30)        YES                                      Tên đầy đủ
+VALUE_T                       VARCHAR2(4000)      YES                                      Giá trị kiểu text của tham số job (nội bộ Oracle)
+VALUE_N                       NUMBER              YES                                      Giá trị kiểu số của tham số job (nội bộ Oracle)
+IS_DEFAULT                    NUMBER              YES                                      Cờ giá trị mặc định (nội bộ Oracle)
+FILE_TYPE                     NUMBER              YES                                      Loại file dump (nội bộ Oracle Data Pump)
+USER_DIRECTORY                VARCHAR2(4000)      YES                                      Thư mục Oracle Directory object (nội bộ Oracle)
+USER_FILE_NAME                VARCHAR2(4000)      YES                                      Tên file do người dùng đặt (nội bộ Oracle)
+FILE_NAME                     VARCHAR2(4000)      YES                                      Tên file dump thực tế trên đĩa (nội bộ Oracle)
+EXTEND_SIZE                   NUMBER              YES                                      Kích thước mở rộng file (nội bộ Oracle)
+FILE_MAX_SIZE                 NUMBER              YES                                      Kích thước tối đa file dump (nội bộ Oracle)
+PROCESS_NAME                  VARCHAR2(30)        YES                                      Tên tiến trình Data Pump (nội bộ Oracle)
+LAST_MODIFIED_AT              DATE                YES                                      Thời điểm cập nhật lần cuối
+WORK_ITEM                     VARCHAR2(30)        YES                                      Mục công việc đang xử lý (nội bộ Oracle)
+OBJECT_NUMBER                 NUMBER              YES                                      Số thứ tự đối tượng trong schema (nội bộ Oracle)
+COMPLETED_BYTES               NUMBER              YES                                      Số byte đã xử lý (nội bộ Oracle)
+TOTAL_BYTES                   NUMBER              YES                                      Tổng số byte cần xử lý (nội bộ Oracle)
+METADATA_IO                   NUMBER              YES                                      I/O metadata (nội bộ Oracle)
+DATA_IO                       NUMBER              YES                                      I/O dữ liệu (nội bộ Oracle)
+CUMULATIVE_TIME               NUMBER              YES                                      Thời gian tích lũy (nội bộ Oracle)
+PACKET_NUMBER                 NUMBER              YES                                      Số packet (nội bộ Oracle)
+INSTANCE_ID                   NUMBER              YES                                      ID instance Oracle (nội bộ Oracle)
+OLD_VALUE                     VARCHAR2(4000)      YES                                      Giá trị cũ (nội bộ Oracle)
+SEED                          NUMBER              YES                                      Seed cho random (nội bộ Oracle)
+LAST_FILE                     NUMBER              YES                                      File cuối cùng (nội bộ Oracle)
+USER_NAME                     VARCHAR2(30)        YES                                      Tên người dùng thực hiện job (nội bộ Oracle)
+OPERATION                     VARCHAR2(30)        YES                                      Loại thao tác: EXPORT/IMPORT (nội bộ Oracle Data Pump)
+JOB_MODE                      VARCHAR2(30)        YES                                      Chế độ job: FULL/SCHEMA/TABLE (nội bộ Oracle Data Pump)
+QUEUE_TABNUM                  NUMBER              YES                                      Số bảng queue (nội bộ Oracle)
+CONTROL_QUEUE                 VARCHAR2(30)        YES                                      Tên queue điều khiển (nội bộ Oracle)
+STATUS_QUEUE                  VARCHAR2(30)        YES                                      Tên queue trạng thái (nội bộ Oracle)
+REMOTE_LINK                   VARCHAR2(4000)      YES                                      Database link từ xa (nội bộ Oracle)
+VERSION                       NUMBER              YES                                      Phiên bản giao thức trao đổi dữ liệu
+JOB_VERSION                   VARCHAR2(30)        YES                                      Phiên bản Oracle của job (nội bộ Oracle Data Pump)
+DB_VERSION                    VARCHAR2(30)        YES                                      Phiên bản Oracle Database (nội bộ Oracle)
+TIMEZONE                      VARCHAR2(64)        YES                                      Múi giờ của job (nội bộ Oracle)
+STATE                         VARCHAR2(30)        YES                                      Trạng thái job Data Pump (nội bộ Oracle)
+PHASE                         NUMBER              YES                                      Pha thực thi job (nội bộ Oracle)
+GUID                          RAW(16)             YES                                      Định danh duy nhất toàn cục (GUID/UUID) của bản ghi
+START_TIME                    DATE                YES                                      Thời điểm bắt đầu job (nội bộ Oracle)
+BLOCK_SIZE                    NUMBER              YES                                      Kích thước block (nội bộ Oracle)
+METADATA_BUFFER_SIZE          NUMBER              YES                                      Kích thước buffer metadata (nội bộ Oracle)
+DATA_BUFFER_SIZE              NUMBER              YES                                      Kích thước buffer dữ liệu (nội bộ Oracle)
+DEGREE                        NUMBER              YES                                      Số degree song song (nội bộ Oracle)
+PLATFORM                      VARCHAR2(101)       YES                                      Nền tảng OS (nội bộ Oracle)
+ABORT_STEP                    NUMBER              YES                                      Bước dừng khi abort (nội bộ Oracle)
+INSTANCE                      VARCHAR2(60)        YES                                      Tên instance Oracle (nội bộ Oracle)
+CLUSTER_OK                    NUMBER              YES                                      Cờ cluster hợp lệ (nội bộ Oracle RAC)
+SERVICE_NAME                  VARCHAR2(100)       YES                                      Tên dịch vụ trao đổi dữ liệu
+OBJECT_INT_OID                VARCHAR2(32)        YES                                      Object internal OID (nội bộ Oracle)
+
+
+BANG: SYS_EXPORT_SCHEMA_04
+Mo ta: Data Pump Master Table EXPORT                         SCHEMA                        
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ABORT_STEP                    NUMBER              YES                                      
+ACCESS_METHOD                 VARCHAR2(16)        YES                                      
+ANCESTOR_OBJECT_NAME          VARCHAR2(128)       YES                                      
+ANCESTOR_OBJECT_SCHEMA        VARCHAR2(128)       YES                                      
+ANCESTOR_OBJECT_TYPE          VARCHAR2(128)       YES                                      
+ANCESTOR_PROCESS_ORDER        NUMBER              YES                                      
+BASE_OBJECT_NAME              VARCHAR2(128)       YES                                      
+BASE_OBJECT_SCHEMA            VARCHAR2(128)       YES                                      
+BASE_OBJECT_TYPE              VARCHAR2(128)       YES                                      
+BASE_PROCESS_ORDER            NUMBER              YES                                      
+BLOCK_SIZE                    NUMBER              YES                                      
+CLUSTER_OK                    NUMBER              YES                                      
+COMPLETED_BYTES               NUMBER              YES                                      
+COMPLETED_ROWS                NUMBER              YES                                      
+COMPLETION_TIME               DATE                YES                                      
+CONTROL_QUEUE                 VARCHAR2(128)       YES                                      
+CREATION_LEVEL                NUMBER              YES                                      
+CREATION_TIME                 DATE                YES                                      
+CUMULATIVE_TIME               NUMBER              YES                                      
+DATA_BUFFER_SIZE              NUMBER              YES                                      
+DATA_IO                       NUMBER              YES                                      
+DATAOBJ_NUM                   NUMBER              YES                                      
+DB_VERSION                    VARCHAR2(60)        YES                                      
+DEGREE                        NUMBER              YES                                      
+DOMAIN_PROCESS_ORDER          NUMBER              YES                                      
+DUMP_ALLOCATION               NUMBER              YES                                      
+DUMP_FILEID                   NUMBER              YES                                      
+DUMP_LENGTH                   NUMBER              YES                                      
+DUMP_ORIG_LENGTH              NUMBER              YES                                      
+DUMP_POSITION                 NUMBER              YES                                      
+DUPLICATE                     NUMBER              YES                                      
+ELAPSED_TIME                  NUMBER              YES                                      
+ERROR_COUNT                   NUMBER              YES                                      
+EXTEND_SIZE                   NUMBER              YES                                      
+FILE_MAX_SIZE                 NUMBER              YES                                      
+FILE_NAME                     VARCHAR2(4000)      YES                                      
+FILE_TYPE                     NUMBER              YES                                      
+FLAGS                         NUMBER              YES                                      
+GRANTOR                       VARCHAR2(128)       YES                                      
+GRANULES                      NUMBER              YES                                      
+GUID                          RAW(16)             YES                                      
+IN_PROGRESS                   CHAR(1)             YES                                      
+INSTANCE                      VARCHAR2(60)        YES                                      
+INSTANCE_ID                   NUMBER              YES                                      
+IS_DEFAULT                    NUMBER              YES                                      
+JOB_MODE                      VARCHAR2(21)        YES                                      
+JOB_VERSION                   VARCHAR2(60)        YES                                      
+LAST_FILE                     NUMBER              YES                                      
+LAST_UPDATE                   DATE                YES                                      
+LOAD_METHOD                   NUMBER              YES                                      
+METADATA_BUFFER_SIZE          NUMBER              YES                                      
+METADATA_IO                   NUMBER              YES                                      
+NAME                          VARCHAR2(128)       YES                                      
+OBJECT_INT_OID                VARCHAR2(130)       YES                                      
+OBJECT_LONG_NAME              VARCHAR2(4000)      YES                                      
+OBJECT_NAME                   VARCHAR2(200)       YES                                      
+OBJECT_NUMBER                 NUMBER              YES                                      
+OBJECT_PATH_SEQNO             NUMBER              YES                                      
+OBJECT_ROW                    NUMBER              YES                                      
+OBJECT_SCHEMA                 VARCHAR2(128)       YES                                      
+OBJECT_TABLESPACE             VARCHAR2(128)       YES                                      
+OBJECT_TYPE                   VARCHAR2(128)       YES                                      
+OBJECT_TYPE_PATH              VARCHAR2(200)       YES                                      
+OLD_VALUE                     VARCHAR2(4000)      YES                                      
+OPERATION                     VARCHAR2(8)         YES                                      
+OPTION_TAG                    VARCHAR2(128)       YES                                      
+ORIG_BASE_OBJECT_NAME         VARCHAR2(128)       YES                                      
+ORIG_BASE_OBJECT_SCHEMA       VARCHAR2(128)       YES                                      
+ORIGINAL_OBJECT_NAME          VARCHAR2(128)       YES                                      
+ORIGINAL_OBJECT_SCHEMA        VARCHAR2(128)       YES                                      
+PACKET_NUMBER                 NUMBER              YES                                      
+PARALLELIZATION               NUMBER              YES                                      
+PARENT_OBJECT_NAME            VARCHAR2(128)       YES                                      
+PARENT_OBJECT_SCHEMA          VARCHAR2(128)       YES                                      
+PARENT_PROCESS_ORDER          NUMBER              YES                                      
+PARTITION_NAME                VARCHAR2(128)       YES                                      
+PHASE                         NUMBER              YES                                      
+PLATFORM                      VARCHAR2(101)       YES                                      
+PROCESS_NAME                  VARCHAR2(128)       YES                                      
+PROCESS_ORDER                 NUMBER              YES                                      
+PROCESSING_STATE              CHAR(1)             YES                                      
+PROCESSING_STATUS             CHAR(1)             YES                                      
+PROPERTY                      NUMBER              YES                                      
+PROXY_SCHEMA                  VARCHAR2(128)       YES                                      
+PROXY_VIEW                    VARCHAR2(128)       YES                                      
+QUEUE_TABNUM                  NUMBER              YES                                      
+REMOTE_LINK                   VARCHAR2(128)       YES                                      
+SCN                           NUMBER              YES                                      
+SEED                          NUMBER              YES                                      
+SERVICE_NAME                  VARCHAR2(64)        YES                                      
+SIZE_ESTIMATE                 NUMBER              YES                                      
+SRC_COMPAT                    VARCHAR2(60)        YES                                      
+START_TIME                    DATE                YES                                      
+STATE                         VARCHAR2(12)        YES                                      
+STATUS_QUEUE                  VARCHAR2(128)       YES                                      
+SUBPARTITION_NAME             VARCHAR2(128)       YES                                      
+TARGET_XML_CLOB               CLOB                YES                                      
+TDE_REWRAPPED_KEY             RAW(2000)           YES                                      
+TEMPLATE_TABLE                VARCHAR2(128)       YES                                      
+TIMEZONE                      VARCHAR2(64)        YES                                      
+TOTAL_BYTES                   NUMBER              YES                                      
+TRIGFLAG                      NUMBER              YES                                      
+UNLOAD_METHOD                 NUMBER              YES                                      
+USER_DIRECTORY                VARCHAR2(4000)      YES                                      
+USER_FILE_NAME                VARCHAR2(4000)      YES                                      
+USER_NAME                     VARCHAR2(128)       YES                                      
+VALUE_N                       NUMBER              YES                                      
+VALUE_T                       VARCHAR2(4000)      YES                                      
+VERSION                       NUMBER              YES                                      
+WORK_ITEM                     VARCHAR2(21)        YES                                      
+XML_CLOB                      CLOB                YES                                      
+
+
+BANG: SYS_FUNCTION
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               
+PARENT_CODE                   VARCHAR2(80)        YES                                      
+HIERARCHY_CODE                VARCHAR2(80)        YES                                      
+FUNCTION_NAME                 NVARCHAR2(400)      YES                                      
+CONTROLLER_CLASS              VARCHAR2(800)       YES                                      
+NOTE                          NVARCHAR2(2000)     YES                                      
+SYS_LEVEL                     NUMBER              YES                                      
+KEY_ID                        VARCHAR2(400)       YES                                      
+CREATED_BY                    NVARCHAR2(400)      YES                                      
+CREATED_AT                    DATE                YES                                      
+CREATED_BY_ID                 NUMBER              YES                                      
+LAST_MODIFIED_BY_ID           NUMBER              YES                                      
+LAST_MODIFIED_BY              NVARCHAR2(400)      YES                                      
+LAST_MODIFIED_AT              DATE                YES                                      
+SORT_ORDER                    NUMBER              YES                                      
+STATUS                        NUMBER              YES                                      
+DELETED                       NUMBER              YES                                      
+
+
+BANG: SYS_FUNCTION_ROLE
+Mo ta: Danh sách chức năng hệ thống KNT kèm phân quyền role: tên, đường dẫn, role áp dụng
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
+FUNCTION_NAME                 VARCHAR2(1000)      YES                                      Tên chức năng/menu hiển thị trên giao diện
+PARENT_ID                     NUMBER              YES                                      FK -> cùng bảng: ID gói tin/tham số cha
+LAST_MODIFIED_AT              DATE                YES                                      Thời điểm cập nhật lần cuối
+FUNCTION_PATH                 VARCHAR2(500)       YES                                      Đường dẫn URL/route của chức năng trong hệ thống
+FUNCTION_ROLE                 NUMBER              YES                                      Role được phép truy cập chức năng này
+SORT_ORDER                    NUMBER              YES                                      Số thứ tự hiển thị/sắp xếp
+PUBLIC_COMPANY                NUMBER              YES                                      Cờ chức năng dành riêng cho công ty đại chúng: 1=Có, 0=Không
+FUNCTION_NAME_EN              VARCHAR2(250)       YES                                      Tên chức năng bằng tiếng Anh
+
+
+BANG: SYS_HENV
+Mo ta: Bảng kỹ thuật lưu trữ biến môi trường hệ thống (CLOB và DATE)
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+A                             CLOB                YES                                      Nội dung biến môi trường (CLOB)
+D                             DATE                YES                                      Thời điểm cập nhật biến môi trường (DATE)
+
+
+BANG: SYS_PARAM
+Mo ta: Tham số cấu hình hệ thống KNT: mã, giá trị, kiểu dữ liệu, trạng thái (thay thế bảng THAM_SO)
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
+PARAM_CODE                    VARCHAR2(200)       YES                                      Mã tham số hệ thống (key tra cứu)
+VALUE                         VARCHAR2(4000)      YES                                      Giá trị tham số/chỉ tiêu/cấu hình
+SORT_ORDER                    NUMBER              YES                                      Số thứ tự hiển thị/sắp xếp
+STATUS                        NUMBER              YES                                      Trạng thái bản ghi: 1=Đang sử dụng, 0=Không sử dụng
+DATA_TYPE                     NUMBER              YES                                      Kiểu dữ liệu: TEXT=1, PASS=2, NUMBER=3, CHECKBOX=4, DROP=5, EMAIL=6
+DESCRIPTION                   VARCHAR2(4000)      YES                                      Mô tả chi tiết
+LAST_MODIFIED_AT              DATE                YES                                      Thời điểm cập nhật lần cuối
+
+
+BANG: SYS_USER
+Mo ta: Tài khoản người dùng hệ thống KNT: cán bộ UBCKNN đăng nhập quản lý dữ liệu trao đổi với Cục Thuế và Bộ Tài chính
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
+FULL_NAME                     NVARCHAR2(400)      YES                                      Họ và tên đầy đủ người dùng
+DATE_OF_BIRTH                 DATE                YES                                      Ngày sinh
+GENDER                        NUMBER              YES                                      Giới tính: 1=Nam, 0=Nữ
+USERNAME                      VARCHAR2(800)       YES                                      Tên đăng nhập
+PASSWORD                      VARCHAR2(400)       YES                                      Mật khẩu (đã mã hóa hash)
+AVATAR                        VARCHAR2(1020)      YES                                      Đường dẫn ảnh đại diện
+EMAIL                         VARCHAR2(1020)      YES                                      Địa chỉ email liên hệ
+PHONE                         VARCHAR2(80)        YES                                      Số điện thoại liên hệ
+ADDRESS                       NVARCHAR2(510)      YES                                      Địa chỉ
+FAX                           VARCHAR2(80)        YES                                      Số fax
+CREATED_BY                    NUMBER              YES                                      Tài khoản/tên người tạo bản ghi
+CREATED_AT                    DATE                YES                                      Thời điểm tạo bản ghi
+LAST_MODIFIED_BY              NUMBER              YES                                      Tài khoản/tên người cập nhật lần cuối
+LAST_MODIFIED_AT              DATE                YES                                      Thời điểm cập nhật lần cuối
+STATUS                        NUMBER              YES                                      Trạng thái tài khoản (TrangThaiChucNangEnum): 1=Đang hoạt động, 0=Ngừng hoạt động
+DELETED                       NUMBER              YES                                      Cờ xóa mềm: 1=Đã xóa, 0=Chưa xóa
+ORG_UNIT_ID                   NUMBER              YES                                      FK -> cat_org_unit: Đơn vị tổ chức của người dùng
+POSITION_ID                   NUMBER              YES                                      FK -> cat_position: Chức vụ của người dùng
+USER_GROUP                    VARCHAR2(1000)      YES                                      Nhóm người dùng (tên nhóm lưu dạng chuỗi)
+LDAP                          VARCHAR2(1020)      YES                                      Thông tin xác thực LDAP (nếu tích hợp Active Directory)
+KEY_ID                        VARCHAR2(200)       YES                                      Key định danh trong hệ thống phân quyền/SSO
+
+
+BANG: SYS_USER_GROUP
+Mo ta: Nhóm người dùng hệ thống KNT: dùng để phân quyền truy cập chức năng
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
+GROUP_NAME                    NVARCHAR2(400)      YES                                      Tên nhóm người dùng
+DESCRIPTION                   NVARCHAR2(2000)     YES                                      Mô tả chi tiết
+CREATED_BY                    NVARCHAR2(400)      YES                                      Tài khoản/tên người tạo bản ghi
+CREATED_AT                    DATE                YES                                      Thời điểm tạo bản ghi
+CREATED_BY_ID                 NUMBER              YES                                      ID người dùng tạo bản ghi
+LAST_MODIFIED_BY_ID           NUMBER              YES                                      ID người dùng cập nhật lần cuối
+LAST_MODIFIED_BY              NVARCHAR2(400)      YES                                      Tài khoản/tên người cập nhật lần cuối
+LAST_MODIFIED_AT              DATE                YES                                      Thời điểm cập nhật lần cuối
+STATUS                        NUMBER              YES                                      Trạng thái nhóm người dùng (TrangThaiChucNangEnum): 1=Đang hoạt động, 0=Ngừng hoạt động
+DELETED                       NUMBER              YES                                      Cờ xóa mềm: 1=Đã xóa, 0=Chưa xóa
+
+
+BANG: TAX_ENFORCEMENT_DEBT
+Mo ta: Thông tin quyết định cưỡng chế nợ thuế do Cục Thuế ban hành: phương thức cưỡng chế, số tiền, tài sản kê biên
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
+TAXPAYER_TAX_CODE             VARCHAR2(400)       YES                                      Mã số thuế người nộp thuế bị cưỡng chế
+TAXPAYER_NAME                 VARCHAR2(800)       YES                                      Tên người nộp thuế (doanh nghiệp trên thị trường chứng khoán)
+TAX_AUTHORITY_CODE            VARCHAR2(400)       YES                                      Mã cơ quan thuế ban hành thông báo cưỡng chế
+TAX_AUTHORITY_NAME            VARCHAR2(800)       YES                                      Tên cơ quan thuế ban hành thông báo cưỡng chế
+ENFORCEMENT_METHOD_CODE       VARCHAR2(200)       YES                                      Mã hình thức cưỡng chế
+ENFORCEMENT_METHOD_NAME       VARCHAR2(1000)      YES                                      Tên hình thức cưỡng chế
+E_TRANSACTION_CODE            VARCHAR2(200)       YES                                      Mã giao dịch điện tử trong hệ thống Cục Thuế
+DECISION_NUMBER               VARCHAR2(400)       YES                                      Số quyết định thành lập/xử phạt
+DECISION_DATE                 DATE                YES                                      Ngày ban hành quyết định
+ENFORCED_AMOUNT               VARCHAR2(80)        YES                                      Số tiền bị cưỡng chế (đơn vị: đồng)
+ENFORCED_ENTITY_BANK_ACCOUNT  VARCHAR2(80)        YES                                      Số tài khoản ngân hàng của đối tượng bị cưỡng chế
+ACCOUNT_OPENING_PLACE         VARCHAR2(800)       YES                                      Nơi mở tài khoản chứng khoán
+INCOME_MANAGING_ENTITY_NAME   VARCHAR2(400)       YES                                      Tên đối tượng quản lý thu nhập (VD: ngân hàng, đơn vị sử dụng lao động)
+INCOME_MANAGING_ENTITY_ADDRESSVARCHAR2(800)       YES                                      Địa chỉ đối tượng quản lý thu nhập
+SEIZED_ASSETS                 VARCHAR2(400)       YES                                      Mô tả tài sản bị kê biên trong biện pháp cưỡng chế
+ASSET_VALUE                   VARCHAR2(80)        YES                                      Giá trị tài sản bị kê biên (đơn vị: đồng)
+ENFORCEMENT_DATE              DATE                YES                                      Thời gian thực hiện cưỡng chế
+ENFORCEMENT_LOCATION          VARCHAR2(800)       YES                                      Địa điểm thực hiện cưỡng chế
+ASSET_HOLDER_NAME             VARCHAR2(800)       YES                                      Tên đối tượng đang giữ tài sản bị cưỡng chế
+ASSET_HOLDER_CODE             VARCHAR2(200)       YES                                      Mã đối tượng đang giữ tài sản bị cưỡng chế
+ASSET_HOLDER_ADDRESS          VARCHAR2(800)       YES                                      Địa chỉ đối tượng đang giữ tài sản bị cưỡng chế
+ENFORCED_ENTITY_BUSINESS_LINE VARCHAR2(800)       YES                                      Ngành kinh doanh của đối tượng bị cưỡng chế
+DECISION_EFFECTIVE_FROM       DATE                YES                                      Ngày bắt đầu hiệu lực quyết định cưỡng chế
+DECISION_EFFECTIVE_TO         DATE                YES                                      Ngày kết thúc hiệu lực quyết định cưỡng chế
+MSG_PACKET_ID                 NUMBER              YES     FK     MSG_PACKET.ID             FK -> msg_packet: Gói tin trao đổi liên quan
+DIRECT_TAX_AUTHORITY_CODE     VARCHAR2(400)       YES                                      Mã cơ quan thuế quản lý trực tiếp
+DIRECT_TAX_AUTHORITY_NAME     VARCHAR2(800)       YES                                      Tên cơ quan thuế quản lý trực tiếp
+
+
+BANG: TAX_ENFORCEMENT_INVOICE
+Mo ta: Thông tin quyết định cưỡng chế ngừng sử dụng hóa đơn do Cục Thuế ban hành: số QĐ, đối tượng bị cưỡng chế, thời gian hiệu lực
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
+TAXPAYER_TAX_CODE             VARCHAR2(400)       YES                                      Mã số thuế người nộp thuế bị cưỡng chế
+TAXPAYER_NAME                 VARCHAR2(800)       YES                                      Tên người nộp thuế (doanh nghiệp trên thị trường chứng khoán)
+DIRECT_TAX_AUTHORITY_CODE     VARCHAR2(400)       YES                                      Mã cơ quan thuế quản lý trực tiếp
+DIRECT_TAX_AUTHORITY_NAME     VARCHAR2(800)       YES                                      Tên cơ quan thuế quản lý trực tiếp
+ENFORCEMENT_METHOD_CODE       VARCHAR2(200)       YES                                      Mã hình thức cưỡng chế
+ENFORCEMENT_METHOD_NAME       VARCHAR2(1000)      YES                                      Tên hình thức cưỡng chế
+E_TRANSACTION_CODE            VARCHAR2(200)       YES                                      Mã giao dịch điện tử trong hệ thống Cục Thuế
+DECISION_NUMBER               VARCHAR2(400)       YES                                      Số quyết định thành lập/xử phạt
+DECISION_DATE                 DATE                YES                                      Ngày ban hành quyết định
+ENFORCED_ENTITY_BUSINESS_LINE VARCHAR2(800)       YES                                      Ngành kinh doanh của đối tượng bị cưỡng chế
+DECISION_EFFECTIVE_FROM       DATE                YES                                      Ngày bắt đầu hiệu lực quyết định cưỡng chế
+DECISION_EFFECTIVE_TO         DATE                YES                                      Ngày kết thúc hiệu lực quyết định cưỡng chế
+NOTICE_TAXPAYER_TAX_CODE      VARCHAR2(400)       YES                                      Thông báo: MST người nộp thuế
+NOTICE_TAXPAYER_NAME          VARCHAR2(800)       YES                                      Thông báo: tên người nộp thuế
+NOTICE_CODE                   VARCHAR2(400)       YES                                      Thông báo: mã thông báo cưỡng chế
+NOTICE_NAME                   VARCHAR2(800)       YES                                      Thông báo: tên thông báo cưỡng chế
+BASIS_DECISION_NUMBER         VARCHAR2(400)       YES                                      Căn cứ: số quyết định gốc
+BASIS_DECISION_DATE           DATE                YES                                      Căn cứ: ngày quyết định gốc
+NOTICE_DEBT_AMOUNT            VARCHAR2(400)       YES                                      Thông báo: số tiền nợ và tiền phạt nộp chậm
+NOTICE_DEBT_DATE              DATE                YES                                      Thông báo: ngày tính tiền nợ và tiền phạt nộp chậm
+VALIDITY_FLAG                 VARCHAR2(400)       YES                                      Cờ hiệu lực của quyết định/thông báo cưỡng chế
+MSG_PACKET_ID                 NUMBER              YES     FK     MSG_PACKET.ID             FK -> msg_packet: Gói tin trao đổi liên quan
+GUID                          VARCHAR2(200)       YES                                      Định danh duy nhất toàn cục (GUID/UUID) của bản ghi
+
+
+BANG: TAX_REGISTRATION_INFO
+Mo ta: Thông tin đăng ký thuế do Cục Thuế cung cấp: địa chỉ, vốn điều lệ, người đại diện, trạng thái hoạt động, tạm ngừng kinh doanh
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
+MSG_PACKET_ID                 NUMBER              YES     FK     MSG_PACKET.ID             FK -> msg_packet: Gói tin trao đổi liên quan
+TAXPAYER_NAME                 VARCHAR2(800)       YES                                      Tên người nộp thuế (doanh nghiệp trên thị trường chứng khoán)
+TAX_CODE                      VARCHAR2(80)        YES                                      Mã số thuế doanh nghiệp
+HQ_ADDRESS                    VARCHAR2(2000)      YES                                      Địa chỉ trụ sở chính của doanh nghiệp
+PHONE                         VARCHAR2(80)        YES                                      Số điện thoại liên hệ
+FAX                           VARCHAR2(1200)      YES                                      Số fax
+CHARTER_CAPITAL               NUMBER              YES                                      Vốn điều lệ/vốn đầu tư của chủ sở hữu (đơn vị: đồng)
+BUSINESS_LINE                 VARCHAR2(2000)      YES                                      Ngành nghề kinh doanh chính
+LICENSE_NUMBER                VARCHAR2(200)       YES                                      Số giấy phép thành lập doanh nghiệp
+ISSUE_DATE                    DATE                YES                                      Ngày cấp giấy phép thành lập
+ISSUING_AUTHORITY             VARCHAR2(800)       YES                                      Cơ quan cấp giấy phép thành lập
+DECISION_NUMBER               VARCHAR2(200)       YES                                      Số quyết định thành lập/xử phạt
+ISSUED_DATE                   DATE                YES                                      Ngày ban hành quyết định
+ISSUING_ORG                   VARCHAR2(800)       YES                                      Cơ quan ban hành quyết định
+SUPERVISING_UNIT              VARCHAR2(800)       YES                                      Đơn vị chủ quản/quản lý trực tiếp doanh nghiệp
+BUSINESS_START_DATE           DATE                YES                                      Ngày bắt đầu hoạt động kinh doanh
+LEGAL_REPRESENTATIVE_NAME     VARCHAR2(200)       YES                                      Họ tên người đại diện theo pháp luật
+ID_CARD_NUMBER                VARCHAR2(80)        YES                                      Số CMND/hộ chiếu người đại diện theo pháp luật
+SO_DIEN_THOAI                 VARCHAR2(80)        YES                                      So DT nguoi dai dien theo phap luat/ chu doanh nghiep tu nhan
+DIRECTOR_NAME                 VARCHAR2(200)       YES                                      Họ tên Giám đốc/Tổng giám đốc ký báo cáo
+DIRECTOR_PHONE                VARCHAR2(80)        YES                                      Số điện thoại Giám đốc/Tổng giám đốc
+OPERATION_STATUS              VARCHAR2(80)        YES                                      Trạng thái hoạt động DN (TrangThaiHoatDongEnum): 0/4=Đang hoạt động, 1=Ngừng HĐ đã hoàn thành thủ tục MST, 3=Ngừng HĐ chưa hoàn thành thủ tục MST, 5=Ngừng KD có thời hạn, 6=Không HĐ tại địa chỉ ĐK
+SUSPENSION_REASON             VARCHAR2(4000)      YES                                      Lý do ngừng hoạt động (nhập sau khi chọn loại ngừng)
+SUSPENSION_TYPE               VARCHAR2(800)       YES                                      Lý do ngừng hoạt động (LyDoNgungHoatDongEnum): 1=Giải thể, 2=Phá sản, 3=Chuyển đổi loại hình
+DIRECT_SUPERVISING_AUTHORITY  VARCHAR2(800)       YES                                      Cơ quan quản lý trực tiếp
+TAX_AUTHORITY_CODE            VARCHAR2(400)       YES                                      Mã cơ quan thuế ban hành thông báo cưỡng chế
+DOMESTIC_CAPITAL_CURRENCY     VARCHAR2(4000)      YES                                      Loại tiền vốn điều lệ trong nước
+FOREIGN_CAPITAL_AMOUNT        NUMBER              YES                                      Vốn điều lệ nước ngoài (đơn vị theo loại tiền)
+FOREIGN_CAPITAL_CURRENCY      VARCHAR2(200)       YES                                      Loại tiền vốn điều lệ nước ngoài
+SUPERVISING_UNIT_ADDRESS      VARCHAR2(800)       YES                                      Địa chỉ đơn vị chủ quản
+BUSINESS_ADDRESS_DESC         VARCHAR2(800)       YES                                      Mô tả địa chỉ kinh doanh
+BUSINESS_PROVINCE_CODE        VARCHAR2(400)       YES                                      Mã tỉnh/thành phố địa chỉ kinh doanh
+BUSINESS_DISTRICT_CODE        VARCHAR2(400)       YES                                      Mã quận/huyện địa chỉ kinh doanh
+BUSINESS_WARD_CODE            VARCHAR2(400)       YES                                      Mã xã/phường địa chỉ kinh doanh
+BUSINESS_PHONE                VARCHAR2(200)       YES                                      Số điện thoại địa chỉ kinh doanh
+BUSINESS_EMAIL                VARCHAR2(1200)      YES                                      Email kinh doanh
+BUSINESS_FAX                  VARCHAR2(1200)      YES                                      Số fax địa chỉ kinh doanh
+SUSPENSION_FROM_DATE          DATE                YES                                      Tạm nghỉ/từ ngày
+SUSPENSION_TO_DATE            DATE                YES                                      Tạm nghỉ/đến ngày
+SUSPENSION_REASON_TEXT        VARCHAR2(800)       YES                                      Lý do tạm nghỉ
+SUSPENSION_NOTICE_NUMBER      VARCHAR2(200)       YES                                      Số thông báo tạm nghỉ
+SUSPENSION_NOTICE_DATE        DATE                YES                                      Ngày thông báo tạm nghỉ
+OPERATION_STOP_DATE           DATE                YES                                      Ngày ngừng hoạt động
+OPERATION_STOP_REASON         VARCHAR2(800)       YES                                      Lý do ngừng hoạt động
+OPERATION_STOP_NOTE           VARCHAR2(800)       YES                                      Ghi chú ngừng hoạt động
+OPERATION_STOP_NOTICE_NUMBER  VARCHAR2(400)       YES                                      Số thông báo ngừng hoạt động
+STATUS_NAME                   VARCHAR2(800)       YES                                      Tên trạng thái người nộp thuế
+BUSINESS_LINE_CODE            VARCHAR2(200)       YES                                      Mã ngành nghề kinh doanh
+BUSINESS_PROVINCE_NAME        VARCHAR2(400)       YES                                      Tên tỉnh/thành phố kinh doanh
+BUSINESS_DISTRICT_NAME        VARCHAR2(400)       YES                                      Tên quận/huyện kinh doanh
+BUSINESS_WARD_NAME            VARCHAR2(400)       YES                                      Tên xã/phường kinh doanh
+FOREIGN_CAPITAL_RATIO         VARCHAR2(200)       YES                                      Tỷ trọng vốn nước ngoài (%)
+
+
+BANG: TAX_REG_ADDRESS_TYPE
+Mo ta: Loại địa chỉ trong thông tin đăng ký thuế của doanh nghiệp: địa chỉ trụ sở, địa chỉ kinh doanh, địa chỉ khác
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+TAX_CODE                      VARCHAR2(20)        YES                                      Mã số thuế doanh nghiệp
+TYPE                          VARCHAR2(50)        YES                                      Loại địa chỉ trong hồ sơ ĐKT: 1=Trụ sở chính, 2=Chi nhánh, 3=Địa điểm kinh doanh (theo mã Cục Thuế)
+ADDRESS_TYPE                  VARCHAR2(1000)      YES                                      Loại địa chỉ trong hồ sơ đăng ký thuế
+ADDRESS                       VARCHAR2(1000)      YES                                      Địa chỉ
+WARD                          VARCHAR2(1000)      YES                                      Phường/xã người nộp thuế
+DISTRICT                      VARCHAR2(1000)      YES                                      Tên quận/huyện
+PROVINCE                      VARCHAR2(1000)      YES                                      Tên tỉnh/thành phố
+WARD_CODE                     VARCHAR2(20)        YES                                      Mã xã/phường
+DISTRICT_CODE                 VARCHAR2(20)        YES                                      Mã quận/huyện
+COUNTRY                       VARCHAR2(20)        YES                                      Quốc gia
+EMAIL                         VARCHAR2(500)       YES                                      Địa chỉ email liên hệ
+FAX                           VARCHAR2(20)        YES                                      Số fax
+WEBSITE                       VARCHAR2(1000)      YES                                      Địa chỉ website
+PHONE                         VARCHAR2(20)        YES                                      Số điện thoại liên hệ
+PACKET_CODE                   VARCHAR2(50)        YES                                      Mã gói tin trao đổi dữ liệu (do hệ thống sinh tự động)
+
+
+BANG: TAX_REG_BUSINESS_LINE
+Mo ta: Ngành nghề kinh doanh trong thông tin đăng ký thuế: mã ngành, tên ngành theo mã gói tin
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+TAX_CODE                      VARCHAR2(50)        YES                                      Mã số thuế doanh nghiệp
+BUSINESS_LINE_CODE            VARCHAR2(100)       YES                                      Mã ngành nghề kinh doanh
+BUSINESS_LINE_NAME            VARCHAR2(1000)      YES                                      Tên ngành nghề kinh doanh
+PACKET_CODE                   VARCHAR2(50)        YES                                      Mã gói tin trao đổi dữ liệu (do hệ thống sinh tự động)
+
+
+BANG: TAX_REG_REPRESENTATIVE
+Mo ta: Thông tin người đại diện/chủ hộ kinh doanh trong đăng ký thuế: họ tên, chức vụ, loại giấy tờ, số giấy tờ
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
+REPRESENTATIVE_NAME           VARCHAR2(80)        YES                                      Họ tên người đại diện/chủ hộ kinh doanh
+POSITION                      VARCHAR2(400)       YES                                      Chức vụ (tên hoặc mã)
+ID_DOCUMENT_TYPE              VARCHAR2(400)       YES                                      Loại giấy tờ: 1010=CMND, 2080=CCCD, 1020=Hộ chiếu
+ID_DOCUMENT_NUMBER            VARCHAR2(400)       YES                                      Số giấy tờ định danh
+ISSUE_DATE                    DATE                YES                                      Ngày cấp giấy phép thành lập
+PHONE                         VARCHAR2(200)       YES                                      Số điện thoại liên hệ
+FAX                           VARCHAR2(200)       YES                                      Số fax
+EMAIL                         VARCHAR2(800)       YES                                      Địa chỉ email liên hệ
+TAX_REGISTRATION_ID           NUMBER              YES     FK     TAX_REGISTRATION_INFO.ID  FK -> tax_registration_info: Hồ sơ đăng ký thuế liên quan
+
+
+BANG: TAX_REPORT
+Mo ta: Báo cáo tài chính do Cục Thuế cung cấp cho UBCKNN: thông tin tờ khai, kỳ kê khai, MST, thông tin kiểm toán
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
+SERVICE_CODE                  VARCHAR2(400)       YES                                      Mã dịch vụ trao đổi dữ liệu
+SERVICE_NAME                  NVARCHAR2(510)      YES                                      Tên dịch vụ trao đổi dữ liệu
+SERVICE_VERSION               VARCHAR2(80)        YES                                      Phiên bản dịch vụ trao đổi dữ liệu
+SERVICE_PROVIDER_INFO         VARCHAR2(2000)      YES                                      Thông tin nhà cung cấp dịch vụ
+DECLARATION_CODE              VARCHAR2(200)       YES                                      Mã tờ khai thuế trong hệ thống Cục Thuế
+DECLARATION_NAME              NVARCHAR2(510)      YES                                      Tên tờ khai thuế
+FORM_DESCRIPTION              VARCHAR2(1000)      YES                                      Mô tả biểu mẫu tờ khai
+DECLARATION_XML_VERSION       VARCHAR2(80)        YES                                      Phiên bản tờ khai dạng XML
+DECLARATION_TYPE              VARCHAR2(80)        YES                                      Loại tờ khai thuế
+ATTEMPT_COUNT                 NUMBER              YES                                      Số lần nộp tờ khai (lần đầu, bổ sung lần 1, 2...)
+PERIOD_TYPE                   VARCHAR2(80)        YES                                      Kiểu kỳ báo cáo: Y=Năm, H=Bán niên, Q=Quý, M=Tháng
+DECLARATION_PERIOD            VARCHAR2(80)        YES                                      Kỳ kê khai thuế
+DECLARATION_FROM_DATE         VARCHAR2(80)        YES                                      Kỳ kê khai từ ngày
+DECLARATION_TO_DATE           VARCHAR2(80)        YES                                      Kỳ kê khai đến ngày
+DECLARATION_FROM_MONTH        VARCHAR2(80)        YES                                      Kỳ kê khai từ tháng
+DECLARATION_TO_MONTH          VARCHAR2(80)        YES                                      Kỳ kê khai đến tháng
+TAX_OFFICE_CODE               VARCHAR2(200)       YES                                      Mã cơ quan thuế nơi nộp
+TAX_OFFICE_NAME               NVARCHAR2(1000)     YES                                      Tên cơ quan thuế nơi nộp
+DECLARATION_DATE              VARCHAR2(80)        YES                                      Ngày lập tờ khai
+EXTENSION_REASON_CODE         VARCHAR2(80)        YES                                      Mã lý do gia hạn nộp báo cáo
+EXTENSION_REASON              NVARCHAR2(1000)     YES                                      Nội dung lý do gia hạn nộp báo cáo
+SIGNATORY                     NVARCHAR2(100)      YES                                      Người ký báo cáo (Giám đốc/TGĐ)
+SIGNED_AT                     DATE                YES                                      Ngày ký báo cáo
+BUSINESS_LINE                 VARCHAR2(800)       YES                                      Ngành nghề kinh doanh chính
+TAX_CODE                      VARCHAR2(80)        YES                                      Mã số thuế doanh nghiệp
+REPRESENTATIVE_NAME           NVARCHAR2(510)      YES                                      Họ tên người đại diện/chủ hộ kinh doanh
+TAXPAYER_ADDRESS              NVARCHAR2(510)      YES                                      Địa chỉ người nộp thuế
+WARD                          NVARCHAR2(200)      YES                                      Phường/xã người nộp thuế
+TAXPAYER_DISTRICT_CODE        VARCHAR2(80)        YES                                      Mã quận/huyện người nộp thuế
+TAXPAYER_DISTRICT_NAME        NVARCHAR2(200)      YES                                      Tên quận/huyện người nộp thuế
+TAXPAYER_PROVINCE_CODE        VARCHAR2(80)        YES                                      Mã tỉnh/thành phố người nộp thuế
+TAXPAYER_PROVINCE_NAME        NVARCHAR2(200)      YES                                      Tên tỉnh/thành phố người nộp thuế
+TAXPAYER_PHONE                VARCHAR2(400)       YES                                      Số điện thoại người nộp thuế
+TAXPAYER_FAX                  VARCHAR2(400)       YES                                      Số fax người nộp thuế
+TAXPAYER_EMAIL                VARCHAR2(200)       YES                                      Email người nộp thuế
+AUDIT_STATUS_TEXT             VARCHAR2(80)        YES                                      Trạng thái kiểm toán dạng văn bản (từ Cục Thuế)
+AUDIT_FIRM_TAX_CODE           VARCHAR2(80)        YES                                      Mã số thuế của tổ chức kiểm toán
+AUDIT_FIRM_NAME               NVARCHAR2(510)      YES                                      Tên tổ chức kiểm toán thực hiện kiểm toán báo cáo
+AUDITOR_CODE                  VARCHAR2(80)        YES                                      Mã kiểm toán viên
+AUDITOR_NAME                  NVARCHAR2(510)      YES                                      Họ tên kiểm toán viên
+AUDITED                       VARCHAR2(80)        YES                                      Cờ báo cáo tài chính đã được kiểm toán: true/false
+AUDIT_OPINION_CODE            VARCHAR2(80)        YES                                      Mã ý kiến kiểm toán (theo chuẩn mực kiểm toán)
+AUDIT_OPINION                 NVARCHAR2(1000)     YES                                      Nội dung ý kiến kiểm toán
+AUDIT_DATE                    DATE                YES                                      Ngày ký báo cáo kiểm toán
+CREATED_AT                    NUMBER              YES                                      Thời điểm tạo bản ghi
+MSG_PACKET_ID                 NUMBER              YES     FK     MSG_PACKET.ID             FK -> msg_packet: Gói tin trao đổi liên quan
+ADD_INFO_SUBMISSION_DATE      DATE                YES                                      Thông tin bổ sung: ngày nộp tờ khai
+ADD_INFO_RECEIVED_DATE        DATE                YES                                      Thông tin bổ sung: ngày tiếp nhận tờ khai
+ADD_INFO_PREPARATION_PERIOD   NVARCHAR2(510)      YES                                      Thông tin bổ sung: kỳ lập bộ hồ sơ
+ADD_INFO_SOURCE               VARCHAR2(1020)      YES                                      Thông tin bổ sung: nguồn gốc tờ khai
+ADD_INFO_ENTERED_BY           NVARCHAR2(510)      YES                                      Thông tin bổ sung: người nhập tờ khai
+ADD_INFO_RECEIVED_AT          DATE                YES                                      Thông tin bổ sung: ngày nhận tờ khai
+ADD_INFO_DECLARATION_ID       VARCHAR2(200)       YES                                      Thông tin bổ sung: ID tờ khai trong hệ thống Cục Thuế
+ADD_INFO_SENT_FROM            NVARCHAR2(510)      YES                                      Thông tin bổ sung: nơi gửi tờ khai
+ADD_INFO_RECEIVED_AT_LOCATION NVARCHAR2(510)      YES                                      Thông tin bổ sung: nơi nhận tờ khai
+GUID                          VARCHAR2(200)       YES                                      Định danh duy nhất toàn cục (GUID/UUID) của bản ghi
+
+
+BANG: TAX_REPORT_DETAIL
+Mo ta: Chi tiết chỉ tiêu trong báo cáo tài chính từ Cục Thuế: giá trị đầu năm, cuối năm, năm nay, năm trước theo từng sheet
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
+TAX_REPORT_ID                 NUMBER              YES     FK     TAX_REPORT.ID             FK -> tax_report: Báo cáo tài chính TCT liên quan
+INDICATOR_CODE                VARCHAR2(200)       YES                                      Mã chỉ tiêu trong biểu mẫu báo cáo
+INDICATOR_NAME                VARCHAR2(800)       YES                                      Tên chỉ tiêu trong biểu mẫu báo cáo
+EXPLANATION_NOTE              VARCHAR2(400)       YES                                      Thuyết minh/ghi chú cho chỉ tiêu báo cáo
+YEAR_END_VALUE                VARCHAR2(400)       YES                                      Giá trị cuối năm báo cáo (đầu kỳ của năm sau)
+YEAR_BEGIN_VALUE              VARCHAR2(400)       YES                                      Giá trị đầu năm báo cáo (số dư đầu kỳ)
+CURRENT_YEAR_VALUE            VARCHAR2(400)       YES                                      Giá trị năm nay (kỳ hiện tại)
+PRIOR_YEAR_VALUE              VARCHAR2(400)       YES                                      Giá trị năm trước (kỳ so sánh)
+SHEET_NAME                    VARCHAR2(400)       YES                                      Mã sheet báo cáo (LoaiBaoCaoChiTietEnum/TEN_SHEET): 1=BCDKT, 2=KQKD, 3=KQKDHD, 4=LCTT-TT, 5=LCTT-GT, 6=CTTKC, 9=THBDVCSH
+PREPARER_NAME                 VARCHAR2(200)       YES                                      Họ tên người lập biểu
+CHIEF_ACCOUNTANT              VARCHAR2(200)       YES                                      Họ tên kế toán trưởng
+PREPARATION_DATE              VARCHAR2(200)       YES                                      Ngày lập biểu
+DIRECTOR_NAME                 VARCHAR2(50)        YES                                      Họ tên Giám đốc/Tổng giám đốc ký báo cáo
+PRACTICE_CERT_NUMBER          VARCHAR2(200)       YES                                      Số chứng chỉ hành nghề kiểm toán
+AUDIT_SERVICE_UNIT            VARCHAR2(1020)      YES                                      Đơn vị cung cấp dịch vụ kiểm toán
+GOING_CONCERN_YES             VARCHAR2(80)        YES                                      Cờ hoạt động liên tục: true/false
+GOING_CONCERN_NO              VARCHAR2(80)        YES                                      Cờ không hoạt động liên tục: true/false
+INCREASE_PRIOR_YEAR           VARCHAR2(50)        YES                                      Số tăng năm trước
+CURRENT_YEAR_AMOUNT           VARCHAR2(50)        YES                                      Số tiền/giá trị năm nay
+PREVIOUS_YEAR_AMOUNT          VARCHAR2(50)        YES                                      Số tiền/giá trị năm ngoái
+BEGIN_BALANCE_CURRENT_YEAR    VARCHAR2(50)        YES                                      Số dư đầu năm nay
+END_BALANCE_CURRENT_YEAR      VARCHAR2(50)        YES                                      Số dư cuối năm nay
+END_BALANCE_PRIOR_YEAR        VARCHAR2(50)        YES                                      Số dư cuối năm trước
+BEGIN_BALANCE_PRIOR_YEAR      VARCHAR2(50)        YES                                      Số dư đầu năm trước
+INCREASE_CURRENT_YEAR         VARCHAR2(50)        YES                                      Số tăng năm nay
+DECREASE_CURRENT_YEAR         VARCHAR2(50)        YES                                      Số giảm năm nay
+DECREASE_PRIOR_YEAR           VARCHAR2(50)        YES                                      Số giảm năm trước
+
+
+BANG: TAX_VIOLATION_HANDLING
+Mo ta: Thông tin xử lý vi phạm pháp luật về thuế do Cục Thuế cung cấp: số QĐ xử lý, tên đối tượng, kỳ thanh tra, tiền phạt
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
+HANDLING_DECISION_NUMBER      VARCHAR2(400)       YES                                      Số quyết định xử lý vi phạm pháp luật về thuế
+SUBJECT_NAME                  VARCHAR2(800)       YES                                      Tên tổ chức/cá nhân đối tượng
+TAX_CODE                      VARCHAR2(400)       YES                                      Mã số thuế doanh nghiệp
+INSPECTION_PERIOD             VARCHAR2(400)       YES                                      Kỳ thanh tra/kiểm tra thuế tại trụ sở doanh nghiệp
+VIOLATION_FINE                VARCHAR2(4000)      YES                                      Số tiền phạt hành vi vi phạm
+ADMIN_VIOLATION_FINE          VARCHAR2(4000)      YES                                      Số tiền phạt hành vi vi phạm hành chính về thuế
+TAX_RECOVERY_AMOUNT           VARCHAR2(400)       YES                                      Số tiền truy thu (thuế, tiền nộp chậm)
+MSG_PACKET_ID                 NUMBER              YES     FK     MSG_PACKET.ID             FK -> msg_packet: Gói tin trao đổi liên quan
+ISSUING_ORG                   VARCHAR2(400)       YES                                      Cơ quan ban hành quyết định
+ISSUING_TAX_AUTHORITY_NAME    VARCHAR2(800)       YES                                      Tên cơ quan thuế ban hành quyết định xử lý
+DECISION_TYPE                 VARCHAR2(800)       YES                                      Loại quyết định: xử phạt hành chính, truy thu, đình chỉ...
+DECISION_DATE                 DATE                YES                                      Ngày ban hành quyết định
+TOTAL_FINE_AMOUNT             VARCHAR2(400)       YES                                      Tổng số tiền phạt theo quyết định (đơn vị: đồng)
+OTHER_FINE_AMOUNT             VARCHAR2(400)       YES                                      Tổng tiền phạt khác (không phải phạt hành chính)
+NAM_BAT_DAU                   NUMBER(4,0)         YES                                      Nam bat dau
+NAM_KET_THUC                  NUMBER(4,0)         YES                                      Nam ket thuc
+
+
+BANG: TTCS_REQUEST_TAX_CODE_CACHE
+Mo ta: Cache MST/tên DN phục vụ yêu cầu thông tin TTCS (tra cứu nhanh theo hệ thống nguồn)
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+SYSTEM_CODE                   NUMBER(2,0)         NO      PK                               Mã hệ thống nguồn dữ liệu cache
+TAX_CODE                      VARCHAR2(100)       NO      PK                               Mã số thuế được cache
+NAME                          VARCHAR2(500)       YES                                      Tên doanh nghiệp cache
+SOURCE_ID                     NUMBER              YES                                      ID bản ghi nguồn trên hệ thống gốc
+REFRESHED_AT                  TIMESTAMP(6)        NO                                       Thời điểm làm mới cache lần cuối
+
+
+BANG: T_TRIG_Q_TEST
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               
+N                             NUMBER              YES                                      
+
+
+BANG: VIOLATION_ACT
+Mo ta: Chi tiết hành vi vi phạm trong hồ sơ thanh tra hoặc quyết định xử phạt: mã CK, số tài khoản, số tiền phạt, biện pháp khắc phục
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(200)       YES                                      Khóa chính của bản ghi (ID số tự tăng)
+SUBJECT_PROFILE_ID            VARCHAR2(200)       YES                                      FK -> subject_profile: Hồ sơ đối tượng có hành vi này (khi chuyển hồ sơ về thanh tra)
+PENALTY_DECISION_ID           VARCHAR2(200)       YES                                      FK -> penalty_decision: Quyết định xử phạt chứa hành vi này
+VIOLATION_ACT_ID              VARCHAR2(4000)      YES                                      FK -> cat_violation_act: Loại hành vi vi phạm từ danh mục
+FINE_AMOUNT                   NUMBER              YES                                      Số tiền phạt đối với hành vi vi phạm (đơn vị: đồng)
+LEGAL_BASIS_DOC               VARCHAR2(4000)      YES                                      Văn bản pháp luật áp dụng làm căn cứ xử lý
+VIOLATION_HANDLING_DOC        VARCHAR2(4000)      YES                                      Văn bản xử lý vi phạm tương ứng
+REMEDIAL_MEASURE              VARCHAR2(1020)      YES                                      Biện pháp khắc phục hậu quả áp dụng
+CREATED_BY                    VARCHAR2(200)       YES                                      Tài khoản/tên người tạo bản ghi
+CREATED_AT                    DATE                YES                                      Thời điểm tạo bản ghi
+VIOLATION_ACT_NAME            VARCHAR2(4000)      YES                                      Tên hành vi vi phạm pháp luật chứng khoán
+SECURITIES_CODE               VARCHAR2(200)       YES                                      Mã chứng khoán liên quan đến hành vi vi phạm giao dịch
+ACCOUNT_NUMBER                VARCHAR2(400)       YES                                      Số tài khoản chứng khoán liên quan
+VIOLATION_TYPE                NUMBER              YES                                      Loại vi phạm: 1=Giao dịch nội gián, 2=Thao túng, 3=Khác
+SHARES_QUANTITY               NUMBER              YES                                      Số lượng cổ phần liên quan đến hành vi vi phạm
+HOLDING_RATIO                 VARCHAR2(200)       YES                                      Tỷ lệ nắm giữ cổ phần của đối tượng vi phạm (%)
+BUY_QUANTITY                  NUMBER              YES                                      Số lượng cổ phần mua vào trong giao dịch vi phạm
+SELL_QUANTITY                 NUMBER              YES                                      Số lượng cổ phần bán ra trong giao dịch vi phạm
+TRANSACTION_DATE              VARCHAR2(200)       YES                                      Ngày thực hiện giao dịch vi phạm
+
+

@@ -53,7 +53,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=IDS.COMPANY_ENTITY_ROLE"
+  classification_context: "SOURCE_SYSTEM=IDS_COMPANY_ENTITY_ROLE"
   etl_derived_value: "IDS_COMPANY_ENTITY_ROLE"
   data_type: "string"
 - attribute_name: "Public Company Id"
@@ -65,7 +65,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.COMPANY_ENTITY_ROLE.COMPANY_PROFILE_ID"
-  comment: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES',\
+  comment: "FK target: public_company.pc_id. Hash: hash_id('IDS_COMPANY_PROFILES',\
     \ COMPANY_PROFILE_ID)."
   classification_context: null
   etl_derived_value: null
@@ -93,7 +93,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.COMPANY_ENTITY_ROLE.LEGAL_ENTITY_ID"
-  comment: "FK target: legal_entity.legal_entity_id. Hash: hash_id('IDS.LEGAL_ENTITIES',\
+  comment: "FK target: legal_entity.legal_entity_id. Hash: hash_id('IDS_LEGAL_ENTITIES',\
     \ LEGAL_ENTITY_ID)."
   classification_context: null
   etl_derived_value: null
@@ -125,19 +125,6 @@ attributes:
   classification_context: "IDS_ENTITY_ROLE_TYPE"
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Active Indicator"
-  physical_name: "active_ind"
-  description: "Trạng thái (1-Hoạt động, 0-Không hoạt động)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.COMPANY_ENTITY_ROLE.ACTIVE_FLG"
-  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
 - attribute_name: "Effective From Date"
   physical_name: "effective_from_dt"
   description: "Ngày bắt đầu hiệu lực."
@@ -164,16 +151,3 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "date"
-- attribute_name: "Deleted Indicator"
-  physical_name: "deleted_ind"
-  description: "Đánh dấu xóa mềm (0 - Chưa xóa; 1 - Đã xóa)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.COMPANY_ENTITY_ROLE.DELETE_FLG"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"

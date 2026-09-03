@@ -33,7 +33,7 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. BCV: \"[Group] Group\". Hash: hash_id('NHNCK.APPLICATION_GROUPS',\
+  comment: "PK surrogate. BCV: \"[Group] Group\". Hash: hash_id('NHNCK_APPLICATION_GROUPS',\
     \ ID)."
   classification_context: null
   etl_derived_value: null
@@ -60,7 +60,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=NHNCK.APPLICATION_GROUPS"
+  classification_context: "SOURCE_SYSTEM=NHNCK_APPLICATION_GROUPS"
   etl_derived_value: "NHNCK_APPLICATION_GROUPS"
   data_type: "string"
 - attribute_name: "Group Name"
@@ -100,7 +100,7 @@ attributes:
   - "NHNCK.APPLICATION_GROUPS.DECISION_ID"
   comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
     \ Cần ETL crosswalk sang NHNCK.DECISIONS: APPLICATION_GROUPS.DECISION_ID = DECISIONS.ID\
-    \ để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK.DECISIONS', DECISION_NUMBER)\
+    \ để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS', DECISION_NUMBER)\
     \ | Trước đây hash trực tiếp theo DECISION_ID (ID kỹ thuật) gây sai lệch với Id\
     \ của bảng main (hash từ DECISION_NUMBER) — đã sửa sang crosswalk 2026-08-14."
   classification_context: null
@@ -184,9 +184,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_GROUPS.APPLICATION_TYPE"
-  comment: "Scheme: NHNCK.APPLICATIONS.APPLICATION_TYPE. Dùng chung value set với\
-    \ NHNCK.APPLICATIONS.APPLICATION_TYPE."
-  classification_context: "NHNCK.APPLICATIONS.APPLICATION_TYPE"
+  comment: "SCHEMA_CODE=NHNCK.APPLICATIONS.APPLICATION_TYPE"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Submitted Date"
@@ -213,7 +212,7 @@ attributes:
   - "NHNCK.APPLICATION_GROUPS.SUBMITED_BY"
   comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
     \ Cần ETL crosswalk sang NHNCK.USERS: APPLICATION_GROUPS.SUBMITED_BY = USERS.ID\
-    \ để xác nhận USERNAME sau đó hash_id('IAM.USERS', USERNAME) | Chưa xác nhận value\
+    \ để xác nhận USERNAME sau đó hash_id('IAM_USERS', USERNAME) | Chưa xác nhận value\
     \ set khớp danh mục IAM.USERS — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
@@ -242,7 +241,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_GROUPS.STATUS"
-  comment: "Scheme: NHNCK.APPLICATION_GROUPS.STATUS."
-  classification_context: "NHNCK.APPLICATION_GROUPS.STATUS"
+  comment: "SCHEMA_CODE=NHNCK.APPLICATION_GROUPS.STATUS"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"

@@ -61,7 +61,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=NHNCK.APPLICATION_RE_EXAMS"
+  classification_context: "SOURCE_SYSTEM=NHNCK_APPLICATION_RE_EXAMS"
   etl_derived_value: "NHNCK_APPLICATION_RE_EXAMS"
   data_type: "string"
 - attribute_name: "Securities Practitioner License Application Id"
@@ -75,7 +75,7 @@ attributes:
   - "NHNCK.APPLICATION_RE_EXAMS.APPLICATION_ID"
   comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL crosswalk\
     \ sang NHNCK.APPLICATIONS: APPLICATION_RE_EXAMS.APPLICATION_ID = APPLICATIONS.ID\
-    \ để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK.APPLICATIONS', APPLICATION_CODE)\
+    \ để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS', APPLICATION_CODE)\
     \ | Trước đây hash trực tiếp theo APPLICATION_ID (ID kỹ thuật) gây sai lệch với\
     \ Id của bảng main (hash từ APPLICATION_CODE) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
@@ -104,7 +104,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_RE_EXAMS.EXAM_DETAIL_ID"
-  comment: "FK target: sp_qualification_examination_assessment_result.sp_qualification_examination_assessment_result_id. Hash: hash_id('NHNCK.EXAM_DETAILS', EXAM_DETAIL_ID)."
+  comment: "FK target: sp_qualification_examination_assessment_result.sp_qualification_examination_assessment_result_id. Hash: hash_id('NHNCK_EXAM_DETAILS', EXAM_DETAIL_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -133,7 +133,7 @@ attributes:
   - "NHNCK.APPLICATION_RE_EXAMS.RE_APPLICATION_ID"
   comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL crosswalk\
     \ sang NHNCK.APPLICATIONS: APPLICATION_RE_EXAMS.RE_APPLICATION_ID = APPLICATIONS.ID\
-    \ để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK.APPLICATIONS', APPLICATION_CODE)\
+    \ để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS', APPLICATION_CODE)\
     \ | Trước đây hash trực tiếp theo RE_APPLICATION_ID (ID kỹ thuật) gây sai lệch\
     \ với Id của bảng main (hash từ APPLICATION_CODE) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
@@ -161,7 +161,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_RE_EXAMS.STATUS"
-  comment: "Scheme: NHNCK.APPLICATION_RE_EXAMS.STATUS."
-  classification_context: "NHNCK.APPLICATION_RE_EXAMS.STATUS"
+  comment: "SCHEMA_CODE=NHNCK.APPLICATION_RE_EXAMS.STATUS"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"

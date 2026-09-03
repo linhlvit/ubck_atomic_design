@@ -30,7 +30,7 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. BCV: \"[Group] Group\". Hash: hash_id('NHNCK.CERTIFICATE_RECORD_GROUPS',\
+  comment: "PK surrogate. BCV: \"[Group] Group\". Hash: hash_id('NHNCK_CERTIFICATE_RECORD_GROUPS',\
     \ ID)."
   classification_context: null
   etl_derived_value: null
@@ -57,7 +57,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=NHNCK.CERTIFICATE_RECORD_GROUPS"
+  classification_context: "SOURCE_SYSTEM=NHNCK_CERTIFICATE_RECORD_GROUPS"
   etl_derived_value: "NHNCK_CERTIFICATE_RECORD_GROUPS"
   data_type: "string"
 - attribute_name: "Group Name"
@@ -95,9 +95,8 @@ attributes:
   status: "pending"
   source_columns:
   - "NHNCK.CERTIFICATE_RECORD_GROUPS.TYPE"
-  comment: "Scheme: NHNCK.CERTIFICATE_RECORD_GROUPS.TYPE. Chưa xác nhận giá trị cụ\
-    \ thể — cần profile dữ liệu nguồn."
-  classification_context: "NHNCK.CERTIFICATE_RECORD_GROUPS.TYPE"
+  comment: "SCHEMA_CODE=NHNCK.CERTIFICATE_RECORD_GROUPS.TYPE"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner License Decision Document Id"
@@ -111,7 +110,7 @@ attributes:
   - "NHNCK.CERTIFICATE_RECORD_GROUPS.DECISION_ID"
   comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
     \ Cần ETL crosswalk sang NHNCK.DECISIONS: CERTIFICATE_RECORD_GROUPS.DECISION_ID\
-    \ = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK.DECISIONS',\
+    \ = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS',\
     \ DECISION_NUMBER) | Trước đây hash trực tiếp theo DECISION_ID (ID kỹ thuật) gây\
     \ sai lệch với Id của bảng main (hash từ DECISION_NUMBER) — đã sửa sang crosswalk\
     \ 2026-08-14."
@@ -195,7 +194,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.CERTIFICATE_RECORD_GROUPS.STATUS"
-  comment: "Scheme: NHNCK.CERTIFICATE_RECORD_GROUPS.STATUS."
-  classification_context: "NHNCK.CERTIFICATE_RECORD_GROUPS.STATUS"
+  comment: "SCHEMA_CODE=NHNCK.CERTIFICATE_RECORD_GROUPS.STATUS"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"

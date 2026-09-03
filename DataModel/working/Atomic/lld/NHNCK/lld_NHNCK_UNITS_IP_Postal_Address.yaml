@@ -33,7 +33,7 @@ attributes:
   comment: "FK target: ra_organization_unit.ra_ou_id. Shared entity — không có PK\
     \ surrogate riêng. Nguồn IP Postal Address chính là NHNCK.UNITS (cùng dòng dữ\
     \ liệu với Regulatory Authority Organization Unit, không cần crosswalk qua bảng\
-    \ khác) nên chỉ cần đổi cơ sở hash: hash_id('NHNCK.UNITS', UNIT_CODE) | Trước\
+    \ khác) nên chỉ cần đổi cơ sở hash: hash_id('NHNCK_UNITS', UNIT_CODE) | Trước\
     \ đây hash trực tiếp theo ID (ID kỹ thuật) gây sai lệch với Id của bảng main\
     \ (hash từ UNIT_CODE) — đã sửa 2026-07-27."
   classification_context: null
@@ -61,7 +61,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: null
-  classification_context: "SOURCE_SYSTEM=NHNCK.UNITS"
+  classification_context: "SOURCE_SYSTEM=NHNCK_UNITS"
   etl_derived_value: "NHNCK_UNITS"
   data_type: "string"
 - attribute_name: "Address Type Code"

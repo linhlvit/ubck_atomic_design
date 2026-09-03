@@ -53,7 +53,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=IDS.STATE_CAPITAL"
+  classification_context: "SOURCE_SYSTEM=IDS_STATE_CAPITAL"
   etl_derived_value: "IDS_STATE_CAPITAL"
   data_type: "string"
 - attribute_name: "Public Company Id"
@@ -65,7 +65,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.STATE_CAPITAL.COMPANY_PROFILE_ID"
-  comment: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES',\
+  comment: "FK target: public_company.pc_id. Hash: hash_id('IDS_COMPANY_PROFILES',\
     \ COMPANY_PROFILE_ID)."
   classification_context: null
   etl_derived_value: null
@@ -163,16 +163,3 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "decimal(5,2)"
-- attribute_name: "Deleted Indicator"
-  physical_name: "deleted_ind"
-  description: "Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.STATE_CAPITAL.DELETE_FLG"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"

@@ -32,7 +32,7 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. BCV: \"[Business Activity] Status Review\". Hash: hash_id('NHNCK.VERIFY_APPLICATION_STATUSES',\
+  comment: "PK surrogate. BCV: \"[Business Activity] Status Review\". Hash: hash_id('NHNCK_VERIFY_APPLICATION_STATUSES',\
     \ ID)."
   classification_context: null
   etl_derived_value: null
@@ -59,7 +59,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=NHNCK.VERIFY_APPLICATION_STATUSES"
+  classification_context: "SOURCE_SYSTEM=NHNCK_VERIFY_APPLICATION_STATUSES"
   etl_derived_value: "NHNCK_VERIFY_APPLICATION_STATUSES"
   data_type: "string"
 - attribute_name: "Securities Practitioner License Application Id"
@@ -73,7 +73,7 @@ attributes:
   - "NHNCK.VERIFY_APPLICATION_STATUSES.APPLICATION_ID"
   comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL crosswalk\
     \ sang NHNCK.APPLICATIONS: VERIFY_APPLICATION_STATUSES.APPLICATION_ID = APPLICATIONS.ID\
-    \ để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK.APPLICATIONS', APPLICATION_CODE)."
+    \ để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS', APPLICATION_CODE)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -102,9 +102,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_STATUSES.STATUS_CODE"
-  comment: "Scheme: SCHEMA_CODE. Cần ETL crosswalk sang NHNCK.APPLICATION_STATUSES:\
-    \ VERIFY_APPLICATION_STATUSES.STATUS_ID = APPLICATION_STATUSES.ID để lấy STATUS_CODE."
-  classification_context: "SCHEMA_CODE=NHNCK.APPLICATION_STATUSES"
+  comment: "SCHEMA_CODE=NHNCK.APPLICATION_STATUSES"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Previous Application Status Code"
@@ -116,10 +115,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_STATUSES.STATUS_CODE"
-  comment: "Scheme: SCHEMA_CODE. Cần ETL crosswalk sang NHNCK.APPLICATION_STATUSES:\
-    \ VERIFY_APPLICATION_STATUSES.PREV_STATUS_ID = APPLICATION_STATUSES.ID để lấy\
-    \ STATUS_CODE."
-  classification_context: "SCHEMA_CODE=NHNCK.APPLICATION_STATUSES"
+  comment: "SCHEMA_CODE=NHNCK.APPLICATION_STATUSES"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Review Reason"
@@ -198,7 +195,7 @@ attributes:
   - "NHNCK.VERIFY_APPLICATION_STATUSES.VERIFIED_BY"
   comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
     \ Cần ETL crosswalk sang NHNCK.USERS: VERIFY_APPLICATION_STATUSES.VERIFIED_BY\
-    \ = USERS.ID để xác nhận USERNAME sau đó hash_id('IAM.USERS', USERNAME) | Chưa\
+    \ = USERS.ID để xác nhận USERNAME sau đó hash_id('IAM_USERS', USERNAME) | Chưa\
     \ xác nhận value set khớp danh mục IAM.USERS — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
@@ -227,7 +224,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.VERIFY_APPLICATION_STATUSES.STATUS"
-  comment: "Scheme: NHNCK.VERIFY_APPLICATION_STATUSES.STATUS."
-  classification_context: "NHNCK.VERIFY_APPLICATION_STATUSES.STATUS"
+  comment: "SCHEMA_CODE=NHNCK.VERIFY_APPLICATION_STATUSES.STATUS"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"

@@ -58,7 +58,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=IDS.EVALUATION_DETAILS"
+  classification_context: "SOURCE_SYSTEM=IDS_EVALUATION_DETAILS"
   etl_derived_value: "IDS_EVALUATION_DETAILS"
   data_type: "string"
 - attribute_name: "Public Company Evaluation Id"
@@ -71,7 +71,7 @@ attributes:
   source_columns:
   - "IDS.EVALUATION_DETAILS.EVALUATION_ID"
   comment: "FK target: pc_evaluation.pc_evaluation_id. Hash:\
-    \ hash_id('IDS.EVALUATIONS', EVALUATION_ID). Nguồn không có fk_note tường minh\
+    \ hash_id('IDS_EVALUATIONS', EVALUATION_ID). Nguồn không có fk_note tường minh\
     \ nhưng ngữ cảnh detail-table xác nhận đây là FK đến EVALUATIONS."
   classification_context: null
   etl_derived_value: null
@@ -101,7 +101,7 @@ attributes:
   - "IDS.EVALUATION_DETAILS.CRITERION_ID"
   comment: "FK target: pc_evaluation_criterion.pc_evaluation_criterion_id. Cần ETL\
     \ crosswalk sang IDS.EVALUATION_CRITERIA: EVALUATION_DETAILS.CRITERION_ID = EVALUATION_CRITERIA.ID\
-    \ để xác nhận CRITERION_CD sau đó hash_id('IDS.EVALUATION_CRITERIA', CRITERION_CD)\
+    \ để xác nhận CRITERION_CD sau đó hash_id('IDS_EVALUATION_CRITERIA', CRITERION_CD)\
     \ | Trước đây hash trực tiếp theo CRITERION_ID (ID kỹ thuật) gây sai lệch với\
     \ Id của bảng main (hash từ CRITERION_CD) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null

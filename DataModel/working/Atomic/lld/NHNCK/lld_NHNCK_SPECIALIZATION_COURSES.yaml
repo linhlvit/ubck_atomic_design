@@ -66,7 +66,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
-  classification_context: "SOURCE_SYSTEM=NHNCK.SPECIALIZATION_COURSES"
+  classification_context: "SOURCE_SYSTEM=NHNCK_SPECIALIZATION_COURSES"
   etl_derived_value: "NHNCK_SPECIALIZATION_COURSES"
   data_type: "string"
 - attribute_name: "Training Class Name"
@@ -104,9 +104,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.SPECIALIZATIONS.SPECIALIZATION_CODE"
-  comment: "Scheme: SCHEMA_CODE. Cần ETL crosswalk sang NHNCK.SPECIALIZATIONS:\
-    \ SPECIALIZATION_COURSES.SPECIALIZATION_ID = SPECIALIZATIONS.ID để lấy SPECIALIZATION_CODE."
-  classification_context: "SCHEMA_CODE=NHNCK.SPECIALIZATIONS"
+  comment: "SCHEMA_CODE=NHNCK.SPECIALIZATIONS"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Exam Start Date"
@@ -159,7 +158,7 @@ attributes:
   - "NHNCK.SPECIALIZATION_COURSES.PROVINCE_ID"
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'PROVINCE'). Cần ETL crosswalk sang NHNCK.PROVINCES: SPECIALIZATION_COURSES.PROVINCE_ID\
-    \ = PROVINCES.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT.PROVINCE_NEW',\
+    \ = PROVINCES.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT_PROVINCE_NEW',\
     \ PROVINCE_CODE) | NHNCK.PROVINCES ngừng thiết kế Atomic entity riêng — chỉ dùng\
     \ để crosswalk. Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu\
     \ trước go-live."

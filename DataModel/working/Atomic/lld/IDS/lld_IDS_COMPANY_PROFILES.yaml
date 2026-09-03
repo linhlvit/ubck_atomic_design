@@ -59,7 +59,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=IDS.COMPANY_PROFILES"
+  classification_context: "SOURCE_SYSTEM=IDS_COMPANY_PROFILES"
   etl_derived_value: "IDS_COMPANY_PROFILES"
   data_type: "string"
 - attribute_name: "Public Company Name"
@@ -167,7 +167,7 @@ attributes:
   - "IDS.COMPANY_PROFILES.CATEGORY_L1_ID"
   comment: "FK target: cl_business_line.cl_business_line_id. Cần ETL crosswalk\
     \ sang IDS.CATEGORIES: COMPANY_PROFILES.CATEGORY_L1_ID = CATEGORIES.ID để xác\
-    \ nhận INDUSTRY_CD sau đó hash_id('ECAT.BUSINESS_LINE_LEVEL_1', INDUSTRY_CD)\
+    \ nhận INDUSTRY_CD sau đó hash_id('ECAT_BUSINESS_LINE_LEVEL_1', INDUSTRY_CD)\
     \ | IDS.CATEGORIES chỉ dùng làm bảng join, không tự sinh entity — quyết định\
     \ 2026-07-23. Chưa xác nhận value set khớp danh mục ECAT.BUSINESS_LINE_LEVEL_1\
     \ — cần profile dữ liệu trước go-live. Xem IDS_HLD_Tier1.md T1-13."
@@ -200,7 +200,7 @@ attributes:
   - "IDS.COMPANY_PROFILES.CATEGORY_L2_ID"
   comment: "FK target: cl_business_line.cl_business_line_id. Cần ETL crosswalk\
     \ sang IDS.CATEGORIES: COMPANY_PROFILES.CATEGORY_L2_ID = CATEGORIES.ID để xác\
-    \ nhận INDUSTRY_CD sau đó hash_id('ECAT.BUSINESS_LINE_LEVEL_2', INDUSTRY_CD)\
+    \ nhận INDUSTRY_CD sau đó hash_id('ECAT_BUSINESS_LINE_LEVEL_2', INDUSTRY_CD)\
     \ | IDS.CATEGORIES chỉ dùng làm bảng join, không tự sinh entity — quyết định\
     \ 2026-07-23. Chưa xác nhận value set khớp danh mục ECAT.BUSINESS_LINE_LEVEL_2\
     \ — cần profile dữ liệu trước go-live. Xem ghi chú tại Business Line Level 1\
@@ -705,16 +705,3 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Deleted Indicator"
-  physical_name: "deleted_ind"
-  description: "Trạng thái xoá."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.COMPANY_PROFILES.DELETE_FLG"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"

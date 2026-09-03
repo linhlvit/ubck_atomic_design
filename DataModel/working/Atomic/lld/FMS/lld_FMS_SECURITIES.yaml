@@ -59,7 +59,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM."
-  classification_context: "SOURCE_SYSTEM=FMS.SECURITIES"
+  classification_context: "SOURCE_SYSTEM=FMS_SECURITIES"
   etl_derived_value: "FMS_SECURITIES"
   data_type: "string"
 - attribute_name: "Operation Status Code"
@@ -204,7 +204,7 @@ attributes:
   status: "pending"
   source_columns:
   - "FMS.SECURITIES.INSIDER_ID"
-  comment: "FK target: fmc_insider.fmc_insider_id. Hash: hash_id('FMS.INSIDER', INSIDER_ID).\
+  comment: "FK target: fmc_insider.fmc_insider_id. Hash: hash_id('FMS_INSIDER', INSIDER_ID).\
     \ Pending — entity thiết kế ở Tier 5."
   classification_context: null
   etl_derived_value: null
@@ -286,7 +286,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.SECURITIES.BANK_ID"
-  comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS.BANK_MONI',\
+  comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS_BANK_MONI',\
     \ BANK_ID)."
   classification_context: null
   etl_derived_value: null
@@ -605,7 +605,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.SECURITIES.PAR_ID"
-  comment: "Self-reference. FK target: fund_management_company.fmc_id. Hash: hash_id('FMS.SECURITIES',\
+  comment: "Self-reference. FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
     \ PAR_ID)."
   classification_context: null
   etl_derived_value: null
@@ -664,7 +664,7 @@ attributes:
   - "FMS.SECURITIES.EVENT_TYPE_ID"
   comment: "FK target: cl_fms_event_type.cl_fms_event_tp_id. Cần ETL crosswalk sang\
     \ FMS.EVENT_TYPE: SECURITIES.EVENT_TYPE_ID = EVENT_TYPE.ID để xác nhận ITEM_NAME\
-    \ sau đó hash_id('FMS.EVENT_TYPE', ITEM_NAME) |"
+    \ sau đó hash_id('FMS_EVENT_TYPE', ITEM_NAME) |"
   classification_context: null
   etl_derived_value: null
   data_type: "string"

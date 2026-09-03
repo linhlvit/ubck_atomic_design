@@ -68,7 +68,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM."
-  classification_context: "SOURCE_SYSTEM=FMS.VIOLT"
+  classification_context: "SOURCE_SYSTEM=FMS_VIOLT"
   etl_derived_value: "FMS_VIOLT"
   data_type: "string"
 - attribute_name: "System Object Type Code"
@@ -96,7 +96,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.VIOLT.SEC_ID"
-  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS.SECURITIES',\
+  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
     \ SEC_ID). Nullable — chỉ có giá trị khi System Object Type Code = QLQ."
   classification_context: null
   etl_derived_value: null
@@ -125,7 +125,7 @@ attributes:
   source_columns:
   - "FMS.VIOLT.PR_WID"
   comment: "FK target: member_warning_parameter.member_warning_parameter_id. Hash:\
-    \ hash_id('FMS.PARA_WARN', PR_WID)."
+    \ hash_id('FMS_PARA_WARN', PR_WID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -153,7 +153,7 @@ attributes:
   source_columns:
   - "FMS.VIOLT.CDT_WID"
   comment: "FK target: member_warning_condition.member_warning_condition_id. Hash:\
-    \ hash_id('FMS.CDT_WARN', CDT_WID). Pending — entity thiết kế ở Tier 2."
+    \ hash_id('FMS_CDT_WARN', CDT_WID). Pending — entity thiết kế ở Tier 2."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -180,7 +180,7 @@ attributes:
   status: "pending"
   source_columns:
   - "FMS.VIOLT.FUD_ID"
-  comment: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS.FUNDS',\
+  comment: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS_FUNDS',\
     \ FUD_ID). Pending — entity thiết kế ở Tier 2. Nullable — chỉ có giá trị khi System\
     \ Object Type Code = QĐT."
   classification_context: null
@@ -209,7 +209,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.VIOLT.BKM_ID"
-  comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS.BANK_MONI',\
+  comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS_BANK_MONI',\
     \ BKM_ID). Nullable — chỉ có giá trị khi System Object Type Code = BKGS."
   classification_context: null
   etl_derived_value: null
@@ -237,7 +237,7 @@ attributes:
   status: "pending"
   source_columns:
   - "FMS.VIOLT.FR_BR_ID"
-  comment: "FK target: foreign_fm_ou.foreign_fm_ou_id. Hash: hash_id('FMS.FOR_BRCH',\
+  comment: "FK target: foreign_fm_ou.foreign_fm_ou_id. Hash: hash_id('FMS_FOR_BRCH',\
     \ FR_BR_ID). Pending — entity thiết kế ở Tier 2. Nullable — chỉ có giá trị khi\
     \ đối tượng là VPĐD/CN QLQ nước ngoài."
   classification_context: null
@@ -267,7 +267,7 @@ attributes:
   source_columns:
   - "FMS.VIOLT.DISTRIBUTOR_ID"
   comment: "FK target: securities_distribution_agent.securities_distribution_agent_id.\
-    \ Hash: hash_id('FMS.DISTRIBUTOR_AGENT', DISTRIBUTOR_ID). Pending — entity thiết\
+    \ Hash: hash_id('FMS_DISTRIBUTOR_AGENT', DISTRIBUTOR_ID). Pending — entity thiết\
     \ kế ở Tier 5."
   classification_context: null
   etl_derived_value: null
@@ -296,7 +296,7 @@ attributes:
   status: "pending"
   source_columns:
   - "FMS.VIOLT.TRANSFER_AGENT_ID"
-  comment: "FK target: transfer_agent.transfer_agent_id. Hash: hash_id('FMS.TRANSFER_AGENT',\
+  comment: "FK target: transfer_agent.transfer_agent_id. Hash: hash_id('FMS_TRANSFER_AGENT',\
     \ TRANSFER_AGENT_ID). Pending — entity thiết kế ở Tier 5."
   classification_context: null
   etl_derived_value: null
@@ -325,7 +325,7 @@ attributes:
   source_columns:
   - "FMS.VIOLT.PENSION_AGENT_ID"
   comment: "FK target: pension_service_organization.pension_service_organization_id.\
-    \ Hash: hash_id('FMS.PENSION_AGENT', PENSION_AGENT_ID). Pending — entity thiết\
+    \ Hash: hash_id('FMS_PENSION_AGENT', PENSION_AGENT_ID). Pending — entity thiết\
     \ kế ở Tier 5 (gộp PENSION_AGENT + PENSION_PROVIDER, phân biệt bằng pension_role_type_code).\
     \ Prefix Pension Distribution để phân biệt với Pension Service Provider Id (PENSION_PROVIDER_ID)\
     \ cùng target entity."
@@ -356,7 +356,7 @@ attributes:
   source_columns:
   - "FMS.VIOLT.PENSION_PROVIDER_ID"
   comment: "FK target: pension_service_organization.pension_service_organization_id.\
-    \ Hash: hash_id('FMS.PENSION_PROVIDER', PENSION_PROVIDER_ID). Pending — entity\
+    \ Hash: hash_id('FMS_PENSION_PROVIDER', PENSION_PROVIDER_ID). Pending — entity\
     \ thiết kế ở Tier 5. Cùng target entity với Pension Distribution Agent Id nhưng\
     \ khác role nguồn (PENSION_PROVIDER khác PENSION_AGENT)."
   classification_context: null
@@ -385,7 +385,7 @@ attributes:
   status: "pending"
   source_columns:
   - "FMS.VIOLT.OTHER_AGENT_ID"
-  comment: "FK target: other_intermediary_ou.other_intermediary_ou_id. Hash: hash_id('FMS.OTHER_AGENT',\
+  comment: "FK target: other_intermediary_ou.other_intermediary_ou_id. Hash: hash_id('FMS_OTHER_AGENT',\
     \ OTHER_AGENT_ID). Pending — entity thiết kế ở Tier 5."
   classification_context: null
   etl_derived_value: null
@@ -413,7 +413,7 @@ attributes:
   status: "pending"
   source_columns:
   - "FMS.VIOLT.PENSION_FUND_ID"
-  comment: "FK target: pension_fund.pension_fund_id. Hash: hash_id('FMS.PENSION_FUND',\
+  comment: "FK target: pension_fund.pension_fund_id. Hash: hash_id('FMS_PENSION_FUND',\
     \ PENSION_FUND_ID). Pending — entity thiết kế ở Tier 5."
   classification_context: null
   etl_derived_value: null

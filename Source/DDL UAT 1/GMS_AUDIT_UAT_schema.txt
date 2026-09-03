@@ -1,0 +1,1189 @@
+DATA DICTIONARY - SCHEMA: GMS_AUDIT_UAT
+Tong so bang: 52 | Materialized View: 0
+==============================================================================================================
+
+BANG: AF_APPROVAL
+Mo ta: Bảng lưu thông tin quyết định chấp thuận
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO      PK                               Khóa chính
+AF_PROFILE_ID                 NUMBER(10,0)        YES                                      Link đến bảng AF_PROFILES
+AF_AUDITOR_PROFILE_ID         NUMBER(10,0)        YES                                      Link đến bảng AF_AUDITOR_PROFILES
+TARGET_TYPE_CD                VARCHAR2(400)       YES                                      Chấp thuận Công ty kiểm toán hay Kiểm toán viên
+SOURCE_TYPE_CD                VARCHAR2(400)       YES                                      Chấp thuận từ BTC hay UBCKNN
+APPROVAL_DOC_NO               VARCHAR2(72)        YES                                      Số văn bản quyết định chấp thuận của BTC
+APPROVAL_ISSUE_DATE           DATE                YES                                      Ngày văn bản quyết định chấp thuận của BTC
+APPROVAL_START_DATE           DATE                YES                                      Ngày bắt đầu quyết định chấp thuận của BTC
+APPROVAL_END_DATE             DATE                YES                                      Ngày kết thúc quyết định chấp thuận của BTC
+APPROVAL_CONTENT              VARCHAR2(4000)      YES                                      Nội dung quyết định chấp thuận của BTC
+CREATED_BY                    VARCHAR2(120)       YES                                      Người tạo
+CREATED_DATE                  DATE                YES                                      Ngày tạo
+UPDATED_BY                    VARCHAR2(120)       YES                                      Người sửa
+UPDATED_DATE                  DATE                YES                                      Ngày sửa
+DELETE_FLG                    NUMBER(1,0)         YES                                      
+
+
+BANG: AF_AUDITOR_PROFILES
+Mo ta: Lưu thông tin chung kiểm toán viên
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO      PK                               Khóa chính
+AF_PROFILE_ID                 NUMBER(10,0)        YES                                      Link đến bảng AF_PROFILES
+FULL_NAME                     VARCHAR2(200)       YES                                      Họ và tên
+IDENTITY_NO                   VARCHAR2(72)        YES                                      Số CCCD
+POSITION_TITLE_CD             VARCHAR2(400)       YES                                      Chức vụ
+PRACTICE_CERT_NO              VARCHAR2(400)       YES                                      Số GCN đăng ký hành nghề kiểm toán
+PRACTICE_CERT_ISSUE_DATE      DATE                YES                                      Ngày cấp GCN đăng ký hành nghề kiểm toán
+PRACTICE_START_DATE           DATE                YES                                      Ngày bắt đầu hành nghề
+PRACTICE_END_DATE             DATE                YES                                      Ngày kết thúc hành nghề
+AUDIT_CERT_NO                 VARCHAR2(400)       YES                                      Số chứng chỉ kiểm toán viên
+AUDIT_CERT_ISSUE_DATE         DATE                YES                                      Ngày cấp chứng chỉ kiểm toán viên
+STATUS_CD                     VARCHAR2(400)       YES                                      Trạng thái kiểm toán viên
+AFFILIATION_END_DATE          DATE                YES                                      Ngày mà kiểm toán viên ko còn thuộc công ty kiểm toán nữa
+REC_CHANGED_FLG               NUMBER(1,0)         YES                                      Đánh dấu bản ghi có bị thay đổi hay không (0-không, 1-có)
+SEND_EMAIL                    NUMBER(1,0)         YES                                      Đánh dấu bản ghi đã được gửi email hay chưa (0-chưa gửi, 1-đã gửi)
+EXTERNAL_ID                   NUMBER(10,0)        YES                                      Khóa ngoài (dùng cho việc chuyển dữ liệu với BTC)
+APPROVAL_STATUS_CD            VARCHAR2(400)       YES                                      Trạng thái duyệt hồ sơ
+CREATED_BY                    VARCHAR2(120)       YES                                      Người tạo
+CREATED_DATE                  DATE                YES                                      Ngày tạo
+UPDATED_BY                    VARCHAR2(120)       YES                                      Người sửa
+UPDATED_DATE                  DATE                YES                                      Ngày sửa
+DELETE_FLG                    NUMBER(1,0)         YES                                      
+APPROVER_COMMENT              VARCHAR2(1020)      YES                                      Ý kiến người 
+duyệt
+
+
+BANG: AF_AUDITOR_STATUS_HISTORY
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO      PK                               
+AF_AUDITOR_PROFILE_ID         NUMBER(10,0)        YES                                      
+EVENT_TYPE                    VARCHAR2(400)       YES                                      
+EFFECTIVE_DATE                DATE                YES                                      
+REASON                        VARCHAR2(4000)      YES                                      
+ADDITIONAL_DESC               VARCHAR2(1020)      YES                                      
+CREATED_BY                    VARCHAR2(120)       YES                                      
+CREATED_DATE                  DATE                YES                                      
+UPDATED_BY                    VARCHAR2(120)       YES                                      
+UPDATED_DATE                  DATE                YES                                      
+DELETE_FLG                    NUMBER(1,0)         YES                                      
+
+
+BANG: AF_INSPECTION
+Mo ta: Bảng lưu thông tin kiểm tra công ty kiểm toán
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO      PK                               Khóa chính
+AF_PROFILE_ID                 NUMBER(10,0)        YES                                      Link đến bảng AF_PROFILES
+INSPECTION_AUTHORITY_CD       VARCHAR2(400)       YES                                      Đơn vị kiểm tra (BTC hoặc UBCKNN)
+INSPECTION_TEAM               VARCHAR2(2048)      YES                                      Đoàn kiểm tra, nhiều người sẽ cách nhau dấu ';'
+INSPECTION_DECISION_NO        VARCHAR2(72)        YES                                      Số quyết định kiểm tra
+INSPECTION_START_DATE         DATE                YES                                      Ngày bắt đầu kiểm tra
+INSPECTION_END_DATE           DATE                YES                                      Ngày kết thúc kiểm tra
+AUDIT_SYSTEM_RESULT_CD        VARCHAR2(400)       YES                                      Kết quả kiểm tra hệ thống (Tốt; Đạt; Không đạt; Kém)
+OVERALL_RESULT_CD             VARCHAR2(400)       YES                                      Kết quả kiểm tra tổng thể (Tốt; Đạt; Không đạt; Kém)
+OVERALL_ACTION_CD             VARCHAR2(400)       YES                                      Hình thức quyết định tổng thể (Quyết định đình chỉ; Công văn nhắc nhở)
+OVERALL_ACTION_TYPE_CD        VARCHAR2(400)       YES                                      Hình thức xử lý tổng thể (Sau kiểm tra, Qua công tác giám sát)
+OVERALL_DOCUMENT_NO           VARCHAR2(72)        YES                                      Số văn bản tổng thể
+OVERALL_DOCUMENT_DATE         DATE                YES                                      Ngày văn bản tổng thể
+OVERALL_VIOLATION_CONTENT     VARCHAR2(4000)      YES                                      Nội dung vi phạm tổng thể
+OVERALL_EFFECTIVE_FROM_DATE   DATE                YES                                      Thời gian hiệu lực - Từ ngày tổng thể
+OVERALL_EFFECTIVE_TO_DATE     DATE                YES                                      Thời gian hiệu lực - Đến ngày tổng thể
+CREATED_BY                    VARCHAR2(120)       YES                                      Người tạo
+CREATED_DATE                  DATE                YES                                      Ngày tạo
+UPDATED_BY                    VARCHAR2(120)       YES                                      Người sửa
+UPDATED_DATE                  DATE                YES                                      Ngày sửa
+DELETE_FLG                    NUMBER(1,0)         YES                                      Soft delete - 0: Active, 1: Deleted
+
+
+BANG: AF_LEGAL_REPRESENTATIVE
+Mo ta: Bảng Người đại diện theo pháp luật
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO      PK                               Khóa chính
+AF_PROFILE_ID                 NUMBER(10,0)        YES                                      Link đến bảng AF_PROFILES
+FULL_NAME                     VARCHAR2(200)       YES                                      Tên đầy đủ
+IDENTITY_NO                   VARCHAR2(72)        YES                                      Số CMND/hộ chiếu
+PHONE_NO                      VARCHAR2(72)        YES                                      Số điện thoại liên hệ
+POSITION_TITLE_CD             VARCHAR2(400)       YES                                      Chức vụ
+APPOINTMENT_START_DATE        DATE                YES                                      Bổ nhiệm (từ ngày)
+APPOINTMENT_END_DATE          DATE                YES                                      Bổ nhiệm (đến ngày)
+CREATED_BY                    VARCHAR2(120)       YES                                      Người tạo
+CREATED_DATE                  DATE                YES                                      Ngày tạo
+UPDATED_BY                    VARCHAR2(120)       YES                                      Người sửa
+UPDATED_DATE                  DATE                YES                                      Ngày sửa
+DELETE_FLG                    NUMBER(1,0)         YES                                      
+
+
+BANG: AF_PROFILES
+Mo ta: Bảng lưu thông tin công ty kiểm toán
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO      PK                               Khóa chính
+AUDIT_FIRM_CD                 VARCHAR2(200)       YES                                      Mã
+FULL_NAME_VI                  VARCHAR2(1020)      YES                                      Tên đầy đủ (tiếng Việt)
+FULL_NAME_EN                  VARCHAR2(1020)      YES                                      Tên đầy đủ (tiếng Anh)
+SHORT_NAME                    VARCHAR2(200)       YES                                      Tên viết tắt
+BUSINESS_REG_NO               VARCHAR2(200)       YES                                      Giấy chứng nhận ĐKKD
+ELIGIBILITY_CERT_NO           VARCHAR2(80)        YES                                      Giấy chứng nhận đủ điều kiện KD
+ADDRESS                       VARCHAR2(1020)      YES                                      Địa chỉ
+PHONE_NO                      VARCHAR2(72)        YES                                      Điện thoại
+FAX_NO                        VARCHAR2(72)        YES                                      Số Fax
+WEBSITE                       VARCHAR2(1020)      YES                                      Website
+PAID_IN_CAPITAL               NUMBER(18,0)        YES                                      Vốn điều lệ thực góp
+FOREIGN_AUDIT_MEMBER_FLG      NUMBER(1,0)         YES                                      Thành viên của hãng kiểm toán nước ngoài (0-không là thành viên, 1-là thành viên)
+MEMBERSHIP_START_DATE         DATE                YES                                      Ngày trở thành thành viên
+MEMBERSHIP_END_DATE           DATE                YES                                      Ngày kết thúc là thành viên
+STATUS_CD                     VARCHAR2(1020)      YES                                      Trạng thái công ty kiểm toán (LOOKUP_GROUP = AF_STATUS)
+EXTERNAL_ID                   NUMBER(10,0)        YES                                      Khóa ngoài (dùng cho việc chuyển dữ liệu với BTC)
+CREATED_BY                    VARCHAR2(120)       YES                                      Người tạo
+CREATED_DATE                  DATE                YES                                      Ngày tạo
+UPDATED_BY                    VARCHAR2(120)       YES                                      Người sửa
+UPDATED_DATE                  DATE                YES                                      Ngày sửa
+FOREIGN_AUDIT_FIRM_NAME       VARCHAR2(1020)      YES                                      Tên hãng kiểm toán nước ngoài (nếu là thành viên)
+APPROVAL_STATUS_CD            VARCHAR2(400)       YES                                      
+APPROVER_COMMENT              VARCHAR2(1020)      YES                                      
+DELETE_FLG                    NUMBER(1,0)         YES                                      
+
+
+BANG: AF_SANCTIONS
+Mo ta: Bảng lưu thông tin xử phạt
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO      PK                               Khóa chính
+AF_PROFILE_ID                 NUMBER(10,0)        YES                                      Link đến bảng AF_PROFILES
+SANCTION_AUTHORITY_CD         VARCHAR2(400)       YES                                      Đơn vị xử phạt (BTC hay UB)
+DECISION_NO                   VARCHAR2(72)        YES                                      Số quyết định xử phạt
+DECISION_DATE                 DATE                YES                                      Ngày quyết định xử phạt
+ATTACHMENT_FILE_URL           VARCHAR2(1020)      YES                                      File đính kèm (đường link)
+CREATED_BY                    VARCHAR2(120)       YES                                      Người tạo
+CREATED_DATE                  DATE                YES                                      Ngày tạo
+UPDATED_BY                    VARCHAR2(120)       YES                                      Người sửa
+UPDATED_DATE                  DATE                YES                                      Ngày sửa
+DELETE_FLG                    NUMBER(1,0)         YES                                      
+SANCTION_CONTENT              CLOB                YES                                      
+
+
+BANG: AF_STATUS_HISTORY
+Mo ta: Bảng lưu lịch sử trạng thái
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO      PK                               Khóa chính
+AF_PROFILE_ID                 NUMBER(10,0)        YES                                      Link đến bảng AF_PROFILES
+STATUS_TYPE                   VARCHAR2(400)       YES                                      Loại trạng thái (Đình chỉ, Tạm ngừng, Chấm dứt, Thu hồi, Đang hoạt động)
+SUSPENSION_STATUS_TYPE        VARCHAR2(400)       YES                                      Trạng thái đình chỉ (đang đình chỉ, đã kết thúc, chưa đến thời hạn)
+DECISION_NO                   VARCHAR2(72)        YES                                      Số quyết định
+DECISION_DATE                 DATE                YES                                      Ngày quyết định
+EFFECTIVE_FROM_DATE           DATE                YES                                      Thời gian hiệu lực - Từ ngày
+EFFECTIVE_TO_DATE             DATE                YES                                      Thời gian hiệu lực - Đến ngày
+TERMINATED_DECISION_DATE      DATE                YES                                      Ngày quyết định chấm dứt/Thu hồi GCN
+REASON                        VARCHAR2(1020)      YES                                      Lý do (chọn từ lý do từ dropdown lấy từ BTC)
+ADDITIONAL_DESC               VARCHAR2(4000)      YES                                      Mô tả bổ sung
+CREATED_BY                    VARCHAR2(120)       YES                                      Người tạo
+CREATED_DATE                  DATE                YES                                      Ngày tạo
+UPDATED_BY                    VARCHAR2(120)       YES                                      Người sửa
+UPDATED_DATE                  DATE                YES                                      Ngày sửa
+DELETE_FLG                    NUMBER(1,0)         YES                                      
+
+
+BANG: AF_SUSPENSION
+Mo ta: Bảng lưu thông tin đình chỉ
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO      PK                               Khóa chính
+AF_PROFILE_ID                 NUMBER(10,0)        YES                                      Link đến bảng AF_PROFILES
+AF_AUDITOR_PROFILE_ID         NUMBER(10,0)        YES                                      Link đến bảng AF_AUDITOR_PROFILES
+TARGET_TYPE_CD                VARCHAR2(400)       YES                                      Nhắc nhở Công ty kiểm toán hay Kiểm toán viên
+SOURCE_TYPE_CD                VARCHAR2(400)       YES                                      Đình chỉ từ BTC hay UBCKNN
+SUSPENSION_DOC_NO             VARCHAR2(220)       YES                                      Số văn bản quyết định đình chỉ của BTC
+SUSPENSION_ISSUE_DATE         DATE                YES                                      Ngày văn bản quyết định đình chỉ của BTC
+SUSPENSION_START_DATE         DATE                YES                                      BTC đình chỉ (từ ngày)
+SUSPENSION_END_DATE           DATE                YES                                      BTC đình chỉ (đến ngày)
+SUSPENSION_CONTENT            VARCHAR2(4000)      YES                                      Nội dung quyết định đình chỉ của BTC
+SUSPENSION_TYPE_CD            VARCHAR2(400)       YES                                      Loại đình chỉ (Sau kiểm tra, Qua công tác giám sát)
+AF_INSPECTION_ID              NUMBER(10,0)        YES                                      Link đến bảng AF_INSPECTION
+CREATED_BY                    VARCHAR2(120)       YES                                      Người tạo
+CREATED_DATE                  DATE                YES                                      Ngày tạo
+UPDATED_BY                    VARCHAR2(120)       YES                                      Người sửa
+UPDATED_DATE                  DATE                YES                                      Ngày sửa
+DELETE_FLG                    NUMBER(1,0)         YES                                      Soft delete - 0: Active, 1: Deleted
+
+
+BANG: AF_TECHNICAL_AUDIT
+Mo ta: Bảng lưu thông tin kiểm tra hồ sơ kiểm toán
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO      PK                               Khóa chính
+AF_PROFILE_ID                 NUMBER(10,0)        YES                                      Link đến bảng AF_PROFILES
+AF_INSPECTION_ID              NUMBER(10,0)        YES                                      Link đến bảng AF_INSPECTION
+INSPECTION_ENTITY_FILES       VARCHAR2(4000)      YES                                      Tên hồ sơ kiểm tra (chọn MCK hoặc nhập tay)
+INSPECTION_YEAR               VARCHAR2(16)        YES                                      Năm kiểm tra
+SIGNING_AUDITOR_NAME          VARCHAR2(400)       YES                                      Kiểm toán viên ký BCTC (chọn từ danh sách KTV)
+LEGAL_REPRESENTATIVE_NAME     VARCHAR2(400)       YES                                      Lãnh đạo ký BCTC (chọn từ danh sách KTV)
+INSPECTION_RESULT_CD          VARCHAR2(400)       YES                                      Kết quả kiểm tra (Tốt; Đạt; Không đạt; Kém)
+AUDIT_ACTION_CD               VARCHAR2(400)       YES                                      Hình thức quyết định (Quyết định đình chỉ; Công văn nhắc nhở)
+ACTION_TYPE_CD                VARCHAR2(400)       YES                                      Hình thức xử lý (Sau kiểm tra, Qua công tác giám sát)
+DOCUMENT_NO                   VARCHAR2(72)        YES                                      Số văn bản
+DOCUMENT_DATE                 DATE                YES                                      Ngày văn bản
+VIOLATION_CONTENT             VARCHAR2(2048)      YES                                      Nội dung vi phạm
+EFFECTIVE_FROM_DATE           DATE                YES                                      Thời gian hiệu lực - Từ ngày
+EFFECTIVE_TO_DATE             DATE                YES                                      Thời gian hiệu lực - Đến ngày
+CREATED_BY                    VARCHAR2(120)       YES                                      Người tạo
+CREATED_DATE                  DATE                YES                                      Ngày tạo
+UPDATED_BY                    VARCHAR2(120)       YES                                      Người sửa
+UPDATED_DATE                  DATE                YES                                      Ngày sửa
+DELETE_FLG                    NUMBER(1,0)         YES                                      Soft delete flag - 0: Active, 1: Deleted
+
+
+BANG: AF_WARNING
+Mo ta: Bảng lưu thông tin nhắc nhở
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO      PK                               Khóa chính
+AF_PROFILE_ID                 NUMBER(10,0)        YES                                      Link đến bảng AF_PROFILES
+AF_AUDITOR_PROFILE_ID         NUMBER(10,0)        YES                                      Link đến bảng AF_AUDITOR_PROFILES
+TARGET_TYPE_CD                VARCHAR2(400)       YES                                      Nhắc nhở Công ty kiểm toán hay Kiểm toán viên
+SOURCE_TYPE_CD                VARCHAR2(400)       YES                                      Nhắc nhở từ BTC hay UBCKNN
+WARNING_DOC_NO                VARCHAR2(72)        YES                                      Số văn bản quyết định nhắc nhở
+WARNING_ISSUE_DATE            DATE                YES                                      Ngày văn bản quyết định nhắc nhở
+WARNING_START_DATE            DATE                YES                                      Ngày bắt đầu quyết định nhắc nhở
+WARNING_END_DATE              DATE                YES                                      Ngày kết thúc quyết định nhắc nhở
+WARNING_CONTENT               VARCHAR2(4000)      YES                                      Nội dung quyết định nhắc nhở
+WARNING_TYPE_CD               VARCHAR2(400)       YES                                      Loại nhắc nhở (Sau kiểm tra, Qua công tác giám sát)
+AF_INSPECTION_ID              NUMBER(10,0)        YES                                      Link đến bảng AF_INSPECTION
+CREATED_BY                    VARCHAR2(120)       YES                                      Người tạo
+CREATED_DATE                  DATE                YES                                      Ngày tạo
+UPDATED_BY                    VARCHAR2(120)       YES                                      Người sửa
+UPDATED_DATE                  DATE                YES                                      Ngày sửa
+DELETE_FLG                    NUMBER(1,0)         YES                                      Soft delete - 0: Active, 1: Deleted
+
+
+BANG: ALERT_TEMPLATE_AUDIT_DTL
+Mo ta: Danh sách rule cấu hình cảnh báo
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO      PK                               Khóa chính
+ID_HDR                        NUMBER(10,0)        NO      FK     ALERT_TEMPLATE_AUDIT_HDR.IDID BẢNG ALERT_TEMPLATE_AUDIT_HDR
+FORM_ID                       NUMBER(10,0)        NO                                       ID BẢNG FORMS
+EXPECTED_FORM_ID              NUMBER(10,0)        YES                                      ID BẢNG FORMS. ID của biểu mẫu vế phải
+CONDITION_TYPE                VARCHAR2(1020)      YES                                      Lưu EQUAL;NOT EQUAL dùng để so sánh ACTUAL và EXPECTED
+COMPARE_TYPE                  VARCHAR2(1020)      YES                                      Lưu VALUE; FIELD Quyết định dùng cột EXPECTED_FIELD hay EXPECTED_VALUE nào để so sánh với ACTUAL_FIELD
+ACTUAL_FIELD                  NUMBER              YES                                      ID field vế trái (năm nay)
+EXPECTED_FIELD                NUMBER              YES                                      ID field vế phải (năm trước)
+EXPECTED_VALUE                VARCHAR2(1020)      YES                                      Giá trị vế phải
+ACTUAL_TIME_OFFSET            NUMBER              YES                                      Mốc thời gian vế trái: 0 - Năm nay, -1- Năm trước
+EXPECTED_TIME_OFFSET          NUMBER              YES                                      Mốc thời gian vế phải: 0 - Năm nay, 1- Năm trước
+CREATED_DATE                  DATE                YES                                      Ngày tạo
+CREATED_BY                    VARCHAR2(1020)      YES                                      Người tạo
+UPDATED_DATE                  DATE                YES                                      Ngày sửa
+UPDATED_BY                    VARCHAR2(1020)      YES                                      Người sửa
+
+
+BANG: ALERT_TEMPLATE_AUDIT_HDR
+Mo ta: Danh sách mẫu template cảnh báo
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO      PK                               Khóa chính
+CODE                          VARCHAR2(1020)      YES                                      Mã
+NAME                          VARCHAR2(1020)      YES                                      Tên
+DESCRIPTION                   VARCHAR2(4000)      YES                                      Mô tả
+CONDITION_TYPE                VARCHAR2(1020)      YES                                      Loại điều kiện
+ACTIVE_FLG                    NUMBER(1,0)         YES                                      Trạng thái hoạt động
+DELETE_FLG                    NUMBER(1,0)         YES                                      Đánh dấu xóa
+CREATED_DATE                  DATE                YES                                      Ngày tạo
+CREATED_BY                    VARCHAR2(1020)      YES                                      Người tạo
+UPDATED_DATE                  DATE                YES                                      Ngày sửa
+UPDATED_BY                    VARCHAR2(1020)      YES                                      Người sửa
+
+
+BANG: COMPANY_CHANGE_ROLE_HIS
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO      PK                               
+USERNAME                      VARCHAR2(40)        NO                                       
+AF_PROFILE_ID                 NUMBER(10,0)        NO                                       
+MNGT_START_DATE               DATE                YES                                      
+MNGT_END_DATE                 DATE                YES                                      
+CHANGE_REASON                 VARCHAR2(255)       YES                                      
+CHANGED_DATE                  DATE                NO                                       
+LOGIN_ID                      NUMBER(10,0)        YES                                      
+
+
+BANG: COMPANY_DATA
+Mo ta: Lưu FORMS dữ liệu thuộc COMPANY_PROFILES
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(19,0)        NO      PK                               Khóa chính
+COMPANY_PROFILE_ID            NUMBER(10,0)        YES                                      ID Hồ sơ doanh nghiệp
+DOC_TITLE                     VARCHAR2(512)       YES                                      Mô tả tiêu đề tin/hồ sơ
+FORM_ID                       NUMBER(19,0)        YES                                      ID form
+NEWS_STATUS_CD                VARCHAR2(255)       YES                                      Trạng thái (Chờ duyệt; Đã duyệt; Từ chối; Đóng quy trình): LOOKUP_VALUES, LOOKUP_GROUP = "NEWS_APPROVAL_STATUS"
+REPORT_YEAR                   NUMBER(4,0)         YES                                      Năm báo cáo tài chính
+REPORT_QUARTER                NUMBER(1,0)         YES                                      Quý báo cáo tài chính
+REPORT_MONTH                  NUMBER(2,0)         YES                                      Tháng báo cáo
+PARENT_ID                     NUMBER(19,0)        YES                                      là parent id của company_data
+DOC_NO                        VARCHAR2(1000)      YES                                      Số công văn
+DOC_DATE                      DATE                YES                                      Ngày công văn
+DOC_SUMMARY                   VARCHAR2(4000)      YES                                      Trích yếu
+DOC_SIGN_DATE                 DATE                YES                                      Ngày ký văn bản
+SUBMISSION_DATE               DATE                YES                                      Ngày gửi duyệt (submit to worklist)
+APPROVAL_DATE                 DATE                YES                                      Ngày phê duyệt
+REJECTION_DATE                DATE                YES                                      Ngày từ chối
+SUBMISSION_DEADLINE_DATE      DATE                YES                                      Ngày gửi tin (deadline) - chạy job hàng ngày, hoặc khi gửi tin thì tính ngay
+OVERDUE_DAYS                  NUMBER(38,0)        YES                                      Thời gian quá hạn (theo ngày): = SUBMISSION_DATE - SUBMISSION_DEADLINE_DATE (=0 - Đúng hạn, >0 - Quá hạn x ngày)
+REF_ID                        NUMBER(10,0)        YES                                      Id của company_data, dùng trong trường hợp có tin đính chính - Luôn Lưu id của tin gốc
+DIGITAL_SIGNATURE_FLG         NUMBER(2,0)         YES                                      File đính kèm có chữ ký số hay ko (1 - có, 0 - không có)
+CREATED_BY                    VARCHAR2(255)       YES                                      Người tạo
+CREATED_DATE                  DATE                YES                                      Ngày tạo
+UPDATED_BY                    VARCHAR2(255)       YES                                      Người sửa
+UPDATED_DATE                  DATE                YES                                      Ngày sửa
+NEWS_TYPE_CD                  VARCHAR2(200)       YES                                      Loại báo cáo (Báo cáo tài chính; Báo cáo định kỳ khác; Báo cáo bất thường 24h...): LOOKUP_VALUES, LOOKUP_GROUP = "NEWS_TYPE". Note: select * from LOOKUP_VALUES where LOOKUP_GROUP='NEWS_TYPE'
+REJECT_REASON                 VARCHAR2(4000)      YES                                      Lý do từ chối/gửi lại tin từ chuyên viên/lãnh đạo HNX (nullable, latest only)
+REVIEW_DATE                   TIMESTAMP(6)        YES                                      Ngày chuyên viên trình phê duyệt (transition SUBMITTED → REVIEWED)
+SEND_BACK_DATE                TIMESTAMP(6)        YES                                      Ngày chuyên viên gửi lại tin yêu cầu bổ sung (transition SUBMITTED → NOT_APPROVED)
+LINK_ID                       NUMBER              YES                                      Id link giữa tin tiếng anh và tin tiếng việt
+LANGUAGE_CD                   VARCHAR2(80)        YES                                      Mã ngôn ngữ (VI - Tiếng việt, EN - Tiếng Anh)
+ALERT_AUDIT                   VARCHAR2(4000)      YES                                      Noi dung canh bao kiem toan tu dong
+SYSTEM_CD                     VARCHAR2(80)        YES                                      
+
+
+BANG: COMPANY_DIGITAL_CERTIFICATES
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO      PK                               Primary key
+COMPANY_PROFILE_ID            NUMBER(10,0)        NO                                       Link to COMPANY_PROFILES
+SERIAL_NO                     VARCHAR2(200)       YES                                      Serial number
+PROVIDER_NAME                 VARCHAR2(1020)      YES                                      Service provider name
+SIGNATURE_TYPE_CD             VARCHAR2(400)       YES                                      Signature type code
+START_DATE                    DATE                YES                                      Start date
+END_DATE                      DATE                YES                                      End date
+ACTIVE_FLG                    NUMBER(1,0)         NO                                       Active status (1 active, 0 inactive)
+CREATED_BY                    VARCHAR2(120)       YES                                      Created by
+CREATED_DATE                  DATE                YES                                      Created date
+UPDATED_BY                    VARCHAR2(120)       YES                                      Updated by
+UPDATED_DATE                  DATE                YES                                      Updated date
+DELETE_FLG                    NUMBER(1,0)         NO                                       Soft delete flag (0 not deleted, 1 deleted)
+
+
+BANG: COUNTRIES
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO      PK                               
+COUNTRY_CD                    VARCHAR2(80)        NO                                       
+COUNTRY_NAME_VI               VARCHAR2(800)       NO                                       
+COUNTRY_NAME_EN               VARCHAR2(800)       NO                                       
+CREATED_BY                    VARCHAR2(120)       YES                                      
+CREATED_DATE                  DATE                YES                                      
+UPDATED_BY                    VARCHAR2(120)       YES                                      
+UPDATED_DATE                  DATE                YES                                      
+ACTIVE_FLG                    NUMBER(1,0)         NO                                       
+DESCRIPTION                   VARCHAR2(4000)      YES                                      
+STATUS_FLG                    NUMBER(1,0)         NO                                       
+SYSTEM_CD                     VARCHAR2(20)        YES                                      
+
+
+BANG: DATA
+Mo ta: Lưu trữ dữ liệu của hàng và cột của báo cáo tài chính
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(19,0)        NO      PK                               Khóa chính
+REPORT_CATALOG_ID             NUMBER(10,0)        YES                                      ID của báo cáo
+DATA_VALUE                    FLOAT               YES                                      Lưu lại dữ liệu trong báo cáo
+REPORT_YEAR                   NUMBER(4,0)         YES                                      Năm báo cáo tài chính
+REPORT_QUARTER                NUMBER(1,0)         YES                                      Quý báo cáo tài chính
+CELL_ENABLED_FLG              NUMBER(1,0)         YES                                      Trạng thái ô nhập liệu (0-disable, 1-enable) Phụ thuộc vào giá trị của trường APPROVAL_STATUS_CD trong bảng COMPANY_DATA, nếu là draft thì enable
+RC_TYPE                       CHAR(1)             YES                                      Kiểu dữ liệu: I/O - Input/Output
+ROW_CD                        VARCHAR2(120)       YES                                      Mã hàng
+COL_CD                        VARCHAR2(120)       YES                                      Mã cột
+CREATED_BY                    VARCHAR2(120)       YES                                      Người tạo
+CREATED_DATE                  DATE                YES                                      Ngày tạo
+UPDATED_BY                    VARCHAR2(120)       YES                                      Người sửa
+UPDATED_DATE                  DATE                YES                                      Ngày sửa
+COMPANY_PROFILE_ID            NUMBER(10,0)        YES                                      ID Hồ sơ doanh nghiệp
+
+
+BANG: DATABASECHANGELOG
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(1020)      NO                                       
+AUTHOR                        VARCHAR2(1020)      YES                                      
+FILENAME                      VARCHAR2(1020)      YES                                      
+DATEEXECUTED                  TIMESTAMP(6)        YES                                      
+ORDEREXECUTED                 NUMBER              YES                                      
+EXECTYPE                      VARCHAR2(40)        YES                                      
+MD5SUM                        VARCHAR2(140)       YES                                      
+DESCRIPTION                   VARCHAR2(1020)      YES                                      
+COMMENTS                      VARCHAR2(1020)      YES                                      
+TAG                           VARCHAR2(1020)      YES                                      
+LIQUIBASE                     VARCHAR2(80)        YES                                      
+CONTEXTS                      VARCHAR2(1020)      YES                                      
+LABELS                        VARCHAR2(1020)      YES                                      
+DEPLOYMENT_ID                 VARCHAR2(40)        YES                                      
+
+
+BANG: DATABASECHANGELOGLOCK
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              YES                                      
+LOCKED                        NUMBER(1,0)         YES                                      
+LOCKGRANTED                   TIMESTAMP(6)        YES                                      
+LOCKEDBY                      VARCHAR2(1020)      YES                                      
+
+
+BANG: DATA_TYPES
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO      PK                               Khóa chính
+DATA_TYPE                     VARCHAR2(2048)      YES                                      Kiểu dữ liệu
+REF_TYPE_VI                   VARCHAR2(120)       YES                                      Tên tham chiếu của kiểu dữ liệu (tiếng Việt)
+REF_TYPE_EN                   VARCHAR2(120)       YES                                      Tên tham chiếu của kiểu dữ liệu (tiếng Anh)
+CREATED_BY                    VARCHAR2(120)       YES                                      Người tạo
+CREATED_DATE                  DATE                YES                                      Ngày tạo
+UPDATED_BY                    VARCHAR2(120)       YES                                      Người sửa
+UPDATED_DATE                  DATE                YES                                      Ngày sửa
+SYSTEM_CD                     VARCHAR2(20)        YES                                      
+
+
+BANG: DATA_VALUES
+Mo ta: Lưu dữ liệu khi nhập vào tương ứng với các Form, Fields
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(19,0)        NO      PK                               Khóa chính
+FIELD_NAME_VI                 VARCHAR2(1020)      YES                                      Tên trường (tiếng Việt)
+FIELD_NAME_EN                 VARCHAR2(1020)      YES                                      Tên trường (tiếng Anh)
+TEXT_VALUE                    VARCHAR2(4000)      YES                                      Dữ liệu kiểu text
+DATE_VALUE                    DATE                YES                                      Dữ liệu kiểu date
+NUMBER_VALUE                  FLOAT               YES                                      Dữ liệu kiểu number
+COMPANY_DATA_ID               NUMBER(10,0)        YES                                      Mã công ty
+PARENT_ID                     NUMBER(19,0)        YES                                      Mã giá trị
+FORM_ID                       NUMBER(10,0)        YES                                      Mã form
+FIELD_ID                      NUMBER(10,0)        YES                                      Mã field
+FORM_FIELD_ID                 NUMBER(10,0)        YES                                      Mã khóa cha của field
+FIELD_PARENT_ID               NUMBER(10,0)        YES                                      Khóa cha
+DATA_TYPE                     VARCHAR2(120)       YES                                      Kiểu dữ liệu
+REQUIRED_FLG                  NUMBER(1,0)         YES                                      Bắt nhập hay không cho các nhãn trường: 0-không bắt buộc, 1-bắt buộc
+CREATED_BY                    VARCHAR2(120)       YES                                      Người tạo
+CREATED_DATE                  DATE                YES                                      Ngày tạo
+UPDATED_BY                    VARCHAR2(120)       YES                                      Người sửa
+UPDATED_DATE                  DATE                YES                                      Ngày sửa
+
+
+BANG: DEPARTMENTS
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO      PK                               Khóa chính
+DEPT_CD                       VARCHAR2(120)       YES                                      Mã phòng/ban
+DEPT_NAME_VI                  VARCHAR2(200)       YES                                      Tên phòng/ban (Tiếng Việt)
+DEPT_NAME_EN                  VARCHAR2(200)       YES                                      Tên phòng/ban (Tiếng Anh)
+DESCRIPTION                   VARCHAR2(1020)      YES                                      Mô tả
+CREATED_BY                    VARCHAR2(120)       YES                                      Người tạo
+CREATED_DATE                  DATE                YES                                      Ngày tạo
+UPDATED_BY                    VARCHAR2(120)       YES                                      Người sửa
+UPDATED_DATE                  DATE                YES                                      Ngày sửa
+ACTIVE_FLG                    NUMBER(1,0)         YES                                      Kích hoạt
+SYNC_FLG                      NUMBER(1,0)         YES                                      
+
+
+BANG: FIELDS
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO      PK                               Khóa chính
+FIELD_NAME_VI                 VARCHAR2(2000)      YES                                      Tên trường
+FIELD_NAME_EN                 VARCHAR2(2000)      YES                                      Tên trường Tiếng anh
+DATA_TYPE                     VARCHAR2(120)       YES                                      Kiểu dữ liệu
+REPEATABLE_FLG                NUMBER(1,0)         YES                                      Lặp (0 - không lặp; 1 - lặp)
+FORM_TYPE                     VARCHAR2(400)       YES                                      Kiểu trường (HS; CBTT)
+PARENT_ID                     NUMBER(10,0)        YES                                      Khóa cha
+LOOKUP_GROUP                  VARCHAR2(120)       YES                                      Loại (LOOKUP_GROUP của LOOKUP_VALUES)
+CONTROL_UNIT_CD               VARCHAR2(1020)      YES                                      Đơn vị kiểm soát DEPT_CD của DEPARTMENT
+OPERATING_UNIT_CD             VARCHAR2(1020)      YES                                      Đơn vị sử dụng DEPT_CD của DEPARTMENT
+CREATED_BY                    VARCHAR2(120)       YES                                      Người tạo
+CREATED_DATE                  DATE                YES                                      Ngày tạo
+UPDATED_BY                    VARCHAR2(120)       YES                                      Người sửa
+UPDATED_DATE                  DATE                YES                                      Ngày sửa
+DELETE_FLG                    NUMBER(1,0)         YES                                      Cờ kích hoạt (1 - active, 0 - deleted soft delete)
+SYSTEM_CD                     VARCHAR2(80)        YES                                      
+
+
+BANG: FILES
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(19,0)        NO      PK                               Khóa chính
+FILE_NAME                     VARCHAR2(255)       YES                                      Tên file lưu trong hệ thống
+ORIGINAL_FILE_NAME            VARCHAR2(255)       YES                                      Tên file gốc khi upload
+CONTENT_TYPE                  VARCHAR2(255)       YES                                      MIME type (ví dụ application/pdf)
+FILE_SIZE                     NUMBER(19,0)        YES                                      Kích thước file (bytes)
+MINIO_KEY                     VARCHAR2(1020)      YES                                      Key truy cập file trong MinIO (thường UUID + extension)
+BUCKET_NAME                   VARCHAR2(255)       YES                                      Tên bucket MinIO
+FILE_PATH                     VARCHAR2(1020)      YES                                      Đường dẫn logic trong bucket
+DESCRIPTION                   VARCHAR2(1000)      YES                                      Mô tả file
+TABLE_NAME                    VARCHAR2(255)       YES                                      Bảng object gắn file (vd users, products). Null nếu file standalone
+OBJECT_ID                     NUMBER(19,0)        YES                                      ID record trong bảng tương ứng TABLE_NAME. Null nếu file standalone
+DRAFT_TOKEN                   VARCHAR2(128)       YES                                      Khóa tạm gom file draft trước khi bind sang object thật. Null nếu file không ở draft flow
+FILE_STATUS                   VARCHAR2(20)        YES                                      Trạng thái file metadata (TEMP hoặc ACTIVE)
+FILE_CATEGORY                 VARCHAR2(1020)      YES                                      Phân loại trong cùng object (vd AVATAR, CONTRACT, PRODUCT_IMAGE)
+CREATED_BY                    VARCHAR2(1020)      YES                                      Người tạo
+CREATED_DATE                  TIMESTAMP(6)        YES                                      Ngày tạo
+UPDATED_BY                    VARCHAR2(1020)      YES                                      Người cập nhật
+UPDATED_DATE                  TIMESTAMP(6)        YES                                      Ngày cập nhật
+
+
+BANG: FORMS
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO      PK                               Khóa chính
+FORM_CD                       VARCHAR2(1020)      YES                                      Mã form
+CREATED_BY                    VARCHAR2(200)       YES                                      Người tạo
+CREATED_DATE                  TIMESTAMP(6)        YES                                      Ngày tạo
+UPDATED_BY                    VARCHAR2(200)       YES                                      Người sửa
+UPDATED_DATE                  TIMESTAMP(6)        YES                                      Ngày sửa
+FORM_NAME_VI                  VARCHAR2(1020)      YES                                      Tên form (tiếng Việt)
+FORM_NAME_EN                  VARCHAR2(1020)      YES                                      Tên form (tiếng Anh)
+FORM_TYPE_CD                  VARCHAR2(400)       YES                                      Loại tin hay hồ sơ
+NEWS_TYPE_CD                  VARCHAR2(400)       YES                                      Loại tin gốc
+SUB_NEWS_TYPE_CD              VARCHAR2(400)       YES                                      Loại tin con
+OFFICER_APPROVAL_FLG          NUMBER(1,0)         YES                                      Chuyên viên tự động duyệt
+POST_CHECKED_FLG              NUMBER(1,0)         YES                                      Hậu kiểm tin
+ACTIVATED_FLG                 NUMBER(1,0)         YES                                      Kích hoạt
+CA_SIGNED_FLG                 NUMBER(1,0)         YES                                      Ký CA
+LEADER_APPROVAL_FLG           NUMBER(1,0)         YES                                      Form tự động duyệt (Lãnh đạo)
+PUBLISHED_FLG                 NUMBER(1,0)         YES                                      Form được công bố
+TITLE_FORMULA                 VARCHAR2(4000)      YES                                      Công thức tiêu đề
+PARENT_ID                     NUMBER(10,0)        YES                                      Khóa cha (tự tham chiếu)
+REPORT_TYPE                   NUMBER(1,0)         YES                                      Loại báo cáo
+CONTROL_UNIT_CD               VARCHAR2(1020)      YES                                      Đơn vị kiểm soát
+OPERATING_UNIT_CD             VARCHAR2(1020)      YES                                      Đơn vị sử dụng
+DELETE_FLG                    NUMBER(1,0)         YES                                      
+SYSTEM_CD                     VARCHAR2(20)        YES                                      
+NEWS_TYPE_GROUP_CD            VARCHAR2(255)       YES                                      
+TITLE_FORMULA_EN              VARCHAR2(4000)      YES                                      
+
+
+BANG: FORM_FIELDS
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO      PK                               Khóa chính
+FIELD_ID                      NUMBER(10,0)        YES                                      Mã field
+FIELD_PARENT_ID               NUMBER(10,0)        YES                                      Mã field cha
+FORM_ID                       NUMBER(10,0)        YES                                      Mã form
+FIELD_NAME_VI                 VARCHAR2(1020)      YES                                      Tên trường
+FIELD_NAME_EN                 VARCHAR2(1020)      YES                                      Tên trường tiếng Anh
+DATA_TYPE                     VARCHAR2(120)       YES                                      Kiểu dữ liệu (DATA_TYPE của bảng DATA_TYPES)
+FIELD_ORDER                   NUMBER(30,0)        YES                                      Thứ tự sắp xếp
+PARENT_ID                     NUMBER(19,0)        YES                                      Mã cha (tham chiếu chính bảng này)
+FIELD_FORMAT                  VARCHAR2(1024)      YES                                      Định dạng của trường
+REQUIRED_FLG                  NUMBER(1,0)         YES                                      0-không bắt buộc, 1-bắt buộc
+CORRECTION_FLG                NUMBER(1,0)         YES                                      0-không đính chính, 1-cho phép đính chính
+PUBLISHED_FLG                 NUMBER(1,0)         YES                                      0-không công bố, 1-được phép công bố
+ACTIVE_FLG                    NUMBER(1,0)         YES                                      0-không hoạt động, 1-đang hoạt động
+DOC_REF                       VARCHAR2(1020)      YES                                      Tham chiếu hồ sơ
+CREATED_BY                    VARCHAR2(120)       YES                                      Người tạo
+CREATED_DATE                  DATE                YES                                      Ngày tạo
+LAST_UPDATED_BY               VARCHAR2(120)       YES                                      Người sửa
+LAST_UPDATED_DATE             DATE                YES                                      Ngày sửa
+SYSTEM_CD                     VARCHAR2(20)        YES                                      
+READ_ONLY_FLG                 NUMBER(1,0)         YES                                      
+
+
+BANG: FORM_FIELD_HISTORY
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO      PK                               Khóa chính
+FIELD_ID                      NUMBER(19,0)        YES                                      Mã field
+FORM_ID                       NUMBER(19,0)        YES                                      Mã form
+FIELD_NAME_VI                 VARCHAR2(1020)      YES                                      Tên trường
+FORM_NAME_VI                  VARCHAR2(1020)      YES                                      Tên form (tiếng Việt)
+ACTION                        NUMBER(1,0)         YES                                      1-insert, 2-update, 3-delete
+CHANGED_BY                    VARCHAR2(120)       YES                                      Người thay đổi
+CHANGED_DATE                  DATE                YES                                      Ngày thay đổi
+SYSTEM_CD                     VARCHAR2(20)        YES                                      
+
+
+BANG: HISTORY_CHANGE_LOG
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(1020)      YES                                      Khóa chính của bản ghi lịch sử thay đổi, sinh UUID tại ứng dụng để tránh dùng IDENTITY trên Oracle
+TABLE_NAME                    VARCHAR2(100)       YES                                      Tên bảng chứa dữ liệu gốc, ví dụ: FORMS, COMPANY_PROFILES
+OBJECT_ID                     VARCHAR2(100)       YES                                      ID của bản ghi bên bảng gốc, lưu dạng chuỗi để hỗ trợ nhiều kiểu khóa
+ACTION                        VARCHAR2(20)        YES                                      Loại thay đổi dữ liệu: CREATE, UPDATE hoặc DELETE
+CHANGED_BY                    VARCHAR2(100)       YES                                      Người thực hiện thay đổi dữ liệu
+CHANGED_AT                    TIMESTAMP(6)        YES                                      Thời điểm phát sinh thay đổi dữ liệu
+SOURCE_SERVICE                VARCHAR2(100)       YES                                      Tên service phát sinh lịch sử thay đổi
+BEFORE_DATA                   CLOB                YES                                      Snapshot dữ liệu trước khi thay đổi, lưu dưới dạng JSON
+AFTER_DATA                    CLOB                YES                                      Snapshot dữ liệu sau khi thay đổi, lưu dưới dạng JSON
+CHANGED_FIELDS                CLOB                YES                                      Danh sách tên các field thay đổi, lưu dưới dạng JSON array
+
+
+BANG: HOLIDAY_CALENDAR
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO      PK                               
+NAME                          VARCHAR2(800)       YES                                      
+HOLIDAY_DATE                  DATE                YES                                      
+HOLIDAY_END_DATE              DATE                YES                                      
+CREATED_BY                    VARCHAR2(120)       YES                                      
+HOLIDAY_TYPE                  VARCHAR2(80)        YES                                      
+CREATED_DATE                  DATE                YES                                      
+UPDATED_BY                    VARCHAR2(120)       YES                                      
+UPDATED_DATE                  DATE                YES                                      
+YEAR                          NUMBER(10,0)        YES                                      
+CODE                          VARCHAR2(80)        NO                                       
+ACTIVE_FLG                    NUMBER(1,0)         YES                                      
+DELETE_FLG                    NUMBER(1,0)         YES                                      
+VERSION                       NUMBER(1,0)         YES                                      
+IS_SYNC                       NUMBER(1,0)         NO                                       
+SYSTEM_CD                     VARCHAR2(20)        YES                                      
+
+
+BANG: HTE_NOTIFICATIONS_DTL
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+DELETE_FLG                    NUMBER(10,0)        YES                                      
+LOGIN_TYPE                    NUMBER(10,0)        YES                                      
+OBJECT_TYPE                   NUMBER(10,0)        YES                                      
+RN_                           NUMBER(10,0)        NO      PK                               
+COMPANY_PROFILE_ID            NUMBER(19,0)        YES                                      
+ID                            NUMBER(19,0)        YES                                      
+LOGIN_ID                      NUMBER(19,0)        YES                                      
+NOTIFICATIONS_ID              NUMBER(19,0)        YES                                      
+DEPT_CD                       VARCHAR2(1020)      YES                                      
+EMAIL                         VARCHAR2(1020)      YES                                      
+EQUITY_LISTING_EXCH           VARCHAR2(1020)      YES                                      
+FULL_NAME                     VARCHAR2(1020)      YES                                      
+TEL                           VARCHAR2(1020)      YES                                      
+
+
+BANG: HTE_VIOLATION_REPORT
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ACTUAL_SUBMIT_DATE            DATE                YES                                      
+BASE_DATE                     DATE                YES                                      
+DEADLINE_DATE                 DATE                YES                                      
+PERIOD_QUARTER                NUMBER(10,0)        YES                                      
+PERIOD_YEAR                   NUMBER(10,0)        YES                                      
+RN_                           NUMBER(10,0)        NO      PK                               
+COMPANY_PROFILE_ID            NUMBER(19,0)        YES                                      
+CREATED_DATE                  TIMESTAMP(6)        YES                                      
+FORM_ID                       NUMBER(19,0)        YES                                      
+ID                            NUMBER(19,0)        YES                                      
+UPDATED_DATE                  TIMESTAMP(6)        YES                                      
+VIOLATION_TEMPLATE_ID         NUMBER(19,0)        YES                                      
+BASE_COLUMN                   VARCHAR2(1020)      YES                                      
+CREATED_BY                    VARCHAR2(1020)      YES                                      
+FORM_CD                       VARCHAR2(1020)      YES                                      
+PERIOD_NAME                   VARCHAR2(1020)      YES                                      
+STATUS                        VARCHAR2(1020)      YES                                      
+UPDATED_BY                    VARCHAR2(1020)      YES                                      
+
+
+BANG: LOGINS
+Mo ta: Bảng tài khoản đăng nhập
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO      PK                               ID - Khóa chính
+LOGIN_NAME                    VARCHAR2(50)        NO                                       Tên đăng nhập
+FULL_NAME                     VARCHAR2(200)       YES                                      Tên đầy đủ
+BIRTH_DATE                    DATE                YES                                      Ngày sinh
+EMAIL                         VARCHAR2(255)       YES                                      Email
+ADDRESS                       VARCHAR2(500)       YES                                      Địa chỉ
+TEL                           VARCHAR2(50)        YES                                      Số điện thoại
+FAX                           VARCHAR2(50)        YES                                      Fax
+GENDER_CD                     NUMBER(1,0)         YES                                      Giới tính - Lookup_values (lookup_group = GENDER)
+DEPT_CD                       VARCHAR2(20)        NO                                       Mã phòng ban (lấy từ DM phòng ban Department).
+Mặc định:
+- CTĐC: công ty đại chúng
+- CTKT: công ty kiểm toán
+- TCPH: công ty chưa đại chúng / cổ đông thực hiện chào bán
+- CN: cá nhân
+LOGIN_TYPE                    NUMBER(1,0)         NO                                       Loại user: 1-Admin, 2-Chuyên viên, 3-Lãnh đạo, 4-Tổ chức, 5-Khác
+OBJECT_TYPE                   NUMBER(1,0)         NO                                       Loại đối tượng: 1-Nội bộ UBCK, 2-Tổ chức bên ngoài, 3-Cá nhân bên ngoài
+COMPANY_PROFILE_ID            NUMBER(10,0)        YES                                      Lưu ID công ty đại chúng / công ty kiểm toán
+ID_SYNC                       VARCHAR2(255)       YES                                      ID tại SSO
+ACTIVE_FLG                    NUMBER(1,0)         YES                                      Trạng thái hoạt động (1: đang hoạt động, 0: không hoạt động)
+CREATED_BY                    VARCHAR2(50)        YES                                      Người tạo
+CREATED_DATE                  DATE                YES                                      Ngày tạo
+UPDATED_BY                    VARCHAR2(50)        YES                                      Người sửa
+UPDATED_DATE                  DATE                YES                                      Ngày sửa
+IS_SUPER_ADMIN                NUMBER(38,0)        YES                                      
+
+
+BANG: LOGIN_PERMISSION_BY_CODE
+Mo ta: Bảng LOGIN_PERMISSION_BY_CODE
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO      PK                               Khóa chính của bảng
+LOGIN_ID                      NUMBER(10,0)        YES                                      ID của tài khoản sử dụng
+LOGIN_NAME                    VARCHAR2(200)       YES                                      User name
+COMPANY_PROFILE_ID            NUMBER(10,0)        YES                                      ID hồ sơ được phân quyền
+SYSTEM_CD                     VARCHAR2(100)       YES                                      Phân hệ gồm: IDS; AUDIT
+CREATED_BY                    VARCHAR2(200)       YES                                      Người tạo
+CREATED_DATE                  DATE                YES                                      Ngày tạo
+UPDATED_BY                    VARCHAR2(200)       YES                                      Người cập nhật
+UPDATED_DATE                  DATE                YES                                      Ngày cập nhật
+AF_PROFILE_ID                 NUMBER(10,0)        YES                                      ID hồ sơ công ty kiểm toán được phân quyền (FK -> AF_PROFILES.ID)
+
+
+BANG: LOOKUP_VALUES
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO      PK                               
+LOOKUP_GROUP                  VARCHAR2(120)       YES                                      
+LOOKUP_CD                     VARCHAR2(400)       YES                                      
+LOOKUP_VALUE_VN               VARCHAR2(4000)      YES                                      
+LOOKUP_VALUE_EN               VARCHAR2(4000)      YES                                      
+DISPLAY_ORDER                 NUMBER(2,0)         YES                                      
+DESCRIPTION                   VARCHAR2(1020)      YES                                      
+ACTIVE_FLG                    NUMBER(1,0)         YES                                      
+CREATED_BY                    VARCHAR2(30)        YES                                      
+CREATED_DATE                  DATE                YES                                      
+UPDATED_BY                    VARCHAR2(30)        YES                                      
+UPDATED_DATE                  DATE                YES                                      
+SYNC_FLG                      NUMBER(1,0)         YES                                      
+DELETE_FLG                    NUMBER(1,0)         YES                                      xoá mềm (ko hiển thị ra màn hình, khác với ACTIVE_FLG)
+SYSTEM_CD                     VARCHAR2(20)        YES                                      
+LOOKUP_PARENT_ID              NUMBER(10,0)        YES                                      
+
+
+BANG: MIGRATION_EXECUTIONS
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(1020)      NO      PK                               
+AUTHOR                        VARCHAR2(400)       YES                                      
+CHANGE_LOG_CONTENT            CLOB                YES                                      
+CHANGE_LOG_TYPE               VARCHAR2(40)        YES                                      
+CHANGESETS_APPLIED            NUMBER(10,0)        YES                                      
+CHANGESETS_FAILED             NUMBER(10,0)        YES                                      
+COMPLETED_AT                  TIMESTAMP(6)        YES                                      
+CREATED_AT                    TIMESTAMP(6)        YES                                      
+DATABASE_NAME                 VARCHAR2(400)       YES                                      
+DATABASE_URL                  VARCHAR2(2000)      YES                                      
+DESCRIPTION                   VARCHAR2(2000)      YES                                      
+DRY_RUN                       NUMBER(1,0)         YES                                      
+ERROR_MESSAGE                 CLOB                YES                                      
+SERVICE_ID                    VARCHAR2(400)       YES                                      
+STARTED_AT                    TIMESTAMP(6)        YES                                      
+STATUS                        VARCHAR2(80)        YES                                      
+UPDATED_AT                    TIMESTAMP(6)        YES                                      
+VERSION                       NUMBER(19,0)        YES                                      
+
+
+BANG: MIGRATION_LOGS
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(19,0)        NO                                       
+LOG_LEVEL                     VARCHAR2(40)        YES                                      
+MESSAGE                       CLOB                YES                                      
+MIGRATION_ID                  VARCHAR2(400)       YES                                      
+STACK_TRACE                   CLOB                YES                                      
+TIMESTAMP                     TIMESTAMP(6)        YES                                      
+
+
+BANG: NOTIFICATIONS
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO      PK                               
+NOTI_CD                       VARCHAR2(50)        YES                                      
+NOTI_TITLE_VI                 VARCHAR2(255)       YES                                      
+NOTI_TITLE_EN                 VARCHAR2(255)       YES                                      
+NOTI_CATEGORY_CD              VARCHAR2(50)        YES                                      
+FORM_ID                       NUMBER(10,0)        YES                                      
+FORM_CD                       VARCHAR2(50)        YES                                      
+SEND_SCHEDULE_TYPE_CD         VARCHAR2(50)        YES                                      
+NEWS_STATUS_CD                VARCHAR2(100)       YES                                      
+SENT_DATE                     DATE                YES                                      
+NOTI_CONTENT_VI               VARCHAR2(512)       YES                                      
+NOTI_CONTENT_EN               VARCHAR2(512)       YES                                      
+MONTHLY_SEND_DAY              VARCHAR2(10)        YES                                      
+MONTHLY_SEND_MONTH            VARCHAR2(10)        YES                                      
+NEWS_TYPE_CD                  VARCHAR2(100)       YES                                      
+SEND_CHANNEL_CD               VARCHAR2(100)       YES                                      
+SYSTEM_CD                     VARCHAR2(255)       YES                                      
+LOGIN_ID                      VARCHAR2(40)        YES                                      
+LOGIN_NAME                    VARCHAR2(30)        YES                                      
+OBJECT_TYPE                   VARCHAR2(1020)      YES                                      
+RECIPIENT_TYPE_CD             VARCHAR2(100)       YES                                      
+EQUITY_LISTING_EXCH           VARCHAR2(20)        YES                                      
+ACTIVE_FLG                    NUMBER(1,0)         YES                                      
+REMINDER_BEFORE_DUE_DAYS      NUMBER(5,0)         YES                                      
+SEND_HOUR                     VARCHAR2(100)       YES                                      
+CREATED_BY                    VARCHAR2(30)        YES                                      
+CREATED_DATE                  DATE                YES                                      
+UPDATED_BY                    VARCHAR2(30)        YES                                      
+UPDATED_DATE                  DATE                YES                                      
+DELETE_FLG                    NUMBER(1,0)         YES                                      
+LAST_FIRE_DATE                DATE                YES                                      
+
+
+BANG: NOTIFICATIONS_DTL
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO      PK                               Khóa chính
+NOTIFICATIONS_ID              NUMBER(10,0)        YES                                      Id thông báo
+LOGIN_ID                      NUMBER(10,0)        YES                                      Id người dùng
+FULL_NAME                     VARCHAR2(200)       YES                                      Tên người dùng
+EMAIL                         VARCHAR2(255)       YES                                      Email người dùng
+TEL                           VARCHAR2(50)        YES                                      Số điện thoại người dùng
+OBJECT_TYPE                   NUMBER(1,0)         YES                                      Loại đối tượng: 1- Nội bộ UBCK; 2- Tổ chức bên ngoài; 3- Cá nhân bên ngoài
+DEPT_CD                       VARCHAR2(20)        YES                                      Mã phòng ban
+LOGIN_TYPE                    NUMBER(1,0)         YES                                      Loại user
+COMPANY_PROFILE_ID            NUMBER(10,0)        YES                                      Id công ty đại chúng
+EQUITY_LISTING_EXCH           VARCHAR2(20)        YES                                      Sàn niêm yết (ĐKGD cổ phiếu)
+CREATED_BY                    VARCHAR2(30)        YES                                      Nguời tạo
+CREATED_DATE                  DATE                YES                                      Ngày tạo
+UPDATED_BY                    VARCHAR2(30)        YES                                      Nguời sửa
+UPDATED_DATE                  DATE                YES                                      Ngày sửa
+DELETE_FLG                    NUMBER(1,0)         YES                                      Đánh dấu xóa mềm
+
+
+BANG: RCOL
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO      PK                               Khóa chính
+COL_NAME_VI                   VARCHAR2(1020)      YES                                      Tên cột (tiếng Việt)
+COL_NAME_EN                   VARCHAR2(1020)      YES                                      Tên cột (tiếng Anh)
+COL_INDEX                     NUMBER(3,0)         YES                                      Chỉ số của cột
+REPORT_CATALOG_ID             NUMBER(10,0)        YES                                      Tham chiếu đến bảng REPORT_CATALOG
+COL_TYPE_CD                   VARCHAR2(400)       YES                                      Giá trị
+COL_FORMULA                   VARCHAR2(4000)      YES                                      Công thức cột
+REPORT_YEAR                   VARCHAR2(16)        YES                                      Lưu năm tạo báo cáo, lấy từ bảng REPORT_CATALOG
+RC_TYPE_CD                    VARCHAR2(400)       YES                                      Loại báo cáo, lấy từ bảng REPORT_CATALOG
+DELETE_FLG                    NUMBER(1,0)         YES                                      Trạng thái - (0 - không sử dụng, 1 - đang sử dụng)
+CREATED_BY                    VARCHAR2(120)       YES                                      Người tạo
+CREATED_DATE                  DATE                YES                                      Ngày tạo
+UPDATED_BY                    VARCHAR2(120)       YES                                      Người sửa
+UPDATED_DATE                  DATE                YES                                      Ngày sửa
+DESCRIPTION                   VARCHAR2(4000)      YES                                      Mô tả
+SYSTEM_CD                     VARCHAR2(20)        YES                                      
+COL_DESC                      VARCHAR2(500)       YES                                      
+FORMULA_DESC                  VARCHAR2(500)       YES                                      
+COL_CD                        VARCHAR2(30)        YES                                      
+
+
+BANG: REPORT_CATALOG
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO      PK                               Khóa chính
+REPORT_CD                     VARCHAR2(200)       YES                                      Mã báo cáo
+REPORT_NAME_VI                VARCHAR2(1020)      YES                                      Tên báo cáo (tiếng Việt)
+REPORT_NAME_EN                VARCHAR2(1020)      YES                                      Tên báo cáo (tiếng Anh)
+RC_TYPE_CD                    VARCHAR2(400)       YES                                      Loại báo cáo; (I - Báo cáo đầu vào, O - Báo cáo xuất ra); LOOKUP_VALUES với LOOKUP_GROUP='RC_TYPE'
+REPORT_YEAR                   VARCHAR2(16)        YES                                      Lưu năm của báo cáo
+REPORT_SCOPE_CD               VARCHAR2(400)       YES                                      Loại hình báo cáo (Hợp nhất, Mẹ); LOOKUP_VALUES với LOOKUP_GROUP='REPORT_SCOPE'
+ENTERPRISE_TYPE_CD            VARCHAR2(400)       YES                                      Loại hình doanh nghiệp (DN-Doanh nghiệp, BH-Bảo hiểm, TD-Tín dụng, CK-Chứng khoán); LOOKUP_VALUES với LOOKUP_GROUP='ENTERPRISE_TYPE'
+CONSOLIDATED_FLG              NUMBER(1,0)         YES                                      Có phải là báo cáo hợp nhất ko? (1 - có, 0 - không)
+ACTIVE_FLG                    NUMBER(1,0)         YES                                      Trạng thái (0 - không sử dụng, 1 - đang sử dụng)
+IS_DELETED                    NUMBER(1,0)         YES                                      Trạng thái xóa (0 - chưa xóa, 1 - đã xóa)
+CREATED_BY                    VARCHAR2(120)       YES                                      Người tạo
+CREATED_DATE                  DATE                YES                                      Ngày tạo
+UPDATED_BY                    VARCHAR2(120)       YES                                      Người sửa
+UPDATED_DATE                  DATE                YES                                      Ngày sửa
+SYSTEM_CD                     VARCHAR2(20)        YES                                      
+FINANCIAL_STATEMENT_CD        VARCHAR2(500)       YES                                      
+REPORTING_PERIOD_CD           VARCHAR2(500)       YES                                      
+REF_CD                        VARCHAR2(500)       YES                                      
+
+
+BANG: REP_COLUMN
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO      PK                               Khóa chính
+COL_NAME_VI                   VARCHAR2(1020)      YES                                      Tên cột (tiếng Việt)
+COL_NAME_EN                   VARCHAR2(1020)      YES                                      Tên cột (tiếng Anh)
+REP_FORM_ID                   NUMBER(10,0)        YES     FK     REP_FORMS.ID              ID của form chứa cột
+COL_INDEX                     NUMBER(3,0)         YES                                      Thứ tự cột
+DUPLICATE_COL_FLG             NUMBER(1,0)         YES                                      Có cho phép nhân đôi cột hay không
+DATA_TYPE_CD                  VARCHAR2(400)       YES                                      Kiểu dữ liệu, lookup group RF_C_DATA_TYPE
+COL_FORMULA                   VARCHAR2(4000)      YES                                      Công thức tính
+COL_CD                        VARCHAR2(120)       NO                                       Lưu mã tự sinh của chỉ tiêu cột
+CREATED_BY                    VARCHAR2(120)       NO                                       Người tạo
+CREATED_DATE                  DATE                NO                                       Ngày tạo
+UPDATED_BY                    VARCHAR2(120)       NO                                       Người cập nhật
+UPDATED_DATE                  DATE                NO                                       Ngày cập nhật
+COL_DESCRIPTION               VARCHAR2(1020)      YES                                      Mô tả
+DELETE_FLG                    NUMBER(1,0)         NO                                       Xóa mềm
+SYSTEM_CD                     VARCHAR2(20)        YES                                      
+
+
+BANG: REP_DATA
+Mo ta: Lưu trữ dữ liệu của hàng và cột của báo cáo có cấu trúc
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(19,0)        NO      PK                               Khóa chính
+COMPANY_PROFILE_ID            NUMBER(10,0)        NO                                       ID Hồ sơ doanh nghiệp
+LEGAL_ENTITY_ID               NUMBER(10,0)        YES                                      ID Nhà đầu tư (NNB, NLQ, CĐ)
+COMPANY_DATA_ID               NUMBER(10,0)        NO                                       Lưu ID tin
+REP_FORM_ID                   NUMBER(10,0)        NO                                       ID của báo cáo có cấu trúc
+DATA_VALUE                    FLOAT               YES                                      Lưu dữ liệu kiểu số (cả số; tỷ lệ)
+TEXT_VALUE                    VARCHAR2(4000)      YES                                      Lưu dữ liệu kiểu chuỗi
+REP_ROW_ID                    NUMBER(10,0)        YES                                      ID của Hàng
+REP_COL_ID                    NUMBER(10,0)        YES                                      ID của cột
+REP_ROW_INDEX                 NUMBER(3,0)         YES                                      STT của hàng
+REP_COL_INDEX                 NUMBER(3,0)         YES                                      STT của cột - sử dụng để hiển thị lần lượt trên ds theo số TT này
+COL_DATA_TYPE                 VARCHAR2(400)       YES                                      Kiểu dữ liệu N(Number), T(Text): LOOKUP_VALUES với LOOKUP_GROUP='RF_C_DATA_TYPE'
+ROW_DATA_TYPE                 VARCHAR2(400)       YES                                      Kiểu dữ liệu: V(Value), D(Description): LOOKUP_VALUES với LOOKUP_GROUP='RF_R_DATA_TYPE'
+CREATED_BY                    VARCHAR2(120)       NO                                       Người tạo
+CREATED_DATE                  DATE                NO                                       Ngày tạo
+UPDATED_BY                    VARCHAR2(120)       NO                                       Người sửa
+UPDATED_DATE                  DATE                NO                                       Ngày sửa
+
+
+BANG: REP_FORMS
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO      PK                               Khóa chính
+REPORT_CD                     VARCHAR2(200)       NO                                       Mã form
+REPORT_NAME_VI                VARCHAR2(1020)      YES                                      Tên form báo cáo (tiếng Việt)
+REPORT_NAME_EN                VARCHAR2(1020)      YES                                      Tên form báo cáo (tiếng Anh)
+RP_REPORT_TYPE_CD             VARCHAR2(400)       YES                                      Loại báo cáo, lookup group RF_REPORT_TYPE
+PUBLISHED_FLG                 NUMBER(1,0)         YES                                      Check báo cáo được công bố hay không
+REPORT_LINK                   VARCHAR2(4000)      YES                                      Đường link cấu hình biểu mẫu
+CREATED_BY                    VARCHAR2(120)       NO                                       Người tạo
+CREATED_DATE                  DATE                NO                                       Ngày tạo
+UPDATED_BY                    VARCHAR2(120)       NO                                       Người cập nhật
+UPDATED_DATE                  DATE                NO                                       Ngày cập nhật
+DELETE_FLG                    NUMBER(1,0)         NO                                       Xóa mềm
+SYSTEM_CD                     VARCHAR2(20)        YES                                      
+
+
+BANG: REP_ROW
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO      PK                               Khóa chính
+ROW_NAME_VI                   VARCHAR2(1020)      YES                                      Tên dòng (tiếng Việt)
+ROW_NAME_EN                   VARCHAR2(1020)      YES                                      Tên dòng (tiếng Anh)
+ROW_CD                        VARCHAR2(120)       YES                                      Lưu mã tự sinh của chỉ tiêu hàng
+REP_FORM_ID                   NUMBER(10,0)        YES     FK     REP_FORMS.ID              ID của form báo cáo tương ứng
+ROW_INDEX                     NUMBER(3,0)         YES                                      Thứ tự dòng
+DUPLICATE_ROW_FLG             NUMBER(1,0)         YES                                      Cho phép nhân đôi dòng hay không
+DATA_TYPE_CD                  VARCHAR2(400)       YES                                      Kiểu dữ liệu, lookup group RF_R_DATA_TYPE
+ALLOW_COL_SUM_FLG             NUMBER(1,0)         YES                                      Check tính tổng cột (1 có, 2 không)
+CREATED_BY                    VARCHAR2(120)       YES                                      Người tạo
+CREATED_DATE                  DATE                YES                                      Ngày tạo
+UPDATED_BY                    VARCHAR2(120)       YES                                      Người cập nhật
+UPDATED_DATE                  DATE                YES                                      Ngày cập nhật
+ROW_DESCRIPTION               VARCHAR2(1020)      YES                                      Mô tả
+DELETE_FLG                    NUMBER(1,0)         YES                                      Xóa mềm
+SYSTEM_CD                     VARCHAR2(20)        YES                                      
+
+
+BANG: RROW
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO      PK                               Khóa chính
+ROW_NAME_VI                   VARCHAR2(1020)      YES                                      Tên hàng (tiếng Việt)
+ROW_NAME_EN                   VARCHAR2(1020)      YES                                      Tên hàng (tiếng Anh)
+ROW_CD                        VARCHAR2(120)       YES                                      Lưu mã tự sinh của chỉ tiêu hàng. Quy tắc r+ sequence
+ROW_TYPE_CD                   VARCHAR2(400)       YES                                      Kiểu giá trị của hàng V/F/D - Value/Formula/Description  LOOKUP_VALUES với LOOKUP_GROUP='REPORT_ROW_TYPE'
+ROW_FORMULA                   VARCHAR2(4000)      YES                                      Lưu công thức của hàng
+ROW_INDEX                     NUMBER(3,0)         YES                                      Thứ tự
+REPORT_CATALOG_ID             NUMBER(10,0)        YES                                      ID của báo cáo chứa hàng
+REPORT_YEAR                   VARCHAR2(16)        YES                                      Lưu năm tạo báo cáo chứa, lấy từ bảng REPORT_CATALOG
+RC_TYPE_CD                    VARCHAR2(400)       YES                                      Loại báo cáo, lấy từ bảng REPORT_CATALOG
+DELETE_FLG                    NUMBER(1,0)         YES                                      Trạng thái (0 không sử dụng, 1 - đang sử dụng)
+CREATED_BY                    VARCHAR2(120)       YES                                      Người tạo
+CREATED_DATE                  DATE                YES                                      Ngày tạo
+UPDATED_BY                    VARCHAR2(120)       YES                                      Người sửa
+UPDATED_DATE                  DATE                YES                                      Ngày sửa
+DESCRIPTION                   VARCHAR2(4000)      YES                                      Mô tả
+SYSTEM_CD                     VARCHAR2(20)        YES                                      Loại system: AUDIT, IDS
+ROW_DESC                      VARCHAR2(500)       YES                                      Mã chỉ tiêu
+FORMULA_DESC                  VARCHAR2(2000)      YES                                      Mô tả công thức
+
+
+BANG: SMS_LOG
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO      PK                               
+SEND_DATE                     TIMESTAMP(6)        NO                                       
+PHONE_NO                      VARCHAR2(1020)      NO                                       
+STATUS                        VARCHAR2(20)        YES                                      
+NOTIFICATION_ID               NUMBER(10,0)        NO                                       
+FORM_ID                       NUMBER(10,0)        NO                                       
+FORM_CODE                     VARCHAR2(1020)      NO                                       
+SMS_TYPE_CD                   VARCHAR2(400)       NO                                       
+CREATED_BY                    VARCHAR2(200)       YES                                      
+CREATED_DATE                  TIMESTAMP(6)        YES                                      
+UPDATED_BY                    VARCHAR2(200)       YES                                      
+UPDATED_DATE                  TIMESTAMP(6)        YES                                      
+COMPANY_PROFILES_ID           NUMBER(10,0)        YES                                      
+
+
+BANG: SYS_PARAMETERS
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO      PK                               
+PARA_DOMAIN                   VARCHAR2(200)       YES                                      
+PARA_CD                       VARCHAR2(200)       NO                                       
+PARA_VALUE                    VARCHAR2(4000)      NO                                       
+DESCRIPTION                   VARCHAR2(1020)      YES                                      
+ACTIVE_FLG                    NUMBER(1,0)         NO                                       
+CREATED_BY                    VARCHAR2(120)       YES                                      
+CREATED_DATE                  DATE                YES                                      
+UPDATED_BY                    VARCHAR2(120)       YES                                      
+UPDATED_DATE                  DATE                YES                                      
+SYSTEM_CD                     VARCHAR2(20)        YES                                      
+
+
+BANG: SYS_TEMP_FBT
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+SCHEMA                        VARCHAR2(130)       YES                                      
+OBJECT_NAME                   VARCHAR2(130)       YES                                      
+OBJECT#                       NUMBER              YES                                      
+RID                           UROWID              YES                                      
+ACTION                        CHAR(1)             YES                                      
+
+
+BANG: USER_AUDIT_LOG
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(19,0)        NO      PK                               Khóa chính
+USER_ID                       VARCHAR2(160)       NO                                       User ID
+USER_NAME                     VARCHAR2(200)       NO                                       Tên người dùng
+USER_AGENT                    VARCHAR2(2000)      NO                                       Thông tin agent lấy từ request header
+CLIENT_IP                     VARCHAR2(180)       NO                                       IP của người dùng
+HTTP_METHOD                   VARCHAR2(40)        NO                                       HTTP method
+QUERY_PARAMS                  CLOB                YES                                      Tham số (đối với method GET)
+REQUEST_BODY                  CLOB                YES                                      Body khi call api
+SOURCE_SERVICE                VARCHAR2(400)       NO                                       Tên service chứa api
+CREATED_DATE                  DATE                NO                                       Ngày người dùng thao tác (datetime)
+REQUEST_URI                   VARCHAR2(2000)      YES                                      Request URI path (ví dụ: /api/v1/masterdata/fields)
+
+
+BANG: VIOLATION_REPORT
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(38,0)        NO      PK                               
+COMPANY_PROFILE_ID            NUMBER(38,0)        YES                                      COMPANY_PROFILE_ID
+VIOLATION_TEMPLATE_ID         NUMBER(38,0)        YES                                      
+FORM_ID                       NUMBER(38,0)        YES                                      FORM_ID
+FORM_CD                       VARCHAR2(255)       YES                                      Mã mẫu báo cáo
+PERIOD_NAME                   VARCHAR2(255)       YES                                      Kỳ tính
+PERIOD_QUARTER                NUMBER              YES                                      quý 1234 - năm 5 - bán niên 6
+PERIOD_YEAR                   NUMBER              YES                                      Năm
+BASE_COLUMN                   VARCHAR2(255)       YES                                      Cột căn cứ để tính
+BASE_DATE                     DATE                YES                                      Ngày chốt sổ kỳ báo cáo
+DEADLINE_DATE                 DATE                YES                                      Hạn chót cần nộp báo cáo
+ACTUAL_SUBMIT_DATE            DATE                YES                                      Ngày công ty nộp thực tế
+STATUS                        VARCHAR2(50)        YES                                      Trạng thái gửi báo cáo
+CREATED_DATE                  TIMESTAMP(6)        YES                                      Thời gian tạo bản ghi
+CREATED_BY                    VARCHAR2(500)       YES                                      Người tạo bản ghi
+UPDATED_DATE                  TIMESTAMP(6)        YES                                      Thời gian cập nhật bản ghi lần cuối
+UPDATED_BY                    VARCHAR2(500)       YES                                      Người cập nhật bản ghi lần cuối
+
+
+BANG: VIOLATION_TEMPLATES
+Mo ta: Bảng lưu trữ thông tin cấu hình mẫu vi phạm
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(38,0)        NO      PK                               Khóa chính - ID tự tăng
+FORM_ID                       NUMBER(38,0)        YES                                      
+VIOLATION_CD                  VARCHAR2(255)       YES                                      Mã vi phạm
+VIOLATION_NAME_VI             VARCHAR2(255)       YES                                      Tên vi phạm (Tiếng Việt)
+VIOLATION_NAME_EN             VARCHAR2(255)       YES                                      Tên vi phạm (Tiếng Anh)
+VIOLATION_TYPE_CD             VARCHAR2(255)       YES                                      Mã loại vi phạm VIOLATION_TYPE
+VIOLATION_SUBTYPE_CD          VARCHAR2(255)       YES                                      Mã nhóm/loại vi phạm chi tiết VIOLATION_SUBTYPE
+REPORT_TYPE_CD                VARCHAR2(255)       YES                                      Mã loại báo cáo REPORT_TYPE
+REPORT_SCOPE_CD               VARCHAR2(255)       YES                                      Mã phạm vi báo cáo REPORT_SCOPE
+PERIOD_TYPE_CD                VARCHAR2(255)       YES                                      Mã loại kỳ báo cáo (Năm, Bán niên, Quý...) REPORT_PERIOD_TYPE
+VIOLATION_TRIGGER_POINT_CD    VARCHAR2(255)       YES                                      Mã thời điểm/hành động kích hoạt vi phạm VIOLATION_TRIGGER_POINT
+OFFSET_DAYS                   NUMBER              YES                                      Số ngày bù/chênh lệch để tính hạn (Deadline)
+VIOLATION_TRIGGER_POINT_CD_EX VARCHAR2(255)       YES                                      Mốc chặn
+OFFSET_DAYS_EX                NUMBER              YES                                      Thời hạn tối đa
+DAY_TYPE_CD                   VARCHAR2(255)       YES                                      Mã loại ngày (Ngày làm việc, Ngày thường...) DAY_TYPE
+EFFECTIVE_START_DATE          DATE                YES                                      Ngày bắt đầu có hiệu lực
+EFFECTIVE_END_DATE            DATE                YES                                      Ngày kết thúc hiệu lực
+ACTIVE_FLG                    NUMBER(1,0)         YES                                      Cờ trạng thái hoạt động (1: Hoạt động, 0: Vô hiệu)
+DELETE_FLG                    NUMBER(1,0)         YES                                      Cờ xóa logic (1: Đã xóa, 0: Chưa xóa)
+OFFSET_DAYS_CONDITION         NUMBER              YES                                      Số ngày cộng thêm khi có điều kiện
+CREATED_DATE                  TIMESTAMP(6)        YES                                      Thời gian tạo bản ghi
+CREATED_BY                    VARCHAR2(500)       YES                                      Người tạo bản ghi
+UPDATED_DATE                  TIMESTAMP(6)        YES                                      Thời gian cập nhật bản ghi lần cuối
+UPDATED_BY                    VARCHAR2(500)       YES                                      Người cập nhật bản ghi lần cuối
+
+

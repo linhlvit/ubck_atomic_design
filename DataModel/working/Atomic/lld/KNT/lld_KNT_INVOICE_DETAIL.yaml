@@ -28,7 +28,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "PK surrogate. BCV: \"[Documentation] Invoice\". 1 hóa đơn cụ thể bị áp\
-    \ dụng biện pháp cưỡng chế ngừng sử dụng. Hash: hash_id('KNT.INVOICE_DETAIL',\
+    \ dụng biện pháp cưỡng chế ngừng sử dụng. Hash: hash_id('KNT_INVOICE_DETAIL',\
     \ ID)."
   classification_context: null
   etl_derived_value: null
@@ -57,7 +57,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM."
-  classification_context: "SOURCE_SYSTEM=KNT.INVOICE_DETAIL"
+  classification_context: "SOURCE_SYSTEM=KNT_INVOICE_DETAIL"
   etl_derived_value: "KNT_INVOICE_DETAIL"
   data_type: "string"
 - attribute_name: "External Tax Enforcement Invoice Decision Id"
@@ -72,7 +72,7 @@ attributes:
   comment: "FK target: External Tax Enforcement Invoice Decision.External Tax Enforcement\
     \ Invoice Decision Id. Nguồn lưu ID kỹ thuật của TAX_ENFORCEMENT_INVOICE — ETL\
     \ join TAX_ENFORCEMENT_INVOICE_ID → KNT.TAX_ENFORCEMENT_INVOICE.ID để lấy DECISION_NUMBER\
-    \ rồi hash_id('KNT.TAX_ENFORCEMENT_INVOICE', DECISION_NUMBER)."
+    \ rồi hash_id('KNT_TAX_ENFORCEMENT_INVOICE', DECISION_NUMBER)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

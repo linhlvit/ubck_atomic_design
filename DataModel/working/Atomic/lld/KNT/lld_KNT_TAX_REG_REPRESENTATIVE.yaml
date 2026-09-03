@@ -29,7 +29,7 @@ attributes:
   source_columns: []
   comment: "PK surrogate. BCV: \"[Involved Party] Designated Representative\". Người\
     \ đại diện pháp luật/chủ hộ kinh doanh của 1 hồ sơ External Tax Registration.\
-    \ Hash: hash_id('KNT.TAX_REG_REPRESENTATIVE', ID)."
+    \ Hash: hash_id('KNT_TAX_REG_REPRESENTATIVE', ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -56,7 +56,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM."
-  classification_context: "SOURCE_SYSTEM=KNT.TAX_REG_REPRESENTATIVE"
+  classification_context: "SOURCE_SYSTEM=KNT_TAX_REG_REPRESENTATIVE"
   etl_derived_value: "KNT_TAX_REG_REPRESENTATIVE"
   data_type: "string"
 - attribute_name: "External Tax Registration Id"
@@ -70,7 +70,7 @@ attributes:
   - "KNT.TAX_REG_REPRESENTATIVE.TAX_REGISTRATION_ID"
   comment: "FK target: External Tax Registration.External Tax Registration Id. Nguồn\
     \ lưu ID kỹ thuật của TAX_REGISTRATION_INFO — ETL join TAX_REGISTRATION_ID → KNT.TAX_REGISTRATION_INFO.ID\
-    \ để lấy TAX_CODE rồi hash_id('KNT.TAX_REGISTRATION_INFO', TAX_CODE)."
+    \ để lấy TAX_CODE rồi hash_id('KNT_TAX_REGISTRATION_INFO', TAX_CODE)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

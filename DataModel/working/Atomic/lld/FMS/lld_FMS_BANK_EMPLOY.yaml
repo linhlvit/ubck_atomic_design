@@ -56,7 +56,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM."
-  classification_context: "SOURCE_SYSTEM=FMS.BANK_EMPLOY"
+  classification_context: "SOURCE_SYSTEM=FMS_BANK_EMPLOY"
   etl_derived_value: "FMS_BANK_EMPLOY"
   data_type: "string"
 - attribute_name: "Custodian Bank Id"
@@ -68,7 +68,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.BANK_EMPLOY.BANK_ID"
-  comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS.BANK_MONI',\
+  comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS_BANK_MONI',\
     \ BANK_ID)."
   classification_context: null
   etl_derived_value: null
@@ -152,20 +152,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "date"
-- attribute_name: "Active Status Flag"
-  physical_name: "active_status_flag"
-  description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu\
-    \ lực."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.BANK_EMPLOY.RECORD_STATUS"
-  comment: "Giá trị 1 → true; 0 → false."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
 - attribute_name: "Current Position Title"
   physical_name: "current_position_title"
   description: "Chức vụ/vị trí công tác hiện tại."

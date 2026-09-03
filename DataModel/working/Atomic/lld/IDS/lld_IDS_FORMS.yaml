@@ -32,7 +32,7 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. Hash: hash_id('IDS.FORMS', FORM_CD). BCV: \"[Documentation]\
+  comment: "PK surrogate. Hash: hash_id('IDS_FORMS', FORM_CD). BCV: \"[Documentation]\
     \ Form Document\". Đổi tên entity 2026-08-05."
   classification_context: null
   etl_derived_value: null
@@ -61,7 +61,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=IDS.FORMS"
+  classification_context: "SOURCE_SYSTEM=IDS_FORMS"
   etl_derived_value: "IDS_FORMS"
   data_type: "string"
 - attribute_name: "Parent Financial Report Template Id"
@@ -74,7 +74,7 @@ attributes:
   source_columns:
   - "IDS.FORMS.PARENT_ID"
   comment: "FK target: fr_template.fr_template_id (self-reference). Resolve: join\
-    \ PARENT_ID → IDS.FORMS.ID để lấy FORM_CD, rồi hash_id('IDS.FORMS', FORM_CD_CHA)."
+    \ PARENT_ID → IDS.FORMS.ID để lấy FORM_CD, rồi hash_id('IDS_FORMS', FORM_CD_CHA)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -134,43 +134,40 @@ attributes:
   data_type: "string"
 - attribute_name: "News Type Code"
   physical_name: "news_tp_code"
-  description: "Loại tin gốc."
-  data_domain: "Text"
+  description: "Mã phân loại."
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.FORMS.NEWS_TYPE_CD"
-  comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong\
-    \ tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
+  comment: "SCHEMA_CODE=IDS.NEWS_TYPE_CD. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_TYPE')."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "News Sub Type Code"
   physical_name: "news_sub_tp_code"
-  description: "Loại tin con."
-  data_domain: "Text"
+  description: "Mã phân loại con."
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.FORMS.SUB_NEWS_TYPE_CD"
-  comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong\
-    \ tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
+  comment: "SCHEMA_CODE=IDS.SUB_NEWS_TYPE_CD. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SUB_NEWS_TYPE')."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "News Group Type Code"
-  physical_name: "news_group_tp_code"
-  description: "Nhóm loại tin."
-  data_domain: "Text"
+- attribute_name: "Form Group Type Code"
+  physical_name: "form_group_tp_code"
+  description: "Nhóm biểu mẫu báo cáo."
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.FORMS.NEWS_TYPE_GROUP_CD"
-  comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong\
-    \ tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
+  comment: "SCHEMA_CODE=IDS.FORM_GROUP_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='FORM_GROUP')."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -281,60 +278,40 @@ attributes:
 - attribute_name: "Report Type Code"
   physical_name: "rpt_tp_code"
   description: "Loại báo cáo."
-  data_domain: "Text"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.FORMS.REPORT_TYPE"
-  comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong\
-    \ tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn. Nguồn\
-    \ lưu dạng số (NUMBER(1)) — ETL cần convert sang string."
+  comment: comment: "SCHEMA_CODE=IDS.REPORT_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_TYPE')."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Control Unit Code"
   physical_name: "control_unit_code"
   description: "Đơn vị kiểm soát."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.FORMS.CONTROL_UNIT_CD"
-  comment: "Scheme: IDS_CONTROL_UNIT (no_lookup) — chưa xác nhận cross-source FK đến\
-    \ Regulatory Authority Organization Unit; giữ Classification Value cho đến khi\
-    \ Data Modeler xác nhận."
+  comment: "Không có giá trị trong LOOKUP_VALUES"
   classification_context: "IDS_CONTROL_UNIT"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Operating Unit Code"
   physical_name: "operating_unit_code"
   description: "Đơn vị sử dụng."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.FORMS.OPERATING_UNIT_CD"
-  comment: "Scheme: IDS_OPERATING_UNIT (no_lookup) — chưa xác nhận cross-source FK\
-    \ đến Regulatory Authority Organization Unit; giữ Classification Value cho đến\
-    \ khi Data Modeler xác nhận."
-  classification_context: "IDS_OPERATING_UNIT"
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "System Code"
-  physical_name: "stm_code"
-  description: "Hệ thống con trong IDS."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IDS.FORMS.SYSTEM_CD"
-  comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong\
-    \ tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
-  classification_context: null
+  - "IDS.FORMS.OPERATING_UNIT_CD"
+  comment: "Không có giá trị trong LOOKUP_VALUES"
+  classification_context: "IDS_OPERATING_UNIT"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Deleted Indicator"

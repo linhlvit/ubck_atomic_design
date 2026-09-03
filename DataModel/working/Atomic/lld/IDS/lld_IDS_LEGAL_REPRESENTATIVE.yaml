@@ -56,7 +56,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=IDS.LEGAL_REPRESENTATIVE"
+  classification_context: "SOURCE_SYSTEM=IDS_LEGAL_REPRESENTATIVE"
   etl_derived_value: "IDS_LEGAL_REPRESENTATIVE"
   data_type: "string"
 - attribute_name: "Public Company Id"
@@ -68,7 +68,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.LEGAL_REPRESENTATIVE.COMPANY_PROFILE_ID"
-  comment: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES',\
+  comment: "FK target: public_company.pc_id. Hash: hash_id('IDS_COMPANY_PROFILES',\
     \ COMPANY_PROFILE_ID)."
   classification_context: null
   etl_derived_value: null
@@ -127,30 +127,16 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "date"
-- attribute_name: "Representative Role Code"
-  physical_name: "representative_role_code"
+- attribute_name: "Representative Role Indicator"
+  physical_name: "representative_role_ind"
   description: "0 - người đại diện pháp luật, 1 - người thực hiện CBTT."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.LEGAL_REPRESENTATIVE.REPRESENTATIVE_ROLE"
-  comment: "Scheme: IDS_REPRESENTATIVE_ROLE. Giá trị số 0/1 → ETL map sang text code.\
-    \ Nguồn lưu dạng số — ETL cần convert sang string code."
-  classification_context: "IDS_REPRESENTATIVE_ROLE"
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Deleted Indicator"
-  physical_name: "deleted_ind"
-  description: "Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa)."
   data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IDS.LEGAL_REPRESENTATIVE.DELETE_FLG"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
+  - "IDS.LEGAL_REPRESENTATIVE.REPRESENTATIVE_ROLE"
+  comment: null
+  classification_context: "IDS_REPRESENTATIVE_ROLE"
   etl_derived_value: null
   data_type: "int"

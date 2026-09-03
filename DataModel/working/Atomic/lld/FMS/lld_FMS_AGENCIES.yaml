@@ -58,7 +58,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM."
-  classification_context: "SOURCE_SYSTEM=FMS.AGENCIES"
+  classification_context: "SOURCE_SYSTEM=FMS_AGENCIES"
   etl_derived_value: "FMS_AGENCIES"
   data_type: "string"
 - attribute_name: "Fund Distribution Agent Full Name"
@@ -139,22 +139,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Active Status Flag"
-  physical_name: "active_status_flag"
-  description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu\
-    \ lực."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.AGENCIES.RECORD_STATUS"
-  comment: "Giá trị 1 → true; 0 → false."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-- attribute_name: "Description Content"
-  physical_name: "description_content"
+- attribute_name: "Note"
+  physical_name: "note"
   description: "Nội dung/ghi chú chi tiết về đại lý phân phối."
   data_domain: "Text"
   nullable: true
@@ -192,8 +178,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "date"
-- attribute_name: "Distribution Staff List Text"
-  physical_name: "distribution_staff_list_text"
+- attribute_name: "Distribution Staff List"
+  physical_name: "distribution_staff_list"
   description: "Danh sách nhân sự phân phối CCQ của đại lý (JSON hoặc danh sách ID\
     \ người hành nghề)."
   data_domain: "Text"

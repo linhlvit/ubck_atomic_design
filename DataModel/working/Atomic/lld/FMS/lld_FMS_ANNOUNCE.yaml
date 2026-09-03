@@ -57,7 +57,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM."
-  classification_context: "SOURCE_SYSTEM=FMS.ANNOUNCE"
+  classification_context: "SOURCE_SYSTEM=FMS_ANNOUNCE"
   etl_derived_value: "FMS_ANNOUNCE"
   data_type: "string"
 - attribute_name: "Fund Management Company Id"
@@ -69,7 +69,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.ANNOUNCE.SEC_ID"
-  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS.SECURITIES',\
+  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
     \ SEC_ID). Nullable — xem T6-05."
   classification_context: null
   etl_derived_value: null
@@ -97,7 +97,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.ANNOUNCE.FUND_ID"
-  comment: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS.FUNDS',\
+  comment: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS_FUNDS',\
     \ FUND_ID). Nullable — xem T6-05."
   classification_context: null
   etl_derived_value: null
@@ -125,7 +125,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.ANNOUNCE.TL_PRO_ID"
-  comment: "FK target: fmc_employee.fmc_employee_id. Hash: hash_id('FMS.TL_PROFILES',\
+  comment: "FK target: fmc_employee.fmc_employee_id. Hash: hash_id('FMS_TL_PROFILES',\
     \ TL_PRO_ID). Nullable — xem T6-05."
   classification_context: null
   etl_derived_value: null
@@ -153,7 +153,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.ANNOUNCE.FR_BR_ID"
-  comment: "FK target: foreign_fm_ou.foreign_fm_ou_id. Hash: hash_id('FMS.FOR_BRCH',\
+  comment: "FK target: foreign_fm_ou.foreign_fm_ou_id. Hash: hash_id('FMS_FOR_BRCH',\
     \ FR_BR_ID). Nullable — xem T6-05."
   classification_context: null
   etl_derived_value: null
@@ -181,7 +181,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.ANNOUNCE.STF_FB_ID"
-  comment: "FK target: foreign_fm_ou_staff.foreign_fm_ou_staff_id. Hash: hash_id('FMS.STF_FG_BRCH',\
+  comment: "FK target: foreign_fm_ou_staff.foreign_fm_ou_staff_id. Hash: hash_id('FMS_STF_FG_BRCH',\
     \ STF_FB_ID). Nullable — xem T6-05."
   classification_context: null
   etl_derived_value: null
@@ -209,7 +209,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.ANNOUNCE.PENSION_FUND_ID"
-  comment: "FK target: pension_fund.pension_fund_id. Hash: hash_id('FMS.PENSION_FUND',\
+  comment: "FK target: pension_fund.pension_fund_id. Hash: hash_id('FMS_PENSION_FUND',\
     \ PENSION_FUND_ID). Nullable — xem T6-05."
   classification_context: null
   etl_derived_value: null
@@ -238,7 +238,7 @@ attributes:
   - "FMS.ANNOUNCE.EVENT_TYPE_ID"
   comment: "FK target: cl_fms_event_type.cl_fms_event_tp_id. [ĐỔI 2026-07-19] Đổi\
     \ từ Classification Value đơn sang cặp FK Id/Code theo yêu cầu Data Modeler —\
-    \ EVENT_TYPE nay là entity riêng (giải quyết Tier6 T6-06). Hash: hash_id('FMS.EVENT_TYPE',\
+    \ EVENT_TYPE nay là entity riêng (giải quyết Tier6 T6-06). Hash: hash_id('FMS_EVENT_TYPE',\
     \ EVENT_CODE resolve từ ID)."
   classification_context: null
   etl_derived_value: null
@@ -267,8 +267,8 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.ANNOUNCE.ANNOUNCE_TYPE"
-  comment: "Scheme: FMS_ANNOUNCE_TYPE (đã đăng ký)."
-  classification_context: "FMS_ANNOUNCE_TYPE"
+  comment: "SCHEMA_CODE=FMS_ANNOUNCE_TYPE"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Report Type Code"
@@ -281,8 +281,8 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.ANNOUNCE.REPORT_TYPE"
-  comment: "Scheme: FMS_ANNOUNCE_REPORT_TYPE (đã đăng ký)."
-  classification_context: "FMS_ANNOUNCE_REPORT_TYPE"
+  comment: "SCHEMA_CODE=FMS_ANNOUNCE_REPORT_TYPE"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Report Year"
@@ -308,8 +308,8 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.ANNOUNCE.PERIOD_TYPE"
-  comment: "Scheme: FMS_PERIOD_TYPE (tái sử dụng — đã đăng ký Tier 1). ETL map: 1=DAY;2=WEEK;3=MONTH;4=QUARTER;5=SEMI_ANNUAL;6=YEAR;7=HALF_MONTH."
-  classification_context: "FMS_PERIOD_TYPE"
+  comment: "CHEMA_CODE=FMS_PERIOD_TYPE"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Period Value"
@@ -377,20 +377,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "date"
-- attribute_name: "Active Status Flag"
-  physical_name: "active_status_flag"
-  description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu\
-    \ lực."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.ANNOUNCE.RECORD_STATUS"
-  comment: "Giá trị 1 → true; 0 → false."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
 - attribute_name: "Send Date"
   physical_name: "send_dt"
   description: "Ngày thành viên gửi thông báo/email."

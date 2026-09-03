@@ -36,7 +36,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "PK surrogate. BCV: \"Organization\" (Involved Party). Tổ chức tham gia\
-    \ TTCK (CTCK, QLQ, NH, Khác). Hash: hash_id('NHNCK.ORGANIZATIONS', ORGANIZATION_CODE)\
+    \ TTCK (CTCK, QLQ, NH, Khác). Hash: hash_id('NHNCK_ORGANIZATIONS', ORGANIZATION_CODE)\
     \ — đổi từ hash theo ID kỹ thuật (qua Securities Organization Reference Code cũ)\
     \ sang ORGANIZATION_CODE, 2026-08-11."
   classification_context: null
@@ -66,7 +66,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=NHNCK.ORGANIZATIONS"
+  classification_context: "SOURCE_SYSTEM=NHNCK_ORGANIZATIONS"
   etl_derived_value: "NHNCK_ORGANIZATIONS"
   data_type: "string"
 - attribute_name: "Securities Organization Reference Name"
@@ -117,20 +117,20 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.ORGANIZATIONS.ORGANIZATION_TYPE_ID"
-  comment: "Scheme: ORGANIZATION_TYPE. Nguồn lưu dạng số (NUMBER) — ETL cần convert"
+  comment: "SCHEMA_CODE=NHNCK.ORGANIZATIONS.ORGANIZATIONS_TYPE"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Organization Level Code"
-  physical_name: "organization_level_code"
+- attribute_name: "Organization Level"
+  physical_name: "organization_level"
   description: "Cấp độ phân cấp tổ chức."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "NHNCK.ORGANIZATIONS.LEVEL_"
-  comment: "Scheme: ORGANIZATION_LEVEL."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -145,7 +145,7 @@ attributes:
   - "NHNCK.ORGANIZATIONS.PARENT_ID"
   comment: "FK target: securities_organization_reference.securities_organization_reference_id.\
     \ Self-referencing. Cần ETL crosswalk sang NHNCK.ORGANIZATIONS: ORGANIZATIONS.PARENT_ID\
-    \ = ORGANIZATIONS.ID để xác nhận ORGANIZATION_CODE sau đó hash_id('NHNCK.ORGANIZATIONS',\
+    \ = ORGANIZATIONS.ID để xác nhận ORGANIZATION_CODE sau đó hash_id('NHNCK_ORGANIZATIONS',\
     \ ORGANIZATION_CODE) | Trước đây hash trực tiếp theo PARENT_ID (ID kỹ thuật) gây\
     \ sai lệch với Id của bảng main (hash từ ORGANIZATION_CODE) — đã sửa sang crosswalk\
     \ 2026-08-11."
@@ -297,9 +297,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.ORGANIZATIONS.SYNC_STATUS"
-  comment: "Scheme: NHNCK.ORGANIZATIONS.SYNC_STATUS. Nguồn lưu dạng số (NUMBER) — ETL cần convert sang\
-    \ string."
-  classification_context: "NHNCK.ORGANIZATIONS.SYNC_STATUS"
+  comment: "SCHEMA_CODE=NHNCK.ORGANIZATIONS.SYNC_STATUS"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Status Code"
@@ -311,7 +310,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.ORGANIZATIONS.STATUS"
-  comment: "Scheme: NHNCK.ORGANIZATIONS.STATUS."
-  classification_context: "NHNCK.ORGANIZATIONS.STATUS"
+  comment: "SCHEMA_CODE=NHNCK.ORGANIZATIONS.STATUS"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"

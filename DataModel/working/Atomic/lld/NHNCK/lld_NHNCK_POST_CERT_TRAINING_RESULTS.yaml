@@ -58,7 +58,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=NHNCK.POST_CERT_TRAINING_RESULTS"
+  classification_context: "SOURCE_SYSTEM=NHNCK_POST_CERT_TRAINING_RESULTS"
   etl_derived_value: "NHNCK_POST_CERT_TRAINING_RESULTS"
   data_type: "string"
 - attribute_name: "Securities Practitioner Id"
@@ -70,7 +70,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.POST_CERT_TRAINING_RESULTS.PROFESSIONAL_ID"
-  comment: "FK target: securities_practitioner.sp_id. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
+  comment: "FK target: securities_practitioner.sp_id. Hash: hash_id('NHNCK_PROFESSIONALS', PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -98,7 +98,7 @@ attributes:
   - "NHNCK.POST_CERT_TRAINING_RESULTS.TRAINING_COURSE_ID"
   comment: "FK target: sp_post_certification_training_course.sp_post_certification_training_course_id.\
     \ Cần ETL crosswalk sang NHNCK.POST_CERT_TRAINING_COURSES: POST_CERT_TRAINING_RESULTS.TRAINING_COURSE_ID\
-    \ = POST_CERT_TRAINING_COURSES.ID để xác nhận COURSE_CODE sau đó hash_id('NHNCK.POST_CERT_TRAINING_COURSES',\
+    \ = POST_CERT_TRAINING_COURSES.ID để xác nhận COURSE_CODE sau đó hash_id('NHNCK_POST_CERT_TRAINING_COURSES',\
     \ COURSE_CODE) | Trước đây hash trực tiếp theo TRAINING_COURSE_ID (ID kỹ thuật)\
     \ gây sai lệch với Id của bảng main (hash từ COURSE_CODE) — đã sửa sang crosswalk\
     \ 2026-07-27."
@@ -166,8 +166,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.POST_CERT_TRAINING_RESULTS.RESULT_STATUS"
-  comment: "Scheme: NHNCK.POST_CERT_TRAINING_RESULTS.RESULT_STATUS."
-  classification_context: "NHNCK.POST_CERT_TRAINING_RESULTS.RESULT_STATUS"
+  comment: "SCHEMA_CODE=NHNCK.POST_CERT_TRAINING_RESULTS.RESULT_STATUS"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Training Classification Result"

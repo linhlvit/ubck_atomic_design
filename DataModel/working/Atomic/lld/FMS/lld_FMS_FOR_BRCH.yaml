@@ -20,7 +20,7 @@ metadata:
   notes: "Tách IP Postal Address (2 loại: FOREIGN_BRANCH + PARENT_ADDRESS) + IP Electronic\
     \ Address + IP Alt Identification (BUSINESS_LICENSE + OPERATING_LICENSE + TAX_ID).\
     \ NAT_ID là UUID FK thực sự đến FMS.NATIONAL — resolve bằng join NAT_ID → FMS.NATIONAL.ID\
-    \ để lấy SNAME, rồi hash_id('ECAT.COUNTRY', SNAME) cho FK pair Country of Registration\
+    \ để lấy SNAME, rồi hash_id('ECAT_COUNTRY', SNAME) cho FK pair Country of Registration\
     \ Id/Code đến Geographic Area (theo yêu cầu Data Modeler 2026-07-24). Business\
     \ Registration Number (REG_NO) đẩy ra IP Alt Identification (IP_ALT_ID_TYPE=BUSINESS_LICENSE)\
     \ thay vì denormalized trên entity chính — theo yêu cầu Data Modeler (2026-07-24).\
@@ -62,7 +62,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM."
-  classification_context: "SOURCE_SYSTEM=FMS.FOR_BRCH"
+  classification_context: "SOURCE_SYSTEM=FMS_FOR_BRCH"
   etl_derived_value: "FMS_FOR_BRCH"
   data_type: "string"
 - attribute_name: "Operation Status Code"
@@ -90,7 +90,7 @@ attributes:
   - "FMS.FOR_BRCH.NAT_ID"
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'COUNTRY'). Cần ETL crosswalk sang FMS.NATIONAL: FOR_BRCH.NAT_ID = NATIONAL.ID\
-    \ để xác nhận SNAME sau đó hash_id('ECAT.COUNTRY', SNAME) | Chưa xác nhận value\
+    \ để xác nhận SNAME sau đó hash_id('ECAT_COUNTRY', SNAME) | Chưa xác nhận value\
     \ set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
@@ -292,7 +292,7 @@ attributes:
   - "FMS.FOR_BRCH.EVENT_TYPE_ID"
   comment: "FK target: cl_fms_event_type.cl_fms_event_tp_id. Cần ETL crosswalk\
     \ sang FMS.EVENT_TYPE: FOR_BRCH.EVENT_TYPE_ID = EVENT_TYPE.ID để xác nhận ITEM_NAME\
-    \ sau đó hash_id('FMS.EVENT_TYPE', ITEM_NAME) |"
+    \ sau đó hash_id('FMS_EVENT_TYPE', ITEM_NAME) |"
   classification_context: null
   etl_derived_value: null
   data_type: "string"

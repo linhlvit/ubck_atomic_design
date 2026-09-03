@@ -55,7 +55,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=IDS.COMPANY_SHAREHOLDING"
+  classification_context: "SOURCE_SYSTEM=IDS_COMPANY_SHAREHOLDING"
   etl_derived_value: "IDS_COMPANY_SHAREHOLDING"
   data_type: "string"
 - attribute_name: "Public Company Id"
@@ -67,7 +67,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.COMPANY_SHAREHOLDING.COMPANY_PROFILE_ID"
-  comment: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES',\
+  comment: "FK target: public_company.pc_id. Hash: hash_id('IDS_COMPANY_PROFILES',\
     \ COMPANY_PROFILE_ID)."
   classification_context: null
   etl_derived_value: null
@@ -95,7 +95,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.COMPANY_SHAREHOLDING.LEGAL_ENTITY_ID"
-  comment: "FK target: legal_entity.legal_entity_id. Hash: hash_id('IDS.LEGAL_ENTITIES',\
+  comment: "FK target: legal_entity.legal_entity_id. Hash: hash_id('IDS_LEGAL_ENTITIES',\
     \ LEGAL_ENTITY_ID)."
   classification_context: null
   etl_derived_value: null
@@ -391,18 +391,16 @@ attributes:
 - attribute_name: "Shareholder Type Code"
   physical_name: "shareholder_tp_code"
   description: "Loại cổ đông (có thể thuộc nhiều loại cùng lúc)."
-  data_domain: "Array<Text>"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.COMPANY_SHAREHOLDING.SHAREHOLDER_TYPE"
-  comment: "Scheme: IDS_SHAREHOLDER_TYPE (source_table, LOOKUP_GROUP = 'SHAREHOLDER_TYPE').\
-    \ Nguồn lưu dạng chuỗi các mã cách nhau dấu phẩy — parse thành Array<Text> khi\
-    \ lên Atomic. Chưa có trong HLD 6d, bổ sung scheme mới."
-  classification_context: "IDS_SHAREHOLDER_TYPE"
+  comment: "Scheme: IDS_SHAREHOLDER_TYPE (source_table, LOOKUP_GROUP = 'SHAREHOLDER_TYPE')."
+  classification_context: null
   etl_derived_value: null
-  data_type: "array<string>"
+  data_type: "string"
 - attribute_name: "Ownership Quantity"
   physical_name: "ownership_quantity"
   description: "Số lượng cổ phiếu nắm giữ."
@@ -495,16 +493,3 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "date"
-- attribute_name: "Deleted Indicator"
-  physical_name: "deleted_ind"
-  description: "Đánh dấu xóa mềm."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.COMPANY_SHAREHOLDING.DELETE_FLG"
-  comment: "Encoding nguồn: 1 = Xóa, 0 = Không xóa."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"

@@ -73,7 +73,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
-  classification_context: "SOURCE_SYSTEM=NHNCK.SPECIALIZATION_COURSE_DETAILS"
+  classification_context: "SOURCE_SYSTEM=NHNCK_SPECIALIZATION_COURSE_DETAILS"
   etl_derived_value: "NHNCK_SPECIALIZATION_COURSE_DETAILS"
   data_type: "string"
 - attribute_name: "Securities Practitioner Professional Training Class Id"
@@ -87,7 +87,7 @@ attributes:
   - "NHNCK.SPECIALIZATION_COURSE_DETAILS.SPECIALIZATION_COURSE_ID"
   comment: "FK target: sp_professional_training_class.sp_professional_training_class_id.\
     \ Cần ETL crosswalk sang NHNCK.SPECIALIZATION_COURSES: SPECIALIZATION_COURSE_DETAILS.SPECIALIZATION_COURSE_ID\
-    \ = SPECIALIZATION_COURSES.ID để xác nhận COURSE_CODE sau đó hash_id('NHNCK.SPECIALIZATION_COURSES',\
+    \ = SPECIALIZATION_COURSES.ID để xác nhận COURSE_CODE sau đó hash_id('NHNCK_SPECIALIZATION_COURSES',\
     \ COURSE_CODE) | Trước đây hash trực tiếp theo SPECIALIZATION_COURSE_ID (ID kỹ\
     \ thuật) gây sai lệch với Id của bảng main (hash từ COURSE_CODE) — đã sửa sang\
     \ crosswalk 2026-07-27."
@@ -116,7 +116,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.SPECIALIZATION_COURSE_DETAILS.PROFESSIONAL_ID"
-  comment: "FK target: securities_practitioner.sp_id. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
+  comment: "FK target: securities_practitioner.sp_id. Hash: hash_id('NHNCK_PROFESSIONALS', PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -142,10 +142,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.SPECIALIZATIONS.SPECIALIZATION_CODE"
-  comment: "Scheme: SCHEMA_CODE. Cần ETL crosswalk sang NHNCK.SPECIALIZATIONS:\
-    \ SPECIALIZATION_COURSE_DETAILS.SPECIALIZATION_ID = SPECIALIZATIONS.ID để lấy\
-    \ SPECIALIZATION_CODE."
-  classification_context: "SCHEMA_CODE=NHNCK.SPECIALIZATIONS"
+  comment: "SCHEMA_CODE=NHNCK.SPECIALIZATIONS"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Exam Number"
@@ -211,7 +209,7 @@ attributes:
   - "NHNCK.SPECIALIZATION_COURSE_DETAILS.PERMANENT_COUNTRY_ID"
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'COUNTRY'). Cần ETL crosswalk sang NHNCK.COUNTRIES: SPECIALIZATION_COURSE_DETAILS.PERMANENT_COUNTRY_ID\
-    \ = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT.COUNTRY', COUNTRY_CODE)\
+    \ = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT_COUNTRY', COUNTRY_CODE)\
     \ | Snapshot tại thời điểm đăng ký. Chưa xác nhận value set khớp danh mục ECAT\
     \ — cần profile dữ liệu trước go-live."
   classification_context: null
@@ -241,7 +239,7 @@ attributes:
   - "NHNCK.SPECIALIZATION_COURSE_DETAILS.PERMANENT_PROVINCE_ID"
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'PROVINCE'). Cần ETL crosswalk sang NHNCK.PROVINCES: SPECIALIZATION_COURSE_DETAILS.PERMANENT_PROVINCE_ID\
-    \ = PROVINCES.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT.PROVINCE_NEW',\
+    \ = PROVINCES.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT_PROVINCE_NEW',\
     \ PROVINCE_CODE) | Snapshot tại thời điểm đăng ký. NHNCK.PROVINCES ngừng thiết\
     \ kế Atomic entity riêng — chỉ dùng để crosswalk. Chưa xác nhận value set khớp\
     \ danh mục ECAT — cần profile dữ liệu trước go-live."
@@ -272,7 +270,7 @@ attributes:
   - "NHNCK.SPECIALIZATION_COURSE_DETAILS.PERMANENT_DISTRICT_ID"
   comment: "FK target: geographic_area_old.geographic_area_old_id (geographic_area_old_tp_code\
     \ = 'DISTRICT_OLD'). Cần ETL crosswalk sang NHNCK.DISTRICTS: SPECIALIZATION_COURSE_DETAILS.PERMANENT_DISTRICT_ID\
-    \ = DISTRICTS.ID để xác nhận DISTRICT_CODE sau đó hash_id('ECAT.DISTRICT_OLD',\
+    \ = DISTRICTS.ID để xác nhận DISTRICT_CODE sau đó hash_id('ECAT_DISTRICT_OLD',\
     \ DISTRICT_CODE) | ĐỔI TARGET — không còn Geographic Area: cấp quận/huyện đã bị\
     \ loại bỏ trong cấu trúc địa giới hiện hành (post-sáp nhập 2025); ECAT chỉ còn\
     \ lưu ở Geographic Area Old. Snapshot tại thời điểm đăng ký. NHNCK.DISTRICTS ngừng\
@@ -303,9 +301,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.SPECIALIZATION_COURSE_DETAILS.IDENTITY_TYPE"
-  comment: "Scheme: IDENTIFICATION_DOCUMENT_TYPE. Nguồn: 1=CMND, 2=CCCD, 3=Hộ chiếu.\
-    \ Snapshot — entity grain là enrollment, không phải Involved Party."
-  classification_context: "IDENTIFICATION_DOCUMENT_TYPE"
+  comment: "SCHEMA_CODE=IDENTIFICATION_DOCUMENT_TYPE"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Identification Number"
@@ -370,8 +367,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.SPECIALIZATION_COURSE_DETAILS.RESULT"
-  comment: "Scheme: NHNCK.EXAM_DETAILS.RESULT (gộp từ TRAINING_RESULT, 2026-07-09)."
-  classification_context: "NHNCK.EXAM_DETAILS.RESULT"
+  comment: "SCHEMA_CODE=NHNCK.EXAM_DETAILS.RESULT"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Description"
@@ -411,7 +408,7 @@ attributes:
   - "NHNCK.SPECIALIZATION_COURSE_DETAILS.ASSIGNEE_ID"
   comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
     \ Cần ETL crosswalk sang NHNCK.USERS: SPECIALIZATION_COURSE_DETAILS.ASSIGNEE_ID\
-    \ = USERS.ID để xác nhận USERNAME sau đó hash_id('IAM.USERS', USERNAME) | Chưa\
+    \ = USERS.ID để xác nhận USERNAME sau đó hash_id('IAM_USERS', USERNAME) | Chưa\
     \ xác nhận value set khớp danh mục IAM.USERS — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null

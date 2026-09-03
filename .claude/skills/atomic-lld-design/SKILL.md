@@ -231,7 +231,7 @@ Mục đích của Bước 2 là **không thay đổi domain đã chọn** mà l
   | Dạng `classification_context` | `etl_derived_value` |
   |---|---|
   | `SCHEME=VALUE` (cố định, VD: `IP_ELEC_ADDR_TYPE=PHONE`) | Điền literal VALUE: `PHONE` |
-  | `SOURCE_SYSTEM=SRC.TABLE` | Điền literal `SRC_TABLE` — **gạch dưới, KHÔNG dùng dấu chấm** (VD: `SOURCE_SYSTEM=NHNCK.PROFESSIONALS` → `NHNCK_PROFESSIONALS`). `classification_context` vẫn giữ dấu chấm như cũ — chỉ đổi giá trị lưu ở `etl_derived_value`. |
+  | `SOURCE_SYSTEM=SRC_TABLE` (Source System Code — xem Bước 3f) | Điền literal `SRC_TABLE` — **gạch dưới**, giống hệt phần VALUE sau dấu `=` của `classification_context` (2 trường nay cùng format gạch dưới, không còn khác nhau). |
   | `SCHEME` (không có `=VALUE`, dynamic — VD: `IP_ADDR_TYPE`) | **Luôn để null** — KHÔNG ghi expression mapping CODE=VALUE. Toàn bộ mapping Code→Value của Classification Value đã được quản lý tập trung tại `classification_schemes.yaml` (và bảng Fundamental `cl_value`) — không lặp lại ở `etl_derived_value` từng attribute. |
   | Không có `classification_context` | Để null |
 
@@ -240,7 +240,7 @@ Mục đích của Bước 2 là **không thay đổi domain đã chọn** mà l
 #### 3e. PK nguồn và BK
 - PK kỹ thuật bảng nguồn (VD: `ID` auto-increment/UUID) **KHÔNG map vào Atomic** — loại khỏi model hoàn toàn, không giữ lại dưới bất kỳ hình thức nào (kể cả technical field).
 - Mã nghiệp vụ duy nhất của bảng nguồn (VD: `CODE`, `MA_CTCK`, `MA_SO_THUE`) → `{Entity} Code` — **BK duy nhất** của entity, data domain `Text`, `nullable: false`. **KHÔNG** đặt tên generic kiểu `Organization Code`.
-- `{Entity} Id` (surrogate) hash **từ chính `{Entity} Code`**: `hash_id('SRC.TABLE', CODE_COLUMN)` — không hash từ ID kỹ thuật.
+- `{Entity} Id` (surrogate) hash **từ chính `{Entity} Code`**: `hash_id('SRC_TABLE', CODE_COLUMN)` (gạch dưới) — không hash từ ID kỹ thuật.
 - **Bảng nguồn có cả `ID` và `CODE`**: chỉ map `CODE` → `{Entity} Code`; bỏ qua `ID` hoàn toàn (không tạo cặp Code kỹ thuật + Unique Key như trước đây).
 - Không còn pattern `{Entity} Unique Key` — đã gộp vào `{Entity} Code` duy nhất (quyết định 2026-07-13, thay thế pattern Id+Code+Unique Key cũ).
 - Pattern tham khảo (`lld_THANHTRA_VIOLATION_CASE.yaml`): `Violation Case Id` (surrogate, hash từ CODE) + `Violation Case Code` (từ `CODE` nguồn — mã hồ sơ VPHC tự sinh, BK duy nhất).
@@ -259,12 +259,17 @@ Format bắt buộc — **cả 2 trường phải nhất quán:**
 
 | Trường | Giá trị bắt buộc |
 |---|---|
-| `classification_context` | `SOURCE_SYSTEM=NHNCK.TABLE_NAME` (giữ dấu chấm) |
-| `etl_derived_value` | `NHNCK_TABLE_NAME` — **gạch dưới**, thay dấu `.` bằng `_` từ phần VALUE sau dấu `=` của `classification_context` |
+| `comment` | `Scheme: SOURCE_SYSTEM. Hardcode.` |
+| `classification_context` | `SOURCE_SYSTEM=NHNCK_TABLE_NAME` (**gạch dưới** — thay dấu `.` bằng `_`) |
+| `etl_derived_value` | `NHNCK_TABLE_NAME` — cùng giá trị VALUE với phần sau dấu `=` của `classification_context` |
 
 `TABLE_NAME` = tên bảng nguồn cụ thể (không phải chỉ tên source system).
 
-**Vì sao 2 trường khác định dạng dấu phân cách:** `classification_context` là scheme identifier cho con người/tool tra cứu, giữ dấu chấm cho dễ đọc (namespace SOURCE.TABLE). `etl_derived_value` là giá trị literal thực sự sẽ được hardcode/lưu vào cột dữ liệu — dùng gạch dưới để tránh nhầm với ký hiệu path/namespace ở phía ETL.
+**Chuẩn gạch dưới cho mọi literal SOURCE.TABLE (2026-08):** `classification_context` và
+`etl_derived_value` nay dùng CÙNG format gạch dưới, không còn khác nhau — thống nhất với quy tắc
+chung: bất kỳ nơi nào `SOURCE_SYSTEM.TABLE` xuất hiện dưới dạng **giá trị literal nhúng** (không
+phải path tham chiếu vật lý như `source_columns` hay `Cần ETL crosswalk sang SOURCE.TABLE:`) đều
+dùng gạch dưới. Áp dụng đồng thời cho literal đầu vào của `hash_id()` — xem Bước 5.
 
 **Pattern sai — KHÔNG dùng:**
 
@@ -274,7 +279,8 @@ Format bắt buộc — **cả 2 trường phải nhất quán:**
 | `''` (trống) | aggregate bỏ qua hoàn toàn |
 | `'ETL-derived = NHNCK.TABLE'` (free-text) | không đúng format `SCHEME=VALUE` |
 | `'SCHEME=SOURCE_SYSTEM'` (key/value đảo ngược) | context không có ý nghĩa |
-| `'Scheme: SOURCE_SYSTEM. ...'` (free-text) | không phải machine-readable format |
+| `'SOURCE_SYSTEM=NHNCK.TABLE_NAME'` (dấu chấm) | đã đổi chuẩn sang gạch dưới, dấu chấm là format cũ |
+| `'Scheme: SOURCE_SYSTEM. ...'` (free-text không có "Hardcode.") | không phải machine-readable format |
 
 #### 3g. Metadata nguồn
 - Trường metadata truyền nhận (VD: `GOI_TIN_ID`) → trường nghiệp vụ bình thường, không đưa vào nhóm `ds_`.
@@ -372,13 +378,18 @@ Phân biệt **Id** (FK constraint thực sự) vs **Code** (denormalized lookup
 
   | Case | source_columns | Hash comment |
   |---|---|---|
-  | FK bình thường | `[SRC.TABLE.FK_COL]` | `Hash: hash_id('SRC.TARGET_TABLE', FK_COL).` |
-  | Shared entity (IP sub-table, dùng PK parent) | `[SRC.PARENT_TABLE.ID]` | `Hash: hash_id('SRC.PARENT_TABLE', ID).` |
+  | FK bình thường | `[SRC.TABLE.FK_COL]` | `Hash: hash_id('SRC_TARGET_TABLE', FK_COL).` |
+  | Shared entity (IP sub-table, dùng PK parent) | `[SRC.PARENT_TABLE.ID]` | `Hash: hash_id('SRC_PARENT_TABLE', ID).` |
   | FK luôn NULL | `[]` (rỗng) | Không thêm hash, không ghi lý do NULL — để `comment: null`. |
 
+  **Literal đầu vào của `hash_id()` luôn dùng gạch dưới** (`SRC_TARGET_TABLE`, không phải
+  `SRC.TARGET_TABLE`) — cùng chuẩn với `classification_context` của Source System Code (xem Bước
+  3f). Phần `entity_physical_name.attribute_physical_name` phía trước (`FK target: ...`) vẫn giữ
+  dấu chấm như bình thường — đó là physical path, không phải SOURCE.TABLE identifier.
+
   Ví dụ:
-  - Normal: `"FK target: securities_practitioner.securities_practitioner_id. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."`
-  - Shared entity: `"FK target: securities_organization_reference.securities_organization_reference_id. Shared entity. Hash: hash_id('NHNCK.ORGANIZATIONS', ID)."`
+  - Normal: `"FK target: securities_practitioner.securities_practitioner_id. Hash: hash_id('NHNCK_PROFESSIONALS', PROFESSIONAL_ID)."`
+  - Shared entity: `"FK target: securities_organization_reference.securities_organization_reference_id. Shared entity. Hash: hash_id('NHNCK_ORGANIZATIONS', ID)."`
   - Always null: `comment: null` (source_columns rỗng → không giữ lại "FK target:"/"Lookup pair:" hay lý do NULL nào trong comment, kể cả khi lý do đó đúng và ngắn gọn).
 
   **FK cần crosswalk sang bảng danh mục nguồn để lấy Code (không hash trực tiếp theo ID kỹ
@@ -392,7 +403,7 @@ Phân biệt **Id** (FK constraint thực sự) vs **Code** (denormalized lookup
 
   Cú pháp:
   ```
-  FK target: {target_entity_physical_name}.{target_attribute_physical_name} ({filter_attribute_physical_name} = {FILTER_VALUE}, nếu cần lọc). Cần ETL crosswalk sang {SOURCE_SYSTEM}.{LOOKUP_TABLE}: {SOURCE_TABLE}.{FK_COLUMN} = {LOOKUP_TABLE}.{LOOKUP_PK_COLUMN} để xác nhận {CODE_COLUMN} sau đó hash_id('{TARGET_SOURCE_SYSTEM}.{TARGET_TABLE}', {CODE_COLUMN}) | {notes khác, ví dụ cảnh báo cần profile dữ liệu}
+  FK target: {target_entity_physical_name}.{target_attribute_physical_name} ({filter_attribute_physical_name} = {FILTER_VALUE}, nếu cần lọc). Cần ETL crosswalk sang {SOURCE_SYSTEM}.{LOOKUP_TABLE}: {SOURCE_TABLE}.{FK_COLUMN} = {LOOKUP_TABLE}.{LOOKUP_PK_COLUMN} để xác nhận {CODE_COLUMN} sau đó hash_id('{TARGET_SOURCE_SYSTEM}_{TARGET_TABLE}', {CODE_COLUMN}) | {notes khác, ví dụ cảnh báo cần profile dữ liệu}
   ```
 
   - `{SOURCE_SYSTEM}.{LOOKUP_TABLE}`, `{SOURCE_TABLE}.{FK_COLUMN}`, `{LOOKUP_PK_COLUMN}`,
@@ -421,13 +432,13 @@ Phân biệt **Id** (FK constraint thực sự) vs **Code** (denormalized lookup
   = COUNTRY):
   `"FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL
   crosswalk sang NHNCK.COUNTRIES: PROFESSIONALS.NATIONALITY_ID = COUNTRIES.ID để xác nhận
-  COUNTRY_CODE sau đó hash_id('ECAT.COUNTRY', COUNTRY_CODE) | Chưa xác nhận value set khớp danh
+  COUNTRY_CODE sau đó hash_id('ECAT_COUNTRY', COUNTRY_CODE) | Chưa xác nhận value set khớp danh
   mục ECAT — cần profile dữ liệu trước go-live."`
 
   Ví dụ (crosswalk cùng phân hệ, sửa lỗi hash-mismatch):
   `"FK target: sp_professional_training_class.sp_professional_training_class_id. Cần ETL
   crosswalk sang NHNCK.SPECIALIZATION_COURSES: SPECIALIZATION_COURSE_DETAILS.SPECIALIZATION_COURSE_ID
-  = SPECIALIZATION_COURSES.ID để xác nhận COURSE_CODE sau đó hash_id('NHNCK.SPECIALIZATION_COURSES',
+  = SPECIALIZATION_COURSES.ID để xác nhận COURSE_CODE sau đó hash_id('NHNCK_SPECIALIZATION_COURSES',
   COURSE_CODE) | Trước đây hash trực tiếp theo SPECIALIZATION_COURSE_ID (ID kỹ thuật) gây sai
   lệch với Id của bảng main (hash từ COURSE_CODE) — đã sửa sang crosswalk 2026-07-27."`
 
@@ -436,7 +447,7 @@ Phân biệt **Id** (FK constraint thực sự) vs **Code** (denormalized lookup
   comment chuẩn (case "FK bình thường" ở trên) — phần `FK target:` vẫn dùng physical_name viết
   thường như mọi FK khác (không có gì đặc biệt cần "giữ lại" — đây luôn là casing chuẩn, không
   phải trạng thái tạm thời của riêng crosswalk):
-  `"FK target: {entity_physical_name}.{entity_physical_name}_id ({điều kiện lọc nếu có}). Hash: hash_id('{TARGET_SRC}.{TARGET_TABLE}', {CODE_COLUMN})."`
+  `"FK target: {entity_physical_name}.{entity_physical_name}_id ({điều kiện lọc nếu có}). Hash: hash_id('{TARGET_SRC}_{TARGET_TABLE}', {CODE_COLUMN})."`
 
 - **Code** — denormalized lookup (KHÔNG phải FK constraint, chỉ là copy giá trị business key cho tiện query):
   `Lookup pair: {entity_physical_name}.{entity_physical_name}_code. Pair with {Id field name}. {notes}`
@@ -465,7 +476,7 @@ Phân biệt **Id** (FK constraint thực sự) vs **Code** (denormalized lookup
   - attribute_name: "Nationality Id"
     source_columns:
     - "NHNCK.PROFESSIONALS.NATIONALITY_ID"
-    comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang NHNCK.COUNTRIES: PROFESSIONALS.NATIONALITY_ID = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT.COUNTRY', COUNTRY_CODE) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
+    comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang NHNCK.COUNTRIES: PROFESSIONALS.NATIONALITY_ID = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT_COUNTRY', COUNTRY_CODE) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
 
   - attribute_name: "Nationality Code"
     source_columns:
@@ -511,7 +522,7 @@ Trước khi xuất file:
 - [ ] **Conversion risk:** Mọi attribute có Data Domain không khớp tự nhiên với data type nguồn (ví dụ: nguồn `string` → domain `Small Counter`) đã có comment ghi chú conversion risk chưa? Nếu data type nguồn không khai báo → đã ghi "cần profile" trong comment?
 - [ ] **Domain mới:** Nếu có attribute dùng tag `[PROPOSE NEW DOMAIN]` → đã tách thành điểm cần xác nhận riêng để reviewer quyết định bổ sung vào `reference/data_domains.md`?
 - [ ] **FK comment** (xem Bước 5): Id ghi `FK target: ...`, Code ghi `Lookup pair: ... Pair with {Id field}` — KHÔNG ghi `FK target:` cho cả Id+Code. Currency Code (Classification Value pattern, không có Id) ghi `FK target:`.
-- [ ] **FK hash comment** (xem Bước 5): Mọi FK Id có `source_columns` không rỗng → comment phải có `Hash: hash_id('SRC.TARGET_TABLE', COL).` (FK_SOURCE tra từ `Source/{SOURCE}_Columns.csv`). FK với `source_columns: []` → không thêm hash, `comment: null` (không ghi lý do NULL).
+- [ ] **FK hash comment** (xem Bước 5): Mọi FK Id có `source_columns` không rỗng → comment phải có `Hash: hash_id('SRC_TARGET_TABLE', COL).` (gạch dưới, FK_SOURCE tra từ `Source/{SOURCE}_Columns.csv`). FK với `source_columns: []` → không thêm hash, `comment: null` (không ghi lý do NULL).
 - [ ] **FK cần crosswalk qua bảng danh mục** (xem Bước 5): Nếu `COL` dùng trong `hash_id()` là ID kỹ thuật của bảng đích chứ không phải Code thật (đối chiếu `"{Entity} Code"` attribute của chính entity đích) → phải dùng cú pháp `FK target: {entity}.{attribute} (...). Cần ETL crosswalk sang ...` (physical_name viết thường), KHÔNG hash trực tiếp theo ID kỹ thuật.
 - [ ] **Code đi kèm Id crosswalk** (xem Bước 5): Khi Id là case crosswalk, Code's `source_columns` phải là `{SOURCE_SYSTEM}.{LOOKUP_TABLE}.{CODE_COLUMN}` (cột Code thật ở bảng danh mục, lấy đúng từ comment crosswalk của Id) — KHÔNG lặp lại `{SOURCE_TABLE}.{FK_COLUMN}` (ID kỹ thuật) giống Id.
 - [ ] **Audit block** (xem Bước 3k): Bảng nguồn có `CREATED_AT / CREATED_BY / UPDATED_AT / UPDATED_BY` → đủ 6 attribute chuẩn. Comment FK target dùng **tên attribute đầy đủ** (có prefix entity). Self-reference vẫn có cặp Id + Code.
@@ -527,8 +538,8 @@ Trước khi xuất file:
 - [ ] **Merge entity 1-1:** `source_columns` KHÔNG dùng format comma-separated `"X.col1, Y.col2"` — chỉ 1 bảng primary, bảng còn lại document pending.
 - [ ] **scope_status sync:** Sau khi lưu LLD file → chạy sync script (xem section "Cập nhật scope_status trong BRD Source YAML") → kiểm tra tất cả source_tables (metadata + source_columns) đã là `in_scope` trong `brd_{SOURCE}.yaml`.
 - [ ] **Encoding:** mọi file CSV ghi UTF-8 with BOM (`utf-8-sig`) — xem [`reference/file_layout.md`](reference/file_layout.md).
-- [ ] **`etl_derived_value` cho Classification Value:** Mọi row có `classification_context = SCHEME=VALUE` → `etl_derived_value = VALUE`. Mọi row `SOURCE_SYSTEM=SRC.TABLE` → `etl_derived_value = SRC_TABLE` (**gạch dưới**, không dùng dấu chấm). Dynamic context (không có `=VALUE`) → **luôn null**, KHÔNG ghi expression mapping CODE=VALUE (mapping đã có trong `classification_schemes.yaml` / bảng `cl_value`).
-- [ ] **Source System Code:** `classification_context = SOURCE_SYSTEM=NHNCK.TABLE_NAME` (không free-text, không bare, không trống — giữ dấu chấm); `etl_derived_value = NHNCK_TABLE_NAME` (bắt buộc, không trống, **gạch dưới**).
+- [ ] **`etl_derived_value` cho Classification Value:** Mọi row có `classification_context = SCHEME=VALUE` → `etl_derived_value = VALUE`. Mọi row `SOURCE_SYSTEM=SRC_TABLE` (Source System Code) → `etl_derived_value = SRC_TABLE` — cùng giá trị gạch dưới với `classification_context`. Dynamic context (không có `=VALUE`) → **luôn null**, KHÔNG ghi expression mapping CODE=VALUE (mapping đã có trong `classification_schemes.yaml` / bảng `cl_value`).
+- [ ] **Source System Code:** `classification_context = SOURCE_SYSTEM=NHNCK_TABLE_NAME` (không free-text, không bare, không trống — **gạch dưới**, thống nhất với `etl_derived_value`); `etl_derived_value = NHNCK_TABLE_NAME` (bắt buộc, không trống, **gạch dưới**); `comment = "Scheme: SOURCE_SYSTEM. Hardcode."`.
 - [ ] **Post-check C7 + C8 + C9:** Sau aggregate, chạy `post_check_atomic.py` — C7 kiểm tra mọi `Classification Value` có context `SCHEME=VALUE` đều có `etl_derived_value`; C8 kiểm tra riêng `Source System Code` (format gạch dưới); C9 kiểm tra không còn sót expression mapping CODE=VALUE trên context dynamic.
 - [ ] **Post-check:** Sau khi chạy aggregate, chạy `post_check_atomic.py` (xem [`reference/post_check_codes.md`](reference/post_check_codes.md)) và xử lý mọi warning trước khi kết thúc Tier.
 - [ ] **Source coverage:** Chạy `post_check_source_coverage.py --source {SOURCE}` — mọi bảng đã thiết kế đều có 100% cột map (hoặc pending với reason rõ).
@@ -601,8 +612,8 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns: []
-    comment: "Scheme: SOURCE_SYSTEM."
-    classification_context: SOURCE_SYSTEM=NHNCK.PROFESSIONALS
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: SOURCE_SYSTEM=NHNCK_PROFESSIONALS
     etl_derived_value: NHNCK_PROFESSIONALS
 ```
 

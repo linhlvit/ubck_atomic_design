@@ -67,7 +67,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=NHNCK.PROFESSIONALS"
+  classification_context: "SOURCE_SYSTEM=NHNCK_PROFESSIONALS"
   etl_derived_value: "NHNCK_PROFESSIONALS"
   data_type: "string"
 - attribute_name: "Full Name"
@@ -131,8 +131,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.PROFESSIONALS.GENDER"
-  comment: "Scheme: GENDER. Nguồn lưu NUMBER — ETL convert sang code."
-  classification_context: "GENDER"
+  comment: "SCHEMA_CODE=GENDER"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Education Level Code"
@@ -144,8 +144,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.PROFESSIONALS.EDUCATION_LEVEL_ID"
-  comment: "Scheme: EDUCATIONAL_LEVEL. Nguồn lưu FK số — ETL lookup convert sang code."
-  classification_context: "EDUCATIONAL_LEVEL"
+  comment: "SCHEMA_CODE=EDUCATIONAL_LEVEL"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Practitioner Registration Type Code"
@@ -157,9 +157,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.PROFESSIONALS.REGISTRATION_TYPE"
-  comment: "Scheme: NHNCK.APPLICATIONS.REGISTRATION_TYPE. Nguồn lưu NUMBER — ETL convert\
-    \ sang code."
-  classification_context: "NHNCK.APPLICATIONS.REGISTRATION_TYPE"
+  comment: "SCHEMA_CODE=NHNCK.APPLICATIONS.REGISTRATION_TYPE"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Practice Status Code"
@@ -171,9 +170,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.PROFESSIONALS.STATUS_WORK"
-  comment: "Scheme: NHNCK.PROFESSIONALS.STATUS_WORK. Nguồn: 0=Chưa HN / 1=Đang HN\
-    \ / 2=Thu hồi có cấp lại / 3=Thu hồi không cấp lại / 4=Cấp có thời hạn."
-  classification_context: "NHNCK.PROFESSIONALS.STATUS_WORK"
+  comment: "SCHEMA_CODE=NHNCK.PROFESSIONALS.STATUS_WORK"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Account Status Code"
@@ -185,9 +183,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.PROFESSIONALS.STATUS_ACCOUNT"
-  comment: "Scheme: NHNCK.PROFESSIONALS.STATUS_ACCOUNT. Reuse — 0=Chưa kích hoạt /\
-    \ 1=Hoạt động / 2=Khóa."
-  classification_context: "NHNCK.PROFESSIONALS.STATUS_ACCOUNT"
+  comment: "SCHEMA_CODE=NHNCK.PROFESSIONALS.STATUS_ACCOUNT"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Organization Reference Id"
@@ -201,7 +198,7 @@ attributes:
   - "NHNCK.PROFESSIONALS.ORGANIZATION_ID"
   comment: "FK target: securities_organization_reference.securities_organization_reference_id.\
     \ Cần ETL crosswalk sang NHNCK.ORGANIZATIONS: PROFESSIONALS.ORGANIZATION_ID =\
-    \ ORGANIZATIONS.ID để xác nhận ORGANIZATION_CODE sau đó hash_id('NHNCK.ORGANIZATIONS',\
+    \ ORGANIZATIONS.ID để xác nhận ORGANIZATION_CODE sau đó hash_id('NHNCK_ORGANIZATIONS',\
     \ ORGANIZATION_CODE) | Nullable — người hành nghề có thể chưa công tác. Trước\
     \ đây hash trực tiếp theo ORGANIZATION_ID (ID kỹ thuật) gây sai lệch với Id của\
     \ bảng main (hash từ ORGANIZATION_CODE) — đã sửa sang crosswalk 2026-08-11."
@@ -234,7 +231,7 @@ attributes:
   - "NHNCK.PROFESSIONALS.NATIONALITY_ID"
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'COUNTRY'). Cần ETL crosswalk sang NHNCK.COUNTRIES: PROFESSIONALS.NATIONALITY_ID\
-    \ = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT.COUNTRY', COUNTRY_CODE)\
+    \ = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT_COUNTRY', COUNTRY_CODE)\
     \ | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
@@ -381,7 +378,7 @@ attributes:
   - "NHNCK.PROFESSIONALS.PLACE_OF_BIRTH_COUNTRY_ID"
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'COUNTRY'). Cần ETL crosswalk sang NHNCK.COUNTRIES: PROFESSIONALS.PLACE_OF_BIRTH_COUNTRY_ID\
-    \ = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT.COUNTRY', COUNTRY_CODE)\
+    \ = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT_COUNTRY', COUNTRY_CODE)\
     \ | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
@@ -412,7 +409,7 @@ attributes:
   - "NHNCK.PROFESSIONALS.PLACE_OF_BIRTH_PROVINCE_ID"
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'PROVINCE'). Cần ETL crosswalk sang NHNCK.PROVINCES: PROFESSIONALS.PLACE_OF_BIRTH_PROVINCE_ID\
-    \ = PROVINCES.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT.PROVINCE_NEW',\
+    \ = PROVINCES.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT_PROVINCE_NEW',\
     \ PROVINCE_CODE) | NHNCK.PROVINCES ngừng thiết kế Atomic entity riêng — chỉ dùng\
     \ để crosswalk. Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu\
     \ trước go-live."
@@ -445,7 +442,7 @@ attributes:
   - "NHNCK.PROFESSIONALS.PLACE_OF_BIRTH_DISTRICT_ID"
   comment: "FK target: geographic_area_old.geographic_area_old_id (geographic_area_old_tp_code\
     \ = 'DISTRICT_OLD'). Cần ETL crosswalk sang NHNCK.DISTRICTS: PROFESSIONALS.PLACE_OF_BIRTH_DISTRICT_ID\
-    \ = DISTRICTS.ID để xác nhận DISTRICT_CODE sau đó hash_id('ECAT.DISTRICT_OLD',\
+    \ = DISTRICTS.ID để xác nhận DISTRICT_CODE sau đó hash_id('ECAT_DISTRICT_OLD',\
     \ DISTRICT_CODE) | ĐỔI TARGET — cấp quận/huyện đã bị loại bỏ trong cấu trúc địa\
     \ giới hiện hành post-sáp nhập 2025; ECAT chỉ còn lưu ở Geographic Area Old. NHNCK.DISTRICTS\
     \ ngừng thiết kế Atomic entity riêng — chỉ dùng để crosswalk. Chưa xác nhận value\
@@ -477,8 +474,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.PROFESSIONALS.SSO_SYNCED"
-  comment: "Scheme: NHNCK.PROFESSIONALS.SSO_SYNCED."
-  classification_context: "NHNCK.PROFESSIONALS.SSO_SYNCED"
+  comment: "SCHEMA_CODE=NHNCK.PROFESSIONALS.SSO_SYNCED"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Identity and Access Management User Id"
@@ -492,7 +489,7 @@ attributes:
   - "NHNCK.PROFESSIONALS.SSO_USER_ID"
   comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
     \ Cần ETL crosswalk sang NHNCK.USERS: PROFESSIONALS.SSO_USER_ID = USERS.ID để\
-    \ xác nhận USERNAME sau đó hash_id('IAM.USERS', USERNAME) | Chưa xác nhận value\
+    \ xác nhận USERNAME sau đó hash_id('IAM_USERS', USERNAME) | Chưa xác nhận value\
     \ set khớp danh mục IAM.USERS — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
@@ -522,7 +519,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.PROFESSIONALS.STATUS"
-  comment: "Scheme: NHNCK.PROFESSIONALS.STATUS."
-  classification_context: "NHNCK.PROFESSIONALS.STATUS"
+  comment: "SCHEMA_CODE=NHNCK.PROFESSIONALS.STATUS"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"

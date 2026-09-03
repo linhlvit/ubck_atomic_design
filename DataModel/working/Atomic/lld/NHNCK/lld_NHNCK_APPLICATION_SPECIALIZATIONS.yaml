@@ -70,7 +70,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=NHNCK.APPLICATION_SPECIALIZATIONS"
+  classification_context: "SOURCE_SYSTEM=NHNCK_APPLICATION_SPECIALIZATIONS"
   etl_derived_value: "NHNCK_APPLICATION_SPECIALIZATIONS"
   data_type: "string"
 - attribute_name: "Securities Practitioner License Application Id"
@@ -84,7 +84,7 @@ attributes:
   - "NHNCK.APPLICATION_SPECIALIZATIONS.APPLICATION_ID"
   comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL crosswalk\
     \ sang NHNCK.APPLICATIONS: APPLICATION_SPECIALIZATIONS.APPLICATION_ID = APPLICATIONS.ID\
-    \ để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK.APPLICATIONS', APPLICATION_CODE)\
+    \ để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS', APPLICATION_CODE)\
     \ | Trước đây hash trực tiếp theo APPLICATION_ID (ID kỹ thuật) gây sai lệch với\
     \ Id của bảng main (hash từ APPLICATION_CODE) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
@@ -112,9 +112,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.SPECIALIZATIONS.SPECIALIZATION_CODE"
-  comment: "Scheme: SCHEMA_CODE. Cần ETL crosswalk sang NHNCK.SPECIALIZATIONS:\
-    \ APPLICATION_SPECIALIZATIONS.SPECIALIZATION_ID = SPECIALIZATIONS.ID để lấy SPECIALIZATION_CODE."
-  classification_context: "SCHEMA_CODE=NHNCK.SPECIALIZATIONS"
+  comment: "SCHEMA_CODE=NHNCK.SPECIALIZATIONS"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Certificate Issue Date"
@@ -167,7 +166,7 @@ attributes:
   - "NHNCK.APPLICATION_SPECIALIZATIONS.ASSIGNEE_ID"
   comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
     \ Cần ETL crosswalk sang NHNCK.USERS: APPLICATION_SPECIALIZATIONS.ASSIGNEE_ID\
-    \ = USERS.ID để xác nhận USERNAME sau đó hash_id('IAM.USERS', USERNAME) | Chưa\
+    \ = USERS.ID để xác nhận USERNAME sau đó hash_id('IAM_USERS', USERNAME) | Chưa\
     \ xác nhận value set khớp danh mục IAM.USERS — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
@@ -222,7 +221,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_SPECIALIZATIONS.STATUS"
-  comment: "Scheme: NHNCK.APPLICATION_SPECIALIZATIONS.STATUS."
-  classification_context: "NHNCK.APPLICATION_SPECIALIZATIONS.STATUS"
+  comment: "SCHEMA_CODE=NHNCK.APPLICATION_SPECIALIZATIONS.STATUS"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"

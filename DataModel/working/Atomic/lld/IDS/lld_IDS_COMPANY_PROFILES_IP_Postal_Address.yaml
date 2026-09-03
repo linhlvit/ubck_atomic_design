@@ -30,7 +30,7 @@ attributes:
   source_columns:
   - "IDS.COMPANY_PROFILES.ID"
   comment: "FK target: public_company.pc_id. Shared entity — không có PK surrogate\
-    \ riêng. Hash: hash_id('IDS.COMPANY_PROFILES', ID)."
+    \ riêng. Hash: hash_id('IDS_COMPANY_PROFILES', ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -56,7 +56,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM."
-  classification_context: "SOURCE_SYSTEM=IDS.COMPANY_PROFILES"
+  classification_context: "SOURCE_SYSTEM=IDS_COMPANY_PROFILES"
   etl_derived_value: "IDS_COMPANY_PROFILES"
   data_type: "string"
 - attribute_name: "Address Type Code"
@@ -93,7 +93,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.COMPANY_PROFILES.PROVINCE_ID"
-  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'PROVINCE'). Cần ETL crosswalk sang IDS.PROVINCES: COMPANY_PROFILES.PROVINCE_ID = PROVINCES.ID để xác nhận PROVINCE_CD sau đó hash_id('ECAT.PROVINCE_NEW', PROVINCE_CD) | IDS.PROVINCES ngoài scope (xem HLD 7f). Nguồn PROVINCE_ID VARCHAR2(50) dù tên cột gợi ý ID — cần profile giá trị thực tế trước khi join với PROVINCES.ID (NUMBER). Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
+  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'PROVINCE'). Cần ETL crosswalk sang IDS.PROVINCES: COMPANY_PROFILES.PROVINCE_ID = PROVINCES.ID để xác nhận PROVINCE_CD sau đó hash_id('ECAT_PROVINCE_NEW', PROVINCE_CD) | IDS.PROVINCES ngoài scope (xem HLD 7f). Nguồn PROVINCE_ID VARCHAR2(50) dù tên cột gợi ý ID — cần profile giá trị thực tế trước khi join với PROVINCES.ID (NUMBER). Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
   etl_derived_value: null
   data_type: "string"

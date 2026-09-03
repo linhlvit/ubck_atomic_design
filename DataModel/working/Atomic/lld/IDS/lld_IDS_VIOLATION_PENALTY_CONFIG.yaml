@@ -55,7 +55,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=IDS.VIOLATION_PENALTY_CONFIG"
+  classification_context: "SOURCE_SYSTEM=IDS_VIOLATION_PENALTY_CONFIG"
   etl_derived_value: "IDS_VIOLATION_PENALTY_CONFIG"
   data_type: "string"
 - attribute_name: "Violation Report Template Id"
@@ -69,7 +69,7 @@ attributes:
   - "IDS.VIOLATION_PENALTY_CONFIG.VIOLATION_TEMPLATE_ID"
   comment: "FK target: vr_template.vr_template_id. Cần ETL\
     \ crosswalk sang IDS.VIOLATION_TEMPLATES: VIOLATION_PENALTY_CONFIG.VIOLATION_TEMPLATE_ID\
-    \ = VIOLATION_TEMPLATES.ID để xác nhận VIOLATION_CD sau đó hash_id('IDS.VIOLATION_TEMPLATES',\
+    \ = VIOLATION_TEMPLATES.ID để xác nhận VIOLATION_CD sau đó hash_id('IDS_VIOLATION_TEMPLATES',\
     \ VIOLATION_CD) | Trước đây hash trực tiếp theo VIOLATION_TEMPLATE_ID (ID kỹ thuật)\
     \ gây sai lệch với Id của bảng main (hash từ VIOLATION_CD) — đã sửa sang crosswalk\
     \ 2026-07-27."

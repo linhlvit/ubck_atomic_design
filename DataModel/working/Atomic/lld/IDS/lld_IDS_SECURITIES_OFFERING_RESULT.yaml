@@ -57,7 +57,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=IDS.SECURITIES_OFFERING_RESULT"
+  classification_context: "SOURCE_SYSTEM=IDS_SECURITIES_OFFERING_RESULT"
   etl_derived_value: "IDS_SECURITIES_OFFERING_RESULT"
   data_type: "string"
 - attribute_name: "Public Company Securities Offering Id"
@@ -69,7 +69,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.SECURITIES_OFFERING_RESULT.SECURITIES_OFFERING_ID"
-  comment: "FK target: pc_securities_offering.pc_securities_offering_id. Cần ETL crosswalk sang IDS.SECURITIES_OFFERING: SECURITIES_OFFERING_RESULT.SECURITIES_OFFERING_ID = SECURITIES_OFFERING.ID để xác nhận APPLICATION_CD sau đó hash_id('IDS.SECURITIES_OFFERING', APPLICATION_CD) | Trước đây hash trực tiếp theo SECURITIES_OFFERING_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ APPLICATION_CD) — đã sửa sang crosswalk 2026-08-14."
+  comment: "FK target: pc_securities_offering.pc_securities_offering_id. Cần ETL crosswalk sang IDS.SECURITIES_OFFERING: SECURITIES_OFFERING_RESULT.SECURITIES_OFFERING_ID = SECURITIES_OFFERING.ID để xác nhận APPLICATION_CD sau đó hash_id('IDS_SECURITIES_OFFERING', APPLICATION_CD) | Trước đây hash trực tiếp theo SECURITIES_OFFERING_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ APPLICATION_CD) — đã sửa sang crosswalk 2026-08-14."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -125,8 +125,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "date"
-- attribute_name: "Offering Method Code Snapshot"
-  physical_name: "offering_method_code_snpst"
+- attribute_name: "Offering Method Code"
+  physical_name: "offering_method_code"
   description: "Hình thức chào bán phát hành (snapshot lấy từ Phương án chào bán)."
   data_domain: "Classification Value"
   nullable: true
@@ -690,7 +690,7 @@ attributes:
   source_columns:
   - "IDS.SECURITIES_OFFERING_RESULT.APPROVER_USER_ID"
   comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM.USERS', APPROVER_USER_ID) | Chưa xác nhận join key IDS.SECURITIES_OFFERING_RESULT.APPROVER_USER_ID\
+    \ Hash: hash_id('IAM_USERS', APPROVER_USER_ID) | Chưa xác nhận join key IDS.SECURITIES_OFFERING_RESULT.APPROVER_USER_ID\
     \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
   classification_context: null
   etl_derived_value: null
@@ -734,7 +734,7 @@ attributes:
   source_columns:
   - "IDS.SECURITIES_OFFERING_RESULT.PROCESSOR_USER_ID"
   comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM.USERS', PROCESSOR_USER_ID) | Chưa xác nhận join key IDS.SECURITIES_OFFERING_RESULT.PROCESSOR_USER_ID\
+    \ Hash: hash_id('IAM_USERS', PROCESSOR_USER_ID) | Chưa xác nhận join key IDS.SECURITIES_OFFERING_RESULT.PROCESSOR_USER_ID\
     \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
   classification_context: null
   etl_derived_value: null
@@ -753,8 +753,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Processor User Name Snapshot"
-  physical_name: "processor_user_nm_snpst"
+- attribute_name: "Processor User Name"
+  physical_name: "processor_user_nm"
   description: "Tên chuyên viên xử lý (đồng bộ từ TTHC hoặc chọn thủ công tại IDS)."
   data_domain: "Text"
   nullable: true
@@ -857,32 +857,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "decimal(23,2)"
-- attribute_name: "Synced From External System Indicator"
-  physical_name: "synced_from_external_stm_ind"
-  description: "Đánh dấu đồng bộ dữ liệu từ hệ thống CBTT hay tạo mới tại IDS."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.SECURITIES_OFFERING_RESULT.IS_SYNC"
-  comment: "Encoding nguồn: 1 = Đồng bộ từ CBTT, 0 = Tạo mới tại IDS."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-- attribute_name: "Deleted Indicator"
-  physical_name: "deleted_ind"
-  description: "Đánh dấu trạng thái xóa mềm."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.SECURITIES_OFFERING_RESULT.DELETE_FLG"
-  comment: "Encoding nguồn: 1 = Xóa, 0 = Chưa xóa."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
 - attribute_name: "Approver Comment"
   physical_name: "approver_comment"
   description: "Ghi chú của người phê duyệt."

@@ -56,7 +56,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=IDS.EVALUATIONS"
+  classification_context: "SOURCE_SYSTEM=IDS_EVALUATIONS"
   etl_derived_value: "IDS_EVALUATIONS"
   data_type: "string"
 - attribute_name: "Public Company Id"
@@ -68,7 +68,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.EVALUATIONS.COMPANY_ID"
-  comment: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES',\
+  comment: "FK target: public_company.pc_id. Hash: hash_id('IDS_COMPANY_PROFILES',\
     \ COMPANY_ID). Nguồn không có fk_note tường minh nhưng ngữ cảnh và HLD Tier3 xác\
     \ nhận đây là FK đến COMPANY_PROFILES."
   classification_context: null
@@ -97,8 +97,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.EVALUATIONS.PERIOD_ID"
-  comment: "FK target: pc_evaluation_period.pc_evaluation_period_id. Hash: hash_id('IDS.EVALUATION_PERIODS', PERIOD_ID). Nguồn không có\
-    \ fk_note tường minh nhưng ngữ cảnh và HLD Tier3 xác nhận đây là FK đến EVALUATION_PERIODS."
+  comment: "FK target: pc_evaluation_period.pc_evaluation_period_id. Hash: hash_id('IDS_EVALUATION_PERIODS', PERIOD_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -179,7 +178,7 @@ attributes:
   source_columns:
   - "IDS.EVALUATIONS.APPROVED_BY"
   comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM.USERS', APPROVED_BY) | Chưa xác nhận join key IDS.EVALUATIONS.APPROVED_BY\
+    \ Hash: hash_id('IAM_USERS', APPROVED_BY) | Chưa xác nhận join key IDS.EVALUATIONS.APPROVED_BY\
     \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
   classification_context: null
   etl_derived_value: null

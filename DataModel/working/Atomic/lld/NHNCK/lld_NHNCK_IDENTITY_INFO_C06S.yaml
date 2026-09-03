@@ -59,7 +59,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=NHNCK.IDENTITY_INFO_C06S"
+  classification_context: "SOURCE_SYSTEM=NHNCK_IDENTITY_INFO_C06S"
   etl_derived_value: "NHNCK_IDENTITY_INFO_C06S"
   data_type: "string"
 - attribute_name: "Full Name"
@@ -123,9 +123,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.IDENTITY_INFO_C06S.GENDER"
-  comment: "Scheme: GENDER (reuse — cùng scheme với Securities Practitioner.Gender\
-    \ Code)."
-  classification_context: "GENDER"
+  comment: "SCHEMA_CODE=GENDER"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Ethnicity Name"
@@ -163,9 +162,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.IDENTITY_INFO_C06S.COUNTRY_CODE"
-  comment: "Scheme: NHNCK_C06_COUNTRY. Dữ liệu tích hợp C06 (API ngoài) — no_lookup,\
-    \ không tạo FK Geographic Area."
-  classification_context: "NHNCK_C06_COUNTRY"
+  comment: "SCHEMA_CODE=NHNCK_C06_COUNTRY"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Place of Birth Description"
@@ -190,8 +188,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.IDENTITY_INFO_C06S.PLACE_OF_BIRTH_COUNTRY_CODE"
-  comment: "Scheme: NHNCK_C06_COUNTRY. Dữ liệu tích hợp C06 — no_lookup."
-  classification_context: "NHNCK_C06_COUNTRY"
+  comment: "SCHEMA_CODE=NHNCK_C06_COUNTRY"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Place of Birth Province Code"
@@ -203,8 +201,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.IDENTITY_INFO_C06S.PLACE_OF_BIRTH_PROVINCE_CODE"
-  comment: "Scheme: NHNCK_C06_PROVINCE. Dữ liệu tích hợp C06 — no_lookup."
-  classification_context: "NHNCK_C06_PROVINCE"
+  comment: "SCHEMA_CODE=NHNCK_C06_PROVINCE"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Place of Birth District Code"
@@ -216,8 +214,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.IDENTITY_INFO_C06S.PLACE_OF_BIRTH_DISTRICT_CODE"
-  comment: "Scheme: NHNCK_C06_DISTRICT. Dữ liệu tích hợp C06 — no_lookup."
-  classification_context: "NHNCK_C06_DISTRICT"
+  comment: "SCHEMA_CODE=NHNCK_C06_DISTRICT"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Hometown"
@@ -255,8 +253,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.IDENTITY_INFO_C06S.FATHER_COUNTRY_CODE"
-  comment: "Scheme: NHNCK_C06_COUNTRY. Dữ liệu tích hợp C06 — no_lookup."
-  classification_context: "NHNCK_C06_COUNTRY"
+  comment: "SCHEMA_CODE=NHNCK_C06_COUNTRY"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Father Identity Number"
@@ -307,8 +305,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.IDENTITY_INFO_C06S.MOTHER_COUNTRY_CODE"
-  comment: "Scheme: NHNCK_C06_COUNTRY. Dữ liệu tích hợp C06 — no_lookup."
-  classification_context: "NHNCK_C06_COUNTRY"
+  comment: "SCHEMA_CODE=NHNCK_C06_COUNTRY"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Mother Identity Number"
@@ -360,8 +358,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.IDENTITY_INFO_C06S.COUPLE_COUNTRY_CODE"
-  comment: "Scheme: NHNCK_C06_COUNTRY. Dữ liệu tích hợp C06 — no_lookup."
-  classification_context: "NHNCK_C06_COUNTRY"
+  comment: "SCHEMA_CODE=NHNCK_C06_COUNTRY"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Spouse Identity Number"
@@ -401,7 +399,7 @@ attributes:
   - "NHNCK.IDENTITY_INFO_C06S.USER_UPDATED_ID"
   comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
     \ Cần ETL crosswalk sang NHNCK.USERS: IDENTITY_INFO_C06S.USER_UPDATED_ID = USERS.ID\
-    \ để xác nhận USERNAME sau đó hash_id('IAM.USERS', USERNAME) | Đây là FK xác nhận\
+    \ để xác nhận USERNAME sau đó hash_id('IAM_USERS', USERNAME) | Đây là FK xác nhận\
     \ thực (không phải suy luận) — khác với CREATED_BY/UPDATED_BY audit chung đã loại\
     \ khỏi thiết kế (xem pending_design.yaml). Chưa xác nhận value set khớp danh mục\
     \ IAM.USERS — cần profile dữ liệu trước go-live."

@@ -61,7 +61,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM."
-  classification_context: "SOURCE_SYSTEM=FMS.STF_FG_BRCH"
+  classification_context: "SOURCE_SYSTEM=FMS_STF_FG_BRCH"
   etl_derived_value: "FMS_STF_FG_BRCH"
   data_type: "string"
 - attribute_name: "Foreign Fund Management Organization Unit Id"
@@ -73,7 +73,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.STF_FG_BRCH.FOR_BRCH_ID"
-  comment: "FK target: foreign_fm_ou.foreign_fm_ou_id. Hash: hash_id('FMS.FOR_BRCH',\
+  comment: "FK target: foreign_fm_ou.foreign_fm_ou_id. Hash: hash_id('FMS_FOR_BRCH',\
     \ FOR_BRCH_ID)."
   classification_context: null
   etl_derived_value: null
@@ -118,7 +118,7 @@ attributes:
   - "FMS.STF_FG_BRCH.NAT_ID"
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'COUNTRY'). Cần ETL crosswalk sang FMS.NATIONAL: STF_FG_BRCH.NAT_ID = NATIONAL.ID\
-    \ để xác nhận SNAME sau đó hash_id('ECAT.COUNTRY', SNAME) | Chưa xác nhận value\
+    \ để xác nhận SNAME sau đó hash_id('ECAT_COUNTRY', SNAME) | Chưa xác nhận value\
     \ set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null

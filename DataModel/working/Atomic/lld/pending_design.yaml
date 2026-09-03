@@ -53,13 +53,6 @@ entries:
 
   - source_system: "TTHC"
     source_table: "CONTENTITEMINDEX"
-    source_column: "DISPLAYTEXT"
-    description: "Tiêu đề/tên content item để hiển thị trong danh sách."
-    reason: "Chưa nằm trong phạm vi cột người thiết kế yêu cầu (2026-08-21)."
-    action: "Pending — thiết kế ở lượt sau nếu cần."
-
-  - source_system: "TTHC"
-    source_table: "CONTENTITEMINDEX"
     source_column: "SITECONTENTITEMID"
     description: "ID content item site - định danh phạm vi tenant/site."
     reason: "Chưa nằm trong phạm vi cột người thiết kế yêu cầu (2026-08-21). Trùng ý nghĩa với DOCUMENT.SITECONTENTITEMID (xem TTHC_HLD_Tier1.md T1-04 / Tier2.md T2-04 — multi-site chưa xác nhận)."
@@ -4789,20 +4782,6 @@ entries:
 
   - source_system: "IDS"
     source_table: "RROW"
-    source_column: "ID"
-    description: "Khóa chính kỹ thuật (auto-increment)."
-    reason: "RROW có cột mã nghiệp vụ riêng ROW_CD (r+sequence) — theo Bước 3e (quyết định 2026-07-13), khi bảng nguồn có cả ID và CODE thì chỉ map CODE, loại ID hoàn toàn khỏi model."
-    action: "Excluded — không map vào lld_IDS_RROW.yaml. ROW_CD map thành Financial Report Row Template Code (BK), Id hash từ ROW_CD."
-
-  - source_system: "IDS"
-    source_table: "RCOL"
-    source_column: "ID"
-    description: "Khóa chính kỹ thuật (auto-increment)."
-    reason: "RCOL có cột mã nghiệp vụ riêng COL_CD — theo Bước 3e (quyết định 2026-07-13), khi bảng nguồn có cả ID và CODE thì chỉ map CODE, loại ID hoàn toàn khỏi model."
-    action: "Excluded — không map vào lld_IDS_RCOL.yaml. COL_CD map thành Financial Report Column Template Code (BK), Id hash từ COL_CD."
-
-  - source_system: "IDS"
-    source_table: "RROW"
     source_column: "CREATED_BY"
     description: "Người tạo (audit block)."
     reason: "Mirror quyết định loại bỏ audit block đã áp dụng cho toàn phân hệ IDS (xem entry REPORT_CATALOG phía trên) — FK cross-source sang Identity and Access Management User (IAM.USERS) chưa resolve crosswalk (IDS.LOGINS.ID NUMBER tự tăng vs IAM.USERS.ID VARCHAR2(36) GUID)."
@@ -5320,6 +5299,34 @@ entries:
     description: "Thời điểm cập nhật cuối."
     reason: "Classification Value (cl_value) không có audit fields nghiệp vụ — chỉ có ds_etl_pcs_tms (technical, ETL job tự quản lý)."
     action: "Không map."
+
+  - source_system: "QLRR"
+    source_table: "RISK_INDICATOR"
+    source_column: "ID"
+    description: "Khóa chính của bản ghi (auto-increment)."
+    reason: "PK kỹ thuật — không map thành attribute BK riêng (BK dùng INDICATOR_CODE), nhưng được dùng làm nguồn crosswalk để xác nhận INDICATOR_CODE cho các bảng con (xem lld_QLRR_RISK_INDICATOR_VALUE.yaml, attribute Classification Risk Indicator Id)."
+    action: "Referenced — dùng làm join key crosswalk sang INDICATOR_CODE, không tạo attribute BK riêng."
+
+  - source_system: "QLRR"
+    source_table: "RISK_INDICATOR_CATEGORY"
+    source_column: "ID"
+    description: "Khóa chính của bản ghi (auto-increment)."
+    reason: "PK kỹ thuật — không map thành attribute BK riêng (BK dùng CATEGORY_CODE), nhưng được dùng làm nguồn crosswalk để xác nhận CATEGORY_CODE cho Risk Indicator Category Code trên Classification Risk Indicator (xem lld_QLRR_RISK_INDICATOR.yaml)."
+    action: "Referenced — dùng làm join key crosswalk sang CATEGORY_CODE, không tạo attribute BK riêng. RISK_INDICATOR_CATEGORY map vào Fundamental entity dùng chung Classification Value (cl_value) — xem lld_QLRR_RISK_INDICATOR_CATEGORY.yaml, QLRR_HLD_Tier1.md 6f T1-01."
+
+  - source_system: "QLRR"
+    source_table: "RISK_INDICATOR_CATEGORY"
+    source_column: "SET_CODE"
+    description: "Bộ chỉ tiêu: 1=Trong nước, 2=Quốc tế."
+    reason: "Schema chuẩn Classification Value (cl_value) chỉ có Code/Name/Description, không có chỗ cho business attribute riêng như Set Code — theo pattern NHNCK (lld_NHNCK_APPLICATION_SOURCES.yaml và tương tự)."
+    action: "Không map. Nếu cần khai thác Set Code của nhóm chỉ tiêu → cân nhắc promote RISK_INDICATOR_CATEGORY thành Atomic entity riêng (xem QLRR_HLD_Tier1.md 6f T1-01)."
+
+  - source_system: "QLRR"
+    source_table: "RISK_INDICATOR_CATEGORY"
+    source_column: "STATUS"
+    description: "Trạng thái hoạt động: 0=Không hoạt động, 1=Hoạt động."
+    reason: "Schema chuẩn Classification Value (cl_value) chỉ có Code/Name/Description, không có chỗ cho business attribute riêng như Status — theo pattern NHNCK (lld_NHNCK_APPLICATION_SOURCES.yaml và tương tự)."
+    action: "Không map. Nếu cần khai thác Status của nhóm chỉ tiêu → cân nhắc promote RISK_INDICATOR_CATEGORY thành Atomic entity riêng (xem QLRR_HLD_Tier1.md 6f T1-01)."
 
 
 

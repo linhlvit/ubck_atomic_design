@@ -45,7 +45,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=NHNCK.CERTIFICATE_SPECIALIZATIONS"
+  classification_context: "SOURCE_SYSTEM=NHNCK_CERTIFICATE_SPECIALIZATIONS"
   etl_derived_value: "NHNCK_CERTIFICATE_SPECIALIZATIONS"
   data_type: "string"
 - attribute_name: "Securities Practitioner License Certificate Type Id"
@@ -59,7 +59,7 @@ attributes:
   - "NHNCK.CERTIFICATE_SPECIALIZATIONS.CERTIFICATE_ID"
   comment: "FK target: sp_license_certificate_type.sp_license_certificate_tp_id. Cần\
     \ ETL crosswalk sang NHNCK.CERTIFICATES: CERTIFICATE_SPECIALIZATIONS.CERTIFICATE_ID\
-    \ = CERTIFICATES.ID để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK.CERTIFICATES',\
+    \ = CERTIFICATES.ID để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK_CERTIFICATES',\
     \ CERTIFICATE_CODE). Composite PK cùng Specialization Code."
   classification_context: null
   etl_derived_value: null
@@ -89,9 +89,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.SPECIALIZATIONS.SPECIALIZATION_CODE"
-  comment: "Scheme: SCHEMA_CODE. Cần ETL crosswalk sang NHNCK.SPECIALIZATIONS:\
-    \ CERTIFICATE_SPECIALIZATIONS.SPECIALIZATION_ID = SPECIALIZATIONS.ID để lấy SPECIALIZATION_CODE."
-  classification_context: "SCHEMA_CODE=NHNCK.SPECIALIZATIONS"
+  comment: "SCHEMA_CODE=NHNCK.SPECIALIZATIONS"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Document Type Code"
@@ -103,8 +102,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.CERTIFICATE_SPECIALIZATIONS.DOCUMENT_TYPE"
-  comment: "Scheme: NHNCK.CERTIFICATE_SPECIALIZATIONS.DOCUMENT_TYPE."
-  classification_context: "NHNCK.CERTIFICATE_SPECIALIZATIONS.DOCUMENT_TYPE"
+  comment: "SCHEMA_CODE=NHNCK.CERTIFICATE_SPECIALIZATIONS.DOCUMENT_TYPE"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Required Indicator"

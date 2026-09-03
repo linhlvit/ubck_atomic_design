@@ -56,7 +56,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM."
-  classification_context: "SOURCE_SYSTEM=FMS.AGENCIES_BRA"
+  classification_context: "SOURCE_SYSTEM=FMS_AGENCIES_BRA"
   etl_derived_value: "FMS_AGENCIES_BRA"
   data_type: "string"
 - attribute_name: "Fund Distribution Agent Id"
@@ -68,7 +68,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.AGENCIES_BRA.AGEN_ID"
-  comment: "FK target: fund_distribution_agent.fund_distribution_agent_id. Hash: hash_id('FMS.AGENCIES',\
+  comment: "FK target: fund_distribution_agent.fund_distribution_agent_id. Hash: hash_id('FMS_AGENCIES',\
     \ AGEN_ID)."
   classification_context: null
   etl_derived_value: null
@@ -100,17 +100,3 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Active Status Flag"
-  physical_name: "active_status_flag"
-  description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu\
-    \ lực."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.AGENCIES_BRA.RECORD_STATUS"
-  comment: "Giá trị 1 → true; 0 → false."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"

@@ -459,6 +459,29 @@ entities:
   source_table: "NHNCK.EXAM_SESSION_FEES"
   status: "approved"
 - bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Documentation"
+  atomic_entity: "Administrative Procedure Document"
+  table_type: "Fundamental"
+  domain_prefix: "Administrative Procedure"
+  entity_physical_name: "ap_document"
+  description: "Business Activity Case — hồ sơ thủ tục hành chính UBCKNN, entity trung\
+    \ tâm chứa metadata phân loại, thời gian xử lý, lệ phí, snapshot thành phần hồ\
+    \ sơ và eform. Nguồn ODS từ JOIN TTHC.DOCUMENT + TTHC.CONTENTITEMINDEX, lọc ContentType\
+    \ = 'HoSoTTHC'."
+  source_table: "TTHC.AP_DOCUMENT"
+  status: "draft"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Documentation"
+  atomic_entity: "Administrative Procedure Document Postal Receipt"
+  table_type: "Fundamental"
+  domain_prefix: "Administrative Procedure"
+  entity_physical_name: "ap_document_postal_receipt"
+  description: "Documentation — thông tin nhận kết quả hồ sơ qua bưu chính. Chỉ tồn\
+    \ tại khi return_method_code = 2 trên hồ sơ cha. FK ho_so_id không unique (cho\
+    \ phép 1-N về sau dù thực tế 1-1)."
+  source_table: "TTHC.AP_DOCUMENT_POSTAL_RECEIPT"
+  status: "draft"
+- bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Form Document"
   atomic_entity: "Examination Result Notice"
   table_type: "Fundamental"
@@ -576,49 +599,6 @@ entities:
     \ sang \"[Documentation] Form Document\" (2026-08-13, theo yêu cầu tường minh\
     \ Data Modeler) — xem IDS_HLD_Overview.md 7e #21."
   source_table: "IDS.RROW"
-  status: "draft"
-- bcv_core_object: "Documentation"
-  bcv_concept: "[Documentation] Form Document"
-  atomic_entity: "Financial Report Sub Column Template"
-  table_type: "Fundamental"
-  domain_prefix: "Financial Report"
-  entity_physical_name: "fr_sub_column_template"
-  description: "Định nghĩa từng cột trong template báo cáo định kỳ. Đổi tên từ \"\
-    Periodic Report Form Column Template\" (2026-08-05, theo yêu cầu tường minh Data\
-    \ Modeler) — xem 7e #15. Bổ sung table_type/entity_physical_name (trước đây để\
-    \ trống) và đổi BCV Concept từ \"[Condition] Form Definition\" (term không tồn\
-    \ tại trong knowledge/terms.csv) sang \"[Documentation] Form Document\" (2026-08-13,\
-    \ theo yêu cầu tường minh Data Modeler) — xem IDS_HLD_Overview.md 7e #21."
-  source_table: "IDS.REP_COLUMN"
-  status: "draft"
-- bcv_core_object: "Documentation"
-  bcv_concept: "[Documentation] Form Document"
-  atomic_entity: "Financial Report Sub Row Template"
-  table_type: "Fundamental"
-  domain_prefix: "Financial Report"
-  entity_physical_name: "fr_sub_row_template"
-  description: "Định nghĩa từng hàng trong template báo cáo định kỳ. Đổi tên từ \"\
-    Periodic Report Form Row Template\" (2026-08-05, theo yêu cầu tường minh Data\
-    \ Modeler) — xem 7e #15. Bổ sung table_type/entity_physical_name (trước đây để\
-    \ trống) và đổi BCV Concept từ \"[Condition] Form Definition\" (term không tồn\
-    \ tại trong knowledge/terms.csv) sang \"[Documentation] Form Document\" (2026-08-13,\
-    \ theo yêu cầu tường minh Data Modeler) — xem IDS_HLD_Overview.md 7e #21."
-  source_table: "IDS.REP_ROW"
-  status: "draft"
-- bcv_core_object: "Documentation"
-  bcv_concept: "[Documentation] Form Document"
-  atomic_entity: "Financial Report Sub Template"
-  table_type: "Fundamental"
-  domain_prefix: "Financial Report"
-  entity_physical_name: "fr_sub_template"
-  description: "Template báo cáo định kỳ (tháng/quý/năm/bán niên) của CTĐC: xác định\
-    \ cấu trúc form cho từng loại kỳ báo cáo. Đổi tên từ \"Periodic Report Form\"\
-    \ (2026-08-05, theo yêu cầu tường minh Data Modeler) — xem 7e. Bổ sung table_type/entity_physical_name\
-    \ (trước đây để trống) và đổi BCV Concept từ \"[Condition] Form Definition\" (term\
-    \ không tồn tại trong knowledge/terms.csv) sang \"[Documentation] Form Document\"\
-    \ (2026-08-13, theo yêu cầu tường minh Data Modeler) — xem IDS_HLD_Overview.md\
-    \ 7e #21."
-  source_table: "IDS.REP_FORMS"
   status: "draft"
 - bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Form Document"
@@ -811,6 +791,61 @@ entities:
   status: "approved"
 - bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Form Document"
+  atomic_entity: "Unstructured Financial Report Column Template"
+  table_type: "Fundamental"
+  domain_prefix: "Unstructured Financial Report"
+  entity_physical_name: "ufr_column_template"
+  description: "Định nghĩa từng cột trong template báo cáo định kỳ. Đổi tên từ \"\
+    Periodic Report Form Column Template\" (2026-08-05, theo yêu cầu tường minh Data\
+    \ Modeler) — xem 7e #15. Bổ sung table_type/entity_physical_name (trước đây để\
+    \ trống) và đổi BCV Concept từ \"[Condition] Form Definition\" (term không tồn\
+    \ tại trong knowledge/terms.csv) sang \"[Documentation] Form Document\" (2026-08-13,\
+    \ theo yêu cầu tường minh Data Modeler) — xem IDS_HLD_Overview.md 7e #21. Đổi\
+    \ Domain Prefix từ \"Financial Report\" sang \"Unstructured Financial Report\"\
+    \ (2026-08-27, theo yêu cầu tường minh Data Modeler — chỉ áp dụng 3 entity REP_FORMS/REP_ROW/REP_COLUMN)\
+    \ — xem IDS_HLD_Overview.md 7e #22. Bỏ chữ \"Sub\" khỏi tên entity/field (2026-08-27,\
+    \ theo yêu cầu tường minh Data Modeler) — xem 7e #23."
+  source_table: "IDS.REP_COLUMN"
+  status: "draft"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Form Document"
+  atomic_entity: "Unstructured Financial Report Row Template"
+  table_type: "Fundamental"
+  domain_prefix: "Unstructured Financial Report"
+  entity_physical_name: "ufr_row_template"
+  description: "Định nghĩa từng hàng trong template báo cáo định kỳ. Đổi tên từ \"\
+    Periodic Report Form Row Template\" (2026-08-05, theo yêu cầu tường minh Data\
+    \ Modeler) — xem 7e #15. Bổ sung table_type/entity_physical_name (trước đây để\
+    \ trống) và đổi BCV Concept từ \"[Condition] Form Definition\" (term không tồn\
+    \ tại trong knowledge/terms.csv) sang \"[Documentation] Form Document\" (2026-08-13,\
+    \ theo yêu cầu tường minh Data Modeler) — xem IDS_HLD_Overview.md 7e #21. Đổi\
+    \ Domain Prefix từ \"Financial Report\" sang \"Unstructured Financial Report\"\
+    \ (2026-08-27, theo yêu cầu tường minh Data Modeler — chỉ áp dụng 3 entity REP_FORMS/REP_ROW/REP_COLUMN)\
+    \ — xem IDS_HLD_Overview.md 7e #22. Bỏ chữ \"Sub\" khỏi tên entity/field (2026-08-27,\
+    \ theo yêu cầu tường minh Data Modeler) — xem 7e #23."
+  source_table: "IDS.REP_ROW"
+  status: "draft"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Form Document"
+  atomic_entity: "Unstructured Financial Report Template"
+  table_type: "Fundamental"
+  domain_prefix: "Unstructured Financial Report"
+  entity_physical_name: "ufr_template"
+  description: "Template báo cáo định kỳ (tháng/quý/năm/bán niên) của CTĐC: xác định\
+    \ cấu trúc form cho từng loại kỳ báo cáo. Đổi tên từ \"Periodic Report Form\"\
+    \ (2026-08-05, theo yêu cầu tường minh Data Modeler) — xem 7e. Bổ sung table_type/entity_physical_name\
+    \ (trước đây để trống) và đổi BCV Concept từ \"[Condition] Form Definition\" (term\
+    \ không tồn tại trong knowledge/terms.csv) sang \"[Documentation] Form Document\"\
+    \ (2026-08-13, theo yêu cầu tường minh Data Modeler) — xem IDS_HLD_Overview.md\
+    \ 7e #21. Đổi Domain Prefix từ \"Financial Report\" sang \"Unstructured Financial\
+    \ Report\" (2026-08-27, theo yêu cầu tường minh Data Modeler — chỉ áp dụng 3 entity\
+    \ REP_FORMS/REP_ROW/REP_COLUMN) — xem IDS_HLD_Overview.md 7e #22. Bỏ chữ \"Sub\"\
+    \ khỏi tên entity/field (2026-08-27, theo yêu cầu tường minh Data Modeler) — xem\
+    \ 7e #23."
+  source_table: "IDS.REP_FORMS"
+  status: "draft"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Form Document"
   atomic_entity: "Violation Case Output Document"
   table_type: "Fundamental"
   domain_prefix: ""
@@ -935,6 +970,18 @@ entities:
   description: "Giao dịch thay đổi sở hữu cổ đông CTCK. Mỗi dòng = 1 lần thay đổi\
     \ insert-only. Ghi nhận số cổ phần và tỷ lệ sở hữu trước/sau thay đổi."
   source_table: "SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE"
+  status: "draft"
+- bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Involved Party"
+  atomic_entity: "Administrative Procedure Document Applicant"
+  table_type: "Fundamental"
+  domain_prefix: "Administrative Procedure"
+  entity_physical_name: "ap_document_applicant"
+  description: "Involved Party — đối tượng nộp hồ sơ (cá nhân hoặc tổ chức), quan\
+    \ hệ 1-N với hồ sơ. PK ghép (ho_so_id, doi_tuong_nop_ho_so_id); surrogate key\
+    \ hash từ composite. Trường applicant_role_code phân biệt nguồn dữ liệu (ID tham\
+    \ chiếu vs. bag nhúng)."
+  source_table: "TTHC.AP_DOCUMENT_APPLICANT"
   status: "draft"
 - bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Individual"
@@ -1437,41 +1484,6 @@ entities:
     \ và lũy kế khối lượng/giá trị từ đầu ngày."
   source_table: "MDDS.JAD_TRANSLOG"
   status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Administrative Procedure Document"
-  table_type: ""
-  domain_prefix: "Administrative Procedure"
-  entity_physical_name: ""
-  description: "Business Activity Case — hồ sơ thủ tục hành chính UBCKNN, entity trung\
-    \ tâm chứa metadata phân loại, thời gian xử lý, lệ phí, snapshot thành phần hồ\
-    \ sơ và eform. Nguồn ODS từ JOIN TTHC.DOCUMENT + TTHC.CONTENTITEMINDEX, lọc ContentType\
-    \ = 'HoSoTTHC'."
-  source_table: "TTHC.HO_SO_TTHC"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Administrative Procedure Document Applicant"
-  table_type: ""
-  domain_prefix: "Administrative Procedure"
-  entity_physical_name: ""
-  description: "Involved Party — đối tượng nộp hồ sơ (cá nhân hoặc tổ chức), quan\
-    \ hệ 1-N với hồ sơ. PK ghép (ho_so_id, doi_tuong_nop_ho_so_id); surrogate key\
-    \ hash từ composite. Trường applicant_role_code phân biệt nguồn dữ liệu (ID tham\
-    \ chiếu vs. bag nhúng)."
-  source_table: "TTHC.DOI_TUONG_NOP_HO_SO"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Administrative Procedure Document Postal Receipt"
-  table_type: ""
-  domain_prefix: "Administrative Procedure"
-  entity_physical_name: ""
-  description: "Documentation — thông tin nhận kết quả hồ sơ qua bưu chính. Chỉ tồn\
-    \ tại khi return_method_code = 2 trên hồ sơ cha. FK ho_so_id không unique (cho\
-    \ phép 1-N về sau dù thực tế 1-1)."
-  source_table: "TTHC.THONG_TIN_NHAN_BUU_CHINH"
-  status: "draft"
 - bcv_core_object: "Group"
   bcv_concept: "[Group] Group"
   atomic_entity: "Application Group X Securities Practitioner License Application\
@@ -1722,17 +1734,17 @@ entities:
     \ 7e #11/#14."
   source_table: "SCMS.CAT_SERVICE"
   status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
+- bcv_core_object: "Common"
+  bcv_concept: "[Classification] Common"
   atomic_entity: "Classification Value"
-  table_type: ""
-  domain_prefix: "N/A (shared entity `cl_value`)"
-  entity_physical_name: ""
+  table_type: "Classification"
+  domain_prefix: ""
+  entity_physical_name: "cl_value"
   description: "Classification Common — danh mục dùng chung TTHC, tổng hợp toàn bộ\
     \ giá trị phân loại từ Orchard Core ContentItem. ContentType = schema_code (nhóm\
     \ scheme); ContentItemId = cl_code (BK). 10 scheme: TRANG_THAI_HO_SO, LOAI_HO_SO,\
     \ LINH_VUC_TTHC, MUC_DO_TTHC, KENH_TIEP_NHAN, CO_QUAN_XU"
-  source_table: "TTHC.DANH_MUC_DUNG_CHUNG_TTHC, NHNCK.APPLICATION_SOURCES, NHNCK.APPLICATION_STATUSES,\
+  source_table: "TTHC.CLASSIFICATION_VALUE, NHNCK.APPLICATION_SOURCES, NHNCK.APPLICATION_STATUSES,\
     \ NHNCK.DOCUMENTS, NHNCK.SPECIALIZATIONS"
   status: "draft"
 - bcv_core_object: "Product"

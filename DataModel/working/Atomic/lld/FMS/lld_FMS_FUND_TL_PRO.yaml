@@ -39,7 +39,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM."
-  classification_context: "SOURCE_SYSTEM=FMS.FUND_TL_PRO"
+  classification_context: "SOURCE_SYSTEM=FMS_FUND_TL_PRO"
   etl_derived_value: "FMS_FUND_TL_PRO"
   data_type: "string"
 - attribute_name: "Investment Fund Id"
@@ -51,7 +51,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.FUND_TL_PRO.FUND_ID"
-  comment: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS.FUNDS',\
+  comment: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS_FUNDS',\
     \ FUND_ID). Composite PK cùng Fund Management Company Employee Id."
   classification_context: null
   etl_derived_value: null
@@ -79,7 +79,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.FUND_TL_PRO.TLPR_ID"
-  comment: "FK target: fmc_employee.fmc_employee_id. Hash: hash_id('FMS.TL_PROFILES',\
+  comment: "FK target: fmc_employee.fmc_employee_id. Hash: hash_id('FMS_TL_PROFILES',\
     \ TLPR_ID). Composite PK cùng Investment Fund Id."
   classification_context: null
   etl_derived_value: null

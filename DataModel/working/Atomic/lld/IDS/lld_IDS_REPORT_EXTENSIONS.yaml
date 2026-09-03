@@ -54,7 +54,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=IDS.REPORT_EXTENSIONS"
+  classification_context: "SOURCE_SYSTEM=IDS_REPORT_EXTENSIONS"
   etl_derived_value: "IDS_REPORT_EXTENSIONS"
   data_type: "string"
 - attribute_name: "Public Company Id"
@@ -66,7 +66,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.REPORT_EXTENSIONS.COMPANY_PROFILE_ID"
-  comment: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES',\
+  comment: "FK target: public_company.pc_id. Hash: hash_id('IDS_COMPANY_PROFILES',\
     \ COMPANY_PROFILE_ID)."
   classification_context: null
   etl_derived_value: null
@@ -85,17 +85,29 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Disclosure Form Code"
-  physical_name: "disclosure_form_code"
-  description: "Mã form công bố thông tin (CBTT)."
+- attribute_name: "Financial Report Template Id"
+  physical_name: "fr_template_id"
+  description: "Id mẫu form CBTT áp dụng."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.REPORT_EXTENSIONS.FORM_CD"
+  comment: "FK target: fr_template.fr_template_id. Hash: hash_id('IDS_FORMS', FORM_CD)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Financial Report Template Code"
+  physical_name: "fr_template_code"
+  description: "Mã mẫu báo cáo."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.REPORT_EXTENSIONS.FORM_CD"
-  comment: "Denormalized — mã form CBTT dạng text, không có cột FORM_ID để FK vật\
-    \ lý đến fr_template trong bảng này."
+  comment: "Lookup pair: fr_template.fr_template_code. Pair with Financial Report Template Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -164,8 +176,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "int"
-- attribute_name: "Report Quarter Number"
-  physical_name: "rpt_quarter_nbr"
+- attribute_name: "Report Quarter"
+  physical_name: "rpt_quarter"
   description: "Quý báo cáo."
   data_domain: "Small Counter"
   nullable: true

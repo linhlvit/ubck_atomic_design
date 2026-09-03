@@ -30,7 +30,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.PROFESSIONALS.ID"
-  comment: "FK target: securities_practitioner.sp_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.PROFESSIONALS', ID)."
+  comment: "FK target: securities_practitioner.sp_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK_PROFESSIONALS', ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -56,7 +56,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: null
-  classification_context: "SOURCE_SYSTEM=NHNCK.PROFESSIONALS"
+  classification_context: "SOURCE_SYSTEM=NHNCK_PROFESSIONALS"
   etl_derived_value: "NHNCK_PROFESSIONALS"
   data_type: "string"
 - attribute_name: "Address Type Code"
@@ -99,7 +99,7 @@ attributes:
   - "NHNCK.PROFESSIONALS.PERMANENT_COUNTRY_ID"
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'COUNTRY'). Cần ETL crosswalk sang NHNCK.COUNTRIES: PROFESSIONALS.PERMANENT_COUNTRY_ID\
-    \ = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT.COUNTRY', COUNTRY_CODE)\
+    \ = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT_COUNTRY', COUNTRY_CODE)\
     \ | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   classification_context: "IP_ADDR_TYPE=PERMANENT"
   etl_derived_value: null
@@ -130,7 +130,7 @@ attributes:
   - "NHNCK.PROFESSIONALS.PERMANENT_PROVINCE_ID"
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'PROVINCE'). Cần ETL crosswalk sang NHNCK.PROVINCES: PROFESSIONALS.PERMANENT_PROVINCE_ID\
-    \ = PROVINCES.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT.PROVINCE_NEW',\
+    \ = PROVINCES.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT_PROVINCE_NEW',\
     \ PROVINCE_CODE) | NHNCK.PROVINCES ngừng thiết kế Atomic entity riêng — chỉ dùng\
     \ để crosswalk. Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu\
     \ trước go-live."
@@ -163,7 +163,7 @@ attributes:
   - "NHNCK.PROFESSIONALS.PERMANENT_DISTRICT_ID"
   comment: "FK target: geographic_area_old.geographic_area_old_id (geographic_area_old_tp_code\
     \ = 'DISTRICT_OLD'). Cần ETL crosswalk sang NHNCK.DISTRICTS: PROFESSIONALS.PERMANENT_DISTRICT_ID\
-    \ = DISTRICTS.ID để xác nhận DISTRICT_CODE sau đó hash_id('ECAT.DISTRICT_OLD',\
+    \ = DISTRICTS.ID để xác nhận DISTRICT_CODE sau đó hash_id('ECAT_DISTRICT_OLD',\
     \ DISTRICT_CODE) | ĐỔI TARGET — không còn Geographic Area: cấp quận/huyện đã bị\
     \ loại bỏ trong cấu trúc địa giới hiện hành (post-sáp nhập 2025); ECAT chỉ còn\
     \ lưu ở Geographic Area Old. NHNCK.DISTRICTS ngừng thiết kế Atomic entity riêng\
@@ -211,7 +211,7 @@ attributes:
   - "NHNCK.PROFESSIONALS.CURRENT_COUNTRY_ID"
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'COUNTRY'). Cần ETL crosswalk sang NHNCK.COUNTRIES: PROFESSIONALS.CURRENT_COUNTRY_ID\
-    \ = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT.COUNTRY', COUNTRY_CODE)\
+    \ = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT_COUNTRY', COUNTRY_CODE)\
     \ | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   classification_context: "IP_ADDR_TYPE=CURRENT"
   etl_derived_value: null
@@ -240,7 +240,7 @@ attributes:
   - "NHNCK.PROFESSIONALS.CURRENT_PROVINCE_ID"
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'PROVINCE'). Cần ETL crosswalk sang NHNCK.PROVINCES: PROFESSIONALS.CURRENT_PROVINCE_ID\
-    \ = PROVINCES.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT.PROVINCE_NEW',\
+    \ = PROVINCES.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT_PROVINCE_NEW',\
     \ PROVINCE_CODE) | NHNCK.PROVINCES ngừng thiết kế Atomic entity riêng — chỉ dùng\
     \ để crosswalk. Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu\
     \ trước go-live."
@@ -272,7 +272,7 @@ attributes:
   comment: "FK target: geographic_area_old.geographic_area_old_id\
     \ (geographic_area_old_tp_code = 'DISTRICT_OLD', ĐỔI TARGET — xem District Id\
     \ khối PERMANENT ở trên). Cần ETL crosswalk sang NHNCK.DISTRICTS: PROFESSIONALS.CURRENT_DISTRICT_ID\
-    \ = DISTRICTS.ID để xác nhận DISTRICT_CODE sau đó hash_id('ECAT.DISTRICT_OLD',\
+    \ = DISTRICTS.ID để xác nhận DISTRICT_CODE sau đó hash_id('ECAT_DISTRICT_OLD',\
     \ DISTRICT_CODE) | NHNCK.DISTRICTS ngừng thiết kế Atomic entity riêng — chỉ dùng\
     \ để crosswalk. Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu\
     \ trước go-live."

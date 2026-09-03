@@ -59,7 +59,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=NHNCK.EXAM_DETAILS"
+  classification_context: "SOURCE_SYSTEM=NHNCK_EXAM_DETAILS"
   etl_derived_value: "NHNCK_EXAM_DETAILS"
   data_type: "string"
 - attribute_name: "Securities Practitioner Qualification Examination Assessment Id"
@@ -73,7 +73,7 @@ attributes:
   - "NHNCK.EXAM_DETAILS.EXAM_SESSION_ID"
   comment: "FK target: sp_qualification_examination_assessment.sp_qualification_examination_assessment_id.\
     \ Cần ETL crosswalk sang NHNCK.EXAM_SESSIONS: EXAM_DETAILS.EXAM_SESSION_ID = EXAM_SESSIONS.ID\
-    \ để xác nhận CODE sau đó hash_id('NHNCK.EXAM_SESSIONS', CODE)"
+    \ để xác nhận CODE sau đó hash_id('NHNCK_EXAM_SESSIONS', CODE)"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -102,7 +102,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.EXAM_DETAILS.PROFESSIONAL_ID"
-  comment: "FK target: securities_practitioner.sp_id. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
+  comment: "FK target: securities_practitioner.sp_id. Hash: hash_id('NHNCK_PROFESSIONALS', PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -130,7 +130,7 @@ attributes:
   - "NHNCK.EXAM_DETAILS.CERTIFICATE_ID"
   comment: "FK target: sp_license_certificate_type.sp_license_certificate_tp_id. Cần\
     \ ETL crosswalk sang NHNCK.CERTIFICATES: EXAM_DETAILS.CERTIFICATE_ID = CERTIFICATES.ID\
-    \ để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK.CERTIFICATES', CERTIFICATE_CODE)\
+    \ để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK_CERTIFICATES', CERTIFICATE_CODE)\
     \ | Trước đây hash trực tiếp theo CERTIFICATE_ID (ID kỹ thuật) gây sai lệch với\
     \ Id của bảng main (hash từ CERTIFICATE_CODE) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
@@ -163,7 +163,7 @@ attributes:
   - "NHNCK.EXAM_DETAILS.APPLICATION_ID"
   comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL crosswalk\
     \ sang NHNCK.APPLICATIONS: EXAM_DETAILS.APPLICATION_ID = APPLICATIONS.ID để xác\
-    \ nhận APPLICATION_CODE sau đó hash_id('NHNCK.APPLICATIONS', APPLICATION_CODE)\
+    \ nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS', APPLICATION_CODE)\
     \ | Trước đây hash trực tiếp theo APPLICATION_ID (ID kỹ thuật) gây sai lệch với\
     \ Id của bảng main (hash từ APPLICATION_CODE) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
@@ -230,8 +230,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.EXAM_DETAILS.LAW_RESULT"
-  comment: "Scheme: EXAM_RESULT (gộp từ EXAM_SCORE_RESULT, 2026-07-09)."
-  classification_context: "EXAM_RESULT"
+  comment: "SCHEMA_CODE=EXAM_RESULT"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Specialization Score"
@@ -256,8 +256,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.EXAM_DETAILS.SPECIALIZATION_RESULT"
-  comment: "Scheme: NHNCK.EXAM_DETAILS.RESULT (gộp từ EXAM_SCORE_RESULT, 2026-07-09)."
-  classification_context: "NHNCK.EXAM_DETAILS.RESULT"
+  comment: "SCHEMA_CODE=NHNCK.EXAM_DETAILS.RESULT"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Overall Result Code"
@@ -269,8 +269,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.EXAM_DETAILS.RESULT"
-  comment: "Scheme: NHNCK.EXAM_DETAILS.RESULT (gộp từ EXAMINATION_RESULT, 2026-07-09)."
-  classification_context: "NHNCK.EXAM_DETAILS.RESULT"
+  comment: "SCHEMA_CODE=NHNCK.EXAM_DETAILS.RESULT"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Examination Note"

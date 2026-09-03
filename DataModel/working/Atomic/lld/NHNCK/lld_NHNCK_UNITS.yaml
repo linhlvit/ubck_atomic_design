@@ -58,7 +58,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=NHNCK.UNITS"
+  classification_context: "SOURCE_SYSTEM=NHNCK_UNITS"
   etl_derived_value: "NHNCK_UNITS"
   data_type: "string"
 - attribute_name: "Organization Unit Type Code"
@@ -69,7 +69,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns: []
-  comment: "Scheme: ORGANIZATION_UNIT_TYPE. ETL-derived."
+  comment: "Scheme: ORGANIZATION_UNIT_TYPE. Hardcode."
   classification_context: "ORGANIZATION_UNIT_TYPE=UNIT"
   etl_derived_value: "UNIT"
   data_type: "string"
@@ -109,7 +109,7 @@ attributes:
   source_columns:
   - "NHNCK.UNITS.PARENT_ID"
   comment: "FK target: ra_organization_unit.ra_ou_id. Cần ETL crosswalk sang NHNCK.UNITS:\
-    \ UNITS.PARENT_ID = UNITS.ID để xác nhận UNIT_CODE sau đó hash_id('NHNCK.UNITS',\
+    \ UNITS.PARENT_ID = UNITS.ID để xác nhận UNIT_CODE sau đó hash_id('NHNCK_UNITS',\
     \ UNIT_CODE) | Trước đây hash trực tiếp theo PARENT_ID (ID kỹ thuật) gây sai lệch\
     \ với Id của bảng main (hash từ UNIT_CODE) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null

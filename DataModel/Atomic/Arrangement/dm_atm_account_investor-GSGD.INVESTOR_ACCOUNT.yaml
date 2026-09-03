@@ -46,7 +46,7 @@ attributes:
     source_system: GSGD
     source_table: INVESTOR_ACCOUNT
     source_column: GSGD.INVESTOR_ACCOUNT.ACCOUNT_CODE
-    comment: "BK chính. Hash: hash_id('GSGD.INVESTOR_ACCOUNT', ACCOUNT_CODE) dùng cho Account Investor Id."
+    comment: "BK chính. Hash: hash_id('GSGD_INVESTOR_ACCOUNT', ACCOUNT_CODE) dùng cho Account Investor Id."
     classification_context: null
     etl_derived_value: null
 
@@ -74,7 +74,7 @@ attributes:
     source_system: GSGD
     source_table: INVESTOR_ACCOUNT
     source_column: GSGD.INVESTOR_ACCOUNT.IDENTITY_NUMBER
-    comment: "FK target: individual.individual_id. Hash: hash_id('NHNCK.IDENTITY_INFO_C06S', IDENTITY_NUMBER). Cross-source FK (GSGD → NHNCK) — Individual mới có quyết định HLD (NHNCK, 2026-07-23), chưa có LLD/manifest entry (forward reference — xem GSGD_HLD_Tier1.md 6f T1-07). Khi NHNCK thiết kế LLD Individual, bắt buộc dùng IDENTITY_NUMBER làm Individual Code. NULL khi Investor Type Code = Tổ chức (không có CCCD cá nhân)."
+    comment: "FK target: individual.individual_id. Hash: hash_id('NHNCK_IDENTITY_INFO_C06S', IDENTITY_NUMBER). Cross-source FK (GSGD → NHNCK) — Individual mới có quyết định HLD (NHNCK, 2026-07-23), chưa có LLD/manifest entry (forward reference — xem GSGD_HLD_Tier1.md 6f T1-07). Khi NHNCK thiết kế LLD Individual, bắt buộc dùng IDENTITY_NUMBER làm Individual Code. NULL khi Investor Type Code = Tổ chức (không có CCCD cá nhân)."
     classification_context: null
     etl_derived_value: null
 
@@ -130,7 +130,7 @@ attributes:
     source_system: GSGD
     source_table: INVESTOR_ACCOUNT
     source_column: GSGD.INVESTOR_ACCOUNT.NATIONALITY
-    comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Hash: hash_id('ECAT.COUNTRY', NATIONALITY) | Chưa xác nhận giá trị trường NATIONALITY khớp danh mục ECAT — cần profile dữ liệu trước go-live."
+    comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Hash: hash_id('ECAT_COUNTRY', NATIONALITY) | Chưa xác nhận giá trị trường NATIONALITY khớp danh mục ECAT — cần profile dữ liệu trước go-live."
     classification_context: null
     etl_derived_value: null
 

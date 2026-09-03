@@ -33,7 +33,7 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. Hash: hash_id('IDS.RCOL', COL_CD). BCV: \"[Documentation]\
+  comment: "PK surrogate. Hash: hash_id('IDS_RCOL', ID). BCV: \"[Documentation]\
     \ Form Document\"."
   classification_context: null
   etl_derived_value: null
@@ -46,9 +46,22 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
+  - "IDS.RCOL.ID"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Column Code"
+  physical_name: "column_code"
+  description: "Mã cột. Trước đây là BK nhưng không đảm bảo unique — giữ lại làm\
+    \ business reference field."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
   - "IDS.RCOL.COL_CD"
-  comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID) — loại bỏ ID khỏi\
-    \ model hoàn toàn. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique trước go-live."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -61,7 +74,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=IDS.RCOL"
+  classification_context: "SOURCE_SYSTEM=IDS_RCOL"
   etl_derived_value: "IDS_RCOL"
   data_type: "string"
 - attribute_name: "Financial Report Column Template Name"
@@ -112,9 +125,8 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.RCOL.REPORT_CATALOG_ID"
-  comment: "FK target: fr_catalog.fr_catalog_id. Cần ETL crosswalk\
-    \ sang IDS.REPORT_CATALOG: RCOL.REPORT_CATALOG_ID = REPORT_CATALOG.ID để xác\
-    \ nhận REPORT_CD sau đó hash_id('IDS.REPORT_CATALOG', REPORT_CD)."
+  comment: "FK target: fr_catalog.fr_catalog_id. Hash: hash_id('IDS_REPORT_CATALOG',\
+    \ REPORT_CATALOG_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -126,25 +138,22 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IDS.REPORT_CATALOG.REPORT_CD"
+  - "IDS.REPORT_CATALOG.ID"
   comment: "Lookup pair: fr_catalog.fr_catalog_code. Pair with Financial Report Catalog\
-    \ Id. Giá trị lấy từ IDS.REPORT_CATALOG.REPORT_CD sau ETL crosswalk — chi tiết\
-    \ xem comment Financial Report Catalog Id."
+    \ Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Column Type Code"
   physical_name: "column_tp_code"
-  description: "Giá trị (không có mô tả rõ ràng tại nguồn)."
-  data_domain: "Text"
+  description: "Kiểu giá trị của cột V/F/D - Value/Formula/Description."
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.RCOL.COL_TYPE_CD"
-  comment: "Nguồn không tài liệu hóa rõ scheme (mô tả cột chỉ ghi \"Giá trị\", không\
-    \ có LOOKUP_GROUP tường minh như ROW_TYPE_CD) — giữ Text denormalized. Cần Data\
-    \ Modeler xác nhận ý nghĩa nghiệp vụ trước khi promote thành Classification Value."
+  comment: "SCHEMA_CODE=IDS.REPORT_ROW/COL_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_ROW_TYPE')."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -184,26 +193,10 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.RCOL.RC_TYPE_CD"
-  comment: "Scheme: IDS_REPORT_CATALOG_TYPE. Trường lưu dư thừa — đã có Financial\
-    \ Report Catalog Id."
-  classification_context: "IDS_REPORT_CATALOG_TYPE"
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Active Indicator"
-  physical_name: "active_ind"
-  description: "Trạng thái - (0 - không sử dụng, 1 - đang sử dụng)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.RCOL.DELETE_FLG"
-  comment: "Giá trị 1 → true (đang sử dụng); 0 → false. Nguồn NUMBER(1), tên cột DELETE_FLG\
-    \ nhưng ngữ nghĩa là active/inactive theo mô tả BRD — đồng nhất pattern với fr_row_template.Active\
-    \ Indicator."
+  comment: "SCHEMA_CODE=IDS.REPORT_CATALOG_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='RC_TYPE')."
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "string"
 - attribute_name: "Description"
   physical_name: "description"
   description: "Mô tả."
@@ -214,20 +207,6 @@ attributes:
   source_columns:
   - "IDS.RCOL.DESCRIPTION"
   comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "System Code"
-  physical_name: "stm_code"
-  description: "Hệ thống con trong IDS (không có mô tả tại nguồn)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.RCOL.SYSTEM_CD"
-  comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong\
-    \ tài liệu thiết kế."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

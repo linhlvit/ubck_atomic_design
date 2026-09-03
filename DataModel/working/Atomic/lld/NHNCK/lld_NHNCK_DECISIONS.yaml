@@ -37,7 +37,7 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. Hash: hash_id('NHNCK.DECISIONS', DECISION_NUMBER)."
+  comment: "PK surrogate. Hash: hash_id('NHNCK_DECISIONS', DECISION_NUMBER)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -65,7 +65,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "ETL-derived: NHNCK.DECISIONS."
-  classification_context: "SOURCE_SYSTEM=NHNCK.DECISIONS"
+  classification_context: "SOURCE_SYSTEM=NHNCK_DECISIONS"
   etl_derived_value: "NHNCK_DECISIONS"
   data_type: "string"
 - attribute_name: "Decision Title"
@@ -194,9 +194,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.DECISIONS.DECISION_TYPE_ID"
-  comment: "Scheme: NHNCK.DECISIONS.DECISION_TYPE_ID. Values: 1=Cấp mới; 2=Thu hồi;\
-    \ 3=Cấp lại; 4=Công nhận KQ thi; 5=Xử lý vi phạm; 6=Hủy CCHN; 7=Khác."
-  classification_context: "NHNCK.DECISIONS.DECISION_TYPE_ID"
+  comment: "SCHEMA_CODE=NHNCK.DECISIONS.DECISION_TYPE_ID"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Notification Content"

@@ -60,7 +60,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=NHNCK.EXAM_SESSIONS"
+  classification_context: "SOURCE_SYSTEM=NHNCK_EXAM_SESSIONS"
   etl_derived_value: "NHNCK_EXAM_SESSIONS"
   data_type: "string"
 - attribute_name: "Assessment Name"
@@ -231,7 +231,7 @@ attributes:
   - "NHNCK.EXAM_SESSIONS.DECISION_ID"
   comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
     \ Cần ETL crosswalk sang NHNCK.DECISIONS: EXAM_SESSIONS.DECISION_ID = DECISIONS.ID\
-    \ để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK.DECISIONS', DECISION_NUMBER)\
+    \ để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS', DECISION_NUMBER)\
     \ | Trước đây hash trực tiếp theo DECISION_ID (ID kỹ thuật) gây sai lệch với Id\
     \ của bảng main (hash từ DECISION_NUMBER) — đã sửa sang crosswalk 2026-08-14."
   classification_context: null
@@ -262,8 +262,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.EXAM_SESSIONS.BANK_ID"
-  comment: "Scheme: BANK. Classification Value lookup từ bảng BANKS."
-  classification_context: "BANK"
+  comment: "SCHEMA_CODE=BANK"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Bank Account Number"
@@ -301,7 +301,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.EXAM_SESSIONS.STATUS"
-  comment: "Scheme: NHNCK.EXAM_SESSIONS.STATUS."
-  classification_context: "NHNCK.EXAM_SESSIONS.STATUS"
+  comment: "SCHEMA_CODE=NHNCK.EXAM_SESSIONS.STATUS"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"

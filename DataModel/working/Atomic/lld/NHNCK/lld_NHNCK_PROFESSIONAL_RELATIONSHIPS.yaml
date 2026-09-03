@@ -53,7 +53,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=NHNCK.PROFESSIONAL_RELATIONSHIPS"
+  classification_context: "SOURCE_SYSTEM=NHNCK_PROFESSIONAL_RELATIONSHIPS"
   etl_derived_value: "NHNCK_PROFESSIONAL_RELATIONSHIPS"
   data_type: "string"
 - attribute_name: "Securities Practitioner Id"
@@ -65,7 +65,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.PROFESSIONAL_RELATIONSHIPS.PROFESSIONAL_ID"
-  comment: "FK target: securities_practitioner.sp_id. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
+  comment: "FK target: securities_practitioner.sp_id. Hash: hash_id('NHNCK_PROFESSIONALS', PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -91,8 +91,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.PROFESSIONAL_RELATIONSHIPS.RELATIONSHIP_TYPE"
-  comment: "Scheme: NHNCK.PROFESSIONAL_RELATIONSHIPS.RELATIONSHIP_TYPE."
-  classification_context: "NHNCK.PROFESSIONAL_RELATIONSHIPS.RELATIONSHIP_TYPE"
+  comment: "SCHEMA_CODE=NHNCK.PROFESSIONAL_RELATIONSHIPS.RELATIONSHIP_TYPE"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Related Individual Full Name"
@@ -184,7 +184,7 @@ attributes:
   - "NHNCK.PROFESSIONAL_RELATIONSHIPS.COUNTRY_ID"
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'COUNTRY'). Cần ETL crosswalk sang NHNCK.COUNTRIES: PROFESSIONAL_RELATIONSHIPS.COUNTRY_ID\
-    \ = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT.COUNTRY', COUNTRY_CODE)\
+    \ = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT_COUNTRY', COUNTRY_CODE)\
     \ | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null

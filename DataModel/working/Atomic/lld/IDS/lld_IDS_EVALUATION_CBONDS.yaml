@@ -56,7 +56,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=IDS.EVALUATION_CBONDS"
+  classification_context: "SOURCE_SYSTEM=IDS_EVALUATION_CBONDS"
   etl_derived_value: "IDS_EVALUATION_CBONDS"
   data_type: "string"
 - attribute_name: "Public Company Id"
@@ -68,7 +68,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.EVALUATION_CBONDS.COMPANY_ID"
-  comment: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES',\
+  comment: "FK target: public_company.pc_id. Hash: hash_id('IDS_COMPANY_PROFILES',\
     \ COMPANY_ID). Cột nguồn COMPANY_ID (khác tên chuẩn COMPANY_PROFILE_ID ở các bảng\
     \ khác) — chưa có ràng buộc NOT NULL rõ ràng nên để nullable."
   classification_context: null
@@ -88,8 +88,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Business Registration Number Snapshot"
-  physical_name: "business_registration_nbr_snpst"
+- attribute_name: "Business Registration Number"
+  physical_name: "business_registration_nbr"
   description: "Mã số doanh nghiệp (snapshot tại thời điểm đánh giá)."
   data_domain: "Text"
   nullable: true
@@ -103,9 +103,9 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Equity Ticker Symbol Snapshot"
-  physical_name: "equity_ticker_symbol_snpst"
-  description: "Mã cổ phiếu (mã chứng khoán, snapshot tại thời điểm đánh giá)."
+- attribute_name: "Equity Ticker Symbol"
+  physical_name: "equity_ticker_symbol"
+  description: "Mã cổ phiếu (mã chứng khoán)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
@@ -116,9 +116,9 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Public Company Name Snapshot"
-  physical_name: "pc_nm_snpst"
-  description: "Tên công ty (snapshot tại thời điểm đánh giá)."
+- attribute_name: "Public Company Name"
+  physical_name: "pc_nm"
+  description: "Tên công ty."
   data_domain: "Text"
   nullable: true
   is_primary_key: false

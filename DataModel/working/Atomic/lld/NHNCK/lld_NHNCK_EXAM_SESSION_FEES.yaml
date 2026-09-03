@@ -58,7 +58,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=NHNCK.EXAM_SESSION_FEES"
+  classification_context: "SOURCE_SYSTEM=NHNCK_EXAM_SESSION_FEES"
   etl_derived_value: "NHNCK_EXAM_SESSION_FEES"
   data_type: "string"
 - attribute_name: "Securities Practitioner Qualification Examination Assessment Id"
@@ -70,7 +70,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.EXAM_SESSION_FEES.EXAM_SESSION_ID"
-  comment: "FK target: sp_qualification_examination_assessment.sp_qualification_examination_assessment_id. Nguồn lưu ID kỹ thuật của EXAM_SESSIONS — ETL join EXAM_SESSION_ID → NHNCK.EXAM_SESSIONS.ID để lấy CODE, rồi hash_id('NHNCK.EXAM_SESSIONS', CODE)."
+  comment: "FK target: sp_qualification_examination_assessment.sp_qualification_examination_assessment_id. Nguồn lưu ID kỹ thuật của EXAM_SESSIONS — ETL join EXAM_SESSION_ID → NHNCK.EXAM_SESSIONS.ID để lấy CODE, rồi hash_id('NHNCK_EXAM_SESSIONS', CODE)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -98,7 +98,7 @@ attributes:
   - "NHNCK.EXAM_SESSION_FEES.CERTIFICATE_ID"
   comment: "FK target: sp_license_certificate_type.sp_license_certificate_tp_id. Cần\
     \ ETL crosswalk sang NHNCK.CERTIFICATES: EXAM_SESSION_FEES.CERTIFICATE_ID = CERTIFICATES.ID\
-    \ để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK.CERTIFICATES', CERTIFICATE_CODE)\
+    \ để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK_CERTIFICATES', CERTIFICATE_CODE)\
     \ | Trước đây hash trực tiếp theo CERTIFICATE_ID (ID kỹ thuật) gây sai lệch với\
     \ Id của bảng main (hash từ CERTIFICATE_CODE) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null

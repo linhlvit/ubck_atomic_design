@@ -60,7 +60,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=IDS.COMPANY_TENDER_OFFER"
+  classification_context: "SOURCE_SYSTEM=IDS_COMPANY_TENDER_OFFER"
   etl_derived_value: "IDS_COMPANY_TENDER_OFFER"
   data_type: "string"
 - attribute_name: "Public Company Id"
@@ -72,7 +72,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.COMPANY_TENDER_OFFER.COMPANY_PROFILE_ID"
-  comment: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES',\
+  comment: "FK target: public_company.pc_id. Hash: hash_id('IDS_COMPANY_PROFILES',\
     \ COMPANY_PROFILE_ID)."
   classification_context: null
   etl_derived_value: null
@@ -249,19 +249,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "decimal(23,2)"
-- attribute_name: "Deleted Indicator"
-  physical_name: "deleted_ind"
-  description: "Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.COMPANY_TENDER_OFFER.DELETE_FLG"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
 - attribute_name: "Target Equity Ticker"
   physical_name: "target_equity_ticker"
   description: "Mã chứng khoán (Cổ phiếu) của công ty mục tiêu."
@@ -286,7 +273,7 @@ attributes:
   - "IDS.COMPANY_TENDER_OFFER.TARGET_LISTING_EXCH"
   comment: "Scheme: IDS_EQUITY_LISTING_EXCH. Dùng chung scheme với Public Company.Equity\
     \ Listing Exchange Code."
-  classification_context: "IDS_EQUITY_LISTING_EXCH"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Target Head Office Address"
@@ -470,7 +457,7 @@ attributes:
   - "IDS.COMPANY_TENDER_OFFER.APPROVAL_STATUS_CD"
   comment: "Scheme: IDS_SO_APPROVAL_STATUS. Dùng chung scheme với Public Company Securities\
     \ Offering.Approval Status Code (cùng LOOKUP_GROUP = SO_APPROVAL_STATUS)."
-  classification_context: "IDS_SO_APPROVAL_STATUS"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Approver User Id"
@@ -482,7 +469,7 @@ attributes:
   status: "pending"
   source_columns:
   - "IDS.COMPANY_TENDER_OFFER.APPROVER_USER_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM.USERS', APPROVER_USER_ID) | Chưa xác nhận join key IDS.COMPANY_TENDER_OFFER.APPROVER_USER_ID ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM_USERS', APPROVER_USER_ID) | Chưa xác nhận join key IDS.COMPANY_TENDER_OFFER.APPROVER_USER_ID ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -508,7 +495,7 @@ attributes:
   status: "pending"
   source_columns:
   - "IDS.COMPANY_TENDER_OFFER.PROCESSOR_USER_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM.USERS', PROCESSOR_USER_ID) | Chưa xác nhận join key IDS.COMPANY_TENDER_OFFER.PROCESSOR_USER_ID ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM_USERS', PROCESSOR_USER_ID) | Chưa xác nhận join key IDS.COMPANY_TENDER_OFFER.PROCESSOR_USER_ID ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

@@ -3,8 +3,8 @@ schema_version: "2.0"
 metadata:
   source_system: "IDS"
   source_table: "REP_FORMS"
-  atomic_entity: "Financial Report Sub Template"
-  entity_physical_name: "fr_sub_template"
+  atomic_entity: "Unstructured Financial Report Template"
+  entity_physical_name: "ufr_template"
   bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Form Document"
   table_type: "Fundamental"
@@ -17,35 +17,33 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "ID kỹ thuật loại khỏi model — REPORT_CD (mã nghiệp vụ) → Financial Report\
-    \ Sub Template Code (BK duy nhất), Id hash từ Code. Đổi tên từ \"Periodic Report\
-    \ Form\" (2026-08-05, theo yêu cầu tường minh Data Modeler)."
+  notes: null
 attributes:
-- attribute_name: "Financial Report Sub Template Id"
-  physical_name: "fr_sub_template_id"
+- attribute_name: "Unstructured Financial Report Template Id"
+  physical_name: "ufr_template_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. Hash: hash_id('IDS.REP_FORMS', REPORT_CD). BCV: \"[Condition]\
-    \ Form Definition\"."
+  comment: "PK surrogate. Hash: hash_id('IDS_REP_FORMS', ID). BCV: \"[Documentation]\
+    \ Form Document\"."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Financial Report Sub Template Code"
-  physical_name: "fr_sub_template_code"
-  description: "Mã form. BK duy nhất — Id hash từ trường này."
+- attribute_name: "Unstructured Financial Report Template Code"
+  physical_name: "ufr_template_code"
+  description: "BK duy nhất — Id hash từ trường này."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IDS.REP_FORMS.REPORT_CD"
-  comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID) + Unique Key cũ —\
-    \ gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique\
-    \ trước go-live."
+  - "IDS.REP_FORMS.ID"
+  comment: "BK chính — chuyển từ mã nghiệp vụ (REPORT_CD) sang ID kỹ thuật nguồn\
+    \ do REPORT_CD không đảm bảo unique (xác nhận qua profile dữ liệu — quyết định\
+    \ Data Modeler 2026-08-27). Nguồn NUMBER(10,0) — ETL cast sang string."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -58,11 +56,25 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=IDS.REP_FORMS"
+  classification_context: "SOURCE_SYSTEM=IDS_REP_FORMS"
   etl_derived_value: "IDS_REP_FORMS"
   data_type: "string"
-- attribute_name: "Financial Report Sub Template Name"
-  physical_name: "fr_sub_template_nm"
+- attribute_name: "Report Code"
+  physical_name: "rpt_code"
+  description: "Mã form. Trước đây là BK nhưng không đảm bảo unique — giữ lại làm\
+    \ business reference field."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.REP_FORMS.REPORT_CD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Unstructured Financial Report Template Name"
+  physical_name: "ufr_template_nm"
   description: "Tên form báo cáo (tiếng Việt)."
   data_domain: "Text"
   nullable: true
@@ -74,8 +86,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Financial Report Sub Template English Name"
-  physical_name: "fr_sub_template_english_nm"
+- attribute_name: "Unstructured Financial Report Template English Name"
+  physical_name: "ufr_template_english_nm"
   description: "Tên form báo cáo (tiếng Anh)."
   data_domain: "Text"
   nullable: true
@@ -87,8 +99,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Financial Report Type Code"
-  physical_name: "fr_tp_code"
+- attribute_name: "Unstructured Financial Report Type Code"
+  physical_name: "ufr_tp_code"
   description: "Tần suất báo cáo (tháng/quý/năm...)."
   data_domain: "Classification Value"
   nullable: true
@@ -114,8 +126,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "int"
-- attribute_name: "Financial Report Link"
-  physical_name: "fr_link"
+- attribute_name: "Unstructured Financial Report Link"
+  physical_name: "ufr_link"
   description: "Đường link cấu hình biểu mẫu."
   data_domain: "Text"
   nullable: true
@@ -124,20 +136,6 @@ attributes:
   source_columns:
   - "IDS.REP_FORMS.REPORT_LINK"
   comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "System Code"
-  physical_name: "stm_code"
-  description: "Hệ thống con trong IDS."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.REP_FORMS.SYSTEM_CD"
-  comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong\
-    \ tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

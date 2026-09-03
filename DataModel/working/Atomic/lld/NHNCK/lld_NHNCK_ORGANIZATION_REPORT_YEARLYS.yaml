@@ -30,7 +30,7 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. BCV: \"Employer Registration\" (Documentation). Hash: hash_id('NHNCK.ORGANIZATION_REPORT_YEARLYS',\
+  comment: "PK surrogate. BCV: \"Employer Registration\" (Documentation). Hash: hash_id('NHNCK_ORGANIZATION_REPORT_YEARLYS',\
     \ ID)."
   classification_context: null
   etl_derived_value: null
@@ -57,7 +57,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=NHNCK.ORGANIZATION_REPORT_YEARLYS"
+  classification_context: "SOURCE_SYSTEM=NHNCK_ORGANIZATION_REPORT_YEARLYS"
   etl_derived_value: "NHNCK_ORGANIZATION_REPORT_YEARLYS"
   data_type: "string"
 - attribute_name: "Securities Organization Reference Id"
@@ -71,7 +71,7 @@ attributes:
   - "NHNCK.ORGANIZATION_REPORT_YEARLYS.ORGANIZATION_ID"
   comment: "FK target: securities_organization_reference.securities_organization_reference_id.\
     \ Cần ETL crosswalk sang NHNCK.ORGANIZATIONS: ORGANIZATION_REPORT_YEARLYS.ORGANIZATION_ID\
-    \ = ORGANIZATIONS.ID để xác nhận ORGANIZATION_CODE sau đó hash_id('NHNCK.ORGANIZATIONS',\
+    \ = ORGANIZATIONS.ID để xác nhận ORGANIZATION_CODE sau đó hash_id('NHNCK_ORGANIZATIONS',\
     \ ORGANIZATION_CODE)."
   classification_context: null
   etl_derived_value: null
@@ -126,8 +126,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.ORGANIZATION_REPORT_YEARLYS.TYPE"
-  comment: "Scheme: NHNCK.ORGANIZATION_REPORT_YEARLYS.TYPE."
-  classification_context: "NHNCK.ORGANIZATION_REPORT_YEARLYS.TYPE"
+  comment: "SCHEMA_CODE=NHNCK.ORGANIZATION_REPORT_YEARLYS.TYPE"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Submission Date"
@@ -165,7 +165,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.ORGANIZATION_REPORT_YEARLYS.STATUS"
-  comment: "Scheme: NHNCK.ORGANIZATION_REPORT_YEARLYS.STATUS."
-  classification_context: "NHNCK.ORGANIZATION_REPORT_YEARLYS.STATUS"
+  comment: "SCHEMA_CODE=NHNCK.ORGANIZATION_REPORT_YEARLYS.STATUS"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"

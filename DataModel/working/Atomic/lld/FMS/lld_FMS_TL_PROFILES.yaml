@@ -60,7 +60,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM."
-  classification_context: "SOURCE_SYSTEM=FMS.TL_PROFILES"
+  classification_context: "SOURCE_SYSTEM=FMS_TL_PROFILES"
   etl_derived_value: "FMS_TL_PROFILES"
   data_type: "string"
 - attribute_name: "Fund Management Company Id"
@@ -72,7 +72,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.TL_PROFILES.SEC_ID"
-  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS.SECURITIES',\
+  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
     \ SEC_ID)."
   classification_context: null
   etl_derived_value: null
@@ -100,7 +100,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.TL_PROFILES.BRANCH_ID"
-  comment: "FK target: fmc_organization_unit.fmc_ou_id. Hash: hash_id('FMS.BRANCHS',\
+  comment: "FK target: fmc_organization_unit.fmc_ou_id. Hash: hash_id('FMS_BRANCHS',\
     \ BRANCH_ID)."
   classification_context: null
   etl_derived_value: null
@@ -563,7 +563,7 @@ attributes:
   status: "pending"
   source_columns:
   - "FMS.TL_PROFILES.INSDER_ID"
-  comment: "FK target: fmc_insider.fmc_insider_id. Hash: hash_id('FMS.INSIDER', INSDER_ID).\
+  comment: "FK target: fmc_insider.fmc_insider_id. Hash: hash_id('FMS_INSIDER', INSDER_ID).\
     \ Pending — entity thiết kế ở Tier 5."
   classification_context: null
   etl_derived_value: null

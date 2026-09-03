@@ -57,7 +57,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=IDS.NOTIFICATIONS_DTL"
+  classification_context: "SOURCE_SYSTEM=IDS_NOTIFICATIONS_DTL"
   etl_derived_value: "IDS_NOTIFICATIONS_DTL"
   data_type: "string"
 - attribute_name: "Notification Id"
@@ -71,7 +71,7 @@ attributes:
   - "IDS.NOTIFICATIONS_DTL.NOTIFICATIONS_ID"
   comment: "FK target: notification.notification_id. Cần ETL crosswalk sang IDS.NOTIFICATIONS:\
     \ NOTIFICATIONS_DTL.NOTIFICATIONS_ID = NOTIFICATIONS.ID để xác nhận NOTI_CD sau\
-    \ đó hash_id('IDS.NOTIFICATIONS', NOTI_CD) | Trước đây hash trực tiếp theo NOTIFICATIONS_ID\
+    \ đó hash_id('IDS_NOTIFICATIONS', NOTI_CD) | Trước đây hash trực tiếp theo NOTIFICATIONS_ID\
     \ (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ NOTI_CD) — đã sửa sang\
     \ crosswalk 2026-07-27."
   classification_context: null
@@ -101,7 +101,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.NOTIFICATIONS_DTL.COMPANY_PROFILE_ID"
-  comment: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES',\
+  comment: "FK target: public_company.pc_id. Hash: hash_id('IDS_COMPANY_PROFILES',\
     \ COMPANY_PROFILE_ID). Nullable — người nhận có thể không phải công ty đại chúng."
   classification_context: null
   etl_derived_value: null
@@ -129,7 +129,7 @@ attributes:
   status: "pending"
   source_columns:
   - "IDS.NOTIFICATIONS_DTL.LOGIN_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM.USERS', LOGIN_ID) | Chưa xác nhận join key IDS.NOTIFICATIONS_DTL.LOGIN_ID ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM_USERS', LOGIN_ID) | Chưa xác nhận join key IDS.NOTIFICATIONS_DTL.LOGIN_ID ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -184,7 +184,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.NOTIFICATIONS_DTL.DEPT_CD"
-  comment: "FK target: Department.Department_Id. Hash: hash_id('IDS.DEPARTMENTS', DEPT_CD)."
+  comment: "FK target: Department.Department_Id. Hash: hash_id('IDS_DEPARTMENTS', DEPT_CD)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

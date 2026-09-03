@@ -31,7 +31,7 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. Hash: hash_id('IDS.NOTIFICATIONS', NOTI_CD). BCV: \"[Communication]\
+  comment: "PK surrogate. Hash: hash_id('IDS_NOTIFICATIONS', NOTI_CD). BCV: \"[Communication]\
     \ Notification\"."
   classification_context: null
   etl_derived_value: null
@@ -60,7 +60,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=IDS.NOTIFICATIONS"
+  classification_context: "SOURCE_SYSTEM=IDS_NOTIFICATIONS"
   etl_derived_value: "IDS_NOTIFICATIONS"
   data_type: "string"
 - attribute_name: "Financial Report Template Id"
@@ -72,7 +72,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.NOTIFICATIONS.FORM_ID"
-  comment: "FK target: fr_template.fr_template_id. Hash: hash_id('IDS.FORMS', FORM_CD)."
+  comment: "FK target: fr_template.fr_template_id. Hash: hash_id('IDS_FORMS', FORM_CD)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -273,7 +273,7 @@ attributes:
   status: "pending"
   source_columns:
   - "IDS.NOTIFICATIONS.LOGIN_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM.USERS', LOGIN_ID) | Chưa xác nhận join key IDS.NOTIFICATIONS.LOGIN_ID ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM_USERS', LOGIN_ID) | Chưa xác nhận join key IDS.NOTIFICATIONS.LOGIN_ID ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

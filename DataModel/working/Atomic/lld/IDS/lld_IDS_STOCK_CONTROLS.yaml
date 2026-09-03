@@ -53,7 +53,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=IDS.STOCK_CONTROLS"
+  classification_context: "SOURCE_SYSTEM=IDS_STOCK_CONTROLS"
   etl_derived_value: "IDS_STOCK_CONTROLS"
   data_type: "string"
 - attribute_name: "Legal Entity Id"
@@ -65,7 +65,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.STOCK_CONTROLS.LEGAL_ENTITY_ID"
-  comment: "FK target: legal_entity.legal_entity_id. Hash: hash_id('IDS.LEGAL_ENTITIES',\
+  comment: "FK target: legal_entity.legal_entity_id. Hash: hash_id('IDS_LEGAL_ENTITIES',\
     \ LEGAL_ENTITY_ID)."
   classification_context: null
   etl_derived_value: null
@@ -122,21 +122,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "date"
-- attribute_name: "Exposure Status Code"
-  physical_name: "exposure_status_code"
-  description: "Dùng cho giám sát (1-insert, 2-update)."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.STOCK_CONTROLS.EXP_STATUS_FLG"
-  comment: "Scheme: IDS_STOCK_CONTROL_EXP_STATUS (no_lookup). Nguồn NUMBER(1) dùng\
-    \ 1=insert, 2=update (không phải boolean true/false chuẩn) — ETL convert sang\
-    \ string code, không map thành Boolean."
-  classification_context: "IDS_STOCK_CONTROL_EXP_STATUS"
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Restriction Type Code"
   physical_name: "restriction_tp_code"
   description: "Loại hạn chế - LOOKUP_VALUES LOOKUP_GROUP = RESTRICTION_TYPE."
@@ -151,16 +136,3 @@ attributes:
   classification_context: "IDS_STOCK_RESTRICTION_TYPE"
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Deleted Indicator"
-  physical_name: "deleted_ind"
-  description: "Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.STOCK_CONTROLS.DELETE_FLG"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"

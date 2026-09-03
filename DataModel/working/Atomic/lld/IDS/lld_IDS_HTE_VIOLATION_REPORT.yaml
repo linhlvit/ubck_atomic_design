@@ -65,7 +65,7 @@ attributes:
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode. Dùng để phân biệt nguồn HTE_VIOLATION_REPORT\
     \ vs VIOLATION_REPORT khi gộp entity."
-  classification_context: "SOURCE_SYSTEM=IDS.HTE_VIOLATION_REPORT"
+  classification_context: "SOURCE_SYSTEM=IDS_HTE_VIOLATION_REPORT"
   etl_derived_value: "IDS_HTE_VIOLATION_REPORT"
   data_type: "string"
 - attribute_name: "Public Company Id"
@@ -77,7 +77,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.HTE_VIOLATION_REPORT.COMPANY_PROFILE_ID"
-  comment: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES',\
+  comment: "FK target: public_company.pc_id. Hash: hash_id('IDS_COMPANY_PROFILES',\
     \ COMPANY_PROFILE_ID)."
   classification_context: null
   etl_derived_value: null
@@ -107,7 +107,7 @@ attributes:
   - "IDS.HTE_VIOLATION_REPORT.VIOLATION_TEMPLATE_ID"
   comment: "FK target: vr_template.vr_template_id. Cần ETL\
     \ crosswalk sang IDS.VIOLATION_TEMPLATES: HTE_VIOLATION_REPORT.VIOLATION_TEMPLATE_ID\
-    \ = VIOLATION_TEMPLATES.ID để xác nhận VIOLATION_CD sau đó hash_id('IDS.VIOLATION_TEMPLATES',\
+    \ = VIOLATION_TEMPLATES.ID để xác nhận VIOLATION_CD sau đó hash_id('IDS_VIOLATION_TEMPLATES',\
     \ VIOLATION_CD)."
   classification_context: null
   etl_derived_value: null
@@ -136,7 +136,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.HTE_VIOLATION_REPORT.FORM_CD"
-  comment: "FK target: fr_template.fr_template_id. Hash: hash_id('IDS.FORMS', FORM_CD)."
+  comment: "FK target: fr_template.fr_template_id. Hash: hash_id('IDS_FORMS', FORM_CD)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

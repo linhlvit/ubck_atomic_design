@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Condition] Form Definition"
   table_type: "Fundamental"
   group: "T1"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -17,8 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "ID kỹ thuật loại khỏi model — REPORT_CD (mã nghiệp vụ) → Financial Report\
-    \ Catalog Code (BK duy nhất), Id hash từ Code. FINANCIAL_STATEMENT_CD/REPORTING_PERIOD_CD/REF_CD\
+  notes: "FINANCIAL_STATEMENT_CD/REPORTING_PERIOD_CD/REF_CD\
     \ không có description tại nguồn — giữ Text denormalized, cần Data Modeler xác\
     \ nhận ý nghĩa nghiệp vụ trước khi dùng."
 attributes:
@@ -30,23 +29,21 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. Hash: hash_id('IDS.REPORT_CATALOG', REPORT_CD). BCV: \"\
-    [Condition] Form Definition\"."
+  comment: "PK surrogate. Hash: hash_id('IDS_REPORT_CATALOG', ID). BCV: \"[Condition]\
+    \ Form Definition\"."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Financial Report Catalog Code"
   physical_name: "fr_catalog_code"
-  description: "Mã báo cáo. BK duy nhất — Id hash từ trường này."
+  description: "BK duy nhất — Id hash từ trường này."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IDS.REPORT_CATALOG.REPORT_CD"
-  comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID) + Unique Key cũ —\
-    \ gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique\
-    \ trước go-live."
+  - "IDS.REPORT_CATALOG.ID"
+  comment: "BK chính — Nguồn NUMBER(10,0) — ETL cast sang string."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -59,8 +56,22 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=IDS.REPORT_CATALOG"
+  classification_context: "SOURCE_SYSTEM=IDS_REPORT_CATALOG"
   etl_derived_value: "IDS_REPORT_CATALOG"
+  data_type: "string"
+- attribute_name: "Report Code"
+  physical_name: "rpt_code"
+  description: "Mã báo cáo. Trước đây là BK nhưng không đảm bảo unique — giữ lại\
+    \ làm business reference field."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.REPORT_CATALOG.REPORT_CD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
   data_type: "string"
 - attribute_name: "Financial Report Catalog Name"
   physical_name: "fr_catalog_nm"
@@ -88,17 +99,17 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Financial Report Catalog Type Code"
-  physical_name: "fr_catalog_tp_code"
-  description: "Loại báo cáo (I - Báo cáo đầu vào, O - Báo cáo xuất ra)."
+- attribute_name: "Report Catalog Type Code"
+  physical_name: "rpt_catalog_tp_code"
+  description: "Loại báo cáo, lấy từ bảng REPORT_CATALOG."
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.REPORT_CATALOG.RC_TYPE_CD"
-  comment: "Scheme: IDS_REPORT_CATALOG_TYPE. Values lấy trực tiếp từ cột nguồn (LOOKUP_GROUP='RC_TYPE')."
-  classification_context: "IDS_REPORT_CATALOG_TYPE"
+  comment: "SCHEMA_CODE=IDS.REPORT_CATALOG_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='RC_TYPE')."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Financial Report Year"
@@ -115,8 +126,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Financial Report Scope Code"
-  physical_name: "fr_scope_code"
+- attribute_name: "Financial Report Scope Type Code"
+  physical_name: "fr_scope_tp_code"
   description: "Loại hình báo cáo (Hợp nhất, Mẹ)."
   data_domain: "Classification Value"
   nullable: true
@@ -124,8 +135,8 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.REPORT_CATALOG.REPORT_SCOPE_CD"
-  comment: "Scheme: IDS_REPORT_SCOPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_SCOPE')."
-  classification_context: "IDS_REPORT_SCOPE"
+  comment: "SCHEMA_CODE=IDS.REPORT_SCOPE_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_SCOPE')."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Enterprise Type Code"
@@ -137,9 +148,9 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.REPORT_CATALOG.ENTERPRISE_TYPE_CD"
-  comment: "Scheme: IDS_ENTERPRISE_TYPE. Dùng chung scheme với Public Company.Enterprise\
-    \ Type Code (LOOKUP_GROUP='ENTERPRISE_TYPE')."
-  classification_context: "IDS_ENTERPRISE_TYPE"
+  comment: "SCHEMA_CODE=IDS.ENTERPRISE_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='ENTERPRISE_TYPE'). Dùng chung scheme với Public Company.Enterprise\
+    \ Type Code."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Consolidated Indicator"
@@ -155,85 +166,42 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "int"
-- attribute_name: "Active Indicator"
-  physical_name: "active_ind"
-  description: "Trạng thái sử dụng."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.REPORT_CATALOG.ACTIVE_FLG"
-  comment: "Giá trị 1 → true (đang sử dụng); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-- attribute_name: "System Code"
-  physical_name: "stm_code"
-  description: "Hệ thống con trong IDS."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.REPORT_CATALOG.SYSTEM_CD"
-  comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong\
-    \ tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Financial Statement Reference"
-  physical_name: "financial_statement_reference"
+- attribute_name: "Financial Statement Type Code"
+  physical_name: "financial_statement_tp_code"
   description: "Tham chiếu báo cáo tài chính (không có mô tả tại nguồn)."
-  data_domain: "Text"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.REPORT_CATALOG.FINANCIAL_STATEMENT_CD"
-  comment: "Nguồn VARCHAR2(500), description null — giữ Text denormalized. Cần Data\
-    \ Modeler xác nhận ý nghĩa nghiệp vụ trước khi dùng (có thể là danh sách composite)."
+  comment: "SCHEMA_CODE=IDS.FINANCIAL_STATEMENT_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='FINANCIAL_STATEMENT_TYPE')."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Reporting Period Reference"
-  physical_name: "reporting_period_reference"
-  description: "Tham chiếu kỳ báo cáo (không có mô tả tại nguồn)."
-  data_domain: "Text"
+- attribute_name: "Reporting Period Type Code"
+  physical_name: "reporting_period_tp_code"
+  description: "Loại kỳ báo cáo."
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.REPORT_CATALOG.REPORTING_PERIOD_CD"
-  comment: "Nguồn VARCHAR2(500), description null — giữ Text denormalized. Cần Data\
-    \ Modeler xác nhận ý nghĩa nghiệp vụ trước khi dùng."
+  comment: "SCHEMA_CODE=IDS.REPORT_PERIOD_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_PERIOD_TYPE')."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Reference Code"
-  physical_name: "reference_code"
-  description: "Mã tham chiếu (không có mô tả tại nguồn)."
+- attribute_name: "Financial Statement Component Type Code"
+  physical_name: "financial_statement_component_tp_code"
+  description: "Loại thành phần của báo cáo tài chính."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.REPORT_CATALOG.REF_CD"
-  comment: "Nguồn VARCHAR2(500), description null — giữ Text denormalized. Cần Data\
-    \ Modeler xác nhận ý nghĩa nghiệp vụ trước khi dùng."
+  comment: "SCHEMA_CODE=IDS.FINANCIAL_STATEMENT_COMPONENT_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='FINANCIAL_STATEMENT_COMPONENT')."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Deleted Indicator"
-  physical_name: "deleted_ind"
-  description: "Trạng thái xóa."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.REPORT_CATALOG.IS_DELETED"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"

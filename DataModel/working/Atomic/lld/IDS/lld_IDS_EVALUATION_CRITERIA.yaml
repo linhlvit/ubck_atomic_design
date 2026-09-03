@@ -34,7 +34,7 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. Hash: hash_id('IDS.EVALUATION_CRITERIA', CRITERION_CD).\
+  comment: "PK surrogate. Hash: hash_id('IDS_EVALUATION_CRITERIA', CRITERION_CD).\
     \ BCV: \"[Condition] Evaluation Criteria\"."
   classification_context: null
   etl_derived_value: null
@@ -63,7 +63,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=IDS.EVALUATION_CRITERIA"
+  classification_context: "SOURCE_SYSTEM=IDS_EVALUATION_CRITERIA"
   etl_derived_value: "IDS_EVALUATION_CRITERIA"
   data_type: "string"
 - attribute_name: "Public Company Evaluation Group Id"
@@ -75,7 +75,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.EVALUATION_CRITERIA.GROUP_CD"
-  comment: "FK target: pc_evaluation_group.pc_evaluation_group_id. Hash: hash_id('IDS.EVALUATION_GROUPS', GROUP_CD). Hash trực tiếp từ GROUP_CD\
+  comment: "FK target: pc_evaluation_group.pc_evaluation_group_id. Hash: hash_id('IDS_EVALUATION_GROUPS', GROUP_CD). Hash trực tiếp từ GROUP_CD\
     \ (đã có sẵn trên cùng dòng nguồn) — không join qua EVALUATION_GROUPS.ID kỹ thuật,\
     \ theo yêu cầu Data Modeler (2026-07-15). Cần profile dữ liệu nguồn xác nhận NOT\
     \ NULL trước go-live."
@@ -144,45 +144,6 @@ attributes:
   source_columns:
   - "IDS.EVALUATION_CRITERIA.BASIC_FLG"
   comment: "Giá trị 1 → true (cơ bản); 0 → false (bình thường). Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-- attribute_name: "Display Order Group"
-  physical_name: "display_order_group"
-  description: "Số thứ tự hiển thị nhóm."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.EVALUATION_CRITERIA.DISPLAY_ORDER_GROUP"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-- attribute_name: "Display Order Subgroup"
-  physical_name: "display_order_subgroup"
-  description: "Số thứ tự hiển thị nhóm con."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.EVALUATION_CRITERIA.DISPLAY_ORDER_SUBGROUP"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-- attribute_name: "Display Order"
-  physical_name: "display_order"
-  description: "Sắp xếp chỉ tiêu."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.EVALUATION_CRITERIA.DISPLAY_ORDER"
-  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "int"

@@ -40,7 +40,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=NHNCK.APPLICATION_GROUP_MEMBERS"
+  classification_context: "SOURCE_SYSTEM=NHNCK_APPLICATION_GROUP_MEMBERS"
   etl_derived_value: "NHNCK_APPLICATION_GROUP_MEMBERS"
   data_type: "string"
 - attribute_name: "Securities Practitioner License Application Group Id"
@@ -53,7 +53,7 @@ attributes:
   source_columns:
   - "NHNCK.APPLICATION_GROUP_MEMBERS.APPLICATION_GROUP_ID"
   comment: "FK target: sp_license_application_group.sp_license_application_group_id.\
-    \ Hash: hash_id('NHNCK.APPLICATION_GROUPS', APPLICATION_GROUP_ID). Composite PK\
+    \ Hash: hash_id('NHNCK_APPLICATION_GROUPS', APPLICATION_GROUP_ID). Composite PK\
     \ cùng Securities Practitioner License Application Id."
   classification_context: null
   etl_derived_value: null
@@ -83,7 +83,7 @@ attributes:
   - "NHNCK.APPLICATION_GROUP_MEMBERS.APPLICATION_ID"
   comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL crosswalk\
     \ sang NHNCK.APPLICATIONS: APPLICATION_GROUP_MEMBERS.APPLICATION_ID = APPLICATIONS.ID\
-    \ để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK.APPLICATIONS', APPLICATION_CODE)\
+    \ để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS', APPLICATION_CODE)\
     \ | Composite PK cùng Securities Practitioner License Application Group Id."
   classification_context: null
   etl_derived_value: null

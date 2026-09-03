@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Condition] Ownership Constraint"
   table_type: "Fundamental"
   group: "T2"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -53,7 +53,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=IDS.FOREIGN_OWNER_LIMIT"
+  classification_context: "SOURCE_SYSTEM=IDS_FOREIGN_OWNER_LIMIT"
   etl_derived_value: "IDS_FOREIGN_OWNER_LIMIT"
   data_type: "string"
 - attribute_name: "Public Company Id"
@@ -65,7 +65,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.FOREIGN_OWNER_LIMIT.COMPANY_PROFILE_ID"
-  comment: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES',\
+  comment: "FK target: public_company.pc_id. Hash: hash_id('IDS_COMPANY_PROFILES',\
     \ COMPANY_PROFILE_ID)."
   classification_context: null
   etl_derived_value: null
@@ -123,29 +123,3 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "date"
-- attribute_name: "Deleted Indicator"
-  physical_name: "deleted_ind"
-  description: "Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.FOREIGN_OWNER_LIMIT.DELETE_FLG"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-- attribute_name: "Sync Indicator"
-  physical_name: "sync_ind"
-  description: "Đánh dấu đồng bộ (1 - Đồng bộ, 0 - Thêm trên giao diện)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.FOREIGN_OWNER_LIMIT.SYNC_FLG"
-  comment: "Giá trị 1 → true (đồng bộ); 0 → false (thêm trên giao diện). Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"

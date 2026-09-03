@@ -38,7 +38,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=NHNCK.CERTIFICATE_DEPARTMENTS"
+  classification_context: "SOURCE_SYSTEM=NHNCK_CERTIFICATE_DEPARTMENTS"
   etl_derived_value: "NHNCK_CERTIFICATE_DEPARTMENTS"
   data_type: "string"
 - attribute_name: "Regulatory Authority Organization Unit Id"
@@ -52,7 +52,7 @@ attributes:
   - "NHNCK.CERTIFICATE_DEPARTMENTS.DEPARTMENT_ID"
   comment: "FK target: ra_organization_unit.ra_ou_id. Cần ETL crosswalk sang NHNCK.DEPARTMENTS:\
     \ CERTIFICATE_DEPARTMENTS.DEPARTMENT_ID = DEPARTMENTS.ID để xác nhận DEPARTMENT_CODE\
-    \ sau đó hash_id('NHNCK.DEPARTMENTS', DEPARTMENT_CODE). Composite PK cùng Securities\
+    \ sau đó hash_id('NHNCK_DEPARTMENTS', DEPARTMENT_CODE). Composite PK cùng Securities\
     \ Practitioner License Certificate Type Id."
   classification_context: null
   etl_derived_value: null
@@ -83,7 +83,7 @@ attributes:
   - "NHNCK.CERTIFICATE_DEPARTMENTS.CERTIFICATE_ID"
   comment: "FK target: sp_license_certificate_type.sp_license_certificate_tp_id. Cần\
     \ ETL crosswalk sang NHNCK.CERTIFICATES: CERTIFICATE_DEPARTMENTS.CERTIFICATE_ID\
-    \ = CERTIFICATES.ID để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK.CERTIFICATES',\
+    \ = CERTIFICATES.ID để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK_CERTIFICATES',\
     \ CERTIFICATE_CODE). Composite PK cùng Regulatory Authority Organization Unit\
     \ Id."
   classification_context: null

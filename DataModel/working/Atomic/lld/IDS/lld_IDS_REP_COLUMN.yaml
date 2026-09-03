@@ -3,8 +3,8 @@ schema_version: "2.0"
 metadata:
   source_system: "IDS"
   source_table: "REP_COLUMN"
-  atomic_entity: "Financial Report Sub Column Template"
-  entity_physical_name: "fr_sub_column_template"
+  atomic_entity: "Unstructured Financial Report Column Template"
+  entity_physical_name: "ufr_column_template"
   bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Form Document"
   table_type: "Fundamental"
@@ -17,34 +17,33 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Đổi tên từ \"Periodic Report Form Column Template\" (2026-08-05, theo yêu\
-    \ cầu tường minh Data Modeler)."
+  notes: null
 attributes:
-- attribute_name: "Financial Report Sub Column Template Id"
-  physical_name: "fr_sub_column_template_id"
+- attribute_name: "Unstructured Financial Report Column Template Id"
+  physical_name: "ufr_column_template_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. Hash: hash_id('IDS.REP_COLUMN', COL_CD). BCV: \"[Condition]\
-    \ Form Definition\"."
+  comment: "PK surrogate. Hash: hash_id('IDS_REP_COLUMN', ID). BCV: \"[Documentation]\
+    \ Form Document\"."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Financial Report Sub Column Template Code"
-  physical_name: "fr_sub_column_template_code"
-  description: "Lưu mã tự sinh của chỉ tiêu cột. BK duy nhất — Id hash từ trường này."
+- attribute_name: "Unstructured Financial Report Column Template Code"
+  physical_name: "ufr_column_template_code"
+  description: "BK duy nhất — Id hash từ trường này."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IDS.REP_COLUMN.COL_CD"
-  comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID) + Unique Key cũ —\
-    \ gộp còn 1 trường Code duy nhất. Nguồn VARCHAR2(30). Cần profile dữ liệu nguồn\
-    \ xác nhận NOT NULL/unique trước go-live."
+  - "IDS.REP_COLUMN.ID"
+  comment: "BK chính — chuyển từ mã nghiệp vụ (COL_CD) sang ID kỹ thuật nguồn do\
+    \ COL_CD không đảm bảo unique (xác nhận qua profile dữ liệu — quyết định Data\
+    \ Modeler 2026-08-27). Nguồn NUMBER(10,0) — ETL cast sang string."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -57,11 +56,25 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=IDS.REP_COLUMN"
+  classification_context: "SOURCE_SYSTEM=IDS_REP_COLUMN"
   etl_derived_value: "IDS_REP_COLUMN"
   data_type: "string"
-- attribute_name: "Financial Report Sub Template Id"
-  physical_name: "fr_sub_template_id"
+- attribute_name: "Column Code"
+  physical_name: "column_code"
+  description: "Mã tự sinh của chỉ tiêu cột. Trước đây là BK nhưng không đảm bảo\
+    \ unique — giữ lại làm business reference field."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.REP_COLUMN.COL_CD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Unstructured Financial Report Template Id"
+  physical_name: "ufr_template_id"
   description: "Tham chiếu đến bảng REP_FORMS — ID của form chứa cột."
   data_domain: "Surrogate Key"
   nullable: false
@@ -69,22 +82,22 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.REP_COLUMN.REP_FORM_ID"
-  comment: "FK target: fr_sub_template.fr_sub_template_id. Resolve: join REP_FORM_ID\
-    \ → IDS.REP_FORMS.ID để lấy REPORT_CD, rồi hash_id('IDS.REP_FORMS', REPORT_CD)."
+  comment: "FK target: ufr_template.ufr_template_id. Hash: hash_id('IDS_REP_FORMS',\
+    \ REP_FORM_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Financial Report Sub Template Code"
-  physical_name: "fr_sub_template_code"
+- attribute_name: "Unstructured Financial Report Template Code"
+  physical_name: "ufr_template_code"
   description: "Mã form chứa cột."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IDS.REP_COLUMN.REP_FORM_ID"
-  comment: "Lookup pair: fr_sub_template.fr_sub_template_code. Pair with Financial\
-    \ Report Sub Template Id."
+  - "IDS.REP_FORMS.ID"
+  comment: "Lookup pair: ufr_template.ufr_template_code. Pair with Unstructured\
+    \ Financial Report Template Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -177,33 +190,6 @@ attributes:
   source_columns:
   - "IDS.REP_COLUMN.COL_DESCRIPTION"
   comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Deleted Indicator"
-  physical_name: "deleted_ind"
-  description: "Xóa mềm."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.REP_COLUMN.DELETE_FLG"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-- attribute_name: "System Code"
-  physical_name: "stm_code"
-  description: "Hệ thống con trong IDS."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.REP_COLUMN.SYSTEM_CD"
-  comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong\
-    \ tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

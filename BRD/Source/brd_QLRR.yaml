@@ -94,9 +94,9 @@ brd_entries:
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
-        data_change_mode: Append
+        data_change_mode: Update
         filter_logic: "period_date = {etl_date}"
-        filter_note: "Số liệu chỉ tiêu theo kỳ — append khi có kỳ mới hoặc cập nhật thủ công"
+        filter_note: "Số liệu chỉ tiêu theo kỳ — cập nhật tại chỗ (update-in-place) khi có giá trị mới hoặc chỉnh sửa thủ công cho cùng kỳ"
 
   - brd_id: BRD-SRC-QLRR-risk_indicator_value_history
     brd_name: "Design Atomic từ nguồn QLRR bảng risk_indicator_value_history"

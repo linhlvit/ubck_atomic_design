@@ -15,7 +15,7 @@ metadata:
   designed_at: null
   reviewed_by: null
   reviewed_at: null
-  approved_by: "hoang.truong"
+  approved_by: null
   approved_at: "2026-08-26"
   notes: "ID kỹ thuật là BK duy nhất (không có cột mã nghiệp vụ riêng — mirror pattern\
     \ Public Company/lld_IDS_COMPANY_PROFILES.yaml) → Public Company Report Submission\
@@ -50,7 +50,7 @@ attributes:
   is_primary_key: true
   status: "approved"
   source_columns: []
-  comment: "PK surrogate. Hash: hash_id('IDS.COMPANY_DATA', ID). BCV: \"[Documentation]\
+  comment: "PK surrogate. Hash: hash_id('IDS_COMPANY_DATA', ID). BCV: \"[Documentation]\
     \ Regulatory Report\"."
   classification_context: null
   etl_derived_value: null
@@ -79,7 +79,7 @@ attributes:
   status: "approved"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=IDS.COMPANY_DATA"
+  classification_context: "SOURCE_SYSTEM=IDS_COMPANY_DATA"
   etl_derived_value: "IDS_COMPANY_DATA"
   data_type: "string"
 - attribute_name: "Public Company Id"
@@ -91,7 +91,7 @@ attributes:
   status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.COMPANY_PROFILE_ID"
-  comment: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES',\
+  comment: "FK target: public_company.pc_id. Hash: hash_id('IDS_COMPANY_PROFILES',\
     \ COMPANY_PROFILE_ID)."
   classification_context: null
   etl_derived_value: null
@@ -119,7 +119,7 @@ attributes:
   source_columns:
   - "IDS.COMPANY_DATA.FORM_ID"
   comment: "FK target: fr_template.fr_template_id. Cần ETL crosswalk sang IDS.FORMS:\
-    \ COMPANY_DATA.FORM_ID = FORMS.ID để xác nhận FORM_CD sau đó hash_id('IDS.FORMS',\
+    \ COMPANY_DATA.FORM_ID = FORMS.ID để xác nhận FORM_CD sau đó hash_id('IDS_FORMS',\
     \ FORM_CD)."
   classification_context: null
   etl_derived_value: null
@@ -148,7 +148,7 @@ attributes:
   status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.PARENT_ID"
-  comment: "FK target: pc_report_submission.pc_rpt_submission_id. Hash: hash_id('IDS.COMPANY_DATA',\
+  comment: "FK target: pc_report_submission.pc_rpt_submission_id. Hash: hash_id('IDS_COMPANY_DATA',\
     \ PARENT_ID)."
   classification_context: null
   etl_derived_value: null
@@ -177,7 +177,7 @@ attributes:
   status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.REF_ID"
-  comment: "FK target: pc_report_submission.pc_rpt_submission_id. Hash: hash_id('IDS.COMPANY_DATA',\
+  comment: "FK target: pc_report_submission.pc_rpt_submission_id. Hash: hash_id('IDS_COMPANY_DATA',\
     \ REF_ID) | Nullable — chỉ có khi tin này là đính chính của tin khác."
   classification_context: null
   etl_derived_value: null
@@ -218,8 +218,8 @@ attributes:
   status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.NEWS_STATUS_CD"
-  comment: "Scheme: IDS_SUBMISSION_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_APPROVAL_STATUS')."
-  classification_context: "IDS_SUBMISSION_STATUS"
+  comment: "SCHEMA_CODE=IDS.COMPANY_DATA.NEWS_STATUS_CD. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_APPROVAL_STATUS')."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Report Year"
@@ -396,17 +396,15 @@ attributes:
   data_type: "int"
 - attribute_name: "News Type Code"
   physical_name: "news_tp_code"
-  description: "Loại báo cáo (Báo cáo tài chính; Báo cáo định kỳ khác; Báo cáo bất\
-    \ thường 24h...)."
+  description: "Mã phân loại."
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
   status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.NEWS_TYPE_CD"
-  comment: "Scheme: IDS_NEWS_TYPE. Dùng chung scheme với Disclosure Notification.\
-    \ Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_TYPE')."
-  classification_context: "IDS_NEWS_TYPE"
+  comment: "SCHEMA_CODE=IDS.NEWS_TYPE_CD. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_TYPE')."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Reject Reason"
@@ -459,7 +457,7 @@ attributes:
   status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.LINK_ID"
-  comment: "FK target: pc_report_submission.pc_rpt_submission_id. Hash: hash_id('IDS.COMPANY_DATA',\
+  comment: "FK target: pc_report_submission.pc_rpt_submission_id. Hash: hash_id('IDS_COMPANY_DATA',\
     \ LINK_ID)."
   classification_context: null
   etl_derived_value: null
@@ -481,15 +479,14 @@ attributes:
 - attribute_name: "Language Code"
   physical_name: "language_code"
   description: "Mã ngôn ngữ (VI - Tiếng việt, EN - Tiếng Anh)."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: false
   is_primary_key: false
   status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.LANGUAGE_CD"
-  comment: "Scheme: IDS_LANGUAGE. Values lấy trực tiếp từ cột nguồn (VARCHAR2(20),\
-    \ VI/EN)."
-  classification_context: "IDS_LANGUAGE"
+  comment: null
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Alert Audit Content"
@@ -546,7 +543,7 @@ attributes:
   - "IDS.COMPANY_DATA.SECURITIES_OFFERING_ID"
   comment: "FK target: pc_securities_offering.pc_securities_offering_id. Cần ETL crosswalk\
     \ sang IDS.SECURITIES_OFFERING: COMPANY_DATA.SECURITIES_OFFERING_ID = SECURITIES_OFFERING.ID\
-    \ để xác nhận APPLICATION_CD sau đó hash_id('IDS.SECURITIES_OFFERING', APPLICATION_CD)\
+    \ để xác nhận APPLICATION_CD sau đó hash_id('IDS_SECURITIES_OFFERING', APPLICATION_CD)\
     \ | Trước đây hash trực tiếp theo SECURITIES_OFFERING_ID (ID kỹ thuật) gây sai\
     \ lệch với Id của bảng main (hash từ APPLICATION_CD) — đã sửa sang crosswalk 2026-08-14."
   classification_context: null
@@ -591,7 +588,7 @@ attributes:
   status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.LEGAL_ENTITY_ID"
-  comment: "FK target: legal_entity.legal_entity_id. Hash: hash_id('IDS.LEGAL_ENTITIES',\
+  comment: "FK target: legal_entity.legal_entity_id. Hash: hash_id('IDS_LEGAL_ENTITIES',\
     \ LEGAL_ENTITY_ID)."
   classification_context: null
   etl_derived_value: null
@@ -619,7 +616,7 @@ attributes:
   status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.COMPANY_TENDER_OFFER_ID"
-  comment: "FK target: pc_tender_offer.pc_tender_offer_id. Hash: hash_id('IDS.COMPANY_TENDER_OFFER',\
+  comment: "FK target: pc_tender_offer.pc_tender_offer_id. Hash: hash_id('IDS_COMPANY_TENDER_OFFER',\
     \ COMPANY_TENDER_OFFER_ID)."
   classification_context: null
   etl_derived_value: null
@@ -648,7 +645,7 @@ attributes:
   source_columns:
   - "IDS.COMPANY_DATA.COMPANY_TREASURY_SHARE_ID"
   comment: "FK target: pc_treasury_share_transaction.pc_treasury_share_transaction_id.\
-    \ Hash: hash_id('IDS.COMPANY_TREASURY_SHARES', COMPANY_TREASURY_SHARE_ID)."
+    \ Hash: hash_id('IDS_COMPANY_TREASURY_SHARES', COMPANY_TREASURY_SHARE_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -677,7 +674,7 @@ attributes:
   source_columns:
   - "IDS.COMPANY_DATA.APPROVER_USER_ID"
   comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM.USERS', APPROVER_USER_ID) | Chưa xác nhận join key IDS.COMPANY_DATA.APPROVER_USER_ID\
+    \ Hash: hash_id('IAM_USERS', APPROVER_USER_ID) | Chưa xác nhận join key IDS.COMPANY_DATA.APPROVER_USER_ID\
     \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
   classification_context: null
   etl_derived_value: null
