@@ -11,13 +11,13 @@ Trùng: Trong phạm vi ban của mình làm đã có tính thông tin này rồ
 );","SELECT DISTINCT
     s.symbol            AS ma_ck
 FROM JAD_STOCKINFOR s
-WHERE s.FloorCode IN ('10','02','04','03')   -- HOSE, HNX, UPCOM
+WHERE s.FloorCode IN ('10','02','04', ' 03')   -- HOSE, HNX, UPCOM
    AND  NOT  (
-    (s.floorcode = '02'  AND s.stocktype  in (1,4))
+    (s.floorcode = '02'  AND s.stocktype  in (1,4)
     OR
-    (s.floorcode = '10' AND s.stocktype = 1)
-)
-  AND s.tradingdate = :ngay_gd;",,"Đã sửa lỗi đảo dấu điều kiện lọc Mã CK (NOT IN/IN, <>/=), cân bằng ngoặc SQL và bỏ khoảng trắng thừa ' 03' - 2026-09-03",,,,Done,Dữ liệu tĩnh,F
+    (s.floorcode = '10' AND s.stocktype = 1
+);
+  AND s.tradingdate = :ngay_gd;",,đã sửa đổi,,,,Done,Dữ liệu tĩnh,F
 1,,Dashboard thông tin về danh mục chứng khoán theo dạng bảng số liệu,Ngành ,Ngành nghề kinh tế cấp 1,Dashboard,Chiều,TB,Mã CK,IDS,X,X,,Done,Ngành kinh tế cấp 1 trên IDS,CATEGORIES,"c.industry_cd, c.industry_name AS ten_nganh",c.active_flg = 1,"SELECT c.industry_cd, c.industry_name,active_flg,equity_ticker
  FROM IDS.categories c
  JOIN IDS.company_profiles cp ON c.id = cp.category_l1_id
@@ -6115,7 +6115,7 @@ ORDER BY a.tradingtime;""
 8,,Top khối lượng theo toàn thị trường theo dạng bảng biểu đồ kĩ thuật ,Giá thấp nhất,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,low,,,,,,,,Done,Dữ liệu tĩnh,
 8,,Top khối lượng theo toàn thị trường theo dạng bảng biểu đồ kĩ thuật ,Giá đóng cửa,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,closePrice,,,,,,,,Done,Dữ liệu tĩnh,
 8,,Top khối lượng theo toàn thị trường theo dạng bảng biểu đồ kĩ thuật ,Thay đổi (%),Thay đổi (%),Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,MDDS,,,,Done,Thông tin thị trường,JAD_STOCKINFOR,change,,,,,,,,Done,Dữ liệu tĩnh,
-8,,Top khối lượng theo toàn thị trường theo dạng bảng biểu đồ kĩ thuật ,Khối lượng giao dịch khớp lệnh,Σ KLGD khớp lệnh,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
+8,,Top khối lượng theo toàn thị trường theo dạng bảng biểu đồ kĩ thuật ,Khối lượng giao dịch,Σ KLGD,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
 Execution - Volume: Khối lượng khớp lệnh
 Trade_HNX:
 Trade quantity: Khối lượng giao dịch","Market ID in (UPX,STX,STK)","select 
@@ -8399,7 +8399,7 @@ WHERE s.tradingdate = :ngay_gd","Giá đóng cửa, giá gần nhất (có thể
 FROM JAD_STOCKINFOR s
 WHERE s.tradingdate = :ngay_gd
 ",,,,,,Done,Dữ liệu tĩnh,
-10,,"Top đột phá dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành) ",Khối lượng giao dịch khớp lệnh,Σ KLGD khớp lệnh,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,X,Done,sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,,,,,,,,,Done,Dữ liệu tĩnh,
+10,,"Top đột phá dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành) ",Khối lượng giao dịch,Σ KLGD,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,X,Done,sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,,,,,,,,,Done,Dữ liệu tĩnh,
 10,,"Top đột phá dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành) ",Doanh thu,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,IDS,,X,X,Done,lấy từ báo cáo tài chính IDS,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.company_data (cd)",SUM(d.data_value) AS doanh_thu,,"Company_data_chuan AS (
@@ -10739,7 +10739,7 @@ WHERE s.tradingdate = :ngay_gd","Giá đóng cửa, giá gần nhất (có thể
 FROM JAD_STOCKINFOR s
 WHERE s.tradingdate = :ngay_gd
 ",,,,,,Done,Dữ liệu tĩnh,
-12,,"Top giá trị dạng biểu đồ kỹ thuật theo toàn thị trường, theo sàn, theo bộ chỉ số",Khối lượng giao dịch khớp lệnh,Σ KLGD khớp lệnh,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
+12,,"Top giá trị dạng biểu đồ kỹ thuật theo toàn thị trường, theo sàn, theo bộ chỉ số",Khối lượng giao dịch,Σ KLGD,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
 Execution - Volume: Khối lượng khớp lệnh
 Trade_HNX:
 Trade quantity: Khối lượng giao dịch",,"-- HOSE
@@ -12125,7 +12125,7 @@ MARKETCODE NOT IN ('HOSE','UPCOM','HNX')",,,,,,,,,
     s.FloorCode
 FROM JAD_STOCKINFOR s
 WHERE s.tradingdate = :ngay_gd","Giá đóng cửa, giá gần nhất (có thể bao gồm cả giá dự khớp trong các phiên khớp lệnh định kỳ)",,,,,Done,Dữ liệu tĩnh,
-14,,"Top giảm giá theo dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Khối lượng giao dịch khớp lệnh,Tổng khối lượng cổ phiếu khớp lệnh được giao dịch,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
+14,,"Top giảm giá theo dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Khối lượng giao dịch,Tổng khối lượng cổ phiếu được giao dịch,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
 Execution - Volume: Khối lượng khớp lệnh
 Trade_HNX:
 Trade quantity: Khối lượng giao dịch",,"-- HOSE
@@ -14666,7 +14666,7 @@ MARKETCODE NOT IN ('HOSE','UPCOM','HNX')",,,,,,,Done,Dữ liệu tĩnh,
     s.FloorCode
 FROM JAD_STOCKINFOR s
 WHERE s.tradingdate = :ngay_gd",,,,,,Done,Dữ liệu tĩnh,
-16,,"Top vượt đỉnh theo dạng bảng số liệu theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành theo  biểu đồ kĩ thuật",Khối lượng giao dịch khớp lệnh,Tổng khối lượng cổ phiếu khớp lệnh được giao dịch,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,X,Done,,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
+16,,"Top vượt đỉnh theo dạng bảng số liệu theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành theo  biểu đồ kĩ thuật",Khối lượng giao dịch,Tổng khối lượng cổ phiếu được giao dịch,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,X,Done,,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
 Execution - Volume: Khối lượng khớp lệnh
 Trade_HNX:
 Trade quantity: Khối lượng giao dịch",,"-- HOSE
@@ -16696,7 +16696,7 @@ MARKETCODE NOT IN ('HOSE','UPCOM','HNX')",,,,,,,Done,Dữ liệu tĩnh,
 18,,"Top thủng đáy theo dạng bảng số liệu theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành theo  biểu đồ kĩ thuật",Giá thấp nhất,Giá giao dịch thấp nhất trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,X,Done,,JAD_STOCKINFOR,low,,,1:1,,,,,Done,Dữ liệu tĩnh,
 18,,"Top thủng đáy theo dạng bảng số liệu theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành theo  biểu đồ kĩ thuật",Giá đóng cửa,Giá giao dịch cuối cùng trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,X,Done,,JAD_STOCKINFOR,closePrice,,,"Giá đóng cửa, giá gần nhất (có thể bao gồm cả giá dự khớp trong các phiên khớp lệnh định kỳ)",,,,,Done,Dữ liệu tĩnh,
 18,,"Top thủng đáy theo dạng bảng số liệu theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành theo  biểu đồ kĩ thuật",% thay đổi,Tỷ lệ thay đổi giá so với giá tham chiếu,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,MDDS,,X,X,Done,,JAD_STOCKINFOR,(change / giá_tham_chiếu) × 100,,,,,,,,Done,Dữ liệu tĩnh,
-18,,"Top thủng đáy theo dạng bảng số liệu theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành theo  biểu đồ kĩ thuật",Khối lượng giao dịch khớp lệnh,Tổng khối lượng cổ phiếu khớp lệnh được giao dịch,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,X,Done,,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
+18,,"Top thủng đáy theo dạng bảng số liệu theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành theo  biểu đồ kĩ thuật",Khối lượng giao dịch,Tổng khối lượng cổ phiếu được giao dịch,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,X,Done,,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
 Execution - Volume: Khối lượng khớp lệnh
 Trade_HNX:
 Trade quantity: Khối lượng giao dịch",,"-- HOSE
@@ -19029,7 +19029,7 @@ MARKETCODE NOT IN ('HOSE','UPCOM','HNX')",,,,,,,Done,Dữ liệu tĩnh,
     s.FloorCode
 FROM JAD_STOCKINFOR s
 WHERE s.tradingdate = :ngay_gd","Giá đóng cửa, giá gần nhất (có thể bao gồm cả giá dự khớp trong các phiên khớp lệnh định kỳ)",,,,,Done,Dữ liệu tĩnh,
-20,,"Top tăng giá theo dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Khối lượng giao dịch khớp lệnh,Tổng khối lượng cổ phiếu khớp lệnh được giao dịch,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
+20,,"Top tăng giá theo dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Khối lượng giao dịch,Tổng khối lượng cổ phiếu được giao dịch,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
 Execution - Volume: Khối lượng khớp lệnh
 Trade_HNX:
 Trade quantity: Khối lượng giao dịch",,"-- HOSE
