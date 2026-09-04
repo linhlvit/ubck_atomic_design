@@ -17,9 +17,12 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "FINANCIAL_STATEMENT_CD/REPORTING_PERIOD_CD/REF_CD\
-    \ không có description tại nguồn — giữ Text denormalized, cần Data Modeler xác\
-    \ nhận ý nghĩa nghiệp vụ trước khi dùng."
+  notes: "FINANCIAL_STATEMENT_CD/REPORTING_PERIOD_CD không có description tại nguồn\
+    \ nhưng đã xác nhận load từ LOOKUP_VALUES (LOOKUP_GROUP='FINANCIAL_STATEMENT_TYPE'/'REPORT_PERIOD_TYPE')\
+    \ — map Classification Value (Financial Statement Type Code/Reporting Period\
+    \ Type Code). REF_CD không có description tại nguồn và chưa xác nhận lookup —\
+    \ giữ Text denormalized (Financial Statement Component Type Code), cần Data\
+    \ Modeler xác nhận ý nghĩa nghiệp vụ trước khi dùng."
 attributes:
 - attribute_name: "Financial Report Catalog Id"
   physical_name: "fr_catalog_id"

@@ -32,7 +32,7 @@ attributes:
     source_system: IDS
     source_table: DATA
     source_column: null
-    comment: "PK surrogate. Hash: hash_id('IDS.DATA', ID). BCV: \"[Documentation] Regulatory Report\"."
+    comment: "PK surrogate. Hash: hash_id('IDS_DATA', ID). BCV: \"[Documentation] Regulatory Report\"."
     classification_context: null
     etl_derived_value: null
 
@@ -74,7 +74,7 @@ attributes:
     source_system: IDS
     source_table: DATA
     source_column: IDS.DATA.REPORT_CATALOG_ID
-    comment: "FK target: fr_catalog.fr_catalog_id. Cần ETL crosswalk sang IDS.REPORT_CATALOG: DATA.REPORT_CATALOG_ID = REPORT_CATALOG.ID để xác nhận REPORT_CD sau đó hash_id('IDS.REPORT_CATALOG', REPORT_CD)."
+    comment: "FK target: fr_catalog.fr_catalog_id. Hash: hash_id('IDS_REPORT_CATALOG', REPORT_CATALOG_ID)."
     classification_context: null
     etl_derived_value: null
 
@@ -87,8 +87,8 @@ attributes:
     is_primary_key: false
     source_system: IDS
     source_table: DATA
-    source_column: IDS.REPORT_CATALOG.REPORT_CD
-    comment: "Lookup pair: fr_catalog.fr_catalog_code. Pair with Financial Report Catalog Id. Giá trị lấy từ IDS.REPORT_CATALOG.REPORT_CD sau ETL crosswalk — chi tiết xem comment Financial Report Catalog Id."
+    source_column: IDS.REPORT_CATALOG.ID
+    comment: "Lookup pair: fr_catalog.fr_catalog_code. Pair with Financial Report Catalog Id."
     classification_context: null
     etl_derived_value: null
 
@@ -102,7 +102,7 @@ attributes:
     source_system: IDS
     source_table: DATA
     source_column: IDS.DATA.COMPANY_PROFILE_ID
-    comment: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES', COMPANY_PROFILE_ID)."
+    comment: "FK target: public_company.pc_id. Hash: hash_id('IDS_COMPANY_PROFILES', COMPANY_PROFILE_ID)."
     classification_context: null
     etl_derived_value: null
 
@@ -204,9 +204,9 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Cell Type Code
-    physical_name: cell_tp_code
-    business_meaning: "Kiểu dữ liệu: I/O - Input/Output."
+  - name: Report Catalog Type Code
+    physical_name: rpt_catalog_tp_code
+    business_meaning: "Loại báo cáo, lấy từ bảng REPORT_CATALOG."
     data_domain: Classification Value
     data_type: string
     nullable: true
@@ -214,6 +214,6 @@ attributes:
     source_system: IDS
     source_table: DATA
     source_column: IDS.DATA.RC_TYPE
-    comment: "Scheme: IDS_REPORT_CELL_TYPE. Values lấy trực tiếp từ cột nguồn (CHAR(1), I/O)."
-    classification_context: IDS_REPORT_CELL_TYPE
+    comment: "SCHEMA_CODE=IDS.REPORT_CATALOG_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='RC_TYPE')."
+    classification_context: null
     etl_derived_value: null

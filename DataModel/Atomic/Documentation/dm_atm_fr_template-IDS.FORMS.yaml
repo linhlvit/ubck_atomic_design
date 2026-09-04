@@ -14,7 +14,7 @@ ldm:
   etl_pattern: SCD4A
   source: IDS
   description: |
-    Template/form dùng để công bố thông tin (CBTT): xác định cấu trúc, phiên bản, và hệ thống phân cấp form qua self-reference. Đổi tên từ "Disclosure Form Definition" (2026-08-05, theo yêu cầu tường minh Data Modeler). LƯU Ý: "Disclosure Form Definition Notification Recipient" và "Disclosure Form Definition Violation Template" chưa đổi tên theo — vi phạm rule#8 (entity con chứa tên entity cha) cho tới khi Data Modeler xác nhận đổi tên 2 entity này.
+    Template/form dùng để công bố thông tin (CBTT): xác định cấu trúc, phiên bản, và hệ thống phân cấp form qua self-reference. Đổi tên từ "Disclosure Form Definition" (2026-08-05, theo yêu cầu tường minh Data Modeler). LƯU Ý: "Disclosure Form Definition Notification Recipient" và "Disclosure Form Definition Violation Template" chưa đổi tên theo — vi phạm rule#8 (entity con chứa tên entity cha) cho tới khi Data Modeler xác nhận đổi tên 2 entity này. Đổi BCV Concept từ "[Condition] Form Definition" (term không tồn tại trong knowledge/terms.csv) sang "[Documentation] Form Document" (2026-08-13, theo yêu cầu tường minh Data Modeler) — xem IDS_HLD_Overview.md 7e #21.
   owner:
     steward: username@ubck.com.vn
     data_modeler: username@fssc.com.vn
@@ -32,7 +32,7 @@ attributes:
     source_system: IDS
     source_table: FORMS
     source_column: null
-    comment: "PK surrogate. Hash: hash_id('IDS.FORMS', FORM_CD). BCV: \"[Documentation] Form Document\". Đổi tên entity 2026-08-05."
+    comment: "PK surrogate. Hash: hash_id('IDS_FORMS', FORM_CD). BCV: \"[Documentation] Form Document\". Đổi tên entity 2026-08-05."
     classification_context: null
     etl_derived_value: null
 
@@ -74,7 +74,7 @@ attributes:
     source_system: IDS
     source_table: FORMS
     source_column: IDS.FORMS.PARENT_ID
-    comment: "FK target: fr_template.fr_template_id (self-reference). Resolve: join PARENT_ID → IDS.FORMS.ID để lấy FORM_CD, rồi hash_id('IDS.FORMS', FORM_CD_CHA)."
+    comment: "FK target: fr_template.fr_template_id (self-reference). Resolve: join PARENT_ID → IDS.FORMS.ID để lấy FORM_CD, rồi hash_id('IDS_FORMS', FORM_CD_CHA)."
     classification_context: null
     etl_derived_value: null
 
@@ -136,43 +136,43 @@ attributes:
 
   - name: News Type Code
     physical_name: news_tp_code
-    business_meaning: Loại tin gốc.
-    data_domain: Text
+    business_meaning: Mã phân loại.
+    data_domain: Classification Value
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: IDS
     source_table: FORMS
     source_column: IDS.FORMS.NEWS_TYPE_CD
-    comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
+    comment: "SCHEMA_CODE=IDS.NEWS_TYPE_CD. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_TYPE')."
     classification_context: null
     etl_derived_value: null
 
   - name: News Sub Type Code
     physical_name: news_sub_tp_code
-    business_meaning: Loại tin con.
-    data_domain: Text
+    business_meaning: Mã phân loại con.
+    data_domain: Classification Value
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: IDS
     source_table: FORMS
     source_column: IDS.FORMS.SUB_NEWS_TYPE_CD
-    comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
+    comment: "SCHEMA_CODE=IDS.SUB_NEWS_TYPE_CD. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SUB_NEWS_TYPE')."
     classification_context: null
     etl_derived_value: null
 
-  - name: News Group Type Code
-    physical_name: news_group_tp_code
-    business_meaning: Nhóm loại tin.
-    data_domain: Text
+  - name: Form Group Type Code
+    physical_name: form_group_tp_code
+    business_meaning: Nhóm biểu mẫu báo cáo.
+    data_domain: Classification Value
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: IDS
     source_table: FORMS
     source_column: IDS.FORMS.NEWS_TYPE_GROUP_CD
-    comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
+    comment: "SCHEMA_CODE=IDS.FORM_GROUP_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='FORM_GROUP')."
     classification_context: null
     etl_derived_value: null
 
@@ -204,20 +204,6 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Activated Indicator
-    physical_name: activated_ind
-    business_meaning: Kích hoạt.
-    data_domain: Small Counter
-    data_type: int
-    nullable: true
-    is_primary_key: false
-    source_system: IDS
-    source_table: FORMS
-    source_column: IDS.FORMS.ACTIVATED_FLG
-    comment: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1).
-    classification_context: null
-    etl_derived_value: null
-
   - name: Ca Signed Indicator
     physical_name: ca_signed_ind
     business_meaning: Ký CA (chứng thư số).
@@ -242,20 +228,6 @@ attributes:
     source_system: IDS
     source_table: FORMS
     source_column: IDS.FORMS.LEADER_APPROVAL_FLG
-    comment: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1).
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Published Indicator
-    physical_name: published_ind
-    business_meaning: Form được công bố.
-    data_domain: Small Counter
-    data_type: int
-    nullable: true
-    is_primary_key: false
-    source_system: IDS
-    source_table: FORMS
-    source_column: IDS.FORMS.PUBLISHED_FLG
     comment: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1).
     classification_context: null
     etl_derived_value: null
@@ -291,14 +263,14 @@ attributes:
   - name: Report Type Code
     physical_name: rpt_tp_code
     business_meaning: Loại báo cáo.
-    data_domain: Text
+    data_domain: Classification Value
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: IDS
     source_table: FORMS
     source_column: IDS.FORMS.REPORT_TYPE
-    comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn. Nguồn lưu dạng số (NUMBER(1)) — ETL cần convert sang string."
+    comment: "SCHEMA_CODE=IDS.REPORT_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_TYPE')."
     classification_context: null
     etl_derived_value: null
 
@@ -312,8 +284,8 @@ attributes:
     source_system: IDS
     source_table: FORMS
     source_column: IDS.FORMS.CONTROL_UNIT_CD
-    comment: "Scheme: IDS_CONTROL_UNIT (no_lookup) — chưa xác nhận cross-source FK đến Regulatory Authority Organization Unit; giữ Classification Value cho đến khi Data Modeler xác nhận."
-    classification_context: IDS_CONTROL_UNIT
+    comment: "SCHEMA_CODE=ECAT.DEPARTMENT"
+    classification_context: null
     etl_derived_value: null
 
   - name: Operating Unit Code
@@ -326,34 +298,6 @@ attributes:
     source_system: IDS
     source_table: FORMS
     source_column: IDS.FORMS.OPERATING_UNIT_CD
-    comment: "Scheme: IDS_OPERATING_UNIT (no_lookup) — chưa xác nhận cross-source FK đến Regulatory Authority Organization Unit; giữ Classification Value cho đến khi Data Modeler xác nhận."
-    classification_context: IDS_OPERATING_UNIT
-    etl_derived_value: null
-
-  - name: System Code
-    physical_name: stm_code
-    business_meaning: Hệ thống con trong IDS.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: IDS
-    source_table: FORMS
-    source_column: IDS.FORMS.SYSTEM_CD
-    comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Deleted Indicator
-    physical_name: deleted_ind
-    business_meaning: Trạng thái xóa.
-    data_domain: Small Counter
-    data_type: int
-    nullable: true
-    is_primary_key: false
-    source_system: IDS
-    source_table: FORMS
-    source_column: IDS.FORMS.DELETE_FLG
-    comment: Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1).
+    comment: "SCHEMA_CODE=ECAT.DEPARTMENT"
     classification_context: null
     etl_derived_value: null

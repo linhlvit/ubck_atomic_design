@@ -3537,6 +3537,7 @@ schemes:
     used_in_entities:
       - "Notification"
       - "Public Company Report Submission"
+      - "Financial Report Template"
     values: []
 
   - scheme_code: "IDS_SUB_NEWS_TYPE"
@@ -3546,8 +3547,6 @@ schemes:
     used_in_entities:
       - "Financial Report Template"
     values: []
-    deprecated: true
-    deprecated_reason: "Nguồn không có FK/lookup annotation — field liên quan (Sub News Type Code) đã revert về Text."
 
   - scheme_code: "IDS_NOTIFICATION_SEND_CHANNEL"
     name: "Hình thức gửi thông báo CBTT (email / SMS / push notification)"
@@ -3584,6 +3583,23 @@ schemes:
       - "Financial Report Catalog"
       - "Financial Report Row Template"
       - "Financial Report Column Template"
+      - "Financial Report Value"
+    values: []
+
+  - scheme_code: "IDS_REPORT_CATALOG_FINANCIAL_STMT_TYPE"
+    name: "Loại báo cáo tài chính áp dụng cho danh mục báo cáo (financial_statement_cd từ report_catalog) — IDS"
+    source_type: "source_table"
+    source_table: "IDS.lookup_values"
+    used_in_entities:
+      - "Financial Report Catalog"
+    values: []
+
+  - scheme_code: "IDS_REPORT_CATALOG_PERIOD_TYPE"
+    name: "Loại kỳ báo cáo tài chính của danh mục báo cáo (reporting_period_cd từ report_catalog) — IDS (khác IDS_REPORT_PERIOD_TYPE là mã text từ VIOLATION_TEMPLATES)"
+    source_type: "source_table"
+    source_table: "IDS.lookup_values"
+    used_in_entities:
+      - "Financial Report Catalog"
     values: []
 
   - scheme_code: "IDS_REPORT_SCOPE"
@@ -3596,11 +3612,12 @@ schemes:
     values: []
 
   - scheme_code: "IDS_REPORT_ROW_TYPE"
-    name: "Loại hàng BCTC (value/formula/description) — row_type_cd từ rrow"
+    name: "Loại hàng/cột BCTC (value/formula/description) — row_type_cd từ rrow, col_type_cd từ rcol"
     source_type: "etl_derived"
     source_table: "IDS.rrow"
     used_in_entities:
       - "Financial Report Row Template"
+      - "Financial Report Column Template"
     values: []
 
   - scheme_code: "IDS_REPORT_CELL_TYPE"
@@ -5111,21 +5128,27 @@ schemes:
     used_in_entities:
       - "Financial Report Template"
     values: []
-    deprecated: true
-    deprecated_reason: "Nguồn không có FK/lookup annotation — field liên quan (Form Report Type Code) đã revert về Text."
+
+  - scheme_code: "IDS_FORM_GROUP_TYPE"
+    name: "Nhóm form CBTT (form_group_cd từ forms) — IDS"
+    source_type: "source_table"
+    source_table: "IDS.lookup_values"
+    used_in_entities:
+      - "Financial Report Template"
+    values: []
 
   - scheme_code: "IDS_CONTROL_UNIT"
-    name: "Đơn vị kiểm soát form CBTT (no_lookup — chưa xác nhận cross-source FK) — IDS"
-    source_type: "modeler_defined"
-    source_table: "IDS.FORMS.CONTROL_UNIT_CD"
+    name: "Đơn vị kiểm soát form CBTT — nạp từ danh mục ECAT.DEPARTMENT — IDS"
+    source_type: "source_table"
+    source_table: "ECAT.DEPARTMENT"
     used_in_entities:
       - "Financial Report Template"
     values: []
 
   - scheme_code: "IDS_OPERATING_UNIT"
-    name: "Đơn vị sử dụng form CBTT (no_lookup — chưa xác nhận cross-source FK) — IDS"
-    source_type: "modeler_defined"
-    source_table: "IDS.FORMS.OPERATING_UNIT_CD"
+    name: "Đơn vị sử dụng form CBTT — nạp từ danh mục ECAT.DEPARTMENT — IDS"
+    source_type: "source_table"
+    source_table: "ECAT.DEPARTMENT"
     used_in_entities:
       - "Financial Report Template"
     values: []

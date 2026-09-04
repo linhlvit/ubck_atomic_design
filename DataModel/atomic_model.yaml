@@ -14367,7 +14367,7 @@ entities:
   - name: Public Company Id
     physical_name: pc_id
     business_meaning_1st: Id công ty đại chúng vi phạm.
-    comment_1st: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES',\
+    comment_1st: "FK target: public_company.pc_id. Hash: hash_id('IDS_COMPANY_PROFILES',\
       \ COMPANY_PROFILE_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
@@ -14381,7 +14381,7 @@ entities:
       - source_table: VIOLATION_REPORT
         source_column: IDS.VIOLATION_REPORT.COMPANY_PROFILE_ID
         business_meaning: Id công ty đại chúng vi phạm.
-        comment: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES',\
+        comment: "FK target: public_company.pc_id. Hash: hash_id('IDS_COMPANY_PROFILES',\
           \ COMPANY_PROFILE_ID)."
   - name: Public Company Code
     physical_name: pc_code
@@ -14405,7 +14405,7 @@ entities:
     business_meaning_1st: Id mẫu quy tắc vi phạm áp dụng.
     comment_1st: "FK target: vr_template.vr_template_id. Cần ETL crosswalk sang IDS.VIOLATION_TEMPLATES:\
       \ VIOLATION_REPORT.VIOLATION_TEMPLATE_ID = VIOLATION_TEMPLATES.ID để xác nhận\
-      \ VIOLATION_CD sau đó hash_id('IDS.VIOLATION_TEMPLATES', VIOLATION_CD)."
+      \ VIOLATION_CD sau đó hash_id('IDS_VIOLATION_TEMPLATES', VIOLATION_CD)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -14420,7 +14420,7 @@ entities:
         business_meaning: Id mẫu quy tắc vi phạm áp dụng.
         comment: "FK target: vr_template.vr_template_id. Cần ETL crosswalk sang IDS.VIOLATION_TEMPLATES:\
           \ VIOLATION_REPORT.VIOLATION_TEMPLATE_ID = VIOLATION_TEMPLATES.ID để xác\
-          \ nhận VIOLATION_CD sau đó hash_id('IDS.VIOLATION_TEMPLATES', VIOLATION_CD)."
+          \ nhận VIOLATION_CD sau đó hash_id('IDS_VIOLATION_TEMPLATES', VIOLATION_CD)."
   - name: Violation Report Template Code
     physical_name: vr_template_code
     business_meaning_1st: Mã mẫu quy tắc vi phạm.
@@ -14445,7 +14445,7 @@ entities:
   - name: Financial Report Template Id
     physical_name: fr_template_id
     business_meaning_1st: Id mẫu form CBTT áp dụng.
-    comment_1st: "FK target: fr_template.fr_template_id. Hash: hash_id('IDS.FORMS',\
+    comment_1st: "FK target: fr_template.fr_template_id. Hash: hash_id('IDS_FORMS',\
       \ FORM_CD)."
     data_domain_most: Surrogate Key
     data_type_most: string
@@ -14459,7 +14459,7 @@ entities:
       - source_table: VIOLATION_REPORT
         source_column: IDS.VIOLATION_REPORT.FORM_CD
         business_meaning: Id mẫu form CBTT áp dụng.
-        comment: "FK target: fr_template.fr_template_id. Hash: hash_id('IDS.FORMS',\
+        comment: "FK target: fr_template.fr_template_id. Hash: hash_id('IDS_FORMS',\
           \ FORM_CD)."
   - name: Financial Report Template Code
     physical_name: fr_template_code
@@ -14497,13 +14497,10 @@ entities:
         source_column: IDS.VIOLATION_REPORT.PERIOD_NAME
         business_meaning: Tên kỳ tính.
         comment: null
-  - name: Period Type Code
-    physical_name: period_tp_code
+  - name: Quarter Type Code
+    physical_name: quarter_tp_code
     business_meaning_1st: "Loại kỳ tính: Quý 1-4, Năm, hoặc Bán niên."
-    comment_1st: "Scheme: IDS_VIOLATION_REPORT_PERIOD_TYPE (modeler_defined, no_lookup)\
-      \ — chưa có trong HLD 6d, bổ sung scheme mới. Nguồn NUMBER encode: 1-4 = Quý\
-      \ 1-4, 5 = Năm, 6 = Bán niên (không phải counter thuần túy nên map Classification\
-      \ Value thay vì Small Counter)."
+    comment_1st: SCHEMA_CODE=IDS.QUARTER_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='QUARTER_CODE').
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
@@ -14516,10 +14513,7 @@ entities:
       - source_table: VIOLATION_REPORT
         source_column: IDS.VIOLATION_REPORT.PERIOD_QUARTER
         business_meaning: "Loại kỳ tính: Quý 1-4, Năm, hoặc Bán niên."
-        comment: "Scheme: IDS_VIOLATION_REPORT_PERIOD_TYPE (modeler_defined, no_lookup)\
-          \ — chưa có trong HLD 6d, bổ sung scheme mới. Nguồn NUMBER encode: 1-4 =\
-          \ Quý 1-4, 5 = Năm, 6 = Bán niên (không phải counter thuần túy nên map Classification\
-          \ Value thay vì Small Counter)."
+        comment: SCHEMA_CODE=IDS.QUARTER_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='QUARTER_CODE').
   - name: Period Year
     physical_name: period_year
     business_meaning_1st: Năm báo cáo vi phạm.
@@ -14608,8 +14602,8 @@ entities:
   - name: Submission Status Code
     physical_name: submission_status_code
     business_meaning_1st: Trạng thái gửi báo cáo.
-    comment_1st: "Scheme: IDS_VIOLATION_REPORT_STATUS (no_lookup) — chưa có trong\
-      \ HLD 6d, bổ sung scheme mới."
+    comment_1st: SCHEMA_CODE=IDS.VIOLATION_SUBMISSION_STATUS. Values load từ LOOKUP_VALUES
+      (LOOKUP_GROUP='VIOLATION_STATUS').
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
@@ -14622,8 +14616,8 @@ entities:
       - source_table: VIOLATION_REPORT
         source_column: IDS.VIOLATION_REPORT.STATUS
         business_meaning: Trạng thái gửi báo cáo.
-        comment: "Scheme: IDS_VIOLATION_REPORT_STATUS (no_lookup) — chưa có trong\
-          \ HLD 6d, bổ sung scheme mới."
+        comment: SCHEMA_CODE=IDS.VIOLATION_SUBMISSION_STATUS. Values load từ LOOKUP_VALUES
+          (LOOKUP_GROUP='VIOLATION_STATUS').
   - name: Original Deadline Date
     physical_name: original_deadline_dt
     business_meaning_1st: Hạn ban đầu (trước khi gia hạn nếu có).
@@ -20102,8 +20096,8 @@ entities:
   - name: Financial Report Catalog Id
     physical_name: fr_catalog_id
     business_meaning_1st: Khóa đại diện (surrogate key).
-    comment_1st: "PK surrogate. Hash: hash_id('IDS.REPORT_CATALOG', REPORT_CD). BCV:\
-      \ \"[Condition] Form Definition\"."
+    comment_1st: "PK surrogate. Hash: hash_id('IDS_REPORT_CATALOG', ID). BCV: \"[Condition]\
+      \ Form Definition\"."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -20116,14 +20110,12 @@ entities:
       - source_table: REPORT_CATALOG
         source_column: null
         business_meaning: Khóa đại diện (surrogate key).
-        comment: "PK surrogate. Hash: hash_id('IDS.REPORT_CATALOG', REPORT_CD). BCV:\
-          \ \"[Condition] Form Definition\"."
+        comment: "PK surrogate. Hash: hash_id('IDS_REPORT_CATALOG', ID). BCV: \"[Condition]\
+          \ Form Definition\"."
   - name: Financial Report Catalog Code
     physical_name: fr_catalog_code
-    business_meaning_1st: Mã báo cáo. BK duy nhất — Id hash từ trường này.
-    comment_1st: BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID) + Unique Key
-      cũ — gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT
-      NULL/unique trước go-live.
+    business_meaning_1st: BK duy nhất — Id hash từ trường này.
+    comment_1st: BK chính — Nguồn NUMBER(10,0) — ETL cast sang string.
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -20134,11 +20126,9 @@ entities:
     - source_system: IDS
       source_tables:
       - source_table: REPORT_CATALOG
-        source_column: IDS.REPORT_CATALOG.REPORT_CD
-        business_meaning: Mã báo cáo. BK duy nhất — Id hash từ trường này.
-        comment: BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID) + Unique Key
-          cũ — gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận
-          NOT NULL/unique trước go-live.
+        source_column: IDS.REPORT_CATALOG.ID
+        business_meaning: BK duy nhất — Id hash từ trường này.
+        comment: BK chính — Nguồn NUMBER(10,0) — ETL cast sang string.
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning_1st: Mã hệ thống nguồn dữ liệu.
@@ -20156,6 +20146,25 @@ entities:
         source_column: null
         business_meaning: Mã hệ thống nguồn dữ liệu.
         comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  - name: Report Code
+    physical_name: rpt_code
+    business_meaning_1st: Mã báo cáo. Trước đây là BK nhưng không đảm bảo unique —
+      giữ lại làm business reference field.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: IDS
+      source_tables:
+      - source_table: REPORT_CATALOG
+        source_column: IDS.REPORT_CATALOG.REPORT_CD
+        business_meaning: Mã báo cáo. Trước đây là BK nhưng không đảm bảo unique —
+          giữ lại làm business reference field.
+        comment: null
   - name: Financial Report Catalog Name
     physical_name: fr_catalog_nm
     business_meaning_1st: Tên báo cáo (tiếng Việt).
@@ -20190,10 +20199,11 @@ entities:
         source_column: IDS.REPORT_CATALOG.REPORT_NAME_EN
         business_meaning: Tên báo cáo (tiếng Anh).
         comment: null
-  - name: Financial Report Catalog Type Code
-    physical_name: fr_catalog_tp_code
-    business_meaning_1st: Loại báo cáo (I - Báo cáo đầu vào, O - Báo cáo xuất ra).
-    comment_1st: SCHEMA_CODE=IDS.REPORT_CATALOG.RC_TYPE_CD.
+  - name: Report Catalog Type Code
+    physical_name: rpt_catalog_tp_code
+    business_meaning_1st: Loại báo cáo, lấy từ bảng REPORT_CATALOG.
+    comment_1st: SCHEMA_CODE=IDS.REPORT_CATALOG_TYPE. Values load từ LOOKUP_VALUES
+      (LOOKUP_GROUP='RC_TYPE').
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
@@ -20205,8 +20215,9 @@ entities:
       source_tables:
       - source_table: REPORT_CATALOG
         source_column: IDS.REPORT_CATALOG.RC_TYPE_CD
-        business_meaning: Loại báo cáo (I - Báo cáo đầu vào, O - Báo cáo xuất ra).
-        comment: SCHEMA_CODE=IDS.REPORT_CATALOG.RC_TYPE_CD.
+        business_meaning: Loại báo cáo, lấy từ bảng REPORT_CATALOG.
+        comment: SCHEMA_CODE=IDS.REPORT_CATALOG_TYPE. Values load từ LOOKUP_VALUES
+          (LOOKUP_GROUP='RC_TYPE').
   - name: Financial Report Year
     physical_name: fr_year
     business_meaning_1st: Lưu năm của báo cáo.
@@ -20226,10 +20237,10 @@ entities:
         business_meaning: Lưu năm của báo cáo.
         comment: Nguồn VARCHAR2(4) — chỉ lưu năm (không có tháng/ngày), giữ Text thay
           vì Date.
-  - name: Financial Report Scope Code
-    physical_name: fr_scope_code
+  - name: Financial Report Scope Type Code
+    physical_name: fr_scope_tp_code
     business_meaning_1st: Loại hình báo cáo (Hợp nhất, Mẹ).
-    comment_1st: "Scheme: IDS_REPORT_SCOPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_SCOPE')."
+    comment_1st: SCHEMA_CODE=IDS.REPORT_SCOPE_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_SCOPE').
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
@@ -20242,12 +20253,11 @@ entities:
       - source_table: REPORT_CATALOG
         source_column: IDS.REPORT_CATALOG.REPORT_SCOPE_CD
         business_meaning: Loại hình báo cáo (Hợp nhất, Mẹ).
-        comment: "Scheme: IDS_REPORT_SCOPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_SCOPE')."
+        comment: SCHEMA_CODE=IDS.REPORT_SCOPE_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_SCOPE').
   - name: Enterprise Type Code
     physical_name: enterprise_tp_code
     business_meaning_1st: Loại hình doanh nghiệp (DN, BH, TD, CK).
-    comment_1st: "Scheme: IDS_ENTERPRISE_TYPE. Dùng chung scheme với Public Company.Enterprise\
-      \ Type Code (LOOKUP_GROUP='ENTERPRISE_TYPE')."
+    comment_1st: SCHEMA_CODE=IDS.ENTERPRISE_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='ENTERPRISE_TYPE').
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
@@ -20260,8 +20270,7 @@ entities:
       - source_table: REPORT_CATALOG
         source_column: IDS.REPORT_CATALOG.ENTERPRISE_TYPE_CD
         business_meaning: Loại hình doanh nghiệp (DN, BH, TD, CK).
-        comment: "Scheme: IDS_ENTERPRISE_TYPE. Dùng chung scheme với Public Company.Enterprise\
-          \ Type Code (LOOKUP_GROUP='ENTERPRISE_TYPE')."
+        comment: SCHEMA_CODE=IDS.ENTERPRISE_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='ENTERPRISE_TYPE').
   - name: Consolidated Indicator
     physical_name: consolidated_ind
     business_meaning_1st: Có phải là báo cáo hợp nhất không.
@@ -20279,30 +20288,12 @@ entities:
         source_column: IDS.REPORT_CATALOG.CONSOLIDATED_FLG
         business_meaning: Có phải là báo cáo hợp nhất không.
         comment: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1).
-  - name: Active Indicator
-    physical_name: active_ind
-    business_meaning_1st: Trạng thái sử dụng.
-    comment_1st: Giá trị 1 → true (đang sử dụng); 0 → false. Nguồn NUMBER(1).
-    data_domain_most: Small Counter
-    data_type_most: int
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: IDS
-      source_tables:
-      - source_table: REPORT_CATALOG
-        source_column: IDS.REPORT_CATALOG.ACTIVE_FLG
-        business_meaning: Trạng thái sử dụng.
-        comment: Giá trị 1 → true (đang sử dụng); 0 → false. Nguồn NUMBER(1).
-  - name: Financial Statement Reference Code
-    physical_name: financial_statement_reference_code
+  - name: Financial Statement Type Code
+    physical_name: financial_statement_tp_code
     business_meaning_1st: Tham chiếu báo cáo tài chính (không có mô tả tại nguồn).
-    comment_1st: Nguồn VARCHAR2(500), description null — giữ Text denormalized. Cần
-      Data Modeler xác nhận ý nghĩa nghiệp vụ trước khi dùng (có thể là danh sách
-      composite).
-    data_domain_most: Text
+    comment_1st: SCHEMA_CODE=IDS.FINANCIAL_STATEMENT_TYPE. Values load từ LOOKUP_VALUES
+      (LOOKUP_GROUP='FINANCIAL_STATEMENT_TYPE').
+    data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
     is_primary_key_most: false
@@ -20314,15 +20305,14 @@ entities:
       - source_table: REPORT_CATALOG
         source_column: IDS.REPORT_CATALOG.FINANCIAL_STATEMENT_CD
         business_meaning: Tham chiếu báo cáo tài chính (không có mô tả tại nguồn).
-        comment: Nguồn VARCHAR2(500), description null — giữ Text denormalized. Cần
-          Data Modeler xác nhận ý nghĩa nghiệp vụ trước khi dùng (có thể là danh sách
-          composite).
-  - name: Reporting Period Reference Code
-    physical_name: reporting_period_reference_code
-    business_meaning_1st: Tham chiếu kỳ báo cáo (không có mô tả tại nguồn).
-    comment_1st: Nguồn VARCHAR2(500), description null — giữ Text denormalized. Cần
-      Data Modeler xác nhận ý nghĩa nghiệp vụ trước khi dùng.
-    data_domain_most: Text
+        comment: SCHEMA_CODE=IDS.FINANCIAL_STATEMENT_TYPE. Values load từ LOOKUP_VALUES
+          (LOOKUP_GROUP='FINANCIAL_STATEMENT_TYPE').
+  - name: Reporting Period Type Code
+    physical_name: reporting_period_tp_code
+    business_meaning_1st: Loại kỳ báo cáo.
+    comment_1st: SCHEMA_CODE=IDS.REPORT_PERIOD_TYPE. Values load từ LOOKUP_VALUES
+      (LOOKUP_GROUP='REPORT_PERIOD_TYPE').
+    data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
     is_primary_key_most: false
@@ -20333,14 +20323,14 @@ entities:
       source_tables:
       - source_table: REPORT_CATALOG
         source_column: IDS.REPORT_CATALOG.REPORTING_PERIOD_CD
-        business_meaning: Tham chiếu kỳ báo cáo (không có mô tả tại nguồn).
-        comment: Nguồn VARCHAR2(500), description null — giữ Text denormalized. Cần
-          Data Modeler xác nhận ý nghĩa nghiệp vụ trước khi dùng.
-  - name: Reference Code
-    physical_name: reference_code
-    business_meaning_1st: Mã tham chiếu (không có mô tả tại nguồn).
-    comment_1st: Nguồn VARCHAR2(500), description null — giữ Text denormalized. Cần
-      Data Modeler xác nhận ý nghĩa nghiệp vụ trước khi dùng.
+        business_meaning: Loại kỳ báo cáo.
+        comment: SCHEMA_CODE=IDS.REPORT_PERIOD_TYPE. Values load từ LOOKUP_VALUES
+          (LOOKUP_GROUP='REPORT_PERIOD_TYPE').
+  - name: Financial Statement Component Type Code
+    physical_name: financial_statement_component_tp_code
+    business_meaning_1st: Loại thành phần của báo cáo tài chính.
+    comment_1st: SCHEMA_CODE=IDS.FINANCIAL_STATEMENT_COMPONENT_TYPE. Values load từ
+      LOOKUP_VALUES (LOOKUP_GROUP='FINANCIAL_STATEMENT_COMPONENT').
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -20352,26 +20342,9 @@ entities:
       source_tables:
       - source_table: REPORT_CATALOG
         source_column: IDS.REPORT_CATALOG.REF_CD
-        business_meaning: Mã tham chiếu (không có mô tả tại nguồn).
-        comment: Nguồn VARCHAR2(500), description null — giữ Text denormalized. Cần
-          Data Modeler xác nhận ý nghĩa nghiệp vụ trước khi dùng.
-  - name: Deleted Indicator
-    physical_name: deleted_ind
-    business_meaning_1st: Trạng thái xóa.
-    comment_1st: Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1).
-    data_domain_most: Small Counter
-    data_type_most: int
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: IDS
-      source_tables:
-      - source_table: REPORT_CATALOG
-        source_column: IDS.REPORT_CATALOG.IS_DELETED
-        business_meaning: Trạng thái xóa.
-        comment: Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1).
+        business_meaning: Loại thành phần của báo cáo tài chính.
+        comment: SCHEMA_CODE=IDS.FINANCIAL_STATEMENT_COMPONENT_TYPE. Values load từ
+          LOOKUP_VALUES (LOOKUP_GROUP='FINANCIAL_STATEMENT_COMPONENT').
 - ldm:
     id: ATM-pc_evaluation_criterion
     logical_name_1st: Public Company Evaluation Criterion
@@ -21250,7 +21223,7 @@ entities:
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
-    conflict_review: "data_domain: ['Classification Value', 'Text']"
+    conflict_review: "data_domain: ['Text', 'Classification Value']"
     source_mappings:
     - source_system: TTHC
       source_tables:
@@ -25622,7 +25595,10 @@ entities:
     status_1st: draft
     description_1st: "Định nghĩa từng cột trong template báo cáo tài chính: mã cột,\
       \ tên, kỳ tham chiếu (hiện tại/kỳ trước). Khôi phục scope 2026-08-05 (xem IDS_HLD_Overview.md\
-      \ 7e #15) — tên bỏ chữ \"Form\" so với thiết kế trước đây."
+      \ 7e #15) — tên bỏ chữ \"Form\" so với thiết kế trước đây. Đổi BCV Concept từ\
+      \ \"[Condition] Form Definition\" (term không tồn tại trong knowledge/terms.csv)\
+      \ sang \"[Documentation] Form Document\" (2026-08-13, theo yêu cầu tường minh\
+      \ Data Modeler) — xem IDS_HLD_Overview.md 7e #21."
     owner_1st:
       steward: username@ubck.com.vn
       data_modeler: username@fssc.com.vn
@@ -25640,7 +25616,7 @@ entities:
   - name: Financial Report Column Template Id
     physical_name: fr_column_template_id
     business_meaning_1st: Khóa đại diện (surrogate key).
-    comment_1st: "PK surrogate. Hash: hash_id('IDS.RCOL', COL_CD). BCV: \"[Documentation]\
+    comment_1st: "PK surrogate. Hash: hash_id('IDS_RCOL', ID). BCV: \"[Documentation]\
       \ Form Document\"."
     data_domain_most: Surrogate Key
     data_type_most: string
@@ -25654,14 +25630,12 @@ entities:
       - source_table: RCOL
         source_column: null
         business_meaning: Khóa đại diện (surrogate key).
-        comment: "PK surrogate. Hash: hash_id('IDS.RCOL', COL_CD). BCV: \"[Documentation]\
+        comment: "PK surrogate. Hash: hash_id('IDS_RCOL', ID). BCV: \"[Documentation]\
           \ Form Document\"."
   - name: Financial Report Column Template Code
     physical_name: fr_column_template_code
     business_meaning_1st: Mã cột. BK duy nhất — Id hash từ trường này.
-    comment_1st: BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID) — loại bỏ ID
-      khỏi model hoàn toàn. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique trước
-      go-live.
+    comment_1st: null
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -25672,11 +25646,28 @@ entities:
     - source_system: IDS
       source_tables:
       - source_table: RCOL
-        source_column: IDS.RCOL.COL_CD
+        source_column: IDS.RCOL.ID
         business_meaning: Mã cột. BK duy nhất — Id hash từ trường này.
-        comment: BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID) — loại bỏ ID
-          khỏi model hoàn toàn. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique
-          trước go-live.
+        comment: null
+  - name: Column Code
+    physical_name: column_code
+    business_meaning_1st: Mã cột. Trước đây là BK nhưng không đảm bảo unique — giữ
+      lại làm business reference field.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: IDS
+      source_tables:
+      - source_table: RCOL
+        source_column: IDS.RCOL.COL_CD
+        business_meaning: Mã cột. Trước đây là BK nhưng không đảm bảo unique — giữ
+          lại làm business reference field.
+        comment: null
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning_1st: Mã hệ thống nguồn dữ liệu.
@@ -25748,9 +25739,8 @@ entities:
   - name: Financial Report Catalog Id
     physical_name: fr_catalog_id
     business_meaning_1st: Tham chiếu đến bảng REPORT_CATALOG.
-    comment_1st: "FK target: fr_catalog.fr_catalog_id. Cần ETL crosswalk sang IDS.REPORT_CATALOG:\
-      \ RCOL.REPORT_CATALOG_ID = REPORT_CATALOG.ID để xác nhận REPORT_CD sau đó hash_id('IDS.REPORT_CATALOG',\
-      \ REPORT_CD)."
+    comment_1st: "FK target: fr_catalog.fr_catalog_id. Hash: hash_id('IDS_REPORT_CATALOG',\
+      \ REPORT_CATALOG_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -25763,15 +25753,13 @@ entities:
       - source_table: RCOL
         source_column: IDS.RCOL.REPORT_CATALOG_ID
         business_meaning: Tham chiếu đến bảng REPORT_CATALOG.
-        comment: "FK target: fr_catalog.fr_catalog_id. Cần ETL crosswalk sang IDS.REPORT_CATALOG:\
-          \ RCOL.REPORT_CATALOG_ID = REPORT_CATALOG.ID để xác nhận REPORT_CD sau đó\
-          \ hash_id('IDS.REPORT_CATALOG', REPORT_CD)."
+        comment: "FK target: fr_catalog.fr_catalog_id. Hash: hash_id('IDS_REPORT_CATALOG',\
+          \ REPORT_CATALOG_ID)."
   - name: Financial Report Catalog Code
     physical_name: fr_catalog_code
     business_meaning_1st: Mã báo cáo tham chiếu.
     comment_1st: "Lookup pair: fr_catalog.fr_catalog_code. Pair with Financial Report\
-      \ Catalog Id. Giá trị lấy từ IDS.REPORT_CATALOG.REPORT_CD sau ETL crosswalk\
-      \ — chi tiết xem comment Financial Report Catalog Id."
+      \ Catalog Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -25782,19 +25770,16 @@ entities:
     - source_system: IDS
       source_tables:
       - source_table: RCOL
-        source_column: IDS.REPORT_CATALOG.REPORT_CD
+        source_column: IDS.REPORT_CATALOG.ID
         business_meaning: Mã báo cáo tham chiếu.
         comment: "Lookup pair: fr_catalog.fr_catalog_code. Pair with Financial Report\
-          \ Catalog Id. Giá trị lấy từ IDS.REPORT_CATALOG.REPORT_CD sau ETL crosswalk\
-          \ — chi tiết xem comment Financial Report Catalog Id."
+          \ Catalog Id."
   - name: Column Type Code
     physical_name: column_tp_code
-    business_meaning_1st: Giá trị (không có mô tả rõ ràng tại nguồn).
-    comment_1st: Nguồn không tài liệu hóa rõ scheme (mô tả cột chỉ ghi "Giá trị",
-      không có LOOKUP_GROUP tường minh như ROW_TYPE_CD) — giữ Text denormalized. Cần
-      Data Modeler xác nhận ý nghĩa nghiệp vụ trước khi promote thành Classification
-      Value.
-    data_domain_most: Text
+    business_meaning_1st: Kiểu giá trị của cột V/F/D - Value/Formula/Description.
+    comment_1st: SCHEMA_CODE=IDS.REPORT_ROW/COL_TYPE. Values load từ LOOKUP_VALUES
+      (LOOKUP_GROUP='REPORT_ROW_TYPE').
+    data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
     is_primary_key_most: false
@@ -25805,11 +25790,9 @@ entities:
       source_tables:
       - source_table: RCOL
         source_column: IDS.RCOL.COL_TYPE_CD
-        business_meaning: Giá trị (không có mô tả rõ ràng tại nguồn).
-        comment: Nguồn không tài liệu hóa rõ scheme (mô tả cột chỉ ghi "Giá trị",
-          không có LOOKUP_GROUP tường minh như ROW_TYPE_CD) — giữ Text denormalized.
-          Cần Data Modeler xác nhận ý nghĩa nghiệp vụ trước khi promote thành Classification
-          Value.
+        business_meaning: Kiểu giá trị của cột V/F/D - Value/Formula/Description.
+        comment: SCHEMA_CODE=IDS.REPORT_ROW/COL_TYPE. Values load từ LOOKUP_VALUES
+          (LOOKUP_GROUP='REPORT_ROW_TYPE').
   - name: Column Formula
     physical_name: column_formula
     business_meaning_1st: Công thức cột.
@@ -25849,8 +25832,8 @@ entities:
   - name: Report Catalog Type Code
     physical_name: rpt_catalog_tp_code
     business_meaning_1st: Loại báo cáo, lấy từ bảng REPORT_CATALOG.
-    comment_1st: "Scheme: IDS_REPORT_CATALOG_TYPE. Trường lưu dư thừa — đã có Financial\
-      \ Report Catalog Id."
+    comment_1st: SCHEMA_CODE=IDS.REPORT_CATALOG_TYPE. Values load từ LOOKUP_VALUES
+      (LOOKUP_GROUP='RC_TYPE').
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
@@ -25863,29 +25846,8 @@ entities:
       - source_table: RCOL
         source_column: IDS.RCOL.RC_TYPE_CD
         business_meaning: Loại báo cáo, lấy từ bảng REPORT_CATALOG.
-        comment: "Scheme: IDS_REPORT_CATALOG_TYPE. Trường lưu dư thừa — đã có Financial\
-          \ Report Catalog Id."
-  - name: Active Indicator
-    physical_name: active_ind
-    business_meaning_1st: Trạng thái - (0 - không sử dụng, 1 - đang sử dụng).
-    comment_1st: Giá trị 1 → true (đang sử dụng); 0 → false. Nguồn NUMBER(1), tên
-      cột DELETE_FLG nhưng ngữ nghĩa là active/inactive theo mô tả BRD — đồng nhất
-      pattern với fr_row_template.Active Indicator.
-    data_domain_most: Small Counter
-    data_type_most: int
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: IDS
-      source_tables:
-      - source_table: RCOL
-        source_column: IDS.RCOL.DELETE_FLG
-        business_meaning: Trạng thái - (0 - không sử dụng, 1 - đang sử dụng).
-        comment: Giá trị 1 → true (đang sử dụng); 0 → false. Nguồn NUMBER(1), tên
-          cột DELETE_FLG nhưng ngữ nghĩa là active/inactive theo mô tả BRD — đồng
-          nhất pattern với fr_row_template.Active Indicator.
+        comment: SCHEMA_CODE=IDS.REPORT_CATALOG_TYPE. Values load từ LOOKUP_VALUES
+          (LOOKUP_GROUP='RC_TYPE').
   - name: Description
     physical_name: description
     business_meaning_1st: Mô tả.
@@ -25903,25 +25865,6 @@ entities:
         source_column: IDS.RCOL.DESCRIPTION
         business_meaning: Mô tả.
         comment: null
-  - name: System Code
-    physical_name: stm_code
-    business_meaning_1st: Hệ thống con trong IDS (không có mô tả tại nguồn).
-    comment_1st: Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES
-      trong tài liệu thiết kế.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: IDS
-      source_tables:
-      - source_table: RCOL
-        source_column: IDS.RCOL.SYSTEM_CD
-        business_meaning: Hệ thống con trong IDS (không có mô tả tại nguồn).
-        comment: Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES
-          trong tài liệu thiết kế.
   - name: Column Description Reference
     physical_name: column_description_reference
     business_meaning_1st: Mô tả cột (không có mô tả tại nguồn).
@@ -25971,7 +25914,10 @@ entities:
     status_1st: draft
     description_1st: "Định nghĩa từng hàng trong template báo cáo tài chính: mã hàng,\
       \ tên, cấp phân cấp, công thức tổng hợp. Khôi phục scope 2026-08-05 (xem IDS_HLD_Overview.md\
-      \ 7e #15) — tên bỏ chữ \"Form\" so với thiết kế trước đây."
+      \ 7e #15) — tên bỏ chữ \"Form\" so với thiết kế trước đây. Đổi BCV Concept từ\
+      \ \"[Condition] Form Definition\" (term không tồn tại trong knowledge/terms.csv)\
+      \ sang \"[Documentation] Form Document\" (2026-08-13, theo yêu cầu tường minh\
+      \ Data Modeler) — xem IDS_HLD_Overview.md 7e #21."
     owner_1st:
       steward: username@ubck.com.vn
       data_modeler: username@fssc.com.vn
@@ -25989,7 +25935,7 @@ entities:
   - name: Financial Report Row Template Id
     physical_name: fr_row_template_id
     business_meaning_1st: Khóa đại diện (surrogate key).
-    comment_1st: "PK surrogate. Hash: hash_id('IDS.RROW', ROW_CD). BCV: \"[Documentation]\
+    comment_1st: "PK surrogate. Hash: hash_id('IDS_RROW', ID). BCV: \"[Documentation]\
       \ Form Document\"."
     data_domain_most: Surrogate Key
     data_type_most: string
@@ -26003,15 +25949,14 @@ entities:
       - source_table: RROW
         source_column: null
         business_meaning: Khóa đại diện (surrogate key).
-        comment: "PK surrogate. Hash: hash_id('IDS.RROW', ROW_CD). BCV: \"[Documentation]\
+        comment: "PK surrogate. Hash: hash_id('IDS_RROW', ID). BCV: \"[Documentation]\
           \ Form Document\"."
   - name: Financial Report Row Template Code
     physical_name: fr_row_template_code
-    business_meaning_1st: Lưu mã tự sinh của chỉ tiêu hàng. Quy tắc r+sequence. BK
-      duy nhất — Id hash từ trường này.
-    comment_1st: BK chính (mã nghiệp vụ tự sinh). Thay thế Code kỹ thuật (ID) — loại
-      bỏ ID khỏi model hoàn toàn. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique
-      trước go-live.
+    business_meaning_1st: BK duy nhất — Id hash từ trường này.
+    comment_1st: BK chính — chuyển từ mã nghiệp vụ (ROW_CD) sang ID kỹ thuật nguồn
+      do ROW_CD không đảm bảo unique (xác nhận qua profile dữ liệu — quyết định Data
+      Modeler 2026-08-27). Nguồn NUMBER(10,0) — ETL cast sang string.
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -26022,12 +25967,30 @@ entities:
     - source_system: IDS
       source_tables:
       - source_table: RROW
+        source_column: IDS.RROW.ID
+        business_meaning: BK duy nhất — Id hash từ trường này.
+        comment: BK chính — chuyển từ mã nghiệp vụ (ROW_CD) sang ID kỹ thuật nguồn
+          do ROW_CD không đảm bảo unique (xác nhận qua profile dữ liệu — quyết định
+          Data Modeler 2026-08-27). Nguồn NUMBER(10,0) — ETL cast sang string.
+  - name: Row Code
+    physical_name: row_code
+    business_meaning_1st: Mã tự sinh của chỉ tiêu hàng (quy tắc r+sequence). Trước
+      đây là BK nhưng không đảm bảo unique — giữ lại làm business reference field.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: IDS
+      source_tables:
+      - source_table: RROW
         source_column: IDS.RROW.ROW_CD
-        business_meaning: Lưu mã tự sinh của chỉ tiêu hàng. Quy tắc r+sequence. BK
-          duy nhất — Id hash từ trường này.
-        comment: BK chính (mã nghiệp vụ tự sinh). Thay thế Code kỹ thuật (ID) — loại
-          bỏ ID khỏi model hoàn toàn. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique
-          trước go-live.
+        business_meaning: Mã tự sinh của chỉ tiêu hàng (quy tắc r+sequence). Trước
+          đây là BK nhưng không đảm bảo unique — giữ lại làm business reference field.
+        comment: null
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning_1st: Mã hệ thống nguồn dữ liệu.
@@ -26082,8 +26045,8 @@ entities:
   - name: Row Type Code
     physical_name: row_tp_code
     business_meaning_1st: Kiểu giá trị của hàng V/F/D - Value/Formula/Description.
-    comment_1st: "Scheme: IDS_REPORT_ROW_TYPE. Values lấy trực tiếp từ cột nguồn (LOOKUP_VALUES,\
-      \ LOOKUP_GROUP='REPORT_ROW_TYPE')."
+    comment_1st: SCHEMA_CODE=IDS.REPORT_ROW/COL_TYPE. Values load từ LOOKUP_VALUES
+      (LOOKUP_GROUP='REPORT_ROW_TYPE').
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
@@ -26096,8 +26059,8 @@ entities:
       - source_table: RROW
         source_column: IDS.RROW.ROW_TYPE_CD
         business_meaning: Kiểu giá trị của hàng V/F/D - Value/Formula/Description.
-        comment: "Scheme: IDS_REPORT_ROW_TYPE. Values lấy trực tiếp từ cột nguồn (LOOKUP_VALUES,\
-          \ LOOKUP_GROUP='REPORT_ROW_TYPE')."
+        comment: SCHEMA_CODE=IDS.REPORT_ROW/COL_TYPE. Values load từ LOOKUP_VALUES
+          (LOOKUP_GROUP='REPORT_ROW_TYPE').
   - name: Row Formula
     physical_name: row_formula
     business_meaning_1st: Lưu công thức của hàng.
@@ -26135,9 +26098,8 @@ entities:
   - name: Financial Report Catalog Id
     physical_name: fr_catalog_id
     business_meaning_1st: ID của báo cáo chứa hàng.
-    comment_1st: "FK target: fr_catalog.fr_catalog_id. Cần ETL crosswalk sang IDS.REPORT_CATALOG:\
-      \ RROW.REPORT_CATALOG_ID = REPORT_CATALOG.ID để xác nhận REPORT_CD sau đó hash_id('IDS.REPORT_CATALOG',\
-      \ REPORT_CD)."
+    comment_1st: "FK target: fr_catalog.fr_catalog_id. Hash: hash_id('IDS_REPORT_CATALOG',\
+      \ REPORT_CATALOG_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -26150,15 +26112,13 @@ entities:
       - source_table: RROW
         source_column: IDS.RROW.REPORT_CATALOG_ID
         business_meaning: ID của báo cáo chứa hàng.
-        comment: "FK target: fr_catalog.fr_catalog_id. Cần ETL crosswalk sang IDS.REPORT_CATALOG:\
-          \ RROW.REPORT_CATALOG_ID = REPORT_CATALOG.ID để xác nhận REPORT_CD sau đó\
-          \ hash_id('IDS.REPORT_CATALOG', REPORT_CD)."
+        comment: "FK target: fr_catalog.fr_catalog_id. Hash: hash_id('IDS_REPORT_CATALOG',\
+          \ REPORT_CATALOG_ID)."
   - name: Financial Report Catalog Code
     physical_name: fr_catalog_code
     business_meaning_1st: Mã báo cáo chứa hàng.
     comment_1st: "Lookup pair: fr_catalog.fr_catalog_code. Pair with Financial Report\
-      \ Catalog Id. Giá trị lấy từ IDS.REPORT_CATALOG.REPORT_CD sau ETL crosswalk\
-      \ — chi tiết xem comment Financial Report Catalog Id."
+      \ Catalog Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -26169,11 +26129,10 @@ entities:
     - source_system: IDS
       source_tables:
       - source_table: RROW
-        source_column: IDS.REPORT_CATALOG.REPORT_CD
+        source_column: IDS.REPORT_CATALOG.ID
         business_meaning: Mã báo cáo chứa hàng.
         comment: "Lookup pair: fr_catalog.fr_catalog_code. Pair with Financial Report\
-          \ Catalog Id. Giá trị lấy từ IDS.REPORT_CATALOG.REPORT_CD sau ETL crosswalk\
-          \ — chi tiết xem comment Financial Report Catalog Id."
+          \ Catalog Id."
   - name: Report Year
     physical_name: rpt_year
     business_meaning_1st: Lưu năm tạo báo cáo chứa, lấy từ bảng REPORT_CATALOG.
@@ -26196,9 +26155,8 @@ entities:
   - name: Report Catalog Type Code
     physical_name: rpt_catalog_tp_code
     business_meaning_1st: Loại báo cáo, lấy từ bảng REPORT_CATALOG.
-    comment_1st: "Scheme: IDS_REPORT_CATALOG_TYPE. Trường lưu dư thừa — đã có Financial\
-      \ Report Catalog Id. Dùng chung scheme với Financial Report Catalog.Report Catalog\
-      \ Type Code."
+    comment_1st: SCHEMA_CODE=IDS.REPORT_CATALOG_TYPE. Values load từ LOOKUP_VALUES
+      (LOOKUP_GROUP='RC_TYPE').
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
@@ -26211,30 +26169,8 @@ entities:
       - source_table: RROW
         source_column: IDS.RROW.RC_TYPE_CD
         business_meaning: Loại báo cáo, lấy từ bảng REPORT_CATALOG.
-        comment: "Scheme: IDS_REPORT_CATALOG_TYPE. Trường lưu dư thừa — đã có Financial\
-          \ Report Catalog Id. Dùng chung scheme với Financial Report Catalog.Report\
-          \ Catalog Type Code."
-  - name: Active Indicator
-    physical_name: active_ind
-    business_meaning_1st: Trạng thái (0 không sử dụng, 1 - đang sử dụng).
-    comment_1st: Giá trị 1 → true (đang sử dụng); 0 → false. Nguồn NUMBER(1), tên
-      cột DELETE_FLG nhưng ngữ nghĩa là active/inactive theo mô tả BRD — đồng nhất
-      pattern với fr_catalog.Active Indicator (lld_IDS_REPORT_CATALOG.yaml).
-    data_domain_most: Small Counter
-    data_type_most: int
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: IDS
-      source_tables:
-      - source_table: RROW
-        source_column: IDS.RROW.DELETE_FLG
-        business_meaning: Trạng thái (0 không sử dụng, 1 - đang sử dụng).
-        comment: Giá trị 1 → true (đang sử dụng); 0 → false. Nguồn NUMBER(1), tên
-          cột DELETE_FLG nhưng ngữ nghĩa là active/inactive theo mô tả BRD — đồng
-          nhất pattern với fr_catalog.Active Indicator (lld_IDS_REPORT_CATALOG.yaml).
+        comment: SCHEMA_CODE=IDS.REPORT_CATALOG_TYPE. Values load từ LOOKUP_VALUES
+          (LOOKUP_GROUP='RC_TYPE').
   - name: Description
     physical_name: description
     business_meaning_1st: Mô tả.
@@ -26252,25 +26188,6 @@ entities:
         source_column: IDS.RROW.DESCRIPTION
         business_meaning: Mô tả.
         comment: null
-  - name: System Code
-    physical_name: stm_code
-    business_meaning_1st: Hệ thống con trong IDS (không có mô tả tại nguồn).
-    comment_1st: Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES
-      trong tài liệu thiết kế. Đồng nhất pattern với fr_catalog.System Code.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: IDS
-      source_tables:
-      - source_table: RROW
-        source_column: IDS.RROW.SYSTEM_CD
-        business_meaning: Hệ thống con trong IDS (không có mô tả tại nguồn).
-        comment: Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES
-          trong tài liệu thiết kế. Đồng nhất pattern với fr_catalog.System Code.
   - name: Row Description Reference
     physical_name: row_description_reference
     business_meaning_1st: Mô tả hàng (không có mô tả tại nguồn).
@@ -26324,7 +26241,9 @@ entities:
       \ LƯU Ý: \"Disclosure Form Definition Notification Recipient\" và \"Disclosure\
       \ Form Definition Violation Template\" chưa đổi tên theo — vi phạm rule#8 (entity\
       \ con chứa tên entity cha) cho tới khi Data Modeler xác nhận đổi tên 2 entity\
-      \ này."
+      \ này. Đổi BCV Concept từ \"[Condition] Form Definition\" (term không tồn tại\
+      \ trong knowledge/terms.csv) sang \"[Documentation] Form Document\" (2026-08-13,\
+      \ theo yêu cầu tường minh Data Modeler) — xem IDS_HLD_Overview.md 7e #21."
     owner_1st:
       steward: username@ubck.com.vn
       data_modeler: username@fssc.com.vn
@@ -26342,7 +26261,7 @@ entities:
   - name: Financial Report Template Id
     physical_name: fr_template_id
     business_meaning_1st: Khóa đại diện (surrogate key).
-    comment_1st: "PK surrogate. Hash: hash_id('IDS.FORMS', FORM_CD). BCV: \"[Documentation]\
+    comment_1st: "PK surrogate. Hash: hash_id('IDS_FORMS', FORM_CD). BCV: \"[Documentation]\
       \ Form Document\". Đổi tên entity 2026-08-05."
     data_domain_most: Surrogate Key
     data_type_most: string
@@ -26356,7 +26275,7 @@ entities:
       - source_table: FORMS
         source_column: null
         business_meaning: Khóa đại diện (surrogate key).
-        comment: "PK surrogate. Hash: hash_id('IDS.FORMS', FORM_CD). BCV: \"[Documentation]\
+        comment: "PK surrogate. Hash: hash_id('IDS_FORMS', FORM_CD). BCV: \"[Documentation]\
           \ Form Document\". Đổi tên entity 2026-08-05."
   - name: Financial Report Template Code
     physical_name: fr_template_code
@@ -26400,7 +26319,7 @@ entities:
     physical_name: parent_fr_template_id
     business_meaning_1st: Khóa cha (tự tham chiếu).
     comment_1st: "FK target: fr_template.fr_template_id (self-reference). Resolve:\
-      \ join PARENT_ID → IDS.FORMS.ID để lấy FORM_CD, rồi hash_id('IDS.FORMS', FORM_CD_CHA)."
+      \ join PARENT_ID → IDS.FORMS.ID để lấy FORM_CD, rồi hash_id('IDS_FORMS', FORM_CD_CHA)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -26414,7 +26333,7 @@ entities:
         source_column: IDS.FORMS.PARENT_ID
         business_meaning: Khóa cha (tự tham chiếu).
         comment: "FK target: fr_template.fr_template_id (self-reference). Resolve:\
-          \ join PARENT_ID → IDS.FORMS.ID để lấy FORM_CD, rồi hash_id('IDS.FORMS',\
+          \ join PARENT_ID → IDS.FORMS.ID để lấy FORM_CD, rồi hash_id('IDS_FORMS',\
           \ FORM_CD_CHA)."
   - name: Parent Financial Report Template Code
     physical_name: parent_fr_template_code
@@ -26491,10 +26410,9 @@ entities:
           nguồn.
   - name: News Type Code
     physical_name: news_tp_code
-    business_meaning_1st: Loại tin gốc.
-    comment_1st: Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES
-      trong tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn.
-    data_domain_most: Text
+    business_meaning_1st: Mã phân loại.
+    comment_1st: SCHEMA_CODE=IDS.NEWS_TYPE_CD. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_TYPE').
+    data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
     is_primary_key_most: false
@@ -26505,16 +26423,13 @@ entities:
       source_tables:
       - source_table: FORMS
         source_column: IDS.FORMS.NEWS_TYPE_CD
-        business_meaning: Loại tin gốc.
-        comment: Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES
-          trong tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL
-          nguồn.
+        business_meaning: Mã phân loại.
+        comment: SCHEMA_CODE=IDS.NEWS_TYPE_CD. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_TYPE').
   - name: News Sub Type Code
     physical_name: news_sub_tp_code
-    business_meaning_1st: Loại tin con.
-    comment_1st: Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES
-      trong tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn.
-    data_domain_most: Text
+    business_meaning_1st: Mã phân loại con.
+    comment_1st: SCHEMA_CODE=IDS.SUB_NEWS_TYPE_CD. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SUB_NEWS_TYPE').
+    data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
     is_primary_key_most: false
@@ -26525,16 +26440,13 @@ entities:
       source_tables:
       - source_table: FORMS
         source_column: IDS.FORMS.SUB_NEWS_TYPE_CD
-        business_meaning: Loại tin con.
-        comment: Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES
-          trong tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL
-          nguồn.
-  - name: News Group Type Code
-    physical_name: news_group_tp_code
-    business_meaning_1st: Nhóm loại tin.
-    comment_1st: Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES
-      trong tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn.
-    data_domain_most: Text
+        business_meaning: Mã phân loại con.
+        comment: SCHEMA_CODE=IDS.SUB_NEWS_TYPE_CD. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SUB_NEWS_TYPE').
+  - name: Form Group Type Code
+    physical_name: form_group_tp_code
+    business_meaning_1st: Nhóm biểu mẫu báo cáo.
+    comment_1st: SCHEMA_CODE=IDS.FORM_GROUP_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='FORM_GROUP').
+    data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
     is_primary_key_most: false
@@ -26545,10 +26457,8 @@ entities:
       source_tables:
       - source_table: FORMS
         source_column: IDS.FORMS.NEWS_TYPE_GROUP_CD
-        business_meaning: Nhóm loại tin.
-        comment: Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES
-          trong tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL
-          nguồn.
+        business_meaning: Nhóm biểu mẫu báo cáo.
+        comment: SCHEMA_CODE=IDS.FORM_GROUP_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='FORM_GROUP').
   - name: Officer Auto Approval Indicator
     physical_name: officer_auto_approval_ind
     business_meaning_1st: Chuyên viên tự động duyệt.
@@ -26583,23 +26493,6 @@ entities:
         source_column: IDS.FORMS.POST_CHECKED_FLG
         business_meaning: Hậu kiểm tin.
         comment: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1).
-  - name: Activated Indicator
-    physical_name: activated_ind
-    business_meaning_1st: Kích hoạt.
-    comment_1st: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1).
-    data_domain_most: Small Counter
-    data_type_most: int
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: IDS
-      source_tables:
-      - source_table: FORMS
-        source_column: IDS.FORMS.ACTIVATED_FLG
-        business_meaning: Kích hoạt.
-        comment: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1).
   - name: Ca Signed Indicator
     physical_name: ca_signed_ind
     business_meaning_1st: Ký CA (chứng thư số).
@@ -26633,23 +26526,6 @@ entities:
       - source_table: FORMS
         source_column: IDS.FORMS.LEADER_APPROVAL_FLG
         business_meaning: Form tự động duyệt (Lãnh đạo).
-        comment: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1).
-  - name: Published Indicator
-    physical_name: published_ind
-    business_meaning_1st: Form được công bố.
-    comment_1st: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1).
-    data_domain_most: Small Counter
-    data_type_most: int
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: IDS
-      source_tables:
-      - source_table: FORMS
-        source_column: IDS.FORMS.PUBLISHED_FLG
-        business_meaning: Form được công bố.
         comment: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1).
   - name: Title Formula
     physical_name: title_formula
@@ -26688,10 +26564,8 @@ entities:
   - name: Report Type Code
     physical_name: rpt_tp_code
     business_meaning_1st: Loại báo cáo.
-    comment_1st: Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES
-      trong tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn.
-      Nguồn lưu dạng số (NUMBER(1)) — ETL cần convert sang string.
-    data_domain_most: Text
+    comment_1st: SCHEMA_CODE=IDS.REPORT_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_TYPE').
+    data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
     is_primary_key_most: false
@@ -26703,15 +26577,11 @@ entities:
       - source_table: FORMS
         source_column: IDS.FORMS.REPORT_TYPE
         business_meaning: Loại báo cáo.
-        comment: Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES
-          trong tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL
-          nguồn. Nguồn lưu dạng số (NUMBER(1)) — ETL cần convert sang string.
+        comment: SCHEMA_CODE=IDS.REPORT_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_TYPE').
   - name: Control Unit Code
     physical_name: control_unit_code
     business_meaning_1st: Đơn vị kiểm soát.
-    comment_1st: "Scheme: IDS_CONTROL_UNIT (no_lookup) — chưa xác nhận cross-source\
-      \ FK đến Regulatory Authority Organization Unit; giữ Classification Value cho\
-      \ đến khi Data Modeler xác nhận."
+    comment_1st: SCHEMA_CODE=ECAT.DEPARTMENT
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
@@ -26724,15 +26594,11 @@ entities:
       - source_table: FORMS
         source_column: IDS.FORMS.CONTROL_UNIT_CD
         business_meaning: Đơn vị kiểm soát.
-        comment: "Scheme: IDS_CONTROL_UNIT (no_lookup) — chưa xác nhận cross-source\
-          \ FK đến Regulatory Authority Organization Unit; giữ Classification Value\
-          \ cho đến khi Data Modeler xác nhận."
+        comment: SCHEMA_CODE=ECAT.DEPARTMENT
   - name: Operating Unit Code
     physical_name: operating_unit_code
     business_meaning_1st: Đơn vị sử dụng.
-    comment_1st: "Scheme: IDS_OPERATING_UNIT (no_lookup) — chưa xác nhận cross-source\
-      \ FK đến Regulatory Authority Organization Unit; giữ Classification Value cho\
-      \ đến khi Data Modeler xác nhận."
+    comment_1st: SCHEMA_CODE=ECAT.DEPARTMENT
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
@@ -26745,46 +26611,7 @@ entities:
       - source_table: FORMS
         source_column: IDS.FORMS.OPERATING_UNIT_CD
         business_meaning: Đơn vị sử dụng.
-        comment: "Scheme: IDS_OPERATING_UNIT (no_lookup) — chưa xác nhận cross-source\
-          \ FK đến Regulatory Authority Organization Unit; giữ Classification Value\
-          \ cho đến khi Data Modeler xác nhận."
-  - name: System Code
-    physical_name: stm_code
-    business_meaning_1st: Hệ thống con trong IDS.
-    comment_1st: Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES
-      trong tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: IDS
-      source_tables:
-      - source_table: FORMS
-        source_column: IDS.FORMS.SYSTEM_CD
-        business_meaning: Hệ thống con trong IDS.
-        comment: Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES
-          trong tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL
-          nguồn.
-  - name: Deleted Indicator
-    physical_name: deleted_ind
-    business_meaning_1st: Trạng thái xóa.
-    comment_1st: Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1).
-    data_domain_most: Small Counter
-    data_type_most: int
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: IDS
-      source_tables:
-      - source_table: FORMS
-        source_column: IDS.FORMS.DELETE_FLG
-        business_meaning: Trạng thái xóa.
-        comment: Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1).
+        comment: SCHEMA_CODE=ECAT.DEPARTMENT
 - ldm:
     id: ATM-fr_value
     logical_name_1st: Financial Report Value
@@ -26815,7 +26642,7 @@ entities:
   - name: Financial Report Value Id
     physical_name: fr_val_id
     business_meaning_1st: Khóa đại diện (surrogate key).
-    comment_1st: "PK surrogate. Hash: hash_id('IDS.DATA', ID). BCV: \"[Documentation]\
+    comment_1st: "PK surrogate. Hash: hash_id('IDS_DATA', ID). BCV: \"[Documentation]\
       \ Regulatory Report\"."
     data_domain_most: Surrogate Key
     data_type_most: string
@@ -26829,7 +26656,7 @@ entities:
       - source_table: DATA
         source_column: null
         business_meaning: Khóa đại diện (surrogate key).
-        comment: "PK surrogate. Hash: hash_id('IDS.DATA', ID). BCV: \"[Documentation]\
+        comment: "PK surrogate. Hash: hash_id('IDS_DATA', ID). BCV: \"[Documentation]\
           \ Regulatory Report\"."
   - name: Financial Report Value Code
     physical_name: fr_val_code
@@ -26872,9 +26699,8 @@ entities:
   - name: Financial Report Catalog Id
     physical_name: fr_catalog_id
     business_meaning_1st: ID của báo cáo.
-    comment_1st: "FK target: fr_catalog.fr_catalog_id. Cần ETL crosswalk sang IDS.REPORT_CATALOG:\
-      \ DATA.REPORT_CATALOG_ID = REPORT_CATALOG.ID để xác nhận REPORT_CD sau đó hash_id('IDS.REPORT_CATALOG',\
-      \ REPORT_CD)."
+    comment_1st: "FK target: fr_catalog.fr_catalog_id. Hash: hash_id('IDS_REPORT_CATALOG',\
+      \ REPORT_CATALOG_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -26887,15 +26713,13 @@ entities:
       - source_table: DATA
         source_column: IDS.DATA.REPORT_CATALOG_ID
         business_meaning: ID của báo cáo.
-        comment: "FK target: fr_catalog.fr_catalog_id. Cần ETL crosswalk sang IDS.REPORT_CATALOG:\
-          \ DATA.REPORT_CATALOG_ID = REPORT_CATALOG.ID để xác nhận REPORT_CD sau đó\
-          \ hash_id('IDS.REPORT_CATALOG', REPORT_CD)."
+        comment: "FK target: fr_catalog.fr_catalog_id. Hash: hash_id('IDS_REPORT_CATALOG',\
+          \ REPORT_CATALOG_ID)."
   - name: Financial Report Catalog Code
     physical_name: fr_catalog_code
     business_meaning_1st: Mã báo cáo.
     comment_1st: "Lookup pair: fr_catalog.fr_catalog_code. Pair with Financial Report\
-      \ Catalog Id. Giá trị lấy từ IDS.REPORT_CATALOG.REPORT_CD sau ETL crosswalk\
-      \ — chi tiết xem comment Financial Report Catalog Id."
+      \ Catalog Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -26906,15 +26730,14 @@ entities:
     - source_system: IDS
       source_tables:
       - source_table: DATA
-        source_column: IDS.REPORT_CATALOG.REPORT_CD
+        source_column: IDS.REPORT_CATALOG.ID
         business_meaning: Mã báo cáo.
         comment: "Lookup pair: fr_catalog.fr_catalog_code. Pair with Financial Report\
-          \ Catalog Id. Giá trị lấy từ IDS.REPORT_CATALOG.REPORT_CD sau ETL crosswalk\
-          \ — chi tiết xem comment Financial Report Catalog Id."
+          \ Catalog Id."
   - name: Public Company Id
     physical_name: pc_id
     business_meaning_1st: ID Hồ sơ doanh nghiệp.
-    comment_1st: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES',\
+    comment_1st: "FK target: public_company.pc_id. Hash: hash_id('IDS_COMPANY_PROFILES',\
       \ COMPANY_PROFILE_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
@@ -26928,7 +26751,7 @@ entities:
       - source_table: DATA
         source_column: IDS.DATA.COMPANY_PROFILE_ID
         business_meaning: ID Hồ sơ doanh nghiệp.
-        comment: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES',\
+        comment: "FK target: public_company.pc_id. Hash: hash_id('IDS_COMPANY_PROFILES',\
           \ COMPANY_PROFILE_ID)."
   - name: Public Company Code
     physical_name: pc_code
@@ -27065,11 +26888,11 @@ entities:
           draft thì enable.
         comment: Giá trị 1 → true (enable); 0 → false (disable). Nguồn NUMBER(1) —
           đồng nhất pattern với fr_catalog.Active Indicator.
-  - name: Cell Type Code
-    physical_name: cell_tp_code
-    business_meaning_1st: "Kiểu dữ liệu: I/O - Input/Output."
-    comment_1st: "Scheme: IDS_REPORT_CELL_TYPE. Values lấy trực tiếp từ cột nguồn\
-      \ (CHAR(1), I/O)."
+  - name: Report Catalog Type Code
+    physical_name: rpt_catalog_tp_code
+    business_meaning_1st: Loại báo cáo, lấy từ bảng REPORT_CATALOG.
+    comment_1st: SCHEMA_CODE=IDS.REPORT_CATALOG_TYPE. Values load từ LOOKUP_VALUES
+      (LOOKUP_GROUP='RC_TYPE').
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
@@ -27081,9 +26904,9 @@ entities:
       source_tables:
       - source_table: DATA
         source_column: IDS.DATA.RC_TYPE
-        business_meaning: "Kiểu dữ liệu: I/O - Input/Output."
-        comment: "Scheme: IDS_REPORT_CELL_TYPE. Values lấy trực tiếp từ cột nguồn\
-          \ (CHAR(1), I/O)."
+        business_meaning: Loại báo cáo, lấy từ bảng REPORT_CATALOG.
+        comment: SCHEMA_CODE=IDS.REPORT_CATALOG_TYPE. Values load từ LOOKUP_VALUES
+          (LOOKUP_GROUP='RC_TYPE').
 - ldm:
     id: ATM-inspection_conclusion_remedial
     logical_name_1st: Inspection Conclusion Remedial
@@ -27259,7 +27082,7 @@ entities:
   - name: Public Company Report Submission Id
     physical_name: pc_rpt_submission_id
     business_meaning_1st: Khóa đại diện (surrogate key).
-    comment_1st: "PK surrogate. Hash: hash_id('IDS.COMPANY_DATA', ID). BCV: \"[Documentation]\
+    comment_1st: "PK surrogate. Hash: hash_id('IDS_COMPANY_DATA', ID). BCV: \"[Documentation]\
       \ Regulatory Report\"."
     data_domain_most: Surrogate Key
     data_type_most: string
@@ -27273,7 +27096,7 @@ entities:
       - source_table: COMPANY_DATA
         source_column: null
         business_meaning: Khóa đại diện (surrogate key).
-        comment: "PK surrogate. Hash: hash_id('IDS.COMPANY_DATA', ID). BCV: \"[Documentation]\
+        comment: "PK surrogate. Hash: hash_id('IDS_COMPANY_DATA', ID). BCV: \"[Documentation]\
           \ Regulatory Report\"."
   - name: Public Company Report Submission Code
     physical_name: pc_rpt_submission_code
@@ -27316,7 +27139,7 @@ entities:
   - name: Public Company Id
     physical_name: pc_id
     business_meaning_1st: ID Hồ sơ doanh nghiệp.
-    comment_1st: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES',\
+    comment_1st: "FK target: public_company.pc_id. Hash: hash_id('IDS_COMPANY_PROFILES',\
       \ COMPANY_PROFILE_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
@@ -27330,7 +27153,7 @@ entities:
       - source_table: COMPANY_DATA
         source_column: IDS.COMPANY_DATA.COMPANY_PROFILE_ID
         business_meaning: ID Hồ sơ doanh nghiệp.
-        comment: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES',\
+        comment: "FK target: public_company.pc_id. Hash: hash_id('IDS_COMPANY_PROFILES',\
           \ COMPANY_PROFILE_ID)."
   - name: Public Company Code
     physical_name: pc_code
@@ -27353,7 +27176,7 @@ entities:
     physical_name: fr_template_id
     business_meaning_1st: ID form.
     comment_1st: "FK target: fr_template.fr_template_id. Cần ETL crosswalk sang IDS.FORMS:\
-      \ COMPANY_DATA.FORM_ID = FORMS.ID để xác nhận FORM_CD sau đó hash_id('IDS.FORMS',\
+      \ COMPANY_DATA.FORM_ID = FORMS.ID để xác nhận FORM_CD sau đó hash_id('IDS_FORMS',\
       \ FORM_CD)."
     data_domain_most: Surrogate Key
     data_type_most: string
@@ -27368,7 +27191,7 @@ entities:
         source_column: IDS.COMPANY_DATA.FORM_ID
         business_meaning: ID form.
         comment: "FK target: fr_template.fr_template_id. Cần ETL crosswalk sang IDS.FORMS:\
-          \ COMPANY_DATA.FORM_ID = FORMS.ID để xác nhận FORM_CD sau đó hash_id('IDS.FORMS',\
+          \ COMPANY_DATA.FORM_ID = FORMS.ID để xác nhận FORM_CD sau đó hash_id('IDS_FORMS',\
           \ FORM_CD)."
   - name: Financial Report Template Code
     physical_name: fr_template_code
@@ -27394,7 +27217,7 @@ entities:
   - name: Parent Submission Id
     physical_name: parent_submission_id
     business_meaning_1st: là parent id của company_data.
-    comment_1st: "FK target: pc_report_submission.pc_rpt_submission_id. Hash: hash_id('IDS.COMPANY_DATA',\
+    comment_1st: "FK target: pc_report_submission.pc_rpt_submission_id. Hash: hash_id('IDS_COMPANY_DATA',\
       \ PARENT_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
@@ -27408,7 +27231,7 @@ entities:
       - source_table: COMPANY_DATA
         source_column: IDS.COMPANY_DATA.PARENT_ID
         business_meaning: là parent id của company_data.
-        comment: "FK target: pc_report_submission.pc_rpt_submission_id. Hash: hash_id('IDS.COMPANY_DATA',\
+        comment: "FK target: pc_report_submission.pc_rpt_submission_id. Hash: hash_id('IDS_COMPANY_DATA',\
           \ PARENT_ID)."
   - name: Parent Submission Code
     physical_name: parent_submission_code
@@ -27433,7 +27256,7 @@ entities:
     physical_name: original_submission_id
     business_meaning_1st: Id của company_data, dùng trong trường hợp có tin đính chính
       - Luôn Lưu id của tin gốc.
-    comment_1st: "FK target: pc_report_submission.pc_rpt_submission_id. Hash: hash_id('IDS.COMPANY_DATA',\
+    comment_1st: "FK target: pc_report_submission.pc_rpt_submission_id. Hash: hash_id('IDS_COMPANY_DATA',\
       \ REF_ID) | Nullable — chỉ có khi tin này là đính chính của tin khác."
     data_domain_most: Surrogate Key
     data_type_most: string
@@ -27448,7 +27271,7 @@ entities:
         source_column: IDS.COMPANY_DATA.REF_ID
         business_meaning: Id của company_data, dùng trong trường hợp có tin đính chính
           - Luôn Lưu id của tin gốc.
-        comment: "FK target: pc_report_submission.pc_rpt_submission_id. Hash: hash_id('IDS.COMPANY_DATA',\
+        comment: "FK target: pc_report_submission.pc_rpt_submission_id. Hash: hash_id('IDS_COMPANY_DATA',\
           \ REF_ID) | Nullable — chỉ có khi tin này là đính chính của tin khác."
   - name: Original Submission Code
     physical_name: original_submission_code
@@ -27489,7 +27312,8 @@ entities:
   - name: Submission Status Code
     physical_name: submission_status_code
     business_meaning_1st: Trạng thái (Chờ duyệt; Đã duyệt; Từ chối; Đóng quy trình).
-    comment_1st: "Scheme: IDS_SUBMISSION_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_APPROVAL_STATUS')."
+    comment_1st: SCHEMA_CODE=IDS.COMPANY_DATA.NEWS_STATUS_CD. Values load từ LOOKUP_VALUES
+      (LOOKUP_GROUP='NEWS_APPROVAL_STATUS').
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
@@ -27502,7 +27326,8 @@ entities:
       - source_table: COMPANY_DATA
         source_column: IDS.COMPANY_DATA.NEWS_STATUS_CD
         business_meaning: Trạng thái (Chờ duyệt; Đã duyệt; Từ chối; Đóng quy trình).
-        comment: "Scheme: IDS_SUBMISSION_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_APPROVAL_STATUS')."
+        comment: SCHEMA_CODE=IDS.COMPANY_DATA.NEWS_STATUS_CD. Values load từ LOOKUP_VALUES
+          (LOOKUP_GROUP='NEWS_APPROVAL_STATUS').
   - name: Report Year
     physical_name: rpt_year
     business_meaning_1st: Năm báo cáo tài chính.
@@ -27732,10 +27557,8 @@ entities:
           với fr_catalog.Active Indicator.
   - name: News Type Code
     physical_name: news_tp_code
-    business_meaning_1st: Loại báo cáo (Báo cáo tài chính; Báo cáo định kỳ khác; Báo
-      cáo bất thường 24h...).
-    comment_1st: "Scheme: IDS_NEWS_TYPE. Dùng chung scheme với Disclosure Notification.\
-      \ Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_TYPE')."
+    business_meaning_1st: Mã phân loại.
+    comment_1st: SCHEMA_CODE=IDS.NEWS_TYPE_CD. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_TYPE').
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: false
@@ -27747,10 +27570,8 @@ entities:
       source_tables:
       - source_table: COMPANY_DATA
         source_column: IDS.COMPANY_DATA.NEWS_TYPE_CD
-        business_meaning: Loại báo cáo (Báo cáo tài chính; Báo cáo định kỳ khác; Báo
-          cáo bất thường 24h...).
-        comment: "Scheme: IDS_NEWS_TYPE. Dùng chung scheme với Disclosure Notification.\
-          \ Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_TYPE')."
+        business_meaning: Mã phân loại.
+        comment: SCHEMA_CODE=IDS.NEWS_TYPE_CD. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_TYPE').
   - name: Reject Reason
     physical_name: reject_reason
     business_meaning_1st: Lý do từ chối/gửi lại tin từ chuyên viên/lãnh đạo HNX (nullable,
@@ -27811,7 +27632,7 @@ entities:
   - name: Linked Submission Id
     physical_name: linked_submission_id
     business_meaning_1st: Id link giữa tin tiếng anh và tin tiếng việt.
-    comment_1st: "FK target: pc_report_submission.pc_rpt_submission_id. Hash: hash_id('IDS.COMPANY_DATA',\
+    comment_1st: "FK target: pc_report_submission.pc_rpt_submission_id. Hash: hash_id('IDS_COMPANY_DATA',\
       \ LINK_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
@@ -27825,7 +27646,7 @@ entities:
       - source_table: COMPANY_DATA
         source_column: IDS.COMPANY_DATA.LINK_ID
         business_meaning: Id link giữa tin tiếng anh và tin tiếng việt.
-        comment: "FK target: pc_report_submission.pc_rpt_submission_id. Hash: hash_id('IDS.COMPANY_DATA',\
+        comment: "FK target: pc_report_submission.pc_rpt_submission_id. Hash: hash_id('IDS_COMPANY_DATA',\
           \ LINK_ID)."
   - name: Linked Submission Code
     physical_name: linked_submission_code
@@ -27849,9 +27670,8 @@ entities:
   - name: Language Code
     physical_name: language_code
     business_meaning_1st: Mã ngôn ngữ (VI - Tiếng việt, EN - Tiếng Anh).
-    comment_1st: "Scheme: IDS_LANGUAGE. Values lấy trực tiếp từ cột nguồn (VARCHAR2(20),\
-      \ VI/EN)."
-    data_domain_most: Classification Value
+    comment_1st: null
+    data_domain_most: Text
     data_type_most: string
     nullable_most: false
     is_primary_key_most: false
@@ -27863,8 +27683,7 @@ entities:
       - source_table: COMPANY_DATA
         source_column: IDS.COMPANY_DATA.LANGUAGE_CD
         business_meaning: Mã ngôn ngữ (VI - Tiếng việt, EN - Tiếng Anh).
-        comment: "Scheme: IDS_LANGUAGE. Values lấy trực tiếp từ cột nguồn (VARCHAR2(20),\
-          \ VI/EN)."
+        comment: null
   - name: Alert Audit Content
     physical_name: alert_audit_content
     business_meaning_1st: Nội dung cảnh báo kiểm toán tự động.
@@ -27928,7 +27747,7 @@ entities:
       bố — chỉ có khi tin liên quan chào bán/phát hành.
     comment_1st: "FK target: pc_securities_offering.pc_securities_offering_id. Cần\
       \ ETL crosswalk sang IDS.SECURITIES_OFFERING: COMPANY_DATA.SECURITIES_OFFERING_ID\
-      \ = SECURITIES_OFFERING.ID để xác nhận APPLICATION_CD sau đó hash_id('IDS.SECURITIES_OFFERING',\
+      \ = SECURITIES_OFFERING.ID để xác nhận APPLICATION_CD sau đó hash_id('IDS_SECURITIES_OFFERING',\
       \ APPLICATION_CD) | Trước đây hash trực tiếp theo SECURITIES_OFFERING_ID (ID\
       \ kỹ thuật) gây sai lệch với Id của bảng main (hash từ APPLICATION_CD) — đã\
       \ sửa sang crosswalk 2026-08-14."
@@ -27947,7 +27766,7 @@ entities:
           bố — chỉ có khi tin liên quan chào bán/phát hành.
         comment: "FK target: pc_securities_offering.pc_securities_offering_id. Cần\
           \ ETL crosswalk sang IDS.SECURITIES_OFFERING: COMPANY_DATA.SECURITIES_OFFERING_ID\
-          \ = SECURITIES_OFFERING.ID để xác nhận APPLICATION_CD sau đó hash_id('IDS.SECURITIES_OFFERING',\
+          \ = SECURITIES_OFFERING.ID để xác nhận APPLICATION_CD sau đó hash_id('IDS_SECURITIES_OFFERING',\
           \ APPLICATION_CD) | Trước đây hash trực tiếp theo SECURITIES_OFFERING_ID\
           \ (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ APPLICATION_CD)\
           \ — đã sửa sang crosswalk 2026-08-14."
@@ -27997,7 +27816,7 @@ entities:
     physical_name: legal_entity_id
     business_meaning_1st: Id cổ đông/nhà đầu tư phát hành khi đối tượng công bố =
       Cổ đông.
-    comment_1st: "FK target: legal_entity.legal_entity_id. Hash: hash_id('IDS.LEGAL_ENTITIES',\
+    comment_1st: "FK target: legal_entity.legal_entity_id. Hash: hash_id('IDS_LEGAL_ENTITIES',\
       \ LEGAL_ENTITY_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
@@ -28012,7 +27831,7 @@ entities:
         source_column: IDS.COMPANY_DATA.LEGAL_ENTITY_ID
         business_meaning: Id cổ đông/nhà đầu tư phát hành khi đối tượng công bố =
           Cổ đông.
-        comment: "FK target: legal_entity.legal_entity_id. Hash: hash_id('IDS.LEGAL_ENTITIES',\
+        comment: "FK target: legal_entity.legal_entity_id. Hash: hash_id('IDS_LEGAL_ENTITIES',\
           \ LEGAL_ENTITY_ID)."
   - name: Legal Entity Code
     physical_name: legal_entity_code
@@ -28037,7 +27856,7 @@ entities:
     physical_name: pc_tender_offer_id
     business_meaning_1st: Id phương án đăng ký chào mua công khai gắn với tin công
       bố (form TBCMCK/KQCMCK).
-    comment_1st: "FK target: pc_tender_offer.pc_tender_offer_id. Hash: hash_id('IDS.COMPANY_TENDER_OFFER',\
+    comment_1st: "FK target: pc_tender_offer.pc_tender_offer_id. Hash: hash_id('IDS_COMPANY_TENDER_OFFER',\
       \ COMPANY_TENDER_OFFER_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
@@ -28052,7 +27871,7 @@ entities:
         source_column: IDS.COMPANY_DATA.COMPANY_TENDER_OFFER_ID
         business_meaning: Id phương án đăng ký chào mua công khai gắn với tin công
           bố (form TBCMCK/KQCMCK).
-        comment: "FK target: pc_tender_offer.pc_tender_offer_id. Hash: hash_id('IDS.COMPANY_TENDER_OFFER',\
+        comment: "FK target: pc_tender_offer.pc_tender_offer_id. Hash: hash_id('IDS_COMPANY_TENDER_OFFER',\
           \ COMPANY_TENDER_OFFER_ID)."
   - name: Public Company Tender Offer Code
     physical_name: pc_tender_offer_code
@@ -28078,7 +27897,7 @@ entities:
     business_meaning_1st: Id phương án mua/bán cổ phiếu quỹ gắn với tin công bố (form
       TBCPQ/KQCPQ).
     comment_1st: "FK target: pc_treasury_share_transaction.pc_treasury_share_transaction_id.\
-      \ Hash: hash_id('IDS.COMPANY_TREASURY_SHARES', COMPANY_TREASURY_SHARE_ID)."
+      \ Hash: hash_id('IDS_COMPANY_TREASURY_SHARES', COMPANY_TREASURY_SHARE_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -28093,7 +27912,7 @@ entities:
         business_meaning: Id phương án mua/bán cổ phiếu quỹ gắn với tin công bố (form
           TBCPQ/KQCPQ).
         comment: "FK target: pc_treasury_share_transaction.pc_treasury_share_transaction_id.\
-          \ Hash: hash_id('IDS.COMPANY_TREASURY_SHARES', COMPANY_TREASURY_SHARE_ID)."
+          \ Hash: hash_id('IDS_COMPANY_TREASURY_SHARES', COMPANY_TREASURY_SHARE_ID)."
   - name: Public Company Treasury Share Transaction Code
     physical_name: pc_treasury_share_transaction_code
     business_meaning_1st: Mã phương án mua/bán cổ phiếu quỹ (denormalized lookup).
@@ -28118,7 +27937,7 @@ entities:
     business_meaning_1st: Id Login của lãnh đạo phê duyệt do chuyên viên chọn khi
       trình phê duyệt (SRS 2.12.3).
     comment_1st: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-      \ Hash: hash_id('IAM.USERS', APPROVER_USER_ID) | Chưa xác nhận join key IDS.COMPANY_DATA.APPROVER_USER_ID\
+      \ Hash: hash_id('IAM_USERS', APPROVER_USER_ID) | Chưa xác nhận join key IDS.COMPANY_DATA.APPROVER_USER_ID\
       \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
     data_domain_most: Surrogate Key
     data_type_most: string
@@ -28134,7 +27953,7 @@ entities:
         business_meaning: Id Login của lãnh đạo phê duyệt do chuyên viên chọn khi
           trình phê duyệt (SRS 2.12.3).
         comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-          \ Hash: hash_id('IAM.USERS', APPROVER_USER_ID) | Chưa xác nhận join key\
+          \ Hash: hash_id('IAM_USERS', APPROVER_USER_ID) | Chưa xác nhận join key\
           \ IDS.COMPANY_DATA.APPROVER_USER_ID ↔ IAM.USERS, cần Data Modeler xác nhận\
           \ trước go-live."
   - name: Approver User Code
