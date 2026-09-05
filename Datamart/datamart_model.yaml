@@ -45,6 +45,7 @@ entities:
     modules_using:
       - "NHNCK"
       - "GSDC"
+      - "GSTT"
     columns:
       - logical_name: "Calendar Date Dimension Id"
         physical_name: "cdr_dt_dim_id"
@@ -118,6 +119,15 @@ entities:
         description: "(Sửa 2026-07-20) Cờ đánh dấu ngày nghỉ — Y nếu là ngày nghỉ, N nếu không. Chỉ đánh dấu nghỉ/không nghỉ, không phân biệt loại nghỉ. Atomic cdr_dt hiện chỉ có Holiday Flag (hol_f — public holiday); ETL tạm map trực tiếp, chờ Atomic bổ sung nếu cần phân biệt thêm loại ngày nghỉ khác"
         source_atomic_table: "cdr_dt"
         source_atomic_column: "cdr_dt.hol_f"
+      - logical_name: "Is Trading Date"
+        physical_name: "is_trading_date"
+        data_domain: "Indicator"
+        data_type: "string"
+        nullable: false
+        key: ""
+        description: "(Sửa 2026-09-05, partial — thêm từ GSTT, yêu cầu thiết kế trực tiếp từ user) Y nếu ngày lịch này là ngày giao dịch thực tế của thị trường chứng khoán (tồn tại bản ghi trên Market Index Snapshot), N nếu không (cuối tuần/lễ/ngày market không mở cửa). Dùng để lọc \"ngày giao dịch\" (khác Is Weekend/Holiday Flag — không dùng chung lịch nghỉ lễ nhà nước, vì thị trường có thể nghỉ thêm ngày không phải lễ chính thức hoặc ngược lại). \"Ngày giao dịch gần nhất\" = MAX(cdr_dt) WHERE is_trading_date = 'Y' — tính tại tầng BI, dùng làm tham số lọc mặc định cho dashboard/báo cáo giao dịch thị trường (xem GSTT Nhóm 1, K_GSTT_128). ETL: EXISTS(SELECT 1 FROM market_index_snapshot WHERE market_index_snapshot.trading_dt = cdr_dt.cdr_dt) → 'Y' ELSE 'N' — join_atomic khác driving table cdr_dt (partial, không ảnh hưởng cột direct hiện có)"
+        source_atomic_table: "market_index_snapshot"
+        source_atomic_column: "market_index_snapshot.trading_dt"
 
   - id: "DTM-securities_practitioner_dim"
     logical_name: "Securities Practitioner Dimension"

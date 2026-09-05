@@ -61,6 +61,7 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_fct_stock_portfolio_snpst_flat ON CLUST
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                              Nullable(Date)          COMMENT 'Ngày giao dịch — từ Calendar Date Dimension',
+    is_trading_date                     Nullable(String)        COMMENT 'Cờ Y/N — ngày lịch có phải ngày thị trường thực sự mở cửa giao dịch hay không (bổ sung 2026-09-05, partial trên cdr_dt_dim, yêu cầu trực tiếp từ user). Dùng suy ra ngày giao dịch gần nhất = MAX(cdr_dt) WHERE is_trading_date=\'Y\' — tham số lọc mặc định dashboard/báo cáo GSTT (K_GSTT_128)',
 
     -- From: SECURITY TRADING SNAPSHOT DIMENSION
     symbol                               Nullable(String)        COMMENT 'Mã chứng khoán — từ Security Trading Snapshot Dimension',

@@ -25,11 +25,10 @@ WHERE s.FloorCode IN ('10','02','04', ' 03')   -- HOSE, HNX, UPCOM
  ORDER BY c.industry_cd",,"WITH
 -- ── 1. THÔNG TIN MÃ CK + GIÁ + NGÀNH + CHỈ SỐ ──────────────────────────
 co_phieu AS (
-select * from 
-(
  SELECT
     s.symbol                        AS ma_ck,
     s.FloorCode                     AS floor_code,
+    s.stocktype,
   cat.industry_name               AS ten_nganh,  
     CASE s.FloorCode
         WHEN '10' THEN 'HOSE'
@@ -51,22 +50,26 @@ select * from
     CASE
         WHEN s.reference IS NULL OR s.reference = 0 THEN NULL
         ELSE ROUND((s.change / s.reference) * 100, 2)
-    END                              AS pct_thay_doi,
-    idx.IndexCode                    AS chi_so,
-    s.TRADINGTIME,
-         ROW_NUMBER() OVER (
-                PARTITION BY s.tradingdate, s.symbol
-                ORDER BY s.TRADINGTIME DESC, SEQUENCE ASC 
-            ) AS rn
-FROM uat_mdds_stg.JAD_STOCKINFOR s
-LEFT JOIN uat_mdds_stg.JAD_CSIDXINFOR idx
-    ON idx.Symbol       = s.symbol
-   AND idx.TradingDate  = s.tradingdate
-    LEFT JOIN uat_ids_stg.company_profiles cp
+    END                              AS pct_thay_doi
+--    ,mk.indexName                    AS chi_so
+--         ROW_NUMBER() OVER (
+--                PARTITION BY s.tradingdate, s.symbol
+--                ORDER BY s.TRADINGTIME DESC, SEQUENCE ASC 
+--            ) AS rn
+FROM uat_mdds_stg.tmp_jad_stockinfor_eod s
+--LEFT JOIN uat_mdds_stg.JAD_CSIDXINFOR idx
+--    ON idx.Symbol       = s.symbol
+--   AND date_format (idx.tradingdate , 'yyyyMMdd') = :Ngay_gd
+--LEFT JOIN uat_mdds_stg.tmp_JAD_MARKETINFOR_eod mk
+--        on mk.marketcode = idx.indexcode
+--        AND date_format (mk.tradingdate , 'yyyyMMdd') = :Ngay_gd
+LEFT JOIN uat_ids_stg.company_profiles cp
         ON cp.equity_ticker    = s.symbol
-    LEFT JOIN uat_ids_stg.categories cat
+        and date_format( cp.ds_snpst_dt, 'yyyyMMdd') = :Ngay_gd
+LEFT JOIN uat_ids_stg.categories cat
         ON cat.id           = cp.category_l1_id
         AND cat.active_flg  = 1
+        AND date_format( cat.ds_snpst_dt, 'yyyyMMdd') =  :Ngay_gd
 WHERE 1=1
   AND date_format(to_date(s.TradingDate, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
   AND s.FloorCode   IN ('10', '02', '04', '03')
@@ -75,13 +78,11 @@ WHERE 1=1
     OR
     (s.floorcode = '10' AND s.stocktype = 1)
 )
---  AND s.symbol = 'ACB'
+--  AND s.symbol = 'ABC'
 --  AND s.STOCKTYPE = '4'
 )
-where rn =1
-),
-so_lenh AS (
-
+--where rn =1,
+,so_lenh AS (
     -- HOSE: Market ID thực tế dùng 'STK', 'STO', 'UPX'
     SELECT
     t.SYMBOL                                                                AS symbol,
@@ -112,6 +113,8 @@ so_lenh AS (
              THEN t.EXECUTION_Value                    ELSE 0 END)        AS gt_nn_ban
 FROM uat_ordertrade_stg.trade_book_hose t
 WHERE 1=1
+        AND t.MARKET_ID IN ('STK')
+--        AND t.BOARD_TYPE IN ('T1','T2','T3','T4','T6')--- NEU LA THOA THUAN
 --        and symbol = 'SHB' 
    AND date_format(to_date(t.TRADE_DATE, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
 GROUP BY t.SYMBOL
@@ -142,6 +145,8 @@ SELECT
              THEN t.TRADE_QUANTITY * trade_price                                 ELSE 0 END) AS gt_nn_ban
  from uat_ordertrade_stg.trade_book_hnx t
  where 1=1 
+--AND t.BOARD_ID IN ('T1','T2','T3','T4','T6')--- NEU LA THOA THUAN
+t.MARKET_ID IN ('STX','UPX')
 AND t.trade_date  = :Ngay_gd 
 group by  t.ISSUE_CODE
 ),
@@ -167,10 +172,11 @@ SELECT
     c.ma_ck,
     c.ten_san,
     c.ten_nganh,
-    c.chi_so,
+--    c.chi_so,
     c.loai_phai_sinh,
+    c.stocktype,
     c.ngay_dao_han,
-    :ngay_gd                            AS ngay_gd,
+    :Ngay_gd                            AS ngay_gd,
     c.gia_tham_chieu,
     c.gia_dong_cua,
     c.thay_doi_gia,
@@ -181,11 +187,19 @@ SELECT
 --    COALESCE(sl.tong_gt_ps, 0)         AS tong_gt_phai_sinh,
     COALESCE(sl.tong_kl_tt, 0)         AS tong_kl_thoa_thuan,
     COALESCE(sl.tong_gt_tt, 0)         AS tong_gt_thoa_thuan,
+        COALESCE(sl.kl_nn_mua,  0)         AS kl_nn_mua,
+        COALESCE(sl.kl_nn_ban,  0)         AS kl_nn_ban,
+        COALESCE(sl.gt_nn_mua,  0)         AS gt_nn_mua,
+        COALESCE(sl.gt_nn_ban,  0)         AS gt_nn_ban,
+        COALESCE(sl.gtnn_rong,  0)         AS gtnn_rong,
     COALESCE(sl.klnn_rong,  0)         AS klnn_rong
 FROM co_phieu           c
 LEFT JOIN so_lenh_agg   sl ON sl.symbol = c.ma_ck
+where 1=1
+--and c.ten_san = 'HOSE'
+--and c.ma_ck = 'ABW'
 ORDER BY c.Floor_Code, c.ma_ck;
-",,,,Done,Dữ liệu tĩnh,F
+;",,,,Done,Dữ liệu tĩnh,F
 1,,Dashboard thông tin về danh mục chứng khoán theo dạng bảng số liệu,Sàn,,Dashboard,Chiều,TB,Mã CK,MDDS,X,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,floorCode,,"SELECT DISTINCT
     s.FloorCode         AS san,
     CASE s.FloorCode
@@ -199,11 +213,11 @@ FROM JAD_STOCKINFOR s
 WHERE s.tradingdate = :ngay_gd;
 
 ",,,,,,Done,Dữ liệu tĩnh,F
-1,,Dashboard thông tin về danh mục chứng khoán theo dạng bảng số liệu,Chỉ sô,,Dashboard,Chiều,TB,Mã CK,MDDS,X,X,,Done,Thông tin thị trường,JAD_MARKETINFOR,indexName,Join bảng JAD_CSIDXINFOR với JAD_STOCKINFOR qua symbol. Join sang bảng JAD_MARKETINFOR qua JAD_MARKETINFOR .marketcode = JAD_CSIDXINFOR .indexcode,"SELECT s.symbol, idx.indexCode
+1,,Dashboard thông tin về danh mục chứng khoán theo dạng bảng số liệu,Chỉ sô,,Dashboard,Chiều,TB,Mã CK,MDDS,X,X,,Done,Thông tin thị trường,JAD_MARKETINFOR,stockType,Join bảng JAD_CSIDXINFOR với JAD_STOCKINFOR qua symbol. Join sang bảng JAD_MARKETINFOR qua JAD_MARKETINFOR .marketcode = JAD_CSIDXINFOR .indexcode,"SELECT s.symbol, idx.indexCode
 FROM JAD_STOCKINFOR s
 JOIN JAD_CSIDXINFOR idx ON s.symbol = idx.symbol
                     AND s.tradingdate = idx.tradingdate;",,,,,,Done,Dữ liệu tĩnh,F
-1,,Dashboard thông tin về danh mục chứng khoán theo dạng bảng số liệu,Loại phái sinh ,,Dashboard,Chiều,TB,Mã CK,MDDS,X,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,stockType,FloorCode='03' (FDS) AND StockType='FU' cho phái sinh,"SELECT
+1,,Dashboard thông tin về danh mục chứng khoán theo dạng bảng số liệu,Loại phái sinh ,,Dashboard,Chiều,TB,Mã CK,MDDS,X,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,,FloorCode='03' (FDS) AND StockType='FU' cho phái sinh,"SELECT
     s.StockType,
      DECODE(si.""""StockType"""", '4', 'HĐTL') || DECODE(si.""""underlyingSymbol"""", 'GB05', 'TPCP', 'GB10', 'TPCP', si.""""underlyingSymbol"""") AS loai_phai_sinh
 FROM JAD_STOCKINFOR s
@@ -5573,6 +5587,9 @@ FROM JAD_STOCKINFOR s
 WHERE s.FloorCode IN ('10','02','04', ' 03')   -- HOSE, HNX, UPCOM
    AND StockType <> 1
   AND s.tradingdate = :ngay_gd;",,,,,,Done,Dữ liệu tĩnh,
+8,,Top khối lượng theo toàn thị trường theo dạng bảng biểu đồ kĩ thuật ,Sàn,,Dashboard,Chiều,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,floorcode," '10'=HOSE, '02'=HNX, '04'=UPCOM",,"10=HOSE, 02=HNX, 04=UPCOM",,,,,Done,Dữ liệu tĩnh,
+8,,Top khối lượng theo toàn thị trường theo dạng bảng biểu đồ kĩ thuật ,Bộ chỉ số thị trường,,Dashboard,Chiều,TB,Mã CK,MDDS,X,X,,Done,Thông tin thị trường,JAD_MARKETINFOR,indexName,"MARKETCODE IN ('HOSE','UPCOM','HNX')",,,,,,,Done,Dữ liệu tĩnh,
+8,,Top khối lượng theo toàn thị trường theo dạng bảng biểu đồ kĩ thuật ,Bộ chỉ số theo ngành ,,Dashboard,Chiều,TB,Mã CK,MDDS,X,X,,Done,Thông tin thị trường,JAD_MARKETINFOR,indexName,"MARKETCODE NOT IN ('HOSE','UPCOM','HNX')",,,,,,,Done,Dữ liệu tĩnh,
 8,,Top khối lượng theo toàn thị trường theo dạng bảng biểu đồ kĩ thuật ,Ngày,,Dashboard,Chiều,Trùng,Mã CK,,,X,,Done,,,,,,,"--------------------------------Tham số từ ngày đến ngày -------------------------------------------------
 WITH Tham_so AS (
     SELECT
@@ -25322,11 +25339,11 @@ LNST AS (
 )
 ",đối với doanh thu và lợi nhuận đang theo kỳ lên sẽ vẫn theo từng kỳ một ,,,,,Chưa có sql,Dữ liệu tĩnh,
 31,,Sở hữu và giao dịch nội bộ ,Mã cổ phiếu,,Dashboard,Chiều,TB,Mã CK,IDS,,,,Done,,ids.company_profiles,equity_ticker,,,,,,,,Chưa có sql,Dữ liệu tĩnh,
-31,,Sở hữu và giao dịch nội bộ ,Tên cổ đông,Tên tổ chức hoặc cá nhân sở hữu cổ phần,Dashboard,Chiều,TB,Mã CK,CSDLTT,,,,Done,,major_shareholder,shareholder_name,,,Mapping biểu mẫu,,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
-31,,Sở hữu và giao dịch nội bộ ,Số cổ phiếu sở hữu,Tổng số cổ phiếu mà cổ đông nắm giữ,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,,,,Done,,major_shareholder,end_period_shares,,,Mapping biểu mẫu,,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
-31,,Sở hữu và giao dịch nội bộ ,Sở hữu nước ngoài ,,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,,,,Done,,vsdc_foreign_investor_info,current_shares_foreign_hold/total_issued_shares,,,Mapping biểu mẫu,,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
-31,,Sở hữu và giao dịch nội bộ ,Sở hữu trong nước,,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,,,,Done,,vsdc_foreign_investor_info,total_issued_shares  - current_shares_foreign_hold/total_issued_shares),,,Mapping biểu mẫu,,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
-31,,Sở hữu và giao dịch nội bộ ,Tỷ lệ sở hữu,Tỷ lệ cổ phần của cổ đông trên tổng số cổ phiếu lưu hành,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,,,,Done,,major_shareholder,end_period_ratio,,,Mapping biểu mẫu,,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
+31,,Sở hữu và giao dịch nội bộ ,Tên cổ đông,Tên tổ chức hoặc cá nhân sở hữu cổ phần,Dashboard,Chiều,TB,Mã CK,CSDLTT,,,,Done,,major_shareholder,shareholder_name,,,,,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
+31,,Sở hữu và giao dịch nội bộ ,Số cổ phiếu sở hữu,Tổng số cổ phiếu mà cổ đông nắm giữ,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,,,,Done,,major_shareholder,end_period_shares,,,,,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
+31,,Sở hữu và giao dịch nội bộ ,Sở hữu nước ngoài ,,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,,,,Done,,vsdc_foreign_investor_info,current_shares_foreign_hold/total_issued_shares,,,,,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
+31,,Sở hữu và giao dịch nội bộ ,Sở hữu trong nước,,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,,,,Done,,vsdc_foreign_investor_info,total_issued_shares  - current_shares_foreign_hold/total_issued_shares),,,,,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
+31,,Sở hữu và giao dịch nội bộ ,Tỷ lệ sở hữu,Tỷ lệ cổ phần của cổ đông trên tổng số cổ phiếu lưu hành,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,,,,Done,,major_shareholder,end_period_ratio,,,,,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
 31,,Sở hữu và giao dịch nội bộ ,Chức vụ người nội bộ,,Dashboard,Chỉ tiêu cơ sở,TB,Mã CK,IDS,,,,Done,,IDS.positions,position_cd," LOOKUP_GROUP = ""POSITION""","SELECT position_cd,cs.ownership_qty,cs.ownership_ratio,cp.equity_ticker FROM ids.LEGAL_ENTITIES le 
 LEFT JOIN ids.POSITIONS p ON le.id = p.legal_entity_id
 LEFT JOIN ids.LOOKUP_VALUES lv ON lv.LOOKUP_CD = p.position_cd

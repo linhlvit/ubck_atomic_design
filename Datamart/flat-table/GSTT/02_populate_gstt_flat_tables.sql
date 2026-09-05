@@ -65,6 +65,7 @@ SELECT
 
     -- From: CALENDAR DATE DIMENSION
     cal.cdr_dt                                     AS cdr_dt,
+    cal.is_trading_date                            AS is_trading_date,
 
     -- From: SECURITY TRADING SNAPSHOT DIMENSION
     sec_dim.symbol                                 AS symbol,
