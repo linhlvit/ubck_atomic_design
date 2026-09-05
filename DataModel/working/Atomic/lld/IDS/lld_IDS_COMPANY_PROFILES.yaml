@@ -156,8 +156,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "int"
-- attribute_name: "Category Level 1 Type Code"
-  physical_name: "category_level_1_tp_code"
+- attribute_name: "Business Line Level 1 Type Code"
+  physical_name: "business_line_level_1_tp_code"
   description: "Mã ngành cấp 1."
   data_domain: "Classification Value"
   nullable: true
@@ -165,41 +165,20 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.CATEGORIES.INDUSTRY_CD"
-  comment: "SCHEMA_CODE=IDS.CATEGORY_L1_TYPE. Values load từ CATEGORIES. Cần ETL crosswalk sang IDS.CATEGORIES: COMPANY_PROFILES.CATEGORY_L1_ID = CATEGORIES.ID để xác nhận INDUSTRY_CD."
+  comment: "SCHEMA_CODE=BUSINESS_LINE_LEVEL_1. Values load từ CATEGORIES. Cần ETL crosswalk sang IDS.CATEGORIES: COMPANY_PROFILES.CATEGORY_L1_ID = CATEGORIES.ID để xác nhận INDUSTRY_CD."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Business Line Level 2 Id"
-  physical_name: "business_line_level_2_id"
-  description: "Ngành cấp 2 (FK)."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.COMPANY_PROFILES.CATEGORY_L2_ID"
-  comment: "FK target: cl_business_line.cl_business_line_id. Cần ETL crosswalk\
-    \ sang IDS.CATEGORIES: COMPANY_PROFILES.CATEGORY_L2_ID = CATEGORIES.ID để xác\
-    \ nhận INDUSTRY_CD sau đó hash_id('ECAT_BUSINESS_LINE_LEVEL_2', INDUSTRY_CD)\
-    \ | IDS.CATEGORIES chỉ dùng làm bảng join, không tự sinh entity — quyết định\
-    \ 2026-07-23. Chưa xác nhận value set khớp danh mục ECAT.BUSINESS_LINE_LEVEL_2\
-    \ — cần profile dữ liệu trước go-live. Xem ghi chú tại Business Line Level 1\
-    \ Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Business Line Level 2 Code"
-  physical_name: "business_line_level_2_code"
+- attribute_name: "Business Line Level 2 Type Code"
+  physical_name: "business_line_level_2_tp_code"
   description: "Mã ngành cấp 2."
-  data_domain: "Text"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.CATEGORIES.INDUSTRY_CD"
-  comment: "Lookup pair: cl_business_line.cl_business_line_code. Pair with Business\
-    \ Line Level 2 Id. Giá trị lấy từ IDS.CATEGORIES.INDUSTRY_CD sau ETL crosswalk\
-    \ — chi tiết xem comment Business Line Level 2 Id."
+  comment: "SCHEMA_CODE=BUSINESS_LINE_LEVEL_2. Values load từ CATEGORIES. Cần ETL crosswalk sang IDS.CATEGORIES: COMPANY_PROFILES.CATEGORY_L2_ID = CATEGORIES.ID để xác nhận INDUSTRY_CD."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

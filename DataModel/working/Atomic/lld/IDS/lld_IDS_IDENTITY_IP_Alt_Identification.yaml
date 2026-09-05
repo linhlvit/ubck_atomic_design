@@ -71,8 +71,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.IDENTITY.IDENTITY_TYPE_CD"
-  comment: "Scheme: IP_ALT_ID_TYPE (source). Nguồn có cột type động qua lookup (LOOKUP_GROUP\
-    \ = 'IDENTITY TYPE') — ETL map value runtime."
+  comment: "SCHEMA_CODE=IDS.IDENTITY_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='IDENTITY_TYPE'). Xử lý CASE WHEN theo giá tri IDENTITY_TYPE_CD (1-NATIONAL_ID, 2-PASSPORT, 3-BUSINESS_LICENSE, 4-CITIZEN_ID)"
   classification_context: "IP_ALT_ID_TYPE=(source)"
   etl_derived_value: null
   data_type: "string"

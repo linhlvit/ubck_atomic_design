@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Involved Party] Individual"
   table_type: "Fundamental"
   group: "T1"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -136,28 +136,25 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.LEGAL_ENTITIES.EDUCATION_LEVEL_CD"
-  comment: "Scheme: IDS_EDUCATION_LEVEL. Values load từ LOOKUP_VALUES (LOOKUP_GROUP\
-    \ = 'EDUCATION_LEVEL')."
-  classification_context: "IDS_EDUCATION_LEVEL"
+  comment: "SCHEMA_CODE=IDS.EDUCATION_LEVEL. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='EDUCATION_LEVEL')."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Nationality Name"
   physical_name: "nationality_nm"
-  description: "Quốc gia."
+  description: "Quốc tịch."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.LEGAL_ENTITIES.NATIONALITY"
-  comment: "Text denormalized — countries là reference data set chưa map vào shared\
-    \ Geographic Area trong scope IDS (xem reference/shared_entity_schemas.md, ví\
-    \ dụ IDS: nationality). Không có fk_note tại nguồn."
+  comment: "Tra cứu geographic_area.geographic_area_code (lọc điều kiện GEOGRAPHIC_AREA_TYPE=COUNTRY)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Individual Birth Date"
-  physical_name: "individual_birth_dt"
+- attribute_name: "Individual Date Of Birth"
+  physical_name: "individual_dt_of_birth"
   description: "Ngày sinh."
   data_domain: "Date"
   nullable: true
@@ -197,16 +194,14 @@ attributes:
   data_type: "decimal(23,2)"
 - attribute_name: "Business Sector Code"
   physical_name: "business_sector_code"
-  description: "Ngành nghề kinh doanh chính (theo mã ngành cấp 4 của Tổng cục Thống\
-    \ kê)."
-  data_domain: "Classification Value"
+  description: "Ngành nghề kinh doanh chính (theo mã ngành cấp 4 của Tổng cục Thống kê)."
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.LEGAL_ENTITIES.BUSINESS_SECTOR"
-  comment: "Scheme: IDS_GSO_BUSINESS_SECTOR (no_lookup) — mã ngành cấp 4 của Tổng\
-    \ cục Thống kê, external classification, không có lookup table trong scope IDS."
-  classification_context: "IDS_GSO_BUSINESS_SECTOR"
+  comment: null
+  classification_context: null
   etl_derived_value: null
   data_type: "string"

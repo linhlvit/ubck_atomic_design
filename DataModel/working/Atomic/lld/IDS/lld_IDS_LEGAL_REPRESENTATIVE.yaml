@@ -17,10 +17,13 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "PHONE_NO/EMAIL → Involved Party Electronic Address. IDENTITY_NO/ISSUE_DATE/ISSUE_PLACE\
-    \ → Involved Party Alternative Identification. Entity này (không phải Legal Entity)\
-    \ là 'Involved Party' handle cho shared entity vì người đại diện không có profile\
-    \ độc lập nào khác trong scope IDS."
+  notes: "PHONE_NO/EMAIL → Involved Party Electronic Address (shared entity). Entity\
+    \ này (không phải Legal Entity) là 'Involved Party' handle cho shared entity vì\
+    \ người đại diện không có profile độc lập nào khác trong scope IDS. IDENTITY_NO/ISSUE_DATE/ISSUE_PLACE\
+    \ giữ denormalized trực tiếp trên entity chính, KHÔNG tách shared entity IP Alt\
+    \ Identification — nguồn không có cột phân biệt loại giấy tờ nên không đủ thông\
+    \ tin để xác định type (quyết định Data Modeler 2026-09-04, thay thế cách làm cũ\
+    \ dùng lld_IDS_LEGAL_REPRESENTATIVE_IP_Alt_Identification.yaml — file đã xóa)."
 attributes:
 - attribute_name: "Public Company Legal Representative Id"
   physical_name: "pc_legal_representative_id"
@@ -136,6 +139,46 @@ attributes:
   source_columns:
   - "IDS.LEGAL_REPRESENTATIVE.REPRESENTATIVE_ROLE"
   comment: null
-  classification_context: "IDS_REPRESENTATIVE_ROLE"
+  classification_context: null
   etl_derived_value: null
   data_type: "int"
+- attribute_name: "Identification Number"
+  physical_name: "identification_nbr"
+  description: "Số CMND, CCCD, Hộ chiếu."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.LEGAL_REPRESENTATIVE.IDENTITY_NO"
+  comment: "Denormalized — nguồn không có cột phân biệt loại giấy tờ, không đủ thông\
+    \ tin để tách shared entity IP Alt Identification."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Identification Issue Date"
+  physical_name: "identification_issue_dt"
+  description: "Ngày cấp."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.LEGAL_REPRESENTATIVE.ISSUE_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Identification Issue Place"
+  physical_name: "identification_issue_place"
+  description: "Nơi cấp."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.LEGAL_REPRESENTATIVE.ISSUE_PLACE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

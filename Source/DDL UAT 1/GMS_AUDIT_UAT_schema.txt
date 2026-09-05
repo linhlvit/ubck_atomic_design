@@ -1,5 +1,5 @@
 DATA DICTIONARY - SCHEMA: GMS_AUDIT_UAT
-Tong so bang: 52 | Materialized View: 0
+Tong so bang: 54 | Materialized View: 0
 ==============================================================================================================
 
 BANG: AF_APPROVAL
@@ -22,6 +22,8 @@ CREATED_DATE                  DATE                YES                           
 UPDATED_BY                    VARCHAR2(120)       YES                                      Người sửa
 UPDATED_DATE                  DATE                YES                                      Ngày sửa
 DELETE_FLG                    NUMBER(1,0)         YES                                      
+AFFILIATION_END_DATE          DATE                YES                                      Ngày kiểm toán viên không còn thuộc công ty kiểm toán nữa
+AFFILIATION_NO                VARCHAR2(80)        YES                                      Số văn bản giảm
 
 
 BANG: AF_AUDITOR_PROFILES
@@ -53,6 +55,7 @@ UPDATED_DATE                  DATE                YES                           
 DELETE_FLG                    NUMBER(1,0)         YES                                      
 APPROVER_COMMENT              VARCHAR2(1020)      YES                                      Ý kiến người 
 duyệt
+IS_WORKING                    NUMBER(1,0)         YES                                      
 
 
 BANG: AF_AUDITOR_STATUS_HISTORY
@@ -244,6 +247,15 @@ CREATED_DATE                  DATE                YES                           
 UPDATED_BY                    VARCHAR2(120)       YES                                      Người sửa
 UPDATED_DATE                  DATE                YES                                      Ngày sửa
 DELETE_FLG                    NUMBER(1,0)         YES                                      Soft delete flag - 0: Active, 1: Deleted
+REASON                        VARCHAR2(512)       YES                                      Lý do (KTV)
+LD_INSPECTION_RESULT_CD       VARCHAR2(100)       YES                                      Kết quả kiểm tra (Lãnh đạo)
+LD_AUDIT_ACTION_CD            VARCHAR2(100)       YES                                      Hình thức xử lý (Lãnh đạo)
+LD_REASON                     VARCHAR2(512)       YES                                      Lý do (Lãnh đạo)
+LD_DOCUMENT_NO                VARCHAR2(18)        YES                                      Số văn bản (Lãnh đạo)
+LD_DOCUMENT_DATE              DATE                YES                                      Ngày văn bản (Lãnh đạo)
+LD_VIOLATION_CONTENT          VARCHAR2(1024)      YES                                      Nội dung vi phạm (Lãnh đạo)
+LD_EFFECTIVE_FROM_DATE        DATE                YES                                      Từ ngày (Lãnh đạo)
+LD_EFFECTIVE_TO_DATE          DATE                YES                                      Đến ngày (Lãnh đạo)
 
 
 BANG: AF_WARNING
@@ -700,6 +712,30 @@ FULL_NAME                     VARCHAR2(1020)      YES
 TEL                           VARCHAR2(1020)      YES                                      
 
 
+BANG: HTE_NOTIFICATIONS_RESULT
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+READ_FLG                      NUMBER(10,0)        YES                                      
+RN_                           NUMBER(10,0)        NO      PK                               
+COMPANY_DATA_ID               NUMBER(19,0)        YES                                      
+COMPANY_PROFILE_ID            NUMBER(19,0)        YES                                      
+CREATED_DATE                  TIMESTAMP(6)        YES                                      
+FORM_ID                       NUMBER(19,0)        YES                                      
+ID                            NUMBER(19,0)        YES                                      
+LOGIN_ID                      NUMBER(19,0)        YES                                      
+NOTIFICATION_ID               NUMBER(19,0)        YES                                      
+READ_DATE                     TIMESTAMP(6)        YES                                      
+SENT_DATE                     TIMESTAMP(6)        YES                                      
+UPDATED_DATE                  TIMESTAMP(6)        YES                                      
+NOTI_CATEGORY_CD              VARCHAR2(80)        YES                                      
+CONTENT                       VARCHAR2(4000)      YES                                      
+CREATED_BY                    VARCHAR2(1020)      YES                                      
+TITLE                         VARCHAR2(1020)      YES                                      
+UPDATED_BY                    VARCHAR2(1020)      YES                                      
+
+
 BANG: HTE_VIOLATION_REPORT
 Mo ta: 
 --------------------------------------------------------------------------------------------------------------
@@ -894,6 +930,29 @@ CREATED_DATE                  DATE                YES                           
 UPDATED_BY                    VARCHAR2(30)        YES                                      Nguời sửa
 UPDATED_DATE                  DATE                YES                                      Ngày sửa
 DELETE_FLG                    NUMBER(1,0)         YES                                      Đánh dấu xóa mềm
+
+
+BANG: NOTIFICATIONS_RESULT
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(19,0)        NO      PK                               
+NOTIFICATION_ID               NUMBER(19,0)        YES                                      Nullable — luồng add-noti (gửi trực tiếp từ COMPANY_DATA) không gắn với NOTIFICATIONS nào
+LOGIN_ID                      NUMBER(19,0)        NO                                       
+NOTI_CATEGORY_CD              VARCHAR2(80)        YES                                      Copy từ NOTIFICATIONS.NOTI_CATEGORY_CD tại thời điểm gửi
+FORM_ID                       NUMBER(19,0)        YES                                      Copy từ NOTIFICATIONS.FORM_ID hoặc COMPANY_DATA.FORM_ID tại thời điểm gửi
+COMPANY_DATA_ID               NUMBER(19,0)        YES                                      
+COMPANY_PROFILE_ID            NUMBER(19,0)        YES                                      Copy từ NOTIFICATIONS_DTL.COMPANY_PROFILE_ID hoặc COMPANY_DATA.COMPANY_PROFILE_ID của người nhận — dùng để lọc/phân quyền theo công ty
+TITLE                         VARCHAR2(1020)      YES                                      
+CONTENT                       VARCHAR2(4000)      YES                                      
+SENT_DATE                     DATE                NO                                       
+READ_FLG                      NUMBER(1,0)         NO                                       
+READ_DATE                     DATE                YES                                      
+CREATED_BY                    CHAR(30)            YES                                      
+CREATED_DATE                  DATE                YES                                      
+UPDATED_BY                    CHAR(30)            YES                                      
+UPDATED_DATE                  DATE                YES                                      
 
 
 BANG: RCOL
@@ -1154,6 +1213,9 @@ CREATED_DATE                  TIMESTAMP(6)        YES                           
 CREATED_BY                    VARCHAR2(500)       YES                                      Người tạo bản ghi
 UPDATED_DATE                  TIMESTAMP(6)        YES                                      Thời gian cập nhật bản ghi lần cuối
 UPDATED_BY                    VARCHAR2(500)       YES                                      Người cập nhật bản ghi lần cuối
+COMPANY_DATA_ID               NUMBER(19,0)        YES                                      
+LANGUAGE_CD                   VARCHAR2(200)       YES                                      
+ORIGINAL_DEADLINE             DATE                YES                                      Hạn nộp báo cao chưa gồm gia hạn
 
 
 BANG: VIOLATION_TEMPLATES
@@ -1185,5 +1247,6 @@ CREATED_DATE                  TIMESTAMP(6)        YES                           
 CREATED_BY                    VARCHAR2(500)       YES                                      Người tạo bản ghi
 UPDATED_DATE                  TIMESTAMP(6)        YES                                      Thời gian cập nhật bản ghi lần cuối
 UPDATED_BY                    VARCHAR2(500)       YES                                      Người cập nhật bản ghi lần cuối
+CONDITION_FIELD_CD            VARCHAR2(1000)      YES                                      
 
 

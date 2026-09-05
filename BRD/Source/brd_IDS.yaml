@@ -1265,8 +1265,12 @@ brd_entries:
     table: AF_PROFILES
     description: Bảng lưu thông tin công ty kiểm toán
     functional_group: audit_firm
-    scope_status: out_of_scope
-    scope_reason: "Quyết định Data Modeler (2026-07-24) — bỏ hoàn toàn khỏi phạm vi thiết kế."
+    scope_status: in_scope
+    scope_reason: "Đảo ngược quyết định out_of_scope 2026-07-24 (2026-09-04) — HLD Overview/Tier1\
+      \ vẫn mô tả AF_PROFILES là entity Tier 1 chính thức (Audit Firm) và 9/10 bảng\
+      \ AF_* còn lại đều có FK Audit Firm Id/Code trỏ tới entity này. Xác nhận tường\
+      \ minh của Data Modeler: giữ trong scope, phục hồi lld_IDS_AF_PROFILES.yaml\
+      \ (+ 3 shared entity) theo DDL GMS_AUDIT_UAT_schema.txt."
     related_tables:
     - table: AF_LEGAL_REPRESENTATIVE
       relation: 1-N — Người đại diện pháp luật của công ty kiểm toán

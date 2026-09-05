@@ -144,19 +144,19 @@ attributes:
   data_type: "date"
 - attribute_name: "Evaluation Type Code"
   physical_name: "evaluation_tp_code"
-  description: "Xếp Loại (A,B,C - theo tổng điểm)."
-  data_domain: "Text"
+  description: "Xếp Loại (A>90,B>80,C>70,D còn lại - theo tổng điểm)."
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.EVALUATIONS.TYPE"
-  comment: null
+  comment: "SCHEMA_CODE=IDS.EVALUATION_RANK"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Evaluation Status Code"
-  physical_name: "evaluation_status_code"
+- attribute_name: "Approval Status Code"
+  physical_name: "approval_status_code"
   description: "Trạng thái đánh giá."
   data_domain: "Classification Value"
   nullable: true
@@ -164,7 +164,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.EVALUATIONS.STATUS"
-  comment: "SCHEMA_CODE=IDS.NEWS_APPROVAL_STAUTS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_APPROVAL_STAUTS')."
+  comment: "SCHEMA_CODE=IDS.NEWS_APPROVAL_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_APPROVAL_STATUS')."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

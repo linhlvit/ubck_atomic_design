@@ -284,6 +284,32 @@ attributes:
   classification_context: "IDS_APPROVAL_STATUS"
   etl_derived_value: null
   data_type: "string"
+- attribute_name: "Approver Comment"
+  physical_name: "approver_comment"
+  description: "Ý kiến người duyệt."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_AUDITOR_PROFILES.APPROVER_COMMENT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Working Indicator"
+  physical_name: "working_ind"
+  description: "Đánh dấu kiểm toán viên đang làm việc."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_AUDITOR_PROFILES.IS_WORKING"
+  comment: "Giá trị 1 → true (đang làm việc); 0 → false. Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
 - attribute_name: "Deleted Indicator"
   physical_name: "deleted_ind"
   description: "Trạng thái xóa."

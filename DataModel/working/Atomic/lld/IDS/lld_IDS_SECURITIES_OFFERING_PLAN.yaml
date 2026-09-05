@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Business Activity] Business Activity"
   table_type: "Fundamental"
   group: "T4"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -97,9 +97,8 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.SECURITIES_OFFERING_PLAN.OFFERING_METHOD_CD"
-  comment: "Scheme: IDS_SO_OFFERING_METHOD (source_table, LOOKUP_GROUP = 'SO_OFFERING_METHOD')\
-    \ — chưa có trong HLD 6d, bổ sung scheme mới."
-  classification_context: "IDS_SO_OFFERING_METHOD"
+  comment: "SCHEMA_CODE=IDS.SO_OFFERING_METHOD. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_OFFERING_METHOD')."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Distribution Method Code"
@@ -112,9 +111,8 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.SECURITIES_OFFERING_PLAN.DISTRIBUTION_METHOD_CD"
-  comment: "Scheme: IDS_SO_DISTRIBUTION_METHOD (source_table, LOOKUP_GROUP = 'SO_DISTRIBUTION_METHOD')\
-    \ — chưa có trong HLD 6d, bổ sung scheme mới."
-  classification_context: "IDS_SO_DISTRIBUTION_METHOD"
+  comment: "SCHEMA_CODE=IDS.SO_DISTRIBUTION_METHOD. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_DISTRIBUTION_METHOD')."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Security Type Code"
@@ -127,10 +125,8 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.SECURITIES_OFFERING_PLAN.SECURITY_TYPE_CD"
-  comment: "Scheme: IDS_SO_SECURITY_TYPE (source_table, LOOKUP_GROUP = 'SO_SECURITY_TYPE')\
-    \ — dùng chung với Public Company Securities Offering Result. Chưa có trong HLD\
-    \ 6d, bổ sung scheme mới."
-  classification_context: "IDS_SO_SECURITY_TYPE"
+  comment: "SCHEMA_CODE=IDS.SO_SECURITY_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_SECURITY_TYPE')."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Security Name"

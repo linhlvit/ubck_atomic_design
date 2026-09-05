@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Business Activity] Business Activity"
   table_type: "Fundamental"
   group: "T3"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -56,20 +56,19 @@ attributes:
   classification_context: "SOURCE_SYSTEM=IDS_SECURITIES_OFFERING"
   etl_derived_value: "IDS_SECURITIES_OFFERING"
   data_type: "string"
-- attribute_name: "Applicant Type Indicator"
-  physical_name: "applicant_tp_ind"
+- attribute_name: "Legal Entity Type Code"
+  physical_name: "legal_entity_tp_code"
   description: "Phân loại bên đăng ký chào bán: tổ chức hay cá nhân."
-  data_domain: "Small Counter"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.SECURITIES_OFFERING.APPLICANT_TYPE_FLG"
-  comment: "Encoding nguồn: 1 = Tổ chức (dùng Public Company Id), 0 = Cá nhân (dùng\
-    \ Legal Entity Id)."
+  comment: "SCHEMA_CODE=IDS.LEGAL_ENTITY_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='ENTITY_TYPE'). Xử lý CASE WHEN dựa trên giá trị của APPLICANT_TYPE_FLG (1-TC, 2-CN)."
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "string"
 - attribute_name: "Public Company Id"
   physical_name: "pc_id"
   description: "Id công ty đại chúng đăng ký chào bán (khi APPLICANT_TYPE_FLG = 1)."
@@ -133,9 +132,8 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.SECURITIES_OFFERING.ADMINISTRATIVE_PROC_CD"
-  comment: "Scheme: IDS_SO_ADMINISTRATIVE_PROC (source_table, LOOKUP_VALUES LOOKUP_GROUP\
-    \ = 'SO_ADMINISTRATIVE_PROCEDURE') — chưa có trong HLD 6d, bổ sung scheme mới."
-  classification_context: "IDS_SO_ADMINISTRATIVE_PROC"
+  comment: "SCHEMA_CODE=IDS.SO_ADMINISTRATIVE_PROCEDURE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_ADMINISTRATIVE_PROCEDURE')."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Administrative Status Code"
@@ -147,9 +145,8 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.SECURITIES_OFFERING.ADMINISTRATIVE_STATUS_CD"
-  comment: "Scheme: IDS_SO_ADMINISTRATIVE_STATUS (source_table, LOOKUP_GROUP = 'SO_ADMINISTRATIVE_STATUS')\
-    \ — chưa có trong HLD 6d, bổ sung scheme mới."
-  classification_context: "IDS_SO_ADMINISTRATIVE_STATUS"
+  comment: "SCHEMA_CODE=IDS.SO_ADMINISTRATIVE_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_ADMINISTRATIVE_STATUS')."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Certificate Number"

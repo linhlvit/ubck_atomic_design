@@ -272,6 +272,126 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "date"
+- attribute_name: "Reason Description"
+  physical_name: "reason_description"
+  description: "Lý do (KTV)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_TECHNICAL_AUDIT.REASON"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Leadership Inspection Result Code"
+  physical_name: "leadership_inspection_result_code"
+  description: "Kết quả kiểm tra (Lãnh đạo)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_TECHNICAL_AUDIT.LD_INSPECTION_RESULT_CD"
+  comment: "Scheme: IDS_AF_TECHNICAL_AUDIT_RESULT. Dùng chung scheme với Inspection\
+    \ Result Code — kết quả theo đánh giá của Lãnh đạo, song song với kết quả theo\
+    \ Kiểm toán viên."
+  classification_context: "IDS_AF_TECHNICAL_AUDIT_RESULT"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Leadership Audit Action Code"
+  physical_name: "leadership_audit_action_code"
+  description: "Hình thức xử lý (Lãnh đạo)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_TECHNICAL_AUDIT.LD_AUDIT_ACTION_CD"
+  comment: "Scheme: IDS_AF_TECHNICAL_AUDIT_ACTION. Dùng chung scheme với Audit Action\
+    \ Code — hình thức xử lý theo quyết định của Lãnh đạo."
+  classification_context: "IDS_AF_TECHNICAL_AUDIT_ACTION"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Leadership Reason Description"
+  physical_name: "leadership_reason_description"
+  description: "Lý do (Lãnh đạo)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_TECHNICAL_AUDIT.LD_REASON"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Leadership Document Number"
+  physical_name: "leadership_document_nbr"
+  description: "Số văn bản (Lãnh đạo)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_TECHNICAL_AUDIT.LD_DOCUMENT_NO"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Leadership Document Date"
+  physical_name: "leadership_document_dt"
+  description: "Ngày văn bản (Lãnh đạo)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_TECHNICAL_AUDIT.LD_DOCUMENT_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Leadership Violation Content"
+  physical_name: "leadership_violation_content"
+  description: "Nội dung vi phạm (Lãnh đạo)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_TECHNICAL_AUDIT.LD_VIOLATION_CONTENT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Leadership Effective From Date"
+  physical_name: "leadership_effective_from_dt"
+  description: "Từ ngày (Lãnh đạo)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_TECHNICAL_AUDIT.LD_EFFECTIVE_FROM_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Leadership Effective To Date"
+  physical_name: "leadership_effective_to_dt"
+  description: "Đến ngày (Lãnh đạo)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_TECHNICAL_AUDIT.LD_EFFECTIVE_TO_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
 - attribute_name: "Deleted Indicator"
   physical_name: "deleted_ind"
   description: "Soft delete flag - 0: Active, 1: Deleted."

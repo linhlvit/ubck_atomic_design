@@ -106,8 +106,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.BOND_LISTING_HISTORY.BOND_TYPE_CD"
-  comment: "Map 1:1 từ nguồn — không phải Classification Value theo yêu cầu Data Modeler\
-    \ (2026-07-15)."
+  comment: "SCHEMA_CODE=IDS.BOND_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='BOND_TYPE')."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -215,8 +214,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "date"
-- attribute_name: "Issuance Category Code"
-  physical_name: "issuance_category_code"
+- attribute_name: "Bond Issuance Type Code"
+  physical_name: "bond_category_tp_code"
   description: "Phân loại."
   data_domain: "Text"
   nullable: true
@@ -224,8 +223,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.BOND_LISTING_HISTORY.ISSUANCE_CATEGORY_CD"
-  comment: "Map 1:1 từ nguồn — không phải Classification Value theo yêu cầu Data Modeler\
-    \ (2026-07-15)."
+  comment: "SCHEMA_CODE=IDS.BOND_ISSUANCE_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='BOND_ISSUANCE_CATEGORY')."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

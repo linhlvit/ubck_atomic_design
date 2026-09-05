@@ -2,14 +2,14 @@ schema_type: "lld_source_table"
 schema_version: "2.0"
 metadata:
   source_system: "IDS"
-  source_table: "COMPANY_RELATIONSHIP"
+  source_table: "AF_PROFILES"
   atomic_entity: "Involved Party Postal Address"
   entity_physical_name: "ip_postal_address"
   bcv_core_object: "Involved Party"
   bcv_concept: "Shared Entity"
   table_type: "Fundamental"
-  group: "T2"
-  design_status: "approved"
+  group: "T1"
+  design_status: "draft"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -17,36 +17,35 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "1 loại địa chỉ: HEAD_OFFICE (trụ sở của pháp nhân liên quan, lưu dạng\
-    \ free-text). Không có FK sang geographic_area — nguồn chỉ lưu text, không có\
-    \ cột PROVINCE_ID hay địa giới hành chính riêng."
+  notes: "Shared entity IP Postal Address — extend từ AF_PROFILES. Grain: 1 địa chỉ\
+    \ trụ sở chính (HEAD_OFFICE) — khớp pattern lld_SCMS_AUDIT_FIRM_IP_Postal_Address.yaml\
+    \ (cùng atomic_entity Audit Firm). Không có FK tỉnh/huyện/xã tại nguồn — chỉ\
+    \ map Address Value."
 attributes:
 - attribute_name: "Involved Party Id"
   physical_name: "ip_id"
-  description: "FK đến Public Company Related Entity (Involved Party)."
+  description: "FK đến Audit Firm (Involved Party)."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IDS.COMPANY_RELATIONSHIP.ID"
-  comment: "FK target: Public Company Related Entity.Public Company Related Entity\
-    \ Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('IDS_COMPANY_RELATIONSHIP',\
-    \ ID)."
+  - "IDS.AF_PROFILES.AUDIT_FIRM_CD"
+  comment: "FK target: audit_firm.af_id. Shared entity — không có PK surrogate riêng.\
+    \ Hash: hash_id('IDS_AF_PROFILES', AUDIT_FIRM_CD)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Involved Party Code"
   physical_name: "ip_code"
-  description: "Mã pháp nhân liên quan."
+  description: "Mã Audit Firm."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IDS.COMPANY_RELATIONSHIP.ID"
-  comment: "Lookup pair: Public Company Related Entity.Public Company Related Entity\
-    \ Code. Pair with Involved Party Id."
+  - "IDS.AF_PROFILES.AUDIT_FIRM_CD"
+  comment: "Lookup pair: audit_firm.af_code. Pair with Involved Party Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -59,30 +58,32 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=IDS_COMPANY_RELATIONSHIP"
-  etl_derived_value: "IDS.COMPANY_RELATIONSHIP"
+  classification_context: "SOURCE_SYSTEM=IDS_AF_PROFILES"
+  etl_derived_value: "IDS_AF_PROFILES"
   data_type: "string"
 - attribute_name: "Address Type Code"
   physical_name: "adr_tp_code"
-  description: "Loại địa chỉ — trụ sở chính pháp nhân liên quan."
+  description: "Loại địa chỉ."
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns: []
-  comment: "Scheme: IP_ADDR_TYPE. Hardcode HEAD_OFFICE."
+  comment: "Scheme: IP_ADDR_TYPE. Hardcode HEAD_OFFICE — AF_PROFILES chỉ có 1 loại\
+    \ địa chỉ (trụ sở chính), khớp pattern SCMS.AUDIT_FIRM (cùng atomic_entity Audit\
+    \ Firm)."
   classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
   etl_derived_value: "HEAD_OFFICE"
   data_type: "string"
 - attribute_name: "Address Value"
   physical_name: "adr_val"
-  description: "Địa chỉ trụ sở của pháp nhân liên quan (free-text)."
+  description: "Địa chỉ."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IDS.COMPANY_RELATIONSHIP.HEAD_OFFICE_ADDR"
+  - "IDS.AF_PROFILES.ADDRESS"
   comment: null
   classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
   etl_derived_value: null
