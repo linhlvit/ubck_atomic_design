@@ -194,6 +194,35 @@ erDiagram
 
 ---
 
+
+### Nhóm 10/38/39 — Giám sát tuân thủ & Lịch sử nộp báo cáo CTCK (K_QLKD_53–58d, K_QLKD_186–194)
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Compliance_Report_Snapshot : " "
+    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Compliance_Report_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Securities Company Compliance Report Snapshot | Fact Snapshot | new | Tình hình nộp báo cáo định kỳ & đột xuất của CTCK (đúng hạn, chậm, chưa nộp, tỷ lệ tuân thủ) | 1 CTCK × 1 loại báo cáo × 1 kỳ/ngày snapshot | K_QLKD_53–58d, K_QLKD_186–194 |
+| Securities Company Dimension | Dimension | new | CTCK — mã, tên, loại hình, trạng thái | 1 CTCK (SCD4A) | — |
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày | — |
+
+### Nhóm 8/9/11/12/14/15/18–26 — Chỉ tiêu Tài chính CTCK & Thị trường (K_QLKD_41–52, 59–65, 73–85, 97–134)
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Financial_Snapshot : " "
+    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Financial_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Securities Company Financial Snapshot | Fact Snapshot | new | Trích xuất các chỉ tiêu tài chính cốt lõi từ BCTC/Báo cáo ATTC: Tài sản, Nguồn vốn, VCSH, Doanh thu, LNST, Dư nợ Margin, Tỷ lệ an toàn tài chính CAR, ROA, ROE, CFO | 1 CTCK × 1 kỳ báo cáo (Quý/Năm) | K_QLKD_41–52, 59–65, 73–85, 97–134 |
+| Securities Company Dimension | Dimension | new | CTCK — mã, tên, loại hình, trạng thái | 1 CTCK (SCD4A) | — |
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày / 1 quý | — |
+
 ## Tab DATA EXPLORER
 
 ### Nhóm 42-145 — Tra cứu báo cáo biểu mẫu định kỳ (K_QLKD_224–4260) — PENDING

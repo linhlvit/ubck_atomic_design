@@ -25,22 +25,16 @@ K_QLKD_16,TỔNG QUAN,Nhóm 2 — Biểu đồ Nghiệp vụ,Số CTCK theo nghi
 K_QLKD_17,TỔNG QUAN,Nhóm 2 — Biểu đồ Nghiệp vụ,Số CTCK theo nghiệp vụ bảo lãnh,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
 K_QLKD_18,TỔNG QUAN,Nhóm 2 — Biểu đồ Nghiệp vụ,Số CTCK theo nghiệp vụ tư vấn,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
 K_QLKD_19,TỔNG QUAN,Nhóm 2 — Biểu đồ Nghiệp vụ,Số CTCK theo nghiệp vụ tự doanh,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
-K_QLKD_20,TỔNG QUAN,Nhóm 3 — Biểu đồ Dịch vụ,Chiều thời gian theo ngày,Base,QLKD,Fact Securities Company Service Registration,Registration Date Dimension Id,SLICER,JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_company_service_registration.registration_dt_dim_id,
-K_QLKD_21,TỔNG QUAN,Nhóm 3 — Biểu đồ Dịch vụ,Chiều dịch vụ kinh doanh chứng khoán,Base,QLKD,Service Type Dimension,Classification Service Name,SLICER,service_tp_dim.cl_service_nm,
-K_QLKD_22,TỔNG QUAN,Nhóm 3 — Biểu đồ Dịch vụ,Số CTCK theo dịch vụ giao dịch ký quỹ,Base,QLKD,Fact Securities Company Service Registration,Securities Company Dimension Id,MEASURE,COUNT(DISTINCT fct_securities_company_service_registration.securities_company_dim_id),
-K_QLKD_22,TỔNG QUAN,Nhóm 3 — Biểu đồ Dịch vụ,Số CTCK theo dịch vụ giao dịch ký quỹ,Base,QLKD,Service Type Dimension,Classification Service Name,FILTER,service_tp_dim.cl_service_nm LIKE '%giao dịch ký quỹ%',
-K_QLKD_23,TỔNG QUAN,Nhóm 3 — Biểu đồ Dịch vụ,Số CTCK theo dịch vụ ứng trước tiền bán,Base,QLKD,Fact Securities Company Service Registration,Securities Company Dimension Id,MEASURE,COUNT(DISTINCT fct_securities_company_service_registration.securities_company_dim_id),
-K_QLKD_23,TỔNG QUAN,Nhóm 3 — Biểu đồ Dịch vụ,Số CTCK theo dịch vụ ứng trước tiền bán,Base,QLKD,Service Type Dimension,Classification Service Name,FILTER,service_tp_dim.cl_service_nm LIKE '%ứng trước tiền bán%',Hiện = 0 do CAT_SERVICE thiếu danh mục — xem O_QLKD_21
-K_QLKD_24,TỔNG QUAN,Nhóm 3 — Biểu đồ Dịch vụ,Số CTCK theo dịch vụ lưu ký,Base,QLKD,Fact Securities Company Service Registration,Securities Company Dimension Id,MEASURE,COUNT(DISTINCT fct_securities_company_service_registration.securities_company_dim_id),
-K_QLKD_24,TỔNG QUAN,Nhóm 3 — Biểu đồ Dịch vụ,Số CTCK theo dịch vụ lưu ký,Base,QLKD,Service Type Dimension,Classification Service Name,FILTER,service_tp_dim.cl_service_nm LIKE '%lưu ký%',Hiện = 0 do CAT_SERVICE thiếu danh mục — xem O_QLKD_21
-K_QLKD_25,TỔNG QUAN,Nhóm 4 — Biểu đồ Dịch vụ phái sinh,Chiều thời gian theo ngày,Base,QLKD,Fact Securities Company Service Registration,Registration Date Dimension Id,SLICER,JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_company_service_registration.registration_dt_dim_id,
-K_QLKD_26,TỔNG QUAN,Nhóm 4 — Biểu đồ Dịch vụ phái sinh,Chiều dịch vụ phái sinh,Base,QLKD,Service Type Dimension,Classification Service Name,SLICER,service_tp_dim.cl_service_nm LIKE '%phái sinh%',
-K_QLKD_27,TỔNG QUAN,Nhóm 4 — Biểu đồ Dịch vụ phái sinh,Số CTCK phái sinh dịch vụ môi giới,Base,QLKD,Fact Securities Company Service Registration,Securities Company Dimension Id,MEASURE,COUNT(DISTINCT fct_securities_company_service_registration.securities_company_dim_id),
-K_QLKD_27,TỔNG QUAN,Nhóm 4 — Biểu đồ Dịch vụ phái sinh,Số CTCK phái sinh dịch vụ môi giới,Base,QLKD,Service Type Dimension,Classification Service Name,FILTER,service_tp_dim.cl_service_nm LIKE '%phái sinh%' AND service_tp_dim.cl_service_nm LIKE '%môi giới%',
-K_QLKD_28,TỔNG QUAN,Nhóm 4 — Biểu đồ Dịch vụ phái sinh,Số CTCK phái sinh dịch vụ tư vấn,Base,QLKD,Fact Securities Company Service Registration,Securities Company Dimension Id,MEASURE,COUNT(DISTINCT fct_securities_company_service_registration.securities_company_dim_id),
-K_QLKD_28,TỔNG QUAN,Nhóm 4 — Biểu đồ Dịch vụ phái sinh,Số CTCK phái sinh dịch vụ tư vấn,Base,QLKD,Service Type Dimension,Classification Service Name,FILTER,service_tp_dim.cl_service_nm LIKE '%phái sinh%' AND service_tp_dim.cl_service_nm LIKE '%tư vấn%',
-K_QLKD_29,TỔNG QUAN,Nhóm 4 — Biểu đồ Dịch vụ phái sinh,Số CTCK phái sinh dịch vụ tự doanh,Base,QLKD,Fact Securities Company Service Registration,Securities Company Dimension Id,MEASURE,COUNT(DISTINCT fct_securities_company_service_registration.securities_company_dim_id),
-K_QLKD_29,TỔNG QUAN,Nhóm 4 — Biểu đồ Dịch vụ phái sinh,Số CTCK phái sinh dịch vụ tự doanh,Base,QLKD,Service Type Dimension,Classification Service Name,FILTER,service_tp_dim.cl_service_nm LIKE '%phái sinh%' AND service_tp_dim.cl_service_nm LIKE '%tự doanh%',
+K_QLKD_20,TỔNG QUAN,Nhóm 3 — Biểu đồ Dịch vụ,Chiều thời gian theo ngày,Base,QLKD,,,,,Pending - chưa thiết kế nguồn
+K_QLKD_21,TỔNG QUAN,Nhóm 3 — Biểu đồ Dịch vụ,Chiều dịch vụ kinh doanh chứng khoán,Base,QLKD,,,,,Pending - chưa thiết kế nguồn
+K_QLKD_22,TỔNG QUAN,Nhóm 3 — Biểu đồ Dịch vụ,Số CTCK theo dịch vụ giao dịch ký quỹ,Base,QLKD,,,,,Pending - chưa thiết kế nguồn
+K_QLKD_23,TỔNG QUAN,Nhóm 3 — Biểu đồ Dịch vụ,Số CTCK theo dịch vụ ứng trước tiền bán,Base,QLKD,,,,,Pending - chưa thiết kế nguồn
+K_QLKD_24,TỔNG QUAN,Nhóm 3 — Biểu đồ Dịch vụ,Số CTCK theo dịch vụ lưu ký,Base,QLKD,,,,,Pending - chưa thiết kế nguồn
+K_QLKD_25,TỔNG QUAN,Nhóm 4 — Biểu đồ Dịch vụ phái sinh,Chiều thời gian theo ngày,Base,QLKD,,,,,Pending - chưa thiết kế nguồn
+K_QLKD_26,TỔNG QUAN,Nhóm 4 — Biểu đồ Dịch vụ phái sinh,Chiều dịch vụ phái sinh,Base,QLKD,,,,,Pending - chưa thiết kế nguồn
+K_QLKD_27,TỔNG QUAN,Nhóm 4 — Biểu đồ Dịch vụ phái sinh,Số CTCK phái sinh dịch vụ môi giới,Base,QLKD,,,,,Pending - chưa thiết kế nguồn
+K_QLKD_28,TỔNG QUAN,Nhóm 4 — Biểu đồ Dịch vụ phái sinh,Số CTCK phái sinh dịch vụ tư vấn,Base,QLKD,,,,,Pending - chưa thiết kế nguồn
+K_QLKD_29,TỔNG QUAN,Nhóm 4 — Biểu đồ Dịch vụ phái sinh,Số CTCK phái sinh dịch vụ tự doanh,Base,QLKD,,,,,Pending - chưa thiết kế nguồn
 K_QLKD_30,TỔNG QUAN,Nhóm 5 — Duy trì điều kiện cấp phép GPHL,Chiều thời gian theo ngày,Base,QLKD,Fact Securities Company License Condition Snapshot,Snapshot Date Dimension Id,SLICER,JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_company_license_condition_snpst.snpst_dt_dim_id,
 K_QLKD_31,TỔNG QUAN,Nhóm 5 — Duy trì điều kiện cấp phép GPHL,Các loại duy trì điều kiện cấp phép,Base,QLKD,Fact Securities Company License Condition Snapshot,Severity Level,SLICER,fct_securities_company_license_condition_snpst.severity_level,
 K_QLKD_32,TỔNG QUAN,Nhóm 5 — Duy trì điều kiện cấp phép GPHL,Số CTCK duy trì tốt — Giấy phép hoạt động,Base,QLKD,Fact Securities Company License Condition Snapshot,Securities Company Dimension Id,MEASURE,COUNT(DISTINCT fct_securities_company_license_condition_snpst.securities_company_dim_id),
@@ -53,7 +47,6 @@ K_QLKD_34,TỔNG QUAN,Nhóm 5 — Duy trì điều kiện cấp phép GPHL,Số 
 K_QLKD_34,TỔNG QUAN,Nhóm 5 — Duy trì điều kiện cấp phép GPHL,Số CTCK không duy trì điều kiện — Giấy phép hoạt động,Base,QLKD,Fact Securities Company License Condition Snapshot,Severity Level,FILTER,fct_securities_company_license_condition_snpst.severity_level = '3',
 K_QLKD_34,TỔNG QUAN,Nhóm 5 — Duy trì điều kiện cấp phép GPHL,Số CTCK không duy trì điều kiện — Giấy phép hoạt động,Base,QLKD,Fact Securities Company License Condition Snapshot,Indicator Code,FILTER,fct_securities_company_license_condition_snpst.indicator_code = 'DUY_TRI_DKCP_GPKD',
 K_QLKD_30,TỔNG QUAN,Nhóm 6 — Duy trì điều kiện cấp phép Phái sinh KDCKPS,Chiều thời gian theo ngày (reuse từ Nhóm 5),Base,QLKD,Fact Securities Company License Condition Snapshot,Snapshot Date Dimension Id,SLICER,JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_company_license_condition_snpst.snpst_dt_dim_id,Reuse từ Nhóm 5
-K_QLKD_31,TỔNG QUAN,Nhóm 6 — Duy trì điều kiện cấp phép Phái sinh KDCKPS,Các loại duy trì điều kiện cấp phép (reuse từ Nhóm 5),Base,QLKD,Fact Securities Company License Condition Snapshot,Severity Level,SLICER,fct_securities_company_license_condition_snpst.severity_level,Reuse từ Nhóm 5
 K_QLKD_35,TỔNG QUAN,Nhóm 6 — Duy trì điều kiện cấp phép Phái sinh KDCKPS,Số CTCK duy trì tốt — Phái sinh KDCKPS,Base,QLKD,Fact Securities Company License Condition Snapshot,Securities Company Dimension Id,MEASURE,COUNT(DISTINCT fct_securities_company_license_condition_snpst.securities_company_dim_id),
 K_QLKD_35,TỔNG QUAN,Nhóm 6 — Duy trì điều kiện cấp phép Phái sinh KDCKPS,Số CTCK duy trì tốt — Phái sinh KDCKPS,Base,QLKD,Fact Securities Company License Condition Snapshot,Severity Level,FILTER,fct_securities_company_license_condition_snpst.severity_level = '1',
 K_QLKD_35,TỔNG QUAN,Nhóm 6 — Duy trì điều kiện cấp phép Phái sinh KDCKPS,Số CTCK duy trì tốt — Phái sinh KDCKPS,Base,QLKD,Fact Securities Company License Condition Snapshot,Indicator Code,FILTER,fct_securities_company_license_condition_snpst.indicator_code = 'DUY_TRI_DKCP_CTCK_PHAI_SINH',
@@ -64,7 +57,6 @@ K_QLKD_37,TỔNG QUAN,Nhóm 6 — Duy trì điều kiện cấp phép Phái sinh
 K_QLKD_37,TỔNG QUAN,Nhóm 6 — Duy trì điều kiện cấp phép Phái sinh KDCKPS,Số CTCK không duy trì điều kiện — Phái sinh KDCKPS,Base,QLKD,Fact Securities Company License Condition Snapshot,Severity Level,FILTER,fct_securities_company_license_condition_snpst.severity_level = '3',
 K_QLKD_37,TỔNG QUAN,Nhóm 6 — Duy trì điều kiện cấp phép Phái sinh KDCKPS,Số CTCK không duy trì điều kiện — Phái sinh KDCKPS,Base,QLKD,Fact Securities Company License Condition Snapshot,Indicator Code,FILTER,fct_securities_company_license_condition_snpst.indicator_code = 'DUY_TRI_DKCP_CTCK_PHAI_SINH',
 K_QLKD_30,TỔNG QUAN,Nhóm 7 — Duy trì điều kiện cấp phép Phái sinh BTTT,Chiều thời gian theo ngày (reuse từ Nhóm 5),Base,QLKD,Fact Securities Company License Condition Snapshot,Snapshot Date Dimension Id,SLICER,JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_company_license_condition_snpst.snpst_dt_dim_id,Reuse từ Nhóm 5
-K_QLKD_31,TỔNG QUAN,Nhóm 7 — Duy trì điều kiện cấp phép Phái sinh BTTT,Các loại duy trì điều kiện cấp phép (reuse từ Nhóm 5),Base,QLKD,Fact Securities Company License Condition Snapshot,Severity Level,SLICER,fct_securities_company_license_condition_snpst.severity_level,Reuse từ Nhóm 5
 K_QLKD_38,TỔNG QUAN,Nhóm 7 — Duy trì điều kiện cấp phép Phái sinh BTTT,Số CTCK duy trì tốt — Phái sinh bù trừ thanh toán,Base,QLKD,Fact Securities Company License Condition Snapshot,Securities Company Dimension Id,MEASURE,COUNT(DISTINCT fct_securities_company_license_condition_snpst.securities_company_dim_id),
 K_QLKD_38,TỔNG QUAN,Nhóm 7 — Duy trì điều kiện cấp phép Phái sinh BTTT,Số CTCK duy trì tốt — Phái sinh bù trừ thanh toán,Base,QLKD,Fact Securities Company License Condition Snapshot,Severity Level,FILTER,fct_securities_company_license_condition_snpst.severity_level = '1',
 K_QLKD_38,TỔNG QUAN,Nhóm 7 — Duy trì điều kiện cấp phép Phái sinh BTTT,Số CTCK duy trì tốt — Phái sinh bù trừ thanh toán,Base,QLKD,Fact Securities Company License Condition Snapshot,Indicator Code,FILTER,fct_securities_company_license_condition_snpst.indicator_code = 'DUY_TRI_DKCP_CTCKPS_BU_TRU',
@@ -74,30 +66,46 @@ K_QLKD_39,TỔNG QUAN,Nhóm 7 — Duy trì điều kiện cấp phép Phái sinh
 K_QLKD_40,TỔNG QUAN,Nhóm 7 — Duy trì điều kiện cấp phép Phái sinh BTTT,Số CTCK không duy trì điều kiện — Phái sinh bù trừ thanh toán,Base,QLKD,Fact Securities Company License Condition Snapshot,Securities Company Dimension Id,MEASURE,COUNT(DISTINCT fct_securities_company_license_condition_snpst.securities_company_dim_id),
 K_QLKD_40,TỔNG QUAN,Nhóm 7 — Duy trì điều kiện cấp phép Phái sinh BTTT,Số CTCK không duy trì điều kiện — Phái sinh bù trừ thanh toán,Base,QLKD,Fact Securities Company License Condition Snapshot,Severity Level,FILTER,fct_securities_company_license_condition_snpst.severity_level = '3',
 K_QLKD_40,TỔNG QUAN,Nhóm 7 — Duy trì điều kiện cấp phép Phái sinh BTTT,Số CTCK không duy trì điều kiện — Phái sinh bù trừ thanh toán,Base,QLKD,Fact Securities Company License Condition Snapshot,Indicator Code,FILTER,fct_securities_company_license_condition_snpst.indicator_code = 'DUY_TRI_DKCP_CTCKPS_BU_TRU',
-K_QLKD_41,TỔNG QUAN,Nhóm 8 — Cơ cấu tài sản,Chiều thời gian theo quý,Chiều,QLKD,,,,,Pending - chưa thiết kế nguồn
+K_QLKD_41,TỔNG QUAN,Nhóm 8 — Cơ cấu tài sản,Chiều thời gian theo quý,Chiều,QLKD,Calendar Date Dimension,Calendar Date,SLICER,cdr_dt_dim.cdr_dt,Ready — Kỳ báo cáo tài chính
 K_QLKD_42,TỔNG QUAN,Nhóm 8 — Cơ cấu tài sản,Tiền và tương đương tiền — toàn TT,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
 K_QLKD_43,TỔNG QUAN,Nhóm 8 — Cơ cấu tài sản,TS TC ghi nhận qua lãi/lỗ — toàn TT,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
 K_QLKD_44,TỔNG QUAN,Nhóm 8 — Cơ cấu tài sản,Đầu tư nắm giữ đến đáo hạn — toàn TT,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
 K_QLKD_45,TỔNG QUAN,Nhóm 8 — Cơ cấu tài sản,TS TC sẵn sàng để bán — toàn TT,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
 K_QLKD_46,TỔNG QUAN,Nhóm 8 — Cơ cấu tài sản,Các khoản cho vay — toàn TT,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
 K_QLKD_47,TỔNG QUAN,Nhóm 8 — Cơ cấu tài sản,Tài sản khác — toàn TT,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
-K_QLKD_48,TỔNG QUAN,Nhóm 9 — Cơ cấu nguồn vốn,Chiều thời gian theo quý,Chiều,QLKD,,,,,Pending - chưa thiết kế nguồn
+K_QLKD_48,TỔNG QUAN,Nhóm 9 — Cơ cấu nguồn vốn,Chiều thời gian theo quý,Chiều,QLKD,Calendar Date Dimension,Calendar Date,SLICER,cdr_dt_dim.cdr_dt,Ready — Kỳ báo cáo nguồn vốn
 K_QLKD_49,TỔNG QUAN,Nhóm 9 — Cơ cấu nguồn vốn,Vay và nợ thuê tài chính ngắn hạn — toàn TT,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
 K_QLKD_50,TỔNG QUAN,Nhóm 9 — Cơ cấu nguồn vốn,Nợ phải trả dài hạn — toàn TT,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
 K_QLKD_51,TỔNG QUAN,Nhóm 9 — Cơ cấu nguồn vốn,Vốn chủ sở hữu — toàn TT,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
 K_QLKD_52,TỔNG QUAN,Nhóm 9 — Cơ cấu nguồn vốn,Nguồn vốn khác — toàn TT,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
-K_QLKD_53,GIÁM SÁT,Nhóm 10 — Giám sát tuân thủ nộp báo cáo,Chiều thời gian theo ngày,Chiều,QLKD,,,,,Pending - chưa thiết kế nguồn
-K_QLKD_54,GIÁM SÁT,Nhóm 10 — Giám sát tuân thủ nộp báo cáo,Trạng thái nộp báo cáo,Chiều,QLKD,,,,,Pending - chưa thiết kế nguồn
-K_QLKD_55,GIÁM SÁT,Nhóm 10 — Giám sát tuân thủ nộp báo cáo,Số báo cáo đúng hạn,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
-K_QLKD_56,GIÁM SÁT,Nhóm 10 — Giám sát tuân thủ nộp báo cáo,Số báo cáo chậm,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
-K_QLKD_57,GIÁM SÁT,Nhóm 10 — Giám sát tuân thủ nộp báo cáo,Số báo cáo chưa nộp,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
-K_QLKD_58,GIÁM SÁT,Nhóm 10 — Giám sát tuân thủ nộp báo cáo,Tỷ lệ tuân thủ,Phái sinh,QLKD,,,,,Pending - chưa thiết kế nguồn
-K_QLKD_59,GIÁM SÁT,Nhóm 11 — Cơ cấu vốn chủ sở hữu,Chiều thời gian theo quý,Chiều,QLKD,,,,,Pending - chưa thiết kế nguồn
+K_QLKD_53,GIÁM SÁT,Nhóm 10 — Giám sát tuân thủ nộp báo cáo,Chiều thời gian theo ngày,Chiều,QLKD,Calendar Date Dimension,Calendar Date,SLICER,cdr_dt_dim.cdr_dt,Ready — Ngày giám sát tuân thủ nộp báo cáo
+K_QLKD_54,GIÁM SÁT,Nhóm 10 — Giám sát tuân thủ nộp báo cáo,Trạng thái nộp báo cáo (Đột xuất),Chiều,QLKD,Fact Securities Company Compliance Report Snapshot,Report Submission Status Code,SLICER,CASE WHEN fct_securities_company_compliance_report_snpst.rpt_submission_status_code = '1' THEN 'Gửi đúng hạn' WHEN fct_securities_company_compliance_report_snpst.rpt_submission_status_code = '2' THEN 'Gửi muộn' WHEN fct_securities_company_compliance_report_snpst.rpt_submission_status_code = '3' THEN 'Bị hủy' ELSE 'Chưa gửi' END,Ready — bộ ADHOC (scheme SCMS_REPORT_SUBMISSION_STATUS riêng ADHOC)
+K_QLKD_54,GIÁM SÁT,Nhóm 10 — Giám sát tuân thủ nộp báo cáo,Trạng thái nộp báo cáo (Đột xuất),Chiều,QLKD,Fact Securities Company Compliance Report Snapshot,Report Type Code,FILTER,fct_securities_company_compliance_report_snpst.report_tp_code = 'ADHOC',
+K_QLKD_55,GIÁM SÁT,Nhóm 10 — Giám sát tuân thủ nộp báo cáo,Số báo cáo đúng hạn,Cơ sở,QLKD,Fact Securities Company Compliance Report Snapshot,Report Id,MEASURE,COUNT(DISTINCT fct_securities_company_compliance_report_snpst.report_id),Ready — Số lượng báo cáo đột xuất nộp đúng hạn
+K_QLKD_55,GIÁM SÁT,Nhóm 10 — Giám sát tuân thủ nộp báo cáo,Số báo cáo đúng hạn,Cơ sở,QLKD,Fact Securities Company Compliance Report Snapshot,Report Submission Status Code,FILTER,fct_securities_company_compliance_report_snpst.rpt_submission_status_code = '1',
+K_QLKD_55,GIÁM SÁT,Nhóm 10 — Giám sát tuân thủ nộp báo cáo,Số báo cáo đúng hạn,Cơ sở,QLKD,Fact Securities Company Compliance Report Snapshot,Report Type Code,FILTER,fct_securities_company_compliance_report_snpst.report_tp_code = 'ADHOC',
+K_QLKD_56,GIÁM SÁT,Nhóm 10 — Giám sát tuân thủ nộp báo cáo,Số báo cáo chậm,Cơ sở,QLKD,Fact Securities Company Compliance Report Snapshot,Report Id,MEASURE,COUNT(DISTINCT fct_securities_company_compliance_report_snpst.report_id),Ready — Số lượng báo cáo đột xuất nộp chậm
+K_QLKD_56,GIÁM SÁT,Nhóm 10 — Giám sát tuân thủ nộp báo cáo,Số báo cáo chậm,Cơ sở,QLKD,Fact Securities Company Compliance Report Snapshot,Report Submission Status Code,FILTER,fct_securities_company_compliance_report_snpst.rpt_submission_status_code = '2',
+K_QLKD_56,GIÁM SÁT,Nhóm 10 — Giám sát tuân thủ nộp báo cáo,Số báo cáo chậm,Cơ sở,QLKD,Fact Securities Company Compliance Report Snapshot,Report Type Code,FILTER,fct_securities_company_compliance_report_snpst.report_tp_code = 'ADHOC',
+K_QLKD_57,GIÁM SÁT,Nhóm 10 — Giám sát tuân thủ nộp báo cáo,Số báo cáo chưa nộp,Cơ sở,QLKD,Fact Securities Company Compliance Report Snapshot,Report Id,MEASURE,COUNT(DISTINCT fct_securities_company_compliance_report_snpst.report_id),Ready — Số lượng báo cáo đột xuất quá hạn chưa nộp
+K_QLKD_57,GIÁM SÁT,Nhóm 10 — Giám sát tuân thủ nộp báo cáo,Số báo cáo chưa nộp,Cơ sở,QLKD,Fact Securities Company Compliance Report Snapshot,Report Submission Status Code,FILTER,fct_securities_company_compliance_report_snpst.rpt_submission_status_code = '0',
+K_QLKD_57,GIÁM SÁT,Nhóm 10 — Giám sát tuân thủ nộp báo cáo,Số báo cáo chưa nộp,Cơ sở,QLKD,Fact Securities Company Compliance Report Snapshot,Report Type Code,FILTER,fct_securities_company_compliance_report_snpst.report_tp_code = 'ADHOC',
+K_QLKD_58,GIÁM SÁT,Nhóm 10 — Giám sát tuân thủ nộp báo cáo,Tỷ lệ tuân thủ,Phái sinh,QLKD,,,DERIVED,"ROUND(COUNT(DISTINCT fct_securities_company_compliance_report_snpst.report_id WHERE fct_securities_company_compliance_report_snpst.report_tp_code = 'ADHOC' AND fct_securities_company_compliance_report_snpst.rpt_submission_status_code = '1') / NULLIF(COUNT(DISTINCT fct_securities_company_compliance_report_snpst.report_id WHERE fct_securities_company_compliance_report_snpst.report_tp_code = 'ADHOC' AND fct_securities_company_compliance_report_snpst.rpt_submission_status_code <> '3'), 0) * 100, 2)",Ready — Tỷ lệ tuân thủ nộp báo cáo đột xuất (%). Mẫu số loại trừ bản ghi Bị hủy (status='3')
+K_QLKD_4261,GIÁM SÁT,Nhóm 10 — Giám sát tuân thủ nộp báo cáo,Báo cáo định kỳ: Trạng thái nộp báo cáo,Chiều,QLKD,Fact Securities Company Compliance Report Snapshot,Report Submission Status Code,SLICER,"CASE WHEN fct_securities_company_compliance_report_snpst.rpt_submission_status_code IN ('1','2') THEN 'Đã gửi' WHEN fct_securities_company_compliance_report_snpst.rpt_submission_status_code = '-1' THEN 'Từ chối' WHEN fct_securities_company_compliance_report_snpst.rpt_submission_status_code = '3' THEN 'Bị hủy' ELSE 'Chưa gửi' END","Ready — bộ PERIODIC (scheme SCMS_REPORT_SUBMISSION_STATUS riêng PERIODIC, có thêm -1=Từ chối). KPI_ID không liền mạch với K_QLKD_53-58 — xem ghi chú Nhóm 10 trong HLD"
+K_QLKD_4261,GIÁM SÁT,Nhóm 10 — Giám sát tuân thủ nộp báo cáo,Báo cáo định kỳ: Trạng thái nộp báo cáo,Chiều,QLKD,Fact Securities Company Compliance Report Snapshot,Report Type Code,FILTER,fct_securities_company_compliance_report_snpst.report_tp_code = 'PERIODIC',
+K_QLKD_4262,GIÁM SÁT,Nhóm 10 — Giám sát tuân thủ nộp báo cáo,Số lượng báo cáo định kỳ của CTCK đã nộp,Cơ sở,QLKD,Fact Securities Company Compliance Report Snapshot,Report Id,MEASURE,COUNT(DISTINCT fct_securities_company_compliance_report_snpst.report_id),Ready — Số lượng báo cáo định kỳ đã nộp
+K_QLKD_4262,GIÁM SÁT,Nhóm 10 — Giám sát tuân thủ nộp báo cáo,Số lượng báo cáo định kỳ của CTCK đã nộp,Cơ sở,QLKD,Fact Securities Company Compliance Report Snapshot,Report Submission Status Code,FILTER,"fct_securities_company_compliance_report_snpst.rpt_submission_status_code IN ('1','2')",
+K_QLKD_4262,GIÁM SÁT,Nhóm 10 — Giám sát tuân thủ nộp báo cáo,Số lượng báo cáo định kỳ của CTCK đã nộp,Cơ sở,QLKD,Fact Securities Company Compliance Report Snapshot,Report Type Code,FILTER,fct_securities_company_compliance_report_snpst.report_tp_code = 'PERIODIC',
+K_QLKD_4263,GIÁM SÁT,Nhóm 10 — Giám sát tuân thủ nộp báo cáo,Số lượng báo cáo định kỳ của CTCK chưa nộp,Cơ sở,QLKD,Fact Securities Company Compliance Report Snapshot,Report Id,MEASURE,COUNT(DISTINCT fct_securities_company_compliance_report_snpst.report_id),Ready — Số lượng báo cáo định kỳ chưa nộp
+K_QLKD_4263,GIÁM SÁT,Nhóm 10 — Giám sát tuân thủ nộp báo cáo,Số lượng báo cáo định kỳ của CTCK chưa nộp,Cơ sở,QLKD,Fact Securities Company Compliance Report Snapshot,Report Submission Status Code,FILTER,fct_securities_company_compliance_report_snpst.rpt_submission_status_code = '0',
+K_QLKD_4263,GIÁM SÁT,Nhóm 10 — Giám sát tuân thủ nộp báo cáo,Số lượng báo cáo định kỳ của CTCK chưa nộp,Cơ sở,QLKD,Fact Securities Company Compliance Report Snapshot,Report Type Code,FILTER,fct_securities_company_compliance_report_snpst.report_tp_code = 'PERIODIC',
+K_QLKD_4264,GIÁM SÁT,Nhóm 10 — Giám sát tuân thủ nộp báo cáo,Tỷ lệ tuân thủ báo cáo định kỳ,Phái sinh,QLKD,,,DERIVED,"ROUND(COUNT(DISTINCT fct_securities_company_compliance_report_snpst.report_id WHERE fct_securities_company_compliance_report_snpst.report_tp_code = 'PERIODIC' AND fct_securities_company_compliance_report_snpst.rpt_submission_status_code IN ('1','2')) / NULLIF(COUNT(DISTINCT fct_securities_company_compliance_report_snpst.report_id WHERE fct_securities_company_compliance_report_snpst.report_tp_code = 'PERIODIC' AND fct_securities_company_compliance_report_snpst.rpt_submission_status_code NOT IN ('3')), 0) * 100, 2)",Ready — Tỷ lệ tuân thủ nộp báo cáo định kỳ (%). Mẫu số loại trừ bản ghi Bị hủy (status='3')
+K_QLKD_59,GIÁM SÁT,Nhóm 11 — Cơ cấu vốn chủ sở hữu,Chiều thời gian theo quý,Chiều,QLKD,Calendar Date Dimension,Calendar Date,SLICER,cdr_dt_dim.cdr_dt,Ready — Kỳ cơ cấu vốn CSH
 K_QLKD_60,GIÁM SÁT,Nhóm 11 — Cơ cấu vốn chủ sở hữu,Vốn đầu tư của CSH — toàn TT,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
 K_QLKD_61,GIÁM SÁT,Nhóm 11 — Cơ cấu vốn chủ sở hữu,Lợi nhuận sau thuế chưa phân phối — toàn TT,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
 K_QLKD_62,GIÁM SÁT,Nhóm 11 — Cơ cấu vốn chủ sở hữu,Quỹ và thặng dư vốn cổ phần — toàn TT,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
 K_QLKD_63,GIÁM SÁT,Nhóm 11 — Cơ cấu vốn chủ sở hữu,Vốn khác — toàn TT,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
-K_QLKD_64,GIÁM SÁT,Nhóm 12 — Vốn đầu tư CSH theo quý,Chiều thời gian theo quý,Chiều,QLKD,,,,,Pending - chưa thiết kế nguồn
+K_QLKD_64,GIÁM SÁT,Nhóm 12 — Vốn đầu tư CSH theo quý,Chiều thời gian theo quý,Chiều,QLKD,Calendar Date Dimension,Calendar Date,SLICER,cdr_dt_dim.cdr_dt,Ready — Kỳ biến động vốn CSH
 K_QLKD_65,GIÁM SÁT,Nhóm 12 — Vốn đầu tư CSH theo quý,Vốn góp của chủ sở hữu — toàn TT,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
 K_QLKD_66,GIÁM SÁT,Nhóm 13 — Nguồn vốn tăng thêm,Chiều thời gian theo tháng,Base,QLKD,Fact Securities Company Capital Raising Event,Event Date Dimension Id,SLICER,JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_company_capital_raising_event.event_dt_dim_id,
 K_QLKD_67,GIÁM SÁT,Nhóm 13 — Nguồn vốn tăng thêm,Chiều Phân loại hình thức tăng vốn,Base,QLKD,Offering Form Dimension,Capital Raising Form Name,SLICER,offering_form_dim.capital_raising_form_nm,
@@ -111,12 +119,12 @@ K_QLKD_71,GIÁM SÁT,Nhóm 13 — Nguồn vốn tăng thêm,Vốn tăng thêm do
 K_QLKD_71,GIÁM SÁT,Nhóm 13 — Nguồn vốn tăng thêm,Vốn tăng thêm do phát hành TP riêng lẻ,Base,QLKD,Offering Form Dimension,Capital Raising Form Code,FILTER,offering_form_dim.capital_raising_form_code = 'PRIVATE_BOND_ISSUANCE',
 K_QLKD_72,GIÁM SÁT,Nhóm 13 — Nguồn vốn tăng thêm,Vốn tăng thêm do phát hành TP ra công chúng,Base,QLKD,Fact Securities Company Capital Raising Event,Proceeds Collected Amount,MEASURE,SUM(fct_securities_company_capital_raising_event.proceeds_collected_amt),
 K_QLKD_72,GIÁM SÁT,Nhóm 13 — Nguồn vốn tăng thêm,Vốn tăng thêm do phát hành TP ra công chúng,Base,QLKD,Offering Form Dimension,Capital Raising Form Code,FILTER,offering_form_dim.capital_raising_form_code = 'PUBLIC_BOND_ISSUANCE',
-K_QLKD_73,GIÁM SÁT,Nhóm 14 — Tỷ lệ an toàn tài chính Số lượng CTCK,Chiều thời gian theo Tháng,Chiều,QLKD,,,,,Pending - chưa thiết kế nguồn
+K_QLKD_73,GIÁM SÁT,Nhóm 14 — Tỷ lệ an toàn tài chính Số lượng CTCK,Chiều thời gian theo Tháng,Chiều,QLKD,Calendar Date Dimension,Calendar Date,SLICER,cdr_dt_dim.cdr_dt,Ready — Tháng an toàn tài chính
 K_QLKD_74,GIÁM SÁT,Nhóm 14 — Tỷ lệ an toàn tài chính Số lượng CTCK,Phân loại tỷ lệ vốn khả dụng,Chiều,QLKD,,,,,Pending - chưa thiết kế nguồn
 K_QLKD_75,GIÁM SÁT,Nhóm 14 — Tỷ lệ an toàn tài chính Số lượng CTCK,Số CTCK TLVKD mức cao (>150%),Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
 K_QLKD_76,GIÁM SÁT,Nhóm 14 — Tỷ lệ an toàn tài chính Số lượng CTCK,Số CTCK TLVKD mức trung bình (120–150%),Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
 K_QLKD_77,GIÁM SÁT,Nhóm 14 — Tỷ lệ an toàn tài chính Số lượng CTCK,Số CTCK TLVKD mức thấp (<120%),Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
-K_QLKD_78,GIÁM SÁT,Nhóm 15 — Doanh thu & Lợi nhuận,Chiều thời gian theo quý,Chiều,QLKD,,,,,Pending - chưa thiết kế nguồn
+K_QLKD_78,GIÁM SÁT,Nhóm 15 — Doanh thu & Lợi nhuận,Chiều thời gian theo quý,Chiều,QLKD,Calendar Date Dimension,Calendar Date,SLICER,cdr_dt_dim.cdr_dt,Ready — Kỳ doanh thu & lợi nhuận
 K_QLKD_79,GIÁM SÁT,Nhóm 15 — Doanh thu & Lợi nhuận,Tổng doanh thu — toàn TT,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
 K_QLKD_80,GIÁM SÁT,Nhóm 15 — Doanh thu & Lợi nhuận,Lợi nhuận sau thuế — toàn TT,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
 K_QLKD_81,GIÁM SÁT,Nhóm 15 — Doanh thu & Lợi nhuận,Cơ cấu DT nghiệp vụ môi giới,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
@@ -143,18 +151,18 @@ K_QLKD_93,GIÁM SÁT,Nhóm 17 — Thị phần môi giới,Chiều sàn giao d�
 K_QLKD_94,GIÁM SÁT,Nhóm 17 — Thị phần môi giới,Chiều top CTCK có thị phần cao nhất,Chiều,QLKD,,,,,Pending - chưa thiết kế nguồn
 K_QLKD_95,GIÁM SÁT,Nhóm 17 — Thị phần môi giới,Thị phần môi giới của từng CTCK,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
 K_QLKD_96,GIÁM SÁT,Nhóm 17 — Thị phần môi giới,Xếp hạng thị phần môi giới,Phái sinh,QLKD,,,,,Pending - chưa thiết kế nguồn
-K_QLKD_97,GIÁM SÁT,Nhóm 18 — Lưu chuyển tiền thuần CFO,Chiều mã CTCK,Chiều,QLKD,,,,,Pending - chưa thiết kế nguồn
+K_QLKD_97,GIÁM SÁT,Nhóm 18 — Lưu chuyển tiền thuần CFO,Chiều mã CTCK,Chiều,QLKD,Securities Company Dimension,Securities Company Code,SLICER,securities_company_dim.sc_code,Ready — Mã CTCK
 K_QLKD_98,GIÁM SÁT,Nhóm 18 — Lưu chuyển tiền thuần CFO,LNST — per CTCK,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
 K_QLKD_99,GIÁM SÁT,Nhóm 18 — Lưu chuyển tiền thuần CFO,CFO (dòng tiền hoạt động KD) — per CTCK,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
-K_QLKD_100,HỒ SƠ CTCK 360,Nhóm 19 — Banner tổng quan CTCK,Chiều mã CTCK,Chiều,QLKD,,,,,Pending - chưa thiết kế nguồn
-K_QLKD_101,HỒ SƠ CTCK 360,Nhóm 19 — Banner tổng quan CTCK,Chiều thời gian theo tháng,Chiều,QLKD,,,,,Pending - chưa thiết kế nguồn
+K_QLKD_100,HỒ SƠ CTCK 360,Nhóm 19 — Banner tổng quan CTCK,Chiều mã CTCK,Chiều,QLKD,Securities Company Dimension,Securities Company Code,SLICER,securities_company_dim.sc_code,Ready — Mã CTCK
+K_QLKD_101,HỒ SƠ CTCK 360,Nhóm 19 — Banner tổng quan CTCK,Chiều thời gian theo tháng,Chiều,QLKD,Calendar Date Dimension,Calendar Date,SLICER,cdr_dt_dim.cdr_dt,Ready — Kỳ báo cáo
 K_QLKD_102,HỒ SƠ CTCK 360,Nhóm 19 — Banner tổng quan CTCK,Vốn chủ sở hữu — per CTCK,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
 K_QLKD_103,HỒ SƠ CTCK 360,Nhóm 19 — Banner tổng quan CTCK,Dư nợ margin — per CTCK,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
 K_QLKD_104,HỒ SƠ CTCK 360,Nhóm 19 — Banner tổng quan CTCK,Tỷ lệ ATTC — per CTCK,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
-K_QLKD_105,HỒ SƠ CTCK 360,Nhóm 19 — Banner tổng quan CTCK,Số nhân viên — per CTCK,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
+K_QLKD_105,HỒ SƠ CTCK 360,Nhóm 19 — Banner tổng quan CTCK,Số nhân viên — per CTCK,Cơ sở,QLKD,Operational Securities Company Personnel Profile,Total Personnel,MEASURE,opr_sc_personnel_profile.total_personnel_cnt,Ready — Tổng nhân sự per CTCK
 K_QLKD_106,HỒ SƠ CTCK 360,Nhóm 19 — Banner tổng quan CTCK,Vốn điều lệ — per CTCK,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
 K_QLKD_107,HỒ SƠ CTCK 360,Nhóm 20 — Biến động vốn CSH,Biến động vốn CSH theo quý — per CTCK,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
-K_QLKD_108,HỒ SƠ CTCK 360,Nhóm 21 — Cơ cấu tổng tài sản CTCK,Chiều thời gian theo quý,Chiều,QLKD,,,,,Pending - chưa thiết kế nguồn
+K_QLKD_108,HỒ SƠ CTCK 360,Nhóm 21 — Cơ cấu tổng tài sản CTCK,Chiều thời gian theo quý,Chiều,QLKD,Calendar Date Dimension,Calendar Date,SLICER,cdr_dt_dim.cdr_dt,Ready — Kỳ tài sản CTCK
 K_QLKD_109,HỒ SƠ CTCK 360,Nhóm 21 — Cơ cấu tổng tài sản CTCK,Tiền và tương đương tiền — per CTCK,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
 K_QLKD_110,HỒ SƠ CTCK 360,Nhóm 21 — Cơ cấu tổng tài sản CTCK,Tài sản tài chính ghi nhận thông qua lãi/lỗ — per CTCK,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
 K_QLKD_111,HỒ SƠ CTCK 360,Nhóm 21 — Cơ cấu tổng tài sản CTCK,Các khoản đầu tư nắm giữ đến ngày đáo hạn — per CTCK,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
@@ -166,18 +174,18 @@ K_QLKD_116,HỒ SƠ CTCK 360,Nhóm 22 — Cơ cấu nguồn vốn CTCK,Vay và n
 K_QLKD_117,HỒ SƠ CTCK 360,Nhóm 22 — Cơ cấu nguồn vốn CTCK,Nợ phải trả dài hạn — per CTCK,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
 K_QLKD_118,HỒ SƠ CTCK 360,Nhóm 22 — Cơ cấu nguồn vốn CTCK,Vốn chủ sở hữu — per CTCK,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
 K_QLKD_119,HỒ SƠ CTCK 360,Nhóm 22 — Cơ cấu nguồn vốn CTCK,Khác — per CTCK,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
-K_QLKD_120,HỒ SƠ CTCK 360,Nhóm 23 — Doanh thu & Lợi nhuận per CTCK,Chiều thời gian theo quý,Chiều,QLKD,,,,,Pending - chưa thiết kế nguồn
+K_QLKD_120,HỒ SƠ CTCK 360,Nhóm 23 — Doanh thu & Lợi nhuận per CTCK,Chiều thời gian theo quý,Chiều,QLKD,Calendar Date Dimension,Calendar Date,SLICER,cdr_dt_dim.cdr_dt,Ready — Kỳ KQKD CTCK
 K_QLKD_121,HỒ SƠ CTCK 360,Nhóm 23 — Doanh thu & Lợi nhuận per CTCK,Cơ cấu doanh thu theo nghiệp vụ môi giới — per CTCK,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
 K_QLKD_122,HỒ SƠ CTCK 360,Nhóm 23 — Doanh thu & Lợi nhuận per CTCK,Cơ cấu doanh thu theo nghiệp vụ tự doanh — per CTCK,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
 K_QLKD_123,HỒ SƠ CTCK 360,Nhóm 23 — Doanh thu & Lợi nhuận per CTCK,Cơ cấu doanh thu theo nghiệp vụ tư vấn — per CTCK,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
 K_QLKD_124,HỒ SƠ CTCK 360,Nhóm 23 — Doanh thu & Lợi nhuận per CTCK,Cơ cấu doanh thu theo nghiệp vụ bảo lãnh — per CTCK,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
 K_QLKD_125,HỒ SƠ CTCK 360,Nhóm 23 — Doanh thu & Lợi nhuận per CTCK,Doanh thu — per CTCK,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
 K_QLKD_126,HỒ SƠ CTCK 360,Nhóm 23 — Doanh thu & Lợi nhuận per CTCK,Lợi nhuận sau thuế — per CTCK,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
-K_QLKD_127,HỒ SƠ CTCK 360,Nhóm 24 — Chỉ số dư nợ margin/vốn CSH CTCK,Chiều thời gian theo tháng,Chiều,QLKD,,,,,Pending - chưa thiết kế nguồn
+K_QLKD_127,HỒ SƠ CTCK 360,Nhóm 24 — Chỉ số dư nợ margin/vốn CSH CTCK,Chiều thời gian theo tháng,Chiều,QLKD,Calendar Date Dimension,Calendar Date,SLICER,cdr_dt_dim.cdr_dt,Ready — Tháng Margin/VCSH
 K_QLKD_128,HỒ SƠ CTCK 360,Nhóm 24 — Chỉ số dư nợ margin/vốn CSH CTCK,Tỷ lệ dư nợ Margin/VCSH — per CTCK,Phái sinh,QLKD,,,,,Pending - chưa thiết kế nguồn
 K_QLKD_127,HỒ SƠ CTCK 360,Nhóm 25 — Tỷ lệ an toàn tài chính,Chiều thời gian theo tháng (reuse từ Nhóm 24),Chiều,QLKD,,,,,Pending - chưa thiết kế nguồn
 K_QLKD_129,HỒ SƠ CTCK 360,Nhóm 25 — Tỷ lệ an toàn tài chính,Tỷ lệ ATTC theo tháng — per CTCK,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
-K_QLKD_130,HỒ SƠ CTCK 360,Nhóm 26 — Các chỉ tiêu chung,Chiều thời gian theo quý,Chiều,QLKD,,,,,Pending - chưa thiết kế nguồn
+K_QLKD_130,HỒ SƠ CTCK 360,Nhóm 26 — Các chỉ tiêu chung,Chiều thời gian theo quý,Chiều,QLKD,Calendar Date Dimension,Calendar Date,SLICER,cdr_dt_dim.cdr_dt,Ready — Kỳ chỉ tiêu chung tài chính
 K_QLKD_131,HỒ SƠ CTCK 360,Nhóm 26 — Các chỉ tiêu chung,Doanh thu YTD — per CTCK,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
 K_QLKD_132,HỒ SƠ CTCK 360,Nhóm 26 — Các chỉ tiêu chung,Lợi nhuận sau thuế YTD — per CTCK,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
 K_QLKD_133,HỒ SƠ CTCK 360,Nhóm 26 — Các chỉ tiêu chung,ROA — per CTCK,Phái sinh,QLKD,,,,,Pending - chưa thiết kế nguồn
@@ -255,13 +263,13 @@ K_QLKD_183,HỒ SƠ CTCK 360,Nhóm 37 — Danh sách CN PGD VPĐD,Nghiệp vụ 
 K_QLKD_184,HỒ SƠ CTCK 360,Nhóm 37 — Danh sách CN PGD VPĐD,Ngày thành lập,Base,QLKD,Operational Securities Company Organization Unit Profile,Decision Date,SLICER,opr_securities_company_organization_unit_profile.decision_dt,
 K_QLKD_185,HỒ SƠ CTCK 360,Nhóm 37 — Danh sách CN PGD VPĐD,Giám đốc chi nhánh/Trưởng VPĐD,Base,QLKD,Operational Securities Company Organization Unit Profile,Director Name,SLICER,opr_securities_company_organization_unit_profile.director_nm,
 K_QLKD_183,HỒ SƠ CTCK 360,Nhóm 37 — Danh sách CN PGD VPĐD,Nghiệp vụ — per đơn vị,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
-K_QLKD_186,HỒ SƠ CTCK 360,Nhóm 38 — Tuân thủ Các chỉ tiêu chung,Chiều thời gian theo Ngày,Base,QLKD,,,,,Pending - chưa thiết kế nguồn
+K_QLKD_186,HỒ SƠ CTCK 360,Nhóm 38 — Tuân thủ Các chỉ tiêu chung,Chiều thời gian theo Ngày,Base,QLKD,Calendar Date Dimension,Calendar Date,SLICER,cdr_dt_dim.cdr_dt,Ready — Ngày giám sát tuân thủ
 K_QLKD_187,HỒ SƠ CTCK 360,Nhóm 38 — Tuân thủ Các chỉ tiêu chung,Báo cáo YTD đã nộp / tổng nghĩa vụ,Phái sinh,QLKD,,,,,Pending - chưa thiết kế nguồn
 K_QLKD_188,HỒ SƠ CTCK 360,Nhóm 38 — Tuân thủ Các chỉ tiêu chung,Số quyết định xử phạt — per CTCK,Base,QLKD,Operational Securities Company Compliance History,Compliance Event Code,MEASURE,COUNT(DISTINCT opr_securities_company_compliance_hist.compliance_event_code),
 K_QLKD_188,HỒ SƠ CTCK 360,Nhóm 38 — Tuân thủ Các chỉ tiêu chung,Số quyết định xử phạt — per CTCK,Base,QLKD,Operational Securities Company Compliance History,Event Type Code,FILTER,opr_securities_company_compliance_hist.event_tp_code = 'ADMIN_PENALTY_DECISION',
 K_QLKD_188,HỒ SƠ CTCK 360,Nhóm 38 — Tuân thủ Các chỉ tiêu chung,Số quyết định xử phạt — per CTCK,Base,QLKD,Operational Securities Company Compliance History,Issued Date,FILTER,opr_securities_company_compliance_hist.issued_dt <= :ngay_chon,
 K_QLKD_188,HỒ SƠ CTCK 360,Nhóm 38 — Tuân thủ Các chỉ tiêu chung,Số quyết định xử phạt — per CTCK,Base,QLKD,Operational Securities Company Compliance History,Decision Number,FILTER,opr_securities_company_compliance_hist.decision_nbr IS NOT NULL,
-K_QLKD_189,HỒ SƠ CTCK 360,Nhóm 39 — Lịch sử nộp báo cáo của CTCK,Chiều thời gian theo Ngày,Chiều,QLKD,,,,,Pending - chưa thiết kế nguồn
+K_QLKD_189,HỒ SƠ CTCK 360,Nhóm 39 — Lịch sử nộp báo cáo của CTCK,Chiều thời gian theo Ngày,Chiều,QLKD,Calendar Date Dimension,Calendar Date,SLICER,cdr_dt_dim.cdr_dt,Ready — Ngày giám sát
 K_QLKD_190,HỒ SƠ CTCK 360,Nhóm 39 — Lịch sử nộp báo cáo của CTCK,Loại báo cáo — per CTCK,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
 K_QLKD_191,HỒ SƠ CTCK 360,Nhóm 39 — Lịch sử nộp báo cáo của CTCK,Kỳ kê khai — per CTCK,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
 K_QLKD_192,HỒ SƠ CTCK 360,Nhóm 39 — Lịch sử nộp báo cáo của CTCK,Hạn nộp — per CTCK,Cơ sở,QLKD,,,,,Pending - chưa thiết kế nguồn
