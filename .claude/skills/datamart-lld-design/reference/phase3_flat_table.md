@@ -26,6 +26,16 @@ Chỉ sinh flat table cho bảng **`fact`** và **`operational`** — không sin
 
 **Đếm trước khi sinh:** Báo cáo cho user: "Phân hệ {MODULE} có X fact + Y operational = Z bảng flat." Chờ xác nhận trước khi sinh file.
 
+**Đồng bộ tuyệt đối LLD ↔ Flat Table (Tránh Orphan Draft Artifacts):**
+- Danh sách bảng fact và operational sinh flat table PHẢI khớp 100% với danh sách bảng fact/operational trong `Datamart/lld/{MODULE}/` và `datamart_model.yaml`.
+- Nếu có bảng fact draft nào từng được tạo ở LLD nhưng quá trình cập nhật thiết kế xác định **không cần nữa** (bị hủy bỏ hoặc sáp nhập, không tạo flat table), BẮT BUỘC phải thực hiện ngay **All-Tier Cleanup Protocol**:
+  1. Xóa file detail `Datamart/lld/{MODULE}/DTM_{MODULE}_{table}.csv`.
+  2. Xóa các dòng của bảng đó khỏi master `Datamart/lld/datamart_attributes.csv`.
+  3. Cập nhật lại `DTM_{MODULE}_Detail_Mapping.csv` (re-map hoặc chuyển PENDING).
+  4. Xóa block entity khỏi `Datamart/datamart_model.yaml`.
+  5. Tuyệt đối không để xảy ra tình trạng flat-table đã bỏ bảng mà LLD vẫn còn lưu file draft mồ côi!
+
+
 ---
 
 ## Quy tắc đặt tên
@@ -92,6 +102,10 @@ Tên bảng Calendar Date (physical): `datamart.cdr_dt_dim`, join key `cdr_dt_di
 Đọc Attributes.csv của bảng dim tương ứng, lấy **toàn bộ cột trừ**:
 - Cột PK surrogate (`data_domain = Surrogate Key`)
 - Cột `src_stm_code` (`data_domain = Classification Value`, `datamart_column = src_stm_code`)
+- Các trường kỹ thuật audit SCD4A (`ds_rcrd_st`, `ds_rcrd_isrt_dt`, `ds_rcrd_udt_dt`, `ds_etl_pcs_tms`, `ds_snpst_dt`) — flat table phục vụ BI trực tiếp, không đưa các trường audit kỹ thuật của dim vào flat table.
+
+**Điều kiện lọc SCD4A khi JOIN Dimension:**
+- Khi viết câu lệnh `POPULATE` (file 02), nếu Dimension là bảng SCD4A, bắt buộc phải có điều kiện `AND dim_alias.ds_rcrd_st = 'ACTIVE'` trong mệnh đề JOIN để chỉ đưa dữ liệu đang hoạt động vào flat table.
 
 **Bắt buộc cross-check sau khi sinh:** Mọi cột trong section `-- From: FACT/OPERATIONAL` của CREATE phải có trong Attributes.csv — không được có cột thừa. Tương tự mọi dim được JOIN phải có FK trong Attributes.csv.
 

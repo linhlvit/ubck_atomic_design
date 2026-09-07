@@ -39,6 +39,14 @@ description: |
 - [ ] `DataModel/working/Atomic/lld/manifest.yaml` tồn tại — entry point tra cứu Atomic entities draft (Nguồn 2, chỉ tra khi Nguồn 1 không có)
 - [ ] `Datamart/datamart_model.yaml` tồn tại — registry schema cross-module (có thể rỗng `entities: []` nếu module đầu tiên)
 
+> **❌ TUYỆT ĐỐI CẤM SỬA ATOMIC TỪ SKILL THIẾT KẾ DATAMART:**
+> Skill thiết kế Datamart (`datamart-hld-design`, `datamart-lld-design`, `datamart-review`) chỉ có quyền **READ-ONLY** đối với thư mục `DataModel/Atomic/` và `DataModel/working/Atomic/`.
+> - Tuyệt đối **KHÔNG ĐƯỢC** tạo file mới, sửa đổi thuộc tính, thêm cột kỹ thuật, hoặc can thiệp vào bất kỳ file YAML nào trong `DataModel/`.
+> - Nếu Atomic thiếu bảng, thiếu cột, hoặc thiếu audit field cần thiết cho Datamart:
+>   - Đánh dấu KPI liên quan là **PENDING** (ghi rõ lý do: "Thiếu nguồn Atomic / Chưa có trong Atomic schema").
+>   - Ghi nhận vào Section 5 Open Issues (`DTM_{MODULE}_HLD.md`).
+>   - DỪNG lại báo cáo human để Data Modeler thuộc luồng Atomic xử lý độc lập. Tuyệt đối không tự ý sửa Atomic!
+>
 > **Cấm dùng `DataModel/working/Atomic_LinhLV/`** — track cũ đã revert, out of date. Xem chi tiết thứ tự ưu tiên 2 nguồn ở Bước 1 mục 3.
 
 ---

@@ -42,6 +42,14 @@ description: |
 - [ ] `BRD/BA/BA_analyst_{MODULE}.csv` tồn tại (cần cho Phase 2)
 - [ ] `DataModel/working/Atomic/lld/classification_schemes.yaml` tồn tại (cần khi map từ danh mục CV)
 
+> **❌ TUYỆT ĐỐI CẤM SỬA ATOMIC TỪ SKILL THIẾT KẾ DATAMART:**
+> Skill thiết kế Datamart (`datamart-hld-design`, `datamart-lld-design`, `datamart-review`) chỉ có quyền **READ-ONLY** đối với thư mục `DataModel/Atomic/` và `DataModel/working/Atomic/`.
+> - Tuyệt đối **KHÔNG ĐƯỢC** tạo file mới, sửa đổi thuộc tính, thêm cột kỹ thuật, hoặc can thiệp vào bất kỳ file YAML nào trong `DataModel/`.
+> - Nếu Atomic thiếu bảng, thiếu cột, hoặc thiếu audit field cần thiết cho Datamart:
+>   - Đánh dấu KPI liên quan là **PENDING** (ghi rõ lý do: "Thiếu nguồn Atomic / Chưa có trong Atomic schema").
+>   - Ghi nhận vào Section 5 Open Issues (`DTM_{MODULE}_HLD.md`).
+>   - DỪNG lại báo cáo human để Data Modeler thuộc luồng Atomic xử lý độc lập. Tuyệt đối không tự ý sửa Atomic!
+>
 > **QUYẾT ĐỊNH CỨNG:** Claude KHÔNG được đoán `source_entity` hay `source_attribute`.
 > Mọi mapping phải tra cứu trực tiếp từ entity YAML files, theo đúng thứ tự ưu tiên 2 nguồn dưới đây.
 >
@@ -795,7 +803,58 @@ Nếu FAIL → sửa trước khi trình bày.
 - Báo: `✅ TC9 PASS: 0 description vi phạm` hoặc `❌ TC9 FAIL: [danh sách file | attribute | lý do | description hiện tại]`.
 - Nếu FAIL → rút gọn `description` chỉ còn phần mô tả nghiệp vụ thuần (bỏ KPI_ID, bỏ toàn bộ vế sau chứa logic ETL) → chạy lại TC9 → báo kết quả.
 
-> **Quy tắc SELF-REVIEW:** Chỉ trình bày file cho human sau khi cả 10 TC (TC1, TC2, TC2b, TC3 gồm cả TC3b, TC4, TC5, TC6, TC7, TC8, TC9) đều PASS. Nếu có TC FAIL → sửa → chạy lại TC đó → báo kết quả cuối cùng kèm tóm tắt "Đã sửa X lỗi" trước khi trình bày file.
+**TC10 — Đầy đủ trường kỹ thuật SCD4A trên Dimension / Operational (bắt buộc dùng Bash tool):**
+- Mục đích: Đảm bảo mọi bảng Dimension và Operational tuân thủ chuẩn SCD4A của Lakehouse Datamart, có đủ các trường kỹ thuật mặc định (`ds_rcrd_st`, `ds_rcrd_isrt_dt`, `ds_rcrd_udt_dt`, `ds_etl_pcs_tms`), và bảng History companion có thêm `ds_snpst_dt`.
+- Chạy script kiểm tra file vừa sinh nếu là Dimension hoặc Operational:
+  ```bash
+  python -c "
+  import csv, sys
+  sys.stdout.reconfigure(encoding='utf-8')
+  REQUIRED_ACTIVE = {'ds_rcrd_st', 'ds_rcrd_isrt_dt', 'ds_rcrd_udt_dt', 'ds_etl_pcs_tms'}
+  fp = '{FILE_PATH}'
+  with open(fp, 'r', encoding='utf-8-sig') as f:
+      reader = csv.DictReader(f)
+      cols = {row['datamart_column'].strip() for row in reader}
+  missing = REQUIRED_ACTIVE - cols
+  if missing:
+      print(f'❌ TC10 FAIL: {fp} thiếu trường kỹ thuật SCD4A: {sorted(list(missing))}')
+  else:
+      print(f'✅ TC10 PASS: {fp} đầy đủ trường kỹ thuật SCD4A')
+  "
+  ```
+- Báo: `✅ TC10 PASS: Đầy đủ trường kỹ thuật SCD4A` hoặc `❌ TC10 FAIL: [tên bảng/file] thiếu trường kỹ thuật SCD4A: [danh sách trường thiếu]`.
+- Nếu FAIL → bổ sung các trường kỹ thuật mặc định theo bảng chuẩn trong `reference/phase1_attributes.md`.
+
+**TC11 — Lọc `ds_rcrd_st = 'ACTIVE'` khi JOIN bảng Atomic SCD4A (bắt buộc dùng Bash tool):**
+- Mục đích: Ngăn chặn lỗi lẫn bản ghi INACTIVE hoặc fanout nhân đôi dữ liệu khi JOIN sang bảng Atomic Fundamental (SCD4A).
+- Kiểm tra file vừa sinh: mọi dòng có `etl_logic` chứa `JOIN` vào bảng Atomic Fundamental (SCD4A) phải có điều kiện lọc bản ghi active (`AND <atomic_table>.ds_rcrd_st = 'ACTIVE'`). Nếu JOIN bảng History (`_hstr`): phải có `ds_snpst_dt` và `ds_rcrd_st = 'ACTIVE'`.
+- Chạy script kiểm tra:
+  ```bash
+  python -c "
+  import csv, sys, re
+  sys.stdout.reconfigure(encoding='utf-8')
+  fp = '{FILE_PATH}'
+  fails = []
+  with open(fp, 'r', encoding='utf-8-sig') as f:
+      for idx, row in enumerate(csv.DictReader(f), 1):
+          logic = row.get('etl_logic', '')
+          # Kiểm tra nếu JOIN bảng atomic mà thiếu ds_rcrd_st
+          joins = re.findall(r'JOIN\s+([a-zA-Z0-9_]+)\s+ON\s+([^→\n]+)', logic, re.IGNORECASE)
+          for tbl, on_cond in joins:
+              if tbl not in ('cv', 'cdr_dt_dim') and not tbl.endswith('_dim'):
+                  if 'ds_rcrd_st' not in on_cond and not tbl.endswith('_flat'):
+                      fails.append((row['datamart_column'], tbl, on_cond))
+  if fails:
+      print(f'❌ TC11 FAIL: Có {len(fails)} biểu thức JOIN bảng Atomic thiếu ds_rcrd_st = \'ACTIVE\'')
+      for col, tbl, cond in fails:
+          print(f'   - Cột {col}: JOIN {tbl} ON {cond.strip()}')
+  else:
+      print('✅ TC11 PASS: Lọc SCD4A đầy đủ trên các mệnh đề JOIN')
+  "
+  ```
+- Báo: `✅ TC11 PASS: Lọc SCD4A đầy đủ` hoặc `❌ TC11 FAIL: [danh sách cột/biểu thức thiếu filter ds_rcrd_st='ACTIVE']`.
+
+> **Quy tắc SELF-REVIEW:** Chỉ trình bày file cho human sau khi cả 11 TC (TC1, TC2, TC2b, TC3 gồm cả TC3b, TC4, TC5, TC6, TC7, TC8, TC9, TC10, TC11) đều PASS. Nếu có TC FAIL → sửa → chạy lại TC đó → báo kết quả cuối cùng kèm tóm tắt "Đã sửa X lỗi" trước khi trình bày file.
 
 ### Checklist Phase 1
 
@@ -1043,5 +1102,24 @@ POST-CHECK (sau khi sinh):
 □ Không có cột nào trong Attributes.csv bị bỏ sót trong CREATE TABLE (fact/operational columns)
 □ Không có cột nào trong CREATE TABLE (fact/operational section) mà KHÔNG có trong Attributes.csv — cột thừa phải xóa
 □ Dim JOIN: mọi dim được JOIN phải có FK tương ứng trong Attributes.csv — dim không có FK thì không JOIN, không lấy cột
+□ Orphan Check (LLD ↔ Flat Table): Đối chiếu danh sách bảng trong `Datamart/lld/{MODULE}/` và `Datamart/flat-table/{MODULE}/01_create_*.sql`. Mọi bảng fact/operational trong LLD PHẢI có bảng flat tương ứng trong file 01. Nếu phát hiện bảng draft trong LLD không có flat table tương ứng (và không phải Dimension thuần), BẮT BUỘC thực hiện quy trình dọn dẹp Deprecation / Cleanup để xóa sạch file CSV, xóa dòng trong master attributes, và xóa entity trong datamart_model.yaml.
 □ Sau khi xuất 2 file: DỪNG chờ human duyệt → ❌ KHÔNG tự kết thúc skill khi chưa có xác nhận
 ```
+
+---
+
+## QUY TRÌNH DEPRECATION VÀ DỌN DẸP ĐỒNG BỘ FACT/DIM DRAFT (ALL-TIER CLEANUP PROTOCOL)
+
+> **NGUYÊN TẮC CỐT LÕI:** Trong quá trình thiết kế, nếu một Fact hoặc Dim draft sau khi tạo ra mà quá trình review / cập nhật xác định **không còn cần nữa** (bị hủy bỏ, gộp bảng, hoặc chuyển thành Dimension thuần):
+> Claude **TUYỆT ĐỐI KHÔNG ĐƯỢC** chỉ sửa/xóa bảng trong `Datamart/flat-table/` mà bỏ quên `Datamart/lld/`!
+> Tình trạng `flat-table` đã loại bỏ bảng nhưng `Datamart/lld/` vẫn còn lưu file detail, master `datamart_attributes.csv` vẫn còn dòng rác, và `datamart_model.yaml` vẫn còn entity mồ côi (orphaned artifacts) là **LỖI NGHIÊM TRỌNG**.
+
+Bắt buộc thực hiện đủ 5 bước dọn dẹp đồng bộ:
+1. **Xóa file LLD detail:** Xóa file `Datamart/lld/{MODULE}/DTM_{MODULE}_{datamart_table}.csv` (và các file biến thể multi-source nếu có).
+2. **Dọn sạch master `datamart_attributes.csv`:** Tìm và xóa TOÀN BỘ các dòng có `datamart_table == {datamart_table}` trong file master `Datamart/lld/datamart_attributes.csv`.
+3. **Cập nhật `DTM_{MODULE}_Detail_Mapping.csv`:** Rà soát các KPI từng map vào bảng bị loại bỏ:
+   - Nếu sáp nhập sang bảng khác: đổi `mart_table` và `mart_column` sang bảng mới.
+   - Nếu không còn bảng đáp ứng: chuyển KPI sang `PENDING`, xóa giá trị `mart_table` và `mart_column`, cập nhật `ghi_chu` nêu rõ lý do.
+4. **Xóa khỏi `Datamart/datamart_model.yaml`:** Xóa triệt để block entity `- id: "DTM-{datamart_table}"` khỏi file registry.
+5. **Đồng bộ HLD & Flat Table SQL:** Cập nhật `DTM_{MODULE}_HLD.md` (Section 4 Reuse Analysis ghi rõ trạng thái `deprecated/removed`, giải thích lý do) và đảm bảo `01_create_*_flat_tables.sql` + `02_populate_*_flat_tables.sql` không còn DDL/INSERT của bảng đó.
+

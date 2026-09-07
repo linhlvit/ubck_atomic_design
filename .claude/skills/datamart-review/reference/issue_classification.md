@@ -113,6 +113,9 @@ Khi đi sâu vào review kỹ thuật từng nhóm (Micro-Review), các vấn đ
   - `nullable` sai với business rule (FK để nullable = true).
   - Tên cột không nhất quán giữa physical và logical (vi phạm `rule_physical_name_exceptions_datamart.csv`).
   - `etl_logic` tham chiếu trực tiếp cột mart khác (`fct_*.col`) thay vì flatten xuống Atomic.
+  - Thiếu bộ 4-5 trường kỹ thuật mặc định SCD4A trên bảng Dimension / Operational (`ds_rcrd_st`, `ds_rcrd_isrt_dt`, `ds_rcrd_udt_dt`, `ds_etl_pcs_tms`, `ds_snpst_dt`).
+  - Mệnh đề JOIN vào bảng Atomic Fundamental (SCD4A) thiếu điều kiện lọc bản ghi active `ds_rcrd_st = 'ACTIVE'`.
+  - Tồn tại bảng/artifact mồ côi (Orphan Draft Artifact): Bảng Fact/Dim draft từng tạo ở LLD nhưng nay bị loại bỏ khỏi `flat-table` và HLD mà chưa được dọn dẹp sạch sẽ ở `Datamart/lld/`.
   - Bảng KPI HLD thiếu cột (chưa đủ chuẩn 7 cột có cột `Trạng thái`).
   - HLD thiếu Section 4 Reuse Analysis.
 - **Hành động:**

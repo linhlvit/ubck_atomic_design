@@ -473,12 +473,12 @@ Xem `reference/column_rules.md` để biết chi tiết. Tóm tắt:
 | Nullable | PK hoặc FK → rỗng; còn lại theo `nullable` (true=X, false=rỗng) |
 | Unique | PK→X; còn lại→rỗng |
 | Giá trị mặc định | Luôn để trống |
-| Hệ thống nguồn | Lookup `(atomic_table, atomic_column)` → `source_system` từ `DataModel/working/Atomic/aggregate/atomic_attributes.yaml`; 3 trường kỹ thuật hoặc `source_entity=Generated`/rỗng → trống |
-| Schema.Table | `ATM.{atomic_table}` (schema cố định `ATM` = Atomic); 3 trường kỹ thuật hoặc `atomic_table` trống → trống |
-| Source Field Name | `atomic_column` từ `DTM_{MODULE}_Attributes.csv`; 3 trường kỹ thuật hoặc `atomic_column` trống → trống |
-| ETL Rules | `etl_logic` từ `DTM_{MODULE}_Attributes.csv`; 3 trường kỹ thuật hoặc `source_entity=Generated`/rỗng → `ETL sinh tự động` |
+| Hệ thống nguồn | Lookup `(atomic_table, atomic_column)` → `source_system` từ `DataModel/working/Atomic/aggregate/atomic_attributes.yaml`; các trường kỹ thuật SCD4A / audit hoặc `source_entity=Generated`/rỗng → trống |
+| Schema.Table | `ATM.{atomic_table}` (schema cố định `ATM` = Atomic); các trường kỹ thuật SCD4A / audit hoặc `atomic_table` trống → trống |
+| Source Field Name | `atomic_column` từ `DTM_{MODULE}_Attributes.csv`; các trường kỹ thuật SCD4A / audit hoặc `atomic_column` trống → trống |
+| ETL Rules | `etl_logic` từ `DTM_{MODULE}_Attributes.csv`; các trường kỹ thuật SCD4A / audit hoặc `source_entity=Generated`/rỗng → `ETL sinh tự động` |
 
-**3 trường kỹ thuật:** `Effective Date`, `Expiry Date`, `Population Date`
+**Bộ 5 trường kỹ thuật SCD4A:** `ds_rcrd_st`, `ds_rcrd_isrt_dt`, `ds_rcrd_udt_dt`, `ds_etl_pcs_tms`, `ds_snpst_dt` (và các trường audit legacy: `eff_dt`, `expr_dt`, `ppl_dt`)
 
 #### C.5 Quy tắc mô tả trường (cột Mô tả)
 
@@ -612,7 +612,7 @@ Theo sau heading là metadata bảng:
 - [ ] ETL Rules = `etl_logic` từ Attributes.csv; Generated/rỗng → `ETL sinh tự động`
 - [ ] Cột Giá trị mặc định: để trống hoàn toàn
 - [ ] DD key → cột P/F Key để trống
-- [ ] 3 trường kỹ thuật: Hệ thống nguồn/Schema.Table/Source Field Name trống, ETL Rules = `ETL sinh tự động`
+- [ ] Các trường kỹ thuật SCD4A / audit: Hệ thống nguồn/Schema.Table/Source Field Name trống, ETL Rules = `ETL sinh tự động`
 
 #### D.3 Quy trình — Checklist
 

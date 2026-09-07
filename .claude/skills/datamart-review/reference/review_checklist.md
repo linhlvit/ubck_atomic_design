@@ -158,6 +158,20 @@ Thực hiện ở **Bước 0b** (trước khi đi vào chi tiết bất kỳ nh
 □ Physical Naming (system/rules/rule_physical_name_exceptions_datamart.csv):
   → Chỉ những từ trong file exceptions mới được viết tắt, các từ khác phải full-word
   → Derive đúng từ logical name, không đổi từ / mở rộng từ
+
+□ Đầy đủ trường kỹ thuật mặc định SCD4A trên Dimension / Operational:
+  → Bảng Dimension và Operational phải có đủ: `ds_rcrd_st`, `ds_rcrd_isrt_dt`, `ds_rcrd_udt_dt`, `ds_etl_pcs_tms` (History có thêm `ds_snpst_dt`)
+  → Thiếu trường kỹ thuật → Warning / Critical (mã: L2-SCD4A-TECH-FIELD)
+
+□ Lọc trạng thái bản ghi `ds_rcrd_st = 'ACTIVE'` khi JOIN Atomic SCD4A:
+  → Mọi JOIN clause tham chiếu tới Atomic table Fundamental (SCD4A) phải có `AND <atomic_table>.ds_rcrd_st = 'ACTIVE'`
+  → Bảng History Atomic (`_hstr`) phải có `ds_snpst_dt = :etl_date AND ds_rcrd_st = 'ACTIVE'`
+  → Thiếu filter → Warning (mã: L2-SCD4A-JOIN-FILTER, nguy cơ sai số hoặc duplicate fanout)
+
+□ Orphan Draft Artifact Check (Đối soát LLD ↔ Flat Table SQL):
+  → So sánh danh sách bảng trong `Datamart/lld/{MODULE}/` vs `Datamart/flat-table/{MODULE}/01_create_*.sql`
+  → Mọi bảng fact/operational trong LLD phải có mặt trong flat table SQL (trừ Dimension dùng chung)
+  → Phát hiện file CSV fact draft hoặc dòng attributes trong LLD mà không còn trong flat table (đã bị loại bỏ trong quá trình thiết kế) → 🔴 Critical (mã: L2-ORPHAN-DRAFT-ARTIFACT, yêu cầu thực hiện All-Tier Cleanup Protocol)
 ```
 
 ---
@@ -236,3 +250,8 @@ Thực hiện ở **Bước 0b** (trước khi đi vào chi tiết bất kỳ nh
    - Mọi thay đổi nội dung nghiệp vụ HLD (Fact/Dim, grain, nguồn, bảng KPI) → gọi `datamart-hld-design`.
    - Mọi thay đổi nội dung LLD (Attributes, Detail Mapping, Registry) → gọi `datamart-lld-design`.
    - Kịch bản C (lỗi kỹ thuật): Trình bày action đề xuất → Claude chờ human xác nhận → gọi skill con tương ứng để thực hiện. Claude tuyệt đối không tự Edit trực tiếp vào file HLD/LLD.
+4. **Nguyên Tắc Bất Khả Xâm Phạm — Tuyệt Đối Cấm Sửa Atomic:**
+   - Skill Datamart Review (và các skill thiết kế Datamart) chỉ có quyền **READ-ONLY** trên thư mục `DataModel/Atomic/` và `DataModel/working/Atomic/`.
+   - Tuyệt đối không được tạo file mới hay sửa đổi bất kỳ file YAML nào trong `DataModel/`.
+   - Reviewer phải xác minh trong git status / diff rằng không có bất kỳ file Atomic nào bị sửa đổi trong suốt quá trình làm việc với Datamart. Nếu phát hiện thiếu nguồn Atomic, chỉ kết luận `PENDING` và ghi nhận Open Issue, không tự ý can thiệp vào Atomic.
+

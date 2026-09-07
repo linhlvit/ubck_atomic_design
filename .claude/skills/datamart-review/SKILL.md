@@ -35,6 +35,7 @@ description: |
 > - Claude thực thi phân tích tiến độ tự động bằng công cụ **Bash**: `python scripts/datamart_progress_analyzer.py --module [MODULE]`.
 > - Claude đọc/tra cứu tài liệu bằng **View**, **Grep**, **Glob**.
 > - **QUYẾT ĐỊNH CỨNG:** Claude **TUYỆT ĐỐI KHÔNG tự Edit trực tiếp** vào file HLD, LLD (`Attributes.csv`, `Detail_Mapping.csv`) hay Model Registry (`datamart_model.yaml`). Mọi sửa đổi phải trình bày cho human duyệt và chuyển giao cho skill con (`datamart-hld-design`, `datamart-lld-design`) thực hiện.
+> - **NGUYÊN TẮC BẤT KHẢ XÂM PHẠM:** Claude **TUYỆT ĐỐI KHÔNG ĐƯỢC CHỈNH SỬA HOẶC TẠO FILE TRONG THƯ MỤC ATOMIC (`DataModel/`)**. Skill review và thiết kế Datamart chỉ có quyền **READ-ONLY** trên Atomic. Mọi thiếu hụt trên Atomic chỉ được kết luận là PENDING và ghi nhận Open Issue, tuyệt đối không tự sửa Atomic.
 
 ## Tài nguyên đi kèm
 

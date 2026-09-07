@@ -128,15 +128,15 @@ Label quan hệ: `" "` (space) — không để trống, không viết text.
 
 ---
 
-## Không thiết kế trong erDiagram
+## Không thiết kế trường kỹ thuật ETL trong erDiagram
 
-Các trường sau do ETL tự quản lý — không đưa vào schema Datamart:
-- `Effective Date`
-- `Expiry Date`
-- `Population Date`
-- `Snapshot Date` → thay bằng `FK Snapshot_Date_Dimension_Id → Calendar Date Dimension`
+Các trường kỹ thuật sau do ETL framework tự quản lý — **không đưa vào khối Mermaid erDiagram** để giữ sơ đồ trực quan, tập trung vào cấu trúc nghiệp vụ (khóa và thuộc tính đo lường/phân tích):
+- `Effective Date`, `Expiry Date`, `Population Date` (các trường audit cũ).
+- Bộ 5 trường kỹ thuật mặc định SCD4A (`ds_rcrd_st`, `ds_rcrd_isrt_dt`, `ds_rcrd_udt_dt`, `ds_etl_pcs_tms`, `ds_snpst_dt`) — các trường này được **bắt buộc bổ sung ở tầng LLD** theo đúng đặc tả trong `phase1_attributes.md`, không cần vẽ trong erDiagram.
+- `Snapshot Date` trên Fact Snapshot → thay bằng `FK Snapshot_Date_Dimension_Id → Calendar Date Dimension`.
 
 ---
+
 
 ## Mỗi cột trong Fact phải trace được về KPI/mockup — không copy nguyên attribute entity nguồn
 

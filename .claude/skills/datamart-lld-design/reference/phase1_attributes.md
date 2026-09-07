@@ -76,6 +76,33 @@ Sau khi human approve từng file:
 - Nếu trùng → bỏ qua dòng đó (không ghi đè)
 - Chỉ append rows mới (chưa có trong master)
 
+### Quy trình Deprecation / Dọn dẹp đồng bộ khi loại bỏ Fact hoặc Dim Draft (All-Tier Cleanup Protocol)
+
+> **BÀI HỌC THỰC TẾ & NGUYÊN TẮC BẮT BUỘC:** Khi một bảng Fact hoặc Dim draft sau khi tạo ra mà quá trình cập nhật thiết kế (hoặc BA tinh gọn) xác định **không còn cần nữa** (bị hủy bỏ, thay thế, hoặc sáp nhập vào bảng khác):
+> Tuyệt đối **KHÔNG ĐƯỢC** chỉ sửa SQL script ở `Datamart/flat-table/` mà bỏ quên thư mục `Datamart/lld/`!
+> Tình trạng `flat-table` đã loại bỏ bảng nhưng `Datamart/lld/` vẫn còn lưu file detail, master `datamart_attributes.csv` vẫn còn dòng rác, và `datamart_model.yaml` vẫn còn entity mồ côi (orphaned artifacts) là **VI PHẠM TÍNH TOÀN VẸN CỦA DESIGN SYSTEM**.
+
+Khi quyết định loại bỏ hoặc thay thế một bảng Datamart draft, Claude **BẮT BUỘC** thực hiện đồng bộ 5 bước sau:
+1. **Xóa file LLD detail:** Xóa file `Datamart/lld/{MODULE}/DTM_{MODULE}_{datamart_table}.csv` (và các file biến thể multi-source nếu có).
+2. **Dọn sạch master `datamart_attributes.csv`:** Tìm và xóa TOÀN BỘ các dòng có `datamart_table == {datamart_table}` trong file master `Datamart/lld/datamart_attributes.csv`.
+3. **Cập nhật `DTM_{MODULE}_Detail_Mapping.csv`:** Rà soát các KPI từng map vào bảng bị loại bỏ:
+   - Nếu sáp nhập sang bảng khác: đổi `mart_table` và `mart_column` sang bảng mới.
+   - Nếu không còn bảng đáp ứng: chuyển KPI sang `PENDING`, xóa giá trị `mart_table` và `mart_column`, cập nhật `ghi_chu` nêu rõ lý do.
+4. **Xóa khỏi `Datamart/datamart_model.yaml`:** Xóa triệt để block entity `- id: "DTM-{datamart_table}"` khỏi file registry.
+5. **Đồng bộ HLD & Flat Table SQL:** Cập nhật `DTM_{MODULE}_HLD.md` (Section 4 Reuse Analysis ghi rõ trạng thái `deprecated/removed`, giải thích lý do) và đảm bảo `01_create_*_flat_tables.sql` + `02_populate_*_flat_tables.sql` không còn DDL/INSERT của bảng đó.
+
+---
+
+## NGUYÊN TẮC CỨNG: TUYỆT ĐỐI CẤM SỬA ATOMIC TỪ SKILL DATAMART
+
+> 🔴 **CẤM TUYỆT ĐỐI:** Mọi skill thiết kế Datamart (`datamart-hld-design`, `datamart-lld-design`, `datamart-review`) chỉ có quyền **READ-ONLY** đối với thư mục `DataModel/Atomic/` và `DataModel/working/Atomic/`.
+> - Tuyệt đối **KHÔNG ĐƯỢC** tạo file mới, sửa đổi thuộc tính, thêm cột kỹ thuật, hoặc can thiệp vào bất kỳ file YAML nào trong `DataModel/`.
+> - Nếu Atomic thiếu bảng, thiếu cột, hoặc thiếu audit field cần thiết cho Datamart:
+>   - Đánh dấu KPI liên quan là **PENDING** (ghi rõ lý do: "Thiếu nguồn Atomic / Chưa có trong Atomic schema").
+>   - Ghi nhận vào Section 5 Open Issues (`DTM_{MODULE}_HLD.md`).
+>   - DỪNG lại báo cáo human để Data Modeler thuộc luồng Atomic xử lý độc lập. Tuyệt đối không tự ý "tiện tay" sửa Atomic!
+
+
 ---
 
 ## Header 15 cột
@@ -143,6 +170,28 @@ etl_logic_type, source_entity, atomic_table, source_attribute, atomic_column
 
 ---
 
+## Trường kỹ thuật mặc định cho bảng SCD4A (Dimension và Operational)
+
+> **BẮT BUỘC:** Trong kiến trúc Lakehouse Datamart của UBCKNN, các bảng Dimension và Operational (tác nghiệp) tuân theo mô hình **SCD4A** (Slowly Changing Dimension Type 4A). Bảng lưu trạng thái hiện hành (current-state) và có companion snapshot history theo kỳ.
+> Mọi bảng Dimension và Operational thuộc pattern SCD4A **BẮT BUỘC PHẢI KHAI BÁO ĐẦY ĐỦ** các trường kỹ thuật mặc định dưới đây trong file Attributes LLD (`DTM_{MODULE}_{mart_table}_{src_stm_code}.csv`):
+
+### Bộ 5 trường kỹ thuật SCD4A chuẩn:
+
+| datamart_column | data_domain | data_type | nullable | key | description | etl_logic | etl_logic_type | source_entity |
+|---|---|---|---|---|---|---|---|---|
+| `ds_rcrd_st` | `Classification Value` | `string` | `false` | (trống) | Trạng thái bản ghi ('ACTIVE' = Active, 'INACTIVE' = Deleted) — audit field SCD4A | `'ACTIVE'` | `direct` | `Generated` |
+| `ds_rcrd_isrt_dt` | `Date` | `date` | `false` | (trống) | Ngày insert bản ghi lần đầu — audit field SCD4A | `:etl_date` | `direct` | `Generated` |
+| `ds_rcrd_udt_dt` | `Date` | `date` | `false` | (trống) | Ngày update bản ghi gần nhất — audit field SCD4A | `:etl_date` | `direct` | `Generated` |
+| `ds_etl_pcs_tms` | `Timestamp` | `timestamp` | `false` | (trống) | Timestamp xử lý ETL — audit field | `CURRENT_TIMESTAMP()` | `direct` | `Generated` |
+| `ds_snpst_dt` | `Date` | `date` | `false` | (trống) | Ngày snapshot kỳ dữ liệu — **chỉ có ở bảng History** | `:etl_date` | `direct` | `Generated` |
+
+**Quy tắc phân bổ:**
+- **Bảng Active (Current-state Dimension / Operational):** Khai báo 4 trường đầu: `ds_rcrd_st`, `ds_rcrd_isrt_dt`, `ds_rcrd_udt_dt`, `ds_etl_pcs_tms`. KHÔNG có `ds_snpst_dt` vì bảng chỉ lưu trạng thái hiện hành.
+- **Bảng History (Snapshot lịch sử Dimension / Operational companion):** Khai báo đủ 5 trường, bao gồm `ds_snpst_dt` + `ds_etl_pcs_tms` + `ds_rcrd_st` + `ds_rcrd_isrt_dt` + `ds_rcrd_udt_dt`.
+- **Cột Atomic nguồn:** Vì đây là các trường kỹ thuật do ETL framework sinh tự động, `source_entity = Generated`, các cột `atomic_table`, `source_attribute`, `atomic_column` để trống.
+
+---
+
 ## etl_logic_type — Bảng đầy đủ
 
 | `etl_logic_type` | Khi nào dùng | `etl_logic` format |
@@ -195,6 +244,29 @@ Khi `etl_logic_type ∈ {join_atomic, lookup_dim, lookup_date}` và có JOIN cla
 ❌ Giá trị đích đặt trước JOIN clause (đọc ngược).
 ❌ Có JOIN nhưng không có dấu `→` phân tách JOIN clause và cột giá trị.
 Xem ví dụ đầy đủ trong [`examples/etl_logic_wrong.md`](../examples/etl_logic_wrong.md) mục "SAI 8".
+
+---
+
+## Quy tắc bắt buộc khi JOIN bảng Atomic SCD4A trong `etl_logic`
+
+> **NGUY CƠ SAI LỆCH DỮ LIỆU & FANOUT:** Trên tầng Atomic, các bảng thuộc `table_type: Fundamental` được vận hành theo cơ chế **SCD4A** (chứa cả bản ghi ACTIVE và INACTIVE/xóa logic). Nếu bảng có companion history (`_hstr`), dữ liệu được lưu theo từng snapshot `ds_snpst_dt`.
+> Khi viết `etl_logic` trong Datamart LLD (ở cả Dimension, Fact, và Operational):
+
+1. **JOIN bảng Atomic Fundamental (Current-state SCD4A):**
+   - BẮT BUỘC phải kèm điều kiện lọc: `AND <atomic_table>.ds_rcrd_st = 'ACTIVE'` trong mệnh đề JOIN.
+   - Ví dụ đúng:
+     ```sql
+     INNER JOIN public_company ON public_company.equity_ticker_symbol = security_trading_snapshot.symbol AND public_company.src_stm_code = 'IDS_COMPANY_PROFILES' AND public_company.ds_rcrd_st = 'ACTIVE' → public_company.public_company_nm
+     ```
+   - ❌ **CẤM:** JOIN bảng Atomic SCD4A mà không có `ds_rcrd_st = 'ACTIVE'`, dẫn đến việc lấy nhầm bản ghi đã bị xóa hoặc trùng lặp dữ liệu.
+
+2. **JOIN bảng Atomic History Companion (`_hstr` hoặc Snapshot theo kỳ):**
+   - BẮT BUỘC phải so khớp chính xác ngày snapshot và trạng thái:
+     `AND <hstr_table>.ds_snpst_dt = :etl_date AND <hstr_table>.ds_rcrd_st = 'ACTIVE'` (hoặc so khớp với trường ngày của driving table, ví dụ `trading_dt`).
+   - Ví dụ đúng:
+     ```sql
+     INNER JOIN pc_share_statistics_hstr ON pc_share_statistics_hstr.pc_id = public_company.pc_id AND pc_share_statistics_hstr.ds_snpst_dt = security_trading_snapshot.trading_dt AND pc_share_statistics_hstr.ds_rcrd_st = 'ACTIVE' → pc_share_statistics_hstr.total_outstanding_share_quantity
+     ```
 
 ---
 
