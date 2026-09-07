@@ -1,211 +1,306 @@
-# BA Source Profile — cấu trúc thật của `BRD/BA/BA_analyst_*.csv`
+# BA Source Profile — Cấu trúc Thật của `BRD/BA/BA_analyst_*.csv`
 
-Hồ sơ này khảo sát trực tiếp toàn bộ 13 file BA (2026-08-22), **cập nhật 2026-08-24** cho `BA_analyst_QLCB.csv` bản mới (đổi delimiter `;` → `,`). Dùng để đọc BA **đúng cột, đúng giá trị**
-thay vì giả định chỉ số cột cố định — vì các file BA export từ Excel ở nhiều thời điểm khác nhau và
-**không có 2 file nào giống nhau về số cột**.
+Hồ sơ này khảo sát và chuẩn hóa trực tiếp toàn bộ 11 file BA hiện hành (cập nhật mới nhất sau đợt gộp `BA_analyst_GSĐC.csv` thay thế 3 part cũ, và nâng cấp QLKD v4.3, GSTT v4.5, TKNB, GSĐC). 
+Dùng để đọc BA **đúng cột, đúng giá trị** thay vì giả định chỉ số cột cố định — vì các file BA export từ Excel ở nhiều thời điểm khác nhau và **không có 2 file nào giống nhau hoàn toàn về số cột và delimiter**.
 
 > ⚠️ **Không hard-code chỉ số cột.** Luôn resolve theo tên header (xem thuật toán bên dưới).
-> Chỉ số cột trong bảng này là kết quả khảo sát để đối chiếu/kiểm tra, không phải để copy vào script.
+> Chỉ số cột trong tài liệu này là kết quả khảo sát thực tế trên repository để đối chiếu, không phải để gán cứng index trong code.
 
 ---
 
-## 1. Header nằm ở dòng nào — KHÔNG đồng nhất
+## 1. Header nằm ở dòng nào — Khảo sát Hiện trạng Repo
 
-| Nhóm file | Header thật | Data bắt đầu |
-|---|---|---|
-| `BA_analyst_GSDC_part1/2/3.csv` | **dòng 0** | dòng 1 |
-| 10 file còn lại (FMS, GSTT, NDTNN, NHNCK, PTTT, QLCB, QLKD, TKNB, TT, VP) | **dòng 1** | dòng 2 |
+| Nhóm file | Header thật | Data bắt đầu | Ghi chú |
+|---|---|---|---|
+| **Toàn bộ 11 file hiện hành** (`FMS`, `GSTT`, `GSĐC`, `NDTNN`, `NHNCK`, `PTTT`, `QLCB`, `QLKD`, `TKNB`, `TT`, `VP`) | **Dòng 1** (0-indexed: index 1) | **Dòng 2** (index 2) | Dòng 0 là ô gộp Excel trống hoặc chứa tiêu đề báo cáo, không chứa đủ tên cột |
+| *File cũ trong `Old versions/` (`BA_analyst_GSDC_part1/2/3.csv`)* | *Dòng 0* | *Dòng 1* | *Đã lưu trữ vào `Old versions/`, được thay thế bởi file gộp `BA_analyst_GSĐC.csv`* |
 
-Ở 10 file kia, dòng 0 là header gộp ô của Excel — chỉ có 1–2 ô có chữ (`Khai thác nguồn`, `Review design`),
-phần còn lại rỗng. Lấy dòng 0 làm header sẽ hỏng toàn bộ mapping cột.
+Ở tất cả file BA hiện hành, dòng 0 là header gộp ô của Excel — chỉ có 1–2 ô có chữ (`Khai thác nguồn`, `Review design`, hoặc tên báo cáo), phần lớn còn lại rỗng. Lấy dòng 0 làm header sẽ làm hỏng toàn bộ việc nhận diện cột.
 
-**Thuật toán xác định header (bắt buộc dùng, không đoán):**
+**Thuật toán xác định header động (bắt buộc dùng, không đoán dòng):**
 
 ```python
 import csv, io
-raw = open(path, encoding='utf-8-sig').read()
-# Dò delimiter — KHÔNG hard-code ';' (xem mục 5, bẫy "Delimiter không cố định")
-best = max((max(len(r) for r in list(csv.reader(io.StringIO(raw), delimiter=d))[:5]), d)
-           for d in (';', ','))
-rows = list(csv.reader(io.StringIO(raw), delimiter=best[1]))
-hdr_idx = 0 if sum(1 for h in rows[0] if h.strip()) >= sum(1 for h in rows[1] if h.strip()) else 1
-header, data = rows[hdr_idx], rows[hdr_idx + 1:]
-col = {h.strip(): i for i, h in enumerate(header) if h.strip()}
+
+def detect_delimiter_and_header(raw_content: str):
+    """Tự động dò delimiter (',' hoặc ';') và header row bằng chấm điểm từ khóa."""
+    best_delim = ';'
+    best_cols = 0
+    # 1. Thử cả 2 delimiter phổ biến
+    for delim in (';', ','):
+        try:
+            reader = csv.reader(io.StringIO(raw_content), delimiter=delim)
+            sample_rows = [next(reader) for _ in range(10)]
+            if sample_rows:
+                max_c = max(len(r) for r in sample_rows)
+                if max_c > best_cols:
+                    best_cols = max_c
+                    best_delim = delim
+        except Exception:
+            pass
+
+    # 2. Đọc toàn bộ với delimiter tối ưu
+    reader = csv.reader(io.StringIO(raw_content), delimiter=best_delim)
+    all_rows = list(reader)
+    if not all_rows:
+        return best_delim, 0, [], []
+
+    # 3. Quét tối đa 10 dòng đầu để chấm điểm từ khóa header đặc trưng
+    best_hdr_idx = 0
+    best_score = -1
+    for idx in range(min(10, len(all_rows))):
+        row = all_rows[idx]
+        non_empty = sum(1 for x in row if x.strip())
+        row_str = " ".join(x.lower() for x in row)
+        score = non_empty
+        if "stt" in row_str or "tt" in row_str:
+            score += 5
+        if "thông tin" in row_str or "chỉ tiêu" in row_str or "tên" in row_str:
+            score += 5
+        if "phân loại" in row_str:
+            score += 5
+        if "trạng thái" in row_str:
+            score += 5
+        if "bảng nguồn" in row_str or "nguồn" in row_str or "khai thác" in row_str:
+            score += 5
+        if "loại dữ liệu" in row_str or "điều kiện" in row_str or "mô tả" in row_str:
+            score += 3
+        if score > best_score:
+            best_score = score
+            best_hdr_idx = idx
+
+    hdr_idx = best_hdr_idx
+    header = [x.strip() for x in all_rows[hdr_idx]]
+    data_rows = all_rows[hdr_idx + 1:]
+    return best_delim, hdr_idx, header, data_rows
 ```
 
 ---
 
-## 2. Số cột mỗi file — 8 biến thể khác nhau
+## 2. Phân bổ Delimiter & Số Cột theo từng Phân hệ
 
-| Số cột | File |
-|---|---|
-| 23 | QLCB (delimiter `,` từ bản 2026-08-24 — xem mục 5) |
-| 24 | GSDC (3 part) |
-| 26 | GSTT, PTTT, TT |
-| 27 | QLKD, VP |
-| 28 | TKNB |
-| 29 | NHNCK |
-| 30 | NDTNN |
-| 31 | FMS |
+Khảo sát thực tế trên repository cho thấy **6 phân hệ dùng dấu phẩy (`,`)** và **5 phân hệ dùng dấu chấm phẩy (`;`)**:
+
+| Delimiter | Phân hệ | Số cột | Tên file BA |
+|---|---|---|---|
+| `,` (Dấu phẩy) | **QLCB** | 23 | `BA_analyst_QLCB.csv` |
+| `,` (Dấu phẩy) | **GSĐC** | 24 | `BA_analyst_GSĐC.csv` (file gộp thay thế 3 part) |
+| `,` (Dấu phẩy) | **PTTT** | 26 | `BA_analyst_PTTT.csv` |
+| `,` (Dấu phẩy) | **GSTT** | 27 | `BA_analyst_GSTT.csv` |
+| `,` (Dấu phẩy) | **QLKD** | 28 | `BA_analyst_QLKD.csv` |
+| `,` (Dấu phẩy) | **TKNB** | 29 | `BA_analyst_TKNB.csv` |
+| `;` (Dấu chấm phẩy) | **TT** | 26 | `BA_analyst_TT.csv` |
+| `;` (Dấu chấm phẩy) | **VP** | 27 | `BA_analyst_VP.csv` |
+| `;` (Dấu chấm phẩy) | **NHNCK** | 29 | `BA_analyst_NHNCK.csv` |
+| `;` (Dấu chấm phẩy) | **NDTNN** | 30 | `BA_analyst_NDTNN.csv` |
+| `;` (Dấu chấm phẩy) | **FMS** | 31 | `BA_analyst_FMS.csv` |
 
 ---
 
-## 3. Vị trí thật của các cột then chốt (đã khảo sát)
+## 3. Quy tắc Tra cứu Cột Động theo Tên (Dynamic Column Mapping)
 
-| Cột | Vị trí | Ghi chú |
+Tuyệt đối không dùng index cứng (như `row[3]`, `row[13]`). Mỗi file có tên cột tương đồng nhưng có thể khác nhau đôi chút:
+
+| Thông tin cần lấy | Danh sách tên cột ứng viên (Case-insensitive) | Ghi chú đặc thù |
 |---|---|---|
-| `STT` | **0** ở mọi file | Số nhóm; mỗi STT = 1 Nhóm duy nhất |
-| `Phân loại` | **6** ở mọi file — **trừ NHNCK = 5** | |
-| `Trạng thái mapping` | **13** ở mọi file — **trừ NHNCK = 12** | |
-| `Khai thác nguồn` | **14** (NHNCK) / **15** (GSTT, NDTNN, PTTT, QLCB, QLKD, TT, VP) / **16** (FMS) / **20** (TKNB) / GSDC dùng tên `Bảng nguồn` ở cột 15 | |
-| `Loại dữ liệu` | **20** (QLCB) / **21** (GSDC) / **23** (NHNCK, QLKD, TT) / **24** (GSTT, NDTNN) / **25** (FMS, PTTT, VP) / **26** (TKNB) | Không có vị trí chung — bắt buộc resolve theo tên |
-
-**Header đầy đủ (chỉ GSDC có, dùng làm từ điển tên cột chuẩn):**
-
-```
-0 STT              6 Phân loại        12 DL lịch sử?          18 Câu lệnh SQL
-1 Mã               7 Đánh giá         13 Trạng thái mapping   19 Câu lệnh update SIT
-2 Dashboard/báo cáo 8 Độ chi tiết     14 Mapping (nghiệp vụ)  20 Note
-3 Thông tin        9 Nguồn            15 Bảng nguồn           21 Hoàn thành DEV
-4 Mô tả           10 Cần phân tích?   16 Trường nguồn         22 Loại dữ liệu
-5 Nhóm yêu cầu    11 Cần test?        17 Điều kiện dữ liệu    23 Kết quả SIT
-```
-
----
-
-## 4. Giá trị THẬT của các cột gating (khảo sát toàn bộ 13 file)
-
-### `Phân loại` — 3 giá trị chính
-
-| Giá trị | Số dòng |
-|---|---|
-| `Chỉ tiêu cơ sở` | 6.091 |
-| `Chiều` | 1.438 |
-| `Chỉ tiêu phái sinh` | 1.199 |
-| `Chiều/Chỉ tiêu cơ sở/Chỉ tiêu phái sinh` (multi-value 1 ô) | 12 |
-| `CHIỀU` / `cHIỀU` (lệch hoa-thường) | 4 |
-| `Chỉ tiêu` (thiếu hậu tố) | 1 |
-
-> 🔴 **Bẫy thường gặp:** giá trị thật là **`Chỉ tiêu cơ sở`** và **`Chỉ tiêu phái sinh`** —
-> KHÔNG phải `Cơ sở` / `Phái sinh`. Filter `== 'Cơ sở'` khớp **0 dòng**.
-> Luôn so bằng `.strip().lower()` và dùng `in`/`startswith` để bắt cả biến thể hoa-thường và multi-value.
-
-### `Trạng thái mapping` — thực tế chỉ 2 giá trị
-
-| Giá trị | Số dòng |
-|---|---|
-| `Done` | 11.184 |
-| `Pending` | 105 |
-
-> 🔴 `Doing` và `failed` **không xuất hiện lần nào** trong dữ liệu — chúng chỉ nằm trong 3 ô chú giải
-> (`"Done: đã map xong / doing: đang xem xét / failed: đã xem nhưng chưa maping"`).
-> Vẫn giữ `Doing` trong điều kiện lọc để phòng BA cập nhật sau, nhưng **không được coi việc thiếu `Doing`
-> là bất thường**, và phải biết `failed` là trạng thái thứ 4 hợp lệ theo chú giải dù chưa dùng.
-
-### `Loại dữ liệu` — 11+ giá trị, nhiều hơn 3 giá trị mà `datamart-hld-design` mô tả
-
-| Giá trị | Số dòng | Gating |
-|---|---|---|
-| `Dữ liệu động` | 4.804 | PENDING |
-| `Dữ liệu tĩnh` | 1.444 | READY (nếu Atomic READY) |
-| `Chưa có CSDL - Map biểu mẫu` | 1.226 | PENDING |
-| `Map biểu mẫu` | 115 | PENDING — biến thể rút gọn |
-| `Dữ liệu tĩnh - Chưa có CSDL` | 80 | PENDING — **nối bằng dấu gạch, KHÔNG phải dấu phẩy** |
-| `Lý do khác` | 40 | ⚠️ chưa có rule — hỏi BA |
-| `Done` | 264 | ⚠️ giá trị sai cột (lẫn từ `Trạng thái mapping`) — hỏi BA, không tự suy |
-| Tổ hợp nhiều giá trị cách bởi dấu phẩy | ~250 | Áp **mức thấp nhất** trong tập |
-
-> 🔴 `datamart-hld-design` Bước 2 chỉ liệt kê 3 giá trị + quy tắc "nhiều giá trị cách bởi dấu phẩy".
-> 4 giá trị còn lại (`Map biểu mẫu`, `Dữ liệu tĩnh - Chưa có CSDL`, `Lý do khác`, `Done`) **chưa có rule**.
-> Khi review gặp chúng → ghi nhận 🟡 Warning "Loại dữ liệu ngoài enum đã chuẩn hoá", không tự quyết READY/PENDING.
-
-### `Đánh giá` (cột 7) — dùng cho rule dedup KPI
-
-| Giá trị | Số dòng |
-|---|---|
-| `Dễ` | 3.523 |
-| `TB` | 3.311 |
-| **`Trùng`** | **1.609** |
-| `Khó` | 113 |
-
-`Trùng` là ngoại lệ duy nhất cho phép reuse KPI_ID đã có thay vì khai sinh ID mới
-(xem checklist `datamart-hld-design`). Với 1.609 dòng, đây là nhánh phổ biến — không phải ca hiếm.
+| **Số nhóm (STT)** | `STT`, `TT` | Module `VP` dùng tên cột là `TT`, 10 module khác dùng `STT` |
+| **Mã Dashboard / BC** | `Mã`, `Mã dashboard/BC`, `Mã dashboard/BC`, `PIC` | QLKD có cột `PIC` ở vị trí 1, TKNB/QLCB có `Mã dashboard/BC` |
+| **Tên Dashboard** | `Dashboard/báo cáo`, `Dashboard >> báo cáo`, `Dashboard/BC` | FMS dùng dấu `>>` |
+| **Tên chỉ tiêu** | `Thông tin`, `Thông tin (chỉ tiêu)`, `Tên chỉ tiêu`, `Chỉ tiêu` | TKNB dùng `Thông tin (chỉ tiêu)`, các file khác dùng `Thông tin` |
+| **Mô tả nghiệp vụ** | `Mô tả` | Diễn giải logic của chỉ tiêu |
+| **Nhóm yêu cầu** | `Nhóm yêu cầu` | Phân loại báo cáo / màn hình |
+| **Phân loại** | `Phân loại` | Bắt buộc kiểm tra: `Chỉ tiêu cơ sở`, `Chỉ tiêu phái sinh`, `Chiều` |
+| **Đánh giá** | `Đánh giá` | `Dễ`, `TB`, `Khó`, `Trùng` (căn cứ reuse KPI_ID) |
+| **Trạng thái mapping** | `Trạng thái mapping`, `Trạng thái` | Trạng thái phân tích của BA: `Done`, `Doing`, `Pending` |
+| **Bảng nguồn** | `Bảng nguồn`, `Nguồn`, `Khai thác nguồn`, `Nguồn chi tiết` | Tên bảng nguồn (IDS, SCMS, MSS, v.v.) |
+| **Trường nguồn** | `Trường nguồn` | Tên cột trong bảng nguồn |
+| **Loại dữ liệu** | `Loại dữ liệu` | Gating `Dữ liệu động`, `Dữ liệu tĩnh`, `Chưa có CSDL - Map biểu mẫu`, v.v. |
+| **Điều kiện dữ liệu** | `Điều kiện`, `Điều kiện chung`, `Điều kiện dữ liệu` | Điều kiện lọc nghiệp vụ |
+| **Câu lệnh SQL** | `Câu lệnh tham khảo`, `Câu lệnh SQL`, `Câu lệnh update SIT` | SQL mẫu chứa logic ngầm (TTM, join, rolling) |
+| **Ghi chú** | `Note` | Ghi chú bổ sung của BA |
 
 ---
 
-## 5. Bẫy parse — bắt buộc xử lý
+## 4. Chuẩn hóa Tập Giá trị Dữ liệu Thực tế
 
-| Bẫy | Chi tiết | Cách xử lý |
-|---|---|---|
-| **Delimiter không cố định** | Khảo sát 2026-08-22 ghi "BA dùng `;`" — **không còn đúng cho mọi file**. `BA_analyst_QLCB.csv` bản 2026-08-24 export lại bằng `,` (vẫn 23 cột, 67 dòng logic). Đọc bằng `delimiter=';'` cho ra 1 cột/dòng và **im lặng** trả về kết quả sai: `col` chỉ có 1 key, mọi `g('Nguồn')`/`g('Bảng nguồn')` trả về `''`, dễ bị kết luận nhầm là "BA chưa map nguồn" | **Dò delimiter, không hard-code** — thử cả `;` và `,`, chọn cái cho số cột lớn nhất ở 5 dòng đầu (xem snippet mục 1 và mục 6). Attributes/Detail Mapping vẫn luôn `,` |
-| **Closure trong `g = lambda`** | Nếu lưu `g` lại để dùng **sau** vòng lặp (VD: `out.append({'g': g})` rồi lặp `out` ở ngoài), `r` bị bắt theo tham chiếu → **mọi row trả về giá trị của dòng cuối cùng**. Rất khó phát hiện vì script chạy không lỗi, chỉ ra dữ liệu giống nhau ở mọi dòng | Bind theo tham số mặc định: `g = lambda name, r=r: ...`. Snippet mục 6 đã sửa. Chỉ an toàn khi gọi `g()` ngay trong vòng lặp |
-| **Ô multi-line** | SQL/mô tả dài chứa xuống dòng → đọc raw line cho số dòng sai (VD GSTT: 452 chỉ tiêu nhưng 7.358 dòng vật lý) | Bắt buộc `csv.reader`, cấm `awk`/`split` |
-| **Header lẫn trong data** | 10/13 file có **1 dòng header lặp lại ngay tại dòng data đầu tiên** (giá trị cột `Phân loại` = literal `"Phân loại"`) | Loại mọi dòng có `Phân loại == 'Phân loại'` trước khi đếm |
-| **BOM** | Có ở đầu file | `encoding='utf-8-sig'` |
-| **GSDC lệch cột** | Ở GSDC, `Note` (col 20) chứa 381 giá trị `Done`, `Hoàn thành DEV` (col 21) chứa 334 `Dữ liệu động` + 47 `Dữ liệu tĩnh`, còn `Loại dữ liệu` (col 22) chỉ có 94+25 — dữ liệu bị **dịch trái 1 cột** ở phần đuôi | Với GSDC: gom giá trị `Loại dữ liệu` từ cả col 21 và col 22; ghi nhận 🟡 Warning về lệch cột nguồn |
-| **Part file** | GSDC có 3 part; nhóm STT lớn nằm ở part sau | Đọc hết mọi part, ghép theo STT trước khi review |
+### 4.1. `Phân loại` — 3 giá trị chuẩn và biến thể
+
+Khảo sát 11.289 dòng dữ liệu hợp lệ:
+- **`Chỉ tiêu cơ sở`** (~6.034 dòng): Chỉ tiêu đo lường trực tiếp hoặc tổng hợp cấp 1 từ nguồn.
+- **`Chiều`** (~1.396 dòng): Dimension, slicer, filter hiển thị hoặc lọc dữ liệu.
+- **`Chỉ tiêu phái sinh`** (~1.128 dòng): Chỉ tiêu tính toán từ các chỉ tiêu khác (tỷ lệ, phần trăm, chênh lệch YoY).
+- **Biến thể multi-value / hoa-thường**:
+  - `Chiều/Chỉ tiêu cơ sở/Chỉ tiêu phái sinh` (10 dòng)
+  - `cHIỀU` / `CHIỀU` (biến thể chữ hoa - chữ thường)
+  - `Chỉ tiêu` (thiếu hậu tố)
+
+> 🔴 **Quy tắc bắt buộc:** Luôn chuẩn hóa bằng `.strip().lower()`. Dùng `'chỉ tiêu' in v` và `v.startswith('chiều')` để bao quát toàn bộ biến thể. Tuyệt đối không filter bằng `== 'Cơ sở'` hay `== 'Phái sinh'` (sẽ cho ra 0 dòng).
+
+### 4.2. `Trạng thái mapping` — Tập giá trị BA
+
+- **`Done`** (hoặc `Hoàn thành`): Chiếm đa số (~10.999 dòng).
+- **`Pending`** (hoặc `Chờ BA`): ~105 dòng.
+- **`Doing`**: Đang xem xét (chú thích).
+
+### 4.3. `Loại dữ liệu` — Gating Trạng thái Datamart
+
+- **`Dữ liệu động`** (~6.386 dòng): Dữ liệu giao dịch biến động theo ngày/phiên. Datamart: PENDING cho đến khi có cơ chế snapshot/SCD.
+- **`Dữ liệu tĩnh`** (~1.428 dòng): Danh mục, thông tin tổ chức/cá nhân ít biến đổi. Datamart: READY (nếu Atomic đã approved).
+- **`Chưa có CSDL - Map biểu mẫu`** (~1.837 dòng): Biểu mẫu nghiệp vụ chưa có bảng CSDL tương ứng. Datamart: PENDING (nhóm "Chưa có mapping nguồn từ BA").
+- **`Map biểu mẫu`** (~46 dòng): Biến thể của nhóm trên. Datamart: PENDING.
+- **`Dữ liệu tĩnh - Chưa có CSDL`** (~88 dòng): Datamart: PENDING.
+- **Tổ hợp nhiều giá trị** (phân cách bằng dấu phẩy, ví dụ `Dữ liệu tĩnh, Dữ liệu động`): Áp dụng **mức gating thấp nhất** trong tập hợp (tức PENDING).
+
+### 4.4. `Đánh giá` — Căn cứ Dedup và Reuse
+
+- `Dễ`: Lấy 1:1 từ nguồn.
+- `TB`: Có tính toán tổng hợp cơ bản.
+- `Khó`: Logic phức tạp, kết hợp nhiều mốc thời gian.
+- **`Trùng`**: Đã có tính thông tin này trong phạm vi phân hệ khác hoặc nhóm khác -> Căn cứ reuse `KPI_ID` hiện hữu.
 
 ---
 
-## 6. Snippet chuẩn — dùng nguyên, không viết lại
+## 5. Các Bẫy Parse Cần Tránh
+
+1. **Bẫy Newline trong Ô Quoted:**
+   Cột SQL tham khảo hoặc Mô tả chứa nhiều ký tự xuống dòng `\n`. Không bao giờ đọc dòng thô bằng `readline()` hay `splitlines()`. Luôn dùng `csv.reader` với `open(..., newline='')` để Python tự quản lý unescape.
+2. **Bẫy Encoding & BOM:**
+   Các file CSV export từ Excel tiếng Việt thường có UTF-8 BOM (`\xef\xbb\xbf`). Luôn mở với `encoding='utf-8-sig'`.
+3. **Bẫy Tên File Tiếng Việt (`GSĐC` vs `GSDC`):**
+   File BA trên đĩa tên là `BA_analyst_GSĐC.csv` (có chữ `Đ`), trong khi Datamart LLD/HLD dùng `GSDC` (`DTM_GSDC_HLD.md`). Parser và script phải tự động chuyển đổi qua lại giữa `GSĐC` và `GSDC`.
+4. **Bẫy Header Lặp trong Data:**
+   Nhiều file BA có dòng header thứ 2 nằm ngay ở dòng data đầu tiên (chứa chữ `Phân loại` hoặc `STT`). Luôn loại bỏ các dòng này trước khi đếm hoặc phân tích:
+   `if row[pl_idx].strip().lower() == 'phân loại': continue`.
+5. **Bẫy Delimiter Không Cố Định:**
+   Không bao giờ giả định file BA dùng `;`. Phải chạy hàm tự động dò delimiter như mô tả ở Mục 1.
+
+---
+
+## 6. Snippet Chuẩn Đọc BA — Sử dụng cho Script và Review
 
 ```python
-import csv, io, glob
+import csv, io, sys
+from pathlib import Path
 
-def _rows(raw):
-    """Dò delimiter thay vì hard-code ';' — QLCB 2026-08-24 đã đổi sang ','."""
-    best = None
-    for d in (';', ','):
-        rows = list(csv.reader(io.StringIO(raw), delimiter=d))
-        width = max(len(r) for r in rows[:5])
-        if best is None or width > best[0]:
-            best = (width, rows)
-    return best[1]
+def read_ba(module_name: str, root_dir: Path):
+    """
+    Đọc toàn bộ file BA của module_name, tự động xử lý delimiter, BOM, header, 
+    và trích xuất danh sách chỉ tiêu chuẩn hóa.
+    """
+    ba_dir = root_dir / "BRD" / "BA"
+    mod = module_name.upper()
+    
+    # Tìm file hỗ trợ cả GSDC và GSĐC
+    candidates = [
+        ba_dir / f"BA_analyst_{mod}.csv",
+        ba_dir / f"BA_analyst_GSĐC.csv" if mod in ("GSDC", "GSĐC") else None,
+        ba_dir / f"BA_analyst_GSDC.csv" if mod in ("GSDC", "GSĐC") else None,
+    ]
+    file_path = next((p for p in candidates if p and p.exists()), None)
+    if not file_path:
+        raise FileNotFoundError(f"Không tìm thấy file BA cho module {module_name} tại {ba_dir}")
+        
+    raw_text = file_path.read_bytes().decode("utf-8-sig", errors="replace")
+    
+    # Dò delimiter
+    best_delim = ';'
+    best_cols = 0
+    for delim in (';', ','):
+        try:
+            reader = csv.reader(io.StringIO(raw_text), delimiter=delim)
+            sample = [next(reader) for _ in range(10)]
+            if sample and max(len(r) for r in sample) > best_cols:
+                best_cols = max(len(r) for r in sample)
+                best_delim = delim
+        except Exception:
+            pass
+            
+    reader = csv.reader(io.StringIO(raw_text), delimiter=best_delim)
+    rows = list(reader)
+    best_hdr_idx = 0
+    best_score = -1
+    for idx in range(min(10, len(rows))):
+        row = rows[idx]
+        non_empty = sum(1 for x in row if x.strip())
+        row_str = " ".join(x.lower() for x in row)
+        score = non_empty
+        if "stt" in row_str or "tt" in row_str:
+            score += 5
+        if "thông tin" in row_str or "chỉ tiêu" in row_str or "tên" in row_str:
+            score += 5
+        if "phân loại" in row_str:
+            score += 5
+        if "trạng thái" in row_str:
+            score += 5
+        if "bảng nguồn" in row_str or "nguồn" in row_str or "khai thác" in row_str:
+            score += 5
+        if "loại dữ liệu" in row_str or "điều kiện" in row_str or "mô tả" in row_str:
+            score += 3
+        if score > best_score:
+            best_score = score
+            best_hdr_idx = idx
 
-def read_ba(module):
-    out = []
-    for p in sorted(glob.glob(f'BRD/BA/BA_analyst_{module}*.csv')):
-        rows = _rows(open(p, encoding='utf-8-sig').read())
-        h = 0 if sum(1 for x in rows[0] if x.strip()) >= sum(1 for x in rows[1] if x.strip()) else 1
-        header = [x.strip() for x in rows[h]]
-        col = {name: i for i, name in enumerate(header) if name}
-        for r in rows[h + 1:]:
-            # r=r bắt buộc: nếu bind theo tham chiếu, mọi row sẽ trả về giá trị dòng cuối
-            g = lambda name, r=r: r[col[name]].strip() if name in col and len(r) > col[name] else ''
-            if g('Phân loại') == 'Phân loại':      # dòng header lặp trong data
-                continue
-            if not any(x.strip() for x in r):       # dòng rỗng
-                continue
-            out.append({'file': p, 'stt': r[0].strip(), 'raw': r, 'g': g,
-                        'phan_loai': g('Phân loại'), 'trang_thai': g('Trạng thái mapping'),
-                        'loai_du_lieu': g('Loại dữ liệu'), 'danh_gia': g('Đánh giá')})
-    return out
-
-def is_chieu(v):      return v.strip().lower().startswith('chiều')
-def is_chi_tieu(v):   return 'chỉ tiêu' in v.strip().lower()
-def in_scope(ts):     return ts.strip() in ('Done', 'Doing')
+    h_idx = best_hdr_idx
+    header = [x.strip() for x in rows[h_idx]]
+    col_map = {name.strip().lower(): i for i, name in enumerate(header) if name.strip()}
+    
+    def get_val(r, col_names):
+        for name in col_names:
+            if name.lower() in col_map:
+                idx = col_map[name.lower()]
+                if len(r) > idx:
+                    return r[idx].strip()
+        return ""
+        
+    items = []
+    for r in rows[h_idx + 1:]:
+        if not any(x.strip() for x in r):
+            continue
+        pl = get_val(r, ["Phân loại"])
+        if pl.lower() == "phân loại":
+            continue
+            
+        stt = get_val(r, ["STT", "TT"])
+        name = get_val(r, ["Thông tin", "Thông tin (chỉ tiêu)", "Tên chỉ tiêu"])
+        if not stt and not name:
+            continue
+            
+        items.append({
+            "stt": stt,
+            "dashboard": get_val(r, ["Dashboard/báo cáo", "Dashboard >> báo cáo", "Dashboard/BC"]),
+            "name": name,
+            "description": get_val(r, ["Mô tả"]),
+            "classification": pl,
+            "evaluation": get_val(r, ["Đánh giá"]),
+            "status": get_val(r, ["Trạng thái mapping", "Trạng thái"]),
+            "source_table": get_val(r, ["Bảng nguồn", "Nguồn", "Khai thác nguồn", "Nguồn chi tiết"]),
+            "source_column": get_val(r, ["Trường nguồn"]),
+            "data_type": get_val(r, ["Loại dữ liệu"]),
+            "condition": get_val(r, ["Điều kiện", "Điều kiện chung", "Điều kiện dữ liệu"]),
+            "sql": get_val(r, ["Câu lệnh tham khảo", "Câu lệnh SQL"]),
+            "note": get_val(r, ["Note"]),
+        })
+        
+    return items
 ```
 
 ---
 
-## 7. Đối chiếu số lượng — con số kỳ vọng
+## 7. Con số Kỳ vọng Khảo sát Toàn bộ 11 Phân hệ
 
-Dùng để tự kiểm script đọc BA có đúng không (số dòng logic sau khi loại header lặp và dòng rỗng):
+Dùng để đối chiếu và kiểm tra tính toàn vẹn khi chạy parser:
 
-Số dòng `read_ba()` trả về (đã loại dòng header lặp và dòng rỗng) — **đã kiểm chứng 2026-08-22**:
-
-| Module | Dòng | Module | Dòng |
-|---|---|---|---|
-| QLKD | 4.272 | GSDC (3 part) | 1.050 |
-| FMS | 2.672 | PTTT | 456 |
-| TKNB | 1.187 | NDTNN | 260 |
-| GSTT | 661 | TT | 166 |
-| VP | 536 | NHNCK | 106 |
-| | | QLCB | 67 |
-
-- GSDC = 1.050 đúng bằng tổng dòng thô vì header ở dòng 0 và **không có** dòng header lặp.
-- 10 module còn lại thấp hơn tổng dòng thô đúng 1 — đó là dòng header lặp đã bị loại. Nếu script của bạn
-  ra đúng bằng tổng dòng thô → chưa lọc header lặp, mọi phép đếm sẽ lệch +1.
-- Lệch nhiều hơn 1 → script đọc sai (thường do lấy nhầm dòng header hoặc đọc raw line thay vì `csv.reader`).
-- `read_ba()` đã được chạy thử trên cả 13 file: **resolve đủ 4/4 cột** (`Phân loại`, `Trạng thái mapping`,
-  `Loại dữ liệu`, `Đánh giá`) cho mọi module.
+| Phân hệ | File BA | Delimiter | Dòng Header | Số cột | Số dòng CSV thô | Số chỉ tiêu hợp lệ |
+|---|---|---|---|---|---|---|
+| **QLKD** | `BA_analyst_QLKD.csv` | `,` | Dòng 1 | 28 | 4.292 | **4.276** |
+| **FMS** | `BA_analyst_FMS.csv` | `;` | Dòng 1 | 31 | 2.672 | **2.671** |
+| **TKNB** | `BA_analyst_TKNB.csv` | `,` | Dòng 1 | 29 | 1.198 | **1.197** |
+| **GSĐC** | `BA_analyst_GSĐC.csv` | `,` | Dòng 1 | 24 | 1.048 | **1.047** |
+| **VP** | `BA_analyst_VP.csv` | `;` | Dòng 1 | 27 | 536 | **535** |
+| **GSTT** | `BA_analyst_GSTT.csv` | `,` | Dòng 1 | 27 | 492 | **491** |
+| **PTTT** | `BA_analyst_PTTT.csv` | `,` | Dòng 1 | 26 | 456 | **455** |
+| **NDTNN** | `BA_analyst_NDTNN.csv` | `;` | Dòng 1 | 30 | 260 | **259** |
+| **TT** | `BA_analyst_TT.csv` | `;` | Dòng 1 | 26 | 166 | **165** |
+| **NHNCK** | `BA_analyst_NHNCK.csv` | `;` | Dòng 1 | 29 | 106 | **106** |
+| **QLCB** | `BA_analyst_QLCB.csv` | `,` | Dòng 1 | 23 | 67 | **66** |
+| **Tổng** | **11 file** | | | | **11.293** | **11.268** |
