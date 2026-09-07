@@ -176,11 +176,14 @@ COMMENT 'Flat table — Fact Market Index Intraday × Calendar Date Dimension ×
 -- ============================================================
 -- 3. FACT: gstt_fct_security_trading_intraday_flat
 --    Biểu đồ phân tích kỹ thuật — 1 row / mã CK (Symbol) / Trading Timestamp —
---    KHÔNG lọc rn=1 (khác Fact EOD security_trading_snpst_dim). trading_tms =
---    cột mới bổ sung Atomic 2026-08-26 (nối chuỗi trading_dt + ' ' + trading_time
---    tại tầng ODS), thay `Trading Time` (Text) làm field xác định grain.
---    Grain: Transaction/Tick log — nhiều dòng/ngày theo Trading Timestamp, có
---    thể append thêm tick mới trong cùng ngày khi ETL chạy nhiều lần/ngày
+--    [SỬA 2026-09-07] Nguồn Atomic đổi sang Market Price Snapshot (nến OHLCV
+--    thật theo phút, MDDS.JAD_TRADINGVIEWHISTORY1MIN, filter
+--    src_stm_code='MDDS_JAD_TRADINGVIEWHISTORY1MIN'), thay workaround trading_tms
+--    cũ (nối trading_dt+trading_time trên Security Trading Snapshot, giá trị
+--    lũy kế-tick sai bản chất nến — xem O_GSTT_11). trading_tms nay = nối
+--    market_price_snapshot.trading_dt + processing_time.
+--    Grain: 1 row / Symbol / (Trading Date, Processing Time) — 1 nến/phút,
+--    KHÔNG lọc rn=1 (khác Fact EOD security_trading_snpst_dim)
 --    Joins: Calendar Date (cdr_dt_dim_id JOIN) × Security Trading Snapshot Dimension
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.gstt_fct_security_trading_intraday_flat ON CLUSTER 'my_cluster'
@@ -188,7 +191,7 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_fct_security_trading_intraday_flat ON C
     -- From: FACT Security Trading Intraday
     security_trading_snpst_dim_id       String                  COMMENT 'FK → Security Trading Snapshot Dimension',
     cdr_dt_dim_id                       String                  COMMENT 'FK → Calendar Date Dimension',
-    trading_tms                         Nullable(DateTime)      COMMENT 'Thời điểm ghi nhận snapshot trong ngày (DD — grain component, nối trading_dt + trading_time tại ODS)',
+    trading_tms                         Nullable(DateTime)      COMMENT 'Thời điểm ghi nhận nến trong ngày (DD — grain component, nối Market Price Snapshot trading_dt + processing_time)',
     open_price_at_time                  Nullable(Decimal(23,2)) COMMENT 'Giá mở cửa tại thời điểm ghi nhận',
     high_price_at_time                  Nullable(Decimal(23,2)) COMMENT 'Giá cao nhất tại thời điểm ghi nhận',
     low_price_at_time                   Nullable(Decimal(23,2)) COMMENT 'Giá thấp nhất tại thời điểm ghi nhận',

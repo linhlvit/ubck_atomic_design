@@ -876,9 +876,7 @@ and FundType =' E - ETF'",,,,
 HOSE: Board Type in (T1,T2,T3,T4,T6,R1)
 HNX:  Board ID in (T1,T2,T3,T4,T6,R1)
 -- Xác định giá trị giao dịch trên sàn HNX: 
-Σ (GTGD)  = KLGD * Giá thỏa thuận",,,,,,,,,,,,,,,,N/A,N/A,NULL (Dòng tiêu đề nhóm),"/*============BC HNX01======
----8.  GIAO DỊCH THỎA THUẬN
-*/
+Σ (GTGD)  = KLGD * Giá thỏa thuận",,,,,,,,,,,,,,,,N/A,N/A,NULL (Dòng tiêu đề nhóm),"---8.  GIAO DỊCH THỎA THUẬN
 WITH TRADE_DATA AS (
     SELECT
         h.""Trade date"" AS TRADEDATE,
@@ -1092,8 +1090,16 @@ group by h.trade date ",,,,,,
 ---xác định GD khớp lệnh của NĐTNN, sàn HNX:
 - Board ID: G1, G2, G3, G4, G7, G8 là GD khớp lệnh
 - Sell Foreign Investor Type Code <> 00 là NĐTNN bán
-- Buy Foreign Investor Type Code <> 00 là NĐTNN mua",,,,,,,,,,,,,,"Dữ liệu giao dịch hàng ngày (MDDS), Dữ liệu sổ lệnh giao dịch từ SGDCK",,N/A,N/A,NULL (Dòng tiêu đề nhóm),"---HNX01: Khối lượng giao dịch khớp lệnh cổ phiếu niêm yết
-SELECT 
+- Buy Foreign Investor Type Code <> 00 là NĐTNN mua",,,,,,,,,,,,,,"Dữ liệu giao dịch hàng ngày (MDDS), Dữ liệu sổ lệnh giao dịch từ SGDCK",,N/A,N/A,NULL (Dòng tiêu đề nhóm),,"Tổng GD khớp lệnh của NĐTNN, sàn HNX, CPNY
+-- Xác định Cổ phiếu niêm yết:
+""Market ID"" = 'STO' --HOSE
+""Market ID"" = 'STX' --HNX
+""Market ID"" = 'UPX' --UPCoM
+---xác định GD khớp lệnh của NĐTNN, sàn HNX:
+- Board ID: G1, G2, G3, G4, G7, G8 là GD khớp lệnh
+- Sell Foreign Investor Type Code <> 00 là NĐTNN bán
+- Buy Foreign Investor Type Code <> 00 là NĐTNN mua",,,X,
+1,HNX01,     BÁO CÁO VỀ GIAO DỊCH TRÊN THỊ TRƯỜNG CỔ PHIẾU,Khối lượng giao dịch cổ phiếu niêm yết,Σ (KLGD khớp lệnh) của NĐTNN với CPNY,,,,,,,,,,Sổ lệnh,CPNY,,,,,N/A,N/A,NULL (Dòng tiêu đề nhóm),"SELECT 
   ' ' AS KL_NN,
   KL_NN_MUA,
   KL_NN_BAN,
@@ -1136,16 +1142,7 @@ FROM (
     AND board_id in ('G1', 'G2', 'G3', 'G4', 'G7', 'G8') -- GD khớp lệnh
     AND trade_date = :ngay_gd
 )
-;","Tổng GD khớp lệnh của NĐTNN, sàn HNX, CPNY
--- Xác định Cổ phiếu niêm yết:
-""Market ID"" = 'STO' --HOSE
-""Market ID"" = 'STX' --HNX
-""Market ID"" = 'UPX' --UPCoM
----xác định GD khớp lệnh của NĐTNN, sàn HNX:
-- Board ID: G1, G2, G3, G4, G7, G8 là GD khớp lệnh
-- Sell Foreign Investor Type Code <> 00 là NĐTNN bán
-- Buy Foreign Investor Type Code <> 00 là NĐTNN mua",,,X,
-1,HNX01,     BÁO CÁO VỀ GIAO DỊCH TRÊN THỊ TRƯỜNG CỔ PHIẾU,Khối lượng giao dịch cổ phiếu niêm yết,Σ (KLGD khớp lệnh) của NĐTNN với CPNY,,,,,,,,,,Sổ lệnh,CPNY,,,,,N/A,N/A,NULL (Dòng tiêu đề nhóm),,,,,X,
+;",,,,X,
 1,HNX01,     BÁO CÁO VỀ GIAO DỊCH TRÊN THỊ TRƯỜNG CỔ PHIẾU,Khối lượng mua ,Σ (KLGD khớp lệnh mua) của NĐTNN với CPNY,Báo cáo,Chỉ tiêu phái sinh,TB,"Sàn, Loại CK",MSS,,X,,Done,Sổ lệnh,CPNY,,,"Dữ liệu giao dịch hàng ngày (MDDS), Dữ liệu sổ lệnh giao dịch từ SGDCK",,"CSDLTT.TRADE_BOOK_HNX,
 MDDS.JAD_STOCKINFOR",TRADE_BOOK_HNX.trade_quantity,"- Loại chứng khoán = Cổ phiếu: 
 JAD_STOCKINFOR.STOCKTYPE = '2'
@@ -1190,7 +1187,8 @@ and FundType =' M'  -- CCQ thông thường
 --Tổng GD khớp lệnh của NĐTNN, sàn HNX:
 - Board ID: G1, G2, G3, G4, G7, G8 là GD khớp lệnh
 - Sell Foreign Investor Type Code <> 00 là NĐTNN bán
-- Buy Foreign Investor Type Code <> 00 là NĐTNN mua",,,,,,,,,,,CCQ,,,,,N/A,N/A,NULL (Dòng tiêu đề nhóm),"-----HNX01: b.GDNĐTNN KHỚP LỆNH chứng chỉ quỹ
+- Buy Foreign Investor Type Code <> 00 là NĐTNN mua",,,,,,,,,,,CCQ,,,,,N/A,N/A,NULL (Dòng tiêu đề nhóm),,,,,X,
+1,HNX01,     BÁO CÁO VỀ GIAO DỊCH TRÊN THỊ TRƯỜNG CỔ PHIẾU,Khối lượng giao dịch Chứng chỉ quỹ,,,,,,,,,,,,CCQ,,∑ khối lượng giao dịch thỏa thuận,,,N/A,N/A,NULL (Dòng tiêu đề nhóm),"-----b.GDNĐTNN KHỚP LỆNH chứng chỉ quỹ
 SELECT h.trade_date,
   ' ' AS KL_NN_CCQ,  
   KL_NN_MUA_CCQ,
@@ -1220,8 +1218,7 @@ FROM (
   WHERE market_id IN ('STX', 'UPX') -- Bảng giao dịch cổ phiếu
     AND board_id in ('G1', 'G2', 'G3', 'G4', 'G7', 'G8') -- GD khớp lệnh
     AND trade_date = :ngay_gd
-);",,,,X,
-1,HNX01,     BÁO CÁO VỀ GIAO DỊCH TRÊN THỊ TRƯỜNG CỔ PHIẾU,Khối lượng giao dịch Chứng chỉ quỹ,,,,,,,,,,,,CCQ,,∑ khối lượng giao dịch thỏa thuận,,,N/A,N/A,NULL (Dòng tiêu đề nhóm),,"-- Cổ phiếu:
+);","-- Cổ phiếu:
 ""Market ID"" = 'STO' --HOSE
 ""Market ID"" = 'STX' --HNX
 ""Market ID"" = 'UPX' --UPCoM
@@ -1287,7 +1284,8 @@ and FundType =' E'  -- Quỹ ETF
 --Tổng GD khớp lệnh của NĐTNN, sàn HNX (sổ lệnh):
 - Board ID: G1, G2, G3, G4, G7, G8 là GD khớp lệnh
 - Sell Foreign Investor Type Code <> 00 là NĐTNN bán
-- Buy Foreign Investor Type Code <> 00 là NĐTNN mua",,,,,,,,,,,ETF,,∑ (Khối lượng giao dịch thỏa thuận × Giá giao dịch),SGDCK,,N/A,N/A,NULL (Dòng tiêu đề nhóm),"-----b.GDNĐTNN KHỚP LỆNH QUỸ ETF
+- Buy Foreign Investor Type Code <> 00 là NĐTNN mua",,,,,,,,,,,ETF,,∑ (Khối lượng giao dịch thỏa thuận × Giá giao dịch),SGDCK,,N/A,N/A,NULL (Dòng tiêu đề nhóm),,,,,X,
+1,HNX01,     BÁO CÁO VỀ GIAO DỊCH TRÊN THỊ TRƯỜNG CỔ PHIẾU,Khối lượng giao dịch ETF,,,,,,,,,,,,ETF,,∑ (Khối lượng giao dịch thỏa thuận × Giá giao dịch) CP niêm yết,SGDCK,,N/A,N/A,NULL (Dòng tiêu đề nhóm),"-----b.GDNĐTNN KHỚP LỆNH QUỸ ETF
 SELECT h.trade_date,
   ' ' AS KL_NN_ETF_KHOPLENH,  
   KL_NN_MUA_ETF_KHOPLENH,
@@ -1317,8 +1315,7 @@ FROM (
   WHERE H.market_id IN ('STX', 'STO','UPX') -- Bảng giao dịch cổ phiếu
     AND H.board_id in ('G1', 'G2', 'G3', 'G4', 'G7', 'G8') -- GD khớp lệnh
     AND H.trade_date = :ngay_gd
-);",,,,X,
-1,HNX01,     BÁO CÁO VỀ GIAO DỊCH TRÊN THỊ TRƯỜNG CỔ PHIẾU,Khối lượng giao dịch ETF,,,,,,,,,,,,ETF,,∑ (Khối lượng giao dịch thỏa thuận × Giá giao dịch) CP niêm yết,SGDCK,,N/A,N/A,NULL (Dòng tiêu đề nhóm),,"-- Quỹ ETF: (Sở)
+);","-- Quỹ ETF: (Sở)
 and StockType ='3'  --Quỹ
 and FundType =' E'  -- Quỹ ETF
 -- Giao dịch NĐTNN - HOSE:
@@ -1391,7 +1388,16 @@ Bảng JAD_STOCKINFOR lấy dòng có INDEXTIME = MAX(INDEXTIME) trong ngày c�
 - Board ID: T1, T2, T3, T4, TR là GD thỏa thuận
 -- Của NĐTNN, sàn HNX (sổ lệnh):
 - Sell Foreign Investor Type Code <> 00 là NĐTNN bán
-- Buy Foreign Investor Type Code <> 00 là NĐTNN mua",,,,,,,,,,,CPNY,,,"Dữ liệu giao dịch hàng ngày (MDDS), Dữ liệu sổ lệnh giao dịch từ SGDCK",,N/A,N/A,NULL (Dòng tiêu đề nhóm),"---------- GIAO DICH THOA THUAN NĐTNN: CPNY
+- Buy Foreign Investor Type Code <> 00 là NĐTNN mua",,,,,,,,,,,CPNY,,,"Dữ liệu giao dịch hàng ngày (MDDS), Dữ liệu sổ lệnh giao dịch từ SGDCK",,N/A,N/A,NULL (Dòng tiêu đề nhóm),,"-- Cổ phiếu niêm yết: (Sổ lệnh)
+""Market ID"" = 'STO' --HOSE
+""Market ID"" = 'STX' --HNX
+""Market ID"" = 'UPX' --UPCoM
+-- GD Thỏa thuận: 
+- Board ID: T1, T2, T3, T4, TR là GD thỏa thuận
+-- Của NĐTNN, sàn HNX (sổ lệnh):
+- Sell Foreign Investor Type Code <> 00 là NĐTNN bán
+- Buy Foreign Investor Type Code <> 00 là NĐTNN mua",,,X,
+1,HNX01,     BÁO CÁO VỀ GIAO DỊCH TRÊN THỊ TRƯỜNG CỔ PHIẾU,Khối lượng giao dịch cổ phiếu niêm yết,KLGD thỏa thuận NĐTNN cổ phiếu niêm yết,,,,,,,,,,,CPNY,,,,,N/A,N/A,NULL (Dòng tiêu đề nhóm),"---------- GIAO DICH THOA THUAN NĐTNN: CPNY
 SELECT trade_date,
   ' ' AS KL_NN_CPNY_THOATHUAN,
   KL_NN_MUA_CPNY_THOATHUAN,
@@ -1422,16 +1428,7 @@ FROM (
     AND board_id in (T1, T2, T3, T4, TR) -- GD thỏa thuận
     AND trade_date = :ngay_gd
 )
-;","-- Cổ phiếu niêm yết: (Sổ lệnh)
-""Market ID"" = 'STO' --HOSE
-""Market ID"" = 'STX' --HNX
-""Market ID"" = 'UPX' --UPCoM
--- GD Thỏa thuận: 
-- Board ID: T1, T2, T3, T4, TR là GD thỏa thuận
--- Của NĐTNN, sàn HNX (sổ lệnh):
-- Sell Foreign Investor Type Code <> 00 là NĐTNN bán
-- Buy Foreign Investor Type Code <> 00 là NĐTNN mua",,,X,
-1,HNX01,     BÁO CÁO VỀ GIAO DỊCH TRÊN THỊ TRƯỜNG CỔ PHIẾU,Khối lượng giao dịch cổ phiếu niêm yết,KLGD thỏa thuận NĐTNN cổ phiếu niêm yết,,,,,,,,,,,CPNY,,,,,N/A,N/A,NULL (Dòng tiêu đề nhóm),,,,,X,
+;",,,,X,
 1,HNX01,     BÁO CÁO VỀ GIAO DỊCH TRÊN THỊ TRƯỜNG CỔ PHIẾU,Khối lượng mua ,Σ KLGD thỏa thuận mua,Báo cáo,Chỉ tiêu cơ sở,TB,"Sàn, Loại CK",MSS,x,X,,Done,SGDCK,CPNY,,,"Dữ liệu giao dịch hàng ngày (MDDS), Dữ liệu sổ lệnh giao dịch từ SGDCK",,"CSDLTT.TRADE_BOOK_HNX,
 MDDS.JAD_STOCKINFOR",TRADE_BOOK_HNX.trade_quantity,"- Loại chứng khoán = Cổ phiếu: 
 JAD_STOCKINFOR.STOCKTYPE = '2'
@@ -1479,7 +1476,18 @@ TRADE_BOOK_HOSE.""Sell - Foreigner Investor type"" <> '00' --Bán
 TRADE_BOOK_HNX.""Buy Foreign Investor Type Code"" <> '00' --Mua
 TRADE_BOOK_HNX.""Sell Foreign Investor Type Code"" <> '00' --Bán
 -- Giao dịch khớp lệnh:
-Board ID: T1, T2, T3, T4, TR là GD thỏa thuận",,,,,,,,,,,TPDN,,,SGDCK,,N/A,N/A,NULL (Dòng tiêu đề nhóm),"---------- GIAO DICH THOA THUAN NĐTNN: TPDN
+Board ID: T1, T2, T3, T4, TR là GD thỏa thuận",,,,,,,,,,,TPDN,,,SGDCK,,N/A,N/A,NULL (Dòng tiêu đề nhóm),,"-- Trái phiếu DN niêm yết:
+""Market ID"" = 'BDO ' --HOSE
+""Market ID"" = 'HCX ' --HNX
+-- Giao dịch NĐTNN - HOSE:
+TRADE_BOOK_HOSE.""Buy - Foreigner Investor type"" <> '00' --Mua
+TRADE_BOOK_HOSE.""Sell - Foreigner Investor type"" <> '00' --Bán
+-- Giao dịch NĐTNN - HNX/UPCOM:
+TRADE_BOOK_HNX.""Buy Foreign Investor Type Code"" <> '00' --Mua
+TRADE_BOOK_HNX.""Sell Foreign Investor Type Code"" <> '00' --Bán
+-- Giao dịch khớp lệnh:
+Board ID: T1, T2, T3, T4, TR là GD thỏa thuận",,,X,
+1,HNX01,     BÁO CÁO VỀ GIAO DỊCH TRÊN THỊ TRƯỜNG CỔ PHIẾU,Khối lượng giao dịch trái phiếu doanh nghiệp,,,,,,,,,,,,TPDN,,,"SGDCK, IDS",,N/A,N/A,NULL (Dòng tiêu đề nhóm),"---------- GIAO DICH THOA THUAN NĐTNN: TPDN
 SELECT trade_date,
         ' ' AS KL_NN_TPDN_THOATHUAN,
         KL_NN_MUA_TPDN_THOATHUAN,
@@ -1510,18 +1518,7 @@ FROM (
     AND board_id in (T1, T2, T3, T4, TR) -- GD thỏa thuận
     AND trade_date = :ngay_gd
 )
-;","-- Trái phiếu DN niêm yết:
-""Market ID"" = 'BDO ' --HOSE
-""Market ID"" = 'HCX ' --HNX
--- Giao dịch NĐTNN - HOSE:
-TRADE_BOOK_HOSE.""Buy - Foreigner Investor type"" <> '00' --Mua
-TRADE_BOOK_HOSE.""Sell - Foreigner Investor type"" <> '00' --Bán
--- Giao dịch NĐTNN - HNX/UPCOM:
-TRADE_BOOK_HNX.""Buy Foreign Investor Type Code"" <> '00' --Mua
-TRADE_BOOK_HNX.""Sell Foreign Investor Type Code"" <> '00' --Bán
--- Giao dịch khớp lệnh:
-Board ID: T1, T2, T3, T4, TR là GD thỏa thuận",,,X,
-1,HNX01,     BÁO CÁO VỀ GIAO DỊCH TRÊN THỊ TRƯỜNG CỔ PHIẾU,Khối lượng giao dịch trái phiếu doanh nghiệp,,,,,,,,,,,,TPDN,,,"SGDCK, IDS",,N/A,N/A,NULL (Dòng tiêu đề nhóm),,,,,,
+;",,,,,
 1,HNX01,     BÁO CÁO VỀ GIAO DỊCH TRÊN THỊ TRƯỜNG CỔ PHIẾU,Khối lượng mua ,Σ KLGD thỏa thuận mua TPDN,Báo cáo,Chỉ tiêu cơ sở,TB,"Sàn, Loại CK",MSS,x,X,,Done,SGDCK,TPDN,,Σ KLGD CP quỹ,"SGDCK, IDS",,TRADE_BOOK_HNX,TRADE_BOOK_HNX.Trade quantity,"- Trái phiếu DN niêm yết: market_id = 'HCX'
 - Giao dịch NĐTNN - Mua: buy_foreign_investor_type_code <> '00'
 - Giao dịch thỏa thuận: board_id IN ('T1', 'T2', 'T3', 'T4', 'T6', 'R1')",,,,,X,
@@ -1546,7 +1543,8 @@ and FundType =' M'  -- CCQ thông thường
 --Board ID: T1, T2, T3, T4, TR là thỏa thuận
 -- GD của NĐTNN:
 - Sell Foreign Investor Type Code <> 00 là NĐTNN bán
-- Buy Foreign Investor Type Code <> 00 là NĐTNN mua",,,,,,,,,,,CCQ,,,,,N/A,N/A,NULL (Dòng tiêu đề nhóm),"---------- GIAO DICH THOA THUAN NĐTNN: CCQ
+- Buy Foreign Investor Type Code <> 00 là NĐTNN mua",,,,,,,,,,,CCQ,,,,,N/A,N/A,NULL (Dòng tiêu đề nhóm),,,,,X,
+1,HNX01,     BÁO CÁO VỀ GIAO DỊCH TRÊN THỊ TRƯỜNG CỔ PHIẾU,Khối lượng giao dịch Chứng chỉ quỹ,,,,,,,,,,,,CCQ,,,,,N/A,N/A,NULL (Dòng tiêu đề nhóm),"---------- GIAO DICH THOA THUAN NĐTNN: CCQ
 SELECT trade_date,
   ' ' AS KL_NN_CCQ_THOATHUAN,
   KL_NN_MUA_CCQ_THOATHUAN,
@@ -1577,8 +1575,7 @@ FROM (
     AND board_id in (T1, T2, T3, T4, TR) -- GD thỏa thuận
     AND trade_date = :ngay_gd
 )
-;",,,,X,
-1,HNX01,     BÁO CÁO VỀ GIAO DỊCH TRÊN THỊ TRƯỜNG CỔ PHIẾU,Khối lượng giao dịch Chứng chỉ quỹ,,,,,,,,,,,,CCQ,,,,,N/A,N/A,NULL (Dòng tiêu đề nhóm),,,,,,
+;",,,,,
 1,HNX01,     BÁO CÁO VỀ GIAO DỊCH TRÊN THỊ TRƯỜNG CỔ PHIẾU,Khối lượng mua ,Σ KLGD thỏa thuận mua CCQ,Báo cáo,Chỉ tiêu cơ sở,TB,Loại CK,"MSS, MDDS",,X,,Done,"Sổ lệnh, Thông tin thị trường",CCQ,,,SGDCK,,"CSDLTT.TRADE_BOOK_HNX,
 MDDS.JAD_STOCKINFOR",TRADE_BOOK_HNX.trade_quantity,"- Loại chứng khoán = CCQ: Bảng JAD_STOCKINFOR
 FLOORCODE IN ('02') AND STOCKTYPE = '3'
@@ -1623,7 +1620,8 @@ and FundType =' E'  -- quỹ ETF
 --Board ID: T1, T2, T3, T4, TR là thỏa thuận
 -- GD của NĐTNN:
 - Sell Foreign Investor Type Code <> 00 là NĐTNN bán
-- Buy Foreign Investor Type Code <> 00 là NĐTNN mua",,,,,,,,,,,ETF,,,,,N/A,N/A,NULL (Dòng tiêu đề nhóm),"---------- GIAO DICH THOA THUAN NĐTNN: ETF
+- Buy Foreign Investor Type Code <> 00 là NĐTNN mua",,,,,,,,,,,ETF,,,,,N/A,N/A,NULL (Dòng tiêu đề nhóm),,,,,X,
+1,HNX01,     BÁO CÁO VỀ GIAO DỊCH TRÊN THỊ TRƯỜNG CỔ PHIẾU,Khối lượng giao dịch ETF,,,,,,,,,,,,ETF,,,,,N/A,N/A,NULL (Dòng tiêu đề nhóm),"---------- GIAO DICH THOA THUAN NĐTNN: ETF
 SELECT trade_date,
   ' ' AS KL_NN_ETF_THOATHUAN,
   KL_NN_MUA_ETF_THOATHUAN,
@@ -1643,7 +1641,7 @@ FROM (
     SELECT SYMBOL
       FROM (
         SELECT  SYMBOL,TRADINGDATE,
-                                ROW_NUMBER() OVER(PARTITION BY TRADINGDATE, SYMBOL ORDER BY TRADINGTIME DESC) RN 
+				ROW_NUMBER() OVER(PARTITION BY TRADINGDATE, SYMBOL ORDER BY TRADINGTIME DESC) RN 
         FROM JAD_STOCKINFOR 
         WHERE STOCKTYPE = '3' AND FundType =' E'  -- ETF
           AND FLOORCODE ='02' --- IN ('02', '04') -- HNX, UPCOM
@@ -1654,8 +1652,7 @@ FROM (
     AND board_id in (T1, T2, T3, T4, TR) -- GD thỏa thuận
     AND trade_date = :ngay_gd
 )
-;",,,,X,
-1,HNX01,     BÁO CÁO VỀ GIAO DỊCH TRÊN THỊ TRƯỜNG CỔ PHIẾU,Khối lượng giao dịch ETF,,,,,,,,,,,,ETF,,,,,N/A,N/A,NULL (Dòng tiêu đề nhóm),,,,,,
+;",,,,,
 1,HNX01,     BÁO CÁO VỀ GIAO DỊCH TRÊN THỊ TRƯỜNG CỔ PHIẾU,Khối lượng mua ,Σ KLGD thỏa thuận mua ETF,Báo cáo,Chỉ tiêu cơ sở,TB,"Sàn, Loại CK","MSS, MDDS",,X,,Done,"Sổ lệnh, Thông tin thị trường",ETF,,,,,"CSDLTT.TRADE_BOOK_HNX,
 MDDS.JAD_STOCKINFOR",TRADE_BOOK_HNX.trade_quantity,"- Loại chứng khoán = CCQ: Bảng JAD_STOCKINFOR
 FLOORCODE IN ('02') AND STOCKTYPE = '6'
@@ -1693,7 +1690,17 @@ Bảng JAD_STOCKINFOR lấy dòng có INDEXTIME = MAX(INDEXTIME) trong ngày c�
   + Giao dịch khớp lệnh: board_id IN ('T1', 'T2', 'T3', 'T4', 'T6', 'R1')
   + Giao dịch mua NĐTNN trên HNX/UPCOM - Bán: sell_foreign_investor_type_code <> '00'
   + GTGD = trade_price * trade_quantity",,Giá trị = 0 do HNX/UPCoM không có GD chứng chỉ quỹ (ETF),,,X,
-1,HNX01,     BÁO CÁO VỀ GIAO DỊCH TRÊN THỊ TRƯỜNG CỔ PHIẾU,2e. GDNĐTNN cổ phiếu đăng ký giao dịch (Upcom),"Cách tính = Σ Giao dịch thỏa thuận (GDNĐTNN) của UpCom, sàn HNX",,,,,,,,,,,,,Σ KL mua CCQ của NĐTNN,,,N/A,N/A,NULL (Dòng tiêu đề nhóm),"---------- GIAO DICH THOA THUAN NĐTNN: UPCOM
+1,HNX01,     BÁO CÁO VỀ GIAO DỊCH TRÊN THỊ TRƯỜNG CỔ PHIẾU,2e. GDNĐTNN cổ phiếu đăng ký giao dịch (Upcom),"Cách tính = Σ Giao dịch thỏa thuận (GDNĐTNN) của UpCom, sàn HNX",,,,,,,,,,,,,Σ KL mua CCQ của NĐTNN,,,N/A,N/A,NULL (Dòng tiêu đề nhóm),,"-- Cổ phiếu:
+""Market ID"" = 'STO' --HOSE
+""Market ID"" = 'STX' --HNX
+""Market ID"" = 'UPX' --UPCoM
+-- Giao dịch NĐTNN - HOSE:
+TRADE_BOOK_HOSE.""Buy - Foreigner Investor type"" <> '00' --Mua
+TRADE_BOOK_HOSE.""Sell - Foreigner Investor type"" <> '00' --Bán
+-- Giao dịch NĐTNN - HNX/UPCOM:
+TRADE_BOOK_HNX.""Buy Foreign Investor Type Code"" <> '00' --Mua
+TRADE_BOOK_HNX.""Sell Foreign Investor Type Code"" <> '00' --Bán",,,X,
+1,HNX01,     BÁO CÁO VỀ GIAO DỊCH TRÊN THỊ TRƯỜNG CỔ PHIẾU,Khối lượng giao dịch cổ phiếu đăng ký giao dịch (Upcom),,,,,,,,,,,,Upcom,,Σ KL bán CCQ của NĐTNN,,,N/A,N/A,NULL (Dòng tiêu đề nhóm),"---------- GIAO DICH THOA THUAN NĐTNN: UPCOM
 SELECT trade_date,
   ' ' AS KL_NN_UPCOM_THOATHUAN,
   KL_NN_MUA_UPCOM_THOATHUAN,
@@ -1724,17 +1731,7 @@ FROM (
     AND board_id in (T1, T2, T3, T4, TR) -- GD thỏa thuận
     AND trade_date = :ngay_gd
 )
-;","-- Cổ phiếu:
-""Market ID"" = 'STO' --HOSE
-""Market ID"" = 'STX' --HNX
-""Market ID"" = 'UPX' --UPCoM
--- Giao dịch NĐTNN - HOSE:
-TRADE_BOOK_HOSE.""Buy - Foreigner Investor type"" <> '00' --Mua
-TRADE_BOOK_HOSE.""Sell - Foreigner Investor type"" <> '00' --Bán
--- Giao dịch NĐTNN - HNX/UPCOM:
-TRADE_BOOK_HNX.""Buy Foreign Investor Type Code"" <> '00' --Mua
-TRADE_BOOK_HNX.""Sell Foreign Investor Type Code"" <> '00' --Bán",,,X,
-1,HNX01,     BÁO CÁO VỀ GIAO DỊCH TRÊN THỊ TRƯỜNG CỔ PHIẾU,Khối lượng giao dịch cổ phiếu đăng ký giao dịch (Upcom),,,,,,,,,,,,Upcom,,Σ KL bán CCQ của NĐTNN,,,N/A,N/A,NULL (Dòng tiêu đề nhóm),,,,,,
+;",,,,,
 1,HNX01,BÁO CÁO VỀ GIAO DỊCH TRÊN THỊ TRƯỜNG CỔ PHIẾU,Khối lượng mua ,Σ KLGD thỏa thuận mua UpCom,Báo cáo,Chỉ tiêu cơ sở,TB,"Sàn, Loại CK, NĐTNN",MSS,x,X,,Done,Sổ lệnh,Upcom,,,,,TRADE_BOOK_HNX,TRADE_BOOK_HNX.trade_quantity,"- Bảng giao dịch cổ phiếu: market_id IN ('UPX') --Cổ phiếu ĐKGD trên UPCoM
 - Giao dịch NĐTNN Mua: buy_foreign_investor_type_code <> '00'",,,,,X,
 1,HNX01, BÁO CÁO VỀ GIAO DỊCH TRÊN THỊ TRƯỜNG CỔ PHIẾU,Khối lượng bán ,Σ KLGD thỏa thuận bán UpCom,Báo cáo,Chỉ tiêu cơ sở,TB,"Sàn, Loại CK, NĐTNN",MSS,x,X,,Done,Sổ lệnh,Upcom,,,,,TRADE_BOOK_HNX,TRADE_BOOK_HNX.trade_quantity,"- Bảng giao dịch cổ phiếu: market_id IN ('UPX') --Cổ phiếu ĐKGD trên UPCoM
@@ -2102,27 +2099,27 @@ JAD_STOCKINFOR.ContractMultiplier: hệ số nhân",--Sell Foreign Investor Type
 4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Kỳ báo cáo (Tháng),"Kỳ báo cáo: Tháng (Hiển thị trên mẫu biểu: Tháng ... năm ...)
 Giá trị tính dữ liệu theo kỳ báo cáo: 
 - DL phát sinh trong kỳ 
-- Lũy kế từ đầu năm ....đến cuối kỳ báo cáo",Báo cáo,Chiều,Dễ,Tháng,"MSS, MDDS",,,,Done,,,,,,,,,"-- Kỳ báo cáo: p_month
--- Ngày đầu, cuối Tháng báo cáo -> Tính ""Trong kỳ - phát sinh""
-  concat(:p_month, '-01') AS frdate, -- Ngày đầu tháng
-  last_day(concat(:p_month, '-01')) AS todate, -- Ngày cuối tháng
--- Ngày đầu, cuối Tháng trước -> Tính tháng trước -> Tính ""Trong kỳ - Tăng/giảm so với kỳ trước (%)"" 
-  add_months(concat(:p_month, '-01'), -1) AS frdate_prev, -- Ngày đầu tháng trước
-  last_day(add_months(concat(:p_month, '-01'), -1)) AS todate_prev, -- Ngày cuối tháng trước
--- Ngày đầu năm -> Tính ""Cộng dồn đến cuối kỳ - phát sinh""
-  concat(substr(:p_month, 1, 4), '-01-01') AS frdate_ytd -- Ngày đầu năm
--- Ngày đầu năm trước, Ngày cuối tháng cùng kỳ năm trước -> Tính ""Cộng dồn đến cuối kỳ - Tăng/giảm so với cùng kỳ (%)""
-  concat(cast(substr(:p_month, 1, 4) as int) - 1, '-01-01') AS frdate_ytd_py -- Ngày đầu năm trước
-  last_day(add_months(concat(:p_month, '-01'), -12)) AS todate_ytd_py -- Ngày cuối tháng cùng kỳ năm trước",Tham số báo cáo,Tham số báo cáo,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Sàn,HNX,Báo cáo,Chiều,Dễ,,,,,,Done,,,,,,,,,,,Điều kiện dữ liệu,,,,
+- Lũy kế từ đầu năm ....đến cuối kỳ báo cáo",Báo cáo,Chiều,Dễ,Tháng,"MSS, MDDS",,,,Done,,,,,,,,,,"-- Ngày đầu và cuối tháng N, tháng N-1
+SELECT 
+  -- Tháng báo cáo
+  TRUNC(TO_DATE(:P_MONTH, 'MM/YYYY'), 'MM') AS FROMDATE,
+  LAST_DAY(TO_DATE(:P_MONTH, 'MM/YYYY')) AS TODATE,
+  -- Tháng trước
+  ADD_MONTHS(TRUNC(TO_DATE(:P_MONTH, 'MM/YYYY'), 'MM'), -1) AS PREV_FROMDATE,
+  TRUNC(TO_DATE(:P_MONTH, 'MM/YYYY'), 'MM') - 1 AS PREV_TODATE
+FROM DUAL;",Tham số báo cáo,,,,
+4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Sàn,HNX,Báo cáo,Chiều,Dễ,,,,,,Done,,,,,,,,,"1. Chỉ số: 
+N/A (Bảng jad_marketinfor không có thông tin sàn)
+2. Giá trị chứng khoán giao dịch (VND), Khối lượng chứng khoán giao dịch (chứng khoán):
+",,Điều kiện dữ liệu,,,,
 4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Chỉ số,Dòng tiêu đề nhóm,Báo cáo,,,,,,,,Done,,,,,,,N/A,N/A,NULL (Dòng tiêu đề nhóm),,,,,,X
 4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Chỉ số,"Gồm các chỉ số:
 HNX-Index
 HNXFFIndex
 HNXUpcom-Index
-HNXFFUpcomIndex",Báo cáo,Chiều,Dễ,Chỉ số,MDDS,,,,Done,,,,,,,MDDS.jad_marketinfor,marketcode,"-- Chỉ số HNXIndex, UPComIndex: 
+HNXFFUpcomIndex",Báo cáo,Chiều,Dễ,Chỉ số,MDDS,,,,Done,,,,,,,mdds.jad_marketinfor,marketcode,"* Chỉ số HNXIndex, UPComIndex: 
 marketcode IN ('HNX', 'UPCOM')
--- Chỉ số HNXFFIndex, HNXFFUpcomIndex: 
+* Chỉ số HNXFFIndex, HNXFFUpcomIndex: 
 NULL (Không còn 2 chỉ số này)","WITH daily_eod_marketinfor AS (
   SELECT 
       marketcode
@@ -2173,779 +2170,106 @@ SELECT
   , index_prev AS INDEX_CUOITHANGTRUOC
   , (index_curr - index_prev) AS INDEX_TANGGIAMTRONGKY
 FROM index_data;",,,,,X
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Chỉ số - Trong kỳ - phát sinh,,Báo cáo,Chỉ tiêu cơ sở,Dễ,"Chỉ số, Ngày",MDDS,,,,Done,,,,,,,MDDS.jad_marketinfor,marketindex,"-- Giá trị Index cuối tháng báo cáo: Lấy dữ liệu tại thời điểm cuối cùng trong tháng.
-MAX(tradingdate) trong khoảng tradingdate >= :frdate AND tradingdate <= :todate
-(ROW_NUMBER() OVER(PARTITION BY marketcode ORDER BY tradingdate DESC, indextime DESC, sequence DESC)) = 1",,Index cuối tháng: Giá trị chỉ số tại ngày cuối cùng có dữ liệu giao dịch trong tháng,,,,X
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Chỉ số - Trong kỳ - Tăng/Giảm,,Báo cáo,Chỉ tiêu phái sinh,Dễ,"Chỉ số, Ngày",MDDS,,,,Done,,,,,,,MDDS.jad_marketinfor,marketindex,"-- Giá trị Index cuối tháng trước: Lấy dữ liệu tại thời điểm cuối cùng trong tháng.
-MAX(tradingdate) trong khoảng tradingdate >= :frdate_prev AND tradingdate <= :todate_prev
-(ROW_NUMBER() OVER(PARTITION BY marketcode ORDER BY tradingdate DESC, indextime DESC, sequence DESC)) = 1
--- Tăng/Giảm trong kỳ = Index cuối tháng báo cáo - Index cuối tháng trước",,Tăng/Giảm trong kỳ: Index cuối tháng - Index cuối tháng trước,,,,X
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Chỉ số - Trong kỳ - phát sinh - HNX-Index,HNX-Index,Báo cáo,Chỉ tiêu cơ sở,Trùng,"Chỉ số, Ngày",MDDS,,,,Done,,,,,,,MDDS.jad_marketinfor,marketindex,"-- Chỉ số Index:
-marketcode IN ('HNX')
--- Giá trị Index cuối tháng báo cáo:
-MAX(tradingdate) trong khoảng tradingdate >= :frdate AND tradingdate <= :todate
-(ROW_NUMBER() OVER(PARTITION BY marketcode ORDER BY tradingdate DESC, indextime DESC, sequence DESC)) = 1",,,,,,X
+4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Chỉ số - Trong kỳ - phát sinh,,Báo cáo,Chỉ tiêu cơ sở,Dễ,"Chỉ số, Ngày",MDDS,,,,Done,,,,,,,mdds.jad_marketinfor,marketindex,"* Giá trị Index cuối tháng N: Lấy dữ liệu tại thời điểm cuối cùng trong tháng.
+- MAX(tradingdate) trong khoảng tradingdate >= :fromdate AND tradingdate <= :todate
+- Lấy ROW_NUMBER() = 1 với ORDER BY indextime DESC",,Index cuối tháng: Giá trị chỉ số tại ngày cuối cùng có dữ liệu giao dịch trong tháng,,,,X
+4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Chỉ số - Trong kỳ - Tăng/Giảm,,Báo cáo,Chỉ tiêu phái sinh,Dễ,"Chỉ số, Ngày",MDDS,,,,Done,,,,,,,mdds.jad_marketinfor,marketindex,"* Giá trị Index cuối tháng N-1: Lấy dữ liệu tại thời điểm cuối cùng trong tháng.
+MAX(tradingdate) trong khoảng tradingdate >= :fromdate_prev AND tradingdate <= :todate_prev
+Lấy ROW_NUMBER() = 1 với ORDER BY indextime DESC
+* Tăng/Giảm trong kỳ = Index cuối tháng N - Index cuối tháng N-1",,Tăng/Giảm trong kỳ: Index cuối tháng - Index cuối tháng trước,,,,X
+4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Chỉ số - Trong kỳ - phát sinh - HNX-Index,HNX-Index,Báo cáo,Chỉ tiêu cơ sở,Trùng,"Chỉ số, Ngày",MDDS,,,,Done,,,,,,,mdds.jad_marketinfor,marketindex,"* Chỉ số Index:
+- marketcode IN ('HNX')
+* Giá trị Index cuối tháng N:
+- MAX(tradingdate) trong khoảng tradingdate >= :fromdate AND tradingdate <= :todate
+- Lấy ROW_NUMBER() = 1 với ORDER BY indextime DESC",,,,,,X
 4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Chỉ số - Trong kỳ - phát sinh - HNXFFIndex,HNXFFIndex,Báo cáo,Chỉ tiêu cơ sở,Trùng,"Chỉ số, Ngày",MDDS,,,,Done,,,,,,,N/A,N/A,NULL,,Không còn chỉ số này,,,,X
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Chỉ số - Trong kỳ - phát sinh - HNXUpcom-Index,HNXUpcom-Index,Báo cáo,Chỉ tiêu cơ sở,Trùng,"Chỉ số, Ngày",MDDS,,,,Done,,,,,,,MDDS.jad_marketinfor,marketindex,"-- Chỉ số Index:
-marketcode IN ('UPCOM')
--- Giá trị Index cuối tháng báo cáo:
-MAX(tradingdate) trong khoảng tradingdate >= :frdate AND tradingdate <= :todate
-(ROW_NUMBER() OVER(PARTITION BY marketcode ORDER BY tradingdate DESC, indextime DESC, sequence DESC)) = 1",,,,,,X
+4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Chỉ số - Trong kỳ - phát sinh - HNXUpcom-Index,HNXUpcom-Index,Báo cáo,Chỉ tiêu cơ sở,Trùng,"Chỉ số, Ngày",MDDS,,,,Done,,,,,,,mdds.jad_marketinfor,marketindex,"* Chỉ số Index:
+- marketcode IN ('UPCOM')
+* Giá trị cuối tháng N:
+- MAX(tradingdate) trong khoảng tradingdate >= :fromdate AND tradingdate <= :todate
+- Lấy ROW_NUMBER() = 1 với ORDER BY indextime DESC",,,,,,X
 4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Chỉ số - Trong kỳ - phát sinh - HNXFFUpcomIndex,HNXFFUpcomIndex,Báo cáo,Chỉ tiêu cơ sở,Trùng,"Chỉ số, Ngày",MDDS,,,,Done,,,,,,,N/A,N/A,NULL,,Không còn chỉ số này,,,,X
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Chỉ số - Trong kỳ - Tăng/Giảm - HNX-Index,HNX-Index,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Chỉ số, Ngày",MDDS,,,,Done,,,,,,,MDDS.jad_marketinfor,marketindex,"-- Chỉ số Index:
-marketcode IN ('HNX')
--- Giá trị Index cuối tháng báo cáo:
-MAX(tradingdate) trong khoảng tradingdate >= :frdate AND tradingdate <= :todate
-(ROW_NUMBER() OVER(PARTITION BY marketcode ORDER BY tradingdate DESC, indextime DESC, sequence DESC)) = 1
--- Giá trị Index cuối tháng báo cáo:
-MAX(tradingdate) trong khoảng tradingdate >= :frdate_prev AND tradingdate <= :todate_prev
-(ROW_NUMBER() OVER(PARTITION BY marketcode ORDER BY tradingdate DESC, indextime DESC, sequence DESC)) = 1
--- Tăng/Giảm trong kỳ = Index cuối tháng báo cáo - Index cuối tháng trước",,,,,,X
+4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Chỉ số - Trong kỳ - Tăng/Giảm - HNX-Index,HNX-Index,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Chỉ số, Ngày",MDDS,,,,Done,,,,,,,mdds.jad_marketinfor,marketindex,"* Chỉ số Index:
+- marketcode IN ('HNX')
+* Giá trị Index cuối tháng N:
+- MAX(tradingdate) trong khoảng tradingdate >= :fromdate AND tradingdate <= :todate
+- Lấy ROW_NUMBER() = 1 với ORDER BY indextime DESC
+* Giá trị Index cuối tháng N-1:
+- MAX(tradingdate) trong khoảng tradingdate >= :fromdate_prev AND tradingdate <= :todate_prev
+- Lấy ROW_NUMBER() = 1 với ORDER BY indextime DESC
+* Tăng/Giảm trong kỳ = Index cuối N - Index cuối tháng N-1",,,,,,X
 4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Chỉ số - Trong kỳ - Tăng/Giảm - HNXFFIndex,HNXFFIndex,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Chỉ số, Ngày",MDDS,,,,Done,,,,,,,N/A,N/A,NULL,,Không còn chỉ số này,,,,X
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Chỉ số - Trong kỳ - Tăng/Giảm - HNXUpcom-Index,HNXUpcom-Index,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Chỉ số, Ngày",MDDS,,,,Done,,,,,,,MDDS.jad_marketinfor,marketindex,"-- Chỉ số Index:
-marketcode IN ('UPCOM')
--- Giá trị Index cuối tháng báo cáo:
-MAX(tradingdate) trong khoảng tradingdate >= :frdate AND tradingdate <= :todate
-(ROW_NUMBER() OVER(PARTITION BY marketcode ORDER BY tradingdate DESC, indextime DESC, sequence DESC)) = 1
--- Giá trị Index cuối tháng báo cáo:
-MAX(tradingdate) trong khoảng tradingdate >= :frdate_prev AND tradingdate <= :todate_prev
-(ROW_NUMBER() OVER(PARTITION BY marketcode ORDER BY tradingdate DESC, indextime DESC, sequence DESC)) = 1
--- Tăng/Giảm trong kỳ = Index cuối tháng báo cáo - Index cuối tháng trước",,,,,,X
+4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Chỉ số - Trong kỳ - Tăng/Giảm - HNXUpcom-Index,HNXUpcom-Index,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Chỉ số, Ngày",MDDS,,,,Done,,,,,,,mdds.jad_marketinfor,marketindex,"* Chỉ số Index:
+- marketcode IN ('UPCOM')
+* Giá trị Index cuối tháng N:
+- MAX(tradingdate) trong khoảng tradingdate >= :fromdate AND tradingdate <= :todate
+- Lấy ROW_NUMBER() = 1 với ORDER BY indextime DESC
+* Giá trị Index cuối tháng N-1:
+- MAX(tradingdate) trong khoảng tradingdate >= :fromdate_prev AND tradingdate <= :todate_prev
+- Lấy ROW_NUMBER() = 1 với ORDER BY indextime DESC
+* Tăng/Giảm trong kỳ = Index cuối N - Index cuối tháng N-1",,,,,,X
 4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Chỉ số - Trong kỳ - Tăng/Giảm - HNXFFUpcomIndex,HNXFFUpcomIndex,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Chỉ số, Ngày",MDDS,,,,Done,,,,,,,N/A,N/A,NULL,,Không còn chỉ số này,,,,X
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Giá trị chứng khoán giao dịch (VND) - Trong kỳ - phát sinh,Trong kỳ - phát sinh,Báo cáo,Chỉ tiêu phái sinh,TB,"Loại CK, Sàn, Tháng","HNX, MDDS",,X,,Done,Phụ lục 05.2,2. Giá trị chứng khoán giao dịch (VND),,,,,"-- Loại CK nhóm Cổ phiếu, TPDN niêm yết, Chứng chỉ quỹ (ETF):
-HNX.trade_book_hnx (t),
-MDDS.jad_stockinfor (s)
--- Loại CK nhóm TPCP:
-HNX.outright_order_book (o), 
-HNX.repo_order_book (r), 
-HNX.gov_bond_listed_list (b)","t.trade_quantity,
-t.trade_price
---
-o.trading_value, 
-r.first_settlement_value","tradingvalue = SUM các mục ""Giá trị chứng khoán giao dịch - ... - Trong kỳ - phát sinh"" bên dưới",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Giá trị chứng khoán giao dịch (VND) - Kỳ trước - phát sinh,"Không có trên BC -> Dùng để tính ""Trong kỳ - Tăng/giảm so với kỳ trước (%)""",Báo cáo,Chỉ tiêu phái sinh,TB,"Loại CK, Sàn, Tháng","HNX, MDDS",,,,Done,,2. Giá trị chứng khoán giao dịch (VND),,,,,"-- Loại CK nhóm Cổ phiếu, TPDN niêm yết, Chứng chỉ quỹ (ETF):
-HNX.trade_book_hnx (t),
-MDDS.jad_stockinfor (s)
--- Loại CK nhóm TPCP:
-HNX.outright_order_book (o), 
-HNX.repo_order_book (r), 
-HNX.gov_bond_listed_list (b)","t.trade_quantity,
-t.trade_price
---
-o.trading_value, 
-r.first_settlement_value","tradingvalue_prev = SUM các mục ""Giá trị chứng khoán giao dịch - ... - Kỳ trước - phát sinh"" bên dưới",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Giá trị chứng khoán giao dịch (VND) - Trong kỳ - Tăng/giảm so với kỳ trước (%),Trong kỳ - Tăng/giảm so với kỳ trước (%),Báo cáo,Chỉ tiêu phái sinh,TB,"Loại CK, Sàn, Tháng","HNX, MDDS",,,,Done,,2. Giá trị chứng khoán giao dịch (VND),,,,,"-- Loại CK nhóm Cổ phiếu, TPDN niêm yết, Chứng chỉ quỹ (ETF):
-HNX.trade_book_hnx (t),
-MDDS.jad_stockinfor (s)
--- Loại CK nhóm TPCP:
-HNX.outright_order_book (o), 
-HNX.repo_order_book (r), 
-HNX.gov_bond_listed_list (b)","t.trade_quantity,
-t.trade_price
---
-o.trading_value, 
-r.first_settlement_value","-- Công thức:
-Tăng/giảm so với cùng kỳ (%) = ( tradingvalue / NULLIF(tradingvalue_prev, 0) - 1 ) * 100",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Giá trị chứng khoán giao dịch (VND) - Cộng dồn đến cuối kỳ - phát sinh,Cộng dồn đến cuối kỳ - phát sinh,Báo cáo,Chỉ tiêu phái sinh,TB,"Loại CK, Sàn, Tháng","HNX, MDDS",,,,Done,,2. Giá trị chứng khoán giao dịch (VND),,,,,"-- Loại CK nhóm Cổ phiếu, TPDN niêm yết, Chứng chỉ quỹ (ETF):
-HNX.trade_book_hnx (t),
-MDDS.jad_stockinfor (s)
--- Loại CK nhóm TPCP:
-HNX.outright_order_book (o), 
-HNX.repo_order_book (r), 
-HNX.gov_bond_listed_list (b)","t.trade_quantity,
-t.trade_price
---
-o.trading_value, 
-r.first_settlement_value","tradingvalue_ytd = SUM các mục ""Giá trị chứng khoán giao dịch - ... - Cộng dồn đến cuối kỳ - phát sinh"" bên dưới",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Giá trị chứng khoán giao dịch (VND) - Cộng dồn đến cuối kỳ - Cùng kỳ năm trước,"Không có trên BC -> Dùng để tính ""Cộng dồn đến cuối kỳ - Tăng/giảm so với cùng kỳ (%)""",Báo cáo,Chỉ tiêu phái sinh,TB,"Loại CK, Sàn, Tháng","HNX, MDDS",,,,Done,,2. Giá trị chứng khoán giao dịch (VND),,,,,"-- Loại CK nhóm Cổ phiếu, TPDN niêm yết, Chứng chỉ quỹ (ETF):
-HNX.trade_book_hnx (t),
-MDDS.jad_stockinfor (s)
--- Loại CK nhóm TPCP:
-HNX.outright_order_book (o), 
-HNX.repo_order_book (r), 
-HNX.gov_bond_listed_list (b)","t.trade_quantity,
-t.trade_price
---
-o.trading_value, 
-r.first_settlement_value","tradingvalue_ytd_py = SUM các mục ""Giá trị chứng khoán giao dịch - ... - Cộng dồn đến cuối kỳ - Cùng kỳ năm trước"" bên dưới",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Giá trị chứng khoán giao dịch (VND) - Cộng dồn đến cuối kỳ - Tăng/giảm so với cùng kỳ (%),Cộng dồn đến cuối kỳ - Tăng/giảm so với cùng kỳ (%),Báo cáo,Chỉ tiêu phái sinh,TB,"Loại CK, Sàn, Tháng","HNX, MDDS",,,,Done,,2. Giá trị chứng khoán giao dịch (VND),,,,,"-- Loại CK nhóm Cổ phiếu, TPDN niêm yết, Chứng chỉ quỹ (ETF):
-HNX.trade_book_hnx (t),
-MDDS.jad_stockinfor (s)
--- Loại CK nhóm TPCP:
-HNX.outright_order_book (o), 
-HNX.repo_order_book (r), 
-HNX.gov_bond_listed_list (b)","t.trade_quantity,
-t.trade_price
---
-o.trading_value, 
-r.first_settlement_value","-- Công thức:
-Tăng/giảm so với cùng kỳ (%) = ( tradingvalue_ytd / NULLIF(tradingvalue_ytd_py, 0) - 1 ) * 100",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Trong kỳ - phát sinh - Khối lượng chứng khoán giao dịch (VND),Trong kỳ - phát sinh,Báo cáo,Chỉ tiêu phái sinh,TB,"Loại CK, Sàn, Tháng","HNX, MDDS",,X,,Done,Phụ lục 05.2,2. Khối lượng chứng khoán giao dịch (VND),,,,,"-- Loại CK nhóm Cổ phiếu, TPDN niêm yết, Chứng chỉ quỹ (ETF):
-HNX.trade_book_hnx (t),
-MDDS.jad_stockinfor (s)
--- Loại CK nhóm TPCP:
-HNX.outright_order_book (o), 
-HNX.repo_order_book (r), 
-HNX.gov_bond_listed_list (b)","t.trade_quantity
---
-o.volume, 
-r.volume","tradingvol = SUM các mục ""Khối lượng chứng khoán giao dịch - ... - Trong kỳ - phát sinh"" bên dưới",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Kỳ trước - phát sinh - Khối lượng chứng khoán giao dịch (VND),"Không có trên BC -> Dùng để tính ""Trong kỳ - Tăng/giảm so với kỳ trước (%)""",Báo cáo,Chỉ tiêu phái sinh,TB,"Loại CK, Sàn, Tháng","HNX, MDDS",,,,Done,,2. Khối lượng chứng khoán giao dịch (VND),,,,,"-- Loại CK nhóm Cổ phiếu, TPDN niêm yết, Chứng chỉ quỹ (ETF):
-HNX.trade_book_hnx (t),
-MDDS.jad_stockinfor (s)
--- Loại CK nhóm TPCP:
-HNX.outright_order_book (o), 
-HNX.repo_order_book (r), 
-HNX.gov_bond_listed_list (b)","t.trade_quantity
---
-o.volume, 
-r.volume","tradingvol_prev = SUM các mục ""Khối lượng chứng khoán giao dịch - ... - Kỳ trước - phát sinh"" bên dưới",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Trong kỳ - Tăng/giảm so với kỳ trước (%) - Khối lượng chứng khoán giao dịch (VND),Trong kỳ - Tăng/giảm so với kỳ trước (%),Báo cáo,Chỉ tiêu phái sinh,TB,"Loại CK, Sàn, Tháng","HNX, MDDS",,,,Done,,2. Khối lượng chứng khoán giao dịch (VND),,,,,"-- Loại CK nhóm Cổ phiếu, TPDN niêm yết, Chứng chỉ quỹ (ETF):
-HNX.trade_book_hnx (t),
-MDDS.jad_stockinfor (s)
--- Loại CK nhóm TPCP:
-HNX.outright_order_book (o), 
-HNX.repo_order_book (r), 
-HNX.gov_bond_listed_list (b)","t.trade_quantity
---
-o.volume, 
-r.volume","-- Công thức:
-Tăng/giảm so với cùng kỳ (%) = ( tradingvol / NULLIF(tradingvol_prev, 0) - 1 ) * 100",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Cộng dồn đến cuối kỳ - phát sinh - Khối lượng chứng khoán giao dịch (VND),Cộng dồn đến cuối kỳ - phát sinh,Báo cáo,Chỉ tiêu phái sinh,TB,"Loại CK, Sàn, Tháng","HNX, MDDS",,,,Done,,2. Khối lượng chứng khoán giao dịch (VND),,,,,"-- Loại CK nhóm Cổ phiếu, TPDN niêm yết, Chứng chỉ quỹ (ETF):
-HNX.trade_book_hnx (t),
-MDDS.jad_stockinfor (s)
--- Loại CK nhóm TPCP:
-HNX.outright_order_book (o), 
-HNX.repo_order_book (r), 
-HNX.gov_bond_listed_list (b)","t.trade_quantity
---
-o.volume, 
-r.volume","tradingvol_ytd = SUM các mục ""Khối lượng chứng khoán giao dịch - ... - Cộng dồn đến cuối kỳ - phát sinh"" bên dưới",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Cộng dồn đến cuối kỳ - Cùng kỳ năm trước - Khối lượng chứng khoán giao dịch (VND),"Không có trên BC -> Dùng để tính ""Cộng dồn đến cuối kỳ - Tăng/giảm so với cùng kỳ (%)""",Báo cáo,Chỉ tiêu phái sinh,TB,"Loại CK, Sàn, Tháng","HNX, MDDS",,,,Done,,2. Khối lượng chứng khoán giao dịch (VND),,,,,"-- Loại CK nhóm Cổ phiếu, TPDN niêm yết, Chứng chỉ quỹ (ETF):
-HNX.trade_book_hnx (t),
-MDDS.jad_stockinfor (s)
--- Loại CK nhóm TPCP:
-HNX.outright_order_book (o), 
-HNX.repo_order_book (r), 
-HNX.gov_bond_listed_list (b)","t.trade_quantity
---
-o.volume, 
-r.volume","tradingvol_ytd_py = SUM các mục ""Khối lượng chứng khoán giao dịch - ... - Cộng dồn đến cuối kỳ - Cùng kỳ năm trước"" bên dưới",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Cộng dồn đến cuối kỳ - Tăng/giảm so với cùng kỳ (%) - Khối lượng chứng khoán giao dịch (VND),Cộng dồn đến cuối kỳ - Tăng/giảm so với cùng kỳ (%),Báo cáo,Chỉ tiêu phái sinh,TB,"Loại CK, Sàn, Tháng","HNX, MDDS",,,,Done,,2. Khối lượng chứng khoán giao dịch (VND),,,,,"-- Loại CK nhóm Cổ phiếu, TPDN niêm yết, Chứng chỉ quỹ (ETF):
-HNX.trade_book_hnx (t),
-MDDS.jad_stockinfor (s)
--- Loại CK nhóm TPCP:
-HNX.outright_order_book (o), 
-HNX.repo_order_book (r), 
-HNX.gov_bond_listed_list (b)","t.trade_quantity
---
-o.volume, 
-r.volume","-- Công thức:
-Tăng/giảm so với cùng kỳ (%) = ( tradingvol_ytd / NULLIF(tradingvol_ytd_py, 0) - 1 ) * 100",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Loại chứng khoán,"Gồm các loại:
-- Cổ phiếu niêm yết
-- Cổ phiếu đăng ký giao dịch
-- Trái phiếu doanh nghiệp niêm yết
-- Chứng chỉ quỹ (ETF)",Báo cáo,Chiều,TB,Loại CK,MDDS,,,,Done,,"2.1. Cổ phiếu niêm yết
-2.2. Cổ phiếu đăng ký giao dịch
-2.6. Trái phiếu doanh nghiệp
-2.8. Chứng chỉ quỹ (ETF)",,,,,MDDS.jad_stockinfor (s),"s.floorcode, 
-s.stocktype, 
-s.fundtype","Bảng MDDS.jad_stockinfor (s):
--- Thời gian:
-(ROW_NUMBER() OVER(PARTITION BY symbol, tradingdate ORDER BY indextime DESC, sequence DESC)) = 1 -- Lấy dữ liệu cuối ngày từng mã CK
--- Loại chứng khoán:
-s.floorcode = '02' AND s.stocktype = '2' -- Cổ phiếu niêm yết (trên HNX)
-s.floorcode = '04' AND s.stocktype = '2' -- Cổ phiếu đăng ký giao dịch (trên UPCOM)
-s.floorcode = '02' AND s.stocktype = '1' -- TPDN niêm yết
-s.floorcode = '02' AND s.stocktype = '3' AND s.fundtype = 'E' -- Chứng chỉ quỹ (ETF)",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Trong kỳ - phát sinh - Giá trị chứng khoán giao dịch,Trong kỳ - phát sinh,Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK, Sàn, Tháng","HNX, MDDS",x,X,,Done,,"2.1. Cổ phiếu niêm yết
-2.2. Cổ phiếu đăng ký giao dịch
-2.6. Trái phiếu doanh nghiệp
-2.8. Chứng chỉ quỹ (ETF)",,,,,"HNX.trade_book_hnx (t),
-MDDS.jad_stockinfor (s)","t.trade_quantity,
-t.trade_price","-- Link bảng HNX.trade_book_hnx (t) và MDDS.jad_stockinfor (s): 
+4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),2. Giá trị chứng khoán giao dịch (VND),"Σ Giá trị chứng khoán giao dịch (VND), sàn HNX",Báo cáo,Chỉ tiêu phái sinh,Dễ,,,,X,,Done,Phụ lục 05.2,,,,,,,,,,,,,,
+4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Cổ phiếu niêm yết - Trong kỳ - phát sinh,Trong kỳ - phát sinh,Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK, Sàn, Tháng",,x,X,,Done,Phụ lục 05.2,CPNY,,,,,"ordertrade.trade_book_hnx (t),
+mdds.jad_stockinfor (s)","t.trade_quantity,
+t.trade_price","* ĐK link bảng ordertrade.trade_book_hnx (t) và mdds.jad_stockinfor (s): 
 t.issue_code = s.symbol AND t.trade_date = s.tradingdate
-s.tradingdate >= :frdate AND s.tradingdate <= :todate -- Tháng báo cáo
--- Bảng HNX.trade_book_hnx (t):
-t.trade_date >= :frdate AND t.trade_date <= :todate -- Tháng báo cáo
-t.market_id IN ('STX', 'UPX', 'HCX') 
-  -- STX: Cổ phiếu, Chứng chỉ quỹ ETF trên HNX
-  -- UPX: Cổ phiếu trên UPCOM
-  -- HCX: TPDN niêm yết
--- Công thức:
-GTGD (tradingvalue) = SUM(t.trade_quantity * t.trade_price)",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Trong kỳ - phát sinh - Khối lượng chứng khoán giao dịch,Trong kỳ - phát sinh,Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK, Sàn, Tháng","HNX, MDDS",x,X,,Done,,"2.1. Cổ phiếu niêm yết
-2.2. Cổ phiếu đăng ký giao dịch
-2.6. Trái phiếu doanh nghiệp
-2.8. Chứng chỉ quỹ (ETF)",,,,,"HNX.trade_book_hnx (t),
-MDDS.jad_stockinfor (s)",t.trade_quantity,"-- Link bảng HNX.trade_book_hnx (t) và MDDS.jad_stockinfor (s): 
+* Bảng ordertrade.trade_book_hnx (t):
+t.market_id = 'STX' -- Giao dịch Cổ phiếu niêm yết trên HNX
+t.trade_date >= :fromdate AND t.trade_date <= :todate -- Trong kỳ - Phát sinh
+* Bảng mdds.jad_stockinfor (s):
+s.stocktype = '2' -- Loại CK = Cổ phiếu
+s.tradingdate >= :fromdate AND s.tradingdate <= :todate -- Trong khoảng ngày đầu - cuối của tháng báo cáo
+Dữ liệu cuối ngày từng mã CK: (ROW_NUMBER() OVER(PARTITION BY marketid, tradingdate ORDER BY indextime DESC, sequence DESC)) = 1
+* Giá trị giao dịch = SUM(t.trade_quantity * t.trade_price)",,,,,,
+4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Cổ phiếu niêm yết - Trong kỳ - Tăng/giảm so với kỳ trước (%),Trong kỳ - Tăng/giảm so với kỳ trước (%),Báo cáo,Chỉ tiêu phái sinh,TB,"Loại CK, Sàn, Tháng",,,,,,,,,,,,"ordertrade.trade_book_hnx (t),
+mdds.jad_stockinfor (s)","t.trade_quantity,
+t.trade_price","* ĐK link bảng ordertrade.trade_book_hnx (t) và mdds.jad_stockinfor (s): 
 t.issue_code = s.symbol AND t.trade_date = s.tradingdate
-s.tradingdate >= :frdate AND s.tradingdate <= :todate -- Tháng báo cáo
--- Bảng HNX.trade_book_hnx (t):
-t.trade_date >= :frdate AND t.trade_date <= :todate -- Tháng báo cáo
-t.market_id IN ('STX', 'UPX', 'HCX') 
-  -- STX: Cổ phiếu, Chứng chỉ quỹ ETF trên HNX
-  -- UPX: Cổ phiếu trên UPCOM
-  -- HCX: TPDN niêm yết
--- Công thức:
-GTGD (tradingvol) = SUM(t.trade_quantity)",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Kỳ trước - phát sinh - Giá trị chứng khoán giao dịch,"Kỳ trước - phát sinh: Không có trên BC -> Dùng để tính ""Trong kỳ - Tăng/giảm so với kỳ trước (%)""",Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK, Sàn, Tháng","HNX, MDDS",,,,Done,,"2.1. Cổ phiếu niêm yết
-2.2. Cổ phiếu đăng ký giao dịch
-2.6. Trái phiếu doanh nghiệp
-2.8. Chứng chỉ quỹ (ETF)",,,,,"HNX.trade_book_hnx (t),
-MDDS.jad_stockinfor (s)","t.trade_quantity,
-t.trade_price","-- Link bảng HNX.trade_book_hnx (t) và MDDS.jad_stockinfor (s): 
+* Bảng ordertrade.trade_book_hnx (t):
+t.market_id = 'STX' -- Giao dịch Cổ phiếu niêm yết trên HNX
+t.trade_date >= :fromdate AND t.trade_date <= :todate -- Tháng báo cáo
+t.trade_date >= :fromdate_prev AND t.trade_date <= :todate_prev -- Tháng trước
+* Bảng mdds.jad_stockinfor (s):
+s.stocktype = '2' -- Loại CK = Cổ phiếu
+s.tradingdate >= :fromdate AND s.tradingdate <= :todate -- Tháng báo cáo
+s.tradingdate >= :fromdate_prev AND s.tradingdate <= :todate_prev -- Tháng trước
+Dữ liệu cuối ngày từng mã CK: (ROW_NUMBER() OVER(PARTITION BY marketid, tradingdate ORDER BY indextime DESC, sequence DESC)) = 1
+* Công thức:
+Giá trị giao dịch = SUM(t.trade_quantity * t.trade_price)
+Tăng/giảm so với cùng kỳ (%) = Giá trị giao dịch tháng báo cáo - Giá trị giao dịch tháng trước",,,,,,
+4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Cổ phiếu niêm yết - Cộng dồn đến cuối kỳ - phát sinh,Cộng dồn đến cuối kỳ - phát sinh,Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK, Sàn, Tháng",CSDLTT,,,,,,,,,,,"ordertrade.trade_book_hnx (t),
+mdds.jad_stockinfor (s)","t.trade_quantity,
+t.trade_price","* ĐK link bảng ordertrade.trade_book_hnx (t) và mdds.jad_stockinfor (s): 
 t.issue_code = s.symbol AND t.trade_date = s.tradingdate
-s.tradingdate >= :frdate_prev AND s.tradingdate <= :todate_prev -- Tháng trước
--- Bảng HNX.trade_book_hnx (t):
-t.trade_date >= :frdate_prev AND t.trade_date <= :todate_prev -- Tháng trước
-t.market_id IN ('STX', 'UPX', 'HCX') 
-  -- STX: Cổ phiếu, Chứng chỉ quỹ ETF trên HNX
-  -- UPX: Cổ phiếu trên UPCOM
-  -- HCX: TPDN niêm yết
--- Công thức:
-GTGD (tradingvalue) = SUM(t.trade_quantity * t.trade_price)",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Kỳ trước - phát sinh - Khối lượng chứng khoán giao dịch,"Kỳ trước - phát sinh: Không có trên BC -> Dùng để tính ""Trong kỳ - Tăng/giảm so với kỳ trước (%)""",Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK, Sàn, Tháng","HNX, MDDS",,,,Done,,"2.1. Cổ phiếu niêm yết
-2.2. Cổ phiếu đăng ký giao dịch
-2.6. Trái phiếu doanh nghiệp
-2.8. Chứng chỉ quỹ (ETF)",,,,,"HNX.trade_book_hnx (t),
-MDDS.jad_stockinfor (s)",t.trade_quantity,"-- Link bảng HNX.trade_book_hnx (t) và MDDS.jad_stockinfor (s): 
-t.issue_code = s.symbol AND t.trade_date = s.tradingdate
-s.tradingdate >= :frdate_prev AND s.tradingdate <= :todate_prev -- Tháng trước
--- Bảng HNX.trade_book_hnx (t):
-t.trade_date >= :frdate_prev AND t.trade_date <= :todate_prev -- Tháng trước
-t.market_id IN ('STX', 'UPX', 'HCX') 
-  -- STX: Cổ phiếu, Chứng chỉ quỹ ETF trên HNX
-  -- UPX: Cổ phiếu trên UPCOM
-  -- HCX: TPDN niêm yết
--- Công thức:
-GTGD (tradingvol) = SUM(t.trade_quantity)",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Trong kỳ - Tăng/giảm so với kỳ trước (%) - Giá trị chứng khoán giao dịch,Trong kỳ - Tăng/giảm so với kỳ trước (%),Báo cáo,Chỉ tiêu phái sinh,TB,"Loại CK, Sàn, Tháng","HNX, MDDS",,,,Done,,"2.1. Cổ phiếu niêm yết
-2.2. Cổ phiếu đăng ký giao dịch
-2.6. Trái phiếu doanh nghiệp
-2.8. Chứng chỉ quỹ (ETF)",,,,,"HNX.trade_book_hnx (t),
-MDDS.jad_stockinfor (s)","t.trade_quantity,
-t.trade_price","-- Công thức:
-Tăng/giảm so với cùng kỳ (%) = ( tradingvalue / NULLIF(tradingvalue_prev, 0) - 1 ) * 100",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Trong kỳ - Tăng/giảm so với kỳ trước (%) - Khối lượng chứng khoán giao dịch,Trong kỳ - Tăng/giảm so với kỳ trước (%),Báo cáo,Chỉ tiêu phái sinh,TB,"Loại CK, Sàn, Tháng","HNX, MDDS",,,,Done,,"2.1. Cổ phiếu niêm yết
-2.2. Cổ phiếu đăng ký giao dịch
-2.6. Trái phiếu doanh nghiệp
-2.8. Chứng chỉ quỹ (ETF)",,,,,"HNX.trade_book_hnx (t),
-MDDS.jad_stockinfor (s)",t.trade_quantity,"-- Công thức:
-Tăng/giảm so với cùng kỳ (%) = ( tradingvol / NULLIF(tradingvol_prev, 0) - 1 ) * 100",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Cộng dồn đến cuối kỳ - phát sinh - Giá trị chứng khoán giao dịch,Cộng dồn đến cuối kỳ - phát sinh,Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK, Sàn, Tháng","HNX, MDDS",,,,Done,,"2.1. Cổ phiếu niêm yết
-2.2. Cổ phiếu đăng ký giao dịch
-2.6. Trái phiếu doanh nghiệp
-2.8. Chứng chỉ quỹ (ETF)",,,,,"HNX.trade_book_hnx (t),
-MDDS.jad_stockinfor (s)","t.trade_quantity,
-t.trade_price","-- Link bảng HNX.trade_book_hnx (t) và MDDS.jad_stockinfor (s): 
-t.issue_code = s.symbol AND t.trade_date = s.tradingdate
-s.tradingdate >= :frdate_ytd AND s.tradingdate <= :todate -- Cộng dồn đến cuối kỳ
--- Bảng HNX.trade_book_hnx (t):
-t.trade_date >= :frdate_ytd AND t.trade_date <= :todate -- Cộng dồn đến cuối kỳ
-t.market_id IN ('STX', 'UPX', 'HCX') 
-  -- STX: Cổ phiếu, Chứng chỉ quỹ ETF trên HNX
-  -- UPX: Cổ phiếu trên UPCOM
-  -- HCX: TPDN niêm yết
--- Công thức:
-GTGD (tradingvalue) = SUM(t.trade_quantity * t.trade_price)",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Cộng dồn đến cuối kỳ - phát sinh - Khối lượng chứng khoán giao dịch,Cộng dồn đến cuối kỳ - phát sinh,Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK, Sàn, Tháng","HNX, MDDS",,,,Done,,"2.1. Cổ phiếu niêm yết
-2.2. Cổ phiếu đăng ký giao dịch
-2.6. Trái phiếu doanh nghiệp
-2.8. Chứng chỉ quỹ (ETF)",,,,,"HNX.trade_book_hnx (t),
-MDDS.jad_stockinfor (s)",t.trade_quantity,"-- Link bảng HNX.trade_book_hnx (t) và MDDS.jad_stockinfor (s): 
-t.issue_code = s.symbol AND t.trade_date = s.tradingdate
-s.tradingdate >= :frdate_ytd AND s.tradingdate <= :todate -- Cộng dồn đến cuối kỳ
--- Bảng HNX.trade_book_hnx (t):
-t.trade_date >= :frdate_ytd AND t.trade_date <= :todate -- Cộng dồn đến cuối kỳ
-t.market_id IN ('STX', 'UPX', 'HCX') 
-  -- STX: Cổ phiếu, Chứng chỉ quỹ ETF trên HNX
-  -- UPX: Cổ phiếu trên UPCOM
-  -- HCX: TPDN niêm yết
--- Công thức:
-GTGD (tradingvol) = SUM(t.trade_quantity)",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Cộng dồn đến cuối kỳ - Cùng kỳ năm trước - Giá trị chứng khoán giao dịch,"Không có trên BC -> Dùng để tính ""Cộng dồn đến cuối kỳ - Tăng/giảm so với cùng kỳ (%)""",Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK, Sàn, Tháng","HNX, MDDS",,,,Done,,"2.1. Cổ phiếu niêm yết
-2.2. Cổ phiếu đăng ký giao dịch
-2.6. Trái phiếu doanh nghiệp
-2.8. Chứng chỉ quỹ (ETF)",,,,,"HNX.trade_book_hnx (t),
-MDDS.jad_stockinfor (s)","t.trade_quantity,
-t.trade_price","-- Link bảng HNX.trade_book_hnx (t) và MDDS.jad_stockinfor (s): 
-t.issue_code = s.symbol AND t.trade_date = s.tradingdate
-s.tradingdate >= :frdate_ytd_py AND s.tradingdate <= :todate_ytd_py -- Cùng kỳ năm trước
--- Bảng HNX.trade_book_hnx (t):
-t.trade_date >= :frdate_ytd_py AND t.trade_date <= :todate_ytd_py -- Cùng kỳ năm trước
-t.market_id IN ('STX', 'UPX', 'HCX') 
-  -- STX: Cổ phiếu, Chứng chỉ quỹ ETF trên HNX
-  -- UPX: Cổ phiếu trên UPCOM
-  -- HCX: TPDN niêm yết
--- Công thức:
-GTGD (tradingvalue) = SUM(t.trade_quantity * t.trade_price)",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Cộng dồn đến cuối kỳ - Cùng kỳ năm trước - Khối lượng chứng khoán giao dịch,"Không có trên BC -> Dùng để tính ""Cộng dồn đến cuối kỳ - Tăng/giảm so với cùng kỳ (%)""",Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK, Sàn, Tháng","HNX, MDDS",,,,Done,,"2.1. Cổ phiếu niêm yết
-2.2. Cổ phiếu đăng ký giao dịch
-2.6. Trái phiếu doanh nghiệp
-2.8. Chứng chỉ quỹ (ETF)",,,,,"HNX.trade_book_hnx (t),
-MDDS.jad_stockinfor (s)","t.trade_quantity,
-t.trade_price","-- Link bảng HNX.trade_book_hnx (t) và MDDS.jad_stockinfor (s): 
-t.issue_code = s.symbol AND t.trade_date = s.tradingdate
-s.tradingdate >= :frdate_ytd_py AND s.tradingdate <= :todate_ytd_py -- Cùng kỳ năm trước
--- Bảng HNX.trade_book_hnx (t):
-t.trade_date >= :frdate_ytd_py AND t.trade_date <= :todate_ytd_py -- Cùng kỳ năm trước
-t.market_id IN ('STX', 'UPX', 'HCX') 
-  -- STX: Cổ phiếu, Chứng chỉ quỹ ETF trên HNX
-  -- UPX: Cổ phiếu trên UPCOM
-  -- HCX: TPDN niêm yết
--- Công thức:
-GTGD (tradingvol) = SUM(t.trade_quantity)",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Cộng dồn đến cuối kỳ - Tăng/giảm so với cùng kỳ (%) - Giá trị chứng khoán giao dịch,Cộng dồn đến cuối kỳ - Tăng/giảm so với cùng kỳ (%),Báo cáo,Chỉ tiêu phái sinh,TB,"Loại CK, Sàn, Tháng","HNX, MDDS",,,,Done,,"2.1. Cổ phiếu niêm yết
-2.2. Cổ phiếu đăng ký giao dịch
-2.6. Trái phiếu doanh nghiệp
-2.8. Chứng chỉ quỹ (ETF)",,,,,"HNX.trade_book_hnx (t),
-MDDS.jad_stockinfor (s)","t.trade_quantity,
-t.trade_price","-- Công thức:
-Tăng/giảm so với cùng kỳ (%) = ( tradingvalue_ytd / NULLIF(tradingvalue_ytd_py, 0) - 1 ) * 100",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Cộng dồn đến cuối kỳ - Tăng/giảm so với cùng kỳ (%) - Khối lượng chứng khoán giao dịch,Cộng dồn đến cuối kỳ - Tăng/giảm so với cùng kỳ (%),Báo cáo,Chỉ tiêu phái sinh,TB,"Loại CK, Sàn, Tháng","HNX, MDDS",,,,Done,,"2.1. Cổ phiếu niêm yết
-2.2. Cổ phiếu đăng ký giao dịch
-2.6. Trái phiếu doanh nghiệp
-2.8. Chứng chỉ quỹ (ETF)",,,,,"HNX.trade_book_hnx (t),
-MDDS.jad_stockinfor (s)",t.trade_quantity,"-- Công thức:
-Tăng/giảm so với cùng kỳ (%) = ( tradingvol_ytd / NULLIF(tradingvol_ytd_py, 0) - 1 ) * 100",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Loại TPCP,"Loại TPCP gồm:
-- Trái phiếu chính phủ
-- Trái phiếu chính quyền địa phương
-- Trái phiếu chính phủ bảo lãnh
-- Tín phiếu kho bạc",Báo cáo,Chiều,TB,Loại CK,HNX,,,,Done,,"2.3. Trái phiếu chính phủ
-2.4. Trái phiếu chính quyền địa phương
-2.5. Trái phiếu chính phủ bảo lãnh
-2.7. Tín phiếu kho bạc",,,,,HNX.gov_bond_listed_list (b),b.bond_type,"-- Bảng HNX.gov_bond_listed_list (b):
-b.bond_type = 'Trái phiếu chính phủ'
-b.bond_type = 'Trái phiếu chính quyền địa phương'
-b.bond_type = 'Trái phiếu chính phủ bảo lãnh'
-b.bond_type = 'Tín phiếu kho bạc'",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Trong kỳ - phát sinh - Giá trị chứng khoán giao dịch,Trong kỳ - phát sinh,Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK, Tháng",HNX,,,,Done,,"2.3. Trái phiếu chính phủ
-2.4. Trái phiếu chính quyền địa phương
-2.5. Trái phiếu chính phủ bảo lãnh
-2.7. Tín phiếu kho bạc",,,,,"HNX.outright_order_book (o), 
-HNX.repo_order_book (r), 
-HNX.gov_bond_listed_list (b)","o.trading_value, 
-r.first_settlement_value","-- Bảng HNX.gov_bond_listed_list (b):
-b.report_month = date_format(concat(:p_month, '-01'), 'MM/yyyy') -- Tháng báo cáo
--- Bảng HNX.outright_order_book (o), HNX.repo_order_book (r):
-begin_trading_date >= :frdate AND begin_trading_date <= :todate -- Tháng báo cáo
--- Link bảng HNX.gov_bond_listed_list (b) và HNX.outright_order_book (o):
-b.bond_code = o.bond_code
-AND b.report_month = date_format(o.begin_trading_date, 'MM/yyyy')
--- Link bảng HNX.gov_bond_listed_list (b) và HNX.repo_order_book (r):
-b.bond_code = r.bond_code
-AND b.report_month = date_format(r.begin_trading_date, 'MM/yyyy')
--- Công thức:
-GTGD Outright = SUM(o.trading_value)
-GTGD Repo = SUM(r.first_settlement_value)
--> GTGD (tradingvalue) = SUM(o.trading_value) + SUM(r.first_settlement_value) GROUP BY b.bond_code",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Trong kỳ - phát sinh - Khối lượng chứng khoán giao dịch,Trong kỳ - phát sinh,Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK, Tháng",HNX,,,,Done,,"2.3. Trái phiếu chính phủ
-2.4. Trái phiếu chính quyền địa phương
-2.5. Trái phiếu chính phủ bảo lãnh
-2.7. Tín phiếu kho bạc",,,,,"HNX.outright_order_book (o), 
-HNX.repo_order_book (r), 
-HNX.gov_bond_listed_list (b)","o.volume, 
-r.volume","-- Bảng HNX.gov_bond_listed_list (b):
-b.report_month = date_format(concat(:p_month, '-01'), 'MM/yyyy') -- Tháng báo cáo
--- Bảng HNX.outright_order_book (o), HNX.repo_order_book (r):
-begin_trading_date >= :frdate AND begin_trading_date <= :todate -- Tháng báo cáo
--- Link bảng HNX.gov_bond_listed_list (b) và HNX.outright_order_book (o):
-b.bond_code = o.bond_code
-AND b.report_month = date_format(o.begin_trading_date, 'MM/yyyy')
--- Link bảng HNX.gov_bond_listed_list (b) và HNX.repo_order_book (r):
-b.bond_code = r.bond_code
-AND b.report_month = date_format(r.begin_trading_date, 'MM/yyyy')
--- Công thức:
-KLGD Outright = SUM(o.volume)
-KLGD Repo = SUM(r.volume)
--> KLGD (tradingvol) = SUM(o.volume) + SUM(r.volume) GROUP BY b.bond_code",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Kỳ trước - phát sinh - Giá trị chứng khoán giao dịch,"Không có trên BC -> Dùng để tính ""Trong kỳ - Tăng/giảm so với kỳ trước (%)""",Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK, Tháng",HNX,,,,Done,,"2.3. Trái phiếu chính phủ
-2.4. Trái phiếu chính quyền địa phương
-2.5. Trái phiếu chính phủ bảo lãnh
-2.7. Tín phiếu kho bạc",,,,,"HNX.outright_order_book (o), 
-HNX.repo_order_book (r), 
-HNX.gov_bond_listed_list (b)","o.trading_value, 
-r.first_settlement_value","-- Bảng HNX.gov_bond_listed_list (b):
-b.report_month = date_format(add_months(concat(:p_month, '-01'), -1), 'MM/yyyy') -- Tháng trước 
--- Bảng HNX.outright_order_book (o), HNX.repo_order_book (r):
-begin_trading_date >= :frdate_prev AND begin_trading_date <= :todate_prev -- Tháng trước
--- Link bảng HNX.gov_bond_listed_list (b) và HNX.outright_order_book (o):
-b.bond_code = o.bond_code
-AND b.report_month = date_format(o.begin_trading_date, 'MM/yyyy')
--- Link bảng HNX.gov_bond_listed_list (b) và HNX.repo_order_book (r):
-b.bond_code = r.bond_code
-AND b.report_month = date_format(r.begin_trading_date, 'MM/yyyy')
--- Công thức:
-GTGD tháng trước (tradingvalue_prev) = SUM(o.trading_value) + SUM(r.first_settlement_value)  GROUP BY b.bond_code",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Kỳ trước - phát sinh - Khối lượng chứng khoán giao dịch,"Không có trên BC -> Dùng để tính ""Trong kỳ - Tăng/giảm so với kỳ trước (%)""",Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK, Tháng",HNX,,,,Done,,"2.3. Trái phiếu chính phủ
-2.4. Trái phiếu chính quyền địa phương
-2.5. Trái phiếu chính phủ bảo lãnh
-2.7. Tín phiếu kho bạc",,,,,"HNX.outright_order_book (o), 
-HNX.repo_order_book (r), 
-HNX.gov_bond_listed_list (b)","o.volume, 
-r.volume","-- Bảng HNX.gov_bond_listed_list (b):
-b.report_month = date_format(add_months(concat(:p_month, '-01'), -1), 'MM/yyyy') -- Tháng trước 
--- Bảng HNX.outright_order_book (o), HNX.repo_order_book (r):
-begin_trading_date >= :frdate_prev AND begin_trading_date <= :todate_prev -- Tháng trước
--- Link bảng HNX.gov_bond_listed_list (b) và HNX.outright_order_book (o):
-b.bond_code = o.bond_code
-AND b.report_month = date_format(o.begin_trading_date, 'MM/yyyy')
--- Link bảng HNX.gov_bond_listed_list (b) và HNX.repo_order_book (r):
-b.bond_code = r.bond_code
-AND b.report_month = date_format(r.begin_trading_date, 'MM/yyyy')
--- Công thức:
-KLGD tháng trước (tradingvol_prev) = SUM(o.volume) + SUM(r.volume)  GROUP BY b.bond_code",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Trong kỳ - Tăng/giảm so với kỳ trước (%) - Giá trị chứng khoán giao dịch,Trong kỳ - Tăng/giảm so với kỳ trước (%),Báo cáo,Chỉ tiêu phái sinh,TB,"Loại CK, Tháng",HNX,,,,Done,,"2.3. Trái phiếu chính phủ
-2.4. Trái phiếu chính quyền địa phương
-2.5. Trái phiếu chính phủ bảo lãnh
-2.7. Tín phiếu kho bạc",,,,,"HNX.outright_order_book (o), 
-HNX.repo_order_book (r), 
-gov_bond_listed_list (b)","o.trading_value, 
-r.first_settlement_value","-- Công thức:
-Tăng/Giảm so với kỳ trước (%) = ( tradingvalue / NULLIF(tradingvalue_prev, 0) - 1 ) * 100",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Trong kỳ - Tăng/giảm so với kỳ trước (%) - Khối lượng chứng khoán giao dịch,Trong kỳ - Tăng/giảm so với kỳ trước (%),Báo cáo,Chỉ tiêu phái sinh,TB,"Loại CK, Tháng",HNX,,,,Done,,"2.3. Trái phiếu chính phủ
-2.4. Trái phiếu chính quyền địa phương
-2.5. Trái phiếu chính phủ bảo lãnh
-2.7. Tín phiếu kho bạc",,,,,"HNX.outright_order_book (o), 
-HNX.repo_order_book (r), 
-gov_bond_listed_list (b)","o.volume, 
-r.volume","-- Công thức:
-Tăng/Giảm so với kỳ trước (%) = ( tradingvol / NULLIF(tradingvol_prev, 0) - 1 ) * 100",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Cộng dồn đến cuối kỳ - phát sinh - Giá trị chứng khoán giao dịch ,Cộng dồn đến cuối kỳ - phát sinh,Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK, Tháng",HNX,,,,Done,,"2.3. Trái phiếu chính phủ
-2.4. Trái phiếu chính quyền địa phương
-2.5. Trái phiếu chính phủ bảo lãnh
-2.7. Tín phiếu kho bạc",,,,,"HNX.outright_order_book (o), 
-HNX.repo_order_book (r), 
-gov_bond_listed_list (b)","o.trading_value, 
-r.first_settlement_value","-- Bảng HNX.gov_bond_listed_list (b):
-b.report_month = date_format(concat(:p_month, '-01'), 'MM/yyyy') -- Tháng báo cáo
--- Bảng HNX.outright_order_book (o), HNX.repo_order_book (r):
-begin_trading_date >= :frdate_ytd AND begin_trading_date <= :todate -- Cộng dồn đến cuối kỳ - phát sinh
--- Link bảng HNX.gov_bond_listed_list (b) và HNX.outright_order_book (o):
-b.bond_code = o.bond_code
-AND b.report_month = date_format(o.begin_trading_date, 'MM/yyyy')
--- Link bảng HNX.gov_bond_listed_list (b) và HNX.repo_order_book (r):
-b.bond_code = r.bond_code
-AND b.report_month = date_format(r.begin_trading_date, 'MM/yyyy')
--- Công thức:
-GTGD cộng dồn (tradingvalue_ytd) = SUM(o.trading_value) + SUM(r.first_settlement_value) GROUP BY b.bond_type",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Cộng dồn đến cuối kỳ - phát sinh - Khối lượng chứng khoán giao dịch ,Cộng dồn đến cuối kỳ - phát sinh,Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK, Tháng",HNX,,,,Done,,"2.3. Trái phiếu chính phủ
-2.4. Trái phiếu chính quyền địa phương
-2.5. Trái phiếu chính phủ bảo lãnh
-2.7. Tín phiếu kho bạc",,,,,"HNX.outright_order_book (o), 
-HNX.repo_order_book (r), 
-gov_bond_listed_list (b)","o.volume, 
-r.volume","-- Bảng HNX.gov_bond_listed_list (b):
-b.report_month = date_format(concat(:p_month, '-01'), 'MM/yyyy') -- Tháng báo cáo
--- Bảng HNX.outright_order_book (o), HNX.repo_order_book (r):
-begin_trading_date >= :frdate_ytd AND begin_trading_date <= :todate -- Cộng dồn đến cuối kỳ - phát sinh
--- Link bảng HNX.gov_bond_listed_list (b) và HNX.outright_order_book (o):
-b.bond_code = o.bond_code
-AND b.report_month = date_format(o.begin_trading_date, 'MM/yyyy')
--- Link bảng HNX.gov_bond_listed_list (b) và HNX.repo_order_book (r):
-b.bond_code = r.bond_code
-AND b.report_month = date_format(r.begin_trading_date, 'MM/yyyy')
--- Công thức:
-KLGD cộng dồn (tradingvol_ytd) = SUM(o.volume) + SUM(r.volume) GROUP BY b.bond_type",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Cộng dồn đến cuối kỳ - Cùng kỳ năm trước - Giá trị chứng khoán giao dịch ,"Không có trên BC -> Dùng để tính ""Cộng dồn đến cuối kỳ - Tăng/giảm so với cùng kỳ (%)""",Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK, Tháng",HNX,,,,Done,,"2.3. Trái phiếu chính phủ
-2.4. Trái phiếu chính quyền địa phương
-2.5. Trái phiếu chính phủ bảo lãnh
-2.7. Tín phiếu kho bạc",,,,,"HNX.outright_order_book (o), 
-HNX.repo_order_book (r), 
-gov_bond_listed_list (b)","o.trading_value, 
-r.first_settlement_value","-- Bảng HNX.gov_bond_listed_list (b):
-b.report_month = date_format(add_months(concat(:p_month, '-01'), -12), 'MM/yyyy') -- Tháng cùng kỳ năm trước
--- Bảng HNX.outright_order_book (o), HNX.repo_order_book (r):
-begin_trading_date >= :frdate_ytd_py AND begin_trading_date <= :todate_ytd_py -- Cùng kỳ năm trước
--- Link bảng HNX.gov_bond_listed_list (b) và HNX.outright_order_book (o):
-b.bond_code = o.bond_code
-AND b.report_month = date_format(o.begin_trading_date, 'MM/yyyy')
--- Link bảng HNX.gov_bond_listed_list (b) và HNX.repo_order_book (r):
-b.bond_code = r.bond_code
-AND b.report_month = date_format(r.begin_trading_date, 'MM/yyyy')
--- Công thức:
-GTGD cộng dồn cùng kỳ năm trước (tradingvalue_ytd_py) = SUM(o.trading_value) + SUM(r.first_settlement_value) GROUP BY b.bond_type",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Cộng dồn đến cuối kỳ - Cùng kỳ năm trước - Khối lượng chứng khoán giao dịch ,"Không có trên BC -> Dùng để tính ""Cộng dồn đến cuối kỳ - Tăng/giảm so với cùng kỳ (%)""",Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK, Tháng",HNX,,,,Done,,"2.3. Trái phiếu chính phủ
-2.4. Trái phiếu chính quyền địa phương
-2.5. Trái phiếu chính phủ bảo lãnh
-2.7. Tín phiếu kho bạc",,,,,"HNX.outright_order_book (o), 
-HNX.repo_order_book (r), 
-gov_bond_listed_list (b)","o.volume, 
-r.volume","-- Bảng HNX.gov_bond_listed_list (b):
-b.report_month = date_format(add_months(concat(:p_month, '-01'), -12), 'MM/yyyy') -- Tháng cùng kỳ năm trước
--- Bảng HNX.outright_order_book (o), HNX.repo_order_book (r):
-begin_trading_date >= :frdate_ytd_py AND begin_trading_date <= :todate_ytd_py -- Cùng kỳ năm trước
--- Link bảng HNX.gov_bond_listed_list (b) và HNX.outright_order_book (o):
-b.bond_code = o.bond_code
-AND b.report_month = date_format(o.begin_trading_date, 'MM/yyyy')
--- Link bảng HNX.gov_bond_listed_list (b) và HNX.repo_order_book (r):
-b.bond_code = r.bond_code
-AND b.report_month = date_format(r.begin_trading_date, 'MM/yyyy')
--- Công thức:
-KLGD cộng dồn cùng kỳ năm trước (tradingvol_ytd_py) = SUM(o.volume) + SUM(r.volume) GROUP BY b.bond_type",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Cộng dồn đến cuối kỳ - Tăng/giảm so với cùng kỳ (%) - Giá trị chứng khoán giao dịch,Cộng dồn đến cuối kỳ - Tăng/giảm so với cùng kỳ (%),Báo cáo,Chỉ tiêu phái sinh,TB,"Loại CK, Tháng",HNX,,,,Done,,"2.3. Trái phiếu chính phủ
-2.4. Trái phiếu chính quyền địa phương
-2.5. Trái phiếu chính phủ bảo lãnh
-2.7. Tín phiếu kho bạc",,,,,"HNX.outright_order_book (o), 
-HNX.repo_order_book (r), 
-gov_bond_listed_list (b)","o.trading_value, 
-r.first_settlement_value","-- Công thức:
-Tăng/giảm so với cùng kỳ (%) = ( tradingvalue_ytd / NULLIF(tradingvalue_ytd_py, 0) - 1 ) * 100",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Cộng dồn đến cuối kỳ - Tăng/giảm so với cùng kỳ (%) - Khối lượng chứng khoán giao dịch,Cộng dồn đến cuối kỳ - Tăng/giảm so với cùng kỳ (%),Báo cáo,Chỉ tiêu phái sinh,TB,"Loại CK, Tháng",HNX,,,,Done,,"2.3. Trái phiếu chính phủ
-2.4. Trái phiếu chính quyền địa phương
-2.5. Trái phiếu chính phủ bảo lãnh
-2.7. Tín phiếu kho bạc",,,,,"HNX.outright_order_book (o), 
-HNX.repo_order_book (r), 
-gov_bond_listed_list (b)","o.volume, 
-r.volume","-- Công thức:
-Tăng/giảm so với cùng kỳ (%) = ( tradingvol_ytd / NULLIF(tradingvol_ytd_py, 0) - 1 ) * 100",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),"Loại CK - CP, CCQ","Loại chứng khoán:
-- Cổ phiếu niêm yết
-- Cổ phiếu đăng ký giao dịch
-- Chứng chỉ quỹ (ETF)",Báo cáo,Chiều,TB,"Loại CK - CP, CCQ",MDDS,,,,Done,,"4.1. Cổ phiếu niêm yết
-4.2. Cổ phiếu đăng ký giao dịch
-4.8. Chứng chỉ quỹ (ETF)
-5.1. Cổ phiếu niêm yết
-5.2. Cổ phiếu đăng ký giao dịch
-5.8. Chứng chỉ quỹ (ETF)",,,,,MDDS.jad_stockinfor (s),"s.floorcode, 
-s.stocktype, 
-s.fundtype","Bảng MDDS.jad_stockinfor (s):
--- Thời gian:
-(ROW_NUMBER() OVER(PARTITION BY symbol, tradingdate ORDER BY indextime DESC, sequence DESC)) = 1 -- Lấy dữ liệu cuối ngày từng mã CK
--- Loại chứng khoán:
-s.floorcode = '02' AND s.stocktype = '2' -- Cổ phiếu niêm yết (trên HNX)
-s.floorcode = '04' AND s.stocktype = '2' -- Cổ phiếu đăng ký giao dịch (trên UPCOM)
-s.floorcode = '02' AND s.stocktype = '1' -- TPDN niêm yết
-s.floorcode = '02' AND s.stocktype = '3' AND s.fundtype = 'E' -- Chứng chỉ quỹ (ETF)",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Trong kỳ - phát sinh - Khối lượng chứng khoán niêm yết và đăng ký giao dịch,Trong kỳ - phát sinh,Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK - CP, CCQ, Tháng","MDDS, HNX",,,,Done,,"4.1. Cổ phiếu niêm yết
-4.2. Cổ phiếu đăng ký giao dịch
-4.8. Chứng chỉ quỹ (ETF)",,,,,MDDS.jad_stockinfor (s),s.listedshare,"-- Bảng MDDS.jad_stockinfor (s): Lấy ngày cuối cùng có dữ liệu trong tháng báo cáo
-s.tradingdate >= :frdate AND s.tradingdate <= :todate 
-(ROW_NUMBER() OVER(PARTITION BY symbol ORDER BY tradingdate DESC, indextime DESC, sequence DESC)) = 1 
--- Giá trị:
-Khối lượng niêm yết/ĐKGD (listedshare) = s.listedshare",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Trong kỳ - phát sinh - Giá trị chứng khoán niêm yết và đăng ký giao dịch,Trong kỳ - phát sinh,Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK - CP, CCQ, Tháng","MDDS, HNX",,,,Done,,"5.1. Cổ phiếu niêm yết
-5.2. Cổ phiếu đăng ký giao dịch
-5.8. Chứng chỉ quỹ (ETF)",,,,,MDDS.jad_stockinfor (s),"s.listedshare, 
-s.reference","-- Bảng MDDS.jad_stockinfor (s): Lấy ngày cuối cùng có dữ liệu trong tháng báo cáo
-s.tradingdate >= :frdate AND s.tradingdate <= :todate 
-(ROW_NUMBER() OVER(PARTITION BY symbol ORDER BY tradingdate DESC, indextime DESC, sequence DESC)) = 1 
--- Giá trị:
-Khối lượng niêm yết/ĐKGD (listedshare) = s.listedshare
-Giá trị niêm yết/ĐKGD (listedshare_value):
-  s.listedshare * 10000 -- Cổ phiếu, Chứng chỉ quỹ
-  s.listedshare * ( 100000 * POWER(10, ROUND(LN(NULLIF(s.reference, 0) / 100000) / LN(10))) ) -- TPDN niêm yết",,"Giá trị niêm yết = KL niêm yết/ĐKGD * Mệnh giá
-Mệnh giá:
-- Cổ phiếu: 10.000
-- Chứng chỉ quỹ ETF: 10.000
-- TPDN niêm yết: 
-  + KL TP niêm yết lấy từ MDDS
-  + Mệnh giá tính ngược từ giá tham chiếu theo nguyên tắc MG TP là bội số của 100000 và bước giá nhảy từ 100000 -> 1000000 -> 10000000 -> 100000000...
-  + Công thức: MG TP = 100000 * 10^ROUND(LOG10(Giá tham chiếu / 100000),0)
-Oracle: 100000 * POWER(10, ROUND(LOG(10, reference / 100000)))
-Apache Hive 2: 100000 * POWER(10, ROUND(LN(NULLIF(reference, 0) / 100000) / LN(10)))",,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Kỳ trước - phát sinh - Khối lượng chứng khoán niêm yết và đăng ký giao dịch,Kỳ trước - phát sinh,Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK - CP, CCQ, Tháng","MDDS, HNX",,,,Done,,"4.1. Cổ phiếu niêm yết
-4.2. Cổ phiếu đăng ký giao dịch
-4.8. Chứng chỉ quỹ (ETF)",,,,,MDDS.jad_stockinfor (s),s.listedshare,"-- Bảng MDDS.jad_stockinfor (s): Lấy ngày cuối cùng có dữ liệu trong tháng trước
-s.tradingdate >= :frdate_prev AND s.tradingdate <= :todate_prev
-(ROW_NUMBER() OVER(PARTITION BY symbol ORDER BY tradingdate DESC, indextime DESC, sequence DESC)) = 1 
--- Giá trị:
-Khối lượng niêm yết/ĐKGD (listedshare) = s.listedshare",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Kỳ trước - phát sinh - Giá trị chứng khoán niêm yết và đăng ký giao dịch,Kỳ trước - phát sinh,Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK - CP, CCQ, Tháng","MDDS, HNX",,,,Done,,"5.1. Cổ phiếu niêm yết
-5.2. Cổ phiếu đăng ký giao dịch
-5.8. Chứng chỉ quỹ (ETF)",,,,,MDDS.jad_stockinfor (s),"s.listedshare, 
-s.reference","-- Bảng MDDS.jad_stockinfor (s): Lấy ngày cuối cùng có dữ liệu trong tháng trước
-s.tradingdate >= :frdate_prev AND s.tradingdate <= :todate_prev
-(ROW_NUMBER() OVER(PARTITION BY symbol ORDER BY tradingdate DESC, indextime DESC, sequence DESC)) = 1 
--- Giá trị:
-Khối lượng niêm yết/ĐKGD (listedshare_prev) = s.listedshare
-Giá trị niêm yết/ĐKGD (listedshare_value_prev):
-  s.listedshare * 10000 -- Cổ phiếu, Chứng chỉ quỹ
-  s.listedshare * ( 100000 * POWER(10, ROUND(LN(NULLIF(s.reference, 0) / 100000) / LN(10))) ) -- TPDN niêm yết",,"Giá trị niêm yết = KL niêm yết/ĐKGD * Mệnh giá
-Mệnh giá:
-- Cổ phiếu: 10.000
-- Chứng chỉ quỹ ETF: 10.000
-- TPDN niêm yết: 
-  + KL TP niêm yết lấy từ MDDS
-  + Mệnh giá tính ngược từ giá tham chiếu theo nguyên tắc MG TP là bội số của 100000 và bước giá nhảy từ 100000 -> 1000000 -> 10000000 -> 100000000...
-  + Công thức: MG TP = 100000 * 10^ROUND(LOG10(Giá tham chiếu / 100000),0)
-Oracle: 100000 * POWER(10, ROUND(LOG(10, reference / 100000)))
-Apache Hive 2: 100000 * POWER(10, ROUND(LN(NULLIF(reference, 0) / 100000) / LN(10)))",,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Trong kỳ - Tăng/giảm so với kỳ trước (%) - Khối lượng chứng khoán niêm yết và đăng ký giao dịch,Trong kỳ - Tăng/giảm so với kỳ trước (%),Báo cáo,Chỉ tiêu phái sinh,TB,"Loại CK - CP, CCQ, Tháng","MDDS, HNX",,,,Done,,"4.1. Cổ phiếu niêm yết
-4.2. Cổ phiếu đăng ký giao dịch
-4.8. Chứng chỉ quỹ (ETF)",,,,,MDDS.jad_stockinfor (s),s.listedshare,"-- Công thức:
-Tăng/Giảm so với kỳ trước (%) = ( listedshare / NULLIF(listedshare_prev, 0) - 1 ) * 100",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Trong kỳ - Tăng/giảm so với kỳ trước (%) - Giá trị chứng khoán niêm yết và đăng ký giao dịch,Trong kỳ - Tăng/giảm so với kỳ trước (%),Báo cáo,Chỉ tiêu phái sinh,TB,"Loại CK - CP, CCQ, Tháng","MDDS, HNX",,,,Done,,"5.1. Cổ phiếu niêm yết
-5.2. Cổ phiếu đăng ký giao dịch
-5.8. Chứng chỉ quỹ (ETF)",,,,,MDDS.jad_stockinfor (s),"s.listedshare, 
-s.reference","-- Công thức:
-Tăng/Giảm so với kỳ trước (%) = ( listedshare_value / NULLIF(listedshare_value_prev, 0) - 1 ) * 100",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Loại CK - TPCP,"Loại TPCP gồm:
-- Trái phiếu chính phủ
-- Trái phiếu chính quyền địa phương
-- Trái phiếu chính phủ bảo lãnh
-- Tín phiếu kho bạc",Báo cáo,Chiều,TB,Loại CK - TPCP,HNX,,,,Done,,"4.3. Trái phiếu chính phủ
-4.4. Trái phiếu chính quyền địa phương
-4.5. Trái phiếu chính phủ bảo lãnh
-4.7. Tín phiếu kho bạc
-5.3. Trái phiếu chính phủ
-5.4. Trái phiếu chính quyền địa phương
-5.5. Trái phiếu chính phủ bảo lãnh
-5.7. Tín phiếu kho bạc",,,,,HNX.gov_bond_listed_list (b),b.bond_type,"-- Bảng HNX.gov_bond_listed_list (b):
-b.bond_type = 'Trái phiếu chính phủ'
-b.bond_type = 'Trái phiếu chính quyền địa phương'
-b.bond_type = 'Trái phiếu chính phủ bảo lãnh'
-b.bond_type = 'Tín phiếu kho bạc'",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Trong kỳ - phát sinh - Khối lượng chứng khoán niêm yết và đăng ký giao dịch,Trong kỳ - phát sinh,Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK - TPCP, Tháng",HNX,,,,Done,,"4.3. Trái phiếu chính phủ
-4.4. Trái phiếu chính quyền địa phương
-4.5. Trái phiếu chính phủ bảo lãnh
-4.7. Tín phiếu kho bạc",,,,,HNX.gov_bond_listed_list (b),b.listed_volume,"-- ĐK Thời gian:
-b.report_month = date_format(concat(:p_month, '-01'), 'MM/yyyy') -- Tháng báo cáo
--- Khối lượng chứng khoán niêm yết tháng báo cáo (listedshare): 
-SUM(b.listed_volume) GROUP BY b.bond_type",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Trong kỳ - phát sinh - Giá trị chứng khoán niêm yết và đăng ký giao dịch,Trong kỳ - phát sinh,Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK - TPCP, Tháng",HNX,,,,Done,,"5.3. Trái phiếu chính phủ
-5.4. Trái phiếu chính quyền địa phương
-5.5. Trái phiếu chính phủ bảo lãnh
-5.7. Tín phiếu kho bạc",,,,,HNX.gov_bond_listed_list (b),b.listed_volume,"-- ĐK Thời gian:
-b.report_month = date_format(concat(:p_month, '-01'), 'MM/yyyy') -- Tháng báo cáo
--- Giá trị chứng khoán niêm yết tháng báo cáo (listedshare_value): 
-SUM(b.listed_volume * 100000) GROUP BY b.bond_type",,"Giá trị niêm yết = KL niêm yết/ĐKGD * Mệnh giá
-Mệnh giá TPCP: 100.000",,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Kỳ trước - phát sinh - Khối lượng chứng khoán niêm yết và đăng ký giao dịch,Kỳ trước - phát sinh,Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK - TPCP, Tháng",HNX,,,,Done,,"4.3. Trái phiếu chính phủ
-4.4. Trái phiếu chính quyền địa phương
-4.5. Trái phiếu chính phủ bảo lãnh
-4.7. Tín phiếu kho bạc",,,,,HNX.gov_bond_listed_list (b),b.listed_volume,"-- ĐK Thời gian:
-b.report_month = date_format(add_months(concat(:p_month, '-01'), -1), 'MM/yyyy') -- Tháng trước 
--- Khối lượng chứng khoán niêm yết tháng trước (listedshare_prev): 
-SUM(b.listed_volume) GROUP BY b.bond_typb.report_month = date_format(add_months(concat(:p_month, '-01'), -1), 'MM/yyyy') -- Tháng trước ",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Kỳ trước - phát sinh - Giá trị chứng khoán niêm yết và đăng ký giao dịch,Kỳ trước - phát sinh,Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK - TPCP, Tháng",HNX,,,,Done,,"5.3. Trái phiếu chính phủ
-5.4. Trái phiếu chính quyền địa phương
-5.5. Trái phiếu chính phủ bảo lãnh
-5.7. Tín phiếu kho bạc",,,,,HNX.gov_bond_listed_list (b),b.listed_volume,"-- Thời gian:
-b.report_month = date_format(add_months(concat(:p_month, '-01'), -1), 'MM/yyyy') -- Tháng trước 
--- Giá trị chứng khoán niêm yết tháng trước (listedshare_value_prev): 
-SUM(b.listed_volume * 100000) GROUP BY b.bond_type",,"Giá trị niêm yết = KL niêm yết/ĐKGD * Mệnh giá
-Mệnh giá TPCP: 100.000",,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Trong kỳ - Tăng/giảm so với kỳ trước (%) - Khối lượng chứng khoán niêm yết và đăng ký giao dịch,Trong kỳ - Tăng/giảm so với kỳ trước (%),Báo cáo,Chỉ tiêu phái sinh,TB,"Loại CK - TPCP, Tháng",HNX,,,,Done,,"4.3. Trái phiếu chính phủ
-4.4. Trái phiếu chính quyền địa phương
-4.5. Trái phiếu chính phủ bảo lãnh
-4.7. Tín phiếu kho bạc",,,,,HNX.gov_bond_listed_list (b),b.listed_volume,"-- Công thức:
-Tăng/Giảm so với kỳ trước (%) = ( listedshare / NULLIF(listedshare_prev, 0) - 1 ) * 100",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Trong kỳ - Tăng/giảm so với kỳ trước (%) - Giá trị chứng khoán niêm yết và đăng ký giao dịch,Trong kỳ - Tăng/giảm so với kỳ trước (%),Báo cáo,Chỉ tiêu phái sinh,TB,"Loại CK - TPCP, Tháng",HNX,,,,Done,,"5.3. Trái phiếu chính phủ
-5.4. Trái phiếu chính quyền địa phương
-5.5. Trái phiếu chính phủ bảo lãnh
-5.7. Tín phiếu kho bạc",,,,,HNX.gov_bond_listed_list (b),b.listed_volume,"-- Công thức:
-Tăng/Giảm so với kỳ trước (%) = ( listedshare_value / NULLIF(listedshare_value_prev, 0) - 1 ) * 100",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Loại CK - TPDN,"TPDN gồm:
-- Trái phiếu doanh nghiệp niêm yết (TPDNNY)
-- Trái phiếu doanh nghiệp riêng lẻ (TPDNRL)",Báo cáo,Chiều,TB,Loại CK - TPDN,HNX,,,,Done,,4.6. Trái phiếu doanh nghiệp,,,,,"-- TPDNNY:
-MDDS.jad_stockinfor (s)
--- TPDNRL:
-HNX.private_corp_bond_trading_registration_scale (cb)","s.floorcode, 
-s.stocktype, 
-s.fundtype","* TPDNNY: Bảng MDDS.jad_stockinfor (s)
--- Thời gian:
-(ROW_NUMBER() OVER(PARTITION BY symbol, tradingdate ORDER BY indextime DESC, sequence DESC)) = 1 -- Lấy dữ liệu cuối ngày từng mã CK
--- Loại chứng khoán:
-s.floorcode = '02' AND s.stocktype = '1' -- TPDN niêm yết
-* TPDNRL: Bảng HNX.private_corp_bond_trading_registration_scale (cb)
--> Có trong bảng này là TPDNRL",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Trong kỳ - phát sinh - Khối lượng chứng khoán niêm yết và đăng ký giao dịch,Trong kỳ - phát sinh,Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK - CP, CCQ, Tháng","MDDS, HNX",,,,Done,,4.6. Trái phiếu doanh nghiệp,,,,,"-- TPDNNY:
-MDDS.jad_stockinfor (s)
--- TPDNRL:
-HNX.private_corp_bond_trading_registration_scale (cb)",s.listedshare,"* TPDNNY: Bảng MDDS.jad_stockinfor (s)
--- Lấy ngày cuối cùng có dữ liệu trong tháng báo cáo
-s.tradingdate >= :frdate AND s.tradingdate <= :todate 
-(ROW_NUMBER() OVER(PARTITION BY symbol ORDER BY tradingdate DESC, indextime DESC, sequence DESC)) = 1 
--- Giá trị:
-Khối lượng niêm yết (listedshare) = s.listedshare
-* TPDNRL: Bảng HNX.private_corp_bond_trading_registration_scale (cb)
--- Lấy tháng báo cáo
-cb.report_month = date_format(concat(:p_month, '-01'), 'MM/yyyy') -- Tháng báo cáo
--- Giá trị:
-Khối lượng ĐKGD (listedshare) = cb.registered_trading_volume",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Trong kỳ - phát sinh - Giá trị chứng khoán niêm yết và đăng ký giao dịch,Trong kỳ - phát sinh,Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK - CP, CCQ, Tháng","MDDS, HNX",,,,Done,,4.6. Trái phiếu doanh nghiệp,,,,,"-- TPDNNY:
-MDDS.jad_stockinfor (s)
--- TPDNRL:
-HNX.private_corp_bond_trading_registration_scale (cb)","s.listedshare, 
-s.reference","* TPDNNY: Bảng MDDS.jad_stockinfor (s)
--- Lấy ngày cuối cùng có dữ liệu trong tháng báo cáo
-s.tradingdate >= :frdate AND s.tradingdate <= :todate 
-(ROW_NUMBER() OVER(PARTITION BY symbol ORDER BY tradingdate DESC, indextime DESC, sequence DESC)) = 1 
--- Giá trị:
-Khối lượng niêm yết (listedshare) = s.listedshare * 100000
-* TPDNRL: Bảng HNX.private_corp_bond_trading_registration_scale (cb)
--- Lấy tháng báo cáo
-cb.report_month = date_format(concat(:p_month, '-01'), 'MM/yyyy') -- Tháng báo cáo
--- Giá trị:
-Khối lượng ĐKGD (listedshare) = cb.registered_trading_volume * cb.par_value",,"Giá trị niêm yết = KL niêm yết/ĐKGD * Mệnh giá
-Mệnh giá:
-- Cổ phiếu: 10.000
-- Chứng chỉ quỹ ETF: 10.000
-- TPDN niêm yết: 
-  + KL TP niêm yết lấy từ MDDS
-  + Mệnh giá tính ngược từ giá tham chiếu theo nguyên tắc MG TP là bội số của 100000 và bước giá nhảy từ 100000 -> 1000000 -> 10000000 -> 100000000...
-  + Công thức: MG TP = 100000 * 10^ROUND(LOG10(Giá tham chiếu / 100000),0)
-Oracle: 100000 * POWER(10, ROUND(LOG(10, reference / 100000)))
-Apache Hive 2: 100000 * POWER(10, ROUND(LN(NULLIF(reference, 0) / 100000) / LN(10)))",,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Kỳ trước - phát sinh - Khối lượng chứng khoán niêm yết và đăng ký giao dịch,Kỳ trước - phát sinh,Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK - CP, CCQ, Tháng","MDDS, HNX",,,,Done,,4.6. Trái phiếu doanh nghiệp,,,,,"-- TPDNNY:
-MDDS.jad_stockinfor (s)
--- TPDNRL:
-HNX.private_corp_bond_trading_registration_scale (cb)",s.listedshare,"* TPDNNY: Bảng MDDS.jad_stockinfor (s)
--- Lấy ngày cuối cùng có dữ liệu trong tháng báo cáo
-s.tradingdate >= :frdate_prev AND s.tradingdate <= :todate_prev
-(ROW_NUMBER() OVER(PARTITION BY symbol ORDER BY tradingdate DESC, indextime DESC, sequence DESC)) = 1 
--- Giá trị:
-Khối lượng niêm yết (listedshare) = s.listedshare
-* TPDNRL: Bảng HNX.private_corp_bond_trading_registration_scale (cb)
--- Lấy tháng báo cáo
-cb.report_month = date_format(add_months(concat(:p_month, '-01'), -1), 'MM/yyyy') -- Tháng trước
--- Giá trị:
-Khối lượng ĐKGD (listedshare) = cb.registered_trading_volume",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Kỳ trước - phát sinh - Giá trị chứng khoán niêm yết và đăng ký giao dịch,Kỳ trước - phát sinh,Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK - CP, CCQ, Tháng","MDDS, HNX",,,,Done,,4.6. Trái phiếu doanh nghiệp,,,,,"-- TPDNNY:
-MDDS.jad_stockinfor (s)
--- TPDNRL:
-HNX.private_corp_bond_trading_registration_scale (cb)","s.listedshare, 
-s.reference","* TPDNNY: Bảng MDDS.jad_stockinfor (s)
--- Lấy ngày cuối cùng có dữ liệu trong tháng báo cáo
-s.tradingdate >= :frdate_prev AND s.tradingdate <= :todate_prev
-(ROW_NUMBER() OVER(PARTITION BY symbol ORDER BY tradingdate DESC, indextime DESC, sequence DESC)) = 1 
--- Giá trị:
-Khối lượng niêm yết (listedshare) = s.listedshare * 100000
-* TPDNRL: Bảng HNX.private_corp_bond_trading_registration_scale (cb)
--- Lấy tháng báo cáo
-cb.report_month = date_format(add_months(concat(:p_month, '-01'), -1), 'MM/yyyy') -- Tháng trước
--- Giá trị:
-Khối lượng ĐKGD (listedshare) = cb.registered_trading_volume * cb.par_value",,"Giá trị niêm yết = KL niêm yết/ĐKGD * Mệnh giá
-Mệnh giá:
-- Cổ phiếu: 10.000
-- Chứng chỉ quỹ ETF: 10.000
-- TPDN niêm yết: 
-  + KL TP niêm yết lấy từ MDDS
-  + Mệnh giá tính ngược từ giá tham chiếu theo nguyên tắc MG TP là bội số của 100000 và bước giá nhảy từ 100000 -> 1000000 -> 10000000 -> 100000000...
-  + Công thức: MG TP = 100000 * 10^ROUND(LOG10(Giá tham chiếu / 100000),0)
-Oracle: 100000 * POWER(10, ROUND(LOG(10, reference / 100000)))
-Apache Hive 2: 100000 * POWER(10, ROUND(LN(NULLIF(reference, 0) / 100000) / LN(10)))",,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Trong kỳ - Tăng/giảm so với kỳ trước (%) - Khối lượng chứng khoán niêm yết và đăng ký giao dịch,Trong kỳ - Tăng/giảm so với kỳ trước (%),Báo cáo,Chỉ tiêu phái sinh,TB,"Loại CK - CP, CCQ, Tháng","MDDS, HNX",,,,Done,,4.6. Trái phiếu doanh nghiệp,,,,,"-- TPDNNY:
-MDDS.jad_stockinfor (s)
--- TPDNRL:
-HNX.private_corp_bond_trading_registration_scale (cb)",s.listedshare,"-- Công thức:
-Tăng/Giảm so với kỳ trước (%) = ( listedshare / NULLIF(listedshare_prev, 0) - 1 ) * 100",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Trong kỳ - Tăng/giảm so với kỳ trước (%) - Giá trị chứng khoán niêm yết và đăng ký giao dịch,Trong kỳ - Tăng/giảm so với kỳ trước (%),Báo cáo,Chỉ tiêu phái sinh,TB,"Loại CK - CP, CCQ, Tháng","MDDS, HNX",,,,Done,,4.6. Trái phiếu doanh nghiệp,,,,,"-- TPDNNY:
-MDDS.jad_stockinfor (s)
--- TPDNRL:
-HNX.private_corp_bond_trading_registration_scale (cb)","s.listedshare, 
-s.reference","-- Công thức:
-Tăng/Giảm so với kỳ trước (%) = ( listedshare_value / NULLIF(listedshare_value_prev, 0) - 1 ) * 100",,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+* Bảng ordertrade.trade_book_hnx (t):
+t.market_id = 'STX' -- Giao dịch Cổ phiếu niêm yết trên HNX
+t.trade_date >= :fromdate AND t.trade_date <= :todate -- Trong kỳ - Phát sinh
+* Bảng mdds.jad_stockinfor (s):
+s.stocktype = '2' -- Loại CK = Cổ phiếu
+s.tradingdate >= :fromdate AND s.tradingdate <= :todate -- Trong khoảng ngày đầu - cuối của tháng báo cáo
+Dữ liệu cuối ngày từng mã CK: (ROW_NUMBER() OVER(PARTITION BY marketid, tradingdate ORDER BY indextime DESC, sequence DESC)) = 1
+* Giá trị giao dịch = SUM(t.trade_quantity * t.trade_price)",,,,,,
+4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Cổ phiếu niêm yết - Cộng dồn đến cuối kỳ - Tăng/giảm so với cùng kỳ (%),Cộng dồn đến cuối kỳ - phát sinh,Báo cáo,Chỉ tiêu phái sinh,TB,"Loại CK, Sàn, Tháng",CSDLTT,,,,,,,,,,,,,,,,,,,
+4,HNX04,BÁO CÁO TỔNG HỢP VỀ QUY MÔ TTCK -LK,Cổ phiếu đăng ký giao dịch,"-- Cổ phiếu đăng ký giao dịch: chỉ có trên UpCom
+""FloorCode"" = 04-upcom and 
+""StockType"" =2- ST Cổ phiếu ---HNX
+""StockType"" =2 -S: Cổ phiếu ---HSX
+---",Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK, Toàn thị trường","MSS, MDDS",x,X,,Done,Phụ lục 05.2,CP đăng ký GD,,,,,TRADE_BOOK_HNX,Σ (Trade price * Trade quantity),"-- Cổ phiếu đăng ký giao dịch: chỉ có trên UpCom
+""FloorCode"" = 04-upcom and 
+""StockType"" =2- ST Cổ phiếu ---HNX
+""StockType"" =2 -S: Cổ phiếu ---HSX
+---","SELECT --""Market ID"" AS marketid,
+    ""Trade date"" AS tradedate,
+   SUM(""Trade price"" * ""Trade quantity"")) AS GT_giaodich
+  FROM TRADE_BOOK_HNX h
+join JAD_STOCKINFOR s on s.symbol =h.symbol and s.tradingdate = h.Trade date
+  WHERE ""Market ID"" IN ('STX','UPX')  -- UpCOm
+ --and h.Board ID in (G1, G2, G3, G4, G7, G8) -- Giao dịch khớp lệnh
+  and s.FloorCode = '04'---upcom 
+and s.StockType = '2'- ST Cổ phiếu ---HNX
+AND ""Trade date"" BETWEEN :from_date AND :ngay_gd
+  GROUP BY h.Trade date",,,,,
 4,HNX04,BÁO CÁO TỔNG HỢP VỀ QUY MÔ TTCK -LK,Trái phiếu doanh nghiệp,"--Trái phiếu DN: 
 ""Market ID"" = 'BDO ' --HOSE
 ""Market ID"" = 'HCX ' --HNX",Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK, Toàn thị trường",MSS,x,X,,Done,Phụ lục 05.2,TPDN,,,,,TRADE_BOOK_HNX,Σ (Trade price * Trade quantity),"--Trái phiếu DN: 
