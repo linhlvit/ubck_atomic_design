@@ -14,8 +14,9 @@
 | T1 | Corporate Bond Trading Snapshot | Product | [Product] Financial Market Instrument | Fact Snapshot | MDDS.CorpBondInfor | Snapshot bảng giá TPDN với attributes bond-specific |
 | T2 | Security Match Log | Transaction | [Transaction] Financial Market Transaction | Fact Append | MDDS.TransLog | Log tick-by-tick từng lần khớp lệnh cổ phiếu |
 | T2 | Index Constituent Snapshot | Group | [Group] Share Index | Fact Snapshot | MDDS.CSIDXInfor | Thành phần rổ chỉ số theo ngày giao dịch |
+| T2 | Market Price Snapshot | Product | [Product] Financial Market Instrument | Fact Snapshot | MDDS.JAD_TRADINGVIEWHISTORY1MIN, MDDS.JAD_TRADINGVIEWHISTORY1DAY | Nến giá OHLCV theo phút/ngày cho TradingView (gộp 2 bảng nguồn, phân biệt qua src_stm_code) |
 
-**Tổng: 5 Atomic entities** (3 Tier 1, 2 Tier 2)
+**Tổng: 6 Atomic entities** (3 Tier 1, 3 Tier 2)
 *(Trong đó: 0 shared entities)*
 
 ---
@@ -33,11 +34,14 @@ graph TD
     subgraph T2["Tier 2 — FK to Tier 1"]
         E4["Security Match Log\n(Fact Append)"]
         E5["Index Constituent Snapshot\n(Fact Snapshot)"]
+        E6["Market Price Snapshot\n(Fact Snapshot)"]
     end
 
     E1 --> E4
     E1 --> E5
     E2 --> E5
+    E1 -.->|suy luận| E6
+    E2 -.->|suy luận| E6
 ```
 
 ---
@@ -51,6 +55,7 @@ graph TD
 | D-03 | `Index Constituent Snapshot`: chọn Fact Snapshot, không phải Relative | Bảng có `tradingdate` — mỗi ngày có 1 snapshot thành phần rổ. ETL insert-only theo partition ngày |
 | D-04 | Không dùng prefix `MDDS` trong tên entity | Tên entity dùng trực tiếp BCV Term, không cần prefix source system |
 | D-05 | Mapping 1-1 từ nguồn lên: không lọc theo instrument type | Atomic lưu toàn bộ instrument (CP/CW/PS/TP/CCQ) trong cùng 1 entity `Security Trading Snapshot`, phân biệt qua `stock_type_code` |
+| D-06 | Gộp `JAD_TRADINGVIEWHISTORY1MIN` và `JAD_TRADINGVIEWHISTORY1DAY` thành 1 entity `Market Price Snapshot`, không tạo Classification Value riêng cho resolution | Cấu trúc 2 bảng gần như giống hệt (1DAY chỉ thiếu cột `minute`) → gộp theo quy tắc #10. Resolution MINUTE/DAY đã suy ra được từ `src_stm_code` (khác theo bảng nguồn) và `period_minute` (null ⇔ DAY) — không cần thêm scheme riêng. BCV term tái dùng `[Product] Financial Market Instrument` vì không có term chuyên biệt cho OHLCV/candlestick trong knowledge base |
 
 ---
 
@@ -63,6 +68,8 @@ graph TD
 | T1 | Product | [Product] Financial Market Instrument | Financial Markets | MDDS.CorpBondInfor | Update | Snapshot bảng giá TPDN với đặc thù bond | Corporate Bond Trading Snapshot | Fact Snapshot | Financial Market Instrument — chuyên biệt cho trái phiếu doanh nghiệp niêm yết HNX. Snapshot theo kid/tradingdate. |
 | T2 | Transaction | [Transaction] Financial Market Transaction | Financial Markets Trading | MDDS.TransLog | Append | Log tick-by-tick từng lần khớp lệnh cổ phiếu | Security Match Log | Fact Append | Financial Market Transaction — mỗi dòng = 1 lần khớp lệnh thực tế (1 tick). BRD Append. |
 | T2 | Group | [Group] Share Index | Financial Markets | MDDS.CSIDXInfor | Update | Thành phần rổ chỉ số theo ngày giao dịch | Index Constituent Snapshot | Fact Snapshot | Share Index constituent — quan hệ (index, symbol, tradingdate). BRD Update nhưng thiết kế Fact Snapshot (insert-only per ngày). |
+| T2 | Product | [Product] Financial Market Instrument | Financial Markets | MDDS.JAD_TRADINGVIEWHISTORY1MIN | Append | Nến giá OHLCV theo phút cho từng mã (CK hoặc index), phục vụ TradingView | Market Price Snapshot | Fact Snapshot | Financial Market Instrument (tái dùng, không có term riêng cho OHLCV). Gộp với JAD_TRADINGVIEWHISTORY1DAY — phân biệt qua src_stm_code/period_minute. |
+| T2 | Product | [Product] Financial Market Instrument | Financial Markets | MDDS.JAD_TRADINGVIEWHISTORY1DAY | Append | Nến giá OHLCV theo ngày cho từng mã (CK hoặc index), phục vụ TradingView | Market Price Snapshot | Fact Snapshot | Financial Market Instrument (tái dùng, không có term riêng cho OHLCV). Gộp với JAD_TRADINGVIEWHISTORY1MIN — phân biệt qua src_stm_code/period_minute. |
 
 #### 7b. Diagram Atomic tổng (Mermaid)
 
@@ -110,9 +117,24 @@ erDiagram
         date add_date
     }
 
+    Market_Price_Snapshot {
+        bigint ds_snapshot_id PK
+        varchar symbol
+        date trading_date
+        varchar period_minute
+        decimal open_price
+        decimal high_price
+        decimal low_price
+        decimal close_price
+        bigint volume
+        varchar src_stm_code
+    }
+
     Security_Trading_Snapshot ||--o{ Security_Match_Log : "symbol + trading_date"
     Security_Trading_Snapshot ||--o{ Index_Constituent_Snapshot : "symbol"
     Market_Index_Snapshot ||--o{ Index_Constituent_Snapshot : "index_code"
+    Security_Trading_Snapshot |o..o{ Market_Price_Snapshot : "symbol (suy luận)"
+    Market_Index_Snapshot |o..o{ Market_Price_Snapshot : "symbol (suy luận)"
 ```
 
 #### 7c. Bảng Classification Value
@@ -143,6 +165,7 @@ erDiagram
 | 3 | T2 | CSIDXInfor.data_change_mode = Update nhưng thiết kế Fact Snapshot — ETL có insert-only per ngày không? | Nếu ETL cần update in-place → đổi sang Fundamental/Relative |
 | 4 | T2 | Security_Match_Log: không tạo FK surrogate sang instrument snapshot — xác nhận join ở Gold layer? | Ảnh hưởng cách xây dựng mart tại Gold |
 | 5 | T1 | Bỏ prefix entity `MDDS` — xác nhận? | Tất cả entity không còn prefix MDDS, dùng trực tiếp BCV Term |
+| 6 | T2 | `Market Price Snapshot`: `symbol` dùng chung cho cả mã chứng khoán và mã chỉ số, không có cột phân loại instrument và không có FK constraint tường minh tới `Security Trading Snapshot`/`Market Index Snapshot` — có cần bổ sung cột phân loại từ nguồn không? | Ảnh hưởng khả năng phân loại instrument khi join downstream tại Gold/Datamart layer |
 
 #### 7f. Bảng ngoài scope
 
@@ -200,3 +223,12 @@ GROUP: dùng từ danh sách chuẩn (xem reference/group_classification.md).
 **Grain:** 1 dòng = 1 cặp (index_code, symbol, trading_date).
 
 **Attributes chính:** ds_constituent_id (PK), source_id, index_code, index_id, symbol, trading_date, add_date, floor_code (MDDS_FLOOR_CODE), total_match_volume.
+
+### 6. Market Price Snapshot
+**Tier:** 2 | **Source:** `MDDS.JAD_TRADINGVIEWHISTORY1MIN, MDDS.JAD_TRADINGVIEWHISTORY1DAY` | **BCV Concept:** [Product] Financial Market Instrument | **BCO:** Product | **Table Type:** Fact Snapshot
+**Domain Prefix:** (none)
+**Description:** Nến giá OHLCV (mở/cao/thấp/đóng cửa, khối lượng khớp) của một mã (chứng khoán hoặc chỉ số) theo kỳ phút hoặc ngày, phục vụ biểu đồ TradingView. Gộp từ 2 bảng nguồn cấu trúc gần như giống hệt nhau, phân biệt qua `src_stm_code`.
+
+**Grain:** 1 dòng = 1 cây nến OHLCV của 1 mã tại 1 kỳ (phút hoặc ngày).
+
+**Attributes chính:** ds_snapshot_id (PK), source_id, symbol, trading_date, period_minute (nullable — có giá trị ⇔ nguồn 1MIN, null ⇔ nguồn 1DAY), open_price, high_price, low_price, close_price, volume, src_stm_code (Source System Code, etl_derived theo bảng nguồn — dùng để phân biệt resolution 1MIN/1DAY).

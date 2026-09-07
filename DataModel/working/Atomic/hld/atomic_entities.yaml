@@ -984,6 +984,16 @@ entities:
   source_table: "TTHC.AP_DOCUMENT_APPLICANT"
   status: "draft"
 - bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Audit Firm"
+  atomic_entity: "Audit Firm"
+  table_type: "Fundamental"
+  domain_prefix: "Audit Firm"
+  entity_physical_name: "audit_firm"
+  description: "Công ty kiểm toán được UBCKNN chấp thuận thực hiện kiểm toán báo cáo\
+    \ tài chính của CTCK. Ghi nhận mã, tên, số GPĐKKD và trạng thái hoạt động."
+  source_table: "SCMS.AUDIT_FIRM, IDS.AF_PROFILES"
+  status: "draft"
+- bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Individual"
   atomic_entity: "Discretionary Investment Investor"
   table_type: "Fundamental"
@@ -1175,7 +1185,7 @@ entities:
     \ FMS.FUNDS, FMS.INVES, FMS.STF_FG_BRCH, FMS.REPRESENT, FMS.MB_FUND, FMS.INSIDER,\
     \ FMS.PENSION_AGENT, FMS.PENSION_PROVIDER, FMS.DISTRIBUTOR_AGENT, FMS.BANK_EMPLOY,\
     \ FMS.TL_PRO_RELA, FMS.OTHER_AGENT, FMS.TRANSFER_AGENT, FMS.INSDER_RELA, FMS.INSDER_RPRST,\
-    \ IDS.COMPANY_PROFILES, IDS.AF_LEGAL_REPRESENTATIVE, IDS.IDENTITY, IDS.LEGAL_REPRESENTATIVE,\
+    \ IDS.COMPANY_PROFILES, IDS.AF_PROFILES, IDS.AF_LEGAL_REPRESENTATIVE, IDS.IDENTITY,\
     \ FIMS.INVESTOR, FIMS.TRADINGREPRESENTATIVE, KNT.TAX_REG_REPRESENTATIVE, NHNCK.IDENTITY_INFO_C06S"
   status: "approved"
 - bcv_core_object: "Involved Party"
@@ -1196,8 +1206,8 @@ entities:
     \ FMS.AGENCIES_BRA, FMS.STF_FG_BRCH, FMS.REPRESENT, FMS.INSIDER, FMS.PENSION_AGENT,\
     \ FMS.PENSION_PROVIDER, FMS.DISTRIBUTOR_AGENT, FMS.OTHER_AGENT, FMS.TRANSFER_AGENT,\
     \ FMS.DISTRIBUTOR_LOCATION, FMS.DISTRIBUTOR_PERSONNEL, IDS.COMPANY_PROFILES, IDS.LEGAL_ENTITIES,\
-    \ IDS.AF_LEGAL_REPRESENTATIVE, IDS.LEGAL_REPRESENTATIVE, FIMS.INVESTOR, FIMS.TRADINGREPRESENTATIVE,\
-    \ KNT.TAX_REGISTRATION_INFO, KNT.TAX_REG_REPRESENTATIVE"
+    \ IDS.AF_PROFILES, IDS.AF_LEGAL_REPRESENTATIVE, IDS.LEGAL_REPRESENTATIVE, FIMS.INVESTOR,\
+    \ FIMS.TRADINGREPRESENTATIVE, KNT.TAX_REGISTRATION_INFO, KNT.TAX_REG_REPRESENTATIVE"
   status: "approved"
 - bcv_core_object: "Involved Party"
   bcv_concept: "Shared Entity"
@@ -1218,7 +1228,7 @@ entities:
     \ FMS.AGENCIES_BRA, FMS.STF_FG_BRCH, FMS.REPRESENT, FMS.MB_FUND, FMS.INSIDER,\
     \ FMS.PENSION_AGENT, FMS.PENSION_PROVIDER, FMS.DISTRIBUTOR_AGENT, FMS.TL_PRO_RELA,\
     \ FMS.OTHER_AGENT, FMS.TRANSFER_AGENT, FMS.INSDER_RELA, FMS.DISTRIBUTOR_LOCATION,\
-    \ IDS.COMPANY_PROFILES, IDS.LEGAL_ENTITIES, FIMS.INVESTOR, FIMS.TRADINGREPRESENTATIVE,\
+    \ IDS.COMPANY_PROFILES, IDS.LEGAL_ENTITIES, IDS.AF_PROFILES, FIMS.INVESTOR, FIMS.TRADINGREPRESENTATIVE,\
     \ KNT.TAX_REGISTRATION_INFO, NHNCK.IDENTITY_INFO_C06S"
   status: "approved"
 - bcv_core_object: "Involved Party"
@@ -1500,16 +1510,6 @@ entities:
     \ Group\" (2026-08-15) — tái dùng concept từ phía Application Group, tên đặt Group\
     \ lên trước."
   source_table: "NHNCK.APPLICATION_GROUP_MEMBERS"
-  status: "draft"
-- bcv_core_object: "Involved Party"
-  bcv_concept: "[Involved Party] Audit Firm"
-  atomic_entity: "Audit Firm"
-  table_type: "Fundamental"
-  domain_prefix: "Audit Firm"
-  entity_physical_name: "audit_firm"
-  description: "Công ty kiểm toán được UBCKNN chấp thuận thực hiện kiểm toán báo cáo\
-    \ tài chính của CTCK. Ghi nhận mã, tên, số GPĐKKD và trạng thái hoạt động."
-  source_table: "SCMS.AUDIT_FIRM, IDS.AF_PROFILES"
   status: "draft"
 - bcv_core_object: ""
   bcv_concept: ""
@@ -2083,6 +2083,17 @@ entities:
     \ UPCOM-Index) tại một thời điểm trong ngày, bao gồm điểm chỉ số, tổng khối lượng/giá\
     \ trị, thống kê mã tăng/giảm/trần/sàn, trạng thái phiên giao dịch."
   source_table: "MDDS.JAD_MARKETINFOR"
+  status: "draft"
+- bcv_core_object: "Product"
+  bcv_concept: "[Product] Financial Market Instrument"
+  atomic_entity: "Market Price Snapshot"
+  table_type: "Fact Snapshot"
+  domain_prefix: ""
+  entity_physical_name: "market_price_snapshot"
+  description: "Nến giá OHLCV (mở/cao/thấp/đóng cửa, khối lượng khớp) của một mã (chứng\
+    \ khoán hoặc chỉ số) theo kỳ phút hoặc ngày, phục vụ biểu đồ TradingView. Gộp\
+    \ từ 2 bảng nguồn cấu trúc gần như giống hệt nhau, phân biệt qua src_stm_code."
+  source_table: "MDDS.JAD_TRADINGVIEWHISTORY1MIN, MDDS.JAD_TRADINGVIEWHISTORY1DAY"
   status: "draft"
 - bcv_core_object: ""
   bcv_concept: ""

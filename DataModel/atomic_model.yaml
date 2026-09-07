@@ -38278,6 +38278,42 @@ entities:
         source_column: MDDS.JAD_MARKETINFOR.TSCPRODGRPID
         business_meaning: Mã sản phẩm giao dịch (hose/hnx/upcom).
         comment: null
+  - name: Index Name
+    physical_name: index_nm
+    business_meaning_1st: Tên của index.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: JAD_MARKETINFOR
+        source_column: MDDS.JAD_MARKETINFOR.INDEXNAME
+        business_meaning: Tên của index.
+        comment: null
+  - name: Sequence
+    physical_name: sequence
+    business_meaning_1st: Đánh thứ tự update của từng Index.
+    comment_1st: Thứ tự update — không phải business sequence number của Sở, chỉ dùng
+      để order các lần update trong ngày.
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: JAD_MARKETINFOR
+        source_column: MDDS.JAD_MARKETINFOR.SEQUENCE
+        business_meaning: Đánh thứ tự update của từng Index.
+        comment: Thứ tự update — không phải business sequence number của Sở, chỉ dùng
+          để order các lần update trong ngày.
 - ldm:
     id: ATM-pc_evaluation_group
     logical_name_1st: Public Company Evaluation Group
@@ -61459,6 +61495,282 @@ entities:
         business_meaning: Đặc điểm trái phiếu.
         comment: null
 - ldm:
+    id: ATM-market_price_snapshot
+    logical_name_1st: Market Price Snapshot
+    physical_name_1st: market_price_snapshot
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: draft
+    description_1st: Nến giá OHLCV (mở/cao/thấp/đóng cửa, khối lượng khớp) của một
+      mã (chứng khoán hoặc chỉ số) theo kỳ phút hoặc ngày, phục vụ biểu đồ TradingView.
+      Gộp từ 2 bảng nguồn cấu trúc gần như giống hệt nhau, phân biệt qua src_stm_code.
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Product
+    bcv_concept_most: "[Product] Financial Market Instrument"
+    table_type_most: Fact Snapshot
+    etl_pattern_most: Fact Snapshot
+    conflict_review: null
+    sources:
+    - MDDS
+    references:
+      brd:
+      - BRD-SRC-MDDS-JAD_TRADINGVIEWHISTORY1DAY
+      - BRD-SRC-MDDS-JAD_TRADINGVIEWHISTORY1MIN
+  attributes:
+  - name: Market Price Snapshot Id
+    physical_name: market_price_snpst_id
+    business_meaning_1st: Khóa đại diện (surrogate key).
+    comment_1st: "PK surrogate. BCV: [Product] Financial Market Instrument (tái dùng\
+      \ — không có BCV term riêng cho OHLCV/candlestick). Nến giá OHLCV của 1 mã tại\
+      \ 1 kỳ."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: JAD_TRADINGVIEWHISTORY1DAY
+        source_column: null
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. BCV: [Product] Financial Market Instrument (tái dùng\
+          \ — không có BCV term riêng cho OHLCV/candlestick). Nến giá OHLCV của 1\
+          \ mã tại 1 kỳ."
+      - source_table: JAD_TRADINGVIEWHISTORY1MIN
+        source_column: null
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. BCV: [Product] Financial Market Instrument (tái dùng\
+          \ — không có BCV term riêng cho OHLCV/candlestick). Nến giá OHLCV của 1\
+          \ mã tại 1 kỳ."
+  - name: Market Price Snapshot Code
+    physical_name: market_price_snpst_code
+    business_meaning_1st: Định danh. PK bảng nguồn. BK của Snapshot entity.
+    comment_1st: BK chính. PK nguồn id — unique per cây nến.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: JAD_TRADINGVIEWHISTORY1DAY
+        source_column: MDDS.JAD_TRADINGVIEWHISTORY1DAY.ID
+        business_meaning: Định danh. PK bảng nguồn. BK của Snapshot entity.
+        comment: BK chính. PK nguồn id — unique per cây nến.
+      - source_table: JAD_TRADINGVIEWHISTORY1MIN
+        source_column: MDDS.JAD_TRADINGVIEWHISTORY1MIN.ID
+        business_meaning: Định danh. PK bảng nguồn. BK của Snapshot entity.
+        comment: BK chính. PK nguồn id — unique per cây nến.
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
+    comment_1st: "Scheme: SOURCE_SYSTEM. Hardcode."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value:
+    - MDDS_JAD_TRADINGVIEWHISTORY1DAY
+    - MDDS_JAD_TRADINGVIEWHISTORY1MIN
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: JAD_TRADINGVIEWHISTORY1DAY
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+      - source_table: JAD_TRADINGVIEWHISTORY1MIN
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  - name: Symbol
+    physical_name: symbol
+    business_meaning_1st: Mã (gồm cả chứng khoán và index).
+    comment_1st: Dùng chung cho mã chứng khoán và mã chỉ số — không có cột phân loại
+      instrument, không có FK constraint tường minh tới security_trading_snapshot/market_index_snapshot.
+      Xem HLD Tier 2 T2-04.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: JAD_TRADINGVIEWHISTORY1DAY
+        source_column: MDDS.JAD_TRADINGVIEWHISTORY1DAY.SYMBOL
+        business_meaning: Mã (gồm cả chứng khoán và index).
+        comment: Dùng chung cho mã chứng khoán và mã chỉ số — không có cột phân loại
+          instrument, không có FK constraint tường minh tới security_trading_snapshot/market_index_snapshot.
+          Xem HLD Tier 2 T2-04.
+      - source_table: JAD_TRADINGVIEWHISTORY1MIN
+        source_column: MDDS.JAD_TRADINGVIEWHISTORY1MIN.SYMBOL
+        business_meaning: Mã (gồm cả chứng khoán và index).
+        comment: Dùng chung cho mã chứng khoán và mã chỉ số — không có cột phân loại
+          instrument, không có FK constraint tường minh tới security_trading_snapshot/market_index_snapshot.
+          Xem HLD Tier 2 T2-04.
+  - name: Trading Date
+    physical_name: trading_dt
+    business_meaning_1st: Ngày tính toán (dd/MM/yyyy).
+    comment_1st: Nguồn lưu dạng string dd/MM/yyyy — ETL cần parse sang date. Cần validate
+      format nhất quán.
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: JAD_TRADINGVIEWHISTORY1DAY
+        source_column: MDDS.JAD_TRADINGVIEWHISTORY1DAY.TRADINGDATE
+        business_meaning: Ngày tính toán (dd/MM/yyyy).
+        comment: Nguồn lưu dạng string dd/MM/yyyy — ETL cần parse sang date. Cần validate
+          format nhất quán.
+      - source_table: JAD_TRADINGVIEWHISTORY1MIN
+        source_column: MDDS.JAD_TRADINGVIEWHISTORY1MIN.TRADINGDATE
+        business_meaning: Ngày tính toán (dd/MM/yyyy).
+        comment: Nguồn lưu dạng string dd/MM/yyyy — ETL cần parse sang date. Cần validate
+          format nhất quán.
+  - name: Open Price
+    physical_name: open_price
+    business_meaning_1st: Giá mở cửa trong ngày.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: JAD_TRADINGVIEWHISTORY1DAY
+        source_column: MDDS.JAD_TRADINGVIEWHISTORY1DAY.OPEN
+        business_meaning: Giá mở cửa trong ngày.
+        comment: null
+      - source_table: JAD_TRADINGVIEWHISTORY1MIN
+        source_column: MDDS.JAD_TRADINGVIEWHISTORY1MIN.OPEN
+        business_meaning: Giá mở cửa trong phút.
+        comment: null
+  - name: High Price
+    physical_name: high_price
+    business_meaning_1st: Giá cao nhất trong ngày.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: JAD_TRADINGVIEWHISTORY1DAY
+        source_column: MDDS.JAD_TRADINGVIEWHISTORY1DAY.HIGH
+        business_meaning: Giá cao nhất trong ngày.
+        comment: null
+      - source_table: JAD_TRADINGVIEWHISTORY1MIN
+        source_column: MDDS.JAD_TRADINGVIEWHISTORY1MIN.HIGH
+        business_meaning: Giá cao nhất trong phút.
+        comment: null
+  - name: Low Price
+    physical_name: low_price
+    business_meaning_1st: Giá thấp nhất trong ngày.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: JAD_TRADINGVIEWHISTORY1DAY
+        source_column: MDDS.JAD_TRADINGVIEWHISTORY1DAY.LOW
+        business_meaning: Giá thấp nhất trong ngày.
+        comment: null
+      - source_table: JAD_TRADINGVIEWHISTORY1MIN
+        source_column: MDDS.JAD_TRADINGVIEWHISTORY1MIN.LOW
+        business_meaning: Giá thấp nhất trong phút.
+        comment: null
+  - name: Close Price
+    physical_name: close_price
+    business_meaning_1st: Giá đóng cửa trong ngày.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: JAD_TRADINGVIEWHISTORY1DAY
+        source_column: MDDS.JAD_TRADINGVIEWHISTORY1DAY.CLOSE
+        business_meaning: Giá đóng cửa trong ngày.
+        comment: null
+      - source_table: JAD_TRADINGVIEWHISTORY1MIN
+        source_column: MDDS.JAD_TRADINGVIEWHISTORY1MIN.CLOSE
+        business_meaning: Giá đóng cửa trong phút.
+        comment: null
+  - name: Volume
+    physical_name: vol
+    business_meaning_1st: Tổng khối lượng khớp trong ngày.
+    comment_1st: Nguồn lưu dạng bigint — widening conversion sang int/bigint không
+      mất dữ liệu.
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: JAD_TRADINGVIEWHISTORY1DAY
+        source_column: MDDS.JAD_TRADINGVIEWHISTORY1DAY.VOLUME
+        business_meaning: Tổng khối lượng khớp trong ngày.
+        comment: Nguồn lưu dạng bigint — widening conversion sang int/bigint không
+          mất dữ liệu.
+      - source_table: JAD_TRADINGVIEWHISTORY1MIN
+        source_column: MDDS.JAD_TRADINGVIEWHISTORY1MIN.VOLUME
+        business_meaning: Tổng khối lượng khớp trong phút.
+        comment: Nguồn lưu dạng bigint — widening conversion sang int/bigint không
+          mất dữ liệu.
+  - name: Processing Time
+    physical_name: processing_time
+    business_meaning_1st: Giờ tính toán (HH:mm).
+    comment_1st: Chỉ có ở JAD_TRADINGVIEWHISTORY1MIN — JAD_TRADINGVIEWHISTORY1DAY
+      không có cột này. Ở mức entity gộp Market Price Snapshot, trường này nullable
+      (null ⇔ bản ghi từ nguồn 1DAY).
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: JAD_TRADINGVIEWHISTORY1MIN
+        source_column: MDDS.JAD_TRADINGVIEWHISTORY1MIN.MINUTE
+        business_meaning: Giờ tính toán (HH:mm).
+        comment: Chỉ có ở JAD_TRADINGVIEWHISTORY1MIN — JAD_TRADINGVIEWHISTORY1DAY
+          không có cột này. Ở mức entity gộp Market Price Snapshot, trường này nullable
+          (null ⇔ bản ghi từ nguồn 1DAY).
+- ldm:
     id: ATM-security_trading_snapshot
     logical_name_1st: Security Trading Snapshot
     physical_name_1st: security_trading_snapshot
@@ -62801,6 +63113,40 @@ entities:
         source_column: MDDS.JAD_STOCKINFOR.ISSUEDATE
         business_meaning: Ngày phát hành.
         comment: Nguồn lưu dạng string — ETL cần parse sang date.
+  - name: Foreign Buy Value
+    physical_name: foreign_buy_val
+    business_meaning_1st: Giá trị NĐTNN mua.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.FOREIGNBUYVAL
+        business_meaning: Giá trị NĐTNN mua.
+        comment: null
+  - name: Foreign Sell Value
+    physical_name: foreign_sell_val
+    business_meaning_1st: Giá trị NĐTNN bán.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.FOREIGNSELLVAL
+        business_meaning: Giá trị NĐTNN bán.
+        comment: null
 - ldm:
     id: ATM-securities_trade
     logical_name_1st: Securities Trade

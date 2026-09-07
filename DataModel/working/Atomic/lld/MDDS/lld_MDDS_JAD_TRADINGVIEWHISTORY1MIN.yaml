@@ -1,0 +1,186 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+
+metadata:
+  source_system: "MDDS"
+  source_table: "JAD_TRADINGVIEWHISTORY1MIN"
+  atomic_entity: "Market Price Snapshot"
+  entity_physical_name: "market_price_snapshot"
+  bcv_core_object: "Product"
+  bcv_concept: "[Product] Financial Market Instrument"
+  table_type: "Fact Snapshot"
+  group: "T2"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Nến giá OHLCV theo resolution phút, phục vụ biểu đồ TradingView. Gộp với\
+    \ JAD_TRADINGVIEWHISTORY1DAY thành 1 entity Market Price Snapshot (HLD D-06) —\
+    \ phân biệt nguồn qua src_stm_code, phân biệt resolution qua period_minute (có\
+    \ giá trị ⇔ nguồn 1MIN, null ⇔ nguồn 1DAY). Symbol dùng chung cho cả CK và index,\
+    \ không có FK constraint tường minh (xem HLD Tier 2 T2-04)."
+
+attributes:
+  - attribute_name: "Market Price Snapshot Id"
+    physical_name: "market_price_snpst_id"
+    description: "Khóa đại diện (surrogate key)."
+    data_domain: "Surrogate Key"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns: []
+    comment: "PK surrogate. BCV: [Product] Financial Market Instrument (tái dùng —\
+      \ không có BCV term riêng cho OHLCV/candlestick). Nến giá OHLCV của 1 mã tại\
+      \ 1 kỳ."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Market Price Snapshot Code"
+    physical_name: "market_price_snpst_code"
+    description: "Định danh. PK bảng nguồn. BK của Snapshot entity."
+    data_domain: "Text"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "MDDS.JAD_TRADINGVIEWHISTORY1MIN.ID"
+    comment: "BK chính. PK nguồn id — unique per cây nến."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Source System Code"
+    physical_name: "src_stm_code"
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "SOURCE_SYSTEM=MDDS_JAD_TRADINGVIEWHISTORY1MIN"
+    etl_derived_value: "MDDS_JAD_TRADINGVIEWHISTORY1MIN"
+    data_type: "string"
+
+  - attribute_name: "Symbol"
+    physical_name: "symbol"
+    description: "Mã (gồm cả chứng khoán và index)."
+    data_domain: "Text"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "MDDS.JAD_TRADINGVIEWHISTORY1MIN.SYMBOL"
+    comment: "Dùng chung cho mã chứng khoán và mã chỉ số — không có cột phân loại\
+      \ instrument, không có FK constraint tường minh tới security_trading_snapshot/market_index_snapshot.\
+      \ Xem HLD Tier 2 T2-04."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Trading Date"
+    physical_name: "trading_dt"
+    description: "Ngày tính toán (dd/MM/yyyy)."
+    data_domain: "Date"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "MDDS.JAD_TRADINGVIEWHISTORY1MIN.TRADINGDATE"
+    comment: "Nguồn lưu dạng string dd/MM/yyyy — ETL cần parse sang date. Cần validate\
+      \ format nhất quán."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "date"
+
+  - attribute_name: "Processing Time"
+    physical_name: "processing_time"
+    description: "Giờ tính toán (HH:mm)."
+    data_domain: "Text"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "MDDS.JAD_TRADINGVIEWHISTORY1MIN.MINUTE"
+    comment: "Chỉ có ở JAD_TRADINGVIEWHISTORY1MIN — JAD_TRADINGVIEWHISTORY1DAY không\
+      \ có cột này. Ở mức entity gộp Market Price Snapshot, trường này nullable (null\
+      \ ⇔ bản ghi từ nguồn 1DAY)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Open Price"
+    physical_name: "open_price"
+    description: "Giá mở cửa trong phút."
+    data_domain: "Currency Amount"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "MDDS.JAD_TRADINGVIEWHISTORY1MIN.OPEN"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    data_type: "decimal(23,2)"
+
+  - attribute_name: "High Price"
+    physical_name: "high_price"
+    description: "Giá cao nhất trong phút."
+    data_domain: "Currency Amount"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "MDDS.JAD_TRADINGVIEWHISTORY1MIN.HIGH"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    data_type: "decimal(23,2)"
+
+  - attribute_name: "Low Price"
+    physical_name: "low_price"
+    description: "Giá thấp nhất trong phút."
+    data_domain: "Currency Amount"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "MDDS.JAD_TRADINGVIEWHISTORY1MIN.LOW"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    data_type: "decimal(23,2)"
+
+  - attribute_name: "Close Price"
+    physical_name: "close_price"
+    description: "Giá đóng cửa trong phút."
+    data_domain: "Currency Amount"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "MDDS.JAD_TRADINGVIEWHISTORY1MIN.CLOSE"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    data_type: "decimal(23,2)"
+
+  - attribute_name: "Volume"
+    physical_name: "vol"
+    description: "Tổng khối lượng khớp trong phút."
+    data_domain: "Small Counter"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "MDDS.JAD_TRADINGVIEWHISTORY1MIN.VOLUME"
+    comment: "Nguồn lưu dạng bigint — widening conversion sang int/bigint không mất\
+      \ dữ liệu."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "int"

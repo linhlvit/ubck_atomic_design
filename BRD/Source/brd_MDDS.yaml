@@ -118,3 +118,52 @@ brd_entries:
         filter_logic: "TRADINGDATE = {etl_date}"
         filter_note: "Snapshot EOD theo ngày giao dịch — append 1 batch mỗi ngày"
 
+  # UID-04 — Thống kê lịch sử TradingView (OHLCV)
+  - brd_id: BRD-SRC-MDDS-JAD_TRADINGVIEWHISTORY1MIN
+    brd_name: "Design Atomic từ nguồn MDDS bảng TradingViewHistory1Min"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Thống kê OHLCV theo resolution phút cho từng mã (chứng khoán hoặc chỉ số), phục vụ biểu đồ TradingView. Mỗi bản tin là một cây nến 1 phút."
+      functional_group: "UID-04 Thống kê lịch sử TradingView"
+      scope_status: in_scope
+      scope_reason: null
+      table: JAD_TRADINGVIEWHISTORY1MIN
+      related_tables:
+        - table: JAD_STOCKINFOR
+          relation: "Tham chiếu suy luận — symbol khi là mã chứng khoán"
+        - table: JAD_MARKETINFOR
+          relation: "Tham chiếu suy luận — symbol khi là mã index"
+      notes: "symbol dùng chung cho cả chứng khoán và index — không tách được FK constraint tường minh, cần làm rõ với nguồn"
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "TRADINGDATE = {etl_date}"
+        filter_note: "Cây nến OHLCV theo phút — append theo ngày giao dịch"
+
+  - brd_id: BRD-SRC-MDDS-JAD_TRADINGVIEWHISTORY1DAY
+    brd_name: "Design Atomic từ nguồn MDDS bảng TradingViewHistory1Day"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Thống kê OHLCV theo resolution ngày cho từng mã (chứng khoán hoặc chỉ số), phục vụ biểu đồ TradingView. Mỗi bản tin là một cây nến 1 ngày."
+      functional_group: "UID-04 Thống kê lịch sử TradingView"
+      scope_status: in_scope
+      scope_reason: null
+      table: JAD_TRADINGVIEWHISTORY1DAY
+      related_tables:
+        - table: JAD_STOCKINFOR
+          relation: "Tham chiếu suy luận — symbol khi là mã chứng khoán"
+        - table: JAD_MARKETINFOR
+          relation: "Tham chiếu suy luận — symbol khi là mã index"
+      notes: "symbol dùng chung cho cả chứng khoán và index — không tách được FK constraint tường minh, cần làm rõ với nguồn"
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "TRADINGDATE = {etl_date}"
+        filter_note: "Cây nến OHLCV theo ngày — append theo ngày giao dịch"
+
