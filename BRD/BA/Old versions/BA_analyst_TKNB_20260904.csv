@@ -110,7 +110,7 @@ JAD_STOCKINFOR.STOCKTYPE","Tổng 5 mục bên dưới:
 2. Cổ phiếu UpCom
 3. Trái phiếu doanh nghiệp
 4. Chứng chỉ quỹ
-5. Chứng chỉ quỹ (ETF)","/*===== BC HNX01:=======
+5. Chứng chỉ quỹ (ETF)","/*
 ---4. GIÁ TRỊ CHỨNG KHOÁN GIAO DỊCH TOÀN THỊ TRƯỜNG (VND)
 ---5. KHỐI LƯỢNG CHỨNG KHOÁN GIAO DỊCH TOÀN THỊ TRƯỜNG (VND)
 */
@@ -135,13 +135,13 @@ FUND_DATA AS (
     FROM JAD_STOCKINFOR s
     WHERE s.""FloorCode"" = '02'
       AND s.""StockType"" = '3'
-          AND h.trade date = :ngay_gd
+	  AND h.trade date = :ngay_gd
 ),
 TONG AS (
 
 SELECT
     t.TRADEDATE,
-        ---GIÁ TRỊ GIAO DỊCH ------
+	---GIÁ TRỊ GIAO DỊCH ------
     SUM(CASE  WHEN t.MARKET_ID IN ('STO', 'STX')  THEN t.TRADE_QTY * t.TRADE_PRICE 
               ELSE 0  END ) AS GTGD_CPNY,
     SUM( CASE WHEN t.MARKET_ID = 'UPX'    THEN t.TRADE_QTY * t.TRADE_PRICE
@@ -152,8 +152,8 @@ SELECT
               ELSE 0   END    ) AS GTGD_CCQ,
     SUM(CASE  WHEN f.FUND_TYPE = 'E'      THEN t.TRADE_QTY * t.TRADE_PRICE
               ELSE 0   END    ) AS GTGD_ETF,
-        ---KHỐI LƯỢNG GIAO DỊCH -------
-        SUM(CASE  WHEN t.MARKET_ID IN ('STO', 'STX')    THEN t.TRADE_QTY    ELSE 0   END ) AS KLGD_CPNY,
+	---KHỐI LƯỢNG GIAO DỊCH -------
+	SUM(CASE  WHEN t.MARKET_ID IN ('STO', 'STX')    THEN t.TRADE_QTY    ELSE 0   END ) AS KLGD_CPNY,
     SUM(CASE WHEN t.MARKET_ID IN ('UPX')     THEN t.TRADE_QTY    ELSE 0   END ) AS KLGD_UPCOM,  
     SUM(CASE WHEN t.MARKET_ID IN ('HCX')     THEN t.TRADE_QTY    ELSE 0   END ) AS KLGD_TPDN,  
     SUM(CASE  WHEN F.FundType =' M'           THEN t.TRADE_QTY    ELSE 0   END ) AS KLGD_CCQ, 
@@ -166,21 +166,21 @@ ORDER BY t.TRADEDATE
 --- ── KẾT QUẢ  ─────────────────────────────────────────────────────────
 SELECT  TRADEDATE, 
     --- 4. GIÁ TRỊ CHỨNG KHOÁN GIAO DỊCH TOÀN THỊ TRƯỜNG (VND)
-            (GTGD_CPNY          + GTGD_UPCOM         + GTGD_TPDN         + GTGD_CCQ         + GTGD_ETF ) AS TONG_GTGD,
+    	(GTGD_CPNY 	 + GTGD_UPCOM	 + GTGD_TPDN	 + GTGD_CCQ	 + GTGD_ETF ) AS TONG_GTGD,
          GTGD_CPNY,
-                 GTGD_UPCOM,
-                 GTGD_TPDN,
-                 GTGD_CCQ,
-                 GTGD_ETF,
-        --- 5. Khối lượng chứng khoán giao dịch toàn thị trường (vnd)
-          ( KLGD_CPNY+ KLGD_UPCOM + KLGD_TPDN +  KLGD_CCQ + KLGD_ETF) AS TONG_KLGD, 
-           KLGD_CPNY,
-           KLGD_UPCOM,
-           KLGD_TPDN,
-           KLGD_CCQ,
-           KLGD_ETF
+		 GTGD_UPCOM,
+		 GTGD_TPDN,
+		 GTGD_CCQ,
+		 GTGD_ETF,
+	--- 5. Khối lượng chứng khoán giao dịch toàn thị trường (vnd)
+	  ( KLGD_CPNY+ KLGD_UPCOM + KLGD_TPDN +  KLGD_CCQ + KLGD_ETF) AS TONG_KLGD, 
+	   KLGD_CPNY,
+	   KLGD_UPCOM,
+	   KLGD_TPDN,
+	   KLGD_CCQ,
+	   KLGD_ETF
 FROM TONG 
-ORDER BY TRADEDATE        
+ORDER BY TRADEDATE	
 ;",,,,"/*
 ---4. GIÁ TRỊ CHỨNG KHOÁN GIAO DỊCH TOÀN THỊ TRƯỜNG (VND)
 ---5. KHỐI LƯỢNG CHỨNG KHOÁN GIAO DỊCH TOÀN THỊ TRƯỜNG (VND)
@@ -251,8 +251,8 @@ ORDER BY TRADEDATE
 Cách phân loại CPNY: Market ID trong 2 giá trị:
 - STO : HoSE Stock Market
 - STX : HNX Listed Stock Market
-",Báo cáo,Chỉ tiêu phái sinh,TB,"Sàn, Loại CK",MSS,x,X,,Done,Sổ lệnh,"Trade price
-Trade quantity",,Σ (Giá giao dịch × KL giao dịch) của cổ phiếu niên yết,,,TRADE_BOOK_HNX,,"Select sum (h.Trade quantity *h.Trade price) Tong_GTGD_CPNY, h.trade date 
+",Báo cáo,Chỉ tiêu phái sinh,TB,"Sàn, Loại CK",MSS,x,X,,Done,Sổ lệnh,CPNY,,Σ (Giá giao dịch × KL giao dịch) của cổ phiếu niên yết,,,TRADE_BOOK_HNX,"Trade price
+Trade quantity","Select sum (h.Trade quantity *h.Trade price) Tong_GTGD_CPNY, h.trade date 
  from TRADE_BOOK_HNX h
  Where Market ID in ('STO','STX')
 and h.trade date = :ngay_gd
@@ -328,7 +328,7 @@ JAD_STOCKINFOR.STOCKTYPE","Tổng 5 mục bên dưới:
 2. Cổ phiếu UpCom
 3. Trái phiếu doanh nghiệp
 4. Chứng chỉ quỹ
-5. Chứng chỉ quỹ (ETF)","/* === BC HNX01======
+5. Chứng chỉ quỹ (ETF)","/*
 ---4. GIÁ TRỊ CHỨNG KHOÁN GIAO DỊCH TOÀN THỊ TRƯỜNG (VND)
 ---5. KHỐI LƯỢNG CHỨNG KHOÁN GIAO DỊCH TOÀN THỊ TRƯỜNG (VND)
 */
@@ -353,13 +353,13 @@ FUND_DATA AS (
     FROM JAD_STOCKINFOR s
     WHERE s.""FloorCode"" = '02'
       AND s.""StockType"" = '3'
-          AND h.trade date = :ngay_gd
+	  AND h.trade date = :ngay_gd
 ),
 TONG AS (
 
 SELECT
     t.TRADEDATE,
-        ---GIÁ TRỊ GIAO DỊCH ------
+	---GIÁ TRỊ GIAO DỊCH ------
     SUM(CASE  WHEN t.MARKET_ID IN ('STO', 'STX')  THEN t.TRADE_QTY * t.TRADE_PRICE 
               ELSE 0  END ) AS GTGD_CPNY,
     SUM( CASE WHEN t.MARKET_ID = 'UPX'    THEN t.TRADE_QTY * t.TRADE_PRICE
@@ -370,8 +370,8 @@ SELECT
               ELSE 0   END    ) AS GTGD_CCQ,
     SUM(CASE  WHEN f.FUND_TYPE = 'E'      THEN t.TRADE_QTY * t.TRADE_PRICE
               ELSE 0   END    ) AS GTGD_ETF,
-        ---KHỐI LƯỢNG GIAO DỊCH -------
-        SUM(CASE  WHEN t.MARKET_ID IN ('STO', 'STX')    THEN t.TRADE_QTY    ELSE 0   END ) AS KLGD_CPNY,
+	---KHỐI LƯỢNG GIAO DỊCH -------
+	SUM(CASE  WHEN t.MARKET_ID IN ('STO', 'STX')    THEN t.TRADE_QTY    ELSE 0   END ) AS KLGD_CPNY,
     SUM(CASE WHEN t.MARKET_ID IN ('UPX')     THEN t.TRADE_QTY    ELSE 0   END ) AS KLGD_UPCOM,  
     SUM(CASE WHEN t.MARKET_ID IN ('HCX')     THEN t.TRADE_QTY    ELSE 0   END ) AS KLGD_TPDN,  
     SUM(CASE  WHEN F.FundType =' M'           THEN t.TRADE_QTY    ELSE 0   END ) AS KLGD_CCQ, 
@@ -384,21 +384,21 @@ ORDER BY t.TRADEDATE
 --- ── KẾT QUẢ  ─────────────────────────────────────────────────────────
 SELECT  TRADEDATE, 
     --- 4. GIÁ TRỊ CHỨNG KHOÁN GIAO DỊCH TOÀN THỊ TRƯỜNG (VND)
-            (GTGD_CPNY          + GTGD_UPCOM         + GTGD_TPDN         + GTGD_CCQ         + GTGD_ETF ) AS TONG_GTGD,
+    	(GTGD_CPNY 	 + GTGD_UPCOM	 + GTGD_TPDN	 + GTGD_CCQ	 + GTGD_ETF ) AS TONG_GTGD,
          GTGD_CPNY,
-                 GTGD_UPCOM,
-                 GTGD_TPDN,
-                 GTGD_CCQ,
-                 GTGD_ETF,
-        --- 5. Khối lượng chứng khoán giao dịch toàn thị trường (vnd)
-          ( KLGD_CPNY+ KLGD_UPCOM + KLGD_TPDN +  KLGD_CCQ + KLGD_ETF) AS TONG_KLGD, 
-           KLGD_CPNY,
-           KLGD_UPCOM,
-           KLGD_TPDN,
-           KLGD_CCQ,
-           KLGD_ETF
+		 GTGD_UPCOM,
+		 GTGD_TPDN,
+		 GTGD_CCQ,
+		 GTGD_ETF,
+	--- 5. Khối lượng chứng khoán giao dịch toàn thị trường (vnd)
+	  ( KLGD_CPNY+ KLGD_UPCOM + KLGD_TPDN +  KLGD_CCQ + KLGD_ETF) AS TONG_KLGD, 
+	   KLGD_CPNY,
+	   KLGD_UPCOM,
+	   KLGD_TPDN,
+	   KLGD_CCQ,
+	   KLGD_ETF
 FROM TONG 
-ORDER BY TRADEDATE        
+ORDER BY TRADEDATE	
 ;","Tổng 5 mục bên dưới: 
 1. Cổ phiếu Niêm Yết
 2. Cổ phiếu UpCom
@@ -586,7 +586,7 @@ Cách 2: Σ (GT vốn hóa) UpCom =(JAD_STOCKINFOR.closePrice * ""Khối lượn
 HOSE: Execution - Volume and Board Type in (G1, G2, G3, G4, G7,G8)
 HNX: Trade quantity and Board ID in (G1, G2, G3, G4, G7,G8)",,,,,,,,,,"---Xác định KL giao dịch khớp lệnh trên sổ lệnh:
 HOSE: Execution - Volume and Board Type in (G1, G2, G3, G4, G7,G8)
-HNX: Trade quantity and Board ID in (G1, G2, G3, G4, G7,G8)",,,,,,N/A,N/A,NULL (Dòng tiêu đề nhóm),"/*============BC HNX01======
+HNX: Trade quantity and Board ID in (G1, G2, G3, G4, G7,G8)",,,,,,N/A,N/A,NULL (Dòng tiêu đề nhóm),"/*
 ---7.   Giao dịch khớp lệnh
 */
 WITH TRADE_DATA AS (
@@ -1209,12 +1209,12 @@ FROM (
       FROM ( 
             SELECT  SYMBOL,TRADINGDATE,
                 ROW_NUMBER() OVER(PARTITION BY TRADINGDATE, SYMBOL ORDER BY TRADINGTIME DESC) RN 
-                        FROM JAD_STOCKINFOR 
-                        WHERE STOCKTYPE = '3' AND FundType =' M' --- CCQ
-                        AND FLOORCODE = '02' -- HNX
-                        AND TRADINGDATE = :ngay_gd
-                        ) WHERE RN = 1 
-                ) s ON h.issue_code = s.SYMBOL AND h.TRADEDATE = s.TRADINGDATE
+			FROM JAD_STOCKINFOR 
+			WHERE STOCKTYPE = '3' AND FundType =' M' --- CCQ
+			AND FLOORCODE = '02' -- HNX
+			AND TRADINGDATE = :ngay_gd
+			) WHERE RN = 1 
+		) s ON h.issue_code = s.SYMBOL AND h.TRADEDATE = s.TRADINGDATE
   WHERE market_id IN ('STX', 'UPX') -- Bảng giao dịch cổ phiếu
     AND board_id in ('G1', 'G2', 'G3', 'G4', 'G7', 'G8') -- GD khớp lệnh
     AND trade_date = :ngay_gd
@@ -1306,12 +1306,12 @@ FROM (
       FROM ( 
             SELECT  SYMBOL,TRADINGDATE,
                 ROW_NUMBER() OVER(PARTITION BY TRADINGDATE, SYMBOL ORDER BY TRADINGTIME DESC) RN 
-                        FROM JAD_STOCKINFOR 
-                        WHERE STOCKTYPE = '3' AND FundType =' E' --- ETF
-                        AND FLOORCODE = '02' -- HNX
-                        AND TRADINGDATE = :ngay_gd
-                        ) WHERE RN = 1 
-                ) s ON h.issue_code = s.SYMBOL AND h.TRADEDATE = s.TRADINGDATE
+			FROM JAD_STOCKINFOR 
+			WHERE STOCKTYPE = '3' AND FundType =' E' --- ETF
+			AND FLOORCODE = '02' -- HNX
+			AND TRADINGDATE = :ngay_gd
+			) WHERE RN = 1 
+		) s ON h.issue_code = s.SYMBOL AND h.TRADEDATE = s.TRADINGDATE
   WHERE H.market_id IN ('STX', 'STO','UPX') -- Bảng giao dịch cổ phiếu
     AND H.board_id in ('G1', 'G2', 'G3', 'G4', 'G7', 'G8') -- GD khớp lệnh
     AND H.trade_date = :ngay_gd
@@ -1489,12 +1489,12 @@ TRADE_BOOK_HNX.""Sell Foreign Investor Type Code"" <> '00' --Bán
 Board ID: T1, T2, T3, T4, TR là GD thỏa thuận",,,X,
 1,HNX01,     BÁO CÁO VỀ GIAO DỊCH TRÊN THỊ TRƯỜNG CỔ PHIẾU,Khối lượng giao dịch trái phiếu doanh nghiệp,,,,,,,,,,,,TPDN,,,"SGDCK, IDS",,N/A,N/A,NULL (Dòng tiêu đề nhóm),"---------- GIAO DICH THOA THUAN NĐTNN: TPDN
 SELECT trade_date,
-        ' ' AS KL_NN_TPDN_THOATHUAN,
-        KL_NN_MUA_TPDN_THOATHUAN,
-        KL_NN_BAN_TPDN_THOATHUAN,
-        ' ' AS GT_NN_TPDN_THOATHUAN,
-        GT_NN_MUA_TPDN_THOATHUAN,
-        GT_NN_BAN_TPDN_THOATHUAN
+	' ' AS KL_NN_TPDN_THOATHUAN,
+	KL_NN_MUA_TPDN_THOATHUAN,
+	KL_NN_BAN_TPDN_THOATHUAN,
+	' ' AS GT_NN_TPDN_THOATHUAN,
+	GT_NN_MUA_TPDN_THOATHUAN,
+	GT_NN_BAN_TPDN_THOATHUAN
 FROM (
   SELECT 
     SUM(CASE       WHEN buy_foreign_investor_type_code <> '00' THEN trade_quantity       ELSE 0    END) AS KL_NN_MUA_TPDN_THOATHUAN,
@@ -1507,7 +1507,7 @@ FROM (
     SELECT SYMBOL,TRADINGDATE
       FROM (
         SELECT  SYMBOL,TRADINGDATE,
-                                ROW_NUMBER() OVER(PARTITION BY TRADINGDATE, SYMBOL ORDER BY TRADINGTIME DESC) RN 
+				ROW_NUMBER() OVER(PARTITION BY TRADINGDATE, SYMBOL ORDER BY TRADINGTIME DESC) RN 
         FROM JAD_STOCKINFOR 
         WHERE STOCKTYPE = '1' -- trái phiếu
           AND FLOORCODE ='06' --- TPDN
@@ -1720,7 +1720,7 @@ FROM (
     SELECT SYMBOL
       FROM (
         SELECT  SYMBOL,TRADINGDATE,
-                                ROW_NUMBER() OVER(PARTITION BY TRADINGDATE, SYMBOL ORDER BY TRADINGTIME DESC) RN 
+				ROW_NUMBER() OVER(PARTITION BY TRADINGDATE, SYMBOL ORDER BY TRADINGTIME DESC) RN 
         FROM JAD_STOCKINFOR 
         WHERE STOCKTYPE = '2' -- CP
           AND FLOORCODE ='04' ----- SÀN UPCOM
@@ -2096,35 +2096,34 @@ JAD_STOCKINFOR.ContractMultiplier: hệ số nhân",--Buy Foreign Investor Type 
 JAD_STOCKINFOR","TRADE_BOOK_HNX.Trade quantity
 TRADE_BOOK_HNX.Trade price
 JAD_STOCKINFOR.ContractMultiplier: hệ số nhân",--Sell Foreign Investor Type Code <> 00 là NĐTNN bán,,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Kỳ báo cáo (Tháng),"Kỳ báo cáo: Tháng (Hiển thị trên mẫu biểu: Tháng ... năm ...)
+4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Ngày giao dịch,"Ngày giao dịch, để tổng hợp dữ liệu thuộc kỳ báo cáo",Báo cáo,Chiều,Dễ,,"MSS, MDDS",,,,Done,,,,,,,,,,,,,,,
+4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Kỳ báo cáo (Tháng),"Kỳ báo cáo: tháng... năm....
 Giá trị tính dữ liệu theo kỳ báo cáo: 
 - DL phát sinh trong kỳ 
-- Lũy kế từ đầu năm ....đến cuối kỳ báo cáo",Báo cáo,Chiều,Dễ,Tháng,"MSS, MDDS",,,,Done,,,,,,,,,,"-- Ngày đầu và cuối tháng N, tháng N-1
+- Lũy kế từ đầu năm ....đến cuối kỳ báo cáo",Báo cáo,Chiều,Dễ,,"MSS, MDDS",,,,Done,,,,,,,,,,"-- Ngày đầu và cuối tháng N, tháng N-1
 SELECT 
   -- Tháng báo cáo
-  TRUNC(TO_DATE(:P_MONTH, 'MM/YYYY'), 'MM') AS FROMDATE,
-  LAST_DAY(TO_DATE(:P_MONTH, 'MM/YYYY')) AS TODATE,
+  TRUNC(ngay_gd(:P_MONTH, 'MM/YYYY'), 'MM') AS FROMDATE,
+  LAST_DAY(ngay_gd(:P_MONTH, 'MM/YYYY')) AS TODATE,
   -- Tháng trước
-  ADD_MONTHS(TRUNC(TO_DATE(:P_MONTH, 'MM/YYYY'), 'MM'), -1) AS PREV_FROMDATE,
-  TRUNC(TO_DATE(:P_MONTH, 'MM/YYYY'), 'MM') - 1 AS PREV_TODATE
-FROM DUAL;",Tham số báo cáo,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Sàn,HNX,Báo cáo,Chiều,Dễ,,,,,,Done,,,,,,,,,"1. Chỉ số: 
-N/A (Bảng jad_marketinfor không có thông tin sàn)
+  ADD_MONTHS(TRUNC(ngay_gd(:P_MONTH, 'MM/YYYY'), 'MM'), -1) AS PREV_FROMDATE,
+  TRUNC(ngay_gd(:P_MONTH, 'MM/YYYY'), 'MM') - 1 AS PREV_TODATE
+FROM DUAL;",,,,,
+4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Sàn,HNX,Báo cáo,Chiều,Dễ,,,,,,Done,,,,,,,MDDS.JAD_MARKETINFOR (m),m.tscprodgrpid,"1. Chỉ số: 
+m.tscprodgrpid IN ('STX', 'UPX') -- Có thể bỏ qua ĐK này
 2. Giá trị chứng khoán giao dịch (VND), Khối lượng chứng khoán giao dịch (chứng khoán):
 ",,Điều kiện dữ liệu,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Chỉ số,Dòng tiêu đề nhóm,Báo cáo,,,,,,,,Done,,,,,,,N/A,N/A,NULL (Dòng tiêu đề nhóm),,,,,,X
+4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),1. Chỉ số,Dòng tiêu đề nhóm,Báo cáo,,,,,,,,Done,,,,,,,N/A,N/A,NULL (Dòng tiêu đề nhóm),,,,,,X
 4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Chỉ số,"Gồm các chỉ số:
 HNX-Index
 HNXFFIndex
 HNXUpcom-Index
-HNXFFUpcomIndex",Báo cáo,Chiều,Dễ,Chỉ số,MDDS,,,,Done,,,,,,,mdds.jad_marketinfor,marketcode,"* Chỉ số HNXIndex, UPComIndex: 
-marketcode IN ('HNX', 'UPCOM')
-* Chỉ số HNXFFIndex, HNXFFUpcomIndex: 
-NULL (Không còn 2 chỉ số này)","WITH daily_eod_marketinfor AS (
+HNXFFUpcomIndex",Báo cáo,Chiều,Dễ,Chỉ số,MDDS,,,,Done,,,,,,,MDDS.JAD_MARKETINFOR,"marketcode, indexname","-- Chỉ số HNXIndex, UPComIndex:
+marketcode IN ('HNX', 'UPCOM') ","WITH daily_eod_marketinfor AS (
   SELECT 
       marketcode
     , indexname
-    , tradingdate
+    , ngay_gd(tradingdate, 'DD/MM/YYYY') tradingdate -- Apache: Chuyển DD/MM/YYYY thành YYYY-MM-DD: from_unixtime(unix_timestamp(TRADINGDATE, 'dd/MM/yyyy'), 'yyyy-MM-dd')
     , marketindex
   FROM (
     SELECT 
@@ -2133,7 +2132,7 @@ NULL (Không còn 2 chỉ số này)","WITH daily_eod_marketinfor AS (
       , tradingdate
       , marketindex
       , ROW_NUMBER() OVER (PARTITION BY marketcode, tradingdate ORDER BY indextime DESC) AS rn
-    FROM jad_marketinfor
+    FROM JAD_MARKETINFOR
     WHERE marketcode IN ('HNX', 'UPCOM')
   )
   WHERE rn = 1
@@ -2170,86 +2169,64 @@ SELECT
   , index_prev AS INDEX_CUOITHANGTRUOC
   , (index_curr - index_prev) AS INDEX_TANGGIAMTRONGKY
 FROM index_data;",,,,,X
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Chỉ số - Trong kỳ - phát sinh,,Báo cáo,Chỉ tiêu cơ sở,Dễ,"Chỉ số, Ngày",MDDS,,,,Done,,,,,,,mdds.jad_marketinfor,marketindex,"* Giá trị Index cuối tháng N: Lấy dữ liệu tại thời điểm cuối cùng trong tháng.
-- MAX(tradingdate) trong khoảng tradingdate >= :fromdate AND tradingdate <= :todate
-- Lấy ROW_NUMBER() = 1 với ORDER BY indextime DESC",,Index cuối tháng: Giá trị chỉ số tại ngày cuối cùng có dữ liệu giao dịch trong tháng,,,,X
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Chỉ số - Trong kỳ - Tăng/Giảm,,Báo cáo,Chỉ tiêu phái sinh,Dễ,"Chỉ số, Ngày",MDDS,,,,Done,,,,,,,mdds.jad_marketinfor,marketindex,"* Giá trị Index cuối tháng N-1: Lấy dữ liệu tại thời điểm cuối cùng trong tháng.
-MAX(tradingdate) trong khoảng tradingdate >= :fromdate_prev AND tradingdate <= :todate_prev
-Lấy ROW_NUMBER() = 1 với ORDER BY indextime DESC
-* Tăng/Giảm trong kỳ = Index cuối tháng N - Index cuối tháng N-1",,Tăng/Giảm trong kỳ: Index cuối tháng - Index cuối tháng trước,,,,X
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Chỉ số - Trong kỳ - phát sinh - HNX-Index,HNX-Index,Báo cáo,Chỉ tiêu cơ sở,Trùng,"Chỉ số, Ngày",MDDS,,,,Done,,,,,,,mdds.jad_marketinfor,marketindex,"* Chỉ số Index:
+4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Chỉ số - Trong kỳ - phát sinh,,Báo cáo,Chỉ tiêu cơ sở,Dễ,"Chỉ số, Ngày",MDDS,,,,Done,,,,,,,MDDS.JAD_MARKETINFOR,marketindex,"* Giá trị Index cuối tháng N:
+- Lấy dữ liệu cuối ngày của từng chỉ số index: indextime = MAX(indextime) trong ngày
+- Lấy ngày cuối cùng có dữ liệu trong tháng báo cáo: MAX(tradingdate >= :fromdate AND tradingdate <= :todate)",,Index cuối tháng: Giá trị chỉ số tại ngày cuối cùng có dữ liệu giao dịch trong tháng,,,,X
+4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Chỉ số - Trong kỳ - Tăng/Giảm,,Báo cáo,Chỉ tiêu phái sinh,Dễ,"Chỉ số, Ngày",MDDS,,,,Done,,,,,,,MDDS.JAD_MARKETINFOR,marketindex,"* Giá trị Index cuối tháng N-1:
+- Lấy dữ liệu cuối ngày của từng chỉ số index: indextime = MAX(indextime) trong ngày
+- Lấy ngày cuối cùng có dữ liệu trong tháng báo cáo: MAX(tradingdate >= :prev_fromdate AND tradingdate <= :prev_todate)
+* Tăng/Giảm trong kỳ = Index cuối tháng - Index cuối tháng trước",,Tăng/Giảm trong kỳ: Index cuối tháng - Index cuối tháng trước,,,,X
+4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Chỉ số - Trong kỳ - phát sinh - HNX-Index,HNX-Index,Báo cáo,Chỉ tiêu cơ sở,Trùng,"Chỉ số, Ngày",MDDS,,,,Done,,,,,,,MDDS.JAD_MARKETINFOR,marketindex,"* Chỉ số:
 - marketcode IN ('HNX')
 * Giá trị Index cuối tháng N:
-- MAX(tradingdate) trong khoảng tradingdate >= :fromdate AND tradingdate <= :todate
-- Lấy ROW_NUMBER() = 1 với ORDER BY indextime DESC",,,,,,X
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Chỉ số - Trong kỳ - phát sinh - HNXFFIndex,HNXFFIndex,Báo cáo,Chỉ tiêu cơ sở,Trùng,"Chỉ số, Ngày",MDDS,,,,Done,,,,,,,N/A,N/A,NULL,,Không còn chỉ số này,,,,X
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Chỉ số - Trong kỳ - phát sinh - HNXUpcom-Index,HNXUpcom-Index,Báo cáo,Chỉ tiêu cơ sở,Trùng,"Chỉ số, Ngày",MDDS,,,,Done,,,,,,,mdds.jad_marketinfor,marketindex,"* Chỉ số Index:
+- indextime = MAX(indextime) trong ngày
+- MAX(tradingdate >= :fromdate AND tradingdate <= :todate)",,,,,,X
+4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Chỉ số - Trong kỳ - phát sinh - HNXFFIndex,HNXFFIndex,Báo cáo,Chỉ tiêu cơ sở,Trùng,"Chỉ số, Ngày",MDDS,,,,Done,,,,,,,N/A,N/A,NULL,,Không có chỉ số này,,,,X
+4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Chỉ số - Trong kỳ - phát sinh - HNXUpcom-Index,HNXUpcom-Index,Báo cáo,Chỉ tiêu cơ sở,Trùng,"Chỉ số, Ngày",MDDS,,,,Done,,,,,,,MDDS.JAD_MARKETINFOR,marketindex,"* Chỉ số:
 - marketcode IN ('UPCOM')
 * Giá trị cuối tháng N:
-- MAX(tradingdate) trong khoảng tradingdate >= :fromdate AND tradingdate <= :todate
-- Lấy ROW_NUMBER() = 1 với ORDER BY indextime DESC",,,,,,X
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Chỉ số - Trong kỳ - phát sinh - HNXFFUpcomIndex,HNXFFUpcomIndex,Báo cáo,Chỉ tiêu cơ sở,Trùng,"Chỉ số, Ngày",MDDS,,,,Done,,,,,,,N/A,N/A,NULL,,Không còn chỉ số này,,,,X
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Chỉ số - Trong kỳ - Tăng/Giảm - HNX-Index,HNX-Index,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Chỉ số, Ngày",MDDS,,,,Done,,,,,,,mdds.jad_marketinfor,marketindex,"* Chỉ số Index:
+- indextime = MAX(indextime) trong ngày
+- MAX(tradingdate >= :fromdate AND tradingdate <= :todate)",,,,,,X
+4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Chỉ số - Trong kỳ - phát sinh - HNXFFUpcomIndex,HNXFFUpcomIndex,Báo cáo,Chỉ tiêu cơ sở,Trùng,"Chỉ số, Ngày",MDDS,,,,Done,,,,,,,N/A,N/A,NULL,,Không có chỉ số này,,,,X
+4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Chỉ số - Trong kỳ - Tăng/Giảm - HNX-Index,HNX-Index,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Chỉ số, Ngày",MDDS,,,,Done,,,,,,,MDDS.JAD_MARKETINFOR,marketindex,"* Chỉ số:
 - marketcode IN ('HNX')
 * Giá trị Index cuối tháng N:
-- MAX(tradingdate) trong khoảng tradingdate >= :fromdate AND tradingdate <= :todate
-- Lấy ROW_NUMBER() = 1 với ORDER BY indextime DESC
+- indextime = MAX(indextime) trong ngày
+- MAX(tradingdate >= :fromdate AND tradingdate <= :todate)
 * Giá trị Index cuối tháng N-1:
-- MAX(tradingdate) trong khoảng tradingdate >= :fromdate_prev AND tradingdate <= :todate_prev
-- Lấy ROW_NUMBER() = 1 với ORDER BY indextime DESC
-* Tăng/Giảm trong kỳ = Index cuối N - Index cuối tháng N-1",,,,,,X
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Chỉ số - Trong kỳ - Tăng/Giảm - HNXFFIndex,HNXFFIndex,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Chỉ số, Ngày",MDDS,,,,Done,,,,,,,N/A,N/A,NULL,,Không còn chỉ số này,,,,X
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Chỉ số - Trong kỳ - Tăng/Giảm - HNXUpcom-Index,HNXUpcom-Index,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Chỉ số, Ngày",MDDS,,,,Done,,,,,,,mdds.jad_marketinfor,marketindex,"* Chỉ số Index:
+- indextime = MAX(indextime) trong ngày
+- MAX(tradingdate >= :fromdate AND tradingdate <= :todate)
+* Tăng/Giảm trong kỳ = Index cuối tháng - Index cuối tháng trước",,,,,,X
+4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Chỉ số - Trong kỳ - Tăng/Giảm - HNXFFIndex,HNXFFIndex,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Chỉ số, Ngày",MDDS,,,,Done,,,,,,,N/A,N/A,NULL,,Không có chỉ số này,,,,X
+4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Chỉ số - Trong kỳ - Tăng/Giảm - HNXUpcom-Index,HNXUpcom-Index,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Chỉ số, Ngày",MDDS,,,,Done,,,,,,,MDDS.JAD_MARKETINFOR,marketindex,"* Chỉ số:
 - marketcode IN ('UPCOM')
 * Giá trị Index cuối tháng N:
-- MAX(tradingdate) trong khoảng tradingdate >= :fromdate AND tradingdate <= :todate
-- Lấy ROW_NUMBER() = 1 với ORDER BY indextime DESC
+- indextime = MAX(indextime) trong ngày
+- MAX(tradingdate >= :fromdate AND tradingdate <= :todate)
 * Giá trị Index cuối tháng N-1:
-- MAX(tradingdate) trong khoảng tradingdate >= :fromdate_prev AND tradingdate <= :todate_prev
-- Lấy ROW_NUMBER() = 1 với ORDER BY indextime DESC
-* Tăng/Giảm trong kỳ = Index cuối N - Index cuối tháng N-1",,,,,,X
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Chỉ số - Trong kỳ - Tăng/Giảm - HNXFFUpcomIndex,HNXFFUpcomIndex,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Chỉ số, Ngày",MDDS,,,,Done,,,,,,,N/A,N/A,NULL,,Không còn chỉ số này,,,,X
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),2. Giá trị chứng khoán giao dịch (VND),"Σ Giá trị chứng khoán giao dịch (VND), sàn HNX",Báo cáo,Chỉ tiêu phái sinh,Dễ,,,,X,,Done,Phụ lục 05.2,,,,,,,,,,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Cổ phiếu niêm yết - Trong kỳ - phát sinh,Trong kỳ - phát sinh,Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK, Sàn, Tháng",,x,X,,Done,Phụ lục 05.2,CPNY,,,,,"ordertrade.trade_book_hnx (t),
-mdds.jad_stockinfor (s)","t.trade_quantity,
-t.trade_price","* ĐK link bảng ordertrade.trade_book_hnx (t) và mdds.jad_stockinfor (s): 
+- indextime = MAX(indextime) trong ngày
+- MAX(tradingdate >= :fromdate AND tradingdate <= :todate)
+* Tăng/Giảm trong kỳ = Index cuối tháng - Index cuối tháng trước",,,,,,X
+4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Chỉ số - Trong kỳ - Tăng/Giảm - HNXFFUpcomIndex,HNXFFUpcomIndex,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Chỉ số, Ngày",MDDS,,,,Done,,,,,,,N/A,N/A,NULL,,Không có chỉ số này,,,,X
+4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),2. Giá trị chứng khoán giao dịch (VND),"Σ Giá trị chứng khoán giao dịch (VND), sàn HNX",Báo cáo,Chỉ tiêu phái sinh,Dễ,,CSDLTT,,X,,Done,Phụ lục 05.2,,,,,,,,,,,,,,
+4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Cổ phiếu niêm yết - Trong kỳ - phát sinh,Trong kỳ - phát sinh,Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK, Sàn, Tháng",CSDLTT,x,X,,Done,Phụ lục 05.2,CPNY,,,,,"csdltt.TRADE_BOOK_HNX (t)
+mdds.JAD_STOCKINFOR (s)",t.trade_quantity * t.trade_price,"* ĐK link bảng: 
 t.issue_code = s.symbol AND t.trade_date = s.tradingdate
-* Bảng ordertrade.trade_book_hnx (t):
-t.market_id = 'STX' -- Giao dịch Cổ phiếu niêm yết trên HNX
-t.trade_date >= :fromdate AND t.trade_date <= :todate -- Trong kỳ - Phát sinh
-* Bảng mdds.jad_stockinfor (s):
-s.stocktype = '2' -- Loại CK = Cổ phiếu
-s.tradingdate >= :fromdate AND s.tradingdate <= :todate -- Trong khoảng ngày đầu - cuối của tháng báo cáo
-Dữ liệu cuối ngày từng mã CK: (ROW_NUMBER() OVER(PARTITION BY marketid, tradingdate ORDER BY indextime DESC, sequence DESC)) = 1
-* Giá trị giao dịch = SUM(t.trade_quantity * t.trade_price)",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Cổ phiếu niêm yết - Trong kỳ - Tăng/giảm so với kỳ trước (%),Trong kỳ - Tăng/giảm so với kỳ trước (%),Báo cáo,Chỉ tiêu phái sinh,TB,"Loại CK, Sàn, Tháng",,,,,,,,,,,,"ordertrade.trade_book_hnx (t),
-mdds.jad_stockinfor (s)","t.trade_quantity,
-t.trade_price","* ĐK link bảng ordertrade.trade_book_hnx (t) và mdds.jad_stockinfor (s): 
-t.issue_code = s.symbol AND t.trade_date = s.tradingdate
-* Bảng ordertrade.trade_book_hnx (t):
-t.market_id = 'STX' -- Giao dịch Cổ phiếu niêm yết trên HNX
-t.trade_date >= :fromdate AND t.trade_date <= :todate -- Tháng báo cáo
-t.trade_date >= :fromdate_prev AND t.trade_date <= :todate_prev -- Tháng trước
-* Bảng mdds.jad_stockinfor (s):
-s.stocktype = '2' -- Loại CK = Cổ phiếu
-s.tradingdate >= :fromdate AND s.tradingdate <= :todate -- Tháng báo cáo
-s.tradingdate >= :fromdate_prev AND s.tradingdate <= :todate_prev -- Tháng trước
-Dữ liệu cuối ngày từng mã CK: (ROW_NUMBER() OVER(PARTITION BY marketid, tradingdate ORDER BY indextime DESC, sequence DESC)) = 1
-* Công thức:
-Giá trị giao dịch = SUM(t.trade_quantity * t.trade_price)
-Tăng/giảm so với cùng kỳ (%) = Giá trị giao dịch tháng báo cáo - Giá trị giao dịch tháng trước",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Cổ phiếu niêm yết - Cộng dồn đến cuối kỳ - phát sinh,Cộng dồn đến cuối kỳ - phát sinh,Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK, Sàn, Tháng",CSDLTT,,,,,,,,,,,"ordertrade.trade_book_hnx (t),
-mdds.jad_stockinfor (s)","t.trade_quantity,
-t.trade_price","* ĐK link bảng ordertrade.trade_book_hnx (t) và mdds.jad_stockinfor (s): 
-t.issue_code = s.symbol AND t.trade_date = s.tradingdate
-* Bảng ordertrade.trade_book_hnx (t):
-t.market_id = 'STX' -- Giao dịch Cổ phiếu niêm yết trên HNX
-t.trade_date >= :fromdate AND t.trade_date <= :todate -- Trong kỳ - Phát sinh
-* Bảng mdds.jad_stockinfor (s):
-s.stocktype = '2' -- Loại CK = Cổ phiếu
-s.tradingdate >= :fromdate AND s.tradingdate <= :todate -- Trong khoảng ngày đầu - cuối của tháng báo cáo
-Dữ liệu cuối ngày từng mã CK: (ROW_NUMBER() OVER(PARTITION BY marketid, tradingdate ORDER BY indextime DESC, sequence DESC)) = 1
-* Giá trị giao dịch = SUM(t.trade_quantity * t.trade_price)",,,,,,
+* Giao dịch Cổ phiếu niêm yết trên HNX:
+t.market_id = 'STX'
+* Loại CK = Cổ phiếu:
+s.stocktype = '2'
+* Trong kỳ - phát sinh:
+"," SELECT --""Market ID"" AS marketid,
+    ""Trade date"" AS tradedate,
+   SUM(""Trade price"" * ""Trade quantity"")) AS GT_giaodich
+  FROM TRADE_BOOK_HNX h
+  WHERE ""Market ID"" IN ('STX','UPX')  -- CP
+ --and h.Board ID in (G1, G2, G3, G4, G7, G8) -- Giao dịch khớp lệnh
+ AND ""Trade date"" BETWEEN :from_date AND :ngay_gd
+  GROUP BY h.Trade date",,,,,
+4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Cổ phiếu niêm yết - Trong kỳ - Tăng/giảm so với kỳ trước (%),Trong kỳ - Tăng/giảm so với kỳ trước (%),Báo cáo,Chỉ tiêu phái sinh,TB,"Loại CK, Sàn, Tháng",CSDLTT,,,,,,,,,,,,,,,,,,,
+4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Cổ phiếu niêm yết - Cộng dồn đến cuối kỳ - phát sinh,Cộng dồn đến cuối kỳ - phát sinh,Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK, Sàn, Tháng",CSDLTT,,,,,,,,,,,,,,,,,,,
 4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Cổ phiếu niêm yết - Cộng dồn đến cuối kỳ - Tăng/giảm so với cùng kỳ (%),Cộng dồn đến cuối kỳ - phát sinh,Báo cáo,Chỉ tiêu phái sinh,TB,"Loại CK, Sàn, Tháng",CSDLTT,,,,,,,,,,,,,,,,,,,
 4,HNX04,BÁO CÁO TỔNG HỢP VỀ QUY MÔ TTCK -LK,Cổ phiếu đăng ký giao dịch,"-- Cổ phiếu đăng ký giao dịch: chỉ có trên UpCom
 ""FloorCode"" = 04-upcom and 

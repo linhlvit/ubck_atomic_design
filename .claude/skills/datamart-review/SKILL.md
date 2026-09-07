@@ -1,14 +1,23 @@
 ---
 name: datamart-review
 description: |
-  Review cross-check tài liệu BA analyst ↔ thiết kế Datamart (HLD + LLD) cho một module.
-  Mục đích: đảm bảo chuỗi Source → Atomic → Datamart → Báo cáo/Dashboard/DataExplorer
-  phản ánh đúng logic nghiệp vụ theo BA.
+  Review cross-check tài liệu BA analyst ↔ thiết kế Datamart (HLD + LLD) cho một module hoặc quét toàn bộ phân hệ.
+  Mục đích: đảm bảo chuỗi Source → Atomic → Datamart → Báo cáo/Dashboard/DataExplorer phản ánh đúng logic nghiệp vụ theo BA.
 
-  Sử dụng khi: cần review toàn bộ hoặc một nhóm cụ thể trong một module Datamart.
-  Gọi tay: /datamart-review [MODULE] [nhóm N] (nhóm N tuỳ chọn — bỏ qua để review toàn module)
+  Hỗ trợ 2 chế độ review linh hoạt:
+    1. Macro-Review (Tiến độ & Trạng thái): Quét nhanh đối soát chéo toàn phân hệ (dùng script tự động hóa
+       `python scripts/datamart_progress_analyzer.py --module [MODULE]`), xuất Ma trận đối soát tiến độ (BA Status ↔ Datamart Status),
+       phân loại 100% chỉ tiêu PENDING theo Cây 6 Nhánh Nguyên nhân, ma trận đối soát số lượng KPI per-nhóm và lập danh sách blocker.
+    2. Micro-Review (Chi tiết kỹ thuật từng nhóm): Đi sâu 4 lớp (HLD → Attributes → Detail Mapping → Registry)
+       cho từng nhóm cụ thể theo kế hoạch đã duyệt.
+    3. Review theo Issue/Bug report (Kịch bản E): Trace nhanh 5 tầng cho chỉ tiêu/lỗi cụ thể.
 
-  Input bắt buộc: BA_analyst_{MODULE}.csv + DTM_{MODULE}_HLD.md +
+  Gọi tay:
+    - Macro-Review toàn module: /datamart-review [MODULE]
+    - Micro-Review nhóm cụ thể: /datamart-review [MODULE] [nhóm N]
+    - Chạy CLI phân tích tiến độ: python scripts/datamart_progress_analyzer.py --module [MODULE]
+
+  Input bắt buộc: BA_analyst_{MODULE}.csv (hỗ trợ file gộp BA_analyst_GSĐC.csv) + DTM_{MODULE}_HLD.md +
                   Datamart/lld/datamart_attributes.csv (summary) hoặc Datamart/lld/{MODULE}/*.csv (detail) +
                   DTM_{MODULE}_Detail_Mapping.csv +
                   Datamart/datamart_model.yaml (registry schema cross-module — review Lớp 4) +
@@ -20,12 +29,21 @@ description: |
 
 Đọc file này TRƯỚC KHI bắt đầu review bất kỳ module nào.
 
+> **QUY ƯỚC CLAUDE CODE (BẮT BUỘC):**
+> - Claude đóng vai trò Data Model Reviewer độc lập, kiểm soát tiến độ thiết kế Datamart vs trạng thái BA mapping.
+> - Người vận hành và phê duyệt là **human** (Data Modeler / Trưởng nhóm thiết kế).
+> - Claude thực thi phân tích tiến độ tự động bằng công cụ **Bash**: `python scripts/datamart_progress_analyzer.py --module [MODULE]`.
+> - Claude đọc/tra cứu tài liệu bằng **View**, **Grep**, **Glob**.
+> - **QUYẾT ĐỊNH CỨNG:** Claude **TUYỆT ĐỐI KHÔNG tự Edit trực tiếp** vào file HLD, LLD (`Attributes.csv`, `Detail_Mapping.csv`) hay Model Registry (`datamart_model.yaml`). Mọi sửa đổi phải trình bày cho human duyệt và chuyển giao cho skill con (`datamart-hld-design`, `datamart-lld-design`) thực hiện.
+
 ## Tài nguyên đi kèm
 
+- **Công cụ tự động hóa:**
+  - `scripts/datamart_progress_analyzer.py` — script Python chạy CLI tự động đối chiếu BA ↔ HLD ↔ Detail Mapping, xuất Ma trận đối soát tiến độ, phân loại PENDING và cảnh báo lệch số dòng KPI.
 - **Reference:**
-  - [`reference/review_checklist.md`](reference/review_checklist.md) — checklist chi tiết 3 lớp HLD/Attributes/Detail Mapping
-  - [`reference/issue_classification.md`](reference/issue_classification.md) — phân loại vấn đề và hành động tương ứng
-  - [`reference/ba_source_profile.md`](reference/ba_source_profile.md) — **cấu trúc THẬT của `BRD/BA/*.csv`**: header nằm dòng nào, vị trí cột theo từng module, giá trị thật của `Phân loại`/`Trạng thái mapping`/`Loại dữ liệu`, 6 bẫy parse. **Đọc TRƯỚC khi viết bất kỳ script đọc BA nào**
+  - [`reference/review_checklist.md`](reference/review_checklist.md) — checklist 2 chế độ: Macro-Review toàn module & Micro-Review 4 lớp chi tiết (HLD / Attributes / Detail Mapping / Registry)
+  - [`reference/issue_classification.md`](reference/issue_classification.md) — Ma trận đối soát tiến độ (Cross-status Matrix), Cây phân loại 6 nhánh nguyên nhân PENDING, và 5 Kịch bản phát hiện vấn đề (A, B, C, D, E)
+  - [`reference/ba_source_profile.md`](reference/ba_source_profile.md) — **cấu trúc THẬT của `BRD/BA/*.csv`**: header nằm dòng nào (dòng 1 cho cả 11 file), phân bổ delimiter (6 file `,` và 5 file `;`), vị trí cột theo từng module, file gộp `BA_analyst_GSĐC.csv`, giá trị thật của `Phân loại`/`Trạng thái mapping`/`Loại dữ liệu`, các bẫy parse. **Đọc TRƯỚC khi viết bất kỳ script đọc BA nào**
 - **Skills liên quan (gọi khi cần):**
   - `datamart-hld-design` — gọi khi nhóm HLD = PENDING nhưng BA = Done (cần thiết kế mới), HOẶC khi HLD đã tồn tại nhưng sai do thiết kế/nguồn Atomic lỗi thời (Kịch bản D) — mọi thay đổi nội dung nghiệp vụ của HLD đều qua skill này, không tự Edit trực tiếp
   - `datamart-lld-design` — gọi khi logic BA thay đổi (cần cập nhật Attributes hoặc Detail Mapping), HOẶC bất kỳ thay đổi nội dung nào vào Attributes/Detail Mapping/`datamart_model.yaml` (registry) — không tự Edit trực tiếp
@@ -34,7 +52,7 @@ description: |
 
 ## NGUYÊN TẮC CỐT LÕI
 
-### Chuỗi truy vết đầy đủ
+### 1. Chuỗi truy vết đầy đủ
 
 ```
 BA analyst (logic nghiệp vụ)
@@ -55,97 +73,143 @@ Không so sánh BA trực tiếp với Datamart mà bỏ qua lớp Atomic.
 
 **Quy tắc bổ sung — không tin theo Attributes ghi gì, phải verify Atomic YAML thật:** Attributes ghi `atomic_table.atomic_column` không có nghĩa là field đó thực sự tồn tại trong Atomic approved. Một KPI có thể bị đánh dấu READY suốt nhiều tuần dù field tham chiếu chưa từng có trong YAML — vì không ai đối chiếu ngược lại approved YAML mà chỉ tin theo những gì Attributes/Detail Mapping đã ghi. Khi review Lớp 2, **luôn mở YAML approved và đếm số attribute thật** trước khi chấp nhận 1 cột Done/READY là đúng — không suy luận từ tên cột "nghe hợp lý" (VD: `record_tp_code`, `record_status_code` nghe rất hợp lý cho 1 entity Violation nhưng có thể chưa từng được thiết kế).
 
-### Phân biệt 5 kịch bản phát hiện vấn đề
+### 2. Ma trận Đối soát Tiến độ Chéo (Cross-status Matrix)
+
+Trong Macro-Review, đối chiếu trực tiếp giữa trạng thái phân tích của BA và trạng thái thiết kế Datamart:
+- **BA Status:** `Done` / `Doing` / `Pending` / `Chưa có trong BA`.
+- **Datamart Status:** `READY` (Fact/Dim/Logic hoàn tất) / `PENDING` (Chưa xong) / `Chưa có trong Datamart` (Thiếu dòng thiết kế).
+
+### 3. Cây Phân loại Chuyên sâu 6 Nhánh Nguyên nhân PENDING
+
+Mọi chỉ tiêu Datamart PENDING bắt buộc phải phân loại chính xác 100% vào đúng 1 trong 6 nhánh:
+1. **BA Pending:** BA chưa phân tích xong (`Trạng thái mapping` ≠ Done, là Pending/Doing/failed).
+2. **Chưa có mapping nguồn từ BA:** BA ghi Done nhưng cột nguồn trống, `N/A`, ghi chú "chưa có CSDL", hoặc `Loại dữ liệu` = `Chưa có CSDL - Map biểu mẫu`.
+3. **Thiếu nguồn dữ liệu ngoại lai:** Cần dữ liệu từ hệ thống ngoài (`UAT_VSDC`, `VSD`, `SCMS`, `SBV`, v.v.) chưa ingest vào DWH.
+4. **Join đa nguồn phức tạp:** Yêu cầu kết hợp dữ liệu giữa nhiều hệ thống chưa được chuẩn hóa ở Atomic (`NHNCK` & `SCMS`, v.v.).
+5. **Datamart Pending:** BA đã Done và nguồn nội bộ đầy đủ, nhưng Datamart chưa thiết kế Fact/Dim hoặc chưa hoàn thiện Detail Mapping.
+6. **Lệch số lượng / Schema out of sync:** Lệch số dòng KPI giữa BA và HLD, hoặc trỏ tới bảng Atomic chưa approved / deprecated.
+
+### 4. Phân biệt 5 kịch bản phát hiện vấn đề
 
 | Kịch bản | Dấu hiệu | Hành động |
 |---|---|---|
 | **A — HLD thiếu / PENDING, BA đã Done** | HLD status = PENDING hoặc nhóm chưa có trong HLD, BA = Done với nguồn đầy đủ | Gọi `datamart-hld-design` để thiết kế/cập nhật |
 | **B — Logic BA thay đổi** | BA cập nhật công thức/nguồn/filter mới, Attributes hoặc Detail Mapping chưa phản ánh | Gọi `datamart-lld-design` để sửa LLD |
-| **C — Lỗi kỹ thuật** | Lỗi không do BA đổi logic — thiếu Section, heading sai cấp, bảng KPI thiếu cột, CSV lệch cột do sed/replace_all, sai `data_domain`/`data_type`/`nullable`, thiếu `src_stm_code`, physical name sai chuẩn, `etl_logic` tham chiếu cột mart... (Attributes/Detail Mapping/registry HOẶC HLD) | **Trình bày action đề xuất → chờ user xác nhận → gọi skill con để sửa.** KHÔNG tự Edit trực tiếp |
+| **C — Lỗi kỹ thuật** | Lỗi không do BA đổi logic — thiếu Section (Section 4 Reuse Analysis), heading sai cấp, bảng KPI thiếu cột (chưa đủ 7 cột có cột `Trạng thái`), CSV lệch cột do sed/replace_all, sai `data_domain`/`data_type`/`nullable`, thiếu `src_stm_code`, physical name sai chuẩn, `etl_logic` tham chiếu cột mart... (Attributes/Detail Mapping/registry HOẶC HLD) | **Trình bày action đề xuất → Claude DỪNG chờ human xác nhận → gọi skill con để sửa.** KHÔNG tự Edit trực tiếp |
 | **D — HLD sai do thiết kế/nguồn Atomic lỗi thời** | HLD đã tồn tại, đánh READY, nhưng trỏ nhầm nguồn Atomic đã deprecated/tái cấu trúc, sai grain, sai entity, hoặc logic nghiệp vụ không còn khớp Atomic hiện hành — khác Kịch bản A (không phải PENDING) và khác Kịch bản C (đây là lỗi nội dung/logic, không phải lỗi kỹ thuật thuần cấu trúc) | Gọi `datamart-hld-design` để thiết kế lại — KHÔNG tự sửa tay nội dung HLD (Fact, grain, nguồn Atomic, bảng KPI) dù đã xác định rõ hướng sửa |
-| **E — Review theo issue/bug report** | User báo 1 vấn đề cụ thể (VD: "thiếu TRADINGTIME", "P/E tính sai", "biểu đồ KT thiếu dữ liệu intraday") — cần trace nhanh thay vì review tuần tự toàn module | Dùng **BƯỚC 0-ALT** (xem bên dưới) thay cho Bước 0/0b/1 thông thường. Trace toàn bộ chuỗi Source → Atomic → HLD → LLD → Flat cho field/chỉ tiêu liên quan. Xuất bảng trạng thái per-tầng (✅/⚠️/❌). Xác định blocker cụ thể + Open Issue liên quan |
+| **E — Review theo issue/bug report** | Human báo 1 vấn đề cụ thể (VD: "thiếu TRADINGTIME", "P/E tính sai", "biểu đồ KT thiếu dữ liệu intraday") — cần trace nhanh thay vì review tuần tự toàn module | Dùng **BƯỚC 0-ALT** (xem bên dưới) thay cho Bước 0/0b/1 thông thường. Trace toàn bộ chuỗi Source → Atomic → HLD → LLD → Flat cho field/chỉ tiêu liên quan. Xuất bảng trạng thái per-tầng (✅/⚠️/❌). Xác định blocker cụ thể + Open Issue liên quan |
 
-> **Nguyên tắc tổng quát — bắt buộc, áp dụng cho MỌI thay đổi nội dung (không chỉ 4 kịch bản trên):**
-> - Bất kỳ thay đổi nào chạm vào **nội dung nghiệp vụ/thiết kế của HLD** (thêm/sửa Nhóm, đổi nguồn Atomic, đổi Fact/Dimension/grain, đổi công thức KPI, thêm Cụm Data Lineage...) → luôn qua `datamart-hld-design`, dù đã tự xác định rõ cách sửa qua quá trình review. Không tự Edit trực tiếp các phần này.
+> **Nguyên tắc tổng quát — bắt buộc cho Claude, áp dụng cho MỌI thay đổi nội dung (không chỉ 4 kịch bản trên):**
+> - Bất kỳ thay đổi nào chạm vào **nội dung nghiệp vụ/thiết kế của HLD** (thêm/sửa Nhóm, đổi nguồn Atomic, đổi Fact/Dimension/grain, đổi công thức KPI, thêm Cụm Data Lineage...) → luôn qua `datamart-hld-design`, dù đã tự xác định rõ cách sửa qua quá trình review. Claude KHÔNG ĐƯỢC tự Edit trực tiếp các phần này.
 > - Bất kỳ thay đổi nào chạm vào **Attributes / Detail Mapping / `datamart_model.yaml` (registry)** — nội dung mapping, `etl_logic`, `column_role`, cột registry... → luôn qua `datamart-lld-design`.
 > - **Kịch bản C cũng đi qua skill con** (chốt 2026-08-22) — trước đây C được phép "sửa tay trực tiếp", nay KHÔNG còn. Quy trình bắt buộc cho C:
 >   1. **Trình bày action đề xuất cụ thể**: file nào, dòng/cột nào, giá trị cũ → giá trị mới, lý do.
->   2. **Chờ user xác nhận.**
+>   2. **Claude DỪNG và chờ human xác nhận.**
 >   3. **Gọi skill con thực hiện** — HLD → `datamart-hld-design`; Attributes/Detail Mapping/`datamart_model.yaml` → `datamart-lld-design`.
 >   Lý do bỏ "sửa tay": trước đây C được định nghĩa 4 kiểu khác nhau ở 4 chỗ trong skill này (thuần cấu trúc / lỗi thiết kế / physical naming / sai data_domain), dẫn tới cùng 1 lỗi mà lúc thì tự Edit, lúc thì gọi skill con. Thống nhất 1 đường đi duy nhất để không còn phải phân định ranh giới "có đổi ý nghĩa hay không".
-> - **KHÔNG có ngoại lệ nào được Edit trực tiếp** vào HLD/Attributes/Detail Mapping/registry trong skill này. `datamart-review` chỉ phát hiện, phân loại, đề xuất — việc sửa thuộc skill con.
+> - **Claude KHÔNG ĐƯỢC tự Edit trực tiếp** vào HLD/Attributes/Detail Mapping/registry trong skill này. `datamart-review` chỉ phát hiện, phân loại, đề xuất — việc sửa thuộc skill con.
 
 ---
 
-## QUY TRÌNH (BẮT BUỘC)
+## QUY TRÌNH TỔNG THỂ (2 CHẾ ĐỘ REVIEW)
 
 ```
-Bước 0:  Xác định scope (module + nhóm cụ thể nếu có) + kiểm tra file tồn tại
-Bước 0b: Lập kế hoạch — đọc nhanh toàn BA + HLD → bảng kế hoạch tổng thể
-         ⛔ DỪNG — chờ user xác nhận thứ tự review trước khi đi vào chi tiết
-Bước 0c: [1 lần/module, sau khi user duyệt kế hoạch] Chạy Lớp 1b (13 mục Bước 5B của
-         datamart-hld-design) + Lớp 2b (10 TC Phase 1 của datamart-lld-design)
-         → gộp kết quả vào bảng vấn đề cấp toàn module
-
-Bước 1:  [Lặp lại cho từng nhóm theo kế hoạch]
-         Đọc BA chi tiết nhóm N → review 4 lớp (HLD → Attributes → Detail Mapping → registry)
-         → Trình bày kết quả nhóm N + danh sách vấn đề + đề xuất action
-         ⛔ DỪNG — chờ user quyết định:
-            (a) Sửa ngay → thực hiện action → sau đó hỏi tiếp tục nhóm N+1
-            (b) Ghi nhận, sang nhóm N+1 → tiếp tục review
-            (c) Dừng tại đây
-Bước 2:  Tổng hợp cuối — sau khi review xong toàn scope
-         Bảng action items tổng hợp theo ưu tiên
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                       CHẾ ĐỘ 1: MACRO-REVIEW                                │
+│              (Kiểm soát Tiến độ & Đối soát Trạng thái Toàn Phân hệ)         │
+│                                                                             │
+│ Bước 0:  Claude xác định scope (Module / toàn bộ) + kiểm tra tồn tại file   │
+│ Bước 0a: Claude chạy script qua Bash:                                       │
+│          python scripts/datamart_progress_analyzer.py --module [MODULE]     │
+│          → Xuất Ma trận Đối soát Tiến độ (BA Status ↔ Datamart Status)       │
+│          → Phân loại 100% PENDING theo Cây 6 Nhánh Nguyên nhân              │
+│ Bước 0b: Lập kế hoạch + Đối soát số lượng chỉ tiêu per-nhóm (0b.3)          │
+│          + Kiểm tra cấu trúc tài liệu HLD (5 Section, bảng KPI 7 cột)       │
+│          ⛔ GATE RULE: DỪNG — Claude chờ human xác nhận kế hoạch và thứ tự  │
+│ Bước 0c: [1 lần/module] Chạy Lớp 1b (13 mục Bước 5B) + Lớp 2b (10 TC Phase1)│
+└──────────────────────────────────────┬──────────────────────────────────────┘
+                                       │
+                                       ▼ (Human duyệt kế hoạch)
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                       CHẾ ĐỘ 2: MICRO-REVIEW                                │
+│                   (Chi tiết Kỹ thuật 4 Lớp từng Nhóm)                       │
+│                                                                             │
+│ Bước 1:  [Lặp lại cho từng nhóm theo kế hoạch đã duyệt]                     │
+│          Claude đọc BA chi tiết nhóm N → Review 4 lớp:                      │
+│            - Lớp 1: HLD (chuẩn 7 cột, số dòng khớp 0b.3, grain, SQL ẩn)     │
+│            - Lớp 2: Attributes (verify Atomic YAML approved, flatten xuống  │
+│                     Atomic, không mart column, exceptions naming)           │
+│            - Lớp 3: Detail Mapping (trace full SQL BA, inline DERIVED)      │
+│            - Lớp 4: datamart_model.yaml (Registry cross-module 1-1 cột)     │
+│          → Trình bày kết quả nhóm N + danh sách vấn đề + đề xuất action     │
+│          ⛔ GATE RULE:                                                       │
+│             - Có vấn đề: Claude DỪNG hỏi human (a) sửa ngay (gọi skill con),│
+│               (b) ghi nhận sang nhóm N+1, (c) dừng                          │
+│             - Không có vấn đề: Tự động chuyển nhóm N+1                      │
+│ Bước 2:  Tổng hợp cuối — xuất bảng action items tổng hợp theo ưu tiên       │
+└─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **GATE RULE — BẮT BUỘC:**
-> 1. Sau Bước 0b: DỪNG, không bắt đầu review chi tiết cho đến khi user xác nhận kế hoạch
+> **GATE RULE — BẮT BUỘC TUYỆT ĐỐI CHO CLAUDE:**
+> 1. Sau Bước 0b: Claude **DỪNG hoàn toàn**, không bắt đầu review chi tiết cho đến khi human xác nhận kế hoạch.
 > 2. Sau mỗi nhóm:
->    - **Có vấn đề (Critical/Warning/Info):** DỪNG, hỏi user muốn (a) sửa ngay, (b) ghi nhận sang nhóm N+1, hay (c) dừng
->    - **Không có vấn đề (tất cả 3 lớp = OK):** Tự động chuyển sang nhóm N+1 trong plan — KHÔNG dừng chờ xác nhận
-> 3. Trước mọi sửa đổi file: DỪNG, không sửa khi chưa được user xác nhận rõ ràng
+>    - **Có vấn đề (Critical/Warning/Info):** Claude **DỪNG**, hỏi human muốn (a) sửa ngay (gọi skill con), (b) ghi nhận sang nhóm N+1, hay (c) dừng.
+>    - **Không có vấn đề (tất cả 4 lớp = OK):** Tự động chuyển sang nhóm N+1 trong plan — KHÔNG dừng chờ xác nhận.
+> 3. Trước mọi sửa đổi file: Claude **DỪNG**, không gọi skill con hay sửa khi chưa được human xác nhận rõ ràng.
+> 4. Human chưa trả lời = Claude chưa được phép tiếp tục. Không được suy diễn "im lặng = đồng ý".
 >
 > **Câu hỏi kết thúc mỗi nhóm CÓ vấn đề (bắt buộc):**
-> "Nhóm N đã review xong. Bạn muốn: **(a)** sửa [vấn đề X] ngay, **(b)** ghi nhận và sang nhóm N+1, hay **(c)** dừng tại đây?"
+> "Nhóm N đã review xong. Bạn muốn: **(a)** sửa [vấn đề X] ngay (gọi skill con), **(b)** ghi nhận và sang nhóm N+1, hay **(c)** dừng tại đây?"
 >
 > **Khi nhóm N không có vấn đề:** Tự động in "✅ Nhóm N — OK (không phát hiện vấn đề). Chuyển sang Nhóm N+1..." và bắt đầu review ngay.
 
 ---
 
-## BƯỚC 0 — XÁC ĐỊNH SCOPE
+## BƯỚC 0 — XÁC ĐỊNH SCOPE & CHẠY MACRO-REVIEW TỰ ĐỘNG
 
-1. Đọc tham số user cung cấp: MODULE + (tuỳ chọn) số nhóm cụ thể
-2. Resolve đường dẫn file:
-   - BA: `BRD/BA/BA_analyst_{MODULE}_part*.csv` (có thể nhiều part)
-   - HLD: `Datamart/hld/DTM_{MODULE}_HLD.md`
-   - Attributes (summary): `Datamart/lld/datamart_attributes.csv` — lọc theo `datamart_table` của module
-   - Attributes (detail): `Datamart/lld/{MODULE}/DTM_{MODULE}_{table}_{source}.csv` — 1 file per bảng mart
-   - Detail Mapping: `Datamart/lld/DTM_{MODULE}_Detail_Mapping.csv`
-   - Model registry: `Datamart/datamart_model.yaml` — lọc entity theo `module: "{MODULE}"` hoặc `module: "SHARED"` (Dim dùng chung); nếu thiếu file này, ghi nhận Critical cấp toàn module (không dừng nếu chỉ 1-2 nhóm dùng SHARED Dim chưa có trong review scope)
-3. Kiểm tra file tồn tại — báo cáo file nào thiếu, không dừng nếu chỉ thiếu 1 lớp LLD
-4. Thông báo scope và danh sách file sẽ review
+1. Đọc tham số human cung cấp: MODULE + (tuỳ chọn) số nhóm cụ thể.
+2. Resolve đường dẫn file (hỗ trợ phân hệ tên có dấu `GSĐC` ↔ `GSDC`):
+   - BA: `BRD/BA/BA_analyst_{MODULE}.csv` (đặc biệt hỗ trợ file gộp `BA_analyst_GSĐC.csv` thay thế 3 part cũ).
+   - HLD: `Datamart/hld/DTM_{MODULE}_HLD.md` (hoặc `DTM_GSDC_HLD.md`).
+   - Attributes (summary): `Datamart/lld/datamart_attributes.csv` — lọc theo `datamart_table` của module.
+   - Attributes (detail): `Datamart/lld/{MODULE}/DTM_{MODULE}_{table}_{source}.csv` — 1 file per bảng mart.
+   - Detail Mapping: `Datamart/lld/DTM_{MODULE}_Detail_Mapping.csv`.
+   - Model registry: `Datamart/datamart_model.yaml` — lọc entity theo `module: "{MODULE}"` hoặc `module: "SHARED"`.
+3. Kiểm tra file tồn tại — báo cáo file nào thiếu.
+4. **Chạy Macro-Review tự động hóa bằng CLI script:**
+   ```bash
+   python scripts/datamart_progress_analyzer.py --module {MODULE}
+   # Hoặc xem chi tiết toàn bộ chỉ tiêu pending:
+   python scripts/datamart_progress_analyzer.py --module {MODULE} --detail
+   ```
+   Script sẽ tự động:
+   - Dò delimiter (`,` hoặc `;`), encoding `utf-8-sig`/BOM, và header row.
+   - Xuất Ma trận Đối soát Tiến độ (Cross-status Matrix: BA Status ↔ Datamart Status).
+   - Phân loại 100% PENDING thành 6 nhóm nguyên nhân chuẩn hóa.
+   - Đối soát số lượng chỉ tiêu per-nhóm (BA ↔ HLD ↔ Detail Mapping).
+   - Lập danh sách Blocker & Action Items chi tiết.
 
 ---
 
-## BƯỚC 0b — LẬP KẾ HOẠCH REVIEW
+## BƯỚC 0b — ĐỐI SOÁT MA TRẬN TIẾN ĐỘ & LẬP KẾ HOẠCH REVIEW
 
 > Bước này thực hiện **một lần duy nhất** trước khi bắt đầu review chi tiết bất kỳ nhóm nào.
-> Mục đích: đọc toàn bộ BA để có danh sách nhóm chính xác, sau đó dừng chờ user xác nhận.
+> Mục đích: kiểm soát tiến độ tổng thể, đối chiếu chéo trạng thái, phát hiện lệch số lượng, sau đó Claude dừng chờ human duyệt kế hoạch.
 
-### 0b.1 — Đọc toàn bộ BA (bắt buộc đọc hết, không đọc lướt)
+### 0b.1 — Đọc toàn bộ BA (bằng parser động, không đoán cột)
 
-Dùng Python `csv.reader` đọc **toàn bộ** tất cả part file (`part1`, `part2`, `part3`...).
+Sử dụng bộ parser chuẩn trong `scripts/datamart_progress_analyzer.py` hoặc snippet chuẩn tại `reference/ba_source_profile.md`.
 Với mỗi nhóm (STT), tổng hợp đầy đủ:
-- Tên nhóm (Col 2)
+- Tên nhóm (cột Dashboard/báo cáo)
 - Tổng KPI, số Done, số Doing, số Pending
-- Bảng nguồn xuất hiện (Col 15)
+- Bảng nguồn xuất hiện (cột Bảng nguồn / Khai thác nguồn)
 
 **Xác định trạng thái BA per-nhóm:**
 - `ALL_DONE`: 100% Done/Doing — nguồn đầy đủ
 - `PARTIAL`: có Done/Doing + còn Pending
 - `ALL_PENDING`: 100% Pending hoặc trống — chưa có nguồn
 
-### 0b.2 — Đọc HLD
+### 0b.2 — Đọc HLD & Kiểm tra Cấu trúc Toàn Module
 
 Với mỗi nhóm trong BA, kiểm tra trong HLD:
 - Nhóm có section trong HLD không?
@@ -162,62 +226,59 @@ Section 3 — Mô hình tổng thể
 Section 4 — Reuse Analysis   (4 cột: Datamart Entity / datamart_table / reuse_status / Ghi chú)
 Section 5 — Vấn đề mở
 ```
-- Thiếu hẳn Section 4 Reuse Analysis, hoặc "Vấn đề mở" đang chiếm nhầm vị trí Section 4 → 🔴 Critical cấp toàn module (không chỉ riêng 1 nhóm) — ghi nhận 1 lần trong bảng vấn đề tổng hợp, action đề xuất: bổ sung Section 4 đúng chuẩn (đẩy "Vấn đề mở" xuống Section 5), liệt kê `reuse_status` cho mọi bảng Fact/Dim đã có trong Section 3.
+- Thiếu hẳn Section 4 Reuse Analysis, hoặc "Vấn đề mở" đang chiếm nhầm vị trí Section 4 → 🔴 Critical cấp toàn module — ghi nhận 1 lần trong bảng vấn đề tổng hợp, action đề xuất: bổ sung Section 4 đúng chuẩn (đẩy "Vấn đề mở" xuống Section 5), liệt kê `reuse_status` cho mọi bảng Fact/Dim đã có trong Section 3.
 - Section 4 tồn tại nhưng thiếu dòng cho 1 bảng Fact/Dim nào đó trong Section 3 → 🟡 Warning, bổ sung dòng thiếu.
-- Cũng kiểm tra: heading `##### Cụm N` đúng cấp (không phải `###`/`####`), và **mỗi Nhóm chỉ có ĐÚNG 1 bảng KPI duy nhất, đủ 7 cột** theo chuẩn hiện hành: `KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái`. Đây đều là lỗi cấu trúc cấp toàn module, gộp chung nhóm Critical/Warning với Section 4 ở trên, không tách issue riêng.
-  - ⚠️ **Chuẩn 7 cột thay thế hoàn toàn format cũ "block READY 6 cột / block PENDING 4 cột" (đổi 2026-07-23).** Dòng READY và PENDING nằm CHUNG 1 bảng, phân biệt bằng cột `Trạng thái`. Nếu HLD còn tách `##### READY` / `##### PENDING` thành 2 block, hoặc bảng chỉ có 6 cột (thiếu `Trạng thái`) → 🟡 Warning cấu trúc, đề xuất gộp về 1 bảng 7 cột.
-  - ❌ **KHÔNG báo lỗi ngược lại** — bảng 7 cột có cột `Trạng thái` là ĐÚNG chuẩn, không phải "thừa cột". Đây là lỗi đã xảy ra khi review chạy theo bản checklist cũ.
-- Không tự suy ra `reuse_status` — nếu chưa rõ, hỏi user xác nhận (theo GATE RULE của `datamart-hld-design`), không tự gán "reuse" hay "new" khi chưa chắc chắn.
+- Cũng kiểm tra: heading `##### Cụm N` đúng cấp (không phải `###`/`####`), và **mỗi Nhóm chỉ có ĐÚNG 1 bảng KPI duy nhất, đủ 7 cột** theo chuẩn hiện hành: `KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái`.
+  - ⚠️ **Chuẩn 7 cột thay thế hoàn toàn format cũ "block READY 6 cột / block PENDING 4 cột" (đổi 2026-07-23).** Dòng READY và PENDING nằm CHUNG 1 bảng, phân biệt bằng cột `Trạng thái`. Nếu HLD còn tách `##### READY` / `##### PENDING` thành 2 block, hoặc bảng chỉ có 6 cột (thiếu `Trạng thái`) → 🟡 Warning cấu trúc, đề xuất gộp về 1 bảng 7 cột qua `datamart-hld-design`.
+  - ❌ **KHÔNG báo lỗi ngược lại** — bảng 7 cột có cột `Trạng thái` là ĐÚNG chuẩn, không phải "thừa cột".
 - **Đối chiếu tên entity và `reuse_status` giữa `Entities.csv` ↔ Section 3 & 4 của `HLD.md` (1 lần/module):**
-  - File `DTM_{MODULE}_Entities.csv` (và `.md`) là output Phase 2, **không tự động đồng bộ** khi `HLD.md` bị chỉnh sửa/tinh chỉnh sau đó (ví dụ: đổi tên entity từ Sector Dimension sang Industry Dimension, đổi trạng thái từ new sang reuse...).
-  - Khi review, bắt buộc đối chiếu 1-1 danh sách entity, tên entity và `reuse_status` giữa `Entities.csv` với bảng Mô hình tổng thể (Section 3) và Reuse Analysis (Section 4) trong `HLD.md` hiện hành.
-  - **Nguyên tắc then chốt:** Khi kiểm tra LLD (Lớp 2/Lớp 3) mà thấy một entity trong `Entities.csv` "thiếu detail mapping CSV" hoặc "chưa có file Attributes CSV", **trước tiên phải xác minh tên entity trong `Entities.csv` có còn khớp với `HLD.md` hay không**, chứ không kết luận vội là thiếu file hay bug LLD.
-  - *Ví dụ thực tế (Case PTTT):* `Entities.csv` ghi `Sector Dimension` (`dim/new`), nhưng `HLD.md` Section 3 & 4 đã đổi thành `Industry Dimension` (`dim/reuse` từ GSDC). Khi review, reviewer tưởng thiếu file Attributes của `Sector Dimension`, nhưng thực tế entity đã được đổi tên và reuse từ module khác trong `HLD.md` — giải pháp đúng là đồng bộ `Entities.csv` / `Entities.md` theo `HLD.md` hiện hành.
+  - Xác minh tên entity trong `Entities.csv` có còn khớp với `HLD.md` hiện hành hay không trước khi kết luận thiếu file Attributes / Detail Mapping.
 
-> **⚠️ Không được để kết quả kiểm tra cấu trúc "chìm" khi có việc khác chen ngang (bắt buộc):** Nếu quá trình review 0b phát sinh một phát hiện lớn hơn giữa chừng (VD: Critical gap Atomic khiến phải tạm dừng lập kế hoạch để điều tra, hoặc phải gọi `datamart-hld-design`/`datamart-lld-design` để sửa ngay một phần trước khi tiếp tục) — kết quả kiểm tra cấu trúc tài liệu ở bước này (Section/heading/cột) VẪN PHẢI được nêu lại tường minh trong bảng 0b.4 và câu hỏi gate 0b.5, không được để trôi mất trong lúc xử lý việc phát sinh. Lý do: gate 0b.5 mặc định chỉ hỏi "thứ tự review nhóm nào", không tự nhắc lại phát hiện cấu trúc — nếu người thực hiện bị cuốn theo nhánh phát sinh (điều tra gap Atomic, chuyển sang skill khác để sửa 1 Nhóm cụ thể) mà không chủ động quay lại, phát hiện cấu trúc dễ bị bỏ sót hoàn toàn cho đến khi user tự phát hiện và hỏi lại (case thực tế: module TT — phát hiện Critical gap Atomic THANHTRA schema cũ/mới ngay sau 0b, chuyển hướng gọi `datamart-hld-design` sửa Nhóm 1, nhưng bỏ luôn việc báo cáo thiếu Section 4/heading Cụm sai cấp/bảng KPI thiếu cột Ghi chú — dù các lỗi này đã có sẵn từ bản gốc và không liên quan gì đến nhánh phát sinh đang xử lý).
+### 0b.3 — Đối chiếu SỐ LƯỢNG dòng BA ↔ số dòng KPI HLD ↔ Detail Mapping
 
-### 0b.3 — Đối chiếu SỐ LƯỢNG dòng BA ↔ số dòng KPI HLD (bắt buộc, không chỉ kiểm tra tồn tại)
-
-> **Đây là bước riêng biệt với "KPI coverage" ở Bước 2 Lớp 1** — KPI coverage kiểm tra kiểu tồn tại
-> (KPI Done có ID chưa), còn bước này đối chiếu **số lượng tuyệt đối 1-1**, phát hiện các trường hợp
-> KPI coverage kiểu tồn tại bỏ lọt: BA đổi nội dung 1 dòng nhưng vẫn giữ tổng số dòng (VD: BA thay
-> "Tỷ lệ TP vi phạm nghĩa vụ thanh toán" bằng "Xếp hạng tín nhiệm", KPI coverage vẫn PASS vì mọi dòng
-> đều có ID, nhưng nội dung đã sai); hoặc BA bớt/thêm 1 dòng làm tổng số lệch mà không ai để ý vì
-> không có bước đếm-so-sánh tường minh.
+> **Đây là bước đối chiếu số lượng tuyệt đối 1-1**, phát hiện các trường hợp KPI coverage kiểu tồn tại bỏ lọt:
+> BA đổi nội dung 1 dòng nhưng vẫn giữ tổng số dòng; hoặc BA bớt/thêm 1 dòng làm tổng số lệch.
 
 Với mỗi nhóm, tính:
 ```
 Số dòng BA = COUNT(dòng BA trong nhóm, Phân loại ∈ {Chiều, Chỉ tiêu cơ sở, Chỉ tiêu phái sinh}, Trạng thái mapping ∈ {Done, Doing})
-          (tên giá trị chính xác — xem reference/ba_source_profile.md §4; KHÔNG dùng 'Cơ sở'/'Phái sinh')
 Số dòng KPI HLD = COUNT(KPI_ID trong bảng KPI của nhóm, loại trừ _YOY/derived thuần trong cùng bảng)
+Số dòng Detail Mapping = COUNT(dòng trong DTM_{MODULE}_Detail_Mapping.csv thuộc nhóm đó)
 ```
 
-- **Số lượng khớp** → tiếp tục Bước 2 Lớp 1 bình thường (kiểm tra coverage/nội dung).
-- **Số lượng lệch (dù chỉ 1 dòng, theo cả 2 chiều thừa/thiếu)** → **bắt buộc dừng, đối chiếu TỪNG DÒNG** giữa BA và bảng KPI HLD theo tên/mô tả/điều kiện lọc (criterion_cd, row_code...) để xác định chính xác:
-  - KPI nào BA đã bỏ → đề xuất loại khỏi HLD (xác nhận với user trước khi xóa)
-  - KPI nào BA thêm mới → đề xuất cấp ID mới, đánh liền mạch theo max hiện có
-  - KPI nào BA đổi nội dung nhưng giữ nguyên vị trí/số lượng → đề xuất đổi tên/nguồn, giữ nguyên ID (ghi rõ lý do đổi trong HLD)
-- **Không được kết luận nhóm "OK" ở Lớp 1 chỉ vì mọi KPI Done đều tìm thấy ID** — số lượng phải khớp tuyệt đối trước khi coi Lớp 1 pass.
+- **Số lượng khớp** → tiếp tục Bước 1 Micro-Review bình thường.
+- **Số lượng lệch (dù chỉ 1 dòng, theo cả 2 chiều thừa/thiếu)** → **Claude bắt buộc dừng, đối chiếu TỪNG DÒNG** giữa BA và bảng KPI HLD theo tên/mô tả/điều kiện lọc để xác định chính xác:
+  - KPI nào BA đã bỏ → đề xuất loại khỏi HLD (xác nhận với human trước khi xóa qua skill con).
+  - KPI nào BA thêm mới → đề xuất cấp ID mới, đánh liền mạch theo max hiện có.
+  - KPI nào BA đổi nội dung nhưng giữ nguyên vị trí/số lượng → đề xuất đổi tên/nguồn, giữ nguyên ID.
 
-Thêm 2 cột vào bảng danh sách nhóm ở 0b.4 để lộ diện lệch số lượng ngay từ bước lập kế hoạch.
+### 0b.4 — Xuất Ma trận Đối soát Tiến độ & Bảng Danh sách Nhóm
 
-### 0b.4 — Xuất bảng danh sách nhóm theo thứ tự tăng dần
+Trình bày bảng tổng hợp Macro-Review từ kết quả chạy `scripts/datamart_progress_analyzer.py`:
+1. **Ma trận Đối soát Tiến độ (Cross-status Matrix):**
+   - BA Status (`Done`, `Doing`, `Pending`, `Chưa có trong BA`) ↔ Datamart Status (`READY`, `PENDING`, `Chưa có trong Datamart`).
+2. **Phân loại 100% PENDING theo 6 Nhánh Nguyên nhân:**
+   - 1. BA Pending
+   - 2. Chưa có mapping nguồn từ BA
+   - 3. Thiếu nguồn dữ liệu ngoại lai
+   - 4. Join đa nguồn phức tạp
+   - 5. Datamart Pending
+   - 6. Lệch số lượng / Schema out of sync
+3. **Bảng Danh sách Nhóm sắp xếp theo số nhóm tăng dần (1 → N):**
 
-Liệt kê **toàn bộ nhóm**, sắp xếp theo số nhóm từ nhỏ đến lớn (nhóm 1 → nhóm N):
-
-| Nhóm | Tên nhóm | Tổng KPI BA | Done | Doing | Pending | Số dòng KPI HLD | Lệch số lượng? | BA Status | HLD Status |
-|---|---|---|---|---|---|---|---|---|---|
-| 1 | Dashboard chấm điểm CTDC | 5 | 0 | 0 | 5 | 0 | Không | ALL_PENDING | PENDING |
-| 2 | ... | ... | ... | ... | ... | ... | ... | ... | ... |
-| 3 | Top CTDC theo chỉ tiêu phát hành | 8 | 8 | 0 | 0 | 8 | **Có — cần đối chiếu từng dòng** | ALL_DONE | READY |
-| 6 | GSTT thống kê niêm yết | 8 | 8 | 0 | 0 | 8 | Không | ALL_DONE | READY |
+| Nhóm | Tên nhóm | Tổng KPI BA | Done | Doing | Pending | Số dòng KPI HLD | Số dòng Detail Mapping | Lệch số lượng? | BA Status | HLD Status |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | Dashboard chấm điểm CTDC | 5 | 0 | 0 | 5 | 0 | 0 | Không | ALL_PENDING | PENDING |
+| 2 | ... | ... | ... | ... | ... | ... | ... | ... | ... | ... | ... |
+| 3 | Top CTDC theo chỉ tiêu phát hành | 8 | 8 | 0 | 0 | 8 | 8 | **Có — cần đối chiếu từng dòng** | ALL_DONE | READY |
+| 6 | GSTT thống kê niêm yết | 8 | 8 | 0 | 0 | 8 | 8 | Không | ALL_DONE | READY |
 
 > Thứ tự review sẽ tuần tự từ nhóm 1 đến nhóm N — không sắp xếp lại theo ưu tiên.
 > Nhóm có cột "Lệch số lượng?" = Có → ưu tiên đối chiếu từng dòng ngay khi vào Bước 2 Lớp 1 của nhóm đó.
 
-### 0b.5 — ⛔ DỪNG, hỏi user
+### 0b.5 — ⛔ DỪNG, Claude hỏi human
 
-Sau khi trình bày bảng danh sách, hỏi:
+Sau khi trình bày bảng danh sách, Claude hỏi human:
 
 > "Đây là danh sách [N] nhóm của module [MODULE]. Thứ tự review sẽ tuần tự nhóm 1 → [N].
 > Bạn muốn:
@@ -225,13 +286,13 @@ Sau khi trình bày bảng danh sách, hỏi:
 > - Chỉ review **một số nhóm cụ thể** (nhóm nào)?
 > - Bỏ qua nhóm nào (VD: nhóm ALL_PENDING)?"
 
-**Không bắt đầu review chi tiết bất kỳ nhóm nào cho đến khi user trả lời.**
+**Claude KHÔNG ĐƯỢC bắt đầu review chi tiết bất kỳ nhóm nào cho đến khi human trả lời.**
 
 ---
 
 ## BƯỚC 0-ALT — REVIEW THEO ISSUE/BUG REPORT (Kịch bản E)
 
-> **Khi nào dùng:** User báo 1 vấn đề cụ thể thay vì yêu cầu review toàn module tuần tự.
+> **Khi nào dùng:** Human báo 1 vấn đề cụ thể thay vì yêu cầu review toàn module tuần tự.
 > VD: "thiếu TRADINGTIME trong datamart", "P/E tính sai", "biểu đồ KT thiếu dữ liệu intraday".
 > Bước này **thay thế** Bước 0/0b/1 thông thường — không cần lập kế hoạch toàn module.
 
@@ -299,7 +360,7 @@ Báo cáo gồm:
 4. **Action items** — theo thứ tự ưu tiên, với owner và blocker rõ ràng
 5. **Đề xuất** — Kịch bản nào (A/B/C/D) phù hợp để sửa, hoặc chỉ cần resolve blocker
 
-> ⛔ **DỪNG — chờ user xác nhận** trước khi thực hiện bất kỳ action nào.
+> ⛔ **DỪNG — Claude chờ human xác nhận** trước khi thực hiện bất kỳ action nào.
 
 ---
 
@@ -426,7 +487,7 @@ HLD | [OK / GAP] | Mô tả vấn đề nếu có
 
 - Chạy **1 lần cho toàn module**, không lặp mỗi Nhóm — kết quả gộp vào bảng vấn đề cấp toàn module.
 - Mục #10 trùng mục đích với 0b.3 — chạy 0b.3 là đủ, không tính 2 lần.
-- FAIL → **Kịch bản C**: trình action đề xuất → chờ user xác nhận → gọi `datamart-hld-design` sửa.
+- FAIL → **Kịch bản C**: trình action đề xuất → Claude DỪNG chờ human xác nhận → gọi `datamart-hld-design` sửa.
 
 ---
 
@@ -452,7 +513,7 @@ và chạy đủ 10 testcase trên các file Attributes của module:
 > của TKNB dùng quy ước mã-báo-cáo-đứng-trước chưa được ghi vào rule nào). Khi review, **tách riêng
 > lỗi tồn đọng này khỏi lỗi của module đang review** — không báo lại toàn bộ 25 dòng mỗi lần.
 
-- FAIL → **Kịch bản C**: trình action đề xuất → chờ user xác nhận → gọi `datamart-lld-design` sửa.
+- FAIL → **Kịch bản C**: trình action đề xuất → Claude DỪNG chờ human xác nhận → gọi `datamart-lld-design` sửa.
 
 ---
 
@@ -616,9 +677,9 @@ Sau khi review tất cả nhóm trong scope, tổng hợp thành 2 bảng:
 |---|---|---|---|---|---|---|
 | 1 | Nhóm 25 | HLD | 🔴 Critical | HLD = PENDING nhưng BA 100% Done với nguồn IDS | A | Gọi datamart-hld-design thiết kế nhóm 25 |
 | 2 | Nhóm 21 | Detail Mapping | 🟡 Warning | Formula K_GSDC_45 chưa phản ánh filter `entp_tp_code = 'dn'` | B | Gọi datamart-lld-design cập nhật Detail Mapping |
-| 3 | Nhóm 7 | Attributes | 🔵 Info | Cột `src_stm_code` thiếu WHERE filter (forward-compat) | C | Sửa trực tiếp Attributes.csv |
+| 3 | Nhóm 7 | Attributes | 🔵 Info | Cột `src_stm_code` thiếu WHERE filter (forward-compat) | C | Trình action đề xuất → gọi datamart-lld-design cập nhật Attributes |
 | 4 | Nhóm 1 | HLD | 🔴 Critical | Fact dùng nguồn Atomic `TT_HO_SO`/`TT_QUYET_DINH` đã deprecated, schema THANHTRA đã tái cấu trúc sang `INSPECTION_TEAM` | D | Gọi datamart-hld-design thiết kế lại Nhóm 1 theo Atomic mới |
-| 5 | Toàn module | HLD | 🟡 Warning | Thiếu Section 4 Reuse Analysis, heading Cụm sai cấp | C | Sửa trực tiếp cấu trúc HLD.md (không đổi nội dung nghiệp vụ) |
+| 5 | Toàn module | HLD | 🟡 Warning | Thiếu Section 4 Reuse Analysis, heading Cụm sai cấp | C | Trình action đề xuất → gọi datamart-hld-design chuẩn hóa cấu trúc HLD.md |
 
 **Mức độ:**
 - 🔴 Critical: logic sai, thiếu thiết kế — báo cáo không chạy được
@@ -629,9 +690,9 @@ Sau khi review tất cả nhóm trong scope, tổng hợp thành 2 bảng:
 
 | Action | Nhóm liên quan | Skill/Tool | Ưu tiên |
 |---|---|---|---|
-| Gọi `datamart-hld-design` | 25, 26, 27, 28, 29, 30, 31, 32 | datamart-hld-design | 🔴 High |
+| Gọi `datamart-hld-design` thiết kế HLD | 25, 26, 27, 28, 29, 30, 31, 32 | datamart-hld-design | 🔴 High |
 | Gọi `datamart-lld-design` cập nhật Detail Mapping | 21, 22, 23, 24 | datamart-lld-design | 🟡 Medium |
-| Sửa Attributes.csv | 7, 11 | Edit trực tiếp | 🔵 Low |
+| Gọi `datamart-lld-design` sửa lỗi kỹ thuật Attributes | 7, 11 | datamart-lld-design | 🔵 Low |
 
 ---
 
@@ -639,13 +700,13 @@ Sau khi review tất cả nhóm trong scope, tổng hợp thành 2 bảng:
 
 Sau khi trình bày bảng tổng hợp:
 
-1. **Hỏi user** muốn thực hiện action nào trước
-2. **Chỉ thực hiện** khi user xác nhận rõ ràng
+1. **Claude hỏi human** muốn thực hiện action nào trước
+2. **Chỉ thực hiện** khi human xác nhận rõ ràng
 3. **Gọi skill tương ứng** khi action = Kịch bản A, B hoặc D:
    - Kịch bản A → `/datamart-hld-design` với context nhóm cụ thể (HLD thiếu/PENDING)
    - Kịch bản B → `/datamart-lld-design` với context thay đổi cụ thể (BA đổi logic)
    - Kịch bản D → `/datamart-hld-design` với context nhóm cụ thể (HLD sai do thiết kế/nguồn Atomic lỗi thời) — cung cấp đầy đủ bằng chứng đã điều tra (entity Atomic cũ vs mới, nguồn deprecated...) để skill con không phải lặp lại việc tra cứu
-4. **Kịch bản C** → trình bày action đề xuất (file / dòng / giá trị cũ → mới) → chờ user xác nhận → **gọi skill con để sửa** (HLD → `datamart-hld-design`; Attributes/Detail Mapping/registry → `datamart-lld-design`). ❌ Không tự Edit trực tiếp
+4. **Kịch bản C** → trình bày action đề xuất (file / dòng / giá trị cũ → mới) → Claude DỪNG chờ human xác nhận → **gọi skill con để sửa** (HLD → `datamart-hld-design`; Attributes/Detail Mapping/registry → `datamart-lld-design`). ❌ Không tự Edit trực tiếp
 5. **Không tự ý hạ cấp D/A/B xuống C để sửa nhanh** — nếu việc sửa chạm vào nội dung nghiệp vụ (nguồn Atomic, Fact/grain, công thức KPI, etl_logic, mapping) dù đã biết rõ hướng sửa, vẫn phải gọi đúng skill con tương ứng, không tự Edit trực tiếp
 
 ---
@@ -655,40 +716,40 @@ Sau khi trình bày bảng tổng hợp:
 ### Flow sau mỗi nhóm (BẮT BUỘC)
 
 ```
-[Review nhóm N — 3 lớp]
+[Review nhóm N — 4 lớp]
         ↓
 [Trình bày kết quả nhóm N]
-  - Bảng vấn đề phát hiện (HLD / Attributes / Detail Mapping)
+  - Bảng vấn đề phát hiện (HLD / Attributes / Detail Mapping / Registry)
   - Phân loại: Critical 🔴 / Warning 🟡 / Info 🔵
   - Đề xuất action cụ thể cho từng vấn đề
         ↓
    ┌──────────────────────────────────────┐
-   │ KHÔNG có vấn đề (tất cả 3 lớp = OK) │
+   │ KHÔNG có vấn đề (tất cả 4 lớp = OK) │
    │ → In: "✅ Nhóm N — OK"              │
    │ → Tự động chuyển sang nhóm N+1      │
    │ → Bắt đầu review nhóm N+1 ngay      │
    └──────────────────────────────────────┘
         ↓ (nếu có vấn đề)
-⛔ DỪNG — Hỏi user:
+⛔ DỪNG — Claude hỏi human:
 "Nhóm N xong. Bạn muốn:
   (a) Sửa [vấn đề X] ngay
   (b) Ghi nhận, sang nhóm N+1
   (c) Dừng tại đây"
         ↓
    ┌────────────────────────────────┐
-   │ User chọn (a)                 │
+   │ Human chọn (a)                │
    │ → Xác nhận lại action cụ thể  │
-   │ → Thực hiện (Edit / gọi skill)│
+   │ → Gọi skill con để sửa        │
    │ → Báo cáo hoàn thành          │
    │ → Tự động chuyển nhóm N+1     │
    └────────────────────────────────┘
    ┌────────────────────────────────┐
-   │ User chọn (b)                 │
+   │ Human chọn (b)                │
    │ → Ghi nhận vào backlog        │
    │ → Tự động chuyển nhóm N+1     │
    └────────────────────────────────┘
    ┌────────────────────────────────┐
-   │ User chọn (c)                 │
+   │ Human chọn (c)                │
    │ → Tổng hợp backlog đã ghi nhận│
    │ → Xuất bảng action items cuối │
    └────────────────────────────────┘
@@ -696,12 +757,12 @@ Sau khi trình bày bảng tổng hợp:
 
 ### Quy tắc cứng
 
-- **Tự động chuyển nhóm** khi nhóm N = OK (không có vấn đề) — không cần lệnh từ user
-- **Tự động chuyển nhóm** sau khi user chọn (a) xong hoặc chọn (b) — không hỏi lại "tiếp tục không?"
-- **DỪNG chờ user** chỉ khi nhóm N có vấn đề cần quyết định
-- **KHÔNG tự sửa file** — kể cả lỗi nhỏ (Info), phải hỏi trước
-- **KHÔNG gộp review nhiều nhóm** trừ khi user nói rõ "review nhanh nhóm X-Y"
-- **Nếu user nói "tiếp tục"** mà không chỉ định nhóm → hiểu là nhóm tiếp theo trong kế hoạch đã duyệt ở Bước 0b
+- **Tự động chuyển nhóm** khi nhóm N = OK (không có vấn đề) — không cần lệnh từ human
+- **Tự động chuyển nhóm** sau khi human chọn (a) xong hoặc chọn (b) — không hỏi lại "tiếp tục không?"
+- **Claude DỪNG chờ human** chỉ khi nhóm N có vấn đề cần quyết định
+- **Claude KHÔNG ĐƯỢC tự sửa file** — kể cả lỗi nhỏ (Info), phải hỏi human trước và gọi skill con
+- **KHÔNG gộp review nhiều nhóm** trừ khi human nói rõ "review nhanh nhóm X-Y"
+- **Nếu human nói "tiếp tục"** mà không chỉ định nhóm → hiểu là nhóm tiếp theo trong kế hoạch đã duyệt ở Bước 0b
 
 ### Quy tắc PENDING → READY (BẮT BUỘC)
 
@@ -726,7 +787,7 @@ Khi xử lý Kịch bản A (PENDING → READY) cho một nhóm:
 
 ### Ghi nhận backlog giữa các nhóm
 
-Khi user chọn (b) — ghi nhận và sang nhóm tiếp — tích luỹ backlog:
+Khi human chọn (b) — ghi nhận và sang nhóm tiếp — tích luỹ backlog:
 
 ```
 Backlog tạm thời (cập nhật liên tục):
@@ -802,7 +863,7 @@ missing = atomic_tables - join_atomic_tables
 - Có JOIN sang bảng Atomic khác driving (dù kết hợp với driving) → `join_atomic`
 - `computed` chỉ dùng khi toàn bộ `etl_logic` chỉ tham chiếu driving table hoặc literal/function thuần
 
-**Action khi phát hiện lỗi này:** **Kịch bản C** — trình bày action đề xuất (danh sách cột vi phạm, `etl_logic_type` cũ → mới) → chờ user xác nhận → gọi `datamart-lld-design` để sửa. Không sửa tay trực tiếp vì cần đảm bảo format chuẩn `join_atomic` (INNER/LEFT JOIN ... → ...).
+**Action khi phát hiện lỗi này:** **Kịch bản C** — trình bày action đề xuất (danh sách cột vi phạm, `etl_logic_type` cũ → mới) → Claude DỪNG chờ human xác nhận → gọi `datamart-lld-design` để sửa. Không sửa tay trực tiếp vì cần đảm bảo format chuẩn `join_atomic` (INNER/LEFT JOIN ... → ...).
 
 ### Khi Detail Mapping trống (nhóm chưa thiết kế)
 
@@ -888,4 +949,4 @@ cat system/rules/rule_physical_name_exceptions_datamart.csv
 grep -E "\b(ctf|prac|trn|rcrd|org|nat|cty|dcsn|rslt|ases|issu|pcs|ovrl|scor|vln|actv|clss|dept|pos|emp|doc|ind)\b" Datamart/lld/datamart_attributes.csv
 ```
 
-**Action khi phát hiện:** **Kịch bản C** — trình bày action đề xuất (bảng: tên cũ → tên mới, danh sách file/dòng bị ảnh hưởng từ `grep -rn` toàn `Datamart/`) → chờ user xác nhận → gọi `datamart-lld-design` thực hiện field-rename-sync trên toàn bộ file output rồi verify sạch. ❌ Không tự Edit trực tiếp.
+**Action khi phát hiện:** **Kịch bản C** — trình bày action đề xuất (bảng: tên cũ → tên mới, danh sách file/dòng bị ảnh hưởng từ `grep -rn` toàn `Datamart/`) → Claude DỪNG chờ human xác nhận → gọi `datamart-lld-design` thực hiện field-rename-sync trên toàn bộ file output rồi verify sạch. ❌ Không tự Edit trực tiếp.
