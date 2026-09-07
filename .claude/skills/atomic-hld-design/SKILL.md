@@ -59,6 +59,11 @@ description: |
 - `Fact Append`: grain = 1 event/occurrence (tick khớp lệnh, log hoạt động). Mỗi dòng là 1 sự kiện xảy ra.
 - `Fact Snapshot`: grain = 1 trạng thái tại 1 thời điểm/kỳ (bảng giá cuối ngày, danh mục theo kỳ). Mỗi dòng là 1 lần chụp — có thể nhiều dòng cùng key nghiệp vụ qua các kỳ khác nhau.
 
+> **[SỬA 2026-09-07]** Entity `Fundamental`/`Relative`/`Fact Snapshot` bắt buộc khai báo tường minh
+> technical fields `ds_*` chuẩn (trạng thái bản ghi, ngày insert/update, timestamp ETL, ngày snapshot
+> cho History) khi thiết kế LLD — xem `atomic-lld-design/reference/technical_fields.md`. Không còn
+> loại trừ khỏi entity YAML như quy ước cũ.
+
 **Dấu hiệu nhận biết nhanh:**
 - Tên entity chứa "Activity Log", "Status Log", "Status History" → `Fact Append`
 - bcv_concept chứa "ETL Pattern" → `Fact Append`
