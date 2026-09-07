@@ -490,6 +490,48 @@ flowchart LR
 
 ---
 
+##### Cụm 15: Cơ cấu khối lượng CP niêm yết & Sở hữu nước ngoài (Fact Public Company Listing Info Snapshot) (Nhóm 31)
+
+> **[MỚI 2026-09-07 — Kịch bản A, PENDING → READY]** MDDS/VSDC đã bổ sung 2 Atomic entity mới, khai báo trực tiếp thành bảng Atomic (chưa qua staging riêng do dữ liệu gốc là biểu mẫu báo cáo định kỳ Thông tư 138/2025/TT-BTC, chưa có CSDL nguồn sống để khảo sát source-survey thông thường) — đã grep xác nhận tồn tại thật tại `DataModel/Atomic/Product/`: `Listed Security Info Snapshot` (`listed_security_info_snapshot`, cơ cấu khối lượng CP: lưu hành/niêm yết/quỹ/tự do chuyển nhượng) và `Foreign Ownership Info Snapshot` (`foreign_ownership_info_snapshot`, tỷ lệ/khối lượng sở hữu nước ngoài: FOL/hiện tại/room còn lại). 8/10 KPI của Nhóm 31 (K_GSDC_1381-1388) chuyển READY.
+>
+> **[SỬA 2026-09-07 lần 2 — Kịch bản D, K_GSDC_1389/1390 PENDING → READY]** Đọc lại full SQL tham khảo của BA (BA_analyst_GSĐC.csv, STT 31, dòng "Khối lượng cổ phiếu sở hữu nhà nước"/"Tỷ lệ sở hữu nhà nước") phát hiện gap-note trước đó ("thiếu audit field `created_date`/`update_dated`") **sai** — BA SQL thực tế dùng CTE `loaiky` lấy `MAX(ds_snpst_dt)` theo `YEAR/MONTH` trực tiếp từ `uat_ids_stg.state_capital`, và `SUM(sc.owned_share_qty)`/`SUM(sc.ownership_ratio)` GROUP BY công ty + tháng (do 1 công ty có thể có nhiều dòng `state_capital` — nhiều tổ chức nhà nước cùng sở hữu). Atomic `pc_state_capital` (`dm_atm_pc_state_capital-IDS.STATE_CAPITAL.yaml`) đã bổ sung field kỹ thuật `ds_snpst_dt` (Date, prefix `ds_`) đúng nguồn thật — 10/10 KPI Nhóm 31 nay READY. **Lưu ý còn mở:** `Mapping/atomic/arrangement/mapping_atm_pc_state_capital-IDS.STATE_CAPITAL.yaml` (ETL mapping ODS→Atomic) chưa cập nhật cột nguồn vật lý cho `ds_snpst_dt` — đội ETL/Atomic cần xác nhận trước go-live (BA tham chiếu schema staging `uat_ids_stg`, có thể khác `ods` mà mapping hiện dùng).
+>
+> **FK Public Company Dimension:** join qua `ticker_symbol` (nguồn mới) = `public_company_dim.equity_ticker_symbol` (đã có sẵn trên Dimension, nguồn `IDS.COMPANY_PROFILES.EQUITY_TICKER`, đã grep xác nhận tồn tại thật) — KHÔNG dùng `public_company_code` (BK khác, không phải mã ticker). `Public Company State Capital` join qua `public_company.pc_code` (bridge 2-hop từ `ticker_symbol` qua `Public Company`, không join thẳng vào Dimension).
+
+```mermaid
+flowchart LR
+    subgraph SRC["Staging"]
+        VSDC_LSIS["VSDC.LISTED_SECURITY_INFO_SNAPSHOT"]
+        VSDC_FOIS["VSDC.FOREIGN_OWNERSHIP_INFO_SNAPSHOT"]
+        IDS_COMPANY_PROFILES_c15["IDS.COMPANY_PROFILES"]
+        IDS_STATE_CAPITAL_c15["IDS.STATE_CAPITAL"]
+    end
+    subgraph SIL["Atomic"]
+        Listed_Security_Info_Snapshot["Listed Security Info Snapshot"]
+        Foreign_Ownership_Info_Snapshot["Foreign Ownership Info Snapshot"]
+        Public_Company_c15["Public Company"]
+        Public_Company_State_Capital_c15["Public Company State Capital"]
+    end
+    subgraph GOLD["Datamart"]
+        fct_public_company_listing_info_snpst["Fact Public Company Listing Info Snapshot"]
+        public_company_dim_c15["Public Company Dimension"]
+    end
+    VSDC_LSIS --> Listed_Security_Info_Snapshot
+    VSDC_FOIS --> Foreign_Ownership_Info_Snapshot
+    IDS_COMPANY_PROFILES_c15 --> Public_Company_c15
+    IDS_STATE_CAPITAL_c15 --> Public_Company_State_Capital_c15
+    Listed_Security_Info_Snapshot --> fct_public_company_listing_info_snpst
+    Foreign_Ownership_Info_Snapshot --> fct_public_company_listing_info_snpst
+    Public_Company_c15 --> fct_public_company_listing_info_snpst
+    Public_Company_State_Capital_c15 --> fct_public_company_listing_info_snpst
+    Public_Company_c15 --> public_company_dim_c15
+    public_company_dim_c15 --> fct_public_company_listing_info_snpst
+```
+
+> **Ghi chú:** `Public Company Dimension` reuse từ Cụm 6, chỉ thêm edge JOIN mới (qua `equity_ticker_symbol`) — không tạo Dimension mới, không thêm cột. `Calendar Date Dimension` reuse Whitelist Lớp 1, xác định qua `ds_snpst_dt` của 2 entity nguồn VSDC. `Public Company` dùng làm bridge join key (`equity_ticker_symbol` → `pc_code`) để nối `Public Company State Capital` (không có ticker) vào cùng grain Fact — measure K_GSDC_1389/1390 flatten trực tiếp xuống `pc_state_capital`, không tham chiếu `public_company_dim`.
+
+---
+
 ## Section 2 — Tổng quan báo cáo
 
 ---
@@ -3026,33 +3068,89 @@ flowchart LR
 
 #### Nhóm 31 — STT 31: Dữ liệu về thông tin niêm yết
 
-> **Rà soát 2026-07-16:** BA ghi Nguồn = "MSS, IDS" (không thuần MSS) và `Loại dữ liệu` phân biệt rõ 2 nhóm: 8 KPI đầu = "Dữ liệu tĩnh - **Chưa có CSDL**" (nguồn là biểu mẫu báo cáo thủ công theo Thông tư 138/2025/TT-BTC hoặc biểu mẫu Ban phát triển thị trường — chưa số hoá thành bảng CSDL); 2 KPI cuối (K_GSDC_1389, K_GSDC_1390) = "Dữ liệu tĩnh" (không có "chưa có CSDL") — BA ghi rõ Bảng nguồn = `state_capital`, Trường nguồn = `owned_share_qty`/`ownership_ratio`, filter `NVL(update_dated, created_date) < cuối tháng` (note: "VSDC ko có, lấy từ IDS"). Khớp Atomic entity `Public Company State Capital` (`pc_state_capital`, từ `lld_IDS_STATE_CAPITAL.yaml`) cho phần business column (`owned_share_quantity`/`ownership_ratio_percentage`).
-> **Gap Atomic K_GSDC_1389/1390 (rà soát LLD 2026-07-16):** Entity `pc_state_capital` hiện **không có audit fields** (`created_date`/`update_dated`) — chỉ có business columns, không có timestamp nào để lọc theo tháng như BA yêu cầu (`NVL(update_dated, created_date) < cuối tháng`). Không thể thiết kế Fact snapshot đúng grain "1 row / CTDC / tháng" nếu thiếu cột này. **Giữ PENDING**, khác gap loại của 8 KPI kia (thiếu hẳn bảng nguồn) — 2 KPI này chỉ thiếu 2 audit field trên 1 entity đã tồn tại. Cần bổ sung `created_date`/`update_dated` vào `pc_state_capital` qua `atomic-lld-design` trước khi Datamart có thể thiết kế Attributes.
+> **Phân loại:** Phân tích
+> **Atomic:** `Listed Security Info Snapshot` (`listed_security_info_snapshot`) ← VSDC — **READY** (Nguồn 1, `DataModel/Atomic/Product/dm_atm_listed_security_info_snapshot-VSDC.LISTED_SECURITY_INFO_SNAPSHOT.yaml`) / `Foreign Ownership Info Snapshot` (`foreign_ownership_info_snapshot`) ← VSDC — **READY** (Nguồn 1, `DataModel/Atomic/Product/dm_atm_foreign_ownership_info_snapshot-VSDC.FOREIGN_OWNERSHIP_INFO_SNAPSHOT.yaml`) / `Public Company` ← IDS.COMPANY_PROFILES — **READY** (reuse, join qua `equity_ticker_symbol`/`pc_code`) / `Public Company State Capital` (`pc_state_capital`) ← IDS.STATE_CAPITAL — **READY** (Nguồn 1, đã bổ sung field `ds_snpst_dt` 2026-09-07, xem Section 1 Cụm 15)
+>
+> **[SỬA 2026-09-07 — Kịch bản A, PENDING → READY]** MDDS/VSDC đã bổ sung 2 Atomic entity mới (xem Section 1, Cụm 15) — 8/10 KPI (K_GSDC_1381-1388) chuyển READY. Rà soát 2026-07-16 trước đó: BA ghi Nguồn = "MSS, IDS", `Loại dữ liệu` = "Dữ liệu tĩnh - Chưa có CSDL" cho 8 KPI đầu (biểu mẫu TT138/2025/Ban PTTT chưa số hoá) — nay đã có bảng Atomic thật, không còn PENDING.
+> **[SỬA 2026-09-07 lần 2 — Kịch bản D, K_GSDC_1389/1390 PENDING → READY]** Gap-note trước đó ("thiếu audit field `created_date`/`update_dated`") sai — đọc lại full BA SQL (STT 31, dòng "Khối lượng cổ phiếu sở hữu nhà nước"/"Tỷ lệ sở hữu nhà nước") xác nhận nguồn thật dùng `MAX(ds_snpst_dt)` theo `YEAR/MONTH` từ `uat_ids_stg.state_capital`, không phải `created_date`/`update_dated`. Atomic `pc_state_capital` đã bổ sung field `ds_snpst_dt`. BA SQL cũng cho thấy 1 CTDC có thể có nhiều dòng `state_capital` (nhiều tổ chức nhà nước sở hữu) — dùng `SUM()` GROUP BY công ty + tháng. 10/10 KPI Nhóm 31 nay READY. Xem Section 1 Cụm 15.
 
-**KPI liên quan:**
+**Mockup:**
+
+| Mã CK | Kỳ | KL lưu hành | KL niêm yết | KL quỹ | Free Float | KL khối ngoại sở hữu | % sở hữu NN | FOL | Room ngoại còn lại |
+|---|---|---|---|---|---|---|---|---|---|
+| VCB | 2026-08 | 4,982,687,000 | 5,000,000,000 | 17,313,000 | 1,200,000,000 | 1,495,000,000 | 30.00% | 30.00% | 5,000,000 |
+
+**Source:** `Fact Public Company Listing Info Snapshot` → `Public Company Dimension`, `Calendar Date Dimension`
+
+**Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_GSDC_1381 | Khối lượng cổ phiếu đang lưu hành | | Base | (chưa xác định — xem Atomic cần bổ sung) |  | Pending - chưa có CSDL (biểu mẫu TT138/2025) |
-| K_GSDC_1382 | Khối lượng cổ phiếu niêm yết | | Base | (chưa xác định — xem Atomic cần bổ sung) |  | Pending - chưa có CSDL (biểu mẫu TT138/2025) |
-| K_GSDC_1383 | Khối lượng cổ phiếu quỹ | | Base | (chưa xác định — xem Atomic cần bổ sung) |  | Pending - chưa có CSDL (biểu mẫu TT138/2025) |
-| K_GSDC_1384 | Khối lượng cổ phiếu tự do chuyển nhượng (Free Float) | | Base | (chưa xác định — xem Atomic cần bổ sung) |  | Pending - chưa có CSDL (biểu mẫu TT138/2025) |
-| K_GSDC_1385 | Khối lượng cổ phiếu khối ngoại sở hữu | | Base | (chưa xác định — xem Atomic cần bổ sung) |  | Pending - chưa có CSDL (biểu mẫu Ban PTTT) |
-| K_GSDC_1386 | Tỷ lệ sở hữu nước ngoài hiện tại | | Base | (chưa xác định — xem Atomic cần bổ sung) |  | Pending - chưa có CSDL (biểu mẫu Ban PTTT) |
-| K_GSDC_1387 | Tỷ lệ sở hữu nước ngoài tối đa (Foreign Ownership Limit – FOL) | | Base | (chưa xác định — xem Atomic cần bổ sung) |  | Pending - chưa có CSDL (biểu mẫu Ban PTTT) |
-| K_GSDC_1388 | Room ngoại còn lại | | Base | (chưa xác định — xem Atomic cần bổ sung) |  | Pending - chưa có CSDL (biểu mẫu Ban PTTT) |
-| K_GSDC_1389 | Khối lượng cổ phiếu sở hữu nhà nước | | Base | owned_share_quantity (trực tiếp) | Public Company State Capital | **PENDING** — thiếu audit field `created_date`/`update_dated` để lọc theo tháng |
-| K_GSDC_1390 | Tỷ lệ sở hữu nhà nước | | Base | ownership_ratio_percentage (trực tiếp) | Public Company State Capital | **PENDING** — thiếu audit field `created_date`/`update_dated` để lọc theo tháng |
+| K_GSDC_1381 | Khối lượng cổ phiếu đang lưu hành | CP | Cơ sở | `listed_security_info_snapshot.outstanding_share_quantity` | | READY |
+| K_GSDC_1382 | Khối lượng cổ phiếu niêm yết | CP | Cơ sở | `listed_security_info_snapshot.total_issued_share_quantity` | | READY |
+| K_GSDC_1383 | Khối lượng cổ phiếu quỹ | CP | Cơ sở | `listed_security_info_snapshot.treasury_share_quantity` | | READY |
+| K_GSDC_1384 | Khối lượng cổ phiếu tự do chuyển nhượng (Free Float) | CP | Cơ sở | `listed_security_info_snapshot.free_float_share_quantity` | | READY |
+| K_GSDC_1385 | Khối lượng cổ phiếu khối ngoại sở hữu | CP | Cơ sở | `foreign_ownership_info_snapshot.current_foreign_holding_quantity` | | READY |
+| K_GSDC_1386 | Tỷ lệ sở hữu nước ngoài hiện tại | % | Phái sinh | `foreign_ownership_info_snapshot.current_foreign_holding_quantity / NULLIF(foreign_ownership_info_snapshot.total_issued_share_quantity, 0) × 100` | BA: `current_shares_foreign_hold/total_issued_shares*100` — dùng `total_issued_share_quantity` tự thân của `foreign_ownership_info_snapshot` (không lấy chéo từ `listed_security_info_snapshot`, 2 nguồn độc lập) | READY |
+| K_GSDC_1387 | Tỷ lệ sở hữu nước ngoài tối đa (Foreign Ownership Limit – FOL) | % | Cơ sở | `foreign_ownership_info_snapshot.max_foreign_ownership_ratio` | | READY |
+| K_GSDC_1388 | Room ngoại còn lại | CP | Cơ sở | `foreign_ownership_info_snapshot.remaining_foreign_holding_quantity` | | READY |
+| K_GSDC_1389 | Khối lượng cổ phiếu sở hữu nhà nước | CP | Cơ sở | `SUM(pc_state_capital.owned_share_quantity)` theo `public_company`/tháng, `pc_state_capital.ds_snpst_dt = MAX(ds_snpst_dt)` trong tháng | BA: `SUM(sc.owned_share_qty)` GROUP BY công ty + tháng (`loaiky` CTE lấy `MAX(ds_snpst_dt)` theo YEAR/MONTH) — 1 CTDC có thể có nhiều dòng `state_capital` (nhiều tổ chức nhà nước sở hữu) | READY |
+| K_GSDC_1390 | Tỷ lệ sở hữu nhà nước | % | Cơ sở | `SUM(pc_state_capital.ownership_ratio_percentage)` theo `public_company`/tháng, cùng filter `ds_snpst_dt` với K_GSDC_1389 | BA: `SUM(sc.ownership_ratio)` — cùng pattern GROUP BY K_GSDC_1389 | READY |
 
-**Lý do PENDING (8 KPI đầu):** Nguồn là biểu mẫu báo cáo thủ công (Thông tư 138/2025/TT-BTC, biểu mẫu Ban phát triển thị trường) — chưa số hoá thành bảng CSDL, cần thiết kế Atomic mới.
+**Star Schema:**
 
-**Lý do PENDING (K_GSDC_1389/1390):** Atomic entity `pc_state_capital` đã có business columns cần thiết nhưng thiếu audit fields (`created_date`/`update_dated`) để dựng snapshot theo tháng — cần bổ sung 2 field này vào Atomic LLD trước.
+```mermaid
+erDiagram
+    Fact_Public_Company_Listing_Info_Snapshot {
+        int Public_Company_Dimension_Id FK
+        int Calendar_Date_Dimension_Id FK
+        int Outstanding_Share_Quantity
+        int Total_Issued_Share_Quantity
+        int Treasury_Share_Quantity
+        int Free_Float_Share_Quantity
+        int Current_Foreign_Holding_Quantity
+        float Foreign_Ownership_Ratio
+        float Max_Foreign_Ownership_Ratio
+        int Remaining_Foreign_Holding_Quantity
+        int State_Owned_Share_Quantity
+        float State_Ownership_Ratio_Percentage
+    }
+    Public_Company_Dimension {
+        int Public_Company_Dimension_Id PK
+        string Public_Company_Code
+        string Equity_Ticker_Symbol
+        string Pc_Nm
+        string Source_System_Code
+    }
+    Calendar_Date_Dimension {
+        int Date_Id PK
+        date Full_Date
+        string Year
+        string Month
+        string Source_System_Code
+    }
+    Public_Company_Dimension ||--o{ Fact_Public_Company_Listing_Info_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Public_Company_Listing_Info_Snapshot : " "
+```
 
-**Atomic cần bổ sung:**
-- 8 KPI đầu: Entity lưu thông tin khối lượng chứng khoán lưu hành/niêm yết (từ MSS) và thông tin sở hữu nước ngoài (từ Ban phát triển thị trường).
-- K_GSDC_1389/1390: bổ sung `created_date`/`update_dated` vào `pc_state_capital` (`lld_IDS_STATE_CAPITAL.yaml`).
+> **Ghi chú:** `Public_Company_Dimension`/`Calendar_Date_Dimension` reuse — chỉ liệt kê field liên quan Nhóm này (Dimension đầy đủ vẽ ở Cụm 1/6). `State_Owned_Share_Quantity`/`State_Ownership_Ratio_Percentage` (K_GSDC_1389/1390) — nguồn `pc_state_capital`, join bridge qua `Public Company` (`equity_ticker_symbol` → `pc_code`), không vẽ riêng trong erDiagram vì `Public Company State Capital` không phải Dimension/Fact reuse trực tiếp mà chỉ là nguồn `join_atomic` — xem chi tiết ETL logic tại Attributes LLD.
 
-**Mart dự kiến:** `Fact Public Company Listing Info Snapshot` (grain: 1 row / CTDC / tháng) — toàn bộ 10 KPI PENDING, chờ Atomic bổ sung tương ứng.
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    fct_public_company_listing_info_snpst["Fact Public Company Listing Info Snapshot"] --> rpt_nhom31["Nhóm 31 - Dữ liệu về thông tin niêm yết: K_GSDC_1381-1390"]
+    public_company_dim_rpt31["Public Company Dimension"] --> fct_public_company_listing_info_snpst
+    cdr_dt_dim_rpt31["Calendar Date Dimension"] --> fct_public_company_listing_info_snpst
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact Public Company Listing Info Snapshot | 1 row / mã CK (CTDC) / tháng |
+| Public Company Dimension | 1 row / CTDC |
+| Calendar Date Dimension | 1 row / ngày |
 
 ---
 
@@ -3583,7 +3681,7 @@ graph TB
 | `Public Company Financial YoY Report` | Fact-report | 1 row / sàn (bao gồm 'ALL'=toàn thị trường) / kỳ | K_GSDC_50_YOY-62_YOY (Nhóm 7 Khối B, Nhóm 11/13/15/17 reuse ID filter sàn); K_GSDC_741_YOY-751_YOY (Nhóm 41, JOIN theo Equity_Listing_Exchange_Code) | READY — giữ nguyên thiết kế cũ, không đổi theo yêu cầu Data Modeler (2026-08-18). Không FK Dimension, denormalize hoàn toàn. **[SỬA 2026-08-19]** Bổ sung Nhóm 41; cần thêm cột `Pre_Tax_Profit_Yoy` (xem Section 5). |
 | `Fact Public Company Financial Report Value` | Event | 1 CTDC × 1 kỳ (Report_Year + Report_Quarter, nullable = kỳ năm) × Row_Code × Column_Code | K_GSDC_99-689 (Nhóm 19-30, MH3 Data Explorer — DN thông thường/bảo hiểm/TCTD × BCĐKT/BCKQKD/LCTT trực tiếp/gián tiếp); K_GSDC_49 (Nhóm 6/10/12/14/16, reuse — Số DN báo lãi) | READY cho Nhóm 6/19-30 (Atomic đủ 5 entity: `fr_value`/`financial_report_catalog`/`fr_row_template`/`fr_column_template`/`pc_report_submission`). **[SỬA 2026-08-18]** Không còn phục vụ Nhóm 7/8/11/13/15/17/37 (đã chuyển sang `Fact Public Company Financial Summary Snapshot`) — chỉ giữ lại cho Nhóm 19-30 (per-cell Data Explorer) và Nhóm 6 (K_GSDC_49). Nhóm 38-41 dùng 4 bảng Fact-report riêng (xem 4 dòng bên dưới), không dùng Fact này. |
 | `Fact Violation Report Snapshot` | Event | 1 row / công ty đại chúng / kỳ (Report_Year + Report_Quarter) / ngày ETL snapshot (FK Calendar Date Dimension) | K_GSDC_48 (Nhóm 6/10/12/14/16) — Tỷ lệ nộp BCTC; K_GSDC_702/703 (Nhóm 38, SUM theo sàn tại snapshot mới nhất, filter rpt_year/rpt_quarter bằng tham số ETL :p_year/:p_quarter — không dùng rpt_year/rpt_quarter của Fact làm nguồn kỳ vì nullable) | READY (2026-08-07 — nguồn `violation_report`/draft, sửa lại từ Operational → Fact vì dữ liệu phát sinh theo kỳ, không phải current-state; bổ sung FK Calendar Date Dimension theo ngày ETL; xem Nhóm 6). Sửa 2026-08-15: bỏ cột `Profitable_Indicator`, chỉ còn phục vụ K_GSDC_48. **[SỬA 2026-08-19 lần 2]** Bổ sung Nhóm 38 (K_GSDC_702/703) — xem Cụm 9, Section 1. |
-| `Fact Public Company Listing Info Snapshot` | Periodic Snapshot | 1 CTDC × 1 ngày | K_GSDC_690–699 (Nhóm 31) | PENDING |
+| `Fact Public Company Listing Info Snapshot` | Periodic Snapshot | 1 CTDC × 1 tháng | K_GSDC_1381–1390 (Nhóm 31, READY 10/10) | READY (10/10 KPI). **[SỬA 2026-09-07]** Nguồn `listed_security_info_snapshot`/`foreign_ownership_info_snapshot` (VSDC, mới) — xem Cụm 15, Section 1. **[SỬA 2026-09-07 lần 2]** K_GSDC_1389/1390 (`pc_state_capital`, sở hữu nhà nước) chuyển READY sau khi bổ sung field `ds_snpst_dt` vào Atomic — xem Cụm 15. Số KPI_ID trong bảng này trước đây ghi sai "K_GSDC_690–699" — đã sửa khớp đúng dải thật dùng ở Nhóm 31 |
 | `Public Company Regulatory Compliance Report` | Fact-report | 1 row / sàn NY-ĐKGD / kỳ (Report_Year + Report_Quarter) | K_GSDC_700-708 (Nhóm 38) — BC01.1 | READY (2026-08-07 — thiết kế lại từ query đa nguồn thành Fact-report denormalize, xem Nhóm 38). **[SỬA 2026-08-19]** Số CTĐC báo lãi (K_GSDC_705/707) đổi nguồn ETL nạp từ JOIN trực tiếp `fr_value` sang aggregate từ `Fact Public Company Financial Summary Snapshot` (đã dedup sẵn) + `Public Company Dimension`. **[SỬA 2026-08-19 lần 2]** Toàn bộ 9 measure đổi sang aggregate từ Datamart — Số lượng DN từ `Public Company Dimension`, Số BCTC đến hạn/đã nộp từ `Fact Violation Report Snapshot` — theo pattern 4 sub-select độc lập, Report Year/Quarter là tham số ETL (không suy diễn từ Fact) — xem Cụm 9, Section 1. |
 | `Public Company Industry Financial Report` | Fact-report | 1 row / ngành / năm báo cáo (kèm cột N-1) | K_GSDC_709-717 (Nhóm 39) — BC01.2 | READY (2026-08-07 — thiết kế lại thành Fact-report, xem Nhóm 39). **[SỬA 2026-08-19]** ETL populate đổi nguồn từ JOIN trực tiếp `fr_value` sang aggregate từ `Fact Public Company Financial Summary Snapshot` (đã dedup sẵn) + `Public Company Dimension` (lấy ngành denormalize sẵn) — xem Cụm 10, Section 1. |
 | `Public Company Multi-Period Financial Report` | Fact-report | 1 row DUY NHẤT / năm báo cáo (kèm cột N-1/N-2), toàn thị trường không group-by | K_GSDC_718-739 (Nhóm 40) — BC01.3 | READY (2026-08-07 — thiết kế lại thành Fact-report, xem Nhóm 40). **[SỬA 2026-08-19]** ETL populate đổi nguồn từ JOIN trực tiếp `fr_value` sang SUM toàn thị trường từ `Fact Public Company Financial Summary Snapshot` (đã dedup sẵn) — xem Cụm 11, Section 1. |
@@ -3620,7 +3718,7 @@ Không có bảng Tác nghiệp nào trong module này. `Operational Public Comp
 | Fact Public Company Issuance Score Snapshot | fct_public_company_issuance_score_snpst | new | Fact mới cho Nhóm 3 (MH1 Tab Phát hành) — nguồn Atomic draft |
 | Fact Public Company Financial Score Snapshot | fct_public_company_financial_score_snpst | new | Fact mới cho Nhóm 4 (MH1 Tab Tài chính) — nguồn Atomic draft |
 | Fact Public Company Non-Financial Score Snapshot | fct_public_company_nonfinancial_score_snpst | new | Fact mới cho Nhóm 5 (MH1 Tab Phi TC & M-Score) — nguồn Atomic draft |
-| Fact Public Company Listing Info Snapshot | fct_public_company_listing_info_snpst | pending | PENDING — nguồn MSS chưa có Atomic (MH5 DB33) |
+| Fact Public Company Listing Info Snapshot | fct_public_company_listing_info_snpst | new | **[SỬA 2026-09-07]** READY (10/10 KPI) — nguồn `listed_security_info_snapshot`/`foreign_ownership_info_snapshot` (VSDC, mới bổ sung Atomic) cho K_GSDC_1381-1388, Kịch bản A PENDING→READY. K_GSDC_1389/1390 (`pc_state_capital`) chuyển READY sau khi bổ sung field `ds_snpst_dt` (Kịch bản D — gap-note trước đó sai, xem Cụm 15). Xem Cụm 15 (Section 1), Nhóm 31 (Section 2) |
 | Public Company Dimension | public_company_dim | reuse | Dùng chung toàn bộ Nhóm 1–37 (MH1/MH2/MH3) — 1 Dimension duy nhất cho toàn module (không dùng cho Nhóm 38-41 nữa — xem 4 dòng Fact-report bên dưới) |
 | Calendar Date Dimension | cdr_dt_dim | reuse | Dimension Conformed dùng chung toàn hệ thống Lakehouse, không chỉ riêng GSDC |
 | Fact Violation Report Snapshot | fct_violation_rpt_snpst | new | Mới 2026-08-06, sửa table_type Operational → Fact + đổi tên thêm hậu tố Snapshot 2026-08-07 (grain 1 row/công ty/kỳ/ngày ETL snapshot, FK Calendar Date Dimension) — nguồn `violation_report`/IDS.VIOLATION_REPORT (draft), phục vụ K_GSDC_48 (Nhóm 6/10/12/14/16). Sửa 2026-08-15: bỏ cột `Profitable_Indicator` (K_GSDC_49 chuyển sang dùng `Fact Public Company Financial Report Value`, xem dòng trên) — lý do: kỳ join `fr_value` trước đó bắc cầu sai qua `violation_report.period_year`, 2 bảng nguồn độc lập không đảm bảo khớp kỳ. |

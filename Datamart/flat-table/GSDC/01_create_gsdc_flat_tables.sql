@@ -637,3 +637,43 @@ PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
 ORDER BY (assumeNotNull(snpst_cdr_dt), public_company_dim_id)
 COMMENT 'Flat table — Fact Public Company Financial Summary Snapshot × Calendar Date × Public Company Dimension'
 ;
+
+-- ---------------------------------------------------------------------
+-- 14. Fact Public Company Listing Info Snapshot
+--     [MỚI 2026-09-07] Cơ cấu KL CP niêm yết, sở hữu nước ngoài & sở hữu nhà nước — 1 row/mã CK/tháng.
+--     Nguồn VSDC listed_security_info_snapshot + foreign_ownership_info_snapshot (mới bổ sung Atomic).
+--     [SỬA 2026-09-07 lần 2] + IDS pc_state_capital (K_GSDC_1389/1390, sở hữu nhà nước).
+--     10/10 KPI READY (Nhóm 31, K_GSDC_1381-1390).
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS datamart.gsdc_fct_public_company_listing_info_snpst_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FACT PUBLIC COMPANY LISTING INFO SNAPSHOT
+    public_company_dim_id              String                  COMMENT 'FK sang Public Company Dimension (surrogate key, join qua equity_ticker_symbol).',
+    cdr_dt_dim_id                      String                  COMMENT 'FK tới Calendar Date Dimension — ngày snapshot (kỳ tháng).',
+    outstanding_share_quantity         Nullable(Int64)         COMMENT 'Khối lượng cổ phiếu đang lưu hành (K_GSDC_1381).',
+    total_issued_share_quantity        Nullable(Int64)         COMMENT 'Khối lượng cổ phiếu niêm yết (K_GSDC_1382).',
+    treasury_share_quantity            Nullable(Int64)         COMMENT 'Khối lượng cổ phiếu quỹ (K_GSDC_1383).',
+    free_float_share_quantity          Nullable(Int64)         COMMENT 'Khối lượng cổ phiếu tự do chuyển nhượng — Free Float (K_GSDC_1384).',
+    current_foreign_holding_quantity   Nullable(Int64)         COMMENT 'Khối lượng cổ phiếu khối ngoại sở hữu (K_GSDC_1385).',
+    foreign_ownership_ratio            Nullable(Decimal(5,2))  COMMENT 'Tỷ lệ sở hữu nước ngoài hiện tại (K_GSDC_1386).',
+    max_foreign_ownership_ratio        Nullable(Decimal(5,2))  COMMENT 'Tỷ lệ sở hữu nước ngoài tối đa — FOL (K_GSDC_1387).',
+    remaining_foreign_holding_quantity Nullable(Int64)         COMMENT 'Room ngoại còn lại (K_GSDC_1388).',
+    state_owned_share_quantity         Nullable(Int64)         COMMENT 'Khối lượng cổ phiếu sở hữu nhà nước — SUM theo công ty/tháng (K_GSDC_1389).',
+    state_ownership_ratio_percentage   Nullable(Decimal(5,2))  COMMENT 'Tỷ lệ sở hữu nhà nước — SUM theo công ty/tháng (K_GSDC_1390).',
+
+    -- From: CALENDAR DATE DIMENSION
+    snpst_cdr_dt                       Nullable(Date)          COMMENT 'Ngày snapshot (kỳ tháng) — từ Calendar Date Dimension.',
+
+    -- From: PUBLIC COMPANY DIMENSION
+    public_company_code                String                  COMMENT 'Khóa nghiệp vụ — Mã CTĐC — từ Public Company Dimension.',
+    equity_ticker_symbol               Nullable(String)        COMMENT 'Mã cổ phiếu — từ Public Company Dimension.',
+    public_company_nm                  Nullable(String)        COMMENT 'Tên công ty (tiếng Việt) — từ Public Company Dimension.',
+    equity_listing_exchange_code       Nullable(String)        COMMENT 'Sàn niêm yết — từ Public Company Dimension.',
+    business_line_level_1_code         Nullable(String)        COMMENT 'Mã ngành cấp 1 — từ Public Company Dimension.',
+    classification_business_line_nm    Nullable(String)        COMMENT 'Tên ngành cấp 1 — từ Public Company Dimension.'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
+ORDER BY (assumeNotNull(snpst_cdr_dt), public_company_dim_id)
+COMMENT 'Flat table — Fact Public Company Listing Info Snapshot × Calendar Date × Public Company Dimension'
+;

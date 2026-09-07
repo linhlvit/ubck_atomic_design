@@ -611,3 +611,38 @@ LEFT JOIN datamart.public_company_dim dim
     ON dim.public_company_dim_id = f.public_company_dim_id
 WHERE snpst_cal.cdr_dt = :etl_date
 ;
+
+-- ---------------------------------------------------------------------
+-- 14. Fact Public Company Listing Info Snapshot (Nhóm 31, K_GSDC_1381-1390)
+--     [MỚI 2026-09-07] Nguồn VSDC listed_security_info_snapshot + foreign_ownership_info_snapshot
+--     [SỬA 2026-09-07 lần 2] + IDS pc_state_capital (K_GSDC_1389/1390, sở hữu nhà nước)
+-- ---------------------------------------------------------------------
+TRUNCATE TABLE IF EXISTS datamart.gsdc_fct_public_company_listing_info_snpst_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.gsdc_fct_public_company_listing_info_snpst_flat
+SELECT
+    f.public_company_dim_id,
+    f.cdr_dt_dim_id,
+    f.outstanding_share_quantity,
+    f.total_issued_share_quantity,
+    f.treasury_share_quantity,
+    f.free_float_share_quantity,
+    f.current_foreign_holding_quantity,
+    f.foreign_ownership_ratio,
+    f.max_foreign_ownership_ratio,
+    f.remaining_foreign_holding_quantity,
+    f.state_owned_share_quantity,
+    f.state_ownership_ratio_percentage,
+    snpst_cal.cdr_dt            AS snpst_cdr_dt,
+    dim.public_company_code,
+    dim.equity_ticker_symbol,
+    dim.public_company_nm,
+    dim.equity_listing_exchange_code,
+    dim.business_line_level_1_code,
+    dim.classification_business_line_nm
+FROM datamart.fct_public_company_listing_info_snpst f
+JOIN datamart.cdr_dt_dim snpst_cal
+    ON snpst_cal.cdr_dt_dim_id = f.cdr_dt_dim_id
+LEFT JOIN datamart.public_company_dim dim
+    ON dim.public_company_dim_id = f.public_company_dim_id
+WHERE snpst_cal.cdr_dt = :etl_date
+;
