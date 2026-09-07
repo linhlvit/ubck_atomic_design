@@ -8400,6 +8400,7 @@ entities:
       - "securities_trade"
       - "public_company"
       - "index_constituent_snapshot"
+      - "listed_security_info_snapshot"
     modules_using:
       - "GSTT"
     columns:
@@ -8736,6 +8737,15 @@ entities:
         description: "Giá đóng cửa trong ngày giao dịch, lưu theo từng ngày trên Fact (khác Security Trading Snapshot Dimension.Close Price — SCD4A current-state) — bổ sung 2026-09-04 (sửa từ High/Low Price) cho window function 52 tuần K_GSTT_106/107 và Đỉnh cũ/Đáy cũ (O_GSTT_6)"
         source_atomic_table: "security_trading_snapshot"
         source_atomic_column: "security_trading_snapshot.close_price"
+      - logical_name: "Free Float Share Quantity"
+        physical_name: "free_float_share_quantity"
+        data_domain: "Small Counter"
+        data_type: "int"
+        nullable: true
+        key: ""
+        description: "[MỚI 2026-09-07] Khối lượng cổ phiếu tự do chuyển nhượng — nguồn VSDC listed_security_info_snapshot (snapshot theo tháng, lấy bản ghi gần nhất <= ngày giao dịch). Phục vụ K_GSTT_76/125 (Nhóm 24)"
+        source_atomic_table: "listed_security_info_snapshot"
+        source_atomic_column: "listed_security_info_snapshot.free_float_share_quantity"
 
   - id: "DTM-fct_market_index_intraday"
     logical_name: "Fact Market Index Intraday"

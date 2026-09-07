@@ -213,10 +213,7 @@ FROM JAD_STOCKINFOR s
 WHERE s.tradingdate = :ngay_gd;
 
 ",,,,,,Done,Dữ liệu tĩnh,F
-1,,Dashboard thông tin về danh mục chứng khoán theo dạng bảng số liệu,Chỉ sô,,Dashboard,Chiều,TB,Mã CK,MDDS,X,X,,Done,Thông tin thị trường,JAD_MARKETINFOR,stockType,Join bảng JAD_CSIDXINFOR với JAD_STOCKINFOR qua symbol. Join sang bảng JAD_MARKETINFOR qua JAD_MARKETINFOR .marketcode = JAD_CSIDXINFOR .indexcode,"SELECT s.symbol, idx.indexCode
-FROM JAD_STOCKINFOR s
-JOIN JAD_CSIDXINFOR idx ON s.symbol = idx.symbol
-                    AND s.tradingdate = idx.tradingdate;",,,,,,Done,Dữ liệu tĩnh,F
+1,,Dashboard thông tin về danh mục chứng khoán theo dạng bảng số liệu,Chỉ sô,,Dashboard,Chiều,TB,Mã CK,MDDS,X,X,,Done,Thông tin thị trường,JAD_MARKETINFOR,indexName,,,,,,,,Done,Dữ liệu tĩnh,F
 1,,Dashboard thông tin về danh mục chứng khoán theo dạng bảng số liệu,Loại phái sinh ,,Dashboard,Chiều,TB,Mã CK,MDDS,X,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,,FloorCode='03' (FDS) AND StockType='FU' cho phái sinh,"SELECT
     s.StockType,
      DECODE(si.""""StockType"""", '4', 'HĐTL') || DECODE(si.""""underlyingSymbol"""", 'GB05', 'TPCP', 'GB10', 'TPCP', si.""""underlyingSymbol"""") AS loai_phai_sinh
@@ -247,24 +244,12 @@ END AS loai_chung_khoan","SELECT
     END AS loai_chung_khoan
 FROM security_master s;",bổ sung thêm ,,,,,,,F
 1,,Dashboard thông tin về danh mục chứng khoán theo dạng bảng số liệu,Phương thức khớp lệnh ( thỏa thuận),,Dashboard,Chiều,TB,Mã CK,CSDLTT,X,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,Board Type/Board ID,"- TRADE_BOOK_HOSE: 
-Board Type in ('T1','T2','T3','T4','T6)
+Board Type in ('T1','T2','T3','T4','T6,'R1')
 - Trade_HNX: 
-Board ID in ('T1','T2','T3','T4','T6)","SELECT DISTINCT
-    CASE
-        WHEN [Board Type] IN ('T1','T2','T3','T4','T6') THEN 'Thỏa thuận'
-    END                     AS phuong_thuc_gd,
-    [Board Type]            AS board_type_code
-FROM TRADE_BOOK_HOSE
-where Trade Date = :ngay_gd
-UNION
-
-SELECT DISTINCT
-    CASE
-        WHEN [Board ID] IN ('T1','T2','T3','T4','T6') THEN 'Thỏa thuận'
-    END,
-    [Board ID] AS board_type_code
-FROM Trade_HNX
-where Trade Date = :ngay_gd;",,,,,,Done,Dữ liệu tĩnh,F
+Board ID in ('T1','T2','T3','T4','T6, 'R1')","- TRADE_BOOK_HOSE: 
+Board Type in ('T1','T2','T3','T4','T6,'R1')
+- Trade_HNX: 
+Board ID in ('T1','T2','T3','T4','T6, 'R1')",,,,,,Done,Dữ liệu tĩnh,F
 1,,Dashboard thông tin về danh mục chứng khoán theo dạng bảng số liệu,Ngày,,Dashboard,Chiều,TB,Mã CK,,X,X,,Done,,,,,,Tham số lọc lấy tại ngày,,,,,Done,Dữ liệu tĩnh,F
 1,,Dashboard thông tin về danh mục chứng khoán theo dạng bảng số liệu,Ngày đáo hạn của các loại hợp đồng phái sinh,,Dashboard,Chỉ tiêu cơ sở,TB,Mã CK,MDDS,X,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,maturityDate,FloorCode='03' (FDS) and StockType='FU' cho phái sinh,"SELECT
     s.symbol,
@@ -377,19 +362,17 @@ Trade price * Trade quantity
 1,,Dashboard thông tin về danh mục chứng khoán theo dạng bảng số liệu,Tổng KL thỏa thuận,Σ KLGD,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,X,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
 Execution - Volume: Khối lượng khớp lệnh
 Trade_HNX:
-Trade quantity: Khối lượng giao dịch","- (TRADE_BOOK_HOSE):
-Board Type IN ('T1','T2','T3','T4','T6')
-- Trade_HNX:
-Board ID IN ('T1','T2','T3','T4','T6')
-Market ID in (UPX,STX,STO)",,,,,,,Done,Dữ liệu tĩnh,F
+Trade quantity: Khối lượng giao dịch","- TRADE_BOOK_HOSE: 
+Board Type in ('T1','T2','T3','T4','T6,'R1')
+- Trade_HNX: 
+Board ID in ('T1','T2','T3','T4','T6, 'R1')",,,,,,,Done,Dữ liệu tĩnh,F
 1,,Dashboard thông tin về danh mục chứng khoán theo dạng bảng số liệu,Tổng GT thỏa thuận,Σ (Giá * KLGD),Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,X,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
 Execution - Value: Giá trị giao dịch
 Trade_HNX:
-Trade price * Trade quantity","- (TRADE_BOOK_HOSE):
-Board Type IN ('T1','T2','T3','T4','T6')
-- Trade_HNX:
-Board ID IN ('T1','T2','T3','T4','T6')
-Market ID in (UPX,STX,STO)",,,,,,,Done,Dữ liệu tĩnh,F
+Trade price * Trade quantity","- TRADE_BOOK_HOSE: 
+Board Type in ('T1','T2','T3','T4','T6,'R1')
+- Trade_HNX: 
+Board ID in ('T1','T2','T3','T4','T6, 'R1')",,,,,,,Done,Dữ liệu tĩnh,F
 1,,Dashboard thông tin về danh mục chứng khoán theo dạng bảng số liệu,KLNN ròng,KLNN mua − KLNN bán,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,X,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"TRADE_BOOK_HOSE:
 kl_nn_mua: Execution - Volume (điều kiện: Buy - Foreigner Investor type IN ('10','20'))
 kl_nn_ban: Execution - Volume (điều kiện: Sell - Foreigner Investor type IN ('10','20'))
@@ -2195,7 +2178,10 @@ FROM (SELECT * FROM HNX UNION ALL SELECT * FROM HOSE)",,,,,,Chưa có sql,Chưa 
 Execution - Volume
 - HNX: 
 Trade quantity
---> cần join qua bảng JAD_CSIDXINFOR để lấy KLGD của chỉ số ","Market ID in ( 'STO', 'STX', 'UPX')","
+--> cần join qua bảng JAD_CSIDXINFOR để lấy KLGD của chỉ số ","- TRADE_BOOK_HOSE: 
+Board Type in ('T1','T2','T3','T4','T6,'R1')
+- Trade_HNX: 
+Board ID in ('T1','T2','T3','T4','T6, 'R1')","
         Select 
         INDEXCODE
         --,SYMBOL
@@ -2273,7 +2259,10 @@ Trade quantity
 Execution - Value
 - HNX: 
 Trade quantity * Trade price
---> cần join qua bảng JAD_CSIDXINFOR để lấy KLGD của chỉ số ","Market ID in ( 'STO', 'STX', 'UPX')","
+--> cần join qua bảng JAD_CSIDXINFOR để lấy KLGD của chỉ số ","- TRADE_BOOK_HOSE: 
+Board Type in ('T1','T2','T3','T4','T6,'R1')
+- Trade_HNX: 
+Board ID in ('T1','T2','T3','T4','T6, 'R1')","
         Select 
         INDEXCODE
         --,SYMBOL
@@ -19337,7 +19326,9 @@ Trade quantity: Khối lượng giao dịch",,,,,Done,Dữ liệu tĩnh,
 FROM JAD_STOCKINFOR s
 WHERE s.tradingdate = :ngay_gd","Giá đóng cửa, giá gần nhất (có thể bao gồm cả giá dự khớp trong các phiên khớp lệnh định kỳ)",,,,,Done,Dữ liệu tĩnh,
 21,,"Top nhà đầu tư nước ngoài  theo dạng bảng số liệu theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",% thay đổi,Tỷ lệ thay đổi giá so với giá tham chiếu,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,(change / giá_tham_chiếu) × 100,,"SELECT    s.symbol,    s.tradingdate,    s.changePercent          AS pct_thay_doiFROM JAD_STOCKINFOR s",,,,,,Done,Dữ liệu tĩnh,
-21,,"Top nhà đầu tư nước ngoài  theo dạng bảng số liệu theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",KL mua ròng ,,Dashboard,Chỉ tiêu phái sinh,TB,,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"TRADE_BOOK_HOSE:
+21,,"Top nhà đầu tư nước ngoài  theo dạng bảng số liệu theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",KL mua ròng ,"CL mua và bán =KL mua -KL bán
+Nếu CL mua và bán > 0 -> KL mua ròng
+Nếu CL mua và bán < 0 -> KL bán ròng",Dashboard,Chỉ tiêu phái sinh,TB,,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"TRADE_BOOK_HOSE:
 Buy - Foreigner Investor type + Execution - Volume (TRADE_BOOK_HOSE)
 Trade_HNX:
 | Buy Foreign Investor Type Code + Trade quantity (Trade_HNX)
@@ -22491,7 +22482,8 @@ LIMIT :top_n;""","- Cần check lại có bỏ loại giao dịch G7,G8
 24,,Xu hướng dòng tiền >> Theo dõi tỷ trọng dòng tiền dưới dạng biểu đồ cột - biểu đồ phân tán,Mã ck,Mã chứng khoán theo rổ chỉ số ,Dashboard,Chiều,TB,Mã CK,MDDS,,X,X,Done,Thông tin thị trường,JAD_CSIDXINFOR,symbol,,"SELECT DISTINCT
     s.symbol            AS ma_ck,
 FROM JAD_CSIDXINFOR s",Hiện tại chưa rõ điều kiện chung,,,,,Done,Dữ liệu tĩnh,
-24,,Xu hướng dòng tiền >> Theo dõi tỷ trọng dòng tiền dưới dạng biểu đồ cột - biểu đồ phân tán,Sàn ,,Dashboard,Chiều,Trùng,Mã CK,MDDS,,X,X,Done,Thông tin thị trường,JAD_MARKETINFOR,marketId,,"SELECT DISTINCT    i.FloorCode,    CASE i.FloorCode        WHEN '10' THEN 'HOSE'        WHEN '02' THEN 'HNX'        WHEN '04' THEN 'UPCOM'    END                 AS ten_sanFROM JAD_MARKETINFORiWHERE i.TradingDate = :ngay_gd;","IDXInfor.FloorCode: 10=HOSE, 02=HNX, 04=UPCOM; JAD_MARKETINFOR.marketId tương đương","MDDS AS (
+24,,Xu hướng dòng tiền >> Theo dõi tỷ trọng dòng tiền dưới dạng biểu đồ cột - biểu đồ phân tán,Sàn ,,Dashboard,Chiều,Trùng,Mã CK,MDDS,,X,X,Done,Thông tin thị trường,JAD_MARKETINFOR,marketId,,"SELECT DISTINCT    i.FloorCode,    CASE i.FloorCode        WHEN '10' THEN 'HOSE'        WHEN '02' THEN 'HNX'        WHEN '04' THEN 'UPCOM'    END                 AS ten_sanFROM JAD_MARKETINFORiWHERE i.TradingDate = :ngay_gd;","IDXInfor.FloorCode: 10=HOSE, 02=HNX, 04=UPCOM; JAD_MARKETINFOR.marketId tương đương","---------------------------------------------------xu hướng dòng tiền - biểu đò cột -------------------------------------------------------
+with MDDS AS (
     -- Thông tin giá + return_i (dạng phân số) + pct_bien_dong (dạng %)
     -- Lấy đúng bản ghi CUỐI CÙNG trong ngày (giá đóng cửa chính thức), tránh lấy nhầm snapshot giữa phiên
     SELECT
@@ -22499,34 +22491,62 @@ FROM JAD_CSIDXINFOR s",Hiện tại chưa rõ điều kiện chung,,,,,Done,Dữ
         gia_dong_cua,
         gia_tham_chieu,
         change,
-        ROUND(change / NULLIF(gia_tham_chieu, 0), 6)        AS return_i,
-        ROUND((change / NULLIF(gia_tham_chieu, 0)) * 100, 2) AS pct_bien_dong
+        closePrice_1,
+        ROUND((gia_dong_cua - closePrice_1) / NULLIF(closePrice_1, 0), 6)        AS return_i,
+        ROUND((change / NULLIF(closePrice_1, 0)) * 100, 2) AS pct_bien_dong
     FROM (
         SELECT
             symbol,
             closePrice AS gia_dong_cua,
             reference  AS gia_tham_chieu,
+            date_format (tradingdate , 'yyyyMMdd') as Ngay_GD,
             change,
+			 LAG(closePrice) OVER (
+            PARTITION BY symbol ORDER BY date_format (tradingdate , 'yyyyMMdd')
+        ) AS closePrice_1
+        FROM uat_mdds_stg.tmp_jad_stockinfor_eod  s
+        where 1=1 
+--        and s.symbol = 'AAA'
+        )
+      WHERE Ngay_GD = :Ngay_gd
+)
+--;
+--select s.* FROM MDDS s
+--where s.symbol = 'AAA'
+--;
+,SCPLH AS (
+    SELECT
+        symbol,
+        ngay_bao_cao,
+        so_luong_cp_luu_hanh,
+        so_luong_cp_tu_do,
+        so_luong_cp_luu_hanh_1,
+        so_luong_cp_tu_do_1
+    FROM (
+        SELECT
+            t.ticker_symbol AS symbol,
+            t.outstanding_shares AS so_luong_cp_luu_hanh,
+            t.free_float_shares as so_luong_cp_tu_do,
+            TO_DATE(t.snapshot_date, 'yyyy-MM-dd') ngay_bao_cao,
+            LAG(t.outstanding_shares) OVER (
+            PARTITION BY t.ticker_symbol ORDER BY date_format (t.snapshot_date , 'yyyyMMdd')) AS so_luong_cp_luu_hanh_1,           
+            LAG(t.free_float_shares) OVER (
+            PARTITION BY t.ticker_symbol ORDER BY date_format (t.snapshot_date , 'yyyyMMdd')) AS so_luong_cp_tu_do_1,
             ROW_NUMBER() OVER (
-                PARTITION BY symbol, tradingdate
-                ORDER BY TRADINGTIME DESC  
+                PARTITION BY t.ticker_symbol
+                ORDER BY TO_DATE(t.snapshot_date, 'yyyy-MM-dd') DESC
             ) AS rn
-        FROM JAD_STOCKINFOR
-        WHERE date_format(TO_DATE(tradingdate, 'DD/MM/YYYY'), 'yyyyMMdd') = :ngay_gd
-    ) x
+        FROM uat_vsdc_stg.outstanding_shares  t
+        WHERE 1=1
+          AND date_format(TO_DATE(t.snapshot_date, 'yyyy-MM-dd'), 'yyyyMMdd') <= :Ngay_gd
+--          and ticker_symbol = 'AAA'
+    )
     WHERE rn = 1
-),,
--- tên bảng/cột chưa xác nhận thật
-SCPLH AS (
-    SELECT 
-        a.MCK AS symbol,
-        a.`Ngày báo cáo` AS ngay_bao_cao,
-        SUM(a.`Khối lượng chứng khoán đang lưu hành`) AS KLLH,
-        SUM(a.`Khối lượng CP tự do chuyển nhượng`) AS KL_tu_do
-    FROM `BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành` a
-    WHERE a.Loai_CK = 'Co phieu'
-    GROUP BY a.MCK, a.`Ngày báo cáo`
 ),
+--;
+--select * from uat_vsdc_stg.outstanding_shares  t
+--where t.ticker_symbol = 'AAA'
+--;
 Von_hoa_theo_chiso AS (
     -- MarketCap = Giá tham chiếu × KLLH, KLLH lấy tại ngày t
     SELECT
@@ -22536,55 +22556,75 @@ Von_hoa_theo_chiso AS (
         v.von_hoa_luu_hanh,
         v.von_hoa_tu_do,
         SUM(v.von_hoa_luu_hanh) OVER (PARTITION BY si.INDEXCODE) AS tong_von_hoa_luu_hanh,
-        SUM(v.von_hoa_tu_do)    OVER (PARTITION BY si.INDEXCODE) AS tong_von_hoa_tu_do
+        SUM(v.von_hoa_tu_do)    OVER (PARTITION BY si.INDEXCODE) AS tong_von_hoa_tu_do,
+        count(*) over ( PARTITION BY si.INDEXCODE) 
     FROM (        
         SELECT
             m.symbol,
             m.gia_dong_cua,
             m.gia_tham_chieu,
-            s.KLLH,
-            m.gia_tham_chieu * s.KLLH AS von_hoa_luu_hanh,
-            s.KL_tu_do,
-            m.gia_tham_chieu * s.KL_tu_do AS von_hoa_tu_do
+            m.closePrice_1,
+            s.so_luong_cp_luu_hanh, 
+            s.so_luong_cp_luu_hanh_1,
+            m.closePrice_1 * s.so_luong_cp_luu_hanh_1 AS von_hoa_luu_hanh,
+            s.so_luong_cp_tu_do,
+            s.so_luong_cp_tu_do_1,
+            m.closePrice_1 * s.so_luong_cp_tu_do_1 AS von_hoa_tu_do
         FROM MDDS m
         JOIN SCPLH s 
             ON m.symbol = s.symbol 
-           AND date_format(s.ngay_bao_cao, 'yyyyMMdd') = :ngay_gd
+           AND date_format(s.ngay_bao_cao, 'yyyyMMdd') = :Ngay_gd
     ) v                                             
-    JOIN JAD_CSIDXINFOR si ON v.symbol = si.Symbol    
-),
-Chi_so_t_1 AS (
+    JOIN uat_mdds_stg.JAD_CSIDXINFOR si ON v.symbol = si.Symbol and date_format(si.tradingdate, 'yyyyMMdd') = :Ngay_gd 
+)
+--select * from Von_hoa_theo_chiso ;
+--where symbol = 'AAA'; 
+, Chi_so_t_1 AS (
     -- Index_t-1 = giá trị chỉ số ngày hôm qua
     SELECT
         MARKETCODE,
         tradingdate,
-        LAG(MARKETINDEX) OVER (
-            PARTITION BY MARKETCODE ORDER BY TO_DATE(tradingdate, 'DD/MM/YYYY')
-        ) AS index_t_1,
-        ROW_NUMBER() OVER (
-            PARTITION BY tradingdate, MARKETCODE ORDER BY INDEXTIME DESC
-        ) AS rn
-    FROM JAD_MARKETINFOR
-    WHERE MARKETID = '10'
-),
-KHGTGD AS (
-    -- Tổng KLGD + GTGD trong ngày
-    SELECT symbol, SUM(kl) AS khoi_luong_gd, SUM(gt) AS gia_tri_gd
-    FROM (
-        SELECT t.Symbol AS symbol, t.Execution_Volume AS kl, t.Execution_Value AS gt
-        FROM TRADE_BOOK_HOSE t
-        WHERE t.Trade_date = :ngay_gd AND t.Market_ID IN ('STK','STO')
-        UNION ALL
-        SELECT t.`Issue Code` AS symbol, t.Trade_quantity AS kl,
-               CAST(t.Trade_price AS DOUBLE) * t.Trade_quantity AS gt
-        FROM TRADE_BOOK_HNX t
-        WHERE t.Trade_date = :ngay_gd AND t.Market_ID IN ('STX','UPX')
-    ) x
-    GROUP BY symbol
+		s.prv_prior_market_index  AS index_t_1
+    FROM uat_mdds_stg.tmp_JAD_MARKETINFOR_eod s
+    WHERE date_format(TO_DATE(s.tradingdate, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
 )
+--select * from uat_mdds_stg.tmp_JAD_MARKETINFOR_eod s
+--select * from Chi_so_t_1
+--where MARKETCODE = '100';
+,KHGTGD AS (
+    SELECT
+    t.SYMBOL                                                                AS symbol,
+--    date_format(to_date(t.TRADE_DATE, 'yyyy-MM-dd'), 'yyyyMMdd'),
+    SUM(CASE WHEN t.MARKET_ID IN ('STK')
+             THEN t.EXECUTION_VOLUME                    ELSE 0 END)        AS tong_kl,
+    SUM(CASE WHEN t.MARKET_ID IN ('STK')
+             THEN CAST(REPLACE(t.EXECUTION_VALUE, ',', '') AS DECIMAL(38,2))
+             ELSE 0 END)                                                    AS tong_gt
+FROM uat_ordertrade_stg.trade_book_hose t
+WHERE 1=1
+--	and symbol = 'SHB' 
+   AND date_format(to_date(t.TRADE_DATE, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
+GROUP BY t.SYMBOL
+union all 
+SELECT
+    t.ISSUE_CODE                                                            AS symbol,
+    SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX')
+             THEN t.TRADE_QUANTITY                                    ELSE 0 END) AS tong_kl,
+    SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX')
+             THEN CAST(t.TRADE_PRICE AS NUMERIC) * t.TRADE_QUANTITY   ELSE 0 END) AS tong_gt
+ from uat_ordertrade_stg.trade_book_hnx t
+ where 1=1 
+AND t.trade_date  = :Ngay_gd 
+group by  t.ISSUE_CODE
+)
+--select * from KHGTGD;
 SELECT
     vc.symbol                                                             AS Ma_CK,
     vc.INDEXCODE                                                          AS Chi_so,
+    vc.von_hoa_luu_hanh ,
+    vc.tong_von_hoa_luu_hanh,
+    NULLIF(vc.tong_von_hoa_luu_hanh, 0),
+    (vc.von_hoa_luu_hanh / NULLIF(vc.tong_von_hoa_luu_hanh, 0)),
     -- Điểm đóng góp TUYỆT ĐỐI (dùng return_i dạng PHÂN SỐ)
     ROUND(
         (vc.von_hoa_luu_hanh / NULLIF(vc.tong_von_hoa_luu_hanh, 0))
@@ -22602,20 +22642,273 @@ SELECT
     vc.gia_dong_cua                                                       AS Gia_dong_cua,
     m.change                                                              AS Thay_doi_gia,
     m.pct_bien_dong                                                       AS Phan_tram_thay_doi_gia,   
-    k.khoi_luong_gd                                                        AS Tong_KLGD_trong_ngay,
-    k.gia_tri_gd                                                           AS Tong_GTGD_trong_ngay
+    k.tong_kl                                                        AS Tong_KLGD_trong_ngay,
+    k.tong_gt                                                           AS Tong_GTGD_trong_ngay
 FROM Von_hoa_theo_chiso vc
 JOIN MDDS m       ON vc.symbol = m.symbol
 JOIN Chi_so_t_1 ci ON vc.INDEXCODE = ci.MARKETCODE 
-   AND date_format(TO_DATE(ci.tradingdate, 'DD/MM/YYYY'), 'yyyyMMdd') = :ngay_gd
-   AND ci.rn = 1
+   AND date_format(TO_DATE(ci.tradingdate, 'DD/MM/YYYY'), 'yyyyMMdd') = :Ngay_gd
 LEFT JOIN KHGTGD k ON vc.symbol = k.symbol
-ORDER BY vc.INDEXCODE, Diem_dong_gop_luu_hanh DESC;",,,,Done,Dữ liệu tĩnh,
+where vc.symbol = 'AAA'
+--where INDEXCODE = '100'
+ORDER BY vc.INDEXCODE, Diem_dong_gop_luu_hanh DESC;
+
+-----------------------------------------------------xu hướng dòng tiền biểu đồ phân tán ---------------------------------------------------------------
+WITH
+Cua_so_giao_dich AS (
+select 
+        ngay_gd,
+        rn
+from 
+(
+    SELECT
+        ngay_gd,
+        ROW_NUMBER() OVER (ORDER BY ngay_gd DESC) AS rn
+    FROM (
+        SELECT DISTINCT
+            TO_DATE(jm.tradingdate, 'yyyy-MM-dd') AS ngay_gd
+        FROM uat_mdds_stg.JAD_MARKETINFOR jm
+        WHERE 1=1
+          AND date_format(TO_DATE(jm.tradingdate, 'yyyy-MM-dd'), 'yyyyMMdd') <= :Ngay_gd
+    )
+    )  
+WHERE rn <= :so_ngay_tb + 1
+)
+--select * from Cua_so_giao_dich;
+,Giao_dich_ngay AS (
+    SELECT
+        symbol,
+        x.ngay_gd,
+        SUM(kl) AS khoi_luong
+    FROM (
+        SELECT
+            t.symbol,
+            TO_DATE(t.trade_date, 'yyyy-MM-dd') AS ngay_gd,
+            t.execution_volume AS kl
+        FROM uat_ordertrade_stg.trade_book_hose t
+        WHERE 1=1
+--        and date_format(TO_DATE(t.trade_date, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
+        and t.market_id = 'STK'
+        UNION ALL
+        SELECT
+            t.issue_code AS symbol,
+            TO_DATE(t.trade_date, 'yyyy-MM-dd') AS ngay_gd,
+            t.trade_quantity AS kl
+        FROM uat_ordertrade_stg.trade_book_hnx t
+        WHERE 1=1
+--        and date_format(TO_DATE(t.trade_date, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
+        and t.market_id IN ('STX', 'UPX')
+    ) x
+   	JOIN Cua_so_giao_dich cs
+        ON cs.ngay_gd = x.ngay_gd
+    GROUP BY
+        symbol,
+        x.ngay_gd
+)
+,KLGD5D AS (
+    SELECT
+        ht.symbol,
+        ht.kl_hien_tai,
+        AVG(NVL(gd.khoi_luong, 0)) AS kl_trung_binh,
+        ROUND(
+            ht.kl_hien_tai
+            / NULLIF(AVG(NVL(gd.khoi_luong, 0)), 0),
+            2
+        ) AS ty_le_dot_pha
+    FROM (
+    SELECT
+        gd.symbol,
+        gd.khoi_luong AS kl_hien_tai
+    FROM Giao_dich_ngay gd
+    JOIN Cua_so_giao_dich cs
+        ON cs.ngay_gd = gd.ngay_gd
+       AND cs.rn = 1
+       ) ht
+    CROSS JOIN Cua_so_giao_dich cs
+    LEFT JOIN Giao_dich_ngay gd
+        ON gd.symbol = ht.symbol
+       AND gd.ngay_gd = cs.ngay_gd
+    WHERE cs.rn BETWEEN 2 AND :so_ngay_tb + 1
+    GROUP BY
+        ht.symbol,
+        ht.kl_hien_tai
+    HAVING COUNT(*) = :so_ngay_tb
+)
+,MDDS AS (
+    -- Thông tin giá + return_i (dạng phân số) + pct_bien_dong (dạng %)
+    -- Lấy đúng bản ghi CUỐI CÙNG trong ngày (giá đóng cửa chính thức), tránh lấy nhầm snapshot giữa phiên
+    SELECT
+        symbol,
+        gia_dong_cua,
+        gia_tham_chieu,
+        change,
+        closePrice_1,
+        ROUND((gia_dong_cua - closePrice_1) / NULLIF(closePrice_1, 0), 6)        AS return_i,
+        ROUND((change / NULLIF(closePrice_1, 0)) * 100, 2) AS pct_bien_dong
+    FROM (
+        SELECT
+            symbol,
+            closePrice AS gia_dong_cua,
+            reference  AS gia_tham_chieu,
+            date_format (tradingdate , 'yyyyMMdd') as Ngay_GD,
+            change,
+			 LAG(closePrice) OVER (
+            PARTITION BY symbol ORDER BY date_format (tradingdate , 'yyyyMMdd')
+        ) AS closePrice_1
+        FROM uat_mdds_stg.tmp_jad_stockinfor_eod  s
+        where 1=1 
+--        and s.symbol = 'AAA'
+        )
+      WHERE Ngay_GD = :Ngay_gd
+)
+--;
+--select s.* FROM MDDS s
+--where s.symbol = 'AAA'
+--;
+,SCPLH AS (
+    SELECT
+        symbol,
+        ngay_bao_cao,
+        so_luong_cp_luu_hanh,
+        so_luong_cp_tu_do,
+        so_luong_cp_luu_hanh_1,
+        so_luong_cp_tu_do_1
+    FROM (
+        SELECT
+            t.ticker_symbol AS symbol,
+            t.outstanding_shares AS so_luong_cp_luu_hanh,
+            t.free_float_shares as so_luong_cp_tu_do,
+            TO_DATE(t.snapshot_date, 'yyyy-MM-dd') ngay_bao_cao,
+            LAG(t.outstanding_shares) OVER (
+            PARTITION BY t.ticker_symbol ORDER BY date_format (t.snapshot_date , 'yyyyMMdd')) AS so_luong_cp_luu_hanh_1,           
+            LAG(t.free_float_shares) OVER (
+            PARTITION BY t.ticker_symbol ORDER BY date_format (t.snapshot_date , 'yyyyMMdd')) AS so_luong_cp_tu_do_1,
+            ROW_NUMBER() OVER (
+                PARTITION BY t.ticker_symbol
+                ORDER BY TO_DATE(t.snapshot_date, 'yyyy-MM-dd') DESC
+            ) AS rn
+        FROM uat_vsdc_stg.outstanding_shares  t
+        WHERE 1=1
+          AND date_format(TO_DATE(t.snapshot_date, 'yyyy-MM-dd'), 'yyyyMMdd') <= :Ngay_gd
+--          and ticker_symbol = 'AAA'
+    )
+    WHERE rn = 1
+),
+--;
+--select * from uat_vsdc_stg.outstanding_shares  t
+--where t.ticker_symbol = 'AAA'
+--;
+Von_hoa_theo_chiso AS (
+    -- MarketCap = Giá tham chiếu × KLLH, KLLH lấy tại ngày t
+    SELECT
+        si.INDEXCODE,
+        v.symbol,
+        v.gia_dong_cua,
+        v.von_hoa_luu_hanh,
+        v.von_hoa_tu_do,
+        SUM(v.von_hoa_luu_hanh) OVER (PARTITION BY si.INDEXCODE) AS tong_von_hoa_luu_hanh,
+        SUM(v.von_hoa_tu_do)    OVER (PARTITION BY si.INDEXCODE) AS tong_von_hoa_tu_do,
+        count(*) over ( PARTITION BY si.INDEXCODE) 
+    FROM (        
+        SELECT
+            m.symbol,
+            m.gia_dong_cua,
+            m.gia_tham_chieu,
+            m.closePrice_1,
+            s.so_luong_cp_luu_hanh, 
+            s.so_luong_cp_luu_hanh_1,
+            m.closePrice_1 * s.so_luong_cp_luu_hanh_1 AS von_hoa_luu_hanh,
+            s.so_luong_cp_tu_do,
+            s.so_luong_cp_tu_do_1,
+            m.closePrice_1 * s.so_luong_cp_tu_do_1 AS von_hoa_tu_do
+        FROM MDDS m
+        JOIN SCPLH s 
+            ON m.symbol = s.symbol 
+           AND date_format(s.ngay_bao_cao, 'yyyyMMdd') = :Ngay_gd
+    ) v                                             
+    JOIN uat_mdds_stg.JAD_CSIDXINFOR si ON v.symbol = si.Symbol and date_format(si.tradingdate, 'yyyyMMdd') = :Ngay_gd 
+)
+--select * from Von_hoa_theo_chiso ;
+--where symbol = 'AAA'; 
+, Chi_so_t_1 AS (
+    -- Index_t-1 = giá trị chỉ số ngày hôm qua
+    SELECT
+        MARKETCODE,
+        tradingdate,
+		s.prv_prior_market_index  AS index_t_1
+    FROM uat_mdds_stg.tmp_JAD_MARKETINFOR_eod s
+    WHERE date_format(TO_DATE(s.tradingdate, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
+)
+--select * from uat_mdds_stg.tmp_JAD_MARKETINFOR_eod s
+--select * from Chi_so_t_1
+--where MARKETCODE = '100';
+,KHGTGD AS (
+    SELECT
+    t.SYMBOL                                                                AS symbol,
+--    date_format(to_date(t.TRADE_DATE, 'yyyy-MM-dd'), 'yyyyMMdd'),
+    SUM(CASE WHEN t.MARKET_ID IN ('STK')
+             THEN t.EXECUTION_VOLUME                    ELSE 0 END)        AS tong_kl,
+    SUM(CASE WHEN t.MARKET_ID IN ('STK')
+             THEN CAST(REPLACE(t.EXECUTION_VALUE, ',', '') AS DECIMAL(38,2))
+             ELSE 0 END)                                                    AS tong_gt
+FROM uat_ordertrade_stg.trade_book_hose t
+WHERE 1=1
+--	and symbol = 'SHB' 
+   AND date_format(to_date(t.TRADE_DATE, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
+GROUP BY t.SYMBOL
+union all 
+SELECT
+    t.ISSUE_CODE                                                            AS symbol,
+    SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX')
+             THEN t.TRADE_QUANTITY                                    ELSE 0 END) AS tong_kl,
+    SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX')
+             THEN CAST(t.TRADE_PRICE AS NUMERIC) * t.TRADE_QUANTITY   ELSE 0 END) AS tong_gt
+ from uat_ordertrade_stg.trade_book_hnx t
+ where 1=1 
+AND t.trade_date  = :Ngay_gd 
+group by  t.ISSUE_CODE
+)
+--select * from KHGTGD;
+SELECT
+    vc.symbol                                                             AS Ma_CK,
+    vc.INDEXCODE                                                          AS Chi_so,
+    vc.von_hoa_luu_hanh ,
+    vc.tong_von_hoa_luu_hanh,
+    NULLIF(vc.tong_von_hoa_luu_hanh, 0),
+    (vc.von_hoa_luu_hanh / NULLIF(vc.tong_von_hoa_luu_hanh, 0)),
+    -- Điểm đóng góp TUYỆT ĐỐI (dùng return_i dạng PHÂN SỐ)
+    ROUND(
+        (vc.von_hoa_luu_hanh / NULLIF(vc.tong_von_hoa_luu_hanh, 0))
+        * m.return_i
+        * ci.index_t_1
+    , 4)                                                                   AS Diem_dong_gop_luu_hanh,
+    ROUND(
+        (vc.von_hoa_tu_do / NULLIF(vc.tong_von_hoa_tu_do, 0))
+        * m.return_i
+        * ci.index_t_1
+    , 4)                                                                   AS Diem_dong_gop_tu_do_chuyen_nhuong,
+    -- Điểm đóng góp TƯƠNG ĐỐI (%) = w_i × Return_i × 100 (dùng return_i dạng PHÂN SỐ)
+    ROUND((vc.von_hoa_luu_hanh / NULLIF(vc.tong_von_hoa_luu_hanh, 0)) * m.return_i * 100, 4) AS Phan_tram_dong_gop_luu_hanh,
+    ROUND((vc.von_hoa_tu_do / NULLIF(vc.tong_von_hoa_tu_do, 0)) * m.return_i * 100, 4)        AS Phan_tram_dong_gop_tu_do,
+    vc.gia_dong_cua                                                       AS Gia_dong_cua,
+    m.change                                                              AS Thay_doi_gia,
+    m.pct_bien_dong                                                       AS Phan_tram_thay_doi_gia,   
+    k.tong_kl                                                        AS Tong_KLGD_trong_ngay,
+    k.tong_gt                                                           AS Tong_GTGD_trong_ngay
+FROM Von_hoa_theo_chiso vc
+JOIN MDDS m       ON vc.symbol = m.symbol
+JOIN Chi_so_t_1 ci ON vc.INDEXCODE = ci.MARKETCODE 
+   AND date_format(TO_DATE(ci.tradingdate, 'DD/MM/YYYY'), 'yyyyMMdd') = :Ngay_gd
+LEFT JOIN KHGTGD k ON vc.symbol = k.symbol
+where vc.symbol = 'AAA'
+--where INDEXCODE = '100'
+ORDER BY vc.INDEXCODE, Diem_dong_gop_luu_hanh DESC;
+",,,,Done,Dữ liệu tĩnh,
 24,,Xu hướng dòng tiền >> Theo dõi tỷ trọng dòng tiền dưới dạng biểu đồ cột - biểu đồ phân tán,Chỉ số ,,Dashboard,Chiều,Trùng,Mã CK,MDDS,,X,X,Done,Thông tin thị trường,JAD_CSIDXINFOR,IndexCode,,,,,,,,Done,Dữ liệu tĩnh,
 24,,Xu hướng dòng tiền >> Theo dõi tỷ trọng dòng tiền dưới dạng biểu đồ cột - biểu đồ phân tán,Tỷ trọng trong chỉ số (%),"(Vốn hóa mã / Tổng vốn hóa rổ chỉ số) * 100
 vốn hóa = giá đóng cửa * số cổ phiếu lưu hành",Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,"MDDS, CSDLTT",,X,X,Done,Sổ lệnh và thông tin thị trường,"- GIá đóng cửa: JAD_MARKETINFOR
-- Khối lượng lưu hành: BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành","- GIá đóng cửa: marketIndex
-- Khối lượng cổ phiếu lưu hành",,"-- Lấy marketIndex tại thời điểm cuối ngày
+outstanding_shares","- GIá đóng cửa: marketIndex
+outstanding_shares",,"-- Lấy marketIndex tại thời điểm cuối ngày
 WITH Chi_so AS (
     SELECT marketCode, tradingdate, marketIndex AS diem_dong_cua
     FROM (
@@ -22810,61 +23103,434 @@ Percent_Contribution_i = Contribution_i / P_t1 * 100
 ",Dashboard,Chỉ tiêu phái sinh,Khó,Mã CK,"MDDS, CSDLTT",X,X,,Done,Sổ lệnh và thông tin thị trường,"""Điểm đóng góp: 
  Contributioni = wi x Returni x Indext-1
  wi:- GIá đóng cửa: JAD_MARKETINFOR
-        - Khối lượng lưu hành: BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành
- Returni: MARKETINDEX
+outstanding_shares Returni: MARKETINDEX
  Indext-1: MARKETINDEX (giá đóng cửa) """," ""Điểm đóng góp: 
  Contributioni = wi x Returni x Indext-1
  wi:- GIá đóng cửa: MARKETINDEX
-        - Khối lượng lưu hành:  khối lượng cổ phiếu chuyển nhượng tự do
+free_float_shares
  Returni: MARKETINDEX
- Indext-1: MARKETINDEX (giá đóng cửa) ",,"""-- Lấy marketIndex tại thời điểm cuối ngày
-WITH Chi_so AS (
-    SELECT marketCode, tradingdate, marketIndex AS diem_dong_cua
+ Indext-1: MARKETINDEX (giá đóng cửa) ",,"---------------------------------------------------xu hướng dòng tiền - biểu đò cột -------------------------------------------------------
+with MDDS AS (
+    -- Thông tin giá + return_i (dạng phân số) + pct_bien_dong (dạng %)
+    -- Lấy đúng bản ghi CUỐI CÙNG trong ngày (giá đóng cửa chính thức), tránh lấy nhầm snapshot giữa phiên
+    SELECT
+        symbol,
+        gia_dong_cua,
+        gia_tham_chieu,
+        change,
+        closePrice_1,
+        ROUND((gia_dong_cua - closePrice_1) / NULLIF(closePrice_1, 0), 6)        AS return_i,
+        ROUND((change / NULLIF(closePrice_1, 0)) * 100, 2) AS pct_bien_dong
     FROM (
-        SELECT marketCode, tradingdate, marketIndex,
+        SELECT
+            symbol,
+            closePrice AS gia_dong_cua,
+            reference  AS gia_tham_chieu,
+            date_format (tradingdate , 'yyyyMMdd') as Ngay_GD,
+            change,
+			 LAG(closePrice) OVER (
+            PARTITION BY symbol ORDER BY date_format (tradingdate , 'yyyyMMdd')
+        ) AS closePrice_1
+        FROM uat_mdds_stg.tmp_jad_stockinfor_eod  s
+        where 1=1 
+--        and s.symbol = 'AAA'
+        )
+      WHERE Ngay_GD = :Ngay_gd
+)
+--;
+--select s.* FROM MDDS s
+--where s.symbol = 'AAA'
+--;
+,SCPLH AS (
+    SELECT
+        symbol,
+        ngay_bao_cao,
+        so_luong_cp_luu_hanh,
+        so_luong_cp_tu_do,
+        so_luong_cp_luu_hanh_1,
+        so_luong_cp_tu_do_1
+    FROM (
+        SELECT
+            t.ticker_symbol AS symbol,
+            t.outstanding_shares AS so_luong_cp_luu_hanh,
+            t.free_float_shares as so_luong_cp_tu_do,
+            TO_DATE(t.snapshot_date, 'yyyy-MM-dd') ngay_bao_cao,
+            LAG(t.outstanding_shares) OVER (
+            PARTITION BY t.ticker_symbol ORDER BY date_format (t.snapshot_date , 'yyyyMMdd')) AS so_luong_cp_luu_hanh_1,           
+            LAG(t.free_float_shares) OVER (
+            PARTITION BY t.ticker_symbol ORDER BY date_format (t.snapshot_date , 'yyyyMMdd')) AS so_luong_cp_tu_do_1,
             ROW_NUMBER() OVER (
-                PARTITION BY tradingdate, marketCode
-                ORDER BY indexTime DESC
+                PARTITION BY t.ticker_symbol
+                ORDER BY TO_DATE(t.snapshot_date, 'yyyy-MM-dd') DESC
             ) AS rn
-        FROM JAD_MARKETINFOR
-        WHERE tradingdate = :ngay_gd
+        FROM uat_vsdc_stg.outstanding_shares  t
+        WHERE 1=1
+          AND date_format(TO_DATE(t.snapshot_date, 'yyyy-MM-dd'), 'yyyyMMdd') <= :Ngay_gd
+--          and ticker_symbol = 'AAA'
     )
     WHERE rn = 1
 ),
-SCPLH AS (
-    SELECT cs.IndexCode, SUM(a.Khối lượng chứng khoán đang lưu hành) AS KLLH
-    FROM BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành  a
-    JOIN JAD_CSIDXINFOR cs ON a.MCK = cs.Symbol
-    WHERE a.Loai_CK = 'Co phieu'
-    GROUP BY cs.IndexCode
-),
-Von_hoa AS (
+--;
+--select * from uat_vsdc_stg.outstanding_shares  t
+--where t.ticker_symbol = 'AAA'
+--;
+Von_hoa_theo_chiso AS (
+    -- MarketCap = Giá tham chiếu × KLLH, KLLH lấy tại ngày t
     SELECT
-        c.marketCode,
-        c.tradingdate,
-        c.diem_dong_cua,
-        s.KLLH,
-        c.diem_dong_cua * s.KLLH AS von_hoa
-    FROM Chi_so c
-    JOIN SCPLH s ON c.marketCode = s.IndexCode
-),
-Tong_von_hoa AS (
-    SELECT
-        marketCode,
-        SUM(von_hoa) OVER (PARTITION BY marketCode) AS tong_von_hoa_ro
-    FROM Von_hoa
+        si.INDEXCODE,
+        v.symbol,
+        v.gia_dong_cua,
+        v.von_hoa_luu_hanh,
+        v.von_hoa_tu_do,
+        SUM(v.von_hoa_luu_hanh) OVER (PARTITION BY si.INDEXCODE) AS tong_von_hoa_luu_hanh,
+        SUM(v.von_hoa_tu_do)    OVER (PARTITION BY si.INDEXCODE) AS tong_von_hoa_tu_do,
+        count(*) over ( PARTITION BY si.INDEXCODE) 
+    FROM (        
+        SELECT
+            m.symbol,
+            m.gia_dong_cua,
+            m.gia_tham_chieu,
+            m.closePrice_1,
+            s.so_luong_cp_luu_hanh, 
+            s.so_luong_cp_luu_hanh_1,
+            m.closePrice_1 * s.so_luong_cp_luu_hanh_1 AS von_hoa_luu_hanh,
+            s.so_luong_cp_tu_do,
+            s.so_luong_cp_tu_do_1,
+            m.closePrice_1 * s.so_luong_cp_tu_do_1 AS von_hoa_tu_do
+        FROM MDDS m
+        JOIN SCPLH s 
+            ON m.symbol = s.symbol 
+           AND date_format(s.ngay_bao_cao, 'yyyyMMdd') = :Ngay_gd
+    ) v                                             
+    JOIN uat_mdds_stg.JAD_CSIDXINFOR si ON v.symbol = si.Symbol and date_format(si.tradingdate, 'yyyyMMdd') = :Ngay_gd 
 )
+--select * from Von_hoa_theo_chiso ;
+--where symbol = 'AAA'; 
+, Chi_so_t_1 AS (
+    -- Index_t-1 = giá trị chỉ số ngày hôm qua
+    SELECT
+        MARKETCODE,
+        tradingdate,
+		s.prv_prior_market_index  AS index_t_1
+    FROM uat_mdds_stg.tmp_JAD_MARKETINFOR_eod s
+    WHERE date_format(TO_DATE(s.tradingdate, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
+)
+--select * from uat_mdds_stg.tmp_JAD_MARKETINFOR_eod s
+--select * from Chi_so_t_1
+--where MARKETCODE = '100';
+,KHGTGD AS (
+    SELECT
+    t.SYMBOL                                                                AS symbol,
+--    date_format(to_date(t.TRADE_DATE, 'yyyy-MM-dd'), 'yyyyMMdd'),
+    SUM(CASE WHEN t.MARKET_ID IN ('STK')
+             THEN t.EXECUTION_VOLUME                    ELSE 0 END)        AS tong_kl,
+    SUM(CASE WHEN t.MARKET_ID IN ('STK')
+             THEN CAST(REPLACE(t.EXECUTION_VALUE, ',', '') AS DECIMAL(38,2))
+             ELSE 0 END)                                                    AS tong_gt
+FROM uat_ordertrade_stg.trade_book_hose t
+WHERE 1=1
+--	and symbol = 'SHB' 
+   AND date_format(to_date(t.TRADE_DATE, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
+GROUP BY t.SYMBOL
+union all 
 SELECT
-    v.marketCode,
-    v.tradingdate,
-    v.diem_dong_cua,
-    v.KLLH,
-    v.von_hoa,
-    t.tong_von_hoa_ro,
-    ROUND(v.von_hoa / NULLIF(t.tong_von_hoa_ro, 0) * 100, 4) AS Ty_trong
-FROM Von_hoa v
-JOIN Tong_von_hoa t ON v.marketCode = t.marketCode
-ORDER BY v.marketCode;""",,,,,,Done,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",
+    t.ISSUE_CODE                                                            AS symbol,
+    SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX')
+             THEN t.TRADE_QUANTITY                                    ELSE 0 END) AS tong_kl,
+    SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX')
+             THEN CAST(t.TRADE_PRICE AS NUMERIC) * t.TRADE_QUANTITY   ELSE 0 END) AS tong_gt
+ from uat_ordertrade_stg.trade_book_hnx t
+ where 1=1 
+AND t.trade_date  = :Ngay_gd 
+group by  t.ISSUE_CODE
+)
+--select * from KHGTGD;
+SELECT
+    vc.symbol                                                             AS Ma_CK,
+    vc.INDEXCODE                                                          AS Chi_so,
+    vc.von_hoa_luu_hanh ,
+    vc.tong_von_hoa_luu_hanh,
+    NULLIF(vc.tong_von_hoa_luu_hanh, 0),
+    (vc.von_hoa_luu_hanh / NULLIF(vc.tong_von_hoa_luu_hanh, 0)),
+    -- Điểm đóng góp TUYỆT ĐỐI (dùng return_i dạng PHÂN SỐ)
+    ROUND(
+        (vc.von_hoa_luu_hanh / NULLIF(vc.tong_von_hoa_luu_hanh, 0))
+        * m.return_i
+        * ci.index_t_1
+    , 4)                                                                   AS Diem_dong_gop_luu_hanh,
+    ROUND(
+        (vc.von_hoa_tu_do / NULLIF(vc.tong_von_hoa_tu_do, 0))
+        * m.return_i
+        * ci.index_t_1
+    , 4)                                                                   AS Diem_dong_gop_tu_do_chuyen_nhuong,
+    -- Điểm đóng góp TƯƠNG ĐỐI (%) = w_i × Return_i × 100 (dùng return_i dạng PHÂN SỐ)
+    ROUND((vc.von_hoa_luu_hanh / NULLIF(vc.tong_von_hoa_luu_hanh, 0)) * m.return_i * 100, 4) AS Phan_tram_dong_gop_luu_hanh,
+    ROUND((vc.von_hoa_tu_do / NULLIF(vc.tong_von_hoa_tu_do, 0)) * m.return_i * 100, 4)        AS Phan_tram_dong_gop_tu_do,
+    vc.gia_dong_cua                                                       AS Gia_dong_cua,
+    m.change                                                              AS Thay_doi_gia,
+    m.pct_bien_dong                                                       AS Phan_tram_thay_doi_gia,   
+    k.tong_kl                                                        AS Tong_KLGD_trong_ngay,
+    k.tong_gt                                                           AS Tong_GTGD_trong_ngay
+FROM Von_hoa_theo_chiso vc
+JOIN MDDS m       ON vc.symbol = m.symbol
+JOIN Chi_so_t_1 ci ON vc.INDEXCODE = ci.MARKETCODE 
+   AND date_format(TO_DATE(ci.tradingdate, 'DD/MM/YYYY'), 'yyyyMMdd') = :Ngay_gd
+LEFT JOIN KHGTGD k ON vc.symbol = k.symbol
+where vc.symbol = 'AAA'
+--where INDEXCODE = '100'
+ORDER BY vc.INDEXCODE, Diem_dong_gop_luu_hanh DESC;
+
+-----------------------------------------------------xu hướng dòng tiền biểu đồ phân tán ---------------------------------------------------------------
+WITH
+Cua_so_giao_dich AS (
+select 
+        ngay_gd,
+        rn
+from 
+(
+    SELECT
+        ngay_gd,
+        ROW_NUMBER() OVER (ORDER BY ngay_gd DESC) AS rn
+    FROM (
+        SELECT DISTINCT
+            TO_DATE(jm.tradingdate, 'yyyy-MM-dd') AS ngay_gd
+        FROM uat_mdds_stg.JAD_MARKETINFOR jm
+        WHERE 1=1
+          AND date_format(TO_DATE(jm.tradingdate, 'yyyy-MM-dd'), 'yyyyMMdd') <= :Ngay_gd
+    )
+    )  
+WHERE rn <= :so_ngay_tb + 1
+)
+--select * from Cua_so_giao_dich;
+,Giao_dich_ngay AS (
+    SELECT
+        symbol,
+        x.ngay_gd,
+        SUM(kl) AS khoi_luong
+    FROM (
+        SELECT
+            t.symbol,
+            TO_DATE(t.trade_date, 'yyyy-MM-dd') AS ngay_gd,
+            t.execution_volume AS kl
+        FROM uat_ordertrade_stg.trade_book_hose t
+        WHERE 1=1
+--        and date_format(TO_DATE(t.trade_date, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
+        and t.market_id = 'STK'
+        UNION ALL
+        SELECT
+            t.issue_code AS symbol,
+            TO_DATE(t.trade_date, 'yyyy-MM-dd') AS ngay_gd,
+            t.trade_quantity AS kl
+        FROM uat_ordertrade_stg.trade_book_hnx t
+        WHERE 1=1
+--        and date_format(TO_DATE(t.trade_date, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
+        and t.market_id IN ('STX', 'UPX')
+    ) x
+   	JOIN Cua_so_giao_dich cs
+        ON cs.ngay_gd = x.ngay_gd
+    GROUP BY
+        symbol,
+        x.ngay_gd
+)
+,KLGD5D AS (
+    SELECT
+        ht.symbol,
+        ht.kl_hien_tai,
+        AVG(NVL(gd.khoi_luong, 0)) AS kl_trung_binh,
+        ROUND(
+            ht.kl_hien_tai
+            / NULLIF(AVG(NVL(gd.khoi_luong, 0)), 0),
+            2
+        ) AS ty_le_dot_pha
+    FROM (
+    SELECT
+        gd.symbol,
+        gd.khoi_luong AS kl_hien_tai
+    FROM Giao_dich_ngay gd
+    JOIN Cua_so_giao_dich cs
+        ON cs.ngay_gd = gd.ngay_gd
+       AND cs.rn = 1
+       ) ht
+    CROSS JOIN Cua_so_giao_dich cs
+    LEFT JOIN Giao_dich_ngay gd
+        ON gd.symbol = ht.symbol
+       AND gd.ngay_gd = cs.ngay_gd
+    WHERE cs.rn BETWEEN 2 AND :so_ngay_tb + 1
+    GROUP BY
+        ht.symbol,
+        ht.kl_hien_tai
+    HAVING COUNT(*) = :so_ngay_tb
+)
+,MDDS AS (
+    -- Thông tin giá + return_i (dạng phân số) + pct_bien_dong (dạng %)
+    -- Lấy đúng bản ghi CUỐI CÙNG trong ngày (giá đóng cửa chính thức), tránh lấy nhầm snapshot giữa phiên
+    SELECT
+        symbol,
+        gia_dong_cua,
+        gia_tham_chieu,
+        change,
+        closePrice_1,
+        ROUND((gia_dong_cua - closePrice_1) / NULLIF(closePrice_1, 0), 6)        AS return_i,
+        ROUND((change / NULLIF(closePrice_1, 0)) * 100, 2) AS pct_bien_dong
+    FROM (
+        SELECT
+            symbol,
+            closePrice AS gia_dong_cua,
+            reference  AS gia_tham_chieu,
+            date_format (tradingdate , 'yyyyMMdd') as Ngay_GD,
+            change,
+			 LAG(closePrice) OVER (
+            PARTITION BY symbol ORDER BY date_format (tradingdate , 'yyyyMMdd')
+        ) AS closePrice_1
+        FROM uat_mdds_stg.tmp_jad_stockinfor_eod  s
+        where 1=1 
+--        and s.symbol = 'AAA'
+        )
+      WHERE Ngay_GD = :Ngay_gd
+)
+--;
+--select s.* FROM MDDS s
+--where s.symbol = 'AAA'
+--;
+,SCPLH AS (
+    SELECT
+        symbol,
+        ngay_bao_cao,
+        so_luong_cp_luu_hanh,
+        so_luong_cp_tu_do,
+        so_luong_cp_luu_hanh_1,
+        so_luong_cp_tu_do_1
+    FROM (
+        SELECT
+            t.ticker_symbol AS symbol,
+            t.outstanding_shares AS so_luong_cp_luu_hanh,
+            t.free_float_shares as so_luong_cp_tu_do,
+            TO_DATE(t.snapshot_date, 'yyyy-MM-dd') ngay_bao_cao,
+            LAG(t.outstanding_shares) OVER (
+            PARTITION BY t.ticker_symbol ORDER BY date_format (t.snapshot_date , 'yyyyMMdd')) AS so_luong_cp_luu_hanh_1,           
+            LAG(t.free_float_shares) OVER (
+            PARTITION BY t.ticker_symbol ORDER BY date_format (t.snapshot_date , 'yyyyMMdd')) AS so_luong_cp_tu_do_1,
+            ROW_NUMBER() OVER (
+                PARTITION BY t.ticker_symbol
+                ORDER BY TO_DATE(t.snapshot_date, 'yyyy-MM-dd') DESC
+            ) AS rn
+        FROM uat_vsdc_stg.outstanding_shares  t
+        WHERE 1=1
+          AND date_format(TO_DATE(t.snapshot_date, 'yyyy-MM-dd'), 'yyyyMMdd') <= :Ngay_gd
+--          and ticker_symbol = 'AAA'
+    )
+    WHERE rn = 1
+),
+--;
+--select * from uat_vsdc_stg.outstanding_shares  t
+--where t.ticker_symbol = 'AAA'
+--;
+Von_hoa_theo_chiso AS (
+    -- MarketCap = Giá tham chiếu × KLLH, KLLH lấy tại ngày t
+    SELECT
+        si.INDEXCODE,
+        v.symbol,
+        v.gia_dong_cua,
+        v.von_hoa_luu_hanh,
+        v.von_hoa_tu_do,
+        SUM(v.von_hoa_luu_hanh) OVER (PARTITION BY si.INDEXCODE) AS tong_von_hoa_luu_hanh,
+        SUM(v.von_hoa_tu_do)    OVER (PARTITION BY si.INDEXCODE) AS tong_von_hoa_tu_do,
+        count(*) over ( PARTITION BY si.INDEXCODE) 
+    FROM (        
+        SELECT
+            m.symbol,
+            m.gia_dong_cua,
+            m.gia_tham_chieu,
+            m.closePrice_1,
+            s.so_luong_cp_luu_hanh, 
+            s.so_luong_cp_luu_hanh_1,
+            m.closePrice_1 * s.so_luong_cp_luu_hanh_1 AS von_hoa_luu_hanh,
+            s.so_luong_cp_tu_do,
+            s.so_luong_cp_tu_do_1,
+            m.closePrice_1 * s.so_luong_cp_tu_do_1 AS von_hoa_tu_do
+        FROM MDDS m
+        JOIN SCPLH s 
+            ON m.symbol = s.symbol 
+           AND date_format(s.ngay_bao_cao, 'yyyyMMdd') = :Ngay_gd
+    ) v                                             
+    JOIN uat_mdds_stg.JAD_CSIDXINFOR si ON v.symbol = si.Symbol and date_format(si.tradingdate, 'yyyyMMdd') = :Ngay_gd 
+)
+--select * from Von_hoa_theo_chiso ;
+--where symbol = 'AAA'; 
+, Chi_so_t_1 AS (
+    -- Index_t-1 = giá trị chỉ số ngày hôm qua
+    SELECT
+        MARKETCODE,
+        tradingdate,
+		s.prv_prior_market_index  AS index_t_1
+    FROM uat_mdds_stg.tmp_JAD_MARKETINFOR_eod s
+    WHERE date_format(TO_DATE(s.tradingdate, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
+)
+--select * from uat_mdds_stg.tmp_JAD_MARKETINFOR_eod s
+--select * from Chi_so_t_1
+--where MARKETCODE = '100';
+,KHGTGD AS (
+    SELECT
+    t.SYMBOL                                                                AS symbol,
+--    date_format(to_date(t.TRADE_DATE, 'yyyy-MM-dd'), 'yyyyMMdd'),
+    SUM(CASE WHEN t.MARKET_ID IN ('STK')
+             THEN t.EXECUTION_VOLUME                    ELSE 0 END)        AS tong_kl,
+    SUM(CASE WHEN t.MARKET_ID IN ('STK')
+             THEN CAST(REPLACE(t.EXECUTION_VALUE, ',', '') AS DECIMAL(38,2))
+             ELSE 0 END)                                                    AS tong_gt
+FROM uat_ordertrade_stg.trade_book_hose t
+WHERE 1=1
+--	and symbol = 'SHB' 
+   AND date_format(to_date(t.TRADE_DATE, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
+GROUP BY t.SYMBOL
+union all 
+SELECT
+    t.ISSUE_CODE                                                            AS symbol,
+    SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX')
+             THEN t.TRADE_QUANTITY                                    ELSE 0 END) AS tong_kl,
+    SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX')
+             THEN CAST(t.TRADE_PRICE AS NUMERIC) * t.TRADE_QUANTITY   ELSE 0 END) AS tong_gt
+ from uat_ordertrade_stg.trade_book_hnx t
+ where 1=1 
+AND t.trade_date  = :Ngay_gd 
+group by  t.ISSUE_CODE
+)
+--select * from KHGTGD;
+SELECT
+    vc.symbol                                                             AS Ma_CK,
+    vc.INDEXCODE                                                          AS Chi_so,
+    vc.von_hoa_luu_hanh ,
+    vc.tong_von_hoa_luu_hanh,
+    NULLIF(vc.tong_von_hoa_luu_hanh, 0),
+    (vc.von_hoa_luu_hanh / NULLIF(vc.tong_von_hoa_luu_hanh, 0)),
+    -- Điểm đóng góp TUYỆT ĐỐI (dùng return_i dạng PHÂN SỐ)
+    ROUND(
+        (vc.von_hoa_luu_hanh / NULLIF(vc.tong_von_hoa_luu_hanh, 0))
+        * m.return_i
+        * ci.index_t_1
+    , 4)                                                                   AS Diem_dong_gop_luu_hanh,
+    ROUND(
+        (vc.von_hoa_tu_do / NULLIF(vc.tong_von_hoa_tu_do, 0))
+        * m.return_i
+        * ci.index_t_1
+    , 4)                                                                   AS Diem_dong_gop_tu_do_chuyen_nhuong,
+    -- Điểm đóng góp TƯƠNG ĐỐI (%) = w_i × Return_i × 100 (dùng return_i dạng PHÂN SỐ)
+    ROUND((vc.von_hoa_luu_hanh / NULLIF(vc.tong_von_hoa_luu_hanh, 0)) * m.return_i * 100, 4) AS Phan_tram_dong_gop_luu_hanh,
+    ROUND((vc.von_hoa_tu_do / NULLIF(vc.tong_von_hoa_tu_do, 0)) * m.return_i * 100, 4)        AS Phan_tram_dong_gop_tu_do,
+    vc.gia_dong_cua                                                       AS Gia_dong_cua,
+    m.change                                                              AS Thay_doi_gia,
+    m.pct_bien_dong                                                       AS Phan_tram_thay_doi_gia,   
+    k.tong_kl                                                        AS Tong_KLGD_trong_ngay,
+    k.tong_gt                                                           AS Tong_GTGD_trong_ngay
+FROM Von_hoa_theo_chiso vc
+JOIN MDDS m       ON vc.symbol = m.symbol
+JOIN Chi_so_t_1 ci ON vc.INDEXCODE = ci.MARKETCODE 
+   AND date_format(TO_DATE(ci.tradingdate, 'DD/MM/YYYY'), 'yyyyMMdd') = :Ngay_gd
+LEFT JOIN KHGTGD k ON vc.symbol = k.symbol
+where vc.symbol = 'AAA'
+--where INDEXCODE = '100'
+ORDER BY vc.INDEXCODE, Diem_dong_gop_luu_hanh DESC;
+",,,,,,Done,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",
 24,,Xu hướng dòng tiền >> Theo dõi tỷ trọng dòng tiền dưới dạng biểu đồ cột - biểu đồ phân tán,Điểm đóng góp theo vốn hóa của cổ phiếu tự do chuyển nhượng tương đối,"Điểm đóng góp 
 * Chart hiển thị:
 Mã CK (Điểm đóng góp tuyệt đối ~ Điểm đóng góp tương đối (%))
@@ -23382,7 +24048,7 @@ co_phieu AS (
     SELECT
         s.symbol                                                          AS ma_ck,
         s.closePrice                                                      AS gia_dong_cua,
-		s.change														  AS Thay_doi,
+                s.change                                                                                                                  AS Thay_doi,
         CASE WHEN s.reference IS NULL OR s.reference = 0 THEN NULL
              ELSE ROUND((s.change / s.reference) * 100, 2) END            AS pct_thay_doi,
         s.floorCode
@@ -23435,8 +24101,8 @@ tudoanh_gan_nhom AS (
 SELECT
         p.*,
         CASE WHEN p.gia_tri_rong_theo_chi_tieu >= 0 THEN 'MUA_RONG' ELSE 'BAN_RONG' END AS nhom
-		from 
-	(	
+                from 
+        (        
     SELECT
         c.ma_ck,
         c.gia_dong_cua,
@@ -23455,27 +24121,27 @@ SELECT
     FROM co_phieu c
     LEFT JOIN tudoanh_all t ON t.symbol = c.ma_ck
     WHERE COALESCE(t.tudoanh_mua,0) <> 0 OR COALESCE(t.tudoanh_ban,0) <> 0
-	)
+        )
 )
 -- 6. Kết quả cuối: mỗi ô treemap
 SELECT
     p.ma_ck,
     p.nhom,
     p.gia_dong_cua,
-	p.Thay_doi
+        p.Thay_doi
     p.pct_thay_doi,
     p.gt_tudoanh_mua,-- có cả ở filtter giá trị tự doanh / giá trị tự doanh ròng
     p.gt_tudoanh_ban,-- có cả ở filtter giá trị tự doanh / giá trị tự doanh ròng
     p.gt_tudoanh_rong,-- có  ở filtter giá trị tự doanh ròng
     p.kl_tudoanh_mua,---có cả ở filtter giá trị tự doanh
     p.kl_tudoanh_ban,---có cả ở filtter giá trị tự doanh
-	CASE WHEN p.nhom = 'MUA_RONG' THEN p.gia_tri_rong_theo_chi_tieu ELSE 0 END) AS gt_tudoanh_mua_rong,
-	CASE WHEN p.nhom = 'BAN_RONG' THEN p.gia_tri_rong_theo_chi_tieu ELSE 0 END) AS gt_tudoanh_ban_rong,
+        CASE WHEN p.nhom = 'MUA_RONG' THEN p.gia_tri_rong_theo_chi_tieu ELSE 0 END) AS gt_tudoanh_mua_rong,
+        CASE WHEN p.nhom = 'BAN_RONG' THEN p.gia_tri_rong_theo_chi_tieu ELSE 0 END) AS gt_tudoanh_ban_rong,
  --   ROUND(ABS(p.gia_tri_rong_theo_chi_tieu) * 100.0
  ---         / SUM(ABS(p.gia_tri_rong_theo_chi_tieu)) OVER (PARTITION BY p.nhom), 2) AS ty_trong_pct_trong_khoi,--- sẽ xem xét sau 
     SUM(CASE WHEN p.nhom = 'MUA_RONG' THEN p.gia_tri_rong_theo_chi_tieu ELSE 0 END) OVER () AS tong_mua_rong,
     SUM(CASE WHEN p.nhom = 'BAN_RONG' THEN -p.gia_tri_rong_theo_chi_tieu ELSE 0 END) OVER () AS tong_ban_rong,
-	SUM(p.gt_tudoanh_mua) OVER () AS tong_gt_mua,
+        SUM(p.gt_tudoanh_mua) OVER () AS tong_gt_mua,
     SUM(p.gt_tudoanh_ban) OVER () AS tong_gt_ban
 FROM tudoanh_gan_nhom p
 ORDER BY p.nhom",,,,Done,Dữ liệu tĩnh,
@@ -24410,9 +25076,9 @@ Board ID in  ('G1','G2','G3','G4')",,,,,Done,Dữ liệu tĩnh,
 Execution - Value: 
 Trade_HNX:
 Trade quantity * trade price: ","- TRADE_BOOK_HOSE: 
-Board Type in ('T1','T2','T3','T4','T6)
+Board Type in ('T1','T2','T3','T4','T6,'R1')
 - Trade_HNX: 
-Board ID in ('T1','T2','T3','T4','T6)","""-- HOSE
+Board ID in ('T1','T2','T3','T4','T6, 'R1')","""-- HOSE
 SELECT
     SUM(t.[Execution - Value])     AS tong_kl_khop
 FROM TRADE_BOOK_HOSE t
@@ -25341,8 +26007,8 @@ LNST AS (
 31,,Sở hữu và giao dịch nội bộ ,Mã cổ phiếu,,Dashboard,Chiều,TB,Mã CK,IDS,,,,Done,,ids.company_profiles,equity_ticker,,,,,,,,Chưa có sql,Dữ liệu tĩnh,
 31,,Sở hữu và giao dịch nội bộ ,Tên cổ đông,Tên tổ chức hoặc cá nhân sở hữu cổ phần,Dashboard,Chiều,TB,Mã CK,CSDLTT,,,,Done,,major_shareholder,shareholder_name,,,,,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
 31,,Sở hữu và giao dịch nội bộ ,Số cổ phiếu sở hữu,Tổng số cổ phiếu mà cổ đông nắm giữ,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,,,,Done,,major_shareholder,end_period_shares,,,,,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
-31,,Sở hữu và giao dịch nội bộ ,Sở hữu nước ngoài ,,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,,,,Done,,vsdc_foreign_investor_info,current_shares_foreign_hold/total_issued_shares,,,,,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
-31,,Sở hữu và giao dịch nội bộ ,Sở hữu trong nước,,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,,,,Done,,vsdc_foreign_investor_info,total_issued_shares  - current_shares_foreign_hold/total_issued_shares),,,,,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
+31,,Sở hữu và giao dịch nội bộ ,Sở hữu nước ngoài ,,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,,,,Done,,foreign_investor_info,current_shares_foreign_hold/total_issued_shares,,,,,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
+31,,Sở hữu và giao dịch nội bộ ,Sở hữu trong nước,,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,,,,Done,,foreign_investor_info,total_issued_shares  - current_shares_foreign_hold/total_issued_shares),,,,,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
 31,,Sở hữu và giao dịch nội bộ ,Tỷ lệ sở hữu,Tỷ lệ cổ phần của cổ đông trên tổng số cổ phiếu lưu hành,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,,,,Done,,major_shareholder,end_period_ratio,,,,,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
 31,,Sở hữu và giao dịch nội bộ ,Chức vụ người nội bộ,,Dashboard,Chỉ tiêu cơ sở,TB,Mã CK,IDS,,,,Done,,IDS.positions,position_cd," LOOKUP_GROUP = ""POSITION""","SELECT position_cd,cs.ownership_qty,cs.ownership_ratio,cp.equity_ticker FROM ids.LEGAL_ENTITIES le 
 LEFT JOIN ids.POSITIONS p ON le.id = p.legal_entity_id
@@ -26754,11 +27420,10 @@ where Mã chứng khoán = 'Cổ phiếu'
 33,,Giao dịch & thanh khoản ,KL thỏa thuận,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
  Execution - Volume: Khối lượng khớp lệnh
  Trade_HNX:
- Trade quantity: Khối lượng giao dịch","- (TRADE_BOOK_HOSE):
- Board Type IN ('T1','T2','T3','T4','T6')
- - Trade_HNX:
- Board ID IN ('T1','T2','T3','T4','T6')
- Market ID in (UPX,STX,STO)",,"Note: 
+ Trade quantity: Khối lượng giao dịch","- TRADE_BOOK_HOSE: 
+Board Type in ('T1','T2','T3','T4','T6,'R1')
+- Trade_HNX: 
+Board ID in ('T1','T2','T3','T4','T6, 'R1')",,"Note: 
  có thể tham khảo thêm JAD_STOCKINFOR - PT_TOTAL_TRADED_QTTY",,,,,Lý do khác,Dữ liệu tĩnh,
 33,,Giao dịch & thanh khoản ,GT mua tự doanh,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"TRADE_BOOK_HOSE:
  [Execution - Value]

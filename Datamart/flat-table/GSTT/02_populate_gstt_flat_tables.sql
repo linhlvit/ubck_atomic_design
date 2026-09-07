@@ -62,6 +62,8 @@ SELECT
     f.domestic_institution_sell_val,
     f.domestic_institution_buy_vol,
     f.domestic_institution_sell_vol,
+    f.close_price                                  AS fct_close_price,
+    f.free_float_share_quantity,
 
     -- From: CALENDAR DATE DIMENSION
     cal.cdr_dt                                     AS cdr_dt,
