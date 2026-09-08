@@ -52,6 +52,11 @@ Thực hiện ở **Bước 0b** (trước khi đi vào chi tiết bất kỳ nh
   □ Heading Cụm đúng cấp (##### Cụm N)
   □ Đối chiếu danh sách entity và reuse_status giữa DTM_{MODULE}_Entities.csv ↔ Section 3 & 4 của HLD.md
 
+□ Kiểm tra nhanh Role-Playing Date Dimension toàn module (CLI script):
+  □ Chạy: python scripts/datamart_date_fk_checker.py --module {MODULE}
+  □ Xác nhận 100% Fact table không có cột generic cdr_dt_dim_id / calendar_dt_dim_id
+  □ Xác nhận 100% Fact Snapshot có đủ cột snpst_dt_dim_id
+
 □ Xuất Báo cáo Tiến độ & Danh sách Blocker:
   □ Bảng tổng hợp Markdown trực quan
   □ Danh sách chỉ tiêu cần BA Team giải quyết (Nhánh 1, 2, 3)
@@ -172,6 +177,13 @@ Thực hiện ở **Bước 0b** (trước khi đi vào chi tiết bất kỳ nh
   → So sánh danh sách bảng trong `Datamart/lld/{MODULE}/` vs `Datamart/flat-table/{MODULE}/01_create_*.sql`
   → Mọi bảng fact/operational trong LLD phải có mặt trong flat table SQL (trừ Dimension dùng chung)
   → Phát hiện file CSV fact draft hoặc dòng attributes trong LLD mà không còn trong flat table (đã bị loại bỏ trong quá trình thiết kế) → 🔴 Critical (mã: L2-ORPHAN-DRAFT-ARTIFACT, yêu cầu thực hiện All-Tier Cleanup Protocol)
+
+□ Role-Playing Date Dimension Key trên Fact table (CẤM cdr_dt_dim_id trên Fact):
+  → Chạy script kiểm tra: python scripts/datamart_date_fk_checker.py --module {MODULE}
+  → Tuyệt đối cấm sử dụng `Calendar Date Dimension Id` / `cdr_dt_dim_id` trên bất kỳ Fact table nào (`cdr_dt_dim_id` chỉ là PK của riêng bảng Dimension `cdr_dt_dim`)
+  → Với Fact Snapshot (`fct_*_snpst`): Cột ngày snapshot kỳ bắt buộc là `Snapshot Date Dimension Id` → `snpst_dt_dim_id`
+  → Với các Fact khác: Cột khóa ngoại ngày bắt buộc đặt theo vai trò nghiệp vụ `<Role> Date Dimension Id` → `<role>_dt_dim_id` (`issue_dt_dim_id`, `trade_dt_dim_id`, `submission_dt_dim_id`, `evaluation_dt_dim_id`, `effective_dt_dim_id`...)
+  → Vi phạm → 🔴 Critical (mã: L2-DATE-FK-ROLE-PLAYING, phân loại Kịch bản C — Lỗi kỹ thuật, yêu cầu chuyển giao sang datamart-lld-design để đồng bộ field rename)
 ```
 
 ---

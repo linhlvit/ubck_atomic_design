@@ -116,6 +116,7 @@ Khi đi sâu vào review kỹ thuật từng nhóm (Micro-Review), các vấn đ
   - Thiếu bộ 4-5 trường kỹ thuật mặc định SCD4A trên bảng Dimension / Operational (`ds_rcrd_st`, `ds_rcrd_isrt_dt`, `ds_rcrd_udt_dt`, `ds_etl_pcs_tms`, `ds_snpst_dt`).
   - Mệnh đề JOIN vào bảng Atomic Fundamental (SCD4A) thiếu điều kiện lọc bản ghi active `ds_rcrd_st = 'ACTIVE'`.
   - Tồn tại bảng/artifact mồ côi (Orphan Draft Artifact): Bảng Fact/Dim draft từng tạo ở LLD nhưng nay bị loại bỏ khỏi `flat-table` và HLD mà chưa được dọn dẹp sạch sẽ ở `Datamart/lld/`.
+  - Vi phạm thiết kế Role-Playing Date Dimension trên Fact table (mã: `L2-DATE-FK-ROLE-PLAYING`): Sử dụng `Calendar Date Dimension Id` (`cdr_dt_dim_id` hoặc `calendar_dt_dim_id`) trên bảng Fact thay vì đặt tên theo vai trò (`snpst_dt_dim_id` cho Fact Snapshot hoặc `<role>_dt_dim_id` cho các Fact khác).
   - Bảng KPI HLD thiếu cột (chưa đủ chuẩn 7 cột có cột `Trạng thái`).
   - HLD thiếu Section 4 Reuse Analysis.
 - **Hành động:**
@@ -123,6 +124,19 @@ Khi đi sâu vào review kỹ thuật từng nhóm (Micro-Review), các vấn đ
   2. Claude DỪNG và chờ human xác nhận rõ ràng.
   3. **Gọi skill con thực hiện** — HLD → `datamart-hld-design`; Attributes / Detail Mapping / `datamart_model.yaml` → `datamart-lld-design`.
 - ❌ **Tuyệt đối KHÔNG tự Edit trực tiếp.** Claude chỉ phát hiện, phân loại và đề xuất — việc sửa thuộc skill con.
+
+#### Đặc tả Mã lỗi Kỹ thuật Lớp 2: `L2-DATE-FK-ROLE-PLAYING`
+
+| Thuộc tính | Chi tiết đặc tả |
+|---|---|
+| **Mã lỗi (Error Code)** | `L2-DATE-FK-ROLE-PLAYING` |
+| **Tên lỗi (Issue Name)** | Vi phạm thiết kế Role-Playing Date Dimension Key trên Fact table |
+| **Phân loại kịch bản** | **Kịch bản C — Lỗi kỹ thuật thiết kế** |
+| **Mức độ (Severity)** | 🔴 **Critical** (Ngăn chặn hoàn tất review, chặn code-gen flat table/ETL) |
+| **Mô tả (Description)** | Bảng thuộc loại Fact (`table_type == 'fact'` hoặc prefix `fct_`) chứa cột khóa ngoại trỏ tới Calendar Date Dimension nhưng đặt tên generic `Calendar Date Dimension Id` (`cdr_dt_dim_id` hoặc `calendar_dt_dim_id`) thay vì đặt tên phản ánh vai trò nghiệp vụ (Role-Playing). `cdr_dt_dim_id` chỉ được phép là PK của bảng Dimension `cdr_dt_dim`. Trên Fact Snapshot (`fct_*_snpst`), cột ngày snapshot kỳ bắt buộc là `Snapshot Date Dimension Id` (`snpst_dt_dim_id`). Trên Fact khác, bắt buộc là `<Role> Date Dimension Id` (`<role>_dt_dim_id`). |
+| **Phương pháp chẩn đoán & phát hiện** | 1. Chạy CLI: `python scripts/datamart_date_fk_checker.py --module [MODULE]` (hoặc `--module all`).<br>2. Quét regex trên Attributes CSV: Nhận diện mọi dòng thuộc bảng `fct_*` có `datamart_column == 'cdr_dt_dim_id'` hoặc `calendar_dt_dim_id`, hoặc `datamart_attribute == 'Calendar Date Dimension Id'`.<br>3. Kiểm tra Fact Snapshot (`_snpst`): thiếu cột `snpst_dt_dim_id`.<br>4. Đảm bảo loại trừ bảng Dimension `cdr_dt_dim` (nơi `cdr_dt_dim_id` là PK) để không false positive. |
+| **Chuẩn đặt tên thay thế** | - Fact Snapshot kỳ: `Snapshot Date Dimension Id` → `snpst_dt_dim_id`<br>- Ngày phát hành: `Issue Date Dimension Id` → `issue_dt_dim_id`<br>- Ngày giao dịch: `Trade Date Dimension Id` → `trade_dt_dim_id`<br>- Ngày nộp: `Submission Date Dimension Id` → `submission_dt_dim_id`<br>- Ngày đánh giá: `Evaluation Date Dimension Id` → `evaluation_dt_dim_id`<br>- Ngày hiệu lực: `Effective Date Dimension Id` → `effective_dt_dim_id` |
+| **Remediation Protocol kết nối `datamart-lld-design`** | **Bước 1 (Reviewer):** Liệt kê bảng vi phạm, file LLD CSV, vị trí dòng, cột sai (`cdr_dt_dim_id`) và cột đề xuất thay thế (`snpst_dt_dim_id` hoặc `<role>_dt_dim_id`).<br>**Bước 2 (Gate):** Claude DỪNG và chờ Human phê duyệt đề xuất.<br>**Bước 3 (Chuyển giao):** Gọi skill `datamart-lld-design` (Phase 1 field rename sync) để thực hiện đồng bộ 4 tầng:<br>  *(a) LLD Attributes detail CSV + master `datamart_attributes.csv`* (sửa logical và physical name).<br>  *(b) Detail Mapping CSV* (sửa `mart_column` và mệnh đề `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = <fact>.<role>_dt_dim_id` trong cột `logic`).<br>  *(c) Model Registry `datamart_model.yaml`* (sửa tên attribute và column trong entity Fact tương ứng).<br>  *(d) Flat Table SQL `01_create_*.sql` & `02_populate_*.sql`* (sửa DDL và câu lệnh JOIN nếu đã sinh SQL). |
 
 ### Kịch bản D — HLD sai do thiết kế/nguồn Atomic lỗi thời
 - **Dấu hiệu:** HLD đã tồn tại, đánh READY, nhưng trỏ nhầm nguồn Atomic đã deprecated/tái cấu trúc, sai grain, sai entity, hoặc logic nghiệp vụ không còn khớp Atomic hiện hành.

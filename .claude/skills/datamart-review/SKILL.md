@@ -16,6 +16,7 @@ description: |
     - Macro-Review toàn module: /datamart-review [MODULE]
     - Micro-Review nhóm cụ thể: /datamart-review [MODULE] [nhóm N]
     - Chạy CLI phân tích tiến độ: python scripts/datamart_progress_analyzer.py --module [MODULE]
+    - Chạy CLI kiểm tra Date Dimension FK: python scripts/datamart_date_fk_checker.py --module [MODULE]
 
   Input bắt buộc: BA_analyst_{MODULE}.csv (hỗ trợ file gộp BA_analyst_GSĐC.csv) + DTM_{MODULE}_HLD.md +
                   Datamart/lld/datamart_attributes.csv (summary) hoặc Datamart/lld/{MODULE}/*.csv (detail) +
@@ -41,6 +42,7 @@ description: |
 
 - **Công cụ tự động hóa:**
   - `scripts/datamart_progress_analyzer.py` — script Python chạy CLI tự động đối chiếu BA ↔ HLD ↔ Detail Mapping, xuất Ma trận đối soát tiến độ, phân loại PENDING và cảnh báo lệch số dòng KPI.
+  - `scripts/datamart_date_fk_checker.py` — script Python chạy CLI tự động quét và phát hiện sớm các vi phạm Role-Playing Date Dimension trên Fact table (phát hiện `cdr_dt_dim_id` / `calendar_dt_dim_id` trên Fact, kiểm tra `snpst_dt_dim_id` trên Fact Snapshot, loại trừ false positive trên bảng Dimension `cdr_dt_dim`).
 - **Reference:**
   - [`reference/review_checklist.md`](reference/review_checklist.md) — checklist 2 chế độ: Macro-Review toàn module & Micro-Review 4 lớp chi tiết (HLD / Attributes / Detail Mapping / Registry)
   - [`reference/issue_classification.md`](reference/issue_classification.md) — Ma trận đối soát tiến độ (Cross-status Matrix), Cây phân loại 6 nhánh nguyên nhân PENDING, và 5 Kịch bản phát hiện vấn đề (A, B, C, D, E)
@@ -96,7 +98,7 @@ Mọi chỉ tiêu Datamart PENDING bắt buộc phải phân loại chính xác 
 |---|---|---|
 | **A — HLD thiếu / PENDING, BA đã Done** | HLD status = PENDING hoặc nhóm chưa có trong HLD, BA = Done với nguồn đầy đủ | Gọi `datamart-hld-design` để thiết kế/cập nhật |
 | **B — Logic BA thay đổi** | BA cập nhật công thức/nguồn/filter mới, Attributes hoặc Detail Mapping chưa phản ánh | Gọi `datamart-lld-design` để sửa LLD |
-| **C — Lỗi kỹ thuật** | Lỗi không do BA đổi logic — thiếu Section (Section 4 Reuse Analysis), heading sai cấp, bảng KPI thiếu cột (chưa đủ 7 cột có cột `Trạng thái`), CSV lệch cột do sed/replace_all, sai `data_domain`/`data_type`/`nullable`, thiếu `src_stm_code`, physical name sai chuẩn, `etl_logic` tham chiếu cột mart... (Attributes/Detail Mapping/registry HOẶC HLD) | **Trình bày action đề xuất → Claude DỪNG chờ human xác nhận → gọi skill con để sửa.** KHÔNG tự Edit trực tiếp |
+| **C — Lỗi kỹ thuật** | Lỗi không do BA đổi logic — thiếu Section (Section 4 Reuse Analysis), heading sai cấp, bảng KPI thiếu cột (chưa đủ 7 cột có cột `Trạng thái`), CSV lệch cột do sed/replace_all, sai `data_domain`/`data_type`/`nullable`, thiếu `src_stm_code`, physical name sai chuẩn, vi phạm Role-Playing Date Dimension trên Fact table (`cdr_dt_dim_id` thay vì `snpst_dt_dim_id` / `<role>_dt_dim_id` — mã `L2-DATE-FK-ROLE-PLAYING`), `etl_logic` tham chiếu cột mart... (Attributes/Detail Mapping/registry HOẶC HLD) | **Trình bày action đề xuất → Claude DỪNG chờ human xác nhận → gọi skill con để sửa.** KHÔNG tự Edit trực tiếp |
 | **D — HLD sai do thiết kế/nguồn Atomic lỗi thời** | HLD đã tồn tại, đánh READY, nhưng trỏ nhầm nguồn Atomic đã deprecated/tái cấu trúc, sai grain, sai entity, hoặc logic nghiệp vụ không còn khớp Atomic hiện hành — khác Kịch bản A (không phải PENDING) và khác Kịch bản C (đây là lỗi nội dung/logic, không phải lỗi kỹ thuật thuần cấu trúc) | Gọi `datamart-hld-design` để thiết kế lại — KHÔNG tự sửa tay nội dung HLD (Fact, grain, nguồn Atomic, bảng KPI) dù đã xác định rõ hướng sửa |
 | **E — Review theo issue/bug report** | Human báo 1 vấn đề cụ thể (VD: "thiếu TRADINGTIME", "P/E tính sai", "biểu đồ KT thiếu dữ liệu intraday") — cần trace nhanh thay vì review tuần tự toàn module | Dùng **BƯỚC 0-ALT** (xem bên dưới) thay cho Bước 0/0b/1 thông thường. Trace toàn bộ chuỗi Source → Atomic → HLD → LLD → Flat cho field/chỉ tiêu liên quan. Xuất bảng trạng thái per-tầng (✅/⚠️/❌). Xác định blocker cụ thể + Open Issue liên quan |
 
@@ -127,7 +129,7 @@ Mọi chỉ tiêu Datamart PENDING bắt buộc phải phân loại chính xác 
 │ Bước 0b: Lập kế hoạch + Đối soát số lượng chỉ tiêu per-nhóm (0b.3)          │
 │          + Kiểm tra cấu trúc tài liệu HLD (5 Section, bảng KPI 7 cột)       │
 │          ⛔ GATE RULE: DỪNG — Claude chờ human xác nhận kế hoạch và thứ tự  │
-│ Bước 0c: [1 lần/module] Chạy Lớp 1b (13 mục Bước 5B) + Lớp 2b (10 TC Phase1)│
+│ Bước 0c: [1 lần/module] Chạy Lớp 1b (13 mục Bước 5B) + Lớp 2b (10 TC Phase 1 + Validate Date FK)│
 └──────────────────────────────────────┬──────────────────────────────────────┘
                                        │
                                        ▼ (Human duyệt kế hoạch)
@@ -514,7 +516,19 @@ và chạy đủ 10 testcase trên các file Attributes của module:
 > của TKNB dùng quy ước mã-báo-cáo-đứng-trước chưa được ghi vào rule nào). Khi review, **tách riêng
 > lỗi tồn đọng này khỏi lỗi của module đang review** — không báo lại toàn bộ 25 dòng mỗi lần.
 
-- FAIL → **Kịch bản C**: trình action đề xuất → Claude DỪNG chờ human xác nhận → gọi `datamart-lld-design` sửa.
+**Kiểm tra tự động Role-Playing Date Dimension Key trên Fact table (Bắt buộc trong Lớp 2b):**
+Chạy script tự động hóa để quét toàn bộ file Attributes của module:
+```bash
+python scripts/datamart_date_fk_checker.py --module [MODULE]
+# Hoặc quét toàn bộ kho Datamart:
+python scripts/datamart_date_fk_checker.py --module all
+```
+Script tự động kiểm tra 3 điều kiện:
+1. Mọi bảng Fact (`table_type == 'fact'` hoặc prefix `fct_`): TUYỆT ĐỐI KHÔNG có cột `cdr_dt_dim_id` hoặc logical `Calendar Date Dimension Id`.
+2. Mọi bảng Fact Snapshot (hậu tố `_snpst`): Bắt buộc có cột `snpst_dt_dim_id` với logical `Snapshot Date Dimension Id`.
+3. Bảng Dimension `cdr_dt_dim`: Cho phép `cdr_dt_dim_id` làm PK, không cảnh báo false positive.
+
+- FAIL → **Kịch bản C** (mã lỗi: `L2-DATE-FK-ROLE-PLAYING`): trình action đề xuất → Claude DỪNG chờ human xác nhận → gọi `datamart-lld-design` sửa.
 
 ---
 
@@ -538,6 +552,7 @@ và chạy đủ 10 testcase trên các file Attributes của module:
 | **`src_stm_code` filter trong JOIN sang shared/cross-module entity — giá trị phải đúng module nguồn thật của bảng đích, không suy diễn theo module đang review** | Với mọi dòng `etl_logic_type ∈ {join_atomic, lookup_dim, lookup_date}` có `AND {atomic_table}.src_stm_code = '{VALUE}'` trong `etl_logic`: nếu `{atomic_table}` là 1 **shared/cross-module Atomic entity** (dùng chung nhiều module — dấu hiệu: BCV Core Object `Location`/`Involved Party`/`Common`/`Classification`, hoặc tên entity không mang prefix module cụ thể, VD `geographic_area`, `ip_alternative_identification`, `ip_postal_address`), KHÔNG được mặc định `{VALUE}` có prefix trùng với module đang review. Bắt buộc mở đúng file Atomic YAML của `{atomic_table}` (`grep -rl "entity_physical_name: \"{atomic_table}\"" DataModel/Atomic/**/*.yaml DataModel/working/Atomic/**/*.yaml`), đọc `source_system`/`classification_context`/`etl_derived_value` của attribute "Source System Code" trong CHÍNH FILE ĐÓ để xác nhận giá trị thật — không suy ra bằng cách ghép `{tên module đang review}_{tên bảng}`. Case thực tế (module NHNCK, 2 cột `nationality_nm`/`country_nm` join tới `geographic_area`): `etl_logic` viết `AND geographic_area.src_stm_code = 'NHNCK_COUNTRIES'`, nhưng `geographic_area` (nguồn quốc gia) luôn thuộc phân hệ **ECAT** (`dm_atm_geographic_area-ECAT.COUNTRY.yaml`, `classification_context: "Source System Code = 'ECAT_COUNTRY'"`) bất kể module Datamart nào đang JOIN tới nó — giá trị đúng phải là `ECAT_COUNTRY`. Lỗi có định dạng hợp lệ (đúng dấu gạch dưới, có mặt điều kiện lọc) nên dễ bị bỏ qua nếu chỉ kiểm tra cú pháp mà không tra ngược Atomic YAML của chính bảng đích. |
 | **Data domain / type** | Khớp với tính chất KPI (số tiền, tỷ lệ, đếm...) |
 | **Key constraints** | FK đúng, nullable đúng với business rule |
+| **Role-Playing Date FK trên Fact** | Mọi Fact table: TUYỆT ĐỐI CẤM dùng generic `Calendar Date Dimension Id` / `cdr_dt_dim_id`. Với Fact Snapshot (`fct_*_snpst`): cột ngày snapshot kỳ bắt buộc là `Snapshot Date Dimension Id` → `snpst_dt_dim_id`. Với các Fact khác: `<Role> Date Dimension Id` → `<role>_dt_dim_id` (`issue_dt_dim_id`, `trade_dt_dim_id`, `submission_dt_dim_id`, `evaluation_dt_dim_id`, `effective_dt_dim_id`...). Lỗi thuộc Kịch bản C (mã: `L2-DATE-FK-ROLE-PLAYING`). |
 | **src_stm_code** | Dim/Operational có `src_stm_code`, Fact No-Driving-Table không có |
 
 **Quy trình trace BA → Atomic → Datamart (bắt buộc với mọi KPI Done):**
@@ -951,3 +966,47 @@ grep -E "\b(ctf|prac|trn|rcrd|org|nat|cty|dcsn|rslt|ases|issu|pcs|ovrl|scor|vln|
 ```
 
 **Action khi phát hiện:** **Kịch bản C** — trình bày action đề xuất (bảng: tên cũ → tên mới, danh sách file/dòng bị ảnh hưởng từ `grep -rn` toàn `Datamart/`) → Claude DỪNG chờ human xác nhận → gọi `datamart-lld-design` thực hiện field-rename-sync trên toàn bộ file output rồi verify sạch. ❌ Không tự Edit trực tiếp.
+
+---
+
+### Quy tắc Role-Playing Date Dimension trên Fact table (Bắt buộc — Bài học GSĐC 2026-09-08)
+
+**1. Bản chất kiến trúc và chuẩn Kimball:**
+- `Calendar Date Dimension` (`cdr_dt_dim`) là bảng Dimension dùng chung toàn hệ thống (Conformed Dimension). Khóa chính (PK) của nó là `Calendar Date Dimension Id` (`cdr_dt_dim_id`).
+- Khi tham chiếu tới `cdr_dt_dim` từ các bảng Fact, một bảng Fact có thể có nhiều mối quan hệ ngày tháng với các ý nghĩa nghiệp vụ hoàn toàn khác nhau (ngày phát sinh giao dịch, ngày thanh toán, ngày hiệu lực, ngày kết thúc, ngày snapshot kỳ...). Vì vậy, các khóa ngoại (FK) trỏ tới bảng ngày trên Fact bắt buộc phải đóng vai trò là **Role-Playing Dimension Keys**.
+
+**2. Quy tắc đặt tên bắt buộc (aligned với `datamart-lld-design` lines 454-461):**
+- ⛔ **TUYỆT ĐỐI CẤM:** Sử dụng `Calendar Date Dimension Id` hoặc `cdr_dt_dim_id` (và biến thể cũ `calendar_dt_dim_id`) làm Foreign Key trên bất kỳ bảng Fact nào! `cdr_dt_dim_id` **CHỈ là Primary Key của chính bảng Dimension `cdr_dt_dim`** (`table_type = dim`).
+- **Với Fact Snapshot (`fct_*_snpst`):** Cột ngày snapshot kỳ bắt buộc mang tên:
+  - Logical name: `Snapshot Date Dimension Id`
+  - Physical name: `snpst_dt_dim_id` (snapshot → snpst, date → dt, dimension → dim, id → id)
+  - Domain: `Surrogate Dimension Key` | Type: `string` | Role: `FK`
+  - ETL Logic: `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = <driving_table>.ds_snpst_dt`
+- **Với Fact Transaction / Event / Fact khác:** Cột ngày bắt buộc đặt tên theo vai trò nghiệp vụ cụ thể:
+  - Logical name: `<Role> Date Dimension Id`
+  - Physical name: `<role>_dt_dim_id`
+  - Ví dụ:
+    - `Issue Date Dimension Id` → `issue_dt_dim_id`
+    - `Trade Date Dimension Id` → `trade_dt_dim_id`
+    - `Submission Date Dimension Id` → `submission_dt_dim_id`
+    - `Evaluation Date Dimension Id` → `evaluation_dt_dim_id`
+    - `Effective Date Dimension Id` → `effective_dt_dim_id`
+
+**3. Nguyên nhân gốc rễ và cơ chế phòng ngừa:**
+- **Nguyên nhân gốc rễ gây lỗi:** Do tên logical trong HLD/LLD bị ghi generic là "Calendar Date Dimension Id" thay vì "Snapshot Date Dimension Id" hoặc "<Role> Date Dimension Id", dẫn tới thuật toán derive physical name sinh ra `cdr_dt_dim_id` hoặc `calendar_dt_dim_id`. Khi thiết kế Fact, phải đặt tên logical theo vai trò ngày trước khi sinh physical name.
+- **Kiểm tra tự động bằng CLI script:**
+  ```bash
+  python scripts/datamart_date_fk_checker.py --module [MODULE]
+  # Hoặc kiểm tra toàn bộ kho Datamart:
+  python scripts/datamart_date_fk_checker.py --module all
+  ```
+
+**4. Action Plan khi phát hiện vi phạm (Kịch bản C — Mã lỗi `L2-DATE-FK-ROLE-PLAYING`):**
+Khi phát hiện vi phạm, Reviewer thực hiện quy trình Kịch bản C chuẩn:
+1. **Trình bày action đề xuất:** Lập bảng kê chi tiết gồm File path, Table name, Cột vi phạm (`cdr_dt_dim_id` / `calendar_dt_dim_id`), Cột đề xuất thay thế (`snpst_dt_dim_id` hoặc `<role>_dt_dim_id`).
+2. **Dừng chờ phê duyệt:** Claude DỪNG và chờ human xác nhận.
+3. **Chuyển giao cho `datamart-lld-design`:** Sau khi human phê duyệt, gọi `datamart-lld-design` (Phase 1 field rename sync) để đồng bộ 4 tầng dữ liệu:
+   - *(a) Attributes CSV:* File chi tiết trong `Datamart/lld/{MODULE}/*.csv` và master `Datamart/lld/datamart_attributes.csv`.
+   - *(b) Detail Mapping:* File `DTM_{MODULE}_Detail_Mapping.csv` (cột `mart_column` và mệnh đề JOIN `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = <fact>.<role>_dt_dim_id`).
+   - *(c) Model Registry:* File `Datamart/datamart_model.yaml` (attribute và column tương ứng trong entity Fact).
+   - *(d) Flat Table SQL:* File DDL `Datamart/flat-table/{MODULE}/01_create_*.sql` và DML `02_populate_*.sql` (nếu đã sinh SQL).
