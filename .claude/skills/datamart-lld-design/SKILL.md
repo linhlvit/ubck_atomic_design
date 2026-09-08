@@ -426,7 +426,10 @@ Organization Name              →  organization_nm                 (name → nm
 Source System Code             →  src_stm_code                    (source → src; system → stm; code → full)
 Snapshot Date                  →  snpst_dt                        (snapshot → snpst; date → dt)
 Calendar Date                  →  cdr_dt                          (calendar → cdr; date → dt — CẢ HAI đều có trong CSV)
-Calendar Date Dimension Id     →  cdr_dt_dim_id                   (calendar → cdr; date → dt; dimension → dim; id → id)
+Calendar Date Dimension Id     →  cdr_dt_dim_id                   (CHỈ dùng làm PK của Dimension cdr_dt_dim; CẤM dùng làm FK trên Fact)
+Snapshot Date Dimension Id     →  snpst_dt_dim_id                 (FK snapshot date trên Fact Snapshot — role-playing date)
+Issue Date Dimension Id        →  issue_dt_dim_id                 (FK issue date trên Fact — role-playing date)
+Trade Date Dimension Id        →  trade_dt_dim_id                 (FK trade date trên Fact — role-playing date)
 Practitioner Dimension ID      →  practitioner_dim_id             (dimension → dim; id → id; practitioner → full)
 Fact Practitioner Daily Snapshot → fct_practitioner_daily_snpst   (fact → fct; snapshot → snpst; practitioner, daily → full — "daily" KHÔNG có trong CSV)
 Operational History            →  opr_hist                        (operational → opr; history → hist)
@@ -443,11 +446,20 @@ prac_code       ❌  (prac không phải exception)         →   practitioner_c
 trn_rslt_nm     ❌  (trn, rslt không phải exception)    →   training_result_nm   ✅
 org_tp_nm       ❌  (org không phải exception)          →   organization_tp_nm   ✅
 examination_score  ❌  (logical là "Exam Score" — "exam" bị mở rộng thành "examination")  →   exam_score  ✅
-calendar_dt_dim_id ❌  ("calendar" CÓ trong CSV → phải rút gọn thành cdr)  →   cdr_dt_dim_id  ✅
+calendar_dt_dim_id ❌  ("calendar" CÓ trong CSV → phải rút gọn thành cdr)  →   cdr_dt_dim_id  ✅ (chỉ dùng trên cdr_dt_dim)
+cdr_dt_dim_id trên Fact table ❌ (làm mất role ngày, vi phạm role-playing) →  snpst_dt_dim_id ✅ (Fact Snapshot) hoặc <role>_dt_dim_id ✅
 dly / smy / list   ❌  (viết tắt của daily/summary/listed — không có trong CSV)  →   daily / summary / listed  ✅
 ```
 
-> **Bài học từ 3 ví dụ SAI cuối:** cả 3 đều sinh ra vì đặt tên theo trí nhớ hoặc theo ví dụ trong tài liệu thay vì mở CSV. Luôn `cat` CSV trước khi đặt tên — bản thân danh sách ví dụ này cũng chỉ là minh hoạ, KHÔNG phải nguồn sự thật.
+> ⛔ **QUY TẮC BẮT BUỘC: ROLE-PLAYING DATE DIMENSION TRÊN FACT TABLE (BÀI HỌC GSDC 2026-09-08):**
+> - `Calendar Date Dimension Id` (`cdr_dt_dim_id`) **CHỈ là Primary Key của chính bảng Dimension `cdr_dt_dim`** (`table_type = dim`).
+> - **TUYỆT ĐỐI CẤM dùng `Calendar Date Dimension Id` / `cdr_dt_dim_id` làm Foreign Key trên bất kỳ Fact table nào!**
+> - Mọi FK trỏ tới `cdr_dt_dim` trên Fact table là **Role-Playing Dimension Key**, PHẢI đặt tên theo đúng vai trò nghiệp vụ (Role):
+>   1. **Fact Snapshot (`fct_*_snpst`):** Cột ngày snapshot kỳ bắt buộc là `Snapshot Date Dimension Id` → `snpst_dt_dim_id` (snapshot → snpst, date → dt, dimension → dim, id → id).
+>   2. **Các vai trò ngày khác trên Fact:** `<Role> Date Dimension Id` → `<role>_dt_dim_id` (ví dụ: `Issue Date Dimension Id` → `issue_dt_dim_id`, `Trade Date Dimension Id` → `trade_dt_dim_id`, `Evaluation Date Dimension Id` → `evaluation_dt_dim_id`, `Submission Date Dimension Id` → `submission_dt_dim_id`, `Effective Date Dimension Id` → `effective_dt_dim_id`...).
+> - **Nguyên nhân gốc rễ gây lỗi:** Do tên logical trong HLD/LLD bị ghi generic là "Calendar Date Dimension Id" thay vì "Snapshot Date Dimension Id", dẫn tới thuật toán derive physical name sinh ra `cdr_dt_dim_id`. Khi thiết kế Fact, phải đặt tên logical theo vai trò ngày trước khi sinh physical name.
+
+> **Bài học từ các ví dụ SAI:** Cần luôn `cat` CSV trước khi đặt tên và đối chiếu vai trò nghiệp vụ của cột — bản thân danh sách ví dụ này cũng chỉ là minh hoạ, KHÔNG phải nguồn sự thật.
 
 > **Lỗi tái diễn — 2 biến thể viết tắt song song cho CÙNG một tên bảng/entity (phát hiện ở GSDC 2026-07-16):**
 > Khi module có nhiều bảng Fact/Dim cùng gắn với 1 khái niệm nghiệp vụ (VD: "Public Company"), rất dễ đặt tên bảng đầu tiên theo 1 kiểu viết tắt tự nghĩ ra (`pblc_co_dim`) rồi bảng sau lại đặt theo kiểu khác (`fct_pc_risk_score_snpst`) — cả 2 đều KHÔNG có trong exceptions và KHÔNG nhất quán với nhau.
@@ -502,6 +514,13 @@ Nếu phát hiện `datamart_column` hoặc `datamart_table` dùng từ viết t
 - Báo: `✅ TC2b PASS` hoặc `❌ TC2b FAIL: [danh sách row vi phạm — ghi rõ key hiện tại, loại bảng, và vi phạm cụ thể]`.
 - Nếu FAIL → sửa trước khi trình bày (Dim/Operational thiếu etl_logic cho BK → điền đầy đủ).
 - **Fact có `key = PK` → XÓA HẲN TOÀN BỘ DÒNG (row) khỏi CSV — không phải chỉ đổi giá trị cột `key` thành trống và giữ nguyên dòng.** Bài học thực tế (module GSDC, 2026-07-22): đã từng chỉ đổi `key: PK` → `key: ''` mà giữ nguyên dòng `fct_..._id`, khiến cột surrogate thừa vẫn tồn tại trong Attributes/registry/SQL sau khi báo "đã fix" — human phải tự phát hiện lại. Trước khi xóa, kiểm tra cột đó có được tham chiếu ở nơi khác không (`grep` trong `Detail_Mapping.csv` và `HLD.md`): nếu KHÔNG có tham chiếu nào → xóa hẳn dòng; nếu có bằng chứng ETL cần cột đó cho merge/upsert kỹ thuật → giữ dòng nhưng `key` để trống (ngoại lệ hiếm, cần nêu rõ lý do). Khi xóa, đồng bộ đủ 4 nơi: (1) file Attributes detail, (2) master `datamart_attributes.csv`, (3) `datamart_model.yaml` — xóa cả block `columns` tương ứng bằng text-replace theo block, KHÔNG dùng `yaml.dump`, (4) file SQL Phase 3 đã sinh nếu có (`01_create_*.sql` dòng CREATE, `02_populate_*.sql` dòng SELECT).
+- **Sub-check Date FK trên Fact table (Role-Playing Date Dimension — bắt buộc):**
+  - Mọi Fact table (`table_type: "fact"` hoặc bảng bắt đầu bằng `fct_`):
+    - **CẤM TUYỆT ĐỐI** cột có tên `datamart_column = 'cdr_dt_dim_id'` hoặc `datamart_attribute = 'Calendar Date Dimension Id'`. Cột `cdr_dt_dim_id` CHỈ ĐƯỢC PHÉP là PK của chính bảng `cdr_dt_dim`.
+    - Mọi FK trỏ tới `cdr_dt_dim` trên Fact PHẢI mang tên theo vai trò nghiệp vụ (Role):
+      - Nếu là Fact Snapshot (tên bảng có hậu tố `_snpst`): Cột snapshot date bắt buộc là `datamart_attribute: "Snapshot Date Dimension Id"`, `datamart_column: "snpst_dt_dim_id"`.
+      - Nếu là Fact Transaction/Event/khác: Bắt buộc dùng `<Role> Date Dimension Id` → `<role>_dt_dim_id` (ví dụ `issue_dt_dim_id`, `trade_dt_dim_id`, `submission_dt_dim_id`, `evaluation_dt_dim_id`, `effective_dt_dim_id`...).
+    - Nếu phát hiện `cdr_dt_dim_id` trên Fact table → báo FAIL ngay lập tức và yêu cầu đổi tên theo vai trò nghiệp vụ.
 
 **TC3 — Đầy đủ prefix table_name.column_name + thứ tự JOIN đúng:**
 - Kiểm tra mọi column reference trong `etl_logic` có dạng `<table>.<col>`.
@@ -903,6 +922,7 @@ ATTRIBUTES CHECK:
 □ Mọi Dimension có ≥1 BK (join anchor cho Fact lookup)
 □ Mọi Operational dùng trường _code làm PK duy nhất — không tạo surrogate key (_id)
 □ Fact KHÔNG có dòng key = PK (dù có cột surrogate id kỹ thuật — để key trống)
+□ Fact TUYỆT ĐỐI KHÔNG có cột cdr_dt_dim_id (Calendar Date Dimension Id) — FK tới Calendar Date Dimension phải đặt theo vai trò nghiệp vụ (Snapshot Date Dimension Id → snpst_dt_dim_id; Fact khác dùng <Role> Date Dimension Id → <role>_dt_dim_id)
 □ Không thiết kế Effective Date / Expiry Date / Population Date
 □ Mọi bảng dim/operational có attribute src_stm_code (cuối danh sách)
 □ src_stm_code: mọi bảng (kể cả single-source) → luôn có WHERE filter trong etl_logic (forward-compatibility)

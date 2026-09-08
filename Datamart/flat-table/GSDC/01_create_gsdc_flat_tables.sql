@@ -649,7 +649,7 @@ CREATE TABLE IF NOT EXISTS datamart.gsdc_fct_public_company_listing_info_snpst_f
 (
     -- From: FACT PUBLIC COMPANY LISTING INFO SNAPSHOT
     public_company_dim_id              String                  COMMENT 'FK sang Public Company Dimension (surrogate key, join qua equity_ticker_symbol).',
-    cdr_dt_dim_id                      String                  COMMENT 'FK tới Calendar Date Dimension — ngày snapshot (kỳ tháng).',
+    snpst_dt_dim_id                    String                  COMMENT 'FK tới Calendar Date Dimension — ngày snapshot (kỳ tháng).',
     outstanding_share_quantity         Nullable(Int64)         COMMENT 'Khối lượng cổ phiếu đang lưu hành (K_GSDC_1381).',
     total_issued_share_quantity        Nullable(Int64)         COMMENT 'Khối lượng cổ phiếu niêm yết (K_GSDC_1382).',
     treasury_share_quantity            Nullable(Int64)         COMMENT 'Khối lượng cổ phiếu quỹ (K_GSDC_1383).',

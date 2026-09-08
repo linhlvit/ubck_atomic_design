@@ -621,7 +621,7 @@ TRUNCATE TABLE IF EXISTS datamart.gsdc_fct_public_company_listing_info_snpst_fla
 INSERT INTO datamart.gsdc_fct_public_company_listing_info_snpst_flat
 SELECT
     f.public_company_dim_id,
-    f.cdr_dt_dim_id,
+    f.snpst_dt_dim_id,
     f.outstanding_share_quantity,
     f.total_issued_share_quantity,
     f.treasury_share_quantity,
@@ -641,7 +641,7 @@ SELECT
     dim.classification_business_line_nm
 FROM datamart.fct_public_company_listing_info_snpst f
 JOIN datamart.cdr_dt_dim snpst_cal
-    ON snpst_cal.cdr_dt_dim_id = f.cdr_dt_dim_id
+    ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
 LEFT JOIN datamart.public_company_dim dim
     ON dim.public_company_dim_id = f.public_company_dim_id
 WHERE snpst_cal.cdr_dt = :etl_date

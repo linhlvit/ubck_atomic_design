@@ -3103,7 +3103,7 @@ flowchart LR
 erDiagram
     Fact_Public_Company_Listing_Info_Snapshot {
         int Public_Company_Dimension_Id FK
-        int Calendar_Date_Dimension_Id FK
+        int Snapshot_Date_Dimension_Id FK
         int Outstanding_Share_Quantity
         int Total_Issued_Share_Quantity
         int Treasury_Share_Quantity

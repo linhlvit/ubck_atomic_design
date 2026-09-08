@@ -207,3 +207,21 @@ etl_logic      = INNER JOIN pc_securities_offering ON pc_securities_offering.pc_
 ```
 
 **Vấn đề:** `LOOKUP <dim> ON <dim>.<col> = <driving_or_joined_table>.<col>` là cú pháp bắt buộc cho MỌI lookup FK sang Dimension (`lookup_dim`/`lookup_date`) — kể cả khi không có JOIN clause phía trước (lookup trực tiếp từ driving table) lẫn khi có multi-hop JOIN phía trước (hop lookup luôn là hop cuối, ngay sau dấu `→`). Viết dạng `<dim>.<col> WHERE ...` (value-first, thiếu `LOOKUP`) hoặc `→ WHERE ...` (thiếu `LOOKUP...ON` ở hop cuối) đều sai format, kể cả khi không vi phạm sub-check thứ tự JOIN (vì bản thân không chứa `JOIN` keyword — chỉ chứa `WHERE`). Đồng thời khi hop cuối là lookup dimension, `etl_logic_type` phải phản ánh đúng (`lookup_dim`/`lookup_date`), không dùng `join_atomic`.
+
+---
+
+## SAI 10 — Dùng generic `Calendar Date Dimension Id` (`cdr_dt_dim_id`) thay vì role-playing `Snapshot Date Dimension Id` (`snpst_dt_dim_id`) trên Fact table (bài học GSDC 2026-09-08)
+
+```csv
+❌ Sai — Fact Snapshot nhưng đặt tên generic theo tên Dimension:
+"Fact Public Company Listing Info Snapshot","fct_public_company_listing_info_snpst","Calendar Date Dimension Id","cdr_dt_dim_id","false","Surrogate Dimension Key","string","FK","FK tới Calendar Date Dimension theo ngày snapshot","LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = listed_security_info_snapshot.ds_snpst_dt WHERE listed_security_info_snapshot.src_stm_code = 'VSDC_LISTED_SECURITY_INFO_SNAPSHOT'","lookup_date","Listed Security Info Snapshot","listed_security_info_snapshot","Snapshot Date","ds_snpst_dt"
+
+Vấn đề:
+1. `Calendar Date Dimension Id` (cdr_dt_dim_id) chỉ là PK của chính bảng Dimension `cdr_dt_dim`.
+2. Trên Fact table, FK trỏ vào Date Dimension phải phản ánh vai trò nghiệp vụ (Role-playing Dimension). Với Fact Snapshot, cột ngày snapshot bắt buộc mang tên `Snapshot Date Dimension Id` (snpst_dt_dim_id).
+3. Đặt cdr_dt_dim_id làm mất ngữ nghĩa vai trò ngày, vi phạm chuẩn Kimball và bị reviewer reject.
+
+✅ Đúng:
+"Fact Public Company Listing Info Snapshot","fct_public_company_listing_info_snpst","Snapshot Date Dimension Id","snpst_dt_dim_id","false","Surrogate Dimension Key","string","FK","FK tới Calendar Date Dimension theo ngày snapshot","LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = listed_security_info_snapshot.ds_snpst_dt WHERE listed_security_info_snapshot.src_stm_code = 'VSDC_LISTED_SECURITY_INFO_SNAPSHOT'","lookup_date","Listed Security Info Snapshot","listed_security_info_snapshot","Snapshot Date","ds_snpst_dt"
+```
+

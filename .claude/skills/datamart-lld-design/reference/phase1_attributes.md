@@ -399,3 +399,25 @@ JOIN <table_b> ON <table_b>.<fk> = <driving>.<col>
 | `Holiday Name` | `direct` | `cdr_dt.hol_nm` |
 
 ❌ Không thiết kế `Month Name` — không có trong Atomic `cdr_dt`.
+
+---
+
+## Quy tắc đặt tên Date FK trên Fact Table (Role-Playing Date Dimensions)
+
+> ⛔ **CẤM TUYỆT ĐỐI:** Fact table **KHÔNG BAO GIỜ** được đặt tên cột FK là `cdr_dt_dim_id` hay logical attribute `Calendar Date Dimension Id`.
+> - `Calendar Date Dimension Id` (`cdr_dt_dim_id`) **CHỈ là Primary Key của chính bảng Dimension `cdr_dt_dim`**.
+> - Trong mô hình Dimensional Modeling (Kimball), khi Fact table kết nối sang Date Dimension, các khóa ngoại đóng các **vai trò nghiệp vụ khác nhau (Role-Playing Dimensions)**.
+> - Bắt buộc đặt tên theo vai trò nghiệp vụ của ngày:
+
+| Loại Fact / Vai trò ngày | datamart_attribute (Logical) | datamart_column (Physical) | data_domain | data_type | key | description | etl_logic | etl_logic_type |
+|---|---|---|---|---|---|---|---|---|
+| **Fact Snapshot (kỳ snapshot)** | `Snapshot Date Dimension Id` | `snpst_dt_dim_id` | `Surrogate Dimension Key` | `string` | `FK` | FK tới Calendar Date Dimension — ngày snapshot | `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = driving.ds_snpst_dt` | `lookup_date` |
+| **Ngày phát hành / cấp** | `Issue Date Dimension Id` | `issue_dt_dim_id` | `Surrogate Dimension Key` | `string` | `FK` | FK tới Calendar Date Dimension — ngày cấp/phát hành | `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = driving.issue_dt` | `lookup_date` |
+| **Ngày giao dịch** | `Trade Date Dimension Id` | `trade_dt_dim_id` | `Surrogate Dimension Key` | `string` | `FK` | FK tới Calendar Date Dimension — ngày giao dịch | `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = driving.trading_dt` | `lookup_date` |
+| **Ngày đánh giá** | `Evaluation Date Dimension Id` | `evaluation_dt_dim_id` | `Surrogate Dimension Key` | `string` | `FK` | FK tới Calendar Date Dimension — ngày đánh giá | `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = driving.evaluation_dt` | `lookup_date` |
+| **Ngày hiệu lực** | `Effective Date Dimension Id` | `effective_dt_dim_id` | `Surrogate Dimension Key` | `string` | `FK` | FK tới Calendar Date Dimension — ngày hiệu lực | `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = driving.effective_dt` | `lookup_date` |
+| **Ngày nộp hồ sơ / báo cáo** | `Submission Date Dimension Id` | `submission_dt_dim_id` | `Surrogate Dimension Key` | `string` | `FK` | FK tới Calendar Date Dimension — ngày nộp | `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = driving.submission_dt` | `lookup_date` |
+| **Ngày vi phạm / quyết định** | `Decision Date Dimension Id` | `decision_dt_dim_id` | `Surrogate Dimension Key` | `string` | `FK` | FK tới Calendar Date Dimension — ngày quyết định | `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = driving.decision_dt` | `lookup_date` |
+| **Ngày sự kiện** | `Event Date Dimension Id` | `evnt_dt_dim_id` | `Surrogate Dimension Key` | `string` | `FK` | FK tới Calendar Date Dimension — ngày sự kiện | `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = driving.event_dt` | `lookup_date` |
+
+> **Bài học GSDC (2026-09-08):** Bảng `fct_public_company_listing_info_snpst` từng bị reviewer Đức reject vì đặt tên cột FK ngày snapshot là `cdr_dt_dim_id`. Đã sửa thành `snpst_dt_dim_id` (Snapshot Date Dimension Id).
