@@ -553,7 +553,7 @@ flowchart LR
 | K_TKNB_4 | Chỉ số HNX-INDEX (cuối ngày) | Điểm | Cơ sở | Reuse K_TKNB_3, filter `market_id_code = '02'` | [STT=4, item_code=`hnx_index_eod`] Trùng — sub-component của K_TKNB_3 | READY |
 | K_TKNB_5 | Chỉ số HNX30 | Điểm | Cơ sở | Reuse K_TKNB_3, filter `market_id_code = '30'` | [STT=5, item_code=`hnx30_index_eod`] Trùng — sub-component của K_TKNB_3 | READY |
 | K_TKNB_6 | Chỉ số UPCoM Index | Điểm | Cơ sở | Reuse K_TKNB_3, filter `market_id_code = '04'` | [STT=6, item_code=`upcom_index_eod`] Trùng — sub-component của K_TKNB_3 | READY |
-| K_TKNB_7 | Loại CK | - | Chiều | `stock_tp_code`/`fund_tp_code` filter `floor_code IN ('02','04')` | [STT=7, item_code=`security_type`] Chiều slicer Loại CK/Thị trường | READY |
+| K_TKNB_7 | Loại CK | - | Chiều | `stock_tp_code`/`fund_tp_code` filter `floor_code IN ('02','04')` | [item_code=`security_type`] Chiều nội bộ — không có dòng BA riêng, derive từ điều kiện lọc StockType/FundType xuất hiện trong SQL của dòng BA STT=11 ("4. Chứng chỉ quỹ") và STT=12 ("5. Chứng chỉ quỹ (ETF)") của Nhóm 1. Dùng trong formula của K_TKNB_12, K_TKNB_13, K_TKNB_18, K_TKNB_19 (và các KPI CCQ/ETF khác cùng pattern lọc) | READY |
 | K_TKNB_8 | I. Giá trị chứng khoán giao dịch toàn thị trường | VND | Phái sinh | `= K_TKNB_9 + K_TKNB_10 + K_TKNB_11 + K_TKNB_12 + K_TKNB_13` | [STT=8, item_code=`total_trading_value`] Tổng GTGD 5 loại CK | READY |
 | K_TKNB_9 | I.1 Giá trị GTGD — Cổ phiếu Niêm Yết | VND | Cơ sở | `SUM(execution_price * execution_vol)` filter `market_id_code IN ('STO','STX')` | [STT=9, item_code=`trading_value_cpny`] Nguồn `Securities Trade` | READY |
 | K_TKNB_10 | I.2 Giá trị GTGD — Cổ phiếu UpCom | VND | Cơ sở | `SUM(execution_price * execution_vol)` filter `market_id_code = 'UPX'` | | READY |

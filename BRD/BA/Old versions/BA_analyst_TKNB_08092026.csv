@@ -2342,11 +2342,11 @@ HNX.gov_bond_listed_list (b)","t.trade_quantity
 o.volume, 
 r.volume","-- Công thức:
 Tăng/giảm so với cùng kỳ (%) = ( tradingvol_ytd / NULLIF(tradingvol_ytd_py, 0) - 1 ) * 100",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),"Loại CK - CP, CCQ, TPDNNY","Gồm các loại:
+4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Loại chứng khoán,"Gồm các loại:
 - Cổ phiếu niêm yết
 - Cổ phiếu đăng ký giao dịch
-- Chứng chỉ quỹ (ETF)
-- Trái phiếu doanh nghiệp niêm yết",Báo cáo,Chiều,TB,Loại CK,MDDS,,,,Done,,"2.1. Cổ phiếu niêm yết
+- Trái phiếu doanh nghiệp niêm yết
+- Chứng chỉ quỹ (ETF)",Báo cáo,Chiều,TB,Loại CK,MDDS,,,,Done,,"2.1. Cổ phiếu niêm yết
 2.2. Cổ phiếu đăng ký giao dịch
 2.6. Trái phiếu doanh nghiệp
 2.8. Chứng chỉ quỹ (ETF)",,,,,MDDS.jad_stockinfor (s),"s.floorcode, 
@@ -2510,7 +2510,7 @@ Tăng/giảm so với cùng kỳ (%) = ( tradingvalue_ytd / NULLIF(tradingvalue_
 2.8. Chứng chỉ quỹ (ETF)",,,,,"HNX.trade_book_hnx (t),
 MDDS.jad_stockinfor (s)",t.trade_quantity,"-- Công thức:
 Tăng/giảm so với cùng kỳ (%) = ( tradingvol_ytd / NULLIF(tradingvol_ytd_py, 0) - 1 ) * 100",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Loại CK - TPCP,"Loại TPCP gồm:
+4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Loại TPCP,"Loại TPCP gồm:
 - Trái phiếu chính phủ
 - Trái phiếu chính quyền địa phương
 - Trái phiếu chính phủ bảo lãnh
@@ -2702,95 +2702,6 @@ HNX.repo_order_book (r),
 gov_bond_listed_list (b)","o.volume, 
 r.volume","-- Công thức:
 Tăng/giảm so với cùng kỳ (%) = ( tradingvol_ytd / NULLIF(tradingvol_ytd_py, 0) - 1 ) * 100",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Trong kỳ - phát sinh - Khối lượng chứng khoán niêm yết và đăng ký giao dịch,Trong kỳ - phát sinh (Dòng Tổng: Khối lượng chứng khoán niêm yết và đăng ký giao dịch (chứng khoán)),Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK - CP, CCQ, Tháng","MDDS, HNX",,,,Done,,4. Khối lượng chứng khoán niêm yết và đăng ký giao dịch (chứng khoán),,,,,"MDDS.jad_stockinfor (s)
---
-HNX.gov_bond_listed_list (b)
--- 
-HNX.private_corp_bond_trading_registration_scale (cb)","s.listedshare, s.reference
---
-b.listed_volume
---
-cb.registered_trading_volume","listedshare = SUM các mục ""Trong kỳ - phát sinh - Khối lượng chứng khoán niêm yết và đăng ký giao dịch"" bên dưới:
-4.1. Cổ phiếu niêm yết
-4.2. Cổ phiếu đăng ký giao dịch
-4.3. Trái phiếu chính phủ
-4.4. Trái phiếu chính quyền địa phương
-4.5. Trái phiếu chính phủ bảo lãnh
-4.6. Trái phiếu doanh nghiệp
-4.7. Tín phiếu kho bạc
-4.8. Chứng chỉ quỹ (ETF)",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Trong kỳ - phát sinh - Giá trị chứng khoán niêm yết và đăng ký giao dịch,Trong kỳ - phát sinh (Dòng Tổng: Giá trị chứng khoán niêm yết và đăng ký giao dịch (VND)),Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK - CP, CCQ, Tháng","MDDS, HNX",,,,Done,,5. Giá trị chứng khoán niêm yết và đăng ký giao dịch (VND),,,,,"MDDS.jad_stockinfor (s)
---
-HNX.gov_bond_listed_list (b)
--- 
-HNX.private_corp_bond_trading_registration_scale (cb)","s.listedshare, s.reference
---
-b.listed_volume
---
-cb.registered_trading_volume, cb.par_value","listedvalue = SUM các mục ""Trong kỳ - phát sinh - Giá trị chứng khoán niêm yết và đăng ký giao dịch"" bên dưới:
-5.1. Cổ phiếu niêm yết
-5.2. Cổ phiếu đăng ký giao dịch
-5.3. Trái phiếu chính phủ
-5.4. Trái phiếu chính quyền địa phương
-5.5. Trái phiếu chính phủ bảo lãnh
-5.6. Trái phiếu doanh nghiệp
-5.7. Tín phiếu kho bạc
-5.8. Chứng chỉ quỹ (ETF)",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Kỳ trước - phát sinh - Khối lượng chứng khoán niêm yết và đăng ký giao dịch,Kỳ trước - phát sinh (Dòng Tổng: Khối lượng chứng khoán niêm yết và đăng ký giao dịch (chứng khoán)),Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK - CP, CCQ, Tháng","MDDS, HNX",,,,Done,,4. Khối lượng chứng khoán niêm yết và đăng ký giao dịch (chứng khoán),,,,,"MDDS.jad_stockinfor (s)
---
-HNX.gov_bond_listed_list (b)
--- 
-HNX.private_corp_bond_trading_registration_scale (cb)","s.listedshare, s.reference
---
-b.listed_volume
---
-cb.registered_trading_volume","listedshare = SUM các mục ""Kỳ trước - phát sinh - Khối lượng chứng khoán niêm yết và đăng ký giao dịch"" bên dưới:
-4.1. Cổ phiếu niêm yết
-4.2. Cổ phiếu đăng ký giao dịch
-4.3. Trái phiếu chính phủ
-4.4. Trái phiếu chính quyền địa phương
-4.5. Trái phiếu chính phủ bảo lãnh
-4.6. Trái phiếu doanh nghiệp
-4.7. Tín phiếu kho bạc
-4.8. Chứng chỉ quỹ (ETF)",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Kỳ trước - phát sinh - Giá trị chứng khoán niêm yết và đăng ký giao dịch,Kỳ trước - phát sinh (Dòng Tổng: Giá trị chứng khoán niêm yết và đăng ký giao dịch (VND)),Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK - CP, CCQ, Tháng","MDDS, HNX",,,,Done,,5. Giá trị chứng khoán niêm yết và đăng ký giao dịch (VND),,,,,"MDDS.jad_stockinfor (s)
---
-HNX.gov_bond_listed_list (b)
--- 
-HNX.private_corp_bond_trading_registration_scale (cb)","s.listedshare, s.reference
---
-b.listed_volume
---
-cb.registered_trading_volume, cb.par_value","listedvalue = SUM các mục ""Kỳ trước - phát sinh - Giá trị chứng khoán niêm yết và đăng ký giao dịch"" bên dưới:
-5.1. Cổ phiếu niêm yết
-5.2. Cổ phiếu đăng ký giao dịch
-5.3. Trái phiếu chính phủ
-5.4. Trái phiếu chính quyền địa phương
-5.5. Trái phiếu chính phủ bảo lãnh
-5.6. Trái phiếu doanh nghiệp
-5.7. Tín phiếu kho bạc
-5.8. Chứng chỉ quỹ (ETF)",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Trong kỳ - Tăng/giảm so với kỳ trước (%) - Khối lượng chứng khoán niêm yết và đăng ký giao dịch,Trong kỳ - Tăng/giảm so với kỳ trước (%) (Dòng Tổng: Khối lượng chứng khoán niêm yết và đăng ký giao dịch (chứng khoán)),Báo cáo,Chỉ tiêu phái sinh,TB,"Loại CK - CP, CCQ, Tháng","MDDS, HNX",,,,Done,,4. Khối lượng chứng khoán niêm yết và đăng ký giao dịch (chứng khoán),,,,,"MDDS.jad_stockinfor (s)
---
-HNX.gov_bond_listed_list (b)
--- 
-HNX.private_corp_bond_trading_registration_scale (cb)","s.listedshare, s.reference
---
-b.listed_volume
---
-cb.registered_trading_volume","-- Công thức:
-Tăng/Giảm so với kỳ trước (%) = ( listedshare / NULLIF(listedshare_prev, 0) - 1 ) * 100
-",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Trong kỳ - Tăng/giảm so với kỳ trước (%) - Giá trị chứng khoán niêm yết và đăng ký giao dịch,Trong kỳ - Tăng/giảm so với kỳ trước (%) (Dòng Tổng: Giá trị chứng khoán niêm yết và đăng ký giao dịch (VND)),Báo cáo,Chỉ tiêu phái sinh,TB,"Loại CK - CP, CCQ, Tháng","MDDS, HNX",,,,Done,,5. Giá trị chứng khoán niêm yết và đăng ký giao dịch (VND),,,,,"MDDS.jad_stockinfor (s)
---
-HNX.gov_bond_listed_list (b)
--- 
-HNX.private_corp_bond_trading_registration_scale (cb)","s.listedshare, s.reference
---
-b.listed_volume
---
-cb.registered_trading_volume, cb.par_value","-- Công thức:
-Tăng/Giảm so với kỳ trước (%) = ( listedvalue / NULLIF(listedvalue_prev, 0) - 1 ) * 100",,,,,,
 4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),"Loại CK - CP, CCQ","Loại chứng khoán:
 - Cổ phiếu niêm yết
 - Cổ phiếu đăng ký giao dịch
@@ -2801,9 +2712,13 @@ Tăng/Giảm so với kỳ trước (%) = ( listedvalue / NULLIF(listedvalue_pre
 5.2. Cổ phiếu đăng ký giao dịch
 5.8. Chứng chỉ quỹ (ETF)",,,,,MDDS.jad_stockinfor (s),"s.floorcode, 
 s.stocktype, 
-s.fundtype","-- Bảng MDDS.jad_stockinfor (s) -> Loại chứng khoán:
+s.fundtype","Bảng MDDS.jad_stockinfor (s):
+-- Thời gian:
+(ROW_NUMBER() OVER(PARTITION BY symbol, tradingdate ORDER BY indextime DESC, sequence DESC)) = 1 -- Lấy dữ liệu cuối ngày từng mã CK
+-- Loại chứng khoán:
 s.floorcode = '02' AND s.stocktype = '2' -- Cổ phiếu niêm yết (trên HNX)
 s.floorcode = '04' AND s.stocktype = '2' -- Cổ phiếu đăng ký giao dịch (trên UPCOM)
+s.floorcode = '02' AND s.stocktype = '1' -- TPDN niêm yết
 s.floorcode = '02' AND s.stocktype = '3' AND s.fundtype = 'E' -- Chứng chỉ quỹ (ETF)",,,,,,
 4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Trong kỳ - phát sinh - Khối lượng chứng khoán niêm yết và đăng ký giao dịch,Trong kỳ - phát sinh,Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK - CP, CCQ, Tháng","MDDS, HNX",,,,Done,,"4.1. Cổ phiếu niêm yết
 4.2. Cổ phiếu đăng ký giao dịch
@@ -2820,7 +2735,7 @@ s.tradingdate >= :frdate AND s.tradingdate <= :todate
 (ROW_NUMBER() OVER(PARTITION BY symbol ORDER BY tradingdate DESC, indextime DESC, sequence DESC)) = 1 
 -- Giá trị:
 Khối lượng niêm yết/ĐKGD (listedshare) = s.listedshare
-Giá trị niêm yết/ĐKGD (listedvalue):
+Giá trị niêm yết/ĐKGD (listedshare_value):
   s.listedshare * 10000 -- Cổ phiếu, Chứng chỉ quỹ
   s.listedshare * ( 100000 * POWER(10, ROUND(LN(NULLIF(s.reference, 0) / 100000) / LN(10))) ) -- TPDN niêm yết",,"Giá trị niêm yết = KL niêm yết/ĐKGD * Mệnh giá
 Mệnh giá:
@@ -2847,7 +2762,7 @@ s.tradingdate >= :frdate_prev AND s.tradingdate <= :todate_prev
 (ROW_NUMBER() OVER(PARTITION BY symbol ORDER BY tradingdate DESC, indextime DESC, sequence DESC)) = 1 
 -- Giá trị:
 Khối lượng niêm yết/ĐKGD (listedshare_prev) = s.listedshare
-Giá trị niêm yết/ĐKGD (listedvalue_prev):
+Giá trị niêm yết/ĐKGD (listedshare_value_prev):
   s.listedshare * 10000 -- Cổ phiếu, Chứng chỉ quỹ
   s.listedshare * ( 100000 * POWER(10, ROUND(LN(NULLIF(s.reference, 0) / 100000) / LN(10))) ) -- TPDN niêm yết",,"Giá trị niêm yết = KL niêm yết/ĐKGD * Mệnh giá
 Mệnh giá:
@@ -2867,7 +2782,7 @@ Tăng/Giảm so với kỳ trước (%) = ( listedshare / NULLIF(listedshare_pre
 5.2. Cổ phiếu đăng ký giao dịch
 5.8. Chứng chỉ quỹ (ETF)",,,,,MDDS.jad_stockinfor (s),"s.listedshare, 
 s.reference","-- Công thức:
-Tăng/Giảm so với kỳ trước (%) = ( listedvalue / NULLIF(listedvalue_prev, 0) - 1 ) * 100",,,,,,
+Tăng/Giảm so với kỳ trước (%) = ( listedshare_value / NULLIF(listedshare_value_prev, 0) - 1 ) * 100",,,,,,
 4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Loại CK - TPCP,"Loại TPCP gồm:
 - Trái phiếu chính phủ
 - Trái phiếu chính quyền địa phương
@@ -2896,7 +2811,7 @@ SUM(b.listed_volume) GROUP BY b.bond_type",,,,,,
 5.5. Trái phiếu chính phủ bảo lãnh
 5.7. Tín phiếu kho bạc",,,,,HNX.gov_bond_listed_list (b),b.listed_volume,"-- ĐK Thời gian:
 b.report_month = date_format(concat(:p_month, '-01'), 'MM/yyyy') -- Tháng báo cáo
--- Giá trị chứng khoán niêm yết tháng báo cáo (listedvalue): 
+-- Giá trị chứng khoán niêm yết tháng báo cáo (listedshare_value): 
 SUM(b.listed_volume * 100000) GROUP BY b.bond_type",,"Giá trị niêm yết = KL niêm yết/ĐKGD * Mệnh giá
 Mệnh giá TPCP: 100.000",,,,
 4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Kỳ trước - phát sinh - Khối lượng chứng khoán niêm yết và đăng ký giao dịch,Kỳ trước - phát sinh,Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK - TPCP, Tháng",HNX,,,,Done,,"4.3. Trái phiếu chính phủ
@@ -2911,7 +2826,7 @@ SUM(b.listed_volume) GROUP BY b.bond_typb.report_month = date_format(add_months(
 5.5. Trái phiếu chính phủ bảo lãnh
 5.7. Tín phiếu kho bạc",,,,,HNX.gov_bond_listed_list (b),b.listed_volume,"-- Thời gian:
 b.report_month = date_format(add_months(concat(:p_month, '-01'), -1), 'MM/yyyy') -- Tháng trước 
--- Giá trị chứng khoán niêm yết tháng trước (listedvalue_prev): 
+-- Giá trị chứng khoán niêm yết tháng trước (listedshare_value_prev): 
 SUM(b.listed_volume * 100000) GROUP BY b.bond_type",,"Giá trị niêm yết = KL niêm yết/ĐKGD * Mệnh giá
 Mệnh giá TPCP: 100.000",,,,
 4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Trong kỳ - Tăng/giảm so với kỳ trước (%) - Khối lượng chứng khoán niêm yết và đăng ký giao dịch,Trong kỳ - Tăng/giảm so với kỳ trước (%),Báo cáo,Chỉ tiêu phái sinh,TB,"Loại CK - TPCP, Tháng",HNX,,,,Done,,"4.3. Trái phiếu chính phủ
@@ -2923,7 +2838,7 @@ Tăng/Giảm so với kỳ trước (%) = ( listedshare / NULLIF(listedshare_pre
 5.4. Trái phiếu chính quyền địa phương
 5.5. Trái phiếu chính phủ bảo lãnh
 5.7. Tín phiếu kho bạc",,,,,HNX.gov_bond_listed_list (b),b.listed_volume,"-- Công thức:
-Tăng/Giảm so với kỳ trước (%) = ( listedvalue / NULLIF(listedvalue_prev, 0) - 1 ) * 100",,,,,,
+Tăng/Giảm so với kỳ trước (%) = ( listedshare_value / NULLIF(listedshare_value_prev, 0) - 1 ) * 100",,,,,,
 4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Loại CK - TPDN,"TPDN gồm:
 - Trái phiếu doanh nghiệp niêm yết (TPDNNY)
 - Trái phiếu doanh nghiệp riêng lẻ (TPDNRL)",Báo cáo,Chiều,TB,Loại CK - TPDN,HNX,,,,Done,,4.6. Trái phiếu doanh nghiệp,,,,,"-- TPDNNY:
@@ -2941,43 +2856,35 @@ s.floorcode = '02' AND s.stocktype = '1' -- TPDN niêm yết
 4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Trong kỳ - phát sinh - Khối lượng chứng khoán niêm yết và đăng ký giao dịch,Trong kỳ - phát sinh,Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK - CP, CCQ, Tháng","MDDS, HNX",,,,Done,,4.6. Trái phiếu doanh nghiệp,,,,,"-- TPDNNY:
 MDDS.jad_stockinfor (s)
 -- TPDNRL:
-HNX.private_corp_bond_trading_registration_scale (cb)","s.listedshare,
---
-cb.registered_trading_volume","* TPDNNY: Bảng MDDS.jad_stockinfor (s)
+HNX.private_corp_bond_trading_registration_scale (cb)",s.listedshare,"* TPDNNY: Bảng MDDS.jad_stockinfor (s)
 -- Lấy ngày cuối cùng có dữ liệu trong tháng báo cáo
 s.tradingdate >= :frdate AND s.tradingdate <= :todate 
 (ROW_NUMBER() OVER(PARTITION BY symbol ORDER BY tradingdate DESC, indextime DESC, sequence DESC)) = 1 
 -- Giá trị:
-Khối lượng niêm yết (listedshare) = SUM(s.listedshare)
+Khối lượng niêm yết (listedshare) = s.listedshare
 * TPDNRL: Bảng HNX.private_corp_bond_trading_registration_scale (cb)
 -- Lấy tháng báo cáo
 cb.report_month = date_format(concat(:p_month, '-01'), 'MM/yyyy') -- Tháng báo cáo
 -- Giá trị:
-Khối lượng ĐKGD (listedshare) = SUM(cb.registered_trading_volume)
-* Tổng TPDN:
-Khối lượng niêm yết/ĐKGD của TPDN = TPDNNY + TPDNRL = SUM(s.listedshare) + SUM(cb.registered_trading_volume)",,,,,,
+Khối lượng ĐKGD (listedshare) = cb.registered_trading_volume",,,,,,
 4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Trong kỳ - phát sinh - Giá trị chứng khoán niêm yết và đăng ký giao dịch,Trong kỳ - phát sinh,Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK - CP, CCQ, Tháng","MDDS, HNX",,,,Done,,4.6. Trái phiếu doanh nghiệp,,,,,"-- TPDNNY:
 MDDS.jad_stockinfor (s)
 -- TPDNRL:
 HNX.private_corp_bond_trading_registration_scale (cb)","s.listedshare, 
-s.reference
---
-cb.registered_trading_volume, 
-cb.par_value","* TPDNNY: Bảng MDDS.jad_stockinfor (s)
+s.reference","* TPDNNY: Bảng MDDS.jad_stockinfor (s)
 -- Lấy ngày cuối cùng có dữ liệu trong tháng báo cáo
 s.tradingdate >= :frdate AND s.tradingdate <= :todate 
 (ROW_NUMBER() OVER(PARTITION BY symbol ORDER BY tradingdate DESC, indextime DESC, sequence DESC)) = 1 
 -- Giá trị:
-Giá trị niêm yết (listedshare) = SUM( s.listedshare * ( 100000 * POWER(10, ROUND(LN(NULLIF(reference, 0) / 100000) / LN(10))) ) )
+Khối lượng niêm yết (listedshare) = s.listedshare * 100000
 * TPDNRL: Bảng HNX.private_corp_bond_trading_registration_scale (cb)
 -- Lấy tháng báo cáo
 cb.report_month = date_format(concat(:p_month, '-01'), 'MM/yyyy') -- Tháng báo cáo
 -- Giá trị:
-Giá trị ĐKGD TPDNRL (listedvalue) = SUM(cb.registered_trading_volume * cb.par_value)
-* Tổng TPDN:
-Giá trị niêm yết/ĐKGD của TPDN = TPDNNY + TPDNRL",,"Giá trị niêm yết = KL niêm yết/ĐKGD * Mệnh giá
+Khối lượng ĐKGD (listedshare) = cb.registered_trading_volume * cb.par_value",,"Giá trị niêm yết = KL niêm yết/ĐKGD * Mệnh giá
 Mệnh giá:
-- TPDN riêng lẻ: Lấy từ báo cáo Sở cung cấp
+- Cổ phiếu: 10.000
+- Chứng chỉ quỹ ETF: 10.000
 - TPDN niêm yết: 
   + KL TP niêm yết lấy từ MDDS
   + Mệnh giá tính ngược từ giá tham chiếu theo nguyên tắc MG TP là bội số của 100000 và bước giá nhảy từ 100000 -> 1000000 -> 10000000 -> 100000000...
@@ -2987,43 +2894,35 @@ Apache Hive 2: 100000 * POWER(10, ROUND(LN(NULLIF(reference, 0) / 100000) / LN(1
 4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Kỳ trước - phát sinh - Khối lượng chứng khoán niêm yết và đăng ký giao dịch,Kỳ trước - phát sinh,Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK - CP, CCQ, Tháng","MDDS, HNX",,,,Done,,4.6. Trái phiếu doanh nghiệp,,,,,"-- TPDNNY:
 MDDS.jad_stockinfor (s)
 -- TPDNRL:
-HNX.private_corp_bond_trading_registration_scale (cb)","s.listedshare,
---
-cb.registered_trading_volume","* TPDNNY: Bảng MDDS.jad_stockinfor (s)
--- Lấy ngày cuối cùng có dữ liệu trong tháng trước
+HNX.private_corp_bond_trading_registration_scale (cb)",s.listedshare,"* TPDNNY: Bảng MDDS.jad_stockinfor (s)
+-- Lấy ngày cuối cùng có dữ liệu trong tháng báo cáo
 s.tradingdate >= :frdate_prev AND s.tradingdate <= :todate_prev
 (ROW_NUMBER() OVER(PARTITION BY symbol ORDER BY tradingdate DESC, indextime DESC, sequence DESC)) = 1 
 -- Giá trị:
-Khối lượng niêm yết (listedshare) = SUM(s.listedshare)
+Khối lượng niêm yết (listedshare) = s.listedshare
 * TPDNRL: Bảng HNX.private_corp_bond_trading_registration_scale (cb)
 -- Lấy tháng báo cáo
 cb.report_month = date_format(add_months(concat(:p_month, '-01'), -1), 'MM/yyyy') -- Tháng trước
 -- Giá trị:
-Khối lượng ĐKGD (listedshare_prev) = SUM(cb.registered_trading_volume)
-* Tổng TPDN:
-Khối lượng niêm yết/ĐKGD của TPDN = TPDNNY + TPDNRL = SUM(s.listedshare) + SUM(cb.registered_trading_volume)",,,,,,
+Khối lượng ĐKGD (listedshare) = cb.registered_trading_volume",,,,,,
 4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Kỳ trước - phát sinh - Giá trị chứng khoán niêm yết và đăng ký giao dịch,Kỳ trước - phát sinh,Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK - CP, CCQ, Tháng","MDDS, HNX",,,,Done,,4.6. Trái phiếu doanh nghiệp,,,,,"-- TPDNNY:
 MDDS.jad_stockinfor (s)
 -- TPDNRL:
 HNX.private_corp_bond_trading_registration_scale (cb)","s.listedshare, 
-s.reference
---
-cb.registered_trading_volume, 
-cb.par_value","* TPDNNY: Bảng MDDS.jad_stockinfor (s)
--- Lấy ngày cuối cùng có dữ liệu trong tháng trước
+s.reference","* TPDNNY: Bảng MDDS.jad_stockinfor (s)
+-- Lấy ngày cuối cùng có dữ liệu trong tháng báo cáo
 s.tradingdate >= :frdate_prev AND s.tradingdate <= :todate_prev
 (ROW_NUMBER() OVER(PARTITION BY symbol ORDER BY tradingdate DESC, indextime DESC, sequence DESC)) = 1 
 -- Giá trị:
-Khối lượng niêm yết (listedshare) = SUM( s.listedshare *  ( 100000 * POWER(10, ROUND(LN(NULLIF(reference, 0) / 100000) / LN(10))) ) )
+Khối lượng niêm yết (listedshare) = s.listedshare * 100000
 * TPDNRL: Bảng HNX.private_corp_bond_trading_registration_scale (cb)
 -- Lấy tháng báo cáo
 cb.report_month = date_format(add_months(concat(:p_month, '-01'), -1), 'MM/yyyy') -- Tháng trước
 -- Giá trị:
-Khối lượng ĐKGD (listedvalue_prev) = SUM(cb.registered_trading_volume * cb.par_value)
-* Tổng TPDN:
-Giá trị niêm yết/ĐKGD của TPDN = TPDNNY + TPDNRL",,"Giá trị niêm yết = KL niêm yết/ĐKGD * Mệnh giá
+Khối lượng ĐKGD (listedshare) = cb.registered_trading_volume * cb.par_value",,"Giá trị niêm yết = KL niêm yết/ĐKGD * Mệnh giá
 Mệnh giá:
-- TPDN riêng lẻ: Lấy từ báo cáo Sở cung cấp
+- Cổ phiếu: 10.000
+- Chứng chỉ quỹ ETF: 10.000
 - TPDN niêm yết: 
   + KL TP niêm yết lấy từ MDDS
   + Mệnh giá tính ngược từ giá tham chiếu theo nguyên tắc MG TP là bội số của 100000 và bước giá nhảy từ 100000 -> 1000000 -> 10000000 -> 100000000...
@@ -3033,207 +2932,14 @@ Apache Hive 2: 100000 * POWER(10, ROUND(LN(NULLIF(reference, 0) / 100000) / LN(1
 4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Trong kỳ - Tăng/giảm so với kỳ trước (%) - Khối lượng chứng khoán niêm yết và đăng ký giao dịch,Trong kỳ - Tăng/giảm so với kỳ trước (%),Báo cáo,Chỉ tiêu phái sinh,TB,"Loại CK - CP, CCQ, Tháng","MDDS, HNX",,,,Done,,4.6. Trái phiếu doanh nghiệp,,,,,"-- TPDNNY:
 MDDS.jad_stockinfor (s)
 -- TPDNRL:
-HNX.private_corp_bond_trading_registration_scale (cb)","s.listedshare, 
-s.reference
---
-cb.registered_trading_volume, 
-cb.par_value","-- Công thức:
+HNX.private_corp_bond_trading_registration_scale (cb)",s.listedshare,"-- Công thức:
 Tăng/Giảm so với kỳ trước (%) = ( listedshare / NULLIF(listedshare_prev, 0) - 1 ) * 100",,,,,,
 4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Trong kỳ - Tăng/giảm so với kỳ trước (%) - Giá trị chứng khoán niêm yết và đăng ký giao dịch,Trong kỳ - Tăng/giảm so với kỳ trước (%),Báo cáo,Chỉ tiêu phái sinh,TB,"Loại CK - CP, CCQ, Tháng","MDDS, HNX",,,,Done,,4.6. Trái phiếu doanh nghiệp,,,,,"-- TPDNNY:
 MDDS.jad_stockinfor (s)
 -- TPDNRL:
-HNX.private_corp_bond_trading_registration_scale (cb)","s.listedshare,
---
-cb.registered_trading_volume","-- Công thức:
-Tăng/Giảm so với kỳ trước (%) = ( listedvalue / NULLIF(listedvalue_prev, 0) - 1 ) * 100",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Kỳ dữ liệu - Tháng,"Trong kỳ - phát sinh
-Kỳ trước - phát sinh",Báo cáo,Chiều,TB,Tháng,HNX,,,,Done,,"6. Khối lượng chứng khoán niêm yết và đăng ký giao dịch mới (chứng khoán)
-7. Giá trị chứng khoán niêm yết và đăng ký giao dịch mới (VND)
-8. Khối lượng chứng khoán niêm yết và đăng ký giao dịch bổ sung (chứng khoán)
-9. Giá trị chứng khoán niêm yết và đăng ký giao dịch bổ sung (VND)
-10. Khối lượng chứng khoán niêm yết và đăng ký giao dịch hủy niêm yết (chứng khoán)
-11. Giá trị chứng khoán niêm yết và đăng ký giao dịch hủy niêm yết (VND)",,,,,"-- Loại CK (CP, CCQ):
-MDDS.jad_stockinfor (s)
--- Loại CK (TPCP):
-HNX.gov_bond_additional_listing (b)","-- Loại CK (CP, CCQ):
-s.tradingdate
--- Loại CK (TPCP):
-b.listing_change_date
--- ","-- Loại CK (CP, CCQ): Bảng MDDS.jad_stockinfor (s) Lấy ngày cuối cùng có dữ liệu trong tháng báo cáo
-(ROW_NUMBER() OVER(PARTITION BY symbol ORDER BY tradingdate DESC, indextime DESC, sequence DESC)) = 1 
-Tháng báo cáo: s.tradingdate >= :frdate AND s.tradingdate <= :todate
-Tháng trước: s.tradingdate >= :frdate_prev AND s.tradingdate <= :todate_prev
--- Loại CK (TPCP): Bảng HNX.gov_bond_additional_listing (b):
-Tháng báo cáo: b.listing_change_date >= :frdate AND b.listing_change_date <= :todate
-Tháng trước: b.listing_change_date >= :frdate_prev AND b.listing_change_date <= :todate_prev
-",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),"Loại CK (CP, CCQ)","Loại chứng khoán:
-- Cổ phiếu niêm yết
-- Cổ phiếu đăng ký giao dịch
-- Chứng chỉ quỹ (ETF)
--> Tương ứng với các mục trên báo cáo:
-6.1. Cổ phiếu niêm yết mới
-6.2. Cổ phiếu đăng ký giao dịch mới
-6.8. Chứng chỉ quỹ (ETF)
-7.1. Cổ phiếu niêm yết mới
-7.2. Cổ phiếu đăng ký giao dịch mới
-7.8. Chứng chỉ quỹ (ETF)
-8.1. Cổ phiếu niêm yết bổ sung
-8.2. Cổ phiếu đăng ký giao dịch bổ sung
-8.8. Chứng chỉ quỹ (ETF)
-9.1. Cổ phiếu niêm yết
-9.2. Cổ phiếu đăng ký giao dịch
-9.8. Chứng chỉ quỹ (ETF)
-10.1. Cổ phiếu niêm yết
-10.2. Cổ phiếu đăng ký giao dịch
-10.8. Chứng chỉ quỹ (ETF)
-11.1. Cổ phiếu niêm yết
-11.2. Cổ phiếu đăng ký giao dịch
-11.8. Chứng chỉ quỹ (ETF)",Báo cáo,Chiều,TB,"Loại CK (CP, CCQ)",MDDS,,,,Done,,,,,,,MDDS.jad_stockinfor (s),"s.floorcode, 
-s.stocktype, 
-s.fundtype","-- Bảng MDDS.jad_stockinfor (s) -> Loại chứng khoán
-s.floorcode = '02' AND s.stocktype = '2' -- Cổ phiếu niêm yết (trên HNX)
-s.floorcode = '04' AND s.stocktype = '2' -- Cổ phiếu đăng ký giao dịch (trên UPCOM)
-s.floorcode = '02' AND s.stocktype = '3' AND s.fundtype = 'E' -- Chứng chỉ quỹ (ETF)",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),,,Báo cáo,,,,,,,,,,,,,,,,,,,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Loại CK (TPCP),"TPCP gồm:
-- Trái phiếu chính phủ
-- Trái phiếu chính quyền địa phương
-- Trái phiếu chính phủ bảo lãnh
-- Tín phiếu kho bạc
--> Tương ứng với các mục trên báo cáo:
-6.3. Trái phiếu chính phủ mới
-6.4. Trái phiếu chính quyền địa phương mới
-6.5. Trái phiếu chính phủ bảo lãnh mới
-6.7. Tín phiếu kho bạc mới
-7.3. Trái phiếu chính phủ mới
-7.4. Trái phiếu chính quyền địa phương mới
-7.5. Trái phiếu chính phủ bảo lãnh mới
-7.7. Tín phiếu kho bạc mới
-8.3. Trái phiếu chính phủ bổ sung
-8.4. Trái phiếu chính quyền địa phương
-8.5. Trái phiếu chính phủ bảo lãnh
-8.7. Tín phiếu kho bạc
-9.3. Trái phiếu chính phủ
-9.4. Trái phiếu chính quyền địa phương
-9.5. Trái phiếu chính phủ bảo lãnh
-9.7. Tín phiếu kho bạc
-10.3. Trái phiếu chính phủ
-10.4. Trái phiếu chính quyền địa phương
-10.5. Trái phiếu chính phủ bảo lãnh
-10.7. Tín phiếu kho bạc
-11.3. Trái phiếu chính phủ
-11.4. Trái phiếu chính quyền địa phương
-11.5. Trái phiếu chính phủ bảo lãnh
-11.7. Tín phiếu kho bạc",Báo cáo,Chiều,TB,Loại CK (TPCP),HNX,,,,Done,,"6.3. Trái phiếu chính phủ mới
-6.4. Trái phiếu chính quyền địa phương mới
-6.5. Trái phiếu chính phủ bảo lãnh mới
-6.7. Tín phiếu kho bạc mới
-7.3. Trái phiếu chính phủ mới
-7.4. Trái phiếu chính quyền địa phương mới
-7.5. Trái phiếu chính phủ bảo lãnh mới
-7.7. Tín phiếu kho bạc mới
-8.3. Trái phiếu chính phủ bổ sung
-8.4. Trái phiếu chính quyền địa phương
-8.5. Trái phiếu chính phủ bảo lãnh
-8.7. Tín phiếu kho bạc
-9.3. Trái phiếu chính phủ
-9.4. Trái phiếu chính quyền địa phương
-9.5. Trái phiếu chính phủ bảo lãnh
-9.7. Tín phiếu kho bạc
-10.3. Trái phiếu chính phủ
-10.4. Trái phiếu chính quyền địa phương
-10.5. Trái phiếu chính phủ bảo lãnh
-10.7. Tín phiếu kho bạc
-11.3. Trái phiếu chính phủ
-11.4. Trái phiếu chính quyền địa phương
-11.5. Trái phiếu chính phủ bảo lãnh
-11.7. Tín phiếu kho bạc",,,,,HNX.gov_bond_additional_listing (b),b.bond_type,"-- Bảng HNX.gov_bond_additional_listing (b):
-b.bond_type = 'Trái phiếu chính phủ'
-b.bond_type = 'Trái phiếu chính quyền địa phương'
-b.bond_type = 'Trái phiếu chính phủ bảo lãnh'
-b.bond_type = 'Tín phiếu kho bạc'",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),"Khối lượng chứng khoán niêm yết và đăng ký giao dịch mới (chứng khoán) - Theo Loại CK (TPCP) - Kỳ dữ liệu (Trong kỳ - phát sinh, Kỳ trước - phát sinh)",,Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK (TPCP), Tháng",HNX,,,,Done,,"6.3. Trái phiếu chính phủ mới
-6.4. Trái phiếu chính quyền địa phương mới
-6.5. Trái phiếu chính phủ bảo lãnh mới
-6.7. Tín phiếu kho bạc mới",,,,,HNX.gov_bond_additional_listing (b),b.volume,"-- Điều kiện:
-b.status = 'Niêm yết mới'
--- Công thức:
-KL niêm yết mới (Tháng báo cáo listedshare_initial, Tháng trước listedshare_initial_prev) = SUM(b.volume) GROUP BY b.bondtype",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),"Giá trị chứng khoán niêm yết và đăng ký giao dịch mới (VND) - Theo Loại CK (TPCP) - Kỳ dữ liệu (Trong kỳ - phát sinh, Kỳ trước - phát sinh)",,Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK (TPCP), Tháng",HNX,,,,Done,,"7.3. Trái phiếu chính phủ mới
-7.4. Trái phiếu chính quyền địa phương mới
-7.5. Trái phiếu chính phủ bảo lãnh mới
-7.7. Tín phiếu kho bạc mới",,,,,HNX.gov_bond_additional_listing (b),"b.volume, 
-b.bond_par_value","-- Điều kiện:
-b.status = 'Niêm yết mới'
--- Công thức:
-GT niêm yết mới (Tháng báo cáo listedvalue_initial, Tháng trước listedvalue_initial_prev) = SUM(b.volume * b.bond_par_value) GROUP BY b.bondtype",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),"Khối lượng chứng khoán niêm yết và đăng ký giao dịch bổ sung (chứng khoán) - Theo Loại CK (TPCP) - Kỳ dữ liệu (Trong kỳ - phát sinh, Kỳ trước - phát sinh)",,Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK (TPCP), Tháng",HNX,,,,Done,,"8.3. Trái phiếu chính phủ bổ sung
-8.4. Trái phiếu chính quyền địa phương
-8.5. Trái phiếu chính phủ bảo lãnh
-8.7. Tín phiếu kho bạc",,,,,HNX.gov_bond_additional_listing (b),b.volume,"-- Điều kiện:
-b.status = 'Niêm yết bổ sung'
--- Công thức:
-KL niêm yết mới (listedshare_additional) = SUM(b.volume) GROUP BY b.bondtype",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),"Giá trị chứng khoán niêm yết và đăng ký giao dịch bổ sung (VND) - Theo Loại CK (TPCP) - Kỳ dữ liệu (Trong kỳ - phát sinh, Kỳ trước - phát sinh)",,Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK (TPCP), Tháng",HNX,,,,Done,,"9.3. Trái phiếu chính phủ
-9.4. Trái phiếu chính quyền địa phương
-9.5. Trái phiếu chính phủ bảo lãnh
-9.7. Tín phiếu kho bạc",,,,,HNX.gov_bond_additional_listing (b),"b.volume, 
-b.bond_par_value","-- Điều kiện:
-b.status = 'Niêm yết bổ sung'
--- Công thức:
-GT niêm yết mới (listedvalue_additional) = SUM(b.volume * b.bond_par_value) GROUP BY b.bondtype",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),"Khối lượng chứng khoán niêm yết và đăng ký giao dịch hủy niêm yết (chứng khoán) - Theo Loại CK (TPCP) - Kỳ dữ liệu (Trong kỳ - phát sinh, Kỳ trước - phát sinh)",,Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK (TPCP), Tháng",HNX,,,,Done,,"10.3. Trái phiếu chính phủ
-10.4. Trái phiếu chính quyền địa phương
-10.5. Trái phiếu chính phủ bảo lãnh
-10.7. Tín phiếu kho bạc",,,,,HNX.gov_bond_additional_listing (b),b.volume,"-- Điều kiện:
-b.status = 'Hủy niêm yết'
--- Công thức:
-KL niêm yết mới (Tháng báo cáo delistedshare, Tháng trước delistedshare_prev) = SUM(b.volume) GROUP BY b.bondtype",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),"Giá trị chứng khoán niêm yết và đăng ký giao dịch hủy niêm yết (VND) - Theo Loại CK (TPCP) - Kỳ dữ liệu (Trong kỳ - phát sinh, Kỳ trước - phát sinh)",,Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK (TPCP), Tháng",HNX,,,,Done,,"11.3. Trái phiếu chính phủ
-11.4. Trái phiếu chính quyền địa phương
-11.5. Trái phiếu chính phủ bảo lãnh
-11.7. Tín phiếu kho bạc",,,,,HNX.gov_bond_additional_listing (b),"b.volume, 
-b.bond_par_value","-- Điều kiện:
-b.status = 'Hủy niêm yết'
--- Công thức:
-GT niêm yết mới (Tháng báo cáo delistedvalue, Tháng trước delistedvalue_prev) = SUM(b.volume * b.bond_par_value) GROUP BY b.bondtype",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),"Khối lượng chứng khoán niêm yết và đăng ký giao dịch mới (chứng khoán) - Theo Loại CK (TPCP) - Kỳ dữ liệu (Trong kỳ - phát sinh, Kỳ trước - phát sinh)",,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Loại CK (TPCP), Tháng",HNX,,,,Done,,"6.3. Trái phiếu chính phủ mới
-6.4. Trái phiếu chính quyền địa phương mới
-6.5. Trái phiếu chính phủ bảo lãnh mới
-6.7. Tín phiếu kho bạc mới",,,,,HNX.gov_bond_additional_listing (b),b.volume,"-- Công thức:
-(listedshare_initial / listedshare_initial_prev - 1) * 100",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Giá trị chứng khoán niêm yết và đăng ký giao dịch mới (VND) - Theo Loại CK (TPCP) - Trong kỳ - Tăng/giảm so với kỳ trước,,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Loại CK (TPCP), Tháng",HNX,,,,Done,,"7.3. Trái phiếu chính phủ mới
-7.4. Trái phiếu chính quyền địa phương mới
-7.5. Trái phiếu chính phủ bảo lãnh mới
-7.7. Tín phiếu kho bạc mới",,,,,HNX.gov_bond_additional_listing (b),"b.volume, 
-b.bond_par_value","-- Công thức:
-(listedvalue_initial / listedvalue_initial_prev - 1) * 100",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Khối lượng chứng khoán niêm yết và đăng ký giao dịch bổ sung (chứng khoán) - Trong kỳ - Tăng/giảm so với kỳ trước,,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Loại CK (TPCP), Tháng",HNX,,,,Done,,"8.3. Trái phiếu chính phủ bổ sung
-8.4. Trái phiếu chính quyền địa phương
-8.5. Trái phiếu chính phủ bảo lãnh
-8.7. Tín phiếu kho bạc",,,,,HNX.gov_bond_additional_listing (b),b.volume,"-- Công thức:
-(listedshare_additional / listedshare_additional_prev - 1) * 100",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Giá trị chứng khoán niêm yết và đăng ký giao dịch bổ sung (VND) - Trong kỳ - Tăng/giảm so với kỳ trước,,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Loại CK (TPCP), Tháng",HNX,,,,Done,,"9.3. Trái phiếu chính phủ
-9.4. Trái phiếu chính quyền địa phương
-9.5. Trái phiếu chính phủ bảo lãnh
-9.7. Tín phiếu kho bạc",,,,,HNX.gov_bond_additional_listing (b),"b.volume, 
-b.bond_par_value","-- Công thức:
-(listedvalue_additional/ listedshare_additional_prev - 1) * 100",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Khối lượng chứng khoán niêm yết và đăng ký giao dịch hủy niêm yết (chứng khoán) - Trong kỳ - Tăng/giảm so với kỳ trước,,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Loại CK (TPCP), Tháng",HNX,,,,Done,,"10.3. Trái phiếu chính phủ
-10.4. Trái phiếu chính quyền địa phương
-10.5. Trái phiếu chính phủ bảo lãnh
-10.7. Tín phiếu kho bạc",,,,,HNX.gov_bond_additional_listing (b),b.volume,"-- Công thức:
-(delistedshare / delistedshare_prev - 1) * 100",,,,,,
-4,HNX04,Báo cáo tổng hợp về quy mô thị trường chứng khoán (HNX04),Giá trị chứng khoán niêm yết và đăng ký giao dịch hủy niêm yết (VND) - Trong kỳ - Tăng/giảm so với kỳ trước,,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Loại CK (TPCP), Tháng",HNX,,,,Done,,"11.3. Trái phiếu chính phủ
-11.4. Trái phiếu chính quyền địa phương
-11.5. Trái phiếu chính phủ bảo lãnh
-11.7. Tín phiếu kho bạc",,,,,HNX.gov_bond_additional_listing (b),"b.volume, 
-b.bond_par_value","-- Công thức:
-(delistedvalue / listedvalue_prev - 1) * 100",,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+HNX.private_corp_bond_trading_registration_scale (cb)","s.listedshare, 
+s.reference","-- Công thức:
+Tăng/Giảm so với kỳ trước (%) = ( listedshare_value / NULLIF(listedshare_value_prev, 0) - 1 ) * 100",,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,
