@@ -171,6 +171,7 @@ SELECT
     -- From: MARKET INDEX DIMENSION
     idx_dim.market_id                   AS market_id,
     idx_dim.market_code                 AS market_code,
+    idx_dim.index_nm                    AS index_nm,
     idx_dim.index_tp_code               AS index_tp_code,
     idx_dim.tsc_product_group_id        AS tsc_product_group_id,
     idx_dim.market_status_code          AS market_status_code,

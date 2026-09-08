@@ -7618,6 +7618,15 @@ entities:
         description: "BK — join anchor từ Fact (kết hợp Market Id)"
         source_atomic_table: "market_index_snapshot"
         source_atomic_column: "market_index_snapshot.market_code"
+      - logical_name: "Index Name"
+        physical_name: "index_nm"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: true
+        key: ""
+        description: "Tên chuẩn của chỉ số theo MDDS (sửa 2026-09-08) — dùng làm giá trị hiển thị thay Market Code; Market Code vẫn giữ làm khóa join/filter nội bộ"
+        source_atomic_table: "market_index_snapshot"
+        source_atomic_column: "market_index_snapshot.index_nm"
       - logical_name: "Index Type Code"
         physical_name: "index_tp_code"
         data_domain: "Classification Value"
@@ -8417,9 +8426,9 @@ entities:
         physical_name: "public_company_dim_id"
         data_domain: "Surrogate Dimension Key"
         data_type: "string"
-        nullable: false
+        nullable: true
         key: "FK"
-        description: "FK tới Public Company Dimension"
+        description: "FK tới Public Company Dimension — nullable khi mã CK chưa có bản ghi công ty đại chúng tương ứng (sửa 2026-09-08: INNER JOIN → LEFT JOIN)"
         source_atomic_table: "public_company"
         source_atomic_column: "public_company.pc_code"
       - logical_name: "Calendar Date Dimension Id"
@@ -8509,7 +8518,7 @@ entities:
         data_type: "int"
         nullable: true
         key: ""
-        description: "Số cổ phiếu đang lưu hành tại đúng ngày giao dịch — Resolved 2026-08-26, nguồn pc_share_statistics_hstr (bảng lịch sử theo ngày của pc_share_statistics, ds_snpst_dt), xem O_GSTT_2"
+        description: "Số cổ phiếu đang lưu hành — Resolved 2026-08-26, sửa lookback 2026-09-08. Nguồn pc_share_statistics_hstr (bảng lịch sử theo ngày của pc_share_statistics), lấy bản ghi ACTIVE gần nhất <= ngày giao dịch, xem O_GSTT_2"
         source_atomic_table: "pc_share_statistics_hstr"
         source_atomic_column: "pc_share_statistics_hstr.total_outstanding_share_quantity"
       - logical_name: "Revenue"

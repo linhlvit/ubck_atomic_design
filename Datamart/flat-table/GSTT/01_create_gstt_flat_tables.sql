@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_fct_stock_portfolio_snpst_flat ON CLUST
     total_negotiated_vol                Nullable(Int64)         COMMENT 'Tổng khối lượng giao dịch thỏa thuận',
     total_negotiated_val                Nullable(Decimal(23,2)) COMMENT 'Tổng giá trị giao dịch thỏa thuận',
     foreign_net_vol                     Nullable(Int64)         COMMENT 'Khối lượng mua ròng của nhà đầu tư nước ngoài',
-    outstanding_share_quantity          Nullable(Int64)         COMMENT 'Số cổ phiếu đang lưu hành — pc_share_statistics_hstr, khớp đúng ngày GD, không lookback (Resolved 2026-08-26, O_GSTT_2)',
+    outstanding_share_quantity          Nullable(Int64)         COMMENT 'Số cổ phiếu đang lưu hành — pc_share_statistics_hstr, bản ghi ACTIVE gần nhất <= ngày GD (lookback, sửa 2026-09-08, O_GSTT_2)',
     revenue                             Nullable(Decimal(23,2)) COMMENT 'Doanh thu — point-in-time theo Ky_bao_cao (rule GSĐC, Resolved 2026-08-26)',
     net_profit_after_tax                Nullable(Decimal(23,2)) COMMENT 'Lợi nhuận sau thuế — point-in-time theo Ky_bao_cao (rule GSĐC, Resolved 2026-08-26)',
     net_profit_after_tax_ttm            Nullable(Decimal(23,2)) COMMENT 'LNST TTM 4 quý gần nhất, NULL nếu không đủ 4 kỳ — dùng cho P/E, EPS (rule GSĐC, Resolved 2026-08-26)',
@@ -163,6 +163,7 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_fct_market_index_intraday_flat ON CLUST
     -- From: MARKET INDEX DIMENSION
     market_id                           Nullable(String)        COMMENT 'Mã thị trường — từ Market Index Dimension',
     market_code                         Nullable(String)        COMMENT 'Mã sàn/chỉ số (HOSE/HNX/UPCOM/30) — từ Market Index Dimension',
+    index_nm                            Nullable(String)        COMMENT 'Tên chuẩn của chỉ số (VN-Index/HNX-Index/UPCoM-Index/VN30...) theo MDDS.JAD_MARKETINFOR.INDEXNAME — từ Market Index Dimension, dùng hiển thị thay market_code',
     index_tp_code                       Nullable(String)        COMMENT 'Loại chỉ số — từ Market Index Dimension',
     tsc_product_group_id                Nullable(String)        COMMENT 'Mã sản phẩm giao dịch (HOSE/HNX/UPCOM) — từ Market Index Dimension',
     market_status_code                  Nullable(String)        COMMENT 'Trạng thái phiên (current-state SCD4A) — từ Market Index Dimension',
