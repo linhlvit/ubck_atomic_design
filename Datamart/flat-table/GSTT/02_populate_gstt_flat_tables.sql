@@ -30,6 +30,7 @@ SELECT
     f.public_company_dim_id,
     f.cdr_dt_dim_id,
     f.index_constituent_dim_id,
+    f.fr_period_end_dt_dim_id,
     f.total_vol,
     f.total_val,
     f.total_derivative_vol,
@@ -42,6 +43,7 @@ SELECT
     f.net_profit_after_tax,
     f.net_profit_after_tax_ttm,
     f.owner_equity,
+    cal_fr.cdr_dt                                  AS fr_period_end_dt,
     f.foreign_buy_vol,
     f.foreign_sell_vol,
     f.foreign_buy_val,
@@ -140,6 +142,8 @@ SELECT
 FROM datamart.fct_stock_portfolio_snpst f
 JOIN datamart.cdr_dt_dim cal
     ON cal.cdr_dt_dim_id = f.cdr_dt_dim_id
+LEFT JOIN datamart.cdr_dt_dim cal_fr
+    ON cal_fr.cdr_dt_dim_id = f.fr_period_end_dt_dim_id
 LEFT JOIN datamart.security_trading_snpst_dim sec_dim
     ON sec_dim.security_trading_snpst_dim_id = f.security_trading_snpst_dim_id
 LEFT JOIN datamart.public_company_dim pc_dim

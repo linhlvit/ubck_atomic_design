@@ -8410,6 +8410,10 @@ entities:
       - "public_company"
       - "index_constituent_snapshot"
       - "listed_security_info_snapshot"
+      - "pc_report_submission"
+      - "fr_value"
+      - "fr_catalog"
+      - "pc_share_statistics_hstr"
     modules_using:
       - "GSTT"
     columns:
@@ -8527,7 +8531,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Doanh thu công bố theo kỳ báo cáo tài chính (BCKQKD), point-in-time theo Ky_bao_cao tại ngày giao dịch — Resolved 2026-08-26, rule GSĐC"
+        description: "Doanh thu công bố theo kỳ báo cáo tài chính (BCKQKD), point-in-time theo Ky_bao_cao tại ngày giao dịch — cập nhật 2026-09-08, rule GSĐC"
         source_atomic_table: "fr_value"
         source_atomic_column: "fr_value.data_val"
       - logical_name: "Net Profit After Tax"
@@ -8536,7 +8540,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Lợi nhuận sau thuế công bố theo kỳ báo cáo tài chính (BCKQKD), point-in-time theo Ky_bao_cao tại ngày giao dịch — Resolved 2026-08-26, rule GSĐC"
+        description: "Lợi nhuận sau thuế công bố theo kỳ báo cáo tài chính (BCKQKD), point-in-time theo Ky_bao_cao tại ngày giao dịch — cập nhật 2026-09-08, rule GSĐC"
         source_atomic_table: "fr_value"
         source_atomic_column: "fr_value.data_val"
       - logical_name: "Net Profit After Tax TTM"
@@ -8545,7 +8549,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "LNST trượt 12 tháng (TTM, tổng đúng 4 quý gần nhất đã công bố) — dùng cho P/E, EPS. NULL nếu không đủ 4 kỳ — Resolved 2026-08-26, rule GSĐC"
+        description: "LNST trượt 12 tháng (TTM, tổng đúng 4 quý gần nhất đã công bố có ngay_ket_thuc <= trading_dt) — dùng cho P/E, EPS. NULL nếu không đủ 4 kỳ — cập nhật 2026-09-08, rule GSĐC"
         source_atomic_table: "fr_value"
         source_atomic_column: "fr_value.data_val"
       - logical_name: "Owner Equity"
@@ -8554,9 +8558,18 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Vốn chủ sở hữu công bố — lấy quý gần nhất đã công bố tính đến ngày giao dịch (BCDKT) — Resolved 2026-08-26, rule GSĐC"
+        description: "Vốn chủ sở hữu công bố — lấy quý gần nhất đã công bố tính đến ngày giao dịch có ngay_ket_thuc <= trading_dt (BCDKT) — cập nhật 2026-09-08, rule GSĐC"
         source_atomic_table: "fr_value"
         source_atomic_column: "fr_value.data_val"
+      - logical_name: "Financial Report Period End Date Dimension Id"
+        physical_name: "fr_period_end_dt_dim_id"
+        data_domain: "Surrogate Dimension Key"
+        data_type: "string"
+        nullable: true
+        key: "FK"
+        description: "FK tới Calendar Date Dimension (Role-Playing: Financial Report Period End Date) — Ngày kết thúc của kỳ báo cáo tài chính gần nhất dùng để tính các chỉ tiêu tài chính (Revenue, LNST, VCSH). Bổ sung 2026-09-08, rule GSĐC"
+        source_atomic_table: "pc_report_submission"
+        source_atomic_column: "pc_report_submission.rpt_year"
       - logical_name: "Foreign Buy Volume"
         physical_name: "foreign_buy_vol"
         data_domain: "Small Counter"
