@@ -48,10 +48,9 @@ source_entity  = Fund Management Company Dimension   ← Dimension entity
 
 Vấn đề: join_atomic phải tham chiếu Atomic entity, không phải Datamart Dimension entity.
 
-✅ Đúng: join vào Atomic entity, sau đó lookup Dimension nếu cần FK:
+✅ Đúng: join vào Atomic entity, sau đó lookup Dimension nếu cần FK (SCD4A current-state):
 etl_logic_type = lookup_dim
 etl_logic      = LOOKUP fnd_mgt_co_dim ON fnd_mgt_co_dim.co_code = rpt_impr_val.fnd_mgt_co_code
-                 AND rpt_impr_val.rpt_dt BETWEEN fnd_mgt_co_dim.eff_dt AND fnd_mgt_co_dim.expiry_dt
 source_entity  = Report Import Value   ← Atomic entity (driving)
 ```
 

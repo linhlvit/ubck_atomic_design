@@ -35,7 +35,7 @@
 ```csv
 "Fact Fund Management Company Snapshot","fct_fnd_mgt_co_snpst","Snapshot Date Dimension Id","snpst_dt_dim_id","false","Surrogate Dimension Key","string","FK → Calendar Date Dimension",
 "FK ngày báo cáo",
-"LOOKUP cdr_dt_dim ON cdr_dt_dim.dt = rpt_impr_val.rpt_dt","lookup_date","Report Import Value","rpt_impr_val","Report Date","rpt_dt"
+"LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = rpt_impr_val.rpt_dt","lookup_date","Report Import Value","rpt_impr_val","Report Date","rpt_dt"
 ```
 
 **Đặc điểm:** `source_entity/atomic_table/atomic_column` phản ánh join key từ driving table (`rpt_impr_val.rpt_dt`), không phải Calendar Date Dimension.

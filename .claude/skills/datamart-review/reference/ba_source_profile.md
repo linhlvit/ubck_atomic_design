@@ -141,6 +141,7 @@ Khảo sát 11.289 dòng dữ liệu hợp lệ:
 - **`Done`** (hoặc `Hoàn thành`): Chiếm đa số (~10.999 dòng).
 - **`Pending`** (hoặc `Chờ BA`): ~105 dòng.
 - **`Doing`**: Đang xem xét (chú thích).
+- **`Delete`** (hoặc `DELETED`, `Xóa`, `Xoá`): Chỉ tiêu đã bị hủy bỏ/loại bỏ từ phía BA/nghiệp vụ. **QUY TẮC BẮT BUỘC:** Tuyệt đối KHÔNG đưa vào thiết kế Datamart (cả HLD lẫn LLD). Loại bỏ ngay từ bước đọc parser, không cấp KPI_ID, không map Detail Mapping, không đếm vào số dòng BA hợp lệ.
 
 ### 4.3. `Loại dữ liệu` — Gating Trạng thái Datamart
 

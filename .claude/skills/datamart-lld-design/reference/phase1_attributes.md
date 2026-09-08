@@ -102,6 +102,10 @@ Khi quyết định loại bỏ hoặc thay thế một bảng Datamart draft, C
 >   - Ghi nhận vào Section 5 Open Issues (`DTM_{MODULE}_HLD.md`).
 >   - DỪNG lại báo cáo human để Data Modeler thuộc luồng Atomic xử lý độc lập. Tuyệt đối không tự ý "tiện tay" sửa Atomic!
 
+> ⛔ **QUY TẮC BẮT BUỘC: LOẠI BỎ CHỈ TIÊU DELETE TỪ BA MAPPING:**
+> Mọi chỉ tiêu trong file BA (`BRD/BA/BA_analyst_{MODULE}.csv`) có `Trạng thái mapping` là **`Delete`** (hoặc `DELETE`, `Xóa`, `Xoá`, `DELETED`):
+> - **TUYỆT ĐỐI KHÔNG ĐƯỢC ĐƯA VÀO THIẾT KẾ ATTRIBUTES** (không tạo cột trong file Attributes CSV, không tạo Fact/Dim/Operational table phục vụ riêng cho chỉ tiêu Delete).
+> - Đây là các yêu cầu đã bị hủy bỏ bởi BA/nghiệp vụ, phải loại trừ hoàn toàn khỏi mọi bảng dữ liệu Datamart.
 
 ---
 
@@ -198,11 +202,26 @@ etl_logic_type, source_entity, atomic_table, source_attribute, atomic_column
 |---|---|---|
 | `direct` | Map thẳng 1 Atomic col **có trong driving table** | `atomic_table.atomic_column` |
 | `computed` | Arithmetic từ nhiều Atomic cols | `atomic_table.col_a * atomic_table.col_b` |
-| `lookup_date` | FK → Calendar Date Dimension | `LOOKUP cdr_dt_dim ON cdr_dt_dim.dt = atomic_table.date_col` |
+| `lookup_date` | FK → Calendar Date Dimension | `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = atomic_table.date_col` |
 | `lookup_dim` | FK → SCD4A Dimension qua BK (current state, không dùng date range) | `LOOKUP dim ON dim.bk_col = driving.bk_col` |
 | `join_atomic` | Cột từ Atomic table **khác** driving table | `JOIN atomic_b ON atomic_b.fk_col = driving.join_col → atomic_b.target_col` |
 | `pivot` | ETL fanout 1 row thành nhiều rows theo branch key | Xem mục Pivot bên dưới |
 | `pending` | Chưa có Atomic source | *(để trống)* |
+
+### Phân định Role-Playing Date FK vs Degenerate Date Attribute
+
+| Tiêu chí | Role-Playing Date FK | Degenerate Date Attribute |
+|---|---|---|
+| **Mục đích** | Trục thời gian phân tích chính (snapshot, giao dịch, sự kiện) | Thuộc tính ngày mô tả nghiệp vụ (pass-through) |
+| **Data Domain** | `Surrogate Dimension Key` | `Date` hoặc `Timestamp` |
+| **Data Type** | `string` | `date` hoặc `timestamp` |
+| **Key** | `FK` | Trống (`""`) — CẤM `FK`, `BK`, `DD` |
+| **etl_logic_type** | `lookup_date` | `direct` hoặc `join_atomic` — CẤM `lookup_date` |
+| **etl_logic** | `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = ...` | `atomic_table.date_column` |
+| **Hậu tố tên** | `_dt_dim_id` (VD: `snpst_dt_dim_id`, `trade_dt_dim_id`) | `_dt` (VD: `violation_record_dt`, `birth_dt`) |
+| **Cấm kỵ** | Cấm dùng `cdr_dt_dim_id` / `Calendar Date Dimension Id` trên Fact | Cấm thêm `_Dimension_Id`, `_Dim_Id` |
+
+> **Ví dụ thực tế (bài học NHNCK):** Trường `violation_record_dt` từng bị đặt nhầm thành `violation_record_dt_dim_id` (commit 742aede) — đây là Degenerate Date (ngày lập biên bản, chỉ hiển thị), KHÔNG phải trục thời gian phân tích.
 
 **ETL runtime parameter — tên biến chuẩn:**
 Mọi tham chiếu đến ngày ETL chạy (snapshot date, population date, runtime date) đều dùng **`:etl_date`** — không dùng `{etl_date}`, `{etl_snapshot_dt}`, `{etl_population_dt}`, hay tên biến tùy ý khác. Đổi quy ước 2026-08-03 (khớp cú pháp binding parameter dùng ở flat-table SQL, tránh 2 hình thức khác nhau giữa LLD và flat-table cho cùng 1 khái niệm).

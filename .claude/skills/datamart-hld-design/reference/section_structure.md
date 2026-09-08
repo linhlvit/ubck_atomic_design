@@ -78,6 +78,7 @@ Cụm Tác nghiệp (không có Fact) → không cần Calendar Date Dimension.
 > ⚠️ **Đơn vị/Công thức của dòng PENDING:** để trống hoặc ghi "TBD — chờ Atomic" — không bịa công thức khi chưa xác nhận nguồn.
 > ⚠️ **Cột Ghi chú của dòng PENDING chứa toàn bộ nội dung trước đây nằm ở block PENDING riêng:** Lý do pending (bắt buộc), Atomic cần bổ sung (bắt buộc), Mart dự kiến — chỉ tên bảng + grain (bắt buộc). Viết súc tích, mỗi phần 1 câu.
 > ⚠️ **Đối soát số lượng BA ↔ HLD (Check #10 Bước 5B):** Tập chỉ tiêu cơ sở ($HLD\_Base$) phải khớp 1-1 với các dòng chỉ tiêu hợp lệ của BA ($BA\_Valid$). Chênh lệch ($\Delta = HLD\_Total - BA\_Valid > 0$) chỉ được chấp nhận khi toàn bộ các chỉ tiêu dôi dư là chỉ tiêu phái sinh nội tại (`_YOY`, `_GROWTH`, tỷ lệ %) hoặc sub-component (`a`, `b`) và phải được giải trình rõ trong cột Ghi chú.
+> ⛔ **Loại trừ chỉ tiêu Delete:** Mọi chỉ tiêu trong BA có `Trạng thái mapping` là `Delete` (hoặc `DELETE`, `Xóa`, `Xoá`, `DELETED`) **TUYỆT ĐỐI KHÔNG** được đưa vào bảng KPI, không cấp KPI ID, và không đếm vào $BA\_Valid$.
 
 **Star Schema:**
 

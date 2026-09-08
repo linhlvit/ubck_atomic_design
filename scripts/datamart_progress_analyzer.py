@@ -328,6 +328,11 @@ class BAParser:
             if not val(r, pl_idx) and not val(r, status_idx) and not val(r, src_tbl_idx):
                 continue
 
+            # Skip rows where mapping status is Delete/Deleted/Xóa (not in scope of design)
+            st_val = val(r, status_idx).lower()
+            if any(w in st_val for w in ["delete", "deleted", "xóa", "xoá"]):
+                continue
+
             item = BAItem(
                 stt=stt,
                 dashboard=val(r, dash_idx),

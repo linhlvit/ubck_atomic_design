@@ -26,6 +26,9 @@ Ma trận đối soát chéo là công cụ then chốt trong **Macro-Review**, 
 │ (Chưa xác định nguồn)   │ (BA chưa có nhưng DM READY│ (Chờ BA hoàn thành nguồn) │ (Không phát sinh nợ)      │
 │                         │  → Cần kiểm tra lại nguồn)│                           │                           │
 ├─────────────────────────┼───────────────────────────┼───────────────────────────┼───────────────────────────┤
+│ BA = Delete             │ 🔴 Vi phạm cấm kỵ         │ 🔴 Vi phạm cấm kỵ         │ 🟢 Đúng chuẩn             │
+│ (Đã bị hủy/xóa từ BA)   │ (Phải xóa ngay khỏi DM)   │ (Phải xóa ngay khỏi DM)   │ (Tuyệt đối không thiết kế)│
+├─────────────────────────┼───────────────────────────┼───────────────────────────┼───────────────────────────┤
 │ Chưa có trong BA        │ ⚠️ KPI phát sinh kỹ thuật │ ⚠️ KPI kỹ thuật PENDING   │ —                         │
 │ (Có trong DM, thiếu BA) │ (Cần xác nhận với BA)     │ (Cần rà soát loại bỏ)     │                           │
 └─────────────────────────┴───────────────────────────┴───────────────────────────┴───────────────────────────┘

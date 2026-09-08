@@ -1,4 +1,4 @@
-# Phase 3 — Detail Mapping CSV Reference
+# Phase 2 — Detail Mapping CSV Reference
 
 ## Header
 
@@ -291,6 +291,7 @@ Ví dụ K_NHNCK_2_YOY (CCHN cấp mới YTD):
 
 **0.a — Kiểm tra độ phủ BA → HLD:**
 1. Với mỗi dòng BA có `Trạng thái mapping ∈ {Done, Doing, Pending}` (kể cả `Phân loại = Chiều`):
+   - ⛔ **LOẠI BỎ CHỈ TIÊU DELETE:** Nếu dòng BA có `Trạng thái mapping` là `Delete` (hoặc `DELETE`, `Xóa`, `Xoá`, `DELETED`) → **TUYỆT ĐỐI KHÔNG ĐƯỢC ĐƯA VÀO DETAIL MAPPING**, không kiểm tra KPI_ID, không sinh dòng mapping.
    - Tìm KPI_ID tương ứng trong bảng KPI của nhóm đó trong HLD
    - Nếu KPI_ID chưa có trong HLD → **DỪNG**, báo cáo danh sách thiếu theo nhóm
 2. ❌ Không tự sinh KPI_ID mới — KPI_ID mới phải được khai sinh trong HLD trước
@@ -299,7 +300,7 @@ Ví dụ K_NHNCK_2_YOY (CCHN cấp mới YTD):
 5. Chỉ tiếp tục bước 0.b khi **tất cả** dòng Done/Doing/Pending từ BA đều đã có KPI_ID trong HLD
 
 **0.b — Kiểm tra số lượng (đếm và báo cáo trước khi sinh):**
-1. Đếm **tổng dòng BA** có `Trạng thái ∈ {Done, Doing, Pending}` (kể cả dòng bị đánh dấu trùng trong cột `Đánh giá`) → gọi là **N_BA**
+1. Đếm **tổng dòng BA** có `Trạng thái ∈ {Done, Doing, Pending}` (TUYỆT ĐỐI LOẠI BỎ các dòng có `Trạng thái = Delete / DELETED / Xóa`; kể cả dòng bị đánh dấu trùng trong cột `Đánh giá`) → gọi là **N_BA**
 2. Đếm số dòng BA **unique** sau khi loại trùng theo cột `Đánh giá` → gọi là **N_KPI** (= số KPI_ID cần có trong HLD)
 3. Báo cáo cho user trước khi sinh:
    > "BA có **N_BA** dòng cần mapping, trong đó **N_KPI** KPI unique (sau loại trùng theo cột Đánh giá). Detail Mapping output sẽ có tối thiểu N_BA dòng và đúng N_KPI KPI_ID unique."
@@ -315,7 +316,7 @@ Ví dụ K_NHNCK_2_YOY (CCHN cấp mới YTD):
 
 **Bước 1 — Lọc và chuẩn bị:**
 
-1. Lọc Done/Doing/Pending từ BA file
+1. Lọc Done/Doing/Pending từ BA file (LOẠI TRỪ 100% dòng có `Trạng thái mapping = Delete / DELETED / Xóa`)
 2. Xác định `mart_table` + `mart_column` từ Attributes.csv cho từng dòng
 3. Nếu không tìm được → `ghi_chu = "Thiếu cột trong mart — cần bổ sung Attributes"`
 4. Tra bảng KPI trong HLD (`Tính chất` + `Công thức`) trước khi điền `column_role`:

@@ -73,7 +73,7 @@ Phase 2:  Sau khi Phase 1 duyệt → đọc Section 3 + Section 4 HLD → xuấ
 
 ## BƯỚC 1 — ĐỌC INPUT (thứ tự bắt buộc)
 
-1. **BA file** (`BRD/BA/BA_analyst_{MODULE}.csv`) — extract toàn bộ dòng có `Trạng thái mapping ∈ {Done, Doing, Pending}`:
+1. **BA file** (`BRD/BA/BA_analyst_{MODULE}.csv`) — extract toàn bộ dòng có `Trạng thái mapping ∈ {Done, Doing, Pending}` (TUYỆT ĐỐI LOẠI BỎ các dòng có `Trạng thái mapping` là `Delete`/`DELETED`/`Xóa`, không đưa vào thiết kế):
 
    > ⚠️ **Đọc CSV chuẩn đa định dạng (Auto-detect Delimiter, Encoding & Header):**
    > File BA chứa cell multi-line (SQL, mô tả dài) và sử dụng các chuẩn delimiter khác nhau tùy phân hệ (dấu `,` ở GSTT, GSĐC, NHNCK, PTTT, QLCB, QLKD, TKNB; dấu `;` ở FMS, NDTNN, TT, VP). Ngoài ra dòng header có thể nằm ở dòng 0 hoặc dòng 1 (sau banner).
@@ -137,6 +137,9 @@ Phase 2:  Sau khi Phase 1 duyệt → đọc Section 3 + Section 4 HLD → xuấ
    >     # 3. Bỏ qua dòng không có tên chỉ tiêu hoặc không có dashboard:
    >     if not name or not dash:
    >         continue
+   >     # 4. BỎ QUA dòng có Trạng thái mapping là Delete / Xóa (không đưa vào thiết kế):
+   >     if any(w in status.lower() for w in ["delete", "deleted", "xóa", "xoá"]):
+   >         continue
    >     
    >     # 4. Nhận diện số nhóm kinh doanh (Group STT) linh hoạt:
    >     # Nếu Cột 0 ('STT') chứa số mục văn bản BRD (dạng '3.2.2.x' có dấu chấm) hoặc rỗng,
@@ -159,6 +162,11 @@ Phase 2:  Sau khi Phase 1 duyệt → đọc Section 3 + Section 4 HLD → xuấ
    - Ghi nhận `Trạng thái mapping` — phân biệt Done/Doing/Pending
    - Ghi nhận cột **`Loại dữ liệu`** (`Dữ liệu tĩnh` / `Dữ liệu động`) cho từng dòng — dùng ở Bước 2 (Scope Gating) để quyết định READY/PENDING, độc lập với gating theo Atomic
    - ❌ Không bỏ qua dòng `Phân loại = Chiều` — đây là phần của bảng KPI, không chỉ là gợi ý thiết kế
+   - ⛔ **QUY TẮC BẮT BUỘC — CHỈ TIÊU TRẠNG THÁI MAPPING = "Delete":**
+     Nếu chỉ tiêu trong file BA có `Trạng thái mapping` là **`Delete`** (hoặc `DELETE`, `Xóa`, `Xoá`, `DELETED`):
+     - **TUYỆT ĐỐI KHÔNG ĐƯỢC ĐƯA VÀO THIẾT KẾ** (không đưa vào Section 1 Data Lineage, không cấp KPI ID, không đưa vào bảng KPI Section 2, không tạo Fact/Dimension/Operational trong Section 3/4, và không xuất hiện trong `Entities.csv`).
+     - Dòng này được coi là yêu cầu đã bị hủy/xóa bỏ từ phía BA/nghiệp vụ, loại bỏ ngay từ bước đọc input BA (`valid_kpis`).
+     - Không đếm vào mẫu số đối soát số lượng chỉ tiêu hợp lệ ($BA\_Valid$) ở Bước 5B.
 
 2. **Screenshot** — xác định scope boundary (tab, nhóm, loại thông tin hiển thị)
 
@@ -446,7 +454,7 @@ Chạy **đủ 14 mục (#0–#13)** dưới đây (Python/grep) trên toàn fil
 9. **Mọi node Atomic dùng làm nguồn Dimension/Fact có tồn tại thật trong `DataModel/Atomic/` (ưu tiên 1) hoặc `DataModel/working/Atomic/` (ưu tiên 2)** — **KHÔNG bao gồm `DataModel/working/Atomic_LinhLV/`** (out of date, cấm dùng dù entity tồn tại ở đó). Không suy diễn theo tên nghe hợp lý nếu module không có entity Atomic nào tên đó ở 2 nguồn hợp lệ. **Ngoại lệ:** `Classification Value` (`cl_value`) LÀ bảng Fundamental vật lý thật ở Atomic (SCD4A, chứa mọi danh mục dùng chung toàn hệ thống — xem CLAUDE.md rule #4) — dù chưa sync đầy đủ vào `DataModel/Atomic/` repo, vẫn được coi là nguồn hợp lệ để JOIN lấy tên hiển thị (`cl_nm`) cho bất kỳ Dimension nào có cột Classification Value, join theo `cl_value.cl_code = [code] AND cl_value.schema_code = '[SCHEME_CODE]'`. Case thực tế QLCB `Offering Method Dimension` (2026-08-05) — trước đó nhầm là "không có bảng CV riêng, code nằm trực tiếp trên Plan", user xác nhận lại đây là hiểu sai.
 10. **Đối soát số lượng BA ↔ HLD theo công thức chuẩn hóa (Khắc phục False Alarm):**
     Với mỗi Nhóm (1 STT nghiệp vụ), thực hiện đối soát số lượng theo công thức 1-1 giữa dòng BA hợp lệ và Chỉ tiêu cơ sở HLD:
-    - **Số dòng BA hợp lệ ($BA\_Valid$):** Đếm các dòng con BA thuộc Nhóm đó có `Trạng thái mapping ∈ {Done, Doing, Pending}`, `Phân loại ∈ {Chiều, Chỉ tiêu cơ sở, Chỉ tiêu phái sinh}` (đã loại bỏ dòng banner tiêu đề rỗng, dòng hướng dẫn template, và dòng trống).
+    - **Số dòng BA hợp lệ ($BA\_Valid$):** Đếm các dòng con BA thuộc Nhóm đó có `Trạng thái mapping ∈ {Done, Doing, Pending}` (TUYỆT ĐỐI LOẠI BỎ các dòng có `Trạng thái mapping` là `Delete` / `DELETED` / `Xóa`), `Phân loại ∈ {Chiều, Chỉ tiêu cơ sở, Chỉ tiêu phái sinh}` (đã loại bỏ dòng banner tiêu đề rỗng, dòng hướng dẫn template, và dòng trống).
     - **Số chỉ tiêu cơ sở HLD ($HLD\_Base$):** Đếm các dòng trong bảng KPI HLD của Nhóm tương ứng 1-1 với BA (bao gồm cả dòng READY, PENDING, dòng reuse ghi rõ "Reuse từ Nhóm X", hoặc dòng trùng ghi "Trùng KPI Y").
     - **Yêu cầu bắt buộc:** $HLD\_Base == BA\_Valid$ (khớp tuyệt đối 1-1).
     - **Quy tắc cho phép chênh lệch ($\Delta = HLD\_Total - BA\_Valid$):** Cho phép $\Delta > 0$ **KHI VÀ CHỈ KHI** toàn bộ các chỉ tiêu dôi dư là:
@@ -568,13 +576,13 @@ Graph TB trong Section 3 dùng mũi tên `DIM_X --> FACT_Y`. Với mỗi mũi t�
 - [ ] Mọi dòng BA `Phân loại = "Chiều"` phải có KPI_ID trong bảng KPI của nhóm tương ứng — không được bỏ qua
 - [ ] Chiều dùng như ETL filter nội bộ (không hiển thị UI) → ghi rõ trong cột Ghi chú: "dùng trong formula KPI K_X_N" — vẫn phải có KPI_ID
 - [ ] Cấm dùng shorthand "xem Nhóm N" thay thế bảng KPI — nếu nhóm reuse KPI từ nhóm khác, liệt kê explicit từng KPI_ID kèm ghi chú nguồn gốc: "Reuse từ Nhóm N"
-- [ ] Đọc toàn bộ BA file trước khi viết bảng KPI — đảm bảo không sót dòng nào có `Trạng thái mapping ∈ {Done, Doing, Pending}`
+- [ ] Đọc toàn bộ BA file trước khi viết bảng KPI — đảm bảo không sót dòng nào có `Trạng thái mapping ∈ {Done, Doing, Pending}`, ĐỒNG THỜI loại bỏ 100% các dòng có `Trạng thái mapping = Delete` (hoặc DELETE, Xóa) khỏi thiết kế HLD
 - [ ] **Mọi dòng Done không note "Trùng" → bắt buộc có KPI_ID trong nhóm:** Nếu concept đã khai ở nhóm khác → reuse explicit trong bảng KPI nhóm này, không được im lặng bỏ qua
 - [ ] **Dòng Done là sub-component của KPI phức tạp → vẫn cấp KPI_ID riêng:** Không gộp im lặng sub-component vào KPI cha. Ngoại lệ duy nhất: cột Đánh giá ghi "Trùng" → reuse ID đã có
 - [ ] **Cấm thêm KPI không có dòng BA tương ứng:** Bảng KPI chỉ chứa KPI có dòng BA trong nhóm đó (mới hoặc reuse). Không thêm KPI từ suy luận nghiệp vụ dù hợp lý
 - [ ] **Dedup KPI giữa các Nhóm trong cùng Tab:** Trước khi cấp ID mới cho Nhóm N, kiểm tra toàn bộ KPI đã khai sinh ở Nhóm 1→(N-1). Nếu trùng nội dung → reuse ID cũ, KHÔNG cấp ID mới. Liệt kê reuse **trong cùng bảng KPI 7 cột duy nhất** — điền cột Ghi chú = "Reuse từ Nhóm X". KHÔNG tạo bảng reuse riêng.
 - [ ] **Đối chiếu SỐ LƯỢNG BA ↔ HLD theo công thức chuẩn hóa (bắt buộc cho mỗi Nhóm ngay khi viết xong bảng KPI):**
-  - Đếm `BA_Valid = COUNT(dòng BA hợp lệ của Nhóm, loại bỏ dòng banner rỗng / template)`
+  - Đếm `BA_Valid = COUNT(dòng BA hợp lệ của Nhóm, loại bỏ dòng banner rỗng / template / dòng Delete)`
   - Đếm `HLD_Base = COUNT(KPI Base/1-1 của Nhóm, loại trừ KPI Derived _YOY/_GROWTH/tỷ lệ nội bộ và sub-component a/b đã giải trình)`
   - Xác nhận `BA_Valid == HLD_Base` khớp chính xác 1-1. Nếu lệch: đối chiếu từng dòng BA để phát hiện dòng bị gộp nhầm hoặc bỏ sót (đặc biệt là các chiều slicer phụ). Mọi KPI dôi dư phải được giải trình rõ trong cột Ghi chú.
   - Ví dụ lỗi thực tế (QLCB Nhóm 4): 2 dòng BA độc lập "Thông tin doanh nghiệp" (nguồn `COMPANY_NAME_VN`) và "Mã chứng khoán" (nguồn `equity_ticker`) bị viết gộp thành 1 dòng KPI "Thông tin doanh nghiệp (Mã CK, Tên DN)" — BA 12 dòng nhưng HLD chỉ có 11 KPI, không bị rule cũ nào bắt được vì dòng KPI đó "vẫn có ID, vẫn có dòng BA tương ứng".

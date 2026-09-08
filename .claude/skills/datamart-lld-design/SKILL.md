@@ -251,6 +251,7 @@ Tổng: [N] nhóm | [M] bảng new | [P] bảng partial | [Q] bảng reuse
 **Input Phase 1:**
 - `Datamart/hld/DTM_{MODULE}_Entities.csv` — danh sách entity, table_type, reuse_status, source_table đã duyệt
 - `Datamart/lld/datamart_attributes.csv` — master hiện tại (cần cho partial flow)
+- `BRD/BA/BA_analyst_{MODULE}.csv` — đối chiếu yêu cầu nghiệp vụ (CHỈ lấy dòng có `Trạng thái mapping ∈ {Done, Doing, Pending}`; **TUYỆT ĐỐI LOẠI BỎ** chỉ tiêu có `Trạng thái mapping = Delete / DELETED / Xóa`, cấm sinh thuộc tính/cột cho chỉ tiêu Delete)
 
 **Bước 0 — Đọc reuse_status từ Entities.csv:**
 - `reuse` → bỏ qua hoàn toàn, không sinh file, ghi note: "Bảng [datamart_table] reuse từ master — không thiết kế mới"
@@ -461,6 +462,20 @@ dly / smy / list   ❌  (viết tắt của daily/summary/listed — không có 
 
 > **Bài học từ các ví dụ SAI:** Cần luôn `cat` CSV trước khi đặt tên và đối chiếu vai trò nghiệp vụ của cột — bản thân danh sách ví dụ này cũng chỉ là minh hoạ, KHÔNG phải nguồn sự thật.
 
+> ⚠️ **PHÂN ĐỊNH: ROLE-PLAYING DATE FK vs DEGENERATE DATE ATTRIBUTE:**
+> Không phải mọi cột ngày trên Fact table đều trỏ sang Date Dimension. Chỉ **trục thời gian phân tích chính** mới là Role-Playing Date FK:
+>
+> | Tiêu chí | Role-Playing Date FK | Degenerate Date Attribute |
+> |---|---|---|
+> | **Khi nào dùng** | Trục thời gian phân tích chính: snapshot date, trade date, event date | Thuộc tính ngày mô tả nghiệp vụ: ngày ký, ngày sinh, ngày lập biên bản |
+> | **Data Domain** | `Surrogate Dimension Key` | `Date` hoặc `Timestamp` |
+> | **Data Type** | `string` | `date` hoặc `timestamp` |
+> | **Key** | `FK` | Trống (`""`) — **CẤM** `FK`, `BK`, `DD` |
+> | **etl_logic_type** | `lookup_date` | `direct` hoặc `join_atomic` — **CẤM** `lookup_date` |
+> | **Hậu tố tên** | `_dt_dim_id` | `_dt` (VD: `violation_record_dt`, `birth_dt`) — **CẤM** `_Dimension_Id` |
+>
+> **Bài học thực tế (NHNCK):** `violation_record_dt` từng bị đặt nhầm thành `violation_record_dt_dim_id` (commit 742aede) — đây là Degenerate Date, KHÔNG phải FK.
+
 > **Lỗi tái diễn — 2 biến thể viết tắt song song cho CÙNG một tên bảng/entity (phát hiện ở GSDC 2026-07-16):**
 > Khi module có nhiều bảng Fact/Dim cùng gắn với 1 khái niệm nghiệp vụ (VD: "Public Company"), rất dễ đặt tên bảng đầu tiên theo 1 kiểu viết tắt tự nghĩ ra (`pblc_co_dim`) rồi bảng sau lại đặt theo kiểu khác (`fct_pc_risk_score_snpst`) — cả 2 đều KHÔNG có trong exceptions và KHÔNG nhất quán với nhau.
 > **Nguyên nhân sâu xa:** dễ nhầm lẫn giữa 2 ngữ cảnh — (a) `atomic_table`/`atomic_column` là tên **Atomic gốc** (read-only, VD: `pc_evaluation_detail`, `pc_report_submission`, `pc_id` — những tên này giữ nguyên, không đổi), và (b) `datamart_table`/`datamart_column` là tên **Datamart tự đặt**, phải tuân physical naming rule độc lập với cách Atomic đặt tên. Thấy Atomic dùng tiền tố `pc_` rồi bắt chước đặt tên Datamart cũng `pc_`/`pblc_co` là sai — hai tầng đặt tên độc lập nhau.
@@ -521,6 +536,35 @@ Nếu phát hiện `datamart_column` hoặc `datamart_table` dùng từ viết t
       - Nếu là Fact Snapshot (tên bảng có hậu tố `_snpst`): Cột snapshot date bắt buộc là `datamart_attribute: "Snapshot Date Dimension Id"`, `datamart_column: "snpst_dt_dim_id"`.
       - Nếu là Fact Transaction/Event/khác: Bắt buộc dùng `<Role> Date Dimension Id` → `<role>_dt_dim_id` (ví dụ `issue_dt_dim_id`, `trade_dt_dim_id`, `submission_dt_dim_id`, `evaluation_dt_dim_id`, `effective_dt_dim_id`...).
     - Nếu phát hiện `cdr_dt_dim_id` trên Fact table → báo FAIL ngay lập tức và yêu cầu đổi tên theo vai trò nghiệp vụ.
+  - **Script kiểm tra tự động (bắt buộc dùng Bash tool):**
+    ```bash
+    python -c "
+    import csv, sys
+    sys.stdout.reconfigure(encoding='utf-8')
+    files = ['<path_to_attributes_file>']  # file Attributes CSV vừa sinh
+    BANNED = {'cdr_dt_dim_id', 'calendar_dt_dim_id'}
+    BANNED_LOGICAL = {'Calendar Date Dimension Id'}
+    violations = []
+    for fpath in files:
+        with open(fpath, encoding='utf-8-sig') as f:
+            reader = csv.DictReader(f)
+            for i, row in enumerate(reader, 2):
+                tbl = row.get('datamart_table','')
+                col = row.get('datamart_column','')
+                attr = row.get('datamart_attribute','')
+                # Skip the cdr_dt_dim table itself (PK is valid there)
+                if tbl == 'cdr_dt_dim':
+                    continue
+                if tbl.startswith('fct_') or 'fact' in row.get('table_type','').lower():
+                    if col in BANNED or attr in BANNED_LOGICAL:
+                        violations.append(f'  Row {i}: {tbl}.{col} ({attr})')
+    if violations:
+        print('❌ TC2b-DATE-FK FAIL:')
+        for v in violations: print(v)
+    else:
+        print('✅ TC2b-DATE-FK PASS')
+    "
+    ```
 
 **TC3 — Đầy đủ prefix table_name.column_name + thứ tự JOIN đúng:**
 - Kiểm tra mọi column reference trong `etl_logic` có dạng `<table>.<col>`.
@@ -569,10 +613,14 @@ Nếu FAIL → sửa trước khi trình bày.
 **TC5 — Cấu trúc CSV hợp lệ (bắt buộc dùng Bash tool):**
 - Sau khi Write file, chạy lệnh sau bằng Bash tool:
   ```bash
-  python3 -c "
-  import csv
-  with open('<path_to_file>') as f:
-      rows = list(csv.reader(f))
+  python -c "
+  import csv, sys
+  sys.stdout.reconfigure(encoding='utf-8')
+  # auto-detect delimiter
+  with open('<path_to_file>', encoding='utf-8-sig') as sniff_f:
+      dialect = csv.Sniffer().sniff(sniff_f.read(2048))
+  with open('<path_to_file>', encoding='utf-8-sig') as f:
+      rows = list(csv.reader(f, delimiter=dialect.delimiter))
   bad = [i for i,r in enumerate(rows) if len(r) != 15]
   print(f'Rows: {len(rows)-1} data rows')
   print('Bad rows:', bad if bad else 'none')
@@ -587,8 +635,9 @@ Nếu FAIL → sửa trước khi trình bày.
 - Thuật toán: với mỗi `datamart_entity` (logical name), tính **physical name kỳ vọng** bằng cách áp dụng đúng PHYSICAL NAMING RULE (tách từng từ theo khoảng trắng/gạch ngang, tra `rule_physical_name_exceptions_datamart.csv`, giữ full word nếu không có exception, nối bằng `_`) — rồi so với `datamart_table` thực tế trong **toàn bộ** `datamart_attributes.csv` (mọi module, không chỉ module đang thiết kế — bắt cả trường hợp entity conformed/shared bị đặt tên lệch giữa các module).
 - Chạy script sau **trên toàn bộ master sau khi merge** (không chỉ file vừa sinh — vì lỗi có thể đã tồn tại từ trước, TC6 phải quét lại toàn bộ mỗi lần có thay đổi):
   ```bash
-  python3 -c "
-  import csv, re
+  python -c "
+  import csv, re, sys
+  sys.stdout.reconfigure(encoding='utf-8')
 
   # Whitelist ngoại lệ đã xác nhận là quy ước riêng, không phải lỗi — cập nhật khi có ca mới được human duyệt
   # CẢNH BÁO: KHÔNG thêm entry vào đây chỉ vì "có vẻ là quy ước riêng" — phải xác minh bằng chứng cụ thể
@@ -654,8 +703,9 @@ Nếu FAIL → sửa trước khi trình bày.
 - **KHÔNG tự động hóa cho `HLD.md`** — free-text + mermaid, regex bắt token dễ false positive (node ID, alias biến, tên Atomic lẫn trong công thức). Khi TC7 FAIL ở bất kỳ nguồn nào trong 5 nguồn trên, bước sửa lỗi (Kịch bản C) đã yêu cầu `grep -rn "tên_cũ" Datamart/` — lệnh này tự nhiên quét luôn HLD.md, nên HLD vẫn được rà soát nhưng qua cơ chế sửa lỗi thủ công, không qua TC7 tự động.
 - Chạy script sau (xây anchor set 1 lần, đối chiếu cả 4 nguồn):
   ```bash
-  python3 -c "
-  import csv, yaml, re, glob
+  python -c "
+  import csv, yaml, re, glob, sys
+  sys.stdout.reconfigure(encoding='utf-8')
 
   with open('Datamart/lld/datamart_attributes.csv', encoding='utf-8-sig') as f:
       rows = list(csv.reader(f))
@@ -742,8 +792,9 @@ Nếu FAIL → sửa trước khi trình bày.
   - **Ngoại lệ — nhóm Fact dạng "report" (quyết định 2026-07-24, module NDTNN `foreign_investor_trading_statistics_rpt`/`foreign_investor_trading_detail_rpt`):** Fact phục vụ báo cáo đóng gói cố định theo kỳ (ETL append-only theo Report Date, không SCD4A, thường denormalize hoàn toàn không FK Dimension) dùng **hậu tố `_rpt`** làm dấu hiệu nhận diện thay cho tiền tố `fct_` — bảng loại này KHÔNG cần (và không nên) có cả tiền tố `fct_` lẫn hậu tố `_rpt` cùng lúc, chỉ `_rpt` là đủ. Áp dụng đồng thời cho `logical_name` — cũng KHÔNG mang tiền tố "Fact" (VD: `"Foreign Investor Trading Statistics Report"`, không phải `"Fact Foreign Investor Trading Statistics Report"`), dù `table_type` đăng ký là `"fact"`. Tiêu chí phân biệt Fact vs Operational khi quyết định table_type: **Fact = append theo thời gian** (mỗi lần ETL chạy thêm dòng cho kỳ mới, không update dòng cũ); **Operational = SCD4A** (giữ current-state, ETL update/replace theo latest) — không dùng "có denormalize hay không" làm tiêu chí phân loại table_type (denormalize là thuộc tính độc lập, áp dụng được cho cả Fact lẫn Operational).
 - Chạy script sau **trên toàn bộ `datamart_model.yaml`** (không chỉ entity vừa thiết kế — vì đây là lỗi loại "thiếu nhất quán với quy ước module", chỉ lộ ra khi so sánh chéo với các entity cùng `table_type` khác, giống cách TC7 phải quét toàn bộ thay vì chỉ file đang sửa):
   ```bash
-  python3 -c "
-  import re
+  python -c "
+  import re, sys
+  sys.stdout.reconfigure(encoding='utf-8')
 
   with open('Datamart/datamart_model.yaml', encoding='utf-8') as f:
       content = f.read()
@@ -789,8 +840,9 @@ Nếu FAIL → sửa trước khi trình bày.
   - **Ngoại lệ duy nhất:** dòng `key = PK` được phép giữ cụm ngắn gọn `"PK — Driving: {table}"` (yêu cầu tường minh của Bước 1 — ghi rõ Driving Table trong description của PK/BK) — nhưng không được kèm thêm giải thích SCD/grain/logic dài dòng phía sau trong cùng ô. Dòng `key = BK` không có ngoại lệ này — description của BK chỉ mô tả ý nghĩa khóa nghiệp vụ, không nhắc driving table hay KPI dùng nó.
 - Chạy script sau trên **từng file vừa sinh** (không cần quét toàn master — đây là lỗi cục bộ theo file, khác TC6/TC7/TC8 vốn cần đối chiếu chéo):
   ```bash
-  python3 -c "
-  import csv, re
+  python -c "
+  import csv, re, sys
+  sys.stdout.reconfigure(encoding='utf-8')
 
   files = ['<path_file_1>', '<path_file_2>', ...]  # danh sách file vừa sinh trong batch này
 
@@ -947,6 +999,11 @@ ATTRIBUTES CHECK:
 
 **Nguồn sự thật:** `BRD/BA/BA_analyst_{MODULE}.csv` — mọi dòng `Trạng thái mapping ∈ {Done, Doing, Pending}` đều phải map.
 
+> ⛔ **QUY TẮC BẮT BUỘC — LOẠI BỎ CHỈ TIÊU DELETE:**
+> Nếu chỉ tiêu trong file BA có `Trạng thái mapping` là **`Delete`** (hoặc `DELETE`, `Xóa`, `Xoá`, `DELETED`):
+> - **TUYỆT ĐỐI KHÔNG ĐƯỢC ĐƯA VÀO THIẾT KẾ** (không sinh dòng mapping trong Detail Mapping CSV, không thiết kế cột/thuộc tính trong Phase 1 Attributes, không đưa vào Flat Table Phase 3).
+> - Chỉ tiêu Delete được coi là đã bị hủy bỏ bởi BA/nghiệp vụ, bị loại trừ 100% khỏi phạm vi Datamart.
+
 **Input bổ sung Phase 2:** Các file `Datamart/lld/{MODULE}/DTM_{MODULE}_*.csv` đã duyệt (Phase 1) — đọc tất cả file trong thư mục `{MODULE}/`.
 
 **Output:** Append block KPI của nhóm N vào `Datamart/lld/DTM_{MODULE}_Detail_Mapping.csv` — không tạo file riêng từng nhóm. File tạo mới với header nếu chưa tồn tại; append nếu đã có.
@@ -975,9 +1032,10 @@ BƯỚC 0 — TODO LIST TOÀN MODULE (bắt buộc, chạy 1 lần trước khi 
 
 PRE-CHECK (trước khi sinh — bắt buộc, chỉ cho KPI của nhóm đang xử lý):
 □ Cross-check BA ↔ HLD: mọi dòng Done/Doing/Pending (kể cả Chiều) của nhóm N đều có KPI_ID trong HLD
-□ Nếu dòng BA nào chưa có KPI_ID → DỪNG, báo cáo danh sách gap → ❌ KHÔNG sinh block khi chưa có xác nhận của human về cách xử lý gap
+□ Lọc bỏ 100% dòng BA có Trạng thái mapping là Delete / DELETED / Xóa — KHÔNG map, KHÔNG sinh dòng Detail Mapping
+□ Nếu dòng BA nào (hợp lệ, không phải Delete) chưa có KPI_ID → DỪNG, báo cáo danh sách gap → ❌ KHÔNG sinh block khi chưa có xác nhận của human về cách xử lý gap
 □ Không tự sinh KPI_ID mới trong Phase 2 — KPI_ID mới phải được khai sinh trong HLD trước
-□ Đếm N_BA(nhóm) và N_KPI(nhóm) → báo cáo 2 con số → DỪNG chờ human xác nhận trước khi sinh
+□ Đếm N_BA(nhóm) (chỉ tính dòng hợp lệ, ĐÃ LOẠI TRỪ dòng Delete) và N_KPI(nhóm) → báo cáo 2 con số → DỪNG chờ human xác nhận trước khi sinh
 
 OUTPUT CHECK (chỉ kiểm tra block KPI của nhóm đang xử lý):
 □ Số dòng block ≥ N_BA(nhóm) — báo danh sách dòng BA bị bỏ sót nếu thiếu
@@ -1018,7 +1076,7 @@ TC3 — Logic dùng tên physical (snake_case), đủ prefix table_name.column_n
 
 TC4 — Trường/bảng trong Detail Mapping tồn tại trong datamart_model.yaml:
 □ Lấy toàn bộ (mart_table, mart_column) unique từ Detail Mapping (bỏ qua row DERIVED có mart_table/mart_column trống)
-□ Kiểm tra mỗi cặp: tra Datamart/datamart_model.yaml → tìm entity có datamart_table khớp → kiểm tra columns list có physical_name = mart_column không
+□ Kiểm tra mỗi cặp: tra Datamart/datamart_model.yaml → tìm entity có **logical_name** khớp với mart_table → kiểm tra columns list có **logical_name** = mart_column không. **LƯU Ý:** mart_table và mart_column trong Detail Mapping là **TÊN LOGICAL** (ví dụ: "Fact Stock Portfolio Snapshot", "Total Trading Volume"), KHÔNG phải tên physical. Do đó PHẢI so sánh với logical_name (KHÔNG so sánh với datamart_table hay physical_name — sẽ gây 100% false positive).
 □ Báo: ✅ TC4 PASS hoặc ❌ TC4 FAIL: [danh sách (mart_table, mart_column) chưa có trong datamart_model.yaml]
 □ Nếu FAIL → kiểm tra xem model thiếu cột (Phase 1 chưa ghi đủ) hay Detail Mapping dùng sai tên → sửa tương ứng
 
@@ -1113,7 +1171,7 @@ FILE 02 (POPULATE):
 □ Đếm cột SELECT = đếm cột CREATE
 □ Tên bảng nguồn fact: datamart.{module}_{datamart_table} (có prefix module)
 □ Tên bảng nguồn operational: datamart.{datamart_table} (không có prefix module)
-□ Calendar Date join: datamart.{module}_calendar_date_dimension / date_dimension_id = f.{fk_col}
+□ Calendar Date join: datamart.cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = f.{role_dt_dim_id} (role-playing FK, ví dụ: snpst_dt_dim_id, trade_dt_dim_id)
 □ Dim join: alias rõ ràng, ON {dim_pk} = f.{fk_col}
 □ Operational: không có LEFT JOIN nào
 

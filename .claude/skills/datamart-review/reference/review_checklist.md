@@ -78,6 +78,7 @@ Thực hiện ở **Bước 0b** (trước khi đi vào chi tiết bất kỳ nh
   → HLD = PENDING + BA = Done → Kịch bản A (gọi datamart-hld-design)
   → HLD = PENDING + BA = Pending → OK (đúng tình trạng)
   → HLD = READY + BA = Done → tiếp tục review Lớp 2, 3, 4
+  → BA có Trạng thái mapping = Delete / DELETED / Xóa → Xác nhận KHÔNG có mặt trong HLD (nếu vẫn tồn tại trong HLD → 🔴 Critical, yêu cầu xóa bỏ khỏi HLD)
   → HLD = READY + BA có KPI mới chưa có trong HLD → Gap (cần cập nhật HLD)
 
 □ KPI coverage BA → HLD: mọi KPI Done/Doing trong BA có KPI_ID trong bảng KPI HLD?
@@ -184,6 +185,9 @@ Thực hiện ở **Bước 0b** (trước khi đi vào chi tiết bất kỳ nh
   → Với Fact Snapshot (`fct_*_snpst`): Cột ngày snapshot kỳ bắt buộc là `Snapshot Date Dimension Id` → `snpst_dt_dim_id`
   → Với các Fact khác: Cột khóa ngoại ngày bắt buộc đặt theo vai trò nghiệp vụ `<Role> Date Dimension Id` → `<role>_dt_dim_id` (`issue_dt_dim_id`, `trade_dt_dim_id`, `submission_dt_dim_id`, `evaluation_dt_dim_id`, `effective_dt_dim_id`...)
   → Vi phạm → 🔴 Critical (mã: L2-DATE-FK-ROLE-PLAYING, phân loại Kịch bản C — Lỗi kỹ thuật, yêu cầu chuyển giao sang datamart-lld-design để đồng bộ field rename)
+
+□ Kiểm tra chỉ tiêu Delete từ BA:
+  → Xác nhận không có cột nào trong Attributes được thiết kế cho chỉ tiêu BA có Trạng thái mapping = Delete / DELETED / Xóa (nếu có → 🔴 Critical, yêu cầu xóa khỏi Attributes)
 ```
 
 ---
@@ -220,6 +224,9 @@ Thực hiện ở **Bước 0b** (trước khi đi vào chi tiết bất kỳ nh
   → Ngược lại → Warning
 
 □ Chiều lặp lại giữa các nhóm: mỗi nhóm có explicit SLICER/FILTER riêng (không dùng "xem nhóm X")
+
+□ Kiểm tra chỉ tiêu Delete từ BA:
+  → Xác nhận TUYỆT ĐỐI không có dòng nào trong Detail Mapping sinh ra từ chỉ tiêu BA có Trạng thái mapping = Delete / DELETED / Xóa
 ```
 
 ---
