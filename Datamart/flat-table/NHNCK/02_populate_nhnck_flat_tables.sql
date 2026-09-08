@@ -32,6 +32,7 @@ SELECT
     f.certificate_issue_dt,
     f.revocation_dt,
     f.decision_tp_code,
+    f.decision_signed_dt,
 
     -- From: CALENDAR DATE DIMENSION (Snapshot Date)
     snpst_cal.cdr_dt            AS snpst_cdr_dt,
@@ -81,6 +82,8 @@ SELECT
     f.snpst_dt_dim_id,
     f.age,
     f.has_active_violation,
+    f.violation_record_dt,
+    f.first_license_dt,
 
     -- From: CALENDAR DATE DIMENSION (Snapshot Date)
     snpst_cal.cdr_dt            AS snpst_cdr_dt,

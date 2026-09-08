@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_fct_practitioner_license_certificate_s
     certificate_issue_dt            Nullable(Date)      COMMENT 'Ngày cấp CCHN',
     revocation_dt                   Nullable(Date)      COMMENT 'Ngày thu hồi CCHN — NULL nếu chưa thu hồi',
     decision_tp_code                Nullable(String)    COMMENT 'Loại quyết định — scheme: LICENSE_CERTIFICATE_DECISION_TYPE',
+    decision_signed_dt              Nullable(Date)      COMMENT 'Ngày ký quyết định thu hồi/hủy CCHN',
 
     -- From: CALENDAR DATE DIMENSION (Snapshot Date)
     snpst_cdr_dt                    Nullable(Date)      COMMENT 'Ngày snapshot — từ Calendar Date Dimension',
@@ -66,6 +67,8 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_fct_practitioner_daily_snpst_flat ON C
     snpst_dt_dim_id         String              COMMENT 'FK → Calendar Date Dimension (ngày snapshot)',
     age                     Nullable(Int64)     COMMENT 'Tuổi NHN tại ngày snapshot',
     has_active_violation            String              COMMENT 'TRUE nếu có vi phạm đang hoạt động',
+    violation_record_dt             Nullable(Date)      COMMENT 'Ngày lập biên bản vi phạm',
+    first_license_dt                Nullable(Date)      COMMENT 'Ngày cấp CCHN đầu tiên của NHN',
 
     -- From: CALENDAR DATE DIMENSION (Snapshot Date)
     snpst_cdr_dt            Nullable(Date)      COMMENT 'Ngày — từ Calendar Date Dimension',

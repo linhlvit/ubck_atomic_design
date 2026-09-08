@@ -272,6 +272,7 @@ class BAParser:
             return None
 
         stt_idx = get_col(["STT", "TT"])
+        ma_idx = get_col(["Mã", "Ma", "Group", "Nhóm"])
         dash_idx = get_col(["Dashboard/báo cáo", "Dashboard >> báo cáo", "Dashboard/BC", "Mã dashboard/BC"])
         name_idx = get_col(["Thông tin", "Thông tin (chỉ tiêu)", "Tên chỉ tiêu", "Chỉ tiêu"])
         desc_idx = get_col(["Mô tả"])
@@ -303,17 +304,28 @@ class BAParser:
 
             name = val(r, name_idx)
             stt = val(r, stt_idx)
+            ma = val(r, ma_idx)
 
-            # Skip empty summary/legend rows without indicator name or STT
-            if not name and not stt:
+            # Prioritize group code from 'Mã' if 'STT' is empty or contains BRD section path like '3.2.2.1'
+            if ma and (not stt or "." in stt or not stt.isdigit()):
+                clean_ma = re.sub(r"^(?:nhóm|group)\s*", "", ma, flags=re.IGNORECASE).strip()
+                if clean_ma.isdigit():
+                    stt = clean_ma
+                elif not stt:
+                    stt = ma
+            elif not stt and ma:
+                stt = ma
+
+            # Skip rows without dashboard or without indicator name
+            if not val(r, dash_idx) or not name:
                 continue
 
             # Skip instruction rows like 'Tên chiều/chỉ tiêu/thuộc tính'
             if "tên chiều/chỉ tiêu" in name.lower() or "thông tin (chỉ tiêu)" in name.lower():
                 continue
 
-            # Skip summary/statistic rows without STT, classification, status, or source table
-            if not stt and not val(r, pl_idx) and not val(r, status_idx) and not val(r, src_tbl_idx):
+            # Skip section header/title rows that have no classification, status, and source table
+            if not val(r, pl_idx) and not val(r, status_idx) and not val(r, src_tbl_idx):
                 continue
 
             item = BAItem(
@@ -361,7 +373,7 @@ class HLDParser:
         for line in lines:
             line_s = line.strip()
 
-            m_nhom = re.search(r"^\s*#{2,5}\s*(?:Nhóm|Group)\s*(\d+)(?:\s*[-–—:]\s*(.*?))?$", line_s, re.IGNORECASE)
+            m_nhom = re.search(r"^\s*#{2,5}\s*(?:Nhóm|Group)\s*(\d+)[a-zA-Z]?(?:\s*[-–—:]\s*(.*?))?$", line_s, re.IGNORECASE)
             if m_nhom:
                 curr_group_num = int(m_nhom.group(1))
                 curr_group_name = m_nhom.group(2).strip() if m_nhom.group(2) else f"Nhóm {curr_group_num}"

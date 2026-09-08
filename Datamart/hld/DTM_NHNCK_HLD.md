@@ -1,8 +1,9 @@
 ﻿# DTM_NHNCK_HLD — High Level Design
 **Module:** NHNCK — Người hành nghề chứng khoán  
-**Phiên bản:** 6.3  
-**Ngày:** 27/04/2026  
+**Phiên bản:** 6.4  
+**Ngày:** 27/04/2026 (cập nhật 09/09/2026)  
 **Phạm vi:** Tab THỐNG KÊ CHUNG + Tab TRA CỨU HỒ SƠ 360° + Tab DATA EXPLORER
+**Thay đổi v6.4 (09/09/2026 — đồng bộ HLD theo `BRD/BA/NHNCK_CodeDriftReport_2026-09-04 1.md`, sau khi LLD/flat-table đã được cập nhật trước đó nhưng HLD bị bỏ sót):** Bổ sung 2 cột kỹ thuật lên `Fact Practitioner Daily Snapshot` (erDiagram tại cả 3 Nhóm dùng chung — 1b/2/4): `Violation_Record_Date` (pass-through `sp_conduct_violation.violation_record_dt`) và `First_License_Date` (`MIN(issue_dt)` từ `atm_sp_license_certificate_document`). Không khai KPI mới — BA hiện hành không có chỉ tiêu tương ứng ở Nhóm 1b/2/4; giữ làm attribute nền tảng, xem ghi chú tại từng Nhóm.
 
 ---
 
@@ -567,6 +568,8 @@ erDiagram
         string Snapshot_Date_Dimension_Id FK
         int Age
         varchar Has_Active_Violation
+        date Violation_Record_Date
+        date First_License_Date
     }
 
     Calendar_Date_Dimension {
@@ -595,6 +598,8 @@ erDiagram
 
 > **Ghi chú erDiagram:**
 > - `Has_Active_Violation` = ETL-derived Indicator (Y/N): Y nếu NHN có ít nhất 1 bản ghi `Conduct Violation` (bất kỳ), N nếu không có — bám sát SQL BA gốc (`JOIN Violations`, không filter trạng thái). Phục vụ K_NHNCK_4 (filter = 'Y'). (Sửa 2026-07-17: đổi từ boolean sang Y/N cho đúng data domain Indicator; Sửa 2026-07-21: bỏ mô tả "đang active" — Atomic `sp_conduct_violation` không có field trạng thái vi phạm và SQL BA cũng không yêu cầu lọc, xem O_NHNCK_5)
+> - **[MỚI 2026-09-08, đồng bộ code↔design]** `Violation_Record_Date` = ETL-derived Date, pass-through `Conduct Violation.Violation Record Date` (LEFT JOIN theo Practitioner Id, không lọc trạng thái — cùng driving key với `Has_Active_Violation`). Cột kỹ thuật hỗ trợ hiển thị chi tiết, KHÔNG phải KPI riêng, không đổi logic K_NHNCK_4. Xem `BRD/BA/NHNCK_CodeDriftReport_2026-09-04 1.md`
+> - **[MỚI 2026-09-08, đồng bộ code↔design]** `First_License_Date` = ETL-derived Date, `MIN(Issue Date)` từ `License Certificate Document` (lọc `Source System Code='NHNCK_CERTIFICATE_RECORDS'`, `Record Status='ACTIVE'`) GROUP BY NHN — Ngày cấp CCHN đầu tiên. Chưa gắn KPI/dashboard nào trong BA hiện hành (BA không có dòng con nào yêu cầu chỉ tiêu này ở Nhóm 1b/2/4) — giữ làm attribute nền tảng, cần BA xác nhận nếu muốn khai KPI mới (VD: thâm niên hành nghề). Xem `BRD/BA/NHNCK_CodeDriftReport_2026-09-04 1.md`
 > - `Age` = ETL-derived: Year(Snapshot_Date) − Year(Birth_Date). Phục vụ Nhóm 4.
 
 **Lineage Mart → Báo cáo — Nhóm 1b:**
@@ -664,6 +669,8 @@ erDiagram
         string Snapshot_Date_Dimension_Id FK
         int Age
         varchar Has_Active_Violation
+        date Violation_Record_Date
+        date First_License_Date
     }
 
     Calendar_Date_Dimension {
@@ -694,6 +701,8 @@ erDiagram
 > - Grain ngày: ETL append 1 row per NHN mỗi ngày. Slicer "chọn năm Y" = filter `Snapshot_Date = 31/12/Y` (năm quá khứ) hoặc `Snapshot_Date = MAX(Snapshot_Date) WHERE Year = Y` (năm hiện tại = ngày mới nhất có dữ liệu).
 > - `Age` = ETL-derived int = Year(Snapshot_Date) − Year(Birth_Date), tính từ `ProfessionalHistories.BirthDate`. Presentation layer tự nhóm thành age bands.
 > - `Has_Active_Violation` = ETL-derived Indicator (Y/N): Y nếu NHN có ít nhất 1 bản ghi `Conduct Violation` (bất kỳ), N nếu không có — bám sát SQL BA gốc (`JOIN Violations`, không filter trạng thái). Xem O_NHNCK_5. Phục vụ K_NHNCK_4 (filter = 'Y'). (Sửa 2026-07-17: đổi từ boolean sang Y/N; Sửa 2026-07-21: bỏ mô tả "Violation_Status_Code=1 (ACTIVE)" — Atomic không có field này và SQL BA cũng không yêu cầu lọc trạng thái)
+> - **[MỚI 2026-09-08, đồng bộ code↔design]** `Violation_Record_Date` = ETL-derived Date, pass-through `Conduct Violation.Violation Record Date` (LEFT JOIN theo Practitioner Id, không lọc trạng thái — cùng driving key với `Has_Active_Violation`). Cột kỹ thuật hỗ trợ hiển thị chi tiết, KHÔNG phải KPI riêng, không đổi logic K_NHNCK_4. Xem `BRD/BA/NHNCK_CodeDriftReport_2026-09-04 1.md`
+> - **[MỚI 2026-09-08, đồng bộ code↔design]** `First_License_Date` = ETL-derived Date, `MIN(Issue Date)` từ `License Certificate Document` (lọc `Source System Code='NHNCK_CERTIFICATE_RECORDS'`, `Record Status='ACTIVE'`) GROUP BY NHN — Ngày cấp CCHN đầu tiên. Chưa gắn KPI/dashboard nào trong BA hiện hành (BA không có dòng con nào yêu cầu chỉ tiêu này ở Nhóm 1b/2/4) — giữ làm attribute nền tảng, cần BA xác nhận nếu muốn khai KPI mới (VD: thâm niên hành nghề). Xem `BRD/BA/NHNCK_CodeDriftReport_2026-09-04 1.md`
 > - Thông tin Education_Level_Code/Name, Nationality_Code, Practitioner_Code, Practice_Status_Code/Name đọc qua JOIN `Securities Practitioner Dimension`. (Bổ sung 2026-08) `Education_Level_Name`/`Practice_Status_Name` — ETL-derived, denormalize từ Classification tại thời điểm populate Dimension; không gắn KPI riêng, chỉ là metadata mô tả bổ sung theo coverage rule cho Dimension.
 
 **Lineage Mart → Báo cáo — Nhóm 2:**
@@ -872,6 +881,8 @@ erDiagram
         string Snapshot_Date_Dimension_Id FK
         int Age
         varchar Has_Active_Violation
+        date Violation_Record_Date
+        date First_License_Date
     }
 
     Calendar_Date_Dimension {
@@ -902,6 +913,8 @@ erDiagram
 > - Grain ngày: ETL append 1 row per NHN mỗi ngày. Slicer "chọn năm Y" = filter `Snapshot_Date = 31/12/Y` (năm quá khứ) hoặc `Snapshot_Date = MAX(Snapshot_Date) WHERE Year = Y` (năm hiện tại = ngày mới nhất có dữ liệu).
 > - `Age` = ETL-derived int = Year(Snapshot_Date) − Year(Birth_Date), tính từ `ProfessionalHistories.BirthDate`. Presentation layer tự nhóm thành age bands.
 > - `Has_Active_Violation` = ETL-derived Indicator (Y/N): Y nếu NHN có ít nhất 1 bản ghi `Conduct Violation` (bất kỳ), N nếu không có — bám sát SQL BA gốc (`JOIN Violations`, không filter trạng thái). Xem O_NHNCK_5. Phục vụ K_NHNCK_4 (filter = 'Y'). (Sửa 2026-07-17: đổi từ boolean sang Y/N; Sửa 2026-07-21: bỏ mô tả "Violation_Status_Code=1 (ACTIVE)" — Atomic không có field này và SQL BA cũng không yêu cầu lọc trạng thái)
+> - **[MỚI 2026-09-08, đồng bộ code↔design]** `Violation_Record_Date` = ETL-derived Date, pass-through `Conduct Violation.Violation Record Date` (LEFT JOIN theo Practitioner Id, không lọc trạng thái — cùng driving key với `Has_Active_Violation`). Cột kỹ thuật hỗ trợ hiển thị chi tiết, KHÔNG phải KPI riêng, không đổi logic K_NHNCK_4. Xem `BRD/BA/NHNCK_CodeDriftReport_2026-09-04 1.md`
+> - **[MỚI 2026-09-08, đồng bộ code↔design]** `First_License_Date` = ETL-derived Date, `MIN(Issue Date)` từ `License Certificate Document` (lọc `Source System Code='NHNCK_CERTIFICATE_RECORDS'`, `Record Status='ACTIVE'`) GROUP BY NHN — Ngày cấp CCHN đầu tiên. Chưa gắn KPI/dashboard nào trong BA hiện hành (BA không có dòng con nào yêu cầu chỉ tiêu này ở Nhóm 1b/2/4) — giữ làm attribute nền tảng, cần BA xác nhận nếu muốn khai KPI mới (VD: thâm niên hành nghề). Xem `BRD/BA/NHNCK_CodeDriftReport_2026-09-04 1.md`
 > - Thông tin Education_Level_Code/Name, Nationality_Code, Practitioner_Code, Practice_Status_Code/Name đọc qua JOIN `Securities Practitioner Dimension`. (Bổ sung 2026-08) `Education_Level_Name`/`Practice_Status_Name` — ETL-derived, denormalize từ Classification tại thời điểm populate Dimension; không gắn KPI riêng, chỉ là metadata mô tả bổ sung theo coverage rule cho Dimension.
 
 **Lineage Mart → Báo cáo — Nhóm 4:**
