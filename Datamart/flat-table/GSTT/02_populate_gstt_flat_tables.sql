@@ -38,6 +38,7 @@ SELECT
     f.total_negotiated_vol,
     f.total_negotiated_val,
     f.foreign_net_vol,
+    f.foreign_net_negotiated_vol,
     f.outstanding_share_quantity,
     f.revenue,
     f.net_profit_after_tax,

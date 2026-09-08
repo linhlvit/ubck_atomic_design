@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_fct_stock_portfolio_snpst_flat ON CLUST
     total_negotiated_vol                Nullable(Int64)         COMMENT 'Tổng khối lượng giao dịch thỏa thuận',
     total_negotiated_val                Nullable(Decimal(23,2)) COMMENT 'Tổng giá trị giao dịch thỏa thuận',
     foreign_net_vol                     Nullable(Int64)         COMMENT 'Khối lượng mua ròng của nhà đầu tư nước ngoài',
+    foreign_net_negotiated_vol          Nullable(Int64)         COMMENT '[MỚI 2026-09-09] Khối lượng mua ròng của NĐT nước ngoài, giao dịch thỏa thuận (Board Type IN T1-T4,T6,R1) — khác foreign_net_vol (khớp lệnh). BA STT 1 dòng con 21, K_GSTT_144, xem O_GSTT_20',
     outstanding_share_quantity          Nullable(Int64)         COMMENT 'Số cổ phiếu đang lưu hành — pc_share_statistics_hstr, bản ghi ACTIVE gần nhất <= ngày GD (lookback, sửa 2026-09-08, O_GSTT_2)',
     revenue                             Nullable(Decimal(23,2)) COMMENT 'Doanh thu — point-in-time theo Ky_bao_cao (rule GSĐC, cập nhật 2026-09-08)',
     net_profit_after_tax                Nullable(Decimal(23,2)) COMMENT 'Lợi nhuận sau thuế — point-in-time theo Ky_bao_cao (rule GSĐC, cập nhật 2026-09-08)',

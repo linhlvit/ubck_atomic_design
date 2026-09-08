@@ -442,6 +442,17 @@ Trade_HNX:
     -- KL NN bán: dòng mà BÊN BÁN là nước ngoài
     SUM(CASE WHEN t.[Sell Foreign Investor Type Code] IN ('10','20')
              THEN t.[Trade quantity] ELSE 0 END) ",,,,,Done,Dữ liệu tĩnh,P
+1,,Dashboard thông tin về danh mục chứng khoán theo dạng bảng số liệu,KLNN ròng thỏa thuận ,KLNN mua − KLNN bán,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,X,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"TRADE_BOOK_HOSE:
+kl_nn_mua: Execution - Volume (điều kiện: Buy - Foreigner Investor type IN ('10','20'))
+kl_nn_ban: Execution - Volume (điều kiện: Sell - Foreigner Investor type IN ('10','20'))
+Board ID in ('T1','T2','T3','T4','T6, 'R1')
+Trade_HNX:
+kl_nn_mua: Trade quantity (điều kiện: Buy Foreign Investor Type Code type IN ('10','20'))
+kl_nn_ban: Trade quantity (điều kiện: Sell Foreign Investor Type Code IN ('10','20'))
+Board ID in ('T1','T2','T3','T4','T6, 'R1')","- TRADE_BOOK_HOSE: 
+Board Type in ('T1','T2','T3','T4','T6,'R1')
+- Trade_HNX: 
+Board ID in ('T1','T2','T3','T4','T6, 'R1')",,,,,,,Done,Dữ liệu tĩnh,P
 2,,Dashboard thông tin về danh mục chứng khoán theo dạng bảng số liệu của trái phiếu,Mã trái phiếu,,Dashboard,Chiều,TB,Mã CK,MDDS,X,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,symbol,"                AND s.STOCKTYPE  = '1'
                 AND s.FLOORCODE in ('04','10','03','02') 
                 AND s.MARKETID IN ('BDO', 'HCX')
@@ -21721,16 +21732,15 @@ LNST AS (
     WHERE rn = 1
 )
 ",,,,,,Chưa có sql,Dữ liệu tĩnh,
-23,,"Theo dõi bản đồ nhiệt của các cổ phiếu, ngành theo Vốn hóa thị trường / KLGD / GTGD / KLNN mua / KLNN bán / GTNN mua / GTNN bán",Mã,Mã chứng khoán,Dashboard,Chiều,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,symbol,"FloorCode IN ('10','02','04', ' 03') AND StockType NOT IN (
-1
-  )","SELECT DISTINCT
-    s.symbol            AS ma_ck,
-FROM JAD_STOCKINFOR s
-WHERE s.FloorCode IN ('10','02','04', ' 03')   -- HOSE, HNX, UPCOM
-   AND StockType NOT IN (
-    1
-                )
-  AND s.tradingdate = :ngay_gd;",,,,,,Done,Dữ liệu tĩnh,
+23,,"Theo dõi bản đồ nhiệt của các cổ phiếu, ngành theo Vốn hóa thị trường / KLGD / GTGD / KLNN mua / KLNN bán / GTNN mua / GTNN bán",Mã,Mã chứng khoán,Dashboard,Chiều,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,symbol,"FloorCode IN ('10','02','04',) AND  NOT  (
+    (s.floorcode = '02'  AND s.stocktype in (1,4))
+    OR
+    (s.floorcode = '10' AND s.stocktype = 1)
+);","FloorCode IN ('10','02','04',) AND  NOT  (
+    (s.floorcode = '02'  AND s.stocktype in (1,4))
+    OR
+    (s.floorcode = '10' AND s.stocktype = 1)
+);",,,,,,Done,Dữ liệu tĩnh,
 23,,"Theo dõi bản đồ nhiệt của các cổ phiếu, ngành theo Vốn hóa thị trường / KLGD / GTGD / KLNN mua / KLNN bán / GTNN mua / GTNN bán",Ngành,Nhóm ngành của cổ phiếu,Dashboard,Chiều,Trùng,Mã CK,IDS,,X,,Done,Ngành kinh tế cấp 1 trên IDS,IDS.categories (c),"c.industry_cd, c.industry_name AS ten_nganh",c.active_flg = 1,"SELECT c.industry_cd, c.industry_name
  FROM IDS.categories c
  WHERE c.active_flg = 1
@@ -22019,7 +22029,7 @@ SCPLH AS (
     FROM krx.trade_book_hose t
     WHERE 1=1
       AND DATE_FORMAT(TO_DATE(t.TRADE_DATE, 'd/M/yyyy'), 'yyyyMMdd') = (SELECT ngay_gd FROM Ngay_chot)
-	  AND t.market_id = 'STK'
+          AND t.market_id = 'STK'
     GROUP BY t.SYMBOL                                                          
 
     UNION ALL
@@ -22045,7 +22055,7 @@ SCPLH AS (
     FROM krx.trade_book_hnx t
     WHERE 1=1
        AND t.trade_date  = (SELECT ngay_gd FROM Ngay_chot)
-	   AND t.market_id IN ('STX', 'UPX')
+           AND t.market_id IN ('STX', 'UPX')
     GROUP BY t.ISSUE_CODE                                            
 )
 , Von_hoa AS (
@@ -22060,7 +22070,7 @@ SCPLH AS (
 SELECT
     c.ten_san,
     c.ten_nganh,
-	ROUND(
+        ROUND(
         (
             SUM(c.gia_dong_cua * COALESCE(vh.KLLH, 0)) OVER (PARTITION BY c.ten_nganh)
             / NULLIF(SUM(c.gia_tham_chieu * COALESCE(vh.KLLH, 0)) OVER (PARTITION BY c.ten_nganh), 0)
@@ -22078,15 +22088,15 @@ SELECT
     COALESCE(sl.kl_nn_ban, 0)            AS kl_nn_ban,
     COALESCE(sl.gt_nn_mua, 0)            AS gt_nn_mua,
     COALESCE(sl.gt_nn_ban, 0)            AS gt_nn_ban,
-	COALESCE(sl.kl_nn_mua, 0) - COALESCE(sl.kl_nn_ban, 0) AS kl_nn_rong,
-	COALESCE(sl.gt_nn_mua, 0) - COALESCE(sl.gt_nn_ban, 0) AS gt_nn_rong,
+        COALESCE(sl.kl_nn_mua, 0) - COALESCE(sl.kl_nn_ban, 0) AS kl_nn_rong,
+        COALESCE(sl.gt_nn_mua, 0) - COALESCE(sl.gt_nn_ban, 0) AS gt_nn_rong,
     vh.von_hoa                                                               
 FROM MDDS c
 LEFT JOIN so_lenh sl ON sl.symbol = c.ma_ck                                  
 LEFT JOIN Von_hoa  vh ON vh.symbol = c.ma_ck                             
 ORDER BY c.floor_code, c.ma_ck;                                              
 
-",,,,,,,Chưa có CSDL - Map biểu mẫu,
+",,,,,,Done,"Dữ liệu động, Dữ liệu tĩnh",
 23,,"Theo dõi bản đồ nhiệt của các cổ phiếu, ngành theo Vốn hóa thị trường / KLGD / GTGD / KLNN mua / KLNN bán / GTNN mua / GTNN bán",Vốn hóa,Giá đóng cửa  * Số cổ phiếu lưu hành,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,"MDDS, CSDLTT",,X,,Done,"- Giá đóng cửa: thông tin thị trường 
 - Số cổ phiếu đang lưu hành: Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày)","1. Giá đóng cửa: 
  JAD_STOCKINFOR
