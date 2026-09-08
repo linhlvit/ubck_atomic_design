@@ -137,6 +137,50 @@ Các trường kỹ thuật sau do ETL framework tự quản lý — **không đ
 
 ---
 
+## Quy tắc Role-Playing Date Dimension & Phân định Degenerate Date trên Fact
+
+### 1. Chuẩn Role-Playing Date Dimension Key trên Fact table (Trục thời gian phân tích chính)
+
+Trong mô hình hình sao (Star Schema), mọi khóa ngoại liên kết từ bảng Fact tới bảng `Calendar_Date_Dimension` đều là **Role-Playing Dimension Key**:
+- **Fact Periodic Snapshot (`Fact_*_Snapshot` / `_snpst`):** Cột ngày snapshot kỳ bắt buộc đặt tên là `Snapshot_Date_Dimension_Id FK` (kiểu `string` hoặc `int`). Bắt buộc có quan hệ `Calendar_Date_Dimension ||--o{ Fact_<Name>_Snapshot : " "`.
+- **Fact Event / Khác:** Cột ngày sự kiện bắt buộc đặt tên phản ánh vai trò nghiệp vụ: `<Role>_Date_Dimension_Id FK` (ví dụ: `Trade_Date_Dimension_Id FK`, `Issue_Date_Dimension_Id FK`, `Decision_Date_Dimension_Id FK`, `Submission_Date_Dimension_Id FK`, `Effective_Date_Dimension_Id FK`...). Bắt buộc có quan hệ `Calendar_Date_Dimension ||--o{ Fact_<Name> : " "`.
+- ❌ **CẤM TUYỆT ĐỐI:** Cấm sử dụng `Calendar_Date_Dimension_Id` (hoặc `Calendar_Date_Dimension_Id FK`, `cdr_dt_dim_id`) trên bất kỳ Fact table nào. Cột `Calendar_Date_Dimension_Id` **chỉ duy nhất** là Primary Key của riêng bảng Dimension `Calendar_Date_Dimension`.
+
+### 2. Phân định Role-Playing Date FK vs Degenerate Date Attribute
+
+Để tránh nhầm lẫn biến tất cả trường ngày thành Dimension FK hoặc gán sai nhãn FK:
+
+| Tiêu chí | Role-Playing Date Dimension FK | Degenerate Date Attribute |
+|---|---|---|
+| **Mục đích nghiệp vụ** | Trục thời gian phân tích chính; phục vụ cắt lát, lọc theo lịch, năm, quý, tháng, tuần, ngày nghỉ, ngày giao dịch. | Thuộc tính mô tả nghiệp vụ của sự kiện hoặc thực thể; phục vụ hiển thị chi tiết (drill-down / pass-through lookup). |
+| **Bảng áp dụng** | Fact tables (`fct_*` / `_Snapshot`). | Fact tables, Dimension tables (`dim_*`), Operational tables (`opr_*`). |
+| **Quan hệ Dimension** | Bắt buộc có quan hệ `Calendar_Date_Dimension \|\|--o{ Fact : " "`. | **Không có** quan hệ với Date Dimension. |
+| **Tên Logical (HLD)** | Fact Snapshot: `Snapshot Date Dimension Id`<br>Fact Event: `<Role> Date Dimension Id` | `<Business Concept> Date` (Title Case With Spaces) |
+| **Cú pháp erDiagram** | `string Snapshot_Date_Dimension_Id FK`<br>`string <Role>_Date_Dimension_Id FK` | `date <Business_Concept>_Date` (Title_Case_With_Underscore, **KHÔNG tag FK**) |
+| **Tên Physical (LLD)** | Fact Snapshot: `snpst_dt_dim_id`<br>Fact Event: `<role>_dt_dim_id` | `<business_concept>_dt` |
+| **Data Domain & Type** | Domain: `Surrogate Dimension Key`<br>Type: `string` (hoặc `int`) | Domain: `Date`<br>Type: `date` (hoặc `datetime`) |
+| **Key Tagging** | Bắt buộc gắn tag **`FK`**. | **Tuyệt đối cấm tag `FK`** (để trống). |
+| **Cấm kỵ tuyệt đối** | Cấm dùng generic `Calendar Date Dimension Id` / `cdr_dt_dim_id`. | Cấm gắn hậu tố `_Dimension_Id`, `_Dim_Id`, hoặc `_Id`. Cấm tạo Dimension ảo. |
+
+### 3. Bảng ví dụ phân định thực tế (Reference Inventory)
+
+| Ngữ cảnh nghiệp vụ | Khái niệm ngày | Phân loại chuẩn | Cú pháp erDiagram | Physical Column (LLD) | Giải thích kỹ thuật |
+|---|---|---|---|---|---|
+| Snapshot kỳ CTCK/NĐT | Ngày chốt kỳ snapshot | **Role-Playing Date FK** | `string Snapshot_Date_Dimension_Id FK` | `snpst_dt_dim_id` | Trục thời gian định kỳ chính của Fact Periodic Snapshot; join `Calendar_Date_Dimension`. |
+| Khớp lệnh chứng khoán | Ngày diễn ra phiên khớp lệnh | **Role-Playing Date FK** | `string Trade_Date_Dimension_Id FK` | `trade_dt_dim_id` | Trục thời gian sự kiện giao dịch; phân tích theo phiên, tuần, tháng. |
+| Cấp giấy phép / CCHN | Ngày ban hành chứng chỉ | **Role-Playing Date FK** | `string Issue_Date_Dimension_Id FK` | `issue_dt_dim_id` | Trục thời gian sự kiện cấp phép hành nghề. |
+| Quyết định xử phạt | Ngày ra quyết định xử phạt | **Role-Playing Date FK** | `string Decision_Date_Dimension_Id FK` | `decision_dt_dim_id` | Trục thời gian sự kiện ban hành quyết định hành chính. |
+| Nộp hồ sơ / báo cáo | Ngày tiếp nhận hồ sơ | **Role-Playing Date FK** | `string Submission_Date_Dimension_Id FK` | `submission_dt_dim_id` | Trục thời gian theo dõi tiến độ nộp báo cáo. |
+| Hiệu lực văn bản / CCHN | Ngày bắt đầu có hiệu lực | **Role-Playing Date FK** | `string Effective_Date_Dimension_Id FK` | `effective_dt_dim_id` | Trục thời gian theo dõi thời hạn hiệu lực phân tích. |
+| Hồ sơ người hành nghề | Ngày lập biên bản vi phạm | **Degenerate Date Attribute** | `date Violation_Record_Date` | `violation_record_dt` | Thuộc tính mô tả chi tiết của biên bản vi phạm, hiển thị pass-through (như trong `fct_practitioner_daily_snpst`). |
+| Quyết định xử phạt | Ngày ký quyết định | **Degenerate Date Attribute** | `date Decision_Signed_Date` | `decision_signed_dt` | Mốc ngày ký văn bản hành chính; hiển thị trên báo cáo chi tiết. |
+| Hồ sơ người hành nghề | Ngày cấp chứng chỉ lần đầu | **Degenerate Date Attribute** | `date First_License_Date` | `first_license_dt` | Mốc thời gian tích lũy thâm niên của cá nhân trên Dimension. |
+| Hồ sơ cá nhân | Ngày sinh | **Degenerate Date Attribute** | `date Birth_Date` | `birth_dt` | Thuộc tính nhân thân trên bảng cá nhân/Operational. |
+| Quá trình công tác | Ngày bắt đầu làm việc | **Degenerate Date Attribute** | `date Hire_Date` | `hire_dt` | Thuộc tính lịch sử công tác trên bảng Operational/History. |
+| Quá trình công tác | Ngày chấm dứt hợp đồng | **Degenerate Date Attribute** | `date Termination_Date` | `termination_dt` | Thuộc tính lịch sử công tác trên bảng Operational/History. |
+
+---
+
 
 ## Mỗi cột trong Fact phải trace được về KPI/mockup — không copy nguyên attribute entity nguồn
 

@@ -72,9 +72,28 @@ Ví dụ: `O_FMS_1`, `O_FMS_2`, `O_NDTNN_3`
 > `Accumulating Snapshot` (vòng đời nhiều milestone, update in-place) bị loại khỏi danh sách hợp lệ: chưa module nào
 > dùng, và nếu phát sinh nhu cầu thì phải bổ sung vào `section_structure.md` trước, không tự thêm ở đây.
 
-Mọi Fact bắt buộc có ít nhất 1 FK date đến Calendar Date Dimension.
+Mọi Fact bắt buộc có ít nhất 1 FK date đến Calendar Date Dimension theo chuẩn **Role-Playing Date Dimension**:
+- Fact Periodic Snapshot (`fct_*_snpst` / `Fact ... Snapshot`): `Snapshot Date Dimension Id` → physical: `snpst_dt_dim_id`.
+- Fact Event / Fact khác: `<Role> Date Dimension Id` → physical: `<role>_dt_dim_id` (`issue_dt_dim_id`, `trade_dt_dim_id`, `evaluation_dt_dim_id`, `submission_dt_dim_id`, `effective_dt_dim_id`...).
+- ❌ **TUYỆT ĐỐI CẤM:** Không được dùng `Calendar Date Dimension Id` / `cdr_dt_dim_id` trên bất kỳ Fact table nào (`cdr_dt_dim_id` chỉ là PK của Dimension `cdr_dt_dim`).
+- **Degenerate Date Attributes:** Các ngày thuộc tính nghiệp vụ phụ (như ngày lập biên bản, ngày ký QĐ, ngày cấp đầu tiên) giữ kiểu `date` thuần túy, đặt tên `<concept>_dt` (Title Case: `<Concept>_Date`, physical: `<concept>_dt`), KHÔNG thêm hậu tố `_Dimension_Id` / `_dim_id`.
 ❌ Không thiết kế Surrogate key cho Fact table.
 ❌ Không dùng Snowflake schema.
+
+---
+
+## Role-Playing Date FK và Degenerate Date Attribute Naming Conventions
+
+| Loại thuộc tính ngày | Logical Name (HLD) | erDiagram Name | Physical Name (LLD) | Label | Type | Mục đích & Ví dụ |
+|---|---|---|---|---|---|---|
+| **Fact Snapshot Date** | `Snapshot Date Dimension Id` | `Snapshot_Date_Dimension_Id` | `snpst_dt_dim_id` | `FK` | `string` / `int` | Trục thời gian định kỳ của Fact Snapshot.<br>VD: `Fact Fund Management Company Snapshot` |
+| **Fact Event Date** | `<Role> Date Dimension Id` | `<Role>_Date_Dimension_Id` | `<role>_dt_dim_id` | `FK` | `string` / `int` | Trục thời gian sự kiện của Fact Event.<br>VD: `Trade Date Dimension Id` → `trade_dt_dim_id`<br>`Issue Date Dimension Id` → `issue_dt_dim_id`<br>`Decision Date Dimension Id` → `decision_dt_dim_id`<br>`Submission Date Dimension Id` → `submission_dt_dim_id`<br>`Effective Date Dimension Id` → `effective_dt_dim_id` |
+| **Degenerate Date** | `<Concept> Date` | `<Concept>_Date` | `<concept>_dt` | (trống) | `date` / `datetime` | Thuộc tính ngày mô tả nghiệp vụ (pass-through).<br>VD: `Violation Record Date` → `violation_record_dt`<br>`Decision Signed Date` → `decision_signed_dt`<br>`First License Date` → `first_license_dt`<br>`Birth Date` → `birth_dt` |
+
+❌ **CẤM:**
+- Cấm dùng `Calendar Date Dimension Id` (`cdr_dt_dim_id`) trên bất kỳ Fact table nào (`Calendar Date Dimension Id` chỉ là PK của Dimension `Calendar_Date_Dimension`).
+- Cấm đặt tên Degenerate Date có hậu tố `_Dimension_Id`, `_Dim_Id`, hoặc `_Id`.
+- Cấm gắn nhãn `FK` cho Degenerate Date attributes.
 
 ---
 

@@ -77,6 +77,7 @@ Cụm Tác nghiệp (không có Fact) → không cần Calendar Date Dimension.
 > ⚠️ **1 bảng KPI duy nhất cho cả Nhóm** — không tách theo trạng thái, không tách `*KPI mới:*` / `*KPI reuse:*` riêng biệt. Mọi dòng KPI của Nhóm (mới, reuse, READY, PENDING) nằm chung 1 bảng 7 cột.
 > ⚠️ **Đơn vị/Công thức của dòng PENDING:** để trống hoặc ghi "TBD — chờ Atomic" — không bịa công thức khi chưa xác nhận nguồn.
 > ⚠️ **Cột Ghi chú của dòng PENDING chứa toàn bộ nội dung trước đây nằm ở block PENDING riêng:** Lý do pending (bắt buộc), Atomic cần bổ sung (bắt buộc), Mart dự kiến — chỉ tên bảng + grain (bắt buộc). Viết súc tích, mỗi phần 1 câu.
+> ⚠️ **Đối soát số lượng BA ↔ HLD (Check #10 Bước 5B):** Tập chỉ tiêu cơ sở ($HLD\_Base$) phải khớp 1-1 với các dòng chỉ tiêu hợp lệ của BA ($BA\_Valid$). Chênh lệch ($\Delta = HLD\_Total - BA\_Valid > 0$) chỉ được chấp nhận khi toàn bộ các chỉ tiêu dôi dư là chỉ tiêu phái sinh nội tại (`_YOY`, `_GROWTH`, tỷ lệ %) hoặc sub-component (`a`, `b`) và phải được giải trình rõ trong cột Ghi chú.
 
 **Star Schema:**
 
@@ -86,6 +87,8 @@ erDiagram
 ```
 
 > Chỉ vẽ nếu Nhóm có ít nhất 1 dòng READY. Nhóm 100% PENDING → bỏ qua Star Schema/erDiagram hoàn toàn.
+>
+> ⚠️ **Quy tắc Role-Playing Date FK (Check #13 Bước 5B):** Khóa ngoại nối Fact với Calendar Date Dimension bắt buộc là Role-Playing Date Key (`Snapshot_Date_Dimension_Id FK` cho Fact Snapshot, `<Role>_Date_Dimension_Id FK` cho Fact Event). Tuyệt đối CẤM dùng `Calendar_Date_Dimension_Id FK` trên bất kỳ Fact block nào. Các ngày mô tả nghiệp vụ phụ (như ngày ký, ngày lập biên bản, ngày sinh) thiết kế dạng Degenerate Date (kiểu `date`, không gắn nhãn `FK`, không nối sang Calendar Date Dimension).
 
 **Lineage Mart → Báo cáo:**
 
@@ -186,6 +189,12 @@ graph TB
 
 Hiển thị node + edge + màu phân loại (dim/fact/oper). Không thêm thông tin khác.
 Node label không dùng `\n` — viết trên 1 dòng duy nhất.
+
+> ⚠️ **Quy tắc trích xuất FK từ graph TB sang Phase 2 (`Entities.csv`):**
+> Mũi tên `DIM_DATE --> FACT_X` biểu diễn quan hệ Date Dimension. Khi trích xuất sang `Entities.csv`, khóa ngoại date trên Fact bắt buộc là Role-Playing Date Key:
+> - Fact Periodic Snapshot: `Calendar Date Dimension.Snapshot Date Dimension Id`
+> - Fact Event: `Calendar Date Dimension.<Role> Date Dimension Id`
+> Tuyệt đối CẤM `Calendar Date Dimension.Calendar Date Dimension Id`.
 
 ### 3.2 Bảng Phân tích (chỉ liệt kê Fact)
 

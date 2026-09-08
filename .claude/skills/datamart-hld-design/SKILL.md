@@ -75,14 +75,84 @@ Phase 2:  Sau khi Phase 1 duyệt → đọc Section 3 + Section 4 HLD → xuấ
 
 1. **BA file** (`BRD/BA/BA_analyst_{MODULE}.csv`) — extract toàn bộ dòng có `Trạng thái mapping ∈ {Done, Doing, Pending}`:
 
-   > ⚠️ **Đọc CSV đúng cách:** File BA chứa cell multi-line (SQL, mô tả dài) — mỗi newline trong cell tạo thêm dòng vật lý. Đọc raw lines sẽ cho số dòng sai (VD: 452 chỉ tiêu nhưng 7358 dòng vật lý). **Bắt buộc dùng `csv.reader` với `delimiter=';'`** để parse đúng quoted multiline cells. STT trong file là số thứ tự nhóm/tab — mỗi STT = 1 nhóm duy nhất.
+   > ⚠️ **Đọc CSV chuẩn đa định dạng (Auto-detect Delimiter, Encoding & Header):**
+   > File BA chứa cell multi-line (SQL, mô tả dài) và sử dụng các chuẩn delimiter khác nhau tùy phân hệ (dấu `,` ở GSTT, GSĐC, NHNCK, PTTT, QLCB, QLKD, TKNB; dấu `;` ở FMS, NDTNN, TT, VP). Ngoài ra dòng header có thể nằm ở dòng 0 hoặc dòng 1 (sau banner).
+   > **Bắt buộc dùng bộ đọc linh hoạt:**
    >
    > ```python
-   > import csv, io
-   > with open('BA_analyst_{MODULE}.csv', encoding='utf-8-sig') as f:
-   >     content = f.read()
-   > reader = csv.reader(io.StringIO(content), delimiter=';')
-   > rows = list(reader)
+   > import csv, io, re
+   > from pathlib import Path
+   > 
+   > raw_bytes = Path(f'BRD/BA/BA_analyst_{MODULE}.csv').read_bytes()
+   > # Xử lý encoding: UTF-8 with BOM, fallback CP1258/Latin-1
+   > try:
+   >     raw_text = raw_bytes.decode('utf-8-sig')
+   > except UnicodeDecodeError:
+   >     raw_text = raw_bytes.decode('cp1258', errors='replace')
+   > 
+   > # Auto-detect delimiter: đếm tần suất trên mẫu đầu file (loại trừ nội dung quote)
+   > sample = raw_text[:4096].lstrip('\ufeff')
+   > delim = ';' if sample.count(';') > sample.count(',') else ','
+   > 
+   > reader = csv.reader(io.StringIO(raw_text), delimiter=delim)
+   > all_rows = list(reader)
+   > 
+   > # Nhận diện dòng header (quét top 10 dòng tìm từ khóa cột)
+   > hdr_idx = 0
+   > for idx in range(min(10, len(all_rows))):
+   >     r_str = " ".join(c.lower() for c in all_rows[idx])
+   >     if ("stt" in r_str or "tt" in r_str) and ("thông tin" in r_str or "chỉ tiêu" in r_str or "dashboard" in r_str):
+   >         hdr_idx = idx
+   >         break
+   > 
+   > header = [c.strip() for c in all_rows[hdr_idx]]
+   > col_map = {name.lower(): i for i, name in enumerate(header) if name}
+   > 
+   > def get_val(row, aliases):
+   >     for a in aliases:
+   >         if a.lower() in col_map and len(row) > col_map[a.lower()]:
+   >             return row[col_map[a.lower()]].strip()
+   >     return ""
+   > 
+   > # Trích xuất dòng KPI hợp lệ và nhận diện Nhóm linh hoạt:
+   > valid_kpis = []
+   > for row in all_rows[hdr_idx + 1:]:
+   >     if not any(c.strip() for c in row):
+   >         continue
+   >     
+   >     name = get_val(row, ["Thông tin", "Thông tin (chỉ tiêu)", "Tên chỉ tiêu", "Chỉ tiêu"])
+   >     stt_raw = get_val(row, ["STT", "TT"])
+   >     ma_raw = get_val(row, ["Mã", "Group", "Nhóm"])
+   >     status = get_val(row, ["Trạng thái mapping", "Trạng thái"])
+   >     pl = get_val(row, ["Phân loại"])
+   >     src_tbl = get_val(row, ["Bảng nguồn", "Nguồn"])
+   >     dash = get_val(row, ["Dashboard/báo cáo", "Dashboard >> báo cáo", "Dashboard/BC"])
+   >     
+   >     # 1. Bỏ qua dòng template/instruction:
+   >     if "tên chiều/chỉ tiêu" in name.lower() or "chiều/chỉ tiêu cơ sở" in pl.lower():
+   >         continue
+   >     # 2. Bỏ qua dòng phân nhóm rỗng / banner tiêu đề (không có phân loại, trạng thái và nguồn):
+   >     if not pl and not status and not src_tbl:
+   >         continue
+   >     # 3. Bỏ qua dòng không có tên chỉ tiêu hoặc không có dashboard:
+   >     if not name or not dash:
+   >         continue
+   >     
+   >     # 4. Nhận diện số nhóm kinh doanh (Group STT) linh hoạt:
+   >     # Nếu Cột 0 ('STT') chứa số mục văn bản BRD (dạng '3.2.2.x' có dấu chấm) hoặc rỗng,
+   >     # ưu tiên đọc số nhóm nghiệp vụ từ Cột 1 ('Mã' = 1..N):
+   >     group_stt = stt_raw
+   >     clean_ma = re.sub(r'^(?:nhóm|group)\s*', '', ma_raw, flags=re.IGNORECASE).strip()
+   >     if clean_ma.isdigit() and (not stt_raw or '.' in stt_raw or not stt_raw.isdigit()):
+   >         group_stt = clean_ma
+   >     elif not stt_raw and ma_raw:
+   >         group_stt = ma_raw
+   >     
+   >     valid_kpis.append({
+   >         "group": group_stt, "name": name, "status": status, 
+   >         "classification": pl, "data_type": get_val(row, ["Loại dữ liệu"]),
+   >         "source_table": src_tbl, "dashboard": dash
+   >     })
    > ```
    - `Phân loại = Chiều` → slicer/filter dimension — **phải có KPI_ID**, không được bỏ qua
    - `Phân loại = Cơ sở` + `Phái sinh` → KPI chỉ tiêu
@@ -358,7 +428,7 @@ Tạo thư mục nếu chưa có. Thông báo đường dẫn file.
 
 > **Áp dụng cả khi CHỈNH SỬA/ĐIỀU CHỈNH một phần của HLD đã tồn tại** (không chỉ khi thiết kế mới từ đầu) — kể cả khi phạm vi yêu cầu chỉ là "sửa lại Nhóm N". Vì các mục kiểm tra dưới đây quét **toàn file**, một thay đổi cục bộ (thêm/sửa 1 Nhóm) vẫn có thể làm lộ ra hoặc để sót lỗi cấu trúc đã tồn tại từ trước ở phần không đụng tới — bỏ qua Bước 5B chỉ vì "task chỉ yêu cầu sửa 1 Nhóm" đã gây sót lỗi thực tế (TT — sửa lại Nhóm 1 theo Atomic schema mới nhưng không chạy mục #0 nên bỏ sót toàn bộ file thiếu Section 4 — Reuse Analysis, heading Cụm sai cấp, bảng KPI thiếu cột Ghi chú, vốn có từ bản gốc 20260427 và không liên quan gì đến thay đổi đang làm).
 
-Chạy **đủ 13 mục (#0–#12)** dưới đây (Python/grep) trên toàn file `DTM_{MODULE}_HLD.md` vừa xuất/vừa sửa. Khi báo kết quả, liệt kê đủ 13 dòng PASS/FAIL — không gộp, không bỏ mục nào vì "chắc không đụng tới":
+Chạy **đủ 14 mục (#0–#13)** dưới đây (Python/grep) trên toàn file `DTM_{MODULE}_HLD.md` vừa xuất/vừa sửa. Khi báo kết quả, liệt kê đủ 14 dòng PASS/FAIL — không gộp, không bỏ mục nào vì "chắc không đụng tới":
 
 0. **Cấu trúc Section đúng chuẩn `reference/section_structure.md`** — chạy TRƯỚC các mục kỹ thuật bên dưới, vì đây là kiểm tra cấp cao nhất:
    - Đếm số Section (`## Section N`) — **phải đúng 5**, theo thứ tự cố định: `Data Lineage` / `Tổng quan báo cáo` / `Mô hình tổng thể` / `Reuse Analysis` / `Vấn đề mở`. Không còn biến thể 4 Section (chốt 2026-08-21 — xem `reference/section_structure.md`). Thiếu bất kỳ Section nào, hoặc "Vấn đề mở" không nằm ở vị trí Section 5 → lỗi cấu trúc, phải sửa trước khi hỏi GATE. Module đầu tiên (`datamart_model.yaml` rỗng) vẫn phải có Section 4 với toàn bộ bảng `reuse_status = new`.
@@ -374,9 +444,31 @@ Chạy **đủ 13 mục (#0–#12)** dưới đây (Python/grep) trên toàn fil
 7. **Code fence cân bằng:** đếm số dòng ` ``` ` trong toàn file — phải là số chẵn.
 8. **KPI_ID liên tục, không trùng lặp:** trích toàn bộ `K_{MODULE}_\d+`, kiểm tra dải số liên tục từ 1 đến max, không có ID nào xuất hiện ở ≥2 dòng bảng KPI khác nhau (trừ dòng ghi chú "Reuse từ Nhóm X" — đó là tham chiếu, không phải khai sinh trùng).
 9. **Mọi node Atomic dùng làm nguồn Dimension/Fact có tồn tại thật trong `DataModel/Atomic/` (ưu tiên 1) hoặc `DataModel/working/Atomic/` (ưu tiên 2)** — **KHÔNG bao gồm `DataModel/working/Atomic_LinhLV/`** (out of date, cấm dùng dù entity tồn tại ở đó). Không suy diễn theo tên nghe hợp lý nếu module không có entity Atomic nào tên đó ở 2 nguồn hợp lệ. **Ngoại lệ:** `Classification Value` (`cl_value`) LÀ bảng Fundamental vật lý thật ở Atomic (SCD4A, chứa mọi danh mục dùng chung toàn hệ thống — xem CLAUDE.md rule #4) — dù chưa sync đầy đủ vào `DataModel/Atomic/` repo, vẫn được coi là nguồn hợp lệ để JOIN lấy tên hiển thị (`cl_nm`) cho bất kỳ Dimension nào có cột Classification Value, join theo `cl_value.cl_code = [code] AND cl_value.schema_code = '[SCHEME_CODE]'`. Case thực tế QLCB `Offering Method Dimension` (2026-08-05) — trước đó nhầm là "không có bảng CV riêng, code nằm trực tiếp trên Plan", user xác nhận lại đây là hiểu sai.
-10. **Số lượng dòng con BA khớp số dòng KPI trong bảng KPI của từng Nhóm** — với mỗi Nhóm (1 STT), đếm chính xác số dòng con (sub-row) BA thuộc STT đó bằng `csv.reader` (không đọc raw line), rồi đếm số dòng trong bảng KPI của Nhóm đó (kể cả dòng PENDING). Hai số này phải khớp 1-1: mỗi dòng con BA → đúng 1 dòng bảng KPI, dù dòng đó là khai sinh KPI mới, reuse KPI đã có (ghi "Reuse từ Nhóm X"), hay trùng lặp với 1 KPI khác (ghi rõ "trùng KPI Y, không khai KPI mới" trong cột Ghi chú — nhưng KHÔNG được lược bỏ hẳn dòng khỏi bảng KPI). Nếu 2 số lệch nhau → rà lại từng dòng con BA để tìm dòng bị bỏ sót (thường là chỉ tiêu ít nổi bật như 1 chiều slicer phụ, VD "theo giờ trong ngày") trước khi báo Nhóm đó hoàn tất. Lỗi thực tế đã xảy ra (GSTT Nhóm 5 — 23 dòng con BA nhưng chỉ 22 dòng KPI, thiếu chiều "Theo giờ trong ngày"; chỉ phát hiện được vì user tự đếm thủ công, không phải do self-check).
+10. **Đối soát số lượng BA ↔ HLD theo công thức chuẩn hóa (Khắc phục False Alarm):**
+    Với mỗi Nhóm (1 STT nghiệp vụ), thực hiện đối soát số lượng theo công thức 1-1 giữa dòng BA hợp lệ và Chỉ tiêu cơ sở HLD:
+    - **Số dòng BA hợp lệ ($BA\_Valid$):** Đếm các dòng con BA thuộc Nhóm đó có `Trạng thái mapping ∈ {Done, Doing, Pending}`, `Phân loại ∈ {Chiều, Chỉ tiêu cơ sở, Chỉ tiêu phái sinh}` (đã loại bỏ dòng banner tiêu đề rỗng, dòng hướng dẫn template, và dòng trống).
+    - **Số chỉ tiêu cơ sở HLD ($HLD\_Base$):** Đếm các dòng trong bảng KPI HLD của Nhóm tương ứng 1-1 với BA (bao gồm cả dòng READY, PENDING, dòng reuse ghi rõ "Reuse từ Nhóm X", hoặc dòng trùng ghi "Trùng KPI Y").
+    - **Yêu cầu bắt buộc:** $HLD\_Base == BA\_Valid$ (khớp tuyệt đối 1-1).
+    - **Quy tắc cho phép chênh lệch ($\Delta = HLD\_Total - BA\_Valid$):** Cho phép $\Delta > 0$ **KHI VÀ CHỈ KHI** toàn bộ các chỉ tiêu dôi dư là:
+      - (a) Chỉ tiêu phái sinh nội tại phục vụ mockup/so sánh kỳ: mang hậu tố `_YOY`, `_GROWTH`, hoặc tỷ lệ cơ cấu (%) tính từ các KPI cơ sở cùng bảng.
+      - (b) Sub-component kỹ thuật: mang ký tự phân nhánh `a`, `b` (ví dụ: `K_NHNCK_2a`, `K_NHNCK_2b`) phân rã từ một chỉ tiêu cha của BA.
+      - Toàn bộ các dòng dôi dư này **bắt buộc phải có giải trình rõ ràng** trong cột `Ghi chú` (ví dụ: "Chỉ tiêu phái sinh phục vụ biểu đồ", "Tách sub-component cấp mới/cấp lại").
+    - **Báo lỗi FAIL khi:**
+      - $BA\_Valid > HLD\_Base$ (bỏ sót chỉ tiêu hoặc chiều slicer của BA).
+      - Tồn tại chỉ tiêu Base mới trong HLD không truy nguyên được dòng BA tương ứng.
 11. **erDiagram của cùng 1 Fact/Dim phải giống hệt nhau ở mọi Nhóm dùng chung** — trích toàn bộ block `{tên_entity} { ... }` theo tên entity (VD: `Fact_Market_Risk_Snapshot`), so sánh nội dung (số dòng field + tên field, theo đúng thứ tự hoặc ít nhất đúng tập hợp) giữa mọi khối cùng tên xuất hiện trong toàn file. Khác nhau → lỗi thật, không phải biến thể hợp lệ — sửa bằng cách **hợp nhất (union) toàn bộ field READY** từng xuất hiện ở bất kỳ khối nào thành 1 schema chuẩn, rồi ghi đè lại **toàn bộ** các khối cùng tên bằng schema chuẩn đó (không chỉ sửa khối đang bị hỏi tới). Đây là lỗi có xu hướng tái diễn mỗi khi sửa cục bộ 1 Nhóm mà không đối chiếu ngược các Nhóm khác cùng dùng Fact đó — xem `reference/erdiagram_rules.md` mục "Nhất quán toàn file HLD". Lỗi thực tế đã xảy ra (PTTT Nhóm 1/2/4, 2026-07-31 — 3 khối `Fact_Market_Risk_Snapshot` có 3 tập field khác nhau sau khi sửa alias từng Nhóm riêng lẻ, chỉ phát hiện vì user tự soát; kèm theo đó tên field còn dính hậu tố đơn vị không cần thiết như `_Bil_VND`/`_t_bil` — khi hợp nhất schema, đồng thời chuẩn hóa bỏ hậu tố đơn vị khỏi tên field, đơn vị đã có ở cột "Đơn vị" của bảng KPI, không cần lặp lại trong tên cột).
 12. **Mỗi KPI READY có measure riêng (không phải sub-component/reuse-nguyên-cột) phải có mặt trong erDiagram của Fact/Dim nó thuộc về** — đối chiếu ngược từ bảng KPI sang erDiagram (chiều ngược của rule "mỗi cột erDiagram phải trace về KPI" đã có ở `erdiagram_rules.md`). Với mỗi dòng KPI READY có Tính chất `Cơ sở`/`Phái sinh` và không thuộc diện loại trừ (sub-component trung gian đã ghi chú rõ trong Ghi chú, hoặc dòng "Reuse từ Nhóm X" trỏ tới measure đã có), phải tìm được ≥1 field tương ứng trong khối erDiagram của Nhóm đó. Thiếu → bổ sung field (đặt tên theo naming convention, không hậu tố đơn vị) vào TẤT CẢ khối cùng tên entity theo mục #11.
+13. **erDiagram — Chuẩn Role-Playing Date Dimension trên Fact table (CẤM Calendar_Date_Dimension_Id trên Fact):**
+    Quét toàn bộ các khối `erDiagram` trong toàn file HLD:
+    - Với mọi entity block thuộc loại Fact (tên bắt đầu bằng `Fact_` hoặc `Fact `):
+      - **CẤM TUYỆT ĐỐI:** Báo lỗi nếu block Fact chứa trường `Calendar_Date_Dimension_Id FK` hoặc `Calendar_Date_Dimension_Id` (mã lỗi tương thích `L2-DATE-FK-ROLE-PLAYING`). `Calendar_Date_Dimension_Id` CHỈ được phép là PK của bảng Dimension `Calendar_Date_Dimension`.
+      - **Fact Periodic Snapshot:** Nếu tên Fact kết thúc bằng `_Snapshot` hoặc có pattern là `Periodic Snapshot`:
+        - Bắt buộc phải có trường `Snapshot_Date_Dimension_Id FK` (kiểu `string` hoặc `int`).
+        - Bắt buộc có dòng quan hệ `Calendar_Date_Dimension ||--o{ <Fact_Snapshot_Entity> : " "`.
+      - **Fact Event / Fact khác:** Nếu tên Fact đại diện cho sự kiện hoặc có pattern là `Event`:
+        - Cột khóa ngoại ngày bắt buộc mang tên vai trò nghiệp vụ `<Role>_Date_Dimension_Id FK` (ví dụ: `Trade_Date_Dimension_Id FK`, `Issue_Date_Dimension_Id FK`, `Decision_Date_Dimension_Id FK`, `Submission_Date_Dimension_Id FK`, `Effective_Date_Dimension_Id FK`...).
+        - Bắt buộc có dòng quan hệ `Calendar_Date_Dimension ||--o{ <Fact_Entity> : " "`.
+      - **Whitelist Dimension:** Bảng `Calendar_Date_Dimension` có `string Calendar_Date_Dimension_Id PK` là hợp lệ 100%, tuyệt đối không báo lỗi (zero false positive).
 
 Nếu phát hiện lỗi ở bất kỳ mục nào trên — sửa ngay trong file, chạy lại kiểm tra đến khi sạch, rồi mới tiếp tục tới GATE bên dưới.
 
@@ -413,9 +505,15 @@ Nếu phát hiện lỗi ở bất kỳ mục nào trên — sửa ngay trong fi
 ### Rule trích xuất `FKs` từ graph TB
 
 Graph TB trong Section 3 dùng mũi tên `DIM_X --> FACT_Y`. Với mỗi mũi tên:
-1. Xác định tên Dimension entity (node nguồn) và Fact entity (node đích)
-2. Tên FK attribute = `{Dim Entity Name} Id` — ví dụ: `Calendar Date Dimension` → FK = `Calendar Date Dimension Id`
-3. Format cột `FKs`: `{Dim Entity Name}.{FK Attribute Name}`, nhiều FK nối bằng ` | `
+1. Xác định tên Dimension entity (node nguồn) và Fact entity (node đích).
+2. Tên FK attribute tuân thủ nghiêm ngặt chuẩn Dimension Key:
+   - **Dimension thông thường:** Tên FK attribute = `{Dim Entity Name} Id` (ví dụ: `Fund Management Company Dimension` → FK = `Fund Management Company Dimension Id`).
+   - **Calendar Date Dimension (BẮT BUỘC ROLE-PLAYING):** Tuyệt đối CẤM dùng `Calendar Date Dimension Id` trên Fact. FK trỏ tới `Calendar Date Dimension` bắt buộc phải mang tên vai trò nghiệp vụ (Role-Playing Date):
+     - Fact Periodic Snapshot (`_Snapshot`): Bắt buộc là `Snapshot Date Dimension Id`.
+     - Fact Event / Fact khác: Bắt buộc là `<Role> Date Dimension Id` (ví dụ: `Issue Date Dimension Id`, `Trade Date Dimension Id`, `Decision Date Dimension Id`, `Submission Date Dimension Id`, `Effective Date Dimension Id`...).
+3. Format cột `FKs`: `{Dim Entity Name}.{FK Attribute Name}`, nhiều FK nối bằng ` | `.
+   - Ví dụ Fact Snapshot: `Calendar Date Dimension.Snapshot Date Dimension Id | Fund Management Company Dimension.Fund Management Company Dimension Id`
+   - Ví dụ Fact Event: `Calendar Date Dimension.Issue Date Dimension Id | Securities Practitioner Dimension.Securities Practitioner Dimension Id`
 
 > `FKs` chỉ điền cho bảng `fact` — để trống cho `dim` và `operational`.
 
@@ -475,7 +573,10 @@ Graph TB trong Section 3 dùng mũi tên `DIM_X --> FACT_Y`. Với mỗi mũi t�
 - [ ] **Dòng Done là sub-component của KPI phức tạp → vẫn cấp KPI_ID riêng:** Không gộp im lặng sub-component vào KPI cha. Ngoại lệ duy nhất: cột Đánh giá ghi "Trùng" → reuse ID đã có
 - [ ] **Cấm thêm KPI không có dòng BA tương ứng:** Bảng KPI chỉ chứa KPI có dòng BA trong nhóm đó (mới hoặc reuse). Không thêm KPI từ suy luận nghiệp vụ dù hợp lý
 - [ ] **Dedup KPI giữa các Nhóm trong cùng Tab:** Trước khi cấp ID mới cho Nhóm N, kiểm tra toàn bộ KPI đã khai sinh ở Nhóm 1→(N-1). Nếu trùng nội dung → reuse ID cũ, KHÔNG cấp ID mới. Liệt kê reuse **trong cùng bảng KPI 7 cột duy nhất** — điền cột Ghi chú = "Reuse từ Nhóm X". KHÔNG tạo bảng reuse riêng.
-- [ ] **Đối chiếu SỐ LƯỢNG tuyệt đối BA ↔ KPI, không chỉ kiểm tra tồn tại (bắt buộc cho mỗi Nhóm ngay khi viết xong bảng KPI):** Đếm `Số dòng BA = COUNT(dòng BA của Nhóm/STT này, Phân loại ∈ {Chiều, Cơ sở, Phái sinh}, Trạng thái mapping ∈ {Done, Doing})` và so với `Số dòng KPI HLD = COUNT(KPI_ID trong bảng KPI của Nhóm, loại trừ KPI Derived thuần suy ra từ các KPI khác CÙNG bảng — VD `_YOY`, tổng/hiệu 2 KPI cơ sở)`. Hai số này phải khớp tuyệt đối — không chỉ kiểm tra "mọi dòng Chiều có ID chưa" (rule 398) hay "KPI có dòng BA chưa" (rule 405), vì 2 rule đó vẫn PASS ngay cả khi N dòng BA độc lập bị gộp nhầm vào 1 KPI_ID (tỷ lệ ánh xạ sai N:1 thay vì N:N). Nếu lệch — dừng lại, đối chiếu từng dòng BA với từng KPI theo tên/mô tả/nguồn để tìm dòng bị gộp nhầm hoặc bỏ sót, tách lại đúng 1 KPI_ID cho mỗi dòng BA độc lập trước khi coi Nhóm là hoàn tất.
+- [ ] **Đối chiếu SỐ LƯỢNG BA ↔ HLD theo công thức chuẩn hóa (bắt buộc cho mỗi Nhóm ngay khi viết xong bảng KPI):**
+  - Đếm `BA_Valid = COUNT(dòng BA hợp lệ của Nhóm, loại bỏ dòng banner rỗng / template)`
+  - Đếm `HLD_Base = COUNT(KPI Base/1-1 của Nhóm, loại trừ KPI Derived _YOY/_GROWTH/tỷ lệ nội bộ và sub-component a/b đã giải trình)`
+  - Xác nhận `BA_Valid == HLD_Base` khớp chính xác 1-1. Nếu lệch: đối chiếu từng dòng BA để phát hiện dòng bị gộp nhầm hoặc bỏ sót (đặc biệt là các chiều slicer phụ). Mọi KPI dôi dư phải được giải trình rõ trong cột Ghi chú.
   - Ví dụ lỗi thực tế (QLCB Nhóm 4): 2 dòng BA độc lập "Thông tin doanh nghiệp" (nguồn `COMPANY_NAME_VN`) và "Mã chứng khoán" (nguồn `equity_ticker`) bị viết gộp thành 1 dòng KPI "Thông tin doanh nghiệp (Mã CK, Tên DN)" — BA 12 dòng nhưng HLD chỉ có 11 KPI, không bị rule cũ nào bắt được vì dòng KPI đó "vẫn có ID, vẫn có dòng BA tương ứng".
 - [ ] **Gating theo "Loại dữ liệu":** Với mọi dòng BA (mọi Nhóm yêu cầu), kiểm tra cột `Loại dữ liệu` — `Dữ liệu động` → dòng KPI đó đánh Trạng thái PENDING dù Atomic đã READY/Trạng thái mapping = Done (lý do ghi trong Ghi chú: "chưa thống nhất quy tắc khai thác"); `Dữ liệu tĩnh` → theo gating Atomic bình thường. KHÔNG suy đoán tĩnh/động theo `Phân loại` (Chiều/Cơ sở/Phái sinh) — đọc đúng giá trị cột này
 - [ ] **Nhóm có cả tĩnh lẫn động:** Cả 2 loại dòng KPI nằm CHUNG 1 bảng KPI duy nhất, chỉ khác cột Trạng thái (READY cho dòng tĩnh, PENDING cho dòng động) — không tách 2 block/2 bảng riêng
@@ -502,6 +603,7 @@ Graph TB trong Section 3 dùng mũi tên `DIM_X --> FACT_Y`. Với mỗi mũi t�
 - [ ] Tên cột dùng Title_Case_With_Underscore
 - [ ] Không thiết kế `Effective Date` / `Expiry Date` / `Population Date` / `Snapshot Date`
 - [ ] **Scan toàn bộ erDiagram đã viết trong file trước khi xuất:** không có trường `Population_Date` / `Effective_Date` / `Expiry_Date` / `Snapshot_Date` trong bất kỳ entity block nào
+- [ ] **Role-Playing Date FK trên Fact:** Tuyệt đối không có trường `Calendar_Date_Dimension_Id` trên bất kỳ Fact block nào (`Calendar_Date_Dimension_Id` chỉ là PK của `Calendar_Date_Dimension`). Fact Snapshot bắt buộc có `Snapshot_Date_Dimension_Id FK`. Fact Event bắt buộc có `<Role>_Date_Dimension_Id FK`. Phân định rõ với Degenerate Date (kiểu `date`, không gắn nhãn `FK`, không hậu tố `_Dimension_Id`).
 - [ ] Toàn file HLD: mỗi bảng có số trường và tên trường giống hệt nhau ở mọi erDiagram
 - [ ] **Tên trường trong erDiagram entity block phải khớp với `attribute.name` trong YAML Atomic entity tương ứng** — đọc YAML trước khi viết. Ví dụ sai: `Date_Of_Birth` khi YAML ghi `Birth_Date`; `Certificate_Type_Code` khi entity thực ra là FK surrogate + unique_key pair
 - [ ] **Fact entity block trong erDiagram không chứa trường nào phản ánh trạng thái kỹ thuật nguồn** (VD: `Record_Status`, `Certificate_Status_Code` từ `record_status`) nếu staging đã lọc bản ghi hiệu lực — các trường này không có giá trị phân tích ở Datamart layer
@@ -523,7 +625,7 @@ Graph TB trong Section 3 dùng mũi tên `DIM_X --> FACT_Y`. Với mỗi mũi t�
 □ description + Grain lấy từ cột Grain/Mô tả của Section 3 — không tự suy luận
 □ source_table tra từ dm_manifest.yaml (physical_name) — không đoán
 □ FKs: chỉ điền cho fact, trống cho dim/operational
-□ FKs: trích từ graph TB Section 3, format "{Dim Entity}.{Dim Entity Id}"
+□ FKs: trích từ graph TB Section 3, format "{Dim Entity}.{FK Attribute Name}" (với Calendar Date Dimension: bắt buộc dùng role-playing như "{Calendar Date Dimension}.{Snapshot Date Dimension Id}" cho Fact Snapshot hoặc "{Calendar Date Dimension}.{<Role> Date Dimension Id}" cho Fact Event; TUYỆT ĐỐI CẤM "{Calendar Date Dimension}.{Calendar Date Dimension Id}")
 □ status = draft toàn bộ rows
 □ Thứ tự: Dimension → Fact → Operational
 □ Export UTF-8 BOM (utf-8-sig)

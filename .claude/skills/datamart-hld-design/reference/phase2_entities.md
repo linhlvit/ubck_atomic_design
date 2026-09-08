@@ -24,15 +24,25 @@ graph TB: DIM_CO --> FACT_NAV     →   Fund Management Company Dimension join F
 ```
 
 Quy tắc:
-1. Tên FK attribute = `{Dim Entity Name} Id` — ví dụ Dim `Calendar Date Dimension` → FK = `Calendar Date Dimension Id`
-2. Format: `{Dim Entity Name}.{FK Attribute Name}`, nhiều FK nối ` | `
-3. `FKs` chỉ điền cho `fact` — **để trống** cho `dim` và `operational`
+1. Với các Dimension thông thường: Tên FK attribute = `{Dim Entity Name} Id` — ví dụ `Fund Management Company Dimension` → FK = `Fund Management Company Dimension Id`.
+2. **Quy tắc bắt buộc đối với Calendar Date Dimension (Role-Playing Date Dimension Key):**
+   - Khóa ngoại từ Fact trỏ đến `Calendar Date Dimension` **bắt buộc mang tên theo vai trò (Role-Playing)**. Tuyệt đối **CẤM** sử dụng `Calendar Date Dimension Id` trên bất kỳ Fact table nào (`Calendar Date Dimension Id` chỉ là PK của riêng bảng Dimension `cdr_dt_dim`).
+   - Với Fact Snapshot (`Fact ... Snapshot`): Bắt buộc là `Snapshot Date Dimension Id`.
+   - Với Fact Event / Fact khác: Bắt buộc mang tên vai trò cụ thể `<Role> Date Dimension Id` (ví dụ: `Issue Date Dimension Id`, `Trade Date Dimension Id`, `Evaluation Date Dimension Id`, `Submission Date Dimension Id`, `Effective Date Dimension Id`...).
+3. Format: `{Dim Entity Name}.{FK Attribute Name}`, nhiều FK nối ` | `
+4. `FKs` chỉ điền cho `fact` — **để trống** cho `dim` và `operational`
 
 Ví dụ đầy đủ:
 ```
+1. Fact Snapshot:
 graph TB có: DIM_DATE --> FACT_MKT  và  DIM_CO --> FACT_MKT
 → FKs của "Fact Fund Management Company Snapshot" =
-  "Calendar Date Dimension.Calendar Date Dimension Id | Fund Management Company Dimension.Fund Management Company Dimension Id"
+  "Calendar Date Dimension.Snapshot Date Dimension Id | Fund Management Company Dimension.Fund Management Company Dimension Id"
+
+2. Fact Event:
+graph TB có: DIM_DATE --> FACT_ISSUE  và  DIM_PRA --> FACT_ISSUE
+→ FKs của "Fact Practitioner Certificate Issue Event" =
+  "Calendar Date Dimension.Issue Date Dimension Id | Securities Practitioner Dimension.Securities Practitioner Dimension Id"
 ```
 
 ### Rule trích xuất `source_table`
