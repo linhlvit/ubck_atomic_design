@@ -21,27 +21,43 @@ Dùng để đọc BA **đúng cột, đúng giá trị** thay vì giả định
 
 ```python
 import csv, io
+from collections import Counter
 
 def detect_delimiter_and_header(raw_content: str):
-    """Tự động dò delimiter (',' hoặc ';') và header row bằng chấm điểm từ khóa."""
-    best_delim = ';'
-    best_cols = 0
-    # 1. Thử cả 2 delimiter phổ biến
-    for delim in (';', ','):
+    """Tự động dò delimiter (',' hoặc ';') bằng mode & consistency analysis và header row bằng chấm điểm từ khóa."""
+    raw_content = raw_content.lstrip("\ufeff")
+    delim_scores = {}
+
+    # 1. Mode & consistency analysis trên 15 dòng đầu tiên
+    for delim in (";", ","):
         try:
             reader = csv.reader(io.StringIO(raw_content), delimiter=delim)
-            sample_rows = [next(reader) for _ in range(10)]
-            if sample_rows:
-                max_c = max(len(r) for r in sample_rows)
-                if max_c > best_cols:
-                    best_cols = max_c
-                    best_delim = delim
+            row_lens = [
+                len(r) for idx, r in enumerate(reader)
+                if idx < 15 and any(c.strip() for c in r) and not (r and r[0].strip().startswith("#"))
+            ]
+            if not row_lens:
+                continue
+            mode_len = Counter(row_lens).most_common(1)[0][0]
+            consistency = sum(1 for l in row_lens if l == mode_len) / len(row_lens)
+            effective_cols = mode_len if mode_len >= 2 else 0
+            delim_scores[delim] = (effective_cols, consistency)
         except Exception:
             pass
 
-    # 2. Đọc toàn bộ với delimiter tối ưu
-    reader = csv.reader(io.StringIO(raw_content), delimiter=best_delim)
-    all_rows = list(reader)
+    best_delim = max(
+        delim_scores.keys(),
+        key=lambda d: (delim_scores[d][0] >= 15, delim_scores[d][0], delim_scores[d][1])
+    ) if delim_scores else ";"
+
+    # 2. Đọc toàn bộ với delimiter tối ưu (hỗ trợ fallback QUOTE_NONE nếu unquoted)
+    try:
+        reader = csv.reader(io.StringIO(raw_content), delimiter=best_delim)
+        all_rows = list(reader)
+    except csv.Error:
+        reader = csv.reader(io.StringIO(raw_content), delimiter=best_delim, quoting=csv.QUOTE_NONE)
+        all_rows = list(reader)
+
     if not all_rows:
         return best_delim, 0, [], []
 

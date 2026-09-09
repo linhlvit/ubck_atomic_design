@@ -28,7 +28,7 @@ import sys
 from collections import Counter, defaultdict
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
 # Reconfigure standard output streams to utf-8 for Windows PowerShell / cmd
 if sys.stdout.encoding != "utf-8":
@@ -48,6 +48,50 @@ try:
     csv.field_size_limit(min(sys.maxsize, 2147483647))
 except (OverflowError, AttributeError):
     pass
+
+
+# Import shared utilities from datamart_common with safe fallback
+try:
+    from datamart_common import (
+        detect_file_encoding,
+        read_file_safe,
+        detect_delimiter,
+        detect_delimiter_and_header,
+        read_csv_dynamic,
+        normalize_module_name,
+        resolve_module_path,
+        get_module_files,
+        load_whitelist,
+        is_group_whitelisted,
+    )
+except ImportError:
+    _script_parent = str(Path(__file__).resolve().parent)
+    if _script_parent not in sys.path:
+        sys.path.insert(0, _script_parent)
+    try:
+        from datamart_common import (
+            detect_file_encoding,
+            read_file_safe,
+            detect_delimiter,
+            detect_delimiter_and_header,
+            read_csv_dynamic,
+            normalize_module_name,
+            resolve_module_path,
+            get_module_files,
+            load_whitelist,
+            is_group_whitelisted,
+        )
+    except ImportError:
+        detect_file_encoding = None
+        read_file_safe = None
+        detect_delimiter = None
+        detect_delimiter_and_header = None
+        read_csv_dynamic = None
+        normalize_module_name = None
+        resolve_module_path = None
+        get_module_files = None
+        load_whitelist = None
+        is_group_whitelisted = None
 
 
 MODULE_ALIASES = {
@@ -163,32 +207,31 @@ class BAParser:
     @staticmethod
     def detect_delimiter_and_header(raw_content: str) -> Tuple[str, int, List[str], List[List[str]]]:
         """Detect delimiter (',' or ';') and header row index (0 or 1)."""
-        raw_content = raw_content.lstrip("\ufeff")
-        best_delim = ";"
-        best_cols = 0
+        raw_content = raw_content.lstrip("\ufeff").replace("\r\n", "\n").replace("\r", "\n")
+        delim_scores = {}
 
         for delim in (";", ","):
             try:
-                reader = csv.reader(io.StringIO(raw_content), delimiter=delim)
-                sample_rows = []
-                for _ in range(10):
-                    try:
-                        sample_rows.append(next(reader))
-                    except StopIteration:
-                        break
-                if sample_rows:
-                    max_cols = max(len(r) for r in sample_rows)
-                    if max_cols > best_cols:
-                        best_cols = max_cols
-                        best_delim = delim
+                reader = csv.reader(io.StringIO(raw_content, newline=""), delimiter=delim)
+                row_lens = [len(r) for idx, r in enumerate(reader) if idx < 15 and any(c.strip() for c in r)]
+                if not row_lens:
+                    continue
+                # Delimiter hợp lệ phải có số cột > 1 và độ biến thiên số cột thấp
+                mode_len = Counter(row_lens).most_common(1)[0][0]
+                consistency = sum(1 for l in row_lens if l == mode_len) / len(row_lens)
+                effective_cols = mode_len if mode_len >= 2 else 0
+                delim_scores[delim] = (effective_cols, consistency)
             except Exception:
                 pass
 
+        # Ưu tiên delimiter có số cột chế độ >= 15 và độ nhất quán cao nhất
+        best_delim = max(delim_scores.keys(), key=lambda d: (delim_scores[d][0] >= 15, delim_scores[d][0], delim_scores[d][1])) if delim_scores else ";"
+
         try:
-            reader = csv.reader(io.StringIO(raw_content), delimiter=best_delim)
+            reader = csv.reader(io.StringIO(raw_content, newline=""), delimiter=best_delim)
             all_rows = list(reader)
         except csv.Error:
-            reader = csv.reader(io.StringIO(raw_content), delimiter=best_delim, quoting=csv.QUOTE_NONE)
+            reader = csv.reader(io.StringIO(raw_content, newline=""), delimiter=best_delim, quoting=csv.QUOTE_NONE)
             all_rows = list(reader)
 
         if not all_rows:
@@ -225,7 +268,7 @@ class BAParser:
         return best_delim, hdr_idx, header, data_rows
 
     @classmethod
-    def parse_file(cls, filepath: Path) -> List[BAItem]:
+    def parse_file(cls, filepath: Path, include_deleted: bool = False) -> List[BAItem]:
         """Parse BA CSV file into a list of BAItem objects with robust encoding support."""
         if not filepath.exists():
             return []
@@ -272,6 +315,7 @@ class BAParser:
             return None
 
         stt_idx = get_col(["STT", "TT"])
+        ma_idx = get_col(["Mã", "Ma", "Group", "Nhóm"])
         dash_idx = get_col(["Dashboard/báo cáo", "Dashboard >> báo cáo", "Dashboard/BC", "Mã dashboard/BC"])
         name_idx = get_col(["Thông tin", "Thông tin (chỉ tiêu)", "Tên chỉ tiêu", "Chỉ tiêu"])
         desc_idx = get_col(["Mô tả"])
@@ -303,17 +347,34 @@ class BAParser:
 
             name = val(r, name_idx)
             stt = val(r, stt_idx)
+            ma = val(r, ma_idx)
 
-            # Skip empty summary/legend rows without indicator name or STT
-            if not name and not stt:
+            # Prioritize group code from 'Mã' if 'STT' is empty or contains BRD section path like '3.2.2.1'
+            if ma and (not stt or "." in stt or not stt.isdigit()):
+                clean_ma = re.sub(r"^(?:nhóm|group)\s*", "", ma, flags=re.IGNORECASE).strip()
+                if clean_ma.isdigit():
+                    stt = clean_ma
+                elif not stt:
+                    stt = ma
+            elif not stt and ma:
+                stt = ma
+
+            # Skip rows without dashboard or without indicator name
+            if not val(r, dash_idx) or not name:
                 continue
 
             # Skip instruction rows like 'Tên chiều/chỉ tiêu/thuộc tính'
             if "tên chiều/chỉ tiêu" in name.lower() or "thông tin (chỉ tiêu)" in name.lower():
                 continue
 
-            # Skip summary/statistic rows without STT, classification, status, or source table
-            if not stt and not val(r, pl_idx) and not val(r, status_idx) and not val(r, src_tbl_idx):
+            # Skip section header/title rows that have no classification, status, and source table
+            if not val(r, pl_idx) and not val(r, status_idx) and not val(r, src_tbl_idx):
+                continue
+
+            # Skip rows where mapping status is Delete/Deleted/Xóa (unless include_deleted is True)
+            st_val = val(r, status_idx).lower()
+            is_deleted = any(w in st_val for w in ["delete", "deleted", "xóa", "xoá", "bãi bỏ", "hủy"])
+            if is_deleted and not include_deleted:
                 continue
 
             item = BAItem(
@@ -337,6 +398,17 @@ class BAParser:
 
         return items
 
+    @classmethod
+    def get_deleted_items(cls, filepath: Path) -> List[BAItem]:
+        """Return only items from BA file that have status Delete/Deleted/Xóa."""
+        if not filepath.exists():
+            return []
+        all_items = cls.parse_file(filepath, include_deleted=True)
+        return [
+            b for b in all_items
+            if any(w in b.mapping_status.lower() for w in ["delete", "deleted", "xóa", "xoá", "bãi bỏ", "hủy"])
+        ]
+
 
 class HLDParser:
     """Parser for Datamart HLD Markdown documents."""
@@ -347,6 +419,10 @@ class HLDParser:
             return []
 
         text = filepath.read_text(encoding="utf-8-sig", errors="replace")
+        return HLDParser.parse_text(text, module)
+
+    @staticmethod
+    def parse_text(text: str, module: str) -> List[HLDItem]:
         lines = text.splitlines()
 
         items = []
@@ -361,10 +437,14 @@ class HLDParser:
         for line in lines:
             line_s = line.strip()
 
-            m_nhom = re.search(r"^\s*#{2,5}\s*(?:Nhóm|Group)\s*(\d+)(?:\s*[-–—:]\s*(.*?))?$", line_s, re.IGNORECASE)
+            m_nhom = re.search(
+                r"^\s*#{2,5}\s*(?:[\d\.]+\s+)?(?:Nhóm|Nhom|Group)\s*(\d+)[a-zA-Z]?(?:[\s\.\-–—:]+(.*?))?$",
+                line_s,
+                re.IGNORECASE,
+            )
             if m_nhom:
                 curr_group_num = int(m_nhom.group(1))
-                curr_group_name = m_nhom.group(2).strip() if m_nhom.group(2) else f"Nhóm {curr_group_num}"
+                curr_group_name = m_nhom.group(2).strip() if m_nhom.group(2) and m_nhom.group(2).strip() else f"Nhóm {curr_group_num}"
                 in_ready_block = False
                 in_pending_block = False
 
@@ -388,13 +468,14 @@ class HLDParser:
                     nature = parts[3] if len(parts) > 3 else ""
 
                     if len(parts) >= 7:
-                        formula = parts[4]
-                        note = parts[5]
-                        raw_status = parts[6]
+                        # Trích xuất từ đuôi bảng để bảo vệ chống vỡ cột khi formula có chứa '|'
+                        raw_status = parts[-1]
+                        note = parts[-2]
+                        formula = " | ".join(parts[4:-2])
                     elif len(parts) == 6:
-                        formula = parts[4]
+                        raw_status = parts[-1]
                         note = ""
-                        raw_status = parts[5]
+                        formula = parts[4]
                     else:
                         formula = parts[4] if len(parts) > 4 else ""
                         note = ""
@@ -437,8 +518,18 @@ class DetailMappingParser:
             return []
 
         items = []
-        text = filepath.read_text(encoding="utf-8-sig", errors="replace").lstrip("\ufeff")
-        reader = csv.DictReader(io.StringIO(text))
+        if read_file_safe is not None:
+            text = read_file_safe(filepath)
+        else:
+            text = filepath.read_text(encoding="utf-8-sig", errors="replace").lstrip("\ufeff")
+
+        delim = (
+            detect_delimiter(text)
+            if detect_delimiter is not None
+            else (";" if text.splitlines() and text.splitlines()[0].count(";") > text.splitlines()[0].count(",") else ",")
+        )
+        text = text.replace("\r\n", "\n").replace("\r", "\n")
+        reader = csv.DictReader(io.StringIO(text, newline=""), delimiter=delim)
         if reader.fieldnames:
             reader.fieldnames = [f.lstrip("\ufeff").strip() if f else f for f in reader.fieldnames]
 
@@ -512,13 +603,14 @@ class PendingClassifier:
         kpi_lower = kpi_name.lower()
         src_lower = ba_source.lower().strip()
         dt_lower = ba_data_type.lower()
-        st_upper = ba_status.upper().strip()
+        st_upper = (ba_status or "").upper().strip()
         nhom_lower = group_name.lower()
         note_lower = ghi_chu.lower()
 
-        # 1. BA Pending: BA chưa phân tích xong
-        if st_upper and st_upper not in ("DONE", "HOÀN THÀNH", "HOAN THANH", "KHÔNG TÌM THẤY TRONG BA"):
-            return cls.REASON_BA_PENDING
+        # 1. BA Pending: BA chưa phân tích xong (bất kỳ trạng thái nào không phải Done/Hoàn thành, kể cả rỗng/None/whitespace)
+        if not st_upper or st_upper not in ("DONE", "HOÀN THÀNH", "HOAN THANH"):
+            if st_upper != "KHÔNG TÌM THẤY TRONG BA":
+                return cls.REASON_BA_PENDING
 
         # 2. Chưa có mapping nguồn từ BA (Nguồn trống / N/A / Chưa có CSDL / Map biểu mẫu)
         if (
@@ -553,7 +645,7 @@ class PendingClassifier:
         ):
             return cls.REASON_COMPLEX_JOIN
 
-        # 6. Schema out of sync / count mismatch if explicitly flagged or group has count mismatch
+        # 6. Schema out of sync: Chỉ gán khi có ghi chú kỹ thuật rõ ràng về việc schema/atomic lỗi thời
         schema_keywords = [
             "mismatch",
             "out of sync",
@@ -566,7 +658,7 @@ class PendingClassifier:
         has_schema_note = any(k in note_lower for k in schema_keywords) or bool(
             re.search(r"(?<!chênh\s)\blệch\b", note_lower)
         )
-        if has_count_mismatch or has_schema_note:
+        if has_schema_note:
             return cls.REASON_SCHEMA_OUT_OF_SYNC
 
         # 5. Datamart Pending (source exists and BA is done, but Datamart pending)
@@ -576,13 +668,41 @@ class PendingClassifier:
 class DatamartProgressAnalyzer:
     """Coordinates progress analysis and cross-check reporting."""
 
-    def __init__(self, root_dir: Path):
-        self.root_dir = root_dir
-        self.ba_dir = root_dir / "BRD" / "BA"
-        self.hld_dir = root_dir / "Datamart" / "hld"
-        self.lld_dir = root_dir / "Datamart" / "lld"
+    @staticmethod
+    def _detect_repo_root() -> Path:
+        curr = Path.cwd().resolve()
+        for p in [curr] + list(curr.parents):
+            if (p / "Datamart").is_dir() and (p / "BRD").is_dir():
+                return p
+        file_dir = Path(__file__).resolve().parent
+        for p in [file_dir] + list(file_dir.parents):
+            if (p / "Datamart").is_dir() and (p / "BRD").is_dir():
+                return p
+        return curr
+
+    def __init__(self, root_dir: Optional[Union[Path, str]] = None, whitelist_rules: Optional[List[Dict[str, Any]]] = None):
+        if root_dir is not None:
+            self.root_dir = Path(root_dir).resolve()
+        else:
+            self.root_dir = self._detect_repo_root()
+        self.ba_dir = self.root_dir / "BRD" / "BA"
+        self.hld_dir = self.root_dir / "Datamart" / "hld"
+        self.lld_dir = self.root_dir / "Datamart" / "lld"
+        if whitelist_rules is not None:
+            self.whitelist_rules = whitelist_rules
+        elif load_whitelist is not None:
+            self.whitelist_rules = load_whitelist(self.root_dir)
+        else:
+            self.whitelist_rules = []
 
     def find_module_files(self, module: str) -> Tuple[Optional[Path], Optional[Path], Optional[Path]]:
+        if resolve_module_path is not None:
+            ba = resolve_module_path(self.root_dir, module, "ba")
+            hld = resolve_module_path(self.root_dir, module, "hld")
+            dm = resolve_module_path(self.root_dir, module, "detail_mapping")
+            if any((ba, hld, dm)):
+                return ba, hld, dm
+
         mod_upper = module.upper().strip()
 
         # BA file candidate names (e.g. QLQ -> FMS, GSDC -> GSĐC)
@@ -705,6 +825,19 @@ class DatamartProgressAnalyzer:
         has_dm_items = len(active_dm_items) > 0
         has_dm_file = dm_path is not None and dm_path.exists() and has_dm_items
 
+        # Load deleted items from BA for Delete-rule violation checking
+        deleted_ba_items = BAParser.get_deleted_items(ba_path) if ba_path else []
+        deleted_by_grp: Dict[str, List[BAItem]] = defaultdict(list)
+        deleted_by_name: Dict[str, List[BAItem]] = defaultdict(list)
+        deleted_by_name_clean: Dict[str, List[BAItem]] = defaultdict(list)
+        for b in deleted_ba_items:
+            if b.stt:
+                deleted_by_grp[b.stt].append(b)
+            if b.name:
+                deleted_by_name[b.name.strip().lower()].append(b)
+                deleted_by_name_clean[clean_kpi_name(b.name)].append(b)
+        deleted_violations: List[Dict[str, Any]] = []
+
         # Group reconciliation
         group_stats = defaultdict(lambda: {"ba_total": 0, "ba_done_doing": 0, "hld_kpis": 0, "dm_rows": 0, "name": ""})
 
@@ -728,8 +861,9 @@ class DatamartProgressAnalyzer:
             if dm.nhom and not group_stats[grp_key]["name"]:
                 group_stats[grp_key]["name"] = dm.nhom
 
-        # Identify groups with count mismatch
+        # Identify groups with count mismatch and evaluate against whitelist
         mismatch_groups = set()
+        whitelisted_groups: Dict[str, str] = {}
         for grp_key, st in group_stats.items():
             if grp_key in ("0", ""):
                 continue
@@ -737,24 +871,35 @@ class DatamartProgressAnalyzer:
             hld_cnt = st["hld_kpis"]
             dm_cnt = st["dm_rows"]
 
-            is_gsdc_bctc = (mod_normalized in ("GSDC", "GSĐC") and grp_key.isdigit() and 21 <= int(grp_key) <= 30)
-
             ba_hld_diff = (ba_cnt != hld_cnt) and (ba_cnt > 0 or hld_cnt > 0)
             if has_dm_file:
-                if is_gsdc_bctc and (hld_cnt * 2 <= dm_cnt <= hld_cnt * 3):
-                    hld_dm_diff = False
-                else:
-                    hld_dm_diff = (hld_cnt != dm_cnt) and (hld_cnt > 0 or dm_cnt > 0)
+                hld_dm_diff = (hld_cnt != dm_cnt) and (hld_cnt > 0 or dm_cnt > 0)
             else:
                 hld_dm_diff = False
 
             if ba_hld_diff or hld_dm_diff:
-                mismatch_groups.add(grp_key)
+                is_wl = False
+                wl_desc = None
+                if is_group_whitelisted is not None:
+                    is_wl, wl_desc = is_group_whitelisted(
+                        mod_normalized, grp_key, ba_cnt, hld_cnt, dm_cnt, self.whitelist_rules
+                    )
+
+                if is_wl:
+                    whitelisted_groups[grp_key] = wl_desc or "Ngoại lệ kiến trúc hợp lệ"
+                    st["whitelisted"] = True
+                    st["whitelist_reason"] = wl_desc
+                else:
+                    mismatch_groups.add(grp_key)
+                    st["whitelisted"] = False
+            else:
+                st["whitelisted"] = False
 
         matrix = {
             "Done": {"READY": 0, "PENDING": 0, "Chưa có": 0},
             "Doing": {"READY": 0, "PENDING": 0, "Chưa có": 0},
             "Pending": {"READY": 0, "PENDING": 0, "Chưa có": 0},
+            "Delete": {"READY": 0, "PENDING": 0, "Chưa có": 0},
             "Chưa xác định": {"READY": 0, "PENDING": 0, "Chưa có": 0},
             "Chưa có trong BA": {"READY": 0, "PENDING": 0, "Chưa có": 0},
         }
@@ -811,8 +956,18 @@ class DatamartProgressAnalyzer:
                     ba_by_name=ba_by_name,
                     ba_by_name_clean=ba_by_name_clean,
                 )
+                if not ba_match and deleted_ba_items:
+                    ba_match = self.find_ba_match(
+                        name=dm.kpi_name,
+                        group_num=dm.group_num,
+                        note=dm.ghi_chu,
+                        formula=dm.logic,
+                        ba_by_grp=deleted_by_grp,
+                        ba_by_name=deleted_by_name,
+                        ba_by_name_clean=deleted_by_name_clean,
+                    )
 
-                ba_status = ba_match.mapping_status if ba_match else ""
+                ba_status = ba_match.mapping_status if ba_match else "Không tìm thấy trong BA"
                 ba_source = ba_match.source_table if ba_match else ""
                 ba_data_type = ba_match.data_type if ba_match else ""
 
@@ -832,7 +987,7 @@ class DatamartProgressAnalyzer:
                     "kpi_name": dm.kpi_name,
                     "nhom": dm.nhom,
                     "group_num": dm.group_num,
-                    "ba_status": ba_status or "Không tìm thấy trong BA",
+                    "ba_status": ba_status,
                     "ba_source": ba_source or "(trống)",
                     "ghi_chu": dm.ghi_chu,
                     "reason": reason,
@@ -848,6 +1003,19 @@ class DatamartProgressAnalyzer:
                     ba_by_name=ba_by_name,
                     ba_by_name_clean=ba_by_name_clean,
                 )
+                is_del = False
+                if not ba_match and deleted_ba_items:
+                    ba_match = self.find_ba_match(
+                        name=dm.kpi_name,
+                        group_num=dm.group_num,
+                        note=dm.ghi_chu,
+                        formula=dm.logic,
+                        ba_by_grp=deleted_by_grp,
+                        ba_by_name=deleted_by_name,
+                        ba_by_name_clean=deleted_by_name_clean,
+                    )
+                    if ba_match:
+                        is_del = True
 
                 is_ready = dm in dm_ready_items
                 dm_col = "READY" if is_ready else "PENDING"
@@ -855,7 +1023,16 @@ class DatamartProgressAnalyzer:
                 if ba_match:
                     matched_ba_keys.add(id(ba_match))
                     st = ba_match.mapping_status.strip().title()
-                    if st in ("Done", "Hoàn Thành", "Hoanthanh"):
+                    if is_del or any(w in st.lower() for w in ["delete", "deleted", "xóa", "xoá", "bãi bỏ", "hủy"]):
+                        matrix["Delete"][dm_col] += 1
+                        deleted_violations.append({
+                            "kpi_id": dm.kpi_id,
+                            "kpi_name": dm.kpi_name,
+                            "nhom": dm.nhom,
+                            "status": dm_col,
+                            "ba_status": ba_match.mapping_status,
+                        })
+                    elif st in ("Done", "Hoàn Thành", "Hoanthanh"):
                         matrix["Done"][dm_col] += 1
                     elif st in ("Doing", "Đang Xem Xét"):
                         matrix["Doing"][dm_col] += 1
@@ -889,8 +1066,18 @@ class DatamartProgressAnalyzer:
                     ba_by_name=ba_by_name,
                     ba_by_name_clean=ba_by_name_clean,
                 )
+                if not ba_match and deleted_ba_items:
+                    ba_match = self.find_ba_match(
+                        name=h.name,
+                        group_num=h.group_num,
+                        note=h.note,
+                        formula=h.formula,
+                        ba_by_grp=deleted_by_grp,
+                        ba_by_name=deleted_by_name,
+                        ba_by_name_clean=deleted_by_name_clean,
+                    )
 
-                ba_status = ba_match.mapping_status if ba_match else ""
+                ba_status = ba_match.mapping_status if ba_match else "Không tìm thấy trong BA"
                 ba_source = ba_match.source_table if ba_match else ""
                 ba_data_type = ba_match.data_type if ba_match else ""
 
@@ -910,7 +1097,7 @@ class DatamartProgressAnalyzer:
                     "kpi_name": h.name,
                     "nhom": h.group_name or f"Nhóm {grp_str}",
                     "group_num": h.group_num,
-                    "ba_status": ba_status or "Không tìm thấy trong BA",
+                    "ba_status": ba_status,
                     "ba_source": ba_source or "(trống)",
                     "ghi_chu": combined_note,
                     "reason": reason,
@@ -926,13 +1113,35 @@ class DatamartProgressAnalyzer:
                     ba_by_name=ba_by_name,
                     ba_by_name_clean=ba_by_name_clean,
                 )
+                is_del = False
+                if not ba_match and deleted_ba_items:
+                    ba_match = self.find_ba_match(
+                        name=h.name,
+                        group_num=h.group_num,
+                        note=h.note,
+                        formula=h.formula,
+                        ba_by_grp=deleted_by_grp,
+                        ba_by_name=deleted_by_name,
+                        ba_by_name_clean=deleted_by_name_clean,
+                    )
+                    if ba_match:
+                        is_del = True
 
                 dm_col = "READY" if h in hld_ready_items else "PENDING"
 
                 if ba_match:
                     matched_ba_keys.add(id(ba_match))
                     st = ba_match.mapping_status.strip().title()
-                    if st in ("Done", "Hoàn Thành", "Hoanthanh"):
+                    if is_del or any(w in st.lower() for w in ["delete", "deleted", "xóa", "xoá", "bãi bỏ", "hủy"]):
+                        matrix["Delete"][dm_col] += 1
+                        deleted_violations.append({
+                            "kpi_id": h.kpi_id,
+                            "kpi_name": h.name,
+                            "nhom": h.group_name or f"Nhóm {grp_str}",
+                            "status": dm_col,
+                            "ba_status": ba_match.mapping_status,
+                        })
+                    elif st in ("Done", "Hoàn Thành", "Hoanthanh"):
                         matrix["Done"][dm_col] += 1
                     elif st in ("Doing", "Đang Xem Xét"):
                         matrix["Doing"][dm_col] += 1
@@ -965,6 +1174,11 @@ class DatamartProgressAnalyzer:
                     else:
                         matrix["Chưa xác định"]["Chưa có"] += 1
 
+        # Check deleted BA items correctly absent from Datamart
+        for b in deleted_ba_items:
+            if id(b) not in matched_ba_keys:
+                matrix["Delete"]["Chưa có"] += 1
+
         return {
             "module": mod_normalized,
             "ba_file": str(ba_path) if ba_path else None,
@@ -981,6 +1195,8 @@ class DatamartProgressAnalyzer:
             "pending_pct": (pending_count / total_dm * 100.0) if total_dm > 0 else 0.0,
             "classified_pending": classified_pending,
             "cross_status_matrix": matrix,
+            "deleted_violations": deleted_violations,
+            "whitelisted_groups": whitelisted_groups,
             "group_stats": dict(sorted(group_stats.items(), key=lambda x: int(x[0]) if x[0].isdigit() else 999)),
             "mismatch_groups": sorted(list(mismatch_groups), key=lambda x: int(x) if x.isdigit() else 999),
         }
@@ -1045,7 +1261,7 @@ class DatamartProgressAnalyzer:
         total_row_pending = 0
         total_row_missing = 0
 
-        for ba_st in ("Done", "Doing", "Pending", "Chưa xác định", "Chưa có trong BA"):
+        for ba_st in ("Done", "Doing", "Pending", "Delete", "Chưa xác định", "Chưa có trong BA"):
             row = matrix[ba_st]
             r_ready = row["READY"]
             r_pending = row["PENDING"]
@@ -1058,6 +1274,16 @@ class DatamartProgressAnalyzer:
 
         md.append(f"| **Tổng cộng Datamart** | **{total_row_ready}** | **{total_row_pending}** | **{total_row_missing}** | **{total_row_ready + total_row_pending + total_row_missing}** |")
         md.append("")
+
+        deleted_viols = analysis.get("deleted_violations", [])
+        if deleted_viols:
+            md.append("### ⚠️ CẢNH BÁO VI PHẠM: Chỉ tiêu BA bị XÓA nhưng vẫn tồn tại trong Datamart (Critical)")
+            md.append("")
+            md.append("| KPI ID | Tên chỉ tiêu | Nhóm | Trạng thái Datamart | Trạng thái BA |")
+            md.append("|---|---|---|---|---|")
+            for dv in deleted_viols:
+                md.append(f"| `{dv['kpi_id']}` | {dv['kpi_name']} | {dv.get('nhom', '')} | **{dv['status']}** | `{dv['ba_status']}` |")
+            md.append("")
 
         # 3. Pending Root Cause Classification Tree
         md.append("## 3. Cây phân loại Chi tiết Nguyên nhân PENDING")
@@ -1122,10 +1348,11 @@ class DatamartProgressAnalyzer:
 
             is_mismatch = ba_hld_diff or hld_dm_diff
 
-            # Domain awareness: GSĐC BCTC groups 21-30 are intentionally duplicated 3x
-            is_gsdc_bctc = (analysis["module"] in ("GSDC", "GSĐC") and grp_key.isdigit() and 21 <= int(grp_key) <= 30)
-            if is_gsdc_bctc and has_dm_file and (hld_cnt * 2 <= dm_cnt <= hld_cnt * 3):
-                status_tag = "🟡 Lệch x2.7~3 (chuẩn hóa 3 loại hình DN/BH/TCTD)"
+            # Whitelist / Reconciled Delta recognition
+            is_wl = st.get("whitelisted", False)
+            wl_reason = st.get("whitelist_reason")
+            if is_wl:
+                status_tag = f"🟢 Khớp (Theo Whitelist: {wl_reason})"
             elif is_mismatch:
                 status_tag = "🔴 Lệch số lượng"
             else:
@@ -1246,7 +1473,7 @@ class DatamartProgressAnalyzer:
         return modules
 
 
-def main():
+def main(argv: Optional[List[str]] = None) -> int:
     if sys.platform.startswith("win"):
         if hasattr(sys.stdout, "reconfigure"):
             sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -1256,12 +1483,16 @@ def main():
     parser = argparse.ArgumentParser(description="Datamart Progress & Cross-Check Analyzer CLI")
     parser.add_argument("-m", "--module", type=str, default="all", help="Module to analyze (e.g. QLKD, GSTT, TKNB, GSĐC, or 'all')")
     parser.add_argument("--root", type=str, default=None, help="Root directory path (default auto-detected)")
-    parser.add_argument("-o", "--output", type=str, default=None, help="Output Markdown report file path")
+    parser.add_argument("-o", "--output", type=str, default=None, help="Output Markdown report file path (or JSON if ending with .json)")
+    parser.add_argument("--json-output", type=str, default=None, help="Dedicated path to write JSON report file")
+    parser.add_argument("--output-dir", type=str, default=None, help="Directory to save both Markdown and JSON reports for analyzed modules")
+    parser.add_argument("--format", type=str, default="md", choices=["md", "json", "all"], help="Output format for stdout (default: md)")
     parser.add_argument("--detail", action="store_true", help="Include exhaustive list of all pending indicators")
     parser.add_argument("--include-de", action="store_true", help="Include DATA EXPLORER tab in counts")
-    parser.add_argument("--json", action="store_true", help="Output JSON structure instead of Markdown")
+    parser.add_argument("--json", action="store_true", help="Output JSON structure instead of Markdown (shorthand for --format json)")
+    parser.add_argument("--strict", action="store_true", help="Strict CI/CD mode: return exit code 1 if any indicator is pending")
 
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     # Determine root directory
     if args.root:
@@ -1284,12 +1515,12 @@ def main():
         modules = analyzer.scan_all_modules()
         if not modules:
             print("No modules found in BRD/BA.", file=sys.stderr)
-            sys.exit(1)
+            return 2
     else:
         ba_path, hld_path, dm_path = analyzer.find_module_files(target_mod)
         if not ba_path and not hld_path and not dm_path:
             print(f"Error: No files found for module '{target_mod}'. Expected BA, HLD, or Detail Mapping file.", file=sys.stderr)
-            sys.exit(1)
+            return 2
         modules = [target_mod]
 
     results = []
@@ -1301,27 +1532,65 @@ def main():
         rep = analyzer.generate_markdown_report(res, show_detail=args.detail)
         reports.append(rep)
 
-    if args.json:
-        out_json = json.dumps(results, ensure_ascii=False, indent=2)
-        if args.output:
-            out_path = Path(args.output)
-            out_path.parent.mkdir(parents=True, exist_ok=True)
-            out_path.write_text(out_json, encoding="utf-8")
-            print(f"JSON report written successfully to: {out_path}")
-        else:
-            print(out_json)
-        return
-
     full_report = "\n\n---\n\n".join(reports)
+    out_json = json.dumps(results if len(results) > 1 or target_mod.lower() == "all" else results[0], ensure_ascii=False, indent=2)
+    out_json_all = json.dumps(results, ensure_ascii=False, indent=2)
 
+    # 1. Output directory: simultaneous export of both Markdown and JSON (Item 14)
+    if args.output_dir:
+        out_dir = Path(args.output_dir).resolve()
+        out_dir.mkdir(parents=True, exist_ok=True)
+        for res, rep in zip(results, reports):
+            mod_code = res["module"]
+            (out_dir / f"{mod_code}_progress_report.md").write_text(rep, encoding="utf-8")
+            (out_dir / f"{mod_code}_progress_report.json").write_text(
+                json.dumps(res, ensure_ascii=False, indent=2), encoding="utf-8"
+            )
+        if len(modules) > 1:
+            (out_dir / "overall_progress_report.md").write_text(full_report, encoding="utf-8")
+            (out_dir / "overall_progress_report.json").write_text(out_json_all, encoding="utf-8")
+        print(f"Reports successfully written to directory: {out_dir}")
+
+    # 2. Dedicated JSON output
+    if args.json_output:
+        jp = Path(args.json_output)
+        jp.parent.mkdir(parents=True, exist_ok=True)
+        jp.write_text(out_json_all, encoding="utf-8")
+        print(f"JSON report written successfully to: {jp}")
+
+    # 3. Output file path
     if args.output:
         out_path = Path(args.output)
         out_path.parent.mkdir(parents=True, exist_ok=True)
-        out_path.write_text(full_report, encoding="utf-8")
-        print(f"Report written successfully to: {out_path}")
-    else:
-        print(full_report)
+        if out_path.suffix.lower() == ".json" or args.json or args.format == "json":
+            out_path.write_text(out_json, encoding="utf-8")
+            print(f"JSON report written successfully to: {out_path}")
+        else:
+            out_path.write_text(full_report, encoding="utf-8")
+            print(f"Report written successfully to: {out_path}")
+    elif not args.output_dir and not args.json_output:
+        # Standard output
+        if args.json or args.format == "json":
+            print(out_json)
+        else:
+            print(full_report)
+
+    # 4. Standardized Exit Code Calculation (Item 14)
+    # Exit 0: OK (No critical blocker, discrepancies whitelisted or matching)
+    # Exit 1: Warning / Non-fatal discrepancies (Unwhitelisted count mismatch or strict mode pending)
+    # Exit 2: Critical Blocker (Deleted indicator violations or fatal errors)
+    exit_code = 0
+    for res in results:
+        if res.get("deleted_violations"):
+            exit_code = 2
+            break
+        if res.get("mismatch_groups"):
+            exit_code = max(exit_code, 1)
+        if args.strict and res.get("pending_count", 0) > 0:
+            exit_code = max(exit_code, 1)
+
+    return exit_code
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

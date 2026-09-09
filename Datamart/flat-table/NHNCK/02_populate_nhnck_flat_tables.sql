@@ -283,7 +283,6 @@ SELECT
     o.training_end_dt,
     o.training_hours,
     o.hours_sufficiency_indicator,
-    o.exam_score,
     o.exam_result_code,
     o.exam_result_nm,
     o.src_stm_code

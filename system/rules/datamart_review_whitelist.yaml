@@ -1,0 +1,86 @@
+# ==============================================================================
+# DATAMART REVIEW RECONCILED DELTA WHITELIST
+# Hệ thống Quy chuẩn Ngoại lệ Đối soát Số lượng Chỉ tiêu Datamart
+# Data Warehouse UBCKNN — Ủy ban Chứng khoán Nhà nước
+# ==============================================================================
+# Tài liệu tham chiếu:
+# - reference/kpi_reconciliation_rules.md (Mục 5: Cơ chế Phân tích Chênh lệch Hợp lệ)
+# - reference/technical_review_rules.md
+# - checkpoint_final_summary.md (ADR-04: Đối Soát Số Lượng Hai Tầng)
+# ==============================================================================
+
+version: "1.0"
+updated_at: "2026-09-09"
+approved_by: "DWH Architecture & QA Team"
+description: |
+  Danh mục các trường hợp chênh lệch số lượng hợp lệ (Reconciled Delta) giữa
+  file BA Analyst, tài liệu HLD và bảng Detail Mapping LLD.
+  Các nhóm nằm trong danh mục này được công cụ phân tích tự động (datamart_progress_analyzer)
+  công nhận là '🟢 Khớp (Theo Whitelist)' thay vì kích hoạt cảnh báo đỏ.
+
+rules:
+  # ----------------------------------------------------------------------------
+  # Phân hệ GSĐC (Giám sát Đại chúng)
+  # ----------------------------------------------------------------------------
+  - rule_id: "WL-GSDC-BCTC-01"
+    module: "GSĐC"
+    aliases: ["GSDC"]
+    group_range: [21, 30]
+    reason_type: "ENTERPRISE_TYPE_SPLIT"
+    name: "Nhân bản Báo cáo tài chính theo 3 loại hình Doanh nghiệp"
+    description: "Nhân bản 3 loại hình: Công ty niêm yết (CTNY), Đại chúng quy mô lớn (CTTG), Đại chúng thông thường (CTDC)"
+    condition: "dm_rows == hld_kpis * 3 or (hld_kpis * 2 <= dm_rows <= hld_kpis * 3)"
+    approval_ref: "RFC-2026-08-GSDC-BCTC"
+    status: "APPROVED"
+
+  # ----------------------------------------------------------------------------
+  # Phân hệ GSTT (Giám sát Thị trường)
+  # ----------------------------------------------------------------------------
+  - rule_id: "WL-GSTT-YOY-01"
+    module: "GSTT"
+    groups: ["1", "2", "3", "4"]
+    reason_type: "DERIVED_YOY_METRICS"
+    name: "Chỉ tiêu phái sinh chuỗi thời gian YoY/MoM"
+    description: "HLD/LLD tự bổ sung các chỉ tiêu so sánh cùng kỳ (_YOY, _MOM) phục vụ biểu đồ trực quan"
+    condition: "hld_kpis >= ba_done_doing"
+    approval_ref: "RFC-2026-07-GSTT-YOY"
+    status: "APPROVED"
+
+  # ----------------------------------------------------------------------------
+  # Phân hệ NHNCK (Người hành nghề chứng khoán)
+  # ----------------------------------------------------------------------------
+  - rule_id: "WL-NHNCK-SPLIT-01"
+    module: "NHNCK"
+    groups: ["1", "2", "7"]
+    reason_type: "PHYSICAL_MEASURE_SPLIT"
+    name: "Phân rã Measure vật lý từ chỉ tiêu nghiệp vụ gộp"
+    description: "Tách 1 chỉ tiêu BA gộp thành nhiều measure vật lý chi tiết trong Detail Mapping"
+    condition: "dm_rows >= hld_kpis"
+    approval_ref: "RFC-2026-09-NHNCK-SPLIT"
+    status: "APPROVED"
+
+  # ----------------------------------------------------------------------------
+  # Phân hệ QLKD (Quản lý Kinh doanh Chứng khoán)
+  # ----------------------------------------------------------------------------
+  - rule_id: "WL-QLKD-BANNER-01"
+    module: "QLKD"
+    groups: ["1", "19"]
+    reason_type: "BANNER_SUMMARY_METRICS"
+    name: "Chỉ tiêu tổng hợp Banner và Thống kê thị trường"
+    description: "Các chỉ tiêu banner tổng hợp per-CTCK hoặc per-Toàn thị trường có độ phân rã khác biệt"
+    condition: "abs(hld_kpis - ba_done_doing) <= 5 or dm_rows >= hld_kpis"
+    approval_ref: "RFC-2026-08-QLKD-BANNER"
+    status: "APPROVED"
+
+  # ----------------------------------------------------------------------------
+  # Phân hệ TKNB (Thống kê Nội bộ)
+  # ----------------------------------------------------------------------------
+  - rule_id: "WL-TKNB-DETAIL-01"
+    module: "TKNB"
+    groups: ["1", "2", "3"]
+    reason_type: "AGGREGATION_LEVEL_VARIANCE"
+    name: "Tách mức độ tổng hợp thống kê nội bộ"
+    description: "Tách theo các cấp quản lý và phòng ban nội bộ của UBCKNN"
+    condition: "dm_rows >= hld_kpis or hld_kpis >= ba_done_doing"
+    approval_ref: "RFC-2026-08-TKNB-STAT"
+    status: "APPROVED"

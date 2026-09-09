@@ -331,6 +331,17 @@ def post_process_docx(docx_path: Path, doc_type: str = "pttk") -> None:
                 elif is_even:
                     _set_shading(cell, _EVEN_ROW_SHADING, qn, OxmlElement)
 
+                # Vertical align center (cell-level)
+                tcPr = cell._tc.find(qn("w:tcPr"))
+                if tcPr is None:
+                    tcPr = OxmlElement("w:tcPr")
+                    cell._tc.insert(0, tcPr)
+                vAlign = tcPr.find(qn("w:vAlign"))
+                if vAlign is None:
+                    vAlign = OxmlElement("w:vAlign")
+                    tcPr.append(vAlign)
+                vAlign.set(qn("w:val"), "center")
+
                 for para in cell.paragraphs:
                     # Alignment: header row → center; cột STT (ci=0) → center
                     if is_header or ci == 0:
@@ -353,17 +364,6 @@ def post_process_docx(docx_path: Path, doc_type: str = "pttk") -> None:
                         pPr.append(spacing)
                     spacing.set(qn("w:before"), "0")
                     spacing.set(qn("w:after"), "0")
-
-                    # Vertical align center
-                    tcPr = cell._tc.find(qn("w:tcPr"))
-                    if tcPr is None:
-                        tcPr = OxmlElement("w:tcPr")
-                        cell._tc.insert(0, tcPr)
-                    vAlign = tcPr.find(qn("w:vAlign"))
-                    if vAlign is None:
-                        vAlign = OxmlElement("w:vAlign")
-                        tcPr.append(vAlign)
-                    vAlign.set(qn("w:val"), "center")
 
                     for run in para.runs:
                         run.font.name = "Times New Roman"

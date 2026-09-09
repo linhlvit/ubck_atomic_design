@@ -21,6 +21,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+from collections import Counter
 import csv
 from dataclasses import asdict, dataclass, field
 from enum import Enum
@@ -31,6 +32,7 @@ from pathlib import Path
 import re
 import sys
 from typing import Any, Dict, List, Optional, Set, Tuple
+import unicodedata
 
 # Reconfigure standard output streams to utf-8 for Windows PowerShell / cmd
 if sys.platform.startswith("win"):
@@ -50,6 +52,56 @@ try:
     csv.field_size_limit(min(sys.maxsize, 2147483647))
 except (OverflowError, AttributeError):
     pass
+
+
+# Import shared utilities from datamart_common with safe fallback
+try:
+    from datamart_common import (
+        detect_file_encoding as _common_detect_encoding,
+        read_file_safe as _common_read_file_safe,
+        detect_delimiter as _common_detect_delimiter,
+        detect_delimiter_and_header as _common_detect_delimiter_and_header,
+        read_csv_dynamic as _common_read_csv_dynamic,
+        normalize_module_name as _common_normalize_module_name,
+        resolve_module_path as _common_resolve_module_path,
+        get_module_files as _common_get_module_files,
+        strip_accents as _common_strip_accents,
+    )
+except ImportError:
+    _script_parent = str(Path(__file__).resolve().parent)
+    if _script_parent not in sys.path:
+        sys.path.insert(0, _script_parent)
+    try:
+        from datamart_common import (
+            detect_file_encoding as _common_detect_encoding,
+            read_file_safe as _common_read_file_safe,
+            detect_delimiter as _common_detect_delimiter,
+            detect_delimiter_and_header as _common_detect_delimiter_and_header,
+            read_csv_dynamic as _common_read_csv_dynamic,
+            normalize_module_name as _common_normalize_module_name,
+            resolve_module_path as _common_resolve_module_path,
+            get_module_files as _common_get_module_files,
+            strip_accents as _common_strip_accents,
+        )
+    except ImportError:
+        _common_detect_encoding = None
+        _common_read_file_safe = None
+        _common_detect_delimiter = None
+        _common_detect_delimiter_and_header = None
+        _common_read_csv_dynamic = None
+        _common_normalize_module_name = None
+        _common_resolve_module_path = None
+        _common_get_module_files = None
+        _common_strip_accents = None
+
+
+def strip_accents(s: str) -> str:
+    """Strip Vietnamese accents for flexible matching (e.g. GSĐC -> GSDC)."""
+    if _common_strip_accents is not None:
+        return _common_strip_accents(s)
+    s = s.replace("Đ", "D").replace("đ", "d")
+    nfkd = unicodedata.normalize("NFKD", s)
+    return "".join([c for c in nfkd if not unicodedata.combining(c)])
 
 
 class Severity(str, Enum):
@@ -264,19 +316,34 @@ def decode_bytes(raw_bytes: bytes) -> str:
 
 
 def detect_delimiter(raw_text: str) -> str:
-    """Auto-detect CSV delimiter (',' or ';')."""
-    sample = raw_text[:4096].lstrip("\ufeff")
-    best_delim = ","
-    best_cols = 0
+    """Auto-detect CSV delimiter (',' or ';') using mode and consistency analysis."""
+    if _common_detect_delimiter is not None:
+        return _common_detect_delimiter(raw_text)
+
+    sample = raw_text[:8192].lstrip("\ufeff").replace("\r\n", "\n").replace("\r", "\n")
+    delim_scores = {}
+
     for delim in (",", ";"):
         try:
-            reader = csv.reader(io.StringIO(sample), delimiter=delim)
-            first_row = next(reader, [])
-            if len(first_row) > best_cols:
-                best_cols = len(first_row)
-                best_delim = delim
+            reader = csv.reader(io.StringIO(sample, newline=""), delimiter=delim)
+            row_lens = [
+                len(r)
+                for idx, r in enumerate(reader)
+                if idx < 15 and any(c.strip() for c in r) and not (r and r[0].strip().startswith("#"))
+            ]
+            if not row_lens:
+                continue
+            mode_len = Counter(row_lens).most_common(1)[0][0]
+            consistency = sum(1 for l in row_lens if l == mode_len) / len(row_lens)
+            effective_cols = mode_len if mode_len >= 2 else 0
+            delim_scores[delim] = (effective_cols, consistency)
         except Exception:
             pass
+
+    if not delim_scores:
+        return ","
+
+    best_delim = max(delim_scores.keys(), key=lambda d: (delim_scores[d][0] >= 2, delim_scores[d][0], delim_scores[d][1]))
     return best_delim
 
 
@@ -285,14 +352,14 @@ def parse_csv_rows(raw_text: str) -> Tuple[List[str], List[Tuple[int, List[str]]
     Parse CSV text into header list and list of (1-based line number, row tokens).
     Robustly handles multi-line cells and quotation errors.
     """
-    raw_text = raw_text.lstrip("\ufeff")
+    raw_text = raw_text.lstrip("\ufeff").replace("\r\n", "\n").replace("\r", "\n")
     delim = detect_delimiter(raw_text)
 
     try:
-        reader = csv.reader(io.StringIO(raw_text), delimiter=delim)
+        reader = csv.reader(io.StringIO(raw_text, newline=""), delimiter=delim)
         all_rows = list(reader)
     except csv.Error:
-        reader = csv.reader(io.StringIO(raw_text), delimiter=delim, quoting=csv.QUOTE_NONE)
+        reader = csv.reader(io.StringIO(raw_text, newline=""), delimiter=delim, quoting=csv.QUOTE_NONE)
         all_rows = list(reader)
 
     if not all_rows:
@@ -462,40 +529,55 @@ def audit_table_rows(
                 )
             )
 
-    # RULE 2 (Advisory Warning): For snapshot fact tables ending with _snpst,
-    # if it has date FK columns but none of them is snpst_dt_dim_id, and no Rule 1 error was already raised:
-    if is_snapshot and date_fk_columns and not has_standard_snpst_dt and not result.violations:
-        # Check if non-standard date FK exists (e.g. trade_dt_dim_id in NDTNN fct_securities_foreign_trading_snpst)
-        line_no, col_name, attr_name, etl_logic, desc, atomic_col = date_fk_columns[0]
-        sugg_col, sugg_attr, rationale = suggest_role_playing_date_column(
-            table_name=table_name,
-            entity_name=entity_name,
-            current_col=col_name,
-            current_attr=attr_name,
-            etl_logic=etl_logic,
-            description=desc,
-            atomic_col=atomic_col,
-        )
-        result.violations.append(
-            ColumnViolation(
-                file_path=file_path,
-                line_number=line_no,
+    # RULE 2: For snapshot fact tables ending with _snpst, snpst_dt_dim_id is mandatory.
+    if is_snapshot and not has_standard_snpst_dt and not result.violations:
+        if date_fk_columns:
+            line_no, col_name, attr_name, etl_logic, desc, atomic_col = date_fk_columns[0]
+            sugg_col, sugg_attr, rationale = suggest_role_playing_date_column(
                 table_name=table_name,
                 entity_name=entity_name,
-                column_name=col_name,
-                attribute_name=attr_name,
-                violation_type=ViolationType.RULE_2_MISSING_SNPST_DT,
-                severity=Severity.WARNING,
-                suggested_column="snpst_dt_dim_id",
-                suggested_attribute="Snapshot Date Dimension Id",
-                rationale=(
-                    f"Snapshot fact table '{table_name}' uses role '{col_name}' instead of standard 'snpst_dt_dim_id'. "
-                    "Confirm if snapshot periodic grain should be standardized."
-                ),
+                current_col=col_name,
+                current_attr=attr_name,
                 etl_logic=etl_logic,
                 description=desc,
+                atomic_col=atomic_col,
             )
-        )
+            result.violations.append(
+                ColumnViolation(
+                    file_path=file_path,
+                    line_number=line_no,
+                    table_name=table_name,
+                    entity_name=entity_name,
+                    column_name=col_name,
+                    attribute_name=attr_name,
+                    violation_type=ViolationType.RULE_2_MISSING_SNPST_DT,
+                    severity=Severity.WARNING,
+                    suggested_column="snpst_dt_dim_id",
+                    suggested_attribute="Snapshot Date Dimension Id",
+                    rationale=(
+                        f"Snapshot fact table '{table_name}' uses role '{col_name}' instead of standard 'snpst_dt_dim_id'. "
+                        "Confirm if snapshot periodic grain should be standardized."
+                    ),
+                    etl_logic=etl_logic,
+                    description=desc,
+                )
+            )
+        else:
+            result.violations.append(
+                ColumnViolation(
+                    file_path=file_path,
+                    line_number=1,
+                    table_name=table_name,
+                    entity_name=entity_name,
+                    column_name="(missing)",
+                    attribute_name="(missing)",
+                    violation_type=ViolationType.RULE_2_MISSING_SNPST_DT,
+                    severity=Severity.ERROR,
+                    suggested_column="snpst_dt_dim_id",
+                    suggested_attribute="Snapshot Date Dimension Id",
+                    rationale=f"Bảng Fact Snapshot '{table_name}' bắt buộc phải có khóa ngoại trục thời gian kỳ 'snpst_dt_dim_id'.",
+                )
+            )
 
     return result
 
@@ -598,6 +680,7 @@ def audit_directory(dir_path: str | Path, module_filter: Optional[str] = None) -
             csv_files.append(f)
 
     summary.scanned_files_count = len(csv_files)
+    audited_files: Set[Path] = set()
 
     for f in csv_files:
         raw_bytes = f.read_bytes()
@@ -635,7 +718,7 @@ def audit_directory(dir_path: str | Path, module_filter: Optional[str] = None) -
         elif "lld" in [p.name for p in f.parents]:
             mod_name = f.parent.name
 
-        if module_filter and module_filter.upper() != "ALL" and mod_name.upper() != module_filter.upper():
+        if module_filter and module_filter.upper() != "ALL" and strip_accents(mod_name).upper() != strip_accents(module_filter).upper():
             # If scanning datamart_attributes.csv at root, we can still process matching tables
             if f.name.lower() != "datamart_attributes.csv":
                 continue
@@ -645,6 +728,16 @@ def audit_directory(dir_path: str | Path, module_filter: Optional[str] = None) -
 
         for line_no, r in data_rows:
             t_name = get_cell(r, tbl_idx) or default_table_name
+            if f.name.lower() == "datamart_attributes.csv" and module_filter and module_filter.upper() != "ALL":
+                mod_lower = strip_accents(module_filter).lower()
+                tbl_lower = t_name.lower()
+                if not (
+                    tbl_lower.startswith(f"fct_{mod_lower}_")
+                    or f"_{mod_lower}_" in tbl_lower
+                    or tbl_lower.startswith(f"dim_{mod_lower}_")
+                    or (mod_lower == "gsdc" and ("public_company" in tbl_lower or "corporate" in tbl_lower or "listing" in tbl_lower))
+                ):
+                    continue
             e_name = get_cell(r, ent_idx)
             row_dict = {
                 "datamart_column": get_cell(r, col_idx),
@@ -657,6 +750,9 @@ def audit_directory(dir_path: str | Path, module_filter: Optional[str] = None) -
             if t_name not in tables_data:
                 tables_data[t_name] = (e_name, [])
             tables_data[t_name][1].append((line_no, row_dict))
+
+        if tables_data:
+            audited_files.add(f)
 
         for t_name, (e_name, rows_list) in tables_data.items():
             audit_res = audit_table_rows(
@@ -678,9 +774,13 @@ def audit_directory(dir_path: str | Path, module_filter: Optional[str] = None) -
             if audit_res.violations:
                 summary.total_violations_count += len(audit_res.violations)
 
-            if mod_name not in summary.results_by_module:
-                summary.results_by_module[mod_name] = []
-            summary.results_by_module[mod_name].append(audit_res)
+            mod_key = module_filter if (f.name.lower() == "datamart_attributes.csv" and module_filter and module_filter.upper() != "ALL") else mod_name
+            if mod_key not in summary.results_by_module:
+                summary.results_by_module[mod_key] = []
+            summary.results_by_module[mod_key].append(audit_res)
+
+    if module_filter and module_filter.upper() != "ALL":
+        summary.scanned_files_count = len(audited_files)
 
     return summary
 
@@ -711,6 +811,12 @@ class DatamartDateFKChecker:
             return self.scan_all()
 
         mod_dir = self.lld_dir / mod
+        if not mod_dir.is_dir():
+            ascii_mod = strip_accents(mod)
+            if (self.lld_dir / ascii_mod).is_dir():
+                mod_dir = self.lld_dir / ascii_mod
+                mod = ascii_mod
+
         if mod_dir.is_dir():
             return audit_directory(mod_dir, module_filter=mod)
 
@@ -891,9 +997,27 @@ def main() -> None:
 
     scope_desc = "All Modules"
     if args.path:
+        target_p = Path(args.path).resolve()
+        if not target_p.exists():
+            print(f"Error: Target path '{args.path}' does not exist.", file=sys.stderr)
+            sys.exit(2)
         summary = checker.scan_path(args.path)
         scope_desc = f"Path: {args.path}"
     elif args.module:
+        target_mod = args.module.strip()
+        if target_mod.lower() != "all":
+            ascii_mod = strip_accents(target_mod)
+            has_mod_dir = (checker.lld_dir / target_mod).is_dir() or (checker.lld_dir / ascii_mod).is_dir()
+            if not has_mod_dir:
+                mod_found = False
+                if checker.lld_dir.exists():
+                    for f in checker.lld_dir.glob("*.csv"):
+                        if target_mod.upper() in f.name.upper() or ascii_mod.upper() in f.name.upper():
+                            mod_found = True
+                            break
+                if not mod_found:
+                    print(f"Error: No LLD files found for module '{target_mod}'. Expected Datamart/lld/{target_mod}/ or matching CSV file.", file=sys.stderr)
+                    sys.exit(2)
         summary = checker.scan_module(args.module)
         scope_desc = f"Module: {args.module}"
     else:

@@ -116,7 +116,7 @@ Khi đi sâu vào review kỹ thuật từng nhóm (Micro-Review), các vấn đ
   - `nullable` sai với business rule (FK để nullable = true).
   - Tên cột không nhất quán giữa physical và logical (vi phạm `rule_physical_name_exceptions_datamart.csv`).
   - `etl_logic` tham chiếu trực tiếp cột mart khác (`fct_*.col`) thay vì flatten xuống Atomic.
-  - Thiếu bộ 4-5 trường kỹ thuật mặc định SCD4A trên bảng Dimension / Operational (`ds_rcrd_st`, `ds_rcrd_isrt_dt`, `ds_rcrd_udt_dt`, `ds_etl_pcs_tms`, `ds_snpst_dt`).
+  - Thiếu bộ 5 trường kỹ thuật mặc định SCD4A trên bảng Dimension / Operational (`ds_rcrd_st`, `ds_eff_start_dt`, `ds_eff_end_dt`, `ds_cdc_opr_cd`, `ds_load_ts`, và `ds_snpst_dt` đối với History/Snapshot).
   - Mệnh đề JOIN vào bảng Atomic Fundamental (SCD4A) thiếu điều kiện lọc bản ghi active `ds_rcrd_st = 'ACTIVE'`.
   - Tồn tại bảng/artifact mồ côi (Orphan Draft Artifact): Bảng Fact/Dim draft từng tạo ở LLD nhưng nay bị loại bỏ khỏi `flat-table` và HLD mà chưa được dọn dẹp sạch sẽ ở `Datamart/lld/`.
   - Vi phạm thiết kế Role-Playing Date Dimension trên Fact table (mã: `L2-DATE-FK-ROLE-PLAYING`): Sử dụng `Calendar Date Dimension Id` (`cdr_dt_dim_id` hoặc `calendar_dt_dim_id`) trên bảng Fact thay vì đặt tên theo vai trò (`snpst_dt_dim_id` cho Fact Snapshot hoặc `<role>_dt_dim_id` cho các Fact khác).
@@ -172,3 +172,28 @@ Khi đi sâu vào review kỹ thuật từng nhóm (Micro-Review), các vấn đ
                   └─ Lớp 4 (Registry datamart_model.yaml): Đồng bộ 1-1 cột, type, status
                             └─ Có lỗi → Kịch bản C → Trình đề xuất → Gọi datamart-lld-design
 ```
+
+---
+
+## 5. Quy tắc Kiểm tra và Xử lý Chỉ tiêu Bị XÓA (`Delete` / `DELETED`)
+
+### 5.1. Nhận diện Chỉ tiêu Bị XÓA từ BA
+Chỉ tiêu bị XÓA là bất kỳ dòng chỉ tiêu nào trong tài liệu BA analyst có cột `Trạng thái mapping` (hoặc `Trạng thái`) mang một trong các giá trị sau (không phân biệt hoa thường):
+- `Delete`, `Deleted`, `DELETE`, `DELETED`
+- `Xóa`, `Xoá`, `XOA`, `XÓA`, `Đã xóa`, `Bãi bỏ`, `Hủy bỏ`
+
+### 5.2. Nguyên tắc Bất khả xâm phạm (Golden Rules)
+1. **Tuyệt đối KHÔNG thiết kế mới:** 
+   - Cấm cấp phát `KPI_ID` hoặc đưa vào bảng KPI của HLD.
+   - Cấm tạo thuộc tính (Attribute) trong `Attributes.csv` và master `datamart_attributes.csv`.
+   - Cấm tạo dòng mapping trong `Detail_Mapping.csv`.
+   - Cấm khai báo trong Model Registry `datamart_model.yaml`.
+2. **Xử lý Chỉ tiêu đã lỡ thiết kế trong Datamart (Retirement Protocol):**
+   - Nếu qua rà soát phát hiện chỉ tiêu mang trạng thái Delete từ BA nhưng đã tồn tại trong Datamart cũ:
+     - Xếp loại mức độ nghiêm trọng: **🔴 Critical (Vi phạm cấm kỵ)**.
+     - Đánh dấu gắn cờ cảnh báo: `DEPRECATED / RETIRED`.
+     - Lập phương án đề xuất thu hồi/loại bỏ trình Human phê duyệt:
+       - **Tầng HLD:** Gọi `datamart-hld-design` xóa bỏ dòng KPI hoặc đánh dấu trạng thái `RETIRED` trong bảng KPI 7 cột.
+       - **Tầng LLD (Attributes & Detail Mapping):** Gọi `datamart-lld-design` xóa sạch các dòng thuộc tính và mapping liên quan, hoặc chuyển trạng thái sang `RETIRED`.
+       - **Tầng Registry (`datamart_model.yaml`):** Loại bỏ thuộc tính khỏi entity nếu không còn bảng báo cáo nào sử dụng.
+       - **Tầng Flat Table SQL:** Loại bỏ cột khỏi DDL/DML bảng Flat Table tương ứng để tránh sinh code và tiêu tốn tài nguyên ETL vô ích.

@@ -365,6 +365,46 @@ class TestDateFKCheckerCLI(unittest.TestCase):
         self.assertEqual(proc.returncode, 1)
         self.assertIn("fct_stock_portfolio_snpst", proc.stdout)
 
+    def test_29_real_repo_gsdc_diacritic_alias_resolution(self):
+        """Verify that scanning GSĐC with Vietnamese diacritic resolves to GSDC and inspects identical tables."""
+        chk = checker.DatamartDateFKChecker(root_dir=REPO_ROOT)
+        sum_viet = chk.scan_module("GSĐC")
+        sum_ascii = chk.scan_module("GSDC")
+
+        s_v = sum_viet.to_dict()["summary"]
+        s_a = sum_ascii.to_dict()["summary"]
+
+        self.assertGreaterEqual(s_v["total_files"], 17, "GSĐC must scan all LLD GSDC files")
+        self.assertEqual(s_v["total_files"], s_a["total_files"])
+        self.assertEqual(s_v["total_tables"], s_a["total_tables"])
+        self.assertEqual(s_v["total_fact_tables"], s_a["total_fact_tables"])
+        self.assertEqual(s_v["clean_fact_tables"], 9)
+        self.assertEqual(s_v["total_violations"], 0)
+
+    def test_30_mixed_carriage_return_newlines_resilience(self):
+        """Verify that CSVs with standalone \r or mixed \r\n and \r are parsed without _csv.Error."""
+        csv_data = (
+            "datamart_entity;datamart_table;datamart_attribute;datamart_column;key;etl_logic\r\n"
+            "Fact Trade;fct_trade;Trade Date Dimension Id;trade_dt_dim_id;FK;\"SELECT 1\rWHERE trade_dt IS NOT NULL\r\nAND vol > 0\"\r"
+            "Fact Trade;fct_trade;Trade Volume;trade_vol;;\"volume\rmetric\"\n"
+        )
+        violations = checker.audit_csv_content(csv_data, file_name="mock_cr_newlines.csv")
+        self.assertEqual(len(violations), 0)
+
+    def test_31_cli_exit_code_2_on_nonexistent_path_and_module(self):
+        """Verify that CLI exits with code 2 when target path or module does not exist."""
+        # Nonexistent path
+        cmd_path = [sys.executable, str(SCRIPTS_DIR / "datamart_date_fk_checker.py"), "-p", "nonexistent_file_xyz.csv"]
+        proc_path = subprocess.run(cmd_path, capture_output=True, text=True, cwd=str(REPO_ROOT))
+        self.assertEqual(proc_path.returncode, 2)
+        self.assertIn("Error: Target path", proc_path.stderr)
+
+        # Nonexistent module
+        cmd_mod = [sys.executable, str(SCRIPTS_DIR / "datamart_date_fk_checker.py"), "-m", "NONEXISTENT_MODULE_XYZ"]
+        proc_mod = subprocess.run(cmd_mod, capture_output=True, text=True, cwd=str(REPO_ROOT))
+        self.assertEqual(proc_mod.returncode, 2)
+        self.assertIn("Error: No LLD files found", proc_mod.stderr)
+
 
 if __name__ == "__main__":
     unittest.main()

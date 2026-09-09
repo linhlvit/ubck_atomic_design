@@ -32,11 +32,12 @@ Thực hiện ở **Bước 0b** (trước khi đi vào chi tiết bất kỳ nh
   □ Nhánh 6: Lệch số lượng / Schema out of sync (Lệch dòng KPI / Atomic entity lỗi thời)
 
 □ Đối soát Số lượng Chỉ tiêu theo Nhóm (BA ↔ HLD ↔ Detail Mapping):
-  □ Đếm số dòng BA hợp lệ trong nhóm (Phân loại ∈ {Chiều, Chỉ tiêu cơ sở, Chỉ tiêu phái sinh}, Trạng thái ∈ {Done, Doing})
-  □ Đếm số dòng KPI HLD của nhóm (loại trừ dòng derived thuần/YoY trong cùng bảng)
-  □ Đếm số dòng Detail Mapping của nhóm
-  □ Tính độ lệch (Delta): BA ↔ HLD và HLD ↔ Detail Mapping
-  □ Bật cờ cảnh báo "🔴 Lệch số lượng" cho mọi nhóm có chênh lệch dù chỉ 1 dòng
+  □ Đối soát 2 Chế độ Song song (theo reference/kpi_reconciliation_rules.md):
+      - Chế độ 1 (Total Scope): Total_BA (loại trừ Delete) == Total_HLD (loại trừ _YOY)
+      - Chế độ 2 (Ready Scope): Ready_BA (Done/Doing) == Ready_HLD (READY) == Ready_DM
+  □ Kiểm tra Cơ chế Whitelist Ngoại lệ (Reconciled Delta theo reference/datamart_review_whitelist.yaml):
+      - Nhóm có trong Whitelist (GSĐC 21-30 nhân bản 3x, GSTT 1-4 YoY/MoM, NHNCK 1, 2, 7 split measure, QLKD 1, 19 banner, TKNB 1, 2, 3) được công nhận "🟢 Khớp (Theo Whitelist)"
+      - Chỉ bật cờ cảnh báo "🔴 Lệch số lượng" khi nhóm có độ lệch chưa có trong Whitelist hoặc chưa có giải trình Reconciled Delta hợp lệ
 
 □ Kiểm tra Cấu trúc Toàn Module trong HLD (DTM_{MODULE}_HLD.md):
   □ Đủ 5 Section chuẩn:
@@ -61,7 +62,7 @@ Thực hiện ở **Bước 0b** (trước khi đi vào chi tiết bất kỳ nh
   □ Bảng tổng hợp Markdown trực quan
   □ Danh sách chỉ tiêu cần BA Team giải quyết (Nhánh 1, 2, 3)
   □ Danh sách chỉ tiêu cần Datamart Team giải quyết (Nhánh 4, 5, 6)
-  □ GATE 0b: Claude DỪNG chờ human xác nhận kế hoạch và thứ tự review trước khi vào Micro-Review
+  □ GATE 1 (Sau Bước 0b/0c): Claude DỪNG chờ human xác nhận kế hoạch và thứ tự review trước khi vào Micro-Review
 ```
 
 ---
@@ -166,7 +167,7 @@ Thực hiện ở **Bước 0b** (trước khi đi vào chi tiết bất kỳ nh
   → Derive đúng từ logical name, không đổi từ / mở rộng từ
 
 □ Đầy đủ trường kỹ thuật mặc định SCD4A trên Dimension / Operational:
-  → Bảng Dimension và Operational phải có đủ: `ds_rcrd_st`, `ds_rcrd_isrt_dt`, `ds_rcrd_udt_dt`, `ds_etl_pcs_tms` (History có thêm `ds_snpst_dt`)
+  → Bảng Dimension và Operational phải có đủ 5 trường kỹ thuật SCD4A: `ds_rcrd_st`, `ds_eff_start_dt`, `ds_eff_end_dt`, `ds_cdc_opr_cd`, `ds_load_ts` (History có thêm `ds_snpst_dt`)
   → Thiếu trường kỹ thuật → Warning / Critical (mã: L2-SCD4A-TECH-FIELD)
 
 □ Lọc trạng thái bản ghi `ds_rcrd_st = 'ACTIVE'` khi JOIN Atomic SCD4A:
@@ -261,10 +262,10 @@ Thực hiện ở **Bước 0b** (trước khi đi vào chi tiết bất kỳ nh
 
 ## PHẦN 3: NGUYÊN TẮC AN TOÀN & GATE CONTROL
 
-1. **Gate Rule Bước 0b:** Sau khi chạy Macro-Review, Claude bắt buộc DỪNG và trình bày bảng kế hoạch + ma trận đối soát cho human, chờ human xác nhận thứ tự review. Human chưa duyệt = chưa được review chi tiết.
-2. **Gate Rule Sau Mỗi Nhóm (Micro-Review):**
-   - Nếu nhóm có vấn đề (Critical/Warning/Info): Claude DỪNG, hỏi human muốn (a) sửa ngay, (b) ghi nhận sang nhóm tiếp, hay (c) dừng.
-   - Nếu nhóm không có vấn đề (4 lớp OK): Tự động chuyển sang nhóm kế tiếp.
+1. **GATE 1 (Sau Bước 0b/0c — Macro-Review):** Sau khi chạy Macro-Review, Claude bắt buộc DỪNG và trình bày bảng kế hoạch + ma trận đối soát cho human, chờ human xác nhận thứ tự review. Human chưa duyệt = chưa được review chi tiết.
+2. **GATE 2 (Group Checkpoint — Sau Mỗi Nhóm Micro-Review):**
+   - Nếu nhóm có vấn đề (Critical 🔴 / Warning 🟡): Claude DỪNG, hỏi human muốn (a) sửa ngay qua skill con, (b) ghi nhận vào Backlog và đi tiếp, hay (c) dừng.
+   - Nếu nhóm không có vấn đề (4 Lớp OK): Tự động in "✅ Nhóm N — OK" và chuyển sang nhóm kế tiếp. Lỗi Info 🔵 ghi vào Backlog tạm, tiếp tục.
 3. **Nguyên Tắc Không Tự Ý Sửa File Trực Tiếp:**
    - Mọi thay đổi nội dung nghiệp vụ HLD (Fact/Dim, grain, nguồn, bảng KPI) → gọi `datamart-hld-design`.
    - Mọi thay đổi nội dung LLD (Attributes, Detail Mapping, Registry) → gọi `datamart-lld-design`.
