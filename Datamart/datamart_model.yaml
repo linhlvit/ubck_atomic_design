@@ -10860,6 +10860,83 @@ entities:
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.src_stm_code"
 
+  - id: "DTM-hnx02_gov_bond_otc_trading_rpt"
+    logical_name: "Gov Bond OTC Trading Report (HNX02)"
+    datamart_table: "hnx02_gov_bond_otc_trading_rpt"
+    table_type: "operational"
+    module: "TKNB"
+    status: "draft"
+    reuse_status: "new"
+    description: "Báo cáo giao dịch trái phiếu Chính phủ OTC trên HNX theo loại hình giao dịch — cấu trúc EAV, 1 dòng/1 chỉ tiêu (item_code)/1 kỳ báo cáo (report_period_dt). Không dùng surrogate key — composite key report_code + report_period_dt + item_code. Chỉ 7/165 KPI READY (3/7 loại hình GD: Outright/Repo1/Repo2, không breakdown theo loại TP)."
+    source_atomic:
+      - "bond_order_book"
+    modules_using:
+      - "TKNB"
+    columns:
+      - logical_name: "Report Code"
+        physical_name: "report_code"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: false
+        key: "BK"
+        description: "BK — mã báo cáo, hằng số cố định cho mọi dòng bảng này"
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "Report Period Date"
+        physical_name: "report_period_dt"
+        data_domain: "Date"
+        data_type: "date"
+        nullable: false
+        key: "BK"
+        description: "BK — kỳ báo cáo (ngày giao dịch)"
+        source_atomic_table: "bond_order_book"
+        source_atomic_column: "bond_order_book.trading_dt"
+      - logical_name: "Item Code"
+        physical_name: "item_code"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: false
+        key: "PK"
+        description: "PK — mã chỉ tiêu EAV, gán theo danh mục cố định của mẫu biểu HNX02"
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "Item STT"
+        physical_name: "item_stt"
+        data_domain: "Small Counter"
+        data_type: "int"
+        nullable: false
+        key: ""
+        description: "Số thứ tự hiển thị của chỉ tiêu theo đúng layout mẫu biểu gốc"
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "Item Unit"
+        physical_name: "item_unit"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: true
+        key: ""
+        description: "Đơn vị tính của chỉ tiêu"
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "Item Value"
+        physical_name: "item_value"
+        data_domain: "Currency Amount"
+        data_type: "float"
+        nullable: true
+        key: ""
+        description: "Giá trị chỉ tiêu — populate theo item_code, mỗi chỉ tiêu lấy nguồn nghiệp vụ tương ứng"
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "Source System Code"
+        physical_name: "src_stm_code"
+        data_domain: "Classification Value"
+        data_type: "string"
+        nullable: false
+        key: ""
+        description: "Mã hệ thống nguồn dữ liệu của báo cáo"
+        source_atomic_table: "bond_order_book"
+        source_atomic_column: "bond_order_book.src_stm_code"
+
   - id: "DTM-hnx03_derivative_trading_rpt"
     logical_name: "Derivative Trading Report (HNX03)"
     datamart_table: "hnx03_derivative_trading_rpt"

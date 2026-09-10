@@ -2,7 +2,7 @@
 -- TKNB Flat Tables — CREATE
 -- Module: Thống kê nội bộ (TKNB)
 -- Generated: Phase 3 LLD Datamart
--- 21 bảng: 0 fact + 21 operational (EAV báo cáo phẳng, 1 báo cáo = 1 bảng phẳng)
+-- 22 bảng: 0 fact + 22 operational (EAV báo cáo phẳng, 1 báo cáo = 1 bảng phẳng)
 -- Toàn bộ bảng operational — KHÔNG JOIN Calendar Date, KHÔNG JOIN dim nào khác
 -- ============================================================
 
@@ -29,7 +29,29 @@ COMMENT 'Flat table — Stock Trading Report (HNX01)'
 
 
 -- ============================================================
--- 2. OPERATIONAL: hnx03_derivative_trading_rpt
+-- 2. OPERATIONAL: hnx02_gov_bond_otc_trading_rpt
+--    Gov Bond OTC Trading Report (HNX02)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.tknb_hnx02_gov_bond_otc_trading_rpt_flat ON CLUSTER 'my_cluster'
+(
+    -- From: OPERATIONAL Gov Bond OTC Trading Report (HNX02)
+    report_code         String                   COMMENT 'BK — mã báo cáo, hằng số cố định cho mọi dòng bảng này',
+    report_period_dt    Date                     COMMENT 'BK — kỳ báo cáo (ngày giao dịch)',
+    item_code           String                   COMMENT 'PK — Driving: bond_order_book — mã chỉ tiêu EAV, gán theo danh mục cố định của mẫu biểu HNX02',
+    item_stt            Int64                    COMMENT 'Số thứ tự hiển thị của chỉ tiêu theo đúng layout mẫu biểu gốc',
+    item_unit           Nullable(String)         COMMENT 'Đơn vị tính của chỉ tiêu',
+    item_value          Nullable(Float64)        COMMENT 'Giá trị chỉ tiêu — populate theo item_code, mỗi chỉ tiêu lấy nguồn nghiệp vụ tương ứng (khối lượng/giá trị/lợi suất giao dịch trái phiếu OTC theo loại hình)',
+    src_stm_code        String                   COMMENT 'Mã hệ thống nguồn dữ liệu của báo cáo'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(report_period_dt)
+ORDER BY (report_code, report_period_dt, item_code)
+COMMENT 'Flat table — Gov Bond OTC Trading Report (HNX02)'
+;
+
+
+-- ============================================================
+-- 3. OPERATIONAL: hnx03_derivative_trading_rpt
 --    Derivative Trading Report (HNX03)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.tknb_hnx03_derivative_trading_rpt_flat ON CLUSTER 'my_cluster'
@@ -51,7 +73,7 @@ COMMENT 'Flat table — Derivative Trading Report (HNX03)'
 
 
 -- ============================================================
--- 3. OPERATIONAL: hnx04_market_scale_rpt
+-- 4. OPERATIONAL: hnx04_market_scale_rpt
 --    Market Scale Report (HNX04)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.tknb_hnx04_market_scale_rpt_flat ON CLUSTER 'my_cluster'
@@ -74,7 +96,7 @@ COMMENT 'Flat table — Market Scale Report (HNX04)'
 
 
 -- ============================================================
--- 4. OPERATIONAL: hnx07_corp_bond_trading_rpt
+-- 5. OPERATIONAL: hnx07_corp_bond_trading_rpt
 --    Corp Bond Trading Report (HNX07)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.tknb_hnx07_corp_bond_trading_rpt_flat ON CLUSTER 'my_cluster'
@@ -96,7 +118,7 @@ COMMENT 'Flat table — Corp Bond Trading Report (HNX07)'
 
 
 -- ============================================================
--- 5. OPERATIONAL: hsx01_stock_trading_rpt
+-- 6. OPERATIONAL: hsx01_stock_trading_rpt
 --    Stock Trading Report (HSX01)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.tknb_hsx01_stock_trading_rpt_flat ON CLUSTER 'my_cluster'
@@ -118,7 +140,7 @@ COMMENT 'Flat table — Stock Trading Report (HSX01)'
 
 
 -- ============================================================
--- 6. OPERATIONAL: hsx02_listing_trading_rpt
+-- 7. OPERATIONAL: hsx02_listing_trading_rpt
 --    Listing Trading Report (HSX02)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.tknb_hsx02_listing_trading_rpt_flat ON CLUSTER 'my_cluster'
@@ -141,7 +163,7 @@ COMMENT 'Flat table — Listing Trading Report (HSX02)'
 
 
 -- ============================================================
--- 7. OPERATIONAL: hsx04_proprietary_trading_rpt
+-- 8. OPERATIONAL: hsx04_proprietary_trading_rpt
 --    Proprietary Trading Report (HSX04)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.tknb_hsx04_proprietary_trading_rpt_flat ON CLUSTER 'my_cluster'
@@ -163,7 +185,7 @@ COMMENT 'Flat table — Proprietary Trading Report (HSX04)'
 
 
 -- ============================================================
--- 8. OPERATIONAL: ttlk10_cw_outstanding_rpt
+-- 9. OPERATIONAL: ttlk10_cw_outstanding_rpt
 --    CW Outstanding Report (TTLK10)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.tknb_ttlk10_cw_outstanding_rpt_flat ON CLUSTER 'my_cluster'
@@ -184,7 +206,7 @@ COMMENT 'Flat table — CW Outstanding Report (TTLK10)'
 
 
 -- ============================================================
--- 9. OPERATIONAL: 0513hubckqg_offering_result_rpt
+-- 10. OPERATIONAL: 0513hubckqg_offering_result_rpt
 --    Offering Result Report (0513.H.UBCK.QG)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.tknb_0513hubckqg_offering_result_rpt_flat ON CLUSTER 'my_cluster'
@@ -206,7 +228,7 @@ COMMENT 'Flat table — Offering Result Report (0513.H.UBCK.QG)'
 
 
 -- ============================================================
--- 10. OPERATIONAL: tk04btc_market_summary_rpt
+-- 11. OPERATIONAL: tk04btc_market_summary_rpt
 --    Market Summary Report (TK-04.BTC)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.tknb_tk04btc_market_summary_rpt_flat ON CLUSTER 'my_cluster'
@@ -230,7 +252,7 @@ COMMENT 'Flat table — Market Summary Report (TK-04.BTC)'
 
 
 -- ============================================================
--- 11. OPERATIONAL: tkniengiam_market_annual_rpt
+-- 12. OPERATIONAL: tkniengiam_market_annual_rpt
 --    Market Annual Report (TK_NienGiam)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.tknb_tkniengiam_market_annual_rpt_flat ON CLUSTER 'my_cluster'
@@ -252,7 +274,7 @@ COMMENT 'Flat table — Market Annual Report (TK_NienGiam)'
 
 
 -- ============================================================
--- 12. OPERATIONAL: bm030amss_market_trading_rpt
+-- 13. OPERATIONAL: bm030amss_market_trading_rpt
 --    Market Trading Report (BM030a)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.tknb_bm030amss_market_trading_rpt_flat ON CLUSTER 'my_cluster'
@@ -274,7 +296,7 @@ COMMENT 'Flat table — Market Trading Report (BM030a)'
 
 
 -- ============================================================
--- 13. OPERATIONAL: bm030cmss_corp_bond_trading_rpt
+-- 14. OPERATIONAL: bm030cmss_corp_bond_trading_rpt
 --    Corp Bond Trading Report (BM030c)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.tknb_bm030cmss_corp_bond_trading_rpt_flat ON CLUSTER 'my_cluster'
@@ -296,7 +318,7 @@ COMMENT 'Flat table — Corp Bond Trading Report (BM030c)'
 
 
 -- ============================================================
--- 14. OPERATIONAL: bm030emss_fund_cert_etf_cw_trading_rpt
+-- 15. OPERATIONAL: bm030emss_fund_cert_etf_cw_trading_rpt
 --    Fund Cert ETF CW Trading Report (BM030e)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.tknb_bm030emss_fund_cert_etf_cw_trading_rpt_flat ON CLUSTER 'my_cluster'
@@ -318,7 +340,7 @@ COMMENT 'Flat table — Fund Cert ETF CW Trading Report (BM030e)'
 
 
 -- ============================================================
--- 15. OPERATIONAL: bm031amss_foreign_proprietary_trading_rpt
+-- 16. OPERATIONAL: bm031amss_foreign_proprietary_trading_rpt
 --    Foreign Proprietary Trading Report (BM031a)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.tknb_bm031amss_foreign_proprietary_trading_rpt_flat ON CLUSTER 'my_cluster'
@@ -340,7 +362,7 @@ COMMENT 'Flat table — Foreign Proprietary Trading Report (BM031a)'
 
 
 -- ============================================================
--- 16. OPERATIONAL: bm031bmss_gov_bond_foreign_proprietary_trading_rpt
+-- 17. OPERATIONAL: bm031bmss_gov_bond_foreign_proprietary_trading_rpt
 --    Gov Bond Foreign Proprietary Trading Report (BM031b)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.tknb_bm031bmss_gov_bond_foreign_proprietary_trading_rpt_flat ON CLUSTER 'my_cluster'
@@ -362,7 +384,7 @@ COMMENT 'Flat table — Gov Bond Foreign Proprietary Trading Report (BM031b)'
 
 
 -- ============================================================
--- 17. OPERATIONAL: bm031cmss_corp_bond_foreign_proprietary_trading_rpt
+-- 18. OPERATIONAL: bm031cmss_corp_bond_foreign_proprietary_trading_rpt
 --    Corp Bond Foreign Proprietary Trading Report (BM031c)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.tknb_bm031cmss_corp_bond_foreign_proprietary_trading_rpt_flat ON CLUSTER 'my_cluster'
@@ -384,7 +406,7 @@ COMMENT 'Flat table — Corp Bond Foreign Proprietary Trading Report (BM031c)'
 
 
 -- ============================================================
--- 18. OPERATIONAL: bm031dmss_fund_cert_etf_cw_foreign_proprietary_trading_rpt
+-- 19. OPERATIONAL: bm031dmss_fund_cert_etf_cw_foreign_proprietary_trading_rpt
 --    Fund Cert ETF CW Foreign Proprietary Trading Report (BM031d)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.tknb_bm031dmss_fund_cert_etf_cw_foreign_proprietary_trading_rpt_flat ON CLUSTER 'my_cluster'
@@ -406,7 +428,7 @@ COMMENT 'Flat table — Fund Cert ETF CW Foreign Proprietary Trading Report (BM0
 
 
 -- ============================================================
--- 19. OPERATIONAL: bm031fmss_derivatives_foreign_proprietary_trading_rpt
+-- 20. OPERATIONAL: bm031fmss_derivatives_foreign_proprietary_trading_rpt
 --    Derivatives Foreign Proprietary Trading Report (BM031f)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.tknb_bm031fmss_derivatives_foreign_proprietary_trading_rpt_flat ON CLUSTER 'my_cluster'
@@ -428,7 +450,7 @@ COMMENT 'Flat table — Derivatives Foreign Proprietary Trading Report (BM031f)'
 
 
 -- ============================================================
--- 20. OPERATIONAL: bm035mss_security_trading_detail_rpt
+-- 21. OPERATIONAL: bm035mss_security_trading_detail_rpt
 --    Security Trading Detail Report (BM035)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.tknb_bm035mss_security_trading_detail_rpt_flat ON CLUSTER 'my_cluster'
@@ -451,7 +473,7 @@ COMMENT 'Flat table — Security Trading Detail Report (BM035)'
 
 
 -- ============================================================
--- 21. OPERATIONAL: bm043mss_derivatives_security_detail_rpt
+-- 22. OPERATIONAL: bm043mss_derivatives_security_detail_rpt
 --    Derivatives Security Detail Report (BM043)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.tknb_bm043mss_derivatives_security_detail_rpt_flat ON CLUSTER 'my_cluster'
