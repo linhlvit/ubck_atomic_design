@@ -465,3 +465,60 @@
 | — | — | — | — | atomic.uat_atm | mdds_order_book | ds_snpst_dt | DATE | ⚙ Dev xử lý — không map từ nguồn |
 | — | — | — | — | atomic.uat_atm | mdds_order_book | ds_snpst_dt | DATE | ⚙ Dev xử lý — không map từ nguồn |
 | — | — | — | — | atomic.uat_atm | mdds_order_book | ds_etl_pcs_tms | TIMESTAMP | ⚙ Dev xử lý — không map từ nguồn |
+
+---
+
+## Business Key & Filter
+
+| # | Schema | Bảng atomic | Business Key | Trường lọc (Filter) | Ghi chú |
+| --- | --- | --- | --- | --- | --- |
+| 1 | atomic.uat_atm | listed_share_info | ticker_symbol | ds_snpst_dt | — |
+| 2 | atomic.uat_atm | foreign_ownership_info | ticker_symbol | ds_snpst_dt | — |
+| 3 | atomic.uat_atm | major_shareholder_ownership | ticker_symbol, identification_nbr | ds_snpst_dt | — |
+| 4 | atomic.uat_atm | end_of_day_open_interest | ticker_symbol | ds_snpst_dt | — |
+| 5 | atomic.uat_atm | depository_account_movement | depository_member_code | ds_snpst_dt | — |
+| 6 | atomic.uat_atm | foreign_bond_portfolio | foreign_investor_code | ds_snpst_dt | — |
+| 7 | atomic.uat_atm | share_auction_result | issuer_name, auction_tp | ds_snpst_dt | — |
+| 8 | atomic.uat_atm | private_corp_bond_trading_summary | indicator_name | ds_snpst_dt | — |
+| 9 | atomic.uat_atm | gov_bond_bidding_result | bidding_session | ds_snpst_dt | — |
+| 10 | atomic.uat_atm | gov_bond_listing | bond_code | ds_snpst_dt | — |
+| 11 | atomic.uat_atm | additional_gov_bond_listing | bond_code, listing_status, listing_change_date | ds_snpst_dt | — |
+| 12 | atomic.uat_atm | private_corp_bond_offering | bond_code, market_type, posting_date | ds_snpst_dt | — |
+| 13 | atomic.uat_atm | private_corp_bond_registration | bond_code | ds_snpst_dt | — |
+| 14 | atomic.uat_atm | bond_trading_registration_status | bond_code, trading_registration_status | ds_snpst_dt | — |
+| 15 | atomic.uat_atm | listing_status_change | decision_no, decision_date, ticker_symbol | ds_snpst_dt | — |
+| 16 | atomic.uat_atm | brokerage_market_share | sc_member_code | ds_snpst_dt | — |
+| 17 | atomic.uat_atm | bond_order_book | order_no | ds_snpst_dt | — |
+
+---
+
+## Chú giải
+
+### Màu sắc
+
+| Màu nền | Ý nghĩa |
+| --- | --- |
+| Xanh dương nhạt (cols 1–4) | Dữ liệu thuộc bảng nguồn (staging) |
+| Xanh lá nhạt (cols 5–8) | Map thẳng sang atomic — rename thuần |
+| Vàng nhạt | Có transformation: CAST, LOOKUP, DERIVE, đổi precision |
+| Cam nhạt | NULL theo loại nguồn (đặc thù bond_order_book) |
+| Tím nhạt | Surrogate key — tự sinh, không từ nguồn |
+| Xám nhạt | Metadata/ETL: src_stm_code, ds_snpst_dt, ds_etl_pcs_tms |
+
+### Lưu ý
+
+| Mục | Nội dung |
+| --- | --- |
+| Bảng 2/3/4 | open/closed/updated_investors KHÔNG map — xử lý cơ chế riêng |
+| Thứ tự trường | Theo đúng thứ tự DDL file vsdc_atomic.sql |
+
+### Pattern đặt tên
+
+| Pattern | Ý nghĩa |
+| --- | --- |
+| volume → quantity | Số lượng đơn vị CK/TP |
+| shares → share_quantity | Số lượng cổ phiếu |
+| _type → _tp | Rút gọn category fields |
+| _name → _nm | Rút gọn name fields |
+| _ind suffix | Boolean flag (Có/Không) |
+| begin_ → opening_ / end_ → closing_ | Chuẩn hóa kỳ đầu/cuối |
