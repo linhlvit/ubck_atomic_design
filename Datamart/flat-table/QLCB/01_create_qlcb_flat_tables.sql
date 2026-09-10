@@ -281,7 +281,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlcb_opr_securities_offering_360_profile_fla
     actual_offering_price                Nullable(Decimal(23,2)) COMMENT 'Giá thực tế',
     employee_quantity_result             Nullable(Int64)         COMMENT 'Số lượng người lao động (thực tế)',
     capital_src                          Nullable(String)        COMMENT 'Đối tượng (thực tế) — giữ lại, không còn KPI dùng (xem result_single_object)',
-    submission_dt                        Nullable(Date)          COMMENT '[MỚI 2026-09-10] Thời điểm báo cáo (ngày nộp hồ sơ) — dùng ở Nhóm 7',
+    result_rpt_dt                        Nullable(Date)          COMMENT '[ĐỔI NGUỒN 2026-09-10 lần 2] Thời điểm báo cáo (nguồn Result, trước là Submission Date trên Offering cha) — dùng ở Nhóm 7',
     plan_single_object                   Nullable(String)        COMMENT '[MỚI 2026-09-10] Đối tượng cấp phép — thay CASE WHEN cũ, dùng ở Nhóm 9',
     offering_end_dt                      Nullable(Date)          COMMENT '[MỚI 2026-09-10] Ngày kết thúc chào bán (kế hoạch) — chưa có KPI dùng',
     result_single_object                 Nullable(String)        COMMENT '[MỚI 2026-09-10] Đối tượng kết quả — thay CASE WHEN cũ, dùng ở Nhóm 10',

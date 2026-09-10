@@ -507,7 +507,8 @@ CONTENTITEMINDEX",CONTENTITEMID,"WHERE CONTENTITEMINDEX.DISPLAYTEXT = 'Ban Quả
       AND cte.ngay_gui_ho_so BETWEEN
             TO_DATE(:tu_ngay,  'YYYYMMDD')
         AND TO_DATE(:den_ngay, 'YYYYMMDD')",,check chéo với TTHC,Done,Dữ liệu tĩnh,P
-7,,Chào bán và phát hành/Thông tin cơ sở,Thời điểm báo cáo,Thời điểm báo cáo,Data Explorer,Chỉ tiêu cơ sở,Dễ,Ngày,IDS,x,x,,Done,,SECURITIES_OFFERING,SUBMISSION_DATE,"NVL(certificate_date,official_letter_date) BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd')","WITH plan_agg AS (
+7,,Chào bán và phát hành/Thông tin cơ sở,Thời điểm báo cáo,Thời điểm báo cáo,Data Explorer,Chỉ tiêu cơ sở,Dễ,Ngày,IDS,x,x,,Done,,SECURITIES_OFFERING,result_report_date ,"NVL(certificate_date,official_letter_date) BETWEEN to_date(:pdate1,'yyyymmdd') AND to_date(:pdate2,'yyyymmdd')","--data explorer
+WITH plan_agg AS (
     -- Tổng hợp phương án phát hành theo đợt
     SELECT 
         securities_offering_id,
@@ -525,7 +526,8 @@ CONTENTITEMINDEX",CONTENTITEMID,"WHERE CONTENTITEMINDEX.DISPLAYTEXT = 'Ban Quả
 result_agg AS (
     -- Tổng hợp kết quả phát hành theo đợt
     SELECT 
-        securities_offering_id,
+        securities_offering_id, 
+        result_report_date,
         RESULT_SINGLE_OBJ,
         security_type_cd,
         offering_end_date,
@@ -537,10 +539,10 @@ result_agg AS (
         SUM(total_collected_am)    AS total_collected_am
     FROM GMS_IDS_UAT.SECURITIES_OFFERING_RESULT
     WHERE NVL(delete_flg, 0) = 0
-    GROUP BY  securities_offering_id, offering_method_cd,RESULT_SINGLE_OBJ,actual_offering_price,security_type_cd,offering_end_date
+    GROUP BY  securities_offering_id, offering_method_cd,RESULT_SINGLE_OBJ,actual_offering_price,security_type_cd,offering_end_date,result_report_date
 )
 SELECT
-    t.submission_date                                                   AS thoi_diem_bao_cao,
+    r.RESULT_REPORT_DATE                                                AS thoi_diem_bao_cao,
     t.processor_user_name                                               AS chuyen_vien,          
     cp.COMPANY_NAME_VN                                                  AS ten_doanh_nghiep,
     cp.equity_ticker                                                    AS ma_chung_khoan,

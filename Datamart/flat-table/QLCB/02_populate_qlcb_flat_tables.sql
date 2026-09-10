@@ -278,7 +278,7 @@ SELECT
     o.actual_offering_price,
     o.employee_quantity_result,
     o.capital_src,
-    o.submission_dt,
+    o.result_rpt_dt,
     o.plan_single_object,
     o.offering_end_dt,
     o.result_single_object,
