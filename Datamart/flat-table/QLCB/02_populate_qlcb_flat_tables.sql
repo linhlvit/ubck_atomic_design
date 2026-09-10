@@ -278,6 +278,11 @@ SELECT
     o.actual_offering_price,
     o.employee_quantity_result,
     o.capital_src,
+    o.submission_dt,
+    o.plan_single_object,
+    o.offering_end_dt,
+    o.result_single_object,
+    o.foreign_collected_amt,
     o.src_stm_code
 FROM datamart.opr_securities_offering_360_profile o
 LEFT JOIN datamart.cl_value cl

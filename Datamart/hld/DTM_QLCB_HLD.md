@@ -1,7 +1,7 @@
 # Data Mart HLD — Phân hệ Quản lý Chào bán (QLCB)
 
-**Phiên bản:** 2.1
-**Ngày:** 17/07/2026
+**Phiên bản:** 2.2
+**Ngày:** 10/09/2026 (bản gốc 17/07/2026, cập nhật liên tục 08-11/08-14/08-24/08-25/09-10)
 
 ---
 
@@ -283,6 +283,7 @@ flowchart LR
 
 > Phân loại: **Phân tích**
 > Atomic: `Public Company Securities Offering` ← IDS.SECURITIES_OFFERING — **READY** (Atomic draft — chưa approved chính thức)
+> Atomic: `Public Company Securities Offering Plan` ← IDS.SECURITIES_OFFERING_PLAN — **READY** (Atomic draft) — [CẬP NHẬT 2026-09-10] nguồn mới cho "Giá trị Cấp phép" (K_QLCB_3), xem ghi chú dưới
 > Atomic: `Public Company Securities Offering Result` ← IDS.SECURITIES_OFFERING_RESULT — **READY** (Atomic draft)
 > Atomic: `Public Company` ← IDS.COMPANY_PROFILES — **READY**
 
@@ -300,15 +301,15 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_QLCB_1 | Ngày | — | Chiều | `GROUP BY Certificate Date` — FK date trên Fact, dùng làm slicer/period cho toàn Nhóm — `Public Company Securities Offering.certificate_dt` | BA cập nhật 2026-08-11: đổi field lọc kỳ báo cáo từ Official Letter Date (ngày công văn) sang Certificate Date (ngày cấp GCN) | READY |
+| K_QLCB_1 | Ngày | — | Chiều | `GROUP BY Certificate Date` — FK date trên Fact, dùng làm slicer/period cho toàn Nhóm — `Public Company Securities Offering.certificate_dt` | BA cập nhật 2026-08-11: đổi field lọc kỳ báo cáo từ Official Letter Date (ngày công văn) sang Certificate Date (ngày cấp GCN). **[CẬP NHẬT 2026-09-10]** phạm vi lọc kỳ báo cáo mở rộng thành `NVL(Certificate Date, Official Letter Date)` — hồ sơ chưa có Certificate Date nhưng đã có Official Letter Date vẫn vào phạm vi; FK ngày trên Fact (`Certificate_Date_Dimension_Id`, giữ nguyên tên cột) nay populate theo `NVL(certificate_dt, official_letter_dt)` thay vì chỉ `certificate_dt` | READY |
 | K_QLCB_2 | Ngành | — | Chiều | `GROUP BY Business Line Level 1 Code` — FK Public Company Dimension (reuse `public_company_dim`), dùng làm slicer ngành cho toàn Nhóm | — | READY |
-| K_QLCB_3 | Giá trị Cấp phép | Tỷ VNĐ | Cơ sở | `SUM(Total Expected Amount)` per ngành × kỳ — `Public Company Securities Offering.total_expected_amt` | BA cập nhật 2026-08-25 (Dũng): chỉ lấy bản ghi có phương án phát hành `offering_method_cd NOT IN (6,7,8,9)` — lọc qua bảng tạm (join `Public Company Securities Offering Plan`, không đổi nguồn giá trị) | READY |
-| K_QLCB_4 | Giá trị Huy động thành công | Tỷ VNĐ | Cơ sở | `SUM(Total Collected Amount)` per ngành × kỳ — aggregate từ `Public Company Securities Offering Result.total_collected_amt` GROUP BY `pc_securities_offering_id` trước khi cộng vào Fact | BA cập nhật 2026-08-25 (Dũng): cùng filter với K_QLCB_3, không đổi nguồn giá trị | READY |
+| K_QLCB_3 | Giá trị Cấp phép | Tỷ VNĐ | Cơ sở | `SUM(Total Expected Amount Snapshot) WHERE Approval Status Code = 'APPROVED' AND Offering Method Code NOT IN (6,7,8,10)` per ngành × kỳ — `Public Company Securities Offering Plan.total_expected_amt_snpst` GROUP BY `pc_securities_offering_id` (CTE `plan_agg`) | **[ĐỔI NGUỒN 2026-09-10]** đổi nguồn từ bảng cha `Public Company Securities Offering.total_expected_amt` (giá trị đơn/hồ sơ) sang SUM `Public Company Securities Offering Plan.total_expected_amt_snpst` (aggregate theo `plan_agg`, cùng cơ chế gom nhóm-trước-JOIN-sau đã áp dụng ở Nhóm 2). Danh sách mã loại trừ đổi từ `(6,7,8,9)` → `(6,7,8,10)` (mã 9-ESOP nay được tính, mã 10-Khác bị loại). Thêm điều kiện bắt buộc `Approval Status Code = 'APPROVED'` (trước đây không lọc theo trạng thái duyệt) | READY |
+| K_QLCB_4 | Giá trị Huy động thành công | Tỷ VNĐ | Cơ sở | `SUM(Total Collected Amount) WHERE Approval Status Code = 'APPROVED' AND Offering Method Code NOT IN (6,7,8,10)` per ngành × kỳ — aggregate từ `Public Company Securities Offering Result.total_collected_amt` GROUP BY `pc_securities_offering_id` (CTE `result_agg`) trước khi cộng vào Fact | **[ĐỔI 2026-09-10]** cùng điều kiện lọc mới với K_QLCB_3 (mã loại trừ + `APPROVAL_STATUS_CD='APPROVED'`). **Đổi kiểu JOIN — chốt với người thiết kế 2026-09-10:** BA đổi `LEFT JOIN result_agg` → `JOIN result_agg` (INNER) — theo đúng BA, chấp nhận thu hẹp phạm vi: hồ sơ **chưa có bất kỳ dòng Result nào** (chưa công bố kết quả huy động) sẽ **không xuất hiện** trong Nhóm 1 nữa (trước đây LEFT JOIN vẫn hiện với Giá trị Huy động = 0). Ảnh hưởng cả K_QLCB_3 vì cùng 1 SELECT — Giá trị Cấp phép của các hồ sơ này cũng biến mất khỏi tổng theo ngành, không chỉ Giá trị Huy động | READY |
 | K_QLCB_5 | Chưa thành công | Tỷ VNĐ | Derived | `K_QLCB_3 − K_QLCB_4` — tính ở presentation layer | — | READY |
 
-> **Lưu ý:** K_QLCB_1/2 là Chiều — cùng dùng chung FK date/ngành đã có sẵn trên `Fact Securities Offering Snapshot` (không tạo cột mới), khai sinh KPI_ID theo rule "mọi dòng BA Phân loại = Chiều phải có KPI_ID". K_QLCB_3 lấy trực tiếp `total_expected_amt` trên bảng cha `Public Company Securities Offering` (1 giá trị/hồ sơ, không cần JOIN). K_QLCB_4 cần SUM `total_collected_amt` từ `Public Company Securities Offering Result` GROUP BY `pc_securities_offering_id` — quan hệ 1-N vì 1 hồ sơ có thể có nhiều dòng Result theo từng đợt báo cáo kết quả (`Offering Phase Name`). K_QLCB_5 là Derived — tính ở presentation layer, không lưu mart.
+> **Lưu ý:** K_QLCB_1/2 là Chiều — cùng dùng chung FK date/ngành đã có sẵn trên `Fact Securities Offering Snapshot` (không tạo cột mới), khai sinh KPI_ID theo rule "mọi dòng BA Phân loại = Chiều phải có KPI_ID". **[CẬP NHẬT 2026-09-10]** K_QLCB_3 nay SUM từ `Public Company Securities Offering Plan` (trước đó lấy trực tiếp `total_expected_amt` trên bảng cha, 1 giá trị/hồ sơ — không còn đúng theo BA mới). K_QLCB_4 cần SUM `total_collected_amt` từ `Public Company Securities Offering Result` GROUP BY `pc_securities_offering_id` — quan hệ 1-N vì 1 hồ sơ có thể có nhiều dòng Result theo từng đợt báo cáo kết quả (`Offering Phase Name`). K_QLCB_5 là Derived — tính ở presentation layer, không lưu mart.
 >
-> **BA cập nhật 2026-08-25 (Dũng):** K_QLCB_3/4 chỉ tính trên các đợt chào bán có tồn tại phương án phát hành thoả `offering_method_cd NOT IN (6,7,8,9)` — lọc qua bảng tạm (CTE `valid_offering`/join `Public Company Securities Offering Plan`), giữ nguyên nguồn giá trị `total_expected_amt`/`total_collected_amt` (không đổi sang tổng theo Plan). Đã lan sang `DTM_QLCB_Detail_Mapping.csv` — thêm 2 dòng `FILTER` cho K_QLCB_3/K_QLCB_4.
+> **[CẬP NHẬT 2026-09-10] Nguồn ETL ghi nhận trong `plan_agg`:** `Public Company Securities Offering Plan` được SUM theo `securities_offering_id` (bảng tạm `plan_agg`) rồi INNER JOIN sang `Public Company Securities Offering` (điều kiện `APPROVAL_STATUS_CD='APPROVED'`, `Offering Method Code NOT IN (6,7,8,10)`), và INNER JOIN sang `result_agg` (SUM `Public Company Securities Offering Result` theo `securities_offering_id`). Đã lan sang `DTM_QLCB_Detail_Mapping.csv` — cập nhật logic K_QLCB_3/K_QLCB_4 theo cấu trúc JOIN mới, không còn dùng CTE `valid_offering` cũ (2026-08-25).
 >
 > **Loại bỏ 2 KPI YOY dư (cross-check phát hiện, đã xóa khỏi bảng trước khi renumber):** BA STT 1 không có dòng nào yêu cầu YoY% — 2 KPI này đã bị thêm không có căn cứ BA, xóa khỏi bảng KPI.
 
@@ -351,6 +352,8 @@ erDiagram
 ```
 
 > **Ghi chú Phase 2 — reuse `Public_Company_Dimension` (= `public_company_dim`):** Dùng nguyên schema đã approved trong `datamart_model.yaml` (module GSDC). Key convention theo entity gốc: `Public_Company_Dimension_Id` = PK, `Public_Company_Code` = NK (ETL join từ `Public Company Securities Offering.Public Company Code` để resolve Surrogate Dimension Key).
+>
+> **[CẬP NHẬT 2026-09-10]** `Certificate_Date_Dimension_Id` — nguồn ETL đổi từ `certificate_dt` sang `NVL(certificate_dt, official_letter_dt)`, giữ nguyên tên cột (không đổi thành role khác vì vẫn cùng 1 vai trò nghiệp vụ "ngày báo cáo/kỳ"). `Total_Expected_Amount`/`Total_Collected_Amount` — không đổi kiểu dữ liệu/tên cột, chỉ đổi nguồn ETL populate (xem K_QLCB_3/4): `Total_Expected_Amount` nay SUM từ `Public Company Securities Offering Plan` thay vì lấy trực tiếp từ Offering cha; cả 2 measure chỉ populate cho hồ sơ có `APPROVAL_STATUS_CD='APPROVED'` + tồn tại ≥1 dòng Result (INNER JOIN).
 
 **Lineage Mart → Báo cáo:**
 
@@ -373,7 +376,7 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| Fact Securities Offering Snapshot | 1 row = 1 hồ sơ chào bán/phát hành CK của 1 công ty đại chúng × 1 ngày snapshot (ETL full-scan hàng ngày để Total Collected Amount luôn phản ánh đúng kết quả huy động mới nhất; Certificate Date giữ nguyên vai trò Chiều/slicer) |
+| Fact Securities Offering Snapshot | 1 row = 1 hồ sơ chào bán/phát hành CK đã duyệt (`APPROVAL_STATUS_CD='APPROVED'`) và đã có ≥1 kết quả huy động (INNER JOIN Result), của 1 công ty đại chúng × 1 ngày snapshot (ETL full-scan hàng ngày để Total Collected Amount luôn phản ánh đúng kết quả huy động mới nhất; `NVL(Certificate Date, Official Letter Date)` giữ vai trò Chiều/slicer) — **[CẬP NHẬT 2026-09-10]** thu hẹp phạm vi so với thiết kế trước (LEFT JOIN Result, không lọc APPROVAL_STATUS_CD) |
 | Public Company Dimension (reuse `public_company_dim`) | 1 row = 1 công ty đại chúng (SCD4A — theo quy ước module GSDC) |
 | Calendar Date Dimension | 1 row = 1 ngày (Certificate Date — ngày cấp giấy chứng nhận) |
 
@@ -384,6 +387,7 @@ flowchart LR
 > Phân loại: **Phân tích**
 > Atomic: `Public Company Securities Offering Plan` ← IDS.SECURITIES_OFFERING_PLAN — **READY** (Atomic draft — chưa approved chính thức)
 > Atomic: `Public Company Securities Offering` ← IDS.SECURITIES_OFFERING — **READY** (Atomic draft, dùng để lấy `certificate_dt` FK date)
+> [CẬP NHẬT 2026-09-10] BA đổi filter kỳ báo cáo sang `NVL(certificate_dt, official_letter_dt)` (đồng bộ với Nhóm 1) — không đổi logic measure K_QLCB_6-12, chỉ mở rộng phạm vi hồ sơ theo ngày. Không có thay đổi nguồn/công thức nào khác cho Nhóm này.
 
 **Mockup:**
 
@@ -402,6 +406,7 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
+| K_QLCB_2 | Ngành | — | Chiều | `GROUP BY Business Line Level 1 Code` — FK `Public Company Dimension` (reuse `public_company_dim`), cùng cột đã khai sinh ở Nhóm 1 | **[BỔ SUNG 2026-09-10 — Bước 5B phát hiện gap tồn tại từ trước]** Reuse từ Nhóm 1 (K_QLCB_2). Dòng BA STT 2 "Ngành" (Chỉ tiêu cơ sở) đã tồn tại từ bản BA gốc nhưng bị bỏ sót khỏi bảng KPI Nhóm 2 — `Public_Company_Dimension` đã sẵn FK trên `Fact_Securities_Offering_Plan_Snapshot`, không cần bổ sung hạ tầng | READY |
 | K_QLCB_6 | Loại hình phát hành | — | Chiều | `GROUP BY Offering Method Code` — hiển thị tên gốc `Offering_Method_Name` (từ Dimension, join Classification Value); filter K_QLCB_7–12 gom mã vào 6 nhóm để tính measure (xem bảng mapping dưới), không đổi tên hiển thị của Chiều này | — | READY |
 | K_QLCB_7 | Giá trị cấp phép — Công chúng | Tỷ VNĐ | Cơ sở | `SUM(Total Expected Amount Snapshot) WHERE Offering Method Code IN ('1','2','3','4')` | — | READY |
 | K_QLCB_8 | Giá trị cấp phép — Riêng lẻ | Tỷ VNĐ | Cơ sở | `SUM(Total Expected Amount Snapshot) WHERE Offering Method Code = '5'` | — | READY |
@@ -484,7 +489,7 @@ flowchart LR
         G4["Calendar Date Dimension"]
     end
     subgraph RPT["Báo cáo"]
-        R2["Tab CHAO BAN PHAT HANH - Nhom 2 - K_QLCB_6-12"]
+        R2["Tab CHAO BAN PHAT HANH - Nhom 2 - K_QLCB_2,6-12"]
     end
     G1 --> R2
     G3 --> R2
@@ -507,6 +512,7 @@ flowchart LR
 > Phân loại: **Phân tích**
 > Atomic: `Public Company Securities Offering Result` ← IDS.SECURITIES_OFFERING_RESULT — **READY** (Atomic draft — chưa approved chính thức)
 > Atomic: `Public Company Securities Offering` ← IDS.SECURITIES_OFFERING — **READY** (Atomic draft, dùng để lấy `certificate_dt` FK date)
+> [CẬP NHẬT 2026-09-10] Cùng thay đổi filter ngày với Nhóm 2 — `NVL(certificate_dt, official_letter_dt)`. Không có thay đổi nguồn/công thức nào khác cho Nhóm này.
 
 **Mockup:**
 
@@ -522,6 +528,7 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
+| K_QLCB_2 | Ngành | — | Chiều | `GROUP BY Business Line Level 1 Code` — FK `Public Company Dimension` (reuse `public_company_dim`), cùng cột đã khai sinh ở Nhóm 1 | **[BỔ SUNG 2026-09-10 — Bước 5B phát hiện gap tồn tại từ trước]** Reuse từ Nhóm 1 (K_QLCB_2). Dòng BA STT 3 "Ngành" (Chỉ tiêu cơ sở) đã tồn tại từ bản BA gốc nhưng bị bỏ sót khỏi bảng KPI Nhóm 3 — `Public_Company_Dimension` đã sẵn FK trên `Fact_Securities_Offering_Result_Snapshot`, không cần bổ sung hạ tầng | READY |
 | K_QLCB_13 | Loại hình phát hành (kết quả) | — | Chiều | `GROUP BY Offering Method Code Snapshot` — hiển thị `Offering_Method_Group_Name` (computed CASE WHEN có sẵn trên Dimension, xem bảng mapping ở Nhóm 2) — khác Nhóm 2/6 (hiển thị tên gốc `Offering_Method_Name`); filter K_QLCB_14–19 dùng cùng mapping mã→nhóm | — | READY |
 | K_QLCB_14 | Giá trị huy động — Công chúng | Tỷ VNĐ | Cơ sở | `SUM(Total Collected Amount) WHERE Offering Method Code Snapshot IN ('1','2','3','4')` GROUP BY ngành | — | READY |
 | K_QLCB_15 | Giá trị huy động — Riêng lẻ | Tỷ VNĐ | Cơ sở | `SUM(Total Collected Amount) WHERE Offering Method Code Snapshot = '5'` GROUP BY ngành | — | READY |
@@ -591,7 +598,7 @@ flowchart LR
         G4["Calendar Date Dimension"]
     end
     subgraph RPT["Báo cáo"]
-        R3["Tab CHAO BAN PHAT HANH - Nhom 3 - K_QLCB_13-19"]
+        R3["Tab CHAO BAN PHAT HANH - Nhom 3 - K_QLCB_2,13-19"]
     end
     G1 --> R3
     G3 --> R3
@@ -616,6 +623,7 @@ flowchart LR
 > Atomic: `Public Company Securities Offering Plan` ← IDS.SECURITIES_OFFERING_PLAN — **READY** (Atomic draft)
 > Atomic: `Public Company Securities Offering Result` ← IDS.SECURITIES_OFFERING_RESULT — **READY** (Atomic draft)
 > Atomic: `Public Company` ← IDS.COMPANY_PROFILES — **READY**
+> [CẬP NHẬT 2026-09-10] Cùng thay đổi filter ngày với Nhóm 1/2/3 — `NVL(certificate_dt, official_letter_dt)`. Không có thay đổi nguồn/công thức nào khác cho Nhóm này.
 
 **Mockup:**
 
@@ -680,9 +688,14 @@ erDiagram
         float Offering_Price
         int Employee_Quantity
         string Swap_Target
+        string Plan_Single_Object
+        date Offering_End_Date
         float Actual_Offering_Price
         int Employee_Quantity_Result
         string Capital_Source
+        string Result_Single_Object
+        float Foreign_Collected_Amount
+        date Submission_Date
         string Source_System_Code
     }
 ```
@@ -697,9 +710,11 @@ erDiagram
 > **Cột dùng ở Nhóm 7/9/10 (mọi cột dùng ở bất kỳ Nhóm nào của `Operational Securities Offering 360 Profile` phải xuất hiện đủ trong erDiagram này):**
 > - `Classification_Business_Line_Name` (nguồn `Classification Business Line.cl_business_line_nm`, JOIN qua `Public Company.business_line_level_1_id` — giữ nguyên tên cột như `public_company_dim.classification_business_line_nm`) — dùng ở Nhóm 7 (K_QLCB_65), đệm sẵn tên ngành cho mockup cột "Ngành"
 > - `Processor_User_Name_Snapshot` (nguồn bảng cha Offering `processor_user_nm_snpst`) — dùng ở Nhóm 7 (K_QLCB_44)
+> - `Submission_Date` (nguồn bảng cha Offering `submission_dt`) — **[MỚI 2026-09-10]** dùng ở Nhóm 7 (K_QLCB_43, thay thế `Certificate_Date` làm "Thời điểm báo cáo" theo SQL BA mới nhất — `Certificate_Date`/`Official_Letter_Date` vẫn giữ trên schema cho Nhóm 8)
 > - `Total_Registered_Quantity` (nguồn bảng cha Offering `total_registered_quantity`) — dùng ở Nhóm 4 (K_QLCB_27) và Nhóm 9 (K_QLCB_54) — Nhóm 4 sửa lại theo BA (trước đó sai map vào Plan snapshot) khi review cross-check phát hiện gap
-> - `Offering_Price` (nguồn Plan `offering_price`), `Employee_Quantity` (nguồn Plan `employee_quantity`), `Swap_Target` (nguồn Plan `swap_target`) — dùng ở Nhóm 9 (K_QLCB_55, 57, 58)
-> - `Actual_Offering_Price` (nguồn Result `actual_offering_price`), `Employee_Quantity_Result` (nguồn Result `employee_quantity`), `Capital_Source` (nguồn Result `capital_src`) — dùng ở Nhóm 10 (K_QLCB_61, 63, 64)
+> - `Securities_Type_Code` — **[ĐỔI NGUỒN 2026-09-10]** nguồn `Public Company Securities Offering Result.security_tp_code` (trước đây `Public Company.securities_tp_code`) — dùng ở Nhóm 7 (K_QLCB_48), xem O_QLCB_17
+> - `Offering_Price` (nguồn Plan `offering_price`), `Employee_Quantity` (nguồn Plan `employee_quantity`), `Swap_Target` (nguồn Plan `swap_target`, giữ lại trên schema dù không còn KPI nào dùng — xem `Plan_Single_Object`), `Plan_Single_Object` (nguồn Plan `single_offering_object` — **[MỚI 2026-09-10]**, thay thế logic CASE WHEN cũ của K_QLCB_58), `Offering_End_Date` (nguồn Plan `offering_end_dt` — **[MỚI 2026-09-10]**, dòng BA STT 10 trùng lặp/lỗi nhập liệu tham chiếu cột này, xem O_QLCB_18) — dùng ở Nhóm 9 (K_QLCB_55, 57, 58)
+> - `Actual_Offering_Price` (nguồn Result `actual_offering_price`), `Employee_Quantity_Result` (nguồn Result `employee_quantity`), `Capital_Source` (nguồn Result `capital_src`, giữ lại trên schema dù không còn KPI nào dùng — xem `Result_Single_Object`), `Result_Single_Object` (nguồn Result `result_single_object` — **[MỚI 2026-09-10]**, thay thế logic CASE WHEN cũ của K_QLCB_64), `Foreign_Collected_Amount` (nguồn Result `foreign_collected_amt` — **[MỚI 2026-09-10]**, KPI mới K_QLCB_68; BA ghi nhầm Bảng nguồn = `SECURITIES_OFFERING` nhưng SQL thực tế dùng `result_agg`/Result, xem O_QLCB_19) — dùng ở Nhóm 10 (K_QLCB_61, 63, 64, 68)
 > - `Source_System_Code` — mã hệ thống nguồn, hardcode `IDS.SECURITIES_OFFERING` (driving table `Public Company Securities Offering`, bảng cha Offering — không phải Plan), bắt buộc cho mọi bảng Operational
 
 **Lineage Mart → Báo cáo:**
@@ -745,6 +760,7 @@ flowchart LR
 > Atomic: `Administrative Procedure Content Item Index` ← TTHC.CONTENTITEMINDEX — **READY** (Atomic draft) — *`display_text` đã được Atomic bổ sung 2026-08-24, O_QLCB_10 Closed*
 > Atomic: `Administrative Procedure Document` ← TTHC.DOCUMENT — **READY** (Atomic draft)
 > Ghi chú: ĐỔI NGUỒN 2026-08-24 (task Dũng) — trước đây `Public Company Securities Offering` ← IDS.SECURITIES_OFFERING. Xem Cụm 3.
+> [CẬP NHẬT 2026-09-10] Cột "Nguồn" của BA sheet nay đã sửa đúng thành `TTHC` cho toàn bộ 11 dòng STT 5/6 (trước đây vẫn ghi nhầm `IDS`) — đóng O_QLCB_14. Tham số ngày `:tu_ngay`/`:den_ngay` nay thống nhất `'YYYYMMDD'` ở cả 2 SQL STT 5/6 (khớp quyết định thiết kế 2026-08-24) — đóng phần (b) của O_QLCB_11. Không có thay đổi logic/nguồn nào khác cho Nhóm 5.
 
 **Mockup (a) — 4 KPI Card:**
 
@@ -876,16 +892,17 @@ flowchart LR
 > Atomic: `Administrative Procedure Content Item Index` ← TTHC.CONTENTITEMINDEX — **READY** (Atomic draft) — *`display_text` đã được Atomic bổ sung 2026-08-24, O_QLCB_10 Closed*
 > Atomic: `Administrative Procedure Document` ← TTHC.DOCUMENT — **READY** (Atomic draft)
 > Ghi chú: ĐỔI NGUỒN 2026-08-24 (task Dũng) — trước đây `Public Company Securities Offering` + `Public Company Securities Offering Plan` ← IDS. Cùng Fact với Nhóm 5 — bổ sung `Administrative Procedure Application Type Dimension` (**mới**, KHÔNG reuse `Offering Method Dimension`) × năm của `Submission Date`. Xem Cụm 3.
+> **[CẬP NHẬT 2026-09-10 — GATE đã duyệt với người thiết kế]** BA viết lại hoàn toàn SQL tham khảo STT 6: bỏ `GROUP BY ngay_gui_ho_so` (năm), đổi sang `GROUP BY hinh_thuc_chao_ban, Ten_to_chuc_ca_nhan, MA_CO_PHIEU`; thêm `ky_bao_cao` = chuỗi tĩnh nối `:tu_ngay`–`:den_ngay` (không phải GROUP BY thật); thêm self-join `CONTENTITEMINDEX te` để resolve `Ten_to_chuc_ca_nhan` từ content item mới `$.HoSoTTHC.DoiTuongNopHoSo.ContentItemIds[0]`; thêm `MA_CO_PHIEU` từ Eform field `$.Eform.ContentItems.Eform10.Macophieu.Text`. **Cả 2 trường mới đều CHƯA có attribute tương ứng trên Atomic `Administrative Procedure Document`** (đã grep xác nhận `ap_document` chỉ có 9 attribute: `document_status_code`/`processing_authority_code`/`offering_method_code`/`submission_dt`/…, không có trường cho `DoiTuongNopHoSo` hay `Macophieu`) → 2 Chiều mới **PENDING chờ Atomic bổ sung**. Grain Fact (`Administrative Procedure Content Item Index`/`Administrative Procedure Document`, 1 row/hồ sơ/ngày) không đổi.
 
 **Mockup:**
 
-| Hình thức chào bán | Năm | Hồ sơ đăng ký | Đang xử lý | Đã cấp phép | Bị từ chối | Tổng |
-|---|---|---|---|---|---|---|
-| Chào bán cổ phiếu lần đầu ra công chúng (IPO) | 2025 | 2 | 5 | 18 | 3 | 28 |
-| Chào bán trái phiếu ra công chúng | 2025 | 1 | 3 | 12 | 1 | 17 |
-| Phát hành cổ phiếu theo chương trình ESOP | 2024 | 0 | 2 | 24 | 4 | 30 |
+| Tên tổ chức/cá nhân | Mã cổ phiếu | Hình thức chào bán | Hồ sơ đăng ký | Đang xử lý | Đã cấp phép | Bị từ chối | Tổng |
+|---|---|---|---|---|---|---|---|
+| Công ty CP ABC | ABC | Chào bán cổ phiếu lần đầu ra công chúng (IPO) | 2 | 5 | 18 | 3 | 28 |
+| Công ty CP DEF | DEF | Chào bán trái phiếu ra công chúng | 1 | 3 | 12 | 1 | 17 |
+| Ông Nguyễn Văn X | — | Phát hành cổ phiếu theo chương trình ESOP | 0 | 2 | 24 | 4 | 30 |
 
-> **Ghi chú mockup:** Nhãn hình thức chào bán nay lấy nguyên `display_text` của content item `LoaiHoSo` trên TTHC (tương ứng bộ Eform: `ChaobanCophieuIPO`, `ChaobanTraiphieu`, `PhathanhCophieuESOP`, `ChaobanCophieuRiengle`, `ChaobanCCQ`, `ChaobanChungquyen`, … — xem `Source/TTHC_JSON_Schemas.csv`), **không** còn là nhãn của scheme `IDS_SO_OFFERING_METHOD`. Danh mục hình thức của Nhóm 6 vì vậy khác Nhóm 2/3 — xem O_QLCB_13.
+> **Ghi chú mockup [CẬP NHẬT 2026-09-10]:** Mockup cũ (GROUP BY hình thức × năm) đã lỗi thời — SQL BA mới nhóm theo hình thức × tổ chức/cá nhân nộp hồ sơ × mã cổ phiếu, không còn hiển thị trục Năm; thay vào đó có `ky_bao_cao` (chuỗi hiển thị khoảng ngày đã lọc, không phải cột GROUP BY). Nhãn hình thức chào bán vẫn lấy nguyên `display_text` của content item `LoaiHoSo` trên TTHC — không đổi so với 2026-08-24, xem O_QLCB_13.
 
 **Source:** `Fact Securities Offering Application Snapshot` → `Administrative Procedure Application Type Dimension`, `Administrative Procedure Application Status Dimension`, `Calendar Date Dimension`
 
@@ -894,14 +911,18 @@ flowchart LR
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
 | K_QLCB_36 | Hình thức chào bán | — | Chiều | `GROUP BY Administrative Procedure Application Type Dimension.Application Type Name` | **ĐỔI NGUỒN 2026-08-24:** Dimension **mới** từ `display_text` của content item `LoaiHoSo` (nguồn thô `TTHC.CONTENTITEMINDEX.DISPLAYTEXT`), KHÔNG reuse `Offering Method Dimension` (dimension đó đang phục vụ K_QLCB_6–19 từ IDS — repoint sẽ phá 14 KPI). Danh mục khác Nhóm 2/3, xem O_QLCB_13 | READY (Atomic draft) |
-| K_QLCB_37 | Năm | — | Chiều | `GROUP BY Year` của `Submission Date Dimension` (reuse `Calendar Date Dimension`, không cần Degenerate Dimension riêng) | **ĐỔI NGUỒN 2026-08-24:** đổi từ `Certificate Date` (IDS, ngày cấp giấy chứng nhận) sang `Submission Date` (TTHC, ngày gửi hồ sơ). Fact lưu grain **ngày**, KPI GROUP BY **năm** — chốt 2026-08-24: SQL BA STT 6 `GROUP BY ngay_gui_ho_so` ở dạng TIMESTAMP có giờ nên mỗi hồ sơ thành 1 dòng riêng, không gom nhóm được, trong khi cột `Thông tin` của BA ghi là "Năm". Xem O_QLCB_11 | READY (Atomic draft) |
-| K_QLCB_38 | Số lượng hồ sơ đăng ký | Hồ sơ | Cơ sở | `COUNT(Application Item Code) WHERE Application Status Group Code = 'REGISTERED'` | ĐỔI NGUỒN 2026-08-24: đếm theo nhóm trạng thái TTHC thay cho `approval_status_cd`. Grain 1 row/hồ sơ nên `COUNT` không cần DISTINCT (rule "N Plan đếm N lần" của FIX 2026-08-14 không còn áp dụng). Số lượng thuần — KHÔNG phải % (khác K_QLCB_32) | READY (Atomic draft) |
+| K_QLCB_37 | Năm | — | Chiều | `GROUP BY Year` của `Submission Date Dimension` (reuse `Calendar Date Dimension`) — hạ tầng vẫn tồn tại trên Fact, không xóa | **[CẬP NHẬT 2026-09-10] SQL BA mới nhất KHÔNG còn GROUP BY theo Năm** (thay bằng Tên tổ chức/cá nhân × Mã cổ phiếu, xem K_QLCB_66/67) — chuyển PENDING vì hiện không có mockup/SQL nào của Nhóm 6 dùng trục này nữa. `Submission_Date_Dimension_Id` trên Fact vẫn giữ nguyên (dùng cho slicer Từ ngày–Đến ngày và cho K_QLCB_32-35 Nhóm 5) — chỉ riêng vai trò GROUP BY hiển thị của Nhóm 6 bị BA bỏ. Cần BA xác nhận đây là chủ đích (bỏ hẳn trục năm) hay thiếu sót khi viết lại SQL — xem O_QLCB_16 | PENDING — chờ BA xác nhận (O_QLCB_16) |
+| K_QLCB_66 | Tên tổ chức/cá nhân nộp hồ sơ | Text | Chiều | `Administrative Procedure Content Item Index.display_text` — self-join qua content item `$.HoSoTTHC.DoiTuongNopHoSo.ContentItemIds[0]` (JOIN mới `te` trong SQL BA) | **[MỚI 2026-09-10]** Atomic `Administrative Procedure Document` **chưa có** attribute cho `DoiTuongNopHoSo` (grep xác nhận 9 attribute hiện có không bao gồm trường này) — Atomic cần bổ sung: (a) attribute mới trên `ap_document` parse `$.HoSoTTHC.DoiTuongNopHoSo.ContentItemIds[0]` (kiểu tương tự `document_status_code`/`offering_method_code`, ref tới content item), hoặc (b) xác nhận field JSON path chính xác trước khi thiết kế | PENDING — Atomic cần bổ sung |
+| K_QLCB_67 | Mã cổ phiếu (hồ sơ) | Text | Chiều | `JSON_VALUE Eform.ContentItems.Eform10.Macophieu.Text` — trường Eform gắn trên content item hồ sơ | **[MỚI 2026-09-10]** Atomic `Administrative Procedure Document` **chưa có** attribute cho trường Eform `Macophieu` — khác hẳn cơ chế 3 ContentItemId ref hiện có (`TrangThaiHoSo`/`LoaiHoSo`/`CoQuanXuLy`), đây là 1 trường Text trực tiếp trong JSON Eform, không phải content item ref — Atomic cần đánh giá lại cấu trúc parse trước khi bổ sung | PENDING — Atomic cần bổ sung |
+| K_QLCB_38 | Số lượng hồ sơ đăng ký | Hồ sơ | Cơ sở | `COUNT(Application Item Code) WHERE Application Status Group Code = 'REGISTERED'` | ĐỔI NGUỒN 2026-08-24: đếm theo nhóm trạng thái TTHC thay cho `approval_status_cd`. Grain 1 row/hồ sơ nên `COUNT` không cần DISTINCT (rule "N Plan đếm N lần" của FIX 2026-08-14 không còn áp dụng). Số lượng thuần — KHÔNG phải % (khác K_QLCB_32). **[2026-09-10]** Đo lường không đổi — chỉ đổi chiều GROUP BY hiển thị (xem K_QLCB_37/66/67), measure vẫn READY | READY (Atomic draft) |
 | K_QLCB_39 | Số lượng hồ sơ đang xử lý | Hồ sơ | Cơ sở | `COUNT(Application Item Code) WHERE Application Status Group Code = 'IN_PROGRESS'` | ĐỔI NGUỒN 2026-08-24: cùng lý do K_QLCB_38 | READY (Atomic draft) |
 | K_QLCB_40 | Số lượng hồ sơ đã cấp phép | Hồ sơ | Cơ sở | `COUNT(Application Item Code) WHERE Application Status Group Code = 'APPROVED'` | ĐỔI NGUỒN 2026-08-24: cùng lý do K_QLCB_38 | READY (Atomic draft) |
 | K_QLCB_41 | Số lượng hồ sơ bị từ chối | Hồ sơ | Cơ sở | `COUNT(Application Item Code) WHERE Application Status Group Code = 'REJECTED'` | ĐỔI NGUỒN 2026-08-24: cùng lý do K_QLCB_38 | READY (Atomic draft) |
-| K_QLCB_42 | Tổng hồ sơ | Hồ sơ | Derived | `COUNT(Application Item Code)` — tổng toàn bộ hồ sơ trong ô (hình thức × năm), **không** phải tổng 4 KPI con | **ĐỔI CÔNG THỨC 2026-08-24:** SQL BA STT 6 dùng `COUNT(*) AS tong_ho_so` chứ không phải tổng 4 cột `COUNT(CASE WHEN …)`. Hai cách chỉ bằng nhau khi không có hồ sơ nào rơi vào nhóm `UNDEFINED`; công thức cũ (`K_QLCB_38+39+40+41`) sẽ **thiếu** hồ sơ chưa phân loại được trạng thái. Đổi sang đếm trực tiếp để khớp BA và để tổng cột trùng mẫu số của Nhóm 5 | READY (Atomic draft) |
+| K_QLCB_42 | Tổng hồ sơ | Hồ sơ | Derived | `COUNT(Application Item Code)` — tổng toàn bộ hồ sơ trong ô (hình thức × tổ chức × mã CP), **không** phải tổng 4 KPI con | **ĐỔI CÔNG THỨC 2026-08-24:** SQL BA STT 6 dùng `COUNT(*) AS tong_ho_so` chứ không phải tổng 4 cột `COUNT(CASE WHEN …)`. Hai cách chỉ bằng nhau khi không có hồ sơ nào rơi vào nhóm `UNDEFINED`; công thức cũ (`K_QLCB_38+39+40+41`) sẽ **thiếu** hồ sơ chưa phân loại được trạng thái. Đổi sang đếm trực tiếp để khớp BA và để tổng cột trùng mẫu số của Nhóm 5. **[2026-09-10]** ô GROUP BY nay là hình thức × tổ chức × mã CP thay vì hình thức × năm | READY (Atomic draft) |
 
 > **Ghi chú `Administrative Procedure Application Type Dimension` (mới):** Grain 1 row = 1 content item `LoaiHoSo` trên TTHC. Cột: `Application Type Item Code` (BK = `CONTENTITEMID`), `Application Type Name` (= `display_text`), `Source System Code`. `Fact Securities Offering Application Snapshot` mang FK `Administrative_Procedure_Application_Type_Dimension_Id`, lookup từ `Administrative Procedure Document.Offering Method Code`. Vì mỗi hồ sơ TTHC chỉ có đúng 1 `LoaiHoSo`, FK này **non-nullable** và **không** làm phồng grain — khác hoàn toàn `Offering_Method_Dimension_Id` cũ (LEFT JOIN Plan, nullable, sinh N dòng/hồ sơ). Nhóm 5 và Nhóm 6 vẫn dùng chung 1 Fact.
+>
+> **[CẬP NHẬT 2026-09-10] K_QLCB_66/67 PENDING — không tạo cột Fact/Dimension nào cho tới khi Atomic bổ sung.** Theo quy tắc cấm sửa Atomic từ skill Datamart: 2 attribute mới (`DoiTuongNopHoSo` ref + `Macophieu` Eform text) phải do luồng `atomic-lld-design` thiết kế độc lập trên `Administrative Procedure Document`. Sau khi Atomic bổ sung xong, K_QLCB_37 cần BA xác nhận lại có khôi phục trục Năm hay retire hẳn trước khi chuyển bất kỳ KPI nào sang READY.
 
 **Star Schema:** Kế thừa Fact từ Nhóm 5, bổ sung FK `Administrative_Procedure_Application_Type_Dimension_Id`:
 
@@ -955,7 +976,7 @@ flowchart LR
         G4["Administrative Procedure Application Status Dimension"]
     end
     subgraph RPT["Báo cáo"]
-        R6["Tab HO SO DANG KY CHAO BAN - Nhom 6 - K_QLCB_36-42"]
+        R6["Tab HO SO DANG KY CHAO BAN - Nhom 6 - K_QLCB_36,38-42"]
     end
     G1 --> R6
     G2 --> R6
@@ -972,6 +993,13 @@ flowchart LR
 | `Administrative Procedure Application Status Dimension` | 1 row = 1 trạng thái hồ sơ TTHC (content item `TrangThaiHoSo`) |
 | `Calendar Date Dimension` | 1 row = 1 ngày (`Submission Date` — ngày gửi hồ sơ) |
 
+**Bảng mapping nguồn (Atomic Placeholder) — [MỚI 2026-09-10]:**
+
+| Bảng nguồn BA | Atomic entity dự kiến | Atomic table dự kiến | KPI liên quan |
+|---|---|---|---|
+| `TTHC.DOCUMENT` (JSON `$.HoSoTTHC.DoiTuongNopHoSo.ContentItemIds[0]`) | `Administrative Procedure Document` (bổ sung attribute mới) | `ap_document` | K_QLCB_66 |
+| `TTHC.DOCUMENT` (JSON Eform `$.Eform.ContentItems.Eform10.Macophieu.Text`) | `Administrative Procedure Document` (bổ sung attribute mới) | `ap_document` | K_QLCB_67 |
+
 ---
 
 ### Tab: CHÀO BÁN VÀ PHÁT HÀNH (Data Explorer)
@@ -987,6 +1015,7 @@ flowchart LR
 > Phân loại: **Tác nghiệp**
 > Atomic: `Public Company Securities Offering` ← IDS.SECURITIES_OFFERING — **READY** (Atomic draft — chưa approved chính thức)
 > Atomic: `Public Company` ← IDS.COMPANY_PROFILES — **READY**
+> Atomic: `Public Company Securities Offering Result` ← IDS.SECURITIES_OFFERING_RESULT — **READY** (Atomic draft) — [MỚI 2026-09-10] cần cho K_QLCB_48 (đổi nguồn "Loại chứng khoán")
 
 **Mockup:**
 
@@ -1001,12 +1030,12 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_QLCB_43 | Thời điểm báo cáo | Ngày | Attribute | `Public Company Securities Offering.certificate_dt` — IDS.SECURITIES_OFFERING.CERTIFICATE_DATE | BA cập nhật 2026-08-11: đổi từ Official Letter Date sang Certificate Date — ngày cấp GCN, dùng làm thời điểm báo cáo (FK date chính) | READY |
+| K_QLCB_43 | Thời điểm báo cáo | Ngày | Attribute | `Public Company Securities Offering.submission_dt` — IDS.SECURITIES_OFFERING.SUBMISSION_DATE | BA cập nhật 2026-08-11: đổi từ Official Letter Date sang Certificate Date. **[ĐỔI NGUỒN 2026-09-10]** BA đổi tiếp sang `SUBMISSION_DATE` (ngày nộp hồ sơ) — Atomic `pc_securities_offering` đã có sẵn attribute `submission_dt` — READY | READY |
 | K_QLCB_44 | Chuyên viên | Text | Attribute | `Public Company Securities Offering.processor_user_nm_snpst` — IDS.SECURITIES_OFFERING.PROCESSOR_USER_NAME | Tên người xử lý hồ sơ dạng snapshot | READY |
 | K_QLCB_45 | Tên công ty | Text | Attribute | `Public Company.public_company_nm` | — | READY |
 | K_QLCB_46 | Mã chứng khoán | Text | Attribute | `Public Company.equity_ticker_symbol` — IDS.COMPANY_PROFILES | — | READY |
 | K_QLCB_47 | Sàn | Text | Attribute | `Public Company.equity_listing_exchange_code` | Scheme: IDS_EQUITY_LISTING_EXCH | READY |
-| K_QLCB_48 | Loại chứng khoán | Text | Attribute | `Public Company.securities_tp_code` — IDS.COMPANY_PROFILES.SECURITIES_TYPE_CD | Scheme: IDS_ISSUANCE_SECURITY_TYPE | READY |
+| K_QLCB_48 | Loại chứng khoán | Text | Attribute | `Public Company Securities Offering Result.security_tp_code` JOIN `Classification Value` (`cl_value.cl_code = security_tp_code`, scheme cần xác nhận) lấy `cl_nm` | **[ĐỔI NGUỒN 2026-09-10]** BA đổi nguồn từ `COMPANY_PROFILES.SECURITIES_TYPE_CD` (thuộc tính tĩnh của công ty) sang `SECURITIES_OFFERING_RESULT.security_type_cd` JOIN `LOOKUP_VALUES` (loại CK của **chính đợt chào bán/kết quả**, có thể khác loại CK niêm yết mặc định của công ty — VD công ty cổ phiếu phát hành thêm trái phiếu). Atomic `security_tp_code` đã có sẵn trên `pc_securities_offering_result` — READY. BA SQL không ghi rõ `LOOKUP_GROUP` cho join này (khác `SO_OFFERING_METHOD` đã biết) — cần xác nhận tên scheme, xem O_QLCB_17 | READY (Atomic draft) — chờ xác nhận scheme (O_QLCB_17) |
 | K_QLCB_65 | Ngành | Text | Attribute | `Classification Business Line.cl_business_line_nm` — JOIN qua `Public Company.business_line_level_1_id` | Tên ngành (đệm sẵn trên `opr_securities_offering_360_profile`, cột `classification_business_line_nm` — giữ nguyên tên như `public_company_dim`) — khớp cột "Ngành" ở mockup | READY |
 
 **Schema bảng tác nghiệp:** Kế thừa `Operational Securities Offering 360 Profile` — bổ sung cột `Processor_User_Name_Snapshot`, `Securities_Type_Code`, `Classification_Business_Line_Name` (xem erDiagram Nhóm 4).
@@ -1088,7 +1117,7 @@ flowchart LR
 
 **Mockup:**
 
-| Số lượng cấp phép | Giá (cấp phép) | Giá trị cấp phép | SL người LĐ | Đối tượng | Mục đích sử dụng vốn |
+| Số lượng cấp phép | Giá (cấp phép) | Giá trị cấp phép | SL người LĐ | Đối tượng cấp phép | Mục đích sử dụng vốn |
 |---|---|---|---|---|---|
 | 10,000,000 | 15,000 đ | 150 tỷ | 500 | CBNV công ty | Bổ sung vốn lưu động |
 
@@ -1102,10 +1131,10 @@ flowchart LR
 | K_QLCB_55 | Giá (cấp phép) | VNĐ | Attribute | `Public Company Securities Offering Plan.offering_price` — IDS.SECURITIES_OFFERING_PLAN.OFFERING_PRICE (giá trực tiếp trên Plan, không cần Derived) | — | READY |
 | K_QLCB_56 | Giá trị cấp phép | Tỷ VNĐ | Attribute | `Public Company Securities Offering.total_expected_amt` — bảng cha, IDS.SECURITIES_OFFERING.TOTAL_EXPECTED_AM (BA ghi rõ nguồn bảng cha, không phải Plan snapshot) | — | READY |
 | K_QLCB_57 | Số lượng người lao động | Người | Attribute | `Public Company Securities Offering Plan.employee_quantity` — IDS.SECURITIES_OFFERING_PLAN.EMPLOYEE_QTY; chỉ có giá trị với 1 số thủ tục (ESOP/Bonus Share), NULL với loại hình khác | — | READY |
-| K_QLCB_58 | Đối tượng | Text | Attribute | `CASE WHEN Offering_Method_Code_Representative = '5' THEN Public Company.Public_Company_Name ELSE NULL END` — `Offering_Method_Code_Representative` = `MIN(Offering Method Code)` gộp theo hồ sơ (cùng cách gộp với Giá cấp phép/Số lượng NLĐ ở trên), chỉ có giá trị khi phát hành riêng lẻ, IDS.COMPANY_PROFILES.COMPANY_NAME_VN | BA cập nhật 2026-08-10: đổi từ SWAP_TARGET sang tên công ty khi offering_method_cd = 5. **FIX 2026-08-14:** điều kiện lọc sửa từ `Offering_Method_Code` per-dòng (BK component 2, per-loại-hình thật) sang `Offering_Method_Code_Representative` (MIN đại diện, gộp theo hồ sơ) — khớp đúng SQL BA dùng `p.offering_method_cd = MIN(offering_method_cd) GROUP BY securities_offering_id`, nhất quán với cách gộp của Offering Price/Employee Quantity cùng Nhóm | READY |
+| K_QLCB_58 | Đối tượng cấp phép | Text | Attribute | `Public Company Securities Offering Plan.single_offering_object` (SUM/gộp theo hồ sơ, cùng CTE `plan_agg` với Giá cấp phép/Số lượng NLĐ) | **[ĐƠN GIẢN HÓA 2026-09-10]** BA thay hẳn logic `CASE WHEN Offering_Method_Code = 5 THEN tên công ty ELSE NULL` (FIX 2026-08-14) bằng field trực tiếp `plan_single_obj` trên Plan — Atomic đã có sẵn attribute tương ứng `single_offering_object` trên `pc_securities_offering_plan` — READY, không còn cần cột `Offering_Method_Code_Representative` (giữ lại trên schema, không dùng nữa) | READY |
 | K_QLCB_59 | Mục đích sử dụng vốn | Text | Attribute | `Public Company Securities Offering.offering_purpose` — bảng cha, IDS.SECURITIES_OFFERING.OFFERING_PURPOSE | — | READY |
 
-**Schema bảng tác nghiệp:** Kế thừa `Operational Securities Offering 360 Profile` — bổ sung 3 cột `Offering_Price`, `Employee_Quantity`, `Swap_Target` (xem erDiagram Nhóm 4). **FIX 2026-08-14:** bổ sung thêm cột `Offering_Method_Code_Representative` (giá trị đại diện `MIN(Offering Method Code)` gộp theo hồ sơ, dùng riêng cho điều kiện lọc K_QLCB_58 — khác `Offering_Method_Code` hiện có vốn là BK per-loại-hình thật, dùng cho Nhóm 4/7/8).
+**Schema bảng tác nghiệp:** Kế thừa `Operational Securities Offering 360 Profile` — bổ sung cột `Offering_Price`, `Employee_Quantity`, `Plan_Single_Object` (**mới**, thay `Swap_Target`/`Offering_Method_Code_Representative` cho K_QLCB_58 — 2 cột cũ giữ lại trên schema, không dùng nữa) (xem erDiagram Nhóm 4).
 
 **Lineage Mart → Báo cáo:**
 
@@ -1133,11 +1162,11 @@ flowchart LR
 > Phân loại: **Tác nghiệp**
 > Atomic: `Public Company Securities Offering Result` ← IDS.SECURITIES_OFFERING_RESULT — **READY** (Atomic draft — chưa approved chính thức)
 
-**Mockup:**
+**Mockup:** [CẬP NHẬT 2026-09-10 — thêm cột "Giá trị chào bán cho NĐTNN", đổi nhãn "Đối tượng (TT)" → "Đối tượng kết quả"]
 
-| Số lượng thực tế | Giá thực tế | Giá trị thực tế | SL người LĐ (TT) | Đối tượng (TT) |
-|---|---|---|---|---|
-| 9,800,000 | 15,000 đ | 147 tỷ | 490 | CBNV công ty |
+| Số lượng thực tế | Giá thực tế | Giá trị thực tế | SL người LĐ (TT) | Đối tượng kết quả | Giá trị chào bán cho NĐTNN |
+|---|---|---|---|---|---|
+| 9,800,000 | 15,000 đ | 147 tỷ | 490 | CBNV công ty | 25 tỷ |
 
 **Source:** `Operational Securities Offering 360 Profile`
 
@@ -1149,9 +1178,10 @@ flowchart LR
 | K_QLCB_61 | Giá thực tế | VNĐ | Attribute | `Public Company Securities Offering Result.actual_offering_price` — IDS.SECURITIES_OFFERING_RESULT.ACTUAL_OFFERING_PRICE (giá trực tiếp trên Result, không cần Derived) | — | READY |
 | K_QLCB_62 | Giá trị thực tế | Tỷ VNĐ | Attribute | `Public Company Securities Offering Result.total_collected_amt` — IDS.SECURITIES_OFFERING_RESULT.TOTAL_COLLECTED_AM | — | READY |
 | K_QLCB_63 | Số lượng người lao động (TT) | Người | Attribute | `Public Company Securities Offering Result.employee_quantity` — IDS.SECURITIES_OFFERING_RESULT.EMPLOYEE_QTY | — | READY |
-| K_QLCB_64 | Đối tượng (thực tế) | Text | Attribute | `CASE WHEN Public Company Securities Offering Result.offering_method_code_snpst = '5' THEN Public Company.Public_Company_Name ELSE NULL END` — điều kiện lấy theo field snapshot trên Result (khác Plan), IDS.SECURITIES_OFFERING_RESULT.OFFERING_METHOD_CD = 5, tên công ty IDS.COMPANY_PROFILES.COMPANY_NM_VN | BA cập nhật 2026-08-10: đổi từ CAPITAL_SOURCE sang tên công ty khi offering_method_cd = 5 (điều kiện theo Result, không dùng lại Offering_Method_Code composite BK của Plan vì 2 field có thể lệch); các hình thức khác NULL | READY |
+| K_QLCB_64 | Đối tượng kết quả | Text | Attribute | `Public Company Securities Offering Result.result_single_object` (JOIN `Public Company Securities Offering Plan` theo BA — cùng khái niệm với K_QLCB_58 nhưng phía kết quả thực tế) | **[ĐƠN GIẢN HÓA 2026-09-10]** BA thay logic `CASE WHEN offering_method_code_snpst = 5 THEN tên công ty ELSE NULL` bằng field trực tiếp `RESULT_SINGLE_OBJ` — Atomic đã có sẵn attribute tương ứng `result_single_object` trên `pc_securities_offering_result` — READY, không còn cần điều kiện CASE WHEN | READY |
+| K_QLCB_68 | Giá trị chào bán cho NĐTNN | Tỷ VNĐ | Attribute | `Public Company Securities Offering Result.foreign_collected_amt` (SUM/gộp theo hồ sơ, cùng CTE `result_agg`) | **[MỚI 2026-09-10]** KPI mới — số tiền thu được từ NĐT nước ngoài. BA ghi cột "Bảng nguồn" = `SECURITIES_OFFERING` nhưng SQL tham khảo thực tế lấy từ alias `r` (`result_agg`, nguồn `SECURITIES_OFFERING_RESULT`) — Atomic đã có sẵn attribute `foreign_collected_amt` trên `pc_securities_offering_result`, dùng nguồn này theo đúng SQL thực thi, không theo cột "Bảng nguồn" ghi nhầm — xem O_QLCB_19 | READY |
 
-**Schema bảng tác nghiệp:** Kế thừa `Operational Securities Offering 360 Profile` — bổ sung 3 cột `Actual_Offering_Price`, `Employee_Quantity_Result`, `Capital_Source`.
+**Schema bảng tác nghiệp:** Kế thừa `Operational Securities Offering 360 Profile` — bổ sung cột `Actual_Offering_Price`, `Employee_Quantity_Result`, `Result_Single_Object` (**mới**, thay `Capital_Source` — giữ `Capital_Source` trên schema, không xóa), `Foreign_Collected_Amount` (**mới**).
 
 **Lineage Mart → Báo cáo:**
 
@@ -1161,7 +1191,7 @@ flowchart LR
         G1["Operational Securities Offering 360 Profile"]
     end
     subgraph RPT["Báo cáo"]
-        R10["Tab CHAO BAN VA PHAT HANH - Nhom 10 - K_QLCB_60-64"]
+        R10["Tab CHAO BAN VA PHAT HANH - Nhom 10 - K_QLCB_60-64,68"]
     end
     G1 --> R10
 ```
@@ -1217,7 +1247,7 @@ graph TB
 
 | Tên bảng Datamart | Mô tả | Fact Pattern | Grain | Nguồn Atomic chính | Trạng thái |
 |---|---|---|---|---|---|
-| Fact Securities Offering Snapshot | Hồ sơ chào bán/phát hành CK — tổng giá trị cấp phép/huy động theo ngành, kỳ (Nhóm 1) | Fact Event | 1 hồ sơ chào bán | Public Company Securities Offering / Public Company Securities Offering Result | READY (Atomic draft) |
+| Fact Securities Offering Snapshot | Hồ sơ chào bán/phát hành CK — tổng giá trị cấp phép/huy động theo ngành, kỳ (Nhóm 1) | Fact Event | 1 hồ sơ chào bán | Public Company Securities Offering / Public Company Securities Offering Plan / Public Company Securities Offering Result | READY (Atomic draft) |
 | Fact Securities Offering Plan Snapshot | Giá trị cấp phép theo loại hình chào bán (Nhóm 2) | Fact Event | 1 đợt × 1 loại hình kế hoạch | Public Company Securities Offering Plan | READY (Atomic draft) |
 | Fact Securities Offering Result Snapshot | Giá trị huy động theo loại hình chào bán (Nhóm 3) | Fact Event | 1 đợt × 1 loại hình kết quả | Public Company Securities Offering Result | READY (Atomic draft) |
 | Fact Securities Offering Application Snapshot | Hồ sơ đăng ký chào bán nộp lên TTHC — đếm và phân tích theo nhóm trạng thái xử lý, hình thức, năm (Nhóm 5-6). **Repoint IDS → TTHC 2026-08-24** | Periodic Snapshot | 1 hồ sơ TTHC × 1 ngày snapshot | Administrative Procedure Content Item Index / Administrative Procedure Document | READY (Atomic draft) |
@@ -1263,11 +1293,16 @@ graph TB
 
 | ID | Vấn đề | Giả định hiện tại | KPI liên quan | Trạng thái |
 |---|---|---|---|---|
-| O_QLCB_9 | **[Phạm vi Atomic — không phải Datamart] 2 track Atomic trùng logical_name "Public Company Securities Offering":** Track cũ `DataModel/working/Atomic_LinhLV/Business_Activity/dm_atm_pblc_co_scr_ofrg-IDS.company_securities_issuance.yaml` (physical_name `pblc_co_scr_ofrg`, nguồn ghi `IDS.company_securities_issuance`) **không có BRD source thật** trong `BRD/Source/IDS/` — có khả năng là track nháp/lỗi thời. Track mới `DataModel/working/Atomic/lld/IDS/lld_IDS_SECURITIES_OFFERING.yaml` (physical_name `pc_securities_offering`, nguồn `IDS.SECURITIES_OFFERING`) có BRD source đầy đủ nhưng attribute-level `status: draft`, chưa aggregate vào `DataModel/Atomic/` + `dm_manifest.yaml`. Đây là vấn đề quy trình thiết kế/quản lý Atomic (track nào là chuẩn, đã aggregate hay chưa) — không phải lỗi trace nguồn hay thiết kế của Datamart HLD; Datamart đã xác định đúng entity có BRD source thật để dùng. | Datamart HLD dùng track mới theo xác nhận người thiết kế (coi LLD draft là READY) — quyết định này thuộc phạm vi Datamart và đã chốt. Phần còn lại (reconcile track cũ, chạy `aggregate_atomic.py`, đưa vào `dm_manifest.yaml`) là việc của quy trình `atomic-lld-design`/`atomic-review`, không block hay thuộc trách nhiệm giải quyết của Datamart. | Toàn bộ KPI Nhóm 1–10 | **Open — chuyển giao đội Atomic** |
+| O_QLCB_9 | **[Phạm vi Atomic — không phải Datamart] 2 track Atomic trùng logical_name "Public Company Securities Offering":** Track cũ `DataModel/working/Atomic_LinhLV/Business_Activity/dm_atm_pblc_co_scr_ofrg-IDS.company_securities_issuance.yaml` (physical_name `pblc_co_scr_ofrg`, nguồn ghi `IDS.company_securities_issuance`) **không có BRD source thật** trong `BRD/Source/IDS/` — có khả năng là track nháp/lỗi thời. Track mới `DataModel/working/Atomic/lld/IDS/lld_IDS_SECURITIES_OFFERING.yaml` (physical_name `pc_securities_offering`, nguồn `IDS.SECURITIES_OFFERING`) có BRD source đầy đủ nhưng attribute-level `status: draft`, chưa aggregate vào `DataModel/Atomic/` + `dm_manifest.yaml`. Đây là vấn đề quy trình thiết kế/quản lý Atomic (track nào là chuẩn, đã aggregate hay chưa) — không phải lỗi trace nguồn hay thiết kế của Datamart HLD; Datamart đã xác định đúng entity có BRD source thật để dùng. | Datamart HLD dùng track mới theo xác nhận người thiết kế (coi LLD draft là READY) — quyết định này thuộc phạm vi Datamart và đã chốt. Phần còn lại (reconcile track cũ, chạy `aggregate_atomic.py`, đưa vào `dm_manifest.yaml`) là việc của quy trình `atomic-lld-design`/`atomic-review`, không block hay thuộc trách nhiệm giải quyết của Datamart. | Toàn bộ KPI Nhóm 1–10 | **[Đã giải quyết 2026-09-10]** `dm_manifest.yaml` nay có entry `pc_securities_offering` (`DataModel/Atomic/Business_Activity/dm_atm_pc_securities_offering-IDS.SECURITIES_OFFERING.yaml`), cùng `pc_securities_offering_plan`/`pc_securities_offering_result` — đã aggregate vào Nguồn 1. **Closed** |
 | O_QLCB_10 | **[Đã giải quyết] Atomic thiếu `display_text` trên `Administrative Procedure Content Item Index`.** SQL BA STT 5/6 (sheet 2026-08-24) dùng `CONTENTITEMINDEX.DISPLAYTEXT` để resolve 3 ContentItemId (`TrangThaiHoSo`, `LoaiHoSo`, `CoQuanXuLy`) thành tên hiển thị — toàn bộ `CASE WHEN ts.DISPLAYTEXT IN (…)` phân loại 4 nhóm trạng thái, nhãn hình thức chào bán của Nhóm 6, và filter cơ quan xử lý đều dựa trên trường này. Khi thiết kế lần đầu (2026-08-24 sáng) cột nằm trong `DataModel/working/Atomic/lld/pending_design.yaml` nên toàn bộ K_QLCB_32–42 phải đánh PENDING. `PUBLISHED` không nằm trong yêu cầu bổ sung — thiết kế Atomic đã lọc theo cột này khi nạp `ap_content_item_index`. | **Closed 2026-08-24** — Atomic đã bổ sung attribute `Display Text` / `display_text` ← `TTHC.CONTENTITEMINDEX.DISPLAYTEXT` (Text, nullable) trên cả `DataModel/Atomic/Documentation/dm_atm_ap_content_item_index-TTHC.CONTENTITEMINDEX.yaml` (9 → 10 attribute) và `DataModel/working/Atomic/lld/TTHC/lld_TTHC_CONTENTITEMINDEX.yaml`. Toàn bộ K_QLCB_32–42 chuyển sang **READY (Atomic draft)**; 3 bảng của Nhóm 5/6 đã được đưa trở lại `DTM_QLCB_Entities.csv`. **Còn tồn đọng bên Atomic (không block Datamart):** entry `DISPLAYTEXT` vẫn nằm trong `pending_design.yaml` với `action: "Pending — thiết kế ở lượt sau nếu cần"` — cần gỡ để danh sách pending không báo sai. | K_QLCB_32–42 | **Closed** |
-| O_QLCB_11 | **Kết quả `TIMESTAMP` so với filter `BETWEEN TO_DATE(...)` → ngày đến bị loại; định dạng `:tu_ngay` ghi 2 kiểu; và `DEFAULT NULL ON CONVERSION ERROR` chỉ có ở STT 5.** (a) Công thức trả `CAST(... AS TIMESTAMP)` (có giờ, không `TRUNC`), nhưng filter là `BETWEEN TO_DATE(:tu_ngay,'YYYYMMDD') AND TO_DATE(:den_ngay,'YYYYMMDD')` — `TO_DATE(:den_ngay)` là 00:00:00 của ngày đến, nên hồ sơ gửi 09:15 ngày đến bị **loại khỏi kết quả**; chọn 01/08→31/08 sẽ mất gần như toàn bộ ngày 31/8, không báo lỗi, chỉ ra số thấp hơn. Nay áp dụng đều cho cả 2 Nhóm (không còn lệch nhau) nhưng vẫn cần chốt biên. (b) **CHỐT 2026-08-24: định dạng tham số `:tu_ngay`/`:den_ngay` là `'YYYYMMDD'`** (VD `20260824`) — khớp thân SQL đang chạy được, không phụ thuộc locale, và không có ca nào parse nhầm im lặng (không có dấu phân cách để hoán vị ngày/tháng), đồng thời trùng convention `data_dt` của flat table. Cột `Điều kiện` (cột R) của **cả STT 5 và STT 6** hiện còn ghi `'DD/MM/YYYY'` (`24/08/2026`) — BA cần sửa lại cho khớp. Lưu ý nếu để `'DD/MM/YYYY'`: date-picker locale US gửi `MM/DD/YYYY` thì ngày ≤ 12 sẽ parse được nhưng **sai im lặng** (VD `03/08/2026` hiểu thành 3 tháng 8 thay vì 8 tháng 3), ngày > 12 mới báo `ORA-01843`. (c) `DEFAULT NULL ON CONVERSION ERROR` có trong `TO_TIMESTAMP` của STT 5 nhưng **thiếu ở STT 6** → gặp chuỗi ngày sai định dạng, STT 5 trả NULL còn STT 6 **lỗi cả câu truy vấn**. **Đã đóng phần (d):** trước 2026-08-24 hai STT dùng 2 công thức derive khác nhau (`SUBSTR(...,1,10)` + `TO_DATE` vs `SUBSTR(...,1,19)` + `FROM_TZ`) làm cùng 1 hồ sơ ra 2 ngày khác nhau — sheet bản 16:04 ngày 2026-08-24 đã thống nhất về **một** công thức có xử lý múi giờ; đã diff xác nhận. | Fact lưu grain **ngày** (`ap_document.submission_dt` — ODS `TRUNC` kết quả TIMESTAMP của BA về DATE) nên trong Datamart cả 2 Nhóm dùng chung một ngày. (a) và (b) thuộc tầng truy vấn/hợp đồng API, (c) thuộc chất lượng SQL BA — cả 3 không chặn thiết kế Datamart. Đề nghị BA: thêm `DEFAULT NULL ON CONVERSION ERROR` vào STT 6, chốt 1 định dạng tham số, và chốt ngày đến có được tính vào khoảng lọc hay không (nếu có → dùng `< :den_ngay + 1` thay cho `BETWEEN`). | K_QLCB_32–42 | **Open — (b) đã chốt `YYYYMMDD` 2026-08-24; còn chờ BA (a) biên ngày đến và (c) bổ sung DEFAULT NULL ở STT 6** |
+| O_QLCB_11 | **Kết quả `TIMESTAMP` so với filter `BETWEEN TO_DATE(...)` → ngày đến bị loại; định dạng `:tu_ngay` ghi 2 kiểu; và `DEFAULT NULL ON CONVERSION ERROR` chỉ có ở STT 5.** (a) Công thức trả `CAST(... AS TIMESTAMP)` (có giờ, không `TRUNC`), nhưng filter là `BETWEEN TO_DATE(:tu_ngay,'YYYYMMDD') AND TO_DATE(:den_ngay,'YYYYMMDD')` — `TO_DATE(:den_ngay)` là 00:00:00 của ngày đến, nên hồ sơ gửi 09:15 ngày đến bị **loại khỏi kết quả**; chọn 01/08→31/08 sẽ mất gần như toàn bộ ngày 31/8, không báo lỗi, chỉ ra số thấp hơn. Nay áp dụng đều cho cả 2 Nhóm (không còn lệch nhau) nhưng vẫn cần chốt biên. (b) **CHỐT 2026-08-24: định dạng tham số `:tu_ngay`/`:den_ngay` là `'YYYYMMDD'`** (VD `20260824`) — khớp thân SQL đang chạy được, không phụ thuộc locale, và không có ca nào parse nhầm im lặng (không có dấu phân cách để hoán vị ngày/tháng), đồng thời trùng convention `data_dt` của flat table. Cột `Điều kiện` (cột R) của **cả STT 5 và STT 6** hiện còn ghi `'DD/MM/YYYY'` (`24/08/2026`) — BA cần sửa lại cho khớp. Lưu ý nếu để `'DD/MM/YYYY'`: date-picker locale US gửi `MM/DD/YYYY` thì ngày ≤ 12 sẽ parse được nhưng **sai im lặng** (VD `03/08/2026` hiểu thành 3 tháng 8 thay vì 8 tháng 3), ngày > 12 mới báo `ORA-01843`. (c) `DEFAULT NULL ON CONVERSION ERROR` có trong `TO_TIMESTAMP` của STT 5 nhưng **thiếu ở STT 6** → gặp chuỗi ngày sai định dạng, STT 5 trả NULL còn STT 6 **lỗi cả câu truy vấn**. **Đã đóng phần (d):** trước 2026-08-24 hai STT dùng 2 công thức derive khác nhau (`SUBSTR(...,1,10)` + `TO_DATE` vs `SUBSTR(...,1,19)` + `FROM_TZ`) làm cùng 1 hồ sơ ra 2 ngày khác nhau — sheet bản 16:04 ngày 2026-08-24 đã thống nhất về **một** công thức có xử lý múi giờ; đã diff xác nhận. | Fact lưu grain **ngày** (`ap_document.submission_dt` — ODS `TRUNC` kết quả TIMESTAMP của BA về DATE) nên trong Datamart cả 2 Nhóm dùng chung một ngày. (a) và (b) thuộc tầng truy vấn/hợp đồng API, (c) thuộc chất lượng SQL BA — cả 3 không chặn thiết kế Datamart. Đề nghị BA: thêm `DEFAULT NULL ON CONVERSION ERROR` vào STT 6, chốt 1 định dạng tham số, và chốt ngày đến có được tính vào khoảng lọc hay không (nếu có → dùng `< :den_ngay + 1` thay cho `BETWEEN`). | K_QLCB_32–42 | **[CẬP NHẬT 2026-09-10]** Sheet BA mới đã: (b) áp dụng `'YYYYMMDD'` cho cả STT 5 và STT 6 — **Closed**; (c) bổ sung `DEFAULT NULL ON CONVERSION ERROR` + `REGEXP_LIKE` guard cho STT 6 — **Closed**; STT 6 còn đổi `BETWEEN` filter sang `trunc(cte.ngay_gui_ho_so) BETWEEN ...` — khắc phục 1 phần (a) cho riêng STT 6. (a) cho STT 5 (biên ngày đến khi chưa TRUNC) **vẫn Open** — SQL STT 5 chưa thấy áp dụng TRUNC tương tự | **Open — chỉ còn (a)/STT 5 chờ BA** |
 | O_QLCB_12 | **47 giá trị trạng thái hồ sơ hard-code trong SQL BA, chưa có danh mục chuẩn hoá.** Việc phân loại 4 nhóm trạng thái dựa trên so khớp chuỗi tiếng Việt của `DISPLAYTEXT` (VD `'LĐCM Đã Ký Kết Quả Chấp Thuận'`, `'CBNV Chờ Trả Yêu Cầu Bổ Sung Hồ Sơ Về BPMC'`) — rất dễ vỡ khi TTHC đổi nhãn hoặc thêm trạng thái mới; nhánh `ELSE` sẽ âm thầm hút mọi trạng thái chưa khai báo. Nhãn nhánh `ELSE` còn khác nhau giữa 2 SQL (`'Chưa xác định - kiểm tra lại danh mục'` ở STT 5 vs `'Chưa xác định'` ở STT 6). TTHC thực tế có sẵn cụm bảng workflow (`TVRP_WORKFLOW_STATUS`, `TVRP_WORKFLOW_STATUS_CATEGORY`, `TVRP_CONTENT_WORKFLOW_STATE_INDEX`) nhưng **chưa có entity Atomic nào** cho các bảng này. | Đặt logic gom nhóm tại `Administrative Procedure Application Status Dimension` (1 chỗ duy nhất, có drill-down xuống trạng thái gốc), thống nhất 1 code `UNDEFINED` với nhãn `Chưa xác định`, và hiển thị lát `UNDEFINED` trên donut Nhóm 5 làm tín hiệu phát hiện trạng thái mới chưa phân loại (quyết định người thiết kế 2026-08-24). Đề xuất giai đoạn sau: thiết kế Atomic cho `TVRP_WORKFLOW_STATUS`/`TVRP_WORKFLOW_STATUS_CATEGORY` để lấy nhóm trạng thái từ danh mục nguồn thay vì so khớp chuỗi. | K_QLCB_32–42 | **Open — chờ BA/đội Atomic** |
 | O_QLCB_13 | **Dashboard QLCB sẽ có 2 danh mục "hình thức chào bán" song song.** Nhóm 2/3 (K_QLCB_6–19) lấy hình thức từ `IDS.SECURITIES_OFFERING_PLAN.offering_method_cd` + `LOOKUP_VALUES` (scheme `IDS_SO_OFFERING_METHOD`, các giá trị Công chúng/Riêng lẻ/ESOP/Trả cổ tức/…); Nhóm 6 sau khi đổi nguồn lấy từ `TTHC.LoaiHoSo.DISPLAYTEXT` (theo bộ Eform: IPO, chào bán thêm cổ phiếu, trái phiếu ra công chúng, chào bán riêng lẻ, ESOP, chứng quyền có bảo đảm, chứng chỉ quỹ, …). Hai danh mục không trùng nhau về độ mịn lẫn cách gọi → người dùng thấy cùng một khái niệm nhưng 2 bộ giá trị khác nhau trên cùng dashboard. | Giữ 2 Dimension độc lập (không repoint `offering_method_dim` vì sẽ phá 14 KPI Nhóm 2/3). Cần BA/nghiệp vụ quyết định: (a) chấp nhận 2 danh mục vì 2 Nhóm phản ánh 2 nghiệp vụ khác nhau (hồ sơ nộp vs đợt chào bán đã cấp phép), hay (b) xây bảng mapping TTHC `LoaiHoSo` → scheme `IDS_SO_OFFERING_METHOD` để hợp nhất nhãn hiển thị. | K_QLCB_36, K_QLCB_6–19 | **Open — chờ BA quyết định** |
-| O_QLCB_14 | **Cột `Nguồn` của BA vẫn ghi `IDS` cho toàn bộ 11 dòng STT 5/6** dù `Bảng nguồn` đã đổi thành `DOCUMENT`/`CONTENTITEMINDEX` và `Câu lệnh tham khảo` truy vấn `TTHC_UAT`. Nếu để nguyên, RTM sẽ trace BR/FR về `Nguồn = IDS` trong khi thiết kế và ETL đều trỏ TTHC. | Thiết kế lấy `Bảng nguồn` + `Câu lệnh tham khảo` làm chuẩn (nguồn = TTHC). Cần BA sửa cột `Nguồn` của 11 dòng STT 5/6 thành `TTHC`. | K_QLCB_32–42 | **Open — chờ BA sửa sheet** |
-| O_QLCB_15 | **`DataModel/Atomic/dm_manifest.yaml` không có entry nào cho TTHC** dù 2 file entity đã tồn tại trong `DataModel/Atomic/Documentation/` (`dm_atm_ap_document-TTHC.DOCUMENT.yaml`, `dm_atm_ap_content_item_index-TTHC.CONTENTITEMINDEX.yaml`). Theo Bước 1 mục 3 của `datamart-hld-design`, tra Nguồn 1 sẽ không thấy → buộc fallback sang Nguồn 2 (`working/Atomic/lld/manifest.yaml`, cả 2 entry `design_status: approved`). Manifest lệch so với thư mục thực tế. | Datamart HLD dùng 2 entity này (đã grep xác nhận file tồn tại + có entry ở manifest Nguồn 2). Việc đăng ký bổ sung vào `dm_manifest.yaml` thuộc quy trình `atomic-lld-design`/`atomic-review`, không block thiết kế Datamart. | K_QLCB_32–42 | **Open — chuyển giao đội Atomic** |
+| O_QLCB_14 | **Cột `Nguồn` của BA vẫn ghi `IDS` cho toàn bộ 11 dòng STT 5/6** dù `Bảng nguồn` đã đổi thành `DOCUMENT`/`CONTENTITEMINDEX` và `Câu lệnh tham khảo` truy vấn `TTHC_UAT`. Nếu để nguyên, RTM sẽ trace BR/FR về `Nguồn = IDS` trong khi thiết kế và ETL đều trỏ TTHC. | Thiết kế lấy `Bảng nguồn` + `Câu lệnh tham khảo` làm chuẩn (nguồn = TTHC). Cần BA sửa cột `Nguồn` của 11 dòng STT 5/6 thành `TTHC`. | K_QLCB_32–42 | **[Đã giải quyết 2026-09-10]** BA sheet mới đã sửa cột `Nguồn` thành `TTHC` cho toàn bộ dòng STT 5/6. **Closed** |
+| O_QLCB_15 | **`DataModel/Atomic/dm_manifest.yaml` không có entry nào cho TTHC** dù 2 file entity đã tồn tại trong `DataModel/Atomic/Documentation/` (`dm_atm_ap_document-TTHC.DOCUMENT.yaml`, `dm_atm_ap_content_item_index-TTHC.CONTENTITEMINDEX.yaml`). Theo Bước 1 mục 3 của `datamart-hld-design`, tra Nguồn 1 sẽ không thấy → buộc fallback sang Nguồn 2 (`working/Atomic/lld/manifest.yaml`, cả 2 entry `design_status: approved`). Manifest lệch so với thư mục thực tế. | Datamart HLD dùng 2 entity này (đã grep xác nhận file tồn tại + có entry ở manifest Nguồn 2). Việc đăng ký bổ sung vào `dm_manifest.yaml` thuộc quy trình `atomic-lld-design`/`atomic-review`, không block thiết kế Datamart. | K_QLCB_32–42 | **[Đã giải quyết 2026-09-10]** `dm_manifest.yaml` nay có entry cho cả `ap_content_item_index` và `ap_document` (nguồn TTHC) — đã tra thấy ở Nguồn 1. **Closed** |
+| O_QLCB_16 | **[MỞ 2026-09-10] Nhóm 6 — SQL BA mới bỏ hẳn trục GROUP BY "Năm" khỏi bảng chi tiết hồ sơ.** Trước đây (2026-08-24) BA GROUP BY theo hình thức × năm (`ngay_gui_ho_so`); sheet 2026-09-10 đổi hẳn sang GROUP BY hình thức × Tên tổ chức/cá nhân × Mã cổ phiếu, thay trục thời gian bằng `ky_bao_cao` (chuỗi tĩnh, không phải GROUP BY thật). K_QLCB_37 "Năm" chuyển PENDING (xem Nhóm 6). | Người thiết kế đã quyết định áp dụng theo SQL mới (không giữ thiết kế cũ). Cần BA xác nhận đây là thay đổi có chủ đích (bỏ hẳn phân tích theo năm cho báo cáo chi tiết hồ sơ) hay là sai sót khi viết lại SQL — nếu BA xác nhận vẫn cần trục Năm, bổ sung lại `Submission_Date_Dimension_Id` vào GROUP BY cùng 2 Chiều mới. | K_QLCB_37, K_QLCB_66, K_QLCB_67 | **Open — chờ BA xác nhận** |
+| O_QLCB_17 | **[MỞ 2026-09-10] Nhóm 7 — K_QLCB_48 "Loại chứng khoán" đổi nguồn sang `SECURITIES_OFFERING_RESULT.security_type_cd` JOIN `LOOKUP_VALUES`, nhưng BA không ghi rõ `LOOKUP_GROUP`** (khác Offering Method đã biết rõ `LOOKUP_GROUP = 'SO_OFFERING_METHOD'`). Không tra được scheme chuẩn trong `classification_schemes.yaml` cho cột `security_type_cd` trên `pc_securities_offering_result`. | Tạm coi là Classification Value cần xác nhận scheme trước khi build ETL — không tự đặt tên scheme (VD `IDS_ISSUANCE_SECURITY_TYPE` cũ dùng cho `Public Company.securities_tp_code`, có thể không phải cùng 1 danh mục với `security_type_cd` trên Result). | K_QLCB_48 | **Open — chờ BA/đội Atomic xác nhận LOOKUP_GROUP** |
+| O_QLCB_18 | **[MỞ 2026-09-10] Nhóm 10 (STT 10) — 1 dòng BA nghi trùng lặp/lỗi nhập liệu.** BA sheet có 2 dòng liên tiếp cùng "Thông tin" = "Số lượng thực tế": dòng 1 ghi Trường nguồn = `offering_end_date` (cột Note/Hoàn thành DEV/Loại dữ liệu/Kết quả Test đều để trống — khác pattern mọi dòng khác), dòng 2 ghi đúng Trường nguồn = `total_successful_qty` (đầy đủ metadata, khớp K_QLCB_60 hiện có). | Coi dòng 1 là lỗi nhập liệu/trùng lặp khi BA copy-paste — không cấp KPI_ID riêng, không đếm vào $BA\_Valid$ đối soát số lượng Nhóm 10. `offering_end_dt` (ngày kết thúc chào bán) đã có sẵn trên Atomic Result/Plan nhưng chưa có dòng BA hợp lệ nào yêu cầu — chưa cấp KPI_ID, chờ BA làm rõ nếu thực sự cần. | (không có KPI_ID — dòng bị loại khỏi thiết kế) | **Open — chờ BA xác nhận có phải lỗi nhập liệu** |
+| O_QLCB_20 | **[MỞ 2026-09-10 — Bước 5B đối soát toàn file phát hiện, tồn tại từ trước, không liên quan mapping mới]** K_QLCB_65 "Ngành" ở Nhóm 7 không có dòng BA tương ứng — cả BA sheet cũ (HEAD) lẫn sheet mới nhất đều chỉ liệt kê đúng 6 dòng cho STT 7 (Thời điểm báo cáo/Chuyên viên/Tên công ty/Mã chứng khoán/Sàn/Loại chứng khoán), không có dòng "Ngành". K_QLCB_65 được thêm để khớp cột "Ngành" trên mockup screenshot (ghi chú cũ: "đệm sẵn tên ngành cho mockup"), vi phạm rule "cấm thêm KPI không có dòng BA tương ứng" nếu chỉ căn cứ vào Thông tin/Bảng KPI. | Không tự xóa KPI đã tồn tại (thuộc quyết định thiết kế trước, có thể đã được duyệt dựa trên screenshot mà phiên làm việc hiện tại không có). Cần BA bổ sung dòng "Ngành" chính thức cho STT 7 (Phân loại = Chỉ tiêu cơ sở) để hợp thức hóa K_QLCB_65, hoặc xác nhận loại bỏ khỏi mockup/bảng KPI nếu không còn cần. | K_QLCB_65 | **Open — chờ BA xác nhận** |
+| O_QLCB_19 | **[MỞ 2026-09-10] K_QLCB_68 "Giá trị chào bán cho NĐTNN" — cột "Bảng nguồn" của BA ghi `SECURITIES_OFFERING` nhưng SQL tham khảo thực tế lấy từ `result_agg` (nguồn `SECURITIES_OFFERING_RESULT.foreign_collected_am`).** Atomic chỉ có attribute `foreign_collected_amt` trên `pc_securities_offering_result`, không có trên `pc_securities_offering`. | Thiết kế ưu tiên SQL tham khảo (nguồn thực thi) hơn cột "Bảng nguồn" (có thể BA gõ nhầm) — dùng `Public Company Securities Offering Result.foreign_collected_amt`. Cần BA xác nhận lại cột "Bảng nguồn" cho đúng khi cập nhật sheet lần sau. | K_QLCB_68 | **Open — chờ BA sửa sheet** |
 | O_QLCB_16 | **Phạm vi 2 Dimension mới lọc bằng tham chiếu ngược, không lọc theo `CONTENTTYPE`.** `TTHC.CONTENTITEMINDEX` gộp mọi content item của CMS (hồ sơ, trạng thái, loại hồ sơ, cơ quan xử lý, tin tức, trang…) trong 1 bảng. Để lấy ra 47 dòng trạng thái cho `ap_application_status_dim` (và tương tự cho `ap_application_tp_dim`), cách gọn nhất là `WHERE content_tp_code = 'TrangThaiHoSo'` — nhưng giá trị thật của `CONTENTTYPE` **chưa được profile**: SQL BA join trạng thái thuần theo `CONTENTITEMID` không hề dùng `CONTENTTYPE`, và `DataModel/working/Atomic/hld/TTHC_HLD_Tier2.md` mục 7e câu #4 ghi rõ *"cần profile toàn bộ distinct values thực tế"*. Đoán sai tên → Dimension ra rỗng. | **Chốt 2026-08-24 (Cách B):** ETL lọc bằng `EXISTS` ngược về `ap_document` — chỉ nạp content item đang được hồ sơ tham chiếu ở vai trò trạng thái (`document_status_code`) hoặc hình thức chào bán (`offering_method_code`). Khớp đúng SQL BA, không phụ thuộc giá trị `CONTENTTYPE` chưa xác nhận, cùng khuôn "ETL-derived (DISTINCT)" mà `offering_method_dim` (Nhóm 2/3) đang dùng. Đánh đổi: ETL nặng hơn, và trạng thái chưa hồ sơ nào dùng thì chưa xuất hiện trong Dimension (không ảnh hưởng số liệu vì cũng không có hồ sơ nào rơi vào trạng thái đó). **Khi TTHC profile xong `CONTENTTYPE`** → đổi sang filter trực tiếp cho gọn và nhẹ ETL, không cần sửa thiết kế Datamart ngoài `etl_logic` của cột `src_stm_code` trên 2 Dimension. | K_QLCB_32–42 | **Open — chờ TTHC profile CONTENTTYPE** |

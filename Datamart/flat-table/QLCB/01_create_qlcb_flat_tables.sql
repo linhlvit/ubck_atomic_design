@@ -256,7 +256,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlcb_opr_securities_offering_360_profile_fla
     public_company_code                  Nullable(String)        COMMENT 'Mã công ty đại chúng',
     public_company_nm                    Nullable(String)        COMMENT 'Tên doanh nghiệp',
     equity_ticker_symbol                 Nullable(String)        COMMENT 'Mã chứng khoán',
-    securities_tp_code                   Nullable(String)        COMMENT 'Loại chứng khoán',
+    securities_tp_code                   Nullable(String)        COMMENT '[ĐỔI NGUỒN 2026-09-10] Loại chứng khoán của đợt chào bán/kết quả (nguồn Result, không phải Public Company)',
     total_registered_quantity            Nullable(Int64)         COMMENT 'Số lượng cấp phép (bảng cha, tổng toàn hồ sơ)',
     total_expected_amt                   Nullable(Decimal(23,2)) COMMENT 'Giá trị cấp phép (bảng cha)',
     total_successful_quantity            Nullable(Int64)         COMMENT 'Số lượng CK chào bán thành công',
@@ -280,7 +280,12 @@ CREATE TABLE IF NOT EXISTS datamart.qlcb_opr_securities_offering_360_profile_fla
     swap_target                          Nullable(String)        COMMENT 'Đối tượng (kế hoạch)',
     actual_offering_price                Nullable(Decimal(23,2)) COMMENT 'Giá thực tế',
     employee_quantity_result             Nullable(Int64)         COMMENT 'Số lượng người lao động (thực tế)',
-    capital_src                          Nullable(String)        COMMENT 'Đối tượng (thực tế)',
+    capital_src                          Nullable(String)        COMMENT 'Đối tượng (thực tế) — giữ lại, không còn KPI dùng (xem result_single_object)',
+    submission_dt                        Nullable(Date)          COMMENT '[MỚI 2026-09-10] Thời điểm báo cáo (ngày nộp hồ sơ) — dùng ở Nhóm 7',
+    plan_single_object                   Nullable(String)        COMMENT '[MỚI 2026-09-10] Đối tượng cấp phép — thay CASE WHEN cũ, dùng ở Nhóm 9',
+    offering_end_dt                      Nullable(Date)          COMMENT '[MỚI 2026-09-10] Ngày kết thúc chào bán (kế hoạch) — chưa có KPI dùng',
+    result_single_object                 Nullable(String)        COMMENT '[MỚI 2026-09-10] Đối tượng kết quả — thay CASE WHEN cũ, dùng ở Nhóm 10',
+    foreign_collected_amt                Nullable(Decimal(23,2)) COMMENT '[MỚI 2026-09-10] Giá trị chào bán cho NĐTNN — dùng ở Nhóm 10',
     src_stm_code                         String                  COMMENT 'Mã hệ thống nguồn — hardcode IDS.SECURITIES_OFFERING_PLAN'
 )
 ENGINE = ReplicatedReplacingMergeTree()
