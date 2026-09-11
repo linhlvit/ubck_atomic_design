@@ -230,6 +230,42 @@ WHERE cal.cdr_dt = :etl_date
 
 
 -- ============================================================
+-- 4. FACT: gstt_fct_foreign_trading_min_snpst_flat
+--    [BỔ SUNG 2026-09-11] cal: JOIN + DELETE-scoped theo cdr_dt = :etl_date
+--    (nhiều dòng/ngày theo Trade Minute)
+-- ============================================================
+DELETE FROM datamart.gstt_fct_foreign_trading_min_snpst_flat ON CLUSTER 'my_cluster'
+WHERE cdr_dt = :etl_date;
+INSERT INTO datamart.gstt_fct_foreign_trading_min_snpst_flat
+SELECT
+    -- From: FACT Foreign Trading Minute Snapshot
+    f.security_trading_snpst_dim_id,
+    f.cdr_dt_dim_id,
+    f.trade_minute_tms,
+    f.foreign_buy_val_at_min,
+    f.foreign_sell_val_at_min,
+
+    -- From: CALENDAR DATE DIMENSION
+    cal.cdr_dt                          AS cdr_dt,
+
+    -- From: SECURITY TRADING SNAPSHOT DIMENSION
+    scr_dim.symbol                      AS symbol,
+    scr_dim.security_full_nm            AS security_full_nm,
+    scr_dim.floor_code                  AS floor_code,
+    scr_dim.stock_tp_code               AS stock_tp_code,
+    scr_dim.stock_tp_nm                 AS stock_tp_nm,
+    scr_dim.src_stm_code                AS foreign_trading_min_src_stm_code
+
+FROM datamart.fct_foreign_trading_min_snpst f
+JOIN datamart.cdr_dt_dim cal
+    ON cal.cdr_dt_dim_id = f.cdr_dt_dim_id
+LEFT JOIN datamart.security_trading_snpst_dim scr_dim
+    ON scr_dim.security_trading_snpst_dim_id = f.security_trading_snpst_dim_id
+WHERE cal.cdr_dt = :etl_date
+;
+
+
+-- ============================================================
 -- Sửa 2026-08-03 (redesign Nhóm 45/48): `Fact Public Company Shareholding` đã loại
 -- khỏi HLD — 6/8 KPI Nhóm 45 PENDING theo gating "Chưa có CSDL - Map biểu mẫu".
 -- 2 KPI READY còn lại (K_GSTT_100, K_GSTT_104) là thuộc tính Dimension thuần,

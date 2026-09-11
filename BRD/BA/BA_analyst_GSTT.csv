@@ -22,20 +22,29 @@ WHERE s.FloorCode IN ('10','02','04', ' 03')   -- HOSE, HNX, UPCOM
  FROM IDS.categories c
  JOIN IDS.company_profiles cp ON c.id = cp.category_l1_id
  WHERE c.active_flg = 1
- ORDER BY c.industry_cd",,"WITH
+ ORDER BY c.industry_cd",,"------------------------------------------------------cổ phiếu --------------------------------
+WITH
 -- ── 1. THÔNG TIN MÃ CK + GIÁ + NGÀNH + CHỈ SỐ ──────────────────────────
 co_phieu AS (
- SELECT
-    s.symbol                        AS ma_ck,
+select x.* 
+,NNKD               AS ten_nganh
+from 
+(
+ select
+         case when s.FloorCode IN ('02', '04','03') then s.symbolisin
+                 when s.FloorCode = '10' then s.symbol 
+                 else null 
+                 end                                                  AS ma_ck,--- de join voi so lenh HNX 
+         case when s.FloorCode IN ('02', '04','03','10') and s.stocktype = '4' then s.underlyingsymbol 
+                 else s.symbol  
+                 end symbol,        -- de lay nganh cua chung quyen
     s.FloorCode                     AS floor_code,
-    s.stocktype,
-  cat.industry_name               AS ten_nganh,  
+    s.stocktype,  
     CASE s.FloorCode
         WHEN '10' THEN 'HOSE'
         WHEN '02' THEN 'HNX'
         WHEN '04' THEN 'UPCOM'
         WHEN '03' THEN 'FDS'
-        WHEN '06' THEN 'CorpBond'
     END                              AS ten_san,
     CASE
         WHEN s.FloorCode IN ('02', '04', '03') 
@@ -47,39 +56,51 @@ co_phieu AS (
     s.reference                      AS gia_tham_chieu,
     s.closePrice                     AS gia_dong_cua,
     s.change                         AS thay_doi_gia,
+    s.closevol ,
+    s.totaltrading,
     CASE
         WHEN s.reference IS NULL OR s.reference = 0 THEN NULL
         ELSE ROUND((s.change / s.reference) * 100, 2)
     END                              AS pct_thay_doi
 --    ,mk.indexName                    AS chi_so
+    ,idx.indexcode AS chi_so
 --         ROW_NUMBER() OVER (
 --                PARTITION BY s.tradingdate, s.symbol
 --                ORDER BY s.TRADINGTIME DESC, SEQUENCE ASC 
 --            ) AS rn
 FROM uat_mdds_stg.tmp_jad_stockinfor_eod s
---LEFT JOIN uat_mdds_stg.JAD_CSIDXINFOR idx
---    ON idx.Symbol       = s.symbol
---   AND date_format (idx.tradingdate , 'yyyyMMdd') = :Ngay_gd
+LEFT JOIN uat_mdds_stg.JAD_CSIDXINFOR idx
+    ON idx.Symbol       = s.symbol
+   AND date_format (idx.tradingdate , 'yyyyMMdd') = :Ngay_gd
 --LEFT JOIN uat_mdds_stg.tmp_JAD_MARKETINFOR_eod mk
 --        on mk.marketcode = idx.indexcode
 --        AND date_format (mk.tradingdate , 'yyyyMMdd') = :Ngay_gd
-LEFT JOIN uat_ids_stg.company_profiles cp
-        ON cp.equity_ticker    = s.symbol
-        and date_format( cp.ds_snpst_dt, 'yyyyMMdd') = :Ngay_gd
-LEFT JOIN uat_ids_stg.categories cat
-        ON cat.id           = cp.category_l1_id
-        AND cat.active_flg  = 1
-        AND date_format( cat.ds_snpst_dt, 'yyyyMMdd') =  :Ngay_gd
-WHERE 1=1
+ WHERE 1=1
   AND date_format(to_date(s.TradingDate, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
-  AND s.FloorCode   IN ('10', '02', '04', '03')
+  AND s.FloorCode   IN ('10', '02', '04') 
   AND  NOT  (
     (s.floorcode = '02'  AND s.stocktype  in (1,4))
     OR
     (s.floorcode = '10' AND s.stocktype = 1)
 )
---  AND s.symbol = 'ABC'
---  AND s.STOCKTYPE = '4'
+) x 
+left join 
+(
+select equity_ticker, company_name_vn ,
+        INDUSTRY_CD, NNKD,
+        equity_listing_exch,
+        ds_snpst_dt
+        from 
+        (select cp.*,  c.INDUSTRY_NAME AS NNKD, c.INDUSTRY_CD
+                , row_number() over (partition by cp.equity_ticker order by cp.id ASC) as rn 
+                from uat_ids_stg.company_profiles_v1 cp
+                left join uat_ids_stg.categories_v1 c on cp.category_l1_id = c.id and date_format( c.ds_snpst_dt, 'yyyyMMdd') = :Ngay_gd
+                where date_format( cp.ds_snpst_dt, 'yyyyMMdd') = :Ngay_gd
+                and delete_flg <> 1
+        )
+where rn = 1
+) IDS on IDS.equity_ticker = x.symbol
+ AND date_format( IDS.ds_snpst_dt, 'yyyyMMdd') =  :Ngay_gd
 )
 --where rn =1,
 ,so_lenh AS (
@@ -93,12 +114,12 @@ WHERE 1=1
              THEN CAST(REPLACE(t.EXECUTION_VALUE, ',', '') AS DECIMAL(38,2))
              ELSE 0 END)                                                    AS tong_gt,
     SUM(CASE WHEN t.MARKET_ID IN ('STK')
-                  AND t.BOARD_TYPE IN ('T1','T2','T3','T4','T6')
+                  AND t.BOARD_TYPE IN ('T1','T2','T3','T4','T6','R1')
              THEN t.EXECUTION_VOLUME                    ELSE 0 END)        AS tong_kl_tt,
     SUM(CASE WHEN t.MARKET_ID IN ('STK')
-                  AND t.BOARD_TYPE IN ('T1','T2','T3','T4','T6')
+                  AND t.BOARD_TYPE IN ('T1','T2','T3','T4','T6','R1')
              THEN CAST(REPLACE(t.EXECUTION_VALUE, ',', '') AS DECIMAL(38,2))
-             ELSE 0 END)                                                                                                      AS tong_gt_tt,
+             ELSE 0 END)                                                      AS tong_gt_tt,
     SUM(CASE WHEN t.MARKET_ID IN ('STK')
                   AND t.BUY_FOREIGNER_INVESTOR_TYPE IN ('10','20')
              THEN t.EXECUTION_VOLUME                    ELSE 0 END)        AS kl_nn_mua,
@@ -111,12 +132,11 @@ WHERE 1=1
     SUM(CASE WHEN t.MARKET_ID IN ('STK')
                   AND t.SELL_FOREIGNER_INVESTOR_TYPE IN ('10','20')
              THEN t.EXECUTION_Value                    ELSE 0 END)        AS gt_nn_ban
-FROM uat_ordertrade_stg.trade_book_hose t
+from uat_hose_stg.trade_book  t
 WHERE 1=1
         AND t.MARKET_ID IN ('STK')
---        AND t.BOARD_TYPE IN ('T1','T2','T3','T4','T6')--- NEU LA THOA THUAN
 --        and symbol = 'SHB' 
-   AND date_format(to_date(t.TRADE_DATE, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
+        AND date_format(to_date(t.TRADE_DATE, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
 GROUP BY t.SYMBOL
 union all 
 SELECT
@@ -126,10 +146,10 @@ SELECT
     SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX')
              THEN CAST(t.TRADE_PRICE AS NUMERIC) * t.TRADE_QUANTITY   ELSE 0 END) AS tong_gt,
     SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX')
-                  AND t.BOARD_ID IN ('T1','T2','T3','T4','T6')
+                  AND t.BOARD_ID IN ('T1','T2','T3','T4','T6','R1')
              THEN t.TRADE_QUANTITY                                    ELSE 0 END) AS tong_kl_tt,
     SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX')
-                  AND t.BOARD_ID IN ('T1','T2','T3','T4','T6')
+                  AND t.BOARD_ID IN ('T1','T2','T3','T4','T6','R1')
              THEN CAST(t.TRADE_PRICE AS NUMERIC) * t.TRADE_QUANTITY   ELSE 0 END) AS tong_gt_tt,
     SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX')
                   AND t.BUY_FOREIGN_INVESTOR_TYPE_CODE IN ('10','20')
@@ -143,11 +163,10 @@ SELECT
     SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX')
                   AND t.SELL_FOREIGN_INVESTOR_TYPE_CODE IN ('10','20')
              THEN t.TRADE_QUANTITY * trade_price                                 ELSE 0 END) AS gt_nn_ban
- from uat_ordertrade_stg.trade_book_hnx t
+ from uat_hnx_stg.trade_book  t
  where 1=1 
---AND t.BOARD_ID IN ('T1','T2','T3','T4','T6')--- NEU LA THOA THUAN
-t.MARKET_ID IN ('STX','UPX')
-AND t.trade_date  = :Ngay_gd 
+AND t.MARKET_ID IN ('STX','UPX')
+ and t.TRADE_DATE = :Ngay_gd
 group by  t.ISSUE_CODE
 ),
 -- ── 3. GỘP HOSE + HNX THEO MÃ ───────────────────────────────────────────
@@ -167,39 +186,202 @@ so_lenh_agg AS (
     FROM so_lenh
     GROUP BY symbol
 )
+--select * from so_lenh_agg
+--where symbol = 'AAA';
 -- ── KẾT QUẢ CUỐI ─────────────────────────────────────────────────────────
 SELECT
     c.ma_ck,
-    c.ten_san,
+--    c.ten_san,
     c.ten_nganh,
 --    c.chi_so,
-    c.loai_phai_sinh,
-    c.stocktype,
+--    c.loai_phai_sinh,
+--    c.stocktype,
     c.ngay_dao_han,
-    :Ngay_gd                            AS ngay_gd,
+--    :Ngay_gd                            AS ngay_gd,
     c.gia_tham_chieu,
     c.gia_dong_cua,
     c.thay_doi_gia,
-    c.pct_thay_doi,
+--    c.pct_thay_doi,
     COALESCE(sl.tong_kl,    0)          AS tong_kl,
     COALESCE(sl.tong_gt,    0)          AS tong_gt,
 --    COALESCE(sl.tong_kl_ps, 0)         AS tong_kl_phai_sinh,
 --    COALESCE(sl.tong_gt_ps, 0)         AS tong_gt_phai_sinh,
-    COALESCE(sl.tong_kl_tt, 0)         AS tong_kl_thoa_thuan,
-    COALESCE(sl.tong_gt_tt, 0)         AS tong_gt_thoa_thuan,
-        COALESCE(sl.kl_nn_mua,  0)         AS kl_nn_mua,
-        COALESCE(sl.kl_nn_ban,  0)         AS kl_nn_ban,
-        COALESCE(sl.gt_nn_mua,  0)         AS gt_nn_mua,
-        COALESCE(sl.gt_nn_ban,  0)         AS gt_nn_ban,
-        COALESCE(sl.gtnn_rong,  0)         AS gtnn_rong,
+--    COALESCE(sl.tong_kl_tt, 0)         AS tong_kl_thoa_thuan,
+--    COALESCE(sl.tong_gt_tt, 0)         AS tong_gt_thoa_thuan,
     COALESCE(sl.klnn_rong,  0)         AS klnn_rong
+--        COALESCE(sl.kl_nn_mua,  0)         AS kl_nn_mua,
+--        COALESCE(sl.kl_nn_ban,  0)         AS kl_nn_ban,
+--        COALESCE(sl.gt_nn_mua,  0)         AS gt_nn_mua,
+--        COALESCE(sl.gt_nn_ban,  0)         AS gt_nn_ban,
+--        COALESCE(sl.gtnn_rong,  0)         AS gtnn_rong,
 FROM co_phieu           c
 LEFT JOIN so_lenh_agg   sl ON sl.symbol = c.ma_ck
 where 1=1
+and c.chi_so = 'HOSE'
 --and c.ten_san = 'HOSE'
---and c.ma_ck = 'ABW'
-ORDER BY c.Floor_Code, c.ma_ck;
-;",,,,Done,Dữ liệu tĩnh,F
+--and c.ma_ck = 'CACB2511'
+ORDER BY ma_ck ASC;
+----------------------------------------------------------------------------Phái sinh --------------------------------------------
+WITH
+-- ── 1. THÔNG TIN MÃ CK + GIÁ + NGÀNH + CHỈ SỐ ──────────────────────────
+co_phieu AS (
+ select
+         case when s.FloorCode IN ('02', '04','03') then s.symbolisin
+                 when s.FloorCode = '10' then s.symbol 
+                 else null 
+                 end                                                  AS ma_ck,-- join voi HNX
+    s.FloorCode                     AS floor_code,
+    s.stocktype, 
+    CASE s.FloorCode
+        WHEN '10' THEN 'HOSE'
+        WHEN '02' THEN 'HNX'
+        WHEN '04' THEN 'UPCOM'
+        WHEN '03' THEN 'FDS'
+    END                              AS ten_san,
+    CASE
+        WHEN s.FloorCode IN ('02', '04', '03') 
+            THEN DECODE(s.StockType, '4', 'HĐTL') || DECODE(s.underlyingSymbol, 'GB05', 'TPCP', 'GB10', 'TPCP', s.underlyingSymbol)
+        ELSE NULL
+    END                              AS loai_phai_sinh,
+    s.underlyingsymbol               AS San_pham_phai_sinh,
+    s.MaturityDate                   AS ngay_dao_han,
+    s.reference                      AS gia_tham_chieu,
+    s.closePrice                     AS gia_dong_cua,
+    s.change                         AS thay_doi_gia,
+    s.closevol ,
+    s.totaltrading,
+    CASE
+        WHEN s.reference IS NULL OR s.reference = 0 THEN NULL
+        ELSE ROUND((s.change / s.reference) * 100, 2)
+    END                              AS pct_thay_doi
+FROM uat_mdds_stg.tmp_jad_stockinfor_eod s
+WHERE 1=1
+  AND date_format(to_date(s.TradingDate, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
+  and s.stocktype = '4' -- khi la phai sinh
+  AND  s.FloorCode IN ('02', '04', '03') -- khi la phai sinh
+)
+--where rn =1,
+,so_lenh AS (
+    -- HOSE: Market ID thực tế dùng 'STK', 'STO', 'UPX'
+    SELECT
+    t.SYMBOL                                                                AS symbol,
+--    date_format(to_date(t.TRADE_DATE, 'yyyy-MM-dd'), 'yyyyMMdd'),
+    SUM(CASE WHEN t.MARKET_ID IN ('DVX')
+             THEN t.EXECUTION_VOLUME                    ELSE 0 END)        AS tong_kl,
+    SUM(CASE WHEN t.MARKET_ID IN ('DVX')
+             THEN CAST(REPLACE(t.EXECUTION_VALUE, ',', '') AS DECIMAL(38,2))
+             ELSE 0 END)                                                    AS tong_gt,
+    SUM(CASE WHEN t.MARKET_ID IN ('DVX')
+                  AND t.BOARD_TYPE IN ('T1','T2','T3','T4','T6')
+             THEN t.EXECUTION_VOLUME                    ELSE 0 END)        AS tong_kl_tt,
+    SUM(CASE WHEN t.MARKET_ID IN ('DVX')
+                  AND t.BOARD_TYPE IN ('T1','T2','T3','T4','T6')
+             THEN CAST(REPLACE(t.EXECUTION_VALUE, ',', '') AS DECIMAL(38,2))
+             ELSE 0 END)                                                      AS tong_gt_tt,
+    SUM(CASE WHEN t.MARKET_ID IN ('DVX')
+                  AND t.BUY_FOREIGNER_INVESTOR_TYPE IN ('10','20')
+             THEN t.EXECUTION_VOLUME                    ELSE 0 END)        AS kl_nn_mua,
+    SUM(CASE WHEN t.MARKET_ID IN ('DVX')
+                  AND t.SELL_FOREIGNER_INVESTOR_TYPE IN ('10','20')
+             THEN t.EXECUTION_VOLUME                    ELSE 0 END)        AS kl_nn_ban,
+    SUM(CASE WHEN t.MARKET_ID IN ('DVX')
+                  AND t.BUY_FOREIGNER_INVESTOR_TYPE IN ('10','20')
+             THEN t.EXECUTION_Value                  ELSE 0 END)        AS gt_nn_mua,
+    SUM(CASE WHEN t.MARKET_ID IN ('DVX')
+                  AND t.SELL_FOREIGNER_INVESTOR_TYPE IN ('10','20')
+             THEN t.EXECUTION_Value                    ELSE 0 END)        AS gt_nn_ban
+from uat_hose_stg.trade_book  t
+WHERE 1=1
+         and t.market_id = 'DVX' ---- Khi chọn phái sinh
+        and date_format(to_date(t.TRADE_DATE, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
+GROUP BY t.SYMBOL
+union all 
+SELECT
+    t.ISSUE_CODE                                                            AS symbol,
+--    t.TRADE_QUANTITY   ,
+--     t.BOARD_ID ,
+    SUM(CASE WHEN t.MARKET_ID IN ('DVX')
+             THEN t.TRADE_QUANTITY                                    ELSE 0 END) AS tong_kl,
+    SUM(CASE WHEN t.MARKET_ID IN ('DVX')
+             THEN CAST(t.TRADE_PRICE AS NUMERIC) * t.TRADE_QUANTITY   ELSE 0 END) AS tong_gt,
+    SUM(CASE WHEN t.MARKET_ID IN ('DVX')
+                  AND t.BOARD_ID IN ('T1','T2','T3','T4','T6')
+             THEN t.TRADE_QUANTITY                                    ELSE 0 END) AS tong_kl_tt,
+    SUM(CASE WHEN t.MARKET_ID IN ('DVX')
+                  AND t.BOARD_ID IN ('T1','T2','T3','T4','T6')
+             THEN CAST(t.TRADE_PRICE AS NUMERIC) * t.TRADE_QUANTITY   ELSE 0 END) AS tong_gt_tt,
+    SUM(CASE WHEN t.MARKET_ID IN ('DVX')
+                  AND t.BUY_FOREIGN_INVESTOR_TYPE_CODE IN ('10','20')
+             THEN t.TRADE_QUANTITY                                    ELSE 0 END) AS kl_nn_mua,
+    SUM(CASE WHEN t.MARKET_ID IN ('DVX')
+                  AND t.SELL_FOREIGN_INVESTOR_TYPE_CODE IN ('10','20')
+             THEN t.TRADE_QUANTITY                                    ELSE 0 END) AS kl_nn_ban,
+    SUM(CASE WHEN t.MARKET_ID IN ('DVX')
+                  AND t.BUY_FOREIGN_INVESTOR_TYPE_CODE IN ('10','20')
+             THEN t.TRADE_QUANTITY  * trade_price                               ELSE 0 END) AS gt_nn_mua,
+    SUM(CASE WHEN t.MARKET_ID IN ('DVX')
+                  AND t.SELL_FOREIGN_INVESTOR_TYPE_CODE IN ('10','20')
+             THEN t.TRADE_QUANTITY * trade_price                                 ELSE 0 END) AS gt_nn_ban
+ from uat_hnx_stg.trade_book  t
+ where 1=1 
+ and t.market_id = 'DVX'--Nếu là phái sinh
+-- and t.issue_code = 'VN41I2G90000'
+and t.TRADE_DATE = :Ngay_gd
+group by  t.ISSUE_CODE
+--,t.TRADE_QUANTITY, t.BOARD_ID    
+),
+-- ── 3. GỘP HOSE + HNX THEO MÃ ───────────────────────────────────────────
+so_lenh_agg AS (
+    SELECT
+        symbol,
+        SUM(tong_kl)                        AS tong_kl,
+        SUM(tong_gt)                        AS tong_gt,
+        SUM(tong_kl_tt)                     AS tong_kl_tt,
+        SUM(tong_gt_tt)                     AS tong_gt_tt,
+        SUM(kl_nn_mua)                      AS kl_nn_mua,
+        SUM(kl_nn_ban)                      AS kl_nn_ban,
+        SUM(kl_nn_mua) - SUM(kl_nn_ban)    AS klnn_rong,
+        SUM(gt_nn_mua)                      AS gt_nn_mua,
+        SUM(gt_nn_ban)                      AS gt_nn_ban,
+        SUM(gt_nn_mua) - SUM(gt_nn_ban)    AS gtnn_rong
+    FROM so_lenh
+    GROUP BY symbol
+)
+--select * from so_lenh_agg a
+--where a.symbol = 'VN41I2G90000';
+-- ── KẾT QUẢ CUỐI ─────────────────────────────────────────────────────────
+SELECT
+    c.ma_ck,
+--    c.ten_san,
+--    c.chi_so,
+--    c.loai_phai_sinh,
+--    c.stocktype,
+    c.ngay_dao_han,
+--    :Ngay_gd                            AS ngay_gd,
+    c.gia_tham_chieu,
+    c.gia_dong_cua,
+    c.thay_doi_gia,
+--    c.pct_thay_doi,
+    COALESCE(sl.tong_kl,    0)          AS tong_kl,
+    COALESCE(sl.tong_gt,    0)          AS tong_gt,
+--    COALESCE(sl.tong_kl_ps, 0)         AS tong_kl_phai_sinh,
+--    COALESCE(sl.tong_gt_ps, 0)         AS tong_gt_phai_sinh,
+--    COALESCE(sl.tong_kl_tt, 0)         AS tong_kl_thoa_thuan,
+--    COALESCE(sl.tong_gt_tt, 0)         AS tong_gt_thoa_thuan,
+    COALESCE(sl.klnn_rong,  0)         AS klnn_rong
+--        COALESCE(sl.kl_nn_mua,  0)         AS kl_nn_mua,
+--        COALESCE(sl.kl_nn_ban,  0)         AS kl_nn_ban,
+--        COALESCE(sl.gt_nn_mua,  0)         AS gt_nn_mua,
+--        COALESCE(sl.gt_nn_ban,  0)         AS gt_nn_ban,
+--        COALESCE(sl.gtnn_rong,  0)         AS gtnn_rong,
+FROM co_phieu           c
+LEFT JOIN so_lenh_agg   sl ON sl.symbol = c.ma_ck
+where 1=1
+--and c.chi_so = 'HOSE'
+--and c.ten_san = 'HOSE'
+--and c.ma_ck = 'VN41I2G90000'
+ORDER BY ma_ck ASC;
+",,,,Done,Dữ liệu tĩnh,F
 1,,Dashboard thông tin về danh mục chứng khoán theo dạng bảng số liệu,Sàn,,Dashboard,Chiều,TB,Mã CK,MDDS,X,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,floorCode,,"SELECT DISTINCT
     s.FloorCode         AS san,
     CASE s.FloorCode
@@ -463,11 +645,11 @@ WHERE 1=1
                 AND s.FLOORCODE in ('04','10','03','02') 
                 AND s.MARKETID IN ('BDO', 'HCX')
 ORDER BY s.symbol;""",--- đổi lại do CorpBondInfor là trái phiếu riêng lẻ? ,"WITH trai_phieu AS (
-select * 
-from 
+select x.*, NNKD from 
 (
-                SELECT
-                        s.symbol                        AS ma_ck,
+               SELECT
+                        s.symbolisin                        AS ma_ck,
+                        s.issuername 				as ma_map_nganh,
                         s.fullname                       AS ten_ck,
                         s.FloorCode                     AS floor_code,
                         CASE s.FloorCode
@@ -475,7 +657,6 @@ from
                                 WHEN '02' THEN 'HNX'
                                 WHEN '04' THEN 'UPCOM'
                                 WHEN '03' THEN 'FDS'
-                                WHEN '06' THEN 'CorpBond'
                         END                              AS ten_san,
                         s.reference                      AS gia_tham_chieu,
                         s.closePrice                     AS gia_dong_cua,
@@ -486,28 +667,39 @@ from
                                 ELSE ROUND((s.change / s.reference) * 100, 2)
                         END                              AS pct_thay_doi,
                         s.couponrate                     AS lai_suat,
-                        s.yield                         AS ytm_binh_quan,
-                        ROW_NUMBER() OVER (
-                                                PARTITION BY s.tradingdate, s.symbol
-                                                ORDER BY s.TRADINGTIME DESC, SEQUENCE DESC 
-                                                    ) AS rn
-                FROM uat_mdds_stg.JAD_STOCKINFOR s
+                        s.yield                         AS ytm_binh_quan
+                FROM uat_mdds_stg.tmp_jad_stockinfor_eod s
                 WHERE 1=1
                   AND date_format(to_date(s.TradingDate, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
-                  AND s.FloorCode   IN ('10', '02', '04', '03')
+                  AND s.FloorCode   IN ('10', '02', '04')
                   AND s.StockType   IN ('1')
-                  AND (:tim_ma = 'ALL' OR UPPER(s.symbol) LIKE '%' || UPPER(:tim_ma) || '%')
-                  )
-        where rn = 1
+                  ) x
+left join 
+	(
+select equity_ticker, company_name_vn ,
+        INDUSTRY_CD, NNKD,
+        equity_listing_exch,
+        ds_snpst_dt
+        from 
+        (select cp.*,  c.INDUSTRY_NAME AS NNKD, c.INDUSTRY_CD
+                , row_number() over (partition by cp.equity_ticker order by cp.id ASC) as rn 
+                from uat_ids_stg.company_profiles_v1 cp
+                left join uat_ids_stg.categories_v1 c on cp.category_l1_id = c.id and date_format( c.ds_snpst_dt, 'yyyyMMdd') = :Ngay_gd
+                where date_format( cp.ds_snpst_dt, 'yyyyMMdd') = :Ngay_gd
+                and delete_flg <> 1
+        )
+where rn = 1
+) IDS on IDS.equity_ticker = x.ma_map_nganh
+ AND date_format( IDS.ds_snpst_dt, 'yyyyMMdd') =  :Ngay_gd
 ),
 so_lenh AS (
     SELECT
         t.ISSUE_CODE                                                            AS symbol,
         SUM( t.TRADE_QUANTITY  ) AS tong_kl,
         SUM(CAST(t.TRADE_PRICE AS NUMERIC) * t.TRADE_QUANTITY) AS tong_gt
-    FROM uat_ordertrade_stg.trade_book_hnx t
+    FROM uat_hnx_stg.trade_book t
     WHERE 1=1
-    and t.trade_date = :ngay_gd 
+    and t.trade_date = :Ngay_gd 
     and t.MARKET_ID IN ('HCX')
     GROUP BY t.ISSUE_CODE
 )
@@ -1576,11 +1768,15 @@ Trade quantity: Khối lượng giao dịch","AND t.[Market ID] in (  HCX)
 Trade_HNX:
 Trade quantity: Khối lượng giao dịch",,,,,Done,Dữ liệu tĩnh,PE
 5,,Dashboard về theo dõi diễn biến các chỉ số thị trường (Index),Chỉ số,,Dashboard,Chiều,TB,Danh mục  chỉ số - theo giờ,MDDS,,X,X,Done,Thông tin thị trường,JAD_MARKETINFOR,indexName,,,,,,,,Chưa có sql,Dữ liệu tĩnh,F
-5,,Dashboard về theo dõi diễn biến các chỉ số thị trường (Index),Theo giờ trong ngày,,Dashboard,Chiều,TB,Danh mục  chỉ số - theo giờ,MDDS,,X,,Done,Thông tin thị trường,JAD_MARKETINFOR,indextime,,,,"WITH Gia_chi_so AS
+5,,Dashboard về theo dõi diễn biến các chỉ số thị trường (Index),Theo giờ trong ngày,,Dashboard,Chiều,TB,Danh mục  chỉ số - theo giờ,MDDS,,X,,Done,Thông tin thị trường,JAD_MARKETINFOR,indextime,,,,"-----CHỉ số cuối ngày tại 1 ngày ---------------------------------------------
+WITH Gia_chi_so AS
 (
     SELECT
         MARKETID,
-        MARKETCODE          AS Chi_so,
+        jm.indexname           AS Chi_so,
+        jm.marketcode        as chi_so_1,
+        date_format(TO_DATE(tradingdate, 'yyyy-MM-dd'), 'yyyyMMdd'),
+        `open`                        AS Gia_mo_cua,
         MARKETINDEX         AS Gia_dong_cua,
         HIGH                AS Gia_cao_nhat,
         LOW                 AS Gia_thap_nhat,
@@ -1596,86 +1792,64 @@ Trade quantity: Khối lượng giao dịch",,,,,Done,Dữ liệu tĩnh,PE
         PT_TOTAL_TRADE      AS tong_khoi_luong_thoa_thuan,
                 indexchange                        AS thay_doi,
                 indexpercentchange  AS Thay_doi_perent
-    FROM
-    (
-        SELECT
-            jm.MARKETID,
-            jm.MARKETINDEX,
-            jm.HIGH,
-            jm.LOW,
-            jm.ADVANCES,
-            jm.DECLINES,
-            jm.NOCHANGE,
-            jm.NUMBEROFCE,
-            jm.NUMBEROFFL,
-            jm.INDEXTIME,
-            jm.tradingdate,
-            jm.MARKETCODE,
-            jm.totalVolume,
-            jm.totalValue,
-            jm.PT_TOTAL_VALUE,
-            jm.PT_TOTAL_TRADE,
-                        indexchange,
-                        indexpercentchange,
-            ROW_NUMBER() OVER (
-                PARTITION BY tradingdate, marketCode
-                ORDER BY indexTime DESC
-            ) AS rn
-        FROM uat_mdds_stg.JAD_MARKETINFOR jm
+        FROM uat_mdds_stg.tmp_jad_marketinfor_eod   jm
         WHERE 1=1
-                  AND TSCPRODGRPID in ('STO', 'STX', 'UPX')
-          AND date_format(TO_DATE(tradingdate, 'yyyy-MM-dd'), 'yyyyMMdd') = :ngay_gd
-    )
-    WHERE rn = 1  
+--        and jm.MARKETCODE = 'HOSE'
+--          AND TSCPRODGRPID in ('STO', 'STX', 'UPX')
+          AND date_format(TO_DATE(tradingdate, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
 ),
 so_lenh AS (
     -- HOSE: Market ID thực tế dùng 'STK', 'STO', 'UPX'
     SELECT
-   idx.INDEXCODE,
+   idx.indexcode ,
 --    date_format(to_date(t.TRADE_DATE, 'yyyy-MM-dd'), 'yyyyMMdd'),
     SUM(CASE WHEN t.MARKET_ID IN ('STK')
              THEN t.EXECUTION_VOLUME                    ELSE 0 END)        AS tong_kl,
-    SUM(CASE WHEN t.MARKET_ID IN ('STK')
+    SUM(CASE WHEN t.MARKET_ID IN ('STK'')
              THEN CAST(REPLACE(t.EXECUTION_VALUE, ',', '') AS DECIMAL(38,2))
              ELSE 0 END)                                                    AS tong_gt,
     SUM(CASE WHEN t.MARKET_ID IN ('STK')
-                  AND t.BOARD_TYPE IN ('T1','T2','T3','T4','T6')
+                  AND t.BOARD_TYPE IN ('T1','T2','T3','T4','T6','R1')
              THEN t.EXECUTION_VOLUME                    ELSE 0 END)        AS tong_kl_tt,
-    SUM(CASE WHEN t.MARKET_ID IN ('STK')
-                  AND t.BOARD_TYPE IN ('T1','T2','T3','T4','T6')
+    SUM(CASE WHEN t.MARKET_ID IN ('STK'')
+                  AND t.BOARD_TYPE IN ('T1','T2','T3','T4','T6','R1')
              THEN CAST(REPLACE(t.EXECUTION_VALUE, ',', '') AS DECIMAL(38,2))
-             ELSE 0 END)                                                                                                      AS tong_gt_tt,
-    SUM(CASE WHEN t.MARKET_ID IN ('STK')
+             ELSE 0 END)                                                                                                   AS tong_gt_tt,
+    SUM(CASE WHEN t.MARKET_ID IN ('STK',)
                   AND t.BUY_FOREIGNER_INVESTOR_TYPE IN ('10','20')
              THEN t.EXECUTION_VOLUME                    ELSE 0 END)        AS kl_nn_mua,
     SUM(CASE WHEN t.MARKET_ID IN ('STK')
                   AND t.SELL_FOREIGNER_INVESTOR_TYPE IN ('10','20')
              THEN t.EXECUTION_VOLUME                    ELSE 0 END)        AS kl_nn_ban,
-    SUM(CASE WHEN t.MARKET_ID IN ('STK')
+    SUM(CASE WHEN t.MARKET_ID IN ('STK',)
                   AND t.BUY_FOREIGNER_INVESTOR_TYPE IN ('10','20')
              THEN t.EXECUTION_Value                  ELSE 0 END)        AS gt_nn_mua,
     SUM(CASE WHEN t.MARKET_ID IN ('STK')
                   AND t.SELL_FOREIGNER_INVESTOR_TYPE IN ('10','20')
              THEN t.EXECUTION_Value                    ELSE 0 END)        AS gt_nn_ban
-FROM uat_ordertrade_stg.trade_book_hose t
+FROM uat_hose_stg.trade_book t
 left JOIN uat_mdds_stg.JAD_CSIDXINFOR idx ON t.SYMBOL = idx.SYMBOL
+ and date_format(to_date(idx.tradingdate, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
+ and idx.floorcode = '10'
+-- left join uat_mdds_stg.tmp_jad_marketinfor_eod tjme on tjme.marketcode = idx.indexcode 
+-- and date_format(to_date(tjme.tradingdate, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
 WHERE 1=1
---	and symbol = 'SHB' 
+--        and tjme.indexname = 'HNXUpcomIndex' 
    AND date_format(to_date(t.TRADE_DATE, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
-   AND t.MARKET_ID = 'STK'  
-    GROUP BY idx.INDEXCODE
+   AND t.MARKET_ID IN ('STK','RPO')
+    GROUP BY idx.indexcode 
 union all 
 SELECT
-    idx.INDEXCODE ,              
+    idx.indexcode  ,              
     SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX')
              THEN t.TRADE_QUANTITY                                    ELSE 0 END) AS tong_kl,
     SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX')
              THEN CAST(t.TRADE_PRICE AS NUMERIC) * t.TRADE_QUANTITY   ELSE 0 END) AS tong_gt,
     SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX')
-                  AND t.BOARD_ID IN ('T1','T2','T3','T4','T6')
+                  AND t.BOARD_ID IN ('T1','T2','T3','T4','T6','R1')
              THEN t.TRADE_QUANTITY                                    ELSE 0 END) AS tong_kl_tt,
     SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX')
-                  AND t.BOARD_ID IN ('T1','T2','T3','T4','T6')
+                  AND t.BOARD_ID IN ('T1','T2','T3','T4','T6','R1')
              THEN CAST(t.TRADE_PRICE AS NUMERIC) * t.TRADE_QUANTITY   ELSE 0 END) AS tong_gt_tt,
     SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX')
                   AND t.BUY_FOREIGN_INVESTOR_TYPE_CODE IN ('10','20')
@@ -1689,16 +1863,22 @@ SELECT
     SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX')
                   AND t.SELL_FOREIGN_INVESTOR_TYPE_CODE IN ('10','20')
              THEN t.TRADE_QUANTITY * trade_price                                 ELSE 0 END) AS gt_nn_ban
- from uat_ordertrade_stg.trade_book_hnx t
- left JOIN uat_mdds_stg.JAD_CSIDXINFOR idx ON t.issue_code  = idx.SYMBOL
+ from uat_hnx_stg.trade_book t
+ left join uat_mdds_stg.tmp_jad_stockinfor_eod tj on tj.symbolisin = t.issue_code
+ and date_format(to_date(tj.tradingdate, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
+ left JOIN uat_mdds_stg.JAD_CSIDXINFOR idx ON tj.SYMBOL  = idx.SYMBOL 
+ and idx.floorcode in ('02', '04')
+ and date_format(to_date(idx.tradingdate, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
+-- left join uat_mdds_stg.tmp_jad_marketinfor_eod tjme on tjme.marketcode = idx.indexcode 
+-- and date_format(to_date(tjme.tradingdate, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
  where 1=1 
-AND date_format(to_date(t.TRADE_DATE, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
+AND t.TRADE_DATE = :Ngay_gd
 AND t.MARKET_ID IN ('STX','UPX')
-group by  idx.INDEXCODE
+group by idx.indexcode 
 ),
 KLNN AS (
     SELECT
-        INDEXCODE,
+        indexcode,
         SUM(tong_kl)                        AS tong_kl,
         SUM(tong_gt)                        AS tong_gt,
         SUM(tong_kl_tt)                     AS tong_kl_tt,
@@ -1710,80 +1890,82 @@ KLNN AS (
         SUM(gt_nn_ban)                      AS gt_nn_ban,
         SUM(gt_nn_mua) - SUM(gt_nn_ban)    AS gtnn_rong
     FROM so_lenh
-    GROUP BY INDEXCODE
+    GROUP BY indexcode
 )
---select * from KLNN
+--select * from KLNN a
+--where a.indexname;
 ,
 so_co_phieu_luu_hanh AS (
    SELECT
         symbol,
         so_luong_cp_luu_hanh
-    FROM (
+        from 
+        (
         SELECT
             t.ticker_symbol AS symbol,
             t.outstanding_shares AS so_luong_cp_luu_hanh,
             ROW_NUMBER() OVER (
                 PARTITION BY t.ticker_symbol
-                ORDER BY TO_DATE(t.snapshot_date, 'yyyy-MM-dd') DESC
+                ORDER BY TO_DATE(t.ds_snpst_dt, 'yyyy-MM-dd') DESC
             ) AS rn
-        FROM uat_vsdc_stg.outstanding_shares  t
+        FROM uat_vsdc_ods.outstanding_shares  t
         WHERE 1=1
-          AND date_format(TO_DATE(t.snapshot_date, 'yyyy-MM-dd'), 'yyyyMMdd') <= :den_ngay
-    )
-    WHERE rn = 1
+          AND date_format(t.ds_snpst_dt , 'yyyyMMdd') <= :Ngay_gd)
+          WHERE rn = 1
 )
 --select * from SCPLH_ranked ;
 ,Gia_tung_ma AS 
 (
-   SELECT
-        symbol,
-        gia_dong_cua
-    FROM (
         SELECT
             symbol,
-            closePrice AS gia_dong_cua,
-            ROW_NUMBER() OVER (
-                PARTITION BY symbol, tradingdate
-                ORDER BY tradingtime DESC,sequence DESC
-            ) AS rn
---            ,t.*
-        FROM uat_mdds_stg.JAD_STOCKINFOR t
-        WHERE date_format(to_date(t.tradingdate, 'yyyy-MM-dd'), 'yyyyMMdd') = :ngay_gd
-    )
-    WHERE rn = 1
+            closePrice AS gia_dong_cua
+        FROM uat_mdds_stg.tmp_jad_stockinfor_eod   t
+        WHERE date_format(to_date(t.tradingdate, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
 ),
 -- Vốn hóa TỪNG MÃ = Giá mã × KLLH mã (không phải giá chỉ số × KLLH mã như bản gốc)
 Von_hoa_chi_so AS 
 (
-    SELECT INDEXCODE, SUM(von_hoa_ma) AS von_hoa
+    SELECT indexcode , SUM(von_hoa_ma) AS von_hoa
     from 
     (
     SELECT
-        idx.INDEXCODE,
+        idx.indexcode ,
         g.symbol,
         g.gia_dong_cua * s.so_luong_cp_luu_hanh AS von_hoa_ma
     FROM Gia_tung_ma g
     JOIN so_co_phieu_luu_hanh s ON s.symbol = g.symbol
-    JOIN uat_mdds_stg.JAD_CSIDXINFOR idx     ON idx.Symbol = g.symbol
+    left JOIN uat_mdds_stg.jad_csidxinfor idx     ON idx.Symbol = g.symbol
+    and date_format(to_date(idx.tradingdate, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
+--    left join uat_mdds_stg.tmp_jad_marketinfor_eod tjme on tjme.marketcode = idx.indexcode 
+--         and date_format(to_date(tjme.tradingdate, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
     )
-        GROUP BY INDEXCODE
+        GROUP BY indexcode 
 )
 --select * from Von_hoa_chi_so ;
 SELECT 
-    a.*, 
+    a.Chi_so , --- đây là chỉ số hiện lên màn hình 
+    a.chi_so_1,
+    a.Gia_dong_cua,
+    a.Gia_cao_nhat ,
+    a.Gia_mo_cua,
+    a.Gia_thap_nhat,
+    a.thay_doi,
+    a.Thay_doi_perent,
     b.tong_kl,
     b.tong_gt,
-    b.kl_nn_mua,
-    b.kl_nn_ban,
+----    b.kl_nn_mua,
+----    b.kl_nn_ban,
     b.klnn_rong,
     b.gtnn_rong,
     b.tong_kl_tt,
     b.tong_gt_tt,
     c.von_hoa
 FROM Gia_chi_so a
-left JOIN KLNN b     ON a.Chi_so = b.INDEXCODE
-left JOIN Von_hoa_chi_so c  ON c.INDEXCODE = a.Chi_so;
---------CHỉ số theo timeline 
+left JOIN KLNN b     ON a.chi_so_1 = b.indexcode 
+left JOIN Von_hoa_chi_so c  ON c.indexcode = a.chi_so_1
+--where a.chi_so_1 = 'UPCOM'
+order by a.Chi_so ASC
+--------CHỉ số theo timeline (1D vaf 1W: theo tung phut / tu 1M >> laf theo ngay)
 SELECT
     marketId,
     marketCode,
@@ -1808,7 +1990,26 @@ FROM (
 --      AND a.marketId = '10'
     AND date_format(TO_DATE(tradingdate, 'yyyy-MM-dd'), 'yyyyMMdd') = :ngay_gd
 )
-ORDER BY indexTime;",,,,Chưa có sql,Dữ liệu tĩnh,F
+ORDER BY indexTime;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+",,,,Chưa có sql,Dữ liệu tĩnh,F
 5,,Dashboard về theo dõi diễn biến các chỉ số thị trường (Index),Giá đóng cửa,,Dashboard,Chỉ tiêu cơ sở,TB,Danh mục  chỉ số - theo giờ,MDDS,,X,X,Done,Thông tin thị trường,JAD_MARKETINFOR,marketIndex,marketIndex (MAX indexTime),"-- Lấy marketIndex tại thời điểm cuối ngày
 SELECT marketCode, tradingdate, marketIndex AS diem_dong_cua,
 FROM (
@@ -3945,48 +4146,59 @@ https://prnt.sc/M-cd4ic77XSy",,,,,,Dữ liệu tĩnh,PE
  WHERE c.active_flg = 1
  ORDER BY c.industry_cd","Xem các tính rule của từng chỉ tiêu top tại 
 https://prnt.sc/M-cd4ic77XSy","-------Top khối lượng gốm các chỉ tiêu: Mã CK,% thay đổi giá,Giá,KLGD,Vốn hóa,P/E,P/B
---Bộ lọc tham số là <Từ ngày - Đến ngày>. Với công thức: 
---- % thay đổi giá:        (Giá đóng cửa <Đến ngày> - Giá đóng cửa <Từ ngày-1>) / Giá đóng cửa <Từ ngày-1> * 100
---- Giá        :                        Giá đóng cửa tại <Đến ngày>
---- KLGD:        Tổng KLGD trong khoảng <Từ ngày - Đến ngày>
---- Vốn hóa:        Giá đóng cửa tại Đến ngày × Số cổ phiếu lưu hành tại Đến ngày.
---- P/E:        P/E của mã tại Đến ngày.
---- P/B:        P/B của mã tại Đến ngày.
-/* EOD từng mã; lấy snapshot cuối cùng trong ngày */
 WITH
 Gia_cuoi AS (
-    SELECT
-        symbol,
-        ngay_gd,
-        gia_dong_cua,
-        ten_nganh,
-        Thay_doi,
-        pct_thay_doi
-    FROM (
+select 
+x.*,     
+NNKD               AS ten_nganh
+from 
+(
         SELECT
-            s.symbol,
+ 	case when s.FloorCode IN ('02', '04','03') then s.symbolisin
+ 		when s.FloorCode = '10' then s.symbol 
+ 		else null 
+ 		end symbol,
+ 		case when s.FloorCode IN ('02', '04','03','10') and s.stocktype = '4' then s.underlyingsymbol 
+ 		else s.symbol  
+ 		end Ma_ck,
+ 		s.symbol Ma_LH,
+            s.FloorCode,
+            s.stocktype,
             date_format(to_date(s.TradingDate, 'yyyy-MM-dd'), 'yyyyMMdd') AS ngay_gd,
-            s.closePrice AS gia_dong_cua,
-            cat.industry_name               AS ten_nganh,  
-            s.reference                                 Tham_chieu,
-            s.change                                        Thay_doi,
+            s.closePrice AS gia_dong_cua, 
+            s.reference 				Tham_chieu,
+            s.change					Thay_doi,
             CASE
         WHEN s.reference IS NULL OR s.reference = 0 THEN NULL
         ELSE ROUND((s.change / s.reference) * 100, 2)
-    END                              AS pct_thay_doi,
-            ROW_NUMBER() OVER (
-                PARTITION BY s.symbol, s.tradingdate
-                ORDER BY s.tradingtime  DESC,s.`sequence` DESC
-            ) AS rn
-        FROM uat_mdds_stg.JAD_STOCKINFOR s
-        LEFT JOIN uat_ids_stg.company_profiles cp
-                ON cp.equity_ticker    = s.symbol
-            LEFT JOIN uat_ids_stg.categories cat
-                ON cat.id           = cp.category_l1_id
-                AND cat.active_flg  = 1
-        WHERE date_format(to_date(s.TradingDate, 'yyyy-MM-dd'), 'yyyyMMdd') <= :den_ngay
-    )
-    WHERE rn = 1
+    END                              AS pct_thay_doi
+        FROM uat_mdds_stg.tmp_jad_stockinfor_eod s
+        WHERE date_format(to_date(s.TradingDate, 'yyyy-MM-dd'), 'yyyyMMdd') = :Đen_ngay
+        AND s.FloorCode   IN ('10', '02', '04')
+--        and s.symbol = 'A32'
+  		AND  NOT  (
+   			 (s.floorcode = '02'  AND s.stocktype  in (1,4))
+    			OR
+   			 (s.floorcode = '10' AND s.stocktype = 1)
+				)
+    ) x
+left join 
+	(
+select equity_ticker, company_name_vn ,
+        INDUSTRY_CD, NNKD,
+        equity_listing_exch,
+        ds_snpst_dt
+        from 
+        (select cp.*,  c.INDUSTRY_NAME AS NNKD, c.INDUSTRY_CD
+                , row_number() over (partition by cp.equity_ticker order by cp.id ASC) as rn 
+                from uat_ids_stg.company_profiles_v1 cp
+                left join uat_ids_stg.categories_v1 c on cp.category_l1_id = c.id and date_format( c.ds_snpst_dt, 'yyyyMMdd') = :Đen_ngay
+                where date_format( cp.ds_snpst_dt, 'yyyyMMdd') = :Đen_ngay
+                and delete_flg <> 1
+        )
+where rn = 1
+) IDS on IDS.equity_ticker = x.Ma_ck
+ AND date_format( IDS.ds_snpst_dt, 'yyyyMMdd') =  :Đen_ngay
 )
 --select * from Gia_EOD;
 /* Tổng khối lượng giao dịch trong khoảng lọc */
@@ -3999,21 +4211,22 @@ FROM (
         t.symbol,
         SUM(CASE WHEN t.MARKET_ID IN ('STK')
                   AND t.BOARD_TYPE  NOT IN ('T1','T2','T3','T4','T6')
-             THEN CAST(REPLACE(t.EXECUTION_VALUE, ',', '') AS DECIMAL(38,2)) AS kl
-    FROM uat_ordertrade_stg.trade_book_hose t
+             THEN CAST(REPLACE(t.EXECUTION_VOLUME, ',', '') AS DECIMAL(38,2)) ELSE 0 END) AS kl
+    FROM uat_hose_stg.trade_book t
     WHERE date_format(TO_DATE(t.trade_date, 'yyyy-MM-dd'), 'yyyyMMdd')
           BETWEEN :Tu_ngay AND :Đen_ngay
       AND t.market_id = 'STK'
+      group by t.symbol
     UNION ALL
     SELECT
         t.issue_code AS symbol,
         SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX')
                   AND t.BOARD_ID NOT IN ('T1','T2','T3','T4','T6')
              THEN t.TRADE_QUANTITY                                    ELSE 0 END) AS kl
-    FROM uat_ordertrade_stg.trade_book_hnx t
-    WHERE date_format(TO_DATE(t.trade_date, 'yyyy-MM-dd'), 'yyyyMMdd')
-          BETWEEN :Tu_ngay AND :Đen_ngay
+    FROM uat_hnx_stg.trade_book t
+    WHERE t.trade_date BETWEEN :Tu_ngay AND :Đen_ngay
       AND t.market_id IN ('STX', 'UPX')
+      group by t.issue_code
 )
 GROUP BY symbol
 ),
@@ -4030,9 +4243,9 @@ SELECT
                 PARTITION BY t.ticker_symbol
                 ORDER BY TO_DATE(t.snapshot_date, 'yyyy-MM-dd') DESC
             ) AS rn
-        FROM uat_vsdc_stg.outstanding_shares  t
+        FROM  uat_vsdc_ods.outstanding_shares t
         WHERE 1=1
-          AND TO_DATE(t.ds_snpst_dt, 'yyyy-MM-dd') <= :den_ngay
+          AND date_format(t.snapshot_date , 'yyyyMMdd') <= :Đen_ngay
     )
     WHERE rn = 1
 ),
@@ -4048,17 +4261,16 @@ Von_hoa AS (
         END AS von_hoa
     FROM Gia_cuoi gc
     LEFT JOIN KLLH k
-        ON k.symbol = gc.symbol
+        ON k.symbol = gc.Ma_LH --- lưu ý từng chỗ này 
 )
 --select * from Von_hoa;
-,
 /* BƯỚC 1:
    Xác định đúng 1 company_data cho mỗi NNT + kỳ:
    - company_data phải APPROVED
    - Ưu tiên loại báo cáo: HN -> TH -> ME -> RI
    - Trong cùng loại báo cáo: lấy submission_date mới nhất
 */
-Company_data_chuan AS (
+,Company_data_chuan AS (
     SELECT
         company_profile_id,
         report_year,
@@ -4073,34 +4285,23 @@ Company_data_chuan AS (
             cd.report_quarter,
             cd.id AS company_data_id,
             f.form_cd,
-                        substr(f.form_cd,1,2) as form_tp,
+			substr(f.form_cd,1,2) as form_tp,
             cd.submission_date,
             ROW_NUMBER() OVER (PARTITION BY cd.company_profile_id, cd.report_year, cd.report_quarter
-                ORDER BY CASE         WHEN f.form_cd LIKE 'HN%' THEN 1
-                                                                WHEN f.form_cd LIKE 'TH%' THEN 2
-                                                                WHEN f.form_cd LIKE 'ME%' THEN 3
-                                                                WHEN f.form_cd LIKE 'RI%' THEN 4
-                                                        END, cd.submission_date DESC) AS rn
+                ORDER BY CASE 	WHEN f.form_cd LIKE 'HN%' THEN 1
+								WHEN f.form_cd LIKE 'TH%' THEN 2
+								WHEN f.form_cd LIKE 'ME%' THEN 3
+								WHEN f.form_cd LIKE 'RI%' THEN 4
+							END, cd.submission_date DESC) AS rn
         FROM UAT_IDS_STG.company_data cd
         JOIN UAT_IDS_STG.forms f ON f.id = cd.form_id AND f.news_type_cd = 'DINH_KY'
         WHERE cd.news_status_cd = 'APPROVED'
---        AND EXISTS (
---              SELECT 1
---              FROM uat_ids_stg.violation_report vr
---              JOIN uat_ids_stg.forms vf
---                  ON vf.id = vr.form_id
---                 AND vf.news_type_cd = 'DINH_KY'
---              WHERE vr.company_profile_id = cd.company_profile_id
---                AND vr.period_year = cd.report_year
---                AND vr.period_quarter = cd.report_quarter
-----                AND vr.base_date <= :Ngay_gd
---          )
-          AND cd.ds_snpst_dt = DATE '2026-08-05'
-          AND f.ds_snpst_dt = DATE '2026-08-05'
+          and date_format( cd.ds_snpst_dt, 'yyyyMMdd') =  :den_ngay
+          and date_format( f.ds_snpst_dt, 'yyyyMMdd') =  :den_ngay
     )
     WHERE rn = 1
 --    AND report_year in (:p_year)
---        AND report_quarter in (:p_quarter)
+--	AND report_quarter in (:p_quarter)
 ),
 /* =========================================================
    BƯỚC 2: tính các chỉ tiêu theo từng DN, từng kỳ
@@ -4117,6 +4318,11 @@ Chitiet_DN AS (
         category_l1_id,
         report_year,
         report_quarter,
+		Case when report_quarter = 1 then to_date ('31-03-'||report_year , 'dd-MM-yyyy')
+			when report_quarter = 2 then to_date ('30-06-'||report_year , 'dd-MM-yyyy')
+			when report_quarter = 3 then to_date ('30-09-'||report_year , 'dd-MM-yyyy')
+			when report_quarter = 4 then to_date ('31-12-'||report_year , 'dd-MM-yyyy') 
+			end as Ngay_ket_thuc,
         SUM(CASE WHEN chi_tieu = 'VCSH' THEN data_value END) AS VCSH,
         SUM(CASE WHEN chi_tieu = 'LNST' THEN data_value END) AS LNST,
         SUM(CASE WHEN chi_tieu = 'DOANH_THU' THEN data_value END) AS DOANH_THU
@@ -4180,11 +4386,12 @@ Chitiet_DN AS (
                   ON rc2.col_cd = d.col_cd
                  AND rc2.report_catalog_id = d.report_catalog_id
                 WHERE 1=1
-                and cp.ds_snpst_dt = DATE '2026-08-05'
-                  AND d.ds_snpst_dt = DATE '2026-08-05'
-                  AND rc.ds_snpst_dt = DATE '2026-08-05'
-                  AND rr.ds_snpst_dt = DATE '2026-08-05'
-                  AND rc2.ds_snpst_dt = DATE '2026-08-05'
+                and date_format( cp.ds_snpst_dt, 'yyyyMMdd') =  :den_ngay
+                and date_format( d.ds_snpst_dt, 'yyyyMMdd') =  :den_ngay
+                and date_format( rc.ds_snpst_dt, 'yyyyMMdd') =  :den_ngay
+                and date_format( rr.ds_snpst_dt, 'yyyyMMdd') =  :den_ngay
+                and date_format( rc2.ds_snpst_dt, 'yyyyMMdd') =  :den_ngay
+                and date_format( rc2.ds_snpst_dt, 'yyyyMMdd') =  :den_ngay
                   AND rc2.col_desc IN ('1','2')
             ) x
         ) t
@@ -4194,6 +4401,7 @@ Chitiet_DN AS (
     GROUP BY company_profile_id, equity_ticker, equity_listing_exch, category_l1_id, report_year, report_quarter
 )
 --select * from Chitiet_DN;
+--where equity_ticker = 'DC4';
 ,LNST4Q as 
 (
 SELECT 
@@ -4201,57 +4409,55 @@ company_profile_id,
         equity_ticker,
         equity_listing_exch,
         category_l1_id,
-                CASE WHEN COUNT(*) = 4 THEN SUM(LNST) END AS lnst_ttm
+		CASE WHEN COUNT(*) = 4 THEN SUM(LNST) END AS lnst_ttm
 --        Sum(LNST)
---                , count(1)
---                ,report_year
+--		, count(1)
+--		,report_year
 --        ,report_quarter
 FROM (
-        select company_profile_id,
+	select company_profile_id,
         equity_ticker,
         equity_listing_exch,
         category_l1_id,
         report_year,
         report_quarter,
-                LNST,
-                ROW_NUMBER() OVER ( PARTITION BY company_profile_id ORDER BY report_year DESC, report_quarter DESC ) AS rn1
-        from Chitiet_DN ct
-        where report_quarter in (1,2,3,4)
---        AND report_year in (:p_year)
---        AND report_quarter in (:p_quarter)
-        --nếu ràng buộc chỉ tiêu <>0 thì thêm đk LNST<>0
-        )
+		LNST,
+		ROW_NUMBER() OVER ( PARTITION BY company_profile_id ORDER BY report_year DESC, report_quarter DESC ) AS rn1
+	from Chitiet_DN ct
+	where report_quarter in (1,2,3,4)
+	and date_format(ngay_ket_thuc, 'yyyyMMdd') <= :Đen_ngay
+--	AND date_format(TO_DATE(Ngay_ket_thuc, 'yyyy-MM-dd'), 'yyyyMMdd')  <= :Ngay_gd
+--	AND report_year in (:p_year)
+--	AND report_quarter in (:p_quarter)
+	)
 WHERE rn1 <=4
 group by 
---report_year,
---        report_quarter,
         company_profile_id,
         equity_ticker
         ,equity_listing_exch,
         category_l1_id
 )
 --select * from LNST4Q;
---175,VPB
 ,VCSH as 
 (
 SELECT company_profile_id,
         equity_ticker,
         equity_listing_exch,
         category_l1_id,
-                sum (VCSH) VCSH
+		sum (VCSH) VCSH
 FROM (
-        select company_profile_id,
+	select company_profile_id,
         equity_ticker,
         equity_listing_exch,
         category_l1_id,
         report_year,
         report_quarter,
-                VCSH,
-                ROW_NUMBER() OVER ( PARTITION BY company_profile_id ORDER BY report_year DESC, report_quarter DESC ) AS rn1
-        from Chitiet_DN ct
-        where report_quarter in (1,2,3,4)
-        --nếu ràng buộc chỉ tiêu <>0 thì thêm đk VCSH<>0
-        )
+		VCSH,
+		ROW_NUMBER() OVER ( PARTITION BY company_profile_id ORDER BY report_year DESC, report_quarter DESC ) AS rn1
+	from Chitiet_DN ct
+	where report_quarter in (1,2,3,4)
+	and date_format(TO_DATE(Ngay_ket_thuc, 'yyyy-MM-dd'), 'yyyyMMdd')  <= :Đen_ngay
+	)
 WHERE rn1=1
 group by 
 --report_year,
@@ -4278,6 +4484,7 @@ from
             ORDER BY tong_kl DESC NULLS LAST, k.symbol
         ) AS stt,
         k.symbol AS ma,
+        gc.FloorCode,
         k.tong_kl,
         gc.gia_dong_cua,
         gc.thay_doi,
@@ -4299,28 +4506,11 @@ from
     LEFT JOIN VCSH vt
         ON vt.equity_ticker = k.symbol
         )
-WHERE stt <= :top_n
+WHERE 1=1
+--and stt <= :top_n
+--and ma = 'CACB2609'---'VN000000ABC8'
+--and FloorCode = '10'
 ORDER BY stt
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ",,,,Done,Dữ liệu tĩnh,
 7,,"Top khối lượng theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành) theo dạng bảng số liệu ",Sàn,,Dashboard,Chiều,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,floorcode," '10'=HOSE, '02'=HNX, '04'=UPCOM",,"10=HOSE, 02=HNX, 04=UPCOM",,,,,Done,Dữ liệu tĩnh,
 7,,"Top khối lượng theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành) theo dạng bảng số liệu ",Bộ chỉ số thị trường,,Dashboard,Chiều,TB,Mã CK,MDDS,X,X,,Done,Thông tin thị trường,JAD_MARKETINFOR,indexName,"MARKETCODE IN ('HOSE','UPCOM','HNX')",,,,,,,Done,Dữ liệu tĩnh,
@@ -6422,25 +6612,31 @@ WHERE rn <= :so_ngay_tb + 1
         x.ngay_gd,
         SUM(kl) AS khoi_luong
     FROM (
-    SELECT
-        t.symbol,
-        SUM(CASE WHEN t.MARKET_ID IN ('STK')
+        SELECT
+            t.symbol,
+            TO_DATE(t.trade_date, 'yyyy-MM-dd') AS ngay_gd,
+            SUM(CASE WHEN t.MARKET_ID IN ('STK')
                   AND t.BOARD_TYPE  NOT IN ('T1','T2','T3','T4','T6')
-             THEN CAST(REPLACE(t.EXECUTION_VALUE, ',', '') AS DECIMAL(38,2)) AS kl
-    FROM uat_ordertrade_stg.trade_book_hose t
-    WHERE date_format(TO_DATE(t.trade_date, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
-      AND t.market_id = 'STK'
-    UNION ALL
-    SELECT
-        t.issue_code AS symbol,
-        SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX')
+             THEN CAST(REPLACE(t.EXECUTION_VOLUME, ',', '') AS DECIMAL(38,2)) ELSE 0 END) AS kl
+        FROM uat_hose_stg.trade_book t
+        WHERE 1=1
+--        and date_format(TO_DATE(t.trade_date, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
+        and t.market_id = 'STK'
+        group by  t.symbol,t.trade_date
+        UNION ALL
+        SELECT
+            t.issue_code AS symbol,
+            TO_DATE(t.trade_date, 'yyyyMMdd') AS ngay_gd,
+            SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX')
                   AND t.BOARD_ID NOT IN ('T1','T2','T3','T4','T6')
              THEN t.TRADE_QUANTITY                                    ELSE 0 END) AS kl
-    FROM uat_ordertrade_stg.trade_book_hnx t
-    WHERE date_format(TO_DATE(t.trade_date, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
-      AND t.market_id IN ('STX', 'UPX')
+        FROM uat_hnx_stg.trade_book t
+        WHERE 1=1
+--        and date_format(TO_DATE(t.trade_date, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
+        and t.market_id IN ('STX', 'UPX')
+        group by  t.issue_code,t.trade_date
     ) x
-           JOIN Cua_so_giao_dich cs
+   	JOIN Cua_so_giao_dich cs
         ON cs.ngay_gd = x.ngay_gd
     GROUP BY
         symbol,
@@ -6484,50 +6680,66 @@ WHERE rn <= :so_ngay_tb + 1
 --where symbol = 'VMD';
 /* EOD của giá mã; INDEXTIME là cột time intraday */
 ,Gia_EOD AS (
-    SELECT
-        symbol,
-        ngay_gd,
-        floorcode,
-        gia_dong_cua,
-        ten_nganh,
-                Thay_doi,
-                pct_thay_doi,
-                bo_chi_so
-    FROM (
+select x.*,  NNKD ten_nganh
+from 
+	(
         SELECT
-            s.symbol,
+            case when s.FloorCode IN ('02', '04','03') then s.symbolisin
+				 when s.FloorCode = '10' then s.symbol 
+				 else null 
+					end symbol,
+			case when s.FloorCode IN ('02', '04','03','10') and s.stocktype = '4' then s.underlyingsymbol 
+				else s.symbol  
+			end Ma_ck,
+ 		s.symbol Ma_LH,			
             TO_DATE(s.tradingdate, 'yyyy-MM-dd') AS ngay_gd,
-            s.floorcode,
-                        cat.industry_name               AS ten_nganh, 
+            s.floorcode, 
             s.closeprice AS gia_dong_cua,
-                        s.change                                        Thay_doi,
-                        idx.indexcode   AS bo_chi_so,
+			s.change					Thay_doi,
+--			idx.indexcode   AS bo_chi_so,
             CASE
         WHEN s.reference IS NULL OR s.reference = 0 THEN NULL
         ELSE ROUND((s.change / s.reference) * 100, 2)
     END                              AS pct_thay_doi,
             ROW_NUMBER() OVER (
-                PARTITION BY s.symbol, s.tradingdate
-                ORDER BY s.tradingtime DESC, s.`sequence` DESC
+                PARTITION BY s.symbol
+                ORDER BY s.tradingdate DESC, s.`sequence` DESC
             ) AS rn
-        FROM uat_mdds_stg.JAD_STOCKINFOR s
-        JOIN Top_dot_pha tp
-            ON tp.symbol = s.symbol
-        LEFT JOIN uat_mdds_stg.JAD_CSIDXINFOR idx 
-                ON idx.symbol = s.symbol 
---            LEFT JOIN uat_mdds_stg.JAD_MARKETINFOR m
---                    ON m.MARKETCODE = idx.INDEXCODE
-                LEFT JOIN uat_ids_stg.company_profiles cp
-                ON cp.equity_ticker    = s.symbol
-            LEFT JOIN uat_ids_stg.categories cat
-                ON cat.id           = cp.category_l1_id
-                AND cat.active_flg  = 1
+        FROM uat_mdds_stg.tmp_jad_stockinfor_eod s
+--        LEFT JOIN uat_mdds_stg.JAD_CSIDXINFOR idx 
+--        	ON idx.symbol = s.symbol 
+--   AND date_format (idx.tradingdate , 'yyyyMMdd') = :Ngay_gd
+--    	LEFT JOIN uat_mdds_stg.JAD_MARKETINFOR m
+--    		ON m.MARKETCODE = idx.INDEXCODE
+--   AND date_format (m.tradingdate , 'yyyyMMdd') = :Ngay_gd
         WHERE date_format(TO_DATE(s.tradingdate, 'yyyy-MM-dd'), 'yyyyMMdd') =  :Ngay_gd
+        AND  NOT  (
+   			 (s.floorcode = '02'  AND s.stocktype  in (1,4))
+    			OR
+   			 (s.floorcode = '10' AND s.stocktype = 1)
+				)
     ) x
-    WHERE rn = 1
-)
+ JOIN Top_dot_pha tp ON tp.symbol = x.symbol
+ left join 
+	(
+select equity_ticker, company_name_vn ,
+        INDUSTRY_CD, NNKD,
+        equity_listing_exch,
+        ds_snpst_dt
+        from 
+        (select cp.*,  c.INDUSTRY_NAME AS NNKD, c.INDUSTRY_CD
+                , row_number() over (partition by cp.equity_ticker order by cp.id ASC) as rn 
+                from uat_ids_stg.company_profiles_v1 cp
+                left join uat_ids_stg.categories_v1 c on cp.category_l1_id = c.id and date_format( c.ds_snpst_dt, 'yyyyMMdd') = :Ngay_gd
+                where date_format( cp.ds_snpst_dt, 'yyyyMMdd') = :Ngay_gd
+                and delete_flg <> 1
+        )
+where rn = 1
+) IDS on IDS.equity_ticker = x.Ma_ck
+ AND date_format( IDS.ds_snpst_dt, 'yyyyMMdd') =  :Ngay_gd
 --select * from Gia_EOD
 --where symbol = 'VMD';
+ )
 ,KLLH_asof AS (
 SELECT
         symbol,
@@ -6540,24 +6752,13 @@ SELECT
                 PARTITION BY t.ticker_symbol
                 ORDER BY TO_DATE(t.snapshot_date, 'yyyy-MM-dd') DESC
             ) AS rn
-        FROM uat_vsdc_stg.outstanding_shares  t
+        FROM uat_vsdc_ods.outstanding_shares  t
         WHERE 1=1
-          AND TO_DATE(t.ds_snpst_dt, 'yyyy-MM-dd') <= :Ngay_gd
-    )
+          AND TO_DATE(t.snapshot_date , 'yyyy-MM-dd') <= :Ngay_gd
+          )
     WHERE rn = 1
+--    and symbol =  'PGD'
 )
---select * from KLLH_asof;
---,Chi_so AS
---(
---    SELECT 
---        idx.Symbol AS symbol,
---        m.indexname  AS bo_chi_so_thi_truong
---    FROM uat_mdds_stg.JAD_CSIDXINFOR idx
---    JOIN uat_mdds_stg.JAD_MARKETINFOR m ON m.MARKETCODE = idx.INDEXCODE
---    WHERE m.MARKETCODE IN ('HOSE','UPCOM','HNX')
---    and date_format(TO_DATE(s.tradingdate, 'yyyy-MM-dd'), 'yyyyMMdd')
---              =  :Ngay_gd
---)
 ,Von_hoa AS (
     SELECT
         gc.symbol,
@@ -6570,7 +6771,7 @@ SELECT
         END AS von_hoa
     FROM Gia_EOD gc
     LEFT JOIN KLLH_asof k
-        ON k.symbol = gc.symbol
+        ON k.symbol = gc.Ma_LH
 )
 --select * from Von_hoa;
 ,
@@ -6595,23 +6796,23 @@ Company_data_chuan AS (
             cd.report_quarter,
             cd.id AS company_data_id,
             f.form_cd,
-                        substr(f.form_cd,1,2) as form_tp,
+			substr(f.form_cd,1,2) as form_tp,
             cd.submission_date,
             ROW_NUMBER() OVER (PARTITION BY cd.company_profile_id, cd.report_year, cd.report_quarter
-                ORDER BY CASE         WHEN f.form_cd LIKE 'HN%' THEN 1
-                                                                WHEN f.form_cd LIKE 'TH%' THEN 2
-                                                                WHEN f.form_cd LIKE 'ME%' THEN 3
-                                                                WHEN f.form_cd LIKE 'RI%' THEN 4
-                                                        END, cd.submission_date DESC) AS rn
+                ORDER BY CASE 	WHEN f.form_cd LIKE 'HN%' THEN 1
+								WHEN f.form_cd LIKE 'TH%' THEN 2
+								WHEN f.form_cd LIKE 'ME%' THEN 3
+								WHEN f.form_cd LIKE 'RI%' THEN 4
+							END, cd.submission_date DESC) AS rn
         FROM UAT_IDS_STG.company_data cd
         JOIN UAT_IDS_STG.forms f ON f.id = cd.form_id AND f.news_type_cd = 'DINH_KY'
         WHERE cd.news_status_cd = 'APPROVED'
-          AND cd.ds_snpst_dt = DATE '2026-08-05'
-          AND f.ds_snpst_dt = DATE '2026-08-05'
+          and date_format( cd.ds_snpst_dt, 'yyyyMMdd') =  :Ngay_gd
+          and date_format( f.ds_snpst_dt, 'yyyyMMdd') =  :Ngay_gd
     )
     WHERE rn = 1
 --    AND report_year in (:p_year)
---        AND report_quarter in (:p_quarter)
+--	AND report_quarter in (:p_quarter)
 ),
 /* =========================================================
    BƯỚC 2: tính các chỉ tiêu theo từng DN, từng kỳ
@@ -6628,11 +6829,11 @@ Chitiet_DN AS (
         category_l1_id,
         report_year,
         report_quarter,
-                Case when report_quarter = 1 then to_date ('31-03-'||report_year , 'dd-MM-yyyy')
-                        when report_quarter = 2 then to_date ('30-06-'||report_year , 'dd-MM-yyyy')
-                        when report_quarter = 3 then to_date ('30-09-'||report_year , 'dd-MM-yyyy')
-                        when report_quarter = 4 then to_date ('31-12-'||report_year , 'dd-MM-yyyy') 
-                        end as Ngay_ket_thuc,
+		Case when report_quarter = 1 then to_date ('31-03-'||report_year , 'dd-MM-yyyy')
+			when report_quarter = 2 then to_date ('30-06-'||report_year , 'dd-MM-yyyy')
+			when report_quarter = 3 then to_date ('30-09-'||report_year , 'dd-MM-yyyy')
+			when report_quarter = 4 then to_date ('31-12-'||report_year , 'dd-MM-yyyy') 
+			end as Ngay_ket_thuc,
         SUM(CASE WHEN chi_tieu = 'VCSH' THEN data_value END) AS VCSH,
         SUM(CASE WHEN chi_tieu = 'LNST' THEN data_value END) AS LNST,
         SUM(CASE WHEN chi_tieu = 'DOANH_THU' THEN data_value END) AS DOANH_THU
@@ -6696,11 +6897,12 @@ Chitiet_DN AS (
                   ON rc2.col_cd = d.col_cd
                  AND rc2.report_catalog_id = d.report_catalog_id
                 WHERE 1=1
-                and cp.ds_snpst_dt = DATE '2026-08-05'
-                  AND d.ds_snpst_dt = DATE '2026-08-05'
-                  AND rc.ds_snpst_dt = DATE '2026-08-05'
-                  AND rr.ds_snpst_dt = DATE '2026-08-05'
-                  AND rc2.ds_snpst_dt = DATE '2026-08-05'
+                and date_format( cp.ds_snpst_dt, 'yyyyMMdd') = :Ngay_gd
+                and date_format( d.ds_snpst_dt, 'yyyyMMdd') =  :Ngay_gd
+                and date_format( rc.ds_snpst_dt, 'yyyyMMdd') =  :Ngay_gd
+                and date_format( rr.ds_snpst_dt, 'yyyyMMdd') =  :Ngay_gd
+                and date_format( rc2.ds_snpst_dt, 'yyyyMMdd') =  :Ngay_gd
+                and date_format( rc2.ds_snpst_dt, 'yyyyMMdd') =  :Ngay_gd
                   AND rc2.col_desc IN ('1','2')
             ) x
         ) t
@@ -6718,27 +6920,27 @@ company_profile_id,
         equity_ticker,
         equity_listing_exch,
         category_l1_id,
-                CASE WHEN COUNT(*) = 4 THEN SUM(LNST) END AS lnst_ttm
+		CASE WHEN COUNT(*) = 4 THEN SUM(LNST) END AS lnst_ttm
 --        Sum(LNST)
---                , count(1)
---                ,report_year
+--		, count(1)
+--		,report_year
 --        ,report_quarter
 FROM (
-        select company_profile_id,
+	select company_profile_id,
         equity_ticker,
         equity_listing_exch,
         category_l1_id,
         report_year,
         report_quarter,
-                LNST,
-                ROW_NUMBER() OVER ( PARTITION BY company_profile_id ORDER BY report_year DESC, report_quarter DESC ) AS rn1
-        from Chitiet_DN ct
-        where report_quarter in (1,2,3,4)
-        and date_format(ngay_ket_thuc, 'yyyyMMdd') <= :Ngay_gd
---        AND date_format(TO_DATE(Ngay_ket_thuc, 'yyyy-MM-dd'), 'yyyyMMdd')  <= :Ngay_gd
---        AND report_year in (:p_year)
---        AND report_quarter in (:p_quarter)
-        )
+		LNST,
+		ROW_NUMBER() OVER ( PARTITION BY company_profile_id ORDER BY report_year DESC, report_quarter DESC ) AS rn1
+	from Chitiet_DN ct
+	where report_quarter in (1,2,3,4)
+	and date_format(ngay_ket_thuc, 'yyyyMMdd') <= :Ngay_gd
+--	AND date_format(TO_DATE(Ngay_ket_thuc, 'yyyy-MM-dd'), 'yyyyMMdd')  <= :Ngay_gd
+--	AND report_year in (:p_year)
+--	AND report_quarter in (:p_quarter)
+	)
 WHERE rn1 <=4
 group by 
 --report_year,
@@ -6755,20 +6957,20 @@ SELECT company_profile_id,
         equity_ticker,
         equity_listing_exch,
         category_l1_id,
-                sum (VCSH) VCSH
+		sum (VCSH) VCSH
 FROM (
-        select company_profile_id,
+	select company_profile_id,
         equity_ticker,
         equity_listing_exch,
         category_l1_id,
         report_year,
         report_quarter,
-                VCSH,
-                ROW_NUMBER() OVER ( PARTITION BY company_profile_id ORDER BY report_year DESC, report_quarter DESC ) AS rn1
-        from Chitiet_DN ct
-        where report_quarter in (1,2,3,4)
-        and date_format(TO_DATE(Ngay_ket_thuc, 'yyyy-MM-dd'), 'yyyyMMdd')  <= :Ngay_gd
-        )
+		VCSH,
+		ROW_NUMBER() OVER ( PARTITION BY company_profile_id ORDER BY report_year DESC, report_quarter DESC ) AS rn1
+	from Chitiet_DN ct
+	where report_quarter in (1,2,3,4)
+	and date_format(TO_DATE(Ngay_ket_thuc, 'yyyy-MM-dd'), 'yyyyMMdd')  <= :Ngay_gd
+	)
 WHERE rn1=1
 group by 
 --report_year,
@@ -6796,18 +6998,19 @@ from
             ELSE gh.floorcode
         END AS san,
         ten_nganh,
+        gh.floorcode,
         tp.kl_hien_tai,
         ROUND(tp.kl_trung_binh, 0) AS kl_trung_binh,
         tp.ty_le_dot_pha,
         gh.gia_dong_cua,
         gh.thay_doi,
         gh.pct_thay_doi,
-        gh.bo_chi_so,
+--        gh.bo_chi_so,
         vh.von_hoa,
         ROUND(vh.von_hoa / NULLIF(lt.lnst_ttm, 0), 2) AS pe,
         ROUND(vh.von_hoa / NULLIF(vm.vcsh, 0), 2) AS pb
     FROM Top_dot_pha tp
-    LEFT JOIN Gia_EOD gh
+    JOIN Gia_EOD gh
         ON gh.symbol = tp.symbol
     LEFT JOIN Von_hoa vh
         ON vh.symbol = tp.symbol
@@ -8828,66 +9031,88 @@ WHERE s.FloorCode IN ('10','02','04', ' 03')   -- HOSE, HNX, UPCOM
                 )
   AND s.tradingdate = :ngay_gd;","Xem các tính rule của từng chỉ tiêu top tại 
 https://prnt.sc/M-cd4ic77XSy",,,,,Done,Dữ liệu tĩnh,
-11,,"Top giá trị dạng bảng số liệu  theo toàn thị trường, theo sàn và theo bộ chỉ số ",Sàn,,Dashboard,Chiều,Trùng,Mã CK,MDDS,,X,X,Done,Thông tin thị trường,JAD_STOCKINFOR,,floorcode,,,"WITH
+11,,"Top giá trị dạng bảng số liệu  theo toàn thị trường, theo sàn và theo bộ chỉ số ",Sàn,,Dashboard,Chiều,Trùng,Mã CK,MDDS,,X,X,Done,Thông tin thị trường,JAD_STOCKINFOR,,floorcode,,,"-------Top khối lượng gốm các chỉ tiêu: Mã CK,% thay đổi giá,Giá,KLGD,Vốn hóa,P/E,P/B
+WITH
 Gia_cuoi AS (
-    SELECT
-        symbol,
-        ngay_gd,
-        gia_dong_cua,
-        ten_nganh,
-        Thay_doi,
-        pct_thay_doi
-    FROM (
+select 
+x.*,     
+NNKD               AS ten_nganh
+from 
+(
         SELECT
-            s.symbol,
+ 	case when s.FloorCode IN ('02', '04','03') then s.symbolisin
+ 		when s.FloorCode = '10' then s.symbol 
+ 		else null 
+ 		end symbol,
+ 		case when s.FloorCode IN ('02', '04','03','10') and s.stocktype = '4' then s.underlyingsymbol 
+ 		else s.symbol  
+ 		end Ma_ck,
+ 		s.symbol Ma_LH,
+            s.FloorCode,
+            s.stocktype,
             date_format(to_date(s.TradingDate, 'yyyy-MM-dd'), 'yyyyMMdd') AS ngay_gd,
-            s.closePrice AS gia_dong_cua,
-            cat.industry_name               AS ten_nganh,  
+            s.closePrice AS gia_dong_cua, 
             s.reference 				Tham_chieu,
             s.change					Thay_doi,
             CASE
         WHEN s.reference IS NULL OR s.reference = 0 THEN NULL
         ELSE ROUND((s.change / s.reference) * 100, 2)
-    END                              AS pct_thay_doi,
-            ROW_NUMBER() OVER (
-                PARTITION BY s.symbol, s.tradingdate
-                ORDER BY s.tradingtime  DESC,s.`sequence` DESC
-            ) AS rn
-        FROM uat_mdds_stg.JAD_STOCKINFOR s
-        LEFT JOIN uat_ids_stg.company_profiles cp
-        	ON cp.equity_ticker    = s.symbol
-    	LEFT JOIN uat_ids_stg.categories cat
-        	ON cat.id           = cp.category_l1_id
-        	AND cat.active_flg  = 1
-        WHERE date_format(to_date(s.TradingDate, 'yyyy-MM-dd'), 'yyyyMMdd') <= :den_ngay
-    )
-    WHERE rn = 1
+    END                              AS pct_thay_doi
+        FROM uat_mdds_stg.tmp_jad_stockinfor_eod s
+        WHERE date_format(to_date(s.TradingDate, 'yyyy-MM-dd'), 'yyyyMMdd') = :Đen_ngay
+        AND s.FloorCode   IN ('10', '02', '04')
+--        and s.symbol = 'A32'
+  		AND  NOT  (
+   			 (s.floorcode = '02'  AND s.stocktype  in (1,4))
+    			OR
+   			 (s.floorcode = '10' AND s.stocktype = 1)
+				)
+    ) x
+left join 
+	(
+select equity_ticker, company_name_vn ,
+        INDUSTRY_CD, NNKD,
+        equity_listing_exch,
+        ds_snpst_dt
+        from 
+        (select cp.*,  c.INDUSTRY_NAME AS NNKD, c.INDUSTRY_CD
+                , row_number() over (partition by cp.equity_ticker order by cp.id ASC) as rn 
+                from uat_ids_stg.company_profiles_v1 cp
+                left join uat_ids_stg.categories_v1 c on cp.category_l1_id = c.id and date_format( c.ds_snpst_dt, 'yyyyMMdd') = :Đen_ngay
+                where date_format( cp.ds_snpst_dt, 'yyyyMMdd') = :Đen_ngay
+                and delete_flg <> 1
+        )
+where rn = 1
+) IDS on IDS.equity_ticker = x.Ma_ck
+ AND date_format( IDS.ds_snpst_dt, 'yyyyMMdd') =  :Đen_ngay
 )
 --select * from Gia_EOD;
 /* Tổng khối lượng giao dịch trong khoảng lọc */
-,KHGD AS (
+,GTGD AS (
     SELECT
     symbol,
     SUM(gt) AS tong_gt
 FROM (
     SELECT
         t.symbol,
-        SUM(CASE WHEN t.BOARD_TYPE  NOT IN ('T1','T2','T3','T4','T6')
-             THEN CAST(REPLACE(t.EXECUTION_VALUE, ',', '') AS DECIMAL(38,2))) AS gt
-    FROM uat_ordertrade_stg.trade_book_hose t
+        SUM(CASE WHEN t.MARKET_ID IN ('STK')
+                  AND t.BOARD_TYPE  NOT IN ('T1','T2','T3','T4','T6')
+             THEN CAST(REPLACE(t.EXECUTION_VALUE, ',', '') AS DECIMAL(38,2)) ELSE 0 END) AS gt
+    FROM uat_hose_stg.trade_book t
     WHERE date_format(TO_DATE(t.trade_date, 'yyyy-MM-dd'), 'yyyyMMdd')
           BETWEEN :Tu_ngay AND :Đen_ngay
       AND t.market_id = 'STK'
+      group by t.symbol
     UNION ALL
     SELECT
         t.issue_code AS symbol,
         SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX')
                   AND t.BOARD_ID NOT IN ('T1','T2','T3','T4','T6')
-             CAST(t.TRADE_PRICE AS NUMERIC) * t.TRADE_QUANTITY  ELSE 0 END) AS gt
-    FROM uat_ordertrade_stg.trade_book_hnx t
-    WHERE date_format(TO_DATE(t.trade_date, 'yyyy-MM-dd'), 'yyyyMMdd')
-          BETWEEN :Tu_ngay AND :Đen_ngay
+             THEN CAST(t.TRADE_PRICE AS NUMERIC) * t.TRADE_QUANTITY      ELSE 0 END) AS gt
+    FROM uat_hnx_stg.trade_book t
+    WHERE t.trade_date BETWEEN :Tu_ngay AND :Đen_ngay
       AND t.market_id IN ('STX', 'UPX')
+      group by t.issue_code
 )
 GROUP BY symbol
 ),
@@ -8904,9 +9129,9 @@ SELECT
                 PARTITION BY t.ticker_symbol
                 ORDER BY TO_DATE(t.snapshot_date, 'yyyy-MM-dd') DESC
             ) AS rn
-        FROM uat_vsdc_stg.outstanding_shares  t
+        FROM  uat_vsdc_ods.outstanding_shares t
         WHERE 1=1
-          AND TO_DATE(t.ds_snpst_dt, 'yyyy-MM-dd') <= :den_ngay
+          AND date_format(t.snapshot_date , 'yyyyMMdd') <= :Đen_ngay
     )
     WHERE rn = 1
 ),
@@ -8922,17 +9147,16 @@ Von_hoa AS (
         END AS von_hoa
     FROM Gia_cuoi gc
     LEFT JOIN KLLH k
-        ON k.symbol = gc.symbol
+        ON k.symbol = gc.Ma_LH --- lưu ý từng chỗ này 
 )
 --select * from Von_hoa;
-,
 /* BƯỚC 1:
    Xác định đúng 1 company_data cho mỗi NNT + kỳ:
    - company_data phải APPROVED
    - Ưu tiên loại báo cáo: HN -> TH -> ME -> RI
    - Trong cùng loại báo cáo: lấy submission_date mới nhất
 */
-Company_data_chuan AS (
+,Company_data_chuan AS (
     SELECT
         company_profile_id,
         report_year,
@@ -8958,19 +9182,8 @@ Company_data_chuan AS (
         FROM UAT_IDS_STG.company_data cd
         JOIN UAT_IDS_STG.forms f ON f.id = cd.form_id AND f.news_type_cd = 'DINH_KY'
         WHERE cd.news_status_cd = 'APPROVED'
---        AND EXISTS (
---              SELECT 1
---              FROM uat_ids_stg.violation_report vr
---              JOIN uat_ids_stg.forms vf
---                  ON vf.id = vr.form_id
---                 AND vf.news_type_cd = 'DINH_KY'
---              WHERE vr.company_profile_id = cd.company_profile_id
---                AND vr.period_year = cd.report_year
---                AND vr.period_quarter = cd.report_quarter
-----                AND vr.base_date <= :Ngay_gd
---          )
-          AND cd.ds_snpst_dt = DATE '2026-08-05'
-          AND f.ds_snpst_dt = DATE '2026-08-05'
+          and date_format( cd.ds_snpst_dt, 'yyyyMMdd') =  :den_ngay
+          and date_format( f.ds_snpst_dt, 'yyyyMMdd') =  :den_ngay
     )
     WHERE rn = 1
 --    AND report_year in (:p_year)
@@ -8991,6 +9204,11 @@ Chitiet_DN AS (
         category_l1_id,
         report_year,
         report_quarter,
+		Case when report_quarter = 1 then to_date ('31-03-'||report_year , 'dd-MM-yyyy')
+			when report_quarter = 2 then to_date ('30-06-'||report_year , 'dd-MM-yyyy')
+			when report_quarter = 3 then to_date ('30-09-'||report_year , 'dd-MM-yyyy')
+			when report_quarter = 4 then to_date ('31-12-'||report_year , 'dd-MM-yyyy') 
+			end as Ngay_ket_thuc,
         SUM(CASE WHEN chi_tieu = 'VCSH' THEN data_value END) AS VCSH,
         SUM(CASE WHEN chi_tieu = 'LNST' THEN data_value END) AS LNST,
         SUM(CASE WHEN chi_tieu = 'DOANH_THU' THEN data_value END) AS DOANH_THU
@@ -9054,11 +9272,12 @@ Chitiet_DN AS (
                   ON rc2.col_cd = d.col_cd
                  AND rc2.report_catalog_id = d.report_catalog_id
                 WHERE 1=1
-                and cp.ds_snpst_dt = DATE '2026-08-05'
-                  AND d.ds_snpst_dt = DATE '2026-08-05'
-                  AND rc.ds_snpst_dt = DATE '2026-08-05'
-                  AND rr.ds_snpst_dt = DATE '2026-08-05'
-                  AND rc2.ds_snpst_dt = DATE '2026-08-05'
+                and date_format( cp.ds_snpst_dt, 'yyyyMMdd') =  :den_ngay
+                and date_format( d.ds_snpst_dt, 'yyyyMMdd') =  :den_ngay
+                and date_format( rc.ds_snpst_dt, 'yyyyMMdd') =  :den_ngay
+                and date_format( rr.ds_snpst_dt, 'yyyyMMdd') =  :den_ngay
+                and date_format( rc2.ds_snpst_dt, 'yyyyMMdd') =  :den_ngay
+                and date_format( rc2.ds_snpst_dt, 'yyyyMMdd') =  :den_ngay
                   AND rc2.col_desc IN ('1','2')
             ) x
         ) t
@@ -9068,6 +9287,7 @@ Chitiet_DN AS (
     GROUP BY company_profile_id, equity_ticker, equity_listing_exch, category_l1_id, report_year, report_quarter
 )
 --select * from Chitiet_DN;
+--where equity_ticker = 'DC4';
 ,LNST4Q as 
 (
 SELECT 
@@ -9091,21 +9311,19 @@ FROM (
 		ROW_NUMBER() OVER ( PARTITION BY company_profile_id ORDER BY report_year DESC, report_quarter DESC ) AS rn1
 	from Chitiet_DN ct
 	where report_quarter in (1,2,3,4)
+	and date_format(ngay_ket_thuc, 'yyyyMMdd') <= :Đen_ngay
+--	AND date_format(TO_DATE(Ngay_ket_thuc, 'yyyy-MM-dd'), 'yyyyMMdd')  <= :Ngay_gd
 --	AND report_year in (:p_year)
 --	AND report_quarter in (:p_quarter)
-	--nếu ràng buộc chỉ tiêu <>0 thì thêm đk LNST<>0
 	)
 WHERE rn1 <=4
 group by 
---report_year,
---        report_quarter,
         company_profile_id,
         equity_ticker
         ,equity_listing_exch,
         category_l1_id
 )
 --select * from LNST4Q;
---175,VPB
 ,VCSH as 
 (
 SELECT company_profile_id,
@@ -9124,7 +9342,7 @@ FROM (
 		ROW_NUMBER() OVER ( PARTITION BY company_profile_id ORDER BY report_year DESC, report_quarter DESC ) AS rn1
 	from Chitiet_DN ct
 	where report_quarter in (1,2,3,4)
-	--nếu ràng buộc chỉ tiêu <>0 thì thêm đk VCSH<>0
+	and date_format(TO_DATE(Ngay_ket_thuc, 'yyyy-MM-dd'), 'yyyyMMdd')  <= :Đen_ngay
 	)
 WHERE rn1=1
 group by 
@@ -9139,7 +9357,7 @@ group by
 Select 
     ma,
     nganh,
-    tong_kl,
+    tong_gt,
     gia_dong_cua,
     phan_tram_thay_doi,
     von_hoa,
@@ -9149,10 +9367,11 @@ from
 (
     SELECT
         ROW_NUMBER() OVER (
-            ORDER BY tong_kl DESC NULLS LAST, k.symbol
+            ORDER BY tong_gt DESC NULLS LAST, k.symbol
         ) AS stt,
         k.symbol AS ma,
-        k.tong_kl,
+        gc.FloorCode,
+        k.tong_gt,
         gc.gia_dong_cua,
         gc.thay_doi,
         gc.ten_nganh nganh,
@@ -9163,7 +9382,7 @@ from
         von_hoa,
         ROUND(von_hoa / NULLIF(lnst_ttm, 0), 2) AS pe,
         ROUND(von_hoa / NULLIF(vcsh, 0), 2) AS pb
-    FROM KHGD k
+    FROM GTGD k
     LEFT JOIN Gia_cuoi gc
         ON gc.symbol = k.symbol
     LEFT JOIN Von_hoa vh
@@ -9173,29 +9392,11 @@ from
     LEFT JOIN VCSH vt
         ON vt.equity_ticker = k.symbol
         )
-WHERE stt <= :top_n
-ORDER BY stt
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-",,,,Done,Dữ liệu tĩnh,
+WHERE 1=1
+--and stt <= :top_n
+--and ma = 'CACB2609'---'VN000000ABC8'
+--and FloorCode = '10'
+ORDER BY stt",,,,Done,Dữ liệu tĩnh,
 11,,"Top giá trị dạng bảng số liệu  theo toàn thị trường, theo sàn và theo bộ chỉ số ",Bộ chỉ số ngành/ bộ chỉ số thị trường,,Dashboard,Chiều,Trùng,Mã CK,MDDS,,X,X,Done,Thông tin thị trường,MARKETCODE,indexName,"MARKETCODE IN ('HOSE','UPCOM','HNX')
 chỉ số ngành: 
 MARKETCODE NOT IN ('HOSE','UPCOM','HNX')",,,,,,,Done,Dữ liệu tĩnh,
@@ -11017,14 +11218,17 @@ Gia_dau AS (
             g.symbol,
             g.closePrice gia_dong_cua,
 			g.floorCode,
+			g.tradingdate,
             ROW_NUMBER() OVER (
                 PARTITION BY g.symbol
-                ORDER BY g.ngay_gd DESC
+                ORDER BY g.tradingdate DESC
             ) AS rn
-        FROM tmp_jad_stockinfor_eod g
-        WHERE TO_DATE(g.tradingdate, 'DD/MM/YYYY') < :tu_ngay
+        FROM uat_mdds_stg.tmp_jad_stockinfor_eod g
+        Where 1=1
+        and date_format(TO_DATE(g.tradingdate, 'yyyy-MM-dd'), 'yyyyMMdd') < :Tu_ngay
     )
     WHERE rn = 1
+--        and symbol = 'ACM'
 ),
 /* Giá đóng cửa phiên gần nhất tại hoặc trước ngày kết thúc */
 Gia_cuoi AS (
@@ -11039,14 +11243,20 @@ Gia_cuoi AS (
             g.closePrice gia_dong_cua,
             g.tradingdate ngay_gd ,
 			g.floorCode,
+--            cat.industry_name               AS ten_nganh, 			
             ROW_NUMBER() OVER (
                 PARTITION BY g.symbol
                 ORDER BY g.tradingdate DESC
             ) AS rn
-        FROM tmp_jad_stockinfor_eod g
-        WHERE TO_DATE(g.tradingdate, 'DD/MM/YYYY') <= :den_ngay
+        FROM uat_mdds_stg.tmp_jad_stockinfor_eod g
+--		LEFT JOIN uat_ids_stg.company_profiles cp
+--        	ON cp.equity_ticker    = s.symbol  and cp.ds_snpst_dt = DATE '2026-08-05'
+--    	LEFT JOIN uat_ids_stg.categories cat
+--        	ON cat.id           = cp.category_l1_id
+        WHERE date_format(TO_DATE(g.tradingdate, 'yyyy-MM-dd'), 'yyyyMMdd') <= :Den_ngay
     )
     WHERE rn = 1
+--    and symbol = 'ACM'
 )
 ,Top_giam_gia AS (
     SELECT
@@ -11062,10 +11272,12 @@ Gia_cuoi AS (
     FROM Gia_cuoi gc
     JOIN Gia_dau gd
         ON gd.symbol = gc.symbol
-    WHERE gc.gia_dong_cua < gd.gia_dau
+--    WHERE 1=1
 )
+--select * from Top_giam_gia
+--where symbol = 'ACM';
 /* Tổng khối lượng giao dịch trong khoảng lọc */
-KHGD AS (
+,KHGD AS (
     SELECT
     symbol,
     SUM(kl) AS tong_kl
@@ -11074,11 +11286,12 @@ FROM (
         t.symbol,
         SUM(CASE WHEN t.MARKET_ID IN ('STK')
                   AND t.BOARD_TYPE  NOT IN ('T1','T2','T3','T4','T6')
-             THEN CAST(REPLACE(t.EXECUTION_VOLUME, ',', '') AS DECIMAL(38,2))) AS kl
-    FROM uat_ordertrade_stg.trade_book_hose t
+             THEN CAST(REPLACE(t.EXECUTION_VOLUME, ',', '') AS DECIMAL(38,2)) ELSE 0 END) AS kl
+    FROM uat_csdltt_stg.hose_tradebook t
     WHERE date_format(TO_DATE(t.trade_date, 'yyyy-MM-dd'), 'yyyyMMdd')
-          BETWEEN :Tu_ngay AND :Đen_ngay
+          BETWEEN :Tu_ngay AND :Den_ngay
       AND t.market_id = 'STK'
+      group by t.symbol
     UNION ALL
     SELECT
         t.issue_code AS symbol,
@@ -11087,9 +11300,10 @@ FROM (
              THEN t.TRADE_QUANTITY                                    ELSE 0 END) AS kl
     FROM uat_ordertrade_stg.trade_book_hnx t
     WHERE date_format(TO_DATE(t.trade_date, 'yyyy-MM-dd'), 'yyyyMMdd')
-          BETWEEN :Tu_ngay AND :Đen_ngay
+          BETWEEN :Tu_ngay AND :Den_ngay
       AND t.market_id IN ('STX', 'UPX')
-)
+      group by t.issue_code
+      )
 GROUP BY symbol
 ),
 /* KLLH gần nhất có hiệu lực tại ngày kết thúc */
@@ -11107,8 +11321,9 @@ KLLH_asof AS (
             ) AS rn
         FROM uat_vsdc_stg.outstanding_shares  t
         WHERE 1=1
-          AND TO_DATE(t.ds_snpst_dt, 'yyyy-MM-dd') <= :den_ngay
-    )
+--        and ticker_symbol = 'CCL'
+          AND date_format(t.snapshot_date , 'yyyyMMdd') <= :Den_ngay
+          )
     WHERE rn = 1
 )
 ,Von_hoa AS (
@@ -11260,7 +11475,7 @@ Chitiet_DN AS (
     WHERE chi_tieu IS NOT NULL
     GROUP BY company_profile_id, equity_ticker, equity_listing_exch, category_l1_id, report_year, report_quarter
 )
---select * from Chitiet_DN;
+--select * from Chitiet_DN
 --where equity_ticker = 'DC4';
 ,LNST4Q as 
 (
@@ -11285,7 +11500,7 @@ FROM (
 		ROW_NUMBER() OVER ( PARTITION BY company_profile_id ORDER BY report_year DESC, report_quarter DESC ) AS rn1
 	from Chitiet_DN ct
 	where report_quarter in (1,2,3,4)
-	and date_format(ngay_ket_thuc, 'yyyyMMdd') <= :Ngay_gd
+	and date_format(ngay_ket_thuc, 'yyyyMMdd') <= :Den_ngay
 --	AND date_format(TO_DATE(Ngay_ket_thuc, 'yyyy-MM-dd'), 'yyyyMMdd')  <= :Ngay_gd
 --	AND report_year in (:p_year)
 --	AND report_quarter in (:p_quarter)
@@ -11316,7 +11531,7 @@ FROM (
 		ROW_NUMBER() OVER ( PARTITION BY company_profile_id ORDER BY report_year DESC, report_quarter DESC ) AS rn1
 	from Chitiet_DN ct
 	where report_quarter in (1,2,3,4)
-	and date_format(TO_DATE(Ngay_ket_thuc, 'yyyy-MM-dd'), 'yyyyMMdd')  <= :Ngay_gd
+	and date_format(TO_DATE(Ngay_ket_thuc, 'yyyy-MM-dd'), 'yyyyMMdd')  <= :Den_ngay
 	)
 WHERE rn1=1
 group by 
@@ -11331,7 +11546,7 @@ SELECT
     stt,
     ma,
     san,
-    nganh,
+--    nganh,
     tong_kl,
     gia_dong_cua,
     thay_doi,
@@ -11339,6 +11554,7 @@ SELECT
     von_hoa,
     pe,
     pb
+    from 
 	(
     SELECT
         ROW_NUMBER() OVER (
@@ -11347,15 +11563,12 @@ SELECT
                 tg.symbol
         ) AS stt,
         tg.symbol AS ma,
-
         CASE
             WHEN tg.floorcode = '10' THEN 'HOSE'
             WHEN tg.floorcode = '02' THEN 'HNX'
             WHEN tg.floorcode = '04' THEN 'UPCOM'
             ELSE tg.floorcode
         END AS san,
-
-        ng.industry_name AS nganh,
         kh.tong_kl,
         tg.gia_dong_cua,
         tg.gia_dong_cua - tg.gia_dau AS thay_doi,
@@ -11363,32 +11576,20 @@ SELECT
         vh.von_hoa,
         ROUND(vh.von_hoa / NULLIF(lt.lnst_ttm, 0), 2) AS pe,
         ROUND(vh.von_hoa / NULLIF(vm.vcsh, 0), 2) AS pb
-    FROM Top_giam_gia tg
-    LEFT JOIN KHGD kh
+    FROM Top_giam_gia  tg
+    LEFT JOIN KHGD kh 
         ON kh.symbol = tg.symbol
     LEFT JOIN Von_hoa vh
         ON vh.symbol = tg.symbol
-    LEFT JOIN Nganh ng
-        ON ng.equity_ticker = tg.symbol
-    LEFT JOIN LNST_TTM lt
+    LEFT JOIN LNST4Q lt
         ON lt.equity_ticker = tg.symbol
-    LEFT JOIN VCSH_moi_nhat vm
+    LEFT JOIN VCSH vm
         ON vm.equity_ticker = tg.symbol
+        where tg.gia_dong_cua <> 0 
+        and tg.gia_dau <> 0
 )
-
 WHERE stt <= :top_n
-ORDER BY stt;
-""
-
-
-
-
-
-
-
-
-
-",,,,Done,Dữ liệu tĩnh,
+ORDER BY stt;",,,,Done,Dữ liệu tĩnh,
 13,,"Top giảm giá theo dạng bảng số liệu theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Bộ chỉ số ngành/ bộ chỉ số thị trường,,Dashboard,Chiều,Trùng,Mã CK,MDDS,,X,X,Done,Thông tin thị trường,JAD_MARKETINFOR,indexName,"MARKETCODE IN ('HOSE','UPCOM','HNX')
 chỉ số ngành: 
 MARKETCODE NOT IN ('HOSE','UPCOM','HNX')",,,,,,,Done,Dữ liệu tĩnh,
@@ -12430,9 +12631,7 @@ from
         SELECT
             t.symbol,
             TO_DATE(t.trade_date, 'yyyy-MM-dd') AS ngay_gd,
-            SUM(CASE WHEN t.MARKET_ID IN ('STK')
-                  AND t.BOARD_TYPE  NOT IN ('T1','T2','T3','T4','T6')
-             THEN CAST(REPLACE(t.EXECUTION_VOLUME, ',', '') AS DECIMAL(38,2))) AS kl
+            t.execution_volume AS kl
         FROM uat_ordertrade_stg.trade_book_hose t
         WHERE 1=1
         and date_format(TO_DATE(t.trade_date, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
@@ -12441,9 +12640,7 @@ from
         SELECT
             t.issue_code AS symbol,
             TO_DATE(t.trade_date, 'yyyy-MM-dd') AS ngay_gd,
-            SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX')
-                  AND t.BOARD_ID NOT IN ('T1','T2','T3','T4','T6')
-             THEN t.TRADE_QUANTITY                                    ELSE 0 END) AS kl
+            t.trade_quantity AS kl
         FROM uat_ordertrade_stg.trade_book_hnx t
         WHERE 1=1
         and date_format(TO_DATE(t.trade_date, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
@@ -12521,15 +12718,16 @@ SELECT
         so_luong_cp_luu_hanh
     FROM (
         SELECT
-            t.ma_ck AS symbol,
-            t.khoi_luong_ck_dang_luu_hanh AS so_luong_cp_luu_hanh,
+            t.ticker_symbol AS symbol,
+            t.outstanding_shares AS so_luong_cp_luu_hanh,
             ROW_NUMBER() OVER (
-                PARTITION BY t.ma_ck
-                ORDER BY TO_DATE(t.ds_snpst_dt, 'yyyy-MM-dd') DESC
+                PARTITION BY t.ticker_symbol
+                ORDER BY TO_DATE(t.snapshot_date, 'yyyy-MM-dd') DESC
             ) AS rn
         FROM uat_vsdc_stg.outstanding_shares  t
         WHERE 1=1
-          AND TO_DATE(t.ds_snpst_dt, 'yyyy-MM-dd') <= :Ngay_gd
+--        and ticker_symbol = 'CCL'
+          AND date_format(t.snapshot_date , 'yyyyMMdd') <= :Ngay_gd
     )
     WHERE rn = 1
 )
@@ -16983,38 +17181,56 @@ Gia_dau AS (
             g.symbol,
             g.closePrice gia_dong_cua,
 			g.floorCode,
+			g.tradingdate,
             ROW_NUMBER() OVER (
                 PARTITION BY g.symbol
-                ORDER BY g.ngay_gd DESC
+                ORDER BY g.tradingdate DESC
             ) AS rn
-        FROM tmp_jad_stockinfor_eod g
-        WHERE TO_DATE(g.tradingdate, 'DD/MM/YYYY') < :tu_ngay
+        FROM uat_mdds_stg.tmp_jad_stockinfor_eod g
+        Where 1=1
+        and date_format(TO_DATE(g.tradingdate, 'yyyy-MM-dd'), 'yyyyMMdd') < :Tu_ngay
     )
     WHERE rn = 1
+--        and symbol = 'ACM'
 ),
 /* Giá đóng cửa phiên gần nhất tại hoặc trước ngày kết thúc */
 Gia_cuoi AS (
     SELECT
         symbol,
+		Ma_ck,
+		Ma_LH,
         gia_dong_cua,
         ngay_gd AS ngay_gia_cuoi,
 		floorCode
     FROM (
         SELECT
-            g.symbol,
+            case when s.FloorCode IN ('02', '04','03') then s.symbolisin
+ 		when s.FloorCode = '10' then s.symbol 
+ 		else null 
+ 		end symbol,
+ 		case when s.FloorCode IN ('02', '04','03','10') and s.stocktype = '4' then s.underlyingsymbol 
+ 		else s.symbol  
+ 		end Ma_ck,
+ 		s.symbol Ma_LH,
             g.closePrice gia_dong_cua,
             g.tradingdate ngay_gd ,
 			g.floorCode,
+--            cat.industry_name               AS ten_nganh, 			
             ROW_NUMBER() OVER (
                 PARTITION BY g.symbol
                 ORDER BY g.tradingdate DESC
             ) AS rn
-        FROM tmp_jad_stockinfor_eod g
-        WHERE TO_DATE(g.tradingdate, 'DD/MM/YYYY') <= :den_ngay
+        FROM uat_mdds_stg.tmp_jad_stockinfor_eod g
+--		LEFT JOIN uat_ids_stg.company_profiles cp
+--        	ON cp.equity_ticker    = s.symbol  and cp.ds_snpst_dt = DATE '2026-08-05'
+--    	LEFT JOIN uat_ids_stg.categories cat
+--        	ON cat.id           = cp.category_l1_id
+        WHERE date_format(TO_DATE(g.tradingdate, 'yyyy-MM-dd'), 'yyyyMMdd') <= :Den_ngay
     )
     WHERE rn = 1
+--    and symbol = 'ACM'
 )
-,Top_giam_gia AS (
+,Top_tang_gia AS (
     SELECT
         gc.symbol,
         gc.floorcode,
@@ -17027,11 +17243,13 @@ Gia_cuoi AS (
         ) AS phan_tram_thay_doi
     FROM Gia_cuoi gc
     JOIN Gia_dau gd
-        ON gd.symbol = gc.symbol
-    WHERE gc.gia_dong_cua < gd.gia_dau
+        ON gd.symbol = gc.Ma_LH
+--    WHERE 1=1
 )
+--select * from Top_giam_gia
+--where symbol = 'ACM';
 /* Tổng khối lượng giao dịch trong khoảng lọc */
-KHGD AS (
+,KHGD AS (
     SELECT
     symbol,
     SUM(kl) AS tong_kl
@@ -17040,22 +17258,24 @@ FROM (
         t.symbol,
         SUM(CASE WHEN t.MARKET_ID IN ('STK')
                   AND t.BOARD_TYPE  NOT IN ('T1','T2','T3','T4','T6')
-             THEN CAST(REPLACE(t.EXECUTION_VOLUME, ',', '') AS DECIMAL(38,2))) AS kl
-    FROM uat_ordertrade_stg.trade_book_hose t
+             THEN CAST(REPLACE(t.EXECUTION_VOLUME, ',', '') AS DECIMAL(38,2)) ELSE 0 END) AS kl
+    FROM uat_hose_stg.trade_book t
     WHERE date_format(TO_DATE(t.trade_date, 'yyyy-MM-dd'), 'yyyyMMdd')
-          BETWEEN :Tu_ngay AND :Đen_ngay
+          BETWEEN :Tu_ngay AND :Den_ngay
       AND t.market_id = 'STK'
+      group by t.symbol
     UNION ALL
     SELECT
         t.issue_code AS symbol,
         SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX')
                   AND t.BOARD_ID NOT IN ('T1','T2','T3','T4','T6')
              THEN t.TRADE_QUANTITY                                    ELSE 0 END) AS kl
-    FROM uat_ordertrade_stg.trade_book_hnx t
-    WHERE date_format(TO_DATE(t.trade_date, 'yyyy-MM-dd'), 'yyyyMMdd')
-          BETWEEN :Tu_ngay AND :Đen_ngay
+    FROM uat_hnx_stg.trade_book t
+    WHERE t.trade_date 
+          BETWEEN :Tu_ngay AND :Den_ngay
       AND t.market_id IN ('STX', 'UPX')
-)
+      group by t.issue_code
+      )
 GROUP BY symbol
 ),
 /* KLLH gần nhất có hiệu lực tại ngày kết thúc */
@@ -17071,10 +17291,11 @@ KLLH_asof AS (
                 PARTITION BY t.ticker_symbol
                 ORDER BY TO_DATE(t.snapshot_date, 'yyyy-MM-dd') DESC
             ) AS rn
-        FROM uat_vsdc_stg.outstanding_shares  t
+        FROM uat_vsdc_ods.outstanding_shares  t
         WHERE 1=1
-          AND TO_DATE(t.ds_snpst_dt, 'yyyy-MM-dd') <= :den_ngay
-    )
+--        and ticker_symbol = 'CCL'
+          AND date_format(t.snapshot_date , 'yyyyMMdd') <= :Den_ngay
+          )
     WHERE rn = 1
 )
 ,Von_hoa AS (
@@ -17089,7 +17310,7 @@ KLLH_asof AS (
         END AS von_hoa
     FROM Gia_cuoi gc
     LEFT JOIN KLLH_asof k
-        ON k.symbol = gc.symbol
+        ON k.symbol = gc.Ma_LH
 )
 /* BƯỚC 1:
    Xác định đúng 1 company_data cho mỗi NNT + kỳ:
@@ -17226,7 +17447,7 @@ Chitiet_DN AS (
     WHERE chi_tieu IS NOT NULL
     GROUP BY company_profile_id, equity_ticker, equity_listing_exch, category_l1_id, report_year, report_quarter
 )
---select * from Chitiet_DN;
+--select * from Chitiet_DN
 --where equity_ticker = 'DC4';
 ,LNST4Q as 
 (
@@ -17251,7 +17472,7 @@ FROM (
 		ROW_NUMBER() OVER ( PARTITION BY company_profile_id ORDER BY report_year DESC, report_quarter DESC ) AS rn1
 	from Chitiet_DN ct
 	where report_quarter in (1,2,3,4)
-	and date_format(ngay_ket_thuc, 'yyyyMMdd') <= :Ngay_gd
+	and date_format(ngay_ket_thuc, 'yyyyMMdd') <= :Den_ngay
 --	AND date_format(TO_DATE(Ngay_ket_thuc, 'yyyy-MM-dd'), 'yyyyMMdd')  <= :Ngay_gd
 --	AND report_year in (:p_year)
 --	AND report_quarter in (:p_quarter)
@@ -17282,7 +17503,7 @@ FROM (
 		ROW_NUMBER() OVER ( PARTITION BY company_profile_id ORDER BY report_year DESC, report_quarter DESC ) AS rn1
 	from Chitiet_DN ct
 	where report_quarter in (1,2,3,4)
-	and date_format(TO_DATE(Ngay_ket_thuc, 'yyyy-MM-dd'), 'yyyyMMdd')  <= :Ngay_gd
+	and date_format(TO_DATE(Ngay_ket_thuc, 'yyyy-MM-dd'), 'yyyyMMdd')  <= :Den_ngay
 	)
 WHERE rn1=1
 group by 
@@ -17297,7 +17518,7 @@ SELECT
     stt,
     ma,
     san,
-    nganh,
+--    nganh,
     tong_kl,
     gia_dong_cua,
     thay_doi,
@@ -17305,6 +17526,7 @@ SELECT
     von_hoa,
     pe,
     pb
+    from 
 	(
     SELECT
         ROW_NUMBER() OVER (
@@ -17313,15 +17535,12 @@ SELECT
                 tg.symbol
         ) AS stt,
         tg.symbol AS ma,
-
         CASE
             WHEN tg.floorcode = '10' THEN 'HOSE'
             WHEN tg.floorcode = '02' THEN 'HNX'
             WHEN tg.floorcode = '04' THEN 'UPCOM'
             ELSE tg.floorcode
         END AS san,
-
-        ng.industry_name AS nganh,
         kh.tong_kl,
         tg.gia_dong_cua,
         tg.gia_dong_cua - tg.gia_dau AS thay_doi,
@@ -17329,31 +17548,20 @@ SELECT
         vh.von_hoa,
         ROUND(vh.von_hoa / NULLIF(lt.lnst_ttm, 0), 2) AS pe,
         ROUND(vh.von_hoa / NULLIF(vm.vcsh, 0), 2) AS pb
-    FROM Top_giam_gia tg
-    LEFT JOIN KHGD kh
+    FROM Top_tang_gia  tg
+    LEFT JOIN KHGD kh 
         ON kh.symbol = tg.symbol
     LEFT JOIN Von_hoa vh
         ON vh.symbol = tg.symbol
-    LEFT JOIN Nganh ng
-        ON ng.equity_ticker = tg.symbol
-    LEFT JOIN LNST_TTM lt
+    LEFT JOIN LNST4Q lt
         ON lt.equity_ticker = tg.symbol
-    LEFT JOIN VCSH_moi_nhat vm
+    LEFT JOIN VCSH vm
         ON vm.equity_ticker = tg.symbol
+        where tg.gia_dong_cua <> 0 
+        and tg.gia_dau <> 0
 )
-
 WHERE stt <= :top_n
-ORDER BY stt;
-""
-
-
-
-
-
-
-
-
-",,,,Done,Dữ liệu tĩnh,
+ORDER BY stt;",,,,Done,Dữ liệu tĩnh,
 19,,"Top tăng giá theo dạng bảng số liệu theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Bộ chỉ số thị trường/ bộ chỉ số ngành,,Dashboard,Chiều,Trùng,Mã CK,MDDS,,,,Done,Thông tin thị trường,JAD_MARKETINFOR,indexName,"MARKETCODE IN ('HOSE','UPCOM','HNX')
 chỉ số ngành: 
 MARKETCODE NOT IN ('HOSE','UPCOM','HNX')",,,,,,,Done,Dữ liệu tĩnh,
@@ -19303,7 +19511,399 @@ WHERE s.FloorCode IN ('10','02','04', ' 03')   -- HOSE, HNX, UPCOM
  FROM IDS.categories c
  WHERE c.active_flg = 1
  ORDER BY c.industry_cd"," -- Lưu ý: Cần xác nhận tên cột industry_cd, industry_name trong bảng IDS.categories
- -- (sheet câu hỏi phân hệ ghi nhận bảng này có 10 ngành IDS, không phải 21 ngành KT)",,,,,Done,Dữ liệu tĩnh,
+ -- (sheet câu hỏi phân hệ ghi nhận bảng này có 10 ngành IDS, không phải 21 ngành KT)","WITH
+/* Giá đóng cửa phiên gần nhất tại hoặc trước ngày kết thúc */
+Gia_cuoi AS (  
+        SELECT
+            case when s.FloorCode IN ('02', '04','03') then s.symbolisin
+ 		when s.FloorCode = '10' then s.symbol 
+ 		else null 
+ 		end symbol,
+ 		case when s.FloorCode IN ('02', '04','03','10') and s.stocktype = '4' then s.underlyingsymbol 
+ 		else s.symbol  
+ 		end Ma_ck,
+ 		s.symbol Ma_LH,
+            TO_DATE(s.tradingdate, 'yyyy-MM-dd') AS ngay_gd,
+            s.floorcode,
+            s.closeprice AS gia_dong_cua,
+			s.change					Thay_doi,
+            CASE
+        WHEN s.reference IS NULL OR s.reference = 0 THEN NULL
+        ELSE ROUND((s.change / s.reference) * 100, 2)
+    END                              AS pct_thay_doi
+        FROM uat_mdds_stg.tmp_jad_stockinfor_eod  s		
+	WHERE date_format(TO_DATE(s.tradingdate, 'yyyy-MM-dd'), 'yyyyMMdd') = :den_ngay
+),
+/* KLLH gần nhất có hiệu lực tại ngày kết thúc */
+KLLH_asof AS (
+    SELECT
+        symbol,
+        so_luong_cp_luu_hanh
+    FROM (
+        SELECT
+            t.ticker_symbol AS symbol,
+            t.outstanding_shares AS so_luong_cp_luu_hanh,
+            ROW_NUMBER() OVER (
+                PARTITION BY t.ticker_symbol
+                ORDER BY TO_DATE(t.snapshot_date, 'yyyy-MM-dd') DESC
+            ) AS rn
+        FROM uat_vsdc_ods.outstanding_shares  t
+        WHERE 1=1
+          AND date_format(TO_DATE(t.snapshot_date, 'yyyy-MM-dd'), 'yyyyMMdd') <= :den_ngay
+    )
+    WHERE rn = 1
+)
+,Von_hoa AS (
+    SELECT
+        gc.symbol,
+        gc.gia_dong_cua AS gia_cuoi,
+        k.so_luong_cp_luu_hanh AS kllh,
+        CASE
+            WHEN gc.gia_dong_cua IS NOT NULL
+             AND k.so_luong_cp_luu_hanh IS NOT NULL
+            THEN gc.gia_dong_cua * k.so_luong_cp_luu_hanh
+        END AS von_hoa
+    FROM Gia_cuoi gc
+    LEFT JOIN KLLH_asof k
+        ON k.symbol = gc.Ma_LH
+)
+,Giao_dich_NN_goc AS (
+    -- HOSE: Market ID thực tế dùng 'STK', 'STO', 'UPX'
+    SELECT
+    t.SYMBOL                                                                AS symbol,
+--    date_format(to_date(t.TRADE_DATE, 'yyyy-MM-dd'), 'yyyyMMdd'),
+    SUM(CASE WHEN t.MARKET_ID IN ('STK')
+             THEN t.EXECUTION_VOLUME                    ELSE 0 END)        AS tong_kl,
+    SUM(CASE WHEN t.MARKET_ID IN ('STK')
+                  AND t.BUY_FOREIGNER_INVESTOR_TYPE IN ('10','20')
+             THEN t.EXECUTION_VOLUME                    ELSE 0 END)        AS kl_nn_mua,
+    SUM(CASE WHEN t.MARKET_ID IN ('STK')
+                  AND t.SELL_FOREIGNER_INVESTOR_TYPE IN ('10','20')
+             THEN t.EXECUTION_VOLUME                    ELSE 0 END)        AS kl_nn_ban,
+    SUM(CASE WHEN t.MARKET_ID IN ('STK')
+                  AND t.BUY_FOREIGNER_INVESTOR_TYPE IN ('10','20')
+             THEN t.EXECUTION_Value                  ELSE 0 END)        AS gt_nn_mua,
+    SUM(CASE WHEN t.MARKET_ID IN ('STK')
+                  AND t.SELL_FOREIGNER_INVESTOR_TYPE IN ('10','20')
+             THEN t.EXECUTION_Value                    ELSE 0 END)        AS gt_nn_ban
+FROM uat_hose_stg.trade_book t
+WHERE 1=1
+--	and symbol = 'SHB' 
+   AND date_format(TO_DATE(t.trade_date, 'yyyy-MM-dd'), 'yyyyMMdd')
+          BETWEEN :tu_ngay AND :den_ngay
+GROUP BY t.SYMBOL
+union all 
+SELECT
+    t.ISSUE_CODE                                                            AS symbol,
+    SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX')
+             THEN t.TRADE_QUANTITY                                    ELSE 0 END) AS tong_kl,
+    SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX')
+                  AND t.BUY_FOREIGN_INVESTOR_TYPE_CODE IN ('10','20')
+             THEN t.TRADE_QUANTITY                                    ELSE 0 END) AS kl_nn_mua,
+    SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX')
+                  AND t.SELL_FOREIGN_INVESTOR_TYPE_CODE IN ('10','20')
+             THEN t.TRADE_QUANTITY                                    ELSE 0 END) AS kl_nn_ban,
+    SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX')
+                  AND t.BUY_FOREIGN_INVESTOR_TYPE_CODE IN ('10','20')
+             THEN t.TRADE_QUANTITY  * trade_price                               ELSE 0 END) AS gt_nn_mua,
+    SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX')
+                  AND t.SELL_FOREIGN_INVESTOR_TYPE_CODE IN ('10','20')
+             THEN t.TRADE_QUANTITY * trade_price                                 ELSE 0 END) AS gt_nn_ban
+ from uat_hnx_stg.trade_book t
+ where 1=1 
+AND t.trade_date BETWEEN :tu_ngay AND :den_ngay
+group by  t.ISSUE_CODE
+),
+NDTNN AS (
+    SELECT
+        symbol,
+        SUM(kl_nn_mua) AS kl_mua,
+        SUM(kl_nn_ban) AS kl_ban,
+        SUM(kl_nn_mua) - SUM(kl_nn_ban) AS kl_rong,
+        SUM(gt_nn_mua) AS gt_mua,
+        SUM(gt_nn_ban) AS gt_ban,
+        SUM(gt_nn_mua) - SUM(gt_nn_ban) AS gt_rong
+    FROM Giao_dich_NN_goc
+    GROUP BY symbol
+)
+--select * from NDTNN;
+/* BƯỚC 1:
+   Xác định đúng 1 company_data cho mỗi NNT + kỳ:
+   - company_data phải APPROVED
+   - Ưu tiên loại báo cáo: HN -> TH -> ME -> RI
+   - Trong cùng loại báo cáo: lấy submission_date mới nhất
+*/
+,Company_data_chuan AS (
+    SELECT
+        company_profile_id,
+        report_year,
+        report_quarter,
+        company_data_id,
+        form_cd, form_tp,
+        submission_date
+    FROM (
+        SELECT
+            cd.company_profile_id,
+            cd.report_year,
+            cd.report_quarter,
+            cd.id AS company_data_id,
+            f.form_cd,
+			substr(f.form_cd,1,2) as form_tp,
+            cd.submission_date,
+            ROW_NUMBER() OVER (PARTITION BY cd.company_profile_id, cd.report_year, cd.report_quarter
+                ORDER BY CASE 	WHEN f.form_cd LIKE 'HN%' THEN 1
+								WHEN f.form_cd LIKE 'TH%' THEN 2
+								WHEN f.form_cd LIKE 'ME%' THEN 3
+								WHEN f.form_cd LIKE 'RI%' THEN 4
+							END, cd.submission_date DESC) AS rn
+        FROM UAT_IDS_STG.company_data cd
+        JOIN UAT_IDS_STG.forms f ON f.id = cd.form_id AND f.news_type_cd = 'DINH_KY'
+        WHERE cd.news_status_cd = 'APPROVED'
+          AND cd.ds_snpst_dt = DATE '2026-08-05'
+          AND f.ds_snpst_dt = DATE '2026-08-05'
+    )
+    WHERE rn = 1
+--    AND report_year in (:p_year)
+--	AND report_quarter in (:p_quarter)
+),
+/* =========================================================
+   BƯỚC 2: tính các chỉ tiêu theo từng DN, từng kỳ
+   - Từ các kỳ hợp lệ ở trên, lấy chỉ tiêu trong DATA
+   - DATA join bằng: company_profile_id + report_year + report_quarter
+   - Điều kiện FINANCIAL_STATEMENT_CD = form_tp
+   - Cùng chỉ tiêu: lấy create_date mới nhất
+   ========================================================= */
+Chitiet_DN AS (
+    SELECT
+        company_profile_id,
+        equity_ticker,
+        equity_listing_exch,
+        category_l1_id,
+        report_year,
+        report_quarter,
+		Case when report_quarter = 1 then to_date ('31-03-'||report_year , 'dd-MM-yyyy')
+			when report_quarter = 2 then to_date ('30-06-'||report_year , 'dd-MM-yyyy')
+			when report_quarter = 3 then to_date ('30-09-'||report_year , 'dd-MM-yyyy')
+			when report_quarter = 4 then to_date ('31-12-'||report_year , 'dd-MM-yyyy') 
+			end as Ngay_ket_thuc,
+        SUM(CASE WHEN chi_tieu = 'VCSH' THEN data_value END) AS VCSH,
+        SUM(CASE WHEN chi_tieu = 'LNST' THEN data_value END) AS LNST,
+        SUM(CASE WHEN chi_tieu = 'DOANH_THU' THEN data_value END) AS DOANH_THU
+    FROM (
+        SELECT
+            rn, company_profile_id, equity_ticker, equity_listing_exch, category_l1_id,
+            report_year, report_quarter,
+            CASE
+                WHEN col_desc = '1' AND report_cd LIKE 'BCDKT%'
+                    AND ((upper(enterprise_type_cd)='DN' AND row_desc='400')
+                      OR (upper(enterprise_type_cd)='BH' AND row_desc='400')
+                      OR (upper(enterprise_type_cd)='TD' AND row_desc='500')) THEN 'VCSH'
+                WHEN col_desc = '1' AND report_cd LIKE 'BCKQKD%'
+                    AND ((upper(enterprise_type_cd)='DN' AND row_desc='60')
+                      OR (upper(enterprise_type_cd)='BH' AND row_desc='60')
+                      OR (upper(enterprise_type_cd)='TD' AND row_desc='21')) THEN 'LNST'
+                WHEN col_desc = '1' AND report_cd LIKE 'BCKQKD%'
+                    AND ((upper(enterprise_type_cd)='DN' AND row_desc='10')
+                      OR (upper(enterprise_type_cd)='BH' AND row_desc='10')
+                      OR (upper(enterprise_type_cd)='TD' AND row_desc='03')) THEN 'DOANH_THU'
+            END AS chi_tieu,
+            data_value
+        FROM (
+            SELECT x.*,
+                   ROW_NUMBER() OVER (
+                       PARTITION BY x.company_profile_id, x.report_year, x.report_quarter, x.row_id, x.col_id
+                       ORDER BY x.updated_date DESC, x.created_date DESC, x.data_id DESC
+                   ) AS rn
+            FROM (
+                SELECT
+                    cdc.company_profile_id,
+                    cp.equity_ticker,
+                    cp.equity_listing_exch,
+                    cp.category_l1_id,
+                    rc.enterprise_type_cd,
+                    cdc.report_year,
+                    cdc.report_quarter,
+                    rc.report_cd,
+                    rc2.id AS col_id,
+                    rc2.col_desc,
+                    rr.id AS row_id,
+                    rr.row_desc,
+                    d.data_value,
+                    d.created_date,
+                    d.updated_date,
+                    d.id AS data_id
+                FROM Company_data_chuan cdc
+                JOIN UAT_IDS_STG.company_profiles cp
+                  ON cp.id = cdc.company_profile_id
+                JOIN UAT_IDS_STG.data d
+                  ON d.company_profile_id = cdc.company_profile_id
+                 AND d.report_year = cdc.report_year
+                 AND d.report_quarter = cdc.report_quarter
+                JOIN UAT_IDS_STG.report_catalog rc
+                  ON rc.id = d.report_catalog_id
+                 AND cdc.form_tp = rc.FINANCIAL_STATEMENT_CD
+                JOIN UAT_IDS_STG.rrow rr
+                  ON rr.row_cd = d.row_cd
+                 AND rr.report_catalog_id = d.report_catalog_id
+                JOIN UAT_IDS_STG.rcol rc2
+                  ON rc2.col_cd = d.col_cd
+                 AND rc2.report_catalog_id = d.report_catalog_id
+                WHERE 1=1
+                and cp.ds_snpst_dt = DATE '2026-08-05'
+                  AND d.ds_snpst_dt = DATE '2026-08-05'
+                  AND rc.ds_snpst_dt = DATE '2026-08-05'
+                  AND rr.ds_snpst_dt = DATE '2026-08-05'
+                  AND rc2.ds_snpst_dt = DATE '2026-08-05'
+                  AND rc2.col_desc IN ('1','2')
+            ) x
+        ) t
+        WHERE rn = 1
+    ) q
+    WHERE chi_tieu IS NOT NULL
+    GROUP BY company_profile_id, equity_ticker, equity_listing_exch, category_l1_id, report_year, report_quarter
+)
+--select * from Chitiet_DN;
+--where equity_ticker = 'DC4';
+,LNST4Q as 
+(
+SELECT 
+company_profile_id,
+        equity_ticker,
+        equity_listing_exch,
+        category_l1_id,
+		CASE WHEN COUNT(*) = 4 THEN SUM(LNST) END AS lnst_ttm
+--        Sum(LNST)
+--		, count(1)
+--		,report_year
+--        ,report_quarter
+FROM (
+	select company_profile_id,
+        equity_ticker,
+        equity_listing_exch,
+        category_l1_id,
+        report_year,
+        report_quarter,
+		LNST,
+		ROW_NUMBER() OVER ( PARTITION BY company_profile_id ORDER BY report_year DESC, report_quarter DESC ) AS rn1
+	from Chitiet_DN ct
+	where report_quarter in (1,2,3,4)
+	and date_format(ngay_ket_thuc, 'yyyyMMdd') <= :den_ngay
+--	AND date_format(TO_DATE(Ngay_ket_thuc, 'yyyy-MM-dd'), 'yyyyMMdd')  <= :Ngay_gd
+--	AND report_year in (:p_year)
+--	AND report_quarter in (:p_quarter)
+	)
+WHERE rn1 <=4
+group by 
+        company_profile_id,
+        equity_ticker
+        ,equity_listing_exch,
+        category_l1_id
+)
+--select * from LNST4Q;
+,VCSH as 
+(
+SELECT company_profile_id,
+        equity_ticker,
+        equity_listing_exch,
+        category_l1_id,
+		sum (VCSH) VCSH
+FROM (
+	select company_profile_id,
+        equity_ticker,
+        equity_listing_exch,
+        category_l1_id,
+        report_year,
+        report_quarter,
+		VCSH,
+		ROW_NUMBER() OVER ( PARTITION BY company_profile_id ORDER BY report_year DESC, report_quarter DESC ) AS rn1
+	from Chitiet_DN ct
+	where report_quarter in (1,2,3,4)
+	and date_format(TO_DATE(Ngay_ket_thuc, 'yyyy-MM-dd'), 'yyyyMMdd')  <= :den_ngay
+	)
+WHERE rn1=1
+group by 
+--report_year,
+--        report_quarter,
+        company_profile_id,
+        equity_ticker
+        ,equity_listing_exch,
+        category_l1_id
+)
+SELECT
+    stt,
+    ma,
+    san,
+    gia_dong_cua,
+    thay_doi,
+    pct_thay_doi,
+    kl_mua,
+    kl_ban,
+    kl_rong,
+    gt_mua,
+    gt_ban,
+    gt_rong,
+    von_hoa,
+    pe,
+    pb
+    from 
+    (
+    SELECT
+        ROW_NUMBER() OVER (
+            ORDER BY
+                CASE
+                    WHEN :loai_top = 'MUA_RONG' THEN nd.gt_rong
+                END DESC NULLS LAST,
+                CASE
+                    WHEN :loai_top = 'BAN_RONG' THEN nd.gt_rong
+                END DESC NULLS LAST,
+                nd.symbol
+        ) AS stt,
+--        ROW_NUMBER() OVER (
+--            ORDER BY
+--                CASE
+--                    WHEN :loai_top = 'MUA_RONG' THEN nd.kl_rong
+--                END DESC NULLS LAST,
+--                CASE
+--                    WHEN :loai_top = 'BAN_RONG' THEN nd.kl_rong
+--                END DESC NULLS LAST,
+--                nd.symbol
+--        ) AS stt,
+        nd.symbol AS ma,
+        CASE
+            WHEN gc.floorcode = '10' THEN 'HOSE'
+            WHEN gc.floorcode = '02' THEN 'HNX'
+            WHEN gc.floorcode = '04' THEN 'UPCOM'
+            ELSE gc.floorcode
+        END AS san,
+        gc.gia_dong_cua,
+        gc.thay_doi,
+        pct_thay_doi,
+        nd.kl_mua,
+        nd.kl_ban,
+        nd.kl_rong,
+        nd.gt_mua,
+        nd.gt_ban,
+        nd.gt_rong,
+        vh.von_hoa,
+        ROUND(vh.von_hoa / NULLIF(lt.lnst_ttm, 0), 2) AS pe,
+        ROUND(vh.von_hoa / NULLIF(vm.vcsh, 0), 2) AS pb
+    FROM NDTNN nd
+    LEFT JOIN Gia_cuoi gc
+        ON gc.symbol = nd.symbol
+    LEFT JOIN Von_hoa vh
+        ON vh.symbol = nd.symbol
+    LEFT JOIN LNST4Q lt
+        ON lt.equity_ticker = nd.symbol
+    LEFT JOIN VCSH vm
+        ON vm.equity_ticker = nd.symbol
+    WHERE (:loai_top = 'MUA_RONG' AND nd.gt_rong > 0)
+       OR (:loai_top = 'BAN_RONG' AND nd.gt_rong < 0)
+--       AND
+--       (:loai_top = 'MUA_RONG' AND nd.kl_rong > 0)
+--       OR (:loai_top = 'BAN_RONG' AND nd.kl_rong < 0)
+)
+WHERE stt <= :top_n
+ORDER BY stt;",,,,Done,Dữ liệu tĩnh,
 21,,"Top nhà đầu tư nước ngoài  theo dạng bảng số liệu theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Sàn,,Dashboard,Chiều,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,floorcode," '10'=HOSE, '02'=HNX, '04'=UPCOM",,,,,,,Done,Dữ liệu tĩnh,
 21,,"Top nhà đầu tư nước ngoài  theo dạng bảng số liệu theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Bộ chỉ số thị trường/ bộ chỉ số ngành,,Dashboard,Chiều,Trùng,Mã CK,MDDS,,,,Done,Thông tin thị trường,JAD_MARKETINFOR,indexName,"MARKETCODE IN ('HOSE','UPCOM','HNX')
 chỉ số ngành: 
@@ -21745,17 +22345,26 @@ LNST AS (
  FROM IDS.categories c
  WHERE c.active_flg = 1
  ORDER BY c.industry_cd"," -- Lưu ý: Cần xác nhận tên cột industry_cd, industry_name trong bảng IDS.categories
- -- (sheet câu hỏi phân hệ ghi nhận bảng này có 10 ngành IDS, không phải 21 ngành KT)","-- ── 2. SỔ LỆNH – UNION HOSE + HNX (ĐÃ SỬA LỖI) ──────────────────────────────
-With
+ -- (sheet câu hỏi phân hệ ghi nhận bảng này có 10 ngành IDS, không phải 21 ngành KT)","With
 MDDS AS (
+select 
+x.*,     
+NNKD               AS ten_nganh
+from 
+(
     SELECT
-            s.symbol,
+            case when s.FloorCode IN ('02', '04','03') then s.symbolisin
+ 		when s.FloorCode = '10' then s.symbol 
+ 		else null 
+ 		end symbol,
+ 		case when s.FloorCode IN ('02', '04','03','10') and s.stocktype = '4' then s.underlyingsymbol 
+ 		else s.symbol  
+ 		end Ma_ck,
+ 		s.symbol Ma_LH,
             TO_DATE(s.tradingdate, 'yyyy-MM-dd') AS ngay_gd,
             s.floorcode AS floor_code,
-			cat.industry_name               AS ten_nganh, 
             s.closeprice AS gia_dong_cua,
 			s.change					Thay_doi,
---			idx.indexcode   AS bo_chi_so,
             CASE
         WHEN s.reference IS NULL OR s.reference = 0 THEN NULL
         ELSE ROUND((s.change / s.reference) * 100, 2)
@@ -21768,16 +22377,35 @@ MDDS AS (
             END AS ten_san,
            s.reference AS gia_tham_chieu
         FROM uat_mdds_stg.tmp_jad_stockinfor_eod  s
-		LEFT JOIN uat_ids_stg.company_profiles cp
-        	ON cp.equity_ticker    = s.symbol and cp.ds_snpst_dt = DATE '2026-08-05'
-    	LEFT JOIN uat_ids_stg.categories cat
-        	ON cat.id           = cp.category_l1_id
-        	AND cat.active_flg  = 1 and cat.ds_snpst_dt = DATE '2026-08-05'
 	WHERE date_format(TO_DATE(s.tradingdate, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
-	          AND s.floorcode IN ('10', '02', '04', '03')
-	          AND s.stocktype <> '1'
-),
-SCPLH AS (
+	    AND s.FloorCode   IN ('10', '02', '04')
+--        and s.symbol = 'A32'
+  		AND  NOT  (
+   			 (s.floorcode = '02'  AND s.stocktype  in (1,4))
+    			OR
+   			 (s.floorcode = '10' AND s.stocktype = 1)
+				)
+)x 
+left join 
+	(
+select equity_ticker, company_name_vn ,
+        INDUSTRY_CD, NNKD,
+        equity_listing_exch,
+        ds_snpst_dt
+        from 
+        (select cp.*,  c.INDUSTRY_NAME AS NNKD, c.INDUSTRY_CD
+                , row_number() over (partition by cp.equity_ticker order by cp.id ASC) as rn 
+                from uat_ids_stg.company_profiles_v1 cp
+                left join uat_ids_stg.categories_v1 c on cp.category_l1_id = c.id and date_format( c.ds_snpst_dt, 'yyyyMMdd') = :Ngay_gd
+                where date_format( cp.ds_snpst_dt, 'yyyyMMdd') = :Ngay_gd
+                and delete_flg <> 1
+        )
+where rn = 1
+) IDS on IDS.equity_ticker = x.Ma_ck
+ AND date_format( IDS.ds_snpst_dt, 'yyyyMMdd') =  :Ngay_gd
+)
+
+,SCPLH AS (
     SELECT
         symbol,
         so_luong_cp_luu_hanh
@@ -21789,7 +22417,7 @@ SCPLH AS (
                 PARTITION BY t.ticker_symbol
                 ORDER BY TO_DATE(t.snapshot_date, 'yyyy-MM-dd') DESC
             ) AS rn
-        FROM uat_vsdc_stg.outstanding_shares  t
+        FROM uat_vsdc_ods.outstanding_shares  t
         WHERE 1=1
           AND date_format(TO_DATE(t.snapshot_date, 'yyyy-MM-dd'), 'yyyyMMdd') <= :Ngay_gd
     )
@@ -21811,7 +22439,7 @@ SCPLH AS (
     SUM(CASE WHEN t.MARKET_ID IN ('STK')
                   AND t.BOARD_TYPE IN ('T1','T2','T3','T4','T6')
              THEN CAST(REPLACE(t.EXECUTION_VALUE, ',', '') AS DECIMAL(38,2))
-             ELSE 0 END)                                                                                                      AS tong_gt_tt,
+             ELSE 0 END)                                                    AS tong_gt_tt,
     SUM(CASE WHEN t.MARKET_ID IN ('STK')
                   AND t.BUY_FOREIGNER_INVESTOR_TYPE IN ('10','20')
              THEN t.EXECUTION_VOLUME                    ELSE 0 END)        AS kl_nn_mua,
@@ -21824,7 +22452,7 @@ SCPLH AS (
     SUM(CASE WHEN t.MARKET_ID IN ('STK')
                   AND t.SELL_FOREIGNER_INVESTOR_TYPE IN ('10','20')
              THEN t.EXECUTION_Value                    ELSE 0 END)        AS gt_nn_ban
-FROM uat_ordertrade_stg.trade_book_hose t
+FROM uat_hose_stg.trade_book t
 WHERE 1=1
 --	and symbol = 'SHB' 
    AND date_format(to_date(t.TRADE_DATE, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
@@ -21854,9 +22482,9 @@ SELECT
     SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX')
                   AND t.SELL_FOREIGN_INVESTOR_TYPE_CODE IN ('10','20')
              THEN t.TRADE_QUANTITY * trade_price                                 ELSE 0 END) AS gt_nn_ban
- from uat_ordertrade_stg.trade_book_hnx t
+ from uat_hnx_stg.trade_book t
  where 1=1 
-AND date_format(to_date(t.TRADE_DATE, 'yyyy-MM-dd'), 'yyyyMMdd')  = :Ngay_gd 
+AND t.TRADE_DATE  = :Ngay_gd 
 group by  t.ISSUE_CODE
 )
 ,Von_hoa AS (
@@ -21866,11 +22494,14 @@ group by  t.ISSUE_CODE
         s.so_luong_cp_luu_hanh,
         c.gia_dong_cua * s.so_luong_cp_luu_hanh           AS von_hoa
     FROM MDDS c
-    Left JOIN SCPLH s ON c.symbol = s.symbol
+    Left JOIN SCPLH s ON c.Ma_LH = s.symbol
 )
 SELECT
+	c.symbol                              AS Ma_ck,    
     c.ten_san,
---    c.ten_nganh,
+    c.ten_nganh,
+    c.gia_dong_cua,
+    c.pct_thay_doi,
         ROUND(
         (
             SUM(c.gia_dong_cua * COALESCE(vh.so_luong_cp_luu_hanh, 0)) OVER (PARTITION BY c.ten_nganh)
@@ -21878,11 +22509,8 @@ SELECT
             - 1
         ) * 100,
         2
-    ) AS pct_thay_doi_nganh,
-    c.symbol                              AS Ma_ck,                            
+    ) AS pct_thay_doi_nganh,                      
     :Ngay_gd                             AS ngay_gd,
-    c.gia_dong_cua,
-    c.pct_thay_doi,
     COALESCE(sl.tong_kl,   0)            AS tong_kl,
     COALESCE(sl.tong_gt,   0)            AS tong_gt,
     COALESCE(sl.kl_nn_mua, 0)            AS kl_nn_mua,
@@ -21894,11 +22522,12 @@ SELECT
     vh.von_hoa                                                               
 FROM MDDS c
 LEFT JOIN so_lenh sl ON sl.symbol = c.symbol                                  
-LEFT JOIN Von_hoa  vh ON vh.symbol = c.symbol                             
+LEFT JOIN Von_hoa  vh ON vh.symbol = c.Ma_LH                             
 where 1=1 
---and ten_san not in  ('HNX')
-and c.symbol =  'LDG'
-ORDER BY c.floor_code, c.symbol
+and ten_nganh is null 
+--and ten_san not in  ('HNX','UPCOM')
+--and c.symbol =  'LDG'
+ORDER BY c.symbol ASC
 
 
 

@@ -2,12 +2,15 @@
 -- GSTT Flat Tables — CREATE
 -- Module: Giám sát Thị trường (GSTT)
 -- Generated: Phase 3 LLD Datamart
--- 3 bảng: 3 fact
+-- 4 bảng: 4 fact
 -- (Fact Market Index Snapshot dùng chung QLKD — flat table đã có ở QLKD, không CREATE lại)
 -- Sửa 2026-08-03: bảng cũ (Fact Public Company Shareholding) đã bị loại bỏ —
 -- xem ghi chú chi tiết cuối file
 -- Sửa 2026-08-26: bổ sung bảng #3 (Fact Security Trading Intraday, Nhóm 44 —
 -- Biểu đồ phân tích kỹ thuật, K_GSTT_95-99 chuyển PENDING → READY)
+-- Sửa 2026-09-11: bổ sung bảng #4 (Fact Foreign Trading Minute Snapshot, Nhóm 25 —
+-- K_GSTT_78-80, Resolved 2026-09-04/O_GSTT_8 nhưng bị bỏ sót khỏi Phase 3 tới nay;
+-- phát hiện qua rà soát sau khi sửa join-key sổ lệnh↔MDDS/filter thỏa thuận)
 -- ============================================================
 
 
@@ -31,10 +34,10 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_fct_stock_portfolio_snpst_flat ON CLUST
     total_val                           Nullable(Decimal(23,2)) COMMENT 'Tổng giá trị giao dịch khớp lệnh cổ phiếu/CCQ 3 sàn, loại trừ phái sinh và trái phiếu',
     total_derivative_vol                Nullable(Int64)         COMMENT 'Tổng khối lượng giao dịch phái sinh',
     total_derivative_val                Nullable(Decimal(23,2)) COMMENT 'Tổng giá trị giao dịch phái sinh',
-    total_negotiated_vol                Nullable(Int64)         COMMENT 'Tổng khối lượng giao dịch thỏa thuận',
-    total_negotiated_val                Nullable(Decimal(23,2)) COMMENT 'Tổng giá trị giao dịch thỏa thuận',
+    total_negotiated_vol                Nullable(Int64)         COMMENT '[SỬA FILTER 2026-09-11] Tổng khối lượng giao dịch thỏa thuận — filter Market Id Code IN (UPX,STX,STK) AND Board Type Code IN (T1-T4,T6,R1), đóng O_GSTT_20',
+    total_negotiated_val                Nullable(Decimal(23,2)) COMMENT '[SỬA FILTER 2026-09-11] Tổng giá trị giao dịch thỏa thuận — filter Market Id Code IN (UPX,STX,STK) AND Board Type Code IN (T1-T4,T6,R1), đóng O_GSTT_20',
     foreign_net_vol                     Nullable(Int64)         COMMENT 'Khối lượng mua ròng của nhà đầu tư nước ngoài',
-    foreign_net_negotiated_vol          Nullable(Int64)         COMMENT '[MỚI 2026-09-09] Khối lượng mua ròng của NĐT nước ngoài, giao dịch thỏa thuận (Board Type IN T1-T4,T6,R1) — khác foreign_net_vol (khớp lệnh). BA STT 1 dòng con 21, K_GSTT_144, xem O_GSTT_20',
+    foreign_net_negotiated_vol          Nullable(Int64)         COMMENT '[MỚI 2026-09-09, SỬA FILTER 2026-09-11] Khối lượng mua ròng của NĐT nước ngoài, giao dịch thỏa thuận (Market Id Code IN (UPX,STX,STK) AND Board Type IN T1-T4,T6,R1) — khác foreign_net_vol (khớp lệnh). BA STT 1 dòng con 21, K_GSTT_144, đóng O_GSTT_20',
     outstanding_share_quantity          Nullable(Int64)         COMMENT 'Số cổ phiếu đang lưu hành — pc_share_statistics_hstr, bản ghi ACTIVE gần nhất <= ngày GD (lookback, sửa 2026-09-08, O_GSTT_2)',
     revenue                             Nullable(Decimal(23,2)) COMMENT 'Doanh thu — point-in-time theo Ky_bao_cao (rule GSĐC, cập nhật 2026-09-08)',
     net_profit_after_tax                Nullable(Decimal(23,2)) COMMENT 'Lợi nhuận sau thuế — point-in-time theo Ky_bao_cao (rule GSĐC, cập nhật 2026-09-08)',
@@ -219,6 +222,43 @@ ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
 ORDER BY (assumeNotNull(cdr_dt), security_trading_snpst_dim_id, trading_tms)
 COMMENT 'Flat table — Fact Security Trading Intraday × Calendar Date Dimension × Security Trading Snapshot Dimension'
+;
+
+
+-- ============================================================
+-- 4. FACT: gstt_fct_foreign_trading_min_snpst_flat
+--    [BỔ SUNG 2026-09-11] Thiết kế thật đã Resolved 2026-09-04 (O_GSTT_8, K_GSTT_78-80)
+--    nhưng bị bỏ sót khỏi Phase 3 — bổ sung lại cho khớp Attributes/Detail Mapping/HLD
+--    đã có sẵn từ trước, không phải thiết kế mới.
+--    Dòng tiền NĐT nước ngoài theo phút — 1 row / mã CK (Symbol) / Trade Minute
+--    Grain: nguồn Securities Trade (per-trade, GROUP BY phút) — khác Fact Security
+--    Trading Intraday (nguồn Security Trading Snapshot, per-tick MDDS)
+--    Joins: Calendar Date (cdr_dt_dim_id JOIN) × Security Trading Snapshot Dimension
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.gstt_fct_foreign_trading_min_snpst_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FACT Foreign Trading Minute Snapshot
+    security_trading_snpst_dim_id       String                  COMMENT 'FK → Security Trading Snapshot Dimension',
+    cdr_dt_dim_id                       String                  COMMENT 'FK → Calendar Date Dimension',
+    trade_minute_tms                    Nullable(DateTime)      COMMENT 'Mốc phút xác định grain (DD — grain component), DATE_TRUNC(minute, Trade Timestamp)',
+    foreign_buy_val_at_min              Nullable(Decimal(23,2)) COMMENT 'Giá trị mua của NĐT nước ngoài trong phút (K_GSTT_78)',
+    foreign_sell_val_at_min             Nullable(Decimal(23,2)) COMMENT 'Giá trị bán của NĐT nước ngoài trong phút (K_GSTT_79)',
+
+    -- From: CALENDAR DATE DIMENSION
+    cdr_dt                              Nullable(Date)          COMMENT 'Ngày giao dịch — từ Calendar Date Dimension',
+
+    -- From: SECURITY TRADING SNAPSHOT DIMENSION
+    symbol                               Nullable(String)        COMMENT 'Mã chứng khoán — từ Security Trading Snapshot Dimension',
+    security_full_nm                    Nullable(String)        COMMENT 'Tên chứng khoán — từ Security Trading Snapshot Dimension',
+    floor_code                          Nullable(String)        COMMENT 'Mã sàn — từ Security Trading Snapshot Dimension',
+    stock_tp_code                       Nullable(String)        COMMENT 'Loại chứng khoán — từ Security Trading Snapshot Dimension',
+    stock_tp_nm                         Nullable(String)        COMMENT 'Tên loại chứng khoán — từ Security Trading Snapshot Dimension',
+    foreign_trading_min_src_stm_code    Nullable(String)        COMMENT 'Mã hệ thống nguồn — từ Security Trading Snapshot Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
+ORDER BY (assumeNotNull(cdr_dt), security_trading_snpst_dim_id, trade_minute_tms)
+COMMENT 'Flat table — Fact Foreign Trading Minute Snapshot × Calendar Date Dimension × Security Trading Snapshot Dimension'
 ;
 
 

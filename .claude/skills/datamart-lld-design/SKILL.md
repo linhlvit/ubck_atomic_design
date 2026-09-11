@@ -497,6 +497,12 @@ Nếu phát hiện `datamart_column` hoặc `datamart_table` dùng từ viết t
 4. **Tuyệt đối không sửa cột `source_entity`/`atomic_table`/`source_attribute`/`atomic_column`** trong Attributes, hay `source_atomic_table`/`source_atomic_column` trong `datamart_model.yaml` — đây là tên Atomic gốc (read-only), kể cả khi trùng chuỗi ký tự với tên Datamart bị đổi (VD: đổi `pc_code` Datamart-side nhưng KHÔNG đổi `pc_code` xuất hiện trong `source_atomic_column: "public_company.pc_code"`)
 5. Sau khi sửa: chạy lại SELF-REVIEW đầy đủ (Phase 1 — đủ 10 TC + Phase 2 TC5/TC6 module-level) để xác nhận số dòng/cấu trúc không đổi trước và sau khi đổi tên
 
+> ⛔ **QUY TẮC BẮT BUỘC — MỞ RỘNG NGOÀI PHẠM VI ĐẶT TÊN: MỌI sửa `etl_logic` (join-key, filter, công thức) vào 1 file Attributes detail đã tồn tại PHẢI đồng bộ ngay `datamart_attributes.csv` — không riêng lỗi đặt tên vật lý:**
+> - 5 bước trên viết cho lỗi **đặt tên** (Kịch bản C — naming) — nhưng nguyên tắc "sửa module file thì phải đồng bộ master" áp dụng cho **MỌI loại Kịch bản C**, kể cả sửa lỗi *logic nghiệp vụ* (sai điều kiện JOIN, thiếu filter, sai công thức) không đổi tên bảng/cột nào.
+> - **Bài học thực tế (module GSTT, 2026-09-11):** Qua review phát hiện + sửa 2 bug join-key/filter trực tiếp vào `Datamart/lld/GSTT/DTM_GSTT_fct_stock_portfolio_snpst.csv` — chỉ sửa file module, KHÔNG đồng bộ `datamart_attributes.csv`. Vì tên bảng/cột không đổi (chỉ nội dung `etl_logic` đổi), TC7 (bản cũ) không phát hiện được, và bug fix được báo cáo "hoàn tất" trong khi master registry vẫn chứa logic sai. Chỉ lộ ra khi user hỏi lại ở lượt hội thoại sau.
+> - **Quy tắc bắt buộc:** Sau BẤT KỲ Edit nào vào `etl_logic`/`description` của 1 file `Datamart/lld/{MODULE}/DTM_{MODULE}_*.csv` đã tồn tại (không phân biệt sinh mới hay sửa lỗi, không phân biệt lối vào là Phase 1 hay bàn giao từ `datamart-review`) — **ngay lập tức** đồng bộ dòng tương ứng trong `datamart_attributes.csv` bằng chuỗi `etl_logic` **giống hệt**, rồi chạy TC7 Sub-check E (xem mục TC7 bên dưới) để xác nhận khớp — **trước khi báo cáo hoàn tất cho human**, không đợi tới lần chạy SELF-REVIEW đầy đủ tiếp theo.
+> - Không có ngoại lệ "sửa nhỏ", "chỉ đổi 1 điều kiện AND" — mọi thay đổi nội dung `etl_logic`, dù nhỏ, đều phải đồng bộ ngay.
+
 ---
 
 ### Bước 4 — SELF-REVIEW trước khi trình bày kết quả
@@ -778,8 +784,36 @@ Nếu FAIL → sửa trước khi trình bày.
   "
   ```
 - **Lưu ý khi đọc kết quả `detail_mapping:logic_missing_ref`:** Có thể là false positive hợp lệ khi cột dùng pattern đặc biệt không có prefix bảng (VD: `src_stm_code` filter viết dạng `"src_stm_code = 'VALUE'"` không kèm `<table>.`, theo rule L11) — xác nhận từng trường hợp trước khi kết luận lỗi, không tự động sửa hàng loạt.
-- Báo: `✅ TC7 PASS: 0 issue giữa 5 nguồn` hoặc `❌ TC7 FAIL: [danh sách issue theo nguồn]` — phân loại rõ nguồn nào lệch, giá trị nào đúng (anchor = `datamart_attributes.csv`).
-- Nếu FAIL → xác định nguồn đang sai (không phải anchor — anchor luôn đúng vì là nguồn sự thật) → sửa theo Kịch bản C → **đồng thời `grep -rn "tên_cũ" Datamart/hld/DTM_{MODULE}_HLD.md` để rà soát HLD thủ công** (không tự động qua TC7) → chạy lại TC7 → báo kết quả.
+
+- **Sub-check E — NỘI DUNG `etl_logic`/`description` khớp giữa master và module file (bắt buộc, không chỉ tên bảng/cột):**
+  - **Mục đích:** 4 script trên (entity_map/column_map) chỉ so khớp **tên vật lý** (`datamart_table`, `datamart_column`) — hoàn toàn KHÔNG so nội dung `etl_logic`. Một bug fix sửa **logic JOIN/filter** (không đổi tên bảng/cột nào) tại `Datamart/lld/{MODULE}/DTM_{MODULE}_*.csv` sẽ **PASS** Sub-check A-D dù `datamart_attributes.csv` (anchor) vẫn giữ nguyên logic SAI/CŨ — che giấu hoàn toàn tình trạng lệch.
+  - **Bài học thực tế (module GSTT, 2026-09-11):** Qua `datamart-review` phát hiện + sửa 2 bug join-key (HNX/UPCOM/FDS phải join `securities_trade` qua `isin_code` thay vì `symbol`; filter "thỏa thuận" thiếu `market_id_code`) trực tiếp vào `Datamart/lld/GSTT/DTM_GSTT_fct_stock_portfolio_snpst.csv` và `..._fct_foreign_trading_min_snpst.csv` — sửa đúng, chạy TC5 (cấu trúc CSV) PASS, báo cáo hoàn tất. **Nhưng quên đồng bộ `datamart_attributes.csv`** — file master vẫn giữ y nguyên 2 bug đó suốt nhiều lượt hội thoại sau, chỉ bị phát hiện khi user chủ động hỏi lại "flat table không sửa gì à" và Data Modeler tự rà soát chéo. TC7 (bản cũ, chỉ Sub-check A-D) đã chạy nhưng **không hề bắt được** vì tên bảng/cột không đổi — chỉ nội dung `etl_logic` khác.
+  - **Quy tắc:** Với mọi `(datamart_entity, datamart_attribute)` unique xuất hiện ở CẢ `datamart_attributes.csv` (anchor) VÀ file Attributes detail module — `etl_logic` (và nên kèm `description`) của 2 bên PHẢI **giống hệt ký tự** (byte-for-byte sau khi trim whitespace 2 đầu). Khác nhau dù chỉ 1 điều kiện `AND` là FAIL, không có khái niệm "khác nhỏ chấp nhận được".
+  - Chạy script (mở rộng Nguồn 2 ở script TC7 chính — thêm so sánh `etl_logic`):
+    ```bash
+    python -c "
+    import csv, glob, sys
+    sys.stdout.reconfigure(encoding='utf-8')
+    with open('Datamart/lld/datamart_attributes.csv', encoding='utf-8-sig') as f:
+        rows = list(csv.reader(f)); header = rows[0]; idx = {h:i for i,h in enumerate(header)}
+    etl_map = {(r[idx['datamart_entity']], r[idx['datamart_attribute']]): r[idx['etl_logic']].strip() for r in rows[1:]}
+    fails = []
+    for fp in glob.glob('Datamart/lld/{MODULE}/DTM_{MODULE}_*.csv'):
+        with open(fp, encoding='utf-8-sig') as f:
+            rows2 = list(csv.reader(f)); h2 = rows2[0]; i2 = {h:i for i,h in enumerate(h2)}
+        for r in rows2[1:]:
+            key = (r[i2['datamart_entity']], r[i2['datamart_attribute']])
+            mod_logic = r[i2['etl_logic']].strip()
+            if key in etl_map and etl_map[key] != mod_logic:
+                fails.append((fp, key, 'MASTER_STALE_OR_MODULE_STALE'))
+    print(f'Tổng lệch etl_logic: {len(fails)}')
+    for f_ in fails: print(' ', f_)
+    "
+    ```
+  - Nếu FAIL → xác định bên nào đúng (thường: bản vừa sửa gần nhất là đúng, bên còn lại là bản cũ chưa đồng bộ) → copy y nguyên `etl_logic` (và `description` liên quan) sang bên còn thiếu — KHÔNG viết lại bằng tay lần 2 (dễ gõ sai lại), dùng chính xác chuỗi đã xác nhận đúng.
+  - **BẮT BUỘC chạy Sub-check E này ngay sau MỌI lần Edit vào 1 file Attributes detail đã tồn tại — không phân biệt lý do sửa (bug fix qua `datamart-review`, sửa trực tiếp giữa hội thoại theo yêu cầu tức thời của user, đổi tên theo Kịch bản C, hay bất kỳ Edit nào khác) và không phân biệt file đó được sinh mới hay đã có từ trước.** Đây là quy tắc riêng, không phụ thuộc "đang ở Phase 1 sinh file mới" — khác với TC1-TC6/TC8/TC9 vốn chủ yếu áp dụng khi *sinh file mới*.
+- Báo: `✅ TC7 PASS: 0 issue giữa 5 nguồn (bao gồm Sub-check E — etl_logic khớp)` hoặc `❌ TC7 FAIL: [danh sách issue theo nguồn]` — phân loại rõ nguồn nào lệch, giá trị nào đúng (anchor = `datamart_attributes.csv`, TRỪ khi chính anchor là bên đang chứa bản cũ/sai — xem Sub-check E).
+- Nếu FAIL → xác định nguồn đang sai (không mặc định anchor luôn đúng nếu vừa phát hiện qua Sub-check E rằng module file mới sửa còn anchor thì chưa) → sửa theo Kịch bản C → **đồng thời `grep -rn "tên_cũ" Datamart/hld/DTM_{MODULE}_HLD.md` để rà soát HLD thủ công** (không tự động qua TC7) → chạy lại TC7 (đủ cả Sub-check A-E) → báo kết quả.
 
 **TC8 — Tiền tố/hậu tố `datamart_table` khớp `table_type` (bắt buộc dùng Bash tool):**
 
@@ -1180,7 +1214,12 @@ POST-CHECK (sau khi sinh):
 □ Không có cột nào trong Attributes.csv bị bỏ sót trong CREATE TABLE (fact/operational columns)
 □ Không có cột nào trong CREATE TABLE (fact/operational section) mà KHÔNG có trong Attributes.csv — cột thừa phải xóa
 □ Dim JOIN: mọi dim được JOIN phải có FK tương ứng trong Attributes.csv — dim không có FK thì không JOIN, không lấy cột
-□ Orphan Check (LLD ↔ Flat Table): Đối chiếu danh sách bảng trong `Datamart/lld/{MODULE}/` và `Datamart/flat-table/{MODULE}/01_create_*.sql`. Mọi bảng fact/operational trong LLD PHẢI có bảng flat tương ứng trong file 01. Nếu phát hiện bảng draft trong LLD không có flat table tương ứng (và không phải Dimension thuần), BẮT BUỘC thực hiện quy trình dọn dẹp Deprecation / Cleanup để xóa sạch file CSV, xóa dòng trong master attributes, và xóa entity trong datamart_model.yaml.
+□ Orphan Check (LLD ↔ Entities ↔ Flat Table) — 3 CHIỀU, không chỉ LLD↔Flat Table: Đối chiếu danh sách bảng fact/operational xuất hiện ở CẢ 3 nơi: (a) `Datamart/lld/{MODULE}/` (Attributes), (b) `Datamart/hld/DTM_{MODULE}_Entities.csv`/`.md` (Phase 2), (c) `Datamart/flat-table/{MODULE}/01_create_*.sql` (Phase 3). Một bảng có mặt ở (a) nhưng thiếu ở (b) và/hoặc (c) là orphan — dù KPI của nó đã READY trong HLD và có Detail Mapping (Phase 1 + Phase 2 Detail Mapping "xong" KHÔNG đồng nghĩa Phase 2 Entities + Phase 3 cũng đã xong).
+  - **Khi phát hiện orphan, xác định đúng 1 trong 2 nhánh trước khi hành động — KHÔNG mặc định là nhánh dọn dẹp:**
+    - **Nhánh A — Bảng còn giá trị, chỉ thiếu Phase 2 Entities/Phase 3 (bỏ sót, không phải đã hủy):** dấu hiệu nhận biết — có ≥1 KPI READY trong HLD tham chiếu bảng này, có dòng trong Detail Mapping, `datamart_model.yaml` vẫn có entry. → **HOÀN TẤT các phần còn thiếu** (thêm vào Entities.csv/.md nếu thiếu, sinh CREATE+POPULATE nếu thiếu Phase 3) — KHÔNG xóa gì cả.
+    - **Nhánh B — Bảng thật sự đã bị hủy/gộp/thay thế:** dấu hiệu nhận biết — không còn KPI nào READY tham chiếu bảng này trong HLD hiện hành (đã bị deprecate/gộp sang bảng khác theo ghi chú lịch sử). → chạy quy trình **QUY TRÌNH DEPRECATION VÀ DỌN DẸP** bên dưới.
+    - **Bài học thực tế (GSTT, phát hiện 2026-09-11):** `Fact Foreign Trading Minute Snapshot` (K_GSTT_78-80, Resolved 2026-09-04/O_GSTT_8) đã có Attributes + Detail Mapping + HLD READY đầy đủ, nhưng bị bỏ sót khỏi Entities.csv/.md VÀ khỏi Phase 3 flat table hơn 1 tuần — không ai phát hiện vì: (1) Orphan Check khi đó chỉ so LLD↔Flat Table (2 chiều, thiếu Entities), (2) Orphan Check chỉ chạy trong POST-CHECK ngay sau khi module vừa sinh SQL Phase 3 batch đầu — module GSTT đã "xong Phase 3" từ trước, nên khi Fact này được thêm SAU đó (để giải quyết 1 Open Issue phát sinh giữa chừng, không qua lại Phase 0→3 đầy đủ), không có điểm kích hoạt nào chạy lại Orphan Check.
+  - **Trigger bắt buộc — không chỉ chạy 1 lần sau khi sinh SQL Phase 3 cho cả module:** Bất kỳ khi nào 1 Fact/Dimension MỚI được thêm vào Attributes (`datamart_attributes.csv` + file module) — dù đi qua flow Phase 0→3 đầy đủ từ đầu, hay được bổ sung giữa chừng để giải quyết 1 Open Issue/KPI mới phát sinh sau khi module đã "hoàn tất Phase 3" trước đó — PHẢI chạy ngay Orphan Check 3 chiều cho riêng entity đó, không đợi lần chạy Phase 3 tiếp theo của cả module. "Module đã Phase 3 xong" không miễn trừ khỏi quy tắc này.
 □ Sau khi xuất 2 file: DỪNG chờ human duyệt → ❌ KHÔNG tự kết thúc skill khi chưa có xác nhận
 ```
 
