@@ -283,7 +283,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlcb_opr_securities_offering_360_profile_fla
     capital_src                          Nullable(String)        COMMENT 'Đối tượng (thực tế) — giữ lại, không còn KPI dùng (xem result_single_object)',
     result_rpt_dt                        Nullable(Date)          COMMENT '[ĐỔI NGUỒN 2026-09-10 lần 2] Thời điểm báo cáo (nguồn Result, trước là Submission Date trên Offering cha) — dùng ở Nhóm 7',
     plan_single_object                   Nullable(String)        COMMENT '[MỚI 2026-09-10] Đối tượng cấp phép — thay CASE WHEN cũ, dùng ở Nhóm 9',
-    offering_end_dt                      Nullable(Date)          COMMENT '[MỚI 2026-09-10] Ngày kết thúc chào bán (kế hoạch) — chưa có KPI dùng',
+    offering_end_dt                      Nullable(Date)          COMMENT '[SỬA NGUỒN 2026-09-10] Ngày kết thúc đợt chào bán (thực tế, nguồn Result) — dùng ở Nhóm 10 (K_QLCB_69)',
     result_single_object                 Nullable(String)        COMMENT '[MỚI 2026-09-10] Đối tượng kết quả — thay CASE WHEN cũ, dùng ở Nhóm 10',
     foreign_collected_amt                Nullable(Decimal(23,2)) COMMENT '[MỚI 2026-09-10] Giá trị chào bán cho NĐTNN — dùng ở Nhóm 10',
     src_stm_code                         String                  COMMENT 'Mã hệ thống nguồn — hardcode IDS.SECURITIES_OFFERING_PLAN'

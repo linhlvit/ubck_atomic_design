@@ -352,7 +352,7 @@ CONTENTITEMINDEX",CONTENTITEMID,"WHERE CONTENTITEMINDEX.DISPLAYTEXT = 'Ban Quả
       AND cte.ngay_gui_ho_so BETWEEN
             TO_DATE(:tu_ngay,  'YYYYMMDD')
         AND TO_DATE(:den_ngay, 'YYYYMMDD')",,check chéo với TTHC,Done,Dữ liệu tĩnh,P
-6,,Hồ sơ đăng ký chào bán/Bảng chi tiết hồ sơ chào bán & phát hành,Tên Cá nhân/Tổ chức,Tên Cá nhân/Tổ chức,Dashboard,Chỉ tiêu cơ sở,Dễ,ngày,TTHC,x,x,,Done,,"DOCUMENT
+6,,Hồ sơ đăng ký chào bán/Bảng chi tiết hồ sơ chào bán & phát hành,Hình thức chào bán,Hình thức chào bán/phát hành chứng khoán mà doanh nghiệp lựa chọn để huy động vốn từ thị trường.,Dashboard,Chỉ tiêu cơ sở,Dễ,ngày,TTHC,x,x,,Done,,"DOCUMENT
 CONTENTITEMINDEX",DISPLAYTEXT,"WHERE CONTENTITEMINDEX.DISPLAYTEXT = 'Ban Quản lý chào bán chứng khoán'
       AND cte.ngay_gui_ho_so BETWEEN
             TO_DATE(:tu_ngay,  'YYYYMMDD')
@@ -408,7 +408,7 @@ cte_filtered AS (
 chi_tiet AS (
     SELECT
         te.DISPLAYTEXT                                  AS Ten_to_chuc_ca_nhan,
-        cf.Ma_cp                                                                                AS MA_CO_PHIEU,
+        cf.Ma_cp										AS MA_CO_PHIEU,
         ht.DISPLAYTEXT                                  AS hinh_thuc_chao_ban,
         CASE
             WHEN ts.DISPLAYTEXT IN (
@@ -455,8 +455,6 @@ chi_tiet AS (
      AND te.PUBLISHED = 1
 )
 SELECT
-        Ten_to_chuc_ca_nhan,
-        MA_CO_PHIEU,
     hinh_thuc_chao_ban,
     TO_CHAR(TO_DATE(:tu_ngay, 'YYYYMMDD'), 'DD/MM/YYYY') || '-' 
     || TO_CHAR(TO_DATE(:den_ngay, 'YYYYMMDD'), 'DD/MM/YYYY') as  ky_bao_cao,
@@ -466,24 +464,14 @@ SELECT
     COUNT(CASE WHEN nhom_trang_thai = 'Hồ sơ bị từ chối'         THEN 1 END) AS so_luong_ho_so_bi_tu_choi,
     COUNT(*)                                                                  AS tong_ho_so
 FROM chi_tiet
-GROUP BY hinh_thuc_chao_ban,Ten_to_chuc_ca_nhan,MA_CO_PHIEU;",,,,
-6,,Hồ sơ đăng ký chào bán/Bảng chi tiết hồ sơ chào bán & phát hành,Mã Cổ Phiếu,Mã cổ phiếu,Dashboard,Chỉ tiêu cơ sở,Dễ,ngày,TTHC,x,x,,Done,,"DOCUMENT
-CONTENTITEMINDEX",CONTENTITEMID,"WHERE CONTENTITEMINDEX.DISPLAYTEXT = 'Ban Quản lý chào bán chứng khoán'
-      AND cte.ngay_gui_ho_so BETWEEN
-            TO_DATE(:tu_ngay,  'YYYYMMDD')
-        AND TO_DATE(:den_ngay, 'YYYYMMDD')",,,,,
-6,,Hồ sơ đăng ký chào bán/Bảng chi tiết hồ sơ chào bán & phát hành,Hình thức chào bán,Hình thức chào bán/phát hành chứng khoán mà doanh nghiệp lựa chọn để huy động vốn từ thị trường.,Dashboard,Chỉ tiêu cơ sở,Dễ,ngày,TTHC,x,x,,Done,,"DOCUMENT
-CONTENTITEMINDEX",DISPLAYTEXT,"WHERE CONTENTITEMINDEX.DISPLAYTEXT = 'Ban Quản lý chào bán chứng khoán'
-      AND cte.ngay_gui_ho_so BETWEEN
-            TO_DATE(:tu_ngay,  'YYYYMMDD')
-        AND TO_DATE(:den_ngay, 'YYYYMMDD')",,check chéo với TTHC,Done,Dữ liệu tĩnh,P
-6,,Hồ sơ đăng ký chào bán/Bảng chi tiết hồ sơ chào bán & phát hành,Năm,Thời gian hồ sơ đăng ký,Dashboard,Chỉ tiêu cơ sở,Dễ,ngày,TTHC,x,x,,Done,,"DOCUMENT
+GROUP BY hinh_thuc_chao_ban;",check chéo với TTHC,Done,Dữ liệu tĩnh,P
+6,,Hồ sơ đăng ký chào bán/Bảng chi tiết hồ sơ chào bán & phát hành,Ngày gửi hồ sơ,ngày gửi hồ sơ,Dashboard,Chỉ tiêu cơ sở,Dễ,,,,,,Done,,"DOCUMENT
 CONTENTITEMINDEX",CONTENT,"WHERE CONTENTITEMINDEX.DISPLAYTEXT = 'Ban Quản lý chào bán chứng khoán'
       AND cte.ngay_gui_ho_so BETWEEN
             TO_DATE(:tu_ngay,  'YYYYMMDD')
-        AND TO_DATE(:den_ngay, 'YYYYMMDD')",,check chéo với TTHC,Done,Dữ liệu tĩnh,P
-6,,Hồ sơ đăng ký chào bán/Bảng chi tiết hồ sơ chào bán & phát hành,Số lượng hồ sơ đăng ký,Số lượng hồ sơ đăng ký chào bán,Dashboard,Chỉ tiêu cơ sở,Dễ,ngày,TTHC,x,x,,Done,,"DOCUMENT
-CONTENTITEMINDEX",CONTENTITEMID,"WHERE CONTENTITEMINDEX.DISPLAYTEXT = 'Ban Quản lý chào bán chứng khoán'
+        AND TO_DATE(:den_ngay, 'YYYYMMDD')",,,,,
+6,,Hồ sơ đăng ký chào bán/Bảng chi tiết hồ sơ chào bán & phát hành,Số lượng hồ sơ đang chờ tiếp nhận ,Số lượng hồ sơ đang chờ tiếp nhận ,Dashboard,Chỉ tiêu cơ sở,Dễ,ngày,TTHC,x,x,,Done,,"DOCUMENT
+CONTENTITEMINDEX",CONTENT,"WHERE CONTENTITEMINDEX.DISPLAYTEXT = 'Ban Quản lý chào bán chứng khoán'
       AND cte.ngay_gui_ho_so BETWEEN
             TO_DATE(:tu_ngay,  'YYYYMMDD')
         AND TO_DATE(:den_ngay, 'YYYYMMDD')",,check chéo với TTHC,Done,Dữ liệu tĩnh,P
@@ -493,6 +481,11 @@ CONTENTITEMINDEX",CONTENTITEMID,"WHERE CONTENTITEMINDEX.DISPLAYTEXT = 'Ban Quả
             TO_DATE(:tu_ngay,  'YYYYMMDD')
         AND TO_DATE(:den_ngay, 'YYYYMMDD')",,check chéo với TTHC,Done,Dữ liệu tĩnh,P
 6,,Hồ sơ đăng ký chào bán/Bảng chi tiết hồ sơ chào bán & phát hành,Số lượng hồ sơ đã cấp phép,Số lượng hồ sơ đăng ký chào bán đã được cấp phép,Dashboard,Chỉ tiêu cơ sở,Dễ,ngày,TTHC,x,x,,Done,,"DOCUMENT
+CONTENTITEMINDEX",CONTENTITEMID,"WHERE CONTENTITEMINDEX.DISPLAYTEXT = 'Ban Quản lý chào bán chứng khoán'
+      AND cte.ngay_gui_ho_so BETWEEN
+            TO_DATE(:tu_ngay,  'YYYYMMDD')
+        AND TO_DATE(:den_ngay, 'YYYYMMDD')",,check chéo với TTHC,Done,Dữ liệu tĩnh,P
+6,,Hồ sơ đăng ký chào bán/Bảng chi tiết hồ sơ chào bán & phát hành,Số lượng hồ sơ quá hạn bổ sung,Số lượng hồ sơ đăng ký chào bán bị quá hạn bổ sung,Dashboard,Chỉ tiêu cơ sở,Dễ,ngày,TTHC,x,x,,Done,,"DOCUMENT
 CONTENTITEMINDEX",CONTENTITEMID,"WHERE CONTENTITEMINDEX.DISPLAYTEXT = 'Ban Quản lý chào bán chứng khoán'
       AND cte.ngay_gui_ho_so BETWEEN
             TO_DATE(:tu_ngay,  'YYYYMMDD')
