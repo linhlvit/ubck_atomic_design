@@ -45,19 +45,24 @@ COMMENT 'Flat table — Fact Securities Company Status Snapshot × Calendar Date
 
 
 -- ============================================================
--- 2. FACT: qlkd_fct_securities_company_service_registration_flat
---    Fact Securities Company Service Registration
---    Joins: Calendar Date × Securities Company Dimension × Service Type Dimension
+-- 2. FACT: qlkd_fct_securities_company_compliance_report_snpst_flat
+--    Fact Securities Company Compliance Report Snapshot
+--    Grain: 1 CTCK × 1 loại báo cáo (ADHOC/PERIODIC) × 1 kỳ/ngày sự vụ
+--    UNION 2 nguồn Atomic độc lập: sc_adhoc_report + sc_periodic_report
+--    Joins: Calendar Date (snpst_dt_dim_id) × Securities Company Dimension
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_service_registration_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_compliance_report_snpst_flat ON CLUSTER 'my_cluster'
 (
-    -- From: FACT Fact Securities Company Service Registration
-    registration_dt_dim_id          String                  COMMENT 'FK ngày đăng ký dịch vụ',
-    securities_company_dim_id       String                  COMMENT 'FK CTCK',
-    service_tp_dim_id             String                  COMMENT 'FK dịch vụ',
+    -- From: FACT Fact Securities Company Compliance Report Snapshot
+    snpst_dt_dim_id                 String                  COMMENT 'FK ngày snapshot — chung cho cả 2 bộ ADHOC/PERIODIC',
+    securities_company_dim_id       String                  COMMENT 'FK CTCK nộp báo cáo',
+    report_tp_code                  String                  COMMENT 'Loại báo cáo — ADHOC (đột xuất) hoặc PERIODIC (định kỳ)',
+    report_id                       String                  COMMENT 'Định danh báo cáo (degenerate) — dùng làm khóa COUNT DISTINCT',
+    rpt_submission_status_code      Nullable(String)        COMMENT 'Mã trạng thái nộp báo cáo — giá trị riêng theo bộ ADHOC/PERIODIC',
+    fct_src_stm_code                 String                  COMMENT 'Mã hệ thống nguồn — SCMS_SC_FIRM_ADHOC_REPORT hoặc SCMS_SC_FIRM_PERIODIC_REPORT',
 
     -- From: CALENDAR DATE DIMENSION
-    cdr_dt                          Nullable(Date)          COMMENT 'FK ngày đăng ký dịch vụ — từ Calendar Date Dimension',
+    cdr_dt                          Nullable(Date)          COMMENT 'Ngày snapshot — từ Calendar Date Dimension',
 
     -- From: SECURITIES COMPANY DIMENSION
     sc_id                           Nullable(String)        COMMENT 'Business Id CTCK (Atomic surrogate) — từ Securities Company Dimension',
@@ -68,17 +73,12 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_service_registra
     company_status_code             Nullable(String)        COMMENT '7 nhóm trạng thái CTCK — derive CASE/LIKE trên Classification Firm Status Name — LEFT JOIN cl_firm_status — từ Securities Company Dimension',
     is_listed_indicator             Nullable(UInt8)         COMMENT 'Cờ niêm yết trên sàn — từ Securities Company Dimension',
     stock_exchange_nm               Nullable(String)        COMMENT 'Sàn niêm yết (HOSE/HNX/UPCOM) — từ Securities Company Dimension',
-    securities_company_src_stm_code Nullable(String)        COMMENT 'Mã hệ thống nguồn — từ Securities Company Dimension',
-
-    -- From: SERVICE TYPE DIMENSION
-    cl_service_code                 Nullable(String)        COMMENT 'Mã dịch vụ chứng khoán — từ Service Type Dimension',
-    cl_service_nm                   Nullable(String)        COMMENT 'Tên dịch vụ chứng khoán — dùng CASE/LIKE phân loại tại tầng báo cáo — từ Service Type Dimension',
-    service_tp_src_stm_code         Nullable(String)        COMMENT 'Mã hệ thống nguồn — từ Service Type Dimension'
+    securities_company_src_stm_code Nullable(String)        COMMENT 'Mã hệ thống nguồn — từ Securities Company Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
-ORDER BY (assumeNotNull(cdr_dt), securities_company_dim_id, service_tp_dim_id)
-COMMENT 'Flat table — Fact Securities Company Service Registration × Calendar Date × Securities Company Dimension × Service Type Dimension'
+ORDER BY (assumeNotNull(cdr_dt), securities_company_dim_id, report_tp_code, report_id)
+COMMENT 'Flat table — Fact Securities Company Compliance Report Snapshot × Calendar Date × Securities Company Dimension'
 ;
 
 
@@ -226,13 +226,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_securities_company_organization_uni
     decision_dt                     Nullable(Date)          COMMENT 'Ngày thành lập',
     director_nm                     Nullable(String)        COMMENT 'Giám đốc/Trưởng đơn vị — BRANCH dùng Director Name, TRANSACTION_OFFICE/REP_OFFICE dùng Representative Name',
     cl_firm_status_code             Nullable(String)        COMMENT 'Trạng thái pháp lý đơn vị',
-    src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn — 3 giá trị khác nhau theo bộ (SC_FIRM_BRANCH/SC_FIRM_TRANSACTION_OFFICE/SC_FIRM_REP_OFFICE)',
-    margin_trading_svc_ind          String                  COMMENT 'ETL-derived: Y/N — CTCK mẹ có dịch vụ Giao dịch ký quỹ, EXISTS-aggregate qua Securities Company Licensed Service',
-    advance_payment_svc_ind         String                  COMMENT 'ETL-derived: Y/N — CTCK mẹ có dịch vụ Ứng trước tiền bán, EXISTS-aggregate qua Securities Company Licensed Service',
-    custody_svc_ind                 String                  COMMENT 'ETL-derived: Y/N — CTCK mẹ có dịch vụ Lưu ký, EXISTS-aggregate qua Securities Company Licensed Service',
-    derivative_broker_svc_ind       String                  COMMENT 'ETL-derived: Y/N — CTCK mẹ có dịch vụ Môi giới chứng khoán phái sinh, EXISTS-aggregate qua Securities Company Licensed Service',
-    derivative_advisory_svc_ind     String                  COMMENT 'ETL-derived: Y/N — CTCK mẹ có dịch vụ Tư vấn đầu tư chứng khoán phái sinh, EXISTS-aggregate qua Securities Company Licensed Service',
-    derivative_dealing_svc_ind      String                  COMMENT 'ETL-derived: Y/N — CTCK mẹ có dịch vụ Tự doanh chứng khoán phái sinh, EXISTS-aggregate qua Securities Company Licensed Service'
+    src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn — 3 giá trị khác nhau theo bộ (SC_FIRM_BRANCH/SC_FIRM_TRANSACTION_OFFICE/SC_FIRM_REP_OFFICE)'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(decision_dt))

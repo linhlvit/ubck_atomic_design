@@ -50,19 +50,22 @@ WHERE cal.cdr_dt = :etl_date
 
 
 -- ============================================================
--- 2. FACT: qlkd_fct_securities_company_service_registration_flat
---    Grain APPEND (Event log — mỗi ngày chỉ thêm đăng ký MỚI phát sinh, không
---    update lại dòng cũ) — DELETE đúng ngày :etl_date (idempotent re-run,
---    không TRUNCATE) rồi INSERT, giữ nguyên lịch sử các ngày khác.
+-- 2. FACT: qlkd_fct_securities_company_compliance_report_snpst_flat
+--    Grain APPEND (Periodic Snapshot theo ngày sự vụ, UNION 2 nguồn ADHOC/
+--    PERIODIC đã merge tại tầng Datamart Fact) — DELETE đúng ngày :etl_date
+--    (không TRUNCATE) rồi INSERT, giữ nguyên lịch sử các ngày sự vụ khác.
 -- ============================================================
-DELETE FROM datamart.qlkd_fct_securities_company_service_registration_flat ON CLUSTER 'my_cluster'
+DELETE FROM datamart.qlkd_fct_securities_company_compliance_report_snpst_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO datamart.qlkd_fct_securities_company_service_registration_flat
+INSERT INTO datamart.qlkd_fct_securities_company_compliance_report_snpst_flat
 SELECT
-    -- From: FACT Fact Securities Company Service Registration
-    f.registration_dt_dim_id,
+    -- From: FACT Fact Securities Company Compliance Report Snapshot
+    f.snpst_dt_dim_id,
     f.securities_company_dim_id,
-    f.service_tp_dim_id,
+    f.report_tp_code,
+    f.report_id,
+    f.rpt_submission_status_code,
+    f.src_stm_code                  AS fct_src_stm_code,
 
     -- From: CALENDAR DATE DIMENSION
     cal.cdr_dt                      AS cdr_dt,
@@ -76,20 +79,13 @@ SELECT
     sc_dim.company_status_code         AS company_status_code,
     sc_dim.is_listed_indicator         AS is_listed_indicator,
     sc_dim.stock_exchange_nm           AS stock_exchange_nm,
-    sc_dim.src_stm_code                AS securities_company_src_stm_code,
+    sc_dim.src_stm_code                AS securities_company_src_stm_code
 
-    -- From: SERVICE TYPE DIMENSION
-    svc_dim.cl_service_code             AS cl_service_code,
-    svc_dim.cl_service_nm               AS cl_service_nm,
-    svc_dim.src_stm_code                AS service_tp_src_stm_code
-
-FROM datamart.fct_securities_company_service_registration f
+FROM datamart.fct_securities_company_compliance_report_snpst f
 JOIN datamart.cdr_dt_dim cal
-    ON cal.cdr_dt_dim_id = f.registration_dt_dim_id
+    ON cal.cdr_dt_dim_id = f.snpst_dt_dim_id
 LEFT JOIN datamart.securities_company_dim sc_dim
     ON sc_dim.securities_company_dim_id = f.securities_company_dim_id
-LEFT JOIN datamart.service_tp_dim svc_dim
-    ON svc_dim.service_tp_dim_id = f.service_tp_dim_id
 WHERE cal.cdr_dt = :etl_date
 ;
 
@@ -252,13 +248,7 @@ SELECT
     o.decision_dt,
     o.director_nm,
     o.cl_firm_status_code,
-    o.src_stm_code,
-    o.margin_trading_svc_ind,
-    o.advance_payment_svc_ind,
-    o.custody_svc_ind,
-    o.derivative_broker_svc_ind,
-    o.derivative_advisory_svc_ind,
-    o.derivative_dealing_svc_ind
+    o.src_stm_code
 
 FROM datamart.opr_securities_company_organization_unit_profile o
 ;

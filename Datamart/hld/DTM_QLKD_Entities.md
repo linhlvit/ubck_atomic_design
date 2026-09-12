@@ -1,6 +1,6 @@
 # DTM_QLKD_Entities — Star Schema per Nhóm báo cáo
 **Module:** QLKD — Quản lý kinh doanh (Hoạt động CTCK)
-**Phiên bản:** 4.2 — 13/07/2026 (khớp DTM_QLKD_HLD.md v4.2)
+**Phiên bản:** 5.0 — 11/09/2026 (đồng bộ theo `DTM_QLKD_HLD.md` v5.0 — redesign cột T thay cột S; STT33/34/35 hạ PENDING; O_QLKD_20 Superseded → O_QLKD_26 mở rộng; loại bỏ toàn bộ entity PENDING 100% khỏi Entities.csv theo `phase2_entities.md`)
 
 ---
 
@@ -20,32 +20,7 @@ erDiagram
 | Securities Company Dimension | Dimension | new | CTCK — mã, tên, loại hình, trạng thái | 1 CTCK (SCD4A) | — |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày | — |
 
-### Nhóm 2 — Biểu đồ Nghiệp vụ (K_QLKD_14–19) — PENDING
-
-> Atomic entity chưa cover quan hệ N:N CTCK↔nghiệp vụ (`Securities Company.Business Lines` là Text thô chưa parse) — xem O_QLKD_20. Không vẽ Star Schema chi tiết cho block PENDING.
-
-| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
-|---|---|---|---|---|---|
-| Fact Securities Company Business Line Registration (dự kiến) | Fact Event | new | Đăng ký nghiệp vụ kinh doanh chứng khoán per CTCK | 1 CTCK × 1 nghiệp vụ | K_QLKD_14–19 (PENDING) |
-| Business Line Dimension | Dimension | reuse (cl_dim) | Nghiệp vụ kinh doanh chứng khoán — Classification Value scheme SCMS_BUSINESS_LINE | 1 nghiệp vụ (SCD4A) | — |
-
-### Nhóm 3/4 — Biểu đồ Dịch vụ & Dịch vụ phái sinh (K_QLKD_20–29)
-
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Service_Registration : " "
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Service_Registration : " "
-    Service_Type_Dimension ||--o{ Fact_Securities_Company_Service_Registration : " "
-```
-
-| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
-|---|---|---|---|---|---|
-| Fact Securities Company Service Registration | Fact Event | new | Đăng ký dịch vụ CTCK (ký quỹ/ứng trước/lưu ký/phái sinh) | 1 CTCK × 1 dịch vụ × 1 lần đăng ký | K_QLKD_20–29 |
-| Securities Company Dimension | Dimension | new | CTCK — mã, tên, loại hình, trạng thái | 1 CTCK (SCD4A) | — |
-| Service Type Dimension | Dimension | new | Dịch vụ CTCK — Atomic entity Classification Service (entity riêng, không phải cv) | 1 dịch vụ (SCD4A) | — |
-| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày | — |
-
-### Nhóm 5/6/7 — Duy trì điều kiện cấp phép (GPHL/Phái sinh KDCKPS/Phái sinh BTTT) (K_QLKD_30–40)
+### Nhóm 5/6/7 — Duy trì điều kiện cấp phép (GPHL / KDCKPS / BTTT) (K_QLKD_30–40)
 
 ```mermaid
 erDiagram
@@ -59,15 +34,6 @@ erDiagram
 | Securities Company Dimension | Dimension | new | CTCK — mã, tên, loại hình, trạng thái | 1 CTCK (SCD4A) | — |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày | — |
 
-### Nhóm 8/9 — Cơ cấu tài sản / nguồn vốn toàn thị trường (K_QLKD_41–52) — PENDING
-
-> Atomic entity `REPORT_CELL_VALUE` không tồn tại trong track hiện hành (O_QLKD_23) — không vẽ Star Schema chi tiết.
-
-| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
-|---|---|---|---|---|---|
-| Fact Securities Company Financial Structure Snapshot (dự kiến) | Fact Snapshot | new | Chỉ tiêu BCTC toàn thị trường/per CTCK — dùng chung nhiều Nhóm | 1 CTCK × 1 chỉ tiêu BCTC × 1 kỳ | K_QLKD_41–52 (PENDING, xem O_QLKD_23) |
-| Report Indicator Dimension | Dimension | new | Chỉ tiêu báo cáo BCTC | 1 chỉ tiêu (SCD4A) | — |
-
 ### Nhóm 13 — Nguồn vốn tăng thêm (K_QLKD_66–72)
 
 ```mermaid
@@ -80,7 +46,7 @@ erDiagram
 |---|---|---|---|---|---|
 | Fact Securities Company Capital Raising Event | Fact Event | new | Nguồn vốn tăng thêm từ chào bán/phát hành — toàn thị trường theo tháng | 1 đợt chào bán/phát hành hợp lệ (aggregated theo tháng × hình thức tăng vốn) | K_QLKD_66–72 |
 | Offering Form Dimension | Dimension | new | Hình thức tăng vốn — ETL-derived (5 giá trị) | 1 hình thức (SCD4A) | — |
-| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày | — |
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày (role: Result Report Date) | 1 ngày | — |
 
 ### Nhóm 16 — Diễn biến thị trường (K_QLKD_88–91)
 
@@ -96,46 +62,30 @@ erDiagram
 | Market Index Dimension | Dimension | new | Mã/loại index/sản phẩm giao dịch/trạng thái phiên. Dùng chung với NDTNN | 1 combo Market Id + Market Code (SCD4A current-state) | — |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày | — |
 
+> **Nhóm 2/3/4 (Biểu đồ Nghiệp vụ/Dịch vụ/Dịch vụ phái sinh, K_QLKD_14–29) — 100% PENDING**, không vẽ Star Schema. Xem bảng "Bảng PENDING" cuối file.
+> **Nhóm 8/9 + Sub-tab Giám sát hoạt động (Nhóm 11/12/14/15/17/18) + Nhóm 19–27 (K_QLKD_41–65, 73–87, 92–141, trừ K_QLKD_88–91 đã ở Nhóm 16) — 100% PENDING**, không vẽ Star Schema. Xem bảng "Bảng PENDING" cuối file.
+
 ---
 
 ## Tab GIÁM SÁT
 
-### Sub-tab GIÁM SÁT HOẠT ĐỘNG — Nhóm 11/12/14/15/16/17/18 (K_QLKD_59–99) — PENDING
-
-> Toàn bộ dùng chung `Fact Securities Company Financial Structure Snapshot` (xem Nhóm 8/9) — PENDING theo O_QLKD_23. Ngoại lệ K_QLKD_88–91 (Nhóm 16, xem Fact Market Index Snapshot ở trên).
-
-| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
-|---|---|---|---|---|---|
-| Fact Securities Company Financial Structure Snapshot (dự kiến) | Fact Snapshot | new | Reuse từ Nhóm 8/9 — mở rộng VCSH, doanh thu, lợi nhuận, thị phần, margin, ATTC | 1 CTCK × 1 chỉ tiêu BCTC × 1 kỳ | K_QLKD_59–65 (Nhóm 11/12), K_QLKD_73–87, 92–99 (Nhóm 14/15/16/17/18) — PENDING |
-
-### Sub-tab GIÁM SÁT TUÂN THỦ — Nhóm 10 (K_QLKD_53–58) — PENDING
-
-> Atomic entity đã READY (`Member Periodic Report`/`Report Submission Obligation`) — PENDING chỉ do gating dữ liệu động, không phải gap Atomic.
+### Sub-tab GIÁM SÁT TUÂN THỦ — Nhóm 10 (K_QLKD_53–58, K_QLKD_4261–4264)
 
 ```mermaid
 erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Report_Compliance_Snapshot : " "
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Report_Compliance_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Compliance_Report_Snapshot : " "
+    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Compliance_Report_Snapshot : " "
 ```
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fact Securities Company Report Compliance Snapshot | Fact Snapshot | new | Tuân thủ nộp báo cáo định kỳ — PENDING (gating dữ liệu động) | 1 CTCK × 1 biểu mẫu × 1 kỳ nghĩa vụ | K_QLKD_53–58 (PENDING) |
+| Fact Securities Company Compliance Report Snapshot | Fact Snapshot | new | Tuân thủ nộp báo cáo — UNION 2 nguồn độc lập `sc_adhoc_report` (đột xuất) + `sc_periodic_report` (định kỳ), phân biệt bằng Report Type Code | 1 CTCK × 1 loại báo cáo × 1 kỳ/ngày sự vụ | K_QLKD_53–58, K_QLKD_4261–4264 |
 | Securities Company Dimension | Dimension | new | CTCK — mã, tên, loại hình, trạng thái | 1 CTCK (SCD4A) | — |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày | — |
 
 ---
 
 ## Tab HỒ SƠ CTCK 360
-
-### Nhóm 19–27 — Banner tổng quan & Biểu đồ tài chính per CTCK (K_QLKD_100–141) — PENDING
-
-> Toàn bộ tái sử dụng `Fact Securities Company Financial Structure Snapshot` — PENDING theo O_QLKD_23. Nhóm 26/27 (Lịch sử BCTC) dùng thêm `Securities Company Financial Report History` (Tác nghiệp).
-
-| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
-|---|---|---|---|---|---|
-| Fact Securities Company Financial Structure Snapshot (dự kiến) | Fact Snapshot | new | Reuse từ Nhóm 8/9 — banner + cơ cấu tài sản/nguồn vốn/doanh thu per CTCK | 1 CTCK × 1 chỉ tiêu BCTC × 1 kỳ | K_QLKD_100–129 (Nhóm 19–25) — PENDING |
-| Securities Company Financial Report History | Tác nghiệp | new | Lịch sử BCTC — DT/LN/ROA/ROE theo từng kỳ | 1 CTCK × 1 kỳ báo cáo BCTC | K_QLKD_130–141 (Nhóm 26/27) — PENDING |
 
 ### Sub-tab Nhân sự — Nhóm 31 (K_QLKD_155–160)
 
@@ -147,13 +97,18 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Operational Securities Company Compliance History | Tác nghiệp | new | BC nộp + quyết định xử phạt hành chính (READY) + thanh tra/kiểm tra (READY, trừ Chiều ngày PENDING) | 1 CTCK × 1 sự kiện | K_QLKD_188, 197–203 READY; K_QLKD_186–187, 190–196 PENDING |
+| Operational Securities Company Compliance History | Tác nghiệp | new | BC nộp + quyết định xử phạt hành chính (Nhóm 38, một phần READY) + thanh tra/kiểm tra (Nhóm 40, phần lớn READY, trừ Chiều ngày PENDING) | 1 CTCK × 1 sự kiện | K_QLKD_188, 196–202 READY; K_QLKD_186–187, 189–195 PENDING (gating dữ liệu động, Nhóm 38/39) |
 
-### Sub-tab CN, PGD, VPĐD — Nhóm 32/33/34/35/36/37 (K_QLKD_161–185) — Partial READY
+### Sub-tab CN, PGD, VPĐD — Nhóm 32–37 (K_QLKD_161–185) — Partial READY
+
+```mermaid
+erDiagram
+    Securities_Company_Dimension ||--o{ Operational_Securities_Company_Organization_Unit_Profile : " "
+```
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Operational Securities Company Organization Unit Profile | Tác nghiệp | new | CN/PGD/VPĐD — số lượng, dịch vụ chấp thuận (READY); nghiệp vụ N:N, duy trì điều kiện cấp phép (PENDING) | 1 đơn vị × 1 CTCK | K_QLKD_161–164, 171–178, 182–183, 185–186 READY; K_QLKD_165–169, 179–181, 184 PENDING |
+| Operational Securities Company Organization Unit Profile | Tác nghiệp | new | CN/PGD/VPĐD — số lượng theo loại (Nhóm 32, READY), Tên/Địa chỉ/Ngày thành lập/Giám đốc (Nhóm 37, READY) | 1 đơn vị × 1 CTCK | K_QLKD_161–164, 181–182, 184–185 READY; K_QLKD_165–180, 183 PENDING (Nhóm 33/34/35/36 toàn bộ + Nhóm 37 cột Nghiệp vụ — xem O_QLKD_26/O_QLKD_7) |
 
 ---
 
@@ -163,8 +118,7 @@ erDiagram
 
 ```mermaid
 erDiagram
-    Individual_Profile
-    Individual_Related_Party_Network
+    Operational_Individual_Profile ||--o{ Operational_Individual_Related_Party_Network : " "
 ```
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
@@ -194,41 +148,24 @@ erDiagram
 
 ---
 
-
-### Nhóm 10/38/39 — Giám sát tuân thủ & Lịch sử nộp báo cáo CTCK (K_QLKD_53–58d, K_QLKD_186–194)
-
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Compliance_Report_Snapshot : " "
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Compliance_Report_Snapshot : " "
-```
-
-| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
-|---|---|---|---|---|---|
-| Fact Securities Company Compliance Report Snapshot | Fact Snapshot | new | Tình hình nộp báo cáo định kỳ & đột xuất của CTCK (đúng hạn, chậm, chưa nộp, tỷ lệ tuân thủ) | 1 CTCK × 1 loại báo cáo × 1 kỳ/ngày snapshot | K_QLKD_53–58d, K_QLKD_186–194 |
-| Securities Company Dimension | Dimension | new | CTCK — mã, tên, loại hình, trạng thái | 1 CTCK (SCD4A) | — |
-| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày | — |
-
-### Nhóm 8/9/11/12/14/15/18–26 — Chỉ tiêu Tài chính CTCK & Thị trường (K_QLKD_41–52, 59–65, 73–85, 97–134)
-
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Financial_Snapshot : " "
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Financial_Snapshot : " "
-```
-
-| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
-|---|---|---|---|---|---|
-| Fact Securities Company Financial Snapshot | Fact Snapshot | new | Trích xuất các chỉ tiêu tài chính cốt lõi từ BCTC/Báo cáo ATTC: Tài sản, Nguồn vốn, VCSH, Doanh thu, LNST, Dư nợ Margin, Tỷ lệ an toàn tài chính CAR, ROA, ROE, CFO | 1 CTCK × 1 kỳ báo cáo (Quý/Năm) | K_QLKD_41–52, 59–65, 73–85, 97–134 |
-| Securities Company Dimension | Dimension | new | CTCK — mã, tên, loại hình, trạng thái | 1 CTCK (SCD4A) | — |
-| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày / 1 quý | — |
-
 ## Tab DATA EXPLORER
 
-### Nhóm 42-145 — Tra cứu báo cáo biểu mẫu định kỳ (K_QLKD_224–4260) — PENDING
+### Nhóm 42-145 — Tra cứu báo cáo biểu mẫu định kỳ (K_QLKD_224–4260) — 100% PENDING
 
-> Toàn bộ PENDING — gating dữ liệu động + gap Atomic entity `REPORT_CELL_VALUE` (O_QLKD_23). Không vẽ Star Schema chi tiết.
+> Toàn bộ PENDING dù cột T đổi nguồn tham khảo — gap là thiếu Atomic entity (họ bảng EAV `FORM_REPORT`/`REPORT_INPUT_CELL_VALUE`, xác nhận **out-of-scope** trong `atomic_out_of_scope.yaml`) + gating `Loại dữ liệu = Dữ liệu động`, không phải do câu SQL tham khảo — không vẽ Star Schema. Xem bảng "Bảng PENDING" cuối file và Section 2 HLD (bảng chi tiết theo nhóm loại báo cáo).
 
-| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
-|---|---|---|---|---|---|
-| Securities Company Report Data (dự kiến) | Tác nghiệp | new | EAV — 1 chỉ tiêu × 1 kỳ × 1 CTCK × 1 biểu mẫu, 104 STT / 4036 chỉ tiêu | 1 chỉ tiêu × 1 kỳ báo cáo × 1 CTCK × 1 biểu mẫu | K_QLKD_224–4260 (PENDING) |
+---
+
+## Bảng PENDING (không thiết kế trong Phase 2)
+
+Các bảng sau **100% KPI/Nhóm dùng đều PENDING** — theo quy tắc `phase2_entities.md`, không đưa vào `Entities.csv` (tránh Phase 1 LLD map nhầm cột vào Atomic entity/attribute chưa tồn tại). Sẽ đưa vào CSV khi có KPI/Nhóm đầu tiên chuyển READY.
+
+| Datamart Entity | Lý do PENDING | Issue |
+|---|---|---|
+| ~~Business Line Dimension~~ | Superseded 11/09/2026 — gap gốc `LNK_SC_FIRM_BUSINESS_LINE` không còn đúng theo cột T, bỏ khỏi mô hình hoàn toàn (không chỉ PENDING) | O_QLKD_20 (Superseded) → O_QLKD_26 |
+| Securities Service Classification Dimension | Nguồn `CAT_SERVICE_LEGAL_CAPITAL` chưa có Atomic entity — phục vụ Nhóm 2/3/4 (100% PENDING) | O_QLKD_26 |
+| Report Indicator Dimension | ETL-derived, chờ Atomic entity thay thế `REPORT_CELL_VALUE`/`REPORT_INPUT_CELL_VALUE` (out-of-scope) | O_QLKD_23 / O_QLKD_27 |
+| Fact Securities Company Financial Structure Snapshot | Toàn bộ Nhóm 8/9/11/12/14–27 dùng chung Fact này — `REPORT_INPUT_CELL_VALUE` xác nhận out-of-scope trong `atomic_out_of_scope.yaml` (cascade từ `MEMBER_REPORT` đã loại) | O_QLKD_23 / O_QLKD_27 |
+| Securities Company Financial Report History | Lịch sử BCTC (Nhóm 26/27) — cùng gap nguồn với Fact trên | O_QLKD_23 / O_QLKD_27 |
+| Securities Company Practitioner Profile | Người hành nghề CK (Nhóm 28/29/30) — đổi nguồn sang `REPORT_CELL_VALUE`/`FORM_REPORT` family, Nhóm 30 re-verify cột T phát hiện nguồn khác biệt hơn nữa (`FORM_REPORT`/`REPORT_INPUT_CELL_VALUE`, report `BCHDPS`), chưa kết luận cuối cùng | O_QLKD_23 / O_QLKD_27 / O_QLKD_28 |
+| Securities Company Report Data | EAV báo cáo biểu mẫu định kỳ — Nhóm 42-145, 104 STT / 4036 chỉ tiêu, 100% PENDING | O_QLKD_23 / O_QLKD_27 |
