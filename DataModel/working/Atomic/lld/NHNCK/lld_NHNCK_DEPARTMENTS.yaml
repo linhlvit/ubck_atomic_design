@@ -3,13 +3,13 @@ schema_version: "2.0"
 metadata:
   source_system: "NHNCK"
   source_table: "DEPARTMENTS"
-  atomic_entity: "Regulatory Authority Organization Unit"
-  entity_physical_name: "ra_organization_unit"
-  bcv_core_object: "Involved Party"
-  bcv_concept: "[Involved Party] Organization"
-  table_type: "Fundamental"
+  atomic_entity: "Classification Value"
+  entity_physical_name: "cl_value"
+  bcv_core_object: "Common"
+  bcv_concept: "[Classification] Common"
+  table_type: "Classification"
   group: "T1"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -17,40 +17,60 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Hạ về draft (2026-07-24) để bổ sung External Catalog Reference Code (ECATALOG_ID,\
-    \ mô tả nguồn còn TBD — cần BA xác nhận ý nghĩa) — phát hiện qua post_check_source_coverage.py.\
-    \ STATUS (nguồn) không map — cùng field với RECORD_STATUS đã loại trừ theo chính\
-    \ sách Data Modeler (2026-07-07), chỉ đổi tên qua DDL UAT remap. Xem pending_design.yaml."
+  notes: "Thiết kế lại (2026-09-11) theo yêu cầu Data Modeler — tách khỏi Atomic entity\
+    \ \"Regulatory Authority Organization Unit\" (dùng chung với UNITS trước đây),\
+    \ map trực tiếp vào Fundamental entity dùng chung Classification Value (cl_value),\
+    \ mirror pattern lld_NHNCK_APPLICATION_STATUSES.yaml. Lý do: DEPARTMENTS chỉ có\
+    \ CODE + NAME + DESCRIPTION mang ý nghĩa danh mục thuần, không có instance/lifecycle\
+    \ data độc lập xứng đáng 1 entity Fundamental riêng. UNIT_ID (quan hệ cha là UNITS)\
+    \ không map được vào cl_value (không có chỗ chứa quan hệ phân cấp) — xem pending_design.yaml.\
+    \ Entity con lld_NHNCK_CERTIFICATE_DEPARTMENTS.yaml đã cập nhật FK tương ứng (Department\
+    \ Code, Classification Value, thay cho cặp Id+Code cũ). Scheme: NHNCK.DEPARTMENTS\
+    \ (đăng ký trong classification_schemes.yaml). File này là Level 1 LLD; cần chạy\
+    \ Level 2 consolidation (generate_entity_consolidation.py) gộp vào entity_cl_value.yaml\
+    \ cùng các source khác trước khi generate ra DataModel/Atomic. 4 cột ds_* không\
+    \ thiết kế ở đây — ETL job tự quản lý (SCD, không map từ cột nguồn)."
 attributes:
-- attribute_name: "Regulatory Authority Organization Unit Id"
-  physical_name: "ra_ou_id"
-  description: "Id tự sinh (surrogate key)"
-  data_domain: "Surrogate Key"
+- attribute_name: "Classification Code"
+  physical_name: "cl_code"
+  description: "Mã giá trị phân loại. Mã phòng ban."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "NHNCK.DEPARTMENTS.DEPARTMENT_CODE"
+  comment: "BK chính (kết hợp Schema Code tạo BK duy nhất)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Schema Code"
+  physical_name: "schema_code"
+  description: "Mã loại phân loại."
+  data_domain: "Classification Value"
   nullable: false
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. BCV: \"Organization\" (Involved Party). Phòng ban thuộc\
-    \ đơn vị UBCKNN."
+  comment: "Scheme: NHNCK.DEPARTMENTS. Hardcode."
   classification_context: null
-  etl_derived_value: null
+  etl_derived_value: "NHNCK.DEPARTMENTS"
   data_type: "string"
-- attribute_name: "Regulatory Authority Organization Unit Code"
-  physical_name: "ra_ou_code"
-  description: "Mã phòng ban. BK"
+- attribute_name: "Schema Name"
+  physical_name: "schema_nm"
+  description: "Tên loại phân loại."
   data_domain: "Text"
-  nullable: false
+  nullable: true
   is_primary_key: false
   status: "draft"
-  source_columns:
-  - "NHNCK.DEPARTMENTS.DEPARTMENT_CODE"
-  comment: "BK chính."
+  source_columns: []
+  comment: "Hardcode."
   classification_context: null
-  etl_derived_value: null
+  etl_derived_value: "NHNCK - Danh mục phòng ban thuộc đơn vị UBCKNN"
   data_type: "string"
 - attribute_name: "Source System Code"
   physical_name: "src_stm_code"
-  description: "Mã hệ thống nguồn. BK"
+  description: "Mã nguồn dữ liệu."
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
@@ -60,21 +80,9 @@ attributes:
   classification_context: "SOURCE_SYSTEM=NHNCK_DEPARTMENTS"
   etl_derived_value: "NHNCK_DEPARTMENTS"
   data_type: "string"
-- attribute_name: "Organization Unit Type Code"
-  physical_name: "ou_tp_code"
-  description: "Phân loại — Phòng ban (Department)"
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns: []
-  comment: "Scheme: ORGANIZATION_UNIT_TYPE. Hardcode."
-  classification_context: "ORGANIZATION_UNIT_TYPE=DEPARTMENT"
-  etl_derived_value: "DEPARTMENT"
-  data_type: "string"
-- attribute_name: "Regulatory Authority Organization Unit Name"
-  physical_name: "ra_ou_nm"
-  description: "Tên phòng ban"
+- attribute_name: "Classification Name"
+  physical_name: "cl_nm"
+  description: "Tên giá trị phân loại (tiếng Việt). Tên phòng ban."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
@@ -85,51 +93,21 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Hierarchy Level Code"
-  physical_name: "hierarchy_level_code"
-  description: "Cấp độ trong cây phân cấp — null cho phòng ban"
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns: []
-  comment: "ETL-derived: null. DEPARTMENTS không có trường LEVEL_."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Parent Regulatory Authority Organization Unit Id"
-  physical_name: "parent_ra_ou_id"
-  description: "FK đến đơn vị cha (UNITS)"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.DEPARTMENTS.UNIT_ID"
-  comment: "FK target: ra_organization_unit.ra_ou_id. Cần ETL crosswalk sang NHNCK.UNITS:\
-    \ DEPARTMENTS.UNIT_ID = UNITS.ID để xác nhận UNIT_CODE sau đó hash_id('NHNCK_UNITS',\
-    \ UNIT_CODE) | Trước đây hash trực tiếp theo UNIT_ID (ID kỹ thuật) gây sai lệch\
-    \ với Id của bảng main (hash từ UNIT_CODE) — đã sửa sang crosswalk 2026-07-27.\
-    \ Parent là Unit không phải Department."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Parent Regulatory Authority Organization Unit Code"
-  physical_name: "parent_ra_ou_code"
-  description: "Mã đơn vị cha (UNITS)"
+- attribute_name: "Classification Name English"
+  physical_name: "cl_nm_english"
+  description: "Tên giá trị phân loại (tiếng Anh)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
-  source_columns:
-  - "NHNCK.UNITS.UNIT_CODE"
-  comment: "Lookup pair: ra_organization_unit.ra_ou_code. Pair with Parent Regulatory Authority Organization Unit Id. Giá trị lấy từ NHNCK.UNITS.UNIT_CODE sau ETL crosswalk — chi tiết xem comment Parent Regulatory Authority Organization Unit Id."
+  source_columns: []
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Description"
-  physical_name: "description"
-  description: "Mô tả chi tiết phòng ban"
+- attribute_name: "Classification Description"
+  physical_name: "cl_description"
+  description: "Diễn giải chi tiết ý nghĩa giá trị phân loại. Mô tả phòng ban."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
@@ -137,22 +115,6 @@ attributes:
   source_columns:
   - "NHNCK.DEPARTMENTS.DESCRIPTION"
   comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "External Catalog Reference Code"
-  physical_name: "external_catalog_reference_code"
-  description: "TBD - cần bổ sung mô tả"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "NHNCK.DEPARTMENTS.ECATALOG_ID"
-  comment: "Mô tả nguồn còn TBD trong BRD — tên cột gợi ý mã tham chiếu tới danh mục/hệ\
-    \ thống ngoài (VD: danh mục đơn vị hành chính chuẩn quốc gia). Cần BA xác nhận\
-    \ ý nghĩa nghiệp vụ chính xác trước khi hoàn thiện thiết kế (đổi domain/FK nếu\
-    \ cần)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

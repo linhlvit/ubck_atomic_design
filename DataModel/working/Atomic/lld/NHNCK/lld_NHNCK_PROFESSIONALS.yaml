@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Involved Party] Individual"
   table_type: "Fundamental"
   group: "T2"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -31,7 +31,14 @@ metadata:
     \ — post_check_source_coverage.py báo sai \"chưa map\" do 2 lỗi công cụ đã biết\
     \ trong aggregate_atomic.py (dedup context rỗng cho shared entity dùng chung tên\
     \ với source khác có addr_type; và source_columns nhiều giá trị bị nối chuỗi thay\
-    \ vì tách dòng riêng) — không phải gap thiết kế thật, không cần sửa LLD."
+    \ vì tách dòng riêng) — không phải gap thiết kế thật, không cần sửa LLD. Bổ sung\
+    \ (2026-09-10) theo DDL mới NHNCK_UAT_schema.txt: \"Previous Identity Issue Date\"\
+    \ / \"Previous Identity Issue Place\" (PREVIOUS_IDENTITY_ISSUE_DATE/PLACE) — thêm\
+    \ trên chính entity này, đi cạnh \"Previous Identity Number\" đã có sẵn (không\
+    \ tách IP Alt Identification, giữ nhất quán với vị trí hiện tại của Previous Identity\
+    \ Number). PASSPORT_NUMBER/PASSPORT_ISSUE_DATE/PASSPORT_ISSUE_PLACE (hộ chiếu\
+    \ — 1 loại giấy tờ định danh mới) map sang lld_NHNCK_PROFESSIONALS_IP_Alt_Identification.yaml\
+    \ (xem file đó). PROFESSIONALS không có cột TAX_CODE trong DDL — không áp dụng."
 attributes:
 - attribute_name: "Securities Practitioner Id"
   physical_name: "sp_id"
@@ -144,7 +151,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.PROFESSIONALS.EDUCATION_LEVEL_ID"
-  comment: "SCHEMA_CODE=EDUCATIONAL_LEVEL"
+  comment: "SCHEMA_CODE=NHNCK.EDUCATION_LEVELS"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -299,6 +306,32 @@ attributes:
   source_columns:
   - "NHNCK.PROFESSIONALS.PREVIOUS_IDENTITY_NUMBER"
   comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Previous Identity Issue Date"
+  physical_name: "previous_identity_issue_dt"
+  description: "Ngày cấp CMND cũ trước khi chuyển sang CCCD."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.PROFESSIONALS.PREVIOUS_IDENTITY_ISSUE_DATE"
+  comment: "Bổ sung theo DDL mới (2026-09-10) — đi cạnh Previous Identity Number."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Previous Identity Issue Place"
+  physical_name: "previous_identity_issue_place"
+  description: "Nơi cấp CMND cũ trước khi chuyển sang CCCD."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.PROFESSIONALS.PREVIOUS_IDENTITY_ISSUE_PLACE"
+  comment: "Bổ sung theo DDL mới (2026-09-10) — đi cạnh Previous Identity Number."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

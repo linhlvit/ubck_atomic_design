@@ -32,21 +32,21 @@ attributes:
     source_system: NHNCK
     source_table: DECISIONS
     source_column: null
-    comment: null
+    comment: "PK surrogate. Hash: hash_id('NHNCK_DECISIONS', DECISION_NUMBER)."
     classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner License Decision Document Code
     physical_name: sp_license_decision_document_code
-    business_meaning: Business key từ PK nguồn DECISIONS.ID
+    business_meaning: "Khóa chính. BK của entity — số quyết định hành chính (VD: 123/QĐ-UBCK)."
     data_domain: Text
     data_type: string
     nullable: false
     is_primary_key: false
     source_system: NHNCK
     source_table: DECISIONS
-    source_column: NHNCK.DECISIONS.ID
-    comment: null
+    source_column: NHNCK.DECISIONS.DECISION_NUMBER
+    comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID) — đổi sang DECISION_NUMBER theo quyết định 2026-08-14. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique trước go-live (DECISION_NUMBER hiện không khai báo NOT NULL trong nguồn)."
     classification_context: null
     etl_derived_value: null
 
@@ -63,20 +63,6 @@ attributes:
     comment: "ETL-derived: NHNCK.DECISIONS."
     classification_context: "Source System Code = 'NHNCK_DECISIONS'"
     etl_derived_value: NHNCK_DECISIONS
-
-  - name: Decision Number
-    physical_name: decision_nbr
-    business_meaning: "Số hiệu quyết định hành chính (VD: 123/QĐ-UBCK)"
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: DECISIONS
-    source_column: NHNCK.DECISIONS.DECISION_NUMBER
-    comment: null
-    classification_context: null
-    etl_derived_value: null
 
   - name: Decision Title
     physical_name: decision_title
@@ -214,8 +200,8 @@ attributes:
     source_system: NHNCK
     source_table: DECISIONS
     source_column: NHNCK.DECISIONS.DECISION_TYPE_ID
-    comment: "Scheme: LICENSE_CERTIFICATE_DECISION_TYPE. Values: 1=Cấp mới; 2=Thu hồi; 3=Cấp lại; 4=Công nhận KQ thi; 5=Xử lý vi phạm; 6=Hủy CCHN; 7=Khác."
-    classification_context: LICENSE_CERTIFICATE_DECISION_TYPE
+    comment: "SCHEMA_CODE=NHNCK.DECISIONS.DECISION_TYPE_ID"
+    classification_context: null
     etl_derived_value: null
 
   - name: Notification Content
@@ -228,20 +214,6 @@ attributes:
     source_system: NHNCK
     source_table: DECISIONS
     source_column: NHNCK.DECISIONS.CONTENT
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Active Flag
-    physical_name: active_flag
-    business_meaning: "Cờ đánh dấu quyết định đang được sử dụng (1=Đang dùng; 0=Vô hiệu)"
-    data_domain: Small Counter
-    data_type: int
-    nullable: false
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: DECISIONS
-    source_column: NHNCK.DECISIONS.IS_ACTIVE
     comment: null
     classification_context: null
     etl_derived_value: null

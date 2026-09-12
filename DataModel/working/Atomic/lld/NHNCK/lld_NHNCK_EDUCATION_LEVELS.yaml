@@ -1,0 +1,132 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "NHNCK"
+  source_table: "EDUCATION_LEVELS"
+  atomic_entity: "Classification Value"
+  entity_physical_name: "cl_value"
+  bcv_core_object: "Common"
+  bcv_concept: "[Classification] Common"
+  table_type: "Classification"
+  group: "T1"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Đưa vào scope (2026-09-11) theo yêu cầu Data Modeler — trước đây out_of_scope\
+    \ (không có scope_reason cụ thể trong brd_NHNCK.yaml). HLD Tier1 6d đã dự kiến\
+    \ trước đó (scheme EDUCATIONAL_LEVEL, dùng bởi Securities Practitioner.Education\
+    \ Level Code). Map trực tiếp vào Fundamental entity dùng chung Classification\
+    \ Value (cl_value), mirror pattern lld_NHNCK_APPLICATION_STATUSES.yaml / lld_NHNCK_DEPARTMENTS.yaml\
+    \ / lld_NHNCK_POSITIONS.yaml. Nguồn KHÔNG có cột CODE riêng (chỉ có ID kỹ thuật\
+    \ + LEVEL_NAME). Scheme: NHNCK.EDUCATION_LEVELS (Schema Code literal, đăng ký\
+    \ trong classification_schemes.yaml) — phân biệt với scheme FK-reference EDUCATIONAL_LEVEL\
+    \ đã có sẵn (dùng bởi Education Level Code trên Securities Practitioner). File\
+    \ này là Level 1 LLD; cần chạy Level 2 consolidation (generate_entity_consolidation.py)\
+    \ gộp vào entity_cl_value.yaml cùng các source khác trước khi generate ra DataModel/Atomic.\
+    \ 4 cột ds_* không thiết kế ở đây — ETL job tự quản lý (SCD, không map từ cột\
+    \ nguồn). **[SỬA 2026-09-11]** cl_code đổi từ LEVEL_NAME sang ID theo yêu cầu\
+    \ tường minh Data Modeler — CHỆCH khỏi rule 3e chung của dự án (PK kỹ thuật không\
+    \ map vào BK) và khác với giá trị đã xác nhận qua profile dữ liệu trước đó (note\
+    \ scheme EDUCATIONAL_LEVEL: \"cl_code lưu trực tiếp bằng tên tiếng Việt\"). Rủi\
+    \ ro: nếu đã có bản ghi cl_value thật export từ trước dùng LEVEL_NAME làm khóa,\
+    \ đổi sang ID sẽ tạo BK không khớp (không phải cùng 1 tập giá trị) — cần Data\
+    \ Modeler xác nhận lại việc này trước go-live, đặc biệt nếu Gold/Datamart đã tham\
+    \ chiếu cl_code theo tên cũ."
+attributes:
+- attribute_name: "Classification Code"
+  physical_name: "cl_code"
+  description: "Mã giá trị phân loại. Khóa chính của bản ghi (số tự tăng)."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "NHNCK.EDUCATION_LEVELS.ID"
+  comment: "BK chính (kết hợp Schema Code tạo BK duy nhất). Nguồn lưu NUMBER — ETL\
+    \ convert sang string. [SỬA 2026-09-11] Dùng ID (PK kỹ thuật) làm mã phân loại\
+    \ theo yêu cầu tường minh Data Modeler — chệch khỏi rule 3e chung (PK kỹ thuật\
+    \ không map vào BK) và khác với giá trị đã xác nhận qua profile dữ liệu trước\
+    \ đó (LEVEL_NAME). Cần xác nhận lại trước go-live nếu đã có dữ liệu cl_value export\
+    \ dùng LEVEL_NAME làm khóa."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Schema Code"
+  physical_name: "schema_code"
+  description: "Mã loại phân loại."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: NHNCK.EDUCATION_LEVELS. Hardcode."
+  classification_context: null
+  etl_derived_value: "NHNCK.EDUCATION_LEVELS"
+  data_type: "string"
+- attribute_name: "Schema Name"
+  physical_name: "schema_nm"
+  description: "Tên loại phân loại."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Hardcode."
+  classification_context: null
+  etl_derived_value: "NHNCK - Danh mục trình độ học vấn"
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=NHNCK_EDUCATION_LEVELS"
+  etl_derived_value: "NHNCK_EDUCATION_LEVELS"
+  data_type: "string"
+- attribute_name: "Classification Name"
+  physical_name: "cl_nm"
+  description: "Tên giá trị phân loại (tiếng Việt). Tên trình độ học vấn."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.EDUCATION_LEVELS.LEVEL_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification Name English"
+  physical_name: "cl_nm_english"
+  description: "Tên giá trị phân loại (tiếng Anh)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification Description"
+  physical_name: "cl_description"
+  description: "Diễn giải chi tiết ý nghĩa giá trị phân loại."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.EDUCATION_LEVELS.DESCRIPTION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

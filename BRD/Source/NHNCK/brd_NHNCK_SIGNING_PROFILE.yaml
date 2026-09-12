@@ -1,0 +1,236 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: SIGNING_PROFILE
+brd_ref: BRD-SRC-NHNCK-SIGNING_PROFILE
+columns:
+- name: PROFILE_KEY
+  data_type: VARCHAR2(256)
+  description: Khóa định danh mẫu chữ ký (chuỗi)
+  key: PK
+  fk_note: null
+- name: DISPLAY_NAME
+  data_type: VARCHAR2(1020)
+  description: Tên hiển thị mẫu chữ ký
+  key: null
+  fk_note: null
+- name: SIGNATURE_KIND
+  data_type: VARCHAR2(80)
+  description: Loại chữ ký
+  key: null
+  fk_note: null
+- name: ALLOW_MANUAL_PLACEMENT
+  data_type: NUMBER(1,0)
+  description: Cho phép đặt vị trí ký thủ công
+  key: null
+  fk_note: null
+- name: IMAGE_PATH
+  data_type: VARCHAR2(2048)
+  description: Đường dẫn ảnh chữ ký
+  key: null
+  fk_note: null
+- name: BOX_WIDTH
+  data_type: BINARY_FLOAT
+  description: Chiều rộng khung chữ ký
+  key: null
+  fk_note: null
+- name: BOX_HEIGHT
+  data_type: BINARY_FLOAT
+  description: Chiều cao khung chữ ký
+  key: null
+  fk_note: null
+- name: CONTENT_TEMPLATE
+  data_type: VARCHAR2(4000)
+  description: Mẫu nội dung hiển thị trên chữ ký
+  key: null
+  fk_note: null
+- name: ORGANIZATION
+  data_type: VARCHAR2(1020)
+  description: Tên tổ chức hiển thị trên chữ ký
+  key: null
+  fk_note: null
+- name: SIGNER_EMAIL
+  data_type: VARCHAR2(1020)
+  description: Email người ký hiển thị trên chữ ký
+  key: null
+  fk_note: null
+- name: VISUAL_MODE
+  data_type: VARCHAR2(80)
+  description: Chế độ hiển thị trực quan
+  key: null
+  fk_note: null
+- name: SHOW_LABELS
+  data_type: NUMBER(1,0)
+  description: Hiển thị nhãn
+  key: null
+  fk_note: null
+- name: SHOW_EMAIL
+  data_type: NUMBER(1,0)
+  description: Hiển thị email
+  key: null
+  fk_note: null
+- name: SHOW_ORGANIZATION
+  data_type: NUMBER(1,0)
+  description: Hiển thị tên tổ chức
+  key: null
+  fk_note: null
+- name: SHOW_SIGN_TIME
+  data_type: NUMBER(1,0)
+  description: Hiển thị thời điểm ký
+  key: null
+  fk_note: null
+- name: FONT_SIZE
+  data_type: BINARY_FLOAT
+  description: Cỡ chữ hiển thị
+  key: null
+  fk_note: null
+- name: PLACEMENT_MODE
+  data_type: VARCHAR2(128)
+  description: Chế độ đặt vị trí ký
+  key: null
+  fk_note: null
+- name: ANCHOR_TEXT
+  data_type: VARCHAR2(1020)
+  description: Văn bản neo để định vị chữ ký
+  key: null
+  fk_note: null
+- name: ANCHOR_OFFSET_X
+  data_type: BINARY_FLOAT
+  description: Độ lệch X so với điểm neo
+  key: null
+  fk_note: null
+- name: ANCHOR_OFFSET_Y
+  data_type: BINARY_FLOAT
+  description: Độ lệch Y so với điểm neo
+  key: null
+  fk_note: null
+- name: ANCHOR_OCCURRENCE
+  data_type: VARCHAR2(40)
+  description: Lần xuất hiện của văn bản neo được dùng
+  key: null
+  fk_note: null
+- name: ANCHOR_OCCURRENCE_INDEX
+  data_type: NUMBER(5,0)
+  description: Chỉ số lần xuất hiện cụ thể
+  key: null
+  fk_note: null
+- name: ANCHOR_SIDE
+  data_type: VARCHAR2(40)
+  description: Phía đặt chữ ký so với điểm neo
+  key: null
+  fk_note: null
+- name: ANCHOR_PAGE
+  data_type: NUMBER(5,0)
+  description: Trang chứa điểm neo
+  key: null
+  fk_note: null
+- name: ANCHOR_FALLBACKS
+  data_type: CLOB
+  description: Danh sách phương án neo dự phòng
+  key: null
+  fk_note: null
+- name: EXTRA_INFO_TEXT
+  data_type: VARCHAR2(1020)
+  description: Thông tin bổ sung hiển thị trên chữ ký
+  key: null
+  fk_note: null
+- name: PAGE_NUMBER
+  data_type: NUMBER(5,0)
+  description: Trang đặt chữ ký (chế độ cố định vị trí)
+  key: null
+  fk_note: null
+- name: LLX
+  data_type: BINARY_FLOAT
+  description: Tọa độ X góc dưới trái
+  key: null
+  fk_note: null
+- name: LLY
+  data_type: BINARY_FLOAT
+  description: Tọa độ Y góc dưới trái
+  key: null
+  fk_note: null
+- name: CORNER_MARGIN
+  data_type: BINARY_FLOAT
+  description: Lề khi đặt chữ ký theo góc trang
+  key: null
+  fk_note: null
+- name: CORNER
+  data_type: VARCHAR2(48)
+  description: Góc trang đặt chữ ký
+  key: null
+  fk_note: null
+- name: HASH_ALGORITHM
+  data_type: VARCHAR2(64)
+  description: Thuật toán băm sử dụng khi ký
+  key: null
+  fk_note: null
+- name: REASON
+  data_type: VARCHAR2(1020)
+  description: Lý do ký (metadata chữ ký số)
+  key: null
+  fk_note: null
+- name: REQUIRE_REGISTERED_CERT
+  data_type: NUMBER(1,0)
+  description: Yêu cầu chứng thư số đã đăng ký
+  key: null
+  fk_note: null
+- name: CHECK_REVOCATION
+  data_type: NUMBER(1,0)
+  description: Kiểm tra thu hồi chứng thư số
+  key: null
+  fk_note: null
+- name: REVOCATION_METHOD
+  data_type: VARCHAR2(40)
+  description: Phương thức kiểm tra thu hồi
+  key: null
+  fk_note: null
+- name: ON_CHECK_FAILURE
+  data_type: VARCHAR2(40)
+  description: Hành động khi kiểm tra thất bại
+  key: null
+  fk_note: null
+- name: CRL_URLS
+  data_type: VARCHAR2(4000)
+  description: Danh sách URL CRL kiểm tra thu hồi
+  key: null
+  fk_note: null
+- name: STAMP_EVERY_PAGE
+  data_type: NUMBER(1,0)
+  description: Đóng dấu/ký trên mọi trang
+  key: null
+  fk_note: null
+- name: STAMP_PAGE_RANGE
+  data_type: VARCHAR2(1020)
+  description: Phạm vi trang đóng dấu
+  key: null
+  fk_note: null
+- name: STAMP_WIDTH
+  data_type: BINARY_FLOAT
+  description: Chiều rộng dấu
+  key: null
+  fk_note: null
+- name: STAMP_HEIGHT
+  data_type: BINARY_FLOAT
+  description: Chiều cao dấu
+  key: null
+  fk_note: null
+- name: STAMP_CORNER
+  data_type: VARCHAR2(48)
+  description: Góc trang đóng dấu
+  key: null
+  fk_note: null
+- name: STAMP_MARGIN
+  data_type: BINARY_FLOAT
+  description: Lề khi đóng dấu
+  key: null
+  fk_note: null
+- name: ACTIVE
+  data_type: NUMBER(1,0)
+  description: 'Cờ hoạt động: 1=Đang dùng, 0=Ngừng dùng'
+  key: null
+  fk_note: null
+- name: OWNER_USER_REF
+  data_type: VARCHAR2(512)
+  description: Định danh người sở hữu mẫu chữ ký
+  key: null
+  fk_note: null

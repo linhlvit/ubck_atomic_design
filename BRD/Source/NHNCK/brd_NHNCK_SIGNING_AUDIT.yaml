@@ -1,0 +1,52 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: SIGNING_AUDIT
+brd_ref: BRD-SRC-NHNCK-SIGNING_AUDIT
+columns:
+- name: ID
+  data_type: NUMBER
+  description: Khóa chính của bản ghi
+  key: PK
+  fk_note: null
+- name: SESSION_ID
+  data_type: VARCHAR2(144)
+  description: Phiên ký số liên quan
+  key: null
+  fk_note: 'Có thể FK tới SIGNING_SESSION.ID — không có FK marker tường minh trong
+    DDL'
+- name: ACTION
+  data_type: VARCHAR2(128)
+  description: Hành động ký số được ghi nhận
+  key: null
+  fk_note: null
+- name: USER_REF
+  data_type: VARCHAR2(512)
+  description: Định danh người dùng thực hiện thao tác
+  key: null
+  fk_note: null
+- name: DOCUMENT_PATH
+  data_type: VARCHAR2(2048)
+  description: Đường dẫn tài liệu được ký
+  key: null
+  fk_note: null
+- name: CERT_SERIAL
+  data_type: VARCHAR2(256)
+  description: Số serial chứng thư số sử dụng
+  key: null
+  fk_note: null
+- name: SUCCESS
+  data_type: NUMBER(1,0)
+  description: 'Cờ thành công: 1=Thành công, 0=Thất bại'
+  key: null
+  fk_note: null
+- name: DETAIL
+  data_type: VARCHAR2(4000)
+  description: Chi tiết log
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: Thời điểm ghi log
+  key: null
+  fk_note: null

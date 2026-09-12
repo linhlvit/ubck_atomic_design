@@ -1,0 +1,87 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: SIGNING_SESSION
+brd_ref: BRD-SRC-NHNCK-SIGNING_SESSION
+columns:
+- name: ID
+  data_type: VARCHAR2(144)
+  description: Khóa chính của bản ghi (dạng chuỗi/UUID)
+  key: PK
+  fk_note: null
+- name: DOCUMENT_PATH
+  data_type: VARCHAR2(2048)
+  description: Đường dẫn tài liệu gốc
+  key: null
+  fk_note: null
+- name: PREPARED_PATH
+  data_type: VARCHAR2(2048)
+  description: Đường dẫn tài liệu đã chuẩn bị để ký
+  key: null
+  fk_note: null
+- name: TARGET_PATH
+  data_type: VARCHAR2(2048)
+  description: Đường dẫn tài liệu đích sau khi ký
+  key: null
+  fk_note: null
+- name: PROFILE_KEY
+  data_type: VARCHAR2(256)
+  description: Mẫu chữ ký sử dụng cho phiên này
+  key: null
+  fk_note: 'FK tới SIGNING_PROFILE.PROFILE_KEY — không có FK marker tường minh trong
+    DDL'
+- name: SIGNER_USER_REF
+  data_type: VARCHAR2(512)
+  description: Định danh người ký
+  key: null
+  fk_note: null
+- name: SIGNER_NAME
+  data_type: VARCHAR2(1020)
+  description: Tên người ký
+  key: null
+  fk_note: null
+- name: SIGNATURE_MODE
+  data_type: VARCHAR2(80)
+  description: Chế độ ký
+  key: null
+  fk_note: null
+- name: HASH_BASE64
+  data_type: VARCHAR2(1020)
+  description: Mã băm (base64) dùng cho quy trình ký
+  key: null
+  fk_note: null
+- name: DOCUMENT_HASH_BASE64
+  data_type: VARCHAR2(1020)
+  description: Mã băm (base64) của tài liệu gốc
+  key: null
+  fk_note: null
+- name: HASH_ALGORITHM
+  data_type: VARCHAR2(64)
+  description: Thuật toán băm sử dụng
+  key: null
+  fk_note: null
+- name: SIGNER_CERT_BASE64
+  data_type: CLOB
+  description: Chứng thư số người ký (base64)
+  key: null
+  fk_note: null
+- name: STATUS
+  data_type: VARCHAR2(64)
+  description: Trạng thái phiên ký
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: Thời điểm tạo phiên ký
+  key: null
+  fk_note: null
+- name: EXPIRES_AT
+  data_type: TIMESTAMP(6)
+  description: Thời điểm hết hạn phiên ký
+  key: null
+  fk_note: null
+- name: ERROR_MESSAGE
+  data_type: VARCHAR2(4000)
+  description: Thông báo lỗi khi ký thất bại
+  key: null
+  fk_note: null

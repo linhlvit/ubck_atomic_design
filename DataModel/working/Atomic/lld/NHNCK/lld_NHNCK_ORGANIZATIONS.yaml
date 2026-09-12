@@ -25,7 +25,10 @@ metadata:
     \ Organization Reference Code) đổi map từ ID (PK kỹ thuật) sang ORGANIZATION_CODE\
     \ (mã nghiệp vụ) — Id hash lại theo ORGANIZATION_CODE; Organization Code (denormalized,\
     \ nay trùng lặp) đã loại bỏ, xem pending_design.yaml; Parent self-reference chuyển\
-    \ sang crosswalk PARENT_ID → ID → ORGANIZATION_CODE."
+    \ sang crosswalk PARENT_ID → ID → ORGANIZATION_CODE. Hạ về draft (2026-09-10)\
+    \ để bổ sung \"Tax Code\" (TAX_CODE) theo DDL mới NHNCK_UAT_schema.txt — denormalized\
+    \ Text, mirror pattern đã dùng ở lld_SCMS_SC_FIRM_FOREIGN_BRANCH.yaml (không tách\
+    \ IP Alt Identification)."
 attributes:
 - attribute_name: "Securities Organization Reference Id"
   physical_name: "securities_organization_reference_id"
@@ -311,6 +314,19 @@ attributes:
   source_columns:
   - "NHNCK.ORGANIZATIONS.STATUS"
   comment: "SCHEMA_CODE=NHNCK.ORGANIZATIONS.STATUS"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Tax Code"
+  physical_name: "tax_code"
+  description: "Mã số thuế của tổ chức."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.ORGANIZATIONS.TAX_CODE"
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"

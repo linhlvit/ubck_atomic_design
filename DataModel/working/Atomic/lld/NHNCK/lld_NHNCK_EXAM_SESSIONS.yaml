@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Communication] Assessment"
   table_type: "Fundamental"
   group: "T2"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -23,7 +23,10 @@ metadata:
     \ Classification Value. ID không map — PK kỹ thuật, BK dùng CODE. Hạ về draft\
     \ (2026-08-14) để sửa lỗi hash-mismatch FK \"Securities Practitioner License Decision\
     \ Document Id\" — trước đây hash trực tiếp theo DECISION_ID (ID kỹ thuật) thay\
-    \ vì Code của bảng đích (DECISION_NUMBER), đồng bộ với đổi BK trên lld_NHNCK_DECISIONS.yaml."
+    \ vì Code của bảng đích (DECISION_NUMBER), đồng bộ với đổi BK trên lld_NHNCK_DECISIONS.yaml.\
+    \ Bổ sung (2026-09-10) theo DDL mới NHNCK_UAT_schema.txt: RESULT_UPDATER_ID —\
+    \ FK tới IAM.USERS (cán bộ cập nhật kết quả thi), mirror pattern Assignee Officer\
+    \ Id/Code đã dùng cho lld_NHNCK_APPLICATIONS.yaml."
 attributes:
 - attribute_name: "Securities Practitioner Qualification Examination Assessment Id"
   physical_name: "sp_qualification_examination_assessment_id"
@@ -261,8 +264,10 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "NHNCK.EXAM_SESSIONS.BANK_ID"
-  comment: "SCHEMA_CODE=BANK"
+  - "NHNCK.BANKS.BANK_CODE"
+  comment: "SCHEMA_CODE=NHNCK.BANKS. Cần ETL crosswalk sang NHNCK.BANKS: EXAM_SESSIONS.BANK_ID = BANKS.ID\
+    \ để xác nhận NHNCK.BANKS.BANK_CODE, sau đó lưu BANK_CODE (không lưu ID kỹ thuật) vào\
+    \ cột này."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -302,6 +307,36 @@ attributes:
   source_columns:
   - "NHNCK.EXAM_SESSIONS.STATUS"
   comment: "SCHEMA_CODE=NHNCK.EXAM_SESSIONS.STATUS"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Result Updater Officer Id"
+  physical_name: "result_updater_officer_id"
+  description: "FK đến cán bộ cập nhật kết quả thi."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.EXAM_SESSIONS.RESULT_UPDATER_ID"
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
+    \ Cần ETL crosswalk sang NHNCK.USERS: EXAM_SESSIONS.RESULT_UPDATER_ID = USERS.ID\
+    \ để xác nhận USERNAME sau đó hash_id('IAM_USERS', USERNAME)"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Result Updater Officer Code"
+  physical_name: "result_updater_officer_code"
+  description: "Mã cán bộ cập nhật kết quả thi."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.USERS.USERNAME"
+  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
+    \ Pair with Result Updater Officer Id. Giá trị lấy từ NHNCK.USERS.USERNAME sau\
+    \ ETL crosswalk — chi tiết xem comment Result Updater Officer Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

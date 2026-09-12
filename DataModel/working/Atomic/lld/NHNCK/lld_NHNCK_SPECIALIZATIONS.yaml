@@ -1,6 +1,5 @@
 schema_type: "lld_source_table"
 schema_version: "2.0"
-
 metadata:
   source_system: "NHNCK"
   source_table: "SPECIALIZATIONS"
@@ -18,108 +17,101 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Revert 2026-08-20: từng nâng cấp thành Atomic entity thật 'Classification Specialization'\
-    \ (cl_specialization, 2026-07-09) — theo quyết định Data Modeler, quay lại map trực\
-    \ tiếp vào Fundamental entity dùng chung Classification Value (cl_value), không giữ\
-    \ entity riêng. Scheme: SPECIALIZATION (đăng ký trong classification_schemes.yaml).\
+  notes: "Revert 2026-08-20: từng nâng cấp thành Atomic entity thật 'Classification\
+    \ Specialization' (cl_specialization, 2026-07-09) — theo quyết định Data Modeler,\
+    \ quay lại map trực tiếp vào Fundamental entity dùng chung Classification Value\
+    \ (cl_value), không giữ entity riêng. Scheme: SPECIALIZATION (đăng ký trong classification_schemes.yaml).\
     \ File này là Level 1 LLD; cần chạy Level 2 consolidation (generate_entity_consolidation.py)\
     \ gộp vào entity_cl_value.yaml cùng các source khác trước khi generate ra DataModel/Atomic.\
     \ 4 cột ds_* (ds_rcrd_st/ds_rcrd_eff_dt/ds_rcrd_end_dt/ds_etl_pcs_tms) không thiết\
     \ kế ở đây — ETL job tự quản lý (SCD, không map từ cột nguồn), theo yêu cầu tường\
     \ minh Data Modeler."
-
 attributes:
-  - attribute_name: "Classification Code"
-    physical_name: "cl_code"
-    description: "Mã giá trị phân loại. Mã chuyên ngành CCHN."
-    data_domain: "Classification Value"
-    nullable: false
-    is_primary_key: true
-    status: "draft"
-    source_columns:
-      - "NHNCK.SPECIALIZATIONS.SPECIALIZATION_CODE"
-    comment: "BK chính (kết hợp Schema Code tạo BK duy nhất)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Schema Code"
-    physical_name: "schema_code"
-    description: "Mã loại phân loại."
-    data_domain: "Classification Value"
-    nullable: false
-    is_primary_key: true
-    status: "draft"
-    source_columns: []
-    comment: "Scheme: NHNCK.SPECIALIZATIONS. Hardcode."
-    classification_context: null
-    etl_derived_value: "NHNCK.SPECIALIZATIONS"
-    data_type: "string"
-
-  - attribute_name: "Schema Name"
-    physical_name: "schema_nm"
-    description: "Tên loại phân loại."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns: []
-    comment: "Hardcode."
-    classification_context: null
-    etl_derived_value: "NHNCK - Danh mục chuyên môn/lĩnh vực hành nghề chứng khoán"
-    data_type: "string"
-
-  - attribute_name: "Source System Code"
-    physical_name: "src_stm_code"
-    description: "Mã nguồn dữ liệu."
-    data_domain: "Classification Value"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns: []
-    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-    classification_context: "SOURCE_SYSTEM=NHNCK_SPECIALIZATIONS"
-    etl_derived_value: "NHNCK_SPECIALIZATIONS"
-    data_type: "string"
-
-  - attribute_name: "Classification Name"
-    physical_name: "cl_nm"
-    description: "Tên giá trị phân loại (tiếng Việt)."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "NHNCK.SPECIALIZATIONS.SPECIALIZATION_NAME"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Classification Name English"
-    physical_name: "cl_nm_english"
-    description: "Tên giá trị phân loại (tiếng Anh)."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns: []
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Classification Description"
-    physical_name: "cl_description"
-    description: "Diễn giải chi tiết ý nghĩa giá trị phân loại."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "NHNCK.SPECIALIZATIONS.REFERENCE"
-    comment: "Trích dẫn căn cứ pháp lý liên quan đến chuyên ngành. Nguồn lưu NCLOB —\
-      \ ETL convert sang string."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
+- attribute_name: "Classification Code"
+  physical_name: "cl_code"
+  description: "Mã giá trị phân loại. Mã chuyên ngành CCHN."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "NHNCK.SPECIALIZATIONS.SPECIALIZATION_CODE"
+  comment: "BK chính (kết hợp Schema Code tạo BK duy nhất)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Schema Code"
+  physical_name: "schema_code"
+  description: "Mã loại phân loại."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: NHNCK.SPECIALIZATIONS. Hardcode."
+  classification_context: null
+  etl_derived_value: "NHNCK.SPECIALIZATIONS"
+  data_type: "string"
+- attribute_name: "Schema Name"
+  physical_name: "schema_nm"
+  description: "Tên loại phân loại."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Hardcode."
+  classification_context: null
+  etl_derived_value: "NHNCK - Danh mục chuyên môn/lĩnh vực hành nghề chứng khoán"
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=NHNCK_SPECIALIZATIONS"
+  etl_derived_value: "NHNCK_SPECIALIZATIONS"
+  data_type: "string"
+- attribute_name: "Classification Name"
+  physical_name: "cl_nm"
+  description: "Tên giá trị phân loại (tiếng Việt)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.SPECIALIZATIONS.SPECIALIZATION_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification Name English"
+  physical_name: "cl_nm_english"
+  description: "Tên giá trị phân loại (tiếng Anh)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification Description"
+  physical_name: "cl_description"
+  description: "Diễn giải chi tiết ý nghĩa giá trị phân loại."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.SPECIALIZATIONS.REFERENCE"
+  comment: "Trích dẫn căn cứ pháp lý liên quan đến chuyên ngành. Nguồn lưu NCLOB —\
+    \ ETL convert sang string."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

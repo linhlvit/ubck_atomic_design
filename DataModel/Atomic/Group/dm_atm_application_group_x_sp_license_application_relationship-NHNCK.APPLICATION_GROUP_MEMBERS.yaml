@@ -1,0 +1,121 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-application_group_x_sp_license_application_relationship-NHNCK.APPLICATION_GROUP_MEMBERS
+  logical_name: Application Group X Securities Practitioner License Application Relationship
+  physical_name: application_group_x_sp_license_application_relationship
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Group
+  bcv_concept: "[Group] Group"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: NHNCK
+  description: |
+    Quan hệ thành viên giữa 1 nhóm xử lý tập thể (Application Group) và 1 hồ sơ CCHN (License Application) — trạng thái thành viên, ghi chú, thứ tự trong nhóm. Đổi tên từ "...Group Member" sang pattern link/relationship "X" + Table Type Fundamental → Relative theo quyết định Data Modeler (2026-08-14, lần 2 — đảo lại quyết định Fundamental cùng ngày). BCV Concept "[Group] Group" → "[Documentation] Gov. Registration Document" (2026-08-14) → trở lại "[Group] Group" (2026-08-15) — tái dùng concept từ phía Application Group, tên đặt Group lên trước.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-NHNCK-APPLICATION_GROUP_MEMBERS
+
+attributes:
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATION_GROUP_MEMBERS
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'NHNCK_APPLICATION_GROUP_MEMBERS'"
+    etl_derived_value: NHNCK_APPLICATION_GROUP_MEMBERS
+
+  - name: Securities Practitioner License Application Group Id
+    physical_name: sp_license_application_group_id
+    business_meaning: "FK -> APPLICATION_GROUPS: Nhóm hồ sơ chứa bản ghi này."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: NHNCK
+    source_table: APPLICATION_GROUP_MEMBERS
+    source_column: NHNCK.APPLICATION_GROUP_MEMBERS.APPLICATION_GROUP_ID
+    comment: "FK target: sp_license_application_group.sp_license_application_group_id. Hash: hash_id('NHNCK_APPLICATION_GROUPS', APPLICATION_GROUP_ID). Composite PK cùng Securities Practitioner License Application Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Securities Practitioner License Application Group Code
+    physical_name: sp_license_application_group_code
+    business_meaning: Mã nhóm hồ sơ chứa bản ghi này (denormalized lookup).
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATION_GROUP_MEMBERS
+    source_column: NHNCK.APPLICATION_GROUP_MEMBERS.APPLICATION_GROUP_ID
+    comment: "Lookup pair: sp_license_application_group.sp_license_application_group_code. Pair with Securities Practitioner License Application Group Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Securities Practitioner License Application Id
+    physical_name: sp_license_application_id
+    business_meaning: "FK -> APPLICATIONS: Hồ sơ CCHN liên quan."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: NHNCK
+    source_table: APPLICATION_GROUP_MEMBERS
+    source_column: NHNCK.APPLICATION_GROUP_MEMBERS.APPLICATION_ID
+    comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL crosswalk sang NHNCK.APPLICATIONS: APPLICATION_GROUP_MEMBERS.APPLICATION_ID = APPLICATIONS.ID để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS', APPLICATION_CODE) | Composite PK cùng Securities Practitioner License Application Group Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Securities Practitioner License Application Code
+    physical_name: sp_license_application_code
+    business_meaning: Mã hồ sơ CCHN liên quan (denormalized lookup).
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATION_GROUP_MEMBERS
+    source_column: NHNCK.APPLICATIONS.APPLICATION_CODE
+    comment: "Lookup pair: sp_license_application.sp_license_application_code. Pair with Securities Practitioner License Application Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Application Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Member Notes
+    physical_name: member_notes
+    business_meaning: Ghi chú bổ sung.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATION_GROUP_MEMBERS
+    source_column: NHNCK.APPLICATION_GROUP_MEMBERS.NOTES
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Member Sort Order
+    physical_name: member_sort_order
+    business_meaning: Thứ tự của bản ghi trong nhóm.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATION_GROUP_MEMBERS
+    source_column: NHNCK.APPLICATION_GROUP_MEMBERS.ORDER_INDEX
+    comment: null
+    classification_context: null
+    etl_derived_value: null

@@ -14,7 +14,7 @@ ldm:
   etl_pattern: Fact Append
   source: NHNCK
   description: |
-    Lịch sử thay đổi trạng thái CCHN (cấp/thu hồi/hủy/hết hiệu lực). Mỗi dòng = 1 lần thay đổi trạng thái insert-only. FK đến License Certificate Document và Decision.
+    Lịch sử thay đổi trạng thái chứng chỉ hành nghề — ghi nhận trạng thái trước/sau (OLD_STATUS/NEW_STATUS), quyết định liên quan và lý do thay đổi. Tái dùng BCV concept của entity cha License Certificate Document (không có BCV term riêng cho "status history").
   owner:
     steward: username@ubck.com.vn
     data_modeler: username@fssc.com.vn
@@ -88,7 +88,7 @@ attributes:
     source_system: NHNCK
     source_table: CERTIFICATE_RECORD_STATUS_HISTORIES
     source_column: NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.CERTIFICATE_RECORD_ID
-    comment: "FK target: sp_license_certificate_document.sp_license_certificate_document_id. Hash: hash_id('NHNCK.CERTIFICATE_RECORDS', CERTIFICATE_RECORD_ID)."
+    comment: "FK target: sp_license_certificate_document.sp_license_certificate_document_id. Cần ETL crosswalk sang NHNCK.CERTIFICATE_RECORDS: CERTIFICATE_RECORD_STATUS_HISTORIES.CERTIFICATE_RECORD_ID = CERTIFICATE_RECORDS.ID để xác nhận CERTIFICATE_NUMBER sau đó hash_id('NHNCK_CERTIFICATE_RECORDS', CERTIFICATE_NUMBER) | Trước đây hash trực tiếp theo CERTIFICATE_RECORD_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CERTIFICATE_NUMBER) — đã sửa sang crosswalk 2026-08-15."
     classification_context: null
     etl_derived_value: null
 
@@ -101,8 +101,8 @@ attributes:
     is_primary_key: false
     source_system: NHNCK
     source_table: CERTIFICATE_RECORD_STATUS_HISTORIES
-    source_column: NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.CERTIFICATE_RECORD_ID
-    comment: "Lookup pair: sp_license_certificate_document.sp_license_certificate_document_code. Pair with Securities Practitioner License Certificate Document Id."
+    source_column: NHNCK.CERTIFICATE_RECORDS.CERTIFICATE_NUMBER
+    comment: "Lookup pair: sp_license_certificate_document.sp_license_certificate_document_code. Pair with Securities Practitioner License Certificate Document Id. Giá trị lấy từ NHNCK.CERTIFICATE_RECORDS.CERTIFICATE_NUMBER sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Certificate Document Id."
     classification_context: null
     etl_derived_value: null
 
@@ -130,8 +130,8 @@ attributes:
     source_system: NHNCK
     source_table: CERTIFICATE_RECORD_STATUS_HISTORIES
     source_column: NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.OLD_STATUS
-    comment: "Scheme: CERTIFICATE_STATUS. Nguồn: 0=Chưa sử dụng, 1=Đang sử dụng, 2=Thu hồi có cấp lại, 3=Thu hồi không cấp lại, 4=Đã hủy, 5=Hết hiệu lực. Khác với STATUS (RECORD_STATUS đổi tên) trên CERTIFICATE_RECORDS — cột đó bị loại trừ theo chính sách Data Modeler (2026-07-07, xem pending_design.yaml), không liên quan đến scheme 6 giá trị này."
-    classification_context: CERTIFICATE_STATUS
+    comment: "SCHEMA_CODE=NHNCK.CERTIFICATE_RECORDS.STATUS"
+    classification_context: null
     etl_derived_value: null
 
   - name: New Certificate Status Code
@@ -144,8 +144,8 @@ attributes:
     source_system: NHNCK
     source_table: CERTIFICATE_RECORD_STATUS_HISTORIES
     source_column: NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.NEW_STATUS
-    comment: "Scheme: CERTIFICATE_STATUS. Cùng bảng giá trị với Old Certificate Status Code."
-    classification_context: CERTIFICATE_STATUS
+    comment: "SCHEMA_CODE=NHNCK.CERTIFICATE_RECORDS.STATUS"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner License Decision Document Id
@@ -158,7 +158,7 @@ attributes:
     source_system: NHNCK
     source_table: CERTIFICATE_RECORD_STATUS_HISTORIES
     source_column: NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.DECISION_ID
-    comment: "FK target: sp_license_decision_document.sp_license_decision_document_id. Hash: hash_id('NHNCK.DECISIONS', DECISION_ID). Nullable — cần xác nhận có luôn gắn quyết định hay không (VD: hết hiệu lực tự động có thể không có quyết định)."
+    comment: "FK target: sp_license_decision_document.sp_license_decision_document_id. Cần ETL crosswalk sang NHNCK.DECISIONS: CERTIFICATE_RECORD_STATUS_HISTORIES.DECISION_ID = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS', DECISION_NUMBER) | Trước đây hash trực tiếp theo DECISION_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ DECISION_NUMBER) — đã sửa sang crosswalk 2026-08-14. Nullable — cần xác nhận có luôn gắn quyết định hay không (VD: hết hiệu lực tự động có thể không có quyết định)."
     classification_context: null
     etl_derived_value: null
 
@@ -171,8 +171,8 @@ attributes:
     is_primary_key: false
     source_system: NHNCK
     source_table: CERTIFICATE_RECORD_STATUS_HISTORIES
-    source_column: NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.DECISION_ID
-    comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code. Pair with Securities Practitioner License Decision Document Id."
+    source_column: NHNCK.DECISIONS.DECISION_NUMBER
+    comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code. Pair with Securities Practitioner License Decision Document Id. Giá trị lấy từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Decision Document Id."
     classification_context: null
     etl_derived_value: null
 

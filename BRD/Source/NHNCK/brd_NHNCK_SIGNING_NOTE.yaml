@@ -1,0 +1,51 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: SIGNING_NOTE
+brd_ref: BRD-SRC-NHNCK-SIGNING_NOTE
+columns:
+- name: ID
+  data_type: VARCHAR2(144)
+  description: Khóa chính của bản ghi (dạng chuỗi/UUID)
+  key: PK
+  fk_note: null
+- name: DOCUMENT_PATH
+  data_type: VARCHAR2(2048)
+  description: Đường dẫn tài liệu được ghi chú
+  key: null
+  fk_note: null
+- name: PAGE_NUMBER
+  data_type: NUMBER(5,0)
+  description: Số trang đặt ghi chú
+  key: null
+  fk_note: null
+- name: X_RATIO
+  data_type: BINARY_FLOAT
+  description: Tọa độ X tương đối trên trang
+  key: null
+  fk_note: null
+- name: Y_RATIO
+  data_type: BINARY_FLOAT
+  description: Tọa độ Y tương đối trên trang
+  key: null
+  fk_note: null
+- name: CONTENT
+  data_type: VARCHAR2(4000)
+  description: Nội dung ghi chú
+  key: null
+  fk_note: null
+- name: AUTHOR_USER_REF
+  data_type: VARCHAR2(512)
+  description: Định danh người tạo ghi chú
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: Thời điểm tạo ghi chú
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: TIMESTAMP(6)
+  description: Thời điểm cập nhật ghi chú gần nhất
+  key: null
+  fk_note: null

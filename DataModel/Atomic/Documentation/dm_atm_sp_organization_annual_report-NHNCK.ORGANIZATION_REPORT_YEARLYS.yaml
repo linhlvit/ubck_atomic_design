@@ -1,0 +1,177 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-sp_organization_annual_report-NHNCK.ORGANIZATION_REPORT_YEARLYS
+  logical_name: Securities Practitioner Organization Annual Report
+  physical_name: sp_organization_annual_report
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Employer Registration"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: NHNCK
+  description: |
+    Báo cáo năm mà tổ chức nộp về tình hình nhân sự hành nghề chứng khoán — container báo cáo (tên, ngày nộp, năm, loại, file, trạng thái). Khác grain với Organization Employment Report (per-practitioner).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-NHNCK-ORGANIZATION_REPORT_YEARLYS
+
+attributes:
+  - name: Securities Practitioner Organization Annual Report Id
+    physical_name: sp_organization_annual_rpt_id
+    business_meaning: Id tự sinh (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: NHNCK
+    source_table: ORGANIZATION_REPORT_YEARLYS
+    source_column: null
+    comment: "PK surrogate. BCV: \"Employer Registration\" (Documentation). Hash: hash_id('NHNCK_ORGANIZATION_REPORT_YEARLYS', ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Securities Practitioner Organization Annual Report Code
+    physical_name: sp_organization_annual_rpt_code
+    business_meaning: Mã định danh kỹ thuật (BK). Map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ORGANIZATION_REPORT_YEARLYS
+    source_column: NHNCK.ORGANIZATION_REPORT_YEARLYS.ID
+    comment: BK chính. PK nguồn (NUMBER — ETL cần convert sang string).
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ORGANIZATION_REPORT_YEARLYS
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORT_YEARLYS'"
+    etl_derived_value: NHNCK_ORGANIZATION_REPORT_YEARLYS
+
+  - name: Securities Organization Reference Id
+    physical_name: securities_organization_reference_id
+    business_meaning: "FK -> ORGANIZATIONS: Tổ chức kinh doanh CK sử dụng NHNCK."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ORGANIZATION_REPORT_YEARLYS
+    source_column: NHNCK.ORGANIZATION_REPORT_YEARLYS.ORGANIZATION_ID
+    comment: "FK target: securities_organization_reference.securities_organization_reference_id. Cần ETL crosswalk sang NHNCK.ORGANIZATIONS: ORGANIZATION_REPORT_YEARLYS.ORGANIZATION_ID = ORGANIZATIONS.ID để xác nhận ORGANIZATION_CODE sau đó hash_id('NHNCK_ORGANIZATIONS', ORGANIZATION_CODE)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Securities Organization Reference Code
+    physical_name: securities_organization_reference_code
+    business_meaning: Mã tổ chức (denormalized).
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ORGANIZATION_REPORT_YEARLYS
+    source_column: NHNCK.ORGANIZATIONS.ORGANIZATION_CODE
+    comment: "Lookup pair: securities_organization_reference.securities_organization_reference_code. Pair with Securities Organization Reference Id. Giá trị lấy từ NHNCK.ORGANIZATIONS.ORGANIZATION_CODE sau ETL crosswalk — chi tiết xem comment Securities Organization Reference Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Name
+    physical_name: rpt_nm
+    business_meaning: Tên hiển thị chính.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ORGANIZATION_REPORT_YEARLYS
+    source_column: NHNCK.ORGANIZATION_REPORT_YEARLYS.NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Year
+    physical_name: rpt_year
+    business_meaning: Năm báo cáo (định dạng YYYY).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ORGANIZATION_REPORT_YEARLYS
+    source_column: NHNCK.ORGANIZATION_REPORT_YEARLYS.YEAR
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Type Code
+    physical_name: rpt_tp_code
+    business_meaning: Loại/phân loại của bản ghi báo cáo năm.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ORGANIZATION_REPORT_YEARLYS
+    source_column: NHNCK.ORGANIZATION_REPORT_YEARLYS.TYPE
+    comment: "SCHEMA_CODE=NHNCK.ORGANIZATION_REPORT_YEARLYS.TYPE"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Submission Date
+    physical_name: submission_dt
+    business_meaning: Ngày nộp hồ sơ chính thức.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ORGANIZATION_REPORT_YEARLYS
+    source_column: NHNCK.ORGANIZATION_REPORT_YEARLYS.SUBMISSION_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report File Path
+    physical_name: rpt_file_path
+    business_meaning: "Đường dẫn file lưu trữ (chứng từ thanh toán, văn bản...)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ORGANIZATION_REPORT_YEARLYS
+    source_column: NHNCK.ORGANIZATION_REPORT_YEARLYS.FILE_PATH
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Status Code
+    physical_name: status_code
+    business_meaning: Trạng thái bản ghi
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ORGANIZATION_REPORT_YEARLYS
+    source_column: NHNCK.ORGANIZATION_REPORT_YEARLYS.STATUS
+    comment: "SCHEMA_CODE=NHNCK.ORGANIZATION_REPORT_YEARLYS.STATUS"
+    classification_context: null
+    etl_derived_value: null

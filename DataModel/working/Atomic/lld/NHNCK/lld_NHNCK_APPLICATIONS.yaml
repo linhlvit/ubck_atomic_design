@@ -26,10 +26,12 @@ metadata:
     \ Document Id / Previous...Id — trước đây hash trực tiếp theo CERTIFICATE_RECORD_ID/PREVIOUS_CERTIFICATE_RECORD_ID\
     \ (ID kỹ thuật) thay vì Code của bảng đích (nay đổi từ ID sang CERTIFICATE_NUMBER,\
     \ đồng bộ với đổi BK trên lld_NHNCK_CERTIFICATE_RECORDS.yaml). Cập nhật 2026-08-20:\
-    \ STATUS_ID đổi từ cặp FK Id+Code (Classification Application Status) sang 1\
-    \ trường Classification Value \"Application Status Code\" (scheme APPLICATION_STATUS)\
+    \ STATUS_ID đổi từ cặp FK Id+Code (Classification Application Status) sang 1 trường\
+    \ Classification Value \"Application Status Code\" (scheme APPLICATION_STATUS)\
     \ — do NHNCK.APPLICATION_STATUSES revert về Classification Value, không còn là\
-    \ Atomic entity riêng."
+    \ Atomic entity riêng. Hạ về draft (2026-09-10) theo DDL mới NHNCK_UAT_schema.txt:\
+    \ bổ sung \"Re Exam Subject\" (RE_EXAM_SUBJECT, map 1:1). MCDT_PERSONAL_SNAPSHOT\
+    \ (NCLOB) không map — không có ý nghĩa nghiệp vụ khai thác, xem pending_design.yaml."
 attributes:
 - attribute_name: "Securities Practitioner License Application Id"
   physical_name: "sp_license_application_id"
@@ -604,6 +606,20 @@ attributes:
   comment: "Mirror pattern Public Service Portal Code (MCDT_CODE) trên Classification\
     \ Document/Classification Specialization — mã đồng bộ với Cổng Dịch vụ công quốc\
     \ gia."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Re Exam Subject"
+  physical_name: "re_exam_subject"
+  description: "Môn thi lại."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.APPLICATIONS.RE_EXAM_SUBJECT"
+  comment: "BCV: không có term riêng — đặt tên theo nghĩa nghiệp vụ. Bổ sung theo\
+    \ DDL mới (2026-09-10)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

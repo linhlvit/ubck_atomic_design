@@ -19,7 +19,7 @@
 | Group | [Group] Group | Group | APPLICATION_GROUPS | Update | Nhóm hồ sơ CCHN được cán bộ tạo để xử lý tập thể (batch) | Securities Practitioner License Application Group | Fundamental | (1) Term candidate: `[Group] Group` — *"Identifies a specific grouping of objects that is of interest to the Financial Organization."* (2) Cấu trúc trường: GROUP_NAME, DESCRIPTION, STATUS, GROUP_CREATED_DATE, GROUP_COMPLETED_DATE, APPLICATION_COUNT, APPLICATION_TYPE, SUBMITED_DATE, SUBMITED_BY — đủ attribute nghiệp vụ riêng của nhóm (ngày tạo/hoàn thành, số lượng, loại hồ sơ batch, workflow gửi cấp trên), không suy ra được từ DECISIONS hay APPLICATIONS. (3) Chọn `[Group] Group`. Quyết định Data Modeler (2026-08-13) — đảo lại out_of_scope trước đó (Batch Processing); rà lại theo 2 điều kiện phân biệt Batch Processing Metadata vs entity thật (xem SKILL.md Bước 2) xác nhận các attribute trên không suy ra được từ entity đã có. |
 | Group | [Group] Group | Group | CERTIFICATE_RECORD_GROUPS | Update | Nhóm chứng chỉ hành nghề được cán bộ tạo để xử lý cấp/thu hồi/hủy tập thể (batch) | Securities Practitioner License Certificate Group | Fundamental | (1)(2)(3) Tương tự `Securities Practitioner License Application Group` — cấu trúc trường GROUP_NAME/DESCRIPTION/STATUS/TYPE/GROUP_CREATED_DATE/GROUP_COMPLETED_DATE/CERTIFICATE_RECORD_COUNT là attribute nghiệp vụ riêng của nhóm, không suy ra được từ DECISIONS hay CERTIFICATE_RECORDS. Chọn `[Group] Group`. Quyết định Data Modeler (2026-08-13) — đảo lại out_of_scope trước đó (Batch Processing). |
 | Documentation | [Documentation] Gov. Registration Document | Government Registration Document | DECISION_DOCUMENTS | Update | Văn bản/tài liệu ký số của quyết định hành chính, kèm thông tin người ký | Securities Practitioner License Decision Document Attachment | Fundamental | (1) Term candidate: tái dùng `[Documentation] Gov. Registration Document` — cùng concept với entity cha `Securities Practitioner License Decision Document` (đây là bản tài liệu/file gắn với quyết định, không phải khái niệm khác). (2) Cấu trúc trường: DECISION_NUMBER, TYPE, POSITION, FILE_PATH, SIGNED_BY, SIGNED_DATE, STATUS — có metadata ký số (người ký, ngày ký, chức vụ người ký) vượt quá điều kiện loại trừ "File Attachment" (chỉ tên file + đường dẫn + loại tài liệu). (3) Chọn `[Documentation] Gov. Registration Document`. Quyết định Data Modeler (2026-08-13) — đảo lại out_of_scope trước đó (Sub-process). |
-| Involved Party | [Involved Party] Organization | Organization | CERTIFICATE_DEPARTMENTS | Update | Liên kết phòng ban phụ trách với loại chứng chỉ hành nghề | Regulatory Authority Organization Unit X Securities Practitioner License Certificate Type Relationship | Relative | (1) Term candidate: tái dùng `[Involved Party] Organization` — cùng concept với entity cha Tier 1 `Regulatory Authority Organization Unit`, khớp BCO Involved Party theo yêu cầu tường minh Data Modeler. (2) Cấu trúc trường: ID (không map), CERTIFICATE_ID (FK→CERTIFICATES), DEPARTMENT_ID (FK→DEPARTMENTS) — pure junction 2 FK, không có attribute nghiệp vụ riêng → PK composite 2 FK, không tạo Id/Code riêng cho chính entity (theo pattern entity link `_x_` khác trong dự án). (3) Trước đây đánh out_of_scope (Application Config, xem Overview 7f cũ) — đảo lại theo quyết định Data Modeler (2026-08-15): đây là quan hệ phân công phòng ban phụ trách xử lý từng loại CCHN, có ý nghĩa nghiệp vụ thay vì chỉ là cấu hình quy trình thuần. |
+| Involved Party | [Involved Party] Organization | Organization | CERTIFICATE_DEPARTMENTS | Update | Liên kết phòng ban phụ trách với loại chứng chỉ hành nghề | Regulatory Authority Organization Unit X Securities Practitioner License Certificate Type Relationship | Relative | (1) Term candidate: tái dùng `[Involved Party] Organization` — khớp BCO Involved Party theo yêu cầu tường minh Data Modeler. (2) Cấu trúc trường: ID (không map), CERTIFICATE_ID (FK→CERTIFICATES), DEPARTMENT_ID (FK→DEPARTMENTS) — pure junction 2 FK, không có attribute nghiệp vụ riêng → PK composite, không tạo Id/Code riêng cho chính entity (theo pattern entity link `_x_` khác trong dự án). (3) Trước đây đánh out_of_scope (Application Config, xem Overview 7f cũ) — đảo lại theo quyết định Data Modeler (2026-08-15): đây là quan hệ phân công phòng ban phụ trách xử lý từng loại CCHN, có ý nghĩa nghiệp vụ thay vì chỉ là cấu hình quy trình thuần. **[SỬA 2026-09-11]** `DEPARTMENTS` tách khỏi entity `Regulatory Authority Organization Unit`, nay map vào Classification Value — FK `DEPARTMENT_ID` đổi từ cặp `Organization Unit Id/Code` sang 1 trường `Department Code` (Classification Value), PK composite nay là `Department Code` + `Certificate Type Id`. |
 | Documentation | [Documentation] Gov. Registration Document | Government Registration Document | CERTIFICATE_SPECIALIZATIONS | Update | Liên kết chuyên môn yêu cầu với loại chứng chỉ hành nghề | Securities Practitioner License Certificate Type X Classification Specialization Relationship | Relative | (1) Term candidate: tái dùng `[Documentation] Gov. Registration Document` — cùng concept với entity cha Tier 1 `Securities Practitioner License Certificate Type`, khớp BCO Documentation theo yêu cầu tường minh Data Modeler. (2) Cấu trúc trường: ID (không map), CERTIFICATE_ID (FK→CERTIFICATES), SPECIALIZATION_ID (FK→SPECIALIZATIONS), SORT_ORDER, DOCUMENT_TYPE, IS_REQUIRED — có 3 attribute nghiệp vụ riêng ngoài 2 FK (thứ tự hiển thị, loại tài liệu yêu cầu — không có FK note trong BRD, ETL-derived Classification Value tạm thời, bắt buộc hay không) → giữ làm entity Relative riêng, không denormalize ARRAY. (3) Trước đây đánh out_of_scope (Application Config, xem Overview 7f cũ) — đảo lại theo quyết định Data Modeler (2026-08-15): quan hệ xác định chuyên môn nào bắt buộc cho từng loại CCHN, kèm attribute nghiệp vụ riêng (SORT_ORDER/DOCUMENT_TYPE/IS_REQUIRED). |
 
 ---
@@ -47,7 +47,7 @@ graph LR
     USERS["**USERS** (Tier 1)"]:::outscope
     ORGANIZATIONS["**ORGANIZATIONS** (Tier 1)"]:::outscope
     BANKS["**BANKS** (Classification Value)"]:::outscope
-    ORGUNIT["**Regulatory Authority Organization Unit** (Tier 1)"]:::outscope
+    DEPARTMENTS["**DEPARTMENTS** (Classification Value)"]:::outscope
     CERTTYPE["**Securities Practitioner License Certificate Type** (Tier 1)"]:::outscope
     CLSSPEC["**SPECIALIZATIONS** (Classification Value)"]:::outscope
 
@@ -62,7 +62,7 @@ graph LR
     CERTIFICATE_RECORD_GROUPS -->|"DECISION_ID"| DECISIONS
     DECISION_DOCUMENTS -->|"DECISION_ID"| DECISIONS
     DECISION_DOCUMENTS -->|"SIGNED_BY"| USERS
-    CERTIFICATE_DEPARTMENTS -->|"DEPARTMENT_ID"| ORGUNIT
+    CERTIFICATE_DEPARTMENTS -->|"DEPARTMENT_ID"| DEPARTMENTS
     CERTIFICATE_DEPARTMENTS -->|"CERTIFICATE_ID"| CERTTYPE
     CERTIFICATE_SPECIALIZATIONS -->|"CERTIFICATE_ID"| CERTTYPE
     CERTIFICATE_SPECIALIZATIONS -->|"SPECIALIZATION_ID"| CLSSPEC
@@ -87,7 +87,7 @@ graph TD
     APPGROUP["**Securities Practitioner License\nApplication Group**\n[Group] Group\nAPPLICATION_GROUPS"]:::atomic
     CERTGROUP["**Securities Practitioner License\nCertificate Group**\n[Group] Group\nCERTIFICATE_RECORD_GROUPS"]:::atomic
     DECDOC["**Securities Practitioner License Decision\nDocument Attachment**\n[Documentation] Gov. Registration Document\nDECISION_DOCUMENTS"]:::atomic
-    CERTDEPT["**Regulatory Authority Organization Unit\nX License Certificate Type Relationship**\n[Involved Party] Organization\nCERTIFICATE_DEPARTMENTS"]:::atomic
+    CERTDEPT["**Regulatory Authority Organization Unit\nX License Certificate Type Relationship**\n[Involved Party] Organization\nCERTIFICATE_DEPARTMENTS\n(Department Code → cl_value)"]:::atomic
     CERTSPEC["**License Certificate Type\nX Classification Specialization Relationship**\n[Documentation] Gov. Registration Document\nCERTIFICATE_SPECIALIZATIONS"]:::atomic
 
     ADDR["IP Postal Address"]:::shared
@@ -97,7 +97,7 @@ graph TD
     DECISION["**License Decision Document** (Tier 1)"]:::outscope
     OFFICER["**Regulatory Authority Officer** (Tier 1)"]:::outscope
     SECORG["**Securities Organization Reference** (Tier 1)"]:::outscope
-    ORGUNITATOMIC["**Regulatory Authority Organization Unit** (Tier 1)"]:::outscope
+    CLVALUEATOMIC["**Classification Value** (cl_value)"]:::outscope
     CERTTYPEATOMIC["**Securities Practitioner License Certificate Type** (Tier 1)"]:::outscope
 
     ADDR -.->|"shared"| PRAC
@@ -112,7 +112,7 @@ graph TD
     CERTGROUP -->|"Decision FK"| DECISION
     DECDOC -->|"Decision FK"| DECISION
     DECDOC -->|"Signed By Officer FK"| OFFICER
-    CERTDEPT -->|"Organization Unit FK"| ORGUNITATOMIC
+    CERTDEPT -->|"Department Code (Classification Value)"| CLVALUEATOMIC
     CERTDEPT -->|"Certificate Type FK"| CERTTYPEATOMIC
     CERTSPEC -->|"Certificate Type FK"| CERTTYPEATOMIC
 ```
@@ -123,7 +123,7 @@ graph TD
 
 | Source Table | Mô tả | Scheme Code | Ghi chú |
 |---|---|---|---|
-| BANKS | Danh mục ngân hàng (dùng cho nộp phí thi) | BANK | Classification Value. FK từ EXAM_SESSIONS.BANK_ID — chỉ có mã + tên ngân hàng. |
+| BANKS | Danh mục ngân hàng (dùng cho nộp phí thi) | BANK | Classification Value. FK từ EXAM_SESSIONS.BANK_ID (crosswalk sang BANKS.BANK_CODE) — chỉ có mã + tên ngân hàng. LLD: `lld_NHNCK_BANKS.yaml`. |
 | CERTIFICATE_SPECIALIZATIONS.DOCUMENT_TYPE | Loại tài liệu yêu cầu cho chuyên môn (không có FK note trong BRD, giá trị số) | NHNCK_CERT_SPEC_DOCUMENT_TYPE | Classification Value tạm — chưa có bảng danh mục nguồn tường minh, `source_type: modeler_defined`, `values: []` — cần profile dữ liệu để xác nhận value set trước go-live. |
 
 ---
@@ -140,8 +140,10 @@ Không có bảng nào trong Tier 2 chưa đủ thông tin cột.
 |---|---|---|
 | 1 | `PROFESSIONALS` có FK đến bất kỳ bảng nghiệp vụ Tier 1 nào không (ngoài ORGANIZATIONS, COUNTRIES, PROVINCES, DISTRICTS là danh mục)? | Hiện tại ORGANIZATION_ID trỏ đến ORGANIZATIONS — là Tier 1 entity, không phải Classification Value. Tuy nhiên PROFESSIONALS thiết kế ở Tier 2 vì ORGANIZATION_ID là FK mô tả tổ chức hiện tại (denormalized, có thể null), không phải dependency lifecycle. Cần xác nhận. |
 | 2 | `SPECIALIZATION_COURSES.SPECIALIZATION_ID` trỏ đến SPECIALIZATIONS (Classification Value) — xác nhận không có FK đến entity nghiệp vụ Tier 1 nào khác. | **Xác nhận: đúng.** SPECIALIZATION_ID là Classification Value → Tier 2 giữ nguyên. |
-| 3 | `EXAM_SESSIONS.BANK_ID` — BANKS chỉ là danh mục thanh toán phí? Hay BANKS là entity Tier 1 phức tạp hơn? | Nếu BANKS chỉ có CODE + NAME → Classification Value, không tạo Atomic entity. |
+| 3 | `EXAM_SESSIONS.BANK_ID` — BANKS chỉ là danh mục thanh toán phí? Hay BANKS là entity Tier 1 phức tạp hơn? | **Xác nhận (2026-09-09): đúng, Classification Value.** BANKS chỉ có BANK_CODE + BANK_NAME + SHORT_NAME + ENGLISH_BANK_NAME (không có instance/lifecycle data) → không tạo Atomic entity riêng, giữ Classification Value scheme BANK. `EXAM_SESSIONS.BANK_ID` (surrogate FK nguồn) crosswalk sang `BANKS.BANK_CODE` để lưu vào attribute `Bank Code` (không lưu ID kỹ thuật). Đã thiết kế LLD: `lld_NHNCK_BANKS.yaml`. |
 | 4 | `POST_CERT_TRAINING_COURSES` — trước đây "Isolated" ngoài scope (7f, lý do "chưa có bảng enrollment liên quan"). Nay `POST_CERT_TRAINING_RESULTS` (Tier 3) được thiết kế làm entity enrollment/kết quả — không còn lý do loại trừ. | **Đưa vào scope theo quyết định Data Modeler (2026-07-24).** BCO Business Activity (không phải Event như SPECIALIZATION_COURSES) — theo yêu cầu tường minh Data Modeler, dùng chung catch-all `[Business Activity] Business Activity` với entity con Post Certification Training Result. |
 | 5 | `ORGANIZATION_REPORT_YEARLYS` (Securities Practitioner Organization Annual Report) và `ORGANIZATION_REPORTS` (Tier 3, Securities Practitioner Organization Employment Report) mô tả cùng lĩnh vực nghiệp vụ "báo cáo của tổ chức" nhưng khác grain (năm/container vs từng người hành nghề) — cần xác nhận đây thực sự là 2 entity riêng, không phải cùng 1 entity bị tách nhầm. | **Chưa xác nhận — Data Modeler review.** Thiết kế tạm giữ 2 entity riêng theo đúng cấu trúc PK/FK nguồn (2 bảng độc lập, PK riêng, không có quan hệ 1-1). `ORGANIZATION_REPORT_LOG_SYNCS` (Tier 4) là cầu nối FK cả 2 — xem 6f Tier 4. |
 | 6 | `DECISION_DOCUMENTS.DECISION_NUMBER` trùng tên với số quyết định đã có trên `DECISIONS` (entity cha) — cần xác nhận đây là dữ liệu denormalize (snapshot số QĐ tại thời điểm tạo file) hay lỗi thiết kế nguồn (duplicate không cần thiết). | **Đã xác nhận (2026-08-14) — trùng lặp thuần.** Loại `DECISION_DOCUMENTS.DECISION_NUMBER` khỏi Atomic attribute (xem `pending_design.yaml`), giữ FK Decision Id + Decision Code làm nguồn duy nhất — đồng bộ với việc đổi BK của `DECISIONS` sang `DECISION_NUMBER` (`lld_NHNCK_DECISIONS.yaml`). |
 | 7 | **[MỚI 2026-08-15]** `CERTIFICATE_SPECIALIZATIONS.DOCUMENT_TYPE` không có FK note trong BRD (giá trị số, không rõ bảng danh mục nguồn) — tạm đăng ký Classification Value `NHNCK_CERT_SPEC_DOCUMENT_TYPE` (`modeler_defined`, `values: []`). | Cần profile dữ liệu để xác nhận value set trước go-live — xem 6d. |
+| 8 | **[MỚI 2026-09-10]** DDL mới thêm `EXAM_SESSIONS.RESULT_UPDATER_ID` và `PROFESSIONALS.PREVIOUS_IDENTITY_ISSUE_DATE/PLACE`, `PASSPORT_NUMBER/ISSUE_DATE/ISSUE_PLACE`. | **Đã xử lý theo quyết định Data Modeler (2026-09-10):** `RESULT_UPDATER_ID` → FK IAM.USERS (cặp `Result Updater Officer Id/Code`, mirror pattern Assignee Officer). `PREVIOUS_IDENTITY_ISSUE_DATE/PLACE` thêm trên chính `lld_NHNCK_PROFESSIONALS.yaml` (đi cạnh Previous Identity Number). `PASSPORT_*` map sang `lld_NHNCK_PROFESSIONALS_IP_Alt_Identification.yaml` (nhóm attribute PASSPORT mới, mirror pattern IP Electronic Address multi-instance). |
+| 9 | **[MỚI 2026-09-11]** `DEPARTMENTS` (Tier 1, entity cha của `CERTIFICATE_DEPARTMENTS`) tách khỏi `Regulatory Authority Organization Unit`, nay map vào Classification Value theo yêu cầu Data Modeler. | **Đã xử lý:** `lld_NHNCK_CERTIFICATE_DEPARTMENTS.yaml` cập nhật FK — cặp `Regulatory Authority Organization Unit Id/Code` → 1 trường `Department Code` (Classification Value, `SCHEMA_CODE=NHNCK.DEPARTMENTS`), PK composite nay là `Department Code` + `Securities Practitioner License Certificate Type Id`. Xem Tier 1 6f #9. |

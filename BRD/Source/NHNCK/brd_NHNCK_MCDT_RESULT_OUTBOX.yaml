@@ -1,0 +1,52 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: MCDT_RESULT_OUTBOX
+brd_ref: BRD-SRC-NHNCK-MCDT_RESULT_OUTBOX
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: APPLICATION_ID
+  data_type: NUMBER(10,0)
+  description: Hồ sơ đăng ký CCHN có kết quả cần đẩy ra Cổng Dịch vụ công (MCĐT)
+  key: null
+  fk_note: 'FK tới APPLICATIONS.ID — không có FK marker tường minh trong DDL'
+- name: SENDER_IDENTITY
+  data_type: NVARCHAR2(100)
+  description: Định danh bên gửi
+  key: null
+  fk_note: null
+- name: STATUS
+  data_type: VARCHAR2(80)
+  description: Trạng thái gửi (VD PENDING/SENT/FAILED — chưa xác nhận qua DDL, cần
+    profile dữ liệu)
+  key: null
+  fk_note: null
+- name: ATTEMPTS
+  data_type: NUMBER(10,0)
+  description: Số lần đã thử gửi
+  key: null
+  fk_note: null
+- name: NEXT_RETRY_AT
+  data_type: DATE
+  description: Thời điểm dự kiến thử gửi lại tiếp theo
+  key: null
+  fk_note: null
+- name: LAST_ERROR
+  data_type: NVARCHAR2(4000)
+  description: Thông báo lỗi gần nhất khi gửi thất bại
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: DATE
+  description: Thời điểm tạo bản ghi outbox
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: DATE
+  description: Thời điểm cập nhật bản ghi outbox gần nhất
+  key: null
+  fk_note: null

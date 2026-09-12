@@ -31,7 +31,10 @@ metadata:
     \ thay vì Code của bảng đích (APPLICATION_CODE/SPECIALIZATION_CODE). Hạ về draft\
     \ lại (2026-08-20): Classification Specialization Id + Code đổi thành 1 trường\
     \ Classification Value \"Specialization Code\" (scheme SPECIALIZATION) — do NHNCK.SPECIALIZATIONS\
-    \ revert về Classification Value, không còn là Atomic entity riêng."
+    \ revert về Classification Value, không còn là Atomic entity riêng. Hạ về draft\
+    \ (2026-09-10) theo DDL mới NHNCK_UAT_schema.txt: bổ sung \"Public Service Portal\
+    \ Document Component Code\" (MCDT_MA_THANH_PHAN_HOSO, map 1:1). SUBMIT_LATER không\
+    \ tồn tại trên bảng này (chỉ có trên APPLICATION_DOCUMENTS) — không map."
 attributes:
 - attribute_name: "Securities Practitioner License Application Education Certificate\
     \ Document Id"
@@ -222,6 +225,20 @@ attributes:
   source_columns:
   - "NHNCK.APPLICATION_SPECIALIZATIONS.STATUS"
   comment: "SCHEMA_CODE=NHNCK.APPLICATION_SPECIALIZATIONS.STATUS"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Practitioner License Application Component Code"
+  physical_name: "sp_license_application_component_code"
+  description: "Mã thành phần hồ sơ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.APPLICATION_SPECIALIZATIONS.MCDT_MA_THANH_PHAN_HOSO"
+  comment: "Mirror pattern Public Service Portal Content Item Code trên lld_NHNCK_APPLICATIONS.yaml\
+    \ — mã đồng bộ với Cổng Dịch vụ công quốc gia. Bổ sung theo DDL mới (2026-09-10)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
