@@ -54,15 +54,36 @@ Thực hiện ở **Bước 0b** (trước khi đi vào chi tiết bất kỳ nh
   □ Đối chiếu danh sách entity và reuse_status giữa DTM_{MODULE}_Entities.csv ↔ Section 3 & 4 của HLD.md
 
 □ Kiểm tra nhanh Role-Playing Date Dimension toàn module (CLI script):
-  □ Chạy: python scripts/datamart_date_fk_checker.py --module {MODULE}
+  □ Chạy: python scripts/check_date_fk.py --module {MODULE}
   □ Xác nhận 100% Fact table không có cột generic cdr_dt_dim_id / calendar_dt_dim_id
   □ Xác nhận 100% Fact Snapshot có đủ cột snpst_dt_dim_id
+
+□ Kiểm tra Orphan Check 3 Chiều toàn module (CLI script):
+  □ Chạy: python scripts/check_orphan.py --module {MODULE}
+  □ Đối soát ma trận 3 chiều: LLD Attributes CSV ↔ HLD Entities ↔ Flat Table SQL DDL
+  □ Phân định rõ 2 nhánh xử lý:
+      - Nhánh A (Incomplete): Bảng còn giá trị / có ≥1 KPI READY → Yêu cầu hoàn tất Phase 2 Entities & Phase 3 Flat Table, TUYỆT ĐỐI KHÔNG XÓA
+      - Nhánh B (Abandoned): Bảng bị hủy / 0 KPI READY → Kích hoạt All-Tier Cleanup Protocol 5 bước dọn dẹp sạch cả 3 tầng
+  □ Xác nhận 0 bảng mồ côi chưa được phân loại và giải quyết
+
+□ Kiểm tra etl_logic Content Parity & Master Registry Sync (CLI script):
+  □ Chạy: python scripts/check_parity.py --module {MODULE}
+  □ Xác nhận 100% thuộc tính của module CSV có mặt đầy đủ trong master registry `Datamart/lld/datamart_attributes.csv`
+  □ Xác nhận nội dung etl_logic khớp byte-for-byte (sau strip whitespace) giữa module CSV và master registry
+  □ Xác nhận 0 mismatch logic, 0 missing attribute
 
 □ Xuất Báo cáo Tiến độ & Danh sách Blocker:
   □ Bảng tổng hợp Markdown trực quan
   □ Danh sách chỉ tiêu cần BA Team giải quyết (Nhánh 1, 2, 3)
   □ Danh sách chỉ tiêu cần Datamart Team giải quyết (Nhánh 4, 5, 6)
-  □ GATE 1 (Sau Bước 0b/0c): Claude DỪNG chờ human xác nhận kế hoạch và thứ tự review trước khi vào Micro-Review
+  □ GATE 1 (Sau Bước 0b/0c — Stop & Report):
+      - Claude BẮT BUỘC DỪNG xuất Báo cáo Tiến độ Toàn Module + Danh sách Blocker
+      - CHẶN CỨNG TUYỆT ĐỐI không cho phép chuyển sang Micro-Review nếu phát hiện:
+        • Vi phạm Orphan 3 chiều (Nhánh A chưa hoàn tất hoặc Nhánh B chưa dọn sạch)
+        • Lệch etl_logic Content Parity hoặc thiếu thuộc tính trong master registry
+        • Vi phạm cdr_dt_dim_id trên Fact table
+        • Chỉ tiêu BA = Delete còn sót lại trong Datamart
+      - Chờ Human phê duyệt kế hoạch trước khi vào Micro-Review
 ```
 
 ---
@@ -175,13 +196,21 @@ Thực hiện ở **Bước 0b** (trước khi đi vào chi tiết bất kỳ nh
   → Bảng History Atomic (`_hstr`) phải có `ds_snpst_dt = :etl_date AND ds_rcrd_st = 'ACTIVE'`
   → Thiếu filter → Warning (mã: L2-SCD4A-JOIN-FILTER, nguy cơ sai số hoặc duplicate fanout)
 
-□ Orphan Draft Artifact Check (Đối soát LLD ↔ Flat Table SQL):
-  → So sánh danh sách bảng trong `Datamart/lld/{MODULE}/` vs `Datamart/flat-table/{MODULE}/01_create_*.sql`
-  → Mọi bảng fact/operational trong LLD phải có mặt trong flat table SQL (trừ Dimension dùng chung)
-  → Phát hiện file CSV fact draft hoặc dòng attributes trong LLD mà không còn trong flat table (đã bị loại bỏ trong quá trình thiết kế) → 🔴 Critical (mã: L2-ORPHAN-DRAFT-ARTIFACT, yêu cầu thực hiện All-Tier Cleanup Protocol)
+□ Orphan Entity & Table Check 3 Chiều (LLD ↔ HLD Entities ↔ Flat Table SQL):
+  → Đối soát ma trận 3 chiều: Datamart/lld/{MODULE}/*.csv ↔ Datamart/hld/DTM_{MODULE}_Entities.csv (.md) ↔ Datamart/flat-table/{MODULE}/01_create_*.sql
+  → Mọi bảng Fact/Operational (trừ Dimension dùng chung SHARED) phải có mặt đồng bộ ở cả 3 tầng
+  → Khi phát hiện thực thể thiếu tầng, BẮT BUỘC phân loại chính xác theo 2 nhánh:
+      • Nhánh A (Incomplete Implementation): Bảng còn giá trị / có ≥1 KPI READY trong HLD/Detail Mapping → 🔴 Critical (mã: L2-ORPHAN-3WAY-INCOMPLETE). Yêu cầu bổ sung HLD Entities và sinh Flat Table SQL DDL/DML. TUYỆT ĐỐI CẤM XÓA BẢNG/ATTRIBUTES!
+      • Nhánh B (Abandoned Entity): Bảng thực sự bị hủy / thay thế / 0 KPI READY → 🟡 Warning / 🔴 Critical (mã: L2-ORPHAN-3WAY-ABANDONED). Kích hoạt All-Tier Cleanup Protocol 5 bước để dọn dẹp sạch cả 3 tầng.
+
+□ etl_logic Content Parity Check với Master Registry `datamart_attributes.csv`:
+  → So khớp chuỗi `etl_logic` của từng thuộc tính trong nhóm đang review với dòng tương ứng trong `Datamart/lld/datamart_attributes.csv`
+  → Bắt buộc khớp 100% byte-for-byte sau khi strip whitespace (chuẩn hóa \r\n thành \n)
+  → Lệch logic (cắt cụt cú pháp, thiếu WHERE, sai JOIN, sai công thức) hoặc thiếu dòng trong master CSV → 🔴 Critical (mã: L2-ETL-LOGIC-PARITY-MISMATCH / L4-MASTER-REGISTRY-OUT-OF-SYNC)
+  → Nghiêm cấm tình trạng sửa file module nhưng quên cập nhật master registry
 
 □ Role-Playing Date Dimension Key trên Fact table (CẤM cdr_dt_dim_id trên Fact):
-  → Chạy script kiểm tra: python scripts/datamart_date_fk_checker.py --module {MODULE}
+  → Chạy script kiểm tra: python scripts/check_date_fk.py --module {MODULE}
   → Tuyệt đối cấm sử dụng `Calendar Date Dimension Id` / `cdr_dt_dim_id` trên bất kỳ Fact table nào (`cdr_dt_dim_id` chỉ là PK của riêng bảng Dimension `cdr_dt_dim`)
   → Với Fact Snapshot (`fct_*_snpst`): Cột ngày snapshot kỳ bắt buộc là `Snapshot Date Dimension Id` → `snpst_dt_dim_id`
   → Với các Fact khác: Cột khóa ngoại ngày bắt buộc đặt theo vai trò nghiệp vụ `<Role> Date Dimension Id` → `<role>_dt_dim_id` (`issue_dt_dim_id`, `trade_dt_dim_id`, `submission_dt_dim_id`, `evaluation_dt_dim_id`, `effective_dt_dim_id`...)
@@ -232,7 +261,7 @@ Thực hiện ở **Bước 0b** (trước khi đi vào chi tiết bất kỳ nh
 
 ---
 
-### Lớp 4: datamart_model.yaml (Registry Cross-Module)
+### Lớp 4: Model Registry (`datamart_model.yaml`) & Master Registry (`datamart_attributes.csv`)
 
 ```
 □ Entity của bảng đang review có tồn tại trong datamart_model.yaml?
@@ -256,15 +285,22 @@ Thực hiện ở **Bước 0b** (trước khi đi vào chi tiết bất kỳ nh
 
 □ Verify registry YAML parse hợp lệ sau khi cập nhật:
   → python -c "import yaml; yaml.safe_load(open('Datamart/datamart_model.yaml', encoding='utf-8'))"
+
+□ Master Registry CSV Synchronization (Datamart/lld/datamart_attributes.csv):
+  → 100% thuộc tính của file module Attributes phải có mặt đầy đủ trong master registry (không thiếu dòng)
+  → Cặp định danh (datamart_table, datamart_column) và (datamart_entity, datamart_attribute) khớp chính xác 1-1
+  → Biểu thức etl_logic khớp byte-for-byte với file module (sau strip whitespace, chuẩn hóa CRLF)
+  → Master registry không chứa dòng mồ côi của các bảng đã bị loại bỏ/hủy (Nhánh B)
+  → Chạy script verify: python scripts/check_parity.py --module {MODULE} --strict
 ```
 
 ---
 
 ## PHẦN 3: NGUYÊN TẮC AN TOÀN & GATE CONTROL
 
-1. **GATE 1 (Sau Bước 0b/0c — Macro-Review):** Sau khi chạy Macro-Review, Claude bắt buộc DỪNG và trình bày bảng kế hoạch + ma trận đối soát cho human, chờ human xác nhận thứ tự review. Human chưa duyệt = chưa được review chi tiết.
+1. **GATE 1 (Sau Bước 0b/0c — Stop & Report):** Sau khi chạy Macro-Review, Claude bắt buộc DỪNG và trình bày bảng kế hoạch + ma trận đối soát cho human, chờ human xác nhận thứ tự review. CHẶN CỨNG không vào Micro-Review nếu phát hiện Orphan 3 chiều, lệch etl_logic Parity, sai Role-Playing Date FK hoặc chỉ tiêu Delete còn tồn tại.
 2. **GATE 2 (Group Checkpoint — Sau Mỗi Nhóm Micro-Review):**
-   - Nếu nhóm có vấn đề (Critical 🔴 / Warning 🟡): Claude DỪNG, hỏi human muốn (a) sửa ngay qua skill con, (b) ghi nhận vào Backlog và đi tiếp, hay (c) dừng.
+   - Nếu nhóm có vấn đề (Critical 🔴 / Warning 🟡): Bao gồm cả vi phạm Parity `L2-ETL-LOGIC-PARITY-MISMATCH` hay Orphan 3 chiều `L2-ORPHAN-3WAY-*` → Claude DỪNG, hỏi human muốn (a) sửa ngay qua skill con, (b) ghi nhận vào Backlog và đi tiếp, hay (c) dừng.
    - Nếu nhóm không có vấn đề (4 Lớp OK): Tự động in "✅ Nhóm N — OK" và chuyển sang nhóm kế tiếp. Lỗi Info 🔵 ghi vào Backlog tạm, tiếp tục.
 3. **Nguyên Tắc Không Tự Ý Sửa File Trực Tiếp:**
    - Mọi thay đổi nội dung nghiệp vụ HLD (Fact/Dim, grain, nguồn, bảng KPI) → gọi `datamart-hld-design`.
@@ -274,4 +310,10 @@ Thực hiện ở **Bước 0b** (trước khi đi vào chi tiết bất kỳ nh
    - Skill Datamart Review (và các skill thiết kế Datamart) chỉ có quyền **READ-ONLY** trên thư mục `DataModel/Atomic/` và `DataModel/working/Atomic/`.
    - Tuyệt đối không được tạo file mới hay sửa đổi bất kỳ file YAML nào trong `DataModel/`.
    - Reviewer phải xác minh trong git status / diff rằng không có bất kỳ file Atomic nào bị sửa đổi trong suốt quá trình làm việc với Datamart. Nếu phát hiện thiếu nguồn Atomic, chỉ kết luận `PENDING` và ghi nhận Open Issue, không tự ý can thiệp vào Atomic.
+5. **Cổng Kiểm Soát Bàn Giao Kịch Bản C (Handover Blocking Gate):**
+   - Bất kể Kịch bản C được thực hiện qua skill con hay qua Action Proposal được Human duyệt, NGAY SAU khi chỉnh sửa file Attributes module, Reviewer/Developer BẮT BUỘC:
+     (1) Đồng bộ dòng tương ứng vào `Datamart/lld/datamart_attributes.csv`.
+     (2) Chạy `python scripts/check_parity.py --module {MODULE} --strict` xác nhận 0 mismatch.
+     (3) Chạy `python scripts/check_orphan.py --module {MODULE} --strict` xác nhận 0 orphan (Nhánh A đã hoàn tất, Nhánh B đã dọn dẹp sạch).
+   - **LỆNH CẤM:** Nghiêm cấm mọi hành vi kết luận "Đã hoàn thành" hoặc bàn giao khi chưa pass 100% cả 2 script trên.
 
