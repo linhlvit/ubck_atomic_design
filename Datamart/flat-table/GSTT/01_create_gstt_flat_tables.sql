@@ -19,7 +19,7 @@
 --    Danh mục chứng khoán tổng hợp — 1 row / mã CK / rổ chỉ số (FK nullable) / ngày giao dịch
 --    Grain: Periodic Snapshot theo ngày (transaction log — mỗi ngày phiên phát sinh
 --    đồng bộ dữ liệu cho toàn bộ mã CK giao dịch)
---    Joins: Calendar Date (cdr_dt_dim_id JOIN) × Security Trading Snapshot Dimension ×
+--    Joins: Calendar Date (snpst_dt_dim_id JOIN) × Security Trading Snapshot Dimension ×
 --           Public Company Dimension × Index Constituent Dimension (LEFT JOIN, nullable)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.gstt_fct_stock_portfolio_snpst_flat ON CLUSTER 'my_cluster'
@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_fct_stock_portfolio_snpst_flat ON CLUST
     -- From: FACT Stock Portfolio Snapshot
     security_trading_snpst_dim_id       String                  COMMENT 'FK → Security Trading Snapshot Dimension',
     public_company_dim_id               String                  COMMENT 'FK → Public Company Dimension',
-    cdr_dt_dim_id                       String                  COMMENT 'FK → Calendar Date Dimension',
+    snpst_dt_dim_id                       String                  COMMENT 'FK → Calendar Date Dimension',
     index_constituent_dim_id            Nullable(String)        COMMENT 'FK → Index Constituent Dimension — nullable khi mã CK không thuộc rổ chỉ số nào',
     fr_period_end_dt_dim_id             Nullable(String)        COMMENT 'FK → Calendar Date Dimension (Role-Playing: Financial Report Period End Date) — bổ sung 2026-09-08 theo rule GSĐC',
     total_vol                           Nullable(Int64)         COMMENT 'Tổng khối lượng giao dịch khớp lệnh cổ phiếu/CCQ 3 sàn, loại trừ phái sinh và trái phiếu',
@@ -152,13 +152,13 @@ COMMENT 'Flat table — Fact Stock Portfolio Snapshot × Calendar Date × Securi
 --    (market_code) / Index Time — KHÔNG lọc rn=1 (khác Fact EOD fct_market_index_snpst)
 --    Grain: Transaction/Tick log — nhiều dòng/ngày theo Index Time, có thể append
 --    thêm tick mới trong cùng ngày khi ETL chạy nhiều lần/ngày
---    Joins: Calendar Date (cdr_dt_dim_id JOIN) × Market Index Dimension
+--    Joins: Calendar Date (trade_dt_dim_id JOIN) × Market Index Dimension
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.gstt_fct_market_index_intraday_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT Market Index Intraday
     market_index_dim_id                 String                  COMMENT 'FK → Market Index Dimension',
-    cdr_dt_dim_id                       String                  COMMENT 'FK → Calendar Date Dimension',
+    trade_dt_dim_id                       String                  COMMENT 'FK → Calendar Date Dimension',
     index_time                          Nullable(String)        COMMENT 'Thời gian ghi nhận chỉ số trong ngày (DD — grain component)',
     market_index_val_at_time            Nullable(Decimal(23,2)) COMMENT 'Điểm chỉ số tại thời điểm ghi nhận',
     total_val_at_time                   Nullable(Decimal(23,2)) COMMENT 'Giá trị giao dịch phát sinh tại thời điểm ghi nhận',
@@ -193,13 +193,13 @@ COMMENT 'Flat table — Fact Market Index Intraday × Calendar Date Dimension ×
 --    market_price_snapshot.trading_dt + processing_time.
 --    Grain: 1 row / Symbol / (Trading Date, Processing Time) — 1 nến/phút,
 --    KHÔNG lọc rn=1 (khác Fact EOD security_trading_snpst_dim)
---    Joins: Calendar Date (cdr_dt_dim_id JOIN) × Security Trading Snapshot Dimension
+--    Joins: Calendar Date (trade_dt_dim_id JOIN) × Security Trading Snapshot Dimension
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.gstt_fct_security_trading_intraday_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT Security Trading Intraday
     security_trading_snpst_dim_id       String                  COMMENT 'FK → Security Trading Snapshot Dimension',
-    cdr_dt_dim_id                       String                  COMMENT 'FK → Calendar Date Dimension',
+    trade_dt_dim_id                       String                  COMMENT 'FK → Calendar Date Dimension',
     trading_tms                         Nullable(DateTime)      COMMENT 'Thời điểm ghi nhận nến trong ngày (DD — grain component, nối Market Price Snapshot trading_dt + processing_time)',
     open_price_at_time                  Nullable(Decimal(23,2)) COMMENT 'Giá mở cửa tại thời điểm ghi nhận',
     high_price_at_time                  Nullable(Decimal(23,2)) COMMENT 'Giá cao nhất tại thời điểm ghi nhận',
@@ -233,13 +233,13 @@ COMMENT 'Flat table — Fact Security Trading Intraday × Calendar Date Dimensio
 --    Dòng tiền NĐT nước ngoài theo phút — 1 row / mã CK (Symbol) / Trade Minute
 --    Grain: nguồn Securities Trade (per-trade, GROUP BY phút) — khác Fact Security
 --    Trading Intraday (nguồn Security Trading Snapshot, per-tick MDDS)
---    Joins: Calendar Date (cdr_dt_dim_id JOIN) × Security Trading Snapshot Dimension
+--    Joins: Calendar Date (snpst_dt_dim_id JOIN) × Security Trading Snapshot Dimension
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.gstt_fct_foreign_trading_min_snpst_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT Foreign Trading Minute Snapshot
     security_trading_snpst_dim_id       String                  COMMENT 'FK → Security Trading Snapshot Dimension',
-    cdr_dt_dim_id                       String                  COMMENT 'FK → Calendar Date Dimension',
+    snpst_dt_dim_id                       String                  COMMENT 'FK → Calendar Date Dimension',
     trade_minute_tms                    Nullable(DateTime)      COMMENT 'Mốc phút xác định grain (DD — grain component), DATE_TRUNC(minute, Trade Timestamp)',
     foreign_buy_val_at_min              Nullable(Decimal(23,2)) COMMENT 'Giá trị mua của NĐT nước ngoài trong phút (K_GSTT_78)',
     foreign_sell_val_at_min             Nullable(Decimal(23,2)) COMMENT 'Giá trị bán của NĐT nước ngoài trong phút (K_GSTT_79)',

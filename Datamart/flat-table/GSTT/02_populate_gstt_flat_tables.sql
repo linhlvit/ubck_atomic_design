@@ -28,7 +28,7 @@ SELECT
     -- From: FACT Stock Portfolio Snapshot
     f.security_trading_snpst_dim_id,
     f.public_company_dim_id,
-    f.cdr_dt_dim_id,
+    f.snpst_dt_dim_id,
     f.index_constituent_dim_id,
     f.fr_period_end_dt_dim_id,
     f.total_vol,
@@ -142,7 +142,7 @@ SELECT
 
 FROM datamart.fct_stock_portfolio_snpst f
 JOIN datamart.cdr_dt_dim cal
-    ON cal.cdr_dt_dim_id = f.cdr_dt_dim_id
+    ON cal.cdr_dt_dim_id = f.snpst_dt_dim_id
 LEFT JOIN datamart.cdr_dt_dim cal_fr
     ON cal_fr.cdr_dt_dim_id = f.fr_period_end_dt_dim_id
 LEFT JOIN datamart.security_trading_snpst_dim sec_dim
@@ -165,7 +165,7 @@ INSERT INTO datamart.gstt_fct_market_index_intraday_flat
 SELECT
     -- From: FACT Market Index Intraday
     f.market_index_dim_id,
-    f.cdr_dt_dim_id,
+    f.trade_dt_dim_id,
     f.index_time,
     f.market_index_val_at_time,
     f.total_val_at_time,
@@ -184,7 +184,7 @@ SELECT
 
 FROM datamart.fct_market_index_intraday f
 JOIN datamart.cdr_dt_dim cal
-    ON cal.cdr_dt_dim_id = f.cdr_dt_dim_id
+    ON cal.cdr_dt_dim_id = f.trade_dt_dim_id
 LEFT JOIN datamart.market_index_dim idx_dim
     ON idx_dim.market_index_dim_id = f.market_index_dim_id
 WHERE cal.cdr_dt = :etl_date
@@ -201,7 +201,7 @@ INSERT INTO datamart.gstt_fct_security_trading_intraday_flat
 SELECT
     -- From: FACT Security Trading Intraday
     f.security_trading_snpst_dim_id,
-    f.cdr_dt_dim_id,
+    f.trade_dt_dim_id,
     f.trading_tms,
     f.open_price_at_time,
     f.high_price_at_time,
@@ -222,7 +222,7 @@ SELECT
 
 FROM datamart.fct_security_trading_intraday f
 JOIN datamart.cdr_dt_dim cal
-    ON cal.cdr_dt_dim_id = f.cdr_dt_dim_id
+    ON cal.cdr_dt_dim_id = f.trade_dt_dim_id
 LEFT JOIN datamart.security_trading_snpst_dim scr_dim
     ON scr_dim.security_trading_snpst_dim_id = f.security_trading_snpst_dim_id
 WHERE cal.cdr_dt = :etl_date
@@ -240,7 +240,7 @@ INSERT INTO datamart.gstt_fct_foreign_trading_min_snpst_flat
 SELECT
     -- From: FACT Foreign Trading Minute Snapshot
     f.security_trading_snpst_dim_id,
-    f.cdr_dt_dim_id,
+    f.snpst_dt_dim_id,
     f.trade_minute_tms,
     f.foreign_buy_val_at_min,
     f.foreign_sell_val_at_min,
@@ -258,7 +258,7 @@ SELECT
 
 FROM datamart.fct_foreign_trading_min_snpst f
 JOIN datamart.cdr_dt_dim cal
-    ON cal.cdr_dt_dim_id = f.cdr_dt_dim_id
+    ON cal.cdr_dt_dim_id = f.snpst_dt_dim_id
 LEFT JOIN datamart.security_trading_snpst_dim scr_dim
     ON scr_dim.security_trading_snpst_dim_id = f.security_trading_snpst_dim_id
 WHERE cal.cdr_dt = :etl_date
