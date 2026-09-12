@@ -2,7 +2,7 @@
 -- GSTT Flat Tables — POPULATE
 -- Module: Giám sát Thị trường (GSTT)
 -- Generated: Phase 3 LLD Datamart
--- 3 bảng: 3 fact + 0 operational
+-- 5 bảng: 4 fact + 1 operational
 -- ETL daily:
 --   Fact 1 (Stock Portfolio Snapshot): transaction log theo ngày —
 --     DELETE đúng ngày :etl_date (không TRUNCATE) rồi INSERT
@@ -12,8 +12,12 @@
 --   Fact 3 (Security Trading Intraday, bổ sung 2026-08-26): transaction/tick log,
 --     nhiều dòng/ngày theo Trading Timestamp (trading_tms) — cùng pattern DELETE
 --     + INSERT theo :etl_date như Fact 2
---   Bảng cũ (Fact Public Company Shareholding) đã bị loại bỏ — xem ghi chú
---   chi tiết cuối file
+--   Fact 4 (Foreign Trading Minute Snapshot, bổ sung 2026-09-11): DELETE đúng ngày
+--     :etl_date (không TRUNCATE) rồi INSERT, cùng pattern Fact 2/3
+--   Operational (Public Company Shareholding, bổ sung 2026-09-12, đảo ngược
+--     O_GSTT_9): TRUNCATE + INSERT toàn bộ current-state, không lọc ngày ETL —
+--     xem ghi chú chi tiết cuối file (thay thế hoàn toàn ghi chú "không có bảng
+--     flat" cũ cho Nhóm 45/48)
 -- ============================================================
 
 
@@ -266,9 +270,29 @@ WHERE cal.cdr_dt = :etl_date
 
 
 -- ============================================================
--- Sửa 2026-08-03 (redesign Nhóm 45/48): `Fact Public Company Shareholding` đã loại
--- khỏi HLD — 6/8 KPI Nhóm 45 PENDING theo gating "Chưa có CSDL - Map biểu mẫu".
--- 2 KPI READY còn lại (K_GSTT_100, K_GSTT_104) là thuộc tính Dimension thuần,
--- không qua Fact — flat table chỉ tạo cho Fact/Operational, không tạo riêng cho
--- Dimension độc lập. Nhóm 45/48 không có bảng flat nào ở giai đoạn này.
+-- 5. OPERATIONAL: gstt_opr_public_company_shareholding_flat
+--    [SỬA 2026-09-12, đảo ngược O_GSTT_9] Current-state — TRUNCATE + INSERT toàn
+--    bộ, không lọc theo :etl_date (khác Fact Snapshot/Event).
 -- ============================================================
+TRUNCATE TABLE IF EXISTS datamart.gstt_opr_public_company_shareholding_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.gstt_opr_public_company_shareholding_flat
+SELECT
+    -- From: OPERATIONAL Public Company Shareholding
+    o.public_company_shareholding_code,
+    o.public_company_code,
+    o.legal_entity_code,
+    o.legal_entity_nm,
+    o.ownership_quantity,
+    o.ownership_ratio_percentage,
+    o.ownership_dt,
+    o.major_shareholder_ind,
+    o.insider_shareholder_ind,
+    o.shareholder_tp_code,
+    o.position_code,
+    o.appointment_dt,
+    o.dismissal_dt,
+    o.current_foreign_holding_ratio,
+    o.src_stm_code
+
+FROM datamart.opr_public_company_shareholding o
+;

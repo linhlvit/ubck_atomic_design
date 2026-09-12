@@ -2,7 +2,7 @@
 -- GSTT Flat Tables — CREATE
 -- Module: Giám sát Thị trường (GSTT)
 -- Generated: Phase 3 LLD Datamart
--- 4 bảng: 4 fact
+-- 5 bảng: 4 fact + 1 operational
 -- (Fact Market Index Snapshot dùng chung QLKD — flat table đã có ở QLKD, không CREATE lại)
 -- Sửa 2026-08-03: bảng cũ (Fact Public Company Shareholding) đã bị loại bỏ —
 -- xem ghi chú chi tiết cuối file
@@ -11,6 +11,8 @@
 -- Sửa 2026-09-11: bổ sung bảng #4 (Fact Foreign Trading Minute Snapshot, Nhóm 25 —
 -- K_GSTT_78-80, Resolved 2026-09-04/O_GSTT_8 nhưng bị bỏ sót khỏi Phase 3 tới nay;
 -- phát hiện qua rà soát sau khi sửa join-key sổ lệnh↔MDDS/filter thỏa thuận)
+-- Sửa 2026-09-12: bổ sung bảng #5 (Operational Public Company Shareholding, Nhóm 31/34 —
+-- đảo ngược O_GSTT_9, thay thế hoàn toàn ghi chú "không có bảng flat" cũ bên dưới)
 -- ============================================================
 
 
@@ -263,12 +265,38 @@ COMMENT 'Flat table — Fact Foreign Trading Minute Snapshot × Calendar Date Di
 
 
 -- ============================================================
--- Sửa 2026-08-03 (redesign Nhóm 45/48): `Fact Public Company Shareholding` và
--- `Legal Entity Dimension` đã loại khỏi HLD — 6/8 KPI Nhóm 45 PENDING theo gating
--- "Chưa có CSDL - Map biểu mẫu" (BM8/BM70), không còn measure nào READY thuộc Fact.
--- 2 KPI READY còn lại (K_GSTT_100, K_GSTT_104) đều là thuộc tính Dimension thuần,
--- không qua Fact — flat table chỉ tạo cho Fact/Operational, KHÔNG tạo bảng flat
--- riêng cho Dimension độc lập. Do đó Nhóm 45/48 KHÔNG có bảng flat nào ở giai đoạn
--- này (K_GSTT_100 dùng trực tiếp `public_company_dim` qua Nhóm 1; K_GSTT_104 dùng
--- trực tiếp `legal_entity_position_dim` — không có flat riêng).
+-- 5. OPERATIONAL: gstt_opr_public_company_shareholding_flat
+--    [SỬA 2026-09-12, đảo ngược O_GSTT_9] Sở hữu cổ đông + chức vụ người nội bộ
+--    + sở hữu NN/trong nước — 1 row / (Public Company × Legal Entity/cổ đông).
+--    Gộp 3 nguồn Atomic: pc_shareholding (IDS.COMPANY_SHAREHOLDING), legal_entity
+--    (IDS.LEGAL_ENTITIES), foreign_ownership_info (VSDC, mapping doc). Đồng thời
+--    denormalize Position Code từ Legal Entity Position (K_GSTT_104 vẫn dùng
+--    `legal_entity_position_dim` độc lập, không đổi). Phục vụ Nhóm 31 (8/8 KPI
+--    READY) và Nhóm 34 (Data Explorer, reuse 6/8 KPI). Không FK Star Schema —
+--    Operational denormalized hoàn toàn, K_GSTT_100 (Mã cổ phiếu) vẫn dùng riêng
+--    `public_company_dim` (Nhóm 1), không phải cột của bảng này.
 -- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.gstt_opr_public_company_shareholding_flat ON CLUSTER 'my_cluster'
+(
+    -- From: OPERATIONAL Public Company Shareholding
+    public_company_shareholding_code    String                  COMMENT 'PK — mã sở hữu cổ đông (Bảng Tác nghiệp)',
+    public_company_code                 String                  COMMENT 'Mã công ty đại chúng',
+    legal_entity_code                   String                  COMMENT 'Mã cổ đông',
+    legal_entity_nm                     Nullable(String)        COMMENT 'Tên cổ đông hoặc người nội bộ hoặc người liên quan (K_GSTT_101)',
+    ownership_quantity                  Nullable(Int64)         COMMENT 'Số lượng cổ phiếu nắm giữ (K_GSTT_102)',
+    ownership_ratio_percentage          Nullable(Decimal(5,2))  COMMENT 'Phần trăm nắm giữ (K_GSTT_103, K_GSTT_103b filter Insider)',
+    ownership_dt                        Nullable(Date)          COMMENT 'Ngày đạt tỷ lệ sở hữu',
+    major_shareholder_ind               String                  COMMENT 'Là cổ đông lớn — Y/N',
+    insider_shareholder_ind             String                  COMMENT 'Là cổ đông nội bộ — Y/N (dùng filter K_GSTT_103b)',
+    shareholder_tp_code                 Array(String)           COMMENT 'Loại cổ đông (có thể nhiều loại cùng lúc) — scheme IDS_SHAREHOLDER_TYPE',
+    position_code                       Nullable(String)        COMMENT 'Chức vụ người nội bộ (nếu có) — denormalize từ Legal Entity Position (K_GSTT_104)',
+    appointment_dt                      Nullable(Date)          COMMENT 'Ngày bổ nhiệm chức vụ (nếu có)',
+    dismissal_dt                        Nullable(Date)          COMMENT 'Ngày miễn nhiệm chức vụ (nếu có)',
+    current_foreign_holding_ratio       Nullable(Decimal(5,2))  COMMENT 'Tỷ lệ sở hữu NĐT nước ngoài (K_GSTT_120) — cấp công ty, lặp lại theo mọi dòng cổ đông cùng công ty',
+    src_stm_code                        String                  COMMENT 'Mã hệ thống nguồn — IDS_COMPANY_SHAREHOLDING'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(ownership_dt))
+ORDER BY (assumeNotNull(ownership_dt), public_company_shareholding_code)
+COMMENT 'Flat table — Operational Public Company Shareholding (latest state per cổ đông × công ty)'
+;

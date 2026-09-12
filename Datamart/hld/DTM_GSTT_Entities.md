@@ -103,21 +103,19 @@ erDiagram
 
 ---
 
-## Legal Entity Position Dimension (phục vụ Nhóm 31)
+## Legal Entity Position Dimension + Operational Public Company Shareholding (phục vụ Nhóm 31, Nhóm 34 reuse)
 
-**[SỬA 2026-08-03]** Dùng độc lập như danh mục Chiều, không qua Fact — `Fact Public Company Shareholding` (Fact gốc dự kiến FK tới Dimension này) đã loại khỏi Star Schema vì 0 KPI READY (xem Bảng PENDING bên dưới), nhưng bản thân Dimension này vẫn READY cho 1 KPI Chiều thuần (Position Code), không cần Fact mới.
+**[THIẾT KẾ LẠI 2026-09-12, đảo ngược O_GSTT_9 theo xác nhận trực tiếp Data Modeler]** `Operational Public Company Shareholding` khôi phục lại (trước đó bị loại khỏi Star Schema 2026-08-03 vì 0 KPI READY) — nay đủ nguồn Atomic cho toàn bộ 8/8 KPI: `pc_shareholding` (IDS.COMPANY_SHAREHOLDING, Nguồn 1 draft), `legal_entity` (IDS.LEGAL_ENTITIES, Nguồn 2 draft), `foreign_ownership_info` (VSDC, theo mapping `DataModel/working/Atomic/lld/VSDC/mapping_vsdc_ods_atm.md` — chưa có LDM YAML/manifest chính thức, chấp nhận ngoại lệ theo xác nhận trực tiếp). `Legal Entity Position Dimension` giữ nguyên như cũ, dùng độc lập song song.
+
+```mermaid
+erDiagram
+    Operational_Public_Company_Shareholding
+    Legal_Entity_Position_Dimension
+```
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Legal Entity Position Dimension | Dimension | new | Chức vụ người nội bộ (Position Code) | 1 row / (cổ đông, chức vụ) (SCD4A) | K_GSTT_104 |
+| Operational Public Company Shareholding | Operational | new | Sở hữu cổ đông + tên cổ đông + chức vụ (denormalize) + sở hữu NN/trong nước | 1 row / (Public Company × Legal Entity/cổ đông) | K_GSTT_100–103, 103b, 120–121 |
+| Legal Entity Position Dimension | Dimension | new | Chức vụ người nội bộ (Position Code) — dùng độc lập làm Chiều | 1 row / (cổ đông, chức vụ) (SCD4A) | K_GSTT_104 |
 
 ---
-
-## Bảng PENDING (không thiết kế trong Phase 2)
-
-| Datamart Entity | Lý do PENDING | Issue |
-|---|---|---|
-| Fact Public Company Shareholding | Toàn bộ measure (Ownership Quantity/Ratio, cờ cổ đông lớn/người nội bộ) `Chưa có CSDL - Map biểu mẫu` — nguồn dự kiến `major_shareholder` (VSDC BM8) chưa số hóa. Có entity Atomic thay thế (`pc_shareholding`/IDS) nhưng quyết định giữ PENDING, không dùng thay thế (dữ liệu IDS có thể không phản ánh đúng/kịp "cổ đông lớn" VSDC gốc). **Loại khỏi Star Schema 2026-08-03** — 0 KPI READY | O_GSTT_9 |
-| Legal Entity Dimension | Chỉ phục vụ `Fact Public Company Shareholding` (100% PENDING) — không còn Fact nào FK tới. Driving entity chỉ có ở Atomic Nguồn 2 (working/Atomic), chưa promote Nguồn 1. **Loại khỏi Star Schema 2026-08-03** cùng đợt với Fact trên | O_GSTT_9 |
-
-Các Fact còn lại (6/8) đều có ít nhất 1 KPI/Nhóm READY (xem Bảng grain Section 3.2 HLD để biết measure/KPI cụ thể còn PENDING trong từng Fact — VD `Fact Stock Portfolio Snapshot` có nhiều cột PENDING như LNST/VCSH/P-E/P-B chờ Atomic EAV báo cáo tài chính, xem O_GSTT_1/O_GSTT_2).
