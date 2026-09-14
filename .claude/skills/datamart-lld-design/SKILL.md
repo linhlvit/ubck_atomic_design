@@ -757,7 +757,7 @@ Nếu FAIL → sửa trước khi trình bày.
   dh = dm_rows[0]; di = {h: i for i, h in enumerate(dh)}
   for r in dm_rows[1:]:
       mart_table, mart_col, logic, role = r[di['mart_table']], r[di['mart_column']], r[di['logic']], r[di['column_role']]
-      if role in ('DERIVED', 'PENDING') or not mart_table or not mart_col:
+      if role in ('DERIVED', 'PENDING', 'DEPRECATED') or not mart_table or not mart_col:
           continue
       if mart_table not in entity_map:
           fails.append(('detail_mapping:entity_not_found', dm_path, r[di['kpi_id']], mart_table, None))
@@ -1075,14 +1075,17 @@ OUTPUT CHECK (chỉ kiểm tra block KPI của nhóm đang xử lý):
 □ Số dòng block ≥ N_BA(nhóm) — báo danh sách dòng BA bị bỏ sót nếu thiếu
 □ Số KPI_ID unique trong block = N_KPI(nhóm) — báo cáo nếu lệch
 □ Không có KPI_ID trong block mà chưa được khai sinh trong HLD — báo danh sách nếu vi phạm
-□ KPI PENDING của nhóm từ HLD cũng có trong block (mart_table/mart_column/logic trống)
+□ KPI PENDING (Quy tắc L4): bắt buộc để trống cả 4 cột mart_table, mart_column, column_role, logic; ghi rõ lý do blocker theo 5 nhóm chuẩn hóa vào ghi_chu
 □ Không bỏ qua dòng Phân loại = Chiều
 □ Không bỏ qua dòng Trạng thái = Doing
 □ Không bỏ qua chiều lặp lại giữa các nhóm — nhóm đang xử lý có đủ SLICER/FILTER explicit (không dùng shorthand "xem nhóm X")
 □ tinh_chat khớp với Tính chất trong HLD bảng KPI
 □ mart_table dùng tên logical; mart_column dùng tên logical
 □ logic dùng tên physical (physical_table.physical_column)
-□ DERIVED: mart_table và mart_column để trống
+□ DERIVED: mart_table và mart_column bắt buộc để trống; logic chứa công thức vật lý (không gán cột ảo/generic)
+□ REUSE Case 1 (Physical): bắt buộc điền đủ mart_table và mart_column khớp 1-1 với Attributes, role = MEASURE/SLICER
+□ REUSE Case 2 (Presentation/Derived): bắt buộc để trống mart_table và mart_column, column_role = DERIVED
+□ DEPRECATED: column_role = DEPRECATED, mart_table/mart_column để trống, logic = "Đã loại bỏ — không tạo cột/slicer", ghi rõ căn cứ bãi bỏ
 □ MEASURE: chỉ phép tính thuần (COUNT/SUM/AVG) — condition tách thành FILTER riêng
 □ NaN/trống trong cột Trạng thái mapping → ghi chú, xác nhận với BA
 □ Append đúng THỨ TỰ SỐ NHÓM TĂNG DẦN — xem TC6; nếu file hiện tại đã append lệch thứ tự từ
@@ -1109,7 +1112,7 @@ TC3 — Logic dùng tên physical (snake_case), đủ prefix table_name.column_n
 □ Nếu FAIL → sửa trước khi trình bày
 
 TC4 — Trường/bảng trong Detail Mapping tồn tại trong datamart_model.yaml:
-□ Lấy toàn bộ (mart_table, mart_column) unique từ Detail Mapping (bỏ qua row DERIVED có mart_table/mart_column trống)
+□ Lấy toàn bộ (mart_table, mart_column) unique từ Detail Mapping (bỏ qua các row DERIVED, PENDING, DEPRECATED có mart_table/mart_column trống: `if role in ('DERIVED', 'PENDING', 'DEPRECATED') or not mart_table or not mart_col: continue`)
 □ Kiểm tra mỗi cặp: tra Datamart/datamart_model.yaml → tìm entity có **logical_name** khớp với mart_table → kiểm tra columns list có **logical_name** = mart_column không. **LƯU Ý:** mart_table và mart_column trong Detail Mapping là **TÊN LOGICAL** (ví dụ: "Fact Stock Portfolio Snapshot", "Total Trading Volume"), KHÔNG phải tên physical. Do đó PHẢI so sánh với logical_name (KHÔNG so sánh với datamart_table hay physical_name — sẽ gây 100% false positive).
 □ Báo: ✅ TC4 PASS hoặc ❌ TC4 FAIL: [danh sách (mart_table, mart_column) chưa có trong datamart_model.yaml]
 □ Nếu FAIL → kiểm tra xem model thiếu cột (Phase 1 chưa ghi đủ) hay Detail Mapping dùng sai tên → sửa tương ứng
@@ -1172,6 +1175,18 @@ Datamart/flat-table/{MODULE}/01_create_{module}_flat_tables.sql
 Datamart/flat-table/{MODULE}/02_populate_{module}_flat_tables.sql
 ```
 
+### Quy trình đồng bộ khép kín LLD ↔ Flat Table (Closed-Loop Synchronization)
+Mọi thay đổi tại tầng LLD (thêm/sửa cột Fact/Dim, sửa logic, thêm bảng mới, bãi bỏ bảng) bắt buộc kích hoạt quy trình đồng bộ 3 pha khép kín:
+1. **Pha 1 (LLD Update):** Cập nhật file Attributes module, Detail Mapping, master `datamart_attributes.csv`, và `datamart_model.yaml`.
+2. **Pha 2 (Flat Table Sync):** Cập nhật DDL (`01_create_*.sql`), DML (`02_populate_*.sql`), và `flat_table_mapping.md`.
+3. **Pha 3 (Quality Gate Review):** Chạy `check_parity.py --strict`, `check_orphan.py --strict`, và đối soát Column Coverage / 1-1 Projection Alignment.
+
+### Ma trận 4 Trigger và Hành động đồng bộ (Sync Triggers & Actions Matrix)
+- **Trigger 1 (Thêm cột mới vào Fact/Dim):** Thêm dòng vào Attributes module + master `datamart_attributes.csv` + `datamart_model.yaml` → Thêm khai báo cột tương ứng trong DDL `01_create_*.sql` (kiểu ClickHouse, COMMENT) → Bổ sung projection vào `SELECT` của DML `02_populate_*.sql` → Cập nhật `flat_table_mapping.md`.
+- **Trigger 2 (Sửa công thức / Thay thế cột):** Cập nhật Detail Mapping & Attributes CSV + master `datamart_attributes.csv` → Sửa tên cột/schema trong DDL `01_create_*.sql` → Sửa projection trong DML `02_populate_*.sql` → Ghi log header file SQL (`-- Sửa YYYY-MM-DD: ...`).
+- **Trigger 3 (Thêm bảng Fact/Operational mới):** Tạo file Attributes + cập nhật `datamart_model.yaml` + HLD/Entities → Thêm khối `CREATE TABLE` mới trong DDL `01_create_*.sql` → Thêm khối `DELETE/TRUNCATE` + `INSERT INTO ... SELECT` mới trong DML `02_populate_*.sql` → Thêm mục vào `flat_table_mapping.md`.
+- **Trigger 4 (Bãi bỏ bảng — Deprecation / Cleanup):** Thực thi All-Tier Cleanup Protocol 5 tầng (LLD, master attributes, detail mapping, model.yaml, HLD) → Xóa/comment khối `CREATE TABLE` trong DDL → Xóa khối DML → Dọn sạch mục trong `flat_table_mapping.md`.
+
 ### Checklist Phase 3
 
 ```
@@ -1208,11 +1223,21 @@ FILE 02 (POPULATE):
 □ Calendar Date join: datamart.cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = f.{role_dt_dim_id} (role-playing FK, ví dụ: snpst_dt_dim_id, trade_dt_dim_id)
 □ Dim join: alias rõ ràng, ON {dim_pk} = f.{fk_col}
 □ Operational: không có LEFT JOIN nào
+□ Parameter Consistency: Toàn bộ điều kiện lọc ngày chạy ETL bắt buộc dùng thống nhất tham số :etl_date (WHERE snpst_cal.cdr_dt = :etl_date / WHERE evnt_cal.cdr_dt = :etl_date — cấm {etl_date}, $etl_date, hoặc hardcode date)
 
-POST-CHECK (sau khi sinh):
-□ Cross-check: mỗi cột trong CREATE có đúng 1 entry tương ứng trong SELECT của INSERT
-□ Không có cột nào trong Attributes.csv bị bỏ sót trong CREATE TABLE (fact/operational columns)
-□ Không có cột nào trong CREATE TABLE (fact/operational section) mà KHÔNG có trong Attributes.csv — cột thừa phải xóa
+POST-CHECK (sau khi sinh) & DESIGNER PRE-DELIVERY CHECKLIST:
+□ Flat Table Column Coverage Check:
+  - 100% cột Fact và Operational từ Attributes module (trừ technical fields ds_batch_date, ds_population_timestamp) phải có mặt trong CREATE TABLE
+  - 100% cột giá trị nghiệp vụ của Dim được JOIN (theo FKs) phải có mặt trong CREATE TABLE (bỏ PK surrogate, src_stm_code và audit fields SCD4A)
+  - Có đầy đủ cột Calendar Date cdr_dt (theo alias vai trò ngày: snpst_cdr_dt, ...)
+□ 1-1 Projection Alignment Check:
+  - Mỗi cột trong CREATE có đúng 1 entry tương ứng trong SELECT của INSERT
+  - Khớp 1-1 số lượng và thứ tự cột giữa câu lệnh CREATE TABLE (01_create_*.sql) và mệnh đề SELECT (02_populate_*.sql)
+  - Tên alias trong SELECT (... AS col_name) khớp chính xác 100% với tên cột định nghĩa trong CREATE TABLE
+□ Column Drift Check (Chống trôi lệch cột):
+  - Không có bất kỳ cột nào trong SQL thiếu trong master datamart_attributes.csv
+  - Không có cột Fact nào có KPI khai thác trong Detail Mapping mà bị bỏ sót khỏi Flat Table
+  - Không có cột nào trong CREATE TABLE (fact/operational section) mà KHÔNG có trong Attributes.csv — cột thừa phải xóa
 □ Dim JOIN: mọi dim được JOIN phải có FK tương ứng trong Attributes.csv — dim không có FK thì không JOIN, không lấy cột
 □ Orphan Check (LLD ↔ Entities ↔ Flat Table) — 3 CHIỀU, không chỉ LLD↔Flat Table: Đối chiếu danh sách bảng fact/operational xuất hiện ở CẢ 3 nơi: (a) `Datamart/lld/{MODULE}/` (Attributes), (b) `Datamart/hld/DTM_{MODULE}_Entities.csv`/`.md` (Phase 2), (c) `Datamart/flat-table/{MODULE}/01_create_*.sql` (Phase 3). Một bảng có mặt ở (a) nhưng thiếu ở (b) và/hoặc (c) là orphan — dù KPI của nó đã READY trong HLD và có Detail Mapping (Phase 1 + Phase 2 Detail Mapping "xong" KHÔNG đồng nghĩa Phase 2 Entities + Phase 3 cũng đã xong).
   - **Khi phát hiện orphan, xác định đúng 1 trong 2 nhánh trước khi hành động — KHÔNG mặc định là nhánh dọn dẹp:**
@@ -1236,7 +1261,7 @@ Bắt buộc thực hiện đủ 5 bước dọn dẹp đồng bộ:
 2. **Dọn sạch master `datamart_attributes.csv`:** Tìm và xóa TOÀN BỘ các dòng có `datamart_table == {datamart_table}` trong file master `Datamart/lld/datamart_attributes.csv`.
 3. **Cập nhật `DTM_{MODULE}_Detail_Mapping.csv`:** Rà soát các KPI từng map vào bảng bị loại bỏ:
    - Nếu sáp nhập sang bảng khác: đổi `mart_table` và `mart_column` sang bảng mới.
-   - Nếu không còn bảng đáp ứng: chuyển KPI sang `PENDING`, xóa giá trị `mart_table` và `mart_column`, cập nhật `ghi_chu` nêu rõ lý do.
+   - Nếu không còn bảng đáp ứng và thống nhất bãi bỏ chỉ tiêu với BA: chuyển KPI sang `DEPRECATED`, đặt `column_role = 'DEPRECATED'`, để trống `mart_table`/`mart_column`, `logic = "Đã loại bỏ — không tạo cột/slicer"`, `tinh_chat = "Deprecated"`, cập nhật `ghi_chu` nêu rõ ngày bãi bỏ và biên bản thống nhất với BA (TUYỆT ĐỐI KHÔNG chuyển sang PENDING nếu đã xác định không triển khai). Nếu chỉ tạm thời thiếu bảng và vẫn bảo lưu nhu cầu tìm nguồn thay thế: áp dụng Quy tắc L4 để trống cả 4 cột và ghi rõ blocker vào `ghi_chu`.
 4. **Xóa khỏi `Datamart/datamart_model.yaml`:** Xóa triệt để block entity `- id: "DTM-{datamart_table}"` khỏi file registry.
 5. **Đồng bộ HLD & Flat Table SQL:** Cập nhật `DTM_{MODULE}_HLD.md` (Section 4 Reuse Analysis ghi rõ trạng thái `deprecated/removed`, giải thích lý do) và đảm bảo `01_create_*_flat_tables.sql` + `02_populate_*_flat_tables.sql` không còn DDL/INSERT của bảng đó.
 

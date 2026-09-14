@@ -88,3 +88,56 @@ Integrity mode: development
 - [ ] Bảng tổng hợp Scorecard thể hiện rõ tỷ lệ đạt chuẩn của module QLKD.
 - [ ] Danh sách Action Items phân loại theo mức độ ưu tiên P0/P1/P2 kèm phân định kịch bản A/B/C/D rõ lượng để bàn giao thực hiện.
 
+## 2026-09-14T10:23:36Z
+
+Rà soát và nâng cấp toàn diện bộ kỹ năng thiết kế Datamart (`datamart-lld-design` và `datamart-review`) dựa trên các lỗi, sự cố và bài học thực tế phát sinh trong ngày hôm nay: chuẩn hóa quy tắc điền Detail Mapping (xử lý triệt để DERIVED vs PENDING vs REUSE vs DEPRECATED), bổ sung kiểm soát Grain/công thức đo lường (tránh nhầm lẫn Vốn hóa mã CK vs rổ chỉ số như K_GSTT_61), nâng cấp script audit kiểm tra chéo linh hoạt giữa BA và Datamart, và thiết lập quy trình đồng bộ tự động giữa LLD và Flat-table scripts.
+
+Working directory: C:/Workspace/Design_DW/ubck_atomic_design
+Integrity mode: development
+
+## Reference Materials
+- Repository skills directory: `.claude/skills/datamart-lld-design/` và `.claude/skills/datamart-review/`
+- Mapping guideline: `.claude/skills/datamart-lld-design/reference/phase2_detail_mapping.md`
+- Review checklist: `.claude/skills/datamart-review/reference/review_checklist.md`
+- Detail mapping mẫu thực tế: `Datamart/lld/DTM_GSTT_Detail_Mapping.csv`
+- BA analyst mẫu thực tế: `BRD/BA/BA_analyst_GSTT.csv`, `BRD/BA/BA_analyst_QLKD.csv`
+- Flat table scripts: `Datamart/flat-table/GSTT/01_create_gstt_flat_tables.sql`, `Datamart/flat-table/GSTT/02_populate_gstt_flat_tables.sql`
+
+## Requirements
+
+### R1. Chuẩn hóa quy chuẩn điền Detail Mapping (phase2_detail_mapping.md)
+Bổ sung và làm rõ quy tắc bắt buộc cho các trường hợp để trống hoặc điền giá trị tại 2 cột `mart_table` và `mart_column`:
+- **DERIVED:** Bắt buộc để trống `mart_table` và `mart_column`. Công thức tính toán vật lý đầy đủ nằm ở `logic`.
+- **PENDING (Quy tắc L4):** Bắt buộc để trống cả 4 cột `mart_table`, `mart_column`, `column_role`, `logic`. Ghi rõ blocker/nguyên nhân tại `ghi_chu`.
+- **REUSE:** Phân biệt rõ hai trường hợp: (1) Chỉ tiêu tái sử dụng một measure đã có sẵn trên bảng Fact/Dim của nhóm trước (bắt buộc phải điền tên `mart_table` và `mart_column` tương ứng, không được để trống nếu Fact đã có cột), và (2) Chỉ tiêu hiển thị lại thuần túy qua BI layer mà không có cột vật lý riêng.
+- **DEPRECATED / LOẠI BỎ:** Đánh dấu rõ ràng trạng thái bãi bỏ, lý do loại bỏ và cơ sở thống nhất với BA, không để nhầm lẫn với trạng thái PENDING.
+
+### R2. Bổ sung kiểm soát Grain và tính đúng đắn của công thức đo lường (review_checklist.md)
+Cập nhật bộ quy tắc kiểm tra (Checklist) để ngăn chặn các sai sót nghiệp vụ:
+- **Kiểm tra khớp cấp độ hạt (Grain Mismatch):** Ngăn chặn việc copy công thức giữa các bảng có grain khác nhau (điển hình: Vốn hóa cấp mã chứng khoán `Symbol` trong bảng Top-N vs Vốn hóa cấp rổ chỉ số `Index` trong bảng Index Constituent).
+- **Chuẩn hóa Window Functions & Time Horizon:** Hướng dẫn rõ ràng cơ sở tính toán cho các chỉ tiêu đỉnh/đáy 52 tuần, 3 tháng, 6 tháng (sử dụng `close_price` hay `high_price`/`low_price` theo đúng tài liệu BA).
+- **Rà soát tính nhất quán của Measure:** Đảm bảo mẫu số và tử số của các chỉ số tài chính (P/E, P/B, EPS, BVPS) sử dụng cùng cơ sở thời gian (TTM 4 quý vs quý gần nhất).
+
+### R3. Nâng cấp và chuẩn hóa công cụ Audit / Cross-Check BA - Datamart
+Xây dựng hoặc cập nhật script Python chuyên dụng để tự động kiểm tra chéo giữa file BA và Detail Mapping Datamart:
+- Tự động nhận diện linh hoạt cấu trúc file BA (xử lý trường hợp header nằm ở dòng 1 hoặc dòng 2, tự động tìm kiếm các biến thể tên cột như `Mã`/`Mã chỉ tiêu`, `Trạng thái`/`Trạng thái mapping`, `Bảng nguồn`/`Nguồn dữ liệu`).
+- Phân loại chính xác 5 nhóm nguyên nhân PENDING: (1) BA chưa mapping xong, (2) Chưa có mapping nguồn từ BA, (3) Thiếu nguồn dữ liệu / Atomic entity ngoài scope, (4) Cần join phức tạp đa nguồn, (5) Datamart chưa thiết kế Fact/Dim.
+- Đảm bảo script chạy ổn định với mã hóa UTF-8 BOM, không bị lỗi console encoding trên Windows.
+
+### R4. Thiết lập quy trình đồng bộ giữa Detail Mapping LLD và Flat-Table Scripts
+Bổ sung vào skill quy trình và checklist kiểm tra đồng bộ:
+- Khi có bất kỳ thay đổi nào về cột, logic tính toán, hoặc bổ sung bảng Fact/Operational mới trong Detail Mapping, quy trình bắt buộc phải cập nhật tương ứng vào file tạo bảng DDL (`01_create_*_flat_tables.sql`) và file nạp dữ liệu DML (`02_populate_*_flat_tables.sql`).
+- Đảm bảo tính nhất quán giữa tên cột logic, tên cột vật lý trong `datamart_attributes.csv`, Detail Mapping và Flat tables.
+
+## Acceptance Criteria
+
+### Tính chuẩn hóa của tài liệu Skill
+- [ ] File `.claude/skills/datamart-lld-design/reference/phase2_detail_mapping.md` được cập nhật đầy đủ các quy định chi tiết cho DERIVED, PENDING, REUSE, DEPRECATED kèm ví dụ đúng/sai cụ thể.
+- [ ] File `.claude/skills/datamart-review/reference/review_checklist.md` có bổ sung mục kiểm tra Grain Mismatch và kiểm soát công thức tài chính/thị trường.
+- [ ] Có mục hướng dẫn kiểm tra đồng bộ Flat Table DDL/DML trong tài liệu skill LLD.
+
+### Độ tin cậy của công cụ tự động
+- [ ] Cung cấp script Python kiểm tra chéo (audit tool) hoàn chỉnh, chạy thành công và xuất báo cáo không có lỗi trên tất cả các phân hệ hiện có trong thư mục `Datamart/lld/`.
+- [ ] Script kiểm tra phát hiện được chính xác các dòng vi phạm quy tắc để trống `mart_table`/`mart_column` (ví dụ: dòng REUSE nhưng để trống bảng, hoặc dòng PENDING nhưng vẫn điền cột logic).
+
+

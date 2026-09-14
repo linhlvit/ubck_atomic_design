@@ -21,17 +21,19 @@ Export encoding: **UTF-8 BOM** (`utf-8-sig`).
 | `Pending` | Đưa vào Detail Mapping đầy đủ |
 | `NaN` / trống | Xác nhận với BA trước khi map — không tự điền |
 
-**KPI PENDING từ HLD** (block PENDING Section 2) — cũng đưa vào Detail Mapping:
+**KPI PENDING từ HLD** (block PENDING Section 2 hoặc KPI PENDING đơn lẻ do thiếu nguồn) — cũng đưa vào Detail Mapping (áp dụng triệt để Quy tắc L4):
 
 | Cột | Giá trị |
 |---|---|
 | `kpi_id` | K_{MODULE}_N — tham chiếu từ HLD |
-| `kpi_name` | Tên KPI từ bảng KPI PENDING trong HLD |
+| `kpi_name` | Tên KPI từ bảng KPI trong HLD |
 | `mart_table` | *(để trống)* |
 | `mart_column` | *(để trống)* |
 | `column_role` | *(để trống)* |
 | `logic` | *(để trống)* |
-| `ghi_chu` | `Pending - chưa thiết kế nguồn` |
+| `ghi_chu` | `Pending - [Nhóm 1-5]: <lý do chi tiết>` |
+
+> **Quy tắc L4 mở rộng:** Áp dụng cho cả nhóm PENDING toàn bộ lẫn KPI PENDING đơn lẻ nằm trong nhóm READY. Bắt buộc để trống cả 4 cột (`mart_table`, `mart_column`, `column_role`, `logic`). Blocker phải được phân loại rõ theo 1 trong 5 nhóm nguyên nhân chuẩn hóa.
 
 ❌ Không bỏ qua dòng `Phân loại = Chiều`.
 ❌ Không bỏ qua dòng `Trạng thái = Doing`.
@@ -49,6 +51,7 @@ Export encoding: **UTF-8 BOM** (`utf-8-sig`).
 | `GROUP_BY` | Chiều nhóm trong aggregate |
 | `JOIN_KEY` | FK dùng để join |
 | `DERIVED` | KPI Phái sinh — tính tại presentation layer |
+| `DEPRECATED` | Chỉ tiêu đã bãi bỏ sau thống nhất với BA — không sinh cột/slicer |
 
 **Mapping từ Phân loại BA / Tính chất HLD:**
 
@@ -58,6 +61,7 @@ Export encoding: **UTF-8 BOM** (`utf-8-sig`).
 | `Chỉ tiêu cơ sở` | `MEASURE` |
 | `Chỉ tiêu phái sinh` | `DERIVED` (ưu tiên) hoặc `MEASURE` nếu lưu trong mart |
 | `Attribute` (KPI tác nghiệp trên Operational) | `SLICER` — column hiển thị / filter trực tiếp, không aggregate |
+| `Deprecated` / `Bãi bỏ` / `Loại bỏ` | `DEPRECATED` — giữ dòng đối soát, không sinh cột |
 
 **Lưu ý `tinh_chat` cho dòng FILTER/SLICER của KPI Base:**
 Dòng FILTER/SLICER thuộc cùng KPI Base (cùng `kpi_id`) kế thừa `tinh_chat = "Base"` từ KPI cha — không để trống.
@@ -93,6 +97,193 @@ Dòng FILTER/SLICER thuộc cùng KPI Base (cùng `kpi_id`) kế thừa `tinh_ch
 
 ❌ `logic` dùng logical name (Title Case) — phải là physical `table.column`.
 ❌ `tinh_chat` trong Detail Mapping khác với `Tính chất` trong HLD bảng KPI.
+
+---
+
+## Quy Chuẩn Điền Cột Cho 4 Trường Hợp Đặc Biệt
+
+Trong Detail Mapping, việc để trống hay điền giá trị tại các cột kỹ thuật (`mart_table`, `mart_column`, `column_role`, `logic`) quyết định trực tiếp đến quá trình sinh Flat Table DDL/DML và kiểm thử đối soát. Dưới đây là quy chuẩn bắt buộc cho 4 trường hợp đặc biệt:
+
+### 1. DERIVED (Chỉ tiêu Phái Sinh Tính Toán Tại Presentation Layer)
+- **Bản chất:** Chỉ tiêu không được lưu trữ vật lý thành một cột riêng trên bảng Fact/Dim của Datamart, mà được tính toán động (dynamically computed) tại tầng báo cáo/BI (PowerBI, Superset, v.v.) dựa trên các thuộc tính/measure vật lý sẵn có.
+- **Quy tắc bắt buộc:**
+  + `mart_table`: **Bắt buộc để trống** (`""`).
+  + `mart_column`: **Bắt buộc để trống** (`""`). Tuyệt đối **CẤM** gán cột ảo, cột phái sinh tự tạo (như `P/E Ratio`, `Market Cap`), hoặc cột generic của bảng báo cáo (như `item_value` trong các bảng Report denormalized).
+  + `column_role`: Điền `DERIVED`.
+  + `logic`: Chứa **công thức vật lý đầy đủ** bằng tên physical (`table.column`), không dùng logical name. Cấm tham chiếu mã KPI chéo (`K_{MODULE}_N`) trừ trường hợp ngoại lệ YoY.
+  + `ghi_chu`: Ghi rõ nguồn gốc các cột cấu thành và lưu ý tính tại presentation layer.
+
+### 2. PENDING (Quy tắc L4: Chưa Có Nguồn Hoặc Nhóm PENDING)
+- **Bản chất:** Chỉ tiêu còn hiệu lực nghiệp vụ nhưng tạm thời chưa thể thiết kế/triển khai do thiếu nguồn Atomic, chờ BA phân tích, hoặc Datamart chưa thiết kế bảng.
+- **Phạm vi áp dụng:** Áp dụng cho **CẢ 2 TRƯỜNG HỢP**:
+  1. Toàn bộ nhóm HLD ở trạng thái PENDING (do thiếu nguồn toàn nhóm).
+  2. KPI PENDING đơn lẻ nằm xen kẽ trong một nhóm HLD đã READY.
+- **Quy tắc bắt buộc (Nguyên tắc vàng L4):**
+  + **BẮT BUỘC ĐỂ TRỐNG CẢ 4 CỘT:** `mart_table`, `mart_column`, `column_role`, `logic`.
+  + Tuyệt đối không điền tên bảng/cột dự kiến, không điền role `MEASURE` hay `PENDING`, không điền logic giả định.
+  + `ghi_chu`: Bắt buộc ghi rõ lý do blocker thuộc **1 trong 5 nhóm nguyên nhân chuẩn hóa**:
+    * **[Nhóm 1 - BA Pending]:** BA chưa phân tích xong / chờ BA confirm mapping.
+    * **[Nhóm 2 - Chưa có mapping nguồn từ BA]:** Nguồn trống / N/A / Chưa có CSDL nguồn.
+    * **[Nhóm 3 - Thiếu nguồn Atomic / Ngoại lai]:** Chưa có bảng/cột Atomic tương ứng (ghi rõ tên entity thiếu và Open Issue ID, ví dụ: `O_{MODULE}_{N}`).
+    * **[Nhóm 4 - Join đa nguồn phức tạp]:** Cần kết nối liên hệ thống chưa chuẩn hóa mô hình dữ liệu.
+    * **[Nhóm 5 - Datamart Pending]:** Atomic đã có sẵn, Datamart đang chờ thiết kế bảng Fact/Dim.
+
+### 3. REUSE (Tái Sử Dụng Chỉ Tiêu Giữa Các Nhóm)
+Khi một chỉ tiêu ở nhóm sau sử dụng lại dữ liệu của nhóm trước, phải phân định dứt khoát 2 trường hợp:
+
+#### Case 1: Tái Sử Dụng Measure/Dim Vật Lý Đã Có Sẵn (Physical Measure/Dim Reuse)
+- **Bản chất:** Chỉ tiêu sử dụng trực tiếp một measure hoặc dimension attribute đã được thiết kế và lưu trữ vật lý trên bảng Fact hoặc Dim ở nhóm trước.
+- **Quy tắc bắt buộc:**
+  + `mart_table`: **BẮT BUỘC ĐIỀN ĐỦ** tên bảng logical tương ứng.
+  + `mart_column`: **BẮT BUỘC ĐIỀN ĐỦ** tên cột logical tương ứng. Tuyệt đối **KHÔNG ĐƯỢC ĐỂ TRỐNG** nếu Fact/Dim đã có cột. Để trống sẽ khiến Phase 3 Flat Table SQL không sinh được cột trong SELECT list.
+  + `column_role`: Điền `MEASURE` (nếu là aggregate) hoặc `SLICER`/`FILTER` (nếu là dimension attribute).
+  + `logic`: Điền công thức vật lý tương ứng (`SUM(table.col)`, v.v.).
+  + `ghi_chu`: Ghi rõ `Reuse từ Nhóm X (K_{MODULE}_Y) — measure có sẵn trên Fact/Dim <Table>`.
+
+#### Case 2: Tái Sử Dụng Chỉ Tiêu Hiển Thị BI / Phái Sinh (Presentation / Derived Reuse)
+- **Bản chất:** Chỉ tiêu hiển thị lại thuần túy qua BI layer hoặc phái sinh từ các measure có sẵn mà không có cột vật lý riêng trên Fact/Dim.
+- **Quy tắc bắt buộc:**
+  + `mart_table`: **BẮT BUỘC ĐỂ TRỐNG** (`""`).
+  + `mart_column`: **BẮT BUỘC ĐỂ TRỐNG** (`""`). Cấm tự tạo tên cột ảo vì sẽ gây lỗi TC4/TC7 do cột không có trong `datamart_attributes.csv`.
+  + `column_role`: Điền `DERIVED`.
+  + `logic`: Viết lại công thức vật lý đầy đủ từ các cột cấu thành (chú ý kiểm tra đúng grain hiển thị của nhóm reuse theo Quy tắc L14).
+  + `ghi_chu`: Ghi rõ `Reuse từ Nhóm X (K_{MODULE}_Y) — tính toán tại presentation layer, không lưu cột riêng trên Fact`.
+
+### 4. DEPRECATED / LOẠI BỎ (Đã Thống Nhất Bãi Bỏ Với BA)
+- **Bản chất:** Chỉ tiêu hoặc chiều đã từng được định danh trong HLD hoặc scope ban đầu, nhưng trong quá trình thiết kế chi tiết/review đã được BA và Data Modeler thống nhất bãi bỏ vĩnh viễn (terminal state).
+- **Quy tắc bắt buộc:**
+  + `column_role`: **BẮT BUỘC ĐIỀN `DEPRECATED`**.
+  + `mart_table`: **Bắt buộc để trống** (`""`).
+  + `mart_column`: **Bắt buộc để trống** (`""`).
+  + `logic`: Điền cố định: `"Đã loại bỏ — không tạo cột/slicer"`.
+  + `tinh_chat`: Điền `Deprecated`.
+  + `ghi_chu`: Ghi rõ ngày thống nhất, lý do loại bỏ và căn cứ/biên bản thống nhất với BA (ví dụ: `Resolved YYYY-MM-DD (Deprecated) — ...`).
+- **Phân biệt 3 khái niệm quan trọng:**
+  1. **Delete từ BA (`Trạng thái mapping = Delete` trong file BA analyst ban đầu):** Loại bỏ 100% ngay từ đầu, KHÔNG sinh dòng trong HLD, **KHÔNG sinh dòng trong Detail Mapping**, KHÔNG tạo cột trong Attributes. Đưa vào Detail Mapping là vi phạm L1/L2-DELETE-VIOLATION.
+  2. **DEPRECATED trong Datamart (`column_role = 'DEPRECATED'`):** Chỉ tiêu đã có KPI_ID trong HLD nhưng sau đó thống nhất hủy. **BẮT BUỘC GIỮ DÒNG** trong Detail Mapping để bảo toàn đối soát số lượng HLD (TC5), nhưng đánh dấu tường minh để loại khỏi ETL active.
+  3. **PENDING trong Datamart (4 cột để trống):** Chỉ tiêu còn nhu cầu triển khai trong tương lai, chỉ tạm thời tắc nghẽn nguồn. **TUYỆT ĐỐI KHÔNG ĐÁNH TRÁO DEPRECATED THÀNH PENDING** vì sẽ làm phình to backlog và báo cáo sai lệch.
+
+---
+
+## Bảng Đối Chiếu Ví Dụ Đúng vs Sai Cho 5 Kịch Bản (Right vs Wrong Examples)
+
+Dưới đây là bảng đối chiếu cụ thể theo đúng cấu trúc 11 cột của Detail Mapping:
+`kpi_id,tab,nhom,kpi_name,tinh_chat,source_module,mart_table,mart_column,column_role,logic,ghi_chu`
+
+### 1. Kịch Bản DERIVED (Chỉ tiêu Phái Sinh)
+
+| Thuộc tính | Cột | Ví dụ ĐÚNG ✅ | Ví dụ SAI ❌ | Phân tích lỗi sai |
+|---|---|---|---|---|
+| Mã KPI | `kpi_id` | `K_GSTT_12` | `K_GSTT_12` | |
+| Tab | `tab` | `TỔNG QUAN` | `TỔNG QUAN` | |
+| Nhóm | `nhom` | `Nhóm 1 — Thị trường cổ phiếu` | `Nhóm 1 — Thị trường cổ phiếu` | |
+| Tên KPI | `kpi_name` | `% Thay đổi giá` | `% Thay đổi giá` | |
+| Tính chất | `tinh_chat` | `Phái sinh` | `Phái sinh` | |
+| Phân hệ nguồn | `source_module` | `GSTT` | `GSTT` | |
+| **Bảng Mart** | `mart_table` | *(để trống)* | `Security Trading Snapshot Dimension` | ❌ **SAI:** Điền tên bảng vật lý cho chỉ tiêu DERIVED |
+| **Cột Mart** | `mart_column` | *(để trống)* | `Price Change Percentage` | ❌ **SAI:** Tự bịa tên cột vật lý không có trong schema Attributes |
+| **Vai trò cột** | `column_role` | `DERIVED` | `DERIVED` (hoặc `MEASURE`) | Nếu đổi thành MEASURE càng sai vì mart không lưu trữ cột này |
+| **Công thức** | `logic` | `security_trading_snpst_dim.price_change / security_trading_snpst_dim.reference_price * 100` | `(K_GSTT_11 - K_GSTT_9) / K_GSTT_9 * 100` | ❌ **SAI:** Tham chiếu chéo mã KPI thay vì công thức cột vật lý |
+| Ghi chú | `ghi_chu` | `Tính tại presentation layer từ 2 cột Dimension` | `Chỉ tiêu phái sinh` | |
+
+*Dạng dòng CSV hợp lệ:*
+```csv
+"K_GSTT_12","TỔNG QUAN","Nhóm 1 — Thị trường cổ phiếu","% Thay đổi giá","Phái sinh","GSTT","","","DERIVED","security_trading_snpst_dim.price_change / security_trading_snpst_dim.reference_price * 100","Tính tại presentation layer từ 2 cột Dimension"
+```
+
+*Lưu ý lỗi cột generic:* Với các bảng báo cáo dạng Report denormalized (như HNX03, HNX04), tuyệt đối không gán `mart_column = "Item Value"` cho dòng DERIVED. Nếu chỉ tiêu tính ở presentation layer thì phải để trống bảng/cột; nếu nạp trực tiếp vào bảng report thì `column_role` phải là `MEASURE`.
+
+---
+
+### 2. Kịch Bản PENDING (Quy Tắc L4: Để Trống Cả 4 Cột)
+
+| Thuộc tính | Cột | Ví dụ ĐÚNG ✅ | Ví dụ SAI ❌ | Phân tích lỗi sai |
+|---|---|---|---|---|
+| Mã KPI | `kpi_id` | `K_QLKD_3039` | `K_QLKD_3039` | |
+| Tab | `tab` | `CHI TIẾT` | `CHI TIẾT` | |
+| Nhóm | `nhom` | `Nhóm 23 — Báo cáo tài chính` | `Nhóm 23 — Báo cáo tài chính` | |
+| Tên KPI | `kpi_name` | `Doanh thu hoạt động môi giới` | `Doanh thu hoạt động môi giới` | |
+| Tính chất | `tinh_chat` | `Base` | `Base` | |
+| Phân hệ nguồn | `source_module` | `QLKD` | `QLKD` | |
+| **Bảng Mart** | `mart_table` | *(để trống)* | `Fact Financial Report Snapshot` | ❌ **SAI L4:** Điền tên bảng dự kiến khi chưa thiết kế |
+| **Cột Mart** | `mart_column` | *(để trống)* | `Brokerage Revenue` | ❌ **SAI L4:** Điền tên cột dự kiến khi chưa có nguồn |
+| **Vai trò cột** | `column_role` | *(để trống)* | `MEASURE` | ❌ **SAI L4:** Điền vai trò cột khi chỉ tiêu đang PENDING |
+| **Công thức** | `logic` | *(để trống)* | `SUM(fct_fin_rpt.brokerage_rev)` | ❌ **SAI L4:** Điền công thức giả định chưa kiểm chứng |
+| **Ghi chú** | `ghi_chu` | `Pending - [Nhóm 3 - Thiếu nguồn Atomic]: gap Atomic REPORT_CELL_VALUE, xem O_QLKD_23` | `Pending - chưa thiết kế nguồn` | Điền đủ 4 cột trên làm script audit hiểu nhầm là READY, gây lỗi khi sinh flat table |
+
+*Dạng dòng CSV hợp lệ:*
+```csv
+"K_QLKD_3039","CHI TIẾT","Nhóm 23 — Báo cáo tài chính","Doanh thu hoạt động môi giới","Base","QLKD","","","","","Pending - [Nhóm 3 - Thiếu nguồn Atomic]: gap Atomic REPORT_CELL_VALUE, xem O_QLKD_23"
+```
+
+---
+
+### 3. Kịch Bản REUSE Case 1 (Tái Sử Dụng Measure/Dim Vật Lý)
+
+| Thuộc tính | Cột | Ví dụ ĐÚNG ✅ | Ví dụ SAI ❌ | Phân tích lỗi sai |
+|---|---|---|---|---|
+| Mã KPI | `kpi_id` | `K_GSTT_13` | `K_GSTT_13` | |
+| Tab | `tab` | `GIAO DỊCH` | `GIAO DỊCH` | |
+| Nhóm | `nhom` | `Nhóm 7 — Top giao dịch cổ phiếu` | `Nhóm 7 — Top giao dịch cổ phiếu` | |
+| Tên KPI | `kpi_name` | `Khối lượng giao dịch khớp lệnh` | `Khối lượng giao dịch khớp lệnh` | |
+| Tính chất | `tinh_chat` | `Base` | `Base` | |
+| Phân hệ nguồn | `source_module` | `GSTT` | `GSTT` | |
+| **Bảng Mart** | `mart_table` | `Fact Stock Portfolio Snapshot` | *(để trống)* | ❌ **SAI NGHIÊM TRỌNG:** Fact đã có bảng nhưng lại để trống |
+| **Cột Mart** | `mart_column` | `Total Volume` | *(để trống)* | ❌ **SAI NGHIÊM TRỌNG:** Fact đã có cột nhưng lại để trống |
+| **Vai trò cột** | `column_role` | `MEASURE` | `MEASURE` (hoặc để trống) | |
+| **Công thức** | `logic` | `SUM(fct_stock_portfolio_snpst.total_vol)` | `SUM(fct_stock_portfolio_snpst.total_vol)` | |
+| **Ghi chú** | `ghi_chu` | `Reuse từ Nhóm 1 (K_GSTT_13) — measure có sẵn trên Fact Stock Portfolio Snapshot` | `Reuse từ Nhóm 1` | Để trống bảng/cột làm Phase 3 Flat Table không lấy được cột vào SELECT list |
+
+*Dạng dòng CSV hợp lệ:*
+```csv
+"K_GSTT_13","GIAO DỊCH","Nhóm 7 — Top giao dịch cổ phiếu","Khối lượng giao dịch khớp lệnh","Base","GSTT","Fact Stock Portfolio Snapshot","Total Volume","MEASURE","SUM(fct_stock_portfolio_snpst.total_vol)","Reuse từ Nhóm 1 (K_GSTT_13) — measure có sẵn trên Fact Stock Portfolio Snapshot"
+```
+
+---
+
+### 4. Kịch Bản REUSE Case 2 (Chỉ Tiêu Hiển Thị BI / Phái Sinh Không Có Cột Riêng)
+
+| Thuộc tính | Cột | Ví dụ ĐÚNG ✅ | Ví dụ SAI ❌ | Phân tích lỗi sai |
+|---|---|---|---|---|
+| Mã KPI | `kpi_id` | `K_GSTT_58` | `K_GSTT_58` | |
+| Tab | `tab` | `ĐỊNH GIÁ` | `ĐỊNH GIÁ` | |
+| Nhóm | `nhom` | `Nhóm 7 — Top cổ phiếu theo P/E` | `Nhóm 7 — Top cổ phiếu theo P/E` | |
+| Tên KPI | `kpi_name` | `Chỉ số P/E` | `Chỉ số P/E` | |
+| Tính chất | `tinh_chat` | `Phái sinh` | `Phái sinh` | |
+| Phân hệ nguồn | `source_module` | `GSTT` | `GSTT` | |
+| **Bảng Mart** | `mart_table` | *(để trống)* | `Fact Stock Portfolio Snapshot` | ❌ **SAI:** Fact không lưu trữ cột P/E, gán bảng gây nhầm lẫn |
+| **Cột Mart** | `mart_column` | *(để trống)* | `P/E Ratio` | ❌ **SAI:** Cột không có trong Attributes CSV, gây FAIL TC4/TC7 |
+| **Vai trò cột** | `column_role` | `DERIVED` | `MEASURE` | ❌ **SAI:** Không phải measure vật lý aggregate |
+| **Công thức** | `logic` | `security_trading_snpst_dim.close_price / (fct_stock_portfolio_snpst.net_profit_after_tax_ttm / fct_stock_portfolio_snpst.outstanding_share_quantity)` | `AVG(fct_stock_portfolio_snpst.pe_ratio)` | Công thức tính từ các cột vật lý có sẵn |
+| **Ghi chú** | `ghi_chu` | `Reuse từ Nhóm 6 (K_GSTT_58) — tính toán tại presentation layer, không lưu cột riêng trên Fact` | `Reuse từ Nhóm 6` | |
+
+*Dạng dòng CSV hợp lệ:*
+```csv
+"K_GSTT_58","ĐỊNH GIÁ","Nhóm 7 — Top cổ phiếu theo P/E","Chỉ số P/E","Phái sinh","GSTT","","","DERIVED","security_trading_snpst_dim.close_price / (fct_stock_portfolio_snpst.net_profit_after_tax_ttm / fct_stock_portfolio_snpst.outstanding_share_quantity)","Reuse từ Nhóm 6 (K_GSTT_58) — tính toán tại presentation layer, không lưu cột riêng trên Fact"
+```
+
+---
+
+### 5. Kịch Bản DEPRECATED / LOẠI BỎ (Đã Thống Nhất Bãi Bỏ Với BA)
+
+| Thuộc tính | Cột | Ví dụ ĐÚNG ✅ | Ví dụ SAI 1 (Nhầm PENDING) ❌ | Ví dụ SAI 2 (Xóa mất dòng) ❌ |
+|---|---|---|---|---|
+| Mã KPI | `kpi_id` | `K_GSTT_6` | `K_GSTT_6` | *(Xóa mất dòng khỏi file)* |
+| Tab | `tab` | `PHÂN TÍCH` | `PHÂN TÍCH` | |
+| Nhóm | `nhom` | `Nhóm 1 — Bảng số liệu` | `Nhóm 1 — Bảng số liệu` | |
+| Tên KPI | `kpi_name` | `Phương thức khớp lệnh (thỏa thuận)` | `Phương thức khớp lệnh (thỏa thuận)` | |
+| Tính chất | `tinh_chat` | `Deprecated` | `Base` | |
+| Phân hệ nguồn | `source_module` | `GSTT` | `GSTT` | |
+| **Bảng Mart** | `mart_table` | *(để trống)* | *(để trống)* | |
+| **Cột Mart** | `mart_column` | *(để trống)* | *(để trống)* | |
+| **Vai trò cột** | `column_role` | `DEPRECATED` | *(để trống)* | ❌ Để trống role làm hệ thống hiểu nhầm là PENDING |
+| **Công thức** | `logic` | `Đã loại bỏ — không tạo cột/slicer` | *(để trống)* | |
+| **Ghi chú** | `ghi_chu` | `Resolved 2026-09-08 (Deprecated) — Loại bỏ khỏi danh mục Chiều/Slicer vì không có giá trị khai thác độc lập. Nghiệp vụ hiển thị trực tiếp 4 cột measure riêng biệt: Khớp lệnh (K_GSTT_13/14) và Thỏa thuận (K_GSTT_17/18).` | `Pending - chưa thiết kế nguồn` ❌ **CỰC KỲ NGUY HIỂM:** Gây hiểu nhầm là thiếu nguồn, phát sinh blocker ảo! | ❌ **LỖI:** Xóa mất dòng làm lệch số lượng HLD ↔ Detail Mapping, gây FAIL TC5! |
+
+*Dạng dòng CSV hợp lệ:*
+```csv
+"K_GSTT_6","PHÂN TÍCH","Nhóm 1 — Bảng số liệu","Phương thức khớp lệnh (thỏa thuận)","Deprecated","GSTT","","","DEPRECATED","Đã loại bỏ — không tạo cột/slicer","Resolved 2026-09-08 (Deprecated) — Loại bỏ khỏi danh mục Chiều/Slicer vì không có giá trị khai thác độc lập. Nghiệp vụ hiển thị trực tiếp 4 cột measure riêng biệt: Khớp lệnh (K_GSTT_13/14) và Thỏa thuận (K_GSTT_17/18)."
+```
 
 ---
 
@@ -132,13 +323,14 @@ Các lỗi dưới đây được tổng hợp từ review module PTTT. Mỗi l�
 
 ---
 
-### L4 — PENDING rule: nhóm HLD PENDING còn điền `column_role`/`mart_table`/`logic`
+### L4 — PENDING rule: nhóm HLD PENDING hoặc KPI PENDING còn điền `column_role`/`mart_table`/`logic`
 
-**Pattern:** HLD nhóm = PENDING nhưng Detail Mapping vẫn điền đầy đủ column_role, mart_table, mart_column, logic (thường do copy từ nhóm khác hoặc điền dự kiến).
+**Pattern:** HLD nhóm = PENDING hoặc KPI đơn lẻ = PENDING nhưng Detail Mapping vẫn điền `column_role`, `mart_table`, `mart_column`, `logic` (thường do copy từ nhóm khác hoặc điền dự kiến).
 
-**Quy tắc cứng:** HLD nhóm PENDING → **toàn bộ** dòng của nhóm đó trong Detail Mapping phải để trống `mart_table`/`mart_column`/`column_role`/`logic`. Chỉ được điền `kpi_id`, `kpi_name`, `tab`, `nhom`, `tinh_chat`, `source_module`, `ghi_chu`.
+**Quy tắc cứng:** Dòng PENDING (bất kể do cả nhóm PENDING hay KPI PENDING đơn lẻ do thiếu nguồn) → **toàn bộ 4 cột: `mart_table`, `mart_column`, `column_role`, `logic` PHẢI ĐỂ TRỐNG TUYỆT ĐỐI (`""`)**. Chỉ được điền `kpi_id`, `kpi_name`, `tab`, `nhom`, `tinh_chat`, `source_module`, `ghi_chu`. Cột `ghi_chu` phải ghi rõ blocker thuộc 1 trong 5 nhóm nguyên nhân chuẩn hóa.
 
 ❌ Nhóm 26–37 (HLD PENDING / FDS blocker) còn MEASURE/SLICER/FILTER → vi phạm.
+❌ KPI PENDING đơn lẻ điền `mart_table = "Fact Financial Report Snapshot"`, `column_role = "MEASURE"` → vi phạm.
 
 ---
 
@@ -281,13 +473,52 @@ Ví dụ K_NHNCK_2_YOY (CCHN cấp mới YTD):
 
 ---
 
+### L15 — REUSE sai quy cách: để trống cột (Case 1) hoặc gán cột ảo (Case 2)
+
+**Pattern:**
+- **Case 1 (Physical Measure/Dim):** Tái sử dụng measure/dim vật lý đã có sẵn trên Fact/Dim của nhóm trước nhưng lại để trống `mart_column` (hoặc cả `mart_table`) trong khi ghi chú có "Reuse" (ví dụ thực tế tại GSTT: `K_GSTT_100` để trống cột, `K_GSTT_90`, `91` để trống cột). Hậu quả: generator Phase 3 không xác định được cột SELECT, gây khuyết tật metadata Flat Table.
+- **Case 2 (BI Presentation / Derived):** Tái sử dụng chỉ tiêu phái sinh/hiển thị BI nhưng lại tự bịa tên cột vật lý (ví dụ: gán cột `P/E Ratio` cho `K_GSTT_58`, `Market Cap` cho `K_GSTT_61`). Hậu quả: gây lỗi TC4/TC7 vì cột không tồn tại trong `datamart_attributes.csv`.
+
+**Quy tắc:**
+- **Case 1 (Physical Measure/Dim):** BẮT BUỘC điền đủ `mart_table` và `mart_column` (tên logical), `column_role` = `MEASURE`/`SLICER`, `logic` = phép tính physical.
+- **Case 2 (BI Presentation / Derived):** BẮT BUỘC để trống `mart_table` và `mart_column`, `column_role` = `DERIVED`, `logic` = công thức physical đầy đủ.
+
+**Kiểm tra:** Quét toàn bộ các dòng có `ghi_chu` chứa từ "Reuse":
+- Nếu `column_role` in ('MEASURE', 'SLICER', 'FILTER') → kiểm tra `mart_table` và `mart_column` không được rỗng.
+- Nếu `column_role` == 'DERIVED' → kiểm tra `mart_table` và `mart_column` bắt buộc phải rỗng.
+
+❌ `K_GSTT_100` ghi "Reuse từ Nhóm 1" nhưng `mart_column` để trống → vi phạm L15 Case 1.
+❌ `K_GSTT_58` role DERIVED nhưng điền `mart_table = "Fact Stock Portfolio Snapshot"`, `mart_column = "P/E Ratio"` → vi phạm L15 Case 2.
+
+---
+
+### L16 — Đánh tráo DEPRECATED thành PENDING gây phình to blocker
+
+**Pattern:** Chỉ tiêu hoặc chiều phân tích đã được BA và Data Modeler thống nhất bãi bỏ vĩnh viễn (như `K_GSTT_6`, hoặc KPI phụ thuộc bảng draft bị hủy trong Cleanup Protocol) nhưng người thiết kế lại ghi nhận thành `PENDING` (để trống `column_role` hoặc ghi `ghi_chu = "Pending - chưa thiết kế nguồn"`).
+
+**Hậu quả:** Làm sai lệch báo cáo tiến độ và KPI Reconciliation, biến chỉ tiêu đã được duyệt bỏ thành blocker ảo tồn đọng vô thời hạn.
+
+**Quy tắc:**
+- Chỉ tiêu bãi bỏ sau thống nhất BA → BẮT BUỘC ghi `column_role = 'DEPRECATED'`, `mart_table = ""`, `mart_column = ""`, `logic = "Đã loại bỏ — không tạo cột/slicer"`, `tinh_chat = "Deprecated"`, `ghi_chu` ghi rõ ngày + căn cứ/biên bản bãi bỏ.
+- Phân biệt với BA Delete: Dòng BA có `Trạng thái mapping = Delete` ban đầu thì loại bỏ 100% (0 dòng trong Detail Mapping). Còn dòng DEPRECATED trong Datamart là chỉ tiêu từng có trong HLD/scope nay bãi bỏ (phải giữ dòng để bảo toàn số lượng đối soát HLD TC5).
+
+**Kiểm tra:**
+- Quét các dòng `column_role == 'DEPRECATED'`: phải đảm bảo `mart_table` và `mart_column` để trống, `logic` đúng chuẩn, và `ghi_chu` có căn cứ bãi bỏ.
+- Quét các dòng PENDING: kiểm tra xem có dòng nào thực chất đã được thống nhất bãi bỏ không để chuyển sang `DEPRECATED`.
+
+❌ Bãi bỏ chiều khớp lệnh `K_GSTT_6` nhưng để trống role và ghi `Pending - chưa thiết kế nguồn` → vi phạm L16.
+❌ Xóa mất dòng `K_GSTT_6` khỏi Detail Mapping làm thiếu KPI so với HLD (FAIL TC5) → sai quy trình.
+✅ Giữ dòng `K_GSTT_6` với `column_role = 'DEPRECATED'`, `mart_table = ""`, `mart_column = ""`, `logic = "Đã loại bỏ — không tạo cột/slicer"`.
+
+---
+
 ### Checklist bổ sung — kiểm tra trước khi giao file Phase 2
 
 ```
 □ L1: Mọi SLICER/FILTER Chiều thời gian → logic trỏ đúng physical_table của nhóm đó (không phải bảng nhóm khác)
 □ L2: Mọi physical_table.physical_column trong logic → tồn tại trong Attributes.csv của bảng tương ứng
 □ L3: Operational table → không có dòng FILTER cdr_dt_dim (chỉ SLICER date column trực tiếp)
-□ L4: HLD nhóm PENDING → toàn bộ dòng của nhóm: mart_table/mart_column/column_role/logic trống
+□ L4: HLD nhóm PENDING hoặc KPI PENDING đơn lẻ → toàn bộ 4 cột mart_table/mart_column/column_role/logic trống; ghi_chu phân loại theo 5 nhóm chuẩn hóa
 □ L5: Nhóm copy từ nhóm khác → scan kpi_name kiểm tra không còn tên ngữ cảnh cũ
 □ L6: Mọi physical_table trong logic → là bảng thuộc nhóm đó (không phải bảng nhóm khác)
 □ L7: Nhóm PENDING → mỗi kpi_id chỉ có 1 dòng (không duplicate)
@@ -298,6 +529,8 @@ Ví dụ K_NHNCK_2_YOY (CCHN cấp mới YTD):
 □ L12: Cột nhom theo thứ tự dòng trong file → số nhóm xuất hiện lần đầu phải tăng dần 1, 2, ..., N_max (parse bằng regex, không so sánh string) — nếu phát hiện lệch, sắp xếp lại toàn file
 □ L13: Tổng số nhóm trong Detail Mapping (cột nhom, unique) = tổng số nhóm trong HLD Section 2 (kể cả nhóm PENDING toàn bộ không có bảng Attributes nào) — không dùng danh sách nhóm từ Phase 0 Plan để xác định "đã xong"
 □ L14: Mọi dòng `ghi_chu` chứa "Reuse từ Nhóm X" mà `logic` có GROUP BY/PARTITION BY/SUM/MAX theo 1 chiều cụ thể → xác định grain hiển thị thật của Nhóm đang reuse (nhìn cột lân cận trong mockup: 1 dòng = 1 mã CK hay 1 chỉ số hay 1 công ty?) và đối chiếu đúng với GROUP BY trong logic — KHÔNG mặc định giữ nguyên GROUP BY của Nhóm gốc chỉ vì đang copy công thức
+□ L15: Mọi dòng REUSE Case 1 (measure/dim vật lý) → điền đầy đủ mart_table và mart_column; Mọi dòng REUSE Case 2 (presentation/derived) → để trống mart_table và mart_column, column_role = DERIVED (không tạo cột ảo)
+□ L16: Mọi chỉ tiêu đã thống nhất bãi bỏ với BA → column_role = DEPRECATED, mart_table/mart_column để trống, logic = 'Đã loại bỏ — không tạo cột/slicer' — TUYỆT ĐỐI KHÔNG đánh tráo thành PENDING
 ```
 
 > **L12 và L13 là 2 testcase module-level** (chạy 1 lần sau khi TOÀN BỘ nhóm đã xử lý, tương ứng TC6 và TC5 trong `SKILL.md`) — khác với L1–L11 vốn kiểm tra trong phạm vi từng nhóm/dòng riêng lẻ.
@@ -348,9 +581,12 @@ Ví dụ K_NHNCK_2_YOY (CCHN cấp mới YTD):
 
 ```csv
 "kpi_id","tab","nhom","kpi_name","tinh_chat","source_module","mart_table","mart_column","column_role","logic","ghi_chu"
-"K_FMS_1","TỔNG QUAN","Nhóm 1","Quỹ đầu tư chứng khoán","Base","FMS","Fact Fund Management Company Snapshot","Investment Fund Count","MEASURE","COUNT(fct_fnd_mgt_co_snpst.ivsm_fnd_cnt)",""
-"K_FMS_1","TỔNG QUAN","Nhóm 1","Quỹ đầu tư chứng khoán","Base","FMS","Fact Fund Management Company Snapshot","Snapshot Date Dimension Id","FILTER","JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_fnd_mgt_co_snpst.snpst_dt_dim_id WHERE cdr_dt_dim.yr = :Y AND cdr_dt_dim.mo = :M",""
-"K_FMS_2_YOY","TỔNG QUAN","Nhóm 1","Tăng trưởng AUM so cùng kỳ","Phái sinh","FMS","","","DERIVED","(K_FMS_2 kỳ hiện tại - K_FMS_2 cùng kỳ năm trước) / K_FMS_2 cùng kỳ năm trước","Refer KPI ID vì YoY — cần presentation layer resolve"
-"K_FMS_5","TỔNG QUAN","Nhóm 2","Loại hình CTQLQ","Base","FMS","Fund Management Company Dimension","Life Cycle Status Code","SLICER","fnd_mgt_co_dim.lcs_code",""
-"K_FMS_10","CHI TIẾT","Nhóm 3","Tên quỹ","Base","FMS","","","","","Pending - chưa thiết kế nguồn"
+"K_GSTT_1","TỔNG QUAN","Nhóm 1 — Thị trường cổ phiếu","Số mã chứng khoán niêm yết","Base","GSTT","Fact Stock Portfolio Snapshot","Listed Stock Count","MEASURE","COUNT(fct_stock_portfolio_snpst.scr_code)",""
+"K_GSTT_1","TỔNG QUAN","Nhóm 1 — Thị trường cổ phiếu","Số mã chứng khoán niêm yết","Base","GSTT","Fact Stock Portfolio Snapshot","Snapshot Date Dimension Id","FILTER","JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_stock_portfolio_snpst.snpst_dt_dim_id WHERE cdr_dt_dim.yr = :Y AND cdr_dt_dim.mo = :M",""
+"K_GSTT_5","TỔNG QUAN","Nhóm 1 — Thị trường cổ phiếu","Sàn giao dịch","Base","GSTT","Stock Exchange Dimension","Stock Exchange Code","SLICER","stock_exch_dim.exch_code",""
+"K_GSTT_12","TỔNG QUAN","Nhóm 1 — Thị trường cổ phiếu","% Thay đổi giá","Phái sinh","GSTT","","","DERIVED","security_trading_snpst_dim.price_change / security_trading_snpst_dim.reference_price * 100","Tính tại presentation layer từ 2 cột Dimension"
+"K_GSTT_13","GIAO DỊCH","Nhóm 7 — Top giao dịch cổ phiếu","Khối lượng giao dịch khớp lệnh","Base","GSTT","Fact Stock Portfolio Snapshot","Total Volume","MEASURE","SUM(fct_stock_portfolio_snpst.total_vol)","Reuse từ Nhóm 1 (K_GSTT_13) — measure có sẵn trên Fact Stock Portfolio Snapshot"
+"K_GSTT_58","ĐỊNH GIÁ","Nhóm 7 — Top cổ phiếu theo P/E","Chỉ số P/E","Phái sinh","GSTT","","","DERIVED","security_trading_snpst_dim.close_price / (fct_stock_portfolio_snpst.net_profit_after_tax_ttm / fct_stock_portfolio_snpst.outstanding_share_quantity)","Reuse từ Nhóm 6 (K_GSTT_58) — tính toán tại presentation layer, không lưu cột riêng trên Fact"
+"K_GSTT_6","PHÂN TÍCH","Nhóm 1 — Bảng số liệu","Phương thức khớp lệnh (thỏa thuận)","Deprecated","GSTT","","","DEPRECATED","Đã loại bỏ — không tạo cột/slicer","Resolved 2026-09-08 (Deprecated) — Loại bỏ khỏi danh mục Chiều/Slicer vì không có giá trị khai thác độc lập. Nghiệp vụ hiển thị trực tiếp 4 cột measure riêng biệt: Khớp lệnh (K_GSTT_13/14) và Thỏa thuận (K_GSTT_17/18)."
+"K_QLKD_3039","CHI TIẾT","Nhóm 23 — Báo cáo tài chính","Doanh thu hoạt động môi giới","Base","QLKD","","","","","Pending - [Nhóm 3 - Thiếu nguồn Atomic]: gap Atomic REPORT_CELL_VALUE, xem O_QLKD_23"
 ```

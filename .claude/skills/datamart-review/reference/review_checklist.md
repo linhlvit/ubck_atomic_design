@@ -83,6 +83,7 @@ Thực hiện ở **Bước 0b** (trước khi đi vào chi tiết bất kỳ nh
         • Lệch etl_logic Content Parity hoặc thiếu thuộc tính trong master registry
         • Vi phạm cdr_dt_dim_id trên Fact table
         • Chỉ tiêu BA = Delete còn sót lại trong Datamart
+        • Lệch cấp độ hạt kiến trúc nghiêm trọng (L1-GRAIN-MISMATCH) hoặc lưu trữ chuỗi thời gian sai lầm trên Dimension SCD4A (L2-WINDOW-STORAGE-INVALID)
       - Chờ Human phê duyệt kế hoạch trước khi vào Micro-Review
 ```
 
@@ -129,8 +130,17 @@ Thực hiện ở **Bước 0b** (trước khi đi vào chi tiết bất kỳ nh
 □ Reuse aggregate measure (GROUP BY/PARTITION BY/SUM/MAX theo 1 chiều) — KHÔNG được tin "Reuse từ Nhóm X" là đủ:
   → Với mọi KPI aggregate (VD: Vốn hóa, Tổng KL/GT theo 1 nhóm...) ghi "Reuse từ Nhóm X": mở mockup của CẢ Nhóm gốc và Nhóm đang review, xác định "1 dòng kết quả = 1 [đơn vị] gì?" ở Nhóm đang review (nhìn cột lân cận: đứng cạnh "Số CP lưu hành"/"Mã CK" → grain là mã CK; có ghi rõ "(theo Chỉ số)" → grain là chỉ số)
   → Đối chiếu GROUP BY/PARTITION BY thực tế trong `logic` — phải khớp đúng đơn vị đó, không phải đơn vị của Nhóm gốc
-  → Lệch (VD: Nhóm gốc theo Index, Nhóm reuse cần theo Symbol nhưng logic vẫn GROUP BY Index Code) → 🔴 Critical (mã: L1-REUSE-GRAIN-MISMATCH, xem `datamart-lld-design/reference/phase2_detail_mapping.md` mục L14) — case thật: K_GSTT_61 "Vốn hóa" copy nguyên từ Nhóm 6 (đúng theo Chỉ số) sang 8 Nhóm Top-N theo mã CK (2026-09-14)
+  → Lệch (VD: Nhóm gốc theo Index, Nhóm reuse cần theo Symbol nhưng logic vẫn GROUP BY Index Code) → 🔴 Critical (mã: L1-GRAIN-MISMATCH, xem `datamart-lld-design/reference/phase2_detail_mapping.md` mục L14) — case thật: K_GSTT_61 "Vốn hóa" copy nguyên từ Nhóm 6 (đúng theo Chỉ số) sang 8 Nhóm Top-N theo mã CK (2026-09-14)
   → Đây là lỗi KHÔNG bị bắt bởi Attributes/Atomic parity hay orphan check — chỉ lộ ra khi đối chiếu ngữ cảnh hiển thị, nên phải chủ động kiểm tra riêng, không dựa vào các script PASS để kết luận "đã đúng"
+
+□ Kiểm tra Khớp Cấp độ Hạt Kiến Trúc (Architectural Grain Alignment):
+  → Xác định rõ 2 cấp độ Grain của nhóm:
+      (1) Grain bảng Fact nguồn (VD: 1 row / symbol / trade_date)
+      (2) Grain hiển thị trên báo cáo/mockup (VD: 1 row / symbol / trade_date, hoặc 1 row / index / trade_date)
+  → Kiểm tra tính tương thích giữa Grain hiển thị và Grain nguồn:
+      - Nhóm hiển thị cấp Cổ phiếu (Symbol) → Fact bắt buộc phải có Grain cấp Cổ phiếu hoặc chi tiết hơn. CẤM dùng Fact có Grain cấp Rổ chỉ số (Index) hay cấp Sàn (Floor) để map trực tiếp mà không có Bridge/Unnest hợp lệ.
+      - Nhóm hiển thị cấp Rổ chỉ số (Index) → Fact cấp Cổ phiếu phải có phép tổng hợp (SUM/AVG) nhóm theo `index_code`.
+  → Vi phạm lệch hạt kiến trúc → 🔴 Critical (mã: L1-GRAIN-MISMATCH)
 
 □ Grain: mô tả grain rõ ràng, khớp với logic BA?
 
@@ -222,6 +232,12 @@ Thực hiện ở **Bước 0b** (trước khi đi vào chi tiết bất kỳ nh
   → Với các Fact khác: Cột khóa ngoại ngày bắt buộc đặt theo vai trò nghiệp vụ `<Role> Date Dimension Id` → `<role>_dt_dim_id` (`issue_dt_dim_id`, `trade_dt_dim_id`, `submission_dt_dim_id`, `evaluation_dt_dim_id`, `effective_dt_dim_id`...)
   → Vi phạm → 🔴 Critical (mã: L2-DATE-FK-ROLE-PLAYING, phân loại Kịch bản C — Lỗi kỹ thuật, yêu cầu chuyển giao sang datamart-lld-design để đồng bộ field rename)
 
+□ Kiểm định Nền tảng Lưu trữ Dữ liệu Chuỗi Thời Gian cho Window Functions:
+  → Nếu nhóm có chỉ tiêu dạng chuỗi thời gian (Rolling N phiên, Đỉnh/Đáy 52 tuần, 3 tháng, 6 tháng, MA5, MA10, MA20):
+      - BẮT BUỘC trường dữ liệu đo lường (như `close_price`, `total_matched_vol`) phải được lưu trữ trên bảng Fact Periodic Snapshot (`table_type: fact`, prefix `fct_*_snpst`) với Grain theo từng ngày giao dịch.
+      - TUYỆT ĐỐI CẤM sử dụng trường từ Dimension SCD4A Current-State (như `security_trading_snpst_dim`) làm nguồn cho Window Function lịch sử (vì Dimension current-state chỉ chứa 1 bản ghi duy nhất của ngày hiện tại).
+      - Vi phạm → 🔴 Critical (mã: L2-WINDOW-STORAGE-INVALID)
+
 □ Kiểm tra chỉ tiêu Delete từ BA:
   → Xác nhận không có cột nào trong Attributes được thiết kế cho chỉ tiêu BA có Trạng thái mapping = Delete / DELETED / Xóa (nếu có → 🔴 Critical, yêu cầu xóa khỏi Attributes)
 ```
@@ -234,8 +250,9 @@ Thực hiện ở **Bước 0b** (trước khi đi vào chi tiết bất kỳ nh
 □ Mọi KPI_ID trong HLD (Done/Doing) có dòng trong Detail Mapping?
   → Thiếu → Critical
 
-□ KPI Pending: có dòng trong Detail Mapping với mart_table/mart_column/logic trống?
-  → Thiếu → Warning
+□ KPI Pending: tuân thủ Quy tắc L4 — bắt buộc CẢ 4 CỘT mart_table, mart_column, column_role, logic ĐỀU PHẢI ĐỂ TRỐNG TUYỆT ĐỐI ("")?
+  → Chỉ điền kpi_id, kpi_name, tab, nhom, tinh_chat, source_module, và ghi_chu (bắt đầu bằng "Pending - [Nhóm 1-5]")
+  → Vi phạm (để sót giá trị ở bất kỳ cột nào trong 4 cột trên) → 🔴 Critical (mã: L3-PENDING-RULE-L4-VIOLATION)
 
 □ Trace BA → Detail Mapping (bắt buộc mọi KPI Done):
   → Aggregation: BA ghi SUM → logic phải SUM (không được COUNT)
@@ -255,6 +272,46 @@ Thực hiện ở **Bước 0b** (trước khi đi vào chi tiết bất kỳ nh
   → SLICER: dimension hiển thị group by
   → FILTER: dimension dùng lọc không hiển thị
   → DERIVED: công thức tính từ measure khác, mart_table/mart_column trống
+  → DEPRECATED: chỉ tiêu bãi bỏ sau thống nhất BA — mart_table/mart_column để trống, logic = 'Đã loại bỏ — không tạo cột/slicer'
+
+□ Kiểm tra Quy cách Chỉ tiêu REUSE (Quy tắc L15):
+  → Phân biệt rõ hai trường hợp REUSE:
+      • Case 1 (Tái sử dụng Measure/Dim vật lý đã có sẵn trên Fact/Dim): BẮT BUỘC điền đủ mart_table và mart_column; column_role là MEASURE, SLICER hoặc FILTER; ghi_chu ghi rõ "Reuse từ Nhóm X: mart_table.mart_column". CẤM để trống mart_table hoặc mart_column.
+      • Case 2 (Tái sử dụng qua BI layer / phái sinh không có cột vật lý riêng): BẮT BUỘC để trống mart_table và mart_column (""); column_role là DERIVED; logic viết công thức inline xuống physical table; ghi_chu ghi rõ "Reuse qua BI layer / DERIVED từ Nhóm X". CẤM tự ý gán tên cột ảo vào mart_table/mart_column.
+  → Vi phạm (để trống cột ở Case 1 hoặc gán cột ảo ở Case 2) → 🔴 Critical (mã: L3-REUSE-INVALID)
+
+□ Kiểm tra Phân định DEPRECATED vs PENDING (Quy tắc L16):
+  → Chỉ tiêu đã thống nhất bãi bỏ với BA/PO: BẮT BUỘC đánh dấu đúng column_role = 'DEPRECATED', để trống mart_table và mart_column, logic = 'Đã loại bỏ — không tạo cột/slicer', ghi rõ lý do và ngày bãi bỏ tại ghi_chu.
+  → TUYỆT ĐỐI CẤM đánh tráo chỉ tiêu bãi bỏ/không triển khai thành nhãn PENDING (gắn "Pending - [Nhóm 1-5]") làm phình to blocker giả tạo.
+  → Vi phạm đánh tráo DEPRECATED thành PENDING → 🔴 Critical (mã: L3-DEPRECATED-AS-PENDING)
+
+□ Kiểm tra Khớp Cấp độ Hạt Công thức (Formula Grain & Group By Verification):
+  → Với MỌI dòng MEASURE hoặc DERIVED có chứa hàm tổng hợp (`SUM`, `MAX`, `AVG`) hoặc `GROUP BY` / `PARTITION BY`:
+      - Đọc mockup giao diện: "1 dòng kết quả trên bảng/biểu đồ = 1 đối tượng gì?" (Mã CK, Chỉ số, CTCK, hay Ngành?).
+      - Đối chiếu danh sách cột trong mệnh đề `GROUP BY` / `PARTITION BY` trong cột `logic`: Bắt buộc phải chứa đúng khóa định danh của đối tượng đó.
+      - Cấm tuyệt đối việc copy công thức từ nhóm khác có grain khác (như copy Vốn hóa rổ chỉ số `idx_market_cap` sang bảng Top-N mã CK — điển hình case K_GSTT_61).
+      - Vi phạm → 🔴 Critical (mã: L3-GRAIN-MISMATCH)
+
+□ Kiểm định Cấu hình Window Functions & Chuẩn hóa Khung Thời Gian:
+  → Với các chỉ tiêu đỉnh/đáy, giá cao nhất/thấp nhất, MA:
+      - Kiểm tra trường giá cơ sở: Đối chiếu tài liệu BA xem quy định dùng `close_price` (chuẩn báo cáo định giá, BM021_MSS) hay `high_price`/`low_price` (biểu đồ nến kỹ thuật). Sai trường giá → 🔴 Critical.
+      - Kiểm tra số phiên lookback (Trading Sessions):
+          • 52 tuần gần nhất: Đúng 260 phiên (`ROWS BETWEEN 259 PRECEDING AND CURRENT ROW`). CẤM dùng `INTERVAL '52' WEEK`.
+          • 6 tháng gần nhất: Đúng 130 phiên (`ROWS BETWEEN 129 PRECEDING AND CURRENT ROW`).
+          • 3 tháng gần nhất: Đúng 65 phiên (`ROWS BETWEEN 64 PRECEDING AND CURRENT ROW`).
+          • 1 tháng / 4 tuần: Đúng 20 phiên (`ROWS BETWEEN 19 PRECEDING AND CURRENT ROW`).
+      - Kiểm tra cấu trúc phân đoạn: Bắt buộc có `PARTITION BY <entity_id>` (như `symbol`) và `ORDER BY <date_col> ASC`. Thiếu `PARTITION BY` → 🔴 Critical (gây trộn lẫn chuỗi giá của mọi cổ phiếu).
+      - Vi phạm → 🔴 Critical (mã: L3-FORMULA-WINDOW-MISMATCH)
+
+□ Kiểm tra Nhất Quán Chu Kỳ Thời Gian Trong Tỷ Số Tài Chính (Financial Ratio Consistency):
+  → Với các chỉ số tài chính (P/E, P/B, EPS, BVPS, ROE, ROA):
+      - Nhất quán Chu kỳ Tử số & Mẫu số:
+          • EPS Quý gần nhất = LNST Quý / Số CP bình quân Quý.
+          • EPS TTM (4 quý) = LNST TTM 4 quý / Số CP bình quân 4 quý.
+          • P/E Chuẩn = Giá đóng cửa / EPS TTM (4 quý). Nếu dùng EPS Quý phải nhân 4 quy năm.
+          • ROE = LNST TTM / VCSH bình quân (Đầu kỳ + Cuối kỳ)/2.
+      - Cấm Cộng Dồn Chỉ tiêu BCDKT: Cấm `SUM` vốn chủ sở hữu (`owner_equity`) hay tổng tài sản qua 4 quý (chỉ được lấy số dư quý gần nhất hoặc tính bình quân).
+      - Vi phạm → 🔴 Critical (mã: L3-FINANCIAL-PERIOD-INCONSISTENT)
 
 □ mart_table / mart_column dùng tên LOGICAL; cột `logic` bắt buộc dùng tên PHYSICAL:
   → Ngược lại → Warning
@@ -267,7 +324,7 @@ Thực hiện ở **Bước 0b** (trước khi đi vào chi tiết bất kỳ nh
 
 ---
 
-### Lớp 4: Model Registry (`datamart_model.yaml`) & Master Registry (`datamart_attributes.csv`)
+### Lớp 4: Model Registry (`datamart_model.yaml`), Master Registry & Flat Tables
 
 ```
 □ Entity của bảng đang review có tồn tại trong datamart_model.yaml?
@@ -298,15 +355,36 @@ Thực hiện ở **Bước 0b** (trước khi đi vào chi tiết bất kỳ nh
   → Biểu thức etl_logic khớp byte-for-byte với file module (sau strip whitespace, chuẩn hóa CRLF)
   → Master registry không chứa dòng mồ côi của các bảng đã bị loại bỏ/hủy (Nhánh B)
   → Chạy script verify: python scripts/check_parity.py --module {MODULE} --strict
+
+□ Kiểm tra Đồng bộ Flat Table (Flat Table Synchronization Check):
+  □ Column Coverage Check (Độ bao phủ cột Fact + Dim):
+    → 100% cột Fact và Operational trong Attributes module (trừ các trường kỹ thuật audit ds_batch_date, ds_population_timestamp) phải có mặt trong DDL 01_create_*.sql
+    → 100% cột giá trị nghiệp vụ của các Dimension được JOIN (theo FKs) phải có mặt trong DDL (bỏ qua PK surrogate, src_stm_code và các trường kỹ thuật audit SCD4A ds_rcrd_st, ds_rcrd_isrt_dt, ds_rcrd_udt_dt, ds_etl_pcs_tms, ds_snpst_dt)
+    → Đảm bảo có mặt đầy đủ cột ngày từ cdr_dt_dim (theo alias vai trò ngày: snpst_cdr_dt, issue_cdr_dt, trade_cdr_dt...)
+    → Thiếu cột → 🔴 Critical (mã: L4-FLAT-TABLE-COLUMN-COVERAGE-MISSING)
+  □ 1-1 Projection Alignment Check (Khớp thứ tự & số lượng chiếu):
+    → Tổng số cột khai báo trong lệnh CREATE TABLE (01_create_*.sql) phải bằng chính xác tổng số biểu thức cột được chiếu trong SELECT của INSERT INTO (02_populate_*.sql)
+    → Thứ tự các cột trong câu lệnh CREATE TABLE phải khớp tuần tự 1-1 với thứ tự trong mệnh đề SELECT
+    → Tên alias trong SELECT (... AS col_name) khớp chính xác 100% với tên cột định nghĩa trong CREATE TABLE
+    → Lệch số lượng hoặc sai thứ tự cột → 🔴 Critical (mã: L4-FLAT-TABLE-PROJECTION-MISALIGNMENT)
+  □ Column Drift Check (Chống trôi lệch cột):
+    → Không có bất kỳ cột nào xuất hiện trong Flat Table SQL mà thiếu trong master datamart_attributes.csv
+    → Không có cột Fact nào có KPI khai thác trong Detail Mapping mà bị bỏ sót khỏi Flat Table
+    → Không có cột nào trong CREATE TABLE (fact/operational section) mà không tồn tại trong Attributes.csv (cột mồ côi/cột thừa phải xóa)
+    → Phát hiện trôi lệch cột → 🔴 Critical (mã: L4-FLAT-TABLE-COLUMN-DRIFT)
+  □ Parameter Consistency Check (Thống nhất tham số ETL):
+    → Toàn bộ các mệnh đề lọc ngày chạy ETL trong file 02_populate_*.sql bắt buộc sử dụng thống nhất tham số :etl_date (WHERE snpst_cal.cdr_dt = :etl_date / WHERE evnt_cal.cdr_dt = :etl_date)
+    → Tuyệt đối cấm dùng {etl_date}, $etl_date, ?, hoặc hardcode chuỗi ngày
+    → Sai cú pháp tham số → 🔴 Critical (mã: L4-FLAT-TABLE-PARAMETER-INCONSISTENT)
 ```
 
 ---
 
 ## PHẦN 3: NGUYÊN TẮC AN TOÀN & GATE CONTROL
 
-1. **GATE 1 (Sau Bước 0b/0c — Stop & Report):** Sau khi chạy Macro-Review, Claude bắt buộc DỪNG và trình bày bảng kế hoạch + ma trận đối soát cho human, chờ human xác nhận thứ tự review. CHẶN CỨNG không vào Micro-Review nếu phát hiện Orphan 3 chiều, lệch etl_logic Parity, sai Role-Playing Date FK hoặc chỉ tiêu Delete còn tồn tại.
+1. **GATE 1 (Sau Bước 0b/0c — Stop & Report):** Sau khi chạy Macro-Review, Claude bắt buộc DỪNG và trình bày bảng kế hoạch + ma trận đối soát cho human, chờ human xác nhận thứ tự review. CHẶN CỨNG không vào Micro-Review nếu phát hiện Orphan 3 chiều, lệch etl_logic Parity, sai Role-Playing Date FK, chỉ tiêu Delete còn tồn tại, hoặc lệch cấp độ hạt kiến trúc / sai nền tảng lưu trữ chuỗi thời gian.
 2. **GATE 2 (Group Checkpoint — Sau Mỗi Nhóm Micro-Review):**
-   - Nếu nhóm có vấn đề (Critical 🔴 / Warning 🟡): Bao gồm cả vi phạm Parity `L2-ETL-LOGIC-PARITY-MISMATCH` hay Orphan 3 chiều `L2-ORPHAN-3WAY-*` → Claude DỪNG, hỏi human muốn (a) sửa ngay qua skill con, (b) ghi nhận vào Backlog và đi tiếp, hay (c) dừng.
+   - Nếu nhóm có vấn đề (Critical 🔴 / Warning 🟡): Bao gồm cả vi phạm Parity `L2-ETL-LOGIC-PARITY-MISMATCH`, Orphan 3 chiều `L2-ORPHAN-3WAY-*`, lệch Grain `L1/L3-GRAIN-MISMATCH`, sai cấu hình Window Functions `L3-FORMULA-WINDOW-MISMATCH`, sai lưu trữ `L2-WINDOW-STORAGE-INVALID`, lệch chu kỳ tỷ số tài chính `L3-FINANCIAL-PERIOD-INCONSISTENT`, hoặc vi phạm Detail Mapping (`L3-PENDING-RULE-L4-VIOLATION`, `L3-REUSE-INVALID`, `L3-DEPRECATED-AS-PENDING`) → Claude DỪNG, hỏi human muốn (a) sửa ngay qua skill con, (b) ghi nhận vào Backlog và đi tiếp, hay (c) dừng.
    - Nếu nhóm không có vấn đề (4 Lớp OK): Tự động in "✅ Nhóm N — OK" và chuyển sang nhóm kế tiếp. Lỗi Info 🔵 ghi vào Backlog tạm, tiếp tục.
 3. **Nguyên Tắc Không Tự Ý Sửa File Trực Tiếp:**
    - Mọi thay đổi nội dung nghiệp vụ HLD (Fact/Dim, grain, nguồn, bảng KPI) → gọi `datamart-hld-design`.
@@ -322,4 +400,12 @@ Thực hiện ở **Bước 0b** (trước khi đi vào chi tiết bất kỳ nh
      (2) Chạy `python scripts/check_parity.py --module {MODULE} --strict` xác nhận 0 mismatch.
      (3) Chạy `python scripts/check_orphan.py --module {MODULE} --strict` xác nhận 0 orphan (Nhánh A đã hoàn tất, Nhánh B đã dọn dẹp sạch).
    - **LỆNH CẤM:** Nghiêm cấm mọi hành vi kết luận "Đã hoàn thành" hoặc bàn giao khi chưa pass 100% cả 2 script trên.
+6. **GATE 4 (Flat Table Synchronization & Delivery Gate — Cổng Kiểm Định Đồng Bộ Flat Table):**
+   - Reviewer BẮT BUỘC thực hiện kiểm định toàn diện bộ script Flat Table (`01_create_*_flat_tables.sql` và `02_populate_*_flat_tables.sql`) trước khi ký duyệt nghiệm thu bàn giao:
+     • **Column Coverage:** 100% cột Fact/Operational và thuộc tính nghiệp vụ của Dim được JOIN có mặt trong DDL.
+     • **1-1 Projection Alignment:** Khớp 1-1 chính xác tuyệt đối về số lượng và thứ tự cột giữa câu lệnh `CREATE TABLE` và mệnh đề `SELECT`.
+     • **Column Drift:** 0 cột thừa/thiếu giữa Flat Table SQL, master `datamart_attributes.csv`, và Detail Mapping.
+     • **Parameter Consistency:** 100% mệnh đề lọc ngày chạy ETL dùng biến chuẩn `:etl_date`.
+   - **LỆNH CẤM:** Nghiêm cấm mọi hành vi bỏ qua Gate 4 hoặc phê duyệt bàn giao khi Flat Table SQL chưa được đồng bộ đầy đủ theo 4 tiêu chí trên.
+
 
