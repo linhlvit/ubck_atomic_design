@@ -2,10 +2,14 @@
 -- GSTT Flat Tables — POPULATE
 -- Module: Giám sát Thị trường (GSTT)
 -- Generated: Phase 3 LLD Datamart
--- 5 bảng: 4 fact + 1 operational
+-- 6 bảng: 5 fact + 1 operational
+-- Sửa 2026-09-14: bổ sung Fact 1b (Index Constituent Snapshot, Bridge Factless) —
+--   tách khỏi Fact 1 để hết fan-out theo rổ chỉ số (xem HLD v4.13)
 -- ETL daily:
 --   Fact 1 (Stock Portfolio Snapshot): transaction log theo ngày —
 --     DELETE đúng ngày :etl_date (không TRUNCATE) rồi INSERT
+--   Fact 1b (Index Constituent Snapshot): Bridge Factless, cùng pattern DELETE + INSERT
+--     theo :etl_date như Fact 1
 --   Fact 2 (Market Index Intraday): transaction/tick log, nhiều dòng/ngày theo
 --     Index Time — DELETE đúng ngày :etl_date (không TRUNCATE) rồi INSERT, cho
 --     phép append thêm tick mới khi ETL chạy nhiều lần/ngày mà không mất tick cũ
@@ -33,7 +37,6 @@ SELECT
     f.security_trading_snpst_dim_id,
     f.public_company_dim_id,
     f.snpst_dt_dim_id,
-    f.index_constituent_dim_id,
     f.fr_period_end_dt_dim_id,
     f.total_vol,
     f.total_val,
@@ -135,14 +138,7 @@ SELECT
     pc_dim.has_subsidiary_indicator                AS has_subsidiary_indicator,
     pc_dim.has_joint_venture_indicator              AS has_joint_venture_indicator,
     pc_dim.ipo_company_indicator                   AS ipo_company_indicator,
-    pc_dim.src_stm_code                            AS public_company_src_stm_code,
-
-    -- From: INDEX CONSTITUENT DIMENSION
-    idx_cons_dim.index_code                        AS index_code,
-    idx_cons_dim.index_id                          AS index_id,
-    idx_cons_dim.floor_code                        AS index_constituent_floor_code,
-    idx_cons_dim.add_dt                            AS add_dt,
-    idx_cons_dim.src_stm_code                      AS index_constituent_src_stm_code
+    pc_dim.src_stm_code                            AS public_company_src_stm_code
 
 FROM datamart.fct_stock_portfolio_snpst f
 JOIN datamart.cdr_dt_dim cal
@@ -153,6 +149,46 @@ LEFT JOIN datamart.security_trading_snpst_dim sec_dim
     ON sec_dim.security_trading_snpst_dim_id = f.security_trading_snpst_dim_id
 LEFT JOIN datamart.public_company_dim pc_dim
     ON pc_dim.public_company_dim_id = f.public_company_dim_id
+WHERE cal.cdr_dt = :etl_date
+;
+
+
+-- ============================================================
+-- 1b. FACT: gstt_fct_index_constituent_snpst_flat
+--    [MỚI 2026-09-14] cal: JOIN + DELETE-scoped theo cdr_dt = :etl_date
+-- ============================================================
+DELETE FROM datamart.gstt_fct_index_constituent_snpst_flat ON CLUSTER 'my_cluster'
+WHERE cdr_dt = :etl_date;
+INSERT INTO datamart.gstt_fct_index_constituent_snpst_flat
+SELECT
+    -- From: FACT Index Constituent Snapshot
+    f.security_trading_snpst_dim_id,
+    f.index_constituent_dim_id,
+    f.snpst_dt_dim_id,
+    f.idx_total_matched_vol,
+    f.idx_total_matched_val,
+    f.idx_foreign_net_vol,
+    f.idx_foreign_net_val,
+    f.idx_total_negotiated_vol,
+    f.idx_total_negotiated_val,
+    f.idx_market_cap,
+    f.idx_free_float_market_cap,
+
+    -- From: CALENDAR DATE DIMENSION
+    cal.cdr_dt                                     AS cdr_dt,
+
+    -- From: SECURITY TRADING SNAPSHOT DIMENSION
+    sec_dim.symbol                                 AS symbol,
+
+    -- From: INDEX CONSTITUENT DIMENSION
+    idx_cons_dim.index_code                        AS index_code,
+    idx_cons_dim.index_id                          AS index_id
+
+FROM datamart.fct_index_constituent_snpst f
+JOIN datamart.cdr_dt_dim cal
+    ON cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+LEFT JOIN datamart.security_trading_snpst_dim sec_dim
+    ON sec_dim.security_trading_snpst_dim_id = f.security_trading_snpst_dim_id
 LEFT JOIN datamart.index_constituent_dim idx_cons_dim
     ON idx_cons_dim.index_constituent_dim_id = f.index_constituent_dim_id
 WHERE cal.cdr_dt = :etl_date

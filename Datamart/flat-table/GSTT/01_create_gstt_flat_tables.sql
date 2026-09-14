@@ -2,7 +2,9 @@
 -- GSTT Flat Tables — CREATE
 -- Module: Giám sát Thị trường (GSTT)
 -- Generated: Phase 3 LLD Datamart
--- 5 bảng: 4 fact + 1 operational
+-- 6 bảng: 5 fact + 1 operational
+-- Sửa 2026-09-14: bổ sung bảng #1b (Fact Index Constituent Snapshot, Bridge Factless) —
+-- tách khỏi Fact Stock Portfolio Snapshot để hết fan-out theo rổ chỉ số (xem HLD v4.13)
 -- (Fact Market Index Snapshot dùng chung QLKD — flat table đã có ở QLKD, không CREATE lại)
 -- Sửa 2026-08-03: bảng cũ (Fact Public Company Shareholding) đã bị loại bỏ —
 -- xem ghi chú chi tiết cuối file
@@ -22,7 +24,9 @@
 --    Grain: Periodic Snapshot theo ngày (transaction log — mỗi ngày phiên phát sinh
 --    đồng bộ dữ liệu cho toàn bộ mã CK giao dịch)
 --    Joins: Calendar Date (snpst_dt_dim_id JOIN) × Security Trading Snapshot Dimension ×
---           Public Company Dimension × Index Constituent Dimension (LEFT JOIN, nullable)
+--           Public Company Dimension
+--    [SỬA 2026-09-14] Không còn join Index Constituent Dimension — tách sang
+--    gstt_fct_index_constituent_snpst_flat riêng (Bridge, xem bảng #1b bên dưới)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.gstt_fct_stock_portfolio_snpst_flat ON CLUSTER 'my_cluster'
 (
@@ -30,7 +34,6 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_fct_stock_portfolio_snpst_flat ON CLUST
     security_trading_snpst_dim_id       String                  COMMENT 'FK → Security Trading Snapshot Dimension',
     public_company_dim_id               String                  COMMENT 'FK → Public Company Dimension',
     snpst_dt_dim_id                       String                  COMMENT 'FK → Calendar Date Dimension',
-    index_constituent_dim_id            Nullable(String)        COMMENT 'FK → Index Constituent Dimension — nullable khi mã CK không thuộc rổ chỉ số nào',
     fr_period_end_dt_dim_id             Nullable(String)        COMMENT 'FK → Calendar Date Dimension (Role-Playing: Financial Report Period End Date) — bổ sung 2026-09-08 theo rule GSĐC',
     total_vol                           Nullable(Int64)         COMMENT 'Tổng khối lượng giao dịch khớp lệnh cổ phiếu/CCQ 3 sàn, loại trừ phái sinh và trái phiếu',
     total_val                           Nullable(Decimal(23,2)) COMMENT 'Tổng giá trị giao dịch khớp lệnh cổ phiếu/CCQ 3 sàn, loại trừ phái sinh và trái phiếu',
@@ -67,7 +70,7 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_fct_stock_portfolio_snpst_flat ON CLUST
     domestic_institution_buy_vol        Nullable(Int64)         COMMENT 'Khối lượng mua của tổ chức trong nước',
     domestic_institution_sell_vol       Nullable(Int64)         COMMENT 'Khối lượng bán của tổ chức trong nước',
     fct_close_price                     Nullable(Decimal(23,2)) COMMENT '[SỬA 2026-09-07] Giá đóng cửa theo ngày lưu trên Fact (khác close_price ở Security Trading Snapshot Dimension — SCD4A current-state) — bổ sung 2026-09-04, thiếu sót trong flat table trước đây, nay bổ sung để phục vụ window function K_GSTT_106/107/140-143 (Đỉnh/Đáy cũ)',
-    free_float_share_quantity           Nullable(Int64)         COMMENT '[MỚI 2026-09-07] Khối lượng cổ phiếu tự do chuyển nhượng — nguồn VSDC listed_security_info_snapshot, phục vụ K_GSTT_76/125 (Nhóm 24)',
+    free_float_share_quantity           Nullable(Int64)         COMMENT '[SỬA 2026-09-14] Khối lượng cổ phiếu tự do chuyển nhượng — nguồn VSDC listed_share_info (outstanding_shares), phục vụ K_GSTT_76/125 (Nhóm 24)',
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                              Nullable(Date)          COMMENT 'Ngày giao dịch — từ Calendar Date Dimension',
@@ -132,19 +135,57 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_fct_stock_portfolio_snpst_flat ON CLUST
     has_subsidiary_indicator             Nullable(Int64)         COMMENT 'Có công ty con — từ Public Company Dimension',
     has_joint_venture_indicator          Nullable(Int64)         COMMENT 'Có liên doanh — từ Public Company Dimension',
     ipo_company_indicator                Nullable(Int64)         COMMENT '1-Công ty đang IPO, 0-Công ty đại chúng — từ Public Company Dimension',
-    public_company_src_stm_code          Nullable(String)        COMMENT 'Mã hệ thống nguồn — từ Public Company Dimension',
-
-    -- From: INDEX CONSTITUENT DIMENSION
-    index_code                          Nullable(String)        COMMENT 'Mã rổ chỉ số — từ Index Constituent Dimension',
-    index_id                            Nullable(String)        COMMENT 'Id chỉ số — từ Index Constituent Dimension',
-    index_constituent_floor_code        Nullable(String)        COMMENT 'Mã sàn (rổ chỉ số) — từ Index Constituent Dimension',
-    add_dt                              Nullable(Date)          COMMENT 'Ngày thêm vào rổ chỉ số — từ Index Constituent Dimension',
-    index_constituent_src_stm_code      Nullable(String)        COMMENT 'Mã hệ thống nguồn — từ Index Constituent Dimension'
+    public_company_src_stm_code          Nullable(String)        COMMENT 'Mã hệ thống nguồn — từ Public Company Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
 ORDER BY (assumeNotNull(cdr_dt), security_trading_snpst_dim_id)
-COMMENT 'Flat table — Fact Stock Portfolio Snapshot × Calendar Date × Security Trading Snapshot Dimension × Public Company Dimension × Index Constituent Dimension'
+COMMENT 'Flat table — Fact Stock Portfolio Snapshot × Calendar Date × Security Trading Snapshot Dimension × Public Company Dimension'
+;
+
+
+-- ============================================================
+-- 1b. FACT: gstt_fct_index_constituent_snpst_flat
+--    [SỬA 2026-09-14] Bridge (3 FK) — thành viên rổ chỉ số theo ngày,
+--    1 row / mã CK / rổ chỉ số / ngày giao dịch. Tách khỏi
+--    gstt_fct_stock_portfolio_snpst_flat để hết fan-out theo rổ chỉ số
+--    (xem HLD v4.13, Cụm 1b). Dùng để lọc/SUM mã CK theo rổ chỉ số —
+--    JOIN sang gstt_fct_stock_portfolio_snpst_flat qua symbol + cdr_dt khi cần measure
+--    riêng theo mã CK. [SỬA 2026-09-14, theo yêu cầu Design] Bổ sung 8 measure tính sẵn
+--    theo Index+Date (idx_*) — giá trị LẶP LẠI trên mọi dòng symbol cùng index_code+cdr_dt,
+--    dùng MAX()/DISTINCT khi truy vấn, KHÔNG SUM lại.
+--    Joins: Calendar Date (snpst_dt_dim_id JOIN) × Security Trading Snapshot Dimension ×
+--           Index Constituent Dimension
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.gstt_fct_index_constituent_snpst_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FACT Index Constituent Snapshot
+    security_trading_snpst_dim_id       String                  COMMENT 'FK → Security Trading Snapshot Dimension',
+    index_constituent_dim_id            String                  COMMENT 'FK → Index Constituent Dimension',
+    snpst_dt_dim_id                     String                  COMMENT 'FK → Calendar Date Dimension',
+    idx_total_matched_vol                Nullable(Int64)         COMMENT '[SỬA 2026-09-14, review sheet Tổng hợp công thức] Tổng KLGD khớp lệnh thuần (loại thỏa thuận) toàn rổ chỉ số theo Index+Date — lặp lại trên mọi dòng symbol cùng rổ, không SUM lại',
+    idx_total_matched_val                Nullable(Decimal(23,2)) COMMENT '[SỬA 2026-09-14, review sheet Tổng hợp công thức] Tổng GTGD khớp lệnh thuần (loại thỏa thuận) toàn rổ chỉ số theo Index+Date — lặp lại trên mọi dòng symbol cùng rổ, không SUM lại',
+    idx_foreign_net_vol                 Nullable(Int64)         COMMENT '[MỚI 2026-09-14] KLNN ròng toàn rổ chỉ số theo Index+Date — lặp lại trên mọi dòng symbol cùng rổ, không SUM lại',
+    idx_foreign_net_val                 Nullable(Decimal(23,2)) COMMENT '[MỚI 2026-09-14] GTNN ròng toàn rổ chỉ số theo Index+Date — lặp lại trên mọi dòng symbol cùng rổ, không SUM lại',
+    idx_total_negotiated_vol            Nullable(Int64)         COMMENT '[MỚI 2026-09-14] Tổng KLGD thỏa thuận toàn rổ chỉ số theo Index+Date — lặp lại trên mọi dòng symbol cùng rổ, không SUM lại',
+    idx_total_negotiated_val            Nullable(Decimal(23,2)) COMMENT '[MỚI 2026-09-14] Tổng GTGD thỏa thuận toàn rổ chỉ số theo Index+Date — lặp lại trên mọi dòng symbol cùng rổ, không SUM lại',
+    idx_market_cap                      Nullable(Decimal(23,2)) COMMENT '[MỚI 2026-09-14] Vốn hóa thị trường toàn rổ chỉ số theo Index+Date — lặp lại trên mọi dòng symbol cùng rổ, không SUM lại',
+    idx_free_float_market_cap           Nullable(Decimal(23,2)) COMMENT '[MỚI 2026-09-14] Vốn hóa tự do chuyển nhượng toàn rổ chỉ số theo Index+Date — lặp lại trên mọi dòng symbol cùng rổ, không SUM lại',
+
+    -- From: CALENDAR DATE DIMENSION
+    cdr_dt                              Nullable(Date)          COMMENT 'Ngày giao dịch — từ Calendar Date Dimension',
+
+    -- From: SECURITY TRADING SNAPSHOT DIMENSION
+    symbol                              Nullable(String)        COMMENT 'Mã chứng khoán — từ Security Trading Snapshot Dimension',
+
+    -- From: INDEX CONSTITUENT DIMENSION
+    index_code                          Nullable(String)        COMMENT 'Mã rổ chỉ số — từ Index Constituent Dimension',
+    index_id                            Nullable(String)        COMMENT 'Id chỉ số — từ Index Constituent Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
+ORDER BY (assumeNotNull(cdr_dt), security_trading_snpst_dim_id, index_constituent_dim_id)
+COMMENT 'Flat table — Fact Index Constituent Snapshot (Bridge) × Calendar Date × Security Trading Snapshot Dimension × Index Constituent Dimension'
 ;
 
 
