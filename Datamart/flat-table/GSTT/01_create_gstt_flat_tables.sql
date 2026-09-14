@@ -174,6 +174,7 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_fct_index_constituent_snpst_flat ON CLU
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                              Nullable(Date)          COMMENT 'Ngày giao dịch — từ Calendar Date Dimension',
+    is_trading_date                     Nullable(String)        COMMENT '[BỔ SUNG 2026-09-14] Cờ Y/N — ngày lịch có phải ngày thị trường thực sự mở cửa giao dịch hay không — từ Calendar Date Dimension',
 
     -- From: SECURITY TRADING SNAPSHOT DIMENSION
     symbol                              Nullable(String)        COMMENT 'Mã chứng khoán — từ Security Trading Snapshot Dimension',
@@ -208,6 +209,7 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_fct_market_index_intraday_flat ON CLUST
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                              Nullable(Date)          COMMENT 'Ngày giao dịch — từ Calendar Date Dimension',
+    is_trading_date                     Nullable(String)        COMMENT '[BỔ SUNG 2026-09-14] Cờ Y/N — ngày lịch có phải ngày thị trường thực sự mở cửa giao dịch hay không — từ Calendar Date Dimension',
 
     -- From: MARKET INDEX DIMENSION
     market_id                           Nullable(String)        COMMENT 'Mã thị trường — từ Market Index Dimension',
@@ -252,6 +254,7 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_fct_security_trading_intraday_flat ON C
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                              Nullable(Date)          COMMENT 'Ngày giao dịch — từ Calendar Date Dimension',
+    is_trading_date                     Nullable(String)        COMMENT '[BỔ SUNG 2026-09-14] Cờ Y/N — ngày lịch có phải ngày thị trường thực sự mở cửa giao dịch hay không — từ Calendar Date Dimension',
 
     -- From: SECURITY TRADING SNAPSHOT DIMENSION
     symbol                               Nullable(String)        COMMENT 'Mã chứng khoán — từ Security Trading Snapshot Dimension',
@@ -289,6 +292,7 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_fct_foreign_trading_min_snpst_flat ON C
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                              Nullable(Date)          COMMENT 'Ngày giao dịch — từ Calendar Date Dimension',
+    is_trading_date                     Nullable(String)        COMMENT '[BỔ SUNG 2026-09-14] Cờ Y/N — ngày lịch có phải ngày thị trường thực sự mở cửa giao dịch hay không — từ Calendar Date Dimension',
 
     -- From: SECURITY TRADING SNAPSHOT DIMENSION
     symbol                               Nullable(String)        COMMENT 'Mã chứng khoán — từ Security Trading Snapshot Dimension',

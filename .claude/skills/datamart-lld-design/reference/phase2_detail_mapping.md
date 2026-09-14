@@ -263,6 +263,24 @@ Ví dụ K_NHNCK_2_YOY (CCHN cấp mới YTD):
 
 ---
 
+### L14 — Reuse KPI "Vốn hóa"/measure tổng hợp nhưng khác grain hiển thị với nhóm gốc (copy nhầm ngữ nghĩa)
+
+**Pattern:** Một KPI aggregate (VD: "Vốn hóa" = SUM/MAX theo 1 chiều nhóm cụ thể) được thiết kế đúng ở Nhóm gốc, rồi các Nhóm khác ghi `ghi_chu = "Reuse từ Nhóm X"` và copy nguyên `logic` — nhưng Nhóm mới có **grain hiển thị khác hẳn** (VD: Nhóm gốc là dashboard theo rổ chỉ số — 1 dòng = 1 chỉ số, còn Nhóm reuse là bảng Top-N theo mã CK — 1 dòng = 1 mã CK). Cùng tên KPI ("Vốn hóa") và cùng ý nghĩa nghiệp vụ ở mức khái niệm, nhưng SAI grain tính toán khi đặt cạnh các cột khác của Nhóm mới (VD: đặt cạnh "Số CP lưu hành" của riêng 1 mã mà lại hiển thị Vốn hóa gộp CẢ RỔ CHỈ SỐ).
+
+**Vì sao dễ lọt qua review thông thường:** KPI_ID giống nhau, `kpi_name` giống nhau, `logic` hợp lệ về mặt cú pháp (chạy được, không lỗi kỹ thuật), Attributes/Atomic parity đều PASS — lỗi chỉ lộ ra khi đối chiếu NGỮ CẢNH HIỂN THỊ (mockup/cột lân cận) của Nhóm reuse với Nhóm gốc, không phải lỗi cú pháp hay lỗi nguồn Atomic.
+
+**Quy tắc bắt buộc khi gặp `ghi_chu` chứa "Reuse từ Nhóm X" trên bất kỳ dòng MEASURE/DERIVED nào có GROUP BY hoặc aggregate theo 1 chiều cụ thể (Index Code, Symbol, Company Code...):**
+1. Mở mockup (hoặc bảng KPI) của CẢ Nhóm gốc VÀ Nhóm đang reuse.
+2. Xác định grain hiển thị thật của Nhóm đang reuse: mỗi dòng kết quả tương ứng với 1 đơn vị gì? (1 mã CK? 1 chỉ số? 1 công ty?) — nhìn vào cột liền kề (VD: nếu đứng cạnh "Số CP lưu hành"/"Mã CK" của 1 dòng cụ thể → grain là mã CK, không phải chỉ số).
+3. Xác nhận `GROUP BY`/`PARTITION BY` trong `logic` của dòng reuse khớp ĐÚNG với đơn vị đó — không mặc định giữ nguyên `GROUP BY` của Nhóm gốc chỉ vì đang "reuse công thức".
+4. Nếu Nhóm gốc và Nhóm reuse có grain khác nhau (dù cùng tên KPI) → **không copy nguyên logic** — viết lại đúng theo đơn vị của Nhóm reuse (đổi `GROUP BY Index Code` → `GROUP BY Symbol` khi cần), giữ nguyên số liệu nguồn (Atomic) nhưng đổi mức tổng hợp.
+
+**Kiểm tra:** Với mọi dòng có `ghi_chu` chứa "Reuse từ Nhóm" và `logic` có `GROUP BY`/`PARTITION BY`/`SUM`/`MAX` theo 1 chiều — bắt buộc trả lời được câu hỏi "1 dòng kết quả của Nhóm này = 1 [đơn vị] gì?" và đối chiếu với `GROUP BY` thực tế trong `logic`.
+
+❌ **Case thật (GSTT, 2026-09-14):** `K_GSTT_61` ("Vốn hóa") ở Nhóm 6 ("Định giá thị trường" — mockup ghi rõ cột là "Vốn hóa TT (**theo Chỉ số**)", đúng vì đây là dashboard theo chỉ số) được reuse nguyên `logic` (`GROUP BY Index Code`) sang 8 Nhóm khác (7, 9, 11, 13, 19, 21, 32, 33 — toàn bộ là bảng Top-N **theo mã CK**, mockup đặt "Vốn hóa" ngay cạnh "Số CP lưu hành" của riêng 1 mã, không ghi "theo Chỉ số"). Kết quả: mọi mã CK trong cùng 1 rổ chỉ số hiển thị CÙNG 1 con số Vốn hóa (của cả rổ), thay vì vốn hóa riêng của từng mã. Lỗi cùng bản chất đã từng bị bắt riêng lẻ cho Nhóm 23 trước đó (2026-09-12, "GROUP BY index_constituent_dim.index_code là sai — copy nhầm ngữ nghĩa") nhưng không được tổng quát hóa thành rule để rà lại toàn bộ các Nhóm reuse khác — dẫn đến lỗi lặp lại ở quy mô 8 Nhóm, chỉ được phát hiện khi Data Modeler hỏi trực tiếp "tại sao nhóm tính theo mã CK lại lấy từ Fact của bộ chỉ số". Sửa: đổi `logic` thành `MAX(Giá đóng cửa × Số CP lưu hành) GROUP BY Symbol, Trade Date` cho cả 8 Nhóm + đồng bộ lại Nhóm 23 (HLD prose bị lệch so với Detail Mapping).
+
+---
+
 ### Checklist bổ sung — kiểm tra trước khi giao file Phase 2
 
 ```
@@ -279,6 +297,7 @@ Ví dụ K_NHNCK_2_YOY (CCHN cấp mới YTD):
 □ L11: Mỗi Operational table (opr_*) có src_stm_code → có đúng 1 dòng FILTER logic="src_stm_code = '<VALUE>'" ngay sau JOIN_KEY đầu tiên; Dimension table → không thêm FILTER này
 □ L12: Cột nhom theo thứ tự dòng trong file → số nhóm xuất hiện lần đầu phải tăng dần 1, 2, ..., N_max (parse bằng regex, không so sánh string) — nếu phát hiện lệch, sắp xếp lại toàn file
 □ L13: Tổng số nhóm trong Detail Mapping (cột nhom, unique) = tổng số nhóm trong HLD Section 2 (kể cả nhóm PENDING toàn bộ không có bảng Attributes nào) — không dùng danh sách nhóm từ Phase 0 Plan để xác định "đã xong"
+□ L14: Mọi dòng `ghi_chu` chứa "Reuse từ Nhóm X" mà `logic` có GROUP BY/PARTITION BY/SUM/MAX theo 1 chiều cụ thể → xác định grain hiển thị thật của Nhóm đang reuse (nhìn cột lân cận trong mockup: 1 dòng = 1 mã CK hay 1 chỉ số hay 1 công ty?) và đối chiếu đúng với GROUP BY trong logic — KHÔNG mặc định giữ nguyên GROUP BY của Nhóm gốc chỉ vì đang copy công thức
 ```
 
 > **L12 và L13 là 2 testcase module-level** (chạy 1 lần sau khi TOÀN BỘ nhóm đã xử lý, tương ứng TC6 và TC5 trong `SKILL.md`) — khác với L1–L11 vốn kiểm tra trong phạm vi từng nhóm/dòng riêng lẻ.

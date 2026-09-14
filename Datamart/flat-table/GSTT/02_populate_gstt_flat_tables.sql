@@ -176,6 +176,7 @@ SELECT
 
     -- From: CALENDAR DATE DIMENSION
     cal.cdr_dt                                     AS cdr_dt,
+    cal.is_trading_date                            AS is_trading_date,
 
     -- From: SECURITY TRADING SNAPSHOT DIMENSION
     sec_dim.symbol                                 AS symbol,
@@ -212,6 +213,7 @@ SELECT
 
     -- From: CALENDAR DATE DIMENSION
     cal.cdr_dt                          AS cdr_dt,
+    cal.is_trading_date                 AS is_trading_date,
 
     -- From: MARKET INDEX DIMENSION
     idx_dim.market_id                   AS market_id,
@@ -251,6 +253,7 @@ SELECT
 
     -- From: CALENDAR DATE DIMENSION
     cal.cdr_dt                          AS cdr_dt,
+    cal.is_trading_date                 AS is_trading_date,
 
     -- From: SECURITY TRADING SNAPSHOT DIMENSION
     scr_dim.symbol                      AS symbol,
@@ -287,6 +290,7 @@ SELECT
 
     -- From: CALENDAR DATE DIMENSION
     cal.cdr_dt                          AS cdr_dt,
+    cal.is_trading_date                 AS is_trading_date,
 
     -- From: SECURITY TRADING SNAPSHOT DIMENSION
     scr_dim.symbol                      AS symbol,

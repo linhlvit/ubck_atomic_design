@@ -126,6 +126,12 @@ Thực hiện ở **Bước 0b** (trước khi đi vào chi tiết bất kỳ nh
 □ Cột Công thức/Mô tả — đầy đủ cho mọi dòng, kể cả dòng reuse:
   → Dòng KPI reuse phải ghi rõ "Reuse từ Nhóm X" ngay trong cột Công thức/Ghi chú
 
+□ Reuse aggregate measure (GROUP BY/PARTITION BY/SUM/MAX theo 1 chiều) — KHÔNG được tin "Reuse từ Nhóm X" là đủ:
+  → Với mọi KPI aggregate (VD: Vốn hóa, Tổng KL/GT theo 1 nhóm...) ghi "Reuse từ Nhóm X": mở mockup của CẢ Nhóm gốc và Nhóm đang review, xác định "1 dòng kết quả = 1 [đơn vị] gì?" ở Nhóm đang review (nhìn cột lân cận: đứng cạnh "Số CP lưu hành"/"Mã CK" → grain là mã CK; có ghi rõ "(theo Chỉ số)" → grain là chỉ số)
+  → Đối chiếu GROUP BY/PARTITION BY thực tế trong `logic` — phải khớp đúng đơn vị đó, không phải đơn vị của Nhóm gốc
+  → Lệch (VD: Nhóm gốc theo Index, Nhóm reuse cần theo Symbol nhưng logic vẫn GROUP BY Index Code) → 🔴 Critical (mã: L1-REUSE-GRAIN-MISMATCH, xem `datamart-lld-design/reference/phase2_detail_mapping.md` mục L14) — case thật: K_GSTT_61 "Vốn hóa" copy nguyên từ Nhóm 6 (đúng theo Chỉ số) sang 8 Nhóm Top-N theo mã CK (2026-09-14)
+  → Đây là lỗi KHÔNG bị bắt bởi Attributes/Atomic parity hay orphan check — chỉ lộ ra khi đối chiếu ngữ cảnh hiển thị, nên phải chủ động kiểm tra riêng, không dựa vào các script PASS để kết luận "đã đúng"
+
 □ Grain: mô tả grain rõ ràng, khớp với logic BA?
 
 □ Bảng Fact/Dim đủ để phản ánh tất cả dimension trong BA?
