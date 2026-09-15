@@ -143,8 +143,11 @@ Các trường kỹ thuật sau do ETL framework tự quản lý — **không đ
 
 Trong mô hình hình sao (Star Schema), mọi khóa ngoại liên kết từ bảng Fact tới bảng `Calendar_Date_Dimension` đều là **Role-Playing Dimension Key**:
 - **Fact Periodic Snapshot (`Fact_*_Snapshot` / `_snpst`):** Cột ngày snapshot kỳ bắt buộc đặt tên là `Snapshot_Date_Dimension_Id FK` (kiểu `string` hoặc `int`). Bắt buộc có quan hệ `Calendar_Date_Dimension ||--o{ Fact_<Name>_Snapshot : " "`.
+  + **Quy chuẩn lưu trữ chuỗi thời gian lookback:** Mọi chỉ tiêu phân tích lookback (52 tuần = 260 phiên, 6 tháng = 130 phiên, 3 tháng = 65 phiên, 1 tháng = 20 phiên, MA20/10/5) bắt buộc phải thiết kế lưu trữ trên Fact Periodic Snapshot theo ngày (`Fact ... Snapshot`) với Grain `1 row / entity / trade_date`.
+  + ⛔ **CẤM TUYỆT ĐỐI (`L2-WINDOW-STORAGE-INVALID`):** Cấm thiết kế Window Function tính toán lịch sử trên Dimension SCD4A current-state (như `security_trading_snpst_dim`), vì Dimension SCD4A chỉ có 1 bản ghi hiện hành của ngày hôm nay, khiến Window Function mất sạch lịch sử.
 - **Fact Event / Khác:** Cột ngày sự kiện bắt buộc đặt tên phản ánh vai trò nghiệp vụ: `<Role>_Date_Dimension_Id FK` (ví dụ: `Trade_Date_Dimension_Id FK`, `Issue_Date_Dimension_Id FK`, `Decision_Date_Dimension_Id FK`, `Submission_Date_Dimension_Id FK`, `Effective_Date_Dimension_Id FK`...). Bắt buộc có quan hệ `Calendar_Date_Dimension ||--o{ Fact_<Name> : " "`.
 - ❌ **CẤM TUYỆT ĐỐI:** Cấm sử dụng `Calendar_Date_Dimension_Id` (hoặc `Calendar_Date_Dimension_Id FK`, `cdr_dt_dim_id`) trên bất kỳ Fact table nào. Cột `Calendar_Date_Dimension_Id` **chỉ duy nhất** là Primary Key của riêng bảng Dimension `Calendar_Date_Dimension`.
+  + ⚠️ **Cảnh báo vi phạm thực tế cần tuyệt đối tránh:** Trong `DTM_QLKD_HLD.md` (dòng 1201), bảng `Fact_Securities_Company_Compliance_Report_Snapshot` đặt tên khóa ngoại là `int Calendar_Date_Dimension_Id FK` — đây là vi phạm trực tiếp quy tắc Role-Playing Date Key (`L1-DATE-FK-VIOLATION`), Designer tuyệt đối không được sao chép mẫu sai này mà bắt buộc phải đổi thành `Snapshot_Date_Dimension_Id FK`.
 
 ### 2. Phân định Role-Playing Date FK vs Degenerate Date Attribute
 

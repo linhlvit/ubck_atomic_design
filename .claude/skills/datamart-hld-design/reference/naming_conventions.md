@@ -57,30 +57,64 @@ Ví dụ: `O_FMS_1`, `O_FMS_2`, `O_NDTNN_3`
 
 ---
 
-## Fact Pattern
+## Fact Pattern & Lưu Trữ Chuỗi Thời Gian
 
 **Giá trị hợp lệ của cột `Pattern` (Section 3.2) — chốt đúng 2, theo `section_structure.md`:**
 
-| Pattern | Khi nào | Grain |
+| Pattern | Khi nào | Grain Lưu Trữ (Fact Storage Grain) |
 |---|---|---|
-| `Event` | Sự kiện bất biến 1 lần | 1 row / sự kiện |
-| `Periodic Snapshot` | Stock metric so sánh theo kỳ | 1 row / đối tượng / kỳ |
+| `Event` | Sự kiện nghiệp vụ bất biến phát sinh 1 lần (giao dịch, vi phạm, cấp phép...) | 1 row / sự kiện phát sinh |
+| `Periodic Snapshot` | Trạng thái định kỳ, số dư tích lũy, hoặc chuỗi thời gian phân tích (lookback N phiên, giá đóng cửa, chỉ số tài chính) | 1 row / đối tượng / kỳ (ngày, tháng, quý, năm) |
 
-> **Chốt 2026-08-22:** bảng này trước đây có 3 giá trị (`Fact Event` / `Fact Snapshot` / `Fact Accumulating Snapshot`)
-> với cách viết khác `section_structure.md` §3.2 (`Event` / `Periodic Snapshot`). Đã thống nhất theo
-> `section_structure.md` — đó là nguồn sự thật cho format Section 3.
-> `Accumulating Snapshot` (vòng đời nhiều milestone, update in-place) bị loại khỏi danh sách hợp lệ: chưa module nào
-> dùng, và nếu phát sinh nhu cầu thì phải bổ sung vào `section_structure.md` trước, không tự thêm ở đây.
+> ⚠️ **Chuẩn hóa lưu trữ chuỗi thời gian lookback trên Fact Periodic Snapshot:**
+> Mọi chỉ tiêu phân tích lookback (Đỉnh/Đáy 52 tuần, 6 tháng, 3 tháng, 1 tháng, MA20, MA10, MA5) bắt buộc phải được thiết kế trên **Fact Periodic Snapshot theo ngày** (`Fact ... Snapshot` / `fct_*_snpst`) với Grain `1 row / entity / trade_date`.
+> - **Quy đổi phiên giao dịch chuẩn (Trading Sessions):**
+>   + 52 tuần = **260 phiên** (`ROWS BETWEEN 259 PRECEDING AND CURRENT ROW`)
+>   + 6 tháng = **130 phiên** (`ROWS BETWEEN 129 PRECEDING AND CURRENT ROW`)
+>   + 3 tháng = **65 phiên** (`ROWS BETWEEN 64 PRECEDING AND CURRENT ROW`)
+>   + 1 tháng / 4 tuần = **20 phiên** (`ROWS BETWEEN 19 PRECEDING AND CURRENT ROW`)
+>   + MA20 = **20 phiên**, MA10 = **10 phiên**, MA5 = **5 phiên**
+> - ⛔ **CẤM TUYỆT ĐỐI:** Cấm dùng ngày lịch `INTERVAL '52' WEEK` (vì thị trường nghỉ cuối tuần/ngày lễ). Cấm thiết kế Window Function trên Dimension SCD4A current-state (`L2-WINDOW-STORAGE-INVALID`).
 
 Mọi Fact bắt buộc có ít nhất 1 FK date đến Calendar Date Dimension theo chuẩn **Role-Playing Date Dimension**:
 - Fact Periodic Snapshot (`fct_*_snpst` / `Fact ... Snapshot`): `Snapshot Date Dimension Id` → physical: `snpst_dt_dim_id`.
 - Fact Event / Fact khác: `<Role> Date Dimension Id` → physical: `<role>_dt_dim_id` (`issue_dt_dim_id`, `trade_dt_dim_id`, `evaluation_dt_dim_id`, `submission_dt_dim_id`, `effective_dt_dim_id`...).
 - ❌ **TUYỆT ĐỐI CẤM:** Không được dùng `Calendar Date Dimension Id` / `cdr_dt_dim_id` trên bất kỳ Fact table nào (`cdr_dt_dim_id` chỉ là PK của Dimension `cdr_dt_dim`).
-- **Degenerate Date Attributes:** Các ngày thuộc tính nghiệp vụ phụ (như ngày lập biên bản, ngày ký QĐ, ngày cấp đầu tiên) giữ kiểu `date` thuần túy, đặt tên `<concept>_dt` (Title Case: `<Concept>_Date`, physical: `<concept>_dt`), KHÔNG thêm hậu tố `_Dimension_Id` / `_dim_id`.
+- ⚠️ **Cảnh báo lỗi thực tế điển hình:** Trong `DTM_QLKD_HLD.md` (dòng 1201), bảng `Fact_Securities_Company_Compliance_Report_Snapshot` chứa `int Calendar_Date_Dimension_Id FK` là lỗi vi phạm nghiêm trọng Role-Playing Date Key (`L1-DATE-FK-VIOLATION`), bắt buộc phải đổi thành `Snapshot_Date_Dimension_Id FK`.
+- **Degenerate Date Attributes:** Các ngày thuộc tính nghiệp vụ phụ (như ngày lập biên bản, ngày ký QĐ, ngày nộp, ngày cấp đầu tiên) giữ kiểu `date` thuần túy, đặt tên `<Concept> Date` (erDiagram: `<Concept>_Date`, physical: `<concept>_dt`), KHÔNG mang nhãn `FK`, KHÔNG thêm hậu tố `_Dimension_Id` / `_dim_id`.
 ❌ Không thiết kế Surrogate key cho Fact table.
 ❌ Không dùng Snowflake schema.
 
 ---
+
+## Thang 6 Bậc Phân Cấp Hạt Kinh Doanh (Grain Hierarchy) & Chống Grain Mismatch
+
+Khi đặt tên bảng và xác định grain cho Fact, Designer bắt buộc tuân theo thứ bậc 6 cấp độ hạt:
+- **Level 1 (Sàn GDCK):** `floor_code` (HOSE, HNX, UPCOM) $\implies$ Bảng phân tích toàn thị trường / cấp sở.
+- **Level 2 (Rổ Chỉ Số):** `index_code` (VN-Index, VN30, HNX30) $\implies$ Bảng rổ chỉ số / rổ cổ phiếu.
+- **Level 3 (Ngành / Lĩnh Vực):** `industry_code` $\implies$ Bảng thống kê theo ngành kinh tế.
+- **Level 4 (Mã Chứng Khoán / Doanh Nghiệp):** `symbol` / `public_company_id` $\implies$ Bảng cổ phiếu, trái phiếu, doanh nghiệp niêm yết.
+- **Level 5 (Định Chế / CTCK / Thành Viên):** `member_code` / `sc_firm_id` $\implies$ Bảng thành viên thị trường, công ty quản lý quỹ.
+- **Level 6 (Tài Khoản / Giao Dịch Chi Tiết):** `account_number`, `order_id` $\implies$ Bảng lệnh, giao dịch chi tiết, tài khoản NĐT.
+
+> ⛔ **Nguyên tắc chống Grain Mismatch (Bài học Case K_GSTT_61):**
+> Cấp độ hạt trình diễn (Presentation Grain ở Section 2) không được mịn hơn Fact Storage Grain ở Section 3. Khi tái sử dụng chỉ tiêu (Reuse), nếu Presentation Grain của nhóm mới khác nhóm gốc (ví dụ gốc cấp Chỉ số Level 2, nhóm mới cấp Mã CK Level 4), **CẤM sao chép nguyên công thức aggregate** — bắt buộc viết lại công thức theo đúng cấp grain của nhóm mới (vd: `GROUP BY symbol`).
+
+---
+
+## Tính Nhất Quán Chu Kỳ Trong Tỷ Số Tài Chính (Financial Ratio Period Consistency)
+
+Khi thiết kế các chỉ tiêu tỷ số tài chính (P/E, P/B, EPS, BVPS, ROE, ROA) trên Fact hoặc trong công thức tính toán:
+1. **Nguyên tắc Ghép Cặp Thời Gian (Period Matching):** Tử số và Mẫu số bắt buộc phải nằm trên **cùng một hệ quy chiếu thời gian**:
+   - **Chỉ số P/E Năm (TTM):** Tử số = `close_price`, Mẫu số = `EPS TTM` (Lợi nhuận sau thuế lũy kế 4 quý gần nhất chia cho Số cổ phiếu bình quân lưu hành 4 quý).
+   - **Chỉ số P/E Quý:** Phải nhân 4 quy năm (`EPS Quý × 4`). Tuyệt đối không lấy Giá đóng cửa chia cho EPS 1 quý mà không quy năm (khiến P/E bị thổi phồng 4 lần).
+2. **Lệnh Cấm Cộng Dồn Biến Số Số Dư (Stock Summation Ban):**
+   - **TUYỆT ĐỐI CẤM:** Sử dụng `SUM(owner_equity)` hoặc `SUM(total_assets)` qua 4 quý trong mẫu số của P/B hay ROE. Vốn chủ sở hữu và Tổng tài sản là biến số số dư thời điểm (Balance Sheet Stock). Bắt buộc phải lấy số dư quý gần nhất hoặc tính bình quân: `(Đầu kỳ + Cuối kỳ) / 2`.
+3. **Quy Tắc Xử Lý Thiếu Báo Cáo Tài Chính (Missing Financial Period):**
+   - Nếu doanh nghiệp thiếu BCTC của bất kỳ quý nào trong chuỗi 4 quý TTM $\implies$ Các chỉ tiêu `net_profit_after_tax_ttm`, `EPS TTM`, `P/E` bắt buộc phải trả về `NULL`. Nghiêm cấm việc cộng 2-3 quý rồi tự ý nội suy hoặc chia bình quân.
+
+---
+
 
 ## Role-Playing Date FK và Degenerate Date Attribute Naming Conventions
 
