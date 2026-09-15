@@ -173,6 +173,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_market_index_snpst_flat ON CLUSTER 
     -- From: MARKET INDEX DIMENSION
     market_id                       Nullable(String)        COMMENT 'Mã thị trường — từ Market Index Dimension',
     market_code                     Nullable(String)        COMMENT 'Mã sàn/chỉ số (HOSE/HNX/UPCOM/30) — từ Market Index Dimension',
+    index_nm                        Nullable(String)        COMMENT '[MỚI 2026-09-15] Tên chuẩn của chỉ số (VN-Index/HNX-Index/UPCoM-Index/VN30...) — từ Market Index Dimension, theo MDDS.JAD_MARKETINFOR.INDEXNAME, dùng làm giá trị hiển thị thay Market Code (cùng cột đã bổ sung ở fct_market_index_intraday_flat/GSTT)',
     index_tp_code                   Nullable(String)        COMMENT 'Loại chỉ số — từ Market Index Dimension',
     tsc_product_group_id             Nullable(String)        COMMENT 'Mã sản phẩm giao dịch (HOSE/HNX/UPCOM) — từ Market Index Dimension',
     market_status_code              Nullable(String)        COMMENT 'Trạng thái phiên (current-state SCD4A) — từ Market Index Dimension',

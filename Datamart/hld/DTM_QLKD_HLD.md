@@ -1,7 +1,8 @@
 # DTM_QLKD_HLD — High Level Design
 **Module:** QLKD — Quản lý kinh doanh (Hoạt động CTCK)
 **Phạm vi hiện tại:** Tab TỔNG QUAN + Tab GIÁM SÁT + Tab HỒ SƠ CTCK 360 + Tab TRA CỨU CÁ NHÂN + Tab DATA EXPLORER
-**Phiên bản:** 4.7 — 05/09/2026 (Nhóm 1 — O_QLKD_24/25; Nhóm 2/3/4 — gộp chung Fact/Dimension theo nguồn BA mới LNK_SC_FIRM_SERVICE+CAT_SERVICE_LEGAL_CAPITAL; Nhóm 3/4 hạ READY→PENDING — regression thật; O_QLKD_21 Closed, O_QLKD_26 mở rộng phạm vi K_QLKD_14-29; Nhóm 6/7 — bỏ K_QLKD_31 khỏi bảng KPI để khớp đúng 4/4 dòng BA, vẫn giữ ở Nhóm 5; Nhóm 10 — thiết kế lại đúng nguồn Atomic thật (sc_adhoc_report/sc_periodic_report, thay 2 entity không tồn tại), đổi K_QLKD_58a-d → K_QLKD_4261-4264, sửa Cụm 7/Section 3/4; O_QLKD_27 mới ghi nhận tên entity Member Periodic Report lỗi thời còn sót nhiều nơi)
+**Phiên bản:** 4.8 — 15/09/2026 (Bổ sung `Index Name`/`index_nm` lên erDiagram `Market_Index_Dimension` (Section 3) — thuộc tính đã có sẵn ở LLD/Master Registry/`datamart_model.yaml` từ trước (dùng cho GSTT Nhóm 5), nhưng erDiagram bản sao của QLKD (chủ sở hữu Dimension này) và flat table `qlkd_fct_market_index_snpst_flat` chưa được cập nhật theo — nay đồng bộ, tương tự cách đã bổ sung `index_nm` cho GSTT `fct_index_constituent_snpst_flat`)
+**Phiên bản trước:** 4.7 — 05/09/2026 (Nhóm 1 — O_QLKD_24/25; Nhóm 2/3/4 — gộp chung Fact/Dimension theo nguồn BA mới LNK_SC_FIRM_SERVICE+CAT_SERVICE_LEGAL_CAPITAL; Nhóm 3/4 hạ READY→PENDING — regression thật; O_QLKD_21 Closed, O_QLKD_26 mở rộng phạm vi K_QLKD_14-29; Nhóm 6/7 — bỏ K_QLKD_31 khỏi bảng KPI để khớp đúng 4/4 dòng BA, vẫn giữ ở Nhóm 5; Nhóm 10 — thiết kế lại đúng nguồn Atomic thật (sc_adhoc_report/sc_periodic_report, thay 2 entity không tồn tại), đổi K_QLKD_58a-d → K_QLKD_4261-4264, sửa Cụm 7/Section 3/4; O_QLKD_27 mới ghi nhận tên entity Member Periodic Report lỗi thời còn sót nhiều nơi)
 
 ---
 
@@ -1537,6 +1538,7 @@ erDiagram
         string market_index_dim_id PK
         string market_id
         string market_code
+        string index_nm
         string index_tp_code
         string tsc_product_group_id
         string market_status_code
