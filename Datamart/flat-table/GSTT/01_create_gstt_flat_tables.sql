@@ -37,7 +37,10 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_fct_stock_portfolio_snpst_flat ON CLUST
     fr_period_end_dt_dim_id             Nullable(String)        COMMENT 'FK → Calendar Date Dimension (Role-Playing: Financial Report Period End Date) — bổ sung 2026-09-08 theo rule GSĐC',
     total_vol                           Nullable(Int64)         COMMENT 'Tổng khối lượng giao dịch khớp lệnh cổ phiếu/CCQ 3 sàn, loại trừ phái sinh và trái phiếu',
     total_val                           Nullable(Decimal(23,2)) COMMENT 'Tổng giá trị giao dịch khớp lệnh cổ phiếu/CCQ 3 sàn, loại trừ phái sinh và trái phiếu',
+    total_matched_vol                   Nullable(Int64)         COMMENT 'Tổng khối lượng giao dịch khớp lệnh thuần (loại trừ thỏa thuận) cổ phiếu/CCQ 3 sàn, loại trừ phái sinh và trái phiếu',
+    total_matched_val                   Nullable(Decimal(23,2)) COMMENT 'Tổng giá trị giao dịch khớp lệnh thuần (loại trừ thỏa thuận) cổ phiếu/CCQ 3 sàn, loại trừ phái sinh và trái phiếu',
     total_derivative_vol                Nullable(Int64)         COMMENT 'Tổng khối lượng giao dịch phái sinh',
+
     total_derivative_val                Nullable(Decimal(23,2)) COMMENT 'Tổng giá trị giao dịch phái sinh',
     total_negotiated_vol                Nullable(Int64)         COMMENT '[SỬA FILTER 2026-09-11] Tổng khối lượng giao dịch thỏa thuận — filter Market Id Code IN (UPX,STX,STK) AND Board Type Code IN (T1-T4,T6,R1), đóng O_GSTT_20',
     total_negotiated_val                Nullable(Decimal(23,2)) COMMENT '[SỬA FILTER 2026-09-11] Tổng giá trị giao dịch thỏa thuận — filter Market Id Code IN (UPX,STX,STK) AND Board Type Code IN (T1-T4,T6,R1), đóng O_GSTT_20',
@@ -182,7 +185,8 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_fct_index_constituent_snpst_flat ON CLU
 
     -- From: INDEX CONSTITUENT DIMENSION
     index_code                          Nullable(String)        COMMENT 'Mã rổ chỉ số — từ Index Constituent Dimension',
-    index_id                            Nullable(String)        COMMENT 'Id chỉ số — từ Index Constituent Dimension'
+    index_id                            Nullable(String)        COMMENT 'Id chỉ số — từ Index Constituent Dimension',
+    index_nm                            Nullable(String)        COMMENT '[MỚI 2026-09-15] Tên chuẩn của chỉ số (VN-Index/HNX-Index/UPCoM-Index/VN30...) — từ Index Constituent Dimension, JOIN sang Market Index Snapshot theo Market Code = Index Code (không CASE WHEN), cùng nguồn Index Name dùng ở Market Index Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))

@@ -40,6 +40,8 @@ SELECT
     f.fr_period_end_dt_dim_id,
     f.total_vol,
     f.total_val,
+    f.total_matched_vol,
+    f.total_matched_val,
     f.total_derivative_vol,
     f.total_derivative_val,
     f.total_negotiated_vol,
@@ -184,7 +186,8 @@ SELECT
 
     -- From: INDEX CONSTITUENT DIMENSION
     idx_cons_dim.index_code                        AS index_code,
-    idx_cons_dim.index_id                          AS index_id
+    idx_cons_dim.index_id                          AS index_id,
+    idx_cons_dim.index_nm                          AS index_nm
 
 FROM datamart.fct_index_constituent_snpst f
 JOIN datamart.cdr_dt_dim cal
