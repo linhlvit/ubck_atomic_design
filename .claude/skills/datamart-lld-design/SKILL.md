@@ -1173,6 +1173,8 @@ TC6 — Thứ tự nhóm trong file tăng dần theo số nhóm:
 ```
 Datamart/flat-table/{MODULE}/01_create_{module}_flat_tables.sql
 Datamart/flat-table/{MODULE}/02_populate_{module}_flat_tables.sql
+Datamart/flat-table/Common/01_create_common_flat_tables.sql        (Conformed Flat Tables: cdr_dt_flat [nguồn datamart.cdr_dt_dim])
+Datamart/flat-table/Common/02_populate_common_flat_tables.sql      (Conformed Flat Tables: cdr_dt_flat [nguồn datamart.cdr_dt_dim])
 ```
 
 ### Quy trình đồng bộ khép kín LLD ↔ Flat Table (Closed-Loop Synchronization)
@@ -1186,6 +1188,7 @@ Mọi thay đổi tại tầng LLD (thêm/sửa cột Fact/Dim, sửa logic, th�
 - **Trigger 2 (Sửa công thức / Thay thế cột):** Cập nhật Detail Mapping & Attributes CSV + master `datamart_attributes.csv` → Sửa tên cột/schema trong DDL `01_create_*.sql` → Sửa projection trong DML `02_populate_*.sql` → Ghi log header file SQL (`-- Sửa YYYY-MM-DD: ...`).
 - **Trigger 3 (Thêm bảng Fact/Operational mới):** Tạo file Attributes + cập nhật `datamart_model.yaml` + HLD/Entities → Thêm khối `CREATE TABLE` mới trong DDL `01_create_*.sql` → Thêm khối `DELETE/TRUNCATE` + `INSERT INTO ... SELECT` mới trong DML `02_populate_*.sql` → Thêm mục vào `flat_table_mapping.md`.
 - **Trigger 4 (Bãi bỏ bảng — Deprecation / Cleanup):** Thực thi All-Tier Cleanup Protocol 5 tầng (LLD, master attributes, detail mapping, model.yaml, HLD) → Xóa/comment khối `CREATE TABLE` trong DDL → Xóa khối DML → Dọn sạch mục trong `flat_table_mapping.md`.
+- **Trigger 5 (Khai thác Conformed Dimension trên ClickHouse):** Khi tầng BI/phân tích cần khai thác trực tiếp chiều ngày lịch (`cdr_dt_dim`) trên ClickHouse dưới dạng bảng phẳng `datamart.cdr_dt_flat` → BẮT BUỘC sinh/đồng bộ DDL `01_create_common_flat_tables.sql` và DML `02_populate_common_flat_tables.sql` tại `Datamart/flat-table/Common/` (nguồn nạp từ `datamart.cdr_dt_dim`) → Đảm bảo đầy đủ 9 cột kể cả `is_trading_date` (phục vụ lọc ngày giao dịch và đếm phiên lookback) → Cập nhật mục `Common Dimensions` trong `flat_table_mapping.md`.
 
 ### Checklist Phase 3
 
@@ -1194,13 +1197,15 @@ PRE-CHECK (trước khi sinh):
 □ Đọc Entities.csv — đếm số fact + operational → báo cáo cho user → DỪNG chờ human xác nhận trước khi sinh
 □ ❌ KHÔNG bắt đầu sinh SQL khi chưa có xác nhận số bảng flat
 □ Đọc Datamart/datamart_model.yaml — lấy columns (physical_name, data_type, nullable, key) cho từng entity fact/operational/dim liên quan
-□ Xác nhận tên thư mục output: Datamart/flat-table/{MODULE}/
+□ Xác nhận tên thư mục output: Datamart/flat-table/{MODULE}/ (hoặc Datamart/flat-table/Common/ cho conformed dimensions)
 □ Xác nhận tên file: 01_create_{module}_flat_tables.sql, 02_populate_{module}_flat_tables.sql
 
 FILE 01 (CREATE):
-□ Số bảng CREATE = số fact + số operational
+□ Số bảng CREATE = số fact + số operational (kèm bảng Common conformed dimension cdr_dt_flat nếu thuộc phạm vi khai thác)
 □ Naming fact flat: datamart.{module}_{datamart_table}_flat
 □ Naming operational flat: datamart.{module}_{datamart_table}_flat (có module prefix — giống fact)
+□ Naming common flat: datamart.{entity}_flat (ví dụ: datamart.cdr_dt_flat lấy nguồn từ datamart.cdr_dt_dim)
+
 □ Thứ tự cột: fact columns → Calendar Date columns → dim columns
 □ Operational: chỉ operational columns (không có Calendar Date, không có dim)
 □ Không có technical metadata (ds_batch_date, ds_population_timestamp) trong flat table

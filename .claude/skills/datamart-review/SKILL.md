@@ -254,11 +254,13 @@ Bất kể Kịch bản C được thực hiện qua lời gọi `datamart-lld-d
 ---
 
 ### ⛔ CỔNG KIỂM ĐỊNH ĐỒNG BỘ FLAT TABLE (GATE 4 — FLAT TABLE DELIVERY GATE)
-Trước khi ký duyệt nghiệm thu và bàn giao bộ script Flat Table (`01_create_*_flat_tables.sql` và `02_populate_*_flat_tables.sql`), Reviewer BẮT BUỘC thực hiện kiểm định toàn diện 4 tiêu chí cốt lõi:
+Trước khi ký duyệt nghiệm thu và bàn giao bộ script Flat Table (`01_create_*_flat_tables.sql` và `02_populate_*_flat_tables.sql`), Reviewer BẮT BUỘC thực hiện kiểm định toàn diện 5 tiêu chí cốt lõi:
 1. **Flat Table Column Coverage Check:** 100% cột Fact/Operational và thuộc tính nghiệp vụ của Dim joined có mặt trong DDL (`L4-FLAT-TABLE-COLUMN-COVERAGE-MISSING`).
 2. **1-1 Projection Alignment Check:** Khớp 1-1 chính xác tuyệt đối số lượng, thứ tự 3 khối cột và alias giữa `CREATE TABLE` và `SELECT` (`L4-FLAT-TABLE-PROJECTION-MISALIGNMENT`).
 3. **Column Drift Check:** 0 cột thừa/thiếu giữa Flat Table SQL, master `datamart_attributes.csv`, và Detail Mapping (`L4-FLAT-TABLE-COLUMN-DRIFT`).
 4. **Parameter Consistency Check:** 100% mệnh đề lọc ngày chạy ETL dùng biến tham số chuẩn `:etl_date` (`L4-FLAT-TABLE-PARAMETER-INCONSISTENT`).
+5. **Common Dimensions ClickHouse Sync Check:** Kiểm tra sự hiện diện và tính đầy đủ của bảng phẳng chiều dùng chung `datamart.cdr_dt_flat` (nguồn `datamart.cdr_dt_dim`) tại `Datamart/flat-table/Common/` với đầy đủ 9 cột kể cả cờ `is_trading_date` phục vụ lọc ngày giao dịch và đếm phiên lookback (`L4-COMMON-DIM-CLICKHOUSE-MISSING`).
 
-> 🚫 **LỆNH CẤM:** Nghiêm cấm mọi hành vi bỏ qua Gate 4 hoặc phê duyệt bàn giao khi Flat Table SQL chưa được đồng bộ đầy đủ theo 4 tiêu chí trên!
+> 🚫 **LỆNH CẤM:** Nghiêm cấm mọi hành vi bỏ qua Gate 4 hoặc phê duyệt bàn giao khi Flat Table SQL chưa được đồng bộ đầy đủ theo 5 tiêu chí trên!
+
 

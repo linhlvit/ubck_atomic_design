@@ -6,6 +6,7 @@ Tài liệu mô tả từng bảng flat: nguồn fact/dim, quan hệ FK → PK, 
 
 ## Mục lục phân hệ
 
+- [Common Dimensions](#common-dimensions)
 - [FMS](#fms)
 - [GSDC](#gsdc)
 - [GSTT](#gstt)
@@ -16,6 +17,42 @@ Tài liệu mô tả từng bảng flat: nguồn fact/dim, quan hệ FK → PK, 
 - [TT](#tt)
 
 ---
+
+## Common Dimensions
+
+**Bảng phẳng chiều Ngày lịch trên ClickHouse (`cdr_dt_flat`) — lấy nguồn từ `datamart.cdr_dt_dim`**
+
+---
+
+### `datamart.cdr_dt_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `common_flat` |
+| **Entity nguồn** | Calendar Date Dimension (`datamart.cdr_dt_dim`) |
+| **Bảng ClickHouse** | `datamart.cdr_dt_flat` |
+| **Bảng nguồn Datamart** | `datamart.cdr_dt_dim` |
+| **PK** | `cdr_dt_dim_id` |
+| **NK** | `cdr_dt` |
+| **Mục đích khai thác ClickHouse** | Lọc ngày giao dịch (`is_trading_date = 'Y'`), tính mẫu số bình quân (Average Daily), xác định ngày giao dịch gần nhất (Latest Trading Date), tính số phiên lookback (20/65/130/260 phiên), join tối ưu cục bộ với các Fact tables trên ClickHouse. |
+
+
+**Cấu trúc cột**
+
+| Cột | Kiểu | Mô tả |
+|-----|------|-------|
+| `cdr_dt_dim_id` | `String` | PK — Surrogate Key (Driving: cdr_dt_id) |
+| `cdr_dt` | `Date` | NK — Ngày lịch chuẩn (YYYY-MM-DD) |
+| `year` | `Int32` | Năm (YYYY) |
+| `quarter` | `Int8` | Quý (1–4) |
+| `month` | `Int8` | Tháng (1–12) |
+| `day_of_week` | `Int8` | Thứ trong tuần (1=Chủ nhật, 7=Thứ bảy) |
+| `is_weekend` | `String` | Cờ Y/N — ngày cuối tuần (thứ 7 hoặc CN) |
+| `holiday_flag` | `Nullable(String)` | Cờ Y/N — ngày nghỉ lễ nhà nước |
+| `is_trading_date` | `String` | Cờ Y/N — ngày thị trường thực tế mở cửa giao dịch |
+
+---
+
 
 ## FMS
 

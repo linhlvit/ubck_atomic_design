@@ -577,7 +577,7 @@ Các job nạp dữ liệu Flat Table hàng ngày trên ClickHouse được kíc
 
 ---
 
-### 13.6. Bảng Ma Trận Đối Soát 4 Tiêu Chí Flat Table SQL
+### 13.6. Bảng Ma Trận Đối Soát 5 Tiêu Chí Flat Table SQL
 
 | # | Tiêu Chí Kiểm Tra | Đối Tượng Đối Soát | Điều Kiện Đạt Chuẩn (PASS) | Mã Lỗi Khi Vi Phạm |
 |---|---|---|---|---|
@@ -585,6 +585,8 @@ Các job nạp dữ liệu Flat Table hàng ngày trên ClickHouse được kíc
 | **2** | **1-1 Projection Alignment** | `01_create_*.sql` vs `02_populate_*.sql` | Tổng số cột, thứ tự 3 khối, và tên alias khớp chính xác 1-1 giữa `CREATE TABLE` và `SELECT`. | `L4-FLAT-TABLE-PROJECTION-MISALIGNMENT` |
 | **3** | **Column Drift Control** | Flat Table SQL vs Master CSV & Detail Mapping | Không có cột thừa trong SQL; không bỏ sót cột Fact có KPI khai thác; 100% cột Fact có trong master CSV. | `L4-FLAT-TABLE-COLUMN-DRIFT` |
 | **4** | **Parameter Consistency** | `02_populate_*.sql` (`WHERE` clause) | 100% mệnh đề lọc ngày ETL dùng đúng cú pháp `:etl_date`; không dùng format lạ hoặc hardcode ngày. | `L4-FLAT-TABLE-PARAMETER-INCONSISTENT` |
+| **5** | **Common Dimensions Sync** | `Datamart/flat-table/Common/` vs `cdr_dt_dim` CSV | Bắt buộc có script DDL/DML cho bảng phẳng `datamart.cdr_dt_flat` (nguồn `datamart.cdr_dt_dim`) trên ClickHouse với đủ 9 cột kể cả cờ `is_trading_date`. | `L4-COMMON-DIM-CLICKHOUSE-MISSING` |
+
 
 ---
 

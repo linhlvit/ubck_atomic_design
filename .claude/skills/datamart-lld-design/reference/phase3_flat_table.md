@@ -20,11 +20,24 @@ Datamart/flat-table/{MODULE}/02_populate_{module}_flat_tables.sql
 
 ---
 
-## Quy tắc xác định bảng flat
+### Quy tắc xác định bảng flat
 
-Chỉ sinh flat table cho bảng **`fact`** và **`operational`** — không sinh cho `dim`.
+1. **Phân hệ nghiệp vụ (`{MODULE}`):**
+   Chỉ sinh flat table cho bảng **`fact`** và **`operational`** — không sinh cho `dim` của phân hệ đó.
+   **Đếm trước khi sinh:** Báo cáo cho user: "Phân hệ {MODULE} có X fact + Y operational = Z bảng flat." Chờ xác nhận trước khi sinh file.
 
-**Đếm trước khi sinh:** Báo cáo cho user: "Phân hệ {MODULE} có X fact + Y operational = Z bảng flat." Chờ xác nhận trước khi sinh file.
+2. **Ngoại lệ bắt buộc — Chiều Dùng Chung Conformed Dimension trên ClickHouse (`Common`):**
+   Đối với các Chiều dùng chung conformed toàn hệ thống mà tầng phân tích/BI cần khai thác trực tiếp trên ClickHouse (đặc biệt là **`cdr_dt_dim` — Calendar Date Dimension**):
+   - **Vị trí lưu trữ:** Bắt buộc lưu tại thư mục chung `Datamart/flat-table/Common/` với 2 file:
+     + `Datamart/flat-table/Common/01_create_common_flat_tables.sql`
+     + `Datamart/flat-table/Common/02_populate_common_flat_tables.sql`
+   - **Tên bảng ClickHouse:** `datamart.cdr_dt_flat` (lấy nguồn trực tiếp từ `datamart.cdr_dt_dim` trên Datamart layer).
+   - **Mục đích khai thác:**
+     + Truy vấn lịch giao dịch thị trường và lọc `WHERE is_trading_date = 'Y'`.
+     + Tính mẫu số bình quân ngày giao dịch (Average Daily Volume/Value).
+     + Xác định tự động ngày giao dịch gần nhất (`MAX(cdr_dt) WHERE is_trading_date = 'Y'`).
+     + Phục vụ window lookback (20, 65, 130, 260 phiên) và JOIN cục bộ tối ưu trên ClickHouse.
+   - **Đồng bộ tài liệu:** Bắt buộc cập nhật vào `Datamart/flat-table/flat_table_mapping.md` dưới mục `## Common Dimensions`.
 
 **Đồng bộ tuyệt đối LLD ↔ Flat Table (Tránh Orphan Draft Artifacts):**
 - Danh sách bảng fact và operational sinh flat table PHẢI khớp 100% với danh sách bảng fact/operational trong `Datamart/lld/{MODULE}/` và `datamart_model.yaml`.
@@ -44,6 +57,7 @@ Chỉ sinh flat table cho bảng **`fact`** và **`operational`** — không sin
 |------|---------|-------|
 | `fact` | `datamart.{module}_{datamart_table}_flat` | `datamart.pttt_fct_mkt_rsk_snpst_flat` |
 | `operational` | `datamart.{module}_{datamart_table}_flat` | `datamart.pttt_opr_corp_bond_issuer_credit_flat` |
+| `common_dim` | `datamart.cdr_dt_flat` (nguồn: `datamart.cdr_dt_dim`) | `datamart.cdr_dt_flat` |
 
 `{datamart_table}` lấy trực tiếp từ cột `datamart_table` trong Attributes.csv — không đặt lại.
 

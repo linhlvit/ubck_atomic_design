@@ -346,7 +346,20 @@ Khi đi sâu vào review kỹ thuật từng nhóm (Micro-Review), các vấn đ
 | **Phương pháp chẩn đoán & phát hiện** | 1. Quét regex trên toàn bộ file `02_populate_*.sql`: tìm các mệnh đề `WHERE` lọc theo bảng Calendar Date (ví dụ `WHERE snpst_cal.cdr_dt = ...`, `WHERE evnt_cal.cdr_dt = ...`).<br>2. Kiểm tra biểu thức sau dấu `=`: Bắt buộc phải là `:etl_date`.<br>3. Gắn cờ vi phạm nếu xuất hiện: `{etl_date}`, `$etl_date`, `%(etl_date)s`, `?`, chuỗi ngày `'YYYY-MM-DD'`, hoặc các biến thể khác. |
 | **Remediation Protocol** | **Bước 1:** Xác định tất cả các dòng câu lệnh chứa mệnh đề lọc ngày không chuẩn trong `02_populate_*.sql`.<br>**Bước 2:** Thay thế toàn bộ mệnh đề lọc ngày bằng cú pháp chuẩn mực duy nhất: `WHERE snpst_cal.cdr_dt = :etl_date` (đối với Fact Snapshot) hoặc `WHERE evnt_cal.cdr_dt = :etl_date` (đối với Fact Event).<br>**Bước 3 (Verify):** Chạy regex quét lại toàn bộ file xác nhận 100% mệnh đề lọc ngày đều sử dụng `:etl_date`, 0 trường hợp hardcode hoặc cú pháp sai. |
 
+#### 17. Đặc tả Mã lỗi: `L4-COMMON-DIM-CLICKHOUSE-MISSING`
+
+| Thuộc tính | Chi tiết đặc tả |
+|---|---|
+| **Mã lỗi (Error Code)** | `L4-COMMON-DIM-CLICKHOUSE-MISSING` |
+| **Tên lỗi (Issue Name)** | Thiếu script DDL/DML tạo bảng phẳng Chiều dùng chung conformed (datamart.cdr_dt_flat) trên ClickHouse |
+| **Phân loại kịch bản** | **Kịch bản C — Lỗi kỹ thuật chuẩn hóa hạ tầng ClickHouse (Lớp 4)** |
+| **Mức độ (Severity)** | 🔴 **Critical** (Chặn nghiệm thu bàn giao khi có yêu cầu khai thác lịch thị trường hoặc join cục bộ trên ClickHouse) |
+| **Mô tả (Description)** | Kho dữ liệu Datamart yêu cầu khai thác trực tiếp chiều ngày lịch dưới dạng bảng phẳng `datamart.cdr_dt_flat` (lấy nguồn từ `datamart.cdr_dt_dim`, chứa cờ `is_trading_date`, các mốc thời gian lookback và phục vụ join trực tiếp với Fact flat tables) trên ClickHouse, nhưng thư mục `Datamart/flat-table/Common/` chưa có đủ bộ đôi file `01_create_common_flat_tables.sql` và `02_populate_common_flat_tables.sql`, hoặc thiếu các trường cốt lõi (như `is_trading_date`). |
+| **Phương pháp chẩn đoán & phát hiện** | 1. Kiểm tra sự tồn tại của thư mục `Datamart/flat-table/Common/`.<br>2. Kiểm tra câu lệnh `CREATE TABLE IF NOT EXISTS datamart.cdr_dt_flat` trong `01_create_common_flat_tables.sql` có đủ 9 trường thuộc tính.<br>3. Kiểm tra câu lệnh `INSERT INTO datamart.cdr_dt_flat ... SELECT ... FROM datamart.cdr_dt_dim` trong `02_populate_common_flat_tables.sql`. |
+| **Remediation Protocol** | **Bước 1:** Khởi tạo thư mục `Datamart/flat-table/Common/`.<br>**Bước 2:** Tạo file DDL `01_create_common_flat_tables.sql` định nghĩa bảng `datamart.cdr_dt_flat` (`ENGINE = ReplicatedReplacingMergeTree()`).<br>**Bước 3:** Tạo file DML `02_populate_common_flat_tables.sql` nạp dữ liệu từ bảng Datamart `datamart.cdr_dt_dim` sang `datamart.cdr_dt_flat` (`TRUNCATE + INSERT`).<br>**Bước 4:** Cập nhật mục `Common Dimensions` trong `Datamart/flat-table/flat_table_mapping.md`. |
+
 ---
+
 
 ### Kịch bản D — HLD sai do thiết kế/nguồn Atomic lỗi thời
 - **Dấu hiệu:** HLD đã tồn tại, đánh READY, nhưng trỏ nhầm nguồn Atomic đã deprecated/tái cấu trúc, sai grain, sai entity, hoặc logic nghiệp vụ không còn khớp Atomic hiện hành.

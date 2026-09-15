@@ -376,7 +376,12 @@ Thực hiện ở **Bước 0b** (trước khi đi vào chi tiết bất kỳ nh
     → Toàn bộ các mệnh đề lọc ngày chạy ETL trong file 02_populate_*.sql bắt buộc sử dụng thống nhất tham số :etl_date (WHERE snpst_cal.cdr_dt = :etl_date / WHERE evnt_cal.cdr_dt = :etl_date)
     → Tuyệt đối cấm dùng {etl_date}, $etl_date, ?, hoặc hardcode chuỗi ngày
     → Sai cú pháp tham số → 🔴 Critical (mã: L4-FLAT-TABLE-PARAMETER-INCONSISTENT)
+  □ Common Dimensions ClickHouse Sync Check (Kiểm tra Chiều dùng chung):
+    → Đối với chiều ngày lịch dùng chung: bắt buộc có script DDL và DML tạo bảng phẳng datamart.cdr_dt_flat (nguồn datamart.cdr_dt_dim) trong Datamart/flat-table/Common/ (01_create_common_flat_tables.sql và 02_populate_common_flat_tables.sql) phục vụ khai thác trực tiếp trên ClickHouse
+    → Đảm bảo đủ 9 cột kể cả cờ is_trading_date (phục vụ lọc ngày giao dịch và đếm phiên lookback)
+    → Thiếu script Common Flat Table trên ClickHouse khi có yêu cầu khai thác → 🔴 Critical (mã: L4-COMMON-DIM-CLICKHOUSE-MISSING)
 ```
+
 
 ---
 
