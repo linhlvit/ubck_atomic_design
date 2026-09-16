@@ -178,7 +178,7 @@ class TestTier4TKNBBenchmark(unittest.TestCase):
 
 
 class TestTier4GSTTPositiveControl(unittest.TestCase):
-    """Tier 4: GSTT serves as the positive control for Branch B orphans & master registry desync."""
+    """Tier 4: GSTT serves as verified clean benchmark (remediated on 2026-09-14)."""
 
     def setUp(self):
         self.hld_csv = REPO_ROOT / "Datamart" / "hld" / "DTM_GSTT_Entities.csv"
@@ -187,27 +187,22 @@ class TestTier4GSTTPositiveControl(unittest.TestCase):
         self.master_csv = REPO_ROOT / "Datamart" / "lld" / "datamart_attributes.csv"
 
     def test_06_gstt_ground_truth_branch_b_orphans(self):
-        """Tier 4 Ground Truth: DTM_GSTT_Entities.csv retains deprecated entities omitted from LLD & Flat Table."""
+        """Tier 4 Ground Truth: GSTT entities remediated with 0 Branch B orphans across HLD & LLD."""
         self.assertTrue(self.hld_csv.exists())
         _, _, hld_rows = csv_utils.read_csv_dynamic(self.hld_csv)
         entity_names = {r.get("datamart_entity") for r in hld_rows}
 
-        # 'Fact Public Company Shareholding' is present in HLD Entities.csv
-        self.assertIn("Fact Public Company Shareholding", entity_names)
-        self.assertIn("Legal Entity Dimension", entity_names)
+        # Active entities are present in HLD Entities.csv
+        self.assertIn("Operational Public Company Shareholding", entity_names)
+        self.assertIn("Legal Entity Position Dimension", entity_names)
 
-        # Neither entity has a corresponding LLD CSV in Datamart/lld/GSTT/
+        # Both entities have a corresponding LLD CSV in Datamart/lld/GSTT/
         lld_files = [f.name.lower() for f in self.lld_dir.glob("*.csv")]
-        shareholding_lld = [f for f in lld_files if "shareholding" in f]
-        self.assertEqual(len(shareholding_lld), 0, "Fact Public Company Shareholding must not exist in LLD")
-
-        # Flat Table SQL explicitly records deprecation of these entities
-        sql_text = encoding.read_file_safe(self.flat_sql)
-        self.assertIn("Fact Public Company Shareholding", sql_text)
-        self.assertIn("loại khỏi HLD", sql_text)
+        self.assertTrue(any("shareholding" in f for f in lld_files), "Operational Public Company Shareholding must exist in LLD")
+        self.assertTrue(any("legal_entity_position" in f for f in lld_files), "Legal Entity Position Dimension must exist in LLD")
 
     def test_07_gstt_ground_truth_master_registry_desync(self):
-        """Tier 4 Ground Truth: free_float_share_quantity is present in GSTT LLD file but MISSING in master registry."""
+        """Tier 4 Ground Truth: free_float_share_quantity is present in GSTT LLD file and in master registry."""
         portfolio_lld = self.lld_dir / "DTM_GSTT_fct_stock_portfolio_snpst.csv"
         self.assertTrue(portfolio_lld.exists())
 
@@ -222,14 +217,14 @@ class TestTier4GSTTPositiveControl(unittest.TestCase):
             for r in master_rows
             if r.get("datamart_table") == "fct_stock_portfolio_snpst"
         }
-        self.assertNotIn(
+        self.assertIn(
             "free_float_share_quantity",
             master_gstt_portfolio_cols,
-            "free_float_share_quantity must be MISSING in datamart_attributes.csv (desync positive control)",
+            "free_float_share_quantity must be synchronized in datamart_attributes.csv",
         )
 
     def test_08_gstt_date_fk_violations_detected(self):
-        """Tier 4: Date FK Checker detects cdr_dt_dim_id violations on GSTT Fact tables."""
+        """Tier 4: Date FK Checker produces 0 violations on GSTT under --strict."""
         self.assertIsNotNone(DATE_FK_SCRIPT)
         cmd = [
             sys.executable,
@@ -239,41 +234,34 @@ class TestTier4GSTTPositiveControl(unittest.TestCase):
             "--strict",
         ]
         result = subprocess.run(cmd, capture_output=True, encoding="utf-8", errors="replace")
-        # Must return exit code 1 due to cdr_dt_dim_id on Fact tables
-        self.assertEqual(result.returncode, 1, "GSTT must trigger Date FK violations under --strict")
-        self.assertIn("cdr_dt_dim_id", result.stdout)
+        self.assertEqual(result.returncode, 0, f"GSTT Date FK check must pass with code 0: {result.stdout}")
+        self.assertIn("ALL CLEAN", result.stdout)
 
     @unittest.skipUnless(HAS_ORPHAN_CHECKER, "M2 datamart_orphan_checker not yet implemented")
     def test_09_gstt_orphan_checker_flags_branch_b(self):
-        """Tier 4: 3-Way Orphan Checker detects Branch B orphan entities in GSTT."""
+        """Tier 4: 3-Way Orphan Checker produces 0 Branch B orphans on GSTT."""
         cmd = [
             sys.executable,
             str(ORPHAN_CHECKER_CLI),
             "-m", "GSTT",
             "--root", str(REPO_ROOT),
-            "--json",
+            "--strict",
         ]
         result = subprocess.run(cmd, capture_output=True, encoding="utf-8", errors="replace")
-        data = json.loads(result.stdout)
-        branch_b = data.get("branch_b_orphans", [])
-        found = any("Shareholding" in str(item) for item in branch_b)
-        self.assertTrue(found, f"Expected Fact Public Company Shareholding in Branch B: {branch_b}")
+        self.assertEqual(result.returncode, 0, f"GSTT orphan check must pass with code 0: {result.stdout}")
 
     @unittest.skipUnless(HAS_PARITY_CHECKER, "M2 datamart_parity_checker not yet implemented")
     def test_10_gstt_parity_checker_flags_missing_master(self):
-        """Tier 4: Parity Checker detects free_float_share_quantity missing in master registry."""
+        """Tier 4: Parity Checker confirms 100% parity for GSTT."""
         cmd = [
             sys.executable,
             str(PARITY_CHECKER_CLI),
             "-m", "GSTT",
             "--root", str(REPO_ROOT),
-            "--json",
+            "--strict",
         ]
         result = subprocess.run(cmd, capture_output=True, encoding="utf-8", errors="replace")
-        data = json.loads(result.stdout)
-        missing_in_master = data.get("missing_in_master", [])
-        found = any("free_float_share_quantity" in str(item) for item in missing_in_master)
-        self.assertTrue(found, f"Expected free_float_share_quantity in missing_in_master: {missing_in_master}")
+        self.assertEqual(result.returncode, 0, f"GSTT parity check must pass with code 0: {result.stdout}")
 
 
 class TestTier4QLCBPositiveControl(unittest.TestCase):
