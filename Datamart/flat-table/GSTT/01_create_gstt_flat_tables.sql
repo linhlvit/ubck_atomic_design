@@ -339,9 +339,7 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_opr_public_company_shareholding_flat ON
     major_shareholder_ind               String                  COMMENT 'Là cổ đông lớn — Y/N',
     insider_shareholder_ind             String                  COMMENT 'Là cổ đông nội bộ — Y/N (dùng filter K_GSTT_103b)',
     shareholder_tp_code                 Array(String)           COMMENT 'Loại cổ đông (có thể nhiều loại cùng lúc) — scheme IDS_SHAREHOLDER_TYPE',
-    position_code                       Nullable(String)        COMMENT 'Chức vụ người nội bộ (nếu có) — denormalize từ Legal Entity Position (K_GSTT_104)',
-    appointment_dt                      Nullable(Date)          COMMENT 'Ngày bổ nhiệm chức vụ (nếu có)',
-    dismissal_dt                        Nullable(Date)          COMMENT 'Ngày miễn nhiệm chức vụ (nếu có)',
+    position_code                       Array(String)           COMMENT '[SỬA 2026-09-16] Chức vụ người nội bộ (có thể nhiều chức vụ ACTIVE cùng lúc) — denormalize từ Legal Entity Position (K_GSTT_104). Đổi từ Nullable(String) sang Array(String) — 1 legal_entity có thể giữ nhiều chức vụ tại cùng công ty, tránh nhân dòng bảng cổ phần. Đã bỏ appointment_dt/dismissal_dt — không lưu chức vụ theo thời gian trên bảng current-state này',
     current_foreign_holding_ratio       Nullable(Decimal(5,2))  COMMENT 'Tỷ lệ sở hữu NĐT nước ngoài (K_GSTT_120) — cấp công ty, lặp lại theo mọi dòng cổ đông cùng công ty',
     src_stm_code                        String                  COMMENT 'Mã hệ thống nguồn — IDS_COMPANY_SHAREHOLDING'
 )

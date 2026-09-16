@@ -333,8 +333,6 @@ SELECT
     o.insider_shareholder_ind,
     o.shareholder_tp_code,
     o.position_code,
-    o.appointment_dt,
-    o.dismissal_dt,
     o.current_foreign_holding_ratio,
     o.src_stm_code
 
