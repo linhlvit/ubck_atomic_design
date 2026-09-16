@@ -8398,8 +8398,6 @@ entities:
       - "index_constituent_snapshot"
       - "security_trading_snapshot"
       - "securities_trade"
-      - "public_company"
-      - "pc_share_statistics_hstr"
       - "listed_share_info"
     modules_using:
       - "GSTT"
@@ -8437,7 +8435,7 @@ entities:
         data_type: "int"
         nullable: true
         key: ""
-        description: "[SỬA 2026-09-14, review sheet Tổng hợp công thức] Đổi tên từ Index Total Volume — KLGD KHỚP LỆNH THUẦN (loại thỏa thuận) toàn rổ chỉ số theo Index+Date — giá trị lặp lại trên mọi dòng Symbol cùng Index+Date, KHÔNG SUM lại."
+        description: "[SỬA 2026-09-14, review sheet Tổng hợp công thức] Tổng KLGD khớp lệnh thuần (loại thỏa thuận) toàn rổ chỉ số theo Index+Date — giá trị lặp lại trên mọi dòng Symbol cùng Index+Date, KHÔNG SUM lại."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_vol"
       - logical_name: "Index Total Matched Value"
@@ -8446,7 +8444,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "[SỬA 2026-09-14, review sheet Tổng hợp công thức] Đổi tên từ Index Total Value — GTGD KHỚP LỆNH THUẦN (loại thỏa thuận) toàn rổ chỉ số theo Index+Date — giá trị lặp lại trên mọi dòng Symbol cùng Index+Date, KHÔNG SUM lại."
+        description: "[SỬA 2026-09-14, review sheet Tổng hợp công thức] Tổng GTGD khớp lệnh thuần (loại thỏa thuận) toàn rổ chỉ số theo Index+Date — giá trị lặp lại trên mọi dòng Symbol cùng Index+Date, KHÔNG SUM lại."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Index Foreign Net Volume"
@@ -8455,18 +8453,18 @@ entities:
         data_type: "int"
         nullable: true
         key: ""
-        description: "[MỚI 2026-09-14] KLNN ròng toàn rổ chỉ số theo Index+Date — giá trị lặp lại trên mọi dòng Symbol cùng Index+Date, KHÔNG SUM lại."
+        description: "[MỚI 2026-09-14] Khối lượng mua ròng NĐT nước ngoài toàn rổ chỉ số theo Index+Date — giá trị lặp lại trên mọi dòng Symbol cùng Index+Date, KHÔNG SUM lại."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.buy_foreign_investor_tp_code"
+        source_atomic_column: "securities_trade.execution_vol"
       - logical_name: "Index Foreign Net Value"
         physical_name: "idx_foreign_net_val"
         data_domain: "Currency Amount"
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "[MỚI 2026-09-14] GTNN ròng toàn rổ chỉ số theo Index+Date — giá trị lặp lại trên mọi dòng Symbol cùng Index+Date, KHÔNG SUM lại."
+        description: "[MỚI 2026-09-14] Giá trị mua-bán ròng NĐT nước ngoài toàn rổ chỉ số theo Index+Date — giá trị lặp lại trên mọi dòng Symbol cùng Index+Date, KHÔNG SUM lại."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.buy_foreign_investor_tp_code"
+        source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Index Total Negotiated Volume"
         physical_name: "idx_total_negotiated_vol"
         data_domain: "Small Counter"
@@ -8491,9 +8489,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "[MỚI 2026-09-14] Vốn hóa thị trường toàn rổ chỉ số (Close Price × Outstanding Share Quantity, SUM) theo Index+Date — giá trị lặp lại trên mọi dòng Symbol cùng Index+Date, KHÔNG SUM lại."
-        source_atomic_table: "pc_share_statistics_hstr"
-        source_atomic_column: "pc_share_statistics_hstr.total_outstanding_share_quantity"
+        description: "[MỚI 2026-09-14, SỬA 2026-09-16] Vốn hóa thị trường toàn rổ chỉ số (Close Price × Outstanding Share Quantity, SUM) theo Index+Date — nguồn listed_share_info (VSDC outstanding_shares), giá trị lặp lại trên mọi dòng Symbol cùng Index+Date, KHÔNG SUM lại."
+        source_atomic_table: "listed_share_info"
+        source_atomic_column: "listed_share_info.outstanding_share_quantity"
       - logical_name: "Index Free Float Market Cap"
         physical_name: "idx_free_float_market_cap"
         data_domain: "Currency Amount"
@@ -8520,7 +8518,6 @@ entities:
       - "pc_report_submission"
       - "fr_value"
       - "fr_catalog"
-      - "pc_share_statistics_hstr"
     modules_using:
       - "GSTT"
     columns:
@@ -8647,9 +8644,9 @@ entities:
         data_type: "int"
         nullable: true
         key: ""
-        description: "Số cổ phiếu đang lưu hành — Resolved 2026-08-26, sửa lookback 2026-09-08. Nguồn pc_share_statistics_hstr (bảng lịch sử theo ngày của pc_share_statistics), lấy bản ghi ACTIVE gần nhất <= ngày giao dịch, xem O_GSTT_2"
-        source_atomic_table: "pc_share_statistics_hstr"
-        source_atomic_column: "pc_share_statistics_hstr.total_outstanding_share_quantity"
+        description: "Số cổ phiếu đang lưu hành — Resolved 2026-08-26, sửa lookback 2026-09-08. [SỬA 2026-09-16] Đổi nguồn từ pc_share_statistics_hstr (IDS) sang listed_share_info (VSDC outstanding_shares, src_stm_code='VSDC_OUTSTANDING_SHARES'), lấy bản ghi gần nhất <= ngày giao dịch (lookback), cùng pattern với Free Float Share Quantity."
+        source_atomic_table: "listed_share_info"
+        source_atomic_column: "listed_share_info.outstanding_share_quantity"
       - logical_name: "Revenue"
         physical_name: "revenue"
         data_domain: "Currency Amount"
