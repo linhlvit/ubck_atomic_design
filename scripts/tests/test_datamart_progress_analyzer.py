@@ -309,33 +309,34 @@ class TestDetailMappingParser(unittest.TestCase):
 
 
 class TestPendingClassifier(unittest.TestCase):
-    """Tests 9, 10 & 15: PendingClassifier all 6 branches and exhaustive condition coverage."""
+    """Tests 9, 10 & 15: PendingClassifier 5 standard categories and exhaustive condition coverage."""
 
-    def test_09_classify_all_six_branches(self):
-        """Verify that each of the 6 branches is activated under its distinct criteria."""
-        # Branch 1: BA Pending
+    def test_09_classify_all_five_categories(self):
+        """Verify that each of the 5 standard categories is activated under its distinct criteria."""
+        # Category 1: BA chưa mapping xong
         b1 = PendingClassifier.classify("KPI 1", "Pending", "tbl", "INT")
         self.assertEqual(b1, PendingClassifier.REASON_BA_PENDING)
 
-        # Branch 2: Chưa có mapping nguồn từ BA
+        # Category 2: Chưa có mapping nguồn từ BA
         b2 = PendingClassifier.classify("KPI 2", "Done", "Chưa có CSDL", "VARCHAR")
         self.assertEqual(b2, PendingClassifier.REASON_NO_BA_SOURCE)
 
-        # Branch 3: Thiếu nguồn dữ liệu ngoại lai
+        # Category 3: Thiếu nguồn dữ liệu / Atomic entity ngoài scope
         b3 = PendingClassifier.classify("KPI 3", "Done", "UAT_VSDC.tbl_trade", "NUMBER")
         self.assertEqual(b3, PendingClassifier.REASON_EXTERNAL_SOURCE)
 
-        # Branch 4: Join đa nguồn phức tạp
+        # Category 4: Cần join phức tạp đa nguồn
         b4 = PendingClassifier.classify("KPI 4", "Done", "scms_nhnck.tbl_bridge", "VARCHAR")
         self.assertEqual(b4, PendingClassifier.REASON_COMPLEX_JOIN)
 
-        # Branch 5: Datamart Pending
+        # Category 5: Datamart chưa thiết kế Fact/Dim
         b5 = PendingClassifier.classify("KPI 5", "Done", "atomic.fact_order", "INT")
         self.assertEqual(b5, PendingClassifier.REASON_DATAMART_PENDING)
 
-        # Branch 6: Lệch số lượng / Schema out of sync
+        # Category 3 merged: Schema out of sync / Atomic chưa approved merged into Category 3
         b6 = PendingClassifier.classify("KPI 6", "Done", "atomic.fact_order", "INT", ghi_chu="mismatch schema atomic")
-        self.assertEqual(b6, PendingClassifier.REASON_SCHEMA_OUT_OF_SYNC)
+        self.assertEqual(b6, PendingClassifier.REASON_EXTERNAL_SOURCE)
+        self.assertEqual(PendingClassifier.REASON_SCHEMA_OUT_OF_SYNC, PendingClassifier.REASON_EXTERNAL_SOURCE)
 
     def test_10_classify_branch_5_preserved_with_group_count_mismatch(self):
         """PA-05: Group count mismatch alone must NOT force Branch 6; Branch 5 must be preserved."""
@@ -401,15 +402,15 @@ class TestPendingClassifier(unittest.TestCase):
             PendingClassifier.REASON_COMPLEX_JOIN,
         )
 
-        # Branch 6 keywords: 'chưa approved', 'out of sync', 'deprecated', and regex (?<!chênh\s)\blệch\b
+        # Category 3 keywords (merged schema/atomic cues): 'chưa approved', 'out of sync', 'deprecated', and regex (?<!chênh\s)\blệch\b
         for kw in ["chưa approved", "out of sync", "deprecated", "chưa duyệt", "out of date", "atomic chưa"]:
             self.assertEqual(
                 PendingClassifier.classify("KPI", "Done", "atomic.tbl", "INT", ghi_chu=f"Lưu ý: {kw}"),
-                PendingClassifier.REASON_SCHEMA_OUT_OF_SYNC,
+                PendingClassifier.REASON_EXTERNAL_SOURCE,
             )
         self.assertEqual(
             PendingClassifier.classify("KPI", "Done", "atomic.tbl", "INT", ghi_chu="bị lệch số dòng"),
-            PendingClassifier.REASON_SCHEMA_OUT_OF_SYNC,
+            PendingClassifier.REASON_EXTERNAL_SOURCE,
         )
         self.assertEqual(
             PendingClassifier.classify("KPI", "Done", "atomic.tbl", "INT", ghi_chu="chênh lệch tự nhiên"),

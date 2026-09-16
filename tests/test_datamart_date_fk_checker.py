@@ -219,37 +219,18 @@ class TestDateFKCheckerIntegration(unittest.TestCase):
             raise unittest.SkipTest("Datamart/lld directory not found in repository")
 
     def test_15_real_repo_gstt_violations_detected(self):
+        """GSTT fact tables were remediated on 2026-09-14 to use role-playing date FKs; must PASS with 0 violations."""
         summary = self.checker.scan_module("GSTT")
-        violating_tables = {v.table_name for v in summary.all_violations}
-        expected_violations = {
-            "fct_foreign_trading_min_snpst",
-            "fct_market_index_intraday",
-            "fct_security_trading_intraday",
-            "fct_stock_portfolio_snpst",
-        }
-        self.assertTrue(expected_violations.issubset(violating_tables), f"Missing expected GSTT violations: {expected_violations - violating_tables}")
-        self.assertEqual(len(summary.all_violations), 4)
-
-        for v in summary.all_violations:
-            self.assertEqual(v.column_name, "cdr_dt_dim_id")
-            self.assertEqual(v.attribute_name, "Calendar Date Dimension Id")
-            self.assertEqual(v.severity, checker.Severity.ERROR)
-            self.assertIn(v.suggested_column, ("snpst_dt_dim_id", "trade_dt_dim_id"))
+        self.assertEqual(len(summary.all_violations), 0, f"GSTT should have 0 violations after remediation, got: {summary.all_violations}")
+        self.assertEqual(summary.clean_fact_tables_count, 5)
+        self.assertEqual(summary.violating_fact_tables_count, 0)
 
     def test_16_real_repo_qlkd_violations_detected(self):
+        """QLKD fact tables were remediated to use role-playing date FKs; must PASS with 0 violations."""
         summary = self.checker.scan_module("QLKD")
-        violating_tables = {v.table_name for v in summary.all_violations}
-        expected_violations = {
-            "fct_securities_company_compliance_report_snpst",
-            "fct_securities_company_financial_snpst",
-        }
-        self.assertTrue(expected_violations.issubset(violating_tables), f"Missing expected QLKD violations: {expected_violations - violating_tables}")
-        self.assertEqual(len(summary.all_violations), 2)
-
-        for v in summary.all_violations:
-            self.assertEqual(v.column_name, "cdr_dt_dim_id")
-            self.assertEqual(v.suggested_column, "snpst_dt_dim_id")
-            self.assertEqual(v.suggested_attribute, "Snapshot Date Dimension Id")
+        self.assertEqual(len(summary.all_violations), 0, f"QLKD should have 0 violations after remediation, got: {summary.all_violations}")
+        self.assertEqual(summary.clean_fact_tables_count, 5)
+        self.assertEqual(summary.violating_fact_tables_count, 0)
 
     def test_17_real_repo_tt_violations_detected(self):
         summary = self.checker.scan_module("TT")
@@ -281,52 +262,58 @@ class TestDateFKCheckerIntegration(unittest.TestCase):
         violations = checker.audit_file(master_file)
         self.assertGreater(len(violations), 0, "Master datamart_attributes.csv must detect violating fact entries")
         violating_cols = {v.column_name for v in violations}
-        self.assertTrue({"cdr_dt_dim_id", "calendar_dt_dim_id"}.issubset(violating_cols))
+        self.assertTrue({"calendar_dt_dim_id"}.issubset(violating_cols))
 
 
 class TestDateFKCheckerCLI(unittest.TestCase):
     """Subprocess tests verifying CLI execution, exit codes, and output formatting."""
 
     def test_21_cli_strict_exit_code_1_on_violations(self):
-        cmd = [sys.executable, str(SCRIPTS_DIR / "datamart_date_fk_checker.py"), "-m", "GSTT", "--strict"]
-        proc = subprocess.run(cmd, capture_output=True, text=True, cwd=str(REPO_ROOT))
-        self.assertEqual(proc.returncode, 1, "GSTT audit in strict mode must return exit code 1")
-        self.assertIn("fct_stock_portfolio_snpst", proc.stdout)
-        self.assertIn("cdr_dt_dim_id", proc.stdout)
+        cmd = [sys.executable, str(SCRIPTS_DIR / "datamart_date_fk_checker.py"), "-m", "TT", "--strict"]
+        proc = subprocess.run(cmd, capture_output=True, encoding="utf-8", errors="replace", cwd=str(REPO_ROOT))
+        self.assertEqual(proc.returncode, 1, "TT audit in strict mode must return exit code 1")
+        self.assertIn("fct_penalty_decision", proc.stdout)
+        self.assertIn("calendar_dt_dim_id", proc.stdout)
 
     def test_22_cli_without_strict_exit_code_0(self):
-        cmd = [sys.executable, str(SCRIPTS_DIR / "datamart_date_fk_checker.py"), "-m", "GSTT"]
-        proc = subprocess.run(cmd, capture_output=True, text=True, cwd=str(REPO_ROOT))
+        cmd = [sys.executable, str(SCRIPTS_DIR / "datamart_date_fk_checker.py"), "-m", "TT"]
+        proc = subprocess.run(cmd, capture_output=True, encoding="utf-8", errors="replace", cwd=str(REPO_ROOT))
         self.assertEqual(proc.returncode, 0, "Audit without --strict must return exit code 0")
-        self.assertIn("fct_stock_portfolio_snpst", proc.stdout)
+        self.assertIn("fct_penalty_decision", proc.stdout)
+
+    def test_22b_cli_gstt_clean_exit_code_0(self):
+        cmd = [sys.executable, str(SCRIPTS_DIR / "datamart_date_fk_checker.py"), "-m", "GSTT", "--strict"]
+        proc = subprocess.run(cmd, capture_output=True, encoding="utf-8", errors="replace", cwd=str(REPO_ROOT))
+        self.assertEqual(proc.returncode, 0, "GSTT in strict mode must return exit code 0")
+        self.assertIn("ALL CLEAN", proc.stdout)
 
     def test_23_cli_strict_exit_code_0_on_clean_target(self):
         target_path = "Datamart/lld/GSDC/DTM_GSDC_fct_public_company_listing_info_snpst.csv"
         cmd = [sys.executable, str(SCRIPTS_DIR / "datamart_date_fk_checker.py"), "-p", target_path, "--strict"]
-        proc = subprocess.run(cmd, capture_output=True, text=True, cwd=str(REPO_ROOT))
+        proc = subprocess.run(cmd, capture_output=True, encoding="utf-8", errors="replace", cwd=str(REPO_ROOT))
         self.assertEqual(proc.returncode, 0, "Clean benchmark in strict mode must return exit code 0")
         self.assertIn("ALL CLEAN", proc.stdout)
 
     def test_24_cli_strict_exit_code_0_on_cdr_dt_dim(self):
         target_path = "Datamart/lld/Common/DTM_NHNCK_cdr_dt_dim.csv"
         cmd = [sys.executable, str(SCRIPTS_DIR / "datamart_date_fk_checker.py"), "-p", target_path, "--strict"]
-        proc = subprocess.run(cmd, capture_output=True, text=True, cwd=str(REPO_ROOT))
+        proc = subprocess.run(cmd, capture_output=True, encoding="utf-8", errors="replace", cwd=str(REPO_ROOT))
         self.assertEqual(proc.returncode, 0, "cdr_dt_dim in strict mode must return exit code 0")
         self.assertIn("ALL CLEAN", proc.stdout)
 
     def test_25_cli_warn_only_flag_overrides_strict(self):
-        cmd = [sys.executable, str(SCRIPTS_DIR / "datamart_date_fk_checker.py"), "-m", "GSTT", "--strict", "--warn-only"]
-        proc = subprocess.run(cmd, capture_output=True, text=True, cwd=str(REPO_ROOT))
+        cmd = [sys.executable, str(SCRIPTS_DIR / "datamart_date_fk_checker.py"), "-m", "TT", "--strict", "--warn-only"]
+        proc = subprocess.run(cmd, capture_output=True, encoding="utf-8", errors="replace", cwd=str(REPO_ROOT))
         self.assertEqual(proc.returncode, 0, "--warn-only must override --strict and return exit code 0")
 
     def test_26_cli_json_output_format(self):
-        cmd = [sys.executable, str(SCRIPTS_DIR / "datamart_date_fk_checker.py"), "-m", "GSTT", "--json"]
-        proc = subprocess.run(cmd, capture_output=True, text=True, cwd=str(REPO_ROOT))
+        cmd = [sys.executable, str(SCRIPTS_DIR / "datamart_date_fk_checker.py"), "-m", "TT", "--json"]
+        proc = subprocess.run(cmd, capture_output=True, encoding="utf-8", errors="replace", cwd=str(REPO_ROOT))
         self.assertEqual(proc.returncode, 0)
         data = json.loads(proc.stdout)
         self.assertIn("summary", data)
         self.assertIn("violations", data)
-        self.assertEqual(data["summary"]["total_violations"], 4)
+        self.assertEqual(data["summary"]["total_violations"], 11)
         self.assertEqual(data["summary"]["status"], "FAILED")
 
     def test_27_cli_markdown_file_export(self):
@@ -334,14 +321,14 @@ class TestDateFKCheckerCLI(unittest.TestCase):
             temp_path = tf.name
 
         try:
-            cmd = [sys.executable, str(SCRIPTS_DIR / "datamart_date_fk_checker.py"), "-m", "GSTT", "-o", temp_path]
-            proc = subprocess.run(cmd, capture_output=True, text=True, cwd=str(REPO_ROOT))
+            cmd = [sys.executable, str(SCRIPTS_DIR / "datamart_date_fk_checker.py"), "-m", "TT", "-o", temp_path]
+            proc = subprocess.run(cmd, capture_output=True, encoding="utf-8", errors="replace", cwd=str(REPO_ROOT))
             self.assertEqual(proc.returncode, 0)
             self.assertTrue(os.path.exists(temp_path))
             content = Path(temp_path).read_text(encoding="utf-8")
             self.assertIn("# Datamart Role-Playing Date FK Validation Report", content)
-            self.assertIn("fct_stock_portfolio_snpst", content)
-            self.assertIn("snpst_dt_dim_id", content)
+            self.assertIn("fct_penalty_decision", content)
+            self.assertIn("decision_dt_dim_id", content)
         finally:
             if os.path.exists(temp_path):
                 os.remove(temp_path)
@@ -360,10 +347,10 @@ class TestDateFKCheckerCLI(unittest.TestCase):
         )
 
         # Run skill copy via CLI
-        cmd = [sys.executable, str(skill_script), "-m", "GSTT", "--strict"]
-        proc = subprocess.run(cmd, capture_output=True, text=True, cwd=str(REPO_ROOT))
+        cmd = [sys.executable, str(skill_script), "-m", "TT", "--strict"]
+        proc = subprocess.run(cmd, capture_output=True, encoding="utf-8", errors="replace", cwd=str(REPO_ROOT))
         self.assertEqual(proc.returncode, 1)
-        self.assertIn("fct_stock_portfolio_snpst", proc.stdout)
+        self.assertIn("fct_penalty_decision", proc.stdout)
 
     def test_29_real_repo_gsdc_diacritic_alias_resolution(self):
         """Verify that scanning GSĐC with Vietnamese diacritic resolves to GSDC and inspects identical tables."""

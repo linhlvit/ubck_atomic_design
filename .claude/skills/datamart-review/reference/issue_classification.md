@@ -2,7 +2,7 @@
 
 Tài liệu này định nghĩa hệ thống phân loại vấn đề trong quy trình review Datamart, bao gồm:
 1. Ma trận đối soát tiến độ chéo (Cross-status Matrix: BA Status ↔ Datamart Status).
-2. Cây phân loại 6 nhánh chuyên sâu nguyên nhân PENDING.
+2. Cây phân loại 5 nhóm chuyên sâu nguyên nhân PENDING.
 3. 5 Kịch bản phát hiện vấn đề kỹ thuật (Kịch bản A, B, C, D, E) và quy trình xử lý qua skill con.
 
 ---
@@ -36,9 +36,9 @@ Ma trận đối soát chéo là công cụ then chốt trong **Macro-Review**, 
 
 ---
 
-## 2. Cây Phân loại Chuyên sâu 6 Nhánh Nguyên nhân PENDING
+## 2. Cây Phân loại Chuyên sâu 5 Nhóm Nguyên nhân PENDING
 
-Mọi chỉ tiêu ở trạng thái **PENDING** trong Datamart bắt buộc phải được phân loại chính xác 100% vào đúng 1 trong 6 nhóm nguyên nhân dưới đây để phân định trách nhiệm và hành động tháo gỡ rõ ràng:
+Mọi chỉ tiêu ở trạng thái **PENDING** trong Datamart bắt buộc phải được phân loại chính xác 100% vào đúng 1 trong 5 nhóm nguyên nhân chuẩn hóa dưới đây để phân định trách nhiệm và hành động tháo gỡ rõ ràng:
 
 ```
                             [CHỈ TIÊU PENDING]
@@ -49,49 +49,43 @@ Mọi chỉ tiêu ở trạng thái **PENDING** trong Datamart bắt buộc ph�
                        KHÔNG        │         CÓ
          ┌──────────────────────────┘         └──────────────────────────┐
          ▼                                                               ▼
-[1. BA Pending]                                  ┌────────────────────────────────────────────────┐
+[1. BA chưa mapping xong]                        ┌────────────────────────────────────────────────┐
 (BA chưa phân tích xong /                        │ Cột nguồn BA có trống, N/A, 'chưa có',         │
  chưa xác nhận nguồn)                            │ hoặc Loại dữ liệu = 'Map biểu mẫu / Chưa CSDL'?│
                                                  └───────────────────────┬────────────────────────┘
                                                               CÓ         │         KHÔNG
                                                 ┌────────────────────────┘         └─────────────────────────┐
                                                 ▼                                                            ▼
-                              [2. Chưa có mapping nguồn BA]                       ┌─────────────────────────────────────┐
-                              (Thiếu CSDL nguồn, biểu mẫu                         │ Nguồn có chứa hệ thống ngoại lai    │
-                               chưa được số hóa)                                  │ (UAT_VSDC, VSD, SCMS, SBV, v.v.)?   │
-                                                                                  └──────────────────┬──────────────────┘
-                                                                                       CÓ            │         KHÔNG
-                                                                         ┌───────────────────────────┘         └──────────────────────────┐
-                                                                         ▼                                                                ▼
-                                                       [3. Thiếu nguồn dữ liệu ngoại lai]                     ┌──────────────────────────────────────┐
-                                                       (Cần ingest dữ liệu từ ngoài vào DWH)                  │ Nguồn yêu cầu join đa hệ thống       │
-                                                                                                              │ phức tạp chưa chuẩn hóa ở Atomic?     │
-                                                                                                              └──────────────────┬───────────────────┘
-                                                                                                                   CÓ            │         KHÔNG
-                                                                                                     ┌───────────────────────────┘         └──────────────────────────┐
-                                                                                                     ▼                                                                ▼
-                                                                                   [4. Join đa nguồn phức tạp]                        ┌──────────────────────────────────────┐
-                                                                                   (Cần Atomic bridge / cross-module)                 │ Có lệch số lượng KPI BA ↔ HLD        │
-                                                                                                                                      │ hoặc trỏ Atomic chưa approved?       │
-                                                                                                                                      └──────────────────┬───────────────────┘
-                                                                                                                                           CÓ            │         KHÔNG
-                                                                                                                             ┌───────────────────────────┘         └──────────────────────────┐
-                                                                                                                             ▼                                                                ▼
-                                                                                                           [6. Lệch số lượng / Schema out of sync]            [5. Datamart Pending]
-                                                                                                           (Lệch dòng KPI / Atomic entity lỗi thời)           (Có nguồn nội bộ đầy đủ,
-                                                                                                                                                               Datamart chưa thiết kế Fact/Dim)
+                              [2. Chưa có mapping nguồn từ BA]                   ┌──────────────────────────────────────────────┐
+                              (Thiếu CSDL nguồn, biểu mẫu                        │ Nguồn thuộc hệ thống ngoại lai (VSD, VSDC,   │
+                               chưa được số hóa)                                 │ SCMS, SBV...) hoặc gap/chưa approved Atomic? │
+                                                                                 └──────────────────────┬───────────────────────┘
+                                                                                      CÓ                │         KHÔNG
+                                                                         ┌──────────────────────────────┘         └──────────────────────────┐
+                                                                         ▼                                                                   ▼
+                                                      [3. Thiếu nguồn / Atomic ngoài scope]                      ┌──────────────────────────────────────┐
+                                                      (Ngoại lai chưa ingest / Atomic gap)                       │ Nguồn yêu cầu join đa hệ thống       │
+                                                                                                                 │ phức tạp chưa chuẩn hóa ở Atomic?    │
+                                                                                                                 └──────────────────┬───────────────────┘
+                                                                                                                      CÓ            │         KHÔNG
+                                                                                                        ┌───────────────────────────┘         └──────────────────────────┐
+                                                                                                        ▼                                                                ▼
+                                                                                      [4. Cần join phức tạp đa nguồn]                      [5. Datamart chưa thiết kế Fact/Dim]
+                                                                                      (Cần Atomic bridge / cross-module)                   (Có nguồn nội bộ đầy đủ, BA Done,
+                                                                                                                                           Atomic approved, chờ thiết kế DM)
 ```
 
-### Chi tiết từng nhánh nguyên nhân:
+### Chi tiết từng nhóm nguyên nhân:
 
 | Nhóm nguyên nhân | Dấu hiệu nhận biết | Đơn vị chủ trì | Hành động tháo gỡ cụ thể |
 |---|---|---|---|
-| **1. BA Pending** | BA `Trạng thái mapping` ≠ `Done` (`Pending`, `Doing`, `failed`, hoặc ô trạng thái trống). | **BA Team** | Yêu cầu BA ưu tiên phân tích, xác định quy tắc tính và nguồn dữ liệu. |
+| **1. BA chưa mapping xong (BA Pending)** | BA `Trạng thái mapping` ≠ `Done` (`Pending`, `Doing`, `failed`, hoặc ô trạng thái trống). | **BA Team** | Yêu cầu BA ưu tiên phân tích, xác định quy tắc tính và nguồn dữ liệu. |
 | **2. Chưa có mapping nguồn từ BA** | BA đánh `Done`, nhưng `Bảng nguồn` trống, `N/A`, ghi chú "chưa có CSDL", hoặc `Loại dữ liệu` ghi `Chưa có CSDL - Map biểu mẫu`, `Map biểu mẫu`, `Dữ liệu tĩnh - Chưa có CSDL`. | **BA Team** | Đề nghị BA làm rõ nguồn dữ liệu thực tế trong CSDL; nếu là biểu mẫu giấy/báo cáo chưa số hóa thì ghi nhận vào backlog chờ số hóa. |
-| **3. Thiếu nguồn dữ liệu ngoại lai** | Bảng nguồn hoặc mô tả tham chiếu các hệ thống bên ngoài: `UAT_VSDC`, `VSD`, `VSDC`, `SCMS_UAT`, `SBV`, `HOSE`, `HNX`, hoặc các chỉ tiêu thị phần, lưu ký chưa có kết nối trực tiếp. | **Data Architecture / Ingestion** | Lập danh mục nguồn ngoại lai cần tích hợp, thiết lập pipeline ingestion đưa dữ liệu vào Data Lake / Staging / Atomic. |
-| **4. Join đa nguồn phức tạp** | Yêu cầu kết hợp dữ liệu giữa nhiều hệ thống chưa được chuẩn hóa ở Atomic (ví dụ: `NHNCK` kết hợp `SCMS`, hoặc `IDS` kết hợp `VSDC`). | **Atomic Modeling** | Thiết kế bảng quan hệ kết nối (Bridge / Relationship Entity) tại tầng Atomic trước khi kéo lên Datamart. |
-| **5. Datamart Pending** | BA đã `Done`, nguồn dữ liệu nội tại đầy đủ và rõ ràng (IDS, MSS, T24), nhưng Datamart chưa thiết kế Fact/Dim hoặc Detail Mapping còn để trống `mart_table` / ghi chú `pending`. | **Datamart Team** | Gọi `datamart-hld-design` và `datamart-lld-design` để hoàn thành thiết kế Fact/Dim và Detail Mapping. |
-| **6. Lệch số lượng / Schema out of sync** | Số lượng dòng KPI trong bảng KPI HLD không khớp với số chỉ tiêu BA của nhóm (thừa/thiếu), hoặc HLD/LLD tham chiếu bảng Atomic đã deprecated / chưa approved trong YAML. | **Datamart Review / HLD** | Chạy đối chiếu từng dòng (0b.3), loại bỏ KPI dư thừa hoặc bổ sung KPI thiếu; cập nhật lại model theo YAML approved hiện hành. |
+| **3. Thiếu nguồn dữ liệu / Atomic entity ngoài scope** | Bảng nguồn hoặc mô tả tham chiếu các hệ thống bên ngoài: `UAT_VSDC`, `VSD`, `VSDC`, `SCMS_UAT`, `SBV`, `HOSE`, `HNX`, hoặc trỏ bảng Atomic chưa approved / gap Atomic trong YAML. | **Data Architecture / Atomic Modeling / Ingestion** | Lập danh mục nguồn ngoại lai và gap Atomic cần thiết kế/approved, cập nhật pipeline ingestion và DataModel Atomic approved. |
+| **4. Cần join phức tạp đa nguồn** | Yêu cầu kết hợp dữ liệu giữa nhiều hệ thống chưa được chuẩn hóa ở Atomic (ví dụ: `NHNCK` kết hợp `SCMS`, hoặc `IDS` kết hợp `VSDC`). | **Atomic Modeling** | Thiết kế bảng quan hệ kết nối (Bridge / Relationship Entity) tại tầng Atomic trước khi kéo lên Datamart. |
+| **5. Datamart chưa thiết kế Fact/Dim (Datamart Pending)** | BA đã `Done`, nguồn dữ liệu nội tại đầy đủ và rõ ràng (IDS, MSS, T24), Atomic approved, nhưng Datamart chưa thiết kế Fact/Dim hoặc Detail Mapping còn để trống `mart_table` / ghi chú `pending`. | **Datamart Team** | Gọi `datamart-hld-design` và `datamart-lld-design` để hoàn thành thiết kế Fact/Dim và Detail Mapping. |
+
+> 📌 **Lưu ý chuẩn hóa:** Các trường hợp schema out-of-sync hoặc trỏ vào Atomic entity chưa được approved được quy chuẩn gom vào **Nhóm 3 (Thiếu nguồn dữ liệu / Atomic entity ngoài scope)** để phản ánh đúng bản chất thiếu hụt tại kho nền tảng Atomic DWH.
 
 ---
 
@@ -148,9 +142,71 @@ Khi đi sâu vào review kỹ thuật từng nhóm (Micro-Review), các vấn đ
 - ❌ **Tuyệt đối KHÔNG tự Edit trực tiếp.** Claude chỉ phát hiện, phân loại và đề xuất — việc sửa thuộc skill con.
 - ⛔ **CỔNG CHẶN BÀN GIAO KỊCH BẢN C (HANDOVER BLOCKING GATE):** Bất kể Kịch bản C được thực hiện qua kênh nào, NGAY SAU khi sửa đổi file Attributes, Reviewer/Developer BẮT BUỘC chạy `python scripts/check_parity.py --module [MODULE] --strict` và `python scripts/check_orphan.py --module [MODULE] --strict`. Bắt buộc đạt 0 lỗi mới được phép nghiệm thu bàn giao.
 
+### Ma Trận Tra Cứu Tổng Hợp Các Mã Lỗi Kỹ Thuật Chuẩn Hóa (L1 — L4)
+
+| Mã Lỗi (Error Code) | Tầng / Lớp | Mức Độ | Kịch Bản | Cổng Kiểm Soát (Gate) | Công Cụ CLI Kiểm Tra | Mô Tả Tóm Tắt & Vi Phạm Điển Hình |
+|---|---|:---:|:---:|:---:|---|---|
+| `L1-GRAIN-MISMATCH` | Lớp 1 (HLD) | 🔴 Critical | D / C | Gate 1, Gate 2 | Manual / Reviewer inspection | Lệch cấp độ hạt giữa Presentation Grain (mockup) và Fact Storage Grain (ví dụ: cấp Cổ phiếu nhưng map vào Fact cấp Rổ chỉ số/Sàn). |
+| `L1/L2-DELETE-VIOLATION` | Lớp 1 & Lớp 2 | 🔴 Critical | C | Gate 1, Gate 2 | `check_orphan.py` / `datamart_progress_analyzer.py` | Chỉ tiêu bị XÓA (`Delete`, `DELETED`, `Xóa`) từ BA vẫn còn tồn tại trong HLD hoặc LLD. |
+| `L2-DATE-FK-ROLE-PLAYING` | Lớp 2 (Attributes) | 🔴 Critical | C | Gate 1, Gate 2, Gate 3 | `python scripts/check_date_fk.py --module [M]` | Vi phạm đặt tên generic `cdr_dt_dim_id` trên bảng Fact; Fact Snapshot thiếu `snpst_dt_dim_id` hoặc Fact Event thiếu `<role>_dt_dim_id`. |
+| `L2-ORPHAN-3WAY-INCOMPLETE` | Lớp 2 (Attributes) | 🔴 Critical | C | Gate 1, Gate 2, Gate 3 | `python scripts/check_orphan.py --module [M] --strict` | Thực thể mồ côi Nhánh A: Bảng có ≥1 KPI READY nhưng bị bỏ sót ở HLD Entities hoặc Flat Table SQL. Bắt buộc hoàn tất, cấm xóa! |
+| `L2-ORPHAN-3WAY-ABANDONED` | Lớp 2 (Attributes) | 🟡/🔴 Warn/Crit | C | Gate 1, Gate 2, Gate 3 | `python scripts/check_orphan.py --module [M] --strict` | Thực thể mồ côi Nhánh B: Bảng bị hủy / 0 KPI READY nhưng còn sót artifact ở LLD, Entities hoặc Flat Table. Phải dọn dẹp All-Tier 5 bước. |
+| `L2-ETL-LOGIC-PARITY-MISMATCH` | Lớp 2 (Attributes) | 🔴 Critical | C | Gate 1, Gate 2, Gate 3 | `python scripts/check_parity.py --module [M] --strict` | Lệch nội dung chuỗi biểu thức `etl_logic` giữa file module Attributes và master registry `datamart_attributes.csv`. |
+| `L2-SCD4A-TECH-FIELD` | Lớp 2 (Attributes) | 🔴 Critical | C | Gate 1, Gate 2 | Manual / Script audit | Bảng Dimension hoặc Operational Fact thiếu bộ 5 trường kỹ thuật SCD4A (`ds_rcrd_st`, `ds_eff_start_dt`, `ds_eff_end_dt`, `ds_cdc_opr_cd`, `ds_load_ts`). |
+| `L2-SCD4A-JOIN-FILTER` | Lớp 2 (Attributes) | 🟡 Warning | C | Gate 2 | Manual / Script audit | Mệnh đề JOIN sang bảng Atomic SCD4A thiếu điều kiện lọc bản ghi active `ds_rcrd_st = 'ACTIVE'`, gây nguy cơ fan-out. |
+| `L2-WINDOW-STORAGE-INVALID` | Lớp 2 (Attributes) | 🔴 Critical | C | Gate 1, Gate 2 | Manual / Detail Mapping review | Sử dụng Dimension SCD4A current-state (chỉ có 1 bản ghi hiện tại) thay vì Fact Periodic Snapshot cho Window Functions chuỗi thời gian. |
+| `L3-GRAIN-MISMATCH` | Lớp 3 (Detail Mapping) | 🔴 Critical | C | Gate 2 | Manual / Detail Mapping review | Lệch cấp độ hạt trong công thức Detail Mapping (`GROUP BY` / `PARTITION BY` lệch khóa định danh đối tượng của nhóm — điển hình `K_GSTT_61`). |
+| `L3-FORMULA-WINDOW-MISMATCH` | Lớp 3 (Detail Mapping) | 🔴 Critical | C | Gate 2 | Manual / Detail Mapping review | Cấu hình Window Function sai: sai số phiên giao dịch chuẩn (260/130/65/20), dùng `INTERVAL` ngày lịch, sai trường giá, hoặc thiếu `PARTITION BY`. |
+| `L3-FINANCIAL-PERIOD-INCONSISTENT` | Lớp 3 (Detail Mapping) | 🔴 Critical | C | Gate 2 | Manual / Detail Mapping review | Lệch chu kỳ thời gian giữa tử số và mẫu số của tỷ số tài chính (P/E, P/B, EPS, ROE, ROA); vi phạm cộng dồn `SUM(owner_equity)` hoặc thiếu kỳ BCTC. |
+| `L3-PENDING-RULE-L4-VIOLATION` | Lớp 3 (Detail Mapping) | 🔴 Critical | C | Gate 2, Gate 3 | `python scripts/datamart_ba_cross_checker.py` | Vi phạm Quy tắc L4: Dòng PENDING không để trống tuyệt đối cả 4 cột `mart_table`, `mart_column`, `column_role`, `logic`. |
+| `L3-REUSE-INVALID` | Lớp 3 (Detail Mapping) | 🔴 Critical | C | Gate 2, Gate 3 | `python scripts/datamart_ba_cross_checker.py` | Vi phạm Quy tắc L15: Để trống bảng/cột ở Case 1 (đã có cột vật lý) hoặc gán bảng/cột ảo ở Case 2 (chỉ tiêu phái sinh BI). |
+| `L3-DEPRECATED-AS-PENDING` | Lớp 3 (Detail Mapping) | 🔴 Critical | C | Gate 2, Gate 3 | `python scripts/datamart_ba_cross_checker.py` | Vi phạm Quy tắc L16: Đánh tráo chỉ tiêu bãi bỏ/không triển khai thành nhãn PENDING, làm phình to blocker ảo. |
+| `L4-MASTER-REGISTRY-OUT-OF-SYNC` | Lớp 4 (Registry) | 🔴 Critical | C | Gate 1, Gate 2, Gate 3 | `python scripts/check_parity.py --module [M] --strict` | Mất đồng bộ danh mục thuộc tính: Master registry thiếu dòng hoặc chứa dòng mồ côi của bảng đã hủy so với file module. |
+| `L4-FLAT-TABLE-COLUMN-COVERAGE-MISSING` | Lớp 4 (Flat Table) | 🔴 Critical | C | Gate 4 | `python scripts/check_flat_table.py --module [M] --strict` | Thiếu cột Fact/Operational hoặc cột thuộc tính của Dimension joined trong DDL `01_create_*.sql` (Coverage < 100%). |
+| `L4-FLAT-TABLE-PROJECTION-MISALIGNMENT` | Lớp 4 (Flat Table) | 🔴 Critical | C | Gate 4 | `python scripts/check_flat_table.py --module [M] --strict` | Lệch số lượng cột, sai thứ tự 3 khối, hoặc sai tên alias giữa CREATE TABLE và câu lệnh SELECT trong INSERT INTO. |
+| `L4-FLAT-TABLE-COLUMN-DRIFT` | Lớp 4 (Flat Table) | 🔴 Critical | C | Gate 4 | `python scripts/check_flat_table.py --module [M] --strict` | Trôi lệch cột: Có cột thừa trong Flat Table SQL; hoặc bỏ sót cột Fact có KPI khai thác; hoặc cột SQL không có trong master CSV. |
+| `L4-FLAT-TABLE-PARAMETER-INCONSISTENT` | Lớp 4 (Flat Table) | 🔴 Critical | C | Gate 4 | `python scripts/check_flat_table.py --module [M] --strict` | Mệnh đề lọc ngày ETL trong `02_populate_*.sql` không dùng đúng tham số chuẩn `:etl_date` (hardcode hoặc dùng format lạ). |
+| `L4-COMMON-DIM-CLICKHOUSE-MISSING` | Lớp 4 (Flat Table) | 🔴 Critical | C | Gate 4 | `python scripts/check_flat_table.py -m Common --strict` | Thiếu bộ script DDL/DML cho bảng phẳng `datamart.cdr_dt_flat` tại `Datamart/flat-table/Common/` hoặc thiếu 9 trường (kể cả `is_trading_date`). |
+
 ---
 
 ### Danh Mục Đặc Tả Chi Tiết Các Mã Lỗi Kỹ Thuật (Lớp 1, Lớp 2, Lớp 3 & Lớp 4)
+
+#### 0A. Đặc tả Mã lỗi: `L1/L2-DELETE-VIOLATION`
+
+| Thuộc tính | Chi tiết đặc tả |
+|---|---|
+| **Mã lỗi (Error Code)** | `L1/L2-DELETE-VIOLATION` |
+| **Tên lỗi (Issue Name)** | Chỉ tiêu bị XÓA (`Delete` / `DELETED`) từ BA còn tồn tại trong Datamart |
+| **Phân loại kịch bản** | **Kịch bản C — Lỗi kỹ thuật & Vi phạm cấm kỵ** |
+| **Mức độ (Severity)** | 🔴 **Critical Violation** (Chặn mở Gate 1/2, vi phạm cấm kỵ bắt buộc gỡ bỏ ngay lập tức) |
+| **Mô tả (Description)** | Một chỉ tiêu trong tài liệu BA mang trạng thái `Delete`, `DELETED`, `Xóa`, `Bỏ`, `Không dùng` nhưng vẫn được cấp mã KPI_ID trong HLD Section 3, hoặc vẫn có cột thuộc tính trong LLD Attributes, hoặc có dòng mapping trong Detail Mapping. |
+| **Phương pháp chẩn đoán & phát hiện** | 1. Chạy CLI: `python scripts/datamart_progress_analyzer.py --module [MODULE]`.<br>2. So sánh danh sách `BAParser.get_deleted_items()` với danh sách KPI trong HLD Section 3 và Detail Mapping CSV.<br>3. Kiểm tra cột Attributes: nếu cột chỉ phục vụ duy nhất chỉ tiêu bị xóa $\implies$ Gắn cờ vi phạm. |
+| **Remediation Protocol** | **Bước 1 (Reviewer):** Lập danh sách các chỉ tiêu bị xóa còn sót lại trong HLD và LLD.<br>**Bước 2 (HLD):** Gọi `datamart-hld-design` xóa bỏ dòng KPI khỏi bảng 7 cột và cập nhật lại Section 4 Reuse.<br>**Bước 3 (LLD):** Gọi `datamart-lld-design` kích hoạt All-Tier Cleanup Protocol 5 bước để xóa khỏi Attributes, Detail Mapping, Model Registry và Flat Table SQL.<br>**Bước 4 (Verify):** Chạy lại `check_orphan.py --strict` và `check_parity.py --strict` xác nhận sạch 100%. |
+
+#### 0B. Đặc tả Mã lỗi: `L2-SCD4A-TECH-FIELD`
+
+| Thuộc tính | Chi tiết đặc tả |
+|---|---|
+| **Mã lỗi (Error Code)** | `L2-SCD4A-TECH-FIELD` |
+| **Tên lỗi (Issue Name)** | Thiếu bộ 5 trường kỹ thuật SCD4A trên bảng Dimension hoặc Operational Fact |
+| **Phân loại kịch bản** | **Kịch bản C — Lỗi kỹ thuật thiết kế mô hình SCD4A (Lớp 2)** |
+| **Mức độ (Severity)** | 🔴 **Critical** (Chặn nghiệm thu LLD và sinh mã ETL) |
+| **Mô tả (Description)** | Bảng Dimension hoặc Operational Fact áp dụng cơ chế SCD Type 4A trên ClickHouse nhưng bị thiếu một hoặc nhiều trường trong bộ 5 trường kỹ thuật bắt buộc: `ds_rcrd_st`, `ds_eff_start_dt`, `ds_eff_end_dt`, `ds_cdc_opr_cd`, `ds_load_ts` (đối với bảng History có thêm `ds_snpst_dt`). |
+| **Phương pháp chẩn đoán & phát hiện** | 1. Quét danh sách thuộc tính trong file Attributes module `DTM_{MODULE}_{table}.csv`.<br>2. Kiểm tra sự hiện diện của đủ 5 trường kỹ thuật: `ds_rcrd_st`, `ds_eff_start_dt`, `ds_eff_end_dt`, `ds_cdc_opr_cd`, `ds_load_ts`.<br>3. Kiểm tra kiểu dữ liệu: `ds_rcrd_st` kiểu string/varchar, `ds_eff_start_dt`/`ds_eff_end_dt` kiểu date, `ds_cdc_opr_cd` kiểu string/varchar, `ds_load_ts` kiểu timestamp. |
+| **Remediation Protocol** | **Bước 1:** Xác định bảng Dimension/Operational bị thiếu trường kỹ thuật.<br>**Bước 2:** Gọi `datamart-lld-design` bổ sung đầy đủ các trường kỹ thuật vào Attributes CSV và master `datamart_attributes.csv`.<br>**Bước 3:** Cập nhật khai báo trường kỹ thuật trong `datamart_model.yaml`.<br>**Bước 4 (Verify):** Chạy `check_parity.py --strict`. |
+
+#### 0C. Đặc tả Mã lỗi: `L2-SCD4A-JOIN-FILTER`
+
+| Thuộc tính | Chi tiết đặc tả |
+|---|---|
+| **Mã lỗi (Error Code)** | `L2-SCD4A-JOIN-FILTER` |
+| **Tên lỗi (Issue Name)** | Thiếu điều kiện lọc bản ghi active (ds_rcrd_st = 'ACTIVE') khi JOIN bảng Atomic SCD4A |
+| **Phân loại kịch bản** | **Kịch bản C — Lỗi kỹ thuật câu lệnh ETL (Lớp 2)** |
+| **Mức độ (Severity)** | 🟡 **Warning** (Nguy cơ nhân đôi số dòng fan-out, làm sai lệch số liệu tính toán) |
+| **Mô tả (Description)** | Trong biểu thức `etl_logic` của Attributes hoặc Detail Mapping, mệnh đề `JOIN` hoặc `LEFT JOIN` tham chiếu tới bảng Dimension/Fundamental của Atomic DWH (áp dụng SCD4A) nhưng không có điều kiện lọc bản ghi active `AND <atomic_table>.ds_rcrd_st = 'ACTIVE'`. Do bảng SCD4A chứa cả bản ghi lịch sử và hiện tại, thiếu điều kiện này sẽ gây fan-out nhân dòng. |
+| **Phương pháp chẩn đoán & phát hiện** | 1. Quét cột `etl_logic` trong Attributes và `logic` trong Detail Mapping tìm các mệnh đề `JOIN` tới bảng Atomic Fundamental.<br>2. Kiểm tra xem mệnh đề `ON` có chứa `ds_rcrd_st = 'ACTIVE'` không.<br>3. Với bảng History (`_hstr`), kiểm tra có điều kiện `ds_snpst_dt = :etl_date AND ds_rcrd_st = 'ACTIVE'` không. |
+| **Remediation Protocol** | **Bước 1:** Xác định các dòng `etl_logic` thiếu điều kiện lọc.<br>**Bước 2:** Bổ sung `AND <atomic_table>.ds_rcrd_st = 'ACTIVE'` vào mệnh đề `ON` hoặc `WHERE`.<br>**Bước 3:** Đồng bộ vào master `datamart_attributes.csv`.<br>**Bước 4 (Verify):** Chạy `check_parity.py --strict`. |
 
 #### 1. Đặc tả Mã lỗi: `L2-DATE-FK-ROLE-PLAYING`
 
@@ -377,7 +433,7 @@ Khi đi sâu vào review kỹ thuật từng nhóm (Micro-Review), các vấn đ
 [BẮT ĐẦU REVIEW]
         │
         ├─► [MACRO-REVIEW] Bộ công cụ CLI Sanity toàn module:
-        │         ├─ datamart_progress_analyzer.py: Ma trận đối soát chéo & Phân loại 6 nhánh PENDING
+        │         ├─ datamart_progress_analyzer.py: Ma trận đối soát chéo & Phân loại 5 nhóm PENDING
         │         ├─ check_date_fk.py: Quét vi phạm cdr_dt_dim_id trên Fact
         │         ├─ check_orphan.py: Quét Orphan 3 chiều (Nhánh A Incomplete vs Nhánh B Abandoned)
         │         ├─ check_parity.py: So khớp etl_logic parity giữa Module CSV & Master Registry

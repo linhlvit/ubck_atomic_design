@@ -153,13 +153,13 @@ Các thực thể dữ liệu cốt lõi tại tầng Atomic (`securities_trade`
 
 ## 5.3 Kiểm soát Chất lượng Dữ liệu (Data Quality Management)
 Hệ thống thiết lập các chốt kiểm soát tự động trong pipeline ETL:
-- **Kiểm tra Tính toàn vẹn (Completeness):** Xác thực số lượng bản ghi giữa Staging, Atomic và Datamart sau mỗi chu kỳ nạp.
+- **Kiểm tra Tính toàn vẹn (Completeness):** Xác thực số lượng bản ghi giữa Staging, ODS, Atomic và Datamart sau mỗi chu kỳ nạp.
 - **Kiểm tra Tính duy nhất (Uniqueness):** Ràng buộc khóa chính (PK) và phát hiện duplicate records.
-- **Kiểm tra Tính hợp lệ (Validity):** Ràng buộc miền giá trị, kiểm tra định dạng ngày tháng và khoảng giá trị số học hợp lệ.
+- **Kiểm tra Tính hợp lệ (Validity):** Ràng buộc miền giá trị, kiểm tra định dạng ngày tháng và khoảng giá trị số học hợp lệ tại tầng ODS và Atomic.
 - **Cơ chế Cảnh báo (Alerting):** Tự động phát thông báo khi có bản ghi lỗi (quarantine records) để quản trị viên xử lý kịp thời.
 
 ## 5.4 Quản lý Siêu dữ liệu và Dòng dữ liệu (Metadata & Lineage Management)
-- Thiết lập sơ đồ dòng dữ liệu trực quan 3 tầng (Staging ➔ Atomic ➔ Datamart) cho 100% các nhóm thông tin báo cáo.
+- Thiết lập sơ đồ dòng dữ liệu trực quan 4 tầng (Staging ➔ ODS ➔ Atomic ➔ Datamart) cho 100% các nhóm thông tin báo cáo.
 - Quản lý metadata tự động: Lưu trữ thông tin hệ thống nguồn, bảng nguồn, trường nguồn và công thức tính toán phục vụ tra cứu ngược (Reverse Lineage Tracing).
 
 ## 5.5 Lưu trữ và Vận hành (Data Retention & Operations)

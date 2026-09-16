@@ -6,7 +6,7 @@ Analyzes Datamart implementation progress against BA analyst specifications:
 - Auto-detects delimiter (',' or ';'), encoding (utf-8-sig/BOM), and header row (0 or 1).
 - Supports merged 'BA_analyst_GSĐC.csv' and all other modules (QLKD, GSTT, TKNB, GSĐC, etc.).
 - Cross-Status Matrix: BA Status (Done, Doing, Pending, Chưa có) <-> Datamart Status (READY, PENDING, Chưa có).
-- Pending Root-Cause Classification Tree (6 distinct categories).
+- Pending Root-Cause Classification Tree (5 standard categories).
 - Group count reconciliation (BA count <-> HLD count <-> Detail Mapping count).
 - CLI for single module or all modules with Markdown summary reporting and blocker lists.
 
@@ -573,21 +573,20 @@ class DetailMappingParser:
 
 class PendingClassifier:
     """
-    Pending Root-Cause Classification Tree (Requirement R2):
-    1. BA Pending: BA chưa phân tích xong hoặc chưa xác định nguồn.
+    Pending Root-Cause Classification Tree (5 Standard Categories):
+    1. BA chưa mapping xong: BA chưa phân tích xong hoặc chưa xác định nguồn (Status != Done).
     2. Chưa có mapping nguồn từ BA: Cột nguồn trống, N/A hoặc chú thích chưa có CSDL / map biểu mẫu.
-    3. Thiếu nguồn dữ liệu ngoại lai: Cần dữ liệu từ hệ thống ngoài (UAT_VSDC, VSD, SCMS, etc.).
-    4. Join đa nguồn phức tạp: Yêu cầu kết hợp dữ liệu giữa nhiều hệ thống chưa được chuẩn hóa ở Atomic.
-    5. Datamart Pending: BA đã Done và nguồn đầy đủ, nhưng Datamart chưa thiết kế Fact/Dim hoặc Detail Mapping.
-    6. Lệch số lượng / Schema out of sync: Lệch số dòng KPI giữa BA và HLD, hoặc trỏ tới bảng Atomic chưa approved.
+    3. Thiếu nguồn dữ liệu / Atomic entity ngoài scope: Cần dữ liệu từ hệ thống ngoài (VSDC, VSD, HOSE, HNX, SBV), Atomic entity ngoài scope, hoặc schema out of sync / atomic chưa approved.
+    4. Cần join phức tạp đa nguồn: Yêu cầu kết hợp dữ liệu giữa nhiều hệ thống chưa được chuẩn hóa ở Atomic (SCMS + NHNCK, đa hệ thống).
+    5. Datamart chưa thiết kế Fact/Dim: BA đã Done và nguồn đầy đủ, approved, nhưng Datamart chưa thiết kế Fact/Dim hoặc Detail Mapping.
     """
 
-    REASON_BA_PENDING = "1. BA Pending (Chưa phân tích / chưa hoàn thành)"
-    REASON_NO_BA_SOURCE = "2. Chưa có mapping nguồn từ BA (Nguồn trống / N/A / Chưa có CSDL)"
-    REASON_EXTERNAL_SOURCE = "3. Thiếu nguồn dữ liệu ngoại lai (VSDC, VSD, SCMS, v.v.)"
-    REASON_COMPLEX_JOIN = "4. Join đa nguồn phức tạp (NHNCK & SCMS, đa hệ thống)"
-    REASON_DATAMART_PENDING = "5. Datamart Pending (Có nguồn, chưa thiết kế Fact/Dim/Detail Mapping)"
-    REASON_SCHEMA_OUT_OF_SYNC = "6. Lệch số lượng / Schema out of sync (Lệch dòng / Atomic chưa approved)"
+    REASON_BA_PENDING = "1. BA chưa mapping xong"
+    REASON_NO_BA_SOURCE = "2. Chưa có mapping nguồn từ BA"
+    REASON_EXTERNAL_SOURCE = "3. Thiếu nguồn dữ liệu / Atomic entity ngoài scope"
+    REASON_COMPLEX_JOIN = "4. Cần join phức tạp đa nguồn"
+    REASON_DATAMART_PENDING = "5. Datamart chưa thiết kế Fact/Dim"
+    REASON_SCHEMA_OUT_OF_SYNC = REASON_EXTERNAL_SOURCE  # Deprecated alias: merged into Category 3
 
     @classmethod
     def classify(
@@ -616,25 +615,53 @@ class PendingClassifier:
         if (
             not src_lower
             or src_lower in ("n/a", "(trống)", "null", "none")
-            or any(k in src_lower for k in ["chưa có csdl", "chưa có nguồn", "chưa số hóa", "biểu mẫu giấy"])
+            or any(k in src_lower for k in ["chưa có csdl", "chưa có nguồn", "chưa số hóa", "biểu mẫu giấy", "báo cáo bản cứng"])
             or any(k in dt_lower for k in ["chưa có csdl", "map biểu mẫu"])
-            or any(k in note_lower for k in ["chưa có csdl", "chưa có nguồn", "chưa số hóa", "biểu mẫu giấy", "map biểu mẫu"])
+            or any(k in note_lower for k in ["chưa có csdl", "chưa có nguồn", "chưa số hóa", "biểu mẫu giấy", "map biểu mẫu", "báo cáo bản cứng"])
             or src_lower == "chưa có"
         ):
             return cls.REASON_NO_BA_SOURCE
 
-        # 3. Thiếu nguồn dữ liệu ngoại lai (inspect both source and notes for external systems)
-        external_keywords = ["uat_vsdc", "vsdc", "vsd", "hose", "hnx", "sbv", "ngoại lai", "ngoại lai"]
+        # 3. Thiếu nguồn dữ liệu / Atomic entity ngoài scope (VSDC, VSD, HOSE, HNX, SBV, ngoại lai, schema out of sync, atomic chưa approved)
+        external_keywords = [
+            "uat_vsdc",
+            "vsdc",
+            "vsd",
+            "hose",
+            "hnx",
+            "sbv",
+            "ngoại lai",
+            "ngoại lai",
+            "external",
+            "administrative sanction",
+            "administrative procedure document",
+            "chưa có attribute",
+            "chưa duyệt atomic",
+            "atomic chưa",
+            "schema mismatch",
+            "mismatch",
+            "chưa approved",
+            "chưa duyệt",
+            "out of sync",
+            "out of date",
+            "deprecated",
+            "eform",
+            "contentitem",
+            "gap marketcap",
+        ]
+        has_schema_note = any(k in note_lower for k in external_keywords) or bool(
+            re.search(r"(?<!chênh\s)\blệch\b", note_lower)
+        )
         if (
-            any(k in src_lower for k in external_keywords)
-            or any(k in note_lower for k in external_keywords)
+            has_schema_note
+            or any(k in src_lower for k in ["uat_vsdc", "vsdc", "vsd", "sbv", "ngoại lai", "ngoại lai", "hose", "hnx"])
             or "thị phần" in kpi_lower
             or "vsd" in kpi_lower
             or "vsdc" in kpi_lower
         ):
             return cls.REASON_EXTERNAL_SOURCE
 
-        # 4. Join đa nguồn phức tạp
+        # 4. Cần join phức tạp đa nguồn
         multi_source_keywords = ["scms_nhnck", "scms_uat", "join", "đa nguồn", "multi-source", "liên hệ thống"]
         if (
             any(k in src_lower for k in multi_source_keywords)
@@ -645,23 +672,7 @@ class PendingClassifier:
         ):
             return cls.REASON_COMPLEX_JOIN
 
-        # 6. Schema out of sync: Chỉ gán khi có ghi chú kỹ thuật rõ ràng về việc schema/atomic lỗi thời
-        schema_keywords = [
-            "mismatch",
-            "out of sync",
-            "chưa approved",
-            "chưa duyệt",
-            "deprecated",
-            "out of date",
-            "atomic chưa",
-        ]
-        has_schema_note = any(k in note_lower for k in schema_keywords) or bool(
-            re.search(r"(?<!chênh\s)\blệch\b", note_lower)
-        )
-        if has_schema_note:
-            return cls.REASON_SCHEMA_OUT_OF_SYNC
-
-        # 5. Datamart Pending (source exists and BA is done, but Datamart pending)
+        # 5. Datamart chưa thiết kế Fact/Dim (source exists and BA is done, but Datamart pending)
         return cls.REASON_DATAMART_PENDING
 
 
@@ -1288,7 +1299,7 @@ class DatamartProgressAnalyzer:
         # 3. Pending Root Cause Classification Tree
         md.append("## 3. Cây phân loại Chi tiết Nguyên nhân PENDING")
         md.append("")
-        md.append("Phân loại 100% các chỉ tiêu PENDING theo 6 nhóm nguyên nhân chuẩn hóa:")
+        md.append("Phân loại 100% các chỉ tiêu PENDING theo 5 nhóm nguyên nhân chuẩn hóa:")
         md.append("")
         md.append("| Nhóm nguyên nhân | Số lượng KPI | Tỷ lệ / PENDING | Đơn vị chủ trì xử lý | Hành động tháo gỡ |")
         md.append("|---|---|---|---|---|")
@@ -1299,16 +1310,14 @@ class DatamartProgressAnalyzer:
             PendingClassifier.REASON_EXTERNAL_SOURCE,
             PendingClassifier.REASON_COMPLEX_JOIN,
             PendingClassifier.REASON_DATAMART_PENDING,
-            PendingClassifier.REASON_SCHEMA_OUT_OF_SYNC,
         ]
 
         action_map = {
             PendingClassifier.REASON_BA_PENDING: ("BA Team", "BA hoàn thành khảo sát và cung cấp nguồn"),
             PendingClassifier.REASON_NO_BA_SOURCE: ("BA Team", "Làm rõ nguồn CSDL hoặc loại bỏ biểu mẫu chưa số hóa"),
-            PendingClassifier.REASON_EXTERNAL_SOURCE: ("Data Architecture / VSDC", "Thiết lập kết nối/ingest dữ liệu ngoại lai vào DWH"),
+            PendingClassifier.REASON_EXTERNAL_SOURCE: ("Data Architecture / Atomic", "Thiết lập kết nối/ingest dữ liệu ngoại lai hoặc duyệt entity/attribute ở Atomic"),
             PendingClassifier.REASON_COMPLEX_JOIN: ("Atomic Modeling", "Chuẩn hóa entity và mối quan hệ join tại lớp Atomic"),
-            PendingClassifier.REASON_DATAMART_PENDING: ("Datamart Modeling", "Thiết kế Fact/Dim và hoàn thiện Detail Mapping"),
-            PendingClassifier.REASON_SCHEMA_OUT_OF_SYNC: ("HLD / LLD Review", "Đồng bộ lại số dòng KPI giữa BA và HLD/LLD"),
+            PendingClassifier.REASON_DATAMART_PENDING: ("Datamart Modeling Team", "Thiết kế Fact/Dim và hoàn thiện Detail Mapping"),
         }
 
         for r_name in all_reasons:
@@ -1413,7 +1422,6 @@ class DatamartProgressAnalyzer:
         dm_blockers = (
             classified.get(PendingClassifier.REASON_DATAMART_PENDING, [])
             + classified.get(PendingClassifier.REASON_COMPLEX_JOIN, [])
-            + classified.get(PendingClassifier.REASON_SCHEMA_OUT_OF_SYNC, [])
         )
         if dm_blockers:
             md.append(f"Tổng cộng: **{len(dm_blockers)}** chỉ tiêu có nguồn khả dụng nhưng Datamart chưa hoàn thiện Fact/Dim.")
@@ -1422,9 +1430,7 @@ class DatamartProgressAnalyzer:
             md.append("|---|---|---|---|---|")
             for b in dm_blockers[:30]:
                 reason_full = b.get("reason", "")
-                if "6. Lệch số lượng" in reason_full:
-                    action_text = "Đồng bộ lại số dòng KPI giữa BA và HLD/LLD"
-                elif "4. Join đa nguồn" in reason_full:
+                if "4." in reason_full or "join" in reason_full.lower():
                     action_text = "Tạo Atomic bridge / multi-source join"
                 elif "join" in b["ba_source"].lower() or "scms" in b["ba_source"].lower():
                     action_text = "Tạo Atomic bridge / multi-source join"

@@ -171,13 +171,13 @@ class TestTier3FlagPermutations(unittest.TestCase):
         cmd = [
             sys.executable,
             str(PARITY_CHECKER_CLI),
-            "-m", "GSTT",
+            "-m", "QLKD",
             "--root", str(REPO_ROOT),
             "--strict",
             "--json",
         ]
         result = subprocess.run(cmd, capture_output=True, encoding="utf-8", errors="replace")
-        self.assertEqual(result.returncode, 1, f"Expected exit code 1 under --strict for GSTT, got {result.returncode}")
+        self.assertEqual(result.returncode, 1, f"Expected exit code 1 under --strict for QLKD, got {result.returncode}")
         data = json.loads(result.stdout)
         self.assertIn("missing_in_master", data)
         self.assertEqual(data.get("status"), "FAIL")

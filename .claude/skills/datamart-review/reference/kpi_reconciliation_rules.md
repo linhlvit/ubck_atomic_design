@@ -69,8 +69,8 @@ $$\text{Ready\_DM} = \text{COUNT}\left(\text{Dòng trong Detail Mapping có kpi\
 | Trạng thái BA | Trạng thái HLD | Trạng thái LLD | Phân Loại & Đánh Giá | Hành Động Xử Lý |
 |---|---|---|---|---|
 | **DONE** | **READY** | **Đầy đủ** | 🟢 **Hoàn tất (Ready to Implement)** | Tiến hành kiểm định chi tiết 4 lớp kỹ thuật. |
-| **DONE** | **PENDING** | **Chưa có** | 🟡 **Datamart Pending (Nhánh 5)** | Backlog thiết kế của đội Datamart Modeling. |
-| **PENDING** | **PENDING** | **Chưa có** | 🟡 **BA Pending (Nhánh 1-4)** | Phân loại theo 6 nhánh, chờ BA hoàn thiện nguồn. |
+| **DONE** | **PENDING** | **Chưa có** | 🟡 **Datamart Pending (Nhóm 5)** | Backlog thiết kế của đội Datamart Modeling. |
+| **PENDING** | **PENDING** | **Chưa có** | 🟡 **BA Pending (Nhóm 1-4)** | Phân loại theo 5 nhóm, chờ BA hoàn thiện nguồn. |
 | **PENDING** | **READY** | **Đã có** | ⚠️ **Cảnh báo Lệch Trạng Thái** | Kiểm tra lại với BA xem nguồn đã chốt chưa. |
 | **DELETE** | **READY** | **Bất kỳ** | 🔴 **CRITICAL VIOLATION (`[L1/L2-DELETE-VIOLATION]`)** | **Vi phạm cấm kỵ:** Bắt buộc gỡ bỏ ngay khỏi HLD và LLD. |
 | **DELETE** | **PENDING** | **Bất kỳ** | 🔴 **CRITICAL VIOLATION** | Bắt buộc xóa bỏ khỏi backlog thiết kế. |

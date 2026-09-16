@@ -344,49 +344,54 @@ Ví dụ:
 
 **B.3.2 Diagram (flowchart)**
 
-- 3 tầng: Staging → Atomic → Datamart
-- Tên subgraph: `Staging`, `Atomic`, `Datamart` — KHÔNG ghi tên hệ thống hay `Datamart Mart`
-- Tên bảng Staging: **dùng `ID["label"]` syntax** — node ID không dấu chấm, label hiển thị `source.table`
+- 4 tầng: Staging → ODS → Atomic → Datamart
+  + **Tầng Staging (Bronze Layer - Nguồn 1:1):** Tiếp nhận dữ liệu thô nguyên bản từ các hệ thống tác nghiệp nguồn (MDDS, ORDERTRADE, SCMS, IDS, FIMS, VSDC, THANHTRA...). Cấu trúc và kiểu dữ liệu giữ nguyên trạng 1:1 với nguồn.
+  + **Tầng ODS (Operational Data Store Layer - Chuẩn hóa & Làm sạch):** Giữ nguyên cấu trúc thực thể và bảng 1:1 với tầng Staging, đóng vai trò vùng làm sạch dữ liệu kỹ thuật, chuẩn hóa kiểu dữ liệu, loại bỏ giá trị rác, kiểm tra toàn vẹn và hợp lệ trước khi tích hợp.
+  + **Tầng Atomic (Silver Layer - Core 3NF):** Mô hình dữ liệu hạt nhân 3NF chuẩn hóa toàn ngành tương tự Silver Zone, thực hiện chuẩn hóa thực thể, khử trùng lặp (deduplication) và quản lý lịch sử SCD Type 2 / SCD4A.
+  + **Tầng Datamart (Gold Layer / Gold Zone - Business Marts):** Vùng dữ liệu chuyên đề đa chiều (Dimensional Marts: Fact, Dimension) và bảng tác nghiệp/bảng phẳng (Operational / Flat Tables) thiết kế theo nghiệp vụ (Business-driven) tối ưu hóa truy vấn phục vụ Web App và Data API Gateway.
+- Tên subgraph: `Staging`, `ODS`, `Atomic`, `Datamart` — KHÔNG ghi tên hệ thống hay `Datamart Mart`
+- Tên bảng **Staging**: **dùng `ID["label"]` syntax** — node ID không dấu chấm, label hiển thị `source.table`
   - Đúng: `THANHTRA_TT_HO_SO["THANHTRA.TT_HO_SO"]`
   - Sai: `THANHTRA.TT_HO_SO` (dấu chấm trong node ID gây lỗi mermaid — parsed như CSS class)
-  - Edge dùng node ID: `THANHTRA_TT_HO_SO --> inspection_case`
+- Tên bảng **ODS**: **dùng `ID["label"]` syntax** — node ID dạng `ODS_...`, label hiển thị `ODS.table` (giữ nguyên cấu trúc 1:1 với Staging)
+  - Đúng: `ODS_TT_HO_SO["ODS.TT_HO_SO"]`
 - Tên bảng **Atomic**: **dùng `ID["label"]` syntax** — node ID dùng `_` thay space, label bỏ dấu `_`
   - Đúng: `Fund_Management_Company["Fund Management Company"]`
   - Sai: `Fund_Management_Company` (mermaid render có dấu `_`, xấu)
-  - Edge dùng node ID: `Fund_Management_Company --> fct_fnd_mgt_co_snpst`
 - Tên bảng **Datamart**: **dùng `ID["label"]` syntax** — node ID là tên physical, label là tên logical đầy đủ
   - Đúng: `fct_fnd_mgt_co_snpst["Fact Fund Management Company Snapshot"]`
   - Sai: `fct_fnd_mgt_co_snpst` (tên physical viết tắt, không có nghĩa với người đọc)
   - Tên logical lấy từ `Entities.csv` cột `datamart_entity`
-- **Tên subgraph luôn là**: `Staging`, `Atomic`, `Datamart` — KHÔNG thêm tên hệ thống kể cả khi có nhiều nguồn (VD sai: `Staging_FMS["Staging (FMS)"]`, VD đúng: `Staging`)
+- **Tên subgraph luôn là**: `Staging`, `ODS`, `Atomic`, `Datamart`
+- Luồng liên kết (edges):
+  - `Staging_X --> ODS_X` (liên kết 1:1 giữa bảng Staging và bảng ODS tương ứng)
+  - `ODS_X --> Atomic_Y` (từ bảng ODS làm sạch nạp vào thực thể Atomic 3NF tương ứng)
+  - `Atomic_Y --> Datamart_Z` (từ các bảng Atomic tổng hợp và tính toán vào bảng Fact/Dim/Operational Datamart)
 - Mũi tên nét liền `-->`, không label, không layer Báo cáo
-- **Lấy cấu trúc từ HLD** — đổi alias subgraph nếu HLD dùng tên khác (VD: `SRC` → `Staging`, `SIL` → `Atomic`, `GOLD` → `Datamart`). Không tự vẽ lại topology.
 - **1 diagram / 1 bảng Gold (Fact hoặc Operational)**: Dimension KHÔNG tách diagram riêng — luôn gộp vào subgraph Datamart của diagram Fact/Operational mà nó phục vụ.
   - Nếu 1 Cụm HLD có N Fact và M Operational → tạo N+M diagram riêng
-  - Mỗi diagram: **chỉ giữ lại node Staging và Atomic thực sự có đường đi đến bảng Gold đó** — loại bỏ node thừa không có mũi tên nối vào bảng Gold đang xét (dù node đó có trong diagram HLD gốc)
-  - Kiểm tra: với mỗi Atomic node, trace ngược mũi tên — nếu Atomic_X → Gold_target thì giữ, kèm Staging_Y → Atomic_X; nếu Atomic_X chỉ → Gold_khác thì bỏ khỏi diagram này
-  - Đúng: nhóm có 1 Fact + 1 Operational → 2 diagram riêng, mỗi diagram chỉ có node thực sự feed bảng Gold đó
-  - Sai: tách Dimension thành diagram riêng; gộp nhiều Fact/Operational vào 1 diagram; copy nguyên toàn bộ Staging+Atomic từ HLD khi cụm có nhiều bảng Gold
+  - Mỗi diagram: **chỉ giữ lại node Staging, ODS và Atomic thực sự có đường đi đến bảng Gold đó** — loại bỏ node thừa không có mũi tên nối vào bảng Gold đang xét
+  - Kiểm tra: trace ngược mũi tên từ Gold_target → Atomic → ODS → Staging
 
-```
 ```mermaid
 flowchart LR
   subgraph Staging
     THANHTRA_TT_HO_SO["THANHTRA.TT_HO_SO"]
-    ...
+  end
+  subgraph ODS
+    ODS_TT_HO_SO["ODS.TT_HO_SO"]
   end
   subgraph Atomic
     inspection_case["Inspection Case"]
-    ...
   end
   subgraph Datamart
     fct_inspection_case_avy["Fact Inspection Case Activity"]
     cdr_dt_dim["Calendar Date Dimension"]
   end
-  THANHTRA_TT_HO_SO --> inspection_case
+  THANHTRA_TT_HO_SO --> ODS_TT_HO_SO
+  ODS_TT_HO_SO --> inspection_case
   inspection_case --> fct_inspection_case_avy
   cdr_dt_dim --> fct_inspection_case_avy
-```
 ```
 
 **B.3.3 Mục đích**
@@ -397,22 +402,20 @@ Format: `**Mục đích:** [Nội dung]`
 
 **B.3.4 Mô tả luồng**
 
-> **Quy tắc nhất quán với diagram:** Mô tả luồng Staging→Atomic **chỉ liệt kê các bảng Atomic có trong diagram của nhóm này** — không mô tả node đã bị loại khỏi diagram vì không feed bảng Gold đang xét. Diagram và mô tả luồng phải khớp 1-1.
+> **Quy tắc nhất quán với diagram:** Mô tả luồng Staging→ODS→Atomic **chỉ liệt kê các bảng có trong diagram của nhóm này**. Diagram và mô tả luồng phải khớp 1-1.
 
-Staging → Atomic — mỗi dòng mô tả 1 bảng Atomic, source nhắc ở cuối:
-```
-- **[Tên Atomic]:** Bảng lưu [ý nghĩa nghiệp vụ] lấy thông tin từ bảng [source.table_name]
-```
+*Staging → ODS:*
+- **ODS.[Tên bảng]:** Bảng ODS tiếp nhận và lưu trữ nguyên bản 1:1 từ bảng nguồn [source.table_name], thực hiện làm sạch kỹ thuật, chuẩn hóa kiểu dữ liệu và kiểm tra tính hợp lệ dữ liệu.
+
+*ODS → Atomic:*
+- **[Tên Atomic]:** Bảng lưu [ý nghĩa nghiệp vụ] lấy thông tin đã chuẩn hóa và làm sạch từ bảng ODS.[Tên bảng] (tương ứng nguồn [source.table_name])
 
 Trường hợp nhiều source:
-```
-- **[Tên Atomic]:** Bảng lưu [ý nghĩa] lấy thông tin từ bảng [source 1], kết hợp [mô tả] từ các bảng [source 2], [source 3]
-```
+- **[Tên Atomic]:** Bảng lưu [ý nghĩa] lấy thông tin từ bảng ODS [source 1], kết hợp [mô tả] từ các bảng ODS [source 2], [source 3]
 
-Bảng CV: `Classification Value (tên_scheme)` — mô tả: "Bảng code value lưu danh mục [ý nghĩa] lấy thông tin từ bảng [source]"
+Bảng CV: `Classification Value (tên_scheme)` — mô tả: "Bảng code value lưu danh mục [ý nghĩa] lấy thông tin từ bảng ODS [source]"
 
-Atomic → Datamart — mỗi dòng mô tả 1 bảng Datamart, không nhắc nguồn Atomic:
-
+*Atomic → Datamart:*
 | Loại bảng | Mở đầu mô tả |
 |---|---|
 | Fact | Bảng sự kiện tổng hợp thông tin... |
@@ -585,16 +588,17 @@ Theo sau heading là metadata bảng:
 - [ ] Tên module dùng tiếng Việt đầy đủ
 - [ ] Mục 3.1.X.1: danh sách gạch đầu dòng, chữ thường, không in đậm, để trống các mục chưa có dữ liệu
 - [ ] Nguồn dữ liệu trong 3.1.X.1 chỉ ghi tên hệ thống
-- [ ] Diagram flowchart: subgraph `Staging`/`Atomic`/`Datamart`; tên bảng Staging dùng `ID["label"]` syntax (node ID không dấu chấm, VD: `FMS_SECURITIES["FMS.SECURITIES"]`)
+- [ ] Diagram flowchart: đủ 4 subgraph `Staging`/`ODS`/`Atomic`/`Datamart`; tên bảng Staging dùng `ID["label"]` syntax (node ID không dấu chấm, VD: `FMS_SECURITIES["FMS.SECURITIES"]`)
+- [ ] Diagram flowchart: node ODS dùng `ID["label"]` syntax (node ID `ODS_...`, label `ODS.table_name`, giữ nguyên 1:1 với Staging)
 - [ ] Diagram flowchart: node Atomic dùng `ID["label"]` syntax (ID dùng `_`, label bỏ `_`, VD: `Fund_Management_Company["Fund Management Company"]`)
 - [ ] Diagram flowchart: node Datamart dùng `ID["label"]` syntax (ID = tên physical, label = tên logical từ Entities.csv, VD: `fct_fnd_mgt_co_snpst["Fact Fund Management Company Snapshot"]`)
-- [ ] Mũi tên nét liền, không label, không layer Báo cáo
-- [ ] Nhiều hệ thống nguồn → nhiều subgraph Staging riêng (VD: `Staging_FMS["Staging (FMS)"]`)
+- [ ] Mũi tên nét liền: `Staging --> ODS --> Atomic --> Datamart`, không label, không layer Báo cáo
 - [ ] Mỗi diagram chỉ có **1 bảng Gold** (Fact hoặc Operational) — nhóm N bảng Gold → N diagram riêng
-- [ ] Node Staging/Atomic trong mỗi diagram **chỉ gồm node thực sự feed bảng Gold đó** — không copy toàn bộ node từ HLD khi cụm có nhiều bảng Gold (trace mũi tên: Atomic_X → Gold_target mới giữ)
-- [ ] Mô tả luồng Staging→Atomic khớp 1-1 với node trong diagram (không mô tả node đã bị loại)
-- [ ] Đã bỏ nhóm chỉ reuse Datamart không có Staging/Atomic riêng
-- [ ] Mô tả Staging→Atomic: tên Atomic in đậm đứng đầu, source ở cuối câu
+- [ ] Node Staging/ODS/Atomic trong mỗi diagram **chỉ gồm node thực sự feed bảng Gold đó** — không copy toàn bộ node từ HLD khi cụm có nhiều bảng Gold (trace mũi tên: Atomic_X → Gold_target mới giữ)
+- [ ] Mô tả luồng Staging→ODS→Atomic khớp 1-1 với node trong diagram (không mô tả node đã bị loại)
+- [ ] Đã bỏ nhóm chỉ reuse Datamart không có Staging/ODS/Atomic riêng
+- [ ] Mô tả Staging→ODS: ODS tiếp nhận 1:1 từ nguồn, chuẩn hóa làm sạch
+- [ ] Mô tả ODS→Atomic: tên Atomic in đậm đứng đầu, nguồn ODS ở cuối câu
 - [ ] Bảng CV ghi đầy đủ `Classification Value (tên_scheme)`
 - [ ] Mô tả Atomic→Datamart: chỉ mô tả ý nghĩa bảng Datamart
 - [ ] Toàn bộ mô tả bằng tiếng Việt
