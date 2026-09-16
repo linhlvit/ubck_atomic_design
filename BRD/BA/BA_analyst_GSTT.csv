@@ -396,7 +396,7 @@ WHERE s.tradingdate = :ngay_gd;
 
 ",,,,,,Done,Dữ liệu tĩnh,F
 1,,Dashboard thông tin về danh mục chứng khoán theo dạng bảng số liệu,Chỉ sô,,Dashboard,Chiều,TB,Mã CK,MDDS,X,X,,Done,Thông tin thị trường,JAD_MARKETINFOR,indexName,,,,,,,,Done,Dữ liệu tĩnh,F
-1,,Dashboard thông tin về danh mục chứng khoán theo dạng bảng số liệu,Loại phái sinh ,,Dashboard,Chiều,TB,Mã CK,MDDS,X,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,,FloorCode='03' (FDS) AND StockType='FU' cho phái sinh,"SELECT
+1,,Dashboard thông tin về danh mục chứng khoán theo dạng bảng số liệu,Loại phái sinh  ,,Dashboard,Chiều,TB,Mã CK,MDDS,X,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,,FloorCode='03' (FDS) AND StockType='FU' cho phái sinh,"SELECT
     s.StockType,
      DECODE(si.""""StockType"""", '4', 'HĐTL') || DECODE(si.""""underlyingSymbol"""", 'GB05', 'TPCP', 'GB10', 'TPCP', si.""""underlyingSymbol"""") AS loai_phai_sinh
 FROM JAD_STOCKINFOR s
@@ -454,10 +454,14 @@ FROM JAD_STOCKINFOR s
 WHERE s.tradingdate = :ngay_gd
 ",,,,,,Done,Dữ liệu tĩnh,F
 1,,Dashboard thông tin về danh mục chứng khoán theo dạng bảng số liệu,% thay đổi,(Giá đóng cứa − Giá TC) / Giá TC * 100,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,MDDS,X,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,(change / giá_tham_chiếu) × 100,,,,,,,,Done,Dữ liệu tĩnh,F
-1,,Dashboard thông tin về danh mục chứng khoán theo dạng bảng số liệu,Tổng KL,Σ KLGD,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,X,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
+1,,Dashboard thông tin về danh mục chứng khoán theo dạng bảng số liệu,Tổng KLGD khớp lệnh,Σ KLGD khớp lệnh,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,X,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
 Execution - Volume: Khối lượng khớp lệnh
 Trade_HNX:
-Trade quantity: Khối lượng giao dịch","Market ID in (UPX,STX,STK)","-- HOSE
+Trade quantity: Khối lượng giao dịch","Market ID in (UPX,STX,STK)
+- TRADE_BOOK_HOSE: 
+Board Type not  in ('T1','T2','T3','T4','T6,'R1')
+- Trade_HNX: 
+Board ID  not in ('T1','T2','T3','T4','T6, 'R1')","-- HOSE
 SELECT
     SUM(t.[Execution - Volume])     AS tong_kl_khop
 FROM TRADE_BOOK_HOSE t
@@ -476,10 +480,14 @@ and Market ID in ('UPX','STX','STK')
 Execution - Volume: Khối lượng khớp lệnh
 Trade_HNX:
 Trade quantity: Khối lượng giao dịch",,,,,Done,Dữ liệu tĩnh,P
-1,,Dashboard thông tin về danh mục chứng khoán theo dạng bảng số liệu,Tổng GT,Σ (Giá khớp * KLGD),Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,X,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
+1,,Dashboard thông tin về danh mục chứng khoán theo dạng bảng số liệu,Tổng GTGD khớp lệnh,Σ (Giá khớp * KLGD) khớp lệnh,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,X,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
 Execution - Value: Giá trị giao dịch
 Trade_HNX:
-Trade price * Trade quantity","Market ID in (UPX,STX,STK)","-- HOSE
+Trade price * Trade quantity","Market ID in (UPX,STX,STK)
+- TRADE_BOOK_HOSE: 
+Board Type  Not in ('T1','T2','T3','T4','T6,'R1')
+- Trade_HNX: 
+Board ID not in ('T1','T2','T3','T4','T6, 'R1')","-- HOSE
 SELECT
     SUM(t.[Execution - Value])      AS tong_gt_khop
 FROM TRADE_BOOK_HOSE t
@@ -649,7 +657,7 @@ select x.*, NNKD from
 (
                SELECT
                         s.symbolisin                        AS ma_ck,
-                        s.issuername 				as ma_map_nganh,
+                        s.issuername                                 as ma_map_nganh,
                         s.fullname                       AS ten_ck,
                         s.FloorCode                     AS floor_code,
                         CASE s.FloorCode
@@ -675,7 +683,7 @@ select x.*, NNKD from
                   AND s.StockType   IN ('1')
                   ) x
 left join 
-	(
+        (
 select equity_ticker, company_name_vn ,
         INDUSTRY_CD, NNKD,
         equity_listing_exch,
@@ -732,15 +740,21 @@ ORDER BY c.floor_code, c.ma_ck
                 AND s.FLOORCODE in ('04','10','03','02')",,,,,,,Done,Dữ liệu tĩnh,PE
 2,,Dashboard thông tin về danh mục chứng khoán theo dạng bảng số liệu của trái phiếu,Ngày đáo hạn của trái phiếu,,Dashboard,Chỉ tiêu cơ sở,TB,,MDDS,,,,Done,Thông tin thị trường,JAD_STOCKINFOR,MaturityDate,"AND s.STOCKTYPE  = '1'
                 AND s.FLOORCODE in ('04','10','03','02')",,,,,,,Chưa có sql,Dữ liệu tĩnh,PE
-2,,Dashboard thông tin về danh mục chứng khoán theo dạng bảng số liệu của trái phiếu,KLGD,,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,X,X,,Done,Sổ lệnh,TRADE_BOOK_HNX,"
+2,,Dashboard thông tin về danh mục chứng khoán theo dạng bảng số liệu của trái phiếu,KLGD khớp lênh,KLDG khớp lệnh,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,X,X,,Done,Sổ lệnh,TRADE_BOOK_HNX,"
 Trade_HNX:
 Trade quantity: Khối lượng giao dịch","AND t.[Market ID] in (  HCX)
-",,"Join Bảng trade_hose/Trade_HNX với JAD_STOCKINFOR qua mã chứng khoán
+- TRADE_BOOK_HOSE: 
+Board Type not  in ('T1','T2','T3','T4','T6,'R1')
+- Trade_HNX: 
+Board ID  not in ('T1','T2','T3','T4','T6, 'R1')",,"Join Bảng trade_hose/Trade_HNX với JAD_STOCKINFOR qua mã chứng khoán
 Cách 2: Có thể lấy từ bảng JAD_STOCKINFOR trường totalTrading",,,,,Done,Dữ liệu tĩnh,PE
-2,,Dashboard thông tin về danh mục chứng khoán theo dạng bảng số liệu của trái phiếu,GTGD,,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,X,X,,Done,Sổ lệnh, TRADE_BOOK_HNX,"
+2,,Dashboard thông tin về danh mục chứng khoán theo dạng bảng số liệu của trái phiếu,GTGD khớp lệnh,GTGD khớp lệnh,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,X,X,,Done,Sổ lệnh, TRADE_BOOK_HNX,"
 Trade_HNX:
 Trade price * Trade quantity","AND t.[Market ID] in (  HCX)
-",,"Join Bảng trade_hose/Trade_HNX với JAD_STOCKINFOR qua mã chứng khoán
+- TRADE_BOOK_HOSE: 
+Board Type not  in ('T1','T2','T3','T4','T6,'R1')
+- Trade_HNX: 
+Board ID  not in ('T1','T2','T3','T4','T6, 'R1')",,"Join Bảng trade_hose/Trade_HNX với JAD_STOCKINFOR qua mã chứng khoán
 Cách 2: Có thể lấy từ bảng JAD_STOCKINFOR trường totalTradingValue",,,,,Done,Dữ liệu tĩnh,PE
 2,,Dashboard thông tin về danh mục chứng khoán theo dạng bảng số liệu của trái phiếu,YTM bình quân,,Dashboard,Chỉ tiêu cơ sở,TB,Mã CK,MDDS,X,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,yield,,,,,,,,Chưa có sql,Dữ liệu tĩnh,PE
 2,,Dashboard thông tin về danh mục chứng khoán theo dạng bảng số liệu của trái phiếu,Lãi suất,,Dashboard,Chỉ tiêu cơ sở,TB,Mã CK,MDDS,X,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,couponrate,,,,,,,,Chưa có sql,Dữ liệu tĩnh,PE
@@ -1347,7 +1361,7 @@ không lấy từ bảng CSDL","-- Chiều thời gian: tham số người dùng
 3,,Dashboard về danh mục chứng khoán theo biểu đồ kỹ thuật,Giá đóng cửa,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,closePrice,,,,,,,,Done,Dữ liệu tĩnh,F
 3,,Dashboard về danh mục chứng khoán theo biểu đồ kỹ thuật,Giá tham chiếu,Giá tham chiếu,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,,,Done,Thông tin thị trường,JAD_STOCKINFOR,reference,,,,,,,,Done,Dữ liệu tĩnh,F
 3,,Dashboard về danh mục chứng khoán theo biểu đồ kỹ thuật,Thay đổi (%),Thay đổi (%),Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,MDDS,,,,Done,Thông tin thị trường,JAD_STOCKINFOR,change,,,,,,,,Done,Dữ liệu tĩnh,F
-3,,Dashboard về danh mục chứng khoán theo biểu đồ kỹ thuật,Khối lượng giao dịch,Σ KLGD,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Thông tin thị trường,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
+3,,Dashboard về danh mục chứng khoán theo biểu đồ kỹ thuật,Khối lượng giao dịch,Σ KLGD  khớp lệnh,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Thông tin thị trường,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
 Execution - Volume: Khối lượng khớp lệnh
 Trade_HNX:
 Trade quantity: Khối lượng giao dịch","Market ID in (UPX,STX,STO)","-- HOSE
@@ -1755,13 +1769,13 @@ ORDER BY a.ngay_gd;",,,,Done,Dữ liệu tĩnh,
 không lấy từ bảng CSDL","-- Chiều thời gian: tham số người dùng chọn
 -- :year = năm (vd 2024), :quarter = quý (vd Q1..Q4)
 -- Dùng trong WHERE của tất cả câu SQL liên quan",Join qua từ company_profiles với Id và company_profile_id,,,,,Done,Dữ liệu tĩnh,F
-4,,Dashboard về danh mục trái phiếu theo biểu đồ kỹ thuật,Giá mở cửa,Giá giao dịch đầu tiên,Dashboard,Chỉ tiêu cơ sở,Dễ,Mã CK,MDDS,X,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,open,,,,,,,,Done,Dữ liệu tĩnh,F
+4,,Dashboard về danh mục trái phiếu theo biểu đồ kỹ thuật,Giá mở cửa,Giá giao dịch đầu tiên,Dashboard,Chỉ tiêu cơ sở,Dễ,Mã CK,MDDS,X,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,open,,,Bỏ biểu đồ kĩ thuật không có trái phiếu,,,,,Done,Dữ liệu tĩnh,F
 4,,Dashboard về danh mục trái phiếu theo biểu đồ kỹ thuật,Giá cao nhất,,Dashboard,Chỉ tiêu cơ sở,Dễ,Mã CK,MDDS,X,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,high,,,,,,,,Done,Dữ liệu tĩnh,F
 4,,Dashboard về danh mục trái phiếu theo biểu đồ kỹ thuật,Giá thấp nhất,,Dashboard,Chỉ tiêu cơ sở,Dễ,Mã CK,MDDS,X,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,low,,,,,,,,Done,Dữ liệu tĩnh,F
 4,,Dashboard về danh mục trái phiếu theo biểu đồ kỹ thuật,Giá đóng cửa,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,closePrice,,,,,,,,Done,Dữ liệu tĩnh,F
 4,,Dashboard về danh mục trái phiếu theo biểu đồ kỹ thuật,Giá tham chiếu,Giá tham chiếu,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,,,Done,Thông tin thị trường,JAD_STOCKINFOR,reference,,,,,,,,Done,Dữ liệu tĩnh,F
 4,,Dashboard về danh mục trái phiếu theo biểu đồ kỹ thuật,Thay đổi (%),Thay đổi (%),Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,MDDS,,,,Done,Thông tin thị trường,JAD_STOCKINFOR,change,,,,,,,,Done,Dữ liệu tĩnh,F
-4,,Dashboard về danh mục trái phiếu theo biểu đồ kỹ thuật,Khối lượng giao dịch,Σ KLGD,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Thông tin thị trường,TRADE_BOOK_HNX,"
+4,,Dashboard về danh mục trái phiếu theo biểu đồ kỹ thuật,Khối lượng giao dịch,Σ KLGD khớp lệnh,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Thông tin thị trường,TRADE_BOOK_HNX,"
 Trade_HNX:
 Trade quantity: Khối lượng giao dịch","AND t.[Market ID] in (  HCX)
 ",,"
@@ -2129,12 +2143,15 @@ where tradingdate = :to_date
 WHERE rn=1",điểm chỉ số gần nhất trong ngày ,,,,,Chưa có sql,Dữ liệu tĩnh,F
 5,,Dashboard về theo dõi diễn biến các chỉ số thị trường (Index),Thay đổi (+/-),Thay đổi của điểm chỉ số,Dashboard,Chỉ tiêu phái sinh,TB,Danh mục  chỉ số - theo giờ,MDDS,X,X,X,Done,Thông tin thị trường,JAD_MARKETINFOR,indexchange,,,,,,,,Chưa có sql,Dữ liệu tĩnh,F
 5,,Dashboard về theo dõi diễn biến các chỉ số thị trường (Index),% thay đổi,,Dashboard,Chỉ tiêu phái sinh,TB,Danh mục  chỉ số - theo giờ,MDDS,X,X,X,Done,Thông tin thị trường,JAD_MARKETINFOR,indexpercentchange,,,,,,,,Chưa có sql,Dữ liệu tĩnh,F
-5,,Dashboard về theo dõi diễn biến các chỉ số thị trường (Index),KLGD của chỉ số,,Dashboard,Chỉ tiêu phái sinh,TB,Danh mục  chỉ số - theo giờ,MDDS,X,X,X,Done,Thông tin thị trường/ Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"lấy từ sổ lệnh: 
+5,,Dashboard về theo dõi diễn biến các chỉ số thị trường (Index),KLGD của chỉ số,KLGD của chỉ số  khớp lệnh,Dashboard,Chỉ tiêu phái sinh,TB,Danh mục  chỉ số - theo giờ,MDDS,X,X,X,Done,Thông tin thị trường/ Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"lấy từ sổ lệnh: 
 - Hose: 
 Execution - Volume
 - HNX: 
 Trade quantity
---> cần join qua bảng JAD_CSIDXINFOR để lấy KLGD của chỉ số ","Market ID in ( 'STO', 'STX', 'UPX')","SELECT
+--> cần join qua bảng JAD_CSIDXINFOR để lấy KLGD của chỉ số ","Market ID in ( 'STO', 'STX', 'UPX')
+Khớp lệnh 
+   + MARKET_ID IN ('STK','STX','UPX')
+   + AND BOARD_TYPE/BOARD_ID  <> ('T1','T2','T3','T4','T6','R1')","SELECT
     sub.indexCode           AS ma_chi_so,
     sub.ngay_gd,
     SUM(sub.kl_gd)          AS tong_kl_gd,
@@ -2199,12 +2216,14 @@ FROM (
   FROM JAD_MARKETINFOR
   WHERE tradingdate = :ngay_gd
 ) WHERE rn = 1",,,,,Chưa có sql,Dữ liệu tĩnh,
-5,,Dashboard về theo dõi diễn biến các chỉ số thị trường (Index),GTGD của chỉ số,,Dashboard,Chỉ tiêu phái sinh,TB,Danh mục  chỉ số - theo giờ,MDDS,X,X,X,Done,Thông tin thị trường/ Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX," lấy từ sổ lệnh: 
+5,,Dashboard về theo dõi diễn biến các chỉ số thị trường (Index),GTGD của chỉ số,GTGD của chỉ số khớp lệnh,Dashboard,Chỉ tiêu phái sinh,TB,Danh mục  chỉ số - theo giờ,MDDS,X,X,X,Done,Thông tin thị trường/ Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX," lấy từ sổ lệnh: 
 - Hose: 
 Execution - Value
 - HNX: 
 Trade quantity * Trade price
---> cần join qua bảng JAD_CSIDXINFOR để lấy KLGD của chỉ số ",,"SELECT
+--> cần join qua bảng JAD_CSIDXINFOR để lấy KLGD của chỉ số ","Khớp lệnh 
+   + MARKET_ID IN ('STK','STX','UPX')
+   + AND BOARD_TYPE/BOARD_ID  <> ('T1','T2','T3','T4','T6','R1')","SELECT
     sub.indexCode           AS ma_chi_so,
     sub.ngay_gd,
     SUM(sub.kl_gd)          AS tong_kl_gd,
@@ -2547,16 +2566,16 @@ Board ID in ('T1','T2','T3','T4','T6, 'R1')","
                 group by INDEXCODE
         --        ,SYMBOL
 ",,,,,,Chưa có sql,Dữ liệu tĩnh,
-5,,Dashboard về theo dõi diễn biến các chỉ số thị trường (Index),Số cổ phiếu lưu hành,,Dashboard,Chỉ tiêu cơ sở,TB,Danh mục  chỉ số - theo giờ,CSDLTT,X,X,X,Done,Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) ,outstanding_shares,outstanding_shares,,,,,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
+5,,Dashboard về theo dõi diễn biến các chỉ số thị trường (Index),Khối lượng cổ phiếu lưu hành,,Dashboard,Chỉ tiêu cơ sở,TB,Danh mục  chỉ số - theo giờ,CSDLTT,X,X,X,Done,Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) ,outstanding_shares,outstanding_shares,,,,,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
 5,,Dashboard về theo dõi diễn biến các chỉ số thị trường (Index),Vốn hóa thị trường,Σ (Giá đóng cửa * khối lượng cổ  phiếu lưu hành),Dashboard,Chỉ tiêu phái sinh,TB,Danh mục  chỉ số - theo giờ,"MDDS, CSDLTT",X,X,X,Done,Thông tin thị trường & Sổ lệnh,"1. Giá đóng cửa: 
 JAD_STOCKINFOR
-2. Số cổ phiếu lưu hành: 
+2. Khối lượng cổ phiếu lưu hành: 
 outstanding_shares","Giá đóng cửa: 
 JAD_STOCKINFOR.closePrice
-Số cổ phiếu lưu hành:
+Khối lượng cổ phiếu lưu hành:
 outstanding_shares",,,,,,,,Chưa có sql,Dữ liệu tĩnh,PE
 6,,Dashboard Định giá thị trường,Chỉ số,,Dashboard,Chiều,Trùng,Danh mục  chỉ số - theo giờ,MDDS,,X,X,Done,Thông tin thị trường,JAD_MARKETINFOR,marketCode,,SELECT DISTINCT marketCode FROM JAD_MARKETINFOR WHERE tradingdate=:ngay_gd,,,,,,Chưa có sql,Dữ liệu tĩnh,F
-6,,Dashboard Định giá thị trường,Ngành,,Dashboard,Chiều,Trùng,Danh mục  chỉ số - theo giờ,IDS,,X,X,Done,Ngành kinh tế cấp 1 trên IDS,IDS.categories (c),"c.industry_cd, c.industry_name AS ten_nganh",c.active_flg = 1,"SELECT c.industry_cd, c.industry_name
+6,,Dashboard Định giá thị trường,Ngành,,Dashboard,Chiều,Trùng,Danh mục  chỉ số - theo giờ,IDS,,X,X,Deleted,Ngành kinh tế cấp 1 trên IDS,IDS.categories (c),"c.industry_cd, c.industry_name AS ten_nganh",c.active_flg = 1,"SELECT c.industry_cd, c.industry_name
  FROM IDS.categories c
  WHERE c.active_flg = 1
  ORDER BY c.industry_cd",,"WITH
@@ -3125,14 +3144,14 @@ EPS = LNST/số cổ phiếu đang lưu hành.",Dashboard,Chỉ tiêu phái sinh
 - LNST: lấy từ báo cáo tài chính IDS
 - Số cổ phiếu đang lưu hành: Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) ","1. Giá đóng cửa: 
 JAD_STOCKINFOR
-2. Số cổ phiếu lưu hành: 
+2. Khối lượng cổ phiếu lưu hành: 
 outstanding_shares
 3. LNST:
 IDS.data (d),
  IDS.report_catalog (rc),
  IDS.company_data (cd)","Giá đóng cửa: 
 JAD_STOCKINFOR.closePrice
-Số cổ phiếu lưu hành:
+Khối lượng cổ phiếu lưu hành:
 outstanding_shares
 LNST:
 SUM(d.data_value)",,"WITH
@@ -3382,14 +3401,14 @@ Giá trị sổ sách = VCSH/ số cổ phiếu đang lưu hành.",Dashboard,Ch�
 - VCSH: lấy từ báo cáo tài chính IDS
 - Số cổ phiếu đang lưu hành: Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) ","1. Giá đóng cửa: 
 JAD_STOCKINFOR
-2. Số cổ phiếu lưu hành: 
+2. Khối lượng cổ phiếu lưu hành: 
 outstanding_shares
 3.VCSH
 IDS.data (d),
  IDS.report_catalog (rc),
  IDS.company_data (cd)","Giá đóng cửa: 
 JAD_STOCKINFOR.closePrice
-Số cổ phiếu lưu hành:
+Khối lượng cổ phiếu lưu hành:
 outstanding_shares
 VCSH:
 SUM(d.data_value)",,"WITH
@@ -3634,15 +3653,15 @@ LEFT JOIN VCSH_theo_ngay vc
     ON vc.symbol = vh.symbol AND vc.ngay_gd = vh.ngay_gd
 GROUP BY c.marketCode, c.ngay_gd, c.diem_dong_cua
 ORDER BY c.ngay_gd ASC;",,,,,,Chưa có sql,"Chưa có CSDL - Map biểu mẫu, Dữ liệu tĩnh",PE
-6,,Dashboard Định giá thị trường,EPS thị trường,Tổng lợi nhuận sau thuế / Tổng số cổ phiếu lưu hành,Dashboard,Chỉ tiêu phái sinh,TB,Danh mục  chỉ số - theo giờ,"IDS, MDDS, CSDLTT",X,X,X,Done,"- LNST: lấy từ báo cáo tài chính IDS
+6,,Dashboard Định giá thị trường,EPS thị trường,Tổng lợi nhuận sau thuế / Tổng Khối lượng cổ phiếu lưu hành,Dashboard,Chỉ tiêu phái sinh,TB,Danh mục  chỉ số - theo giờ,"IDS, MDDS, CSDLTT",X,X,X,Done,"- LNST: lấy từ báo cáo tài chính IDS
 - Số cổ phiếu đang lưu hành: Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) ","1. LNST:
 IDS.data (d),
  IDS.report_catalog (rc),
  IDS.company_data (cd)
-2. Số cổ phiếu lưu hành: 
+2. Khối lượng cổ phiếu lưu hành: 
 outstanding_shares","LNST:
 SUM(d.data_value) AS lnst
-SỐ cổ phiếu lưu hành: 
+Khối lượng cổ phiếu lưu hành: 
 outstanding_shares",,"WITH
 Lich_giao_dich AS (
     SELECT ngay, ROW_NUMBER() OVER (ORDER BY ngay DESC) AS rn
@@ -3885,13 +3904,13 @@ LEFT JOIN VCSH_theo_ngay vc
     ON vc.symbol = vh.symbol AND vc.ngay_gd = vh.ngay_gd
 GROUP BY c.marketCode, c.ngay_gd, c.diem_dong_cua
 ORDER BY c.ngay_gd ASC;",,,,,,Chưa có sql,"Chưa có CSDL - Map biểu mẫu, Dữ liệu tĩnh",PE
-6,,Dashboard Định giá thị trường,Vốn hóa thị trường,Σ (Giá đóng cửa * Số cổ phiếu lưu hành),Dashboard,Chỉ tiêu phái sinh,Trùng,Danh mục  chỉ số - theo giờ,"MDDS, CSDLTT",,X,X,Done,"- Giá đóng cửa: thông tin thị trường 
+6,,Dashboard Định giá thị trường,Vốn hóa thị trường,Σ (Giá đóng cửa * Khối lượng cổ phiếu lưu hành),Dashboard,Chỉ tiêu phái sinh,Trùng,Danh mục  chỉ số - theo giờ,"MDDS, CSDLTT",,X,X,Done,"- Giá đóng cửa: thông tin thị trường 
 - Số cổ phiếu đang lưu hành: Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) ","1. Giá đóng cửa: 
 JAD_STOCKINFOR
-2. Số cổ phiếu lưu hành: 
+2. Khối lượng cổ phiếu lưu hành: 
 outstanding_shares","Giá đóng cửa: 
 JAD_STOCKINFOR.closePrice
-Số cổ phiếu lưu hành:
+Khối lượng cổ phiếu lưu hành:
 outstanding_shares",,"WITH
 Lich_giao_dich AS (
     SELECT ngay, ROW_NUMBER() OVER (ORDER BY ngay DESC) AS rn
@@ -4562,13 +4581,13 @@ https://prnt.sc/M-cd4ic77XSy",,,,,Done,Dữ liệu tĩnh,
 https://prnt.sc/M-cd4ic77XSy",,,,,Done,Dữ liệu tĩnh,
 7,,"Top khối lượng theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành) theo dạng bảng số liệu ",Số cổ phiếu đang lưu hành ,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,CSDLTT,,,,Done,Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) ,outstanding_shares,outstanding_shares,,,"Xem các tính rule của từng chỉ tiêu top tại 
 https://prnt.sc/M-cd4ic77XSy",,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
-7,,"Top khối lượng theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành) theo dạng bảng số liệu ",Vốn hóa thị trường,Σ (Giá đóng cửa * Số cổ phiếu lưu hành),Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,"MDDS, CSDLTT",,X,,Done,"- Số cổ phiếu đang lưu hành: ""- Giá đóng cửa: thông tin thị trường 
+7,,"Top khối lượng theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành) theo dạng bảng số liệu ",Vốn hóa thị trường,Σ (Giá đóng cửa * Khối lượng cổ phiếu lưu hành),Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,"MDDS, CSDLTT",,X,,Done,"- Số cổ phiếu đang lưu hành: ""- Giá đóng cửa: thông tin thị trường 
 - Số cổ phiếu đang lưu hành: Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) ""","1. Giá đóng cửa: 
  JAD_STOCKINFOR
- 2. Số cổ phiếu lưu hành: 
+ 2. Khối lượng cổ phiếu lưu hành: 
 outstanding_shares","Giá đóng cửa: 
  JAD_STOCKINFOR.closePrice
- Số cổ phiếu lưu hành:
+ Khối lượng cổ phiếu lưu hành:
 outstanding_shares",,"WITH
 Tham_so AS (
     SELECT
@@ -4826,14 +4845,14 @@ https://prnt.sc/M-cd4ic77XSy",,,,,Done,Dữ liệu tĩnh,
  EPS = LNST/số cổ phiếu đang lưu hành.",Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,"IDS, MDDS, CSDLTT",,X,,Done,"- Giá đóng cửa: thông tin thị trường 
 - Số cổ phiếu đang lưu hành: Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) ""","1. Giá đóng cửa: 
  JAD_STOCKINFOR
- 2. Số cổ phiếu lưu hành: 
+ 2. Khối lượng cổ phiếu lưu hành: 
 outstanding_shares
  3. LNST:
  IDS.data (d),
  IDS.report_catalog (rc),
  IDS.company_data (cd)","Giá đóng cửa: 
  JAD_STOCKINFOR.closePrice
- Số cổ phiếu lưu hành:
+ Khối lượng cổ phiếu lưu hành:
 outstanding_shares
  LNST:
  SUM(d.data_value)",,"-----------------------------------------------------------------------------------
@@ -4842,7 +4861,7 @@ Bộ lọc tham số là <Từ ngày - Đến ngày>. Với công thức:
 - % thay đổi giá:	(Giá đóng cửa <Đến ngày> - Giá đóng cửa <Từ ngày-1>) / Giá đóng cửa <Từ ngày-1> * 100
 - Giá	:			Giá đóng cửa tại <Đến ngày>
 - KLGD:	Tổng KLGD trong khoảng <Từ ngày - Đến ngày>
-- Vốn hóa:	Giá đóng cửa tại Đến ngày × Số cổ phiếu lưu hành tại Đến ngày.
+- Vốn hóa:	Giá đóng cửa tại Đến ngày × Khối lượng cổ phiếu lưu hành tại Đến ngày.
 - P/E:	P/E của mã tại Đến ngày.
 - P/B:	P/B của mã tại Đến ngày.
 
@@ -5358,14 +5377,14 @@ https://prnt.sc/M-cd4ic77XSy",,,,,Done,Dữ liệu tĩnh,
 7,,"Top khối lượng theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành) theo dạng bảng số liệu ",P/B thị trường,"P/B = Giá đóng cửa/ giá trị sổ sách của cổ phiếu.
  Giá trị sổ sách = VCSH/ số cổ phiếu đang lưu hành.",Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,"IDS, MDDS, CSDLTT",,X,,Done,- Giá đóng cửa: thông tin thị trường - VCSH: lấy từ báo cáo tài chính IDS- Số cổ phiếu đang lưu hành: Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày),"1. Giá đóng cửa: 
  JAD_STOCKINFOR
- 2. Số cổ phiếu lưu hành: 
+ 2. Khối lượng cổ phiếu lưu hành: 
 outstanding_shares
  3.VCSH
  IDS.data (d),
  IDS.report_catalog (rc),
  IDS.company_data (cd)","Giá đóng cửa: 
  JAD_STOCKINFOR.closePrice
- Số cổ phiếu lưu hành:
+ Khối lượng cổ phiếu lưu hành:
 outstanding_shares
  VCSH:
  SUM(d.data_value)",,"-----------------------------------------------------------------------------------
@@ -5374,7 +5393,7 @@ Bộ lọc tham số là <Từ ngày - Đến ngày>. Với công thức:
 - % thay đổi giá:	(Giá đóng cửa <Đến ngày> - Giá đóng cửa <Từ ngày-1>) / Giá đóng cửa <Từ ngày-1> * 100
 - Giá	:			Giá đóng cửa tại <Đến ngày>
 - KLGD:	Tổng KLGD trong khoảng <Từ ngày - Đến ngày>
-- Vốn hóa:	Giá đóng cửa tại Đến ngày × Số cổ phiếu lưu hành tại Đến ngày.
+- Vốn hóa:	Giá đóng cửa tại Đến ngày × Khối lượng cổ phiếu lưu hành tại Đến ngày.
 - P/E:	P/E của mã tại Đến ngày.
 - P/B:	P/B của mã tại Đến ngày.
 
@@ -6322,7 +6341,7 @@ ORDER BY a.tradingtime;""
 8,,Top khối lượng theo toàn thị trường theo dạng bảng biểu đồ kĩ thuật ,Giá thấp nhất,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,low,,,,,,,,Done,Dữ liệu tĩnh,
 8,,Top khối lượng theo toàn thị trường theo dạng bảng biểu đồ kĩ thuật ,Giá đóng cửa,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,closePrice,,,,,,,,Done,Dữ liệu tĩnh,
 8,,Top khối lượng theo toàn thị trường theo dạng bảng biểu đồ kĩ thuật ,Thay đổi (%),Thay đổi (%),Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,MDDS,,,,Done,Thông tin thị trường,JAD_STOCKINFOR,change,,,,,,,,Done,Dữ liệu tĩnh,
-8,,Top khối lượng theo toàn thị trường theo dạng bảng biểu đồ kĩ thuật ,Khối lượng giao dịch,Σ KLGD,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
+8,,Top khối lượng theo toàn thị trường theo dạng bảng biểu đồ kĩ thuật ,Khối lượng giao dịch,Σ KLGD của khớp lệnh,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
 Execution - Volume: Khối lượng khớp lệnh
 Trade_HNX:
 Trade quantity: Khối lượng giao dịch","Market ID in (UPX,STX,STK)","select 
@@ -7273,13 +7292,13 @@ Trade quantity: Khối lượng giao dịch","Market ID in (UPX,STX,STO) and NOT
 9,,"Top đột phá theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành) ",Giá,Giá đóng cửa của ngày tra cứu,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,X,Done,Thông tin thị trường,JAD_STOCKINFOR,closePrice,,,,,,,,Done,Dữ liệu tĩnh,
 9,,"Top đột phá theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành) ",Thay đổi (+/-),Thay đổi so với giá tham chiếu,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,MDDS,,X,X,Done,Thông tin thị trường,JAD_STOCKINFOR,Change,,,,,,,,Done,Dữ liệu tĩnh,
 9,,"Top đột phá theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành) ",% thay đổi,(Giá đóng cứa − Giá TC) / Giá TC * 100,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,MDDS,,X,X,Done,Thông tin thị trường,JAD_STOCKINFOR,(change / giá_tham_chiếu) × 100,,,,,,,,Done,Dữ liệu tĩnh,
-9,,"Top đột phá theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành) ",Số cổ phiếu lưu hành,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,CSDLTT,,,,Done,VSDC,outstanding_shares,outstanding_shares,,,,,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
-9,,"Top đột phá theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành) ",Vốn hóa,Giá đóng cửa * Số cổ phiếu lưu hành,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,"MDDS, CSDLTT",,X,X,Done,sổ lệnh & VSDC,"1. Giá đóng cửa: 
+9,,"Top đột phá theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành) ",Khối lượng cổ phiếu lưu hành,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,CSDLTT,,,,Done,VSDC,outstanding_shares,outstanding_shares,,,,,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
+9,,"Top đột phá theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành) ",Vốn hóa,Giá đóng cửa * Khối lượng cổ phiếu lưu hành,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,"MDDS, CSDLTT",,X,X,Done,sổ lệnh & VSDC,"1. Giá đóng cửa: 
  JAD_STOCKINFOR
- 2. Số cổ phiếu lưu hành: 
+ 2. Khối lượng cổ phiếu lưu hành: 
 outstanding_shares","Giá đóng cửa: 
  JAD_STOCKINFOR.closePrice
- Số cổ phiếu lưu hành:
+ Khối lượng cổ phiếu lưu hành:
 outstanding_shares",,"WITH
 Ngay_chot AS (
     SELECT
@@ -7598,14 +7617,14 @@ LNST_4_ky AS (
  - LNST: lấy từ báo cáo tài chính IDS
 - Số cổ phiếu đang lưu hành: Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày)","1. Giá đóng cửa: 
  JAD_STOCKINFOR
- 2. Số cổ phiếu lưu hành: 
+ 2. Khối lượng cổ phiếu lưu hành: 
 outstanding_shares 
 LNST:
  IDS.data (d),
  IDS.report_catalog (rc),
  IDS.company_data (cd)","Giá đóng cửa: 
  JAD_STOCKINFOR.closePrice
- Số cổ phiếu lưu hành:
+ Khối lượng cổ phiếu lưu hành:
 outstanding_shares
  LNST:
  SUM(d.data_value)",,"WITH
@@ -8038,14 +8057,14 @@ Von_hoa AS (
  - VCSH: lấy từ báo cáo tài chính IDS
 - Số cổ phiếu đang lưu hành: Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày)","1. Giá đóng cửa: 
  JAD_STOCKINFOR
- 2. Số cổ phiếu lưu hành: 
+ 2. Khối lượng cổ phiếu lưu hành: 
 outstanding_shares
  3.VCSH
  IDS.data (d),
  IDS.report_catalog (rc),
  IDS.company_data (cd)","Giá đóng cửa: 
  JAD_STOCKINFOR.closePrice
- Số cổ phiếu lưu hành:
+ Khối lượng cổ phiếu lưu hành:
 outstanding_shares
  VCSH:
  SUM(d.data_value)",,"WITH
@@ -8619,7 +8638,7 @@ WHERE s.tradingdate = :ngay_gd","Giá đóng cửa, giá gần nhất (có thể
 FROM JAD_STOCKINFOR s
 WHERE s.tradingdate = :ngay_gd
 ",,,,,,Done,Dữ liệu tĩnh,
-10,,"Top đột phá dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành) ",Khối lượng giao dịch,Σ KLGD,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,X,Done,sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,,,,,,,,,Done,Dữ liệu tĩnh,
+10,,"Top đột phá dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành) ",Khối lượng giao dịch,Σ KLGD của khớp lệnh,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,X,Done,sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,,,,,,,,,Done,Dữ liệu tĩnh,
 10,,"Top đột phá dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành) ",Doanh thu,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,IDS,,X,X,Done,lấy từ báo cáo tài chính IDS,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.company_data (cd)",SUM(d.data_value) AS doanh_thu,,"Company_data_chuan AS (
@@ -9432,14 +9451,14 @@ FROM (
 GROUP BY symbol",,,,,,Done,Dữ liệu tĩnh,
 11,,"Top giá trị dạng bảng số liệu  theo toàn thị trường, theo sàn và theo bộ chỉ số ",Giá,Giá đóng cửa của ngày tra cứu,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,closePrice,,,,,,,,Done,Dữ liệu tĩnh,
 11,,"Top giá trị dạng bảng số liệu  theo toàn thị trường, theo sàn và theo bộ chỉ số ",% thay đổi,% thay đổi với giá tham chiếu,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,(change / giá_tham_chiếu) × 100,,,,,,,,Done,Dữ liệu tĩnh,
-11,,"Top giá trị dạng bảng số liệu  theo toàn thị trường, theo sàn và theo bộ chỉ số ",Số cổ phiếu lưu hành,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,CSDLTT,,,,Done,"- Số cổ phiếu đang lưu hành: Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày)""",outstanding_shares,khoi_luong_ck_dang_luu_hanh,,,,,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
-11,,"Top giá trị dạng bảng số liệu  theo toàn thị trường, theo sàn và theo bộ chỉ số ",Vốn hóa,Σ  (Giá đóng cửa* Số cổ phiếu lưu hành),Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,"MDDS, CSDLTT",,X,,Done,"""- Giá đóng cửa: thông tin thị trường
+11,,"Top giá trị dạng bảng số liệu  theo toàn thị trường, theo sàn và theo bộ chỉ số ",Khối lượng cổ phiếu lưu hành,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,CSDLTT,,,,Done,"- Số cổ phiếu đang lưu hành: Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày)""",outstanding_shares,khoi_luong_ck_dang_luu_hanh,,,,,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
+11,,"Top giá trị dạng bảng số liệu  theo toàn thị trường, theo sàn và theo bộ chỉ số ",Vốn hóa,Σ  (Giá đóng cửa* Khối lượng cổ phiếu lưu hành),Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,"MDDS, CSDLTT",,X,,Done,"""- Giá đóng cửa: thông tin thị trường
 - Số cổ phiếu đang lưu hành: Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày)""","1. Giá đóng cửa: 
  JAD_STOCKINFOR
- 2. Số cổ phiếu lưu hành: 
+ 2. Khối lượng cổ phiếu lưu hành: 
  outstanding_shares","Giá đóng cửa: 
  JAD_STOCKINFOR.closePrice
- Số cổ phiếu lưu hành:
+ Khối lượng cổ phiếu lưu hành:
 outstanding_shares",,"WITH
 Gia_cuoi AS (
     SELECT
@@ -9745,14 +9764,14 @@ group by
  - LNST: lấy từ báo cáo tài chính IDS
 - Số cổ phiếu đang lưu hành: Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày)""","1. Giá đóng cửa: 
  JAD_STOCKINFOR
- 2. Số cổ phiếu lưu hành: 
+ 2. Khối lượng cổ phiếu lưu hành: 
 outstanding_shares
  3. LNST:
  IDS.data (d),
  IDS.report_catalog (rc),
  IDS.company_data (cd)","Giá đóng cửa: 
  JAD_STOCKINFOR.closePrice
- Số cổ phiếu lưu hành:
+ Khối lượng cổ phiếu lưu hành:
 outstanding_shares
  LNST:
  SUM(d.data_value)",,"Company_data_chuan AS (
@@ -10174,14 +10193,14 @@ group by
  - VCSH: lấy từ báo cáo tài chính IDS
 - Số cổ phiếu đang lưu hành: Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày)""","1. Giá đóng cửa: 
  JAD_STOCKINFOR
- 2. Số cổ phiếu lưu hành: 
+ 2. Khối lượng cổ phiếu lưu hành: 
 outstanding_shares
  3.VCSH
  IDS.data (d),
  IDS.report_catalog (rc),
  IDS.company_data (cd)","Giá đóng cửa: 
  JAD_STOCKINFOR.closePrice
- Số cổ phiếu lưu hành:
+ Khối lượng cổ phiếu lưu hành:
 outstanding_shares
  VCSH:
  SUM(d.data_value)",,"Company_data_chuan AS (
@@ -11598,6 +11617,8 @@ MARKETCODE NOT IN ('HOSE','UPCOM','HNX')",,,,,,,Done,Dữ liệu tĩnh,
  WHERE c.active_flg = 1
  ORDER BY c.industry_cd",,,,,,Done,Dữ liệu tĩnh,
 13,,"Top giảm giá theo dạng bảng số liệu theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Ngày,,Dashboard,Chiều,Trùng,Mã CK,,,X,,Done,,,,,,,,,,,Done,Dữ liệu tĩnh,
+13,,"Top giảm giá theo dạng bảng số liệu theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",% thay đổi trong kỳ,"% thay đổi giá của n ngày: [(P_close_t / P_reference_t-n) - 1] * 100
+-> Chỉ tiêu dùng để lọc top mã chứng khoán tăng/giảm giá",,,,,,,,,,,JAD_STOCKINFOR,% thay đổi giá của n ngày: [(P_close_t / P_reference_t-n) - 1] * 100,,,,,,,,,,
 13,,"Top giảm giá theo dạng bảng số liệu theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",% thay đổi,(Giá đóng cửa − Giá tham chiếu) / Giá tham chiếu * 100,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,(change / giá_tham_chiếu) × 100,,"SELECT    s.symbol,    s.tradingdate,    s.changePercent          AS pct_thay_doiFROM JAD_STOCKINFOR s",,,,,,Done,Dữ liệu tĩnh,
 13,,"Top giảm giá theo dạng bảng số liệu theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",KLGD,Σ KLGD khớp lệnh,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
 Execution - Volume: Khối lượng khớp lệnh
@@ -11629,13 +11650,13 @@ FROM (
 )
 GROUP BY symbol",,,,,,Done,Dữ liệu tĩnh,
 13,,"Top giảm giá theo dạng bảng số liệu theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Giá đóng cửa,Giá đóng cửa theo ngày tra cứu,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,closePrice,,,,,,,,Done,Dữ liệu tĩnh,
-13,,"Top giảm giá theo dạng bảng số liệu theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Số cổ phiếu lưu hành,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,CSDLTT,,,,Done,,outstanding_shares,outstanding_shares,,,,,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
-13,,"Top giảm giá theo dạng bảng số liệu theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Vốn hóa,Giá đóng cửa * Số cổ phiếu lưu hành,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,"MDDS, CSDLTT",,X,,Done,,"1. Giá đóng cửa: 
+13,,"Top giảm giá theo dạng bảng số liệu theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Khối lượng cổ phiếu lưu hành,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,CSDLTT,,,,Done,,outstanding_shares,outstanding_shares,,,,,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
+13,,"Top giảm giá theo dạng bảng số liệu theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Vốn hóa,Giá đóng cửa * Khối lượng cổ phiếu lưu hành,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,"MDDS, CSDLTT",,X,,Done,,"1. Giá đóng cửa: 
  JAD_STOCKINFOR
- 2. Số cổ phiếu lưu hành: 
+ 2. Khối lượng cổ phiếu lưu hành: 
 outstanding_shares","Giá đóng cửa: 
  JAD_STOCKINFOR.closePrice
- Số cổ phiếu lưu hành:
+ Khối lượng cổ phiếu lưu hành:
 outstanding_shares",,"WITH
 /* Giá đóng cửa phiên gần nhất trước ngày bắt đầu */
 Gia_dau AS (
@@ -11954,14 +11975,14 @@ group by
 13,,"Top giảm giá theo dạng bảng số liệu theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",P/E thị trường,"P/E = Giá đóng cửa/EPS.
  EPS = LNST/số cổ phiếu đang lưu hành.",Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,"IDS, MDDS, CSDLTT",,X,,Done,,"1. Giá đóng cửa: 
  JAD_STOCKINFOR
- 2. Số cổ phiếu lưu hành: 
+ 2. Khối lượng cổ phiếu lưu hành: 
 outstanding_shares
  3. LNST:
  IDS.data (d),
  IDS.report_catalog (rc),
  IDS.company_data (cd)","Giá đóng cửa: 
  JAD_STOCKINFOR.closePrice
- Số cổ phiếu lưu hành:
+ Khối lượng cổ phiếu lưu hành:
 outstanding_shares
  LNST:
  SUM(d.data_value)",,,,,,,,Chưa có sql,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",
@@ -12166,14 +12187,14 @@ group by
 13,,"Top giảm giá theo dạng bảng số liệu theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",P/B thị trường,"P/B = Giá đóng cửa/ giá trị sổ sách của cổ phiếu.
  Giá trị sổ sách = VCSH/ số cổ phiếu đang lưu hành.",Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,"IDS, MDDS, CSDLTT",,X,,Done,,"1. Giá đóng cửa: 
  JAD_STOCKINFOR
- 2. Số cổ phiếu lưu hành: 
+ 2. Khối lượng cổ phiếu lưu hành: 
 outstanding_shares
  3.VCSH
  IDS.data (d),
  IDS.report_catalog (rc),
  IDS.company_data (cd)","Giá đóng cửa: 
  JAD_STOCKINFOR.closePrice
- Số cổ phiếu lưu hành:
+ Khối lượng cổ phiếu lưu hành:
 outstanding_shares
  VCSH:
  SUM(d.data_value)",,,,,,,,Chưa có sql,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",
@@ -13057,7 +13078,7 @@ Trade_HNX:
 Trade quantity: Khối lượng giao dịch",,,,,Done,Dữ liệu tĩnh,
 15,,"Top vượt đỉnh theo dạng bảng số liệu theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Giá,Giá đóng cửa ngày tra cứu,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,X,Done,,JAD_STOCKINFOR,closePrice,,,"Giá đóng cửa, giá gần nhất (có thể bao gồm cả giá dự khớp trong các phiên khớp lệnh định kỳ)",,,,,Done,Dữ liệu tĩnh,
 15,,"Top vượt đỉnh theo dạng bảng số liệu theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",% thay đổi,Tỷ lệ thay đổi giá so với giá tham chiếu,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,MDDS,,X,X,Done,,JAD_STOCKINFOR,(change / giá_tham_chiếu) × 100,,,,,,,,Done,Dữ liệu tĩnh,
-15,,"Top vượt đỉnh theo dạng bảng số liệu theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Đỉnh cũ,Giá cao nhất trong giai đoạn tham chiếu,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,MDDS,,X,X,Done,,JAD_STOCKINFOR,high,,,1:1,,,,,Done,Dữ liệu tĩnh,
+15,,"Top vượt đỉnh theo dạng bảng số liệu theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Đỉnh cũ,Giá cao nhất trong giai đoạn tham chiếu 3M/6M/1Nam,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,MDDS,,X,X,Done,,JAD_STOCKINFOR,high,,,1:1,,,,,Done,Dữ liệu tĩnh,
 15,,"Top vượt đỉnh theo dạng bảng số liệu theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",LNST,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,IDS,,,,Done,lấy từ báo cáo tài chính IDS,"IDS.data (d), IDS.report_catalog (rc), IDS.company_data (cd)",SUM(d.data_value) AS lnst,"Company_data_chuan AS (
     SELECT
         company_profile_id,
@@ -13452,17 +13473,17 @@ group by
         ,equity_listing_exch,
         category_l1_id
 )",,,,,,,Done,Dữ liệu tĩnh,
-15,,"Top vượt đỉnh theo dạng bảng số liệu theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Số cổ phiếu lưu hành,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,CSDLTT,,,,Done,,outstanding_shares,outstanding_shares,,,,,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
+15,,"Top vượt đỉnh theo dạng bảng số liệu theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Khối lượng cổ phiếu lưu hành,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,CSDLTT,,,,Done,,outstanding_shares,outstanding_shares,,,,,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
 15,,"Top vượt đỉnh theo dạng bảng số liệu theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",P/E thị trường,P/E = Giá đóng cửa/EPS. EPS = LNST/số cổ phiếu đang lưu hành.,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,"IDS, MDDS, CSDLTT",,X,X,Done,,"1. Giá đóng cửa: 
  JAD_STOCKINFOR
- 2. Số cổ phiếu lưu hành: 
+ 2. Khối lượng cổ phiếu lưu hành: 
 outstanding_shares
  3. LNST:
  IDS.data (d),
  IDS.report_catalog (rc),
  IDS.company_data (cd)","Giá đóng cửa: 
  JAD_STOCKINFOR.closePrice
- Số cổ phiếu lưu hành:
+ Khối lượng cổ phiếu lưu hành:
 outstanding_shares
  LNST:
  SUM(d.data_value)","WITH ---- lấy ngày giao dịch ngày chốt
@@ -13887,14 +13908,14 @@ ORDER BY stt;
 ",,,,,,,Chưa có sql,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",
 15,,"Top vượt đỉnh theo dạng bảng số liệu theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",P/B thị trường,P/B = Giá đóng cửa/ giá trị sổ sách của cổ phiếu. Giá trị sổ sách = VCSH/ số cổ phiếu đang lưu hành.,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,"IDS, MDDS, CSDLTT",,X,X,Done,,"1. Giá đóng cửa: 
  JAD_STOCKINFOR
- 2. Số cổ phiếu lưu hành: 
+ 2. Khối lượng cổ phiếu lưu hành: 
 outstanding_shares
  3.VCSH
  IDS.data (d),
  IDS.report_catalog (rc),
  IDS.company_data (cd)","Giá đóng cửa: 
  JAD_STOCKINFOR.closePrice
- Số cổ phiếu lưu hành:
+ Khối lượng cổ phiếu lưu hành:
 outstanding_shares
  VCSH:
  SUM(d.data_value)","WITH ---- lấy ngày giao dịch ngày chốt
@@ -15831,17 +15852,17 @@ LNST_4_ky AS (
         )
         WHERE rn= 1
                 )",,,,,,Done,Dữ liệu tĩnh,
-17,,"Top thủng đáy theo dạng bảng số liệu theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Số cổ phiếu lưu hành,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,CSDLTT,,,,Done,,outstanding_shares,khoi_luong_ck_dang_luu_hanh,,,,,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
+17,,"Top thủng đáy theo dạng bảng số liệu theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Khối lượng cổ phiếu lưu hành,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,CSDLTT,,,,Done,,outstanding_shares,khoi_luong_ck_dang_luu_hanh,,,,,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
 17,,"Top thủng đáy theo dạng bảng số liệu theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",P/E thị trường,P/E = Giá đóng cửa /EPS. EPS = LNST/số cổ phiếu đang lưu hành.,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,"IDS, MDDS, CSDLTT",,X,X,Done,,"1. Giá đóng cửa: 
  JAD_STOCKINFOR
- 2. Số cổ phiếu lưu hành: 
+ 2. Khối lượng cổ phiếu lưu hành: 
 outstanding_shares
  3. LNST:
  IDS.data (d),
  IDS.report_catalog (rc),
  IDS.company_data (cd)","Giá đóng cửa: 
  JAD_STOCKINFOR.closePrice
- Số cổ phiếu lưu hành:
+ Khối lượng cổ phiếu lưu hành:
 outstanding_shares
  LNST:
  SUM(d.data_value)",,"WITH ---- lấy ngày giao dịch ngày chốt
@@ -16267,14 +16288,14 @@ ORDER BY stt;
 ",,,,,,Chưa có sql,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",
 17,,"Top thủng đáy theo dạng bảng số liệu theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",P/B thị trường,P/B = Giá đóng cửa / giá trị sổ sách của cổ phiếu. Giá trị sổ sách = VCSH/ số cổ phiếu đang lưu hành.,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,"IDS, MDDS, CSDLTT",,X,X,Done,,"1. Giá đóng cửa: 
  JAD_STOCKINFOR
- 2. Số cổ phiếu lưu hành: 
+ 2. Khối lượng cổ phiếu lưu hành: 
 outstanding_shares
  3.VCSH
  IDS.data (d),
  IDS.report_catalog (rc),
  IDS.company_data (cd)","Giá đóng cửa: 
  JAD_STOCKINFOR.closePrice
- Số cổ phiếu lưu hành:
+ Khối lượng cổ phiếu lưu hành:
 outstanding_shares
  VCSH:
  SUM(d.data_value)",,"WITH ---- lấy ngày giao dịch ngày chốt
@@ -17571,6 +17592,9 @@ MARKETCODE NOT IN ('HOSE','UPCOM','HNX')",,,,,,,Done,Dữ liệu tĩnh,
  ORDER BY c.industry_cd"," -- Lưu ý: Cần xác nhận tên cột industry_cd, industry_name trong bảng IDS.categories
  -- (sheet câu hỏi phân hệ ghi nhận bảng này có 10 ngành IDS, không phải 21 ngành KT)",,,,,Done,Dữ liệu tĩnh,
 19,,"Top tăng giá theo dạng bảng số liệu theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Ngày,,Dashboard,Chiều,Trùng,Mã CK,,,X,,Done,,,,,,,,,,,Done,Dữ liệu tĩnh,
+19,,"Top tăng giá theo dạng bảng số liệu theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",% thay đổi trong kỳ,"% thay đổi giá của n ngày: [(P_close_t / P_reference_t-n) - 1] * 100
+-> Chỉ tiêu dùng để lọc top mã chứng khoán tăng/giảm giá",,,,,MDDS,,,,Done,Thông tin thị trường,JAD_STOCKINFOR,"% thay đổi giá của n ngày: [(P_close_t / P_reference_t-n) - 1] * 100
+-> Chỉ tiêu dùng để lọc top mã chứng khoán tăng/giảm giá",,,,,,,,,,
 19,,"Top tăng giá theo dạng bảng số liệu theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",% thay đổi,(Giá đóng cửa − Giá tham chiếu) / Giá tham chiếu * 100,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,(change / giá_tham_chiếu) × 100,,,,,,,,Done,Dữ liệu tĩnh,
 19,,"Top tăng giá theo dạng bảng số liệu theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Khối lượng,Tổng khối lượng giao dịch khớp lệnh,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,X,Done,,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
 Execution - Volume: Khối lượng khớp lệnh
@@ -17840,13 +17864,13 @@ LNST_4_ky AS (
         )
         WHERE rn= 1
                 )",,,,,,Done,Dữ liệu tĩnh,
-19,,"Top tăng giá theo dạng bảng số liệu theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Số cổ phiếu lưu hành,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,CSDLTT,,,,Done,,outstanding_shares,khoi_luong_ck_dang_luu_hanh,,,,,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
-19,,"Top tăng giá theo dạng bảng số liệu theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Vốn hóa,Giá đóng cửa  * Số cổ phiếu lưu hành,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,"MDDS, CSDLTT",,X,,Done,,"1. Giá đóng cửa: 
+19,,"Top tăng giá theo dạng bảng số liệu theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Khối lượng cổ phiếu lưu hành,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,CSDLTT,,,,Done,,outstanding_shares,khoi_luong_ck_dang_luu_hanh,,,,,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
+19,,"Top tăng giá theo dạng bảng số liệu theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Vốn hóa,Giá đóng cửa  * Khối lượng cổ phiếu lưu hành,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,"MDDS, CSDLTT",,X,,Done,,"1. Giá đóng cửa: 
  JAD_STOCKINFOR
- 2. Số cổ phiếu lưu hành: 
+ 2. Khối lượng cổ phiếu lưu hành: 
 outstanding_shares","Giá đóng cửa: 
  JAD_STOCKINFOR.closePrice
- Số cổ phiếu lưu hành:
+ Khối lượng cổ phiếu lưu hành:
 outstanding_shares",,"""WITH
 /* Giá đóng cửa phiên gần nhất trước ngày bắt đầu */
 Gia_dau AS (
@@ -18244,14 +18268,14 @@ ORDER BY stt;
 19,,"Top tăng giá theo dạng bảng số liệu theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",P/E thị trường,"P/E = Giá đóng cửa /EPS.
  EPS = LNST/số cổ phiếu đang lưu hành.",Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,"IDS, MDDS, CSDLTT",,X,,Done,,"1. Giá đóng cửa: 
  JAD_STOCKINFOR
- 2. Số cổ phiếu lưu hành: 
+ 2. Khối lượng cổ phiếu lưu hành: 
  outstanding_shares
  3. LNST:
  IDS.data (d),
  IDS.report_catalog (rc),
  IDS.company_data (cd)","Giá đóng cửa: 
  JAD_STOCKINFOR.closePrice
- Số cổ phiếu lưu hành:
+ Khối lượng cổ phiếu lưu hành:
 outstanding_shares
  LNST:
  SUM(d.data_value)",,"""WITH
@@ -18651,14 +18675,14 @@ ORDER BY stt;
 19,,"Top tăng giá theo dạng bảng số liệu theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",P/B thị trường,"P/B =Giá đóng cửa / giá trị sổ sách của cổ phiếu.
  Giá trị sổ sách = VCSH/ số cổ phiếu đang lưu hành.",Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,"IDS, MDDS, CSDLTT",,X,,Done,,"1. Giá đóng cửa: 
  JAD_STOCKINFOR
- 2. Số cổ phiếu lưu hành: 
+ 2. Khối lượng cổ phiếu lưu hành: 
  outstanding_shares
  3.VCSH
  IDS.data (d),
  IDS.report_catalog (rc),
  IDS.company_data (cd)","Giá đóng cửa: 
  JAD_STOCKINFOR.closePrice
- Số cổ phiếu lưu hành:
+ Khối lượng cổ phiếu lưu hành:
 outstanding_shares
  VCSH:
  SUM(d.data_value)",,"""WITH
@@ -19254,7 +19278,7 @@ MARKETCODE NOT IN ('HOSE','UPCOM','HNX')",,,,,,,Done,Dữ liệu tĩnh,
     s.FloorCode
 FROM JAD_STOCKINFOR s
 WHERE s.tradingdate = :ngay_gd","Giá đóng cửa, giá gần nhất (có thể bao gồm cả giá dự khớp trong các phiên khớp lệnh định kỳ)",,,,,Done,Dữ liệu tĩnh,
-20,,"Top tăng giá theo dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Khối lượng giao dịch,Tổng khối lượng cổ phiếu được giao dịch,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
+20,,"Top tăng giá theo dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Khối lượng giao dịch KHớp lệnh,Tổng khối lượng cổ phiếu được giao dịch,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
 Execution - Volume: Khối lượng khớp lệnh
 Trade_HNX:
 Trade quantity: Khối lượng giao dịch",,"-- HOSE
@@ -20191,15 +20215,15 @@ LNST AS (
         )
         WHERE rn= 1
                 )",,,,,,Done,Dữ liệu tĩnh,
-21,,"Top nhà đầu tư nước ngoài  theo dạng bảng số liệu theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Số cổ phiếu lưu hành,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,CSDLTT,,,,Done,- Số cổ phiếu đang lưu hành: Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày),outstanding_shares,khoi_luong_ck_dang_luu_hanh,,,,,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
-21,,"Top nhà đầu tư nước ngoài  theo dạng bảng số liệu theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Vốn hóa,Giá đóng cửa  * Số cổ phiếu lưu hành,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,"MDDS, CSDLTT",,X,,Done,"- Giá đóng cửa: thông tin thị trường
+21,,"Top nhà đầu tư nước ngoài  theo dạng bảng số liệu theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Khối lượng cổ phiếu lưu hành,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,CSDLTT,,,,Done,- Số cổ phiếu đang lưu hành: Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày),outstanding_shares,khoi_luong_ck_dang_luu_hanh,,,,,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
+21,,"Top nhà đầu tư nước ngoài  theo dạng bảng số liệu theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Vốn hóa,Giá đóng cửa  * Khối lượng cổ phiếu lưu hành,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,"MDDS, CSDLTT",,X,,Done,"- Giá đóng cửa: thông tin thị trường
 
 - Số cổ phiếu đang lưu hành: Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày)""""""","1. Giá đóng cửa: 
  JAD_STOCKINFOR
- 2. Số cổ phiếu lưu hành: 
+ 2. Khối lượng cổ phiếu lưu hành: 
 outstanding_shares","Giá đóng cửa: 
  JAD_STOCKINFOR.closePrice
- Số cổ phiếu lưu hành:
+ Khối lượng cổ phiếu lưu hành:
 khoi_luong_ck_dang_luu_hanh",,"WITH
 Tham_so AS (
     SELECT
@@ -20687,14 +20711,14 @@ ORDER BY stt;",,,,,,Done,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",
  - LNST: lấy từ báo cáo tài chính IDS
 - Số cổ phiếu đang lưu hành: Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày)""""""","1. Giá đóng cửa: 
  JAD_STOCKINFOR
- 2. Số cổ phiếu lưu hành: 
+ 2. Khối lượng cổ phiếu lưu hành: 
 outstanding_shares
  3. LNST:
  IDS.data (d),
  IDS.report_catalog (rc),
  IDS.company_data (cd)","Giá đóng cửa: 
  JAD_STOCKINFOR.closePrice
- Số cổ phiếu lưu hành:
+ Khối lượng cổ phiếu lưu hành:
 khoi_luong_ck_dang_luu_hanh
  LNST:
  SUM(d.data_value)",,"WITH
@@ -21184,14 +21208,14 @@ ORDER BY stt;",,,,,,Chưa có sql,"Dữ liệu tĩnh, Chưa có CSDL - Map biể
  - VCSH: lấy từ báo cáo tài chính IDS
 - Số cổ phiếu đang lưu hành: Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày)""""""","1. Giá đóng cửa: 
  JAD_STOCKINFOR
- 2. Số cổ phiếu lưu hành: 
+ 2. Khối lượng cổ phiếu lưu hành: 
 outstanding_shares
  3.VCSH
  IDS.data (d),
  IDS.report_catalog (rc),
  IDS.company_data (cd)","Giá đóng cửa: 
  JAD_STOCKINFOR.closePrice
- Số cổ phiếu lưu hành:
+ Khối lượng cổ phiếu lưu hành:
 khoi_luong_ck_dang_luu_hanh
  VCSH:
  SUM(d.data_value)",,"WITH
@@ -22542,7 +22566,7 @@ ORDER BY c.symbol ASC
 23,,"Theo dõi bản đồ nhiệt của các cổ phiếu, ngành theo Vốn hóa thị trường / KLGD / GTGD / KLNN mua / KLNN bán / GTNN mua / GTNN bán",Ngày,,Dashboard,Chiều,Trùng,Mã CK,,,X,,Done,,,,,,,,,,,Done,Dữ liệu tĩnh,
 23,,"Theo dõi bản đồ nhiệt của các cổ phiếu, ngành theo Vốn hóa thị trường / KLGD / GTGD / KLNN mua / KLNN bán / GTNN mua / GTNN bán",Giá,Giá đóng cửa,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,closePrice,,,"Giá đóng cửa, giá gần nhất (có thể bao gồm cả giá dự khớp trong các phiên khớp lệnh định kỳ)",,,,,Done,Dữ liệu tĩnh,
 23,,"Theo dõi bản đồ nhiệt của các cổ phiếu, ngành theo Vốn hóa thị trường / KLGD / GTGD / KLNN mua / KLNN bán / GTNN mua / GTNN bán",% thay đổi,Mức biến động giá trong phiên,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,(change / giá_tham_chiếu) × 100,,,,,,,,Done,Dữ liệu tĩnh,
-23,,"Theo dõi bản đồ nhiệt của các cổ phiếu, ngành theo Vốn hóa thị trường / KLGD / GTGD / KLNN mua / KLNN bán / GTNN mua / GTNN bán",Số cổ phiếu lưu hành ,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,CSDLTT,,,,Done,Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày),outstanding_shares,outstanding_shares,,,,,,,,Done,Chưa có CSDL - Map biểu mẫu,
+23,,"Theo dõi bản đồ nhiệt của các cổ phiếu, ngành theo Vốn hóa thị trường / KLGD / GTGD / KLNN mua / KLNN bán / GTNN mua / GTNN bán",Khối lượng cổ phiếu lưu hành ,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,CSDLTT,,,,Done,Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày),outstanding_shares,outstanding_shares,,,,,,,,Done,Chưa có CSDL - Map biểu mẫu,
 23,,"Theo dõi bản đồ nhiệt của các cổ phiếu, ngành theo Vốn hóa thị trường / KLGD / GTGD / KLNN mua / KLNN bán / GTNN mua / GTNN bán",tính % thay đổi giá của nhóm ngành,( Σ(Giá đóng cửa * KL CK lưu hành) / Σ(Giá tham chiếu * KL CK lưu hành) - 1 ) * 100,,,,,MDDS,,,,Done,,"JAD_STOCKINFOR
 outstanding_shares","closeprice
 outstanding_shares","ROUND(
@@ -22726,13 +22750,13 @@ LEFT JOIN Von_hoa  vh ON vh.symbol = c.ma_ck
 ORDER BY c.floor_code, c.ma_ck;                                              
 
 ",,,,,,Done,"Dữ liệu động, Dữ liệu tĩnh",
-23,,"Theo dõi bản đồ nhiệt của các cổ phiếu, ngành theo Vốn hóa thị trường / KLGD / GTGD / KLNN mua / KLNN bán / GTNN mua / GTNN bán",Vốn hóa,Giá đóng cửa  * Số cổ phiếu lưu hành,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,"MDDS, CSDLTT",,X,,Done,"- Giá đóng cửa: thông tin thị trường 
+23,,"Theo dõi bản đồ nhiệt của các cổ phiếu, ngành theo Vốn hóa thị trường / KLGD / GTGD / KLNN mua / KLNN bán / GTNN mua / GTNN bán",Vốn hóa,Giá đóng cửa  * Khối lượng cổ phiếu lưu hành,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,"MDDS, CSDLTT",,X,,Done,"- Giá đóng cửa: thông tin thị trường 
 - Số cổ phiếu đang lưu hành: Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày)","1. Giá đóng cửa: 
  JAD_STOCKINFOR
- 2. Số cổ phiếu lưu hành: 
+ 2. Khối lượng cổ phiếu lưu hành: 
 outstanding_shares","Giá đóng cửa: 
  JAD_STOCKINFOR.closePrice
- Số cổ phiếu lưu hành:
+ Khối lượng cổ phiếu lưu hành:
 outstanding_shares",,"-- ── 2. SỔ LỆNH – UNION HOSE + HNX (ĐÃ SỬA LỖI) ──────────────────────────────
 With
 Ngay_chot AS (
@@ -22906,10 +22930,12 @@ FROM MDDS c
 LEFT JOIN so_lenh sl ON sl.symbol = c.ma_ck                                  
 LEFT JOIN Von_hoa  vh ON vh.symbol = c.ma_ck                             
 ORDER BY c.floor_code, c.ma_ck;   ",,,,,,Done,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",
-23,,"Theo dõi bản đồ nhiệt của các cổ phiếu, ngành theo Vốn hóa thị trường / KLGD / GTGD / KLNN mua / KLNN bán / GTNN mua / GTNN bán",KLGD,Tổng khối lượng giao dịch,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
+23,,"Theo dõi bản đồ nhiệt của các cổ phiếu, ngành theo Vốn hóa thị trường / KLGD / GTGD / KLNN mua / KLNN bán / GTNN mua / GTNN bán",KLGD khớp lệnh,Tổng khối lượng giao dịch khớp lệnh,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
 Execution - Volume: Khối lượng khớp lệnh
 Trade_HNX:
-Trade quantity: Khối lượng giao dịch",,"-- HOSE
+Trade quantity: Khối lượng giao dịch"," Khớp lệnh 
+   + MARKET_ID IN ('STK','STX','UPX')
+   + AND BOARD_TYPE/BOARD_ID  <> ('T1','T2','T3','T4','T6','R1')","-- HOSE
 SELECT
     SUM(t.[Execution - Volume])     AS tong_kl_khop
 FROM TRADE_BOOK_HOSE t
@@ -22922,11 +22948,14 @@ SELECT
 FROM Trade_HNX t
 WHERE t.[Trade date] = :ngay_gd
 and Market ID in (UPX,STX,STO)
-",,,,,,Done,Dữ liệu tĩnh,
-23,,"Theo dõi bản đồ nhiệt của các cổ phiếu, ngành theo Vốn hóa thị trường / KLGD / GTGD / KLNN mua / KLNN bán / GTNN mua / GTNN bán",GTGD,Tổng giá trị giao dịch,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
+
+",,,,,,Done,Dữ liệu tĩnh,
+23,,"Theo dõi bản đồ nhiệt của các cổ phiếu, ngành theo Vốn hóa thị trường / KLGD / GTGD / KLNN mua / KLNN bán / GTNN mua / GTNN bán",GTGD khớp lệnh,Tổng giá trị giao dịch khớp lệnh,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
 Execution - Value: 
 Trade_HNX:
-Trade quantity * trade price: ",,"""-- HOSE
+Trade quantity * trade price: "," Khớp lệnh 
+   + MARKET_ID IN ('STK','STX','UPX')
+   + AND BOARD_TYPE/BOARD_ID  <> ('T1','T2','T3','T4','T6','R1')","""-- HOSE
 SELECT
     SUM(t.[Execution - Value])     AS tong_kl_khop
 FROM TRADE_BOOK_HOSE t
@@ -23544,8 +23573,12 @@ where vc.symbol = 'AAA'
 ORDER BY vc.INDEXCODE, Diem_dong_gop_luu_hanh DESC;
 ",,,,Done,Dữ liệu tĩnh,
 24,,Xu hướng dòng tiền >> Theo dõi tỷ trọng dòng tiền dưới dạng biểu đồ cột - biểu đồ phân tán,Chỉ số ,,Dashboard,Chiều,Trùng,Mã CK,MDDS,,X,X,Done,Thông tin thị trường,JAD_CSIDXINFOR,IndexCode,,,,,,,,Done,Dữ liệu tĩnh,
+24,,Xu hướng dòng tiền >> Theo dõi tỷ trọng dòng tiền dưới dạng biểu đồ cột - biểu đồ phân tán,KLGD của tại ngày tra cứu/ KLGD5D,,,,,,,,,,,,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
+Execution - Volume: Khối lượng khớp lệnh
+Trade_HNX:
+Trade quantity: Khối lượng giao dịch",,,Bổ sung thêm ,,,,,,,
 24,,Xu hướng dòng tiền >> Theo dõi tỷ trọng dòng tiền dưới dạng biểu đồ cột - biểu đồ phân tán,Tỷ trọng trong chỉ số (%),"(Vốn hóa mã / Tổng vốn hóa rổ chỉ số) * 100
-vốn hóa = giá đóng cửa * số cổ phiếu lưu hành",Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,"MDDS, CSDLTT",,X,X,Done,Sổ lệnh và thông tin thị trường,"- GIá đóng cửa: JAD_MARKETINFOR
+vốn hóa = giá đóng cửa * Khối lượng cổ phiếu lưu hành",Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,"MDDS, CSDLTT",,X,X,Done,Sổ lệnh và thông tin thị trường,"- GIá đóng cửa: JAD_MARKETINFOR
 outstanding_shares","- GIá đóng cửa: marketIndex
 outstanding_shares",,"-- Lấy marketIndex tại thời điểm cuối ngày
 WITH Chi_so AS (
@@ -24189,10 +24222,12 @@ Index_t1: Chỉ số index ngày t-1
 Percent_Contribution_i = Contribution_i / P_t1 * 100
 
 ",Dashboard,Chỉ tiêu phái sinh,Khó,Mã CK,"MDDS, CSDLTT",X,X,,Done,Sổ lệnh và thông tin thị trường,"ROUND((vc.von_hoa_tu_do / NULLIF(vc.tong_von_hoa_tu_do, 0)) * m.return_i * 100, 4)        AS Phan_tram_dong_gop_tu_do",,,,đã bổ sung thêm,,,,,,,
-24,,Xu hướng dòng tiền >> Theo dõi tỷ trọng dòng tiền dưới dạng biểu đồ cột - biểu đồ phân tán,Khối lượng giao dịch,Tổng KL khớp trong phiên,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,MDDS,,X,X,Done,Thông tin thị trường,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
+24,,Xu hướng dòng tiền >> Theo dõi tỷ trọng dòng tiền dưới dạng biểu đồ cột - biểu đồ phân tán,Khối lượng giao dịch khớp lệnh,Tính từ sổ lệnh khớp. Là KLGD khớp lệnh.,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,MDDS,,X,X,Done,Thông tin thị trường,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
 Execution - Volume: Khối lượng khớp lệnh
 Trade_HNX:
-Trade quantity: Khối lượng giao dịch",,"-- HOSE
+Trade quantity: Khối lượng giao dịch"," Khớp lệnh 
+   + MARKET_ID IN ('STK','STX','UPX')
+   + AND BOARD_TYPE/BOARD_ID  <> ('T1','T2','T3','T4','T6','R1')","-- HOSE
 SELECT
     SUM(t.[Execution - Volume])     AS tong_kl_khop
 FROM TRADE_BOOK_HOSE t
@@ -24206,10 +24241,12 @@ FROM Trade_HNX t
 WHERE t.[Trade date] = :ngay_gd
 and Market ID in (UPX,STX,STO)
 ",,,,,,Done,Dữ liệu tĩnh,
-24,,Xu hướng dòng tiền >> Theo dõi tỷ trọng dòng tiền dưới dạng biểu đồ cột - biểu đồ phân tán,Giá trị giao dịch,∑ (Giá GD * KLGD),Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,X,Done,Thông tin thị trường,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
+24,,Xu hướng dòng tiền >> Theo dõi tỷ trọng dòng tiền dưới dạng biểu đồ cột - biểu đồ phân tán,Giá trị giao dịch khớp lệnh,∑ (Giá GD * KLGD) khớp lệnh,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,X,Done,Thông tin thị trường,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
 Execution - Value: 
 Trade_HNX:
-Trade quantity * trade price: ",,"""-- HOSE
+Trade quantity * trade price: "," Khớp lệnh 
+   + MARKET_ID IN ('STK','STX','UPX')
+   + AND BOARD_TYPE/BOARD_ID  <> ('T1','T2','T3','T4','T6','R1')","""-- HOSE
 SELECT
     SUM(t.[Execution - Value])     AS tong_kl_khop
 FROM TRADE_BOOK_HOSE t
@@ -25164,7 +25201,13 @@ FROM
 WHERE rn = 1
 --AND  ""marketId"" = '10'
 ORDER BY ""tradingdate"";",Lấy giá cuối ngày hôm nay - giá cuối ngày hôm trước,,,,,Done,Dữ liệu tĩnh,
-28,,Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư ,GT cá nhân ròng ,,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"HOSE
+28,,Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư ,GT cá nhân ròng ,"GTGD mua theo từng phân loại nhà đầu tư: 
+- Tính từ sổ lệnh khớp
+- Nếu không chọn ""Khớp lệnh"": Là tổng GTGD.
+- Nếu chọn ""Khớp lệnh"": Là GTGD khớp lệnh.
+- Điều kiện tổng hợp dữ liệu từ sổ lệnh: 
+  + Giao dịch cổ phiếu: MARKET_ID gồm STK, STX, UPX
+  + Giao dịch khớp lệnh: BOARD_TYPE/BOARD_ID gồm G1, G2, G3, G4, G7, G8",Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"HOSE
  SUM(CASE
                 WHEN SUBSTRING(t.buy_acct_no, 4, 1) IN ('C','E') THEN t.EXECUTION_VALUE
                 WHEN SUBSTRING(t.buy_acct_no, 4, 1) = 'B'
@@ -25279,7 +25322,13 @@ SELECT
 FROM ca_nhan
 GROUP BY ma_ck, ngay_gd
 ORDER BY ABS(SUM(gt_mua) - SUM(gt_ban)) DESC;",,,,,,Done,Dữ liệu tĩnh,
-28,,Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư ,GT tổ chức trong nước ròng ,,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"HOSE
+28,,Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư ,GT tổ chức trong nước ròng ,"GTGD mua theo từng phân loại nhà đầu tư: 
+- Tính từ sổ lệnh khớp
+- Nếu không chọn ""Khớp lệnh"": Là tổng GTGD.
+- Nếu chọn ""Khớp lệnh"": Là GTGD khớp lệnh.
+- Điều kiện tổng hợp dữ liệu từ sổ lệnh: 
+  + Giao dịch cổ phiếu: MARKET_ID gồm STK, STX, UPX
+  + Giao dịch khớp lệnh: BOARD_TYPE/BOARD_ID gồm G1, G2, G3, G4, G7, G8",Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"HOSE
  SUM(CASE
                 WHEN SUBSTRING(t.buy_acct_no, 4, 1) IN ('P','A') THEN t.EXECUTION_VALUE
                 WHEN SUBSTRING(t.buy_acct_no, 4, 1) = 'B'
@@ -25394,7 +25443,13 @@ SELECT
 FROM ca_nhan
 GROUP BY ma_ck, ngay_gd
 ORDER BY ABS(SUM(gt_mua) - SUM(gt_ban)) DESC;""",,,,,,Done,Dữ liệu tĩnh,
-28,,Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư ,GT tự doanh ròng ,,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"HOSE:
+28,,Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư ,GT tự doanh ròng ,"GTGD mua theo từng phân loại nhà đầu tư: 
+- Tính từ sổ lệnh khớp
+- Nếu không chọn ""Khớp lệnh"": Là tổng GTGD.
+- Nếu chọn ""Khớp lệnh"": Là GTGD khớp lệnh.
+- Điều kiện tổng hợp dữ liệu từ sổ lệnh: 
+  + Giao dịch cổ phiếu: MARKET_ID gồm STK, STX, UPX
+  + Giao dịch khớp lệnh: BOARD_TYPE/BOARD_ID gồm G1, G2, G3, G4, G7, G8",Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"HOSE:
   [Execution - Value]
   WHERE [Buy/Sell - Client/House Classification Code]='30'
 HNX:
@@ -25448,7 +25503,13 @@ SELECT
 FROM tu_doanh
 GROUP BY ma_ck, ngay_gd
 ORDER BY ABS(SUM(gt_mua) - SUM(gt_ban)) DESC;",,,,,,Done,Dữ liệu tĩnh,
-28,,Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư ,GT NN ròng ,,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,JAD_CSIDXINFOR/ TRADE_BOOK_HOSE/TRADE_BOOK_HNX,"HNX/UPCOM:
+28,,Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư ,GT NN ròng ,"GTGD mua theo từng phân loại nhà đầu tư: 
+- Tính từ sổ lệnh khớp
+- Nếu không chọn ""Khớp lệnh"": Là tổng GTGD.
+- Nếu chọn ""Khớp lệnh"": Là GTGD khớp lệnh.
+- Điều kiện tổng hợp dữ liệu từ sổ lệnh: 
+  + Giao dịch cổ phiếu: MARKET_ID gồm STK, STX, UPX
+  + Giao dịch khớp lệnh: BOARD_TYPE/BOARD_ID gồm G1, G2, G3, G4, G7, G8",Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,JAD_CSIDXINFOR/ TRADE_BOOK_HOSE/TRADE_BOOK_HNX,"HNX/UPCOM:
 Buy Foreign Investor Type Code
 Trade quantity * Trade price
 Sell Foreign Investor Type Code
@@ -26644,11 +26705,11 @@ LNST AS (
 )
 ",đối với doanh thu và lợi nhuận đang theo kỳ lên sẽ vẫn theo từng kỳ một ,,,,,Chưa có sql,Dữ liệu tĩnh,
 31,,Sở hữu và giao dịch nội bộ ,Mã cổ phiếu,,Dashboard,Chiều,TB,Mã CK,IDS,,,,Done,,ids.company_profiles,equity_ticker,,,,,,,,Chưa có sql,Dữ liệu tĩnh,
-31,,Sở hữu và giao dịch nội bộ ,Tên cổ đông,Tên tổ chức hoặc cá nhân sở hữu cổ phần,Dashboard,Chiều,TB,Mã CK,CSDLTT,,,,Done,,major_shareholder,shareholder_name,,,,,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
-31,,Sở hữu và giao dịch nội bộ ,Số cổ phiếu sở hữu,Tổng số cổ phiếu mà cổ đông nắm giữ,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,,,,Done,,major_shareholder,end_period_shares,,,,,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
-31,,Sở hữu và giao dịch nội bộ ,Sở hữu nước ngoài ,,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,,,,Done,,foreign_investor_info,current_shares_foreign_hold/total_issued_shares,,,,,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
-31,,Sở hữu và giao dịch nội bộ ,Sở hữu trong nước,,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,,,,Done,,foreign_investor_info,total_issued_shares  - current_shares_foreign_hold/total_issued_shares),,,,,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
-31,,Sở hữu và giao dịch nội bộ ,Tỷ lệ sở hữu,Tỷ lệ cổ phần của cổ đông trên tổng số cổ phiếu lưu hành,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,,,,Done,,major_shareholder,end_period_ratio,,,,,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
+31,,Sở hữu và giao dịch nội bộ ,Tên cổ đông,Tên tổ chức hoặc cá nhân sở hữu cổ phần,Dashboard,Chiều,TB,Mã CK,CSDLTT,,,,Done,,major_shareholder,shareholder_name,,,,,,,,Chưa có sql,Dữ liệu tĩnh,
+31,,Sở hữu và giao dịch nội bộ ,Số cổ phiếu sở hữu,Tổng số cổ phiếu mà cổ đông nắm giữ,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,,,,Done,,major_shareholder,end_period_shares,,,,,,,,Chưa có sql,Dữ liệu tĩnh,
+31,,Sở hữu và giao dịch nội bộ ,Sở hữu nước ngoài ,,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,,,,Done,,foreign_investor_info,current_shares_foreign_hold/total_issued_shares,,,,,,,,Chưa có sql,Dữ liệu tĩnh,
+31,,Sở hữu và giao dịch nội bộ ,Sở hữu trong nước,,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,,,,Done,,foreign_investor_info,total_issued_shares  - current_shares_foreign_hold/total_issued_shares),,,,,,,,Chưa có sql,Dữ liệu tĩnh,
+31,,Sở hữu và giao dịch nội bộ ,Tỷ lệ sở hữu,Tỷ lệ cổ phần của cổ đông trên tổng Khối lượng cổ phiếu lưu hành,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,,,,Done,,major_shareholder,end_period_ratio,,,,,,,,Chưa có sql,Dữ liệu tĩnh,
 31,,Sở hữu và giao dịch nội bộ ,Chức vụ người nội bộ,,Dashboard,Chỉ tiêu cơ sở,TB,Mã CK,IDS,,,,Done,,IDS.positions,position_cd," LOOKUP_GROUP = ""POSITION""","SELECT position_cd,cs.ownership_qty,cs.ownership_ratio,cp.equity_ticker FROM ids.LEGAL_ENTITIES le 
 LEFT JOIN ids.POSITIONS p ON le.id = p.legal_entity_id
 LEFT JOIN ids.LOOKUP_VALUES lv ON lv.LOOKUP_CD = p.position_cd
@@ -26656,7 +26717,7 @@ LEFT JOIN ids.COMPANY_SHAREHOLDING cs ON p.legal_entity_id = cs.legal_entity_id
 LEFT JOIN ids.company_profiles cp ON cp.id = cs.COMPANY_PROFILE_ID 
 WHERE 1=1 
 AND lv.LOOKUP_GROUP = 'POSITION'",,,,,,Chưa có sql,Dữ liệu tĩnh,
-31,,Sở hữu và giao dịch nội bộ ,Sở hữu cổ đông lớn của người nội bộ/ban lãnh đạo,Tổng tỷ lệ sở hữu của các cổ đông lớn,Dashboard,Chỉ tiêu cơ sở,TB,Mã CK,CSDLTT,,,,Done,,major_shareholder,end_period_ratio,,,Sẽ đánh giá lại xem là lấy từ IDS hay thẳng VSDC. VÌ lấy IDS có thể sẽ phụ thuộc,,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
+31,,Sở hữu và giao dịch nội bộ ,Sở hữu cổ đông lớn của người nội bộ/ban lãnh đạo,Tổng tỷ lệ sở hữu của các cổ đông lớn,Dashboard,Chỉ tiêu cơ sở,TB,Mã CK,CSDLTT,,,,Done,,major_shareholder,end_period_ratio,,,Sẽ đánh giá lại xem là lấy từ IDS hay thẳng VSDC. VÌ lấy IDS có thể sẽ phụ thuộc,,,,,Chưa có sql,Dữ liệu tĩnh,
 32,,Báo cáo Thống kê định giá TTCK Việt Nam ( BM021_MSS),Mã ck ,,Báo cáo,Chiều,Trùng,Mã ck ,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,symbol,"tradingdate = :ngay_gd
 FloorCode IN ('10','02','04')
 StockType NOT IN ('B','1','BO','D')
@@ -26964,7 +27025,7 @@ ORDER BY gh.symbol;",,,,Chưa có sql,Dữ liệu tĩnh,
     s.FloorCode
 FROM JAD_STOCKINFOR s
 WHERE s.tradingdate = :ngay_gd",,,"Giá đóng cửa, giá gần nhất (có thể bao gồm cả giá dự khớp trong các phiên khớp lệnh định kỳ)",,,Chưa có sql,Dữ liệu tĩnh,
-32,,Báo cáo Thống kê định giá TTCK Việt Nam ( BM021_MSS),vốn hóa,Giá đóng cửa  * Số cổ phiếu lưu hành,Báo cáo,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,X,,Done,Thông tin thị trường,,,,,,,"Giá đóng cửa, giá gần nhất (có thể bao gồm cả giá dự khớp trong các phiên khớp lệnh định kỳ)",,,Chưa có sql,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",
+32,,Báo cáo Thống kê định giá TTCK Việt Nam ( BM021_MSS),vốn hóa,Giá đóng cửa  * Khối lượng cổ phiếu lưu hành,Báo cáo,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,X,,Done,Thông tin thị trường,,,,,,,"Giá đóng cửa, giá gần nhất (có thể bao gồm cả giá dự khớp trong các phiên khớp lệnh định kỳ)",,,Chưa có sql,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",
 32,,Báo cáo Thống kê định giá TTCK Việt Nam ( BM021_MSS),Giá cao nhất 4/52 tuần gần nhất,Giá cao nhất trong vòng 4 tuần gần nhất,Báo cáo,Chỉ tiêu phái sinh,TB,Mã ck ,MDDS,X,X,X,Done,Thông tin thị trường,JAD_MARKETINFOR,HIGH,,"SELECT
     MARKETCODE,
     tradingdate,
@@ -27427,28 +27488,28 @@ https://prnt.sc/IRgvNFLg1gRz",,,Chưa có sql,"Dữ liệu tĩnh, Chưa có CSDL
 https://prnt.sc/IRgvNFLg1gRz",,,Chưa có sql,Dữ liệu tĩnh,
 32,,Báo cáo Thống kê định giá TTCK Việt Nam ( BM021_MSS),Giá trị sổ sách quý gần nhất (B),Giá trị sổ sách = VCSH/ số cổ phiếu đang lưu hành.,Báo cáo,Chỉ tiêu phái sinh,TB,Mã ck ,"IDS, MDDS, CSDLTT",X,X,X,Done," Số cổ phiếu đang lưu hành: Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày)""","1. Giá đóng cửa: 
  JAD_STOCKINFOR
- 2. Số cổ phiếu lưu hành: 
+ 2. Khối lượng cổ phiếu lưu hành: 
 uat_vsdc_stg.outstanding_shares
  3.VCSH
  IDS.data (d),
  IDS.report_catalog (rc),
  IDS.company_data (cd)","Giá đóng cửa: 
  JAD_STOCKINFOR.closePrice
- Số cổ phiếu lưu hành:
+ Khối lượng cổ phiếu lưu hành:
 khoi_luong_ck_dang_luu_hanh 
 VCSH:
  SUM(d.data_value)",,,,,"Tham khảo nink: 
 https://prnt.sc/IRgvNFLg1gRz",,,Chưa có sql,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",
 32,,Báo cáo Thống kê định giá TTCK Việt Nam ( BM021_MSS),Giá trị sổ sách bình quân 4 quý gần nhất,,Báo cáo,Chỉ tiêu phái sinh,TB,Mã ck ,"IDS, CSDLTT",X,X,X,Done,,"1. Giá đóng cửa: 
  JAD_STOCKINFOR
- 2. Số cổ phiếu lưu hành: 
+ 2. Khối lượng cổ phiếu lưu hành: 
 uat_vsdc_stg.outstanding_shares
  3.VCSH
  IDS.data (d),
  IDS.report_catalog (rc),
  IDS.company_data (cd)","Giá đóng cửa: 
  JAD_STOCKINFOR.closePrice
- Số cổ phiếu lưu hành:
+ Khối lượng cổ phiếu lưu hành:
 khoi_luong_ck_dang_luu_hanh 
 VCSH:
  SUM(d.data_value)",,,,,"Tham khảo nink: 
@@ -27456,14 +27517,14 @@ https://prnt.sc/IRgvNFLg1gRz",,,Chưa có sql,"Dữ liệu tĩnh, Chưa có CSDL
 32,,Báo cáo Thống kê định giá TTCK Việt Nam ( BM021_MSS),P/E,"P/E = Giá đóng cửa /EPS.
  EPS = LNST/số cổ phiếu đang lưu hành.",Báo cáo,Chỉ tiêu phái sinh,Trùng,Mã ck ,"IDS, MDDS, CSDLTT",,X,,Done," Số cổ phiếu đang lưu hành: Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày)""","1. Giá đóng cửa: 
  JAD_STOCKINFOR
- 2. Số cổ phiếu lưu hành: 
+ 2. Khối lượng cổ phiếu lưu hành: 
 uat_vsdc_stg.outstanding_shares 
 3. LNST:
  IDS.data (d),
  IDS.report_catalog (rc),
  IDS.company_data (cd)","Giá đóng cửa: 
  JAD_STOCKINFOR.closePrice
- Số cổ phiếu lưu hành:
+ Khối lượng cổ phiếu lưu hành:
 khoi_luong_ck_dang_luu_hanh
  LNST:
  SUM(d.data_value)",,,,,"Tham khảo nink: 
@@ -27471,14 +27532,14 @@ https://prnt.sc/IRgvNFLg1gRz",,,Chưa có sql,"Dữ liệu tĩnh, Chưa có CSDL
 32,,Báo cáo Thống kê định giá TTCK Việt Nam ( BM021_MSS),P/B,"P/B = Giá đóng cửa / giá trị sổ sách của cổ phiếu.
  Giá trị sổ sách = VCSH/ số cổ phiếu đang lưu hành.",Báo cáo,Chỉ tiêu phái sinh,Trùng,Mã ck ,"IDS, MDDS, CSDLTT",,X,,Done," Số cổ phiếu đang lưu hành: Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày)""","1. Giá đóng cửa: 
  JAD_STOCKINFOR
- 2. Số cổ phiếu lưu hành: 
+ 2. Khối lượng cổ phiếu lưu hành: 
 uat_vsdc_stg.outstanding_shares
  3.VCSH
  IDS.data (d),
  IDS.report_catalog (rc),
  IDS.company_data (cd)","Giá đóng cửa: 
  JAD_STOCKINFOR.closePrice
- Số cổ phiếu lưu hành:
+ Khối lượng cổ phiếu lưu hành:
 khoi_luong_ck_dang_luu_hanh 
 VCSH:
  SUM(d.data_value)",,,,,"Tham khảo nink: 
@@ -27555,14 +27616,14 @@ WHERE s.tradingdate = :ngay_gd","Giá đóng cửa, giá gần nhất (có thể
  - VCSH: lấy từ báo cáo tài chính IDS
 - Số cổ phiếu đang lưu hành: Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày)","1. Giá đóng cửa: 
  JAD_STOCKINFOR
- 2. Số cổ phiếu lưu hành: 
+ 2. Khối lượng cổ phiếu lưu hành: 
 outstanding_shares
  3. LNST:
  IDS.data (d),
  IDS.report_catalog (rc),
  IDS.company_data (cd)","Giá đóng cửa: 
  JAD_STOCKINFOR.closePrice
- Số cổ phiếu lưu hành:
+ Khối lượng cổ phiếu lưu hành:
  khoi_luong_ck_dang_luu_hanh
  LNST:
  SUM(d.data_value)",,"	With GĐC AS
@@ -27604,14 +27665,14 @@ outstanding_shares
  - LNST: lấy từ báo cáo tài chính IDS
 - Số cổ phiếu đang lưu hành: Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày)","1. Giá đóng cửa: 
  JAD_STOCKINFOR
- 2. Số cổ phiếu lưu hành: 
+ 2. Khối lượng cổ phiếu lưu hành: 
 outstanding_shares
  3.VCSH
  IDS.data (d),
  IDS.report_catalog (rc),
  IDS.company_data (cd)","Giá đóng cửa: 
  JAD_STOCKINFOR.closePrice
- Số cổ phiếu lưu hành:
+ Khối lượng cổ phiếu lưu hành:
 khoi_luong_ck_dang_luu_hanh
  VCSH:
  SUM(d.data_value)",,"With GĐC AS
@@ -28291,13 +28352,13 @@ Board ID in ('T1','T2','T3','T4','T6, 'R1')",,"Note:
   GT ròng = KL mua - KLbán
   Phân loại theo từng nhóm NĐT
   (cá nhân / tổ chức / tự doanh / NN)",,,,,Lý do khác,Dữ liệu tĩnh,
-33,,Giao dịch & thanh khoản ,Vốn hóa thị trường,Giá đóng cửa * Số cổ phiếu lưu hành,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,X,,Done,"- Giá đóng cửa: thông tin thị trường
+33,,Giao dịch & thanh khoản ,Vốn hóa thị trường,Giá đóng cửa * Khối lượng cổ phiếu lưu hành,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,X,,Done,"- Giá đóng cửa: thông tin thị trường
 - Số cổ phiếu đang lưu hành: Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày)","1. Giá đóng cửa: 
  JAD_STOCKINFOR
- 2. Số cổ phiếu lưu hành: 
+ 2. Khối lượng cổ phiếu lưu hành: 
 outstanding_shares","Giá đóng cửa: 
  JAD_STOCKINFOR.closePrice
- Số cổ phiếu lưu hành:
+ Khối lượng cổ phiếu lưu hành:
 khoi_luong_ck_dang_luu_hanh",,"WITH
 Tham_so AS (
     SELECT
@@ -28782,9 +28843,9 @@ FROM Xep_hang_NDTNN
 WHERE stt <= :top_n
 ORDER BY stt;",,,,,,Lý do khác,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",
 34,,Giao dịch & thanh khoản >> số cổ phiếu sở hữu,Mã cổ phiếu,,Dashboard,Chiều,TB,Mã CK,IDS,,,,Done,,ids.company_profiles,equity_ticker,,,,,,,,Chưa có sql,Dữ liệu tĩnh,
-34,,Giao dịch & thanh khoản >> số cổ phiếu sở hữu,Tên cổ đông,Tên tổ chức hoặc cá nhân sở hữu cổ phần,Dashboard,Chiều,TB,Mã CK,CSDLTT,,,,Done,,major_shareholder,shareholder_name,,,Mapping biểu mẫu,,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
-34,,Giao dịch & thanh khoản >> số cổ phiếu sở hữu,Số cổ phiếu sở hữu,Tổng số cổ phiếu mà cổ đông nắm giữ,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,,,,Done,,major_shareholder,end_period_shares,,,Mapping biểu mẫu,,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
-34,,Giao dịch & thanh khoản >> số cổ phiếu sở hữu,Tỷ lệ sở hữu,Tỷ lệ cổ phần của cổ đông trên tổng số cổ phiếu lưu hành,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,,,,Done,,major_shareholder,end_period_ratio,,,Mapping biểu mẫu,,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
+34,,Giao dịch & thanh khoản >> số cổ phiếu sở hữu,Tên cổ đông,Tên tổ chức hoặc cá nhân sở hữu cổ phần,Dashboard,Chiều,TB,Mã CK,CSDLTT,,,,Done,,major_shareholder,shareholder_name,,,,,,,,Chưa có sql,Dữ liệu tĩnh,
+34,,Giao dịch & thanh khoản >> số cổ phiếu sở hữu,Số cổ phiếu sở hữu,Tổng số cổ phiếu mà cổ đông nắm giữ,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,,,,Done,,major_shareholder,end_period_shares,,,,,,,,Chưa có sql,Dữ liệu tĩnh,
+34,,Giao dịch & thanh khoản >> số cổ phiếu sở hữu,Tỷ lệ sở hữu,Tỷ lệ cổ phần của cổ đông trên tổng Khối lượng cổ phiếu lưu hành,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,,,,Done,,major_shareholder,end_period_ratio,,,,,,,,Chưa có sql,Dữ liệu tĩnh,
 34,,Giao dịch & thanh khoản >> số cổ phiếu sở hữu,Chức vụ người nội bộ,,Dashboard,Chỉ tiêu cơ sở,TB,Mã CK,IDS,,,,Done,,IDS.positions,position_cd," LOOKUP_GROUP = ""POSITION""","SELECT position_cd,cs.ownership_qty,cs.ownership_ratio,cp.equity_ticker FROM ids.LEGAL_ENTITIES le 
 LEFT JOIN ids.POSITIONS p ON le.id = p.legal_entity_id
 LEFT JOIN ids.LOOKUP_VALUES lv ON lv.LOOKUP_CD = p.position_cd
@@ -28792,7 +28853,7 @@ LEFT JOIN ids.COMPANY_SHAREHOLDING cs ON p.legal_entity_id = cs.legal_entity_id
 LEFT JOIN ids.company_profiles cp ON cp.id = cs.COMPANY_PROFILE_ID 
 WHERE 1=1 
 AND lv.LOOKUP_GROUP = 'POSITION'",,,,,,Chưa có sql,Dữ liệu tĩnh,
-34,,Giao dịch & thanh khoản >> số cổ phiếu sở hữu,Sở hữu cổ đông lớn của người nội bộ/ban lãnh đạo,Tổng tỷ lệ sở hữu của các cổ đông lớn,Dashboard,Chỉ tiêu cơ sở,TB,Mã CK,CSDLTT,,,,Done,,major_shareholder,end_period_ratio,,,Sẽ đánh giá lại xem là lấy từ IDS hay thẳng VSDC. VÌ lấy IDS có thể sẽ phụ thuộc,,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
+34,,Giao dịch & thanh khoản >> số cổ phiếu sở hữu,Sở hữu cổ đông lớn của người nội bộ/ban lãnh đạo,Tổng tỷ lệ sở hữu của các cổ đông lớn,Dashboard,Chỉ tiêu cơ sở,TB,Mã CK,CSDLTT,,,,Done,,major_shareholder,end_period_ratio,,,,,,,,Chưa có sql,Dữ liệu tĩnh,
 35,,Giao dịch & thanh khoản >> chỉ số,Chỉ số,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,MDDS,,X,,Done,Thông tin thị trường,JAD_MARKETINFOR,indexName,,,,,,,,Lý do khác,Dữ liệu tĩnh,
 35,,Giao dịch & thanh khoản >> chỉ số,Giá trị chỉ số,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,MDDS,,X,,Done,Thông tin thị trường,JAD_MARKETINFOR,marketIndex,,,,,,,,Lý do khác,Dữ liệu tĩnh,
 35,,Giao dịch & thanh khoản >> chỉ số,thay đổi,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,MDDS,,X,X,Done,Sổ lệnh và thông tin thị trường,JAD_MARKETINFOR,marketIndex,,"SELECT
@@ -28821,7 +28882,7 @@ AND lv.LOOKUP_GROUP = 'POSITION'",,,,,,Chưa có sql,Dữ liệu tĩnh,
  )
  WHERE rn = 1
  --AND ""marketId"" = '10'
- ORDER BY ""tradingdate"";",,,,,,Lý do khác,"Chưa có CSDL - Map biểu mẫu, Dữ liệu tĩnh",
+ ORDER BY ""tradingdate"";",,,,,,Lý do khác,Dữ liệu tĩnh,
 35,,Giao dịch & thanh khoản >> chỉ số,KLGD,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,X,X,Done,Sổ lệnh và thông tin thị trường,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"lấy từ sổ lệnh: 
  - Hose: 
  Execution - Volume
@@ -28880,7 +28941,7 @@ AND lv.LOOKUP_GROUP = 'POSITION'",,,,,,Chưa có sql,Dữ liệu tĩnh,
  AND t.[Market ID] = 'UPX' -- UPCOM, loại BDX/HCX/DVX
  
  ) sub
- GROUP BY sub.indexCode, sub.ngay_gd;",,,,,,Lý do khác,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",
+ GROUP BY sub.indexCode, sub.ngay_gd;",,,,,,Lý do khác,Dữ liệu tĩnh,
 35,,Giao dịch & thanh khoản >> chỉ số,GTGD,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,Thông tin thị trường/ Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"lấy từ sổ lệnh: 
  - Hose: 
  Execution - Value
