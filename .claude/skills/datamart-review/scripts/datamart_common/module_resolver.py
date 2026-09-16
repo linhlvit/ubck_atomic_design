@@ -23,7 +23,8 @@ MODULE_ALIASES: Dict[str, str] = {
     "QLCB": "QLCB",
     "TKNB": "TKNB",
     "VP": "VP",
-    "NDTNN": "NDTNN",
+    "NDTNN": "NĐTNN",
+    "NĐTNN": "NĐTNN",
 }
 
 

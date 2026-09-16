@@ -14,7 +14,7 @@
 CREATE TABLE IF NOT EXISTS datamart.ndtnn_fct_securities_foreign_trading_snpst_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT Fact Securities Foreign Trading Snapshot
-    trade_dt_dim_id                 String                  COMMENT 'FK ngày giao dịch',
+    snpst_dt_dim_id                 String                  COMMENT 'FK ngày giao dịch',
     securities_dim_id               String                  COMMENT 'FK mã chứng khoán',
     public_company_dim_id           Nullable(String)        COMMENT 'FK công ty đại chúng — nullable, không phải mọi mã CK đều là công ty đại chúng',
     foreign_buy_val                 Decimal(23,2)           COMMENT 'GT mua của NĐTNN',

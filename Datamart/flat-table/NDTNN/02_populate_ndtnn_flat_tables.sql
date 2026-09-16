@@ -19,7 +19,7 @@ TRUNCATE TABLE IF EXISTS datamart.ndtnn_fct_securities_foreign_trading_snpst_fla
 INSERT INTO datamart.ndtnn_fct_securities_foreign_trading_snpst_flat
 SELECT
     -- From: FACT Fact Securities Foreign Trading Snapshot
-    f.trade_dt_dim_id,
+    f.snpst_dt_dim_id,
     f.securities_dim_id,
     f.public_company_dim_id,
     f.foreign_buy_val,
@@ -73,7 +73,7 @@ SELECT
 
 FROM datamart.fct_securities_foreign_trading_snpst f
 JOIN datamart.cdr_dt_dim trade_cal
-    ON trade_cal.cdr_dt_dim_id = f.trade_dt_dim_id
+    ON trade_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
 LEFT JOIN datamart.securities_dim sec_dim
     ON sec_dim.securities_dim_id = f.securities_dim_id
 LEFT JOIN datamart.public_company_dim pc_dim
