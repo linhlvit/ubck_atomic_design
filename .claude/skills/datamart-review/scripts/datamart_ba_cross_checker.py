@@ -35,6 +35,7 @@ import csv
 import io
 import json
 import os
+import difflib
 import re
 import sys
 import unicodedata
@@ -214,13 +215,48 @@ def clean_kpi_name(name: str) -> str:
     n = re.sub(r"\bny/", "niêm yết/", n, flags=re.IGNORECASE)
     n = re.sub(r"\bdòng\s+tiền\s+vào\b", "dòng vào", n, flags=re.IGNORECASE)
     n = re.sub(r"\bdòng\s+tiền\s+ra\b", "dòng ra", n, flags=re.IGNORECASE)
+    # Abbreviation normalization — specific patterns first, then general
     n = re.sub(r"\bkhối\s+lượng\s+giao\s+dịch\b", "klgd", n, flags=re.IGNORECASE)
     n = re.sub(r"\bgiá\s+trị\s+giao\s+dịch\b", "gtgd", n, flags=re.IGNORECASE)
+    n = re.sub(r"\bkhối\s+lượng\b", "kl", n, flags=re.IGNORECASE)
     n = re.sub(r"\bgiá\s+trị\b", "gt", n, flags=re.IGNORECASE)
     n = re.sub(r"\btpdn\s+riêng\s+lẻ\b", "tp", n, flags=re.IGNORECASE)
     n = re.sub(r"\btpdn\b", "tp", n, flags=re.IGNORECASE)
-    n = re.sub(r"\s+", " ", n).strip(" -:–—()[]%")
+    # Synonym normalization for common Vietnamese wording variants
+    n = re.sub(r"\bđang\s+lưu\s+hành\b", "lưu hành", n, flags=re.IGNORECASE)
+    n = re.sub(r"\btrong\s+1\s+ngày\b", "trong ngày", n, flags=re.IGNORECASE)
+    n = re.sub(r"\bcủa\s+các\s+loại\s+hợp\s+đồng\s+phái\s+sinh\b", "phái sinh", n, flags=re.IGNORECASE)
+    n = re.sub(r"\bcủa\s+trái\s+phiếu\b", "phái sinh", n, flags=re.IGNORECASE)
+    # GSTT specific domain pattern alignments
+    n = re.sub(r"\bgiữa\s+klgd/klgdtb\s+trong\s+(\d+)\s+ngày\s+lớn\s+hơn\s+x\s+lần\b", r"klgd/klgdtb \1 ngày", n, flags=re.IGNORECASE)
+    n = re.sub(r"\btỷ\s+lệ\s+klgd/klgdtb\s+(\d+)\s+ngày\b", r"klgd/klgdtb \1 ngày", n, flags=re.IGNORECASE)
+    n = re.sub(r"\bcủa\s+cổ\s+phiếu\s+(?:đang\s+)?lưu\s+hành\b", "lưu hành", n, flags=re.IGNORECASE)
+    n = re.sub(r"\bcủa\s+cổ\s+phiếu\s+tự\s+do\s+chuyển\s+nhượng\b", "tự do chuyển nhượng", n, flags=re.IGNORECASE)
+    n = re.sub(r"\bđiểm\s+đóng\s+góp\s+tương\s+đối\b", "tương đối", n, flags=re.IGNORECASE)
+    n = re.sub(r"\s*-\s*tương\s*đối(?:\s*\([^)]*\))?", " tương đối", n, flags=re.IGNORECASE)
+    n = re.sub(r"\b(?:theo\s+từng\s+time|tại\s+thời\s+điểm\s+time)\s+trong\s+(?:1\s+)?ngày\b", "theo time trong ngày", n, flags=re.IGNORECASE)
+    n = re.sub(r"\b(?:khối\s+lượng|kl)\s+niêm\s+(?:cổ\s+phiếu\s+)?niêm\s+yết\s+hiện\s+tại\b", "kl niêm yết hiện tại", n, flags=re.IGNORECASE)
+    n = re.sub(r"\b4/52\s+tuần\b", "52 tuần", n, flags=re.IGNORECASE)
+    n = re.sub(r"\btổng\s+klgd\s+khớp\s+lệnh\b", "klgd khớp lệnh", n, flags=re.IGNORECASE)
+    n = re.sub(r"\btổng\s+gtgd\s+khớp\s+lệnh\b", "gtgd khớp lệnh", n, flags=re.IGNORECASE)
+    n = re.sub(r"\btổng\s+kl\s+thỏa\s+thuận\b", "klgd thỏa thuận", n, flags=re.IGNORECASE)
+    n = re.sub(r"\btổng\s+gt\s+thỏa\s+thuận\b", "gtgd thỏa thuận", n, flags=re.IGNORECASE)
+    # Normalize spaces inside parentheses: "( thỏa thuận )" -> "(thỏa thuận)"
+    n = re.sub(r"\(\s+", "(", n)
+    n = re.sub(r"\s+\)", ")", n)
+    # Collapse whitespace — do NOT strip () to avoid asymmetric parenthesis removal
+    n = re.sub(r"\s+", " ", n).strip(" -:–—[]%")
     return n.lower()
+
+
+def strip_qualifiers(name: str) -> str:
+    """Strip all parenthesized qualifiers for fallback matching.
+
+    Useful when DTM adds context in parens that BA doesn't have, e.g.:
+    - DTM: 'Giá đóng cửa (điểm chỉ số)' -> 'Giá đóng cửa'
+    - DTM: 'KLNN ròng (theo chỉ số)' -> 'KLNN ròng'
+    """
+    return re.sub(r"\s*\([^)]*\)", "", name).strip()
 
 
 @dataclass
@@ -955,12 +991,36 @@ class DatamartBACrossChecker:
         crit_count = sum(1 for v in violations if v.severity == "CRITICAL")
         warn_count = sum(1 for v in violations if v.severity == "WARNING")
 
-        # 2. Build BA lookup index (by cleaned name and by raw name)
+        # 2. Build BA lookup indices (exact, stripped-qualifier, and fuzzy)
         ba_by_clean_name: Dict[str, List[BAItem]] = defaultdict(list)
+        ba_by_stripped: Dict[str, List[BAItem]] = defaultdict(list)
         for b in ba_items:
             c_name = clean_kpi_name(b.name)
             if c_name:
                 ba_by_clean_name[c_name].append(b)
+                sq = strip_qualifiers(c_name)
+                if sq:
+                    ba_by_stripped[sq].append(b)
+
+        ba_clean_keys = list(ba_by_clean_name.keys())
+
+        def _match_ba(kpi_name: str) -> Optional[List[BAItem]]:
+            """Multi-pass BA matching: exact → stripped-qualifier → fuzzy."""
+            c_name = clean_kpi_name(kpi_name)
+            if not c_name:
+                return None
+            # Pass 1: exact clean name match
+            if c_name in ba_by_clean_name:
+                return ba_by_clean_name[c_name]
+            # Pass 2: match after stripping parenthesized qualifiers
+            sq = strip_qualifiers(c_name)
+            if sq and sq in ba_by_stripped:
+                return ba_by_stripped[sq]
+            # Pass 3: fuzzy match (ratio >= 0.85)
+            matches = difflib.get_close_matches(c_name, ba_clean_keys, n=1, cutoff=0.85)
+            if matches:
+                return ba_by_clean_name[matches[0]]
+            return None
 
         # 3. Classify PENDING items & compute Status Matrix
         pending_items: List[PendingItemDetail] = []
@@ -1003,9 +1063,8 @@ class DatamartBACrossChecker:
 
             dtm_status = "PENDING" if is_pending else ("DEPRECATED" if is_deprecated else "READY")
 
-            # Match to BA item
-            c_name = clean_kpi_name(d.kpi_name)
-            matched_ba = ba_by_clean_name.get(c_name, [])
+            # Match to BA item (multi-pass: exact → stripped-qualifier → fuzzy)
+            matched_ba = _match_ba(d.kpi_name) or []
             primary_ba = matched_ba[0] if matched_ba else None
 
             ba_st = (primary_ba.mapping_status if primary_ba else "").strip().title()
@@ -1054,12 +1113,17 @@ class DatamartBACrossChecker:
                     )
                 )
 
-        # 4. Delta Reconciliation
-        matched_dtm_count = sum(1 for d in dtm_items if clean_kpi_name(d.kpi_name) in ba_by_clean_name)
+        # 4. Delta Reconciliation (multi-pass consistent)
+        matched_dtm_count = sum(1 for d in dtm_items if _match_ba(d.kpi_name))
         unmatched_dtm_count = len(dtm_items) - matched_dtm_count
 
-        dtm_clean_names = {clean_kpi_name(d.kpi_name) for d in dtm_items if clean_kpi_name(d.kpi_name)}
-        ba_unmapped = [b for b in ba_items if clean_kpi_name(b.name) not in dtm_clean_names]
+        matched_ba_ids = set()
+        for d in dtm_items:
+            m = _match_ba(d.kpi_name)
+            if m:
+                for b in m:
+                    matched_ba_ids.add(id(b))
+        ba_unmapped = [b for b in ba_items if id(b) not in matched_ba_ids]
 
         reconciled_delta = {
             "ba_total_indicators": len(ba_items),

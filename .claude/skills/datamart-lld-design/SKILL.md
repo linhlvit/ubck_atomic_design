@@ -1069,6 +1069,7 @@ PRE-CHECK (trước khi sinh — bắt buộc, chỉ cho KPI của nhóm đang x
 □ Lọc bỏ 100% dòng BA có Trạng thái mapping là Delete / DELETED / Xóa — KHÔNG map, KHÔNG sinh dòng Detail Mapping
 □ Nếu dòng BA nào (hợp lệ, không phải Delete) chưa có KPI_ID → DỪNG, báo cáo danh sách gap → ❌ KHÔNG sinh block khi chưa có xác nhận của human về cách xử lý gap
 □ Không tự sinh KPI_ID mới trong Phase 2 — KPI_ID mới phải được khai sinh trong HLD trước
+□ Đọc kỹ `Câu lệnh tham khảo`, `Điều kiện chung`, `Bảng nguồn`, `Trường nguồn`, và `Note` trong file BA đối với toàn bộ chỉ tiêu của nhóm đang xử lý (theo Quy tắc L17)
 □ Đếm N_BA(nhóm) (chỉ tính dòng hợp lệ, ĐÃ LOẠI TRỪ dòng Delete) và N_KPI(nhóm) → báo cáo 2 con số → DỪNG chờ human xác nhận trước khi sinh
 
 OUTPUT CHECK (chỉ kiểm tra block KPI của nhóm đang xử lý):
@@ -1076,6 +1077,9 @@ OUTPUT CHECK (chỉ kiểm tra block KPI của nhóm đang xử lý):
 □ Số KPI_ID unique trong block = N_KPI(nhóm) — báo cáo nếu lệch
 □ Không có KPI_ID trong block mà chưa được khai sinh trong HLD — báo danh sách nếu vi phạm
 □ KPI PENDING (Quy tắc L4): bắt buộc để trống cả 4 cột mart_table, mart_column, column_role, logic; ghi rõ lý do blocker theo 5 nhóm chuẩn hóa vào ghi_chu
+□ Bám sát Câu lệnh tham khảo (Quy tắc L17):
+  - Mọi điều kiện WHERE trong SQL tham khảo (sàn, loại CK, loại bảng lệnh, loại NĐT, cờ hiệu lực...) PHẢI được sinh thành dòng `column_role = FILTER` tương ứng HOẶC ghi rõ trong `ghi_chu` là đã lọc sẵn tại ETL Fact.
+  - Số đo trong `mart_column` và `logic` phải bám sát biểu thức `SELECT` trong SQL tham khảo: phân biệt rạch ròi Khớp lệnh (`total_matched_*`) vs Thỏa thuận (`total_negotiated_*`) vs Tổng (`total_*`); Mua vs Bán vs Ròng; Rolling window...
 □ Không bỏ qua dòng Phân loại = Chiều
 □ Không bỏ qua dòng Trạng thái = Doing
 □ Không bỏ qua chiều lặp lại giữa các nhóm — nhóm đang xử lý có đủ SLICER/FILTER explicit (không dùng shorthand "xem nhóm X")
@@ -1092,12 +1096,19 @@ OUTPUT CHECK (chỉ kiểm tra block KPI của nhóm đang xử lý):
   trước, KHÔNG tự ý append tiếp theo thứ tự sai đó, báo cho human trước
 □ Sau khi human duyệt block: append vào DTM_{MODULE}_Detail_Mapping.csv → báo "Đã append N dòng nhóm [N] vào Detail Mapping"
 
-SELF-REVIEW Phase 2 — mỗi nhóm (bắt buộc trước khi trình bày — chạy 4 testcase, báo kết quả):
+SELF-REVIEW Phase 2 — mỗi nhóm (bắt buộc trước khi trình bày — chạy 5 testcase, báo kết quả):
 
 TC1 — Mô tả khớp chỉ tiêu:
 □ Kiểm tra cột `kpi_name` trong Detail Mapping khớp với tên KPI trong HLD bảng KPI (Section 2)
 □ Kiểm tra cột `logic` mô tả đúng bản chất chỉ tiêu — không mâu thuẫn với mô tả trong BA_analyst
 □ Báo: ✅ TC1 PASS hoặc ❌ TC1 FAIL: [danh sách kpi_id có kpi_name hoặc logic không khớp]
+□ Nếu FAIL → sửa trước khi trình bày
+
+TC1b — Bám sát Câu lệnh tham khảo (Reference SQL Alignment Check — Quy tắc L17):
+□ Với mọi chỉ tiêu có `Câu lệnh tham khảo` hoặc `Điều kiện chung` trong BA:
+  - Kiểm tra các điều kiện lọc trong mệnh đề WHERE đã được ánh xạ thành dòng `column_role = FILTER` hoặc đã ghi nhận lọc sẵn trong ETL Fact chưa.
+  - Kiểm tra `mart_column` và biểu thức tổng hợp trong `logic` có phản ánh đúng mệnh đề SELECT (khớp lệnh vs thỏa thuận vs tổng; mua vs bán vs ròng; rolling/window...) không.
+□ Báo: ✅ TC1b PASS hoặc ❌ TC1b FAIL: [danh sách kpi_id bị lệch số đo hoặc thiếu filter so với SQL tham khảo]
 □ Nếu FAIL → sửa trước khi trình bày
 
 TC2 — KPI_ID hợp lệ (thuộc HLD, kể cả Chiều và Pending):
@@ -1117,7 +1128,7 @@ TC4 — Trường/bảng trong Detail Mapping tồn tại trong datamart_model.y
 □ Báo: ✅ TC4 PASS hoặc ❌ TC4 FAIL: [danh sách (mart_table, mart_column) chưa có trong datamart_model.yaml]
 □ Nếu FAIL → kiểm tra xem model thiếu cột (Phase 1 chưa ghi đủ) hay Detail Mapping dùng sai tên → sửa tương ứng
 
-□ Tất cả 4 TC đều PASS → trình bày block KPI nhóm N cho human
+□ Tất cả 5 TC đều PASS (TC1, TC1b, TC2, TC3, TC4) → trình bày block KPI nhóm N cho human
 □ Sau khi xuất block: DỪNG chờ human duyệt block → append vào Detail Mapping khi được approve
 
 GATE CUỐI NHÓM:

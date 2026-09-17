@@ -134,12 +134,37 @@ def clean_kpi_name(name: str) -> str:
     n = re.sub(r"\bny/", "niêm yết/", n, flags=re.IGNORECASE)
     n = re.sub(r"\bdòng\s+tiền\s+vào\b", "dòng vào", n, flags=re.IGNORECASE)
     n = re.sub(r"\bdòng\s+tiền\s+ra\b", "dòng ra", n, flags=re.IGNORECASE)
+    # Abbreviation normalization — specific patterns first, then general
     n = re.sub(r"\bkhối\s+lượng\s+giao\s+dịch\b", "klgd", n, flags=re.IGNORECASE)
     n = re.sub(r"\bgiá\s+trị\s+giao\s+dịch\b", "gtgd", n, flags=re.IGNORECASE)
+    n = re.sub(r"\bkhối\s+lượng\b", "kl", n, flags=re.IGNORECASE)
     n = re.sub(r"\bgiá\s+trị\b", "gt", n, flags=re.IGNORECASE)
     n = re.sub(r"\btpdn\s+riêng\s+lẻ\b", "tp", n, flags=re.IGNORECASE)
     n = re.sub(r"\btpdn\b", "tp", n, flags=re.IGNORECASE)
-    n = re.sub(r"\s+", " ", n).strip(" -:–—()[]%")
+    # Synonym normalization for common Vietnamese wording variants
+    n = re.sub(r"\bđang\s+lưu\s+hành\b", "lưu hành", n, flags=re.IGNORECASE)
+    n = re.sub(r"\btrong\s+1\s+ngày\b", "trong ngày", n, flags=re.IGNORECASE)
+    n = re.sub(r"\bcủa\s+các\s+loại\s+hợp\s+đồng\s+phái\s+sinh\b", "phái sinh", n, flags=re.IGNORECASE)
+    n = re.sub(r"\bcủa\s+trái\s+phiếu\b", "phái sinh", n, flags=re.IGNORECASE)
+    # GSTT specific domain pattern alignments
+    n = re.sub(r"\bgiữa\s+klgd/klgdtb\s+trong\s+(\d+)\s+ngày\s+lớn\s+hơn\s+x\s+lần\b", r"klgd/klgdtb \1 ngày", n, flags=re.IGNORECASE)
+    n = re.sub(r"\btỷ\s+lệ\s+klgd/klgdtb\s+(\d+)\s+ngày\b", r"klgd/klgdtb \1 ngày", n, flags=re.IGNORECASE)
+    n = re.sub(r"\bcủa\s+cổ\s+phiếu\s+(?:đang\s+)?lưu\s+hành\b", "lưu hành", n, flags=re.IGNORECASE)
+    n = re.sub(r"\bcủa\s+cổ\s+phiếu\s+tự\s+do\s+chuyển\s+nhượng\b", "tự do chuyển nhượng", n, flags=re.IGNORECASE)
+    n = re.sub(r"\bđiểm\s+đóng\s+góp\s+tương\s+đối\b", "tương đối", n, flags=re.IGNORECASE)
+    n = re.sub(r"\s*-\s*tương\s*đối(?:\s*\([^)]*\))?", " tương đối", n, flags=re.IGNORECASE)
+    n = re.sub(r"\b(?:theo\s+từng\s+time|tại\s+thời\s+điểm\s+time)\s+trong\s+(?:1\s+)?ngày\b", "theo time trong ngày", n, flags=re.IGNORECASE)
+    n = re.sub(r"\b(?:khối\s+lượng|kl)\s+niêm\s+(?:cổ\s+phiếu\s+)?niêm\s+yết\s+hiện\s+tại\b", "kl niêm yết hiện tại", n, flags=re.IGNORECASE)
+    n = re.sub(r"\b4/52\s+tuần\b", "52 tuần", n, flags=re.IGNORECASE)
+    n = re.sub(r"\btổng\s+klgd\s+khớp\s+lệnh\b", "klgd khớp lệnh", n, flags=re.IGNORECASE)
+    n = re.sub(r"\btổng\s+gtgd\s+khớp\s+lệnh\b", "gtgd khớp lệnh", n, flags=re.IGNORECASE)
+    n = re.sub(r"\btổng\s+kl\s+thỏa\s+thuận\b", "klgd thỏa thuận", n, flags=re.IGNORECASE)
+    n = re.sub(r"\btổng\s+gt\s+thỏa\s+thuận\b", "gtgd thỏa thuận", n, flags=re.IGNORECASE)
+    # Normalize spaces inside parentheses: "( thỏa thuận )" -> "(thỏa thuận)"
+    n = re.sub(r"\(\s+", "(", n)
+    n = re.sub(r"\s+\)", ")", n)
+    # Collapse whitespace — do NOT strip () to avoid asymmetric parenthesis removal
+    n = re.sub(r"\s+", " ", n).strip(" -:–—[]%")
     return n.lower()
 
 
