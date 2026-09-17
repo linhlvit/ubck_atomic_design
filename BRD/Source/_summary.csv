@@ -528,7 +528,7 @@ IDS,BRD-SRC-IDS-AF_AUDITOR_PROFILES,AF_AUDITOR_PROFILES,audit_firm,in_scope,,,,,
 IDS,BRD-SRC-IDS-AF_AUDITOR_STATUS_HISTORY,AF_AUDITOR_STATUS_HISTORY,audit_firm,in_scope,,,,,
 IDS,BRD-SRC-IDS-AF_INSPECTION,AF_INSPECTION,audit_firm,in_scope,,,,,
 IDS,BRD-SRC-IDS-AF_LEGAL_REPRESENTATIVE,AF_LEGAL_REPRESENTATIVE,audit_firm,in_scope,,,,,
-IDS,BRD-SRC-IDS-AF_PROFILES,AF_PROFILES,audit_firm,out_of_scope,Quyết định Data Modeler (2026-07-24) — bỏ hoàn toàn khỏi phạm vi thiết kế.,,,,
+IDS,BRD-SRC-IDS-AF_PROFILES,AF_PROFILES,audit_firm,in_scope,"Đảo ngược quyết định out_of_scope 2026-07-24 (2026-09-04) — HLD Overview/Tier1 vẫn mô tả AF_PROFILES là entity Tier 1 chính thức (Audit Firm) và 9/10 bảng AF_* còn lại đều có FK Audit Firm Id/Code trỏ tới entity này. Xác nhận tường minh của Data Modeler: giữ trong scope, phục hồi lld_IDS_AF_PROFILES.yaml (+ 3 shared entity) theo DDL GMS_AUDIT_UAT_schema.txt.",,,,
 IDS,BRD-SRC-IDS-AF_SANCTIONS,AF_SANCTIONS,audit_firm,in_scope,,,,,
 IDS,BRD-SRC-IDS-AF_STATUS_HISTORY,AF_STATUS_HISTORY,audit_firm,in_scope,,,,,
 IDS,BRD-SRC-IDS-AF_SUSPENSION,AF_SUSPENSION,audit_firm,in_scope,,,,,
@@ -562,7 +562,7 @@ IDS,BRD-SRC-IDS-COMPANY_RELATIONSHIP,COMPANY_RELATIONSHIP,public_company,in_scop
 IDS,BRD-SRC-IDS-COMPANY_SHAREHOLDING,COMPANY_SHAREHOLDING,shareholder,in_scope,,,,,
 IDS,BRD-SRC-IDS-COMPANY_SHARE_STATISTICS,COMPANY_SHARE_STATISTICS,capital_activity,in_scope,,,,,
 IDS,BRD-SRC-IDS-COMPANY_TENDER_OFFER,COMPANY_TENDER_OFFER,capital_activity,in_scope,,,,,
-IDS,BRD-SRC-IDS-COMPANY_TENDER_OFFER_RESULT,COMPANY_TENDER_OFFER_RESULT,capital_activity,pending,,,,,
+IDS,BRD-SRC-IDS-COMPANY_TENDER_OFFER_RESULT,COMPANY_TENDER_OFFER_RESULT,capital_activity,in_scope,,,,,
 IDS,BRD-SRC-IDS-COMPANY_TREASURY_SHARES,COMPANY_TREASURY_SHARES,capital_activity,in_scope,,,,,
 IDS,BRD-SRC-IDS-COMPANY_TREASURY_STOCKS,COMPANY_TREASURY_STOCKS,capital_activity,in_scope,,,,,
 IDS,BRD-SRC-IDS-COUNTRIES,COUNTRIES,master_data,pending,,,,,
@@ -638,7 +638,7 @@ IDS,BRD-SRC-IDS-REPORT_CATALOG,REPORT_CATALOG,reporting,in_scope,,,,,
 IDS,BRD-SRC-IDS-REPORT_CATALOG_MGR,REPORT_CATALOG_MGR,unclassified_pending,pending,,,,,
 IDS,BRD-SRC-IDS-REPORT_EXTENSIONS,REPORT_EXTENSIONS,reporting,in_scope,,,,,
 IDS,BRD-SRC-IDS-REP_COLUMN,REP_COLUMN,reporting,in_scope,,,,,
-IDS,BRD-SRC-IDS-REP_DATA,REP_DATA,public_company,pending,,,,,
+IDS,BRD-SRC-IDS-REP_DATA,REP_DATA,public_company,in_scope,,,,,
 IDS,BRD-SRC-IDS-REP_FORMS,REP_FORMS,reporting,in_scope,,,,,
 IDS,BRD-SRC-IDS-REP_ROW,REP_ROW,reporting,in_scope,,,,,
 IDS,BRD-SRC-IDS-RROW,RROW,reporting,in_scope,,,,,
@@ -660,6 +660,27 @@ IDS,BRD-SRC-IDS-VIOLATION_PENALTY_CONFIG,VIOLATION_PENALTY_CONFIG,inspection_pen
 IDS,BRD-SRC-IDS-VIOLATION_REPORT,VIOLATION_REPORT,inspection_penalty,in_scope,,,,,
 IDS,BRD-SRC-IDS-VIOLATION_TEMPLATES,VIOLATION_TEMPLATES,inspection_penalty,in_scope,,,,,
 IDS,BRD-SRC-IDS-WARDS,WARDS,master_data,pending,,,,,
+ISS,BRD-SRC-ISS-AUDIT_LOG,AUDIT_LOG,Nhật ký & tiện ích dùng chung,pending,,Nhật ký thay đổi dữ liệu (audit trail) theo entity — lưu giá trị cũ/mới dạng JSON,Không có Oracle comment trên bảng/cột nguồn — mô tả suy luận từ tên trường. ENTITY_TYPE/ENTITY_ID là tham chiếu polymorphic (không phải FK khai báo) tới entity bất kỳ trong hệ thống.,huy.pham@fssc.com.vn,username@ubck.com.vn
+ISS,BRD-SRC-ISS-FACT_REPORT_DATA,FACT_REPORT_DATA,Quản lý báo cáo đầu vào (Input Report),pending,,"Dữ liệu chi tiết (fact) trích xuất từ báo cáo đầu vào đã nộp, theo từng sheet và kỳ báo cáo",Không có Oracle comment trên bảng/cột nguồn — mô tả suy luận từ tên trường. JSON_DATA lưu dữ liệu chi tiết dạng JSON theo cấu trúc sheet.,huy.pham@fssc.com.vn,username@ubck.com.vn
+ISS,BRD-SRC-ISS-FILE_INFO,FILE_INFO,Nhật ký & tiện ích dùng chung,pending,,"Thông tin file đính kèm dùng chung trong hệ thống (tên file, dung lượng, đường dẫn lưu trữ)","Không có Oracle comment trên bảng/cột nguồn — mô tả suy luận từ tên trường. Bảng dùng chung, được nhiều bảng khác tham chiếu qua FILE_INFO_ID.",huy.pham@fssc.com.vn,username@ubck.com.vn
+ISS,BRD-SRC-ISS-INPUT_REPORT,INPUT_REPORT,Quản lý báo cáo đầu vào (Input Report),pending,,"Yêu cầu nộp báo cáo đầu vào theo tổ chức và kỳ báo cáo, sinh từ mẫu báo cáo",Không có Oracle comment trên bảng/cột nguồn — mô tả suy luận từ tên trường. ORGANIZATION_ID tham chiếu tổ chức ở hệ thống ngoài (không có bảng ORGANIZATION trong schema ISS).,huy.pham@fssc.com.vn,username@ubck.com.vn
+ISS,BRD-SRC-ISS-INPUT_REPORT_DEADLINE,INPUT_REPORT_DEADLINE,Quản lý báo cáo đầu vào (Input Report),pending,,Cấu hình hạn nộp và nhắc nhở cho báo cáo đầu vào theo mẫu báo cáo,Không có Oracle comment trên bảng/cột nguồn — mô tả suy luận từ tên trường.,huy.pham@fssc.com.vn,username@ubck.com.vn
+ISS,BRD-SRC-ISS-INPUT_REPORT_METRIC,INPUT_REPORT_METRIC,Quản lý báo cáo đầu vào (Input Report),pending,,Cây chỉ tiêu (metric) trong sheet của mẫu báo cáo đầu vào,Không có Oracle comment trên bảng/cột nguồn — mô tả suy luận từ tên trường. Self-referencing FK trên PARENT_ID.,huy.pham@fssc.com.vn,username@ubck.com.vn
+ISS,BRD-SRC-ISS-INPUT_REPORT_SUBMISSION,INPUT_REPORT_SUBMISSION,Quản lý báo cáo đầu vào (Input Report),pending,,"Bản ghi nộp báo cáo đầu vào thực tế — file nộp, trạng thái nộp, kết quả so khớp",Không có Oracle comment trên bảng/cột nguồn — mô tả suy luận từ tên trường. FILE_INFO_ID và COMPARE_RESULT_FILE_INFO_ID đều FK cùng tới FILE_INFO (2 vai trò khác nhau: file nộp vs file kết quả so khớp).,huy.pham@fssc.com.vn,username@ubck.com.vn
+ISS,BRD-SRC-ISS-INPUT_REPORT_TEMPLATE,INPUT_REPORT_TEMPLATE,Quản lý báo cáo đầu vào (Input Report),pending,,"Mẫu báo cáo đầu vào — mã báo cáo, căn cứ pháp lý, cấu hình layout",Không có Oracle comment trên bảng/cột nguồn — mô tả suy luận từ tên trường. Entity trung tâm của nhóm Input Report.,huy.pham@fssc.com.vn,username@ubck.com.vn
+ISS,BRD-SRC-ISS-INPUT_REPORT_TEMPLATE_SHEET,INPUT_REPORT_TEMPLATE_SHEET,Quản lý báo cáo đầu vào (Input Report),pending,,Sheet (trang tính) trong mẫu báo cáo đầu vào,Không có Oracle comment trên bảng/cột nguồn — mô tả suy luận từ tên trường.,huy.pham@fssc.com.vn,username@ubck.com.vn
+ISS,BRD-SRC-ISS-LOG_DATA_CHANGE,LOG_DATA_CHANGE,Nhật ký & tiện ích dùng chung,pending,,"Nhật ký thao tác của người dùng trên hệ thống (action, IP, user agent)",Không có Oracle comment trên bảng/cột nguồn — mô tả suy luận từ tên trường. Không có FK khai báo; USER_ID là tham chiếu người dùng ở hệ thống ngoài (IAM).,huy.pham@fssc.com.vn,username@ubck.com.vn
+ISS,BRD-SRC-ISS-OUTPUT_REPORT,OUTPUT_REPORT,Quản lý báo cáo đầu ra (Output Report),pending,,Bản ghi báo cáo đầu ra được sinh theo kỳ báo cáo,Không có Oracle comment trên bảng/cột nguồn — mô tả suy luận từ tên trường.,huy.pham@fssc.com.vn,username@ubck.com.vn
+ISS,BRD-SRC-ISS-OUTPUT_REPORT_DEADLINE,OUTPUT_REPORT_DEADLINE,Quản lý báo cáo đầu ra (Output Report),pending,,Cấu hình hạn phát sinh báo cáo đầu ra theo mẫu báo cáo,Không có Oracle comment trên bảng/cột nguồn — mô tả suy luận từ tên trường.,huy.pham@fssc.com.vn,username@ubck.com.vn
+ISS,BRD-SRC-ISS-OUTPUT_REPORT_GENERATE_JOB,OUTPUT_REPORT_GENERATE_JOB,Quản lý báo cáo đầu ra (Output Report),pending,,Job (tác vụ nền) sinh báo cáo đầu ra tự động,Không có Oracle comment trên bảng/cột nguồn — mô tả suy luận từ tên trường.,huy.pham@fssc.com.vn,username@ubck.com.vn
+ISS,BRD-SRC-ISS-OUTPUT_REPORT_GENERATE_JOB_ITEM,OUTPUT_REPORT_GENERATE_JOB_ITEM,Quản lý báo cáo đầu ra (Output Report),pending,,Chi tiết báo cáo đầu ra được sinh ra trong một job,Không có Oracle comment trên bảng/cột nguồn — mô tả suy luận từ tên trường. Bảng liên kết N-N giữa job và báo cáo đầu ra.,huy.pham@fssc.com.vn,username@ubck.com.vn
+ISS,BRD-SRC-ISS-OUTPUT_REPORT_METRIC,OUTPUT_REPORT_METRIC,Quản lý báo cáo đầu ra (Output Report),pending,,Cây chỉ tiêu (metric) trong mẫu báo cáo đầu ra,Không có Oracle comment trên bảng/cột nguồn — mô tả suy luận từ tên trường. Self-referencing FK trên PARENT_ID.,huy.pham@fssc.com.vn,username@ubck.com.vn
+ISS,BRD-SRC-ISS-OUTPUT_REPORT_SOURCE,OUTPUT_REPORT_SOURCE,Quản lý báo cáo đầu ra (Output Report),pending,,Bảng liên kết N-N: mẫu báo cáo đầu vào là nguồn dữ liệu cho mẫu báo cáo đầu ra,"Không có Oracle comment trên bảng/cột nguồn — mô tả suy luận từ tên trường. Bảng junction thuần túy, PK composite = 2 FK, không có surrogate ID riêng.",huy.pham@fssc.com.vn,username@ubck.com.vn
+ISS,BRD-SRC-ISS-OUTPUT_REPORT_TEMPLATE,OUTPUT_REPORT_TEMPLATE,Quản lý báo cáo đầu ra (Output Report),pending,,"Mẫu báo cáo đầu ra — mã báo cáo, căn cứ pháp lý, cấu hình truy vấn dữ liệu",Không có Oracle comment trên bảng/cột nguồn — mô tả suy luận từ tên trường. QUERY_COMMAND lưu câu lệnh truy vấn sinh dữ liệu — cần rà soát kỹ khi thiết kế Atomic vì có thể chứa logic nghiệp vụ phức tạp.,huy.pham@fssc.com.vn,username@ubck.com.vn
+ISS,BRD-SRC-ISS-OUTPUT_REPORT_TEMPLATE_COMBO_USED,OUTPUT_REPORT_TEMPLATE_COMBO_USED,Quản lý báo cáo đầu ra (Output Report),pending,,Tổ hợp (combo) hợp lệ giữa mẫu báo cáo đầu vào và mẫu báo cáo đầu ra,Không có Oracle comment trên bảng/cột nguồn — mô tả suy luận từ tên trường.,huy.pham@fssc.com.vn,username@ubck.com.vn
+ISS,BRD-SRC-ISS-REPORT_PERMISSION_GROUP,REPORT_PERMISSION_GROUP,Phân quyền báo cáo,pending,,Nhóm quyền truy cập báo cáo — danh sách mã báo cáo đầu vào/đầu ra được phép,Không có Oracle comment trên bảng/cột nguồn — mô tả suy luận từ tên trường. INPUT_REPORT_CODES/OUTPUT_REPORT_CODES lưu danh sách mã báo cáo dạng chuỗi (không phải FK chuẩn hóa).,huy.pham@fssc.com.vn,username@ubck.com.vn
+ISS,BRD-SRC-ISS-REPORT_SEND_LOG,REPORT_SEND_LOG,Phân quyền báo cáo,pending,,Nhật ký gửi/phát báo cáo (đầu vào hoặc đầu ra) đến nơi nhận,Không có Oracle comment trên bảng/cột nguồn — mô tả suy luận từ tên trường. REPORT_TYPE phân biệt gửi báo cáo đầu vào hay đầu ra; chỉ 1 trong 2 FK (INPUT_REPORT_SUBMISSION_ID/OUTPUT_REPORT_ID) có giá trị tùy theo loại.,huy.pham@fssc.com.vn,username@ubck.com.vn
+ISS,BRD-SRC-ISS-USER_PERMISSION_GROUP,USER_PERMISSION_GROUP,Phân quyền báo cáo,pending,,Gán người dùng vào nhóm quyền báo cáo,"Không có Oracle comment trên bảng/cột nguồn — mô tả suy luận từ tên trường. USER_ID tham chiếu người dùng ở hệ thống ngoài (IAM), không phải FK nội bộ ISS.",huy.pham@fssc.com.vn,username@ubck.com.vn
 KNT,BRD-SRC-KNT-AUDITOR,AUDITOR,KNT-06 Thông tin công ty & kiểm toán,pending,,"Danh sách kiểm toán viên được UBCKNN chấp thuận: thuộc công ty kiểm toán nào, số GCN hành nghề, ngày chấp thuận/hủy",,huy.pham@fssc.com.vn,username@ubck.com.vn
 KNT,BRD-SRC-KNT-AUDIT_FIRM,AUDIT_FIRM,KNT-06 Thông tin công ty & kiểm toán,pending,,"Hồ sơ tổ chức kiểm toán được UBCKNN chấp thuận kiểm toán cho đơn vị có lợi ích công chúng: số QĐ, ngày QĐ, MST, số lượng KTV",,huy.pham@fssc.com.vn,username@ubck.com.vn
 KNT,BRD-SRC-KNT-CATALOG,CATALOG,KNT-REF Danh mục dùng chung,pending,,"Danh mục điện tử dùng chung trong phân hệ KNT: mã, tên, nhóm danh mục",,huy.pham@fssc.com.vn,username@ubck.com.vn

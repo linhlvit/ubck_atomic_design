@@ -499,7 +499,7 @@ schemes:
       - code: "BUSINESS_LICENSE"
         name: "Giấy phép kinh doanh"
         source_table: null
-      - code: "BUSINESS_ELIGIBILITY_LICENSE"
+      - code: "ELIGIBILITY_CERTIFICATE"
         name: "Giấy chứng nhận đủ điều kiện kinh doanh — bổ sung khi thiết kế IDS.AF_PROFILES"
         source_table: null
       - code: "CERTIFICATE"
@@ -511,6 +511,9 @@ schemes:
         source_table: null
       - code: "CUSTODIAN_CERT"
         name: "Chứng nhận lưu ký"
+        source_table: null
+      - code: "AUDITOR_CERTIFICATE"
+        name: "Chứng chỉ kiểm toán viên (CPA) — bổ sung khi thiết kế IDS.AF_AUDITOR_PROFILES"
         source_table: null
       - code: "CUSTODIAN_MEMBER_CERT"
         name: "Chứng nhận thành viên lưu ký"
@@ -3525,19 +3528,19 @@ schemes:
     source_type: "source_table"
     source_table: "IDS.lookup_values"
     used_in_entities:
-      - "Financial Report Template"
+      - "Financial Report"
     values: []
     deprecated: true
     deprecated_reason: "Nguồn không có FK/lookup annotation — field liên quan (Form Type Code) đã revert về Text."
 
   - scheme_code: "IDS_NEWS_TYPE"
-    name: "Loại tin gốc — dùng chung cho Financial Report Template và Notification"
+    name: "Loại tin gốc — dùng chung cho Financial Report và Notification"
     source_type: "source_table"
     source_table: "IDS.lookup_values"
     used_in_entities:
       - "Notification"
       - "Public Company Report Submission"
-      - "Financial Report Template"
+      - "Financial Report"
     values: []
 
   - scheme_code: "IDS_SUB_NEWS_TYPE"
@@ -3545,7 +3548,7 @@ schemes:
     source_type: "source_table"
     source_table: "IDS.lookup_values"
     used_in_entities:
-      - "Financial Report Template"
+      - "Financial Report"
     values: []
 
   - scheme_code: "IDS_NOTIFICATION_SEND_CHANNEL"
@@ -3581,8 +3584,8 @@ schemes:
     source_table: "IDS.report_catalog"
     used_in_entities:
       - "Financial Report Catalog"
-      - "Financial Report Row Template"
-      - "Financial Report Column Template"
+      - "Financial Report Row"
+      - "Financial Report Column"
       - "Financial Report Value"
     values: []
 
@@ -3616,8 +3619,8 @@ schemes:
     source_type: "etl_derived"
     source_table: "IDS.rrow"
     used_in_entities:
-      - "Financial Report Row Template"
-      - "Financial Report Column Template"
+      - "Financial Report Row"
+      - "Financial Report Column"
     values: []
 
   - scheme_code: "IDS_REPORT_CELL_TYPE"
@@ -3671,7 +3674,7 @@ schemes:
     source_type: "etl_derived"
     source_table: "IDS.rep_forms"
     used_in_entities:
-      - "Unstructured Financial Report Template"
+      - "Unstructured Financial Report"
     values: []
 
   # --- Tier 2 schemes ---
@@ -3761,7 +3764,8 @@ schemes:
     source_type: "etl_derived"
     source_table: "IDS.rep_row"
     used_in_entities:
-      - "Unstructured Financial Report Row Template"
+      - "Unstructured Financial Report Row"
+      - "Unstructured Financial Report Value"
     values: []
 
   - scheme_code: "IDS_PERIODIC_FORM_COLUMN_DATA_TYPE"
@@ -3769,7 +3773,8 @@ schemes:
     source_type: "etl_derived"
     source_table: "IDS.rep_column"
     used_in_entities:
-      - "Unstructured Financial Report Column Template"
+      - "Unstructured Financial Report Column"
+      - "Unstructured Financial Report Value"
     values: []
 
   # --- Tier 3 schemes ---
@@ -5116,7 +5121,7 @@ schemes:
     source_type: "source_table"
     source_table: "IDS.LOOKUP_VALUES"
     used_in_entities:
-      - "Financial Report Template"
+      - "Financial Report"
     values: []
     deprecated: true
     deprecated_reason: "Nguồn không có FK/lookup annotation — field liên quan (News Type Group Code) đã revert về Text."
@@ -5126,7 +5131,7 @@ schemes:
     source_type: "source_table"
     source_table: "IDS.FORMS.REPORT_TYPE"
     used_in_entities:
-      - "Financial Report Template"
+      - "Financial Report"
     values: []
 
   - scheme_code: "IDS_FORM_GROUP_TYPE"
@@ -5134,7 +5139,7 @@ schemes:
     source_type: "source_table"
     source_table: "IDS.lookup_values"
     used_in_entities:
-      - "Financial Report Template"
+      - "Financial Report"
     values: []
 
   - scheme_code: "IDS_CONTROL_UNIT"
@@ -5142,7 +5147,7 @@ schemes:
     source_type: "source_table"
     source_table: "ECAT.DEPARTMENT"
     used_in_entities:
-      - "Financial Report Template"
+      - "Financial Report"
     values: []
 
   - scheme_code: "IDS_OPERATING_UNIT"
@@ -5150,7 +5155,7 @@ schemes:
     source_type: "source_table"
     source_table: "ECAT.DEPARTMENT"
     used_in_entities:
-      - "Financial Report Template"
+      - "Financial Report"
     values: []
 
   - scheme_code: "IDS_SYSTEM_CD"
@@ -5158,9 +5163,9 @@ schemes:
     source_type: "modeler_defined"
     source_table: "IDS.FORMS.SYSTEM_CD"
     used_in_entities:
-      - "Financial Report Template"
+      - "Financial Report"
       - "Financial Report Catalog"
-      - "Unstructured Financial Report Template"
+      - "Unstructured Financial Report"
     values: []
     deprecated: true
     deprecated_reason: "Nguồn không có FK/lookup annotation — field SYSTEM_CD ở toàn bộ 8 bảng dùng scheme này (FORMS, RCOL, REPORT_CATALOG, REP_FORMS, REP_COLUMN, REP_ROW, RROW, NOTIFICATIONS) đã revert về Text."

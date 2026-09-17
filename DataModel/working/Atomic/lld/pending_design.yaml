@@ -2377,6 +2377,13 @@ entries:
     action: "Moved — da xoa attribute Business Registration Number / Eligibility Certificate Number khoi lld_IDS_AF_PROFILES.yaml, tao lld_IDS_AF_PROFILES_IP_Alt_Identification.yaml (2 block)."
 
   - source_system: "IDS"
+    source_table: "AF_AUDITOR_PROFILES"
+    source_column: "IDENTITY_NO, PRACTICE_CERT_NO, PRACTICE_CERT_ISSUE_DATE, AUDIT_CERT_NO, AUDIT_CERT_ISSUE_DATE"
+    description: "Số CCCD / Số GCN đăng ký hành nghề kiểm toán + ngày cấp / Số chứng chỉ kiểm toán viên + ngày cấp"
+    reason: "Phát hiện review (2026-09-05): AF_AUDITOR_PROFILES là bảng Involved Party (Individual) nhưng thiết kế trước đó giữ denormalized Text tại entity chính do nhầm lẫn \"IDENTITY_NO không có type-code scheme\". Thực tế IDENTITY_NO mô tả rõ là CCCD, PRACTICE_CERT_NO/AUDIT_CERT_NO là 2 loại giấy tờ/chứng chỉ khác nhau nên xác định được type — đủ điều kiện tách IP Alt Identification theo Bước 4. 3 block: CITIZEN_ID (IDENTITY_NO), PRACTITIONER_LICENSE (PRACTICE_CERT_NO/ISSUE_DATE, value đã có sẵn trong scheme), AUDITOR_CERTIFICATE (AUDIT_CERT_NO/ISSUE_DATE, value mới bổ sung vào scheme IP_ALT_ID_TYPE)."
+    action: "Moved — đã xóa attribute Identity Number / Practice Certificate Number / Practice Certificate Issue Date / Audit Certificate Number / Audit Certificate Issue Date khỏi lld_IDS_AF_AUDITOR_PROFILES.yaml, tạo lld_IDS_AF_AUDITOR_PROFILES_IP_Alt_Identification.yaml (3 block)."
+
+  - source_system: "IDS"
     source_table: "AF_SANCTIONS"
     source_column: "CREATED_DATE, UPDATED_DATE, CREATED_BY, UPDATED_BY"
     description: "Audit block created/updated by-at"
@@ -2487,6 +2494,13 @@ entries:
     description: "Audit block created/updated by-at"
     reason: "Quyet dinh thiet ke: loai bo audit block khoi Atomic entity phan he IDS, mirror quyet dinh da ap dung cho SCMS. Created By/Updated By von pending do FK cross-source sang Identity and Access Management User (IAM.USERS) chua resolve crosswalk (IDS.LOGINS.ID NUMBER tu tang vs IAM.USERS.ID VARCHAR2(36) GUID); Created/Updated Timestamp loai bo dong bo theo cung quyet dinh."
     action: "Excluded — da xoa Created/Updated Timestamp va Created/Updated By User Id/Code khoi lld_IDS_COMPANY_TENDER_OFFER.yaml."
+
+  - source_system: "IDS"
+    source_table: "COMPANY_TENDER_OFFER_RESULT"
+    source_column: "CREATED_DATE, UPDATED_DATE, CREATED_BY, UPDATED_BY"
+    description: "Audit block created/updated by-at"
+    reason: "Quyet dinh thiet ke: loai bo audit block khoi Atomic entity phan he IDS, mirror quyet dinh da ap dung cho SCMS. Created By/Updated By von pending do FK cross-source sang Identity and Access Management User (IAM.USERS) chua resolve crosswalk (IDS.LOGINS.ID NUMBER tu tang vs IAM.USERS.ID VARCHAR2(36) GUID); Created/Updated Timestamp loai bo dong bo theo cung quyet dinh."
+    action: "Excluded — da xoa Created/Updated Timestamp va Created/Updated By User Id/Code khoi lld_IDS_COMPANY_TENDER_OFFER_RESULT.yaml."
 
   - source_system: "IDS"
     source_table: "COMPANY_TREASURY_STOCKS"
@@ -5433,5 +5447,32 @@ entries:
     reason: "Schema chuẩn Classification Value (cl_value) chỉ có Code/Name/Description, không có chỗ cho business attribute riêng như Status — theo pattern NHNCK (lld_NHNCK_APPLICATION_SOURCES.yaml và tương tự)."
     action: "Không map. Nếu cần khai thác Status của nhóm chỉ tiêu → cân nhắc promote RISK_INDICATOR_CATEGORY thành Atomic entity riêng (xem MRMS_HLD_Tier1.md 6f T1-01)."
 
+  - source_system: "IDS"
+    source_table: "REP_DATA"
+    source_column: "CREATED_BY"
+    description: "Người tạo (audit block)."
+    reason: "Mirror quyết định loại bỏ audit block đã áp dụng cho toàn phân hệ IDS — FK cross-source sang IAM.USERS chưa resolve crosswalk."
+    action: "Excluded — không map vào lld_IDS_REP_DATA.yaml."
+
+  - source_system: "IDS"
+    source_table: "REP_DATA"
+    source_column: "CREATED_DATE"
+    description: "Ngày tạo (audit block)."
+    reason: "Mirror quyết định loại bỏ audit block đã áp dụng cho toàn phân hệ IDS."
+    action: "Excluded — không map vào lld_IDS_REP_DATA.yaml."
+
+  - source_system: "IDS"
+    source_table: "REP_DATA"
+    source_column: "UPDATED_BY"
+    description: "Người sửa (audit block)."
+    reason: "Mirror quyết định loại bỏ audit block đã áp dụng cho toàn phân hệ IDS — FK cross-source sang IAM.USERS chưa resolve crosswalk."
+    action: "Excluded — không map vào lld_IDS_REP_DATA.yaml."
+
+  - source_system: "IDS"
+    source_table: "REP_DATA"
+    source_column: "UPDATED_DATE"
+    description: "Ngày sửa (audit block)."
+    reason: "Mirror quyết định loại bỏ audit block đã áp dụng cho toàn phân hệ IDS."
+    action: "Excluded — không map vào lld_IDS_REP_DATA.yaml."
 
 
