@@ -1,5 +1,5 @@
 DATA DICTIONARY - SCHEMA: SCMS_UAT
-Tong so bang: 176 | Materialized View: 0
+Tong so bang: 191 | Materialized View: 0
 ==============================================================================================================
 
 BANG: ALERT_API_SOURCE
@@ -285,6 +285,7 @@ ATTACHMENT_PATH               VARCHAR2(500)       YES
 NOTE                          NCLOB               YES                                      
 INPUT_REPORT_DATA             NUMBER(1,0)         YES                                      
 EFORM_DATA_JSON               NCLOB               YES                                      
+DELETED                       NUMBER(1,0)         NO                                       0:active, 1:soft-deleted
 
 
 BANG: BANK_HISTORY
@@ -346,6 +347,7 @@ LAST_MODIFIED_AT              TIMESTAMP(6)        YES
 CREATED_AT                    TIMESTAMP(6)        YES                                      
 SUBMISSION_DEADLINE_AT        TIMESTAMP(0)        YES                                      
 ATTACHMENT_PATH               NCLOB               YES                                      
+PREVIOUS_SUBMIT_STATUS        NUMBER(2,0)         YES                                      
 
 
 BANG: BANK_PERIODIC_REPORT_HISTORY
@@ -591,7 +593,7 @@ Mo ta:
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
 ID                            NUMBER(10,0)        NO                                       
-POSITION_GROUP                NVARCHAR2(20)       YES                                      
+POSITION_GROUP                NVARCHAR2(40)       YES                                      
 POSITION_CODE                 NVARCHAR2(100)      YES                                      
 POSITION_NAME                 NVARCHAR2(500)      YES                                      
 NOTE                          NVARCHAR2(2000)     YES                                      
@@ -663,6 +665,7 @@ CREATED_AT                    TIMESTAMP(6)        YES
 CREATED_BY                    NUMBER(19,0)        YES                                      
 UPDATED_AT                    TIMESTAMP(6)        YES                                      
 UPDATED_BY                    NUMBER(19,0)        YES                                      
+REPORT_KIND                   VARCHAR2(80)        YES                                      INPUT: nhóm biểu mẫu nhập liệu; OUTPUT: nhóm báo cáo đầu ra (BA §1.1.1)
 
 
 BANG: CAT_SC_FIRM_POSITION
@@ -901,7 +904,6 @@ REPORT_YEAR                   VARCHAR2(1020)      YES
 TITLE                         VARCHAR2(4000)      YES                                      
 DISCLOSURE_PERSON_NAME        VARCHAR2(1020)      YES                                      
 DISCLOSURE_DATE               DATE                YES                                      
-ATTACHMENT_PATH               VARCHAR2(1020)      YES                                      
 ERROR_DESCRIPTION             NVARCHAR2(2000)     YES                                      
 CREATED_BY                    NUMBER(10,0)        YES                                      
 CREATED_AT                    TIMESTAMP(6)        YES                                      
@@ -938,6 +940,7 @@ IMPORT_FILE_PATH              NVARCHAR2(2000)     YES                           
 IMPORT_FILE_NAME              NVARCHAR2(1000)     YES                                      TÃªn file Excel gá»‘c khi import CBTT
 IMPORT_DATA                   NCLOB               YES                                      JSON lÆ°á»›i Excel import CBTT (parity importDuLieuJson)
 IMPORT_BM_ID                  NUMBER(19,0)        YES                                      BM_BAO_CAO.ID dÃ¹ng khi commit import Excel CBTT
+ATTACHMENT_PATH               NCLOB               YES                                      
 
 
 BANG: DISCLOSURE_SECURITIES_OFFERING
@@ -1047,7 +1050,6 @@ SC_FIRM_INFO_ID               NUMBER(10,0)        YES
 TRANSACTION_TYPE_ID           NUMBER(10,0)        YES                                      
 DISCLOSURE_DATE               TIMESTAMP(6)        YES                                      
 CONTENT                       NVARCHAR2(2000)     YES                                      
-ATTACHMENT_PATH               VARCHAR2(2000)      YES                                      
 CREATED_BY                    NUMBER(10,0)        YES                                      
 CREATED_AT                    TIMESTAMP(6)        YES                                      
 RECORD_STATUS                 NUMBER(1,0)         YES                                      
@@ -1074,6 +1076,7 @@ IMPORT_FILE_PATH              NVARCHAR2(2000)     YES                           
 IMPORT_FILE_NAME              NVARCHAR2(1000)     YES                                      TÃªn file Excel gá»‘c khi import CBTT cá»• Ä‘Ã´ng
 IMPORT_DATA                   NCLOB               YES                                      JSON lÆ°á»›i Excel import CBTT cá»• Ä‘Ã´ng
 IMPORT_BM_ID                  NUMBER(19,0)        YES                                      BM_BAO_CAO.ID dÃ¹ng khi commit import Excel CBTT cá»• Ä‘Ã´ng
+ATTACHMENT_PATH               NCLOB               YES                                      
 
 
 BANG: DOCUMENT_FOLDER
@@ -1611,7 +1614,7 @@ Mo ta:
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
 ID                            NUMBER(19,0)        NO      PK                               
-SC_FIRM_INFO_ID               NUMBER(19,0)        NO      FK     SC_FIRM_INFO.ID           
+SC_FIRM_INFO_ID               NUMBER(19,0)        NO      FK     SC_FIRM_INFO.SC_FIRM_INFO_ID
 SERVICE_ID                    NUMBER(19,0)        NO                                       
 LICENSE_NUMBER                NVARCHAR2(400)      YES                                      
 LICENSE_DATE                  DATE                YES                                      
@@ -1619,6 +1622,7 @@ RECORD_STATUS                 NUMBER(10,0)        YES
 CREATED_AT                    TIMESTAMP(6)        YES                                      
 START_DATE                    DATE                YES                                      
 END_DATE                      DATE                YES                                      
+APPROVAL_FILE                 NVARCHAR2(4000)     YES                                      
 
 
 BANG: LNK_SC_FIRM_STATUS_REPORT
@@ -1824,6 +1828,7 @@ SENDER_ID                     NUMBER(10,0)        NO
 CONTENT                       VARCHAR2(4000)      NO                                       
 TITLE                         VARCHAR2(2000)      NO                                       
 REPLY_TO_MESSAGE_ID           NUMBER              YES                                      
+RECIPIENT_UNIT_LABELS         VARCHAR2(4000)      YES                                      
 
 
 BANG: MESSAGE_RECIPIENT
@@ -1834,23 +1839,6 @@ Cot                           Kieu du lieu        Null?   Khoa   Lien ket       
 ID                            NUMBER(10,0)        NO      PK                               
 RECIPIENT_ID                  NUMBER(10,0)        NO                                       
 MESSAGE_ID                    NUMBER(10,0)        NO                                       
-
-
-BANG: MIG_BIEU_MAU_DAU_VAO_LEDGER
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER(19,0)        NO      PK                               
-BATCH_ID                      VARCHAR2(40)        NO                                       
-TABLE_NAME                    VARCHAR2(128)       NO                                       
-SOURCE_PK                     VARCHAR2(200)       NO                                       
-TARGET_PK                     VARCHAR2(200)       YES                                      
-BUSINESS_KEY                  VARCHAR2(500)       YES                                      
-ACTION                        VARCHAR2(20)        NO                                       
-CREATED_AT                    TIMESTAMP(6)        NO                                       
-ROLLED_BACK_AT                TIMESTAMP(6)        YES                                      
-NOTE                          VARCHAR2(4000)      YES                                      
 
 
 BANG: NOTIFICATION
@@ -1883,6 +1871,7 @@ SENDER_NAME                   VARCHAR2(500)       YES
 CONFIRMED                     NUMBER(1,0)         YES                                      
 CONFIRMED_AT                  TIMESTAMP(6)        YES                                      
 CONFIRMED_BY                  VARCHAR2(500)       YES                                      
+EXTERNAL_PAYLOAD_JSON         NCLOB               YES                                      
 
 
 BANG: OUTPUT_REPORT_CHART_CONFIG
@@ -2167,6 +2156,8 @@ SECTION_ID                    NVARCHAR2(400)      YES
 CELL_ID                       NVARCHAR2(400)      NO                                       
 ROW_NO                        NUMBER(10,0)        YES                                      
 ITEM_VALUE                    NCLOB               YES                                      
+PERIOD_YEAR                   NUMBER(4,0)         YES                                      Copy năm kỳ từ REPORT_INPUT_SUBMISSION. Null = bản cũ. Khai thác không bắt buộc cột này.
+REF_TYPE                      VARCHAR2(64)        YES                                      
 
 
 BANG: REPORT_INPUT_SUBMISSION
@@ -2181,6 +2172,7 @@ FORM_REPORT_ID                NUMBER(19,0)        NO      FK     FORM_REPORT.ID
 FORM_VERSION_ID               NUMBER(19,0)        YES                                      
 CREATED_AT                    TIMESTAMP(6)        NO                                       
 LAST_MODIFIED_AT              TIMESTAMP(6)        YES                                      
+PERIOD_YEAR                   NUMBER(4,0)         YES                                      Năm kỳ báo cáo (REPORT_YEAR của shell). Null = bản cũ / chưa gắn. Không dùng ngày parse.
 
 
 BANG: REPORT_INPUT_SUBMISSION_FILE
@@ -2193,6 +2185,7 @@ REPORT_INPUT_SUBMISSION_ID    NUMBER(19,0)        NO      FK     REPORT_INPUT_SU
 RECORD_TYPE                   NVARCHAR2(64)       NO                                       
 PATH_URL                      NVARCHAR2(4000)     NO                                       
 ORIGINAL_FILE_NAME            NVARCHAR2(1000)     YES                                      
+REF_TYPE                      VARCHAR2(64)        YES                                      
 
 
 BANG: REPORT_VIOLATION
@@ -2379,6 +2372,53 @@ SC_FIRM_INFO_ID               NUMBER              YES
 RISK_REPORTING_PERIOD_ID      NUMBER              YES                                      
 
 
+BANG: SCMS_ECAT_WORKING_CALENDAR_CONFLICT
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(19,0)        NO      PK                               
+SYNC_RUN_ID                   NUMBER(19,0)        YES                                      
+CALENDAR_DATE                 DATE                NO                                       
+ECAT_CODE                     VARCHAR2(100)       YES                                      
+CONFLICT_TYPE                 VARCHAR2(50)        YES                                      
+
+
+BANG: SCMS_ECAT_WORKING_CALENDAR_SYNC_RUN
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(19,0)        NO      PK                               
+STARTED_AT                    TIMESTAMP(6)        NO                                       
+FINISHED_AT                   TIMESTAMP(6)        YES                                      
+SUCCESS                       NUMBER(1,0)         NO                                       
+DRY_RUN                       NUMBER(1,0)         NO                                       
+FETCHED                       NUMBER(10,0)        YES                                      
+SKIPPED                       NUMBER(10,0)        YES                                      
+BASE_DAYS_ENSURED             NUMBER(10,0)        YES                                      
+DAYS_UPDATED                  NUMBER(10,0)        YES                                      
+CONFLICTS                     NUMBER(10,0)        YES                                      
+WINDOW_FROM                   DATE                YES                                      
+WINDOW_TO                     DATE                YES                                      
+ERROR_MESSAGE                 VARCHAR2(4000)      YES                                      
+
+
+BANG: SCMS_ECAT_WORKING_SCHEDULE
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ECAT_ID                       VARCHAR2(36)        NO      PK                               
+CODE                          VARCHAR2(100)       YES                                      
+NAME                          VARCHAR2(500)       YES                                      
+DESCRIPTION                   VARCHAR2(2000)      YES                                      
+SCHEDULE_TYPE                 VARCHAR2(50)        NO                                       
+TU_NGAY                       DATE                NO                                       
+DEN_NGAY                      DATE                NO                                       
+ECAT_SYNC_AT                  TIMESTAMP(6)        NO                                       
+
+
 BANG: SCMS_SHEDLOCK
 Mo ta: 
 --------------------------------------------------------------------------------------------------------------
@@ -2450,6 +2490,7 @@ REPORT_INPUT_SUBMISSION_ID    NUMBER(19,0)        YES     FK     REPORT_INPUT_SU
 SC_FIRM_FOREIGN_BRANCH_ID     NUMBER(10,0)        YES                                      
 BANK_ID                       NUMBER(10,0)        YES                                      
 BANK_SCOPE                    VARCHAR2(80)        YES                                      LUU_KY|GIAM_SAT - phan loai NH luc tao BC
+PREVIOUS_SUBMIT_STATUS        NUMBER(2,0)         YES                                      
 
 
 BANG: SC_FIRM_ADHOC_REPORT_HISTORY
@@ -2578,7 +2619,7 @@ DECISION_DATE                 DATE                YES
 VALID_DOSSIER_DATE            DATE                YES                                      
 DIRECTOR_NAME                 NVARCHAR2(200)      YES                                      
 BUSINESS_LINES                NVARCHAR2(200)      YES                                      
-BRANCH_STATUS                 NUMBER(2,0)         YES                                      
+BRANCH_STATUS                 NUMBER(10,0)        YES                                      
 NOTE                          NVARCHAR2(2000)     YES                                      
 CREATED_BY                    NUMBER(10,0)        YES                                      
 CREATED_AT                    TIMESTAMP(6)        YES                                      
@@ -2609,6 +2650,7 @@ OFFICIAL_OPERATION_DATE       TIMESTAMP(6)        YES
 BRANCH_ALLOCATED_CAPITAL      NUMBER(22,4)        YES                                      
 MATTER_ID                     NUMBER(19,0)        YES                                      
 FORM_DATA_JSON                NCLOB               YES                                      
+DELETED                       NUMBER(1,0)         NO                                       0:active, 1:soft-deleted
 
 
 BANG: SC_FIRM_COMPLAINT_PETITION
@@ -2711,6 +2753,7 @@ RECORD_STATUS                 NUMBER(10,0)        NO
 ALLOCATED_CAPITAL             NUMBER(20,0)        NO                                       
 ATTACHMENT_PATH               NVARCHAR2(4000)     YES                                      
 FORM_DATA_JSON                NCLOB               YES                                      
+DELETED                       NUMBER(1,0)         NO                                       0:active, 1:soft-deleted
 
 
 BANG: SC_FIRM_FOREIGN_BRANCH_HISTORY
@@ -2744,7 +2787,6 @@ Cot                           Kieu du lieu        Null?   Khoa   Lien ket       
 ID                            NUMBER(10,0)        NO      PK                               
 SC_FIRM_FOREIGN_BRANCH_ID     NUMBER(10,0)        NO                                       
 EFORM_DATA                    VARCHAR2(4000)      YES                                      
-ATTACHMENT_PATH               VARCHAR2(4000)      YES                                      
 IMPORT_FILE_PATH              VARCHAR2(4000)      YES                                      
 SUBMISSION_DEADLINE           DATE                NO                                       
 PERIOD                        NUMBER(10,0)        NO                                       
@@ -2768,6 +2810,8 @@ REPORT_PERIOD                 VARCHAR2(20)        YES
 QUARTER                       NUMBER              YES                                      
 REPORT_MONTH                  NUMBER              YES                                      
 SUBMISSION_DEADLINE_AT        TIMESTAMP(0)        YES                                      
+ATTACHMENT_PATH               NCLOB               YES                                      
+PREVIOUS_SUBMIT_STATUS        NUMBER(2,0)         YES                                      
 
 
 BANG: SC_FIRM_FOREIGN_BRANCH_PERSONNEL
@@ -2810,6 +2854,7 @@ VERIFICATION_STATUS           VARCHAR2(200)       YES
 CREATED_BY                    NUMBER(19,0)        YES                                      Nguoi tao (QT_NGUOI_DUNG.ID)
 LAST_MODIFIED_BY              NUMBER(19,0)        YES                                      Nguoi sua gan nhat (QT_NGUOI_DUNG.ID)
 LAST_MODIFIED_AT              TIMESTAMP(6)        YES                                      Thoi diem sua gan nhat
+DELETED                       NUMBER(1,0)         NO                                       0:active, 1:soft-deleted
 
 
 BANG: SC_FIRM_FOREIGN_BRANCH_PERSONNEL_HISTORY
@@ -2841,10 +2886,10 @@ LICENSE_DATE                  DATE                NO
 AMENDMENT_EFFECTIVE_DATE      DATE                YES                                      
 OFFICIAL_OPERATION_DATE       DATE                NO                                       
 CREATED_AT                    TIMESTAMP(6)        YES                                      
-COUNTRY                       VARCHAR2(800)       NO                                       
+COUNTRY                       VARCHAR2(800)       YES                                      
 LICENSE_NUMBER                VARCHAR2(400)       NO                                       
 AMENDMENT_DOCUMENT_NUMBER     VARCHAR2(400)       YES                                      
-PARENT_COMPANY_NAME           VARCHAR2(2000)      NO                                       
+PARENT_COMPANY_NAME           VARCHAR2(2000)      YES                                      
 REP_OFFICE_NAME               VARCHAR2(2000)      NO                                       
 RECORD_STATUS                 NUMBER(1,0)         NO                                       
 SC_FIRM_INFO_ID               NUMBER              YES                                      
@@ -2867,6 +2912,7 @@ CREATED_BY                    NUMBER              YES
 LAST_MODIFIED_BY              NUMBER              YES                                      
 LAST_MODIFIED_AT              TIMESTAMP(6)        YES                                      
 FORM_DATA_JSON                NCLOB               YES                                      
+DELETED                       NUMBER(1,0)         NO                                       0:active, 1:soft-deleted
 
 
 BANG: SC_FIRM_FOREIGN_REP_OFFICE_HISTORY
@@ -2912,7 +2958,6 @@ NOTE                          VARCHAR2(2000)      YES
 SUBMISSION_DEADLINE           DATE                NO                                       
 SENT_AT                       TIMESTAMP(6)        YES                                      
 IMPORT_FILE_PATH              VARCHAR2(1000)      YES                                      
-ATTACHMENT_PATH               VARCHAR2(2000)      YES                                      
 EFORM_DATA                    VARCHAR2(4000)      YES                                      
 RECORD_STATUS                 NUMBER              NO                                       
 CANCELLATION_REASON           VARCHAR2(2000)      YES                                      
@@ -2924,6 +2969,8 @@ REPORT_PERIOD                 VARCHAR2(20)        YES
 QUARTER                       NUMBER              YES                                      
 REPORT_MONTH                  NUMBER              YES                                      
 SUBMISSION_DEADLINE_AT        TIMESTAMP(0)        YES                                      
+ATTACHMENT_PATH               NCLOB               YES                                      
+PREVIOUS_SUBMIT_STATUS        NUMBER(2,0)         YES                                      
 
 
 BANG: SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL
@@ -2953,6 +3000,7 @@ CREATED_AT                    TIMESTAMP(6)        YES
 LAST_MODIFIED_BY              NUMBER              YES                                      
 LAST_MODIFIED_AT              TIMESTAMP(6)        YES                                      
 DATE_OF_BIRTH                 DATE                YES                                      Ngày sinh nhân sự / trưởng VPĐD NN
+DELETED                       NUMBER(1,0)         NO                                       0:active, 1:soft-deleted
 
 
 BANG: SC_FIRM_FOREIGN_REP_OFFICE_VN
@@ -3073,6 +3121,10 @@ FORM_DATA_JSON                NCLOB               YES
 CUSTODIAN_MEMBERSHIP_REVOCATION_DECISIONVARCHAR2(200)       YES                                      
 CUSTODIAN_MEMBERSHIP_REVOCATION_DATEDATE                YES                                      
 LAST_MODIFIED_BY_ALT          NUMBER(19,0)        YES                                      
+TRADING_REGISTERED            NUMBER(1,0)         YES                                      
+CUSTODY_REG_CERT_DECISION_NUMBERVARCHAR2(800)       YES                                      
+CUSTODY_REG_CERT_DECISION_DATEDATE                YES                                      
+DELETED                       NUMBER(1,0)         NO                                       0:active, 1:soft-deleted
 
 
 BANG: SC_FIRM_INSIDER_RELATION
@@ -3110,6 +3162,7 @@ NAME_EN                       NVARCHAR2(1000)     YES
 SHORT_NAME                    NVARCHAR2(400)      YES                                      
 LEGAL_REPRESENTATIVE_NAME     NVARCHAR2(1000)     YES                                      
 REPRESENTATIVE_POSITION       NVARCHAR2(400)      YES                                      
+DELETED                       NUMBER(1,0)         NO                                       0:active, 1:soft-deleted
 
 
 BANG: SC_FIRM_INSIDER_RELATION_HISTORY
@@ -3161,6 +3214,7 @@ PERIOD_TO_DATE                DATE                YES
 PERIOD_FROM_DATE              DATE                YES                                      
 TEAM_LEADER                   VARCHAR2(2000)      YES                                      
 CONTENT                       NCLOB               YES                                      
+DELETED                       NUMBER(1,0)         NO                                       0:active, 1:soft-deleted
 
 
 BANG: SC_FIRM_LICENSED_PRACTITIONER
@@ -3243,6 +3297,7 @@ SECURITIES_LICENSE_NUMBER_ALT VARCHAR2(400)       YES
 LATEST_VERIFICATION_AT        TIMESTAMP(6)        YES                                      
 WORK_STATUS                   VARCHAR2(80)        YES                                      
 VERIFICATION_STATUS           NUMBER(10,0)        YES                                      
+MISMATCH_REASON               NVARCHAR2(2000)     YES                                      
 
 
 BANG: SC_FIRM_MAJOR_SHAREHOLDER_RELATION
@@ -3272,6 +3327,7 @@ IDENTIFICATION_NUMBER         VARCHAR2(200)       NO
 SHARES_COUNT                  NUMBER(19,0)        YES                                      
 OWNERSHIP_RATIO               NUMBER(12,4)        YES                                      
 CONTRIBUTED_CAPITAL           NUMBER(22,4)        YES                                      
+DELETED                       NUMBER(1,0)         NO                                       0:active, 1:soft-deleted
 
 
 BANG: SC_FIRM_OWNERSHIP_RELATION
@@ -3295,6 +3351,7 @@ CREATED_BY                    NUMBER(10,0)        YES
 COUNTRY_ID                    NUMBER(10,0)        YES                                      
 COMPANY_NAME                  VARCHAR2(2000)      YES                                      
 OWNERSHIP_RATIO               NUMBER(10,2)        YES                                      
+DELETED                       NUMBER(1,0)         NO                                       0:active, 1:soft-deleted
 
 
 BANG: SC_FIRM_PERIODIC_REPORT
@@ -3338,6 +3395,7 @@ EFORM_DATA                    NCLOB               YES
 SUBMISSION_DEADLINE_AT        TIMESTAMP(0)        YES                                      
 DISCLOSURE_EFORM_DATA         NCLOB               YES                                      
 IMPORT_FILE_NAME              NVARCHAR2(1000)     YES                                      
+PREVIOUS_SUBMIT_STATUS        NUMBER(2,0)         YES                                      
 
 
 BANG: SC_FIRM_PERIODIC_REPORT_HISTORY
@@ -3353,6 +3411,32 @@ PERFORMER_NAME                VARCHAR2(1020)      YES
 ACTION                        VARCHAR2(400)       YES                                      
 PERFORMED_AT                  TIMESTAMP(6)        YES                                      
 RECORD_STATUS                 NUMBER(10,0)        YES                                      
+
+
+BANG: SC_FIRM_PRACTITIONER_CCHN
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO      PK                               
+PRACTITIONER_ID               NUMBER(10,0)        NO                                       
+SECURITIES_LICENSE_NUMBER     VARCHAR2(400)       YES                                      
+SECURITIES_LICENSE_DATE       DATE                YES                                      
+BUSINESS_DIVISION_ID          NUMBER(10,0)        YES                                      
+RESPONSIBLE_SERVICE_ID        NUMBER(10,0)        YES                                      
+SORT_ORDER                    NUMBER(10,0)        YES                                      
+CREATED_AT                    TIMESTAMP(6)        YES                                      
+
+
+BANG: SC_FIRM_PRACTITIONER_CCHN_DIV
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO      PK                               
+CCHN_ID                       NUMBER(10,0)        NO      FK     SC_FIRM_PRACTITIONER_CCHN.ID
+BUSINESS_DIVISION_ID          NUMBER(10,0)        NO                                       
+SORT_ORDER                    NUMBER(10,0)        YES                                      
 
 
 BANG: SC_FIRM_PROFILE_CHANGE
@@ -3455,6 +3539,7 @@ RESOLUTION_NUMBER             NVARCHAR2(1000)     YES
 TRANSACTION_CONTENT           NCLOB               YES                                      
 RELATION_START_DATE           DATE                YES                                      
 RELATION_END_DATE             DATE                YES                                      
+DELETED                       NUMBER(1,0)         NO                                       0:active, 1:soft-deleted
 
 
 BANG: SC_FIRM_REP_OFFICE
@@ -3476,7 +3561,7 @@ DECISION_NUMBER_ALT           NVARCHAR2(60)       YES
 DECISION_DATE_ALT             DATE                YES                                      
 VALID_DOSSIER_DATE            DATE                YES                                      
 REPRESENTATIVE_NAME           NVARCHAR2(200)      YES                                      
-REP_OFFICE_STATUS             NUMBER(2,0)         YES                                      
+REP_OFFICE_STATUS             NUMBER(10,0)        YES                                      
 NOTE                          NVARCHAR2(2000)     YES                                      
 CREATED_BY                    NUMBER(10,0)        YES                                      
 CREATED_AT                    TIMESTAMP(6)        YES                                      
@@ -3502,6 +3587,7 @@ VALIDITY_START_DATE           DATE                YES
 VALIDITY_END_DATE             DATE                YES                                      
 DOCUMENT_FILE_PATH            VARCHAR2(2000)      YES                                      
 FORM_DATA_JSON                NCLOB               YES                                      
+DELETED                       NUMBER(1,0)         NO                                       0:active, 1:soft-deleted
 
 
 BANG: SC_FIRM_SENIOR_PERSONNEL
@@ -3567,6 +3653,7 @@ CONTRIBUTED_CAPITAL           NUMBER(22,4)        YES
 OWNERSHIP_RATIO_DATE          DATE                YES                                      
 DISCLOSURE_EFFECTIVE_DATE     DATE                YES                                      
 DISCLOSURE_AUTHORIZATION_DOC_NUMBERVARCHAR2(1020)      YES                                      
+OWNERSHIP_RATIO               NUMBER(10,4)        YES                                      Ty le nam giu (%) — nhap thu cong, khong bat buoc
 
 
 BANG: SC_FIRM_SERVICE
@@ -3647,6 +3734,7 @@ RESTRICTED_SHARES             NUMBER(19,0)        YES
 ORG_SHORT_NAME                NVARCHAR2(400)      YES                                      
 LEGAL_REPRESENTATIVE_NAME     NVARCHAR2(1000)     YES                                      
 REPRESENTATIVE_POSITION       NVARCHAR2(400)      YES                                      
+DELETED                       NUMBER(1,0)         NO                                       0:active, 1:soft-deleted
 
 
 BANG: SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE
@@ -3669,6 +3757,7 @@ DATA_SOURCE                   NVARCHAR2(100)      YES
 NOTE                          NVARCHAR2(4000)     YES                                      
 CREATED_BY                    NUMBER(19,0)        YES                                      
 CREATED_AT                    TIMESTAMP(6)        YES                                      
+DELETED                       NUMBER(1,0)         NO                                       0:active, 1:soft-deleted
 
 
 BANG: SC_FIRM_SHAREHOLDER_RELATION
@@ -3696,6 +3785,7 @@ CREATED_AT                    TIMESTAMP(6)        YES
 LAST_MODIFIED_BY              NUMBER(10,0)        YES                                      
 LAST_MODIFIED_AT              TIMESTAMP(6)        YES                                      
 RECORD_STATUS                 NUMBER(1,0)         YES                                      
+DELETED                       NUMBER(1,0)         NO                                       0:active, 1:soft-deleted
 
 
 BANG: SC_FIRM_SHAREHOLDER_REPRESENTATIVE
@@ -3720,6 +3810,7 @@ CREATED_AT                    TIMESTAMP(6)        YES
 LAST_MODIFIED_BY              NUMBER(10,0)        YES                                      
 LAST_MODIFIED_AT              TIMESTAMP(6)        YES                                      
 RECORD_STATUS                 NUMBER(1,0)         YES                                      
+DELETED                       NUMBER(1,0)         NO                                       0:active, 1:soft-deleted
 
 
 BANG: SC_FIRM_SHAREHOLDER_TRANSFER
@@ -3744,6 +3835,7 @@ LAST_MODIFIED_BY              NUMBER(10,0)        YES
 LAST_MODIFIED_AT              TIMESTAMP(6)        YES                                      
 RECORD_STATUS                 NUMBER(1,0)         YES                                      
 EVENT_TYPE_ID                 NUMBER(10,0)        YES                                      
+DELETED                       NUMBER(1,0)         NO                                       0:active, 1:soft-deleted
 
 
 BANG: SC_FIRM_TRANSACTION_OFFICE
@@ -3765,7 +3857,7 @@ DECISION_NUMBER               NVARCHAR2(60)       YES
 DECISION_DATE                 TIMESTAMP(6)        YES                                      
 VALID_DOSSIER_DATE            TIMESTAMP(6)        YES                                      
 REPRESENTATIVE_NAME           NVARCHAR2(200)      YES                                      
-TRANSACTION_OFFICE_STATUS     NUMBER(2,0)         YES                                      
+TRANSACTION_OFFICE_STATUS     NUMBER(10,0)        YES                                      
 NOTE                          NVARCHAR2(2000)     YES                                      
 CREATED_BY                    NUMBER(10,0)        YES                                      
 CREATED_AT                    TIMESTAMP(6)        YES                                      
@@ -3792,486 +3884,5 @@ TRANSACTION_OFFICE_NAME       VARCHAR2(2000)      YES
 FORM_DATA_JSON                NCLOB               YES                                      
 LAST_MODIFIED_AT              TIMESTAMP(6)        YES                                      
 LAST_MODIFIED_BY              NUMBER(19,0)        YES                                      
-
-
-BANG: SMS_NEWS
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-RID                           UROWID              NO                                       
-NEWSID                        NUMBER(20,0)        YES                                      
-CATID                         NUMBER(20,0)        YES                                      
-SECID                         NUMBER(20,0)        YES                                      
-TITLE                         VARCHAR2(4000)      YES                                      
-CONTENT                       VARCHAR2(4000)      YES                                      
-DATECREATED                   DATE                YES                                      
-CREATEDBY                     VARCHAR2(200)       YES                                      
-MODIFYDATED                   DATE                YES                                      
-MODIFYBY                      VARCHAR2(200)       YES                                      
-FILENAME                      VARCHAR2(200)       YES                                      
-FILEDATA                      BLOB                YES                                      
-PUBLISHBY                     VARCHAR2(200)       YES                                      
-PUBLISHDATE                   DATE                YES                                      
-DESCRIPTION                   VARCHAR2(1000)      YES                                      
-STATUS                        NUMBER(1,0)         YES                                      
-SENDBY                        VARCHAR2(200)       YES                                      
-SENDDATE                      DATE                YES                                      
-TYPE                          NUMBER(10,0)        YES                                      
-TERM                          VARCHAR2(20)        YES                                      
-RYEAR                         VARCHAR2(10)        YES                                      
-ERRLOG                        VARCHAR2(1000)      YES                                      
-
-
-BANG: SMS_OFFER_OF_STOCKS
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-RID                           UROWID              NO                                       
-SECID                         NUMBER(10,0)        YES                                      
-CERTNO                        VARCHAR2(100)       YES                                      
-BEGINDATE                     DATE                YES                                      
-QTTY                          NUMBER(20,0)        YES                                      
-VALUE                         NUMBER(20,0)        YES                                      
-OFFER                         VARCHAR2(1000)      YES                                      
-ENDDATE                       DATE                YES                                      
-DATECREATED                   DATE                YES                                      
-CREATEDBY                     VARCHAR2(200)       YES                                      
-MODIFYDATED                   DATE                YES                                      
-MODIFYBY                      VARCHAR2(200)       YES                                      
-CERTDATE                      DATE                YES                                      
-PRFDATE                       DATE                YES                                      
-TYPE                          VARCHAR2(500)       YES                                      
-FILENAME                      VARCHAR2(200)       YES                                      
-FILEDATA                      BLOB                YES                                      
-DESCRIPTION                   VARCHAR2(1000)      YES                                      
-
-
-BANG: SMS_REPORT_DATA
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-RID                           UROWID              NO                                       
-SECID                         VARCHAR2(20)        YES                                      
-FILENAME                      VARCHAR2(1000)      YES                                      
-DESCRIPTION                   VARCHAR2(2000)      YES                                      
-DATECREATED                   DATE                YES                                      
-CREATEDBY                     VARCHAR2(200)       YES                                      
-RPTID                         VARCHAR2(20)        YES                                      
-FILEDATA                      BLOB                YES                                      
-AUNAME                        VARCHAR2(200)       YES                                      
-AUEMPNAME                     VARCHAR2(200)       YES                                      
-AUDESC                        VARCHAR2(1000)      YES                                      
-STATUS                        NUMBER(1,0)         YES                                      
-TERM                          VARCHAR2(2)         YES                                      
-TERMNO                        NUMBER(2,0)         YES                                      
-RYEAR                         NUMBER(4,0)         YES                                      
-RPTLOGID                      VARCHAR2(20)        YES                                      
-FDATE                         DATE                YES                                      
-DATEMODIFIED                  DATE                YES                                      
-MODIFIEDBY                    VARCHAR2(100)       YES                                      
-
-
-BANG: SMS_TL_LOG
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-RID                           UROWID              NO                                       
-TXNUM                         VARCHAR2(10)        NO                                       
-TXDATE                        DATE                YES                                      
-TXTIME                        VARCHAR2(20)        YES                                      
-TLID                          VARCHAR2(200)       YES                                      
-OFFID                         VARCHAR2(200)       YES                                      
-OVRRQS                        VARCHAR2(500)       YES                                      
-CHKID                         VARCHAR2(200)       YES                                      
-MODID                         VARCHAR2(10)        YES                                      
-TXSTATUS                      NUMBER(1,0)         YES                                      
-OVRSTS                        NUMBER(1,0)         YES                                      
-DESCRIPTION                   VARCHAR2(1000)      YES                                      
-STOREEXEC                     VARCHAR2(200)       YES                                      
-FILENAME                      VARCHAR2(1000)      YES                                      
-FILEDATA                      BLOB                YES                                      
-APPROVEDDATE                  DATE                YES                                      
-SUBMOD                        VARCHAR2(3)         YES                                      
-SENDDATE                      DATE                YES                                      
-SENDTIME                      VARCHAR2(20)        YES                                      
-REJECTREASON                  VARCHAR2(4000)      YES                                      
-
-
-BANG: SMS_VW_SECURITIES
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-RID                           UROWID              NO                                       
-NAME                          VARCHAR2(1000)      YES                                      
-TNAME                         VARCHAR2(1000)      YES                                      
-ENAME                         VARCHAR2(1000)      YES                                      
-SHORTNAME                     VARCHAR2(30)        YES                                      
-CODE                          VARCHAR2(3)         YES                                      
-ADDRESS                       VARCHAR2(1000)      YES                                      
-TELEPHONE                     VARCHAR2(50)        YES                                      
-FAX                           VARCHAR2(50)        YES                                      
-WEBSITE                       VARCHAR2(100)       YES                                      
-IDNO                          VARCHAR2(50)        YES                                      
-IDDATE                        DATE                YES                                      
-IDADD                         VARCHAR2(200)       YES                                      
-CAPITAL                       NUMBER              YES                                      
-TOTALQTTY                     NUMBER              YES                                      
-BUSINESSTYPE                  VARCHAR2(2000)      YES                                      
-BORFFLAG                      NUMBER(1,0)         YES                                      
-STATUS                        VARCHAR2(1)         YES                                      
-INSIDERID                     NUMBER(10,0)        YES                                      
-DESCRIPTION                   VARCHAR2(2000)      YES                                      
-DATECREATED                   DATE                YES                                      
-CREATEDBY                     VARCHAR2(50)        YES                                      
-DATEMODIFIED                  DATE                YES                                      
-MODIFYBY                      VARCHAR2(50)        YES                                      
-STOCKCODE                     VARCHAR2(5)         YES                                      
-MARKET                        NUMBER(1,0)         YES                                      
-EMAIL                         VARCHAR2(50)        YES                                      
-NATIONAL                      VARCHAR2(5)         YES                                      
-COMPANYTYPE                   NUMBER(2,0)         YES                                      
-SECID                         NUMBER(5,0)         YES                                      
-FRDATE                        DATE                YES                                      
-TODATE                        DATE                YES                                      
-STOPDATE                      DATE                YES                                      
-ACTIVEDATE                    DATE                YES                                      
-TYPE                          VARCHAR2(10)        YES                                      
-DELETED                       VARCHAR2(1)         YES                                      
-REPRESENTATIVE                NUMBER(10,0)        YES                                      
-PUBLICID                      NUMBER(10,0)        YES                                      
-FILENAME                      VARCHAR2(2000)      YES                                      
-ORGNAME                       VARCHAR2(1000)      YES                                      
-TRCODE                        VARCHAR2(3)         YES                                      
-LISTED                        VARCHAR2(1)         YES                                      
-ISPUBLIC                      VARCHAR2(1)         YES                                      
-REGDATE                       DATE                YES                                      
-FINDATE                       DATE                YES                                      
-DECDATE                       DATE                YES                                      
-VOUCHERNO                     VARCHAR2(30)        YES                                      
-DIRECNAME                     VARCHAR2(100)       YES                                      
-DEPUTNAME                     VARCHAR2(100)       YES                                      
-FILETYPE                      VARCHAR2(1)         YES                                      
-DECISION                      VARCHAR2(100)       YES                                      
-DECISIONDATE                  DATE                YES                                      
-SENDDATE                      DATE                YES                                      
-WARD                          VARCHAR2(200)       YES                                      
-DISTRICT                      VARCHAR2(200)       YES                                      
-PROVINCE                      VARCHAR2(100)       YES                                      
-DESCHANGE                     VARCHAR2(1000)      YES                                      
-ENDVOURNO                     VARCHAR2(100)       YES                                      
-TAX_CODE                      VARCHAR2(200)       YES                                      
-
-
-BANG: SMS_VW_TL_PROFILES
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-RID                           UROWID              NO                                       
-TLID                          NUMBER(5,0)         YES                                      
-SECID                         NUMBER(5,0)         YES                                      
-NAME                          VARCHAR2(100)       YES                                      
-SEX                           NUMBER(1,0)         YES                                      
-JOBID                         VARCHAR2(100)       YES                                      
-IDNO                          VARCHAR2(20)        YES                                      
-IDDATE                        DATE                YES                                      
-IDADD                         VARCHAR2(200)       YES                                      
-QTTY                          NUMBER(20,0)        YES                                      
-STATUS                        VARCHAR2(1)         YES                                      
-DESCRIPTION                   VARCHAR2(500)       YES                                      
-DATECREATED                   DATE                YES                                      
-CREATEDBY                     VARCHAR2(50)        YES                                      
-DATEMODIFIED                  DATE                YES                                      
-MODIFIEDBY                    VARCHAR2(50)        YES                                      
-BRID                          NUMBER(10,0)        YES                                      
-CUSTTYPE                      VARCHAR2(2000)      YES                                      
-JOBFRDATE                     DATE                YES                                      
-JOBCLOSEDATE                  DATE                YES                                      
-CERTNO                        VARCHAR2(100)       YES                                      
-CERTDATE                      DATE                YES                                      
-ADDRESS                       VARCHAR2(1000)      YES                                      
-NATIONAL                      VARCHAR2(10)        YES                                      
-TELEPHONE                     VARCHAR2(30)        YES                                      
-FAX                           VARCHAR2(30)        YES                                      
-EMAIL                         VARCHAR2(100)       YES                                      
-DELETED                       VARCHAR2(1)         YES                                      
-SHORTNAME                     VARCHAR2(30)        YES                                      
-ISR                           VARCHAR2(1)         YES                                      
-ISP                           VARCHAR2(1)         YES                                      
-CURRENTADD                    VARCHAR2(1000)      YES                                      
-EDUCATION                     VARCHAR2(1000)      YES                                      
-QUALIFICATION                 VARCHAR2(1000)      YES                                      
-JOBTYPE                       NUMBER(1,0)         YES                                      
-POLITICS                      NUMBER(1,0)         YES                                      
-BIRTH                         DATE                YES                                      
-PLACEOFBIRTH                  VARCHAR2(1000)      YES                                      
-CERTTYPE                      VARCHAR2(1000)      YES                                      
-ISD                           VARCHAR2(1)         YES                                      
-ISI                           NUMBER(1,0)         YES                                      
-ISHOST                        VARCHAR2(1)         YES                                      
-FILENAME                      VARCHAR2(1000)      YES                                      
-TYPE                          VARCHAR2(2)         YES                                      
-MOVDATE                       DATE                YES                                      
-ADDRWORK                      VARCHAR2(500)       YES                                      
-ISEMPLOY                      VARCHAR2(1)         YES                                      
-POSITJOB                      VARCHAR2(200)       YES                                      
-TIMEWORK                      VARCHAR2(100)       YES                                      
-PROFESSION                    VARCHAR2(300)       YES                                      
-CDYACC                        VARCHAR2(10)        YES                                      
-PEMAIL                        VARCHAR2(50)        YES                                      
-
-
-BANG: SSC_NOTIFICATION
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER(10,0)        NO      PK                               
-SENT_AT                       TIMESTAMP(6)        YES                                      
-CREATED_AT                    TIMESTAMP(6)        YES                                      
-SENDER_ID                     NUMBER(10,0)        YES                                      
-CREATED_BY                    NUMBER(10,0)        NO                                       
-CONTENT                       VARCHAR2(4000)      NO                                       
-TITLE                         VARCHAR2(2000)      NO                                       
-RECORD_STATUS                 NUMBER(10,0)        NO                                       
-ATTACHMENT_PATH               VARCHAR2(2000)      YES                                      
-VIA_EMAIL                     NUMBER(1,0)         YES                                      
-VIA_SMS                       NUMBER(1,0)         YES                                      
-LAST_MODIFIED_BY              NUMBER              YES                                      
-LAST_MODIFIED_AT              TIMESTAMP(6)        YES                                      
-
-
-BANG: SSC_NOTIFICATION_RECIPIENT
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER              NO      PK                               
-NOTIFICATION_ID               NUMBER              NO                                       
-RECIPIENT_ID                  NUMBER              NO                                       
-
-
-BANG: SYS_AUDIT_LOG
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER(38,0)        NO                                       
-ACTION_IP                     NVARCHAR2(500)      YES                                      
-CONTENT                       NVARCHAR2(2000)     YES                                      
-LOG_TYPE                      NVARCHAR2(100)      YES                                      
-CREATED_BY                    NUMBER(10,0)        YES                                      
-CREATED_AT                    TIMESTAMP(6)        YES                                      
-TARGET_ENTITY                 VARCHAR2(800)       YES                                      
-ENTITY_ID                     NUMBER(10,0)        YES                                      
-OLD_DATA                      CLOB                YES                                      
-NEW_DATA                      CLOB                YES                                      
-ACTION_TYPE                   VARCHAR2(800)       YES                                      
-DESCRIPTION                   VARCHAR2(4000)      YES                                      
-PERFORMED_BY                  NUMBER(10,0)        YES                                      
-SUCCESS                       NUMBER(1,0)         YES                                      
-PERFORMED_AT                  TIMESTAMP(6)        YES                                      
-
-
-BANG: SYS_CONFIG_PARAM
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER(10,0)        NO                                       
-SUBSYSTEM                     NVARCHAR2(20)       YES                                      
-PARAMETER                     NVARCHAR2(500)      YES                                      
-ITEM_VALUE                    NVARCHAR2(2000)     YES                                      
-NOTE                          NVARCHAR2(2000)     YES                                      
-LAST_MODIFIED_BY              NUMBER(10,0)        YES                                      
-LAST_MODIFIED_AT              TIMESTAMP(6)        YES                                      
-RECORD_STATUS                 NUMBER(1,0)         YES                                      
-
-
-BANG: SYS_FUNCTION
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER(10,0)        NO                                       
-PARENT_ID                     NUMBER(10,0)        YES                                      
-FUNCTION_CODE                 NVARCHAR2(100)      YES                                      
-FUNCTION_NAME                 NVARCHAR2(500)      YES                                      
-ACTION_ID                     NUMBER(10,0)        YES                                      
-ICON                          NVARCHAR2(200)      YES                                      
-MENU                          NUMBER(1,0)         YES                                      
-DETAIL                        NUMBER(1,0)         YES                                      
-SUBSYSTEM                     NVARCHAR2(20)       YES                                      
-SORT_ORDER                    NUMBER(3,0)         YES                                      
-NOTE                          NVARCHAR2(2000)     YES                                      
-CREATED_BY                    NUMBER(10,0)        YES                                      
-CREATED_AT                    TIMESTAMP(6)        YES                                      
-LAST_MODIFIED_BY              NUMBER(10,0)        YES                                      
-LAST_MODIFIED_AT              TIMESTAMP(6)        YES                                      
-DELETED                       NUMBER(1,0)         YES                                      
-RECORD_STATUS                 NUMBER(1,0)         YES                                      
-DISABLED                      NUMBER(1,0)         YES                                      
-
-
-BANG: SYS_FUNCTION_DETAIL
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER(10,0)        NO                                       
-FUNCTION_NAME                 NVARCHAR2(500)      YES                                      
-FRONTEND_ROUTE                NVARCHAR2(200)      YES                                      
-API_ROUTE                     NVARCHAR2(1000)     YES                                      
-RECORD_STATUS                 NUMBER(1,0)         YES                                      
-API_TEMP                      NVARCHAR2(1000)     YES                                      
-
-
-BANG: SYS_ORGANIZATION
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER(10,0)        NO                                       
-PARENT_ID                     NUMBER(10,0)        YES                                      
-ORG_UNIT_CODE                 NVARCHAR2(100)      YES                                      
-ORG_UNIT_NAME                 NVARCHAR2(500)      YES                                      
-NOTE                          NVARCHAR2(2000)     YES                                      
-CREATED_BY                    NUMBER(10,0)        YES                                      
-CREATED_AT                    TIMESTAMP(6)        YES                                      
-LAST_MODIFIED_BY              NUMBER(10,0)        YES                                      
-LAST_MODIFIED_AT              TIMESTAMP(6)        YES                                      
-RECORD_STATUS                 NUMBER(1,0)         YES                                      
-
-
-BANG: SYS_USER
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER(10,0)        NO                                       
-USER_CODE                     NVARCHAR2(100)      YES                                      
-USERNAME                      NVARCHAR2(100)      YES                                      
-PASSWORD                      NVARCHAR2(2000)     YES                                      
-DEFAULT_PASSWORD              NVARCHAR2(500)      YES                                      
-POSITION_CATALOG_ID           NUMBER(10,0)        YES                                      
-FULL_NAME                     NVARCHAR2(500)      YES                                      
-EMAIL                         NVARCHAR2(200)      YES                                      
-MOBILE_PHONE                  NVARCHAR2(100)      YES                                      
-DIGITAL_SIGNATURE             NUMBER(1,0)         YES                                      
-MEMBER                        NUMBER(1,0)         YES                                      
-SC_FIRM_ID                    NUMBER(10,0)        YES                                      
-NOTE                          NVARCHAR2(2000)     YES                                      
-AVATAR                        NVARCHAR2(500)      YES                                      
-CREATED_BY                    NUMBER(10,0)        YES                                      
-CREATED_AT                    TIMESTAMP(6)        YES                                      
-EXPIRY_DATE                   TIMESTAMP(6)        YES                                      
-RECORD_STATUS                 NUMBER(1,0)         YES                                      
-USER_TOKEN                    NVARCHAR2(4000)     YES                                      
-PERMISSIONS_JSON              CLOB                YES                                      
-LAST_PASSWORD_CHANGE_DATE     DATE                YES                                      
-LEGACY_ID                     NUMBER(10,0)        YES                                      
-ADMIN                         NUMBER(1,0)         YES                                      
-SSO_USER_ID                   VARCHAR2(256)       YES                                      
-IAM_USER_TYPE                 VARCHAR2(200)       YES                                      
-VERIFY_ATTACHMENT_SIGNATURE   NUMBER(1,0)         YES                                      
-
-
-BANG: SYS_USER_BACKUP
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER(10,0)        NO                                       
-USER_CODE                     NVARCHAR2(100)      YES                                      
-USERNAME                      NVARCHAR2(100)      YES                                      
-PASSWORD                      NVARCHAR2(2000)     YES                                      
-DEFAULT_PASSWORD              NVARCHAR2(500)      YES                                      
-POSITION_CATALOG_ID           NUMBER(10,0)        YES                                      
-FULL_NAME                     NVARCHAR2(500)      YES                                      
-EMAIL                         NVARCHAR2(200)      YES                                      
-MOBILE_PHONE                  NVARCHAR2(100)      YES                                      
-DIGITAL_SIGNATURE             NUMBER(1,0)         YES                                      
-MEMBER                        NUMBER(1,0)         YES                                      
-SC_FIRM_ID                    NUMBER(10,0)        YES                                      
-NOTE                          NVARCHAR2(2000)     YES                                      
-AVATAR                        NVARCHAR2(500)      YES                                      
-CREATED_BY                    NUMBER(10,0)        YES                                      
-CREATED_AT                    TIMESTAMP(6)        YES                                      
-EXPIRY_DATE                   TIMESTAMP(6)        YES                                      
-RECORD_STATUS                 NUMBER(1,0)         YES                                      
-USER_TOKEN                    NVARCHAR2(4000)     YES                                      
-PERMISSIONS_JSON              CLOB                YES                                      
-LAST_PASSWORD_CHANGE_DATE     DATE                YES                                      
-LEGACY_ID                     NUMBER(10,0)        YES                                      
-ADMIN                         NUMBER(1,0)         YES                                      
-
-
-BANG: SYS_USER_GROUP
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER(10,0)        NO                                       
-PARENT_ID                     NUMBER(10,0)        YES                                      
-GROUP_CODE                    NVARCHAR2(100)      YES                                      
-GROUP_NAME                    NVARCHAR2(500)      YES                                      
-NOTE                          NVARCHAR2(2000)     YES                                      
-CREATED_BY                    NUMBER(10,0)        YES                                      
-CREATED_AT                    TIMESTAMP(6)        YES                                      
-LAST_MODIFIED_BY              NUMBER(10,0)        YES                                      
-LAST_MODIFIED_AT              TIMESTAMP(6)        YES                                      
-EXPIRY_DATE                   DATE                YES                                      
-RECORD_STATUS                 NUMBER(1,0)         YES                                      
-MEMBER                        NUMBER(1,0)         YES                                      
-USAGE_START_DATE              DATE                YES                                      
-
-
-BANG: SYS_USER_LOGIN_LOG
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER(10,0)        NO      PK                               
-USER_ID                       NUMBER(10,0)        NO                                       
-LOGIN_AT                      TIMESTAMP(6)        YES                                      
-IP_ADDRESS                    NVARCHAR2(100)      NO                                       
-ACTIVE                        NUMBER(1,0)         YES                                      
-
-
-BANG: SYS_WORKING_CALENDAR
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER(10,0)        NO                                       
-REPORT_YEAR                   NUMBER(4,0)         YES                                      
-WEEK                          NUMBER(2,0)         YES                                      
-CALENDAR_DATE                 DATE                YES                                      
-NOTE                          NVARCHAR2(2000)     YES                                      
-LAST_MODIFIED_BY              NUMBER(10,0)        YES                                      
-LAST_MODIFIED_AT              TIMESTAMP(6)        YES                                      
-RECORD_STATUS                 NUMBER(1,0)         YES                                      
-
-
-BANG: flyway_schema_history
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-installed_rank                NUMBER              NO      PK                               
-version                       VARCHAR2(50)        YES                                      
-description                   VARCHAR2(200)       NO                                       
-type                          VARCHAR2(20)        NO                                       
-script                        VARCHAR2(1000)      NO                                       
-checksum                      NUMBER              YES                                      
-installed_by                  VARCHAR2(100)       NO                                       
-installed_on                  TIMESTAMP(6)        NO                                       
-execution_time                NUMBER              NO                                       
-success                       NUMBER(1,0)         NO                                       
-
+DELETED                       NUMBER(1,0)         NO                                       0:active, 1:soft-deleted
 

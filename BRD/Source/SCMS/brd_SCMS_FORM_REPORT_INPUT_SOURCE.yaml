@@ -1,0 +1,51 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: FORM_REPORT_INPUT_SOURCE
+brd_ref: BRD-SRC-SCMS-FORM_REPORT_INPUT_SOURCE
+columns:
+  - name: ID
+    data_type: NUMBER(19,0)
+    description: "Khóa chính của bản ghi"
+    key: PK
+    fk_note: null
+  - name: CANONICAL_FORM_REPORT_ID
+    data_type: NUMBER(19,0)
+    description: "Biểu mẫu báo cáo gộp (canonical) — biểu mẫu đích dùng để khai thác/cảnh báo"
+    key: FK
+    fk_note: "FK → FORM_REPORT.ID"
+  - name: SOURCE_FORM_REPORT_ID
+    data_type: NUMBER(19,0)
+    description: "Biểu mẫu báo cáo nguồn — nơi đọc dữ liệu thực tế để nạp vào biểu mẫu canonical"
+    key: FK
+    fk_note: "FK → FORM_REPORT.ID"
+  - name: PERIOD_SCOPE
+    data_type: VARCHAR2(400)
+    description: "Phạm vi kỳ áp dụng ánh xạ: ALL hoặc danh sách CSV (QUY, BAN_NIEN, NAM)"
+    key: null
+    fk_note: null
+  - name: PRIORITY
+    data_type: NUMBER(3,0)
+    description: "Thứ tự ưu tiên nguồn khi trùng CTCK + kỳ báo cáo — giá trị nhỏ hơn ưu tiên cao hơn"
+    key: null
+    fk_note: null
+  - name: ACTIVE
+    data_type: NUMBER(1,0)
+    description: "Cờ hiệu lực ánh xạ"
+    key: null
+    fk_note: null
+  - name: NOTE
+    data_type: VARCHAR2(2000)
+    description: "Ghi chú bổ sung"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm tạo bản ghi"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm cập nhật bản ghi gần nhất"
+    key: null
+    fk_note: null

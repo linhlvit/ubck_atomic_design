@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Business Activity] Business Review"
   table_type: "Fundamental"
   group: "T3"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -22,7 +22,7 @@ metadata:
     \ để bổ sung DEPARTMENT_ID — phát hiện qua post_check_source_coverage.py. Thêm\
     \ cặp Member Department Id/Code (FK crosswalk sang NHNCK.DEPARTMENTS qua Regulatory\
     \ Authority Organization Unit); Member Department Name giữ nguyên làm snapshot\
-    \ tên đi kèm."
+    \ tên đi kèm. [SỬA 2026-09-11] Bổ sung Job Title (DDL UAT cập nhật)."
 attributes:
 - attribute_name: "Inspection Team Member Id"
   physical_name: "inspection_team_member_id"
@@ -187,6 +187,22 @@ attributes:
   source_columns:
   - "THANHTRA.INSPECTION_TEAM_MEMBER.ROLE_IN_TEAM"
   comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Job Title"
+  physical_name: "job_title"
+  description: "Chức vụ — dùng chính cho người giám sát (role SUPERVISORY); tùy chọn\
+    \ với thành viên đoàn."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.INSPECTION_TEAM_MEMBER.JOB_TITLE"
+  comment: "Cột mới (DDL UAT cập nhật 2026-09). Mô tả nguồn nhắc đến role SUPERVISORY\
+    \ nhưng Role In Team Code hiện chỉ có LEADER/SECRETARY/MEMBER — có thể nguồn chưa\
+    \ đồng bộ đầy đủ giá trị enum, cần Data Modeler/BA xác nhận."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

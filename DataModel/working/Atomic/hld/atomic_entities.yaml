@@ -10,7 +10,8 @@ entities:
   description: "Tài khoản giao dịch chứng khoán của nhà đầu tư trong hệ thống GSGD\
     \ (nguồn gốc VSDC). Gộp thông tin cơ bản (định danh, loại hình NĐT, trạng thái,\
     \ người/ngày nhận ủy quyền) và thông tin mở rộng liên hệ/ngân hàng vào 1 entity\
-    \ duy nhất. Số CCCD (Identity Number) FK sang Individual (nguồn NHNCK.IDENTITY_INFO_C06S)."
+    \ duy nhất. Số CCCD (Identity Number) denormalized text — entity Individual (nguồn\
+    \ NHNCK.IDENTITY_INFO_C06S) đã gỡ bỏ khỏi scope (2026-09-12), không còn FK target."
   source_table: "GSGD.INVESTOR_ACCOUNT"
   status: "approved"
 - bcv_core_object: "Arrangement"
@@ -271,6 +272,28 @@ entities:
   status: "draft"
 - bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Business Activity"
+  atomic_entity: "Securities Practitioner Post Certification Training Course"
+  table_type: "Fundamental"
+  domain_prefix: "Securities Practitioner"
+  entity_physical_name: "sp_post_certification_training_course"
+  description: "Khóa học/lớp bồi dưỡng kiến thức định kỳ sau cấp CCHN. Master entity\
+    \ độc lập, không FK bảng nghiệp vụ nào. Dùng catch-all BCV term chung với entity\
+    \ con Post Certification Training Result theo quyết định Data Modeler."
+  source_table: "NHNCK.POST_CERT_TRAINING_COURSES"
+  status: "draft"
+- bcv_core_object: "Business Activity"
+  bcv_concept: "[Business Activity] Business Activity"
+  atomic_entity: "Securities Practitioner Post Certification Training Result"
+  table_type: "Fundamental"
+  domain_prefix: "Securities Practitioner"
+  entity_physical_name: "sp_post_certification_training_result"
+  description: "Kết quả tham gia khóa bồi dưỡng sau cấp CCHN của người hành nghề:\
+    \ thời gian, số giờ đào tạo, kết quả/phân loại. FK đến Post Certification Training\
+    \ Course (Tier 2) và Practitioner (Tier 2)."
+  source_table: "NHNCK.POST_CERT_TRAINING_RESULTS"
+  status: "draft"
+- bcv_core_object: "Business Activity"
+  bcv_concept: "[Business Activity] Business Activity"
   atomic_entity: "Securities Practitioner Professional Training Class"
   table_type: "Fundamental"
   domain_prefix: "Securities Practitioner"
@@ -406,6 +429,18 @@ entities:
   source_table: "ORDERTRADE.ORDER_BOOK_HOSE, ORDERTRADE.ORDER_BOOK_HNX"
   status: "approved"
 - bcv_core_object: "Communication"
+  bcv_concept: "[Communication] Notification"
+  atomic_entity: "Securities Practitioner License Application Result Notification"
+  table_type: "Relative"
+  domain_prefix: "Securities Practitioner"
+  entity_physical_name: "sp_license_application_result_notification"
+  description: "Outbox đẩy kết quả xử lý hồ sơ đăng ký CCHN ra Cổng Dịch vụ công quốc\
+    \ gia (MCĐT) — trạng thái gửi, số lần thử lại, lỗi gần nhất. Thiết kế SCD2 (etl_pattern:\
+    \ SCD2) theo quyết định Data Modeler (2026-09-10) để lưu lịch sử thay đổi trạng\
+    \ thái gửi. FK đến License Application."
+  source_table: "NHNCK.MCDT_RESULT_OUTBOX"
+  status: "draft"
+- bcv_core_object: "Communication"
   bcv_concept: "[Communication] Assessment"
   atomic_entity: "Securities Practitioner Qualification Examination Assessment"
   table_type: "Fundamental"
@@ -480,6 +515,21 @@ entities:
     \ tại khi return_method_code = 2 trên hồ sơ cha. FK ho_so_id không unique (cho\
     \ phép 1-N về sau dù thực tế 1-1)."
   source_table: "TTHC.AP_DOCUMENT_POSTAL_RECEIPT"
+  status: "draft"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Form Document"
+  atomic_entity: "Classification Securities Company Event Type X Securities Company\
+    \ Report Relationship"
+  table_type: "Relative"
+  domain_prefix: ""
+  entity_physical_name: "cl_sc_event_type_x_sc_report_relationship"
+  description: "Quy định biểu mẫu báo cáo nào bắt buộc nộp cho loại sự kiện nào, trong\
+    \ khoảng thời gian nào (APPLICABLE_FROM/APPLICABLE_TO, REQUIRED). Đặt tên theo\
+    \ pattern `_x_ Relationship` — tham khảo NHNCK APPLICATION_DECISIONS và tiền lệ\
+    \ SCMS LNK_SC_FIRM_SERVICE — vì có attribute nghiệp vụ thật, không phải pure junction\
+    \ thuần. Tên đổi theo cascade khi parent Classification Securities Company Event\
+    \ Type đổi tên 2026-09-16."
+  source_table: "SCMS.LNK_EVENT_TYPE_FORM"
   status: "draft"
 - bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Form Document"
@@ -676,6 +726,52 @@ entities:
   source_table: "SCMS.SC_FIRM_ADMIN_SANCTION"
   status: "draft"
 - bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Form Document"
+  atomic_entity: "Securities Company Report"
+  table_type: "Relative"
+  domain_prefix: "Securities Company"
+  entity_physical_name: "sc_report"
+  description: "Biểu mẫu báo cáo (định kỳ/bất thường/theo yêu cầu/CBTT) mà CTCK/Chi\
+    \ nhánh/VPĐD phải nộp UBCKNN — căn cứ pháp lý, phiên bản, phân cấp biểu mẫu cha-con.\
+    \ BCV Concept sửa theo tiền lệ IDS (2026-09-15, xem 7e #22) — trước đây dùng term\
+    \ tự đặt không có thật trong BCV. Đổi tên từ \"Securities Company Form"
+  source_table: "SCMS.FORM_REPORT"
+  status: "draft"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Regulatory Report"
+  atomic_entity: "Securities Company Report Input Submission"
+  table_type: "Relative"
+  domain_prefix: "Securities Company"
+  entity_physical_name: "sc_report_input_submission"
+  description: "Lần nộp dữ liệu báo cáo đầu vào (eForm) gắn với 1 biểu mẫu báo cáo\
+    \ (Securities Company Report), có thể liên kết tới báo cáo định kỳ cụ thể hoặc\
+    \ không liên kết. Đảo ngược quyết định loại-scope trước đây — xem 7e #22."
+  source_table: "SCMS.REPORT_INPUT_SUBMISSION"
+  status: "draft"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Regulatory Report"
+  atomic_entity: "Securities Company Report Input Value"
+  table_type: "Classification"
+  domain_prefix: "Securities Company"
+  entity_physical_name: "sc_report_input_value"
+  description: "Giá trị từng ô dữ liệu (cell) trong 1 lần nộp báo cáo đầu vào (Securities\
+    \ Company Report Input Submission), xác định theo tọa độ sheet/section/cell. Đảo\
+    \ ngược quyết định loại-scope trước đây — xem 7e #22. Table Type đổi Relative\
+    \ → Classification (Upsert/SCD1) theo chỉ đạo Data Modeler (2026-09-16)."
+  source_table: "SCMS.REPORT_INPUT_CELL_VALUE"
+  status: "draft"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Form Document"
+  atomic_entity: "Securities Company Report Sheet Column"
+  table_type: "Relative"
+  domain_prefix: "Securities Company"
+  entity_physical_name: "sc_report_sheet_column"
+  description: "Cột dữ liệu trong 1 sheet của biểu mẫu báo cáo — mã, tên, kiểu dữ\
+    \ liệu, định dạng hiển thị. Đảo ngược quyết định loại-scope trước đây (cascade\
+    \ từ FORM_REPORT) — xem 7e #23."
+  source_table: "SCMS.FORM_SHEET_COLUMN"
+  status: "draft"
+- bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Gov. Registration Document"
   atomic_entity: "Securities Practitioner License Application"
   table_type: "Fundamental"
@@ -722,6 +818,18 @@ entities:
   status: "approved"
 - bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Gov. Registration Document"
+  atomic_entity: "Securities Practitioner License Certificate Status Change History"
+  table_type: "Fact Append"
+  domain_prefix: "Securities Practitioner"
+  entity_physical_name: "sp_license_certificate_status_change_history"
+  description: "Lịch sử thay đổi trạng thái chứng chỉ hành nghề — ghi nhận trạng thái\
+    \ trước/sau (OLD_STATUS/NEW_STATUS), quyết định liên quan và lý do thay đổi. Tái\
+    \ dùng BCV concept của entity cha License Certificate Document (không có BCV term\
+    \ riêng cho \"status history\")."
+  source_table: "NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES"
+  status: "draft"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Gov. Registration Document"
   atomic_entity: "Securities Practitioner License Certificate Type"
   table_type: "Fundamental"
   domain_prefix: "Securities Practitioner"
@@ -766,6 +874,20 @@ entities:
     \ định, chức vụ/tên người ký, ngày ký, đường dẫn file. Tái dùng BCV concept của\
     \ entity cha License Decision Document."
   source_table: "NHNCK.DECISION_DOCUMENTS"
+  status: "draft"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Gov. Registration Document"
+  atomic_entity: "Securities Practitioner License Decision Document X Securities Practitioner\
+    \ License Application Relationship"
+  table_type: "Relative"
+  domain_prefix: ""
+  entity_physical_name: "sp_license_decision_document_x_sp_license_application_relationship"
+  description: "Quan hệ giữa 1 quyết định hành chính (License Decision Document) và\
+    \ 1 hồ sơ CCHN (License Application) — pure junction 2 FK, không có attribute\
+    \ nghiệp vụ riêng. Tái dùng BCV concept của entity cha License Decision Document.\
+    \ Đảo lại quyết định denormalize ARRAY trước đó (Overview §7d) theo yêu cầu Data\
+    \ Modeler (2026-09-12)."
+  source_table: "NHNCK.APPLICATION_DECISIONS"
   status: "draft"
 - bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Employer Registration"
@@ -1186,7 +1308,7 @@ entities:
     \ FMS.PENSION_AGENT, FMS.PENSION_PROVIDER, FMS.DISTRIBUTOR_AGENT, FMS.BANK_EMPLOY,\
     \ FMS.TL_PRO_RELA, FMS.OTHER_AGENT, FMS.TRANSFER_AGENT, FMS.INSDER_RELA, FMS.INSDER_RPRST,\
     \ IDS.COMPANY_PROFILES, IDS.AF_PROFILES, IDS.AF_LEGAL_REPRESENTATIVE, IDS.IDENTITY,\
-    \ FIMS.INVESTOR, FIMS.TRADINGREPRESENTATIVE, KNT.TAX_REG_REPRESENTATIVE, NHNCK.IDENTITY_INFO_C06S"
+    \ FIMS.INVESTOR, FIMS.TRADINGREPRESENTATIVE, KNT.TAX_REG_REPRESENTATIVE"
   status: "approved"
 - bcv_core_object: "Involved Party"
   bcv_concept: "Shared Entity"
@@ -1229,7 +1351,7 @@ entities:
     \ FMS.PENSION_AGENT, FMS.PENSION_PROVIDER, FMS.DISTRIBUTOR_AGENT, FMS.TL_PRO_RELA,\
     \ FMS.OTHER_AGENT, FMS.TRANSFER_AGENT, FMS.INSDER_RELA, FMS.DISTRIBUTOR_LOCATION,\
     \ IDS.COMPANY_PROFILES, IDS.LEGAL_ENTITIES, IDS.AF_PROFILES, FIMS.INVESTOR, FIMS.TRADINGREPRESENTATIVE,\
-    \ KNT.TAX_REGISTRATION_INFO, NHNCK.IDENTITY_INFO_C06S"
+    \ KNT.TAX_REGISTRATION_INFO"
   status: "approved"
 - bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Individual Employment Status"
@@ -1258,11 +1380,13 @@ entities:
   table_type: "Fundamental"
   domain_prefix: "Regulatory Authority"
   entity_physical_name: "ra_organization_unit"
-  description: "Đơn vị và phòng ban thuộc UBCKNN — cấu trúc cây self-referencing DEPARTMENT\
-    \ → UNIT. Phân biệt bằng Organization Unit Type Code (ETL-derived). Dùng chung\
-    \ làm FK tổ chức nội bộ."
-  source_table: "NHNCK.UNITS, NHNCK.DEPARTMENTS"
-  status: "approved"
+  description: "Đơn vị thuộc UBCKNN — cấu trúc cây self-referencing. Phân biệt bằng\
+    \ Organization Unit Type Code (ETL-derived). Dùng chung làm FK tổ chức nội bộ.\
+    \ [SỬA 2026-09-11] DEPARTMENTS tách khỏi entity này theo yêu cầu Data Modeler\
+    \ — nay chỉ map từ NHNCK.UNITS, xem lld_NHNCK_DEPARTMENTS.yaml (đổi sang Classification\
+    \ Value)."
+  source_table: "NHNCK.UNITS"
+  status: "draft"
 - bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Organization"
   atomic_entity: "Regulatory Authority Organization Unit X Securities Practitioner\
@@ -1370,6 +1494,21 @@ entities:
   description: "Người được cổ đông tổ chức ủy quyền đại diện quyền lợi tại CTCK. Ghi\
     \ nhận thông tin cá nhân người đại diện, số cổ phần được đại diện và ngày bổ nhiệm."
   source_table: "SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE"
+  status: "draft"
+- bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Broker Dealer"
+  atomic_entity: "Securities Company X Classification Securities Company Firm Service\
+    \ Relationship"
+  table_type: "Relative"
+  domain_prefix: ""
+  entity_physical_name: "sc_x_cl_sc_firm_service_relationship"
+  description: "Danh mục số giấy phép dịch vụ chứng khoán hiện hành theo từng CTCK\
+    \ (FK Securities Company + Classification Securities Company Firm Service), gồm\
+    \ số giấy phép và ngày hiệu lực/hết hiệu lực. Khác dữ liệu với Securities Company\
+    \ Licensed Service (hồ sơ đăng ký/thu hồi dịch vụ) — xem 7e #4. Tái dùng BCV Concept\
+    \ của entity cha Securities Company. Tên đổi theo cascade khi parent Classification\
+    \ Securities Company Firm Service đổi tên 2026-09-16."
+  source_table: "SCMS.LNK_SC_FIRM_SERVICE"
   status: "draft"
 - bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Organization"
@@ -1629,6 +1768,44 @@ entities:
     \ theo yêu cầu Data Modeler — chỉ giữ 2 cặp FK Id/Code như các entity link khác."
   source_table: "NHNCK.CERTIFICATE_RECORD_GROUP_MEMBERS"
   status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Citizen Reception Participant"
+  table_type: ""
+  domain_prefix: ""
+  entity_physical_name: ""
+  description: "Người tham gia buổi tiếp công dân: RECEIVER (người tiếp, tối thiểu\
+    \ 2 người) hoặc COORDINATOR (đơn vị phối hợp, không bắt buộc). Bảng mới (DDL UAT\
+    \ 2026-09) thay thế cột RECEIVER_ID/RECEIVER_NAME (nay DEPRECATED) trên Citizen\
+    \ Reception. Kế thừa BCV Concept của entity cha vì là chi tiết 1-N của cùng hoạt\
+    \ động, k"
+  source_table: "THANHTRA.CITIZEN_RECEPTION_PARTICIPANT"
+  status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Citizen Reception Subject"
+  table_type: ""
+  domain_prefix: ""
+  entity_physical_name: ""
+  description: "Chi tiết đối tượng được tiếp: cá nhân (1 dòng), đoàn đông người (nhiều\
+    \ dòng, mỗi dòng 1 người đại diện), hoặc tổ chức (1 dòng). Bảng mới (DDL UAT 2026-09)\
+    \ thay thế cột SUBJECT_NAME (nay DEPRECATED) trên Citizen Reception. Không tách\
+    \ IP Postal Address dù có ADDRESS — snapshot tại thời điểm tiếp, không phải hồ\
+    \ sơ I"
+  source_table: "THANHTRA.CITIZEN_RECEPTION_SUBJECT"
+  status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Citizen Reception X Petition Relationship"
+  table_type: ""
+  domain_prefix: ""
+  entity_physical_name: ""
+  description: "Liên kết 1 buổi tiếp công dân với nhiều đơn thư (trường hợp đoàn đông\
+    \ người, mỗi người nộp 1 đơn riêng) — entity link/relationship thuần bắc cầu 2\
+    \ domain (Citizen Reception + Petition) nên không mang domain prefix riêng. Bảng\
+    \ mới (DDL UAT 2026-09) thay thế cột PETITION_ID (nay DEPRECA"
+  source_table: "THANHTRA.CITIZEN_RECEPTION_PETITION_LINK"
+  status: "draft"
 - bcv_core_object: "Common"
   bcv_concept: "[Common] Industry Classification"
   atomic_entity: "Classification Business Line"
@@ -1660,20 +1837,11 @@ entities:
     \ Data Modeler (bỏ tiền tố nguồn + đổi BCV Term hiển thị thành \"Business Transaction\"\
     ); BCV Concept giữ nguyên [Common] Business Line do không tìm thấy BCV Term \"\
     Business Transaction\" khớp hơn trong knowledge/terms.csv. Xem SCMS_HLD_Overview.md\
-    \ #55 / 7e #16."
+    \ #55 / 7e #16. **DEPRECATED 2026-09-12** — gộp vào `Classification Securities\
+    \ Firm Service` (SCMS.CAT_SERVICE_LEGAL_CAPITAL), vai trò nay là attribute \"\
+    Application Type Code\". Chờ Data Modeler đổi design_status của lld_SCMS_CAT_BUSINESS_LINE.yaml\
+    \ khỏi approved trước khi xoá dòng này (xem SCMS_HLD_Tier1.md 6f T1-11)."
   source_table: "SCMS.CAT_BUSINESS_LINE"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Classification Event Type"
-  table_type: ""
-  domain_prefix: "Classification"
-  entity_physical_name: ""
-  description: "Danh mục loại sự kiện/sự vụ nghiệp vụ (thành lập, điều chỉnh vốn,\
-    \ đổi tên...) làm cơ sở xác định nghĩa vụ báo cáo/CBTT của CTCK. Nâng cấp từ Classification\
-    \ Value (scheme SCMS_EVENT_TYPE) lên entity thật. Table Type = Relative (khác\
-    \ 3 entity Classification khác trong nhóm) theo chỉ đạo Data Modeler. Xem 7e #11/#13."
-  source_table: "SCMS.CAT_EVENT_TYPE"
   status: "draft"
 - bcv_core_object: "Common"
   bcv_concept: "[Common] Event Type"
@@ -1698,18 +1866,6 @@ entities:
     \ tham chiếu bảng này — được ghi nhận ở 7f). FK ra JOB_TYPE (Classification Value,\
     \ scheme `FMS_JOB_TYPE` đã đăng ký sẵn — xem 7c, dùng chung với TL_PROFILES.JOB_TYPE/STF_FG_BRCH)."
   source_table: "FMS.JOBS"
-  status: "draft"
-- bcv_core_object: "Common"
-  bcv_concept: "[Common] Firm Status"
-  atomic_entity: "Classification Firm Status"
-  table_type: "Classification"
-  domain_prefix: "Classification"
-  entity_physical_name: "cl_firm_status"
-  description: "Danh mục trạng thái pháp lý áp dụng cho CTCK, Chi nhánh, VPĐD, PGD,\
-    \ Ngân hàng đối tác — mã, tên, cờ yêu cầu nộp báo cáo/CBTT theo từng trạng thái.\
-    \ Nâng cấp từ Classification Value (scheme SCMS_SC_FIRM_STATUS) lên entity thật.\
-    \ Xem 7e #11."
-  source_table: "SCMS.CAT_SC_FIRM_STATUS"
   status: "draft"
 - bcv_core_object: "Common"
   bcv_concept: "[Common] Nationality"
@@ -1747,6 +1903,48 @@ entities:
   source_table: "MRMS.RISK_INDICATOR_VALUE"
   status: "draft"
 - bcv_core_object: "Common"
+  bcv_concept: "[Common] Event Type"
+  atomic_entity: "Classification Securities Company Event Type"
+  table_type: "Relative"
+  domain_prefix: "Classification"
+  entity_physical_name: "cl_securities_company_event_type"
+  description: "Danh mục loại sự kiện/sự vụ nghiệp vụ (thành lập, điều chỉnh vốn,\
+    \ đổi tên...) làm cơ sở xác định nghĩa vụ báo cáo/CBTT của CTCK. Nâng cấp từ Classification\
+    \ Value (scheme SCMS_EVENT_TYPE) lên entity thật. Table Type = Relative (khác\
+    \ 3 entity Classification khác trong nhóm) theo chỉ đạo Data Modeler. Đổi tên\
+    \ 2026-09-16: Classification Event Type → Classification SCMS Event Type → Classification\
+    \ Securities Company Event Type (theo chỉ đạo Data Modeler, đối xứng Classification\
+    \ FMS Event Type)."
+  source_table: "SCMS.CAT_EVENT_TYPE"
+  status: "draft"
+- bcv_core_object: "Common"
+  bcv_concept: "[Common] Service"
+  atomic_entity: "Classification Securities Company Firm Service"
+  table_type: "Classification"
+  domain_prefix: "Classification"
+  entity_physical_name: "cl_securities_company_firm_service"
+  description: "Danh mục dịch vụ và nghiệp vụ kinh doanh chứng khoán của CTCK/CN nước\
+    \ ngoài, kèm vốn pháp định tối thiểu theo tổ hợp loại hình (Catalog Type) + nghiệp\
+    \ vụ (Application Type). Thay thế `Classification Service` (CAT_SERVICE) và `Classification\
+    \ Business Transaction` (CAT_BUSINESS_LINE, cả 2 deprecated) theo quyết định Data\
+    \ Modeler (2026-09-12). Đổi tên 2026-09-16: Classification Securities Firm Service\
+    \ → Classification Securities Company Firm Service theo chỉ đạo Data Modeler."
+  source_table: "SCMS.CAT_SERVICE_LEGAL_CAPITAL"
+  status: "draft"
+- bcv_core_object: "Common"
+  bcv_concept: "[Common] Firm Status"
+  atomic_entity: "Classification Securities Company Firm Status"
+  table_type: "Classification"
+  domain_prefix: "Classification"
+  entity_physical_name: "cl_securities_company_firm_status"
+  description: "Danh mục trạng thái pháp lý áp dụng cho CTCK, Chi nhánh, VPĐD, PGD,\
+    \ Ngân hàng đối tác — mã, tên, cờ yêu cầu nộp báo cáo/CBTT theo từng trạng thái.\
+    \ Nâng cấp từ Classification Value (scheme SCMS_SC_FIRM_STATUS) lên entity thật.\
+    \ Đổi tên 2026-09-16: Classification Firm Status → Classification Securities Company\
+    \ Firm Status theo chỉ đạo Data Modeler. Xem 7e #11."
+  source_table: "SCMS.CAT_SC_FIRM_STATUS"
+  status: "draft"
+- bcv_core_object: "Common"
   bcv_concept: "[Common] Service"
   atomic_entity: "Classification Service"
   table_type: "Classification"
@@ -1755,7 +1953,10 @@ entities:
   description: "Danh mục dịch vụ chứng khoán được UBCKNN cấp phép cho CTCK. Nâng cấp\
     \ từ Classification Value (scheme SCMS_SERVICE_TYPE) lên entity thật. FK target\
     \ cho Classification Service Id trên Securities Company Licensed Service. Xem\
-    \ 7e #11/#14."
+    \ 7e #11/#14. **DEPRECATED 2026-09-12** — gộp vào `Classification Securities Firm\
+    \ Service` (SCMS.CAT_SERVICE_LEGAL_CAPITAL). Chờ Data Modeler đổi design_status\
+    \ của lld_SCMS_CAT_SERVICE.yaml khỏi approved trước khi xoá dòng này (xem SCMS_HLD_Tier1.md\
+    \ 6f T1-11)."
   source_table: "SCMS.CAT_SERVICE"
   status: "draft"
 - bcv_core_object: "Common"
@@ -1768,8 +1969,9 @@ entities:
     \ giá trị phân loại từ Orchard Core ContentItem. ContentType = schema_code (nhóm\
     \ scheme); ContentItemId = cl_code (BK). 10 scheme: TRANG_THAI_HO_SO, LOAI_HO_SO,\
     \ LINH_VUC_TTHC, MUC_DO_TTHC, KENH_TIEP_NHAN, CO_QUAN_XU"
-  source_table: "MRMS.RISK_INDICATOR_CATEGORY, TTHC.CLASSIFICATION_VALUE, NHNCK.APPLICATION_SOURCES,\
-    \ NHNCK.APPLICATION_STATUSES, NHNCK.DOCUMENTS, NHNCK.SPECIALIZATIONS"
+  source_table: "MRMS.RISK_INDICATOR_CATEGORY, TTHC.CLASSIFICATION_VALUE, NHNCK.DEPARTMENTS,\
+    \ NHNCK.POSITIONS, NHNCK.EDUCATION_LEVELS, NHNCK.APPLICATION_SOURCES, NHNCK.APPLICATION_STATUSES,\
+    \ NHNCK.DOCUMENTS, NHNCK.SPECIALIZATIONS, NHNCK.BANKS"
   status: "draft"
 - bcv_core_object: "Product"
   bcv_concept: "[Product] Financial Market Instrument"
@@ -1977,15 +2179,6 @@ entities:
     \ dòng ghi nhận một cặp mã chỉ số và mã chứng khoán có mặt trong rổ chỉ số tại\
     \ ngày giao dịch tương ứng."
   source_table: "MDDS.JAD_CSIDXINFOR"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Individual"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: ""
-  source_table: "NHNCK.IDENTITY_INFO_C06S"
   status: "draft"
 - bcv_core_object: "Business Direction"
   bcv_concept: "[Business Direction] Business Plan"
@@ -2283,6 +2476,19 @@ entities:
     \ kiện liên quan."
   source_table: "THANHTRA.PENALTY_DECISION"
   status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Penalty Decision Subject Behavior X Penalty Type Relationship"
+  table_type: ""
+  domain_prefix: ""
+  entity_physical_name: ""
+  description: "Hình thức xử phạt bổ sung theo hành vi trên quyết định xử phạt VPHC\
+    \ — entity link/relationship thuần bắc cầu Penalty Decision Subject Behavior (T6)\
+    \ và Penalty Type (T1), cross-tier FK bình thường. Bảng mới (DDL UAT 2026-09),\
+    \ cho phép 1 hành vi có N hình thức xử phạt bổ sung. Cân nhắc quan hệ với cột\
+    \ SU"
+  source_table: "THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR_SUPPLEMENTARY"
+  status: "draft"
 - bcv_core_object: "Business Direction"
   bcv_concept: "[Business Direction] Law"
   atomic_entity: "Penalty Type"
@@ -2326,6 +2532,31 @@ entities:
   description: "Hồ sơ đơn thư gửi đến UBCKNN từ công dân hoặc tổ chức, gồm phản ánh\
     \ kiến nghị, khiếu nại và tố cáo, với khả năng nhận diện đơn trùng qua self-reference."
   source_table: "THANHTRA.PETITION"
+  status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Petition Target"
+  table_type: ""
+  domain_prefix: ""
+  entity_physical_name: ""
+  description: "Danh sách đối tượng được đề cập trong đơn thư (1 đơn - nhiều đối tượng,\
+    \ có thể thuộc loại khác nhau: công ty chứng khoán, công ty quản lý quỹ, công\
+    \ ty đại chúng, khác). Bảng mới (DDL UAT 2026-09) thay thế cột TARGET_TYPE/TARGET_REFERENCE_ID/TARGET_NAME\
+    \ (nay DEPRECATED) trên Petition. Polymorphic reference — giữ pattern đã dùng\
+    \ ở Inspecti"
+  source_table: "THANHTRA.PETITION_TARGET"
+  status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Petition X Regulatory Authority Organization Unit Relationship"
+  table_type: ""
+  domain_prefix: ""
+  entity_physical_name: ""
+  description: "Danh sách đơn vị nội bộ UBCKNN được chuyển xử lý đơn thư (1 đơn -\
+    \ nhiều đơn vị) — entity link bắc cầu Petition (Communication) và Regulatory Authority\
+    \ Organization Unit (Involved Party, entity đã có ở nguồn NHNCK). Bảng mới (DDL\
+    \ UAT 2026-09) thay thế cột INTERNAL_TRANSFER_UNIT_ID/NAME (nay DEPRECATE"
+  source_table: "THANHTRA.PETITION_INTERNAL_TRANSFER_UNIT"
   status: "draft"
 - bcv_core_object: ""
   bcv_concept: ""
@@ -2623,18 +2854,6 @@ entities:
   status: "draft"
 - bcv_core_object: ""
   bcv_concept: ""
-  atomic_entity: "Securities Company Form Report"
-  table_type: ""
-  domain_prefix: "Securities Company"
-  entity_physical_name: ""
-  description: "Biểu mẫu báo cáo (định kỳ/bất thường/theo yêu cầu/CBTT) mà CTCK/Chi\
-    \ nhánh/VPĐD phải nộp UBCKNN — căn cứ pháp lý, phiên bản, phân cấp biểu mẫu cha-con.\
-    \ Đảo ngược quyết định loại-scope trước đây (form metadata). BCV Concept là term\
-    \ mới đề xuất, chưa tồn tại sẵn trong knowledge base. Xem 7"
-  source_table: "SCMS.FORM_REPORT"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
   atomic_entity: "Securities Company Inspection Schedule"
   table_type: ""
   domain_prefix: ""
@@ -2708,6 +2927,77 @@ entities:
     \ Mỗi dòng = 1 lần thay đổi insert-only với đối tượng thay đổi, giá trị trước/sau\
     \ và số văn bản chấp thuận."
   source_table: "SCMS.SC_FIRM_PROFILE_CHANGE"
+  status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Securities Company Report Indicator"
+  table_type: ""
+  domain_prefix: "Securities Company"
+  entity_physical_name: "sc_report_indicator"
+  description: "Định nghĩa 1 chỉ tiêu/trường dữ liệu có thể gắn vào ô (cell) của biểu\
+    \ mẫu báo cáo — mã, tên, kiểu dữ liệu, nguồn giá trị tham chiếu. Table Type =\
+    \ Relative là ngoại lệ tường minh (không FK nội bộ scope đến Fundamental khác,\
+    \ cùng pattern Classification Securities Company Event Type/Securities Company\
+    \ Rep"
+  source_table: "SCMS.FORM_INDICATOR_INPUT"
+  status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Securities Company Report Input Source"
+  table_type: ""
+  domain_prefix: "Securities Company"
+  entity_physical_name: "sc_report_input_source"
+  description: "Ánh xạ biểu mẫu báo cáo gộp (canonical) sang nguồn đọc dữ liệu khai\
+    \ thác/cảnh báo, kèm phạm vi kỳ áp dụng và độ ưu tiên khi trùng CTCK + kỳ báo\
+    \ cáo. Bảng chưa được khảo sát BRD trước đây — cấu trúc trích từ DDL UAT (Source/DDL\
+    \ UAT 1/SCMS_UAT_schema.txt), bổ sung BRD và thiết kế Atomic"
+  source_table: "SCMS.FORM_REPORT_INPUT_SOURCE"
+  status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Securities Company Report Output Filter"
+  table_type: ""
+  domain_prefix: "Securities Company"
+  entity_physical_name: "sc_report_output_filter"
+  description: "Cấu hình bộ lọc khả dụng khi khai thác 1 biểu mẫu báo cáo đầu ra —\
+    \ cho phép chọn, giá trị mặc định, thứ tự hiển thị. FILTER_CATALOG_ID (FK→CAT_FILTER,\
+    \ bảng chưa khảo sát/thiết kế Atomic) không model FK — denormalize thành attribute\
+    \ Text, xem Tier2 6f T2-16. Bảng chưa được khảo sát BRD trước đâ"
+  source_table: "SCMS.OUTPUT_REPORT_FILTER"
+  status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Securities Company Report Sheet"
+  table_type: ""
+  domain_prefix: "Securities Company"
+  entity_physical_name: "sc_report_sheet"
+  description: "Sheet/trang cụ thể trong 1 biểu mẫu báo cáo — tiêu đề, khổ giấy, người\
+    \ ký, loại sheet (DATA/SUMMARY/HEADER). Đảo ngược quyết định loại-scope trước\
+    \ đây (cascade từ FORM_REPORT) — xem 7e #23."
+  source_table: "SCMS.FORM_SHEET"
+  status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Securities Company Report Sheet Cell"
+  table_type: ""
+  domain_prefix: "Securities Company"
+  entity_physical_name: "sc_report_sheet_cell"
+  description: "Ô dữ liệu (cell) cụ thể trong sheet biểu mẫu báo cáo — gắn chỉ tiêu\
+    \ (Securities Company Report Indicator) vào đúng vị trí hàng/cột, kèm định dạng\
+    \ hiển thị và công thức tính toán. Entity Tier 4 đầu tiên của SCMS. Đảo ngược\
+    \ quyết định loại-scope trước đây (cascade từ FORM_REPORT) — xem 7e #23."
+  source_table: "SCMS.FORM_SHEET_CELL"
+  status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Securities Company Report Sheet Row"
+  table_type: ""
+  domain_prefix: "Securities Company"
+  entity_physical_name: "sc_report_sheet_row"
+  description: "Hàng dữ liệu trong 1 sheet của biểu mẫu báo cáo — mã, tên, định dạng,\
+    \ phân cấp cha-con (self-ref), loại hàng (DU_LIEU/TONG_CONG/TIEU_DE). Đảo ngược\
+    \ quyết định loại-scope trước đây (cascade từ FORM_REPORT) — xem 7e #23."
+  source_table: "SCMS.FORM_SHEET_ROW"
   status: "draft"
 - bcv_core_object: ""
   bcv_concept: ""
@@ -2835,33 +3125,6 @@ entities:
   description: "Nhóm chứng chỉ hành nghề được cán bộ tạo để xử lý cấp/thu hồi/hủy\
     \ tập thể (batch) — tương tự License Application Group."
   source_table: "NHNCK.CERTIFICATE_RECORD_GROUPS"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Securities Practitioner License Certificate Status Change History"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: ""
-  source_table: "NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Securities Practitioner Post Certification Training Course"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: ""
-  source_table: "NHNCK.POST_CERT_TRAINING_COURSES"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Securities Practitioner Post Certification Training Result"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: ""
-  source_table: "NHNCK.POST_CERT_TRAINING_RESULTS"
   status: "draft"
 - bcv_core_object: "Product"
   bcv_concept: "[Product] Financial Market Instrument"

@@ -1,0 +1,149 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-cl_securities_company_firm_service-SCMS.CAT_SERVICE_LEGAL_CAPITAL
+  logical_name: Classification Securities Company Firm Service
+  physical_name: cl_securities_company_firm_service
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Common
+  bcv_concept: "[Common] Service"
+  table_type: Classification
+  etl_pattern: Upsert
+  source: SCMS
+  description: |
+    Danh mục dịch vụ và nghiệp vụ kinh doanh chứng khoán của CTCK/CN nước ngoài, kèm vốn pháp định tối thiểu theo tổ hợp loại hình (Catalog Type) + nghiệp vụ (Application Type). Thay thế `Classification Service` (CAT_SERVICE) và `Classification Business Transaction` (CAT_BUSINESS_LINE, cả 2 deprecated) theo quyết định Data Modeler (2026-09-12). Đổi tên 2026-09-16: Classification Securities Firm Service → Classification Securities Company Firm Service theo chỉ đạo Data Modeler.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-CAT_SERVICE_LEGAL_CAPITAL
+
+attributes:
+  - name: Classification Securities Company Firm Service Id
+    physical_name: cl_sc_firm_service_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: CAT_SERVICE_LEGAL_CAPITAL
+    source_column: null
+    comment: "PK surrogate. Hash: hash_id('SCMS_CAT_SERVICE_LEGAL_CAPITAL', SERVICE_ID). BCV: \"[Common] Service\"."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Classification Securities Company Firm Service Code
+    physical_name: cl_sc_firm_service_code
+    business_meaning: Mã dịch vụ/nghiệp vụ kinh doanh chứng khoán. BK duy nhất — Id hash từ trường này.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_SERVICE_LEGAL_CAPITAL
+    source_column: SCMS.CAT_SERVICE_LEGAL_CAPITAL.SERVICE_ID
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_SERVICE_LEGAL_CAPITAL
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'SCMS_CAT_SERVICE_LEGAL_CAPITAL'"
+    etl_derived_value: SCMS_CAT_SERVICE_LEGAL_CAPITAL
+
+  - name: Classification Securities Company Firm Service Name
+    physical_name: cl_sc_firm_service_nm
+    business_meaning: Tên dịch vụ chứng khoán.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_SERVICE_LEGAL_CAPITAL
+    source_column: SCMS.CAT_SERVICE_LEGAL_CAPITAL.SERVICE_NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: description
+    business_meaning: Mô tả chi tiết nội dung/mục đích của bản ghi.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_SERVICE_LEGAL_CAPITAL
+    source_column: SCMS.CAT_SERVICE_LEGAL_CAPITAL.DESCRIPTION
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Catalog Type
+    physical_name: catalog_tp
+    business_meaning: "Loại danh mục: NGHIEP_VU, DICH_VU."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_SERVICE_LEGAL_CAPITAL
+    source_column: SCMS.CAT_SERVICE_LEGAL_CAPITAL.CATALOG_TYPE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Catalog Code
+    physical_name: catalog_code
+    business_meaning: Mã danh mục — mã chi tiết hơn trong nhóm Catalog Type.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_SERVICE_LEGAL_CAPITAL
+    source_column: SCMS.CAT_SERVICE_LEGAL_CAPITAL.CATALOG_CODE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Application Type Code
+    physical_name: application_tp_code
+    business_meaning: "1-Nghiệp vụ kinh doanh cơ sở, 2-Nghiệp vụ kinh doanh phái sinh. Chỉ có ý nghĩa với CATALOG_TYPE=NGHIEP_VU, CATALOG_TYPE=DICH_VU không có ý nghĩa"
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_SERVICE_LEGAL_CAPITAL
+    source_column: SCMS.CAT_SERVICE_LEGAL_CAPITAL.APPLICATION_TYPE
+    comment: "SCHEMA_CODE=SCMS.CAT_SERVICE_LEGAL_CAPITAL.APPLICATION_TYPE"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Legal Capital Amount
+    physical_name: legal_capital_amt
+    business_meaning: Vốn pháp định tối thiểu theo quy định pháp luật cho tổ hợp dịch vụ/loại hình/nghiệp vụ này (mô tả gốc BRD trống).
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_SERVICE_LEGAL_CAPITAL
+    source_column: SCMS.CAT_SERVICE_LEGAL_CAPITAL.LEGAL_CAPITAL
+    comment: "Nguồn NUMBER(20,0) không khai báo đơn vị/scale — cần profile xác nhận đơn vị tiền (VND?) trước go-live. Cùng bản chất với `legal_capital_amt` trên Classification Business Transaction (deprecated) — xem SCMS_HLD_Tier1.md 6f T1-11."
+    classification_context: null
+    etl_derived_value: null

@@ -1,0 +1,153 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "SCMS"
+  source_table: "FORM_INDICATOR_INPUT"
+  atomic_entity: "Securities Company Report Indicator"
+  entity_physical_name: "sc_report_indicator"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Form Document"
+  table_type: "Relative"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Định nghĩa 1 chỉ tiêu/trường dữ liệu có thể gắn vào ô (cell) của biểu mẫu\
+    \ báo cáo — mã, tên, kiểu dữ liệu, nguồn giá trị tham chiếu. Đảo ngược quyết định\
+    \ loại-scope trước đây (cascade từ FORM_REPORT đã loại, lý do đã lỗi thời) — xem\
+    \ SCMS_HLD_Overview.md 7e #23, SCMS_HLD_Tier1.md 6a/6f T1-14. BCV Core Object\
+    \ = Documentation (không dùng Business Activity dù có tiền lệ Risk/Alert Indicator\
+    \ trong SCMS) theo chỉ đạo Data Modeler. Table Type = Relative là NGOẠI LỆ tường\
+    \ minh — bảng không có FK nghiệp vụ rõ ràng đến 1 Fundamental khác còn trong scope\
+    \ (REFERENCE_CATALOG_ID→FORM_INDICATOR_REFERENCE_VALUE và FIELD_METADATA_ID→FORM_INDICATOR_FIELD_META\
+    \ đều trỏ bảng ngoài scope), cùng pattern ngoại lệ đã ghi nhận cho Classification\
+    \ Securities Company Event Type/Securities Company Report (xem Tier1 6f T1-07).\
+    \ REFERENCE_CATALOG_ID/FIELD_METADATA_ID không model làm FK Atomic (bảng đích\
+    \ ngoài scope) — giữ dạng Text denormalized, không resolve/hash, cùng pattern\
+    \ Primary Source Api Id trên Securities Company Report. Audit block (CREATED_BY/CREATED_AT/UPDATED_BY/LAST_MODIFIED_AT)\
+    \ loại bỏ theo convention SCMS (cùng quyết định áp dụng cho FORM_REPORT/CAT_EVENT_TYPE)."
+attributes:
+- attribute_name: "Securities Company Report Indicator Id"
+  physical_name: "sc_rpt_ind_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_INDICATOR_INPUT.CODE"
+  comment: "PK surrogate. BCV: \"[Documentation] Form Document\". Định nghĩa chỉ tiêu/trường\
+    \ dữ liệu báo cáo. Hash: hash_id('SCMS_FORM_INDICATOR_INPUT', CODE)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Report Indicator Code"
+  physical_name: "sc_rpt_ind_code"
+  description: "Mã định danh (mã viết tắt, mã nghiệp vụ). BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_INDICATOR_INPUT.CODE"
+  comment: "BK chính."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=SCMS_FORM_INDICATOR_INPUT"
+  etl_derived_value: "SCMS_FORM_INDICATOR_INPUT"
+  data_type: "string"
+- attribute_name: "Securities Company Report Indicator Name"
+  physical_name: "sc_rpt_ind_nm"
+  description: "Tên chỉ tiêu (mô tả gốc BRD trống)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_INDICATOR_INPUT.ITEM_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Description"
+  physical_name: "description"
+  description: "Mô tả chi tiết nội dung/mục đích của bản ghi."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_INDICATOR_INPUT.DESCRIPTION"
+  comment: "Nguồn NCLOB — blob text, kích thước lớn. Cần profile nội dung trước ETL."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Data Type Code"
+  physical_name: "data_tp_code"
+  description: "Kiểu dữ liệu (TEXT/NUMBER/DATE/BOOLEAN/SELECT)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_INDICATOR_INPUT.DATA_TYPE"
+  comment: "SCHEMA_CODE=SCMS.FORM_SHEET.DATA_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Category"
+  physical_name: "category"
+  description: "Cột category (mô tả gốc BRD trống — xem thêm tài liệu đặc tả SCMS)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_INDICATOR_INPUT.CATEGORY"
+  comment: "Giữ Text vì mô tả nguồn không liệt kê tập giá trị cố định — cần profile\
+    \ dữ liệu, có thể chuyển sang Classification Value nếu phát hiện tập giá trị hữu\
+    \ hạn."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source Entity Code"
+  physical_name: "src_entity_code"
+  description: "Mã thực thể nguồn dữ liệu chỉ tiêu (mô tả gốc BRD trống)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_INDICATOR_INPUT.SOURCE_ENTITY_CODE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Selection List Source"
+  physical_name: "selection_list_src"
+  description: "Nguồn lấy danh sách chọn (API endpoint hoặc bảng danh mục)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_INDICATOR_INPUT.SELECTION_LIST_SOURCE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

@@ -1,5 +1,5 @@
 DATA DICTIONARY - SCHEMA: THANHTRA_UAT
-Tong so bang: 76 | Materialized View: 0
+Tong so bang: 77 | Materialized View: 0
 ==============================================================================================================
 
 BANG: ADHOC_ADMIN_VIOLATION_REPORT
@@ -115,7 +115,7 @@ Cot                           Kieu du lieu        Null?   Khoa   Lien ket       
 ID                            VARCHAR2(144)       NO      PK                               Khóa chính UUID
 NAME                          VARCHAR2(2000)      NO                                       Tên báo cáo định kỳ phòng chống tham nhũng
 REPORT_TEMPLATE               VARCHAR2(200)       NO                                       Loại mẫu: TEMPLATE_01_PCTN (01/PCTN), TEMPLATE_02_PCTN (02/PCTN), TEMPLATE_03_PCTN (03/PCTN)
-PERIOD_TYPE                   VARCHAR2(200)       NO                                       Kỳ: QUARTER_1, QUARTER_2, QUARTER_3, QUARTER_4, HALF_YEAR, NINE_MONTHS, YEAR
+PERIOD_TYPE                   VARCHAR2(200)       NO                                       Kỳ: QUARTER_1, QUARTER_2, QUARTER_3, QUARTER_4, HALF_YEAR, NINE_MONTHS, YEAR, MONTH_1..MONTH_12
 REPORT_YEAR                   NUMBER(4,0)         NO                                       Năm báo cáo
 DATA_PERIOD_FROM              DATE                YES                                      Thời gian chốt số liệu - Từ ngày
 DATA_PERIOD_TO                DATE                YES                                      Thời gian chốt số liệu - Đến ngày
@@ -154,7 +154,7 @@ Mo ta: Văn bản chỉ đạo và triển khai công tác phòng, chống rửa
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
 ID                            VARCHAR2(144)       NO      PK                               Khóa chính UUID
-DOCUMENT_TYPE                 VARCHAR2(200)       NO                                       Loại văn bản PCRT: SENT (Văn bản đi), RECEIVED (Văn bản đến)
+DOCUMENT_TYPE                 VARCHAR2(200)       NO                                       Loại VB: SUBMISSION_REPORT, DEPLOYMENT_LETTER, RESULT_REPORT, INCOMING (Văn bản đến)
 DOCUMENT_NUMBER               VARCHAR2(400)       NO                                       Số hiệu văn bản PCRT
 ISSUED_DATE                   DATE                NO                                       Ngày ban hành văn bản
 SUMMARY                       CLOB                NO                                       Trích yếu nội dung văn bản PCRT
@@ -168,6 +168,24 @@ CREATED_BY                    VARCHAR2(400)       NO                            
 LAST_MODIFIED_BY              VARCHAR2(400)       YES                                      ID người dùng cập nhật gần nhất
 VERSION                       NUMBER(10,0)        NO                                       Số phiên bản bản ghi (optimistic locking)
 DELETED                       NUMBER(1,0)         NO                                       Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa
+DOSSIER_ID                    VARCHAR2(144)       YES                                      FK logic -> anti_money_laundering_dossier.id. NULL = văn bản tạo trước khi có khái niệm bộ hồ sơ (dữ liệu cũ)
+
+
+BANG: ANTI_MONEY_LAUNDERING_DOSSIER
+Mo ta: Bộ hồ sơ PCRT — gom nhóm nhiều văn bản (anti_money_laundering_document) để dễ tra cứu và theo dõi toàn bộ tiến trình xử lý từ đầu đến cuối
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(144)       NO      PK                               
+NAME                          VARCHAR2(2000)      NO                                       Tên bộ hồ sơ
+DOSSIER_YEAR                  NUMBER(4,0)         NO                                       Năm của bộ hồ sơ — mặc định gán cho văn bản con nếu văn bản không tự nhập năm riêng
+NOTE                          CLOB                YES                                      Ghi chú chung cho cả bộ hồ sơ
+CREATED_AT                    DATE                NO                                       
+LAST_MODIFIED_AT              DATE                YES                                      
+CREATED_BY                    VARCHAR2(400)       NO                                       
+LAST_MODIFIED_BY              VARCHAR2(400)       YES                                      
+VERSION                       NUMBER(10,0)        NO                                       
+DELETED                       NUMBER(1,0)         NO                                       
 
 
 BANG: ANTI_MONEY_LAUNDERING_REPORT
@@ -218,16 +236,16 @@ Cot                           Kieu du lieu        Null?   Khoa   Lien ket       
 --------------------------------------------------------------------------------------------------------------
 ID                            VARCHAR2(144)       NO      PK                               Khóa chính UUID
 RECEPTION_DATE                DATE                NO                                       Ngày tiếp công dân
-RECEIVER_ID                   VARCHAR2(144)       NO                                       ID cán bộ tiếp công dân (FK -> user)
-RECEIVER_NAME                 VARCHAR2(800)       NO                                       Tên cán bộ tiếp công dân
-SUBJECT_TYPE                  VARCHAR2(200)       NO                                       Phân loại đối tượng: INDIVIDUAL (Cá nhân), ORGANIZATION (Tổ chức)
-SUBJECT_NAME                  VARCHAR2(2000)      NO                                       Tên cá nhân/tổ chức được tiếp
+RECEIVER_ID                   VARCHAR2(144)       YES                                      DEPRECATED — xem bảng citizen_reception_participant (participant_type=RECEIVER). Giữ lại = người tiếp đầu tiên, tương thích ngược.
+RECEIVER_NAME                 VARCHAR2(800)       YES                                      DEPRECATED — xem bảng citizen_reception_participant (participant_type=RECEIVER).
+SUBJECT_TYPE                  VARCHAR2(200)       NO                                       INDIVIDUAL (Cá nhân) | GROUP (Đoàn đông người, >= 5 người) | ORGANIZATION (Tổ chức)
+SUBJECT_NAME                  VARCHAR2(2000)      NO                                       DEPRECATED — xem bảng citizen_reception_subject. Giữ lại để tương thích ngược, tự suy ra từ dữ liệu bảng con.
 NUMBER_OF_PEOPLE              NUMBER(5,0)         NO                                       Số người (tiếp đông người: nhóm có tối đa 5 người đại diện)
 SUMMARY                       CLOB                NO                                       Nội dung tóm tắt buổi tiếp công dân
 PETITION_ATTACHED             NUMBER(1,0)         NO                                       Có đơn: 0=Không, 1=Có
-PETITION_CATEGORY             VARCHAR2(200)       YES                                      Loại đơn: COMPLAINT (Khiếu nại), DENUNCIATION (Tố cáo), FEEDBACK_SUGGESTION (Phản ánh kiến nghị). Bắt buộc khi petition_attached=1
-PROCESSING_STATUS             VARCHAR2(800)       YES                                      Trạng thái xử lý vụ việc tiếp công dân
-PETITION_ID                   VARCHAR2(144)       YES     FK     PETITION.ID               FK -> petition (liên kết hồ sơ đơn thư, thêm FK sau khi tạo bảng petition)
+PETITION_CATEGORY             VARCHAR2(200)       YES                                      COMPLAINT (Khiếu nại) | DENUNCIATION (Tố cáo) | FEEDBACK_SUGGESTION (Phản ánh kiến nghị) | MULTI_CONTENT (Đơn có nhiều nội dung). Không bắt buộc dù has_petition = true.
+PROCESSING_STATUS             VARCHAR2(800)       YES                                      Kết quả tiếp công dân (tên hiển thị mới của "Trạng thái xử lý").
+PETITION_ID                   VARCHAR2(144)       YES     FK     PETITION.ID               DEPRECATED — xem bảng citizen_reception_petition_link. Giữ lại để tương thích ngược, tự đồng bộ với đơn thư đầu tiên trong danh sách liên kết.
 NOTE                          CLOB                YES                                      Ghi chú bổ sung
 CREATED_AT                    DATE                NO                                       Thời điểm tạo bản ghi
 LAST_MODIFIED_AT              DATE                YES                                      Thời điểm cập nhật gần nhất
@@ -235,6 +253,68 @@ CREATED_BY                    VARCHAR2(400)       NO                            
 LAST_MODIFIED_BY              VARCHAR2(400)       YES                                      ID người dùng cập nhật gần nhất
 VERSION                       NUMBER(10,0)        NO                                       Số phiên bản bản ghi (optimistic locking)
 DELETED                       NUMBER(1,0)         NO                                       Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa
+HAS_PETITION                  NUMBER(1,0)         NO                                       
+
+
+BANG: CITIZEN_RECEPTION_PARTICIPANT
+Mo ta: Người tham gia buổi tiếp công dân: RECEIVER (Người tiếp, tối thiểu 2 người) hoặc COORDINATOR (Đơn vị phối hợp, không bắt buộc)
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(144)       NO      PK                               
+CITIZEN_RECEPTION_ID          VARCHAR2(144)       NO      FK     CITIZEN_RECEPTION.ID      
+PARTICIPANT_TYPE              VARCHAR2(80)        NO                                       RECEIVER (Người tiếp: cán bộ Thanh tra/lãnh đạo UBCKNN) | COORDINATOR (Đơn vị phối hợp)
+USER_ID                       VARCHAR2(144)       YES                                      Mã tài khoản SSO. NULL khi là nhân sự ngoài UBCKNN tham gia phối hợp (nhập tên thủ công) — chỉ áp dụng cho COORDINATOR
+USER_FULL_NAME                VARCHAR2(800)       NO                                       
+USER_ACCOUNT                  VARCHAR2(400)       YES                                      
+DEPARTMENT_ID                 VARCHAR2(144)       YES                                      
+DEPARTMENT_NAME               VARCHAR2(800)       YES                                      
+SORT_ORDER                    NUMBER(5,0)         NO                                       
+CREATED_AT                    DATE                NO                                       
+LAST_MODIFIED_AT              DATE                YES                                      
+CREATED_BY                    VARCHAR2(400)       NO                                       
+LAST_MODIFIED_BY              VARCHAR2(400)       YES                                      
+VERSION                       NUMBER(10,0)        NO                                       
+DELETED                       NUMBER(1,0)         NO                                       
+
+
+BANG: CITIZEN_RECEPTION_PETITION_LINK
+Mo ta: Liên kết 1 buổi tiếp công dân - nhiều đơn thư (trường hợp đoàn đông người, mỗi người nộp 1 đơn riêng). 1 đơn thư chỉ được liên kết với đúng 1 buổi tiếp (validate ở service).
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(144)       NO      PK                               
+CITIZEN_RECEPTION_ID          VARCHAR2(144)       NO      FK     CITIZEN_RECEPTION.ID      
+PETITION_ID                   VARCHAR2(144)       NO      FK     PETITION.ID               
+SORT_ORDER                    NUMBER(5,0)         NO                                       
+CREATED_AT                    DATE                NO                                       
+LAST_MODIFIED_AT              DATE                YES                                      
+CREATED_BY                    VARCHAR2(400)       NO                                       
+LAST_MODIFIED_BY              VARCHAR2(400)       YES                                      
+VERSION                       NUMBER(10,0)        NO                                       
+DELETED                       NUMBER(1,0)         NO                                       
+
+
+BANG: CITIZEN_RECEPTION_SUBJECT
+Mo ta: Chi tiết đối tượng được tiếp: Cá nhân (1 dòng) / Đoàn đông người (nhiều dòng, mỗi dòng 1 người đại diện) / Tổ chức (1 dòng)
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(144)       NO      PK                               
+CITIZEN_RECEPTION_ID          VARCHAR2(144)       NO      FK     CITIZEN_RECEPTION.ID      
+FULL_NAME                     VARCHAR2(800)       NO                                       Họ tên cá nhân / thành viên đại diện đoàn / người đại diện theo PL-người được ủy quyền của tổ chức
+ID_NUMBER                     VARCHAR2(80)        NO                                       Số CCCD của người ở full_name
+ADDRESS                       VARCHAR2(2000)      YES                                      Chỉ áp dụng cho Cá nhân/Đoàn đông người
+PHONE                         VARCHAR2(80)        YES                                      Chỉ áp dụng cho Cá nhân/Đoàn đông người
+ORGANIZATION_NAME             VARCHAR2(2000)      YES                                      Chỉ áp dụng cho Tổ chức — tên tổ chức
+BUSINESS_REGISTRATION_NUMBER  VARCHAR2(200)       YES                                      Chỉ áp dụng cho Tổ chức — số ĐKKD
+SORT_ORDER                    NUMBER(5,0)         NO                                       
+CREATED_AT                    DATE                NO                                       
+LAST_MODIFIED_AT              DATE                YES                                      
+CREATED_BY                    VARCHAR2(400)       NO                                       
+LAST_MODIFIED_BY              VARCHAR2(400)       YES                                      
+VERSION                       NUMBER(10,0)        NO                                       
+DELETED                       NUMBER(1,0)         NO                                       
 
 
 BANG: CODE_SEQUENCE_COUNTER
@@ -305,7 +385,7 @@ DOCUMENT_NAME                 VARCHAR2(2000)      YES                           
 DOCUMENT_DATE                 DATE                YES                                      Ngày ban hành văn bản
 DOCUMENT_CATEGORY             VARCHAR2(400)       YES                                      Phân loại văn bản: SURVEY_REPORT, INSPECTION_DECISION, SUPERVISION_DECISION, INSPECTION_PLAN, CONCLUSION, PENALTY_DECISION, FOLLOW_UP_LETTER, REQUEST_LETTER, REPORT_FILE, APPENDIX, OTHER
 FILE_PATH                     VARCHAR2(4000)      YES                                      Đường dẫn file trên storage
-FILE_NAME                     VARCHAR2(2000)      NO                                       Tên file gốc khi upload
+FILE_NAME                     VARCHAR2(2000)      YES                                      Tên file gốc. NULL = văn bản mới được import metadata, CHƯA upload file (chờ NSD đính kèm file sau)
 FILE_SIZE                     NUMBER(19,0)        YES                                      Dung lượng file (bytes)
 SORT_ORDER                    NUMBER(5,0)         NO                                       Thứ tự hiển thị
 CREATED_AT                    DATE                NO                                       Thời điểm tạo bản ghi
@@ -443,6 +523,8 @@ CREATED_BY                    VARCHAR2(400)       NO                            
 LAST_MODIFIED_BY              VARCHAR2(400)       YES                                      ID người dùng cập nhật gần nhất
 VERSION                       NUMBER(10,0)        NO                                       Số phiên bản bản ghi (optimistic locking)
 DELETED                       NUMBER(1,0)         NO                                       Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa
+IMPLEMENTED                   NUMBER(1,0)         NO                                       Đã triển khai kiểm tra đối tượng này chưa: 0 = Chưa triển khai, 1 = Đã triển khai
+ACTUAL_QUARTER                NUMBER(1,0)         YES                                      Quý thực tế triển khai (1-4) — do người dùng cập nhật khi đã triển khai xong
 
 
 BANG: EXAMINATION_RESULT_NOTICE
@@ -565,6 +647,8 @@ CITIZEN_ID                    VARCHAR2(200)       YES                           
 BUSINESS_REGISTRATION_NUMBER  VARCHAR2(400)       YES                                      Số đăng ký kinh doanh - chỉ dùng cho tổ chức (targetType=ORGANIZATION)
 LEGAL_REP_NAME                VARCHAR2(800)       YES                                      Tên người đại diện theo pháp luật - chỉ dùng cho tổ chức
 LEGAL_REP_CITIZEN_ID          VARCHAR2(200)       YES                                      CCCD người đại diện theo pháp luật - chỉ dùng cho tổ chức
+START_DATE                    DATE                YES                                      Thời gian bắt đầu kiểm tra đối với đối tượng này; null = lấy theo examination_team.start_date
+END_DATE                      DATE                YES                                      Thời gian kết thúc kiểm tra đối với đối tượng này; null = lấy theo examination_team.end_date
 
 
 BANG: FORM_TEMPLATE
@@ -667,6 +751,8 @@ CREATED_BY                    VARCHAR2(400)       NO                            
 LAST_MODIFIED_BY              VARCHAR2(400)       YES                                      ID người dùng cập nhật gần nhất
 VERSION                       NUMBER(10,0)        NO                                       Số phiên bản bản ghi (optimistic locking)
 DELETED                       NUMBER(1,0)         NO                                       Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa
+IMPLEMENTED                   NUMBER(1,0)         NO                                       Đã triển khai thanh tra đối tượng này chưa: 0 = Chưa triển khai, 1 = Đã triển khai
+ACTUAL_QUARTER                NUMBER(1,0)         YES                                      Quý thực tế triển khai (1-4) — do người dùng cập nhật khi đã triển khai xong
 
 
 BANG: INSPECTION_CONCLUSION
@@ -693,7 +779,12 @@ CREATED_BY                    VARCHAR2(400)       NO                            
 LAST_MODIFIED_BY              VARCHAR2(400)       YES                                      ID người dùng cập nhật gần nhất
 VERSION                       NUMBER(10,0)        NO                                       Số phiên bản bản ghi (optimistic locking)
 DELETED                       NUMBER(1,0)         NO                                       Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa
-TRANSFERRED                   NUMBER              NO                                       
+TRANSFERRED                   NUMBER(1,0)         NO                                       Có chuyển (1) / Không chuyển (0)
+OTHER_HANDLING_CONTENT        CLOB                YES                                      Nội dung kiến nghị xử lý khác
+OTHER_HANDLING_AMOUNT         NUMBER(19,4)        YES                                      Số tiền kiến nghị xử lý khác
+HANDLED_ORGANIZATION_COUNT    NUMBER(10,0)        YES                                      Số tổ chức bị xử lý trách nhiệm
+HANDLED_INDIVIDUAL_COUNT      NUMBER(10,0)        YES                                      Số cá nhân bị xử lý trách nhiệm
+POLICY_DOCUMENT_COUNT         VARCHAR2(800)       YES                                      Hoàn thiện cơ chế chính sách (số văn bản) — nhập chuỗi, không format số
 
 
 BANG: INSPECTION_CONCLUSION_REMEDIAL
@@ -762,6 +853,8 @@ LAST_MODIFIED_BY              VARCHAR2(400)       YES                           
 VERSION                       NUMBER(10,0)        NO                                       Số phiên bản bản ghi (optimistic locking)
 DELETED                       NUMBER(1,0)         NO                                       Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa
 VERIFICATION_MINUTES_SIGN_DATEDATE                YES                                      Ngày ký biên bản xác minh — mốc tính thời hạn lập kết luận thanh tra; phải nhập trước khi hệ thống gửi nhắc nhở kết luận
+CRIMINAL_TRANSFER             NUMBER(1,0)         NO                                       Có (1) / Không (0) chuyển hồ sơ sang Cơ quan điều tra (CQĐT)
+CRIMINAL_TRANSFER_NOTE        VARCHAR2(2000)      YES                                      Ghi chú tên Cơ quan điều tra được chuyển đến — chỉ có ý nghĩa khi criminal_transfer = 1
 
 
 BANG: INSPECTION_TEAM_MEMBER
@@ -783,6 +876,7 @@ CREATED_BY                    VARCHAR2(400)       NO                            
 LAST_MODIFIED_BY              VARCHAR2(400)       YES                                      ID người dùng cập nhật gần nhất
 VERSION                       NUMBER(10,0)        NO                                       Số phiên bản bản ghi (optimistic locking)
 DELETED                       NUMBER(1,0)         NO                                       Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa
+JOB_TITLE                     VARCHAR2(800)       YES                                      Chức vụ — dùng chính cho người giám sát (role SUPERVISORY); tùy chọn với thành viên đoàn
 
 
 BANG: INSPECTION_TEAM_TARGET
@@ -807,6 +901,8 @@ INSPECTION_PERIOD_TO          DATE                YES                           
 ANTI_MONEY_LAUNDERING         NUMBER(1,0)         NO                                       Có/không thanh tra về PCRT: 1=Có, 0=Không
 ABNORMAL_TRANSACTION_CHECK    NUMBER(1,0)         NO                                       Kiểm tra giao dịch bất thường: 1=Có, 0=Không. Nếu =1 thì không tạo thông báo kết quả kiểm tra
 NOTE                          CLOB                YES                                      Ghi chú (per-target)
+START_DATE                    DATE                YES                                      Thời gian bắt đầu thanh tra đối với đối tượng này; null = lấy theo inspection_team.start_date
+END_DATE                      DATE                YES                                      Thời gian kết thúc thanh tra đối với đối tượng này; null = lấy theo inspection_team.end_date
 
 
 BANG: LEGAL_DOCUMENT
@@ -826,6 +922,7 @@ LAST_MODIFIED_AT              TIMESTAMP(6)        YES                           
 LAST_MODIFIED_BY              VARCHAR2(200)       YES                                      ID người dùng cập nhật gần nhất
 VERSION                       NUMBER(10,0)        NO                                       Số phiên bản bản ghi (optimistic locking)
 DELETED                       NUMBER(1,0)         NO                                       Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa
+ECATALOG_ID                   VARCHAR2(36)        YES                                      
 
 
 BANG: NOTIFICATION
@@ -910,6 +1007,10 @@ REVIEWED_AT                   TIMESTAMP(6)        YES
 SOURCE_DOCUMENT_URL           VARCHAR2(4000)      YES                                      
 REVIEWED_BY_ID                VARCHAR2(100)       YES                                      
 APPROVER_NAME                 VARCHAR2(200)       YES                                      
+ENFORCEMENT_STATUS            VARCHAR2(200)       YES                                      Trạng thái thi hành: NOT_ENFORCED (Chưa thi hành), ENFORCED (Đã thi hành)
+CONFISCATED_ASSET_SALE_AMOUNT NUMBER(19,4)        YES                                      Số tiền thu được từ bán thanh lý tang vật, phương tiện bị tịch thu
+OTHER_PENALTY_REVENUE_AMOUNT  NUMBER(19,4)        YES                                      Các khoản tiền khác thu từ xử phạt vi phạm hành chính
+REPORT_CLASSIFICATION         VARCHAR2(200)       YES                                      Phân loại trong báo cáo: DEFERRED_OR_REDUCED, COERCIVE_ENFORCEMENT, COMPLAINED_OR_SUED
 
 
 BANG: PENALTY_DECISION_APPROVAL_HISTORY
@@ -939,7 +1040,7 @@ Mo ta: Tình tiết tăng nặng/giảm nhẹ theo hành vi vi phạm
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
 ID                            VARCHAR2(144)       NO      PK                               Khóa chính UUID
-PENALTY_DECISION_SUBJECT_BEHAVIOR_IDVARCHAR2(144)       NO      FK     PENALTY_DECISION_SUBJECT_BEHAVIOR.IDFK -> penalty_decision_subject_behavior
+PENALTY_DECISION_SUBJECT_BEHAVIOR_ID VARCHAR2(144)       NO      FK     PENALTY_DECISION_SUBJECT_BEHAVIOR.IDFK -> penalty_decision_subject_behavior
 CIRCUMSTANCE_TYPE             VARCHAR2(200)       NO                                       Loại: AGGRAVATING (Tăng nặng), MITIGATING (Giảm nhẹ)
 CREATED_AT                    DATE                NO                                       Thời điểm tạo bản ghi
 LAST_MODIFIED_AT              DATE                YES                                      Thời điểm cập nhật gần nhất
@@ -1008,11 +1109,11 @@ SUBJECT_PHONE                 VARCHAR2(50)        YES
 EMAIL_SENT_AT                 TIMESTAMP(6)        YES                                      
 SMS_SENT_AT                   TIMESTAMP(6)        YES                                      
 VIOLATION_RECORD_ID           VARCHAR2(36)        YES                                      
-RECEIPT_STATUS                VARCHAR2(200)       YES                                      Trạng thái nhận QĐ (text): Chưa nhận / Đã nhận
-VIEWED_AT                     TIMESTAMP(6)        YES                                      Thời điểm đối tượng mở xem quyết định (portal)
-DOWNLOADED_AT                 TIMESTAMP(6)        YES                                      Thời điểm đối tượng tải file quyết định
-CONFIRMED_AT                  TIMESTAMP(6)        YES                                      Thời điểm đối tượng xác nhận đã nhận quyết định
-RECEIVED_AT                   TIMESTAMP(6)        YES                                      Thời điểm chuyển sang Đã nhận (lần đầu trong 3 thao tác)
+RECEIPT_STATUS                VARCHAR2(200)       YES                                      
+VIEWED_AT                     TIMESTAMP(6)        YES                                      
+DOWNLOADED_AT                 TIMESTAMP(6)        YES                                      
+CONFIRMED_AT                  TIMESTAMP(6)        YES                                      
+RECEIVED_AT                   TIMESTAMP(6)        YES                                      
 
 
 BANG: PENALTY_DECISION_SUBJECT_BEHAVIOR
@@ -1038,6 +1139,23 @@ VERSION                       NUMBER(10,0)        NO                            
 DELETED                       NUMBER(1,0)         NO                                       Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa
 LEGAL_BASIS                   CLOB                YES                                      Căn cứ pháp luật để xử phạt hành vi vi phạm này
 VIOLATION_RECORD_ID           VARCHAR2(36)        YES                                      
+SUPPLEMENTARY_PENALTY         CLOB                YES                                      Hình thức xử phạt bổ sung (nhập tự do)
+
+
+BANG: PENALTY_DECISION_SUBJECT_BEHAVIOR_SUPPLEMENTARY
+Mo ta: Hình thức xử phạt bổ sung theo hành vi trên QĐ xử phạt VPHC
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(144)       NO      PK                               
+PENALTY_DECISION_SUBJECT_BEHAVIOR_IDVARCHAR2(144)       NO      FK     PENALTY_DECISION_SUBJECT_BEHAVIOR.ID
+PENALTY_TYPE_ID               VARCHAR2(144)       NO      FK     PENALTY_TYPE.ID           
+CREATED_AT                    DATE                NO                                       
+LAST_MODIFIED_AT              DATE                YES                                      
+CREATED_BY                    VARCHAR2(400)       NO                                       
+LAST_MODIFIED_BY              VARCHAR2(400)       YES                                      
+VERSION                       NUMBER(10,0)        NO                                       
+DELETED                       NUMBER(1,0)         NO                                       
 
 
 BANG: PENALTY_DECISION_VIOLATION_RECORD
@@ -1075,6 +1193,7 @@ LAST_MODIFIED_BY              VARCHAR2(400)       YES                           
 VERSION                       NUMBER(10,0)        NO                                       Số phiên bản bản ghi (optimistic locking)
 DELETED                       NUMBER(1,0)         NO                                       Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa
 LEGAL_BASIS                   CLOB                YES                                      Căn cứ pháp luật cho hình thức xử phạt này
+ECATALOG_ID                   VARCHAR2(36)        YES                                      
 
 
 BANG: PENALTY_TYPE_VIOLATION_BEHAVIOR
@@ -1103,9 +1222,9 @@ CODE                          VARCHAR2(200)       NO                            
 RECEIVED_DATE                 DATE                NO                                       Ngày tiếp nhận đơn thư
 FORWARDING_UNIT               VARCHAR2(2000)      YES                                      Đơn vị/cơ quan chuyển đơn thư đến Thanh tra
 SENDER_NAME                   VARCHAR2(2000)      NO                                       Họ tên người gửi đơn thư
-SENDER_ADDRESS                VARCHAR2(4000)      YES                                      Địa chỉ người gửi đơn thư
+SENDER_ADDRESS                VARCHAR2(4000)      NO                                       Địa chỉ người gửi đơn thư
 CONTENT                       CLOB                NO                                       Nội dung tóm tắt đơn thư
-PETITION_CATEGORY             VARCHAR2(200)       NO                                       Loại đơn: FEEDBACK_SUGGESTION (Phản ánh kiến nghị), COMPLAINT (Khiếu nại), DENUNCIATION (Tố cáo)
+PETITION_CATEGORY             VARCHAR2(200)       NO                                       FEEDBACK_SUGGESTION (Phản ánh kiến nghị) | COMPLAINT (Khiếu nại) | DENUNCIATION (Tố cáo) | MULTI_CONTENT (Đơn có nhiều nội dung).
 RELATED_TO_CORPORATE_BOND     NUMBER(1,0)         NO                                       Liên quan TPDN: 0=Không, 1=Có
 ELIGIBLE_FOR_PROCESSING       NUMBER(1,0)         NO                                       Đủ điều kiện xử lý: 0=Không, 1=Có
 WITHIN_JURISDICTION           NUMBER(1,0)         NO                                       Thuộc thẩm quyền: 0=Không, 1=Có
@@ -1113,15 +1232,15 @@ ASSIGNED_OFFICER_ID           VARCHAR2(144)       NO                            
 ASSIGNED_OFFICER_NAME         VARCHAR2(800)       NO                                       Tên chuyên viên được phân công xử lý đơn thư
 DUPLICATE_TYPE                VARCHAR2(200)       NO                                       Loại: ORIGINAL (Đơn gốc), DUPLICATE (Đơn trùng)
 ORIGINAL_PETITION_ID          VARCHAR2(144)       YES     FK     PETITION.ID               FK tự tham chiếu -> petition (đơn gốc). Bắt buộc khi duplicate_type=DUPLICATE
-SUBMISSION_NUMBER             VARCHAR2(400)       YES                                      Số tờ trình Thanh tra trình lãnh đạo (lấy từ eDoc)
-TRANSFERRED_AUTHORITY         VARCHAR2(2000)      YES                                      Tên cơ quan có thẩm quyền nhận chuyển đơn
-INTERNAL_TRANSFER_UNIT_ID     VARCHAR2(144)       YES                                      ID ban/đơn vị nội bộ UBCKNN nhận chuyển đơn
-INTERNAL_TRANSFER_UNIT_NAME   VARCHAR2(800)       YES                                      Tên ban/đơn vị nội bộ nhận chuyển đơn
+SUBMISSION_NUMBER             VARCHAR2(400)       YES                                      Số phiếu trình (tên hiển thị mới của "Số tờ trình" — không đổi field kỹ thuật).
+TRANSFERRED_AUTHORITY         VARCHAR2(2000)      YES                                      Chuyển CQ có thẩm quyền (tên hiển thị mới của "Cơ quan"). Không loại trừ với các phương án xử lý khác (chuyển nội bộ, công văn hướng dẫn) — 1 đơn thư có thể có đồng thời nhiều phương án.
+INTERNAL_TRANSFER_UNIT_ID     VARCHAR2(144)       YES                                      DEPRECATED — xem bảng petition_internal_transfer_unit. Giữ lại để tương thích ngược, tự đồng bộ với đơn vị đầu tiên trong danh sách.
+INTERNAL_TRANSFER_UNIT_NAME   VARCHAR2(800)       YES                                      DEPRECATED — xem bảng petition_internal_transfer_unit.
 ARCHIVED                      NUMBER(1,0)         NO                                       Lưu đơn: 0=Không, 1=Có
 GUIDANCE_DOCUMENT_NUMBER      VARCHAR2(400)       YES                                      Số văn bản hướng dẫn nhà đầu tư (văn bản đi)
 GUIDANCE_DOCUMENT_DATE        DATE                YES                                      Ngày văn bản hướng dẫn nhà đầu tư
 STATUS                        VARCHAR2(200)       NO                                       Trạng thái: RECEIVED (Đã tiếp nhận), PROCESSED (Đã xử lý xong)
-NOTE                          CLOB                YES                                      Ghi chú bổ sung
+NOTE                          CLOB                YES                                      Ghi chú phương án xử lý (tên hiển thị mới của "Ghi chú").
 END_DATE                      DATE                YES                                      Ngày kết thúc xử lý đơn thư
 CREATED_AT                    DATE                NO                                       Thời điểm tạo bản ghi
 LAST_MODIFIED_AT              DATE                YES                                      Thời điểm cập nhật gần nhất
@@ -1129,9 +1248,13 @@ CREATED_BY                    VARCHAR2(400)       NO                            
 LAST_MODIFIED_BY              VARCHAR2(400)       YES                                      ID người dùng cập nhật gần nhất
 VERSION                       NUMBER(10,0)        NO                                       Số phiên bản bản ghi (optimistic locking)
 DELETED                       NUMBER(1,0)         NO                                       Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa
-TARGET_TYPE                   VARCHAR2(50)        YES                                      
-TARGET_REFERENCE_ID           VARCHAR2(100)       YES                                      
-TARGET_NAME                   VARCHAR2(500)       YES                                      
+TARGET_TYPE                   VARCHAR2(50)        YES                                      DEPRECATED — xem bảng petition_target. Giữ lại để tương thích ngược, tự đồng bộ với đối tượng đầu tiên trong danh sách. SECURITIES_COMPANY | FUND_MANAGEMENT_COMPANY | PUBLIC_COMPANY | OTHER.
+TARGET_REFERENCE_ID           VARCHAR2(100)       YES                                      DEPRECATED — xem bảng petition_target. Giữ lại để tương thích ngược.
+TARGET_NAME                   VARCHAR2(500)       YES                                      DEPRECATED — xem bảng petition_target. Giữ lại để tương thích ngược. Trường "Đối tượng" đã đổi tên hiển thị thành "Đối tượng được đề cập trong đơn".
+INCOMING_DOCUMENT_NUMBER      VARCHAR2(200)       YES                                      Số đến VBĐH (Văn bản điều hành) — số đăng ký đơn thư trong hệ thống văn bản điều hành (eDoc/eOffice). Bắt buộc nhập, chỉ chứa số. Hiển thị cạnh "Ngày nhận" trên UI.
+SUBMISSION_DATE               DATE                YES                                      Ngày phiếu trình — đi kèm "Số phiếu trình" (xem submission_number) tại mục Kết quả xử lý.
+COMPLAINT_CLASSIFICATION      VARCHAR2(200)       YES                                      Phân loại chi tiết kết quả giải quyết khiếu nại (chỉ khi petition_category=COMPLAINT), dùng cho Biểu 02/XLD cột 7/8: KN_FIRST_CORRECT|KN_FIRST_INCORRECT|KN_FIRST_PARTIALLY_CORRECT|KN_SECOND_UPHELD|KN_SECOND_OVERTURNED.
+DENUNCIATION_CLASSIFICATION   VARCHAR2(200)       YES                                      Phân loại chi tiết kết quả giải quyết tố cáo (chỉ khi petition_category=DENUNCIATION), dùng cho Biểu 02/XLD cột 13/14: TC_FIRST_CORRECT|TC_FIRST_INCORRECT|TC_FIRST_MIXED|TC_FOLLOWUP_CORRECT|TC_FOLLOWUP_INCORRECT|TC_FOLLOWUP_MIXED.
 
 
 BANG: PETITION_DOCUMENT
@@ -1163,6 +1286,43 @@ DELETED                       NUMBER(1,0)         NO                            
 DOCUMENT_TEMPLATE_ID          VARCHAR2(36)        YES                                      FK -> document_template: mẫu sử dụng cho màn nhập liệu biểu mẫu đơn thư
 DOCUMENT_TEMPLATE_NAME        VARCHAR2(500)       YES                                      Tên biểu mẫu sử dụng để tạo văn bản
 FIELD_HTML_JSON               CLOB                YES                                      JSON {instanceId: html} — nội dung rich text người dùng đã sửa từng ô trên biểu mẫu
+
+
+BANG: PETITION_INTERNAL_TRANSFER_UNIT
+Mo ta: Danh sách ban/đơn vị trong UBCKNN được chuyển nội bộ xử lý đơn thư (1 đơn - nhiều đơn vị).
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(144)       NO      PK                               
+PETITION_ID                   VARCHAR2(144)       NO      FK     PETITION.ID               
+UNIT_ID                       VARCHAR2(144)       NO                                       
+UNIT_NAME                     VARCHAR2(800)       NO                                       
+SORT_ORDER                    NUMBER(5,0)         NO                                       
+CREATED_AT                    DATE                NO                                       
+LAST_MODIFIED_AT              DATE                YES                                      
+CREATED_BY                    VARCHAR2(400)       NO                                       
+LAST_MODIFIED_BY              VARCHAR2(400)       YES                                      
+VERSION                       NUMBER(10,0)        NO                                       
+DELETED                       NUMBER(1,0)         NO                                       
+
+
+BANG: PETITION_TARGET
+Mo ta: Danh sách đối tượng được đề cập trong đơn thư (1 đơn - nhiều đối tượng, có thể thuộc loại khác nhau).
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(144)       NO      PK                               
+PETITION_ID                   VARCHAR2(144)       NO      FK     PETITION.ID               
+TARGET_TYPE                   VARCHAR2(200)       NO                                       SECURITIES_COMPANY (Công ty chứng khoán) | FUND_MANAGEMENT_COMPANY (Công ty quản lý quỹ) | PUBLIC_COMPANY (Công ty đại chúng) | OTHER (Khác — nhập thủ công tên).
+TARGET_REFERENCE_ID           VARCHAR2(400)       YES                                      ID/mã đối tượng từ hệ thống ngoài (SCMS/FMS/IDS) — NULL khi target_type = OTHER (nhập thủ công).
+TARGET_NAME                   VARCHAR2(2000)      NO                                       
+SORT_ORDER                    NUMBER(5,0)         NO                                       
+CREATED_AT                    DATE                NO                                       
+LAST_MODIFIED_AT              DATE                YES                                      
+CREATED_BY                    VARCHAR2(400)       NO                                       
+LAST_MODIFIED_BY              VARCHAR2(400)       YES                                      
+VERSION                       NUMBER(10,0)        NO                                       
+DELETED                       NUMBER(1,0)         NO                                       
 
 
 BANG: POST_INSPECTION_PROCESSING
@@ -1249,14 +1409,14 @@ CONFIRMATION_STATUS           VARCHAR2(50)        NO                            
 CONFIRMED_AT                  TIMESTAMP(6)        YES                                      Thời điểm công ty xác nhận đã nhận thông báo
 CONFIRMED_BY                  VARCHAR2(200)       YES                                      Người đại diện công ty xác nhận nhận thông báo
 PUSH_STATUS                   VARCHAR2(50)        NO                                       Trạng thái đẩy thông báo sang SCMS/FMS: PENDING (Chờ gửi), SUCCESS (Thành công), FAILED (Thất bại)
-PUSH_ERROR                    VARCHAR2(1000)      YES                                      Thông tin lỗi khi đẩy thông báo thất bại
+PUSH_ERROR                    VARCHAR2(1000)      YES                                      Lý do lỗi cụ thể khi push_status=FAILED (kết nối/HTTP lỗi khi đẩy sang SCMS/FMS)
 CREATED_AT                    TIMESTAMP(6)        NO                                       Thời điểm tạo bản ghi
 LAST_MODIFIED_AT              TIMESTAMP(6)        YES                                      Thời điểm cập nhật gần nhất
 CREATED_BY                    VARCHAR2(200)       NO                                       ID người dùng tạo bản ghi
 LAST_MODIFIED_BY              VARCHAR2(200)       YES                                      ID người dùng cập nhật gần nhất
 VERSION                       NUMBER(10,0)        NO                                       Số phiên bản bản ghi (optimistic locking)
 DELETED                       NUMBER(1,0)         NO                                       Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa
-FMS_EVENT_ID                  VARCHAR2(400)       YES                                      
+FMS_EVENT_ID                  VARCHAR2(100)       YES                                      eventId trả về từ FMS (Nhóm B sendEvent) — dùng để poll trạng thái xử lý thật (Nhóm C). Chỉ có với companyType=FUND_MANAGEMENT_COMPANY
 
 
 BANG: SECURITY_MEASURE_DECISION
@@ -1291,7 +1451,7 @@ Cot                           Kieu du lieu        Null?   Khoa   Lien ket       
 --------------------------------------------------------------------------------------------------------------
 ID                            VARCHAR2(144)       NO      PK                               Khóa chính UUID
 SECURITY_MEASURE_DECISION_ID  VARCHAR2(144)       NO      FK     SECURITY_MEASURE_DECISION.IDFK -> security_measure_decision
-RECIPIENT_TYPE                VARCHAR2(200)       NO                                       Loại: SECURITIES_COMPANY (CTCK), FUND_MANAGEMENT_COMPANY (CT QLQ), STOCK_EXCHANGE (Sở GDCK), VSDC, SSC_DEPARTMENT (Ban nghiệp vụ UBCKNN)
+RECIPIENT_TYPE                VARCHAR2(200)       NO                                       Loại tổ chức nhận: SECURITIES_COMPANY (CTCK → SCMS), FUND_MANAGEMENT_COMPANY (CT QLQ → FMS), STOCK_EXCHANGE (Sở GDCK), VSDC. Không còn hỗ trợ SSC_DEPARTMENT (Ban nghiệp vụ UBCKNN — theo yêu cầu 21/08/2026, bỏ khỏi luồng gửi liên thông)
 RECIPIENT_NAME                VARCHAR2(2000)      NO                                       Tên tổ chức nhận quyết định (CTCK, CT QLQ, Sở GDCK, VSDC, Ban UBCKNN)
 RECIPIENT_REFERENCE_ID        VARCHAR2(144)       YES                                      ID tham chiếu tổ chức nhận trong hệ thống nguồn
 SENT_DATE                     DATE                YES                                      Ngày gửi quyết định đến tổ chức
@@ -1304,6 +1464,9 @@ CREATED_BY                    VARCHAR2(400)       NO                            
 LAST_MODIFIED_BY              VARCHAR2(400)       YES                                      ID người dùng cập nhật gần nhất
 VERSION                       NUMBER(10,0)        NO                                       Số phiên bản bản ghi (optimistic locking)
 DELETED                       NUMBER(1,0)         NO                                       Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa
+PUSH_STATUS                   VARCHAR2(200)       NO                                       Trạng thái ĐẨY sang hệ thống ngoài: PENDING (chưa gửi) | SUCCESS (đã đẩy) | FAILED (lỗi đẩy) — khác confirmation_status (đối tượng nhận đã xác nhận đọc hay chưa)
+PUSH_ERROR                    VARCHAR2(4000)      YES                                      Thông báo lỗi lần đẩy gần nhất (khi push_status = FAILED)
+FMS_EVENT_ID                  VARCHAR2(400)       YES                                      eventId FMS trả về khi đẩy sự kiện SECURITY_MEASURE_DECISION_SENT — dùng tra soát qua FmsDetailClient#getEventStatus (Nhóm C)
 
 
 BANG: SECURITY_MEASURE_DECISION_SUBJECT
@@ -1393,6 +1556,7 @@ VERSION                       NUMBER(10,0)        NO                            
 DELETED                       NUMBER(1,0)         NO                                       Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa
 LEGAL_DOCUMENT                VARCHAR2(4000)      YES                                      Văn bản pháp luật (nhập text tham chiếu)
 VIOLATION_CLAUSE              CLOB                YES                                      Điều khoản vi phạm
+ECATALOG_ID                   VARCHAR2(36)        YES                                      
 
 
 BANG: VIOLATION_BEHAVIOR_LEGAL_DOCUMENT
@@ -1419,7 +1583,7 @@ Cot                           Kieu du lieu        Null?   Khoa   Lien ket       
 ID                            VARCHAR2(144)       NO      PK                               Khóa chính UUID
 CODE                          VARCHAR2(200)       NO                                       Mã hồ sơ tự động sinh
 NAME                          VARCHAR2(2000)      NO                                       Tên hồ sơ/vụ việc vi phạm hành chính
-SOURCE_CATEGORY               VARCHAR2(200)       NO                                       Nguồn phát sinh: INSPECTION_RESULT (KQ thanh tra), INTERNAL_UNIT (Đơn vị nội bộ UBCKNN), STOCK_EXCHANGE (Sở GDCK), VSDC (VSDC), OTHER_SUPERVISION (KQ giám sát của đơn vị khác)
+SOURCE_CATEGORY               VARCHAR2(200)       NO                                       Nguồn gửi: INSPECTION_RESULT (Kết quả thanh kiểm tra của Thanh tra), INTERNAL_UNIT (Đơn vị giám sát trong UBCKNN), HNX (Sở HNX), HOSE (Sở HOSE), VSDC, OTHER_SUPERVISION (Khác). Giá trị cũ STOCK_EXCHANGE (Sở GDCK) không còn dùng cho hồ sơ mới, chỉ còn tồn tại ở dữ liệu lịch sử.
 SOURCE_UNIT_ID                VARCHAR2(144)       YES                                      ID đơn vị gửi kết quả giám sát/vi phạm
 SOURCE_UNIT_NAME              VARCHAR2(800)       YES                                      Tên đơn vị gửi kết quả (Sở GDCK, Ban giám sát, VSDC...)
 INSPECTION_TEAM_ID            VARCHAR2(144)       YES     FK     INSPECTION_TEAM.ID        FK -> inspection_team (liên kết hồ sơ đoàn thanh tra nếu phát sinh từ thanh tra)
@@ -1440,6 +1604,7 @@ CREATED_BY                    VARCHAR2(400)       NO                            
 LAST_MODIFIED_BY              VARCHAR2(400)       YES                                      ID người dùng cập nhật gần nhất
 VERSION                       NUMBER(10,0)        NO                                       Số phiên bản bản ghi (optimistic locking)
 DELETED                       NUMBER(1,0)         NO                                       Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa
+REPORT_CLASSIFICATION         VARCHAR2(200)       YES                                      Phân loại báo cáo: NO_PENALTY_ART65_2, RECORD_NO_PENALTY, FROM_CRIMINAL_PROCEEDINGS, MINOR_WARNING_SUBSTITUTE
 
 
 BANG: VIOLATION_CASE_OUTPUT_DOCUMENT
@@ -1470,7 +1635,7 @@ Cot                           Kieu du lieu        Null?   Khoa   Lien ket       
 --------------------------------------------------------------------------------------------------------------
 ID                            VARCHAR2(144)       NO      PK                               Khóa chính UUID
 VIOLATION_CASE_ID             VARCHAR2(144)       NO      FK     VIOLATION_CASE.ID         FK -> violation_case
-DOCUMENT_NUMBER               VARCHAR2(400)       NO                                       Số văn bản tiếp nhận (kết quả giám sát, biên bản từ đơn vị khác)
+DOCUMENT_NUMBER               VARCHAR2(400)       YES                                      Số văn bản tiếp nhận (kết quả giám sát, biên bản từ đơn vị khác)
 DOCUMENT_DATE                 DATE                NO                                       Ngày ban hành văn bản tiếp nhận
 ISSUING_UNIT_NAME             VARCHAR2(800)       NO                                       Tên đơn vị lập/gửi văn bản tiếp nhận
 VIOLATION_SUBJECT_NAME        VARCHAR2(2000)      NO                                       Tên đối tượng vi phạm trong văn bản tiếp nhận
@@ -1553,16 +1718,18 @@ SIGNATURE_TYPE                VARCHAR2(200)       YES                           
 FIRST_SIGNED_BY               VARCHAR2(800)       YES                                      ID người ký số đầu tiên (Chuyên viên/TTV ký nháy)
 FIRST_SIGNED_AT               TIMESTAMP(6)        YES                                      Thời điểm ký số đầu tiên
 SIGNED_DOCUMENT_URL           VARCHAR2(4000)      YES                                      URL file biên bản VPHC đã được ký số (PDF)
-RECEIPT_STATUS                VARCHAR2(200)       YES                                      
-VIEWED_AT                     TIMESTAMP(6)        YES                                      
-DOWNLOADED_AT                 TIMESTAMP(6)        YES                                      
-UPLOADED_SIGNED_AT            TIMESTAMP(6)        YES                                      
-ASSIGNED_SIGNER_NAME          VARCHAR2(800)       YES                                      
+RECEIPT_STATUS                VARCHAR2(200)       YES                                      Trạng thái nhận BB (text): Chưa xem / Đã xem / Đã tải về / Đã upload BB đã ký
+VIEWED_AT                     TIMESTAMP(6)        YES                                      Thời điểm đối tượng mở xem biên bản (portal)
+DOWNLOADED_AT                 TIMESTAMP(6)        YES                                      Thời điểm đối tượng tải file đính kèm biên bản
+UPLOADED_SIGNED_AT            TIMESTAMP(6)        YES                                      Thời điểm đối tượng upload biên bản đã ký
 ASSIGNED_SIGNER_ID            VARCHAR2(400)       YES                                      
+ASSIGNED_SIGNER_NAME          VARCHAR2(800)       YES                                      
 ASSIGNED_LEADER_SIGNER_ID     VARCHAR2(400)       YES                                      
 ASSIGNED_LEADER_SIGNER_NAME   VARCHAR2(800)       YES                                      
-CREATED_BY_BAN_ROLE           VARCHAR2(50)        YES                                      
 SIGNING_FLOW                  VARCHAR2(80)        YES                                      
+CREATED_BY_BAN_ROLE           VARCHAR2(50)        YES                                      
+EMAIL_SENT_AT                 TIMESTAMP(6)        YES                                      Thời điểm gửi thông báo Email tới đối tượng (null = chưa gửi kênh này)
+SMS_SENT_AT                   TIMESTAMP(6)        YES                                      Thời điểm gửi thông báo SMS tới đối tượng (null = chưa gửi kênh này)
 
 
 BANG: VIOLATION_RECORD_BEHAVIOR
@@ -1608,108 +1775,3 @@ FIELD_HTML_JSON               CLOB                YES                           
 FIELD_SOURCE_JSON             CLOB                YES                                      JSON {instanceId: plain} — snapshot dữ liệu API tại thời điểm lưu, dùng để phát hiện lệch và reset ô
 MANUAL_MERGE_DATA_JSON        CLOB                YES                                      JSON patch dữ liệu merge do người dùng chọn thủ công khi nguồn API chính rỗng
 OUTPUT_DOCUMENT_ID            VARCHAR2(144)       YES                                      Liên kết tới văn bản đầu ra trong hồ sơ xử lý VPHC khi công văn đã được đồng bộ
-
-
-BANG: dynamic_column
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER              NO      PK                               Khóa chính UUID
-table_config_id               NUMBER              NO      FK     dynamic_table.ID          FK -> dynamictables: bảng chứa cột này
-column_name                   VARCHAR2(255)       NO                                       Tên cột động
-data_type                     VARCHAR2(100)       NO                                       Kiểu dữ liệu cột động (VARCHAR2, NUMBER, DATE...)
-nullable                      NUMBER(1,0)         NO                                       Cho phép NULL: 0=Không, 1=Có
-primary_key                   NUMBER(1,0)         NO                                       Là khóa chính: 0=Không, 1=Có
-default_value                 VARCHAR2(500)       YES                                      Giá trị mặc định của cột
-order_index                   NUMBER              NO                                       Thứ tự hiển thị cột
-DESCRIPTION                   CLOB                YES                                      Mô tả mục đích cột động
-created_at                    TIMESTAMP(6)        NO                                       Thời điểm tạo bản ghi
-
-
-BANG: dynamic_connection
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER              NO      PK                               Khóa chính UUID
-table_name                    VARCHAR2(255)       NO                                       Tên bảng đích áp dụng kết nối dữ liệu động
-schema_name                   VARCHAR2(255)       YES                                      Tên schema chứa bảng đích
-connection_name               VARCHAR2(255)       NO                                       Tên kết nối (định danh duy nhất)
-mapping_config                CLOB                NO                                       Cấu hình ánh xạ field JSON
-source_data_path              VARCHAR2(500)       YES                                      Đường dẫn nguồn dữ liệu (file/API)
-post_process_handler          VARCHAR2(500)       YES                                      Tên handler xử lý sau khi nhận dữ liệu
-post_process_script           CLOB                YES                                      Script xử lý hậu kỳ
-source_api_url                VARCHAR2(1000)      YES                                      URL API nguồn cấp dữ liệu
-http_method                   VARCHAR2(10)        YES                                      HTTP method: GET, POST...
-response_type                 VARCHAR2(50)        YES                                      Kiểu phản hồi: JSON, XML...
-custom_headers                CLOB                YES                                      Header tùy chỉnh gửi kèm API request (JSON)
-request_body_template         CLOB                YES                                      Template body khi gọi API (POST/PUT)
-DESCRIPTION                   CLOB                YES                                      Mô tả mục đích kết nối dữ liệu động
-active                        NUMBER(1,0)         NO                                       Kết nối đang hoạt động: 0=Không, 1=Có
-created_at                    TIMESTAMP(6)        NO                                       Thời điểm tạo bản ghi
-updated_at                    TIMESTAMP(6)        YES                                      Thời điểm cập nhật gần nhất
-created_by                    VARCHAR2(255)       YES                                      ID người tạo bản ghi
-
-
-BANG: dynamic_generator_config
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER              NO      PK                               Khóa chính UUID
-table_name                    VARCHAR2(255)       NO                                       Tên bảng áp dụng cấu hình sinh mã
-column_name                   VARCHAR2(255)       NO                                       Tên cột được sinh mã tự động
-PATTERN                       VARCHAR2(500)       NO                                       Mẫu sinh mã (VD: HSTT-{YYYY}-{SEQ:3})
-number_length                 NUMBER(3,0)         NO                                       Độ dài phần số thứ tự
-reset_type                    VARCHAR2(10)        NO                                       Kiểu reset: YEARLY (theo năm), NEVER (không reset)
-active                        NUMBER(1,0)         NO                                       Đang áp dụng: 0=Không, 1=Có
-DESCRIPTION                   CLOB                YES                                      Mô tả cấu hình sinh mã
-created_at                    TIMESTAMP(6)        NO                                       Thời điểm tạo bản ghi
-updated_at                    TIMESTAMP(6)        YES                                      Thời điểm cập nhật gần nhất
-created_by                    VARCHAR2(255)       YES                                      ID người tạo bản ghi
-
-
-BANG: dynamic_generator_seq
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER              NO      PK                               Khóa chính UUID
-table_name                    VARCHAR2(255)       NO                                       Tên bảng quản lý sequence
-column_name                   VARCHAR2(255)       NO                                       Tên cột quản lý sequence
-PERIOD                        VARCHAR2(20)        NO                                       Chu kỳ sequence (năm: YYYY hoặc ALL)
-current_seq                   NUMBER              NO                                       Giá trị sequence hiện tại
-
-
-BANG: dynamic_table
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER              NO      PK                               Khóa chính UUID
-table_name                    VARCHAR2(255)       NO                                       Tên bảng vật lý trong database
-schema_name                   VARCHAR2(255)       YES                                      Tên schema chứa bảng
-DESCRIPTION                   CLOB                YES                                      Mô tả mục đích bảng động
-created_at                    TIMESTAMP(6)        NO                                       Thời điểm tạo bản ghi
-updated_at                    TIMESTAMP(6)        YES                                      Thời điểm cập nhật gần nhất
-created_by                    VARCHAR2(255)       YES                                      ID người tạo bản ghi
-
-
-BANG: flyway_schema_history
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-installed_rank                NUMBER              NO      PK                               Thứ tự cài đặt migration
-version                       VARCHAR2(50)        YES                                      Phiên bản migration (NULL với repeatable migrations)
-description                   VARCHAR2(200)       NO                                       Mô tả nội dung migration
-type                          VARCHAR2(20)        NO                                       Loại migration: SQL, JAVA_MIGRATION...
-script                        VARCHAR2(1000)      NO                                       Tên file script migration
-checksum                      NUMBER              YES                                      Giá trị hash kiểm tra tính toàn vẹn file migration
-installed_by                  VARCHAR2(100)       NO                                       Người dùng DB thực hiện migration
-installed_on                  TIMESTAMP(6)        NO                                       Thời điểm thực hiện migration
-execution_time                NUMBER              NO                                       Thời gian thực hiện migration (milliseconds)
-success                       NUMBER(1,0)         NO                                       Kết quả: true=Thành công, false=Thất bại
-
-

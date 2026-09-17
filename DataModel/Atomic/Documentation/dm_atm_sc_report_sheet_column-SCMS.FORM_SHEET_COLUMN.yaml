@@ -1,0 +1,331 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-sc_report_sheet_column-SCMS.FORM_SHEET_COLUMN
+  logical_name: Securities Company Report Sheet Column
+  physical_name: sc_report_sheet_column
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Form Document"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: SCMS
+  description: |
+    Cột dữ liệu trong 1 sheet của biểu mẫu báo cáo — mã, tên, kiểu dữ liệu, định dạng hiển thị. Đảo ngược quyết định loại-scope trước đây (cascade từ FORM_REPORT) — xem 7e #23.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-FORM_SHEET_COLUMN
+
+attributes:
+  - name: Securities Company Report Sheet Column Id
+    physical_name: sc_rpt_sheet_column_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: FORM_SHEET_COLUMN
+    source_column: SCMS.FORM_SHEET_COLUMN.ID
+    comment: "PK surrogate. BCV: \"[Documentation] Form Document\". Cột dữ liệu trong sheet biểu mẫu báo cáo. Hash: hash_id('SCMS_FORM_SHEET_COLUMN', ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Securities Company Report Sheet Column Code
+    physical_name: sc_rpt_sheet_column_code
+    business_meaning: BK chính.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_SHEET_COLUMN
+    source_column: SCMS.FORM_SHEET_COLUMN.ID
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_SHEET_COLUMN
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'SCMS_FORM_SHEET_COLUMN'"
+    etl_derived_value: SCMS_FORM_SHEET_COLUMN
+
+  - name: Securities Company Report Sheet Id
+    physical_name: sc_rpt_sheet_id
+    business_meaning: "FK -> form_sheet: Sheet chứa cột dữ liệu này."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_SHEET_COLUMN
+    source_column: SCMS.FORM_SHEET_COLUMN.FORM_SHEET_ID
+    comment: "FK target: sc_report_sheet.sc_rpt_sheet_id. Hash: hash_id('SCMS_FORM_SHEET', FORM_SHEET_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Securities Company Report Sheet Code
+    physical_name: sc_rpt_sheet_code
+    business_meaning: Mã sheet chứa cột dữ liệu này.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_SHEET_COLUMN
+    source_column: SCMS.FORM_SHEET_COLUMN.FORM_SHEET_ID
+    comment: "Lookup pair: sc_report_sheet.sc_rpt_sheet_code. Pair with Securities Company Report Sheet Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Column Code
+    physical_name: column_code
+    business_meaning: Mã cột trong sheet biểu mẫu.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_SHEET_COLUMN
+    source_column: SCMS.FORM_SHEET_COLUMN.COLUMN_CODE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Column Name
+    physical_name: column_nm
+    business_meaning: Tên hiển thị của cột.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_SHEET_COLUMN
+    source_column: SCMS.FORM_SHEET_COLUMN.COLUMN_NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Name Format Code
+    physical_name: nm_format_code
+    business_meaning: "Định dạng tên cột: ID = In đậm; IN = In nghiêng; IH = In hoa; GC = Gạch chân."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_SHEET_COLUMN
+    source_column: SCMS.FORM_SHEET_COLUMN.NAME_FORMAT
+    comment: "SCHEMA_CODE=SCMS.FORM_SHEET.TEXT_FORMATTING"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Color
+    physical_name: color
+    business_meaning: Màu chữ (mã màu HEX).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_SHEET_COLUMN
+    source_column: SCMS.FORM_SHEET_COLUMN.COLOR
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Alignment
+    physical_name: alignment
+    business_meaning: Canh lề văn bản (LEFT/CENTER/RIGHT).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_SHEET_COLUMN
+    source_column: SCMS.FORM_SHEET_COLUMN.ALIGNMENT
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Frozen Column Indicator
+    physical_name: frozen_column_ind
+    business_meaning: "Cờ cột cố định khi cuộn ngang: 1=Có, 0=Không."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_SHEET_COLUMN
+    source_column: SCMS.FORM_SHEET_COLUMN.FROZEN_COLUMN
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Locked Column Indicator
+    physical_name: locked_column_ind
+    business_meaning: "Cờ khóa cột không cho nhập liệu: 1=Có, 0=Không."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_SHEET_COLUMN
+    source_column: SCMS.FORM_SHEET_COLUMN.LOCKED_COLUMN
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: description
+    business_meaning: Mô tả chi tiết nội dung/mục đích của bản ghi.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_SHEET_COLUMN
+    source_column: SCMS.FORM_SHEET_COLUMN.DESCRIPTION
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Legacy Column Code
+    physical_name: legacy_column_code
+    business_meaning: Mã cột hệ thống cũ (mô tả gốc BRD trống).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_SHEET_COLUMN
+    source_column: SCMS.FORM_SHEET_COLUMN.LEGACY_COLUMN_CODE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Sync Column Code
+    physical_name: sync_column_code
+    business_meaning: Mã đồng bộ cột (mô tả gốc BRD trống).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_SHEET_COLUMN
+    source_column: SCMS.FORM_SHEET_COLUMN.SYNC_COLUMN_CODE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Hidden Column Indicator
+    physical_name: hidden_column_ind
+    business_meaning: "Cờ ẩn cột: 1=Ẩn, 0=Hiển thị."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_SHEET_COLUMN
+    source_column: SCMS.FORM_SHEET_COLUMN.HIDDEN_COLUMN
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Required Indicator
+    physical_name: required_ind
+    business_meaning: "Cờ bắt buộc: 1=Bắt buộc nhập, 0=Không bắt buộc."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_SHEET_COLUMN
+    source_column: SCMS.FORM_SHEET_COLUMN.REQUIRED
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Editable Indicator
+    physical_name: editable_ind
+    business_meaning: "Cờ cho phép nhập liệu: 1=Có, 0=Không."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_SHEET_COLUMN
+    source_column: SCMS.FORM_SHEET_COLUMN.EDITABLE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Formula
+    physical_name: formula
+    business_meaning: Công thức tính toán giá trị ô.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_SHEET_COLUMN
+    source_column: SCMS.FORM_SHEET_COLUMN.FORMULA
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Format
+    physical_name: format
+    business_meaning: "Định dạng hiển thị/in ấn của cột (VD: #,##0; dd/MM/yyyy)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_SHEET_COLUMN
+    source_column: SCMS.FORM_SHEET_COLUMN.FORMAT
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Width Number
+    physical_name: width_nbr
+    business_meaning: Độ rộng cột (pixel hoặc ký tự).
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_SHEET_COLUMN
+    source_column: SCMS.FORM_SHEET_COLUMN.WIDTH
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Data Type Code
+    physical_name: data_tp_code
+    business_meaning: "Kiểu dữ liệu cột: TEXT = Văn bản; NUMBER = Số; DATE = Ngày tháng; BOOLEAN = Có/Không; SELECT = Chọn từ danh sách."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_SHEET_COLUMN
+    source_column: SCMS.FORM_SHEET_COLUMN.DATA_TYPE
+    comment: "SCHEMA_CODE=SCMS.FORM_SHEET.DATA_TYPE"
+    classification_context: null
+    etl_derived_value: null

@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Documentation] Form Document"
   table_type: "Fundamental"
   group: "T3"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -18,10 +18,10 @@ metadata:
   approved_by: null
   approved_at: null
   notes: "Kết luận thanh tra chính thức kết thúc đoàn thanh tra. FK→Inspection Team\
-    \ (T2). Grain: 1 dòng = 1 kết luận thanh tra. Hạ về draft (2026-08-07) để bổ sung\
-    \ TRANSFERRED — phát hiện qua post_check_source_coverage.py. Nguồn không có mô\
-    \ tả (bare NUMBER) — map tạm dạng Indicator pending, cần Data Modeler/BA xác nhận\
-    \ ý nghĩa."
+    \ (T2). Grain: 1 dòng = 1 kết luận thanh tra. [SỬA 2026-09-11] DDL UAT cập nhật:\
+    \ Transferred Indicator nay có mô tả rõ ràng (xác nhận map trước đó đúng); bổ sung\
+    \ Other Handling Content/Amount, Handled Organization/Individual Count, Policy\
+    \ Document Count."
 attributes:
 - attribute_name: "Inspection Conclusion Id"
   physical_name: "inspection_conclusion_id"
@@ -221,17 +221,15 @@ attributes:
   data_type: "string"
 - attribute_name: "Transferred Indicator"
   physical_name: "transferred_ind"
-  description: "Đã chuyển giao xử lý hay chưa (cờ đánh dấu)."
+  description: "Có chuyển (1) / Không chuyển (0) — DDL UAT cập nhật (2026-09) đã bổ\
+    \ sung mô tả, xác nhận ý nghĩa trước đây map tạm là đúng."
   data_domain: "Indicator"
-  nullable: true
+  nullable: false
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
   - "THANHTRA.INSPECTION_CONCLUSION.TRANSFERRED"
-  comment: "Nguồn NUMBER không kèm mô tả trong BRD/DDL (không rõ precision/giá trị\
-    \ hợp lệ) — map tạm theo pattern Indicator đồng dạng với các cờ NUMBER(1,0) khác\
-    \ của phân hệ THANHTRA. Cần Data Modeler/BA xác nhận ý nghĩa nghiệp vụ chính xác\
-    \ trước go-live."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -248,3 +246,71 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "date"
+- attribute_name: "Other Handling Content"
+  physical_name: "other_handling_content"
+  description: "Nội dung kiến nghị xử lý khác."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.INSPECTION_CONCLUSION.OTHER_HANDLING_CONTENT"
+  comment: "Nguồn CLOB — ETL truncate nếu vượt ngưỡng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Other Handling Amount"
+  physical_name: "other_handling_amt"
+  description: "Số tiền kiến nghị xử lý khác."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.INSPECTION_CONCLUSION.OTHER_HANDLING_AMOUNT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Handled Organization Count"
+  physical_name: "handled_organization_count"
+  description: "Số tổ chức bị xử lý trách nhiệm."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.INSPECTION_CONCLUSION.HANDLED_ORGANIZATION_COUNT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Handled Individual Count"
+  physical_name: "handled_individual_count"
+  description: "Số cá nhân bị xử lý trách nhiệm."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.INSPECTION_CONCLUSION.HANDLED_INDIVIDUAL_COUNT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Policy Document Count"
+  physical_name: "policy_document_count"
+  description: "Hoàn thiện cơ chế chính sách (số văn bản) — nhập chuỗi, không format\
+    \ số."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.INSPECTION_CONCLUSION.POLICY_DOCUMENT_COUNT"
+  comment: "Nguồn lưu dạng VARCHAR2 (không phải NUMBER) — tên cột gợi ý đếm nhưng thực\
+    \ chất là chuỗi tự do theo mô tả nguồn (\"nhập chuỗi, không format số\"). Domain\
+    \ Text nhất quán với data type nguồn."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

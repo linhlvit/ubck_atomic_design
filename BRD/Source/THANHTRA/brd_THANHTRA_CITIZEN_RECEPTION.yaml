@@ -16,22 +16,22 @@ columns:
     fk_note: null
   - name: RECEIVER_ID
     data_type: VARCHAR2(144)
-    description: "ID cán bộ tiếp công dân (FK -> user)"
+    description: "DEPRECATED — xem bảng citizen_reception_participant (participant_type=RECEIVER). Giữ lại = người tiếp đầu tiên, tương thích ngược."
     key: null
     fk_note: null
   - name: RECEIVER_NAME
     data_type: VARCHAR2(800)
-    description: "Tên cán bộ tiếp công dân"
+    description: "DEPRECATED — xem bảng citizen_reception_participant (participant_type=RECEIVER)."
     key: null
     fk_note: null
   - name: SUBJECT_TYPE
     data_type: VARCHAR2(200)
-    description: "Phân loại đối tượng: INDIVIDUAL (Cá nhân), ORGANIZATION (Tổ chức)"
+    description: "INDIVIDUAL (Cá nhân) | GROUP (Đoàn đông người, >= 5 người) | ORGANIZATION (Tổ chức)"
     key: null
     fk_note: null
   - name: SUBJECT_NAME
     data_type: VARCHAR2(2000)
-    description: "Tên cá nhân/tổ chức được tiếp"
+    description: "DEPRECATED — xem bảng citizen_reception_subject. Giữ lại để tương thích ngược, tự suy ra từ dữ liệu bảng con."
     key: null
     fk_note: null
   - name: NUMBER_OF_PEOPLE
@@ -51,17 +51,17 @@ columns:
     fk_note: null
   - name: PETITION_CATEGORY
     data_type: VARCHAR2(200)
-    description: "Loại đơn: COMPLAINT (Khiếu nại), DENUNCIATION (Tố cáo), FEEDBACK_SUGGESTION (Phản ánh kiến nghị). Bắt buộc khi petition_attached=1"
+    description: "COMPLAINT (Khiếu nại) | DENUNCIATION (Tố cáo) | FEEDBACK_SUGGESTION (Phản ánh kiến nghị) | MULTI_CONTENT (Đơn có nhiều nội dung). Không bắt buộc dù has_petition = true."
     key: null
     fk_note: null
   - name: PROCESSING_STATUS
     data_type: VARCHAR2(800)
-    description: "Trạng thái xử lý vụ việc tiếp công dân"
+    description: "Kết quả tiếp công dân (tên hiển thị mới của \"Trạng thái xử lý\")."
     key: null
     fk_note: null
   - name: PETITION_ID
     data_type: VARCHAR2(144)
-    description: "FK -> petition (liên kết hồ sơ đơn thư, thêm FK sau khi tạo bảng petition)"
+    description: "DEPRECATED — xem bảng citizen_reception_petition_link. Giữ lại để tương thích ngược, tự đồng bộ với đơn thư đầu tiên trong danh sách liên kết."
     key: FK
     fk_note: "FK → PETITION.ID"
   - name: NOTE
@@ -97,5 +97,10 @@ columns:
   - name: DELETED
     data_type: NUMBER(1,0)
     description: "Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa"
+    key: null
+    fk_note: null
+  - name: HAS_PETITION
+    data_type: NUMBER(1,0)
+    description: "Cờ cho biết buổi tiếp có đơn thư liên kết hay không (nguồn không có mô tả)"
     key: null
     fk_note: null

@@ -114,8 +114,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Classification Firm Status Id"
-  physical_name: "cl_firm_status_id"
+- attribute_name: "Classification Securities Company Firm Status Id"
+  physical_name: "cl_sc_firm_status_id"
   description: "FK đến trạng thái hoạt động: 1=Hoạt động; 2=Đóng cửa; 3=Tạm ngừng;\
     \ 4=Đình chỉ."
   data_domain: "Surrogate Key"
@@ -124,22 +124,28 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.RECORD_STATUS"
-  comment: "FK target: Classification Firm Status.Classification Firm Status Id. Hash:\
-    \ hash_id('SCMS.CAT_SC_FIRM_STATUS', RECORD_STATUS)."
+  comment: "FK target: cl_securities_company_firm_status.cl_sc_firm_status_id. Cần\
+    \ ETL crosswalk sang SCMS.CAT_SC_FIRM_STATUS: SC_FIRM_FOREIGN_REP_OFFICE_VN.RECORD_STATUS\
+    \ = CAT_SC_FIRM_STATUS.ID để xác nhận SC_FIRM_STATUS_CODE sau đó hash_id('SCMS_CAT_SC_FIRM_STATUS',\
+    \ SC_FIRM_STATUS_CODE) | Trước đây hash trực tiếp theo RECORD_STATUS (ID kỹ thuật)\
+    \ gây sai lệch với Id của bảng main (hash từ SC_FIRM_STATUS_CODE) — đã sửa sang\
+    \ crosswalk 2026-09-16."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Classification Firm Status Code"
-  physical_name: "cl_firm_status_code"
+- attribute_name: "Classification Securities Company Firm Status Code"
+  physical_name: "cl_sc_firm_status_code"
   description: "Mã trạng thái hoạt động."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.RECORD_STATUS"
-  comment: "Lookup pair: Classification Firm Status.Classification Firm Status Code.\
-    \ Pair with Classification Firm Status Id."
+  - "SCMS.CAT_SC_FIRM_STATUS.SC_FIRM_STATUS_CODE"
+  comment: "Lookup pair: cl_securities_company_firm_status.cl_sc_firm_status_code.\
+    \ Pair with Classification Securities Company Firm Status Id. Giá trị lấy từ SCMS.CAT_SC_FIRM_STATUS.SC_FIRM_STATUS_CODE\
+    \ sau ETL crosswalk — chi tiết xem comment Classification Securities Company Firm\
+    \ Status Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

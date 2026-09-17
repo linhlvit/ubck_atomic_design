@@ -1,0 +1,145 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "SCMS"
+  source_table: "LNK_EVENT_TYPE_FORM"
+  atomic_entity: "Classification Securities Company Event Type X Securities Company\
+    \ Report Relationship"
+  entity_physical_name: "cl_sc_event_type_x_sc_report_relationship"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Form Document"
+  table_type: "Relative"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Quy định biểu mẫu báo cáo nào bắt buộc nộp cho loại sự kiện nào, trong khoảng\
+    \ thời gian nào (APPLICABLE_FROM/APPLICABLE_TO, REQUIRED). Đảo ngược quyết định\
+    \ loại-scope trước đây (cascade từ FORM_REPORT đã loại, lý do đã lỗi thời) — xem\
+    \ SCMS_HLD_Overview.md 7e #23, SCMS_HLD_Tier2.md 6a/6f T1-14. Đặt tên theo pattern\
+    \ `_x_ Relationship` — tham khảo NHNCK APPLICATION_DECISIONS và tiền lệ SCMS LNK_SC_FIRM_SERVICE.\
+    \ **[XÁC NHẬN 2026-09-16 — Data Modeler]** Không cần Id/Code riêng cho entity —\
+    \ dùng composite PK 2 FK (cùng pattern LNK_SC_FIRM_SERVICE), không map ID kỹ thuật\
+    \ nguồn thành BK riêng. Không có mã nghiệp vụ tự nhiên trong nguồn cho 2 FK — BK\
+    \ = cặp (EVENT_TYPE_ID, FORM_REPORT_ID). EVENT_TYPE_ID hash trực tiếp (Classification\
+    \ Securities Company Event Type Code = mã nghiệp vụ EVENT_TYPE_CODE, không phải\
+    \ ID kỹ thuật — cần crosswalk). FORM_REPORT_ID hash trực tiếp (Code của Securities\
+    \ Company Report = ID kỹ thuật nguồn) — không cần crosswalk. Không có cột audit\
+    \ (CREATED_AT/CREATED_BY/UPDATED_AT/UPDATED_BY) trong nguồn."
+attributes:
+- attribute_name: "Classification Securities Company Event Type Id"
+  physical_name: "cl_sc_event_tp_id"
+  description: "FK -> cat_event_type: Loại sự vụ/sự kiện nghiệp vụ."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "SCMS.LNK_EVENT_TYPE_FORM.EVENT_TYPE_ID"
+  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Cần ETL\
+    \ crosswalk sang SCMS.CAT_EVENT_TYPE: LNK_EVENT_TYPE_FORM.EVENT_TYPE_ID = CAT_EVENT_TYPE.ID\
+    \ để xác nhận EVENT_TYPE_CODE sau đó hash_id('SCMS_CAT_EVENT_TYPE', EVENT_TYPE_CODE)\
+    \ | Composite PK cùng Securities Company Report Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification Securities Company Event Type Code"
+  physical_name: "cl_sc_event_tp_code"
+  description: "Mã loại sự vụ/sự kiện nghiệp vụ."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE"
+  comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code. Pair\
+    \ with Classification Securities Company Event Type Id. Giá trị lấy từ SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE\
+    \ sau ETL crosswalk — chi tiết xem comment Classification Securities Company Event\
+    \ Type Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Report Id"
+  physical_name: "sc_rpt_id"
+  description: "FK -> form_report: Biểu mẫu báo cáo liên quan."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "SCMS.LNK_EVENT_TYPE_FORM.FORM_REPORT_ID"
+  comment: "FK target: sc_report.sc_rpt_id. Hash: hash_id('SCMS_FORM_REPORT', FORM_REPORT_ID)\
+    \ | Composite PK cùng Classification Securities Company Event Type Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Report Code"
+  physical_name: "sc_rpt_code"
+  description: "Mã biểu mẫu báo cáo liên quan."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.LNK_EVENT_TYPE_FORM.FORM_REPORT_ID"
+  comment: "Lookup pair: sc_report.sc_rpt_code. Pair with Securities Company Report\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=SCMS_LNK_EVENT_TYPE_FORM"
+  etl_derived_value: "SCMS_LNK_EVENT_TYPE_FORM"
+  data_type: "string"
+- attribute_name: "Applicable From Date"
+  physical_name: "applicable_from_dt"
+  description: "Ngày bắt đầu áp dụng."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.LNK_EVENT_TYPE_FORM.APPLICABLE_FROM"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Applicable To Date"
+  physical_name: "applicable_to_dt"
+  description: "Ngày kết thúc áp dụng."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.LNK_EVENT_TYPE_FORM.APPLICABLE_TO"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Required Indicator"
+  physical_name: "required_ind"
+  description: "Cờ bắt buộc: 1=Bắt buộc nhập, 0=Không bắt buộc."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.LNK_EVENT_TYPE_FORM.REQUIRED"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"

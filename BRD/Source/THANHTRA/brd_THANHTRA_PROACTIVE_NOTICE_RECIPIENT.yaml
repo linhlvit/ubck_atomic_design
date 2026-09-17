@@ -51,7 +51,7 @@ columns:
     fk_note: null
   - name: PUSH_ERROR
     data_type: VARCHAR2(1000)
-    description: "Thông tin lỗi khi đẩy thông báo thất bại"
+    description: "Lý do lỗi cụ thể khi push_status=FAILED (kết nối/HTTP lỗi khi đẩy sang SCMS/FMS)"
     key: null
     fk_note: null
   - name: CREATED_AT
@@ -85,7 +85,7 @@ columns:
     key: null
     fk_note: null
   - name: FMS_EVENT_ID
-    data_type: VARCHAR2(400)
-    description: null
+    data_type: VARCHAR2(100)
+    description: "eventId trả về từ FMS (Nhóm B sendEvent) — dùng để poll trạng thái xử lý thật (Nhóm C). Chỉ có với companyType=FUND_MANAGEMENT_COMPANY"
     key: null
     fk_note: null

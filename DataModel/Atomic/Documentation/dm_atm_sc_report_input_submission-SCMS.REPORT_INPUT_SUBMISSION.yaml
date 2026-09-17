@@ -1,0 +1,149 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-sc_report_input_submission-SCMS.REPORT_INPUT_SUBMISSION
+  logical_name: Securities Company Report Input Submission
+  physical_name: sc_report_input_submission
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: SCMS
+  description: |
+    Lần nộp dữ liệu báo cáo đầu vào (eForm) gắn với 1 biểu mẫu báo cáo (Securities Company Report), có thể liên kết tới báo cáo định kỳ cụ thể hoặc không liên kết. Đảo ngược quyết định loại-scope trước đây — xem 7e #22.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-REPORT_INPUT_SUBMISSION
+
+attributes:
+  - name: Securities Company Report Input Submission Id
+    physical_name: sc_rpt_input_submission_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: REPORT_INPUT_SUBMISSION
+    source_column: null
+    comment: "PK surrogate. Hash: hash_id('SCMS_REPORT_INPUT_SUBMISSION', ID). BCV: \"[Documentation] Regulatory Report\". Lần nộp dữ liệu báo cáo đầu vào (eForm)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Securities Company Report Input Submission Code
+    physical_name: sc_rpt_input_submission_code
+    business_meaning: Khóa chính kỹ thuật SCMS (ID tự tăng hoặc UUID). BK của entity.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: REPORT_INPUT_SUBMISSION
+    source_column: SCMS.REPORT_INPUT_SUBMISSION.ID
+    comment: BK. NUMBER(19) — ETL convert sang string. Không có mã nghiệp vụ tự nhiên trong nguồn.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: REPORT_INPUT_SUBMISSION
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'SCMS_REPORT_INPUT_SUBMISSION'"
+    etl_derived_value: SCMS_REPORT_INPUT_SUBMISSION
+
+  - name: Securities Company Report Id
+    physical_name: sc_rpt_id
+    business_meaning: "FK -> form_report: Biểu mẫu báo cáo liên quan."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: REPORT_INPUT_SUBMISSION
+    source_column: SCMS.REPORT_INPUT_SUBMISSION.FORM_REPORT_ID
+    comment: "FK target: sc_report.sc_report_id. Hash: hash_id('SCMS_FORM_REPORT', FORM_REPORT_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Securities Company Report Code
+    physical_name: sc_rpt_code
+    business_meaning: Mã biểu mẫu báo cáo liên quan.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: REPORT_INPUT_SUBMISSION
+    source_column: SCMS.REPORT_INPUT_SUBMISSION.FORM_REPORT_ID
+    comment: "Lookup pair: sc_report.sc_report_code. Pair with Securities Company Report Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Ref Type Code
+    physical_name: ref_tp_code
+    business_meaning: Loại đối tượng được liên kết khi nộp dữ liệu báo cáo đầu vào.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: REPORT_INPUT_SUBMISSION
+    source_column: SCMS.REPORT_INPUT_SUBMISSION.REF_TYPE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Ref Id
+    physical_name: ref_id
+    business_meaning: ID đối tượng tham chiếu (báo cáo/hồ sơ liên quan đến thông báo).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: REPORT_INPUT_SUBMISSION
+    source_column: SCMS.REPORT_INPUT_SUBMISSION.REF_ID
+    comment: "Con trỏ logic, KHÔNG model FK cứng — polymorphic theo Ref Type Code, nguồn không enforce (key: null trong BRD). Chỉ có ý nghĩa khi Ref Type Code = BAO_CAO_DINH_KY, lúc đó trỏ logic tới Securities Company Periodic Report (ID kỹ thuật SC_FIRM_PERIODIC_REPORT.ID). Nguồn lưu dạng số (NUMBER(19,0)) — ETL cast sang string. Xem SCMS_HLD_Tier2.md 6f T2-14."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Securities Company Report Version Id
+    physical_name: sc_rpt_version_id
+    business_meaning: ID phiên bản biểu mẫu liên quan.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: REPORT_INPUT_SUBMISSION
+    source_column: SCMS.REPORT_INPUT_SUBMISSION.FORM_VERSION_ID
+    comment: "FK target: sc_report.sc_report_id. Hash: hash_id('SCMS_FORM_REPORT', FORM_VERSION_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Securities Company Report Version Code
+    physical_name: sc_rpt_version_code
+    business_meaning: Mã phiên bản biểu mẫu báo cáo liên quan.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: REPORT_INPUT_SUBMISSION
+    source_column: SCMS.REPORT_INPUT_SUBMISSION.FORM_VERSION_ID
+    comment: "Lookup pair: sc_report.sc_report_code. Pair with Securities Company Report Id."
+    classification_context: null
+    etl_derived_value: null

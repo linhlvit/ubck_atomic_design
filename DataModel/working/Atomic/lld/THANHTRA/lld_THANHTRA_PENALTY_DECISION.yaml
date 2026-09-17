@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Event] Event"
   table_type: "Fundamental"
   group: "T4"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -24,7 +24,9 @@ metadata:
     \ về draft (2026-08-07) để bổ sung REVIEWER_ID/REVIEWER_NAME/REVIEWED_AT/SOURCE_DOCUMENT_URL/REVIEWED_BY_ID/APPROVER_NAME\
     \ — phát hiện qua post_check_source_coverage.py. APPROVER_NAME mới xuất hiện nên\
     \ cập nhật lại Approver Officer Code để lấy đúng nguồn (trước đây tạm dùng APPROVER_ID\
-    \ do chưa có cột tên)."
+    \ do chưa có cột tên). [SỬA 2026-09-11] DDL UAT cập nhật: bổ sung Enforcement\
+    \ Status Code, Confiscated Asset Sale Amount, Other Penalty Revenue Amount, Report\
+    \ Classification Code."
 attributes:
 - attribute_name: "Penalty Decision Id"
   physical_name: "pd_id"
@@ -121,14 +123,14 @@ attributes:
   physical_name: "decision_category_code"
   description: "Phân loại: INSPECTOR_SIGNED (LĐ Thanh tra ký), SSC_LEADER_SIGNED (LĐ\
     \ UBCKNN ký)."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "THANHTRA.PENALTY_DECISION.DECISION_CATEGORY"
-  comment: "Scheme: PENALTY_DECISION_CATEGORY."
-  classification_context: "PENALTY_DECISION_CATEGORY"
+  comment: null
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Life Cycle Status Code"
@@ -357,14 +359,14 @@ attributes:
 - attribute_name: "Complaint Status Code"
   physical_name: "complaint_status_code"
   description: "Trạng thái khiếu nại: PROCESSING, RESOLVED."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "THANHTRA.PENALTY_DECISION.COMPLAINT_STATUS"
-  comment: "Scheme: COMPLAINT_STATUS."
-  classification_context: "COMPLAINT_STATUS"
+  comment: null
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Complaint Result"
@@ -515,6 +517,60 @@ attributes:
   - "THANHTRA.PENALTY_DECISION.REVIEWED_BY_ID"
   comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
     \ Pair with Reviewed By Officer Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Enforcement Status Code"
+  physical_name: "enforcement_status_code"
+  description: "Trạng thái thi hành: NOT_ENFORCED (Chưa thi hành), ENFORCED (Đã thi\
+    \ hành)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION.ENFORCEMENT_STATUS"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Confiscated Asset Sale Amount"
+  physical_name: "confiscated_asset_sale_amt"
+  description: "Số tiền thu được từ bán thanh lý tang vật, phương tiện bị tịch thu."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION.CONFISCATED_ASSET_SALE_AMOUNT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Other Penalty Revenue Amount"
+  physical_name: "other_penalty_revenue_amt"
+  description: "Các khoản tiền khác thu từ xử phạt vi phạm hành chính."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION.OTHER_PENALTY_REVENUE_AMOUNT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Classification Code"
+  physical_name: "report_classification_code"
+  description: "Phân loại trong báo cáo: DEFERRED_OR_REDUCED, COERCIVE_ENFORCEMENT,\
+    \ COMPLAINED_OR_SUED."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION.REPORT_CLASSIFICATION"
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"

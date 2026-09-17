@@ -624,13 +624,16 @@ brd_entries:
       related_tables:
         - table: LNK_SC_FIRM_STATUS_REPORT
           relation: "1-N — Liên kết trạng thái CTCK và báo cáo"
-      notes: null
+      notes: "Data change mode sửa Append→Update (2026-09-16, theo yêu cầu Data Modeler)\
+        \ — CAT_SC_FIRM_STATUS là bảng danh mục (master), không phải bảng event/log,\
+        \ nên không thể lọc theo created_at (Append) như trước; danh mục nhỏ, cần Update\
+        \ toàn bộ mỗi lần ETL."
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
-        data_change_mode: Append
-        filter_logic: "created_at >= {etl_date} AND created_at < {etl_date} + 1"
-        filter_note: "Append theo created_at"
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-SCMS-CAT_SERVICE
     brd_name: "Design Atomic từ nguồn SCMS bảng CAT_SERVICE"
@@ -670,15 +673,13 @@ brd_entries:
     ba_email: username@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Danh mục vốn pháp định dịch vụ"
+      table_meaning: "Danh mục dịch vụ + nghiệp vụ kinh doanh chứng khoán kèm vốn pháp định"
       functional_group: "Danh mục dùng chung"
-      scope_status: pending
+      scope_status: in_scope
       scope_reason: null
       table: CAT_SERVICE_LEGAL_CAPITAL
-      related_tables:
-        - table: CAT_SERVICE
-          relation: "FK cha — Danh mục dịch vụ chứng khoán"
-      notes: null
+      related_tables: []
+      notes: "SERVICE_ID là PK/identity riêng của chính bảng này — KHÔNG phải FK đến CAT_SERVICE.ID (mô tả gốc \"FK -> cat_service\" gây hiểu nhầm, đã xác nhận với Data Modeler 2026-09-12). Bảng này thay thế CAT_SERVICE và CAT_BUSINESS_LINE — xem Atomic HLD SCMS_HLD_Tier1.md 6f T1-11."
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -987,11 +988,11 @@ brd_entries:
     content:
       table_meaning: "Nguồn dữ liệu chỉ tiêu biểu mẫu"
       functional_group: "Biểu mẫu báo cáo"
-      scope_status: pending
-      scope_reason: null
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — metadata kỹ thuật (DB_TABLE_NAME, URL pattern) cho engine form động, không mang ý nghĩa nghiệp vụ"
       table: FORM_INDICATOR_DATA_SOURCE
       related_tables: null
-      notes: null
+      notes: "Đánh giá lại 2026-09-16 (trước đó pending/cascade theo FORM_REPORT) — Data Modeler chốt giữ ngoài scope, không còn liên quan quyết định cascade cũ."
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -1007,11 +1008,11 @@ brd_entries:
     content:
       table_meaning: "Metadata trường chỉ tiêu biểu mẫu"
       functional_group: "Biểu mẫu báo cáo"
-      scope_status: pending
-      scope_reason: null
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — metadata ánh xạ field-binding (ENTITY_CODE/DB_COLUMN_NAME/JUNCTION_TABLE_NAME...) cho engine form động, không mang ý nghĩa nghiệp vụ"
       table: FORM_INDICATOR_FIELD_META
       related_tables: null
-      notes: null
+      notes: "Đánh giá lại 2026-09-16 (trước đó pending/cascade theo FORM_REPORT) — Data Modeler chốt giữ ngoài scope, không còn liên quan quyết định cascade cũ."
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -1025,13 +1026,13 @@ brd_entries:
     ba_email: username@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Dữ liệu nhập chỉ tiêu biểu mẫu"
+      table_meaning: "Định nghĩa chỉ tiêu (trường dữ liệu) có thể gắn vào ô biểu mẫu báo cáo"
       functional_group: "Biểu mẫu báo cáo"
-      scope_status: pending
+      scope_status: in_scope
       scope_reason: null
       table: FORM_INDICATOR_INPUT
       related_tables: null
-      notes: null
+      notes: "Đánh giá lại 2026-09-16 (trước đó pending/cascade theo FORM_REPORT) — Data Modeler chốt đưa vào scope. FK REFERENCE_CATALOG_ID (→FORM_INDICATOR_REFERENCE_VALUE) và FIELD_METADATA_ID (→FORM_INDICATOR_FIELD_META) không model làm FK Atomic vì 2 bảng đích giữ ngoài scope."
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -1047,11 +1048,11 @@ brd_entries:
     content:
       table_meaning: "Giá trị tham chiếu chỉ tiêu biểu mẫu"
       functional_group: "Biểu mẫu báo cáo"
-      scope_status: pending
-      scope_reason: null
+      scope_status: out_of_scope
+      scope_reason: "Reference Data — danh sách giá trị tham chiếu dùng chung nhiều loại (REFERENCE_CATALOG_TYPE: PROVINCE/NATIONALITY/SC_FIRM_STATUS/CUSTOM), không có FK inbound từ bảng nghiệp vụ trong scope"
       table: FORM_INDICATOR_REFERENCE_VALUE
       related_tables: null
-      notes: null
+      notes: "Đánh giá lại 2026-09-16 (trước đó pending/cascade theo FORM_REPORT) — Data Modeler chốt giữ ngoài scope, không còn liên quan quyết định cascade cũ."
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -1173,6 +1174,28 @@ brd_entries:
       data_volume_hint: null
       refresh_frequency: null
 
+  - brd_id: BRD-SRC-SCMS-FORM_REPORT_INPUT_SOURCE
+    brd_name: "Design Atomic từ nguồn SCMS bảng FORM_REPORT_INPUT_SOURCE"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Ánh xạ biểu mẫu báo cáo gộp (canonical) sang nguồn đọc dữ liệu khai thác/cảnh báo"
+      functional_group: "Biểu mẫu báo cáo"
+      scope_status: in_scope
+      scope_reason: null
+      table: FORM_REPORT_INPUT_SOURCE
+      related_tables:
+        - table: FORM_REPORT
+          relation: "FK cha (x2) — Biểu mẫu canonical (CANONICAL_FORM_REPORT_ID) và biểu mẫu nguồn (SOURCE_FORM_REPORT_ID)"
+      notes: "Bảng chưa được khảo sát vào BRD trước đây (không có trong DDL UAT khảo sát ban đầu) — cấu trúc cột trích từ Source/DDL UAT 1/SCMS_UAT_schema.txt, bổ sung 2026-09-16 cùng đợt thiết kế Atomic FORM_SHEET*/FORM_INDICATOR_INPUT/LNK_EVENT_TYPE_FORM."
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
   - brd_id: BRD-SRC-SCMS-FORM_REPORT_PERIODIC
     brd_name: "Design Atomic từ nguồn SCMS bảng FORM_REPORT_PERIODIC"
     type: Theo Source
@@ -1209,15 +1232,19 @@ brd_entries:
     content:
       table_meaning: "Tiêu đề hàng biểu mẫu"
       functional_group: "Biểu mẫu báo cáo"
-      scope_status: pending
-      scope_reason: null
+      scope_status: out_of_scope
+      scope_reason: "Phục vụ khai thác báo cáo đầu ra ở hệ thống cũ — hiện không còn cần thiết."
       table: FORM_ROW_HEADER
       related_tables:
+        - table: FORM_SHEET
+          relation: "FK cha — Sheet của biểu mẫu báo cáo"
         - table: FORM_ROW_HEADER
-          relation: "FK cha — Tiêu đề hàng biểu mẫu"
+          relation: "FK cha (self-ref PARENT_HEADER_ID) — Tiêu đề hàng biểu mẫu"
         - table: FORM_ROW_HEADER
-          relation: "1-N — Tiêu đề hàng biểu mẫu"
-      notes: null
+          relation: "1-N (self-ref) — Tiêu đề hàng biểu mẫu"
+      notes: "Đánh giá lại 2026-09-16: đưa vào scope (Data Modeler chốt), sau đó đảo ngược lại out_of_scope\
+        \ cùng ngày — theo yêu cầu Data Modeler, bảng phục vụ khai thác báo cáo đầu ra ở hệ thống cũ,\
+        \ hiện không còn cần thiết. Thiết kế LLD/Atomic entity đã tạo đã bị gỡ bỏ hoàn toàn."
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -1253,13 +1280,13 @@ brd_entries:
     content:
       table_meaning: "Sheet của biểu mẫu báo cáo"
       functional_group: "Biểu mẫu báo cáo"
-      scope_status: pending
+      scope_status: in_scope
       scope_reason: null
       table: FORM_SHEET
       related_tables:
         - table: FORM_REPORT
           relation: "FK cha — Biểu mẫu báo cáo"
-      notes: null
+      notes: "Đánh giá lại 2026-09-16 (trước đó pending/cascade theo FORM_REPORT) — Data Modeler chốt đưa vào scope."
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -1273,15 +1300,23 @@ brd_entries:
     ba_email: username@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Ô dữ liệu trong sheet biểu mẫu"
+      table_meaning: "Ô dữ liệu trong sheet biểu mẫu — gắn chỉ tiêu (indicator) vào đúng vị trí hàng/cột"
       functional_group: "Biểu mẫu báo cáo"
-      scope_status: pending
+      scope_status: in_scope
       scope_reason: null
       table: FORM_SHEET_CELL
       related_tables:
         - table: FORM_REPORT
           relation: "FK cha — Biểu mẫu báo cáo"
-      notes: null
+        - table: FORM_SHEET
+          relation: "FK cha — Sheet của biểu mẫu báo cáo"
+        - table: FORM_SHEET_ROW
+          relation: "FK cha — Hàng dữ liệu trong sheet biểu mẫu"
+        - table: FORM_SHEET_COLUMN
+          relation: "FK cha — Cột dữ liệu trong sheet biểu mẫu"
+        - table: FORM_INDICATOR_INPUT
+          relation: "FK cha (FORM_SHEET_CELL_INPUT_ID) — Định nghĩa chỉ tiêu gắn vào ô"
+      notes: "Đánh giá lại 2026-09-16 (trước đó pending/cascade theo FORM_REPORT) — Data Modeler chốt đưa vào scope."
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -1297,13 +1332,15 @@ brd_entries:
     content:
       table_meaning: "Cột dữ liệu trong sheet biểu mẫu"
       functional_group: "Biểu mẫu báo cáo"
-      scope_status: pending
+      scope_status: in_scope
       scope_reason: null
       table: FORM_SHEET_COLUMN
       related_tables:
         - table: FORM_REPORT
           relation: "FK cha — Biểu mẫu báo cáo"
-      notes: null
+        - table: FORM_SHEET
+          relation: "FK cha — Sheet của biểu mẫu báo cáo"
+      notes: "Đánh giá lại 2026-09-16 (trước đó pending/cascade theo FORM_REPORT) — Data Modeler chốt đưa vào scope."
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -1319,17 +1356,19 @@ brd_entries:
     content:
       table_meaning: "Hàng dữ liệu trong sheet biểu mẫu"
       functional_group: "Biểu mẫu báo cáo"
-      scope_status: pending
+      scope_status: in_scope
       scope_reason: null
       table: FORM_SHEET_ROW
       related_tables:
         - table: FORM_REPORT
           relation: "FK cha — Biểu mẫu báo cáo"
+        - table: FORM_SHEET
+          relation: "FK cha — Sheet của biểu mẫu báo cáo"
         - table: FORM_SHEET_ROW
-          relation: "FK cha — Hàng dữ liệu trong sheet biểu mẫu"
+          relation: "FK cha (self-ref PARENT_ROW_ID) — Hàng dữ liệu trong sheet biểu mẫu"
         - table: FORM_SHEET_ROW
-          relation: "1-N — Hàng dữ liệu trong sheet biểu mẫu"
-      notes: null
+          relation: "1-N (self-ref) — Hàng dữ liệu trong sheet biểu mẫu"
+      notes: "Đánh giá lại 2026-09-16 (trước đó pending/cascade theo FORM_REPORT) — Data Modeler chốt đưa vào scope."
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -1375,9 +1414,9 @@ brd_entries:
     ba_email: username@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Liên kết loại sự kiện và biểu mẫu"
+      table_meaning: "Liên kết loại sự kiện và biểu mẫu — quy định form nào bắt buộc nộp cho loại sự kiện nào, trong khoảng thời gian nào"
       functional_group: "Liên kết"
-      scope_status: pending
+      scope_status: in_scope
       scope_reason: null
       table: LNK_EVENT_TYPE_FORM
       related_tables:
@@ -1539,7 +1578,7 @@ brd_entries:
     content:
       table_meaning: "Liên kết công ty chứng khoán và dịch vụ"
       functional_group: "Liên kết"
-      scope_status: pending
+      scope_status: in_scope
       scope_reason: null
       table: LNK_SC_FIRM_SERVICE
       related_tables:
@@ -1897,6 +1936,24 @@ brd_entries:
       data_volume_hint: null
       refresh_frequency: null
 
+  - brd_id: BRD-SRC-SCMS-OUTPUT_REPORT_CHART_CONFIG
+    brd_name: "Design Atomic từ nguồn SCMS bảng OUTPUT_REPORT_CHART_CONFIG"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Cấu hình hiển thị biểu đồ (line marker, round point/marker) cho báo cáo đầu ra"
+      functional_group: "Biểu mẫu báo cáo"
+      scope_status: out_of_scope
+      scope_reason: "UI Metadata — cấu hình hiển thị chart thuần túy, cùng nhóm với OUTPUT_REPORT_EXTRACTION*"
+      table: OUTPUT_REPORT_CHART_CONFIG
+      related_tables:
+        - table: FORM_REPORT
+          relation: "FK cha — Biểu mẫu báo cáo"
+      notes: "Bảng chưa được khảo sát vào BRD trước đây — cấu trúc cột trích từ Source/DDL UAT 1/SCMS_UAT_schema.txt, bổ sung 2026-09-16. Toàn bộ attribute (LINE_MARKER_TYPE/ROUND_POINT_TYPE/ROUND_MARKER_TYPE) là cấu hình hiển thị chart thuần túy, không mang ý nghĩa nghiệp vụ độc lập."
+      data_volume_hint: null
+      refresh_frequency: null
+
   - brd_id: BRD-SRC-SCMS-OUTPUT_REPORT_EXTRACTION
     brd_name: "Design Atomic từ nguồn SCMS bảng OUTPUT_REPORT_EXTRACTION"
     type: Theo Source
@@ -1976,6 +2033,30 @@ brd_entries:
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+
+  - brd_id: BRD-SRC-SCMS-OUTPUT_REPORT_FILTER
+    brd_name: "Design Atomic từ nguồn SCMS bảng OUTPUT_REPORT_FILTER"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Cấu hình bộ lọc khả dụng khi khai thác một biểu mẫu báo cáo đầu ra"
+      functional_group: "Biểu mẫu báo cáo"
+      scope_status: in_scope
+      scope_reason: null
+      table: OUTPUT_REPORT_FILTER
+      related_tables:
+        - table: FORM_REPORT
+          relation: "FK cha — Biểu mẫu báo cáo"
+        - table: CAT_FILTER
+          relation: "FK cha — Danh mục bộ lọc hệ thống (CAT_FILTER là bảng Code+Name thuần, không thiết kế Atomic entity riêng — crosswalk lấy CODE map thành Classification Value trên entity Atomic, giá trị đã insert trực tiếp vào cl_value)"
+      notes: "Bảng chưa được khảo sát vào BRD trước đây — cấu trúc cột trích từ Source/DDL UAT 1/SCMS_UAT_schema.txt, bổ sung 2026-09-16."
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-SCMS-PERMISSION_INPUT_REPORT_EVENT
     brd_name: "Design Atomic từ nguồn SCMS bảng PERMISSION_INPUT_REPORT_EVENT"
@@ -2097,7 +2178,7 @@ brd_entries:
     content:
       table_meaning: "Giá trị ô nhập liệu báo cáo"
       functional_group: "Báo cáo đầu vào"
-      scope_status: pending
+      scope_status: in_scope
       scope_reason: null
       table: REPORT_INPUT_CELL_VALUE
       related_tables:
@@ -2119,7 +2200,7 @@ brd_entries:
     content:
       table_meaning: "Lần nộp báo cáo nhập liệu"
       functional_group: "Báo cáo đầu vào"
-      scope_status: pending
+      scope_status: in_scope
       scope_reason: null
       table: REPORT_INPUT_SUBMISSION
       related_tables:

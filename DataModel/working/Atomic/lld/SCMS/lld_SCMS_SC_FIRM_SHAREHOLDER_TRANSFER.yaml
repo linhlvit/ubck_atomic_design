@@ -75,10 +75,10 @@ attributes:
   source_columns:
   - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.SC_FIRM_INFO_ID"
   comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO:\
-    \ SC_FIRM_SHAREHOLDER_TRANSFER.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận\
-    \ CODE sau đó hash_id('SCMS.SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo\
-    \ SC_FIRM_INFO_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE)\
-    \ — đã sửa sang crosswalk 2026-07-27."
+    \ SC_FIRM_SHAREHOLDER_TRANSFER.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE\
+    \ sau đó hash_id('SCMS.SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID\
+    \ (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang\
+    \ crosswalk 2026-07-27."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -155,8 +155,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Classification Event Type Id"
-  physical_name: "cl_event_tp_id"
+- attribute_name: "Classification Securities Company Event Type Id"
+  physical_name: "cl_sc_event_tp_id"
   description: "FK đến loại sự kiện pháp lý tương ứng với giao dịch chuyển nhượng."
   data_domain: "Surrogate Key"
   nullable: true
@@ -164,13 +164,13 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.EVENT_TYPE_ID"
-  comment: "FK target: Classification Event Type.Classification Event Type Id. Hash:\
-    \ hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash: hash_id('SCMS.CAT_EVENT_TYPE',\
+    \ EVENT_TYPE_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Classification Event Type Code"
-  physical_name: "cl_event_tp_code"
+- attribute_name: "Classification Securities Company Event Type Code"
+  physical_name: "cl_sc_event_tp_code"
   description: "Mã loại sự kiện pháp lý."
   data_domain: "Text"
   nullable: true
@@ -178,8 +178,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.EVENT_TYPE_ID"
-  comment: "Lookup pair: Classification Event Type.Classification Event Type Code.\
-    \ Pair with Classification Event Type Id."
+  comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code. Pair\
+    \ with Classification Securities Company Event Type Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

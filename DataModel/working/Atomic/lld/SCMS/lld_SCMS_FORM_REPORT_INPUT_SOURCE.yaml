@@ -1,0 +1,170 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "SCMS"
+  source_table: "FORM_REPORT_INPUT_SOURCE"
+  atomic_entity: "Securities Company Report Input Source"
+  entity_physical_name: "sc_report_input_source"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Form Document"
+  table_type: "Relative"
+  group: "T2"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Ánh xạ biểu mẫu báo cáo gộp (canonical) sang nguồn đọc dữ liệu khai thác/cảnh\
+    \ báo, kèm phạm vi kỳ áp dụng và độ ưu tiên khi trùng CTCK + kỳ báo cáo. Bảng\
+    \ chưa được khảo sát vào BRD trước đây — cấu trúc cột trích từ DDL UAT (Source/DDL\
+    \ UAT 1/SCMS_UAT_schema.txt), bổ sung BRD và thiết kế Atomic 2026-09-16 — xem\
+    \ SCMS_HLD_Overview.md 7e #23, SCMS_HLD_Tier2.md 6a. Không có mã nghiệp vụ tự\
+    \ nhiên trong nguồn — BK dùng ID kỹ thuật trực tiếp, cùng pattern Securities Company\
+    \ Report Input Submission/Alert Run. CANONICAL_FORM_REPORT_ID/SOURCE_FORM_REPORT_ID\
+    \ đều hash trực tiếp (Code của Securities Company Report = ID kỹ thuật nguồn)\
+    \ — không cần crosswalk. Data change mode nguồn chưa xác định rõ (bảng mới khảo\
+    \ sát từ DDL, không có thông tin ingestion) — cần Data Modeler/ETL xác nhận trước\
+    \ go-live."
+attributes:
+- attribute_name: "Securities Company Report Input Source Id"
+  physical_name: "sc_rpt_input_src_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_REPORT_INPUT_SOURCE.ID"
+  comment: "PK surrogate. BCV: \"[Documentation] Form Document\". Ánh xạ biểu mẫu\
+    \ báo cáo canonical sang nguồn đọc dữ liệu khai thác/cảnh báo. Hash: hash_id('SCMS_FORM_REPORT_INPUT_SOURCE',\
+    \ ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Report Input Source Code"
+  physical_name: "sc_rpt_input_src_code"
+  description: "Khóa chính kỹ thuật SCMS (ID tự tăng hoặc UUID). BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_REPORT_INPUT_SOURCE.ID"
+  comment: "BK. NUMBER(19) — ETL convert sang string. Không có mã nghiệp vụ tự nhiên\
+    \ trong nguồn."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=SCMS_FORM_REPORT_INPUT_SOURCE"
+  etl_derived_value: "SCMS_FORM_REPORT_INPUT_SOURCE"
+  data_type: "string"
+- attribute_name: "Canonical Securities Company Report Id"
+  physical_name: "canonical_sc_rpt_id"
+  description: "FK -> form_report: Biểu mẫu báo cáo gộp (canonical) — biểu mẫu đích\
+    \ dùng để khai thác/cảnh báo."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_REPORT_INPUT_SOURCE.CANONICAL_FORM_REPORT_ID"
+  comment: "FK target: sc_report.sc_rpt_id. Hash: hash_id('SCMS_FORM_REPORT', CANONICAL_FORM_REPORT_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Canonical Securities Company Report Code"
+  physical_name: "canonical_sc_rpt_code"
+  description: "Mã biểu mẫu báo cáo gộp (canonical)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_REPORT_INPUT_SOURCE.CANONICAL_FORM_REPORT_ID"
+  comment: "Lookup pair: sc_report.sc_rpt_code. Pair with Canonical Securities Company\
+    \ Report Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source Securities Company Report Id"
+  physical_name: "src_sc_rpt_id"
+  description: "FK -> form_report: Biểu mẫu báo cáo nguồn — nơi đọc dữ liệu thực tế\
+    \ để nạp vào biểu mẫu canonical."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_REPORT_INPUT_SOURCE.SOURCE_FORM_REPORT_ID"
+  comment: "FK target: sc_report.sc_rpt_id. Hash: hash_id('SCMS_FORM_REPORT', SOURCE_FORM_REPORT_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source Securities Company Report Code"
+  physical_name: "src_sc_rpt_code"
+  description: "Mã biểu mẫu báo cáo nguồn."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_REPORT_INPUT_SOURCE.SOURCE_FORM_REPORT_ID"
+  comment: "Lookup pair: sc_report.sc_rpt_code. Pair with Source Securities Company\
+    \ Report Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Period Scope"
+  physical_name: "period_scope"
+  description: "Phạm vi kỳ áp dụng ánh xạ: ALL hoặc danh sách CSV (QUY, BAN_NIEN,\
+    \ NAM)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_REPORT_INPUT_SOURCE.PERIOD_SCOPE"
+  comment: "Giữ Text tự do — giá trị dạng CSV nhiều mã (ALL hoặc tổ hợp QUY,BAN_NIEN,NAM),\
+    \ không chuẩn hóa Classification Value đơn trị."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Priority Number"
+  physical_name: "priority_nbr"
+  description: "Thứ tự ưu tiên nguồn khi trùng CTCK + kỳ báo cáo — giá trị nhỏ hơn\
+    \ ưu tiên cao hơn."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_REPORT_INPUT_SOURCE.PRIORITY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Note"
+  physical_name: "note"
+  description: "Ghi chú bổ sung."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_REPORT_INPUT_SOURCE.NOTE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

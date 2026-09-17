@@ -15,18 +15,18 @@ columns:
     key: FK
     fk_note: "FK → REPORT_INPUT_SUBMISSION.ID"
   - name: SHEET_ID
-    data_type: NVARCHAR2(200)
+    data_type: NVARCHAR2(400)
     description: "Cột sheet_id — xem thêm tài liệu đặc tả SCMS"
     key: null
     fk_note: null
   - name: SECTION_ID
-    data_type: NVARCHAR2(200)
+    data_type: NVARCHAR2(400)
     description: "Cột section_id — xem thêm tài liệu đặc tả SCMS"
     key: null
     fk_note: null
   - name: CELL_ID
-    data_type: NVARCHAR2(200)
-    description: "Cột cell_id — xem thêm tài liệu đặc tả SCMS"
+    data_type: NVARCHAR2(400)
+    description: "Cột cell_id — xem thêm tài liệu đặc tả SCMS (UAT: NOT NULL)"
     key: null
     fk_note: null
   - name: ROW_NO
@@ -36,6 +36,16 @@ columns:
     fk_note: null
   - name: ITEM_VALUE
     data_type: NCLOB
+    description: null
+    key: null
+    fk_note: null
+  - name: PERIOD_YEAR
+    data_type: NUMBER(4,0)
+    description: "Copy năm kỳ từ REPORT_INPUT_SUBMISSION. Null = bản cũ. Khai thác không bắt buộc cột này."
+    key: null
+    fk_note: null
+  - name: REF_TYPE
+    data_type: VARCHAR2(64)
     description: null
     key: null
     fk_note: null

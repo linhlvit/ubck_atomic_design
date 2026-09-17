@@ -17,7 +17,12 @@
 | Business Activity | [Business Activity] Conduct Violation | Security Measure Recipient | SECURITY_MEASURE_DECISION_RECIPIENT | Update | Đơn vị nhận quyết định biện pháp ngăn chặn: RECIPIENT_TYPE(SECURITIES_COMPANY/FUND_MGT/STOCK_EXCHANGE/VSDC/SSC_DEPARTMENT), RECIPIENT_NAME | Security Measure Decision Recipient | Fundamental | (1) Conduct Violation — BCO đổi sang Business Activity vì đây là phần của hoạt động cưỡng chế/ngăn chặn. (2) Bảng có FK→SECURITY_MEASURE_DECISION, RECIPIENT_TYPE(5 values), RECIPIENT_NAME — danh sách đơn vị nhận bản sao quyết định. (3) BCO đổi sang Business Activity. Tên chứa "Security Measure Decision" ✓. |
 | Business Activity | [Business Activity] Business Review | Security Measure Execution | SECURITY_MEASURE_EXECUTION | Update | Kết quả thực thi biện pháp ngăn chặn: REPORTER_NAME, REPORT_DATE, EXECUTION_RESULT(FULLY_EXECUTED/IN_PROGRESS/NOT_EXECUTED) | Security Measure Execution | Fundamental | (1) Business Review — BCV: "a Business Activity in which business operations are studied and compared to business objectives". (2) Bảng có FK→SECURITY_MEASURE_DECISION, REPORTER_NAME, REPORT_DATE, EXECUTION_RESULT(3 values) — theo dõi kết quả thực thi quyết định ngăn chặn. (3) Business Review phù hợp — đây là hoạt động nghiệp vụ tracking kết quả thực thi. |
 | Business Activity | [Business Activity] Business Review | Citizen Reception | CITIZEN_RECEPTION | Update | Buổi tiếp công dân tại cơ quan: RECEPTION_DATE, RECEIVER_ID, SUBJECT_TYPE, NUMBER_OF_PEOPLE, SUMMARY, FK→PETITION(nullable) | Citizen Reception | Fundamental | (1) Business Review — BCV gần nhất cho "formal reception/meeting activity". (2) Bảng có RECEPTION_DATE, RECEIVER_ID, SUBJECT_TYPE, SUBJECT_NAME, NUMBER_OF_PEOPLE, SUMMARY, PETITION_ATTACHED, PETITION_CATEGORY, PROCESSING_STATUS, FK→PETITION(nullable) — ghi nhận buổi tiếp công dân cụ thể. (3) Business Review phù hợp. FK→PETITION nullable → Fundamental. |
+| Business Activity | [Business Activity] Business Review | Citizen Reception | CITIZEN_RECEPTION_PARTICIPANT | Update | Người tham gia buổi tiếp công dân (bảng mới, DDL UAT cập nhật): FK→CITIZEN_RECEPTION, PARTICIPANT_TYPE(RECEIVER/COORDINATOR), USER_ID/USER_FULL_NAME, DEPARTMENT_ID/NAME | Citizen Reception Participant | Fundamental | (1) Business Review — kế thừa BCV Concept của Citizen Reception (parent) vì đây chỉ là chi tiết 1-N của cùng hoạt động tiếp công dân, không phải hoạt động nghiệp vụ độc lập. (2) Bảng: FK→CITIZEN_RECEPTION, PARTICIPANT_TYPE(2 values: RECEIVER tối thiểu 2 người, COORDINATOR không bắt buộc), USER_ID(nullable — null khi nhân sự ngoài UBCKNN), USER_FULL_NAME, USER_ACCOUNT, DEPARTMENT_ID/NAME — mỗi dòng là 1 người tham gia. (3) Thay thế cột RECEIVER_ID/RECEIVER_NAME (nay DEPRECATED, giữ lại trên CITIZEN_RECEPTION chỉ để tương thích ngược — xem T2 Điểm cần xác nhận). Tên chứa "Citizen Reception" ✓. Không tách IP Postal/Electronic Address vì đây là snapshot vai trò tại thời điểm buổi tiếp, không phải hồ sơ Involved Party đầy đủ. |
+| Business Activity | [Business Activity] Business Review | Citizen Reception | CITIZEN_RECEPTION_SUBJECT | Update | Chi tiết đối tượng được tiếp (bảng mới, DDL UAT cập nhật): FK→CITIZEN_RECEPTION, FULL_NAME/ID_NUMBER (cá nhân/đoàn) hoặc ORGANIZATION_NAME/BUSINESS_REGISTRATION_NUMBER (tổ chức) | Citizen Reception Subject | Fundamental | (1) Business Review — kế thừa BCV Concept của Citizen Reception (parent), cùng lý do như Citizen Reception Participant. (2) Bảng: FK→CITIZEN_RECEPTION, FULL_NAME, ID_NUMBER, ADDRESS/PHONE (chỉ Cá nhân/Đoàn đông người), ORGANIZATION_NAME/BUSINESS_REGISTRATION_NUMBER (chỉ Tổ chức) — 1 dòng/1 người hoặc 1 tổ chức được tiếp, hỗ trợ đoàn đông người nhiều dòng. (3) Thay thế cột SUBJECT_NAME (nay DEPRECATED, giữ lại trên CITIZEN_RECEPTION chỉ để tương thích ngược — xem T2 Điểm cần xác nhận). Tên chứa "Citizen Reception" ✓. Không tách IP Postal Address dù có ADDRESS — đây là snapshot tại thời điểm tiếp, không phải hồ sơ Involved Party độc lập có thể tái sử dụng. |
+| Business Activity | [Business Activity] Business Review | Citizen Reception | CITIZEN_RECEPTION_PETITION_LINK | Update | Liên kết 1 buổi tiếp công dân với nhiều đơn thư (bảng mới, DDL UAT cập nhật): FK→CITIZEN_RECEPTION, FK→PETITION, không có business attribute nào khác ngoài SORT_ORDER + audit fields chuẩn | Citizen Reception X Petition Relationship | Relative | (1) Business Review — BCV Concept kế thừa từ Citizen Reception (entity neo/anchor của quan hệ), Domain Prefix = rỗng vì đây là entity link/relationship thuần bắc cầu 2 domain (Citizen Reception T2 + Petition T1), không thuộc riêng nhóm nào — cùng cơ chế đã áp dụng cho `Penalty Decision X Violation Record Relationship` (xem HLD Overview 7a). (2) Bảng: chỉ 2 FK nghiệp vụ (CITIZEN_RECEPTION_ID, PETITION_ID) + SORT_ORDER (thứ tự hiển thị khi 1 buổi tiếp có nhiều đơn — trường hợp đoàn đông người, mỗi người nộp 1 đơn riêng) + audit fields. (3) Thay thế cột PETITION_ID (nay DEPRECATED trên CITIZEN_RECEPTION, giữ lại chỉ để tương thích ngược — xem T2 Điểm cần xác nhận). Đặt tên theo pattern junction-entity đã dùng trong dự án (`{A} X {B} Relationship`). SORT_ORDER là thuộc tính thứ tự thuần túy (không phải business attribute độc lập) nên KHÔNG loại khỏi diện "pure link" — cân nhắc PK: có thể composite (CITIZEN_RECEPTION_ID + PETITION_ID) hoặc Id/Code riêng nếu cần hỗ trợ soft-delete từng dòng liên kết độc lập — quyết định cụ thể khi thiết kế LLD. Table Type = Relative vì FK đến 2 Fundamental (Citizen Reception T2, Petition T1). |
 | Communication | [Communication] Feedback | Petition Processing Document | PETITION_DOCUMENT | Update | Văn bản xử lý đơn thư: DOCUMENT_TYPE(8 loại gồm tờ trình phân loại, phiếu đề xuất, công văn thông báo thụ lý, CV trả lời NĐT v.v.), nhiều attributes nghiệp vụ | Petition Document | Fundamental | (1) Feedback — BCV: entity này là communication artifacts của quá trình xử lý đơn thư. (2) Bảng có FK→PETITION, DOCUMENT_TYPE(8 values), DOCUMENT_NUMBER, DOCUMENT_DATE, CONTENT(CLOB), CLASSIFICATION_RESULT, PROPOSED_ACTION, TRANSFER_TARGET_UNIT, SIGNER_NAME. (3) Dùng Feedback (đồng concept với Petition parent). Tên chứa "Petition" ✓. Table Type = Fundamental. |
+| Communication | [Communication] Feedback | Petition Processing Assignment | PETITION_INTERNAL_TRANSFER_UNIT | Update | Danh sách đơn vị nội bộ UBCKNN được chuyển xử lý đơn thư (bảng mới, DDL UAT cập nhật): FK→PETITION, UNIT_ID/UNIT_NAME (đơn vị nội bộ) | Petition X Regulatory Authority Organization Unit Relationship | Relative | (1) Feedback — kế thừa BCV Concept của Petition (parent, entity neo/anchor), Domain Prefix = rỗng vì là entity link bắc cầu 2 domain khác nhau (Petition — Communication, Regulatory Authority Organization Unit — Involved Party, entity đã có ở NHNCK: `ra_organization_unit`), cùng cơ chế `{A} X {B} Relationship` đã dùng cho `Penalty Decision X Violation Record Relationship`. (2) Bảng: FK→PETITION, UNIT_ID/UNIT_NAME + SORT_ORDER + audit fields — không phải polymorphic (khác PETITION_TARGET) vì UNIT luôn là 1 loại: đơn vị nội bộ UBCKNN. (3) Thay thế cột INTERNAL_TRANSFER_UNIT_ID/INTERNAL_TRANSFER_UNIT_NAME (nay DEPRECATED trên PETITION, giữ lại chỉ để tương thích ngược — xem Điểm cần xác nhận). UNIT_ID là ID kỹ thuật nội bộ UBCKNN — cần xác nhận khi thiết kế LLD đây có phải cùng ID với `ra_organization_unit` (nguồn NHNCK.UNITS/DEPARTMENTS) hay cần crosswalk riêng. Table Type = Relative vì FK đến 2 Fundamental (Petition T1, Regulatory Authority Organization Unit — nguồn NHNCK). Tier = T2 (chỉ phụ thuộc Petition trong nội bộ THANHTRA; FK sang NHNCK là cross-source, không tính vào Tier nội bộ). |
+| Communication | [Communication] Feedback | Petition Target | PETITION_TARGET | Update | Danh sách đối tượng được đề cập trong đơn thư (bảng mới, DDL UAT cập nhật): FK→PETITION, TARGET_TYPE(SECURITIES_COMPANY/FUND_MANAGEMENT_COMPANY/PUBLIC_COMPANY/OTHER), TARGET_REFERENCE_ID, TARGET_NAME | Petition Target | Fundamental | (1) Feedback — kế thừa BCV Concept của Petition (parent) vì đây là chi tiết 1-N của cùng đơn thư, không phải hoạt động độc lập. (2) Bảng: FK→PETITION, TARGET_TYPE(4 values), TARGET_REFERENCE_ID(nullable — null khi OTHER), TARGET_NAME — polymorphic reference tới nhiều loại entity khác nhau tùy TARGET_TYPE, giữ nguyên pattern polymorphic Target Type/Reference Id/Name đã dùng ở `Inspection Team Target`/`Examination Team Target`/`Examination Annual Plan Target`, KHÔNG ép về 1 FK cứng như Petition Internal Transfer Unit (vì Target có thể là 1 trong nhiều loại entity, không cố định 1 loại). (3) Thay thế cột TARGET_TYPE/TARGET_REFERENCE_ID/TARGET_NAME (nay DEPRECATED trên PETITION, giữ lại chỉ để tương thích ngược — xem Điểm cần xác nhận). Tên chứa "Petition" ✓. Table Type = Fundamental (không phải Relative vì không có 1 FK cố định đến 1 entity duy nhất). |
 | Event | [Event] Event | Proactive Notice Recipient | PROACTIVE_NOTICE_RECIPIENT | Update | Danh sách công ty nhận thông báo chủ động: COMPANY_CODE, RECIPIENT_TYPE — mỗi thông báo gửi đến nhiều công ty | Proactive Notice Recipient | Fundamental | (1) Event — BCO đổi sang Event đồng với parent Proactive Notice. (2) Bảng có FK→PROACTIVE_NOTICE, COMPANY_CODE, RECIPIENT_TYPE — danh sách đơn vị nhận thông báo. (3) Tên chứa "Proactive Notice" ✓. Table Type = Fundamental. |
 | Business Activity | [Business Activity] Conduct Violation | Violation Behavior Catalog | VIOLATION_BEHAVIOR | Update | Danh mục hành vi vi phạm hành chính: CODE(UNIQUE), NAME, FK→PENALTY_TYPE, MIN/MAX_FINE_AMOUNT, REMEDIAL_MEASURE, VIOLATION_CLAUSE | Violation Behavior | Fundamental | (1) Conduct Violation — BCV: "a Business Activity that breaches a business code of conduct". (2) Bảng có CODE(UNIQUE), NAME, PRIMARY_PENALTY_TYPE_ID(FK→PENALTY_TYPE), MIN_FINE_AMOUNT, MAX_FINE_AMOUNT, REMEDIAL_MEASURE, LEGAL_DOCUMENT(text legacy), VIOLATION_CLAUSE — danh mục hành vi vi phạm có mức phạt tiền min/max. (3) Không thuần Code+Name vì có fine range, FK→PENALTY_TYPE → Fundamental. Conduct Violation phù hợp. |
 
@@ -92,11 +97,41 @@ erDiagram
         date RECEPTION_DATE
         varchar SUBJECT_TYPE
     }
+    CITIZEN_RECEPTION_PARTICIPANT {
+        varchar ID PK
+        varchar CITIZEN_RECEPTION_ID FK
+        varchar PARTICIPANT_TYPE
+        varchar USER_ID
+    }
+    CITIZEN_RECEPTION_SUBJECT {
+        varchar ID PK
+        varchar CITIZEN_RECEPTION_ID FK
+        varchar FULL_NAME
+        varchar ORGANIZATION_NAME
+    }
+    CITIZEN_RECEPTION_PETITION_LINK {
+        varchar ID PK
+        varchar CITIZEN_RECEPTION_ID FK
+        varchar PETITION_ID FK
+        number SORT_ORDER
+    }
     PETITION_DOCUMENT {
         varchar ID PK
         varchar PETITION_ID FK
         varchar DOCUMENT_TYPE
         varchar DOCUMENT_NUMBER
+    }
+    PETITION_INTERNAL_TRANSFER_UNIT {
+        varchar ID PK
+        varchar PETITION_ID FK
+        varchar UNIT_ID
+        varchar UNIT_NAME
+    }
+    PETITION_TARGET {
+        varchar ID PK
+        varchar PETITION_ID FK
+        varchar TARGET_TYPE
+        varchar TARGET_NAME
     }
     PROACTIVE_NOTICE_RECIPIENT {
         varchar ID PK
@@ -119,7 +154,13 @@ erDiagram
     SECURITY_MEASURE_DECISION ||--o{ SECURITY_MEASURE_DECISION_RECIPIENT : "FK"
     SECURITY_MEASURE_DECISION ||--o{ SECURITY_MEASURE_EXECUTION : "FK"
     PETITION ||--o{ CITIZEN_RECEPTION : "nullable FK"
+    CITIZEN_RECEPTION ||--o{ CITIZEN_RECEPTION_PARTICIPANT : "FK"
+    CITIZEN_RECEPTION ||--o{ CITIZEN_RECEPTION_SUBJECT : "FK"
+    CITIZEN_RECEPTION ||--o{ CITIZEN_RECEPTION_PETITION_LINK : "FK"
+    PETITION ||--o{ CITIZEN_RECEPTION_PETITION_LINK : "FK"
     PETITION ||--o{ PETITION_DOCUMENT : "FK"
+    PETITION ||--o{ PETITION_INTERNAL_TRANSFER_UNIT : "FK"
+    PETITION ||--o{ PETITION_TARGET : "FK"
     PROACTIVE_NOTICE ||--o{ PROACTIVE_NOTICE_RECIPIENT : "FK"
     PENALTY_TYPE ||--o{ VIOLATION_BEHAVIOR : "FK"
 ```
@@ -266,3 +307,5 @@ erDiagram
 | T2-02 | CITIZEN_RECEPTION có FK→PETITION nullable — nếu PETITION_ID null thì reception này không liên kết đơn thư nào. Grain Atomic: 1 dòng = 1 buổi tiếp công dân. Có cần Fact Append không? | Giữ Fundamental (Update). Buổi tiếp có thể bổ sung thông tin, không phải append-only. |
 | T2-03 | VIOLATION_BEHAVIOR có LEGAL_DOCUMENT cột text (không FK chính thức đến bảng LEGAL_DOCUMENT) — cần làm rõ có cần FK đến TT Legal Document không hay chỉ lưu text. | Ghi nhận: LEGAL_DOCUMENT trong VIOLATION_BEHAVIOR là text legacy field. Khi thiết kế LLD sẽ xem xét thêm FK suy luận hoặc bỏ qua. |
 | T2-04 | TT Citizen Reception có PETITION_CATEGORY lưu lại (denormalized từ PETITION) — có cần giữ lại cột này trên Atomic không? | Quyết định LLD. HLD ghi nhận: cột này là denormalized snapshot tại thời điểm tiếp công dân — hữu ích khi không có PETITION liên kết. |
+| T2-05 | DDL UAT cập nhật thêm 3 bảng con CITIZEN_RECEPTION_PARTICIPANT/SUBJECT/PETITION_LINK, đánh dấu DEPRECATED 4 cột trên CITIZEN_RECEPTION (RECEIVER_ID, RECEIVER_NAME, SUBJECT_NAME, PETITION_ID — nguồn giữ lại để tự đồng bộ với dòng "đầu tiên" của bảng con, chỉ để tương thích ngược). Atomic có nên tiếp tục map 4 cột deprecated này trên Citizen Reception hay chuyển hẳn sang 3 bảng con? | Đề xuất: loại 4 cột deprecated khỏi attribute mapping của Citizen Reception (LLD), document trong `pending_design.yaml` với lý do "Superseded bởi bảng con — cột nguồn giữ lại chỉ để tương thích ngược". 3 bảng con là nguồn dữ liệu chính thức duy nhất. Cần Data Modeler xác nhận trước khi áp dụng ở Bước LLD. |
+| T2-06 | DDL UAT cập nhật thêm 2 bảng con PETITION_INTERNAL_TRANSFER_UNIT/PETITION_TARGET, đánh dấu DEPRECATED 5 cột trên PETITION (INTERNAL_TRANSFER_UNIT_ID, INTERNAL_TRANSFER_UNIT_NAME, TARGET_TYPE, TARGET_REFERENCE_ID, TARGET_NAME — cùng lý do tương thích ngược như CITIZEN_RECEPTION). Xử lý tương tự T2-05? | Cùng đề xuất T2-05: loại 5 cột deprecated khỏi attribute mapping của Petition (LLD), document `pending_design.yaml`. Lưu ý: các cột này (INTERNAL_TRANSFER_UNIT_*, TARGET_*) đã được thêm vào LLD Petition draft trước đó (2026-08-07, theo note trong `lld_THANHTRA_PETITION.yaml`) khi DDL chưa có bảng con — nay cần gỡ bỏ khỏi mapping và chuyển hẳn sang 2 bảng con mới. |

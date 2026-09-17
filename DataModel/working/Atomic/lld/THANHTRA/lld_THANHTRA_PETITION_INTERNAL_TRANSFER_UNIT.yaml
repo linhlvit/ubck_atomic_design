@@ -1,0 +1,155 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "THANHTRA"
+  source_table: "PETITION_INTERNAL_TRANSFER_UNIT"
+  atomic_entity: "Petition X Regulatory Authority Organization Unit Relationship"
+  entity_physical_name: "petition_x_ra_ou_relationship"
+  bcv_core_object: "Communication"
+  bcv_concept: "[Communication] Feedback"
+  table_type: "Relative"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Bảng mới (DDL UAT cập nhật 2026-09) — thay thế cột INTERNAL_TRANSFER_UNIT_ID/INTERNAL_TRANSFER_UNIT_NAME\
+    \ (nay DEPRECATED, giữ lại trên PETITION chỉ để tương thích ngược) — xem THANHTRA_HLD_Tier2.md\
+    \ mục T2-06. Domain Prefix rỗng vì entity link bắc cầu Petition (Communication)\
+    \ và Regulatory Authority Organization Unit (Involved Party, entity đã có ở nguồn\
+    \ NHNCK, entity_physical_name ra_organization_unit). KHÔNG áp dụng composite-PK\
+    \ 'pure link' của Rule 3e vì bảng có SORT_ORDER — cần Id/Code riêng. Code lấy\
+    \ trực tiếp từ ID kỹ thuật. Audit block loại trừ khỏi Atomic — mirror quyết định\
+    \ đã áp dụng cho toàn bộ phân hệ THANHTRA (xem pending_design.yaml)."
+attributes:
+- attribute_name: "Petition X Regulatory Authority Organization Unit Relationship\
+    \ Id"
+  physical_name: "petition_x_ra_ou_rltnp_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: [Communication] Feedback — phân công đơn vị nội bộ\
+    \ xử lý đơn thư."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Petition X Regulatory Authority Organization Unit Relationship\
+    \ Code"
+  physical_name: "petition_x_ra_ou_rltnp_code"
+  description: "BK chính. PK nguồn (VARCHAR2 UUID)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PETITION_INTERNAL_TRANSFER_UNIT.ID"
+  comment: "BK chính. PK nguồn (VARCHAR2 UUID) — không có mã nghiệp vụ riêng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=THANHTRA_PETITION_INTERNAL_TRANSFER_UNIT"
+  etl_derived_value: "THANHTRA_PETITION_INTERNAL_TRANSFER_UNIT"
+  data_type: "string"
+- attribute_name: "Petition Id"
+  physical_name: "petition_id"
+  description: "FK đến Petition (đơn thư được chuyển xử lý nội bộ)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PETITION_INTERNAL_TRANSFER_UNIT.PETITION_ID"
+  comment: "FK target: petition.petition_id. Cần ETL crosswalk sang THANHTRA.PETITION:\
+    \ PETITION_INTERNAL_TRANSFER_UNIT.PETITION_ID = PETITION.ID để xác nhận CODE sau\
+    \ đó hash_id('THANHTRA_PETITION', CODE) — cùng pattern crosswalk đã dùng cho CITIZEN_RECEPTION.PETITION_ID."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Petition Code"
+  physical_name: "petition_code"
+  description: "Mã đơn thư liên kết (denormalized lookup)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PETITION.CODE"
+  comment: "Lookup pair: petition.petition_code. Pair with Petition Id. Giá trị lấy\
+    \ từ THANHTRA.PETITION.CODE sau ETL crosswalk — chi tiết xem comment Petition\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Regulatory Authority Organization Unit Id"
+  physical_name: "ra_ou_id"
+  description: "FK đến đơn vị/ban nội bộ UBCKNN được chuyển xử lý."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PETITION_INTERNAL_TRANSFER_UNIT.UNIT_ID"
+  comment: "FK target: ra_organization_unit.ra_ou_id. Cần ETL crosswalk sang NHNCK.UNITS:\
+    \ PETITION_INTERNAL_TRANSFER_UNIT.UNIT_ID = UNITS.UNIT_CODE để xác nhận UNIT_CODE\
+    \ sau đó hash_id('NHNCK_UNITS', UNIT_CODE) | UNIT_ID (VARCHAR2) nhiều khả năng\
+    \ đã lưu trực tiếp UNIT_CODE (không phải NHNCK.UNITS.ID — kiểu NUMBER, khác kiểu\
+    \ dữ liệu) nhưng chưa xác nhận — cần profile dữ liệu trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Regulatory Authority Organization Unit Code"
+  physical_name: "ra_ou_code"
+  description: "Mã đơn vị/ban nội bộ (denormalized lookup)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PETITION_INTERNAL_TRANSFER_UNIT.UNIT_ID"
+  comment: "Lookup pair: ra_organization_unit.ra_ou_code. Pair with Regulatory Authority\
+    \ Organization Unit Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Unit Name"
+  physical_name: "unit_nm"
+  description: "Tên đơn vị nội bộ (denormalized snapshot tại thời điểm chuyển xử lý)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PETITION_INTERNAL_TRANSFER_UNIT.UNIT_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Sort Order"
+  physical_name: "sort_order"
+  description: "Thứ tự hiển thị."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PETITION_INTERNAL_TRANSFER_UNIT.SORT_ORDER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
