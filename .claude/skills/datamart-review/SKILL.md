@@ -36,6 +36,7 @@ triggers:
 | **Orphan Check 3 Chiều (Nhánh A & B)** | `reference/technical_review_rules.md` (Mục 8) | `python scripts/check_orphan.py --module [M] --strict` |
 | **Bảo Vệ Master Registry & Parity etl_logic** | `reference/technical_review_rules.md` (Mục 9) | `python scripts/check_parity.py --module [M] --strict` |
 | **Quy Tắc Kỹ Thuật Sâu Lớp 1–4 & Gate 4 SQL** | `reference/technical_review_rules.md` | `python scripts/check_flat_table.py --module [M] --strict` |
+| **Linter Detail Mapping (L4, L15, L16, L17)** | `reference/technical_review_rules.md` (Mục 8B) | `python scripts/datamart_ba_cross_checker.py --module [M]` |
 | **Bộ Điều Phối Chất Lượng 4 Gate Hợp Nhất** | `reference/technical_review_rules.md` (Mục 14) | `python scripts/run_quality_gates.py --module [M] [--strict]` |
 | **Checklist Đánh Giá Nhanh 4 Lớp & 4 Gates** | `reference/review_checklist.md` | — |
 
@@ -208,18 +209,19 @@ Khi người dùng yêu cầu điều tra một lỗi cụ thể (sai số liệ
   8. *Kiểm định Lưu trữ Chuỗi Thời Gian (`L2-WINDOW-STORAGE-INVALID`):* Mọi trường dữ liệu đo lường phục vụ Window Function lịch sử (giá đóng cửa `close_price`, khối lượng...) bắt buộc phải được lưu trữ trên Fact Periodic Snapshot (`fct_*_snpst`) theo từng ngày giao dịch. CẤM TUYỆT ĐỐI trỏ Window Function vào Dimension SCD4A current-state (như `security_trading_snpst_dim` chỉ có 1 bản ghi hiện tại).
 
 #### 🔹 Lớp 3: Detail Mapping Verification (Datamart ➔ Báo Cáo)
-- 📌 **Deterministic Trigger:** Trước khi đánh giá Lớp 3, BẮT BUỘC dùng tool `view_file` đọc `reference/technical_review_rules.md` (đặc biệt Mục 10, 11, 12).
+- 📌 **Deterministic Trigger:** Trước khi đánh giá Lớp 3, BẮT BUỘC dùng tool `view_file` đọc `reference/technical_review_rules.md` (đặc biệt Mục 8B, 10, 11, 12).
 - ⚓ **Anchor Summaries (Quy tắc sống còn):**
-  1. *Trace logic BA:* Đọc full câu lệnh SQL và ghi chú của BA để chuyển hóa trọn vẹn vào `logic`.
+  1. *Trace logic BA:* Đọc full câu lệnh SQL, điều kiện chung và ghi chú của BA để chuyển hóa trọn vẹn vào `logic`.
   2. *Quy tắc L4 đối với dòng PENDING (`L3-PENDING-RULE-L4-VIOLATION`):* Mọi dòng PENDING (cả nhóm PENDING lẫn KPI PENDING đơn lẻ) bắt buộc để trống tuyệt đối cả 4 cột: `mart_table`, `mart_column`, `column_role`, `logic`. Blocker ghi tại `ghi_chu` theo cú pháp `Pending - [Nhóm 1-5]: ...`.
   3. *Quy tắc L15 đối với dòng REUSE (`L3-REUSE-INVALID`):* Phân biệt dứt khoát: Case 1 (Measure vật lý có sẵn) $\implies$ điền đủ `mart_table` và `mart_column`; Case 2 (Chỉ tiêu BI phái sinh) $\implies$ để trống `mart_table`/`mart_column`, `column_role = 'DERIVED'`.
   4. *Quy tắc L16 phân định DEPRECATED vs PENDING (`L3-DEPRECATED-AS-PENDING`):* Chỉ tiêu đã thống nhất bãi bỏ với BA bắt buộc đặt `column_role = 'DEPRECATED'`, để trống 2 cột mart, `logic = 'Đã loại bỏ — không tạo cột/slicer'`, ghi rõ căn cứ tại `ghi_chu`. Cấm đánh tráo thành PENDING.
-  5. *Inline DERIVED:* Cột phái sinh bắt buộc inline toàn bộ công thức tính toán từ Atomic/Mart, **cấm tham chiếu mã KPI_ID khác** (như `K_01 + K_02`).
-  6. *Trace cột LLD:* Cột `mart_table` và `mart_column` phải tồn tại thực tế và khớp 1-1 với Attributes.
-  7. *Cú pháp JOIN Date FK:* Truy vấn Detail Mapping kết nối sang Dimension ngày theo khóa surrogate key: `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = <fact>.<role>_dt_dim_id`.
-  8. *Formula Grain & Group By Verification (`L3-GRAIN-MISMATCH`):* Đọc mockup "1 dòng kết quả = 1 đối tượng gì"; đối chiếu danh sách cột trong mệnh đề `GROUP BY` / `PARTITION BY` trong `logic` bắt buộc khớp đúng khóa định danh đối tượng đó. Cấm tuyệt đối copy công thức từ nhóm khác lệch grain (điển hình case `K_GSTT_61` copy vốn hóa Index `idx_market_cap` sang Top-N mã CK).
-  9. *Chuẩn hóa Window Functions & Time Horizon (`L3-FORMULA-WINDOW-MISMATCH`):* Đếm số phiên giao dịch chuẩn (52W = 260 phiên `ROWS BETWEEN 259 PRECEDING AND CURRENT ROW`, 6M = 130 phiên, 3M = 65 phiên, 1M = 20 phiên); CẤM dùng `INTERVAL` ngày lịch; Phân định chuẩn `close_price` (báo cáo định giá/BM021_MSS) vs `high_price`/`low_price` (intraday nến kỹ thuật); Bắt buộc đủ `PARTITION BY <entity_id>` và `ORDER BY <date_col> ASC` (tránh lẫn chuỗi giá nhiều mã).
-  10. *Nhất quán Chu kỳ Tỷ số Tài chính (`L3-FINANCIAL-PERIOD-INCONSISTENT`):* Tử số và mẫu số cùng một hệ quy chiếu thời gian (TTM 4 quý vs 1 quý quy năm cho P/E, P/B, EPS, BVPS, ROE, ROA); CẤM TUYỆT ĐỐI `SUM(owner_equity)` hoặc `SUM(total_assets)` qua 4 quý trong mẫu số; bắt buộc trả về `NULL` khi thiếu bất kỳ quý BCTC nào của chuỗi TTM.
+  5. *Quy tắc L17 Bám sát Câu lệnh tham khảo & Điều kiện chung BA (`L3-REFERENCE-SQL-MISALIGNMENT`):* Bắt buộc bóc tách 4 thành phần SQL tham khảo của BA: (a) SELECT: khớp đúng số đo (khớp lệnh thuần `total_matched_vol/val` vs thỏa thuận `total_negotiated_vol/val` vs gộp tổng `total_vol/val`; mua vs bán vs ròng `foreign_net_vol`); (b) WHERE: toàn bộ điều kiện lọc tĩnh (sàn `FloorCode`, loại CK `StockType`, loại bảng lệnh `Board Type`, cờ hiệu lực, loại NĐT) phải sinh thành dòng `column_role = FILTER` tương ứng HOẶC ghi rõ trong `ghi_chu` là đã lọc sẵn tại ETL Fact; (c) FROM/JOIN: đủ Dimension và FK liên kết; (d) GROUP BY/Window: đúng grain hiển thị và công thức cửa sổ rolling.
+  6. *Inline DERIVED:* Cột phái sinh bắt buộc inline toàn bộ công thức tính toán từ Atomic/Mart, **cấm tham chiếu mã KPI_ID khác** (như `K_01 + K_02`).
+  7. *Trace cột LLD:* Cột `mart_table` và `mart_column` phải tồn tại thực tế và khớp 1-1 với Attributes.
+  8. *Cú pháp JOIN Date FK:* Truy vấn Detail Mapping kết nối sang Dimension ngày theo khóa surrogate key: `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = <fact>.<role>_dt_dim_id`.
+  9. *Formula Grain & Group By Verification (`L3-GRAIN-MISMATCH`):* Đọc mockup "1 dòng kết quả = 1 đối tượng gì"; đối chiếu danh sách cột trong mệnh đề `GROUP BY` / `PARTITION BY` trong `logic` bắt buộc khớp đúng khóa định danh đối tượng đó. Cấm tuyệt đối copy công thức từ nhóm khác lệch grain (điển hình case `K_GSTT_61` copy vốn hóa Index `idx_market_cap` sang Top-N mã CK).
+  10. *Chuẩn hóa Window Functions & Time Horizon (`L3-FORMULA-WINDOW-MISMATCH`):* Đếm số phiên giao dịch chuẩn (52W = 260 phiên `ROWS BETWEEN 259 PRECEDING AND CURRENT ROW`, 6M = 130 phiên, 3M = 65 phiên, 1M = 20 phiên); CẤM dùng `INTERVAL` ngày lịch; Phân định chuẩn `close_price` (báo cáo định giá/BM021_MSS) vs `high_price`/`low_price` (intraday nến kỹ thuật); Bắt buộc đủ `PARTITION BY <entity_id>` và `ORDER BY <date_col> ASC` (tránh lẫn chuỗi giá nhiều mã).
+  11. *Nhất quán Chu kỳ Tỷ số Tài chính (`L3-FINANCIAL-PERIOD-INCONSISTENT`):* Tử số và mẫu số cùng một hệ quy chiếu thời gian (TTM 4 quý vs 1 quý quy năm cho P/E, P/B, EPS, BVPS, ROE, ROA); CẤM TUYỆT ĐỐI `SUM(owner_equity)` hoặc `SUM(total_assets)` qua 4 quý trong mẫu số; bắt buộc trả về `NULL` khi thiếu bất kỳ quý BCTC nào của chuỗi TTM.
 
 #### 🔹 Lớp 4: Model Registry (datamart_model.yaml), Master Registry & Flat Tables
 - ⚓ **Anchor Summaries (Quy tắc sống còn):**
@@ -234,7 +236,7 @@ Khi người dùng yêu cầu điều tra một lỗi cụ thể (sai số liệ
 > ⛔ **GATE 2 (GROUP CHECKPOINT):**  
 > - 4 Lớp = OK ➔ In "✅ Nhóm N — OK", tự động chuyển sang Nhóm N+1.  
 > - Lỗi Info 🔵 ➔ Ghi vào Backlog tạm, không dừng, tiếp tục Nhóm N+1.  
-> - Lỗi Critical 🔴 / Warning 🟡 ➔ DỪNG hỏi human: (a) Sửa ngay qua skill con, (b) Ghi nhận vào Backlog và đi tiếp, (c) Dừng review. (Bao gồm các vi phạm Critical: `L1/L3-GRAIN-MISMATCH`, `L2-WINDOW-STORAGE-INVALID`, `L3-FORMULA-WINDOW-MISMATCH`, `L3-FINANCIAL-PERIOD-INCONSISTENT`, `L3-PENDING-RULE-L4-VIOLATION`, `L3-REUSE-INVALID`, `L3-DEPRECATED-AS-PENDING`).
+> - Lỗi Critical 🔴 / Warning 🟡 ➔ DỪNG hỏi human: (a) Sửa ngay qua skill con, (b) Ghi nhận vào Backlog và đi tiếp, (c) Dừng review. (Bao gồm các vi phạm Critical: `L1/L3-GRAIN-MISMATCH`, `L2-WINDOW-STORAGE-INVALID`, `L3-FORMULA-WINDOW-MISMATCH`, `L3-FINANCIAL-PERIOD-INCONSISTENT`, `L3-PENDING-RULE-L4-VIOLATION`, `L3-REUSE-INVALID`, `L3-DEPRECATED-AS-PENDING`, `L3-REFERENCE-SQL-MISALIGNMENT`).
 
 ---
 
@@ -269,7 +271,10 @@ Bất kể Kịch bản C được thực hiện qua lời gọi `datamart-lld-d
    - **Nhánh A (Bảng còn giá trị / có ≥1 KPI READY):** Hoàn tất Phase 2 Entities và Phase 3 Flat Table SQL DDL/DML, **TUYỆT ĐỐI KHÔNG ĐƯỢC XÓA**.
    - **Nhánh B (Bảng đã bị hủy / 0 KPI READY):** Kích hoạt All-Tier Cleanup Protocol 5 bước dọn dẹp sạch cả 5 tầng.
 3. **Detail Mapping Linter Check:**
-   Xác nhận 0 vi phạm Quy tắc L4 (PENDING để trống 4 cột kỹ thuật), Quy tắc L15 (REUSE Case 1 vs Case 2), và Quy tắc L16 (DEPRECATED phân định rõ ràng).
+   Xác nhận 0 vi phạm Quy tắc L4 (PENDING để trống 4 cột kỹ thuật), Quy tắc L15 (REUSE Case 1 vs Case 2), Quy tắc L16 (DEPRECATED phân định rõ ràng), và Quy tắc L17 (Reference SQL alignment — không lệch số đo, không thiếu FILTER). Chạy CLI:
+   ```bash
+   python scripts/datamart_ba_cross_checker.py --module [MODULE]
+   ```
 4. **Role-Playing Date FK Verification:**
    ```bash
    python scripts/check_date_fk.py --module [MODULE]

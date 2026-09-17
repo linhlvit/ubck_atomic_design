@@ -253,9 +253,9 @@ python scripts/check_orphan.py --module [MODULE] --strict
 
 ---
 
-## 8B. Quy Chuẩn Điền Detail Mapping: PENDING (L4), REUSE (L15) & DEPRECATED (L16)
+## 8B. Quy Chuẩn Điền Detail Mapping: PENDING (L4), REUSE (L15), DEPRECATED (L16) & REFERENCE SQL (L17)
 
-Để đảm bảo Detail Mapping phản ánh chính xác 100% ánh xạ vật lý và không làm phình to blocker ảo, Designer và Reviewer bắt buộc tuân thủ 3 quy tắc sau:
+Để đảm bảo Detail Mapping phản ánh chính xác 100% ánh xạ vật lý, bám sát nghiệp vụ và không làm phình to blocker ảo, Designer và Reviewer bắt buộc tuân thủ 4 quy tắc sau:
 
 ### 1. Quy Tắc L4: PENDING 4-Column Blank Rule (`L3-PENDING-RULE-L4-VIOLATION`)
 - Mọi dòng mang trạng thái PENDING (dù nằm trong nhóm PENDING hay là KPI PENDING đơn lẻ của nhóm READY) **BẮT BUỘC PHẢI ĐỂ TRỐNG TUYỆT ĐỐI CẢ 4 CỘT KỸ THUẬT**:
@@ -291,6 +291,23 @@ Phân định dứt khoát 2 trường hợp tái sử dụng chỉ tiêu:
   - `logic = 'Đã loại bỏ — không tạo cột/slicer'`
   - `ghi_chu` ghi rõ căn cứ và ngày thống nhất: `"Bãi bỏ sau thống nhất BA YYYY-MM-DD: [Lý do]"`
 - **LỆNH CẤM:** Tuyệt đối cấm đánh tráo chỉ tiêu bãi bỏ thành trạng thái PENDING (`Pending - [Nhóm 1-5]`). Việc đánh tráo này sẽ làm phình to số lượng blocker ảo, làm sai lệch báo cáo tiến độ dự án.
+
+### 4. Quy Tắc L17: Bắt Buộc Bám Sát Câu Lệnh Tham Khảo & Điều Kiện Chung BA (`L3-REFERENCE-SQL-MISALIGNMENT`)
+- **Bối cảnh:** File BA analyst (`BRD/BA/BA_analyst_{MODULE}.csv`) cung cấp các cột kỹ thuật chi tiết: `Câu lệnh tham khảo` (SQL mẫu), `Điều kiện chung`, `Bảng nguồn`, `Trường nguồn`, và `Note`. Nếu Designer chỉ đọc tên chỉ tiêu dạng text thuần túy mà bỏ qua câu lệnh SQL tham khảo sẽ gây ra các sai lệch nghiêm trọng giữa tầng Datamart và nhu cầu khai thác thực tế.
+- **Quy tắc bóc tách 4 thành phần bắt buộc:**
+  1. **Mệnh đề `SELECT` (Measure Alignment):**
+     - **Khớp lệnh vs Thỏa thuận:** Khớp lệnh thuần (SQL tham khảo loại trừ thỏa thuận: `Board Type NOT IN ('T1','T2','T3','T4','T6','R1')`) BẮT BUỘC ánh xạ vào `Total Matched Volume` / `total_matched_vol` và `Total Matched Value` / `total_matched_val`. **TUYỆT ĐỐI KHÔNG map nhầm sang `Total Volume` / `total_vol`** (vốn là số gộp cả thỏa thuận). Thỏa thuận phải map sang `Total Negotiated Volume` / `total_negotiated_vol`.
+     - **Mua vs Bán vs Ròng:** Chỉ tiêu Mua / Bán / Ròng (NĐTNN, Tự doanh) phải đối chiếu đúng công thức trong SELECT của SQL tham khảo (ví dụ: `SUM(kl_nn_mua) - SUM(kl_nn_ban)` ➔ `foreign_net_vol`).
+  2. **Mệnh đề `WHERE` (Static Filter & Scope Alignment):**
+     - Toàn bộ điều kiện lọc tĩnh trong WHERE của SQL tham khảo (lọc sàn `FloorCode IN ('10','02','04')`, loại trừ chứng khoán `StockType NOT IN (1,4)`, loại bảng lệnh `Board Type`, cờ hiệu lực `active_flg = 1`, phân loại NĐTNN) **PHẢI ĐƯỢC ÁNH XẠ THÀNH CÁC DÒNG `column_role = FILTER` TƯƠNG ỨNG TRONG NHÓM**, HOẶC nếu đã lọc ngầm tại ETL Fact thì cột `ghi_chu` phải ghi rõ: `"Đã lọc sẵn tại ETL Fact theo SQL tham khảo BA: <điều kiện>"`.
+  3. **Mệnh đề `FROM/JOIN` (Dimension & Linkage Coverage):**
+     - Đảm bảo Fact/Operational có đủ Foreign Key liên kết sang các Dimension tương ứng để thực hiện được phép lọc và cắt lát theo yêu cầu BA.
+  4. **Mệnh đề `GROUP BY` & Window Function:**
+     - Xác định đúng grain hiển thị và công thức cửa sổ rolling/moving average (ví dụ: KLGDTB 5 ngày `5 PRECEDING`, TTM 4 quý BCTC).
+- **Cấm kỵ:**
+  - ❌ BA SQL lọc khớp lệnh thuần nhưng Detail Mapping map vào `total_vol` / `total_val` (gộp thỏa thuận).
+  - ❌ BA SQL có điều kiện WHERE loại trừ trái phiếu/chứng quyền (`StockType NOT IN (1,4)`) nhưng Detail Mapping không có dòng FILTER và không có ghi chú ETL.
+- **Phân loại lỗi:** Vi phạm quy tắc L17 được gán mã lỗi **🔴 Critical (`L3-REFERENCE-SQL-MISALIGNMENT`)**, chặn mở Gate 2 và Gate 3.
 
 ---
 

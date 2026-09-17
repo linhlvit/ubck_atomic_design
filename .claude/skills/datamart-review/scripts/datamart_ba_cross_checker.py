@@ -755,6 +755,49 @@ class DetailMappingLinter:
                         )
                     )
 
+            # ----------------------------------------------------------------
+            # Rule 5: Reference SQL Alignment (Rule L17) check
+            # Detect measure mismatches where KPI name indicates matched trading
+            # ("khớp lệnh") but logic uses total_vol or total_val without matched
+            # ----------------------------------------------------------------
+            kpi_name_lower = item.kpi_name.lower()
+            if role_upper == "MEASURE":
+                is_khop_lenh = "khớp lệnh" in kpi_name_lower and "thỏa thuận" not in kpi_name_lower
+                if is_khop_lenh:
+                    logic_lower = logic.lower()
+                    if "total_vol" in logic_lower and "total_matched_vol" not in logic_lower:
+                        violations.append(
+                            MappingViolation(
+                                module=module,
+                                line_num=item.line_num,
+                                kpi_id=item.kpi_id,
+                                rule_code="L3-REFERENCE-SQL-MISALIGNMENT",
+                                severity="CRITICAL",
+                                message="Chỉ tiêu khớp lệnh vi phạm Quy tắc L17: logic dùng total_vol (gộp cả thỏa thuận) thay vì total_matched_vol theo đúng SQL tham khảo BA.",
+                                mart_table=tbl,
+                                mart_column=col,
+                                column_role=role_upper,
+                                logic=logic,
+                                ghi_chu=item.ghi_chu,
+                            )
+                        )
+                    if "total_val" in logic_lower and "total_matched_val" not in logic_lower:
+                        violations.append(
+                            MappingViolation(
+                                module=module,
+                                line_num=item.line_num,
+                                kpi_id=item.kpi_id,
+                                rule_code="L3-REFERENCE-SQL-MISALIGNMENT",
+                                severity="CRITICAL",
+                                message="Chỉ tiêu khớp lệnh vi phạm Quy tắc L17: logic dùng total_val (gộp cả thỏa thuận) thay vì total_matched_val theo đúng SQL tham khảo BA.",
+                                mart_table=tbl,
+                                mart_column=col,
+                                column_role=role_upper,
+                                logic=logic,
+                                ghi_chu=item.ghi_chu,
+                            )
+                        )
+
         return violations
 
 
