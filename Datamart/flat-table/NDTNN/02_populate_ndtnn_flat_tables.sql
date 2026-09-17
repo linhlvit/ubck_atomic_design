@@ -2,9 +2,9 @@
 -- NDTNN Flat Tables — POPULATE
 -- Module: Nhà Đầu Tư Nước Ngoài — NDTNN
 -- Generated: Phase 3 LLD Datamart
--- 5 bảng: 3 fact + 2 operational
--- ETL daily: fact lọc theo WHERE cal.cdr_dt = :etl_date (bảng có FK Calendar Date)
---            fact report lọc trực tiếp theo WHERE f.report_dt = :etl_date (không FK Calendar Date)
+-- 6 bảng: 4 fact + 2 operational
+-- ETL daily: fact có FK Calendar Date lọc theo WHERE cal.cdr_dt = :etl_date
+--            fact report không có FK Calendar Date, lọc trực tiếp theo WHERE f.report_dt = :etl_date
 -- 2 fact report (statistics_rpt, detail_rpt) là ETL append-only theo Report
 -- Date (xem HLD O_NDTNN_31b) — KHÔNG TRUNCATE, chỉ DELETE đúng ngày :etl_date
 -- (idempotent re-run) rồi INSERT lại, giữ nguyên lịch sử các ngày report khác.
@@ -162,4 +162,41 @@ SELECT
     o.src_stm_code
 
 FROM datamart.opr_investor_compliance_hist o
+;
+
+
+-- ============================================================
+-- 6. FACT: ndtnn_fct_public_company_foreign_ownership_snpst_flat
+--    snpst_cal: JOIN + WHERE cdr_dt = :etl_date
+-- ============================================================
+TRUNCATE TABLE IF EXISTS datamart.ndtnn_fct_public_company_foreign_ownership_snpst_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.ndtnn_fct_public_company_foreign_ownership_snpst_flat
+SELECT
+    -- From: FACT Fact Public Company Foreign Ownership Snapshot
+    f.snpst_dt_dim_id,
+    f.public_company_dim_id,
+    f.ticker_symbol,
+    f.total_issued_share_quantity,
+    f.max_foreign_ownership_ratio,
+    f.max_foreign_holding_quantity,
+    f.current_foreign_holding_quantity,
+    f.remaining_foreign_holding_quantity,
+    f.src_stm_code,
+
+    -- From: CALENDAR DATE DIMENSION
+    snpst_cal.cdr_dt                       AS snpst_cdr_dt,
+
+    -- From: PUBLIC COMPANY DIMENSION
+    pc_dim.public_company_code             AS public_company_code,
+    pc_dim.equity_ticker_symbol            AS equity_ticker_symbol,
+    pc_dim.public_company_nm               AS public_company_nm,
+    pc_dim.equity_listing_exchange_code    AS equity_listing_exchange_code,
+    pc_dim.classification_business_line_nm AS classification_business_line_nm
+
+FROM datamart.fct_public_company_foreign_ownership_snpst f
+JOIN datamart.cdr_dt_dim snpst_cal
+    ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+LEFT JOIN datamart.public_company_dim pc_dim
+    ON pc_dim.public_company_dim_id = f.public_company_dim_id
+WHERE snpst_cal.cdr_dt = :etl_date
 ;

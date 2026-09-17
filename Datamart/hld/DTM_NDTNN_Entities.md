@@ -134,6 +134,37 @@ erDiagram
 
 ---
 
+### Nhóm 9/10 — Sở hữu NĐT nước ngoài ROOM
+
+**[MỚI 2026-09-17]** Atomic entity `Foreign Ownership Info` (VSDC.FOREIGN_INVESTOR_INFO) vừa được thiết kế (draft) — đóng gap O_NDTNN_22, chuyển Nhóm 9/10 từ PENDING sang READY.
+
+#### Star schema
+
+```mermaid
+erDiagram
+    Fact_Public_Company_Foreign_Ownership_Snapshot {
+        string Snapshot_Date_Dimension_Id FK
+        string Public_Company_Dimension_Id FK
+        string Ticker_Symbol
+        int Total_Issued_Share_Quantity
+        float Max_Foreign_Ownership_Ratio
+        int Max_Foreign_Holding_Quantity
+        int Current_Foreign_Holding_Quantity
+        int Remaining_Foreign_Holding_Quantity
+        string Source_System_Code
+    }
+    Calendar_Date_Dimension ||--o{ Fact_Public_Company_Foreign_Ownership_Snapshot : "Snapshot Date"
+    Public_Company_Dimension |o--o{ Fact_Public_Company_Foreign_Ownership_Snapshot : " "
+```
+
+#### Bảng entity
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Public Company Foreign Ownership Snapshot | Fact (snapshot) | new | Room sở hữu nước ngoài theo mã CK | 1 row = 1 mã CK × 1 ngày | K_NDTNN_52-57 (Nhóm 9), K_NDTNN_54 reuse (Nhóm 10) |
+
+---
+
 ## Bảng PENDING (không thiết kế trong Phase 2)
 
 Các bảng dưới đây 100% KPI/Nhóm dùng đều PENDING (Gap Atomic hoặc chờ nguồn) — không đưa vào Entities.csv, chờ Data Modeler xác nhận nguồn trước khi thiết kế lại LLD.
@@ -143,6 +174,5 @@ Các bảng dưới đây 100% KPI/Nhóm dùng đều PENDING (Gap Atomic hoặc
 | Fact Foreign Investor Registration Report (tên tạm) | Nguồn báo cáo PLVI-TT51 — cần xác nhận Report Code trong generic store TT51 | O_NDTNN_1, Cụm 1b |
 | Fact Foreign Investor Capital Flow Report (tên tạm) | Nguồn báo cáo PLIV-TT51 — cần xác nhận Report Code | O_NDTNN_16, Cụm 5a |
 | Fact Foreign Investor Portfolio Value Report (tên tạm) | Nguồn báo cáo PLIII-TT51 — cần xác nhận Report Code Mục II | O_NDTNN_21, Cụm 3a |
-| Fact Public Company Foreign Ownership Snapshot (tên tạm) | BA yêu cầu nguồn báo cáo thủ công BM67 VSDC (chưa số hoá), không dùng entity IDS/FIMS đã có | O_NDTNN_22, Cụm 6 |
 | NDTNN Regulatory Report Store | 100% Dữ liệu động (Nhóm 18-43) — cần xác nhận 26 Report Code riêng biệt | O_NDTNN_25, O_NDTNN_27, Cụm 7 |
 | Fact Foreign Investor Portfolio Snapshot (grain 1 NĐT × 1 mã CK, Nhóm 8) | Thiếu measure giá đóng cửa chứng khoán trong FIMS/IDS — K_NDTNN_50 (Chiều) cũng chuyển PENDING vì đứng độc lập không measure | O_NDTNN_12, O_NDTNN_21 |
