@@ -1,6 +1,7 @@
 # DTM_QLKD_Entities — Star Schema per Nhóm báo cáo
 **Module:** QLKD — Quản lý kinh doanh (Hoạt động CTCK)
-**Phiên bản:** 5.0 — 11/09/2026 (đồng bộ theo `DTM_QLKD_HLD.md` v5.0 — redesign cột T thay cột S; STT33/34/35 hạ PENDING; O_QLKD_20 Superseded → O_QLKD_26 mở rộng; loại bỏ toàn bộ entity PENDING 100% khỏi Entities.csv theo `phase2_entities.md`)
+**Phiên bản:** 5.1 — 17/09/2026 (đồng bộ theo `DTM_QLKD_HLD.md` v4.9 — Nhóm 2/3/4 Atomic hoàn thiện, nâng PENDING→READY; thêm Fact Securities Company Service Assignment Snapshot + Securities Service Classification Dimension vào Entities.csv, bỏ khỏi bảng "Bảng PENDING")
+**Phiên bản trước:** 5.0 — 11/09/2026 (đồng bộ theo `DTM_QLKD_HLD.md` v5.0 — redesign cột T thay cột S; STT33/34/35 hạ PENDING; O_QLKD_20 Superseded → O_QLKD_26 mở rộng; loại bỏ toàn bộ entity PENDING 100% khỏi Entities.csv theo `phase2_entities.md`)
 
 ---
 
@@ -62,7 +63,22 @@ erDiagram
 | Market Index Dimension | Dimension | new | Mã/loại index/sản phẩm giao dịch/trạng thái phiên. Dùng chung với NDTNN | 1 combo Market Id + Market Code (SCD4A current-state) | — |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày | — |
 
-> **Nhóm 2/3/4 (Biểu đồ Nghiệp vụ/Dịch vụ/Dịch vụ phái sinh, K_QLKD_14–29) — 100% PENDING**, không vẽ Star Schema. Xem bảng "Bảng PENDING" cuối file.
+### Nhóm 2/3/4 — Biểu đồ Nghiệp vụ/Dịch vụ/Dịch vụ phái sinh (K_QLKD_14–29)
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Service_Assignment_Snapshot : " "
+    Securities_Service_Classification_Dimension ||--o{ Fact_Securities_Company_Service_Assignment_Snapshot : " "
+    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Service_Assignment_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Securities Company Service Assignment Snapshot | Fact Snapshot | new | Dịch vụ/nghiệp vụ kinh doanh chứng khoán còn hiệu lực của CTCK — dùng chung cho cả 3 Nhóm, phân biệt bằng Catalog Code | 1 CTCK × 1 dịch vụ/nghiệp vụ × 1 ngày snapshot (còn hiệu lực) | K_QLKD_14–29 |
+| Securities Service Classification Dimension | Dimension | new | Danh mục dịch vụ/nghiệp vụ — phân loại qua Catalog Code | 1 dịch vụ/nghiệp vụ (SCD4A) | — |
+| Securities Company Dimension | Dimension | reuse (Nhóm 1) | CTCK — mã, tên, loại hình, trạng thái | 1 CTCK (SCD4A) | — |
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày (role: Snapshot Date) | 1 ngày | — |
+
 > **Nhóm 8/9 + Sub-tab Giám sát hoạt động (Nhóm 11/12/14/15/17/18) + Nhóm 19–27 (K_QLKD_41–65, 73–87, 92–141, trừ K_QLKD_88–91 đã ở Nhóm 16) — 100% PENDING**, không vẽ Star Schema. Xem bảng "Bảng PENDING" cuối file.
 
 ---
@@ -163,7 +179,6 @@ Các bảng sau **100% KPI/Nhóm dùng đều PENDING** — theo quy tắc `phas
 | Datamart Entity | Lý do PENDING | Issue |
 |---|---|---|
 | ~~Business Line Dimension~~ | Superseded 11/09/2026 — gap gốc `LNK_SC_FIRM_BUSINESS_LINE` không còn đúng theo cột T, bỏ khỏi mô hình hoàn toàn (không chỉ PENDING) | O_QLKD_20 (Superseded) → O_QLKD_26 |
-| Securities Service Classification Dimension | Nguồn `CAT_SERVICE_LEGAL_CAPITAL` chưa có Atomic entity — phục vụ Nhóm 2/3/4 (100% PENDING) | O_QLKD_26 |
 | Report Indicator Dimension | ETL-derived, chờ Atomic entity thay thế `REPORT_CELL_VALUE`/`REPORT_INPUT_CELL_VALUE` (out-of-scope) | O_QLKD_23 / O_QLKD_27 |
 | Fact Securities Company Financial Structure Snapshot | Toàn bộ Nhóm 8/9/11/12/14–27 dùng chung Fact này — `REPORT_INPUT_CELL_VALUE` xác nhận out-of-scope trong `atomic_out_of_scope.yaml` (cascade từ `MEMBER_REPORT` đã loại) | O_QLKD_23 / O_QLKD_27 |
 | Securities Company Financial Report History | Lịch sử BCTC (Nhóm 26/27) — cùng gap nguồn với Fact trên | O_QLKD_23 / O_QLKD_27 |

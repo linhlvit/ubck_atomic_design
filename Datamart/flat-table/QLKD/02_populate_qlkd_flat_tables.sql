@@ -2,7 +2,7 @@
 -- QLKD Flat Tables — POPULATE
 -- Module: Quản lý kinh doanh (Hoạt động CTCK) — QLKD
 -- Generated: Phase 3 LLD Datamart
--- 14 bảng: 5 fact + 9 operational
+-- 15 bảng: 6 fact + 9 operational
 -- ETL daily: fact lọc theo WHERE cal.cdr_dt = :etl_date
 -- ============================================================
 
@@ -212,7 +212,65 @@ WHERE cal.cdr_dt = TO_DATE(:etl_date,'yyyy-MM-dd')
 
 
 -- ============================================================
--- 6. OPERATIONAL: qlkd_opr_securities_company_personnel_profile_flat
+-- 6. FACT: qlkd_fct_securities_company_service_assignment_snpst_flat
+--    Grain APPEND (Periodic Snapshot theo ngày) — DELETE đúng ngày :etl_date
+--    (không TRUNCATE) rồi INSERT, giữ nguyên lịch sử các ngày snapshot khác.
+--    Fact nguồn (fct_securities_company_service_assignment_snpst) chỉ chứa
+--    assignment còn hiệu lực tại ngày :etl_date (Start Date <= D AND (End Date
+--    IS NULL OR End Date > D)) — filter này áp dụng khi populate bảng nguồn
+--    datamart.fct_securities_company_service_assignment_snpst, không lặp lại ở đây.
+-- ============================================================
+DELETE FROM datamart.qlkd_fct_securities_company_service_assignment_snpst_flat ON CLUSTER 'my_cluster'
+WHERE cdr_dt = :etl_date;
+INSERT INTO datamart.qlkd_fct_securities_company_service_assignment_snpst_flat
+SELECT
+    -- From: FACT Fact Securities Company Service Assignment Snapshot
+    f.snpst_dt_dim_id,
+    f.securities_company_dim_id,
+    f.securities_service_cl_dim_id,
+    f.license_nbr,
+    f.license_dt,
+    f.start_dt,
+    f.end_dt,
+    f.src_stm_code,
+
+    -- From: CALENDAR DATE DIMENSION (Snapshot Date)
+    cal.cdr_dt                         AS cdr_dt,
+
+    -- From: SECURITIES COMPANY DIMENSION
+    sc_dim.sc_id                       AS sc_id,
+    sc_dim.sc_code                     AS sc_code,
+    sc_dim.sc_nm                       AS sc_nm,
+    sc_dim.sc_short_nm                 AS sc_short_nm,
+    sc_dim.company_tp_code             AS company_tp_code,
+    sc_dim.company_status_code         AS company_status_code,
+    sc_dim.is_listed_indicator         AS is_listed_indicator,
+    sc_dim.stock_exchange_nm           AS stock_exchange_nm,
+    sc_dim.src_stm_code                AS securities_company_src_stm_code,
+
+    -- From: SECURITIES SERVICE CLASSIFICATION DIMENSION
+    svc_dim.cl_sc_firm_service_code    AS cl_sc_firm_service_code,
+    svc_dim.cl_sc_firm_service_nm      AS cl_sc_firm_service_nm,
+    svc_dim.description                AS description,
+    svc_dim.catalog_tp                 AS catalog_tp,
+    svc_dim.catalog_code               AS catalog_code,
+    svc_dim.application_tp_code        AS application_tp_code,
+    svc_dim.legal_capital_amt          AS legal_capital_amt,
+    svc_dim.src_stm_code                AS securities_service_cl_src_stm_code
+
+FROM datamart.fct_securities_company_service_assignment_snpst f
+JOIN datamart.cdr_dt_dim cal
+    ON cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+LEFT JOIN datamart.securities_company_dim sc_dim
+    ON sc_dim.securities_company_dim_id = f.securities_company_dim_id
+LEFT JOIN datamart.securities_service_cl_dim svc_dim
+    ON svc_dim.securities_service_cl_dim_id = f.securities_service_cl_dim_id
+WHERE cal.cdr_dt = :etl_date
+;
+
+
+-- ============================================================
+-- 7. OPERATIONAL: qlkd_opr_securities_company_personnel_profile_flat
 -- ============================================================
 TRUNCATE TABLE IF EXISTS datamart.qlkd_opr_securities_company_personnel_profile_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.qlkd_opr_securities_company_personnel_profile_flat
@@ -235,7 +293,7 @@ FROM datamart.opr_securities_company_personnel_profile o
 
 
 -- ============================================================
--- 7. OPERATIONAL: qlkd_opr_securities_company_organization_unit_profile_flat
+-- 8. OPERATIONAL: qlkd_opr_securities_company_organization_unit_profile_flat
 -- ============================================================
 TRUNCATE TABLE IF EXISTS datamart.qlkd_opr_securities_company_organization_unit_profile_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.qlkd_opr_securities_company_organization_unit_profile_flat
@@ -256,7 +314,7 @@ FROM datamart.opr_securities_company_organization_unit_profile o
 
 
 -- ============================================================
--- 8. OPERATIONAL: qlkd_opr_securities_company_compliance_hist_flat
+-- 9. OPERATIONAL: qlkd_opr_securities_company_compliance_hist_flat
 -- ============================================================
 TRUNCATE TABLE IF EXISTS datamart.qlkd_opr_securities_company_compliance_hist_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.qlkd_opr_securities_company_compliance_hist_flat
@@ -279,7 +337,7 @@ FROM datamart.opr_securities_company_compliance_hist o
 
 
 -- ============================================================
--- 9. OPERATIONAL: qlkd_opr_individual_profile_flat
+-- 10. OPERATIONAL: qlkd_opr_individual_profile_flat
 -- ============================================================
 TRUNCATE TABLE IF EXISTS datamart.qlkd_opr_individual_profile_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.qlkd_opr_individual_profile_flat
@@ -298,7 +356,7 @@ FROM datamart.opr_individual_profile o
 
 
 -- ============================================================
--- 10. OPERATIONAL: qlkd_opr_individual_related_party_network_flat
+-- 11. OPERATIONAL: qlkd_opr_individual_related_party_network_flat
 -- ============================================================
 TRUNCATE TABLE IF EXISTS datamart.qlkd_opr_individual_related_party_network_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.qlkd_opr_individual_related_party_network_flat
@@ -319,7 +377,7 @@ FROM datamart.opr_individual_related_party_network o
 
 
 -- ============================================================
--- 11. OPERATIONAL: qlkd_opr_individual_listed_company_role_flat
+-- 12. OPERATIONAL: qlkd_opr_individual_listed_company_role_flat
 -- ============================================================
 TRUNCATE TABLE IF EXISTS datamart.qlkd_opr_individual_listed_company_role_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.qlkd_opr_individual_listed_company_role_flat
@@ -337,7 +395,7 @@ FROM datamart.opr_individual_listed_company_role o
 
 
 -- ============================================================
--- 12. OPERATIONAL: qlkd_opr_individual_trading_account_flat
+-- 13. OPERATIONAL: qlkd_opr_individual_trading_account_flat
 -- ============================================================
 TRUNCATE TABLE IF EXISTS datamart.qlkd_opr_individual_trading_account_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.qlkd_opr_individual_trading_account_flat
@@ -354,7 +412,7 @@ FROM datamart.opr_individual_trading_account o
 
 
 -- ============================================================
--- 13. OPERATIONAL: qlkd_opr_individual_work_hist_flat
+-- 14. OPERATIONAL: qlkd_opr_individual_work_hist_flat
 -- ============================================================
 TRUNCATE TABLE IF EXISTS datamart.qlkd_opr_individual_work_hist_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.qlkd_opr_individual_work_hist_flat
@@ -373,7 +431,7 @@ FROM datamart.opr_individual_work_hist o
 
 
 -- ============================================================
--- 14. OPERATIONAL: qlkd_opr_individual_violation_hist_flat
+-- 15. OPERATIONAL: qlkd_opr_individual_violation_hist_flat
 -- ============================================================
 TRUNCATE TABLE IF EXISTS datamart.qlkd_opr_individual_violation_hist_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.qlkd_opr_individual_violation_hist_flat

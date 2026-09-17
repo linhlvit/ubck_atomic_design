@@ -2,7 +2,7 @@
 -- QLKD Flat Tables — CREATE
 -- Module: Quản lý kinh doanh (Hoạt động CTCK) — QLKD
 -- Generated: Phase 3 LLD Datamart
--- 14 bảng: 5 fact + 9 operational
+-- 15 bảng: 6 fact + 9 operational
 -- ============================================================
 
 -- ============================================================
@@ -187,7 +187,59 @@ COMMENT 'Flat table — Fact Market Index Snapshot × Calendar Date × Market In
 
 
 -- ============================================================
--- 6. OPERATIONAL: qlkd_opr_securities_company_personnel_profile_flat
+-- 6. FACT: qlkd_fct_securities_company_service_assignment_snpst_flat
+--    Fact Securities Company Service Assignment Snapshot
+--    Grain: 1 CTCK × 1 dịch vụ/nghiệp vụ × 1 ngày snapshot D (còn hiệu lực:
+--    Start Date <= D AND (End Date IS NULL OR End Date > D))
+--    Mới 17/09/2026 — Nhóm 2/3/4.
+--    Joins: Calendar Date (snpst_dt_dim_id) × Securities Company Dimension ×
+--    Securities Service Classification Dimension
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_service_assignment_snpst_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FACT Fact Securities Company Service Assignment Snapshot
+    snpst_dt_dim_id                    String                  COMMENT 'FK ngày snapshot D — ETL runtime date, full-scan assignment còn hiệu lực',
+    securities_company_dim_id          String                  COMMENT 'FK CTCK',
+    securities_service_cl_dim_id       String                  COMMENT 'FK dịch vụ/nghiệp vụ kinh doanh chứng khoán',
+    license_nbr                        Nullable(String)        COMMENT 'Số giấy phép dịch vụ chứng khoán hiện hành',
+    license_dt                         Nullable(Date)          COMMENT 'Ngày cấp giấy phép dịch vụ',
+    start_dt                           Nullable(Date)          COMMENT 'Ngày bắt đầu hiệu lực — dùng lọc còn hiệu lực tại ngày D',
+    end_dt                             Nullable(Date)          COMMENT 'Ngày hết hiệu lực — dùng lọc còn hiệu lực tại ngày D',
+    src_stm_code                       String                  COMMENT 'Mã hệ thống nguồn — từ Fact',
+
+    -- From: CALENDAR DATE DIMENSION (Snapshot Date)
+    cdr_dt                             Nullable(Date)          COMMENT 'Ngày snapshot D — từ Calendar Date Dimension',
+
+    -- From: SECURITIES COMPANY DIMENSION
+    sc_id                               Nullable(String)        COMMENT 'Business Id CTCK — từ Securities Company Dimension',
+    sc_code                             Nullable(String)        COMMENT 'Mã định danh CTCK — từ Securities Company Dimension',
+    sc_nm                               Nullable(String)        COMMENT 'Tên đầy đủ CTCK — từ Securities Company Dimension',
+    sc_short_nm                         Nullable(String)        COMMENT 'Tên viết tắt CTCK — từ Securities Company Dimension',
+    company_tp_code                     Nullable(String)        COMMENT 'Loại hình doanh nghiệp CTCK — từ Securities Company Dimension',
+    company_status_code                 Nullable(String)        COMMENT '7 nhóm trạng thái CTCK — từ Securities Company Dimension',
+    is_listed_indicator                 Nullable(UInt8)         COMMENT 'Cờ niêm yết trên sàn — từ Securities Company Dimension',
+    stock_exchange_nm                   Nullable(String)        COMMENT 'Sàn niêm yết — từ Securities Company Dimension',
+    securities_company_src_stm_code     Nullable(String)        COMMENT 'Mã hệ thống nguồn — từ Securities Company Dimension',
+
+    -- From: SECURITIES SERVICE CLASSIFICATION DIMENSION
+    cl_sc_firm_service_code             Nullable(String)        COMMENT 'Mã dịch vụ/nghiệp vụ — từ Securities Service Classification Dimension',
+    cl_sc_firm_service_nm               Nullable(String)        COMMENT 'Tên dịch vụ/nghiệp vụ — từ Securities Service Classification Dimension',
+    description                         Nullable(String)        COMMENT 'Mô tả chi tiết dịch vụ/nghiệp vụ — từ Securities Service Classification Dimension',
+    catalog_tp                          Nullable(String)        COMMENT 'Loại danh mục — từ Securities Service Classification Dimension',
+    catalog_code                        Nullable(String)        COMMENT 'Mã danh mục chi tiết — dùng lọc nhóm dịch vụ/nghiệp vụ trên báo cáo — từ Securities Service Classification Dimension',
+    application_tp_code                 Nullable(String)        COMMENT 'Loại nghiệp vụ: cơ sở/phái sinh — từ Securities Service Classification Dimension',
+    legal_capital_amt                   Nullable(Decimal(23,2)) COMMENT 'Vốn pháp định tối thiểu — từ Securities Service Classification Dimension',
+    securities_service_cl_src_stm_code  Nullable(String)        COMMENT 'Mã hệ thống nguồn — từ Securities Service Classification Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
+ORDER BY (assumeNotNull(cdr_dt), securities_company_dim_id, securities_service_cl_dim_id)
+COMMENT 'Flat table — Fact Securities Company Service Assignment Snapshot × Calendar Date × Securities Company Dimension × Securities Service Classification Dimension'
+;
+
+
+-- ============================================================
+-- 7. OPERATIONAL: qlkd_opr_securities_company_personnel_profile_flat
 --    Operational Securities Company Personnel Profile
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_securities_company_personnel_profile_flat ON CLUSTER 'my_cluster'
@@ -213,7 +265,7 @@ COMMENT 'Flat table — Operational Securities Company Personnel Profile'
 
 
 -- ============================================================
--- 7. OPERATIONAL: qlkd_opr_securities_company_organization_unit_profile_flat
+-- 8. OPERATIONAL: qlkd_opr_securities_company_organization_unit_profile_flat
 --    Operational Securities Company Organization Unit Profile
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_securities_company_organization_unit_profile_flat ON CLUSTER 'my_cluster'
@@ -237,7 +289,7 @@ COMMENT 'Flat table — Operational Securities Company Organization Unit Profile
 
 
 -- ============================================================
--- 8. OPERATIONAL: qlkd_opr_securities_company_compliance_hist_flat
+-- 9. OPERATIONAL: qlkd_opr_securities_company_compliance_hist_flat
 --    Operational Securities Company Compliance History
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_securities_company_compliance_hist_flat ON CLUSTER 'my_cluster'
@@ -263,7 +315,7 @@ COMMENT 'Flat table — Operational Securities Company Compliance History'
 
 
 -- ============================================================
--- 9. OPERATIONAL: qlkd_opr_individual_profile_flat
+-- 10. OPERATIONAL: qlkd_opr_individual_profile_flat
 --    Operational Individual Profile
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_individual_profile_flat ON CLUSTER 'my_cluster'
@@ -285,7 +337,7 @@ COMMENT 'Flat table — Operational Individual Profile'
 
 
 -- ============================================================
--- 10. OPERATIONAL: qlkd_opr_individual_related_party_network_flat
+-- 11. OPERATIONAL: qlkd_opr_individual_related_party_network_flat
 --    Operational Individual Related Party Network
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_individual_related_party_network_flat ON CLUSTER 'my_cluster'
@@ -309,7 +361,7 @@ COMMENT 'Flat table — Operational Individual Related Party Network'
 
 
 -- ============================================================
--- 11. OPERATIONAL: qlkd_opr_individual_listed_company_role_flat
+-- 12. OPERATIONAL: qlkd_opr_individual_listed_company_role_flat
 --    Operational Individual Listed Company Role
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_individual_listed_company_role_flat ON CLUSTER 'my_cluster'
@@ -330,7 +382,7 @@ COMMENT 'Flat table — Operational Individual Listed Company Role'
 
 
 -- ============================================================
--- 12. OPERATIONAL: qlkd_opr_individual_trading_account_flat
+-- 13. OPERATIONAL: qlkd_opr_individual_trading_account_flat
 --    Operational Individual Trading Account
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_individual_trading_account_flat ON CLUSTER 'my_cluster'
@@ -350,7 +402,7 @@ COMMENT 'Flat table — Operational Individual Trading Account'
 
 
 -- ============================================================
--- 13. OPERATIONAL: qlkd_opr_individual_work_hist_flat
+-- 14. OPERATIONAL: qlkd_opr_individual_work_hist_flat
 --    Operational Individual Work History
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_individual_work_hist_flat ON CLUSTER 'my_cluster'
@@ -372,7 +424,7 @@ COMMENT 'Flat table — Operational Individual Work History'
 
 
 -- ============================================================
--- 14. OPERATIONAL: qlkd_opr_individual_violation_hist_flat
+-- 15. OPERATIONAL: qlkd_opr_individual_violation_hist_flat
 --    Operational Individual Violation History
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_individual_violation_hist_flat ON CLUSTER 'my_cluster'
