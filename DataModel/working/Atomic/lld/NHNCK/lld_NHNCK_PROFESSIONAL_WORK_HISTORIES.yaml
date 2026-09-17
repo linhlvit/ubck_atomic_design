@@ -180,8 +180,11 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "NHNCK.PROFESSIONAL_WORK_HISTORIES.POSITION_ID"
+  - "NHNCK.POSITIONS.POSITION_CODE"
   comment: "SCHEMA_CODE=POSITION"
+  comment: "SCHEMA_CODE=NHNCK.POSITIONS. Cần ETL crosswalk sang NHNCK.POSITIONS: PROFESSIONAL_WORK_HISTORIES.POSITION_ID = POSITIONS.ID\
+    \ để xác nhận NHNCK.POSITIONS.POSITION_CODE, sau đó lưu POSITION_CODE (không lưu ID kỹ thuật) vào\
+    \ cột này."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

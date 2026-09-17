@@ -56,12 +56,6 @@ entries:
   reason: Cascade drop từ AUTHOANNOUNCE — denormalize thành ARRAY trên Info Disclosure
     Authorization (xem 7d).
 - source_system: FIMS
-  source_table: TRADINGAUTHORIZATIONINVES
-  description: Danh sách NĐT NN trong ủy quyền giao dịch
-  group: Cascade drop
-  reason: Cascade drop từ TRADINGAUTHORIZATION — denormalize thành ARRAY trên Trading
-    Authorization (xem 7d).
-- source_system: FIMS
   source_table: RPT_EVENT_TYPE_LEGAL_BASIS
   description: Danh sách căn cứ pháp lý của loại sự vụ
   group: Chưa có cột
@@ -1106,7 +1100,7 @@ entries:
   group: Shared Entity
   reason: Không thiết kế Atomic entity riêng — ADDRESS/WARD/DISTRICT/PROVINCE/COUNTRY
     denormalize vào IP Postal Address, EMAIL/PHONE/FAX/WEBSITE denormalize vào IP
-    Electronic Address, gắn với Tax Registration (cha).
+    Electronic Address, gắn với External Tax Registration (cha).
 - source_system: NHNCK
   source_table: CERTIFICATE_DOCUMENTS
   description: Liên kết loại tài liệu với loại chứng chỉ
@@ -1153,6 +1147,13 @@ entries:
   group: Archive / Physical
   reason: Physical archive metadata.
 - source_system: NHNCK
+  source_table: CONVERSION_PRACTICE_HISTORY_CONFIRMS
+  description: Bảng theo dõi tích hợp luồng xác nhận quá trình hành nghề khi chuyển
+    đổi CCHN
+  group: Conversion Flow
+  reason: 'Bảng mới trong DDL (2026-09-10) — quyết định Data Modeler: không cần thiết
+    kế bảng theo dõi tích hợp luồng xác nhận quá trình hành nghề khi chuyển đổi CCHN.'
+- source_system: NHNCK
   source_table: DIGITAL_CERTIFICATES
   description: Chứng thư số PKI
   group: Digital Cert
@@ -1162,6 +1163,42 @@ entries:
   description: Người dùng được sử dụng chứng thư số
   group: Digital Cert
   reason: Operational/PKI data.
+- source_system: NHNCK
+  source_table: SIGNING_AUDIT
+  description: Nhật ký thao tác ký số
+  group: Digital Signing Subsystem
+  reason: 'Bảng mới trong DDL (2026-09-10) — quyết định Data Modeler: không có ý nghĩa
+    nghiệp vụ khai thác trên mart.'
+- source_system: NHNCK
+  source_table: SIGNING_CERTIFICATE
+  description: Chứng thư số dùng để ký
+  group: Digital Signing Subsystem
+  reason: 'Bảng mới trong DDL (2026-09-10) — quyết định Data Modeler: không có ý nghĩa
+    nghiệp vụ khai thác trên mart.'
+- source_system: NHNCK
+  source_table: SIGNING_NOTE
+  description: Ghi chú đính kèm trên tài liệu ký số
+  group: Digital Signing Subsystem
+  reason: 'Bảng mới trong DDL (2026-09-10) — quyết định Data Modeler: không có ý nghĩa
+    nghiệp vụ khai thác trên mart.'
+- source_system: NHNCK
+  source_table: SIGNING_PROFILE
+  description: Cấu hình mẫu chữ ký số của người dùng
+  group: Digital Signing Subsystem
+  reason: 'Bảng mới trong DDL (2026-09-10) — quyết định Data Modeler: không có ý nghĩa
+    nghiệp vụ khai thác trên mart.'
+- source_system: NHNCK
+  source_table: SIGNING_SESSION
+  description: Phiên xử lý ký số 1 tài liệu
+  group: Digital Signing Subsystem
+  reason: 'Bảng mới trong DDL (2026-09-10) — quyết định Data Modeler: không có ý nghĩa
+    nghiệp vụ khai thác trên mart.'
+- source_system: NHNCK
+  source_table: SIGNING_SIGNATURE_IMAGE
+  description: Ảnh chữ ký tay lưu cho người dùng
+  group: Digital Signing Subsystem
+  reason: 'Bảng mới trong DDL (2026-09-10) — quyết định Data Modeler: không có ý nghĩa
+    nghiệp vụ khai thác trên mart.'
 - source_system: NHNCK
   source_table: APPLICATION_EXPERIENCES
   description: Kinh nghiệm làm việc khai báo trong hồ sơ xin cấp CCHN
@@ -1228,7 +1265,9 @@ entries:
   group: Sub-process
   reason: Bảng lưu file attachment (tên file, đường dẫn, loại tài liệu) — không có
     attribute nghiệp vụ độc lập ngoài con trỏ file; thông tin loại tài liệu đã có
-    trên APPLICATION_SPECIALIZATIONS.
+    trên APPLICATION_SPECIALIZATIONS. **Xác nhận lại (2026-09-10):** DDL mới thêm
+    `MCDT_MA_THANH_PHAN_HOSO`/`SUBMIT_LATER` — Data Modeler xác nhận vẫn giữ out-of-scope,
+    không tạo entity; 2 cột mới ghi nhận trong `pending_design.yaml`.
 - source_system: NHNCK
   source_table: APPLICATION_DOCUMENT_HISTORIES
   description: Lịch sử thẩm định từng tài liệu trong hồ sơ
@@ -1275,7 +1314,8 @@ entries:
   source_table: BACKUP_SCHEDULES
   description: Lịch tự động sao lưu cơ sở dữ liệu
   group: System / Config
-  reason: Operational/system data.
+  reason: Operational/system data. **REMOVED FROM SOURCE (2026-09-10)** — bảng đã
+    bị xoá khỏi DDL nguồn, xác nhận qua NHNCK_UAT_schema.txt refresh.
 - source_system: NHNCK
   source_table: NOTIFICATION_CONFIGURATIONS
   description: Cấu hình thông báo theo sự kiện nghiệp vụ
@@ -1285,7 +1325,8 @@ entries:
   source_table: SYSTEM_PARAMETERS
   description: Tham số cấu hình hệ thống
   group: System / Config
-  reason: Config data.
+  reason: Config data. **REMOVED FROM SOURCE (2026-09-10)** — bảng đã bị xoá khỏi
+    DDL nguồn, xác nhận qua NHNCK_UAT_schema.txt refresh.
 - source_system: NHNCK
   source_table: ACTION_LOGS
   description: Nhật ký hành động của người dùng trên hệ thống
@@ -1295,7 +1336,8 @@ entries:
   source_table: BACKUPS
   description: Thông tin file sao lưu cơ sở dữ liệu
   group: System / Log
-  reason: Operational/system data.
+  reason: Operational/system data. **REMOVED FROM SOURCE (2026-09-10)** — bảng đã
+    bị xoá khỏi DDL nguồn, xác nhận qua NHNCK_UAT_schema.txt refresh.
 - source_system: NHNCK
   source_table: DOCUMENT_SIGN_LOGS
   description: Nhật ký ký số tài liệu
@@ -1378,71 +1420,38 @@ entries:
   group: Audit Log nguồn
   reason: Cấu trúc OLD_DATA/NEW_DATA JSON + ACTION_TYPE — Audit log kỹ thuật.
 - source_system: SCMS
-  source_table: FORM_INDICATOR_DATA_SOURCE
-  description: Nguồn dữ liệu chỉ tiêu biểu mẫu
-  group: Form Metadata
-  reason: Cascade từ FORM_REPORT đã loại.
-- source_system: SCMS
-  source_table: FORM_INDICATOR_FIELD_META
-  description: Metadata trường chỉ tiêu biểu mẫu
-  group: Form Metadata
-  reason: Cascade từ FORM_REPORT đã loại.
-- source_system: SCMS
-  source_table: FORM_INDICATOR_INPUT
-  description: Dữ liệu nhập chỉ tiêu biểu mẫu
-  group: Form Metadata
-  reason: Cascade từ FORM_REPORT đã loại.
-- source_system: SCMS
-  source_table: FORM_INDICATOR_REFERENCE_VALUE
-  description: Giá trị tham chiếu chỉ tiêu biểu mẫu
-  group: Form Metadata
-  reason: Cascade từ FORM_REPORT đã loại.
-- source_system: SCMS
   source_table: FORM_REPORT_DEEP_CONFIG
   description: Cấu hình chi tiết biểu mẫu
   group: Form Metadata
-  reason: Cascade từ FORM_REPORT đã loại.
+  reason: 'Cascade — cần review lý do loại-scope độc lập (FORM_REPORT không còn ngoài
+    scope). Chưa đánh giá lại trong lượt #23.'
 - source_system: SCMS
   source_table: FORM_REPORT_HISTORY
   description: Lịch sử phiên bản biểu mẫu
   group: Form Metadata
-  reason: Cascade từ FORM_REPORT đã loại.
+  reason: Cascade — cần review lý do loại-scope độc lập (FORM_REPORT không còn ngoài
+    scope). Không nằm trong phạm vi 14 bảng được yêu cầu thiết kế lượt này — chưa
+    đánh giá lại.
 - source_system: SCMS
   source_table: FORM_REPORT_PERIODIC
   description: Cấu hình kỳ báo cáo của biểu mẫu
   group: Form Metadata
   reason: 'Cascade — cần review lý do loại-scope độc lập (FORM_REPORT không còn ngoài
-    scope, xem 7e #12).'
+    scope, xem 7e #12). Chưa đánh giá lại trong lượt #23 (2026-09-16) — chỉ nhóm FORM_SHEET*/FORM_INDICATOR_*/LNK_EVENT_TYPE_FORM
+    được xử lý.'
 - source_system: SCMS
   source_table: FORM_ROW_HEADER
   description: Tiêu đề hàng biểu mẫu
   group: Form Metadata
-  reason: Cascade từ FORM_REPORT đã loại.
+  reason: 'Đưa vào scope ở lượt #23 (2026-09-16), sau đó đảo ngược lại ngoài scope
+    cùng ngày theo yêu cầu Data Modeler — bảng phục vụ khai thác báo cáo đầu ra ở
+    hệ thống cũ, hiện không còn cần thiết. Thiết kế LLD/Atomic entity đã tạo (Securities
+    Company Report Row Header) đã bị gỡ bỏ hoàn toàn.'
 - source_system: SCMS
   source_table: FORM_ROW_HEADER_COLUMN
   description: Cột tiêu đề hàng biểu mẫu
   group: Form Metadata
-  reason: Cascade từ FORM_REPORT đã loại.
-- source_system: SCMS
-  source_table: FORM_SHEET
-  description: Danh sách sheet trong biểu mẫu
-  group: Form Metadata
-  reason: Cascade từ FORM_REPORT đã loại.
-- source_system: SCMS
-  source_table: FORM_SHEET_CELL
-  description: Ô chỉ tiêu với vị trí hàng/cột trong sheet
-  group: Form Metadata
-  reason: Cascade từ FORM_REPORT đã loại.
-- source_system: SCMS
-  source_table: FORM_SHEET_COLUMN
-  description: Định nghĩa cột trong sheet biểu mẫu
-  group: Form Metadata
-  reason: Cascade từ FORM_REPORT đã loại.
-- source_system: SCMS
-  source_table: FORM_SHEET_ROW
-  description: Định nghĩa hàng trong sheet biểu mẫu
-  group: Form Metadata
-  reason: Cascade từ FORM_REPORT đã loại.
+  reason: Cascade — cùng nhóm với FORM_ROW_HEADER (ngoài scope, xem entry trên).
 - source_system: SCMS
   source_table: MEMBER_REPORT
   description: Báo cáo đã nộp của đơn vị thành viên
@@ -1452,7 +1461,8 @@ entries:
   source_table: REPORT_CELL_VALUE
   description: Giá trị dữ liệu từng ô báo cáo
   group: Form Metadata
-  reason: Loại theo yêu cầu người thiết kế.
+  reason: 'Loại theo yêu cầu người thiết kế — khác REPORT_INPUT_CELL_VALUE (đã vào
+    scope, xem 7e #22), giữ nguyên ngoài scope theo quyết định #22.'
 - source_system: SCMS
   source_table: CAT_DISTRICT
   description: Danh mục quận/huyện/thị xã
@@ -1525,13 +1535,6 @@ entries:
   reason: Không có trong danh sách entity đã review — thông tin điểm nhóm CAMEL có
     thể suy ra từ RISK_SCORING_SC_FIRM_DETAIL group by RISK_INDICATOR_GROUP.
 - source_system: SCMS
-  source_table: CUSTODIAN_BANK
-  description: Ngân hàng lưu ký
-  group: Loại theo quyết định Data Modeler
-  reason: Quyết định Data Modeler (2026-07-24) — bỏ hoàn toàn khỏi phạm vi thiết kế,
-    không map bất kỳ entity nào (bao gồm Securities Company Custodian Bank, IP Postal
-    Address, IP Electronic Address, IP Alt Identification).
-- source_system: SCMS
   source_table: BANK_PERIODIC_REPORT
   description: Báo cáo định kỳ ngân hàng đối tác
   group: Operational / System
@@ -1541,11 +1544,6 @@ entries:
   description: Lịch sử báo cáo định kỳ ngân hàng
   group: Operational / System
   reason: Cascade từ BANK_PERIODIC_REPORT chưa xác định.
-- source_system: SCMS
-  source_table: LNK_EVENT_TYPE_FORM
-  description: Liên kết loại sự kiện và biểu mẫu
-  group: Operational / System
-  reason: Cascade từ FORM_REPORT đã loại.
 - source_system: SCMS
   source_table: LNK_FUNCTION_USER
   description: Liên kết chức năng và người dùng
@@ -1722,6 +1720,28 @@ entries:
   group: Operational / System
   reason: DB migration metadata.
 - source_system: SCMS
+  source_table: FORM_INDICATOR_DATA_SOURCE
+  description: Nguồn dữ liệu chỉ tiêu biểu mẫu
+  group: Reference Data
+  reason: 'Operational/system data — metadata kỹ thuật (DB_TABLE_NAME, URL pattern)
+    cho engine form động, không mang ý nghĩa nghiệp vụ. Đánh giá lại 2026-09-16 (trước
+    đó "Cascade từ FORM_REPORT đã loại" — lý do cũ không còn đúng, xem 7e #23).'
+- source_system: SCMS
+  source_table: FORM_INDICATOR_FIELD_META
+  description: Metadata trường chỉ tiêu biểu mẫu
+  group: Reference Data
+  reason: 'Operational/system data — metadata ánh xạ field-binding (ENTITY_CODE/DB_COLUMN_NAME/JUNCTION_TABLE_NAME...)
+    cho engine form động, không mang ý nghĩa nghiệp vụ. Đánh giá lại 2026-09-16 (trước
+    đó "Cascade từ FORM_REPORT đã loại" — lý do cũ không còn đúng, xem 7e #23).'
+- source_system: SCMS
+  source_table: FORM_INDICATOR_REFERENCE_VALUE
+  description: Giá trị tham chiếu chỉ tiêu biểu mẫu
+  group: Reference Data
+  reason: 'Không có FK inbound từ bảng nghiệp vụ trong scope — danh sách giá trị tham
+    chiếu dùng chung nhiều loại (PROVINCE/NATIONALITY/SC_FIRM_STATUS/CUSTOM), FORM_INDICATOR_INPUT.REFERENCE_CATALOG_ID
+    không model làm FK Atomic. Đánh giá lại 2026-09-16 (trước đó "Cascade từ FORM_REPORT
+    đã loại" — lý do cũ không còn đúng, xem 7e #23).'
+- source_system: SCMS
   source_table: DIGITAL_CERTIFICATE
   description: Chứng thư số (metadata PKI xác thực)
   group: UI Metadata
@@ -1757,6 +1777,14 @@ entries:
   group: UI Metadata
   reason: Workflow processing state.
 - source_system: SCMS
+  source_table: OUTPUT_REPORT_CHART_CONFIG
+  description: Cấu hình hiển thị biểu đồ (line marker, round point/marker) cho báo
+    cáo đầu ra
+  group: UI Metadata
+  reason: 'Cấu hình hiển thị chart thuần túy, không mang ý nghĩa nghiệp vụ độc lập
+    — cùng nhóm/lý do với sibling OUTPUT_REPORT_EXTRACTION/OUTPUT_REPORT_EXTRACTION_VALUE
+    đã loại trước đó. Bảng chưa từng khảo sát BRD, bổ sung 2026-09-16 (xem 7e #23).'
+- source_system: SCMS
   source_table: OUTPUT_REPORT_EXTRACTION
   description: Metadata trích xuất báo cáo đầu ra
   group: UI Metadata
@@ -1771,16 +1799,6 @@ entries:
   description: Giá trị hàng động trong báo cáo
   group: UI Metadata
   reason: Dynamic report rendering metadata.
-- source_system: SCMS
-  source_table: REPORT_INPUT_CELL_VALUE
-  description: Giá trị ô nhập liệu báo cáo
-  group: UI Metadata
-  reason: Cascade từ MEMBER_REPORT đã loại.
-- source_system: SCMS
-  source_table: REPORT_INPUT_SUBMISSION
-  description: Lần nộp báo cáo nhập liệu
-  group: UI Metadata
-  reason: Workflow submission state — operational.
 - source_system: SCMS
   source_table: REPORT_INPUT_SUBMISSION_FILE
   description: Tệp đính kèm lần nộp báo cáo
@@ -1827,6 +1845,12 @@ entries:
   group: Audit Log nguồn
   reason: Báo cáo tổng hợp nguồn — không phải entity nghiệp vụ Atomic
 - source_system: THANHTRA
+  source_table: ANTI_MONEY_LAUNDERING_DOSSIER
+  description: Bộ hồ sơ PCRT — gom nhóm nhiều văn bản
+  group: Audit Log nguồn
+  reason: Báo cáo tổng hợp nguồn — không phải entity nghiệp vụ Atomic (nhất quán với
+    ANTI_MONEY_LAUNDERING_DOCUMENT)
+- source_system: THANHTRA
   source_table: ANTI_MONEY_LAUNDERING_REPORT
   description: Báo cáo phòng chống rửa tiền
   group: Audit Log nguồn
@@ -1842,10 +1866,20 @@ entries:
   group: Audit Log nguồn
   reason: Form Metadata — cấu trúc báo cáo, không có instance data nghiệp vụ
 - source_system: THANHTRA
+  source_table: PENALTY_DECISION_APPROVAL_HISTORY
+  description: Log hoạt động phê duyệt quyết định xử phạt
+  group: Audit Log nguồn
+  reason: Audit Log nguồn — không thiết kế entity Atomic riêng
+- source_system: THANHTRA
   source_table: SUPERVISION_ACTIVITY_REPORT
   description: Báo cáo hoạt động giám sát
   group: Audit Log nguồn
   reason: Báo cáo tổng hợp nguồn — không phải entity nghiệp vụ Atomic
+- source_system: THANHTRA
+  source_table: VIOLATION_CASE_STATUS_HISTORY
+  description: Log lịch sử thay đổi trạng thái hồ sơ VPHC
+  group: Audit Log nguồn
+  reason: Audit Log nguồn — không thiết kế entity Atomic riêng
 - source_system: THANHTRA
   source_table: DOCUMENT_TEMPLATE
   description: 'Template biểu mẫu công văn: định nghĩa cấu trúc form, placeholder
@@ -1893,8 +1927,8 @@ entries:
   source_table: VIOLATION_BEHAVIOR_LEGAL_DOCUMENT
   description: Bảng nối nhiều-nhiều giữa hành vi vi phạm và văn bản pháp luật
   group: Junction
-  reason: Pure junction không có business attribute — denormalize vào TT Violation
-    Behavior dạng ARRAY
+  reason: Pure junction không có business attribute — KHÔNG denormalize thành ARRAY
+    (trùng với text legacy `Legal Document` đã có sẵn). Xem `pending_design.yaml`.
 - source_system: THANHTRA
   source_table: CODE_SEQUENCE_COUNTER
   description: Bộ đếm sinh mã tự động
@@ -1921,33 +1955,3 @@ entries:
   description: Danh mục private do user định nghĩa trong hệ thống
   group: Operational / System
   reason: Operational/system data — configuration metadata
-- source_system: THANHTRA
-  source_table: dynamic_column
-  description: Cột động của hệ thống dynamic table
-  group: Operational / System
-  reason: Operational/system data — không có giá trị nghiệp vụ
-- source_system: THANHTRA
-  source_table: dynamic_connection
-  description: Kết nối dynamic table
-  group: Operational / System
-  reason: Operational/system data — không có giá trị nghiệp vụ
-- source_system: THANHTRA
-  source_table: dynamic_generator_config
-  description: Cấu hình generator dynamic
-  group: Operational / System
-  reason: Operational/system data — không có giá trị nghiệp vụ
-- source_system: THANHTRA
-  source_table: dynamic_generator_seq
-  description: Sequence cho dynamic generator
-  group: Operational / System
-  reason: Operational/system data — không có giá trị nghiệp vụ
-- source_system: THANHTRA
-  source_table: dynamic_table
-  description: Bảng động của hệ thống
-  group: Operational / System
-  reason: Operational/system data — không có giá trị nghiệp vụ
-- source_system: THANHTRA
-  source_table: flyway_schema_history
-  description: Lịch sử migration schema database
-  group: Operational / System
-  reason: Operational/system data — database maintenance

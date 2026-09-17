@@ -1,0 +1,56 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: OUTPUT_REPORT_FILTER
+brd_ref: BRD-SRC-SCMS-OUTPUT_REPORT_FILTER
+columns:
+  - name: ID
+    data_type: NUMBER(19,0)
+    description: "Khóa chính của bản ghi"
+    key: PK
+    fk_note: null
+  - name: FORM_REPORT_ID
+    data_type: NUMBER(19,0)
+    description: "Biểu mẫu báo cáo mà bộ lọc này áp dụng khi khai thác output"
+    key: FK
+    fk_note: "FK → FORM_REPORT.ID"
+  - name: FILTER_CATALOG_ID
+    data_type: NUMBER(19,0)
+    description: "Loại bộ lọc tham chiếu tới danh mục bộ lọc hệ thống (CAT_FILTER — ngoài scope khảo sát hiện tại)"
+    key: FK
+    fk_note: "FK → CAT_FILTER.ID (CAT_FILTER chưa khảo sát/thiết kế Atomic)"
+  - name: ALLOW_SELECT
+    data_type: NUMBER(1,0)
+    description: "Cờ cho phép người dùng chọn giá trị lọc khi khai thác báo cáo"
+    key: null
+    fk_note: null
+  - name: DEFAULT_VALUE
+    data_type: VARCHAR2(2000)
+    description: "Giá trị lọc mặc định"
+    key: null
+    fk_note: null
+  - name: SORT_ORDER
+    data_type: NUMBER(10,0)
+    description: "Thứ tự hiển thị bộ lọc trên giao diện khai thác báo cáo"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm tạo bản ghi"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: NUMBER(19,0)
+    description: "Người tạo bản ghi"
+    key: null
+    fk_note: null
+  - name: UPDATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm cập nhật bản ghi gần nhất"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: NUMBER(19,0)
+    description: "Người cập nhật bản ghi gần nhất"
+    key: null
+    fk_note: null

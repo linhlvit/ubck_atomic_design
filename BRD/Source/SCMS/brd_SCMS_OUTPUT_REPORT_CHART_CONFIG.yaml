@@ -1,0 +1,51 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: OUTPUT_REPORT_CHART_CONFIG
+brd_ref: BRD-SRC-SCMS-OUTPUT_REPORT_CHART_CONFIG
+columns:
+  - name: ID
+    data_type: NUMBER(19,0)
+    description: "Khóa chính của bản ghi"
+    key: PK
+    fk_note: null
+  - name: FORM_REPORT_ID
+    data_type: NUMBER(19,0)
+    description: "Biểu mẫu báo cáo mà cấu hình biểu đồ này áp dụng"
+    key: FK
+    fk_note: "FK → FORM_REPORT.ID"
+  - name: LINE_MARKER_TYPE
+    data_type: VARCHAR2(80)
+    description: "Kiểu đường/marker hiển thị biểu đồ dạng line"
+    key: null
+    fk_note: null
+  - name: ROUND_POINT_TYPE
+    data_type: VARCHAR2(80)
+    description: "Kiểu bo điểm dữ liệu trên biểu đồ"
+    key: null
+    fk_note: null
+  - name: ROUND_MARKER_TYPE
+    data_type: VARCHAR2(80)
+    description: "Kiểu bo marker hiển thị trên biểu đồ"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm tạo bản ghi"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: NUMBER(19,0)
+    description: "Người tạo bản ghi"
+    key: null
+    fk_note: null
+  - name: UPDATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm cập nhật bản ghi gần nhất"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY
+    data_type: NUMBER(19,0)
+    description: "Người cập nhật bản ghi gần nhất"
+    key: null
+    fk_note: null

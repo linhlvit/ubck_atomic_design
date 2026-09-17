@@ -7,14 +7,14 @@ ldm:
   physical_name: ra_organization_unit
   layer: Atomic
   version: "1.0"
-  status: approved
+  status: draft
   bcv_core_object: Involved Party
   bcv_concept: "[Involved Party] Organization"
   table_type: Fundamental
   etl_pattern: SCD4A
   source: NHNCK
   description: |
-    Đơn vị và phòng ban thuộc UBCKNN — cấu trúc cây self-referencing DEPARTMENT → UNIT. Phân biệt bằng Organization Unit Type Code (ETL-derived). Dùng chung làm FK tổ chức nội bộ.
+    Đơn vị thuộc UBCKNN — cấu trúc cây self-referencing. Phân biệt bằng Organization Unit Type Code (ETL-derived). Dùng chung làm FK tổ chức nội bộ. [SỬA 2026-09-11] DEPARTMENTS tách khỏi entity này theo yêu cầu Data Modeler — nay chỉ map từ NHNCK.UNITS, xem lld_NHNCK_DEPARTMENTS.yaml (đổi sang Classification Value).
   owner:
     steward: username@ubck.com.vn
     data_modeler: username@fssc.com.vn
@@ -60,7 +60,7 @@ attributes:
     source_system: NHNCK
     source_table: UNITS
     source_column: null
-    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     classification_context: "Source System Code = 'NHNCK_UNITS'"
     etl_derived_value: NHNCK_UNITS
 
@@ -74,7 +74,7 @@ attributes:
     source_system: NHNCK
     source_table: UNITS
     source_column: null
-    comment: "Scheme: ORGANIZATION_UNIT_TYPE. ETL-derived."
+    comment: "Scheme: ORGANIZATION_UNIT_TYPE. Hardcode."
     classification_context: "ORGANIZATION_UNIT_TYPE=UNIT"
     etl_derived_value: UNIT
 
@@ -116,7 +116,7 @@ attributes:
     source_system: NHNCK
     source_table: UNITS
     source_column: NHNCK.UNITS.PARENT_ID
-    comment: "FK target: ra_organization_unit.ra_ou_id. Cần ETL crosswalk sang NHNCK.UNITS: UNITS.PARENT_ID = UNITS.ID để xác nhận UNIT_CODE sau đó hash_id('NHNCK.UNITS', UNIT_CODE) | Trước đây hash trực tiếp theo PARENT_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ UNIT_CODE) — đã sửa sang crosswalk 2026-07-27."
+    comment: "FK target: ra_organization_unit.ra_ou_id. Cần ETL crosswalk sang NHNCK.UNITS: UNITS.PARENT_ID = UNITS.ID để xác nhận UNIT_CODE sau đó hash_id('NHNCK_UNITS', UNIT_CODE) | Trước đây hash trực tiếp theo PARENT_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ UNIT_CODE) — đã sửa sang crosswalk 2026-07-27."
     classification_context: null
     etl_derived_value: null
 
@@ -130,7 +130,7 @@ attributes:
     source_system: NHNCK
     source_table: UNITS
     source_column: NHNCK.UNITS.UNIT_CODE
-    comment: "Lookup pair: ra_organization_unit.ra_organization_unit_code. Pair with Parent Regulatory Authority Organization Unit Id. Giá trị lấy từ NHNCK.UNITS.UNIT_CODE sau ETL crosswalk — chi tiết xem comment Parent Regulatory Authority Organization Unit Id."
+    comment: "Lookup pair: ra_organization_unit.ra_ou_code. Pair with Parent Regulatory Authority Organization Unit Id. Giá trị lấy từ NHNCK.UNITS.UNIT_CODE sau ETL crosswalk — chi tiết xem comment Parent Regulatory Authority Organization Unit Id."
     classification_context: null
     etl_derived_value: null
 

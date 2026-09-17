@@ -411,35 +411,16 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "date"
-- attribute_name: "Classification Business Transaction Id"
-  physical_name: "cl_business_transaction_id"
-  description: "Nghiệp vụ kinh doanh người hành nghề phụ trách (FK → CAT_BUSINESS_LINE)."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.BUSINESS_LINE_ID"
-  comment: "FK target: Classification Business Transaction.Classification SCMS Business\
-    \ Line Id. Thay thế Classification Value scheme SCMS_BUSINESS_LINE (deprecated)\
-    \ — xem lld_SCMS_CAT_BUSINESS_LINE.yaml. Nguồn BUSINESS_LINE_ID khai báo VARCHAR2(100)\
-    \ nhưng fk_note trỏ CAT_BUSINESS_LINE.ID (kỹ thuật) — cần join BUSINESS_LINE_ID\
-    \ = SCMS.CAT_BUSINESS_LINE.ID để lấy BUSINESS_LINE_CODE, rồi hash_id('SCMS.CAT_BUSINESS_LINE',\
-    \ BUSINESS_LINE_CODE)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Classification Business Transaction Code"
-  physical_name: "cl_business_transaction_code"
-  description: "Mã nghiệp vụ kinh doanh người hành nghề phụ trách (denormalized lookup)."
+- attribute_name: "Classification Securities Company Firm Service Id"
+  physical_name: "cl_sc_firm_service_id"
+  description: "Nghiệp vụ kinh doanh người hành nghề phụ trách."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.BUSINESS_LINE_ID"
-  comment: "Lookup pair: Classification Business Transaction.Classification SCMS Business\
-    \ Line Code. Pair with Classification Business Transaction Id."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"

@@ -7,7 +7,7 @@ ldm:
   physical_name: sp_license_application
   layer: Atomic
   version: "1.0"
-  status: draft
+  status: approved
   bcv_core_object: Documentation
   bcv_concept: "[Documentation] Gov. Registration Document"
   table_type: Fundamental
@@ -60,7 +60,7 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATIONS
     source_column: null
-    comment: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     classification_context: "Source System Code = 'NHNCK_APPLICATIONS'"
     etl_derived_value: NHNCK_APPLICATIONS
 
@@ -74,35 +74,21 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATIONS
     source_column: NHNCK.APPLICATIONS.APPLICATION_TYPE
-    comment: "Scheme: APPLICATION_TYPE. Map từ NUMBER: 0=Cấp mới, 1=Cấp lại do thu hồi, 2=Cấp lại thay đổi thông tin, 3=Cấp lại mất CCHN."
-    classification_context: APPLICATION_TYPE
-    etl_derived_value: null
-
-  - name: Classification Application Status Id
-    physical_name: cl_application_status_id
-    business_meaning: FK đến trạng thái hồ sơ hiện tại.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: APPLICATIONS
-    source_column: NHNCK.APPLICATIONS.STATUS_ID
-    comment: "FK target: cl_application_status.cl_application_status_id. Cần ETL crosswalk sang NHNCK.APPLICATION_STATUSES: APPLICATIONS.STATUS_ID = APPLICATION_STATUSES.ID để xác nhận STATUS_CODE sau đó hash_id('NHNCK.APPLICATION_STATUSES', STATUS_CODE) | Trước đây hash trực tiếp theo STATUS_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ STATUS_CODE) — đã sửa sang crosswalk 2026-07-27. Thêm 2026-07-09 khi APPLICATION_STATUSES lên entity thật (trước đó chỉ có Code, scheme NHNCK_APPLICATION_STATUS đã deprecate)."
+    comment: "SCHEMA_CODE=NHNCK.APPLICATIONS.APPLICATION_TYPE"
     classification_context: null
     etl_derived_value: null
 
-  - name: Classification Application Status Code
-    physical_name: cl_application_status_code
-    business_meaning: Mã trạng thái hồ sơ hiện tại (denormalized lookup).
-    data_domain: Text
+  - name: Application Status Code
+    physical_name: application_status_code
+    business_meaning: Mã trạng thái hồ sơ hiện tại.
+    data_domain: Classification Value
     data_type: string
     nullable: false
     is_primary_key: false
     source_system: NHNCK
     source_table: APPLICATIONS
     source_column: NHNCK.APPLICATION_STATUSES.STATUS_CODE
-    comment: "Lookup pair: cl_application_status.cl_application_status_code. Pair with Classification Application Status Id. Giá trị lấy từ NHNCK.APPLICATION_STATUSES.STATUS_CODE sau ETL crosswalk — chi tiết xem comment Classification Application Status Id."
+    comment: "SCHEMA_CODE=NHNCK.APPLICATION_STATUSES"
     classification_context: null
     etl_derived_value: null
 
@@ -116,8 +102,8 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATIONS
     source_column: NHNCK.APPLICATIONS.REGISTRATION_TYPE
-    comment: "Scheme: REGISTRATION_TYPE. Map từ NUMBER: 0=MCĐT/cổng DVC, 1=Nhập tay."
-    classification_context: REGISTRATION_TYPE
+    comment: "SCHEMA_CODE=NHNCK.APPLICATIONS.REGISTRATION_TYPE"
+    classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner License Certificate Type Id
@@ -130,7 +116,7 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATIONS
     source_column: NHNCK.APPLICATIONS.CERTIFICATE_ID
-    comment: "FK target: sp_license_certificate_type.sp_license_certificate_tp_id. Cần ETL crosswalk sang NHNCK.CERTIFICATES: APPLICATIONS.CERTIFICATE_ID = CERTIFICATES.ID để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK.CERTIFICATES', CERTIFICATE_CODE) | Trước đây hash trực tiếp theo CERTIFICATE_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CERTIFICATE_CODE) — đã sửa sang crosswalk 2026-07-27."
+    comment: "FK target: sp_license_certificate_type.sp_license_certificate_tp_id. Cần ETL crosswalk sang NHNCK.CERTIFICATES: APPLICATIONS.CERTIFICATE_ID = CERTIFICATES.ID để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK_CERTIFICATES', CERTIFICATE_CODE) | Trước đây hash trực tiếp theo CERTIFICATE_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CERTIFICATE_CODE) — đã sửa sang crosswalk 2026-07-27."
     classification_context: null
     etl_derived_value: null
 
@@ -270,7 +256,7 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATIONS
     source_column: NHNCK.APPLICATIONS.PREVIOUS_CERTIFICATE_ID
-    comment: "FK target: sp_license_certificate_type.sp_license_certificate_tp_id. Cần ETL crosswalk sang NHNCK.CERTIFICATES: APPLICATIONS.PREVIOUS_CERTIFICATE_ID = CERTIFICATES.ID để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK.CERTIFICATES', CERTIFICATE_CODE) | Trước đây hash trực tiếp theo PREVIOUS_CERTIFICATE_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CERTIFICATE_CODE) — đã sửa sang crosswalk 2026-07-27."
+    comment: "FK target: sp_license_certificate_type.sp_license_certificate_tp_id. Cần ETL crosswalk sang NHNCK.CERTIFICATES: APPLICATIONS.PREVIOUS_CERTIFICATE_ID = CERTIFICATES.ID để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK_CERTIFICATES', CERTIFICATE_CODE) | Trước đây hash trực tiếp theo PREVIOUS_CERTIFICATE_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CERTIFICATE_CODE) — đã sửa sang crosswalk 2026-07-27."
     classification_context: null
     etl_derived_value: null
 
@@ -326,8 +312,8 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATIONS
     source_column: NHNCK.APPLICATIONS.CERTIFICATE_RECEIPT_METHOD
-    comment: "Scheme: CERT_RECEIPT_METHOD. Map từ NUMBER: 1=Nhận tại UBCKNN, 2=Gửi bưu điện, 3=Điện tử."
-    classification_context: CERT_RECEIPT_METHOD
+    comment: "SCHEMA_CODE=NHNCK.APPLICATIONS.CERTIFICATE_RECEIPT_METHOD"
+    classification_context: null
     etl_derived_value: null
 
   - name: Certificate Receipt Address
@@ -358,18 +344,18 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Receipt Status Code
-    physical_name: receipt_status_code
+  - name: Received Indicator
+    physical_name: received_ind
     business_meaning: Trạng thái nhận CCHN.
-    data_domain: Classification Value
-    data_type: string
+    data_domain: Small Counter
+    data_type: int
     nullable: true
     is_primary_key: false
     source_system: NHNCK
     source_table: APPLICATIONS
     source_column: NHNCK.APPLICATIONS.RECEIPT_STATUS
-    comment: "Scheme: RECEIPT_STATUS. Map từ NUMBER: 0=Chưa nhận, 1=Đã nhận."
-    classification_context: RECEIPT_STATUS
+    comment: "Giá trị: 0=Chưa nhận, 1=Đã nhận."
+    classification_context: null
     etl_derived_value: null
 
   - name: Violated Indicator
@@ -438,7 +424,7 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATIONS
     source_column: NHNCK.APPLICATIONS.PROFESSIONAL_ID
-    comment: "FK target: securities_practitioner.securities_practitioner_id. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
+    comment: "FK target: securities_practitioner.sp_id. Hash: hash_id('NHNCK_PROFESSIONALS', PROFESSIONAL_ID)."
     classification_context: null
     etl_derived_value: null
 
@@ -452,7 +438,7 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATIONS
     source_column: NHNCK.APPLICATIONS.PROFESSIONAL_ID
-    comment: "Lookup pair: securities_practitioner.securities_practitioner_code. Pair with Securities Practitioner Id."
+    comment: "Lookup pair: securities_practitioner.sp_code. Pair with Securities Practitioner Id."
     classification_context: null
     etl_derived_value: null
 
@@ -466,7 +452,7 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATIONS
     source_column: NHNCK.APPLICATIONS.CERTIFICATE_RECORD_ID
-    comment: "FK target: sp_license_certificate_document.sp_license_certificate_document_id. Cần ETL crosswalk sang NHNCK.CERTIFICATE_RECORDS: APPLICATIONS.CERTIFICATE_RECORD_ID = CERTIFICATE_RECORDS.ID để xác nhận CERTIFICATE_NUMBER sau đó hash_id('NHNCK.CERTIFICATE_RECORDS', CERTIFICATE_NUMBER) | Trước đây hash trực tiếp theo CERTIFICATE_RECORD_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CERTIFICATE_NUMBER) — đã sửa sang crosswalk 2026-08-15."
+    comment: "FK target: sp_license_certificate_document.sp_license_certificate_document_id. Cần ETL crosswalk sang NHNCK.CERTIFICATE_RECORDS: APPLICATIONS.CERTIFICATE_RECORD_ID = CERTIFICATE_RECORDS.ID để xác nhận CERTIFICATE_NUMBER sau đó hash_id('NHNCK_CERTIFICATE_RECORDS', CERTIFICATE_NUMBER) | Trước đây hash trực tiếp theo CERTIFICATE_RECORD_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CERTIFICATE_NUMBER) — đã sửa sang crosswalk 2026-08-15."
     classification_context: null
     etl_derived_value: null
 
@@ -494,7 +480,7 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATIONS
     source_column: NHNCK.APPLICATIONS.PREVIOUS_CERTIFICATE_RECORD_ID
-    comment: "FK target: sp_license_certificate_document.sp_license_certificate_document_id. Cần ETL crosswalk sang NHNCK.CERTIFICATE_RECORDS: APPLICATIONS.PREVIOUS_CERTIFICATE_RECORD_ID = CERTIFICATE_RECORDS.ID để xác nhận CERTIFICATE_NUMBER sau đó hash_id('NHNCK.CERTIFICATE_RECORDS', CERTIFICATE_NUMBER) | Trước đây hash trực tiếp theo PREVIOUS_CERTIFICATE_RECORD_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CERTIFICATE_NUMBER) — đã sửa sang crosswalk 2026-08-15."
+    comment: "FK target: sp_license_certificate_document.sp_license_certificate_document_id. Cần ETL crosswalk sang NHNCK.CERTIFICATE_RECORDS: APPLICATIONS.PREVIOUS_CERTIFICATE_RECORD_ID = CERTIFICATE_RECORDS.ID để xác nhận CERTIFICATE_NUMBER sau đó hash_id('NHNCK_CERTIFICATE_RECORDS', CERTIFICATE_NUMBER) | Trước đây hash trực tiếp theo PREVIOUS_CERTIFICATE_RECORD_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CERTIFICATE_NUMBER) — đã sửa sang crosswalk 2026-08-15."
     classification_context: null
     etl_derived_value: null
 
@@ -522,7 +508,7 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATIONS
     source_column: NHNCK.APPLICATIONS.EXAM_SESSION_ID
-    comment: "FK target: sp_qualification_examination_assessment.sp_qualification_examination_assessment_id. Nguồn lưu ID kỹ thuật của EXAM_SESSIONS — ETL join EXAM_SESSION_ID → NHNCK.EXAM_SESSIONS.ID để lấy CODE, rồi hash_id('NHNCK.EXAM_SESSIONS', CODE)."
+    comment: "FK target: sp_qualification_examination_assessment.sp_qualification_examination_assessment_id. Nguồn lưu ID kỹ thuật của EXAM_SESSIONS — ETL join EXAM_SESSION_ID → NHNCK.EXAM_SESSIONS.ID để lấy CODE, rồi hash_id('NHNCK_EXAM_SESSIONS', CODE)."
     classification_context: null
     etl_derived_value: null
 
@@ -550,7 +536,7 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATIONS
     source_column: NHNCK.APPLICATIONS.ASSIGNEE_ID
-    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Cần ETL crosswalk sang NHNCK.USERS: APPLICATIONS.ASSIGNEE_ID = USERS.ID để xác nhận USERNAME sau đó hash_id('IAM.USERS', USERNAME) | Chưa xác nhận value set khớp danh mục IAM.USERS — cần profile dữ liệu trước go-live."
+    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Cần ETL crosswalk sang NHNCK.USERS: APPLICATIONS.ASSIGNEE_ID = USERS.ID để xác nhận USERNAME sau đó hash_id('IAM_USERS', USERNAME) | Chưa xác nhận value set khớp danh mục IAM.USERS — cần profile dữ liệu trước go-live."
     classification_context: null
     etl_derived_value: null
 
@@ -578,7 +564,7 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATIONS
     source_column: NHNCK.APPLICATIONS.INFO_VERIFY_ID
-    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Cần ETL crosswalk sang NHNCK.USERS: APPLICATIONS.INFO_VERIFY_ID = USERS.ID để xác nhận USERNAME sau đó hash_id('IAM.USERS', USERNAME) | Chưa xác nhận value set khớp danh mục IAM.USERS — cần profile dữ liệu trước go-live."
+    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Cần ETL crosswalk sang NHNCK.USERS: APPLICATIONS.INFO_VERIFY_ID = USERS.ID để xác nhận USERNAME sau đó hash_id('IAM_USERS', USERNAME) | Chưa xác nhận value set khớp danh mục IAM.USERS — cần profile dữ liệu trước go-live."
     classification_context: null
     etl_derived_value: null
 
@@ -607,5 +593,19 @@ attributes:
     source_table: APPLICATIONS
     source_column: NHNCK.APPLICATIONS.MCDT_CONTENT_ITEM_ID
     comment: Mirror pattern Public Service Portal Code (MCDT_CODE) trên Classification Document/Classification Specialization — mã đồng bộ với Cổng Dịch vụ công quốc gia.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Re Exam Subject
+    physical_name: re_exam_subject
+    business_meaning: Môn thi lại.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATIONS
+    source_column: NHNCK.APPLICATIONS.RE_EXAM_SUBJECT
+    comment: "BCV: không có term riêng — đặt tên theo nghĩa nghiệp vụ. Bổ sung theo DDL mới (2026-09-10)."
     classification_context: null
     etl_derived_value: null

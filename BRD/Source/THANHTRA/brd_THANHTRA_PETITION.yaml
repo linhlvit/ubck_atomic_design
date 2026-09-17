@@ -41,7 +41,7 @@ columns:
     fk_note: null
   - name: PETITION_CATEGORY
     data_type: VARCHAR2(200)
-    description: "Loại đơn: FEEDBACK_SUGGESTION (Phản ánh kiến nghị), COMPLAINT (Khiếu nại), DENUNCIATION (Tố cáo)"
+    description: "FEEDBACK_SUGGESTION (Phản ánh kiến nghị) | COMPLAINT (Khiếu nại) | DENUNCIATION (Tố cáo) | MULTI_CONTENT (Đơn có nhiều nội dung)"
     key: null
     fk_note: null
   - name: RELATED_TO_CORPORATE_BOND
@@ -81,22 +81,22 @@ columns:
     fk_note: "FK → PETITION.ID"
   - name: SUBMISSION_NUMBER
     data_type: VARCHAR2(400)
-    description: "Số tờ trình Thanh tra trình lãnh đạo (lấy từ eDoc)"
+    description: "Số phiếu trình (tên hiển thị mới của \"Số tờ trình\" — không đổi field kỹ thuật)"
     key: null
     fk_note: null
   - name: TRANSFERRED_AUTHORITY
     data_type: VARCHAR2(2000)
-    description: "Tên cơ quan có thẩm quyền nhận chuyển đơn"
+    description: "Chuyển CQ có thẩm quyền (tên hiển thị mới của \"Cơ quan\"). Không loại trừ với các phương án xử lý khác — 1 đơn thư có thể có đồng thời nhiều phương án."
     key: null
     fk_note: null
   - name: INTERNAL_TRANSFER_UNIT_ID
     data_type: VARCHAR2(144)
-    description: "ID ban/đơn vị nội bộ UBCKNN nhận chuyển đơn"
+    description: "DEPRECATED — xem bảng petition_internal_transfer_unit. Giữ lại để tương thích ngược, tự đồng bộ với đơn vị đầu tiên trong danh sách."
     key: null
     fk_note: null
   - name: INTERNAL_TRANSFER_UNIT_NAME
     data_type: VARCHAR2(800)
-    description: "Tên ban/đơn vị nội bộ nhận chuyển đơn"
+    description: "DEPRECATED — xem bảng petition_internal_transfer_unit."
     key: null
     fk_note: null
   - name: ARCHIVED
@@ -121,7 +121,7 @@ columns:
     fk_note: null
   - name: NOTE
     data_type: CLOB
-    description: "Ghi chú bổ sung"
+    description: "Ghi chú phương án xử lý (tên hiển thị mới của \"Ghi chú\")"
     key: null
     fk_note: null
   - name: END_DATE
@@ -161,16 +161,36 @@ columns:
     fk_note: null
   - name: TARGET_TYPE
     data_type: VARCHAR2(50)
-    description: null
+    description: "DEPRECATED — xem bảng petition_target. Giữ lại để tương thích ngược, tự đồng bộ với đối tượng đầu tiên trong danh sách. SECURITIES_COMPANY | FUND_MANAGEMENT_COMPANY | PUBLIC_COMPANY | OTHER."
     key: null
     fk_note: null
   - name: TARGET_REFERENCE_ID
     data_type: VARCHAR2(100)
-    description: null
+    description: "DEPRECATED — xem bảng petition_target. Giữ lại để tương thích ngược."
     key: null
     fk_note: null
   - name: TARGET_NAME
     data_type: VARCHAR2(500)
-    description: null
+    description: "DEPRECATED — xem bảng petition_target. Giữ lại để tương thích ngược. Trường \"Đối tượng\" đã đổi tên hiển thị thành \"Đối tượng được đề cập trong đơn\"."
+    key: null
+    fk_note: null
+  - name: INCOMING_DOCUMENT_NUMBER
+    data_type: VARCHAR2(200)
+    description: "Số đến VBĐH (Văn bản điều hành) — số đăng ký đơn thư trong hệ thống văn bản điều hành (eDoc/eOffice). Bắt buộc nhập, chỉ chứa số. Hiển thị cạnh \"Ngày nhận\" trên UI."
+    key: null
+    fk_note: null
+  - name: SUBMISSION_DATE
+    data_type: DATE
+    description: "Ngày phiếu trình — đi kèm \"Số phiếu trình\" (xem submission_number) tại mục Kết quả xử lý."
+    key: null
+    fk_note: null
+  - name: COMPLAINT_CLASSIFICATION
+    data_type: VARCHAR2(200)
+    description: "Phân loại chi tiết kết quả giải quyết khiếu nại (chỉ khi petition_category=COMPLAINT), dùng cho Biểu 02/XLD cột 7/8: KN_FIRST_CORRECT|KN_FIRST_INCORRECT|KN_FIRST_PARTIALLY_CORRECT|KN_SECOND_UPHELD|KN_SECOND_OVERTURNED."
+    key: null
+    fk_note: null
+  - name: DENUNCIATION_CLASSIFICATION
+    data_type: VARCHAR2(200)
+    description: "Phân loại chi tiết kết quả giải quyết tố cáo (chỉ khi petition_category=DENUNCIATION), dùng cho Biểu 02/XLD cột 13/14: TC_FIRST_CORRECT|TC_FIRST_INCORRECT|TC_FIRST_MIXED|TC_FOLLOWUP_CORRECT|TC_FOLLOWUP_INCORRECT|TC_FOLLOWUP_MIXED."
     key: null
     fk_note: null

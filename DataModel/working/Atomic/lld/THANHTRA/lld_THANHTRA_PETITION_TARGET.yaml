@@ -1,0 +1,154 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "THANHTRA"
+  source_table: "PETITION_TARGET"
+  atomic_entity: "Petition Target"
+  entity_physical_name: "petition_target"
+  bcv_core_object: "Communication"
+  bcv_concept: "[Communication] Feedback"
+  table_type: "Fundamental"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Bảng mới (DDL UAT cập nhật 2026-09) — thay thế cột TARGET_TYPE/TARGET_REFERENCE_ID/TARGET_NAME\
+    \ (nay DEPRECATED, giữ lại trên PETITION chỉ để tương thích ngược) — xem THANHTRA_HLD_Tier2.md\
+    \ mục T2-06. Polymorphic reference (TARGET_TYPE xác định loại đối tượng: SECURITIES_COMPANY/FUND_MANAGEMENT_COMPANY/PUBLIC_COMPANY/OTHER)\
+    \ — giữ nguyên pattern polymorphic Target Type/Reference Id/Name đã dùng ở Inspection\
+    \ Team Target/Examination Team Target, KHÔNG ép về 1 FK cứng vì Target có thể\
+    \ thuộc nhiều loại entity khác nhau. Không có mã nghiệp vụ riêng trong nguồn —\
+    \ Code lấy trực tiếp từ ID. Audit block loại trừ khỏi Atomic — mirror quyết định\
+    \ đã áp dụng cho toàn bộ phân hệ THANHTRA (xem pending_design.yaml)."
+attributes:
+- attribute_name: "Petition Target Id"
+  physical_name: "petition_target_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: [Communication] Feedback — đối tượng được đề cập trong\
+    \ đơn thư."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Petition Target Code"
+  physical_name: "petition_target_code"
+  description: "BK chính. PK nguồn (VARCHAR2 UUID)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PETITION_TARGET.ID"
+  comment: "BK chính. PK nguồn (VARCHAR2 UUID) — không có mã nghiệp vụ riêng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=THANHTRA_PETITION_TARGET"
+  etl_derived_value: "THANHTRA_PETITION_TARGET"
+  data_type: "string"
+- attribute_name: "Petition Id"
+  physical_name: "petition_id"
+  description: "FK đến Petition (đơn thư đề cập đến đối tượng này)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PETITION_TARGET.PETITION_ID"
+  comment: "FK target: petition.petition_id. Cần ETL crosswalk sang THANHTRA.PETITION:\
+    \ PETITION_TARGET.PETITION_ID = PETITION.ID để xác nhận CODE sau đó hash_id('THANHTRA_PETITION',\
+    \ CODE) — cùng pattern crosswalk đã dùng cho CITIZEN_RECEPTION.PETITION_ID."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Petition Code"
+  physical_name: "petition_code"
+  description: "Mã đơn thư liên kết (denormalized lookup)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PETITION.CODE"
+  comment: "Lookup pair: petition.petition_code. Pair with Petition Id. Giá trị lấy\
+    \ từ THANHTRA.PETITION.CODE sau ETL crosswalk — chi tiết xem comment Petition\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Target Type Code"
+  physical_name: "target_tp_code"
+  description: "SECURITIES_COMPANY (Công ty chứng khoán) | FUND_MANAGEMENT_COMPANY\
+    \ (Công ty quản lý quỹ) | PUBLIC_COMPANY (Công ty đại chúng) | OTHER (Khác — nhập\
+    \ thủ công tên)."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PETITION_TARGET.TARGET_TYPE"
+  comment: "Scheme: PETITION_TARGET_TYPE."
+  classification_context: "PETITION_TARGET_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Target Reference Id"
+  physical_name: "target_reference_id"
+  description: "ID/mã đối tượng từ hệ thống ngoài (SCMS/FMS/IDS) — NULL khi target_type\
+    \ = OTHER (nhập thủ công). Polymorphic reference, không có 1 FK cứng vì phụ thuộc\
+    \ Target Type Code."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PETITION_TARGET.TARGET_REFERENCE_ID"
+  comment: "Denormalized polymorphic reference — không map FK cụ thể vì target có\
+    \ thể thuộc nhiều hệ thống/entity khác nhau tùy Target Type Code, cùng pattern\
+    \ đã dùng ở Inspection Team Target/Examination Team Target."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Target Name"
+  physical_name: "target_nm"
+  description: "Tên đối tượng được đề cập trong đơn."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PETITION_TARGET.TARGET_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Sort Order"
+  physical_name: "sort_order"
+  description: "Thứ tự hiển thị."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PETITION_TARGET.SORT_ORDER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"

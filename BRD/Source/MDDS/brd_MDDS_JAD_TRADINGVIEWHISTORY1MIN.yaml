@@ -1,0 +1,44 @@
+schema_type: brd_source_columns
+source: MDDS
+table: JAD_TRADINGVIEWHISTORY1MIN
+bronze_table: JAD_TRADINGVIEWHISTORY1MIN
+description: "Thống kê OHLCV theo resolution phút cho từng mã (chứng khoán hoặc chỉ số), phục vụ biểu đồ TradingView"
+scope_status: pending
+
+columns:
+  - name: ID
+    data_type: "character varying(255)"
+    nullable: false
+    description: "Định danh — PK"
+  - name: SYMBOL
+    data_type: "character varying(255)"
+    nullable: false
+    description: "Mã (gồm cả chứng khoán và index)"
+  - name: TRADINGDATE
+    data_type: "character varying(255)"
+    nullable: false
+    description: "Ngày tính toán (dd/MM/yyyy)"
+  - name: MINUTE
+    data_type: "character varying(255)"
+    nullable: false
+    description: "Giờ tính toán (HH:mm)"
+  - name: OPEN
+    data_type: double precision
+    nullable: false
+    description: "Giá mở cửa trong phút"
+  - name: HIGH
+    data_type: double precision
+    nullable: false
+    description: "Giá cao nhất trong phút"
+  - name: LOW
+    data_type: double precision
+    nullable: false
+    description: "Giá thấp nhất trong phút"
+  - name: CLOSE
+    data_type: double precision
+    nullable: false
+    description: "Giá đóng cửa trong phút"
+  - name: VOLUME
+    data_type: bigint
+    nullable: false
+    description: "Tổng khối lượng khớp trong phút"

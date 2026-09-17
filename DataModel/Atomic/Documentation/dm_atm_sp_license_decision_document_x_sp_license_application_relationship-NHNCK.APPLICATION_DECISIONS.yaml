@@ -1,0 +1,93 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-sp_license_decision_document_x_sp_license_application_relationship-NHNCK.APPLICATION_DECISIONS
+  logical_name: Securities Practitioner License Decision Document X Securities Practitioner License Application Relationship
+  physical_name: sp_license_decision_document_x_sp_license_application_relationship
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Gov. Registration Document"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: NHNCK
+  description: |
+    Quan hệ giữa 1 quyết định hành chính (License Decision Document) và 1 hồ sơ CCHN (License Application) — pure junction 2 FK, không có attribute nghiệp vụ riêng. Tái dùng BCV concept của entity cha License Decision Document. Đảo lại quyết định denormalize ARRAY trước đó (Overview §7d) theo yêu cầu Data Modeler (2026-09-12).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-NHNCK-APPLICATION_DECISIONS
+
+attributes:
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATION_DECISIONS
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'NHNCK_APPLICATION_DECISIONS'"
+    etl_derived_value: NHNCK_APPLICATION_DECISIONS
+
+  - name: Securities Practitioner License Decision Document Id
+    physical_name: sp_license_decision_document_id
+    business_meaning: "FK -> DECISIONS: Quyết định hành chính liên quan."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: NHNCK
+    source_table: APPLICATION_DECISIONS
+    source_column: NHNCK.APPLICATION_DECISIONS.DECISION_ID
+    comment: "FK target: sp_license_decision_document.sp_license_decision_document_id. Cần ETL crosswalk sang NHNCK.DECISIONS: APPLICATION_DECISIONS.DECISION_ID = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS', DECISION_NUMBER) | Composite PK cùng Securities Practitioner License Application Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Securities Practitioner License Decision Document Code
+    physical_name: sp_license_decision_document_code
+    business_meaning: Số quyết định hành chính liên quan (denormalized lookup).
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATION_DECISIONS
+    source_column: NHNCK.DECISIONS.DECISION_NUMBER
+    comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code. Pair with Securities Practitioner License Decision Document Id. Giá trị lấy từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Decision Document Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Securities Practitioner License Application Id
+    physical_name: sp_license_application_id
+    business_meaning: "FK -> APPLICATIONS: Hồ sơ CCHN liên quan."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: NHNCK
+    source_table: APPLICATION_DECISIONS
+    source_column: NHNCK.APPLICATION_DECISIONS.APPLICATION_ID
+    comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL crosswalk sang NHNCK.APPLICATIONS: APPLICATION_DECISIONS.APPLICATION_ID = APPLICATIONS.ID để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS', APPLICATION_CODE) | Composite PK cùng Securities Practitioner License Decision Document Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Securities Practitioner License Application Code
+    physical_name: sp_license_application_code
+    business_meaning: Mã hồ sơ CCHN liên quan (denormalized lookup).
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATION_DECISIONS
+    source_column: NHNCK.APPLICATIONS.APPLICATION_CODE
+    comment: "Lookup pair: sp_license_application.sp_license_application_code. Pair with Securities Practitioner License Application Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Application Id."
+    classification_context: null
+    etl_derived_value: null

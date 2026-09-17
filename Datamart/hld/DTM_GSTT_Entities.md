@@ -1,31 +1,53 @@
-# DTM_GSTT_Entities — v2.0
+# DTM_GSTT_Entities — v2.3
 
-**Phiên bản:** 2.0
-**Ngày cập nhật:** 2026-07-28
-**Phạm vi:** Star schema diagram theo Fact chính — GSTT module, khớp `DTM_GSTT_HLD.md` v4.1 (49/49 Nhóm)
+**Phiên bản:** 2.3
+**Ngày cập nhật:** 2026-09-14
+**Phạm vi:** Star schema diagram theo Fact chính — GSTT module, khớp `DTM_GSTT_HLD.md` v4.15 (49/49 Nhóm)
+**Thay đổi v2.4 (2026-09-16):** Đổi nguồn `Outstanding Share Quantity` (trên `Fact Stock Portfolio Snapshot`) và `Index Market Cap` (trên `Fact Index Constituent Snapshot`) từ `pc_share_statistics_hstr` (IDS) sang `listed_share_info` (VSDC `outstanding_shares`, `src_stm_code = 'VSDC_OUTSTANDING_SHARES'`). Đồng bộ hoàn toàn nguồn dữ liệu số lượng cổ phiếu lưu hành & tự do chuyển nhượng về VSDC, khắc phục dứt điểm tình trạng rỗng dữ liệu trên sàn HNX/UPCOM.
+**Thay đổi v2.3:** Đổi tên `Index Total Volume`/`Index Total Value` → `Index Total Matched Volume`/`Index Total Matched Value` — review sheet Tổng hợp công thức xác nhận KLGD/GTGD của chỉ số (K_GSTT_47/48) phải loại trừ thỏa thuận, khác BA_analyst_GSTT.csv STT5.
+**Thay đổi v2.2:** Bổ sung 8 measure tính sẵn theo rổ chỉ số lên `Fact Index Constituent Snapshot` (Index Total Matched Volume/Value, Index Foreign Net Volume/Value, Index Total Negotiated Volume/Value, Index Market Cap, Index Free Float Market Cap — theo yêu cầu Design, không chấp nhận Bridge thuần 3 FK). Sửa mô tả `Fact Stock Portfolio Snapshot` — nguồn Free Float đổi từ `listed_security_info_snapshot` (chưa tồn tại) sang `listed_share_info`.
+**Thay đổi v2.1:** Tách `Fact Index Constituent Snapshot` (Bridge Factless) khỏi `Fact Stock Portfolio Snapshot` — giải quyết fan-out do 1 mã CK thuộc N rổ chỉ số (Index Constituent Dimension trước đây là FK trực tiếp trên Fact chính). `Index Constituent Dimension` đổi grain còn 1 row/Index Code (thuần mô tả), Symbol/Floor Code/Add Date chuyển sang Fact mới.
 **Thay đổi so với v1.3:** Viết lại toàn bộ — bản v1.3 (2026-06-04) theo cấu trúc HLD cũ trước v4.0 (`Fact Security Daily Market Summary`, `Corporate Bond Trading Snapshot Dimension`...) đã lỗi thời, không còn khớp với HLD hiện hành (thiết kế lại toàn bộ theo BA CSV mới, 1 Nhóm = 1 STT). Tổ chức lại theo 4 Fact chính (thay vì liệt kê rời rạc 49 Nhóm) vì phần lớn các Nhóm dùng chung `Fact Stock Portfolio Snapshot`.
 
 ---
 
 ## Fact Stock Portfolio Snapshot (phục vụ Nhóm 1–44, 46, 47)
 
-Bảng trung tâm của module — 1 row / mã CK / rổ chỉ số (FK nullable) / ngày giao dịch. Phục vụ toàn bộ Tab "Danh mục CK", "Top", "Xu hướng dòng tiền" (Nhóm 1–4, 6–44, 46, 47).
+Bảng trung tâm của module — 1 row / mã CK / ngày giao dịch. Phục vụ toàn bộ Tab "Danh mục CK", "Top", "Xu hướng dòng tiền" (Nhóm 1–4, 6–44, 46, 47). **[SỬA 2026-09-14]** Không còn FK rổ chỉ số — xem `Fact Index Constituent Snapshot` bên dưới cho nhu cầu phân tích theo rổ chỉ số.
 
 ```mermaid
 erDiagram
     Security_Trading_Snapshot_Dimension ||--o{ Fact_Stock_Portfolio_Snapshot : " "
     Public_Company_Dimension ||--o{ Fact_Stock_Portfolio_Snapshot : " "
     Calendar_Date_Dimension ||--o{ Fact_Stock_Portfolio_Snapshot : " "
-    Index_Constituent_Dimension |o--o{ Fact_Stock_Portfolio_Snapshot : " "
 ```
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fact Stock Portfolio Snapshot | Fact Snapshot | new | Giá, khối lượng/giá trị GD, NĐT nước ngoài/tự doanh/phân loại NĐT, LNST/VCSH/P-E/P-B (PENDING) | 1 row / mã CK / rổ chỉ số (FK nullable) / ngày giao dịch | K_GSTT_1–32, 55–61, 64–92, 98–119 (xem Bảng grain Section 3.2 HLD) |
+| Fact Stock Portfolio Snapshot | Fact Snapshot | new | Giá, khối lượng/giá trị GD, NĐT nước ngoài/tự doanh/phân loại NĐT, LNST/VCSH/P-E/P-B (PENDING). [SỬA 2026-09-14] + Free_Float_Share_Quantity (nguồn `listed_share_info`, VSDC outstanding_shares — sửa từ `listed_security_info_snapshot` chưa tồn tại). Bỏ FK Index Constituent Dimension Id | 1 row / mã CK / ngày giao dịch | K_GSTT_1–32, 55–61, 64–92, 98–119, 124–125, 133–143 (xem Bảng grain Section 3.2 HLD) |
 | Security Trading Snapshot Dimension | Dimension | new | Hồ sơ mô tả chứng khoán + giá hiện hành (Open/High/Low/Reference/Close) | 1 row / mã CK (SCD4A) | — |
 | Public Company Dimension | Dimension | reuse | Mã CK/tên DN/ngành — conformed GSDC/QLCB/NDTNN | 1 row / mã CK (SCD4A) | — |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày — conformed toàn hệ thống | 1 row / ngày | — |
-| Index Constituent Dimension | Dimension | new | Quan hệ thành viên rổ chỉ số (Index Code, Symbol) | 1 row / (Index Code, Symbol) có thật trong nguồn (SCD4A) | — |
+
+---
+
+## Fact Index Constituent Snapshot (phục vụ Nhóm 1, 5, 6, 7-22, 49 — mọi KPI theo rổ chỉ số)
+
+**[MỚI 2026-09-14]** Bridge — tách khỏi `Fact Stock Portfolio Snapshot` để giải quyết fan-out (1 mã CK thuộc N rổ chỉ số từng gây double-count trên measure của Fact chính). Phục vụ K_GSTT_4 (chọn 1 Chỉ số), K_GSTT_62/63 (Bộ chỉ số thị trường/theo ngành) — join qua `Symbol` + `Trading Date` sang `Fact Stock Portfolio Snapshot` khi cần lấy measure theo mã CK. **[SỬA 2026-09-14, theo yêu cầu Design]** Bổ sung 8 measure tính sẵn theo Index+Date (Index Total Matched Volume/Value, Index Foreign Net Volume/Value, Index Total Negotiated Volume/Value, Index Market Cap, Index Free Float Market Cap) phục vụ K_GSTT_47-52/54/61 + mẫu số K_GSTT_74/76 — giá trị lặp lại trên mọi dòng Symbol cùng Index+Date, dùng MAX()/DISTINCT khi truy vấn.
+
+```mermaid
+erDiagram
+    Security_Trading_Snapshot_Dimension ||--o{ Fact_Index_Constituent_Snapshot : " "
+    Index_Constituent_Dimension ||--o{ Fact_Index_Constituent_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Index_Constituent_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Index Constituent Snapshot | Fact Snapshot (Bridge + measure tính sẵn) | new | Thành viên rổ chỉ số theo ngày + 8 measure tính sẵn theo Index+Date (lặp lại trên mọi dòng Symbol cùng rổ) | 1 row / mã CK / rổ chỉ số / ngày giao dịch | K_GSTT_4, 47–52, 54, 61, 62–63, 74, 76 |
+| Security Trading Snapshot Dimension | Dimension | reuse | Hồ sơ mô tả chứng khoán — đã thiết kế ở Nhóm 1 | 1 row / mã CK (SCD4A) | — |
+| Index Constituent Dimension | Dimension | new | Mô tả rổ chỉ số (Index Code, Index Id) — [SỬA 2026-09-14] không còn chứa Symbol/Floor Code/Add Date | 1 row / Index Code | — |
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày — conformed toàn hệ thống | 1 row / ngày | — |
 
 ---
 
@@ -83,26 +105,39 @@ erDiagram
 
 ---
 
-## Fact Public Company Shareholding (phục vụ Nhóm 45, 48)
+## Fact Foreign Trading Minute Snapshot (phục vụ Nhóm 25)
 
-Sở hữu cổ đông và chức vụ người nội bộ — entity mới hoàn toàn, chưa từng xuất hiện ở các Nhóm trước.
+**[BỔ SUNG 2026-09-11]** Thiết kế thật đã có từ 2026-09-04 (Resolved O_GSTT_8, Attributes + Detail Mapping + HLD đều đã READY) nhưng bị bỏ sót khỏi Entities.csv/.md — bổ sung lại cho khớp, không phải thiết kế mới.
+
+Dòng tiền NĐT nước ngoài theo phút — grain mịn hơn `Fact Stock Portfolio Snapshot` (theo phút thay vì theo ngày). Nguồn `Securities Trade` (per-trade, sổ lệnh HOSE/HNX GROUP BY phút) — khác `Fact Security Trading Intraday` (nguồn `Security Trading Snapshot`, per-tick MDDS).
 
 ```mermaid
 erDiagram
-    Legal_Entity_Dimension ||--o{ Fact_Public_Company_Shareholding : " "
-    Public_Company_Dimension ||--o{ Fact_Public_Company_Shareholding : " "
-    Legal_Entity_Position_Dimension |o--o{ Fact_Public_Company_Shareholding : " "
+    Security_Trading_Snapshot_Dimension ||--o{ Fact_Foreign_Trading_Minute_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Trading_Minute_Snapshot : " "
 ```
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fact Public Company Shareholding | Fact Snapshot | new | Số cổ phiếu sở hữu, tỷ lệ sở hữu, cờ cổ đông lớn/người nội bộ | 1 row / cổ đông (Legal Entity) / mã công ty (Public Company) / chức vụ (nullable) | K_GSTT_93–97 |
-| Legal Entity Dimension | Dimension | new | Tên cổ đông — driving entity chỉ có ở Atomic Nguồn 2 (working/Atomic), chưa promote Nguồn 1 | 1 row / cổ đông (SCD4A) | — |
-| Public Company Dimension | Dimension | reuse | Mã CK/tên DN/ngành — conformed GSDC/QLCB/NDTNN | 1 row / mã CK (SCD4A) | — |
-| Legal Entity Position Dimension | Dimension | new | Chức vụ người nội bộ | 1 row / (cổ đông, chức vụ) (SCD4A) | — |
+| Fact Foreign Trading Minute Snapshot | Fact Snapshot | new | Giá trị mua/bán của NĐT nước ngoài theo phút | 1 row / mã CK (Symbol) / Trade Minute (`trade_minute_tms`) — FK Calendar Date Dimension qua Trade Date | K_GSTT_78–80 |
+| Security Trading Snapshot Dimension | Dimension | reuse | Hồ sơ mô tả chứng khoán — đã thiết kế ở Nhóm 1 | 1 row / mã CK (SCD4A) | — |
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày — conformed toàn hệ thống | 1 row / ngày | — |
 
 ---
 
-## Bảng PENDING (không thiết kế trong Phase 2)
+## Legal Entity Position Dimension + Operational Public Company Shareholding (phục vụ Nhóm 31, Nhóm 34 reuse)
 
-Không có bảng nào PENDING toàn bộ trong module GSTT. Tất cả 5 Fact đều có ít nhất 1 KPI/Nhóm READY (xem Bảng grain Section 3.2 HLD để biết measure/KPI cụ thể còn PENDING trong từng Fact — VD `Fact Stock Portfolio Snapshot` có nhiều cột PENDING như LNST/VCSH/P-E/P-B chờ Atomic EAV báo cáo tài chính, xem O_GSTT_1/O_GSTT_2).
+**[THIẾT KẾ LẠI 2026-09-12, đảo ngược O_GSTT_9 theo xác nhận trực tiếp Data Modeler]** `Operational Public Company Shareholding` khôi phục lại (trước đó bị loại khỏi Star Schema 2026-08-03 vì 0 KPI READY) — nay đủ nguồn Atomic cho toàn bộ 8/8 KPI: `pc_shareholding` (IDS.COMPANY_SHAREHOLDING, Nguồn 1 draft), `legal_entity` (IDS.LEGAL_ENTITIES, Nguồn 2 draft), `foreign_ownership_info` (VSDC, theo mapping `DataModel/working/Atomic/lld/VSDC/mapping_vsdc_ods_atm.md` — chưa có LDM YAML/manifest chính thức, chấp nhận ngoại lệ theo xác nhận trực tiếp). `Legal Entity Position Dimension` giữ nguyên như cũ, dùng độc lập song song.
+
+```mermaid
+erDiagram
+    Operational_Public_Company_Shareholding
+    Legal_Entity_Position_Dimension
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Operational Public Company Shareholding | Operational | new | Sở hữu cổ đông + tên cổ đông + chức vụ (denormalize) + sở hữu NN/trong nước | 1 row / (Public Company × Legal Entity/cổ đông) | K_GSTT_100–103, 103b, 120–121 |
+| Legal Entity Position Dimension | Dimension | new | Chức vụ người nội bộ (Position Code) — dùng độc lập làm Chiều | 1 row / (cổ đông, chức vụ) (SCD4A) | K_GSTT_104 |
+
+---

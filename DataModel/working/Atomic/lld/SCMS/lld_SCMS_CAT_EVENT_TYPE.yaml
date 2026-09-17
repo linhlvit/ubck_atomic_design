@@ -3,8 +3,8 @@ schema_version: "2.0"
 metadata:
   source_system: "SCMS"
   source_table: "CAT_EVENT_TYPE"
-  atomic_entity: "Classification Event Type"
-  entity_physical_name: "cl_event_type"
+  atomic_entity: "Classification Securities Company Event Type"
+  entity_physical_name: "cl_securities_company_event_type"
   bcv_core_object: "Common"
   bcv_concept: "[Common] Event Type"
   table_type: "Relative"
@@ -18,9 +18,11 @@ metadata:
   approved_by: null
   approved_at: null
   notes: "Nâng cấp từ Classification Value (scheme SCMS_EVENT_TYPE, nay deprecated)\
-    \ lên entity thật — xem SCMS_HLD_Tier1.md 6f T1-05. BCV Core Object gán Common\
-    \ theo chỉ đạo Data Modeler (term BCV khớp mạnh `Event Type` id 9924, category\
-    \ Event — không dùng, giữ Common để nhất quán pattern Classification-naming).\
+    \ lên entity thật — xem SCMS_HLD_Tier1.md 6f T1-05. [ĐỔI TÊN 2026-09-16] Classification\
+    \ Securities Company Event Type -> Classification Securities Company Event Type,\
+    \ đối xứng tiền lệ Classification FMS Event Type — xem 7e #23. BCV Core Object\
+    \ gán Common theo chỉ đạo Data Modeler (term BCV khớp mạnh `Event Type` id 9924,\
+    \ category Event — không dùng, giữ Common để nhất quán pattern Classification-naming).\
     \ Table Type = Relative theo chỉ đạo tường minh (khác 3 entity Classification\
     \ cùng nhóm) — bảng không FK nghiệp vụ rõ ràng đến 1 Fundamental entity khác trong\
     \ scope hiện tại, xem 6f T1-07. BK dùng EVENT_TYPE_CODE; surrogate Id hash từ\
@@ -31,8 +33,8 @@ metadata:
     \ tạo cặp FK Id+Code vì chưa xác nhận bảng đích. Audit block (CREATED_BY/CREATED_AT/UPDATED_BY/UPDATED_AT)\
     \ loại bỏ theo convention SCMS."
 attributes:
-- attribute_name: "Classification Event Type Id"
-  physical_name: "cl_event_tp_id"
+- attribute_name: "Classification Securities Company Event Type Id"
+  physical_name: "cl_sc_event_tp_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -46,8 +48,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Classification Event Type Code"
-  physical_name: "cl_event_tp_code"
+- attribute_name: "Classification Securities Company Event Type Code"
+  physical_name: "cl_sc_event_tp_code"
   description: "Mã sự vụ (thành lập, điều chỉnh vốn, thay đổi tên). BK của entity."
   data_domain: "Text"
   nullable: false
@@ -72,8 +74,8 @@ attributes:
   classification_context: "SOURCE_SYSTEM=SCMS.CAT_EVENT_TYPE"
   etl_derived_value: "SCMS_CAT_EVENT_TYPE"
   data_type: "string"
-- attribute_name: "Classification Event Type Name"
-  physical_name: "cl_event_tp_nm"
+- attribute_name: "Classification Securities Company Event Type Name"
+  physical_name: "cl_sc_event_tp_nm"
   description: "Tên sự vụ/sự kiện."
   data_domain: "Text"
   nullable: false
@@ -83,19 +85,6 @@ attributes:
   - "SCMS.CAT_EVENT_TYPE.EVENT_TYPE_NAME"
   comment: null
   classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Record Status Code"
-  physical_name: "record_status_code"
-  description: "Trạng thái danh mục sự vụ: 1 = Đang sử dụng; 0 = Ngừng sử dụng."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.CAT_EVENT_TYPE.RECORD_STATUS"
-  comment: "Scheme: SCMS_EVENT_TYPE_RECORD_STATUS."
-  classification_context: "SCMS_EVENT_TYPE_RECORD_STATUS"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "License Required Indicator"
@@ -135,9 +124,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.CAT_EVENT_TYPE.OBLIGATION_TYPE"
-  comment: "Scheme: SCMS_EVENT_TYPE_OBLIGATION_TYPE. Nguồn lưu dạng số — ETL giữ nguyên\
-    \ mapping 1/2/3/4 theo mô tả nguồn."
-  classification_context: "SCMS_EVENT_TYPE_OBLIGATION_TYPE"
+  comment: "SCHEMA_CODE=SCMS.CAT_EVENT_TYPE.OBLIGATION_TYPE"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Target Entity Code"
@@ -262,20 +250,6 @@ attributes:
   comment: "Scheme: SCMS_EVENT_TYPE_DEADLINE_CALC_METHOD. Mô tả gốc BRD trống — cần\
     \ profile dữ liệu trước khi ETL."
   classification_context: "SCMS_EVENT_TYPE_DEADLINE_CALC_METHOD"
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Extended Data"
-  physical_name: "extended_data"
-  description: "Dữ liệu mở rộng (du_lieu_mo_rong) — xem thêm tài liệu đặc tả SCMS."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.CAT_EVENT_TYPE.DU_LIEU_MO_RONG"
-  comment: "Nguồn NCLOB — blob text/JSON mở rộng, kích thước lớn. Cần profile nội\
-    \ dung trước ETL."
-  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Event Group Code"

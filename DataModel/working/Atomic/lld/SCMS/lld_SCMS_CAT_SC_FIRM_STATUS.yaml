@@ -3,13 +3,13 @@ schema_version: "2.0"
 metadata:
   source_system: "SCMS"
   source_table: "CAT_SC_FIRM_STATUS"
-  atomic_entity: "Classification Firm Status"
-  entity_physical_name: "cl_firm_status"
+  atomic_entity: "Classification Securities Company Firm Status"
+  entity_physical_name: "cl_securities_company_firm_status"
   bcv_core_object: "Common"
   bcv_concept: "[Common] Firm Status"
   table_type: "Classification"
   group: "T1"
-  design_status: "approved"
+  design_status: "draft"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -22,30 +22,32 @@ metadata:
     \ theo chỉ đạo Data Modeler (không dùng Organization Life Cycle Status/Involved\
     \ Party dù match khá tốt) để nhất quán pattern NHNCK (Classification Application\
     \ Status/Document/Specialization). BK dùng SC_FIRM_STATUS_CODE (mã nghiệp vụ chuyên\
-    \ biệt); surrogate Id hash từ ID kỹ thuật (nhất quán với entity tiêu thụ FK qua\
-    \ giá trị ID). Theo chỉ đạo Data Modeler (2026-07-10): map 1:1 toàn bộ cột nghiệp\
-    \ vụ, không tự loại trừ vì nghi trùng lặp — CODE/ITEM_NAME/ACTIVE map thành attribute\
-    \ riêng (Item Code/Item Name/Active Indicator), không coi là trùng SC_FIRM_STATUS_CODE/SC_FIRM_STATUS_NAME/RECORD_STATUS.\
-    \ Audit fields (CREATED_BY/CREATED_AT) loại bỏ theo convention SCMS (không FK\
-    \ target hợp lệ, SYS_USER ngoài phạm vi Atomic)."
+    \ biệt); surrogate Id hash trực tiếp từ SC_FIRM_STATUS_CODE (đổi từ hash theo\
+    \ ID kỹ thuật sang hash theo Code — theo yêu cầu tường minh Data Modeler 2026-09-16,\
+    \ đúng chuẩn mặc định CLAUDE.md #3/Bước 3e). Theo chỉ đạo Data Modeler (2026-07-10):\
+    \ map 1:1 toàn bộ cột nghiệp vụ, không tự loại trừ vì nghi trùng lặp — CODE/ITEM_NAME/ACTIVE\
+    \ map thành attribute riêng (Item Code/Item Name/Active Indicator), không coi\
+    \ là trùng SC_FIRM_STATUS_CODE/SC_FIRM_STATUS_NAME/RECORD_STATUS. Audit fields\
+    \ (CREATED_BY/CREATED_AT) loại bỏ theo convention SCMS (không FK target hợp lệ,\
+    \ SYS_USER ngoài phạm vi Atomic)."
 attributes:
-- attribute_name: "Classification Firm Status Id"
-  physical_name: "cl_firm_status_id"
+- attribute_name: "Classification Securities Company Firm Status Id"
+  physical_name: "cl_sc_firm_status_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: true
   status: "draft"
   source_columns:
-  - "SCMS.CAT_SC_FIRM_STATUS.ID"
+  - "SCMS.CAT_SC_FIRM_STATUS.SC_FIRM_STATUS_CODE"
   comment: "PK surrogate. BCV: \"[Common] Firm Status\". Danh mục trạng thái pháp\
-    \ lý CTCK/Chi nhánh/VPĐD/PGD/Ngân hàng. Hash: hash_id('SCMS.CAT_SC_FIRM_STATUS',\
-    \ ID)."
+    \ lý CTCK/Chi nhánh/VPĐD/PGD/Ngân hàng. Hash: hash_id('SCMS_CAT_SC_FIRM_STATUS',\
+    \ SC_FIRM_STATUS_CODE)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Classification Firm Status Code"
-  physical_name: "cl_firm_status_code"
+- attribute_name: "Classification Securities Company Firm Status Code"
+  physical_name: "cl_sc_firm_status_code"
   description: "Mã trạng thái hoạt động CTCK. BK của entity."
   data_domain: "Text"
   nullable: false
@@ -70,30 +72,8 @@ attributes:
   classification_context: "SOURCE_SYSTEM=SCMS.CAT_SC_FIRM_STATUS"
   etl_derived_value: "SCMS_CAT_SC_FIRM_STATUS"
   data_type: "string"
-- attribute_name: "Data Date"
-  physical_name: "data_dt"
-  description: "Thời điểm tạo bản ghi (nguồn: CREATED_AT). Dùng làm căn cứ partition\
-    \ Delta Lake / incremental filter — bảng nguồn có data_change_mode=Append, filter_logic\
-    \ theo created_at (xem BRD/Source/brd_SCMS.yaml, đã sửa lỗi created_by→created_at\
-    \ 2026-07-15)."
-  data_domain: "Date"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.CAT_SC_FIRM_STATUS.CREATED_AT"
-  comment: "BCV: không có term riêng. Reinstated 2026-07-15 — CREATED_AT bị loại theo\
-    \ quyết định audit-block SCMS (xem pending_design.yaml) nhưng bảng dùng Append/incremental\
-    \ filter theo created_at, cần giữ lại làm partition key. Đổi tên từ 'created_at'\
-    \ sang 'Data Date' để phản ánh vai trò ngày dữ liệu/phân vùng, tách biệt khỏi\
-    \ audit block (CREATED_BY vẫn loại trừ). Nguồn lưu TIMESTAMP(6) — ETL truncate\
-    \ về Date (00:00:00) khi map vào Data Date, phù hợp granularity partition theo\
-    \ ngày."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "date"
-- attribute_name: "Classification Firm Status Name"
-  physical_name: "cl_firm_status_nm"
+- attribute_name: "Classification Securities Company Firm Status Name"
+  physical_name: "cl_sc_firm_status_nm"
   description: "Tên trạng thái hoạt động CTCK."
   data_domain: "Text"
   nullable: false
@@ -107,15 +87,14 @@ attributes:
   data_type: "string"
 - attribute_name: "Applicable Entity"
   physical_name: "applicable_entity"
-  description: "Đối tượng áp dụng (CTCK/CN/VPDD/NH/Cả hai)."
+  description: "Đối tượng áp dụng."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.CAT_SC_FIRM_STATUS.APPLICABLE_ENTITY"
-  comment: "Map 1:1 từ nguồn — không phải Classification Value theo chỉ đạo Data Modeler\
-    \ (2026-07-15). NVARCHAR2(100)."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -145,19 +124,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "int"
-- attribute_name: "Record Status Code"
-  physical_name: "record_status_code"
-  description: "Trạng thái bản ghi danh mục: 1 = Đang sử dụng; 0 = Ngừng sử dụng."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.CAT_SC_FIRM_STATUS.RECORD_STATUS"
-  comment: "Scheme: SCMS_FIRM_STATUS_RECORD_STATUS."
-  classification_context: "SCMS_FIRM_STATUS_RECORD_STATUS"
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Description"
   physical_name: "description"
   description: "Mô tả chi tiết nội dung/mục đích của bản ghi."
@@ -194,7 +160,7 @@ attributes:
   source_columns:
   - "SCMS.CAT_SC_FIRM_STATUS.CODE"
   comment: "Map 1:1 theo chỉ đạo Data Modeler (2026-07-10) — không coi là trùng lặp\
-    \ với Classification Firm Status Code (SC_FIRM_STATUS_CODE)."
+    \ với Classification Securities Company Firm Status Code (SC_FIRM_STATUS_CODE)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -208,21 +174,7 @@ attributes:
   source_columns:
   - "SCMS.CAT_SC_FIRM_STATUS.ITEM_NAME"
   comment: "Map 1:1 theo chỉ đạo Data Modeler (2026-07-10) — không coi là trùng lặp\
-    \ với Classification Firm Status Name (SC_FIRM_STATUS_NAME)."
+    \ với Classification Securities Company Firm Status Name (SC_FIRM_STATUS_NAME)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Active Indicator"
-  physical_name: "active_ind"
-  description: "Cột active (mô tả gốc BRD trống)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.CAT_SC_FIRM_STATUS.ACTIVE"
-  comment: "Map 1:1 theo chỉ đạo Data Modeler (2026-07-10) — không coi là trùng lặp\
-    \ với Record Status Code (RECORD_STATUS)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"

@@ -1,5 +1,6 @@
 DATA DICTIONARY - SCHEMA: GMS_IDS_UAT
 Tong so bang: 144 | Materialized View: 0
+Tong so bang: 144 | Materialized View: 0
 ==============================================================================================================
 
 BANG: ACCOUNT_NUMBERS
@@ -214,6 +215,49 @@ UPDATED_BY                    VARCHAR2(400)       YES
 UPDATED_DATE                  TIMESTAMP(6)        YES                                      
 
 
+BANG: CAPITAL_INCREASE_DETAIL
+Mo ta: Chi tiết từng hình thức chào bán/phát hành trong kế hoạch tăng vốn (5.3.2.6)
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(19,0)        NO      PK                               Khóa chính
+CAPITAL_INCREASE_PLAN_ID      NUMBER(19,0)        NO      FK     CAPITAL_INCREASE_PLAN.ID  FK → CAPITAL_INCREASE_PLAN.ID
+OFFERING_METHOD_CD            VARCHAR2(400)       NO                                       Mã hình thức chào bán/phát hành (CB_CONG_CHUNG, CB_RIENG_LE, PH_ESOP, ...)
+MAX_OFFERED_QTY               NUMBER(19,0)        YES                                      Số lượng cổ phiếu dự kiến chào bán/phát hành tối đa
+OFFERING_PRICE                NUMBER(20,2)        YES                                      Giá chào bán (nếu có)
+PRICE_RANGE_FROM              NUMBER(20,2)        YES                                      Khoảng giá chào bán — từ
+PRICE_RANGE_TO                NUMBER(20,2)        YES                                      Khoảng giá chào bán — đến
+TOTAL_PAR_VALUE               NUMBER(20,2)        YES                                      Tổng giá trị phát hành tính theo mệnh giá
+CAPITAL_USE_PLAN              VARCHAR2(4000)      YES                                      Phương án sử dụng vốn dự kiến thu được
+EXPECTED_EXEC_DATE            VARCHAR2(800)       YES                                      Thời gian dự kiến thực hiện (free-text)
+CREATED_BY                    VARCHAR2(400)       YES                                      Người gửi (HNX/HOSE)
+CREATED_DATE                  TIMESTAMP(6)        YES                                      Thời gian đọc dữ liệu
+UPDATED_BY                    VARCHAR2(400)       YES                                      
+UPDATED_DATE                  TIMESTAMP(6)        YES                                      
+
+
+BANG: CAPITAL_INCREASE_PLAN
+Mo ta: Kế hoạch tăng vốn từ file đính kèm Nghị quyết ĐHĐCĐ (5.3.2.6)
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(19,0)        NO      PK                               Khóa chính
+COMPANY_DATA_ID               NUMBER(19,0)        YES                                      FK → COMPANY_DATA.ID của tin gốc
+COMPANY_PROFILE_ID            NUMBER(19,0)        YES                                      FK → COMPANY_PROFILES.ID
+RESOLUTION_TYPE_CD            VARCHAR2(800)       YES                                      Loại Nghị quyết ĐHĐCĐ (cột 1)
+ATTENDANCE_RATE               NUMBER(10,4)        YES                                      Tỷ lệ tham dự họp (cột 2)
+HAS_CASH_DIVIDEND_FLG         NUMBER(1,0)         YES                                      Chi trả cổ tức bằng tiền mặt: 1=có, 0=không (cột 3)
+CASH_DIVIDEND_RATE            NUMBER(10,4)        YES                                      Tỷ lệ chi trả cổ tức (cột 4)
+HAS_CAPITAL_INCREASE_FLG      NUMBER(1,0)         YES                                      Có thông qua phương án tăng vốn: 1=có, 0=không (cột 5)
+APPROVAL_RATE                 VARCHAR2(800)       YES                                      Số lượng/tỷ lệ biểu quyết thông qua (cột 6)
+HAS_ISSUANCE_PLAN_FLG         VARCHAR2(2000)      YES                                      Hình thức chào bán/phát hành — raw text (cột 7)
+DOC_SIGN_DATE                 DATE                YES                                      Ngày ký văn bản của tin gốc
+CREATED_BY                    VARCHAR2(400)       YES                                      Người gửi (HNX/HOSE)
+CREATED_DATE                  TIMESTAMP(6)        YES                                      Thời gian đọc dữ liệu
+UPDATED_BY                    VARCHAR2(400)       YES                                      
+UPDATED_DATE                  TIMESTAMP(6)        YES                                      
+
+
 BANG: CAPITAL_MOBILIZATION
 Mo ta: 
 --------------------------------------------------------------------------------------------------------------
@@ -232,6 +276,11 @@ CREATED_BY                    VARCHAR2(120)       YES                           
 CREATED_DATE                  DATE                YES                                      Ngày tạo
 UPDATED_BY                    VARCHAR2(120)       YES                                      Người sửa
 UPDATED_DATE                  DATE                YES                                      Ngày sửa
+CHANGE_DATE                   DATE                YES                                      Thời gian tăng/giảm vốn (định dạng ngày/tháng/năm)
+CHANGE_TYPE                   NUMBER(1,0)         YES                                      Phân loại (1: Tăng; 0: Giảm)
+CAPITAL_BEFORE_CHANGE         NUMBER(24,0)        YES                                      Vốn điều lệ trước tăng/giảm
+CHANGE_AMOUNT                 NUMBER(24,0)        YES                                      Vốn điều lệ tăng / giảm
+CAPITAL_AFTER_CHANGE          NUMBER(24,0)        YES                                      Vốn điều lệ sau tăng/ giảm
 CHANGE_DATE                   DATE                YES                                      Thời gian tăng/giảm vốn (định dạng ngày/tháng/năm)
 CHANGE_TYPE                   NUMBER(1,0)         YES                                      Phân loại (1: Tăng; 0: Giảm)
 CAPITAL_BEFORE_CHANGE         NUMBER(24,0)        YES                                      Vốn điều lệ trước tăng/giảm
@@ -344,6 +393,11 @@ COMPANY_TREASURY_SHARE_ID     NUMBER(10,0)        YES                           
 APPROVER_USER_ID              VARCHAR2(480)       YES                                      Id user Lãnh đạo phê duyệt do Chuyên viên chọn khi Trình phê duyệt (SRS 2.12.3).
 APPROVER_USER_NAME            VARCHAR2(2048)      YES                                      Tên Lãnh đạo phê duyệt (denormalize để hiển thị, không join auth-service).
 FLATTENED_FLG                 NUMBER(1,0)         NO                                       Đã làm phẳng BCTC vào FINANCIAL_RATIOS_DETAIL chưa (0/1). Chỉ dùng cho tin DINH_KY; reader batch lọc = 0.
+SPECIALIST_OPINION_CD         VARCHAR2(2000)      YES                                      
+SPECIALIST_OPINION_DETAIL     VARCHAR2(2000)      YES                                      
+SECURITIES_OFFERING_RESULT_ID NUMBER(19,0)        YES                                      
+TREASURY_SHARE_TRANS_RESULT_IDNUMBER(19,0)        YES                                      
+COMPANY_TENDER_OFFER_RESULT_IDNUMBER(19,0)        YES                                      
 SPECIALIST_OPINION_CD         VARCHAR2(2000)      YES                                      
 SPECIALIST_OPINION_DETAIL     VARCHAR2(2000)      YES                                      
 SECURITIES_OFFERING_RESULT_ID NUMBER(19,0)        YES                                      
@@ -507,6 +561,17 @@ UPDATED_DATE                  DATE                YES                           
 HEAD_OFFICE_PROV              VARCHAR2(200)       YES                                      Tỉnh/TP trụ sở chính
 IPO_COMPANY_FLG               NUMBER(1,0)         NO                                       1-Công ty đang IPO, 0-Công ty đại chúng
 APPROVAL_STATUS_CD            VARCHAR2(400)       YES                                      Trạng thái phê duyệt hồ sơ
+
+
+BANG: COMPANY_PROFILES_CAT_BAK_20260721
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+COMPANY_PROFILE_ID            NUMBER(19,0)        NO                                       
+OLD_CATEGORY_L1_ID            NUMBER(19,0)        YES                                      
+OLD_CATEGORY_L2_ID            NUMBER(19,0)        YES                                      
+BACKUP_AT                     TIMESTAMP(6) WITH TIME ZONEYES                                      
 
 
 BANG: COMPANY_PROFILES_CAT_BAK_20260721
@@ -700,6 +765,8 @@ DELETE_FLG                    NUMBER(1,0)         NO                            
 APPROVER_COMMENT              VARCHAR2(1020)      YES                                      Nội dung đề xuất phê duyệt / Lý do từ chối (uc.md 2.4.3)
 RESULT_REPORT_DATE            DATE                YES                                      Ngày báo cáo kết quả
 EXTENSION_DATE                DATE                YES                                      Ngày gia hạn báo cáo kết quả
+RESULT_REPORT_DATE            DATE                YES                                      Ngày báo cáo kết quả
+EXTENSION_DATE                DATE                YES                                      Ngày gia hạn báo cáo kết quả
 
 
 BANG: COMPANY_TREASURY_SHARES
@@ -723,6 +790,9 @@ PROCESSOR_USER_ID             VARCHAR2(30)        YES
 PROCESSOR_USER_NAME           VARCHAR2(128)       YES                                      
 REVISION_REASON               VARCHAR2(512)       YES                                      
 TOTAL_TREASURY_SHARE_BEFORE   NUMBER(15,0)        YES                                      
+LATEST_TREASURY_TRANS_QTY     NUMBER(15,0)        YES                                      
+LATEST_TREASURY_TRANS_DATE    DATE                YES                                      
+LATEST_OFFERING_END_DATE      DATE                YES                                      
 LATEST_TREASURY_TRANS_QTY     NUMBER(15,0)        YES                                      
 LATEST_TREASURY_TRANS_DATE    DATE                YES                                      
 LATEST_OFFERING_END_DATE      DATE                YES                                      
@@ -821,6 +891,7 @@ Mo ta:
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
 ID                            VARCHAR2(1020)      NO      PK                               
+ID                            VARCHAR2(1020)      NO      PK                               
 AUTHOR                        VARCHAR2(1020)      NO                                       
 FILENAME                      VARCHAR2(1020)      NO                                       
 DATEEXECUTED                  TIMESTAMP(6)        NO                                       
@@ -912,6 +983,8 @@ Cot                           Kieu du lieu        Null?   Khoa   Lien ket       
 --------------------------------------------------------------------------------------------------------------
 ID                            NUMBER(10,0)        NO      PK                               Khóa chính
 DEPT_CD                       VARCHAR2(120)       NO                                       Mã phòng/ban
+DEPT_NAME_VI                  VARCHAR2(400)       NO                                       Tên phòng/ban (Tiếng Việt)
+DEPT_NAME_EN                  VARCHAR2(400)       NO                                       Tên phòng/ban (Tiếng Anh)
 DEPT_NAME_VI                  VARCHAR2(400)       NO                                       Tên phòng/ban (Tiếng Việt)
 DEPT_NAME_EN                  VARCHAR2(400)       NO                                       Tên phòng/ban (Tiếng Anh)
 DESCRIPTION                   VARCHAR2(1020)      YES                                      Mô tả
@@ -1381,6 +1454,209 @@ ACCUM_DEPRE_TANGIBLE          NUMBER(30,3)        YES                           
 PREV_ACCUM_DEPRE_TANGIBLE     NUMBER(30,3)        YES                                      Khấu hao lũy kế TSCĐ hữu hình - số đầu kỳ (B1), phục vụ M-Score
 
 
+BANG: FINANCIAL_INDICATOR_MAPPING
+Mo ta: Bảng khai báo ánh xạ MÃ SỐ KẾ TOÁN (RROW.ROW_DESC) của chỉ tiêu BCTC sang cột đích của FINANCIAL_RATIOS_DETAIL. Khai theo REPORT_YEAR + REPORT_CD; REPORT_CD dạng 'BASE_<họ>_<loại>' là bản khai chung, bản khai theo REPORT_CD cụ thể đè base khi trùng ROW_DESC.
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(19,0)        NO      PK                               Khóa chính
+REPORT_YEAR                   NUMBER(4,0)         NO                                       Năm áp dụng bộ khai báo (khớp REPORT_CATALOG.REPORT_YEAR)
+REPORT_CD                     VARCHAR2(50)        NO                                       Mã báo cáo composite: 'BASE_<họ>_<loại>' (VD BASE_BCDKT_DN, BASE_BCLCTT_GT_TD) = bản khai chung; hoặc mã catalog đầy đủ = bản khai riêng đè base
+ROW_DESC                      VARCHAR2(120)       NO                                       Mã số kế toán của chỉ tiêu (khớp RROW.ROW_DESC), VD 270/300/440/01/20
+INDICATOR_DESC_VI             VARCHAR2(500)       NO                                       Mô tả tiếng Việt của chỉ tiêu (nên khớp RROW.ROW_NAME_VI) — giúp người khai/đọc mapping
+TARGET_COLUMN                 VARCHAR2(64)        NO                                       Tên cột đích trong FINANCIAL_RATIOS_DETAIL nhận giá trị SỐ CUỐI KỲ (cột đầu tiên theo COL_INDEX)
+PREV_TARGET_COLUMN            VARCHAR2(64)        YES                                      Tên cột đích trong FRD nhận giá trị SỐ ĐẦU NĂM / CÙNG KỲ NĂM TRƯỚC (cột thứ hai theo COL_INDEX). Null nếu không dùng.
+NOTE                          VARCHAR2(1000)      YES                                      Ghi chú tự do
+ACTIVE_FLG                    NUMBER(1,0)         NO                                       Cờ hiệu lực: 1=áp dụng, 0=bỏ qua
+CREATED_BY                    VARCHAR2(255)       YES                                      Người/tài khoản tạo bản ghi
+CREATED_DATE                  TIMESTAMP(6)        YES                                      Thời điểm tạo bản ghi
+UPDATED_BY                    VARCHAR2(255)       YES                                      Người/tài khoản cập nhật gần nhất
+UPDATED_DATE                  TIMESTAMP(6)        YES                                      Thời điểm cập nhật gần nhất
+
+
+BANG: FINANCIAL_RATIOS_DETAIL
+Mo ta: Bảng chi tiết số liệu tài chính của công ty đại chúng theo kỳ (năm/quý). Là dữ liệu đầu vào phục vụ tính các chỉ số/tỷ số tài chính lưu trong bảng LOOKUP_KEY_FINANCIALS. Khóa nghiệp vụ (STOCK_CODE, YEAR, QUARTER).
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO      PK                               Khóa chính - ID bản ghi (dùng để join sang LOOKUP_KEY_FINANCIALS)
+COMPANY_CATEGORY              VARCHAR2(255)       NO                                       Loại hình công ty (VD: công ty đại chúng, CTCK, NHTM...)
+STOCK_CODE                    VARCHAR2(40)        YES                                      Mã chứng khoán / mã công ty
+YEAR                          NUMBER(4,0)         NO                                       Năm báo cáo tài chính
+QUARTER                       NUMBER(1,0)         NO                                       Số thứ tự trong kỳ: 1..4 khi REPORTING_PERIOD_CD='QUAR'; 1..2 khi 'HALF'; NULL/1 khi 'YEAR'
+STOCK_EXCHANGE                VARCHAR2(255)       YES                                      Sàn niêm yết (HOSE, HNX, UPCoM...)
+CATEGORIES_ID                 NUMBER(19,0)        YES                                      ID danh mục ngành nghề
+REPORT_CATALOG_ID             NUMBER(19,0)        NO      FK     REPORT_CATALOG.ID         FK sang REPORT_CATALOG.ID - xác định tổ hợp (REPORT_CD, REPORT_YEAR, STMT, PERIOD, ENT, CONSOLIDATED)
+FINANCIAL_STATEMENT_CD        VARCHAR2(3)         YES                                      Loại BCTC: HN=hợp nhất, ME=công ty mẹ, RI=riêng, TH=tổng hợp (denormalize từ REPORT_CATALOG)
+REPORTING_PERIOD_CD           VARCHAR2(4)         YES                                      Kỳ báo cáo: QUAR=quý, HALF=bán niên, YEAR=năm (denormalize từ REPORT_CATALOG)
+ENTERPRISE_TYPE_CD            VARCHAR2(2)         YES                                      Loại doanh nghiệp: BH=bảo hiểm, DN=doanh nghiệp thường, TD=tổ chức tín dụng (denormalize từ REPORT_CATALOG)
+CONSOLIDATED_FLG              NUMBER(1,0)         YES                                      Cờ hợp nhất: 0=không hợp nhất, 1=hợp nhất (denormalize từ REPORT_CATALOG)
+CALCULATION_FLAG              NUMBER(1,0)         YES                                      Cờ tính toán dữ liệu: 0=chưa tính sang LOOKUP_KEY_FINANCIALS, 1=đã tính
+CURRENT_ASSET                 NUMBER(30,3)        YES                                      Tài sản ngắn hạn
+CASH_AND_CASH_EQUIVALENTS     NUMBER(30,3)        YES                                      Tiền và các khoản tương đương tiền
+SHORT_INVESTMENTS             NUMBER(30,3)        YES                                      Đầu tư tài chính ngắn hạn (tổng)
+SHORT_INVESTMENT              NUMBER(30,3)        YES                                      Đầu tư tài chính ngắn hạn (chi tiết, không kể dự phòng)
+PROVISION_SHORT_INVESTMENT    NUMBER(30,3)        YES                                      Dự phòng giảm giá đầu tư ngắn hạn
+SHORT_RECEIVABLES             NUMBER(30,3)        YES                                      Các khoản phải thu ngắn hạn
+SHORT_TRADE_RECEIVABLES       NUMBER(30,3)        YES                                      Phải thu thương mại ngắn hạn (khách hàng)
+SHORT_PROVI_BAD_RECEIVABLES   NUMBER(30,3)        YES                                      Dự phòng phải thu ngắn hạn khó đòi
+RECEIVABLES_SCHEDULE          NUMBER(30,3)        YES                                      Phải thu theo tiến độ (hợp đồng xây dựng)
+INVENTORY                     NUMBER(30,3)        YES                                      Hàng tồn kho (tổng)
+INVENTORY_141                 NUMBER(30,3)        YES                                      Hàng tồn kho theo TK141 (tạm ứng liên quan tồn kho)
+PROVISION_DEVALUATION_STOCK   NUMBER(30,3)        YES                                      Dự phòng giảm giá hàng tồn kho
+LONGTERM_ASSETS               NUMBER(30,3)        YES                                      Tài sản dài hạn (tổng)
+LONG_RECEIVABLES              NUMBER(30,3)        YES                                      Các khoản phải thu dài hạn
+LONG_TRADE_RECEIVABLES        NUMBER(30,3)        YES                                      Phải thu thương mại dài hạn
+LONG_PROVI_BAD_RECEIVABLES    NUMBER(30,3)        YES                                      Dự phòng phải thu dài hạn khó đòi
+FIXED_ASSETS                  NUMBER(30,3)        YES                                      Tài sản cố định (tổng, gồm HH+VH+TC)
+FIXED_ASSET                   NUMBER(30,3)        YES                                      Tài sản cố định (giá trị còn lại)
+TANGIBLE_FIXED_ASSETS         NUMBER(30,3)        YES                                      Tài sản cố định hữu hình
+ACCUMULATED_DEPRECIATION      NUMBER(30,3)        YES                                      Khấu hao lũy kế tài sản cố định hữu hình
+FINANCE_LEASE_ASSETS          NUMBER(30,3)        YES                                      Tài sản thuê tài chính
+ACCUM_DEPRE_FINANCE_LEASE     NUMBER(30,3)        YES                                      Khấu hao lũy kế tài sản thuê tài chính
+ACCUMULATED_AMORTIZATION      NUMBER(30,3)        YES                                      Khấu hao lũy kế tài sản cố định vô hình
+REAL_ESTATE_INVESTMENT        NUMBER(30,3)        YES                                      Bất động sản đầu tư
+LONG_INVESTMENTS              NUMBER(30,3)        YES                                      Đầu tư tài chính dài hạn
+PROVISION_LONG_INVESTMENT     NUMBER(30,3)        YES                                      Dự phòng giảm giá đầu tư dài hạn
+OTHER_LONG_ASSETS             NUMBER(30,3)        YES                                      Tài sản dài hạn khác
+FLOATING_ASSET                NUMBER(30,3)        YES                                      Tài sản lưu động
+TOTAL_ASSET                   NUMBER(30,3)        YES                                      Tổng cộng tài sản
+TOTAL_LIABILITY               NUMBER(30,3)        YES                                      Tổng nợ phải trả
+SHORTTERM_BORROWINGS          NUMBER(30,3)        YES                                      Nợ ngắn hạn (vay và các khoản phải trả ngắn hạn)
+SHORT_PROVISION_PAYABLE       NUMBER(30,3)        YES                                      Dự phòng phải trả ngắn hạn
+LONGTERM_LIABILITIES          NUMBER(30,3)        YES                                      Nợ dài hạn
+LONG_PROVISION_PAYABLE        NUMBER(30,3)        YES                                      Dự phòng phải trả dài hạn
+CONVERTIBLE_BONDS             NUMBER(30,3)        YES                                      Trái phiếu chuyển đổi
+TAX_PAYABLES_GOVERNMENT       NUMBER(30,3)        YES                                      Thuế và các khoản phải nộp Nhà nước
+OWNER_CAPITAL                 NUMBER(30,3)        YES                                      Vốn chủ sở hữu
+OWNER_S_EQUITY                NUMBER(30,3)        YES                                      Vốn chủ sở hữu (bao gồm lợi ích cổ đông thiểu số nếu có)
+OWNER_EQUITY                  NUMBER(30,3)        YES                                      Vốn chủ sở hữu (nguồn vốn CSH thuần)
+HOLDER_OWNER_CAPITAL          NUMBER(30,3)        YES                                      Vốn chủ sở hữu thuộc cổ đông công ty mẹ
+PAIDIN_CAPITAL                NUMBER(30,3)        YES                                      Vốn góp của chủ sở hữu (vốn điều lệ đã góp)
+AFTER_TAX_RETAIN_EARNINGS     NUMBER(30,3)        YES                                      Lợi nhuận sau thuế chưa phân phối
+OTHER_FUNDS                   NUMBER(30,3)        YES                                      Các quỹ khác thuộc vốn chủ sở hữu
+TOTAL_CAPITAL                 NUMBER(30,3)        YES                                      Tổng cộng nguồn vốn
+LEGAL_CAPITAL                 NUMBER(30,3)        YES                                      Vốn pháp định (áp dụng CTCK, ngân hàng)
+STATE_ONWED_PERCENTAGE        NUMBER(30,3)        YES                                      Tỷ lệ sở hữu Nhà nước
+REVENUE                       NUMBER(30,3)        YES                                      Doanh thu bán hàng và cung cấp dịch vụ (tổng)
+ALLOWANCE_IN_REVENUE          NUMBER(30,3)        YES                                      Các khoản giảm trừ doanh thu
+GROSS_REVENUE                 NUMBER(30,3)        YES                                      Doanh thu thuần về bán hàng và cung cấp dịch vụ
+CURRENT_REVENUE               NUMBER(30,3)        YES                                      Doanh thu kỳ hiện tại (dùng tính growth)
+OTHER_REVENUE                 NUMBER(30,3)        YES                                      Doanh thu khác
+REVENUE_SECURITY_BROKE_ACT    NUMBER(30,3)        YES                                      Doanh thu hoạt động môi giới chứng khoán (CTCK)
+REVENUE_SECURITY_INVEST_JOIN  NUMBER(30,3)        YES                                      Doanh thu hoạt động tự doanh chứng khoán
+REVENUE_SECURITY_UNDERWRITING NUMBER(30,3)        YES                                      Doanh thu hoạt động bảo lãnh phát hành chứng khoán
+REVENUE_SECURITY_ISSU_AGENCY  NUMBER(30,3)        YES                                      Doanh thu đại lý phát hành chứng khoán
+REVENUE_SECURITY_CONSUL_ACT   NUMBER(30,3)        YES                                      Doanh thu tư vấn đầu tư chứng khoán
+REVENUE_SECURITY_DEPOSITORY   NUMBER(30,3)        YES                                      Doanh thu lưu ký chứng khoán
+REVENUE_ACTION_COMMISSION     NUMBER(30,3)        YES                                      Doanh thu hoa hồng đại lý
+REVENUE_ASSETS_LEASING        NUMBER(30,3)        YES                                      Doanh thu cho thuê tài sản
+COST_OF_GOOD_SOLD             NUMBER(30,3)        YES                                      Giá vốn hàng bán
+GROSS_PROFIT                  NUMBER(30,3)        YES                                      Lợi nhuận gộp về bán hàng và cung cấp dịch vụ
+GROSS_PROFIT_BEFORE_TAX       NUMBER(30,3)        YES                                      Lợi nhuận gộp trước thuế
+FINANCIAL_ACTIVITIES_INCOME   NUMBER(30,3)        YES                                      Doanh thu hoạt động tài chính
+FINANCIAL_EXPENSES            NUMBER(30,3)        YES                                      Chi phí hoạt động tài chính
+COST_OF_BORROWING             NUMBER(30,3)        YES                                      Chi phí đi vay (thành phần của chi phí tài chính)
+SELLING_EXPENSES              NUMBER(30,3)        YES                                      Chi phí bán hàng
+GEN_AND_ADMIN_EXPENSES        NUMBER(30,3)        YES                                      Chi phí quản lý doanh nghiệp
+OPERATING_EXPENCE             NUMBER(30,3)        YES                                      Chi phí hoạt động (áp dụng ngành đặc thù CTCK/NHTM)
+OTHER_EXPENSES                NUMBER(30,3)        YES                                      Chi phí khác
+OPERATING_INCOME              NUMBER(30,3)        YES                                      Lợi nhuận thuần từ hoạt động kinh doanh
+OTHER_EARNINGS                NUMBER(30,3)        YES                                      Lợi nhuận khác (thu nhập khác - chi phí khác)
+GAIN_LOSS_JOINT_VENTURE_CO    NUMBER(30,3)        YES                                      Lãi/lỗ trong công ty liên doanh, liên kết
+BEFORE_TAX_INCOME             NUMBER(30,3)        YES                                      Tổng lợi nhuận kế toán trước thuế
+EARN_BEFORE_TAX               NUMBER(30,3)        YES                                      Lợi nhuận trước thuế (giá trị tổng hợp)
+BEFORE_TAX_INTEREST           NUMBER(30,3)        YES                                      Lợi nhuận trước thuế cộng chi phí lãi vay (EBIT)
+CURR_BI_CHARGE                NUMBER(30,3)        YES                                      Chi phí thuế TNDN kỳ hiện tại
+PROFIT_AFTER_TAX_BI           NUMBER(30,3)        YES                                      Lợi nhuận sau thuế TNDN (chi tiết theo cấu phần)
+AFTER_TAX_INCOME              NUMBER(30,3)        YES                                      Lợi nhuận sau thuế TNDN
+AFTER_TAX_INCOME_HOLDER       NUMBER(30,3)        YES                                      LNST thuộc về cổ đông công ty mẹ
+AFTER_TAX_INCOME_MINORITY     NUMBER(30,3)        YES                                      LNST thuộc về cổ đông không kiểm soát (thiểu số)
+ACCRUED_INCOME                NUMBER(30,3)        YES                                      Thu nhập trích trước / thu nhập chờ phân bổ
+INTEREST                      NUMBER(30,3)        YES                                      Chi phí lãi vay trong kỳ
+PAYABLE_INTEREST              NUMBER(30,3)        YES                                      Lãi vay phải trả (dùng cho hệ số thanh toán lãi vay)
+DIVIDEND                      NUMBER(30,3)        YES                                      Cổ tức trong kỳ
+EPS                           NUMBER(30,3)        YES                                      Thu nhập trên mỗi cổ phiếu (Earnings Per Share)
+CURRENT_MARKET_PRICE          NUMBER(30,3)        YES                                      Giá thị trường hiện tại của cổ phiếu
+MARKET_PRICE                  NUMBER(30,3)        YES                                      Giá thị trường (tham chiếu)
+BOOK_PRICE                    NUMBER(30,3)        YES                                      Giá trị sổ sách của cổ phiếu
+EARN_PER_LATEST_COMMON_SHARE  NUMBER(30,3)        YES                                      Thu nhập trên mỗi cổ phiếu phổ thông gần nhất
+CUR_MAR_PRICE_OF_COMMON_SHARE NUMBER(30,3)        YES                                      Giá thị trường hiện tại của cổ phiếu phổ thông
+INTEREST_PER_COMMON_SHARE     NUMBER(30,3)        YES                                      Lãi trên mỗi cổ phiếu phổ thông
+DIVIDEND_PER_SHARE_EACH_YEAR  NUMBER(30,3)        YES                                      Cổ tức trên mỗi cổ phiếu theo năm
+NUMBER_OF_OUTSTANDING_SHARES  NUMBER(30,3)        YES                                      Số cổ phiếu đang lưu hành cuối kỳ
+AVE_NUMBER_OF_FLOATING_STOCK  NUMBER(30,3)        YES                                      Số cổ phiếu tự do chuyển nhượng bình quân
+WEIGHT_AVE_OF_SHARES_OUTSTAND NUMBER(30,3)        YES                                      Bình quân gia quyền số cổ phiếu đang lưu hành trong kỳ (dùng tính EPS/BV)
+CASH_FLOW_FROM_OPERATION      NUMBER(30,3)        YES                                      Lưu chuyển tiền thuần từ hoạt động kinh doanh
+TOTAL_CASH_FLOW_FROM_OPERATIONNUMBER(30,3)        YES                                      Tổng lưu chuyển tiền từ HĐKD lũy kế
+CASH_FLOW_FROM_INVESTMENT_TT  NUMBER(30,3)        YES                                      Lưu chuyển tiền thuần từ hoạt động đầu tư (phương pháp trực tiếp)
+CASH_FLOW_FROM_FINANCIAL_TT   NUMBER(30,3)        YES                                      Lưu chuyển tiền thuần từ hoạt động tài chính (phương pháp trực tiếp)
+OPERATING_CASHFLOW            NUMBER(30,3)        YES                                      Dòng tiền thuần từ hoạt động (tổng hợp)
+WARNING_CASHFLOW_FROM_OPERA   NUMBER(30,3)        YES                                      Cờ cảnh báo dòng tiền từ HĐKD âm liên tiếp
+OUTSTANDING_CREDIT            NUMBER(30,3)        YES                                      Dư nợ tín dụng (NHTM)
+OPEN_OUTSTANDING_CREDIT       NUMBER(30,3)        YES                                      Dư nợ tín dụng đầu kỳ (NHTM)
+CLOSE_OUTSTANDING_CREDIT      NUMBER(30,3)        YES                                      Dư nợ tín dụng cuối kỳ (NHTM)
+CAPITAL_MOBILIZATION          NUMBER(30,3)        YES                                      Vốn huy động (NHTM)
+OPEN_DEPOSIT                  NUMBER(30,3)        YES                                      Số dư tiền gửi đầu kỳ (NHTM)
+CLOSE_DEPOSIT                 NUMBER(30,3)        YES                                      Số dư tiền gửi cuối kỳ (NHTM)
+INVESTMENT_INTEREST           NUMBER(30,3)        YES                                      Thu nhập lãi từ đầu tư (NHTM/CTCK)
+AVER_EARNING_ASSETS           NUMBER(30,3)        YES                                      Tài sản sinh lãi bình quân (NHTM, tính NIM)
+TOTAL_BAD_RESERVE             NUMBER(30,3)        YES                                      Tổng dự phòng nợ xấu
+TOTAL_RESERVE                 NUMBER(30,3)        YES                                      Tổng dự phòng
+AVAILABLE_CAPITAL_RATIO       NUMBER(30,3)        YES                                      Tỷ lệ vốn khả dụng (CTCK)
+AVERAGE_RECEIVABLE            NUMBER(30,3)        YES                                      Bình quân các khoản phải thu (đầu + cuối kỳ)/2
+AVARAGE_INVENTORY             NUMBER(30,3)        YES                                      Bình quân hàng tồn kho (đầu + cuối kỳ)/2
+AVERAGE_PAYABLE               NUMBER(30,3)        YES                                      Bình quân các khoản phải trả
+TOTAL_AVERAGE_ASSET           NUMBER(30,3)        YES                                      Tổng tài sản bình quân trong kỳ
+TOTAL_AVERAGE_FIXED_ASSET     NUMBER(30,3)        YES                                      Tài sản cố định bình quân trong kỳ
+AVERAGE_OWNER_CAPITAL         NUMBER(30,3)        YES                                      Vốn chủ sở hữu bình quân trong kỳ
+AVERAGE_FLOATING_CAPITAL      NUMBER(30,3)        YES                                      Vốn lưu động bình quân
+AVG_CURRENT_ASSET             NUMBER(30,3)        YES                                      Bình quân tài sản ngắn hạn (đầu + cuối kỳ)/2
+AVG_SHORTERM_BORROWINGS       NUMBER(30,3)        YES                                      Bình quân nợ ngắn hạn (đầu + cuối kỳ)/2
+CURRENT_AVERAGE_NOPAT         NUMBER(30,3)        YES                                      NOPAT bình quân kỳ hiện tại
+PREVIOUS_AVERAGE_NOPAT        NUMBER(30,3)        YES                                      NOPAT bình quân kỳ trước
+ADJUSTED_PREVIOUS_AVE_NOPAT   NUMBER(30,3)        YES                                      NOPAT bình quân kỳ trước đã điều chỉnh
+PREVIOUS_REVENUE              NUMBER(30,3)        YES                                      Doanh thu kỳ trước (dùng tính SALE_GROWTH_RATE)
+PREV_GROSS_REVENUE            NUMBER(30,3)        YES                                      Doanh thu thuần kỳ trước (dùng tính SALE_GROWTH)
+PREV_GROSS_PROFIT             NUMBER(30,3)        YES                                      Lợi nhuận gộp kỳ trước
+PREV_AFTER_TAX_INCOME         NUMBER(30,3)        YES                                      Lợi nhuận sau thuế kỳ trước (dùng tính AFTER_TAX_INCOME_GROWTH)
+PREV_EPS                      NUMBER(30,3)        YES                                      EPS kỳ trước (dùng tính EPS_GROWTH)
+PREV_OWNER_CAPITAL            NUMBER(30,3)        YES                                      Vốn CSH kỳ trước (dùng tính OWNER_S_EQUITY_GROWTH)
+PREV_CASH_AND_CASH_EQUIV      NUMBER(30,3)        YES                                      Tiền và tương đương tiền kỳ trước (dùng tính CASH_GROWTH)
+PREV_CURRENT_ASSET            NUMBER(30,3)        YES                                      Tài sản ngắn hạn kỳ trước
+PREV_TOTAL_ASSET              NUMBER(30,3)        YES                                      Tổng tài sản kỳ trước (dùng tính AQI, TATA)
+PREV_LONG_INVESTMENTS         NUMBER(30,3)        YES                                      Đầu tư dài hạn kỳ trước (dùng tính AQI)
+PREV_SHORT_TRADE_RECEIVABLES  NUMBER(30,3)        YES                                      Phải thu thương mại ngắn hạn kỳ trước (DRSI)
+PREV_LONG_TRADE_RECEIVABLES   NUMBER(30,3)        YES                                      Phải thu thương mại dài hạn kỳ trước (DRSI)
+PREV_RECEIVABLES_SCHEDULE     NUMBER(30,3)        YES                                      Phải thu theo tiến độ kỳ trước
+PREV_TANGIBLE_FIXED_ASSETS    NUMBER(30,3)        YES                                      Tài sản cố định hữu hình kỳ trước (DEPI)
+PREV_FINANCE_LEASE_ASSETS     NUMBER(30,3)        YES                                      Tài sản thuê tài chính kỳ trước (DEPI)
+PREV_ACCUMULATED_DEPRECIATION NUMBER(30,3)        YES                                      Khấu hao lũy kế TSCĐ HH kỳ trước (DEPI)
+PREV_ACCUM_DEPRE_FINANCE_LEASENUMBER(30,3)        YES                                      Khấu hao lũy kế TSCĐ thuê TC kỳ trước (DEPI)
+PREV_ACCUMULATED_AMORTIZATION NUMBER(30,3)        YES                                      Khấu hao lũy kế TSCĐ vô hình kỳ trước
+PREV_SELLING_EXPENSES         NUMBER(30,3)        YES                                      Chi phí bán hàng kỳ trước (SGAI)
+PREV_GEN_AND_ADMIN_EXPENSES   NUMBER(30,3)        YES                                      Chi phí QLDN kỳ trước (SGAI)
+PREV_CONVERTIBLE_BONDS        NUMBER(30,3)        YES                                      Trái phiếu chuyển đổi kỳ trước (LVGI)
+PREV_TAX_PAYABLES_GOVERNMENT  NUMBER(30,3)        YES                                      Thuế phải nộp NN kỳ trước (LVGI)
+PREV_SHORTTERM_BORROWINGS     NUMBER(30,3)        YES                                      Nợ ngắn hạn kỳ trước (LVGI)
+PREV_LONGTERM_LIABILITIES     NUMBER(30,3)        YES                                      Nợ dài hạn kỳ trước (LVGI)
+BEF_OPERATING_INCOME          NUMBER(30,3)        YES                                      Lợi nhuận HĐKD kỳ trước (tính GROWTH_AFTAX_INC_RATE_OPERA)
+DRSI                          NUMBER(30,3)        YES                                      Beneish M-Score - DRSI: Days Sales in Receivables Index
+GMI                           NUMBER(30,3)        YES                                      Beneish M-Score - GMI: Gross Margin Index
+AQI                           NUMBER(30,3)        YES                                      Beneish M-Score - AQI: Asset Quality Index
+SGI                           NUMBER(30,3)        YES                                      Beneish M-Score - SGI: Sales Growth Index
+DEPI                          NUMBER(30,3)        YES                                      Beneish M-Score - DEPI: Depreciation Index
+SGAI                          NUMBER(30,3)        YES                                      Beneish M-Score - SGAI: Sales, General & Admin Expenses Index
+LVGI                          NUMBER(30,3)        YES                                      Beneish M-Score - LVGI: Leverage Index
+TATA                          NUMBER(30,3)        YES                                      Beneish M-Score - TATA: Total Accruals to Total Assets
+CREATE_BY                     VARCHAR2(255)       NO                                       Người/tài khoản tạo bản ghi
+CREATE_DATE                   TIMESTAMP(6)        NO                                       Thời điểm tạo bản ghi
+UPDATE_BY                     VARCHAR2(255)       YES                                      Người/tài khoản cập nhật gần nhất
+UPDATE_DATE                   TIMESTAMP(6)        YES                                      Thời điểm cập nhật gần nhất
+ACCUM_DEPRE_TANGIBLE          NUMBER(30,3)        YES                                      Khấu hao lũy kế TSCĐ hữu hình (BCĐKT mã 223) - số cuối kỳ (B0), phục vụ M-Score
+PREV_ACCUM_DEPRE_TANGIBLE     NUMBER(30,3)        YES                                      Khấu hao lũy kế TSCĐ hữu hình - số đầu kỳ (B1), phục vụ M-Score
+
+
 BANG: FOREIGN_OWNER_LIMIT
 Mo ta: Bảng giới hạn tỷ lệ sở hữu nước ngoài
 --------------------------------------------------------------------------------------------------------------
@@ -1456,6 +1732,36 @@ CREATED_BY                    VARCHAR2(120)       NO                            
 CREATED_DATE                  DATE                NO                                       Ngày tạo
 LAST_UPDATED_BY               VARCHAR2(120)       NO                                       Người sửa
 LAST_UPDATED_DATE             DATE                NO                                       Ngày sửa
+SYSTEM_CD                     VARCHAR2(20)        YES                                      
+READ_ONLY_FLG                 NUMBER(1,0)         NO                                       
+WRITE_FLG                     NUMBER(1,0)         NO                                       
+FIELD_FORMAT_OTHER            VARCHAR2(1024)      YES                                      
+
+
+BANG: FORM_FIELDS_BK_CBPH
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO                                       
+FIELD_ID                      NUMBER(10,0)        NO                                       
+FIELD_PARENT_ID               NUMBER(10,0)        YES                                      
+FORM_ID                       NUMBER(10,0)        NO                                       
+FIELD_NAME_VI                 VARCHAR2(1020)      YES                                      
+FIELD_NAME_EN                 VARCHAR2(1020)      YES                                      
+DATA_TYPE                     VARCHAR2(120)       YES                                      
+FIELD_ORDER                   NUMBER(30,0)        YES                                      
+PARENT_ID                     NUMBER(19,0)        YES                                      
+FIELD_FORMAT                  VARCHAR2(1024)      YES                                      
+REQUIRED_FLG                  NUMBER(1,0)         YES                                      
+CORRECTION_FLG                NUMBER(1,0)         YES                                      
+PUBLISHED_FLG                 NUMBER(1,0)         YES                                      
+ACTIVE_FLG                    NUMBER(1,0)         NO                                       
+DOC_REF                       VARCHAR2(1020)      YES                                      
+CREATED_BY                    VARCHAR2(120)       NO                                       
+CREATED_DATE                  DATE                NO                                       
+LAST_UPDATED_BY               VARCHAR2(120)       NO                                       
+LAST_UPDATED_DATE             DATE                NO                                       
 SYSTEM_CD                     VARCHAR2(20)        YES                                      
 READ_ONLY_FLG                 NUMBER(1,0)         NO                                       
 WRITE_FLG                     NUMBER(1,0)         NO                                       
@@ -1664,6 +1970,30 @@ TITLE                         VARCHAR2(1020)      YES
 UPDATED_BY                    VARCHAR2(1020)      YES                                      
 
 
+BANG: HTE_NOTIFICATIONS_RESULT
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+READ_FLG                      NUMBER(10,0)        YES                                      
+RN_                           NUMBER(10,0)        NO      PK                               
+COMPANY_DATA_ID               NUMBER(19,0)        YES                                      
+COMPANY_PROFILE_ID            NUMBER(19,0)        YES                                      
+CREATED_DATE                  TIMESTAMP(6)        YES                                      
+FORM_ID                       NUMBER(19,0)        YES                                      
+ID                            NUMBER(19,0)        YES                                      
+LOGIN_ID                      NUMBER(19,0)        YES                                      
+NOTIFICATION_ID               NUMBER(19,0)        YES                                      
+READ_DATE                     TIMESTAMP(6)        YES                                      
+SENT_DATE                     TIMESTAMP(6)        YES                                      
+UPDATED_DATE                  TIMESTAMP(6)        YES                                      
+NOTI_CATEGORY_CD              VARCHAR2(80)        YES                                      
+CONTENT                       VARCHAR2(4000)      YES                                      
+CREATED_BY                    VARCHAR2(1020)      YES                                      
+TITLE                         VARCHAR2(1020)      YES                                      
+UPDATED_BY                    VARCHAR2(1020)      YES                                      
+
+
 BANG: HTE_VIOLATION_REPORT
 Mo ta: 
 --------------------------------------------------------------------------------------------------------------
@@ -1819,6 +2149,31 @@ UPDATED_DATE                  DATE                NO
 REPORTING_PERIOD_CD           VARCHAR2(400)       YES                                      
 
 
+BANG: INTG_FINANCIAL_STATEMENT_BK
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO                                       
+EXCHANGE_CODE                 VARCHAR2(80)        YES                                      
+REPORT_YEAR                   VARCHAR2(16)        YES                                      
+ENTERPRISE_TYPE_CD            VARCHAR2(400)       YES                                      
+FINANCIAL_STATEMENT_CD        VARCHAR2(400)       YES                                      
+REPORT_CATALOG_ID             NUMBER(10,0)        YES                                      
+IDS_RROW_ID                   NUMBER(10,0)        YES                                      
+IDS_ROW_NAME                  VARCHAR2(1020)      YES                                      
+IDS_ROW_DESC                  VARCHAR2(400)       YES                                      
+EXCH_INDICATOR_CODE           VARCHAR2(400)       YES                                      
+EXCH_INDICATOR_NAME           VARCHAR2(1020)      YES                                      
+SUMMARY_FLG                   NUMBER(1,0)         YES                                      
+ACTIVE_FLG                    NUMBER(1,0)         YES                                      
+CREATED_BY                    VARCHAR2(120)       NO                                       
+CREATED_DATE                  DATE                NO                                       
+UPDATED_BY                    VARCHAR2(120)       NO                                       
+UPDATED_DATE                  DATE                NO                                       
+REPORTING_PERIOD_CD           VARCHAR2(400)       YES                                      
+
+
 BANG: INTG_FORM_MAPPING
 Mo ta: 
 --------------------------------------------------------------------------------------------------------------
@@ -1837,6 +2192,26 @@ CREATED_BY                    VARCHAR2(200)       NO                            
 CREATED_DATE                  DATE                NO                                       Ngày tạo
 UPDATED_BY                    VARCHAR2(200)       NO                                       Người cập nhật cuối
 UPDATED_DATE                  DATE                NO                                       Ngày cập nhật cuối
+
+
+BANG: INTG_FORM_MAPPING_BK
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO                                       
+EXCHANGE_CODE                 VARCHAR2(80)        YES                                      
+IDS_NEWS_TYPE_CD              VARCHAR2(400)       YES                                      
+IDS_FORM_ID                   NUMBER(10,0)        YES                                      
+EXCH_FORM_ID                  VARCHAR2(400)       YES                                      
+EXCH_FORM_NAME_VI             VARCHAR2(1020)      YES                                      
+EXCH_FORM_NAME_EN             VARCHAR2(1020)      YES                                      
+IDS_FIN_REPORT_TYPE           VARCHAR2(400)       YES                                      
+ACTIVE_FLG                    NUMBER(1,0)         YES                                      
+CREATED_BY                    VARCHAR2(200)       NO                                       
+CREATED_DATE                  DATE                NO                                       
+UPDATED_BY                    VARCHAR2(200)       NO                                       
+UPDATED_DATE                  DATE                NO                                       
 
 
 BANG: INTG_FORM_MAPPING_BK
@@ -1968,6 +2343,36 @@ UPDATED_BY                    VARCHAR2(200)       NO
 UPDATED_DATE                  DATE                NO                                       
 
 
+BANG: INTG_REPORT_FIELD_BK
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO                                       
+NEWS_TYPE_GROUP_CD            VARCHAR2(400)       YES                                      
+NEWS_TYPE_CD                  VARCHAR2(400)       YES                                      
+FORM_ID                       NUMBER(10,0)        YES                                      
+FIELD_ID                      NUMBER(10,0)        YES                                      
+REP_FORM_ID                   NUMBER(10,0)        YES                                      
+REP_COLUMN_ID                 NUMBER(10,0)        YES                                      
+FIELD_NAME_VI                 VARCHAR2(1020)      YES                                      
+FIELD_NAME_EN                 VARCHAR2(1020)      YES                                      
+DATA_TYPE                     VARCHAR2(200)       YES                                      
+IMPORT_ORDER                  NUMBER(3,0)         YES                                      
+SHEET_NAME                    VARCHAR2(400)       YES                                      
+REQUIRE_FLG                   NUMBER(1,0)         YES                                      
+REQ_ANNUAL_FS_FLG             NUMBER(1,0)         YES                                      
+FIXED_FLG                     NUMBER(1,0)         YES                                      
+TARGET_TYPE                   NUMBER(1,0)         YES                                      
+SAVE_DATA_VALUE_FLG           NUMBER(1,0)         YES                                      
+INFO_GROUP_NAME               VARCHAR2(1020)      YES                                      
+ACTIVE_FLG                    NUMBER(1,0)         YES                                      
+CREATED_BY                    VARCHAR2(200)       NO                                       
+CREATED_DATE                  DATE                NO                                       
+UPDATED_BY                    VARCHAR2(200)       NO                                       
+UPDATED_DATE                  DATE                NO                                       
+
+
 BANG: INTG_SIGNATURE_CONFIG
 Mo ta: 
 --------------------------------------------------------------------------------------------------------------
@@ -1989,6 +2394,7 @@ Cot                           Kieu du lieu        Null?   Khoa   Lien ket       
 --------------------------------------------------------------------------------------------------------------
 ID                            NUMBER(10,0)        NO      PK                               Khóa chính
 ENTITY_NAME                   VARCHAR2(1020)      NO                                       Tên cổ đông hoặc người nội bộ hoặc người liên quan
+ENTITY_TYPE_CD                VARCHAR2(100)       YES                                      Loại hình (Cá nhân, Tổ chức) - LOOKUP_VALUES LOOKUP_GROUP = "ENTITY_TYPE"
 ENTITY_TYPE_CD                VARCHAR2(100)       YES                                      Loại hình (Cá nhân, Tổ chức) - LOOKUP_VALUES LOOKUP_GROUP = "ENTITY_TYPE"
 IDENTITY_TYPE_CD              VARCHAR2(400)       YES                                      Loại giấy tờ (cách nhau dấu ",") - IDENTITY_TYPE_CD của bảng IDENTITY
 BUSINESS_REG_NO               VARCHAR2(60)        YES                                      Mã doanh nghiệp
@@ -2079,6 +2485,183 @@ CREATED_DATE                  DATE                NO                            
 UPDATED_BY                    VARCHAR2(200)       NO                                       Người cập nhật
 UPDATED_DATE                  DATE                NO                                       Ngày cập nhật
 AF_PROFILE_ID                 NUMBER(10,0)        YES                                      ID hồ sơ công ty kiểm toán được phân quyền (FK -> AF_PROFILES.ID)
+
+
+BANG: LOOKUP_KEY_FINANCIALS
+Mo ta: Bảng lưu kết quả tính các chỉ số/tỷ số tài chính theo công ty và kỳ (năm/quý). Materialize từ FINANCIAL_RATIOS_DETAIL, quan hệ 1-1 qua ID. Phục vụ tra cứu nhanh (lookup) cho các báo cáo phân tích.
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO      PK     FINANCIAL_RATIOS_DETAIL.IDKhóa chính - bằng FINANCIAL_RATIOS_DETAIL.ID (1-1)
+STOCK_CODE                    VARCHAR2(19)        YES                                      Mã chứng khoán / mã công ty (denormalize từ FRD để lookup nhanh)
+YEAR                          NUMBER(4,0)         YES                                      Năm báo cáo (denormalize)
+QUARTER                       NUMBER(1,0)         YES                                      Số thứ tự trong kỳ: 1..4 khi REPORTING_PERIOD_CD='QUAR'; 1..2 khi 'HALF'; NULL/1 khi 'YEAR'
+COMPANY_CATEGORY              VARCHAR2(255)       YES                                      Loại hình công ty (denormalize)
+STOCK_EXCHANGE                VARCHAR2(19)        YES                                      Sàn niêm yết (denormalize)
+CATEGORIES_ID                 NUMBER(19,0)        YES                                      ID danh mục ngành nghề
+REPORT_CATALOG_ID             NUMBER(19,0)        NO      FK     REPORT_CATALOG.ID         FK sang REPORT_CATALOG.ID - xác định tổ hợp (REPORT_CD, REPORT_YEAR, STMT, PERIOD, ENT, CONSOLIDATED)
+FINANCIAL_STATEMENT_CD        VARCHAR2(3)         YES                                      Loại BCTC: HN=hợp nhất, ME=công ty mẹ, RI=riêng, TH=tổng hợp (denormalize từ REPORT_CATALOG)
+REPORTING_PERIOD_CD           VARCHAR2(4)         YES                                      Kỳ báo cáo: QUAR=quý, HALF=bán niên, YEAR=năm (denormalize từ REPORT_CATALOG)
+ENTERPRISE_TYPE_CD            VARCHAR2(2)         YES                                      Loại doanh nghiệp: BH=bảo hiểm, DN=doanh nghiệp thường, TD=tổ chức tín dụng (denormalize từ REPORT_CATALOG)
+CONSOLIDATED_FLG              NUMBER(1,0)         YES                                      Cờ hợp nhất: 0=không hợp nhất, 1=hợp nhất (denormalize từ REPORT_CATALOG)
+WARNING_CASHFLOW_FROM_OPERA   NUMBER(30,3)        YES                                      Cờ cảnh báo dòng tiền HĐKD âm liên tiếp (copy từ FRD)
+PREV_AFTER_TAX_INCOME         NUMBER(30,3)        YES                                      LNST kỳ trước (dùng để hiển thị / so sánh trên báo cáo)
+CASH_RATIO                    NUMBER(30,3)        YES                                      Hệ số thanh toán tiền mặt = CASH_AND_CASH_EQUIVALENTS / SHORTTERM_BORROWINGS
+ACID_TEST_RATIO               NUMBER(30,3)        YES                                      Hệ số thanh toán nhanh = (CURRENT_ASSET - INVENTORY) / SHORTTERM_BORROWINGS
+CURRENT_RATIO                 NUMBER(30,3)        YES                                      Hệ số thanh toán hiện hành = CURRENT_ASSET / SHORTTERM_BORROWINGS
+INTEREST_COVERAGE_RATIO       NUMBER(30,3)        YES                                      Hệ số thanh toán lãi vay = (BEFORE_TAX_INCOME + INTEREST) / PAYABLE_INTEREST
+RECEIVABLE_TURN_OVER_RATIO    NUMBER(30,3)        YES                                      Vòng quay khoản phải thu = GROSS_REVENUE / AVERAGE_RECEIVABLE (lần)
+RECEIVABLE_TURN_OVER_RATIO_DAYNUMBER(30,3)        YES                                      Kỳ thu tiền bình quân = 365 / vòng quay khoản phải thu (ngày)
+INVENTORY_TURNOVER_RATIO      NUMBER(30,3)        YES                                      Vòng quay hàng tồn kho = COST_OF_GOOD_SOLD / AVARAGE_INVENTORY (lần)
+INVENTORY_TURNOVER_RATIO_DAY  NUMBER(30,3)        YES                                      Số ngày tồn kho = 365 / vòng quay hàng tồn kho (ngày)
+PAYABLE_TURNOVER_RATIO        NUMBER(30,3)        YES                                      Vòng quay khoản phải trả = GROSS_REVENUE / AVERAGE_PAYABLE (lần)
+PAYABLE_TURN_OVER_RATIO       NUMBER(30,3)        YES                                      Kỳ trả tiền bình quân = 365 / vòng quay khoản phải trả (ngày)
+FIXED_ASSET_TURNOVER          NUMBER(30,3)        YES                                      Vòng quay tài sản cố định = GROSS_REVENUE / TOTAL_AVERAGE_FIXED_ASSET
+TOTAL_ASSET_TURNOVER          NUMBER(30,3)        YES                                      Vòng quay tổng tài sản = GROSS_REVENUE / TOTAL_AVERAGE_ASSET
+SHORTTERM_ASSET_TURNOVER      NUMBER(30,3)        YES                                      Vòng quay tài sản ngắn hạn = GROSS_REVENUE / AVG_CURRENT_ASSET
+OWNER_S_EQUITY_TURNOVER       NUMBER(30,3)        YES                                      Vòng quay vốn chủ sở hữu = GROSS_REVENUE / AVERAGE_OWNER_CAPITAL
+FACTOR_REPOS_WORKING_CAPITAL  NUMBER(30,3)        YES                                      Hệ số vốn lưu động/doanh thu = (AVG_CURRENT_ASSET - AVG_SHORTERM_BORROWINGS) / GROSS_REVENUE
+DEBT_RATIO                    NUMBER(30,3)        YES                                      Hệ số nợ = TOTAL_LIABILITY / TOTAL_ASSET
+SELF_FUNDED_RATIOS            NUMBER(30,3)        YES                                      Hệ số tự tài trợ = OWNER_CAPITAL / TOTAL_CAPITAL
+SELF_FUNDING_RATE             NUMBER(30,3)        YES                                      Tỷ suất tự tài trợ = OWNER_CAPITAL / TOTAL_ASSET
+DEBT_TO_EQUITY_RATIO          NUMBER(30,3)        YES                                      Nợ/Vốn CSH = TOTAL_LIABILITY / OWNER_CAPITAL
+DEBT_TO_CAPITAL_RATIOS        NUMBER(30,3)        YES                                      Nợ/Tổng nguồn vốn = TOTAL_LIABILITY / TOTAL_CAPITAL
+LIABILITY_FIXED_ASSET         NUMBER(30,3)        YES                                      Tự tài trợ TSCĐ = OWNER_CAPITAL / FIXED_ASSETS
+INTEREST_EXPENSE_PAYMENTS     NUMBER(30,3)        YES                                      Khả năng thanh toán chi phí lãi vay = BEFORE_TAX_INCOME / INTEREST
+GROSS_MARGIN                  NUMBER(30,3)        YES                                      Biên lợi nhuận gộp = GROSS_PROFIT / GROSS_REVENUE
+OPERATING_PROFIT_MARGIN       NUMBER(30,3)        YES                                      Biên lợi nhuận HĐKD = OPERATING_INCOME / GROSS_REVENUE
+PRE_TAX_PROFIT_MARGIN         NUMBER(30,3)        YES                                      Biên lợi nhuận trước thuế = BEFORE_TAX_INCOME / GROSS_REVENUE
+RETURN_ON_ASSETS              NUMBER(30,3)        YES                                      ROA = AFTER_TAX_INCOME / TOTAL_AVERAGE_ASSET
+RETURN_ON_EQUITY              NUMBER(30,3)        YES                                      ROE = AFTER_TAX_INCOME / AVERAGE_OWNER_CAPITAL
+RETURN_ON_EARNINGS_ROS        NUMBER(30,3)        YES                                      LNTT trên vốn CSH bình quân = BEFORE_TAX_INCOME / AVERAGE_OWNER_CAPITAL
+RETURN_ON_WORKING_CAPITAL     NUMBER(30,3)        YES                                      LNTT trên vốn lưu động = BEFORE_TAX_INCOME / AVERAGE_FLOATING_CAPITAL
+AFTAX_INC_ON_TOTAL_REVENUE    NUMBER(30,3)        YES                                      LNST/Tổng doanh thu = AFTER_TAX_INCOME / REVENUE
+UNDISTRI_AFTAX_INC_ON_EQUITY  NUMBER(30,3)        YES                                      LNST chưa phân phối / Tổng nguồn vốn = AFTER_TAX_RETAIN_EARNINGS / TOTAL_CAPITAL
+UNDISTRI_AFTAX_INC_ON_CHARTER NUMBER(30,3)        YES                                      LNST chưa phân phối / Vốn điều lệ = AFTER_TAX_RETAIN_EARNINGS / PAIDIN_CAPITAL
+OSF_SHORT_TERM_DEB            NUMBER(30,3)        YES                                      Dòng tiền HĐKD / Nợ ngắn hạn = CASH_FLOW_FROM_OPERATION / SHORTTERM_BORROWINGS
+OPERATING_CASHFLOW_ON_SALES   NUMBER(30,3)        YES                                      Dòng tiền HĐKD / Vốn CSH = CASH_FLOW_FROM_OPERATION / OWNER_CAPITAL
+OPERATING_CASHFLOW_ON_EQUITY  NUMBER(30,3)        YES                                      Dòng tiền HĐKD / Doanh thu thuần = CASH_FLOW_FROM_OPERATION / GROSS_REVENUE
+PRICE_TO_EAR_RATIO            NUMBER(30,3)        YES                                      P/E = CURRENT_MARKET_PRICE / EPS_BASIC
+PRICE_TO_BOOK_RATIO           NUMBER(30,3)        YES                                      P/B = CURRENT_MARKET_PRICE / (HOLDER_OWNER_CAPITAL / WEIGHT_AVE_OF_SHARES_OUTSTAND)
+BOOK_VALUE                    NUMBER(30,3)        YES                                      Giá trị sổ sách trên mỗi cổ phiếu = HOLDER_OWNER_CAPITAL / WEIGHT_AVE_OF_SHARES_OUTSTAND
+SALE_GROWTH_RATE              NUMBER(30,3)        YES                                      Tăng trưởng doanh thu = CURRENT_REVENUE / PREVIOUS_REVENUE - 1
+SALE_GROWTH                   NUMBER(30,3)        YES                                      Tăng trưởng doanh thu thuần = GROSS_REVENUE / PREV_GROSS_REVENUE - 1
+AFTER_TAX_INCOME_GROWTH       NUMBER(30,3)        YES                                      Tăng trưởng LNST = AFTER_TAX_INCOME / PREV_AFTER_TAX_INCOME
+EPS_GROWTH                    NUMBER(30,3)        YES                                      Tăng trưởng EPS = EPS_BASIC / PREV_EPS - 1
+OWNER_S_EQUITY_GROWTH         NUMBER(30,3)        YES                                      Tăng trưởng vốn CSH = OWNER_CAPITAL / PREV_OWNER_CAPITAL
+CASH_GROWTH                   NUMBER(30,3)        YES                                      Tăng trưởng tiền = CASH_AND_CASH_EQUIVALENTS / PREV_CASH_AND_CASH_EQUIV - 1
+GROWTH_AFTAX_INC_RATE_OPERA   NUMBER(30,3)        YES                                      Tăng trưởng LN HĐKD = OPERATING_INCOME / BEF_OPERATING_INCOME - 1
+LOSS_DISALLOWANCE_RULE        NUMBER(30,3)        YES                                      Dư nợ tín dụng / Vốn huy động = OUTSTANDING_CREDIT / CAPITAL_MOBILIZATION
+CREDIT_GROWTH_RATE            NUMBER(30,3)        YES                                      Tăng trưởng tín dụng = (CLOSE_OUTSTANDING_CREDIT - OPEN_OUTSTANDING_CREDIT) / CLOSE_OUTSTANDING_CREDIT
+MOBILIZATION_GROWTH_RATE      NUMBER(30,3)        YES                                      Tăng trưởng huy động vốn = (CLOSE_DEPOSIT - OPEN_DEPOSIT) / CLOSE_DEPOSIT
+NET_INTEREST_MARGIN           NUMBER(30,3)        YES                                      Biên lãi ròng NIM = INVESTMENT_INTEREST / AVER_EARNING_ASSETS
+ADEQUATE_LVL_OF_CAPITAL       NUMBER(30,3)        YES                                      Mức độ đáp ứng vốn pháp định = OWNER_CAPITAL / LEGAL_CAPITAL
+PERCENTAGE_OF_THE_ALLOWANCE   NUMBER(30,3)        YES                                      Tỷ lệ dự phòng / (Đầu tư + Phải thu) = (dự phòng ngắn + dài) / (đầu tư ngắn + phải thu ngắn + đầu tư dài + phải thu dài)
+RECEI_RATE_ON_TOTAL_ASSETS    NUMBER(30,3)        YES                                      Tỷ lệ khoản phải thu / Tổng tài sản = (SHORT_RECEIVABLES + LONG_RECEIVABLES) / TOTAL_ASSET
+TOTAL_ASSETS_AND_REAL_ESTATE  NUMBER(30,3)        YES                                      Tổng TSCĐ và BĐS đầu tư = FIXED_ASSETS + REAL_ESTATE_INVESTMENT (giá trị, không phải tỷ số)
+TA_N_REAL_ESTATE_ON_T_ASSETS  NUMBER(30,3)        YES                                      (TSCĐ + BĐS đầu tư) / Tổng tài sản = (FIXED_ASSETS + REAL_ESTATE_INVESTMENT) / TOTAL_ASSET
+RECEIVABLES_GREV_RATIO        NUMBER(30,3)        YES                                      Phải thu / Doanh thu thuần = (SHORT_RECEIVABLES + LONG_RECEIVABLES) / GROSS_REVENUE
+M_SCORE                       NUMBER(30,3)        YES                                      Điểm M-Score theo mô hình Beneish 8 biến = -4.84 + 0.92*DRSI + 0.528*GMI + 0.404*AQI + 0.892*SGI + 0.115*DEPI - 0.172*SGAI + 4.679*TATA - 0.327*LVGI. Ngưỡng cảnh báo gian lận: M-Score > -1.78
+Z_SCORE                       NUMBER(30,3)        YES                                      Điểm Altman Z-Score - chỉ số cảnh báo nguy cơ phá sản. Ngưỡng: Z>2.99 an toàn, 1.81<=Z<=2.99 vùng xám, Z<1.81 có nguy cơ phá sản
+EARN_BEFORE_INTEREST_TAXES    NUMBER(30,3)        YES                                      EBIT - Lợi nhuận trước lãi vay và thuế = BEFORE_TAX_INCOME + INTEREST
+EARN_INTEREST_TAX_DEP         NUMBER(30,3)        YES                                      EBITDA - Lợi nhuận trước lãi vay, thuế, khấu hao và phân bổ = EBIT + khấu hao TSCĐ + khấu hao TSCĐ vô hình
+NET_OPERATING_PROFIT_AFTER_TAXNUMBER(30,3)        YES                                      NOPAT - Lợi nhuận hoạt động thuần sau thuế = OPERATING_INCOME * (1 - thuế suất TNDN)
+FINANCIAL_LEVERAGE_RATIO      NUMBER(30,3)        YES                                      Hệ số đòn bẩy tài chính = TOTAL_ASSET / OWNER_CAPITAL (nhân tử đòn bẩy trong Dupont)
+RETURN_ON_EARNINGS            NUMBER(30,3)        YES                                      Tỷ suất sinh lời trên lợi nhuận (biến thể ROE dùng lợi nhuận giữ lại)
+RETURN_ON_INVESTMENT          NUMBER(30,3)        YES                                      ROI - Tỷ suất sinh lời trên vốn đầu tư
+GROSS_PROFIT_MARGIN           NUMBER(30,3)        YES                                      Biên lợi nhuận gộp (biến thể) = GROSS_PROFIT / REVENUE
+GROWTH_EQUATION               NUMBER(30,3)        YES                                      Phương trình tăng trưởng bền vững (SGR) = ROE * (1 - tỷ lệ chi trả cổ tức)
+WORKING_CAPITAL               NUMBER(30,3)        YES                                      Vốn lưu động thuần = CURRENT_ASSET - SHORTTERM_BORROWINGS
+EPS_BASIC                     NUMBER(30,3)        YES                                      EPS cơ bản = LNST của cổ đông phổ thông / Bình quân gia quyền CP phổ thông đang lưu hành
+EPS_ADJUSTED                  NUMBER(30,3)        YES                                      EPS pha loãng (điều chỉnh) - tính đến ảnh hưởng của trái phiếu chuyển đổi, quyền mua CP...
+AVERAGE_QTTY_OUTSTANDING      NUMBER(30,3)        YES                                      Bình quân số cổ phiếu đang lưu hành trong kỳ (dùng tính EPS_BASIC/EPS_ADJUSTED)
+MARKET_CAPITALIZATION         NUMBER(30,3)        YES                                      Vốn hóa thị trường = CURRENT_MARKET_PRICE * NUMBER_OF_OUTSTANDING_SHARES
+DIVIDEND                      NUMBER(30,3)        YES                                      Cổ tức trong kỳ (lấy từ hàm GET_DATAVALUE_COTUC theo mã dữ liệu 46606)
+DIVIDEND_YIELD_RATIO          NUMBER(30,3)        YES                                      Tỷ suất cổ tức = DIVIDEND per share / CURRENT_MARKET_PRICE
+DIVIDEND_PAYOUT_RATIO         NUMBER(30,3)        YES                                      Tỷ lệ chi trả cổ tức = DIVIDEND / AFTER_TAX_INCOME
+NET_CASH_FLOW_FROM_OPERATION  NUMBER(30,3)        YES                                      Lưu chuyển tiền thuần từ hoạt động kinh doanh (dẫn xuất/điều chỉnh từ FRD.CASH_FLOW_FROM_OPERATION)
+CASH_FLOW_FROM_INVESTMENT_GT  NUMBER(30,3)        YES                                      Lưu chuyển tiền thuần từ hoạt động đầu tư - phương pháp gián tiếp
+CASH_FLOW_FROM_FINANCIAL_PT   NUMBER(30,3)        YES                                      Lưu chuyển tiền thuần từ hoạt động tài chính - phương pháp phái sinh/gián tiếp
+ISSUED_SHARES                 NUMBER(30,3)        YES                                      Số cổ phiếu đã phát hành (không có trong FRD, cache riêng ở LKF phục vụ lookup)
+NUMBER_OF_LISTED_SHARES       NUMBER(30,3)        YES                                      Số cổ phiếu đang niêm yết (khác NUMBER_OF_OUTSTANDING_SHARES do có CP quỹ)
+CATEGORIES_ID_TRADE           NUMBER(19,0)        YES                                      ID danh mục ngành giao dịch (dùng cho báo cáo phân loại theo ngành trên sàn)
+CURRENT_ASSET                 NUMBER(30,3)        YES                                      Tài sản ngắn hạn (copy từ FRD)
+CASH_AND_CASH_EQUIVALENTS     NUMBER(30,3)        YES                                      Tiền và các khoản tương đương tiền (copy từ FRD)
+SHORT_INVESTMENTS             NUMBER(30,3)        YES                                      Đầu tư tài chính ngắn hạn - tổng (copy từ FRD)
+SHORT_INVESTMENT              NUMBER(30,3)        YES                                      Đầu tư tài chính ngắn hạn - chi tiết (copy từ FRD)
+PROVISION_SHORT_INVESTMENT    NUMBER(30,3)        YES                                      Dự phòng giảm giá đầu tư ngắn hạn (copy từ FRD)
+SHORT_RECEIVABLES             NUMBER(30,3)        YES                                      Các khoản phải thu ngắn hạn (copy từ FRD)
+SHORT_PROVI_BAD_RECEIVABLES   NUMBER(30,3)        YES                                      Dự phòng phải thu ngắn hạn khó đòi (copy từ FRD)
+INVENTORY                     NUMBER(30,3)        YES                                      Hàng tồn kho - tổng (copy từ FRD)
+INVENTORY_141                 NUMBER(30,3)        YES                                      Hàng tồn kho theo TK141 (copy từ FRD)
+PROVISION_DEVALUATION_STOCK   NUMBER(30,3)        YES                                      Dự phòng giảm giá hàng tồn kho (copy từ FRD)
+LONGTERM_ASSETS               NUMBER(30,3)        YES                                      Tài sản dài hạn - tổng (copy từ FRD)
+LONG_RECEIVABLES              NUMBER(30,3)        YES                                      Các khoản phải thu dài hạn (copy từ FRD)
+LONG_PROVI_BAD_RECEIVABLES    NUMBER(30,3)        YES                                      Dự phòng phải thu dài hạn khó đòi (copy từ FRD)
+FIXED_ASSET                   NUMBER(30,3)        YES                                      Tài sản cố định - giá trị còn lại (copy từ FRD)
+REAL_ESTATE_INVESTMENT        NUMBER(30,3)        YES                                      Bất động sản đầu tư (copy từ FRD)
+LONG_INVESTMENTS              NUMBER(30,3)        YES                                      Đầu tư tài chính dài hạn (copy từ FRD)
+PROVISION_LONG_INVESTMENT     NUMBER(30,3)        YES                                      Dự phòng giảm giá đầu tư dài hạn (copy từ FRD)
+OTHER_LONG_ASSETS             NUMBER(30,3)        YES                                      Tài sản dài hạn khác (copy từ FRD)
+TOTAL_ASSET                   NUMBER(30,3)        YES                                      Tổng cộng tài sản (copy từ FRD)
+TOTAL_LIABILITY               NUMBER(30,3)        YES                                      Tổng nợ phải trả (copy từ FRD)
+SHORTTERM_BORROWINGS          NUMBER(30,3)        YES                                      Nợ ngắn hạn (copy từ FRD)
+SHORT_PROVISION_PAYABLE       NUMBER(30,3)        YES                                      Dự phòng phải trả ngắn hạn (copy từ FRD)
+LONGTERM_LIABILITIES          NUMBER(30,3)        YES                                      Nợ dài hạn (copy từ FRD)
+LONG_PROVISION_PAYABLE        NUMBER(30,3)        YES                                      Dự phòng phải trả dài hạn (copy từ FRD)
+OWNER_CAPITAL                 NUMBER(30,3)        YES                                      Vốn chủ sở hữu (copy từ FRD)
+OWNER_S_EQUITY                NUMBER(30,3)        YES                                      Vốn chủ sở hữu (bao gồm lợi ích cổ đông thiểu số) (copy từ FRD)
+PAIDIN_CAPITAL                NUMBER(30,3)        YES                                      Vốn góp của chủ sở hữu (copy từ FRD)
+AFTER_TAX_RETAIN_EARNINGS     NUMBER(30,3)        YES                                      Lợi nhuận sau thuế chưa phân phối (copy từ FRD)
+OTHER_FUNDS                   NUMBER(30,3)        YES                                      Các quỹ khác thuộc vốn CSH (copy từ FRD)
+TOTAL_CAPITAL                 NUMBER(30,3)        YES                                      Tổng cộng nguồn vốn (copy từ FRD)
+LEGAL_CAPITAL                 NUMBER(30,3)        YES                                      Vốn pháp định - CTCK/NHTM (copy từ FRD)
+STATE_ONWED_PERCENTAGE        NUMBER(30,3)        YES                                      Tỷ lệ sở hữu Nhà nước (copy từ FRD)
+REVENUE                       NUMBER(30,3)        YES                                      Doanh thu bán hàng và cung cấp dịch vụ - tổng (copy từ FRD)
+ALLOWANCE_IN_REVENUE          NUMBER(30,3)        YES                                      Các khoản giảm trừ doanh thu (copy từ FRD)
+GROSS_REVENUE                 NUMBER(30,3)        YES                                      Doanh thu thuần về bán hàng và cung cấp dịch vụ (copy từ FRD)
+REVENUE_SECURITY_BROKE_ACT    NUMBER(30,3)        YES                                      Doanh thu môi giới chứng khoán - CTCK (copy từ FRD)
+REVENUE_SECURITY_INVEST_JOIN  NUMBER(30,3)        YES                                      Doanh thu tự doanh chứng khoán (copy từ FRD)
+REVENUE_SECURITY_UNDERWRITING NUMBER(30,3)        YES                                      Doanh thu bảo lãnh phát hành chứng khoán (copy từ FRD)
+REVENUE_SECURITY_ISSU_AGENCY  NUMBER(30,3)        YES                                      Doanh thu đại lý phát hành chứng khoán (copy từ FRD)
+REVENUE_SECURITY_CONSUL_ACT   NUMBER(30,3)        YES                                      Doanh thu tư vấn đầu tư chứng khoán (copy từ FRD)
+REVENUE_SECURITY_DEPOSITORY   NUMBER(30,3)        YES                                      Doanh thu lưu ký chứng khoán (copy từ FRD)
+REVENUE_ACTION_COMMISSION     NUMBER(30,3)        YES                                      Doanh thu hoa hồng đại lý (copy từ FRD)
+REVENUE_ASSETS_LEASING        NUMBER(30,3)        YES                                      Doanh thu cho thuê tài sản (copy từ FRD)
+OTHER_REVENUE                 NUMBER(30,3)        YES                                      Doanh thu khác (copy từ FRD)
+COST_OF_GOOD_SOLD             NUMBER(30,3)        YES                                      Giá vốn hàng bán (copy từ FRD)
+GROSS_PROFIT                  NUMBER(30,3)        YES                                      Lợi nhuận gộp về bán hàng và cung cấp dịch vụ (copy từ FRD)
+FINANCIAL_ACTIVITIES_INCOME   NUMBER(30,3)        YES                                      Doanh thu hoạt động tài chính (copy từ FRD)
+FINANCIAL_EXPENSES            NUMBER(30,3)        YES                                      Chi phí hoạt động tài chính (copy từ FRD)
+COST_OF_BORROWING             NUMBER(30,3)        YES                                      Chi phí đi vay (copy từ FRD)
+SELLING_EXPENSES              NUMBER(30,3)        YES                                      Chi phí bán hàng (copy từ FRD)
+GEN_AND_ADMIN_EXPENSES        NUMBER(30,3)        YES                                      Chi phí quản lý doanh nghiệp (copy từ FRD)
+OPERATING_EXPENCE             NUMBER(30,3)        YES                                      Chi phí hoạt động - ngành đặc thù CTCK/NHTM (copy từ FRD)
+OPERATING_INCOME              NUMBER(30,3)        YES                                      Lợi nhuận thuần từ hoạt động kinh doanh (copy từ FRD)
+OTHER_EARNINGS                NUMBER(30,3)        YES                                      Lợi nhuận khác (copy từ FRD)
+GAIN_LOSS_JOINT_VENTURE_CO    NUMBER(30,3)        YES                                      Lãi/lỗ trong công ty liên doanh, liên kết (copy từ FRD)
+BEFORE_TAX_INCOME             NUMBER(30,3)        YES                                      Tổng lợi nhuận kế toán trước thuế (copy từ FRD)
+BEFORE_TAX_INTEREST           NUMBER(30,3)        YES                                      Lợi nhuận trước thuế cộng chi phí lãi vay - EBIT (copy từ FRD)
+CURR_BI_CHARGE                NUMBER(30,3)        YES                                      Chi phí thuế TNDN kỳ hiện tại (copy từ FRD)
+PROFIT_AFTER_TAX_BI           NUMBER(30,3)        YES                                      Lợi nhuận sau thuế TNDN theo cấu phần (copy từ FRD)
+AFTER_TAX_INCOME              NUMBER(30,3)        YES                                      Lợi nhuận sau thuế TNDN (copy từ FRD)
+AFTER_TAX_INCOME_HOLDER       NUMBER(30,3)        YES                                      LNST thuộc về cổ đông công ty mẹ (copy từ FRD)
+AFTER_TAX_INCOME_MINORITY     NUMBER(30,3)        YES                                      LNST thuộc về cổ đông không kiểm soát (copy từ FRD)
+INTEREST                      NUMBER(30,3)        YES                                      Chi phí lãi vay trong kỳ (copy từ FRD)
+CASH_FLOW_FROM_OPERATION      NUMBER(30,3)        YES                                      Lưu chuyển tiền thuần từ hoạt động kinh doanh (copy từ FRD)
+CASH_FLOW_FROM_INVESTMENT_TT  NUMBER(30,3)        YES                                      Lưu chuyển tiền thuần từ hoạt động đầu tư - phương pháp trực tiếp (copy từ FRD)
+CASH_FLOW_FROM_FINANCIAL_TT   NUMBER(30,3)        YES                                      Lưu chuyển tiền thuần từ hoạt động tài chính - phương pháp trực tiếp (copy từ FRD)
+OPERATING_CASHFLOW            NUMBER(30,3)        YES                                      Dòng tiền thuần từ hoạt động - tổng hợp (copy từ FRD)
+TOTAL_BAD_RESERVE             NUMBER(30,3)        YES                                      Tổng dự phòng nợ xấu (copy từ FRD)
+TOTAL_RESERVE                 NUMBER(30,3)        YES                                      Tổng dự phòng (copy từ FRD)
+AVAILABLE_CAPITAL_RATIO       NUMBER(30,3)        YES                                      Tỷ lệ vốn khả dụng - CTCK (copy từ FRD)
+CURRENT_MARKET_PRICE          NUMBER(30,3)        YES                                      Giá thị trường hiện tại của cổ phiếu (copy từ FRD)
+WEIGHT_AVE_OF_SHARES_OUTSTAND NUMBER(30,3)        YES                                      Bình quân gia quyền số cổ phiếu đang lưu hành trong kỳ (copy từ FRD)
+NUMBER_OF_OUTSTANDING_SHARES  NUMBER(30,3)        YES                                      Số cổ phiếu đang lưu hành cuối kỳ (copy từ FRD)
+CREATE_BY                     VARCHAR2(255)       YES                                      Người/tài khoản tạo bản ghi (mặc định 'job')
+CREATE_DATE                   DATE                YES                                      Ngày tạo bản ghi
+UPDATE_BY                     VARCHAR2(255)       YES                                      Người/tài khoản cập nhật gần nhất
+UPDATE_DATE                   DATE                YES                                      Ngày cập nhật gần nhất
 
 
 BANG: LOOKUP_KEY_FINANCIALS
@@ -2364,6 +2947,7 @@ LOGIN_NAME                    VARCHAR2(30)        YES                           
 OBJECT_TYPE                   VARCHAR2(1020)      YES                                      Loại đối tượng: 1- Nội bộ UBCK; 2- Tổ chức bên ngoài; 3- Cá nhân bên ngoài
 RECIPIENT_TYPE_CD             VARCHAR2(100)       YES                                      Đối tượng nhận tin
 EQUITY_LISTING_EXCH           VARCHAR2(255)       YES                                      Sàn niêm yết (ĐKGD cổ phiếu)
+EQUITY_LISTING_EXCH           VARCHAR2(255)       YES                                      Sàn niêm yết (ĐKGD cổ phiếu)
 ACTIVE_FLG                    NUMBER(1,0)         YES                                      Trạng thái (0-không kích hoạt, 1-kích hoạt)
 REMINDER_BEFORE_DUE_DAYS      NUMBER(5,0)         YES                                      Nhắc trước bao nhiêu ngày
 SEND_HOUR                     VARCHAR2(100)       YES                                      Giờ gửi
@@ -2421,6 +3005,29 @@ UPDATED_BY                    CHAR(30)            YES
 UPDATED_DATE                  DATE                YES                                      
 
 
+BANG: NOTIFICATIONS_RESULT
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(19,0)        NO      PK                               
+NOTIFICATION_ID               NUMBER(19,0)        YES                                      Nullable — luồng add-noti (gửi trực tiếp từ COMPANY_DATA) không gắn với NOTIFICATIONS nào
+LOGIN_ID                      NUMBER(19,0)        NO                                       
+NOTI_CATEGORY_CD              VARCHAR2(80)        YES                                      Copy từ NOTIFICATIONS.NOTI_CATEGORY_CD tại thời điểm gửi
+FORM_ID                       NUMBER(19,0)        YES                                      Copy từ NOTIFICATIONS.FORM_ID hoặc COMPANY_DATA.FORM_ID tại thời điểm gửi
+COMPANY_DATA_ID               NUMBER(19,0)        YES                                      
+COMPANY_PROFILE_ID            NUMBER(19,0)        YES                                      Copy từ NOTIFICATIONS_DTL.COMPANY_PROFILE_ID hoặc COMPANY_DATA.COMPANY_PROFILE_ID của người nhận — dùng để lọc/phân quyền theo công ty
+TITLE                         VARCHAR2(1020)      YES                                      
+CONTENT                       VARCHAR2(4000)      YES                                      
+SENT_DATE                     DATE                NO                                       
+READ_FLG                      NUMBER(1,0)         NO                                       
+READ_DATE                     DATE                YES                                      
+CREATED_BY                    CHAR(30)            YES                                      
+CREATED_DATE                  DATE                YES                                      
+UPDATED_BY                    CHAR(30)            YES                                      
+UPDATED_DATE                  DATE                YES                                      
+
+
 BANG: POSITIONS
 Mo ta: 
 --------------------------------------------------------------------------------------------------------------
@@ -2428,6 +3035,7 @@ Cot                           Kieu du lieu        Null?   Khoa   Lien ket       
 --------------------------------------------------------------------------------------------------------------
 ID                            NUMBER(10,0)        NO      PK                               Khóa chính
 POSITION_CD                   VARCHAR2(400)       NO                                       Loại chức vụ - LOOKUP_VALUES LOOKUP_GROUP = "POSITION"
+APPOINTMENT_DATE              DATE                YES                                      Ngày bổ nhiệm
 APPOINTMENT_DATE              DATE                YES                                      Ngày bổ nhiệm
 DISMISSAL_DATE                DATE                YES                                      Ngày miễn nhiệm
 ACTIVE_FLG                    NUMBER(1,0)         NO                                       Có trạng thái chức vụ hiện tại (0-Không, 1-Có)
@@ -2481,6 +3089,8 @@ UPDATED_BY                    VARCHAR2(50)        YES
 DELETE_FLG                    NUMBER(1,0)         YES                                      
 OFFICIAL_LETTER_NO            VARCHAR2(18)        YES                                      Số công văn
 OFFICIAL_LETTER_DATE          DATE                YES                                      Ngày công văn
+NOTE                          VARCHAR2(4000)      YES                                      
+NON_COMPLIANCE_DATE           DATE                YES                                      
 NOTE                          VARCHAR2(4000)      YES                                      
 NON_COMPLIANCE_DATE           DATE                YES                                      
 
@@ -2795,6 +3405,7 @@ CREATED_DATE                  DATE                YES
 UPDATED_BY                    VARCHAR2(30)        YES                                      
 UPDATED_DATE                  DATE                YES                                      
 REPORT_TYPE_CD                VARCHAR2(50)        YES                                      
+REPORT_TYPE_CD                VARCHAR2(50)        YES                                      
 
 
 BANG: REP_COLUMN
@@ -2961,6 +3572,7 @@ OFFICIAL_LETTER_DATE          DATE                YES                           
 OFFERING_PURPOSE              VARCHAR2(1020)      YES                                      Mục đích sử dụng
 TOTAL_REGISTERED_QTY          NUMBER(15,0)        NO                                       Tổng số chứng khoán chào bán/ phát hành
 TOTAL_EXPECTED_AM             NUMBER(30,0)        NO                                       Tổng số tiền dự kiến thu được (VNĐ)
+TOTAL_EXPECTED_AM             NUMBER(30,0)        NO                                       Tổng số tiền dự kiến thu được (VNĐ)
 CAPITAL_USAGE_PLAN            VARCHAR2(2048)      YES                                      Phương án sử dụng (phương án sử dụng vốn)
 EXPECTED_SCHEDULE             VARCHAR2(2048)      YES                                      Tiến độ dự kiến (phương án sử dụng vốn)
 MATCHING_CAPITAL              VARCHAR2(1020)      YES                                      Nguồn vốn đối ứng (phương án sử dụng vốn)
@@ -2988,6 +3600,7 @@ PROJECT_INVESTMENT_FLG        NUMBER(1,0)         NO
 CAPITAL_PURPOSE               VARCHAR2(512)       YES                                      
 APPROVER_COMMENT              VARCHAR2(255)       YES                                      
 ADMINISTRATIVE_STATUS_CD      VARCHAR2(400)       YES                                      
+ADMINISTRATIVE_STATUS_CD      VARCHAR2(400)       YES                                      
 
 
 BANG: SECURITIES_OFFERING_PLAN
@@ -3009,8 +3622,17 @@ ISSUER_TOTAL_REGISTERED_QTY   NUMBER(15,0)        YES                           
 SHAREHOLDER_REGISTERED_QTY    NUMBER(15,0)        YES                                      Số lượng chứng khoán cổ đông/thành viên đăng ký (hiển thị đối với 1 số thủ tục)
 ISSUER_TOTAL_EXPECTED_AM      NUMBER(30,0)        YES                                      Số tiền dự kiến thu được từ TCPH (VND) (hiển thị đối với 1 số thủ tục) --> TỰ ĐỘNG LÁY TỔNG TRONG BẢNG SECURITIES_OFFERING_DISTRIBUTION
 SHAREHOLDER_EXPECTED_AM       NUMBER(30,0)        YES                                      Số tiền dự kiến thu được từ cổ đông/thành viên (VND) (hiển thị đối với 1 số thủ tục)
+TOTAL_REGISTERED_QTY          NUMBER(15,0)        NO                                       Tổng số chứng khoán chào bán/ phát hành --> Lấy bên bảng SECURITIES_OFFERINGS
+OFFERING_PRICE                NUMBER(10,0)        NO                                       Giá chào bán phát hành dự kiến
+TOTAL_EXPECTED_AM             NUMBER(30,0)        NO                                       Tổng số tiền dự kiến thu được (VNĐ) --> Lấy bên bảng SECURITIES_OFFERINGS
+ISSUER_TOTAL_REGISTERED_QTY   NUMBER(15,0)        YES                                      Số lượng chứng khoán TCPH đăng ký (hiển thị đối với 1 số thủ tục) --> TỰ ĐỘNG LÁY TỔNG TRONG BẢNG SECURITIES_OFFERING_DISTRIBUTION
+SHAREHOLDER_REGISTERED_QTY    NUMBER(15,0)        YES                                      Số lượng chứng khoán cổ đông/thành viên đăng ký (hiển thị đối với 1 số thủ tục)
+ISSUER_TOTAL_EXPECTED_AM      NUMBER(30,0)        YES                                      Số tiền dự kiến thu được từ TCPH (VND) (hiển thị đối với 1 số thủ tục) --> TỰ ĐỘNG LÁY TỔNG TRONG BẢNG SECURITIES_OFFERING_DISTRIBUTION
+SHAREHOLDER_EXPECTED_AM       NUMBER(30,0)        YES                                      Số tiền dự kiến thu được từ cổ đông/thành viên (VND) (hiển thị đối với 1 số thủ tục)
 OFFERING_START_DATE           DATE                YES                                      Thời gian chào bán (từ ngày)
 OFFERING_END_DATE             DATE                YES                                      Thời gian chào bán (đến ngày)
+OWNED_SHARE_QTY               NUMBER(15,0)        YES                                      Số lượng cổ phiếu sở hữu (hiển thị đối với 1 số thủ tục)
+UNRESTRICTED_SHARE_QTY        NUMBER(15,0)        YES                                      Số lượng cổ phiếu được phép chuyển nhượng (hiển thị đối với 1 số thủ tục)
 OWNED_SHARE_QTY               NUMBER(15,0)        YES                                      Số lượng cổ phiếu sở hữu (hiển thị đối với 1 số thủ tục)
 UNRESTRICTED_SHARE_QTY        NUMBER(15,0)        YES                                      Số lượng cổ phiếu được phép chuyển nhượng (hiển thị đối với 1 số thủ tục)
 OFFER_TO_OWNED_PCT            NUMBER(5,2)         YES                                      Tỷ lệ CP đăng ký chào bán / Tổng CP sở hữu (hiển thị đối với 1 số thủ tục)
@@ -3035,12 +3657,20 @@ EXERCISE_RATIO                NUMBER(6,2)         YES                           
 EXERCISE_GUARANTEE_PLAN       VARCHAR2(4000)      YES                                      Phương án đảm bảo tỷ lệ sở hữu nước ngoài về thực hiện quyền
 GUARANTEE_TYPE_CD             VARCHAR2(400)       YES                                      Hình thức bảo đảm (gồm : Thanh toán bằng bảo lãnh; Thanh toán bằng tài sản) LOOKUP_VALUES LOOKUP_GROUP = 'GUARANTEE_TYPE'
 GUARANTEED_BOND_VALUE         NUMBER(30,0)        YES                                      Giá trị trái phiếu được bảo đảm
+GUARANTEED_BOND_VALUE         NUMBER(30,0)        YES                                      Giá trị trái phiếu được bảo đảm
 PAYMENT_GUARANTOR_ORG         VARCHAR2(1020)      YES                                      Tên tổ chức bảo lãnh thanh toán
 PAYMENT_GUARANTEE_VALUE       NUMBER(24,2)        YES                                      Giá trị bảo lãnh
 SECURED_ASSET                 VARCHAR2(2048)      YES                                      Tài sản bảo đảm
 SECURED_ASSET_VALUE           NUMBER(30,0)        YES                                      Giá trị tài sản bảo đảm
+SECURED_ASSET_VALUE           NUMBER(30,0)        YES                                      Giá trị tài sản bảo đảm
 SECURED_ASSET_OWNER           VARCHAR2(1020)      YES                                      Chủ sở hữu tài sản bảo đảm
 SECURED_ASSET_ORG             VARCHAR2(1020)      YES                                      Tổ chức nhận tài sản bảo đảm
+PUBLIC_OFFERING_VAL           NUMBER(30,0)        YES                                      Tổng giá trị TP CB ra công chúng (trái phiếu đang lưu hành)
+PRIVATE_PLACEMENT_VAL         NUMBER(30,0)        YES                                      Tổng giá trị TP CB riêng lẻ (trái phiếu đang lưu hành)
+TOTAL_OUTSTANDING_VAL         NUMBER(30,0)        YES                                      Tổng giá TP đang lưu hành
+PUBLIC_OFFERING_12M_VAL       NUMBER(30,0)        YES                                      Tổng giá trị TP CB ra công chúng (huy động trong 12 tháng gần nhất)
+PRIVATE_PLACEMENT_12M_VAL     NUMBER(30,0)        YES                                      Tổng giá trị TP CB riêng lẻ (huy động trong 12 tháng gần nhất)
+TOTAL_12M_VAL                 NUMBER(30,0)        YES                                      Tổng giá trị TP huy động trong 12 tháng gần nhất
 PUBLIC_OFFERING_VAL           NUMBER(30,0)        YES                                      Tổng giá trị TP CB ra công chúng (trái phiếu đang lưu hành)
 PRIVATE_PLACEMENT_VAL         NUMBER(30,0)        YES                                      Tổng giá trị TP CB riêng lẻ (trái phiếu đang lưu hành)
 TOTAL_OUTSTANDING_VAL         NUMBER(30,0)        YES                                      Tổng giá TP đang lưu hành
@@ -3280,6 +3910,7 @@ UPDATED_BY                    VARCHAR2(120)       YES                           
 UPDATED_DATE                  DATE                YES                                      Ngày sửa
 DELETE_FLG                    NUMBER(1,0)         NO                                       Đánh dấu xóa mềm (0-Chưa xóa, 1-Đã xóa)
 ADMINISTRATIVE_STATUS_CD      VARCHAR2(12)        YES                                      
+ADMINISTRATIVE_STATUS_CD      VARCHAR2(12)        YES                                      
 
 
 BANG: TENDER_OFFER_RESULT
@@ -3368,6 +3999,7 @@ CORRELATION_ID                VARCHAR2(256)       NO                            
 JOB_CODE                      VARCHAR2(400)       NO                                       
 BUSINESS_REG_NO               VARCHAR2(400)       YES                                      MST công ty (nếu có)
 IDENTITY_NO                   VARCHAR2(100)       YES                                      Số giấy tờ NĐT (IDS011/015)
+IDENTITY_NO                   VARCHAR2(100)       YES                                      Số giấy tờ NĐT (IDS011/015)
 ITEM_STATUS                   VARCHAR2(120)       NO                                       UPDATED | NO_CHANGE | EMPTY_FROM_API | UNMAPPED | NOT_FOUND_LOCAL | FAILED
 API_RAW_VALUE                 VARCHAR2(2000)      YES                                      Giá trị raw từ API CSDLTT (vd. 'Suspended')
 MAPPED_VALUE                  VARCHAR2(2000)      YES                                      Giá trị sau khi map sang code IDS
@@ -3375,6 +4007,33 @@ PREVIOUS_VALUE                VARCHAR2(2000)      YES                           
 API_UPDATED_DATE              VARCHAR2(80)        YES                                      updatedDate gốc từ API (dd/MM/yyyy)
 REASON                        VARCHAR2(4000)      YES                                      Lý do skip/fail; null cho UPDATED/NO_CHANGE
 CREATED_AT                    TIMESTAMP(6)        NO                                       
+
+
+BANG: USERS
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            RAW(16)             NO      PK                               
+USER_NAME                     VARCHAR2(255)       NO                                       
+PASSWORD                      VARCHAR2(255)       NO                                       
+FULL_NAME                     VARCHAR2(255)       YES                                      
+BIRTH_DATE                    DATE                YES                                      
+GENDER_CD                     VARCHAR2(20)        YES                                      
+ADDRESS                       VARCHAR2(500)       YES                                      
+PHONE_NO                      VARCHAR2(50)        YES                                      
+FAX_NO                        VARCHAR2(50)        YES                                      
+EMAIL                         VARCHAR2(255)       YES                                      
+IDENTITY                      VARCHAR2(100)       YES                                      
+IDENTITY_TYPE_CD              VARCHAR2(50)        YES                                      
+IDENTITY_ISSUED_DATE          DATE                YES                                      
+IDENTITY_ISSUED_PLACE         VARCHAR2(255)       YES                                      
+STATUS                        NUMBER              YES                                      
+CREATED_BY                    VARCHAR2(255)       YES                                      
+CREATED_DATE                  TIMESTAMP(6)        YES                                      
+UPDATED_BY                    VARCHAR2(255)       YES                                      
+UPDATED_DATE                  TIMESTAMP(6)        YES                                      
+DEPARTMENT_ID                 NUMBER(19,0)        YES                                      Foreign key trỏ tới bảng DEPARTMENTS trong masterdata-service
 
 
 BANG: USERS
@@ -3470,6 +4129,7 @@ UPDATED_BY                    VARCHAR2(500)       YES                           
 ORIGINAL_DEADLINE             DATE                YES                                      
 LANGUAGE_CD                   VARCHAR2(10)        YES                                      
 COMPANY_DATA_ID               NUMBER(19,0)        YES                                      
+COMPANY_DATA_ID               NUMBER(19,0)        YES                                      
 
 
 BANG: VIOLATION_TEMPLATES
@@ -3501,6 +4161,8 @@ CREATED_DATE                  TIMESTAMP(6)        YES                           
 CREATED_BY                    VARCHAR2(500)       YES                                      Người tạo bản ghi
 UPDATED_DATE                  TIMESTAMP(6)        YES                                      Thời gian cập nhật bản ghi lần cuối
 UPDATED_BY                    VARCHAR2(500)       YES                                      Người cập nhật bản ghi lần cuối
+CONDITION_FIELD_CD            VARCHAR2(1020)      YES                                      
+PRIORITY_ORDER                NUMBER(38,0)        YES                                      
 CONDITION_FIELD_CD            VARCHAR2(1020)      YES                                      
 PRIORITY_ORDER                NUMBER(38,0)        YES                                      
 

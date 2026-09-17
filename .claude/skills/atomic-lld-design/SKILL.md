@@ -515,7 +515,7 @@ Trước khi xuất file:
 - [ ] Prefix nhất quán trong nhóm trường liên quan?
 - [ ] Prefix chủ thể cho trường mô tả người/đối tượng khác?
 - [ ] Mọi trường nguồn đều xuất hiện trong mapping? Không có dòng "không map ở đây"?
-- [ ] LLD không bao gồm technical fields (ds_*) — xem danh sách chuẩn tại [`reference/technical_fields.md`](reference/technical_fields.md)?
+- [ ] **[SỬA 2026-09-07]** Entity `table_type: Fundamental`/`Relative`/`Fact Snapshot` đã khai báo tường minh đủ technical fields `ds_*` áp dụng trong `attributes:` (không còn loại trừ) — xem bộ chuẩn theo table_type tại [`reference/technical_fields.md`](reference/technical_fields.md)? Riêng `ds_snpst_dt` chỉ khai báo trên bảng/biến thể History, không khai báo trên bảng Active của cặp SCD4A.
 - [ ] Tên attribute cùng ý nghĩa với LLD source khác đã có → dùng đúng tên đó (`Charter Capital Amount`, `Life Cycle Status Code`...)?
 - [ ] **Entity dùng chung nhiều source:** attribute tên công ty/tên tắt/tên tiếng Anh phải dùng **prefix entity** nhất quán (`Fund Management Company Name`, `Custodian Bank Short Name`) — KHÔNG dùng `Full Name` / `Abbreviation` / `English Name` cho entity shared.
 - [ ] Format `nullable` nhất quán: `true`/`false` — không dùng `Yes`/`No`.

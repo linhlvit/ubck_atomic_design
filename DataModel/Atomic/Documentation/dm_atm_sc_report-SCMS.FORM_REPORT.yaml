@@ -1,0 +1,499 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-sc_report-SCMS.FORM_REPORT
+  logical_name: Securities Company Report
+  physical_name: sc_report
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Form Document"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: SCMS
+  description: |
+    Biểu mẫu báo cáo (định kỳ/bất thường/theo yêu cầu/CBTT) mà CTCK/Chi nhánh/VPĐD phải nộp UBCKNN — căn cứ pháp lý, phiên bản, phân cấp biểu mẫu cha-con. BCV Concept sửa theo tiền lệ IDS (2026-09-15, xem 7e #22) — trước đây dùng term tự đặt không có thật trong BCV. Đổi tên từ "Securities Company Form
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-FORM_REPORT
+
+attributes:
+  - name: Securities Company Report Id
+    physical_name: sc_rpt_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: FORM_REPORT
+    source_column: SCMS.FORM_REPORT.ID
+    comment: "PK surrogate. BCV: \"[Documentation] Form Document\". Biểu mẫu báo cáo CTCK/CN/VPĐD phải nộp UBCKNN. Hash: hash_id('SCMS_FORM_REPORT', ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Securities Company Report Code
+    physical_name: sc_rpt_code
+    business_meaning: Khóa chính của bản ghi (ID tự tăng hoặc UUID). BK của entity.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_REPORT
+    source_column: SCMS.FORM_REPORT.ID
+    comment: "BK chính. Dùng ID kỹ thuật trực tiếp (NUMBER(10) — ETL convert sang string) theo chỉ đạo Data Modeler (2026-07-10) — giúp hash 3 cột tự tham chiếu (PARENT_ID/FORM_REPORT_ID/NEXT_FORM_ID) nhất quán, không cần self-join."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Code
+    physical_name: rpt_code
+    business_meaning: "Mã báo cáo/biểu mẫu (VD: BCTC-Q, ATCT-T)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_REPORT
+    source_column: SCMS.FORM_REPORT.REPORT_CODE
+    comment: "Trường nghiệp vụ, map 1:1 theo chỉ đạo Data Modeler (2026-07-10) — không còn là BK (BK nay dùng ID kỹ thuật, xem Securities Company Report Code)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_REPORT
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'SCMS_FORM_REPORT'"
+    etl_derived_value: SCMS_FORM_REPORT
+
+  - name: Securities Company Report Name
+    physical_name: sc_rpt_nm
+    business_meaning: Tên báo cáo/biểu mẫu.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_REPORT
+    source_column: SCMS.FORM_REPORT.REPORT_NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Legal Basis
+    physical_name: legal_basis
+    business_meaning: "Căn cứ pháp lý (tên/số thông tư, nghị định áp dụng)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_REPORT
+    source_column: SCMS.FORM_REPORT.LEGAL_BASIS
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Group
+    physical_name: rpt_group
+    business_meaning: Nhóm báo cáo (phân nhóm theo chức năng/đối tượng).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_REPORT
+    source_column: SCMS.FORM_REPORT.REPORT_GROUP
+    comment: "Giữ Text vì mô tả nguồn không liệt kê tập giá trị cố định — cần profile dữ liệu, có thể chuyển sang Classification Value nếu phát hiện tập giá trị hữu hạn."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Disclosure Required Indicator
+    physical_name: disclosure_required_ind
+    business_meaning: "Có phải công bố thông tin khi nộp báo cáo: 1 = Có; 0 = Không."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_REPORT
+    source_column: SCMS.FORM_REPORT.REQUIRES_DISCLOSURE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Import Required Indicator
+    physical_name: import_required_ind
+    business_meaning: "Có yêu cầu nhập liệu qua file Excel: 1 = Có; 0 = Không."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_REPORT
+    source_column: SCMS.FORM_REPORT.REQUIRES_IMPORT
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Attachment Path
+    physical_name: attachment_path
+    business_meaning: Đường dẫn file đính kèm trên hệ thống lưu trữ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_REPORT
+    source_column: SCMS.FORM_REPORT.ATTACHMENT_PATH
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: description
+    business_meaning: Mô tả chi tiết nội dung/mục đích của bản ghi.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_REPORT
+    source_column: SCMS.FORM_REPORT.DESCRIPTION
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Type Code
+    physical_name: rpt_tp_code
+    business_meaning: "Loại báo cáo: INPUT, OUTPUT."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_REPORT
+    source_column: SCMS.FORM_REPORT.REPORT_TYPE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Version Number
+    physical_name: version_nbr
+    business_meaning: "Số phiên bản (biểu mẫu, bản ghi) dùng cho optimistic locking."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_REPORT
+    source_column: SCMS.FORM_REPORT.VERSION
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Version Date
+    physical_name: version_dt
+    business_meaning: Ngày của phiên bản khi đưa vào sử dụng.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_REPORT
+    source_column: SCMS.FORM_REPORT.VERSION_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Sender Entity Code
+    physical_name: sender_entity_code
+    business_meaning: Loại đơn vị gửi báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_REPORT
+    source_column: SCMS.FORM_REPORT.SENDER_ENTITY
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Parent Securities Company Report Id
+    physical_name: parent_sc_rpt_id
+    business_meaning: "FK -> form_report: Biểu mẫu báo cáo cha."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_REPORT
+    source_column: SCMS.FORM_REPORT.FORM_REPORT_ID
+    comment: "FK target: sc_report.sc_report_id. Self-reference (biểu mẫu liên quan, khác PARENT_ID phân cấp). Hash: hash_id('SCMS_FORM_REPORT', FORM_REPORT_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Parent Securities Company Report Code
+    physical_name: parent_sc_rpt_code
+    business_meaning: Mã biểu mẫu báo cáo cha.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_REPORT
+    source_column: SCMS.FORM_REPORT.FORM_REPORT_ID
+    comment: "Lookup pair: sc_report.sc_report_code. Pair with Parent Securities Company Report Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Style Code
+    physical_name: rpt_style_code
+    business_meaning: "Phong cách báo cáo: 0 = Báo cáo đầu vào (nhập liệu); 1 = Báo cáo đầu ra (xuất dữ liệu)."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_REPORT
+    source_column: SCMS.FORM_REPORT.REPORT_STYLE
+    comment: "SCHEMA_CODE=SCMS.FORM_REPORT.REPORT_STYLE"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Disclosure News Type Code
+    physical_name: disclosure_news_tp_code
+    business_meaning: "Loại tin CBTT tạo ra khi gửi báo cáo: 1 = Định kỳ; 2 = Bất thường; 3 = Theo yêu cầu."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_REPORT
+    source_column: SCMS.FORM_REPORT.DISCLOSURE_NEWS_TYPE
+    comment: "SCHEMA_CODE=SCMS.DISCLOSURE_REPORT.NEWS_TYPE"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Next Securities Company Report Id
+    physical_name: next_sc_rpt_id
+    business_meaning: BM ID báo cáo tiếp theo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_REPORT
+    source_column: SCMS.FORM_REPORT.NEXT_FORM_ID
+    comment: "FK target: sc_report.sc_report_id. Self-reference (biểu mẫu tiếp theo trong chuỗi). FK suy luận — không có key:FK khai báo trong BRD nhưng mô tả gốc xác nhận trỏ về FORM_REPORT. Hash: hash_id('SCMS_FORM_REPORT', NEXT_FORM_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Next Securities Company Report Code
+    physical_name: next_sc_rpt_code
+    business_meaning: Mã biểu mẫu báo cáo tiếp theo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_REPORT
+    source_column: SCMS.FORM_REPORT.NEXT_FORM_ID
+    comment: "Lookup pair: sc_report.sc_report_code. Pair with Next Securities Company Report Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Legacy Report Type Code
+    physical_name: legacy_rpt_tp_code
+    business_meaning: Mã loại báo cáo hệ thống cũ (để tìm kiếm theo liên thông với hệ thống 334).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_REPORT
+    source_column: SCMS.FORM_REPORT.LEGACY_REPORT_TYPE
+    comment: "Mã tham chiếu hệ thống cũ (334) — giữ dạng Text, không có Classification Value quản lý trên Atomic."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Excel Template Path
+    physical_name: excel_template_path
+    business_meaning: Đường dẫn file template Excel (mô tả gốc BRD trống).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_REPORT
+    source_column: SCMS.FORM_REPORT.EXCEL_TEMPLATE_PATH
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Summary Indicator
+    physical_name: summary_ind
+    business_meaning: Cột summary (mô tả gốc BRD trống).
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_REPORT
+    source_column: SCMS.FORM_REPORT.SUMMARY
+    comment: "Map 1:1 theo chỉ đạo Data Modeler (2026-07-10). Mô tả gốc BRD trống — cần xác nhận ý nghĩa nghiệp vụ với BA khi có điều kiện; tạm gán Boolean theo cấu trúc NUMBER(1) tương tự các cờ khác trong bảng."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Input Report Indicator
+    physical_name: input_rpt_ind
+    business_meaning: "Cờ là báo cáo đầu vào do đơn vị nộp: 1=Đầu vào, 0=Đầu ra."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_REPORT
+    source_column: SCMS.FORM_REPORT.INPUT_REPORT
+    comment: "Map 1:1 theo chỉ đạo Data Modeler (2026-07-10) — không coi là trùng lặp với Report Style Code (REPORT_STYLE, giá trị đảo ngược)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: "Ghi chú bổ sung, không bắt buộc."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_REPORT
+    source_column: SCMS.FORM_REPORT.NOTE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Signature Type Code
+    physical_name: signature_tp_code
+    business_meaning: "Loại chữ ký yêu cầu: DIEN_TU = Chữ ký điện tử; SO_HOA = Số hóa/upload file ký; NONE = Không yêu cầu chữ ký."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_REPORT
+    source_column: SCMS.FORM_REPORT.SIGNATURE_TYPE
+    comment: "SCHEMA_CODE=SCMS.FORM_REPORT.SIGNATURE_TYPE"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Eform Enabled Indicator
+    physical_name: eform_enabled_ind
+    business_meaning: "Cờ có eform (biểu mẫu điện tử tương tác): 1=Có, 0=Không."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_REPORT
+    source_column: SCMS.FORM_REPORT.EFORM_ENABLED
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Structure Format
+    physical_name: structure_format
+    business_meaning: Định dạng cấu trúc dữ liệu của biểu mẫu (mô tả gốc BRD trống).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_REPORT
+    source_column: SCMS.FORM_REPORT.STRUCTURE_FORMAT
+    comment: "Giữ Text vì mô tả nguồn không liệt kê tập giá trị cố định — cần profile dữ liệu, có thể chuyển sang Classification Value nếu phát hiện tập giá trị hữu hạn (tương tự Report Group)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Primary Source Type Code
+    physical_name: primary_src_tp_code
+    business_meaning: Loại nguồn dữ liệu chính cấp cho biểu mẫu (mô tả gốc BRD trống).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_REPORT
+    source_column: SCMS.FORM_REPORT.PRIMARY_SOURCE_TYPE
+    comment: "Giữ Text vì mô tả nguồn không liệt kê tập giá trị cố định — cần profile dữ liệu, có thể chuyển sang Classification Value nếu phát hiện tập giá trị hữu hạn (VD: API/MANUAL/DB_QUERY). Liên quan Primary Source Api Id (pending) khi giá trị = API — xem pending_design.yaml."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Identifier Field
+    physical_name: identifier_field
+    business_meaning: Tên trường định danh dùng để xác định bản ghi trong dữ liệu nguồn của biểu mẫu (mô tả gốc BRD trống).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_REPORT
+    source_column: SCMS.FORM_REPORT.IDENTIFIER_FIELD
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Display Location
+    physical_name: display_location
+    business_meaning: Vị trí hiển thị biểu mẫu trên giao diện/hệ thống (mô tả gốc BRD trống).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_REPORT
+    source_column: SCMS.FORM_REPORT.DISPLAY_LOCATION
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Show Grand Total Row Indicator
+    physical_name: show_grand_total_row_ind
+    business_meaning: "Cờ hiển thị dòng tổng cộng (grand total) trên báo cáo: 1=Có, 0=Không (mô tả gốc BRD trống)."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_REPORT
+    source_column: SCMS.FORM_REPORT.SHOW_GRAND_TOTAL_ROW
+    comment: "Map 1:1 theo cùng convention Indicator NUMBER(1,0) đã dùng trong bảng này (Active/Summary/Input Report/Eform Enabled)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Primary Source Api Id
+    physical_name: primary_src_api_id
+    business_meaning: ID kỹ thuật của API dùng làm nguồn dữ liệu chính cho biểu mẫu (mô tả gốc BRD trống).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_REPORT
+    source_column: SCMS.FORM_REPORT.PRIMARY_SOURCE_API_ID
+    comment: "Map 1:1 theo chỉ đạo Data Modeler (2026-09-15) — không thiết kế cặp Id+Code/FK vì bảng đích (API_MAPPINGS hoặc SYS_FUNCTION_DETAIL) thuộc nhóm Operational/System ngoài phạm vi Atomic, cùng lý do với SYS_FUNCTION_ID. Giữ nguyên giá trị ID kỹ thuật gốc dạng denormalized text — không resolve/hash. Nguồn lưu dạng số (NUMBER(19,0)) — ETL convert sang string."
+    classification_context: null
+    etl_derived_value: null

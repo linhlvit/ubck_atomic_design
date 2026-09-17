@@ -1,5 +1,5 @@
 DATA DICTIONARY - SCHEMA: NHNCK_UAT
-Tong so bang: 95 | Materialized View: 0
+Tong so bang: 93 | Materialized View: 0
 ==============================================================================================================
 
 BANG: ACTION_LOGS
@@ -61,7 +61,9 @@ CREATED_AT                    DATE                YES
 UPDATED_AT                    DATE                YES                                      
 UPDATED_BY                    NUMBER(10,0)        YES                                      
 CREATED_BY                    NUMBER(10,0)        YES                                      
-MCDT_CONTENT_ITEM_ID          NVARCHAR2(100)      YES                                      ContentItemId hồ sơ TTHC trên DVC (MCĐT)
+MCDT_CONTENT_ITEM_ID          NVARCHAR2(100)      YES                                      
+MCDT_PERSONAL_SNAPSHOT        NCLOB               YES                                      
+RE_EXAM_SUBJECT               NVARCHAR2(1000)     YES                                      
 
 
 BANG: APPLICATION_ARCHIVES
@@ -110,6 +112,8 @@ APPRAISALED_AT                DATE                YES
 UPDATED_AT                    DATE                YES                                      
 CREATED_BY                    NUMBER(10,0)        YES                                      
 UPDATED_BY                    NUMBER(10,0)        YES                                      
+MCDT_MA_THANH_PHAN_HOSO       NVARCHAR2(200)      YES                                      
+SUBMIT_LATER                  NUMBER(1,0)         YES                                      
 
 
 BANG: APPLICATION_DOCUMENT_HISTORIES
@@ -344,6 +348,7 @@ CREATED_AT                    DATE                NO
 UPDATED_AT                    DATE                YES                                      
 FILES                         CLOB                YES                                      
 UPDATED_BY                    NUMBER(10,0)        YES                                      
+MCDT_MA_THANH_PHAN_HOSO       NVARCHAR2(200)      YES                                      
 
 
 BANG: APPLICATION_STATUSES
@@ -391,32 +396,6 @@ CERTIFICATE_ID                NUMBER(10,0)        NO      FK     CERTIFICATES.ID
 CODE                          NVARCHAR2(20)       YES                                      
 RECORD_TYPE                   NUMBER(10,0)        YES                                      
 DOCUMENT_TYPE                 NUMBER(10,0)        YES                                      
-
-
-BANG: BACKUPS
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER(10,0)        NO      PK                               
-FILE_NAME                     NVARCHAR2(510)      NO                                       
-FILE_PATH                     NVARCHAR2(2048)     NO                                       
-BACKUP_TYPE                   NUMBER(10,0)        YES                                      
-CREATED_AT                    DATE                NO                                       
-CREATED_BY                    NUMBER(10,0)        YES                                      
-
-
-BANG: BACKUP_SCHEDULES
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER(10,0)        NO      PK                               
-FILE_PATH                     NVARCHAR2(1000)     NO                                       
-SCHEDULE_TYPE                 NUMBER(10,0)        NO                                       
-HOUR                          NUMBER(10,0)        YES                                      
-MINUTE                        NUMBER(10,0)        YES                                      
-DAY                           NUMBER(10,0)        YES                                      
 
 
 BANG: BANKS
@@ -672,6 +651,33 @@ DOCUMENT_TYPE                 NUMBER(10,0)        YES
 IS_REQUIRED                   NUMBER(1,0)         YES                                      
 
 
+BANG: CONVERSION_PRACTICE_HISTORY_CONFIRMS
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO      PK                               
+REQUEST_ID                    NVARCHAR2(200)      NO                                       
+CONVERSION_REQUEST_ID         NUMBER(10,0)        YES                                      
+SOURCE_TYPE                   NUMBER(10,0)        NO                                       
+ORGANIZATION_ID               NUMBER(10,0)        YES                                      
+IDENTITY_NUMBER               NVARCHAR2(100)      YES                                      
+FULL_NAME                     NVARCHAR2(400)      YES                                      
+DECLARED_WORK_HISTORY         NCLOB               YES                                      
+STATUS                        NUMBER(10,0)        NO                                       
+RESULT                        NVARCHAR2(60)       YES                                      
+RESPONDED_BY                  NVARCHAR2(400)      YES                                      
+RESPONDED_AT                  DATE                YES                                      
+CORRECTED_WORK_HISTORY        NCLOB               YES                                      
+REASON                        NCLOB               YES                                      
+REQUESTED_BY                  NVARCHAR2(400)      YES                                      
+REQUESTED_AT                  DATE                YES                                      
+CREATED_BY                    NUMBER(10,0)        YES                                      
+CREATED_AT                    DATE                YES                                      
+UPDATED_BY                    NUMBER(10,0)        YES                                      
+UPDATED_AT                    DATE                YES                                      
+
+
 BANG: COUNTRIES
 Mo ta: 
 --------------------------------------------------------------------------------------------------------------
@@ -756,8 +762,8 @@ Mo ta:
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
 ID                            NUMBER(10,0)        NO      PK                               
-DEPARTMENT_ID                 NUMBER(10,0)        NO      FK     DEPARTMENTS.ID            
-DEPARTMENT_ACCESS_ID          NUMBER(10,0)        NO      FK     DEPARTMENTS.ID            
+DEPARTMENT_ID                 NUMBER(10,0)        NO      FK     DEPARTMENTS.ID                                       
+DEPARTMENT_ACCESS_ID          NUMBER(10,0)        NO      FK     DEPARTMENTS.ID                                       
 
 
 BANG: DIGITAL_CERTIFICATES
@@ -940,6 +946,7 @@ DECISION_ID                   NUMBER(10,0)        YES
 BANK_ID                       NUMBER(10,0)        YES     FK     BANKS.ID                  
 BANK_ACCOUNT_NUMBER           NVARCHAR2(100)      YES                                      
 BANK_ACCOUNT_NAME             NVARCHAR2(510)      YES                                      
+RESULT_UPDATER_ID             NUMBER(10,0)        YES                                      
 
 
 BANG: EXAM_SESSION_FEES
@@ -1051,594 +1058,20 @@ REASON                        NVARCHAR2(4000)     YES
 UPDATED_BY                    NUMBER(10,0)        YES                                      
 
 
-BANG: NHNCKEXP0623031101
-Mo ta: Data Pump Master Table EXPORT                         SCHEMA                        
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ABORT_STEP                    NUMBER              YES                                      
-ACCESS_METHOD                 VARCHAR2(16)        YES                                      
-ANCESTOR_OBJECT_NAME          VARCHAR2(128)       YES                                      
-ANCESTOR_OBJECT_SCHEMA        VARCHAR2(128)       YES                                      
-ANCESTOR_OBJECT_TYPE          VARCHAR2(128)       YES                                      
-ANCESTOR_PROCESS_ORDER        NUMBER              YES                                      
-BASE_OBJECT_NAME              VARCHAR2(128)       YES                                      
-BASE_OBJECT_SCHEMA            VARCHAR2(128)       YES                                      
-BASE_OBJECT_TYPE              VARCHAR2(128)       YES                                      
-BASE_PROCESS_ORDER            NUMBER              YES                                      
-BLOCK_SIZE                    NUMBER              YES                                      
-CLUSTER_OK                    NUMBER              YES                                      
-COMPLETED_BYTES               NUMBER              YES                                      
-COMPLETED_ROWS                NUMBER              YES                                      
-COMPLETION_TIME               DATE                YES                                      
-CONTROL_QUEUE                 VARCHAR2(128)       YES                                      
-CREATION_LEVEL                NUMBER              YES                                      
-CREATION_TIME                 DATE                YES                                      
-CUMULATIVE_TIME               NUMBER              YES                                      
-DATA_BUFFER_SIZE              NUMBER              YES                                      
-DATA_IO                       NUMBER              YES                                      
-DATAOBJ_NUM                   NUMBER              YES                                      
-DB_VERSION                    VARCHAR2(60)        YES                                      
-DEGREE                        NUMBER              YES                                      
-DOMAIN_PROCESS_ORDER          NUMBER              YES                                      
-DUMP_ALLOCATION               NUMBER              YES                                      
-DUMP_FILEID                   NUMBER              YES                                      
-DUMP_LENGTH                   NUMBER              YES                                      
-DUMP_ORIG_LENGTH              NUMBER              YES                                      
-DUMP_POSITION                 NUMBER              YES                                      
-DUPLICATE                     NUMBER              YES                                      
-ELAPSED_TIME                  NUMBER              YES                                      
-ERROR_COUNT                   NUMBER              YES                                      
-EXTEND_SIZE                   NUMBER              YES                                      
-FILE_MAX_SIZE                 NUMBER              YES                                      
-FILE_NAME                     VARCHAR2(4000)      YES                                      
-FILE_TYPE                     NUMBER              YES                                      
-FLAGS                         NUMBER              YES                                      
-GRANTOR                       VARCHAR2(128)       YES                                      
-GRANULES                      NUMBER              YES                                      
-GUID                          RAW(16)             YES                                      
-IN_PROGRESS                   CHAR(1)             YES                                      
-INSTANCE                      VARCHAR2(60)        YES                                      
-INSTANCE_ID                   NUMBER              YES                                      
-IS_DEFAULT                    NUMBER              YES                                      
-JOB_MODE                      VARCHAR2(21)        YES                                      
-JOB_VERSION                   VARCHAR2(60)        YES                                      
-LAST_FILE                     NUMBER              YES                                      
-LAST_UPDATE                   DATE                YES                                      
-LOAD_METHOD                   NUMBER              YES                                      
-METADATA_BUFFER_SIZE          NUMBER              YES                                      
-METADATA_IO                   NUMBER              YES                                      
-NAME                          VARCHAR2(128)       YES                                      
-OBJECT_INT_OID                VARCHAR2(130)       YES                                      
-OBJECT_LONG_NAME              VARCHAR2(4000)      YES                                      
-OBJECT_NAME                   VARCHAR2(200)       YES                                      
-OBJECT_NUMBER                 NUMBER              YES                                      
-OBJECT_PATH_SEQNO             NUMBER              YES                                      
-OBJECT_ROW                    NUMBER              YES                                      
-OBJECT_SCHEMA                 VARCHAR2(128)       YES                                      
-OBJECT_TABLESPACE             VARCHAR2(128)       YES                                      
-OBJECT_TYPE                   VARCHAR2(128)       YES                                      
-OBJECT_TYPE_PATH              VARCHAR2(200)       YES                                      
-OLD_VALUE                     VARCHAR2(4000)      YES                                      
-OPERATION                     VARCHAR2(8)         YES                                      
-OPTION_TAG                    VARCHAR2(128)       YES                                      
-ORIG_BASE_OBJECT_NAME         VARCHAR2(128)       YES                                      
-ORIG_BASE_OBJECT_SCHEMA       VARCHAR2(128)       YES                                      
-ORIGINAL_OBJECT_NAME          VARCHAR2(128)       YES                                      
-ORIGINAL_OBJECT_SCHEMA        VARCHAR2(128)       YES                                      
-PACKET_NUMBER                 NUMBER              YES                                      
-PARALLELIZATION               NUMBER              YES                                      
-PARENT_OBJECT_NAME            VARCHAR2(128)       YES                                      
-PARENT_OBJECT_SCHEMA          VARCHAR2(128)       YES                                      
-PARENT_PROCESS_ORDER          NUMBER              YES                                      
-PARTITION_NAME                VARCHAR2(128)       YES                                      
-PHASE                         NUMBER              YES                                      
-PLATFORM                      VARCHAR2(101)       YES                                      
-PROCESS_NAME                  VARCHAR2(128)       YES                                      
-PROCESS_ORDER                 NUMBER              YES                                      
-PROCESSING_STATE              CHAR(1)             YES                                      
-PROCESSING_STATUS             CHAR(1)             YES                                      
-PROPERTY                      NUMBER              YES                                      
-PROXY_SCHEMA                  VARCHAR2(128)       YES                                      
-PROXY_VIEW                    VARCHAR2(128)       YES                                      
-QUEUE_TABNUM                  NUMBER              YES                                      
-REMOTE_LINK                   VARCHAR2(128)       YES                                      
-SCN                           NUMBER              YES                                      
-SEED                          NUMBER              YES                                      
-SERVICE_NAME                  VARCHAR2(64)        YES                                      
-SIZE_ESTIMATE                 NUMBER              YES                                      
-SRC_COMPAT                    VARCHAR2(60)        YES                                      
-START_TIME                    DATE                YES                                      
-STATE                         VARCHAR2(12)        YES                                      
-STATUS_QUEUE                  VARCHAR2(128)       YES                                      
-SUBPARTITION_NAME             VARCHAR2(128)       YES                                      
-TARGET_XML_CLOB               CLOB                YES                                      
-TDE_REWRAPPED_KEY             RAW(2000)           YES                                      
-TEMPLATE_TABLE                VARCHAR2(128)       YES                                      
-TIMEZONE                      VARCHAR2(64)        YES                                      
-TOTAL_BYTES                   NUMBER              YES                                      
-TRIGFLAG                      NUMBER              YES                                      
-UNLOAD_METHOD                 NUMBER              YES                                      
-USER_DIRECTORY                VARCHAR2(4000)      YES                                      
-USER_FILE_NAME                VARCHAR2(4000)      YES                                      
-USER_NAME                     VARCHAR2(128)       YES                                      
-VALUE_N                       NUMBER              YES                                      
-VALUE_T                       VARCHAR2(4000)      YES                                      
-VERSION                       NUMBER              YES                                      
-WORK_ITEM                     VARCHAR2(21)        YES                                      
-XML_CLOB                      CLOB                YES                                      
-
-
-BANG: NHNCKEXP0630015346
-Mo ta: Data Pump Master Table EXPORT                         SCHEMA                        
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ABORT_STEP                    NUMBER              YES                                      
-ACCESS_METHOD                 VARCHAR2(16)        YES                                      
-ANCESTOR_OBJECT_NAME          VARCHAR2(128)       YES                                      
-ANCESTOR_OBJECT_SCHEMA        VARCHAR2(128)       YES                                      
-ANCESTOR_OBJECT_TYPE          VARCHAR2(128)       YES                                      
-ANCESTOR_PROCESS_ORDER        NUMBER              YES                                      
-BASE_OBJECT_NAME              VARCHAR2(128)       YES                                      
-BASE_OBJECT_SCHEMA            VARCHAR2(128)       YES                                      
-BASE_OBJECT_TYPE              VARCHAR2(128)       YES                                      
-BASE_PROCESS_ORDER            NUMBER              YES                                      
-BLOCK_SIZE                    NUMBER              YES                                      
-CLUSTER_OK                    NUMBER              YES                                      
-COMPLETED_BYTES               NUMBER              YES                                      
-COMPLETED_ROWS                NUMBER              YES                                      
-COMPLETION_TIME               DATE                YES                                      
-CONTROL_QUEUE                 VARCHAR2(128)       YES                                      
-CREATION_LEVEL                NUMBER              YES                                      
-CREATION_TIME                 DATE                YES                                      
-CUMULATIVE_TIME               NUMBER              YES                                      
-DATA_BUFFER_SIZE              NUMBER              YES                                      
-DATA_IO                       NUMBER              YES                                      
-DATAOBJ_NUM                   NUMBER              YES                                      
-DB_VERSION                    VARCHAR2(60)        YES                                      
-DEGREE                        NUMBER              YES                                      
-DOMAIN_PROCESS_ORDER          NUMBER              YES                                      
-DUMP_ALLOCATION               NUMBER              YES                                      
-DUMP_FILEID                   NUMBER              YES                                      
-DUMP_LENGTH                   NUMBER              YES                                      
-DUMP_ORIG_LENGTH              NUMBER              YES                                      
-DUMP_POSITION                 NUMBER              YES                                      
-DUPLICATE                     NUMBER              YES                                      
-ELAPSED_TIME                  NUMBER              YES                                      
-ERROR_COUNT                   NUMBER              YES                                      
-EXTEND_SIZE                   NUMBER              YES                                      
-FILE_MAX_SIZE                 NUMBER              YES                                      
-FILE_NAME                     VARCHAR2(4000)      YES                                      
-FILE_TYPE                     NUMBER              YES                                      
-FLAGS                         NUMBER              YES                                      
-GRANTOR                       VARCHAR2(128)       YES                                      
-GRANULES                      NUMBER              YES                                      
-GUID                          RAW(16)             YES                                      
-IN_PROGRESS                   CHAR(1)             YES                                      
-INSTANCE                      VARCHAR2(60)        YES                                      
-INSTANCE_ID                   NUMBER              YES                                      
-IS_DEFAULT                    NUMBER              YES                                      
-JOB_MODE                      VARCHAR2(21)        YES                                      
-JOB_VERSION                   VARCHAR2(60)        YES                                      
-LAST_FILE                     NUMBER              YES                                      
-LAST_UPDATE                   DATE                YES                                      
-LOAD_METHOD                   NUMBER              YES                                      
-METADATA_BUFFER_SIZE          NUMBER              YES                                      
-METADATA_IO                   NUMBER              YES                                      
-NAME                          VARCHAR2(128)       YES                                      
-OBJECT_INT_OID                VARCHAR2(130)       YES                                      
-OBJECT_LONG_NAME              VARCHAR2(4000)      YES                                      
-OBJECT_NAME                   VARCHAR2(200)       YES                                      
-OBJECT_NUMBER                 NUMBER              YES                                      
-OBJECT_PATH_SEQNO             NUMBER              YES                                      
-OBJECT_ROW                    NUMBER              YES                                      
-OBJECT_SCHEMA                 VARCHAR2(128)       YES                                      
-OBJECT_TABLESPACE             VARCHAR2(128)       YES                                      
-OBJECT_TYPE                   VARCHAR2(128)       YES                                      
-OBJECT_TYPE_PATH              VARCHAR2(200)       YES                                      
-OLD_VALUE                     VARCHAR2(4000)      YES                                      
-OPERATION                     VARCHAR2(8)         YES                                      
-OPTION_TAG                    VARCHAR2(128)       YES                                      
-ORIG_BASE_OBJECT_NAME         VARCHAR2(128)       YES                                      
-ORIG_BASE_OBJECT_SCHEMA       VARCHAR2(128)       YES                                      
-ORIGINAL_OBJECT_NAME          VARCHAR2(128)       YES                                      
-ORIGINAL_OBJECT_SCHEMA        VARCHAR2(128)       YES                                      
-PACKET_NUMBER                 NUMBER              YES                                      
-PARALLELIZATION               NUMBER              YES                                      
-PARENT_OBJECT_NAME            VARCHAR2(128)       YES                                      
-PARENT_OBJECT_SCHEMA          VARCHAR2(128)       YES                                      
-PARENT_PROCESS_ORDER          NUMBER              YES                                      
-PARTITION_NAME                VARCHAR2(128)       YES                                      
-PHASE                         NUMBER              YES                                      
-PLATFORM                      VARCHAR2(101)       YES                                      
-PROCESS_NAME                  VARCHAR2(128)       YES                                      
-PROCESS_ORDER                 NUMBER              YES                                      
-PROCESSING_STATE              CHAR(1)             YES                                      
-PROCESSING_STATUS             CHAR(1)             YES                                      
-PROPERTY                      NUMBER              YES                                      
-PROXY_SCHEMA                  VARCHAR2(128)       YES                                      
-PROXY_VIEW                    VARCHAR2(128)       YES                                      
-QUEUE_TABNUM                  NUMBER              YES                                      
-REMOTE_LINK                   VARCHAR2(128)       YES                                      
-SCN                           NUMBER              YES                                      
-SEED                          NUMBER              YES                                      
-SERVICE_NAME                  VARCHAR2(64)        YES                                      
-SIZE_ESTIMATE                 NUMBER              YES                                      
-SRC_COMPAT                    VARCHAR2(60)        YES                                      
-START_TIME                    DATE                YES                                      
-STATE                         VARCHAR2(12)        YES                                      
-STATUS_QUEUE                  VARCHAR2(128)       YES                                      
-SUBPARTITION_NAME             VARCHAR2(128)       YES                                      
-TARGET_XML_CLOB               CLOB                YES                                      
-TDE_REWRAPPED_KEY             RAW(2000)           YES                                      
-TEMPLATE_TABLE                VARCHAR2(128)       YES                                      
-TIMEZONE                      VARCHAR2(64)        YES                                      
-TOTAL_BYTES                   NUMBER              YES                                      
-TRIGFLAG                      NUMBER              YES                                      
-UNLOAD_METHOD                 NUMBER              YES                                      
-USER_DIRECTORY                VARCHAR2(4000)      YES                                      
-USER_FILE_NAME                VARCHAR2(4000)      YES                                      
-USER_NAME                     VARCHAR2(128)       YES                                      
-VALUE_N                       NUMBER              YES                                      
-VALUE_T                       VARCHAR2(4000)      YES                                      
-VERSION                       NUMBER              YES                                      
-WORK_ITEM                     VARCHAR2(21)        YES                                      
-XML_CLOB                      CLOB                YES                                      
-
-
-BANG: NHNCKEXP0630015456
-Mo ta: Data Pump Master Table EXPORT                         SCHEMA                        
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ABORT_STEP                    NUMBER              YES                                      
-ACCESS_METHOD                 VARCHAR2(16)        YES                                      
-ANCESTOR_OBJECT_NAME          VARCHAR2(128)       YES                                      
-ANCESTOR_OBJECT_SCHEMA        VARCHAR2(128)       YES                                      
-ANCESTOR_OBJECT_TYPE          VARCHAR2(128)       YES                                      
-ANCESTOR_PROCESS_ORDER        NUMBER              YES                                      
-BASE_OBJECT_NAME              VARCHAR2(128)       YES                                      
-BASE_OBJECT_SCHEMA            VARCHAR2(128)       YES                                      
-BASE_OBJECT_TYPE              VARCHAR2(128)       YES                                      
-BASE_PROCESS_ORDER            NUMBER              YES                                      
-BLOCK_SIZE                    NUMBER              YES                                      
-CLUSTER_OK                    NUMBER              YES                                      
-COMPLETED_BYTES               NUMBER              YES                                      
-COMPLETED_ROWS                NUMBER              YES                                      
-COMPLETION_TIME               DATE                YES                                      
-CONTROL_QUEUE                 VARCHAR2(128)       YES                                      
-CREATION_LEVEL                NUMBER              YES                                      
-CREATION_TIME                 DATE                YES                                      
-CUMULATIVE_TIME               NUMBER              YES                                      
-DATA_BUFFER_SIZE              NUMBER              YES                                      
-DATA_IO                       NUMBER              YES                                      
-DATAOBJ_NUM                   NUMBER              YES                                      
-DB_VERSION                    VARCHAR2(60)        YES                                      
-DEGREE                        NUMBER              YES                                      
-DOMAIN_PROCESS_ORDER          NUMBER              YES                                      
-DUMP_ALLOCATION               NUMBER              YES                                      
-DUMP_FILEID                   NUMBER              YES                                      
-DUMP_LENGTH                   NUMBER              YES                                      
-DUMP_ORIG_LENGTH              NUMBER              YES                                      
-DUMP_POSITION                 NUMBER              YES                                      
-DUPLICATE                     NUMBER              YES                                      
-ELAPSED_TIME                  NUMBER              YES                                      
-ERROR_COUNT                   NUMBER              YES                                      
-EXTEND_SIZE                   NUMBER              YES                                      
-FILE_MAX_SIZE                 NUMBER              YES                                      
-FILE_NAME                     VARCHAR2(4000)      YES                                      
-FILE_TYPE                     NUMBER              YES                                      
-FLAGS                         NUMBER              YES                                      
-GRANTOR                       VARCHAR2(128)       YES                                      
-GRANULES                      NUMBER              YES                                      
-GUID                          RAW(16)             YES                                      
-IN_PROGRESS                   CHAR(1)             YES                                      
-INSTANCE                      VARCHAR2(60)        YES                                      
-INSTANCE_ID                   NUMBER              YES                                      
-IS_DEFAULT                    NUMBER              YES                                      
-JOB_MODE                      VARCHAR2(21)        YES                                      
-JOB_VERSION                   VARCHAR2(60)        YES                                      
-LAST_FILE                     NUMBER              YES                                      
-LAST_UPDATE                   DATE                YES                                      
-LOAD_METHOD                   NUMBER              YES                                      
-METADATA_BUFFER_SIZE          NUMBER              YES                                      
-METADATA_IO                   NUMBER              YES                                      
-NAME                          VARCHAR2(128)       YES                                      
-OBJECT_INT_OID                VARCHAR2(130)       YES                                      
-OBJECT_LONG_NAME              VARCHAR2(4000)      YES                                      
-OBJECT_NAME                   VARCHAR2(200)       YES                                      
-OBJECT_NUMBER                 NUMBER              YES                                      
-OBJECT_PATH_SEQNO             NUMBER              YES                                      
-OBJECT_ROW                    NUMBER              YES                                      
-OBJECT_SCHEMA                 VARCHAR2(128)       YES                                      
-OBJECT_TABLESPACE             VARCHAR2(128)       YES                                      
-OBJECT_TYPE                   VARCHAR2(128)       YES                                      
-OBJECT_TYPE_PATH              VARCHAR2(200)       YES                                      
-OLD_VALUE                     VARCHAR2(4000)      YES                                      
-OPERATION                     VARCHAR2(8)         YES                                      
-OPTION_TAG                    VARCHAR2(128)       YES                                      
-ORIG_BASE_OBJECT_NAME         VARCHAR2(128)       YES                                      
-ORIG_BASE_OBJECT_SCHEMA       VARCHAR2(128)       YES                                      
-ORIGINAL_OBJECT_NAME          VARCHAR2(128)       YES                                      
-ORIGINAL_OBJECT_SCHEMA        VARCHAR2(128)       YES                                      
-PACKET_NUMBER                 NUMBER              YES                                      
-PARALLELIZATION               NUMBER              YES                                      
-PARENT_OBJECT_NAME            VARCHAR2(128)       YES                                      
-PARENT_OBJECT_SCHEMA          VARCHAR2(128)       YES                                      
-PARENT_PROCESS_ORDER          NUMBER              YES                                      
-PARTITION_NAME                VARCHAR2(128)       YES                                      
-PHASE                         NUMBER              YES                                      
-PLATFORM                      VARCHAR2(101)       YES                                      
-PROCESS_NAME                  VARCHAR2(128)       YES                                      
-PROCESS_ORDER                 NUMBER              YES                                      
-PROCESSING_STATE              CHAR(1)             YES                                      
-PROCESSING_STATUS             CHAR(1)             YES                                      
-PROPERTY                      NUMBER              YES                                      
-PROXY_SCHEMA                  VARCHAR2(128)       YES                                      
-PROXY_VIEW                    VARCHAR2(128)       YES                                      
-QUEUE_TABNUM                  NUMBER              YES                                      
-REMOTE_LINK                   VARCHAR2(128)       YES                                      
-SCN                           NUMBER              YES                                      
-SEED                          NUMBER              YES                                      
-SERVICE_NAME                  VARCHAR2(64)        YES                                      
-SIZE_ESTIMATE                 NUMBER              YES                                      
-SRC_COMPAT                    VARCHAR2(60)        YES                                      
-START_TIME                    DATE                YES                                      
-STATE                         VARCHAR2(12)        YES                                      
-STATUS_QUEUE                  VARCHAR2(128)       YES                                      
-SUBPARTITION_NAME             VARCHAR2(128)       YES                                      
-TARGET_XML_CLOB               CLOB                YES                                      
-TDE_REWRAPPED_KEY             RAW(2000)           YES                                      
-TEMPLATE_TABLE                VARCHAR2(128)       YES                                      
-TIMEZONE                      VARCHAR2(64)        YES                                      
-TOTAL_BYTES                   NUMBER              YES                                      
-TRIGFLAG                      NUMBER              YES                                      
-UNLOAD_METHOD                 NUMBER              YES                                      
-USER_DIRECTORY                VARCHAR2(4000)      YES                                      
-USER_FILE_NAME                VARCHAR2(4000)      YES                                      
-USER_NAME                     VARCHAR2(128)       YES                                      
-VALUE_N                       NUMBER              YES                                      
-VALUE_T                       VARCHAR2(4000)      YES                                      
-VERSION                       NUMBER              YES                                      
-WORK_ITEM                     VARCHAR2(21)        YES                                      
-XML_CLOB                      CLOB                YES                                      
-
-
-BANG: NHNCKEXP0630081612
-Mo ta: Data Pump Master Table EXPORT                         SCHEMA                        
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ABORT_STEP                    NUMBER              YES                                      
-ACCESS_METHOD                 VARCHAR2(16)        YES                                      
-ANCESTOR_OBJECT_NAME          VARCHAR2(128)       YES                                      
-ANCESTOR_OBJECT_SCHEMA        VARCHAR2(128)       YES                                      
-ANCESTOR_OBJECT_TYPE          VARCHAR2(128)       YES                                      
-ANCESTOR_PROCESS_ORDER        NUMBER              YES                                      
-BASE_OBJECT_NAME              VARCHAR2(128)       YES                                      
-BASE_OBJECT_SCHEMA            VARCHAR2(128)       YES                                      
-BASE_OBJECT_TYPE              VARCHAR2(128)       YES                                      
-BASE_PROCESS_ORDER            NUMBER              YES                                      
-BLOCK_SIZE                    NUMBER              YES                                      
-CLUSTER_OK                    NUMBER              YES                                      
-COMPLETED_BYTES               NUMBER              YES                                      
-COMPLETED_ROWS                NUMBER              YES                                      
-COMPLETION_TIME               DATE                YES                                      
-CONTROL_QUEUE                 VARCHAR2(128)       YES                                      
-CREATION_LEVEL                NUMBER              YES                                      
-CREATION_TIME                 DATE                YES                                      
-CUMULATIVE_TIME               NUMBER              YES                                      
-DATA_BUFFER_SIZE              NUMBER              YES                                      
-DATA_IO                       NUMBER              YES                                      
-DATAOBJ_NUM                   NUMBER              YES                                      
-DB_VERSION                    VARCHAR2(60)        YES                                      
-DEGREE                        NUMBER              YES                                      
-DOMAIN_PROCESS_ORDER          NUMBER              YES                                      
-DUMP_ALLOCATION               NUMBER              YES                                      
-DUMP_FILEID                   NUMBER              YES                                      
-DUMP_LENGTH                   NUMBER              YES                                      
-DUMP_ORIG_LENGTH              NUMBER              YES                                      
-DUMP_POSITION                 NUMBER              YES                                      
-DUPLICATE                     NUMBER              YES                                      
-ELAPSED_TIME                  NUMBER              YES                                      
-ERROR_COUNT                   NUMBER              YES                                      
-EXTEND_SIZE                   NUMBER              YES                                      
-FILE_MAX_SIZE                 NUMBER              YES                                      
-FILE_NAME                     VARCHAR2(4000)      YES                                      
-FILE_TYPE                     NUMBER              YES                                      
-FLAGS                         NUMBER              YES                                      
-GRANTOR                       VARCHAR2(128)       YES                                      
-GRANULES                      NUMBER              YES                                      
-GUID                          RAW(16)             YES                                      
-IN_PROGRESS                   CHAR(1)             YES                                      
-INSTANCE                      VARCHAR2(60)        YES                                      
-INSTANCE_ID                   NUMBER              YES                                      
-IS_DEFAULT                    NUMBER              YES                                      
-JOB_MODE                      VARCHAR2(21)        YES                                      
-JOB_VERSION                   VARCHAR2(60)        YES                                      
-LAST_FILE                     NUMBER              YES                                      
-LAST_UPDATE                   DATE                YES                                      
-LOAD_METHOD                   NUMBER              YES                                      
-METADATA_BUFFER_SIZE          NUMBER              YES                                      
-METADATA_IO                   NUMBER              YES                                      
-NAME                          VARCHAR2(128)       YES                                      
-OBJECT_INT_OID                VARCHAR2(130)       YES                                      
-OBJECT_LONG_NAME              VARCHAR2(4000)      YES                                      
-OBJECT_NAME                   VARCHAR2(200)       YES                                      
-OBJECT_NUMBER                 NUMBER              YES                                      
-OBJECT_PATH_SEQNO             NUMBER              YES                                      
-OBJECT_ROW                    NUMBER              YES                                      
-OBJECT_SCHEMA                 VARCHAR2(128)       YES                                      
-OBJECT_TABLESPACE             VARCHAR2(128)       YES                                      
-OBJECT_TYPE                   VARCHAR2(128)       YES                                      
-OBJECT_TYPE_PATH              VARCHAR2(200)       YES                                      
-OLD_VALUE                     VARCHAR2(4000)      YES                                      
-OPERATION                     VARCHAR2(8)         YES                                      
-OPTION_TAG                    VARCHAR2(128)       YES                                      
-ORIG_BASE_OBJECT_NAME         VARCHAR2(128)       YES                                      
-ORIG_BASE_OBJECT_SCHEMA       VARCHAR2(128)       YES                                      
-ORIGINAL_OBJECT_NAME          VARCHAR2(128)       YES                                      
-ORIGINAL_OBJECT_SCHEMA        VARCHAR2(128)       YES                                      
-PACKET_NUMBER                 NUMBER              YES                                      
-PARALLELIZATION               NUMBER              YES                                      
-PARENT_OBJECT_NAME            VARCHAR2(128)       YES                                      
-PARENT_OBJECT_SCHEMA          VARCHAR2(128)       YES                                      
-PARENT_PROCESS_ORDER          NUMBER              YES                                      
-PARTITION_NAME                VARCHAR2(128)       YES                                      
-PHASE                         NUMBER              YES                                      
-PLATFORM                      VARCHAR2(101)       YES                                      
-PROCESS_NAME                  VARCHAR2(128)       YES                                      
-PROCESS_ORDER                 NUMBER              YES                                      
-PROCESSING_STATE              CHAR(1)             YES                                      
-PROCESSING_STATUS             CHAR(1)             YES                                      
-PROPERTY                      NUMBER              YES                                      
-PROXY_SCHEMA                  VARCHAR2(128)       YES                                      
-PROXY_VIEW                    VARCHAR2(128)       YES                                      
-QUEUE_TABNUM                  NUMBER              YES                                      
-REMOTE_LINK                   VARCHAR2(128)       YES                                      
-SCN                           NUMBER              YES                                      
-SEED                          NUMBER              YES                                      
-SERVICE_NAME                  VARCHAR2(64)        YES                                      
-SIZE_ESTIMATE                 NUMBER              YES                                      
-SRC_COMPAT                    VARCHAR2(60)        YES                                      
-START_TIME                    DATE                YES                                      
-STATE                         VARCHAR2(12)        YES                                      
-STATUS_QUEUE                  VARCHAR2(128)       YES                                      
-SUBPARTITION_NAME             VARCHAR2(128)       YES                                      
-TARGET_XML_CLOB               CLOB                YES                                      
-TDE_REWRAPPED_KEY             RAW(2000)           YES                                      
-TEMPLATE_TABLE                VARCHAR2(128)       YES                                      
-TIMEZONE                      VARCHAR2(64)        YES                                      
-TOTAL_BYTES                   NUMBER              YES                                      
-TRIGFLAG                      NUMBER              YES                                      
-UNLOAD_METHOD                 NUMBER              YES                                      
-USER_DIRECTORY                VARCHAR2(4000)      YES                                      
-USER_FILE_NAME                VARCHAR2(4000)      YES                                      
-USER_NAME                     VARCHAR2(128)       YES                                      
-VALUE_N                       NUMBER              YES                                      
-VALUE_T                       VARCHAR2(4000)      YES                                      
-VERSION                       NUMBER              YES                                      
-WORK_ITEM                     VARCHAR2(21)        YES                                      
-XML_CLOB                      CLOB                YES                                      
-
-
-BANG: NHNCKIMP0702035842
+BANG: MCDT_RESULT_OUTBOX
 Mo ta: 
 --------------------------------------------------------------------------------------------------------------
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
-ABORT_STEP                    NUMBER              YES                                      
-ACCESS_METHOD                 VARCHAR2(16)        YES                                      
-ANCESTOR_OBJECT_NAME          VARCHAR2(128)       YES                                      
-ANCESTOR_OBJECT_SCHEMA        VARCHAR2(128)       YES                                      
-ANCESTOR_OBJECT_TYPE          VARCHAR2(128)       YES                                      
-ANCESTOR_PROCESS_ORDER        NUMBER              YES                                      
-BASE_OBJECT_NAME              VARCHAR2(128)       YES                                      
-BASE_OBJECT_SCHEMA            VARCHAR2(128)       YES                                      
-BASE_OBJECT_TYPE              VARCHAR2(128)       YES                                      
-BASE_PROCESS_ORDER            NUMBER              YES                                      
-BLOCK_SIZE                    NUMBER              YES                                      
-CLUSTER_OK                    NUMBER              YES                                      
-COMPLETED_BYTES               NUMBER              YES                                      
-COMPLETED_ROWS                NUMBER              YES                                      
-COMPLETION_TIME               DATE                YES                                      
-CONTROL_QUEUE                 VARCHAR2(128)       YES                                      
-CREATION_LEVEL                NUMBER              YES                                      
-CREATION_TIME                 DATE                YES                                      
-CUMULATIVE_TIME               NUMBER              YES                                      
-DATA_BUFFER_SIZE              NUMBER              YES                                      
-DATA_IO                       NUMBER              YES                                      
-DATAOBJ_NUM                   NUMBER              YES                                      
-DB_VERSION                    VARCHAR2(60)        YES                                      
-DEGREE                        NUMBER              YES                                      
-DOMAIN_PROCESS_ORDER          NUMBER              YES                                      
-DUMP_ALLOCATION               NUMBER              YES                                      
-DUMP_FILEID                   NUMBER              YES                                      
-DUMP_LENGTH                   NUMBER              YES                                      
-DUMP_ORIG_LENGTH              NUMBER              YES                                      
-DUMP_POSITION                 NUMBER              YES                                      
-DUPLICATE                     NUMBER              YES                                      
-ELAPSED_TIME                  NUMBER              YES                                      
-ERROR_COUNT                   NUMBER              YES                                      
-EXTEND_SIZE                   NUMBER              YES                                      
-FILE_MAX_SIZE                 NUMBER              YES                                      
-FILE_NAME                     VARCHAR2(4000)      YES                                      
-FILE_TYPE                     NUMBER              YES                                      
-FLAGS                         NUMBER              YES                                      
-GRANTOR                       VARCHAR2(128)       YES                                      
-GRANULES                      NUMBER              YES                                      
-GUID                          RAW(16)             YES                                      
-IN_PROGRESS                   CHAR(1)             YES                                      
-INSTANCE                      VARCHAR2(60)        YES                                      
-INSTANCE_ID                   NUMBER              YES                                      
-IS_DEFAULT                    NUMBER              YES                                      
-JOB_MODE                      VARCHAR2(21)        YES                                      
-JOB_VERSION                   VARCHAR2(60)        YES                                      
-LAST_FILE                     NUMBER              YES                                      
-LAST_UPDATE                   DATE                YES                                      
-LOAD_METHOD                   NUMBER              YES                                      
-METADATA_BUFFER_SIZE          NUMBER              YES                                      
-METADATA_IO                   NUMBER              YES                                      
-NAME                          VARCHAR2(128)       YES                                      
-OBJECT_INT_OID                VARCHAR2(130)       YES                                      
-OBJECT_LONG_NAME              VARCHAR2(4000)      YES                                      
-OBJECT_NAME                   VARCHAR2(200)       YES                                      
-OBJECT_NUMBER                 NUMBER              YES                                      
-OBJECT_PATH_SEQNO             NUMBER              YES                                      
-OBJECT_ROW                    NUMBER              YES                                      
-OBJECT_SCHEMA                 VARCHAR2(128)       YES                                      
-OBJECT_TABLESPACE             VARCHAR2(128)       YES                                      
-OBJECT_TYPE                   VARCHAR2(128)       YES                                      
-OBJECT_TYPE_PATH              VARCHAR2(200)       YES                                      
-OLD_VALUE                     VARCHAR2(4000)      YES                                      
-OPERATION                     VARCHAR2(8)         YES                                      
-OPTION_TAG                    VARCHAR2(128)       YES                                      
-ORIG_BASE_OBJECT_NAME         VARCHAR2(128)       YES                                      
-ORIG_BASE_OBJECT_SCHEMA       VARCHAR2(128)       YES                                      
-ORIGINAL_OBJECT_NAME          VARCHAR2(128)       YES                                      
-ORIGINAL_OBJECT_SCHEMA        VARCHAR2(128)       YES                                      
-PACKET_NUMBER                 NUMBER              YES                                      
-PARALLELIZATION               NUMBER              YES                                      
-PARENT_OBJECT_NAME            VARCHAR2(128)       YES                                      
-PARENT_OBJECT_SCHEMA          VARCHAR2(128)       YES                                      
-PARENT_PROCESS_ORDER          NUMBER              YES                                      
-PARTITION_NAME                VARCHAR2(128)       YES                                      
-PHASE                         NUMBER              YES                                      
-PLATFORM                      VARCHAR2(101)       YES                                      
-PROCESS_NAME                  VARCHAR2(128)       YES                                      
-PROCESS_ORDER                 NUMBER              YES                                      
-PROCESSING_STATE              CHAR(1)             YES                                      
-PROCESSING_STATUS             CHAR(1)             YES                                      
-PROPERTY                      NUMBER              YES                                      
-PROXY_SCHEMA                  VARCHAR2(128)       YES                                      
-PROXY_VIEW                    VARCHAR2(128)       YES                                      
-QUEUE_TABNUM                  NUMBER              YES                                      
-REMOTE_LINK                   VARCHAR2(128)       YES                                      
-SCN                           NUMBER              YES                                      
-SEED                          NUMBER              YES                                      
-SERVICE_NAME                  VARCHAR2(64)        YES                                      
-SIZE_ESTIMATE                 NUMBER              YES                                      
-SRC_COMPAT                    VARCHAR2(60)        YES                                      
-START_TIME                    DATE                YES                                      
-STATE                         VARCHAR2(12)        YES                                      
-STATUS_QUEUE                  VARCHAR2(128)       YES                                      
-SUBPARTITION_NAME             VARCHAR2(128)       YES                                      
-TARGET_XML_CLOB               CLOB                YES                                      
-TDE_REWRAPPED_KEY             RAW(2000)           YES                                      
-TEMPLATE_TABLE                VARCHAR2(128)       YES                                      
-TIMEZONE                      VARCHAR2(64)        YES                                      
-TOTAL_BYTES                   NUMBER              YES                                      
-TRIGFLAG                      NUMBER              YES                                      
-UNLOAD_METHOD                 NUMBER              YES                                      
-USER_DIRECTORY                VARCHAR2(4000)      YES                                      
-USER_FILE_NAME                VARCHAR2(4000)      YES                                      
-USER_NAME                     VARCHAR2(128)       YES                                      
-VALUE_N                       NUMBER              YES                                      
-VALUE_T                       VARCHAR2(4000)      YES                                      
-VERSION                       NUMBER              YES                                      
-WORK_ITEM                     VARCHAR2(21)        YES                                      
-XML_CLOB                      CLOB                YES                                      
+ID                            NUMBER(10,0)        NO      PK                               
+APPLICATION_ID                NUMBER(10,0)        NO                                       
+SENDER_IDENTITY               NVARCHAR2(100)      YES                                      
+STATUS                        VARCHAR2(80)        NO                                       
+ATTEMPTS                      NUMBER(10,0)        NO                                       
+NEXT_RETRY_AT                 DATE                NO                                       
+LAST_ERROR                    NVARCHAR2(4000)     YES                                      
+CREATED_AT                    DATE                NO                                       
+UPDATED_AT                    DATE                NO                                       
 
 
 BANG: NOTIFICATIONS
@@ -1714,6 +1147,7 @@ UPDATED_AT                    DATE                YES
 UPDATED_BY                    NUMBER(10,0)        YES                                      
 WEBSITE                       NVARCHAR2(4000)     YES                                      
 CHARTER_CAPITAL               NVARCHAR2(4000)     YES                                      
+TAX_CODE                      VARCHAR2(200)       YES                                      
 
 
 BANG: ORGANIZATION_REPORTS
@@ -1979,8 +1413,13 @@ STATUS_ACCOUNT                NUMBER(10,0)        NO
 PLACE_OF_BIRTH_COUNTRY_ID     NUMBER(10,0)        YES                                      
 PLACE_OF_BIRTH_PROVINCE_ID    NUMBER(10,0)        YES                                      
 PLACE_OF_BIRTH_DISTRICT_ID    NUMBER(10,0)        YES                                      
-SSO_USER_ID                   VARCHAR2(64)        YES                                      UUID user tren IAM (provisioning SSO)
-SSO_SYNCED                    NUMBER(1,0)         NO                                       0=chua chuyen SSO, 1=da chuyen SSO
+SSO_USER_ID                   VARCHAR2(64)        YES                                      
+SSO_SYNCED                    NUMBER(1,0)         NO                                       
+PREVIOUS_IDENTITY_ISSUE_DATE  DATE                YES                                      
+PREVIOUS_IDENTITY_ISSUE_PLACE NVARCHAR2(510)      YES                                      
+PASSPORT_NUMBER               NVARCHAR2(100)      YES                                      
+PASSPORT_ISSUE_DATE           DATE                YES                                      
+PASSPORT_ISSUE_PLACE          NVARCHAR2(510)      YES                                      
 
 
 BANG: PROFESSIONAL_HISTORIES
@@ -2184,6 +1623,145 @@ CREATED_BY                    NUMBER(10,0)        YES
 UPDATED_BY                    NUMBER(10,0)        YES                                      
 
 
+BANG: SIGNING_AUDIT
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               
+SESSION_ID                    VARCHAR2(144)       YES                                      
+ACTION                        VARCHAR2(128)       NO                                       
+USER_REF                      VARCHAR2(512)       YES                                      
+DOCUMENT_PATH                 VARCHAR2(2048)      YES                                      
+CERT_SERIAL                   VARCHAR2(256)       YES                                      
+SUCCESS                       NUMBER(1,0)         NO                                       
+DETAIL                        VARCHAR2(4000)      YES                                      
+CREATED_AT                    TIMESTAMP(6)        NO                                       
+
+
+BANG: SIGNING_CERTIFICATE
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               
+SERIAL_HEX                    VARCHAR2(256)       NO                                       
+SUBJECT                       VARCHAR2(2048)      YES                                      
+ISSUER                        VARCHAR2(2048)      YES                                      
+OWNER_NAME                    VARCHAR2(1020)      YES                                      
+USER_REF                      VARCHAR2(512)       YES                                      
+VALID_FROM                    TIMESTAMP(6)        YES                                      
+VALID_TO                      TIMESTAMP(6)        YES                                      
+ACTIVE                        NUMBER(1,0)         NO                                       
+CREATED_AT                    TIMESTAMP(6)        NO                                       
+
+
+BANG: SIGNING_NOTE
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(144)       NO      PK                               
+DOCUMENT_PATH                 VARCHAR2(2048)      NO                                       
+PAGE_NUMBER                   NUMBER(5,0)         NO                                       
+X_RATIO                       BINARY_FLOAT        NO                                       
+Y_RATIO                       BINARY_FLOAT        NO                                       
+CONTENT                       VARCHAR2(4000)      NO                                       
+AUTHOR_USER_REF               VARCHAR2(512)       NO                                       
+CREATED_AT                    TIMESTAMP(6)        NO                                       
+UPDATED_AT                    TIMESTAMP(6)        NO                                       
+
+
+BANG: SIGNING_PROFILE
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+PROFILE_KEY                   VARCHAR2(256)       NO      PK                               
+DISPLAY_NAME                  VARCHAR2(1020)      YES                                      
+SIGNATURE_KIND                VARCHAR2(80)        NO                                       
+ALLOW_MANUAL_PLACEMENT        NUMBER(1,0)         NO                                       
+IMAGE_PATH                    VARCHAR2(2048)      YES                                      
+BOX_WIDTH                     BINARY_FLOAT        NO                                       
+BOX_HEIGHT                    BINARY_FLOAT        NO                                       
+CONTENT_TEMPLATE              VARCHAR2(4000)      YES                                      
+ORGANIZATION                  VARCHAR2(1020)      YES                                      
+SIGNER_EMAIL                  VARCHAR2(1020)      YES                                      
+VISUAL_MODE                   VARCHAR2(80)        NO                                       
+SHOW_LABELS                   NUMBER(1,0)         NO                                       
+SHOW_EMAIL                    NUMBER(1,0)         NO                                       
+SHOW_ORGANIZATION             NUMBER(1,0)         NO                                       
+SHOW_SIGN_TIME                NUMBER(1,0)         NO                                       
+FONT_SIZE                     BINARY_FLOAT        NO                                       
+PLACEMENT_MODE                VARCHAR2(128)       NO                                       
+ANCHOR_TEXT                   VARCHAR2(1020)      YES                                      
+ANCHOR_OFFSET_X               BINARY_FLOAT        NO                                       
+ANCHOR_OFFSET_Y               BINARY_FLOAT        NO                                       
+ANCHOR_OCCURRENCE             VARCHAR2(40)        NO                                       
+ANCHOR_OCCURRENCE_INDEX       NUMBER(5,0)         NO                                       
+ANCHOR_SIDE                   VARCHAR2(40)        NO                                       
+ANCHOR_PAGE                   NUMBER(5,0)         NO                                       
+ANCHOR_FALLBACKS              CLOB                YES                                      
+EXTRA_INFO_TEXT               VARCHAR2(1020)      YES                                      
+PAGE_NUMBER                   NUMBER(5,0)         NO                                       
+LLX                           BINARY_FLOAT        NO                                       
+LLY                           BINARY_FLOAT        NO                                       
+CORNER_MARGIN                 BINARY_FLOAT        NO                                       
+CORNER                        VARCHAR2(48)        NO                                       
+HASH_ALGORITHM                VARCHAR2(64)        NO                                       
+REASON                        VARCHAR2(1020)      YES                                      
+REQUIRE_REGISTERED_CERT       NUMBER(1,0)         NO                                       
+CHECK_REVOCATION              NUMBER(1,0)         NO                                       
+REVOCATION_METHOD             VARCHAR2(40)        NO                                       
+ON_CHECK_FAILURE              VARCHAR2(40)        NO                                       
+CRL_URLS                      VARCHAR2(4000)      YES                                      
+STAMP_EVERY_PAGE              NUMBER(1,0)         NO                                       
+STAMP_PAGE_RANGE              VARCHAR2(1020)      YES                                      
+STAMP_WIDTH                   BINARY_FLOAT        NO                                       
+STAMP_HEIGHT                  BINARY_FLOAT        NO                                       
+STAMP_CORNER                  VARCHAR2(48)        NO                                       
+STAMP_MARGIN                  BINARY_FLOAT        NO                                       
+ACTIVE                        NUMBER(1,0)         NO                                       
+OWNER_USER_REF                VARCHAR2(512)       YES                                      
+
+
+BANG: SIGNING_SESSION
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(144)       NO      PK                               
+DOCUMENT_PATH                 VARCHAR2(2048)      NO                                       
+PREPARED_PATH                 VARCHAR2(2048)      NO                                       
+TARGET_PATH                   VARCHAR2(2048)      NO                                       
+PROFILE_KEY                   VARCHAR2(256)       NO                                       
+SIGNER_USER_REF               VARCHAR2(512)       YES                                      
+SIGNER_NAME                   VARCHAR2(1020)      YES                                      
+SIGNATURE_MODE                VARCHAR2(80)        NO                                       
+HASH_BASE64                   VARCHAR2(1020)      NO                                       
+DOCUMENT_HASH_BASE64          VARCHAR2(1020)      NO                                       
+HASH_ALGORITHM                VARCHAR2(64)        NO                                       
+SIGNER_CERT_BASE64            CLOB                YES                                      
+STATUS                        VARCHAR2(64)        NO                                       
+CREATED_AT                    TIMESTAMP(6)        NO                                       
+EXPIRES_AT                    TIMESTAMP(6)        NO                                       
+ERROR_MESSAGE                 VARCHAR2(4000)      YES                                      
+
+
+BANG: SIGNING_SIGNATURE_IMAGE
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(144)       NO      PK                               
+OWNER_USER_REF                VARCHAR2(512)       NO                                       
+NAME                          VARCHAR2(1020)      NO                                       
+FILE_PATH                     VARCHAR2(2048)      NO                                       
+FILE_NAME                     VARCHAR2(1020)      YES                                      
+CREATED_AT                    TIMESTAMP(6)        NO                                       
+UPDATED_AT                    TIMESTAMP(6)        NO                                       
+
+
 BANG: SMS_LOGS
 Mo ta: 
 --------------------------------------------------------------------------------------------------------------
@@ -2268,139 +1846,6 @@ STATUS                        NUMBER(10,0)        NO
 NOTE                          NVARCHAR2(2048)     YES                                      
 SPECIALIZATION_ID             NUMBER(10,0)        YES     FK     SPECIALIZATIONS.ID        
 ASSIGNEE_ID                   NUMBER(10,0)        YES     FK     USERS.ID                  
-
-
-BANG: SYSTEM_PARAMETERS
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER(10,0)        NO      PK                               
-PARAMETER_CODE                NVARCHAR2(510)      NO                                       
-VALUE                         NCLOB               NO                                       
-DESCRIPTION                   NVARCHAR2(2048)     YES                                      
-SORT_ORDER                    NUMBER(10,0)        NO                                       
-DATA_TYPE                     NUMBER(10,0)        YES                                      
-IS_DISPLAYED                  NUMBER(10,0)        YES                                      
-TYPE                          NUMBER(10,0)        YES                                      
-
-
-BANG: SYS_EXPORT_SCHEMA_01
-Mo ta: Data Pump Master Table EXPORT                         SCHEMA                        
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ABORT_STEP                    NUMBER              YES                                      
-ACCESS_METHOD                 VARCHAR2(16)        YES                                      
-ANCESTOR_OBJECT_NAME          VARCHAR2(128)       YES                                      
-ANCESTOR_OBJECT_SCHEMA        VARCHAR2(128)       YES                                      
-ANCESTOR_OBJECT_TYPE          VARCHAR2(128)       YES                                      
-ANCESTOR_PROCESS_ORDER        NUMBER              YES                                      
-BASE_OBJECT_NAME              VARCHAR2(128)       YES                                      
-BASE_OBJECT_SCHEMA            VARCHAR2(128)       YES                                      
-BASE_OBJECT_TYPE              VARCHAR2(128)       YES                                      
-BASE_PROCESS_ORDER            NUMBER              YES                                      
-BLOCK_SIZE                    NUMBER              YES                                      
-CLUSTER_OK                    NUMBER              YES                                      
-COMPLETED_BYTES               NUMBER              YES                                      
-COMPLETED_ROWS                NUMBER              YES                                      
-COMPLETION_TIME               DATE                YES                                      
-CONTROL_QUEUE                 VARCHAR2(128)       YES                                      
-CREATION_LEVEL                NUMBER              YES                                      
-CREATION_TIME                 DATE                YES                                      
-CUMULATIVE_TIME               NUMBER              YES                                      
-DATA_BUFFER_SIZE              NUMBER              YES                                      
-DATA_IO                       NUMBER              YES                                      
-DATAOBJ_NUM                   NUMBER              YES                                      
-DB_VERSION                    VARCHAR2(60)        YES                                      
-DEGREE                        NUMBER              YES                                      
-DOMAIN_PROCESS_ORDER          NUMBER              YES                                      
-DUMP_ALLOCATION               NUMBER              YES                                      
-DUMP_FILEID                   NUMBER              YES                                      
-DUMP_LENGTH                   NUMBER              YES                                      
-DUMP_ORIG_LENGTH              NUMBER              YES                                      
-DUMP_POSITION                 NUMBER              YES                                      
-DUPLICATE                     NUMBER              YES                                      
-ELAPSED_TIME                  NUMBER              YES                                      
-ERROR_COUNT                   NUMBER              YES                                      
-EXTEND_SIZE                   NUMBER              YES                                      
-FILE_MAX_SIZE                 NUMBER              YES                                      
-FILE_NAME                     VARCHAR2(4000)      YES                                      
-FILE_TYPE                     NUMBER              YES                                      
-FLAGS                         NUMBER              YES                                      
-GRANTOR                       VARCHAR2(128)       YES                                      
-GRANULES                      NUMBER              YES                                      
-GUID                          RAW(16)             YES                                      
-IN_PROGRESS                   CHAR(1)             YES                                      
-INSTANCE                      VARCHAR2(60)        YES                                      
-INSTANCE_ID                   NUMBER              YES                                      
-IS_DEFAULT                    NUMBER              YES                                      
-JOB_MODE                      VARCHAR2(21)        YES                                      
-JOB_VERSION                   VARCHAR2(60)        YES                                      
-LAST_FILE                     NUMBER              YES                                      
-LAST_UPDATE                   DATE                YES                                      
-LOAD_METHOD                   NUMBER              YES                                      
-METADATA_BUFFER_SIZE          NUMBER              YES                                      
-METADATA_IO                   NUMBER              YES                                      
-NAME                          VARCHAR2(128)       YES                                      
-OBJECT_INT_OID                VARCHAR2(130)       YES                                      
-OBJECT_LONG_NAME              VARCHAR2(4000)      YES                                      
-OBJECT_NAME                   VARCHAR2(200)       YES                                      
-OBJECT_NUMBER                 NUMBER              YES                                      
-OBJECT_PATH_SEQNO             NUMBER              YES                                      
-OBJECT_ROW                    NUMBER              YES                                      
-OBJECT_SCHEMA                 VARCHAR2(128)       YES                                      
-OBJECT_TABLESPACE             VARCHAR2(128)       YES                                      
-OBJECT_TYPE                   VARCHAR2(128)       YES                                      
-OBJECT_TYPE_PATH              VARCHAR2(200)       YES                                      
-OLD_VALUE                     VARCHAR2(4000)      YES                                      
-OPERATION                     VARCHAR2(8)         YES                                      
-OPTION_TAG                    VARCHAR2(128)       YES                                      
-ORIG_BASE_OBJECT_NAME         VARCHAR2(128)       YES                                      
-ORIG_BASE_OBJECT_SCHEMA       VARCHAR2(128)       YES                                      
-ORIGINAL_OBJECT_NAME          VARCHAR2(128)       YES                                      
-ORIGINAL_OBJECT_SCHEMA        VARCHAR2(128)       YES                                      
-PACKET_NUMBER                 NUMBER              YES                                      
-PARALLELIZATION               NUMBER              YES                                      
-PARENT_OBJECT_NAME            VARCHAR2(128)       YES                                      
-PARENT_OBJECT_SCHEMA          VARCHAR2(128)       YES                                      
-PARENT_PROCESS_ORDER          NUMBER              YES                                      
-PARTITION_NAME                VARCHAR2(128)       YES                                      
-PHASE                         NUMBER              YES                                      
-PLATFORM                      VARCHAR2(101)       YES                                      
-PROCESS_NAME                  VARCHAR2(128)       YES                                      
-PROCESS_ORDER                 NUMBER              YES                                      
-PROCESSING_STATE              CHAR(1)             YES                                      
-PROCESSING_STATUS             CHAR(1)             YES                                      
-PROPERTY                      NUMBER              YES                                      
-PROXY_SCHEMA                  VARCHAR2(128)       YES                                      
-PROXY_VIEW                    VARCHAR2(128)       YES                                      
-QUEUE_TABNUM                  NUMBER              YES                                      
-REMOTE_LINK                   VARCHAR2(128)       YES                                      
-SCN                           NUMBER              YES                                      
-SEED                          NUMBER              YES                                      
-SERVICE_NAME                  VARCHAR2(64)        YES                                      
-SIZE_ESTIMATE                 NUMBER              YES                                      
-SRC_COMPAT                    VARCHAR2(60)        YES                                      
-START_TIME                    DATE                YES                                      
-STATE                         VARCHAR2(12)        YES                                      
-STATUS_QUEUE                  VARCHAR2(128)       YES                                      
-SUBPARTITION_NAME             VARCHAR2(128)       YES                                      
-TARGET_XML_CLOB               CLOB                YES                                      
-TDE_REWRAPPED_KEY             RAW(2000)           YES                                      
-TEMPLATE_TABLE                VARCHAR2(128)       YES                                      
-TIMEZONE                      VARCHAR2(64)        YES                                      
-TOTAL_BYTES                   NUMBER              YES                                      
-TRIGFLAG                      NUMBER              YES                                      
-UNLOAD_METHOD                 NUMBER              YES                                      
-USER_DIRECTORY                VARCHAR2(4000)      YES                                      
-USER_FILE_NAME                VARCHAR2(4000)      YES                                      
-USER_NAME                     VARCHAR2(128)       YES                                      
-VALUE_N                       NUMBER              YES                                      
-VALUE_T                       VARCHAR2(4000)      YES                                      
-VERSION                       NUMBER              YES                                      
-WORK_ITEM                     VARCHAR2(21)        YES                                      
-XML_CLOB                      CLOB                YES                                      
 
 
 BANG: UNITS
@@ -2525,22 +1970,3 @@ TYPE                          NUMBER(10,0)        NO
 STATUS                        NUMBER(10,0)        NO                                       
 UPDATED_BY                    NUMBER(10,0)        YES                                      
 UPDATED_AT                    DATE                YES                                      
-
-
-BANG: flyway_schema_history
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-installed_rank                NUMBER              NO      PK                               
-version                       VARCHAR2(50)        YES                                      
-description                   VARCHAR2(200)       NO                                       
-type                          VARCHAR2(20)        NO                                       
-script                        VARCHAR2(1000)      NO                                       
-checksum                      NUMBER              YES                                      
-installed_by                  VARCHAR2(100)       NO                                       
-installed_on                  TIMESTAMP(6)        NO                                       
-execution_time                NUMBER              NO                                       
-success                       NUMBER(1,0)         NO                                       
-
-

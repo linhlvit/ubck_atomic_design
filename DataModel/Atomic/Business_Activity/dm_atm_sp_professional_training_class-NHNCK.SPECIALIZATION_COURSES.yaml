@@ -7,7 +7,7 @@ ldm:
   physical_name: sp_professional_training_class
   layer: Atomic
   version: "1.0"
-  status: draft
+  status: approved
   bcv_core_object: Business Activity
   bcv_concept: "[Business Activity] Business Activity"
   table_type: Fundamental
@@ -60,7 +60,7 @@ attributes:
     source_system: NHNCK
     source_table: SPECIALIZATION_COURSES
     source_column: null
-    comment: "ETL-derived: luôn = 'NHNCK.SPECIALIZATION_COURSES'"
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
     classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
     etl_derived_value: NHNCK_SPECIALIZATION_COURSES
 
@@ -92,18 +92,18 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Specialization Type Code
-    physical_name: specialization_tp_code
-    business_meaning: Loại chuyên môn của khóa học
+  - name: Specialization Code
+    physical_name: specialization_code
+    business_meaning: Mã chuyên ngành CCHN của khóa học
     data_domain: Classification Value
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: NHNCK
     source_table: SPECIALIZATION_COURSES
-    source_column: NHNCK.SPECIALIZATION_COURSES.SPECIALIZATION_ID
-    comment: "Scheme: SPECIALIZATION. FK nguồn đến SPECIALIZATIONS."
-    classification_context: SPECIALIZATION
+    source_column: NHNCK.SPECIALIZATIONS.SPECIALIZATION_CODE
+    comment: "SCHEMA_CODE=NHNCK.SPECIALIZATIONS"
+    classification_context: null
     etl_derived_value: null
 
   - name: Exam Start Date
@@ -158,7 +158,7 @@ attributes:
     source_system: NHNCK
     source_table: SPECIALIZATION_COURSES
     source_column: NHNCK.SPECIALIZATION_COURSES.PROVINCE_ID
-    comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'PROVINCE'). Cần ETL crosswalk sang NHNCK.PROVINCES: SPECIALIZATION_COURSES.PROVINCE_ID = PROVINCES.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT.PROVINCE_NEW', PROVINCE_CODE) | NHNCK.PROVINCES ngừng thiết kế Atomic entity riêng — chỉ dùng để crosswalk. Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
+    comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'PROVINCE'). Cần ETL crosswalk sang NHNCK.PROVINCES: SPECIALIZATION_COURSES.PROVINCE_ID = PROVINCES.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT_PROVINCE_NEW', PROVINCE_CODE) | NHNCK.PROVINCES ngừng thiết kế Atomic entity riêng — chỉ dùng để crosswalk. Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
     classification_context: null
     etl_derived_value: null
 

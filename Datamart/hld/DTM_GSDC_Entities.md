@@ -62,11 +62,6 @@ erDiagram
 | Public Company Industry Financial Report | Fact-report | new | Báo cáo vĩ mô theo ngành (BC01.2) | 1 row/ngành/năm báo cáo (kèm cột N-1) | K_GSDC_709-717 (Nhóm 39) |
 | Public Company Multi-Period Financial Report | Fact-report | new | Báo cáo vĩ mô đa kỳ N/N-1/N-2 (BC01.3) | 1 row DUY NHẤT/năm báo cáo (kèm cột N-1/N-2), toàn thị trường không group-by | K_GSDC_718-739 (Nhóm 40) |
 | Public Company Exchange Financial Summary Report | Fact-report | new | Tổng hợp tài chính theo sàn kèm YoY (BC22) | 1 row/sàn NY-ĐKGD/kỳ (Report_Year + Report_Quarter) | K_GSDC_740-751+YOY (Nhóm 41) |
+| Fact Public Company Listing Info Snapshot | Fact Snapshot | new | Cơ cấu khối lượng CP niêm yết, sở hữu nước ngoài & sở hữu nhà nước (nguồn VSDC/IDS, mới 2026-09-07) | 1 row/mã CK/tháng | K_GSDC_1381-1390 (Nhóm 31, READY 10/10) |
 
 ---
-
-## Bảng PENDING (không thiết kế trong Phase 2)
-
-| Datamart Entity | Lý do PENDING | Issue |
-|---|---|---|
-| Fact Public Company Listing Info Snapshot | Nguồn MSS chưa có Atomic entity (MH5, DB33 — K_GSDC_1381-1390, Nhóm 31) | — |

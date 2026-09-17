@@ -10,7 +10,7 @@ Phase 2 sinh Entities **từ Section 3 và Section 4 của `DTM_{MODULE}_HLD.md`
 |---|---|
 | `datamart_entity` | Tên bảng trong bảng "Bảng Phân tích" / "Bảng Tác nghiệp" / "Bảng Dimension" |
 | `table_type` | `fact` từ bảng Phân tích; `operational` từ bảng Tác nghiệp; `dim` từ bảng Dimension |
-| `reuse_status` | Đọc từ **Section 4** — `new` / `reuse` / `partial` |
+| `reuse_status` | Đọc từ **Section 4** — `new` / `reuse` / `partial` / `DEPRECATED` |
 | `status` | Luôn `draft` |
 | `description` | Ghép: cột Mô tả (hoặc Pattern) + " — grain " + cột Grain |
 | `source_table` | Cột "Nguồn Atomic chính" → tra `DataModel/Atomic/dm_manifest.yaml` lấy `atomic_table` vật lý; nhiều nguồn nối ` / ` |
@@ -24,15 +24,25 @@ graph TB: DIM_CO --> FACT_NAV     →   Fund Management Company Dimension join F
 ```
 
 Quy tắc:
-1. Tên FK attribute = `{Dim Entity Name} Id` — ví dụ Dim `Calendar Date Dimension` → FK = `Calendar Date Dimension Id`
-2. Format: `{Dim Entity Name}.{FK Attribute Name}`, nhiều FK nối ` | `
-3. `FKs` chỉ điền cho `fact` — **để trống** cho `dim` và `operational`
+1. Với các Dimension thông thường: Tên FK attribute = `{Dim Entity Name} Id` — ví dụ `Fund Management Company Dimension` → FK = `Fund Management Company Dimension Id`.
+2. **Quy tắc bắt buộc đối với Calendar Date Dimension (Role-Playing Date Dimension Key):**
+   - Khóa ngoại từ Fact trỏ đến `Calendar Date Dimension` **bắt buộc mang tên theo vai trò (Role-Playing)**. Tuyệt đối **CẤM** sử dụng `Calendar Date Dimension Id` trên bất kỳ Fact table nào (`Calendar Date Dimension Id` chỉ là PK của riêng bảng Dimension `cdr_dt_dim`).
+   - Với Fact Snapshot (`Fact ... Snapshot`): Bắt buộc là `Snapshot Date Dimension Id`.
+   - Với Fact Event / Fact khác: Bắt buộc mang tên vai trò cụ thể `<Role> Date Dimension Id` (ví dụ: `Issue Date Dimension Id`, `Trade Date Dimension Id`, `Evaluation Date Dimension Id`, `Submission Date Dimension Id`, `Effective Date Dimension Id`...).
+3. Format: `{Dim Entity Name}.{FK Attribute Name}`, nhiều FK nối ` | `
+4. `FKs` chỉ điền cho `fact` — **để trống** cho `dim` và `operational`
 
 Ví dụ đầy đủ:
 ```
+1. Fact Snapshot:
 graph TB có: DIM_DATE --> FACT_MKT  và  DIM_CO --> FACT_MKT
 → FKs của "Fact Fund Management Company Snapshot" =
-  "Calendar Date Dimension.Calendar Date Dimension Id | Fund Management Company Dimension.Fund Management Company Dimension Id"
+  "Calendar Date Dimension.Snapshot Date Dimension Id | Fund Management Company Dimension.Fund Management Company Dimension Id"
+
+2. Fact Event:
+graph TB có: DIM_DATE --> FACT_ISSUE  và  DIM_PRA --> FACT_ISSUE
+→ FKs của "Fact Practitioner Certificate Issue Event" =
+  "Calendar Date Dimension.Issue Date Dimension Id | Securities Practitioner Dimension.Securities Practitioner Dimension Id"
 ```
 
 ### Rule trích xuất `source_table`
@@ -43,22 +53,33 @@ graph TB có: DIM_DATE --> FACT_MKT  và  DIM_CO --> FACT_MKT
 3. Nhiều nguồn: nối ` / ` theo thứ tự driving table trước, join table sau
 4. PENDING chưa xác định Atomic → để trống hoặc `TBD`
 
-### Rule loại bảng PENDING toàn bộ khỏi Entities.csv
+### Rule loại bảng PENDING và xử lý bảng DEPRECATED
 
-**Bắt buộc:** Fact/Dim/Operational **PENDING TOÀN BỘ** (không có bất kỳ KPI/Nhóm nào ở trạng thái READY trong Section 3/Section 2 HLD — 100% Gap Atomic hoặc chờ nguồn) → **KHÔNG đưa vào Entities.csv**.
+1. **Bảng PENDING toàn bộ:** Fact/Dim/Operational **PENDING TOÀN BỘ** (không có bất kỳ KPI/Nhóm nào ở trạng thái READY trong Section 3/Section 2 HLD — 100% Gap Atomic hoặc chờ nguồn) → **KHÔNG đưa vào Entities.csv**.
+   - *Lý do:* Nếu đưa vào CSV chính, `datamart-lld-design` Phase 1 (sinh Attributes) có thể xử lý nhầm như bảng đã sẵn sàng → map cột vào Atomic entity/attribute chưa tồn tại → sai lệch lan xuống Detail Mapping trước khi Atomic thực sự approved.
+   - *Cách thể hiện trong Entities.md:* Thêm mục "Bảng PENDING (không thiết kế trong Phase 2)" ở cuối file — bảng 3 cột `Datamart Entity | Lý do PENDING | Issue` (tham chiếu ID Open Issue ở Section 5 — Vấn đề mở của HLD). Không thêm bảng PENDING vào CSV, kể cả với `source_table = TBD`.
 
-**Lý do:** Nếu đưa vào CSV chính, `datamart-lld-design` Phase 1 (sinh Attributes) có thể xử lý nhầm như bảng đã sẵn sàng → map cột vào Atomic entity/attribute chưa tồn tại → sai lệch lan xuống Detail Mapping trước khi Atomic thực sự approved.
+2. **Bảng DEPRECATED (Bãi bỏ / Sáp nhập):** Khi bảng Fact/Dim bị bãi bỏ sau thống nhất với BA và được đánh dấu `DEPRECATED` trong Section 3 & 4 HLD:
+   - **Trong `Entities.csv`:** Bảng DEPRECATED bị loại bỏ khỏi danh sách active entity cần sinh LLD (hoặc ghi rõ `reuse_status = DEPRECATED` nếu lưu vết).
+   - **Kích hoạt Giao thức Bãi bỏ Bảng 5 Tầng (All-Tier Cleanup):** Nếu bảng draft đã từng sinh file LLD trước đó, Designer/Reviewer bắt buộc dọn dẹp đồng bộ:
+     + Tầng 1: Xóa file `DTM_{MODULE}_{datamart_table}.csv` trong `Datamart/lld/{MODULE}/`.
+     + Tầng 2: Purge 100% dòng của bảng trong `Datamart/lld/datamart_attributes.csv`.
+     + Tầng 3: Cập nhật Detail Mapping (`column_role = 'DEPRECATED'`, để trống bảng/cột).
+     + Tầng 4: Xóa block entity trong `Datamart/datamart_model.yaml`.
+     + Tầng 5: HLD Section 3/4 + `Entities.csv/.md` cập nhật DEPRECATED; Flat Table SQL xóa/comment DDL/DML.
+   - **Trong `Entities.md`:** Liệt kê trong mục riêng "Bảng DEPRECATED / Bãi bỏ" ở cuối file — bảng 3 cột: `Datamart Entity | Căn cứ bãi bỏ | Trạng thái`.
 
-**Phân biệt quan trọng — chỉ loại khi PENDING 100%, không loại khi PENDING một phần:**
+3. **Đồng bộ Tái Sử Dụng (Reuse Case 1 vs Case 2):**
+   - **Case 1 (Physical Measure/Dim Reuse):** Tái sử dụng measure/dim vật lý đã có sẵn trên Fact/Dim của nhóm trước $\implies$ Bắt buộc bảng Fact/Dim đó phải có mặt trong `Entities.csv` (với `reuse_status = reuse` nếu không thêm cột, hoặc `partial` nếu thêm cột/nguồn mới) để LLD có căn cứ điền `mart_table` và `mart_column`.
+   - **Case 2 (Presentation / Derived Reuse):** Hiển thị lại thuần túy qua BI layer hoặc công thức phái sinh mà không tạo cột vật lý riêng $\implies$ KHÔNG tạo bảng mới trong `Entities.csv`, KHÔNG thêm cột vật lý trùng lặp vào schema Fact.
 
-| Trường hợp | Xử lý |
-|---|---|
-| Fact/Dim có ít nhất 1 KPI/Nhóm READY (dù các KPI khác cùng bảng PENDING) | **Giữ trong Entities.csv** — phần READY cần Attributes thật để LLD thiết kế đúng |
-| Fact/Dim PENDING toàn bộ (100% KPI/Nhóm dùng bảng đó đều PENDING, không có ngoại lệ) | **Loại khỏi Entities.csv** — liệt kê riêng trong Entities.md, không đưa vào CSV |
+**Phân biệt quan trọng khi sinh Entities.csv:**
 
-Ví dụ: `Fact Public Company Financial Summary Snapshot` có K_GSDC_46/47 READY dù K_GSDC_48/49 PENDING → **giữ trong CSV**. `Fact Public Company Financial Report Value` 100% PENDING (toàn bộ Nhóm dùng bảng này đều Gap Atomic) → **loại khỏi CSV**.
-
-**Cách thể hiện trong Entities.md:** thêm mục "Bảng PENDING (không thiết kế trong Phase 2)" ở cuối file — bảng 3 cột `Datamart Entity | Lý do PENDING | Issue` (tham chiếu ID Open Issue ở Section 5 — Vấn đề mở của HLD). Không thêm bảng PENDING vào CSV, kể cả với `source_table = TBD`.
+| Trường hợp | Xử lý trong Entities.csv | Xử lý trong Entities.md |
+|---|---|---|
+| Fact/Dim có ít nhất 1 KPI/Nhóm READY | **Giữ trong Entities.csv** (`new`/`reuse`/`partial`) | Liệt kê bảng tóm tắt bình thường |
+| Fact/Dim PENDING toàn bộ (100% KPI PENDING) | **Loại khỏi Entities.csv** | Liệt kê mục "Bảng PENDING" |
+| Fact/Dim DEPRECATED (đã bãi bỏ) | **Loại khỏi active CSV** (hoặc ghi `DEPRECATED`) | Liệt kê mục "Bảng DEPRECATED" |
 
 ---
 
@@ -77,7 +98,7 @@ datamart_entity,table_type,reuse_status,status,description,source_table,FKs
 |---|---|
 | `datamart_entity` | Tên logical đầy đủ — khớp với HLD và Attributes.csv |
 | `table_type` | `fact` / `dim` / `operational` |
-| `reuse_status` | `new` / `reuse` / `partial` — đọc từ Section 4 HLD; **bắt buộc có** |
+| `reuse_status` | `new` / `reuse` / `partial` / `DEPRECATED` — đọc từ Section 4 HLD; **bắt buộc có** |
 | `status` | **`draft`** — toàn bộ rows khi Claude sinh; chỉ reviewer chuyển sang `ready` |
 | `description` | 1 câu tiếng Việt ngắn gọn mô tả mục đích bảng + grain chính |
 | `source_table` | Tên Atomic table(s) nguồn — `physical_name` từ `dm_manifest.yaml`; nhiều bảng nối bằng ` / ` |
@@ -88,8 +109,10 @@ datamart_entity,table_type,reuse_status,status,description,source_table,FKs
 | Giá trị | Nghĩa | LLD Phase 1 |
 |---|---|---|
 | `new` | Bảng mới hoàn toàn, chưa có trong master | Sinh file đầy đủ |
-| `reuse` | Tái sử dụng toàn bộ — không thêm nguồn, không thêm cột | **Không sinh file** |
-| `partial` | Tái sử dụng cấu trúc, thêm nguồn mới | Sinh file đầy đủ (toàn bộ cột) |
+| `reuse` | Tái sử dụng toàn bộ — không thêm nguồn, không thêm cột | **Không sinh file** (dùng bảng đã có) |
+| `partial` | Tái sử dụng cấu trúc, thêm nguồn/cột mới | Sinh file đầy đủ (toàn bộ cột) |
+| `DEPRECATED` | Bảng đã bãi bỏ sau thống nhất với BA | **Không sinh file** (kích hoạt All-Tier Cleanup nếu có file cũ) |
+
 
 **Ví dụ:**
 ```csv

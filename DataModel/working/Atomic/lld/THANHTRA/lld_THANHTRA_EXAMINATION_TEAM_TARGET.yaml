@@ -23,7 +23,9 @@ metadata:
     \ trước đây hash trực tiếp theo ID kỹ thuật thay vì CODE của bảng đích. Hạ về\
     \ draft lại (2026-07-27) để gộp lại field ADDRESS — trước đây tách sai thành\
     \ shared entity IP Postal Address dù grain của entity này là Business Activity,\
-    \ không phải Involved Party (vi phạm rule Bước 4 skill atomic-lld-design)."
+    \ không phải Involved Party (vi phạm rule Bước 4 skill atomic-lld-design). [SỬA\
+    \ 2026-09-11] Hạ về draft để đồng bộ DDL UAT cập nhật: bổ sung Start Date, End\
+    \ Date."
 attributes:
 - attribute_name: "Examination Team Target Id"
   physical_name: "examination_team_target_id"
@@ -221,3 +223,31 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
+- attribute_name: "Start Date"
+  physical_name: "start_dt"
+  description: "Thời gian bắt đầu kiểm tra đối với đối tượng này; null = lấy theo\
+    \ Examination Team.Start Date."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.EXAMINATION_TEAM_TARGET.START_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "End Date"
+  physical_name: "end_dt"
+  description: "Thời gian kết thúc kiểm tra đối với đối tượng này; null = lấy theo\
+    \ Examination Team.End Date."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.EXAMINATION_TEAM_TARGET.END_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"

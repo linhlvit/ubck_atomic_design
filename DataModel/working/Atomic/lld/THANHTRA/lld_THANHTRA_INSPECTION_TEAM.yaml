@@ -17,7 +17,8 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: null
+  notes: "Hạ về draft (2026-09-11) để đồng bộ DDL UAT cập nhật: bổ sung Criminal Transfer\
+    \ Indicator, Criminal Transfer Note."
 attributes:
 - attribute_name: "Inspection Team Id"
   physical_name: "inspection_team_id"
@@ -291,6 +292,33 @@ attributes:
   source_columns:
   - "THANHTRA.INSPECTION_TEAM.NOTE"
   comment: "Nguồn CLOB — ETL cần truncate nếu vượt ngưỡng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Criminal Transfer Indicator"
+  physical_name: "criminal_transfer_ind"
+  description: "Có (1) / Không (0) chuyển hồ sơ sang Cơ quan điều tra (CQĐT)."
+  data_domain: "Indicator"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.INSPECTION_TEAM.CRIMINAL_TRANSFER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Criminal Transfer Note"
+  physical_name: "criminal_transfer_note"
+  description: "Ghi chú tên Cơ quan điều tra được chuyển đến — chỉ có ý nghĩa khi\
+    \ Criminal Transfer Indicator = 1."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.INSPECTION_TEAM.CRIMINAL_TRANSFER_NOTE"
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"

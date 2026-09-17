@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_fct_practitioner_license_certificate_s
     certificate_issue_dt            Nullable(Date)      COMMENT 'Ngày cấp CCHN',
     revocation_dt                   Nullable(Date)      COMMENT 'Ngày thu hồi CCHN — NULL nếu chưa thu hồi',
     decision_tp_code                Nullable(String)    COMMENT 'Loại quyết định — scheme: LICENSE_CERTIFICATE_DECISION_TYPE',
+    decision_signed_dt              Nullable(Date)      COMMENT 'Ngày ký quyết định thu hồi/hủy CCHN',
 
     -- From: CALENDAR DATE DIMENSION (Snapshot Date)
     snpst_cdr_dt                    Nullable(Date)      COMMENT 'Ngày snapshot — từ Calendar Date Dimension',
@@ -66,6 +67,8 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_fct_practitioner_daily_snpst_flat ON C
     snpst_dt_dim_id         String              COMMENT 'FK → Calendar Date Dimension (ngày snapshot)',
     age                     Nullable(Int64)     COMMENT 'Tuổi NHN tại ngày snapshot',
     has_active_violation            String              COMMENT 'TRUE nếu có vi phạm đang hoạt động',
+    violation_record_dt             Nullable(Date)      COMMENT 'Ngày lập biên bản vi phạm',
+    first_license_dt                Nullable(Date)      COMMENT 'Ngày cấp CCHN đầu tiên của NHN',
 
     -- From: CALENDAR DATE DIMENSION (Snapshot Date)
     snpst_cdr_dt            Nullable(Date)      COMMENT 'Ngày — từ Calendar Date Dimension',
@@ -294,9 +297,8 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_training_hist_flat ON
     training_end_dt         Nullable(Date)          COMMENT 'Ngày kết thúc bồi dưỡng (đổi từ Exam End Date)',
     training_hours           Nullable(Int64)         COMMENT 'Số giờ đào tạo — K_NHNCK_67',
     hours_sufficiency_indicator Nullable(String)     COMMENT 'Đã đủ 8h (Y/N) — ETL-derived: Training Hours >= 8 — K_NHNCK_67',
-    exam_score              Nullable(Decimal(5,2))  COMMENT 'Điểm thi — JOIN phụ qua sp_code (fan-out), nullable nếu chưa thi',
-    exam_result_code    Nullable(String)        COMMENT 'Kết quả kiểm tra chuyên môn — scheme: EXAM_RESULT, JOIN phụ qua sp_code (fan-out, đổi tên từ training_result_code)',
-    exam_result_nm      Nullable(String)        COMMENT 'Tên kết quả kiểm tra (đổi tên từ training_result_nm)',
+    exam_result_code    Nullable(String)        COMMENT '(Sửa 2026-09-09) Kết quả kiểm tra chuyên môn — lấy trực tiếp trên driving row (training_result_status_code), scheme NHNCK_POST_CERT_TRAINING_RESULT_STATUS, không còn JOIN phụ qua sp_code',
+    exam_result_nm      Nullable(String)        COMMENT '(Sửa 2026-09-09) Lấy trực tiếp training_cl_result_code trên driving row, scheme NHNCK_POST_CERT_TRAINING_CLASSIFICATION — không còn denormalize qua cl_value; tên cột không còn phản ánh đúng bản chất dữ liệu',
     src_stm_code            String                  COMMENT 'Mã hệ thống nguồn'
 )
 ENGINE = ReplicatedReplacingMergeTree()

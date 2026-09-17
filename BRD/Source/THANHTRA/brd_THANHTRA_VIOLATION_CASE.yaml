@@ -21,7 +21,7 @@ columns:
     fk_note: null
   - name: SOURCE_CATEGORY
     data_type: VARCHAR2(200)
-    description: "Nguồn phát sinh: INSPECTION_RESULT (KQ thanh tra), INTERNAL_UNIT (Đơn vị nội bộ UBCKNN), STOCK_EXCHANGE (Sở GDCK), VSDC (VSDC), OTHER_SUPERVISION (KQ giám sát của đơn vị khác)"
+    description: "Nguồn gửi: INSPECTION_RESULT (Kết quả thanh kiểm tra của Thanh tra), INTERNAL_UNIT (Đơn vị giám sát trong UBCKNN), HNX (Sở HNX), HOSE (Sở HOSE), VSDC, OTHER_SUPERVISION (Khác). Giá trị cũ STOCK_EXCHANGE (Sở GDCK) không còn dùng cho hồ sơ mới, chỉ còn tồn tại ở dữ liệu lịch sử."
     key: null
     fk_note: null
   - name: SOURCE_UNIT_ID
@@ -122,5 +122,10 @@ columns:
   - name: DELETED
     data_type: NUMBER(1,0)
     description: "Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa"
+    key: null
+    fk_note: null
+  - name: REPORT_CLASSIFICATION
+    data_type: VARCHAR2(200)
+    description: "Phân loại báo cáo: NO_PENALTY_ART65_2, RECORD_NO_PENALTY, FROM_CRIMINAL_PROCEEDINGS, MINOR_WARNING_SUBSTITUTE"
     key: null
     fk_note: null

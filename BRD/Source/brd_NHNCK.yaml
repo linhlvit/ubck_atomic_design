@@ -22,25 +22,6 @@ brd_entries:
       data_change_mode: Update
       filter_logic: null
       filter_note: null
-- brd_id: BRD-SRC-NHNCK-SYSTEM_PARAMETERS
-  brd_name: Design Atomic từ nguồn NHNCK bảng SYSTEM_PARAMETERS
-  type: Theo Source
-  ba_email: username@fssc.com.vn
-  steward_email: username@ubck.com.vn
-  content:
-    table_meaning: Tham số hệ thống
-    functional_group: UID01 Quản trị phân hệ
-    scope_status: out_of_scope
-    scope_reason: Config data
-    table: SYSTEM_PARAMETERS
-    related_tables: null
-    notes: null
-    data_volume_hint: null
-    refresh_frequency: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
 - brd_id: BRD-SRC-NHNCK-DIGITAL_CERTIFICATES
   brd_name: Design Atomic từ nguồn NHNCK bảng DIGITAL_CERTIFICATES
   type: Theo Source
@@ -139,7 +120,7 @@ brd_entries:
   content:
     table_meaning: Thông tin người dùng hệ thống (cán bộ UBCKNN)
     functional_group: UID01 Quản trị phân hệ
-    scope_status: out_of_scope
+    scope_status: in_scope
     scope_reason: Quyết định Data Modeler — không thiết kế Atomic entity riêng cho
       NHNCK.USERS. Định hướng dùng chung entity Identity and Access Management User
       (nguồn IAM.USERS) cho mọi FK "officer/user" trong hệ thống.
@@ -268,8 +249,9 @@ brd_entries:
   content:
     table_meaning: Chức vụ trong tổ chức
     functional_group: UID01 Quản trị phân hệ
-    scope_status: out_of_scope
-    scope_reason: null
+    scope_status: in_scope
+    scope_reason: Đã thiết kế Atomic (2026-09-11) — map vào Classification Value (cl_value),
+      scheme NHNCK.POSITIONS, theo yêu cầu Data Modeler. Xem lld_NHNCK_POSITIONS.yaml.
     table: POSITIONS
     related_tables:
     - table: PROFESSIONAL_WORK_HISTORIES
@@ -484,8 +466,9 @@ brd_entries:
   content:
     table_meaning: Danh mục trình độ học vấn
     functional_group: UID02 Quản lý danh mục dùng riêng
-    scope_status: out_of_scope
-    scope_reason: null
+    scope_status: in_scope
+    scope_reason: Đã thiết kế Atomic (2026-09-11) — map vào Classification Value (cl_value),
+      scheme NHNCK.EDUCATION_LEVELS, theo yêu cầu Data Modeler. Xem lld_NHNCK_EDUCATION_LEVELS.yaml.
     table: EDUCATION_LEVELS
     related_tables:
     - table: APPLICATION_PROFESSIONALS
@@ -811,11 +794,15 @@ brd_entries:
   content:
     table_meaning: Lịch sử kiểm tra xác thực với C06
     functional_group: UID03 Quản lý hồ sơ
-    scope_status: in_scope
-    scope_reason: null
+    scope_status: out_of_scope
+    scope_reason: Quyết định Data Modeler (2026-09-12) — trả về out_of_scope, đảo ngược
+      quyết định đưa vào scope trước đó (2026-07-23). Entity Individual (Fundamental)
+      cùng 2 shared entity (Involved Party Postal Address, Involved Party Alternative
+      Identification) đã gỡ bỏ khỏi manifest.yaml/atomic_entities.yaml, xóa 3 file LLD.
     table: IDENTITY_INFO_C06S
     related_tables: null
-    notes: null
+    notes: 'REMOVED FROM SCOPE (2026-09-12) — xem NHNCK_HLD_Overview.md §7f và Entities
+      #5f.'
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
@@ -1415,44 +1402,6 @@ brd_entries:
       data_change_mode: Update
       filter_logic: null
       filter_note: null
-- brd_id: BRD-SRC-NHNCK-BACKUPS
-  brd_name: Design Atomic từ nguồn NHNCK bảng BACKUPS
-  type: Theo Source
-  ba_email: username@fssc.com.vn
-  steward_email: username@ubck.com.vn
-  content:
-    table_meaning: Thông tin file sao lưu cơ sở dữ liệu
-    functional_group: UID01 Quản trị phân hệ
-    scope_status: out_of_scope
-    scope_reason: Operational/system data
-    table: BACKUPS
-    related_tables: null
-    notes: null
-    data_volume_hint: null
-    refresh_frequency: null
-    ingestion:
-      data_change_mode: Append
-      filter_logic: created_at >= {etl_date} AND created_at < {etl_date} + 1
-      filter_note: Thông tin file sao lưu cơ sở dữ liệu — append theo CREATED_AT
-- brd_id: BRD-SRC-NHNCK-BACKUP_SCHEDULES
-  brd_name: Design Atomic từ nguồn NHNCK bảng BACKUP_SCHEDULES
-  type: Theo Source
-  ba_email: username@fssc.com.vn
-  steward_email: username@ubck.com.vn
-  content:
-    table_meaning: Lịch tự động sao lưu cơ sở dữ liệu
-    functional_group: UID01 Quản trị phân hệ
-    scope_status: out_of_scope
-    scope_reason: Operational/system data
-    table: BACKUP_SCHEDULES
-    related_tables: null
-    notes: null
-    data_volume_hint: null
-    refresh_frequency: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
 - brd_id: BRD-SRC-NHNCK-EMAIL_LOGS
   brd_name: Design Atomic từ nguồn NHNCK bảng EMAIL_LOGS
   type: Theo Source
@@ -1739,8 +1688,8 @@ brd_entries:
   content:
     table_meaning: Danh mục ngân hàng (dùng cho nộp phí thi)
     functional_group: UID02 Quản lý danh mục dùng riêng
-    scope_status: out_of_scope
-    scope_reason: null
+    scope_status: in_scope
+    scope_reason: Đã thiết kế Atomic — map vào Classification Value (cl_value), scheme BANK. Xem lld_NHNCK_BANKS.yaml.
     table: BANKS
     related_tables:
     - table: EXAM_SESSIONS
@@ -1918,8 +1867,11 @@ brd_entries:
   content:
     table_meaning: Liên kết hồ sơ CCHN với quyết định tương ứng
     functional_group: UID03 Quản lý hồ sơ
-    scope_status: out_of_scope
-    scope_reason: null
+    scope_status: in_scope
+    scope_reason: Quyết định Data Modeler (2026-09-12) — thiết kế thành entity link/relationship
+      "Securities Practitioner License Decision Document X Securities Practitioner
+      License Application Relationship" (đảo ngược quyết định denormalize ARRAY
+      trước đó ở Overview §7d). Xem lld_NHNCK_APPLICATION_DECISIONS.yaml.
     table: APPLICATION_DECISIONS
     related_tables:
     - table: APPLICATIONS
@@ -2325,11 +2277,13 @@ brd_entries:
   content:
     table_meaning: Nhật ký hành động xử lý yêu cầu chuyển đổi chứng chỉ hành nghề (log theo từng ACTION/DETAIL)
     functional_group: TBD - cần xác định nhóm chức năng
-    scope_status: pending
-    scope_reason: null
+    scope_status: out_of_scope
+    scope_reason: Không có nhu cầu khai thác nghiệp vụ trên báo cáo — Quyết định Data
+      Modeler (2026-09-12).
     table: CERTIFICATE_CONVERSION_REQUEST_LOGS
     related_tables: null
-    notes: Bảng mới phát hiện qua đối chiếu DDL UAT ngày 2026-07-15, chưa có trong khảo sát ban đầu. Cần xác nhận ý nghĩa nghiệp vụ và nhóm chức năng trước khi đưa vào scope Atomic.
+    notes: Bảng mới phát hiện qua đối chiếu DDL UAT ngày 2026-07-15, chưa có trong khảo sát ban đầu.
+      Chốt out_of_scope (2026-09-12) — không có nhu cầu khai thác nghiệp vụ. Xem NHNCK_HLD_Overview.md §7f.
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
@@ -2371,11 +2325,13 @@ brd_entries:
   content:
     table_meaning: Mẫu biểu báo cáo (report template) cấu hình JSON theo từng module
     functional_group: TBD - cần xác định nhóm chức năng
-    scope_status: pending
-    scope_reason: null
+    scope_status: out_of_scope
+    scope_reason: Không có nhu cầu khai thác nghiệp vụ trên báo cáo — Quyết định Data
+      Modeler (2026-09-12).
     table: REPORT_TEMPLATES
     related_tables: null
-    notes: Bảng mới phát hiện qua đối chiếu DDL UAT ngày 2026-07-15, chưa có trong khảo sát ban đầu. Cần xác nhận ý nghĩa nghiệp vụ và nhóm chức năng trước khi đưa vào scope Atomic.
+    notes: Bảng mới phát hiện qua đối chiếu DDL UAT ngày 2026-07-15, chưa có trong khảo sát ban đầu.
+      Chốt out_of_scope (2026-09-12) — không có nhu cầu khai thác nghiệp vụ. Xem NHNCK_HLD_Overview.md §7f.
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
@@ -2390,8 +2346,9 @@ brd_entries:
   content:
     table_meaning: Kết quả thẩm định/xác minh yêu cầu chuyển đổi trạng thái chứng chỉ (lý do thẩm định theo từng cấp xét duyệt)
     functional_group: UID05 Quản lý chứng chỉ hành nghề
-    scope_status: pending
-    scope_reason: null
+    scope_status: out_of_scope
+    scope_reason: Không có nhu cầu khai thác nghiệp vụ trên báo cáo — Quyết định Data
+      Modeler (2026-09-12), chốt out_of_scope thay vì tiếp tục chờ bảng cha.
     table: VERIFY_CERTIFICATE_CONVERSION_STATUSES
     related_tables:
     - table: CERTIFICATE_CONVERSION_REQUESTS
@@ -2400,9 +2357,181 @@ brd_entries:
     notes: Bảng phát hiện qua đối chiếu DDL UAT ngày 2026-07-15. Ý nghĩa nghiệp vụ đã
       xác nhận (2026-08-13) qua đối chiếu cấu trúc cột với VERIFY_APPLICATION_STATUSES
       — cấu trúc đối xứng hoàn toàn (TARGET_STATUS/PREV_STATUS + 4 trường lý do theo cấp
-      xét duyệt + VERIFIED_BY). Người thiết kế quyết định (2026-08-14) bỏ thiết kế Atomic
-      entity ở đợt này — chờ CERTIFICATE_CONVERSION_REQUESTS (bảng cha) được đưa vào scope
-      trước.
+      xét duyệt + VERIFIED_BY). Người thiết kế quyết định (2026-08-14) tạm dừng thiết kế
+      Atomic entity — chờ CERTIFICATE_CONVERSION_REQUESTS (bảng cha) được đưa vào scope
+      trước. Chốt lại (2026-09-12) — không có nhu cầu khai thác nghiệp vụ, không chờ bảng
+      cha nữa.
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-NHNCK-CONVERSION_PRACTICE_HISTORY_CONFIRMS
+  brd_name: Design Atomic từ nguồn NHNCK bảng CONVERSION_PRACTICE_HISTORY_CONFIRMS
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Theo dõi tích hợp luồng xác nhận quá trình hành nghề khi chuyển đổi
+      CCHN
+    functional_group: UID03 Quản lý hồ sơ
+    scope_status: out_of_scope
+    scope_reason: Quyết định Data Modeler (2026-09-10) — không cần thiết kế bảng theo
+      dõi tích hợp luồng xác nhận quá trình hành nghề khi chuyển đổi CCHN.
+    table: CONVERSION_PRACTICE_HISTORY_CONFIRMS
+    related_tables:
+    - table: CERTIFICATE_CONVERSION_REQUESTS
+      relation: FK cha (không tường minh trong DDL) — Yêu cầu chuyển đổi CCHN
+    - table: ORGANIZATIONS
+      relation: FK cha (không tường minh trong DDL) — Tổ chức liên quan
+    notes: Bảng mới trong DDL (2026-09-10).
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-NHNCK-MCDT_RESULT_OUTBOX
+  brd_name: Design Atomic từ nguồn NHNCK bảng MCDT_RESULT_OUTBOX
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Outbox đẩy kết quả xử lý hồ sơ CCHN ra Cổng Dịch vụ công quốc gia
+      (MCĐT)
+    functional_group: UID03 Quản lý hồ sơ
+    scope_status: in_scope
+    scope_reason: Đã thiết kế Atomic — entity Securities Practitioner License Application
+      Result Notification, table_type Relative (SCD2). Xem lld_NHNCK_MCDT_RESULT_OUTBOX.yaml.
+    table: MCDT_RESULT_OUTBOX
+    related_tables:
+    - table: APPLICATIONS
+      relation: FK cha (không tường minh trong DDL) — Hồ sơ đăng ký CCHN
+    notes: Bảng mới trong DDL (2026-09-10). Nguồn update tại chỗ; Atomic thiết kế SCD2
+      để lưu lịch sử thay đổi trạng thái gửi.
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-NHNCK-SIGNING_AUDIT
+  brd_name: Design Atomic từ nguồn NHNCK bảng SIGNING_AUDIT
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Nhật ký thao tác ký số
+    functional_group: UID01 Quản trị phân hệ
+    scope_status: out_of_scope
+    scope_reason: Quyết định Data Modeler (2026-09-10) — không có ý nghĩa nghiệp vụ khai
+      thác trên mart.
+    table: SIGNING_AUDIT
+    related_tables: null
+    notes: Bảng mới trong DDL (2026-09-10) — thuộc phân hệ ký số (Digital Signing Subsystem).
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Append
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-NHNCK-SIGNING_CERTIFICATE
+  brd_name: Design Atomic từ nguồn NHNCK bảng SIGNING_CERTIFICATE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Chứng thư số dùng để ký
+    functional_group: UID01 Quản trị phân hệ
+    scope_status: out_of_scope
+    scope_reason: Quyết định Data Modeler (2026-09-10) — không có ý nghĩa nghiệp vụ khai
+      thác trên mart.
+    table: SIGNING_CERTIFICATE
+    related_tables: null
+    notes: Bảng mới trong DDL (2026-09-10) — thuộc phân hệ ký số (Digital Signing Subsystem).
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-NHNCK-SIGNING_NOTE
+  brd_name: Design Atomic từ nguồn NHNCK bảng SIGNING_NOTE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Ghi chú đính kèm trên tài liệu ký số
+    functional_group: UID01 Quản trị phân hệ
+    scope_status: out_of_scope
+    scope_reason: Quyết định Data Modeler (2026-09-10) — không có ý nghĩa nghiệp vụ khai
+      thác trên mart.
+    table: SIGNING_NOTE
+    related_tables: null
+    notes: Bảng mới trong DDL (2026-09-10) — thuộc phân hệ ký số (Digital Signing Subsystem).
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-NHNCK-SIGNING_PROFILE
+  brd_name: Design Atomic từ nguồn NHNCK bảng SIGNING_PROFILE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Cấu hình mẫu chữ ký số của người dùng
+    functional_group: UID01 Quản trị phân hệ
+    scope_status: out_of_scope
+    scope_reason: Quyết định Data Modeler (2026-09-10) — không có ý nghĩa nghiệp vụ khai
+      thác trên mart.
+    table: SIGNING_PROFILE
+    related_tables: null
+    notes: Bảng mới trong DDL (2026-09-10) — thuộc phân hệ ký số (Digital Signing Subsystem).
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-NHNCK-SIGNING_SESSION
+  brd_name: Design Atomic từ nguồn NHNCK bảng SIGNING_SESSION
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Phiên xử lý ký số 1 tài liệu
+    functional_group: UID01 Quản trị phân hệ
+    scope_status: out_of_scope
+    scope_reason: Quyết định Data Modeler (2026-09-10) — không có ý nghĩa nghiệp vụ khai
+      thác trên mart.
+    table: SIGNING_SESSION
+    related_tables:
+    - table: SIGNING_PROFILE
+      relation: FK cha (không tường minh trong DDL) — Mẫu chữ ký sử dụng
+    notes: Bảng mới trong DDL (2026-09-10) — thuộc phân hệ ký số (Digital Signing Subsystem).
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-NHNCK-SIGNING_SIGNATURE_IMAGE
+  brd_name: Design Atomic từ nguồn NHNCK bảng SIGNING_SIGNATURE_IMAGE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Ảnh chữ ký tay lưu cho người dùng
+    functional_group: UID01 Quản trị phân hệ
+    scope_status: out_of_scope
+    scope_reason: Quyết định Data Modeler (2026-09-10) — không có ý nghĩa nghiệp vụ khai
+      thác trên mart.
+    table: SIGNING_SIGNATURE_IMAGE
+    related_tables: null
+    notes: Bảng mới trong DDL (2026-09-10) — thuộc phân hệ ký số (Digital Signing Subsystem).
     data_volume_hint: null
     refresh_frequency: null
     ingestion:

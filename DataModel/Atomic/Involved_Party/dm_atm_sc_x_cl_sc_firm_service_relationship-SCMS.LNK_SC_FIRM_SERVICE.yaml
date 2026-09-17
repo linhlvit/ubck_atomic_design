@@ -1,0 +1,163 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-sc_x_cl_sc_firm_service_relationship-SCMS.LNK_SC_FIRM_SERVICE
+  logical_name: Securities Company X Classification Securities Company Firm Service Relationship
+  physical_name: sc_x_cl_sc_firm_service_relationship
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Broker Dealer"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: SCMS
+  description: |
+    Danh mục số giấy phép dịch vụ chứng khoán hiện hành theo từng CTCK (FK Securities Company + Classification Securities Company Firm Service), gồm số giấy phép và ngày hiệu lực/hết hiệu lực. Khác dữ liệu với Securities Company Licensed Service (hồ sơ đăng ký/thu hồi dịch vụ) — xem 7e #4. Tái dùng BCV Concept của entity cha Securities Company. Tên đổi theo cascade khi parent Classification Securities Company Firm Service đổi tên 2026-09-16.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-LNK_SC_FIRM_SERVICE
+
+attributes:
+  - name: Securities Company Id
+    physical_name: sc_id
+    business_meaning: "FK -> sc_firm_info: Công ty chứng khoán liên quan."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: LNK_SC_FIRM_SERVICE
+    source_column: SCMS.LNK_SC_FIRM_SERVICE.SC_FIRM_INFO_ID
+    comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO: LNK_SC_FIRM_SERVICE.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE sau đó hash_id('SCMS.SC_FIRM_INFO', CODE) | Composite PK cùng Classification Securities Company Firm Service Id — entity không có Id/Code riêng, business key = cặp (SC_FIRM_INFO_ID, SERVICE_ID) theo quyết định Data Modeler (2026-09-15)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Securities Company Code
+    physical_name: sc_code
+    business_meaning: Mã Công ty chứng khoán.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: LNK_SC_FIRM_SERVICE
+    source_column: SCMS.SC_FIRM_INFO.CODE
+    comment: "Lookup pair: securities_company.securities_company_code. Pair with Securities Company Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết xem comment Securities Company Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Classification Securities Company Firm Service Id
+    physical_name: cl_sc_firm_service_id
+    business_meaning: "FK -> cat_service_legal_capital: Dịch vụ chứng khoán được cấp phép."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: LNK_SC_FIRM_SERVICE
+    source_column: SCMS.LNK_SC_FIRM_SERVICE.SERVICE_ID
+    comment: "FK target: cl_securities_company_firm_service.cl_sc_firm_service_id. Hash: hash_id('SCMS_CAT_SERVICE_LEGAL_CAPITAL', SERVICE_ID). Retarget theo T1-11 — nguồn fk_note còn ghi cat_service (deprecated), không dùng. | Composite PK cùng Securities Company Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Classification Securities Company Firm Service Code
+    physical_name: cl_sc_firm_service_code
+    business_meaning: Mã dịch vụ chứng khoán được cấp phép.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: LNK_SC_FIRM_SERVICE
+    source_column: SCMS.LNK_SC_FIRM_SERVICE.SERVICE_ID
+    comment: "Lookup pair: cl_securities_company_firm_service.cl_sc_firm_service_code. Pair with Classification Securities Company Firm Service Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: LNK_SC_FIRM_SERVICE
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'SCMS_LNK_SC_FIRM_SERVICE'"
+    etl_derived_value: SCMS_LNK_SC_FIRM_SERVICE
+
+  - name: License Number
+    physical_name: license_nbr
+    business_meaning: Số giấy phép dịch vụ chứng khoán hiện hành.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: LNK_SC_FIRM_SERVICE
+    source_column: SCMS.LNK_SC_FIRM_SERVICE.LICENSE_NUMBER
+    comment: NVARCHAR2(200). Mô tả gốc BRD trống.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: License Date
+    physical_name: license_dt
+    business_meaning: Ngày cấp giấy phép dịch vụ.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: LNK_SC_FIRM_SERVICE
+    source_column: SCMS.LNK_SC_FIRM_SERVICE.LICENSE_DATE
+    comment: Mô tả gốc BRD trống.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Start Date
+    physical_name: start_dt
+    business_meaning: Ngày bắt đầu hiệu lực của giấy phép dịch vụ.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: LNK_SC_FIRM_SERVICE
+    source_column: SCMS.LNK_SC_FIRM_SERVICE.START_DATE
+    comment: Mô tả gốc BRD trống.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: End Date
+    physical_name: end_dt
+    business_meaning: Ngày hết hiệu lực của giấy phép dịch vụ.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: LNK_SC_FIRM_SERVICE
+    source_column: SCMS.LNK_SC_FIRM_SERVICE.END_DATE
+    comment: Mô tả gốc BRD trống.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Approval File
+    physical_name: approval_file
+    business_meaning: Hồ sơ phê duyệt.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: LNK_SC_FIRM_SERVICE
+    source_column: SCMS.LNK_SC_FIRM_SERVICE.APPROVAL_FILE
+    comment: Mô tả gốc BRD trống.
+    classification_context: null
+    etl_derived_value: null

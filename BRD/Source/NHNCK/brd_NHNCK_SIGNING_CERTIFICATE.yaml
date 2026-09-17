@@ -1,0 +1,56 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: SIGNING_CERTIFICATE
+brd_ref: BRD-SRC-NHNCK-SIGNING_CERTIFICATE
+columns:
+- name: ID
+  data_type: NUMBER
+  description: Khóa chính của bản ghi
+  key: PK
+  fk_note: null
+- name: SERIAL_HEX
+  data_type: VARCHAR2(256)
+  description: Số serial chứng thư số (dạng hex)
+  key: null
+  fk_note: null
+- name: SUBJECT
+  data_type: VARCHAR2(2048)
+  description: Subject DN của chứng thư số
+  key: null
+  fk_note: null
+- name: ISSUER
+  data_type: VARCHAR2(2048)
+  description: Issuer DN của chứng thư số
+  key: null
+  fk_note: null
+- name: OWNER_NAME
+  data_type: VARCHAR2(1020)
+  description: Tên chủ sở hữu chứng thư số
+  key: null
+  fk_note: null
+- name: USER_REF
+  data_type: VARCHAR2(512)
+  description: Định danh người dùng sở hữu
+  key: null
+  fk_note: null
+- name: VALID_FROM
+  data_type: TIMESTAMP(6)
+  description: Thời điểm bắt đầu hiệu lực
+  key: null
+  fk_note: null
+- name: VALID_TO
+  data_type: TIMESTAMP(6)
+  description: Thời điểm hết hiệu lực
+  key: null
+  fk_note: null
+- name: ACTIVE
+  data_type: NUMBER(1,0)
+  description: 'Cờ hoạt động: 1=Đang dùng, 0=Ngừng dùng'
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: Thời điểm tạo bản ghi
+  key: null
+  fk_note: null

@@ -2,13 +2,14 @@
 
 ## Ghi chú thiết kế
 
-Toàn bộ 21 bảng là `operational` (bảng phẳng theo từng báo cáo — EAV `item_code` hoặc danh sách) — module TKNB không có Fact Star Schema, không tách Dimension dùng chung (theo quyết định thiết kế ghi ở đầu `DTM_TKNB_HLD.md`, Section 3.2/3.4 đều ghi "Không có"). Không có FK/relationship giữa các bảng — mỗi bảng độc lập hoàn toàn theo layout báo cáo gốc, nên **không vẽ erDiagram** (không có đường quan hệ nào để thể hiện).
+Toàn bộ 22 bảng là `operational` (bảng phẳng theo từng báo cáo — EAV `item_code` hoặc danh sách) — module TKNB không có Fact Star Schema, không tách Dimension dùng chung (theo quyết định thiết kế ghi ở đầu `DTM_TKNB_HLD.md`, Section 3.2/3.4 đều ghi "Không có"). Không có FK/relationship giữa các bảng — mỗi bảng độc lập hoàn toàn theo layout báo cáo gốc, nên **không vẽ erDiagram** (không có đường quan hệ nào để thể hiện).
 
-## Bảng entity tóm tắt (21 bảng, sắp theo thứ tự Nhóm trong HLD)
+## Bảng entity tóm tắt (22 bảng, sắp theo thứ tự Nhóm trong HLD)
 
 | STT | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|---|
 | 1 | Stock Trading Report (HNX01) | Operational | new | Báo cáo giao dịch thị trường cổ phiếu HNX theo kỳ | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_1–108 |
+| 2 | Gov Bond OTC Trading Report (HNX02) | Operational | new | Báo cáo giao dịch trái phiếu Chính phủ OTC trên HNX (7/165 KPI READY — 3/7 loại hình GD) | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_109–273 |
 | 3 | Derivative Trading Report (HNX03) | Operational | new | Báo cáo giao dịch thị trường CKPS (HNX) theo kỳ | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_274–286 |
 | 4 | Market Scale Report (HNX04) | Operational | new | Báo cáo tổng hợp quy mô TTCK HNX | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo/1 period_type | K_TKNB_290–471 |
 | 6 | Corp Bond Trading Report (HNX07) | Operational | new | Báo cáo giao dịch TPDN niêm yết trên HNX theo kỳ | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_497–519 |
@@ -35,6 +36,7 @@ Toàn bộ 21 bảng là `operational` (bảng phẳng theo từng báo cáo —
 | Datamart Entity | source_table (Atomic physical_name) |
 |---|---|
 | Stock Trading Report (HNX01) | market_index_snapshot / security_trading_snapshot / securities_trade |
+| Gov Bond OTC Trading Report (HNX02) | bond_order_book |
 | Derivative Trading Report (HNX03) | security_trading_snapshot / securities_trade |
 | Market Scale Report (HNX04) | securities_trade / security_trading_snapshot |
 | Corp Bond Trading Report (HNX07) | securities_trade |

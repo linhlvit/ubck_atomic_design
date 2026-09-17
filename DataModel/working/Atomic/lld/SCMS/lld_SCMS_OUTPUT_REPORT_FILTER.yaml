@@ -1,0 +1,148 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "SCMS"
+  source_table: "OUTPUT_REPORT_FILTER"
+  atomic_entity: "Securities Company Report Output Filter"
+  entity_physical_name: "sc_report_output_filter"
+  bcv_core_object: "Condition"
+  bcv_concept: "[Condition] Format Condition"
+  table_type: "Relative"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Cấu hình bộ lọc khả dụng khi khai thác 1 biểu mẫu báo cáo đầu ra — cho phép\
+    \ chọn, giá trị mặc định, thứ tự hiển thị. Bảng chưa được khảo sát vào BRD trước\
+    \ đây — cấu trúc cột trích từ DDL UAT (Source/DDL UAT 1/SCMS_UAT_schema.txt),\
+    \ bổ sung BRD và thiết kế Atomic 2026-09-16 — xem SCMS_HLD_Overview.md 7e #23,\
+    \ SCMS_HLD_Tier2.md 6a/6f T2-16. Không có mã nghiệp vụ tự nhiên trong nguồn —\
+    \ BK dùng ID kỹ thuật trực tiếp, cùng pattern Securities Company Report Input\
+    \ Submission/Alert Run. FORM_REPORT_ID hash trực tiếp (Code của Securities Company\
+    \ Report = ID kỹ thuật nguồn) — không cần crosswalk. FILTER_CATALOG_ID (FK → CAT_FILTER)\
+    \ — CAT_FILTER là bảng Code+Name thuần (ID/CODE/NAME/DESCRIPTION/ALLOW_MULTIPLE/SORT_ORDER),\
+    \ reference data set theo Rule #11 CLAUDE.md, không thiết kế thành Atomic entity\
+    \ riêng. Theo yêu cầu Data Modeler (2026-09-16), giá trị CAT_FILTER đã được insert\
+    \ trực tiếp vào bảng Fundamental `cl_value` — đổi thiết kế từ denormalize Text\
+    \ (quyết định tạm thời cũ, xem Tier2 6f T2-16) sang Classification Value thật:\
+    \ crosswalk `FILTER_CATALOG_ID` sang `CAT_FILTER.ID` để lấy `CODE`, đổi tên attribute\
+    \ `Filter Catalog Id` → `Filter Catalog Code`. Scheme `SCMS_CAT_FILTER` đăng ký\
+    \ tại classification_schemes.yaml. Data change mode nguồn chưa xác định rõ (bảng\
+    \ mới khảo sát từ DDL) — cần Data Modeler/ETL xác nhận trước go-live."
+attributes:
+- attribute_name: "Securities Company Report Output Filter Id"
+  physical_name: "sc_rpt_output_filter_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "SCMS.OUTPUT_REPORT_FILTER.ID"
+  comment: "PK surrogate. BCV: \"[Condition] Format Condition\". Cấu hình bộ lọc khả\
+    \ dụng khi khai thác báo cáo đầu ra. Hash: hash_id('SCMS_OUTPUT_REPORT_FILTER',\
+    \ ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Report Output Filter Code"
+  physical_name: "sc_rpt_output_filter_code"
+  description: "Khóa chính kỹ thuật SCMS (ID tự tăng hoặc UUID). BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.OUTPUT_REPORT_FILTER.ID"
+  comment: "BK. NUMBER(19) — ETL convert sang string. Không có mã nghiệp vụ tự nhiên\
+    \ trong nguồn."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=SCMS_OUTPUT_REPORT_FILTER"
+  etl_derived_value: "SCMS_OUTPUT_REPORT_FILTER"
+  data_type: "string"
+- attribute_name: "Securities Company Report Id"
+  physical_name: "sc_rpt_id"
+  description: "FK -> form_report: Biểu mẫu báo cáo mà bộ lọc này áp dụng khi khai\
+    \ thác output."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.OUTPUT_REPORT_FILTER.FORM_REPORT_ID"
+  comment: "FK target: sc_report.sc_rpt_id. Hash: hash_id('SCMS_FORM_REPORT', FORM_REPORT_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Report Code"
+  physical_name: "sc_rpt_code"
+  description: "Mã biểu mẫu báo cáo."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.OUTPUT_REPORT_FILTER.FORM_REPORT_ID"
+  comment: "Lookup pair: sc_report.sc_rpt_code. Pair with Securities Company Report\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Filter Catalog Code"
+  physical_name: "filter_catalog_code"
+  description: "Mã loại bộ lọc tham chiếu tới danh mục bộ lọc hệ thống."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_FILTER.CODE"
+  comment: "SCHEMA_CODE=SCMS.CAT_FILTER. Cần ETL crosswalk sang SCMS.CAT_FILTER: OUTPUT_REPORT_FILTER.FILTER_CATALOG_ID\
+    \ = CAT_FILTER.ID để xác nhận CODE, sau đó lưu CODE (không lưu ID kỹ thuật) vào\
+    \ cột này. Giá trị CAT_FILTER đã được Data Modeler insert trực tiếp vào bảng Fundamental\
+    \ cl_value (2026-09-16)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Allow Select"
+  physical_name: "allow_select"
+  description: "Cờ cho phép người dùng chọn giá trị lọc khi khai thác báo cáo."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.OUTPUT_REPORT_FILTER.ALLOW_SELECT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Default Value"
+  physical_name: "default_val"
+  description: "Giá trị lọc mặc định."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.OUTPUT_REPORT_FILTER.DEFAULT_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

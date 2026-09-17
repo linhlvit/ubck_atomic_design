@@ -1,0 +1,61 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: THANHTRA
+table: PETITION_INTERNAL_TRANSFER_UNIT
+brd_ref: BRD-SRC-THANHTRA-PETITION_INTERNAL_TRANSFER_UNIT
+columns:
+  - name: ID
+    data_type: VARCHAR2(144)
+    description: "Khóa chính UUID"
+    key: PK
+    fk_note: null
+  - name: PETITION_ID
+    data_type: VARCHAR2(144)
+    description: "FK -> petition"
+    key: FK
+    fk_note: "FK → PETITION.ID"
+  - name: UNIT_ID
+    data_type: VARCHAR2(144)
+    description: "Mã đơn vị/ban thuộc UBCKNN được chuyển nội bộ xử lý"
+    key: null
+    fk_note: null
+  - name: UNIT_NAME
+    data_type: VARCHAR2(800)
+    description: "Tên đơn vị/ban"
+    key: null
+    fk_note: null
+  - name: SORT_ORDER
+    data_type: NUMBER(5,0)
+    description: "Thứ tự hiển thị"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: DATE
+    description: "Thời điểm tạo bản ghi"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_AT
+    data_type: DATE
+    description: "Thời điểm cập nhật gần nhất"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(400)
+    description: "ID người dùng tạo bản ghi"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_BY
+    data_type: VARCHAR2(400)
+    description: "ID người dùng cập nhật gần nhất"
+    key: null
+    fk_note: null
+  - name: VERSION
+    data_type: NUMBER(10,0)
+    description: "Số phiên bản bản ghi (optimistic locking)"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: NUMBER(1,0)
+    description: "Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa"
+    key: null
+    fk_note: null

@@ -76,6 +76,37 @@ Sau khi human approve từng file:
 - Nếu trùng → bỏ qua dòng đó (không ghi đè)
 - Chỉ append rows mới (chưa có trong master)
 
+### Quy trình Deprecation / Dọn dẹp đồng bộ khi loại bỏ Fact hoặc Dim Draft (All-Tier Cleanup Protocol)
+
+> **BÀI HỌC THỰC TẾ & NGUYÊN TẮC BẮT BUỘC:** Khi một bảng Fact hoặc Dim draft sau khi tạo ra mà quá trình cập nhật thiết kế (hoặc BA tinh gọn) xác định **không còn cần nữa** (bị hủy bỏ, thay thế, hoặc sáp nhập vào bảng khác):
+> Tuyệt đối **KHÔNG ĐƯỢC** chỉ sửa SQL script ở `Datamart/flat-table/` mà bỏ quên thư mục `Datamart/lld/`!
+> Tình trạng `flat-table` đã loại bỏ bảng nhưng `Datamart/lld/` vẫn còn lưu file detail, master `datamart_attributes.csv` vẫn còn dòng rác, và `datamart_model.yaml` vẫn còn entity mồ côi (orphaned artifacts) là **VI PHẠM TÍNH TOÀN VẸN CỦA DESIGN SYSTEM**.
+
+Khi quyết định loại bỏ hoặc thay thế một bảng Datamart draft, Claude **BẮT BUỘC** thực hiện đồng bộ 5 bước sau:
+1. **Xóa file LLD detail:** Xóa file `Datamart/lld/{MODULE}/DTM_{MODULE}_{datamart_table}.csv` (và các file biến thể multi-source nếu có).
+2. **Dọn sạch master `datamart_attributes.csv`:** Tìm và xóa TOÀN BỘ các dòng có `datamart_table == {datamart_table}` trong file master `Datamart/lld/datamart_attributes.csv`.
+3. **Cập nhật `DTM_{MODULE}_Detail_Mapping.csv`:** Rà soát các KPI từng map vào bảng bị loại bỏ:
+   - Nếu sáp nhập sang bảng khác: đổi `mart_table` và `mart_column` sang bảng mới.
+   - Nếu không còn bảng đáp ứng: chuyển KPI sang `PENDING`, xóa giá trị `mart_table` và `mart_column`, cập nhật `ghi_chu` nêu rõ lý do.
+4. **Xóa khỏi `Datamart/datamart_model.yaml`:** Xóa triệt để block entity `- id: "DTM-{datamart_table}"` khỏi file registry.
+5. **Đồng bộ HLD & Flat Table SQL:** Cập nhật `DTM_{MODULE}_HLD.md` (Section 4 Reuse Analysis ghi rõ trạng thái `deprecated/removed`, giải thích lý do) và đảm bảo `01_create_*_flat_tables.sql` + `02_populate_*_flat_tables.sql` không còn DDL/INSERT của bảng đó.
+
+---
+
+## NGUYÊN TẮC CỨNG: TUYỆT ĐỐI CẤM SỬA ATOMIC TỪ SKILL DATAMART
+
+> 🔴 **CẤM TUYỆT ĐỐI:** Mọi skill thiết kế Datamart (`datamart-hld-design`, `datamart-lld-design`, `datamart-review`) chỉ có quyền **READ-ONLY** đối với thư mục `DataModel/Atomic/` và `DataModel/working/Atomic/`.
+> - Tuyệt đối **KHÔNG ĐƯỢC** tạo file mới, sửa đổi thuộc tính, thêm cột kỹ thuật, hoặc can thiệp vào bất kỳ file YAML nào trong `DataModel/`.
+> - Nếu Atomic thiếu bảng, thiếu cột, hoặc thiếu audit field cần thiết cho Datamart:
+>   - Đánh dấu KPI liên quan là **PENDING** (ghi rõ lý do: "Thiếu nguồn Atomic / Chưa có trong Atomic schema").
+>   - Ghi nhận vào Section 5 Open Issues (`DTM_{MODULE}_HLD.md`).
+>   - DỪNG lại báo cáo human để Data Modeler thuộc luồng Atomic xử lý độc lập. Tuyệt đối không tự ý "tiện tay" sửa Atomic!
+
+> ⛔ **QUY TẮC BẮT BUỘC: LOẠI BỎ CHỈ TIÊU DELETE TỪ BA MAPPING:**
+> Mọi chỉ tiêu trong file BA (`BRD/BA/BA_analyst_{MODULE}.csv`) có `Trạng thái mapping` là **`Delete`** (hoặc `DELETE`, `Xóa`, `Xoá`, `DELETED`):
+> - **TUYỆT ĐỐI KHÔNG ĐƯỢC ĐƯA VÀO THIẾT KẾ ATTRIBUTES** (không tạo cột trong file Attributes CSV, không tạo Fact/Dim/Operational table phục vụ riêng cho chỉ tiêu Delete).
+> - Đây là các yêu cầu đã bị hủy bỏ bởi BA/nghiệp vụ, phải loại trừ hoàn toàn khỏi mọi bảng dữ liệu Datamart.
+
 ---
 
 ## Header 15 cột
@@ -143,17 +174,54 @@ etl_logic_type, source_entity, atomic_table, source_attribute, atomic_column
 
 ---
 
+## Trường kỹ thuật mặc định cho bảng SCD4A (Dimension và Operational)
+
+> **BẮT BUỘC:** Trong kiến trúc Lakehouse Datamart của UBCKNN, các bảng Dimension và Operational (tác nghiệp) tuân theo mô hình **SCD4A** (Slowly Changing Dimension Type 4A). Bảng lưu trạng thái hiện hành (current-state) và có companion snapshot history theo kỳ.
+> Mọi bảng Dimension và Operational thuộc pattern SCD4A **BẮT BUỘC PHẢI KHAI BÁO ĐẦY ĐỦ** các trường kỹ thuật mặc định dưới đây trong file Attributes LLD (`DTM_{MODULE}_{mart_table}_{src_stm_code}.csv`):
+
+### Bộ 5 trường kỹ thuật SCD4A chuẩn:
+
+| datamart_column | data_domain | data_type | nullable | key | description | etl_logic | etl_logic_type | source_entity |
+|---|---|---|---|---|---|---|---|---|
+| `ds_rcrd_st` | `Classification Value` | `string` | `false` | (trống) | Trạng thái bản ghi ('ACTIVE' = Active, 'INACTIVE' = Deleted) — audit field SCD4A | `'ACTIVE'` | `direct` | `Generated` |
+| `ds_rcrd_isrt_dt` | `Date` | `date` | `false` | (trống) | Ngày insert bản ghi lần đầu — audit field SCD4A | `:etl_date` | `direct` | `Generated` |
+| `ds_rcrd_udt_dt` | `Date` | `date` | `false` | (trống) | Ngày update bản ghi gần nhất — audit field SCD4A | `:etl_date` | `direct` | `Generated` |
+| `ds_etl_pcs_tms` | `Timestamp` | `timestamp` | `false` | (trống) | Timestamp xử lý ETL — audit field | `CURRENT_TIMESTAMP()` | `direct` | `Generated` |
+| `ds_snpst_dt` | `Date` | `date` | `false` | (trống) | Ngày snapshot kỳ dữ liệu — **chỉ có ở bảng History** | `:etl_date` | `direct` | `Generated` |
+
+**Quy tắc phân bổ:**
+- **Bảng Active (Current-state Dimension / Operational):** Khai báo 4 trường đầu: `ds_rcrd_st`, `ds_rcrd_isrt_dt`, `ds_rcrd_udt_dt`, `ds_etl_pcs_tms`. KHÔNG có `ds_snpst_dt` vì bảng chỉ lưu trạng thái hiện hành.
+- **Bảng History (Snapshot lịch sử Dimension / Operational companion):** Khai báo đủ 5 trường, bao gồm `ds_snpst_dt` + `ds_etl_pcs_tms` + `ds_rcrd_st` + `ds_rcrd_isrt_dt` + `ds_rcrd_udt_dt`.
+- **Cột Atomic nguồn:** Vì đây là các trường kỹ thuật do ETL framework sinh tự động, `source_entity = Generated`, các cột `atomic_table`, `source_attribute`, `atomic_column` để trống.
+
+---
+
 ## etl_logic_type — Bảng đầy đủ
 
 | `etl_logic_type` | Khi nào dùng | `etl_logic` format |
 |---|---|---|
 | `direct` | Map thẳng 1 Atomic col **có trong driving table** | `atomic_table.atomic_column` |
 | `computed` | Arithmetic từ nhiều Atomic cols | `atomic_table.col_a * atomic_table.col_b` |
-| `lookup_date` | FK → Calendar Date Dimension | `LOOKUP cdr_dt_dim ON cdr_dt_dim.dt = atomic_table.date_col` |
+| `lookup_date` | FK → Calendar Date Dimension | `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = atomic_table.date_col` |
 | `lookup_dim` | FK → SCD4A Dimension qua BK (current state, không dùng date range) | `LOOKUP dim ON dim.bk_col = driving.bk_col` |
 | `join_atomic` | Cột từ Atomic table **khác** driving table | `JOIN atomic_b ON atomic_b.fk_col = driving.join_col → atomic_b.target_col` |
 | `pivot` | ETL fanout 1 row thành nhiều rows theo branch key | Xem mục Pivot bên dưới |
 | `pending` | Chưa có Atomic source | *(để trống)* |
+
+### Phân định Role-Playing Date FK vs Degenerate Date Attribute
+
+| Tiêu chí | Role-Playing Date FK | Degenerate Date Attribute |
+|---|---|---|
+| **Mục đích** | Trục thời gian phân tích chính (snapshot, giao dịch, sự kiện) | Thuộc tính ngày mô tả nghiệp vụ (pass-through) |
+| **Data Domain** | `Surrogate Dimension Key` | `Date` hoặc `Timestamp` |
+| **Data Type** | `string` | `date` hoặc `timestamp` |
+| **Key** | `FK` | Trống (`""`) — CẤM `FK`, `BK`, `DD` |
+| **etl_logic_type** | `lookup_date` | `direct` hoặc `join_atomic` — CẤM `lookup_date` |
+| **etl_logic** | `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = ...` | `atomic_table.date_column` |
+| **Hậu tố tên** | `_dt_dim_id` (VD: `snpst_dt_dim_id`, `trade_dt_dim_id`) | `_dt` (VD: `violation_record_dt`, `birth_dt`) |
+| **Cấm kỵ** | Cấm dùng `cdr_dt_dim_id` / `Calendar Date Dimension Id` trên Fact | Cấm thêm `_Dimension_Id`, `_Dim_Id` |
+
+> **Ví dụ thực tế (bài học NHNCK):** Trường `violation_record_dt` từng bị đặt nhầm thành `violation_record_dt_dim_id` (commit 742aede) — đây là Degenerate Date (ngày lập biên bản, chỉ hiển thị), KHÔNG phải trục thời gian phân tích.
 
 **ETL runtime parameter — tên biến chuẩn:**
 Mọi tham chiếu đến ngày ETL chạy (snapshot date, population date, runtime date) đều dùng **`:etl_date`** — không dùng `{etl_date}`, `{etl_snapshot_dt}`, `{etl_population_dt}`, hay tên biến tùy ý khác. Đổi quy ước 2026-08-03 (khớp cú pháp binding parameter dùng ở flat-table SQL, tránh 2 hình thức khác nhau giữa LLD và flat-table cho cùng 1 khái niệm).
@@ -195,6 +263,29 @@ Khi `etl_logic_type ∈ {join_atomic, lookup_dim, lookup_date}` và có JOIN cla
 ❌ Giá trị đích đặt trước JOIN clause (đọc ngược).
 ❌ Có JOIN nhưng không có dấu `→` phân tách JOIN clause và cột giá trị.
 Xem ví dụ đầy đủ trong [`examples/etl_logic_wrong.md`](../examples/etl_logic_wrong.md) mục "SAI 8".
+
+---
+
+## Quy tắc bắt buộc khi JOIN bảng Atomic SCD4A trong `etl_logic`
+
+> **NGUY CƠ SAI LỆCH DỮ LIỆU & FANOUT:** Trên tầng Atomic, các bảng thuộc `table_type: Fundamental` được vận hành theo cơ chế **SCD4A** (chứa cả bản ghi ACTIVE và INACTIVE/xóa logic). Nếu bảng có companion history (`_hstr`), dữ liệu được lưu theo từng snapshot `ds_snpst_dt`.
+> Khi viết `etl_logic` trong Datamart LLD (ở cả Dimension, Fact, và Operational):
+
+1. **JOIN bảng Atomic Fundamental (Current-state SCD4A):**
+   - BẮT BUỘC phải kèm điều kiện lọc: `AND <atomic_table>.ds_rcrd_st = 'ACTIVE'` trong mệnh đề JOIN.
+   - Ví dụ đúng:
+     ```sql
+     INNER JOIN public_company ON public_company.equity_ticker_symbol = security_trading_snapshot.symbol AND public_company.src_stm_code = 'IDS_COMPANY_PROFILES' AND public_company.ds_rcrd_st = 'ACTIVE' → public_company.public_company_nm
+     ```
+   - ❌ **CẤM:** JOIN bảng Atomic SCD4A mà không có `ds_rcrd_st = 'ACTIVE'`, dẫn đến việc lấy nhầm bản ghi đã bị xóa hoặc trùng lặp dữ liệu.
+
+2. **JOIN bảng Atomic History Companion (`_hstr` hoặc Snapshot theo kỳ):**
+   - BẮT BUỘC phải so khớp chính xác ngày snapshot và trạng thái:
+     `AND <hstr_table>.ds_snpst_dt = :etl_date AND <hstr_table>.ds_rcrd_st = 'ACTIVE'` (hoặc so khớp với trường ngày của driving table, ví dụ `trading_dt`).
+   - Ví dụ đúng:
+     ```sql
+     INNER JOIN pc_share_statistics_hstr ON pc_share_statistics_hstr.pc_id = public_company.pc_id AND pc_share_statistics_hstr.ds_snpst_dt = security_trading_snapshot.trading_dt AND pc_share_statistics_hstr.ds_rcrd_st = 'ACTIVE' → pc_share_statistics_hstr.total_outstanding_share_quantity
+     ```
 
 ---
 
@@ -327,3 +418,25 @@ JOIN <table_b> ON <table_b>.<fk> = <driving>.<col>
 | `Holiday Name` | `direct` | `cdr_dt.hol_nm` |
 
 ❌ Không thiết kế `Month Name` — không có trong Atomic `cdr_dt`.
+
+---
+
+## Quy tắc đặt tên Date FK trên Fact Table (Role-Playing Date Dimensions)
+
+> ⛔ **CẤM TUYỆT ĐỐI:** Fact table **KHÔNG BAO GIỜ** được đặt tên cột FK là `cdr_dt_dim_id` hay logical attribute `Calendar Date Dimension Id`.
+> - `Calendar Date Dimension Id` (`cdr_dt_dim_id`) **CHỈ là Primary Key của chính bảng Dimension `cdr_dt_dim`**.
+> - Trong mô hình Dimensional Modeling (Kimball), khi Fact table kết nối sang Date Dimension, các khóa ngoại đóng các **vai trò nghiệp vụ khác nhau (Role-Playing Dimensions)**.
+> - Bắt buộc đặt tên theo vai trò nghiệp vụ của ngày:
+
+| Loại Fact / Vai trò ngày | datamart_attribute (Logical) | datamart_column (Physical) | data_domain | data_type | key | description | etl_logic | etl_logic_type |
+|---|---|---|---|---|---|---|---|---|
+| **Fact Snapshot (kỳ snapshot)** | `Snapshot Date Dimension Id` | `snpst_dt_dim_id` | `Surrogate Dimension Key` | `string` | `FK` | FK tới Calendar Date Dimension — ngày snapshot | `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = driving.ds_snpst_dt` | `lookup_date` |
+| **Ngày phát hành / cấp** | `Issue Date Dimension Id` | `issue_dt_dim_id` | `Surrogate Dimension Key` | `string` | `FK` | FK tới Calendar Date Dimension — ngày cấp/phát hành | `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = driving.issue_dt` | `lookup_date` |
+| **Ngày giao dịch** | `Trade Date Dimension Id` | `trade_dt_dim_id` | `Surrogate Dimension Key` | `string` | `FK` | FK tới Calendar Date Dimension — ngày giao dịch | `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = driving.trading_dt` | `lookup_date` |
+| **Ngày đánh giá** | `Evaluation Date Dimension Id` | `evaluation_dt_dim_id` | `Surrogate Dimension Key` | `string` | `FK` | FK tới Calendar Date Dimension — ngày đánh giá | `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = driving.evaluation_dt` | `lookup_date` |
+| **Ngày hiệu lực** | `Effective Date Dimension Id` | `effective_dt_dim_id` | `Surrogate Dimension Key` | `string` | `FK` | FK tới Calendar Date Dimension — ngày hiệu lực | `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = driving.effective_dt` | `lookup_date` |
+| **Ngày nộp hồ sơ / báo cáo** | `Submission Date Dimension Id` | `submission_dt_dim_id` | `Surrogate Dimension Key` | `string` | `FK` | FK tới Calendar Date Dimension — ngày nộp | `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = driving.submission_dt` | `lookup_date` |
+| **Ngày vi phạm / quyết định** | `Decision Date Dimension Id` | `decision_dt_dim_id` | `Surrogate Dimension Key` | `string` | `FK` | FK tới Calendar Date Dimension — ngày quyết định | `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = driving.decision_dt` | `lookup_date` |
+| **Ngày sự kiện** | `Event Date Dimension Id` | `evnt_dt_dim_id` | `Surrogate Dimension Key` | `string` | `FK` | FK tới Calendar Date Dimension — ngày sự kiện | `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = driving.event_dt` | `lookup_date` |
+
+> **Bài học GSDC (2026-09-08):** Bảng `fct_public_company_listing_info_snpst` từng bị reviewer Đức reject vì đặt tên cột FK ngày snapshot là `cdr_dt_dim_id`. Đã sửa thành `snpst_dt_dim_id` (Snapshot Date Dimension Id).

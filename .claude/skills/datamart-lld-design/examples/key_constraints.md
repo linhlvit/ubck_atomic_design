@@ -97,6 +97,21 @@ datamart_entity,key,data_domain,nullable,description
 
 ---
 
+## Quy tắc Date Dimension FK trên Fact table (Role-Playing Date)
+
+**CẤM TUYYỆT ĐỐI** sử dụng `Calendar Date Dimension Id` / `cdr_dt_dim_id` trên Fact table. Cột `cdr_dt_dim_id` CHỈ là PK của bảng `cdr_dt_dim`.
+
+| Loại Fact | Tên bắt buộc (Logical) | Tên bắt buộc (Physical) | Ví dụ |
+|---|---|---|---|
+| Fact Snapshot (`_snpst`) | `Snapshot Date Dimension Id` | `snpst_dt_dim_id` | `fct_stock_portfolio_snpst` |
+| Fact Event/Transaction | `<Role> Date Dimension Id` | `<role>_dt_dim_id` | `trade_dt_dim_id`, `decision_dt_dim_id` |
+
+### Phân biệt với Degenerate Date
+
+Các trường ngày mô tả nghiệp vụ thuần túy (VD: `violation_record_dt`, `first_license_dt`, `birth_dt`) giữ kiểu `date`, `key` để trống, KHÔNG tạo FK và KHÔNG thêm hậu tố `_dim_id`.
+
+---
+
 ## Ví dụ đúng — Operational
 
 ```csv

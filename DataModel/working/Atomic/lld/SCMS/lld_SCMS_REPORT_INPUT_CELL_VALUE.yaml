@@ -1,0 +1,188 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "SCMS"
+  source_table: "REPORT_INPUT_CELL_VALUE"
+  atomic_entity: "Securities Company Report Input Value"
+  entity_physical_name: "sc_report_input_value"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: "Classification"
+  group: "T3"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: null
+attributes:
+- attribute_name: "Securities Company Report Input Value Id"
+  physical_name: "sc_rpt_input_val_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. Hash: hash_id('SCMS_REPORT_INPUT_CELL_VALUE', ID). BCV:\
+    \ \"[Documentation] Regulatory Report\". Giá trị 1 ô dữ liệu trong lần nộp báo\
+    \ cáo đầu vào."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Report Input Value Code"
+  physical_name: "sc_rpt_input_val_code"
+  description: "Khóa chính kỹ thuật SCMS (ID tự tăng hoặc UUID). BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.REPORT_INPUT_CELL_VALUE.ID"
+  comment: "BK. NUMBER(19) — ETL convert sang string. Không có mã nghiệp vụ tự nhiên\
+    \ trong nguồn."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=SCMS_REPORT_INPUT_CELL_VALUE"
+  etl_derived_value: "SCMS_REPORT_INPUT_CELL_VALUE"
+  data_type: "string"
+- attribute_name: "Securities Company Report Input Submission Id"
+  physical_name: "sc_rpt_input_submission_id"
+  description: "FK -> report_input_submission: Phiên gửi báo cáo liên quan."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.REPORT_INPUT_CELL_VALUE.REPORT_INPUT_SUBMISSION_ID"
+  comment: "FK target: sc_report_input_submission.sc_report_input_submission_id. Hash:\
+    \ hash_id('SCMS_REPORT_INPUT_SUBMISSION', REPORT_INPUT_SUBMISSION_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Report Input Submission Code"
+  physical_name: "sc_rpt_input_submission_code"
+  description: "Mã phiên gửi báo cáo liên quan."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.REPORT_INPUT_CELL_VALUE.REPORT_INPUT_SUBMISSION_ID"
+  comment: "Lookup pair: sc_report_input_submission.sc_report_input_submission_code.\
+    \ Pair with Securities Company Report Input Submission Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Sheet Id"
+  physical_name: "sheet_id"
+  description: "Định danh sheet trong cấu trúc biểu mẫu eForm động."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.REPORT_INPUT_CELL_VALUE.SHEET_ID"
+  comment: "Tọa độ trong cấu trúc eForm động — không FK đến family FORM_SHEET* (hiện\
+    \ ngoài scope Atomic, xem SCMS_HLD_Tier3.md 6f T3-08)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Section Id"
+  physical_name: "section_id"
+  description: "Định danh section trong cấu trúc biểu mẫu eForm động."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.REPORT_INPUT_CELL_VALUE.SECTION_ID"
+  comment: "Tọa độ trong cấu trúc eForm động — không FK đến family FORM_SHEET* (hiện\
+    \ ngoài scope Atomic, xem SCMS_HLD_Tier3.md 6f T3-08)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Cell Id"
+  physical_name: "cell_id"
+  description: "Định danh ô (cell) trong cấu trúc biểu mẫu eForm động."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.REPORT_INPUT_CELL_VALUE.CELL_ID"
+  comment: "Tọa độ trong cấu trúc eForm động — không FK đến family FORM_SHEET* (hiện\
+    \ ngoài scope Atomic, xem SCMS_HLD_Tier3.md 6f T3-08). NOT NULL theo UAT schema\
+    \ (2026-09-15) — trước đó BRD ghi nullable, đã sửa lại theo DDL thực tế."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Row No"
+  physical_name: "row_no"
+  description: "Số thứ tự dòng dữ liệu trong sheet/section."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.REPORT_INPUT_CELL_VALUE.ROW_NO"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Item Value"
+  physical_name: "item_val"
+  description: "Giá trị đã nhập cho ô dữ liệu."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.REPORT_INPUT_CELL_VALUE.ITEM_VALUE"
+  comment: "NCLOB — giá trị lớn, có thể chứa nhiều kiểu dữ liệu (số/chuỗi/ngày) tùy\
+    \ cấu hình field của form."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Ref Type Code"
+  physical_name: "ref_tp_code"
+  description: "Loại đối tượng được liên kết, copy từ Securities Company Report Input\
+    \ Submission."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.REPORT_INPUT_CELL_VALUE.REF_TYPE"
+  comment: "VARCHAR2(64). Denormalized từ Securities Company Report Input Submission\
+    \ (Ref Type Code) xuống cấp cell — không phải FK. Cột phát sinh mới ở nguồn (2026-09-15,\
+    \ UAT schema); mô tả gốc BRD trống."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Etl Process Timestamp"
+  physical_name: "etl_process_tms"
+  description: "Thời gian xử lý ETL."
+  data_domain: "Timestamp"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Technical field (prefix ds_) — do ETL framework quản lý, không map 1:1\
+    \ từ cột nguồn. Bắt buộc cho table_type Classification theo reference/technical_fields.md."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"

@@ -17,7 +17,8 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: null
+  notes: "Hạ về draft (2026-09-11) để đồng bộ DDL UAT cập nhật: bổ sung Implemented\
+    \ Indicator, Actual Quarter."
 attributes:
 - attribute_name: "Inspection Annual Plan Target Id"
   physical_name: "inspection_annual_plan_target_id"
@@ -177,3 +178,31 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
+- attribute_name: "Implemented Indicator"
+  physical_name: "implemented_ind"
+  description: "Đã triển khai thanh tra đối tượng này chưa: 0 = Chưa triển khai, 1\
+    \ = Đã triển khai."
+  data_domain: "Indicator"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.INSPECTION_ANNUAL_PLAN_TARGET.IMPLEMENTED"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Actual Quarter"
+  physical_name: "actual_quarter"
+  description: "Quý thực tế triển khai (1-4) — do người dùng cập nhật khi đã triển\
+    \ khai xong."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.INSPECTION_ANNUAL_PLAN_TARGET.ACTUAL_QUARTER"
+  comment: "Nguồn NUMBER(1,0) — ETL cast sang integer. Giá trị hợp lệ: 1–4."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"

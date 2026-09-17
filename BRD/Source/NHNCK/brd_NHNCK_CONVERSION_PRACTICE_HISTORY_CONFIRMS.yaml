@@ -1,0 +1,108 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: NHNCK
+table: CONVERSION_PRACTICE_HISTORY_CONFIRMS
+brd_ref: BRD-SRC-NHNCK-CONVERSION_PRACTICE_HISTORY_CONFIRMS
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (số tự tăng)
+  key: PK
+  fk_note: null
+- name: REQUEST_ID
+  data_type: NVARCHAR2(200)
+  description: Mã yêu cầu xác nhận quá trình hành nghề (tích hợp ngoài)
+  key: null
+  fk_note: null
+- name: CONVERSION_REQUEST_ID
+  data_type: NUMBER(10,0)
+  description: Yêu cầu chuyển đổi CCHN liên quan
+  key: null
+  fk_note: 'Có thể FK tới CERTIFICATE_CONVERSION_REQUESTS.ID — không có FK marker
+    tường minh trong DDL'
+- name: SOURCE_TYPE
+  data_type: NUMBER(10,0)
+  description: Loại nguồn xác nhận
+  key: null
+  fk_note: null
+- name: ORGANIZATION_ID
+  data_type: NUMBER(10,0)
+  description: Tổ chức liên quan đến quá trình hành nghề khai báo
+  key: null
+  fk_note: 'Có thể FK tới ORGANIZATIONS.ID — không có FK marker tường minh trong
+    DDL'
+- name: IDENTITY_NUMBER
+  data_type: NVARCHAR2(100)
+  description: Số giấy tờ định danh của người được xác nhận
+  key: null
+  fk_note: null
+- name: FULL_NAME
+  data_type: NVARCHAR2(400)
+  description: Họ tên người được xác nhận
+  key: null
+  fk_note: null
+- name: DECLARED_WORK_HISTORY
+  data_type: NCLOB
+  description: Quá trình hành nghề tự khai báo
+  key: null
+  fk_note: null
+- name: STATUS
+  data_type: NUMBER(10,0)
+  description: Trạng thái xử lý yêu cầu xác nhận
+  key: null
+  fk_note: null
+- name: RESULT
+  data_type: NVARCHAR2(60)
+  description: Kết quả xác nhận
+  key: null
+  fk_note: null
+- name: RESPONDED_BY
+  data_type: NVARCHAR2(400)
+  description: Người phản hồi xác nhận
+  key: null
+  fk_note: null
+- name: RESPONDED_AT
+  data_type: DATE
+  description: Thời điểm phản hồi
+  key: null
+  fk_note: null
+- name: CORRECTED_WORK_HISTORY
+  data_type: NCLOB
+  description: Quá trình hành nghề sau khi được hiệu chỉnh/xác nhận
+  key: null
+  fk_note: null
+- name: REASON
+  data_type: NCLOB
+  description: Lý do (từ chối/điều chỉnh)
+  key: null
+  fk_note: null
+- name: REQUESTED_BY
+  data_type: NVARCHAR2(400)
+  description: Người khởi tạo yêu cầu xác nhận
+  key: null
+  fk_note: null
+- name: REQUESTED_AT
+  data_type: DATE
+  description: Thời điểm khởi tạo yêu cầu
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: NUMBER(10,0)
+  description: Người tạo bản ghi
+  key: null
+  fk_note: 'Có thể FK tới USERS.ID — không có FK marker tường minh trong DDL'
+- name: CREATED_AT
+  data_type: DATE
+  description: Thời điểm tạo bản ghi
+  key: null
+  fk_note: null
+- name: UPDATED_BY
+  data_type: NUMBER(10,0)
+  description: Người cập nhật bản ghi gần nhất
+  key: null
+  fk_note: 'Có thể FK tới USERS.ID — không có FK marker tường minh trong DDL'
+- name: UPDATED_AT
+  data_type: DATE
+  description: Thời điểm cập nhật gần nhất
+  key: null
+  fk_note: null

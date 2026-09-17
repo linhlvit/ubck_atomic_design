@@ -7,7 +7,7 @@ ldm:
   physical_name: sp_license_application_education_certificate_document
   layer: Atomic
   version: "1.0"
-  status: draft
+  status: approved
   bcv_core_object: Documentation
   bcv_concept: "[Documentation] Education Certificate"
   table_type: Fundamental
@@ -60,7 +60,7 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATION_SPECIALIZATIONS
     source_column: null
-    comment: "Scheme: SOURCE_SYSTEM. ETL-derived = NHNCK.APPLICATION_SPECIALIZATIONS."
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     classification_context: "Source System Code = 'NHNCK_APPLICATION_SPECIALIZATIONS'"
     etl_derived_value: NHNCK_APPLICATION_SPECIALIZATIONS
 
@@ -74,7 +74,7 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATION_SPECIALIZATIONS
     source_column: NHNCK.APPLICATION_SPECIALIZATIONS.APPLICATION_ID
-    comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL crosswalk sang NHNCK.APPLICATIONS: APPLICATION_SPECIALIZATIONS.APPLICATION_ID = APPLICATIONS.ID để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK.APPLICATIONS', APPLICATION_CODE) | Trước đây hash trực tiếp theo APPLICATION_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ APPLICATION_CODE) — đã sửa sang crosswalk 2026-07-27."
+    comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL crosswalk sang NHNCK.APPLICATIONS: APPLICATION_SPECIALIZATIONS.APPLICATION_ID = APPLICATIONS.ID để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS', APPLICATION_CODE) | Trước đây hash trực tiếp theo APPLICATION_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ APPLICATION_CODE) — đã sửa sang crosswalk 2026-07-27."
     classification_context: null
     etl_derived_value: null
 
@@ -92,31 +92,17 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Classification Specialization Id
-    physical_name: cl_specialization_id
-    business_meaning: FK đến chuyên ngành CCHN đăng ký
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: APPLICATION_SPECIALIZATIONS
-    source_column: NHNCK.APPLICATION_SPECIALIZATIONS.SPECIALIZATION_ID
-    comment: "FK target: cl_specialization.cl_specialization_id. Cần ETL crosswalk sang NHNCK.SPECIALIZATIONS: APPLICATION_SPECIALIZATIONS.SPECIALIZATION_ID = SPECIALIZATIONS.ID để xác nhận SPECIALIZATION_CODE sau đó hash_id('NHNCK.SPECIALIZATIONS', SPECIALIZATION_CODE) | Trước đây hash trực tiếp theo SPECIALIZATION_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ SPECIALIZATION_CODE) — đã sửa sang crosswalk 2026-07-27. Đổi tên 2026-07-09 từ Specialization Type Code khi SPECIALIZATIONS lên entity thật (scheme SPECIALIZATION đã deprecate)."
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Classification Specialization Code
-    physical_name: cl_specialization_code
-    business_meaning: Mã chuyên ngành CCHN đăng ký (denormalized lookup)
-    data_domain: Text
+  - name: Specialization Code
+    physical_name: specialization_code
+    business_meaning: Mã chuyên ngành CCHN đăng ký
+    data_domain: Classification Value
     data_type: string
     nullable: false
     is_primary_key: false
     source_system: NHNCK
     source_table: APPLICATION_SPECIALIZATIONS
     source_column: NHNCK.SPECIALIZATIONS.SPECIALIZATION_CODE
-    comment: "Lookup pair: Classification Specialization.Classification Specialization Code. Pair with Classification Specialization Id. Giá trị lấy từ NHNCK.SPECIALIZATIONS.SPECIALIZATION_CODE sau ETL crosswalk — chi tiết xem comment Classification Specialization Id."
+    comment: "SCHEMA_CODE=NHNCK.SPECIALIZATIONS"
     classification_context: null
     etl_derived_value: null
 
@@ -172,7 +158,7 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATION_SPECIALIZATIONS
     source_column: NHNCK.APPLICATION_SPECIALIZATIONS.ASSIGNEE_ID
-    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Cần ETL crosswalk sang NHNCK.USERS: APPLICATION_SPECIALIZATIONS.ASSIGNEE_ID = USERS.ID để xác nhận USERNAME sau đó hash_id('IAM.USERS', USERNAME) | Chưa xác nhận value set khớp danh mục IAM.USERS — cần profile dữ liệu trước go-live."
+    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Cần ETL crosswalk sang NHNCK.USERS: APPLICATION_SPECIALIZATIONS.ASSIGNEE_ID = USERS.ID để xác nhận USERNAME sau đó hash_id('IAM_USERS', USERNAME) | Chưa xác nhận value set khớp danh mục IAM.USERS — cần profile dữ liệu trước go-live."
     classification_context: null
     etl_derived_value: null
 
@@ -215,5 +201,33 @@ attributes:
     source_table: APPLICATION_SPECIALIZATIONS
     source_column: NHNCK.APPLICATION_SPECIALIZATIONS.NOTE
     comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Status Code
+    physical_name: status_code
+    business_meaning: Trạng thái bản ghi
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATION_SPECIALIZATIONS
+    source_column: NHNCK.APPLICATION_SPECIALIZATIONS.STATUS
+    comment: "SCHEMA_CODE=NHNCK.APPLICATION_SPECIALIZATIONS.STATUS"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Securities Practitioner License Application Component Code
+    physical_name: sp_license_application_component_code
+    business_meaning: Mã thành phần hồ sơ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATION_SPECIALIZATIONS
+    source_column: NHNCK.APPLICATION_SPECIALIZATIONS.MCDT_MA_THANH_PHAN_HOSO
+    comment: "Mirror pattern Public Service Portal Content Item Code trên lld_NHNCK_APPLICATIONS.yaml — mã đồng bộ với Cổng Dịch vụ công quốc gia. Bổ sung theo DDL mới (2026-09-10)."
     classification_context: null
     etl_derived_value: null

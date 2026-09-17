@@ -1,0 +1,51 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: THANHTRA
+table: PENALTY_DECISION_SUBJECT_BEHAVIOR_SUPPLEMENTARY
+brd_ref: BRD-SRC-THANHTRA-PENALTY_DECISION_SUBJECT_BEHAVIOR_SUPPLEMENTARY
+columns:
+  - name: ID
+    data_type: VARCHAR2(144)
+    description: "Khóa chính UUID"
+    key: PK
+    fk_note: null
+  - name: PENALTY_DECISION_SUBJECT_BEHAVIOR_ID
+    data_type: VARCHAR2(144)
+    description: "FK -> penalty_decision_subject_behavior"
+    key: FK
+    fk_note: "FK → PENALTY_DECISION_SUBJECT_BEHAVIOR.ID"
+  - name: PENALTY_TYPE_ID
+    data_type: VARCHAR2(144)
+    description: "FK -> penalty_type"
+    key: FK
+    fk_note: "FK → PENALTY_TYPE.ID"
+  - name: CREATED_AT
+    data_type: DATE
+    description: "Thời điểm tạo bản ghi"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_AT
+    data_type: DATE
+    description: "Thời điểm cập nhật gần nhất"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(400)
+    description: "ID người dùng tạo bản ghi"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_BY
+    data_type: VARCHAR2(400)
+    description: "ID người dùng cập nhật gần nhất"
+    key: null
+    fk_note: null
+  - name: VERSION
+    data_type: NUMBER(10,0)
+    description: "Số phiên bản bản ghi (optimistic locking)"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: NUMBER(1,0)
+    description: "Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa"
+    key: null
+    fk_note: null

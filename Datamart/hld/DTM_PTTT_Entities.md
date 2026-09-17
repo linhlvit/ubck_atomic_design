@@ -120,7 +120,7 @@ erDiagram
 |---|---|---|---|---|---|
 | Calendar Date Dimension | Dimension | reuse | Chiều thời gian | 1 row / ngày | — |
 | Securities Company Dimension | Dimension | new | Chiều công ty chứng khoán | 1 row / CTCK | — |
-| Fact Member Safety Per Member Snapshot | Fact Snapshot | new | VCSH, dư nợ margin, xếp hạng ATTC per CTCK — chỉ Chiều Mã CTCK (K_PTTT_208) READY, còn lại PENDING (O_PTTT_13) | 1 row / CTCK / ngày | K_PTTT_43,58,197,199,202,203,204~208 |
+| Fact Member Safety Per Member Snapshot | Fact Snapshot | new | VCSH, dư nợ margin, xếp hạng ATTC per CTCK — chỉ Chiều Mã CTCK (K_PTTT_208) READY, còn lại PENDING (O_PTTT_13) | 1 row / CTCK / ngày | K_PTTT_43,251,252,253,202,203,204~208 |
 | Operational Member Safety Monitor | Operational | new | Danh sách CTCK giám sát rủi ro dư nợ margin — PENDING (cùng gap O_PTTT_13) | 1 row / CTCK / ngày | — |
 
 > Toàn bộ measure chính (Dư nợ margin, VCSH, D/E) của Tab này còn PENDING — chỉ Chiều Mã CTCK (dùng `securities_company` READY) đã READY. Xem O_PTTT_13. `Fact Member Safety Snapshot` (Nhóm 22/23, grain toàn hệ thống) 100% PENDING — loại khỏi Entities.csv, xem mục "Bảng PENDING" cuối file.

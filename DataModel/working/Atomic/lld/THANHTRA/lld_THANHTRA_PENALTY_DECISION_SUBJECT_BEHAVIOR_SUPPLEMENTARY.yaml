@@ -1,0 +1,109 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "THANHTRA"
+  source_table: "PENALTY_DECISION_SUBJECT_BEHAVIOR_SUPPLEMENTARY"
+  atomic_entity: "Penalty Decision Subject Behavior X Penalty Type Relationship"
+  entity_physical_name: "pd_subject_behavior_x_penalty_type_relationship"
+  bcv_core_object: "Event"
+  bcv_concept: "[Event] Event"
+  table_type: "Relative"
+  group: "T6"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Bảng mới (DDL UAT cập nhật 2026-09) — Hình thức xử phạt bổ sung theo hành\
+    \ vi trên QĐ xử phạt VPHC, cho phép 1 hành vi có N hình thức xử phạt bổ sung.\
+    \ Domain Prefix rỗng vì entity link/relationship thuần bắc cầu Penalty Decision\
+    \ Subject Behavior (T6) và Penalty Type (T1) — cross-tier FK bình thường, cùng\
+    \ pattern PENALTY_DECISION_SUBJECT_BEHAVIOR đang dùng cho FK tới Penalty Type.\
+    \ Bảng nguồn chỉ có 2 FK, không có business attribute nào khác (thỏa điều kiện\
+    \ 'pure link' — Rule 3e atomic-lld-design) → PK composite trên 2 FK Id, KHÔNG\
+    \ có cặp Id/Code riêng cho entity, cùng cơ chế đã áp dụng cho Penalty Decision\
+    \ X Violation Record Relationship (PENALTY_DECISION_VIOLATION_RECORD cũng có ID\
+    \ kỹ thuật riêng trong nguồn nhưng vẫn dùng composite PK, không tạo Id/Code riêng,\
+    \ do không có business attribute nào khác ngoài 2 FK). Cân nhắc quan hệ với cột\
+    \ SUPPLEMENTARY_PENALTY (CLOB, free-text) hiện có trên PENALTY_DECISION_SUBJECT_BEHAVIOR\
+    \ — DDL KHÔNG đánh dấu DEPRECATED cột này, xem THANHTRA_HLD_Tier6.md mục T6-03:\
+    \ giữ nguyên SUPPLEMENTARY_PENALTY trên Atomic, chưa loại bỏ, chờ Data Modeler\
+    \ xác nhận có trùng lặp/mâu thuẫn không. Audit block + PK kỹ thuật ID loại trừ\
+    \ khỏi Atomic — mirror quyết định đã áp dụng cho toàn bộ phân hệ THANHTRA (xem\
+    \ pending_design.yaml)."
+attributes:
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=THANHTRA_PENALTY_DECISION_SUBJECT_BEHAVIOR_SUPPLEMENTARY"
+  etl_derived_value: "THANHTRA_PENALTY_DECISION_SUBJECT_BEHAVIOR_SUPPLEMENTARY"
+  data_type: "string"
+- attribute_name: "Penalty Decision Subject Behavior Id"
+  physical_name: "pd_subject_behavior_id"
+  description: "FK đến Penalty Decision Subject Behavior (hành vi vi phạm của đối\
+    \ tượng bị xử phạt)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR_SUPPLEMENTARY.PENALTY_DECISION_SUBJECT_BEHAVIOR_ID"
+  comment: "FK target: pd_subject_behavior.pd_subject_behavior_id. Hash: hash_id('THANHTRA_PENALTY_DECISION_SUBJECT_BEHAVIOR',\
+    \ PENALTY_DECISION_SUBJECT_BEHAVIOR_ID). Composite PK cùng Penalty Type Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Penalty Decision Subject Behavior Code"
+  physical_name: "pd_subject_behavior_code"
+  description: "Mã hành vi vi phạm liên kết (denormalized lookup)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR.ID"
+  comment: "Lookup pair: pd_subject_behavior.pd_subject_behavior_code. Pair with Penalty\
+    \ Decision Subject Behavior Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Penalty Type Id"
+  physical_name: "penalty_tp_id"
+  description: "FK đến Penalty Type (hình thức xử phạt bổ sung được áp dụng)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR_SUPPLEMENTARY.PENALTY_TYPE_ID"
+  comment: "FK target: penalty_type.penalty_tp_id. Cần ETL crosswalk sang THANHTRA.PENALTY_TYPE:\
+    \ PENALTY_DECISION_SUBJECT_BEHAVIOR_SUPPLEMENTARY.PENALTY_TYPE_ID = PENALTY_TYPE.ID\
+    \ để xác nhận CODE sau đó hash_id('THANHTRA_PENALTY_TYPE', CODE). Composite PK\
+    \ cùng Penalty Decision Subject Behavior Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Penalty Type Code"
+  physical_name: "penalty_tp_code"
+  description: "Mã hình thức xử phạt bổ sung (denormalized lookup)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_TYPE.CODE"
+  comment: "Lookup pair: penalty_type.penalty_tp_code. Pair with Penalty Type Id.\
+    \ Giá trị lấy từ THANHTRA.PENALTY_TYPE.CODE sau ETL crosswalk — chi tiết xem comment\
+    \ Penalty Type Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

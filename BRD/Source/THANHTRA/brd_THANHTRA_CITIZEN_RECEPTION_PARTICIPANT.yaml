@@ -1,0 +1,81 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: THANHTRA
+table: CITIZEN_RECEPTION_PARTICIPANT
+brd_ref: BRD-SRC-THANHTRA-CITIZEN_RECEPTION_PARTICIPANT
+columns:
+  - name: ID
+    data_type: VARCHAR2(144)
+    description: "Khóa chính UUID"
+    key: PK
+    fk_note: null
+  - name: CITIZEN_RECEPTION_ID
+    data_type: VARCHAR2(144)
+    description: "FK -> citizen_reception"
+    key: FK
+    fk_note: "FK → CITIZEN_RECEPTION.ID"
+  - name: PARTICIPANT_TYPE
+    data_type: VARCHAR2(80)
+    description: "RECEIVER (Người tiếp, tối thiểu 2 người) | COORDINATOR (Đơn vị phối hợp, không bắt buộc)"
+    key: null
+    fk_note: null
+  - name: USER_ID
+    data_type: VARCHAR2(144)
+    description: "Mã tài khoản SSO. NULL khi là nhân sự ngoài UBCKNN tham gia phối hợp (nhập tên thủ công) — chỉ áp dụng cho COORDINATOR"
+    key: null
+    fk_note: null
+  - name: USER_FULL_NAME
+    data_type: VARCHAR2(800)
+    description: "Họ tên người tham gia"
+    key: null
+    fk_note: null
+  - name: USER_ACCOUNT
+    data_type: VARCHAR2(400)
+    description: "Tài khoản người dùng"
+    key: null
+    fk_note: null
+  - name: DEPARTMENT_ID
+    data_type: VARCHAR2(144)
+    description: "Đơn vị/phòng ban"
+    key: null
+    fk_note: null
+  - name: DEPARTMENT_NAME
+    data_type: VARCHAR2(800)
+    description: "Tên đơn vị/phòng ban"
+    key: null
+    fk_note: null
+  - name: SORT_ORDER
+    data_type: NUMBER(5,0)
+    description: "Thứ tự hiển thị"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: DATE
+    description: "Thời điểm tạo bản ghi"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_AT
+    data_type: DATE
+    description: "Thời điểm cập nhật gần nhất"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(400)
+    description: "ID người dùng tạo bản ghi"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_BY
+    data_type: VARCHAR2(400)
+    description: "ID người dùng cập nhật gần nhất"
+    key: null
+    fk_note: null
+  - name: VERSION
+    data_type: NUMBER(10,0)
+    description: "Số phiên bản bản ghi (optimistic locking)"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: NUMBER(1,0)
+    description: "Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa"
+    key: null
+    fk_note: null

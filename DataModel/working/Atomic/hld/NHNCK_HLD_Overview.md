@@ -16,12 +16,12 @@
 
 | Tier | BCV Core Object | BCV Concept | Category | Source Table | Source Table Change Mode | Mô tả bảng nguồn | Atomic Entity | Table Type | BCV Term |
 |---|---|---|---|---|---|---|---|---|---|
-| 1 | Involved Party | [Involved Party] Organization | Organization | UNITS | Update | Danh mục đơn vị thuộc UBCKNN | Regulatory Authority Organization Unit | Fundamental | Organization — cấu trúc cây self-referencing. Cùng Atomic entity với DEPARTMENTS. Phân biệt bằng Organization Unit Type Code và Source System Code. |
-| 1 | Involved Party | [Involved Party] Organization | Organization | DEPARTMENTS | Update | Danh mục phòng ban thuộc UBCKNN | Regulatory Authority Organization Unit | Fundamental | Organization — cùng Atomic entity với UNITS. Organization Unit Type Code = DEPARTMENT, Source System Code = NHNCK.DEPARTMENTS. Tách attr file theo nguồn. |
+| 1 | Involved Party | [Involved Party] Organization | Organization | UNITS | Update | Danh mục đơn vị thuộc UBCKNN | Regulatory Authority Organization Unit | Fundamental | Organization — cấu trúc cây self-referencing. **[SỬA 2026-09-11]** DEPARTMENTS đã tách khỏi entity này, nay UNITS là nguồn duy nhất. |
+| 1 | Common | [Classification] Common | Common | DEPARTMENTS | Update | Danh mục phòng ban thuộc UBCKNN | Classification Value | Classification | **[SỬA 2026-09-11]** Tách khỏi Regulatory Authority Organization Unit theo yêu cầu Data Modeler — map trực tiếp vào Classification Value (cl_value), mirror pattern APPLICATION_STATUSES. Scheme: NHNCK.DEPARTMENTS. UNIT_ID (quan hệ cha) không map — xem pending_design.yaml. |
 | 1 | Involved Party | [Involved Party] Organization | Organization | ORGANIZATIONS | Update | Thông tin các tổ chức tham gia TTCK (CTCK, QLQ, Ngân hàng...) | Securities Organization Reference | Fundamental | Organization — entity nghiệp vụ phong phú, FK từ nhiều bảng. |
-| 1 | Involved Party | [Involved Party] Individual | Personal Information | IDENTITY_INFO_C06S | Update | Lịch sử kiểm tra xác thực danh tính với C06 (CSDL quốc gia về dân cư) | Individual | Fundamental | Individual — master thể nhân độc lập, không FK đến Securities Practitioner. Trước đây "Isolated" ngoài scope, nay có đủ cấu trúc cột. Xem 7e. |
 | 1 | Documentation | [Documentation] Gov. Registration Document | Government Registration Document | DECISIONS | Update | Danh mục các quyết định hành chính do UBCKNN ban hành | Securities Practitioner License Decision Document | Fundamental | Government Registration Document — được FK từ Certificate Document (×3), Certificate Group Document, Conduct Violation, Examination Assessment. |
 | 1 | Documentation | [Documentation] Gov. Registration Document | Government Registration Document | CERTIFICATES | Update | Danh mục các loại chứng chỉ hành nghề chứng khoán | Securities Practitioner License Certificate Type | Fundamental | Government Registration Document — danh mục loại CCHN, có processing_days/sort_order/description nên là entity thật (không phải Classification Value). FK target cho Certificate Type Id ở License Application/Certificate Document/Organization Employment Report/Examination Assessment Result/Fee, và cross-source từ IAM User. |
+| 1 | Common | [Classification] Common | Common | POSITIONS | Update | Danh mục chức vụ | Classification Value | Classification | **[MỚI 2026-09-11]** Đưa vào scope theo yêu cầu Data Modeler (trước đây out_of_scope, chỉ dự kiến ở Tier1 6d). Map vào Classification Value (cl_value), mirror pattern APPLICATION_STATUSES/DEPARTMENTS. Scheme: NHNCK.POSITIONS. |
 | 2 | Involved Party | [Involved Party] Individual | Individual | PROFESSIONALS | Update | Thông tin người hành nghề chứng khoán | Securities Practitioner | Fundamental | Individual — master entity người hành nghề. |
 | 2 | Involved Party | [Involved Party] Individual | Individual | PROFESSIONAL_HISTORIES | Update | Lịch sử thay đổi thông tin cá nhân của người hành nghề | Securities Practitioner Reason Change History | Fundamental | Individual — ghi nhận 1 lần thay đổi thông tin (ai/khi nào/lý do). Thiết kế lại 2026-07-07 — bản cũ map nhầm sang PROFESSIONALS. FK đến Securities Practitioner qua PROFESSIONAL_ID. |
 | 2 | Business Activity | [Business Activity] Business Activity | Business Activity | SPECIALIZATION_COURSES | Update | Danh mục khóa học chuyên môn bổ sung kiến thức | Securities Practitioner Professional Training Class | Fundamental | Business Activity — master entity khóa học, không gắn với người cụ thể. BCO đổi từ Event theo yêu cầu Data Modeler (2026-07-24) — xem 7e #13. |
@@ -31,7 +31,7 @@
 | 2 | Group | [Group] Group | Group | APPLICATION_GROUPS | Update | Nhóm hồ sơ CCHN xử lý tập thể (batch) | Securities Practitioner License Application Group | Fundamental | Group — GROUP_NAME/GROUP_CREATED_DATE/GROUP_COMPLETED_DATE/APPLICATION_COUNT là attribute nghiệp vụ riêng, không suy ra từ DECISIONS/APPLICATIONS. FK đến Decision (Tier 1), Officer (Tier 1). Quyết định Data Modeler (2026-08-13) — đảo out_of_scope (Batch Processing). |
 | 2 | Group | [Group] Group | Group | CERTIFICATE_RECORD_GROUPS | Update | Nhóm chứng chỉ hành nghề xử lý tập thể (batch) | Securities Practitioner License Certificate Group | Fundamental | Group — tương tự License Application Group. FK đến Decision (Tier 1). Quyết định Data Modeler (2026-08-13) — đảo out_of_scope (Batch Processing). |
 | 2 | Documentation | [Documentation] Gov. Registration Document | Government Registration Document | DECISION_DOCUMENTS | Update | Văn bản/tài liệu ký số của quyết định hành chính | Securities Practitioner License Decision Document Attachment | Fundamental | Government Registration Document — tái dùng concept entity cha License Decision Document. Có metadata ký số (SIGNED_BY/SIGNED_DATE) — vượt điều kiện loại trừ File Attachment. Quyết định Data Modeler (2026-08-13) — đảo out_of_scope (Sub-process). |
-| 2 | Involved Party | [Involved Party] Organization | Organization | CERTIFICATE_DEPARTMENTS | Update | Liên kết phòng ban phụ trách với loại chứng chỉ hành nghề | Regulatory Authority Organization Unit X Securities Practitioner License Certificate Type Relationship | Relative | Organization — tái dùng concept entity cha Regulatory Authority Organization Unit. Pure junction 2 FK (CERTIFICATE_ID, DEPARTMENT_ID), không attribute nghiệp vụ riêng. Quyết định Data Modeler (2026-08-15) — đảo out_of_scope (Application Config). |
+| 2 | Involved Party | [Involved Party] Organization | Organization | CERTIFICATE_DEPARTMENTS | Update | Liên kết phòng ban phụ trách với loại chứng chỉ hành nghề | Regulatory Authority Organization Unit X Securities Practitioner License Certificate Type Relationship | Relative | Organization — tái dùng concept entity cha Regulatory Authority Organization Unit. Pure junction 2 FK (CERTIFICATE_ID, DEPARTMENT_ID), không attribute nghiệp vụ riêng. Quyết định Data Modeler (2026-08-15) — đảo out_of_scope (Application Config). **[SỬA 2026-09-11]** DEPARTMENTS tách sang Classification Value — FK Department đổi từ cặp Id/Code sang 1 trường Department Code (Classification Value). |
 | 2 | Documentation | [Documentation] Gov. Registration Document | Government Registration Document | CERTIFICATE_SPECIALIZATIONS | Update | Liên kết chuyên môn yêu cầu với loại chứng chỉ hành nghề | Securities Practitioner License Certificate Type X Classification Specialization Relationship | Relative | Government Registration Document — tái dùng concept entity cha License Certificate Type. Có 3 attribute nghiệp vụ riêng (SORT_ORDER/DOCUMENT_TYPE/IS_REQUIRED) ngoài 2 FK. Quyết định Data Modeler (2026-08-15) — đảo out_of_scope (Application Config). |
 | 3 | Documentation | [Documentation] Gov. Registration Document | Government Registration Document | CERTIFICATE_RECORDS | Update | Chứng chỉ hành nghề được cấp cho người hành nghề | Securities Practitioner License Certificate Document | Fundamental | Government Registration Document — FK đến Practitioner (Tier 2), Decision ×3 (Tier 1), Officer (Tier 1). |
 | 3 | Documentation | [Documentation] Gov. Registration Document | Government Registration Document | APPLICATIONS | Update | Hồ sơ đăng ký chứng chỉ hành nghề chứng khoán | Securities Practitioner License Application | Fundamental | Government Registration Document — FK đến Practitioner (Tier 2), Certificate Document (Tier 3), Examination Assessment (Tier 2), Officer ×2 (Tier 1). |
@@ -66,7 +66,6 @@ graph TD
     SECORG["**Securities Organization Reference**"]:::atomic
     DECISION["**Securities Practitioner License Decision Document**"]:::atomic
     OFFICER["**Identity and Access Management User**\n(pending — xem IAM, thay Regulatory\nAuthority Officer đã loại khỏi scope)"]:::atomic
-    INDIVIDUAL["**Individual**"]:::atomic
     %% Shared
     ADDR["IP Postal Address"]:::shared
     EADDR["IP Electronic Address"]:::shared
@@ -113,7 +112,6 @@ graph TD
     ADDR -.->|shared| SECORG
     EADDR -.->|shared| SECORG
     ALTID -.->|shared| SECORG
-    INDIVIDUAL -->|Updated By Officer FK| OFFICER
 
     %% Tier 2
     ADDR -.->|shared| PRAC
@@ -178,22 +176,39 @@ graph TD
 
 | Source Table | Mô tả | BCV Term | Xử lý Atomic |
 |---|---|---|---|
-| EDUCATION_LEVELS | Danh mục trình độ học vấn | Classification Value | Scheme: EDUCATION_LEVEL. |
+| EDUCATION_LEVELS | Danh mục trình độ học vấn | Classification Value | Scheme: NHNCK.EDUCATION_LEVELS. Không có cột CODE riêng — cl_code = LEVEL_NAME. **Đưa vào scope, thiết kế xong (2026-09-11).** |
+| DEPARTMENTS | Danh mục phòng ban thuộc UBCKNN | Classification Value | Scheme: NHNCK.DEPARTMENTS. **[SỬA 2026-09-11]** Tách khỏi entity Regulatory Authority Organization Unit (trước đây dùng chung với UNITS) theo yêu cầu Data Modeler. |
 | CERTIFICATES | Danh mục loại chứng chỉ hành nghề | Classification Value | Scheme: CERTIFICATE_TYPE. Chỉ có CERTIFICATE_CODE + CERTIFICATE_NAME + metadata vận hành. |
 | APPLICATION_SOURCES | Hình thức nộp hồ sơ | Classification Value | Scheme: APPLICATION_SOURCE. |
 | APPLICATION_STATUSES | Danh mục trạng thái hồ sơ đăng ký CCHN | Classification Value | Scheme: APPLICATION_STATUS. Từng nâng cấp thành entity thật Classification Application Status (2026-07-09) — revert lại 2026-08-20. Xem 5c. |
 | DOCUMENTS | Danh mục các tài liệu/hồ sơ cần nộp theo thủ tục CCHN | Classification Value | Scheme: DOCUMENT_TYPE. Từng nâng cấp thành entity thật Classification Document (2026-07-09) — revert lại 2026-08-20. Xem 5d. |
 | SPECIALIZATIONS | Danh mục chuyên môn/lĩnh vực hành nghề chứng khoán | Classification Value | Scheme: SPECIALIZATION. Từng nâng cấp thành entity thật Classification Specialization (2026-07-09) — revert lại 2026-08-20. Xem 5e. |
-| POSITIONS | Danh mục chức vụ | Classification Value | Scheme: POSITION. BCV: Employment Position Type — reference data set, không phải entity. |
+| POSITIONS | Danh mục chức vụ | Classification Value | Scheme: NHNCK.POSITIONS. BCV: Employment Position Type — reference data set, không phải entity. **Đưa vào scope, thiết kế xong (2026-09-11).** |
 | BANKS | Danh mục ngân hàng (dùng cho nộp phí thi) | Classification Value | Scheme: BANK. FK từ EXAM_SESSIONS.BANK_ID — chỉ có mã + tên. |
 
 ---
 
 #### 7d. Junction Tables
 
+**[ĐẢO NGƯỢC 2026-09-12]** `APPLICATION_DECISIONS` không còn ở bảng này — theo
+yêu cầu Data Modeler, bảng này nay được thiết kế thành entity Atomic riêng
+`Securities Practitioner License Decision Document X Securities Practitioner
+License Application Relationship` (pattern link/relationship `_x_`, PK
+composite 2 FK, mirror `APPLICATION_GROUP_MEMBERS`/`FMS.JOB_TL_PRO`) thay vì
+denormalize ARRAY như quyết định cũ dưới đây. Xem mục `## Entities` và
+`NHNCK_HLD_Tier4.md` 6a/6b/6c.
+
+Không còn bảng nào khác thuộc nhóm Junction Tables (pure junction,
+denormalize ARRAY) trong scope hiện tại.
+
+<details>
+<summary>Quyết định cũ (2026-08-xx, đã đảo ngược — giữ lại để tham khảo lịch sử)</summary>
+
 | Source Table | Mô tả | Entity chính | Xử lý trên Atomic |
 |---|---|---|---|
 | APPLICATION_DECISIONS | Liên kết hồ sơ CCHN với quyết định tương ứng (APPLICATION_ID + DECISION_ID) | Securities Practitioner License Decision Document | Pure junction — không tạo Atomic entity. Xác định bên Many: 1 quyết định bao gồm nhiều hồ sơ CCHN → denormalize thành `ARRAY<STRUCT<application_id BIGINT, application_code STRING>>` trên entity DECISIONS. |
+
+</details>
 
 ---
 
@@ -225,6 +240,7 @@ graph TD
 | Isolated | PROVINCES | Danh mục tỉnh/thành phố trực thuộc trung ương | Dữ liệu địa giới chuẩn hóa tại ECAT — không tự thiết kế Atomic entity, chỉ tra cứu qua mã tham chiếu (2026-07-10). |
 | Isolated | DISTRICTS | Danh mục quận/huyện/thị xã | Dữ liệu địa giới chuẩn hóa tại ECAT — không tự thiết kế Atomic entity, chỉ tra cứu qua mã tham chiếu (2026-07-10). |
 | Involved Party | USERS | Thông tin cán bộ/chuyên viên UBCKNN có tài khoản trong hệ thống NHNCK | Quyết định Data Modeler (2026-07-07) — không thiết kế Atomic entity riêng. Định hướng dùng chung entity Identity and Access Management User (nguồn IAM.USERS) cho mọi FK "officer/user" trong hệ thống. |
+| Involved Party | IDENTITY_INFO_C06S | Lịch sử kiểm tra xác thực danh tính với C06 (CSDL quốc gia về dân cư) | **Quyết định Data Modeler (2026-09-12) — trả về out_of_scope**, đảo ngược quyết định đưa vào scope trước đó (2026-07-23, xem Entities #5f). Entity `Individual` (Fundamental) cùng 2 shared entity (Involved Party Postal Address, Involved Party Alternative Identification) đã gỡ khỏi `manifest.yaml`/`atomic_entities.yaml`; 3 file LLD đã xóa. |
 | Involved Party | APPLICATION_EXPERIENCES | Kinh nghiệm làm việc khai báo trong hồ sơ xin cấp CCHN | Quyết định Data Modeler (2026-08-13) — loại khỏi thiết kế Atomic 3NF; vẫn còn nhu cầu khai thác nghiệp vụ nên sẽ đánh giá lại hướng thiết kế khác sau. |
 | Involved Party | APPLICATION_PROFESSIONALS | Snapshot thông tin cá nhân người đăng ký tại thời điểm nộp hồ sơ | Quyết định Data Modeler (2026-08-13) — loại khỏi thiết kế Atomic 3NF; vẫn còn nhu cầu khai thác nghiệp vụ nên sẽ đánh giá lại hướng thiết kế khác sau. |
 | Involved Party | PROFESSIONAL_TRAININGS | Lịch sử đào tạo, bồi dưỡng của người hành nghề | Quyết định Data Modeler (2026-08-13) — loại khỏi thiết kế Atomic 3NF; vẫn còn nhu cầu khai thác nghiệp vụ nên sẽ đánh giá lại hướng thiết kế khác sau. |
@@ -234,11 +250,11 @@ graph TD
 | System / Auth | PERMISSION_ROLES | Phân quyền theo nhóm vai trò | Operational/system data. |
 | System / Auth | DEPARTMENT_ACCESS | Quản lý quyền khai thác giữa các phòng ban | Operational/system data. |
 | System / Log | ACTION_LOGS | Nhật ký hành động của người dùng trên hệ thống | System audit log — không phải nghiệp vụ CCHN. |
-| System / Config | SYSTEM_PARAMETERS | Tham số cấu hình hệ thống | Config data. |
+| System / Config | SYSTEM_PARAMETERS | Tham số cấu hình hệ thống | Config data. **REMOVED FROM SOURCE (2026-09-10)** — bảng đã bị xoá khỏi DDL nguồn, xác nhận qua NHNCK_UAT_schema.txt refresh. |
 | System / Config | AUTO_INCREMENT_CODES | Quản lý số tự tăng cho mã CCHN và mã tài liệu | Sequence/counter table — operational data. |
 | System / Config | NOTIFICATION_CONFIGURATIONS | Cấu hình thông báo theo sự kiện nghiệp vụ | Application config data. |
-| System / Config | BACKUP_SCHEDULES | Lịch tự động sao lưu cơ sở dữ liệu | Operational/system data. |
-| System / Log | BACKUPS | Thông tin file sao lưu cơ sở dữ liệu | Operational/system data. |
+| System / Config | BACKUP_SCHEDULES | Lịch tự động sao lưu cơ sở dữ liệu | Operational/system data. **REMOVED FROM SOURCE (2026-09-10)** — bảng đã bị xoá khỏi DDL nguồn, xác nhận qua NHNCK_UAT_schema.txt refresh. |
+| System / Log | BACKUPS | Thông tin file sao lưu cơ sở dữ liệu | Operational/system data. **REMOVED FROM SOURCE (2026-09-10)** — bảng đã bị xoá khỏi DDL nguồn, xác nhận qua NHNCK_UAT_schema.txt refresh. |
 | System / Log | EMAIL_LOGS | Nhật ký gửi email trong hệ thống | Operational log — không phải nghiệp vụ CCHN. |
 | System / Log | SMS_LOGS | Nhật ký gửi SMS trong hệ thống | Operational log. |
 | System / Log | SEND_AND_RECIEVE_LOGS | Nhật ký gửi nhận dữ liệu tích hợp | Operational log. |
@@ -259,9 +275,20 @@ graph TD
 | Operational | CERTIFICATE_CONVERSION_REQUESTS | Yêu cầu chuyển đổi CCHN bản giấy sang bản điện tử | Operational/migration data — nghiệp vụ 1 lần, không có giá trị phân tích liên tục. |
 | Source Process Log | APPLICATION_LOGS | Nhật ký thay đổi trạng thái/nội dung hồ sơ | Quy trình internal tác nghiệp ứng dụng nguồn — không phải sự kiện nghiệp vụ độc lập. |
 | Source Process Log | CERTIFICATE_RECORD_LOGS | Nhật ký hoạt động trên chứng chỉ hành nghề | Audit log nguồn — không phải sự kiện nghiệp vụ tường minh. |
-| Sub-process | APPLICATION_DOCUMENTS | Tài liệu vật lý (file attachment) đính kèm hồ sơ đăng ký | Bảng lưu file attachment (tên file, đường dẫn, loại tài liệu) — không có attribute nghiệp vụ độc lập ngoài con trỏ file; thông tin loại tài liệu đã có trên APPLICATION_SPECIALIZATIONS. |
+| Sub-process | APPLICATION_DOCUMENTS | Tài liệu vật lý (file attachment) đính kèm hồ sơ đăng ký | Bảng lưu file attachment (tên file, đường dẫn, loại tài liệu) — không có attribute nghiệp vụ độc lập ngoài con trỏ file; thông tin loại tài liệu đã có trên APPLICATION_SPECIALIZATIONS. **Xác nhận lại (2026-09-10):** DDL mới thêm `MCDT_MA_THANH_PHAN_HOSO`/`SUBMIT_LATER` — Data Modeler xác nhận vẫn giữ out-of-scope, không tạo entity; 2 cột mới ghi nhận trong `pending_design.yaml`. |
 | Sub-process | APPLICATION_DOCUMENT_HISTORIES | Lịch sử thẩm định từng tài liệu trong hồ sơ | Quy trình internal tác nghiệp từ nguồn — không phản ánh sự kiện nghiệp vụ có giá trị phân tích. |
 | Sub-process | APPLICATION_SUPPLEMENTS | Thông tin bổ sung hồ sơ CCHN | Sub-process bổ sung hồ sơ theo yêu cầu — cấu trúc internal tác nghiệp tại nguồn. |
+| Conversion Flow | CONVERSION_PRACTICE_HISTORY_CONFIRMS | Bảng theo dõi tích hợp luồng xác nhận quá trình hành nghề khi chuyển đổi CCHN | Bảng mới trong DDL (2026-09-10) — quyết định Data Modeler: không cần thiết kế bảng theo dõi tích hợp luồng xác nhận quá trình hành nghề khi chuyển đổi CCHN. |
+| Digital Signing Subsystem | SIGNING_AUDIT | Nhật ký thao tác ký số | Bảng mới trong DDL (2026-09-10) — quyết định Data Modeler: không có ý nghĩa nghiệp vụ khai thác trên mart. |
+| Digital Signing Subsystem | SIGNING_CERTIFICATE | Chứng thư số dùng để ký | Bảng mới trong DDL (2026-09-10) — quyết định Data Modeler: không có ý nghĩa nghiệp vụ khai thác trên mart. |
+| Digital Signing Subsystem | SIGNING_NOTE | Ghi chú đính kèm trên tài liệu ký số | Bảng mới trong DDL (2026-09-10) — quyết định Data Modeler: không có ý nghĩa nghiệp vụ khai thác trên mart. |
+| Digital Signing Subsystem | SIGNING_PROFILE | Cấu hình mẫu chữ ký số của người dùng | Bảng mới trong DDL (2026-09-10) — quyết định Data Modeler: không có ý nghĩa nghiệp vụ khai thác trên mart. |
+| Digital Signing Subsystem | SIGNING_SESSION | Phiên xử lý ký số 1 tài liệu | Bảng mới trong DDL (2026-09-10) — quyết định Data Modeler: không có ý nghĩa nghiệp vụ khai thác trên mart. |
+| Digital Signing Subsystem | SIGNING_SIGNATURE_IMAGE | Ảnh chữ ký tay lưu cho người dùng | Bảng mới trong DDL (2026-09-10) — quyết định Data Modeler: không có ý nghĩa nghiệp vụ khai thác trên mart. |
+| Operational | ORGANIZATION_REPORT_LOG_SYNCS | Đối soát đồng bộ báo cáo nhân sự hành nghề với Organization Employment Report | Thiết kế thử 2026-08-13 (BCV Concept `[Documentation] Employer Registration`), nhưng Data Modeler quyết định (2026-08-14) bỏ thiết kế Atomic entity đợt này — trả `scope_status` về `out_of_scope`. LLD/manifest/atomic_entities đã gỡ bỏ. Xem `## Entities` #31, `NHNCK_HLD_Tier4.md` 6f #6. |
+| Uncertain scope | CERTIFICATE_CONVERSION_REQUEST_LOGS | Nhật ký hành động xử lý yêu cầu chuyển đổi CCHN (log theo từng ACTION/DETAIL) | Bảng mới phát hiện qua đối chiếu DDL UAT (2026-07-15), `scope_status: pending` từ đó đến 2026-09-12. **Quyết định Data Modeler (2026-09-12) — chốt `out_of_scope`:** không có nhu cầu khai thác nghiệp vụ trên báo cáo. |
+| Uncertain scope | REPORT_TEMPLATES | Mẫu biểu báo cáo (report template) cấu hình JSON theo từng module | Bảng mới phát hiện qua đối chiếu DDL UAT (2026-07-15), `scope_status: pending` từ đó đến 2026-09-12. **Quyết định Data Modeler (2026-09-12) — chốt `out_of_scope`:** không có nhu cầu khai thác nghiệp vụ trên báo cáo. |
+| Operational | VERIFY_CERTIFICATE_CONVERSION_STATUSES | Kết quả thẩm định/xác minh yêu cầu chuyển đổi trạng thái CCHN (lý do thẩm định theo từng cấp xét duyệt) | Thiết kế thử 2026-08-13, tạm dừng 2026-08-14 vì FK cha `CERTIFICATE_CONVERSION_REQUESTS` vẫn `out_of_scope` (xem `## Entities` #24). **Quyết định Data Modeler (2026-09-12) — chốt `out_of_scope` (không còn chờ bảng cha nữa):** không có nhu cầu khai thác nghiệp vụ trên báo cáo. |
 
 ---
 
@@ -273,8 +300,8 @@ graph TD
 
 
 ### 2. Regulatory Authority Organization Unit
-**Tier:** 1 | **Source:** `UNITS, DEPARTMENTS` | **BCV Concept:** [Involved Party] Organization | **BCO:** Involved Party | **Table Type:** Fundamental
-**Description:** Đơn vị và phòng ban thuộc UBCKNN — cấu trúc cây self-referencing DEPARTMENT → UNIT. Phân biệt bằng Organization Unit Type Code (ETL-derived). Dùng chung làm FK tổ chức nội bộ.
+**Tier:** 1 | **Source:** `UNITS` | **BCV Concept:** [Involved Party] Organization | **BCO:** Involved Party | **Table Type:** Fundamental
+**Description:** Đơn vị thuộc UBCKNN — cấu trúc cây self-referencing. Phân biệt bằng Organization Unit Type Code (ETL-derived). Dùng chung làm FK tổ chức nội bộ. **[SỬA 2026-09-11]** DEPARTMENTS tách khỏi entity này theo yêu cầu Data Modeler — nay map trực tiếp vào Classification Value (cl_value, entity dùng chung nhiều source), xem `lld_NHNCK_DEPARTMENTS.yaml`.
 
 
 ### 3. Securities Organization Reference
@@ -307,10 +334,9 @@ graph TD
 **Tier:** — | **Source:** `SPECIALIZATIONS` (out of scope làm Atomic entity) | **Thay thế:** Classification Value, scheme `SPECIALIZATION`
 **Ghi chú:** Từng nâng cấp thành entity thật 2026-07-09. Data Modeler quyết định revert lại về Classification Value (2026-08-20). 4 entity tiêu thụ (Securities Practitioner License Application Education Certificate Document, Securities Practitioner License Certificate Type X Classification Specialization Relationship, Securities Practitioner Professional Training Class, Securities Practitioner Professional Training Class Enrollment) đổi từ cặp FK Id+Code sang 1 trường `Specialization Code`. Xem 7c.
 
-### 5f. Individual — MỚI (2026-07-23)
-**Tier:** 1 | **Source:** `IDENTITY_INFO_C06S` | **BCV Concept:** [Involved Party] Individual | **BCO:** Involved Party | **Table Type:** Fundamental
-**Domain Prefix:** (none)
-**Description:** Thể nhân đã qua xác thực danh tính với C06 (CSDL quốc gia về dân cư) — họ tên, ngày sinh, số CCCD, giới tính, dân tộc, tôn giáo, địa chỉ thường trú/tạm trú, nơi sinh, quê quán, thông tin cha/mẹ/vợ/chồng. Master entity độc lập, không FK đến Securities Practitioner. Trước đây "Isolated" ngoài scope (7f); đưa vào scope theo quyết định Data Modeler (2026-07-23). Xem 7e #10.
+### 5f. Individual — ĐÃ BỎ THIẾT KẾ (2026-09-12)
+**Tier:** 1 | **Source:** `IDENTITY_INFO_C06S` (scope_status: out_of_scope)
+**Ghi chú:** Đưa vào scope 2026-07-23 (BCV Concept `[Involved Party] Individual`, Fundamental — thể nhân đã qua xác thực danh tính với C06: họ tên, ngày sinh, số CCCD, giới tính, dân tộc, tôn giáo, địa chỉ thường trú/tạm trú, nơi sinh, quê quán, thông tin cha/mẹ/vợ/chồng; master entity độc lập, không FK đến Securities Practitioner). Data Modeler quyết định (2026-09-12) bỏ thiết kế — trả `scope_status` về `out_of_scope` trong `brd_NHNCK.yaml`. LLD (`lld_NHNCK_IDENTITY_INFO_C06S.yaml` + 2 shared entity IP Postal Address/IP Alt Identification)/manifest/atomic_entities đã gỡ bỏ. Scheme `NHNCK_C06_COUNTRY`/`NHNCK_C06_PROVINCE`/`NHNCK_C06_DISTRICT` đã xóa khỏi `classification_schemes.yaml`. Xem Tier1 6f #5 và Overview §7f.
 
 
 ### 6. Securities Practitioner
@@ -421,9 +447,9 @@ graph TD
 **Domain Prefix:** Securities Practitioner
 **Description:** Lịch sử thay đổi trạng thái chứng chỉ hành nghề — ghi nhận trạng thái trước/sau (OLD_STATUS/NEW_STATUS), quyết định liên quan và lý do thay đổi. Tái dùng BCV concept của entity cha License Certificate Document (không có BCV term riêng cho "status history"). Trước đây bị loại khỏi scope (7f, "Audit Log nguồn") — đưa vào scope (2026-07-24) vì có cấu trúc OLD/NEW_STATUS tường minh, đủ điều kiện Fact Append.
 
-### 24. Securities Practitioner License Certificate Conversion Status Review — ĐÃ BỎ THIẾT KẾ (2026-08-14)
-**Tier:** 1 | **Source:** `VERIFY_CERTIFICATE_CONVERSION_STATUSES` (scope_status: pending)
-**Ghi chú:** Thiết kế thử ngày 2026-08-13, nhưng Data Modeler quyết định (2026-08-14) bỏ thiết kế Atomic entity đợt này vì FK cha `CONVERSION_REQUEST_ID` trỏ đến `CERTIFICATE_CONVERSION_REQUESTS` vẫn `out_of_scope`, không có Atomic FK cha nào resolve được. Sẽ thiết kế lại khi bảng cha được đưa vào scope. Xem Tier1 6f #6.
+### 24. Securities Practitioner License Certificate Conversion Status Review — ĐÃ BỎ THIẾT KẾ (2026-08-14), CHỐT OUT_OF_SCOPE (2026-09-12)
+**Tier:** 1 | **Source:** `VERIFY_CERTIFICATE_CONVERSION_STATUSES` (scope_status: out_of_scope)
+**Ghi chú:** Thiết kế thử ngày 2026-08-13, tạm dừng 2026-08-14 vì FK cha `CONVERSION_REQUEST_ID` trỏ đến `CERTIFICATE_CONVERSION_REQUESTS` vẫn `out_of_scope`, không có Atomic FK cha nào resolve được. **Quyết định Data Modeler (2026-09-12) — chốt `out_of_scope`** (không còn chờ bảng cha vào scope nữa): không có nhu cầu khai thác nghiệp vụ trên báo cáo. Xem Tier1 6f #6 và §7f.
 
 ### 25. Securities Practitioner Organization Annual Report — MỚI (2026-08-13)
 **Tier:** 2 | **Source:** `ORGANIZATION_REPORT_YEARLYS` | **BCV Concept:** [Documentation] Employer Registration | **BCO:** Documentation | **Table Type:** Fundamental
@@ -467,9 +493,19 @@ graph TD
 ### 33. Regulatory Authority Organization Unit X Securities Practitioner License Certificate Type Relationship — MỚI (2026-08-15)
 **Tier:** 2 | **Source:** `CERTIFICATE_DEPARTMENTS` | **BCV Concept:** [Involved Party] Organization | **BCO:** Involved Party | **Table Type:** Relative
 **Domain Prefix:** (none)
-**Description:** Quan hệ phân công phòng ban phụ trách xử lý với loại chứng chỉ hành nghề — pure junction 2 FK (CERTIFICATE_ID, DEPARTMENT_ID), không có attribute nghiệp vụ riêng. Tái dùng BCV concept của entity cha Regulatory Authority Organization Unit. Đảo lại quyết định out_of_scope trước đó (Application Config) theo yêu cầu Data Modeler — đây là quan hệ nghiệp vụ (phân công phụ trách), không chỉ là cấu hình quy trình.
+**Description:** Quan hệ phân công phòng ban phụ trách xử lý với loại chứng chỉ hành nghề — pure junction 2 FK (CERTIFICATE_ID, DEPARTMENT_ID), không có attribute nghiệp vụ riêng. Tái dùng BCV concept của entity cha Regulatory Authority Organization Unit. Đảo lại quyết định out_of_scope trước đó (Application Config) theo yêu cầu Data Modeler — đây là quan hệ nghiệp vụ (phân công phụ trách), không chỉ là cấu hình quy trình. **[SỬA 2026-09-11]** DEPARTMENTS tách khỏi Regulatory Authority Organization Unit, nay map vào Classification Value — FK Department đổi từ cặp Id/Code sang 1 trường `Department Code` (Classification Value, SCHEMA_CODE=NHNCK.DEPARTMENTS).
 
 ### 34. Securities Practitioner License Certificate Type X Classification Specialization Relationship — MỚI (2026-08-15)
 **Tier:** 2 | **Source:** `CERTIFICATE_SPECIALIZATIONS` | **BCV Concept:** [Documentation] Gov. Registration Document | **BCO:** Documentation | **Table Type:** Relative
 **Domain Prefix:** (none)
 **Description:** Quan hệ xác định chuyên môn nào bắt buộc cho từng loại chứng chỉ hành nghề — ngoài 2 FK còn có thứ tự hiển thị (SORT_ORDER), loại tài liệu yêu cầu (DOCUMENT_TYPE — Classification Value tạm, chưa profile), cờ bắt buộc (IS_REQUIRED). Tái dùng BCV concept của entity cha Securities Practitioner License Certificate Type. Đảo lại quyết định out_of_scope trước đó (Application Config) theo yêu cầu Data Modeler.
+
+### 35. Securities Practitioner License Application Result Notification — MỚI (2026-09-10)
+**Tier:** 4 | **Source:** `MCDT_RESULT_OUTBOX` | **BCV Concept:** [Communication] Notification | **BCO:** Communication | **Table Type:** Relative
+**Domain Prefix:** Securities Practitioner
+**Description:** Outbox đẩy kết quả xử lý hồ sơ đăng ký CCHN ra Cổng Dịch vụ công quốc gia (MCĐT) — trạng thái gửi, số lần thử lại, thời điểm thử lại tiếp theo, lỗi gần nhất. Thiết kế SCD2 theo quyết định Data Modeler để lưu lịch sử thay đổi trạng thái gửi thay vì overwrite. FK đến Securities Practitioner License Application. Bảng mới trong DDL (2026-09-10).
+
+### 36. Securities Practitioner License Decision Document X Securities Practitioner License Application Relationship — MỚI (2026-09-12), ĐẢO NGƯỢC QUYẾT ĐỊNH §7d
+**Tier:** 4 | **Source:** `APPLICATION_DECISIONS` | **BCV Concept:** [Documentation] Gov. Registration Document | **BCO:** Documentation | **Table Type:** Relative
+**Domain Prefix:** (none)
+**Description:** Quan hệ giữa 1 quyết định hành chính (License Decision Document, Tier 1) và 1 hồ sơ CCHN (License Application, Tier 3) — pure junction 2 FK (APPLICATION_ID, DECISION_ID), không có attribute nghiệp vụ nào khác. Tái dùng BCV concept của entity cha License Decision Document. Đảo lại quyết định "denormalize thành ARRAY<STRUCT> trên DECISIONS" đã ghi ở §7d trước đó (2026-08-xx) theo yêu cầu Data Modeler (2026-09-12) — thiết kế thành entity link/relationship "_x_" riêng, PK composite 2 FK Id (Decision Document Id + Application Id), theo đúng pattern đã dùng cho `Application Group X Securities Practitioner License Application Relationship` / `Certificate Group X Securities Practitioner License Certificate Document Relationship` (rule 3e, skill atomic-lld-design). ID kỹ thuật nguồn không map — xem `pending_design.yaml`.

@@ -1,0 +1,107 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "NHNCK"
+  source_table: "APPLICATION_DECISIONS"
+  atomic_entity: "Securities Practitioner License Decision Document X Securities Practitioner License Application Relationship"
+  entity_physical_name: "sp_license_decision_document_x_sp_license_application_relationship"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Gov. Registration Document"
+  table_type: "Relative"
+  group: "T4"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "[MỚI 2026-09-12] Bảng nguồn chỉ có 3 cột: ID (PK kỹ thuật, không map — xem\
+    \ pending_design.yaml), APPLICATION_ID (FK), DECISION_ID (FK) — pure junction,\
+    \ không có attribute nghiệp vụ nào khác. Trước đây ghi nhận ở Overview §7d là\
+    \ \"pure junction — không tạo Atomic entity, denormalize thành ARRAY<STRUCT> trên\
+    \ entity DECISIONS\". ĐẢO NGƯỢC quyết định đó (2026-09-12, yêu cầu Data Modeler)\
+    \ — thiết kế thành entity link/relationship riêng theo pattern \"_x_\" (rule 3e\
+    \ atomic-lld-design/SKILL.md), mirror `lld_NHNCK_APPLICATION_GROUP_MEMBERS.yaml`\
+    \ và `lld_FMS_JOB_TL_PRO.yaml`: PK composite 2 FK Id (Decision Document Id + License\
+    \ Application Id), không có Id/Code riêng của entity. BCV Concept tái dùng từ\
+    \ entity cha Decision Document (Tier 1). Đặt Decision Document lên trước trong\
+    \ tên entity — 1 quyết định bao gồm nhiều hồ sơ CCHN (phía Many là Application)."
+attributes:
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=NHNCK_APPLICATION_DECISIONS"
+  etl_derived_value: "NHNCK_APPLICATION_DECISIONS"
+  data_type: "string"
+- attribute_name: "Securities Practitioner License Decision Document Id"
+  physical_name: "sp_license_decision_document_id"
+  description: "FK -> DECISIONS: Quyết định hành chính liên quan."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "NHNCK.APPLICATION_DECISIONS.DECISION_ID"
+  comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
+    \ Cần ETL crosswalk sang NHNCK.DECISIONS: APPLICATION_DECISIONS.DECISION_ID =\
+    \ DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS', DECISION_NUMBER)\
+    \ | Composite PK cùng Securities Practitioner License Application Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Practitioner License Decision Document Code"
+  physical_name: "sp_license_decision_document_code"
+  description: "Số quyết định hành chính liên quan (denormalized lookup)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.DECISIONS.DECISION_NUMBER"
+  comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
+    \ Pair with Securities Practitioner License Decision Document Id. Giá trị lấy\
+    \ từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem comment\
+    \ Securities Practitioner License Decision Document Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Practitioner License Application Id"
+  physical_name: "sp_license_application_id"
+  description: "FK -> APPLICATIONS: Hồ sơ CCHN liên quan."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "NHNCK.APPLICATION_DECISIONS.APPLICATION_ID"
+  comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL crosswalk\
+    \ sang NHNCK.APPLICATIONS: APPLICATION_DECISIONS.APPLICATION_ID = APPLICATIONS.ID\
+    \ để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS', APPLICATION_CODE)\
+    \ | Composite PK cùng Securities Practitioner License Decision Document Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Practitioner License Application Code"
+  physical_name: "sp_license_application_code"
+  description: "Mã hồ sơ CCHN liên quan (denormalized lookup)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.APPLICATIONS.APPLICATION_CODE"
+  comment: "Lookup pair: sp_license_application.sp_license_application_code. Pair\
+    \ with Securities Practitioner License Application Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE\
+    \ sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Application\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

@@ -28,6 +28,9 @@ flowchart LR
     subgraph SRC["Staging"]
         ...
     end
+    subgraph ODS["ODS"]
+        ...
+    end
     subgraph SIL["Atomic"]
         ...
     end
@@ -36,8 +39,12 @@ flowchart LR
     end
 ```
 
-- Label subgraph: `SRC["Staging"]` / `SIL["Atomic"]` / `GOLD["Datamart"]` — KHÔNG đổi tên
-- Bắt buộc 3 subgraph — không bỏ qua tầng Atomic dù source map thẳng
+- Label subgraph: `SRC["Staging"]` / `ODS["ODS"]` / `SIL["Atomic"]` / `GOLD["Datamart"]`
+  + **Tầng Staging:** 1:1 với nguồn (raw data)
+  + **Tầng ODS:** Chuẩn hóa kỹ thuật và làm sạch dữ liệu, giữ nguyên cấu trúc 1:1 với Staging
+  + **Tầng Atomic:** Chuẩn hóa hạt nhân 3NF toàn ngành tương tự Silver zone
+  + **Tầng Datamart:** Thiết kế theo nghiệp vụ (Business-driven) tương tự Gold zone
+- Bắt buộc đủ 4 tầng trong luồng: `Staging --> ODS --> Atomic --> Datamart`
 - Mũi tên nét liền `-->`, không label trên edge
 - Không vẽ layer Báo cáo
 

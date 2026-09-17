@@ -49,6 +49,46 @@ schemes:
       \ Entity thật Classification Application Status đã revert về Classification\
       \ Value — scheme này nay dùng lại làm nguồn Code chuẩn cho các entity trên."
 
+  - scheme_code: "NHNCK.DEPARTMENTS"
+    name: "Danh mục phòng ban — values from Departments"
+    source_type: "source_table"
+    source_table: "NHNCK.Departments"
+    used_in_entities:
+      - "Regulatory Authority Organization Unit X Securities Practitioner License Certificate Type Relationship"
+    values: []
+    reactivated_note: "Đăng ký mới 2026-09-11 — NHNCK.DEPARTMENTS map vào Classification\
+      \ Value (không còn là nguồn của entity Regulatory Authority Organization Unit),\
+      \ theo yêu cầu Data Modeler. Xem lld_NHNCK_DEPARTMENTS.yaml."
+
+  - scheme_code: "NHNCK.POSITIONS"
+    name: "Danh mục chức vụ — values from Positions"
+    source_type: "source_table"
+    source_table: "NHNCK.Positions"
+    used_in_entities: []
+    values: []
+    reactivated_note: "Đăng ký mới 2026-09-11 — NHNCK.POSITIONS đưa vào scope, map\
+      \ vào Classification Value theo yêu cầu Data Modeler (trước đó dự kiến ở HLD\
+      \ Tier1 6d, scheme \"POSITION\" — nay dùng chuẩn schema_code literal NHNCK.POSITIONS\
+      \ nhất quán với các bảng cl_value khác). Chưa có entity nào thiết kế tiêu thụ\
+      \ scheme này."
+
+  - scheme_code: "NHNCK.EDUCATION_LEVELS"
+    name: "Danh mục trình độ học vấn — values from EducationLevels (schema_code literal\
+      \ trên cl_value, khác với scheme FK-reference EDUCATIONAL_LEVEL)"
+    source_type: "source_table"
+    source_table: "NHNCK.EducationLevels"
+    used_in_entities: []
+    values: []
+    reactivated_note: "Đăng ký mới 2026-09-11 — NHNCK.EDUCATION_LEVELS đưa vào scope,\
+      \ map vào Classification Value theo yêu cầu Data Modeler, mirror pattern NHNCK.DEPARTMENTS/NHNCK.POSITIONS.\
+      \ Không có cột CODE riêng. Phân biệt với scheme EDUCATIONAL_LEVEL đã có sẵn\
+      \ (FK-reference, dùng bởi Securities Practitioner.Education Level Code). **[SỬA\
+      \ 2026-09-11]** cl_code = ID (không phải LEVEL_NAME) theo yêu cầu tường minh\
+      \ Data Modeler — khớp với cách `Education Level Code` trên PROFESSIONALS đã\
+      \ map trực tiếp từ EDUCATION_LEVEL_ID (không crosswalk), nhưng ngược với ghi\
+      \ chú \"cl_code = tên tiếng Việt\" từng xác nhận qua export ở scheme EDUCATIONAL_LEVEL\
+      \ — xem xung đột ghi ở đó."
+
   - scheme_code: "APPLICATION_SOURCE"
     name: "Nguồn nộp hồ sơ — values from ApplicationSources"
     source_type: "source_table"
@@ -241,10 +281,20 @@ schemes:
         name: "Không hoạt động"
         source_value: "0"
 
+  - scheme_code: "NHNCK.MCDT_RESULT_OUTBOX.STATUS"
+    name: "Trạng thái gửi kết quả hồ sơ ra Cổng Dịch vụ công (MCĐT). Nguồn lưu VARCHAR2(80)\
+      \ — giá trị cụ thể chưa xác nhận qua DDL (không có enum/comment nguồn). Cần profile\
+      \ dữ liệu trước go-live để xác định đầy đủ value set (ví dụ PENDING/SENT/FAILED)."
+    source_type: "etl_derived"
+    source_table: "NHNCK.MCDT_RESULT_OUTBOX"
+    used_in_entities:
+      - "Securities Practitioner License Application Result Notification"
+    values: []
+
   - scheme_code: "BANK"
-    name: null
+    name: "Danh mục ngân hàng (BIN/NAPAS) — dùng cho nộp phí thi"
     source_type: "source_table"
-    source_table: "NHNCK.EXAM_SESSIONS"
+    source_table: "NHNCK.BANKS"
     used_in_entities:
       - "Securities Practitioner Qualification Exam Session"
     values: []
@@ -344,7 +394,7 @@ schemes:
     source_table: "NHNCK.EducationLevels"
     used_in_entities:
       - "Securities Practitioner"
-    notes: "(Bổ sung 2026-08) Đã xác nhận giá trị thật qua cl_value export (src_stm_code=NHNCK_EDUCATION_LEVELS). cl_code lưu trực tiếp bằng tên tiếng Việt (không phải code tiếng Anh) — sửa scheme_code từ 'EDUCATION_LEVEL' (sai, thiếu AL) thành đúng 'EDUCATIONAL_LEVEL'."
+    notes: "(Bổ sung 2026-08) Đã xác nhận giá trị thật qua cl_value export (src_stm_code=NHNCK_EDUCATION_LEVELS). cl_code lưu trực tiếp bằng tên tiếng Việt (không phải code tiếng Anh) — sửa scheme_code từ 'EDUCATION_LEVEL' (sai, thiếu AL) thành đúng 'EDUCATIONAL_LEVEL'. **[XUNG ĐỘT 2026-09-11]** `lld_NHNCK_PROFESSIONALS.yaml` attribute \"Education Level Code\" map trực tiếp từ `PROFESSIONALS.EDUCATION_LEVEL_ID` (số, không crosswalk sang LEVEL_NAME) — không khớp với values bên dưới (tên tiếng Việt). Theo yêu cầu Data Modeler, `lld_NHNCK_EDUCATION_LEVELS.yaml` đổi `cl_code` sang ID (khớp với cách PROFESSIONALS đang tham chiếu) — ĐẢO NGƯỢC kết luận cũ ở trên. `values` bên dưới (dựa trên LEVEL_NAME) có thể đã lỗi thời, cần Data Modeler xác nhận lại toàn bộ trước go-live."
     values:
       - code: "Đại học"
         name: "Đại học"
@@ -745,12 +795,13 @@ schemes:
     used_in_entities:
       - "Regulatory Authority Organization Unit"
     values:
-      - code: "DEPARTMENT"
-        name: "Phòng ban"
-        source_table: null
       - code: "UNIT"
         name: "Đơn vị"
         source_table: null
+    reactivated_note: "Giá trị DEPARTMENT đã bỏ (2026-09-11) — DEPARTMENTS tách khỏi\
+      \ entity Regulatory Authority Organization Unit, map trực tiếp vào Classification\
+      \ Value (cl_value, scheme NHNCK.DEPARTMENTS) theo yêu cầu Data Modeler. Entity\
+      \ Regulatory Authority Organization Unit nay chỉ còn nguồn UNITS."
 
   - scheme_code: "PAYMENT_STATUS"
     name: "Trạng thái thanh toán — cần xác nhận từ data"
@@ -1807,6 +1858,54 @@ schemes:
       - "Security Measure Execution"
     values: []
 
+  - scheme_code: "CITIZEN_RECEPTION_PARTICIPANT_TYPE"
+    name: "Loại người tham gia buổi tiếp công dân: RECEIVER (Người tiếp), COORDINATOR (Đơn vị phối hợp)"
+    source_type: "source_table"
+    source_table: "THANHTRA.CITIZEN_RECEPTION_PARTICIPANT"
+    used_in_entities:
+      - "Citizen Reception Participant"
+    values: []
+
+  - scheme_code: "PETITION_TARGET_TYPE"
+    name: "Loại đối tượng được đề cập trong đơn thư: SECURITIES_COMPANY, FUND_MANAGEMENT_COMPANY, PUBLIC_COMPANY, OTHER"
+    source_type: "source_table"
+    source_table: "THANHTRA.PETITION_TARGET"
+    used_in_entities:
+      - "Petition Target"
+    values: []
+
+  - scheme_code: "PETITION_COMPLAINT_CLASSIFICATION"
+    name: "Phân loại chi tiết kết quả giải quyết khiếu nại (Biểu 02/XLD cột 7/8): KN_FIRST_CORRECT, KN_FIRST_INCORRECT, KN_FIRST_PARTIALLY_CORRECT, KN_SECOND_UPHELD, KN_SECOND_OVERTURNED"
+    source_type: "source_table"
+    source_table: "THANHTRA.PETITION"
+    used_in_entities:
+      - "Petition"
+    values: []
+
+  - scheme_code: "PENALTY_DECISION_REPORT_CLASSIFICATION"
+    name: "Phân loại trong báo cáo quyết định xử phạt: DEFERRED_OR_REDUCED, COERCIVE_ENFORCEMENT, COMPLAINED_OR_SUED"
+    source_type: "source_table"
+    source_table: "THANHTRA.PENALTY_DECISION"
+    used_in_entities:
+      - "Penalty Decision"
+    values: []
+
+  - scheme_code: "VIOLATION_CASE_REPORT_CLASSIFICATION"
+    name: "Phân loại báo cáo hồ sơ VPHC: NO_PENALTY_ART65_2, RECORD_NO_PENALTY, FROM_CRIMINAL_PROCEEDINGS, MINOR_WARNING_SUBSTITUTE"
+    source_type: "source_table"
+    source_table: "THANHTRA.VIOLATION_CASE"
+    used_in_entities:
+      - "Violation Case"
+    values: []
+
+  - scheme_code: "PETITION_DENUNCIATION_CLASSIFICATION"
+    name: "Phân loại chi tiết kết quả giải quyết tố cáo (Biểu 02/XLD cột 13/14): TC_FIRST_CORRECT, TC_FIRST_INCORRECT, TC_FIRST_MIXED, TC_FOLLOWUP_CORRECT, TC_FOLLOWUP_INCORRECT, TC_FOLLOWUP_MIXED"
+    source_type: "source_table"
+    source_table: "THANHTRA.PETITION"
+    used_in_entities:
+      - "Petition"
+    values: []
+
   # --- Tier 3 schemes ---
 
   - scheme_code: "CONCLUSION_EXECUTION_STATUS"
@@ -2029,7 +2128,7 @@ schemes:
       - "Securities Company Organization Unit"
     values: []
     deprecated: true
-    deprecated_reason: "SCMS.CAT_SC_FIRM_STATUS đã nâng cấp thành Atomic entity thật 'Classification Firm Status' (table_type Classification, HLD bổ sung SCMS Tier1; đổi tên bỏ tiền tố nguồn theo CLAUDE.md #7 rev. 2026-07-14) — không còn dùng scheme này. Migrated 2026-07-10 sang cặp FK Classification Firm Status Id + Code trong: lld_SCMS_SC_FIRM_INFO.yaml, lld_SCMS_SC_FIRM_BRANCH.yaml, lld_SCMS_SC_FIRM_REP_OFFICE.yaml, lld_SCMS_SC_FIRM_TRANSACTION_OFFICE.yaml, lld_SCMS_SC_FIRM_FOREIGN_REP_OFFICE.yaml, lld_SCMS_SC_FIRM_FOREIGN_REP_OFFICE_VN.yaml (tất cả cùng consolidate về entity 'Securities Company Organization Unit'). 'Securities Company Foreign Branch' KHÔNG có cột status tương ứng trong BRD nguồn — đã loại khỏi danh sách consumer (không phải gap thiết kế)."
+    deprecated_reason: "SCMS.CAT_SC_FIRM_STATUS đã nâng cấp thành Atomic entity thật 'Classification Securities Company Firm Status' (table_type Classification, HLD bổ sung SCMS Tier1; đổi tên bỏ tiền tố nguồn theo CLAUDE.md #7 rev. 2026-07-14) — không còn dùng scheme này. Migrated 2026-07-10 sang cặp FK Classification Securities Company Firm Status Id + Code trong: lld_SCMS_SC_FIRM_INFO.yaml, lld_SCMS_SC_FIRM_BRANCH.yaml, lld_SCMS_SC_FIRM_REP_OFFICE.yaml, lld_SCMS_SC_FIRM_TRANSACTION_OFFICE.yaml, lld_SCMS_SC_FIRM_FOREIGN_REP_OFFICE.yaml, lld_SCMS_SC_FIRM_FOREIGN_REP_OFFICE_VN.yaml (tất cả cùng consolidate về entity 'Securities Company Organization Unit'). 'Securities Company Foreign Branch' KHÔNG có cột status tương ứng trong BRD nguồn — đã loại khỏi danh sách consumer (không phải gap thiết kế)."
 
   - scheme_code: "SCMS_SERVICE_TYPE"
     name: "Loại dịch vụ chứng khoán"
@@ -2040,7 +2139,7 @@ schemes:
       - "Securities Company Foreign Branch"
     values: []
     deprecated: true
-    deprecated_reason: "SCMS.CAT_SERVICE đã nâng cấp thành Atomic entity thật 'Classification Service' (table_type Classification, HLD bổ sung SCMS Tier1; đổi tên bỏ tiền tố nguồn theo CLAUDE.md #7 rev. 2026-07-14) — không còn dùng scheme này. Entity tiêu thụ 'Securities Company Licensed Service' đã đổi sang cặp FK Classification Service Id + Classification Service Code (xem lld_SCMS_SC_FIRM_SERVICE.yaml). 'Securities Company Foreign Branch' (junction LNK_SC_FIRM_FOREIGN_BRANCH_SERVICE, denormalized ARRAY) migrated 2026-07-10 sang Array<Struct> {classification_service_id; classification_service_code}. 'Securities Company Custodian Bank' đã được xác nhận KHÔNG có cột nguồn liên kết CAT_SERVICE — loại khỏi danh sách consumer (thông tin cũ/sai)."
+    deprecated_reason: "SCMS.CAT_SERVICE đã nâng cấp thành Atomic entity thật 'Classification Service' (table_type Classification, HLD bổ sung SCMS Tier1; đổi tên bỏ tiền tố nguồn theo CLAUDE.md #7 rev. 2026-07-14) — không còn dùng scheme này. Entity tiêu thụ 'Securities Company Licensed Service' đã đổi sang cặp FK Classification Service Id + Classification Service Code (xem lld_SCMS_SC_FIRM_SERVICE.yaml). 'Securities Company Foreign Branch' (junction LNK_SC_FIRM_FOREIGN_BRANCH_SERVICE, denormalized ARRAY) migrated 2026-07-10 sang Array<Struct> {classification_service_id; classification_service_code}. 'Securities Company Custodian Bank' đã được xác nhận KHÔNG có cột nguồn liên kết CAT_SERVICE — loại khỏi danh sách consumer (thông tin cũ/sai). **Cập nhật 2026-09-12:** entity 'Classification Service' (và SCMS.CAT_SERVICE) chính nó đã bị deprecate thêm 1 lần nữa — gộp cùng 'Classification Business Transaction' (CAT_BUSINESS_LINE) thành entity mới 'Classification Securities Company Firm Service' (source SCMS.CAT_SERVICE_LEGAL_CAPITAL). Consumer cần đổi FK target sang entity mới khi thiết kế LLD — xem SCMS_HLD_Tier1.md 6f T1-11, scheme mới nhóm `SCMS_CL_SECURITIES_FIRM_SERVICE_*`."
 
   - scheme_code: "SCMS_SERVICE_RECORD_STATUS"
     name: "Trạng thái dịch vụ được cấp phép: 1=Đang hoạt động/còn hiệu lực; 0=Ngừng hoạt động/hết hiệu lực"
@@ -2064,7 +2163,49 @@ schemes:
       - "Securities Company"
     values: []
     deprecated: true
-    deprecated_reason: "SCMS.CAT_BUSINESS_LINE đã nâng cấp thành Atomic entity thật 'Classification Business Transaction' (table_type Classification, HLD bổ sung SCMS Tier1, xem 6f T1-09; đổi tên từ 'Classification SCMS Business Line' — bỏ tiền tố nguồn theo CLAUDE.md #7 rev. 2026-07-14 + đổi BCV Term hiển thị theo yêu cầu Data Modeler) — không còn dùng scheme này. Junction LNK_SC_FIRM_BUSINESS_LINE và LNK_PRACTITIONER_BUSINESS_LINE KHÔNG denormalize ARRAY<STRUCT> nữa — đã tách thành 2 entity Relative độc lập 'Securities Company Business Transaction Relationship' và 'Securities Company Practitioner Business Transaction Relationship' (đảo ngược quyết định denormalize cũ, xem SCMS_HLD_Overview.md 7d/7e)."
+    deprecated_reason: "SCMS.CAT_BUSINESS_LINE đã nâng cấp thành Atomic entity thật 'Classification Business Transaction' (table_type Classification, HLD bổ sung SCMS Tier1, xem 6f T1-09; đổi tên từ 'Classification SCMS Business Line' — bỏ tiền tố nguồn theo CLAUDE.md #7 rev. 2026-07-14 + đổi BCV Term hiển thị theo yêu cầu Data Modeler) — không còn dùng scheme này. Junction LNK_SC_FIRM_BUSINESS_LINE và LNK_PRACTITIONER_BUSINESS_LINE KHÔNG denormalize ARRAY<STRUCT> nữa — đã tách thành 2 entity Relative độc lập 'Securities Company Business Transaction Relationship' và 'Securities Company Practitioner Business Transaction Relationship' (đảo ngược quyết định denormalize cũ, xem SCMS_HLD_Overview.md 7d/7e). **Cập nhật 2026-09-12:** entity 'Classification Business Transaction' (và SCMS.CAT_BUSINESS_LINE) chính nó đã bị deprecate thêm 1 lần nữa — gộp cùng 'Classification Service' (CAT_SERVICE) thành entity mới 'Classification Securities Company Firm Service' (source SCMS.CAT_SERVICE_LEGAL_CAPITAL), vai trò Business Transaction nay là attribute 'Application Type Code' trên entity mới. Xem SCMS_HLD_Tier1.md 6f T1-11, scheme mới nhóm `SCMS_CL_SECURITIES_FIRM_SERVICE_*`."
+
+  - scheme_code: "SCMS_CL_SECURITIES_FIRM_SERVICE_CATALOG_TYPE"
+    name: "Loại danh mục áp dụng (Classification Securities Company Firm Service)"
+    source_type: "source_table"
+    source_table: "SCMS.CAT_SERVICE_LEGAL_CAPITAL.CATALOG_TYPE"
+    used_in_entities:
+      - "Classification Securities Company Firm Service"
+    values:
+      - code: "CTCK"
+        label: "Áp dụng cho CTCK"
+        source_value: "CTCK"
+      - code: "CN_NUOC_NGOAI"
+        label: "Áp dụng cho chi nhánh nước ngoài"
+        source_value: "CN_NUOC_NGOAI"
+
+  - scheme_code: "SCMS_CL_SECURITIES_FIRM_SERVICE_CATALOG_CODE"
+    name: "Mã danh mục chi tiết trong nhóm Catalog Type (Classification Securities Company Firm Service)"
+    source_type: "source_table"
+    source_table: "SCMS.CAT_SERVICE_LEGAL_CAPITAL.CATALOG_CODE"
+    used_in_entities:
+      - "Classification Securities Company Firm Service"
+    values: []
+
+  - scheme_code: "SCMS_CL_SECURITIES_FIRM_SERVICE_APPLICATION_TYPE"
+    name: "Loại áp dụng vốn pháp định (Classification Securities Company Firm Service) — thay thế vai trò Classification Business Transaction"
+    source_type: "source_table"
+    source_table: "SCMS.CAT_SERVICE_LEGAL_CAPITAL.APPLICATION_TYPE"
+    used_in_entities:
+      - "Classification Securities Company Firm Service"
+    values:
+      - code: "KINH_DOANH"
+        label: "Vốn kinh doanh"
+        source_value: null
+      - code: "LUU_KY"
+        label: "Vốn lưu ký"
+        source_value: null
+      - code: "TU_VAN"
+        label: "Vốn tư vấn"
+        source_value: null
+      - code: "BACH_LANH"
+        label: "Vốn bảo lãnh phát hành"
+        source_value: null
 
   - scheme_code: "SCMS_NATIONALITY"
     name: "Quốc tịch"
@@ -2114,7 +2255,7 @@ schemes:
       - "Securities Company Risk Indicator Group"
     values: []
 
-  # --- Tier 1 schemes — Classification Firm Status / Service / Nationality / Event Type,
+  # --- Tier 1 schemes — Classification Securities Company Firm Status / Service / Nationality / Event Type,
   #     Securities Company Form Report (HLD bổ sung, xem SCMS_HLD_Tier1.md 6f T1-05/T1-06) ---
 
   - scheme_code: "SCMS_FIRM_STATUS_RECORD_STATUS"
@@ -2122,7 +2263,7 @@ schemes:
     source_type: "source_table"
     source_table: "SCMS.CAT_SC_FIRM_STATUS.RECORD_STATUS"
     used_in_entities:
-      - "Classification Firm Status"
+      - "Classification Securities Company Firm Status"
     values:
       - code: "ACTIVE"
         label: "Đang sử dụng"
@@ -2164,7 +2305,7 @@ schemes:
     source_type: "source_table"
     source_table: "SCMS.CAT_EVENT_TYPE.RECORD_STATUS"
     used_in_entities:
-      - "Classification Event Type"
+      - "Classification Securities Company Event Type"
     values:
       - code: "ACTIVE"
         label: "Đang sử dụng"
@@ -2178,7 +2319,7 @@ schemes:
     source_type: "source_table"
     source_table: "SCMS.CAT_EVENT_TYPE.OBLIGATION_TYPE"
     used_in_entities:
-      - "Classification Event Type"
+      - "Classification Securities Company Event Type"
     values:
       - code: "REPORT_ONLY"
         label: "Chỉ báo cáo (không CBTT)"
@@ -2198,7 +2339,7 @@ schemes:
     source_type: "source_table"
     source_table: "SCMS.CAT_EVENT_TYPE.TARGET_ENTITY"
     used_in_entities:
-      - "Classification Event Type"
+      - "Classification Securities Company Event Type"
     values: []
 
   - scheme_code: "SCMS_EVENT_TYPE_EVENT_CATEGORY"
@@ -2206,7 +2347,7 @@ schemes:
     source_type: "source_table"
     source_table: "SCMS.CAT_EVENT_TYPE.EVENT_CATEGORY"
     used_in_entities:
-      - "Classification Event Type"
+      - "Classification Securities Company Event Type"
     values: []
 
   - scheme_code: "SCMS_EVENT_TYPE_CYCLE"
@@ -2214,7 +2355,7 @@ schemes:
     source_type: "source_table"
     source_table: "SCMS.CAT_EVENT_TYPE.CYCLE"
     used_in_entities:
-      - "Classification Event Type"
+      - "Classification Securities Company Event Type"
     values: []
 
   - scheme_code: "SCMS_EVENT_TYPE_FREQUENCY"
@@ -2222,7 +2363,7 @@ schemes:
     source_type: "source_table"
     source_table: "SCMS.CAT_EVENT_TYPE.FREQUENCY"
     used_in_entities:
-      - "Classification Event Type"
+      - "Classification Securities Company Event Type"
     values: []
 
   - scheme_code: "SCMS_EVENT_TYPE_SUBMISSION_METHOD"
@@ -2230,7 +2371,7 @@ schemes:
     source_type: "source_table"
     source_table: "SCMS.CAT_EVENT_TYPE.SUBMISSION_METHOD"
     used_in_entities:
-      - "Classification Event Type"
+      - "Classification Securities Company Event Type"
     values: []
 
   - scheme_code: "SCMS_EVENT_TYPE_DEADLINE_CALC_METHOD"
@@ -2238,7 +2379,7 @@ schemes:
     source_type: "source_table"
     source_table: "SCMS.CAT_EVENT_TYPE.DEADLINE_CALCULATION_METHOD"
     used_in_entities:
-      - "Classification Event Type"
+      - "Classification Securities Company Event Type"
     values: []
 
   # --- Tier 1 scheme — Classification Business Transaction (HLD bổ sung,
@@ -2411,7 +2552,7 @@ schemes:
       - "Securities Company Foreign Representative Office Periodic Report"
     values: []
     deprecated: true
-    deprecated_reason: "SCMS.CAT_EVENT_TYPE đã nâng cấp thành Atomic entity thật 'Classification Event Type' (table_type Relative, HLD bổ sung SCMS Tier1; đổi tên bỏ tiền tố nguồn theo CLAUDE.md #7 rev. 2026-07-14) — không còn dùng scheme này. Migrated 2026-07-10 sang cặp FK Classification Event Type Id + Code trong toàn bộ entity tiêu thụ liệt kê ở trên (danh sách trước đó chỉ ghi 2 entity, đã lỗi thời)."
+    deprecated_reason: "SCMS.CAT_EVENT_TYPE đã nâng cấp thành Atomic entity thật 'Classification Securities Company Event Type' (table_type Relative, HLD bổ sung SCMS Tier1; đổi tên bỏ tiền tố nguồn theo CLAUDE.md #7 rev. 2026-07-14) — không còn dùng scheme này. Migrated 2026-07-10 sang cặp FK Classification Securities Company Event Type Id + Code trong toàn bộ entity tiêu thụ liệt kê ở trên (danh sách trước đó chỉ ghi 2 entity, đã lỗi thời)."
 
   - scheme_code: "SCMS_PROFILE_STATUS"
     name: "Trạng thái hồ sơ phê duyệt"
@@ -3030,6 +3171,20 @@ schemes:
       - code: "2"
         label: "Bị huỷ"
         source_value: "2"
+
+  - scheme_code: "SCMS_REPORT_INPUT_SUBMISSION_REF_TYPE"
+    name: "Loại đối tượng được liên kết khi nộp dữ liệu báo cáo đầu vào (eForm): báo cáo định kỳ hoặc không liên kết"
+    source_type: "source_table"
+    source_table: "SCMS.REPORT_INPUT_SUBMISSION.REF_TYPE"
+    used_in_entities:
+      - "Securities Company Report Input Submission"
+    values:
+      - code: "BAO_CAO_DINH_KY"
+        label: "Báo cáo định kỳ"
+        source_value: "BAO_CAO_DINH_KY"
+      - code: "UNLINKED"
+        label: "Không liên kết"
+        source_value: "UNLINKED"
 
   - scheme_code: "SCMS_IMPLEMENTATION_STATUS"
     name: "Trạng thái thực thi quyết định xử phạt: Chưa thực hiện, Đang thực hiện, Đã thực hiện, Quá hạn"
@@ -5943,35 +6098,6 @@ schemes:
       - "Securities Practitioner Post Certification Training Result"
     values: []
 
-  - scheme_code: "NHNCK_C06_COUNTRY"
-    name: "Mã quốc gia từ dữ liệu tích hợp C06 (no_lookup — API ngoài, không có bảng\
-      \ danh mục nội bộ trong scope NHNCK)"
-    source_type: "modeler_defined"
-    source_table: "NHNCK.IDENTITY_INFO_C06S.COUNTRY_CODE"
-    used_in_entities:
-      - "Individual"
-      - "Involved Party Postal Address"
-    values: []
-
-  - scheme_code: "NHNCK_C06_PROVINCE"
-    name: "Mã tỉnh/thành từ dữ liệu tích hợp C06 (no_lookup — API ngoài, không có bảng\
-      \ danh mục nội bộ trong scope NHNCK)"
-    source_type: "modeler_defined"
-    source_table: "NHNCK.IDENTITY_INFO_C06S.PERMANENT_PROVINCE_CODE"
-    used_in_entities:
-      - "Individual"
-      - "Involved Party Postal Address"
-    values: []
-
-  - scheme_code: "NHNCK_C06_DISTRICT"
-    name: "Mã quận/huyện từ dữ liệu tích hợp C06 (no_lookup — API ngoài, không có bảng\
-      \ danh mục nội bộ trong scope NHNCK)"
-    source_type: "modeler_defined"
-    source_table: "NHNCK.IDENTITY_INFO_C06S.PERMANENT_DISTRICT_CODE"
-    used_in_entities:
-      - "Individual"
-      - "Involved Party Postal Address"
-    values: []
 
   - scheme_code: "NHNCK_SSO_SYNC_STATUS"
     name: "Trạng thái đồng bộ tài khoản sang SSO/IAM: 0=chưa chuyển, 1=đã chuyển"
@@ -6184,4 +6310,366 @@ schemes:
       \ dùng trong comment của attribute Data Origin Type Code. classification_context\
       \ của attribute vẫn để null (giá trị insert thủ công) — entry này chỉ phục\
       \ vụ ghi chú/tra cứu, không dùng để tự động hoá."
+
+  - scheme_code: "SCMS_FORM_DATA_TYPE"
+    name: "Kiểu dữ liệu trường/cột trong family biểu mẫu báo cáo SCMS"
+    source_type: "source_table"
+    source_table: "SCMS.FORM_INDICATOR_INPUT.DATA_TYPE"
+    used_in_entities:
+      - "Securities Company Report Indicator"
+      - "Securities Company Report Sheet Column"
+    values:
+      - code: "TEXT"
+        label: "Văn bản"
+        source_value: "TEXT"
+      - code: "NUMBER"
+        label: "Số"
+        source_value: "NUMBER"
+      - code: "DATE"
+        label: "Ngày tháng"
+        source_value: "DATE"
+      - code: "BOOLEAN"
+        label: "Có/Không"
+        source_value: "BOOLEAN"
+      - code: "SELECT"
+        label: "Chọn từ danh sách"
+        source_value: "SELECT"
+    note: "Scheme dùng chung cho mọi cột DATA_TYPE trong family FORM_* (FORM_INDICATOR_INPUT,\
+      \ FORM_SHEET_COLUMN) vì cùng value set — không dùng cho FORM_SHEET_CELL.DATA_TYPE\
+      \ (value set rộng hơn, có thêm FORMULA, xem SCMS_CELL_DATA_TYPE)."
+
+  - scheme_code: "SCMS_INDICATOR_REFERENCE_CATALOG_TYPE"
+    name: "Loại danh mục tham chiếu cho chỉ tiêu SELECT"
+    source_type: "source_table"
+    source_table: "SCMS.FORM_INDICATOR_INPUT.REFERENCE_CATALOG_TYPE"
+    used_in_entities:
+      - "Securities Company Report Indicator"
+    values:
+      - code: "PROVINCE"
+        label: "Tỉnh thành"
+        source_value: "PROVINCE"
+      - code: "NATIONALITY"
+        label: "Quốc tịch"
+        source_value: "NATIONALITY"
+      - code: "SC_FIRM_STATUS"
+        label: "Trạng thái CTCK"
+        source_value: "SC_FIRM_STATUS"
+      - code: "CUSTOM"
+        label: "Tùy chỉnh"
+        source_value: "CUSTOM"
+
+  - scheme_code: "SCMS_FORM_INDICATOR_INPUT_RECORD_STATUS"
+    name: "Trạng thái trường nhập liệu biểu mẫu: 1=Đang sử dụng; 0=Không sử dụng"
+    source_type: "source_table"
+    source_table: "SCMS.FORM_INDICATOR_INPUT.RECORD_STATUS"
+    used_in_entities:
+      - "Securities Company Report Indicator"
+    values:
+      - code: "ACTIVE"
+        label: "Đang sử dụng"
+        source_value: "1"
+      - code: "INACTIVE"
+        label: "Không sử dụng"
+        source_value: "0"
+
+  - scheme_code: "SCMS_SHEET_PAPER_SIZE"
+    name: "Khổ giấy in sheet biểu mẫu báo cáo"
+    source_type: "modeler_defined"
+    source_table: "SCMS.FORM_SHEET.PAPER_SIZE"
+    used_in_entities:
+      - "Securities Company Report Sheet"
+    values:
+      - code: "A4"
+        label: "A4"
+        source_value: "A4"
+      - code: "A3"
+        label: "A3"
+        source_value: "A3"
+    note: "Values suy luận từ mô tả nguồn (A4, A3) — cần profile dữ liệu để xác nhận\
+      \ tập giá trị đầy đủ trước go-live."
+
+  - scheme_code: "SCMS_SHEET_PAPER_ORIENTATION"
+    name: "Chiều giấy in sheet biểu mẫu báo cáo"
+    source_type: "modeler_defined"
+    source_table: "SCMS.FORM_SHEET.PAPER_ORIENTATION"
+    used_in_entities:
+      - "Securities Company Report Sheet"
+    values:
+      - code: "PORTRAIT"
+        label: "Dọc"
+        source_value: null
+      - code: "LANDSCAPE"
+        label: "Ngang"
+        source_value: null
+    note: "Mô tả nguồn chỉ ghi 'Dọc/Ngang', không xác nhận mã giá trị thực tế lưu\
+      \ trong CSDL — cần profile dữ liệu trước go-live để xác nhận source_value."
+
+  - scheme_code: "SCMS_SHEET_REPORT_STYLE"
+    name: "Kiểu bố trí sheet biểu mẫu báo cáo"
+    source_type: "source_table"
+    source_table: "SCMS.FORM_SHEET.REPORT_STYLE"
+    used_in_entities:
+      - "Securities Company Report Sheet"
+    values:
+      - code: "H"
+        label: "Hàng (theo hàng)"
+        source_value: "H"
+      - code: "C"
+        label: "Cột (theo cột)"
+        source_value: "C"
+      - code: "HC"
+        label: "Hàng-Cột"
+        source_value: "HC"
+      - code: "TH"
+        label: "Tổng hợp"
+        source_value: "TH"
+
+  - scheme_code: "SCMS_FORM_SHEET_RECORD_STATUS"
+    name: "Trạng thái sheet biểu mẫu: 1=Đang sử dụng; 0=Không sử dụng"
+    source_type: "source_table"
+    source_table: "SCMS.FORM_SHEET.RECORD_STATUS"
+    used_in_entities:
+      - "Securities Company Report Sheet"
+    values:
+      - code: "ACTIVE"
+        label: "Đang sử dụng"
+        source_value: "1"
+      - code: "INACTIVE"
+        label: "Không sử dụng"
+        source_value: "0"
+
+  - scheme_code: "SCMS_SHEET_SUB_TITLE_POSITION"
+    name: "Vị trí hiển thị tiêu đề phụ trên sheet"
+    source_type: "source_table"
+    source_table: "SCMS.FORM_SHEET.SUB_TITLE_POSITION"
+    used_in_entities:
+      - "Securities Company Report Sheet"
+    values:
+      - code: "TREN"
+        label: "Trên tiêu đề chính"
+        source_value: "TREN"
+      - code: "DUOI"
+        label: "Dưới tiêu đề chính"
+        source_value: "DUOI"
+
+  - scheme_code: "SCMS_SHEET_SUB_TITLE_ALIGNMENT"
+    name: "Canh lề tiêu đề phụ trên sheet"
+    source_type: "source_table"
+    source_table: "SCMS.FORM_SHEET.SUB_TITLE_ENABLED"
+    used_in_entities:
+      - "Securities Company Report Sheet"
+    values:
+      - code: "GIUA"
+        label: "Căn giữa"
+        source_value: "GIUA"
+      - code: "TRAI"
+        label: "Căn trái"
+        source_value: "TRAI"
+      - code: "PHAI"
+        label: "Căn phải"
+        source_value: "PHAI"
+    note: "Tên cột nguồn (SUB_TITLE_ENABLED) gây hiểu nhầm là cờ bật/tắt — mô tả gốc\
+      \ BRD xác nhận giá trị thực tế là canh lề (GIUA/TRAI/PHAI)."
+
+  - scheme_code: "SCMS_SHEET_RECORD_TYPE"
+    name: "Loại sheet trong biểu mẫu báo cáo"
+    source_type: "source_table"
+    source_table: "SCMS.FORM_SHEET.RECORD_TYPE"
+    used_in_entities:
+      - "Securities Company Report Sheet"
+    values:
+      - code: "DATA"
+        label: "Sheet dữ liệu chính"
+        source_value: "DATA"
+      - code: "SUMMARY"
+        label: "Sheet tổng hợp"
+        source_value: "SUMMARY"
+      - code: "HEADER"
+        label: "Sheet tiêu đề"
+        source_value: "HEADER"
+    note: "Nguồn lưu dạng số (NUMBER(2,0)) — ETL giữ nguyên mapping theo mô tả nguồn\
+      \ (DATA/SUMMARY/HEADER), cần profile để xác nhận mã số cụ thể tương ứng."
+
+  - scheme_code: "SCMS_LNK_EVENT_TYPE_FORM_RECORD_STATUS"
+    name: "Trạng thái bản ghi liên kết Loại sự vụ - Báo cáo: 1=Đang hoạt động; 0=Ngừng hoạt động"
+    source_type: "source_table"
+    source_table: "SCMS.LNK_EVENT_TYPE_FORM.RECORD_STATUS"
+    used_in_entities:
+      - "Classification Securities Company Event Type X Securities Company Report Relationship"
+    values:
+      - code: "ACTIVE"
+        label: "Đang hoạt động"
+        source_value: "1"
+      - code: "INACTIVE"
+        label: "Ngừng hoạt động"
+        source_value: "0"
+
+  - scheme_code: "SCMS_SHEET_NAME_FORMAT"
+    name: "Định dạng chữ ký tự (đậm/nghiêng/hoa/gạch chân) trong family sheet biểu mẫu SCMS"
+    source_type: "source_table"
+    source_table: "SCMS.FORM_SHEET_ROW.NAME_FORMAT"
+    used_in_entities:
+      - "Securities Company Report Sheet Row"
+      - "Securities Company Report Sheet Column"
+      - "Securities Company Report Sheet Cell"
+    values:
+      - code: "ID"
+        label: "In đậm"
+        source_value: "ID"
+      - code: "IN"
+        label: "In nghiêng"
+        source_value: "IN"
+      - code: "IH"
+        label: "In hoa"
+        source_value: "IH"
+      - code: "GC"
+        label: "Gạch chân"
+        source_value: "GC"
+    note: "Scheme dùng chung cho FORM_SHEET_ROW.NAME_FORMAT, FORM_SHEET_COLUMN.NAME_FORMAT\
+      \ và FORM_SHEET_CELL.STYLE_FORMAT — cùng value set, có thể kết hợp nhiều mã\
+      \ (VD 'ID,GC')."
+
+  - scheme_code: "SCMS_SHEET_ALIGNMENT"
+    name: "Canh lề văn bản trong family sheet biểu mẫu SCMS"
+    source_type: "source_table"
+    source_table: "SCMS.FORM_SHEET_ROW.ALIGNMENT"
+    used_in_entities:
+      - "Securities Company Report Sheet Row"
+      - "Securities Company Report Sheet Column"
+      - "Securities Company Report Sheet Cell"
+    values:
+      - code: "LEFT"
+        label: "Trái"
+        source_value: "LEFT"
+      - code: "CENTER"
+        label: "Giữa"
+        source_value: "CENTER"
+      - code: "RIGHT"
+        label: "Phải"
+        source_value: "RIGHT"
+    note: "Scheme dùng chung cho mọi cột ALIGNMENT trong family FORM_SHEET_ROW/COLUMN/FORM_ROW_HEADER/FORM_SHEET_CELL."
+
+  - scheme_code: "SCMS_FORM_SHEET_ROW_RECORD_STATUS"
+    name: "Trạng thái hàng trong sheet biểu mẫu: 1=Đang sử dụng; 0=Không sử dụng"
+    source_type: "source_table"
+    source_table: "SCMS.FORM_SHEET_ROW.RECORD_STATUS"
+    used_in_entities:
+      - "Securities Company Report Sheet Row"
+    values:
+      - code: "ACTIVE"
+        label: "Đang sử dụng"
+        source_value: "1"
+      - code: "INACTIVE"
+        label: "Không sử dụng"
+        source_value: "0"
+
+  - scheme_code: "SCMS_SHEET_ROW_TYPE"
+    name: "Loại hàng dữ liệu trong sheet biểu mẫu báo cáo"
+    source_type: "source_table"
+    source_table: "SCMS.FORM_SHEET_ROW.ROW_TYPE"
+    used_in_entities:
+      - "Securities Company Report Sheet Row"
+    values:
+      - code: "DU_LIEU"
+        label: "Hàng nhập liệu chính"
+        source_value: "DU_LIEU"
+      - code: "TONG_CONG"
+        label: "Hàng tổng cộng/tổng hợp"
+        source_value: "TONG_CONG"
+      - code: "TIEU_DE"
+        label: "Hàng tiêu đề"
+        source_value: "TIEU_DE"
+    note: "Nguồn lưu dạng số (NUMBER(10,0)) — ETL giữ nguyên mapping theo mô tả nguồn,\
+      \ cần profile để xác nhận mã số cụ thể tương ứng."
+
+  - scheme_code: "SCMS_FORM_SHEET_COLUMN_RECORD_STATUS"
+    name: "Trạng thái cột trong sheet biểu mẫu: 1=Đang sử dụng; 0=Không sử dụng"
+    source_type: "source_table"
+    source_table: "SCMS.FORM_SHEET_COLUMN.RECORD_STATUS"
+    used_in_entities:
+      - "Securities Company Report Sheet Column"
+    values:
+      - code: "ACTIVE"
+        label: "Đang sử dụng"
+        source_value: "1"
+      - code: "INACTIVE"
+        label: "Không sử dụng"
+        source_value: "0"
+
+  - scheme_code: "SCMS_CELL_UNIT"
+    name: "Đơn vị tính của ô dữ liệu trong sheet biểu mẫu báo cáo"
+    source_type: "modeler_defined"
+    source_table: "SCMS.FORM_SHEET_CELL.UNIT"
+    used_in_entities:
+      - "Securities Company Report Sheet Cell"
+    values:
+      - code: "TRIEU_DONG"
+        label: "Triệu đồng"
+        source_value: null
+      - code: "TY_DONG"
+        label: "Tỷ đồng"
+        source_value: null
+      - code: "PHAN_TRAM"
+        label: "Phần trăm"
+        source_value: null
+      - code: "SO_LUONG"
+        label: "Số lượng"
+        source_value: null
+    note: "Mô tả nguồn liệt kê 4 giá trị nhưng không xác nhận mã số cụ thể lưu trong\
+      \ CSDL (cột UNIT là NUMBER không precision) — cần profile dữ liệu trước go-live\
+      \ để xác nhận source_value."
+
+  - scheme_code: "SCMS_CELL_DATA_TYPE"
+    name: "Kiểu dữ liệu ô trong sheet biểu mẫu báo cáo"
+    source_type: "source_table"
+    source_table: "SCMS.FORM_SHEET_CELL.DATA_TYPE"
+    used_in_entities:
+      - "Securities Company Report Sheet Cell"
+    values:
+      - code: "TEXT"
+        label: "Văn bản"
+        source_value: "TEXT"
+      - code: "NUMBER"
+        label: "Số"
+        source_value: "NUMBER"
+      - code: "DATE"
+        label: "Ngày tháng"
+        source_value: "DATE"
+      - code: "BOOLEAN"
+        label: "Có/Không"
+        source_value: "BOOLEAN"
+      - code: "SELECT"
+        label: "Chọn từ danh sách"
+        source_value: "SELECT"
+      - code: "FORMULA"
+        label: "Công thức tính toán"
+        source_value: "FORMULA"
+    note: "Value set rộng hơn SCMS_FORM_DATA_TYPE (Tier 1/3) — có thêm FORMULA, không\
+      \ tái dùng chung scheme để tránh áp giá trị FORMULA sai ngữ cảnh cho FORM_INDICATOR_INPUT/FORM_SHEET_COLUMN."
+
+  - scheme_code: "SCMS_CAT_FILTER"
+    name: "Danh mục loại bộ lọc báo cáo đầu ra — values from CAT_FILTER"
+    source_type: "source_table"
+    source_table: "SCMS.CAT_FILTER.CODE"
+    used_in_entities:
+      - "Securities Company Report Output Filter"
+    values: []
+    note: "CAT_FILTER (ID/CODE/NAME/DESCRIPTION/ALLOW_MULTIPLE/SORT_ORDER) là bảng Code+Name\
+      \ thuần — reference data set theo Rule #11 CLAUDE.md, không thiết kế thành Atomic\
+      \ entity riêng. Giá trị đã được Data Modeler insert trực tiếp vào bảng Fundamental\
+      \ cl_value (2026-09-16) — không enumerate values tại đây."
+
+  - scheme_code: "SCMS_FORM_SHEET_CELL_RECORD_STATUS"
+    name: "Trạng thái ô (cell): 1=Đang sử dụng; 0=Không sử dụng"
+    source_type: "source_table"
+    source_table: "SCMS.FORM_SHEET_CELL.RECORD_STATUS"
+    used_in_entities:
+      - "Securities Company Report Sheet Cell"
+    values:
+      - code: "ACTIVE"
+        label: "Đang sử dụng"
+        source_value: "1"
+      - code: "INACTIVE"
+        label: "Không sử dụng"
+        source_value: "0"
 

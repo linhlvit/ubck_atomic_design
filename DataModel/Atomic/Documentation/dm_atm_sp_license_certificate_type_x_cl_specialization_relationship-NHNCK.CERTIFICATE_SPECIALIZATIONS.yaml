@@ -1,0 +1,107 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-sp_license_certificate_type_x_cl_specialization_relationship-NHNCK.CERTIFICATE_SPECIALIZATIONS
+  logical_name: Securities Practitioner License Certificate Type X Classification Specialization Relationship
+  physical_name: sp_license_certificate_type_x_cl_specialization_relationship
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Gov. Registration Document"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: NHNCK
+  description: |
+    Quan hệ xác định chuyên môn bắt buộc cho từng loại chứng chỉ hành nghề — kèm thứ tự hiển thị, loại tài liệu yêu cầu (Classification Value tạm), cờ bắt buộc. Tái dùng BCV concept của entity cha Securities Practitioner License Certificate Type. Đảo lại quyết định out_of_scope trước đó (Application Config).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-NHNCK-CERTIFICATE_SPECIALIZATIONS
+
+attributes:
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATE_SPECIALIZATIONS
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_SPECIALIZATIONS'"
+    etl_derived_value: NHNCK_CERTIFICATE_SPECIALIZATIONS
+
+  - name: Securities Practitioner License Certificate Type Id
+    physical_name: sp_license_certificate_tp_id
+    business_meaning: "FK -> CERTIFICATES: Loại CCHN yêu cầu chuyên môn này."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: NHNCK
+    source_table: CERTIFICATE_SPECIALIZATIONS
+    source_column: NHNCK.CERTIFICATE_SPECIALIZATIONS.CERTIFICATE_ID
+    comment: "FK target: sp_license_certificate_type.sp_license_certificate_tp_id. Cần ETL crosswalk sang NHNCK.CERTIFICATES: CERTIFICATE_SPECIALIZATIONS.CERTIFICATE_ID = CERTIFICATES.ID để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK_CERTIFICATES', CERTIFICATE_CODE). Composite PK cùng Specialization Code."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Securities Practitioner License Certificate Type Code
+    physical_name: sp_license_certificate_tp_code
+    business_meaning: Mã loại CCHN (denormalized lookup).
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATE_SPECIALIZATIONS
+    source_column: NHNCK.CERTIFICATES.CERTIFICATE_CODE
+    comment: "Lookup pair: sp_license_certificate_type.sp_license_certificate_tp_code. Pair with Securities Practitioner License Certificate Type Id. Giá trị lấy từ NHNCK.CERTIFICATES.CERTIFICATE_CODE sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Certificate Type Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Specialization Code
+    physical_name: specialization_code
+    business_meaning: Chuyên môn được yêu cầu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: NHNCK
+    source_table: CERTIFICATE_SPECIALIZATIONS
+    source_column: NHNCK.SPECIALIZATIONS.SPECIALIZATION_CODE
+    comment: "SCHEMA_CODE=NHNCK.SPECIALIZATIONS"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Document Type Code
+    physical_name: document_tp_code
+    business_meaning: Loại tài liệu yêu cầu cho chuyên môn này.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATE_SPECIALIZATIONS
+    source_column: NHNCK.CERTIFICATE_SPECIALIZATIONS.DOCUMENT_TYPE
+    comment: "SCHEMA_CODE=NHNCK.CERTIFICATE_SPECIALIZATIONS.DOCUMENT_TYPE"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Required Indicator
+    physical_name: required_ind
+    business_meaning: "Cờ bắt buộc: 1=Bắt buộc, 0=Tùy chọn."
+    data_domain: Indicator
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATE_SPECIALIZATIONS
+    source_column: NHNCK.CERTIFICATE_SPECIALIZATIONS.IS_REQUIRED
+    comment: "BCV: không có term riêng — dùng Indicator vì chỉ là flag 1/0. Nguồn NUMBER(1)."
+    classification_context: null
+    etl_derived_value: null
