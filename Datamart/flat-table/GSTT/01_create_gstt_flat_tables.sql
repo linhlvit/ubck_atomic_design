@@ -46,6 +46,7 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_fct_stock_portfolio_snpst_flat ON CLUST
     total_negotiated_val                Nullable(Decimal(23,2)) COMMENT '[SỬA FILTER 2026-09-11] Tổng giá trị giao dịch thỏa thuận — filter Market Id Code IN (UPX,STX,STK) AND Board Type Code IN (T1-T4,T6,R1), đóng O_GSTT_20',
     foreign_net_vol                     Nullable(Int64)         COMMENT 'Khối lượng mua ròng của nhà đầu tư nước ngoài',
     foreign_net_negotiated_vol          Nullable(Int64)         COMMENT '[MỚI 2026-09-09, SỬA FILTER 2026-09-11] Khối lượng mua ròng của NĐT nước ngoài, giao dịch thỏa thuận (Market Id Code IN (UPX,STX,STK) AND Board Type IN T1-T4,T6,R1) — khác foreign_net_vol (khớp lệnh). BA STT 1 dòng con 21, K_GSTT_144, đóng O_GSTT_20',
+    foreign_net_derivative_vol          Nullable(Int64)         COMMENT '[MỚI 2026-09-17] Khối lượng mua ròng của NĐT nước ngoài trên thị trường phái sinh (Market ID = DVX, khớp lệnh). K_GSTT_148, bổ sung KPI thiếu phát hiện qua rà soát BA↔KPI toàn diện',
     outstanding_share_quantity          Nullable(Int64)         COMMENT 'Số cổ phiếu đang lưu hành — nguồn VSDC listed_share_info (outstanding_shares), bản ghi gần nhất <= ngày GD (lookback, sửa 2026-09-16)',
     revenue                             Nullable(Decimal(23,2)) COMMENT 'Doanh thu — point-in-time theo Ky_bao_cao (rule GSĐC, cập nhật 2026-09-08)',
     net_profit_after_tax                Nullable(Decimal(23,2)) COMMENT 'Lợi nhuận sau thuế — point-in-time theo Ky_bao_cao (rule GSĐC, cập nhật 2026-09-08)',

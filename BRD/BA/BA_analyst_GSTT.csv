@@ -508,10 +508,13 @@ Execution - Value: Giá trị giao dịch
 Trade_HNX:
 Trade price * Trade quantity
 ",,,,,Done,Dữ liệu tĩnh,P
-1,,Dashboard thông tin về danh mục chứng khoán theo dạng bảng số liệu,Tổng KL theo loại phái sinh,Σ KLGD,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,X,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
+1,,Dashboard thông tin về danh mục chứng khoán theo dạng bảng số liệu,Tổng KL theo loại phái sinh KHỚP LỆNH,Σ KLGD KHỚP LỆNH,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,X,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
 Execution - Volume: Khối lượng khớp lệnh
 Trade_HNX:
-Trade quantity: Khối lượng giao dịch",Market ID in (DVX),"WITH tmp AS (
+Trade quantity: Khối lượng giao dịch","Market ID in (DVX)
+ Khớp lệnh 
+   + MARKET_ID IN ('STK','STX','UPX')
+   + AND BOARD_TYPE/BOARD_ID  <> ('T1','T2','T3','T4','T6','R1')","WITH tmp AS (
   SELECT 
       DECODE(si.StockType, '4', 'HĐTL') || DECODE(SUBSTR(si.underlyingSymbol,1,2), 'GB', 'TPCP', si.underlyingSymbol) AS derivative_product,
       SUM(Trade quantity) qty
@@ -528,10 +531,13 @@ SELECT 'Toàn thị trường', SUM(qty) qty FROM tmp --Tổng toàn thị trư�
 Execution - Volume: Khối lượng khớp lệnh
 Trade_HNX:
 Trade quantity: Khối lượng giao dịch",,,,,Done,Dữ liệu tĩnh,PE
-1,,Dashboard thông tin về danh mục chứng khoán theo dạng bảng số liệu,Tổng GT theo loại phái sinh,Σ (Giá khớp * KLGD),Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,X,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
+1,,Dashboard thông tin về danh mục chứng khoán theo dạng bảng số liệu,Tổng GT theo loại phái sinh KHỚP LỆNH,Σ (Giá khớp * KLGD) KHỚP LỆNH,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,X,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
 Execution - Value: Giá trị giao dịch
 Trade_HNX:
-Trade price * Trade quantity",Market ID in (DVX),"WITH tmp AS (
+Trade price * Trade quantity","Market ID in (DVX)
+ Khớp lệnh 
+   + MARKET_ID IN ('STK','STX','UPX')
+   + AND BOARD_TYPE/BOARD_ID  <> ('T1','T2','T3','T4','T6','R1')","WITH tmp AS (
   SELECT 
       DECODE(si.StockType, '4', 'HĐTL') || DECODE(SUBSTR(si.underlyingSymbol,1,2), 'GB', 'TPCP', si.underlyingSymbol) AS derivative_product,
       SUM(CAST(t.[Trade price] AS NUMERIC) * t.[Trade quantity])) qty
@@ -549,6 +555,28 @@ Execution - Value: Giá trị giao dịch
 Trade_HNX:
 Trade price * Trade quantity
 ",,,,,Done,Dữ liệu tĩnh,PE
+1,,Dashboard thông tin về danh mục chứng khoán theo dạng bảng số liệu,Tổng KNNN ròng của phái sinh khớp lệnh,KLNN mua − KLNN bán khớp lệnh,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,X,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
+Execution - Value: Giá trị giao dịch
+Trade_HNX:
+Trade price * Trade quantity","Market ID in (DVX)
+ Khớp lệnh 
+   + MARKET_ID IN ('STK','STX','UPX')
+   + AND BOARD_TYPE/BOARD_ID  <> ('T1','T2','T3','T4','T6','R1')
+TRADE_BOOK_HOSE:
+kl_nn_mua: Execution - Volume (điều kiện: Buy - Foreigner Investor type IN ('10','20'))
+kl_nn_ban: Execution - Volume (điều kiện: Sell - Foreigner Investor type IN ('10','20'))
+Trade_HNX:
+kl_nn_mua: Trade quantity (điều kiện: Buy Foreign Investor Type Code type IN ('10','20'))
+kl_nn_ban: Trade quantity (điều kiện: Sell Foreign Investor Type Code IN ('10','20'))","Market ID in (DVX)
+ Khớp lệnh 
+   + MARKET_ID IN ('STK','STX','UPX')
+   + AND BOARD_TYPE/BOARD_ID  <> ('T1','T2','T3','T4','T6','R1')
+TRADE_BOOK_HOSE:
+kl_nn_mua: Execution - Volume (điều kiện: Buy - Foreigner Investor type IN ('10','20'))
+kl_nn_ban: Execution - Volume (điều kiện: Sell - Foreigner Investor type IN ('10','20'))
+Trade_HNX:
+kl_nn_mua: Trade quantity (điều kiện: Buy Foreign Investor Type Code type IN ('10','20'))
+kl_nn_ban: Trade quantity (điều kiện: Sell Foreign Investor Type Code IN ('10','20'))",,,,,,,,
 1,,Dashboard thông tin về danh mục chứng khoán theo dạng bảng số liệu,Tổng KL thỏa thuận,Σ KLGD,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,X,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
 Execution - Volume: Khối lượng khớp lệnh
 Trade_HNX:
@@ -4577,6 +4605,7 @@ FROM JAD_STOCKINFOR s
 WHERE s.tradingdate = :ngay_gd
   AND s.StockType NOT IN ('B', '1', 'BO', 'D')    -- Loại bỏ trái phiếu","Xem các tính rule của từng chỉ tiêu top tại 
 https://prnt.sc/M-cd4ic77XSy",,,,,Done,Dữ liệu tĩnh,
+7,,"Top khối lượng theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành) theo dạng bảng số liệu ",Thay đổi giá (+/-),% thay đổi giữa giá đóng cửa và giá tham chiếu ,Dashboard,Chỉ tiêu cơ sở,TB,,MDDS,,,,Done,Thông tin thị trường,JAD_STOCKINFOR,change,,,,,,,,,,
 7,,"Top khối lượng theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành) theo dạng bảng số liệu ",% thay đổi,(Giá đóng cửa − Giá tham chiếu) / Giá tham chiếu * 100,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,(change / giá_tham_chiếu) × 100,,"SELECT    s.symbol,    s.tradingdate,    s.changePercent          AS pct_thay_doiFROM JAD_STOCKINFOR s","Xem các tính rule của từng chỉ tiêu top tại 
 https://prnt.sc/M-cd4ic77XSy",,,,,Done,Dữ liệu tĩnh,
 7,,"Top khối lượng theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành) theo dạng bảng số liệu ",Số cổ phiếu đang lưu hành ,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,CSDLTT,,,,Done,Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) ,outstanding_shares,outstanding_shares,,,"Xem các tính rule của từng chỉ tiêu top tại 
@@ -9450,6 +9479,7 @@ FROM (
 )
 GROUP BY symbol",,,,,,Done,Dữ liệu tĩnh,
 11,,"Top giá trị dạng bảng số liệu  theo toàn thị trường, theo sàn và theo bộ chỉ số ",Giá,Giá đóng cửa của ngày tra cứu,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,closePrice,,,,,,,,Done,Dữ liệu tĩnh,
+11,,"Top giá trị dạng bảng số liệu  theo toàn thị trường, theo sàn và theo bộ chỉ số ",Thay đổi giá (+/-),% thay đổi giữa giá đóng cửa và giá tham chiếu ,Dashboard,Chỉ tiêu cơ sở,TB,,MDDS,,,,Done,Thông tin thị trường,JAD_STOCKINFOR,change,,,,,,,,,,
 11,,"Top giá trị dạng bảng số liệu  theo toàn thị trường, theo sàn và theo bộ chỉ số ",% thay đổi,% thay đổi với giá tham chiếu,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,(change / giá_tham_chiếu) × 100,,,,,,,,Done,Dữ liệu tĩnh,
 11,,"Top giá trị dạng bảng số liệu  theo toàn thị trường, theo sàn và theo bộ chỉ số ",Khối lượng cổ phiếu lưu hành,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,CSDLTT,,,,Done,"- Số cổ phiếu đang lưu hành: Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày)""",outstanding_shares,khoi_luong_ck_dang_luu_hanh,,,,,,,,Chưa có sql,Chưa có CSDL - Map biểu mẫu,
 11,,"Top giá trị dạng bảng số liệu  theo toàn thị trường, theo sàn và theo bộ chỉ số ",Vốn hóa,Σ  (Giá đóng cửa* Khối lượng cổ phiếu lưu hành),Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,"MDDS, CSDLTT",,X,,Done,"""- Giá đóng cửa: thông tin thị trường
@@ -11619,6 +11649,7 @@ MARKETCODE NOT IN ('HOSE','UPCOM','HNX')",,,,,,,Done,Dữ liệu tĩnh,
 13,,"Top giảm giá theo dạng bảng số liệu theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Ngày,,Dashboard,Chiều,Trùng,Mã CK,,,X,,Done,,,,,,,,,,,Done,Dữ liệu tĩnh,
 13,,"Top giảm giá theo dạng bảng số liệu theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",% thay đổi trong kỳ,"% thay đổi giá của n ngày: [(P_close_t / P_reference_t-n) - 1] * 100
 -> Chỉ tiêu dùng để lọc top mã chứng khoán tăng/giảm giá",,,,,,,,,,,JAD_STOCKINFOR,% thay đổi giá của n ngày: [(P_close_t / P_reference_t-n) - 1] * 100,,,,,,,,,,
+13,,"Top giảm giá theo dạng bảng số liệu theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Thay đổi giá (+/-),% thay đổi giữa giá đóng cửa và giá tham chiếu ,Dashboard,Chỉ tiêu cơ sở,TB,,MDDS,,,,Done,Thông tin thị trường,JAD_STOCKINFOR,change,,,,,,,,,,
 13,,"Top giảm giá theo dạng bảng số liệu theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",% thay đổi,(Giá đóng cửa − Giá tham chiếu) / Giá tham chiếu * 100,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,(change / giá_tham_chiếu) × 100,,"SELECT    s.symbol,    s.tradingdate,    s.changePercent          AS pct_thay_doiFROM JAD_STOCKINFOR s",,,,,,Done,Dữ liệu tĩnh,
 13,,"Top giảm giá theo dạng bảng số liệu theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",KLGD,Σ KLGD khớp lệnh,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
 Execution - Volume: Khối lượng khớp lệnh
@@ -13077,6 +13108,7 @@ Execution - Volume: Khối lượng khớp lệnh
 Trade_HNX:
 Trade quantity: Khối lượng giao dịch",,,,,Done,Dữ liệu tĩnh,
 15,,"Top vượt đỉnh theo dạng bảng số liệu theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Giá,Giá đóng cửa ngày tra cứu,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,X,Done,,JAD_STOCKINFOR,closePrice,,,"Giá đóng cửa, giá gần nhất (có thể bao gồm cả giá dự khớp trong các phiên khớp lệnh định kỳ)",,,,,Done,Dữ liệu tĩnh,
+15,,"Top vượt đỉnh theo dạng bảng số liệu theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Thay đổi giá (+/-),% thay đổi giữa giá đóng cửa và giá tham chiếu ,Dashboard,Chỉ tiêu cơ sở,TB,,MDDS,,,,Done,Thông tin thị trường,JAD_STOCKINFOR,change,,,,,,,,,,
 15,,"Top vượt đỉnh theo dạng bảng số liệu theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",% thay đổi,Tỷ lệ thay đổi giá so với giá tham chiếu,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,MDDS,,X,X,Done,,JAD_STOCKINFOR,(change / giá_tham_chiếu) × 100,,,,,,,,Done,Dữ liệu tĩnh,
 15,,"Top vượt đỉnh theo dạng bảng số liệu theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Đỉnh cũ,Giá cao nhất trong giai đoạn tham chiếu 3M/6M/1Nam,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,MDDS,,X,X,Done,,JAD_STOCKINFOR,high,,,1:1,,,,,Done,Dữ liệu tĩnh,
 15,,"Top vượt đỉnh theo dạng bảng số liệu theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",LNST,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,IDS,,,,Done,lấy từ báo cáo tài chính IDS,"IDS.data (d), IDS.report_catalog (rc), IDS.company_data (cd)",SUM(d.data_value) AS lnst,"Company_data_chuan AS (
@@ -15612,6 +15644,7 @@ Trade quantity: Khối lượng giao dịch",,"
 Execution - Volume: Khối lượng khớp lệnh
 Trade_HNX:
 Trade quantity: Khối lượng giao dịch",,,,,Done,Dữ liệu tĩnh,
+17,,"Top thủng đáy theo dạng bảng số liệu theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Thay đổi giá (+/-),% thay đổi giữa giá đóng cửa và giá tham chiếu ,Dashboard,Chỉ tiêu cơ sở,TB,,MDDS,,,,Done,Thông tin thị trường,JAD_STOCKINFOR,change,,,,,,,,,,
 17,,"Top thủng đáy theo dạng bảng số liệu theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Giá,Giá đóng cửa,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,MDDS,,X,X,Done,,JAD_STOCKINFOR,closePrice,,"SELECT
     s.symbol,
     s.tradingdate,
@@ -17595,6 +17628,7 @@ MARKETCODE NOT IN ('HOSE','UPCOM','HNX')",,,,,,,Done,Dữ liệu tĩnh,
 19,,"Top tăng giá theo dạng bảng số liệu theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",% thay đổi trong kỳ,"% thay đổi giá của n ngày: [(P_close_t / P_reference_t-n) - 1] * 100
 -> Chỉ tiêu dùng để lọc top mã chứng khoán tăng/giảm giá",,,,,MDDS,,,,Done,Thông tin thị trường,JAD_STOCKINFOR,"% thay đổi giá của n ngày: [(P_close_t / P_reference_t-n) - 1] * 100
 -> Chỉ tiêu dùng để lọc top mã chứng khoán tăng/giảm giá",,,,,,,,,,
+19,,"Top tăng giá theo dạng bảng số liệu theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Thay đổi giá (+/-),% thay đổi giữa giá đóng cửa và giá tham chiếu ,Dashboard,Chỉ tiêu cơ sở,TB,,MDDS,,,,Done,Thông tin thị trường,JAD_STOCKINFOR,change,,,,,,,,,,
 19,,"Top tăng giá theo dạng bảng số liệu theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",% thay đổi,(Giá đóng cửa − Giá tham chiếu) / Giá tham chiếu * 100,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,(change / giá_tham_chiếu) × 100,,,,,,,,Done,Dữ liệu tĩnh,
 19,,"Top tăng giá theo dạng bảng số liệu theo sàn (HOUSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Khối lượng,Tổng khối lượng giao dịch khớp lệnh,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,X,Done,,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
 Execution - Volume: Khối lượng khớp lệnh
@@ -19960,6 +19994,7 @@ Trade quantity: Khối lượng giao dịch",,,,,Done,Dữ liệu tĩnh,
     s.FloorCode
 FROM JAD_STOCKINFOR s
 WHERE s.tradingdate = :ngay_gd","Giá đóng cửa, giá gần nhất (có thể bao gồm cả giá dự khớp trong các phiên khớp lệnh định kỳ)",,,,,Done,Dữ liệu tĩnh,
+21,,"Top nhà đầu tư nước ngoài  theo dạng bảng số liệu theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Thay đổi giá (+/-),% thay đổi giữa giá đóng cửa và giá tham chiếu ,Dashboard,Chỉ tiêu cơ sở,TB,,MDDS,,,,Done,Thông tin thị trường,JAD_STOCKINFOR,change,,,,,,,,,,
 21,,"Top nhà đầu tư nước ngoài  theo dạng bảng số liệu theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",% thay đổi,Tỷ lệ thay đổi giá so với giá tham chiếu,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,(change / giá_tham_chiếu) × 100,,"SELECT    s.symbol,    s.tradingdate,    s.changePercent          AS pct_thay_doiFROM JAD_STOCKINFOR s",,,,,,Done,Dữ liệu tĩnh,
 21,,"Top nhà đầu tư nước ngoài  theo dạng bảng số liệu theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",KL mua ròng ,"CL mua và bán =KL mua -KL bán
 Nếu CL mua và bán > 0 -> KL mua ròng
@@ -23169,7 +23204,7 @@ with MDDS AS (
             reference  AS gia_tham_chieu,
             date_format (tradingdate , 'yyyyMMdd') as Ngay_GD,
             change,
-			 LAG(closePrice) OVER (
+                         LAG(closePrice) OVER (
             PARTITION BY symbol ORDER BY date_format (tradingdate , 'yyyyMMdd')
         ) AS closePrice_1
         FROM uat_mdds_stg.tmp_jad_stockinfor_eod  s
@@ -23252,7 +23287,7 @@ Von_hoa_theo_chiso AS (
     SELECT
         MARKETCODE,
         tradingdate,
-		s.prv_prior_market_index  AS index_t_1
+                s.prv_prior_market_index  AS index_t_1
     FROM uat_mdds_stg.tmp_JAD_MARKETINFOR_eod s
     WHERE date_format(TO_DATE(s.tradingdate, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
 )
@@ -23270,7 +23305,7 @@ Von_hoa_theo_chiso AS (
              ELSE 0 END)                                                    AS tong_gt
 FROM uat_ordertrade_stg.trade_book_hose t
 WHERE 1=1
---	and symbol = 'SHB' 
+--        and symbol = 'SHB' 
    AND date_format(to_date(t.TRADE_DATE, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
 GROUP BY t.SYMBOL
 union all 
@@ -23367,7 +23402,7 @@ WHERE rn <= :so_ngay_tb + 1
 --        and date_format(TO_DATE(t.trade_date, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
         and t.market_id IN ('STX', 'UPX')
     ) x
-   	JOIN Cua_so_giao_dich cs
+           JOIN Cua_so_giao_dich cs
         ON cs.ngay_gd = x.ngay_gd
     GROUP BY
         symbol,
@@ -23420,7 +23455,7 @@ WHERE rn <= :so_ngay_tb + 1
             reference  AS gia_tham_chieu,
             date_format (tradingdate , 'yyyyMMdd') as Ngay_GD,
             change,
-			 LAG(closePrice) OVER (
+                         LAG(closePrice) OVER (
             PARTITION BY symbol ORDER BY date_format (tradingdate , 'yyyyMMdd')
         ) AS closePrice_1
         FROM uat_mdds_stg.tmp_jad_stockinfor_eod  s
@@ -23503,7 +23538,7 @@ Von_hoa_theo_chiso AS (
     SELECT
         MARKETCODE,
         tradingdate,
-		s.prv_prior_market_index  AS index_t_1
+                s.prv_prior_market_index  AS index_t_1
     FROM uat_mdds_stg.tmp_JAD_MARKETINFOR_eod s
     WHERE date_format(TO_DATE(s.tradingdate, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
 )
@@ -23521,7 +23556,7 @@ Von_hoa_theo_chiso AS (
              ELSE 0 END)                                                    AS tong_gt
 FROM uat_ordertrade_stg.trade_book_hose t
 WHERE 1=1
---	and symbol = 'SHB' 
+--        and symbol = 'SHB' 
    AND date_format(to_date(t.TRADE_DATE, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
 GROUP BY t.SYMBOL
 union all 
