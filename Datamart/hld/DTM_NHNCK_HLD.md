@@ -1,4 +1,4 @@
-﻿# DTM_NHNCK_HLD — High Level Design
+# DTM_NHNCK_HLD — High Level Design
 **Module:** NHNCK — Người hành nghề chứng khoán  
 **Phiên bản:** 6.4  
 **Ngày:** 27/04/2026 (cập nhật 09/09/2026)  
@@ -1265,7 +1265,7 @@ flowchart LR
 > Phân loại: **Tác nghiệp**
 > Atomic chính: `Securities Practitioner License Certificate Document` (`sp_license_certificate_document`) ← NHNCK.CertificateRecords — **READY**
 > Atomic phụ: `Securities Practitioner License Decision Document` (`sp_license_decision_document`) ← NHNCK.Decisions — join để lấy số quyết định cấp và thu hồi
-> Ghi chú: Cột "Trạng thái" trong Mockup (K_NHNCK_48) — (Sửa 2026-08) READY, xem O_NHNCK_16. (Sửa 2026-08-11, K_NHNCK_43) Certificate Number đổi nguồn về `sp_license_certificate_document.certificate_nbr` (cột trực tiếp trên CERTIFICATE_RECORDS, direct — không còn join `sp_organization_employment_report`).
+> Ghi chú: Cột "Trạng thái" trong Mockup (K_NHNCK_48) — (Sửa 2026-08) READY, xem O_NHNCK_16. (Sửa 2026-08-11, K_NHNCK_43) Certificate Number đổi nguồn về `sp_license_certificate_document.sp_license_certificate_document_code` (cột trực tiếp trên CERTIFICATE_RECORDS, direct — không còn join `sp_organization_employment_report`).
 
 **Mockup:**
 
