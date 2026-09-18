@@ -559,6 +559,7 @@ Trong kiến trúc kho dữ liệu ClickHouse, các báo cáo phân tích và da
 | **3** | **Column Drift Control** | Flat Table SQL vs Master CSV & Detail Mapping | Không có cột thừa trong SQL; không bỏ sót cột Fact có KPI khai thác; 100% cột Fact có trong master CSV. | `L4-FLAT-TABLE-COLUMN-DRIFT` |
 | **4** | **Parameter Consistency** | `02_populate_*.sql` (`WHERE` clause) | 100% mệnh đề lọc ngày ETL dùng đúng cú pháp `:etl_date`; không dùng format lạ hoặc hardcode ngày. | `L4-FLAT-TABLE-PARAMETER-INCONSISTENT` |
 | **5** | **Common Dimensions Sync** | `Datamart/flat-table/Common/` vs `cdr_dt_dim` CSV | Bắt buộc có script DDL/DML cho bảng phẳng `datamart.cdr_dt_flat` (nguồn `datamart.cdr_dt_dim`) trên ClickHouse với đủ 9 cột kể cả cờ `is_trading_date`. | `L4-COMMON-DIM-CLICKHOUSE-MISSING` |
+| **6** | **Source Column Existence (DML → LLD)** | `02_populate_*.sql` vs Attributes CSV / master registry | Mọi tham chiếu `<alias>.<cột>` trong `SELECT` phải tồn tại ở bảng nguồn tương ứng sau khi phân giải alias qua `FROM`/`JOIN`. Bảng ngoài registry thì bỏ qua, không kết luận. | `L4-FLAT-TABLE-COLUMN-NOT-IN-LLD` |
 
 ---
 

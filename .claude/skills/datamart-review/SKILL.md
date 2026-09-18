@@ -21,7 +21,7 @@ triggers:
    - **GATE 1 (Sanity Stop):** Dừng bắt buộc sau Bước 0b/0c Macro-Audit; chặn cứng nếu phát hiện Orphan 3 chiều, Parity mismatch, Role Date FK violation, Delete sót, hoặc Grain Mismatch kiến trúc (`L1-GRAIN-MISMATCH`) / Window Storage trên Dimension (`L2-WINDOW-STORAGE-INVALID`).
    - **GATE 2 (Group Checkpoint):** Dừng kiểm tra sau mỗi nhóm Micro-Review có lỗi Critical 🔴 hoặc Warning 🟡; chỉ tự động đi tiếp khi 4 Lớp đều PASS (OK).
    - **GATE 3 (HLD/LLD Parity Gate — Handover Blocking Gate):** Cổng chặn cứng kiểm định tính đồng nhất giữa HLD và LLD trước khi chuyển giao hoặc sinh mã Flat Table: bắt buộc 0 parity mismatch (`check_parity.py --strict`), 0 orphan (`check_orphan.py --strict`), 0 linter violation (Detail Mapping Rule L4, L15, L16), và 0 Date FK violation.
-   - **GATE 4 (Flat Table Delivery Gate):** Cổng kiểm định chất lượng phân phối Flat Table ClickHouse với 5 tiêu chí cốt lõi: Coverage, 1-1 Projection Alignment, Column Drift, Parameter Consistency (`:etl_date`), Common Dimensions Sync (`datamart.cdr_dt_flat`).
+   - **GATE 4 (Flat Table Delivery Gate):** Cổng kiểm định chất lượng phân phối Flat Table ClickHouse với 6 tiêu chí cốt lõi: Coverage, 1-1 Projection Alignment, Column Drift, Parameter Consistency (`:etl_date`), Common Dimensions Sync (`datamart.cdr_dt_flat`).
    - **GATE 5 (HLD Structure — Bước 5B, 14 mục):** Cổng kiểm cấu trúc HLD sau mọi chỉnh sửa. Chạy `check_hld_5b.py`.
    - **GATE 6 (Context Budget — trần 500K token/bước):** Chặn khi một bước thiết kế được dự báo vượt trần ngữ cảnh. Chạy `ctx_budget.py --module [M] --all-steps --strict`. Đây là gate **duy nhất đọc tới file BA**.
    - **GATE 7 (LLD Self-Check module-level — TC4–TC7):** Bốn kiểm tra toàn module trước đây bắt agent nạp cả Detail Mapping (QLKD 552K token × 4 lần). Chạy `lld_selfcheck.py --module [M]`.
@@ -354,11 +354,12 @@ Hoặc chạy runner hợp nhất:
 python scripts/run_quality_gates.py --module [MODULE] --strict
 ```
 
-#### 5 Tiêu Chí Nghiệm Thu Gate 4:
+#### 6 Tiêu Chí Nghiệm Thu Gate 4:
 1. **Flat Table Column Coverage Check (`L4-FLAT-TABLE-COLUMN-COVERAGE-MISSING`):** 100% cột Fact/Operational và thuộc tính nghiệp vụ của Dim joined có mặt trong DDL `01_create_*.sql`.
 2. **1-1 Projection Alignment Check (`L4-FLAT-TABLE-PROJECTION-MISALIGNMENT`):** Khớp 1-1 chính xác tuyệt đối số lượng, thứ tự 3 khối cột (Fact ➔ Date ➔ Dim) và alias giữa `CREATE TABLE` trong file `01` và `SELECT` trong file `02`.
 3. **Column Drift Check (`L4-FLAT-TABLE-COLUMN-DRIFT`):** 0 cột thừa trong Flat Table SQL; không bỏ sót cột Fact có KPI khai thác trong Detail Mapping; 100% cột Fact có trong master `datamart_attributes.csv`.
 4. **Parameter Consistency Check (`L4-FLAT-TABLE-PARAMETER-INCONSISTENT`):** 100% mệnh đề lọc ngày chạy ETL trong `02_populate_*.sql` dùng biến tham số chuẩn duy nhất `:etl_date`.
 5. **Common Dimensions ClickHouse Sync Check (`L4-COMMON-DIM-CLICKHOUSE-MISSING`):** Kiểm tra sự hiện diện và tính đầy đủ của bảng phẳng chiều dùng chung `datamart.cdr_dt_flat` (nguồn `datamart.cdr_dt_dim`) tại `Datamart/flat-table/Common/` với đầy đủ 9 trường thuộc tính kể cả cờ `is_trading_date` phục vụ lọc ngày giao dịch và đếm phiên lookback trên ClickHouse.
+6. **Source Column Existence Check (`L4-FLAT-TABLE-COLUMN-NOT-IN-LLD`):** Mọi tham chiếu `<alias>.<cột>` trong `02_populate_*.sql` phải tồn tại ở bảng nguồn tương ứng (phân giải alias qua `FROM`/`JOIN`, đối chiếu master registry). **[MỚI 2026-09-18]** Bổ sung sau ca NDTNN: `SELECT f.account_holder_nm` từ `foreign_investor_trading_detail_rpt` trong khi bảng đó không có cột này — Gate 4 vẫn PASS vì tiêu chí 1 chỉ soi chiều LLD → DDL, còn cột bịa trong DDL/DML thì không ai kiểm; script chỉ vỡ khi chạy thật. Cố ý KHÔNG kiểm "mọi cột DDL phải có trong LLD bảng gốc" — DDL hợp lệ có cột lấy từ Dimension qua JOIN.
 
-> 🚫 **LỆNH CẤM:** Nghiêm cấm mọi hành vi bỏ qua Gate 4 hoặc phê duyệt bàn giao khi Flat Table SQL chưa được đồng bộ đạt 100% cả 5 tiêu chí trên!
+> 🚫 **LỆNH CẤM:** Nghiêm cấm mọi hành vi bỏ qua Gate 4 hoặc phê duyệt bàn giao khi Flat Table SQL chưa được đồng bộ đạt 100% cả 6 tiêu chí trên!

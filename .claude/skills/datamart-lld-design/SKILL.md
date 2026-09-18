@@ -1192,7 +1192,7 @@ PRE-CHECK (trước khi sinh — bắt buộc, chỉ cho KPI của nhóm đang x
 □ Lọc bỏ 100% dòng BA có Trạng thái mapping là Delete / DELETED / Xóa — KHÔNG map, KHÔNG sinh dòng Detail Mapping
 □ Nếu dòng BA nào (hợp lệ, không phải Delete) chưa có KPI_ID → DỪNG, báo cáo danh sách gap → ❌ KHÔNG sinh block khi chưa có xác nhận của human về cách xử lý gap
 □ Không tự sinh KPI_ID mới trong Phase 2 — KPI_ID mới phải được khai sinh trong HLD trước
-□ Đọc kỹ `Câu lệnh tham khảo`, `Điều kiện chung`, `Bảng nguồn`, `Trường nguồn`, và `Note` của toàn bộ chỉ tiêu nhóm đang xử lý (theo Quy tắc L17) — lấy bằng `python .claude/skills/datamart-review/scripts/ba_slice.py --module {MODULE} --nhom {N} --with-sql --print`. Lưu ý: với QLKD, cột `Câu lệnh tham khảo (không dùng nữa, giữ lại để lưu vết)` bị bỏ khỏi lát cắt theo `system/rules/ba_column_profile.yaml`; bản sống là `Câu lệnh update (SIT)`
+□ Đọc kỹ `Câu lệnh tham khảo`, `Điều kiện chung`, `Bảng nguồn`, `Trường nguồn`, và `Note` của toàn bộ chỉ tiêu nhóm đang xử lý (theo Quy tắc L17) — lấy bằng `python .claude/skills/datamart-review/scripts/ba_slice.py --module {MODULE} --nhom {N} --with-sql --print`. Lưu ý: với QLKD, BA đã gộp 2 cột SQL thành 1 vào 2026-09-18 — cột sống duy nhất là `Câu lệnh tham khảo (SIT)` (cột S)
 □ Đếm N_BA(nhóm) (chỉ tính dòng hợp lệ, ĐÃ LOẠI TRỪ dòng Delete) và N_KPI(nhóm) → báo cáo 2 con số → DỪNG chờ human xác nhận trước khi sinh
 
 OUTPUT CHECK (chỉ kiểm tra block KPI của nhóm đang xử lý):

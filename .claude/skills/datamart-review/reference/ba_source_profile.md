@@ -110,7 +110,7 @@ NHNCK, NĐTNN, VP sang nhóm `;`.
 | `,` | **GSĐC** | 24 | STT | `BA_analyst_GSĐC.csv` (file gộp thay thế 3 part) |
 | `,` | **PTTT** | 26 | STT | `BA_analyst_PTTT.csv` |
 | `,` | **GSTT** | 27 | STT | `BA_analyst_GSTT.csv` |
-| `,` | **QLKD** | 28 | STT | `BA_analyst_QLKD.csv` |
+| `,` | **QLKD** | 27 | STT | `BA_analyst_QLKD.csv` — BA gộp 2 cột SQL thành 1 ngày 2026-09-18 |
 | `,` | **TKNB** | 29 | STT | `BA_analyst_TKNB.csv` |
 | `,` | **NĐTNN** | 31 | STT | `BA_analyst_NDTNN.csv` |
 | `,` | **NHNCK** | 31 | STT | `BA_analyst_NHNCK.csv` |
