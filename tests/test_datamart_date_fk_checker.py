@@ -229,7 +229,7 @@ class TestDateFKCheckerIntegration(unittest.TestCase):
         """QLKD fact tables were remediated to use role-playing date FKs; must PASS with 0 violations."""
         summary = self.checker.scan_module("QLKD")
         self.assertEqual(len(summary.all_violations), 0, f"QLKD should have 0 violations after remediation, got: {summary.all_violations}")
-        self.assertEqual(summary.clean_fact_tables_count, 5)
+        self.assertEqual(summary.clean_fact_tables_count, 7)
         self.assertEqual(summary.violating_fact_tables_count, 0)
 
     def test_17_real_repo_tt_violations_detected(self):
