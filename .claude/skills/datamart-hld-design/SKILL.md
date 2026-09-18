@@ -52,6 +52,68 @@ description: |
 
 ---
 
+## QUY TẮC CHỐNG TÁI DIỄN (ANTI-REGRESSION) — ĐỌC TRƯỚC KHI SỬA HLD
+
+> Rút ra từ sự cố PTTT/QLKD ngày 2026-09-18. Cả 5 quy tắc đều là lỗi **thật đã lọt lưới**,
+> không phải rủi ro giả định. Mã lỗi tương ứng nằm trong Gate 0 (`check_references.py`) và
+> Gate 5 (`check_hld_5b.py`).
+
+### H1 — Một HLD là MỘT nguồn sự thật: sửa Section 1 phải sửa cả Section 3/4/5
+
+Section 1 (Lineage), Section 3 (Mô hình), Section 4 (Reuse), Section 5 (Open Issue) mô tả cùng một
+tập bảng. Sửa lẻ một Section tạo ra HLD tự mâu thuẫn.
+
+Thực tế đã sai: Section 1 và Section 5 tuyên bố `O_PTTT_13` đã giải quyết và thay Fact mới, nhưng
+Section 3 vẫn giữ node `fct_mbr_sfty_per_mbr_snpst` + entity giả `Member Report Indicator Value`
+và ghi "PENDING"; Section 3 còn để tên vật lý cũ `fct_mcr_ind_snpst` trong khi Entities/LLD đã đổi.
+
+**Checklist khi thay/bãi bỏ một bảng:** Section 1 flowchart → Section 3.1 graph TB → bảng 3.2/3.3/3.4
+→ Section 4 reuse_status → Section 5 issue → Entities.csv/.md. Đủ 6 nơi, không thiếu nơi nào.
+
+### H2 — Đóng Open Issue mặc định là "Resolved một phần" `[partial-resolution]`
+
+Nguồn Atomic mới xuất hiện **không** đồng nghĩa mọi KPI trong danh sách issue đều READY được.
+Bắt buộc tách theo grain / theo nhánh nguồn:
+
+1. Liệt kê KPI chuyển READY **kèm grain đạt được**.
+2. KPI chưa đạt → mở Open Issue mới (`O_{MODULE}_{N+1}`) ghi rõ còn thiếu gì.
+3. Issue gốc để trạng thái `Resolved một phần`, không phải `Resolved`.
+
+Thực tế đã sai: O_PTTT_11 và O_PTTT_13 bị đóng toàn phần → 9 KPI grain ngày bị đánh READY trong khi
+nguồn chỉ có grain kỳ báo cáo tháng/quý.
+
+### H3 — Reuse Fact xuyên module: grain là hợp đồng bất biến `[L1-GRAIN-MISMATCH]`
+
+Trước khi ghi `reuse` vào Section 4:
+1. Mở Entities.csv của **module chủ sở hữu**, copy nguyên văn chuỗi grain.
+2. Đối chiếu với Presentation Grain của mockup module mình (Thang 6 bậc hạt ở Bước 4B).
+3. Grain Fact **kỳ báo cáo** không phục vụ được chỉ tiêu rolling theo **phiên giao dịch** — trường hợp này
+   phải giữ PENDING và mở Open Issue, không được reuse rồi viết công thức như thể có dữ liệu ngày.
+4. Cột "Nguồn Atomic" trong Section 3 và `source_table` trong Entities.csv ghi **entity Atomic**,
+   tuyệt đối không ghi tên bảng Datamart (`fct_*`).
+
+### H4 — Trạng thái KPI phải đồng bộ 2 chiều với Detail Mapping `[L0-HLD-LLD-STATUS-DESYNC]`
+
+Bảng KPI trong HLD và Detail Mapping là hai bản ghi của cùng một trạng thái. Sau khi sửa cột
+`Trạng thái` trong HLD, chạy ngay:
+
+```bash
+python .claude/skills/datamart-review/scripts/check_references.py --module {MODULE}
+```
+
+Nhóm chuyển từ 100% PENDING sang có KPI READY còn phải bổ sung đủ: `**Source:**`, `**Star Schema:**`,
+`**Lineage Mart → Báo cáo:**`, `**Bảng grain:**` — và gỡ bảng "Bảng mapping nguồn (Atomic Placeholder)"
+nếu nhóm đã hết PENDING.
+
+### H5 — Mọi tên cột Atomic viết vào HLD phải grep được `[L0-ATOMIC-COLUMN-NOT-FOUND]`
+
+Áp dụng cho công thức KPI, ghi chú nguồn và erDiagram. Không suy tên từ nghĩa nghiệp vụ:
+`cl_risk_indicator` có `ind_nm` chứ không phải `cl_risk_ind_name`; `security_trading_snapshot` có
+`symbol` chứ không phải `security_symbol_code`. Xem bảng đối chiếu đầy đủ ở mục **A1** của
+`datamart-lld-design/SKILL.md`.
+
+---
+
 ## QUY TRÌNH (BẮT BUỘC)
 
 ```
@@ -619,7 +681,25 @@ Tạo thư mục nếu chưa có. Thông báo đường dẫn file.
 
 > **Áp dụng cả khi CHỈNH SỬA/ĐIỀU CHỈNH một phần của HLD đã tồn tại** (không chỉ khi thiết kế mới từ đầu) — kể cả khi phạm vi yêu cầu chỉ là "sửa lại Nhóm N". Vì các mục kiểm tra dưới đây quét **toàn file**, một thay đổi cục bộ (thêm/sửa 1 Nhóm) vẫn có thể làm lộ ra hoặc để sót lỗi cấu trúc đã tồn tại từ trước ở phần không đụng tới — bỏ qua Bước 5B chỉ vì "task chỉ yêu cầu sửa 1 Nhóm" đã gây sót lỗi thực tế (TT — sửa lại Nhóm 1 theo Atomic schema mới nhưng không chạy mục #0 nên bỏ sót toàn bộ file thiếu Section 4 — Reuse Analysis, heading Cụm sai cấp, bảng KPI thiếu cột Ghi chú, vốn có từ bản gốc 20260427 và không liên quan gì đến thay đổi đang làm).
 
-Chạy **đủ 14 mục (#0–#13)** dưới đây (bằng Python/grep hoặc bộ CLI audit) trên toàn file `DTM_{MODULE}_HLD.md` vừa xuất/vừa sửa. Toàn bộ các tiêu chí này khớp 1-1 với tiêu chuẩn kiểm định **Lớp 1b của `datamart-review`**. Khi báo kết quả, liệt kê đủ 14 dòng PASS/FAIL kèm mã lỗi chuẩn — không gộp, không bỏ mục nào:
+### Cách chạy: DÙNG SCRIPT, KHÔNG ĐỌC MẮT
+
+14 mục dưới đây đã được tự động hoá. **Bắt buộc chạy lệnh này**, không tự viết lại checker
+và không tự đánh giá bằng mắt:
+
+```bash
+python .claude/skills/datamart-review/scripts/check_hld_5b.py --module {MODULE}
+```
+
+Script in đủ 14 dòng `#0`–`#13` kèm mã lỗi. Mục `MANUAL` (#9, #10, #12) chuyển sang
+`check_references.py` và `datamart_progress_analyzer.py` — vẫn phải chạy, không được bỏ.
+Dán nguyên output vào báo cáo cho human.
+
+> **Vì sao bắt buộc dùng script:** trước khi có `check_hld_5b.py`, 14 mục này chỉ là checklist chữ.
+> Thực tế agent bỏ qua hoặc tự đánh giá "đã xong" mà không phát hiện: 18 khối erDiagram thiếu
+> `Source_System_Code`, 36 Fact dùng `Snapshot_Date_Id` thay vì `Snapshot_Date_Dimension_Id`,
+> 17 heading `### Cụm` sai cấp, Section 3 còn giữ Fact đã bãi bỏ trong khi Section 1 & 5 đã ghi Resolved.
+
+Diễn giải chi tiết từng mục (khớp 1-1 với tiêu chuẩn **Lớp 1b của `datamart-review`**):
 
 0. **Cấu trúc Section & Bảng KPI 7 Cột (`[L1-SECTION-STRUCTURE]`):**
    - Đếm số Section (`## Section N`) — **phải đúng 5**, theo thứ tự cố định: `Data Lineage` / `Tổng quan báo cáo` / `Mô hình tổng thể` / `Reuse Analysis` / `Vấn đề mở`. Không còn biến thể 4 Section. Thiếu bất kỳ Section nào, hoặc "Vấn đề mở" không nằm ở vị trí Section 5 $\implies$ Báo lỗi cấu trúc. Module đầu tiên (`datamart_model.yaml` rỗng) vẫn phải có Section 4 với toàn bộ bảng `reuse_status = new`.
@@ -669,16 +749,30 @@ Chạy **đủ 14 mục (#0–#13)** dưới đây (bằng Python/grep hoặc b�
 
 ### Tích Hợp Bộ Công Cụ Kiểm Định CLI Tự Động Vào Bước 5B
 
-Trước khi mở GATE Phase 1, Designer **bắt buộc phải chạy bộ 3 lệnh CLI audit tự động** từ thư mục gốc của repository:
+Trước khi mở GATE Phase 1, Designer **bắt buộc chạy bộ lệnh audit** từ thư mục gốc của repository.
+Cách nhanh nhất là chạy runner hợp nhất (bao trùm Gate 0 → Gate 5):
 
-```powershell
-# 1. Kiểm tra chéo BA, phân loại 5 nhóm PENDING và lint quy chuẩn Detail Mapping (Exit 0 = PASS):
+```bash
+python .claude/skills/datamart-review/scripts/run_quality_gates.py --module {MODULE} --strict
+```
+
+Hoặc chạy lẻ khi cần xem chi tiết:
+
+```bash
+# 0. Reference Integrity — cột Atomic/Mart có tồn tại thật không, CSV có vỡ cột không,
+#    trạng thái KPI giữa HLD và Detail Mapping có lệch nhau không (Exit 0 = PASS):
+python .claude/skills/datamart-review/scripts/check_references.py --module {MODULE} --strict
+
+# 1. Cấu trúc HLD — Bước 5B, 14 mục #0–#13 (Exit 0 = PASS):
+python .claude/skills/datamart-review/scripts/check_hld_5b.py --module {MODULE}
+
+# 2. Kiểm tra chéo BA, phân loại 5 nhóm PENDING và lint quy chuẩn Detail Mapping (Exit 0 = PASS):
 python .claude/skills/datamart-review/scripts/check_ba_mapping.py --module {MODULE} --strict
 
-# 2. Kiểm tra chuẩn Role-Playing Date FK trên toàn bộ Fact tables (Exit 0 = PASS):
+# 3. Kiểm tra chuẩn Role-Playing Date FK trên toàn bộ Fact tables (Exit 0 = PASS):
 python .claude/skills/datamart-review/scripts/check_date_fk.py --module {MODULE} --strict
 
-# 3. Phân tích tiến độ 3 chiều BA ↔ HLD ↔ LLD và quét các chỉ tiêu bị xóa Delete:
+# 4. Phân tích tiến độ 3 chiều BA ↔ HLD ↔ LLD và quét các chỉ tiêu bị xóa Delete:
 python .claude/skills/datamart-review/scripts/datamart_progress_analyzer.py --module {MODULE}
 ```
 

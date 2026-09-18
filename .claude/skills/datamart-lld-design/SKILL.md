@@ -73,6 +73,153 @@ description: |
 
 ---
 
+## QUY TẮC CHỐNG TÁI DIỄN (ANTI-REGRESSION) — ĐỌC TRƯỚC, CHẠY SAU MỌI THAY ĐỔI
+
+> **Nguồn gốc:** toàn bộ 9 quy tắc dưới đây được rút ra từ sự cố thiết kế PTTT/QLKD phát hiện ngày
+> 2026-09-18. Tất cả đều **đã lọt qua Gate 1–4 cũ** — nghĩa là không có checker nào bắt được.
+> Chúng được bổ sung thành **Gate 0 (`check_references.py`)** và **Gate 5 (`check_hld_5b.py`)**.
+
+### Lệnh bắt buộc — chạy SAU mỗi lần sửa LLD, TRƯỚC khi báo kết quả cho human
+
+```bash
+python .claude/skills/datamart-review/scripts/run_quality_gates.py --module {MODULE} --strict
+```
+
+Chạy đủ Gate 0 → Gate 5. **Không được tuyên bố hoàn thành khi chưa dán output của lệnh này.**
+Nếu chỉ sửa 1 file, vẫn chạy toàn bộ — các lỗi dưới đây là lỗi *liên file*, sửa cục bộ không thấy.
+
+### Artifact sinh tự động — KHÔNG sửa tay (RFC Đ3/Đ4/Đ7)
+
+Sau khi sửa file LLD per-module (`Datamart/lld/{MODULE}/*.csv`), chạy đúng thứ tự:
+
+```bash
+python .claude/skills/datamart-review/scripts/build_registry.py       # -> datamart_attributes.csv
+python .claude/skills/datamart-review/scripts/build_model_yaml.py     # -> datamart_model.yaml (chỉ khối columns)
+python .claude/skills/datamart-review/scripts/build_kpi_index.py      # -> Datamart/index/kpi_index.csv
+python .claude/skills/datamart-review/scripts/build_flat_tables.py --module {MODULE} --check
+```
+
+- `Datamart/lld/datamart_attributes.csv` và khối `columns` trong `Datamart/datamart_model.yaml`
+  là **output sinh ra** — sửa tay sẽ bị ghi đè ở lần build kế tiếp. Nguồn sự thật là file LLD per-module.
+- Tra cứu nhanh một KPI (ở đâu, trạng thái gì, map cột nào) dùng `Datamart/index/kpi_index.csv`
+  thay vì nạp cả file HLD 3.000 dòng:
+  `grep -E "^K_PTTT_58," Datamart/index/kpi_index.csv`
+- Đọc/ghi CSV thiết kế bằng `datamart_common.csv_io` (`read_design_csv` / `write_design_csv`)
+  — tự quote đúng và verify lại số cột sau khi ghi.
+- Danh mục giá trị hợp lệ của `column_role` / `tinh_chat` / `etl_logic_type` nằm ở
+  `system/rules/datamart_conventions.yaml` — đọc file này thay vì đoán theo đa số.
+
+### A1 — CẤM tự đặt tên cột Atomic `[L0-ATOMIC-COLUMN-NOT-FOUND]`
+
+Mọi `atomic_column` và mọi tham chiếu `bảng.cột` trong `etl_logic` phải **grep được trong YAML Atomic thật**.
+
+| Đã viết sai (thực tế) | Tên đúng trong YAML |
+|---|---|
+| `cl_risk_indicator.cl_risk_ind_name` | `ind_nm` |
+| `sc_periodic_report.submission_dt` | không tồn tại → dùng `sent_tms` |
+| `sc_periodic_report.record_status` | `rpt_submission_status_code` |
+| `sc_report_input_value.numeric_val` | `item_val` |
+| `security_trading_snapshot.security_symbol_code` | `symbol` |
+| `sc_alert_indicator.indicator_code` | `ind_code` |
+
+Cách kiểm nhanh 1 cột trước khi viết:
+```bash
+grep -rn "physical_name: \"\?{column}" DataModel/Atomic DataModel/working/Atomic/lld
+```
+**Đừng suy tên cột từ tên thuộc tính nghiệp vụ.** `Name` không đồng nghĩa `_name`; nhiều entity dùng `_nm`, `_cd`, `_ind`.
+
+### A2 — CẤM tự đặt tên cột Mart trong Detail Mapping `[L0-MART-COLUMN-NOT-FOUND]`
+
+`mart_column` phải tồn tại trong Attributes CSV của chính bảng đó (chấp nhận tên physical hoặc logical,
+nhưng phải là **một trong hai** — không được bịa tên thứ ba).
+
+Thực tế đã sai: Detail Mapping PTTT/QLKD trỏ tới `margin_balance_amt`, `owner_equity_amt`,
+`total_debt_amt`, `financial_leverage_ratio`, `capital_adequacy_ratio`, `active_account_count`,
+`client_deposit_balance_amt` — **không cột nào tồn tại**. Bảng nguồn thực tế là Fact EAV chỉ có
+duy nhất `indicator_val_amt` + FK `report_indicator_dim_id`.
+
+> **Dấu hiệu nhận biết sớm:** nếu Fact là EAV (một cột giá trị + một chiều chỉ tiêu) mà bạn đang
+> viết ra 5–10 tên cột nghiệp vụ khác nhau → chắc chắn sai. Mọi measure phải là
+> `SUM(<fact>.indicator_val_amt) WHERE <dim>.indicator_code = '...'`.
+
+### A3 — Ghi CSV bắt buộc qua `csv.writer`, cấm nối chuỗi `[L0-CSV-STRUCTURE-BROKEN]`
+
+`etl_logic` thường chứa dấu phẩy (`hash_id('X', y)`, `LPAD(..., 2, '0')`, `IN ('A','B')`).
+Nối chuỗi thủ công làm vỡ dòng → 4 file LLD QLKD từng có dòng 16–19 cột trong khi header 15 cột.
+
+```python
+with open(path, "w", encoding="utf-8", newline="") as f:
+    csv.writer(f, quoting=csv.QUOTE_ALL, lineterminator="\n").writerows(rows)
+```
+Sau khi ghi, **luôn đọc lại và đối chiếu số cột từng dòng** với header.
+
+### A4 — Nâng READY ở LLD phải đồng bộ ngược lên HLD `[L0-HLD-LLD-STATUS-DESYNC]`
+
+Trạng thái KPI tồn tại ở **hai nơi**: bảng KPI trong HLD (cột `Trạng thái`) và Detail Mapping
+(4 cột `mart_table`/`mart_column`/`column_role`/`logic`). Sửa một bên mà quên bên kia là lỗi đã xảy ra
+trên diện rộng (HLD ghi PENDING trong khi Detail Mapping đã điền mapping đầy đủ).
+
+- Nâng PENDING → READY: sửa **cả** dòng KPI trong HLD **và** dòng Detail Mapping.
+- Hạ READY → PENDING: để trống đủ 4 cột Detail Mapping (Rule L4) **và** sửa cột `Trạng thái` trong HLD.
+- Ngoại lệ hợp lệ duy nhất: `column_role = DERIVED`/`DEPRECATED` được phép trống 2 cột mart.
+
+### A5 — Reuse Fact xuyên module: grain là hợp đồng, không được diễn giải lại `[L1-GRAIN-MISMATCH]`
+
+Khi module B reuse Fact của module A:
+1. Copy **nguyên văn** chuỗi grain từ Entities.csv của module A. Cấm viết lại theo cách hiểu của mình.
+2. Cột `source_table` của module B ghi **entity Atomic của module A**, tuyệt đối không ghi tên bảng
+   Datamart (`fct_*`) — đó không phải nguồn Atomic.
+3. Đối chiếu grain đó với công thức đang định viết. Fact grain **kỳ báo cáo** không đỡ được
+   `ROWS BETWEEN 19 PRECEDING` theo **phiên giao dịch**.
+
+Thực tế đã sai: cùng `fct_securities_company_financial_structure_snpst` được khai 3 grain khác nhau
+ở 3 nơi (1 CTCK/ngày — 1 CTCK × 1 tháng — 1 CTCK × 1 kỳ × 1 chỉ tiêu).
+
+### A6 — Đóng Open Issue: mặc định là "Resolved một phần"
+
+Khi nguồn Atomic mới xuất hiện, **không** đánh dấu issue là "ĐÃ GIẢI QUYẾT" cho toàn bộ danh sách KPI
+đính kèm. Bắt buộc:
+1. Liệt kê rõ KPI nào chuyển READY và **ở grain nào**.
+2. KPI còn lại → tách sang Open Issue mới, ghi lý do cụ thể.
+3. Trạng thái issue gốc → `Resolved một phần`.
+
+Thực tế đã sai: O_PTTT_11 và O_PTTT_13 bị đóng toàn phần trong khi nhóm chỉ tiêu grain ngày vẫn
+không có nguồn — kéo theo 9 KPI bị đánh READY sai.
+
+### A7 — Không áp convention của module khác lên file đang sửa
+
+Trước khi thêm dòng vào một CSV có sẵn, **đếm giá trị đang dùng** ở cột `column_role` và `tinh_chat`
+rồi theo đa số của chính file đó:
+
+```bash
+python -c "import csv,collections;r=list(csv.reader(open('<file>',encoding='utf-8-sig')));print(collections.Counter(x[8] for x in r[1:]))"
+```
+
+PTTT dùng `MEASURE/SLICER/DERIVED/FILTER` + `Base/Phái sinh`; QLKD dùng `MEASURE/SLICER/FILTER` +
+`Cơ sở/Chiều`. Trộn lẫn (`Measure`, `Dimension`, `Attribute`, `Thuộc tính`) làm linter và BI layer sai.
+Tương tự: `mart_table` ghi tên **logical** — không trộn physical.
+
+### A8 — Window function: cửa sổ phải chạy trên cột ngày, không trên surrogate key
+
+- Đủ mệnh đề: `PARTITION BY <entity>` + `ORDER BY <date_col> ASC` + `ROWS BETWEEN n-1 PRECEDING AND CURRENT ROW`.
+- Số phiên chuẩn: 52W = 260, 6M = 130, 3M = 65, 1M/MA20 = 20, MA10 = 10, MA5 = 5.
+- **CẤM** `ORDER BY snpst_dt_dim_id` và `TRUNC(snpst_dt_dim_id, 'MM')` — khoá đại diện không đảm bảo
+  thứ tự thời gian. Gom nhóm theo tháng phải qua `cdr_dt_dim.cdr_year` / `.cdr_month`.
+- **CẤM** ghi tắt `OVER 20 phiên` — phải viết đủ mệnh đề cửa sổ.
+
+### A9 — Registry: chỉ append/patch, cấm dump lại toàn file
+
+`Datamart/datamart_model.yaml` chứa 28 dòng comment header là quy tắc ghi registry.
+Ghi lại bằng `yaml.dump()` xoá sạch comment và reformat 100% file (diff 27.885 dòng để thêm 6 entity).
+
+- Thêm entity: đọc file, nối thêm block text đúng định dạng thủ công, giữ nguyên phần còn lại.
+- Sửa 1 entity: patch đúng block đó.
+- Sau khi ghi: `python -c "import yaml;yaml.safe_load(open('Datamart/datamart_model.yaml',encoding='utf-8'))"`
+  và kiểm `grep -c '^#'` vẫn còn đủ dòng comment.
+- `source_atomic_table`/`source_atomic_column` là **chuỗi**, không phải list — `"['x']"` là lỗi serialize.
+
+---
+
 ## QUY TRÌNH (BẮT BUỘC)
 
 ```

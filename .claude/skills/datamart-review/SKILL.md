@@ -16,7 +16,8 @@ triggers:
 1. **Vai Trò Độc Lập:** Claude đóng vai trò Data Model Reviewer độc lập (Read-Only Explorer). Human là người quyết định và phê duyệt tối cao.
 2. **CẤM TUYỆT ĐỐI Tự Sửa File Trực Tiếp:** Claude **TUYỆT ĐỐI KHÔNG** tự Edit trực tiếp vào file HLD (`.md`), LLD (`Attributes.csv`, `Detail_Mapping.csv`), Model Registry (`datamart_model.yaml`, `datamart_attributes.csv`), hay Flat Table SQL (`01_create_*.sql`, `02_populate_*.sql`). Mọi sửa đổi phải lập Action Proposal, xin phê duyệt và ủy quyền cho skill con (`datamart-hld-design`, `datamart-lld-design`) thực hiện.
 3. **READ-ONLY Trên Thư Mục Atomic:** Tuyệt đối không tạo, sửa, xóa file trong `DataModel/Atomic/` và `DataModel/working/Atomic/`.
-4. **Tuân Thủ Tuyệt Đối 4 CỔNG KIỂM SOÁT (4 CONTROL GATES):**
+4. **Tuân Thủ Tuyệt Đối 6 CỔNG KIỂM SOÁT (6 CONTROL GATES):**
+   - **GATE 0 (Reference Integrity):** chặn cứng khi có tham chiếu tới thứ không tồn tại — cột Atomic sai tên (`L0-ATOMIC-COLUMN-NOT-FOUND`), cột mart không có trong Attributes (`L0-MART-COLUMN-NOT-FOUND`), file CSV vỡ cột (`L0-CSV-STRUCTURE-BROKEN`), hoặc trạng thái KPI lệch giữa HLD và Detail Mapping (`L0-HLD-LLD-STATUS-DESYNC`). Chạy `check_references.py`.
    - **GATE 1 (Sanity Stop):** Dừng bắt buộc sau Bước 0b/0c Macro-Audit; chặn cứng nếu phát hiện Orphan 3 chiều, Parity mismatch, Role Date FK violation, Delete sót, hoặc Grain Mismatch kiến trúc (`L1-GRAIN-MISMATCH`) / Window Storage trên Dimension (`L2-WINDOW-STORAGE-INVALID`).
    - **GATE 2 (Group Checkpoint):** Dừng kiểm tra sau mỗi nhóm Micro-Review có lỗi Critical 🔴 hoặc Warning 🟡; chỉ tự động đi tiếp khi 4 Lớp đều PASS (OK).
    - **GATE 3 (HLD/LLD Parity Gate — Handover Blocking Gate):** Cổng chặn cứng kiểm định tính đồng nhất giữa HLD và LLD trước khi chuyển giao hoặc sinh mã Flat Table: bắt buộc 0 parity mismatch (`check_parity.py --strict`), 0 orphan (`check_orphan.py --strict`), 0 linter violation (Detail Mapping Rule L4, L15, L16), và 0 Date FK violation.
@@ -37,7 +38,9 @@ triggers:
 | **Bảo Vệ Master Registry & Parity etl_logic** | `reference/technical_review_rules.md` (Mục 9) | `python scripts/check_parity.py --module [M] --strict` |
 | **Quy Tắc Kỹ Thuật Sâu Lớp 1–4 & Gate 4 SQL** | `reference/technical_review_rules.md` | `python scripts/check_flat_table.py --module [M] --strict` |
 | **Linter Detail Mapping (L4, L15, L16, L17)** | `reference/technical_review_rules.md` (Mục 8B) | `python scripts/datamart_ba_cross_checker.py --module [M]` |
-| **Bộ Điều Phối Chất Lượng 4 Gate Hợp Nhất** | `reference/technical_review_rules.md` (Mục 14) | `python scripts/run_quality_gates.py --module [M] [--strict]` |
+| **Bộ Điều Phối Chất Lượng 6 Gate Hợp Nhất** | `reference/technical_review_rules.md` (Mục 14) | `python scripts/run_quality_gates.py --module [M] [--strict]` |
+| **Reference Integrity (Gate 0)** | mục A1–A4 trong `datamart-lld-design/SKILL.md` | `python scripts/check_references.py --module [M] --strict` |
+| **Cấu trúc HLD Bước 5B (Gate 5)** | Bước 5B trong `datamart-hld-design/SKILL.md` | `python scripts/check_hld_5b.py --module [M]` |
 | **Checklist Đánh Giá Nhanh 4 Lớp & 4 Gates** | `reference/review_checklist.md` | — |
 
 ---
@@ -68,7 +71,9 @@ Chuẩn hóa **BA Status:** `Done` / `Doing` / `Pending` / `Delete`.
            - Quét Date FK: python scripts/check_date_fk.py --module [M]
            - Quét Orphan 3 Chiều: python scripts/check_orphan.py --module [M] --strict
            - Quét etl_logic Parity: python scripts/check_parity.py --module [M] --strict
-           + 13 mục HLD + 10 TC LLD + Quét Delete/Retired + Quét Grain Kiến trúc (L1) & Window Storage (L2)
+           - Bước 5B cấu trúc HLD 14 mục: python scripts/check_hld_5b.py --module [M]
+           - Reference Integrity: python scripts/check_references.py --module [M] --strict
+           + 14 mục HLD + 10 TC LLD + Quét Delete/Retired + Quét Grain Kiến trúc (L1) & Window Storage (L2)
   └── ⛔ GATE 1 (SANITY STOP): DỪNG, xuất báo cáo tổng thể, CHẶN CỨNG nếu có Orphan, Parity Mismatch, Date FK,
         Delete sót, Grain Mismatch kiến trúc (L1), hoặc Window Storage sai trên SCD4A (L2), chờ Human phê duyệt kế hoạch.
         ↓ (Human duyệt thông qua)

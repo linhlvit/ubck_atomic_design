@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 """
-run_quality_gates.py — Unified Datamart Quality Gate Runner (Gate 1 → Gate 4)
+run_quality_gates.py — Unified Datamart Quality Gate Runner (Gate 0 → Gate 5)
 
 Runs all quality gate checks sequentially and aggregates results.
 
 Gates:
+  Gate 0 (Reference Integrity): check_references.py --strict
   Gate 1 (Macro-Review Sanity): check_date_fk.py
   Gate 2 (Parity Check):       check_parity.py --strict
   Gate 3 (Orphan Check):       check_orphan.py --strict
   Gate 4 (Flat Table):         check_flat_table.py --strict
+  Gate 5 (HLD Structure 5B):   check_hld_5b.py --strict
 
 Exit Code:
   0 on PASS (all gates pass or skip)
@@ -51,6 +53,13 @@ from datamart_common import find_project_root, get_available_modules
 
 GATE_SPECS = [
     {
+        "gate": "Gate 0",
+        "name": "Reference Integrity (Atomic/Mart column, CSV, HLD-LLD status)",
+        "script": "check_references.py",
+        "supports_strict": True,
+        "supports_json": False,
+    },
+    {
         "gate": "Gate 1",
         "name": "Role-Playing Date FK Sanity",
         "script": "check_date_fk.py",
@@ -77,6 +86,13 @@ GATE_SPECS = [
         "script": "check_flat_table.py",
         "supports_strict": True,
         "supports_json": True,
+    },
+    {
+        "gate": "Gate 5",
+        "name": "HLD Structure (Bước 5B — 14 mục)",
+        "script": "check_hld_5b.py",
+        "supports_strict": True,
+        "supports_json": False,
     },
 ]
 
@@ -184,7 +200,7 @@ def print_summary(results: List[Dict[str, Any]], module: str) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Unified Datamart Quality Gate Runner (Gate 1-4)",
+        description="Unified Datamart Quality Gate Runner (Gate 0-5)",
     )
     parser.add_argument(
         "-m", "--module",

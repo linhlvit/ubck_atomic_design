@@ -19,7 +19,13 @@ Nếu user hỏi mentor Q&A đơn giản (không phải task thiết kế), tr�
 
 ## QUY TẮC CỨNG — SELF-CHECK BƯỚC 5B SAU MỌI CHỈNH SỬA HLD DATAMART
 
-**Áp dụng bất kể có gọi Skill tool `datamart-hld-design` hay không** — kể cả khi sửa `Datamart/hld/DTM_{MODULE}_HLD.md` trực tiếp qua Edit giữa hội thoại (không đi qua flow Phase 1 đầy đủ từ đầu), vẫn bắt buộc chạy lại checklist Bước 5B (**13 mục, đánh số #0–#12**, xem `.claude/skills/datamart-hld-design/SKILL.md`) **ngay sau Edit, trước khi báo kết quả cho user**.
+**Áp dụng bất kể có gọi Skill tool `datamart-hld-design` hay không** — kể cả khi sửa `Datamart/hld/DTM_{MODULE}_HLD.md` trực tiếp qua Edit giữa hội thoại (không đi qua flow Phase 1 đầy đủ từ đầu), vẫn bắt buộc chạy lại Bước 5B (**14 mục, đánh số #0–#13**) **ngay sau Edit, trước khi báo kết quả cho user** bằng script, không đọc mắt:
+
+```bash
+python .claude/skills/datamart-review/scripts/run_quality_gates.py --module {MODULE} --strict
+```
+
+Runner này chạy Gate 0 (Reference Integrity) → Gate 5 (Bước 5B). Dán nguyên output vào báo cáo.
 
 > Khi bổ sung mục mới vào Bước 5B, cập nhật con số ở CẢ 2 nơi (SKILL.md + dòng này). Con số lệch nhau đã từng khiến self-check chạy thiếu mục mà vẫn báo "đã chạy đủ".
 
