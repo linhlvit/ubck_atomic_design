@@ -67,6 +67,12 @@ CREATE TABLE IF NOT EXISTS datamart.pttt_fct_market_risk_snpst_flat ON CLUSTER '
     net_flow_foreign_average_30_days            Nullable(Decimal(23,2)) COMMENT 'Dòng tiền ròng NĐTNN trung bình 30 phiên',
     net_flow_proprietary_average_30_days        Nullable(Decimal(23,2)) COMMENT 'Dòng tiền ròng Tự doanh trung bình 30 phiên',
     net_flow_correlation_foreign_proprietary    Nullable(Decimal(5,2))  COMMENT 'Hệ số tương quan Pearson — NĐTNN & Tự doanh',
+    total_margin_limit_amt                      Nullable(Decimal(23,2)) COMMENT 'Tổng hạn mức margin = 2 x VCSH tại kỳ báo cáo',
+    margin_balance_delta                        Nullable(Decimal(23,2)) COMMENT 'Δ dư nợ margin giữa 2 kỳ báo cáo tháng',
+    margin_stress                               Nullable(Decimal(5,2))  COMMENT 'Margin Stress — tỷ lệ bão hòa đòn bẩy',
+    margin_stress_status                        Nullable(String)        COMMENT 'Ngưỡng trạng thái Margin Stress',
+    corr_index_interbank_rate                   Nullable(Decimal(5,4))  COMMENT 'Tương quan 30 phiên VN-Index & Δ lãi suất liên ngân hàng',
+    corr_index_dxy                              Nullable(Decimal(5,4))  COMMENT 'Tương quan 30 phiên VN-Index & return DXY Index',
 
     -- From: CALENDAR DATE DIMENSION
     snpst_cdr_dt                                Nullable(Date)          COMMENT 'Ngày snapshot — từ Calendar Date Dimension'
@@ -410,4 +416,42 @@ ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(snpst_dt)
 ORDER BY (snpst_dt, issuer_symbol_code)
 COMMENT 'Flat table — Operational Corporate Bond Issuer Credit Monitor'
+;
+
+
+-- ============================================================
+-- 14. FACT: pttt_fct_macro_indicator_snpst_flat
+--    Fact Macro Indicator Snapshot — chỉ tiêu vĩ mô, lãi suất LNH, tỷ giá, CPI, GDP, DXY
+--    Grain: 1 row / chỉ tiêu vĩ mô / kỳ công bố
+--    Joins: Calendar Date Dimension
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.pttt_fct_macro_indicator_snpst_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FCT_MACRO_INDICATOR_SNPST
+    snpst_dt_dim_id                              String                  COMMENT 'FK đến Calendar Date Dimension — khóa ngày chụp số liệu vĩ mô',
+    macro_indicator_code                         String                  COMMENT 'Mã định danh chỉ tiêu vĩ mô/tiền tệ (VD: INTERBANK_IR, EX_RATE_VND_USD, CPI_VN, GDP_VN, DXY)',
+    macro_indicator_name                         String                  COMMENT 'Tên chỉ tiêu vĩ mô/tiền tệ',
+    period_tp_code                               String                  COMMENT 'Mã loại kỳ báo cáo: 1=Ngày, 2=Tháng, 3=Quý, 4=Năm',
+    period_label                                 Nullable(String)        COMMENT 'Nhãn hiển thị kỳ báo cáo (VD: 2026-03, 2026-Q1, 2026)',
+    indicator_val                                Decimal(23,4)           COMMENT 'Giá trị chỉ tiêu vĩ mô tại kỳ báo cáo này',
+    prev_period_val                              Nullable(Decimal(23,4)) COMMENT 'Giá trị chỉ tiêu vĩ mô ở kỳ báo cáo liền trước (t-1)',
+    pct_change                                   Nullable(Decimal(5,2))  COMMENT 'Tỷ lệ tăng trưởng % so với kỳ liền trước ((t - t-1) / t-1 * 100)',
+    yoy_pct_change                               Nullable(Decimal(5,2))  COMMENT 'Tỷ lệ tăng trưởng % cùng kỳ năm trước (YoY)',
+    ma_n_val                                     Nullable(Decimal(23,4)) COMMENT 'Giá trị trung bình trượt N phiên gần nhất (phục vụ tính correlation / trend)',
+    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu',
+
+    -- From: CALENDAR DATE DIMENSION
+    cdr_dt                                       Nullable(Date)          COMMENT 'NK — ngày lịch dùng để join từ Fact — từ Calendar Date Dimension',
+    year                                         Nullable(Int64)         COMMENT 'Năm (YYYY) — từ Calendar Date Dimension',
+    quarter                                      Nullable(Int64)         COMMENT 'Quý (1–4) — từ Calendar Date Dimension',
+    month                                        Nullable(Int64)         COMMENT 'Tháng (1–12) — từ Calendar Date Dimension',
+    day_of_week                                  Nullable(Int64)         COMMENT 'Thứ trong tuần (1=Chủ nhật, 7=Thứ bảy) — từ Calendar Date Dimension',
+    is_weekend                                   Nullable(String)        COMMENT '(Sửa 2026-07-17) Y nếu là ngày cuối tuần (thứ 7 hoặc CN), N nếu không — từ Calendar Date Dimension',
+    holiday_flag                                 Nullable(String)        COMMENT '(Sửa 2026-07-20) Cờ đánh dấu ngày nghỉ — Y nếu là ngày nghỉ, N nếu không. Chỉ đánh dấu nghỉ/không nghỉ, không  — từ Calendar Date Dimension',
+    is_trading_date                              Nullable(String)        COMMENT '(Sửa 2026-09-05, partial — thêm từ GSTT, yêu cầu thiết kế trực tiếp từ user) Y nếu ngày lịch là ngày giao dịch — từ Calendar Date Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
+ORDER BY (assumeNotNull(cdr_dt), snpst_dt_dim_id)
+COMMENT 'Flat table — Fact Macro Indicator Snapshot — chỉ tiêu vĩ mô, lãi suất LNH, tỷ giá, CPI, GDP, DXY'
 ;
