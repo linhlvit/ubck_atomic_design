@@ -1,7 +1,7 @@
 # DTM_QLKD_Entities — Star Schema per Nhóm báo cáo
 **Module:** QLKD — Quản lý kinh doanh (Hoạt động CTCK)
-**Phiên bản:** 5.1 — 17/09/2026 (đồng bộ theo `DTM_QLKD_HLD.md` v4.9 — Nhóm 2/3/4 Atomic hoàn thiện, nâng PENDING→READY; thêm Fact Securities Company Service Assignment Snapshot + Securities Service Classification Dimension vào Entities.csv, bỏ khỏi bảng "Bảng PENDING")
-**Phiên bản trước:** 5.0 — 11/09/2026 (đồng bộ theo `DTM_QLKD_HLD.md` v5.0 — redesign cột T thay cột S; STT33/34/35 hạ PENDING; O_QLKD_20 Superseded → O_QLKD_26 mở rộng; loại bỏ toàn bộ entity PENDING 100% khỏi Entities.csv theo `phase2_entities.md`)
+**Phiên bản:** 5.2 — 17/09/2026 (Unblock downstream Datamart sau khi xác nhận REPORT_CELL_VALUE = REPORT_INPUT_CELL_VALUE / sc_report_input_value; nâng READY cho Cụm 4, Cụm 5, Cụm 6, Cụm 15; thiết kế Fact Securities Company Financial Structure Snapshot, Report Indicator Dimension, Securities Company Report Data, Securities Company Financial Report History, Securities Company Practitioner Profile; chuyển từ Bảng PENDING vào Entities chính thức)
+**Phiên bản trước:** 5.1 — 17/09/2026 (đồng bộ theo `DTM_QLKD_HLD.md` v4.9 — Nhóm 2/3/4 Atomic hoàn thiện, nâng PENDING→READY; thêm Fact Securities Company Service Assignment Snapshot + Securities Service Classification Dimension vào Entities.csv, bỏ khỏi bảng "Bảng PENDING")
 
 ---
 
@@ -21,48 +21,6 @@ erDiagram
 | Securities Company Dimension | Dimension | new | CTCK — mã, tên, loại hình, trạng thái | 1 CTCK (SCD4A) | — |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày | — |
 
-### Nhóm 5/6/7 — Duy trì điều kiện cấp phép (GPHL / KDCKPS / BTTT) (K_QLKD_30–40)
-
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_License_Condition_Snapshot : " "
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_License_Condition_Snapshot : " "
-```
-
-| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
-|---|---|---|---|---|---|
-| Fact Securities Company License Condition Snapshot | Fact Snapshot | new | Duy trì điều kiện cấp phép — dùng chung 3 nhóm, phân biệt bằng Indicator_Code | 1 CTCK × 1 loại giấy phép × 1 ngày snapshot | K_QLKD_30–40 |
-| Securities Company Dimension | Dimension | new | CTCK — mã, tên, loại hình, trạng thái | 1 CTCK (SCD4A) | — |
-| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày | — |
-
-### Nhóm 13 — Nguồn vốn tăng thêm (K_QLKD_66–72)
-
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Capital_Raising_Event : " "
-    Offering_Form_Dimension ||--o{ Fact_Securities_Company_Capital_Raising_Event : " "
-```
-
-| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
-|---|---|---|---|---|---|
-| Fact Securities Company Capital Raising Event | Fact Event | new | Nguồn vốn tăng thêm từ chào bán/phát hành — toàn thị trường theo tháng | 1 đợt chào bán/phát hành hợp lệ (aggregated theo tháng × hình thức tăng vốn) | K_QLKD_66–72 |
-| Offering Form Dimension | Dimension | new | Hình thức tăng vốn — ETL-derived (5 giá trị) | 1 hình thức (SCD4A) | — |
-| Calendar Date Dimension | Dimension | reuse | Lịch ngày (role: Result Report Date) | 1 ngày | — |
-
-### Nhóm 16 — Diễn biến thị trường (K_QLKD_88–91)
-
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Market_Index_Snapshot : " "
-    Market_Index_Dimension ||--o{ Fact_Market_Index_Snapshot : " "
-```
-
-| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
-|---|---|---|---|---|---|
-| Fact Market Index Snapshot | Fact Snapshot | new | Chỉ số thị trường VN-Index/HNX/UPCOM/VN30 | 1 chỉ số (market_code) × 1 ngày (bản ghi cuối phiên) | K_QLKD_88–91 |
-| Market Index Dimension | Dimension | new | Mã/loại index/sản phẩm giao dịch/trạng thái phiên. Dùng chung với NDTNN | 1 combo Market Id + Market Code (SCD4A current-state) | — |
-| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày | — |
-
 ### Nhóm 2/3/4 — Biểu đồ Nghiệp vụ/Dịch vụ/Dịch vụ phái sinh (K_QLKD_14–29)
 
 ```mermaid
@@ -79,7 +37,35 @@ erDiagram
 | Securities Company Dimension | Dimension | reuse (Nhóm 1) | CTCK — mã, tên, loại hình, trạng thái | 1 CTCK (SCD4A) | — |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày (role: Snapshot Date) | 1 ngày | — |
 
-> **Nhóm 8/9 + Sub-tab Giám sát hoạt động (Nhóm 11/12/14/15/17/18) + Nhóm 19–27 (K_QLKD_41–65, 73–87, 92–141, trừ K_QLKD_88–91 đã ở Nhóm 16) — 100% PENDING**, không vẽ Star Schema. Xem bảng "Bảng PENDING" cuối file.
+### Nhóm 5/6/7 — Duy trì điều kiện cấp phép (GPHL / KDCKPS / BTTT) (K_QLKD_30–40)
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_License_Condition_Snapshot : " "
+    Securities_Company_Dimension ||--o{ Fact_Securities_Company_License_Condition_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Securities Company License Condition Snapshot | Fact Snapshot | new | Duy trì điều kiện cấp phép — dùng chung 3 nhóm, phân biệt bằng Indicator_Code | 1 CTCK × 1 loại giấy phép × 1 ngày snapshot | K_QLKD_30–40 |
+| Securities Company Dimension | Dimension | new | CTCK — mã, tên, loại hình, trạng thái | 1 CTCK (SCD4A) | — |
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày | — |
+
+### Nhóm 8/9 — Cơ cấu tài sản và cơ cấu nguồn vốn toàn thị trường (K_QLKD_41–52)
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : " "
+    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : " "
+    Report_Indicator_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Securities Company Financial Structure Snapshot | Fact Snapshot | new | Cơ cấu tài sản, nguồn vốn và các chỉ tiêu tài chính định kỳ toàn thị trường và từng CTCK | 1 CTCK × 1 kỳ báo cáo × 1 chỉ tiêu tài chính | K_QLKD_41–52 |
+| Report Indicator Dimension | Dimension | new | Danh mục chỉ tiêu tài chính báo cáo (cell coordinates & standardized indicator codes) | 1 chỉ tiêu (SCD4A) | — |
+| Securities Company Dimension | Dimension | reuse (Nhóm 1) | CTCK — mã, tên, loại hình, trạng thái | 1 CTCK (SCD4A) | — |
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày (role: Snapshot Date / Period End Date) | 1 ngày | — |
 
 ---
 
@@ -99,9 +85,69 @@ erDiagram
 | Securities Company Dimension | Dimension | new | CTCK — mã, tên, loại hình, trạng thái | 1 CTCK (SCD4A) | — |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày | — |
 
+### Sub-tab GIÁM SÁT HOẠT ĐỘNG — Nhóm 11/12/14/15/16/17/18 (K_QLKD_59–65, 73–87, 92–99)
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : " "
+    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : " "
+    Report_Indicator_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Securities Company Financial Structure Snapshot | Fact Snapshot | reuse (Nhóm 8/9) | Chỉ tiêu tài chính giám sát: VCSH, vốn đầu tư CSH, tỷ lệ an toàn tài chính, doanh thu, lợi nhuận, margin, CFO, thị phần | 1 CTCK × 1 kỳ báo cáo × 1 chỉ tiêu tài chính | K_QLKD_59–65, 73–87, 92–99 |
+| Report Indicator Dimension | Dimension | reuse (Nhóm 8/9) | Danh mục chỉ tiêu tài chính báo cáo | 1 chỉ tiêu (SCD4A) | — |
+| Securities Company Dimension | Dimension | reuse (Nhóm 1) | CTCK — mã, tên, loại hình, trạng thái | 1 CTCK (SCD4A) | — |
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày | — |
+
+### Nhóm 13 — Nguồn vốn tăng thêm (K_QLKD_66–72)
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Capital_Raising_Event : " "
+    Offering_Form_Dimension ||--o{ Fact_Securities_Company_Capital_Raising_Event : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Securities Company Capital Raising Event | Fact Event | new | Nguồn vốn tăng thêm từ chào bán/phát hành — toàn thị trường theo tháng | 1 đợt chào bán/phát hành hợp lệ (aggregated theo tháng × hình thức tăng vốn) | K_QLKD_66–72 |
+| Offering Form Dimension | Dimension | new | Hình thức tăng vốn — ETL-derived (5 giá trị) | 1 hình thức (SCD4A) | — |
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày (role: Result Report Date) | 1 ngày | — |
+
+### Nhóm 16b — Diễn biến thị trường (K_QLKD_88–91)
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Market_Index_Snapshot : " "
+    Market_Index_Dimension ||--o{ Fact_Market_Index_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Market Index Snapshot | Fact Snapshot | new | Chỉ số thị trường VN-Index/HNX/UPCOM/VN30 | 1 chỉ số (market_code) × 1 ngày (bản ghi cuối phiên) | K_QLKD_88–91 |
+| Market Index Dimension | Dimension | new | Mã/loại index/sản phẩm giao dịch/trạng thái phiên. Dùng chung với NDTNN | 1 combo Market Id + Market Code (SCD4A current-state) | — |
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày | — |
+
 ---
 
 ## Tab HỒ SƠ CTCK 360
+
+### Sub-tab Tài chính — Nhóm 19–27 (K_QLKD_100–141)
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Securities Company Financial Structure Snapshot | Fact Snapshot | reuse (Nhóm 8/9) | Banner tài chính tổng quan & các biểu đồ tài chính 360 của CTCK | 1 CTCK × 1 kỳ báo cáo × 1 chỉ tiêu tài chính | K_QLKD_100–129 |
+| Securities Company Financial Report History | Tác nghiệp | new | Lịch sử báo cáo tài chính qua các kỳ (doanh thu, lợi nhuận, ROA, ROE, ngày nộp, trạng thái) | 1 CTCK × 1 kỳ báo cáo tài chính | K_QLKD_130–141 |
+| Securities Company Dimension | Dimension | reuse (Nhóm 1) | CTCK — mã, tên, loại hình, trạng thái | 1 CTCK (SCD4A) | — |
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày | — |
+
+### Sub-tab NHNCK — Nhóm 28–30 (K_QLKD_142–154)
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Securities Company Practitioner Profile | Tác nghiệp | new | Thống kê người hành nghề chứng khoán theo nghiệp vụ và phái sinh (báo cáo BCTHHDKD_TH sheet TTC) | 1 CTCK × 1 kỳ báo cáo | K_QLKD_142–154 |
+| Securities Company Dimension | Dimension | reuse (Nhóm 1) | CTCK — mã, tên, loại hình, trạng thái | 1 CTCK (SCD4A) | — |
 
 ### Sub-tab Nhân sự — Nhóm 31 (K_QLKD_155–160)
 
@@ -166,21 +212,22 @@ erDiagram
 
 ## Tab DATA EXPLORER
 
-### Nhóm 42-145 — Tra cứu báo cáo biểu mẫu định kỳ (K_QLKD_224–4260) — 100% PENDING
+### Nhóm 42-145 — Tra cứu báo cáo biểu mẫu định kỳ (K_QLKD_224–4260) — READY
 
-> Toàn bộ PENDING dù cột T đổi nguồn tham khảo — gap là thiếu Atomic entity (họ bảng EAV `FORM_REPORT`/`REPORT_INPUT_CELL_VALUE`, xác nhận **out-of-scope** trong `atomic_out_of_scope.yaml`) + gating `Loại dữ liệu = Dữ liệu động`, không phải do câu SQL tham khảo — không vẽ Star Schema. Xem bảng "Bảng PENDING" cuối file và Section 2 HLD (bảng chi tiết theo nhóm loại báo cáo).
+```mermaid
+erDiagram
+    Securities_Company_Dimension ||--o{ Securities_Company_Report_Data : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Securities Company Report Data | Tác nghiệp | new | Tra cứu dữ liệu chi tiết từng ô (cell) của 102 biểu mẫu báo cáo định kỳ eForm động | 1 ô dữ liệu (cell) × 1 lần nộp báo cáo × 1 CTCK | K_QLKD_224–4260 |
+| Securities Company Dimension | Dimension | reuse (Nhóm 1) | CTCK — mã, tên, loại hình, trạng thái | 1 CTCK (SCD4A) | — |
 
 ---
 
-## Bảng PENDING (không thiết kế trong Phase 2)
+## Bảng PENDING / Superseded
 
-Các bảng sau **100% KPI/Nhóm dùng đều PENDING** — theo quy tắc `phase2_entities.md`, không đưa vào `Entities.csv` (tránh Phase 1 LLD map nhầm cột vào Atomic entity/attribute chưa tồn tại). Sẽ đưa vào CSV khi có KPI/Nhóm đầu tiên chuyển READY.
-
-| Datamart Entity | Lý do PENDING | Issue |
+| Datamart Entity | Lý do | Issue |
 |---|---|---|
-| ~~Business Line Dimension~~ | Superseded 11/09/2026 — gap gốc `LNK_SC_FIRM_BUSINESS_LINE` không còn đúng theo cột T, bỏ khỏi mô hình hoàn toàn (không chỉ PENDING) | O_QLKD_20 (Superseded) → O_QLKD_26 |
-| Report Indicator Dimension | ETL-derived, chờ Atomic entity thay thế `REPORT_CELL_VALUE`/`REPORT_INPUT_CELL_VALUE` (out-of-scope) | O_QLKD_23 / O_QLKD_27 |
-| Fact Securities Company Financial Structure Snapshot | Toàn bộ Nhóm 8/9/11/12/14–27 dùng chung Fact này — `REPORT_INPUT_CELL_VALUE` xác nhận out-of-scope trong `atomic_out_of_scope.yaml` (cascade từ `MEMBER_REPORT` đã loại) | O_QLKD_23 / O_QLKD_27 |
-| Securities Company Financial Report History | Lịch sử BCTC (Nhóm 26/27) — cùng gap nguồn với Fact trên | O_QLKD_23 / O_QLKD_27 |
-| Securities Company Practitioner Profile | Người hành nghề CK (Nhóm 28/29/30) — đổi nguồn sang `REPORT_CELL_VALUE`/`FORM_REPORT` family, Nhóm 30 re-verify cột T phát hiện nguồn khác biệt hơn nữa (`FORM_REPORT`/`REPORT_INPUT_CELL_VALUE`, report `BCHDPS`), chưa kết luận cuối cùng | O_QLKD_23 / O_QLKD_27 / O_QLKD_28 |
-| Securities Company Report Data | EAV báo cáo biểu mẫu định kỳ — Nhóm 42-145, 104 STT / 4036 chỉ tiêu, 100% PENDING | O_QLKD_23 / O_QLKD_27 |
+| ~~Business Line Dimension~~ | Superseded 11/09/2026 — gap gốc `LNK_SC_FIRM_BUSINESS_LINE` không còn đúng theo cột T, bỏ khỏi mô hình hoàn toàn | O_QLKD_20 (Superseded) → O_QLKD_26 |
