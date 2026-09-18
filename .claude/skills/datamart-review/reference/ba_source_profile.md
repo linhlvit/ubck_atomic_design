@@ -95,21 +95,35 @@ def detect_delimiter_and_header(raw_content: str):
 
 ## 2. Phân bổ Delimiter & Số Cột theo từng Phân hệ
 
-Khảo sát thực tế trên repository cho thấy **6 phân hệ dùng dấu phẩy (`,`)** và **5 phân hệ dùng dấu chấm phẩy (`;`)**:
+> **Nguồn sự thật hiện nay là `system/rules/ba_column_profile.yaml`**, không phải bảng dưới đây.
+> Script đọc BA (`datamart_common/ba_parser.py`) lấy delimiter / dòng header / dòng legend / cột STT
+> từ file YAML đó và **kiểm chứng lại với header thật**; lệch thì dừng và báo lỗi, không đoán tiếp.
+> Bảng dưới đây giữ lại để đối chiếu bằng mắt.
 
-| Delimiter | Phân hệ | Số cột | Tên file BA |
-|---|---|---|---|
-| `,` (Dấu phẩy) | **QLCB** | 23 | `BA_analyst_QLCB.csv` |
-| `,` (Dấu phẩy) | **GSĐC** | 24 | `BA_analyst_GSĐC.csv` (file gộp thay thế 3 part) |
-| `,` (Dấu phẩy) | **PTTT** | 26 | `BA_analyst_PTTT.csv` |
-| `,` (Dấu phẩy) | **GSTT** | 27 | `BA_analyst_GSTT.csv` |
-| `,` (Dấu phẩy) | **QLKD** | 28 | `BA_analyst_QLKD.csv` |
-| `,` (Dấu phẩy) | **TKNB** | 29 | `BA_analyst_TKNB.csv` |
-| `;` (Dấu chấm phẩy) | **TT** | 26 | `BA_analyst_TT.csv` |
-| `;` (Dấu chấm phẩy) | **VP** | 27 | `BA_analyst_VP.csv` |
-| `;` (Dấu chấm phẩy) | **NHNCK** | 29 | `BA_analyst_NHNCK.csv` |
-| `;` (Dấu chấm phẩy) | **NDTNN** | 30 | `BA_analyst_NDTNN.csv` |
-| `;` (Dấu chấm phẩy) | **FMS** | 31 | `BA_analyst_FMS.csv` |
+Đo lại trực tiếp ngày 2026-09-18 trên cả 11 file: **8 phân hệ dùng dấu phẩy (`,`)** và
+**3 phân hệ dùng dấu chấm phẩy (`;`)** — bản khảo sát trước ghi 6/5 là **SAI**, đã xếp nhầm
+NHNCK, NĐTNN, VP sang nhóm `;`.
+
+| Delimiter | Phân hệ | Số cột | Cột STT | Tên file BA |
+|---|---|---|---|---|
+| `,` | **QLCB** | 23 | STT | `BA_analyst_QLCB.csv` |
+| `,` | **GSĐC** | 24 | STT | `BA_analyst_GSĐC.csv` (file gộp thay thế 3 part) |
+| `,` | **PTTT** | 26 | STT | `BA_analyst_PTTT.csv` |
+| `,` | **GSTT** | 27 | STT | `BA_analyst_GSTT.csv` |
+| `,` | **QLKD** | 28 | STT | `BA_analyst_QLKD.csv` |
+| `,` | **TKNB** | 29 | STT | `BA_analyst_TKNB.csv` |
+| `,` | **NĐTNN** | 31 | STT | `BA_analyst_NDTNN.csv` |
+| `,` | **NHNCK** | 31 | STT | `BA_analyst_NHNCK.csv` |
+| `;` | **TT** | 26 | STT | `BA_analyst_TT.csv` |
+| `;` | **VP** | 27 | **`TT`** | `BA_analyst_VP.csv` — phân hệ DUY NHẤT không đặt tên cột là `STT` |
+| `;` | **FMS** | 31 | STT | `BA_analyst_FMS.csv` |
+
+**Cả 11 file đều có dòng legend ở index 2** ("Tên chiều/chỉ tiêu/thuộc tính", "Dễ: lấy 1:1 từ nguồn"…)
+— phải bỏ, không phải dòng dữ liệu.
+
+**Cột trùng tên** (parser phải dùng index, không dùng dict tên cột): FMS có 2 cột `Note` (19, 30),
+NĐTNN có 2 cột `Note` (19, 30), NHNCK có 2 cột `Kết quả` (26, 29). PTTT (index 20) và VP (index 26)
+có cột tên rỗng.
 
 ---
 
@@ -195,113 +209,32 @@ Khảo sát 11.289 dòng dữ liệu hợp lệ:
 
 ## 6. Snippet Chuẩn Đọc BA — Sử dụng cho Script và Review
 
+**Không viết lại parser nữa.** Toàn bộ logic đọc BA nằm ở `datamart_common/ba_parser.py`:
+
 ```python
-import csv, io, sys
-from pathlib import Path
+from datamart_common.ba_parser import (parse_ba_file, profile_for, group_ba_items,
+                                       resolve_ba_path, list_ba_modules)
 
-def read_ba(module_name: str, root_dir: Path):
-    """
-    Đọc toàn bộ file BA của module_name, tự động xử lý delimiter, BOM, header, 
-    và trích xuất danh sách chỉ tiêu chuẩn hóa.
-    """
-    ba_dir = root_dir / "BRD" / "BA"
-    mod = module_name.upper()
-    
-    # Tìm file hỗ trợ cả GSDC và GSĐC
-    candidates = [
-        ba_dir / f"BA_analyst_{mod}.csv",
-        ba_dir / f"BA_analyst_GSĐC.csv" if mod in ("GSDC", "GSĐC") else None,
-        ba_dir / f"BA_analyst_GSDC.csv" if mod in ("GSDC", "GSĐC") else None,
-    ]
-    file_path = next((p for p in candidates if p and p.exists()), None)
-    if not file_path:
-        raise FileNotFoundError(f"Không tìm thấy file BA cho module {module_name} tại {ba_dir}")
-        
-    raw_text = file_path.read_bytes().decode("utf-8-sig", errors="replace")
-    
-    # Dò delimiter
-    best_delim = ';'
-    best_cols = 0
-    for delim in (';', ','):
-        try:
-            reader = csv.reader(io.StringIO(raw_text), delimiter=delim)
-            sample = [next(reader) for _ in range(10)]
-            if sample and max(len(r) for r in sample) > best_cols:
-                best_cols = max(len(r) for r in sample)
-                best_delim = delim
-        except Exception:
-            pass
-            
-    reader = csv.reader(io.StringIO(raw_text), delimiter=best_delim)
-    rows = list(reader)
-    best_hdr_idx = 0
-    best_score = -1
-    for idx in range(min(10, len(rows))):
-        row = rows[idx]
-        non_empty = sum(1 for x in row if x.strip())
-        row_str = " ".join(x.lower() for x in row)
-        score = non_empty
-        if "stt" in row_str or "tt" in row_str:
-            score += 5
-        if "thông tin" in row_str or "chỉ tiêu" in row_str or "tên" in row_str:
-            score += 5
-        if "phân loại" in row_str:
-            score += 5
-        if "trạng thái" in row_str:
-            score += 5
-        if "bảng nguồn" in row_str or "nguồn" in row_str or "khai thác" in row_str:
-            score += 5
-        if "loại dữ liệu" in row_str or "điều kiện" in row_str or "mô tả" in row_str:
-            score += 3
-        if score > best_score:
-            best_score = score
-            best_hdr_idx = idx
-
-    h_idx = best_hdr_idx
-    header = [x.strip() for x in rows[h_idx]]
-    col_map = {name.strip().lower(): i for i, name in enumerate(header) if name.strip()}
-    
-    def get_val(r, col_names):
-        for name in col_names:
-            if name.lower() in col_map:
-                idx = col_map[name.lower()]
-                if len(r) > idx:
-                    return r[idx].strip()
-        return ""
-        
-    items = []
-    for r in rows[h_idx + 1:]:
-        if not any(x.strip() for x in r):
-            continue
-        pl = get_val(r, ["Phân loại"])
-        if pl.lower() == "phân loại":
-            continue
-            
-        stt = get_val(r, ["STT", "TT"])
-        name = get_val(r, ["Thông tin", "Thông tin (chỉ tiêu)", "Tên chỉ tiêu"])
-        if not stt and not name:
-            continue
-            
-        items.append({
-            "stt": stt,
-            "dashboard": get_val(r, ["Dashboard/báo cáo", "Dashboard >> báo cáo", "Dashboard/BC"]),
-            "name": name,
-            "description": get_val(r, ["Mô tả"]),
-            "classification": pl,
-            "evaluation": get_val(r, ["Đánh giá"]),
-            "status": get_val(r, ["Trạng thái mapping", "Trạng thái"]),
-            "source_table": get_val(r, ["Bảng nguồn", "Nguồn", "Khai thác nguồn", "Nguồn chi tiết"]),
-            "source_column": get_val(r, ["Trường nguồn"]),
-            "data_type": get_val(r, ["Loại dữ liệu"]),
-            "condition": get_val(r, ["Điều kiện", "Điều kiện chung", "Điều kiện dữ liệu"]),
-            "sql": get_val(r, ["Câu lệnh tham khảo", "Câu lệnh SQL"]),
-            "note": get_val(r, ["Note"]),
-        })
-        
-    return items
+path  = resolve_ba_path(root, "QLKD")          # xử lý FMS, GSĐC/GSDC, NĐTNN/NDTNN
+prof  = profile_for(root, "QLKD")              # đọc system/rules/ba_column_profile.yaml
+items, meta = parse_ba_file(path, prof)        # -> (List[BAItem], BAFileMeta)
+groups = group_ba_items(items)                 # -> OrderedDict[khoá Nhóm, List[BAItem]]
 ```
 
+- `BAItem` có `line_num` (truy vết về dòng gốc), `stt` (**chính là khoá Nhóm**, đã áp dụng logic
+  suy ra từ `STT`/`Mã`), `raw_row`, và 13 trường nghiệp vụ đã resolve qua `COLUMN_ALIASES`.
+- `BAFileMeta` có `delimiter`, `header_row`, `legend_rows`, `header`, `profile_source`
+  (`"yaml"` khi dùng profile, `"heuristic"` khi phân hệ chưa khai trong YAML), `warnings`.
+- Profile lệch với file thật → ném `BaProfileMismatch`. **Không bắt ngoại lệ này để đi tiếp** —
+  nó có nghĩa file BA đã đổi cấu trúc và profile phải được cập nhật trước.
+- Muốn lát cắt sẵn dùng cho ngữ cảnh, gọi CLI thay vì tự render:
+  `python .claude/skills/datamart-review/scripts/ba_slice.py --module QLKD --nhom 8 --print`
+
+Bản dò động cũ (`_legacy_detect`) vẫn còn trong `ba_parser.py` nhưng **chỉ chạy khi phân hệ chưa
+có trong profile**, và luôn kèm cảnh báo. Đừng gọi trực tiếp.
+
 ---
+
 
 ## 7. Con số Kỳ vọng Khảo sát Toàn bộ 11 Phân hệ
 

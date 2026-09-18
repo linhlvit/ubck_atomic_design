@@ -17,6 +17,35 @@ Bạn là chuyên gia Data Modeling cho kiến trúc Medallion (Bronze/Atomic/Go
 
 Nếu user hỏi mentor Q&A đơn giản (không phải task thiết kế), trả lời trực tiếp từ kiến thức trong file này — không cần đọc skill.
 
+## QUY TẮC CỨNG — TRẦN NGỮ CẢNH 500K TOKEN, ĐỌC QUA LÁT CẮT
+
+**KHÔNG bao giờ Read trực tiếp 4 nhóm file này.** Một mình `BA_analyst_QLKD.csv` là 998K token và
+`DTM_QLKD_Detail_Mapping.csv` là 552K — mỗi file đã vượt trần 500K. Đơn vị công việc là **một Nhóm KPI**,
+Nhóm nặng nhất toàn repo chỉ ~66K token.
+
+| File | Thay bằng |
+|---|---|
+| `BRD/BA/BA_analyst_*.csv` | `ba_slice.py --module {M} --index` rồi `--nhom {N} --print` (thêm `--with-sql` cho LLD Phase 2) |
+| `Datamart/hld/DTM_*_HLD.md` | `ctx_slice.py --module {M} --sections` + `--nhom {N}` |
+| `Datamart/lld/DTM_*_Detail_Mapping.csv` | `ctx_slice.py --module {M} --nhom {N}`; kiểm tra toàn module bằng `lld_selfcheck.py` |
+| `Datamart/lld/datamart_attributes.csv` | `grep`, hoặc file per-table trong `Datamart/lld/{M}/` |
+
+Ghi ngược vào HLD/Detail Mapping bằng `apply_patch.py --dry-run` rồi mới ghi thật — **không Edit tay
+file lớn, không append mù** (append chỉ đúng khi viết mới; sửa lại một Nhóm đã có sẽ sinh Nhóm trùng
+và phá thứ tự nhóm tăng dần của TC6).
+
+Mọi script ở `.claude/skills/datamart-review/scripts/`. Lát cắt sinh ra nằm trong `Datamart/context/`
+— **artifact gốc trong `BRD/BA/`, `Datamart/hld/`, `Datamart/lld/`, `Datamart/flat-table/` không bị sửa**.
+
+Delimiter / dòng header / cột STT của cả 11 phân hệ đã khai và kiểm chứng trong
+`system/rules/ba_column_profile.yaml` — **không dò động nữa**. Ba phân hệ dùng `;` (FMS, TT, VP),
+VP đặt tên cột số thứ tự là `TT`, và cả 11 file đều có dòng legend ở index 2 phải bỏ.
+
+Kiểm ngân sách trước bước nặng: `python .claude/skills/datamart-review/scripts/ctx_budget.py --module {M} --all-steps`
+
+**Lý do quy tắc này nằm ở CLAUDE.md:** nó phải có hiệu lực cả khi thao tác trực tiếp bằng Read/Edit
+giữa hội thoại, không qua Skill tool — giống hệt lý do của quy tắc Bước 5B bên dưới.
+
 ## QUY TẮC CỨNG — SELF-CHECK BƯỚC 5B SAU MỌI CHỈNH SỬA HLD DATAMART
 
 **Áp dụng bất kể có gọi Skill tool `datamart-hld-design` hay không** — kể cả khi sửa `Datamart/hld/DTM_{MODULE}_HLD.md` trực tiếp qua Edit giữa hội thoại (không đi qua flow Phase 1 đầy đủ từ đầu), vẫn bắt buộc chạy lại Bước 5B (**14 mục, đánh số #0–#13**) **ngay sau Edit, trước khi báo kết quả cho user** bằng script, không đọc mắt:

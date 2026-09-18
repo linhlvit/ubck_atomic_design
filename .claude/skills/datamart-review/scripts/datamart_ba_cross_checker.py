@@ -44,6 +44,12 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
+_script_dir = Path(__file__).resolve().parent
+if str(_script_dir) not in sys.path:
+    sys.path.insert(0, str(_script_dir))
+
+from datamart_common import ba_parser as _ba  # noqa: E402
+
 # ---------------------------------------------------------------------------
 # 1. Windows Console Safety & Environment Initialization
 # ---------------------------------------------------------------------------
@@ -182,307 +188,42 @@ def get_available_modules(root_dir: Path) -> List[str]:
 # ---------------------------------------------------------------------------
 # 3. BA File Parsing & Column Aliases
 # ---------------------------------------------------------------------------
-COLUMN_ALIASES: Dict[str, List[str]] = {
-    "stt": ["stt", "tt"],
-    "ma": ["mã", "mã dashboard/bc", "ma", "group", "nhóm", "pic"],
-    "dashboard": ["dashboard/báo cáo", "dashboard >> báo cáo", "dashboard/bc", "mã dashboard/bc"],
-    "name": ["thông tin", "thông tin (chỉ tiêu)", "tên chỉ tiêu", "chỉ tiêu"],
-    "description": ["mô tả"],
-    "requirement_group": ["nhóm yêu cầu"],
-    "classification": ["phân loại"],
-    "evaluation": ["đánh giá"],
-    "mapping_status": ["trạng thái mapping", "trạng thái"],
-    "source_table": ["bảng nguồn", "nguồn", "khai thác nguồn", "nguồn chi tiết", "nguồn dữ liệu", "mapping nguồn dữ liệu"],
-    "source_column": ["trường nguồn", "cột nguồn"],
-    "data_type": ["loại dữ liệu"],
-    "condition": ["điều kiện", "điều kiện chung", "điều kiện dữ liệu"],
-    "sql": ["câu lệnh tham khảo", "câu lệnh sql", "sit sql", "câu lệnh update sit", "câu lệnh update (sit)"],
-    "note": ["note", "chú ý", "ghi chú"],
-}
-
-
-def clean_kpi_name(name: str) -> str:
-    """Normalize indicator name for robust cross-matching."""
-    if not name:
-        return ""
-    n = re.sub(r"\((?:reuse\s+từ|chiều\s*lọc|tham\s*số\s*lọc|filter|slicer).*?\)", "", name, flags=re.IGNORECASE)
-    n = re.sub(r"\[(?:reuse\s+từ|chiều\s*lọc|tham\s*số\s*lọc|filter|slicer).*?\]", "", n, flags=re.IGNORECASE)
-    n = re.sub(r"\s*\(\s*%\s*\)", "", n)
-    n = re.sub(r"\s*\((?:giá\s+trị\s+trúng\s+thầu).*?\)", "", n, flags=re.IGNORECASE)
-    n = re.sub(r"[\u2010\u2011\u2012\u2013\u2014\u2015\u2212\-]+", "-", n)
-    n = re.sub(r"\s*-\s*", " - ", n)
-    n = re.sub(r"so\s+(?:sánh\s+)?với\s+kỳ\s+trước", "so kỳ trước", n, flags=re.IGNORECASE)
-    n = re.sub(r"\bny/", "niêm yết/", n, flags=re.IGNORECASE)
-    n = re.sub(r"\bdòng\s+tiền\s+vào\b", "dòng vào", n, flags=re.IGNORECASE)
-    n = re.sub(r"\bdòng\s+tiền\s+ra\b", "dòng ra", n, flags=re.IGNORECASE)
-    # Abbreviation normalization — specific patterns first, then general
-    n = re.sub(r"\bkhối\s+lượng\s+giao\s+dịch\b", "klgd", n, flags=re.IGNORECASE)
-    n = re.sub(r"\bgiá\s+trị\s+giao\s+dịch\b", "gtgd", n, flags=re.IGNORECASE)
-    n = re.sub(r"\bkhối\s+lượng\b", "kl", n, flags=re.IGNORECASE)
-    n = re.sub(r"\bgiá\s+trị\b", "gt", n, flags=re.IGNORECASE)
-    n = re.sub(r"\btpdn\s+riêng\s+lẻ\b", "tp", n, flags=re.IGNORECASE)
-    n = re.sub(r"\btpdn\b", "tp", n, flags=re.IGNORECASE)
-    # Synonym normalization for common Vietnamese wording variants
-    n = re.sub(r"\bđang\s+lưu\s+hành\b", "lưu hành", n, flags=re.IGNORECASE)
-    n = re.sub(r"\btrong\s+1\s+ngày\b", "trong ngày", n, flags=re.IGNORECASE)
-    n = re.sub(r"\bcủa\s+các\s+loại\s+hợp\s+đồng\s+phái\s+sinh\b", "phái sinh", n, flags=re.IGNORECASE)
-    n = re.sub(r"\bcủa\s+trái\s+phiếu\b", "phái sinh", n, flags=re.IGNORECASE)
-    # GSTT specific domain pattern alignments
-    n = re.sub(r"\bgiữa\s+klgd/klgdtb\s+trong\s+(\d+)\s+ngày\s+lớn\s+hơn\s+x\s+lần\b", r"klgd/klgdtb \1 ngày", n, flags=re.IGNORECASE)
-    n = re.sub(r"\btỷ\s+lệ\s+klgd/klgdtb\s+(\d+)\s+ngày\b", r"klgd/klgdtb \1 ngày", n, flags=re.IGNORECASE)
-    n = re.sub(r"\bcủa\s+cổ\s+phiếu\s+(?:đang\s+)?lưu\s+hành\b", "lưu hành", n, flags=re.IGNORECASE)
-    n = re.sub(r"\bcủa\s+cổ\s+phiếu\s+tự\s+do\s+chuyển\s+nhượng\b", "tự do chuyển nhượng", n, flags=re.IGNORECASE)
-    n = re.sub(r"\bđiểm\s+đóng\s+góp\s+tương\s+đối\b", "tương đối", n, flags=re.IGNORECASE)
-    n = re.sub(r"\s*-\s*tương\s*đối(?:\s*\([^)]*\))?", " tương đối", n, flags=re.IGNORECASE)
-    n = re.sub(r"\b(?:theo\s+từng\s+time|tại\s+thời\s+điểm\s+time)\s+trong\s+(?:1\s+)?ngày\b", "theo time trong ngày", n, flags=re.IGNORECASE)
-    n = re.sub(r"\b(?:khối\s+lượng|kl)\s+niêm\s+(?:cổ\s+phiếu\s+)?niêm\s+yết\s+hiện\s+tại\b", "kl niêm yết hiện tại", n, flags=re.IGNORECASE)
-    n = re.sub(r"\b4/52\s+tuần\b", "52 tuần", n, flags=re.IGNORECASE)
-    n = re.sub(r"\btổng\s+klgd\s+khớp\s+lệnh\b", "klgd khớp lệnh", n, flags=re.IGNORECASE)
-    n = re.sub(r"\btổng\s+gtgd\s+khớp\s+lệnh\b", "gtgd khớp lệnh", n, flags=re.IGNORECASE)
-    n = re.sub(r"\btổng\s+kl\s+thỏa\s+thuận\b", "klgd thỏa thuận", n, flags=re.IGNORECASE)
-    n = re.sub(r"\btổng\s+gt\s+thỏa\s+thuận\b", "gtgd thỏa thuận", n, flags=re.IGNORECASE)
-    # Normalize spaces inside parentheses: "( thỏa thuận )" -> "(thỏa thuận)"
-    n = re.sub(r"\(\s+", "(", n)
-    n = re.sub(r"\s+\)", ")", n)
-    # Collapse whitespace — do NOT strip () to avoid asymmetric parenthesis removal
-    n = re.sub(r"\s+", " ", n).strip(" -:–—[]%")
-    return n.lower()
-
-
-def strip_qualifiers(name: str) -> str:
-    """Strip all parenthesized qualifiers for fallback matching.
-
-    Useful when DTM adds context in parens that BA doesn't have, e.g.:
-    - DTM: 'Giá đóng cửa (điểm chỉ số)' -> 'Giá đóng cửa'
-    - DTM: 'KLNN ròng (theo chỉ số)' -> 'KLNN ròng'
-    """
-    return re.sub(r"\s*\([^)]*\)", "", name).strip()
-
-
-@dataclass
-class BAItem:
-    line_num: int
-    stt: str
-    ma: str
-    dashboard: str
-    name: str
-    description: str
-    requirement_group: str
-    classification: str
-    evaluation: str
-    mapping_status: str
-    source_table: str
-    source_column: str
-    data_type: str
-    condition: str
-    sql: str
-    note: str
-    raw_row: List[str] = field(default_factory=list)
+COLUMN_ALIASES = _ba.COLUMN_ALIASES
+clean_kpi_name = _ba.clean_kpi_name
+strip_qualifiers = _ba.strip_qualifiers
+BAItem = _ba.BAItem
 
 
 class BAParser:
-    """Flexible parser for BA analyst CSV files."""
+    """Shim mỏng giữ nguyên API cũ, uỷ quyền cho datamart_common.ba_parser.
+
+    Toàn bộ logic đọc BA (COLUMN_ALIASES, bộ lọc dòng rác, suy ra group key từ STT/Mã)
+    đã chuyển sang `datamart_common/ba_parser.py` — nơi delimiter/header/legend lấy từ
+    `system/rules/ba_column_profile.yaml` thay vì dò bằng heuristic.
+
+    Đã đối chiếu toàn bộ 11 phân hệ: mọi trường trùng khít bản cũ, trừ `BAItem.ma` của QLKD.
+    Bản cũ tra alias 'ma' bằng so khớp chuỗi con nên bắt nhầm 'Trạng thái mapping' (giá trị
+    'Done'); profile khai đúng cột là 'PIC'. Trường `ma` không được đọc ở bất kỳ đâu ngoài
+    việc suy ra group key, và group key của QLKD không đổi (145 nhóm trước và sau).
+    """
 
     @staticmethod
-    def read_text_safe(filepath: Path) -> Tuple[str, str]:
-        """Read file raw bytes and detect encoding safely."""
-        raw = filepath.read_bytes()
-        # UTF-8 BOM
-        if raw.startswith(b"\xef\xbb\xbf"):
-            return raw.decode("utf-8-sig", errors="replace").lstrip("\ufeff"), "utf-8-sig"
-        # UTF-16 BOM
-        if raw.startswith(b"\xff\xfe") or raw.startswith(b"\xfe\xff"):
-            try:
-                return raw.decode("utf-16", errors="replace"), "utf-16"
-            except Exception:
-                pass
-        # Try UTF-8 strict
-        try:
-            return raw.decode("utf-8"), "utf-8"
-        except UnicodeDecodeError:
-            pass
-        # Fallback cp1258 / latin-1
-        for enc in ("cp1258", "latin-1"):
-            try:
-                return raw.decode(enc, errors="replace"), enc
-            except Exception:
-                pass
-        return raw.decode("latin-1", errors="replace"), "latin-1"
+    def read_text_safe(filepath: Path):
+        return _ba.read_ba_text(filepath)
 
     @staticmethod
-    def detect_delimiter_and_header(raw_content: str) -> Tuple[str, int, List[str], List[List[str]]]:
-        """
-        Dynamically detect delimiter (',' or ';') and header row index (Line 1 vs Line 2).
-        Uses heuristic keyword scoring on top rows.
-        """
-        content = raw_content.lstrip("\ufeff").replace("\r\n", "\n").replace("\r", "\n")
-        delim_scores: Dict[str, Tuple[int, float]] = {}
-
-        for delim in (";", ","):
-            try:
-                reader = csv.reader(io.StringIO(content, newline=""), delimiter=delim)
-                row_lens = [len(r) for idx, r in enumerate(reader) if idx < 15 and any(c.strip() for c in r)]
-                if not row_lens:
-                    continue
-                mode_len = Counter(row_lens).most_common(1)[0][0]
-                consistency = sum(1 for l in row_lens if l == mode_len) / len(row_lens)
-                effective_cols = mode_len if mode_len >= 2 else 0
-                delim_scores[delim] = (effective_cols, consistency)
-            except Exception:
-                pass
-
-        best_delim = (
-            max(delim_scores.keys(), key=lambda d: (delim_scores[d][0] >= 15, delim_scores[d][0], delim_scores[d][1]))
-            if delim_scores
-            else ","
-        )
-
-        try:
-            reader = csv.reader(io.StringIO(content, newline=""), delimiter=best_delim)
-            all_rows = list(reader)
-        except csv.Error:
-            reader = csv.reader(io.StringIO(content, newline=""), delimiter=best_delim, quoting=csv.QUOTE_NONE)
-            all_rows = list(reader)
-
-        if not all_rows:
-            return best_delim, 0, [], []
-
-        # Heuristic keyword scoring for header row (scan first 10 rows)
-        best_hdr_idx = 0
-        best_score = -1
-        for idx in range(min(10, len(all_rows))):
-            row = all_rows[idx]
-            non_empty = sum(1 for x in row if x.strip())
-            row_str = " ".join(x.lower() for x in row)
-            score = non_empty
-
-            if any(k in row_str for k in ("stt", "tt")):
-                score += 6
-            if any(k in row_str for k in ("thông tin", "chỉ tiêu", "tên chỉ tiêu")):
-                score += 6
-            if "phân loại" in row_str:
-                score += 5
-            if "trạng thái" in row_str:
-                score += 5
-            if any(k in row_str for k in ("bảng nguồn", "nguồn", "khai thác nguồn")):
-                score += 5
-            if any(k in row_str for k in ("loại dữ liệu", "điều kiện", "mô tả", "dashboard")):
-                score += 3
-            if any(k in row_str for k in ("câu lệnh", "sql", "note", "chú ý")):
-                score += 3
-
-            # Heavily penalize rows with 2 or fewer non-empty cells (like section labels 'Khai thác nguồn')
-            if non_empty <= 2:
-                score -= 20
-
-            if score > best_score:
-                best_score = score
-                best_hdr_idx = idx
-
-        hdr_idx = best_hdr_idx
-        header = [x.lstrip("\ufeff").strip() for x in all_rows[hdr_idx]]
-        data_rows = all_rows[hdr_idx + 1 :]
-        return best_delim, hdr_idx, header, data_rows
+    def detect_delimiter_and_header(raw_content: str):
+        return _ba._legacy_detect(raw_content)
 
     @classmethod
-    def parse_file(cls, filepath: Path, include_deleted: bool = False) -> Tuple[List[BAItem], str, str, int]:
-        """Parse BA CSV file into a list of BAItem objects using column alias mappings."""
+    def parse_file(cls, filepath: Path, include_deleted: bool = False):
+        """-> (items, encoding, delimiter, header_line_1based) — giữ nguyên tuple cũ."""
+        filepath = Path(filepath)
         if not filepath.is_file():
             return [], "unknown", ",", 0
-
-        raw_text, enc = cls.read_text_safe(filepath)
-        delim, hdr_idx, header, data_rows = cls.detect_delimiter_and_header(raw_text)
-
-        col_map = {name.lower().strip(): idx for idx, name in enumerate(header) if name.strip()}
-
-        def get_col_idx(field_key: str) -> Optional[int]:
-            aliases = COLUMN_ALIASES.get(field_key, [])
-            for alias in aliases:
-                for col_name, idx in col_map.items():
-                    if col_name == alias.lower() or alias.lower() in col_name:
-                        return idx
-            return None
-
-        stt_idx = get_col_idx("stt")
-        ma_idx = get_col_idx("ma")
-        dash_idx = get_col_idx("dashboard")
-        name_idx = get_col_idx("name")
-        desc_idx = get_col_idx("description")
-        req_idx = get_col_idx("requirement_group")
-        pl_idx = get_col_idx("classification")
-        dg_idx = get_col_idx("evaluation")
-        status_idx = get_col_idx("mapping_status")
-        src_tbl_idx = get_col_idx("source_table")
-        src_col_idx = get_col_idx("source_column")
-        type_idx = get_col_idx("data_type")
-        cond_idx = get_col_idx("condition")
-        sql_idx = get_col_idx("sql")
-        note_idx = get_col_idx("note")
-
-        def val(row: List[str], idx: Optional[int]) -> str:
-            if idx is not None and len(row) > idx:
-                return row[idx].strip()
-            return ""
-
-        items: List[BAItem] = []
-        for row_offset, r in enumerate(data_rows):
-            line_num = hdr_idx + 2 + row_offset
-            if not any(x.strip() for x in r):
-                continue
-
-            # Skip duplicate header rows or instruction rows
-            pl_val = val(r, pl_idx).lower()
-            if pl_val in ("phân loại", "chiều/chỉ tiêu cơ sở/chỉ tiêu phái sinh"):
-                continue
-            stt_val = val(r, stt_idx).lower()
-            if stt_val in ("stt", "tt"):
-                continue
-
-            name = val(r, name_idx)
-            # Skip instruction rows like 'Tên chiều/chỉ tiêu/thuộc tính'
-            if not name or "tên chiều/chỉ tiêu" in name.lower() or name.lower() == "thông tin (chỉ tiêu)":
-                continue
-
-            # Skip section header/title rows that have no classification, status, and source table
-            if not val(r, pl_idx) and not val(r, status_idx) and not val(r, src_tbl_idx):
-                continue
-
-            # Check deleted status
-            st_val = val(r, status_idx).lower()
-            is_deleted = any(w in st_val for w in ["delete", "deleted", "xóa", "xoá", "bãi bỏ", "hủy"])
-            if is_deleted and not include_deleted:
-                continue
-
-            ma_val = val(r, ma_idx)
-            if ma_val and (not stt_val or "." in stt_val or not stt_val.isdigit()):
-                clean_ma = re.sub(r"^(?:nhóm|group)\s*", "", ma_val, flags=re.IGNORECASE).strip()
-                if clean_ma.isdigit():
-                    stt_val = clean_ma
-                elif not stt_val:
-                    stt_val = ma_val
-
-            item = BAItem(
-                line_num=line_num,
-                stt=stt_val,
-                ma=ma_val,
-                dashboard=val(r, dash_idx),
-                name=name,
-                description=val(r, desc_idx),
-                requirement_group=val(r, req_idx),
-                classification=val(r, pl_idx),
-                evaluation=val(r, dg_idx),
-                mapping_status=val(r, status_idx),
-                source_table=val(r, src_tbl_idx),
-                source_column=val(r, src_col_idx),
-                data_type=val(r, type_idx),
-                condition=val(r, cond_idx),
-                sql=val(r, sql_idx),
-                note=val(r, note_idx),
-                raw_row=r,
-            )
-            items.append(item)
-
-        return items, enc, delim, hdr_idx + 1
+        prof = _ba.profile_for(find_project_root(filepath.parent), filepath.stem.replace("BA_analyst_", ""))
+        items, meta = _ba.parse_ba_file(filepath, prof, include_deleted=include_deleted, strict=False)
+        return items, meta.encoding, meta.delimiter, meta.header_row + 1
 
 
 # ---------------------------------------------------------------------------

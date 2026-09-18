@@ -73,6 +73,41 @@ description: |
 
 ---
 
+## QUY TẮC NGỮ CẢNH — TRẦN 500K TOKEN (BẮT BUỘC, ĐỌC TRƯỚC MỌI BƯỚC)
+
+**KHÔNG bao giờ Read trực tiếp 4 nhóm file này** — luôn đi qua lát cắt:
+
+| File | Vì sao | Thay bằng |
+|---|---|---|
+| `BRD/BA/BA_analyst_*.csv` | QLKD 998K token, GSĐC 443K | `ba_slice.py --index` rồi `--nhom N` |
+| `Datamart/hld/DTM_*_HLD.md` | TKNB 163K; bị yêu cầu đọc lại 2 lần/module | `ctx_slice.py --sections` + `--nhom N` |
+| `Datamart/lld/DTM_*_Detail_Mapping.csv` | QLKD 552K; TC4–TC7 cũ nạp lại 4 lần | `ctx_slice.py --nhom N`; kiểm tra bằng `lld_selfcheck.py` |
+| `Datamart/lld/datamart_attributes.csv` | master registry 800KB | `grep`, hoặc file per-table trong `Datamart/lld/{MODULE}/` |
+
+Ghi ngược lại file gốc bằng `apply_patch.py` — **không** Edit tay file lớn, **không** append mù
+(append chỉ đúng khi viết mới, sai khi sửa lại một Nhóm đã có: sinh Nhóm trùng và phá thứ tự TC6).
+
+Mọi script ở `.claude/skills/datamart-review/scripts/`. Kiểm ngân sách trước khi chạy bước nặng:
+
+```bash
+python .claude/skills/datamart-review/scripts/ctx_budget.py --module {MODULE} --all-steps
+```
+
+Ngân sách thực đo (Nhóm nặng nhất của phân hệ nặng nhất, trần 500.000):
+
+| Bước | p50 | Xấu nhất | Phân hệ xấu nhất |
+|---|---:|---:|---|
+| hld-phase1 | ~89K | 174K | TKNB |
+| hld-phase2 | ~56K | 64K | QLKD |
+| lld-phase1 | ~77K | 131K | GSĐC |
+| lld-phase2 | ~92K | **235K** | GSĐC |
+| lld-phase3 | ~68K | 120K | GSĐC |
+| review | ~88K | 88K | — |
+
+Nếu một bước vượt trần: chia nhỏ theo Nhóm, **không** nén hay bỏ bớt thông tin nghiệp vụ.
+
+---
+
 ## QUY TẮC CHỐNG TÁI DIỄN (ANTI-REGRESSION) — ĐỌC TRƯỚC, CHẠY SAU MỌI THAY ĐỔI
 
 > **Nguồn gốc:** toàn bộ 9 quy tắc dưới đây được rút ra từ sự cố thiết kế PTTT/QLKD phát hiện ngày
@@ -314,7 +349,10 @@ Tổng: N nhóm | M bảng new | P bảng partial | Q bảng reuse
 
 ### Bước P1 — Đọc HLD Section 2
 
-Đọc `DTM_{MODULE}_HLD.md` Section 2 từ đầu đến hết → trích danh sách **TOÀN BỘ** nhóm báo cáo
+Lấy danh sách **TOÀN BỘ** nhóm báo cáo bằng `python .claude/skills/datamart-review/scripts/lld_selfcheck.py --module {MODULE} --tc 5`
+(dòng tóm tắt in ra số nhóm và số KPI_ID của HLD Section 2) — KHÔNG Read cả file HLD.
+Chỉ nạp khối từng Nhóm khi bắt đầu xử lý Nhóm đó: `ctx_slice.py --module {MODULE} --nhom {N}`.
+Danh sách nhóm báo cáo
 (Nhóm 1 → Nhóm N_max), không bỏ sót nhóm nào dù trạng thái gì:
 - Tên nhóm (Nhóm 1, Nhóm 2, ..., Nhóm N_max)
 - Trạng thái HLD của nhóm: READY / READY (thu hẹp) / PENDING toàn bộ
@@ -398,7 +436,10 @@ Tổng: [N] nhóm | [M] bảng new | [P] bảng partial | [Q] bảng reuse
 **Input Phase 1:**
 - `Datamart/hld/DTM_{MODULE}_Entities.csv` — danh sách entity, table_type, reuse_status, source_table đã duyệt
 - `Datamart/lld/datamart_attributes.csv` — master hiện tại (cần cho partial flow)
-- `BRD/BA/BA_analyst_{MODULE}.csv` — đối chiếu yêu cầu nghiệp vụ (CHỈ lấy dòng có `Trạng thái mapping ∈ {Done, Doing, Pending}`; **TUYỆT ĐỐI LOẠI BỎ** chỉ tiêu có `Trạng thái mapping = Delete / DELETED / Xóa`, cấm sinh thuộc tính/cột cho chỉ tiêu Delete)
+- `BRD/BA/BA_analyst_{MODULE}.csv` — **đọc qua lát cắt, KHÔNG Read thẳng file**:
+  `python .claude/skills/datamart-review/scripts/ba_slice.py --module {MODULE} --nhom {N} --print`
+  (file gốc tới 998K token; lát cắt giữ nguyên văn mọi ô nghiệp vụ của Nhóm đó).
+  Đối chiếu yêu cầu nghiệp vụ (CHỈ lấy dòng có `Trạng thái mapping ∈ {Done, Doing, Pending}`; **TUYỆT ĐỐI LOẠI BỎ** chỉ tiêu có `Trạng thái mapping = Delete / DELETED / Xóa`, cấm sinh thuộc tính/cột cho chỉ tiêu Delete)
 
 **Bước 0 — Đọc reuse_status từ Entities.csv:**
 - `reuse` → bỏ qua hoàn toàn, không sinh file, ghi note: "Bảng [datamart_table] reuse từ master — không thiết kế mới"
@@ -854,83 +895,12 @@ Nếu FAIL → sửa trước khi trình bày.
   4. `Datamart/lld/DTM_{MODULE}_Detail_Mapping.csv` — `mart_table`/`mart_column` (logical) phải resolve đúng `datamart_table`/`datamart_column` (physical) trong anchor, và cột `logic` phải chứa đúng chuỗi `<physical_table>.<physical_column>` tương ứng
   5. `Datamart/hld/DTM_{MODULE}_Entities.csv` — `datamart_entity` (logical) phải tồn tại trong anchor set
 - **KHÔNG tự động hóa cho `HLD.md`** — free-text + mermaid, regex bắt token dễ false positive (node ID, alias biến, tên Atomic lẫn trong công thức). Khi TC7 FAIL ở bất kỳ nguồn nào trong 5 nguồn trên, bước sửa lỗi (Kịch bản C) đã yêu cầu `grep -rn "tên_cũ" Datamart/` — lệnh này tự nhiên quét luôn HLD.md, nên HLD vẫn được rà soát nhưng qua cơ chế sửa lỗi thủ công, không qua TC7 tự động.
-- Chạy script sau (xây anchor set 1 lần, đối chiếu cả 4 nguồn):
+- Chạy script (xây anchor set 1 lần, đối chiếu cả 4 nguồn còn lại):
   ```bash
-  python -c "
-  import csv, yaml, re, glob, sys
-  sys.stdout.reconfigure(encoding='utf-8')
-
-  with open('Datamart/lld/datamart_attributes.csv', encoding='utf-8-sig') as f:
-      rows = list(csv.reader(f))
-  header = rows[0]
-  idx = {h: i for i, h in enumerate(header)}
-
-  entity_map, column_map = {}, {}
-  for r in rows[1:]:
-      ent, tbl, attr, col = r[idx['datamart_entity']], r[idx['datamart_table']], r[idx['datamart_attribute']], r[idx['datamart_column']]
-      entity_map[ent] = tbl
-      column_map[(ent, attr)] = col
-
-  fails = []
-
-  # Nguồn 2: Attributes detail — thay '{MODULE}' bằng module đang xử lý
-  for fp in glob.glob('Datamart/lld/{MODULE}/DTM_{MODULE}_*.csv'):
-      with open(fp, encoding='utf-8-sig') as f:
-          rows2 = list(csv.reader(f))
-      h2 = rows2[0]; i2 = {h: i for i, h in enumerate(h2)}
-      for r in rows2[1:]:
-          ent, tbl, attr, col = r[i2['datamart_entity']], r[i2['datamart_table']], r[i2['datamart_attribute']], r[i2['datamart_column']]
-          if ent in entity_map and entity_map[ent] != tbl:
-              fails.append(('detail_csv:entity', fp, ent, tbl, entity_map[ent]))
-          if (ent, attr) in column_map and column_map[(ent, attr)] != col:
-              fails.append(('detail_csv:column', fp, f'{ent}.{attr}', col, column_map[(ent, attr)]))
-
-  # Nguồn 3: datamart_model.yaml
-  with open('Datamart/datamart_model.yaml', encoding='utf-8') as f:
-      model = yaml.safe_load(f)
-  for e in model['entities']:
-      logical, physical = e['logical_name'], e['datamart_table']
-      if logical in entity_map and entity_map[logical] != physical:
-          fails.append(('model:entity', 'datamart_model.yaml', logical, physical, entity_map[logical]))
-      for c in e.get('columns', []):
-          key = (logical, c['logical_name'])
-          if key in column_map and column_map[key] != c['physical_name']:
-              fails.append(('model:column', 'datamart_model.yaml', f\"{logical}.{c['logical_name']}\", c['physical_name'], column_map[key]))
-
-  # Nguồn 4: Detail Mapping — thay '{MODULE}' bằng module đang xử lý
-  dm_path = 'Datamart/lld/DTM_{MODULE}_Detail_Mapping.csv'
-  with open(dm_path, encoding='utf-8-sig') as f:
-      dm_rows = list(csv.reader(f))
-  dh = dm_rows[0]; di = {h: i for i, h in enumerate(dh)}
-  for r in dm_rows[1:]:
-      mart_table, mart_col, logic, role = r[di['mart_table']], r[di['mart_column']], r[di['logic']], r[di['column_role']]
-      if role in ('DERIVED', 'PENDING', 'DEPRECATED') or not mart_table or not mart_col:
-          continue
-      if mart_table not in entity_map:
-          fails.append(('detail_mapping:entity_not_found', dm_path, r[di['kpi_id']], mart_table, None))
-          continue
-      exp_col = column_map.get((mart_table, mart_col))
-      if exp_col is None:
-          fails.append(('detail_mapping:column_not_found', dm_path, r[di['kpi_id']], f'{mart_table}.{mart_col}', None))
-          continue
-      expected_ref = f\"{entity_map[mart_table]}.{exp_col}\"
-      if expected_ref not in logic:
-          fails.append(('detail_mapping:logic_missing_ref', dm_path, r[di['kpi_id']], f'{mart_table}.{mart_col}', expected_ref))
-
-  # Nguồn 5: Entities.csv — thay '{MODULE}' bằng module đang xử lý
-  with open('Datamart/hld/DTM_{MODULE}_Entities.csv', encoding='utf-8-sig') as f:
-      ent_rows = list(csv.reader(f))
-  eh = ent_rows[0]; ei = eh.index('datamart_entity')
-  for r in ent_rows[1:]:
-      if r[ei] not in entity_map:
-          fails.append(('entities_csv:not_in_anchor', 'Entities.csv', r[ei], None, None))
-
-  print(f'Tổng issue: {len(fails)}')
-  for f_ in fails:
-      print(' ', f_)
-  "
+  python .claude/skills/datamart-review/scripts/lld_selfcheck.py --module {MODULE} --tc 7
   ```
-- **Lưu ý khi đọc kết quả `detail_mapping:logic_missing_ref`:** Có thể là false positive hợp lệ khi cột dùng pattern đặc biệt không có prefix bảng (VD: `src_stm_code` filter viết dạng `"src_stm_code = 'VALUE'"` không kèm `<table>.`, theo rule L11) — xác nhận từng trường hợp trước khi kết luận lỗi, không tự động sửa hàng loạt.
+  Dán nguyên output vào báo cáo. Script tách **lỗi cứng** (`entity_not_found`, `column_not_found`,
+  lệch tên giữa module file / model / Entities.csv) khỏi **cảnh báo** (`logic_missing_ref`).
 
 - **Sub-check E — NỘI DUNG `etl_logic`/`description` khớp giữa master và module file (bắt buộc, không chỉ tên bảng/cột):**
   - **Mục đích:** 4 script trên (entity_map/column_map) chỉ so khớp **tên vật lý** (`datamart_table`, `datamart_column`) — hoàn toàn KHÔNG so nội dung `etl_logic`. Một bug fix sửa **logic JOIN/filter** (không đổi tên bảng/cột nào) tại `Datamart/lld/{MODULE}/DTM_{MODULE}_*.csv` sẽ **PASS** Sub-check A-D dù `datamart_attributes.csv` (anchor) vẫn giữ nguyên logic SAI/CŨ — che giấu hoàn toàn tình trạng lệch.
@@ -1179,6 +1149,7 @@ ATTRIBUTES CHECK:
 Đọc [`reference/phase2_detail_mapping.md`](reference/phase2_detail_mapping.md) đầy đủ trước khi bắt đầu.
 
 **Nguồn sự thật:** `BRD/BA/BA_analyst_{MODULE}.csv` — mọi dòng `Trạng thái mapping ∈ {Done, Doing, Pending}` đều phải map.
+Đọc qua lát cắt kèm SQL: `python .claude/skills/datamart-review/scripts/ba_slice.py --module {MODULE} --nhom {N} --with-sql --print`.
 
 > ⛔ **QUY TẮC BẮT BUỘC — LOẠI BỎ CHỈ TIÊU DELETE:**
 > Nếu chỉ tiêu trong file BA có `Trạng thái mapping` là **`Delete`** (hoặc `DELETE`, `Xóa`, `Xoá`, `DELETED`):
@@ -1187,7 +1158,11 @@ ATTRIBUTES CHECK:
 
 **Input bổ sung Phase 2:** Các file `Datamart/lld/{MODULE}/DTM_{MODULE}_*.csv` đã duyệt (Phase 1) — đọc tất cả file trong thư mục `{MODULE}/`.
 
-**Output:** Append block KPI của nhóm N vào `Datamart/lld/DTM_{MODULE}_Detail_Mapping.csv` — không tạo file riêng từng nhóm. File tạo mới với header nếu chưa tồn tại; append nếu đã có.
+**Output:** Ghi block KPI của nhóm N vào `Datamart/lld/DTM_{MODULE}_Detail_Mapping.csv` bằng
+`python .claude/skills/datamart-review/scripts/apply_patch.py --module {MODULE} --target dm --nhom {N} --from <file rows>` — không tạo file riêng từng nhóm.
+**KHÔNG append mù và KHÔNG Edit tay file này** (QLKD 552K token): append chỉ đúng khi viết mới, sai khi
+sửa lại một Nhóm đã có — sinh Nhóm trùng và phá thứ tự TC6. `apply_patch.py` thay đúng các dòng của
+Nhóm N nếu đã tồn tại, hoặc chèn đúng vị trí theo số nhóm tăng dần nếu là Nhóm mới; luôn chạy `--dry-run` trước.
 
 Header:
 ```
@@ -1200,7 +1175,8 @@ Export encoding: **UTF-8 BOM** (`utf-8-sig`).
 
 ```
 BƯỚC 0 — TODO LIST TOÀN MODULE (bắt buộc, chạy 1 lần trước khi vào loop nhóm):
-□ Quét lại HLD Section 2 từ đầu đến hết (Nhóm 1 → Nhóm N_max) — ĐỘC LẬP với Phase 0 Plan,
+□ Đối chiếu lại danh sách nhóm bằng `python .claude/skills/datamart-review/scripts/lld_selfcheck.py --module {MODULE} --tc 5`
+  (Nhóm 1 → Nhóm N_max) — ĐỘC LẬP với Phase 0 Plan, KHÔNG Read lại cả file HLD,
   không copy danh sách nhóm từ Plan (Plan có thể đã lược bỏ nhóm PENDING toàn bộ vì không cần
   bảng Attributes ở Phase 1)
 □ Lập bảng todo list: Nhóm | Tên nhóm | Trạng thái HLD (READY/READY thu hẹp/PENDING toàn bộ) |
@@ -1216,7 +1192,7 @@ PRE-CHECK (trước khi sinh — bắt buộc, chỉ cho KPI của nhóm đang x
 □ Lọc bỏ 100% dòng BA có Trạng thái mapping là Delete / DELETED / Xóa — KHÔNG map, KHÔNG sinh dòng Detail Mapping
 □ Nếu dòng BA nào (hợp lệ, không phải Delete) chưa có KPI_ID → DỪNG, báo cáo danh sách gap → ❌ KHÔNG sinh block khi chưa có xác nhận của human về cách xử lý gap
 □ Không tự sinh KPI_ID mới trong Phase 2 — KPI_ID mới phải được khai sinh trong HLD trước
-□ Đọc kỹ `Câu lệnh tham khảo`, `Điều kiện chung`, `Bảng nguồn`, `Trường nguồn`, và `Note` trong file BA đối với toàn bộ chỉ tiêu của nhóm đang xử lý (theo Quy tắc L17)
+□ Đọc kỹ `Câu lệnh tham khảo`, `Điều kiện chung`, `Bảng nguồn`, `Trường nguồn`, và `Note` của toàn bộ chỉ tiêu nhóm đang xử lý (theo Quy tắc L17) — lấy bằng `python .claude/skills/datamart-review/scripts/ba_slice.py --module {MODULE} --nhom {N} --with-sql --print`. Lưu ý: với QLKD, cột `Câu lệnh tham khảo (không dùng nữa, giữ lại để lưu vết)` bị bỏ khỏi lát cắt theo `system/rules/ba_column_profile.yaml`; bản sống là `Câu lệnh update (SIT)`
 □ Đếm N_BA(nhóm) (chỉ tính dòng hợp lệ, ĐÃ LOẠI TRỪ dòng Delete) và N_KPI(nhóm) → báo cáo 2 con số → DỪNG chờ human xác nhận trước khi sinh
 
 OUTPUT CHECK (chỉ kiểm tra block KPI của nhóm đang xử lý):
@@ -1241,7 +1217,7 @@ OUTPUT CHECK (chỉ kiểm tra block KPI của nhóm đang xử lý):
 □ NaN/trống trong cột Trạng thái mapping → ghi chú, xác nhận với BA
 □ Append đúng THỨ TỰ SỐ NHÓM TĂNG DẦN — xem TC6; nếu file hiện tại đã append lệch thứ tự từ
   trước, KHÔNG tự ý append tiếp theo thứ tự sai đó, báo cho human trước
-□ Sau khi human duyệt block: append vào DTM_{MODULE}_Detail_Mapping.csv → báo "Đã append N dòng nhóm [N] vào Detail Mapping"
+□ Sau khi human duyệt block: ghi bằng `python .claude/skills/datamart-review/scripts/apply_patch.py --module {MODULE} --target dm --nhom {N} --from <file rows> --dry-run` → xem diff → chạy lại bỏ `--dry-run` → báo "Đã ghi N dòng nhóm [N] vào Detail Mapping"
 
 SELF-REVIEW Phase 2 — mỗi nhóm (bắt buộc trước khi trình bày — chạy 5 testcase, báo kết quả):
 
@@ -1270,11 +1246,17 @@ TC3 — Logic dùng tên physical (snake_case), đủ prefix table_name.column_n
 □ Nếu FAIL → sửa trước khi trình bày
 
 TC4 — Trường/bảng trong Detail Mapping tồn tại trong datamart_model.yaml:
-□ Lấy toàn bộ (mart_table, mart_column) unique từ Detail Mapping (bỏ qua các row DERIVED, PENDING, DEPRECATED có mart_table/mart_column trống: `if role in ('DERIVED', 'PENDING', 'DEPRECATED') or not mart_table or not mart_col: continue`)
-□ Kiểm tra mỗi cặp: tra Datamart/datamart_model.yaml → tìm entity có **logical_name** khớp với mart_table → kiểm tra columns list có **logical_name** = mart_column không. **LƯU Ý:** mart_table và mart_column trong Detail Mapping là **TÊN LOGICAL** (ví dụ: "Fact Stock Portfolio Snapshot", "Total Trading Volume"), KHÔNG phải tên physical. Do đó PHẢI so sánh với logical_name (KHÔNG so sánh với datamart_table hay physical_name — sẽ gây 100% false positive).
-□ Báo: ✅ TC4 PASS hoặc ❌ TC4 FAIL: [danh sách (mart_table, mart_column) chưa có trong datamart_model.yaml]
-□ Nếu FAIL → kiểm tra xem model thiếu cột (Phase 1 chưa ghi đủ) hay Detail Mapping dùng sai tên → sửa tương ứng
 
+```bash
+python .claude/skills/datamart-review/scripts/lld_selfcheck.py --module {MODULE} --tc 4
+```
+
+Script bỏ qua dòng `DERIVED`/`PENDING`/`DEPRECATED` có `mart_table`/`mart_column` trống (Quy tắc L4),
+và chấp nhận **cả tên logical lẫn tên physical** — thực tế repo ghi `mart_table` logical
+("Calendar Date Dimension") nhưng `mart_column` physical ("cdr_dt"); chỉ so một kiểu sẽ gây
+false positive hàng loạt.
+
+□ FAIL → xác định model thiếu cột (Phase 1 chưa ghi đủ) hay Detail Mapping dùng sai tên → sửa tương ứng
 □ Tất cả 5 TC đều PASS (TC1, TC1b, TC2, TC3, TC4) → trình bày block KPI nhóm N cho human
 □ Sau khi xuất block: DỪNG chờ human duyệt block → append vào Detail Mapping khi được approve
 
@@ -1290,27 +1272,21 @@ GATE CUỐI NHÓM:
 SELF-REVIEW Phase 2 — module-level (bắt buộc, chạy 1 lần sau khi TẤT CẢ nhóm trong todo list
 đã xử lý, TRƯỚC KHI báo "Tất cả nhóm hoàn thành"):
 
-TC5 — Đối chiếu tổng số nhóm/KPI toàn module (không chỉ từng nhóm riêng lẻ):
-□ Lấy tập hợp số nhóm (cột `nhom`, parse ra số nhóm) xuất hiện trong Detail Mapping
-□ Lấy tập hợp số nhóm xuất hiện trong HLD Section 2 (Nhóm 1 → Nhóm N_max)
-□ Đối chiếu 2 tập — báo danh sách nhóm có trong HLD nhưng THIẾU trong Detail Mapping
-□ Lấy toàn bộ KPI_ID unique trong HLD (mọi nhóm, mọi trạng thái) và toàn bộ KPI_ID unique trong
-  Detail Mapping → đối chiếu, báo danh sách KPI_ID có trong HLD nhưng thiếu trong Detail Mapping
-□ Báo: ✅ TC5 PASS: [N_nhom] nhóm, [N_kpi] KPI_ID unique — khớp đủ HLD
-  hoặc ❌ TC5 FAIL: thiếu [X] nhóm ([danh sách]), thiếu [Y] KPI_ID ([danh sách])
-□ Nếu FAIL → bổ sung nhóm/KPI còn thiếu trước khi báo hoàn thành Phase 2 (không được báo hoàn
-  thành khi TC5 còn FAIL)
+TC5 + TC6 — chạy bằng script, KHÔNG tự đọc cả file:
 
-TC6 — Thứ tự nhóm trong file tăng dần theo số nhóm:
-□ Duyệt cột `nhom` theo thứ tự xuất hiện trong file (top-to-bottom), parse số nhóm bằng regex
-  (VD: `Nhóm (\d+)`) — KHÔNG so sánh dạng chuỗi (string sort xếp "Nhóm 11" trước "Nhóm 2" là SAI)
-□ Nhóm nào xuất hiện lần đầu ở dòng thứ i thì số nhóm phải ≥ số nhóm xuất hiện lần đầu ở mọi dòng
-  trước i — tức thứ tự nhóm-xuất-hiện-lần-đầu phải là 1, 2, 3, ..., N_max tăng dần liên tục
-□ Báo: ✅ TC6 PASS: thứ tự nhóm đúng 1→N_max
-  hoặc ❌ TC6 FAIL: nhóm [X] xuất hiện trước nhóm [Y] dù X > Y — [vị trí dòng cụ thể]
-□ Nếu FAIL → sắp xếp lại toàn bộ file theo đúng thứ tự số nhóm tăng dần (giữ nguyên nội dung
-  từng dòng, chỉ đổi thứ tự dòng) — báo cho human trước khi ghi đè file, vì đây là thay đổi
-  toàn file không phải append
+```bash
+python .claude/skills/datamart-review/scripts/lld_selfcheck.py --module {MODULE} --tc 5,6
+```
+
+- **TC5** đối chiếu tập Nhóm và tập KPI_ID giữa HLD Section 2 ↔ Detail Mapping, báo danh sách
+  Nhóm/KPI_ID có trong HLD nhưng THIẾU trong Detail Mapping.
+- **TC6** kiểm tra thứ tự nhóm-xuất-hiện-lần-đầu tăng dần theo **SỐ** nhóm (không so chuỗi —
+  string sort xếp "Nhóm 11" trước "Nhóm 2" là SAI). FAIL → `--tc 6 --fix-order` sắp lại toàn file,
+  giữ nguyên nội dung và thứ tự dòng trong từng nhóm. **Báo cho human trước khi chạy `--fix-order`**,
+  vì đây là thay đổi toàn file chứ không phải append.
+
+Lý do dùng script: cả hai TC đều cần đọc TOÀN BỘ Detail Mapping — với QLKD là 552K token, vượt
+trần ngữ cảnh. Dán nguyên output vào báo cáo, không diễn giải lại.
 
 □ TC5 + TC6 đều PASS → báo "Tất cả nhóm hoàn thành. Chuyển sang Phase 3?"
 → DỪNG chờ human xác nhận chuyển Phase 3

@@ -94,6 +94,20 @@ GATE_SPECS = [
         "supports_strict": True,
         "supports_json": False,
     },
+    {
+        "gate": "Gate 6",
+        "name": "Context Budget (trần 500K token/bước)",
+        "script": "ctx_budget.py",
+        "supports_strict": True,
+        "supports_json": True,
+    },
+    {
+        "gate": "Gate 7",
+        "name": "LLD Self-Check module-level (TC4–TC7)",
+        "script": "lld_selfcheck.py",
+        "supports_strict": True,
+        "supports_json": True,
+    },
 ]
 
 

@@ -1,0 +1,178 @@
+# ba_column_profile.yaml — Hồ sơ cấu trúc file BRD/BA/BA_analyst_{MODULE}.csv
+#
+# MỤC ĐÍCH
+#   Khai báo MỘT CHỖ cấu trúc của cả 11 file BA, thay cho việc mỗi script tự dò lại
+#   delimiter / header bằng heuristic. Dò động là nguồn lỗi thật đã xảy ra nhiều lần
+#   (nhận nhầm file `;` thành `,`, nhận nhầm dòng legend thành dòng dữ liệu).
+#
+# HỢP ĐỒNG SỬ DỤNG (quan trọng)
+#   Đây là KHẲNG ĐỊNH CÓ KIỂM CHỨNG, không phải phỏng đoán. Script đọc BA phải:
+#     1. Lấy profile của module theo `modules:` (thiếu -> dùng `defaults:`).
+#     2. Đọc header tại `header_row` bằng `delimiter` đã khai báo.
+#     3. So khớp `expect_columns` và `expect_header_contains`.
+#     4. LỆCH -> raise/exit 1 ngay, KHÔNG được fallback sang dò động.
+#   Nhờ vậy khi file BA đổi cấu trúc, ta biết ngay thay vì lặng lẽ parse sai.
+#
+# CHỈ SỐ DÒNG/CỘT ĐỀU 0-INDEXED.
+# So khớp tên cột: bỏ khoảng trắng đầu/cuối, gộp khoảng trắng liên tiếp, KHÔNG phân biệt hoa/thường.
+#
+# Khảo sát thực tế ngày 2026-09-18 trên toàn bộ 11 file.
+
+version: 1
+
+defaults:
+  encoding: utf-8-sig
+  delimiter: ","
+  header_row: 1          # dòng 0 là banner merge cell của Excel
+  legend_rows: [2]       # dòng chú giải ("Tên chiều/chỉ tiêu/thuộc tính", "Dễ: lấy 1:1 từ nguồn")
+  stt_column: STT        # cột quyết định Nhóm — xem `group_key` bên dưới
+  ma_column: "Mã"
+  dashboard_column: "Dashboard/báo cáo"
+  name_column: "Thông tin"
+  status_column: "Trạng thái mapping"
+
+  # Cột theo dõi dự án — không mang ngữ nghĩa thiết kế, luôn bỏ khỏi lát cắt.
+  # Cột KHÔNG nằm trong danh sách này thì được GIỮ (fail-safe: cột mới lạ không bị mất).
+  drop:
+    - "Cần phân tích?"
+    - "Cần test?"
+    - "DL lịch sử?"
+    - "Kết quả Test"
+    - "Model"
+    - "DMT"
+    - "Hoàn thành DEV"
+    - "Kết quả SIT"
+    - "Kết quả"
+
+  # Cột SQL: chỉ đưa vào lát cắt khi chạy với --with-sql.
+  # Lý do tách: chiếm 12–80% dung lượng file nhưng HLD Phase 1 hầu như không cần;
+  # chỉ LLD Phase 2 (Detail Mapping) cần để bóc 4 thành phần theo Quy tắc L17.
+  sql_columns: []
+
+# Cách suy ra khoá Nhóm từ một dòng BA. Giữ nguyên hành vi của BAParser hiện hành
+# (datamart_progress_analyzer.py / datamart_ba_cross_checker.py) để không đổi kết quả.
+group_key:
+  primary: stt_column
+  fallback: ma_column
+  # Dùng `ma` thay cho `stt` khi: stt rỗng, hoặc stt dạng phân cấp "3.2.2.1", hoặc stt không phải số.
+  use_fallback_when: ["empty", "dotted", "non_numeric"]
+  strip_prefix_regex: '^(nhóm|group)\s*'
+  # Tên Nhóm lấy từ `dashboard_column` của dòng đầu tiên trong nhóm.
+  name_from: dashboard_column
+
+# ---------------------------------------------------------------------------
+# Quy tắc bỏ cột có điều kiện
+# ---------------------------------------------------------------------------
+# Viết dạng điều kiện (không hardcode tên module) để file BA sau này đổi thì tự khớp.
+drop_rules:
+  - id: deprecated_reference_sql
+    # Bỏ cột "Câu lệnh tham khảo …" KHI VÀ CHỈ KHI trong cùng file có cột "Câu lệnh update (SIT)".
+    # Khi đó cột tham khảo đã được chính BA đánh dấu là bản chết, giữ lại chỉ để lưu vết.
+    drop_column_matches: '^câu lệnh tham khảo\b'
+    only_if_column_exists: '^câu lệnh update\s*\(sit\)$'
+    reason: >-
+      BA đã khai báo tường minh "không dùng nữa, giữ lại để lưu vết"; bản sống là cột
+      "Câu lệnh update (SIT)". Hiện chỉ khớp QLKD — tiết kiệm 317.333 token (38,5% file).
+      File gốc BRD/BA/ giữ nguyên cột này, việc bỏ chỉ xảy ra trong lát cắt sinh ra.
+
+# ---------------------------------------------------------------------------
+# Hồ sơ từng module — chỉ khai những gì khác `defaults`
+# ---------------------------------------------------------------------------
+modules:
+
+  FMS:
+    delimiter: ";"
+    expect_columns: 31
+    dashboard_column: "Dashboard >> báo cáo"
+    sql_columns: ["Câu lệnh tham khảo"]
+    expect_header_contains: ["STT", "Mã", "Dashboard >> báo cáo", "Trạng thái mapping", "Câu lệnh tham khảo"]
+    note: "Trùng tên cột 'Note' ở index 20 và 30 -> parser phải dùng index, không dùng dict tên cột."
+
+  GSTT:
+    expect_columns: 27
+    sql_columns: ["Câu lệnh tham khảo", "Câu lệnh màn"]
+    expect_header_contains: ["STT", "Mã", "Dashboard/báo cáo", "Trạng thái mapping", "Câu lệnh tham khảo", "Câu lệnh màn"]
+    note: "Có 'Câu lệnh tham khảo' nhưng KHÔNG có 'Câu lệnh update (SIT)' -> drop_rules không áp dụng."
+
+  "GSĐC":
+    aliases: [GSDC]
+    expect_columns: 24
+    sql_columns: ["Câu lệnh SQL", "Câu lệnh update SIT"]
+    expect_header_contains: ["STT", "Mã", "Dashboard/báo cáo", "Trạng thái mapping", "Câu lệnh SQL", "Câu lệnh update SIT"]
+    note: >-
+      Cột SQL tên là "Câu lệnh SQL", không mang nhãn "tham khảo" -> drop_rules KHÔNG áp dụng.
+      Artifact Datamart dùng tên ASCII: DTM_GSDC_HLD.md, DTM_GSDC_Detail_Mapping.csv.
+
+  NDTNN:
+    aliases: ["NĐTNN"]
+    expect_columns: 31
+    sql_columns: ["Câu lệnh tham khảo"]
+    expect_header_contains: ["STT", "Mã", "Dashboard/báo cáo", "Trạng thái mapping", "Câu lệnh tham khảo"]
+    note: "Trùng tên cột 'Note' ở index 19 và 30."
+
+  NHNCK:
+    expect_columns: 31
+    sql_columns: ["Câu lệnh tham khảo"]
+    drop_extra:
+      - "SIT ngày 17/7/2026"          # header gốc có 2 khoảng trắng — so khớp sau khi gộp whitespace
+      - "THAY ĐỔI VỚI TK CŨ"
+      - "29/7 - Kiểm tra với Staging"
+    expect_header_contains: ["STT", "Mã", "Dashboard/báo cáo", "Trạng thái mapping", "Câu lệnh tham khảo"]
+    note: "Trùng tên cột 'Kết quả' ở index 26 và 29."
+
+  PTTT:
+    expect_columns: 26
+    sql_columns: ["Câu lệnh tham khảo"]
+    expect_header_contains: ["STT", "Mã", "Dashboard/báo cáo", "Trạng thái mapping", "Câu lệnh tham khảo"]
+    note: "Cột index 20 có tên rỗng -> parser phải chịu được header rỗng."
+
+  QLCB:
+    expect_columns: 23
+    ma_column: "Mã dashboard/BC"
+    sql_columns: ["Câu lệnh tham khảo"]
+    expect_header_contains: ["STT", "Mã dashboard/BC", "Dashboard/báo cáo", "Trạng thái mapping"]
+
+  QLKD:
+    expect_columns: 28
+    ma_column: "PIC"
+    sql_columns:
+      - "Câu lệnh tham khảo (không dùng nữa, giữ lại để lưu vết)"   # bị drop_rules loại
+      - "Câu lệnh update (SIT)"
+    expect_header_contains:
+      - "STT"
+      - "PIC"
+      - "Dashboard/báo cáo"
+      - "Trạng thái mapping"
+      - "Câu lệnh tham khảo (không dùng nữa, giữ lại để lưu vết)"
+      - "Câu lệnh update (SIT)"
+    note: >-
+      Module DUY NHẤT khớp drop_rules.deprecated_reference_sql.
+      Cột `Mã` được đặt tên là `PIC`; cột `Trạng thái` (index 20) KHÁC `Trạng thái mapping` (index 13).
+
+  TKNB:
+    expect_columns: 29
+    ma_column: "Mã dashboard/BC"
+    name_column: "Thông tin (chỉ tiêu)"
+    sql_columns: ["Câu lệnh tham khảo", "SIT SQL"]
+    drop_extra: ["Link mẫu Báo cáo"]
+    expect_header_contains: ["STT", "Mã dashboard/BC", "Dashboard/báo cáo", "Trạng thái mapping", "Câu lệnh tham khảo"]
+    note: >-
+      Bố cục lệch nhiều nhất: chèn thêm 'Loại sản phầm', 'Mapping', 'Cách tính',
+      'Nguồn dữ liệu', 'Chú ý' giữa 'Mapping Nguồn dữ liệu' và 'Bảng nguồn'.
+      Dòng legend index 2 của file này gần như rỗng nhưng vẫn phải bỏ.
+
+  TT:
+    delimiter: ";"
+    expect_columns: 26
+    sql_columns: ["Câu lệnh tham khảo"]
+    expect_header_contains: ["STT", "Mã", "Dashboard/báo cáo", "Trạng thái mapping", "Câu lệnh tham khảo"]
+
+  VP:
+    delimiter: ";"
+    expect_columns: 27
+    stt_column: "TT"
+    sql_columns: ["Câu lệnh tham khảo"]
+    expect_header_contains: ["TT", "Mã", "Dashboard/báo cáo", "Trạng thái mapping", "Câu lệnh tham khảo"]
+    note: >-
+      Module DUY NHẤT đặt cột số thứ tự là 'TT' thay vì 'STT'.
+      Cột index 26 có tên rỗng.

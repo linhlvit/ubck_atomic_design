@@ -3,7 +3,7 @@ name: datamart-review
 description: |
   Master Quality Gatekeeper: Review cross-check BA analyst ↔ Datamart (HLD + LLD ↔ Flat Table).
   Hỗ trợ Macro-Review (tiến độ toàn phân hệ), Micro-Review (chi tiết 4 lớp từng nhóm),
-  và Issue Trace 5 tầng (Kịch bản E). Đảm bảo chuẩn Kimball, SCD4A, 4 Control Gates và tính toàn vẹn DWH.
+  và Issue Trace 5 tầng (Kịch bản E). Đảm bảo chuẩn Kimball, SCD4A, 8 Control Gates và tính toàn vẹn DWH.
 triggers:
   - /datamart-review [MODULE]
   - /datamart-review [MODULE] [nhóm N]
@@ -16,13 +16,51 @@ triggers:
 1. **Vai Trò Độc Lập:** Claude đóng vai trò Data Model Reviewer độc lập (Read-Only Explorer). Human là người quyết định và phê duyệt tối cao.
 2. **CẤM TUYỆT ĐỐI Tự Sửa File Trực Tiếp:** Claude **TUYỆT ĐỐI KHÔNG** tự Edit trực tiếp vào file HLD (`.md`), LLD (`Attributes.csv`, `Detail_Mapping.csv`), Model Registry (`datamart_model.yaml`, `datamart_attributes.csv`), hay Flat Table SQL (`01_create_*.sql`, `02_populate_*.sql`). Mọi sửa đổi phải lập Action Proposal, xin phê duyệt và ủy quyền cho skill con (`datamart-hld-design`, `datamart-lld-design`) thực hiện.
 3. **READ-ONLY Trên Thư Mục Atomic:** Tuyệt đối không tạo, sửa, xóa file trong `DataModel/Atomic/` và `DataModel/working/Atomic/`.
-4. **Tuân Thủ Tuyệt Đối 6 CỔNG KIỂM SOÁT (6 CONTROL GATES):**
+4. **Tuân Thủ Tuyệt Đối 8 CỔNG KIỂM SOÁT (8 CONTROL GATES):**
    - **GATE 0 (Reference Integrity):** chặn cứng khi có tham chiếu tới thứ không tồn tại — cột Atomic sai tên (`L0-ATOMIC-COLUMN-NOT-FOUND`), cột mart không có trong Attributes (`L0-MART-COLUMN-NOT-FOUND`), file CSV vỡ cột (`L0-CSV-STRUCTURE-BROKEN`), hoặc trạng thái KPI lệch giữa HLD và Detail Mapping (`L0-HLD-LLD-STATUS-DESYNC`). Chạy `check_references.py`.
    - **GATE 1 (Sanity Stop):** Dừng bắt buộc sau Bước 0b/0c Macro-Audit; chặn cứng nếu phát hiện Orphan 3 chiều, Parity mismatch, Role Date FK violation, Delete sót, hoặc Grain Mismatch kiến trúc (`L1-GRAIN-MISMATCH`) / Window Storage trên Dimension (`L2-WINDOW-STORAGE-INVALID`).
    - **GATE 2 (Group Checkpoint):** Dừng kiểm tra sau mỗi nhóm Micro-Review có lỗi Critical 🔴 hoặc Warning 🟡; chỉ tự động đi tiếp khi 4 Lớp đều PASS (OK).
    - **GATE 3 (HLD/LLD Parity Gate — Handover Blocking Gate):** Cổng chặn cứng kiểm định tính đồng nhất giữa HLD và LLD trước khi chuyển giao hoặc sinh mã Flat Table: bắt buộc 0 parity mismatch (`check_parity.py --strict`), 0 orphan (`check_orphan.py --strict`), 0 linter violation (Detail Mapping Rule L4, L15, L16), và 0 Date FK violation.
    - **GATE 4 (Flat Table Delivery Gate):** Cổng kiểm định chất lượng phân phối Flat Table ClickHouse với 5 tiêu chí cốt lõi: Coverage, 1-1 Projection Alignment, Column Drift, Parameter Consistency (`:etl_date`), Common Dimensions Sync (`datamart.cdr_dt_flat`).
+   - **GATE 5 (HLD Structure — Bước 5B, 14 mục):** Cổng kiểm cấu trúc HLD sau mọi chỉnh sửa. Chạy `check_hld_5b.py`.
+   - **GATE 6 (Context Budget — trần 500K token/bước):** Chặn khi một bước thiết kế được dự báo vượt trần ngữ cảnh. Chạy `ctx_budget.py --module [M] --all-steps --strict`. Đây là gate **duy nhất đọc tới file BA**.
+   - **GATE 7 (LLD Self-Check module-level — TC4–TC7):** Bốn kiểm tra toàn module trước đây bắt agent nạp cả Detail Mapping (QLKD 552K token × 4 lần). Chạy `lld_selfcheck.py --module [M]`.
    - **LỆNH CẤM:** Nghiêm cấm mọi hành vi tự ý vượt Gate hoặc tuyên bố hoàn thành (Claim Done) khi chưa có lệnh xác nhận từ Human và chưa PASS 100% các công cụ kiểm tra tự động.
+
+---
+
+## QUY TẮC NGỮ CẢNH — TRẦN 500K TOKEN (BẮT BUỘC, ĐỌC TRƯỚC MỌI BƯỚC)
+
+**KHÔNG bao giờ Read trực tiếp 4 nhóm file này** — luôn đi qua lát cắt:
+
+| File | Vì sao | Thay bằng |
+|---|---|---|
+| `BRD/BA/BA_analyst_*.csv` | QLKD 998K token, GSĐC 443K | `ba_slice.py --index` rồi `--nhom N` |
+| `Datamart/hld/DTM_*_HLD.md` | TKNB 163K; bị yêu cầu đọc lại 2 lần/module | `ctx_slice.py --sections` + `--nhom N` |
+| `Datamart/lld/DTM_*_Detail_Mapping.csv` | QLKD 552K; TC4–TC7 cũ nạp lại 4 lần | `ctx_slice.py --nhom N`; kiểm tra bằng `lld_selfcheck.py` |
+| `Datamart/lld/datamart_attributes.csv` | master registry 800KB | `grep`, hoặc file per-table trong `Datamart/lld/{MODULE}/` |
+
+Ghi ngược lại file gốc bằng `apply_patch.py` — **không** Edit tay file lớn, **không** append mù
+(append chỉ đúng khi viết mới, sai khi sửa lại một Nhóm đã có: sinh Nhóm trùng và phá thứ tự TC6).
+
+Mọi script ở `.claude/skills/datamart-review/scripts/`. Kiểm ngân sách trước khi chạy bước nặng:
+
+```bash
+python .claude/skills/datamart-review/scripts/ctx_budget.py --module {MODULE} --all-steps
+```
+
+Ngân sách thực đo (Nhóm nặng nhất của phân hệ nặng nhất, trần 500.000):
+
+| Bước | p50 | Xấu nhất | Phân hệ xấu nhất |
+|---|---:|---:|---|
+| hld-phase1 | ~89K | 174K | TKNB |
+| hld-phase2 | ~56K | 64K | QLKD |
+| lld-phase1 | ~77K | 131K | GSĐC |
+| lld-phase2 | ~92K | **235K** | GSĐC |
+| lld-phase3 | ~68K | 120K | GSĐC |
+| review | ~88K | 88K | — |
+
+Nếu một bước vượt trần: chia nhỏ theo Nhóm, **không** nén hay bỏ bớt thông tin nghiệp vụ.
 
 ---
 
@@ -30,7 +68,9 @@ triggers:
 
 | Phân Hệ / Tác Vụ Review | Tài Liệu Reference Bắt Buộc | Công Cụ CLI Tự Động Hóa |
 |---|---|---|
-| **Cấu trúc File BA & Dò Delimiter** | `reference/ba_source_profile.md` | `python scripts/datamart_progress_analyzer.py` |
+| **Cấu trúc File BA (đã khai, không dò)** | `system/rules/ba_column_profile.yaml` + `reference/ba_source_profile.md` | `scripts/ba_slice.py --module [M] --index` |
+| **Lát cắt HLD / Detail Mapping theo Nhóm** | mục 1 — QUY TẮC NGỮ CẢNH | `scripts/ctx_slice.py --module [M] --nhom [N]` |
+| **Ngân sách ngữ cảnh 500K** | mục 1 — QUY TẮC NGỮ CẢNH | `scripts/ctx_budget.py --module [M] --all-steps` |
 | **Phân Loại Lỗi & Cây 5 Nhóm PENDING** | `reference/issue_classification.md` | `scripts/datamart_progress_analyzer.py` / `scripts/check_ba_mapping.py` |
 | **Đối Soát Số Lượng KPI 2 Chế Độ** | `reference/kpi_reconciliation_rules.md` | `scripts/datamart_progress_analyzer.py --module [M]` |
 | **Quy Chuẩn Role-Playing Date FK** | `reference/role_playing_date_fk_guide.md` | `python scripts/check_date_fk.py --module [M]` |
@@ -38,10 +78,11 @@ triggers:
 | **Bảo Vệ Master Registry & Parity etl_logic** | `reference/technical_review_rules.md` (Mục 9) | `python scripts/check_parity.py --module [M] --strict` |
 | **Quy Tắc Kỹ Thuật Sâu Lớp 1–4 & Gate 4 SQL** | `reference/technical_review_rules.md` | `python scripts/check_flat_table.py --module [M] --strict` |
 | **Linter Detail Mapping (L4, L15, L16, L17)** | `reference/technical_review_rules.md` (Mục 8B) | `python scripts/datamart_ba_cross_checker.py --module [M]` |
-| **Bộ Điều Phối Chất Lượng 6 Gate Hợp Nhất** | `reference/technical_review_rules.md` (Mục 14) | `python scripts/run_quality_gates.py --module [M] [--strict]` |
+| **Bộ Điều Phối Chất Lượng 8 Gate Hợp Nhất** | `reference/technical_review_rules.md` (Mục 14) | `python scripts/run_quality_gates.py --module [M] [--strict]` |
 | **Reference Integrity (Gate 0)** | mục A1–A4 trong `datamart-lld-design/SKILL.md` | `python scripts/check_references.py --module [M] --strict` |
 | **Cấu trúc HLD Bước 5B (Gate 5)** | Bước 5B trong `datamart-hld-design/SKILL.md` | `python scripts/check_hld_5b.py --module [M]` |
-| **Checklist Đánh Giá Nhanh 4 Lớp & 4 Gates** | `reference/review_checklist.md` | — |
+| **LLD Self-Check TC4–TC7 (Gate 7)** | TC4/TC5/TC6/TC7 trong `datamart-lld-design/SKILL.md` | `python scripts/lld_selfcheck.py --module [M]` |
+| **Checklist Đánh Giá Nhanh 4 Lớp & 8 Gates** | `reference/review_checklist.md` | — |
 
 ---
 
@@ -61,7 +102,7 @@ Chuẩn hóa **BA Status:** `Done` / `Doing` / `Pending` / `Delete`.
 
 ---
 
-## 4. QUY TRÌNH ĐIỀU PHỐI TỔNG THỂ & GATE CONTROL (3 GIAI ĐOẠN — 4 GATES)
+## 4. QUY TRÌNH ĐIỀU PHỐI TỔNG THỂ & GATE CONTROL (3 GIAI ĐOẠN — 8 GATES)
 
 ```
 [Giai đoạn 1: MACRO-AUDIT (Toàn Module)]
@@ -79,7 +120,7 @@ Chuẩn hóa **BA Status:** `Done` / `Doing` / `Pending` / `Delete`.
         ↓ (Human duyệt thông qua)
 [Giai đoạn 2: MICRO-REVIEW (Tuần Tự Từng Nhóm)]
   Vòng lặp Nhóm 1 → N:
-    Bước 1: Đọc BA nhóm N theo reference/ba_source_profile.md (dò delimiter động, đọc dòng header index 1)
+    Bước 1: Đọc BA nhóm N qua lát cắt — scripts/ba_slice.py --module [M] --nhom [N] --print
     Bước 2: Review 4 Lớp Kỹ Thuật Chuẩn:
       - Lớp 1: HLD Alignment (Coverage 2 chiều, Iso-Grain Rule L1-GRAIN-MISMATCH, Bảng 7 cột, Temporal SQL)
       - Lớp 2: Attributes Verification (Atomic YAML thật, SCD4A, Flatten, Role-Playing Date FK, Parity Master Sync,
@@ -191,9 +232,12 @@ Khi người dùng yêu cầu điều tra một lỗi cụ thể (sai số liệ
 ## 7. GIAI ĐOẠN 2: BƯỚC 1 & 2 — MICRO-REVIEW CHI TIẾT TỪNG NHÓM (4 LỚP CHUẨN)
 
 ### Bước 1: Đọc BA Nhóm N
-- **TUYỆT ĐỐI KHÔNG gán cứng delimiter=';' hay delimiter=','** khi đọc file BA. Bắt buộc dùng hàm dò delimiter động `detect_delimiter_and_header()`.
-- Header nằm ở **dòng 1 với TOÀN BỘ 11 file hiện hành** (0-indexed: index 1). Dòng 0 là tiêu đề merge Excel.
-- Đọc file BA theo quy chuẩn `reference/ba_source_profile.md`. Lọc bỏ các chỉ tiêu Delete.
+- **KHÔNG Read thẳng file BA và KHÔNG dò delimiter nữa.** Dùng `python .claude/skills/datamart-review/scripts/ba_slice.py --module [M] --nhom [N] --print`.
+- Delimiter / dòng header / cột STT của cả 11 phân hệ đã khai và kiểm chứng trong
+  `system/rules/ba_column_profile.yaml`: header ở **index 1** với toàn bộ 11 file (dòng 0 là banner merge Excel),
+  **dòng legend ở index 2 phải bỏ**, ba phân hệ dùng `;` (FMS, TT, VP), và VP đặt tên cột số thứ tự là `TT`.
+  File BA lệch với profile → script dừng và báo lỗi, KHÔNG đoán tiếp.
+- Lát cắt đã lọc sẵn chỉ tiêu Delete.
 
 ### Bước 2: Kiểm Định Chi Tiết 4 Lớp Kỹ Thuật Chuẩn
 

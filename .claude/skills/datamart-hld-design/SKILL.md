@@ -52,6 +52,41 @@ description: |
 
 ---
 
+## QUY TẮC NGỮ CẢNH — TRẦN 500K TOKEN (BẮT BUỘC, ĐỌC TRƯỚC MỌI BƯỚC)
+
+**KHÔNG bao giờ Read trực tiếp 4 nhóm file này** — luôn đi qua lát cắt:
+
+| File | Vì sao | Thay bằng |
+|---|---|---|
+| `BRD/BA/BA_analyst_*.csv` | QLKD 998K token, GSĐC 443K | `ba_slice.py --index` rồi `--nhom N` |
+| `Datamart/hld/DTM_*_HLD.md` | TKNB 163K; bị yêu cầu đọc lại 2 lần/module | `ctx_slice.py --sections` + `--nhom N` |
+| `Datamart/lld/DTM_*_Detail_Mapping.csv` | QLKD 552K; TC4–TC7 cũ nạp lại 4 lần | `ctx_slice.py --nhom N`; kiểm tra bằng `lld_selfcheck.py` |
+| `Datamart/lld/datamart_attributes.csv` | master registry 800KB | `grep`, hoặc file per-table trong `Datamart/lld/{MODULE}/` |
+
+Ghi ngược lại file gốc bằng `apply_patch.py` — **không** Edit tay file lớn, **không** append mù
+(append chỉ đúng khi viết mới, sai khi sửa lại một Nhóm đã có: sinh Nhóm trùng và phá thứ tự TC6).
+
+Mọi script ở `.claude/skills/datamart-review/scripts/`. Kiểm ngân sách trước khi chạy bước nặng:
+
+```bash
+python .claude/skills/datamart-review/scripts/ctx_budget.py --module {MODULE} --all-steps
+```
+
+Ngân sách thực đo (Nhóm nặng nhất của phân hệ nặng nhất, trần 500.000):
+
+| Bước | p50 | Xấu nhất | Phân hệ xấu nhất |
+|---|---:|---:|---|
+| hld-phase1 | ~89K | 174K | TKNB |
+| hld-phase2 | ~56K | 64K | QLKD |
+| lld-phase1 | ~77K | 131K | GSĐC |
+| lld-phase2 | ~92K | **235K** | GSĐC |
+| lld-phase3 | ~68K | 120K | GSĐC |
+| review | ~88K | 88K | — |
+
+Nếu một bước vượt trần: chia nhỏ theo Nhóm, **không** nén hay bỏ bớt thông tin nghiệp vụ.
+
+---
+
 ## QUY TẮC CHỐNG TÁI DIỄN (ANTI-REGRESSION) — ĐỌC TRƯỚC KHI SỬA HLD
 
 > Rút ra từ sự cố PTTT/QLKD ngày 2026-09-18. Cả 5 quy tắc đều là lỗi **thật đã lọt lưới**,
@@ -138,114 +173,29 @@ Phase 2:  Sau khi Phase 1 duyệt → đọc Section 3 + Section 4 HLD → xuấ
 
 1. **BA file** (`BRD/BA/BA_analyst_{MODULE}.csv`) — extract toàn bộ dòng có `Trạng thái mapping ∈ {Done, Doing, Pending}` (TUYỆT ĐỐI LOẠI BỎ các dòng có `Trạng thái mapping` là `Delete`/`DELETED`/`Xóa`, không đưa vào thiết kế):
 
-   > ⚠️ **Đọc CSV chuẩn đa định dạng động (Dynamic Delimiter, Encoding & Header Engine):**
-   > File BA chứa cell multi-line (câu lệnh SQL, mô tả dài), sử dụng các chuẩn delimiter khác nhau (`,` hoặc `;`), encoding đa dạng (UTF-8 BOM, UTF-8, CP1258), và dòng header có thể nằm ở dòng index 0, 1 hoặc 2 (sau dòng banner tiêu đề / phân nhóm).
-   > **Quy tắc nhận diện động bắt buộc (tương thích engine `datamart_common.csv_utils`):**
-   > 1. **Mã hóa (Encoding):** Thử giải mã `utf-8-sig` (xử lý triệt để BOM `\ufeff`), nếu gặp lỗi `UnicodeDecodeError` thì fallback sang `cp1258` hoặc `latin-1`.
-   > 2. **Dấu phân cách (Delimiter Sniffer):** Không gán cứng theo tên module! Chạy thử nghiệm cả `,` và `;` trên 15 dòng đầu tiên, tính Mode Column Length (độ dài số cột phổ biến nhất) và Consistency (tỷ lệ dòng khớp Mode). Ưu tiên dấu phân cách cho Mode Length $\ge 15$ cột (đặc thù cấu trúc BA 15–18 cột) và độ nhất quán cao nhất.
-   > 3. **Dòng Header (Keyword Scoring Heuristics):** Quét qua 10 dòng đầu tiên, chấm điểm theo từ khóa đặc trưng (`stt`/`tt`: +6, `thông tin`/`chỉ tiêu`: +6, `phân loại`: +5, `trạng thái`: +5, `bảng nguồn`/`nguồn`: +5, `loại dữ liệu`/`dashboard`: +3). **Chống False Positive:** Nếu dòng chỉ có $\le 2$ ô có dữ liệu (dòng banner tiêu đề), trừ ngay 20 điểm (`score -= 20`). Dòng có điểm cao nhất là Header Row.
+   > ⚠️ **KHÔNG Read thẳng file BA.** `BA_analyst_QLKD.csv` là 998K token — một mình đã vượt
+   > trần ngữ cảnh 500K. Đơn vị công việc là MỘT Nhóm, và Nhóm nặng nhất toàn repo chỉ ~66K token.
    >
-   > ```python
-   > import csv, io, re
-   > from pathlib import Path
-   > from collections import Counter
-   > 
-   > raw_bytes = Path(f'BRD/BA/BA_analyst_{MODULE}.csv').read_bytes()
-   > try:
-   >     raw_text = raw_bytes.decode('utf-8-sig')
-   > except UnicodeDecodeError:
-   >     raw_text = raw_bytes.decode('cp1258', errors='replace')
-   > 
-   > # 1. Dynamic Delimiter Sniffer (Phân tích Mode & Consistency)
-   > def sniffer_delimiter(text: str) -> str:
-   >     lines = [l for l in text.splitlines() if l.strip()][:15]
-   >     best_delim, best_score = ',', -1
-   >     for d in [',', ';']:
-   >         try:
-   >             r = list(csv.reader(lines, delimiter=d))
-   >             lengths = [len(row) for row in r if row]
-   >             if not lengths:
-   >                 continue
-   >             mode_len, count = Counter(lengths).most_common(1)[0]
-   >             consistency = count / len(lengths)
-   >             # Ưu tiên cấu trúc BA đầy đủ (>= 15 cột) và độ nhất quán cao
-   >             score = (mode_len if mode_len >= 15 else mode_len * 0.5) * (consistency ** 2)
-   >             if score > best_score:
-   >                 best_score, best_delim = score, d
-   >         except Exception:
-   >             pass
-   >     return best_delim
-   > 
-   > delim = sniffer_delimiter(raw_text)
-   > reader = csv.reader(io.StringIO(raw_text), delimiter=delim)
-   > all_rows = [row for row in reader if any(c.strip() for c in row)]
-   > 
-   > # 2. Heuristic Header Detection (Chấm điểm từ khóa có phạt banner)
-   > KEYWORD_SCORES = {
-   >     'stt': 6, 'tt': 6, 'thông tin': 6, 'chỉ tiêu': 6, 'tên chỉ tiêu': 6,
-   >     'phân loại': 5, 'trạng thái': 5, 'trạng thái mapping': 5, 'bảng nguồn': 5, 'nguồn': 5,
-   >     'loại dữ liệu': 3, 'dashboard': 3, 'điều kiện': 3, 'mô tả': 3, 'sql': 3, 'ghi chú': 3
-   > }
-   > 
-   > hdr_idx, max_score = 0, -100
-   > for idx in range(min(10, len(all_rows))):
-   >     row = all_rows[idx]
-   >     non_empty = sum(1 for c in row if c.strip())
-   >     score = 0
-   >     if non_empty <= 2:
-   >         score -= 20  # Phạt nặng dòng banner tiêu đề
-   >     r_str = " ".join(c.lower() for c in row)
-   >     for kw, weight in KEYWORD_SCORES.items():
-   >         if kw in r_str:
-   >             score += weight
-   >     if score > max_score:
-   >         max_score, hdr_idx = score, idx
-   > 
-   > header = [c.strip() for c in all_rows[hdr_idx]]
-   > col_map = {name.lower(): i for i, name in enumerate(header) if name}
-   > 
-   > def get_val(row, aliases):
-   >     for a in aliases:
-   >         if a.lower() in col_map and len(row) > col_map[a.lower()]:
-   >             return row[col_map[a.lower()]].strip()
-   >     return ""
-   > 
-   > # 3. Trích xuất dòng KPI hợp lệ và nhận diện Nhóm linh hoạt:
-   > valid_kpis = []
-   > for row in all_rows[hdr_idx + 1:]:
-   >     name = get_val(row, ["Thông tin", "Thông tin (chỉ tiêu)", "Tên chỉ tiêu", "Chỉ tiêu"])
-   >     stt_raw = get_val(row, ["STT", "TT"])
-   >     ma_raw = get_val(row, ["Mã", "Group", "Nhóm"])
-   >     status = get_val(row, ["Trạng thái mapping", "Trạng thái"])
-   >     pl = get_val(row, ["Phân loại"])
-   >     src_tbl = get_val(row, ["Bảng nguồn", "Nguồn", "Khai thác nguồn", "Nguồn dữ liệu"])
-   >     dash = get_val(row, ["Dashboard/báo cáo", "Dashboard >> báo cáo", "Dashboard/BC"])
-   >     
-   >     # Bỏ qua dòng template/instruction/banner:
-   >     if not name or not dash:
-   >         continue
-   >     if "tên chiều/chỉ tiêu" in name.lower() or "chiều/chỉ tiêu cơ sở" in pl.lower():
-   >         continue
-   >     if not pl and not status and not src_tbl:
-   >         continue
-   >     # BỎ QUA 100% dòng có Trạng thái mapping là Delete / Xóa (L1-DELETE-VIOLATION):
-   >     if any(w in status.lower() for w in ["delete", "deleted", "xóa", "xoá", "bãi bỏ"]):
-   >         continue
-   >     
-   >     # Nhận diện STT nhóm nghiệp vụ (Group STT):
-   >     group_stt = stt_raw
-   >     clean_ma = re.sub(r'^(?:nhóm|group)\s*', '', ma_raw, flags=re.IGNORECASE).strip()
-   >     if clean_ma.isdigit() and (not stt_raw or '.' in stt_raw or not stt_raw.isdigit()):
-   >         group_stt = clean_ma
-   >     elif not stt_raw and ma_raw:
-   >         group_stt = ma_raw
-   >     
-   >     valid_kpis.append({
-   >         "group": group_stt, "name": name, "status": status, 
-   >         "classification": pl, "data_type": get_val(row, ["Loại dữ liệu"]),
-   >         "source_table": src_tbl, "dashboard": dash
-   >     })
+   > **Bước 1a — nạp bản đồ Nhóm (một lần mỗi phiên, ~0,3–7K token):**
+   > ```bash
+   > python .claude/skills/datamart-review/scripts/ba_slice.py --module {MODULE} --index
    > ```
+   > Sinh `Datamart/context/ba/BA_index_{MODULE}.csv`: mỗi Nhóm một dòng — số chỉ tiêu,
+   > đếm Done/Doing/Pending, đếm Chiều/Cơ sở/Phái sinh, token ước tính. Dùng nó để chọn Nhóm
+   > và lập todo list, KHÔNG dùng để thiết kế.
+   >
+   > **Bước 1b — nạp lát cắt Nhóm đang làm:**
+   > ```bash
+   > python .claude/skills/datamart-review/scripts/ba_slice.py --module {MODULE} --nhom {N} --print
+   > ```
+   > Lát cắt giữ **nguyên văn mọi ô nghiệp vụ** của Nhóm đó (đã kiểm chứng trên cả 11 phân hệ:
+   > không mất dòng, không mất ô). Chỉ bỏ cột theo dõi dự án và cột SQL; thêm `--with-sql` khi
+   > cần SQL (Phase 2 LLD). File gốc trong `BRD/BA/` KHÔNG bị sửa.
+   >
+   > Delimiter / dòng header / cột STT của từng phân hệ khai trong `system/rules/ba_column_profile.yaml`
+   > — **đã kiểm chứng, không dò động nữa**. Ba phân hệ dùng `;` (FMS, TT, VP), VP đặt tên cột số
+   > thứ tự là `TT` chứ không phải `STT`, và cả 11 file đều có dòng legend ở index 2 phải bỏ.
+   > File BA lệch với profile → script dừng và báo lỗi, KHÔNG đoán tiếp.
    > *(Mẹo: Designer có thể chạy trực tiếp CLI audit `python .claude/skills/datamart-review/scripts/check_ba_mapping.py --module {MODULE} --strict` để kiểm tra chéo tự động cấu trúc BA).*
    - `Phân loại = Chiều` → slicer/filter dimension — **phải có KPI_ID**, không được bỏ qua
    - `Phân loại = Cơ sở` + `Phái sinh` → KPI chỉ tiêu
@@ -292,7 +242,7 @@ Phase 2:  Sau khi Phase 1 duyệt → đọc Section 3 + Section 4 HLD → xuấ
   - Sau khi lấy code từ BA → cross-check với `DataModel/working/Atomic/lld/classification_schemes.yaml` để xác nhận scheme tồn tại.
   - Chỉ tạo Open Issue khi BA **thực sự không cung cấp** giá trị code. Nếu BA đã ghi rõ → dùng thẳng, không tạo issue thừa.
   - Ví dụ thực tế (VP module): BA ghi `Buy/Sell Client House Classification Code = '30'` → Tự doanh; `Foreign Investor Type Code <> '00'` → NĐTNN (negative filter). Sai nếu dùng `'PROP'` hay `= 'FI'` mà không đọc BA.
-- [ ] **Đọc full SQL/công thức tham khảo của MỌI dòng BA trước khi kết luận nguồn Atomic** — không suy diễn tên bảng/cột nguồn chỉ từ tên KPI hoặc khái niệm nghiệp vụ. Bắt buộc mở nguyên văn ô Công thức/Mô tả (thường chứa SQL tham khảo) và trích đúng: tên bảng JOIN, tên cột, điều kiện filter/LIKE — rồi mới tra sang Atomic. KHÔNG được giả định "chắc dùng entity X" vì nhóm trước cùng module đã dùng X cho khái niệm nghiệp vụ tương tự.
+- [ ] **Đọc full SQL/công thức tham khảo của MỌI dòng BA trong Nhóm đang xét trước khi kết luận nguồn Atomic** — lấy bằng `ba_slice.py --module {MODULE} --nhom {N} --with-sql --print` (phạm vi là Nhóm đang xét, KHÔNG phải cả phân hệ — cả phân hệ thì vượt trần ngữ cảnh). Không suy diễn tên bảng/cột nguồn chỉ từ tên KPI hoặc khái niệm nghiệp vụ. Bắt buộc mở nguyên văn ô Công thức/Mô tả (thường chứa SQL tham khảo) và trích đúng: tên bảng JOIN, tên cột, điều kiện filter/LIKE — rồi mới tra sang Atomic. KHÔNG được giả định "chắc dùng entity X" vì nhóm trước cùng module đã dùng X cho khái niệm nghiệp vụ tương tự.
 - [ ] **Không copy pattern nguồn từ Nhóm trước khi chưa tự đọc SQL của chính dòng BA đang xét** — kể cả khi Nhóm N-1 đã xác nhận Atomic entity Y là nguồn đúng cho 1 khái niệm (VD: "Dư nợ margin"), Nhóm N nhắc lại đúng khái niệm đó KHÔNG được mặc định dùng lại Y. Phải tự đọc SQL riêng của Nhóm N — nếu BA đổi bảng/report code/sheet khác thì đó là nguồn khác, không reuse. Đây là nguyên nhân đã gây sai lặp lại nhiều lần trong thực tế (QLKD: hàng loạt Nhóm giả định dùng chung 1 entity EAV suy diễn theo tên, trong khi BA SQL thực tế của từng Nhóm chỉ ra các report_code/sheet_name/cột LIKE khác nhau hoàn toàn — phải re-verify từng Nhóm riêng lẻ mới phát hiện ra).
 
 ---
