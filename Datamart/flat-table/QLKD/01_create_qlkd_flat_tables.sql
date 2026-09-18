@@ -544,7 +544,7 @@ COMMENT 'Flat table — Securities Company Report Data — raw data 102 bieu mau
 -- ============================================================
 -- 18. OPERATIONAL: qlkd_opr_securities_company_financial_report_hist_flat
 --    Securities Company Financial Report History — lich su BCTC cua CTCK
---    Grain: 1 CTCK x 1 ky bao cao tai chinh
+--    Grain: 1 CTCK x 1 ky bao cao tai chinh x 1 ma bieu mau (rpt_code)
 --    Joins: không JOIN dimension
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_securities_company_financial_report_hist_flat ON CLUSTER 'my_cluster'
@@ -555,6 +555,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_securities_company_financial_report
     sc_nm                                        Nullable(String)        COMMENT 'Tên CTCK.',
     rpt_year                                     Int64                   COMMENT 'Năm báo cáo.',
     rpt_period                                   String                  COMMENT 'Kỳ báo cáo (QUY, NAM, BAN_NIEN).',
+    rpt_code                                     String                  COMMENT '[MỚI 2026-09-18] Mã biểu mẫu báo cáo: BCTCHN=hợp nhất, BCTCRL=riêng lẻ, BCTCRLCTCK, BCTHHDKD_TH. Thuộc NK — cùng (CTCK, kỳ) có thể có cả hai bản.',
     period_nbr                                   Nullable(Int64)         COMMENT 'Số thứ tự kỳ (1-4).',
     revenue_amt                                  Nullable(Decimal(23,2)) COMMENT 'Doanh thu (tỷ VNĐ).',
     profit_after_tax_amt                         Nullable(Decimal(23,2)) COMMENT 'Lợi nhuận sau thuế (tỷ VNĐ).',
@@ -567,7 +568,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_securities_company_financial_report
 )
 ENGINE = ReplicatedReplacingMergeTree()
 ORDER BY (fin_rpt_hist_id)
-COMMENT 'Flat table — Securities Company Financial Report History — lich su BCTC cua CTCK'
+COMMENT 'Flat table — Securities Company Financial Report History — lich su BCTC cua CTCK (grain them rpt_code tu 2026-09-18)'
 ;
 
 

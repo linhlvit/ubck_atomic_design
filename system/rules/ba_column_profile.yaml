@@ -71,9 +71,13 @@ drop_rules:
     drop_column_matches: '^câu lệnh tham khảo\b'
     only_if_column_exists: '^câu lệnh update\s*\(sit\)$'
     reason: >-
-      BA đã khai báo tường minh "không dùng nữa, giữ lại để lưu vết"; bản sống là cột
-      "Câu lệnh update (SIT)". Hiện chỉ khớp QLKD — tiết kiệm 317.333 token (38,5% file).
-      File gốc BRD/BA/ giữ nguyên cột này, việc bỏ chỉ xảy ra trong lát cắt sinh ra.
+      BA khai báo tường minh "không dùng nữa, giữ lại để lưu vết"; bản sống là cột
+      "Câu lệnh update (SIT)". File gốc BRD/BA/ giữ nguyên cột này, việc bỏ chỉ xảy ra
+      trong lát cắt sinh ra.
+      [CẬP NHẬT 2026-09-18] Hiện KHÔNG module nào khớp: QLKD — module duy nhất từng khớp —
+      đã được BA gộp 2 cột SQL thành 1 ("Câu lệnh tham khảo (SIT)"), nên điều kiện
+      `only_if_column_exists` không còn thoả. Giữ lại rule vì nó viết theo điều kiện, không
+      hardcode tên module: nếu BA lặp lại mô-típ này ở phân hệ khác thì tự khớp.
 
 # ---------------------------------------------------------------------------
 # Hồ sơ từng module — chỉ khai những gì khác `defaults`
@@ -133,21 +137,21 @@ modules:
     expect_header_contains: ["STT", "Mã dashboard/BC", "Dashboard/báo cáo", "Trạng thái mapping"]
 
   QLKD:
-    expect_columns: 28
+    expect_columns: 27
     ma_column: "PIC"
-    sql_columns:
-      - "Câu lệnh tham khảo (không dùng nữa, giữ lại để lưu vết)"   # bị drop_rules loại
-      - "Câu lệnh update (SIT)"
+    sql_columns: ["Câu lệnh tham khảo (SIT)"]
     expect_header_contains:
       - "STT"
       - "PIC"
       - "Dashboard/báo cáo"
       - "Trạng thái mapping"
-      - "Câu lệnh tham khảo (không dùng nữa, giữ lại để lưu vết)"
-      - "Câu lệnh update (SIT)"
+      - "Câu lệnh tham khảo (SIT)"
     note: >-
-      Module DUY NHẤT khớp drop_rules.deprecated_reference_sql.
-      Cột `Mã` được đặt tên là `PIC`; cột `Trạng thái` (index 20) KHÁC `Trạng thái mapping` (index 13).
+      [CẬP NHẬT 2026-09-18] BA gộp 2 cột SQL thành 1: bỏ hẳn
+      "Câu lệnh tham khảo (không dùng nữa, giữ lại để lưu vết)" (cột S cũ, 482 ô có nội dung)
+      và đổi tên "Câu lệnh update (SIT)" thành "Câu lệnh tham khảo (SIT)" — nay là cột S
+      (index 18), bản sống DUY NHẤT. Từ đó QLKD KHÔNG còn khớp drop_rules nữa.
+      Cột `Mã` được đặt tên là `PIC`; cột `Trạng thái` (index 19) KHÁC `Trạng thái mapping` (13).
 
   TKNB:
     expect_columns: 29

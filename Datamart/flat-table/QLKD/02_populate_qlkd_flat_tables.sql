@@ -557,6 +557,7 @@ SELECT
     f.sc_nm,
     f.rpt_year,
     f.rpt_period,
+    f.rpt_code,
     f.period_nbr,
     f.revenue_amt,
     f.profit_after_tax_amt,

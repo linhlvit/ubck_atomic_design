@@ -13347,7 +13347,7 @@ entities:
         data_type: "string"
         nullable: false
         key: ""
-        description: "Mã hệ thống nguồn dữ liệu."
+        description: "Mã hệ thống nguồn dữ liệu. [RÀNG BUỘC ETL 2026-09-18] BA bỏ `ORDER BY fr.VERSION DESC FETCH FIRST 1 ROW ONLY` và đổi `FORM_REPORT_ID =` thành `IN`, nên nguồn trả về MỌI version của biểu mẫu. ETL PHẢI khử trùng theo (securities_company_dim_id, report_indicator_dim_id, rpt_year, rpt_period_tp_code, period_nbr, rpt_code), giữ bản nộp mới nhất theo submission_dt — Datamart giữ nguyên grain 1 dòng/khoá."
         source_atomic_table: "sc_report_input_value"
         source_atomic_column: "sc_report_input_value.src_stm_code"
 
@@ -13665,7 +13665,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "PK"
-        description: "Khóa chính lịch sử báo cáo tài chính."
+        description: "Khóa chính lịch sử báo cáo tài chính. [SỬA 2026-09-18] Bổ sung `rpt_code` vào khoá băm cùng lúc với việc đưa nó vào NK."
         source_atomic_table: "sc_periodic_report"
         source_atomic_column: null
       - logical_name: "Securities Company Code"
@@ -13704,6 +13704,15 @@ entities:
         description: "Kỳ báo cáo (QUY, NAM, BAN_NIEN)."
         source_atomic_table: "sc_periodic_report"
         source_atomic_column: "sc_periodic_report.rpt_period"
+      - logical_name: "Report Code"
+        physical_name: "rpt_code"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: false
+        key: "NK"
+        description: "[MỚI 2026-09-18] Mã biểu mẫu báo cáo (BCTCHN — hợp nhất, BCTCRL — riêng lẻ, BCTCRLCTCK, BCTHHDKD_TH). Bổ sung vào NK vì BA đưa thêm BCTC hợp nhất vào cùng nguồn: cùng một (CTCK, kỳ) nay có thể có cả bản hợp nhất lẫn riêng lẻ. Cùng quy ước với rpt_code đã có trên Fact Securities Company Financial Structure Snapshot."
+        source_atomic_table: "sc_report_input_submission"
+        source_atomic_column: "sc_report_input_submission.sc_rpt_code"
       - logical_name: "Period Number"
         physical_name: "period_nbr"
         data_domain: "Small Counter"
@@ -13773,7 +13782,7 @@ entities:
         data_type: "string"
         nullable: false
         key: ""
-        description: "Mã hệ thống nguồn dữ liệu."
+        description: "Mã hệ thống nguồn dữ liệu. [RÀNG BUỘC ETL 2026-09-18] BA bỏ `FETCH FIRST 1 ROW ONLY` nên nguồn này trả về moi version cua biểu mẫu. ETL PHẢI khử trùng theo (sc_code, rpt_year, rpt_period, rpt_code), giữ bản nộp moi nhat theo submission_dt — Datamart giữ nguyên grain 1 dong/khoa."
         source_atomic_table: "sc_report_input_value"
         source_atomic_column: "sc_report_input_value.src_stm_code"
       - logical_name: "Etl Process Timestamp"

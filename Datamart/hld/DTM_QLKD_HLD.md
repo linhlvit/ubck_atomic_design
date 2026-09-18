@@ -1340,6 +1340,9 @@ flowchart LR
 | K_QLKD_45 | TS TC sẵn sàng để bán — toàn TT | Cơ sở | READY |
 | K_QLKD_46 | Các khoản cho vay — toàn TT | Cơ sở | READY |
 | K_QLKD_47 | Tài sản khác — toàn TT | Cơ sở | READY |
+| K_QLKD_4265 | Loại BCTC (hợp nhất/riêng lẻ) | Chiều | READY |
+
+> **[MỚI 2026-09-18]** `K_QLKD_4265` — **Loại BCTC**: chiều lọc BẮT BUỘC sau khi BA đưa BCTC hợp nhất (`BCTCHN`) vào cùng nguồn với riêng lẻ (`BCTCRL`). Không lọc chiều này thì mọi measure đọc `fct_securities_company_financial_structure_snpst` / `opr_securities_company_financial_report_hist` sẽ cộng gộp cả hai bản báo cáo của cùng một (CTCK, chỉ tiêu, kỳ). Khai sinh tại Nhóm 8, reuse ở Nhóm 9, 11, 12, 14–25 (Fact) và 26–27 (Operational).
 
 ---
 
@@ -1362,6 +1365,9 @@ flowchart LR
 | K_QLKD_50 | Nợ phải trả dài hạn — toàn TT | Cơ sở | READY |
 | K_QLKD_51 | Vốn chủ sở hữu — toàn TT | Cơ sở | READY |
 | K_QLKD_52 | Nguồn vốn khác — toàn TT | Cơ sở | READY |
+| K_QLKD_4265 | Loại BCTC (hợp nhất/riêng lẻ) | Chiều | READY |
+
+> **[MỚI 2026-09-18]** `K_QLKD_4265` — **Loại BCTC**: chiều lọc BẮT BUỘC sau khi BA đưa BCTC hợp nhất (`BCTCHN`) vào cùng nguồn với riêng lẻ (`BCTCRL`). Không lọc chiều này thì mọi measure đọc `fct_securities_company_financial_structure_snpst` / `opr_securities_company_financial_report_hist` sẽ cộng gộp cả hai bản báo cáo của cùng một (CTCK, chỉ tiêu, kỳ). Khai sinh tại Nhóm 8, reuse ở Nhóm 9, 11, 12, 14–25 (Fact) và 26–27 (Operational).
 
 ---
 
@@ -1491,6 +1497,9 @@ flowchart LR
 | K_QLKD_61 | Lợi nhuận sau thuế chưa phân phối — toàn TT | Cơ sở | READY |
 | K_QLKD_62 | Quỹ và thặng dư vốn cổ phần — toàn TT | Cơ sở | READY |
 | K_QLKD_63 | Vốn khác — toàn TT | Cơ sở | READY |
+| K_QLKD_4265 | Loại BCTC (hợp nhất/riêng lẻ) | Chiều | READY |
+
+> **[MỚI 2026-09-18]** `K_QLKD_4265` — **Loại BCTC**: chiều lọc BẮT BUỘC sau khi BA đưa BCTC hợp nhất (`BCTCHN`) vào cùng nguồn với riêng lẻ (`BCTCRL`). Không lọc chiều này thì mọi measure đọc `fct_securities_company_financial_structure_snpst` / `opr_securities_company_financial_report_hist` sẽ cộng gộp cả hai bản báo cáo của cùng một (CTCK, chỉ tiêu, kỳ). Khai sinh tại Nhóm 8, reuse ở Nhóm 9, 11, 12, 14–25 (Fact) và 26–27 (Operational).
 
 ---
 
@@ -1510,6 +1519,9 @@ flowchart LR
 |---|---|---|---|
 | K_QLKD_64 | Chiều thời gian theo quý | Chiều | READY |
 | K_QLKD_65 | Vốn góp của chủ sở hữu — toàn TT | Cơ sở | READY |
+| K_QLKD_4265 | Loại BCTC (hợp nhất/riêng lẻ) | Chiều | READY |
+
+> **[MỚI 2026-09-18]** `K_QLKD_4265` — **Loại BCTC**: chiều lọc BẮT BUỘC sau khi BA đưa BCTC hợp nhất (`BCTCHN`) vào cùng nguồn với riêng lẻ (`BCTCRL`). Không lọc chiều này thì mọi measure đọc `fct_securities_company_financial_structure_snpst` / `opr_securities_company_financial_report_hist` sẽ cộng gộp cả hai bản báo cáo của cùng một (CTCK, chỉ tiêu, kỳ). Khai sinh tại Nhóm 8, reuse ở Nhóm 9, 11, 12, 14–25 (Fact) và 26–27 (Operational).
 
 ---
 
@@ -1640,6 +1652,9 @@ flowchart LR
 | K_QLKD_75 | Số CTCK TLVKD mức cao (>150%) | Cơ sở | READY |
 | K_QLKD_76 | Số CTCK TLVKD mức trung bình (120–150%) | Cơ sở | READY |
 | K_QLKD_77 | Số CTCK TLVKD mức thấp (<120%) | Cơ sở | READY |
+| K_QLKD_4265 | Loại BCTC (hợp nhất/riêng lẻ) | Chiều | READY |
+
+> **[MỚI 2026-09-18]** `K_QLKD_4265` — **Loại BCTC**: chiều lọc BẮT BUỘC sau khi BA đưa BCTC hợp nhất (`BCTCHN`) vào cùng nguồn với riêng lẻ (`BCTCRL`). Không lọc chiều này thì mọi measure đọc `fct_securities_company_financial_structure_snpst` / `opr_securities_company_financial_report_hist` sẽ cộng gộp cả hai bản báo cáo của cùng một (CTCK, chỉ tiêu, kỳ). Khai sinh tại Nhóm 8, reuse ở Nhóm 9, 11, 12, 14–25 (Fact) và 26–27 (Operational).
 
 ---
 
@@ -1678,6 +1693,9 @@ flowchart LR
 | K_QLKD_83 | Cơ cấu DT nghiệp vụ tư vấn | Cơ sở | READY |
 | K_QLKD_84 | Cơ cấu DT nghiệp vụ bảo lãnh | Cơ sở | READY |
 | K_QLKD_85 | Cơ cấu DT nghiệp vụ khác | Cơ sở | READY |
+| K_QLKD_4265 | Loại BCTC (hợp nhất/riêng lẻ) | Chiều | READY |
+
+> **[MỚI 2026-09-18]** `K_QLKD_4265` — **Loại BCTC**: chiều lọc BẮT BUỘC sau khi BA đưa BCTC hợp nhất (`BCTCHN`) vào cùng nguồn với riêng lẻ (`BCTCRL`). Không lọc chiều này thì mọi measure đọc `fct_securities_company_financial_structure_snpst` / `opr_securities_company_financial_report_hist` sẽ cộng gộp cả hai bản báo cáo của cùng một (CTCK, chỉ tiêu, kỳ). Khai sinh tại Nhóm 8, reuse ở Nhóm 9, 11, 12, 14–25 (Fact) và 26–27 (Operational).
 
 ---
 
@@ -1724,6 +1742,9 @@ flowchart LR
 | K_QLKD_89 | Chỉ số HNX Index | Điểm | Cơ sở | `fct_market_index_snpst.market_index_val` JOIN `market_index_dim` WHERE `market_index_dim.market_code = 'HNX'` JOIN `cdr_dt_dim` WHERE `cdr_dt_dim.cdr_dt = LAST_DAY(:pmonth)` — bản ghi cuối tháng (filter tường minh trên Fact grain-ngày, sửa 24/07/2026) | — | READY |
 | K_QLKD_90 | Chỉ số UPCOM Index | Điểm | Cơ sở | `fct_market_index_snpst.market_index_val` JOIN `market_index_dim` WHERE `market_index_dim.market_code = 'UPCOM'` JOIN `cdr_dt_dim` WHERE `cdr_dt_dim.cdr_dt = LAST_DAY(:pmonth)` — bản ghi cuối tháng (filter tường minh trên Fact grain-ngày, sửa 24/07/2026) | — | READY |
 | K_QLKD_91 | Chỉ số VN30 | Điểm | Cơ sở | `fct_market_index_snpst.market_index_val` JOIN `market_index_dim` WHERE `market_index_dim.market_code = '30'` JOIN `cdr_dt_dim` WHERE `cdr_dt_dim.cdr_dt = LAST_DAY(:pmonth)` — bản ghi cuối tháng (filter tường minh trên Fact grain-ngày, sửa 24/07/2026) | — | READY |
+| K_QLKD_4265 | Loại BCTC (hợp nhất/riêng lẻ) | — | Chiều | `fct_securities_company_financial_structure_snpst.rpt_code` | **[MỚI 2026-09-18]** Reuse từ Nhóm 8 — phân biệt BCTCHN (hợp nhất) / BCTCRL (riêng lẻ) | READY |
+
+> **[MỚI 2026-09-18]** `K_QLKD_4265` — **Loại BCTC**: chiều lọc BẮT BUỘC sau khi BA đưa BCTC hợp nhất (`BCTCHN`) vào cùng nguồn với riêng lẻ (`BCTCRL`). Không lọc chiều này thì mọi measure đọc `fct_securities_company_financial_structure_snpst` / `opr_securities_company_financial_report_hist` sẽ cộng gộp cả hai bản báo cáo của cùng một (CTCK, chỉ tiêu, kỳ). Khai sinh tại Nhóm 8, reuse ở Nhóm 9, 11, 12, 14–25 (Fact) và 26–27 (Operational).
 
 **Atomic (K_QLKD_88–91):** Không có gap — `Market Index Snapshot` ← `MDDS.JAD_MARKETINFOR` READY (track draft, chưa approved).
 - Grain Atomic: 1 market_code × 1 ngày × 1 index_time
@@ -1825,6 +1846,9 @@ flowchart LR
 | K_QLKD_94 | Chiều top CTCK có thị phần cao nhất | Chiều | READY |
 | K_QLKD_95 | Thị phần môi giới của từng CTCK | Cơ sở | READY |
 | K_QLKD_96 | Xếp hạng thị phần môi giới | Phái sinh | READY |
+| K_QLKD_4265 | Loại BCTC (hợp nhất/riêng lẻ) | Chiều | READY |
+
+> **[MỚI 2026-09-18]** `K_QLKD_4265` — **Loại BCTC**: chiều lọc BẮT BUỘC sau khi BA đưa BCTC hợp nhất (`BCTCHN`) vào cùng nguồn với riêng lẻ (`BCTCRL`). Không lọc chiều này thì mọi measure đọc `fct_securities_company_financial_structure_snpst` / `opr_securities_company_financial_report_hist` sẽ cộng gộp cả hai bản báo cáo của cùng một (CTCK, chỉ tiêu, kỳ). Khai sinh tại Nhóm 8, reuse ở Nhóm 9, 11, 12, 14–25 (Fact) và 26–27 (Operational).
 
 ---
 
@@ -1855,6 +1879,9 @@ flowchart LR
 | K_QLKD_97 | Chiều mã CTCK | Chiều | READY |
 | K_QLKD_98 | LNST — per CTCK | Cơ sở | READY |
 | K_QLKD_99 | CFO (dòng tiền hoạt động KD) — per CTCK | Cơ sở | READY |
+| K_QLKD_4265 | Loại BCTC (hợp nhất/riêng lẻ) | Chiều | READY |
+
+> **[MỚI 2026-09-18]** `K_QLKD_4265` — **Loại BCTC**: chiều lọc BẮT BUỘC sau khi BA đưa BCTC hợp nhất (`BCTCHN`) vào cùng nguồn với riêng lẻ (`BCTCRL`). Không lọc chiều này thì mọi measure đọc `fct_securities_company_financial_structure_snpst` / `opr_securities_company_financial_report_hist` sẽ cộng gộp cả hai bản báo cáo của cùng một (CTCK, chỉ tiêu, kỳ). Khai sinh tại Nhóm 8, reuse ở Nhóm 9, 11, 12, 14–25 (Fact) và 26–27 (Operational).
 
 ---
 
@@ -1900,6 +1927,9 @@ flowchart LR
 | K_QLKD_104 | Tỷ lệ ATTC — per CTCK | Cơ sở | READY |
 | K_QLKD_105 | Số nhân viên — per CTCK | Cơ sở | PENDING |
 | K_QLKD_106 | Vốn điều lệ — per CTCK | Cơ sở | READY |
+| K_QLKD_4265 | Loại BCTC (hợp nhất/riêng lẻ) | Chiều | READY |
+
+> **[MỚI 2026-09-18]** `K_QLKD_4265` — **Loại BCTC**: chiều lọc BẮT BUỘC sau khi BA đưa BCTC hợp nhất (`BCTCHN`) vào cùng nguồn với riêng lẻ (`BCTCRL`). Không lọc chiều này thì mọi measure đọc `fct_securities_company_financial_structure_snpst` / `opr_securities_company_financial_report_hist` sẽ cộng gộp cả hai bản báo cáo của cùng một (CTCK, chỉ tiêu, kỳ). Khai sinh tại Nhóm 8, reuse ở Nhóm 9, 11, 12, 14–25 (Fact) và 26–27 (Operational).
 
 ---
 
@@ -1931,6 +1961,9 @@ flowchart LR
 | KPI ID | Tên KPI | Tính chất | Trạng thái |
 |---|---|---|---|
 | K_QLKD_107 | Biến động vốn CSH theo quý — per CTCK | Cơ sở | READY |
+| K_QLKD_4265 | Loại BCTC (hợp nhất/riêng lẻ) | Chiều | READY |
+
+> **[MỚI 2026-09-18]** `K_QLKD_4265` — **Loại BCTC**: chiều lọc BẮT BUỘC sau khi BA đưa BCTC hợp nhất (`BCTCHN`) vào cùng nguồn với riêng lẻ (`BCTCRL`). Không lọc chiều này thì mọi measure đọc `fct_securities_company_financial_structure_snpst` / `opr_securities_company_financial_report_hist` sẽ cộng gộp cả hai bản báo cáo của cùng một (CTCK, chỉ tiêu, kỳ). Khai sinh tại Nhóm 8, reuse ở Nhóm 9, 11, 12, 14–25 (Fact) và 26–27 (Operational).
 
 ---
 
@@ -1968,6 +2001,9 @@ flowchart LR
 | K_QLKD_113 | Tài sản tài chính sẵn sàng để bán — per CTCK | Cơ sở | READY |
 | K_QLKD_114 | Các khoản cho vay — per CTCK | Cơ sở | READY |
 | K_QLKD_115 | Khác — per CTCK | Cơ sở | READY |
+| K_QLKD_4265 | Loại BCTC (hợp nhất/riêng lẻ) | Chiều | READY |
+
+> **[MỚI 2026-09-18]** `K_QLKD_4265` — **Loại BCTC**: chiều lọc BẮT BUỘC sau khi BA đưa BCTC hợp nhất (`BCTCHN`) vào cùng nguồn với riêng lẻ (`BCTCRL`). Không lọc chiều này thì mọi measure đọc `fct_securities_company_financial_structure_snpst` / `opr_securities_company_financial_report_hist` sẽ cộng gộp cả hai bản báo cáo của cùng một (CTCK, chỉ tiêu, kỳ). Khai sinh tại Nhóm 8, reuse ở Nhóm 9, 11, 12, 14–25 (Fact) và 26–27 (Operational).
 
 ---
 
@@ -2002,6 +2038,9 @@ flowchart LR
 | K_QLKD_117 | Nợ phải trả dài hạn — per CTCK | Cơ sở | READY |
 | K_QLKD_118 | Vốn chủ sở hữu — per CTCK | Cơ sở | READY |
 | K_QLKD_119 | Khác — per CTCK | Cơ sở | READY |
+| K_QLKD_4265 | Loại BCTC (hợp nhất/riêng lẻ) | Chiều | READY |
+
+> **[MỚI 2026-09-18]** `K_QLKD_4265` — **Loại BCTC**: chiều lọc BẮT BUỘC sau khi BA đưa BCTC hợp nhất (`BCTCHN`) vào cùng nguồn với riêng lẻ (`BCTCRL`). Không lọc chiều này thì mọi measure đọc `fct_securities_company_financial_structure_snpst` / `opr_securities_company_financial_report_hist` sẽ cộng gộp cả hai bản báo cáo của cùng một (CTCK, chỉ tiêu, kỳ). Khai sinh tại Nhóm 8, reuse ở Nhóm 9, 11, 12, 14–25 (Fact) và 26–27 (Operational).
 
 ---
 
@@ -2036,6 +2075,9 @@ flowchart LR
 | K_QLKD_124 | Cơ cấu doanh thu theo nghiệp vụ bảo lãnh — per CTCK | Cơ sở | READY |
 | K_QLKD_125 | Doanh thu — per CTCK | Cơ sở | READY |
 | K_QLKD_126 | Lợi nhuận sau thuế — per CTCK | Cơ sở | READY |
+| K_QLKD_4265 | Loại BCTC (hợp nhất/riêng lẻ) | Chiều | READY |
+
+> **[MỚI 2026-09-18]** `K_QLKD_4265` — **Loại BCTC**: chiều lọc BẮT BUỘC sau khi BA đưa BCTC hợp nhất (`BCTCHN`) vào cùng nguồn với riêng lẻ (`BCTCRL`). Không lọc chiều này thì mọi measure đọc `fct_securities_company_financial_structure_snpst` / `opr_securities_company_financial_report_hist` sẽ cộng gộp cả hai bản báo cáo của cùng một (CTCK, chỉ tiêu, kỳ). Khai sinh tại Nhóm 8, reuse ở Nhóm 9, 11, 12, 14–25 (Fact) và 26–27 (Operational).
 
 ---
 
@@ -2067,6 +2109,9 @@ flowchart LR
 |---|---|---|---|
 | K_QLKD_127 | Chiều thời gian theo tháng | Chiều | READY |
 | K_QLKD_128 | Tỷ lệ dư nợ Margin/VCSH — per CTCK | Phái sinh | READY |
+| K_QLKD_4265 | Loại BCTC (hợp nhất/riêng lẻ) | Chiều | READY |
+
+> **[MỚI 2026-09-18]** `K_QLKD_4265` — **Loại BCTC**: chiều lọc BẮT BUỘC sau khi BA đưa BCTC hợp nhất (`BCTCHN`) vào cùng nguồn với riêng lẻ (`BCTCRL`). Không lọc chiều này thì mọi measure đọc `fct_securities_company_financial_structure_snpst` / `opr_securities_company_financial_report_hist` sẽ cộng gộp cả hai bản báo cáo của cùng một (CTCK, chỉ tiêu, kỳ). Khai sinh tại Nhóm 8, reuse ở Nhóm 9, 11, 12, 14–25 (Fact) và 26–27 (Operational).
 
 ---
 
@@ -2096,6 +2141,9 @@ flowchart LR
 |---|---|---|---|
 | K_QLKD_127 | Chiều thời gian theo tháng (reuse từ Nhóm 24) | Chiều | READY |
 | K_QLKD_129 | Tỷ lệ ATTC theo tháng — per CTCK | Cơ sở | READY |
+| K_QLKD_4265 | Loại BCTC (hợp nhất/riêng lẻ) | Chiều | READY |
+
+> **[MỚI 2026-09-18]** `K_QLKD_4265` — **Loại BCTC**: chiều lọc BẮT BUỘC sau khi BA đưa BCTC hợp nhất (`BCTCHN`) vào cùng nguồn với riêng lẻ (`BCTCRL`). Không lọc chiều này thì mọi measure đọc `fct_securities_company_financial_structure_snpst` / `opr_securities_company_financial_report_hist` sẽ cộng gộp cả hai bản báo cáo của cùng một (CTCK, chỉ tiêu, kỳ). Khai sinh tại Nhóm 8, reuse ở Nhóm 9, 11, 12, 14–25 (Fact) và 26–27 (Operational).
 
 ---
 
@@ -2133,6 +2181,9 @@ flowchart LR
 | K_QLKD_132 | Lợi nhuận sau thuế YTD — per CTCK | Cơ sở | READY |
 | K_QLKD_133 | ROA — per CTCK | Phái sinh | READY |
 | K_QLKD_134 | ROE — per CTCK | Phái sinh | READY |
+| K_QLKD_4265 | Loại BCTC (hợp nhất/riêng lẻ) | Chiều | READY |
+
+> **[MỚI 2026-09-18]** `K_QLKD_4265` — **Loại BCTC**: chiều lọc BẮT BUỘC sau khi BA đưa BCTC hợp nhất (`BCTCHN`) vào cùng nguồn với riêng lẻ (`BCTCRL`). Không lọc chiều này thì mọi measure đọc `fct_securities_company_financial_structure_snpst` / `opr_securities_company_financial_report_hist` sẽ cộng gộp cả hai bản báo cáo của cùng một (CTCK, chỉ tiêu, kỳ). Khai sinh tại Nhóm 8, reuse ở Nhóm 9, 11, 12, 14–25 (Fact) và 26–27 (Operational).
 
 ---
 
@@ -2169,6 +2220,9 @@ flowchart LR
 | K_QLKD_139 | ROE (%) — theo từng kỳ | Phái sinh | READY |
 | K_QLKD_140 | Ngày nộp — theo từng kỳ | Cơ sở | READY |
 | K_QLKD_141 | Trạng thái — theo từng kỳ | Cơ sở | READY |
+| K_QLKD_4265 | Loại BCTC (hợp nhất/riêng lẻ) | Chiều | READY |
+
+> **[MỚI 2026-09-18]** `K_QLKD_4265` — **Loại BCTC**: chiều lọc BẮT BUỘC sau khi BA đưa BCTC hợp nhất (`BCTCHN`) vào cùng nguồn với riêng lẻ (`BCTCRL`). Không lọc chiều này thì mọi measure đọc `fct_securities_company_financial_structure_snpst` / `opr_securities_company_financial_report_hist` sẽ cộng gộp cả hai bản báo cáo của cùng một (CTCK, chỉ tiêu, kỳ). Khai sinh tại Nhóm 8, reuse ở Nhóm 9, 11, 12, 14–25 (Fact) và 26–27 (Operational).
 
 ---
 
@@ -3068,7 +3122,7 @@ graph TB
 |---|---|---|---|---|
 | Fact Securities Company Status Snapshot | Periodic Snapshot | 1 CTCK × 1 ngày | K_QLKD_1–13 (Nhóm 1) | READY (trừ K_QLKD_12–13 PENDING) |
 | Fact Securities Company License Condition Snapshot | Periodic Snapshot | 1 CTCK × 1 loại giấy phép × 1 ngày | K_QLKD_30–40 (Nhóm 5/6/7) | READY |
-| Fact Securities Company Financial Structure Snapshot | Periodic Snapshot | 1 CTCK × 1 chỉ tiêu BCTC × 1 kỳ | K_QLKD_41–52 (Nhóm 8/9), K_QLKD_59–65 (Nhóm 11/12), K_QLKD_73–131 (Nhóm 14/15/16/17/18/19/20/21/22/23/24/25) — trừ K_QLKD_88–91 (Cụm 6b, nguồn MDDS.JAD_MARKETINFOR — khác Fact, READY) | **READY** (nâng 17/09/2026 — nguồn sc_report_input_value, O_QLKD_23 Closed) |
+| Fact Securities Company Financial Structure Snapshot | Periodic Snapshot | 1 CTCK × 1 chỉ tiêu BCTC × 1 kỳ × 1 mã biểu mẫu (`rpt_code`) — **[SỬA 2026-09-18]** bổ sung `rpt_code` vào grain: BA đưa thêm BCTC hợp nhất (BCTCHN) vào cùng nguồn với riêng lẻ (BCTCRL), nên cùng một (CTCK, chỉ tiêu, kỳ) nay có 2 bản ghi. `rpt_code` vốn đã có trên Fact dưới dạng DD nhưng bị bỏ sót khỏi grain khai báo | K_QLKD_41–52 (Nhóm 8/9), K_QLKD_59–65 (Nhóm 11/12), K_QLKD_73–131 (Nhóm 14/15/16/17/18/19/20/21/22/23/24/25) — trừ K_QLKD_88–91 (Cụm 6b, nguồn MDDS.JAD_MARKETINFOR — khác Fact, READY) | **READY** (nâng 17/09/2026 — nguồn sc_report_input_value, O_QLKD_23 Closed) |
 | Fact Securities Company Capital Raising Event | Event | 1 đợt chào bán/phát hành hợp lệ (aggregated theo tháng × hình thức tăng vốn, toàn thị trường) | K_QLKD_66–72 (Nhóm 13) | READY |
 | Fact Market Index Snapshot | Periodic Snapshot | 1 chỉ số (market_code) × 1 ngày (sửa 24/07/2026 — trước đây 1 tháng) | K_QLKD_88–91 (Nhóm 16) | **READY** (O_QLKD_8 Closed) |
 | Fact Securities Company Compliance Report Snapshot | Periodic Snapshot | 1 CTCK × 1 loại báo cáo (ADHOC/PERIODIC) × 1 kỳ/ngày sự vụ | K_QLKD_53–58, K_QLKD_4261–4264 (Nhóm 10) | **READY** (sửa 05/09/2026 — thiết kế lại đúng nguồn `sc_adhoc_report`/`sc_periodic_report`) |
@@ -3078,7 +3132,7 @@ graph TB
 
 | Bảng | Grain | KPI | Trạng thái |
 |---|---|---|---|
-| Securities Company Financial Report History | 1 CTCK × 1 kỳ BC BCTC | K_QLKD_130–141 (Nhóm 26/27) | **READY** (nâng 17/09/2026 — nguồn sc_report_input_value, O_QLKD_23 Closed) |
+| Securities Company Financial Report History | 1 CTCK × 1 kỳ BC BCTC × 1 mã biểu mẫu (`rpt_code`) — **[SỬA 2026-09-18]** cùng lý do; đã bổ sung cột `rpt_code` vào NK và vào khoá băm PK | K_QLKD_130–141 (Nhóm 26/27) | **READY** (nâng 17/09/2026 — nguồn sc_report_input_value, O_QLKD_23 Closed) |
 | Operational Securities Company Personnel Profile | 1 nhân sự cao cấp × 1 CTCK | K_QLKD_155–160 (Nhóm 31) | READY |
 | Securities Company Practitioner Profile | 1 người HN × 1 CTCK | K_QLKD_142–154 (Nhóm 28/29/30) | **READY** (nâng 17/09/2026 — nguồn sc_report_input_value, O_QLKD_23 Closed) |
 | Operational Securities Company Compliance History | 1 CTCK × 1 sự kiện | K_QLKD_188, 197–203 READY; K_QLKD_186–187, 190–196 **PENDING** (Nhóm 38/39/40 — gating dữ liệu động) | **Partial READY** |
