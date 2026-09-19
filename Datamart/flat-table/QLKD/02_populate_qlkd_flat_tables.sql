@@ -331,7 +331,8 @@ SELECT
     o.supplementary_penalty_nm,
     o.remedial_measure_nm,
     o.sc_code,
-    o.src_stm_code
+    o.src_stm_code,
+    o.event_dt
 
 FROM datamart.opr_securities_company_compliance_hist o
 ;
