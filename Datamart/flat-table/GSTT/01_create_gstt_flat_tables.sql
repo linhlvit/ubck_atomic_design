@@ -74,7 +74,11 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_fct_stock_portfolio_snpst_flat ON CLUST
     domestic_institution_buy_vol        Nullable(Int64)         COMMENT 'Khối lượng mua của tổ chức trong nước',
     domestic_institution_sell_vol       Nullable(Int64)         COMMENT 'Khối lượng bán của tổ chức trong nước',
     fct_close_price                     Nullable(Decimal(23,2)) COMMENT '[SỬA 2026-09-07] Giá đóng cửa theo ngày lưu trên Fact (khác close_price ở Security Trading Snapshot Dimension — SCD4A current-state) — bổ sung 2026-09-04, thiếu sót trong flat table trước đây, nay bổ sung để phục vụ window function K_GSTT_106/107/140-143 (Đỉnh/Đáy cũ)',
+    fct_high_price                      Nullable(Decimal(23,2)) COMMENT '[SỬA 2026-09-19, lần 4] Giá cao nhất theo ngày lưu trên Fact (khác high_price ở Security Trading Snapshot Dimension — SCD4A current-state) — phục vụ window function K_GSTT_106/140/141 (Đỉnh cũ/Giá cao nhất N tháng), đổi lại từ close_price sau khi đối chiếu lại BA (Nhóm 15/17/32)',
+    fct_low_price                       Nullable(Decimal(23,2)) COMMENT '[SỬA 2026-09-19, lần 4] Giá thấp nhất theo ngày lưu trên Fact — phục vụ window function K_GSTT_107/142/143 (Đáy cũ/Giá thấp nhất N tháng)',
     fct_reference_price                 Nullable(Decimal(23,2)) COMMENT '[MỚI 2026-09-14, đóng O_GSTT_21 — đơn giản hóa theo góp ý Data Modeler] Giá tham chiếu theo ngày lưu trên Fact — đã do sàn tính đúng theo quy tắc riêng từng sàn (HOSE/HNX = Close Price phiên trước, UPCOM = VWAP phiên trước). Phục vụ K_GSTT_145: lấy thẳng dòng tại Từ ngày, không cần self-join/CASE floor',
+    prior_market_cap                    Nullable(Decimal(23,2)) COMMENT '[MỚI 2026-09-19, review Nhóm 24, xem O_GSTT_25] Vốn hóa mã CK tại phiên LIỀN TRƯỚC (T-1) — LAG(Close Price × Outstanding Share Quantity), lưu sẵn trên dòng T. Phục vụ K_GSTT_74 (trọng số w_i đúng ngày T-1, sửa bug lấy nhầm vốn hóa ngày T)',
+    prior_free_float_market_cap         Nullable(Decimal(23,2)) COMMENT '[MỚI 2026-09-19, review Nhóm 24, xem O_GSTT_25] Vốn hóa tự do chuyển nhượng mã CK tại phiên LIỀN TRƯỚC (T-1) — LAG(Close Price × Free Float Share Quantity). Phục vụ K_GSTT_76 (trọng số w_ff_i đúng ngày T-1)',
     free_float_share_quantity           Nullable(Int64)         COMMENT '[SỬA 2026-09-14] Khối lượng cổ phiếu tự do chuyển nhượng — nguồn VSDC listed_share_info (outstanding_shares), phục vụ K_GSTT_76/125 (Nhóm 24)',
 
     -- From: CALENDAR DATE DIMENSION
@@ -176,6 +180,11 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_fct_index_constituent_snpst_flat ON CLU
     idx_total_negotiated_val            Nullable(Decimal(23,2)) COMMENT '[MỚI 2026-09-14] Tổng GTGD thỏa thuận toàn rổ chỉ số theo Index+Date — lặp lại trên mọi dòng symbol cùng rổ, không SUM lại',
     idx_market_cap                      Nullable(Decimal(23,2)) COMMENT '[MỚI 2026-09-14, SỬA 2026-09-16] Vốn hóa thị trường toàn rổ chỉ số theo Index+Date (nguồn VSDC listed_share_info) — lặp lại trên mọi dòng symbol cùng rổ, không SUM lại',
     idx_free_float_market_cap           Nullable(Decimal(23,2)) COMMENT '[MỚI 2026-09-14] Vốn hóa tự do chuyển nhượng toàn rổ chỉ số theo Index+Date — lặp lại trên mọi dòng symbol cùng rổ, không SUM lại',
+    idx_pe                               Nullable(Decimal(10,2)) COMMENT '[MỚI 2026-09-19, review Nhóm 6] P/E CỦA CHỈ SỐ = SUM(Vốn hóa mã có LNST TTM)/SUM(LNST TTM) theo Index+Date — khác K_GSTT_58 (P/E từng mã, trên fct_stock_portfolio_snpst). Lặp lại trên mọi dòng symbol cùng rổ, không SUM/AVG lại',
+    idx_pb                               Nullable(Decimal(10,2)) COMMENT '[MỚI 2026-09-19, review Nhóm 6] P/B CỦA CHỈ SỐ = SUM(Vốn hóa mã có VCSH)/SUM(VCSH) theo Index+Date — khác K_GSTT_59 (P/B từng mã). Lặp lại trên mọi dòng symbol cùng rổ, không SUM/AVG lại',
+    idx_eps                             Nullable(Decimal(23,2)) COMMENT '[MỚI 2026-09-19, review Nhóm 6] EPS CỦA CHỈ SỐ = SUM(LNST TTM)/SUM(Số CP lưu hành) theo Index+Date — khác K_GSTT_60 (EPS từng mã); xem O_GSTT_24 về lọc mẫu số. Lặp lại trên mọi dòng symbol cùng rổ, không SUM/AVG lại',
+    idx_prior_market_cap                Nullable(Decimal(23,2)) COMMENT '[MỚI 2026-09-19, review Nhóm 24, xem O_GSTT_25] LAG(idx_market_cap) 1 phiên theo Index Code — Tổng vốn hóa rổ chỉ số tại T-1. Phục vụ K_GSTT_74 (mẫu số trọng số w_i đúng ngày T-1)',
+    idx_prior_free_float_market_cap     Nullable(Decimal(23,2)) COMMENT '[MỚI 2026-09-19, review Nhóm 24, xem O_GSTT_25] LAG(idx_free_float_market_cap) 1 phiên theo Index Code — Tổng vốn hóa tự do chuyển nhượng rổ tại T-1. Phục vụ K_GSTT_76 (mẫu số w_ff_i)',
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                              Nullable(Date)          COMMENT 'Ngày giao dịch — từ Calendar Date Dimension',

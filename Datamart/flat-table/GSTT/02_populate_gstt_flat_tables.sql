@@ -76,7 +76,11 @@ SELECT
     f.domestic_institution_buy_vol,
     f.domestic_institution_sell_vol,
     f.close_price                                  AS fct_close_price,
+    f.high_price                                   AS fct_high_price,
+    f.low_price                                    AS fct_low_price,
     f.reference_price                              AS fct_reference_price,
+    f.prior_market_cap,
+    f.prior_free_float_market_cap,
     f.free_float_share_quantity,
 
     -- From: CALENDAR DATE DIMENSION
@@ -177,6 +181,11 @@ SELECT
     f.idx_total_negotiated_val,
     f.idx_market_cap,
     f.idx_free_float_market_cap,
+    f.idx_pe,
+    f.idx_pb,
+    f.idx_eps,
+    f.idx_prior_market_cap,
+    f.idx_prior_free_float_market_cap,
 
     -- From: CALENDAR DATE DIMENSION
     cal.cdr_dt                                     AS cdr_dt,
