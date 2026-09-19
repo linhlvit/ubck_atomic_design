@@ -334,6 +334,7 @@ SELECT
     -- From: OPERATIONAL Public Company Shareholding
     o.public_company_shareholding_code,
     o.public_company_code,
+    o.equity_ticker_symbol,
     o.legal_entity_code,
     o.legal_entity_nm,
     o.ownership_quantity,

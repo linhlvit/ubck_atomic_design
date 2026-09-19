@@ -333,14 +333,19 @@ COMMENT 'Flat table — Fact Foreign Trading Minute Snapshot × Calendar Date Di
 --    denormalize Position Code từ Legal Entity Position (K_GSTT_104 vẫn dùng
 --    `legal_entity_position_dim` độc lập, không đổi). Phục vụ Nhóm 31 (8/8 KPI
 --    READY) và Nhóm 34 (Data Explorer, reuse 6/8 KPI). Không FK Star Schema —
---    Operational denormalized hoàn toàn, K_GSTT_100 (Mã cổ phiếu) vẫn dùng riêng
---    `public_company_dim` (Nhóm 1), không phải cột của bảng này.
+--    Operational denormalized hoàn toàn.
+--    [SỬA 2026-09-19, review K_GSTT_100] Trước đây K_GSTT_100 (Mã cổ phiếu) dùng
+--    riêng `public_company_dim` qua JOIN runtime — bản thân cách đó cũng SAI (lấy
+--    nhầm Public Company Code, khóa nội bộ, thay vì Equity Ticker Symbol). Đã bỏ
+--    JOIN runtime, denormalize thẳng `equity_ticker_symbol` lên bảng này, tái dùng
+--    chính JOIN `public_company` đã có sẵn cho `current_foreign_holding_ratio`.
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.gstt_opr_public_company_shareholding_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Public Company Shareholding
     public_company_shareholding_code    String                  COMMENT 'PK — mã sở hữu cổ đông (Bảng Tác nghiệp)',
-    public_company_code                 String                  COMMENT 'Mã công ty đại chúng',
+    public_company_code                 String                  COMMENT 'Mã công ty đại chúng (khóa nghiệp vụ nội bộ — dùng để JOIN, KHÔNG phải mã cổ phiếu hiển thị, xem equity_ticker_symbol)',
+    equity_ticker_symbol                Nullable(String)        COMMENT '[MỚI 2026-09-19] Mã cổ phiếu (K_GSTT_100) — denormalize trực tiếp, thay cho JOIN runtime sang public_company_dim trước đây (vốn cũng sai cột)',
     legal_entity_code                   String                  COMMENT 'Mã cổ đông',
     legal_entity_nm                     Nullable(String)        COMMENT 'Tên cổ đông hoặc người nội bộ hoặc người liên quan (K_GSTT_101)',
     ownership_quantity                  Nullable(Int64)         COMMENT 'Số lượng cổ phiếu nắm giữ (K_GSTT_102)',

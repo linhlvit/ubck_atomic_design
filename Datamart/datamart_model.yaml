@@ -2565,7 +2565,7 @@ entities:
         key: "PK"
         description: "[SỬA 2026-09-19, review Nhóm 40 — xem O_QLKD_24] SỬA BUG grain/driving table: bản trước dùng Penalty Decision Subject Behavior làm driving table (INNER), khiến MỌI đợt thanh tra không phát hiện vi phạm bị loại hoàn toàn khỏi bảng — sai so với SQL tham khảo BA (driving table = Inspection Team Target/Inspection Team, mọi bảng phạt đều LEFT JOIN). Nay driving table đúng = Inspection Team Target JOIN Inspection Team (mọi đợt thanh tra đều có dòng, kể cả không phát hiện vi phạm — cột phạt NULL). Grain = 1 đợt thanh tra × 1 hành vi vi phạm (nếu có; NULL nếu đợt thanh tra sạch). PK ghép để vừa duy nhất theo hành vi (fan-out 1 đợt thanh tra → N hành vi) vừa giữ được dòng cho đợt sạch (không có hành vi nào)."
         source_atomic_table: "inspection_team_target"
-        source_atomic_column: "inspection_team_target.inspection_team_target_code / pd_subject_behavior_code"
+        source_atomic_column: "inspection_team_target.inspection_team_target_code"
       - logical_name: "Securities Company Code"
         physical_name: "sc_code"
         data_domain: "Text"
@@ -8824,7 +8824,7 @@ entities:
         data_type: "decimal(10,2)"
         nullable: true
         key: ""
-        description: "[MỚI 2026-09-19, review Nhóm 6] P/E CỦA CHỈ SỐ (khác K_GSTT_58 — P/E TỪNG MÃ, dùng cho Nhóm 7/9/11/13/15/17/19/21/32/33, đã xác nhận qua cột Độ chi tiết = 'Mã CK' ở các Nhóm đó). Nhóm 6 riêng có Độ chi tiết = 'Danh mục chỉ số - theo giờ' + Mô tả BA 'Vốn hóa CỦA CHỈ SỐ / LNST CỦA CHỈ SỐ' + SQL tham khảo SUM/SUM GROUP BY marketCode — = SUM(Vốn hóa từng mã CÓ LNST TTM) / SUM(LNST TTM từng mã), GROUP BY Index Code + Trading Date — tính sẵn trên Fact Index Constituent Snapshot (cùng cơ chế idx_market_cap). GIÁ TRỊ LẶP LẠI trên mọi dòng Symbol cùng Index+Date — TUYỆT ĐỐI KHÔNG SUM/AVG lại cột này theo Symbol, dùng MAX()/ANY_VALUE() GROUP BY Index Code, Trading Date hoặc SELECT DISTINCT (không thể suy ra P/E của rổ từ AVG các P/E từng mã)."
+        description: "[MỚI 2026-09-19, review Nhóm 6] P/E CỦA CHỈ SỐ (khác K_GSTT_58 — P/E TỪNG MÃ, dùng cho Nhóm 7/9/11/13/15/17/19/21/32/33, đã xác nhận qua cột Độ chi tiết = 'Mã CK' ở các Nhóm đó). Nhóm 6 riêng có Độ chi tiết = 'Danh mục chỉ số - theo giờ' + Mô tả BA 'Vốn hóa CỦA CHỈ SỐ / LNST CỦA CHỈ SỐ' + SQL tham khảo SUM/SUM GROUP BY marketCode — = SUM(Vốn hóa TOÀN BỘ mã trong rổ) / SUM(LNST TTM từng mã) — [SỬA 2026-09-19, theo yêu cầu trực tiếp — bỏ CASE WHEN NOT NULL] bỏ điều kiện lọc 'CÓ LNST TTM' ở tử số theo yêu cầu trực tiếp; tử số nay là tổng vốn hóa cả rổ không điều kiện, mẫu số vẫn chỉ cộng LNST TTM của mã nào có dữ liệu (NULL tự động bị SUM bỏ qua), GROUP BY Index Code + Trading Date — tính sẵn trên Fact Index Constituent Snapshot (cùng cơ chế idx_market_cap). GIÁ TRỊ LẶP LẠI trên mọi dòng Symbol cùng Index+Date — TUYỆT ĐỐI KHÔNG SUM/AVG lại cột này theo Symbol, dùng MAX()/ANY_VALUE() GROUP BY Index Code, Trading Date hoặc SELECT DISTINCT (không thể suy ra P/E của rổ từ AVG các P/E từng mã)."
         source_atomic_table: "fr_value"
         source_atomic_column: "fr_value.data_val"
       - logical_name: "Index PB"
@@ -8833,7 +8833,7 @@ entities:
         data_type: "decimal(10,2)"
         nullable: true
         key: ""
-        description: "[MỚI 2026-09-19, review Nhóm 6] P/B CỦA CHỈ SỐ (khác K_GSTT_59 — P/B TỪNG MÃ, dùng cho Nhóm 7/9/11/13/15/17/19/21/32/33, đã xác nhận qua cột Độ chi tiết = 'Mã CK' ở các Nhóm đó). Nhóm 6 riêng có Độ chi tiết = 'Danh mục chỉ số - theo giờ' + Mô tả BA 'Vốn hóa CỦA CHỈ SỐ / VCSH CỦA CHỈ SỐ' + SQL tham khảo SUM/SUM GROUP BY marketCode — = SUM(Vốn hóa từng mã CÓ VCSH TTM) / SUM(VCSH TTM từng mã), GROUP BY Index Code + Trading Date — tính sẵn trên Fact Index Constituent Snapshot (cùng cơ chế idx_market_cap). GIÁ TRỊ LẶP LẠI trên mọi dòng Symbol cùng Index+Date — TUYỆT ĐỐI KHÔNG SUM/AVG lại cột này theo Symbol, dùng MAX()/ANY_VALUE() GROUP BY Index Code, Trading Date hoặc SELECT DISTINCT (không thể suy ra P/B của rổ từ AVG các P/B từng mã)."
+        description: "[MỚI 2026-09-19, review Nhóm 6] P/B CỦA CHỈ SỐ (khác K_GSTT_59 — P/B TỪNG MÃ, dùng cho Nhóm 7/9/11/13/15/17/19/21/32/33, đã xác nhận qua cột Độ chi tiết = 'Mã CK' ở các Nhóm đó). Nhóm 6 riêng có Độ chi tiết = 'Danh mục chỉ số - theo giờ' + Mô tả BA 'Vốn hóa CỦA CHỈ SỐ / VCSH CỦA CHỈ SỐ' + SQL tham khảo SUM/SUM GROUP BY marketCode — = SUM(Vốn hóa TOÀN BỘ mã trong rổ) / SUM(VCSH từng mã) — [SỬA 2026-09-19, theo yêu cầu trực tiếp — bỏ CASE WHEN NOT NULL] bỏ điều kiện lọc 'CÓ VCSH' ở tử số theo yêu cầu trực tiếp; tử số nay là tổng vốn hóa cả rổ không điều kiện, mẫu số vẫn chỉ cộng VCSH của mã nào có dữ liệu (NULL tự động bị SUM bỏ qua), GROUP BY Index Code + Trading Date — tính sẵn trên Fact Index Constituent Snapshot (cùng cơ chế idx_market_cap). GIÁ TRỊ LẶP LẠI trên mọi dòng Symbol cùng Index+Date — TUYỆT ĐỐI KHÔNG SUM/AVG lại cột này theo Symbol, dùng MAX()/ANY_VALUE() GROUP BY Index Code, Trading Date hoặc SELECT DISTINCT (không thể suy ra P/B của rổ từ AVG các P/B từng mã)."
         source_atomic_table: "fr_value"
         source_atomic_column: "fr_value.data_val"
       - logical_name: "Index EPS"
@@ -9712,6 +9712,15 @@ entities:
         description: "Mã hệ thống nguồn dữ liệu"
         source_atomic_table: "pc_shareholding"
         source_atomic_column: "pc_shareholding.src_stm_code"
+      - logical_name: "Equity Ticker Symbol"
+        physical_name: "equity_ticker_symbol"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: true
+        key: ""
+        description: "[SỬA 2026-09-19, review K_GSTT_100] Mã cổ phiếu (K_GSTT_100) — denormalize trực tiếp lên bảng này thay vì bắt buộc JOIN runtime sang `Public Company Dimension` (cách cũ dùng nhầm `Public Company Code` — khóa nghiệp vụ nội bộ — thay vì mã ticker thật). Tận dụng lại chính JOIN `public_company` đã có sẵn cho `Current Foreign Holding Ratio` (cùng bảng, cùng pc_id) — không phát sinh JOIN mới."
+        source_atomic_table: "public_company"
+        source_atomic_column: "public_company.equity_ticker_symbol"
 
   - id: "DTM-fct_market_risk_snpst"
     logical_name: "Fact Market Risk Snapshot"
