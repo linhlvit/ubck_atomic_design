@@ -173,6 +173,35 @@ flowchart LR
 
 ---
 
+##### Cụm 3d: Phân ngành của NĐTNN (Fact Public Company Listing Info Snapshot — reuse partial GSDC)
+
+**Trạng thái:** READY — **[MỚI 2026-09-18, Resolved một phần O_NDTNN_12]** BA cập nhật STT8 sang nguồn VSDC `foreign_investor_info` — reuse `Fact Public Company Listing Info Snapshot` (sở hữu module GSDC, grain 1 mã CK/tháng), bổ sung cột `Foreign Holding Value` = `Current Foreign Holding Quantity × Close Price` (JOIN `Security Trading Snapshot`, MDDS). Xem Nhóm 8 (Section 2) và `DTM_GSDC_HLD.md` (Cụm sở hữu chính, Section 4).
+
+```mermaid
+flowchart LR
+    subgraph SRC["Staging"]
+        S1["VSDC.outstanding_shares"]
+        S2["VSDC.foreign_investor_info"]
+        S3["MDDS.JAD_STOCKINFOR"]
+    end
+    subgraph SIL["Atomic"]
+        SV1["Listed Security Info Snapshot"]
+        SV2["Foreign Ownership Info Snapshot"]
+        SV3["Security Trading Snapshot"]
+    end
+    subgraph Datamart["Datamart"]
+        G1["Fact Public Company Listing Info Snapshot"]
+    end
+    S1 --> SV1
+    S2 --> SV2
+    S3 --> SV3
+    SV1 --> G1
+    SV2 --> G1
+    SV3 --> G1
+```
+
+---
+
 ##### Cụm 4: Lịch sử tuân thủ NĐTNN (Operational Investor Compliance History)
 
 Phục vụ Tab NĐTNN 360 — Nhóm 13 (Lịch sử tuân thủ). Atomic từ phân hệ Thanh Tra, nguồn `PENALTY_DECISION*`/`PENALTY_TYPE` — **sửa Kịch bản D** (2026-07-23): nguồn cũ ghi `GS_HO_SO`/`GS_VAN_BAN_XU_LY` (entity `Surveillance Enforcement Case`/`Decision`) không khớp BA thật — xem O_NDTNN_26.
@@ -338,11 +367,9 @@ flowchart LR
 ```mermaid
 erDiagram
     Calendar_Date_Dimension {
-        int Date_Dimension_Id PK
-        date Full_Date
-        int Year
-        int Month
-        int Day_Of_Year
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
+        string Source_System_Code
     }
     Securities_Dimension {
         int Securities_Dimension_Id PK
@@ -449,11 +476,9 @@ flowchart LR
 ```mermaid
 erDiagram
     Calendar_Date_Dimension {
-        int Date_Dimension_Id PK
-        date Full_Date
-        int Year
-        int Month
-        int Day_Of_Year
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
+        string Source_System_Code
     }
     Securities_Dimension {
         int Securities_Dimension_Id PK
@@ -622,8 +647,9 @@ flowchart LR
 ```mermaid
 erDiagram
     Calendar_Date_Dimension {
-        string cdr_dt_dim_id PK
-        date cdr_dt
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
+        string Source_System_Code
     }
     Market_Index_Dimension {
         string market_index_dim_id PK
@@ -750,16 +776,16 @@ pie showData
 
 #### Nhóm 8 - Phân ngành của NĐTNN (STT=8)
 
-> Phân loại: **Phân tích** (100% PENDING)
+> Phân loại: **Phân tích**
 > Atomic:
 > - `Classification Business Line` (IDS.CATEGORIES, draft) — **READY**. Join chain 2 bước: `Public Company.Business_Line_Level1_Code` → `Classification Business Line.cl_business_line_code` → lấy `Classification Business Line Name`.
 > - `Public Company` (IDS.COMPANY_PROFILES, draft) — READY, dùng làm cầu nối (Business Line Level1/2 Id/Code).
-> - `Foreign Investor Securities Account` (FIMS.SECURITIESACCOUNT+CATEGORIESSTOCK, draft) — có `Current Holding Quantity`, KHÔNG có giá đóng cửa/market value.
-
-**Ghi chú thiết kế:**
-- **Sửa O_NDTNN_12:** `Industry Category Dimension` (tên cũ) KHÔNG ETL-derived trực tiếp từ `Public Company` như thiết kế trước — `Public Company` chỉ có `Business Line Level 1/2 Id/Code` (FK), tên ngành thật nằm ở entity riêng `Classification Business Line` (nguồn `IDS.CATEGORIES`, gộp với `ECAT.BUSINESS_LINE_LEVEL_1/2`).
-- **Sửa O_NDTNN_21:** Bỏ `Fact Foreign Investor Portfolio Snapshot` (entity ảo, không tồn tại trong manifest) khỏi Source — measure "Giá trị tài sản" (đã khai sinh K_NDTNN_43 ở Nhóm 7, PENDING) chưa có nguồn giá đóng cửa trong FIMS/IDS, nên KPI "Tỷ trọng theo ngành" (cần chia theo giá trị tài sản, không phải theo số lượng cổ phiếu) tiếp tục PENDING — cùng gốc rễ thiếu measure với Nhóm 7.
-- **Sửa O_NDTNN_12 (2026-07-24) — chuyển K_NDTNN_50 sang PENDING:** Dù `Public Company Dimension` (reuse từ Nhóm 2) đã READY đúng nghĩa Atomic, K_NDTNN_50 là Chiều duy nhất của Nhóm nhưng KHÔNG có bất kỳ measure nào khác trong Nhóm 8 dùng để filter/GROUP BY (K_NDTNN_51 — measure duy nhất — đang PENDING). Một Chiều đứng độc lập không phục vụ được báo cáo nào — chuyển PENDING theo cùng trạng thái K_NDTNN_51, Nhóm 8 nay 100% PENDING.
+> - `Listed Security Info Snapshot` (VSDC, `uat_vsdc_stg.outstanding_shares`) — **READY**, driving table của `Fact Public Company Listing Info Snapshot` (reuse cross-module từ GSDC).
+> - `Foreign Ownership Info Snapshot` (VSDC, `uat_vsdc_stg.foreign_investor_info`) — **READY** (ngoại lệ Data Modeler xác nhận, chưa có LDM YAML/manifest chính thức — cùng ngoại lệ đã dùng cho GSTT/GSDC, xem `mapping_vsdc_ods_atm.md` Bảng 9). Có `Current Foreign Holding Quantity`, `Total Issued Share Quantity`.
+> - `Security Trading Snapshot` (MDDS.JAD_STOCKINFOR) — **READY**, dùng lấy giá đóng cửa gần nhất để quy đổi Khối lượng → Giá trị.
+>
+> **[SỬA 2026-09-18, BA cập nhật STT8 — Resolved một phần O_NDTNN_12]** BA đổi nguồn STT8 từ FIMS (`SECURITIESACCOUNT`+`CATEGORIESSTOCK`, chỉ có `Current Holding Quantity`, không giá) sang VSDC `uat_vsdc_stg.foreign_investor_info` — đúng nguồn `Foreign Ownership Info Snapshot` đã READY (ngoại lệ VSDC). Kết hợp gợi ý cũ trong O_NDTNN_21 ("xác nhận cross-module join với Security Trading Snapshot") — **reuse (partial) `Fact Public Company Listing Info Snapshot` của module GSDC** (grain 1 mã CK/tháng, khớp đúng "Độ chi tiết: Tháng" của BA), bổ sung 1 cột mới `Foreign Holding Value` = `Current Foreign Holding Quantity × Close Price` (JOIN `Security Trading Snapshot` lấy giá đóng cửa gần nhất `<=` ngày snapshot) — xem `Datamart/lld/GSDC/DTM_GSDC_fct_public_company_listing_info_snpst.csv`. Không tạo Fact riêng cho NDTNN — tránh trùng lặp dữ liệu VSDC đã có ở GSDC (theo Rule A5, `modules_using` nay gồm cả GSDC và NDTNN).
+> Nhóm ngành (K_NDTNN_50) và Tỷ trọng danh mục theo ngành (K_NDTNN_51) — cả 2 chuyển **READY**.
 
 **Mockup:**
 
@@ -775,19 +801,69 @@ pie showData
     "Khác" : 7.2
 ```
 
+**Source:** `Fact Public Company Listing Info Snapshot` (reuse partial từ GSDC) → `Calendar Date Dimension`, `Public Company Dimension`
+
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_NDTNN_50 | Nhóm ngành | — | Chiều | `Public_Company_Dimension.Classification_Business_Line_Name` | **Chuyển PENDING (2026-07-24)** — Chiều này chỉ phục vụ K_NDTNN_51 (đang PENDING), không có measure nào khác trong Nhóm dùng đến, nên đứng độc lập không phục vụ được báo cáo nào. Atomic (`Public Company Dimension`, reuse Nhóm 2) vẫn READY — sẽ chuyển lại READY ngay khi K_NDTNN_51 sẵn sàng. Không phải gap Atomic | PENDING |
-| K_NDTNN_51 | Tỷ trọng danh mục theo ngành | % | Derived | TBD — chờ Atomic | Lý do pending: thiếu measure "Giá trị tài sản NĐTNN" (Quantity × giá đóng cửa) — `Foreign Investor Securities Account` chỉ có `Current Holding Quantity`, không có giá đóng cửa trong hệ thống nguồn FIMS/IDS mà BA khai báo (giống O_NDTNN_21 mục Nhóm 7 — K_NDTNN_43 cũng PENDING vì lý do này). Atomic cần bổ sung: field giá đóng cửa chứng khoán trong FIMS/IDS, hoặc xác nhận cross-module join với `Security Trading Snapshot` (MDDS). Mart dự kiến: `Fact Foreign Investor Portfolio Snapshot` (grain 1 NĐT × 1 mã CK × 1 kỳ) | PENDING |
+| K_NDTNN_50 | Nhóm ngành | — | Chiều | `Public_Company_Dimension.Classification_Business_Line_Name` | **[SỬA 2026-09-18]** Chuyển lại READY — K_NDTNN_51 (measure duy nhất dùng Chiều này) nay đã có nguồn. Reuse `Public Company Dimension` (đã thiết kế Nhóm 2), công thức không đổi | READY |
+| K_NDTNN_51 | Tỷ trọng danh mục theo ngành | % | Phái sinh | `SUM(Fact_Public_Company_Listing_Info_Snapshot.Foreign_Holding_Value) GROUP BY Public_Company_Dimension.Classification_Business_Line_Name / SUM(Fact_Public_Company_Listing_Info_Snapshot.Foreign_Holding_Value) toàn thị trường (cùng Snapshot_Date_Dimension_Id) × 100` | **[SỬA 2026-09-18, Resolved một phần O_NDTNN_12]** Chuyển READY — nguồn `Foreign Holding Value` mới bổ sung trên `Fact Public Company Listing Info Snapshot` (reuse partial GSDC, xem ghi chú Atomic trên). Mẫu số SUM toàn thị trường tại cùng kỳ snapshot (tháng) | READY |
 
-**Bảng mapping nguồn (Atomic Placeholder):**
+**Star Schema:**
 
-| Bảng nguồn BA | Atomic entity dự kiến | Atomic table dự kiến | Ghi chú |
-|---|---|---|---|
-| CATEGORIESSTOCK, SECURITIES | Fact Foreign Investor Portfolio Snapshot (chưa thiết kế) | TBD | Cần measure giá đóng cửa chứng khoán — chưa có nguồn Atomic trong FIMS/IDS (xem O_NDTNN_21) — phục vụ K_NDTNN_51 |
-| IDS.COMPANY_PROFILES, IDS.CATEGORIES | Public Company Dimension (đã thiết kế, reuse Nhóm 2) | dim_pub_co | **Atomic đã READY** — không phải gap Atomic. K_NDTNN_50 PENDING vì đứng độc lập không có measure đi kèm trong Nhóm (xem Ghi chú thiết kế) |
+```mermaid
+erDiagram
+    Fact_Public_Company_Listing_Info_Snapshot {
+        string Public_Company_Dimension_Id FK
+        string Snapshot_Date_Dimension_Id FK
+        int Current_Foreign_Holding_Quantity
+        decimal Foreign_Holding_Value
+    }
+    Public_Company_Dimension {
+        int Public_Company_Dimension_Id PK
+        varchar Security_Symbol_Code
+        varchar Business_Line_Level1_Code
+        varchar Classification_Business_Line_Name
+        string Source_System_Code
+    }
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
+        string Source_System_Code
+    }
+    Public_Company_Dimension ||--o{ Fact_Public_Company_Listing_Info_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Public_Company_Listing_Info_Snapshot : " "
+```
+
+> **Ghi chú:** `Fact Public Company Listing Info Snapshot` — bảng dùng chung, sở hữu module **GSDC** (đầy đủ 12 cột, xem `DTM_GSDC_HLD.md`) — chỉ liệt kê 2 cột NDTNN dùng trực tiếp (`Current_Foreign_Holding_Quantity` tham khảo, `Foreign_Holding_Value` cho K_NDTNN_51). `Public_Company_Dimension` reuse nguyên trạng từ Nhóm 2 (đã có sẵn `Classification_Business_Line_Name`).
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph Datamart["Datamart"]
+        G1["Fact Public Company Listing Info Snapshot"]
+        G2["Public Company Dimension"]
+        G3["Calendar Date Dimension"]
+    end
+    subgraph RPT["Báo cáo"]
+        R1["K_NDTNN_50-51: Tab DANH MUC - Nhom 8 - Phan nganh cua NDTNN"]
+    end
+    G1 --> R1
+    G2 --> R1
+    G3 --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact Public Company Listing Info Snapshot | 1 row = 1 mã CK × 1 tháng (reuse partial từ GSDC — xem `DTM_GSDC_HLD.md`) |
+| Public Company Dimension | 1 row = 1 công ty đại chúng (SCD4A current-state) — reuse từ Nhóm 2 |
+| Calendar Date Dimension | 1 row = 1 ngày |
+
+> **Coverage rule:** Không áp dụng — Nhóm này không tạo bảng mới, 100% reuse (`Fact Public Company Listing Info Snapshot` partial từ GSDC + `Public Company Dimension`/`Calendar Date Dimension` từ Nhóm 2).
 
 ---
 
@@ -1939,6 +2015,7 @@ graph TB
     FACT_MKTIDX["Fact Market Index Snapshot"]:::fact
     FACT_TRADESTAT["Foreign Investor Trading Statistics Report"]:::fact
     FACT_TRADEDETAIL["Foreign Investor Trading Detail Report"]:::fact
+    FACT_LISTINGINFO["Fact Public Company Listing Info Snapshot"]:::fact
 
     OPR_PROFILE["Operational Foreign Investor 360 Profile"]:::oper
     OPR_COMPLY["Operational Investor Compliance History"]:::oper
@@ -1949,6 +2026,9 @@ graph TB
 
     DIM_DATE --> FACT_MKTIDX
     DIM_MKTIDX --> FACT_MKTIDX
+
+    DIM_DATE --> FACT_LISTINGINFO
+    DIM_PUBCO --> FACT_LISTINGINFO
 ```
 
 > **Ghi chú:** `Foreign Investor Dimension`, `Geographic Area Dimension`, `Asset Category Dimension` tạm thời không xuất hiện trong graph này vì Fact duy nhất dùng chúng (`Fact Foreign Investor Portfolio Snapshot`, Nhóm 6) đã chuyển PENDING — xem O_NDTNN_21. Các Dimension này vẫn READY (dùng chung Nhóm 2/4/9), chỉ chưa có Fact READY nào join tới ở trạng thái hiện tại. `Industry Category Dimension` (tên cũ) đã bỏ hẳn khỏi mô hình — Nhóm 8 (nơi duy nhất định nghĩa entity này) đã chuyển sang reuse `Public Company Dimension` thay thế (xem O_NDTNN_12). `Fact Foreign Ownership Snapshot` (tên cũ, entity ảo) đã bỏ khỏi mô hình — Nhóm 9 (nơi duy nhất định nghĩa Fact này) đã chuyển 100% PENDING, thay bằng `Fact Public Company Foreign Ownership Snapshot` (xem O_NDTNN_21/O_NDTNN_22). `NDTNN Regulatory Report Store` đã bỏ khỏi mô hình — Nhóm 18 (nơi duy nhất định nghĩa bảng tác nghiệp này) đã chuyển 100% PENDING (xem O_NDTNN_25). **[Cập nhật 2026-07-24]** `Foreign Investor Trading Statistics Report` (Nhóm 14) — bảng tác nghiệp mới, KHÔNG join Dimension trên graph này (ETL populate độc lập, chỉ dùng `Securities Dimension` nội bộ ETL để filter dòng FUND_CERT — không phải FK query-time) — xem O_NDTNN_24. **[Cập nhật 2026-07-24]** `Fact Securities Foreign Investor Trade Detail` (Nhóm 15) đã bỏ khỏi mô hình — thay bằng bảng tác nghiệp `Foreign Investor Trading Detail Report`, denormalize hoàn toàn (không join Dimension nào trên graph này) — xem O_NDTNN_30.
@@ -1961,6 +2041,7 @@ graph TB
 | Fact Market Index Snapshot | Snapshot chỉ số thị trường (VN-Index/HNX-Index/UPCOM-Index) cuối phiên theo ngày (đã thêm FK Market Index Dimension, xem O_NDTNN_29) | Fact Snapshot | 1 chỉ số × 1 ngày (ETL lấy bản ghi cuối phiên) | Market Index Snapshot (MDDS.JAD_MARKETINFOR) |
 | Foreign Investor Trading Statistics Report | Báo cáo thống kê GT mua/bán/ròng NĐTNN theo 4 nhóm loại CK (biểu tổng hợp Nhóm 14) — xem O_NDTNN_24 | Fact Report (append, denormalize) | 1 row = 1 ngày × 1 Security_Type_Group (STOCK/BOND/FUND_CERT/TOTAL) | Securities Trade (ORDERTRADE) + Securities Dimension (chỉ dòng FUND_CERT) |
 | Foreign Investor Trading Detail Report | Báo cáo chi tiết giao dịch NĐTNN theo tài khoản (biểu chi tiết Nhóm 15) — xem O_NDTNN_30 | Fact Report (append, denormalize) | 1 row = 1 ngày × 1 Account_Number × 1 Symbol × 1 bên (Buy/Sell) | Securities Trade (ORDERTRADE) |
+| Fact Public Company Listing Info Snapshot | Cơ cấu khối lượng CP niêm yết + sở hữu nước ngoài theo mã CK — reuse partial từ GSDC, phục vụ Nhóm 8 — xem O_NDTNN_12 | Fact Snapshot | 1 mã CK × 1 tháng | Listed Security Info Snapshot / Foreign Ownership Info Snapshot (VSDC) |
 
 ### Bảng Tác nghiệp (Denormalized)
 
@@ -2005,6 +2086,7 @@ graph TB
 | Securities Dimension | securities_dim | new | Chưa có trong master — nguồn Security Trading Snapshot (MDDS.JAD_STOCKINFOR, working/draft), grain 1 mã CK, dùng chung Nhóm 2/14. **Conformed Dimension (module: SHARED)** — module GSTT đã tự thiết kế cùng khái niệm (`scr_tdg_snpst_dim`) ở cấp HLD riêng nhưng chưa đăng ký `datamart_model.yaml`; NDTNN là module đầu tiên đăng ký chính thức, tên/physical_name theo đúng `rule_physical_name_exceptions_datamart.csv` — xem O_NDTNN_28 |
 | Foreign Investor Trading Detail Report | foreign_investor_trading_detail_rpt | new | Chưa có trong master — nguồn Securities Trade (ORDERTRADE), phục vụ Nhóm 15. **[Cập nhật 2026-07-24, Kịch bản D]** Thay thế thiết kế trước dùng `Fact Securities Foreign Investor Trade Detail` (Star Schema) — chuyển sang bảng tác nghiệp riêng, denormalize hoàn toàn (không FK Securities Dimension) vì Nhóm 15 thuộc Tab BÁO CÁO (đóng gói cố định) — xem O_NDTNN_30 |
 | Market Index Dimension | market_index_dim | reuse | **Sửa 24/07/2026:** Chuyển sở hữu sang QLKD (cùng module với Fact `fct_market_index_snpst`) — NDTNN reuse. Grain 1 combo Market_Id+Market_Code (SCD4A current-state), dùng cho Nhóm 5. Nguồn Market Index Snapshot (MDDS.JAD_MARKETINFOR, working/draft) — xem O_NDTNN_29 (Closed) |
+| Fact Public Company Listing Info Snapshot | fct_public_company_listing_info_snpst | partial | **[MỚI 2026-09-18, Resolved một phần O_NDTNN_12]** Reuse cross-module — sở hữu GSDC (10 cột sẵn có: Outstanding/Total Issued/Treasury/Free Float Share Quantity, Current Foreign Holding Quantity, Foreign/Max Foreign Ownership Ratio, Remaining Foreign Holding Quantity, State Owned Share Quantity/Ratio). NDTNN bổ sung 1 cột mới `Foreign Holding Value` (JOIN thêm `Security Trading Snapshot` lấy giá đóng cửa) — phục vụ K_NDTNN_51 (Nhóm 8). Grain giữ nguyên 1 mã CK/tháng, không đổi cột/measure hiện có của GSDC — xem `DTM_GSDC_HLD.md` |
 
 ---
 
@@ -2027,7 +2109,7 @@ graph TB
 | O_NDTNN_9 | **[Cập nhật 2026-07-23] Asset Category scheme — không còn áp dụng:** Giả định cũ dùng scheme `FIMS_SECURITIES_TYPE` cho 5 loại tài sản (Nhóm 7) không còn đúng — đối chiếu BA Nhóm 7 xác nhận toàn bộ measure là Dữ liệu động (nguồn báo cáo PLIII-TT51), Chiều "Loại tài sản" thật sự lấy từ `FIMS.RELATEDPROPERTIES` (không phải `FIMS_SECURITIES_TYPE`) nhưng bảng này cũng chưa được model hóa đúng ngữ cảnh danh mục đầu tư trong Atomic (chỉ có scheme `FIMS_RELATED_PROPERTY` cho ngữ cảnh ủy quyền CBTT/giao dịch, khác hẳn). Xem O_NDTNN_21. | Không dùng `FIMS_SECURITIES_TYPE` — cần entity/scheme Atomic riêng cho phân loại tài sản danh mục đầu tư NĐTNN, xác nhận qua generic store TT51. | K_NDTNN_45-49, 43, 44 | Closed — giả định cũ sai, xem O_NDTNN_21 |
 | O_NDTNN_10 | **[Cập nhật 2026-07-23] ROOM source — giả định cũ sai, xem O_NDTNN_22:** Giả định trước đây "IDS.foreign_owner_limit là nguồn chính thức, Nhóm 9 READY" không còn đúng — rà soát BA STT=9 (Nhóm 9) xác nhận toàn bộ 6/6 dòng đều PENDING, nguồn thật là báo cáo BM67 VSDC (chưa số hoá) hoặc Dữ liệu động, không phải trực tiếp từ IDS.FOREIGN_OWNER_LIMIT/FIMS. | Đã chuyển toàn bộ Nhóm 9 (K_NDTNN_52-57) sang PENDING — xem O_NDTNN_22 để biết chi tiết 2 nguồn khác nhau cùng khái niệm. | K_NDTNN_52-57 | Closed — nguyên nhân xác định lại, xem O_NDTNN_22 |
 | O_NDTNN_11 | **[Superseded bởi O_NDTNN_22] Room theo ngành (K_NDTNN_57):** Vấn đề gốc (thiếu nguồn tổng CP lưu hành) không còn là gốc rễ chính — toàn bộ Nhóm 9 đã PENDING vì BA yêu cầu nguồn BM67 VSDC, không riêng K_NDTNN_57. | Không còn áp dụng riêng lẻ — xem O_NDTNN_22 cho toàn bộ Nhóm 9. | K_NDTNN_57 | Closed — superseded bởi O_NDTNN_22 |
-| O_NDTNN_12 | **[Cập nhật 2026-07-24] `Industry Category Dimension` — sai tên field + thiếu 1 bước join, phát hiện khi review Nhóm 2 (2026-07-22); K_NDTNN_50 sau đó chuyển lại PENDING vì đứng độc lập không measure:** Header Nhóm 8 (cũ) ghi "Atomic: `Public Company` (IDS.company_profiles + IDS.company_detail)" — `company_detail` không tồn tại trong Atomic (chỉ có `IDS.COMPANY_PROFILES`, xem `DataModel/working/Atomic/lld/IDS/lld_IDS_COMPANY_PROFILES.yaml`, entity `Public Company`, draft). Entity này có `Business Line Level 1/2 Id/Code` (FK, từ `CATEGORY_L1_ID/L2_ID`) — **không tự chứa tên ngành**. Tên ngành thật nằm ở entity riêng `Classification Business Line` (physical_name `cl_business_line`, nguồn `IDS.CATEGORIES` + `ECAT.BUSINESS_LINE_LEVEL_1/2`, draft), có `Classification Business Line Code/Name`. erDiagram cũ tự đặt field `Industry_Category_Code`/`Industry_Category_Name` không khớp attribute thật nào của cả 2 entity trên — vi phạm rule "tên trường erDiagram phải khớp attribute.name YAML". **[Cập nhật 2026-07-24]** User chỉ ra: K_NDTNN_50 (Chiều) là KPI duy nhất còn lại của Nhóm 8 sau khi sửa lỗi Dimension, nhưng measure duy nhất trong Nhóm dùng nó (K_NDTNN_51) vẫn PENDING (xem O_NDTNN_21) — 1 Chiều đứng độc lập không có measure nào để filter/GROUP BY thì không phục vụ được báo cáo nào, dù bản thân Atomic đã sẵn sàng. | Nhóm 8 đã sửa (2026-07-23): bỏ hẳn `Industry Category Dimension` (tên/field tự đặt sai), **reuse thẳng `Public Company Dimension`** (đã thiết kế đầy đủ ở Nhóm 2, có sẵn cột `Classification_Business_Line_Name` đệm đúng qua join chain 2 bước `Public Company.Business_Line_Level1_Code` → `Classification Business Line.cl_business_line_code`) — không tạo Dimension riêng mới. **[Cập nhật 2026-07-24]** K_NDTNN_50 chuyển lại **PENDING** (đứng độc lập không measure đi kèm) — Nhóm 8 nay 100% PENDING, đã bỏ Source/Star Schema/Lineage/Bảng grain theo đúng format Nhóm PENDING toàn bộ. Atomic (`Public Company Dimension`) không đổi trạng thái — vẫn READY, chỉ chưa dùng được cho báo cáo này. Nhóm 9 chưa rà — xem O_NDTNN_21. | K_NDTNN_50 (Nhóm 8, PENDING — chờ K_NDTNN_51); mọi KPI dùng chiều ngành ở Nhóm 9 (chưa rà) | Open — chờ K_NDTNN_51 (measure giá đóng cửa) sẵn sàng để chuyển lại READY; còn Nhóm 9 xem O_NDTNN_21 |
+| O_NDTNN_12 | **[Cập nhật 2026-07-24] `Industry Category Dimension` — sai tên field + thiếu 1 bước join, phát hiện khi review Nhóm 2 (2026-07-22); K_NDTNN_50 sau đó chuyển lại PENDING vì đứng độc lập không measure:** Header Nhóm 8 (cũ) ghi "Atomic: `Public Company` (IDS.company_profiles + IDS.company_detail)" — `company_detail` không tồn tại trong Atomic (chỉ có `IDS.COMPANY_PROFILES`, xem `DataModel/working/Atomic/lld/IDS/lld_IDS_COMPANY_PROFILES.yaml`, entity `Public Company`, draft). Entity này có `Business Line Level 1/2 Id/Code` (FK, từ `CATEGORY_L1_ID/L2_ID`) — **không tự chứa tên ngành**. Tên ngành thật nằm ở entity riêng `Classification Business Line` (physical_name `cl_business_line`, nguồn `IDS.CATEGORIES` + `ECAT.BUSINESS_LINE_LEVEL_1/2`, draft), có `Classification Business Line Code/Name`. erDiagram cũ tự đặt field `Industry_Category_Code`/`Industry_Category_Name` không khớp attribute thật nào của cả 2 entity trên — vi phạm rule "tên trường erDiagram phải khớp attribute.name YAML". **[Cập nhật 2026-07-24]** User chỉ ra: K_NDTNN_50 (Chiều) là KPI duy nhất còn lại của Nhóm 8 sau khi sửa lỗi Dimension, nhưng measure duy nhất trong Nhóm dùng nó (K_NDTNN_51) vẫn PENDING (xem O_NDTNN_21) — 1 Chiều đứng độc lập không có measure nào để filter/GROUP BY thì không phục vụ được báo cáo nào, dù bản thân Atomic đã sẵn sàng. | Nhóm 8 đã sửa (2026-07-23): bỏ hẳn `Industry Category Dimension` (tên/field tự đặt sai), **reuse thẳng `Public Company Dimension`** (đã thiết kế đầy đủ ở Nhóm 2, có sẵn cột `Classification_Business_Line_Name` đệm đúng qua join chain 2 bước `Public Company.Business_Line_Level1_Code` → `Classification Business Line.cl_business_line_code`) — không tạo Dimension riêng mới. **[Cập nhật 2026-07-24]** K_NDTNN_50 chuyển lại **PENDING** (đứng độc lập không measure đi kèm) — Nhóm 8 nay 100% PENDING, đã bỏ Source/Star Schema/Lineage/Bảng grain theo đúng format Nhóm PENDING toàn bộ. Atomic (`Public Company Dimension`) không đổi trạng thái — vẫn READY, chỉ chưa dùng được cho báo cáo này. Nhóm 9 chưa rà — xem O_NDTNN_21. | K_NDTNN_50/51 (Nhóm 8, **Resolved 2026-09-18** — cả 2 chuyển READY, xem ghi chú dưới); mọi KPI dùng chiều ngành ở Nhóm 9 (chưa rà, vẫn Open) | **[SỬA 2026-09-18]** Resolved một phần — Nhóm 8: BA cập nhật nguồn STT8 sang VSDC `foreign_investor_info`, kết hợp reuse partial `Fact Public Company Listing Info Snapshot` (GSDC) + JOIN `Security Trading Snapshot` lấy giá đóng cửa → đủ nguồn "Giá trị tài sản NĐTNN" (Quantity × Close Price), K_NDTNN_50/51 chuyển READY. Nhóm 9 (chiều ngành, KPI khác) **chưa rà** — vẫn Open, cần xử lý riêng | Resolved một phần — Nhóm 8 Closed; Nhóm 9 còn Open |
 | O_NDTNN_14 | **[SUPERSEDED bởi O_NDTNN_20] Header READY/PENDING không đồng nhất text mô tả (phát hiện 2026-07-22, user chỉ ra):** 3 style khác nhau cho cùng 1 cấp heading `##### READY`/`##### PENDING`. Vấn đề gốc không còn áp dụng — xem O_NDTNN_20 (đổi thiết kế: bỏ hẳn header con `##### READY`/`##### PENDING`, gộp 1 bảng KPI duy nhất/Nhóm). | Không còn áp dụng — thiết kế mới không còn header con để "đồng nhất style" nữa, đã thay bằng cột Trạng thái trong 1 bảng KPI chung. | Toàn bộ header READY/PENDING trong file (Nhóm 1-5 đã sửa, còn 6-12 + block Loại 1/2 chờ xử lý — xem O_NDTNN_20) | Closed — superseded bởi thay đổi thiết kế O_NDTNN_20 |
 | O_NDTNN_20 | **Thay đổi thiết kế: bỏ tách Block READY/PENDING riêng, gộp 1 bảng KPI duy nhất/Nhóm (2026-07-23, theo yêu cầu user):** Format cũ (`##### READY`/`##### PENDING` header con, bảng KPI READY 6 cột tách biệt bảng KPI PENDING 4 cột) đã đổi thành 1 bảng KPI 7 cột duy nhất cho mọi Nhóm (KPI ID/Tên/Đơn vị/Tính chất/Công thức/Ghi chú/Trạng thái) — dòng PENDING vẫn nằm trong cùng bảng, cột Ghi chú chứa Lý do pending/Atomic cần bổ sung/Mart dự kiến. Đã sửa `section_structure.md` + `SKILL.md` + `naming_conventions.md` (skill `datamart-hld-design`) phản ánh thiết kế mới. | Đã chuyển đổi Nhóm 1-43 sang format mới, đối chiếu lại số lượng BA↔KPI khớp tuyệt đối (Nhóm 1=7, Nhóm 2=16, Nhóm 3=3, Nhóm 4=10, Nhóm 5=3, Nhóm 6=7, Nhóm 7=7, Nhóm 8=2, Nhóm 9=6, Nhóm 10=1, Nhóm 11=6, Nhóm 12=2, Nhóm 13=6, Nhóm 14=12, Nhóm 15=6, Nhóm 16=5, Nhóm 17=4, Nhóm 18=6, Nhóm 19-43=6 mỗi Nhóm). 8 block "Bổ sung Loại 2" (format cũ) đã xóa hẳn (2026-07-23) sau khi xác nhận trùng lặp 100% với các Nhóm đã thiết kế — xem O_NDTNN_15. Ngoài ra, toàn bộ header Section 2 đã đổi từ cấu trúc "Sub-tab A/B/C" + "Nhóm 11a/11b/12" (không đúng STT) sang đúng chuẩn `#### Nhóm {STT}` và sắp xếp lại vật lý tăng dần 1→43 (2026-07-23, theo yêu cầu user) — kéo theo đánh lại toàn bộ KPI_ID liên tục 1→253 (xem ghi chú cuối Section 5). | Toàn bộ HLD nay dùng thống nhất 1 format bảng KPI 7 cột, đúng cấu trúc header STT, KPI_ID liên tục 1→253. | Open — chờ user duyệt Phase 1 hoàn chỉnh |
 | O_NDTNN_15 | **10 block "Bổ sung Loại 1/2" (trước Section 3) sai cấu trúc + trùng lặp nội dung với Nhóm gốc — phát hiện khi chuẩn hóa header theo yêu cầu user (2026-07-22):** (1) **2 block "Loại 1"** (DANH MỤC Nhóm 9, DATA EXPLORER Nhóm 18) **trùng lặp hoàn toàn** với Nhóm gốc đã có sẵn phía trên trong Section 2 — cùng KPI_ID, cùng nội dung, chỉ khác format bảng. Cả 2 đã xóa (Nhóm 9: 2026-07-23, xem O_NDTNN_22; Nhóm 18: 2026-07-23, xem O_NDTNN_25 — giữ ID khai sinh trước làm chính thức, xóa bộ `DE3-DE7b` trùng ở Nhóm 18 gốc). Block thứ 3 (GIAO DỊCH Nhóm 3 cũ, không phải Nhóm 3 hiện hành) đã xóa — xem O_NDTNN_3d. Block thứ 4 (GIÁM SÁT DÒNG VỐN — Nhóm 4/5) đã xóa — xem O_NDTNN_17. (2) **8 block "Loại 2"** (ID lịch sử đã xóa, không còn tồn tại trong HLD) dùng header sai cấu trúc `#### Tab: X — Nhóm — Y` (không có STT) — vi phạm chuẩn `### Tab` → `#### Nhóm {STT} - {tên}`. Đối chiếu từng KPI_ID với các Nhóm 1-15/Nhóm 11/13 đã thiết kế xác nhận **cả 8/8 block trùng lặp hoàn toàn 100%** — không có nội dung mới nào (block 1 ↔ Nhóm 1+2; block 2 ↔ Nhóm 3/4/5; block 3 ↔ Nhóm 6/7/8/9/10; block 4 ↔ Nhóm 11 + Nhóm 13; block 5 ↔ Nhóm 14; block 6 ↔ Nhóm 15; block 7 ↔ Nhóm 16; block 8 ↔ Nhóm 17). | **Toàn bộ 4/4 block "Loại 1" và 8/8 block "Loại 2" đã xóa (2026-07-23)** — không di chuyển nội dung nào sang Section 2 vì xác nhận trùng lặp 100%, không có KPI mới. Toàn bộ ~99 dòng BA "trạng thái mapping trống" đại diện bởi các block này thực chất đã được phủ đủ bởi Nhóm 1-15 + Nhóm 11/13 hiện hành. | Không còn KPI nào thuộc phạm vi block Loại 1/2 — toàn bộ đã có KPI_ID chính thức ở Nhóm tương ứng | Closed — đã xóa toàn bộ 4+8 block, xác nhận trùng lặp 100% |

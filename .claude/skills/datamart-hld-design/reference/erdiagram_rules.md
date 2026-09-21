@@ -224,6 +224,15 @@ Fact_Securities_Company_Service_Registration {
 
 Ví dụ: nếu `Fact_FMS_Snapshot` có 5 trường ở Section 2 Nhóm 1, thì ở Section 2 Nhóm 2 và Section 3 cũng phải đúng 5 trường đó — không thêm, không bớt.
 
+**Khi sửa lỗi `[L1-INCONSISTENT-ENTITY-BLOCKS]` (Gate 5 mục #11) — thứ tự ưu tiên xác định block nào là ĐÚNG, cấm chọn theo "biến thể nào lặp nhiều hơn":**
+
+1. Entity có schema chuẩn universal đã khai trong skill (`Calendar Date Dimension` — xem mục ngay dưới đây) → luôn dùng ĐÚNG schema đó, bất kể file đang có bao nhiêu biến thể khác và biến thể nào xuất hiện nhiều lần hơn.
+2. Entity không có schema chuẩn universal (Dimension/Fact riêng của module) → đối chiếu `Datamart/lld/datamart_attributes.csv` (registry — nguồn sự thật vật lý) lấy đúng tên logic (`datamart_attribute`) và PK, KHÔNG suy đoán, KHÔNG chọn theo số lần lặp trong file.
+3. Sau khi xác định block đúng → `grep -n "<Entity_Name> {" DTM_{MODULE}_HLD.md` liệt kê **toàn bộ** vị trí xuất hiện, sửa **đồng loạt tất cả**, không chỉ chỗ vừa thêm/vừa sửa.
+
+> ❌ **Sai (đã xảy ra thực tế — module NDTNN, 2026-09-18):** File đã có sẵn 2 biến thể sai/lỗi thời của `Calendar_Date_Dimension` (`Date_Dimension_Id` × 2 lần, `cdr_dt_dim_id` × 1 lần — không khớp registry `Calendar Date Dimension Id`/`cdr_dt_dim_id` logic name). Khi thêm block mới đúng chuẩn (`Calendar_Date_Dimension_Id`) bị Gate 5 #11 báo lỗi, đã sửa NGƯỢC block mới về khớp biến thể `Date_Dimension_Id` (chọn vì nó lặp 2 lần, nhiều hơn biến thể kia) — thay vì tra mục "Calendar Date Dimension — schema chuẩn bắt buộc" bên dưới. Kết quả: hợp thức hóa cái sai thành "chuẩn", pass được Gate 5 nhưng sai với registry.
+> ✅ **Đúng:** Tra schema chuẩn/registry trước, sửa toàn bộ các block cũ (kể cả những cái không phải mình vừa thêm) về đúng, không phải sửa cái mới xuống bằng cái cũ sai.
+
 ---
 
 ## Calendar Date Dimension — schema chuẩn bắt buộc

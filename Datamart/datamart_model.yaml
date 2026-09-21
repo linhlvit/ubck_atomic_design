@@ -4309,6 +4309,15 @@ entities:
         description: "Tỷ lệ sở hữu nhà nước (K_GSDC_1390)"
         source_atomic_table: "pc_state_capital"
         source_atomic_column: "pc_state_capital.ownership_ratio_percentage"
+      - logical_name: "Foreign Holding Value"
+        physical_name: "foreign_holding_value"
+        data_domain: "Currency Amount"
+        data_type: "decimal(23,2)"
+        nullable: true
+        key: "DD"
+        description: "Gia tri co phieu khoi ngoai dang so huu = Current Foreign Holding Quantity x gia dong cua gan nhat <= ngay snapshot (K_NDTNN_51, module NDTNN, xem O_NDTNN_21/O_NDTNN_12 Resolved mot phan 2026-09-18)"
+        source_atomic_table: "foreign_ownership_info_snapshot / security_trading_snapshot"
+        source_atomic_column: "foreign_ownership_info_snapshot / security_trading_snapshot.current_foreign_holding_quantity / close_price"
 
   - id: "DTM-financial_rpt_catalog_dim"
     logical_name: "Financial Report Catalog Dimension"
@@ -7635,7 +7644,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "FK"
-        description: "FK → Securities Dimension — LOOKUP qua Symbol (BK)"
+        description: "FK to Securities Dimension - LOOKUP qua Symbol (HOSE) hoac ISIN Code (HNX/UPCOM, vi securities_trade.security_symbol_code cua HNX la issue_code tho, khong phai ticker sach) - [SUA 2026-09-18, theo BA cap nhat join HNX-stockinfor: stockinfor.symbolisin = hnx.issue_code]"
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.security_symbol_code"
       - logical_name: "Public Company Dimension Id"
@@ -7644,9 +7653,9 @@ entities:
         data_type: "string"
         nullable: true
         key: "FK"
-        description: "FK → Public Company Dimension (bảng dùng chung GSDC/QLCB/NDTNN) — LOOKUP qua mã CK (Equity Ticker Symbol, BK có sẵn của public_company_dim); nullable=true — không phải mọi mã CK trên Securities Trade đều là công ty đại chúng có Business Line (CW/derivative/ETF...) — bổ sung Nhóm 2 (partial)"
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.security_symbol_code"
+        description: "FK to Public Company Dimension (bang dung chung GSDC/QLCB/NDTNN) - LOOKUP qua ma CK sach (Equity Ticker Symbol), bac cau qua Securities Dimension da resolve dung ca HOSE/HNX - [SUA 2026-09-18] truoc day LOOKUP thang tu securities_trade.security_symbol_code, sai voi HNX (issue_code tho khong khop equity_ticker_symbol). nullable=true - khong phai moi ma CK deu la cong ty dai chung co Business Line (CW/derivative/ETF...)"
+        source_atomic_table: "securities_trade / securities_dim"
+        source_atomic_column: "securities_trade / securities_dim.security_symbol_code / symbol"
       - logical_name: "Foreign Buy Value"
         physical_name: "foreign_buy_val"
         data_domain: "Currency Amount"
@@ -7706,6 +7715,15 @@ entities:
         description: "BK — join anchor từ Fact (Security Symbol Code)"
         source_atomic_table: "security_trading_snapshot"
         source_atomic_column: "security_trading_snapshot.symbol"
+      - logical_name: "ISIN Code"
+        physical_name: "isin_code"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: true
+        key: ""
+        description: "Ma ISIN cua CK - dung lam cau noi join cho ma san HNX (issue_code = ISIN, khac symbol) - xem etl_logic Fact Securities Foreign Trading Snapshot"
+        source_atomic_table: "security_trading_snapshot"
+        source_atomic_column: "security_trading_snapshot.isin_code"
       - logical_name: "Security Full Name"
         physical_name: "security_full_nm"
         data_domain: "Text"
@@ -9539,7 +9557,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "FK"
-        description: "FK tới Calendar Date Dimension"
+        description: "FK tới Calendar Date Dimension."
         source_atomic_table: "security_trading_snapshot"
         source_atomic_column: "security_trading_snapshot.trading_dt"
       - logical_name: "Investor Category Code"
@@ -9548,16 +9566,16 @@ entities:
         data_type: "string"
         nullable: false
         key: ""
-        description: "Phân loại nhà đầu tư: CA_NHAN / TO_CHUC_TRONG_NUOC / TU_DOANH / NUOC_NGOAI — Classification Value chuẩn, không FK sang Dimension riêng"
+        description: "Phân loại nhà đầu tư: CA_NHAN / TO_CHUC_TRONG_NUOC / TU_DOANH / NUOC_NGOAI — không phải FK sang Dimension riêng (Classification Value chuẩn, 1 trường Code)."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.buy_investor_tp_code / securities_trade.sell_investor_tp_code"
+        source_atomic_column: "securities_trade.buy_investor_tp_code / sell_investor_tp_code"
       - logical_name: "Buy Value"
         physical_name: "buy_val"
         data_domain: "Currency Amount"
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua theo Phân loại NĐT (khớp lệnh + thỏa thuận)"
+        description: "Giá trị mua theo Phân loại NDT (khớp lệnh + thỏa thuận)."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Sell Value"
@@ -9566,7 +9584,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán theo Phân loại NĐT (khớp lệnh + thỏa thuận)"
+        description: "Giá trị bán theo Phân loại NDT (khớp lệnh + thỏa thuận)."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Matched Buy Value"
@@ -9575,7 +9593,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua khớp lệnh thuần (loại trừ thỏa thuận) theo Phân loại NĐT"
+        description: "Giá trị mua khớp lệnh thuần (loại trừ thỏa thuận) theo Phân loại NDT."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Matched Sell Value"
@@ -9584,7 +9602,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán khớp lệnh thuần (loại trừ thỏa thuận) theo Phân loại NĐT"
+        description: "Giá trị bán khớp lệnh thuần (loại trừ thỏa thuận) theo Phân loại NDT."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Negotiated Buy Value"
@@ -9593,7 +9611,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua thỏa thuận theo Phân loại NĐT"
+        description: "Giá trị mua thỏa thuận theo Phân loại NDT."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Negotiated Sell Value"
@@ -9602,7 +9620,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán thỏa thuận theo Phân loại NĐT"
+        description: "Giá trị bán thỏa thuận theo Phân loại NDT."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
 

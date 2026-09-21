@@ -199,7 +199,9 @@ def main() -> None:
     ddl_txt = ddl_p.read_text(encoding="utf-8").rstrip("\n")
     dml_txt = dml_p.read_text(encoding="utf-8").rstrip("\n")
 
-    lld_dir = root / "Datamart" / "lld" / mod
+    lld_cand = [mod, strip_accents(mod)]
+    lld_dir = next((root / "Datamart" / "lld" / c for c in lld_cand
+                     if (root / "Datamart" / "lld" / c).is_dir()), root / "Datamart" / "lld" / mod)
     mine = []
     if lld_dir.is_dir():
         for f in sorted(lld_dir.glob("*.csv")):
