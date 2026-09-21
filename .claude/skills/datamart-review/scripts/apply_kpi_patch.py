@@ -143,14 +143,19 @@ def upsert_dm_row(cur: DesignCsv, nhom: str, row: Dict[str, str]) -> DesignCsv:
     j_nhom = header.index("nhom")
     kpi_id = new_row[j_kpi]
 
+    pat = re.compile(rf"^\s*(?:Nhóm|Nhom|Group)?\s*0*{re.escape(str(nhom))}\b", re.IGNORECASE)
+    target = int(nhom) if str(nhom).isdigit() else None
+
     rows = list(cur.rows)
-    existing_idx = next((i for i, r in enumerate(rows) if j_kpi < len(r) and r[j_kpi] == kpi_id), None)
+    # QUAN TRỌNG: 1 kpi_id có thể xuất hiện ở NHIỀU Nhóm khác nhau (reuse hợp lệ, VD K_GSTT_85
+    # ở cả Nhóm 28 và Nhóm 29) — khớp CẢ kpi_id LẪN nhom, không chỉ kpi_id, nếu không sẽ ghi đè
+    # nhầm dòng của Nhóm khác (đã xảy ra thực tế 2026-09-21, xem CLAUDE.md/session note).
+    existing_idx = next((i for i, r in enumerate(rows)
+                          if j_kpi < len(r) and r[j_kpi] == kpi_id
+                          and j_nhom < len(r) and pat.match(r[j_nhom])), None)
     if existing_idx is not None:
         rows[existing_idx] = new_row
         return DesignCsv(header=cur.header, rows=rows, quote_all=cur.quote_all, path=cur.path)
-
-    pat = re.compile(rf"^\s*(?:Nhóm|Nhom|Group)?\s*0*{re.escape(str(nhom))}\b", re.IGNORECASE)
-    target = int(nhom) if str(nhom).isdigit() else None
     last_same_nhom = None
     for i, r in enumerate(rows):
         if j_nhom < len(r) and pat.match(r[j_nhom]):

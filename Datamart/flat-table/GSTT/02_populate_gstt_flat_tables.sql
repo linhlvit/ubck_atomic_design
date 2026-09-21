@@ -324,7 +324,48 @@ WHERE cal.cdr_dt = :etl_date
 
 
 -- ============================================================
--- 5. OPERATIONAL: gstt_opr_public_company_shareholding_flat
+-- 5. FACT: gstt_fct_investor_category_trading_snpst_flat
+--    [MỚI 2026-09-21] DELETE-scoped theo cdr_dt = :etl_date (4 dòng/mã CK/ngày,
+--    1 dòng/Phân loại NĐT)
+-- ============================================================
+DELETE FROM datamart.gstt_fct_investor_category_trading_snpst_flat ON CLUSTER 'my_cluster'
+WHERE cdr_dt = :etl_date;
+INSERT INTO datamart.gstt_fct_investor_category_trading_snpst_flat
+SELECT
+    -- From: FACT Investor Category Trading Snapshot
+    f.security_trading_snpst_dim_id,
+    f.snpst_dt_dim_id,
+    f.investor_category_code,
+    f.buy_val,
+    f.sell_val,
+    f.matched_buy_val,
+    f.matched_sell_val,
+    f.negotiated_buy_val,
+    f.negotiated_sell_val,
+
+    -- From: CALENDAR DATE DIMENSION
+    cal.cdr_dt                          AS cdr_dt,
+    cal.is_trading_date                 AS is_trading_date,
+
+    -- From: SECURITY TRADING SNAPSHOT DIMENSION
+    scr_dim.symbol                      AS symbol,
+    scr_dim.security_full_nm            AS security_full_nm,
+    scr_dim.floor_code                  AS floor_code,
+    scr_dim.stock_tp_code               AS stock_tp_code,
+    scr_dim.stock_tp_nm                 AS stock_tp_nm,
+    scr_dim.src_stm_code                AS investor_ctgy_trd_src_stm_code
+
+FROM datamart.fct_investor_category_trading_snpst f
+JOIN datamart.cdr_dt_dim cal
+    ON cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+LEFT JOIN datamart.security_trading_snpst_dim scr_dim
+    ON scr_dim.security_trading_snpst_dim_id = f.security_trading_snpst_dim_id
+WHERE cal.cdr_dt = :etl_date
+;
+
+
+-- ============================================================
+-- 6. OPERATIONAL: gstt_opr_public_company_shareholding_flat
 --    [SỬA 2026-09-12, đảo ngược O_GSTT_9] Current-state — TRUNCATE + INSERT toàn
 --    bộ, không lọc theo :etl_date (khác Fact Snapshot/Event).
 -- ============================================================

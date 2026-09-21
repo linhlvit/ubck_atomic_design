@@ -3,6 +3,7 @@
 **Phiên bản:** 2.3
 **Ngày cập nhật:** 2026-09-14
 **Phạm vi:** Star schema diagram theo Fact chính — GSTT module, khớp `DTM_GSTT_HLD.md` v4.15 (49/49 Nhóm)
+**Thay đổi v2.5 (2026-09-21):** Bổ sung `Fact Investor Category Trading Snapshot` (mới) — tách phân loại NĐT khỏi `Fact Stock Portfolio Snapshot`, phục vụ Nhóm 28/29 (K_GSTT_85–94).
 **Thay đổi v2.4 (2026-09-16):** Đổi nguồn `Outstanding Share Quantity` (trên `Fact Stock Portfolio Snapshot`) và `Index Market Cap` (trên `Fact Index Constituent Snapshot`) từ `pc_share_statistics_hstr` (IDS) sang `listed_share_info` (VSDC `outstanding_shares`, `src_stm_code = 'VSDC_OUTSTANDING_SHARES'`). Đồng bộ hoàn toàn nguồn dữ liệu số lượng cổ phiếu lưu hành & tự do chuyển nhượng về VSDC, khắc phục dứt điểm tình trạng rỗng dữ liệu trên sàn HNX/UPCOM.
 **Thay đổi v2.3:** Đổi tên `Index Total Volume`/`Index Total Value` → `Index Total Matched Volume`/`Index Total Matched Value` — review sheet Tổng hợp công thức xác nhận KLGD/GTGD của chỉ số (K_GSTT_47/48) phải loại trừ thỏa thuận, khác BA_analyst_GSTT.csv STT5.
 **Thay đổi v2.2:** Bổ sung 8 measure tính sẵn theo rổ chỉ số lên `Fact Index Constituent Snapshot` (Index Total Matched Volume/Value, Index Foreign Net Volume/Value, Index Total Negotiated Volume/Value, Index Market Cap, Index Free Float Market Cap — theo yêu cầu Design, không chấp nhận Bridge thuần 3 FK). Sửa mô tả `Fact Stock Portfolio Snapshot` — nguồn Free Float đổi từ `listed_security_info_snapshot` (chưa tồn tại) sang `listed_share_info`.
@@ -120,6 +121,24 @@ erDiagram
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
 | Fact Foreign Trading Minute Snapshot | Fact Snapshot | new | Giá trị mua/bán của NĐT nước ngoài theo phút | 1 row / mã CK (Symbol) / Trade Minute (`trade_minute_tms`) — FK Calendar Date Dimension qua Trade Date | K_GSTT_78–80 |
+| Security Trading Snapshot Dimension | Dimension | reuse | Hồ sơ mô tả chứng khoán — đã thiết kế ở Nhóm 1 | 1 row / mã CK (SCD4A) | — |
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày — conformed toàn hệ thống | 1 row / ngày | — |
+
+---
+
+## Fact Investor Category Trading Snapshot (phục vụ Nhóm 28, 29)
+
+**[MỚI 2026-09-21, theo yêu cầu Data Modeler]** Tách khỏi `Fact Stock Portfolio Snapshot` để có cột vật lý `Investor Category Code` thay vì 4 cụm cột cố định (`Individual_*`/`Domestic_Institution_*`/`Proprietary_*`/`Foreign_*`) + CASE WHEN switch tại tầng BI. Nguồn `Securities Trade.Buy/Sell Investor Type Code` (Cá nhân/Tổ chức trong nước, phân nhánh HOSE/HNX) + `Buy/Sell Client House Classification Code='30'` (Tự doanh) + `Buy/Sell Foreign Investor Type Code IN ('10','20')` (Nước ngoài). Không đổi grain/cột của `Fact Stock Portfolio Snapshot` — Nhóm 21/25/27/33 tiếp tục dùng nguyên các cột đã có, không bị ảnh hưởng.
+
+```mermaid
+erDiagram
+    Security_Trading_Snapshot_Dimension ||--o{ Fact_Investor_Category_Trading_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Investor_Category_Trading_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Investor Category Trading Snapshot | Fact Snapshot | new | Giá trị mua/bán theo Phân loại NĐT (Cá nhân/Tổ chức trong nước/Tự doanh/Nước ngoài), tách riêng khớp lệnh/thỏa thuận | 1 row / mã CK / ngày giao dịch / Phân loại NĐT | K_GSTT_85–94 |
 | Security Trading Snapshot Dimension | Dimension | reuse | Hồ sơ mô tả chứng khoán — đã thiết kế ở Nhóm 1 | 1 row / mã CK (SCD4A) | — |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày — conformed toàn hệ thống | 1 row / ngày | — |
 

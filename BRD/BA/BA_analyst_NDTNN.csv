@@ -30,6 +30,7 @@ stockinfor as
 (
         select
                 js.symbol
+                , js.symbolisin 
                 , js.tradingdate 
                 , js.stocktype 
                 , js.ds_etl_pcs_tms 
@@ -60,7 +61,7 @@ select
 FROM
         uat_hnx_stg.trade_book tb 
 join 
-        stockinfor js on js.symbol = tb.issue_code and tb.trade_date = js.tradingdate 
+        stockinfor js on js.symbolisin = tb.issue_code and to_date(tb.trade_date, 'yyyyMMdd') = js.tradingdate 
 WHERE
         tb.trade_date BETWEEN :pdat1 AND :pdat2
         and to_date(tb.ds_snpst_dt) = to_date('2026-09-07', 'yyyy-MM-dd')
@@ -140,48 +141,36 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
         and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,,,,,Chưa có SQL,Dữ liệu tĩnh,,,,,,
-1,5,Dashboard/Giao dịch/Thống kê chung,Tăng trưởng NĐT mới,Số lượng mã số giao dịch cấp mới cho NĐTNN (YTD).,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,FIMS,X,X,,Done,Báo cáo,"uat_fims_ods.item_list
-uat_fims_ods.item_value
-
-","count ( cột Mã số giao dịch chứng khoán)
-
-hàng all ","item_list.report_code = 'H0I8J' 
-","
-SELECT iv.value
-FROM uat_fims_ods.item_value iv
-LEFT JOIN uat_fims_ods.item_list il ON iv.item_id = il.item_id
-LEFT JOIN  uat_fims_ods.report_history rh ON iv.report_log_id = rh.report_log_id
-WHERE il.report_code = 'H0I8J'
-  AND il.column_path = 'Mã số giao dịch chứng khoán'
-  AND rh.ngay_nop =  :ngay_nop;",,,,,Done,Dữ liệu động,,"Báo cáo PLVI-TT51/2021/TT-BTC (Báo cáo hoạt động cấp mã số GD - do VSDC gửi, kỳ tháng)",I. Thông tin chung,Tổng,Tổng số lượng tới thời điểm báo cáo,
-1,6,Dashboard/Giao dịch/Thống kê chung,Tăng trưởng NĐT mới là cá nhân,Số lượng mã số giao dịch cấp mới cho NĐTNN là cá nhân (YTD).,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,FIMS,X,X,,Done,Báo cáo,"uat_fims_ods.item_list
-uat_fims_ods.item_value
-
-","count ( cột Mã số giao dịch chứng khoán)
-
-hàng cá nhân","item_list.report_code = 'H0I8J' 
-","SELECT COUNT(1)
-FROM uat_fims_ods.item_value iv
-LEFT JOIN uat_fims_ods.item_list il ON iv.item_id = il.item_id
-LEFT JOIN  uat_fims_ods.report_history rh ON iv.report_log_id = rh.report_log_id
-WHERE il.report_code = 'H0I8J'
-  AND il.column_path = 'Mã số giao dịch chứng khoán'
-  AND il.row_path = 'Cá nhân'
-  AND rh.ngay_nop = :ngay_nop;",,,,,Done,Dữ liệu động,,"Báo cáo PLVI-TT51/2021/TT-BTC (Báo cáo hoạt động cấp mã số GD - do VSDC gửi, kỳ tháng)",I. Thông tin chung,Cá nhân,Tổng số lượng tới thời điểm báo cáo,
-1,7,Dashboard/Giao dịch/Thống kê chung,Tăng trưởng NĐT mới là tổ chức,Số lượng mã số giao dịch cấp mới cho NĐTNN là tổ chức (YTD).,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,FIMS,X,X,,Done,Báo cáo,"uat_fims_ods.item_list
-uat_fims_ods.item_value
-
-","count ( cột Mã số giao dịch chứng khoán)
-
-hàng: tổ chức","item_list.report_code = 'H0I8J' 
-","SELECT COUNT(1)
-FROM uat_fims_ods.item_value iv
-LEFT JOIN uat_fims_ods.item_list il ON iv.item_id = il.item_id
-LEFT JOIN  uat_fims_ods.report_history rh ON iv.report_log_id = rh.report_log_id
-WHERE il.report_code = 'H0I8J'
-  AND il.column_path = 'Mã số giao dịch chứng khoán'
-  AND il.row_path = 'Tổ chức'
-  AND rh.ngay_nop = :ngay_nop;",,,,,Done,Dữ liệu động,,"Báo cáo PLVI-TT51/2021/TT-BTC (Báo cáo hoạt động cấp mã số GD - do VSDC gửi, kỳ tháng)",I. Thông tin chung,Tổ chức,Tổng số lượng tới thời điểm báo cáo,
+1,5,Dashboard/Giao dịch/Thống kê chung,Tăng trưởng NĐT mới,Số lượng mã số giao dịch cấp mới cho NĐTNN (YTD).,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,FIMS,X,X,,Done,Báo cáo,uat_fims_ods.fact_report_cell,value_num  ,"where report_code = 'H0I8J'
+and frc.sheet_name = 'I'
+and column_path = 'Tổng số lượng tới thời điểm báo cáo';
+and row_path = 'Tổng
+and ngay_nop = :ngaynop;","select frc.value_num  from uat_fims_ods.fact_report_cell frc
+where report_code = 'H0I8J'
+and frc.sheet_name = 'I'
+and column_path = 'Tổng số lượng tới thời điểm báo cáo';
+and row_path = 'Tổng
+and ngay_nop = :ngaynop;",,,,,Done,Dữ liệu động,,"Báo cáo PLVI-TT51/2021/TT-BTC (Báo cáo hoạt động cấp mã số GD - do VSDC gửi, kỳ tháng)",I. Thông tin chung,Tổng,Tổng số lượng tới thời điểm báo cáo,
+1,6,Dashboard/Giao dịch/Thống kê chung,Tăng trưởng NĐT mới là cá nhân,Số lượng mã số giao dịch cấp mới cho NĐTNN là cá nhân (YTD).,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,FIMS,X,X,,Done,Báo cáo,uat_fims_ods.fact_report_cell,value_num  ,"where report_code = 'H0I8J'
+and frc.sheet_name = 'I'
+and column_path = 'Tổng số lượng tới thời điểm báo cáo';
+and row_path = 'Cá nhân'
+and ngay_nop = :ngaynop;","select frc.value_num  from uat_fims_ods.fact_report_cell frc
+where report_code = 'H0I8J'
+and frc.sheet_name = 'I'
+and column_path = 'Tổng số lượng tới thời điểm báo cáo';
+and row_path = 'Cá nhân'
+and ngay_nop = :ngaynop;",,,,,Done,Dữ liệu động,,"Báo cáo PLVI-TT51/2021/TT-BTC (Báo cáo hoạt động cấp mã số GD - do VSDC gửi, kỳ tháng)",I. Thông tin chung,Cá nhân,Tổng số lượng tới thời điểm báo cáo,
+1,7,Dashboard/Giao dịch/Thống kê chung,Tăng trưởng NĐT mới là tổ chức,Số lượng mã số giao dịch cấp mới cho NĐTNN là tổ chức (YTD).,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,FIMS,X,X,,Done,Báo cáo,uat_fims_ods.fact_report_cell,value_num  ,"where report_code = 'H0I8J'
+and frc.sheet_name = 'I'
+and column_path = 'Tổng số lượng tới thời điểm báo cáo';
+and row_path = 'Tổ chức'
+and ngay_nop = :ngaynop;","select frc.value_num  from uat_fims_ods.fact_report_cell frc
+where report_code = 'H0I8J'
+and frc.sheet_name = 'I'
+and column_path = 'Tổng số lượng tới thời điểm báo cáo';
+and row_path = 'Tổ chức'
+and ngay_nop = :ngaynop;",,,,,Done,Dữ liệu động,,"Báo cáo PLVI-TT51/2021/TT-BTC (Báo cáo hoạt động cấp mã số GD - do VSDC gửi, kỳ tháng)",I. Thông tin chung,Tổ chức,Tổng số lượng tới thời điểm báo cáo,
 2,8,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Giá trị mua/bán ròng,Giá trị mua/bán ròng = Giá trị mua - giá trị bán,Dashboard,Chỉ tiêu phái sinh,TB,"Ngày, Tháng","CSDLTT, MDDS",X,X,X,Done,Sổ lệnh,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
@@ -207,6 +196,7 @@ stockinfor as
 (
         select
                 js.symbol
+		, js.symbolisin 
                 , js.tradingdate 
                 , js.stocktype 
                 , js.ds_etl_pcs_tms 
@@ -365,22 +355,23 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
         and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","WITH 
 stockinfor as 
 (
-	select
-		js.symbol
-		, js.tradingdate 
-		, js.stocktype 
-		, js.ds_etl_pcs_tms 
-	from uat_mdds_stg.jad_stockinfor js 
-	where 1=1
-	and js.tradingtime in (select max(tradingtime) from uat_mdds_stg.jad_stockinfor group by stocktype)
---	and to_date(js.ds_etl_pcs_tms) = to_date('20260908','yyyyMMdd')
-	and js.stocktype in(1,2,3)
+        select
+                js.symbol
+		, js.symbolisin 
+                , js.tradingdate 
+                , js.stocktype 
+                , js.ds_etl_pcs_tms 
+        from uat_mdds_stg.jad_stockinfor js 
+        where 1=1
+        and js.tradingtime in (select max(tradingtime) from uat_mdds_stg.jad_stockinfor group by stocktype)
+--        and to_date(js.ds_etl_pcs_tms) = to_date('20260908','yyyyMMdd')
+        and js.stocktype in(1,2,3)
 ),
 raw_trades AS (
 -- 1. Sàn HOSE
     SELECT 
         'HOSE'                                                   AS exchange,
-    	to_date(tb.trade_date, 'yyyy-MM-dd')                        AS trade_date,
+            to_date(tb.trade_date, 'yyyy-MM-dd')                        AS trade_date,
         tb.symbol                                                    AS symbol,
         tb.execution_value                          AS execution_value,
         CASE WHEN tb.buy_foreigner_investor_type IN ('10', '20') 
@@ -389,8 +380,8 @@ raw_trades AS (
              THEN tb.execution_value ELSE 0.0 END   AS gtri_ndtnn_ban
     FROM uat_hose_stg.trade_book tb
     join stockinfor js on tb.symbol = js.symbol and tb.trade_date = js.tradingdate 
---    		and to_date(js.ds_etl_pcs_tms) =  to_date('20260908','yyyyMMdd') 
-    WHERE 	tb.trade_date BETWEEN :pdat1 AND :pdat2
+--                    and to_date(js.ds_etl_pcs_tms) =  to_date('20260908','yyyyMMdd') 
+    WHERE         tb.trade_date BETWEEN :pdat1 AND :pdat2
 --    and ds_snpst_dt = to_date('20260908','yyyyMMdd')
     UNION ALL
     -- 2. Sàn HNX
@@ -405,8 +396,8 @@ raw_trades AS (
              THEN tb.trade_price * tb.trade_quantity ELSE 0.0 END AS gtri_ndtnn_ban
     FROM uat_hnx_stg.trade_book tb
     join stockinfor js on tb.issue_code = js.symbol and tb.trade_date = js.tradingdate 
---    		and to_date(js.ds_etl_pcs_tms) =  to_date('20260908','yyyyMMdd') 
-    WHERE 	tb.trade_date BETWEEN :pdat1 AND :pdat2
+--                    and to_date(js.ds_etl_pcs_tms) =  to_date('20260908','yyyyMMdd') 
+    WHERE         tb.trade_date BETWEEN :pdat1 AND :pdat2
     and tb.ds_snpst_dt = to_date('20260908','yyyyMMdd')
 ),
 stock_agg AS (
@@ -424,7 +415,7 @@ stock_agg AS (
 )
 --top ngành bán ròng
 SELECT 
-    industry_name              		AS nganh,
+    industry_name                              AS nganh,
     gtri_ban_nganh           AS tong_gtri_ban_nganh
 FROM stock_agg
 ORDER BY gtri_ban_nganh DESC
@@ -460,22 +451,23 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
         and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","WITH 
 stockinfor as 
 (
-	select
-		js.symbol
-		, js.tradingdate 
-		, js.stocktype 
-		, js.ds_etl_pcs_tms 
-	from uat_mdds_stg.jad_stockinfor js 
-	where 1=1
-	and js.tradingtime in (select max(tradingtime) from uat_mdds_stg.jad_stockinfor group by stocktype)
---	and to_date(js.ds_etl_pcs_tms) = to_date('20260908','yyyyMMdd')
-	and js.stocktype in(1,2,3)
+        select
+                js.symbol
+		, js.symbolisin 
+                , js.tradingdate 
+                , js.stocktype 
+                , js.ds_etl_pcs_tms 
+        from uat_mdds_stg.jad_stockinfor js 
+        where 1=1
+        and js.tradingtime in (select max(tradingtime) from uat_mdds_stg.jad_stockinfor group by stocktype)
+--        and to_date(js.ds_etl_pcs_tms) = to_date('20260908','yyyyMMdd')
+        and js.stocktype in(1,2,3)
 ),
 raw_trades AS (
 -- 1. Sàn HOSE
     SELECT 
         'HOSE'                                                   AS exchange,
-    	to_date(tb.trade_date, 'yyyy-MM-dd')                        AS trade_date,
+            to_date(tb.trade_date, 'yyyy-MM-dd')                        AS trade_date,
         tb.symbol                                                    AS symbol,
         tb.execution_value                          AS execution_value,
         CASE WHEN tb.buy_foreigner_investor_type IN ('10', '20') 
@@ -484,8 +476,8 @@ raw_trades AS (
              THEN tb.execution_value ELSE 0.0 END   AS gtri_ndtnn_ban
     FROM uat_hose_stg.trade_book tb
     join stockinfor js on tb.symbol = js.symbol and tb.trade_date = js.tradingdate 
---    		and to_date(js.ds_etl_pcs_tms) =  to_date('20260908','yyyyMMdd') 
-    WHERE 	tb.trade_date BETWEEN :pdat1 AND :pdat2
+--                    and to_date(js.ds_etl_pcs_tms) =  to_date('20260908','yyyyMMdd') 
+    WHERE         tb.trade_date BETWEEN :pdat1 AND :pdat2
 --    and ds_snpst_dt = to_date('20260908','yyyyMMdd')
     UNION ALL
     -- 2. Sàn HNX
@@ -500,8 +492,8 @@ raw_trades AS (
              THEN tb.trade_price * tb.trade_quantity ELSE 0.0 END AS gtri_ndtnn_ban
     FROM uat_hnx_stg.trade_book tb
     join stockinfor js on tb.issue_code = js.symbol and tb.trade_date = js.tradingdate 
---    		and to_date(js.ds_etl_pcs_tms) =  to_date('20260908','yyyyMMdd') 
-    WHERE 	tb.trade_date BETWEEN :pdat1 AND :pdat2
+--                    and to_date(js.ds_etl_pcs_tms) =  to_date('20260908','yyyyMMdd') 
+    WHERE         tb.trade_date BETWEEN :pdat1 AND :pdat2
     and tb.ds_snpst_dt = to_date('20260908','yyyyMMdd')
 ),
 stock_agg AS (
@@ -519,8 +511,8 @@ stock_agg AS (
 )
 --top ngành mua ròng
 SELECT 
-    industry_name              		AS nganh,
-    gtri_mua_nganh           		AS tong_gtri_mua_nganh
+    industry_name                              AS nganh,
+    gtri_mua_nganh                           AS tong_gtri_mua_nganh
 FROM stock_agg
 ORDER BY gtri_mua_nganh desc
 LIMIT 5;",,,,,Chưa có SQL,Dữ liệu tĩnh,,,,,,
@@ -554,6 +546,7 @@ stockinfor as
 (
         select
                 js.symbol
+		, js.symbolisin 
                 , js.tradingdate 
                 , js.stocktype 
                 , js.ds_etl_pcs_tms 
@@ -644,22 +637,23 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
         and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","WITH 
 stockinfor as 
 (
-	select
-		js.symbol
-		, js.tradingdate 
-		, js.stocktype 
-		, js.ds_etl_pcs_tms 
-	from uat_mdds_stg.jad_stockinfor js 
-	where 1=1
-	and js.tradingtime in (select max(tradingtime) from uat_mdds_stg.jad_stockinfor group by stocktype)
---	and to_date(js.ds_etl_pcs_tms) = to_date('20260908','yyyyMMdd')
-	and js.stocktype in(1,2,3)
+        select
+                js.symbol
+		, js.symbolisin 
+                , js.tradingdate 
+                , js.stocktype 
+                , js.ds_etl_pcs_tms 
+        from uat_mdds_stg.jad_stockinfor js 
+        where 1=1
+        and js.tradingtime in (select max(tradingtime) from uat_mdds_stg.jad_stockinfor group by stocktype)
+--        and to_date(js.ds_etl_pcs_tms) = to_date('20260908','yyyyMMdd')
+        and js.stocktype in(1,2,3)
 ),
 raw_trades AS (
 -- 1. Sàn HOSE
     SELECT 
         'HOSE'                                                   AS exchange,
-    	to_date(tb.trade_date, 'yyyy-MM-dd')                        AS trade_date,
+            to_date(tb.trade_date, 'yyyy-MM-dd')                        AS trade_date,
         tb.symbol                                                    AS symbol,
         tb.execution_value                          AS execution_value,
         CASE WHEN tb.buy_foreigner_investor_type IN ('10', '20') 
@@ -668,8 +662,8 @@ raw_trades AS (
              THEN tb.execution_value ELSE 0.0 END   AS gtri_ndtnn_ban
     FROM uat_hose_stg.trade_book tb
     join stockinfor js on tb.symbol = js.symbol and tb.trade_date = js.tradingdate 
---    		and to_date(js.ds_etl_pcs_tms) =  to_date('20260908','yyyyMMdd') 
-    WHERE 	tb.trade_date BETWEEN :pdat1 AND :pdat2
+--                    and to_date(js.ds_etl_pcs_tms) =  to_date('20260908','yyyyMMdd') 
+    WHERE         tb.trade_date BETWEEN :pdat1 AND :pdat2
 --    and ds_snpst_dt = to_date('20260908','yyyyMMdd')
     UNION ALL
     -- 2. Sàn HNX
@@ -684,8 +678,8 @@ raw_trades AS (
              THEN tb.trade_price * tb.trade_quantity ELSE 0.0 END AS gtri_ndtnn_ban
     FROM uat_hnx_stg.trade_book tb
     join stockinfor js on tb.issue_code = js.symbol and tb.trade_date = js.tradingdate 
---    		and to_date(js.ds_etl_pcs_tms) =  to_date('20260908','yyyyMMdd') 
-    WHERE 	tb.trade_date BETWEEN :pdat1 AND :pdat2
+--                    and to_date(js.ds_etl_pcs_tms) =  to_date('20260908','yyyyMMdd') 
+    WHERE         tb.trade_date BETWEEN :pdat1 AND :pdat2
     and tb.ds_snpst_dt = to_date('20260908','yyyyMMdd')
 ),
 stock_agg AS (
@@ -703,8 +697,8 @@ stock_agg AS (
 )
 --top mã mua ròng
 --SELECT 
---    symbol              		AS ma_ck,
---    gtri_mua_ma           		AS tong_gtri_mua_ma
+--    symbol                              AS ma_ck,
+--    gtri_mua_ma                           AS tong_gtri_mua_ma
 --FROM stock_agg
 --ORDER BY gtri_mua_ma desc
 --LIMIT 5;",,,,,Chưa có SQL,Dữ liệu tĩnh,,,,,,
@@ -733,6 +727,7 @@ stockinfor as
 (
         select
                 js.symbol
+		, js.symbolisin 
                 , js.tradingdate 
                 , js.stocktype 
                 , js.ds_etl_pcs_tms 
@@ -897,16 +892,17 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
         and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","WITH 
 stockinfor as 
 (
-	select
-		js.symbol
-		, js.tradingdate 
-		, js.stocktype 
-		, js.ds_etl_pcs_tms 
-	from uat_mdds_stg.jad_stockinfor js 
-	where 1=1
-	and js.tradingtime in (select max(tradingtime) from uat_mdds_stg.jad_stockinfor group by stocktype)
---	and to_date(js.ds_etl_pcs_tms) = to_date('20260908','yyyyMMdd')
-	and js.stocktype in(1,2,3)
+        select
+                js.symbol
+		, js.symbolisin 
+                , js.tradingdate 
+                , js.stocktype 
+                , js.ds_etl_pcs_tms 
+        from uat_mdds_stg.jad_stockinfor js 
+        where 1=1
+        and js.tradingtime in (select max(tradingtime) from uat_mdds_stg.jad_stockinfor group by stocktype)
+--        and to_date(js.ds_etl_pcs_tms) = to_date('20260908','yyyyMMdd')
+        and js.stocktype in(1,2,3)
 ),
 raw_trades AS (
     SELECT 
@@ -918,8 +914,8 @@ raw_trades AS (
              THEN execution_value ELSE 0.0 END   AS gtri_ndtnn_ban
     FROM uat_hose_stg.trade_book tb
     join stockinfor js on tb.symbol = js.symbol and tb.trade_date = js.tradingdate 
---    		and to_date(js.ds_etl_pcs_tms) =  to_date('20260908','yyyyMMdd') 
-    WHERE 	tb.trade_date BETWEEN :pdat1 AND :pdat2
+--                    and to_date(js.ds_etl_pcs_tms) =  to_date('20260908','yyyyMMdd') 
+    WHERE         tb.trade_date BETWEEN :pdat1 AND :pdat2
 --    and ds_snpst_dt = to_date('20260908','yyyyMMdd')
     UNION ALL
     SELECT 
@@ -931,8 +927,8 @@ raw_trades AS (
              THEN trade_price * trade_quantity ELSE 0.0 END AS gtri_ndtnn_ban
     FROM uat_hnx_stg.trade_book tb
     join stockinfor js on tb.issue_code = js.symbol and tb.trade_date = js.tradingdate 
---    		and to_date(js.ds_etl_pcs_tms) =  to_date('20260908','yyyyMMdd') 
-    WHERE 	tb.trade_date BETWEEN :pdat1 AND :pdat2
+--                    and to_date(js.ds_etl_pcs_tms) =  to_date('20260908','yyyyMMdd') 
+    WHERE         tb.trade_date BETWEEN :pdat1 AND :pdat2
 --    and ds_snpst_dt = to_date('20260908','yyyyMMdd')
 ),
 base_trades AS (
@@ -949,8 +945,8 @@ daily_summary AS (
         sum(gtri_ndtnn_mua)  AS gtri_mua_ngay,
         sum(gtri_ndtnn_ban)  AS gtri_ban_ngay,
         sum(execution_value) AS tong_gtgd_ngay,
-		((sum(gtri_ndtnn_mua) + sum(gtri_ndtnn_ban)) / 
-     	(sum(execution_value)*2)) * 100 AS ty_trong_ngay_pct
+                ((sum(gtri_ndtnn_mua) + sum(gtri_ndtnn_ban)) / 
+             (sum(execution_value)*2)) * 100 AS ty_trong_ngay_pct
     FROM base_trades
 )
 SELECT 
@@ -988,16 +984,17 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
         and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","WITH 
 stockinfor as 
 (
-	select
-		js.symbol
-		, js.tradingdate 
-		, js.stocktype 
-		, js.ds_etl_pcs_tms 
-	from uat_mdds_stg.jad_stockinfor js 
-	where 1=1
-	and js.tradingtime in (select max(tradingtime) from uat_mdds_stg.jad_stockinfor group by stocktype)
---	and to_date(js.ds_etl_pcs_tms) = to_date('20260908','yyyyMMdd')
-	and js.stocktype in(1,2,3)
+        select
+                js.symbol
+		, js.symbolisin 
+                , js.tradingdate 
+                , js.stocktype 
+                , js.ds_etl_pcs_tms 
+        from uat_mdds_stg.jad_stockinfor js 
+        where 1=1
+        and js.tradingtime in (select max(tradingtime) from uat_mdds_stg.jad_stockinfor group by stocktype)
+--        and to_date(js.ds_etl_pcs_tms) = to_date('20260908','yyyyMMdd')
+        and js.stocktype in(1,2,3)
 ),
 raw_trades AS (
     SELECT 
@@ -1010,8 +1007,8 @@ raw_trades AS (
              THEN execution_value ELSE 0.0 END   AS gtri_ndtnn_ban
     FROM uat_hose_stg.trade_book tb
     join stockinfor js on tb.symbol = js.symbol and tb.trade_date = js.tradingdate 
---    		and to_date(js.ds_etl_pcs_tms) =  to_date('20260908','yyyyMMdd') 
-    WHERE 	tb.trade_date BETWEEN :pdat1 AND :pdat2
+--                    and to_date(js.ds_etl_pcs_tms) =  to_date('20260908','yyyyMMdd') 
+    WHERE         tb.trade_date BETWEEN :pdat1 AND :pdat2
 --    and ds_snpst_dt = to_date('20260908','yyyyMMdd')
     UNION ALL
     SELECT 
@@ -1024,8 +1021,8 @@ raw_trades AS (
              THEN trade_price * trade_quantity ELSE 0.0 END AS gtri_ndtnn_ban
     FROM uat_hnx_stg.trade_book tb
     join stockinfor js on tb.issue_code = js.symbol and tb.trade_date = js.tradingdate 
---    		and to_date(js.ds_etl_pcs_tms) =  to_date('20260908','yyyyMMdd') 
-    WHERE 	tb.trade_date BETWEEN :pdat1 AND :pdat2
+--                    and to_date(js.ds_etl_pcs_tms) =  to_date('20260908','yyyyMMdd') 
+    WHERE         tb.trade_date BETWEEN :pdat1 AND :pdat2
 --    and ds_snpst_dt = to_date('20260908','yyyyMMdd')
 ),
 stock_agg AS (
@@ -1045,8 +1042,8 @@ stock_agg AS (
 )
 SELECT 
     industry_name,
-	(tong_gtgd_ndtnn_ma / 
- 	(tong_gtgd_ma*2)) * 100 AS ty_trong_nganh_pct
+        (tong_gtgd_ndtnn_ma / 
+         (tong_gtgd_ma*2)) * 100 AS ty_trong_nganh_pct
 FROM stock_agg
 ORDER BY ty_trong_nganh_pct DESC
 LIMIT 5;",,,,,Chưa có SQL,Dữ liệu tĩnh,,,,,,
@@ -1077,20 +1074,21 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
         and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","WITH 
 stockinfor as 
 (
-	select
-		js.symbol
-		, js.tradingdate 
-		, js.stocktype 
-		, js.ds_etl_pcs_tms 
-	from uat_mdds_stg.jad_stockinfor js 
-	where 1=1
-	and js.tradingtime in (select max(tradingtime) from uat_mdds_stg.jad_stockinfor group by stocktype)
---	and to_date(js.ds_etl_pcs_tms) = to_date('20260908','yyyyMMdd')
-	and js.stocktype in(1,2,3)
+        select
+                js.symbol
+		, js.symbolisin 
+                , js.tradingdate 
+                , js.stocktype 
+                , js.ds_etl_pcs_tms 
+        from uat_mdds_stg.jad_stockinfor js 
+        where 1=1
+        and js.tradingtime in (select max(tradingtime) from uat_mdds_stg.jad_stockinfor group by stocktype)
+--        and to_date(js.ds_etl_pcs_tms) = to_date('20260908','yyyyMMdd')
+        and js.stocktype in(1,2,3)
 ),
 raw_trades AS (
     SELECT 
-    	tb.symbol 								as symbol,
+            tb.symbol                                                                 as symbol,
         to_date(tb.trade_date, 'yyyy-MM-dd')                        AS trade_date,
         tb.execution_value                          AS execution_value,
         CASE WHEN tb.buy_foreigner_investor_type IN ('10', '20') 
@@ -1099,12 +1097,12 @@ raw_trades AS (
              THEN tb.execution_value  END   AS gtri_ndtnn_ban
     FROM uat_hose_stg.trade_book tb
     join stockinfor js on tb.symbol = js.symbol and tb.trade_date = js.tradingdate 
---    		and to_date(js.ds_etl_pcs_tms) =  to_date('20260908','yyyyMMdd') 
-    WHERE 	tb.trade_date BETWEEN :pdat1 AND :pdat2
+--                    and to_date(js.ds_etl_pcs_tms) =  to_date('20260908','yyyyMMdd') 
+    WHERE         tb.trade_date BETWEEN :pdat1 AND :pdat2
 --    and ds_snpst_dt = to_date('20260908','yyyyMMdd')
     UNION ALL
     SELECT 
-    	tb.issue_code 								as symbol,
+            tb.issue_code                                                                 as symbol,
         to_date(trade_date, 'yyyyMMdd')                          AS trade_date,
         tb.trade_price * tb.trade_quantity             AS execution_value,
         CASE WHEN tb.buy_foreign_investor_type_code IN ('10', '20') 
@@ -1113,8 +1111,8 @@ raw_trades AS (
              THEN tb.trade_price * tb.trade_quantity  END AS gtri_ndtnn_ban
     FROM uat_hnx_stg.trade_book tb
     join stockinfor js on tb.issue_code = js.symbol and tb.trade_date = js.tradingdate 
---    		and to_date(js.ds_etl_pcs_tms) =  to_date('20260908','yyyyMMdd') 
-    WHERE 	tb.trade_date BETWEEN :pdat1 AND :pdat2
+--                    and to_date(js.ds_etl_pcs_tms) =  to_date('20260908','yyyyMMdd') 
+    WHERE         tb.trade_date BETWEEN :pdat1 AND :pdat2
 --    and ds_snpst_dt = to_date('20260908','yyyyMMdd')
 ),
 base_trades AS (
@@ -1133,259 +1131,391 @@ base_trades AS (
 --top mã tỷ trọng cao 
 SELECT 
     symbol,
-		((sum(gtri_ndtnn_mua) + sum(gtri_ndtnn_ban)) / 
-     	(sum(execution_value)*2)) * 100 AS ty_trong_ndtnn_pct
+                ((sum(gtri_ndtnn_mua) + sum(gtri_ndtnn_ban)) / 
+             (sum(execution_value)*2)) * 100 AS ty_trong_ndtnn_pct
 FROM base_trades
 GROUP BY symbol
 ORDER BY ty_trong_ndtnn_pct DESC
 LIMIT 5;",Cần bảng danh mục ngành từ IDS-GSĐC. Phần MSS đã xác định: trường mã CK để JOIN.,,,,Chưa có SQL,Dữ liệu tĩnh,,,,,,
 3,23,Dashboard/Giám sát dòng vốn/Thống kê dòng vốn,Dòng tiền ròng ,"Dòng tiền ròng = Tổng tiền vào - Tổng tiền ra
-Hiển thị lũy kế đầu tháng đến cuối tháng (có dữ liệu hàng ngày và nửa tháng, ưu tiên lấy dữ liệu kỳ nửa tháng)",Dashboard,Chỉ tiêu phái sinh,TB,Ngày,FIMS,X,X,,Done,Báo cáo,"uat_fims_ods.item_list
-uat_fims_ods.item_value
-
-",GT dòng vốn vào kỳ báo cáo (+/-) (USD),,"SELECT iv.value
-FROM uat_fims_ods.item_value iv
-LEFT JOIN uat_fims_ods.item_list il ON iv.item_id = il.item_id
-LEFT JOIN uat_fims_ods.report_history rh ON iv.report_log_id = rh.report_log_id
-WHERE il.report_code = 'IBOU9'
-  AND il.column_path = 'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)'
-  AND rh.ngay_nop = :ngay_nop;
-",,,,,Done,Dữ liệu động,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,Tổng = (1)+(2),Giá trị dòng vốn vào trong kỳ báo cáo (đơn vị USD),Báo cáo tại ngày (lấy ngày cuối tháng)
-3,24,Dashboard/Giám sát dòng vốn/Thống kê dòng vốn,Dòng tiền vào, ,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,FIMS,X,X,,Done,Báo cáo,"uat_fims_ods.item_list
-uat_fims_ods.item_value
-
-","cột: Tổng GT ngoại tệ đổi sang VND trong kỳ (USD)
-
-dòng: Tổng = (1)+(2) ", ,"SELECT iv.value
-FROM uat_fims_ods.item_value iv
-LEFT JOIN uat_fims_ods.item_list il ON iv.item_id = il.item_id
-LEFT JOIN uat_fims_ods.report_history rh ON iv.report_log_id = rh.report_log_id
-WHERE il.report_code = 'IBOU9'
-  AND il.column_path = 'Tổng giá trị ngoại tệ đổi sang VND trong kỳ báo cáo (đơn vị USD)'
-  AND rh.ngay_nop =  = :ngay_nop;",,,,,Done,Dữ liệu động,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,Tổng = (1)+(2),Tổng giá trị ngoại tệ đổi sang VND trong kỳ báo cáo (đơn vị USD),
-3,25,Dashboard/Giám sát dòng vốn/Thống kê dòng vốn,Dòng tiền ra,Tổng tiền ra,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,FIMS,X,X,,Done,Báo cáo,"uat_fims_ods.item_list
-uat_fims_ods.item_value
-
-","cột: Tổng GT VND đổi ra ngoại tệ và chuyển ra (USD)
-
-dòng: Tổng = (1)+(2) ",,"SELECT iv.value
-FROM uat_fims_ods.item_value iv
-LEFT JOIN uat_fims_ods.item_list il ON iv.item_id = il.item_id
-LEFT JOIN uat_fims_ods.report_history rh ON iv.report_log_id = rh.report_log_id
-WHERE il.report_code = 'IBOU9'
-  AND il.column_path = 'Tổng giá trị VND đổi ra ngoại tệ và chuyển ra trong kỳ báo cáo (đơn vị USD)';
-  AND rh.ngay_nop = :ngay_nop;",,,,,Done,Dữ liệu động,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,Tổng = (1)+(2),Tổng giá trị VND đổi ra ngoại tệ và chuyển ra trong kỳ báo cáo (đơn vị USD),
+Hiển thị lũy kế đầu tháng đến cuối tháng (có dữ liệu hàng ngày và nửa tháng, ưu tiên lấy dữ liệu kỳ nửa tháng)",Dashboard,Chỉ tiêu phái sinh,TB,Ngày,FIMS,X,X,,Done,Báo cáo,uat_fims_ods.fact_report_cell,value_num  ,"where report_code = 'IBOU9'
+and column_path = 'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)'
+and row_path = 'Tổng= (1) + (2)'
+and ngay_nop = :ngaynop;","select frc.value_num  from uat_fims_ods.fact_report_cell frc
+where report_code = 'IBOU9'
+and column_path = 'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)'
+and row_path = 'Tổng= (1) + (2)'
+and ngay_nop = :ngaynop;",,,,,Done,Dữ liệu động,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,Tổng = (1)+(2),Giá trị dòng vốn vào trong kỳ báo cáo (đơn vị USD),Báo cáo tại ngày (lấy ngày cuối tháng)
+3,24,Dashboard/Giám sát dòng vốn/Thống kê dòng vốn,Dòng tiền vào, ,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,FIMS,X,X,,Done,Báo cáo,uat_fims_ods.fact_report_cell,value_num  ,"where report_code = 'IBOU9'
+and column_path = 'Tổng giá trị ngoại tệ đổi sang VND trong kỳ báo cáo (đơn vị USD)'
+and row_path = 'Tổng= (1) + (2)'
+and ngay_nop = :ngaynop;","select sum(frc.value_num)  from uat_fims_ods.fact_report_cell frc
+where report_code = 'IBOU9'
+and column_path = 'Tổng giá trị ngoại tệ đổi sang VND trong kỳ báo cáo (đơn vị USD)'
+and row_path = 'Tổng= (1) + (2)'
+and ngay_nop = :ngaynop;",,,,,Done,Dữ liệu động,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,Tổng = (1)+(2),Tổng giá trị ngoại tệ đổi sang VND trong kỳ báo cáo (đơn vị USD),
+3,25,Dashboard/Giám sát dòng vốn/Thống kê dòng vốn,Dòng tiền ra,Tổng tiền ra,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,FIMS,X,X,,Done,Báo cáo,uat_fims_ods.fact_report_cell,value_num  ,"where report_code = 'IBOU9'
+and column_path = 'Tổng giá trị VND đổi ra ngoại tệ và chuyển ra trong kỳ báo cáo (đơn vị USD)'
+and row_path = 'Tổng= (1) + (2)'
+and ngay_nop = :ngaynop;","select sum(frc.value_num)  from uat_fims_ods.fact_report_cell frc
+where report_code = 'IBOU9'
+and column_path = 'Tổng giá trị VND đổi ra ngoại tệ và chuyển ra trong kỳ báo cáo (đơn vị USD)'
+and row_path = 'Tổng= (1) + (2)'
+and ngay_nop = :ngaynop;",,,,,Done,Dữ liệu động,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,Tổng = (1)+(2),Tổng giá trị VND đổi ra ngoại tệ và chuyển ra trong kỳ báo cáo (đơn vị USD),
 4,,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Dòng vốn ròng,"Dòng vốn ròng = Dòng vốn đầu tư vào - Dòng vốn rút ra
-Hiển thị lũy kế đầu tháng đến cuối tháng (có dữ liệu hàng ngày và nửa tháng, ưu tiên lấy dữ liệu kỳ nửa tháng)",Dashboard,Chỉ tiêu phái sinh,Trùng,Ngày,FIMS,X,X,X,Done,  ,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)","cột: GT dòng vốn vào kỳ báo cáo (+/-) (USD)
-
-dòng: Tổng = (1)+(2) ",,"SELECT iv.value
-FROM uat_fims_ods.item_value iv
-LEFT JOIN uat_fims_ods.item_list il ON iv.item_id = il.item_id
-LEFT JOIN uat_fims_ods.report_history rh ON iv.report_log_id = rh.report_log_id
-WHERE il.report_code = 'ELCLS'
-  AND il.column_path = 'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)'
-  AND rh.ngay_nop = :ngay_nop;",,,,,Done,Dữ liệu động,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,Tổng = (1)+(2),Giá trị dòng vốn vào trong kỳ báo cáo (đơn vị USD),join với cụm INVESTOR qua cột MSGD
-4,,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Loại hình NĐTNN,,Dashboard,Chiều,Dễ,,FIMS,X,X,X,Done,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",Cột: Loại hình đối với tổ chức,,,,,,,Done,Dữ liệu tĩnh,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,,Loại hình đối với tổ chức,Nếu Loại hình có chi tiết thì lấy luôn phân loại theo báo cáo
-4,,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Quốc gia,,Dashboard,Chiều,Dễ,,FIMS,X,X,X,Done,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",Cột: Quốc tịch,,,,,,,Done,Dữ liệu tĩnh,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,,Quốc tịch,
-4,,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Quỹ,Giá trị dòng tiền đầu tư ròng từ các NĐTNN là Quỹ.,Dashboard,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại hình NĐTNN",FIMS,,X,X,Done,Báo cáo,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)","cột: GT dòng vốn vào kỳ báo cáo (USD)
-
-hàng: ubset của Tổng (1) A-Tổ chức",,"SELECT iv.value
-LEFT JOIN uat_fims_ods.item_list il ON iv.item_id = il.item_id
-LEFT JOIN uat_fims_ods.report_history rh ON iv.report_log_id = rh.report_log_id
-WHERE il.report_code = 'ELCLS'
-  AND il.column_path = 'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)'
-  AND il.row_path = 'A-Tổ chức > Tổng (1)'
-  AND rh.ngay_nop = :ngay_nop;",,,,,Done,Dữ liệu động,,,,,,
-4,,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Cá nhân,Giá trị dòng tiền đầu tư ròng từ các NĐTNN là Cá nhân.,Dashboard,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại hình NĐTNN",FIMS,,X,X,Done,Báo cáo,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)","cột: GT dòng vốn vào kỳ báo cáo (USD)
-
-hàng: Tổng (2) — B-Cá nhân",,"SELECT iv.value
-FROM uat_fims_ods.item_value iv
-LEFT JOIN uat_fims_ods.item_list il ON iv.item_id = il.item_id
-LEFT JOIN uat_fims_ods.report_history rh ON iv.report_log_id = rh.report_log_id
-WHERE il.report_code = 'ELCL'
-  AND il.column_path = 'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)'
-  AND il.row_path = 'B-Cá nhân > Tổng (2)' 
-  AND rh.ngay_nop = :ngay_nop;",,,,,Done,Dữ liệu động,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,Tổng (2),Giá trị dòng vốn vào trong kỳ báo cáo (đơn vị USD),"Báo cáo phân loại theo Cá nhân và Tổ chức, Tổ chức phân loại theo cột Loại hình đối với tổ chức"
-4,,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Tổ chức khác quỹ,Giá trị dòng tiền đầu tư ròng từ các NĐTNN là Tổ chức khác quỹ.,Dashboard,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại hình NĐTNN",FIMS,,X,X,Done,Báo cáo,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)","cột: GT dòng vốn vào kỳ báo cáo (USD) — cột (3)
-
-hàng: Subset của Tổng (1) A-Tổ chức",,"SELECT iv.value
-FROM uat_fims_ods.item_value iv
-LEFT JOIN uat_fims_ods.item_list il ON iv.item_id = il.item_id
-LEFT JOIN uat_fims_ods.report_history rh ON iv.report_log_id = rh.report_log_id
-WHERE il.report_code = 'ELCLS'
-  AND il.column_path = 'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)'
-  AND il.row_path = 'A-Tổ chức > Tổng (1)'
-  AND rh.ngay_nop = :ngay_nop;",,,,,Done,Dữ liệu động,,,,,,
-4,,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Top 5 quốc gia vào ròng,Top 5 quốc gia có dòng vốn đầu tư vào ròng lớn nhất,Dashboard,Chỉ tiêu phái sinh,TB,"Ngày, Quốc gia",FIMS,,X,X,Done,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)","cột: GT dòng vốn vào (3)
-
-hàng: tâts cả","GROUP BY quốc tịch, RANK theo SUM cột (3) DESC","WITH data_quoc_tich AS (
-    SELECT il.row_id, iv.value AS quoc_tich
-    FROM uat_fims_ods.item_value iv
-    LEFT JOIN uat_fims_ods.item_list il ON iv.item_id = il.item_id
-    LEFT JOIN uat_fims_ods.report_history rh ON iv.report_log_id = rh.report_log_id
-    WHERE il.report_code = 'ELCLS'
-      AND il.column_path = 'Quốc tịch'
-      AND rh.ngay_nop = :ngay_nop
-),
-data_von_vao AS (
-    SELECT il.row_id, CAST(iv.value AS DECIMAL(20,2)) AS gia_tri_von_vao
-    FROM uat_fims_ods.item_value iv
-    LEFT JOIN uat_fims_ods.item_list il ON iv.item_id = il.item_id
-    LEFT JOIN uat_fims_ods.report_history rh ON iv.report_log_id = rh.report_log_id
-    WHERE il.report_code = 'ELCLS'
-      AND il.column_path = 'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)'
-      AND rh.ngay_nop = :ngay_nop
-      -- hàng: tất cả -> không filter row_path
-),
-tong_hop AS (
+Hiển thị lũy kế đầu tháng đến cuối tháng (có dữ liệu hàng ngày và nửa tháng, ưu tiên lấy dữ liệu kỳ nửa tháng)",Dashboard,Chỉ tiêu phái sinh,Trùng,Ngày,FIMS,X,X,X,Done,  ,uat_fims_ods.fact_report_cell,value_num  ,"   WHERE report_code IN ('59WJB', 'BZ5X4')
+      AND sheet_name  = 'II'
+      AND is_mirror = 0 
+      AND is_section_echo = 0 
+      AND is_band_overflow = 0
+      AND is_static_copy = 0 
+      AND is_template_marker = 0
+      AND is_total_row = 0
+      AND ngay_nop = :ngaynop","WITH base_cell AS (
     SELECT
-        qt.quoc_tich,
-        SUM(vv.gia_tri_von_vao) AS tong_von_vao_rong
-    FROM data_quoc_tich qt
-    JOIN data_von_vao vv ON qt.row_id = vv.row_id
-    GROUP BY qt.quoc_tich
+        report_log_id,
+        section_id,
+        row_path,
+        row_order,
+        entity_code,
+        column_path,
+        value_raw,
+        value_num,
+        value_text
+    FROM uat_fims_ods.fact_report_cell
+    WHERE report_code IN ('59WJB', 'BZ5X4')
+      AND sheet_name  = 'II'
+      AND is_mirror = 0 
+      AND is_section_echo = 0 
+      AND is_band_overflow = 0
+      AND is_static_copy = 0 
+      AND is_template_marker = 0
+      AND is_total_row = 0
+      AND ngay_nop = :ngaynop
 ),
-xep_hang AS (
+base_rows AS (
+    SELECT DISTINCT
+        report_log_id,
+        section_id,
+        row_path,
+        row_order,
+        entity_code
+    FROM base_cell
+),
+c_ten_kh AS (
+    SELECT report_log_id, section_id, row_order, COALESCE(value_text, value_raw) AS ten_kh
+    FROM base_cell WHERE column_path = 'Tên khách hàng'
+),
+c_loai_hinh AS (
+    SELECT report_log_id, section_id, row_order, COALESCE(value_text, value_raw) AS loai_hinh_to_chuc
+    FROM base_cell WHERE column_path = 'Loại hình đối với tổ chức'
+),
+c_gtri_danh_muc AS (
+    SELECT report_log_id, section_id, row_order, 
+           COALESCE(value_num, CAST(REGEXP_REPLACE(value_raw, ""^'"", """") AS DOUBLE)) AS tong_gtri_danh_muc
+    FROM base_cell WHERE column_path = 'Tổng giá trị danh mục > Giá trị'
+),
+pvt_data AS (
     SELECT
-        quoc_tich,
-        tong_von_vao_rong,
-        RANK() OVER (ORDER BY tong_von_vao_rong DESC) AS rn
-    FROM tong_hop
+        b.row_path,
+        b.row_order,
+        b.entity_code,
+        c_ten_kh.ten_kh,
+        c_loai_hinh.loai_hinh_to_chuc,
+        c_gtri_danh_muc.tong_gtri_danh_muc
+    FROM base_rows b
+    LEFT JOIN c_ten_kh        ON b.report_log_id = c_ten_kh.report_log_id        AND b.section_id = c_ten_kh.section_id        AND b.row_order = c_ten_kh.row_order
+    LEFT JOIN c_loai_hinh     ON b.report_log_id = c_loai_hinh.report_log_id     AND b.section_id = c_loai_hinh.section_id     AND b.row_order = c_loai_hinh.row_order
+    LEFT JOIN c_gtri_danh_muc ON b.report_log_id = c_gtri_danh_muc.report_log_id AND b.section_id = c_gtri_danh_muc.section_id AND b.row_order = c_gtri_danh_muc.row_order
 )
-SELECT quoc_tich, tong_von_vao_rong
-FROM xep_hang
-WHERE rn <= 5
-ORDER BY tong_von_vao_rong DESC;",,,,,Done,Dữ liệu động,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,,Quốc tịch,"Sum (Giá trị dòng vốn vào trong kỳ báo cáo) theo Quốc tịch, lấy top 5 dương"
-4,,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Top 5 quốc gia rút ròng,Top 5 quốc gia có dòng vốn đầu tư rút ròng lớn nhất,Dashboard,Chỉ tiêu phái sinh,TB,"Ngày, Quốc gia",FIMS,,X,X,Done,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)","cột: GT dòng vốn vào (3)
-
-hàng: tâts cả","GROUP BY quốc tịch, RANK theo SUM cột (3) ASC (giá trị âm)","WITH data_quoc_tich AS (
-    SELECT il.row_id, iv.value AS quoc_tich
-    FROM uat_fims_ods.item_value iv
-    LEFT JOIN uat_fims_ods.item_list il ON iv.item_id = il.item_id
-    LEFT JOIN uat_fims_ods.report_history rh ON iv.report_log_id = rh.report_log_id
-    WHERE il.report_code = 'ELCL'
-      AND il.column_path = 'Quốc tịch'
-      AND rh.ngay_nop = :ngay_nop
-),
-data_von_vao AS (
-    SELECT il.row_id, CAST(iv.value AS DECIMAL(20,2)) AS gia_tri_von_vao
-    FROM uat_fims_ods.item_value iv
-    LEFT JOIN uat_fims_ods.item_list il ON iv.item_id = il.item_id
-    LEFT JOIN uat_fims_ods.report_history rh ON iv.report_log_id = rh.report_log_id
-    WHERE il.report_code = 'ELCL'
-      AND il.column_path = 'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)'
-      AND rh.ngay_nop = :ngay_nop
-      -- hàng: tất cả -> không filter row_path
-),
-tong_hop AS (
+SELECT
+    COALESCE(loai_hinh_to_chuc, 'Cá nhân / Chưa xác định') AS loai_hinh_to_chuc,
+    ROUND(SUM(CASE WHEN row_path = 'B-Cá nhân' THEN tong_gtri_danh_muc END), 4) AS tong_gtri_danh_muc_ca_nhan,
+    ROUND(SUM(CASE
+        WHEN row_path = 'A-Tổ chức' 
+             AND (loai_hinh_to_chuc LIKE '%Công ty%' 
+                  OR loai_hinh_to_chuc LIKE '%Ngân hàng%' 
+                  OR loai_hinh_to_chuc LIKE '%Tổ chức%' 
+                  OR loai_hinh_to_chuc LIKE '%Không phải quỹ%' 
+                  OR loai_hinh_to_chuc LIKE '%Các loại khác%') 
+        THEN tong_gtri_danh_muc
+    END), 4) AS dong_von_rong_tochuc_khac_quy,
+    ROUND(SUM(CASE
+        WHEN row_path = 'A-Tổ chức' 
+             AND loai_hinh_to_chuc LIKE '%Quỹ%' 
+             AND loai_hinh_to_chuc NOT LIKE '%Không phải quỹ%' 
+        THEN tong_gtri_danh_muc
+    END), 4) AS dong_von_rong_quy
+FROM pvt_data
+WHERE tong_gtri_danh_muc IS NOT NULL
+GROUP BY COALESCE(loai_hinh_to_chuc, 'Cá nhân / Chưa xác định');",,,,,Done,Dữ liệu động,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,Tổng = (1)+(2),Giá trị dòng vốn vào trong kỳ báo cáo (đơn vị USD),join với cụm INVESTOR qua cột MSGD
+4,,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Loại hình NĐTNN,,Dashboard,Chiều,Dễ,,FIMS,X,X,X,Done,,uat_fims_ods.fact_report_cell,value_num  ,"   WHERE report_code IN ('59WJB', 'BZ5X4')
+      AND sheet_name  = 'II'
+      AND is_mirror = 0 
+      AND is_section_echo = 0 
+      AND is_band_overflow = 0
+      AND is_static_copy = 0 
+      AND is_template_marker = 0
+      AND is_total_row = 0
+      AND ngay_nop = :ngaynop",,,,,,Done,Dữ liệu tĩnh,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,,Loại hình đối với tổ chức,Nếu Loại hình có chi tiết thì lấy luôn phân loại theo báo cáo
+4,,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Quốc gia,,Dashboard,Chiều,Dễ,,FIMS,X,X,X,Done,,uat_fims_ods.fact_report_cell,value_num  ,"   WHERE report_code IN ('59WJB', 'BZ5X4')
+      AND sheet_name  = 'II'
+      AND is_mirror = 0 
+      AND is_section_echo = 0 
+      AND is_band_overflow = 0
+      AND is_static_copy = 0 
+      AND is_template_marker = 0
+      AND is_total_row = 0
+      AND ngay_nop = :ngaynop",,,,,,Done,Dữ liệu tĩnh,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,,Quốc tịch,
+4,,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Quỹ,Giá trị dòng tiền đầu tư ròng từ các NĐTNN là Quỹ.,Dashboard,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại hình NĐTNN",FIMS,,X,X,Done,Báo cáo,uat_fims_ods.fact_report_cell,value_num  ,"   WHERE report_code IN ('59WJB', 'BZ5X4')
+      AND sheet_name  = 'II'
+      AND is_mirror = 0 
+      AND is_section_echo = 0 
+      AND is_band_overflow = 0
+      AND is_static_copy = 0 
+      AND is_template_marker = 0
+      AND is_total_row = 0
+      AND ngay_nop = :ngaynop",,,,,,Done,Dữ liệu động,,,,,,
+4,,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Cá nhân,Giá trị dòng tiền đầu tư ròng từ các NĐTNN là Cá nhân.,Dashboard,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại hình NĐTNN",FIMS,,X,X,Done,Báo cáo,uat_fims_ods.fact_report_cell,value_num  ,"   WHERE report_code IN ('59WJB', 'BZ5X4')
+      AND sheet_name  = 'II'
+      AND is_mirror = 0 
+      AND is_section_echo = 0 
+      AND is_band_overflow = 0
+      AND is_static_copy = 0 
+      AND is_template_marker = 0
+      AND is_total_row = 0
+      AND ngay_nop = :ngaynop",,,,,,Done,Dữ liệu động,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,Tổng (2),Giá trị dòng vốn vào trong kỳ báo cáo (đơn vị USD),"Báo cáo phân loại theo Cá nhân và Tổ chức, Tổ chức phân loại theo cột Loại hình đối với tổ chức"
+4,,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Tổ chức khác quỹ,Giá trị dòng tiền đầu tư ròng từ các NĐTNN là Tổ chức khác quỹ.,Dashboard,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại hình NĐTNN",FIMS,,X,X,Done,Báo cáo,uat_fims_ods.fact_report_cell,value_num  ,"   WHERE report_code IN ('59WJB', 'BZ5X4')
+      AND sheet_name  = 'II'
+      AND is_mirror = 0 
+      AND is_section_echo = 0 
+      AND is_band_overflow = 0
+      AND is_static_copy = 0 
+      AND is_template_marker = 0
+      AND is_total_row = 0
+      AND ngay_nop = :ngaynop",,,,,,Done,Dữ liệu động,,,,,,
+4,,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Top 5 quốc gia vào ròng,Top 5 quốc gia có dòng vốn đầu tư vào ròng lớn nhất,Dashboard,Chỉ tiêu phái sinh,TB,"Ngày, Quốc gia",FIMS,,X,X,Done,,uat_fims_ods.fact_report_cell,value_raw,"        WHERE report_code = 'IBOU9'
+          AND sheet_name  = 'I'
+          AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
+          AND is_static_copy = 0 AND is_template_marker = 0
+          and ngay_nop = :ngaynop","WITH base_cell AS (
     SELECT
-        qt.quoc_tich,
-        SUM(vv.gia_tri_von_vao) AS tong_von_vao_rong
-    FROM data_quoc_tich qt
-    JOIN data_von_vao vv ON qt.row_id = vv.row_id
-    GROUP BY qt.quoc_tich
+        report_log_id,
+        section_id,
+        row_order,
+        column_path,
+        value_raw,
+        value_num,
+        value_text
+    FROM uat_fims_ods.fact_report_cell
+    WHERE report_code = 'IBOU9'
+      AND sheet_name  = 'I'
+      AND is_mirror = 0 
+      AND is_section_echo = 0 
+      AND is_band_overflow = 0
+      AND is_static_copy = 0 
+      AND is_template_marker = 0
+      AND is_total_row = 0
+      AND ngay_nop = :ngaynop
 ),
-xep_hang AS (
-    SELECT
-        quoc_tich,
-        tong_von_vao_rong,
-        RANK() OVER (ORDER BY tong_von_vao_rong ASC) AS rn   -- ASC: âm nhiều nhất xếp trước
-    FROM tong_hop
+c_quoc_tich AS (
+    SELECT 
+        report_log_id, 
+        section_id, 
+        row_order, 
+        COALESCE(value_text, value_raw) AS quoc_tich
+    FROM base_cell
+    WHERE column_path = 'Quốc tịch'
+),
+c_dong_von AS (
+    SELECT 
+        report_log_id, 
+        section_id, 
+        row_order, 
+        COALESCE(value_num, CAST(REGEXP_REPLACE(value_raw, ""^'"", """") AS DOUBLE)) AS dong_von_rong
+    FROM base_cell
+    WHERE column_path = 'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)'
 )
-SELECT quoc_tich, tong_von_vao_rong
-FROM xep_hang
-WHERE rn <= 5
-ORDER BY tong_von_vao_rong ASC;",,,,,Done,Dữ liệu động,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,,Quốc tịch,"Sum (Giá trị dòng vốn vào trong kỳ báo cáo) theo Quốc tịch, lấy top 5 âm nhiều nhất"
-4,,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Top 5 NĐT vào ròng,Tên top 5 NĐT có dòng vốn đầu tư vào ròng lớn nhất,Dashboard,Chỉ tiêu phái sinh,TB,"Ngày, NĐT",FIMS,,X,X,Done,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)","cột: GT dòng vốn vào (3)
-
-hàng: tâts cả",RANK theo cột (3) DESC,"WITH data_quoc_tich AS (
-    SELECT il.row_id, iv.value AS quoc_tich
-    FROM uat_fims_ods.item_value iv
-    LEFT JOIN uat_fims_ods.item_list il ON iv.item_id = il.item_id
-    LEFT JOIN uat_fims_ods.report_history rh ON iv.report_log_id = rh.report_log_id
-    WHERE il.report_code = 'ELCL'
-      AND il.column_path = 'Quốc tịch'
-      AND rh.ngay_nop = :ngay_nop
-),
-data_von_vao AS (
-    SELECT il.row_id, CAST(iv.value AS DECIMAL(20,2)) AS gia_tri_von_vao
-    FROM uat_fims_ods.item_value iv
-    LEFT JOIN uat_fims_ods.item_list il ON iv.item_id = il.item_id
-    LEFT JOIN uat_fims_ods.report_history rh ON iv.report_log_id = rh.report_log_id
-    WHERE il.report_code = 'ELCL'
-      AND il.column_path = 'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)'   -- cột (3): GT dòng vốn vào
-      AND rh.ngay_nop = :ngay_nop
-      -- hàng: tất cả -> không filter row_path
-),
-tong_hop AS (
+SELECT 
+    q.quoc_tich,
+    ROUND(SUM(d.dong_von_rong), 4) AS vao_rong
+FROM c_dong_von d
+JOIN c_quoc_tich q 
+    ON d.report_log_id = q.report_log_id 
+   AND d.section_id    = q.section_id 
+   AND d.row_order     = q.row_order
+WHERE q.quoc_tich IS NOT NULL
+GROUP BY q.quoc_tich
+ORDER BY vao_rong DESC
+LIMIT 5;",,,,,Done,Dữ liệu động,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,,Quốc tịch,"Sum (Giá trị dòng vốn vào trong kỳ báo cáo) theo Quốc tịch, lấy top 5 dương"
+4,,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Top 5 quốc gia rút ròng,Top 5 quốc gia có dòng vốn đầu tư rút ròng lớn nhất,Dashboard,Chỉ tiêu phái sinh,TB,"Ngày, Quốc gia",FIMS,,X,X,Done,,uat_fims_ods.fact_report_cell,value_raw,"        WHERE report_code = 'IBOU9'
+          AND sheet_name  = 'I'
+          AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
+          AND is_static_copy = 0 AND is_template_marker = 0
+          and ngay_nop = :ngaynop","WITH base_cell AS (
     SELECT
-        qt.quoc_tich,
-        SUM(vv.gia_tri_von_vao) AS tong_von_vao_rong
-    FROM data_quoc_tich qt
-    JOIN data_von_vao vv ON qt.row_id = vv.row_id
-    GROUP BY qt.quoc_tich
+        report_log_id,
+        section_id,
+        row_order,
+        column_path,
+        value_raw,
+        value_num,
+        value_text
+    FROM uat_fims_ods.fact_report_cell
+    WHERE report_code = 'IBOU9'
+      AND sheet_name  = 'I'
+      AND is_mirror = 0 
+      AND is_section_echo = 0 
+      AND is_band_overflow = 0
+      AND is_static_copy = 0 
+      AND is_template_marker = 0
+      AND is_total_row = 0
+      AND ngay_nop = :ngaynop
 ),
-xep_hang AS (
-    SELECT
-        quoc_tich,
-        tong_von_vao_rong,
-        RANK() OVER (ORDER BY tong_von_vao_rong DESC) AS rn   -- DESC: vào ròng lớn nhất xếp trước
-    FROM tong_hop
+c_quoc_tich AS (
+    SELECT 
+        report_log_id, 
+        section_id, 
+        row_order, 
+        COALESCE(value_text, value_raw) AS quoc_tich
+    FROM base_cell
+    WHERE column_path = 'Quốc tịch'
+),
+c_dong_von AS (
+    SELECT 
+        report_log_id, 
+        section_id, 
+        row_order, 
+        COALESCE(value_num, CAST(REGEXP_REPLACE(value_raw, ""^'"", """") AS DOUBLE)) AS dong_von_rong
+    FROM base_cell
+    WHERE column_path = 'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)'
 )
-SELECT quoc_tich, tong_von_vao_rong
-FROM xep_hang
-WHERE rn <= 5
-ORDER BY tong_von_vao_rong DESC;",,,,,Done,Dữ liệu động,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,,Tên nhà đầu tư,"Sum (Giá trị dòng vốn vào trong kỳ báo cáo) theo Tên nhà đầu tư, lấy top 5 dương"
-4,,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Top 5 NĐT  rút ròng,Tên top 5 NĐT có dòng vốn đầu tư rút ròng lớn nhất,Dashboard,Chỉ tiêu phái sinh,TB,"Ngày, NĐT",FIMS,,X,X,Done,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)","cột: GT dòng vốn vào (3)
-
-hàng: tâts cả",RANK theo cột (3) ASC,"WITH data_ten_ndt AS (
-    SELECT il.row_id, iv.value AS ten_ndt
-    FROM uat_fims_ods.item_value iv
-    LEFT JOIN uat_fims_ods.item_list il ON iv.item_id = il.item_id
-    LEFT JOIN uat_fims_ods.report_history rh ON iv.report_log_id = rh.report_log_id
-    WHERE il.report_code = 'ELCL'
-      AND il.column_path = 'Tên NĐT'
-      AND rh.ngay_nop = :ngay_nop
-),
-data_von_vao AS (
-    SELECT il.row_id, CAST(iv.value AS DECIMAL(20,2)) AS gia_tri_von_vao
-    FROM uat_fims_ods.item_value iv
-    LEFT JOIN uat_fims_ods.item_list il ON iv.item_id = il.item_id
-    LEFT JOIN uat_fims_ods.report_history rh ON iv.report_log_id = rh.report_log_id
-    WHERE il.report_code = 'ELCL'
-      AND il.column_path = 'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)'   -- cột (3): GT dòng vốn vào
-      AND rh.ngay_nop = :ngay_nop
-      -- hàng: tất cả -> không filter row_path
-),
-tong_hop AS (
+SELECT 
+    q.quoc_tich,
+    ROUND(SUM(d.dong_von_rong), 4) AS vao_rong
+FROM c_dong_von d
+JOIN c_quoc_tich q 
+    ON d.report_log_id = q.report_log_id 
+   AND d.section_id    = q.section_id 
+   AND d.row_order     = q.row_order
+WHERE q.quoc_tich IS NOT NULL
+GROUP BY q.quoc_tich
+ORDER BY vao_rong ASC
+LIMIT 5;",,,,,Done,Dữ liệu động,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,,Quốc tịch,"Sum (Giá trị dòng vốn vào trong kỳ báo cáo) theo Quốc tịch, lấy top 5 âm nhiều nhất"
+4,,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Top 5 NĐT vào ròng,Tên top 5 NĐT có dòng vốn đầu tư vào ròng lớn nhất,Dashboard,Chỉ tiêu phái sinh,TB,"Ngày, NĐT",FIMS,,X,X,Done,,uat_fims_ods.fact_report_cell,value_raw,"        WHERE report_code = 'IBOU9'
+          AND sheet_name  = 'I'
+          AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
+          AND is_static_copy = 0 AND is_template_marker = 0
+          and ngay_nop = :ngaynop","WITH base_cell AS (
     SELECT
-        ndt.ten_ndt,
-        SUM(vv.gia_tri_von_vao) AS tong_von_rut_rong
-    FROM data_ten_ndt ndt
-    JOIN data_von_vao vv ON ndt.row_id = vv.row_id
-    GROUP BY ndt.ten_ndt
+        report_log_id,
+        section_id,
+        row_order,
+        column_path,
+        value_raw,
+        value_num,
+        value_text
+    FROM uat_fims_ods.fact_report_cell
+    WHERE report_code = 'IBOU9'
+      AND sheet_name  = 'I'
+      AND is_mirror = 0 
+      AND is_section_echo = 0 
+      AND is_band_overflow = 0
+      AND is_static_copy = 0 
+      AND is_template_marker = 0
+      AND is_total_row = 0
+      AND ngay_nop = :ngaynop
 ),
-xep_hang AS (
-    SELECT
-        ten_ndt,
-        tong_von_rut_rong,
-        RANK() OVER (ORDER BY tong_von_rut_rong ASC) AS rn   -- ASC: rút ròng (âm) nhiều nhất xếp trước
-    FROM tong_hop
+c_ndt AS (
+    SELECT 
+        report_log_id, 
+        section_id, 
+        row_order, 
+        COALESCE(value_text, value_raw) AS ten_ndt
+    FROM base_cell
+    WHERE column_path = 'Tên nhà đầu tư'
+),
+c_dong_von AS (
+    SELECT 
+        report_log_id, 
+        section_id, 
+        row_order, 
+        value_num AS dong_von_rong
+    FROM base_cell
+    WHERE column_path = 'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)'
 )
-SELECT ten_ndt, tong_von_rut_rong
-FROM xep_hang
-WHERE rn <= 5
-ORDER BY tong_von_rut_rong ASC;",,,,,Done,Dữ liệu động,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,,Tên nhà đầu tư,"Sum (Giá trị dòng vốn vào trong kỳ báo cáo) theo Tên nhà đầu tư, lấy top 5 âm nhiều nhất"
-5,,Dashboard/Giám sát dòng vốn/Tương quan Net Flow và VN-Index của NĐTNN,Dòng tiền ròng,Chênh lệch giữa dòng tiền vào và dòng tiền ra của NĐTNN.,Dashboard,Chỉ tiêu phái sinh,Trùng,Tháng,FIMS,,X,X,Done,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)","cột: GT dòng vốn vào kỳ báo cáo (+/-) (USD) — cột (3)
-
-hàng: Tổng = (1)+(2)",,"SELECT iv.value
-FROM uat_fims_ods.item_value iv
-LEFT JOIN uat_fims_ods.item_list il ON iv.item_id = il.item_id
-LEFT JOIN uat_fims_ods.report_history rh ON iv.report_log_id = rh.report_log_id
-WHERE il.report_code = 'ELCLS'
-  AND il.column_path = 'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)'   -- cột (3)
-  AND il.row_path = 'Tổng = (1)+(2)'   -- hàng: Tổng = (1)+(2)
-  AND rh.ngay_nop = :ngay_nop;",,,,,Done,Dữ liệu động,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,Tổng = (1)+(2),Giá trị dòng vốn vào trong kỳ báo cáo (đơn vị USD),
+SELECT 
+    c.ten_ndt,
+    ROUND(SUM(d.dong_von_rong), 4) AS vao_rong
+FROM c_dong_von d
+JOIN c_ndt c 
+    ON d.report_log_id = c.report_log_id 
+   AND d.section_id    = c.section_id 
+   AND d.row_order     = c.row_order
+GROUP BY c.ten_ndt
+ORDER BY vao_rong DESC
+LIMIT 5;",,,,,Done,Dữ liệu động,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,,Tên nhà đầu tư,"Sum (Giá trị dòng vốn vào trong kỳ báo cáo) theo Tên nhà đầu tư, lấy top 5 dương"
+4,,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Top 5 NĐT  rút ròng,Tên top 5 NĐT có dòng vốn đầu tư rút ròng lớn nhất,Dashboard,Chỉ tiêu phái sinh,TB,"Ngày, NĐT",FIMS,,X,X,Done,,uat_fims_ods.fact_report_cell,value_raw,"        WHERE report_code = 'IBOU9'
+          AND sheet_name  = 'I'
+          AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
+          AND is_static_copy = 0 AND is_template_marker = 0
+          and ngay_nop = :ngaynop","WITH base_cell AS (
+    SELECT
+        report_log_id,
+        section_id,
+        row_order,
+        column_path,
+        value_raw,
+        value_num,
+        value_text
+    FROM uat_fims_ods.fact_report_cell
+    WHERE report_code = 'IBOU9'
+      AND sheet_name  = 'I'
+      AND is_mirror = 0 
+      AND is_section_echo = 0 
+      AND is_band_overflow = 0
+      AND is_static_copy = 0 
+      AND is_template_marker = 0
+      AND is_total_row = 0
+      AND ngay_nop = :ngaynop
+),
+c_ndt AS (
+    SELECT 
+        report_log_id, 
+        section_id, 
+        row_order, 
+        COALESCE(value_text, value_raw) AS ten_ndt
+    FROM base_cell
+    WHERE column_path = 'Tên nhà đầu tư'
+),
+c_dong_von AS (
+    SELECT 
+        report_log_id, 
+        section_id, 
+        row_order, 
+        value_num AS dong_von_rong
+    FROM base_cell
+    WHERE column_path = 'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)'
+)
+SELECT 
+    c.ten_ndt,
+    ROUND(SUM(d.dong_von_rong), 4) AS vao_rong
+FROM c_dong_von d
+JOIN c_ndt c 
+    ON d.report_log_id = c.report_log_id 
+   AND d.section_id    = c.section_id 
+   AND d.row_order     = c.row_order
+GROUP BY c.ten_ndt
+ORDER BY vao_rong ASC
+LIMIT 5;",,,,,Done,Dữ liệu động,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,,Tên nhà đầu tư,"Sum (Giá trị dòng vốn vào trong kỳ báo cáo) theo Tên nhà đầu tư, lấy top 5 âm nhiều nhất"
+5,,Dashboard/Giám sát dòng vốn/Tương quan Net Flow và VN-Index của NĐTNN,Dòng tiền ròng,Chênh lệch giữa dòng tiền vào và dòng tiền ra của NĐTNN.,Dashboard,Chỉ tiêu phái sinh,Trùng,Tháng,FIMS,,X,X,Done,,uat_fims_ods.fact_report_cell,value_num  ,"where report_code = 'IBOU9'
+and column_path = 'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)'
+and row_path = 'Tổng= (1) + (2)'
+and ngay_nop = :ngaynop;","select frc.value_num  from uat_fims_ods.fact_report_cell frc
+where report_code = 'IBOU9'
+and column_path = 'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)'
+and row_path = 'Tổng= (1) + (2)'
+and ngay_nop = :ngaynop;",,,,,Done,Dữ liệu động,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,Tổng = (1)+(2),Giá trị dòng vốn vào trong kỳ báo cáo (đơn vị USD),
 5,,Dashboard/Giám sát dòng vốn/Tương quan Net Flow và VN-Index của NĐTNN,Giá trị mua/bán ròng,Giá trị mua bán ròng hàng ngày của nhà đầu tư.,Dashboard,Chỉ tiêu phái sinh,Trùng,Ngày,"CSDLTT, MDDS",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
@@ -1406,39 +1536,57 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","with cte as 
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","with
+stockinfor as 
 (
-SELECT 
+        select
+                js.symbol
+                , js.symbolisin 
+                , js.tradingdate 
+                , js.stocktype 
+                , js.ds_etl_pcs_tms 
+        from uat_mdds_stg.jad_stockinfor js 
+        where 1=1
+        and js.tradingtime in (select max(tradingtime) from uat_mdds_stg.jad_stockinfor group by stocktype)
+        and to_date(js.ds_etl_pcs_tms) = to_date('2026-09-18','yyyy-MM-dd')
+        and js.stocktype in(1,2,3)
+)
+,cte as 
+(
+select
           SUM(CASE WHEN buy_foreigner_investor_type <> '00' THEN Execution_Value ELSE 0 END) gtri_ndtnn_mua,
         SUM(CASE WHEN sell_foreigner_investor_type  <> '00' THEN Execution_Value ELSE 0 END) gtri_ndtnn_ban,
-   SUM(Execution_Value) tong_gtri,
-   trade_date
-FROM uat_hose_stg.trade_book  
-where 1=1 
-and to_date(trade_date,'yyyy-MM-dd') BETWEEN to_date(:pdat1,'yyyyMMdd') AND to_date(:pdat2,'yyyyMMdd')
-and ds_snpst_dt = to_date('20260908','yyyyMMdd')
-group by trade_date
+   SUM(Execution_Value) tong_gtri
+FROM
+        uat_hose_stg.trade_book tb
+join 
+        stockinfor js on tb.symbol = js.symbol and tb.trade_date = js.tradingdate 
+where
+        tb.trade_date BETWEEN :pdat1 AND :pdat2
+        and to_date(tb.ds_snpst_dt, 'yyyy-MM-dd') = to_date('2026-09-07', 'yyyy-MM-dd')
 union all
-SELECT
+select
     SUM(CASE WHEN Buy_Foreign_Investor_Type_Code IN ('10','20') THEN (Trade_price * Trade_quantity) ELSE 0 END) gtri_ndtnn_mua, 
     SUM(CASE WHEN Sell_Foreign_Investor_Type_Code IN ('10','20') THEN (Trade_price * Trade_quantity) ELSE 0 END) gtri_ndtnn_ban,
-    SUM(Trade_price * Trade_quantity) tong_gtri,
-    trade_date 
-FROM uat_hnx_stg.trade_book  
-WHERE to_date(trade_date,'yyyyMMdd') BETWEEN to_date(:pdat1,'yyyyMMdd') AND to_date(:pdat2,'yyyyMMdd')
-and ds_snpst_dt = to_date('20260908','yyyyMMdd')
-group by trade_date
+    SUM(Trade_price * Trade_quantity) tong_gtri
+FROM
+        uat_hnx_stg.trade_book tb 
+join 
+        stockinfor js on js.symbolisin = tb.issue_code and to_date(tb.trade_date, 'yyyyMMdd') = js.tradingdate 
+WHERE
+        tb.trade_date BETWEEN :pdatee1 AND :pdatee2
+        and to_date(tb.ds_snpst_dt) = to_date('2026-09-07', 'yyyy-MM-dd')
 )
 --luỹ kế mua bán ròng
-select
-        SUM(gtri_ndtnn_mua) - SUM(gtri_ndtnn_ban) as luy_ke,
-        trade_date
-from cte
-group by trade_date;",,,,,Chưa có SQL,Dữ liệu tĩnh,,,,,,
+select SUM(gtri_ndtnn_mua) - SUM(gtri_ndtnn_ban) as luy_ke from cte;",,,,,Chưa có SQL,Dữ liệu tĩnh,,,,,,
 5,,Dashboard/Giám sát dòng vốn/Tương quan Net Flow và VN-Index của NĐTNN,Điểm đóng cửa chỉ số,Mức điểm của VN-Index tại cuối mỗi ngày.,Dashboard,Chỉ tiêu cơ sở,Dễ,Ngày,MDDS,,X,X,Done,,JAD_MARKETINFOR,"""marketIndex"",
 ""tradingdate"",
 ""indexTime"",
-""marketCode""",,"WITH ranked AS (
+""marketCode""","WHERE 1=1
+        -- Lọc khoảng ngày (nếu cần lọc, truyền dạng 'yyyyMMdd' ví dụ: '20260101'):
+         AND m.tradingdate BETWEEN :tu_ngay AND :den_ngay
+        AND m.marketId   = '10'
+        AND m.marketCode = 'HOSE'","WITH ranked AS (
     SELECT
         m.tradingdate,
         m.marketId,
@@ -1465,297 +1613,491 @@ SELECT
 FROM ranked
 WHERE rn = 1
 ORDER BY tradingdate, marketId, marketCode;",,,,,Chưa có SQL,Dữ liệu tĩnh,,,,,,
-6,,Dashboard/Danh mục/Thống kê danh mục,Tổng giá trị danh mục,"Tổng quy mô tài sản mà NĐTNN đang nắm giữ (bao gồm cổ phiếu, trái phiếu và tiền mặt.",Dashboard,Chỉ tiêu phái sinh,TB,"Tháng, Toàn thị trường",FIMS,X,X,,Done,,"Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân 
-Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC)","cột: Tổng giá trị danh mục
-
-hàng: Tổng = (1)+(2)",,"SELECT iv.value
-FROM uat_fims_ods.item_value iv
-LEFT JOIN uat_fims_ods.item_list il ON iv.item_id = il.item_id
-LEFT JOIN uat_fims_ods.report_history rh ON iv.report_log_id = rh.report_log_id
-WHERE il.report_code = '59WJB'
-  AND il.column_path = 'Tổng giá trị danh mục > Giá trị'
-  AND il.row_path = 'Tổng = (1)+(2)'
-  AND rh.ngay_nop = :ngay_nop;",,,,,Done,Dữ liệu động,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,Tổng= (1)+(2),Tổng giá trị danh mục,
-6,,Dashboard/Danh mục/Thống kê danh mục,Loại hình nhà đầu tư,,Dashboard,Chiều,Trùng,,FIMS,,,,Done,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)/II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân",,,,,,,,Done,Dữ liệu tĩnh,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,,Loại hình đối với tổ chức,
-6,,Dashboard/Danh mục/Thống kê danh mục,Tổng giá trị danh mục của cá nhân,Tổng giá trị danh mục của NĐTNN là cá nhân,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, loại hình NĐT",FIMS,,,,Done,,"Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân 
-Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC)","cột: Tổng giá trị danh mục
-
-hàng: Tổng (2) — B-Cá nhân",,"SELECT iv.value
-FROM uat_fims_ods.item_value iv
-LEFT JOIN uat_fims_ods.item_list il ON iv.item_id = il.item_id
-LEFT JOIN uat_fims_ods.report_history rh ON iv.report_log_id = rh.report_log_id
-WHERE il.report_code = '59WJB'
-  AND il.column_path = 'Tổng giá trị danh mục > Giá trị'
-  AND il.row_path = 'B-Cá nhân > Tổng (2)'
-  AND rh.ngay_nop = :ngay_nop;",,,,,Done,Dữ liệu động,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,Tổng= (2),Tổng giá trị danh mục,
-6,,Dashboard/Danh mục/Thống kê danh mục,Tổng giá trị danh mục của quỹ,Tổng giá trị danh mục của NĐTNN là quỹ,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, loại hình NĐT",FIMS,,,,Done,,"Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân 
-Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC)","cột: Tổng giá trị danh mục
-
-hàng: Subset Tổng (1) lọc loại Quỹ(lọc Loại hình đối với tổ chức)",,"WITH data_gia_tri AS (
-    SELECT il.row_id, CAST(iv.value AS DECIMAL(20,2)) AS gia_tri_danh_muc
-    FROM uat_fims_ods.item_value iv
-    LEFT JOIN uat_fims_ods.item_list il ON iv.item_id = il.item_id
-    LEFT JOIN uat_fims_ods.report_history rh ON iv.report_log_id = rh.report_log_id
-    WHERE il.report_code = '59WJB'
-      AND il.column_path = 'Tổng giá trị danh mục > Giá trị'
-      AND il.row_path LIKE 'A-Tổ chức%'      -- Subset Tổng (1) - nhóm Tổ chức
-      AND il.row_path <> 'A-Tổ chức > Tổng (1)'   -- loại dòng tổng, chỉ lấy dòng chi tiết từng tổ chức
-      AND rh.ngay_nop = :ngay_nop
+6,,Dashboard/Danh mục/Thống kê danh mục,Tổng giá trị danh mục,"Tổng quy mô tài sản mà NĐTNN đang nắm giữ (bao gồm cổ phiếu, trái phiếu và tiền mặt.",Dashboard,Chỉ tiêu phái sinh,TB,"Tháng, Toàn thị trường",FIMS,X,X,,Done,,uat_fims_ods.fact_report_cell,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+          AND sheet_name  = 'II'
+          AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
+          AND is_static_copy = 0 AND is_template_marker = 0
+          and ngay_nop = :ngaynop","WITH base_cell AS (
+    SELECT
+        report_log_id,
+        section_id,
+        row_path,
+        row_order,
+        entity_code,
+        column_path,
+        value_raw,
+        value_num,
+        value_text
+    FROM uat_fims_ods.fact_report_cell
+    WHERE report_code IN ('59WJB', 'BZ5X4')
+      AND sheet_name  = 'II'
+      AND is_mirror = 0 
+      AND is_section_echo = 0 
+      AND is_band_overflow = 0
+      AND is_static_copy = 0 
+      AND is_template_marker = 0
+      AND is_total_row = 0 -- Bỏ dòng tổng cộng để không tính trùng số liệu
+      AND ngay_nop = :ngaynop
 ),
-data_loai_hinh AS (
-    SELECT il.row_id, iv.value AS loai_hinh
-    FROM uat_fims_ods.item_value iv
-    LEFT JOIN uat_fims_ods.item_list il ON iv.item_id = il.item_id
-    LEFT JOIN uat_fims_ods.report_history rh ON iv.report_log_id = rh.report_log_id
-    WHERE il.report_code = '59WJB'
-      AND il.column_path = 'Loại hình'   -- cần xác nhận đúng label cột Loại hình đối với tổ chức
-      AND rh.ngay_nop = :ngay_nop
-)
-SELECT SUM(gt.gia_tri_danh_muc) AS tong_gia_tri_danh_muc_quy
-FROM data_gia_tri gt
-JOIN data_loai_hinh lh ON gt.row_id = lh.row_id
-WHERE lh.loai_hinh = 'Quỹ';",,,,,Done,Dữ liệu động,,,,,,
-6,,Dashboard/Danh mục/Thống kê danh mục,Tổng giá trị danh mục của tổ chức khác quỹ,Tổng giá trị danh mục của NĐTNN là tổ chức khác quỹ,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, loại hình NĐT",FIMS,,,,Done,,"Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân 
-Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC)","cột: Tổng giá trị danh mục
+base_rows AS (
+    SELECT DISTINCT
+        report_log_id,
+        section_id,
+        row_path,
+        row_order,
+        entity_code
+    FROM base_cell
+),
+c_ten_kh AS (
+    SELECT 
+        report_log_id, 
+        section_id, 
+        row_order, 
+        COALESCE(value_text, value_raw) AS ten_kh
+    FROM base_cell 
+    WHERE column_path = 'Tên khách hàng'
+),
+c_loai_hinh AS (
+    SELECT 
+        report_log_id, 
+        section_id, 
+        row_order, 
+        COALESCE(value_text, value_raw) AS loai_hinh_to_chuc
+    FROM base_cell 
+    WHERE column_path = 'Loại hình đối với tổ chức'
+),
+c_gtri_danh_muc AS (
+    SELECT 
+        report_log_id, 
+        section_id, 
+        row_order, 
+        -- Ưu tiên lấy value_num kiểu DOUBLE, nếu rỗng thì ép kiểu từ value_raw
+        value_num AS tong_gtri_danh_muc
+    FROM base_cell 
+    WHERE column_path = 'Tổng giá trị danh mục > Giá trị'
+),
+pvt_data AS (
+    SELECT
+        b.row_path,
+        b.row_order,
+        b.entity_code,
+        c_ten_kh.ten_kh,
+        c_loai_hinh.loai_hinh_to_chuc,
+        c_gtri_danh_muc.tong_gtri_danh_muc
+    FROM base_rows b
+    -- Khóa ghép kèm report_log_id để tránh nhân chéo dòng giữa 2 báo cáo 59WJB và BZ5X4:
+    LEFT JOIN c_ten_kh        ON b.report_log_id = c_ten_kh.report_log_id 
+                             AND b.section_id    = c_ten_kh.section_id 
+                             AND b.row_order     = c_ten_kh.row_order
 
-hàng: Subset Tổng (1) lọc loại khác Quỹ(lọc Loại hình đối với tổ chức)",,"WITH data_gia_tri AS (
-    SELECT il.row_id, CAST(iv.value AS DECIMAL(20,2)) AS gia_tri_danh_muc
-    FROM uat_fims_ods.item_value iv
-    LEFT JOIN uat_fims_ods.item_list il ON iv.item_id = il.item_id
-    LEFT JOIN uat_fims_ods.report_history rh ON iv.report_log_id = rh.report_log_id
-    WHERE il.report_code = '59WJB'
-      AND il.column_path = 'Tổng giá trị danh mục > Giá trị'
-      AND il.row_path LIKE 'A-Tổ chức%'      -- Subset Tổng (1) - nhóm Tổ chức
-      AND il.row_path <> 'A-Tổ chức > Tổng (1)'   -- loại dòng tổng, chỉ lấy dòng chi tiết từng tổ chức
-      AND rh.ngay_nop = :ngay_nop
-),
-data_loai_hinh AS (
-    SELECT il.row_id, iv.value AS loai_hinh
-    FROM uat_fims_ods.item_value iv
-    LEFT JOIN uat_fims_ods.item_list il ON iv.item_id = il.item_id
-    LEFT JOIN uat_fims_ods.report_history rh ON iv.report_log_id = rh.report_log_id
-    WHERE il.report_code = '59WJB'
-      AND il.column_path = 'Loại hình'   -- cần xác nhận đúng label cột Loại hình đối với tổ chức
-      AND rh.ngay_nop = :ngay_nop
-)
-SELECT SUM(gt.gia_tri_danh_muc) AS tong_gia_tri_danh_muc_khac_quy
-FROM data_gia_tri gt
-JOIN data_loai_hinh lh ON gt.row_id = lh.row_id
-WHERE lh.loai_hinh <> 'Quỹ';   -- lọc loại KHÁC Quỹ",,,,,Done,Dữ liệu động,,,,,,
-6,,Dashboard/Danh mục/Thống kê danh mục,Top 5 quốc gia,Top 5 quốc gia có tổng giá trị danh mục lớn nhất,Dashboard,Chỉ tiêu phái sinh,TB,"Tháng, Quốc gia",FIMS,X,X,,Done,,"Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân 
-Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC)","cột: Tổng giá trị danh mục+ quốc tịch
-hàng: các dòng NĐT","GROUP BY quốc tịch, RANK DESC","WITH data_gia_tri AS (
-    SELECT il.row_id, il.row_path, CAST(iv.value AS DECIMAL(20,2)) AS gia_tri_danh_muc
-    FROM uat_fims_ods.item_value iv
-    LEFT JOIN uat_fims_ods.item_list il ON iv.item_id = il.item_id
-    LEFT JOIN uat_fims_ods.report_history rh ON iv.report_log_id = rh.report_log_id
-    WHERE il.report_code = '59WJB'
-      AND il.column_path = 'Tổng giá trị danh mục > Giá trị'
-      AND rh.ngay_nop = :ngay_nop
-),
-data_quoc_tich AS (
-    SELECT il.row_id, iv.value AS quoc_tich
-    FROM uat_fims_ods.item_value iv
-    LEFT JOIN uat_fims_ods.item_list il ON iv.item_id = il.item_id
-    LEFT JOIN uat_fims_ods.report_history rh ON iv.report_log_id = rh.report_log_id
-    WHERE il.report_code = '59WJB'
-      AND il.column_path = 'Quốc tịch'
-      AND rh.ngay_nop = :ngay_nop
+    LEFT JOIN c_loai_hinh     ON b.report_log_id = c_loai_hinh.report_log_id 
+                             AND b.section_id    = c_loai_hinh.section_id 
+                             AND b.row_order     = c_loai_hinh.row_order
+
+    LEFT JOIN c_gtri_danh_muc ON b.report_log_id = c_gtri_danh_muc.report_log_id 
+                             AND b.section_id    = c_gtri_danh_muc.section_id 
+                             AND b.row_order     = c_gtri_danh_muc.row_order
 )
 SELECT
-    gt.row_path AS nha_dau_tu,
-    gt.gia_tri_danh_muc,
-    qt.quoc_tich
-FROM data_gia_tri gt
-LEFT JOIN data_quoc_tich qt ON gt.row_id = qt.row_id
-ORDER BY gt.row_path;",,,,,Done,Dữ liệu động,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,,"Tổng giá trị danh mục,
+    COALESCE(loai_hinh_to_chuc, 'Cá nhân / Chưa xác định') AS loai_hinh_to_chuc,
+    -- 1. Cá nhân
+    ROUND(SUM(CASE 
+        WHEN row_path = 'B-Cá nhân' 
+        THEN tong_gtri_danh_muc 
+    END), 4) AS tong_gtri_danh_muc_ca_nhan,   
+    -- 2. Tổ chức khác Quỹ (Bọc ngoặc tròn các điều kiện OR để row_path = 'A-Tổ chức' áp dụng cho tất cả)
+    ROUND(SUM(CASE
+        WHEN row_path = 'A-Tổ chức' 
+             AND (loai_hinh_to_chuc LIKE '%Công ty%' 
+                  OR loai_hinh_to_chuc LIKE '%Ngân hàng%' 
+                  OR loai_hinh_to_chuc LIKE '%Tổ chức%' 
+                  OR loai_hinh_to_chuc LIKE '%Không phải quỹ%' 
+                  OR loai_hinh_to_chuc LIKE '%Các loại khác%') 
+        THEN tong_gtri_danh_muc
+    END), 4) AS dong_von_rong_tochuc_khac_quy,
+    -- 3. Quỹ
+    ROUND(SUM(CASE
+        WHEN row_path = 'A-Tổ chức' 
+             AND loai_hinh_to_chuc LIKE '%Quỹ%' 
+             AND loai_hinh_to_chuc NOT LIKE '%Không phải quỹ%' 
+        THEN tong_gtri_danh_muc
+    END), 4) AS dong_von_rong_quy,
+     sum(tong_gtri_danh_muc)
+FROM pvt_data
+WHERE tong_gtri_danh_muc IS NOT NULL
+GROUP BY COALESCE(loai_hinh_to_chuc, 'Cá nhân / Chưa xác định');",,,,,Done,Dữ liệu động,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,Tổng= (1)+(2),Tổng giá trị danh mục,
+6,,Dashboard/Danh mục/Thống kê danh mục,Loại hình nhà đầu tư,,Dashboard,Chiều,Trùng,,FIMS,,,,Done,,uat_fims_ods.fact_report_cell,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+          AND sheet_name  = 'II'
+          AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
+          AND is_static_copy = 0 AND is_template_marker = 0
+          and ngay_nop = :ngaynop",,,,,,Done,Dữ liệu tĩnh,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,,Loại hình đối với tổ chức,
+6,,Dashboard/Danh mục/Thống kê danh mục,Tổng giá trị danh mục của cá nhân,Tổng giá trị danh mục của NĐTNN là cá nhân,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, loại hình NĐT",FIMS,,,,Done,,uat_fims_ods.fact_report_cell,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+          AND sheet_name  = 'II'
+          AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
+          AND is_static_copy = 0 AND is_template_marker = 0
+          and ngay_nop = :ngaynop",,,,,,Done,Dữ liệu động,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,Tổng= (2),Tổng giá trị danh mục,
+6,,Dashboard/Danh mục/Thống kê danh mục,Tổng giá trị danh mục của quỹ,Tổng giá trị danh mục của NĐTNN là quỹ,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, loại hình NĐT",FIMS,,,,Done,,uat_fims_ods.fact_report_cell,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+          AND sheet_name  = 'II'
+          AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
+          AND is_static_copy = 0 AND is_template_marker = 0
+          and ngay_nop = :ngaynop",,,,,,Done,Dữ liệu động,,,,,,
+6,,Dashboard/Danh mục/Thống kê danh mục,Tổng giá trị danh mục của tổ chức khác quỹ,Tổng giá trị danh mục của NĐTNN là tổ chức khác quỹ,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, loại hình NĐT",FIMS,,,,Done,,uat_fims_ods.fact_report_cell,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+          AND sheet_name  = 'II'
+          AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
+          AND is_static_copy = 0 AND is_template_marker = 0
+          and ngay_nop = :ngaynop",,,,,,Done,Dữ liệu động,,,,,,
+6,,Dashboard/Danh mục/Thống kê danh mục,Top 5 quốc gia,Top 5 quốc gia có tổng giá trị danh mục lớn nhất,Dashboard,Chỉ tiêu phái sinh,TB,"Tháng, Quốc gia",FIMS,X,X,,Done,,uat_fims_ods.fact_report_cell,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+          AND sheet_name  = 'II'
+          AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
+          AND is_static_copy = 0 AND is_template_marker = 0
+          and ngay_nop = :ngaynop","WITH base_cell AS (
+    SELECT
+        report_log_id,
+        section_id,
+        row_path,
+        row_order,
+        entity_code,
+        column_path,
+        value_raw,
+        value_num,
+        value_text
+    FROM uat_fims_ods.fact_report_cell
+    WHERE report_code IN ('59WJB', 'BZ5X4')
+      AND sheet_name  = 'II'
+      AND is_mirror = 0 
+      AND is_section_echo = 0 
+      AND is_band_overflow = 0
+      AND is_static_copy = 0 
+      AND is_template_marker = 0
+      AND is_total_row = 0 -- Bỏ dòng tổng cộng để không tính trùng số liệu
+      AND ngay_nop = :ngaynop
+),
+base_rows AS (
+    SELECT DISTINCT
+        report_log_id,
+        section_id,
+        row_path,
+        row_order,
+        entity_code
+    FROM base_cell
+),
+c_quoc_tich AS (
+    SELECT 
+        report_log_id, 
+        section_id, 
+        row_order, 
+        COALESCE(value_text, value_raw) AS quoc_tich
+    FROM base_cell 
+    WHERE column_path = 'Quốc tịch'
+),
+c_loai_hinh AS (
+    SELECT 
+        report_log_id, 
+        section_id, 
+        row_order, 
+        COALESCE(value_text, value_raw) AS loai_hinh_to_chuc
+    FROM base_cell 
+    WHERE column_path = 'Loại hình đối với tổ chức'
+),
+c_gtri_danh_muc AS (
+    SELECT 
+        report_log_id, 
+        section_id, 
+        row_order, 
+        value_num AS tong_gtri_danh_muc
+    FROM base_cell 
+    WHERE column_path = 'Tổng giá trị danh mục > Giá trị'
+),
+pvt_data AS (
+    SELECT
+        b.row_path,
+        b.row_order,
+        b.entity_code,
+        c_quoc_tich.quoc_tich,
+        c_loai_hinh.loai_hinh_to_chuc,
+        c_gtri_danh_muc.tong_gtri_danh_muc
+    FROM base_rows b
+    -- Khóa ghép kèm report_log_id để tránh nhân chéo dòng giữa 2 báo cáo 59WJB và BZ5X4:
+    LEFT JOIN c_quoc_tich        ON b.report_log_id = c_quoc_tich.report_log_id 
+                             AND b.section_id    = c_quoc_tich.section_id 
+                             AND b.row_order     = c_quoc_tich.row_order
+    LEFT JOIN c_loai_hinh     ON b.report_log_id = c_loai_hinh.report_log_id 
+                             AND b.section_id    = c_loai_hinh.section_id 
+                             AND b.row_order     = c_loai_hinh.row_order
+    LEFT JOIN c_gtri_danh_muc ON b.report_log_id = c_gtri_danh_muc.report_log_id 
+                             AND b.section_id    = c_gtri_danh_muc.section_id 
+                             AND b.row_order     = c_gtri_danh_muc.row_order
+)
+select 
+        quoc_tich,
+        sum(tong_gtri_danh_muc)
+from pvt_data 
+group by quoc_tich 
+order by sum(tong_gtri_danh_muc) desc
+limit 5;",,,,,Done,Dữ liệu động,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,,"Tổng giá trị danh mục,
 Quốc tịch","Sum (Tổng giá trị danh mục) theo cột Quốc tịch, lấy top 5 lớn nhất"
-6,,Dashboard/Danh mục/Thống kê danh mục,Top 5 NĐT,Tên top 5 NĐTNN có tổng giá trị danh mục lớn nhất,Dashboard,Chỉ tiêu phái sinh,TB,"Tháng, NĐT",FIMS,X,X,,Done,,"Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân 
-Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC)","cột: Tổng giá trị danh mục+ tên KH 
-hàng: các dòng NĐT",RANK DESC theo GTDM,"WITH data_gia_tri AS (
-    SELECT il.row_id, il.row_path, CAST(iv.value AS DECIMAL(20,2)) AS gia_tri_danh_muc
-    FROM uat_fims_ods.item_value iv
-    LEFT JOIN uat_fims_ods.item_list il ON iv.item_id = il.item_id
-    LEFT JOIN uat_fims_ods.report_history rh ON iv.report_log_id = rh.report_log_id
-    WHERE il.report_code = '59WJB'
-      AND il.column_path = 'Tổng giá trị danh mục > Giá trị'
-      AND rh.ngay_nop = :ngay_nop
-),
-data_ten_kh AS (
-    SELECT il.row_id, iv.value AS ten_kh
-    FROM uat_fims_ods.item_value iv
-    LEFT JOIN uat_fims_ods.item_list il ON iv.item_id = il.item_id
-    LEFT JOIN uat_fims_ods.report_history rh ON iv.report_log_id = rh.report_log_id
-    WHERE il.report_code = '59WJB'
-      AND il.column_path = 'Tên KH'   -- cần xác nhận đúng label cột Tên KH
-      AND rh.ngay_nop = :ngay_nop
-),
-tong_hop AS (
+6,,Dashboard/Danh mục/Thống kê danh mục,Top 5 NĐT,Tên top 5 NĐTNN có tổng giá trị danh mục lớn nhất,Dashboard,Chỉ tiêu phái sinh,TB,"Tháng, NĐT",FIMS,X,X,,Done,,uat_fims_ods.fact_report_cell,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+          AND sheet_name  = 'II'
+          AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
+          AND is_static_copy = 0 AND is_template_marker = 0
+          and ngay_nop = :ngaynop","WITH base_cell AS (
     SELECT
-        gt.row_path AS nha_dau_tu,
-        tk.ten_kh,
-        gt.gia_tri_danh_muc
-    FROM data_gia_tri gt
-    LEFT JOIN data_ten_kh tk ON gt.row_id = tk.row_id
+        report_log_id,
+        section_id,
+        row_path,
+        row_order,
+        entity_code,
+        column_path,
+        value_raw,
+        value_num,
+        value_text
+    FROM uat_fims_ods.fact_report_cell
+    WHERE report_code IN ('59WJB', 'BZ5X4')
+      AND sheet_name  = 'II'
+      AND is_mirror = 0 
+      AND is_section_echo = 0 
+      AND is_band_overflow = 0
+      AND is_static_copy = 0 
+      AND is_template_marker = 0
+      AND is_total_row = 0 -- Bỏ dòng tổng cộng để không tính trùng số liệu
+      AND ngay_nop = :ngaynop
 ),
-xep_hang AS (
+base_rows AS (
+    SELECT DISTINCT
+        report_log_id,
+        section_id,
+        row_path,
+        row_order,
+        entity_code
+    FROM base_cell
+),
+c_ten_kh AS (
+    SELECT 
+        report_log_id, 
+        section_id, 
+        row_order, 
+        COALESCE(value_text, value_raw) AS ten_kh
+    FROM base_cell 
+    WHERE column_path = 'Tên khách hàng'
+),
+c_loai_hinh AS (
+    SELECT 
+        report_log_id, 
+        section_id, 
+        row_order, 
+        COALESCE(value_text, value_raw) AS loai_hinh_to_chuc
+    FROM base_cell 
+    WHERE column_path = 'Loại hình đối với tổ chức'
+),
+c_gtri_danh_muc AS (
+    SELECT 
+        report_log_id, 
+        section_id, 
+        row_order, 
+        value_num AS tong_gtri_danh_muc
+    FROM base_cell 
+    WHERE column_path = 'Tổng giá trị danh mục > Giá trị'
+),
+pvt_data AS (
     SELECT
-        nha_dau_tu,
+        b.row_path,
+        b.row_order,
+        b.entity_code,
+        c_ten_kh.ten_kh,
+        c_loai_hinh.loai_hinh_to_chuc,
+        c_gtri_danh_muc.tong_gtri_danh_muc
+    FROM base_rows b
+    -- Khóa ghép kèm report_log_id để tránh nhân chéo dòng giữa 2 báo cáo 59WJB và BZ5X4:
+    LEFT JOIN c_ten_kh        ON b.report_log_id = c_ten_kh.report_log_id 
+                             AND b.section_id    = c_ten_kh.section_id 
+                             AND b.row_order     = c_ten_kh.row_order
+    LEFT JOIN c_loai_hinh     ON b.report_log_id = c_loai_hinh.report_log_id 
+                             AND b.section_id    = c_loai_hinh.section_id 
+                             AND b.row_order     = c_loai_hinh.row_order
+    LEFT JOIN c_gtri_danh_muc ON b.report_log_id = c_gtri_danh_muc.report_log_id 
+                             AND b.section_id    = c_gtri_danh_muc.section_id 
+                             AND b.row_order     = c_gtri_danh_muc.row_order
+)
+select 
         ten_kh,
-        gia_tri_danh_muc,
-        RANK() OVER (ORDER BY gia_tri_danh_muc DESC) AS rn
-    FROM tong_hop
-)
-SELECT nha_dau_tu, ten_kh, gia_tri_danh_muc, rn
-FROM xep_hang
-ORDER BY rn;",,,,,Done,Dữ liệu động,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,,"Tổng giá trị danh mục,
+        sum(tong_gtri_danh_muc)
+from pvt_data 
+group by ten_kh
+order by sum(tong_gtri_danh_muc) desc
+limit 5;",,,,,Done,Dữ liệu động,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,,"Tổng giá trị danh mục,
 Tên khách hàng","Sum (Tổng giá trị danh mục) theo cột Tên khách hàng, lấy top 5 lớn nhất"
-7,,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,Giá trị tài sản,,Dashboard,Chỉ tiêu phái sinh,TB,Tháng,FIMS,X,X,,Done,,"Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân 
-Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC)/III. Hoạt động kinh doanh chứng khoán của thành viên lưu ký là chi nhánh các tổ chức tín dụng nước ngoài, tổ chức tín dụng 100% vốn nước ngoài thành lập tại Việt Nam",cột: số dư cuối kỳ/giá trị,,"SELECT il.row_path AS nha_dau_tu, iv.value AS so_du_cuoi_ky
-FROM uat_fims_ods.item_value iv
-LEFT JOIN uat_fims_ods.item_list il ON iv.item_id = il.item_id
-LEFT JOIN uat_fims_ods.report_history rh ON iv.report_log_id = rh.report_log_id
-WHERE il.report_code = '59WJB'
-  AND il.column_path = 'Số dư cuối kỳ > Giá trị'
-  AND rh.ngay_nop = :ngay_nop;",,,,,Done,Dữ liệu động,,,,,,
-7,,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,Loại tài sản,,Dashboard,Chiều,TB,,FIMS,X,X,,Done,,"Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân 
-Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC)/III. Hoạt động kinh doanh chứng khoán của thành viên lưu ký là chi nhánh các tổ chức tín dụng nước ngoài, tổ chức tín dụng 100% vốn nước ngoài thành lập tại Việt Nam",cột: Loại tài sản,,"SELECT iv.value
-FROM uat_fims_ods.item_value iv
-LEFT JOIN uat_fims_ods.item_list il ON iv.item_id = il.item_id
-LEFT JOIN uat_fims_ods.report_history rh ON iv.report_log_id = rh.report_log_id
-WHERE il.report_code = '59WJB'
-  AND il.column_path = 'Loại tài sản'
-  AND rh.ngay_nop = :ngay_nop;",,,,,Done,Dữ liệu động,,,,,,
-7,,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,"Cổ phiếu, CCQ niêm yết","Giá trị tài sản NĐTNN đầu tư vào cổ phiếu, CCQ niêm yết",Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, Loại tài sản",FIMS,,X,,Done,,"Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân 
-Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC)/III. Hoạt động kinh doanh chứng khoán của thành viên lưu ký là chi nhánh các tổ chức tín dụng nước ngoài, tổ chức tín dụng 100% vốn nước ngoài thành lập tại Việt Nam","cột: Cổ phiếu/CCQ >> Cổ phiếu niêm yết, CCQ niêm yết >> Giá trị
-
-hàng: Tổng = (1)+(2)",,"SELECT iv.value
-FROM uat_fims_ods.item_value iv
-LEFT JOIN uat_fims_ods.item_list il ON iv.item_id = il.item_id
-LEFT JOIN uat_fims_ods.report_history rh ON iv.report_log_id = rh.report_log_id
-WHERE il.report_code = '59WJB'
-  AND il.column_path = 'Cổ phiếu/CCQ >> Cổ phiếu niêm yết, CCQ niêm yết >> Giá trị'
-  AND il.row_path = 'Tổng = (1)+(2)'
-  AND rh.ngay_nop = :ngay_nop;",,,,,Done,Dữ liệu động,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,Tổng= (1)+(2),"Cổ phiếu/Chứng chỉ quỹ>>Cổ phiếu niêm yết, chứng chỉ quỹ niêm yết>>Giá trị",
-7,,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,Trái phiếu,Giá trị tài sản NĐTNN đầu tư vào trái phiếu,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, Loại tài sản",FIMS,,X,,Done,,"Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân 
-Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC)/III. Hoạt động kinh doanh chứng khoán của thành viên lưu ký là chi nhánh các tổ chức tín dụng nước ngoài, tổ chức tín dụng 100% vốn nước ngoài thành lập tại Việt Nam","cột: Trái phiếu
-
-hàng: Tổng = (1)+(2)",,"SELECT iv.value
-FROM uat_fims_ods.item_value iv
-LEFT JOIN uat_fims_ods.item_list il ON iv.item_id = il.item_id
-LEFT JOIN uat_fims_ods.report_history rh ON iv.report_log_id = rh.report_log_id
-WHERE il.report_code = '59WJB'
-  AND il.column_path = 'Trái phiếu'
-  AND il.row_path = 'Tổng = (1)+(2)'
-  AND rh.ngay_nop = :ngay_nop;",,,,,Done,Dữ liệu động,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,Tổng= (1)+(2),Trái phiếu,Sum (Giá trị) của 3 loại trái phiếu
-7,,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,Upcom,Giá trị tài sản NĐTNN đầu tư vào upcom,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, Loại tài sản",FIMS,,X,,Done,,"Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân 
-Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC)/III. Hoạt động kinh doanh chứng khoán của thành viên lưu ký là chi nhánh các tổ chức tín dụng nước ngoài, tổ chức tín dụng 100% vốn nước ngoài thành lập tại Việt Nam","cột: Cổ phiếu/Chứng chỉ quỹ >> Cổ phiếu công ty đại chúng đăng ký giao dịch (upcom) >> Giá Trị
-
-hàng: Tổng = (1)+(2)",,"SELECT iv.value
-FROM uat_fims_ods.item_value iv
-LEFT JOIN uat_fims_ods.item_list il ON iv.item_id = il.item_id
-LEFT JOIN uat_fims_ods.report_history rh ON iv.report_log_id = rh.report_log_id
-WHERE il.report_code = '59WJB'
-  AND il.column_path = 'Cổ phiếu/Chứng chỉ quỹ >> Cổ phiếu công ty đại chúng đăng ký giao dịch (upcom) >> Giá Trị'
-  AND il.row_path = 'Tổng = (1)+(2)'
-  AND rh.ngay_nop = :ngay_nop;",,,,,Done,Dữ liệu động,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,Tổng= (1)+(2),Cổ phiếu/Chứng chỉ quỹ>>Cổ phiếu công ty đại chúng đăng ký giao dịch (upcom)>>Giá trị,
-7,,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,"Giá trị vốn góp, mua cổ phần, quỹ thành viên và chứng khoán khác","Giá trị tài sản NĐTNN đầu tư vào giá trị vốn góp, mua cổ phần, quỹ thành viên và chứng khoán khác",Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, Loại tài sản",FIMS,,X,,Done,,"Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân 
-Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC)/III. Hoạt động kinh doanh chứng khoán của thành viên lưu ký là chi nhánh các tổ chức tín dụng nước ngoài, tổ chức tín dụng 100% vốn nước ngoài thành lập tại Việt Nam","cột: Cổ phiếu/CCQ >> Giá trị vốn góp mua cổ phần, quỹ thành viên và CK khác >> Giá trị
-hàng: Tổng = (1)+(2)",,"SELECT iv.value
-FROM uat_fims_ods.item_value iv
-LEFT JOIN uat_fims_ods.item_list il ON iv.item_id = il.item_id
-LEFT JOIN uat_fims_ods.report_history rh ON iv.report_log_id = rh.report_log_id
-WHERE il.report_code = '59WJB'
-  AND il.column_path = 'Cổ phiếu/CCQ >> Giá trị vốn góp mua cổ phần, quỹ thành viên và CK khác >> Giá trị'
-  AND il.row_path = 'Tổng = (1)+(2)'
-  AND rh.ngay_nop = :ngay_nop;",,,,,Done,Dữ liệu động,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,Tổng= (1)+(2),"Cổ phiếu/Chứng chỉ quỹ>>Giá trị vốn góp mua cổ phần, quỹ thành viên và chứng khoán khác>>Giá trị",
-7,,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,Tiền và tương đương với tiền,Giá trị tài sản NĐTNN là tiền và tương đương với tiền,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, Loại tài sản",FIMS,,X,,Done,,"Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân 
-Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC)/III. Hoạt động kinh doanh chứng khoán của thành viên lưu ký là chi nhánh các tổ chức tín dụng nước ngoài, tổ chức tín dụng 100% vốn nước ngoài thành lập tại Việt Nam","cột: Tiền và các khoản tương đương tiền (CCTG...) >> Giá trị
-hàng: Tổng = (1)+(2)",,"SELECT iv.value
-FROM uat_fims_ods.item_value iv
-LEFT JOIN uat_fims_ods.item_list il ON iv.item_id = il.item_id
-LEFT JOIN uat_fims_ods.report_history rh ON iv.report_log_id = rh.report_log_id
-WHERE il.report_code = '59WJB'
-  AND il.column_path = 'Tiền và các khoản tương đương tiền (CCTG...) >> Giá trị'
-  AND il.row_path = 'Tổng = (1)+(2)'
-  AND rh.ngay_nop = :ngay_nop;",Lấy từ báo cáo NHLK,,,,Done,Dữ liệu động,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,Tổng= (1)+(2),Tiền và các khoản tương đương tiền (chứng chỉ tiền gửi...)>> Giá trị,
-8,,Dashboard/Danh mục/Phân ngành của NĐTNN,Nhóm ngành,Lấy theo phân loại nhóm ngành của phân hệ IDS.,Dashboard,Chiều,TB,Tháng,IDS,X,X,,Doing,,"IDS.COMPANY_PROFILES
-IDS.CATEGORIES","IDS:
-COMPANY_PROFILES.CATEGORY_L1_ID
-CATEGORIES.INDUSTRY_NAME",,"WITH
-
--- Bước 1: Lấy giá đóng cửa mới nhất của từng mã CK tại ngày p_trade_date
-gia_dong_cua AS (
+7,,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,Giá trị tài sản,,Dashboard,Chỉ tiêu phái sinh,TB,Tháng,FIMS,X,X,,Done,,uat_fims_ods.fact_report_cell,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+          AND sheet_name  = 'II'
+          AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
+          AND is_static_copy = 0 AND is_template_marker = 0
+          and ngay_nop = :ngaynop","WITH base_cell AS (
     SELECT
-        cp.SecCode,
-        cp.ClosePrice
-    FROM CLOSING_PRICE_SECURITIES cp
-    WHERE cp.TradeDate = :p_trade_date
-      AND cp.IsFake    = 0              -- chỉ lấy giá thực tế
+        report_log_id,
+        section_id,
+        row_path,
+        row_order,
+        entity_code,
+        column_path,
+        value_raw,
+        value_num,
+        value_text
+    FROM uat_fims_ods.fact_report_cell_spk2
+    WHERE report_code IN ('59WJB', 'BZ5X4')
+      AND sheet_name  = 'II'
+      AND is_mirror = 0 
+      AND is_section_echo = 0 
+      AND is_band_overflow = 0
+      AND is_static_copy = 0 
+      AND is_template_marker = 0
+      AND is_total_row = 0
+      AND ngay_nop = :ngaynop
 ),
-
--- Bước 2: Tính giá trị tài sản NĐTNN từng mã CK
-gia_tri_tai_san AS (
+base_rows AS (
+    SELECT distinct
+        report_log_id,
+        section_id,
+        row_path,
+        row_order,
+        entity_code
+    FROM base_cell
+),
+c_tin_phieu AS (
+    SELECT report_log_id, section_id, row_order, value_num  AS tin_phieu
+    FROM base_cell WHERE column_path = 'Tín phiếu > Giá trị'
+),
+c_trai_phieu AS (
+    SELECT 
+        report_log_id, 
+        section_id, 
+        row_order, 
+        SUM(value_num) AS trai_phieu
+    FROM base_cell 
+    WHERE column_path IN (
+        'Trái phiếu > Thời gian còn lại tới khi đáo hạn > Ngắn hạn > Dưới 12 tháng > Giá trị',
+        'Trái phiếu > Thời gian còn lại tới khi đáo hạn > Trung hạn > Từ 12 tháng đến 24 tháng > Giá trị',
+        'Trái phiếu > Thời gian còn lại tới khi đáo hạn > Dài hạn > Trên 24 tháng > Giá trị'
+    )
+    GROUP BY report_log_id, section_id, row_order
+),
+c_CCQ AS (
+    SELECT report_log_id, section_id, row_order, 
+           value_num AS ccq
+    FROM base_cell WHERE column_path = 'Cổ phiếu/Chứng chỉ quỹ > Cổ phiếu niêm yết, chứng chỉ quỹ niêm yết > Giá trị'
+),
+c_upcom AS (
+    SELECT report_log_id, section_id, row_order, 
+           value_num AS upcom
+    FROM base_cell WHERE column_path = 'Cổ phiếu/Chứng chỉ quỹ > Cổ phiếu công ty đại chúng đăng ký giao dịch (upcom) > Giá trị'
+),
+c_gtri_von_gop AS (
+    SELECT report_log_id, section_id, row_order, 
+           value_num AS gtri_von_gop
+    FROM base_cell WHERE column_path = 'Cổ phiếu/Chứng chỉ quỹ > Giá trị vốn góp mua cổ phần, quỹ thành viên và chứng khoán khác > Giá trị'
+),
+c_tien AS (
+    SELECT report_log_id, section_id, row_order, 
+           value_num AS tien
+    FROM base_cell WHERE column_path = 'Tiền và các khoản tương đương tiền (chứng chỉ tiền gửi...) > Giá trị'
+),
+c_gtri_danh_muc AS (
+    SELECT report_log_id, section_id, row_order, 
+           value_num AS tong_gtri_danh_muc
+    FROM base_cell WHERE column_path = 'Tổng giá trị danh mục > Giá trị'
+),
+pvt_data AS (
     SELECT
-        cs.SecId                                    AS ma_ck,
-        cp.equity_ticker,
-        cs.Quantity,
-        NVL(g.ClosePrice, 0)                        AS gia_dong_cua,
-        cs.Quantity * NVL(g.ClosePrice, 0)          AS gia_tri_nam_giu
-    FROM CATEGORIESSTOCK cs
-    -- Join sang IDS để lấy thông tin ngành qua mã ticker
-    JOIN IDS.company_profiles cp
-        ON cp.equity_ticker = cs.SecId
-    -- Join giá đóng cửa
-    LEFT JOIN gia_dong_cua g
-        ON g.SecCode = cs.SecId
-    WHERE cs.Deleted = 0
-),
-
--- Bước 3: Tổng giá trị toàn thị trường
-tong_thi_truong AS (
-    SELECT SUM(gia_tri_nam_giu) AS tong_gt_toan_tt
-    FROM   gia_tri_tai_san
-),
-
--- Bước 4: Tổng giá trị từng ngành
-tong_theo_nganh AS (
-    SELECT
-        cat.id                      AS nganh_id,
-        cat.industry_name           AS ten_nganh,
-        SUM(g.gia_tri_nam_giu)      AS tong_gt_nganh
-    FROM gia_tri_tai_san g
-    JOIN IDS.company_profiles cp
-        ON cp.equity_ticker = g.ma_ck
-    JOIN IDS.categories cat
-        ON cat.id = cp.category_l1_id
-      AND cat.active_flg = 1
-    GROUP BY
-        cat.id,
-        cat.industry_name
+        b.row_path,
+        b.row_order,
+        b.entity_code,
+		c_tin_phieu.tin_phieu,
+		c_trai_phieu.trai_phieu,
+		c_CCQ.ccq,
+		c_upcom.upcom,
+		c_gtri_von_gop.gtri_von_gop,
+		c_tien.tien,
+        c_gtri_danh_muc.tong_gtri_danh_muc
+    FROM base_rows b
+    LEFT JOIN c_tin_phieu ON b.report_log_id = c_tin_phieu.report_log_id
+    	AND b.section_id = c_tin_phieu.section_id        
+    	AND b.row_order = c_tin_phieu.row_order
+    LEFT JOIN c_trai_phieu ON b.report_log_id = c_trai_phieu.report_log_id
+    	AND b.section_id = c_trai_phieu.section_id    
+    	AND b.row_order = c_trai_phieu.row_order
+    LEFT JOIN c_CCQ ON b.report_log_id = c_CCQ.report_log_id
+    	AND b.section_id = c_CCQ.section_id    
+    	AND b.row_order = c_CCQ.row_order
+    LEFT JOIN c_upcom ON b.report_log_id = c_upcom.report_log_id
+    	AND b.section_id = c_upcom.section_id    
+    	AND b.row_order = c_upcom.row_order
+    LEFT JOIN c_gtri_von_gop ON b.report_log_id = c_gtri_von_gop.report_log_id
+    	AND b.section_id = c_gtri_von_gop.section_id    
+    	AND b.row_order = c_gtri_von_gop.row_order
+    LEFT JOIN c_tien ON b.report_log_id = c_tien.report_log_id
+    	AND b.section_id = c_tien.section_id    
+    	AND b.row_order = c_tien.row_order
+    LEFT JOIN c_gtri_danh_muc ON b.report_log_id = c_gtri_danh_muc.report_log_id 
+    	AND b.section_id = c_gtri_danh_muc.section_id 
+    	AND b.row_order = c_gtri_danh_muc.row_order
 )
-
--- Bước 5: Tính tỷ trọng
 SELECT
-    n.nganh_id,
-    n.ten_nganh,
-    n.tong_gt_nganh,
-    t.tong_gt_toan_tt,
-    ROUND(
-        CAST(n.tong_gt_nganh AS NUMBER)
-        / NULLIF(t.tong_gt_toan_tt, 0)
-        * 100,
-        2
-    )                               AS ty_trong_pct
-FROM tong_theo_nganh  n
-CROSS JOIN tong_thi_truong t
-ORDER BY ty_trong_pct DESC;",,,,,Done,Dữ liệu tĩnh,,,,,,
-8,,Dashboard/Danh mục/Phân ngành của NĐTNN,Tỷ trọng theo ngành,Tỷ trọng theo ngành = Tổng giá trị tài sản NĐTNN theo một nhóm ngành*100/Tổng giá trị tài sản NĐTNN toàn thị trường,Dashboard,Chỉ tiêu phái sinh,TB,Tháng,"FIMS, IDS",X,X,,Doing,,"IDS.COMPANY_PROFILES
-IDS.CATEGORIES
+	sum(tin_phieu)*100/sum(tong_gtri_danh_muc) as tin_phieu,
+	sum(trai_phieu)*100/sum(tong_gtri_danh_muc) as trai_phieu,
+	sum(ccq)*100/sum(tong_gtri_danh_muc) as ccq,
+	sum(upcom)*100/sum(tong_gtri_danh_muc) as upcom,
+	sum(gtri_von_gop)*100/sum(tong_gtri_danh_muc) as gtri_von_gop,
+	sum(tien)*100/sum(tong_gtri_danh_muc) as tien
+FROM pvt_data;",,,,,Done,Dữ liệu động,,,,,,
+7,,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,Loại tài sản,,Dashboard,Chiều,TB,,FIMS,X,X,,Done,,uat_fims_ods.fact_report_cell,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+          AND sheet_name  = 'II'
+          AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
+          AND is_static_copy = 0 AND is_template_marker = 0
+          and ngay_nop = :ngaynop",,,,,,Done,Dữ liệu động,,,,,,
+7,,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,"Cổ phiếu, CCQ niêm yết","Giá trị tài sản NĐTNN đầu tư vào cổ phiếu, CCQ niêm yết",Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, Loại tài sản",FIMS,,X,,Done,,uat_fims_ods.fact_report_cell,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+          AND sheet_name  = 'II'
+          AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
+          AND is_static_copy = 0 AND is_template_marker = 0
+          and ngay_nop = :ngaynop",,,,,,Done,Dữ liệu động,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,Tổng= (1)+(2),"Cổ phiếu/Chứng chỉ quỹ>>Cổ phiếu niêm yết, chứng chỉ quỹ niêm yết>>Giá trị",
+7,,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,Trái phiếu,Giá trị tài sản NĐTNN đầu tư vào trái phiếu,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, Loại tài sản",FIMS,,X,,Done,,uat_fims_ods.fact_report_cell,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+          AND sheet_name  = 'II'
+          AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
+          AND is_static_copy = 0 AND is_template_marker = 0
+          and ngay_nop = :ngaynop",,,,,,Done,Dữ liệu động,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,Tổng= (1)+(2),Trái phiếu,Sum (Giá trị) của 3 loại trái phiếu
+7,,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,Upcom,Giá trị tài sản NĐTNN đầu tư vào upcom,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, Loại tài sản",FIMS,,X,,Done,,uat_fims_ods.fact_report_cell,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+          AND sheet_name  = 'II'
+          AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
+          AND is_static_copy = 0 AND is_template_marker = 0
+          and ngay_nop = :ngaynop",,,,,,Done,Dữ liệu động,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,Tổng= (1)+(2),Cổ phiếu/Chứng chỉ quỹ>>Cổ phiếu công ty đại chúng đăng ký giao dịch (upcom)>>Giá trị,
+7,,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,"Giá trị vốn góp, mua cổ phần, quỹ thành viên và chứng khoán khác","Giá trị tài sản NĐTNN đầu tư vào giá trị vốn góp, mua cổ phần, quỹ thành viên và chứng khoán khác",Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, Loại tài sản",FIMS,,X,,Done,,uat_fims_ods.fact_report_cell,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+          AND sheet_name  = 'II'
+          AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
+          AND is_static_copy = 0 AND is_template_marker = 0
+          and ngay_nop = :ngaynop",,,,,,Done,Dữ liệu động,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,Tổng= (1)+(2),"Cổ phiếu/Chứng chỉ quỹ>>Giá trị vốn góp mua cổ phần, quỹ thành viên và chứng khoán khác>>Giá trị",
+7,,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,Tiền và tương đương với tiền,Giá trị tài sản NĐTNN là tiền và tương đương với tiền,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, Loại tài sản",FIMS,,X,,Done,,uat_fims_ods.fact_report_cell,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+          AND sheet_name  = 'II'
+          AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
+          AND is_static_copy = 0 AND is_template_marker = 0
+          and ngay_nop = :ngaynop",,Lấy từ báo cáo NHLK,,,,Done,Dữ liệu động,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,Tổng= (1)+(2),Tiền và các khoản tương đương tiền (chứng chỉ tiền gửi...)>> Giá trị,
+8,,Dashboard/Danh mục/Phân ngành của NĐTNN,Nhóm ngành,Lấy theo phân loại nhóm ngành của phân hệ IDS.,Dashboard,Chiều,TB,Tháng,"IDS, CSDLTT",X,X,,Done,,"uat_vsdc_stg.foreign_investor_info
 
-CATEGORIESSTOCK
-CLOSING_PRICE_SECURITIES
-SECURITIES","IDS:
+COMPANY_PROFILES
+categories","IDS:
+COMPANY_PROFILES.CATEGORY_L1_ID
+CATEGORIES.INDUSTRY_NAME",,"select 	
+	nvl(c.industry_name, 'Chưa phân ngành') as nganh,
+	sum(fii.current_shares_foreign_hold)*100/sum(total_issued_shares) as ty_trong
+from uat_vsdc_stg.foreign_investor_info fii
+LEFT JOIN uat_ids_stg.company_profiles cp 
+       ON fii.ticker_symbol = cp.equity_ticker 
+      AND cp.ds_snpst_dt = to_date('2026-09-02')
+LEFT JOIN uat_ids_stg.categories c 
+       ON cp.category_l1_id = c.id
+       AND c.ds_snpst_dt = to_date('2026-09-02')
+where fii.ds_snpst_dt between :pdate1 and :pdate2
+group by nvl(c.industry_name, 'Chưa phân ngành');",,,,,Done,Dữ liệu tĩnh,,,,,,
+8,,Dashboard/Danh mục/Phân ngành của NĐTNN,Tỷ trọng theo ngành,Tỷ trọng theo ngành = Tổng giá trị tài sản NĐTNN theo một nhóm ngành*100/Tổng giá trị tài sản NĐTNN toàn thị trường,Dashboard,Chỉ tiêu phái sinh,TB,Tháng,"IDS, CSDLTT",X,X,,Done,,"uat_vsdc_stg.foreign_investor_info
+
+COMPANY_PROFILES
+categories","IDS:
 COMPANY_PROFILES.CATEGORY_L1_ID
 CATEGORIES.INDUSTRY_NAME
 
@@ -1836,12 +2178,67 @@ INVESTOR",INVESTOR.Director,,,,,,,Done,Dữ liệu tĩnh,,,,,,
 11,,Dashboard/NĐT 360/Hồ sơ định danh của NĐTNN,Đại diện giao dịch,"Thông tin người đại diện giao dịch của nhà đầu tư nước ngoài: Tên, số CCCD, Trạng thái (đã xác thực)",Dashboard,Chỉ tiêu cơ sở,Dễ,NĐT,FIMS,X,X,,Done,,"INVESTOR
 STATUS","StatusId
 STATUS.Name",,,,,,,Done,Dữ liệu tĩnh,,,,,,
-12,,Dashboard/NĐT 360/Biến động tài sản của NĐTNN,Thông tin nhà đầu tư,"Tên, MSGD của NĐTNN",Dashboard,Chỉ tiêu cơ sở,Trùng,,FIMS,,,,Doing,,"Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân 
-Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC)",cột: tên khách hàng',,,,,,,Done,Dữ liệu tĩnh,,,,,,
-12,,Dashboard/NĐT 360/Biến động tài sản của NĐTNN,Tổng giá trị danh mục,Tổng giá trị thị trường của tài sản mà nhà đầu tư nước ngoài đang nắm giữ,Dashboard,Chỉ tiêu cơ sở,Trùng,"Tháng, NĐT",FIMS,,X,,Doing,,"Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân 
-Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC)","cột: Tổng giá trị danh mục
-hàng: từng NĐT cụ thể",,,,,,,Done,Chưa có CSDL - Map biểu mẫu,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,"Các dòng của cột """,Tổng giá trị danh mục,
-13,,Dashboard/NĐT 360/Lịch sử tuân thủ của NĐTNN,Thông tin nhà đầu tư,"Tên, MSGD của NĐTNN",Dashboard,Chỉ tiêu cơ sở,Trùng,,Thanh tra,,,,Done,,PENALTY_DECISION_SUBJECT,SUBJECT_NAME,,"SELECT
+12,,Dashboard/NĐT 360/Biến động tài sản của NĐTNN,Thông tin nhà đầu tư,"Tên, MSGD của NĐTNN",Dashboard,Chỉ tiêu cơ sở,Trùng,,FIMS,,,,Doing,, uat_fims_ods.fact_report_cell,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+          AND sheet_name  = 'II'
+          AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
+          AND is_static_copy = 0 AND is_template_marker = 0
+          and ngay_nop = :ngaynop","WITH pvt_data AS (
+    SELECT *
+    FROM (
+        SELECT
+            row_path,
+            row_order,
+            entity_code,
+            column_path,
+            value_raw
+        FROM uat_fims_ods.fact_report_cell
+        WHERE report_code  in ('59WJB', 'BZ5X4')
+          AND sheet_name  = 'II'
+          AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
+          AND is_static_copy = 0 AND is_template_marker = 0
+          and ngay_nop = :ngaynop
+    ) src
+    PIVOT (
+        MAX(value_raw)
+        FOR column_path IN (
+                'Tên khách hàng' as ten_kh,
+                        'Loại hình đối với tổ chức' as loai_hinh,
+                        'Tổng giá trị danh mục > Giá trị' as tong_gtri_danh_muc
+        )
+    )
+)
+select ten_kh, tong_gtri_danh_muc from pvt_data;",,,,,Done,Dữ liệu tĩnh,,,,,,
+12,,Dashboard/NĐT 360/Biến động tài sản của NĐTNN,Tổng giá trị danh mục,Tổng giá trị thị trường của tài sản mà nhà đầu tư nước ngoài đang nắm giữ,Dashboard,Chỉ tiêu cơ sở,Trùng,"Tháng, NĐT",FIMS,,X,,Doing,, uat_fims_ods.fact_report_cell,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+          AND sheet_name  = 'II'
+          AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
+          AND is_static_copy = 0 AND is_template_marker = 0
+          and ngay_nop = :ngaynop","WITH pvt_data AS (
+    SELECT *
+    FROM (
+        SELECT
+            row_path,
+            row_order,
+            entity_code,
+            column_path,
+            value_raw
+        FROM uat_fims_ods.fact_report_cell
+        WHERE report_code  in ('59WJB', 'BZ5X4')
+          AND sheet_name  = 'II'
+          AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
+          AND is_static_copy = 0 AND is_template_marker = 0
+          and ngay_nop = :ngaynop
+    ) src
+    PIVOT (
+        MAX(value_raw)
+        FOR column_path IN (
+        	'Tên khách hàng' as ten_kh,
+			'Loại hình đối với tổ chức' as loai_hinh,
+			'Tổng giá trị danh mục > Giá trị' as tong_gtri_danh_muc
+        )
+    )
+)
+select ten_kh, tong_gtri_danh_muc from pvt_data;",,,,,Done,Chưa có CSDL - Map biểu mẫu,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,"Các dòng của cột """,Tổng giá trị danh mục,
+13,,Dashboard/NĐT 360/Lịch sử tuân thủ của NĐTNN,Thông tin nhà đầu tư,"Tên, MSGD của NĐTNN",Dashboard,Chỉ tiêu cơ sở,Trùng,,Thanh tra,,,,Done,,PENALTY_DECISION_SUBJECT,SUBJECT_NAME,"WHERE pd.ISSUED_DATE BETWEEN TO_DATE(:pdate1, 'yyyymmdd') AND TO_DATE(:pdate2, 'yyyymmdd');","SELECT
         pds.SUBJECT_NAME thong_tin_NDTNN,
         pd.ISSUED_DATE ngay_qd,
         pt.NAME phan_loai,
@@ -1852,11 +2249,11 @@ LEFT JOIN THANHTRA_UAT.PENALTY_DECISION pd ON pds.PENALTY_DECISION_ID = pd.id
 LEFT JOIN THANHTRA_UAT.PENALTY_DECISION_SUBJECT_BEHAVIOR pdsb ON pdsb.PENALTY_DECISION_SUBJECT_ID = pds.id
 LEFT JOIN THANHTRA_UAT.PENALTY_TYPE pt ON pt.id = pdsb.PENALTY_TYPE_ID
 WHERE pd.ISSUED_DATE BETWEEN TO_DATE(:pdate1, 'yyyymmdd') AND TO_DATE(:pdate2, 'yyyymmdd');",,,,,,Dữ liệu tĩnh,,,,,,
-13,,Dashboard/NĐT 360/Lịch sử tuân thủ của NĐTNN,Ngày quyết định,Ngày ra quyết định xử phạt nhà đầu tư nước ngoài,Dashboard,Chỉ tiêu cơ sở,Dễ,NĐT,Thanh tra,X,X,,Done,,PENALTY_DECISION,ISSUED_DATE,,,,,,,Done,Dữ liệu tĩnh,,,,,,
-13,,Dashboard/NĐT 360/Lịch sử tuân thủ của NĐTNN,Phân loại,"Phân loại hình thức xử lý: bị nhắc nhở, xử phạt hành chính,…",Dashboard,Chỉ tiêu cơ sở,Dễ,NĐT,Thanh tra,X,X,,Done,,PENALTY_TYPE,NAME,,,,,,,Done,Dữ liệu tĩnh,,,,,,
-13,,Dashboard/NĐT 360/Lịch sử tuân thủ của NĐTNN,Nội dung/ Trích yếu,Tóm tắt nội dung xử phạt,Dashboard,Chỉ tiêu cơ sở,Dễ,NĐT,Thanh tra,X,X,,Done,,PENALTY_DECISION_SUBJECT_BEHAVIOR,DESCRIPTION,,,,,,,Done,Dữ liệu tĩnh,,,,,,
+13,,Dashboard/NĐT 360/Lịch sử tuân thủ của NĐTNN,Ngày quyết định,Ngày ra quyết định xử phạt nhà đầu tư nước ngoài,Dashboard,Chỉ tiêu cơ sở,Dễ,NĐT,Thanh tra,X,X,,Done,,PENALTY_DECISION,ISSUED_DATE,"WHERE pd.ISSUED_DATE BETWEEN TO_DATE(:pdate1, 'yyyymmdd') AND TO_DATE(:pdate2, 'yyyymmdd');",,,,,,Done,Dữ liệu tĩnh,,,,,,
+13,,Dashboard/NĐT 360/Lịch sử tuân thủ của NĐTNN,Phân loại,"Phân loại hình thức xử lý: bị nhắc nhở, xử phạt hành chính,…",Dashboard,Chỉ tiêu cơ sở,Dễ,NĐT,Thanh tra,X,X,,Done,,PENALTY_TYPE,NAME,"WHERE pd.ISSUED_DATE BETWEEN TO_DATE(:pdate1, 'yyyymmdd') AND TO_DATE(:pdate2, 'yyyymmdd');",,,,,,Done,Dữ liệu tĩnh,,,,,,
+13,,Dashboard/NĐT 360/Lịch sử tuân thủ của NĐTNN,Nội dung/ Trích yếu,Tóm tắt nội dung xử phạt,Dashboard,Chỉ tiêu cơ sở,Dễ,NĐT,Thanh tra,X,X,,Done,,PENALTY_DECISION_SUBJECT_BEHAVIOR,DESCRIPTION,"WHERE pd.ISSUED_DATE BETWEEN TO_DATE(:pdate1, 'yyyymmdd') AND TO_DATE(:pdate2, 'yyyymmdd');",,,,,,Done,Dữ liệu tĩnh,,,,,,
 13,,Dashboard/NĐT 360/Lịch sử tuân thủ của NĐTNN,Mức độ,"Đánh giá mức độ vi phạm là thấp, trùng bình, cao,…",Dashboard,Chỉ tiêu cơ sở,Dễ,NĐT,Thanh tra,X,X,,Done,,,,,,không có trường thông tin xác định mức độ phi phạm  ==> lên UAT trao dổi vs HO để loại bỏ trường này,,,,Done,Dữ liệu tĩnh,,,,,,
-13,,Dashboard/NĐT 360/Lịch sử tuân thủ của NĐTNN,Trạng thái,"Trạng thái xử lý: đã khắc phục, đã nộp phạt,…",Dashboard,Chỉ tiêu cơ sở,Dễ,NĐT,Thanh tra,X,X,,Done,,PENALTY_DECISION,Status,,,,,,,Done,Dữ liệu tĩnh,,,,,,
+13,,Dashboard/NĐT 360/Lịch sử tuân thủ của NĐTNN,Trạng thái,"Trạng thái xử lý: đã khắc phục, đã nộp phạt,…",Dashboard,Chỉ tiêu cơ sở,Dễ,NĐT,Thanh tra,X,X,,Done,,PENALTY_DECISION,Status,"WHERE pd.ISSUED_DATE BETWEEN TO_DATE(:pdate1, 'yyyymmdd') AND TO_DATE(:pdate2, 'yyyymmdd');",,,,,,Done,Dữ liệu tĩnh,,,,,,
 14,,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán,Cổ phiếu - GT NĐTNN mua chứng khoán (triệu VNĐ),,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại CK","CSDLTT, MDDS",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
@@ -1879,6 +2276,7 @@ stockinfor as
 (
         select
                 js.symbol
+		, js.symbolisin 
                 , js.tradingdate 
                 , js.stocktype 
                 , js.ds_etl_pcs_tms 
@@ -1914,7 +2312,7 @@ select
 FROM
         uat_hnx_stg.trade_book tb 
 left join 
-        stockinfor js on js.symbol = tb.issue_code and tb.trade_date = js.tradingdate 
+        stockinfor js on js.symbolisin = tb.issue_code and to_date(tb.trade_date, 'yyyyMMdd') = js.tradingdate 
 WHERE
         tb.trade_date BETWEEN :pdat1 AND :pdat2
         and to_date(tb.ds_snpst_dt) = to_date('2026-09-07', 'yyyy-MM-dd')
@@ -1980,53 +2378,54 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
         and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","with
 stockinfor as 
 (
-	select
-		js.symbol
-		, js.tradingdate 
-		, js.stocktype 
-		, js.ds_etl_pcs_tms 
-	from uat_mdds_stg.jad_stockinfor js 
-	where 1=1
-	and js.tradingtime in (select max(tradingtime) from uat_mdds_stg.jad_stockinfor group by stocktype)
---	and to_date(js.ds_etl_pcs_tms) = to_date('20260908','yyyyMMdd')
+        select
+                js.symbol
+                , js.symbolisin 
+                , js.tradingdate 
+                , js.stocktype 
+                , js.ds_etl_pcs_tms 
+        from uat_mdds_stg.jad_stockinfor js 
+        where 1=1
+        and js.tradingtime in (select max(tradingtime) from uat_mdds_stg.jad_stockinfor group by stocktype)
+--        and to_date(js.ds_etl_pcs_tms) = to_date('20260908','yyyyMMdd')
 )
 ,cte as 
 (
 select
-	SUM(case WHEN (tb.buy_foreigner_investor_type <> '00') and (js.stocktype = 1) THEN Execution_Value ELSE 0 END) gtri_ndtnn_mua_co_phieu,
-	SUM(CASE WHEN (sell_foreigner_investor_type <> '00') and (js.stocktype = 1) THEN Execution_Value ELSE 0 END) gtri_ndtnn_ban_co_phieu,
-	SUM(case WHEN (buy_foreigner_investor_type <> '00') and (js.stocktype = 2) THEN Execution_Value ELSE 0 END) gtri_ndtnn_mua_trai_phieu,
-	SUM(case when (sell_foreigner_investor_type <> '00') and (js.stocktype = 2) then Execution_Value else 0 end) gtri_ndtnn_ban_trai_phieu,
-	SUM(case WHEN (tb.buy_foreigner_investor_type <> '00') and (js.stocktype = 3) THEN tb.Execution_Value ELSE 0 END) gtri_ndtnn_mua_CCQ,
-	SUM(case when (tb.sell_foreigner_investor_type <> '00') and (js.stocktype = 3) then tb.Execution_Value else 0 end) gtri_ndtnn_ban_CCQ
+        SUM(case WHEN (tb.buy_foreigner_investor_type <> '00') and (js.stocktype = 1) THEN Execution_Value ELSE 0 END) gtri_ndtnn_mua_co_phieu,
+        SUM(CASE WHEN (sell_foreigner_investor_type <> '00') and (js.stocktype = 1) THEN Execution_Value ELSE 0 END) gtri_ndtnn_ban_co_phieu,
+        SUM(case WHEN (buy_foreigner_investor_type <> '00') and (js.stocktype = 2) THEN Execution_Value ELSE 0 END) gtri_ndtnn_mua_trai_phieu,
+        SUM(case when (sell_foreigner_investor_type <> '00') and (js.stocktype = 2) then Execution_Value else 0 end) gtri_ndtnn_ban_trai_phieu,
+        SUM(case WHEN (tb.buy_foreigner_investor_type <> '00') and (js.stocktype = 3) THEN tb.Execution_Value ELSE 0 END) gtri_ndtnn_mua_CCQ,
+        SUM(case when (tb.sell_foreigner_investor_type <> '00') and (js.stocktype = 3) then tb.Execution_Value else 0 end) gtri_ndtnn_ban_CCQ
 FROM
-	uat_hose_stg.trade_book tb
+        uat_hose_stg.trade_book tb
 left join 
-	stockinfor js on tb.symbol = js.symbol and tb.trade_date = js.tradingdate 
+        stockinfor js on tb.symbol = js.symbol and tb.trade_date = js.tradingdate 
 where
-	tb.trade_date BETWEEN :pdat1 AND :pdat2
---	and to_date(tb.ds_snpst_dt, 'yyyy-MM-dd') = to_date('2026-09-07', 'yyyy-MM-dd')
+        tb.trade_date BETWEEN :pdat1 AND :pdat2
+--        and to_date(tb.ds_snpst_dt, 'yyyy-MM-dd') = to_date('2026-09-07', 'yyyy-MM-dd')
 union all
 select
-	SUM(CASE WHEN Buy_Foreign_Investor_Type_Code IN ('10', '20') and (js.stocktype = 1) THEN (Trade_price * Trade_quantity) ELSE 0 END) gtri_ndtnn_mua_co_phieu,
-	SUM(CASE WHEN Sell_Foreign_Investor_Type_Code IN ('10', '20') and (js.stocktype = 1) THEN (Trade_price * Trade_quantity) ELSE 0 END) gtri_ndtnn_ban_co_phieu,
-	SUM(CASE WHEN Buy_Foreign_Investor_Type_Code IN ('10', '20') and (js.stocktype = 2) THEN (Trade_price * Trade_quantity) ELSE 0 END) gtri_ndtnn_mua_trai_phieu,
-	SUM(CASE WHEN Sell_Foreign_Investor_Type_Code IN ('10', '20') and (js.stocktype = 2) THEN (Trade_price * Trade_quantity) ELSE 0 END) gtri_ndtnn_ban_trai_phieu,
-	SUM(CASE WHEN (Buy_Foreign_Investor_Type_Code IN ('10', '20')) and (js.stocktype in(3,6)) THEN (Trade_price * Trade_quantity) ELSE 0 END) gtri_ndtnn_mua_CCQ,
-	SUM(CASE WHEN (Sell_Foreign_Investor_Type_Code IN ('10', '20')) and (js.stocktype in(3,6)) THEN (Trade_price * Trade_quantity) ELSE 0 END) gtri_ndtnn_ban_CCQ
+        SUM(CASE WHEN Buy_Foreign_Investor_Type_Code IN ('10', '20') and (js.stocktype = 1) THEN (Trade_price * Trade_quantity) ELSE 0 END) gtri_ndtnn_mua_co_phieu,
+        SUM(CASE WHEN Sell_Foreign_Investor_Type_Code IN ('10', '20') and (js.stocktype = 1) THEN (Trade_price * Trade_quantity) ELSE 0 END) gtri_ndtnn_ban_co_phieu,
+        SUM(CASE WHEN Buy_Foreign_Investor_Type_Code IN ('10', '20') and (js.stocktype = 2) THEN (Trade_price * Trade_quantity) ELSE 0 END) gtri_ndtnn_mua_trai_phieu,
+        SUM(CASE WHEN Sell_Foreign_Investor_Type_Code IN ('10', '20') and (js.stocktype = 2) THEN (Trade_price * Trade_quantity) ELSE 0 END) gtri_ndtnn_ban_trai_phieu,
+        SUM(CASE WHEN (Buy_Foreign_Investor_Type_Code IN ('10', '20')) and (js.stocktype in(3,6)) THEN (Trade_price * Trade_quantity) ELSE 0 END) gtri_ndtnn_mua_CCQ,
+        SUM(CASE WHEN (Sell_Foreign_Investor_Type_Code IN ('10', '20')) and (js.stocktype in(3,6)) THEN (Trade_price * Trade_quantity) ELSE 0 END) gtri_ndtnn_ban_CCQ
 FROM
-	uat_hnx_stg.trade_book tb 
+        uat_hnx_stg.trade_book tb 
 left join 
-	stockinfor js on js.symbol = tb.issue_code and tb.trade_date = js.tradingdate 
+        stockinfor js on js.symbolisin = tb.issue_code and to_date(tb.trade_date, 'yyyyMMdd') = js.tradingdate 
 WHERE
-	tb.trade_date BETWEEN :pdat1 AND :pdat2
-	and to_date(tb.ds_snpst_dt) = to_date('2026-09-07', 'yyyy-MM-dd')
+        tb.trade_date BETWEEN :pdat1 AND :pdat2
+        and to_date(tb.ds_snpst_dt) = to_date('2026-09-07', 'yyyy-MM-dd')
 )
 --TP
 select
-	SUM(gtri_ndtnn_mua_trai_phieu)     AS tong_gtri_ndtnn_mua_trai_phieu,
-	SUM(gtri_ndtnn_ban_trai_phieu)      AS tong_gtri_ndtnn_ban_trai_phieu,
-	SUM(gtri_ndtnn_mua_trai_phieu) - SUM(gtri_ndtnn_ban_trai_phieu) as luy_ke_trai_phieu
+        SUM(gtri_ndtnn_mua_trai_phieu)     AS tong_gtri_ndtnn_mua_trai_phieu,
+        SUM(gtri_ndtnn_ban_trai_phieu)      AS tong_gtri_ndtnn_ban_trai_phieu,
+        SUM(gtri_ndtnn_mua_trai_phieu) - SUM(gtri_ndtnn_ban_trai_phieu) as luy_ke_trai_phieu
 FROM cte;",,,,,,Dữ liệu tĩnh,,,,,,
 14,,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán,Trái phiếu - GT NĐTNN bán chứng khoán (triệu VNĐ),,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại CK","CSDLTT, MDDS",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
@@ -2083,6 +2482,7 @@ stockinfor as
 (
         select
                 js.symbol
+		, js.symbolisin 
                 , js.tradingdate 
                 , js.stocktype 
                 , js.ds_etl_pcs_tms 
@@ -2118,7 +2518,7 @@ select
 FROM
         uat_hnx_stg.trade_book tb 
 left join 
-        stockinfor js on js.symbol = tb.issue_code and tb.trade_date = js.tradingdate 
+        stockinfor js on js.symbolisin = tb.issue_code and to_date(tb.trade_date, 'yyyyMMdd') = js.tradingdate 
 WHERE
         tb.trade_date BETWEEN :pdat1 AND :pdat2
         and to_date(tb.ds_snpst_dt) = to_date('2026-09-07', 'yyyy-MM-dd')
@@ -2183,6 +2583,7 @@ stockinfor as
 (
         select
                 js.symbol
+                , js.symbolisin 
                 , js.tradingdate 
                 , js.stocktype 
                 , js.ds_etl_pcs_tms 
@@ -2263,57 +2664,57 @@ jad_stockinfor","TRADE_BOOK_HNX:
 
 TRADE_BOOK_HOSE:
 - Buy - Acct No","TRADE_BOOK_HNX:
-where Trade date = :pdate
-  and Buy Foreign Investor Type Code IN ('10','20')
+where  trade_date BETWEEN :pdat1 AND :pdat2
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')
 
 TRADE_BOOK_HOSE:
-where Trade Date = :pdate
-  and Buy - Foreigner Investor type
- <> '00' -- phía MUA","with
+where  trade_date BETWEEN :pdat1 AND :pdat2
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","with
 stockinfor as 
 (
-	select
-		js.symbol
-		, js.tradingdate 
-		, js.stocktype 
-		, js.ds_etl_pcs_tms 
-	from uat_mdds_stg.jad_stockinfor js 
-	where 1=1
-	and js.tradingtime in (select max(tradingtime) from uat_mdds_stg.jad_stockinfor group by stocktype)
---	and to_date(js.ds_etl_pcs_tms) = to_date('20260908','yyyyMMdd')
+        select
+                js.symbol
+                , js.symbolisin 
+                , js.tradingdate 
+                , js.stocktype 
+                , js.ds_etl_pcs_tms 
+        from uat_mdds_stg.jad_stockinfor js 
+        where 1=1
+        and js.tradingtime in (select max(tradingtime) from uat_mdds_stg.jad_stockinfor group by stocktype)
+--        and to_date(js.ds_etl_pcs_tms) = to_date('20260908','yyyyMMdd')
 ),
 cte as 
 (
 select 
-	tb.trade_date as ngay_giao_dich,
-	tb.buy_acct_no  as tai_khoan_giao_dich,
-	tb.symbol as ma_ck,
-	sum(case when tb.buy_foreigner_investor_type <> '00' then tb.execution_volume else 0 end) as khoi_luong_mua,
-	sum(case when tb.sell_foreigner_investor_type <> '00' then tb.execution_volume else 0 end) as khoi_luong_ban,
-	sum(case when tb.buy_foreigner_investor_type <> '00' then tb.execution_value else 0 end) as gia_tri_mua,
-	sum(case when tb.sell_foreigner_investor_type <> '00' then tb.execution_value else 0 end) as gia_tri_ban
+        tb.trade_date as ngay_giao_dich,
+        tb.buy_acct_no  as tai_khoan_giao_dich,
+        tb.symbol as ma_ck,
+        sum(case when tb.buy_foreigner_investor_type <> '00' then tb.execution_volume else 0 end) as khoi_luong_mua,
+        sum(case when tb.sell_foreigner_investor_type <> '00' then tb.execution_volume else 0 end) as khoi_luong_ban,
+        sum(case when tb.buy_foreigner_investor_type <> '00' then tb.execution_value else 0 end) as gia_tri_mua,
+        sum(case when tb.sell_foreigner_investor_type <> '00' then tb.execution_value else 0 end) as gia_tri_ban
 from uat_hose_stg.trade_book tb
 left join 
-	stockinfor js on tb.symbol = js.symbol and tb.trade_date = js.tradingdate 
+        stockinfor js on tb.symbol = js.symbol and tb.trade_date = js.tradingdate 
 where
-	tb.trade_date BETWEEN :pdat1 AND :pdat2
---	and to_date(tb.ds_snpst_dt, 'yyyy-MM-dd') = to_date('2026-09-08', 'yyyy-MM-dd')
+        tb.trade_date BETWEEN :pdat1 AND :pdat2
+--        and to_date(tb.ds_snpst_dt, 'yyyy-MM-dd') = to_date('2026-09-08', 'yyyy-MM-dd')
 group by tb.buy_acct_no,tb.symbol,tb.trade_date
 union all
 select 
-	tb.trade_date as ngay_giao_dich,
-	tb.buy_account_number   as tai_khoan_giao_dich,
-	tb.issue_code  as ma_ck,
-	sum(case when Buy_Foreign_Investor_Type_Code IN ('10', '20') then tb.trade_quantity  else 0 end) as khoi_luong_mua,
-	sum(case when Sell_Foreign_Investor_Type_Code IN ('10', '20') then tb.trade_quantity  else 0 end) as khoi_luong_ban,
-	sum(case when Buy_Foreign_Investor_Type_Code IN ('10', '20') then tb.trade_price * tb.trade_quantity  else 0 end) as gia_tri_mua,
-	sum(case when Sell_Foreign_Investor_Type_Code IN ('10', '20') then tb.trade_price * tb.trade_quantity  else 0 end) as gia_tri_ban
+        tb.trade_date as ngay_giao_dich,
+        tb.buy_account_number   as tai_khoan_giao_dich,
+        tb.issue_code  as ma_ck,
+        sum(case when Buy_Foreign_Investor_Type_Code IN ('10', '20') then tb.trade_quantity  else 0 end) as khoi_luong_mua,
+        sum(case when Sell_Foreign_Investor_Type_Code IN ('10', '20') then tb.trade_quantity  else 0 end) as khoi_luong_ban,
+        sum(case when Buy_Foreign_Investor_Type_Code IN ('10', '20') then tb.trade_price * tb.trade_quantity  else 0 end) as gia_tri_mua,
+        sum(case when Sell_Foreign_Investor_Type_Code IN ('10', '20') then tb.trade_price * tb.trade_quantity  else 0 end) as gia_tri_ban
 from uat_hnx_stg.trade_book tb
 left join 
-	stockinfor js on tb.issue_code = js.symbol and tb.trade_date = js.tradingdate 
+        stockinfor js on tb.issue_code = js.symbol and tb.trade_date = js.tradingdate 
 where
-	tb.trade_date BETWEEN :pdat1 AND :pdat2
---	and to_date(tb.ds_snpst_dt, 'yyyy-MM-dd') = to_date('2026-09-08', 'yyyy-MM-dd')
+        tb.trade_date BETWEEN :pdat1 AND :pdat2
+--        and to_date(tb.ds_snpst_dt, 'yyyy-MM-dd') = to_date('2026-09-08', 'yyyy-MM-dd')
 group by tb.buy_account_number, tb.issue_code,tb.trade_date
 )
 select * from cte
@@ -2327,16 +2728,12 @@ jad_stockinfor","TRADE_BOOK_HNX:
 
 TRADE_BOOK_HOSE:
 - Symbol","TRADE_BOOK_HNX:
-where Trade date = :pdate
-  and Buy Foreign Investor Type Code IN ('10','20')  -- phía MUA
-  [hoặc] Sell Foreign Investor Type Code IN ('10','20')  -- phía BÁN
+where  trade_date BETWEEN :pdat1 AND :pdat2
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')
 
 TRADE_BOOK_HOSE:
-where Trade Date = :pdate
-  and Buy - Foreigner Investor type
- <> '00' -- phía MUA
-  [hoặc] Sell - Foreigner Investor type
- <> '00'  -- phía BÁN",,,,,,,Dữ liệu tĩnh,,,,,,
+where  trade_date BETWEEN :pdat1 AND :pdat2
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,,,,,,Dữ liệu tĩnh,,,,,,
 15,,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết,KL mua chứng khoán,,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, NĐT","CSDLTT, MDDS",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
@@ -2346,13 +2743,12 @@ jad_stockinfor","TRADE_BOOK_HNX:
 
 TRADE_BOOK_HOSE:
 - Execution - Volume (where Buy - Invest Type = '7000')","TRADE_BOOK_HNX:
-where Trade date = :pdate
-  and Buy Foreign Investor Type Code IN ('10','20')
+where  trade_date BETWEEN :pdat1 AND :pdat2
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')
 
 TRADE_BOOK_HOSE:
-where Trade Date = :pdate
-  and Buy - Foreigner Investor type
- <> '00' -- phía MUA",,,,,,,Dữ liệu tĩnh,,,,,,
+where  trade_date BETWEEN :pdat1 AND :pdat2
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,,,,,,Dữ liệu tĩnh,,,,,,
 15,,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết,KL bán CK,,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, NĐT","CSDLTT, MDDS",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
@@ -2362,13 +2758,12 @@ jad_stockinfor","TRADE_BOOK_HNX:
 
 TRADE_BOOK_HOSE:
 - Execution - Volume (where Sell - Invest Type = '7000')","TRADE_BOOK_HNX:
-where Trade date = :pdate
-  and Sell Foreign Investor Type Code IN ('10','20')
+where  trade_date BETWEEN :pdat1 AND :pdat2
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')
 
 TRADE_BOOK_HOSE:
-where Trade Date = :pdate
-  and Sell - Foreigner Investor type
- <> '00'  -- phía BÁN",,,,,,,Dữ liệu tĩnh,,,,,,
+where  trade_date BETWEEN :pdat1 AND :pdat2
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,,,,,,Dữ liệu tĩnh,,,,,,
 15,,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết,GT mua chứng khoán,,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, NĐT","CSDLTT, MDDS",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
@@ -2378,13 +2773,12 @@ jad_stockinfor","TRADE_BOOK_HNX:
 
 TRADE_BOOK_HOSE:
 - Execution - Value (where Buy - Invest Type = '7000')","TRADE_BOOK_HNX:
-where Trade date = :pdate
-  and Buy Foreign Investor Type Code IN ('10','20')
+where  trade_date BETWEEN :pdat1 AND :pdat2
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')
 
 TRADE_BOOK_HOSE:
-where Trade Date = :pdate
-  and Buy - Foreigner Investor type
- <> '00' -- phía MUA",,,,,,,Dữ liệu tĩnh,,,,,,
+where  trade_date BETWEEN :pdat1 AND :pdat2
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,,,,,,Dữ liệu tĩnh,,,,,,
 15,,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết,GT bán chứng khoán,,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, NĐT","CSDLTT, MDDS",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
@@ -2394,13 +2788,12 @@ jad_stockinfor","TRADE_BOOK_HNX:
 
 TRADE_BOOK_HOSE:
 - Execution - Value (where Sell - Invest Type = '7000')","TRADE_BOOK_HNX:
-where Trade date = :pdate
-  and Sell Foreign Investor Type Code IN ('10','20')
+where  trade_date BETWEEN :pdat1 AND :pdat2
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')
 
 TRADE_BOOK_HOSE:
-where Trade Date = :pdate
-  and Sell - Foreigner Investor type
- <> '00'  -- phía BÁN",,,,,,,Dữ liệu tĩnh,,,,,,
+where  trade_date BETWEEN :pdat1 AND :pdat2
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,,,,,,Dữ liệu tĩnh,,,,,,
 16,,Data Explorer Dòng vốn ròng của NĐTNN,Tháng,,Data Explorer,Chiều,Trùng,,FIMS,X,X,,Done,,RPTMEMBER,RPTMEMBER.PeriodValue,,,,,,,,Dữ liệu động,,,,,,
 16,,Data Explorer Dòng vốn ròng của NĐTNN,Quốc gia,Tổng hợp Vốn đầu tư vào ròng/ Vốn đầu tư rút ròng theo Quốc gia,Data Explorer,Chỉ tiêu phái sinh,Trùng,,FIMS,X,X,,Done,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)","cột: GT dòng vốn vào (3)
 

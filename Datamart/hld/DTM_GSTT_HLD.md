@@ -107,6 +107,33 @@ flowchart LR
 > **[SỬA 2026-09-14, theo yêu cầu Design] 8 measure tính sẵn theo rổ chỉ số:** `Index Total Volume`/`Index Total Value` (KLGD/GTGD toàn rổ), `Index Foreign Net Volume`/`Index Foreign Net Value` (KLNN/GTNN ròng toàn rổ), `Index Total Negotiated Volume`/`Index Total Negotiated Value` (KLGD/GTGD thỏa thuận toàn rổ), `Index Market Cap`/`Index Free Float Market Cap` (Vốn hóa/Vốn hóa free-float toàn rổ) — mỗi cột SUM theo `Index Code + Trading Date`, nguồn Atomic mở rộng thêm `Security Trading Snapshot`, `Securities Trade`, `Public Company Share Statistics History`, `Listed Share Info` (không vẽ thêm node — theo đúng quy ước hiện có của file, diagram chỉ thể hiện driving entity chính, các bảng JOIN phụ nêu tại LLD). **Giá trị lặp lại trên mọi dòng Symbol cùng Index+Date** (denormalize có chủ đích — bridge không còn "factless" thuần túy) — bắt buộc dùng `MAX()`/`DISTINCT` khi truy vấn, không SUM lại.
 > **KPI dùng Fact này:** K_GSTT_4 (chọn 1 Chỉ số), K_GSTT_62/63 (Bộ chỉ số thị trường/theo ngành) — join qua `Symbol`+`Trading Date`, không qua FK cố định trên `Fact Stock Portfolio Snapshot`; K_GSTT_47-52/54/61 (Nhóm 5/6/7/9/11/13/17/19/32/33, trừ Nhóm 23) và mẫu số K_GSTT_74/76 (Nhóm 24) nay đọc trực tiếp 8 cột tính sẵn ở trên (MAX, không JOIN+SUM lại).
 
+##### Cụm 1c: Giao dịch theo phân loại nhà đầu tư (`Fact Investor Category Trading Snapshot`)
+
+```mermaid
+flowchart LR
+    subgraph SRC["Staging"]
+        S1C["ORDERTRADE.TRADE_BOOK_HOSE"]
+        S1D["ORDERTRADE.TRADE_BOOK_HNX"]
+    end
+    subgraph SIL["Atomic"]
+        A1C["Securities Trade"]
+    end
+    subgraph GOLD["Datamart"]
+        fct_investor_category_trading_snpst["Fact Investor Category Trading Snapshot"]
+    end
+    S1C --> A1C
+    S1D --> A1C
+    A1C --> fct_investor_category_trading_snpst
+```
+
+> **[MỚI 2026-09-21, theo yêu cầu Data Modeler]** Nhóm 28/29 ("Xu hướng dòng tiền — Giao dịch theo phân loại Nhà đầu tư") trước đây lưu phân loại NĐT (Cá nhân/Tổ chức trong nước) thành 8 cột giá trị cố định (`Individual_Buy/Sell_Value/Volume`, `Domestic_Institution_Buy/Sell_Value/Volume`) trên `Fact Stock Portfolio Snapshot`, buộc tầng BI phải `CASE {nhánh} WHEN ... THEN individual_buy_val WHEN ... THEN domestic_institution_buy_val END` để switch cột theo lựa chọn Chiều "Phân loại nhà đầu tư" (K_GSTT_85) — không có cột vật lý nào đại diện cho chính "Phân loại nhà đầu tư" như 1 giá trị dữ liệu thật. Fact mới tách riêng, grain hẹp hơn (`mã CK × ngày × Phân loại NĐT`), có cột vật lý `Investor Category Code` — K_GSTT_85 trở thành FK/attribute thật, K_GSTT_86-94 (Nhóm 28/29) chỉ còn `SUM(...) WHERE Investor Category Code = :x`, không còn CASE WHEN. **Không đổi grain/cột của `Fact Stock Portfolio Snapshot`** — Nhóm 21 (Foreign)/Nhóm 27 (Proprietary)/Nhóm 33 (Proprietary Volume) tiếp tục dùng nguyên các cột đã có trên Fact đó, không bị ảnh hưởng.
+> **Nguồn phân loại (đã xác nhận với Data Modeler, tham khảo trực tiếp BA_analyst_GSTT.csv dòng "Phân loại nhà đầu tư", STT 28/29):** phân nhánh theo thứ tự ưu tiên Tự doanh → Nước ngoài → Cá nhân/Tổ chức trong nước (giữ nguyên logic đã duyệt ở Nhóm 27/28 cũ):
+> 1. **Tự doanh:** `Buy/Sell Client House Classification Code = '30'` (cả HOSE/HNX).
+> 2. **Nước ngoài:** `Buy/Sell Foreign Investor Type Code IN ('10','20')` (cả HOSE/HNX).
+> 3. **Cá nhân** (loại trừ 1, 2): HOSE `Buy/Sell Investor Type Code IN ('1000','8000','1100','1200')` HOẶC HNX `Buy/Sell Investor Type Code = '8000'`.
+> 4. **Tổ chức trong nước** (loại trừ 1, 2): HOSE `Buy/Sell Investor Type Code IN ('2000','2100','2200','3000','3100','3200','3300','4000','5000','5200','6000','9000')` HOẶC HNX `Buy/Sell Investor Type Code IN ('1000','2000','3000','3100','4000','5000','6000','7000','7100')`.
+> ETL populate riêng phía Mua (dùng `Buy ...`) và phía Bán (dùng `Sell ...`) — 1 giao dịch có thể có bên mua và bên bán thuộc 2 phân loại khác nhau, nên `Matched/Negotiated_Buy_Value` và `Matched/Negotiated_Sell_Value` được tính độc lập theo đúng phân loại của từng phía trước khi `UNION`/`FULL OUTER JOIN` theo `(Symbol, Trade Date, Investor Category Code)` — cùng cơ chế BA đã tham khảo ở SQL gốc Nhóm 29 (CTE `gt_mua_theo_ngay`/`gt_ban_theo_ngay`/`gt_rong_theo_ngay`).
+
 ##### Cụm 2a: Diễn biến chỉ số thị trường — snapshot cuối ngày (`Fact Market Index Snapshot`)
 
 ```mermaid
@@ -165,20 +192,25 @@ flowchart LR
 >
 > **[GHI CHÚ 2026-09-07] Nguồn mới `Market Price Snapshot` chưa dùng được cho Fact này:** MDDS đã bổ sung Atomic entity `market_price_snapshot` (MDDS.JAD_TRADINGVIEWHISTORY1MIN/1DAY — nến OHLCV thật theo phút/ngày, đã dùng để thiết kế lại `Fact Security Trading Intraday` ở Nhóm 30, xem O_GSTT_11) — về nguyên tắc phù hợp hơn nguồn `Market Index Snapshot` hiện tại (tránh phải dùng `LAG()` trừ giá trị lũy kế để suy ra `Total Value At Time`). Tuy nhiên **chưa áp dụng được**: `market_price_snapshot.symbol` (định danh dạng TradingView, VD dự đoán "VNINDEX") không có join key xác nhận với `Market Index Dimension` (định danh theo `Market Code`/`Market Id` — HOSE/HNX/UPCOM) — cùng gap đã ghi nhận ở dòng ~100 ("2 hệ định danh khác nhau... PENDING xác nhận nghiệp vụ"). `BRD/Source/MDDS/brd_MDDS_JAD_TRADINGVIEWHISTORY1MIN.yaml` không có sample giá trị `SYMBOL` nào để verify. Giữ nguyên thiết kế hiện tại cho tới khi nghiệp vụ xác nhận mapping `symbol`↔`Market Code`.
 
-##### Cụm 3: Sở hữu và giao dịch nội bộ (`Legal Entity Position Dimension`)
+##### Cụm 3: Sở hữu và giao dịch nội bộ (`Operational Public Company Shareholding`)
 
 ```mermaid
 flowchart LR
     subgraph SRC["Staging"]
+        S3A["IDS.COMPANY_SHAREHOLDING"]
         S3B["IDS.POSITIONS"]
     end
     subgraph SIL["Atomic"]
+        A3A["Public Company Shareholding"]
         A3B["Legal Entity Position"]
     end
     subgraph GOLD["Datamart"]
+        opr_public_company_shareholding["Operational Public Company Shareholding"]
         legal_entity_position_dim["Legal Entity Position Dimension"]
     end
+    S3A --> A3A
     S3B --> A3B
+    A3A --> opr_public_company_shareholding
     A3B --> legal_entity_position_dim
 ```
 
@@ -491,6 +523,21 @@ flowchart LR
 > **[DEPRECATED 2026-09-17 — theo yêu cầu trực tiếp user]** Dashboard "Danh mục trái phiếu theo biểu đồ kỹ thuật" (STT 4) không còn cần thiết kế — BA đã quyết định loại bỏ dashboard này. `BA_analyst_GSTT.csv` (STT 4, 10 dòng con) tại thời điểm sửa vẫn còn ghi `Trạng thái mapping = Done` (BA team chưa cập nhật lại CSV) — quyết định bãi bỏ ghi nhận trực tiếp từ user, không qua cập nhật CSV.
 >
 > 100% KPI của Nhóm này (K_GSTT_20, 7, 30, 27, 28, 29, 10, 9, 11, 23) đều reuse từ Nhóm 1/2/3 — không có Fact/Dimension/cột nào tạo riêng cho Nhóm 4, nên bãi bỏ không ảnh hưởng thiết kế các Nhóm khác (K_GSTT_23 v.v. vẫn READY cho Nhóm 2). Đã chuyển 10 dòng liên quan tại `DTM_GSTT_Detail_Mapping.csv` (`nhom = "Nhóm 4 - ..."`) sang `column_role = DEPRECATED` — không xóa hẳn để giữ vết lịch sử.
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_GSTT_20 | Mã trái phiếu | — | Chiều | — | [DEPRECATED 2026-09-17] Dashboard bãi bỏ | DEPRECATED |
+| K_GSTT_7 | Ngày | — | Chiều | — | [DEPRECATED 2026-09-17] Dashboard bãi bỏ | DEPRECATED |
+| K_GSTT_30 | Kỳ báo cáo | — | Chiều | — | [DEPRECATED 2026-09-17] Dashboard bãi bỏ | DEPRECATED |
+| K_GSTT_27 | Giá mở cửa | VNĐ | Cơ sở | — | [DEPRECATED 2026-09-17] Dashboard bãi bỏ | DEPRECATED |
+| K_GSTT_28 | Giá cao nhất | VNĐ | Cơ sở | — | [DEPRECATED 2026-09-17] Dashboard bãi bỏ | DEPRECATED |
+| K_GSTT_29 | Giá thấp nhất | VNĐ | Cơ sở | — | [DEPRECATED 2026-09-17] Dashboard bãi bỏ | DEPRECATED |
+| K_GSTT_10 | Giá đóng cửa | VNĐ | Cơ sở | — | [DEPRECATED 2026-09-17] Dashboard bãi bỏ | DEPRECATED |
+| K_GSTT_9 | Giá tham chiếu | VNĐ | Cơ sở | — | [DEPRECATED 2026-09-17] Dashboard bãi bỏ | DEPRECATED |
+| K_GSTT_11 | Thay đổi (+/-) | VNĐ | Cơ sở | — | [DEPRECATED 2026-09-17] Dashboard bãi bỏ | DEPRECATED |
+| K_GSTT_23 | Khối lượng giao dịch | Trái phiếu | Phái sinh | — | [DEPRECATED 2026-09-17] Dashboard bãi bỏ | DEPRECATED |
 
 ---
 
@@ -1896,66 +1943,133 @@ flowchart LR
 #### Nhóm 28 - Xu hướng dòng tiền — Giao dịch theo phân loại Nhà đầu tư (biểu đồ GT ròng)
 
 > **Phân loại:** Dashboard
-> **Atomic:** 100% reuse Nhóm 1 (`Security Trading Snapshot`, `Securities Trade`) + Nhóm 3 (`Open/High/Low Price`) + Nhóm 21 (Foreign Investor) + Nhóm 27 (Client House/Tự doanh) — bổ sung measure "cá nhân ròng"/"tổ chức trong nước ròng" mới, dùng `Buy/Sell Account Number` (mới) với các cột đã có.
+> **Atomic:** 100% reuse Nhóm 1 (`Security Trading Snapshot`, `Securities Trade`) + Nhóm 3 (`Open/High/Low Price`) + Nhóm 21 (Foreign Investor) + Nhóm 27 (Client House/Tự doanh) — **[SỬA 2026-09-21]** Phân loại NĐT (Cá nhân/Tổ chức trong nước/Tự doanh/Nước ngoài) nay lưu trên `Fact Investor Category Trading Snapshot` (mới, xem Section 1 Cụm 1c), KHÔNG còn mở rộng cột trên `Fact Stock Portfolio Snapshot`.
 >
-> **Ghi chú tái sử dụng:** BA liệt kê 11 dòng con — 6 dòng đã có KPI ID sẵn từ Nhóm 1 (Mã CK, Chỉ số, % thay đổi), Nhóm 3 (Giá cao/thấp/đóng cửa — **không có Giá mở cửa**, khác các Nhóm khác) — reuse thẳng. "GT tự doanh ròng" trùng hoàn toàn K_GSTT_83 (Nhóm 27), "GT NN ròng" trùng hoàn toàn K_GSTT_77 (Nhóm 25, = K_GSTT_72 − K_GSTT_73) — không khai KPI mới cho 2 dòng này. 2 dòng còn lại ("GT cá nhân ròng", "GT tổ chức trong nước ròng") là chỉ tiêu mới — xem ghi chú dưới đây.
-> **Sửa nguồn phân loại NĐT (khác bản HLD trước, 2026-07-29):** Bản thiết kế trước dùng `Buy/Sell Investor Type Code` (scheme `ORDERTRADE_INVESTOR_TYPE`) để phân biệt Cá nhân/Tổ chức — **sai nguồn**. BA minh thị trong cột Note của dòng "Phân loại nhà đầu tư": *"Hiện tại chưa có cơ sở để phân biệt chính xác về phân loại hình NĐT. Theo CĐS hiện tại sẽ phân biệt qua **số tài khoản** của nhà đầu tư"* — kèm SQL tham khảo đầy đủ dùng `SUBSTRING(account_number, 4, 1)`. Atomic `Securities Trade` (Nguồn 1) có sẵn `Buy Account Number`/`Sell Account Number` (`buy_account_nbr`/`sell_account_nbr`, cùng physical_name cho cả HOSE `BUY_ACCT_NO`/`SELL_ACCT_NO` và HNX `BUY_ACCOUNT_NUMBER`/`SELL_ACCOUNT_NUMBER`) — đủ nguồn để redesign đúng theo BA. **[SỬA 2026-09-19, BA cập nhật STT 28]** BA cập nhật lại STT 28 trên `BA_analyst_GSTT.csv`: điều kiện lọc quay về dùng `Buy/Sell Invest Type` (HOSE) / `investor classification code` (HNX) — tức đúng field `Buy/Sell Investor Type Code` (`buy_investor_tp_code`/`sell_investor_tp_code`, scheme `ORDERTRADE_INVESTOR_TYPE`) đã bị bác ở lần sửa 07/2026. Bảng nguồn vẫn là `TRADE_BOOK_HOSE/HNX` như trước, chỉ đổi cột điều kiện. Xem công thức mới ở K_GSTT_85/86/87 bên dưới.
-> **Ghi chú "Phân loại nhà đầu tư" (Chiều, K_GSTT_85) và "GT cá nhân ròng"/"GT tổ chức trong nước ròng" (K_GSTT_86/87) — **[SỬA 2026-09-19, BA cập nhật STT 28]**, đổi lại công thức:** Phân loại dựa trên `Investor Type Code` (`buy_investor_tp_code`/`sell_investor_tp_code`), PHÂN NHÁNH theo `src_stm_code` vì cùng mã số mang nghĩa khác nhau giữa HOSE và HNX (VD mã `1000`: HOSE = Cá nhân, HNX = Securities/Futures company):
-> - **Cá nhân**: HOSE `Investor Type Code IN ('1000','8000','1100','1200')` HOẶC HNX `Investor Type Code = '8000'`
-> - **Tổ chức trong nước**: HOSE `Investor Type Code IN ('2000','2100','2200','3000','3100','3200','3300','4000','5000','5200','6000','9000')` HOẶC HNX `Investor Type Code IN ('1000','2000','3000','3100','4000','5000','6000','7000','7100')`
-> - Cả 2 nhánh đều loại trừ `Client/House Classification Code = '30'` (Tự doanh) và `Foreign Investor Type Code IN ('10','20')` (Nước ngoài) — 2 trường riêng, không đổi — để không đếm trùng với K_GSTT_83/K_GSTT_77, theo đúng thứ tự ưu tiên trong SQL tham khảo gốc của BA (2026-07-27: Tự doanh → Nước ngoài → Cá nhân/Tổ chức).
->
-> "GT cá nhân ròng"/"GT tổ chức trong nước ròng" — **[SỬA 2026-09-19, BA cập nhật STT 28]** đổi driver từ `SUBSTRING(Account Number,4,1)` sang `Investor Type Code`, xem công thức đầy đủ ở ghi chú "Phân loại nhà đầu tư" (trên). Khác trước đây (BA không phân biệt HOSE/HNX theo ký tự tài khoản), `Investor Type Code` mang **nghĩa khác nhau giữa 2 sàn** với cùng mã số nên ETL bắt buộc rẽ nhánh theo `src_stm_code`.
+> **Ghi chú tái sử dụng:** BA liệt kê 11 dòng con — 6 dòng đã có KPI ID sẵn từ Nhóm 1 (Mã CK, Chỉ số, % thay đổi), Nhóm 3 (Giá cao/thấp/đóng cửa — **không có Giá mở cửa**, khác các Nhóm khác) — reuse thẳng. "GT tự doanh ròng" trùng hoàn toàn K_GSTT_83 (Nhóm 27), "GT NN ròng" trùng hoàn toàn K_GSTT_77 (Nhóm 25, = K_GSTT_72 − K_GSTT_73) — không khai KPI mới cho 2 dòng này, **giữ nguyên nguồn cũ trên `Fact Stock Portfolio Snapshot`** (không di chuyển sang Fact mới — 2 KPI này không dùng chung slicer K_GSTT_85, là measure đơn lẻ cố định theo đúng định nghĩa gốc tại Nhóm 27/25). 2 dòng còn lại ("GT cá nhân ròng", "GT tổ chức trong nước ròng") là chỉ tiêu mới — xem ghi chú dưới đây.
+> **Lịch sử nguồn phân loại NĐT (giữ nguyên, không xóa — precedent O_GSTT_1/6/10/22):**
+> - **2026-07-29:** Bản thiết kế trước dùng `Buy/Sell Investor Type Code` (scheme `ORDERTRADE_INVESTOR_TYPE`) để phân biệt Cá nhân/Tổ chức — bị đánh giá "sai nguồn" theo Note BA khi đó ("Hiện tại chưa có cơ sở để phân biệt chính xác... sẽ phân biệt qua **số tài khoản**") — đổi sang dùng `Buy/Sell Account Number` (`buy_account_nbr`/`sell_account_nbr` trên `Securities Trade`).
+> - **[SỬA 2026-09-19, BA cập nhật STT 28]** BA cập nhật lại STT 28: điều kiện lọc quay về dùng `Buy/Sell Invest Type` (HOSE) / `investor classification code` (HNX) — tức field `Buy/Sell Investor Type Code` (scheme `ORDERTRADE_INVESTOR_TYPE`) đã bị bác ở lần sửa 07/2026, nay dùng lại. Lưu vật lý dưới dạng 10 cột cố định (`Individual_*`/`Domestic_Institution_*`) trên `Fact Stock Portfolio Snapshot`, tầng BI dùng `CASE {nhánh} WHEN...` để switch cột theo K_GSTT_85 — không có cột vật lý riêng cho "Phân loại nhà đầu tư" như 1 giá trị dữ liệu.
+> - **[SỬA 2026-09-21, theo yêu cầu Data Modeler — xác nhận trực tiếp bảng mã Investor Type Code từ BA_analyst_GSTT.csv]** Giữ nguyên nguồn `Investor Type Code` (đã đúng, xác nhận lại 2026-09-19) nhưng đổi cách **lưu trữ vật lý**: tách sang Fact mới grain hẹp `mã CK/ngày/Phân loại NĐT` (`Fact Investor Category Trading Snapshot`, Cụm 1c) với cột `Investor Category Code` vật lý — loại bỏ hoàn toàn CASE WHEN switch cột ở tầng BI. **Đã cân nhắc và loại bỏ phương án** dùng bảng `BM_DANH_MUC_NDT(TAI_KHOAN, LOAI_NDT)` xuất hiện tại 1 vị trí lẻ trong BA (Nhóm 29, dòng "Chỉ số", cột Câu lệnh màn) — Data Modeler xác nhận đây không phải nguồn đúng, giữ nguyên `Investor Type Code` trên `Securities Trade` đã có sẵn Atomic.
+> Quy tắc phân loại (giữ nguyên từ 2026-09-19, chỉ đổi nơi lưu):
+> - **Tự doanh:** `Buy/Sell Client House Classification Code = '30'` (cả HOSE/HNX) — xét trước tiên.
+> - **Nước ngoài:** `Buy/Sell Foreign Investor Type Code IN ('10','20')` (cả HOSE/HNX) — xét thứ nhì.
+> - **Cá nhân** (loại trừ 2 nhánh trên): HOSE `Investor Type Code IN ('1000','8000','1100','1200')` HOẶC HNX `Investor Type Code = '8000'`.
+> - **Tổ chức trong nước** (loại trừ 2 nhánh trên): HOSE `Investor Type Code IN ('2000','2100','2200','3000','3100','3200','3300','4000','5000','5200','6000','9000')` HOẶC HNX `Investor Type Code IN ('1000','2000','3000','3100','4000','5000','6000','7000','7100')`.
+> ETL populate riêng phía Mua (`Buy ...`) và phía Bán (`Sell ...`) rồi UNION/FULL OUTER JOIN theo `(Symbol, Trade Date, Investor Category Code)` — xem chi tiết Section 1 Cụm 1c.
+> **[SỬA 2026-09-21 lần 2, theo yêu cầu Data Modeler — 5 dòng BA đang soạn dở]** `BA_analyst_GSTT.csv` (STT 28) có thêm 5 dòng con: "Giá trị mua theo phân loại nhà đầu tư", "Giá trị bán theo phân loại nhà đầu tư", "Giá trị ròng theo phân loại nhà đầu tư", "Giá trị mua ròng theo phân loại nhà đầu tư", "Giá trị bán ròng theo phân loại nhà đầu tư" — cột "Nhóm yêu cầu"/"Bảng nguồn"/"SQL tham khảo" của 4/5 dòng đang để trống (BA chưa điền xong), chỉ 1 dòng có đủ thông tin. Tên gọi khớp 1-1 với 5 KPI đã khai sinh ở Nhóm 29 (K_GSTT_90 GT mua, K_GSTT_91 GT bán, K_GSTT_92 GT ròng, K_GSTT_93 GT mua ròng, K_GSTT_94 GT bán ròng — cùng công thức `SUM(Buy/Sell Value) WHERE Investor Category Code = :nhánh`, tham số hóa theo K_GSTT_85) — xác nhận trực tiếp với Data Modeler: **reuse thẳng 5 KPI này vào Nhóm 28**, không khai ID mới (dedup theo đúng quy ước đã dùng cho K_GSTT_83/77). Khác K_GSTT_86/87/83/77 (4 giá trị RÒNG cố định, 1 cho mỗi phân khúc, phục vụ biểu đồ cột hiển thị đồng thời cả 4 phân khúc) — K_GSTT_90-94 là bộ 5 giá trị THAM SỐ HÓA theo 1 phân khúc được chọn qua slicer K_GSTT_85 (phục vụ nhu cầu xem chi tiết mua/bán/khớp lệnh của TỪNG phân khúc riêng lẻ, bổ sung cho biểu đồ cột 4-cột đã có) — 2 cách hiển thị khác nhau trên cùng 1 nguồn dữ liệu, không loại trừ nhau.
 
 **Mockup:**
 
-| Phân loại NĐT | Mã ck | Chỉ số | Giá cao | Giá thấp | Giá đóng | % thay đổi | GT cá nhân ròng | GT tổ chức trong nước ròng | GT tự doanh ròng | GT NN ròng |
-|---|---|---|---|---|---|---|---|---|---|---|
-| Cá nhân | VCB | VN30 | 83.00 | 81.50 | 82.50 | +0.61% | +2.5 Tỷ | -1.8 Tỷ | +1.1 Tỷ | +0.4 Tỷ |
+| Phân loại NĐT | Mã ck | Chỉ số | Giá cao | Giá thấp | Giá đóng | % thay đổi | GT cá nhân ròng | GT tổ chức trong nước ròng | GT tự doanh ròng | GT NN ròng | GT mua | GT bán | GT ròng | GT mua ròng | GT bán ròng |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Cá nhân | VCB | VN30 | 83.00 | 81.50 | 82.50 | +0.61% | +2.5 Tỷ | -1.8 Tỷ | +1.1 Tỷ | +0.4 Tỷ | 12.3 Tỷ | 9.8 Tỷ | +2.5 Tỷ | 2.5 Tỷ | — |
 
-**Source:** `Fact Stock Portfolio Snapshot` → `Security Trading Snapshot Dimension`, `Index Constituent Dimension` — mở rộng 2 cột mới (cá nhân/tổ chức trong nước), reuse cấu trúc Fact hiện có.
+**Source:** `Fact Investor Category Trading Snapshot` (mới) + `Fact Stock Portfolio Snapshot` (Tự doanh/NN, reuse Nhóm 25/27) → `Security Trading Snapshot Dimension`, `Index Constituent Dimension`.
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_GSTT_85 | Phân loại nhà đầu tư | — | Chiều | Slicer 4 phân khúc NĐT: Tự doanh (`Client/House = '30'`), Nước ngoài (`Foreign Type IN '10','20'`), Cá nhân (`HOSE Invest Type IN ('1000','8000','1100','1200')` / `HNX = '8000'`), Tổ chức (`HOSE Invest Type IN ('2000'..'9000')` / `HNX IN ('1000'..'7100')`) → switch sang cụm cột tương ứng trên `Fact Stock Portfolio Snapshot` (`individual_*`, `domestic_institution_*`, `proprietary_*`, `foreign_*`) | **[SỬA 2026-09-19, BA cập nhật STT 28]** Cá nhân/Tổ chức nay lấy theo `Investor Type Code`, xem ghi chú trên. Chiều slicer 4 giá trị: Cá nhân/Tổ chức trong nước/Tự doanh/Nước ngoài — mỗi phân loại đã có cột Buy/Sell riêng trên Fact (tách sẵn từ Account Number/Client House Classification Code/Foreign Investor Type Code tại ETL), không cần SUBSTRING ở tầng Datamart | READY |
+| K_GSTT_85 | Phân loại nhà đầu tư | — | Chiều | `Fact Investor Category Trading Snapshot.Investor Category Code` — 4 giá trị: Cá nhân, Tổ chức trong nước, Tự doanh, Nước ngoài | **[SỬA 2026-09-21]** Nay là cột vật lý (FK/attribute thật trên Fact mới), không còn Slicer ảo CASE WHEN — xem ghi chú nguồn trên | READY |
 | K_GSTT_1 | Mã ck | — | Chiều | `Security Trading Snapshot Dimension.Symbol` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_4 | Chỉ số | — | Chiều | `Index Constituent Dimension.Index Code` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_28 | Giá cao nhất | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.High Price` | Reuse từ Nhóm 3 | READY |
 | K_GSTT_29 | Giá thấp nhất | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Low Price` | Reuse từ Nhóm 3 | READY |
 | K_GSTT_10 | Giá đóng cửa | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Close Price` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_12 | % thay đổi | % | Phái sinh | `Price Change / Reference Price × 100` | Reuse từ Nhóm 1 | READY |
-| K_GSTT_86 | GT cá nhân ròng | VNĐ | Phái sinh | `SUM(Execution Value WHERE Investor Type Code khớp nhánh Cá nhân theo sàn (xem ghi chú trên), loại trừ Tự doanh/Nước ngoài) − SUM(điều kiện tương tự trên Sell) GROUP BY Symbol, Trade Date` | **[SỬA 2026-09-19, BA cập nhật STT 28]** Đổi lại dùng `Investor Type Code` thay Account Number substring — xem ghi chú "Phân loại nhà đầu tư" ở trên | READY |
-| K_GSTT_87 | GT tổ chức trong nước ròng | VNĐ | Phái sinh | `SUM(Execution Value WHERE Investor Type Code khớp nhánh Tổ chức theo sàn (xem ghi chú trên), loại trừ Tự doanh/Nước ngoài) − SUM(điều kiện tương tự trên Sell) GROUP BY Symbol, Trade Date` | **[SỬA 2026-09-19, BA cập nhật STT 28]** Đổi lại dùng `Investor Type Code` thay Account Number substring — nay cần loại trừ Tự doanh/Nước ngoài tường minh vì `Investor Type Code` không tự phân biệt như ký tự tài khoản trước đây | READY |
-| K_GSTT_83 | GT tự doanh ròng | VNĐ | Phái sinh | `K_GSTT_82 − K_GSTT_84` | Trùng hoàn toàn K_GSTT_83 (Nhóm 27) — không khai KPI mới | READY |
-| K_GSTT_77 | GT NN ròng | VNĐ | Phái sinh | `K_GSTT_72 − K_GSTT_73` | Trùng hoàn toàn K_GSTT_77 (Nhóm 25) — không khai KPI mới | READY |
+| K_GSTT_86 | GT cá nhân ròng | VNĐ | Phái sinh | `SUM(Fact Investor Category Trading Snapshot.Buy Value) − SUM(Fact Investor Category Trading Snapshot.Sell Value) WHERE Investor Category Code = 'Cá nhân' GROUP BY Symbol, Trade Date` | **[SỬA 2026-09-21]** Nguồn `Fact Investor Category Trading Snapshot` (mới) — filter đơn giản theo Investor Category Code, không còn CASE WHEN switch cột | READY |
+| K_GSTT_87 | GT tổ chức trong nước ròng | VNĐ | Phái sinh | `SUM(Fact Investor Category Trading Snapshot.Buy Value) − SUM(Fact Investor Category Trading Snapshot.Sell Value) WHERE Investor Category Code = 'Tổ chức trong nước' GROUP BY Symbol, Trade Date` | **[SỬA 2026-09-21]** Cùng cơ chế K_GSTT_86 | READY |
+| K_GSTT_83 | GT tự doanh ròng | VNĐ | Phái sinh | `K_GSTT_82 − K_GSTT_84` | Trùng hoàn toàn K_GSTT_83 (Nhóm 27) — không khai KPI mới, giữ nguyên nguồn `Fact Stock Portfolio Snapshot` | READY |
+| K_GSTT_77 | GT NN ròng | VNĐ | Phái sinh | `K_GSTT_72 − K_GSTT_73` | Trùng hoàn toàn K_GSTT_77 (Nhóm 25) — không khai KPI mới, giữ nguyên nguồn `Fact Stock Portfolio Snapshot` | READY |
+| K_GSTT_90 | GT mua | VNĐ | Phái sinh | `SUM(Fact Investor Category Trading Snapshot.Buy Value) WHERE Investor Category Code = :nhánh (K_GSTT_85) GROUP BY Symbol, Trade Date` | **[MỚI 2026-09-21]** Reuse từ Nhóm 29 — BA STT 28 thêm dòng "Giá trị mua theo phân loại nhà đầu tư" khớp 1-1 công thức, không khai ID mới | READY |
+| K_GSTT_91 | GT bán | VNĐ | Phái sinh | `SUM(Fact Investor Category Trading Snapshot.Sell Value) WHERE Investor Category Code = :nhánh (K_GSTT_85) GROUP BY Symbol, Trade Date` | **[MỚI 2026-09-21]** Reuse từ Nhóm 29 — BA STT 28 thêm dòng "Giá trị bán theo phân loại nhà đầu tư" khớp 1-1 công thức, không khai ID mới | READY |
+| K_GSTT_92 | GT ròng | VNĐ | Phái sinh | `K_GSTT_90 − K_GSTT_91` | **[MỚI 2026-09-21]** Reuse từ Nhóm 29 — BA STT 28 thêm dòng "Giá trị ròng theo phân loại nhà đầu tư" khớp 1-1 công thức, không khai ID mới. Khác K_GSTT_86/87/83/77 — đây là bản THAM SỐ HÓA theo 1 phân khúc chọn qua K_GSTT_85, không phải 4 giá trị cố định song song | READY |
+| K_GSTT_93 | GT mua ròng | VNĐ | Phái sinh | `K_GSTT_92 WHERE K_GSTT_92 > 0` | **[MỚI 2026-09-21]** Reuse từ Nhóm 29 — BA STT 28 thêm dòng "Giá trị mua ròng theo phân loại nhà đầu tư" khớp 1-1 công thức, không khai ID mới | READY |
+| K_GSTT_94 | GT bán ròng | VNĐ | Phái sinh | `K_GSTT_92 WHERE K_GSTT_92 < 0` | **[MỚI 2026-09-21]** Reuse từ Nhóm 29 — BA STT 28 thêm dòng "Giá trị bán ròng theo phân loại nhà đầu tư" khớp 1-1 công thức, không khai ID mới | READY |
 
-**Star Schema:** Không có bảng mới — reuse `Fact Stock Portfolio Snapshot` đã vẽ ở Nhóm 1/21/27, bổ sung 2 cột `Individual_Net_Value`, `Domestic_Institution_Net_Value` (READY, nguồn Atomic `Buy/Sell Account Number` — đã sửa 2026-07-29, xem ghi chú sửa nguồn ở trên).
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Security_Trading_Snapshot_Dimension {
+        string Security_Trading_Snapshot_Dimension_Id PK
+        string Symbol
+        string Security_Full_Name
+        string Floor_Code
+        string Stock_Type_Code
+        string Stock_Type_Name
+        string Underlying_Symbol
+        string ISIN_Code
+        string Issuer_Name
+        int Listed_Share_Count
+        date First_Trading_Date
+        date Last_Trading_Date
+        date Issue_Date
+        date Maturity_Date
+        string Fund_Type_Code
+        string Covered_Warrant_Type_Code
+        decimal Exercise_Price
+        string Exercise_Ratio
+        string Exercise_Style_Code
+        string Put_Or_Call_Code
+        string Contract_Multiplier
+        string Maturity_Month_Year
+        decimal Coupon_Rate
+        decimal Yield
+        decimal Open_Price
+        decimal High_Price
+        decimal Low_Price
+        decimal Reference_Price
+        decimal Close_Price
+        decimal Price_Change
+        string Source_System_Code
+    }
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
+        string Source_System_Code
+    }
+    Fact_Investor_Category_Trading_Snapshot {
+        string Security_Trading_Snapshot_Dimension_Id FK
+        string Snapshot_Date_Dimension_Id FK
+        string Investor_Category_Code
+        decimal Buy_Value
+        decimal Sell_Value
+        decimal Matched_Buy_Value
+        decimal Matched_Sell_Value
+        decimal Negotiated_Buy_Value
+        decimal Negotiated_Sell_Value
+    }
+    Security_Trading_Snapshot_Dimension ||--o{ Fact_Investor_Category_Trading_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Investor_Category_Trading_Snapshot : " "
+```
+
+> `Investor_Category_Code` là Classification Value thuần (giá trị: `CA_NHAN`/`TO_CHUC_TRONG_NUOC`/`TU_DOANH`/`NUOC_NGOAI`) — không FK sang Dimension riêng, theo đúng Rule #4 CLAUDE.md (Classification Value chỉ 1 trường Code). K_GSTT_83/77 (Tự doanh/NN ròng, reuse Nhóm 25/27) tiếp tục dùng `Fact Stock Portfolio Snapshot` không đổi — không xuất hiện trong erDiagram này.
 
 **Lineage Mart → Báo cáo:**
 
 ```mermaid
 flowchart LR
-    F1["Fact Stock Portfolio Snapshot"] --> RPT42["Xu hướng dòng tiền — GD theo phân loại NĐT (biểu đồ GT ròng)"]
+    F1["Fact Investor Category Trading Snapshot"] --> RPT42["Xu hướng dòng tiền — GD theo phân loại NĐT (biểu đồ GT ròng)"]
+    F3["Fact Stock Portfolio Snapshot"] --> RPT42
     D1["Security Trading Snapshot Dimension"] --> RPT42
     D4["Index Constituent Dimension"] --> RPT42
 ```
 
-**Bảng grain:** Không có bảng mới — cùng grain `Fact Stock Portfolio Snapshot` đã có ở Nhóm 1. 2 cột mới (K_GSTT_86/87) đặt cùng grain mã CK/ngày.
+**Bảng grain:** `Fact Investor Category Trading Snapshot` — 1 row/mã CK/ngày/Phân loại NĐT (4 dòng/mã CK/ngày). K_GSTT_83/77 vẫn grain `Fact Stock Portfolio Snapshot` — 1 row/mã CK/ngày.
 
-> **Coverage rule:** Áp dụng cho `Fact Stock Portfolio Snapshot` — bổ sung đủ 2 measure còn thiếu (cá nhân/tổ chức trong nước ròng) để hoàn thiện toàn bộ 4 phân khúc NĐT (cá nhân/tổ chức trong nước/tự doanh/nước ngoài) trên cùng Fact, tránh bổ sung lẻ tẻ ở Nhóm 29.
+> **Coverage rule:** Áp dụng cho `Fact Investor Category Trading Snapshot` — đủ cả 4 phân khúc NĐT (Cá nhân/Tổ chức trong nước/Tự doanh/Nước ngoài) trên cùng 1 Fact, tránh bổ sung lẻ tẻ ở Nhóm 29. **[SỬA 2026-09-21]** Thay thế Coverage rule cũ (áp dụng cho `Fact Stock Portfolio Snapshot`) — xem lịch sử nguồn ở trên.
 
 ---
 
 #### Nhóm 29 - Xu hướng dòng tiền — Giao dịch theo phân loại Nhà đầu tư (bản đồ nhiệt GT mua/bán ròng)
 
 > **Phân loại:** Dashboard
-> **Atomic:** 100% reuse Nhóm 1 (`Security Trading Snapshot`, `Securities Trade`) + Nhóm 28 (Phân loại NĐT, GT cá nhân/tổ chức/tự doanh/NN ròng) — bổ sung "GT khớp lệnh"/"GT thỏa thuận" tách theo Board Type Code (cùng cơ chế với K_GSTT_17/18, Nhóm 1).
+> **Atomic:** 100% reuse Nhóm 1 (`Security Trading Snapshot`, `Securities Trade`) + Nhóm 28 (Phân loại NĐT, `Fact Investor Category Trading Snapshot`) — bổ sung "GT khớp lệnh"/"GT thỏa thuận" tách theo Board Type Code (cùng cơ chế với K_GSTT_17/18, Nhóm 1), nay lưu sẵn trên Fact mới thay vì tính động qua CASE WHEN.
 >
-> **Ghi chú tái sử dụng:** BA liệt kê 13 dòng con — 4 dòng đã có KPI ID sẵn từ Nhóm 1 (Mã chứng khoán, Chỉ số, Giá, % thay đổi) và Nhóm 28 (Phân loại nhà đầu tư = K_GSTT_85) — reuse thẳng. "Tổng GTGD" trùng hoàn toàn K_GSTT_14 (Nhóm 1, Tổng GT) — không khai KPI mới. 5 dòng ("GT khớp lệnh", "GT thỏa thuận", "GT mua", "GT bán", "GT ròng") cần tách theo cả Board Type (khớp lệnh/thỏa thuận) và Phân loại NĐT cùng lúc — xem ghi chú dưới đây. 2 dòng cuối ("GT mua ròng", "GT bán ròng") là filter con của "GT ròng" — xem ghi chú riêng.
-> **Ghi chú "GT khớp lệnh"/"GT thỏa thuận" (K_GSTT_88/89, mới) và "GT mua"/"GT bán"/"GT ròng" theo phân loại NĐT (tổng quát hóa K_GSTT_86/87):** "GT khớp lệnh" = `SUM(Execution Value WHERE Board Type Code NOT IN ('T1','T2','T3','T4','T6'))` (phần bù của Thỏa thuận K_GSTT_18, Nhóm 1); "GT thỏa thuận" = `SUM(Execution Value WHERE Board Type Code IN ('T1','T2','T3','T4','T6'))`, cùng điều kiện đã dùng cho K_GSTT_18 (Tổng GT thỏa thuận, Nhóm 1) nhưng không GROUP BY theo mã CK/ngày đơn thuần mà thêm chiều Phân loại NĐT (K_GSTT_85). "GT mua"/"GT bán"/"GT ròng" (K_GSTT_90/91/92) là công thức tổng quát của K_GSTT_86/87/K_GSTT_82-84/K_GSTT_72-73 — cùng 1 cách tính (SUM Execution Value theo Buy/Sell + điều kiện phân loại tương ứng theo NHÁNH được chọn của Phân loại NĐT), nhưng tham số hóa theo `Phân loại nhà đầu tư` (K_GSTT_85) được chọn thay vì 4 cột cố định riêng biệt — bản chất là 1 công thức duy nhất filter động theo K_GSTT_85, không phải 3 KPI độc lập mới. **[SỬA 2026-09-19, BA cập nhật STT 28]** điều kiện filter theo từng nhánh của K_GSTT_85 nay dùng `Investor Type Code` (`buy_investor_tp_code`/`sell_investor_tp_code`, PHÂN NHÁNH theo `src_stm_code` HOSE/HNX) cho 2 nhánh Cá nhân/Tổ chức trong nước — xem công thức đầy đủ ở ghi chú Nhóm 28. Tự doanh (`Client House Classification Code='30'`) và Nước ngoài (`Foreign Investor Type Code IN ('10','20')`) giữ nguyên không đổi. Biến thể bản đồ nhiệt (treemap) của cùng bộ dữ liệu, không có cấu trúc Datamart riêng.
-> **Ghi chú "GT mua ròng"/"GT bán ròng" (K_GSTT_93/94, mới — filter con của K_GSTT_92, không phải measure độc lập):** BA mô tả 2 dòng này là "GT ròng = GT mua − GT bán > 0" (GT mua ròng) và "GT ròng = GT mua − GT bán < 0" (GT bán ròng) — tức không phải 2 giá trị tính riêng, mà là cách hiển thị phân loại theo dấu của K_GSTT_92 (GT ròng) đã có: hiển thị dưới nhãn "GT mua ròng" khi K_GSTT_92 > 0, dưới nhãn "GT bán ròng" khi K_GSTT_92 < 0 (cùng 1 con số, khác nhãn hiển thị theo điều kiện dấu). Áp dụng cho bản đồ nhiệt (treemap): màu/vị trí ô phân biệt theo dấu dương/âm của K_GSTT_92.
+> **Ghi chú tái sử dụng:** BA liệt kê 13 dòng con — 4 dòng đã có KPI ID sẵn từ Nhóm 1 (Mã chứng khoán, Chỉ số, Giá, % thay đổi) và Nhóm 28 (Phân loại nhà đầu tư = K_GSTT_85) — reuse thẳng. 5 dòng ("GT khớp lệnh", "GT thỏa thuận", "GT mua", "GT bán", "GT ròng") cần tách theo cả Board Type (khớp lệnh/thỏa thuận) và Phân loại NĐT cùng lúc — xem ghi chú dưới đây. 2 dòng cuối ("GT mua ròng", "GT bán ròng") là filter con của "GT ròng" — xem ghi chú riêng.
+> **[SỬA 2026-09-21, theo yêu cầu Data Modeler]** "GT khớp lệnh"/"GT thỏa thuận" (K_GSTT_88/89) và "GT mua"/"GT bán"/"GT ròng" theo phân loại NĐT (K_GSTT_90-94) nay đọc trực tiếp từ `Fact Investor Category Trading Snapshot` (Cụm 1c, xem Nhóm 28) — Fact grain `mã CK/ngày/Phân loại NĐT` có sẵn 6 cột giá trị (`Buy Value`, `Sell Value`, `Matched Buy/Sell Value`, `Negotiated Buy/Sell Value`), tất cả populate 1 lần tại ETL cho cả 4 phân khúc (Cá nhân/Tổ chức trong nước/Tự doanh/Nước ngoài). Tầng BI chỉ còn `WHERE Investor Category Code = :nhánh` (tham số từ K_GSTT_85) — **KHÔNG còn `CASE {nhánh} WHEN 'Ca nhan' THEN individual_buy_val WHEN...`** switch giữa các cột khác nguồn/khác bảng như thiết kế trước (Resolved 2026-09-04/2026-09-19). Ghi chú lịch sử "GT khớp lệnh"/"GT thỏa thuận" Resolved 2026-09-04 + bổ sung R1 2026-09-17 giữ nguyên không xóa (precedent O_GSTT_20) — chỉ đổi nguồn vật lý từ `securities_trade` (tính động) sang cột đã pre-aggregate sẵn trên Fact mới.
+> **[SỬA 2026-09-21 lần 2 — "Tổng GTGD" tách khỏi K_GSTT_14, khai KPI mới K_GSTT_152]** Rà lại theo yêu cầu Data Modeler + đối chiếu SQL tham khảo gốc của BA (STT 29, dòng "Chỉ số" — CTE `giao_dich_phan_loai`/`gt_mua_theo_ngay`/`gt_ban_theo_ngay`/`gt_rong_theo_ngay`, tham số `:loai_gtgd` toggle `TONG_GTGD`/`KHOP_LENH`): "Tổng GTGD" trong ngữ cảnh bảng NÀY (cùng dòng với các cột đã lọc theo Phân loại NĐT) **phải lọc theo Phân loại NĐT** — trước đây nhầm reuse thẳng K_GSTT_14 (Nhóm 1, tổng thị trường KHÔNG lọc NĐT, không đổi giá trị dù đổi dòng Phân loại NĐT đang xem — sai ngữ nghĩa bảng). SQL tham khảo gốc của BA xác nhận `gt_mua`/`gt_ban`/`gt_rong` đều tính trên tập đã phân loại theo NĐT (`giao_dich_phan_loai`, JOIN `DANH_MUC_NDT`/phân loại theo `Client House Classification Code`) — TONG_GTGD (không lọc Board Type) là 1 trong các state của tham số `:loai_gtgd`, cùng cấp với KHOP_LENH, áp dụng trên tập ĐÃ phân loại NĐT đó, không phải tổng thị trường thô. **Khai KPI mới K_GSTT_152** ("Tổng GTGD theo phân loại NĐT") = `Buy Value + Sell Value` (không lọc Board Type, cùng cơ chế "Tổng" = TONG_GTGD của `:loai_gtgd`) trên `Fact Investor Category Trading Snapshot`, filter theo Investor Category Code — không đổi cột vật lý (đã có sẵn `buy_val`/`sell_val`), chỉ khai KPI_ID mới do công thức khác K_GSTT_14 (K_GSTT_14 giữ nguyên định nghĩa cũ, vẫn dùng cho Nhóm 1/3/9/10/23/24/30, KHÔNG đổi). Nguồn phân loại NĐT áp dụng đồng nhất `Investor Type Code` (đã xác nhận, không dùng `BM_DANH_MUC_NDT` trong SQL tham khảo — bảng đó chưa có trên Atomic, xem ghi chú Nhóm 28).
 
 **Mockup:**
 
@@ -1963,7 +2077,7 @@ flowchart LR
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
 | VCB | VN30 | Cá nhân | 20.5 Tỷ | 1.6 Tỷ | 22.1 Tỷ | 12.3 Tỷ | 9.8 Tỷ | +2.5 Tỷ | 2.5 Tỷ | — | 82.50 | +0.61% |
 
-**Source:** `Fact Stock Portfolio Snapshot` → `Security Trading Snapshot Dimension`, `Index Constituent Dimension` — 100% reuse, filter động theo Phân loại NĐT tại tầng BI.
+**Source:** `Fact Investor Category Trading Snapshot` (mới, K_GSTT_88-94, K_GSTT_152) → `Security Trading Snapshot Dimension`, `Index Constituent Dimension`.
 
 **Bảng KPI:**
 
@@ -1971,32 +2085,32 @@ flowchart LR
 |---|---|---|---|---|---|---|
 | K_GSTT_1 | Mã chứng khoán | — | Chiều | `Security Trading Snapshot Dimension.Symbol` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_4 | Chỉ số | — | Chiều | `Index Constituent Dimension.Index Code` | Reuse từ Nhóm 1 | READY |
-| K_GSTT_85 | Phân loại nhà đầu tư | — | Chiều | Slicer 4 phân khúc NĐT: Tự doanh (`Client/House = '30'`), Nước ngoài (`Foreign Type IN '10','20'`), Cá nhân (`HOSE Invest Type IN ('1000','8000','1100','1200')` / `HNX = '8000'`), Tổ chức (`HOSE Invest Type IN ('2000'..'9000')` / `HNX IN ('1000'..'7100')`) → switch sang cụm cột tương ứng trên `Fact Stock Portfolio Snapshot` (`individual_*`, `domestic_institution_*`, `proprietary_*`, `foreign_*`) | Reuse từ Nhóm 28 — **[SỬA 2026-09-19, BA cập nhật STT 28]** Cá nhân/Tổ chức nay lấy theo `Investor Type Code` | READY |
-| K_GSTT_88 | GT khớp lệnh | VNĐ | Phái sinh | `SUM(Execution Value WHERE Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')) filter động theo Phân loại NĐT (K_GSTT_85) GROUP BY Symbol, Trade Date, Phân loại NĐT` | **Resolved 2026-09-04 — đánh giá lại:** nhãn "TBD — chờ Atomic" trước đó ghi sai. `Board Type Code` (khớp lệnh/thỏa thuận, đã dùng ở K_GSTT_17/18 Nhóm 1) và filter Phân loại NĐT (đã dùng ở K_GSTT_90/91 Nhóm 29) đều sẵn có trên `Securities Trade` — chỉ cần AND 2 điều kiện đã có vào cùng 1 SUM tại tầng BI, không cần Atomic/Fact mới. **[SỬA 2026-09-17, rà soát toàn diện]** Bổ sung `R1` (Negotiation Repo) vào filter — thiếu từ bản gốc, cùng loại thiếu sót đã đóng ở O_GSTT_20 cho K_GSTT_17/18/144 nhưng chưa lan sang K_GSTT_88/89 | READY |
-| K_GSTT_89 | GT thỏa thuận | VNĐ | Phái sinh | `SUM(Execution Value WHERE Board Type Code IN ('T1','T2','T3','T4','T6','R1')) filter động theo Phân loại NĐT (K_GSTT_85) GROUP BY Symbol, Trade Date, Phân loại NĐT` | Cùng ghi chú K_GSTT_88 — bổ sung `R1` [SỬA 2026-09-17] | READY |
-| K_GSTT_14 | Tổng GTGD | VNĐ | Phái sinh | `SUM(Securities Trade.Execution Value WHERE Market Id Code IN ('UPX','STX','STK') AND Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')) GROUP BY Symbol, Trade Date` | **[SỬA 2026-09-16, đồng bộ theo BA mới]** Trùng hoàn toàn K_GSTT_14 (Nhóm 1) — không khai KPI mới. Nhóm 1 đã đổi nguồn `total_val` → `total_matched_val` (khớp lệnh thuần) | READY |
-| K_GSTT_90 | GT mua | VNĐ | Phái sinh | `SUM(Execution Value) WHERE Buy-side filter theo nhánh Phân loại NĐT được chọn (K_GSTT_85: Buy Investor Type Code, phân nhánh theo src_stm_code, cho Cá nhân/Tổ chức trong nước; Client House/Foreign Investor Type cho Tự doanh/Nước ngoài) GROUP BY Symbol, Trade Date, Phân loại NĐT` | Mới — công thức tổng quát hóa của K_GSTT_70/71/81/85/86 (Nhóm 21/27/28), filter động theo K_GSTT_85 thay vì 4 cột cố định riêng. **[SỬA 2026-09-19, BA cập nhật STT 28]** đồng bộ K_GSTT_85 — nay dùng Investor Type Code thay Account Number substring | READY |
-| K_GSTT_91 | GT bán | VNĐ | Phái sinh | `SUM(Execution Value) WHERE Sell-side filter theo nhánh Phân loại NĐT được chọn (K_GSTT_85, cùng cơ chế K_GSTT_90) GROUP BY Symbol, Trade Date, Phân loại NĐT` | Mới — cùng cơ chế K_GSTT_90, chiều bán | READY |
-| K_GSTT_92 | GT ròng | VNĐ | Phái sinh | `K_GSTT_90 − K_GSTT_91` | Mới — derive tại tầng BI, tổng quát hóa K_GSTT_77/83/85/86 | READY |
-| K_GSTT_93 | GT mua ròng | VNĐ | Phái sinh | `K_GSTT_92 WHERE K_GSTT_92 > 0` | Mới — filter con của K_GSTT_92 theo dấu dương, không phải measure tính riêng | READY |
-| K_GSTT_94 | GT bán ròng | VNĐ | Phái sinh | `K_GSTT_92 WHERE K_GSTT_92 < 0` | Mới — filter con của K_GSTT_92 theo dấu âm, không phải measure tính riêng | READY |
+| K_GSTT_85 | Phân loại nhà đầu tư | — | Chiều | `Fact Investor Category Trading Snapshot.Investor Category Code` — 4 giá trị: Cá nhân, Tổ chức trong nước, Tự doanh, Nước ngoài | Reuse từ Nhóm 28 — **[SỬA 2026-09-21]** cột vật lý thật trên Fact mới | READY |
+| K_GSTT_88 | GT khớp lệnh | VNĐ | Phái sinh | `SUM(Fact Investor Category Trading Snapshot.Matched Buy Value) + SUM(Fact Investor Category Trading Snapshot.Matched Sell Value) WHERE Investor Category Code = :nhánh (K_GSTT_85) GROUP BY Symbol, Trade Date` | **[SỬA 2026-09-21]** Đổi nguồn sang `Fact Investor Category Trading Snapshot` (Matched Buy/Sell Value pre-aggregate sẵn theo Board Type Code NOT IN thỏa thuận, đã gồm `R1`) — không còn SUM động trên `securities_trade`. Lịch sử Resolved 2026-09-04 + bổ sung R1 2026-09-17 giữ nguyên | READY |
+| K_GSTT_89 | GT thỏa thuận | VNĐ | Phái sinh | `SUM(Fact Investor Category Trading Snapshot.Negotiated Buy Value) + SUM(Fact Investor Category Trading Snapshot.Negotiated Sell Value) WHERE Investor Category Code = :nhánh (K_GSTT_85) GROUP BY Symbol, Trade Date` | **[SỬA 2026-09-21]** Cùng cơ chế K_GSTT_88 | READY |
+| K_GSTT_152 | Tổng GTGD theo phân loại NĐT | VNĐ | Phái sinh | `SUM(Fact Investor Category Trading Snapshot.Buy Value) + SUM(Fact Investor Category Trading Snapshot.Sell Value) WHERE Investor Category Code = :nhánh (K_GSTT_85) GROUP BY Symbol, Trade Date` | **[MỚI 2026-09-21]** KPI mới, thay cho reuse K_GSTT_14 (Nhóm 1) — K_GSTT_14 là tổng thị trường KHÔNG lọc NĐT, sai ngữ nghĩa khi đặt cùng bảng đã lọc theo Phân loại NĐT. Tương ứng state `TONG_GTGD` của tham số `:loai_gtgd` trong SQL tham khảo gốc BA (không lọc Board Type, trên tập đã phân loại NĐT) — cùng cấp với KHOP_LENH (K_GSTT_88). K_GSTT_14 giữ nguyên định nghĩa cũ, không đổi, vẫn dùng cho Nhóm 1/3/9/10/23/24/30 | READY |
+| K_GSTT_90 | GT mua | VNĐ | Phái sinh | `SUM(Fact Investor Category Trading Snapshot.Buy Value) WHERE Investor Category Code = :nhánh (K_GSTT_85) GROUP BY Symbol, Trade Date` | **[SỬA 2026-09-21]** Đổi nguồn sang `Fact Investor Category Trading Snapshot` — filter đơn giản theo Investor Category Code, thay cho `CASE {nhanh} WHEN 'Ca nhan' THEN individual_buy_val WHEN...` trước đây | READY |
+| K_GSTT_91 | GT bán | VNĐ | Phái sinh | `SUM(Fact Investor Category Trading Snapshot.Sell Value) WHERE Investor Category Code = :nhánh (K_GSTT_85) GROUP BY Symbol, Trade Date` | **[SỬA 2026-09-21]** Cùng cơ chế K_GSTT_90, chiều bán | READY |
+| K_GSTT_92 | GT ròng | VNĐ | Phái sinh | `K_GSTT_90 − K_GSTT_91` | Derive tại tầng BI, không đổi công thức | READY |
+| K_GSTT_93 | GT mua ròng | VNĐ | Phái sinh | `K_GSTT_92 WHERE K_GSTT_92 > 0` | Filter con của K_GSTT_92 theo dấu dương, không phải measure tính riêng | READY |
+| K_GSTT_94 | GT bán ròng | VNĐ | Phái sinh | `K_GSTT_92 WHERE K_GSTT_92 < 0` | Filter con của K_GSTT_92 theo dấu âm, không phải measure tính riêng | READY |
 | K_GSTT_10 | Giá | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Close Price` | Reuse từ Nhóm 1 (K_GSTT_10 = Giá đóng cửa) | READY |
 | K_GSTT_12 | % thay đổi | % | Phái sinh | `Price Change / Reference Price × 100` | Reuse từ Nhóm 1 | READY |
 
-**Star Schema:** Không có bảng mới — 100% reuse `Fact Stock Portfolio Snapshot`, `Security Trading Snapshot Dimension`, `Index Constituent Dimension` đã vẽ ở Nhóm 1/21/27/28. K_GSTT_88–91 tính tại tầng BI qua filter động theo Phân loại NĐT; K_GSTT_92–94 (GT ròng/mua ròng/bán ròng) derive thêm 1 tầng nữa từ K_GSTT_90/91 — không cần cột Fact mới (đã có sẵn 6 cột nguồn: Foreign Buy/Sell Volume/Value, Proprietary Buy/Sell Value, Individual/Domestic Institution Net Value).
+**Star Schema:** 100% reuse `Fact Investor Category Trading Snapshot` (Nhóm 28, Cụm 1c) cho K_GSTT_88-94/152, `Security Trading Snapshot Dimension`/`Index Constituent Dimension` cho K_GSTT_1/4/10/12 — không tạo bảng mới ở Nhóm này.
 
 **Lineage Mart → Báo cáo:**
 
 ```mermaid
 flowchart LR
-    F1["Fact Stock Portfolio Snapshot"] --> RPT43["Xu hướng dòng tiền — GD theo phân loại NĐT (bản đồ nhiệt)"]
+    F1["Fact Investor Category Trading Snapshot"] --> RPT43["Xu hướng dòng tiền — GD theo phân loại NĐT (bản đồ nhiệt)"]
     D1["Security Trading Snapshot Dimension"] --> RPT43
     D4["Index Constituent Dimension"] --> RPT43
 ```
 
-**Bảng grain:** Không có bảng mới — cùng grain `Fact Stock Portfolio Snapshot` đã có ở Nhóm 1.
+**Bảng grain:** `Fact Investor Category Trading Snapshot` — 1 row/mã CK/ngày/Phân loại NĐT (K_GSTT_88-94, K_GSTT_152).
 
-> **Coverage rule:** Không áp dụng — Nhóm này không tạo/mở rộng Fact hay Dimension nào, thuần túy reuse + filter động tại tầng BI.
+> **Coverage rule:** Không áp dụng — Nhóm này không tạo/mở rộng Fact hay Dimension nào, 100% reuse `Fact Investor Category Trading Snapshot` (Nhóm 28).
 
 ---
 
@@ -2458,6 +2572,7 @@ graph TB
     FctMarketIndexSnpst["Fact Market Index Snapshot"]:::fact
     FctMarketIndexIntraday["Fact Market Index Intraday"]:::fact
     FctScrTdgIntraday["Fact Security Trading Intraday"]:::fact
+    FctInvestorCategoryTradingSnpst["Fact Investor Category Trading Snapshot"]:::fact
 
     ScrTdgSnpstDim --> FctStockPortfolioSnpst
     PblcCoDim --> FctStockPortfolioSnpst
@@ -2468,18 +2583,21 @@ graph TB
     CdrDtDim --> FctMarketIndexIntraday
     ScrTdgSnpstDim --> FctScrTdgIntraday
     CdrDtDim --> FctScrTdgIntraday
+    ScrTdgSnpstDim --> FctInvestorCategoryTradingSnpst
+    CdrDtDim --> FctInvestorCategoryTradingSnpst
 ```
 
 ### 3.2 Bảng Phân tích (chỉ liệt kê Fact)
 
 | Bảng | Pattern | Grain | KPI | Trạng thái |
 |---|---|---|---|---|
-| Fact Stock Portfolio Snapshot | Periodic Snapshot | 1 row / mã CK / ngày giao dịch (không còn FK rổ chỉ số — xem `Fact Index Constituent Snapshot`, sửa 2026-09-14) | K_GSTT_1–19 (Nhóm 1), K_GSTT_20–26 (Nhóm 2, reuse Nhóm 1), K_GSTT_27–29 (Nhóm 3, mới), K_GSTT_30 (Nhóm 3, Kỳ báo cáo — computed BI-tier), K_GSTT_31–32 (Nhóm 3, Resolved 2026-08-26 rule GSĐC: Doanh thu/LNST), Nhóm 4 (100% reuse Nhóm 2/3), K_GSTT_55–61 (Nhóm 6, toàn bộ Resolved 2026-08-26 — Số CP lưu hành qua `pc_share_statistics_hstr` (O_GSTT_2), LNST/VCSH qua rule GSĐC (O_GSTT_1), P/E/P/B/EPS/Vốn hóa theo đó cũng READY), Nhóm 7 (100% reuse Nhóm 1/6, Top-N theo KLGD), Nhóm 8 (100% reuse Nhóm 1/3, Top-N theo KLGD dạng biểu đồ), K_GSTT_62–63 (Nhóm 7, mới: Bộ chỉ số thị trường/theo ngành — cùng cột vật lý K_GSTT_4 nhưng 2 chỉ tiêu nghiệp vụ độc lập, reuse ở 13 Nhóm khác), Nhóm 8 (100% reuse Nhóm 1/3/7, Top-N theo KLGD dạng biểu đồ), K_GSTT_64–69 (Nhóm 9, rolling window KLGDTB/tỷ lệ đột phá 5/10/20 ngày, không cần cột mới), Nhóm 10 (100% reuse Nhóm 1/3/9, Top-N theo tỷ lệ đột phá dạng biểu đồ), Nhóm 9 (100% reuse Nhóm 1/6/7/9, Top-N theo tỷ lệ đột phá theo sàn/bộ chỉ số), Nhóm 10 (100% reuse Nhóm 1/3/7/9, Top-N theo tỷ lệ đột phá theo sàn/bộ chỉ số dạng biểu đồ), Nhóm 11 (100% reuse Nhóm 1/6/7, Top-N theo GTGD), Nhóm 12 (100% reuse Nhóm 1/3/7, Top-N theo GTGD dạng biểu đồ), Nhóm 13 (100% reuse Nhóm 1/6, Top-N theo % thay đổi giảm mạnh nhất), Nhóm 14 (100% reuse Nhóm 1/3, Top-N theo % thay đổi giảm mạnh nhất dạng biểu đồ), Nhóm 13 (100% reuse Nhóm 1/6, Top-N theo % thay đổi giảm mạnh nhất theo sàn), Nhóm 14 (100% reuse Nhóm 1/3, Top-N theo % thay đổi giảm mạnh nhất theo sàn dạng biểu đồ), Nhóm 15 (100% reuse Nhóm 1/3/6, Top-N theo % thay đổi tăng mạnh nhất "vượt đỉnh"), Nhóm 16 (100% reuse Nhóm 1/3, Top-N theo % thay đổi tăng mạnh nhất "vượt đỉnh" dạng biểu đồ), Nhóm 15 (100% reuse Nhóm 1/3/6/7, Top-N theo % thay đổi tăng mạnh nhất "vượt đỉnh" theo sàn/bộ chỉ số), Nhóm 16 (100% reuse Nhóm 1/3/7, Top-N theo % thay đổi tăng mạnh nhất "vượt đỉnh" theo sàn/bộ chỉ số dạng biểu đồ), Nhóm 17 (100% reuse Nhóm 1/3/6, Top-N theo % thay đổi giảm mạnh nhất "thủng đáy"), Nhóm 18 (100% reuse Nhóm 1/3, Top-N theo % thay đổi giảm mạnh nhất "thủng đáy" dạng biểu đồ), Nhóm 17 (100% reuse Nhóm 1/3/6/7, Top-N theo % thay đổi giảm mạnh nhất "thủng đáy" theo sàn/bộ chỉ số), Nhóm 18 (100% reuse Nhóm 1/3/7, Top-N theo % thay đổi giảm mạnh nhất "thủng đáy" theo sàn/bộ chỉ số dạng biểu đồ), Nhóm 19 (100% reuse Nhóm 1/6, Top-N theo % thay đổi tăng mạnh nhất "tăng giá"), Nhóm 20 (100% reuse Nhóm 1/3, Top-N theo % thay đổi tăng mạnh nhất "tăng giá" dạng biểu đồ), Nhóm 19 (100% reuse Nhóm 1/6/7, Top-N theo % thay đổi tăng mạnh nhất "tăng giá" theo sàn/bộ chỉ số), Nhóm 20 (100% reuse Nhóm 1/3/7, Top-N theo % thay đổi tăng mạnh nhất "tăng giá" theo sàn/bộ chỉ số dạng biểu đồ), K_GSTT_70–73 (Nhóm 21, mới: KL/GT mua-bán ròng NĐTNN, mở rộng Fact — reuse Nhóm 21), Nhóm 22 (100% reuse, biến thể biểu đồ không lặp measure NĐTNN), Nhóm 23 (100% reuse Nhóm 1/6/21, bản đồ nhiệt), K_GSTT_74–76/124–125 (Nhóm 24, Resolved 2026-09-07/O_GSTT_7, sửa nguồn Free Float 2026-09-14: Tỷ trọng/Điểm đóng góp qua `listed_share_info` + Bridge), K_GSTT_77 (Nhóm 25, GTNN ròng — derive từ K_GSTT_72/73), Nhóm 26 (100% reuse Nhóm 1/21, bản đồ nhiệt KLNN), K_GSTT_81–84 (Nhóm 27, mới: Phân loại + GT tự doanh mua/bán/ròng, mở rộng Fact), K_GSTT_85–87 (Nhóm 28, mới: Phân loại NĐT + GT cá nhân/tổ chức trong nước ròng, mở rộng Fact), K_GSTT_88–94 (Nhóm 29, mới: GT khớp lệnh/thỏa thuận/mua/bán/ròng/mua ròng/bán ròng theo phân loại NĐT, filter động tại BI), K_GSTT_105 (Nhóm 32, mới: Ngày GD đầu tiên/Khối lượng niêm yết — đã có sẵn theo coverage rule Nhóm 1, mới khai KPI), K_GSTT_106–107 (Nhóm 32, Resolved 2026-09-04: Giá cao/thấp 52 tuần dựa trên Giá đóng cửa, bổ sung cột Close Price theo ngày, mở rộng Fact — cũng reuse cho "Đỉnh cũ"/"Đáy cũ" Nhóm 15/17/17, xem O_GSTT_6), K_GSTT_109 (Nhóm 32, Resolved 2026-09-04: KL lưu hành bình quân qua `pc_share_statistics_hstr`), K_GSTT_110–113 (Nhóm 32, Resolved 2026-09-04: EPS/Book Value quý + bình quân 4 quý, tổ hợp lại từ K_GSTT_56/57/109 đã có, không cần Atomic mới), K_GSTT_114–119 (Nhóm 33, mới: KL mua/bán/ròng tự doanh + theo phân loại NĐT, mở rộng Fact + filter động) | READY |
+| Fact Stock Portfolio Snapshot | Periodic Snapshot | 1 row / mã CK / ngày giao dịch (không còn FK rổ chỉ số — xem `Fact Index Constituent Snapshot`, sửa 2026-09-14) | K_GSTT_1–19 (Nhóm 1), K_GSTT_20–26 (Nhóm 2, reuse Nhóm 1), K_GSTT_27–29 (Nhóm 3, mới), K_GSTT_30 (Nhóm 3, Kỳ báo cáo — computed BI-tier), K_GSTT_31–32 (Nhóm 3, Resolved 2026-08-26 rule GSĐC: Doanh thu/LNST), Nhóm 4 (100% reuse Nhóm 2/3), K_GSTT_55–61 (Nhóm 6, toàn bộ Resolved 2026-08-26 — Số CP lưu hành qua `pc_share_statistics_hstr` (O_GSTT_2), LNST/VCSH qua rule GSĐC (O_GSTT_1), P/E/P/B/EPS/Vốn hóa theo đó cũng READY), Nhóm 7 (100% reuse Nhóm 1/6, Top-N theo KLGD), Nhóm 8 (100% reuse Nhóm 1/3, Top-N theo KLGD dạng biểu đồ), K_GSTT_62–63 (Nhóm 7, mới: Bộ chỉ số thị trường/theo ngành — cùng cột vật lý K_GSTT_4 nhưng 2 chỉ tiêu nghiệp vụ độc lập, reuse ở 13 Nhóm khác), Nhóm 8 (100% reuse Nhóm 1/3/7, Top-N theo KLGD dạng biểu đồ), K_GSTT_64–69 (Nhóm 9, rolling window KLGDTB/tỷ lệ đột phá 5/10/20 ngày, không cần cột mới), Nhóm 10 (100% reuse Nhóm 1/3/9, Top-N theo tỷ lệ đột phá dạng biểu đồ), Nhóm 9 (100% reuse Nhóm 1/6/7/9, Top-N theo tỷ lệ đột phá theo sàn/bộ chỉ số), Nhóm 10 (100% reuse Nhóm 1/3/7/9, Top-N theo tỷ lệ đột phá theo sàn/bộ chỉ số dạng biểu đồ), Nhóm 11 (100% reuse Nhóm 1/6/7, Top-N theo GTGD), Nhóm 12 (100% reuse Nhóm 1/3/7, Top-N theo GTGD dạng biểu đồ), Nhóm 13 (100% reuse Nhóm 1/6, Top-N theo % thay đổi giảm mạnh nhất), Nhóm 14 (100% reuse Nhóm 1/3, Top-N theo % thay đổi giảm mạnh nhất dạng biểu đồ), Nhóm 13 (100% reuse Nhóm 1/6, Top-N theo % thay đổi giảm mạnh nhất theo sàn), Nhóm 14 (100% reuse Nhóm 1/3, Top-N theo % thay đổi giảm mạnh nhất theo sàn dạng biểu đồ), Nhóm 15 (100% reuse Nhóm 1/3/6, Top-N theo % thay đổi tăng mạnh nhất "vượt đỉnh"), Nhóm 16 (100% reuse Nhóm 1/3, Top-N theo % thay đổi tăng mạnh nhất "vượt đỉnh" dạng biểu đồ), Nhóm 15 (100% reuse Nhóm 1/3/6/7, Top-N theo % thay đổi tăng mạnh nhất "vượt đỉnh" theo sàn/bộ chỉ số), Nhóm 16 (100% reuse Nhóm 1/3/7, Top-N theo % thay đổi tăng mạnh nhất "vượt đỉnh" theo sàn/bộ chỉ số dạng biểu đồ), Nhóm 17 (100% reuse Nhóm 1/3/6, Top-N theo % thay đổi giảm mạnh nhất "thủng đáy"), Nhóm 18 (100% reuse Nhóm 1/3, Top-N theo % thay đổi giảm mạnh nhất "thủng đáy" dạng biểu đồ), Nhóm 17 (100% reuse Nhóm 1/3/6/7, Top-N theo % thay đổi giảm mạnh nhất "thủng đáy" theo sàn/bộ chỉ số), Nhóm 18 (100% reuse Nhóm 1/3/7, Top-N theo % thay đổi giảm mạnh nhất "thủng đáy" theo sàn/bộ chỉ số dạng biểu đồ), Nhóm 19 (100% reuse Nhóm 1/6, Top-N theo % thay đổi tăng mạnh nhất "tăng giá"), Nhóm 20 (100% reuse Nhóm 1/3, Top-N theo % thay đổi tăng mạnh nhất "tăng giá" dạng biểu đồ), Nhóm 19 (100% reuse Nhóm 1/6/7, Top-N theo % thay đổi tăng mạnh nhất "tăng giá" theo sàn/bộ chỉ số), Nhóm 20 (100% reuse Nhóm 1/3/7, Top-N theo % thay đổi tăng mạnh nhất "tăng giá" theo sàn/bộ chỉ số dạng biểu đồ), K_GSTT_70–73 (Nhóm 21, mới: KL/GT mua-bán ròng NĐTNN, mở rộng Fact — reuse Nhóm 21), Nhóm 22 (100% reuse, biến thể biểu đồ không lặp measure NĐTNN), Nhóm 23 (100% reuse Nhóm 1/6/21, bản đồ nhiệt), K_GSTT_74–76/124–125 (Nhóm 24, Resolved 2026-09-07/O_GSTT_7, sửa nguồn Free Float 2026-09-14: Tỷ trọng/Điểm đóng góp qua `listed_share_info` + Bridge), K_GSTT_77 (Nhóm 25, GTNN ròng — derive từ K_GSTT_72/73), Nhóm 26 (100% reuse Nhóm 1/21, bản đồ nhiệt KLNN), K_GSTT_81–84 (Nhóm 27, mới: Phân loại + GT tự doanh mua/bán/ròng, mở rộng Fact), K_GSTT_105 (Nhóm 32, mới: Ngày GD đầu tiên/Khối lượng niêm yết — đã có sẵn theo coverage rule Nhóm 1, mới khai KPI), K_GSTT_106–107 (Nhóm 32, Resolved 2026-09-04: Giá cao/thấp 52 tuần dựa trên Giá đóng cửa, bổ sung cột Close Price theo ngày, mở rộng Fact — cũng reuse cho "Đỉnh cũ"/"Đáy cũ" Nhóm 15/17/17, xem O_GSTT_6), K_GSTT_109 (Nhóm 32, Resolved 2026-09-04: KL lưu hành bình quân qua `pc_share_statistics_hstr`), K_GSTT_110–113 (Nhóm 32, Resolved 2026-09-04: EPS/Book Value quý + bình quân 4 quý, tổ hợp lại từ K_GSTT_56/57/109 đã có, không cần Atomic mới), K_GSTT_114–119 (Nhóm 33, mới: KL mua/bán/ròng tự doanh + theo phân loại NĐT, mở rộng Fact + filter động) | READY |
 | Fact Index Constituent Snapshot | Snapshot Fact (Bridge + measure tính sẵn) | 1 row / mã CK / rổ chỉ số / ngày giao dịch (8 measure SUM theo Index+Date, lặp lại trên mọi dòng Symbol cùng rổ) | K_GSTT_4 (Nhóm 1, chọn 1 Chỉ số), K_GSTT_62–63 (Nhóm 7, Bộ chỉ số thị trường/theo ngành), K_GSTT_47–52/54/61 (Nhóm 5/6/7/9/11/13/17/19/32/33, đọc trực tiếp measure tính sẵn), K_GSTT_74/76 (Nhóm 24, mẫu số Market Cap/Free Float Market Cap) — mới 2026-09-14, tách khỏi Fact Stock Portfolio Snapshot để hết fan-out; sửa 2026-09-14 bổ sung 8 measure theo yêu cầu Design | READY |
 | Fact Market Index Snapshot | Periodic Snapshot | 1 row / chỉ số thị trường (market_code) / ngày (bản ghi cuối phiên) | K_GSTT_35–43, K_GSTT_47–51 (Nhóm 5, reuse + mở rộng Fact QLKD), Nhóm 35 (100% reuse Nhóm 5, Data Explorer) | READY |
 | Fact Market Index Intraday | Transaction/Tick Snapshot | 1 row / chỉ số thị trường (market_code) / Index Time — FK `Calendar Date Dimension` qua `Trading Date` | K_GSTT_34, K_GSTT_45–46 (Nhóm 5, mới) | READY |
 | Fact Security Trading Intraday | Transaction/Tick Snapshot | 1 row / mã CK (Symbol) / Trading Timestamp (`trading_tms`) — FK `Calendar Date Dimension` qua `Trading Date` | K_GSTT_95–99 (Nhóm 30, mới) | READY |
 | Fact Foreign Trading Minute Snapshot | Transaction/Minute Snapshot | 1 row / mã CK (Symbol) / Trade Minute (`trade_tms` truncate phút) — FK `Calendar Date Dimension` qua `Trade Date` | K_GSTT_78–80 (Nhóm 25, Resolved 2026-09-04, O_GSTT_8) | READY |
+| Fact Investor Category Trading Snapshot | Periodic Snapshot | 1 row / mã CK / ngày giao dịch / Phân loại NĐT (Cá nhân, Tổ chức trong nước, Tự doanh, Nước ngoài) | K_GSTT_85–87 (Nhóm 28, mới: Phân loại NĐT + GT cá nhân/tổ chức trong nước ròng), K_GSTT_88–94 (Nhóm 29, mới: GT khớp lệnh/thỏa thuận/mua/bán/ròng/mua ròng/bán ròng theo phân loại NĐT) — **[MỚI 2026-09-21]** tách khỏi `Fact Stock Portfolio Snapshot`, xem Cụm 1c Section 1 | READY |
 
 ### 3.3 Bảng Tác nghiệp
 
@@ -2506,7 +2624,8 @@ graph TB
 
 | Datamart Entity | datamart_table | reuse_status | Ghi chú |
 |---|---|---|---|
-| Fact Stock Portfolio Snapshot | fct_stock_portfolio_snpst | new | Chưa có trong master — Nhóm đầu tiên của module GSTT. Grain = mã CK/ngày. **[SỬA 2026-09-14]** Bỏ FK `Index Constituent Dimension Id` — tách sang `Fact Index Constituent Snapshot` riêng (xem Section 1, Cụm 1b) để hết fan-out theo rổ chỉ số. **Sửa 2026-09-08 (review dashboard "Giám sát danh mục đầu tư"):** FK `Public Company Dimension Id` đổi INNER JOIN → LEFT JOIN, nay cũng nullable — mã CK chưa có bản ghi công ty đại chúng (`public_company`) tương ứng vẫn được giữ trong Fact (trước đây bị loại mất cả dòng). Xem `DTM_GSTT_fct_stock_portfolio_snpst.csv` dòng `Public Company Dimension Id`. Nhóm 6 mở rộng thêm 6 cột (Outstanding Share Quantity, Revenue, Net Profit After Tax, Net Profit After Tax TTM, Owner Equity, và Financial Report Period End Date Dimension Id / `fr_period_end_dt_dim_id` — Role-Playing Date FK trỏ sang `cdr_dt_dim` cho Ngày kết thúc của kỳ BCTC gần nhất, làm phẳng thành `fr_period_end_dt` trên ClickHouse) — không đổi grain, join qua FK Public Company Dimension đã có sẵn. **Cập nhật 2026-08-26, chỉnh sửa 2026-09-08:** Revenue/Net Profit After Tax/Net Profit After Tax TTM/Owner Equity Resolved theo rule GSĐC — join `public_company → pc_report_submission → fr_value → fr_catalog → fr_row_template → fr_column_template` (Atomic Nguồn 2), point-in-time theo `Ky_bao_cao` (Revenue/LNST) hoặc lookback kỳ kết thúc `ngay_ket_thuc <= trading_dt` kèm `submission_dt <= trading_dt` (VCSH, LNST TTM 4 quý `rn<=4`, NULL nếu thiếu kỳ). **Cập nhật 2026-08-26 (O_GSTT_2), sửa lookback 2026-09-08:** Outstanding Share Quantity cũng Resolved — nguồn `pc_share_statistics_hstr` (bảng lịch sử theo ngày của `pc_share_statistics`), lấy bản ghi ACTIVE gần nhất `<= Trading Date` (lookback, không còn khớp đúng ngày như bản trước). Toàn bộ 5 cột mở rộng Nhóm 6 nay đều READY. Nhóm 21 mở rộng thêm 4 cột READY (Foreign Buy/Sell Volume, Foreign Buy/Sell Value — nguồn `Securities Trade.Buy/Sell Foreign Investor Type Code`, Atomic Nguồn 1 approved) — không đổi grain. Nhóm 27 mở rộng thêm 2 cột READY (Proprietary Buy/Sell Value — nguồn `Securities Trade.Buy/Sell Client House Classification Code`). Nhóm 28 mở rộng thêm 2 cột READY (Individual/Domestic Institution Net Value — nguồn kết hợp `Investor Type Code` + `Foreign Investor Type Code` + `Client House Classification Code`); **cập nhật 2026-08-05:** bổ sung thêm 8 cột READY (Individual Buy/Sell Value, Individual Buy/Sell Volume, Domestic Institution Buy/Sell Value, Domestic Institution Buy/Sell Volume — cùng nguồn Account Number breakdown, tách riêng Buy/Sell thay vì chỉ Net, đối xứng với Foreign/Proprietary — phục vụ Nhóm 28/29/33 breakdown theo Phân loại NĐT qua K_GSTT_85) — không đổi grain. Nhóm 33 mở rộng thêm 2 cột READY (Proprietary Buy/Sell Volume — cùng nguồn Client House Classification Code, đo Volume thay Value) — tất cả không đổi grain mã CK/ngày |
+| Fact Stock Portfolio Snapshot | fct_stock_portfolio_snpst | new | Chưa có trong master — Nhóm đầu tiên của module GSTT. Grain = mã CK/ngày. **[SỬA 2026-09-14]** Bỏ FK `Index Constituent Dimension Id` — tách sang `Fact Index Constituent Snapshot` riêng (xem Section 1, Cụm 1b) để hết fan-out theo rổ chỉ số. **Sửa 2026-09-08 (review dashboard "Giám sát danh mục đầu tư"):** FK `Public Company Dimension Id` đổi INNER JOIN → LEFT JOIN, nay cũng nullable — mã CK chưa có bản ghi công ty đại chúng (`public_company`) tương ứng vẫn được giữ trong Fact (trước đây bị loại mất cả dòng). Xem `DTM_GSTT_fct_stock_portfolio_snpst.csv` dòng `Public Company Dimension Id`. Nhóm 6 mở rộng thêm 6 cột (Outstanding Share Quantity, Revenue, Net Profit After Tax, Net Profit After Tax TTM, Owner Equity, và Financial Report Period End Date Dimension Id / `fr_period_end_dt_dim_id` — Role-Playing Date FK trỏ sang `cdr_dt_dim` cho Ngày kết thúc của kỳ BCTC gần nhất, làm phẳng thành `fr_period_end_dt` trên ClickHouse) — không đổi grain, join qua FK Public Company Dimension đã có sẵn. **Cập nhật 2026-08-26, chỉnh sửa 2026-09-08:** Revenue/Net Profit After Tax/Net Profit After Tax TTM/Owner Equity Resolved theo rule GSĐC — join `public_company → pc_report_submission → fr_value → fr_catalog → fr_row_template → fr_column_template` (Atomic Nguồn 2), point-in-time theo `Ky_bao_cao` (Revenue/LNST) hoặc lookback kỳ kết thúc `ngay_ket_thuc <= trading_dt` kèm `submission_dt <= trading_dt` (VCSH, LNST TTM 4 quý `rn<=4`, NULL nếu thiếu kỳ). **Cập nhật 2026-08-26 (O_GSTT_2), sửa lookback 2026-09-08:** Outstanding Share Quantity cũng Resolved — nguồn `pc_share_statistics_hstr` (bảng lịch sử theo ngày của `pc_share_statistics`), lấy bản ghi ACTIVE gần nhất `<= Trading Date` (lookback, không còn khớp đúng ngày như bản trước). Toàn bộ 5 cột mở rộng Nhóm 6 nay đều READY. Nhóm 21 mở rộng thêm 4 cột READY (Foreign Buy/Sell Volume, Foreign Buy/Sell Value — nguồn `Securities Trade.Buy/Sell Foreign Investor Type Code`, Atomic Nguồn 1 approved) — không đổi grain. Nhóm 27 mở rộng thêm 2 cột READY (Proprietary Buy/Sell Value — nguồn `Securities Trade.Buy/Sell Client House Classification Code`). Nhóm 28 mở rộng thêm 2 cột (Individual/Domestic Institution Net Value) và 8 cột (Individual/Domestic Institution Buy/Sell Value/Volume, cập nhật 2026-08-05) — nguồn Account Number breakdown. **[SỬA 2026-09-21]** 10 cột này **KHÔNG còn dùng cho Nhóm 28/29** — K_GSTT_85–94 đã chuyển sang `Fact Investor Category Trading Snapshot` (Cụm 1c, xem dòng riêng bên dưới), nguồn phân loại cũng đổi từ Account Number breakdown sang `Investor Type Code`. 10 cột này **vẫn giữ nguyên, còn dùng cho Nhóm 33** (K_GSTT_114-119) — không xóa, không đổi tên/nguồn của chúng. Nhóm 33 mở rộng thêm 2 cột READY (Proprietary Buy/Sell Volume — cùng nguồn Client House Classification Code, đo Volume thay Value) — tất cả không đổi grain mã CK/ngày |
+| Fact Investor Category Trading Snapshot | fct_investor_category_trading_snpst | new | **[MỚI 2026-09-21, theo yêu cầu Data Modeler]** Chưa có trong master. Tách khỏi `Fact Stock Portfolio Snapshot` để có cột vật lý `Investor Category Code` thay vì 4 cụm cột cố định + CASE WHEN (xem Section 1, Cụm 1c). Grain: 1 row/mã CK/ngày/Phân loại NĐT (Cá nhân, Tổ chức trong nước, Tự doanh, Nước ngoài). Nguồn `securities_trade` (ORDERTRADE.TRADE_BOOK_HOSE/HNX, Nguồn 1 approved) — `Buy/Sell Investor Type Code` (Cá nhân/Tổ chức, phân nhánh HOSE/HNX), `Buy/Sell Client House Classification Code='30'` (Tự doanh), `Buy/Sell Foreign Investor Type Code IN ('10','20')` (Nước ngoài). Phục vụ K_GSTT_85-94 (Nhóm 28/29) |
 | Security Trading Snapshot Dimension | security_trading_snpst_dim | new | Chưa có trong master. Schema đã áp dụng coverage rule (Bước 1a) ngay từ Nhóm 1 — bao gồm sẵn cột phục vụ Nhóm 2 (Coupon Rate, Yield) và các Nhóm biểu đồ/phái sinh sau này (ISIN, Issuer, CW/OP/HĐTL...). Nhóm 3 bổ sung `Open Price`, `High Price`, `Low Price` (nguồn Atomic Nguồn 2, `design_status: approved` 2026-07-03) |
 | Index Constituent Dimension | index_constituent_dim | new | Chưa có trong master. Driving entity `Index Constituent Snapshot` ← MDDS.JAD_CSIDXINFOR — tách riêng khỏi `Security Trading Snapshot Dimension` vì khác driving Atomic entity/nguồn (xem lịch sử 3 lần sửa ở Section 1). **[SỬA 2026-09-14]** Grain đổi thành 1 row/Index Code (thuần mô tả rổ chỉ số: Index Code, Index Id) — Symbol/Floor Code/Add Date (thuộc tính *thành viên*) chuyển sang `Fact Index Constituent Snapshot` mới, không còn FK trực tiếp vào `Fact Stock Portfolio Snapshot` |
 | Fact Index Constituent Snapshot | fct_index_constituent_snpst | new | **[MỚI 2026-09-14]** Chưa có trong master. Bridge (3 FK) — grain 1 row/mã CK/rổ chỉ số/ngày giao dịch, nguồn `index_constituent_snapshot` ← MDDS.JAD_CSIDXINFOR (đã có sẵn `Trading Date` đúng grain). Tách khỏi `Fact Stock Portfolio Snapshot` để giải quyết fan-out do 1 mã CK thuộc N rổ chỉ số — phục vụ K_GSTT_4 (chọn 1 Chỉ số), K_GSTT_62/63 (Bộ chỉ số thị trường/theo ngành). **[SỬA 2026-09-14, theo yêu cầu Design]** Bổ sung 8 measure tính sẵn theo rổ chỉ số (`Index Total Matched Volume/Value`, `Index Foreign Net Volume/Value`, `Index Total Negotiated Volume/Value`, `Index Market Cap`, `Index Free Float Market Cap` — SUM theo Index+Date, nguồn `security_trading_snapshot`/`securities_trade`/`pc_share_statistics_hstr`/`listed_share_info`) phục vụ K_GSTT_47-52/54/61 (10 Nhóm, trừ Nhóm 23) + mẫu số K_GSTT_74/76 (Nhóm 24) — thay JOIN+SUM tại Detail Mapping bằng cột tính sẵn (MAX, giá trị lặp lại trên mọi dòng Symbol cùng Index+Date). Đánh đổi: logic filter (isin_code/floor_code, board_tp_code) lặp song song với `Fact Stock Portfolio Snapshot` — 2 nơi tính cùng loại filter, rủi ro lệch nếu chỉ sửa 1 nơi khi nghiệp vụ đổi. |

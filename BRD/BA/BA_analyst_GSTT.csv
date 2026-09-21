@@ -11,7 +11,7 @@ Trùng: Trong phạm vi ban của mình làm đã có tính thông tin này rồ
 );","SELECT DISTINCT
     s.symbol            AS ma_ck
 FROM JAD_STOCKINFOR s
-WHERE s.FloorCode IN ('10','02','04', ' 03')   -- HOSE, HNX, UPCOM
+WHERE s.FloorCode IN ('10','02','04')   -- HOSE, HNX, UPCOM
    AND  NOT  (
     (s.floorcode = '02'  AND s.stocktype  in (1,4)
     OR
@@ -23196,25 +23196,25 @@ FROM JAD_CSIDXINFOR s",Hiện tại chưa rõ điều kiện chung,,,,,Done,Dữ
     FROM (
         SELECT
             symbol,
-   			case when s.FloorCode IN ('02', '04') then s.symbolisin
- 				when s.FloorCode = '10' then s.symbol 
- 				else null end MA_GD,
+                           case when s.FloorCode IN ('02', '04') then s.symbolisin
+                                 when s.FloorCode = '10' then s.symbol 
+                                 else null end MA_GD,
             closePrice AS gia_dong_cua,
             reference  AS gia_tham_chieu,
             date_format (tradingdate , 'yyyyMMdd') as Ngay_GD,
             change,
-			 LAG(closePrice) OVER (
+                         LAG(closePrice) OVER (
             PARTITION BY symbol ORDER BY date_format (tradingdate , 'yyyyMMdd')
         ) AS closePrice_1
         FROM uat_mdds_stg.tmp_jad_stockinfor_eod  s
         where 1=1 
         --        and s.symbol = 'AAA'
         AND s.FloorCode   IN ('10', '02', '04')
-  		AND  NOT  (
-   			 (s.floorcode = '02'  AND s.stocktype  in (1,4))
-    			OR
-   			 (s.floorcode = '10' AND s.stocktype = 1)
-				)
+                  AND  NOT  (
+                            (s.floorcode = '02'  AND s.stocktype  in (1,4))
+                            OR
+                            (s.floorcode = '10' AND s.stocktype = 1)
+                                )
         )
       WHERE Ngay_GD = :Ngay_gd
 )
@@ -23298,7 +23298,7 @@ from
         LAG(marketindex) OVER (
             PARTITION BY MARKETCODE ORDER BY date_format (s.tradingdate , 'yyyyMMdd')
         ) AS index_t_1
---		s.prv_prior_market_index  AS index_t_1
+--                s.prv_prior_market_index  AS index_t_1
     FROM uat_mdds_stg.tmp_JAD_MARKETINFOR_eod s
     )x
     WHERE date_format(TO_DATE(x.tradingdate, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
@@ -23311,25 +23311,25 @@ from
     t.SYMBOL                                                                AS symbol,
 --    date_format(to_date(t.TRADE_DATE, 'yyyy-MM-dd'), 'yyyyMMdd'),
     SUM(CASE WHEN t.MARKET_ID IN ('STK')
-    		AND t.BOARD_TYPE NOT IN ('T1','T2','T3','T4','T6','R1')
+                    AND t.BOARD_TYPE NOT IN ('T1','T2','T3','T4','T6','R1')
              THEN t.EXECUTION_VOLUME                    ELSE 0 END)        AS tong_kl,
     SUM(CASE WHEN t.MARKET_ID IN ('STK')
-    		AND t.BOARD_TYPE NOT IN ('T1','T2','T3','T4','T6','R1')
+                    AND t.BOARD_TYPE NOT IN ('T1','T2','T3','T4','T6','R1')
              THEN CAST(REPLACE(t.EXECUTION_VALUE, ',', '') AS DECIMAL(38,2))
              ELSE 0 END)                                                    AS tong_gt
-FROM uat_hose_stg.trade_book	 t
+FROM uat_hose_stg.trade_book         t
 WHERE 1=1
---	and symbol = 'SHB' 
+--        and symbol = 'SHB' 
    AND date_format(to_date(t.TRADE_DATE, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd
 GROUP BY t.SYMBOL
 union all 
 SELECT
     t.ISSUE_CODE                                                            AS symbol,
     SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX')
-    			AND t.BOARD_ID NOT IN ('T1','T2','T3','T4','T6','R1')
+                            AND t.BOARD_ID NOT IN ('T1','T2','T3','T4','T6','R1')
              THEN t.TRADE_QUANTITY                                    ELSE 0 END) AS tong_kl,
     SUM(CASE WHEN t.MARKET_ID IN ('STX','UPX')
-    			AND t.BOARD_ID NOT IN ('T1','T2','T3','T4','T6','R1')
+                            AND t.BOARD_ID NOT IN ('T1','T2','T3','T4','T6','R1')
              THEN CAST(t.TRADE_PRICE AS DECIMAL(38,2)) * t.TRADE_QUANTITY   ELSE 0 END) AS tong_gt
  from uat_hnx_stg.trade_book t
  where 1=1 
@@ -24610,13 +24610,23 @@ FROM
 WHERE rn = 1
 --AND  ""marketId"" = '10'
 ORDER BY ""tradingdate"";",Lấy giá cuối ngày hôm nay - giá cuối ngày hôm trước,,,,,Done,Dữ liệu tĩnh,
-28,,Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư ,GT cá nhân ròng ,"GTGD mua theo từng phân loại nhà đầu tư: 
+28,,Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư ,Giá trị mua theo phân loại nhà đầu tư,"GTGD mua theo từng phân loại nhà đầu tư: 
 - Tính từ sổ lệnh khớp
 - Nếu không chọn ""Khớp lệnh"": Là tổng GTGD.
 - Nếu chọn ""Khớp lệnh"": Là GTGD khớp lệnh.
 - Điều kiện tổng hợp dữ liệu từ sổ lệnh: 
   + Giao dịch cổ phiếu: MARKET_ID gồm STK, STX, UPX
-  + Giao dịch khớp lệnh: BOARD_TYPE/BOARD_ID gồm G1, G2, G3, G4, G7, G8",Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"HOSE
+  + Giao dịch khớp lệnh: BOARD_TYPE/BOARD_ID gồm G1, G2, G3, G4, G7, G8",,,,,,,,,,,,,,,,,,,,,,
+28,,Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư ,Giá trị bán theo phân loại nhà đầu tư,"GTGD mua theo từng phân loại nhà đầu tư: 
+- Tính từ sổ lệnh khớp
+- Nếu không chọn ""Khớp lệnh"": Là tổng GTGD.
+- Nếu chọn ""Khớp lệnh"": Là GTGD khớp lệnh.
+- Điều kiện tổng hợp dữ liệu từ sổ lệnh: 
+  + Giao dịch cổ phiếu: MARKET_ID gồm STK, STX, UPX
+  + Giao dịch khớp lệnh: BOARD_TYPE/BOARD_ID gồm G1, G2, G3, G4, G7, G8",,,,,,,,,,,,,,,,,,,,,,
+28,,Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư ,Giá trị ròng theo phân loại nhà đầu tư,GTGD ròng =  GTGD mua - GTGD bán theo từng phân loại nhà đầu tư,,,,,,,,,,,,,,,,,,,,,,
+28,,Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư ,Giá trị mua  ròng theo phân loại nhà đầu tư,GTGD ròng > 0,,,,,,,,,,,,,,,,,,,,,,
+28,,Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư ,Giá trị bán ròng theo phân loại nhà đầu tư,GTGD ròng < 0,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"HOSE
  SUM(CASE
                 WHEN SUBSTRING(t.buy_acct_no, 4, 1) IN ('C','E') THEN t.EXECUTION_VALUE
                 WHEN SUBSTRING(t.buy_acct_no, 4, 1) = 'B'

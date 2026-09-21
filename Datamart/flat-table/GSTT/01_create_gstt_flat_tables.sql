@@ -325,7 +325,49 @@ COMMENT 'Flat table — Fact Foreign Trading Minute Snapshot × Calendar Date Di
 
 
 -- ============================================================
--- 5. OPERATIONAL: gstt_opr_public_company_shareholding_flat
+-- 5. FACT: gstt_fct_investor_category_trading_snpst_flat
+--    [MỚI 2026-09-21, theo yêu cầu Data Modeler] Giá trị mua/bán theo Phân loại NĐT
+--    (Cá nhân/Tổ chức trong nước/Tự doanh/Nước ngoài), tách khớp lệnh/thỏa thuận —
+--    1 row / mã CK / ngày giao dịch / Phân loại NĐT. Tách khỏi Fact Stock Portfolio
+--    Snapshot để có cột vật lý Investor Category Code thay vì 4 cụm cột cố định +
+--    CASE WHEN. Phục vụ K_GSTT_85-94 (Nhóm 28/29). Không đổi Fact Stock Portfolio
+--    Snapshot — Nhóm 21/25/27/33 không bị ảnh hưởng.
+--    Joins: Calendar Date (snpst_dt_dim_id JOIN) × Security Trading Snapshot Dimension
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.gstt_fct_investor_category_trading_snpst_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FACT Investor Category Trading Snapshot
+    security_trading_snpst_dim_id       String                  COMMENT 'FK → Security Trading Snapshot Dimension',
+    snpst_dt_dim_id                       String                  COMMENT 'FK → Calendar Date Dimension',
+    investor_category_code              Nullable(String)        COMMENT 'Phân loại NĐT: CA_NHAN / TO_CHUC_TRONG_NUOC / TU_DOANH / NUOC_NGOAI (Classification Value)',
+    buy_val                             Nullable(Decimal(23,2)) COMMENT 'Giá trị mua theo Phân loại NĐT (khớp lệnh + thỏa thuận) (K_GSTT_86, K_GSTT_90)',
+    sell_val                            Nullable(Decimal(23,2)) COMMENT 'Giá trị bán theo Phân loại NĐT (khớp lệnh + thỏa thuận) (K_GSTT_87, K_GSTT_91)',
+    matched_buy_val                     Nullable(Decimal(23,2)) COMMENT 'Giá trị mua khớp lệnh thuần theo Phân loại NĐT (K_GSTT_88)',
+    matched_sell_val                    Nullable(Decimal(23,2)) COMMENT 'Giá trị bán khớp lệnh thuần theo Phân loại NĐT (K_GSTT_88)',
+    negotiated_buy_val                  Nullable(Decimal(23,2)) COMMENT 'Giá trị mua thỏa thuận theo Phân loại NĐT (K_GSTT_89)',
+    negotiated_sell_val                 Nullable(Decimal(23,2)) COMMENT 'Giá trị bán thỏa thuận theo Phân loại NĐT (K_GSTT_89)',
+
+    -- From: CALENDAR DATE DIMENSION
+    cdr_dt                              Nullable(Date)          COMMENT 'Ngày giao dịch — từ Calendar Date Dimension',
+    is_trading_date                     Nullable(String)        COMMENT 'Cờ Y/N — ngày lịch có phải ngày thị trường thực sự mở cửa giao dịch hay không — từ Calendar Date Dimension',
+
+    -- From: SECURITY TRADING SNAPSHOT DIMENSION
+    symbol                               Nullable(String)        COMMENT 'Mã chứng khoán — từ Security Trading Snapshot Dimension',
+    security_full_nm                    Nullable(String)        COMMENT 'Tên chứng khoán — từ Security Trading Snapshot Dimension',
+    floor_code                          Nullable(String)        COMMENT 'Mã sàn — từ Security Trading Snapshot Dimension',
+    stock_tp_code                       Nullable(String)        COMMENT 'Loại chứng khoán — từ Security Trading Snapshot Dimension',
+    stock_tp_nm                         Nullable(String)        COMMENT 'Tên loại chứng khoán — từ Security Trading Snapshot Dimension',
+    investor_ctgy_trd_src_stm_code      Nullable(String)        COMMENT 'Mã hệ thống nguồn — từ Security Trading Snapshot Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
+ORDER BY (assumeNotNull(cdr_dt), security_trading_snpst_dim_id, investor_category_code)
+COMMENT 'Flat table — Fact Investor Category Trading Snapshot × Calendar Date Dimension × Security Trading Snapshot Dimension'
+;
+
+
+-- ============================================================
+-- 6. OPERATIONAL: gstt_opr_public_company_shareholding_flat
 --    [SỬA 2026-09-12, đảo ngược O_GSTT_9] Sở hữu cổ đông + chức vụ người nội bộ
 --    + sở hữu NN/trong nước — 1 row / (Public Company × Legal Entity/cổ đông).
 --    Gộp 3 nguồn Atomic: pc_shareholding (IDS.COMPANY_SHAREHOLDING), legal_entity
